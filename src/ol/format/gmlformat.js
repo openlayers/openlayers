@@ -378,18 +378,18 @@ ol.format.GML.readLineString_ = function(node, objectStack) {
  * @param {Node} node Node.
  * @param {Array.<*>} objectStack Object stack.
  * @private
- * @return {Array.<(Array.<number>)>} flat coordinates.
+ * @return {Array.<(Array.<number>)>|undefined} flat coordinates.
  */
-ol.format.GML.patchesParser_ = function(node, objectStack) {
+ol.format.GML.readPatch_ = function(node, objectStack) {
   goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT);
   goog.asserts.assert(node.localName == 'patches');
   var result = ol.xml.pushParseAndPop(
       /** @type {Array.<Array.<number>>} */ ([null]),
       ol.format.GML.PATCHES_PARSERS_, node, objectStack);
-  if (!goog.isDef(result)) {
-    return null;
-  } else {
+  if (goog.isDef(result)) {
     return result;
+  } else {
+    return undefined;
   }
 };
 
@@ -398,18 +398,18 @@ ol.format.GML.patchesParser_ = function(node, objectStack) {
  * @param {Node} node Node.
  * @param {Array.<*>} objectStack Object stack.
  * @private
- * @return {Array.<number>} flat coordinates.
+ * @return {Array.<number>|undefined} flat coordinates.
  */
-ol.format.GML.segmentsParser_ = function(node, objectStack) {
+ol.format.GML.readSegment_ = function(node, objectStack) {
   goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT);
   goog.asserts.assert(node.localName == 'segments');
   var result = ol.xml.pushParseAndPop(
       /** @type {Array.<number>} */ ([null]),
       ol.format.GML.SEGMENTS_PARSERS_, node, objectStack);
-  if (!goog.isDef(result)) {
-    return null;
-  } else {
+  if (goog.isDef(result)) {
     return result;
+  } else {
+    return undefined;
   }
 };
 
@@ -418,18 +418,18 @@ ol.format.GML.segmentsParser_ = function(node, objectStack) {
  * @param {Node} node Node.
  * @param {Array.<*>} objectStack Object stack.
  * @private
- * @return {Array.<(Array.<number>)>} flat coordinates.
+ * @return {Array.<(Array.<number>)>|undefined} flat coordinates.
  */
-ol.format.GML.polygonPatchParser_ = function(node, objectStack) {
+ol.format.GML.readPolygonPatch_ = function(node, objectStack) {
   goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT);
   goog.asserts.assert(node.localName == 'PolygonPatch');
   var result = ol.xml.pushParseAndPop(
       /** @type {Array.<Array.<number>>} */ ([null]),
       ol.format.GML.FLAT_LINEAR_RINGS_PARSERS_, node, objectStack);
-  if (!goog.isDef(result)) {
-    return null;
-  } else {
+  if (goog.isDef(result)) {
     return result;
+  } else {
+    return undefined;
   }
 };
 
@@ -438,18 +438,18 @@ ol.format.GML.polygonPatchParser_ = function(node, objectStack) {
  * @param {Node} node Node.
  * @param {Array.<*>} objectStack Object stack.
  * @private
- * @return {Array.<number>} flat coordinates.
+ * @return {Array.<number>|undefined} flat coordinates.
  */
-ol.format.GML.lineStringSegmentParser_ = function(node, objectStack) {
+ol.format.GML.readLineStringSegment_ = function(node, objectStack) {
   goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT);
   goog.asserts.assert(node.localName == 'LineStringSegment');
   var result = ol.xml.pushParseAndPop(
       /** @type {Array.<number>} */ ([null]),
       ol.format.GML.GEOMETRY_FLAT_COORDINATES_PARSERS_, node, objectStack);
-  if (!goog.isDef(result)) {
-    return null;
-  } else {
+  if (goog.isDef(result)) {
     return result;
+  } else {
+    return undefined;
   }
 };
 
@@ -500,13 +500,18 @@ ol.format.GML.exteriorParser_ = function(node, objectStack) {
  * @param {Node} node Node.
  * @param {Array.<*>} objectStack Object stack.
  * @private
- * @return {Array.<number>} LinearRing flat coordinates.
+ * @return {Array.<number>|undefined} LinearRing flat coordinates.
  */
 ol.format.GML.readFlatLinearRing_ = function(node, objectStack) {
   goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT);
   goog.asserts.assert(node.localName == 'LinearRing');
-  return /** @type {Array.<number>} */ (ol.xml.pushParseAndPop(
-      null, ol.format.GML.FLAT_LINEAR_RING_PARSERS_, node, objectStack));
+  var ring = ol.xml.pushParseAndPop(/** @type {Array.<number>} */(null),
+      ol.format.GML.GEOMETRY_FLAT_COORDINATES_PARSERS_, node, objectStack);
+  if (goog.isDefAndNotNull(ring)) {
+    return ring;
+  } else {
+    return undefined;
+  }
 };
 
 
@@ -913,7 +918,7 @@ ol.format.GML.POLYGONMEMBER_PARSERS_ = {
  */
 ol.format.GML.SURFACE_PARSERS_ = {
   'http://www.opengis.net/gml' : {
-    'patches': ol.xml.makeReplacer(ol.format.GML.patchesParser_)
+    'patches': ol.xml.makeReplacer(ol.format.GML.readPatch_)
   }
 };
 
@@ -925,7 +930,7 @@ ol.format.GML.SURFACE_PARSERS_ = {
  */
 ol.format.GML.CURVE_PARSERS_ = {
   'http://www.opengis.net/gml' : {
-    'segments': ol.xml.makeReplacer(ol.format.GML.segmentsParser_)
+    'segments': ol.xml.makeReplacer(ol.format.GML.readSegment_)
   }
 };
 
@@ -950,7 +955,7 @@ ol.format.GML.ENVELOPE_PARSERS_ = {
  */
 ol.format.GML.PATCHES_PARSERS_ = {
   'http://www.opengis.net/gml' : {
-    'PolygonPatch': ol.xml.makeReplacer(ol.format.GML.polygonPatchParser_)
+    'PolygonPatch': ol.xml.makeReplacer(ol.format.GML.readPolygonPatch_)
   }
 };
 
@@ -963,7 +968,7 @@ ol.format.GML.PATCHES_PARSERS_ = {
 ol.format.GML.SEGMENTS_PARSERS_ = {
   'http://www.opengis.net/gml' : {
     'LineStringSegment': ol.xml.makeReplacer(
-        ol.format.GML.lineStringSegmentParser_)
+        ol.format.GML.readLineStringSegment_)
   }
 };
 
@@ -976,18 +981,6 @@ ol.format.GML.SEGMENTS_PARSERS_ = {
 ol.format.GML.RING_PARSERS_ = {
   'http://www.opengis.net/gml' : {
     'LinearRing': ol.xml.makeReplacer(ol.format.GML.readFlatLinearRing_)
-  }
-};
-
-
-/**
- * @const
- * @type {Object.<string, Object.<string, ol.xml.Parser>>}
- * @private
- */
-ol.format.GML.FLAT_LINEAR_RING_PARSERS_ = {
-  'http://www.opengis.net/gml' : {
-    'posList': ol.xml.makeReplacer(ol.format.GML.readFlatPosList_)
   }
 };
 
