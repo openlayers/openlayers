@@ -38,9 +38,9 @@ var createMap = function(divId, rotate) {
   return new ol.Map(mapOptions);
 };
 
+// TODO - overviewmap fails to render unless maximized is set
 var map1 = createMap('map1', false);
 var overview1 = new ol.control.OverviewMap({
-  // TODO - overviewmap fails to render unless maximized is set
   maximized: true
 });
 map1.addControl(overview1);
