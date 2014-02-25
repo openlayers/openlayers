@@ -228,6 +228,69 @@ describe('ol.geom.LineString', function() {
 
   });
 
+  describe('with a simple XYM coordinates', function() {
+
+    var lineString;
+    beforeEach(function() {
+      lineString = new ol.geom.LineString(
+          [[1, 2, 3], [4, 5, 6]], ol.geom.GeometryLayout.XYM);
+    });
+
+    describe('#getCoordinateAtM', function() {
+
+      it('returns the expected value', function() {
+        expect(lineString.getCoordinateAtM(2, false)).to.be(null);
+        expect(lineString.getCoordinateAtM(2, true)).to.eql([1, 2, 2]);
+        expect(lineString.getCoordinateAtM(3, false)).to.eql([1, 2, 3]);
+        expect(lineString.getCoordinateAtM(3, true)).to.eql([1, 2, 3]);
+        expect(lineString.getCoordinateAtM(4, false)).to.eql([2, 3, 4]);
+        expect(lineString.getCoordinateAtM(4, true)).to.eql([2, 3, 4]);
+        expect(lineString.getCoordinateAtM(5, false)).to.eql([3, 4, 5]);
+        expect(lineString.getCoordinateAtM(5, true)).to.eql([3, 4, 5]);
+        expect(lineString.getCoordinateAtM(6, false)).to.eql([4, 5, 6]);
+        expect(lineString.getCoordinateAtM(6, true)).to.eql([4, 5, 6]);
+        expect(lineString.getCoordinateAtM(7, false)).to.eql(null);
+        expect(lineString.getCoordinateAtM(7, true)).to.eql([4, 5, 7]);
+      });
+
+    });
+
+  });
+
+  describe('with several XYZM coordinates', function() {
+
+    var lineString;
+    beforeEach(function() {
+      lineString = new ol.geom.LineString([
+        [0, 0, 0, 0],
+        [1, -1, 2, 1],
+        [2, -2, 4, 2],
+        [4, -4, 8, 4],
+        [8, -8, 16, 8],
+        [12, -12, 24, 12],
+        [14, -14, 28, 14],
+        [15, -15, 30, 15],
+        [16, -16, 32, 16],
+        [18, -18, 36, 18],
+        [22, -22, 44, 22]
+      ]);
+    });
+
+    describe('#getCoordinateAtM', function() {
+
+      it('returns the expected value', function() {
+        expect(lineString.getLayout()).to.be(ol.geom.GeometryLayout.XYZM);
+        var m;
+        for (m = 0; m <= 22; m += 0.5) {
+          expect(lineString.getCoordinateAtM(m, true)).to.eql(
+              [m, -m, 2 * m, m]);
+        }
+      });
+
+    });
+
+  });
+
 });
 
 
