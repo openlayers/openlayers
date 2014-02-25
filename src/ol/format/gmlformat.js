@@ -9,7 +9,6 @@ goog.require('goog.string');
 goog.require('ol.Feature');
 goog.require('ol.extent');
 goog.require('ol.format.XML');
-goog.require('ol.geom.GeometryCollection');
 goog.require('ol.geom.LineString');
 goog.require('ol.geom.MultiLineString');
 goog.require('ol.geom.MultiPoint');
@@ -107,16 +106,9 @@ ol.format.GML.FEATURE_COLLECTION_PARSERS_ = {
  * @private
  */
 ol.format.GML.readGeometry_ = function(node, objectStack) {
-  var geometries = ol.xml.pushParseAndPop(
-      /** @type {Array.<ol.geom.Geometry>} */ ([]),
-      ol.format.GML.GEOMETRY_PARSERS_, node, objectStack);
-  if (!goog.isDef(geometries)) {
-    return null;
-  }
-  if (geometries.length === 0) {
-    return new ol.geom.GeometryCollection(geometries);
-  }
-  return geometries[0];
+  objectStack = [{srsName: node.firstElementChild.getAttribute('srsName')}];
+  ol.xml.parse(ol.format.GML.GEOMETRY_PARSERS_, node, objectStack);
+  return objectStack.pop();
 };
 
 
@@ -163,7 +155,6 @@ ol.format.GML.readFeature_ = function(node, objectStack) {
 ol.format.GML.readPoint_ = function(node, objectStack) {
   goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT);
   goog.asserts.assert(node.localName == 'Point');
-  ol.format.GML.injectSrsName_(node, objectStack);
   var flatCoordinates =
       ol.format.GML.readFlatCoordinatesFromNode_(node, objectStack);
   if (goog.isDefAndNotNull(flatCoordinates)) {
@@ -186,7 +177,6 @@ ol.format.GML.readPoint_ = function(node, objectStack) {
 ol.format.GML.readMultiPoint_ = function(node, objectStack) {
   goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT);
   goog.asserts.assert(node.localName == 'MultiPoint');
-  ol.format.GML.injectSrsName_(node, objectStack);
   var coordinates = ol.xml.pushParseAndPop(
       /** @type {Array.<Array.<number>>} */ ([]),
       ol.format.GML.MULTIPOINT_PARSERS_, node, objectStack);
@@ -207,7 +197,6 @@ ol.format.GML.readMultiPoint_ = function(node, objectStack) {
 ol.format.GML.readMultiLineString_ = function(node, objectStack) {
   goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT);
   goog.asserts.assert(node.localName == 'MultiLineString');
-  ol.format.GML.injectSrsName_(node, objectStack);
   var lineStrings = ol.xml.pushParseAndPop(
       /** @type {Array.<ol.geom.LineString>} */ ([]),
       ol.format.GML.MULTILINESTRING_PARSERS_, node, objectStack);
@@ -230,7 +219,6 @@ ol.format.GML.readMultiLineString_ = function(node, objectStack) {
 ol.format.GML.readMultiCurve_ = function(node, objectStack) {
   goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT);
   goog.asserts.assert(node.localName == 'MultiCurve');
-  ol.format.GML.injectSrsName_(node, objectStack);
   var lineStrings = ol.xml.pushParseAndPop(
       /** @type {Array.<ol.geom.LineString>} */ ([]),
       ol.format.GML.MULTICURVE_PARSERS_, node, objectStack);
@@ -253,7 +241,6 @@ ol.format.GML.readMultiCurve_ = function(node, objectStack) {
 ol.format.GML.readMultiSurface_ = function(node, objectStack) {
   goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT);
   goog.asserts.assert(node.localName == 'MultiSurface');
-  ol.format.GML.injectSrsName_(node, objectStack);
   var polygons = ol.xml.pushParseAndPop(
       /** @type {Array.<ol.geom.Polygon>} */ ([]),
       ol.format.GML.MULTISURFACE_PARSERS_, node, objectStack);
@@ -276,7 +263,6 @@ ol.format.GML.readMultiSurface_ = function(node, objectStack) {
 ol.format.GML.readMultiPolygon_ = function(node, objectStack) {
   goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT);
   goog.asserts.assert(node.localName == 'MultiPolygon');
-  ol.format.GML.injectSrsName_(node, objectStack);
   var polygons = ol.xml.pushParseAndPop(
       /** @type {Array.<ol.geom.Polygon>} */ ([]),
       ol.format.GML.MULTIPOLYGON_PARSERS_, node, objectStack);
@@ -359,24 +345,11 @@ ol.format.GML.polygonMemberParser_ = function(node, objectStack) {
  * @param {Node} node Node.
  * @param {Array.<*>} objectStack Object stack.
  * @private
- */
-ol.format.GML.injectSrsName_ = function(node, objectStack) {
-  if (node.getAttribute('srsName') !== null) {
-    objectStack.push({srsName: node.getAttribute('srsName')});
-  }
-};
-
-
-/**
- * @param {Node} node Node.
- * @param {Array.<*>} objectStack Object stack.
- * @private
  * @return {ol.geom.LineString|undefined} LineString.
  */
 ol.format.GML.readLineString_ = function(node, objectStack) {
   goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT);
   goog.asserts.assert(node.localName == 'LineString');
-  ol.format.GML.injectSrsName_(node, objectStack);
   var flatCoordinates =
       ol.format.GML.readFlatCoordinatesFromNode_(node, objectStack);
   if (goog.isDefAndNotNull(flatCoordinates)) {
@@ -534,7 +507,6 @@ ol.format.GML.readFlatLinearRing_ = function(node, objectStack) {
 ol.format.GML.readLinearRing_ = function(node, objectStack) {
   goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT);
   goog.asserts.assert(node.localName == 'LinearRing');
-  ol.format.GML.injectSrsName_(node, objectStack);
   var flatCoordinates =
       ol.format.GML.readFlatCoordinatesFromNode_(node, objectStack);
   if (goog.isDef(flatCoordinates)) {
@@ -557,7 +529,6 @@ ol.format.GML.readLinearRing_ = function(node, objectStack) {
 ol.format.GML.readPolygon_ = function(node, objectStack) {
   goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT);
   goog.asserts.assert(node.localName == 'Polygon');
-  ol.format.GML.injectSrsName_(node, objectStack);
   var flatLinearRings = ol.xml.pushParseAndPop(
       /** @type {Array.<Array.<number>>} */ ([null]),
       ol.format.GML.FLAT_LINEAR_RINGS_PARSERS_, node, objectStack);
@@ -589,7 +560,6 @@ ol.format.GML.readPolygon_ = function(node, objectStack) {
 ol.format.GML.readSurface_ = function(node, objectStack) {
   goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT);
   goog.asserts.assert(node.localName == 'Surface');
-  ol.format.GML.injectSrsName_(node, objectStack);
   var flatLinearRings = ol.xml.pushParseAndPop(
       /** @type {Array.<Array.<number>>} */ ([null]),
       ol.format.GML.SURFACE_PARSERS_, node, objectStack);
@@ -621,7 +591,6 @@ ol.format.GML.readSurface_ = function(node, objectStack) {
 ol.format.GML.readCurve_ = function(node, objectStack) {
   goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT);
   goog.asserts.assert(node.localName == 'Curve');
-  ol.format.GML.injectSrsName_(node, objectStack);
   var flatCoordinates = ol.xml.pushParseAndPop(
       /** @type {Array.<number>} */ ([null]),
       ol.format.GML.CURVE_PARSERS_, node, objectStack);
@@ -644,7 +613,6 @@ ol.format.GML.readCurve_ = function(node, objectStack) {
 ol.format.GML.readEnvelope_ = function(node, objectStack) {
   goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT);
   goog.asserts.assert(node.localName == 'Envelope');
-  ol.format.GML.injectSrsName_(node, objectStack);
   var flatCoordinates = ol.xml.pushParseAndPop(
       /** @type {Array.<number>} */ ([null]),
       ol.format.GML.ENVELOPE_PARSERS_, node, objectStack);
@@ -677,15 +645,7 @@ ol.format.GML.readFlatCoordinatesFromNode_ = function(node, objectStack) {
 ol.format.GML.readFlatPos_ = function(node, objectStack) {
   var s = ol.xml.getAllTextContent(node, false).replace(/^\s*|\s*$/g, '');
   var flatCoordinates = goog.array.map(s.split(/\s+/), parseFloat);
-  var containerSrs = null;
-  for (var i = 0, ii = objectStack.length; i < ii; ++i) {
-    if (goog.isObject(objectStack[i]) &&
-        goog.object.get(/** @type {Object} */(objectStack[i]), 'srsName')) {
-      containerSrs = objectStack[i].srsName;
-      goog.array.removeAt(objectStack, i);
-      break;
-    }
-  }
+  var containerSrs = objectStack[0].srsName;
   var axisOrientation = 'enu';
   if (containerSrs !== null) {
     var proj = ol.proj.get(containerSrs);
@@ -713,15 +673,7 @@ ol.format.GML.readFlatPos_ = function(node, objectStack) {
  */
 ol.format.GML.readFlatPosList_ = function(node, objectStack) {
   var s = ol.xml.getAllTextContent(node, false).replace(/^\s*|\s*$/g, '');
-  var containerSrs = null;
-  for (var i = 0, ii = objectStack.length; i < ii; ++i) {
-    if (goog.isObject(objectStack[i]) &&
-        goog.object.get(/** @type {Object} */ (objectStack[i]), 'srsName')) {
-      containerSrs = objectStack[i].srsName;
-      goog.array.removeAt(objectStack, i);
-      break;
-    }
-  }
+  var containerSrs = objectStack[0].srsName;
   var containerDimension = node.parentNode.getAttribute('srsDimension');
   var axisOrientation = 'enu';
   if (containerSrs !== null) {
@@ -757,19 +709,19 @@ ol.format.GML.readFlatPosList_ = function(node, objectStack) {
  */
 ol.format.GML.GEOMETRY_PARSERS_ = ol.xml.makeParsersNS(
     ol.format.GML.NAMESPACE_URIS_, {
-      'Point': ol.xml.makeArrayPusher(ol.format.GML.readPoint_),
-      'MultiPoint': ol.xml.makeArrayPusher(ol.format.GML.readMultiPoint_),
-      'LineString': ol.xml.makeArrayPusher(ol.format.GML.readLineString_),
-      'MultiLineString': ol.xml.makeArrayPusher(
+      'Point': ol.xml.makeReplacer(ol.format.GML.readPoint_),
+      'MultiPoint': ol.xml.makeReplacer(ol.format.GML.readMultiPoint_),
+      'LineString': ol.xml.makeReplacer(ol.format.GML.readLineString_),
+      'MultiLineString': ol.xml.makeReplacer(
           ol.format.GML.readMultiLineString_),
-      'LinearRing' : ol.xml.makeArrayPusher(ol.format.GML.readLinearRing_),
-      'Polygon': ol.xml.makeArrayPusher(ol.format.GML.readPolygon_),
-      'MultiPolygon': ol.xml.makeArrayPusher(ol.format.GML.readMultiPolygon_),
-      'Surface': ol.xml.makeArrayPusher(ol.format.GML.readSurface_),
-      'MultiSurface': ol.xml.makeArrayPusher(ol.format.GML.readMultiSurface_),
-      'Curve': ol.xml.makeArrayPusher(ol.format.GML.readCurve_),
-      'MultiCurve': ol.xml.makeArrayPusher(ol.format.GML.readMultiCurve_),
-      'Envelope': ol.xml.makeArrayPusher(ol.format.GML.readEnvelope_)
+      'LinearRing' : ol.xml.makeReplacer(ol.format.GML.readLinearRing_),
+      'Polygon': ol.xml.makeReplacer(ol.format.GML.readPolygon_),
+      'MultiPolygon': ol.xml.makeReplacer(ol.format.GML.readMultiPolygon_),
+      'Surface': ol.xml.makeReplacer(ol.format.GML.readSurface_),
+      'MultiSurface': ol.xml.makeReplacer(ol.format.GML.readMultiSurface_),
+      'Curve': ol.xml.makeReplacer(ol.format.GML.readCurve_),
+      'MultiCurve': ol.xml.makeReplacer(ol.format.GML.readMultiCurve_),
+      'Envelope': ol.xml.makeReplacer(ol.format.GML.readEnvelope_)
     });
 
 
