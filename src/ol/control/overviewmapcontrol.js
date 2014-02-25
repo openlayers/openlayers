@@ -196,8 +196,7 @@ ol.control.OverviewMap.prototype.setMap = function(map) {
     var view = map.getView();
     goog.asserts.assert(goog.isDef(view));
     var view2D = view.getView2D();
-    goog.asserts.assert(goog.isDef(view2D));
-    goog.asserts.assertInstanceOf(view2D, ol.View2D);
+    goog.asserts.assertInstanceof(view2D, ol.View2D);
 
     goog.events.listen(
         view2D, ol.Object.getChangeEventType(ol.View2DProperty.CENTER),
@@ -286,8 +285,24 @@ ol.control.OverviewMap.prototype.handleSizeChanged_ = function(event) {
 ol.control.OverviewMap.prototype.validateExtent_ = function() {
   var map = this.getMap();
   var ovmap = this.ovmap_;
-  var extent = map.getView().calculateExtent(map.getSize());
-  var ovextent = ovmap.getView().calculateExtent(ovmap.getSize());
+
+  var mapSize = map.getSize();
+  goog.asserts.assertArray(mapSize);
+
+  var view = map.getView();
+  goog.asserts.assert(goog.isDef(view));
+  var view2D = view.getView2D();
+  goog.asserts.assertInstanceof(view2D, ol.View2D);
+  var extent = view2D.calculateExtent(mapSize);
+
+  var ovmapSize = ovmap.getSize();
+  goog.asserts.assertArray(ovmapSize);
+
+  var ovview = ovmap.getView();
+  goog.asserts.assert(goog.isDef(ovview));
+  var ovview2D = ovview.getView2D();
+  goog.asserts.assertInstanceof(ovview2D, ol.View2D);
+  var ovextent = ovview2D.calculateExtent(ovmapSize);
 
   var topLeftPixel =
       ovmap.getPixelFromCoordinate(ol.extent.getTopLeft(extent));
@@ -297,7 +312,6 @@ ol.control.OverviewMap.prototype.validateExtent_ = function() {
       Math.abs(topLeftPixel[0] - bottomRightPixel[0]),
       Math.abs(topLeftPixel[1] - bottomRightPixel[1]));
 
-  var ovmapSize = ovmap.getSize();
   var ovmapWidth = ovmapSize[0];
   var ovmapHeight = ovmapSize[1];
 
@@ -324,7 +338,23 @@ ol.control.OverviewMap.prototype.resetExtent_ = function() {
 
   var map = this.getMap();
   var ovmap = this.ovmap_;
-  var extent = map.getView().calculateExtent(map.getSize());
+
+  var mapSize = map.getSize();
+  goog.asserts.assertArray(mapSize);
+
+  var view = map.getView();
+  goog.asserts.assert(goog.isDef(view));
+  var view2D = view.getView2D();
+  goog.asserts.assertInstanceof(view2D, ol.View2D);
+  var extent = view2D.calculateExtent(mapSize);
+
+  var ovmapSize = ovmap.getSize();
+  goog.asserts.assertArray(ovmapSize);
+
+  var ovview = ovmap.getView();
+  goog.asserts.assert(goog.isDef(ovview));
+  var ovview2D = ovview.getView2D();
+  goog.asserts.assertInstanceof(ovview2D, ol.View2D);
 
   // get how many times the current map overview could hold different
   // box sizes using the min and max ratio, pick the step in the middle used
@@ -332,7 +362,7 @@ ol.control.OverviewMap.prototype.resetExtent_ = function() {
   var steps = Math.log(this.maxRatio_ / this.minRatio_) / Math.LN2;
   var ratio = 1 / (Math.pow(2, steps / 2) * this.minRatio_);
   ol.extent.scaleFromCenter(extent, ratio);
-  ovmap.getView().fitExtent(extent, ovmap.getSize());
+  ovview2D.fitExtent(extent, ovmapSize);
 };
 
 
@@ -344,7 +374,18 @@ ol.control.OverviewMap.prototype.resetExtent_ = function() {
 ol.control.OverviewMap.prototype.recenter_ = function() {
   var map = this.getMap();
   var ovmap = this.ovmap_;
-  ovmap.getView().setCenter(map.getView().getCenter());
+
+  var view = map.getView();
+  goog.asserts.assert(goog.isDef(view));
+  var view2D = view.getView2D();
+  goog.asserts.assertInstanceof(view2D, ol.View2D);
+
+  var ovview = ovmap.getView();
+  goog.asserts.assert(goog.isDef(ovview));
+  var ovview2D = ovview.getView2D();
+  goog.asserts.assertInstanceof(ovview2D, ol.View2D);
+
+  ovview2D.setCenter(view2D.getCenter());
 };
 
 
@@ -355,13 +396,30 @@ ol.control.OverviewMap.prototype.recenter_ = function() {
 ol.control.OverviewMap.prototype.updateBox_ = function() {
   var map = this.getMap();
   var ovmap = this.ovmap_;
+
+  var mapSize = map.getSize();
+  goog.asserts.assertArray(mapSize);
+
   var view = map.getView();
+  goog.asserts.assert(goog.isDef(view));
+  var view2D = view.getView2D();
+  goog.asserts.assertInstanceof(view2D, ol.View2D);
+
   var ovview = ovmap.getView();
-  var rotation = view.getRotation();
+  goog.asserts.assert(goog.isDef(ovview));
+  var ovview2D = ovview.getView2D();
+  goog.asserts.assertInstanceof(ovview2D, ol.View2D);
+
+  var ovmapSize = ovmap.getSize();
+  goog.asserts.assertArray(ovmapSize);
+
+  var rotation = view2D.getRotation();
+  goog.asserts.assert(goog.isDef(rotation));
+
   var overlay = this.boxOverlay_;
   var box = this.boxOverlay_.getElement();
-  var extent = view.calculateExtent(map.getSize());
-  var ovresolution = ovview.getResolution();
+  var extent = view2D.calculateExtent(mapSize);
+  var ovresolution = ovview2D.getResolution();
   var bottomLeft = ol.extent.getBottomLeft(extent);
   var topRight = ol.extent.getTopRight(extent);
 
@@ -427,8 +485,15 @@ ol.control.OverviewMap.prototype.minimize_ = function() {
 ol.control.OverviewMap.prototype.calculateCoordinateRotate = function(
     rotation, coordinate) {
   var coordinateRotate;
-  var view = this.getMap().getView();
-  var currentCenter = view.getCenter();
+
+  var map = this.getMap();
+  var view = map.getView();
+  goog.asserts.assert(goog.isDef(view));
+  var view2D = view.getView2D();
+  goog.asserts.assertInstanceof(view2D, ol.View2D);
+
+  var currentCenter = view2D.getCenter();
+
   if (goog.isDef(currentCenter)) {
     coordinateRotate = [
       coordinate[0] - currentCenter[0],
