@@ -9,6 +9,7 @@ goog.require('ol.events.ConditionType');
 goog.require('ol.events.condition');
 goog.require('ol.interaction.Drag');
 goog.require('ol.interaction.Interaction');
+goog.require('ol.interaction.PointerInteraction');
 
 
 /**
@@ -25,7 +26,7 @@ ol.interaction.DRAGROTATEANDZOOM_ANIMATION_DURATION = 400;
  *
  * This interaction is not included in the default interactions.
  * @constructor
- * @extends {ol.interaction.Drag}
+ * @extends {ol.interaction.PointerInteraction}
  * @param {olx.interaction.DragRotateAndZoomOptions=} opt_options Options.
  * @todo stability experimental
  */
@@ -61,14 +62,19 @@ ol.interaction.DragRotateAndZoom = function(opt_options) {
   this.lastScaleDelta_ = 0;
 
 };
-goog.inherits(ol.interaction.DragRotateAndZoom, ol.interaction.Drag);
+goog.inherits(ol.interaction.DragRotateAndZoom,
+    ol.interaction.PointerInteraction);
 
 
 /**
  * @inheritDoc
  */
-ol.interaction.DragRotateAndZoom.prototype.handleDrag =
+ol.interaction.DragRotateAndZoom.prototype.handlePointerDrag =
     function(mapBrowserEvent) {
+  if (!ol.events.condition.mouseOnly(mapBrowserEvent)) {
+    return;
+  }
+
   var map = mapBrowserEvent.map;
   var size = map.getSize();
   var offset = mapBrowserEvent.pixel;
@@ -101,8 +107,12 @@ ol.interaction.DragRotateAndZoom.prototype.handleDrag =
 /**
  * @inheritDoc
  */
-ol.interaction.DragRotateAndZoom.prototype.handleDragEnd =
+ol.interaction.DragRotateAndZoom.prototype.handlePointerUp =
     function(mapBrowserEvent) {
+  if (!ol.events.condition.mouseOnly(mapBrowserEvent)) {
+    return false;
+  }
+
   var map = mapBrowserEvent.map;
   // FIXME works for View2D only
   var view = map.getView();
@@ -122,8 +132,12 @@ ol.interaction.DragRotateAndZoom.prototype.handleDragEnd =
 /**
  * @inheritDoc
  */
-ol.interaction.DragRotateAndZoom.prototype.handleDragStart =
+ol.interaction.DragRotateAndZoom.prototype.handlePointerDown =
     function(mapBrowserEvent) {
+  if (!ol.events.condition.mouseOnly(mapBrowserEvent)) {
+    return false;
+  }
+
   if (this.condition_(mapBrowserEvent)) {
     mapBrowserEvent.map.getView().setHint(ol.ViewHint.INTERACTING, 1);
     this.lastAngle_ = undefined;
@@ -132,4 +146,16 @@ ol.interaction.DragRotateAndZoom.prototype.handleDragStart =
   } else {
     return false;
   }
+};
+
+
+/**
+ * @inheritDoc
+ */
+ol.interaction.DragRotateAndZoom.prototype.shouldStopEvent =
+    function(hasHandledEvent) {
+  /* Stop the event if it was handled, so that interaction `DragZoom`
+   * does not interfere.
+   */
+  return hasHandledEvent;
 };

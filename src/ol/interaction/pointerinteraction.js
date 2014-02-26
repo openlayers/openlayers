@@ -136,6 +136,7 @@ ol.interaction.PointerInteraction.prototype.handleMapBrowserEvent =
   var mapBrowserPointerEvent =
       /** @type {ol.MapBrowserPointerEvent} */ (mapBrowserEvent);
 
+  var stopEvent = false;
   var view = mapBrowserEvent.map.getView();
   this.updateTrackedPointers_(mapBrowserPointerEvent);
   if (this.handled_) {
@@ -156,6 +157,20 @@ ol.interaction.PointerInteraction.prototype.handleMapBrowserEvent =
       view.setHint(ol.ViewHint.INTERACTING, 1);
     }
     this.handled_ = handled;
+    stopEvent = this.shouldStopEvent(handled);
   }
-  return true;
+  return !stopEvent;
 };
+
+
+/**
+ * This method allows inheriting classes to stop the event from being
+ * passed to further interactions. For example, this is required for
+ * interaction `DragRotateAndZoom`.
+ *
+ * @protected
+ * @param {boolean} handled Was the event handled by the interaction?
+ * @return {boolean} Should the event be stopped?
+ */
+ol.interaction.PointerInteraction.prototype.shouldStopEvent =
+    goog.functions.FALSE;
