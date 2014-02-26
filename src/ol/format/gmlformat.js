@@ -694,7 +694,7 @@ ol.format.GML.readFlatPosList_ = function(node, objectStack) {
     x = parseFloat(coords[i]);
     y = parseFloat(coords[i + 1]);
     z = (dim === 3) ? parseFloat(coords[i + 2]) : 0;
-    if (axisOrientation === 'enu') {
+    if (axisOrientation.substr(0, 2) === 'en') {
       flatCoordinates.push(x, y, z);
     } else {
       flatCoordinates.push(y, x, z);
@@ -994,10 +994,22 @@ ol.format.GML.prototype.readFeaturesFromNode = function(node) {
  * @private
  */
 ol.format.GML.writePos_ = function(node, value, objectStack) {
-  var layout = value.getLayout();
-  node.setAttribute('srsDimension',
-      (layout == ol.geom.GeometryLayout.XYZ) ? '3' : '2');
-  ol.format.XSD.writeStringTextNode(node, value.getCoordinates().join(' '));
+  var context = objectStack[objectStack.length - 1];
+  goog.asserts.assert(goog.isObject(context));
+  var srsName = goog.object.get(context, 'srsName');
+  var axisOrientation = 'enu';
+  if (goog.isDefAndNotNull(srsName)) {
+    axisOrientation = ol.proj.get(srsName).getAxisOrientation();
+  }
+  var point = value.getCoordinates();
+  var coords;
+  // only 2d for simple features profile
+  if (axisOrientation.substr(0, 2) === 'en') {
+    coords = (point[0] + ' ' + point[1]);
+  } else {
+    coords = (point[1] + ' ' + point[0]);
+  }
+  ol.format.XSD.writeStringTextNode(node, coords);
 };
 
 
@@ -1022,7 +1034,7 @@ ol.format.GML.writePosList_ = function(node, value, objectStack) {
   var point;
   for (var i = 0; i < len; ++i) {
     point = points[i];
-    if (axisOrientation === 'enu') {
+    if (axisOrientation.substr(0, 2) === 'en') {
       parts[i] = point[0] + ' ' + point[1];
     } else {
       parts[i] = point[1] + ' ' + point[0];
@@ -1079,7 +1091,8 @@ ol.format.GML.writePoint_ = function(node, geometry, objectStack) {
   if (goog.isDefAndNotNull(srsName)) {
     node.setAttribute('srsName', srsName);
   }
-  ol.xml.pushSerializeAndPop({node: node},
+  var context = {node: node, srsName: srsName};
+  ol.xml.pushSerializeAndPop(context,
       ol.format.GML.FLAT_COORDINATES_SERIALIZERS_,
       ol.format.GML.POS_NODE_FACTORY_, [geometry], []);
 };

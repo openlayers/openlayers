@@ -23,7 +23,7 @@ describe('ol.format.GML', function() {
         var text =
             '<gml:Point xmlns:gml="http://www.opengis.net/gml" ' +
             '    srsName="CRS:84">' +
-            '  <gml:pos srsDimension="3">1 2 0</gml:pos>' +
+            '  <gml:pos>1 2</gml:pos>' +
             '</gml:Point>';
         var g = readGeometry(format, text);
         expect(g).to.be.an(ol.geom.Point);
@@ -70,16 +70,22 @@ describe('ol.format.GML', function() {
             expect(serialized.firstElementChild).to.xmleql(ol.xml.load(text));
           });
 
-      it('can read a point geometry with correct axis order', function() {
-        var text =
-            '<gml:Point xmlns:gml="http://www.opengis.net/gml" ' +
-            '    srsName="urn:x-ogc:def:crs:EPSG:4326">' +
-            '  <gml:pos>-90 -180</gml:pos>' +
-            '</gml:Point>';
-        var g = readGeometry(format, text);
-        expect(g).to.be.an(ol.geom.Point);
-        expect(g.getCoordinates()).to.eql([-180, -90, 0]);
-      });
+      it('can read and write a point geometry with correct axis order',
+          function() {
+            var text =
+                '<gml:Point xmlns:gml="http://www.opengis.net/gml" ' +
+                '    srsName="urn:x-ogc:def:crs:EPSG:4326">' +
+                '  <gml:pos>-90 -180</gml:pos>' +
+                '</gml:Point>';
+            format = new ol.format.GML({
+              srsName: 'urn:x-ogc:def:crs:EPSG:4326'
+            });
+            var g = readGeometry(format, text);
+            expect(g).to.be.an(ol.geom.Point);
+            expect(g.getCoordinates()).to.eql([-180, -90, 0]);
+            var serialized = format.writeGeometry(g);
+            expect(serialized.firstElementChild).to.xmleql(ol.xml.load(text));
+          });
 
       it('can read multi surface geometry with right axis order', function() {
         var text =
