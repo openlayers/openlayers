@@ -52,6 +52,13 @@ ol.control.ZoomToExtent = function(opt_options) {
     goog.events.EventType.CLICK
   ], this.handleZoomToExtent_, false, this);
 
+  goog.events.listen(button, [
+    goog.events.EventType.MOUSEOUT,
+    goog.events.EventType.FOCUSOUT
+  ], function() {
+    this.blur();
+  }, false);
+
   goog.base(this, {
     element: element,
     target: options.target
