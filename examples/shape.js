@@ -81,15 +81,15 @@ var map = new ol.Map({
 function getFeatureStyle() {
   return [new ol.style.Style({
     image: new ol.style.Shape(/** @type {ol.style.ShapeOptions} */({
-      type: parseInt(typeSelect.value),
-      size: [parseInt(widthInput.value), parseInt(heightInput.value)],
-      rotation: parseInt(rotationInput.value) * Math.PI / 180,
+      type: parseInt(typeSelect.value, 10),
+      size: [parseInt(widthInput.value, 10), parseInt(heightInput.value, 10)],
+      rotation: parseInt(rotationInput.value, 10) * Math.PI / 180,
       fill: fillInput.checked ? new ol.style.Fill({
         color: '#f00'
       }) : null,
       stroke: strokeInput.checked ? new ol.style.Stroke({
         color: '#00f',
-        width: parseInt(strokewidthInput.value)
+        width: parseInt(strokewidthInput.value, 10)
       }) : null
     }))
   })];
