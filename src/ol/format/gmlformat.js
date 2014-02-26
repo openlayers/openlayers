@@ -9,6 +9,8 @@ goog.require('goog.string');
 goog.require('ol.Feature');
 goog.require('ol.extent');
 goog.require('ol.format.XMLFeature');
+goog.require('ol.format.XSD');
+goog.require('ol.geom.Geometry');
 goog.require('ol.geom.LineString');
 goog.require('ol.geom.MultiLineString');
 goog.require('ol.geom.MultiPoint');
@@ -42,6 +44,12 @@ ol.format.GML = function(opt_options) {
    * @type {string}
    */
   this.featureNS_ = options.featureNS;
+
+  /**
+   * @private
+   * @type {string}
+   */
+  this.srsName_ = options.srsName;
 
   goog.base(this);
 };
@@ -972,4 +980,101 @@ ol.format.GML.prototype.readFeaturesFromNode = function(node) {
     'featureNS': this.featureNS_
   }];
   return ol.format.GML.readFeatures_(node, objectStack);
+};
+
+
+/**
+ * @param {Node} node Node.
+ * @param {ol.geom.Point} value Point geometry.
+ * @param {Array.<*>} objectStack Node stack.
+ * @private
+ */
+ol.format.GML.writePos_ = function(node, value, objectStack) {
+  var layout = value.getLayout();
+  node.setAttribute('srsDimension',
+      (layout == ol.geom.GeometryLayout.XYZ) ? '3' : '2');
+  ol.format.XSD.writeStringTextNode(node, value.getCoordinates().join(' '));
+};
+
+
+/**
+ * @const
+ * @param {*} value Value.
+ * @param {Array.<*>} objectStack Object stack.
+ * @param {string=} opt_nodeName Node name.
+ * @return {Node|undefined} Node.
+ * @private
+ */
+ol.format.GML.POS_NODE_FACTORY_ = ol.xml.makeSimpleNodeFactory('pos');
+
+
+/**
+ * @type {Object.<string, Object.<string, ol.xml.Serializer>>}
+ * @private
+ */
+ol.format.GML.POS_SERIALIZERS_ = {
+  'http://www.opengis.net/gml': {
+    'pos': ol.xml.makeChildAppender(ol.format.GML.writePos_),
+    'pos_': ol.xml.makeChildAppender(ol.format.XSD.writeStringTextNode)
+  }
+};
+
+
+/**
+ * @param {Node} node Node.
+ * @param {ol.geom.Point} geometry Point geometry.
+ * @param {Array.<*>} objectStack Node stack.
+ * @private
+ */
+ol.format.GML.writePoint_ = function(node, geometry, objectStack) {
+  var context = objectStack[objectStack.length - 1];
+  goog.asserts.assert(goog.isObject(context));
+  var srsName = goog.object.get(context, 'srsName');
+  if (goog.isDefAndNotNull(srsName)) {
+    node.setAttribute('srsName', srsName);
+  }
+  ol.xml.pushSerializeAndPop({node: node}, ol.format.GML.POS_SERIALIZERS_,
+      ol.format.GML.POS_NODE_FACTORY_, [geometry], []);
+};
+
+
+/**
+ * @type {Object.<string, Object.<string, ol.xml.Serializer>>}
+ * @private
+ */
+ol.format.GML.GEOMETRY_SERIALIZERS_ = {
+  'http://www.opengis.net/gml': {
+    'Point': ol.xml.makeChildAppender(ol.format.GML.writePoint_)
+  }
+};
+
+
+/**
+ * @const
+ * @param {*} value Value.
+ * @param {Array.<*>} objectStack Object stack.
+ * @param {string=} opt_nodeName Node name.
+ * @return {Node|undefined} Node.
+ * @private
+ */
+ol.format.GML.GEOMETRY_NODE_FACTORY_ = function(value, objectStack,
+    opt_nodeName) {
+  goog.asserts.assertInstanceof(value, ol.geom.Geometry);
+  var parentNode = objectStack[objectStack.length - 1].node;
+  goog.asserts.assert(ol.xml.isNode(parentNode));
+  return ol.xml.createElementNS(parentNode.namespaceURI,
+      value.getType());
+};
+
+
+/**
+ * @inheritDoc
+ */
+ol.format.GML.prototype.writeGeometryNode = function(geometry) {
+  var geom = ol.xml.createElementNS('http://www.opengis.net/gml', 'geom');
+  var context = {node: geom, srsName: this.srsName_};
+  ol.xml.pushSerializeAndPop(/** @type {ol.xml.NodeStackItem} */
+      (context), ol.format.GML.GEOMETRY_SERIALIZERS_,
+      ol.format.GML.GEOMETRY_NODE_FACTORY_, [geometry], []);
+  return geom;
 };

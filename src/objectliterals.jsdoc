@@ -308,6 +308,7 @@
  * @typedef {Object} olx.format.GMLOptions
  * @property {string} featureNS Feature namespace.
  * @property {string} featureType Feature type to parse.
+ * @property {string} srsName srsName to use when writing geometries.
  */
 
 /**

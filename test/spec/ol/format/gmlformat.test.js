@@ -12,22 +12,24 @@ describe('ol.format.GML', function() {
 
   var format;
   beforeEach(function() {
-    format = new ol.format.GML();
+    format = new ol.format.GML({srsName: 'CRS:84'});
   });
 
   describe('#readGeometry', function() {
 
     describe('point', function() {
 
-      it('can read a point geometry', function() {
+      it('can read and write a point geometry', function() {
         var text =
             '<gml:Point xmlns:gml="http://www.opengis.net/gml" ' +
             '    srsName="CRS:84">' +
-            '  <gml:pos>1 2</gml:pos>' +
+            '  <gml:pos srsDimension="3">1 2 0</gml:pos>' +
             '</gml:Point>';
         var g = readGeometry(format, text);
         expect(g).to.be.an(ol.geom.Point);
         expect(g.getCoordinates()).to.eql([1, 2, 0]);
+        var serialized = format.writeGeometry(g);
+        expect(serialized.firstElementChild).to.xmleql(ol.xml.load(text));
       });
 
     });
