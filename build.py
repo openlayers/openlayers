@@ -4,7 +4,7 @@ from cStringIO import StringIO
 import gzip
 import json
 import os
-import os.path
+import glob
 import regex as re
 import shutil
 import sys
@@ -14,60 +14,59 @@ from pake import ifind, main, output, rule, target, variables, virtual, which
 
 
 if sys.platform == 'win32':
-    """ windows_defaults assumes that jsdoc was installed at a specific place
-        (C:\jsdoc). It also fixes a certain version (1.9.0) of phantomjs which
-        might not anymore be proposed on
-        http://code.google.com/p/phantomjs/downloads/list"""
 
-    windows_defaults = {
-        'ProgramFiles': os.environ.get('ProgramFiles', 'C:\\Program Files'),
-        'Python27': os.environ.get('SystemDrive', 'C:') + '\\Python27',
-        'jsdoc': os.environ.get('SystemDrive', 'C:') + '\\jsdoc3',
-        'phantomjs': (os.environ.get('SystemDrive', 'C:') +
-                      '\\phantomjs-1.9.0-windows')
+    win = {
+        'GIT': 'git.exe',
+        'GJSLINT': 'gjslint.exe',
+        'JAVA': 'java.exe',
+        'JAR': 'jar.exe',
+        'JSDOC': 'jsdoc.cmd',
+        'PYTHON': 'python.exe',
+        'PHANTOMJS': 'phantomjs.cmd'
     }
 
-    if which('git.exe'):
-        variables.GIT = 'git.exe'
-    else:
-        variables.GIT = os.path.join(windows_defaults['ProgramFiles'],
-                                     'Git', 'bin', 'git.exe')
+    sys_dir = os.environ.get('SYSTEMDRIVE')
+    program_files = os.environ.get('PROGRAMFILES')
+    java_home = os.environ.get('JAVA_HOME')
 
-    if which('gjslint.exe'):
-        variables.GJSLINT = 'gjslint.exe'
-    else:
-        variables.GJSLINT = os.path.join(windows_defaults['Python27'],
-                                         'Scripts', 'gjslint.exe')
+    if not java_home:
+        # Following lines choose sensible defaults to guess JAVA_HOME in
+        # 32/64bit Program Files folder opting for the most current version.
+        search_term = os.path.join(sys_dir, os.sep, 'Program Files*', 'Java', 'jdk*')
+        found_jdks = sorted(glob.glob(search_term), key=lambda x: x[-8:])
+        if found_jdks:
+            java_home = found_jdks[-1]
 
-    if which('java.exe'):
-        variables.JAVA = 'java.exe'
-    else:
-        variables.JAVA = os.path.join(windows_defaults['ProgramFiles'],
-                                      'Java', 'jre7', 'bin', 'java.exe')
+    if java_home:
+        if not which(win['JAVA']):
+            win['JAVA'] = os.path.join(java_home, 'bin', 'java.exe')
+        if not which(win['JAR']):
+            win['JAR'] = os.path.join(java_home, 'bin', 'jar.exe')
+    elif not which(win['JAVA']):
+        win['JAVA'] = os.path.join(program_files,
+                                   'Java', 'jre7', 'bin', 'java.exe')
 
-    if which('jar.exe'):
-        variables.JAR = 'jar.exe'
-    else:
-        variables.JAR = os.path.join(windows_defaults['ProgramFiles'],
-                                     'Java', 'jdk1.7.0_17', 'bin', 'jar.exe')
+    if not which(win['GIT']):
+        win['GIT'] = os.path.join(program_files, 'Git', 'cmd', 'git.exe')
+    if not which(win['GIT']):
+        win['GIT'] = os.path.join(program_files, 'Git', 'bin', 'git.exe')
 
-    if which('jsdoc.cmd'):
-        variables.JSDOC = 'jsdoc.cmd'
-    else:
-        variables.JSDOC = os.path.join(windows_defaults['jsdoc'],
-                                       'jsdoc.cmd')
+    if not which(win['PYTHON']):
+        win['PYTHON'] = os.path.join(sys_dir, 'Python27', 'python.exe')
 
-    if which('python.exe'):
-        variables.PYTHON = 'python.exe'
-    else:
-        variables.PYTHON = os.path.join(windows_defaults['Python27'],
-                                        'python.exe')
+    if not which(win['GJSLINT']):
+        win['GJSLINT'] = os.path.join(sys_dir, 'Python27', 'Scripts', 'gjslint.exe')
 
-    if which('phantomjs.exe'):
-        variables.PHANTOMJS = 'phantomjs.exe'
-    else:
-        variables.PHANTOMJS = os.path.join(windows_defaults['phantomjs'],
-                                           'phantomjs.exe')
+    if not which(win['PHANTOMJS']):
+        win['PHANTOMJS'] = 'phantomjs.exe'
+    if not which(win['PHANTOMJS']):
+        win['PHANTOMJS'] = os.path.join(sys_dir, 'phantomjs-1.9.7-windows', 'phantomjs.exe')
+
+    if not which(win['JSDOC']):
+        win['JSDOC'] = os.path.join(program_files, 'jsdoc3', 'jsdoc.cmd')
+
+    for program, path in win.iteritems():
+        setattr(variables, program, path)
 
 else:
     variables.GIT = 'git'
@@ -75,7 +74,6 @@ else:
     variables.JAVA = 'java'
     variables.JAR = 'jar'
     variables.JSDOC = 'jsdoc'
-    variables.NODE = 'node'
     variables.PYTHON = 'python'
     variables.PHANTOMJS = 'phantomjs'
 
@@ -306,7 +304,7 @@ def build_examples_all_combined_js(t):
 
 @target('build/examples/all.js', EXAMPLES_SRC)
 def build_examples_all_js(t):
-    t.output('bin/combine-examples.py', t.dependencies)
+    t.output('%(PYTHON)s', 'bin/combine-examples.py', t.dependencies)
 
 
 @rule(r'\Abuild/examples/(?P<id>.*).json\Z')
