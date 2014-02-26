@@ -680,10 +680,14 @@ ol.format.GML.readFlatPosList_ = function(node, objectStack) {
   }
   var coords = s.split(/\s+/);
   // The "dimension" attribute is from the GML 3.0.1 spec.
-  var dim = parseInt(node.getAttribute('srsDimension') ||
-      node.getAttribute('dimension'), 10) ||
-      (!goog.isNull(containerDimension)) ?
-      parseInt(containerDimension, 10) : 2;
+  var dim = 2;
+  if (!goog.isNull(node.getAttribute('srsDimension'))) {
+    dim = parseInt(node.getAttribute('srsDimension'), 10);
+  } else if (!goog.isNull(node.getAttribute('dimension'))) {
+    dim = parseInt(node.getAttribute('dimension'), 10);
+  } else if (!goog.isNull(containerDimension)) {
+    dim = parseInt(containerDimension, 10);
+  }
   var x, y, z;
   var flatCoordinates = [];
   for (var i = 0, ii = coords.length; i < ii; i += dim) {
@@ -998,6 +1002,27 @@ ol.format.GML.writePos_ = function(node, value, objectStack) {
 
 
 /**
+ * @param {Node} node Node.
+ * @param {ol.geom.Point} value Point geometry.
+ * @param {Array.<*>} objectStack Node stack.
+ * @private
+ */
+ol.format.GML.writePosList_ = function(node, value, objectStack) {
+  // only 2d for simple features profile
+  var points = value.getCoordinates();
+  var len = points.length;
+  var parts = new Array(len);
+  var point;
+  for (var i = 0; i < len; ++i) {
+    point = points[i];
+    // TODO axis orientation
+    parts[i] = point[0] + ' ' + point[1];
+  }
+  ol.format.XSD.writeStringTextNode(node, parts.join(' '));
+};
+
+
+/**
  * @const
  * @param {*} value Value.
  * @param {Array.<*>} objectStack Object stack.
@@ -1009,13 +1034,24 @@ ol.format.GML.POS_NODE_FACTORY_ = ol.xml.makeSimpleNodeFactory('pos');
 
 
 /**
+ * @const
+ * @param {*} value Value.
+ * @param {Array.<*>} objectStack Object stack.
+ * @param {string=} opt_nodeName Node name.
+ * @return {Node|undefined} Node.
+ * @private
+ */
+ol.format.GML.POSLIST_NODE_FACTORY_ = ol.xml.makeSimpleNodeFactory('posList');
+
+
+/**
  * @type {Object.<string, Object.<string, ol.xml.Serializer>>}
  * @private
  */
-ol.format.GML.POS_SERIALIZERS_ = {
+ol.format.GML.FLAT_COORDINATES_SERIALIZERS_ = {
   'http://www.opengis.net/gml': {
     'pos': ol.xml.makeChildAppender(ol.format.GML.writePos_),
-    'pos_': ol.xml.makeChildAppender(ol.format.XSD.writeStringTextNode)
+    'posList': ol.xml.makeChildAppender(ol.format.GML.writePosList_)
   }
 };
 
@@ -1033,8 +1069,28 @@ ol.format.GML.writePoint_ = function(node, geometry, objectStack) {
   if (goog.isDefAndNotNull(srsName)) {
     node.setAttribute('srsName', srsName);
   }
-  ol.xml.pushSerializeAndPop({node: node}, ol.format.GML.POS_SERIALIZERS_,
+  ol.xml.pushSerializeAndPop({node: node},
+      ol.format.GML.FLAT_COORDINATES_SERIALIZERS_,
       ol.format.GML.POS_NODE_FACTORY_, [geometry], []);
+};
+
+
+/**
+ * @param {Node} node Node.
+ * @param {ol.geom.LineString} geometry LineString geometry.
+ * @param {Array.<*>} objectStack Node stack.
+ * @private
+ */
+ol.format.GML.writeLineString_ = function(node, geometry, objectStack) {
+  var context = objectStack[objectStack.length - 1];
+  goog.asserts.assert(goog.isObject(context));
+  var srsName = goog.object.get(context, 'srsName');
+  if (goog.isDefAndNotNull(srsName)) {
+    node.setAttribute('srsName', srsName);
+  }
+  ol.xml.pushSerializeAndPop({node: node},
+      ol.format.GML.FLAT_COORDINATES_SERIALIZERS_,
+      ol.format.GML.POSLIST_NODE_FACTORY_, [geometry], []);
 };
 
 
@@ -1044,7 +1100,8 @@ ol.format.GML.writePoint_ = function(node, geometry, objectStack) {
  */
 ol.format.GML.GEOMETRY_SERIALIZERS_ = {
   'http://www.opengis.net/gml': {
-    'Point': ol.xml.makeChildAppender(ol.format.GML.writePoint_)
+    'Point': ol.xml.makeChildAppender(ol.format.GML.writePoint_),
+    'LineString': ol.xml.makeChildAppender(ol.format.GML.writeLineString_)
   }
 };
 
