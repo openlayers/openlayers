@@ -4,7 +4,6 @@ from cStringIO import StringIO
 import gzip
 import json
 import os
-import os.path
 import regex as re
 import shutil
 import sys
@@ -75,7 +74,6 @@ else:
     variables.JAVA = 'java'
     variables.JAR = 'jar'
     variables.JSDOC = 'jsdoc'
-    variables.NODE = 'node'
     variables.PYTHON = 'python'
     variables.PHANTOMJS = 'phantomjs'
 
