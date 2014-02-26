@@ -2,8 +2,8 @@ goog.provide('ol.BrowserFeature');
 
 goog.require('goog.dom');
 goog.require('goog.dom.TagName');
-goog.require('goog.dom.fullscreen');
 goog.require('goog.userAgent');
+goog.require('googx.dom.fullscreen');
 goog.require('ol.webgl');
 
 
@@ -148,7 +148,7 @@ ol.BrowserFeature.HAS_DOM = ol.ENABLE_DOM;
  * @type {boolean}
  * @todo stability experimental
  */
-ol.BrowserFeature.HAS_FULLSCREEN = goog.dom.fullscreen.isSupported();
+ol.BrowserFeature.HAS_FULLSCREEN = googx.dom.fullscreen.isSupported();
 
 
 /**
