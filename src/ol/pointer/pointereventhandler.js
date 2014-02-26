@@ -217,13 +217,6 @@ ol.pointer.PointerEventHandler.prototype.cloneEvent =
         ol.pointer.CLONE_DEFAULTS[i];
   }
 
-  // keep the semantics of preventDefault
-  if (browserEvent.preventDefault) {
-    eventCopy.preventDefault = function() {
-      browserEvent.preventDefault();
-    };
-  }
-
   return eventCopy;
 };
 
@@ -386,8 +379,12 @@ ol.pointer.PointerEventHandler.prototype.makeEvent =
   }
 
   var e = new ol.pointer.PointerEvent(inType, browserEvent, pointerEventData);
-  if (pointerEventData.preventDefault) {
-    e.preventDefault = pointerEventData.preventDefault;
+
+  // keep the semantics of preventDefault
+  if (browserEvent.preventDefault) {
+    e.preventDefault = function() {
+      browserEvent.preventDefault();
+    };
   }
 
   return e;
