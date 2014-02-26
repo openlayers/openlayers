@@ -1,6 +1,7 @@
 goog.provide('ol.MapBrowserEvent');
 goog.provide('ol.MapBrowserEvent.EventType');
 goog.provide('ol.MapBrowserEventHandler');
+goog.provide('ol.MapBrowserPointerEvent');
 
 goog.require('goog.array');
 goog.require('goog.asserts');
