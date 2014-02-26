@@ -69,11 +69,11 @@ goog.inherits(ol.interaction.Rotate, ol.interaction.PointerInteraction);
  */
 ol.interaction.Rotate.prototype.handlePointerDrag =
     function(mapBrowserEvent) {
-  goog.asserts.assert(this.targetTouches.length >= 2);
+  goog.asserts.assert(this.targetPointers.length >= 2);
   var rotationDelta = 0.0;
 
-  var touch0 = this.targetTouches[0];
-  var touch1 = this.targetTouches[1];
+  var touch0 = this.targetPointers[0];
+  var touch1 = this.targetPointers[1];
 
   // angle between touches
   var angle = Math.atan2(
@@ -97,7 +97,8 @@ ol.interaction.Rotate.prototype.handlePointerDrag =
   // FIXME: should be the intersection point between the lines:
   //     touch0,touch1 and previousTouch0,previousTouch1
   var viewportPosition = goog.style.getClientPosition(map.getViewport());
-  var centroid = ol.interaction.PointerInteraction.centroid(this.targetTouches);
+  var centroid =
+      ol.interaction.PointerInteraction.centroid(this.targetPointers);
   centroid[0] -= viewportPosition.x;
   centroid[1] -= viewportPosition.y;
   this.anchor_ = map.getCoordinateFromPixel(centroid);
@@ -119,7 +120,7 @@ ol.interaction.Rotate.prototype.handlePointerDrag =
  */
 ol.interaction.Rotate.prototype.handlePointerUp =
     function(mapBrowserEvent) {
-  if (this.targetTouches.length < 2) {
+  if (this.targetPointers.length < 2) {
     var map = mapBrowserEvent.map;
     // FIXME works for View2D only
     var view = map.getView().getView2D();
@@ -141,7 +142,7 @@ ol.interaction.Rotate.prototype.handlePointerUp =
  */
 ol.interaction.Rotate.prototype.handlePointerDown =
     function(mapBrowserEvent) {
-  if (this.targetTouches.length >= 2) {
+  if (this.targetPointers.length >= 2) {
     var map = mapBrowserEvent.map;
     this.anchor_ = null;
     this.lastAngle_ = undefined;

@@ -57,11 +57,11 @@ goog.inherits(ol.interaction.Zoom, ol.interaction.PointerInteraction);
  */
 ol.interaction.Zoom.prototype.handlePointerDrag =
     function(mapBrowserEvent) {
-  goog.asserts.assert(this.targetTouches.length >= 2);
+  goog.asserts.assert(this.targetPointers.length >= 2);
   var scaleDelta = 1.0;
 
-  var touch0 = this.targetTouches[0];
-  var touch1 = this.targetTouches[1];
+  var touch0 = this.targetPointers[0];
+  var touch1 = this.targetPointers[1];
   var dx = touch0.clientX - touch1.clientX;
   var dy = touch0.clientY - touch1.clientY;
 
@@ -83,7 +83,8 @@ ol.interaction.Zoom.prototype.handlePointerDrag =
 
   // scale anchor point.
   var viewportPosition = goog.style.getClientPosition(map.getViewport());
-  var centroid = ol.interaction.PointerInteraction.centroid(this.targetTouches);
+  var centroid =
+      ol.interaction.PointerInteraction.centroid(this.targetPointers);
   centroid[0] -= viewportPosition.x;
   centroid[1] -= viewportPosition.y;
   this.anchor_ = map.getCoordinateFromPixel(centroid);
@@ -101,7 +102,7 @@ ol.interaction.Zoom.prototype.handlePointerDrag =
  */
 ol.interaction.Zoom.prototype.handlePointerUp =
     function(mapBrowserEvent) {
-  if (this.targetTouches.length < 2) {
+  if (this.targetPointers.length < 2) {
     var map = mapBrowserEvent.map;
     // FIXME works for View2D only
     var view = map.getView().getView2D();
@@ -124,7 +125,7 @@ ol.interaction.Zoom.prototype.handlePointerUp =
  */
 ol.interaction.Zoom.prototype.handlePointerDown =
     function(mapBrowserEvent) {
-  if (this.targetTouches.length >= 2) {
+  if (this.targetPointers.length >= 2) {
     var map = mapBrowserEvent.map;
     this.anchor_ = null;
     this.lastDistance_ = undefined;

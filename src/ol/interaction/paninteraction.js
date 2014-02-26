@@ -13,8 +13,7 @@ goog.require('ol.interaction.PointerInteraction');
 
 
 /**
- * Allows the user to pan the map by touching and dragging
- * on a touch screen.
+ * Allows the user to pan the map by dragging the map.
  * @constructor
  * @extends {ol.interaction.PointerInteraction}
  * @param {olx.interaction.PanOptions=} opt_options Options.
@@ -64,8 +63,9 @@ goog.inherits(ol.interaction.Pan, ol.interaction.PointerInteraction);
  * @inheritDoc
  */
 ol.interaction.Pan.prototype.handlePointerDrag = function(mapBrowserEvent) {
-  goog.asserts.assert(this.targetTouches.length >= 1);
-  var centroid = ol.interaction.PointerInteraction.centroid(this.targetTouches);
+  goog.asserts.assert(this.targetPointers.length >= 1);
+  var centroid =
+      ol.interaction.PointerInteraction.centroid(this.targetPointers);
   if (!goog.isNull(this.lastCentroid)) {
     if (this.kinetic_) {
       this.kinetic_.update(centroid[0], centroid[1]);
@@ -96,7 +96,7 @@ ol.interaction.Pan.prototype.handlePointerUp =
   var map = mapBrowserEvent.map;
   var view2D = map.getView().getView2D();
   goog.asserts.assertInstanceof(view2D, ol.View2D);
-  if (this.targetTouches.length === 0) {
+  if (this.targetPointers.length === 0) {
     if (!this.noKinetic_ && this.kinetic_ && this.kinetic_.end()) {
       var distance = this.kinetic_.getDistance();
       var angle = this.kinetic_.getAngle();
@@ -126,7 +126,7 @@ ol.interaction.Pan.prototype.handlePointerUp =
  */
 ol.interaction.Pan.prototype.handlePointerDown =
     function(mapBrowserEvent) {
-  if (this.targetTouches.length > 0 && this.condition_(mapBrowserEvent)) {
+  if (this.targetPointers.length > 0 && this.condition_(mapBrowserEvent)) {
     var map = mapBrowserEvent.map;
     var view2D = map.getView().getView2D();
     goog.asserts.assertInstanceof(view2D, ol.View2D);
@@ -140,9 +140,9 @@ ol.interaction.Pan.prototype.handlePointerDown =
     if (this.kinetic_) {
       this.kinetic_.begin();
     }
-    // No kinetic as soon as more than one fingers on the screen is
+    // No kinetic as soon as more than one pointer on the screen is
     // detected. This is to prevent nasty pans after pinch.
-    this.noKinetic_ = this.targetTouches.length > 1;
+    this.noKinetic_ = this.targetPointers.length > 1;
     return true;
   } else {
     return false;
