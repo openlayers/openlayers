@@ -7,6 +7,7 @@ goog.require('ol.Pixel');
 goog.require('ol.PreRenderFunction');
 goog.require('ol.View2D');
 goog.require('ol.coordinate');
+goog.require('ol.events.condition');
 goog.require('ol.interaction.PointerInteraction');
 
 
@@ -41,6 +42,13 @@ ol.interaction.Pan = function(opt_options) {
    * @type {ol.Pixel}
    */
   this.lastCentroid = null;
+
+  /**
+   * @private
+   * @type {ol.events.ConditionType}
+   */
+  this.condition_ = goog.isDef(opt_options.condition) ?
+      opt_options.condition : ol.events.condition.noModifierKeys;
 
   /**
    * @private
@@ -118,7 +126,7 @@ ol.interaction.Pan.prototype.handlePointerUp =
  */
 ol.interaction.Pan.prototype.handlePointerDown =
     function(mapBrowserEvent) {
-  if (this.targetTouches.length > 0) {
+  if (this.targetTouches.length > 0 && this.condition_(mapBrowserEvent)) {
     var map = mapBrowserEvent.map;
     var view2D = map.getView().getView2D();
     goog.asserts.assertInstanceof(view2D, ol.View2D);
