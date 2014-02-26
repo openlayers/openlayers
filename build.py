@@ -306,7 +306,7 @@ def build_examples_all_combined_js(t):
 
 @target('build/examples/all.js', EXAMPLES_SRC)
 def build_examples_all_js(t):
-    t.output('bin/combine-examples.py', t.dependencies)
+    t.output('%(PYTHON)s', 'bin/combine-examples.py', t.dependencies)
 
 
 @rule(r'\Abuild/examples/(?P<id>.*).json\Z')
