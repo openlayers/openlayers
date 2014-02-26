@@ -6,6 +6,7 @@ goog.require('ol.events.ConditionType');
 goog.require('ol.events.condition');
 goog.require('ol.interaction.Drag');
 goog.require('ol.interaction.Interaction');
+goog.require('ol.interaction.PointerInteraction');
 
 
 /**
@@ -19,8 +20,11 @@ ol.interaction.DRAGROTATE_ANIMATION_DURATION = 250;
  * Allows the user to rotate the map by clicking and dragging on the map,
  * normally combined with an {@link ol.events.condition} that limits
  * it to when the alt and shift keys are held down.
+ *
+ * This interaction is only supported for mouse devices.
+ *
  * @constructor
- * @extends {ol.interaction.Drag}
+ * @extends {ol.interaction.PointerInteraction}
  * @param {olx.interaction.DragRotateOptions=} opt_options Options.
  */
 ol.interaction.DragRotate = function(opt_options) {
@@ -43,13 +47,18 @@ ol.interaction.DragRotate = function(opt_options) {
   this.lastAngle_ = undefined;
 
 };
-goog.inherits(ol.interaction.DragRotate, ol.interaction.Drag);
+goog.inherits(ol.interaction.DragRotate, ol.interaction.PointerInteraction);
 
 
 /**
  * @inheritDoc
  */
-ol.interaction.DragRotate.prototype.handleDrag = function(mapBrowserEvent) {
+ol.interaction.DragRotate.prototype.handlePointerDrag =
+    function(mapBrowserEvent) {
+  if (!ol.events.condition.mouseOnly(mapBrowserEvent)) {
+    return;
+  }
+
   var map = mapBrowserEvent.map;
   var size = map.getSize();
   var offset = mapBrowserEvent.pixel;
@@ -71,7 +80,12 @@ ol.interaction.DragRotate.prototype.handleDrag = function(mapBrowserEvent) {
 /**
  * @inheritDoc
  */
-ol.interaction.DragRotate.prototype.handleDragEnd = function(mapBrowserEvent) {
+ol.interaction.DragRotate.prototype.handlePointerUp =
+    function(mapBrowserEvent) {
+  if (!ol.events.condition.mouseOnly(mapBrowserEvent)) {
+    return false;
+  }
+
   var map = mapBrowserEvent.map;
   // FIXME works for View2D only
   var view = map.getView();
@@ -86,8 +100,12 @@ ol.interaction.DragRotate.prototype.handleDragEnd = function(mapBrowserEvent) {
 /**
  * @inheritDoc
  */
-ol.interaction.DragRotate.prototype.handleDragStart =
+ol.interaction.DragRotate.prototype.handlePointerDown =
     function(mapBrowserEvent) {
+  if (!ol.events.condition.mouseOnly(mapBrowserEvent)) {
+    return false;
+  }
+
   var browserEvent = mapBrowserEvent.browserEvent;
   if (browserEvent.isMouseActionButton() && this.condition_(mapBrowserEvent)) {
     var map = mapBrowserEvent.map;
