@@ -77,6 +77,12 @@ ol.format.KML = function(opt_options) {
     if (goog.isArray(styleValue)) {
       return styleValue;
     } else if (goog.isString(styleValue)) {
+      // KML files in the wild occasionally forget the leading `#` on styleUrls
+      // defined in the same document.  Add a leading `#` if it enables to find
+      // a style.
+      if (!(styleValue in sharedStyles) && ('#' + styleValue in sharedStyles)) {
+        styleValue = '#' + styleValue;
+      }
       return findStyle(sharedStyles[styleValue]);
     } else {
       return defaultStyle;
