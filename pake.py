@@ -71,14 +71,31 @@ class DuplicateTargetError(PakeError):
         return 'duplicate target %r' % (self.target.name,)
 
 
+class UnknownTargetError(PakeError):
+
+    def __init__(self, name):
+        self.name = name
+
+    def __str__(self):
+        return 'unknown target %r' % (self.name,)
+
+
 class Target(object):
+    """Target is the core object of pake.  It includes all of the target's name
+    (which may or may not correspond to a real file in the filesystem, see the
+    comments in virtual and TargetCollection below), the action to be performed
+    when this target is to be rebuilt, its dependencies, and various other
+    metadata."""
 
     def __init__(self, name, action=None, clean=True, dependencies=(),
-                 makedirs=True, phony=False, precious=False):
+                 help=None, help_group=None, makedirs=True, phony=False,
+                 precious=False):
         self.name = name
         self.action = action
         self._clean = clean
         self.dependencies = list(flatten(dependencies))
+        self.help = help
+        self.help_group = help_group
         self._makedirs = makedirs
         self.phony = phony
         self.precious = precious
@@ -184,17 +201,26 @@ class Target(object):
                 if targets.get(arg).timestamp > self.timestamp]
 
     def output(self, *args, **kwargs):
+        """output runs the command passed to it, saving the output of the
+        command to the contents of the target.  For example:
+            @target('ofile')
+            def ofile(t):
+                t.output('echo', '123')
+        After this target's action is executed, ofile will contain the string
+        "123"."""
         args = flatten_expand_list(args)
         self.info(' '.join(args))
         try:
             output = check_output(args, **kwargs)
-            with open(self.name, 'w') as f:
+            with open(self.name, 'wb') as f:
                 f.write(output)
         except subprocess.CalledProcessError as e:
             self.clean(recurse=False)
             self.error(e)
 
     def rm_rf(self, *args):
+        """rm_rf recursively deletes the files and/or directories passed to
+        it."""
         args = flatten_expand_list(args)
         for arg in args:
             self.info('rm -rf %s', arg)
@@ -211,6 +237,15 @@ class Target(object):
 
     @contextlib.contextmanager
     def tempdir(self):
+        """tempdir creates a temporary directory, changes to it, and runs the
+        nested block of code.  However the nested block of code exits, tempdir
+        will delete the temporary directory permanently, before pake exits. For
+        example:
+            with t.tempdir():
+                # copy various files to $PWD (the temporary directory)
+                # zip up the contents of $PWD, or copy them somewhere else
+        However the above code exits (e.g. copy error or zip error), the
+        temporary directory will be cleaned up."""
         tempdir = tempfile.mkdtemp()
         self.info('mkdir -p %s', tempdir)
         try:
@@ -220,20 +255,32 @@ class Target(object):
             shutil.rmtree(tempdir, ignore_errors=True)
 
     def touch(self):
+        """touch updates the timestamp of the target.  If the target already
+        exists as a file in the filesystem its timestamp is updated, otherwise
+        a new file is created with the current timestamp."""
         if os.path.exists(self.name):
             os.utime(self.name, None)
         else:
-            with open(self.name, 'w'):
+            with open(self.name, 'wb'):
                 pass
 
 
 class TargetCollection(object):
+    """TargetCollection implements a namespace for looking up build targets.
+    TargetCollection will first look for rules that match exactly, and then
+    - if no match is found - search through a list of regular expression-based
+    rules.  As soon as a regular expression match is found, that rule is added
+    to the list of rules that match exactly.  Typically, an invocation of pake
+    will only create a single TargetCollection."""
 
     def __init__(self):
         self.default = None
         self.targets = {}
 
     def add(self, target):
+        """add adds a concrete target to self, raising an error if the target
+        already exists.  If target is the first target to be added, it becomes
+        the default for this TargetCollection."""
         if target.name in self.targets:
             raise DuplicateTargetError(target)
         self.targets[target.name] = target
@@ -241,6 +288,11 @@ class TargetCollection(object):
             self.default = target
 
     def get(self, name):
+        """get searches for a target.  If it already exists, it is returned.
+        Otherwise, get searches through the defined rules, trying to find a
+        rule that matches.  If it finds a matching rule, a concrete target is
+        instantiated, cached, and returned.  If no match is found, a virtual
+        precious target is instantiated and returned."""
         if name in self.targets:
             return self.targets[name]
         target = None
@@ -252,28 +304,74 @@ class TargetCollection(object):
                 raise AmbiguousRuleError(name)
             target = f(name, match)
         if target is None:
-            target = Target(name, precious=True)
+            if os.path.exists(name):
+                target = Target(name, precious=True)
+            else:
+                raise UnknownTargetError(name)
         self.targets[name] = target
         return target
 
+    def format_epilog(self, formatter):
+        helps_by_help_group = collections.defaultdict(dict)
+        max_name_len = 0
+        for name in sorted(self.targets):
+            target = self.targets[name]
+            if target.help is not None:
+                helps_by_help_group[target.help_group][name] = target.help
+                max_name_len = max(max_name_len, len(name))
+        lines = []
+        lines.append('Targets:\n')
+        format = '  %%-%ds  %%s\n' % (max_name_len,)
+        for help_group in sorted(helps_by_help_group.keys()):
+            helps = helps_by_help_group[help_group]
+            if help_group is not None:
+                lines.append('%s targets:\n' % (help_group,))
+            for name in sorted(helps.keys()):
+                lines.append(format % (name, helps[name]))
+        return ''.join(lines)
+
 
 class VariableCollection(object):
+    """VariableCollection implements an object with properties where the first
+    set of a property wins, and all further sets are ignored. For example:
+        vc = VariableCollection()
+        vc.FOO = 1    # First set of the property FOO
+        vc.FOO = 2    # Further sets of the property FOO are ignored, and do
+                      # not raise an error.  After this statement, vc.FOO is
+                      # still 1.
+        print vc.FOO  # Prints "1" """
 
     def __init__(self, **kwargs):
         for key, value in kwargs.iteritems():
             setattr(self, key, value)
 
     def __setattr__(self, key, value):
+        """Only set an attribute if it has not already been set.  First to set
+        the value is the winner."""
         if not hasattr(self, key):
             object.__setattr__(self, key, value)
 
 
+# targets is the single TargetCollection instance created for this invokation
+# of pake
 targets = TargetCollection()
+# rules is a dict of regular expressions to @rules where dynamically created
+# rules are registered.
 rules = {}
+# variables is the global set of substitution variables, where the first setter
+# takes priority.  The priority order is:
+# 1. Environment variables
+# 2. Command line arguments
+# 3. Internal Python settings in build.py
 variables = VariableCollection(**os.environ)
 
 
 def flatten(*args):
+    """flatten takes a variable number of arguments, each of which may or may
+    be not be a collection.Iterable, and yields the elements of each in
+    depth-first order.  In short, it flattens nested iterables into a single
+    collection.  For example, flatten(1, [2, (3, 4), 5], 6) yields 1, 2, 3, 4,
+    5, 6."""
     for arg in args:
         if (isinstance(arg, collections.Iterable) and
                 not isinstance(arg, basestring)):
@@ -284,17 +382,21 @@ def flatten(*args):
 
 
 def flatten_expand_list(*args):
+    """flatten_expand_list applies flatten, treats each element as a string,
+    and formats each string according to the global value of variables."""
     return list(arg % vars(variables) for arg in flatten(args))
 
 
 def ifind(*paths):
+    """ifind is an iterative version of os.walk, yielding all walked paths and
+    normalizing paths to use forward slashes."""
     for path in paths:
         for dirpath, dirnames, names in os.walk(path):
             for name in names:
-                if sys.platform == 'win32':
-                    yield '/'.join(dirpath.split('\\') + [name])
-                else:
+                if os.sep == '/':
                     yield os.path.join(dirpath, name)
+                else:
+                    yield '/'.join(dirpath.split(os.sep) + [name])
 
 
 def main(argv=sys.argv):
@@ -310,6 +412,7 @@ def main(argv=sys.argv):
     option_parser.add_option('-v', '--verbose',
                              action='count', dest='logging_level')
     option_parser.set_defaults(logging_level=0)
+    option_parser.format_epilog = targets.format_epilog
     options, args = option_parser.parse_args(argv[1:])
     logging.basicConfig(format='%(asctime)s %(name)s: %(message)s',
                         level=logging.INFO - 10 * options.logging_level)
@@ -343,6 +446,11 @@ def main(argv=sys.argv):
 
 
 def output(*args):
+    """output captures the output of a single command.  It is typically used to
+    set variables that only need to be set once.  For example:
+        UNAME_A = output('uname', '-a')
+    If you need to capture the output of a command in a target, you should use
+    t.output."""
     args = flatten_expand_list(args)
     logger.debug(' '.join(args))
     return check_output(args)
@@ -355,6 +463,14 @@ def rule(pattern):
 
 
 def target(name, *dependencies, **kwargs):
+    """The @target decorator describes the action needed to build a single
+    target file when its dependencies are out of date.  For example:
+        @target('hello', 'hello.c')
+        def hello(t):
+            t.run('gcc', '-o', t.name, t.dependencies)
+            # the above line will run gcc -o hello hello.c
+    See the documentation for Target to see the properties provide by the
+    target t."""
     def f(action):
         target = Target(name, action=action, dependencies=dependencies,
                         **kwargs)
@@ -363,6 +479,12 @@ def target(name, *dependencies, **kwargs):
 
 
 def virtual(name, *dependencies, **kwargs):
+    """virtual targets are metatargets.  They do not correspond to any real
+    file in the filesystem, even if a file with the same name already exists.
+    Virtual targets can be thought of as only existing for the duration of the
+    build.   Their up-to-dateness or otherwise is independent of any existence
+    or up-to-dateness of any actual file in the filesystem.  Typically they are
+    used to group actions such as "all", "build", or "test"."""
     target = Target(name, dependencies=dependencies, clean=False, phony=True,
                     **kwargs)
     targets.add(target)
@@ -370,7 +492,8 @@ def virtual(name, *dependencies, **kwargs):
 
 def which(program):
     """Returns the full path of a given argument or `None`.
-    See: http://stackoverflow.com/questions/377017/test-if-executable-exists-in-python"""
+    See:
+    http://stackoverflow.com/questions/377017/test-if-executable-exists-in-python"""
     def is_exe(fpath):
         return os.path.isfile(fpath) and os.access(fpath, os.X_OK)
     fpath, fname = os.path.split(program)
