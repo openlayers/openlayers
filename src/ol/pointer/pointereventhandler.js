@@ -373,11 +373,6 @@ ol.pointer.PointerEventHandler.prototype.contains_ =
  */
 ol.pointer.PointerEventHandler.prototype.makeEvent =
     function(inType, pointerEventData, browserEvent) {
-  // relatedTarget must be null if pointer is captured
-  if (this.captureInfo) {
-    pointerEventData.relatedTarget = null;
-  }
-
   var e = new ol.pointer.PointerEvent(inType, browserEvent, pointerEventData);
 
   // keep the semantics of preventDefault
