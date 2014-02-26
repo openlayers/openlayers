@@ -52,6 +52,13 @@ ol.control.FullScreen = function(opt_options) {
     goog.events.EventType.TOUCHEND
   ], this.handleClick_, false, this);
 
+  goog.events.listen(button, [
+    goog.events.EventType.MOUSEOUT,
+    goog.events.EventType.FOCUSOUT
+  ], function() {
+    this.blur();
+  }, false);
+
   goog.events.listen(goog.global.document, goog.dom.fullscreen.EventType.CHANGE,
       this.handleFullScreenChange_, false, this);
 
