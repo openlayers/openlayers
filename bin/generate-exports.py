@@ -113,7 +113,7 @@ def main(argv):
     for arg in args:
         in_comment = False
         object_literal = None
-        for line in open(arg):
+        for line in open(arg, 'rU'):
             line = line.strip()
             if not line:
                 continue
