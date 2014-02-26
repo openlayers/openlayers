@@ -16,8 +16,10 @@ ol.render.IVectorContext = function() {
 /**
  * @param {number} zIndex Z index.
  * @param {function(ol.render.canvas.Immediate)} callback Callback.
+ * @param {ol.Feature=} opt_feature Feature.
  */
-ol.render.IVectorContext.prototype.drawAsync = function(zIndex, callback) {
+ol.render.IVectorContext.prototype.drawAsync =
+    function(zIndex, callback, opt_feature) {
 };
 
 
