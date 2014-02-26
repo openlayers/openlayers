@@ -1156,7 +1156,7 @@ ol.format.KML.GEOMETRY_FLAT_COORDINATES_PARSERS_ = ol.xml.makeParsersNS(
  */
 ol.format.KML.ICON_PARSERS_ = ol.xml.makeParsersNS(
     ol.format.KML.NAMESPACE_URIS_, {
-      'href': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString)
+      'href': ol.xml.makeObjectPropertySetter(ol.format.KML.readURI_)
     });
 
 
