@@ -1008,6 +1008,13 @@ ol.format.GML.writePos_ = function(node, value, objectStack) {
  * @private
  */
 ol.format.GML.writePosList_ = function(node, value, objectStack) {
+  var context = objectStack[objectStack.length - 1];
+  goog.asserts.assert(goog.isObject(context));
+  var srsName = goog.object.get(context, 'srsName');
+  var axisOrientation = 'enu';
+  if (goog.isDefAndNotNull(srsName)) {
+    axisOrientation = ol.proj.get(srsName).getAxisOrientation();
+  }
   // only 2d for simple features profile
   var points = value.getCoordinates();
   var len = points.length;
@@ -1015,8 +1022,11 @@ ol.format.GML.writePosList_ = function(node, value, objectStack) {
   var point;
   for (var i = 0; i < len; ++i) {
     point = points[i];
-    // TODO axis orientation
-    parts[i] = point[0] + ' ' + point[1];
+    if (axisOrientation === 'enu') {
+      parts[i] = point[0] + ' ' + point[1];
+    } else {
+      parts[i] = point[1] + ' ' + point[0];
+    }
   }
   ol.format.XSD.writeStringTextNode(node, parts.join(' '));
 };
@@ -1088,7 +1098,8 @@ ol.format.GML.writeLineString_ = function(node, geometry, objectStack) {
   if (goog.isDefAndNotNull(srsName)) {
     node.setAttribute('srsName', srsName);
   }
-  ol.xml.pushSerializeAndPop({node: node},
+  var context = {node: node, srsName: srsName};
+  ol.xml.pushSerializeAndPop(context,
       ol.format.GML.FLAT_COORDINATES_SERIALIZERS_,
       ol.format.GML.POSLIST_NODE_FACTORY_, [geometry], []);
 };

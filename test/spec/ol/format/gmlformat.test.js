@@ -53,16 +53,22 @@ describe('ol.format.GML', function() {
 
     describe('axis order', function() {
 
-      it('can read a linestring geometry with correct axis order', function() {
-        var text =
-            '<gml:LineString xmlns:gml="http://www.opengis.net/gml" ' +
-            '    srsName="urn:x-ogc:def:crs:EPSG:4326">' +
-            '  <gml:posList>-90 -180 90 180</gml:posList>' +
-            '</gml:LineString>';
-        var g = readGeometry(format, text);
-        expect(g).to.be.an(ol.geom.LineString);
-        expect(g.getCoordinates()).to.eql([[-180, -90, 0], [180, 90, 0]]);
-      });
+      it('can read and write a linestring geometry with ' +
+          'correct axis order', function() {
+            var text =
+                '<gml:LineString xmlns:gml="http://www.opengis.net/gml" ' +
+                '    srsName="urn:x-ogc:def:crs:EPSG:4326">' +
+                '  <gml:posList>-90 -180 90 180</gml:posList>' +
+                '</gml:LineString>';
+            format = new ol.format.GML({
+              srsName: 'urn:x-ogc:def:crs:EPSG:4326'
+            });
+            var g = readGeometry(format, text);
+            expect(g).to.be.an(ol.geom.LineString);
+            expect(g.getCoordinates()).to.eql([[-180, -90, 0], [180, 90, 0]]);
+            var serialized = format.writeGeometry(g);
+            expect(serialized.firstElementChild).to.xmleql(ol.xml.load(text));
+          });
 
       it('can read a point geometry with correct axis order', function() {
         var text =
