@@ -1091,8 +1091,7 @@ ol.format.GML.writePoint_ = function(node, geometry, objectStack) {
   if (goog.isDefAndNotNull(srsName)) {
     node.setAttribute('srsName', srsName);
   }
-  var context = {node: node, srsName: srsName};
-  ol.xml.pushSerializeAndPop(context,
+  ol.xml.pushSerializeAndPop({node: node, srsName: srsName},
       ol.format.GML.FLAT_COORDINATES_SERIALIZERS_,
       ol.format.GML.POS_NODE_FACTORY_, [geometry], []);
 };
@@ -1111,10 +1110,82 @@ ol.format.GML.writeLineString_ = function(node, geometry, objectStack) {
   if (goog.isDefAndNotNull(srsName)) {
     node.setAttribute('srsName', srsName);
   }
-  var context = {node: node, srsName: srsName};
-  ol.xml.pushSerializeAndPop(context,
+  ol.xml.pushSerializeAndPop({node: node, srsName: srsName},
       ol.format.GML.FLAT_COORDINATES_SERIALIZERS_,
       ol.format.GML.POSLIST_NODE_FACTORY_, [geometry], []);
+};
+
+
+/**
+ * @param {Node} node Node.
+ * @param {ol.geom.LinearRing} geometry LinearRing geometry.
+ * @param {Array.<*>} objectStack Node stack.
+ * @private
+ */
+ol.format.GML.writeLinearRing_ = function(node, geometry, objectStack) {
+  var context = objectStack[objectStack.length - 1];
+  goog.asserts.assert(goog.isObject(context));
+  var srsName = goog.object.get(context, 'srsName');
+  if (goog.isDefAndNotNull(srsName)) {
+    node.setAttribute('srsName', srsName);
+  }
+  ol.xml.pushSerializeAndPop({node: node, srsName: srsName},
+      ol.format.GML.FLAT_COORDINATES_SERIALIZERS_,
+      ol.format.GML.POSLIST_NODE_FACTORY_, [geometry], []);
+};
+
+
+/**
+ * @param {Node} node Node.
+ * @param {ol.geom.Polygon} geometry Polygon geometry.
+ * @param {Array.<*>} objectStack Node stack.
+ * @private
+ */
+ol.format.GML.writePolygon_ = function(node, geometry, objectStack) {
+  var context = objectStack[objectStack.length - 1];
+  goog.asserts.assert(goog.isObject(context));
+  var srsName = goog.object.get(context, 'srsName');
+  if (goog.isDefAndNotNull(srsName)) {
+    node.setAttribute('srsName', srsName);
+  }
+  var rings = geometry.getLinearRings();
+  for (var i = 0, ii = rings.length; i < ii; ++i) {
+    if (i === 0) {
+      ol.xml.pushSerializeAndPop({node: node, srsName: srsName},
+          ol.format.GML.RING_SERIALIZERS_,
+          ol.xml.makeSimpleNodeFactory('exterior'), [rings[i]], objectStack);
+    } else {
+      ol.xml.pushSerializeAndPop({node: node, srsName: srsName},
+          ol.format.GML.RING_SERIALIZERS_,
+          ol.xml.makeSimpleNodeFactory('interior'), [rings[i]], objectStack);
+    }
+  }
+};
+
+
+/**
+ * @param {Node} node Node.
+ * @param {ol.geom.LinearRing} ring LinearRing geometry.
+ * @param {Array.<*>} objectStack Node stack.
+ * @private
+ */
+ol.format.GML.writeRing_ = function(node, ring, objectStack) {
+  var context = {node: node};
+  ol.xml.pushSerializeAndPop(/** @type {ol.xml.NodeStackItem} */
+      (context), ol.format.GML.GEOMETRY_SERIALIZERS_,
+      ol.format.GML.GEOMETRY_NODE_FACTORY_, [ring], []);
+};
+
+
+/**
+ * @type {Object.<string, Object.<string, ol.xml.Serializer>>}
+ * @private
+ */
+ol.format.GML.RING_SERIALIZERS_ = {
+  'http://www.opengis.net/gml': {
+    'exterior': ol.xml.makeChildAppender(ol.format.GML.writeRing_),
+    'interior': ol.xml.makeChildAppender(ol.format.GML.writeRing_)
+  }
 };
 
 
@@ -1125,7 +1196,9 @@ ol.format.GML.writeLineString_ = function(node, geometry, objectStack) {
 ol.format.GML.GEOMETRY_SERIALIZERS_ = {
   'http://www.opengis.net/gml': {
     'Point': ol.xml.makeChildAppender(ol.format.GML.writePoint_),
-    'LineString': ol.xml.makeChildAppender(ol.format.GML.writeLineString_)
+    'LineString': ol.xml.makeChildAppender(ol.format.GML.writeLineString_),
+    'LinearRing': ol.xml.makeChildAppender(ol.format.GML.writeLinearRing_),
+    'Polygon': ol.xml.makeChildAppender(ol.format.GML.writePolygon_)
   }
 };
 

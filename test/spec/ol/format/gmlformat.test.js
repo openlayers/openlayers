@@ -10,9 +10,10 @@ var readGeometry = function(format, text) {
 
 describe('ol.format.GML', function() {
 
-  var format;
+  var format, formatWGS84;
   beforeEach(function() {
     format = new ol.format.GML({srsName: 'CRS:84'});
+    formatWGS84 = new ol.format.GML({srsName: 'urn:x-ogc:def:crs:EPSG:4326'});
   });
 
   describe('#readGeometry', function() {
@@ -60,13 +61,10 @@ describe('ol.format.GML', function() {
                 '    srsName="urn:x-ogc:def:crs:EPSG:4326">' +
                 '  <gml:posList>-90 -180 90 180</gml:posList>' +
                 '</gml:LineString>';
-            format = new ol.format.GML({
-              srsName: 'urn:x-ogc:def:crs:EPSG:4326'
-            });
             var g = readGeometry(format, text);
             expect(g).to.be.an(ol.geom.LineString);
             expect(g.getCoordinates()).to.eql([[-180, -90, 0], [180, 90, 0]]);
-            var serialized = format.writeGeometry(g);
+            var serialized = formatWGS84.writeGeometry(g);
             expect(serialized.firstElementChild).to.xmleql(ol.xml.load(text));
           });
 
@@ -77,38 +75,37 @@ describe('ol.format.GML', function() {
                 '    srsName="urn:x-ogc:def:crs:EPSG:4326">' +
                 '  <gml:pos>-90 -180</gml:pos>' +
                 '</gml:Point>';
-            format = new ol.format.GML({
-              srsName: 'urn:x-ogc:def:crs:EPSG:4326'
-            });
             var g = readGeometry(format, text);
             expect(g).to.be.an(ol.geom.Point);
             expect(g.getCoordinates()).to.eql([-180, -90, 0]);
-            var serialized = format.writeGeometry(g);
+            var serialized = formatWGS84.writeGeometry(g);
             expect(serialized.firstElementChild).to.xmleql(ol.xml.load(text));
           });
 
-      it('can read multi surface geometry with right axis order', function() {
-        var text =
-            '<gml:MultiSurface xmlns:gml="http://www.opengis.net/gml" ' +
-            '    srsName="urn:x-ogc:def:crs:EPSG:4326">' +
-            '  <gml:surfaceMember>' +
-            '    <gml:Polygon>' +
-            '      <gml:exterior>' +
-            '        <gml:LinearRing>' +
-            '          <gml:posList>38.9661 -77.0081 38.9931 -77.0421 ' +
-            '          38.9321 -77.1221 38.9151 -77.0781 38.8861 -77.0671 ' +
-            '          38.8621 -77.0391 38.8381 -77.0401 38.8291 -77.0451 ' +
-            '          38.8131 -77.0351 38.7881 -77.0451' +
-            '          38.8891 -76.9111 38.9661 -77.0081</gml:posList>' +
-            '        </gml:LinearRing>' +
-            '      </gml:exterior>' +
-            '    </gml:Polygon>' +
-            '  </gml:surfaceMember>' +
-            '</gml:MultiSurface>';
-        var g = readGeometry(format, text);
-        expect(g.getCoordinates()[0][0][0][0]).to.equal(-77.0081);
-        expect(g.getCoordinates()[0][0][0][1]).to.equal(38.9661);
-      });
+      it('can read and write multi surface geometry with right axis order',
+          function() {
+            var text =
+                '<gml:MultiSurface xmlns:gml="http://www.opengis.net/gml" ' +
+                '    srsName="urn:x-ogc:def:crs:EPSG:4326">' +
+                '  <gml:surfaceMember>' +
+                '    <gml:Polygon>' +
+                '      <gml:exterior>' +
+                '        <gml:LinearRing>' +
+                '          <gml:posList>38.9661 -77.0081 38.9931 -77.0421 ' +
+                '          38.9321 -77.1221 38.9151 -77.0781 38.8861 ' +
+                '          -77.0671 38.8621 -77.0391 38.8381 -77.0401 ' +
+                '          38.8291 -77.0451 38.8131 -77.0351 38.7881 ' +
+                '          -77.0451 38.8891 -76.9111 38.9661 -77.0081' +
+                '          </gml:posList>' +
+                '        </gml:LinearRing>' +
+                '      </gml:exterior>' +
+                '    </gml:Polygon>' +
+                '  </gml:surfaceMember>' +
+                '</gml:MultiSurface>';
+            var g = readGeometry(format, text);
+            expect(g.getCoordinates()[0][0][0][0]).to.equal(-77.0081);
+            expect(g.getCoordinates()[0][0][0][1]).to.equal(38.9661);
+          });
 
     });
 
@@ -129,7 +126,7 @@ describe('ol.format.GML', function() {
 
     describe('linearring', function() {
 
-      it('can read a linearring geometry', function() {
+      it('can read and write a linearring geometry', function() {
         var text =
             '<gml:LinearRing xmlns:gml="http://www.opengis.net/gml" ' +
             '    srsName="CRS:84">' +
@@ -139,13 +136,15 @@ describe('ol.format.GML', function() {
         expect(g).to.be.an(ol.geom.Polygon);
         expect(g.getCoordinates()).to.eql(
             [[[1, 2, 0], [3, 4, 0], [5, 6, 0], [1, 2, 0]]]);
+        var serialized = format.writeGeometry(g.getLinearRings()[0]);
+        expect(serialized.firstElementChild).to.xmleql(ol.xml.load(text));
       });
 
     });
 
     describe('polygon', function() {
 
-      it('can read a polygon geometry', function() {
+      it('can read and write a polygon geometry', function() {
         var text =
             '<gml:Polygon xmlns:gml="http://www.opengis.net/gml" ' +
             '    srsName="CRS:84">' +
@@ -170,6 +169,8 @@ describe('ol.format.GML', function() {
         expect(g.getCoordinates()).to.eql([[[1, 2, 0], [3, 2, 0], [3, 4, 0],
                 [1, 2, 0]], [[2, 3, 0], [2, 5, 0], [4, 5, 0], [2, 3, 0]],
               [[3, 4, 0], [3, 6, 0], [5, 6, 0], [3, 4, 0]]]);
+        var serialized = format.writeGeometry(g);
+        expect(serialized.firstElementChild).to.xmleql(ol.xml.load(text));
       });
 
     });
