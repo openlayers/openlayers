@@ -1,5 +1,8 @@
 @import url("ol.css");
 
+.ol-zoom, .ol-full-screen {
+    background: rgba(51, 51, 51, 0.5);
+}
 .ol-scale-line {
     background-color: rgba(255, 255, 255, 0.7);
     left: 8px;
