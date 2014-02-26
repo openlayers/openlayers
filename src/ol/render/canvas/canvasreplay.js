@@ -1818,12 +1818,20 @@ ol.render.canvas.ReplayGroup.prototype.replay_ = function(
     zs, context, extent, pixelRatio, transform, viewRotation,
     renderGeometryFunction) {
 
-  var pixelExtent = ol.geom.flat.transform2D(this.maxExtent_, 2, transform);
-  var width = pixelExtent[2] - pixelExtent[0];
-  var height = pixelExtent[1] - pixelExtent[3];
+  var maxExtent = this.maxExtent_;
+  var minX = maxExtent[0];
+  var minY = maxExtent[1];
+  var maxX = maxExtent[2];
+  var maxY = maxExtent[3];
+  var flatClipCoords = ol.geom.flat.transform2D(
+      [minX, minY, minX, maxY, maxX, maxY, maxX, minY], 2, transform);
   context.save();
   context.beginPath();
-  context.rect(pixelExtent[0], pixelExtent[3], width, height);
+  context.moveTo(flatClipCoords[0], flatClipCoords[1]);
+  context.lineTo(flatClipCoords[2], flatClipCoords[3]);
+  context.lineTo(flatClipCoords[4], flatClipCoords[5]);
+  context.lineTo(flatClipCoords[6], flatClipCoords[7]);
+  context.closePath();
   context.clip();
 
   var i, ii, j, jj, replays, replayType, replay, result;
