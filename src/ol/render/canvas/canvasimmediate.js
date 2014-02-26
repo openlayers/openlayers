@@ -224,6 +224,12 @@ ol.render.canvas.Immediate =
    */
   this.tmpLocalTransform_ = goog.vec.Mat4.createNumber();
 
+  /**
+   * @private
+   * @type {boolean}
+   */
+  this.hitDetectionMode_ = false;
+
 };
 
 
@@ -717,6 +723,33 @@ ol.render.canvas.Immediate.prototype.flush = function() {
 
 
 /**
+ * @param {function(ol.Feature): T} callback Feature callback.
+ * @return {T} Callback result.
+ * @template T
+ */
+ol.render.canvas.Immediate.prototype.flushHitDetection = function(callback) {
+  this.hitDetectionMode_ = true;
+  /** @type {Array.<number>} */
+  var zs = goog.array.map(
+      goog.object.getKeys(this.callbackObjectsByZIndex_), Number);
+  goog.array.sort(zs, function(a, b) { return b - a; });
+  var i, ii, callbacks, callbackObjects, feature, j, result;
+  for (i = 0, ii = zs.length; i < ii; ++i) {
+    callbackObjects = this.callbackObjectsByZIndex_[zs[i].toString()];
+    callbacks = callbackObjects.callbacks;
+    for (j = callbacks.length - 1; j >= 0; --j) {
+      callbacks[j](this);
+      result = callback(callbackObjects.feature);
+      if (result) {
+        return result;
+      }
+    }
+  }
+  return undefined;
+};
+
+
+/**
  * @param {ol.render.canvas.FillState} fillState Fill state.
  * @private
  */
@@ -833,7 +866,13 @@ ol.render.canvas.Immediate.prototype.setContextTextState_ =
 ol.render.canvas.Immediate.prototype.setFillStrokeStyle =
     function(fillStyle, strokeStyle) {
   if (goog.isNull(fillStyle)) {
-    this.fillState_ = null;
+    if (this.hitDetectionMode_) {
+      this.fillState_ = {
+        fillStyle: ol.color.asString(ol.render.canvas.defaultFillStyle)
+      };
+    } else {
+      this.fillState_ = null;
+    }
   } else {
     var fillStyleColor = fillStyle.getColor();
     this.fillState_ = {
@@ -881,7 +920,8 @@ ol.render.canvas.Immediate.prototype.setImageStyle = function(imageStyle) {
   } else {
     var imageAnchor = imageStyle.getAnchor();
     // FIXME pixel ratio
-    var imageImage = imageStyle.getImage(1);
+    var imageImage = this.hitDetectionMode_ ?
+        imageStyle.getHitDetectionImage(1) : imageStyle.getImage(1);
     var imageOpacity = imageStyle.getOpacity();
     var imageRotateWithView = imageStyle.getRotateWithView();
     var imageRotation = imageStyle.getRotation();
