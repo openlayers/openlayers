@@ -1,12 +1,13 @@
 @import url("ol.css");
 
-.ol-zoom, .ol-full-screen {
-    background: rgba(51, 51, 51, 0.5);
-}
+/* Ol3 css overrides */
 .ol-scale-line {
-    background-color: rgba(255, 255, 255, 0.7);
+    background-color: rgb(255, 255, 255);
     left: 8px;
     bottom: 0;
+}
+.ol-scale-line:not([ie8andbelow]) {
+    background-color: rgba(255, 255, 255, 0.7);
 }
 .ol-scale-line-inner {
     border: 2px solid #000;
@@ -17,20 +18,27 @@
     font-family: Arial,"Helvetica Neue",Helvetica,sans-serif;
 }
 .ol-attribution {
-    background-color: rgba(255, 255, 255, 0.7);
+    background-color: rgb(51, 51, 51);
     padding: 7px;
 }
-.ol-attribution a {
-    color: #333;
+.ol-attribution:not([ie8andbelow]) {
+    background-color: rgba(51, 51, 51, 0.7);
+}
+.ol-attribution {
     font-size:  11px;
     font-family: Arial,"Helvetica Neue",Helvetica,sans-serif;
 }
-.ol-zoom a {
-    background: rgba(58,60,60,0.5);
+.ol-zoom a, .ol-full-screen a {
+    background-color: rgb(51, 51, 51);
 }
-.ol-zoom a:hover {
-    background: rgba(30,30,30,0.5);
+.ol-zoom a:not([ie8andbelow]), .ol-full-screen a:not([ie8andbelow]) {
+    background-color: rgba(51, 51, 51, 0.5);
 }
+.ol-zoom a:hover:not([ie8andbelow]), .ol-full-screen a:hover:not([ie8andbelow]) {
+    background-color: rgba(51, 51, 51, 0.8);
+}
+
+/* Custom api css */
 .ga-tooltip {
     display: none;
     position: absolute;
