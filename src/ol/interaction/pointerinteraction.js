@@ -129,7 +129,10 @@ ol.interaction.PointerInteraction.prototype.handlePointerDown =
  */
 ol.interaction.PointerInteraction.prototype.handleMapBrowserEvent =
     function(mapBrowserEvent) {
-  goog.asserts.assertInstanceof(mapBrowserEvent, ol.MapBrowserPointerEvent);
+  if (!(mapBrowserEvent instanceof ol.MapBrowserPointerEvent)) {
+    return true;
+  }
+
   var mapBrowserPointerEvent =
       /** @type {ol.MapBrowserPointerEvent} */ (mapBrowserEvent);
 
