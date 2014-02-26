@@ -3,7 +3,6 @@ goog.provide('ol.interaction');
 goog.require('ol.Collection');
 goog.require('ol.Kinetic');
 goog.require('ol.interaction.DoubleClickZoom');
-goog.require('ol.interaction.DragPan');
 goog.require('ol.interaction.DragRotate');
 goog.require('ol.interaction.DragZoom');
 goog.require('ol.interaction.KeyboardPan');
@@ -70,14 +69,6 @@ ol.interaction.defaults = function(opt_options) {
   if (zoom) {
     interactions.push(new ol.interaction.Zoom({
       duration: options.zoomDuration
-    }));
-  }
-
-  var dragPan = goog.isDef(options.dragPan) ?
-      options.dragPan : true;
-  if (dragPan) {
-    interactions.push(new ol.interaction.DragPan({
-      kinetic: kinetic
     }));
   }
 

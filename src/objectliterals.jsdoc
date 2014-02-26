@@ -386,15 +386,6 @@
  */
 
 /**
- * @typedef {Object} olx.interaction.DragPanOptions
- * @property {ol.Kinetic|undefined} kinetic Kinetic inertia to apply to the pan.
- * @property {ol.events.ConditionType|undefined} condition A conditional
- *     modifier (i.e. Shift key) that determines if the interaction is active
- *     or not, default is no modifiers.
- * @todo stability experimental
- */
-
-/**
  * @typedef {Object} olx.interaction.DragRotateOptions
  * @property {ol.events.ConditionType|undefined} condition A conditional
  *     modifier (i.e. Shift key) that determines if the interaction is active
@@ -435,7 +426,6 @@
  *     rotate is desired. Default is `true`.
  * @property {boolean|undefined} doubleClickZoom Whether double click zoom is
  *     desired. Default is `true`.
- * @property {boolean|undefined} dragPan Whether drag-pan is desired. Default is `true`.
  * @property {boolean|undefined} keyboard Whether keyboard interaction is
  *     desired. Default is `true`.
  * @property {boolean|undefined} mouseWheelZoom Whether mousewheel zoom is
