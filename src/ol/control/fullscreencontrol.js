@@ -8,6 +8,7 @@ goog.require('goog.dom.fullscreen');
 goog.require('goog.dom.fullscreen.EventType');
 goog.require('goog.events');
 goog.require('goog.events.EventType');
+goog.require('ol.BrowserFeature');
 goog.require('ol.control.Control');
 goog.require('ol.css');
 
@@ -64,7 +65,7 @@ ol.control.FullScreen = function(opt_options) {
 
   var element = goog.dom.createDom(goog.dom.TagName.DIV, {
     'class': this.cssClassName_ + ' ' + ol.css.CLASS_UNSELECTABLE + ' ' +
-        (!goog.dom.fullscreen.isSupported() ? ol.css.CLASS_UNSUPPORTED : '')
+        (!ol.BrowserFeature.HAS_FULLSCREEN ? ol.css.CLASS_UNSUPPORTED : '')
   }, button);
 
   goog.base(this, {
@@ -87,7 +88,7 @@ goog.inherits(ol.control.FullScreen, ol.control.Control);
  * @private
  */
 ol.control.FullScreen.prototype.handleClick_ = function(browserEvent) {
-  if (!goog.dom.fullscreen.isSupported()) {
+  if (!ol.BrowserFeature.HAS_FULLSCREEN) {
     return;
   }
   browserEvent.preventDefault();
