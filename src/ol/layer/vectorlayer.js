@@ -25,11 +25,10 @@ ol.layer.Vector = function(opt_options) {
   var options = goog.isDef(opt_options) ?
       opt_options : /** @type {olx.layer.VectorOptions} */ ({});
 
-  var baseOptions = /** @type {olx.layer.LayerOptions} */
-      (goog.object.clone(options));
+  var baseOptions = goog.object.clone(options);
 
   delete baseOptions.style;
-  goog.base(this, baseOptions);
+  goog.base(this, /** @type {olx.layer.LayerOptions} */ (baseOptions));
 
   /**
    * User provided style.

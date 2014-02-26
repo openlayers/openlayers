@@ -25,11 +25,10 @@ goog.require('ol.source.Source');
  */
 ol.layer.Layer = function(options) {
 
-  var baseOptions = /** @type {olx.layer.LayerOptions} */
-      (goog.object.clone(options));
+  var baseOptions = goog.object.clone(options);
   delete baseOptions.source;
 
-  goog.base(this, baseOptions);
+  goog.base(this, /** @type {olx.layer.LayerOptions} */ (baseOptions));
 
   /**
    * @private
