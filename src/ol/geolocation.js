@@ -49,13 +49,13 @@ ol.GeolocationProperty = {
  * @param {olx.GeolocationOptions=} opt_options Options.
  * @todo stability experimental
  * @todo observable accuracy {number} readonly the accuracy of the position
- *       measurement
+ *       measurement in meters
  * @todo observable altitude {number} readonly the altitude of the position in
  *       meters above mean sea level
  * @todo observable altitudeAccuracy {number} readonly the accuracy of the
- *       altitude measurement
+ *       altitude measurement in meters
  * @todo observable heading {number} readonly the heading of the device in
- *       radians from norht
+ *       radians from north
  * @todo observable position {ol.Coordinate} readonly the current position of
  *       the device reported in the current projection
  * @todo observable projection {ol.proj.Projection} readonly the projection to
