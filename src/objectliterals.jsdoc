@@ -168,6 +168,8 @@
 
 /**
  * @typedef {Object} olx.animation.RotateOptions
+ * @property {ol.Coordinate|undefined} anchor The rotation center/anchor.  The map rotates around the center of the view
+ *     if unspecified.
  * @property {number} rotation The rotation to apply, in radians.
  * @property {number|undefined} start The start time of the animation. Default is immediately.
  * @property {number|undefined} duration The duration of the animation in milliseconds.  Default is `1000`.

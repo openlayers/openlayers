@@ -4,6 +4,7 @@ goog.provide('ol.animation');
 
 goog.require('ol.PreRenderFunction');
 goog.require('ol.ViewHint');
+goog.require('ol.coordinate');
 goog.require('ol.easing');
 
 
@@ -92,6 +93,8 @@ ol.animation.rotate = function(options) {
   var duration = goog.isDef(options.duration) ? options.duration : 1000;
   var easing = goog.isDef(options.easing) ?
       options.easing : ol.easing.inAndOut;
+  var anchor = goog.isDef(options.anchor) ?
+      options.anchor : null;
 
   return (
       /**
@@ -106,9 +109,15 @@ ol.animation.rotate = function(options) {
         } else if (frameState.time < start + duration) {
           var delta = 1 - easing((frameState.time - start) / duration);
           var deltaRotation =
-              sourceRotation - frameState.view2DState.rotation;
+              (sourceRotation - frameState.view2DState.rotation) * delta;
           frameState.animate = true;
-          frameState.view2DState.rotation += delta * deltaRotation;
+          frameState.view2DState.rotation += deltaRotation;
+          if (!goog.isNull(anchor)) {
+            var center = frameState.view2DState.center;
+            ol.coordinate.sub(center, anchor);
+            ol.coordinate.rotate(center, deltaRotation);
+            ol.coordinate.add(center, anchor);
+          }
           frameState.viewHints[ol.ViewHint.ANIMATING] += 1;
           return true;
         } else {
