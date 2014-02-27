@@ -309,6 +309,9 @@
  * @property {string} featureNS Feature namespace.
  * @property {string} featureType Feature type to parse.
  * @property {string} srsName srsName to use when writing geometries.
+ * @property {boolean|undefined} surface Write gml:Surface instead of
+ *     gml:Polygon elements. This also affects the elements in multi-part
+ *     geometries. Default is `false´.
  */
 
 /**

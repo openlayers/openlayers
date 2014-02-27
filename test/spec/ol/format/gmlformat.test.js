@@ -179,12 +179,12 @@ describe('ol.format.GML', function() {
 
     describe('surface', function() {
 
-      it('can read a surface geometry', function() {
+      it('can read and write a surface geometry', function() {
         var text =
             '<gml:Surface xmlns:gml="http://www.opengis.net/gml" ' +
             '    srsName="CRS:84">' +
             '  <gml:patches>' +
-            '    <gml:PolygonPatch interpolation="planar">' +
+            '    <gml:PolygonPatch>' +
             '      <gml:exterior>' +
             '        <gml:LinearRing>' +
             '          <gml:posList>1 2 3 2 3 4 1 2</gml:posList>' +
@@ -208,6 +208,9 @@ describe('ol.format.GML', function() {
         expect(g.getCoordinates()).to.eql([[[1, 2, 0], [3, 2, 0], [3, 4, 0],
                 [1, 2, 0]], [[2, 3, 0], [2, 5, 0], [4, 5, 0], [2, 3, 0]],
               [[3, 4, 0], [3, 6, 0], [5, 6, 0], [3, 4, 0]]]);
+        format = new ol.format.GML({srsName: 'CRS:84', surface: true});
+        var serialized = format.writeGeometry(g);
+        expect(serialized.firstElementChild).to.xmleql(ol.xml.load(text));
       });
 
     });
@@ -573,7 +576,7 @@ describe('ol.format.GML', function() {
             '  <gml:surfaceMember>' +
             '    <gml:Surface>' +
             '      <gml:patches>' +
-            '        <gml:PolygonPatch interpolation="planar">' +
+            '        <gml:PolygonPatch>' +
             '          <gml:exterior>' +
             '            <gml:LinearRing>' +
             '              <gml:posList>1 2 3 2 3 4 1 2</gml:posList>' +
@@ -596,7 +599,7 @@ describe('ol.format.GML', function() {
             '  <gml:surfaceMember>' +
             '    <gml:Surface>' +
             '      <gml:patches>' +
-            '        <gml:PolygonPatch interpolation="planar">' +
+            '        <gml:PolygonPatch>' +
             '          <gml:exterior>' +
             '            <gml:LinearRing>' +
             '              <gml:posList>1 2 3 2 3 4 1 2</gml:posList>' +

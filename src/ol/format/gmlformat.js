@@ -52,6 +52,13 @@ ol.format.GML = function(opt_options) {
    */
   this.srsName_ = options.srsName;
 
+  /**
+   * @private
+   * @type {boolean}
+   */
+  this.surface_ = goog.isDef(options.surface) ?
+      options.surface : false;
+
   goog.base(this);
 };
 goog.inherits(ol.format.GML, ol.format.XMLFeature);
@@ -1167,6 +1174,26 @@ ol.format.GML.writePolygon_ = function(node, geometry, objectStack) {
 
 /**
  * @param {Node} node Node.
+ * @param {ol.geom.Polygon} geometry Polygon geometry.
+ * @param {Array.<*>} objectStack Node stack.
+ * @private
+ */
+ol.format.GML.writeSurface_ = function(node, geometry, objectStack) {
+  var context = objectStack[objectStack.length - 1];
+  goog.asserts.assert(goog.isObject(context));
+  var srsName = goog.object.get(context, 'srsName');
+  if (goog.isDefAndNotNull(srsName)) {
+    node.setAttribute('srsName', srsName);
+  }
+  ol.xml.pushSerializeAndPop({node: node, srsName: srsName},
+      ol.format.GML.PATCH_SERIALIZERS_,
+      ol.xml.makeSimpleNodeFactory('patches'), [geometry],
+      objectStack);
+};
+
+
+/**
+ * @param {Node} node Node.
  * @param {ol.geom.MultiPolygon} geometry MultiPolygon geometry.
  * @param {Array.<*>} objectStack Node stack.
  * @private
@@ -1225,12 +1252,40 @@ ol.format.GML.writeSurfaceMember_ = function(node, polygon, objectStack) {
 
 
 /**
+ * @param {Node} node Node.
+ * @param {ol.geom.Polygon} polygon Polygon geometry.
+ * @param {Array.<*>} objectStack Node stack.
+ * @private
+ */
+ol.format.GML.writeSurfacePatches_ = function(node, polygon, objectStack) {
+  var context = objectStack[objectStack.length - 1];
+  goog.asserts.assert(goog.isObject(context));
+  var srsName = goog.object.get(context, 'srsName');
+  ol.xml.pushSerializeAndPop(/** @type {ol.xml.NodeStackItem} */
+      ({node: node, srsName: srsName, writeSrsName: false}),
+      ol.format.GML.SURFACE_SERIALIZERS_,
+      ol.xml.makeSimpleNodeFactory('PolygonPatch'), [polygon], []);
+};
+
+
+/**
  * @type {Object.<string, Object.<string, ol.xml.Serializer>>}
  * @private
  */
 ol.format.GML.SURFACEMEMBER_SERIALIZERS_ = {
   'http://www.opengis.net/gml': {
     'surfaceMember': ol.xml.makeChildAppender(ol.format.GML.writeSurfaceMember_)
+  }
+};
+
+
+/**
+ * @type {Object.<string, Object.<string, ol.xml.Serializer>>}
+ * @private
+ */
+ol.format.GML.PATCH_SERIALIZERS_ = {
+  'http://www.opengis.net/gml': {
+    'patches': ol.xml.makeChildAppender(ol.format.GML.writeSurfacePatches_)
   }
 };
 
@@ -1251,12 +1306,24 @@ ol.format.GML.RING_SERIALIZERS_ = {
  * @type {Object.<string, Object.<string, ol.xml.Serializer>>}
  * @private
  */
+ol.format.GML.SURFACE_SERIALIZERS_ = {
+  'http://www.opengis.net/gml': {
+    'PolygonPatch': ol.xml.makeChildAppender(ol.format.GML.writePolygon_)
+  }
+};
+
+
+/**
+ * @type {Object.<string, Object.<string, ol.xml.Serializer>>}
+ * @private
+ */
 ol.format.GML.GEOMETRY_SERIALIZERS_ = {
   'http://www.opengis.net/gml': {
     'Point': ol.xml.makeChildAppender(ol.format.GML.writePoint_),
     'LineString': ol.xml.makeChildAppender(ol.format.GML.writeLineString_),
     'LinearRing': ol.xml.makeChildAppender(ol.format.GML.writeLinearRing_),
     'Polygon': ol.xml.makeChildAppender(ol.format.GML.writePolygon_),
+    'Surface': ol.xml.makeChildAppender(ol.format.GML.writeSurface_),
     'MultiSurface': ol.xml.makeChildAppender(ol.format.GML.writeMultiSurface_)
   }
 };
@@ -1272,12 +1339,18 @@ ol.format.GML.GEOMETRY_SERIALIZERS_ = {
  */
 ol.format.GML.GEOMETRY_NODE_FACTORY_ = function(value, objectStack,
     opt_nodeName) {
+  var context = objectStack[objectStack.length - 1];
+  goog.asserts.assert(goog.isObject(context));
+  var surface = goog.object.get(context, 'surface');
   goog.asserts.assertInstanceof(value, ol.geom.Geometry);
   var parentNode = objectStack[objectStack.length - 1].node;
   goog.asserts.assert(ol.xml.isNode(parentNode));
   var nodeName = value.getType();
   if (nodeName === 'MultiPolygon') {
     nodeName = 'MultiSurface';
+  }
+  if (nodeName === 'Polygon' && surface === true) {
+    nodeName = 'Surface';
   }
   return ol.xml.createElementNS(parentNode.namespaceURI,
       nodeName);
@@ -1289,7 +1362,7 @@ ol.format.GML.GEOMETRY_NODE_FACTORY_ = function(value, objectStack,
  */
 ol.format.GML.prototype.writeGeometryNode = function(geometry) {
   var geom = ol.xml.createElementNS('http://www.opengis.net/gml', 'geom');
-  var context = {node: geom, srsName: this.srsName_};
+  var context = {node: geom, srsName: this.srsName_, surface: this.surface_};
   ol.xml.pushSerializeAndPop(/** @type {ol.xml.NodeStackItem} */
       (context), ol.format.GML.GEOMETRY_SERIALIZERS_,
       ol.format.GML.GEOMETRY_NODE_FACTORY_, [geometry], []);
