@@ -544,7 +544,8 @@ olx.animation.PanOptions.prototype.easing;
 
 
 /**
- * @typedef {{rotation: number,
+ * @typedef {{rotation: (number|undefined),
+ *     anchor: (ol.Coordinate|undefined),
  *     start: (number|undefined),
  *     duration: (number|undefined),
  *     easing: (function(number):number|undefined)}}
@@ -554,10 +555,19 @@ olx.animation.RotateOptions;
 
 
 /**
- * The rotation to apply, in radians.
- * @type {number}
+ * The rotation value (in radians) to begin rotating from, typically
+ * `map.getView().getRotation()`. If `undefined` then `0` is assumed.
+ * @type {number|undefined}
  */
 olx.animation.RotateOptions.prototype.rotation;
+
+
+/**
+ * The rotation center/anchor. The map rotates around the center of the view
+ * if unspecified.
+ * @type {ol.Coordinate|undefined}
+ */
+olx.animation.RotateOptions.prototype.anchor;
 
 
 /**
