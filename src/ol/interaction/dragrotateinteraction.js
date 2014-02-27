@@ -60,7 +60,7 @@ ol.interaction.DragRotate.prototype.handleDrag = function(mapBrowserEvent) {
     // FIXME works for View2D only
     var view = map.getView().getView2D();
     var view2DState = view.getView2DState();
-    map.requestRenderFrame();
+    map.render();
     ol.interaction.Interaction.rotateWithoutConstraints(
         map, view, view2DState.rotation - delta);
   }
@@ -92,7 +92,7 @@ ol.interaction.DragRotate.prototype.handleDragStart =
   if (browserEvent.isMouseActionButton() && this.condition_(mapBrowserEvent)) {
     var map = mapBrowserEvent.map;
     map.getView().setHint(ol.ViewHint.INTERACTING, 1);
-    map.requestRenderFrame();
+    map.render();
     this.lastAngle_ = undefined;
     return true;
   } else {

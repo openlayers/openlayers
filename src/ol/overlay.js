@@ -327,7 +327,7 @@ ol.Overlay.prototype.updatePixelPosition_ = function() {
 
   var map = this.getMap();
   var position = this.getPosition();
-  if (!goog.isDef(map) || !map.isDef() || !goog.isDef(position)) {
+  if (!goog.isDef(map) || !map.isRendered() || !goog.isDef(position)) {
     if (this.rendered_.visible) {
       goog.style.setElementShown(this.element_, false);
       this.rendered_.visible = false;

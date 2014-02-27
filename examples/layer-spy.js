@@ -28,10 +28,10 @@ var radius = 75;
 $(document).keydown(function(evt) {
   if (evt.which === 38) {
     radius = Math.min(radius + 5, 150);
-    map.requestRenderFrame();
+    map.render();
   } else if (evt.which === 40) {
     radius = Math.max(radius - 5, 25);
-    map.requestRenderFrame();
+    map.render();
   }
 });
 
@@ -39,10 +39,10 @@ $(document).keydown(function(evt) {
 var mousePosition = null;
 $(map.getViewport()).on('mousemove', function(evt) {
   mousePosition = map.getEventPixel(evt.originalEvent);
-  map.requestRenderFrame();
+  map.render();
 }).on('mouseout', function() {
   mousePosition = null;
-  map.requestRenderFrame();
+  map.render();
 });
 
 // before rendering the layer, do some clipping

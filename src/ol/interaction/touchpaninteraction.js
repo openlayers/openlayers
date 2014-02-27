@@ -73,7 +73,7 @@ ol.interaction.TouchPan.prototype.handleTouchMove = function(mapBrowserEvent) {
     ol.coordinate.rotate(center, view2DState.rotation);
     ol.coordinate.add(center, view2DState.center);
     center = view2D.constrainCenter(center);
-    map.requestRenderFrame();
+    map.render();
     view2D.setCenter(center);
   }
   this.lastCentroid = centroid;
@@ -104,7 +104,7 @@ ol.interaction.TouchPan.prototype.handleTouchEnd =
       dest = view2D.constrainCenter(dest);
       view2D.setCenter(dest);
     }
-    map.requestRenderFrame();
+    map.render();
     return false;
   } else {
     this.lastCentroid = null;
@@ -123,7 +123,7 @@ ol.interaction.TouchPan.prototype.handleTouchStart =
     var view2D = map.getView().getView2D();
     goog.asserts.assertInstanceof(view2D, ol.View2D);
     this.lastCentroid = null;
-    map.requestRenderFrame();
+    map.render();
     if (!goog.isNull(this.kineticPreRenderFn_) &&
         map.removePreRenderFunction(this.kineticPreRenderFn_)) {
       view2D.setCenter(mapBrowserEvent.frameState.view2DState.center);

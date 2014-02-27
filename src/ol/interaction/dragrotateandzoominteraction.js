@@ -80,7 +80,7 @@ ol.interaction.DragRotateAndZoom.prototype.handleDrag =
   // FIXME works for View2D only
   var view = map.getView().getView2D();
   var view2DState = view.getView2DState();
-  map.requestRenderFrame();
+  map.render();
   if (goog.isDef(this.lastAngle_)) {
     var angleDelta = theta - this.lastAngle_;
     ol.interaction.Interaction.rotateWithoutConstraints(

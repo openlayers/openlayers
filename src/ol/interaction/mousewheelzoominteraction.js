@@ -114,7 +114,7 @@ ol.interaction.MouseWheelZoom.prototype.doZoom_ = function(map) {
   // FIXME works for View2D only
   var view = map.getView().getView2D();
 
-  map.requestRenderFrame();
+  map.render();
   ol.interaction.Interaction.zoomByDelta(map, view, -delta, this.lastAnchor_,
       this.duration_);
 
