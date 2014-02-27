@@ -3,7 +3,6 @@ goog.provide('ol.BrowserFeature');
 goog.require('goog.dom');
 goog.require('goog.dom.TagName');
 goog.require('goog.userAgent');
-goog.require('googx.dom.fullscreen');
 goog.require('ol.webgl');
 
 
@@ -140,15 +139,6 @@ ol.BrowserFeature.HAS_DEVICE_ORIENTATION =
  * @todo stability experimental
  */
 ol.BrowserFeature.HAS_DOM = ol.ENABLE_DOM;
-
-
-/**
- * True if browser supports the fullscreen API.
- * @const
- * @type {boolean}
- * @todo stability experimental
- */
-ol.BrowserFeature.HAS_FULLSCREEN = googx.dom.fullscreen.isSupported();
 
 
 /**
