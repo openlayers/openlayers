@@ -535,6 +535,18 @@ ol.View2D.prototype.isDef = function() {
 
 
 /**
+ * Rotate the view around a given coordinate.
+ * @param {number} rotation New rotation value for the view.
+ * @param {ol.Coordinate} anchor The rotation center.
+ */
+ol.View2D.prototype.rotate = function(rotation, anchor) {
+  var center = this.calculateCenterRotate(rotation, anchor);
+  this.setRotation(rotation);
+  this.setCenter(center);
+};
+
+
+/**
  * Set the center of the current view.
  * @param {ol.Coordinate|undefined} center Center.
  * @todo stability experimental
