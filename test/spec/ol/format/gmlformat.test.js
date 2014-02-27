@@ -82,7 +82,7 @@ describe('ol.format.GML', function() {
             expect(serialized.firstElementChild).to.xmleql(ol.xml.load(text));
           });
 
-      it('can read a surface geometry with right axis order',
+      it('can read and write a surface geometry with right axis order',
           function() {
             var text =
                 '<gml:MultiSurface xmlns:gml="http://www.opengis.net/gml" ' +
@@ -105,6 +105,10 @@ describe('ol.format.GML', function() {
             var g = readGeometry(format, text);
             expect(g.getCoordinates()[0][0][0][0]).to.equal(-77.0081);
             expect(g.getCoordinates()[0][0][0][1]).to.equal(38.9661);
+            format = new ol.format.GML({srsName: 'urn:x-ogc:def:crs:EPSG:4326',
+              surface: false});
+            var serialized = format.writeGeometry(g);
+            expect(serialized.firstElementChild).to.xmleql(ol.xml.load(text));
           });
 
     });
@@ -323,6 +327,7 @@ describe('ol.format.GML', function() {
         expect(g).to.be.an(ol.geom.MultiLineString);
         expect(g.getCoordinates()).to.eql(
             [[[1, 2, 0], [2, 3, 0]], [[3, 4, 0], [4, 5, 0]]]);
+        format = new ol.format.GML({srsName: 'CRS:84', multiCurve: false});
         var serialized = format.writeGeometry(g);
         expect(serialized.firstElementChild).to.xmleql(ol.xml.load(text));
       });
@@ -390,6 +395,7 @@ describe('ol.format.GML', function() {
             [1, 2, 0]], [[2, 3, 0], [2, 5, 0], [4, 5, 0], [2, 3, 0]],
             [[3, 4, 0], [3, 6, 0], [5, 6, 0], [3, 4, 0]]],
           [[[1, 2, 0], [3, 2, 0], [3, 4, 0], [1, 2, 0]]]]);
+        format = new ol.format.GML({srsName: 'CRS:84', multiSurface: false});
         var serialized = format.writeGeometry(g);
         expect(serialized.firstElementChild).to.xmleql(ol.xml.load(text));
       });
@@ -438,26 +444,29 @@ describe('ol.format.GML', function() {
 
     describe('multicurve', function() {
 
-      it('can read a singular multicurve-linestring geometry', function() {
-        var text =
-            '<gml:MultiCurve xmlns:gml="http://www.opengis.net/gml" ' +
-            '    srsName="CRS:84">' +
-            '  <gml:curveMember>' +
-            '    <gml:LineString>' +
-            '      <gml:posList>1 2 2 3</gml:posList>' +
-            '    </gml:LineString>' +
-            '  </gml:curveMember>' +
-            '  <gml:curveMember>' +
-            '    <gml:LineString>' +
-            '      <gml:posList>3 4 4 5</gml:posList>' +
-            '    </gml:LineString>' +
-            '  </gml:curveMember>' +
-            '</gml:MultiCurve>';
-        var g = readGeometry(format, text);
-        expect(g).to.be.an(ol.geom.MultiLineString);
-        expect(g.getCoordinates()).to.eql(
-            [[[1, 2, 0], [2, 3, 0]], [[3, 4, 0], [4, 5, 0]]]);
-      });
+      it('can read and write a singular multicurve-linestring geometry',
+          function() {
+            var text =
+                '<gml:MultiCurve xmlns:gml="http://www.opengis.net/gml" ' +
+                '    srsName="CRS:84">' +
+                '  <gml:curveMember>' +
+                '    <gml:LineString>' +
+                '      <gml:posList>1 2 2 3</gml:posList>' +
+                '    </gml:LineString>' +
+                '  </gml:curveMember>' +
+                '  <gml:curveMember>' +
+                '    <gml:LineString>' +
+                '      <gml:posList>3 4 4 5</gml:posList>' +
+                '    </gml:LineString>' +
+                '  </gml:curveMember>' +
+                '</gml:MultiCurve>';
+            var g = readGeometry(format, text);
+            expect(g).to.be.an(ol.geom.MultiLineString);
+            expect(g.getCoordinates()).to.eql(
+                [[[1, 2, 0], [2, 3, 0]], [[3, 4, 0], [4, 5, 0]]]);
+            var serialized = format.writeGeometry(g);
+            expect(serialized.firstElementChild).to.xmleql(ol.xml.load(text));
+          });
 
       it('can read a singular multicurve-curve geometry', function() {
         var text =
