@@ -80,7 +80,7 @@ var map = new ol.Map({
 
 function getFeatureStyle() {
   return [new ol.style.Style({
-    image: new ol.style.Shape(/** @type {ol.style.ShapeOptions} */({
+    image: new ol.style.Shape(/** @type {olx.style.ShapeOptions} */({
       type: typeSelect.value,
       size: [parseInt(widthInput.value, 10), parseInt(heightInput.value, 10)],
       rotation: parseInt(rotationInput.value, 10) * Math.PI / 180,
