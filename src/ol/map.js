@@ -1022,13 +1022,7 @@ ol.Map.prototype.isRendered = function() {
  * Render.
  */
 ol.Map.prototype.renderSync = function() {
-  if (this.animationDelay_.isActive()) {
-    // pass
-  } else if (this.freezeRenderingCount_ === 0) {
-    this.animationDelay_.fire();
-  } else {
-    this.dirty_ = true;
-  }
+  this.animationDelay_.fire();
 };
 
 
