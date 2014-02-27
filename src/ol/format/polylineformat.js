@@ -253,20 +253,6 @@ ol.format.Polyline.encodeFloat = function(num, opt_factor) {
 
 
 /**
- * Decode one single floating point number from an encoded string
- *
- * @param {string} encoded An encoded string.
- * @param {number=} opt_factor The factor by which the result will be divided.
- * @return {number} The decoded floating point number.
- */
-ol.format.Polyline.decodeFloat = function(encoded, opt_factor) {
-  var factor = goog.isDef(opt_factor) ? opt_factor : 1e5;
-  var result = ol.format.Polyline.decodeSignedInteger(encoded);
-  return result / factor;
-};
-
-
-/**
  * Encode one single signed integer and return an encoded string
  *
  * @param {number} num Signed integer that should be encoded.
