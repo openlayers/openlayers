@@ -183,6 +183,18 @@ ol.coordinate.scale = function(coordinate, s) {
 
 
 /**
+ * @param {ol.Coordinate} coordinate Coordinate.
+ * @param {ol.Coordinate} delta Delta.
+ * @return {ol.Coordinate} Coordinate.
+ */
+ol.coordinate.sub = function(coordinate, delta) {
+  coordinate[0] -= delta[0];
+  coordinate[1] -= delta[1];
+  return coordinate;
+};
+
+
+/**
  * @param {ol.Coordinate} coord1 First coordinate.
  * @param {ol.Coordinate} coord2 Second coordinate.
  * @return {number} Squared distance between coord1 and coord2.
