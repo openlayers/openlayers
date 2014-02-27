@@ -28,8 +28,7 @@ goog.inherits(ol.format.Polyline, ol.format.Text);
  * @param {number=} opt_dimension The dimension of the coordinates in the array.
  * @return {string} The encoded string.
  */
-ol.format.Polyline.encodeFlatCoordinates =
-    function(flatPoints, opt_dimension) {
+ol.format.Polyline.encodeFlatCoordinates = function(flatPoints, opt_dimension) {
   var dimension = goog.isDef(opt_dimension) ? opt_dimension : 2;
   return ol.format.Polyline.encodeDeltas(flatPoints, dimension);
 };
@@ -40,7 +39,7 @@ ol.format.Polyline.encodeFlatCoordinates =
  *
  * @param {string} encoded An encoded string.
  * @param {number=} opt_dimension The dimension of the coordinates in the
- * encoded string.
+ *     encoded string.
  * @return {Array.<number>} A flat array of coordinates.
  */
 ol.format.Polyline.decodeFlatCoordinates = function(encoded, opt_dimension) {
@@ -57,7 +56,8 @@ ol.format.Polyline.decodeFlatCoordinates = function(encoded, opt_dimension) {
  * @param {Array.<number>} numbers A list of n-dimensional points.
  * @param {number} dimension The dimension of the points in the list.
  * @param {number=} opt_factor The factor by which the numbers will be
- * multiplied. The remaining decimal places will get rounded away.
+ *     multiplied. The remaining decimal places will get rounded away.
+ *     Default is `1e5`.
  * @return {string} The encoded string.
  */
 ol.format.Polyline.encodeDeltas = function(numbers, dimension, opt_factor) {
@@ -90,7 +90,7 @@ ol.format.Polyline.encodeDeltas = function(numbers, dimension, opt_factor) {
  * @param {string} encoded An encoded string.
  * @param {number} dimension The dimension of the points in the encoded string.
  * @param {number=} opt_factor The factor by which the resulting numbers will
- * be divided.
+ *     be divided. Default is `1e5`.
  * @return {Array.<number>} A list of n-dimensional points.
  */
 ol.format.Polyline.decodeDeltas = function(encoded, dimension, opt_factor) {
@@ -125,7 +125,8 @@ ol.format.Polyline.decodeDeltas = function(encoded, dimension, opt_factor) {
  *
  * @param {Array.<number>} numbers A list of floating point numbers.
  * @param {number=} opt_factor The factor by which the numbers will be
- * multiplied. The remaining decimal places will get rounded away.
+ *     multiplied. The remaining decimal places will get rounded away.
+ *     Default is `1e5`.
  * @return {string} The encoded string.
  */
 ol.format.Polyline.encodeFloats = function(numbers, opt_factor) {
@@ -145,6 +146,7 @@ ol.format.Polyline.encodeFloats = function(numbers, opt_factor) {
  *
  * @param {string} encoded An encoded string.
  * @param {number=} opt_factor The factor by which the result will be divided.
+ *     Default is `1e5`.
  * @return {Array.<number>} A list of floating point numbers.
  */
 ol.format.Polyline.decodeFloats = function(encoded, opt_factor) {
@@ -240,7 +242,7 @@ ol.format.Polyline.decodeUnsignedIntegers = function(encoded) {
  *
  * @param {number} num Floating point number that should be encoded.
  * @param {number=} opt_factor The factor by which num will be multiplied.
- * The remaining decimal places will get rounded away.
+ *     The remaining decimal places will get rounded away.
  * @return {string} The encoded string.
  */
 ol.format.Polyline.encodeFloat = function(num, opt_factor) {
