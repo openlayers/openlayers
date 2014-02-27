@@ -188,19 +188,19 @@ describe('ol.format.Polyline', function() {
 
   describe('encodeSignedInteger', function() {
     it('returns expected value', function() {
-      var encodeSignedInteger = ol.format.Polyline.encodeSignedInteger;
+      var encodeSignedIntegers = ol.format.Polyline.encodeSignedIntegers;
 
-      expect(encodeSignedInteger(0)).to.eql('?');
-      expect(encodeSignedInteger(-1)).to.eql('@');
-      expect(encodeSignedInteger(1)).to.eql('A');
-      expect(encodeSignedInteger(-2)).to.eql('B');
-      expect(encodeSignedInteger(2)).to.eql('C');
-      expect(encodeSignedInteger(15)).to.eql(']');
-      expect(encodeSignedInteger(-16)).to.eql('^');
+      expect(encodeSignedIntegers([0])).to.eql('?');
+      expect(encodeSignedIntegers([-1])).to.eql('@');
+      expect(encodeSignedIntegers([1])).to.eql('A');
+      expect(encodeSignedIntegers([-2])).to.eql('B');
+      expect(encodeSignedIntegers([2])).to.eql('C');
+      expect(encodeSignedIntegers([15])).to.eql(']');
+      expect(encodeSignedIntegers([-16])).to.eql('^');
 
-      expect(encodeSignedInteger(16)).to.eql('_@');
-      expect(encodeSignedInteger(16 * 32)).to.eql('__@');
-      expect(encodeSignedInteger(16 * 32 * 32)).to.eql('___@');
+      expect(encodeSignedIntegers([16])).to.eql('_@');
+      expect(encodeSignedIntegers([16 * 32])).to.eql('__@');
+      expect(encodeSignedIntegers([16 * 32 * 32])).to.eql('___@');
     });
   });
 

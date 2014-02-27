@@ -238,18 +238,6 @@ ol.format.Polyline.decodeUnsignedIntegers = function(encoded) {
 
 
 /**
- * Encode one single signed integer and return an encoded string
- *
- * @param {number} num Signed integer that should be encoded.
- * @return {string} The encoded string.
- */
-ol.format.Polyline.encodeSignedInteger = function(num) {
-  var signedNum = (num < 0) ? ~(num << 1) : (num << 1);
-  return ol.format.Polyline.encodeUnsignedInteger(signedNum);
-};
-
-
-/**
  * Encode one single unsigned integer and return an encoded string
  *
  * @param {number} num Unsigned integer that should be encoded.
