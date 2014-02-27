@@ -122,6 +122,11 @@ ol.renderer.dom.TileLayer.prototype.prepareFrame =
   var findLoadedTiles = goog.bind(tileSource.findLoadedTiles, tileSource,
       tilesToDrawByZ, getTileIfLoaded);
 
+  var useInterimTilesOnError = tileLayer.getUseInterimTilesOnError();
+  if (!goog.isDef(useInterimTilesOnError)) {
+    useInterimTilesOnError = true;
+  }
+
   var tmpExtent = ol.extent.createEmpty();
   var tmpTileRange = new ol.TileRange(0, 0, 0, 0);
   var childTileRange, fullyLoaded, tile, tileState, x, y;
@@ -133,8 +138,9 @@ ol.renderer.dom.TileLayer.prototype.prepareFrame =
       if (tileState == ol.TileState.LOADED) {
         tilesToDrawByZ[z][tile.tileCoord.toString()] = tile;
         continue;
-      } else if (tileState == ol.TileState.ERROR ||
-                 tileState == ol.TileState.EMPTY) {
+      } else if (tileState == ol.TileState.EMPTY ||
+                 (tileState == ol.TileState.ERROR &&
+                  !useInterimTilesOnError)) {
         continue;
       }
 

@@ -56,6 +56,13 @@ ol.control.Zoom = function(opt_options) {
     goog.events.EventType.CLICK
   ], goog.partial(ol.control.Zoom.prototype.zoomByDelta_, delta), false, this);
 
+  goog.events.listen(inElement, [
+    goog.events.EventType.MOUSEOUT,
+    goog.events.EventType.FOCUSOUT
+  ], function() {
+    this.blur();
+  }, false);
+
   var tTipsZoomOut = goog.dom.createDom(goog.dom.TagName.SPAN, {
     'role' : 'tooltip',
     'type' : 'button'
@@ -68,6 +75,13 @@ ol.control.Zoom = function(opt_options) {
     goog.events.EventType.TOUCHEND,
     goog.events.EventType.CLICK
   ], goog.partial(ol.control.Zoom.prototype.zoomByDelta_, -delta), false, this);
+
+  goog.events.listen(outElement, [
+    goog.events.EventType.MOUSEOUT,
+    goog.events.EventType.FOCUSOUT
+  ], function() {
+    this.blur();
+  }, false);
 
   var cssClasses = className + ' ' + ol.css.CLASS_UNSELECTABLE;
   var element = goog.dom.createDom(goog.dom.TagName.DIV, cssClasses, inElement,

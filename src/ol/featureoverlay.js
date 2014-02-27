@@ -105,7 +105,7 @@ ol.FeatureOverlay.prototype.getFeatures = function() {
  * @private
  */
 ol.FeatureOverlay.prototype.handleFeatureChange_ = function() {
-  this.requestRenderFrame_();
+  this.render_();
 };
 
 
@@ -120,7 +120,7 @@ ol.FeatureOverlay.prototype.handleFeaturesAdd_ =
   this.featureChangeListenerKeys_[goog.getUid(feature).toString()] =
       goog.events.listen(feature, goog.events.EventType.CHANGE,
       this.handleFeatureChange_, false, this);
-  this.requestRenderFrame_();
+  this.render_();
 };
 
 
@@ -135,7 +135,7 @@ ol.FeatureOverlay.prototype.handleFeaturesRemove_ =
   var key = goog.getUid(feature).toString();
   goog.events.unlistenByKey(this.featureChangeListenerKeys_[key]);
   delete this.featureChangeListenerKeys_[key];
-  this.requestRenderFrame_();
+  this.render_();
 };
 
 
@@ -175,9 +175,9 @@ ol.FeatureOverlay.prototype.removeFeature = function(feature) {
 /**
  * @private
  */
-ol.FeatureOverlay.prototype.requestRenderFrame_ = function() {
+ol.FeatureOverlay.prototype.render_ = function() {
   if (!goog.isNull(this.map_)) {
-    this.map_.requestRenderFrame();
+    this.map_.render();
   }
 };
 
@@ -216,7 +216,7 @@ ol.FeatureOverlay.prototype.setFeatures = function(features) {
           this.handleFeatureChange_, false, this);
     }
   }
-  this.requestRenderFrame_();
+  this.render_();
 };
 
 
@@ -229,13 +229,13 @@ ol.FeatureOverlay.prototype.setMap = function(map) {
     goog.events.unlistenByKey(this.postComposeListenerKey_);
     this.postComposeListenerKey_ = null;
   }
-  this.requestRenderFrame_();
+  this.render_();
   this.map_ = map;
   if (!goog.isNull(map)) {
     this.postComposeListenerKey_ = goog.events.listen(
         map, ol.render.EventType.POSTCOMPOSE, this.handleMapPostCompose_, false,
         this);
-    map.requestRenderFrame();
+    map.render();
   }
 };
 
@@ -251,7 +251,7 @@ ol.FeatureOverlay.prototype.setMap = function(map) {
 ol.FeatureOverlay.prototype.setStyle = function(style) {
   this.style_ = style;
   this.styleFunction_ = ol.feature.createStyleFunction(style);
-  this.requestRenderFrame_();
+  this.render_();
 };
 
 

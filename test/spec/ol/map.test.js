@@ -48,7 +48,7 @@ describe('ol.Map', function() {
     });
   });
 
-  describe('#requestRenderFrame()', function() {
+  describe('#render()', function() {
 
     var target, map;
 
@@ -78,7 +78,7 @@ describe('ol.Map', function() {
 
     it('results in an postrender event', function(done) {
 
-      map.requestRenderFrame();
+      map.render();
       map.on('postrender', function(event) {
         expect(event).to.be.a(ol.MapEvent);
         var frameState = event.frameState;
@@ -92,7 +92,7 @@ describe('ol.Map', function() {
       target.style.height = '0px';
       map.updateSize();
 
-      map.requestRenderFrame();
+      map.render();
       map.on('postrender', function(event) {
         expect(event).to.be.a(ol.MapEvent);
         var frameState = event.frameState;
@@ -106,7 +106,7 @@ describe('ol.Map', function() {
       target.style.width = '0px';
       map.updateSize();
 
-      map.requestRenderFrame();
+      map.render();
       map.on('postrender', function(event) {
         expect(event).to.be.a(ol.MapEvent);
         var frameState = event.frameState;

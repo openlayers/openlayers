@@ -266,6 +266,11 @@ ol.renderer.canvas.TileLayer.prototype.prepareFrame =
   var findLoadedTiles = goog.bind(tileSource.findLoadedTiles, tileSource,
       tilesToDrawByZ, getTileIfLoaded);
 
+  var useInterimTilesOnError = tileLayer.getUseInterimTilesOnError();
+  if (!goog.isDef(useInterimTilesOnError)) {
+    useInterimTilesOnError = true;
+  }
+
   var tmpExtent = ol.extent.createEmpty();
   var tmpTileRange = new ol.TileRange(0, 0, 0, 0);
   var childTileRange, fullyLoaded, tile, tileState, x, y;
@@ -276,7 +281,7 @@ ol.renderer.canvas.TileLayer.prototype.prepareFrame =
       tileState = tile.getState();
       if (tileState == ol.TileState.LOADED ||
           tileState == ol.TileState.EMPTY ||
-          tileState == ol.TileState.ERROR) {
+          (tileState == ol.TileState.ERROR && !useInterimTilesOnError)) {
         tilesToDrawByZ[z][tile.tileCoord.toString()] = tile;
         continue;
       }
@@ -331,7 +336,7 @@ ol.renderer.canvas.TileLayer.prototype.prepareFrame =
           y = tilePixelSize * (canvasTileRange.maxY - tile.tileCoord.y);
           tileState = tile.getState();
           if (tileState == ol.TileState.EMPTY ||
-              tileState == ol.TileState.ERROR ||
+              (tileState == ol.TileState.ERROR && !useInterimTilesOnError) ||
               !opaque) {
             context.clearRect(x, y, tilePixelSize, tilePixelSize);
           }

@@ -6,7 +6,7 @@ describe('ol.interaction.Draw', function() {
   var width = 360;
   var height = 180;
 
-  beforeEach(function() {
+  beforeEach(function(done) {
     target = document.createElement('div');
     var style = target.style;
     style.position = 'absolute';
@@ -26,6 +26,9 @@ describe('ol.interaction.Draw', function() {
         center: [0, 0],
         resolution: 1
       })
+    });
+    map.on('postrender', function() {
+      done();
     });
   });
 
