@@ -537,12 +537,14 @@ ol.View2D.prototype.isDef = function() {
 /**
  * Rotate the view around a given coordinate.
  * @param {number} rotation New rotation value for the view.
- * @param {ol.Coordinate} anchor The rotation center.
+ * @param {ol.Coordinate=} opt_anchor The rotation center.
  */
-ol.View2D.prototype.rotate = function(rotation, anchor) {
-  var center = this.calculateCenterRotate(rotation, anchor);
+ol.View2D.prototype.rotate = function(rotation, opt_anchor) {
+  if (goog.isDef(opt_anchor)) {
+    var center = this.calculateCenterRotate(rotation, opt_anchor);
+    this.setCenter(center);
+  }
   this.setRotation(rotation);
-  this.setCenter(center);
 };
 
 
