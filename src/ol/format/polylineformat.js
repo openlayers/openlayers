@@ -257,28 +257,6 @@ ol.format.Polyline.encodeUnsignedInteger = function(num) {
 
 
 /**
- * Decode one single unsigned integer from an encoded string
- *
- * @param {string} encoded An encoded string.
- * @return {number} The decoded unsigned integer.
- */
-ol.format.Polyline.decodeUnsignedInteger = function(encoded) {
-  var result = 0;
-  var shift = 0;
-  var i, ii;
-  for (i = 0, ii = encoded.length; i < ii; ++i) {
-    var b = encoded.charCodeAt(i) - 63;
-    result |= (b & 0x1f) << shift;
-    if (b < 0x20) {
-      break;
-    }
-    shift += 5;
-  }
-  return result;
-};
-
-
-/**
  * @inheritDoc
  */
 ol.format.Polyline.prototype.readFeatureFromText = function(text) {
