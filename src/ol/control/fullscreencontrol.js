@@ -4,10 +4,11 @@ goog.require('goog.asserts');
 goog.require('goog.dom');
 goog.require('goog.dom.TagName');
 goog.require('goog.dom.classes');
-goog.require('goog.dom.fullscreen');
-goog.require('goog.dom.fullscreen.EventType');
 goog.require('goog.events');
 goog.require('goog.events.EventType');
+goog.require('googx.dom.fullscreen');
+goog.require('googx.dom.fullscreen.EventType');
+goog.require('ol.BrowserFeature');
 goog.require('ol.control.Control');
 goog.require('ol.css');
 
@@ -43,7 +44,7 @@ ol.control.FullScreen = function(opt_options) {
   }, tipLabel);
 
   var button = goog.dom.createDom(goog.dom.TagName.BUTTON, {
-    'class': this.cssClassName_ + '-' + goog.dom.fullscreen.isFullScreen() +
+    'class': this.cssClassName_ + '-' + googx.dom.fullscreen.isFullScreen() +
         ' ol-has-tooltip'
   });
   goog.dom.appendChild(button, tip);
@@ -59,12 +60,13 @@ ol.control.FullScreen = function(opt_options) {
     this.blur();
   }, false);
 
-  goog.events.listen(goog.global.document, goog.dom.fullscreen.EventType.CHANGE,
+  goog.events.listen(goog.global.document,
+      googx.dom.fullscreen.EventType.CHANGE,
       this.handleFullScreenChange_, false, this);
 
   var element = goog.dom.createDom(goog.dom.TagName.DIV, {
     'class': this.cssClassName_ + ' ' + ol.css.CLASS_UNSELECTABLE + ' ' +
-        (!goog.dom.fullscreen.isSupported() ? ol.css.CLASS_UNSUPPORTED : '')
+        (!ol.BrowserFeature.HAS_FULLSCREEN ? ol.css.CLASS_UNSUPPORTED : '')
   }, button);
 
   goog.base(this, {
@@ -87,7 +89,7 @@ goog.inherits(ol.control.FullScreen, ol.control.Control);
  * @private
  */
 ol.control.FullScreen.prototype.handleClick_ = function(browserEvent) {
-  if (!goog.dom.fullscreen.isSupported()) {
+  if (!ol.BrowserFeature.HAS_FULLSCREEN) {
     return;
   }
   browserEvent.preventDefault();
@@ -95,17 +97,17 @@ ol.control.FullScreen.prototype.handleClick_ = function(browserEvent) {
   if (goog.isNull(map)) {
     return;
   }
-  if (goog.dom.fullscreen.isFullScreen()) {
-    goog.dom.fullscreen.exitFullScreen();
+  if (googx.dom.fullscreen.isFullScreen()) {
+    googx.dom.fullscreen.exitFullScreen();
   } else {
     var target = map.getTarget();
     goog.asserts.assert(goog.isDefAndNotNull(target));
     var element = goog.dom.getElement(target);
     goog.asserts.assert(goog.isDefAndNotNull(element));
     if (this.keys_) {
-      goog.dom.fullscreen.requestFullScreenWithKeys(element);
+      googx.dom.fullscreen.requestFullScreenWithKeys(element);
     } else {
-      goog.dom.fullscreen.requestFullScreen(element);
+      googx.dom.fullscreen.requestFullScreen(element);
     }
   }
 };
@@ -119,7 +121,7 @@ ol.control.FullScreen.prototype.handleFullScreenChange_ = function() {
   var closed = this.cssClassName_ + '-false';
   var anchor = goog.dom.getFirstElementChild(this.element);
   var map = this.getMap();
-  if (goog.dom.fullscreen.isFullScreen()) {
+  if (googx.dom.fullscreen.isFullScreen()) {
     goog.dom.classes.swap(anchor, closed, opened);
   } else {
     goog.dom.classes.swap(anchor, opened, closed);
