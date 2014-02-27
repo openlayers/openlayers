@@ -206,19 +206,19 @@ describe('ol.format.Polyline', function() {
 
   describe('decodeSignedInteger', function() {
     it('returns expected value', function() {
-      var decodeSignedInteger = ol.format.Polyline.decodeSignedInteger;
+      var decodeSignedIntegers = ol.format.Polyline.decodeSignedIntegers;
 
-      expect(decodeSignedInteger('?')).to.eql(0);
-      expect(decodeSignedInteger('@')).to.eql(-1);
-      expect(decodeSignedInteger('A')).to.eql(1);
-      expect(decodeSignedInteger('B')).to.eql(-2);
-      expect(decodeSignedInteger('C')).to.eql(2);
-      expect(decodeSignedInteger(']')).to.eql(15);
-      expect(decodeSignedInteger('^')).to.eql(-16);
+      expect(decodeSignedIntegers('?')).to.eql([0]);
+      expect(decodeSignedIntegers('@')).to.eql([-1]);
+      expect(decodeSignedIntegers('A')).to.eql([1]);
+      expect(decodeSignedIntegers('B')).to.eql([-2]);
+      expect(decodeSignedIntegers('C')).to.eql([2]);
+      expect(decodeSignedIntegers(']')).to.eql([15]);
+      expect(decodeSignedIntegers('^')).to.eql([-16]);
 
-      expect(decodeSignedInteger('_@')).to.eql(16);
-      expect(decodeSignedInteger('__@')).to.eql(16 * 32);
-      expect(decodeSignedInteger('___@')).to.eql(16 * 32 * 32);
+      expect(decodeSignedIntegers('_@')).to.eql([16]);
+      expect(decodeSignedIntegers('__@')).to.eql([16 * 32]);
+      expect(decodeSignedIntegers('___@')).to.eql([16 * 32 * 32]);
     });
   });
 
