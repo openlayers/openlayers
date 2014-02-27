@@ -254,7 +254,7 @@ describe('ol.format.GML', function() {
 
     describe('multipoint', function() {
 
-      it('can read a singular multipoint geometry', function() {
+      it('can read and write a singular multipoint geometry', function() {
         var text =
             '<gml:MultiPoint xmlns:gml="http://www.opengis.net/gml" ' +
             '    srsName="CRS:84">' +
@@ -277,6 +277,8 @@ describe('ol.format.GML', function() {
         var g = readGeometry(format, text);
         expect(g).to.be.an(ol.geom.MultiPoint);
         expect(g.getCoordinates()).to.eql([[1, 2, 0], [2, 3, 0], [3, 4, 0]]);
+        var serialized = format.writeGeometry(g);
+        expect(serialized.firstElementChild).to.xmleql(ol.xml.load(text));
       });
 
       it('can read a plural multipoint geometry', function() {
