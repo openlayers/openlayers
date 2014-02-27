@@ -12,6 +12,7 @@ goog.require('ol.format.XMLFeature');
 goog.require('ol.format.XSD');
 goog.require('ol.geom.Geometry');
 goog.require('ol.geom.LineString');
+goog.require('ol.geom.LinearRing');
 goog.require('ol.geom.MultiLineString');
 goog.require('ol.geom.MultiPoint');
 goog.require('ol.geom.MultiPolygon');
@@ -496,7 +497,7 @@ ol.format.GML.readFlatLinearRing_ = function(node, objectStack) {
  * @param {Node} node Node.
  * @param {Array.<*>} objectStack Object stack.
  * @private
- * @return {ol.geom.Polygon|undefined} Polygon.
+ * @return {ol.geom.LinearRing|undefined} LinearRing.
  */
 ol.format.GML.readLinearRing_ = function(node, objectStack) {
   goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT);
@@ -504,10 +505,9 @@ ol.format.GML.readLinearRing_ = function(node, objectStack) {
   var flatCoordinates =
       ol.format.GML.readFlatCoordinatesFromNode_(node, objectStack);
   if (goog.isDef(flatCoordinates)) {
-    var polygon = new ol.geom.Polygon(null);
-    polygon.setFlatCoordinates(ol.geom.GeometryLayout.XYZ, flatCoordinates,
-        [flatCoordinates.length]);
-    return polygon;
+    var ring = new ol.geom.LinearRing(null);
+    ring.setFlatCoordinates(ol.geom.GeometryLayout.XYZ, flatCoordinates);
+    return ring;
   } else {
     return undefined;
   }
@@ -1126,7 +1126,8 @@ ol.format.GML.writeLinearRing_ = function(node, geometry, objectStack) {
   var context = objectStack[objectStack.length - 1];
   goog.asserts.assert(goog.isObject(context));
   var srsName = goog.object.get(context, 'srsName');
-  if (goog.isDefAndNotNull(srsName)) {
+  var writeSrsName = goog.object.get(context, 'writeSrsName');
+  if (writeSrsName !== false && goog.isDefAndNotNull(srsName)) {
     node.setAttribute('srsName', srsName);
   }
   ol.xml.pushSerializeAndPop({node: node, srsName: srsName},
@@ -1145,20 +1146,45 @@ ol.format.GML.writePolygon_ = function(node, geometry, objectStack) {
   var context = objectStack[objectStack.length - 1];
   goog.asserts.assert(goog.isObject(context));
   var srsName = goog.object.get(context, 'srsName');
-  if (goog.isDefAndNotNull(srsName)) {
+  var writeSrsName = goog.object.get(context, 'writeSrsName');
+  if (writeSrsName !== false && goog.isDefAndNotNull(srsName)) {
     node.setAttribute('srsName', srsName);
   }
   var rings = geometry.getLinearRings();
   for (var i = 0, ii = rings.length; i < ii; ++i) {
     if (i === 0) {
-      ol.xml.pushSerializeAndPop({node: node, srsName: srsName},
-          ol.format.GML.RING_SERIALIZERS_,
-          ol.xml.makeSimpleNodeFactory('exterior'), [rings[i]], objectStack);
+      ol.xml.pushSerializeAndPop({node: node, srsName: srsName,
+        writeSrsName: false}, ol.format.GML.RING_SERIALIZERS_,
+      ol.xml.makeSimpleNodeFactory('exterior'), [rings[i]], objectStack);
     } else {
-      ol.xml.pushSerializeAndPop({node: node, srsName: srsName},
-          ol.format.GML.RING_SERIALIZERS_,
-          ol.xml.makeSimpleNodeFactory('interior'), [rings[i]], objectStack);
+      ol.xml.pushSerializeAndPop({node: node, srsName: srsName,
+        writeSrsName: false}, ol.format.GML.RING_SERIALIZERS_,
+      ol.xml.makeSimpleNodeFactory('interior'), [rings[i]], objectStack);
     }
+  }
+};
+
+
+/**
+ * @param {Node} node Node.
+ * @param {ol.geom.MultiPolygon} geometry MultiPolygon geometry.
+ * @param {Array.<*>} objectStack Node stack.
+ * @private
+ */
+ol.format.GML.writeMultiSurface_ = function(node, geometry,
+    objectStack) {
+  var context = objectStack[objectStack.length - 1];
+  goog.asserts.assert(goog.isObject(context));
+  var srsName = goog.object.get(context, 'srsName');
+  if (goog.isDefAndNotNull(srsName)) {
+    node.setAttribute('srsName', srsName);
+  }
+  var polygons = geometry.getPolygons();
+  for (var i = 0, ii = polygons.length; i < ii; ++i) {
+    ol.xml.pushSerializeAndPop({node: node, srsName: srsName},
+        ol.format.GML.SURFACEMEMBER_SERIALIZERS_,
+        ol.xml.makeSimpleNodeFactory('surfaceMember'), [polygons[i]],
+        objectStack);
   }
 };
 
@@ -1170,10 +1196,42 @@ ol.format.GML.writePolygon_ = function(node, geometry, objectStack) {
  * @private
  */
 ol.format.GML.writeRing_ = function(node, ring, objectStack) {
-  var context = {node: node};
+  var context = objectStack[objectStack.length - 1];
+  goog.asserts.assert(goog.isObject(context));
+  var srsName = goog.object.get(context, 'srsName');
+  var writeSrsName = goog.object.get(context, 'writeSrsName');
   ol.xml.pushSerializeAndPop(/** @type {ol.xml.NodeStackItem} */
-      (context), ol.format.GML.GEOMETRY_SERIALIZERS_,
+      ({node: node, srsName: srsName, writeSrsName: writeSrsName}),
+      ol.format.GML.GEOMETRY_SERIALIZERS_,
       ol.format.GML.GEOMETRY_NODE_FACTORY_, [ring], []);
+};
+
+
+/**
+ * @param {Node} node Node.
+ * @param {ol.geom.Polygon} polygon Polygon geometry.
+ * @param {Array.<*>} objectStack Node stack.
+ * @private
+ */
+ol.format.GML.writeSurfaceMember_ = function(node, polygon, objectStack) {
+  var context = objectStack[objectStack.length - 1];
+  goog.asserts.assert(goog.isObject(context));
+  var srsName = goog.object.get(context, 'srsName');
+  ol.xml.pushSerializeAndPop(/** @type {ol.xml.NodeStackItem} */
+      ({node: node, srsName: srsName, writeSrsName: false}),
+      ol.format.GML.GEOMETRY_SERIALIZERS_,
+      ol.format.GML.GEOMETRY_NODE_FACTORY_, [polygon], []);
+};
+
+
+/**
+ * @type {Object.<string, Object.<string, ol.xml.Serializer>>}
+ * @private
+ */
+ol.format.GML.SURFACEMEMBER_SERIALIZERS_ = {
+  'http://www.opengis.net/gml': {
+    'surfaceMember': ol.xml.makeChildAppender(ol.format.GML.writeSurfaceMember_)
+  }
 };
 
 
@@ -1198,7 +1256,8 @@ ol.format.GML.GEOMETRY_SERIALIZERS_ = {
     'Point': ol.xml.makeChildAppender(ol.format.GML.writePoint_),
     'LineString': ol.xml.makeChildAppender(ol.format.GML.writeLineString_),
     'LinearRing': ol.xml.makeChildAppender(ol.format.GML.writeLinearRing_),
-    'Polygon': ol.xml.makeChildAppender(ol.format.GML.writePolygon_)
+    'Polygon': ol.xml.makeChildAppender(ol.format.GML.writePolygon_),
+    'MultiSurface': ol.xml.makeChildAppender(ol.format.GML.writeMultiSurface_)
   }
 };
 
@@ -1216,8 +1275,12 @@ ol.format.GML.GEOMETRY_NODE_FACTORY_ = function(value, objectStack,
   goog.asserts.assertInstanceof(value, ol.geom.Geometry);
   var parentNode = objectStack[objectStack.length - 1].node;
   goog.asserts.assert(ol.xml.isNode(parentNode));
+  var nodeName = value.getType();
+  if (nodeName === 'MultiPolygon') {
+    nodeName = 'MultiSurface';
+  }
   return ol.xml.createElementNS(parentNode.namespaceURI,
-      value.getType());
+      nodeName);
 };
 
 

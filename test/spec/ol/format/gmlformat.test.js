@@ -105,6 +105,8 @@ describe('ol.format.GML', function() {
             var g = readGeometry(format, text);
             expect(g.getCoordinates()[0][0][0][0]).to.equal(-77.0081);
             expect(g.getCoordinates()[0][0][0][1]).to.equal(38.9661);
+            var serialized = formatWGS84.writeGeometry(g);
+            expect(serialized.firstElementChild).to.xmleql(ol.xml.load(text));
           });
 
     });
@@ -133,10 +135,10 @@ describe('ol.format.GML', function() {
             '  <gml:posList>1 2 3 4 5 6 1 2</gml:posList>' +
             '</gml:LinearRing>';
         var g = readGeometry(format, text);
-        expect(g).to.be.an(ol.geom.Polygon);
+        expect(g).to.be.an(ol.geom.LinearRing);
         expect(g.getCoordinates()).to.eql(
-            [[[1, 2, 0], [3, 4, 0], [5, 6, 0], [1, 2, 0]]]);
-        var serialized = format.writeGeometry(g.getLinearRings()[0]);
+            [[1, 2, 0], [3, 4, 0], [5, 6, 0], [1, 2, 0]]);
+        var serialized = format.writeGeometry(g);
         expect(serialized.firstElementChild).to.xmleql(ol.xml.load(text));
       });
 
@@ -764,6 +766,7 @@ goog.require('goog.dom');
 goog.require('goog.dom.TagName');
 goog.require('ol.format.GML');
 goog.require('ol.geom.LineString');
+goog.require('ol.geom.LinearRing');
 goog.require('ol.geom.MultiPoint');
 goog.require('ol.geom.MultiLineString');
 goog.require('ol.geom.MultiPolygon');
