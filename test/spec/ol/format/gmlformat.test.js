@@ -306,7 +306,7 @@ describe('ol.format.GML', function() {
 
     describe('multilinestring', function() {
 
-      it('can read a singular multilinestring geometry', function() {
+      it('can read and write a singular multilinestring geometry', function() {
         var text =
             '<gml:MultiLineString xmlns:gml="http://www.opengis.net/gml" ' +
             '    srsName="CRS:84">' +
@@ -325,6 +325,8 @@ describe('ol.format.GML', function() {
         expect(g).to.be.an(ol.geom.MultiLineString);
         expect(g.getCoordinates()).to.eql(
             [[[1, 2, 0], [2, 3, 0]], [[3, 4, 0], [4, 5, 0]]]);
+        var serialized = format.writeGeometry(g);
+        expect(serialized.firstElementChild).to.xmleql(ol.xml.load(text));
       });
 
       it('can read a plural multilinestring geometry', function() {

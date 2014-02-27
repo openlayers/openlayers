@@ -1271,6 +1271,30 @@ ol.format.GML.writeMultiPoint_ = function(node, geometry,
 
 /**
  * @param {Node} node Node.
+ * @param {ol.geom.MultiLineString} geometry MultiLineString geometry.
+ * @param {Array.<*>} objectStack Node stack.
+ * @private
+ */
+ol.format.GML.writeMultiLineString_ = function(node, geometry,
+    objectStack) {
+  var context = objectStack[objectStack.length - 1];
+  goog.asserts.assert(goog.isObject(context));
+  var srsName = goog.object.get(context, 'srsName');
+  if (goog.isDefAndNotNull(srsName)) {
+    node.setAttribute('srsName', srsName);
+  }
+  var lines = geometry.getLineStrings();
+  for (var i = 0, ii = lines.length; i < ii; ++i) {
+    ol.xml.pushSerializeAndPop({node: node, srsName: srsName},
+        ol.format.GML.LINESTRINGMEMBER_SERIALIZERS_,
+        ol.xml.makeSimpleNodeFactory('lineStringMember'), [lines[i]],
+        objectStack);
+  }
+};
+
+
+/**
+ * @param {Node} node Node.
  * @param {ol.geom.LinearRing} ring LinearRing geometry.
  * @param {Array.<*>} objectStack Node stack.
  * @private
@@ -1318,6 +1342,23 @@ ol.format.GML.writePointMember_ = function(node, point, objectStack) {
       ({node: node, srsName: srsName, writeSrsName: false}),
       ol.format.GML.GEOMETRY_SERIALIZERS_,
       ol.format.GML.GEOMETRY_NODE_FACTORY_, [point], []);
+};
+
+
+/**
+ * @param {Node} node Node.
+ * @param {ol.geom.LineString} line LineString geometry.
+ * @param {Array.<*>} objectStack Node stack.
+ * @private
+ */
+ol.format.GML.writeLineStringMember_ = function(node, line, objectStack) {
+  var context = objectStack[objectStack.length - 1];
+  goog.asserts.assert(goog.isObject(context));
+  var srsName = goog.object.get(context, 'srsName');
+  ol.xml.pushSerializeAndPop(/** @type {ol.xml.NodeStackItem} */
+      ({node: node, srsName: srsName, writeSrsName: false}),
+      ol.format.GML.GEOMETRY_SERIALIZERS_,
+      ol.format.GML.GEOMETRY_NODE_FACTORY_, [line], []);
 };
 
 
@@ -1373,6 +1414,18 @@ ol.format.GML.SURFACEMEMBER_SERIALIZERS_ = {
 ol.format.GML.POINTMEMBER_SERIALIZERS_ = {
   'http://www.opengis.net/gml': {
     'pointMember': ol.xml.makeChildAppender(ol.format.GML.writePointMember_)
+  }
+};
+
+
+/**
+ * @type {Object.<string, Object.<string, ol.xml.Serializer>>}
+ * @private
+ */
+ol.format.GML.LINESTRINGMEMBER_SERIALIZERS_ = {
+  'http://www.opengis.net/gml': {
+    'lineStringMember': ol.xml.makeChildAppender(
+        ol.format.GML.writeLineStringMember_)
   }
 };
 
@@ -1444,6 +1497,8 @@ ol.format.GML.GEOMETRY_SERIALIZERS_ = {
     'Point': ol.xml.makeChildAppender(ol.format.GML.writePoint_),
     'MultiPoint': ol.xml.makeChildAppender(ol.format.GML.writeMultiPoint_),
     'LineString': ol.xml.makeChildAppender(ol.format.GML.writeLineString_),
+    'MultiLineString': ol.xml.makeChildAppender(
+        ol.format.GML.writeMultiLineString_),
     'LinearRing': ol.xml.makeChildAppender(ol.format.GML.writeLinearRing_),
     'Polygon': ol.xml.makeChildAppender(ol.format.GML.writePolygon_),
     'Surface': ol.xml.makeChildAppender(ol.format.GML.writeSurface_),
