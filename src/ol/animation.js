@@ -88,7 +88,7 @@ ol.animation.pan = function(options) {
  * @todo stability experimental
  */
 ol.animation.rotate = function(options) {
-  var sourceRotation = options.rotation;
+  var sourceRotation = goog.isDef(options.rotation) ? options.rotation : 0;
   var start = goog.isDef(options.start) ? options.start : goog.now();
   var duration = goog.isDef(options.duration) ? options.duration : 1000;
   var easing = goog.isDef(options.easing) ?
