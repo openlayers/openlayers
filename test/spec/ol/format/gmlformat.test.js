@@ -82,7 +82,7 @@ describe('ol.format.GML', function() {
             expect(serialized.firstElementChild).to.xmleql(ol.xml.load(text));
           });
 
-      it('can read and write multi surface geometry with right axis order',
+      it('can read a surface geometry with right axis order',
           function() {
             var text =
                 '<gml:MultiSurface xmlns:gml="http://www.opengis.net/gml" ' +
@@ -105,8 +105,6 @@ describe('ol.format.GML', function() {
             var g = readGeometry(format, text);
             expect(g.getCoordinates()[0][0][0][0]).to.equal(-77.0081);
             expect(g.getCoordinates()[0][0][0][1]).to.equal(38.9661);
-            var serialized = formatWGS84.writeGeometry(g);
-            expect(serialized.firstElementChild).to.xmleql(ol.xml.load(text));
           });
 
     });
@@ -352,7 +350,7 @@ describe('ol.format.GML', function() {
 
     describe('multipolygon', function() {
 
-      it('can read a singular multipolygon geometry', function() {
+      it('can read and write a singular multipolygon geometry', function() {
         var text =
             '<gml:MultiPolygon xmlns:gml="http://www.opengis.net/gml" ' +
             '    srsName="CRS:84">' +
@@ -392,6 +390,8 @@ describe('ol.format.GML', function() {
             [1, 2, 0]], [[2, 3, 0], [2, 5, 0], [4, 5, 0], [2, 3, 0]],
             [[3, 4, 0], [3, 6, 0], [5, 6, 0], [3, 4, 0]]],
           [[[1, 2, 0], [3, 2, 0], [3, 4, 0], [1, 2, 0]]]]);
+        var serialized = format.writeGeometry(g);
+        expect(serialized.firstElementChild).to.xmleql(ol.xml.load(text));
       });
 
       it('can read a plural multipolygon geometry', function() {
