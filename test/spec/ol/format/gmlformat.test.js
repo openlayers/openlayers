@@ -217,7 +217,7 @@ describe('ol.format.GML', function() {
 
     describe('curve', function() {
 
-      it('can read a curve geometry', function() {
+      it('can read and write a curve geometry', function() {
         var text =
             '<gml:Curve xmlns:gml="http://www.opengis.net/gml" ' +
             '    srsName="CRS:84">' +
@@ -230,6 +230,9 @@ describe('ol.format.GML', function() {
         var g = readGeometry(format, text);
         expect(g).to.be.an(ol.geom.LineString);
         expect(g.getCoordinates()).to.eql([[1, 2, 0], [3, 4, 0]]);
+        format = new ol.format.GML({srsName: 'CRS:84', curve: true});
+        var serialized = format.writeGeometry(g);
+        expect(serialized.firstElementChild).to.xmleql(ol.xml.load(text));
       });
 
     });

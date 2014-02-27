@@ -312,6 +312,9 @@
  * @property {boolean|undefined} surface Write gml:Surface instead of
  *     gml:Polygon elements. This also affects the elements in multi-part
  *     geometries. Default is `false´.
+ * @property {boolean|undefined} curve Write gml:Curve instead of
+ *     gml:LineString elements. This also affects the elements in multi-part
+ *     geometries. Default is `false´.
  */
 
 /**
