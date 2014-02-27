@@ -97,50 +97,44 @@ ol.interaction.Select.prototype.handleMapBrowserEvent =
   var add = this.addCondition_(mapBrowserEvent);
   var map = mapBrowserEvent.map;
   var features = this.featureOverlay_.getFeatures();
-  map.withFrozenRendering(
-      /**
-       * @this {ol.interaction.Select}
-       */
-      function() {
-        if (add) {
-          map.forEachFeatureAtPixel(mapBrowserEvent.pixel,
-              /**
-               * @param {ol.Feature} feature Feature.
-               * @param {ol.layer.Layer} layer Layer.
-               */
-              function(feature, layer) {
-                if (goog.array.indexOf(features.getArray(), feature) == -1) {
-                  features.push(feature);
-                }
-              }, undefined, this.layerFilter_);
-        } else {
-          /** @type {ol.Feature|undefined} */
-          var feature = map.forEachFeatureAtPixel(mapBrowserEvent.pixel,
-              /**
-               * @param {ol.Feature} feature Feature.
-               * @param {ol.layer.Layer} layer Layer.
-               */
-              function(feature, layer) {
-                return feature;
-              }, undefined, this.layerFilter_);
-          if (goog.isDef(feature)) {
-            if (features.getLength() == 1) {
-              if (features.getAt(0) !== feature) {
-                features.setAt(0, feature);
-              }
-            } else {
-              if (features.getLength() != 1) {
-                features.clear();
-              }
-              features.push(feature);
-            }
-          } else {
-            if (features.getLength() !== 0) {
-              features.clear();
-            }
+  if (add) {
+    map.forEachFeatureAtPixel(mapBrowserEvent.pixel,
+        /**
+         * @param {ol.Feature} feature Feature.
+         * @param {ol.layer.Layer} layer Layer.
+         */
+        function(feature, layer) {
+          if (goog.array.indexOf(features.getArray(), feature) == -1) {
+            features.push(feature);
           }
+        }, undefined, this.layerFilter_);
+  } else {
+    /** @type {ol.Feature|undefined} */
+    var feature = map.forEachFeatureAtPixel(mapBrowserEvent.pixel,
+        /**
+         * @param {ol.Feature} feature Feature.
+         * @param {ol.layer.Layer} layer Layer.
+         */
+        function(feature, layer) {
+          return feature;
+        }, undefined, this.layerFilter_);
+    if (goog.isDef(feature)) {
+      if (features.getLength() == 1) {
+        if (features.getAt(0) !== feature) {
+          features.setAt(0, feature);
         }
-      }, this);
+      } else {
+        if (features.getLength() != 1) {
+          features.clear();
+        }
+        features.push(feature);
+      }
+    } else {
+      if (features.getLength() !== 0) {
+        features.clear();
+      }
+    }
+  }
   return false;
 };
 
