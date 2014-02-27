@@ -12,32 +12,22 @@ goog.require('ol.style.Stroke');
 
 
 /**
- * @enum {number}
+ * @enum {string}
  */
 ol.style.ShapeType = {
-  SQUARE: 0,
-  CIRCLE: 1,
-  TRIANGLE: 2,
-  STAR: 3,
-  CROSS: 4,
-  X: 5
+  SQUARE: 'square',
+  CIRCLE: 'circle',
+  TRIANGLE: 'triangle',
+  STAR: 'star',
+  CROSS: 'cross',
+  X: 'x'
 };
-
-
-/**
- * @typedef {{type: ol.style.ShapeType,
- *            size: ol.Size,
- *            rotation: number,
- *            fill: ol.style.Fill,
- *            stroke: ol.style.Stroke}}
- */
-ol.style.ShapeOptions;
 
 
 
 /**
  * @constructor
- * @param {ol.style.ShapeOptions=} opt_options Options.
+ * @param {olx.style.ShapeOptions=} opt_options Options.
  * @extends {ol.style.Image}
  * @todo stability experimental
  */
@@ -52,13 +42,11 @@ ol.style.Shape = function(opt_options) {
   this.canvas_ = /** @type {HTMLCanvasElement} */
       (goog.dom.createElement(goog.dom.TagName.CANVAS));
 
-
   /**
-    * @private
-    * @type {ol.style.Fill}
-    */
+   * @private
+   * @type {ol.style.Fill}
+   */
   this.fill_ = goog.isDef(options.fill) ? options.fill : null;
-
 
   /**
    * @private
@@ -67,46 +55,35 @@ ol.style.Shape = function(opt_options) {
   this.hitDetectionCanvas_ = null;
 
   /**
- * @type {boolean}
- */
+   * @type {boolean}
+   */
   var rotateWithView = goog.isDef(options.rotateWithView) ?
       options.rotateWithView : false;
 
   /**
-    * @private
-    * @type {ol.Size}
-    */
+   * @private
+   * @type {ol.Size}
+   */
   this.size_ = options.size;
 
-
   /**
-    * @private
-    * @type {ol.style.Stroke}
-    */
+   * @private
+   * @type {ol.style.Stroke}
+   */
   this.stroke_ = goog.isDef(options.stroke) ? options.stroke : null;
 
-
   /**
-    * @type {ol.style.ShapeType}
-    * @private
-    */
-  this.type_ = /** @type {ol.style.ShapeType} */ (goog.isDef(options.type) ?
+   * @type {ol.style.ShapeType}
+   * @private
+   */
+  this.type_ = (goog.isDef(options.type) ?
       options.type : ol.style.ShapeType.SQUARE);
-
-
-  /**
-    * @private
-    * @type {ol.Size}
-    */
-  //this.renderedSize_ = this.render_();
-
 
   /**
    * @private
    * @type {Array.<number>}
    */
   this.anchor_ = [this.size_[0] / 2, this.size_[1] / 2];
-
 
   goog.base(this, {
     opacity: 1,
@@ -243,37 +220,37 @@ ol.style.Shape.prototype.render_ = function() {
   // draw shape on the canvas
 
   switch (this.type_) {
-    case 0:
+    case ol.style.ShapeType.SQUARE:
       this.renderSquare_(context, width, height, strokeWidth);
       if (hitContext !== null) {
         this.renderSquare_(hitContext, width, height, strokeWidth);
       }
       break;
-    case 1:
+    case ol.style.ShapeType.CIRCLE:
       this.renderCircle_(context, width, height, strokeWidth);
       if (hitContext !== null) {
         this.renderCircle_(hitContext, width, height, strokeWidth);
       }
       break;
-    case 2:
+    case ol.style.ShapeType.TRIANGLE:
       this.renderTriangle_(context, width, height, strokeWidth);
       if (hitContext !== null) {
         this.renderTriangle_(hitContext, width, height, strokeWidth);
       }
       break;
-    case 3:
+    case ol.style.ShapeType.STAR:
       this.renderStar_(context, width, height, strokeWidth);
       if (hitContext !== null) {
         this.renderStar_(hitContext, width, height, strokeWidth);
       }
       break;
-    case 4:
+    case ol.style.ShapeType.CROSS:
       this.renderCross_(context, width, height, strokeWidth);
       if (hitContext !== null) {
         this.renderCross_(hitContext, width, height, strokeWidth);
       }
       break;
-    case 5:
+    case ol.style.ShapeType.X:
       this.renderX_(context, width, height, strokeWidth);
       if (hitContext !== null) {
         this.renderX_(hitContext, width, height, strokeWidth);

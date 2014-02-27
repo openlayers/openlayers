@@ -69,7 +69,7 @@ var overlay = new ol.Overlay({
 
 var map = new ol.Map({
   layers: [rasterLayer, vectorLayer],
-  renderer: exampleNS.getRendererFromQueryString(),
+  renderer: 'canvas',
   overlays: [overlay],
   target: 'map',
   view: new ol.View2D({
@@ -81,7 +81,7 @@ var map = new ol.Map({
 function getFeatureStyle() {
   return [new ol.style.Style({
     image: new ol.style.Shape(/** @type {ol.style.ShapeOptions} */({
-      type: parseInt(typeSelect.value, 10),
+      type: typeSelect.value,
       size: [parseInt(widthInput.value, 10), parseInt(heightInput.value, 10)],
       rotation: parseInt(rotationInput.value, 10) * Math.PI / 180,
       fill: fillInput.checked ? new ol.style.Fill({

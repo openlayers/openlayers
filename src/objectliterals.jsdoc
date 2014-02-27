@@ -953,6 +953,14 @@
  * @property {string} src Image source URI.
  */
 
+ /**
+ * @typedef {Object} olx.style.ShapeOptions
+ * @property {ol.style.Fill|undefined} fill Fill style.
+ * @property {number|undefined} rotation Rotation.
+ * @property {ol.Size} size Shape size in pixel.
+ * @property {ol.style.Stroke|undefined} stroke Stroke style.
+ */
+
 /**
  * @typedef {Object} olx.style.StrokeOptions
  * @property {ol.Color|string|undefined} color Color.

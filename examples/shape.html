@@ -16,6 +16,7 @@
             .ol-popup:before { border-top-color: #cccccc; border-width: 11px; left: 48px; margin-left: -11px; }
         .ol-popup-closer { text-decoration: none; position: absolute; top: 2px; right: 8px; }
             .ol-popup-closer:after { content: "✖"; }
+        td label { margin-right: 10px; }
     </style>
 </head>
 <body>
@@ -46,7 +47,10 @@
         <div class="row-fluid">
             <div class="span4">
                 <h4 id="title">Shape example</h4>
-                <p id="shortdesc">Example using a shape to symbolize a point.<br />Click on the shape to get a popup</p>
+                <p id="shortdesc">
+                    Example using a shape to symbolize a point.<br />
+                    Click on the shape to get a popup
+                </p>
                 <div id="docs">
                     <p>See the <a href="shape.js" target="_blank">shape.js source</a> to see how this is done.</p>
                 </div>
@@ -56,31 +60,74 @@
                 <form class="">
                     <fieldset>
                         <legend>Shape</legend>
-                        <div style="float: left; margin-right: 20px;">
-                            <label>type</label>
-                            <select id="type">
-                                <option value="0">square</option>
-                                <option value="1">circle</option>
-                                <option value="2">triangle</option>
-                                <option value="3">star</option>
-                                <option value="4">cross</option>
-                                <option value="5">x</option>
-                            </select>
-                            <label>width</label>
-                            <input id="width" type="number" min="0" step="1" value="40" />
-                            <label>height</label>
-                            <input id="height" type="number" min="0" step="1" value="40" />
-                            <label>rotation (degrees)</label>
-                            <input id="rotation" type="number" min="0" step="1" value="0" />
-                        </div>
-                        <div>
-                            <label>fill</label>
-                            <input id="filled" type="checkbox" checked="checked" style="margin-bottom: 20px;" />
-                            <label>stroke</label>
-                            <input id="stroked" type="checkbox" checked="checked" style="margin-bottom: 20px;" />
-                            <label>stroke width</label>
-                            <input id="strokewidth" type="number" min="0" step="1" value="1" />
-                        </div>
+                        <table cellpadding="0" cellspacing="0" border="0">
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <label>type</label>
+                                    </td>
+                                    <td>
+                                        <select id="type">
+                                            <option>square</option>
+                                            <option>circle</option>
+                                            <option>triangle</option>
+                                            <option>star</option>
+                                            <option>cross</option>
+                                            <option>x</option>
+                                        </select>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <label>width</label>
+                                    </td>
+                                    <td>
+                                        <input id="width" type="number" min="0" step="1" value="40" />
+
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <label>height</label>
+                                    </td>
+                                    <td>
+                                        <input id="height" type="number" min="0" step="1" value="40" />
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <label>rotation (degrees)</label>
+                                    </td>
+                                    <td>
+                                        <input id="rotation" type="number" min="0" step="1" value="0" />
+
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <label>fill</label></td>
+                                    <td valign="middle">
+                                        <input id="filled" type="checkbox" checked="checked" style="margin-bottom: 20px;" />
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <label>stroke</label>
+                                    </td>
+                                    <td valign="middle">
+                                        <input id="stroked" type="checkbox" checked="checked" style="margin-bottom: 20px;" />
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <label>stroke width</label>
+                                    </td>
+                                    <td>
+                                        <input id="strokewidth" type="number" min="0" step="1" value="1" />
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </fieldset>
                 </form>
             </div>
