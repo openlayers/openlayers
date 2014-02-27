@@ -238,21 +238,6 @@ ol.format.Polyline.decodeUnsignedIntegers = function(encoded) {
 
 
 /**
- * Encode one single floating point number and return an encoded string
- *
- * @param {number} num Floating point number that should be encoded.
- * @param {number=} opt_factor The factor by which num will be multiplied.
- *     The remaining decimal places will get rounded away.
- * @return {string} The encoded string.
- */
-ol.format.Polyline.encodeFloat = function(num, opt_factor) {
-  var factor = goog.isDef(opt_factor) ? opt_factor : 1e5;
-  num = Math.round(num * factor);
-  return ol.format.Polyline.encodeSignedInteger(num);
-};
-
-
-/**
  * Encode one single signed integer and return an encoded string
  *
  * @param {number} num Signed integer that should be encoded.

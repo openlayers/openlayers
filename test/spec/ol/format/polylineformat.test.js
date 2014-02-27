@@ -140,24 +140,24 @@ describe('ol.format.Polyline', function() {
 
   describe('encodeFloat', function() {
     it('returns expected value', function() {
-      var encodeFloat = ol.format.Polyline.encodeFloat;
+      var encodeFloats = ol.format.Polyline.encodeFloats;
 
-      expect(encodeFloat(0.00000)).to.eql('?');
-      expect(encodeFloat(-0.00001)).to.eql('@');
-      expect(encodeFloat(0.00001)).to.eql('A');
-      expect(encodeFloat(-0.00002)).to.eql('B');
-      expect(encodeFloat(0.00002)).to.eql('C');
-      expect(encodeFloat(0.00015)).to.eql(']');
-      expect(encodeFloat(-0.00016)).to.eql('^');
+      expect(encodeFloats([0.00000])).to.eql('?');
+      expect(encodeFloats([-0.00001])).to.eql('@');
+      expect(encodeFloats([0.00001])).to.eql('A');
+      expect(encodeFloats([-0.00002])).to.eql('B');
+      expect(encodeFloats([0.00002])).to.eql('C');
+      expect(encodeFloats([0.00015])).to.eql(']');
+      expect(encodeFloats([-0.00016])).to.eql('^');
 
-      expect(encodeFloat(-0.1, 10)).to.eql('@');
-      expect(encodeFloat(0.1, 10)).to.eql('A');
+      expect(encodeFloats([-0.1], 10)).to.eql('@');
+      expect(encodeFloats([0.1], 10)).to.eql('A');
 
-      expect(encodeFloat(16 * 32 / 1e5)).to.eql('__@');
-      expect(encodeFloat(16 * 32 * 32 / 1e5)).to.eql('___@');
+      expect(encodeFloats([16 * 32 / 1e5])).to.eql('__@');
+      expect(encodeFloats([16 * 32 * 32 / 1e5])).to.eql('___@');
 
       // from the "Encoded Polyline Algorithm Format" page at Google
-      expect(encodeFloat(-179.9832104)).to.eql('`~oia@');
+      expect(encodeFloats([-179.9832104])).to.eql('`~oia@');
     });
   });
 
