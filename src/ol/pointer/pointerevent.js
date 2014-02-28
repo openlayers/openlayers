@@ -300,15 +300,14 @@ ol.pointer.PointerEvent.HAS_BUTTONS = false;
 /**
  * Checks if the `MouseEvent` type is supported.
  */
-ol.pointer.PointerEvent.checkNewMouseEvent = function() {
+(function() {
   try {
     var ev = ol.pointer.PointerEvent.createMouseEvent('click', {buttons: 1});
     ol.pointer.PointerEvent.NEW_MOUSE_EVENT = true;
     ol.pointer.PointerEvent.HAS_BUTTONS = ev.buttons === 1;
   } catch (e) {
   }
-};
-ol.pointer.PointerEvent.checkNewMouseEvent();
+})();
 
 
 /**
