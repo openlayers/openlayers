@@ -1,4 +1,4 @@
-goog.provide('ol.format.Binary');
+goog.provide('ol.format.BinaryFeature');
 
 goog.require('goog.asserts');
 goog.require('ol.BrowserFeature');
@@ -13,10 +13,10 @@ goog.require('ol.proj');
  * @constructor
  * @extends {ol.format.Feature}
  */
-ol.format.Binary = function() {
+ol.format.BinaryFeature = function() {
   goog.base(this);
 };
-goog.inherits(ol.format.Binary, ol.format.Feature);
+goog.inherits(ol.format.BinaryFeature, ol.format.Feature);
 
 
 /**
@@ -24,7 +24,7 @@ goog.inherits(ol.format.Binary, ol.format.Feature);
  * @private
  * @return {ol.binary.Buffer} Buffer.
  */
-ol.format.Binary.getBuffer_ = function(source) {
+ol.format.BinaryFeature.getBuffer_ = function(source) {
   if (ol.BrowserFeature.HAS_ARRAY_BUFFER && source instanceof ArrayBuffer) {
     return new ol.binary.Buffer(source);
   } else if (goog.isString(source)) {
@@ -39,7 +39,7 @@ ol.format.Binary.getBuffer_ = function(source) {
 /**
  * @inheritDoc
  */
-ol.format.Binary.prototype.getType = function() {
+ol.format.BinaryFeature.prototype.getType = function() {
   return ol.format.FormatType.BINARY;
 };
 
@@ -47,16 +47,17 @@ ol.format.Binary.prototype.getType = function() {
 /**
  * @inheritDoc
  */
-ol.format.Binary.prototype.readFeature = function(source) {
-  return this.readFeatureFromBuffer(ol.format.Binary.getBuffer_(source));
+ol.format.BinaryFeature.prototype.readFeature = function(source) {
+  return this.readFeatureFromBuffer(ol.format.BinaryFeature.getBuffer_(source));
 };
 
 
 /**
  * @inheritDoc
  */
-ol.format.Binary.prototype.readFeatures = function(source) {
-  return this.readFeaturesFromBuffer(ol.format.Binary.getBuffer_(source));
+ol.format.BinaryFeature.prototype.readFeatures = function(source) {
+  return this.readFeaturesFromBuffer(
+      ol.format.BinaryFeature.getBuffer_(source));
 };
 
 
@@ -65,7 +66,7 @@ ol.format.Binary.prototype.readFeatures = function(source) {
  * @protected
  * @return {ol.Feature} Feature.
  */
-ol.format.Binary.prototype.readFeatureFromBuffer = goog.abstractMethod;
+ol.format.BinaryFeature.prototype.readFeatureFromBuffer = goog.abstractMethod;
 
 
 /**
@@ -73,14 +74,15 @@ ol.format.Binary.prototype.readFeatureFromBuffer = goog.abstractMethod;
  * @protected
  * @return {Array.<ol.Feature>} Feature.
  */
-ol.format.Binary.prototype.readFeaturesFromBuffer = goog.abstractMethod;
+ol.format.BinaryFeature.prototype.readFeaturesFromBuffer = goog.abstractMethod;
 
 
 /**
  * @inheritDoc
  */
-ol.format.Binary.prototype.readGeometry = function(source) {
-  return this.readGeometryFromBuffer(ol.format.Binary.getBuffer_(source));
+ol.format.BinaryFeature.prototype.readGeometry = function(source) {
+  return this.readGeometryFromBuffer(
+      ol.format.BinaryFeature.getBuffer_(source));
 };
 
 
@@ -89,14 +91,15 @@ ol.format.Binary.prototype.readGeometry = function(source) {
  * @protected
  * @return {ol.geom.Geometry} Geometry.
  */
-ol.format.Binary.prototype.readGeometryFromBuffer = goog.abstractMethod;
+ol.format.BinaryFeature.prototype.readGeometryFromBuffer = goog.abstractMethod;
 
 
 /**
  * @inheritDoc
  */
-ol.format.Binary.prototype.readProjection = function(source) {
-  return this.readProjectionFromBuffer(ol.format.Binary.getBuffer_(source));
+ol.format.BinaryFeature.prototype.readProjection = function(source) {
+  return this.readProjectionFromBuffer(
+      ol.format.BinaryFeature.getBuffer_(source));
 };
 
 
@@ -104,4 +107,5 @@ ol.format.Binary.prototype.readProjection = function(source) {
  * @param {ol.binary.Buffer} buffer Buffer.
  * @return {ol.proj.Projection} Projection.
  */
-ol.format.Binary.prototype.readProjectionFromBuffer = goog.abstractMethod;
+ol.format.BinaryFeature.prototype.readProjectionFromBuffer =
+    goog.abstractMethod;
