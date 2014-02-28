@@ -4,6 +4,7 @@ goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('ol.extent');
 goog.require('ol.geom.GeometryType');
+goog.require('ol.geom.MultiPoint');
 goog.require('ol.geom.Polygon');
 goog.require('ol.geom.SimpleGeometry');
 goog.require('ol.geom.closest');
@@ -152,6 +153,17 @@ ol.geom.MultiPolygon.prototype.getFlatInteriorPoints = function() {
     this.flatInteriorPointsRevision_ = this.getRevision();
   }
   return this.flatInteriorPoints_;
+};
+
+
+/**
+ * @return {ol.geom.MultiPoint} Interior points.
+ */
+ol.geom.MultiPolygon.prototype.getInteriorPoints = function() {
+  var interiorPoints = new ol.geom.MultiPoint(null);
+  interiorPoints.setFlatCoordinates(ol.geom.GeometryLayout.XY,
+      this.getFlatInteriorPoints().slice());
+  return interiorPoints;
 };
 
 
