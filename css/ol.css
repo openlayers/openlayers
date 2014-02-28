@@ -198,6 +198,9 @@ button.ol-full-screen-true:after {
 
 /* show a tooltip offset to below and right */
 .ol-has-tooltip:hover [role=tooltip], .ol-has-tooltip:focus [role=tooltip] {
+  -moz-box-sizing: content-box;
+  -webkit-box-sizing: content-box;
+  box-sizing: content-box;
   clip: auto;
   padding: 0 .4em;
   font-size: .8em;
