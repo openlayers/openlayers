@@ -164,6 +164,14 @@ describe('ol.geom.LineString', function() {
           [[0, 0], [1.5, 1], [3, 3], [5, 1], [6, 3.5], [7, 5]]);
     });
 
+    describe('#getFirstCoordinate', function() {
+
+      it('returns the expected result', function() {
+        expect(lineString.getFirstCoordinate()).to.eql([0, 0]);
+      });
+
+    });
+
     describe('#getFlatMidpoint', function() {
 
       it('returns the expected result', function() {
