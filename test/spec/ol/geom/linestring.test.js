@@ -184,6 +184,14 @@ describe('ol.geom.LineString', function() {
 
     });
 
+    describe('#getLastCoordinate', function() {
+
+      it('returns the expected result', function() {
+        expect(lineString.getLastCoordinate()).to.eql([7, 5]);
+      });
+
+    });
+
     describe('#getSimplifiedGeometry', function() {
 
       it('returns the expectedResult', function() {

@@ -116,6 +116,14 @@ ol.geom.SimpleGeometry.prototype.getFlatCoordinates = function() {
 
 
 /**
+ * @return {ol.Coordinate} Last point.
+ */
+ol.geom.SimpleGeometry.prototype.getLastCoordinate = function() {
+  return this.flatCoordinates.slice(this.flatCoordinates.length - this.stride);
+};
+
+
+/**
  * @return {ol.geom.GeometryLayout} Layout.
  * @todo stability experimental
  */
