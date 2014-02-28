@@ -17,13 +17,6 @@ goog.require('ol.render.canvas');
 goog.require('ol.vec.Mat4');
 
 
-/**
- * @typedef {{feature: ol.Feature,
- *            callbacks: Array.<function(ol.render.canvas.Immediate)>}}
- */
-ol.render.canvas.AsyncCallbackObjectType;
-
-
 
 /**
  * @constructor
@@ -40,7 +33,9 @@ ol.render.canvas.Immediate =
 
   /**
    * @private
-   * @type {Object.<string, ol.render.canvas.AsyncCallbackObjectType>}
+   * @type {Object.<string,
+   *                Array.<{feature: ol.Feature,
+   *                        callback: function(ol.render.canvas.Immediate)}>>}
    */
   this.callbackObjectsByZIndex_ = {};
 
@@ -400,10 +395,10 @@ ol.render.canvas.Immediate.prototype.drawAsync =
   var zIndexKey = zIndex.toString();
   var callbackObjects = this.callbackObjectsByZIndex_[zIndexKey];
   if (goog.isDef(callbackObjects)) {
-    callbackObjects.callbacks.push(callback);
+    callbackObjects.push({callback: callback, feature: feature});
   } else {
     this.callbackObjectsByZIndex_[zIndexKey] =
-        {feature: feature, callbacks: [callback]};
+        [{callback: callback, feature: feature}];
   }
 };
 
@@ -712,11 +707,11 @@ ol.render.canvas.Immediate.prototype.flush = function() {
   var zs = goog.array.map(
       goog.object.getKeys(this.callbackObjectsByZIndex_), Number);
   goog.array.sort(zs);
-  var i, ii, callbacks, j, jj;
+  var i, ii, callbackObjects, j, jj;
   for (i = 0, ii = zs.length; i < ii; ++i) {
-    callbacks = this.callbackObjectsByZIndex_[zs[i].toString()].callbacks;
-    for (j = 0, jj = callbacks.length; j < jj; ++j) {
-      callbacks[j](this);
+    callbackObjects = this.callbackObjectsByZIndex_[zs[i].toString()];
+    for (j = 0, jj = callbackObjects.length; j < jj; ++j) {
+      callbackObjects[j].callback(this);
     }
   }
 };
@@ -733,15 +728,18 @@ ol.render.canvas.Immediate.prototype.flushHitDetection = function(callback) {
   var zs = goog.array.map(
       goog.object.getKeys(this.callbackObjectsByZIndex_), Number);
   goog.array.sort(zs, function(a, b) { return b - a; });
-  var i, ii, callbacks, callbackObjects, feature, j, result;
+  var i, ii, callbackObject, callbackObjects, feature, j, result;
   for (i = 0, ii = zs.length; i < ii; ++i) {
     callbackObjects = this.callbackObjectsByZIndex_[zs[i].toString()];
-    callbacks = callbackObjects.callbacks;
-    for (j = callbacks.length - 1; j >= 0; --j) {
-      callbacks[j](this);
-      result = callback(callbackObjects.feature);
-      if (result) {
-        return result;
+    for (j = callbackObjects.length - 1; j >= 0; --j) {
+      callbackObject = callbackObjects[j];
+      feature = callbackObject.feature;
+      if (!goog.isNull(feature)) {
+        callbackObject.callback(this);
+        result = callback(feature);
+        if (result) {
+          return result;
+        }
       }
     }
   }

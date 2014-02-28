@@ -148,7 +148,6 @@ ol.renderer.canvas.Map.prototype.postComposeHitDetection_ =
   var map = this.getMap();
   if (map.hasListener(ol.render.EventType.POSTCOMPOSE)) {
     var context = this.hitDetectionContext_;
-    context.clearRect(0, 0, 1, 1);
     var view2DState = frameState.view2DState;
     var pixelRatio = frameState.pixelRatio;
     var transform = this.hitDetectionTransform_;
@@ -163,6 +162,7 @@ ol.renderer.canvas.Map.prototype.postComposeHitDetection_ =
     var composeEvent = new ol.render.Event(ol.render.EventType.POSTCOMPOSE,
         map, render, frameState, context, null);
     map.dispatchEvent(composeEvent);
+    context.clearRect(0, 0, 1, 1);
     return render.flushHitDetection(
         /**
          * @param {ol.Feature} feature Feature.
@@ -170,15 +170,13 @@ ol.renderer.canvas.Map.prototype.postComposeHitDetection_ =
          * @template T
          */
         function(feature) {
-          if (!goog.isNull(feature)) {
-            var imageData = context.getImageData(0, 0, 1, 1).data;
-            if (imageData[3] > 0) {
-              var result = callback.call(thisArg, feature, null);
-              if (result) {
-                return result;
-              }
-              context.clearRect(0, 0, 1, 1);
+          var imageData = context.getImageData(0, 0, 1, 1).data;
+          if (imageData[3] > 0) {
+            var result = callback.call(thisArg, feature, null);
+            if (result) {
+              return result;
             }
+            context.clearRect(0, 0, 1, 1);
           }
         });
   }
