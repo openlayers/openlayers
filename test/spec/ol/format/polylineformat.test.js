@@ -140,47 +140,47 @@ describe('ol.format.Polyline', function() {
 
   describe('encodeFloat', function() {
     it('returns expected value', function() {
-      var encodeFloat = ol.format.Polyline.encodeFloat;
+      var encodeFloats = ol.format.Polyline.encodeFloats;
 
-      expect(encodeFloat(0.00000)).to.eql('?');
-      expect(encodeFloat(-0.00001)).to.eql('@');
-      expect(encodeFloat(0.00001)).to.eql('A');
-      expect(encodeFloat(-0.00002)).to.eql('B');
-      expect(encodeFloat(0.00002)).to.eql('C');
-      expect(encodeFloat(0.00015)).to.eql(']');
-      expect(encodeFloat(-0.00016)).to.eql('^');
+      expect(encodeFloats([0.00000])).to.eql('?');
+      expect(encodeFloats([-0.00001])).to.eql('@');
+      expect(encodeFloats([0.00001])).to.eql('A');
+      expect(encodeFloats([-0.00002])).to.eql('B');
+      expect(encodeFloats([0.00002])).to.eql('C');
+      expect(encodeFloats([0.00015])).to.eql(']');
+      expect(encodeFloats([-0.00016])).to.eql('^');
 
-      expect(encodeFloat(-0.1, 10)).to.eql('@');
-      expect(encodeFloat(0.1, 10)).to.eql('A');
+      expect(encodeFloats([-0.1], 10)).to.eql('@');
+      expect(encodeFloats([0.1], 10)).to.eql('A');
 
-      expect(encodeFloat(16 * 32 / 1e5)).to.eql('__@');
-      expect(encodeFloat(16 * 32 * 32 / 1e5)).to.eql('___@');
+      expect(encodeFloats([16 * 32 / 1e5])).to.eql('__@');
+      expect(encodeFloats([16 * 32 * 32 / 1e5])).to.eql('___@');
 
       // from the "Encoded Polyline Algorithm Format" page at Google
-      expect(encodeFloat(-179.9832104)).to.eql('`~oia@');
+      expect(encodeFloats([-179.9832104])).to.eql('`~oia@');
     });
   });
 
   describe('decodeFloat', function() {
     it('returns expected value', function() {
-      var decodeFloat = ol.format.Polyline.decodeFloat;
+      var decodeFloats = ol.format.Polyline.decodeFloats;
 
-      expect(decodeFloat('?')).to.eql(0.00000);
-      expect(decodeFloat('@')).to.eql(-0.00001);
-      expect(decodeFloat('A')).to.eql(0.00001);
-      expect(decodeFloat('B')).to.eql(-0.00002);
-      expect(decodeFloat('C')).to.eql(0.00002);
-      expect(decodeFloat(']')).to.eql(0.00015);
-      expect(decodeFloat('^')).to.eql(-0.00016);
+      expect(decodeFloats('?')).to.eql([0.00000]);
+      expect(decodeFloats('@')).to.eql([-0.00001]);
+      expect(decodeFloats('A')).to.eql([0.00001]);
+      expect(decodeFloats('B')).to.eql([-0.00002]);
+      expect(decodeFloats('C')).to.eql([0.00002]);
+      expect(decodeFloats(']')).to.eql([0.00015]);
+      expect(decodeFloats('^')).to.eql([-0.00016]);
 
-      expect(decodeFloat('@', 10)).to.eql(-0.1);
-      expect(decodeFloat('A', 10)).to.eql(0.1);
+      expect(decodeFloats('@', 10)).to.eql([-0.1]);
+      expect(decodeFloats('A', 10)).to.eql([0.1]);
 
-      expect(decodeFloat('__@')).to.eql(16 * 32 / 1e5);
-      expect(decodeFloat('___@')).to.eql(16 * 32 * 32 / 1e5);
+      expect(decodeFloats('__@')).to.eql([16 * 32 / 1e5]);
+      expect(decodeFloats('___@')).to.eql([16 * 32 * 32 / 1e5]);
 
       // from the "Encoded Polyline Algorithm Format" page at Google
-      expect(decodeFloat('`~oia@')).to.eql(-179.98321);
+      expect(decodeFloats('`~oia@')).to.eql([-179.98321]);
     });
   });
 
@@ -188,37 +188,37 @@ describe('ol.format.Polyline', function() {
 
   describe('encodeSignedInteger', function() {
     it('returns expected value', function() {
-      var encodeSignedInteger = ol.format.Polyline.encodeSignedInteger;
+      var encodeSignedIntegers = ol.format.Polyline.encodeSignedIntegers;
 
-      expect(encodeSignedInteger(0)).to.eql('?');
-      expect(encodeSignedInteger(-1)).to.eql('@');
-      expect(encodeSignedInteger(1)).to.eql('A');
-      expect(encodeSignedInteger(-2)).to.eql('B');
-      expect(encodeSignedInteger(2)).to.eql('C');
-      expect(encodeSignedInteger(15)).to.eql(']');
-      expect(encodeSignedInteger(-16)).to.eql('^');
+      expect(encodeSignedIntegers([0])).to.eql('?');
+      expect(encodeSignedIntegers([-1])).to.eql('@');
+      expect(encodeSignedIntegers([1])).to.eql('A');
+      expect(encodeSignedIntegers([-2])).to.eql('B');
+      expect(encodeSignedIntegers([2])).to.eql('C');
+      expect(encodeSignedIntegers([15])).to.eql(']');
+      expect(encodeSignedIntegers([-16])).to.eql('^');
 
-      expect(encodeSignedInteger(16)).to.eql('_@');
-      expect(encodeSignedInteger(16 * 32)).to.eql('__@');
-      expect(encodeSignedInteger(16 * 32 * 32)).to.eql('___@');
+      expect(encodeSignedIntegers([16])).to.eql('_@');
+      expect(encodeSignedIntegers([16 * 32])).to.eql('__@');
+      expect(encodeSignedIntegers([16 * 32 * 32])).to.eql('___@');
     });
   });
 
   describe('decodeSignedInteger', function() {
     it('returns expected value', function() {
-      var decodeSignedInteger = ol.format.Polyline.decodeSignedInteger;
+      var decodeSignedIntegers = ol.format.Polyline.decodeSignedIntegers;
 
-      expect(decodeSignedInteger('?')).to.eql(0);
-      expect(decodeSignedInteger('@')).to.eql(-1);
-      expect(decodeSignedInteger('A')).to.eql(1);
-      expect(decodeSignedInteger('B')).to.eql(-2);
-      expect(decodeSignedInteger('C')).to.eql(2);
-      expect(decodeSignedInteger(']')).to.eql(15);
-      expect(decodeSignedInteger('^')).to.eql(-16);
+      expect(decodeSignedIntegers('?')).to.eql([0]);
+      expect(decodeSignedIntegers('@')).to.eql([-1]);
+      expect(decodeSignedIntegers('A')).to.eql([1]);
+      expect(decodeSignedIntegers('B')).to.eql([-2]);
+      expect(decodeSignedIntegers('C')).to.eql([2]);
+      expect(decodeSignedIntegers(']')).to.eql([15]);
+      expect(decodeSignedIntegers('^')).to.eql([-16]);
 
-      expect(decodeSignedInteger('_@')).to.eql(16);
-      expect(decodeSignedInteger('__@')).to.eql(16 * 32);
-      expect(decodeSignedInteger('___@')).to.eql(16 * 32 * 32);
+      expect(decodeSignedIntegers('_@')).to.eql([16]);
+      expect(decodeSignedIntegers('__@')).to.eql([16 * 32]);
+      expect(decodeSignedIntegers('___@')).to.eql([16 * 32 * 32]);
     });
   });
 
@@ -246,21 +246,21 @@ describe('ol.format.Polyline', function() {
 
   describe('decodeUnsignedInteger', function() {
     it('returns expected value', function() {
-      var decodeUnsignedInteger = ol.format.Polyline.decodeUnsignedInteger;
+      var decodeUnsignedIntegers = ol.format.Polyline.decodeUnsignedIntegers;
 
-      expect(decodeUnsignedInteger('?')).to.eql(0);
-      expect(decodeUnsignedInteger('@')).to.eql(1);
-      expect(decodeUnsignedInteger('A')).to.eql(2);
-      expect(decodeUnsignedInteger(']')).to.eql(30);
-      expect(decodeUnsignedInteger('^')).to.eql(31);
-      expect(decodeUnsignedInteger('_@')).to.eql(32);
+      expect(decodeUnsignedIntegers('?')).to.eql([0]);
+      expect(decodeUnsignedIntegers('@')).to.eql([1]);
+      expect(decodeUnsignedIntegers('A')).to.eql([2]);
+      expect(decodeUnsignedIntegers(']')).to.eql([30]);
+      expect(decodeUnsignedIntegers('^')).to.eql([31]);
+      expect(decodeUnsignedIntegers('_@')).to.eql([32]);
 
-      expect(decodeUnsignedInteger('__@')).to.eql(32 * 32);
-      expect(decodeUnsignedInteger('__D')).to.eql(5 * 32 * 32);
-      expect(decodeUnsignedInteger('___@')).to.eql(32 * 32 * 32);
+      expect(decodeUnsignedIntegers('__@')).to.eql([32 * 32]);
+      expect(decodeUnsignedIntegers('__D')).to.eql([5 * 32 * 32]);
+      expect(decodeUnsignedIntegers('___@')).to.eql([32 * 32 * 32]);
 
       // from the "Encoded Polyline Algorithm Format" page at Google
-      expect(decodeUnsignedInteger('mD')).to.eql(174);
+      expect(decodeUnsignedIntegers('mD')).to.eql([174]);
     });
   });
 
