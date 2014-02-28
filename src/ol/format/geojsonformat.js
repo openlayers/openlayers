@@ -7,7 +7,7 @@ goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('goog.object');
 goog.require('ol.Feature');
-goog.require('ol.format.JSON');
+goog.require('ol.format.JSONFeature');
 goog.require('ol.geom.GeometryCollection');
 goog.require('ol.geom.GeometryType');
 goog.require('ol.geom.LineString');
@@ -22,7 +22,7 @@ goog.require('ol.proj');
 
 /**
  * @constructor
- * @extends {ol.format.JSON}
+ * @extends {ol.format.JSONFeature}
  * @param {olx.format.GeoJSONOptions=} opt_options Options.
  * @todo stability experimental
  */
@@ -40,7 +40,7 @@ ol.format.GeoJSON = function(opt_options) {
       options.defaultProjection : 'EPSG:4326');
 
 };
-goog.inherits(ol.format.GeoJSON, ol.format.JSON);
+goog.inherits(ol.format.GeoJSON, ol.format.JSONFeature);
 
 
 /**
