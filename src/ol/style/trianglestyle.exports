@@ -1,0 +1,6 @@
+@exportSymbol ol.style.Triangle
+@exportProperty ol.style.Triangle.prototype.getAnchor
+@exportProperty ol.style.Triangle.prototype.getFill
+@exportProperty ol.style.Triangle.prototype.getImage
+@exportProperty ol.style.Triangle.prototype.getSize
+@exportProperty ol.style.Triangle.prototype.getStroke
