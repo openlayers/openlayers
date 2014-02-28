@@ -823,7 +823,7 @@ Other less frequently used targets are:
                      installed on your machine.
   fixme            - Will print a list of parts of the code that are marked
                      with either TODO or FIXME.
-  todo             - is an alias for the fixme-target
+  todo             - This is an alias for the fixme-target (see above).
   plovr            - Fetches the required plovr.jar. Usually called by other
                      targets that depend on plovr.
 
