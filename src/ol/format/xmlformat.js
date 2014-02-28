@@ -3,7 +3,7 @@ goog.provide('ol.format.XML');
 goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('goog.dom.NodeType');
-goog.require('ol.format.Format');
+goog.require('ol.format.Feature');
 goog.require('ol.format.FormatType');
 goog.require('ol.xml');
 
@@ -11,12 +11,12 @@ goog.require('ol.xml');
 
 /**
  * @constructor
- * @extends {ol.format.Format}
+ * @extends {ol.format.Feature}
  */
 ol.format.XML = function() {
   goog.base(this);
 };
-goog.inherits(ol.format.XML, ol.format.Format);
+goog.inherits(ol.format.XML, ol.format.Feature);
 
 
 /**

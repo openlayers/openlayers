@@ -3,7 +3,7 @@ goog.provide('ol.format.Binary');
 goog.require('goog.asserts');
 goog.require('ol.BrowserFeature');
 goog.require('ol.binary.Buffer');
-goog.require('ol.format.Format');
+goog.require('ol.format.Feature');
 goog.require('ol.format.FormatType');
 goog.require('ol.proj');
 
@@ -11,12 +11,12 @@ goog.require('ol.proj');
 
 /**
  * @constructor
- * @extends {ol.format.Format}
+ * @extends {ol.format.Feature}
  */
 ol.format.Binary = function() {
   goog.base(this);
 };
-goog.inherits(ol.format.Binary, ol.format.Format);
+goog.inherits(ol.format.Binary, ol.format.Feature);
 
 
 /**

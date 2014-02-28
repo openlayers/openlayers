@@ -2,19 +2,19 @@ goog.provide('ol.format.JSON');
 
 goog.require('goog.asserts');
 goog.require('goog.json');
-goog.require('ol.format.Format');
+goog.require('ol.format.Feature');
 goog.require('ol.format.FormatType');
 
 
 
 /**
  * @constructor
- * @extends {ol.format.Format}
+ * @extends {ol.format.Feature}
  */
 ol.format.JSON = function() {
   goog.base(this);
 };
-goog.inherits(ol.format.JSON, ol.format.Format);
+goog.inherits(ol.format.JSON, ol.format.Feature);
 
 
 /**

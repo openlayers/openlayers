@@ -1,19 +1,19 @@
 goog.provide('ol.format.Text');
 
 goog.require('goog.asserts');
-goog.require('ol.format.Format');
+goog.require('ol.format.Feature');
 goog.require('ol.format.FormatType');
 
 
 
 /**
  * @constructor
- * @extends {ol.format.Format}
+ * @extends {ol.format.Feature}
  */
 ol.format.Text = function() {
   goog.base(this);
 };
-goog.inherits(ol.format.Text, ol.format.Format);
+goog.inherits(ol.format.Text, ol.format.Feature);
 
 
 /**
