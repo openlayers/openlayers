@@ -37,7 +37,7 @@ ol.source.VectorFile = function(opt_options) {
   });
 
   /**
-   * @type {ol.format.Format}
+   * @type {ol.format.Feature}
    * @protected
    */
   this.format = options.format;

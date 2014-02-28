@@ -4,7 +4,7 @@ goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('goog.object');
 goog.require('ol.Feature');
-goog.require('ol.format.JSON');
+goog.require('ol.format.JSONFeature');
 goog.require('ol.geom.LineString');
 goog.require('ol.geom.MultiLineString');
 goog.require('ol.geom.MultiPoint');
@@ -17,7 +17,7 @@ goog.require('ol.proj');
 
 /**
  * @constructor
- * @extends {ol.format.JSON}
+ * @extends {ol.format.JSONFeature}
  * @param {olx.format.TopoJSONOptions=} opt_options Options.
  * @todo stability experimental
  */
@@ -35,7 +35,7 @@ ol.format.TopoJSON = function(opt_options) {
       ol.proj.get(options.defaultProjection || 'EPSG:4326');
 
 };
-goog.inherits(ol.format.TopoJSON, ol.format.JSON);
+goog.inherits(ol.format.TopoJSON, ol.format.JSONFeature);
 
 
 /**

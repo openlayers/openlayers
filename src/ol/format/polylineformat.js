@@ -2,7 +2,7 @@ goog.provide('ol.format.Polyline');
 
 goog.require('goog.asserts');
 goog.require('ol.Feature');
-goog.require('ol.format.Text');
+goog.require('ol.format.TextFeature');
 goog.require('ol.geom.LineString');
 goog.require('ol.geom.flat');
 goog.require('ol.proj');
@@ -11,12 +11,12 @@ goog.require('ol.proj');
 
 /**
  * @constructor
- * @extends {ol.format.Text}
+ * @extends {ol.format.TextFeature}
  */
 ol.format.Polyline = function() {
   goog.base(this);
 };
-goog.inherits(ol.format.Polyline, ol.format.Text);
+goog.inherits(ol.format.Polyline, ol.format.TextFeature);
 
 
 /**

@@ -6,7 +6,7 @@ goog.require('goog.asserts');
 goog.require('goog.dom.NodeType');
 goog.require('goog.object');
 goog.require('ol.Feature');
-goog.require('ol.format.XML');
+goog.require('ol.format.XMLFeature');
 goog.require('ol.format.XSD');
 goog.require('ol.geom.LineString');
 goog.require('ol.geom.MultiLineString');
@@ -18,13 +18,13 @@ goog.require('ol.xml');
 
 /**
  * @constructor
- * @extends {ol.format.XML}
+ * @extends {ol.format.XMLFeature}
  * @todo stability experimental
  */
 ol.format.GPX = function() {
   goog.base(this);
 };
-goog.inherits(ol.format.GPX, ol.format.XML);
+goog.inherits(ol.format.GPX, ol.format.XMLFeature);
 
 
 /**
