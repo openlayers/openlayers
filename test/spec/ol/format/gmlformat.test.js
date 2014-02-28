@@ -706,7 +706,7 @@ describe('ol.format.GML', function() {
 
   describe('when parsing TOPP states GML from WFS', function() {
 
-    var features, feature;
+    var features, feature, text, wfsFormat;
     before(function(done) {
       afterLoadText('spec/ol/format/gml/topp-states-wfs.xml', function(xml) {
         try {
@@ -714,7 +714,9 @@ describe('ol.format.GML', function() {
             'featureNS': 'http://www.openplans.org/topp',
             'featureType': 'states'
           };
-          features = new ol.format.GML(config).readFeatures(xml);
+          text = xml;
+          wfsFormat = new ol.format.GML(config);
+          features = wfsFormat.readFeatures(xml);
         } catch (e) {
           done(e);
         }

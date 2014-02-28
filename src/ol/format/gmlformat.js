@@ -1466,6 +1466,76 @@ ol.format.GML.writeCurveSegments_ = function(node, line, objectStack) {
 
 
 /**
+ * @param {Node} node Node.
+ * @param {ol.geom.Geometry} geometry Geometry.
+ * @param {Array.<*>} objectStack Node stack.
+ * @private
+ */
+ol.format.GML.writeGeometry_ = function(node, geometry, objectStack) {
+  ol.xml.pushSerializeAndPop(/** @type {ol.xml.NodeStackItem} */
+      ({node: node}), ol.format.GML.GEOMETRY_SERIALIZERS_,
+      ol.format.GML.GEOMETRY_NODE_FACTORY_, [geometry], []);
+};
+
+
+/**
+ * @param {Node} node Node.
+ * @param {ol.Feature} feature Feature.
+ * @param {Array.<*>} objectStack Node stack.
+ * @private
+ */
+ol.format.GML.writeFeature_ = function(node, feature, objectStack) {
+  var context = objectStack[objectStack.length - 1];
+  goog.asserts.assert(goog.isObject(context));
+  var featureNS = goog.object.get(context, 'featureNS');
+  var geometryName = feature.getGeometryName();
+  var serializers = {};
+  serializers[featureNS] = {};
+  var properties = feature.getProperties();
+  var keys = [], values = [];
+  for (var key in properties) {
+    keys.push(key);
+    values.push(properties[key]);
+    if (key == geometryName) {
+      serializers[featureNS][key] = ol.xml.makeChildAppender(
+          ol.format.GML.writeGeometry_);
+    } else {
+      serializers[featureNS][key] = ol.xml.makeChildAppender(
+          ol.format.XSD.writeStringTextNode);
+    }
+  }
+  ol.xml.pushSerializeAndPop(/** @type {ol.xml.NodeStackItem} */
+      ({node: node}), serializers,
+      ol.xml.OBJECT_PROPERTY_NODE_FACTORY,
+      values,
+      objectStack, keys);
+};
+
+
+/**
+ * @param {Node} node Node.
+ * @param {Array.<ol.Feature>} features Features.
+ * @param {Array.<*>} objectStack Node stack.
+ * @private
+ */
+ol.format.GML.writeFeatureMembers_ = function(node, features, objectStack) {
+  var context = objectStack[objectStack.length - 1];
+  goog.asserts.assert(goog.isObject(context));
+  var featureType = goog.object.get(context, 'featureType');
+  var featureNS = goog.object.get(context, 'featureNS');
+  //featureNS = 'http://www.opengis.net/gml';
+  var serializers = {};
+  serializers[featureNS] = {};
+  serializers[featureNS][featureType] = ol.xml.makeChildAppender(
+      ol.format.GML.writeFeature_);
+  ol.xml.pushSerializeAndPop(/** @type {ol.xml.NodeStackItem} */
+      ({node: node, featureType: featureType, featureNS: featureNS}),
+      serializers,
+      ol.xml.makeSimpleNodeFactory(featureType, featureNS), features, []);
+};
+
+
+/**
  * @type {Object.<string, Object.<string, ol.xml.Serializer>>}
  * @private
  */
@@ -1584,6 +1654,18 @@ ol.format.GML.GEOMETRY_SERIALIZERS_ = {
 
 
 /**
+ * @type {Object.<string, Object.<string, ol.xml.Serializer>>}
+ * @private
+ */
+ol.format.GML.GML_SERIALIZERS_ = {
+  'http://www.opengis.net/gml': {
+    'featureMembers': ol.xml.makeChildAppender(
+        ol.format.GML.writeFeatureMembers_)
+  }
+};
+
+
+/**
  * @const
  * @param {*} value Value.
  * @param {Array.<*>} objectStack Object stack.
@@ -1612,7 +1694,7 @@ ol.format.GML.GEOMETRY_NODE_FACTORY_ = function(value, objectStack,
   } else if (nodeName === 'MultiLineString' && multiCurve === true) {
     nodeName = 'MultiCurve';
   }
-  return ol.xml.createElementNS(parentNode.namespaceURI,
+  return ol.xml.createElementNS('http://www.opengis.net/gml',
       nodeName);
 };
 
@@ -1629,4 +1711,28 @@ ol.format.GML.prototype.writeGeometryNode = function(geometry) {
       (context), ol.format.GML.GEOMETRY_SERIALIZERS_,
       ol.format.GML.GEOMETRY_NODE_FACTORY_, [geometry], []);
   return geom;
+};
+
+
+/**
+ * @inheritDoc
+ */
+ol.format.GML.prototype.writeFeaturesNode = function(features) {
+  var collection = ol.xml.createElementNS('http://www.opengis.net/wfs',
+      'FeatureCollection');
+  var context = {
+    node: collection,
+    srsName: this.srsName_,
+    curve: this.curve_,
+    surface: this.surface_,
+    multiSurface: this.multiSurface_,
+    multiCurve: this.multiCurve_,
+    featureNS: this.featureNS_,
+    featureType: this.featureType_
+  };
+  ol.xml.pushSerializeAndPop(/** @type {ol.xml.NodeStackItem} */
+      (context), ol.format.GML.GML_SERIALIZERS_,
+      ol.xml.makeSimpleNodeFactory('featureMembers',
+          'http://www.opengis.net/gml'), [features], []);
+  return collection;
 };
