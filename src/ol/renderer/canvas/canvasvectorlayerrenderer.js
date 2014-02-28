@@ -4,7 +4,6 @@ goog.require('goog.asserts');
 goog.require('goog.dom');
 goog.require('goog.dom.TagName');
 goog.require('goog.events');
-goog.require('goog.functions');
 goog.require('ol.ViewHint');
 goog.require('ol.extent');
 goog.require('ol.feature');
@@ -96,12 +95,13 @@ ol.renderer.canvas.VectorLayer.prototype.composeFrame =
     } else {
       replayContext = context;
     }
-    var renderGeometryFunction = this.getRenderGeometryFunction_();
-    goog.asserts.assert(goog.isFunction(renderGeometryFunction));
+    goog.asserts.assertInstanceof(layer, ol.layer.Vector);
+    var skippedFeaturesIds = layer.getSkippedFeaturesIds();
+    goog.asserts.assert(goog.isArray(skippedFeaturesIds));
     replayContext.globalAlpha = layerState.opacity;
     replayGroup.replay(
         replayContext, frameState.extent, frameState.pixelRatio, transform,
-        frameState.view2DState.rotation, renderGeometryFunction);
+        frameState.view2DState.rotation, skippedFeaturesIds);
 
     if (replayContext != context) {
       this.dispatchRenderEvent(replayContext, frameState, transform);
@@ -126,10 +126,11 @@ ol.renderer.canvas.VectorLayer.prototype.forEachFeatureAtPixel =
     var resolution = frameState.view2DState.resolution;
     var rotation = frameState.view2DState.rotation;
     var layer = this.getLayer();
-    var renderGeometryFunction = this.getRenderGeometryFunction_();
-    goog.asserts.assert(goog.isFunction(renderGeometryFunction));
+    goog.asserts.assertInstanceof(layer, ol.layer.Vector);
+    var skippedFeaturesIds = layer.getSkippedFeaturesIds();
+    goog.asserts.assert(goog.isArray(skippedFeaturesIds));
     return this.replayGroup_.forEachGeometryAtPixel(extent, resolution,
-        rotation, coordinate, renderGeometryFunction,
+        rotation, coordinate, skippedFeaturesIds,
         /**
          * @param {ol.geom.Geometry} geometry Geometry.
          * @param {Object} data Data.
@@ -140,43 +141,6 @@ ol.renderer.canvas.VectorLayer.prototype.forEachFeatureAtPixel =
           goog.asserts.assert(goog.isDef(feature));
           return callback.call(thisArg, feature, layer);
         });
-  }
-};
-
-
-/**
- * @private
- * @return {function(ol.geom.Geometry): boolean} Render geometry function.
- */
-ol.renderer.canvas.VectorLayer.prototype.getRenderGeometryFunction_ =
-    function() {
-  var vectorLayer = this.getLayer();
-  goog.asserts.assertInstanceof(vectorLayer, ol.layer.Vector);
-  var renderGeometryFunctions = vectorLayer.getRenderGeometryFunctions();
-  if (!goog.isDef(renderGeometryFunctions)) {
-    return goog.functions.TRUE;
-  }
-  var renderGeometryFunctionsArray = renderGeometryFunctions.getArray();
-  switch (renderGeometryFunctionsArray.length) {
-    case 0:
-      return goog.functions.TRUE;
-    case 1:
-      return renderGeometryFunctionsArray[0];
-    default:
-      return (
-          /**
-           * @param {ol.geom.Geometry} geometry Geometry.
-           * @return {boolean} Render geometry.
-           */
-          function(geometry) {
-            var i, ii;
-            for (i = 0, ii = renderGeometryFunctionsArray.length; i < ii; ++i) {
-              if (!renderGeometryFunctionsArray[i](geometry)) {
-                return false;
-              }
-            }
-            return true;
-          });
   }
 };
 
