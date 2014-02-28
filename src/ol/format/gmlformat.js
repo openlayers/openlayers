@@ -8,7 +8,7 @@ goog.require('goog.object');
 goog.require('goog.string');
 goog.require('ol.Feature');
 goog.require('ol.extent');
-goog.require('ol.format.XML');
+goog.require('ol.format.XMLFeature');
 goog.require('ol.geom.LineString');
 goog.require('ol.geom.MultiLineString');
 goog.require('ol.geom.MultiPoint');
@@ -24,7 +24,7 @@ goog.require('ol.xml');
  * @constructor
  * @param {olx.format.GMLOptions=} opt_options
  *     Optional configuration object.
- * @extends {ol.format.XML}
+ * @extends {ol.format.XMLFeature}
  * @todo stability experimental
  */
 ol.format.GML = function(opt_options) {
@@ -45,7 +45,7 @@ ol.format.GML = function(opt_options) {
 
   goog.base(this);
 };
-goog.inherits(ol.format.GML, ol.format.XML);
+goog.inherits(ol.format.GML, ol.format.XMLFeature);
 
 
 /**
