@@ -110,12 +110,10 @@ ol.interaction.DragRotateAndZoom.prototype.handleDragEnd =
   var view2D = view.getView2D();
   var view2DState = view2D.getView2DState();
   var direction = this.lastScaleDelta_ - 1;
-  map.withFrozenRendering(function() {
-    ol.interaction.Interaction.rotate(map, view2D, view2DState.rotation);
-    ol.interaction.Interaction.zoom(map, view2D, view2DState.resolution,
-        undefined, ol.interaction.DRAGROTATEANDZOOM_ANIMATION_DURATION,
-        direction);
-  });
+  ol.interaction.Interaction.rotate(map, view2D, view2DState.rotation);
+  ol.interaction.Interaction.zoom(map, view2D, view2DState.resolution,
+      undefined, ol.interaction.DRAGROTATEANDZOOM_ANIMATION_DURATION,
+      direction);
   this.lastScaleDelta_ = 0;
   return true;
 };
