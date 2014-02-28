@@ -16,7 +16,7 @@ goog.require('goog.object');
 goog.require('goog.string');
 goog.require('ol.Feature');
 goog.require('ol.feature');
-goog.require('ol.format.XML');
+goog.require('ol.format.XMLFeature');
 goog.require('ol.format.XSD');
 goog.require('ol.geom.GeometryCollection');
 goog.require('ol.geom.GeometryType');
@@ -60,7 +60,7 @@ ol.format.KMLGxTrackObject_;
 
 /**
  * @constructor
- * @extends {ol.format.XML}
+ * @extends {ol.format.XMLFeature}
  * @param {olx.format.KMLOptions=} opt_options Options.
  * @todo stability experimental
  */
@@ -130,7 +130,7 @@ ol.format.KML = function(opt_options) {
   };
 
 };
-goog.inherits(ol.format.KML, ol.format.XML);
+goog.inherits(ol.format.KML, ol.format.XMLFeature);
 
 
 /**

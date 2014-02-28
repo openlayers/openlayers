@@ -3,6 +3,7 @@ goog.provide('ol.geom.Polygon');
 goog.require('ol.extent');
 goog.require('ol.geom.GeometryType');
 goog.require('ol.geom.LinearRing');
+goog.require('ol.geom.Point');
 goog.require('ol.geom.SimpleGeometry');
 goog.require('ol.geom.closest');
 goog.require('ol.geom.flat');
@@ -149,6 +150,14 @@ ol.geom.Polygon.prototype.getFlatInteriorPoint = function() {
     this.flatInteriorPointRevision_ = this.getRevision();
   }
   return this.flatInteriorPoint_;
+};
+
+
+/**
+ * @return {ol.geom.Point} Interior point.
+ */
+ol.geom.Polygon.prototype.getInteriorPoint = function() {
+  return new ol.geom.Point(this.getFlatInteriorPoint());
 };
 
 

@@ -320,7 +320,7 @@
 
 /**
  * @typedef {Object} olx.interaction.DragAndDropOptions
- * @property {Array.<function(new: ol.format.Format)>|undefined} formatConstructors
+ * @property {Array.<function(new: ol.format.Feature)>|undefined} formatConstructors
  *     Format constructors.
  * @property {ol.proj.ProjectionLike} reprojectTo Target projection. By
  *     default, the map's view's projection is used.
@@ -853,7 +853,7 @@
  * @property {Array.<ol.Attribution>|undefined} attributions Attributions.
  * @property {Document|undefined} doc Document.
  * @property {ol.Extent|undefined} extent Extent.
- * @property {ol.format.Format} format Format.
+ * @property {ol.format.Feature} format Format.
  * @property {string|undefined} logo Logo.
  * @property {Node|undefined} node Node.
  * @property {Object|undefined} object Object.

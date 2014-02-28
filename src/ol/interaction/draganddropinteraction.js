@@ -29,7 +29,7 @@ ol.interaction.DragAndDrop = function(opt_options) {
 
   /**
    * @private
-   * @type {Array.<function(new: ol.format.Format)>}
+   * @type {Array.<function(new: ol.format.Feature)>}
    */
   this.formatConstructors_ = goog.isDef(options.formatConstructors) ?
       options.formatConstructors : [];
@@ -157,7 +157,7 @@ ol.interaction.DragAndDrop.prototype.setMap = function(map) {
 
 
 /**
- * @param {ol.format.Format} format Format.
+ * @param {ol.format.Feature} format Format.
  * @param {string} text Text.
  * @private
  * @return {Array.<ol.Feature>} Features.
