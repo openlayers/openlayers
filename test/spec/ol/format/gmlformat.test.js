@@ -468,7 +468,7 @@ describe('ol.format.GML', function() {
             expect(serialized.firstElementChild).to.xmleql(ol.xml.load(text));
           });
 
-      it('can read a singular multicurve-curve geometry', function() {
+      it('can read and write a singular multicurve-curve geometry', function() {
         var text =
             '<gml:MultiCurve xmlns:gml="http://www.opengis.net/gml" ' +
             '    srsName="CRS:84">' +
@@ -495,13 +495,16 @@ describe('ol.format.GML', function() {
         expect(g).to.be.an(ol.geom.MultiLineString);
         expect(g.getCoordinates()).to.eql(
             [[[1, 2, 0], [2, 3, 0]], [[3, 4, 0], [4, 5, 0]]]);
+        format = new ol.format.GML({srsName: 'CRS:84', curve: true});
+        var serialized = format.writeGeometry(g);
+        expect(serialized.firstElementChild).to.xmleql(ol.xml.load(text));
       });
 
     });
 
     describe('multisurface', function() {
 
-      it('can read a singular multisurface geometry', function() {
+      it('can read and write a singular multisurface geometry', function() {
         var text =
             '<gml:MultiSurface xmlns:gml="http://www.opengis.net/gml" ' +
             '    srsName="CRS:84">' +
@@ -541,6 +544,8 @@ describe('ol.format.GML', function() {
             [1, 2, 0]], [[2, 3, 0], [2, 5, 0], [4, 5, 0], [2, 3, 0]],
             [[3, 4, 0], [3, 6, 0], [5, 6, 0], [3, 4, 0]]],
           [[[1, 2, 0], [3, 2, 0], [3, 4, 0], [1, 2, 0]]]]);
+        var serialized = format.writeGeometry(g);
+        expect(serialized.firstElementChild).to.xmleql(ol.xml.load(text));
       });
 
       it('can read a plural multisurface geometry', function() {
@@ -585,7 +590,7 @@ describe('ol.format.GML', function() {
           [[[1, 2, 0], [3, 2, 0], [3, 4, 0], [1, 2, 0]]]]);
       });
 
-      it('can read a multisurface-surface geometry', function() {
+      it('can read and write a multisurface-surface geometry', function() {
         var text =
             '<gml:MultiSurface xmlns:gml="http://www.opengis.net/gml" ' +
             '    srsName="CRS:84">' +
@@ -633,6 +638,9 @@ describe('ol.format.GML', function() {
             [1, 2, 0]], [[2, 3, 0], [2, 5, 0], [4, 5, 0], [2, 3, 0]],
             [[3, 4, 0], [3, 6, 0], [5, 6, 0], [3, 4, 0]]],
           [[[1, 2, 0], [3, 2, 0], [3, 4, 0], [1, 2, 0]]]]);
+        format = new ol.format.GML({srsName: 'CRS:84', surface: true});
+        var serialized = format.writeGeometry(g);
+        expect(serialized.firstElementChild).to.xmleql(ol.xml.load(text));
       });
 
     });

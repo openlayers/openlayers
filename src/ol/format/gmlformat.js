@@ -1205,7 +1205,8 @@ ol.format.GML.writeSurface_ = function(node, geometry, objectStack) {
   var context = objectStack[objectStack.length - 1];
   goog.asserts.assert(goog.isObject(context));
   var srsName = goog.object.get(context, 'srsName');
-  if (goog.isDefAndNotNull(srsName)) {
+  var writeSrsName = goog.object.get(context, 'writeSrsName');
+  if (goog.isDefAndNotNull(srsName) && writeSrsName !== false) {
     node.setAttribute('srsName', srsName);
   }
   ol.xml.pushSerializeAndPop({node: node, srsName: srsName},
@@ -1225,7 +1226,8 @@ ol.format.GML.writeCurve_ = function(node, geometry, objectStack) {
   var context = objectStack[objectStack.length - 1];
   goog.asserts.assert(goog.isObject(context));
   var srsName = goog.object.get(context, 'srsName');
-  if (goog.isDefAndNotNull(srsName)) {
+  var writeSrsName = goog.object.get(context, 'writeSrsName');
+  if (goog.isDefAndNotNull(srsName) && writeSrsName !== false) {
     node.setAttribute('srsName', srsName);
   }
   ol.xml.pushSerializeAndPop({node: node, srsName: srsName},
@@ -1246,12 +1248,13 @@ ol.format.GML.writeMultiSurface_ = function(node, geometry,
   var context = objectStack[objectStack.length - 1];
   goog.asserts.assert(goog.isObject(context));
   var srsName = goog.object.get(context, 'srsName');
+  var surface = goog.object.get(context, 'surface');
   if (goog.isDefAndNotNull(srsName)) {
     node.setAttribute('srsName', srsName);
   }
   var polygons = geometry.getPolygons();
   for (var i = 0, ii = polygons.length; i < ii; ++i) {
-    ol.xml.pushSerializeAndPop({node: node, srsName: srsName},
+    ol.xml.pushSerializeAndPop({node: node, srsName: srsName, surface: surface},
         ol.format.GML.SURFACEORPOLYGONMEMBER_SERIALIZERS_,
         ol.xml.makeSimpleNodeFactory('surfaceMember'), [polygons[i]],
         objectStack);
@@ -1341,12 +1344,13 @@ ol.format.GML.writeMultiCurve_ = function(node, geometry, objectStack) {
   var context = objectStack[objectStack.length - 1];
   goog.asserts.assert(goog.isObject(context));
   var srsName = goog.object.get(context, 'srsName');
+  var curve = goog.object.get(context, 'curve');
   if (goog.isDefAndNotNull(srsName)) {
     node.setAttribute('srsName', srsName);
   }
   var lines = geometry.getLineStrings();
   for (var i = 0, ii = lines.length; i < ii; ++i) {
-    ol.xml.pushSerializeAndPop({node: node, srsName: srsName},
+    ol.xml.pushSerializeAndPop({node: node, srsName: srsName, curve: curve},
         ol.format.GML.LINESTRINGORCURVEMEMBER_SERIALIZERS_,
         ol.xml.makeSimpleNodeFactory('curveMember'), [lines[i]],
         objectStack);
@@ -1382,9 +1386,10 @@ ol.format.GML.writeSurfaceOrPolygonMember_ = function(node, polygon,
     objectStack) {
   var context = objectStack[objectStack.length - 1];
   goog.asserts.assert(goog.isObject(context));
+  var surface = goog.object.get(context, 'surface');
   var srsName = goog.object.get(context, 'srsName');
   ol.xml.pushSerializeAndPop(/** @type {ol.xml.NodeStackItem} */
-      ({node: node, srsName: srsName, writeSrsName: false}),
+      ({node: node, srsName: srsName, writeSrsName: false, surface: surface}),
       ol.format.GML.GEOMETRY_SERIALIZERS_,
       ol.format.GML.GEOMETRY_NODE_FACTORY_, [polygon], []);
 };
@@ -1417,9 +1422,10 @@ ol.format.GML.writeLineStringOrCurveMember_ = function(node, line,
     objectStack) {
   var context = objectStack[objectStack.length - 1];
   goog.asserts.assert(goog.isObject(context));
+  var curve = goog.object.get(context, 'curve');
   var srsName = goog.object.get(context, 'srsName');
   ol.xml.pushSerializeAndPop(/** @type {ol.xml.NodeStackItem} */
-      ({node: node, srsName: srsName, writeSrsName: false}),
+      ({node: node, srsName: srsName, writeSrsName: false, curve: curve}),
       ol.format.GML.GEOMETRY_SERIALIZERS_,
       ol.format.GML.GEOMETRY_NODE_FACTORY_, [line], []);
 };
