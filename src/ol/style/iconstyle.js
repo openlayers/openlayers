@@ -429,7 +429,11 @@ ol.style.IconImage_.prototype.load = function() {
       goog.events.listenOnce(this.image_, goog.events.EventType.LOAD,
           this.handleImageLoad_, false, this)
     ];
-    this.image_.src = this.src_;
+    try {
+      this.image_.src = this.src_;
+    } catch (e) {
+      this.handleImageError_();
+    }
   }
 };
 
