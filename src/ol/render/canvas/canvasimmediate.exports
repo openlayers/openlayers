@@ -9,3 +9,4 @@
 @exportProperty ol.render.canvas.Immediate.prototype.drawPolygonGeometry
 @exportProperty ol.render.canvas.Immediate.prototype.setFillStrokeStyle
 @exportProperty ol.render.canvas.Immediate.prototype.setImageStyle
+@exportProperty ol.render.canvas.Immediate.prototype.setTextStyle
