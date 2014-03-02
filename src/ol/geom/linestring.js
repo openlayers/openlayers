@@ -81,6 +81,14 @@ ol.geom.LineString.prototype.closestPointXY =
 
 
 /**
+ * Returns the coordinate at `m` using linear interpolation, or `null` if no
+ * such coordinate exists.
+ *
+ * `opt_extrapolate` controls extrapolation beyond the range of Ms in the
+ * MultiLineString. If `opt_extrapolate` is `true` then Ms less than the first
+ * M will return the first coordinate and Ms greater than the last M will
+ * return the last coordinate.
+ *
  * @param {number} m M.
  * @param {boolean=} opt_extrapolate Extrapolate.
  * @return {ol.Coordinate} Coordinate.
