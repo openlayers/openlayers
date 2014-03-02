@@ -86,9 +86,13 @@ ol.geom.LineString.prototype.closestPointXY =
  * @return {ol.Coordinate} Coordinate.
  */
 ol.geom.LineString.prototype.getCoordinateAtM = function(m, opt_extrapolate) {
+  if (this.layout != ol.geom.GeometryLayout.XYM &&
+      this.layout != ol.geom.GeometryLayout.XYZM) {
+    return null;
+  }
   var extrapolate = goog.isDef(opt_extrapolate) ? opt_extrapolate : false;
   return ol.geom.flat.lineStringCoordinateAtM(this.flatCoordinates, 0,
-      this.flatCoordinates.length, this.stride, this.layout, m, extrapolate);
+      this.flatCoordinates.length, this.stride, m, extrapolate);
 };
 
 

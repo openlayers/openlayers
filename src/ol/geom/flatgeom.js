@@ -310,16 +310,13 @@ ol.geom.flat.lineStringInterpolate =
  * @param {number} offset Offset.
  * @param {number} end End.
  * @param {number} stride Stride.
- * @param {ol.geom.GeometryLayout} layout Layout.
  * @param {number} m M.
  * @param {boolean} extrapolate Extrapolate.
  * @return {ol.Coordinate} Coordinate.
  */
 ol.geom.flat.lineStringCoordinateAtM =
-    function(flatCoordinates, offset, end, stride, layout, m, extrapolate) {
-  if ((layout != ol.geom.GeometryLayout.XYM &&
-       layout != ol.geom.GeometryLayout.XYZM) ||
-      end == offset) {
+    function(flatCoordinates, offset, end, stride, m, extrapolate) {
+  if (end == offset) {
     return null;
   }
   var coordinate;
