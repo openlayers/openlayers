@@ -189,6 +189,11 @@ ol.MapBrowserEventHandler = function(map) {
   this.pointerdownListenerKey_ = goog.events.listen(this.pointerEventHandler_,
       ol.pointer.EventType.POINTERDOWN,
       this.handlePointerDown_, false, this);
+
+  this.relayedListenerKey_ = goog.events.listen(this.pointerEventHandler_,
+      [ol.pointer.EventType.POINTERMOVE],
+      this.relayEvent_, false, this);
+
 };
 goog.inherits(ol.MapBrowserEventHandler, goog.events.EventTarget);
 
@@ -345,9 +350,25 @@ ol.MapBrowserEventHandler.prototype.handlePointerMove_ =
 
 
 /**
+ * Wrap and relay a pointer event.  Note that this requires that the type
+ * string for the MapBrowserPointerEvent matches the PointerEvent type.
+ * @param {ol.pointer.PointerEvent} pointerEvent Pointer event.
+ * @private
+ */
+ol.MapBrowserEventHandler.prototype.relayEvent_ = function(pointerEvent) {
+  this.dispatchEvent(new ol.MapBrowserPointerEvent(
+      pointerEvent.type, this.map_, pointerEvent));
+};
+
+
+/**
  * @inheritDoc
  */
 ol.MapBrowserEventHandler.prototype.disposeInternal = function() {
+  if (!goog.isNull(this.relayedListenerKey_)) {
+    goog.events.unlistenByKey(this.relayedListenerKey_);
+    this.relayedListenerKey_ = null;
+  }
   if (!goog.isNull(this.pointerdownListenerKey_)) {
     goog.events.unlistenByKey(this.pointerdownListenerKey_);
     this.pointerdownListenerKey_ = null;
