@@ -678,15 +678,25 @@ describe('ol.format.GML', function() {
 
   describe('when parsing TOPP states GML', function() {
 
-    var features;
+    var features, text, gmlFormat;
     before(function(done) {
       afterLoadText('spec/ol/format/gml/topp-states-gml.xml', function(xml) {
         try {
+          var schemaLoc = 'http://www.openplans.org/topp ' +
+              'http://demo.opengeo.org/geoserver/wfs?service=WFS&version=' +
+              '1.1.0&request=DescribeFeatureType&typeName=topp:states ' +
+              'http://www.opengis.net/gml ' +
+              'http://schemas.opengis.net/gml/3.2.1/gml.xsd';
           var config = {
             'featureNS': 'http://www.openplans.org/topp',
-            'featureType': 'states'
+            'featureType': 'states',
+            'multiSurface': true,
+            'srsName': 'urn:x-ogc:def:crs:EPSG:4326',
+            'schemaLocation': schemaLoc
           };
-          features = new ol.format.GML(config).readFeatures(xml);
+          text = xml;
+          gmlFormat = new ol.format.GML(config);
+          features = gmlFormat.readFeatures(xml);
         } catch (e) {
           done(e);
         }
@@ -702,11 +712,16 @@ describe('ol.format.GML', function() {
       expect(features[0].getId()).to.equal('states.1');
     });
 
+    it('writes back features as GML', function() {
+      var serialized = gmlFormat.writeFeatures(features);
+      expect(serialized).to.xmleql(ol.xml.load(text));
+    });
+
   });
 
   describe('when parsing TOPP states GML from WFS', function() {
 
-    var features, feature, text, wfsFormat;
+    var features, feature;
     before(function(done) {
       afterLoadText('spec/ol/format/gml/topp-states-wfs.xml', function(xml) {
         try {
@@ -714,9 +729,7 @@ describe('ol.format.GML', function() {
             'featureNS': 'http://www.openplans.org/topp',
             'featureType': 'states'
           };
-          text = xml;
-          wfsFormat = new ol.format.GML(config);
-          features = wfsFormat.readFeatures(xml);
+          features = new ol.format.GML(config).readFeatures(xml);
         } catch (e) {
           done(e);
         }

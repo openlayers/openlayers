@@ -80,6 +80,15 @@ ol.format.GML = function(opt_options) {
   this.multiSurface_ = goog.isDef(options.multiSurface) ?
       options.multiSurface : true;
 
+  /**
+   * @private
+   * @type {string}
+   */
+  this.schemaLocation_ = goog.isDef(options.schemaLocation) ?
+      options.schemaLocation : ('http://www.opengis.net/gml ' +
+      'http://schemas.opengis.net/gml/3.1.1/profiles/gmlsfProfile/' +
+      '1.0.0/gmlsf.xsd');
+
   goog.base(this);
 };
 goog.inherits(ol.format.GML, ol.format.XMLFeature);
@@ -1472,8 +1481,12 @@ ol.format.GML.writeCurveSegments_ = function(node, line, objectStack) {
  * @private
  */
 ol.format.GML.writeGeometry_ = function(node, geometry, objectStack) {
+  var context = objectStack[objectStack.length - 1];
+  goog.asserts.assert(goog.isObject(context));
+  var item = goog.object.clone(context);
+  goog.object.set(item, 'node', node);
   ol.xml.pushSerializeAndPop(/** @type {ol.xml.NodeStackItem} */
-      ({node: node}), ol.format.GML.GEOMETRY_SERIALIZERS_,
+      (item), ol.format.GML.GEOMETRY_SERIALIZERS_,
       ol.format.GML.GEOMETRY_NODE_FACTORY_, [geometry], []);
 };
 
@@ -1485,6 +1498,10 @@ ol.format.GML.writeGeometry_ = function(node, geometry, objectStack) {
  * @private
  */
 ol.format.GML.writeFeature_ = function(node, feature, objectStack) {
+  var fid = feature.getId();
+  if (goog.isDef(fid)) {
+    node.setAttribute('fid', fid);
+  }
   var context = objectStack[objectStack.length - 1];
   goog.asserts.assert(goog.isObject(context));
   var featureNS = goog.object.get(context, 'featureNS');
@@ -1504,8 +1521,10 @@ ol.format.GML.writeFeature_ = function(node, feature, objectStack) {
           ol.format.XSD.writeStringTextNode);
     }
   }
+  var item = goog.object.clone(context);
+  goog.object.set(item, 'node', node);
   ol.xml.pushSerializeAndPop(/** @type {ol.xml.NodeStackItem} */
-      ({node: node}), serializers,
+      (item), serializers,
       ol.xml.OBJECT_PROPERTY_NODE_FACTORY,
       values,
       objectStack, keys);
@@ -1523,13 +1542,14 @@ ol.format.GML.writeFeatureMembers_ = function(node, features, objectStack) {
   goog.asserts.assert(goog.isObject(context));
   var featureType = goog.object.get(context, 'featureType');
   var featureNS = goog.object.get(context, 'featureNS');
-  //featureNS = 'http://www.opengis.net/gml';
   var serializers = {};
   serializers[featureNS] = {};
   serializers[featureNS][featureType] = ol.xml.makeChildAppender(
       ol.format.GML.writeFeature_);
+  var item = goog.object.clone(context);
+  goog.object.set(item, 'node', node);
   ol.xml.pushSerializeAndPop(/** @type {ol.xml.NodeStackItem} */
-      ({node: node, featureType: featureType, featureNS: featureNS}),
+      (item),
       serializers,
       ol.xml.makeSimpleNodeFactory(featureType, featureNS), features, []);
 };
@@ -1654,18 +1674,6 @@ ol.format.GML.GEOMETRY_SERIALIZERS_ = {
 
 
 /**
- * @type {Object.<string, Object.<string, ol.xml.Serializer>>}
- * @private
- */
-ol.format.GML.GML_SERIALIZERS_ = {
-  'http://www.opengis.net/gml': {
-    'featureMembers': ol.xml.makeChildAppender(
-        ol.format.GML.writeFeatureMembers_)
-  }
-};
-
-
-/**
  * @const
  * @param {*} value Value.
  * @param {Array.<*>} objectStack Object stack.
@@ -1718,10 +1726,12 @@ ol.format.GML.prototype.writeGeometryNode = function(geometry) {
  * @inheritDoc
  */
 ol.format.GML.prototype.writeFeaturesNode = function(features) {
-  var collection = ol.xml.createElementNS('http://www.opengis.net/wfs',
-      'FeatureCollection');
+  var node = ol.xml.createElementNS('http://www.opengis.net/gml',
+      'featureMembers');
+  ol.xml.setAttributeNS(node, 'http://www.w3.org/2001/XMLSchema-instance',
+      'xsi:schemaLocation', this.schemaLocation_);
   var context = {
-    node: collection,
+    node: node,
     srsName: this.srsName_,
     curve: this.curve_,
     surface: this.surface_,
@@ -1730,9 +1740,6 @@ ol.format.GML.prototype.writeFeaturesNode = function(features) {
     featureNS: this.featureNS_,
     featureType: this.featureType_
   };
-  ol.xml.pushSerializeAndPop(/** @type {ol.xml.NodeStackItem} */
-      (context), ol.format.GML.GML_SERIALIZERS_,
-      ol.xml.makeSimpleNodeFactory('featureMembers',
-          'http://www.opengis.net/gml'), [features], []);
-  return collection;
+  ol.format.GML.writeFeatureMembers_(node, features, [context]);
+  return node;
 };

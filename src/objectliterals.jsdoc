@@ -321,6 +321,8 @@
  * @property {boolean|undefined} multiSurface Write gml:multiSurface instead
  *     of gml:MultiPolygon. Since the latter is deprecated in GML 3, the
  *     default is `true´.
+ * @property {string|undefined} schemaLocation Optional schemaLocation to use
+ *     when writing out the GML, this will override the default provided.
  */
 
 /**
