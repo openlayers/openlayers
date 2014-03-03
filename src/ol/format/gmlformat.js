@@ -1252,7 +1252,7 @@ ol.format.GML.writeCurve_ = function(node, geometry, objectStack) {
  * @param {Array.<*>} objectStack Node stack.
  * @private
  */
-ol.format.GML.writeMultiSurface_ = function(node, geometry,
+ol.format.GML.writeMultiSurfaceOrPolygon_ = function(node, geometry,
     objectStack) {
   var context = objectStack[objectStack.length - 1];
   goog.asserts.assert(goog.isObject(context));
@@ -1265,31 +1265,7 @@ ol.format.GML.writeMultiSurface_ = function(node, geometry,
   for (var i = 0, ii = polygons.length; i < ii; ++i) {
     ol.xml.pushSerializeAndPop({node: node, srsName: srsName, surface: surface},
         ol.format.GML.SURFACEORPOLYGONMEMBER_SERIALIZERS_,
-        ol.xml.makeSimpleNodeFactory('surfaceMember'), [polygons[i]],
-        objectStack);
-  }
-};
-
-
-/**
- * @param {Node} node Node.
- * @param {ol.geom.MultiPolygon} geometry MultiPolygon geometry.
- * @param {Array.<*>} objectStack Node stack.
- * @private
- */
-ol.format.GML.writeMultiPolygon_ = function(node, geometry,
-    objectStack) {
-  var context = objectStack[objectStack.length - 1];
-  goog.asserts.assert(goog.isObject(context));
-  var srsName = goog.object.get(context, 'srsName');
-  if (goog.isDefAndNotNull(srsName)) {
-    node.setAttribute('srsName', srsName);
-  }
-  var polygons = geometry.getPolygons();
-  for (var i = 0, ii = polygons.length; i < ii; ++i) {
-    ol.xml.pushSerializeAndPop({node: node, srsName: srsName},
-        ol.format.GML.SURFACEORPOLYGONMEMBER_SERIALIZERS_,
-        ol.xml.makeSimpleNodeFactory('polygonMember'), [polygons[i]],
+        ol.format.GML.MULTISURFACEORPOLYGON_NODE_FACTORY_, [polygons[i]],
         objectStack);
   }
 };
@@ -1325,31 +1301,8 @@ ol.format.GML.writeMultiPoint_ = function(node, geometry,
  * @param {Array.<*>} objectStack Node stack.
  * @private
  */
-ol.format.GML.writeMultiLineString_ = function(node, geometry,
+ol.format.GML.writeMultiCurveOrLineString_ = function(node, geometry,
     objectStack) {
-  var context = objectStack[objectStack.length - 1];
-  goog.asserts.assert(goog.isObject(context));
-  var srsName = goog.object.get(context, 'srsName');
-  if (goog.isDefAndNotNull(srsName)) {
-    node.setAttribute('srsName', srsName);
-  }
-  var lines = geometry.getLineStrings();
-  for (var i = 0, ii = lines.length; i < ii; ++i) {
-    ol.xml.pushSerializeAndPop({node: node, srsName: srsName},
-        ol.format.GML.LINESTRINGORCURVEMEMBER_SERIALIZERS_,
-        ol.xml.makeSimpleNodeFactory('lineStringMember'), [lines[i]],
-        objectStack);
-  }
-};
-
-
-/**
- * @param {Node} node Node.
- * @param {ol.geom.MultiLineString} geometry MultiLineString geometry.
- * @param {Array.<*>} objectStack Node stack.
- * @private
- */
-ol.format.GML.writeMultiCurve_ = function(node, geometry, objectStack) {
   var context = objectStack[objectStack.length - 1];
   goog.asserts.assert(goog.isObject(context));
   var srsName = goog.object.get(context, 'srsName');
@@ -1361,7 +1314,7 @@ ol.format.GML.writeMultiCurve_ = function(node, geometry, objectStack) {
   for (var i = 0, ii = lines.length; i < ii; ++i) {
     ol.xml.pushSerializeAndPop({node: node, srsName: srsName, curve: curve},
         ol.format.GML.LINESTRINGORCURVEMEMBER_SERIALIZERS_,
-        ol.xml.makeSimpleNodeFactory('curveMember'), [lines[i]],
+        ol.format.GML.MULTICURVELINESTRING_NODE_FACTORY_, [lines[i]],
         objectStack);
   }
 };
@@ -1658,18 +1611,67 @@ ol.format.GML.CURVE_SERIALIZERS_ = {
 ol.format.GML.GEOMETRY_SERIALIZERS_ = {
   'http://www.opengis.net/gml': {
     'Curve': ol.xml.makeChildAppender(ol.format.GML.writeCurve_),
-    'MultiCurve': ol.xml.makeChildAppender(ol.format.GML.writeMultiCurve_),
+    'MultiCurve': ol.xml.makeChildAppender(
+        ol.format.GML.writeMultiCurveOrLineString_),
     'Point': ol.xml.makeChildAppender(ol.format.GML.writePoint_),
     'MultiPoint': ol.xml.makeChildAppender(ol.format.GML.writeMultiPoint_),
     'LineString': ol.xml.makeChildAppender(ol.format.GML.writeLineString_),
     'MultiLineString': ol.xml.makeChildAppender(
-        ol.format.GML.writeMultiLineString_),
+        ol.format.GML.writeMultiCurveOrLineString_),
     'LinearRing': ol.xml.makeChildAppender(ol.format.GML.writeLinearRing_),
     'Polygon': ol.xml.makeChildAppender(ol.format.GML.writePolygon_),
-    'MultiPolygon': ol.xml.makeChildAppender(ol.format.GML.writeMultiPolygon_),
+    'MultiPolygon': ol.xml.makeChildAppender(
+        ol.format.GML.writeMultiSurfaceOrPolygon_),
     'Surface': ol.xml.makeChildAppender(ol.format.GML.writeSurface_),
-    'MultiSurface': ol.xml.makeChildAppender(ol.format.GML.writeMultiSurface_)
+    'MultiSurface': ol.xml.makeChildAppender(
+        ol.format.GML.writeMultiSurfaceOrPolygon_)
   }
+};
+
+
+/**
+ * @const
+ * @param {*} value Value.
+ * @param {Array.<*>} objectStack Object stack.
+ * @param {string=} opt_nodeName Node name.
+ * @return {Node|undefined} Node.
+ * @private
+ */
+ol.format.GML.MULTICURVELINESTRING_NODE_FACTORY_ = function(value, objectStack,
+    opt_nodeName) {
+  var parentNode = objectStack[objectStack.length - 1].node;
+  goog.asserts.assert(ol.xml.isNode(parentNode));
+  var nodeName;
+  if (parentNode.nodeName === 'MultiLineString') {
+    nodeName = 'lineStringMember';
+  } else {
+    nodeName = 'curveMember';
+  }
+  return ol.xml.createElementNS('http://www.opengis.net/gml',
+      nodeName);
+};
+
+
+/**
+ * @const
+ * @param {*} value Value.
+ * @param {Array.<*>} objectStack Object stack.
+ * @param {string=} opt_nodeName Node name.
+ * @return {Node|undefined} Node.
+ * @private
+ */
+ol.format.GML.MULTISURFACEORPOLYGON_NODE_FACTORY_ = function(value, objectStack,
+    opt_nodeName) {
+  var parentNode = objectStack[objectStack.length - 1].node;
+  goog.asserts.assert(ol.xml.isNode(parentNode));
+  var nodeName;
+  if (parentNode.nodeName === 'MultiPolygon') {
+    nodeName = 'polygonMember';
+  } else {
+    nodeName = 'surfaceMember';
+  }
+  return ol.xml.createElementNS('http://www.opengis.net/gml',
+      nodeName);
 };
 
 
