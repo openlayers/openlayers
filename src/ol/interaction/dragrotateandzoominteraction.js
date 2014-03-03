@@ -9,7 +9,7 @@ goog.require('ol.events.ConditionType');
 goog.require('ol.events.condition');
 goog.require('ol.interaction.Drag');
 goog.require('ol.interaction.Interaction');
-goog.require('ol.interaction.PointerInteraction');
+goog.require('ol.interaction.Pointer');
 
 
 /**
@@ -26,7 +26,7 @@ ol.interaction.DRAGROTATEANDZOOM_ANIMATION_DURATION = 400;
  *
  * This interaction is not included in the default interactions.
  * @constructor
- * @extends {ol.interaction.PointerInteraction}
+ * @extends {ol.interaction.Pointer}
  * @param {olx.interaction.DragRotateAndZoomOptions=} opt_options Options.
  * @todo stability experimental
  */
@@ -63,7 +63,7 @@ ol.interaction.DragRotateAndZoom = function(opt_options) {
 
 };
 goog.inherits(ol.interaction.DragRotateAndZoom,
-    ol.interaction.PointerInteraction);
+    ol.interaction.Pointer);
 
 
 /**

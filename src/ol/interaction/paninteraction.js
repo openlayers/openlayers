@@ -8,14 +8,14 @@ goog.require('ol.PreRenderFunction');
 goog.require('ol.View2D');
 goog.require('ol.coordinate');
 goog.require('ol.events.condition');
-goog.require('ol.interaction.PointerInteraction');
+goog.require('ol.interaction.Pointer');
 
 
 
 /**
  * Allows the user to pan the map by dragging the map.
  * @constructor
- * @extends {ol.interaction.PointerInteraction}
+ * @extends {ol.interaction.Pointer}
  * @param {olx.interaction.PanOptions=} opt_options Options.
  * @todo stability experimental
  */
@@ -56,7 +56,7 @@ ol.interaction.Pan = function(opt_options) {
   this.noKinetic_ = false;
 
 };
-goog.inherits(ol.interaction.Pan, ol.interaction.PointerInteraction);
+goog.inherits(ol.interaction.Pan, ol.interaction.Pointer);
 
 
 /**
@@ -65,7 +65,7 @@ goog.inherits(ol.interaction.Pan, ol.interaction.PointerInteraction);
 ol.interaction.Pan.prototype.handlePointerDrag = function(mapBrowserEvent) {
   goog.asserts.assert(this.targetPointers.length >= 1);
   var centroid =
-      ol.interaction.PointerInteraction.centroid(this.targetPointers);
+      ol.interaction.Pointer.centroid(this.targetPointers);
   if (!goog.isNull(this.lastCentroid)) {
     if (this.kinetic_) {
       this.kinetic_.update(centroid[0], centroid[1]);

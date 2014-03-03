@@ -1,4 +1,4 @@
-goog.provide('ol.interaction.PointerInteraction');
+goog.provide('ol.interaction.Pointer');
 
 goog.require('goog.asserts');
 goog.require('goog.functions');
@@ -17,7 +17,7 @@ goog.require('ol.interaction.Interaction');
  * @constructor
  * @extends {ol.interaction.Interaction}
  */
-ol.interaction.PointerInteraction = function() {
+ol.interaction.Pointer = function() {
 
   goog.base(this);
 
@@ -40,14 +40,14 @@ ol.interaction.PointerInteraction = function() {
   this.targetPointers = [];
 
 };
-goog.inherits(ol.interaction.PointerInteraction, ol.interaction.Interaction);
+goog.inherits(ol.interaction.Pointer, ol.interaction.Interaction);
 
 
 /**
  * @param {Array.<ol.pointer.PointerEvent>} pointerEvents
  * @return {ol.Pixel} Centroid pixel.
  */
-ol.interaction.PointerInteraction.centroid = function(pointerEvents) {
+ol.interaction.Pointer.centroid = function(pointerEvents) {
   var length = pointerEvents.length;
   var clientX = 0;
   var clientY = 0;
@@ -65,7 +65,7 @@ ol.interaction.PointerInteraction.centroid = function(pointerEvents) {
  *     or pointerup event.
  * @private
  */
-ol.interaction.PointerInteraction.prototype.isPointerDraggingEvent_ =
+ol.interaction.Pointer.prototype.isPointerDraggingEvent_ =
     function(mapBrowserEvent) {
   var type = mapBrowserEvent.type;
   return (
@@ -79,7 +79,7 @@ ol.interaction.PointerInteraction.prototype.isPointerDraggingEvent_ =
  * @param {ol.MapBrowserPointerEvent} mapBrowserEvent Event.
  * @private
  */
-ol.interaction.PointerInteraction.prototype.updateTrackedPointers_ =
+ol.interaction.Pointer.prototype.updateTrackedPointers_ =
     function(mapBrowserEvent) {
   if (this.isPointerDraggingEvent_(mapBrowserEvent)) {
     var event = mapBrowserEvent.pointerEvent;
@@ -102,7 +102,7 @@ ol.interaction.PointerInteraction.prototype.updateTrackedPointers_ =
  * @param {ol.MapBrowserPointerEvent} mapBrowserEvent Event.
  * @protected
  */
-ol.interaction.PointerInteraction.prototype.handlePointerDrag =
+ol.interaction.Pointer.prototype.handlePointerDrag =
     goog.nullFunction;
 
 
@@ -111,7 +111,7 @@ ol.interaction.PointerInteraction.prototype.handlePointerDrag =
  * @protected
  * @return {boolean} Capture dragging.
  */
-ol.interaction.PointerInteraction.prototype.handlePointerUp =
+ol.interaction.Pointer.prototype.handlePointerUp =
     goog.functions.FALSE;
 
 
@@ -120,14 +120,14 @@ ol.interaction.PointerInteraction.prototype.handlePointerUp =
  * @protected
  * @return {boolean} Capture dragging.
  */
-ol.interaction.PointerInteraction.prototype.handlePointerDown =
+ol.interaction.Pointer.prototype.handlePointerDown =
     goog.functions.FALSE;
 
 
 /**
  * @inheritDoc
  */
-ol.interaction.PointerInteraction.prototype.handleMapBrowserEvent =
+ol.interaction.Pointer.prototype.handleMapBrowserEvent =
     function(mapBrowserEvent) {
   if (!(mapBrowserEvent instanceof ol.MapBrowserPointerEvent)) {
     return true;
@@ -172,5 +172,5 @@ ol.interaction.PointerInteraction.prototype.handleMapBrowserEvent =
  * @param {boolean} handled Was the event handled by the interaction?
  * @return {boolean} Should the event be stopped?
  */
-ol.interaction.PointerInteraction.prototype.shouldStopEvent =
+ol.interaction.Pointer.prototype.shouldStopEvent =
     goog.functions.FALSE;

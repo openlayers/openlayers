@@ -6,7 +6,7 @@ goog.require('ol.events.ConditionType');
 goog.require('ol.events.condition');
 goog.require('ol.interaction.Drag');
 goog.require('ol.interaction.Interaction');
-goog.require('ol.interaction.PointerInteraction');
+goog.require('ol.interaction.Pointer');
 
 
 /**
@@ -24,7 +24,7 @@ ol.interaction.DRAGROTATE_ANIMATION_DURATION = 250;
  * This interaction is only supported for mouse devices.
  *
  * @constructor
- * @extends {ol.interaction.PointerInteraction}
+ * @extends {ol.interaction.Pointer}
  * @param {olx.interaction.DragRotateOptions=} opt_options Options.
  */
 ol.interaction.DragRotate = function(opt_options) {
@@ -47,7 +47,7 @@ ol.interaction.DragRotate = function(opt_options) {
   this.lastAngle_ = undefined;
 
 };
-goog.inherits(ol.interaction.DragRotate, ol.interaction.PointerInteraction);
+goog.inherits(ol.interaction.DragRotate, ol.interaction.Pointer);
 
 
 /**

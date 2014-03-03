@@ -6,7 +6,7 @@ goog.require('goog.asserts');
 goog.require('goog.style');
 goog.require('ol.Coordinate');
 goog.require('ol.interaction.Interaction');
-goog.require('ol.interaction.PointerInteraction');
+goog.require('ol.interaction.Pointer');
 
 
 
@@ -14,7 +14,7 @@ goog.require('ol.interaction.PointerInteraction');
  * Allows the user to zoom the map by pinching with two fingers
  * on a touch screen.
  * @constructor
- * @extends {ol.interaction.PointerInteraction}
+ * @extends {ol.interaction.Pointer}
  * @param {olx.interaction.ZoomOptions=} opt_options Options.
  * @todo stability experimental
  */
@@ -49,7 +49,7 @@ ol.interaction.Zoom = function(opt_options) {
   this.lastScaleDelta_ = 1;
 
 };
-goog.inherits(ol.interaction.Zoom, ol.interaction.PointerInteraction);
+goog.inherits(ol.interaction.Zoom, ol.interaction.Pointer);
 
 
 /**
@@ -84,7 +84,7 @@ ol.interaction.Zoom.prototype.handlePointerDrag =
   // scale anchor point.
   var viewportPosition = goog.style.getClientPosition(map.getViewport());
   var centroid =
-      ol.interaction.PointerInteraction.centroid(this.targetPointers);
+      ol.interaction.Pointer.centroid(this.targetPointers);
   centroid[0] -= viewportPosition.x;
   centroid[1] -= viewportPosition.y;
   this.anchor_ = map.getCoordinateFromPixel(centroid);

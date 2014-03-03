@@ -8,7 +8,7 @@ goog.require('goog.asserts');
 goog.require('goog.events.Event');
 goog.require('ol.events.ConditionType');
 goog.require('ol.events.condition');
-goog.require('ol.interaction.PointerInteraction');
+goog.require('ol.interaction.Pointer');
 goog.require('ol.render.Box');
 
 
@@ -69,7 +69,7 @@ goog.inherits(ol.DragBoxEvent, goog.events.Event);
  * This interaction is only supported for mouse devices.
  *
  * @constructor
- * @extends {ol.interaction.PointerInteraction}
+ * @extends {ol.interaction.Pointer}
  * @param {olx.interaction.DragBoxOptions=} opt_options Options.
  * @todo stability experimental
  */
@@ -105,7 +105,7 @@ ol.interaction.DragBox = function(opt_options) {
       options.condition : ol.events.condition.always;
 
 };
-goog.inherits(ol.interaction.DragBox, ol.interaction.PointerInteraction);
+goog.inherits(ol.interaction.DragBox, ol.interaction.Pointer);
 
 
 /**

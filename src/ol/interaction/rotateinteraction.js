@@ -6,7 +6,7 @@ goog.require('goog.asserts');
 goog.require('goog.style');
 goog.require('ol.Coordinate');
 goog.require('ol.interaction.Interaction');
-goog.require('ol.interaction.PointerInteraction');
+goog.require('ol.interaction.Pointer');
 
 
 /**
@@ -20,7 +20,7 @@ ol.interaction.ROTATE_ANIMATION_DURATION = 250;
  * Allows the user to rotate the map by twisting with two fingers
  * on a touch screen.
  * @constructor
- * @extends {ol.interaction.PointerInteraction}
+ * @extends {ol.interaction.Pointer}
  * @param {olx.interaction.RotateOptions=} opt_options Options.
  * @todo stability experimental
  */
@@ -61,7 +61,7 @@ ol.interaction.Rotate = function(opt_options) {
   this.threshold_ = goog.isDef(options.threshold) ? options.threshold : 0.3;
 
 };
-goog.inherits(ol.interaction.Rotate, ol.interaction.PointerInteraction);
+goog.inherits(ol.interaction.Rotate, ol.interaction.Pointer);
 
 
 /**
@@ -98,7 +98,7 @@ ol.interaction.Rotate.prototype.handlePointerDrag =
   //     touch0,touch1 and previousTouch0,previousTouch1
   var viewportPosition = goog.style.getClientPosition(map.getViewport());
   var centroid =
-      ol.interaction.PointerInteraction.centroid(this.targetPointers);
+      ol.interaction.Pointer.centroid(this.targetPointers);
   centroid[0] -= viewportPosition.x;
   centroid[1] -= viewportPosition.y;
   this.anchor_ = map.getCoordinateFromPixel(centroid);
