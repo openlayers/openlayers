@@ -142,6 +142,110 @@ describe('ol.geom.MultiLineString', function() {
       expect(multiLineString.getStride()).to.be(3);
     });
 
+    describe('#getCoordinateAtM', function() {
+
+      describe('with extrapolation and interpolation', function() {
+
+        it('returns the expected value', function() {
+          expect(multiLineString.getCoordinateAtM(0, true, true)).to.eql(
+              [1, 2, 0]);
+          expect(multiLineString.getCoordinateAtM(3, true, true)).to.eql(
+              [1, 2, 3]);
+          expect(multiLineString.getCoordinateAtM(4.5, true, true)).to.eql(
+              [2.5, 3.5, 4.5]);
+          expect(multiLineString.getCoordinateAtM(6, true, true)).to.eql(
+              [4, 5, 6]);
+          expect(multiLineString.getCoordinateAtM(7.5, true, true)).to.eql(
+              [5.5, 6.5, 7.5]);
+          expect(multiLineString.getCoordinateAtM(9, true, true)).to.eql(
+              [7, 8, 9]);
+          expect(multiLineString.getCoordinateAtM(10.5, true, true)).to.eql(
+              [8.5, 9.5, 10.5]);
+          expect(multiLineString.getCoordinateAtM(12, true, true)).to.eql(
+              [10, 11, 12]);
+          expect(multiLineString.getCoordinateAtM(15, true, true)).to.eql(
+              [10, 11, 15]);
+        });
+
+      });
+
+      describe('with extrapolation and no interpolation', function() {
+
+        it('returns the expected value', function() {
+          expect(multiLineString.getCoordinateAtM(0, true, false)).to.eql(
+              [1, 2, 0]);
+          expect(multiLineString.getCoordinateAtM(3, true, false)).to.eql(
+              [1, 2, 3]);
+          expect(multiLineString.getCoordinateAtM(4.5, true, false)).to.eql(
+              [2.5, 3.5, 4.5]);
+          expect(multiLineString.getCoordinateAtM(6, true, false)).to.eql(
+              [4, 5, 6]);
+          expect(multiLineString.getCoordinateAtM(7.5, true, false)).to.be(
+              null);
+          expect(multiLineString.getCoordinateAtM(9, true, false)).to.eql(
+              [7, 8, 9]);
+          expect(multiLineString.getCoordinateAtM(10.5, true, false)).to.eql(
+              [8.5, 9.5, 10.5]);
+          expect(multiLineString.getCoordinateAtM(12, true, false)).to.eql(
+              [10, 11, 12]);
+          expect(multiLineString.getCoordinateAtM(15, true, false)).to.eql(
+              [10, 11, 15]);
+        });
+
+      });
+
+      describe('with no extrapolation and interpolation', function() {
+
+        it('returns the expected value', function() {
+          expect(multiLineString.getCoordinateAtM(0, false, true)).to.eql(
+              null);
+          expect(multiLineString.getCoordinateAtM(3, false, true)).to.eql(
+              [1, 2, 3]);
+          expect(multiLineString.getCoordinateAtM(4.5, false, true)).to.eql(
+              [2.5, 3.5, 4.5]);
+          expect(multiLineString.getCoordinateAtM(6, false, true)).to.eql(
+              [4, 5, 6]);
+          expect(multiLineString.getCoordinateAtM(7.5, false, true)).to.eql(
+              [5.5, 6.5, 7.5]);
+          expect(multiLineString.getCoordinateAtM(9, false, true)).to.eql(
+              [7, 8, 9]);
+          expect(multiLineString.getCoordinateAtM(10.5, false, true)).to.eql(
+              [8.5, 9.5, 10.5]);
+          expect(multiLineString.getCoordinateAtM(12, false, true)).to.eql(
+              [10, 11, 12]);
+          expect(multiLineString.getCoordinateAtM(15, false, true)).to.eql(
+              null);
+        });
+
+      });
+
+      describe('with no extrapolation or interpolation', function() {
+
+        it('returns the expected value', function() {
+          expect(multiLineString.getCoordinateAtM(0, false, false)).to.eql(
+              null);
+          expect(multiLineString.getCoordinateAtM(3, false, false)).to.eql(
+              [1, 2, 3]);
+          expect(multiLineString.getCoordinateAtM(4.5, false, false)).to.eql(
+              [2.5, 3.5, 4.5]);
+          expect(multiLineString.getCoordinateAtM(6, false, false)).to.eql(
+              [4, 5, 6]);
+          expect(multiLineString.getCoordinateAtM(7.5, false, false)).to.eql(
+              null);
+          expect(multiLineString.getCoordinateAtM(9, false, false)).to.eql(
+              [7, 8, 9]);
+          expect(multiLineString.getCoordinateAtM(10.5, false, false)).to.eql(
+              [8.5, 9.5, 10.5]);
+          expect(multiLineString.getCoordinateAtM(12, false, false)).to.eql(
+              [10, 11, 12]);
+          expect(multiLineString.getCoordinateAtM(15, false, false)).to.eql(
+              null);
+        });
+
+      });
+
+    });
+
   });
 
   describe('construct with 4D coordinates', function() {
