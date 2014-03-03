@@ -249,6 +249,7 @@ ol.source.TileWMS.prototype.getRequestUrl_ =
       case ol.source.wms.ServerType.MAPSERVER:
         goog.object.set(params, 'MAP_RESOLUTION', 90 * pixelRatio);
         break;
+      case ol.source.wms.ServerType.CARMENTA_SERVER:
       case ol.source.wms.ServerType.QGIS:
         goog.object.set(params, 'DPI', 90 * pixelRatio);
         break;
