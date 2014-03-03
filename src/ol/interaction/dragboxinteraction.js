@@ -44,28 +44,20 @@ ol.DragBoxEventType = {
  * @param {ol.Coordinate} coordinate The event coordinate.
  * @extends {goog.events.Event}
  * @constructor
+ * @implements {oli.DragBoxEvent}
  */
 ol.DragBoxEvent = function(type, coordinate) {
   goog.base(this, type);
 
   /**
    * The coordinate of the drag event.
+   * @const
    * @type {ol.Coordinate}
-   * @private
    */
-  this.coordinate_ = coordinate;
+  this.coordinate = coordinate;
 
 };
 goog.inherits(ol.DragBoxEvent, goog.events.Event);
-
-
-/**
- * Get the name of the property associated with this event.
- * @return {ol.Coordinate} Event coordinate.
- */
-ol.DragBoxEvent.prototype.getCoordinate = function() {
-  return this.coordinate_;
-};
 
 
 

@@ -79,6 +79,41 @@ ol.geom.MultiLineString.prototype.closestPointXY =
 
 
 /**
+ * Returns the coordinate at `m` using linear interpolation, or `null` if no
+ * such coordinate exists.
+ *
+ * `opt_extrapolate` controls extrapolation beyond the range of Ms in the
+ * MultiLineString. If `opt_extrapolate` is `true` then Ms less than the first
+ * M will return the first coordinate and Ms greater than the last M will
+ * return the last coordinate.
+ *
+ * `opt_interpolate` controls interpolation between consecutive LineStrings
+ * within the MultiLineString. If `opt_interpolate` is `true` the coordinates
+ * will be linearly interpolated between the last coordinate of one LineString
+ * and the first coordinate of the next LineString.  If `opt_interpolate` is
+ * `false` then the function will return `null` for Ms falling between
+ * LineStrings.
+ *
+ * @param {number} m M.
+ * @param {boolean=} opt_extrapolate Extrapolate.
+ * @param {boolean=} opt_interpolate Interpolate.
+ * @return {ol.Coordinate} Coordinate.
+ */
+ol.geom.MultiLineString.prototype.getCoordinateAtM =
+    function(m, opt_extrapolate, opt_interpolate) {
+  if ((this.layout != ol.geom.GeometryLayout.XYM &&
+       this.layout != ol.geom.GeometryLayout.XYZM) ||
+      this.flatCoordinates.length === 0) {
+    return null;
+  }
+  var extrapolate = goog.isDef(opt_extrapolate) ? opt_extrapolate : false;
+  var interpolate = goog.isDef(opt_interpolate) ? opt_interpolate : false;
+  return ol.geom.flat.lineStringsCoordinateAtM(this.flatCoordinates, 0,
+      this.ends_, this.stride, m, extrapolate, interpolate);
+};
+
+
+/**
  * @return {ol.geom.RawMultiLineString} Coordinates.
  * @todo stability experimental
  */

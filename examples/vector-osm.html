@@ -8,14 +8,14 @@
     <link rel="stylesheet" href="../resources/bootstrap/css/bootstrap.min.css" type="text/css">
     <link rel="stylesheet" href="../resources/layout.css" type="text/css">
     <link rel="stylesheet" href="../resources/bootstrap/css/bootstrap-responsive.min.css" type="text/css">
-    <title>IGC example</title>
+    <title>OSM XML example</title>
   </head>
   <body>
 
     <div class="navbar navbar-inverse navbar-fixed-top">
       <div class="navbar-inner">
         <div class="container">
-          <a class="brand" href="./"><img src="../resources/logo.png"> OpenLayers 3 Examples</a>
+          <a class="brand" href="./"><img src="../resources/logo.png"> OpenLayers 3 Examples</a>          
         </div>
       </div>
     </div>
@@ -31,13 +31,12 @@
       <div class="row-fluid">
 
         <div class="span4">
-          <h4 id="title">IGC example</h4>
-          <p id="shortdesc">Example of tracks recorded from multiple paraglider flights on the same day, read from an IGC file. The five tracks contain a total of 49,707 unique coordinates. Zoom in to see more detail. The background layer is from <a href="http://www.opencyclemap.org/">OpenCycleMap</a>.</p>
+          <h4 id="title">OSM XML example</h4>
+          <p id="shortdesc">Example of using the OSM XML source.</p>
           <div id="docs">
-            <p>See the <a href="igc.js" target="_blank">igc.js source</a> to see how this is done.</p>
+            <p>See the <a href="vector-osm.js" target="_blank">vector-osm.js source</a> to see how this is done.</p>
           </div>
-          <input id="time" type="range" value="0" steps="1"></input>
-          <div id="tags">complex-geometry, closest-feature, igc, opencyclemap</div>
+          <div id="tags">vector, osm, xml</div>
         </div>
         <div class="span4 offset4">
           <div id="info" class="alert alert-success">
@@ -51,7 +50,7 @@
 
     <script src="jquery.min.js" type="text/javascript"></script>
     <script src="../resources/example-behaviour.js" type="text/javascript"></script>
-    <script src="loader.js?id=igc" type="text/javascript"></script>
+    <script src="loader.js?id=vector-osm" type="text/javascript"></script>
 
   </body>
 </html>

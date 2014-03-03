@@ -13,6 +13,10 @@
     div.ol-logo {
       left: 65px;
     }
+    div.fill {
+      width: 100%;
+      height: 100%;
+    }
     </style>
     <script src="http://maps.google.com/maps/api/js?v=3&amp;sensor=false"></script>
     <title>Google Maps integration example</title>
@@ -31,7 +35,10 @@
 
       <div class="row-fluid">
         <div class="span12">
-          <div id="map" class="map"></div>
+          <div id="map" class="map">
+            <div id="gmap" class="fill"></div>
+            <div id="olmap" class="fill"></div>
+          </div>
         </div>
       </div>
 

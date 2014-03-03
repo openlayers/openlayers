@@ -18,6 +18,16 @@ oli.CollectionEvent = function() {};
 oli.CollectionEvent.prototype.element;
 
 
+
+/** @interface */
+oli.DragBoxEvent;
+
+
+/** @type {ol.Coordinate} */
+oli.DragBoxEvent.prototype.coordinate;
+
+
+
 /** @interface */
 oli.DrawEvent;
 

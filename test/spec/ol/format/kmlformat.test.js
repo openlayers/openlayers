@@ -984,6 +984,41 @@ describe('ol.format.KML', function() {
         expect(s).to.be(ol.format.KML.DEFAULT_STYLE_);
       });
 
+      it('can use Styles in StyleMaps before they are defined', function() {
+        var text =
+            '<kml xmlns="http://earth.google.com/kml/2.2">' +
+            '  <Document>' +
+            '    <StyleMap id="fooMap">' +
+            '      <Pair>' +
+            '        <key>normal</key>' +
+            '        <styleUrl>#foo</styleUrl>' +
+            '       </Pair>' +
+            '    </StyleMap>' +
+            '    <Style id="foo">' +
+            '      <PolyStyle>' +
+            '        <color>12345678</color>' +
+            '      </PolyStyle>' +
+            '    </Style>' +
+            '    <Placemark>' +
+            '      <styleUrl>#fooMap</styleUrl>' +
+            '    </Placemark>' +
+            '  </Document>' +
+            '</kml>';
+        var fs = format.readFeatures(text);
+        expect(fs).to.have.length(1);
+        var f = fs[0];
+        expect(f).to.be.an(ol.Feature);
+        var styleFunction = f.getStyleFunction();
+        expect(styleFunction).not.to.be(undefined);
+        var styleArray = styleFunction.call(f, 0);
+        expect(styleArray).to.be.an(Array);
+        expect(styleArray).to.have.length(1);
+        var s = styleArray[0];
+        expect(s).to.be.an(ol.style.Style);
+        expect(s.getFill()).not.to.be(null);
+        expect(s.getFill().getColor()).to.eql([120, 86, 52, 18 / 255]);
+      });
+
     });
 
     describe('shared styles', function() {
