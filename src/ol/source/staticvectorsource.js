@@ -45,13 +45,13 @@ ol.source.StaticVector = function(options) {
   if (goog.isDef(options.url) || goog.isDef(options.urls)) {
     this.setState(ol.source.State.LOADING);
     if (goog.isDef(options.url)) {
-      this.loadFeatures(options.url);
+      this.loadFeaturesFromURL(options.url);
     }
     if (goog.isDef(options.urls)) {
       var urls = options.urls;
       var i, ii;
       for (i = 0, ii = urls.length; i < ii; ++i) {
-        this.loadFeatures(urls[i]);
+        this.loadFeaturesFromURL(urls[i]);
       }
     }
   }

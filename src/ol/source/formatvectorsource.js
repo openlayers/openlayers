@@ -95,7 +95,7 @@ ol.source.FormatVector.prototype.handleXhrIo_ = function(event) {
 /**
  * @param {goog.Uri|string} url URL.
  */
-ol.source.FormatVector.prototype.loadFeatures = function(url) {
+ol.source.FormatVector.prototype.loadFeaturesFromURL = function(url) {
   var xhrIo = new goog.net.XhrIo();
   var type = this.format.getType();
   var responseType;
