@@ -478,8 +478,8 @@ ol.interaction.Modify.prototype.handleMapBrowserEvent =
       mapBrowserEvent.type == ol.MapBrowserEvent.EventType.POINTERMOVE) {
     this.handlePointerMove_(mapBrowserEvent);
   }
-  goog.base(this, 'handleMapBrowserEvent', mapBrowserEvent);
-  return !this.modifiable_;
+  return (goog.base(this, 'handleMapBrowserEvent', mapBrowserEvent) &&
+      !this.modifiable_);
 };
 
 

@@ -17,7 +17,7 @@ goog.require('ol.geom.MultiPoint');
 goog.require('ol.geom.MultiPolygon');
 goog.require('ol.geom.Point');
 goog.require('ol.geom.Polygon');
-goog.require('ol.interaction.Interaction');
+goog.require('ol.interaction.Pointer');
 goog.require('ol.source.Vector');
 goog.require('ol.style.Circle');
 goog.require('ol.style.Fill');
@@ -59,13 +59,19 @@ goog.inherits(ol.DrawEvent, goog.events.Event);
 /**
  * Interaction that allows drawing geometries
  * @constructor
- * @extends {ol.interaction.Interaction}
+ * @extends {ol.interaction.Pointer}
  * @param {olx.interaction.DrawOptions} options Options.
  * @todo stability experimental
  */
 ol.interaction.Draw = function(options) {
 
   goog.base(this);
+
+  /**
+   * @type {ol.Pixel}
+   * @private
+   */
+  this.downPx_ = null;
 
   /**
    * Target source for drawn features.
@@ -149,8 +155,8 @@ ol.interaction.Draw = function(options) {
   this.sketchRawPolygon_ = null;
 
   /**
-   * Squared tolerance for handling click events.  If the squared distance
-   * between a down and click event is greater than this tolerance, click events
+   * Squared tolerance for handling up events.  If the squared distance
+   * between a down and up event is greater than this tolerance, up events
    * will not be handled.
    * @type {number}
    * @private
@@ -168,7 +174,7 @@ ol.interaction.Draw = function(options) {
   });
 
 };
-goog.inherits(ol.interaction.Draw, ol.interaction.Interaction);
+goog.inherits(ol.interaction.Draw, ol.interaction.Pointer);
 
 
 /**
@@ -250,25 +256,33 @@ ol.interaction.Draw.prototype.handleMapBrowserEvent = function(event) {
     return true;
   }
   var pass = true;
-  if (event.type === ol.MapBrowserEvent.EventType.CLICK) {
-    pass = this.handleClick_(event);
-  } else if (event.type === ol.MapBrowserEvent.EventType.MOUSEMOVE) {
-    pass = this.handleMove_(event);
+  if (event.type === ol.MapBrowserEvent.EventType.POINTERMOVE) {
+    pass = this.handlePointerMove_(event);
   } else if (event.type === ol.MapBrowserEvent.EventType.DBLCLICK) {
     pass = false;
   }
-  return pass;
+  return (goog.base(this, 'handleMapBrowserEvent', event) && pass);
 };
 
 
 /**
- * Handle click events.
- * @param {ol.MapBrowserEvent} event A click event.
+ * Handle down events.
+ * @param {ol.MapBrowserEvent} event A down event.
  * @return {boolean} Pass the event to other interactions.
- * @private
  */
-ol.interaction.Draw.prototype.handleClick_ = function(event) {
-  var downPx = event.map.getEventPixel(event.target.getDown());
+ol.interaction.Draw.prototype.handlePointerDown = function(event) {
+  this.downPx_ = event.pixel;
+  return true;
+};
+
+
+/**
+ * Handle up events.
+ * @param {ol.MapBrowserEvent} event An up event.
+ * @return {boolean} Pass the event to other interactions.
+ */
+ol.interaction.Draw.prototype.handlePointerUp = function(event) {
+  var downPx = this.downPx_;
   var clickPx = event.pixel;
   var dx = downPx[0] - clickPx[0];
   var dy = downPx[1] - clickPx[1];
@@ -290,12 +304,12 @@ ol.interaction.Draw.prototype.handleClick_ = function(event) {
 
 
 /**
- * Handle mousemove events.
- * @param {ol.MapBrowserEvent} event A mousemove event.
+ * Handle move events.
+ * @param {ol.MapBrowserEvent} event A move event.
  * @return {boolean} Pass the event to other interactions.
  * @private
  */
-ol.interaction.Draw.prototype.handleMove_ = function(event) {
+ol.interaction.Draw.prototype.handlePointerMove_ = function(event) {
   if (this.mode_ === ol.interaction.DrawMode.POINT &&
       goog.isNull(this.finishCoordinate_)) {
     this.startDrawing_(event);
