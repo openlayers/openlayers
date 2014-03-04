@@ -200,8 +200,10 @@ ol.interaction.Select.prototype.removeFeature_ = function(feature) {
   features.remove(feature);
   for (i = 0, ii = hash[uid].length; i < ii; i++) {
     layer = hash[uid][i];
-    goog.asserts.assertInstanceof(layer, ol.layer.Vector);
-    layer.getSkippedFeatures().remove(feature);
+    if (!goog.isNull(layer)) {
+      goog.asserts.assertInstanceof(layer, ol.layer.Vector);
+      layer.getSkippedFeatures().remove(feature);
+    }
   }
   delete hash[uid];
 };
