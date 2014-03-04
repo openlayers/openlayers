@@ -22,6 +22,16 @@ goog.require('ol.proj');
 goog.require('ol.xml');
 
 
+/**
+ * @const
+ * @type {string}
+ * @private
+ */
+ol.format.GML.schemaLocation_ = 'http://www.opengis.net/gml ' +
+    'http://schemas.opengis.net/gml/3.1.1/profiles/gmlsfProfile/' +
+    '1.0.0/gmlsf.xsd';
+
+
 
 /**
  * @constructor
@@ -85,9 +95,7 @@ ol.format.GML = function(opt_options) {
    * @type {string}
    */
   this.schemaLocation_ = goog.isDef(options.schemaLocation) ?
-      options.schemaLocation : ('http://www.opengis.net/gml ' +
-      'http://schemas.opengis.net/gml/3.1.1/profiles/gmlsfProfile/' +
-      '1.0.0/gmlsf.xsd');
+      options.schemaLocation : ol.format.GML.schemaLocation_;
 
   goog.base(this);
 };
