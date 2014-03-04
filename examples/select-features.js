@@ -32,8 +32,8 @@ var select = new ol.interaction.Select({
           color: 'rgba(255,0,0,0.3)'
         }),
         stroke: new ol.style.Stroke({
-            color: 'rgba(255,0,0,1)',
-            size: 2
+          color: 'rgba(255,0,0,1)',
+          size: 2
         }),
         text: new ol.style.Text({
           font: '12px Calibri,sans-serif',

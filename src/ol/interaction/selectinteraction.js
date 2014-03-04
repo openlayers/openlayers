@@ -1,10 +1,13 @@
 goog.provide('ol.interaction.Select');
 
 goog.require('goog.array');
+goog.require('goog.asserts');
 goog.require('goog.functions');
+goog.require('ol.Feature');
 goog.require('ol.FeatureOverlay');
 goog.require('ol.events.condition');
 goog.require('ol.interaction.Interaction');
+goog.require('ol.layer.Vector');
 
 
 
@@ -87,6 +90,12 @@ ol.interaction.Select = function(options) {
     style: options.style
   });
 
+  /**
+   * @private
+   * @type {Object}
+   */
+  this.featuresLayerHash_ = {};
+
 };
 goog.inherits(ol.interaction.Select, ol.interaction.Interaction);
 
@@ -111,58 +120,103 @@ ol.interaction.Select.prototype.handleMapBrowserEvent =
   var add = this.addCondition_(mapBrowserEvent);
   var remove = this.removeCondition_(mapBrowserEvent);
   var toggle = this.toggleCondition_(mapBrowserEvent);
-  var set = !add && !remove && !toggle;
   var map = mapBrowserEvent.map;
-  var features = this.featureOverlay_.getFeatures();
-  if (set) {
-    // Replace the currently selected feature(s) with the feature at the pixel,
-    // or clear the selected feature(s) if there is no feature at the pixel.
-    /** @type {ol.Feature|undefined} */
-    var feature = map.forEachFeatureAtPixel(mapBrowserEvent.pixel,
-        /**
-         * @param {ol.Feature} feature Feature.
-         * @param {ol.layer.Layer} layer Layer.
-         */
-        function(feature, layer) {
-          return feature;
-        }, undefined, this.layerFilter_);
-    if (goog.isDef(feature)) {
-      if (features.getLength() == 1) {
-        if (features.getAt(0) !== feature) {
-          features.setAt(0, feature);
+  var feature = map.forEachFeatureAtPixel(mapBrowserEvent.pixel,
+      /**
+        * @param {ol.Feature} feature Feature.
+        * @param {ol.layer.Layer} layer Layer.
+        */
+      function(feature, layer) {
+        this.addFeature_(feature, layer, add, remove, toggle);
+        return feature;
+      }, this, this.layerFilter_);
+  if (!goog.isDef(feature) && !add && !remove) {
+    this.removeAllFeatures_();
+  }
+  return false;
+};
+
+
+/**
+ * @param {?ol.Feature|undefined} feature Feature.
+ * @param {ol.layer.Layer} layer Layer.
+ * @param {Boolean} add Add
+ * @param {Boolean} remove Remove
+ * @param {Boolean} toggle Toggle
+ * @private
+ * @todo stability experimental
+ */
+ol.interaction.Select.prototype.addFeature_ = function(feature, layer, add,
+    remove, toggle) {
+  var features = this.featureOverlay_.getFeatures(),
+      hash = this.featuresLayerHash_,
+      uid, index = -1,
+      i, ii;
+  if ((!goog.isDef(feature) || goog.isNull(feature)) && !add) {
+    this.removeAllFeatures_();
+    return;
+  }
+  goog.asserts.assertInstanceof(feature, ol.Feature);
+  uid = goog.getUid(feature);
+  index = features.getArray().indexOf(feature);
+  if (index == -1) {
+    if (!add && !remove && (features.getLength() > 0)) {
+      for (ii = features.getLength() - 1, i = ii; i >= 0; i--) {
+        if (features.getAt(i) != feature) {
+          this.removeFeature_(/** @type {ol.Feature} */ (features.getAt(i)));
         }
-      } else {
-        if (features.getLength() != 1) {
-          features.clear();
-        }
-        features.push(feature);
-      }
-    } else {
-      if (features.getLength() !== 0) {
-        features.clear();
       }
     }
   } else {
-    // Modify the currently selected feature(s).
-    map.forEachFeatureAtPixel(mapBrowserEvent.pixel,
-        /**
-         * @param {ol.Feature} feature Feature.
-         * @param {ol.layer.Layer} layer Layer.
-         */
-        function(feature, layer) {
-          var index = goog.array.indexOf(features.getArray(), feature);
-          if (index == -1) {
-            if (add || toggle) {
-              features.push(feature);
-            }
-          } else {
-            if (remove || toggle) {
-              features.removeAt(index);
-            }
-          }
-        }, undefined, this.layerFilter_);
+    if (toggle || remove) {
+      this.removeFeature_(/** @type {ol.Feature} */ (features.getAt(index)));
+      return;
+    }
   }
-  return false;
+  if (remove) {
+    return;
+  }
+  if (index >= 0) {
+    goog.array.insert(hash[uid], layer);
+    return;
+  }
+  features.push(feature);
+  goog.asserts.assertInstanceof(layer, ol.layer.Vector);
+  layer.getSkippedFeatures().push(feature);
+  hash[uid] = [layer];
+};
+
+
+/**
+ * @param {ol.Feature} feature Feature.
+ * @private
+ * @todo stability experimental
+ */
+ol.interaction.Select.prototype.removeFeature_ = function(feature) {
+  var features = this.featureOverlay_.getFeatures(),
+      hash = this.featuresLayerHash_,
+      uid = goog.getUid(feature),
+      i, ii, layer;
+  features.remove(feature);
+  for (i = 0, ii = hash[uid].length; i < ii; i++) {
+    layer = hash[uid][i];
+    goog.asserts.assertInstanceof(layer, ol.layer.Vector);
+    layer.getSkippedFeatures().remove(feature);
+  }
+  delete hash[uid];
+};
+
+
+/**
+ * @private
+ * @todo stability experimental
+ */
+ol.interaction.Select.prototype.removeAllFeatures_ = function() {
+  var i, ii,
+      features = this.featureOverlay_.getFeatures();
+  for (ii = features.getLength() - 1, i = ii; i >= 0; i--) {
+    this.removeFeature_(/** @type {ol.Feature} */ (features.getAt(i)));
+  }
 };
 
 
