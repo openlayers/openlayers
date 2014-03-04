@@ -26,7 +26,7 @@ ol.source.MapQuest = function(opt_options) {
   goog.base(this, {
     attributions: layerConfig.attributions,
     crossOrigin: 'anonymous',
-    logo: 'http://developer.mapquest.com/content/osm/mq_logo.png',
+    logo: '//developer.mapquest.com/content/osm/mq_logo.png',
     maxZoom: layerConfig.maxZoom,
     opaque: true,
     tileLoadFunction: options.tileLoadFunction,
