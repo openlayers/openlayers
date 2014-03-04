@@ -172,6 +172,34 @@ describe('ol.View2D', function() {
       expect(view.getCenter()[1]).to.be(46300);
     });
   });
+
+  describe('centerOn', function() {
+    var view;
+    beforeEach(function() {
+      view = new ol.View2D({
+        resolutions: [200, 100, 50, 20, 10, 5, 2, 1]
+      });
+    });
+    it('fit correctly to the coordinates', function() {
+      view.setResolution(10);
+      view.centerOn(
+          [6000, 46000],
+          [400, 400],
+          [300, 300]
+      );
+      expect(view.getCenter()[0]).to.be(5000);
+      expect(view.getCenter()[1]).to.be(47000);
+
+      view.setRotation(Math.PI / 4);
+      view.centerOn(
+          [6000, 46000],
+          [400, 400],
+          [300, 300]
+      );
+      expect(view.getCenter()[0]).to.be(4585.78643762691);
+      expect(view.getCenter()[1]).to.be(46000);
+    });
+  });
 });
 
 goog.require('ol.View2D');

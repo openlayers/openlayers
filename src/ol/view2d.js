@@ -498,6 +498,34 @@ ol.View2D.prototype.fitGeometry = function(geometry, size, opt_options) {
 
 
 /**
+ * Center on coordinate and view position.
+ * Take care on the map angle.
+ * @param {ol.Coordinate} coordinate Coordinate.
+ * @param {ol.Size} size Box pixel size.
+ * @param {ol.Pixel} position Position on the view to center on.
+ * @todo stability experimental
+ */
+ol.View2D.prototype.centerOn = function(coordinate, size, position) {
+  // calculate rotated position
+  var rotation = this.getRotation();
+  var cosAngle = Math.cos(-rotation);
+  var sinAngle = Math.sin(-rotation);
+  var rotX = coordinate[0] * cosAngle - coordinate[1] * sinAngle;
+  var rotY = coordinate[1] * cosAngle + coordinate[0] * sinAngle;
+  var resolution = this.getResolution();
+  rotX += (size[0] / 2 - position[0]) * resolution;
+  rotY += (position[1] - size[1] / 2) * resolution;
+
+  // go back to original angle
+  sinAngle = -sinAngle; // go back to original rotation
+  var centerX = rotX * cosAngle - rotY * sinAngle;
+  var centerY = rotY * cosAngle + rotX * sinAngle;
+
+  this.setCenter([centerX, centerY]);
+};
+
+
+/**
  * @return {boolean} Is defined.
  */
 ol.View2D.prototype.isDef = function() {
