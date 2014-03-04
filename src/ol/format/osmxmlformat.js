@@ -78,6 +78,7 @@ ol.format.OSMXML.readNode_ = function(node, objectStack) {
 ol.format.OSMXML.readWay_ = function(node, objectStack) {
   goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT);
   goog.asserts.assert(node.localName == 'way');
+  var id = node.getAttribute('id');
   var values = ol.xml.pushParseAndPop({
     ndrefs: [],
     tags: {}
@@ -98,6 +99,7 @@ ol.format.OSMXML.readWay_ = function(node, objectStack) {
     geometry.setFlatCoordinates(ol.geom.GeometryLayout.XY, flatCoordinates);
   }
   var feature = new ol.Feature(geometry);
+  feature.setId(id);
   feature.setValues(values.tags);
   state.features.push(feature);
 };
