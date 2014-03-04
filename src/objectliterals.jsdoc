@@ -1052,3 +1052,12 @@
  * @property {!Array.<number>} resolutions Resolutions.
  * @todo stability experimental
  */
+
+/**
+ * @typedef {Object} olx.View2D.fitGeometryOptions
+ * @property {!Array.<number>} padding Padding (in pixels) to be cleared inside the view.  Values in the array are top, right, bottom and left padding.  Default is `[0, 0, 0, 0]`.
+ * @property {boolean|undefined} constrainResolution Constrain the resolution.  Default is `true`.
+ * @property {boolean|undefined} nearest Get the nearest extent.  Default is `false`.
+ * @property {number|undefined} minResolution Minimum resolution that we zoom to.  Default is `0`.
+ * @todo stability experimental
+ */
