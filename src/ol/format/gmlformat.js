@@ -727,11 +727,13 @@ ol.format.GML.readFlatPosList_ = function(node, objectStack) {
   // The "dimension" attribute is from the GML 3.0.1 spec.
   var dim = 2;
   if (!goog.isNull(node.getAttribute('srsDimension'))) {
-    dim = parseInt(node.getAttribute('srsDimension'), 10);
+    dim = ol.format.XSD.readNonNegativeIntegerString(
+        node.getAttribute('srsDimension'));
   } else if (!goog.isNull(node.getAttribute('dimension'))) {
-    dim = parseInt(node.getAttribute('dimension'), 10);
+    dim = ol.format.XSD.readNonNegativeIntegerString(
+        node.getAttribute('dimension'));
   } else if (!goog.isNull(containerDimension)) {
-    dim = parseInt(containerDimension, 10);
+    dim = ol.format.XSD.readNonNegativeIntegerString(containerDimension);
   }
   var x, y, z;
   var flatCoordinates = [];
