@@ -338,6 +338,13 @@ ol.source.Vector.prototype.isEmpty = function() {
 
 
 /**
+ * @param {ol.Extent} extent Extent.
+ * @param {number} resolution Resolution.
+ */
+ol.source.Vector.prototype.loadFeatures = goog.nullFunction;
+
+
+/**
  * @param {ol.Feature} feature Feature.
  * @todo stability experimental
  */
