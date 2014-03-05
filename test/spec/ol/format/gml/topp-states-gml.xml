@@ -7,9 +7,9 @@
         <feature:the_geom>
             <gml:MultiSurface srsName="urn:x-ogc:def:crs:EPSG:4326">
                 <gml:surfaceMember>
-                    <gml:Polygon>
+                    <gml:Polygon srsName="urn:x-ogc:def:crs:EPSG:4326">
                         <gml:exterior>
-                            <gml:LinearRing>
+                            <gml:LinearRing srsName="urn:x-ogc:def:crs:EPSG:4326">
                                 <gml:posList>37.5101 -88.0711 37.5831 -88.1341 37.6281 -88.1571
                                     37.6601 -88.1591 37.7001 -88.1331 37.7351 -88.0721 37.8051
                                     -88.0351 37.8171 -88.0861 37.8311 -88.0891 37.8271 -88.0421
@@ -138,9 +138,9 @@
         <feature:the_geom>
             <gml:MultiSurface srsName="urn:x-ogc:def:crs:EPSG:4326">
                 <gml:surfaceMember>
-                    <gml:Polygon>
+                    <gml:Polygon srsName="urn:x-ogc:def:crs:EPSG:4326">
                         <gml:exterior>
-                            <gml:LinearRing>
+                            <gml:LinearRing srsName="urn:x-ogc:def:crs:EPSG:4326">
                                 <gml:posList>38.9661 -77.0081 38.9931 -77.0421 38.9321 -77.1221
                                     38.9151 -77.0781 38.8861 -77.0671 38.8621 -77.0391 38.8381
                                     -77.0401 38.8291 -77.0451 38.8131 -77.0351 38.7881 -77.0451
@@ -179,9 +179,9 @@
         <feature:the_geom>
             <gml:MultiSurface srsName="urn:x-ogc:def:crs:EPSG:4326">
                 <gml:surfaceMember>
-                    <gml:Polygon>
+                    <gml:Polygon srsName="urn:x-ogc:def:crs:EPSG:4326">
                         <gml:exterior>
-                            <gml:LinearRing>
+                            <gml:LinearRing srsName="urn:x-ogc:def:crs:EPSG:4326">
                                 <gml:posList>38.5571 -75.7071 38.4631 -75.6991 38.4551 -75.3501
                                     38.4501 -75.0931 38.4491 -75.0681 38.4491 -75.0451 38.7991
                                     -75.0831 38.8081 -75.1901 38.9451 -75.3071 39.0121 -75.3241
@@ -227,9 +227,9 @@
         <feature:the_geom>
             <gml:MultiSurface srsName="urn:x-ogc:def:crs:EPSG:4326">
                 <gml:surfaceMember>
-                    <gml:Polygon>
+                    <gml:Polygon srsName="urn:x-ogc:def:crs:EPSG:4326">
                         <gml:exterior>
-                            <gml:LinearRing>
+                            <gml:LinearRing srsName="urn:x-ogc:def:crs:EPSG:4326">
                                 <gml:posList>38.4801 -79.2311 38.6581 -79.1271 38.6631 -79.1211
                                     38.6591 -79.0881 38.7071 -79.0871 38.7611 -79.0561 38.7901
                                     -79.0551 38.7991 -79.0331 38.8461 -78.9871 38.7631 -78.8661
@@ -378,9 +378,9 @@
         <feature:the_geom>
             <gml:MultiSurface srsName="urn:x-ogc:def:crs:EPSG:4326">
                 <gml:surfaceMember>
-                    <gml:Polygon>
+                    <gml:Polygon srsName="urn:x-ogc:def:crs:EPSG:4326">
                         <gml:exterior>
-                            <gml:LinearRing>
+                            <gml:LinearRing srsName="urn:x-ogc:def:crs:EPSG:4326">
                                 <gml:posList>38.6491 -75.7111 38.8301 -75.7241 39.1411 -75.7521
                                     39.2471 -75.7611 39.2951 -75.7641 39.3831 -75.7721 39.7231
                                     -75.7911 39.7221 -76.1391 39.7211 -76.2331 39.7201 -76.5701
@@ -456,9 +456,9 @@
                     </gml:Polygon>
                 </gml:surfaceMember>
                 <gml:surfaceMember>
-                    <gml:Polygon>
+                    <gml:Polygon srsName="urn:x-ogc:def:crs:EPSG:4326">
                         <gml:exterior>
-                            <gml:LinearRing>
+                            <gml:LinearRing srsName="urn:x-ogc:def:crs:EPSG:4326">
                                 <gml:posList>38.9071 -76.2931 38.9491 -76.2731 38.9231 -76.2461
                                     38.9781 -76.2481 39.0401 -76.2991 38.9581 -76.3561 38.8541
                                     -76.3751 38.8751 -76.3291 38.9241 -76.3421 38.9121 -76.3221
@@ -469,9 +469,9 @@
                     </gml:Polygon>
                 </gml:surfaceMember>
                 <gml:surfaceMember>
-                    <gml:Polygon>
+                    <gml:Polygon srsName="urn:x-ogc:def:crs:EPSG:4326">
                         <gml:exterior>
-                            <gml:LinearRing>
+                            <gml:LinearRing srsName="urn:x-ogc:def:crs:EPSG:4326">
                                 <gml:posList>38.4491 -75.0681 38.3221 -75.0871 38.4491 -75.0451
                                     38.4491 -75.0681</gml:posList>
                             </gml:LinearRing>
@@ -479,9 +479,9 @@
                     </gml:Polygon>
                 </gml:surfaceMember>
                 <gml:surfaceMember>
-                    <gml:Polygon>
+                    <gml:Polygon srsName="urn:x-ogc:def:crs:EPSG:4326">
                         <gml:exterior>
-                            <gml:LinearRing>
+                            <gml:LinearRing srsName="urn:x-ogc:def:crs:EPSG:4326">
                                 <gml:posList>38.0271 -75.2701 38.0281 -75.2421 38.1241 -75.1731
                                     38.3201 -75.0941 38.2041 -75.1641 38.0941 -75.2091 38.0371
                                     -75.2441 38.0271 -75.2701</gml:posList>
@@ -519,9 +519,9 @@
         <feature:the_geom>
             <gml:MultiSurface srsName="urn:x-ogc:def:crs:EPSG:4326">
                 <gml:surfaceMember>
-                    <gml:Polygon>
+                    <gml:Polygon srsName="urn:x-ogc:def:crs:EPSG:4326">
                         <gml:exterior>
-                            <gml:LinearRing>
+                            <gml:LinearRing srsName="urn:x-ogc:def:crs:EPSG:4326">
                                 <gml:posList>37.6411 -102.0431 37.7341 -102.0431 38.2531 -102.0451
                                     38.2631 -102.0451 38.6151 -102.0471 38.6921 -102.0471 39.0361
                                     -102.0481 39.1261 -102.0471 39.5621 -102.0481 39.5681 -102.0481
@@ -573,9 +573,9 @@
         <feature:the_geom>
             <gml:MultiSurface srsName="urn:x-ogc:def:crs:EPSG:4326">
                 <gml:surfaceMember>
-                    <gml:Polygon>
+                    <gml:Polygon srsName="urn:x-ogc:def:crs:EPSG:4326">
                         <gml:exterior>
-                            <gml:LinearRing>
+                            <gml:LinearRing srsName="urn:x-ogc:def:crs:EPSG:4326">
                                 <gml:posList>36.6551 -86.5101 36.6501 -86.4151 36.6431 -86.1991
                                     36.6331 -85.9801 36.6261 -85.7851 36.6181 -85.4371 36.6261
                                     -85.3001 36.6251 -85.2721 36.6201 -84.9981 36.6051 -84.7911
@@ -681,9 +681,9 @@
                     </gml:Polygon>
                 </gml:surfaceMember>
                 <gml:surfaceMember>
-                    <gml:Polygon>
+                    <gml:Polygon srsName="urn:x-ogc:def:crs:EPSG:4326">
                         <gml:exterior>
-                            <gml:LinearRing>
+                            <gml:LinearRing srsName="urn:x-ogc:def:crs:EPSG:4326">
                                 <gml:posList>36.4981 -89.5331 36.4981 -89.4751 36.5041 -89.4811
                                     36.5251 -89.4711 36.5471 -89.4811 36.5591 -89.4931 36.5641
                                     -89.5301 36.5571 -89.5561 36.5411 -89.5681 36.5181 -89.5661
@@ -722,9 +722,9 @@
         <feature:the_geom>
             <gml:MultiSurface srsName="urn:x-ogc:def:crs:EPSG:4326">
                 <gml:surfaceMember>
-                    <gml:Polygon>
+                    <gml:Polygon srsName="urn:x-ogc:def:crs:EPSG:4326">
                         <gml:exterior>
-                            <gml:LinearRing>
+                            <gml:LinearRing srsName="urn:x-ogc:def:crs:EPSG:4326">
                                 <gml:posList>37.0011 -95.0711 37.0001 -95.0321 36.9961 -94.6201
                                     37.0601 -94.6201 37.3271 -94.6181 37.3601 -94.6181 37.6501
                                     -94.6181 37.6791 -94.6191 38.0301 -94.6161 38.0551 -94.6171
@@ -795,9 +795,9 @@
         <feature:the_geom>
             <gml:MultiSurface srsName="urn:x-ogc:def:crs:EPSG:4326">
                 <gml:surfaceMember>
-                    <gml:Polygon>
+                    <gml:Polygon srsName="urn:x-ogc:def:crs:EPSG:4326">
                         <gml:exterior>
-                            <gml:LinearRing>
+                            <gml:LinearRing srsName="urn:x-ogc:def:crs:EPSG:4326">
                                 <gml:posList>36.5461 -79.1441 36.5431 -78.7961 36.5461 -78.7371
                                     36.5411 -78.4581 36.5451 -78.3211 36.5521 -78.0511 36.5521
                                     -77.8981 36.5531 -77.7631 36.5531 -77.3201 36.5561 -77.1771
@@ -907,9 +907,9 @@
                     </gml:Polygon>
                 </gml:surfaceMember>
                 <gml:surfaceMember>
-                    <gml:Polygon>
+                    <gml:Polygon srsName="urn:x-ogc:def:crs:EPSG:4326">
                         <gml:exterior>
-                            <gml:LinearRing>
+                            <gml:LinearRing srsName="urn:x-ogc:def:crs:EPSG:4326">
                                 <gml:posList>38.0271 -75.2701 37.9181 -75.3461 37.9001 -75.3781
                                     37.9011 -75.3441 37.8751 -75.3861 37.8881 -75.3391 37.9621
                                     -75.2981 38.0281 -75.2421 38.0271 -75.2701</gml:posList>
@@ -918,9 +918,9 @@
                     </gml:Polygon>
                 </gml:surfaceMember>
                 <gml:surfaceMember>
-                    <gml:Polygon>
+                    <gml:Polygon srsName="urn:x-ogc:def:crs:EPSG:4326">
                         <gml:exterior>
-                            <gml:LinearRing>
+                            <gml:LinearRing srsName="urn:x-ogc:def:crs:EPSG:4326">
                                 <gml:posList>37.5521 -75.8671 37.5561 -75.9301 37.5211 -75.9541
                                     37.4791 -75.9651 37.4841 -75.9341 37.3081 -76.0181 37.1261
                                     -75.9701 37.1421 -75.9311 37.3671 -75.8971 37.4181 -75.8261
@@ -965,9 +965,9 @@
         <feature:the_geom>
             <gml:MultiSurface srsName="urn:x-ogc:def:crs:EPSG:4326">
                 <gml:surfaceMember>
-                    <gml:Polygon>
+                    <gml:Polygon srsName="urn:x-ogc:def:crs:EPSG:4326">
                         <gml:exterior>
-                            <gml:LinearRing>
+                            <gml:LinearRing srsName="urn:x-ogc:def:crs:EPSG:4326">
                                 <gml:posList>36.9531 -89.1041 36.9771 -89.1071 36.9881 -89.1291
                                     36.9861 -89.1931 37.0281 -89.2101 37.0411 -89.2371 37.0871
                                     -89.2641 37.0911 -89.2841 37.0851 -89.3031 37.0601 -89.3091

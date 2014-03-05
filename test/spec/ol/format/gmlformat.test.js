@@ -88,9 +88,10 @@ describe('ol.format.GML', function() {
                 '<gml:MultiSurface xmlns:gml="http://www.opengis.net/gml" ' +
                 '    srsName="urn:x-ogc:def:crs:EPSG:4326">' +
                 '  <gml:surfaceMember>' +
-                '    <gml:Polygon>' +
+                '    <gml:Polygon srsName="urn:x-ogc:def:crs:EPSG:4326">' +
                 '      <gml:exterior>' +
-                '        <gml:LinearRing>' +
+                '        <gml:LinearRing srsName=' +
+                '          "urn:x-ogc:def:crs:EPSG:4326">' +
                 '          <gml:posList>38.9661 -77.0081 38.9931 -77.0421 ' +
                 '          38.9321 -77.1221 38.9151 -77.0781 38.8861 ' +
                 '          -77.0671 38.8621 -77.0391 38.8381 -77.0401 ' +
@@ -153,17 +154,17 @@ describe('ol.format.GML', function() {
             '<gml:Polygon xmlns:gml="http://www.opengis.net/gml" ' +
             '    srsName="CRS:84">' +
             '  <gml:exterior>' +
-            '    <gml:LinearRing>' +
+            '    <gml:LinearRing srsName="CRS:84">' +
             '      <gml:posList>1 2 3 2 3 4 1 2</gml:posList>' +
             '    </gml:LinearRing>' +
             '  </gml:exterior>' +
             '  <gml:interior>' +
-            '    <gml:LinearRing>' +
+            '    <gml:LinearRing srsName="CRS:84">' +
             '      <gml:posList>2 3 2 5 4 5 2 3</gml:posList>' +
             '    </gml:LinearRing>' +
             '  </gml:interior>' +
             '  <gml:interior>' +
-            '    <gml:LinearRing>' +
+            '    <gml:LinearRing srsName="CRS:84">' +
             '      <gml:posList>3 4 3 6 5 6 3 4</gml:posList>' +
             '    </gml:LinearRing>' +
             '  </gml:interior>' +
@@ -188,17 +189,17 @@ describe('ol.format.GML', function() {
             '  <gml:patches>' +
             '    <gml:PolygonPatch>' +
             '      <gml:exterior>' +
-            '        <gml:LinearRing>' +
+            '        <gml:LinearRing srsName="CRS:84">' +
             '          <gml:posList>1 2 3 2 3 4 1 2</gml:posList>' +
             '        </gml:LinearRing>' +
             '      </gml:exterior>' +
             '      <gml:interior>' +
-            '        <gml:LinearRing>' +
+            '        <gml:LinearRing srsName="CRS:84">' +
             '          <gml:posList>2 3 2 5 4 5 2 3</gml:posList>' +
             '        </gml:LinearRing>' +
             '      </gml:interior>' +
             '      <gml:interior>' +
-            '        <gml:LinearRing>' +
+            '        <gml:LinearRing srsName="CRS:84">' +
             '          <gml:posList>3 4 3 6 5 6 3 4</gml:posList>' +
             '        </gml:LinearRing>' +
             '      </gml:interior>' +
@@ -261,17 +262,17 @@ describe('ol.format.GML', function() {
             '<gml:MultiPoint xmlns:gml="http://www.opengis.net/gml" ' +
             '    srsName="CRS:84">' +
             '  <gml:pointMember>' +
-            '    <gml:Point>' +
+            '    <gml:Point srsName="CRS:84">' +
             '      <gml:pos>1 2</gml:pos>' +
             '    </gml:Point>' +
             '  </gml:pointMember>' +
             '  <gml:pointMember>' +
-            '    <gml:Point>' +
+            '    <gml:Point srsName="CRS:84">' +
             '      <gml:pos>2 3</gml:pos>' +
             '    </gml:Point>' +
             '  </gml:pointMember>' +
             '  <gml:pointMember>' +
-            '    <gml:Point>' +
+            '    <gml:Point srsName="CRS:84">' +
             '      <gml:pos>3 4</gml:pos>' +
             '    </gml:Point>' +
             '  </gml:pointMember>' +
@@ -313,12 +314,12 @@ describe('ol.format.GML', function() {
             '<gml:MultiLineString xmlns:gml="http://www.opengis.net/gml" ' +
             '    srsName="CRS:84">' +
             '  <gml:lineStringMember>' +
-            '    <gml:LineString>' +
+            '    <gml:LineString srsName="CRS:84">' +
             '      <gml:posList>1 2 2 3</gml:posList>' +
             '    </gml:LineString>' +
             '  </gml:lineStringMember>' +
             '  <gml:lineStringMember>' +
-            '    <gml:LineString>' +
+            '    <gml:LineString srsName="CRS:84">' +
             '      <gml:posList>3 4 4 5</gml:posList>' +
             '    </gml:LineString>' +
             '  </gml:lineStringMember>' +
@@ -360,28 +361,28 @@ describe('ol.format.GML', function() {
             '<gml:MultiPolygon xmlns:gml="http://www.opengis.net/gml" ' +
             '    srsName="CRS:84">' +
             '  <gml:polygonMember>' +
-            '    <gml:Polygon>' +
+            '    <gml:Polygon srsName="CRS:84">' +
             '      <gml:exterior>' +
-            '        <gml:LinearRing>' +
+            '        <gml:LinearRing srsName="CRS:84">' +
             '          <gml:posList>1 2 3 2 3 4 1 2</gml:posList>' +
             '        </gml:LinearRing>' +
             '      </gml:exterior>' +
             '      <gml:interior>' +
-            '        <gml:LinearRing>' +
+            '        <gml:LinearRing srsName="CRS:84">' +
             '          <gml:posList>2 3 2 5 4 5 2 3</gml:posList>' +
             '        </gml:LinearRing>' +
             '      </gml:interior>' +
             '      <gml:interior>' +
-            '        <gml:LinearRing>' +
+            '        <gml:LinearRing srsName="CRS:84">' +
             '          <gml:posList>3 4 3 6 5 6 3 4</gml:posList>' +
             '        </gml:LinearRing>' +
             '      </gml:interior>' +
             '    </gml:Polygon>' +
             '  </gml:polygonMember>' +
             '  <gml:polygonMember>' +
-            '    <gml:Polygon>' +
+            '    <gml:Polygon srsName="CRS:84">' +
             '      <gml:exterior>' +
-            '        <gml:LinearRing>' +
+            '        <gml:LinearRing srsName="CRS:84">' +
             '          <gml:posList>1 2 3 2 3 4 1 2</gml:posList>' +
             '        </gml:LinearRing>' +
             '      </gml:exterior>' +
@@ -450,12 +451,12 @@ describe('ol.format.GML', function() {
                 '<gml:MultiCurve xmlns:gml="http://www.opengis.net/gml" ' +
                 '    srsName="CRS:84">' +
                 '  <gml:curveMember>' +
-                '    <gml:LineString>' +
+                '    <gml:LineString srsName="CRS:84">' +
                 '      <gml:posList>1 2 2 3</gml:posList>' +
                 '    </gml:LineString>' +
                 '  </gml:curveMember>' +
                 '  <gml:curveMember>' +
-                '    <gml:LineString>' +
+                '    <gml:LineString srsName="CRS:84">' +
                 '      <gml:posList>3 4 4 5</gml:posList>' +
                 '    </gml:LineString>' +
                 '  </gml:curveMember>' +
@@ -473,7 +474,7 @@ describe('ol.format.GML', function() {
             '<gml:MultiCurve xmlns:gml="http://www.opengis.net/gml" ' +
             '    srsName="CRS:84">' +
             '  <gml:curveMember>' +
-            '    <gml:Curve>' +
+            '    <gml:Curve srsName="CRS:84">' +
             '      <gml:segments>' +
             '        <gml:LineStringSegment>' +
             '          <gml:posList>1 2 2 3</gml:posList>' +
@@ -482,7 +483,7 @@ describe('ol.format.GML', function() {
             '    </gml:Curve>' +
             '  </gml:curveMember>' +
             '  <gml:curveMember>' +
-            '    <gml:Curve>' +
+            '    <gml:Curve srsName="CRS:84">' +
             '      <gml:segments>' +
             '        <gml:LineStringSegment>' +
             '          <gml:posList>3 4 4 5</gml:posList>' +
@@ -509,28 +510,28 @@ describe('ol.format.GML', function() {
             '<gml:MultiSurface xmlns:gml="http://www.opengis.net/gml" ' +
             '    srsName="CRS:84">' +
             '  <gml:surfaceMember>' +
-            '    <gml:Polygon>' +
+            '    <gml:Polygon srsName="CRS:84">' +
             '      <gml:exterior>' +
-            '        <gml:LinearRing>' +
+            '        <gml:LinearRing srsName="CRS:84">' +
             '          <gml:posList>1 2 3 2 3 4 1 2</gml:posList>' +
             '        </gml:LinearRing>' +
             '      </gml:exterior>' +
             '      <gml:interior>' +
-            '        <gml:LinearRing>' +
+            '        <gml:LinearRing srsName="CRS:84">' +
             '          <gml:posList>2 3 2 5 4 5 2 3</gml:posList>' +
             '        </gml:LinearRing>' +
             '      </gml:interior>' +
             '      <gml:interior>' +
-            '        <gml:LinearRing>' +
+            '        <gml:LinearRing srsName="CRS:84">' +
             '          <gml:posList>3 4 3 6 5 6 3 4</gml:posList>' +
             '        </gml:LinearRing>' +
             '      </gml:interior>' +
             '    </gml:Polygon>' +
             '  </gml:surfaceMember>' +
             '  <gml:surfaceMember>' +
-            '    <gml:Polygon>' +
+            '    <gml:Polygon srsName="CRS:84">' +
             '      <gml:exterior>' +
-            '        <gml:LinearRing>' +
+            '        <gml:LinearRing srsName="CRS:84">' +
             '          <gml:posList>1 2 3 2 3 4 1 2</gml:posList>' +
             '        </gml:LinearRing>' +
             '      </gml:exterior>' +
@@ -595,21 +596,21 @@ describe('ol.format.GML', function() {
             '<gml:MultiSurface xmlns:gml="http://www.opengis.net/gml" ' +
             '    srsName="CRS:84">' +
             '  <gml:surfaceMember>' +
-            '    <gml:Surface>' +
+            '    <gml:Surface srsName="CRS:84">' +
             '      <gml:patches>' +
             '        <gml:PolygonPatch>' +
             '          <gml:exterior>' +
-            '            <gml:LinearRing>' +
+            '            <gml:LinearRing srsName="CRS:84">' +
             '              <gml:posList>1 2 3 2 3 4 1 2</gml:posList>' +
             '            </gml:LinearRing>' +
             '          </gml:exterior>' +
             '          <gml:interior>' +
-            '            <gml:LinearRing>' +
+            '            <gml:LinearRing srsName="CRS:84">' +
             '              <gml:posList>2 3 2 5 4 5 2 3</gml:posList>' +
             '            </gml:LinearRing>' +
             '          </gml:interior>' +
             '          <gml:interior>' +
-            '            <gml:LinearRing>' +
+            '            <gml:LinearRing srsName="CRS:84">' +
             '              <gml:posList>3 4 3 6 5 6 3 4</gml:posList>' +
             '            </gml:LinearRing>' +
             '          </gml:interior>' +
@@ -618,11 +619,11 @@ describe('ol.format.GML', function() {
             '    </gml:Surface>' +
             '  </gml:surfaceMember>' +
             '  <gml:surfaceMember>' +
-            '    <gml:Surface>' +
+            '    <gml:Surface srsName="CRS:84">' +
             '      <gml:patches>' +
             '        <gml:PolygonPatch>' +
             '          <gml:exterior>' +
-            '            <gml:LinearRing>' +
+            '            <gml:LinearRing srsName="CRS:84">' +
             '              <gml:posList>1 2 3 2 3 4 1 2</gml:posList>' +
             '            </gml:LinearRing>' +
             '          </gml:exterior>' +
