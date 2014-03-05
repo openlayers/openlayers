@@ -1412,7 +1412,7 @@ ol.format.GML.writeGeometry_ = function(node, geometry, objectStack) {
   var context = objectStack[objectStack.length - 1];
   goog.asserts.assert(goog.isObject(context));
   var item = goog.object.clone(context);
-  goog.object.set(item, 'node', node);
+  item.node = node;
   ol.xml.pushSerializeAndPop(/** @type {ol.xml.NodeStackItem} */
       (item), ol.format.GML.GEOMETRY_SERIALIZERS_,
       ol.format.GML.GEOMETRY_NODE_FACTORY_, [geometry], objectStack);
@@ -1455,8 +1455,8 @@ ol.format.GML.writeFeature_ = function(node, feature, objectStack) {
       }
     }
   }
-  var item = goog.object.clone(context);
-  goog.object.set(item, 'node', node);
+  var item = objectStack[0];
+  item.node = node;
   ol.xml.pushSerializeAndPop(/** @type {ol.xml.NodeStackItem} */
       (item), context.serializers,
       ol.xml.OBJECT_PROPERTY_NODE_FACTORY,
@@ -1481,7 +1481,7 @@ ol.format.GML.writeFeatureMembers_ = function(node, features, objectStack) {
   serializers[featureNS][featureType] = ol.xml.makeChildAppender(
       ol.format.GML.writeFeature_);
   var item = goog.object.clone(context);
-  goog.object.set(item, 'node', node);
+  item.node = node;
   ol.xml.pushSerializeAndPop(/** @type {ol.xml.NodeStackItem} */
       (item),
       serializers,
