@@ -102,6 +102,7 @@ ol.render.Box.prototype.handleMapPostCompose_ = function(event) {
   // use drawAsync(Infinity) to draw above everything
   event.vectorContext.drawAsync(Infinity, function(render) {
     render.setFillStrokeStyle(style.getFill(), style.getStroke());
+    render.setTextStyle(style.getText());
     render.drawPolygonGeometry(geometry, null);
   });
 };
