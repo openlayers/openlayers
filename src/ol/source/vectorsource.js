@@ -222,7 +222,7 @@ ol.source.Vector.prototype.getAllFeaturesAtCoordinate = function(coordinate) {
  * @return {Array.<ol.Feature>} Features.
  * @todo stability experimental
  */
-ol.source.Vector.prototype.getAllFeaturesInExtent = function(extent) {
+ol.source.Vector.prototype.getFeaturesInExtent = function(extent) {
   return this.rBush_.getAllInExtent(extent);
 };
 
