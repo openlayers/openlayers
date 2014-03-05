@@ -1228,7 +1228,7 @@ ol.format.GML.writeMultiSurfaceOrPolygon_ = function(node, geometry,
   var polygons = geometry.getPolygons();
   ol.xml.pushSerializeAndPop({node: node, srsName: srsName, surface: surface},
       ol.format.GML.SURFACEORPOLYGONMEMBER_SERIALIZERS_,
-      ol.format.GML.MULTISURFACEORPOLYGON_NODE_FACTORY_, polygons,
+      ol.format.GML.MULTIGEOMETRY_MEMBER_NODE_FACTORY_, polygons,
       objectStack);
 };
 
@@ -1273,7 +1273,7 @@ ol.format.GML.writeMultiCurveOrLineString_ = function(node, geometry,
   var lines = geometry.getLineStrings();
   ol.xml.pushSerializeAndPop({node: node, srsName: srsName, curve: curve},
       ol.format.GML.LINESTRINGORCURVEMEMBER_SERIALIZERS_,
-      ol.format.GML.MULTICURVELINESTRING_NODE_FACTORY_, lines,
+      ol.format.GML.MULTIGEOMETRY_MEMBER_NODE_FACTORY_, lines,
       objectStack);
 };
 
@@ -1533,24 +1533,14 @@ ol.format.GML.GEOMETRY_SERIALIZERS_ = {
 
 /**
  * @const
- * @param {*} value Value.
- * @param {Array.<*>} objectStack Object stack.
- * @param {string=} opt_nodeName Node name.
- * @return {Node|undefined} Node.
+ * @type {Object.<string, string>}
  * @private
  */
-ol.format.GML.MULTICURVELINESTRING_NODE_FACTORY_ = function(value, objectStack,
-    opt_nodeName) {
-  var parentNode = objectStack[objectStack.length - 1].node;
-  goog.asserts.assert(ol.xml.isNode(parentNode));
-  var nodeName;
-  if (parentNode.nodeName === 'MultiLineString') {
-    nodeName = 'lineStringMember';
-  } else {
-    nodeName = 'curveMember';
-  }
-  return ol.xml.createElementNS('http://www.opengis.net/gml',
-      nodeName);
+ol.format.GML.MULTIGEOMETRY_TO_MEMBER_NODENAME_ = {
+  'MultiLineString': 'lineStringMember',
+  'MultiCurve': 'curveMember',
+  'MultiPolygon': 'polygonMember',
+  'MultiSurface': 'surfaceMember'
 };
 
 
@@ -1562,18 +1552,12 @@ ol.format.GML.MULTICURVELINESTRING_NODE_FACTORY_ = function(value, objectStack,
  * @return {Node|undefined} Node.
  * @private
  */
-ol.format.GML.MULTISURFACEORPOLYGON_NODE_FACTORY_ = function(value, objectStack,
-    opt_nodeName) {
+ol.format.GML.MULTIGEOMETRY_MEMBER_NODE_FACTORY_ = function(value,
+    objectStack, opt_nodeName) {
   var parentNode = objectStack[objectStack.length - 1].node;
   goog.asserts.assert(ol.xml.isNode(parentNode));
-  var nodeName;
-  if (parentNode.nodeName === 'MultiPolygon') {
-    nodeName = 'polygonMember';
-  } else {
-    nodeName = 'surfaceMember';
-  }
   return ol.xml.createElementNS('http://www.opengis.net/gml',
-      nodeName);
+      ol.format.GML.MULTIGEOMETRY_TO_MEMBER_NODENAME_[parentNode.nodeName]);
 };
 
 
