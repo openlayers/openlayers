@@ -208,7 +208,7 @@ ol.source.Vector.prototype.getFeatures = function() {
  * @return {Array.<ol.Feature>} Features.
  * @todo stability experimental
  */
-ol.source.Vector.prototype.getAllFeaturesAtCoordinate = function(coordinate) {
+ol.source.Vector.prototype.getFeaturesAtCoordinate = function(coordinate) {
   var features = [];
   this.forEachFeatureAtCoordinate(coordinate, function(feature) {
     features.push(feature);
