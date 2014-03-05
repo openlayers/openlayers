@@ -10,16 +10,17 @@ var readGeometry = function(format, text) {
 
 describe('ol.format.GML', function() {
 
-  var format;
+  var format, formatWGS84;
   beforeEach(function() {
-    format = new ol.format.GML();
+    format = new ol.format.GML({srsName: 'CRS:84'});
+    formatWGS84 = new ol.format.GML({srsName: 'urn:x-ogc:def:crs:EPSG:4326'});
   });
 
   describe('#readGeometry', function() {
 
     describe('point', function() {
 
-      it('can read a point geometry', function() {
+      it('can read and write a point geometry', function() {
         var text =
             '<gml:Point xmlns:gml="http://www.opengis.net/gml" ' +
             '    srsName="CRS:84">' +
@@ -28,13 +29,15 @@ describe('ol.format.GML', function() {
         var g = readGeometry(format, text);
         expect(g).to.be.an(ol.geom.Point);
         expect(g.getCoordinates()).to.eql([1, 2, 0]);
+        var serialized = format.writeGeometry(g);
+        expect(serialized.firstElementChild).to.xmleql(ol.xml.load(text));
       });
 
     });
 
     describe('linestring', function() {
 
-      it('can read a linestring geometry', function() {
+      it('can read and write a linestring geometry', function() {
         var text =
             '<gml:LineString xmlns:gml="http://www.opengis.net/gml" ' +
             '    srsName="CRS:84">' +
@@ -43,56 +46,71 @@ describe('ol.format.GML', function() {
         var g = readGeometry(format, text);
         expect(g).to.be.an(ol.geom.LineString);
         expect(g.getCoordinates()).to.eql([[1, 2, 0], [3, 4, 0]]);
+        var serialized = format.writeGeometry(g);
+        expect(serialized.firstElementChild).to.xmleql(ol.xml.load(text));
       });
 
     });
 
     describe('axis order', function() {
 
-      it('can read a linestring geometry with correct axis order', function() {
-        var text =
-            '<gml:LineString xmlns:gml="http://www.opengis.net/gml" ' +
-            '    srsName="urn:x-ogc:def:crs:EPSG:4326">' +
-            '  <gml:posList>-90 -180 90 180</gml:posList>' +
-            '</gml:LineString>';
-        var g = readGeometry(format, text);
-        expect(g).to.be.an(ol.geom.LineString);
-        expect(g.getCoordinates()).to.eql([[-180, -90, 0], [180, 90, 0]]);
-      });
+      it('can read and write a linestring geometry with ' +
+          'correct axis order', function() {
+            var text =
+                '<gml:LineString xmlns:gml="http://www.opengis.net/gml" ' +
+                '    srsName="urn:x-ogc:def:crs:EPSG:4326">' +
+                '  <gml:posList>-90 -180 90 180</gml:posList>' +
+                '</gml:LineString>';
+            var g = readGeometry(format, text);
+            expect(g).to.be.an(ol.geom.LineString);
+            expect(g.getCoordinates()).to.eql([[-180, -90, 0], [180, 90, 0]]);
+            var serialized = formatWGS84.writeGeometry(g);
+            expect(serialized.firstElementChild).to.xmleql(ol.xml.load(text));
+          });
 
-      it('can read a point geometry with correct axis order', function() {
-        var text =
-            '<gml:Point xmlns:gml="http://www.opengis.net/gml" ' +
-            '    srsName="urn:x-ogc:def:crs:EPSG:4326">' +
-            '  <gml:pos>-90 -180</gml:pos>' +
-            '</gml:Point>';
-        var g = readGeometry(format, text);
-        expect(g).to.be.an(ol.geom.Point);
-        expect(g.getCoordinates()).to.eql([-180, -90, 0]);
-      });
+      it('can read and write a point geometry with correct axis order',
+          function() {
+            var text =
+                '<gml:Point xmlns:gml="http://www.opengis.net/gml" ' +
+                '    srsName="urn:x-ogc:def:crs:EPSG:4326">' +
+                '  <gml:pos>-90 -180</gml:pos>' +
+                '</gml:Point>';
+            var g = readGeometry(format, text);
+            expect(g).to.be.an(ol.geom.Point);
+            expect(g.getCoordinates()).to.eql([-180, -90, 0]);
+            var serialized = formatWGS84.writeGeometry(g);
+            expect(serialized.firstElementChild).to.xmleql(ol.xml.load(text));
+          });
 
-      it('can read multi surface geometry with right axis order', function() {
-        var text =
-            '<gml:MultiSurface xmlns:gml="http://www.opengis.net/gml" ' +
-            '    srsName="urn:x-ogc:def:crs:EPSG:4326">' +
-            '  <gml:surfaceMember>' +
-            '    <gml:Polygon>' +
-            '      <gml:exterior>' +
-            '        <gml:LinearRing>' +
-            '          <gml:posList>38.9661 -77.0081 38.9931 -77.0421 ' +
-            '          38.9321 -77.1221 38.9151 -77.0781 38.8861 -77.0671 ' +
-            '          38.8621 -77.0391 38.8381 -77.0401 38.8291 -77.0451 ' +
-            '          38.8131 -77.0351 38.7881 -77.0451' +
-            '          38.8891 -76.9111 38.9661 -77.0081</gml:posList>' +
-            '        </gml:LinearRing>' +
-            '      </gml:exterior>' +
-            '    </gml:Polygon>' +
-            '  </gml:surfaceMember>' +
-            '</gml:MultiSurface>';
-        var g = readGeometry(format, text);
-        expect(g.getCoordinates()[0][0][0][0]).to.equal(-77.0081);
-        expect(g.getCoordinates()[0][0][0][1]).to.equal(38.9661);
-      });
+      it('can read and write a surface geometry with right axis order',
+          function() {
+            var text =
+                '<gml:MultiSurface xmlns:gml="http://www.opengis.net/gml" ' +
+                '    srsName="urn:x-ogc:def:crs:EPSG:4326">' +
+                '  <gml:surfaceMember>' +
+                '    <gml:Polygon srsName="urn:x-ogc:def:crs:EPSG:4326">' +
+                '      <gml:exterior>' +
+                '        <gml:LinearRing srsName=' +
+                '          "urn:x-ogc:def:crs:EPSG:4326">' +
+                '          <gml:posList>38.9661 -77.0081 38.9931 -77.0421 ' +
+                '          38.9321 -77.1221 38.9151 -77.0781 38.8861 ' +
+                '          -77.0671 38.8621 -77.0391 38.8381 -77.0401 ' +
+                '          38.8291 -77.0451 38.8131 -77.0351 38.7881 ' +
+                '          -77.0451 38.8891 -76.9111 38.9661 -77.0081' +
+                '          </gml:posList>' +
+                '        </gml:LinearRing>' +
+                '      </gml:exterior>' +
+                '    </gml:Polygon>' +
+                '  </gml:surfaceMember>' +
+                '</gml:MultiSurface>';
+            var g = readGeometry(format, text);
+            expect(g.getCoordinates()[0][0][0][0]).to.equal(-77.0081);
+            expect(g.getCoordinates()[0][0][0][1]).to.equal(38.9661);
+            format = new ol.format.GML({srsName: 'urn:x-ogc:def:crs:EPSG:4326',
+              surface: false});
+            var serialized = format.writeGeometry(g);
+            expect(serialized.firstElementChild).to.xmleql(ol.xml.load(text));
+          });
 
     });
 
@@ -113,38 +131,40 @@ describe('ol.format.GML', function() {
 
     describe('linearring', function() {
 
-      it('can read a linearring geometry', function() {
+      it('can read and write a linearring geometry', function() {
         var text =
             '<gml:LinearRing xmlns:gml="http://www.opengis.net/gml" ' +
             '    srsName="CRS:84">' +
             '  <gml:posList>1 2 3 4 5 6 1 2</gml:posList>' +
             '</gml:LinearRing>';
         var g = readGeometry(format, text);
-        expect(g).to.be.an(ol.geom.Polygon);
+        expect(g).to.be.an(ol.geom.LinearRing);
         expect(g.getCoordinates()).to.eql(
-            [[[1, 2, 0], [3, 4, 0], [5, 6, 0], [1, 2, 0]]]);
+            [[1, 2, 0], [3, 4, 0], [5, 6, 0], [1, 2, 0]]);
+        var serialized = format.writeGeometry(g);
+        expect(serialized.firstElementChild).to.xmleql(ol.xml.load(text));
       });
 
     });
 
     describe('polygon', function() {
 
-      it('can read a polygon geometry', function() {
+      it('can read and write a polygon geometry', function() {
         var text =
             '<gml:Polygon xmlns:gml="http://www.opengis.net/gml" ' +
             '    srsName="CRS:84">' +
             '  <gml:exterior>' +
-            '    <gml:LinearRing>' +
+            '    <gml:LinearRing srsName="CRS:84">' +
             '      <gml:posList>1 2 3 2 3 4 1 2</gml:posList>' +
             '    </gml:LinearRing>' +
             '  </gml:exterior>' +
             '  <gml:interior>' +
-            '    <gml:LinearRing>' +
+            '    <gml:LinearRing srsName="CRS:84">' +
             '      <gml:posList>2 3 2 5 4 5 2 3</gml:posList>' +
             '    </gml:LinearRing>' +
             '  </gml:interior>' +
             '  <gml:interior>' +
-            '    <gml:LinearRing>' +
+            '    <gml:LinearRing srsName="CRS:84">' +
             '      <gml:posList>3 4 3 6 5 6 3 4</gml:posList>' +
             '    </gml:LinearRing>' +
             '  </gml:interior>' +
@@ -154,30 +174,32 @@ describe('ol.format.GML', function() {
         expect(g.getCoordinates()).to.eql([[[1, 2, 0], [3, 2, 0], [3, 4, 0],
                 [1, 2, 0]], [[2, 3, 0], [2, 5, 0], [4, 5, 0], [2, 3, 0]],
               [[3, 4, 0], [3, 6, 0], [5, 6, 0], [3, 4, 0]]]);
+        var serialized = format.writeGeometry(g);
+        expect(serialized.firstElementChild).to.xmleql(ol.xml.load(text));
       });
 
     });
 
     describe('surface', function() {
 
-      it('can read a surface geometry', function() {
+      it('can read and write a surface geometry', function() {
         var text =
             '<gml:Surface xmlns:gml="http://www.opengis.net/gml" ' +
             '    srsName="CRS:84">' +
             '  <gml:patches>' +
-            '    <gml:PolygonPatch interpolation="planar">' +
+            '    <gml:PolygonPatch>' +
             '      <gml:exterior>' +
-            '        <gml:LinearRing>' +
+            '        <gml:LinearRing srsName="CRS:84">' +
             '          <gml:posList>1 2 3 2 3 4 1 2</gml:posList>' +
             '        </gml:LinearRing>' +
             '      </gml:exterior>' +
             '      <gml:interior>' +
-            '        <gml:LinearRing>' +
+            '        <gml:LinearRing srsName="CRS:84">' +
             '          <gml:posList>2 3 2 5 4 5 2 3</gml:posList>' +
             '        </gml:LinearRing>' +
             '      </gml:interior>' +
             '      <gml:interior>' +
-            '        <gml:LinearRing>' +
+            '        <gml:LinearRing srsName="CRS:84">' +
             '          <gml:posList>3 4 3 6 5 6 3 4</gml:posList>' +
             '        </gml:LinearRing>' +
             '      </gml:interior>' +
@@ -189,13 +211,16 @@ describe('ol.format.GML', function() {
         expect(g.getCoordinates()).to.eql([[[1, 2, 0], [3, 2, 0], [3, 4, 0],
                 [1, 2, 0]], [[2, 3, 0], [2, 5, 0], [4, 5, 0], [2, 3, 0]],
               [[3, 4, 0], [3, 6, 0], [5, 6, 0], [3, 4, 0]]]);
+        format = new ol.format.GML({srsName: 'CRS:84', surface: true});
+        var serialized = format.writeGeometry(g);
+        expect(serialized.firstElementChild).to.xmleql(ol.xml.load(text));
       });
 
     });
 
     describe('curve', function() {
 
-      it('can read a curve geometry', function() {
+      it('can read and write a curve geometry', function() {
         var text =
             '<gml:Curve xmlns:gml="http://www.opengis.net/gml" ' +
             '    srsName="CRS:84">' +
@@ -208,6 +233,9 @@ describe('ol.format.GML', function() {
         var g = readGeometry(format, text);
         expect(g).to.be.an(ol.geom.LineString);
         expect(g.getCoordinates()).to.eql([[1, 2, 0], [3, 4, 0]]);
+        format = new ol.format.GML({srsName: 'CRS:84', curve: true});
+        var serialized = format.writeGeometry(g);
+        expect(serialized.firstElementChild).to.xmleql(ol.xml.load(text));
       });
 
     });
@@ -229,22 +257,22 @@ describe('ol.format.GML', function() {
 
     describe('multipoint', function() {
 
-      it('can read a singular multipoint geometry', function() {
+      it('can read and write a singular multipoint geometry', function() {
         var text =
             '<gml:MultiPoint xmlns:gml="http://www.opengis.net/gml" ' +
             '    srsName="CRS:84">' +
             '  <gml:pointMember>' +
-            '    <gml:Point>' +
+            '    <gml:Point srsName="CRS:84">' +
             '      <gml:pos>1 2</gml:pos>' +
             '    </gml:Point>' +
             '  </gml:pointMember>' +
             '  <gml:pointMember>' +
-            '    <gml:Point>' +
+            '    <gml:Point srsName="CRS:84">' +
             '      <gml:pos>2 3</gml:pos>' +
             '    </gml:Point>' +
             '  </gml:pointMember>' +
             '  <gml:pointMember>' +
-            '    <gml:Point>' +
+            '    <gml:Point srsName="CRS:84">' +
             '      <gml:pos>3 4</gml:pos>' +
             '    </gml:Point>' +
             '  </gml:pointMember>' +
@@ -252,6 +280,8 @@ describe('ol.format.GML', function() {
         var g = readGeometry(format, text);
         expect(g).to.be.an(ol.geom.MultiPoint);
         expect(g.getCoordinates()).to.eql([[1, 2, 0], [2, 3, 0], [3, 4, 0]]);
+        var serialized = format.writeGeometry(g);
+        expect(serialized.firstElementChild).to.xmleql(ol.xml.load(text));
       });
 
       it('can read a plural multipoint geometry', function() {
@@ -279,17 +309,17 @@ describe('ol.format.GML', function() {
 
     describe('multilinestring', function() {
 
-      it('can read a singular multilinestring geometry', function() {
+      it('can read and write a singular multilinestring geometry', function() {
         var text =
             '<gml:MultiLineString xmlns:gml="http://www.opengis.net/gml" ' +
             '    srsName="CRS:84">' +
             '  <gml:lineStringMember>' +
-            '    <gml:LineString>' +
+            '    <gml:LineString srsName="CRS:84">' +
             '      <gml:posList>1 2 2 3</gml:posList>' +
             '    </gml:LineString>' +
             '  </gml:lineStringMember>' +
             '  <gml:lineStringMember>' +
-            '    <gml:LineString>' +
+            '    <gml:LineString srsName="CRS:84">' +
             '      <gml:posList>3 4 4 5</gml:posList>' +
             '    </gml:LineString>' +
             '  </gml:lineStringMember>' +
@@ -298,6 +328,9 @@ describe('ol.format.GML', function() {
         expect(g).to.be.an(ol.geom.MultiLineString);
         expect(g.getCoordinates()).to.eql(
             [[[1, 2, 0], [2, 3, 0]], [[3, 4, 0], [4, 5, 0]]]);
+        format = new ol.format.GML({srsName: 'CRS:84', multiCurve: false});
+        var serialized = format.writeGeometry(g);
+        expect(serialized.firstElementChild).to.xmleql(ol.xml.load(text));
       });
 
       it('can read a plural multilinestring geometry', function() {
@@ -323,33 +356,33 @@ describe('ol.format.GML', function() {
 
     describe('multipolygon', function() {
 
-      it('can read a singular multipolygon geometry', function() {
+      it('can read and write a singular multipolygon geometry', function() {
         var text =
             '<gml:MultiPolygon xmlns:gml="http://www.opengis.net/gml" ' +
             '    srsName="CRS:84">' +
             '  <gml:polygonMember>' +
-            '    <gml:Polygon>' +
+            '    <gml:Polygon srsName="CRS:84">' +
             '      <gml:exterior>' +
-            '        <gml:LinearRing>' +
+            '        <gml:LinearRing srsName="CRS:84">' +
             '          <gml:posList>1 2 3 2 3 4 1 2</gml:posList>' +
             '        </gml:LinearRing>' +
             '      </gml:exterior>' +
             '      <gml:interior>' +
-            '        <gml:LinearRing>' +
+            '        <gml:LinearRing srsName="CRS:84">' +
             '          <gml:posList>2 3 2 5 4 5 2 3</gml:posList>' +
             '        </gml:LinearRing>' +
             '      </gml:interior>' +
             '      <gml:interior>' +
-            '        <gml:LinearRing>' +
+            '        <gml:LinearRing srsName="CRS:84">' +
             '          <gml:posList>3 4 3 6 5 6 3 4</gml:posList>' +
             '        </gml:LinearRing>' +
             '      </gml:interior>' +
             '    </gml:Polygon>' +
             '  </gml:polygonMember>' +
             '  <gml:polygonMember>' +
-            '    <gml:Polygon>' +
+            '    <gml:Polygon srsName="CRS:84">' +
             '      <gml:exterior>' +
-            '        <gml:LinearRing>' +
+            '        <gml:LinearRing srsName="CRS:84">' +
             '          <gml:posList>1 2 3 2 3 4 1 2</gml:posList>' +
             '        </gml:LinearRing>' +
             '      </gml:exterior>' +
@@ -363,6 +396,9 @@ describe('ol.format.GML', function() {
             [1, 2, 0]], [[2, 3, 0], [2, 5, 0], [4, 5, 0], [2, 3, 0]],
             [[3, 4, 0], [3, 6, 0], [5, 6, 0], [3, 4, 0]]],
           [[[1, 2, 0], [3, 2, 0], [3, 4, 0], [1, 2, 0]]]]);
+        format = new ol.format.GML({srsName: 'CRS:84', multiSurface: false});
+        var serialized = format.writeGeometry(g);
+        expect(serialized.firstElementChild).to.xmleql(ol.xml.load(text));
       });
 
       it('can read a plural multipolygon geometry', function() {
@@ -409,33 +445,36 @@ describe('ol.format.GML', function() {
 
     describe('multicurve', function() {
 
-      it('can read a singular multicurve-linestring geometry', function() {
-        var text =
-            '<gml:MultiCurve xmlns:gml="http://www.opengis.net/gml" ' +
-            '    srsName="CRS:84">' +
-            '  <gml:curveMember>' +
-            '    <gml:LineString>' +
-            '      <gml:posList>1 2 2 3</gml:posList>' +
-            '    </gml:LineString>' +
-            '  </gml:curveMember>' +
-            '  <gml:curveMember>' +
-            '    <gml:LineString>' +
-            '      <gml:posList>3 4 4 5</gml:posList>' +
-            '    </gml:LineString>' +
-            '  </gml:curveMember>' +
-            '</gml:MultiCurve>';
-        var g = readGeometry(format, text);
-        expect(g).to.be.an(ol.geom.MultiLineString);
-        expect(g.getCoordinates()).to.eql(
-            [[[1, 2, 0], [2, 3, 0]], [[3, 4, 0], [4, 5, 0]]]);
-      });
+      it('can read and write a singular multicurve-linestring geometry',
+          function() {
+            var text =
+                '<gml:MultiCurve xmlns:gml="http://www.opengis.net/gml" ' +
+                '    srsName="CRS:84">' +
+                '  <gml:curveMember>' +
+                '    <gml:LineString srsName="CRS:84">' +
+                '      <gml:posList>1 2 2 3</gml:posList>' +
+                '    </gml:LineString>' +
+                '  </gml:curveMember>' +
+                '  <gml:curveMember>' +
+                '    <gml:LineString srsName="CRS:84">' +
+                '      <gml:posList>3 4 4 5</gml:posList>' +
+                '    </gml:LineString>' +
+                '  </gml:curveMember>' +
+                '</gml:MultiCurve>';
+            var g = readGeometry(format, text);
+            expect(g).to.be.an(ol.geom.MultiLineString);
+            expect(g.getCoordinates()).to.eql(
+                [[[1, 2, 0], [2, 3, 0]], [[3, 4, 0], [4, 5, 0]]]);
+            var serialized = format.writeGeometry(g);
+            expect(serialized.firstElementChild).to.xmleql(ol.xml.load(text));
+          });
 
-      it('can read a singular multicurve-curve geometry', function() {
+      it('can read and write a singular multicurve-curve geometry', function() {
         var text =
             '<gml:MultiCurve xmlns:gml="http://www.opengis.net/gml" ' +
             '    srsName="CRS:84">' +
             '  <gml:curveMember>' +
-            '    <gml:Curve>' +
+            '    <gml:Curve srsName="CRS:84">' +
             '      <gml:segments>' +
             '        <gml:LineStringSegment>' +
             '          <gml:posList>1 2 2 3</gml:posList>' +
@@ -444,7 +483,7 @@ describe('ol.format.GML', function() {
             '    </gml:Curve>' +
             '  </gml:curveMember>' +
             '  <gml:curveMember>' +
-            '    <gml:Curve>' +
+            '    <gml:Curve srsName="CRS:84">' +
             '      <gml:segments>' +
             '        <gml:LineStringSegment>' +
             '          <gml:posList>3 4 4 5</gml:posList>' +
@@ -457,39 +496,42 @@ describe('ol.format.GML', function() {
         expect(g).to.be.an(ol.geom.MultiLineString);
         expect(g.getCoordinates()).to.eql(
             [[[1, 2, 0], [2, 3, 0]], [[3, 4, 0], [4, 5, 0]]]);
+        format = new ol.format.GML({srsName: 'CRS:84', curve: true});
+        var serialized = format.writeGeometry(g);
+        expect(serialized.firstElementChild).to.xmleql(ol.xml.load(text));
       });
 
     });
 
     describe('multisurface', function() {
 
-      it('can read a singular multisurface geometry', function() {
+      it('can read and write a singular multisurface geometry', function() {
         var text =
             '<gml:MultiSurface xmlns:gml="http://www.opengis.net/gml" ' +
             '    srsName="CRS:84">' +
             '  <gml:surfaceMember>' +
-            '    <gml:Polygon>' +
+            '    <gml:Polygon srsName="CRS:84">' +
             '      <gml:exterior>' +
-            '        <gml:LinearRing>' +
+            '        <gml:LinearRing srsName="CRS:84">' +
             '          <gml:posList>1 2 3 2 3 4 1 2</gml:posList>' +
             '        </gml:LinearRing>' +
             '      </gml:exterior>' +
             '      <gml:interior>' +
-            '        <gml:LinearRing>' +
+            '        <gml:LinearRing srsName="CRS:84">' +
             '          <gml:posList>2 3 2 5 4 5 2 3</gml:posList>' +
             '        </gml:LinearRing>' +
             '      </gml:interior>' +
             '      <gml:interior>' +
-            '        <gml:LinearRing>' +
+            '        <gml:LinearRing srsName="CRS:84">' +
             '          <gml:posList>3 4 3 6 5 6 3 4</gml:posList>' +
             '        </gml:LinearRing>' +
             '      </gml:interior>' +
             '    </gml:Polygon>' +
             '  </gml:surfaceMember>' +
             '  <gml:surfaceMember>' +
-            '    <gml:Polygon>' +
+            '    <gml:Polygon srsName="CRS:84">' +
             '      <gml:exterior>' +
-            '        <gml:LinearRing>' +
+            '        <gml:LinearRing srsName="CRS:84">' +
             '          <gml:posList>1 2 3 2 3 4 1 2</gml:posList>' +
             '        </gml:LinearRing>' +
             '      </gml:exterior>' +
@@ -503,6 +545,8 @@ describe('ol.format.GML', function() {
             [1, 2, 0]], [[2, 3, 0], [2, 5, 0], [4, 5, 0], [2, 3, 0]],
             [[3, 4, 0], [3, 6, 0], [5, 6, 0], [3, 4, 0]]],
           [[[1, 2, 0], [3, 2, 0], [3, 4, 0], [1, 2, 0]]]]);
+        var serialized = format.writeGeometry(g);
+        expect(serialized.firstElementChild).to.xmleql(ol.xml.load(text));
       });
 
       it('can read a plural multisurface geometry', function() {
@@ -547,26 +591,26 @@ describe('ol.format.GML', function() {
           [[[1, 2, 0], [3, 2, 0], [3, 4, 0], [1, 2, 0]]]]);
       });
 
-      it('can read a multisurface-surface geometry', function() {
+      it('can read and write a multisurface-surface geometry', function() {
         var text =
             '<gml:MultiSurface xmlns:gml="http://www.opengis.net/gml" ' +
             '    srsName="CRS:84">' +
             '  <gml:surfaceMember>' +
-            '    <gml:Surface>' +
+            '    <gml:Surface srsName="CRS:84">' +
             '      <gml:patches>' +
-            '        <gml:PolygonPatch interpolation="planar">' +
+            '        <gml:PolygonPatch>' +
             '          <gml:exterior>' +
-            '            <gml:LinearRing>' +
+            '            <gml:LinearRing srsName="CRS:84">' +
             '              <gml:posList>1 2 3 2 3 4 1 2</gml:posList>' +
             '            </gml:LinearRing>' +
             '          </gml:exterior>' +
             '          <gml:interior>' +
-            '            <gml:LinearRing>' +
+            '            <gml:LinearRing srsName="CRS:84">' +
             '              <gml:posList>2 3 2 5 4 5 2 3</gml:posList>' +
             '            </gml:LinearRing>' +
             '          </gml:interior>' +
             '          <gml:interior>' +
-            '            <gml:LinearRing>' +
+            '            <gml:LinearRing srsName="CRS:84">' +
             '              <gml:posList>3 4 3 6 5 6 3 4</gml:posList>' +
             '            </gml:LinearRing>' +
             '          </gml:interior>' +
@@ -575,11 +619,11 @@ describe('ol.format.GML', function() {
             '    </gml:Surface>' +
             '  </gml:surfaceMember>' +
             '  <gml:surfaceMember>' +
-            '    <gml:Surface>' +
+            '    <gml:Surface srsName="CRS:84">' +
             '      <gml:patches>' +
-            '        <gml:PolygonPatch interpolation="planar">' +
+            '        <gml:PolygonPatch>' +
             '          <gml:exterior>' +
-            '            <gml:LinearRing>' +
+            '            <gml:LinearRing srsName="CRS:84">' +
             '              <gml:posList>1 2 3 2 3 4 1 2</gml:posList>' +
             '            </gml:LinearRing>' +
             '          </gml:exterior>' +
@@ -595,6 +639,9 @@ describe('ol.format.GML', function() {
             [1, 2, 0]], [[2, 3, 0], [2, 5, 0], [4, 5, 0], [2, 3, 0]],
             [[3, 4, 0], [3, 6, 0], [5, 6, 0], [3, 4, 0]]],
           [[[1, 2, 0], [3, 2, 0], [3, 4, 0], [1, 2, 0]]]]);
+        format = new ol.format.GML({srsName: 'CRS:84', surface: true});
+        var serialized = format.writeGeometry(g);
+        expect(serialized.firstElementChild).to.xmleql(ol.xml.load(text));
       });
 
     });
@@ -632,15 +679,25 @@ describe('ol.format.GML', function() {
 
   describe('when parsing TOPP states GML', function() {
 
-    var features;
+    var features, text, gmlFormat;
     before(function(done) {
       afterLoadText('spec/ol/format/gml/topp-states-gml.xml', function(xml) {
         try {
+          var schemaLoc = 'http://www.openplans.org/topp ' +
+              'http://demo.opengeo.org/geoserver/wfs?service=WFS&version=' +
+              '1.1.0&request=DescribeFeatureType&typeName=topp:states ' +
+              'http://www.opengis.net/gml ' +
+              'http://schemas.opengis.net/gml/3.2.1/gml.xsd';
           var config = {
             'featureNS': 'http://www.openplans.org/topp',
-            'featureType': 'states'
+            'featureType': 'states',
+            'multiSurface': true,
+            'srsName': 'urn:x-ogc:def:crs:EPSG:4326',
+            'schemaLocation': schemaLoc
           };
-          features = new ol.format.GML(config).readFeatures(xml);
+          text = xml;
+          gmlFormat = new ol.format.GML(config);
+          features = gmlFormat.readFeatures(xml);
         } catch (e) {
           done(e);
         }
@@ -654,6 +711,11 @@ describe('ol.format.GML', function() {
 
     it('creates the right id for the feature', function() {
       expect(features[0].getId()).to.equal('states.1');
+    });
+
+    it('writes back features as GML', function() {
+      var serialized = gmlFormat.writeFeatures(features);
+      expect(serialized).to.xmleql(ol.xml.load(text));
     });
 
   });
@@ -747,6 +809,7 @@ goog.require('goog.dom');
 goog.require('goog.dom.TagName');
 goog.require('ol.format.GML');
 goog.require('ol.geom.LineString');
+goog.require('ol.geom.LinearRing');
 goog.require('ol.geom.MultiPoint');
 goog.require('ol.geom.MultiLineString');
 goog.require('ol.geom.MultiPolygon');
