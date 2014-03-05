@@ -143,9 +143,9 @@ ol.pointer.TouchSource.prototype.isPrimaryTouch_ = function(inTouch) {
 
 
 /**
- * @private
  * Set primary touch if there are no pointers, or the only pointer is the mouse.
  * @param {Touch} inTouch
+ * @private
  */
 ol.pointer.TouchSource.prototype.setPrimaryTouch_ = function(inTouch) {
   if (this.pointerMap.getCount() === 0 ||
