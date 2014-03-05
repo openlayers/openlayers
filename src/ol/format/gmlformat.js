@@ -1419,7 +1419,7 @@ ol.format.GML.writeFeature_ = function(node, feature, objectStack) {
       }
     }
   }
-  var item = objectStack[0];
+  var item = goog.object.clone(context);
   item.node = node;
   ol.xml.pushSerializeAndPop(/** @type {ol.xml.NodeStackItem} */
       (item), context.serializers,
@@ -1619,7 +1619,6 @@ ol.format.GML.prototype.writeFeaturesNode = function(features) {
   ol.xml.setAttributeNS(node, 'http://www.w3.org/2001/XMLSchema-instance',
       'xsi:schemaLocation', this.schemaLocation_);
   var context = {
-    node: node,
     srsName: this.srsName_,
     curve: this.curve_,
     surface: this.surface_,
