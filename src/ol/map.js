@@ -30,6 +30,7 @@ goog.require('goog.style');
 goog.require('goog.vec.Mat4');
 goog.require('ol.BrowserFeature');
 goog.require('ol.Collection');
+goog.require('ol.CollectionEventType');
 goog.require('ol.FrameState');
 goog.require('ol.IView');
 goog.require('ol.MapBrowserEvent');
@@ -399,6 +400,22 @@ ol.Map = function(options) {
         overlay.setMap(this);
       }, this);
 
+  goog.events.listen(this.overlays_, ol.CollectionEventType.ADD,
+      /**
+       * @param {ol.CollectionEvent} event Collection event.
+       */
+      function(event) {
+        event.element.setMap(this);
+      }, false, this);
+
+  goog.events.listen(this.overlays_, ol.CollectionEventType.REMOVE,
+      /**
+       * @param {ol.CollectionEvent} event Collection event.
+       */
+      function(event) {
+        event.element.setMap(null);
+      }, false, this);
+
 };
 goog.inherits(ol.Map, ol.Object);
 
@@ -449,7 +466,6 @@ ol.Map.prototype.addOverlay = function(overlay) {
   var overlays = this.getOverlays();
   goog.asserts.assert(goog.isDef(overlays));
   overlays.push(overlay);
-  overlay.setMap(this);
 };
 
 
@@ -1077,7 +1093,6 @@ ol.Map.prototype.removeOverlay = function(overlay) {
   var overlays = this.getOverlays();
   goog.asserts.assert(goog.isDef(overlays));
   if (goog.isDef(overlays.remove(overlay))) {
-    overlay.setMap(null);
     return overlay;
   }
   return undefined;
