@@ -91,7 +91,7 @@ describe('ol.source.Vector', function() {
         var removeFeatureSpy = sinon.spy();
         goog.events.listen(vectorSource, 'removefeature', removeFeatureSpy);
         vectorSource.clear();
-        expect(vectorSource.getAllFeatures()).to.eql([]);
+        expect(vectorSource.getFeatures()).to.eql([]);
         expect(vectorSource.isEmpty()).to.be(true);
         expect(changeSpy).to.be.called();
         expect(changeSpy.callCount).to.be(1);
@@ -209,28 +209,28 @@ describe('ol.source.Vector', function() {
     it('handles features with null geometries', function() {
       var feature = new ol.Feature(null);
       vectorSource.addFeature(feature);
-      expect(vectorSource.getAllFeatures()).to.eql([feature]);
+      expect(vectorSource.getFeatures()).to.eql([feature]);
     });
 
     it('handles features with geometries changing from null', function() {
       var feature = new ol.Feature(null);
       vectorSource.addFeature(feature);
-      expect(vectorSource.getAllFeatures()).to.eql([feature]);
+      expect(vectorSource.getFeatures()).to.eql([feature]);
       feature.setGeometry(new ol.geom.Point([1, 1]));
       expect(vectorSource.getAllFeaturesInExtent([0, 0, 2, 2])).
           to.eql([feature]);
-      expect(vectorSource.getAllFeatures()).to.eql([feature]);
+      expect(vectorSource.getFeatures()).to.eql([feature]);
     });
 
     it('handles features with geometries changing to null', function() {
       var feature = new ol.Feature(new ol.geom.Point([1, 1]));
       vectorSource.addFeature(feature);
-      expect(vectorSource.getAllFeatures()).to.eql([feature]);
+      expect(vectorSource.getFeatures()).to.eql([feature]);
       expect(vectorSource.getAllFeaturesInExtent([0, 0, 2, 2])).
           to.eql([feature]);
       feature.setGeometry(null);
       expect(vectorSource.getAllFeaturesInExtent([0, 0, 2, 2])).to.be.empty();
-      expect(vectorSource.getAllFeatures()).to.eql([feature]);
+      expect(vectorSource.getFeatures()).to.eql([feature]);
     });
 
   });

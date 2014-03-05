@@ -193,7 +193,7 @@ ol.source.Vector.prototype.forEachFeatureInExtent =
  * @return {Array.<ol.Feature>} Features.
  * @todo stability experimental
  */
-ol.source.Vector.prototype.getAllFeatures = function() {
+ol.source.Vector.prototype.getFeatures = function() {
   var features = this.rBush_.getAll();
   if (!goog.object.isEmpty(this.nullGeometryFeatures_)) {
     goog.array.extend(
