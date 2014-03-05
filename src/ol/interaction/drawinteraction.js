@@ -289,6 +289,7 @@ ol.interaction.Draw.prototype.handlePointerUp = function(event) {
   var squaredDistance = dx * dx + dy * dy;
   var pass = true;
   if (squaredDistance <= this.squaredClickTolerance_) {
+    this.handlePointerMove_(event);
     if (goog.isNull(this.finishCoordinate_)) {
       this.startDrawing_(event);
     } else if (this.mode_ === ol.interaction.DrawMode.POINT ||
