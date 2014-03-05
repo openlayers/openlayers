@@ -450,7 +450,7 @@ ol.format.KML.IconStyleParser_ = function(node, objectStack) {
     anchorXUnits = ol.format.KML.DEFAULT_IMAGE_STYLE_ANCHOR_X_UNITS_;
     anchorYUnits = ol.format.KML.DEFAULT_IMAGE_STYLE_ANCHOR_Y_UNITS_;
   } else if (/^http:\/\/maps\.(?:google|gstatic)\.com\//.test(src)) {
-    anchor = [0.5, 0];
+    anchor = [0.5, 1];
     anchorXUnits = ol.style.IconAnchorUnits.FRACTION;
     anchorYUnits = ol.style.IconAnchorUnits.FRACTION;
   }
@@ -471,7 +471,7 @@ ol.format.KML.IconStyleParser_ = function(node, objectStack) {
 
   var imageStyle = new ol.style.Icon({
     anchor: anchor,
-    anchorOrigin: ol.style.IconAnchorOrigin.BOTTOM_LEFT,
+    anchorOrigin: ol.style.IconAnchorOrigin.TOP_LEFT,
     anchorXUnits: anchorXUnits,
     anchorYUnits: anchorYUnits,
     crossOrigin: 'anonymous', // FIXME should this be configurable?

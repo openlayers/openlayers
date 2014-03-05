@@ -84,8 +84,7 @@ ol.proj.EPSG3857.PROJECTIONS = goog.array.map(
  * @param {number=} opt_dimension Dimension (default is `2`).
  * @return {Array.<number>} Output array of coordinate values.
  */
-ol.proj.EPSG3857.fromEPSG4326 = function(
-    input, opt_output, opt_dimension) {
+ol.proj.EPSG3857.fromEPSG4326 = function(input, opt_output, opt_dimension) {
   var length = input.length,
       dimension = opt_dimension > 1 ? opt_dimension : 2,
       output = opt_output;

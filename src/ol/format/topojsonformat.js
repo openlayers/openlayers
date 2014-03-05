@@ -357,8 +357,7 @@ ol.format.TopoJSON.transformArc_ = function(arc, scale, translate) {
  * @param {Array.<number>} translate Translation for each dimension.
  * @private
  */
-ol.format.TopoJSON.transformVertex_ = function(vertex, scale,
-    translate) {
+ol.format.TopoJSON.transformVertex_ = function(vertex, scale, translate) {
   vertex[0] = vertex[0] * scale[0] + translate[0];
   vertex[1] = vertex[1] * scale[1] + translate[1];
 };

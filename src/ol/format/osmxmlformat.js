@@ -78,6 +78,7 @@ ol.format.OSMXML.readNode_ = function(node, objectStack) {
 ol.format.OSMXML.readWay_ = function(node, objectStack) {
   goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT);
   goog.asserts.assert(node.localName == 'way');
+  var id = node.getAttribute('id');
   var values = ol.xml.pushParseAndPop({
     ndrefs: [],
     tags: {}
@@ -88,16 +89,18 @@ ol.format.OSMXML.readWay_ = function(node, objectStack) {
     var point = goog.object.get(state.nodes, values.ndrefs[i]);
     goog.array.extend(flatCoordinates, point);
   }
+  var geometry;
   if (values.ndrefs[0] == values.ndrefs[values.ndrefs.length - 1]) {
     // closed way
-    var geometry = new ol.geom.Polygon(null);
+    geometry = new ol.geom.Polygon(null);
     geometry.setFlatCoordinates(ol.geom.GeometryLayout.XY, flatCoordinates,
         [flatCoordinates.length]);
   } else {
-    var geometry = new ol.geom.LineString(null);
+    geometry = new ol.geom.LineString(null);
     geometry.setFlatCoordinates(ol.geom.GeometryLayout.XY, flatCoordinates);
   }
   var feature = new ol.Feature(geometry);
+  feature.setId(id);
   feature.setValues(values.tags);
   state.features.push(feature);
 };
