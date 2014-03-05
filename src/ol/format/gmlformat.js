@@ -1434,25 +1434,31 @@ ol.format.GML.writeFeature_ = function(node, feature, objectStack) {
   goog.asserts.assert(goog.isObject(context));
   var featureNS = goog.object.get(context, 'featureNS');
   var geometryName = feature.getGeometryName();
-  var serializers = {};
-  serializers[featureNS] = {};
+  if (!goog.isDef(context.serializers)) {
+    context.serializers = {};
+    context.serializers[featureNS] = {};
+  }
   var properties = feature.getProperties();
   var keys = [], values = [];
   for (var key in properties) {
     keys.push(key);
     values.push(properties[key]);
     if (key == geometryName) {
-      serializers[featureNS][key] = ol.xml.makeChildAppender(
-          ol.format.GML.writeGeometry_);
+      if (!(key in context.serializers[featureNS])) {
+        context.serializers[featureNS][key] = ol.xml.makeChildAppender(
+            ol.format.GML.writeGeometry_);
+      }
     } else {
-      serializers[featureNS][key] = ol.xml.makeChildAppender(
-          ol.format.XSD.writeStringTextNode);
+      if (!(key in context.serializers[featureNS])) {
+        context.serializers[featureNS][key] = ol.xml.makeChildAppender(
+            ol.format.XSD.writeStringTextNode);
+      }
     }
   }
   var item = goog.object.clone(context);
   goog.object.set(item, 'node', node);
   ol.xml.pushSerializeAndPop(/** @type {ol.xml.NodeStackItem} */
-      (item), serializers,
+      (item), context.serializers,
       ol.xml.OBJECT_PROPERTY_NODE_FACTORY,
       values,
       objectStack, keys);
