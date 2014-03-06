@@ -193,7 +193,7 @@ ol.source.Vector.prototype.forEachFeatureInExtent =
  * @return {Array.<ol.Feature>} Features.
  * @todo stability experimental
  */
-ol.source.Vector.prototype.getAllFeatures = function() {
+ol.source.Vector.prototype.getFeatures = function() {
   var features = this.rBush_.getAll();
   if (!goog.object.isEmpty(this.nullGeometryFeatures_)) {
     goog.array.extend(
@@ -208,7 +208,7 @@ ol.source.Vector.prototype.getAllFeatures = function() {
  * @return {Array.<ol.Feature>} Features.
  * @todo stability experimental
  */
-ol.source.Vector.prototype.getAllFeaturesAtCoordinate = function(coordinate) {
+ol.source.Vector.prototype.getFeaturesAtCoordinate = function(coordinate) {
   var features = [];
   this.forEachFeatureAtCoordinate(coordinate, function(feature) {
     features.push(feature);
@@ -222,7 +222,7 @@ ol.source.Vector.prototype.getAllFeaturesAtCoordinate = function(coordinate) {
  * @return {Array.<ol.Feature>} Features.
  * @todo stability experimental
  */
-ol.source.Vector.prototype.getAllFeaturesInExtent = function(extent) {
+ol.source.Vector.prototype.getFeaturesInExtent = function(extent) {
   return this.rBush_.getAllInExtent(extent);
 };
 

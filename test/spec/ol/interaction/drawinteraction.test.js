@@ -85,7 +85,7 @@ describe('ol.interaction.Draw', function() {
       simulateEvent('mousedown', 10, 20);
       simulateEvent('mouseup', 10, 20);
       simulateEvent('click', 10, 20);
-      var features = source.getAllFeatures();
+      var features = source.getFeatures();
       expect(features).to.have.length(1);
       var geometry = features[0].getGeometry();
       expect(geometry).to.be.a(ol.geom.Point);
@@ -98,7 +98,7 @@ describe('ol.interaction.Draw', function() {
       simulateEvent('mousemove', 15, 20);
       simulateEvent('mouseup', 15, 20);
       simulateEvent('click', 15, 20);
-      var features = source.getAllFeatures();
+      var features = source.getFeatures();
       expect(features).to.have.length(0);
     });
 
@@ -132,7 +132,7 @@ describe('ol.interaction.Draw', function() {
       simulateEvent('mousedown', 30, 15);
       simulateEvent('mouseup', 30, 15);
       simulateEvent('click', 30, 15);
-      var features = source.getAllFeatures();
+      var features = source.getFeatures();
       expect(features).to.have.length(1);
       var geometry = features[0].getGeometry();
       expect(geometry).to.be.a(ol.geom.MultiPoint);
@@ -170,7 +170,7 @@ describe('ol.interaction.Draw', function() {
       simulateEvent('mouseup', 30, 20);
       simulateEvent('click', 30, 20);
 
-      var features = source.getAllFeatures();
+      var features = source.getFeatures();
       expect(features).to.have.length(1);
       var geometry = features[0].getGeometry();
       expect(geometry).to.be.a(ol.geom.LineString);
@@ -203,7 +203,7 @@ describe('ol.interaction.Draw', function() {
       simulateEvent('mouseup', 30, 20);
       simulateEvent('click', 30, 20);
 
-      var features = source.getAllFeatures();
+      var features = source.getFeatures();
       expect(features).to.have.length(1);
       var geometry = features[0].getGeometry();
       expect(geometry).to.be.a(ol.geom.LineString);
@@ -267,7 +267,7 @@ describe('ol.interaction.Draw', function() {
       simulateEvent('mouseup', 30, 20);
       simulateEvent('click', 30, 20);
 
-      var features = source.getAllFeatures();
+      var features = source.getFeatures();
       expect(features).to.have.length(1);
       var geometry = features[0].getGeometry();
       expect(geometry).to.be.a(ol.geom.MultiLineString);
@@ -312,7 +312,7 @@ describe('ol.interaction.Draw', function() {
       simulateEvent('mouseup', 10, 20);
       simulateEvent('click', 10, 20);
 
-      var features = source.getAllFeatures();
+      var features = source.getFeatures();
       expect(features).to.have.length(1);
       var geometry = features[0].getGeometry();
       expect(geometry).to.be.a(ol.geom.Polygon);
@@ -346,7 +346,7 @@ describe('ol.interaction.Draw', function() {
       simulateEvent('mouseup', 40, 10);
       simulateEvent('click', 40, 11);
 
-      var features = source.getAllFeatures();
+      var features = source.getFeatures();
       expect(features).to.have.length(1);
       var geometry = features[0].getGeometry();
       expect(geometry).to.be.a(ol.geom.Polygon);
@@ -426,7 +426,7 @@ describe('ol.interaction.Draw', function() {
       simulateEvent('mouseup', 10, 20);
       simulateEvent('click', 10, 20);
 
-      var features = source.getAllFeatures();
+      var features = source.getFeatures();
       expect(features).to.have.length(1);
       var geometry = features[0].getGeometry();
       expect(geometry).to.be.a(ol.geom.MultiPolygon);
@@ -462,7 +462,7 @@ describe('ol.interaction.Draw', function() {
       simulateEvent('mouseup', 40, 10);
       simulateEvent('click', 40, 10);
 
-      var features = source.getAllFeatures();
+      var features = source.getFeatures();
       expect(features).to.have.length(1);
       var geometry = features[0].getGeometry();
       expect(geometry).to.be.a(ol.geom.MultiPolygon);
