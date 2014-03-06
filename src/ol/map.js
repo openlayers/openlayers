@@ -382,6 +382,22 @@ ol.Map = function(options) {
         control.setMap(this);
       }, this);
 
+  goog.events.listen(this.controls_, ol.CollectionEventType.ADD,
+      /**
+       * @param {ol.CollectionEvent} event Collection event.
+       */
+      function(event) {
+        event.element.setMap(this);
+      }, false, this);
+
+  goog.events.listen(this.controls_, ol.CollectionEventType.REMOVE,
+      /**
+       * @param {ol.CollectionEvent} event Collection event.
+       */
+      function(event) {
+        event.element.setMap(null);
+      }, false, this);
+
   this.interactions_.forEach(
       /**
        * @param {ol.interaction.Interaction} interaction Interaction.
@@ -445,7 +461,6 @@ ol.Map.prototype.addControl = function(control) {
   var controls = this.getControls();
   goog.asserts.assert(goog.isDef(controls));
   controls.push(control);
-  control.setMap(this);
 };
 
 
@@ -1058,7 +1073,6 @@ ol.Map.prototype.removeControl = function(control) {
   var controls = this.getControls();
   goog.asserts.assert(goog.isDef(controls));
   if (goog.isDef(controls.remove(control))) {
-    control.setMap(null);
     return control;
   }
   return undefined;
