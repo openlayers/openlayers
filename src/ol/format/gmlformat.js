@@ -117,7 +117,7 @@ ol.format.GML.readFeatures_ = function(node, objectStack) {
   var features;
   if (localName == 'FeatureCollection') {
     features = ol.xml.pushParseAndPop(null,
-        ol.format.GML.FEATURE_COLLECTION_PARSERS_, node, objectStack);
+        ol.format.GML.FEATURE_COLLECTION_PARSERS, node, objectStack);
   } else if (localName == 'featureMembers') {
     var parsers = {};
     var parsersNS = {};
@@ -134,9 +134,8 @@ ol.format.GML.readFeatures_ = function(node, objectStack) {
 
 /**
  * @type {Object.<string, Object.<string, Object>>}
- * @private
  */
-ol.format.GML.FEATURE_COLLECTION_PARSERS_ = {
+ol.format.GML.FEATURE_COLLECTION_PARSERS = {
   'http://www.opengis.net/gml': {
     'featureMembers': ol.xml.makeReplacer(ol.format.GML.readFeatures_)
   }
