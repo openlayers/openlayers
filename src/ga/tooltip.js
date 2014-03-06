@@ -163,7 +163,7 @@ ga.Tooltip.prototype.handleIdentifyResponse_ = function(response) {
   }
   this.source_ = new ol.source.GeoJSON();
   this.vector_ = new ol.layer.Vector({
-    styleFunction: function(feature, resolution) {
+    style: function(feature, resolution) {
       return [new ol.style.Style({
         fill: new ol.style.Fill({
           color: '#ffff00'

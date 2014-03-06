@@ -112,7 +112,7 @@ ga.Map.prototype.geocode = function(text) {
     '//api3.geo.admin.ch/rest/services/api/SearchServer');
   var payload = { 'searchText': text,
                   'type': 'locations',
-                  'returnGeometry': false
+                  'returnGeometry': true
   };
   jsonp.send(payload, 
              goog.bind(this.handleGeocode_, this), 
@@ -195,7 +195,7 @@ ga.Map.prototype.handleHighlight_ = function(response) {
   var vector = new ol.layer.Vector({
     opacity: 0.75,
     source: vectorSource,
-    styleFunction: function(feature, resolution) {
+    style: function(feature, resolution) {
       return [new ol.style.Style({
         fill: new ol.style.Fill({color: '#ffff00'}),
         stroke: new ol.style.Stroke({color: '#ff8000', width: 3}),

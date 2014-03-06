@@ -14,7 +14,7 @@ var vector = new ol.layer.Vector({
     projection: 'EPSG:21781',
     url: 'data/cities.geojson'
   }),
-  styleFunction: function(feature, resolution) {
+  style: function(feature, resolution) {
     var text = resolution < 50 ? feature.get('NAME') : '';
     var style = new ol.style.Style({
       image: new ol.style.Circle({

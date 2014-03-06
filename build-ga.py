@@ -38,7 +38,7 @@ targets.add = MethodType(add, targets, TargetCollection)
 
 # We redefine 'build'
 virtual('build', 'build/ga.css', 'build/src/internal/src/requireallga.js', 'build/ga.js',
-        'build/ga-whitespace.js','build/layersConfig')
+        'build/ga-whitespace.js','build/layersconfig')
 
 # We redifine 'apidoc'
 JSDOC = 'node_modules/.bin/jsdoc'
@@ -97,7 +97,7 @@ def build_ga_whitespace_js(t):
              'build', 'buildcfg/ga-whitespace.json')
     report_sizes(t)
     
-@target('build/layersconfig', AVAILABLE_LANGS)
+@target('build/layersconfig')
 def get_layersconfig(t):
     for lang in AVAILABLE_LANGS:
         name = "%s.%s.js" % (t.name, lang)
