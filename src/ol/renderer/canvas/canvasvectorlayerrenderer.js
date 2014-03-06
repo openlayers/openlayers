@@ -1,12 +1,15 @@
 goog.provide('ol.renderer.canvas.VectorLayer');
 
 goog.require('goog.asserts');
+goog.require('goog.dom');
+goog.require('goog.dom.TagName');
 goog.require('goog.events');
 goog.require('goog.functions');
 goog.require('ol.ViewHint');
 goog.require('ol.extent');
 goog.require('ol.feature');
 goog.require('ol.layer.Vector');
+goog.require('ol.render.EventType');
 goog.require('ol.render.canvas.ReplayGroup');
 goog.require('ol.renderer.canvas.Layer');
 goog.require('ol.renderer.vector');
@@ -54,6 +57,19 @@ ol.renderer.canvas.VectorLayer = function(mapRenderer, vectorLayer) {
    */
   this.replayGroup_ = null;
 
+  /**
+   * @type {HTMLCanvasElement}
+   */
+  var canvas = /** @type {HTMLCanvasElement} */
+      (goog.dom.createElement(goog.dom.TagName.CANVAS));
+
+  /**
+   * @private
+   * @type {CanvasRenderingContext2D}
+   */
+  this.context_ = /** @type {CanvasRenderingContext2D} */
+      (canvas.getContext('2d'));
+
 };
 goog.inherits(ol.renderer.canvas.VectorLayer, ol.renderer.canvas.Layer);
 
@@ -70,12 +86,27 @@ ol.renderer.canvas.VectorLayer.prototype.composeFrame =
 
   var replayGroup = this.replayGroup_;
   if (!goog.isNull(replayGroup) && !replayGroup.isEmpty()) {
+    var layer = this.getLayer();
+    var replayContext;
+    if (layer.hasListener(ol.render.EventType.RENDER)) {
+      // resize and clear
+      this.context_.canvas.width = context.canvas.width;
+      this.context_.canvas.height = context.canvas.height;
+      replayContext = this.context_;
+    } else {
+      replayContext = context;
+    }
     var renderGeometryFunction = this.getRenderGeometryFunction_();
     goog.asserts.assert(goog.isFunction(renderGeometryFunction));
-    context.globalAlpha = layerState.opacity;
+    replayContext.globalAlpha = layerState.opacity;
     replayGroup.replay(
-        context, frameState.extent, frameState.pixelRatio, transform,
+        replayContext, frameState.extent, frameState.pixelRatio, transform,
         frameState.view2DState.rotation, renderGeometryFunction);
+
+    if (replayContext != context) {
+      this.dispatchRenderEvent(replayContext, frameState, transform);
+      context.drawImage(replayContext.canvas, 0, 0);
+    }
   }
 
   this.dispatchPostComposeEvent(context, frameState, transform);
