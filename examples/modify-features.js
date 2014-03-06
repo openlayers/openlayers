@@ -67,7 +67,7 @@ var styleFunction = (function() {
   };
 })();
 
-var vectorSource = new ol.source.GeoJSON(
+var testDataSource = new ol.source.GeoJSON(
     /** @type {olx.source.GeoJSONOptions} */ ({
       object: {
         'type': 'FeatureCollection',
@@ -166,9 +166,18 @@ var vectorSource = new ol.source.GeoJSON(
       }
     }));
 
+var testDataLayer = new ol.layer.Vector({
+  source: testDataSource,
+  style: styleFunction
+});
 
-var vectorLayer = new ol.layer.Vector({
-  source: vectorSource,
+var realDataSource = new ol.source.GeoJSON({
+  projection: 'EPSG:3857',
+  url: 'data/geojson/countries.geojson'
+});
+
+var realDataLayer = new ol.layer.Vector({
+  source: realDataSource,
   style: styleFunction
 });
 
@@ -246,7 +255,7 @@ var modify = new ol.interaction.Modify({
 
 var map = new ol.Map({
   interactions: ol.interaction.defaults().extend([select, modify]),
-  layers: [raster, vectorLayer],
+  layers: [raster, testDataLayer, realDataLayer],
   renderer: 'canvas',
   target: 'map',
   view: new ol.View2D({
@@ -254,3 +263,14 @@ var map = new ol.Map({
     zoom: 2
   })
 });
+
+$('#layer-select').change(function() {
+  select.getFeatures().clear();
+  var index = $(this).children().index($(this).find(':selected'));
+  var layers = [testDataLayer, realDataLayer];
+  var i, ii;
+  for (i = 0, ii = layers.length; i < ii; ++i) {
+    layers[i].setVisible(index == i);
+  }
+});
+$('#layer-select').trigger('change');
