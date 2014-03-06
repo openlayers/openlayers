@@ -391,6 +391,22 @@ ol.Map = function(options) {
         interaction.setMap(this);
       }, this);
 
+  goog.events.listen(this.interactions_, ol.CollectionEventType.ADD,
+      /**
+       * @param {ol.CollectionEvent} event Collection event.
+       */
+      function(event) {
+        event.element.setMap(this);
+      }, false, this);
+
+  goog.events.listen(this.interactions_, ol.CollectionEventType.REMOVE,
+      /**
+       * @param {ol.CollectionEvent} event Collection event.
+       */
+      function(event) {
+        event.element.setMap(null);
+      }, false, this);
+
   this.overlays_.forEach(
       /**
        * @param {ol.Overlay} overlay Overlay.
@@ -441,7 +457,6 @@ ol.Map.prototype.addInteraction = function(interaction) {
   var interactions = this.getInteractions();
   goog.asserts.assert(goog.isDef(interactions));
   interactions.push(interaction);
-  interaction.setMap(this);
 };
 
 
@@ -1061,7 +1076,6 @@ ol.Map.prototype.removeInteraction = function(interaction) {
   var interactions = this.getInteractions();
   goog.asserts.assert(goog.isDef(interactions));
   if (goog.isDef(interactions.remove(interaction))) {
-    interaction.setMap(null);
     removed = interaction;
   }
   return removed;
