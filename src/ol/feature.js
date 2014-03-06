@@ -222,7 +222,7 @@ ol.feature.FeatureStyleFunction;
  * @this {ol.Feature}
  * @todo stability experimental
  */
-ol.feature.defaultFeatureStyleFunction = (function() {
+ol.feature.defaultFeatureStyleFunction = function(resolution) {
   var fill = new ol.style.Fill({
     color: 'rgba(255,255,255,0.4)'
   });
@@ -241,10 +241,17 @@ ol.feature.defaultFeatureStyleFunction = (function() {
       stroke: stroke
     })
   ];
-  return function(resolution) {
-    return styles;
-  };
-})();
+
+  // now that we've run it the first time,
+  // replace the function with a constant version
+  ol.feature.defaultFeatureStyleFunction =
+      /** @type {function(this:ol.Feature):Array.<ol.style.Style>} */(
+      function(resolution) {
+        return styles;
+      });
+
+  return styles;
+};
 
 
 /**
