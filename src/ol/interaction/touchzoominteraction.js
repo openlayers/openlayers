@@ -89,7 +89,7 @@ ol.interaction.TouchZoom.prototype.handleTouchMove =
   this.anchor_ = map.getCoordinateFromPixel(centroid);
 
   // scale, bypass the resolution constraint
-  map.requestRenderFrame();
+  map.render();
   ol.interaction.Interaction.zoomWithoutConstraints(
       map, view, view2DState.resolution * scaleDelta, this.anchor_);
 
@@ -129,7 +129,7 @@ ol.interaction.TouchZoom.prototype.handleTouchStart =
     this.anchor_ = null;
     this.lastDistance_ = undefined;
     this.lastScaleDelta_ = 1;
-    map.requestRenderFrame();
+    map.render();
     return true;
   } else {
     return false;

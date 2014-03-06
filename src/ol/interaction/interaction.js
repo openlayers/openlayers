@@ -127,16 +127,12 @@ ol.interaction.Interaction.rotateWithoutConstraints =
         }));
       }
     }
+    goog.asserts.assertInstanceof(view, ol.View2D);
     if (goog.isDefAndNotNull(opt_anchor)) {
       var center = view.calculateCenterRotate(rotation, opt_anchor);
-      map.withFrozenRendering(function() {
-        goog.asserts.assertInstanceof(view, ol.View2D);
-        view.setCenter(center);
-        view.setRotation(rotation);
-      });
-    } else {
-      view.setRotation(rotation);
+      view.setCenter(center);
     }
+    view.setRotation(rotation);
   }
 };
 
@@ -210,15 +206,11 @@ ol.interaction.Interaction.zoomWithoutConstraints =
         }));
       }
     }
+    goog.asserts.assertInstanceof(view, ol.View2D);
     if (goog.isDefAndNotNull(opt_anchor)) {
       var center = view.calculateCenterZoom(resolution, opt_anchor);
-      map.withFrozenRendering(function() {
-        goog.asserts.assertInstanceof(view, ol.View2D);
-        view.setCenter(center);
-        view.setResolution(resolution);
-      });
-    } else {
-      view.setResolution(resolution);
+      view.setCenter(center);
     }
+    view.setResolution(resolution);
   }
 };

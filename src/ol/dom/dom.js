@@ -12,22 +12,29 @@ goog.require('goog.vec.Mat4');
 
 
 /**
- * http://caniuse.com/#feat=transforms2d
- * http://caniuse.com/#feat=transforms3d
  * @enum {boolean}
  */
 ol.dom.BrowserFeature = {
-  CAN_USE_CSS_TRANSFORM: (
-      /**
-       * Detect 2d transform.
-       * Adapted from http://stackoverflow.com/q/5661671/130442
-       * @return {boolean}
-       */
-      function() {
-        if (!window.getComputedStyle) {
-          // this browser is ancient
-          return false;
-        }
+  USE_MS_MATRIX_TRANSFORM: ol.LEGACY_IE_SUPPORT && ol.IS_LEGACY_IE,
+  USE_MS_ALPHA_FILTER: ol.LEGACY_IE_SUPPORT && ol.IS_LEGACY_IE
+};
+
+
+/**
+ * Detect 2d transform.
+ * Adapted from http://stackoverflow.com/q/5661671/130442
+ * http://caniuse.com/#feat=transforms2d
+ * @return {boolean}
+ */
+ol.dom.canUseCssTransform = (function() {
+  var canUseCssTransform;
+  return function() {
+    if (!goog.isDef(canUseCssTransform)) {
+      goog.asserts.assert(!goog.isNull(document.body));
+      if (!goog.global.getComputedStyle) {
+        // this browser is ancient
+        canUseCssTransform = false;
+      } else {
         var el = goog.dom.createElement(goog.dom.TagName.P),
             has2d,
             transforms = {
@@ -41,25 +48,35 @@ ol.dom.BrowserFeature = {
         for (var t in transforms) {
           if (t in el.style) {
             el.style[t] = 'translate(1px,1px)';
-            has2d = window.getComputedStyle(el).getPropertyValue(transforms[t]);
+            has2d = goog.global.getComputedStyle(el).getPropertyValue(
+                transforms[t]);
           }
         }
         goog.dom.removeNode(el);
 
-        return (goog.isDefAndNotNull(has2d) && has2d.length > 0 &&
-            has2d !== 'none');
-      })(),
-  CAN_USE_CSS_TRANSFORM3D: (
-      /**
-       * Detect 3d transform.
-       * Adapted from http://stackoverflow.com/q/5661671/130442
-       * @return {boolean}
-       */
-      function() {
-        if (!window.getComputedStyle) {
-          // this browser is ancient
-          return false;
-        }
+        canUseCssTransform = (has2d && has2d !== 'none');
+      }
+    }
+    return canUseCssTransform;
+  };
+}());
+
+
+/**
+ * Detect 3d transform.
+ * Adapted from http://stackoverflow.com/q/5661671/130442
+ * http://caniuse.com/#feat=transforms3d
+ * @return {boolean}
+ */
+ol.dom.canUseCssTransform3D = (function() {
+  var canUseCssTransform3D;
+  return function() {
+    if (!goog.isDef(canUseCssTransform3D)) {
+      goog.asserts.assert(!goog.isNull(document.body));
+      if (!goog.global.getComputedStyle) {
+        // this browser is ancient
+        canUseCssTransform3D = false;
+      } else {
         var el = goog.dom.createElement(goog.dom.TagName.P),
             has3d,
             transforms = {
@@ -73,17 +90,18 @@ ol.dom.BrowserFeature = {
         for (var t in transforms) {
           if (t in el.style) {
             el.style[t] = 'translate3d(1px,1px,1px)';
-            has3d = window.getComputedStyle(el).getPropertyValue(transforms[t]);
+            has3d = goog.global.getComputedStyle(el).getPropertyValue(
+                transforms[t]);
           }
         }
         goog.dom.removeNode(el);
 
-        return (goog.isDefAndNotNull(has3d) && has3d.length > 0 &&
-            has3d !== 'none');
-      })(),
-  USE_MS_MATRIX_TRANSFORM: ol.LEGACY_IE_SUPPORT && ol.IS_LEGACY_IE,
-  USE_MS_ALPHA_FILTER: ol.LEGACY_IE_SUPPORT && ol.IS_LEGACY_IE
-};
+        canUseCssTransform3D = (has3d && has3d !== 'none');
+      }
+    }
+    return canUseCssTransform3D;
+  };
+}());
 
 
 /**
@@ -183,7 +201,7 @@ ol.dom.transformElement2D =
   // using matrix() causes gaps in Chrome and Firefox on Mac OS X, so prefer
   // matrix3d()
   var i;
-  if (ol.dom.BrowserFeature.CAN_USE_CSS_TRANSFORM3D) {
+  if (ol.dom.canUseCssTransform3D()) {
     var value3D;
 
     if (goog.isDef(opt_precision)) {
@@ -197,7 +215,7 @@ ol.dom.transformElement2D =
       value3D = transform.join(',');
     }
     ol.dom.setTransform(element, 'matrix3d(' + value3D + ')');
-  } else if (ol.dom.BrowserFeature.CAN_USE_CSS_TRANSFORM) {
+  } else if (ol.dom.canUseCssTransform()) {
     /** @type {Array.<number>} */
     var transform2D = [
       goog.vec.Mat4.getElement(transform, 0, 0),

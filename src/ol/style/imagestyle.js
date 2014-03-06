@@ -16,10 +16,11 @@ ol.style.ImageState = {
 
 
 /**
- * @typedef {{rotation: number,
+ * @typedef {{opacity: number,
+ *            rotateWithView: boolean,
+ *            rotation: number,
  *            scale: number,
- *            snapToPixel: (boolean|undefined),
- *            subtractViewRotation: boolean}}
+ *            snapToPixel: (boolean|undefined)}}
  */
 ol.style.ImageOptions;
 
@@ -30,6 +31,18 @@ ol.style.ImageOptions;
  * @param {ol.style.ImageOptions} options Options.
  */
 ol.style.Image = function(options) {
+
+  /**
+   * @private
+   * @type {number}
+   */
+  this.opacity_ = options.opacity;
+
+  /**
+   * @private
+   * @type {boolean}
+   */
+  this.rotateWithView_ = options.rotateWithView;
 
   /**
    * @private
@@ -49,12 +62,22 @@ ol.style.Image = function(options) {
    */
   this.snapToPixel_ = options.snapToPixel;
 
-  /**
-   * @private
-   * @type {boolean|undefined}
-   */
-  this.subtractViewRotation_ = options.subtractViewRotation;
+};
 
+
+/**
+ * @return {number} Opacity.
+ */
+ol.style.Image.prototype.getOpacity = function() {
+  return this.opacity_;
+};
+
+
+/**
+ * @return {boolean} Rotate with map.
+ */
+ol.style.Image.prototype.getRotateWithView = function() {
+  return this.rotateWithView_;
 };
 
 
@@ -79,14 +102,6 @@ ol.style.Image.prototype.getScale = function() {
  */
 ol.style.Image.prototype.getSnapToPixel = function() {
   return this.snapToPixel_;
-};
-
-
-/**
- * @return {boolean|undefined} Subtract view rotation?
- */
-ol.style.Image.prototype.getSubtractViewRotation = function() {
-  return this.subtractViewRotation_;
 };
 
 

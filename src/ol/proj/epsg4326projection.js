@@ -53,7 +53,6 @@ ol.proj.EPSG4326.PROJECTIONS = [
 /**
  * @inheritDoc
  */
-ol.proj.EPSG4326.prototype.getPointResolution =
-    function(resolution, point) {
+ol.proj.EPSG4326.prototype.getPointResolution = function(resolution, point) {
   return resolution;
 };

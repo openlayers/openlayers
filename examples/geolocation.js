@@ -5,7 +5,6 @@
 goog.require('ol.Geolocation');
 goog.require('ol.Map');
 goog.require('ol.Overlay');
-goog.require('ol.RendererHints');
 goog.require('ol.View2D');
 goog.require('ol.dom.Input');
 goog.require('ol.layer.Tile');
@@ -23,7 +22,7 @@ var map = new ol.Map({
       source: new ol.source.OSM()
     })
   ],
-  renderer: ol.RendererHints.createFromQueryData(),
+  renderer: exampleNS.getRendererFromQueryString(),
   target: 'map',
   view: view
 });

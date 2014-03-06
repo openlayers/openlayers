@@ -5,7 +5,6 @@
 goog.provide('ol.Map');
 goog.provide('ol.MapProperty');
 goog.provide('ol.RendererHint');
-goog.provide('ol.RendererHints');
 
 goog.require('goog.Uri.QueryData');
 goog.require('goog.array');
@@ -218,18 +217,6 @@ ol.Map = function(options) {
 
   /**
    * @private
-   * @type {number}
-   */
-  this.freezeRenderingCount_ = 0;
-
-  /**
-   * @private
-   * @type {boolean}
-   */
-  this.dirty_ = false;
-
-  /**
-   * @private
    * @type {goog.events.Key}
    */
   this.viewPropertyListenerKey_ = null;
@@ -311,6 +298,12 @@ ol.Map = function(options) {
    * @private
    */
   this.controls_ = optionsInternal.controls;
+
+  /**
+   * @type {olx.DeviceOptions}
+   * @private
+   */
+  this.deviceOptions_ = optionsInternal.deviceOptions;
 
   /**
    * @type {ol.Collection}
@@ -469,7 +462,7 @@ ol.Map.prototype.addOverlay = function(overlay) {
  * @todo stability experimental
  */
 ol.Map.prototype.beforeRender = function(var_args) {
-  this.requestRenderFrame();
+  this.render();
   Array.prototype.push.apply(this.preRenderFunctions_, arguments);
 };
 
@@ -519,14 +512,6 @@ ol.Map.prototype.forEachFeatureAtPixel =
   return this.renderer_.forEachFeatureAtPixel(
       coordinate, this.frameState_, callback, thisArg,
       layerFilter, thisArg2);
-};
-
-
-/**
- * Freeze rendering.
- */
-ol.Map.prototype.freezeRendering = function() {
-  ++this.freezeRenderingCount_;
 };
 
 
@@ -828,8 +813,15 @@ ol.Map.prototype.handlePostRender = function() {
     var tileSourceCount = 0;
     if (!goog.isNull(frameState)) {
       var hints = frameState.viewHints;
-      if (hints[ol.ViewHint.ANIMATING] || hints[ol.ViewHint.INTERACTING]) {
-        maxTotalLoading = 8;
+      var deviceOptions = this.deviceOptions_;
+      if (hints[ol.ViewHint.ANIMATING]) {
+        maxTotalLoading = deviceOptions.loadTilesWhileAnimating === false ?
+            0 : 8;
+        maxNewLoads = 2;
+      }
+      if (hints[ol.ViewHint.INTERACTING]) {
+        maxTotalLoading = deviceOptions.loadTilesWhileInteracting === false ?
+            0 : 8;
         maxNewLoads = 2;
       }
       tileSourceCount = goog.object.getCount(frameState.wantedTiles);
@@ -898,7 +890,7 @@ ol.Map.prototype.handleTargetChanged_ = function() {
  * @private
  */
 ol.Map.prototype.handleTileChange_ = function() {
-  this.requestRenderFrame();
+  this.render();
 };
 
 
@@ -1000,29 +992,27 @@ ol.Map.prototype.isDef = function() {
 
 
 /**
+ * @return {boolean} Is rendered.
+ */
+ol.Map.prototype.isRendered = function() {
+  return !goog.isNull(this.frameState_);
+};
+
+
+/**
  * Render.
  */
-ol.Map.prototype.render = function() {
-  if (this.animationDelay_.isActive()) {
-    // pass
-  } else if (this.freezeRenderingCount_ === 0) {
-    this.animationDelay_.fire();
-  } else {
-    this.dirty_ = true;
-  }
+ol.Map.prototype.renderSync = function() {
+  this.animationDelay_.fire();
 };
 
 
 /**
  * Request that renderFrame_ be called some time in the future.
  */
-ol.Map.prototype.requestRenderFrame = function() {
-  if (this.freezeRenderingCount_ === 0) {
-    if (!this.animationDelay_.isActive()) {
-      this.animationDelay_.start();
-    }
-  } else {
-    this.dirty_ = true;
+ol.Map.prototype.render = function() {
+  if (!this.animationDelay_.isActive()) {
+    this.animationDelay_.start();
   }
 };
 
@@ -1103,10 +1093,6 @@ ol.Map.prototype.renderFrame_ = function(time) {
 
   var i, ii, view2DState;
 
-  if (this.freezeRenderingCount_ !== 0) {
-    return;
-  }
-
   /**
    * Check whether a size has non-zero width and height.  Note that this
    * function is here because the compiler doesn't recognize that size is
@@ -1183,11 +1169,10 @@ ol.Map.prototype.renderFrame_ = function(time) {
 
   this.frameState_ = frameState;
   this.renderer_.renderFrame(frameState);
-  this.dirty_ = false;
 
   if (!goog.isNull(frameState)) {
     if (frameState.animate) {
-      this.requestRenderFrame();
+      this.render();
     }
     Array.prototype.push.apply(
         this.postRenderFunctions_, frameState.postRenderFunctions);
@@ -1267,17 +1252,6 @@ goog.exportProperty(
 
 
 /**
- * Unfreeze rendering.
- */
-ol.Map.prototype.unfreezeRendering = function() {
-  goog.asserts.assert(this.freezeRenderingCount_ > 0);
-  if (--this.freezeRenderingCount_ === 0 && this.dirty_) {
-    this.animationDelay_.fire();
-  }
-};
-
-
-/**
  * Force a recalculation of the map viewport size.  This should be called when
  * third-party code changes the size of the map viewport.
  * @todo stability experimental
@@ -1301,22 +1275,8 @@ ol.Map.prototype.updateSize = function() {
 
 
 /**
- * @param {function(this: T)} f Function.
- * @param {T=} opt_this The object to use as `this` in `f`.
- * @template T
- */
-ol.Map.prototype.withFrozenRendering = function(f, opt_this) {
-  this.freezeRendering();
-  try {
-    f.call(opt_this);
-  } finally {
-    this.unfreezeRendering();
-  }
-};
-
-
-/**
  * @typedef {{controls: ol.Collection,
+ *            deviceOptions: olx.DeviceOptions,
  *            interactions: ol.Collection,
  *            keyboardEventTarget: (Element|Document),
  *            ol3Logo: boolean,
@@ -1417,6 +1377,9 @@ ol.Map.createOptionsInternal = function(options) {
     controls = ol.control.defaults();
   }
 
+  var deviceOptions = goog.isDef(options.deviceOptions) ?
+      options.deviceOptions : /** @type {olx.DeviceOptions} */ ({});
+
   var interactions;
   if (goog.isDef(options.interactions)) {
     if (goog.isArray(options.interactions)) {
@@ -1443,6 +1406,7 @@ ol.Map.createOptionsInternal = function(options) {
 
   return {
     controls: controls,
+    deviceOptions: deviceOptions,
     interactions: interactions,
     keyboardEventTarget: keyboardEventTarget,
     ol3Logo: ol3Logo,
@@ -1451,24 +1415,6 @@ ol.Map.createOptionsInternal = function(options) {
     values: values
   };
 
-};
-
-
-/**
- * @param {goog.Uri.QueryData=} opt_queryData Query data.
- * @return {Array.<ol.RendererHint>} Renderer hints.
- */
-ol.RendererHints.createFromQueryData = function(opt_queryData) {
-  var query = goog.global.location.search.substring(1),
-      queryData = goog.isDef(opt_queryData) ?
-          opt_queryData : new goog.Uri.QueryData(query);
-  if (queryData.containsKey('renderers')) {
-    return queryData.get('renderers').split(',');
-  } else if (queryData.containsKey('renderer')) {
-    return [queryData.get('renderer')];
-  } else {
-    return ol.DEFAULT_RENDERER_HINTS;
-  }
 };
 
 

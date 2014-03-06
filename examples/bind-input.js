@@ -1,6 +1,5 @@
 goog.require('ol.BrowserFeature');
 goog.require('ol.Map');
-goog.require('ol.RendererHints');
 goog.require('ol.View2D');
 goog.require('ol.dom.Input');
 goog.require('ol.layer.Tile');
@@ -30,7 +29,7 @@ var view = new ol.View2D({
 
 var map = new ol.Map({
   layers: [layer],
-  renderer: ol.RendererHints.createFromQueryData(),
+  renderer: exampleNS.getRendererFromQueryString(),
   target: 'map',
   view: view
 });

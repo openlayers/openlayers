@@ -8,7 +8,11 @@ goog.require('ol.MapBrowserEvent.EventType');
 
 
 /**
+ * A function that takes an {@link ol.MapBrowserEvent} and returns a
+ * `{boolean}`. If the condition is met, true should be returned.
+ *
  * @typedef {function(ol.MapBrowserEvent): boolean}
+ * @todo stability experimental
  */
 ol.events.ConditionType;
 

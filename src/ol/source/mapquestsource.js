@@ -20,13 +20,13 @@ ol.source.MapQuest = function(opt_options) {
 
   var layerConfig = ol.source.MapQuestConfig[options.layer];
 
-  var url = 'http://otile{1-4}.mqcdn.com/tiles/1.0.0/' +
+  var url = '//otile{1-4}.mqcdn.com/tiles/1.0.0/' +
       options.layer + '/{z}/{x}/{y}.jpg';
 
   goog.base(this, {
     attributions: layerConfig.attributions,
     crossOrigin: 'anonymous',
-    logo: 'http://developer.mapquest.com/content/osm/mq_logo.png',
+    logo: '//developer.mapquest.com/content/osm/mq_logo.png',
     maxZoom: layerConfig.maxZoom,
     opaque: true,
     tileLoadFunction: options.tileLoadFunction,

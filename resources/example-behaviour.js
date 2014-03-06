@@ -17,6 +17,10 @@
       modeTxt,
       modeChangedMethod;
 
+  if (!container) {
+    return;
+  }
+
   modeChangedMethod = function() {
     var newMode = this.value,
         search = window.location.search.substring(1),
@@ -56,9 +60,27 @@
 
   $(select).change(modeChangedMethod);
   select.className = 'input-medium';
-  
+
   form.className = 'navbar-form pull-right';
   form.appendChild(select);
 
   container.appendChild(form);
 })();
+
+var exampleNS = {};
+
+exampleNS.getRendererFromQueryString = function() {
+  var obj = {}, queryString = location.search.slice(1),
+      re = /([^&=]+)=([^&]*)/g, m;
+
+  while (m = re.exec(queryString)) {
+    obj[decodeURIComponent(m[1])] = decodeURIComponent(m[2]);
+  }
+  if ('renderers' in obj) {
+    return obj['renderers'].split(',');
+  } else if ('renderer' in obj) {
+    return [obj['renderer']];
+  } else {
+    return ['webgl', 'canvas', 'dom'];
+  }
+};

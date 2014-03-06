@@ -44,8 +44,9 @@ ol.source.ImageVector = function(options) {
    * @private
    * @type {!ol.feature.StyleFunction}
    */
-  this.styleFunction_ = goog.isDef(options.styleFunction) ?
-      options.styleFunction : ol.feature.defaultStyleFunction;
+  this.styleFunction_ = goog.isDef(options.style) ?
+      ol.feature.createStyleFunction(options.style) :
+      ol.feature.defaultStyleFunction;
 
   /**
    * @private
@@ -138,7 +139,7 @@ ol.source.ImageVector.prototype.canvasFunctionInternal_ =
 
   var transform = this.getTransform_(ol.extent.getCenter(extent),
       resolution, pixelRatio, size);
-  replayGroup.replay(this.canvasContext_, extent, pixelRatio, transform,
+  replayGroup.replay(this.canvasContext_, extent, pixelRatio, transform, 0,
       goog.functions.TRUE);
 
   this.replayGroup_ = replayGroup;

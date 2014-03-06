@@ -46,7 +46,7 @@ var vectorSource = new ol.source.Vector({
 });
 var vector = new ol.layer.Vector({
   source: vectorSource,
-  styleFunction: function(feature, resolution) {
+  style: function(feature, resolution) {
     return styles[feature.get('size')];
   }
 });
@@ -87,7 +87,7 @@ var displaySnap = function(coordinate) {
       line.setCoordinates([coordinate, closestPoint]);
     }
   }
-  map.requestRenderFrame();
+  map.render();
 };
 
 $(map.getViewport()).on('mousemove', function(evt) {

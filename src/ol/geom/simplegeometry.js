@@ -100,10 +100,26 @@ ol.geom.SimpleGeometry.prototype.getExtent = function(opt_extent) {
 
 
 /**
+ * @return {ol.Coordinate} First coordinate.
+ */
+ol.geom.SimpleGeometry.prototype.getFirstCoordinate = function() {
+  return this.flatCoordinates.slice(0, this.stride);
+};
+
+
+/**
  * @return {Array.<number>} Flat coordinates.
  */
 ol.geom.SimpleGeometry.prototype.getFlatCoordinates = function() {
   return this.flatCoordinates;
+};
+
+
+/**
+ * @return {ol.Coordinate} Last point.
+ */
+ol.geom.SimpleGeometry.prototype.getLastCoordinate = function() {
+  return this.flatCoordinates.slice(this.flatCoordinates.length - this.stride);
 };
 
 

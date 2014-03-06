@@ -207,10 +207,182 @@ describe('ol.Feature', function() {
 
   });
 
+  describe('#getStyleFunction()', function() {
+
+    var styleFunction = function(resolution) {
+      return null;
+    };
+
+    it('returns undefined after construction', function() {
+      var feature = new ol.Feature();
+      expect(feature.getStyleFunction()).to.be(undefined);
+    });
+
+    it('returns the function passed to setStyle', function() {
+      var feature = new ol.Feature();
+      feature.setStyle(styleFunction);
+      expect(feature.getStyleFunction()).to.be(styleFunction);
+    });
+
+    it('does not get confused with user "styleFunction" property', function() {
+      var feature = new ol.Feature();
+      feature.set('styleFunction', 'foo');
+      expect(feature.getStyleFunction()).to.be(undefined);
+    });
+
+    it('does not get confused with "styleFunction" option', function() {
+      var feature = new ol.Feature({
+        styleFunction: 'foo'
+      });
+      expect(feature.getStyleFunction()).to.be(undefined);
+    });
+
+  });
+
+  describe('#setStyle()', function() {
+
+    var style = new ol.style.Style();
+
+    var styleFunction = function(feature, resolution) {
+      return null;
+    };
+
+    it('accepts a single style', function() {
+      var feature = new ol.Feature();
+      feature.setStyle(style);
+      var func = feature.getStyleFunction();
+      expect(func()).to.eql([style]);
+    });
+
+    it('accepts an array of styles', function() {
+      var feature = new ol.Feature();
+      feature.setStyle([style]);
+      var func = feature.getStyleFunction();
+      expect(func()).to.eql([style]);
+    });
+
+    it('accepts a style function', function() {
+      var feature = new ol.Feature();
+      feature.setStyle(styleFunction);
+      expect(feature.getStyleFunction()).to.be(styleFunction);
+    });
+
+    it('dispatches a change event', function(done) {
+      var feature = new ol.Feature();
+      feature.on('change', function() {
+        done();
+      });
+      feature.setStyle(style);
+    });
+
+  });
+
+  describe('#getStyle()', function() {
+
+    var style = new ol.style.Style();
+
+    var styleFunction = function(resolution) {
+      return null;
+    };
+
+    it('returns what is passed to setStyle', function() {
+      var feature = new ol.Feature();
+
+      expect(feature.getStyle()).to.be(null);
+
+      feature.setStyle(style);
+      expect(feature.getStyle()).to.be(style);
+
+      feature.setStyle([style]);
+      expect(feature.getStyle()).to.eql([style]);
+
+      feature.setStyle(styleFunction);
+      expect(feature.getStyle()).to.be(styleFunction);
+
+    });
+
+    it('does not get confused with "style" option to constructor', function() {
+      var feature = new ol.Feature({
+        style: 'foo'
+      });
+
+      expect(feature.getStyle()).to.be(null);
+    });
+
+    it('does not get confused with user set "style" property', function() {
+      var feature = new ol.Feature();
+      feature.set('style', 'foo');
+
+      expect(feature.getStyle()).to.be(null);
+    });
+
+  });
+
+
+});
+
+describe('ol.feature.createStyleFunction()', function() {
+  var style = new ol.style.Style();
+
+  it('creates a style function from a single style', function() {
+    var styleFunction = ol.feature.createStyleFunction(style);
+    expect(styleFunction()).to.eql([style]);
+  });
+
+  it('creates a style function from an array of styles', function() {
+    var styleFunction = ol.feature.createStyleFunction([style]);
+    expect(styleFunction()).to.eql([style]);
+  });
+
+  it('passes through a function', function() {
+    var original = function() {
+      return [style];
+    };
+    var styleFunction = ol.feature.createStyleFunction(original);
+    expect(styleFunction).to.be(original);
+  });
+
+  it('throws on (some) unexpected input', function() {
+    expect(function() {
+      ol.feature.createStyleFunction({bogus: 'input'});
+    }).to.throwException();
+  });
+
+});
+
+describe('ol.feature.createFeatureStyleFunction()', function() {
+  var style = new ol.style.Style();
+
+  it('creates a feature style function from a single style', function() {
+    var styleFunction = ol.feature.createFeatureStyleFunction(style);
+    expect(styleFunction()).to.eql([style]);
+  });
+
+  it('creates a feature style function from an array of styles', function() {
+    var styleFunction = ol.feature.createFeatureStyleFunction([style]);
+    expect(styleFunction()).to.eql([style]);
+  });
+
+  it('passes through a function', function() {
+    var original = function() {
+      return [style];
+    };
+    var styleFunction = ol.feature.createFeatureStyleFunction(original);
+    expect(styleFunction).to.be(original);
+  });
+
+  it('throws on (some) unexpected input', function() {
+    expect(function() {
+      ol.feature.createFeatureStyleFunction({bogus: 'input'});
+    }).to.throwException();
+  });
+
 });
 
 
 goog.require('goog.events');
 goog.require('goog.object');
 goog.require('ol.Feature');
+goog.require('ol.feature');
 goog.require('ol.geom.Point');
+goog.require('ol.style.Style');

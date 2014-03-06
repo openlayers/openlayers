@@ -310,6 +310,126 @@ ol.geom.flat.lineStringInterpolate =
  * @param {number} offset Offset.
  * @param {number} end End.
  * @param {number} stride Stride.
+ * @param {number} m M.
+ * @param {boolean} extrapolate Extrapolate.
+ * @return {ol.Coordinate} Coordinate.
+ */
+ol.geom.flat.lineStringCoordinateAtM =
+    function(flatCoordinates, offset, end, stride, m, extrapolate) {
+  if (end == offset) {
+    return null;
+  }
+  var coordinate;
+  if (m < flatCoordinates[offset + stride - 1]) {
+    if (extrapolate) {
+      coordinate = flatCoordinates.slice(offset, offset + stride);
+      coordinate[stride - 1] = m;
+      return coordinate;
+    } else {
+      return null;
+    }
+  } else if (flatCoordinates[end - 1] < m) {
+    if (extrapolate) {
+      coordinate = flatCoordinates.slice(end - stride, end);
+      coordinate[stride - 1] = m;
+      return coordinate;
+    } else {
+      return null;
+    }
+  }
+  // FIXME use O(1) search
+  if (m == flatCoordinates[offset + stride - 1]) {
+    return flatCoordinates.slice(offset, offset + stride);
+  }
+  var lo = offset / stride;
+  var hi = end / stride;
+  while (lo < hi) {
+    var mid = (lo + hi) >> 1;
+    if (m < flatCoordinates[(mid + 1) * stride - 1]) {
+      hi = mid;
+    } else {
+      lo = mid + 1;
+    }
+  }
+  var m0 = flatCoordinates[lo * stride - 1];
+  if (m == m0) {
+    return flatCoordinates.slice((lo - 1) * stride, (lo - 1) * stride + stride);
+  }
+  var m1 = flatCoordinates[(lo + 1) * stride - 1];
+  goog.asserts.assert(m0 < m);
+  goog.asserts.assert(m <= m1);
+  var t = (m - m0) / (m1 - m0);
+  coordinate = [];
+  var i;
+  for (i = 0; i < stride - 1; ++i) {
+    coordinate.push((1 - t) * flatCoordinates[(lo - 1) * stride + i] +
+        t * flatCoordinates[lo * stride + i]);
+  }
+  coordinate.push(m);
+  goog.asserts.assert(coordinate.length == stride);
+  return coordinate;
+};
+
+
+/**
+ * @param {Array.<number>} flatCoordinates Flat coordinates.
+ * @param {number} offset Offset.
+ * @param {Array.<number>} ends Ends.
+ * @param {number} stride Stride.
+ * @param {number} m M.
+ * @param {boolean} extrapolate Extrapolate.
+ * @param {boolean} interpolate Interpolate.
+ * @return {ol.Coordinate} Coordinate.
+ */
+ol.geom.flat.lineStringsCoordinateAtM = function(
+    flatCoordinates, offset, ends, stride, m, extrapolate, interpolate) {
+  if (interpolate) {
+    return ol.geom.flat.lineStringCoordinateAtM(
+        flatCoordinates, offset, ends[ends.length - 1], stride, m, extrapolate);
+  }
+  var coordinate;
+  if (m < flatCoordinates[stride - 1]) {
+    if (extrapolate) {
+      coordinate = flatCoordinates.slice(0, stride);
+      coordinate[stride - 1] = m;
+      return coordinate;
+    } else {
+      return null;
+    }
+  }
+  if (flatCoordinates[flatCoordinates.length - 1] < m) {
+    if (extrapolate) {
+      coordinate = flatCoordinates.slice(flatCoordinates.length - stride);
+      coordinate[stride - 1] = m;
+      return coordinate;
+    } else {
+      return null;
+    }
+  }
+  var i, ii;
+  for (i = 0, ii = ends.length; i < ii; ++i) {
+    var end = ends[i];
+    if (offset == end) {
+      continue;
+    }
+    if (m < flatCoordinates[offset + stride - 1]) {
+      return null;
+    } else if (m <= flatCoordinates[end - 1]) {
+      return ol.geom.flat.lineStringCoordinateAtM(
+          flatCoordinates, offset, end, stride, m, false);
+    }
+    offset = end;
+  }
+  goog.asserts.fail();
+  return null;
+};
+
+
+/**
+ * @param {Array.<number>} flatCoordinates Flat coordinates.
+ * @param {number} offset Offset.
+ * @param {number} end End.
+ * @param {number} stride Stride.
  * @return {number} Length.
  */
 ol.geom.flat.lineStringLength = function(flatCoordinates, offset, end, stride) {

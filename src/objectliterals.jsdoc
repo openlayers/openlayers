@@ -7,6 +7,13 @@
  */
 
 /**
+ * @typedef {Object} olx.DeviceOptions
+ * @property {boolean|undefined} loadTilesWhileAnimating When set to false, no tiles will be loaded while animating, which improves responsiveness on devices with slow memory. Default is `true`.
+ * @property {boolean|undefined} loadTilesWhileInteracting When set to false, no tiles will be loaded while interacting, which improves responsiveness on devices with slow memory. Default is `true`.
+ * @todo stability experimental
+ */
+
+/**
  * @typedef {Object} olx.DeviceOrientationOptions
  * @property {boolean|undefined} tracking Start tracking. Default is `false`.
  * @todo stability experimental
@@ -25,6 +32,8 @@
  * @typedef {Object} olx.MapOptions
  * @property {ol.Collection|Array.<ol.control.Control>|undefined} controls
  *     Controls initially added to the map.
+ * @property {olx.DeviceOptions|undefined} deviceOptions
+ *     Device options for the map.
  * @property {number|undefined} pixelRatio The ratio between physical
  *     pixels and device-independent pixels (dips) on the device. If `undefined`
  *     then it gets set by using `window.devicePixelRatio`.
@@ -207,6 +216,7 @@
 /**
  * @typedef {Object} olx.control.FullScreenOptions
  * @property {string|undefined} className CSS class name. Default is `ol-full-screen`.
+ * @property {string|undefined} tipLabel Text label to use for the button tip. Default is `Toggle full-screen`
  * @property {boolean|undefined} keys Full keyboard access.
  * @property {Element|undefined} target Target.
  * @todo stability experimental
@@ -247,6 +257,8 @@
  * @property {string|undefined} className CSS class name. Default is `ol-zoom`.
  * @property {string|undefined} zoomInLabel Text label to use for the zoom-in button. Default is `+`
  * @property {string|undefined} zoomOutLabel Text label to use for the zoom-out button. Default is `-`
+ * @property {string|undefined} zoomInTipLabel Text label to use for the button tip. Default is `Zoom in`
+ * @property {string|undefined} zoomOutTipLabel Text label to use for the button tip. Default is `Zoom out`
  * @property {number|undefined} delta The zoom delta applied on each click.
  * @property {Element|undefined} target Target.
  * @todo stability experimental
@@ -264,6 +276,7 @@
  * @typedef {Object} olx.control.ZoomToExtentOptions
  * @property {string|undefined} className Class name. Default is `ol-zoom-extent`.
  * @property {Element|undefined} target Target.
+ * @property {string|undefined} tipLabel Text label to use for the button tip. Default is `Zoom to extent`
  * @property {ol.Extent|undefined} extent The extent to zoom to. If
  *     undefined the validity extent of the view projection is used.
  * @todo stability experimental
@@ -292,6 +305,27 @@
  */
 
 /**
+ * @typedef {Object} olx.format.GMLOptions
+ * @property {string} featureNS Feature namespace.
+ * @property {string} featureType Feature type to parse.
+ * @property {string} srsName srsName to use when writing geometries.
+ * @property {boolean|undefined} surface Write gml:Surface instead of
+ *     gml:Polygon elements. This also affects the elements in multi-part
+ *     geometries. Default is `false´.
+ * @property {boolean|undefined} curve Write gml:Curve instead of
+ *     gml:LineString elements. This also affects the elements in multi-part
+ *     geometries. Default is `false´.
+ * @property {boolean|undefined} multiCurve Write gml:MultiCurve instead of
+ *     gml:MultiLineString. Since the latter is deprecated in GML 3, the
+ *     default is `true´.
+ * @property {boolean|undefined} multiSurface Write gml:multiSurface instead
+ *     of gml:MultiPolygon. Since the latter is deprecated in GML 3, the
+ *     default is `true´.
+ * @property {string|undefined} schemaLocation Optional schemaLocation to use
+ *     when writing out the GML, this will override the default provided.
+ */
+
+/**
  * @typedef {Object} olx.interaction.DoubleClickZoomOptions
  * @property {number|undefined} duration Animation duration in milliseconds. Default is `250`.
  * @property {number|undefined} delta The zoom delta applied on each double
@@ -301,7 +335,7 @@
 
 /**
  * @typedef {Object} olx.interaction.DragAndDropOptions
- * @property {Array.<function(new: ol.format.Format)>|undefined} formatConstructors
+ * @property {Array.<function(new: ol.format.Feature)>|undefined} formatConstructors
  *     Format constructors.
  * @property {ol.proj.ProjectionLike} reprojectTo Target projection. By
  *     default, the map's view's projection is used.
@@ -375,12 +409,14 @@
 
 /**
  * @typedef {Object} olx.interaction.DrawOptions
- * @property {ol.source.Vector|undefined} source Destination source for the features.
+ * @property {ol.Collection|undefined} features Destination collection for the drawn features.
+ * @property {ol.source.Vector|undefined} source Destination source for the drawn features.
  * @property {number|undefined} snapTolerance Pixel distance for snapping to the
  *     drawing finish (default is 12).
  * @property {ol.geom.GeometryType} type Drawing type ('Point', 'LineString',
  *     'Polygon', 'MultiPoint', 'MultiLineString', or 'MultiPolygon').
- * @property {ol.feature.StyleFunction|undefined} styleFunction Style function.
+ * @property {ol.style.Style|Array.<ol.style.Style>|ol.feature.StyleFunction|undefined} style
+ *     Style for sketch features.
  * @todo stability experimental
  */
 
@@ -426,7 +462,7 @@
  *     features should be selected.
  * @property {Array.<ol.layer.Layer>|undefined} layers Layers.  Zero or more
  *     layers from which features should be selected.
- * @property {ol.FeatureOverlay} featureOverlay Feature overlay.
+ * @property {ol.style.Style|Array.<ol.style.Style>|ol.feature.StyleFunction|undefined} style FeatureOverlay style.
  */
 
 /**
@@ -440,7 +476,8 @@
  * @typedef {Object} olx.interaction.ModifyOptions
  * @property {number|undefined} pixelTolerance Pixel tolerance for considering
  *     the pointer close enough to a vertex for editing. Default is 20 pixels.
- * @property {ol.FeatureOverlay} featureOverlay Features overlay.
+ * @property {ol.style.Style|Array.<ol.style.Style>|ol.feature.StyleFunction|undefined} style FeatureOverlay style.
+ * @property {ol.Collection} features The features the interaction works on.
  */
 
 /**
@@ -517,6 +554,8 @@
  *      (inclusive) at which this layer will be visible.
  * @property {number|undefined} maxResolution The maximum resolution
  *      (exclusive) below which this layer will be visible.
+ * @property {boolean|undefined} useInterimTilesOnError Use interim tiles on
+ *      error.  Default is `true`.
  * @todo stability experimental
  */
 
@@ -532,41 +571,16 @@
  * @property {number|undefined} opacity Opacity. 0-1. Default is `1`.
  * @property {number|undefined} saturation Saturation.
  * @property {ol.source.Vector} source Source.
- * @property {ol.feature.StyleFunction|undefined} styleFunction Style function.
+ * @property {ol.style.Style|Array.<ol.style.Style>|ol.feature.StyleFunction|undefined} style Layer style.
  * @property {boolean|undefined} visible Visibility. Default is `true` (visible).
  * @todo stability experimental
- */
-
-/**
- * @typedef {Object} olx.parser.WFSWriteGetFeatureOptions
- * @property {string} featureNS The namespace URI used for features.
- * @property {string} featurePrefix The prefix for the feature namespace.
- * @property {Array.<string>} featureTypes The feature type names.
- * @property {string|undefined} srsName SRS name. For WFS 1.1.0, this is
- *     required. In WFS 1.0.0, no srsName attribute will be set on geometries
- *     when this is not provided.
- * @property {string|undefined} handle Handle.
- * @property {string|undefined} outputFormat Output format.
- * @property {number} maxFeatures Maximum number of features to fetch.
- */
-
-/**
- * @typedef {Object} olx.parser.WFSWriteTransactionOptions
- * @property {string} featureNS The namespace URI used for features.
- * @property {string} featurePrefix The prefix for the feature namespace.
- * @property {string} featureType The feature type name.
- * @property {string|undefined} srsName SRS name. No srsName attribute will be
- *     set on geometries when this is not provided.
- * @property {string|undefined} handle Handle.
- * @property {Array.<Object>} nativeElements Native elements. Currently not
- *     supported.
  */
 
 /**
  * @typedef {Object} olx.FeatureOverlayOptions
  * @property {Array.<ol.Feature>|ol.Collection|undefined} features Features.
  * @property {ol.Map|undefined} map Map.
- * @property {ol.feature.StyleFunction|undefined} styleFunction Style function.
+ * @property {ol.style.Style|Array.<ol.style.Style>|ol.feature.StyleFunction|undefined} style Feature style.
  */
 
 /**
@@ -601,7 +615,7 @@
  * @property {Document|undefined} doc Document.
  * @property {ol.Extent|undefined} extent Extent.
  * @property {string|undefined} logo Logo.
- * @property {Node|undefined| node Node.
+ * @property {Node|undefined} node Node.
  * @property {ol.proj.ProjectionLike} projection Destination projection.  If
  *     provided, features will be transformed to this projection.  If not
  *     provided, features will not be transformed.
@@ -662,7 +676,7 @@
  * @property {Document|undefined} doc Document.
  * @property {ol.Extent|undefined} extent Extent.
  * @property {string|undefined} logo Logo.
- * @property {Node|undefined| node Node.
+ * @property {Node|undefined} node Node.
  * @property {ol.proj.ProjectionLike} projection Destination projection.  If
  *     provided, features will be transformed to this projection.  If not
  *     provided, features will not be transformed.
@@ -697,8 +711,23 @@
  *     function to load a tile given a URL.
  * @property {string|undefined} url URL template. Must include `{x}`, `{y}`,
  *     and `{z}` placeholders. Default is
- *     `http://{a-c}.tile.openstreetmap.org/{z}/{x}/{y}.png`.
+ *     `//{a-c}.tile.openstreetmap.org/{z}/{x}/{y}.png`.
  * @todo stability experimental
+ */
+
+/**
+ * @typedef {Object} olx.source.OSMXMLOptions
+ * @property {Array.<ol.Attribution>|undefined} attributions Attributions.
+ * @property {Array.<ol.style.Style>|undefined} defaultStyle Default style.
+ * @property {Document|undefined} doc Document.
+ * @property {ol.Extent|undefined} extent Extent.
+ * @property {string|undefined} logo Logo.
+ * @property {Node|undefined| node Node.
+ * @property {ol.proj.ProjectionLike} projection Projection.
+ * @property {ol.proj.ProjectionLike} reprojectTo Re-project to.
+ * @property {string|undefined} text Text.
+ * @property {string|undefined} url URL.
+ * @property {Array.<string>|undefined} urls URLs.
  */
 
 /**
@@ -717,7 +746,7 @@
  * @property {ol.proj.ProjectionLike} projection Projection.
  * @property {number|undefined} ratio Ratio. 1 means canvases are the size
  *     of the map viewport, 2 means twice the size of the map viewport, and so
- *     on.
+ *     on. Default is `1.5`.
  * @property {Array.<number>|undefined} resolutions Resolutions. If specified,
  *     new canvases will be created for these resolutions only.
  * @property {ol.source.State|string|undefined} state Source state.
@@ -731,13 +760,13 @@
  * @property {ol.proj.ProjectionLike} projection Projection.
  * @property {number|undefined} ratio Ratio. 1 means canvases are the size
  *     of the map viewport, 2 means twice the size of the map viewport, and so
- *     on.
+ *     on. Default is `1.5`.
  * @property {Array.<number>|undefined} resolutions Resolutions. If specified,
  *     new canvases will be created for these resolutions only.
  * @property {ol.source.Vector} source The vector source from which the vector
  *     features drawn in canvas elements are read.
- * @property {ol.feature.StyleFunction|undefined} styleFunction Style function
- *     providing the styles to use when rendering features to the canvas.
+ * @property {ol.style.Style|Array.<ol.style.Style>|ol.feature.StyleFunction|undefined} style
+ *     Style to use when rendering features to the canvas.
  */
 
 /**
@@ -850,10 +879,11 @@
 
 /**
  * @typedef {Object} olx.source.VectorFileOptions
+ * @property {ArrayBuffer|undefined} arrayBuffer Array buffer.
  * @property {Array.<ol.Attribution>|undefined} attributions Attributions.
  * @property {Document|undefined} doc Document.
  * @property {ol.Extent|undefined} extent Extent.
- * @property {ol.format.Format} format Format.
+ * @property {ol.format.Feature} format Format.
  * @property {string|undefined} logo Logo.
  * @property {Node|undefined} node Node.
  * @property {Object|undefined} object Object.
@@ -916,6 +946,7 @@
  *     requests.
  * @property {string|undefined} logo Logo.
  * @property {!string} url Prefix of URL template.
+ * @property {string|undefined}  tierSizeCalculation Tier size calculation method: `default` or `truncated`.
  * @property {ol.Size} size Size of the image.
  * @todo stability experimental
  */
@@ -935,8 +966,9 @@
 
 /**
  * @typedef {Object} olx.style.IconOptions
- * @property {Array.<number>|undefined} anchor Anchor. Default value is [0.5, 0.5]
+ * @property {Array.<number>|undefined} anchor Anchor. Default value is `[0.5, 0.5]`
  *     (icon center).
+ * @property {ol.style.IconAnchorOrigin|undefined} anchorOrigin Origin of the anchor: `bottom-left`, `bottom-right`, `top-left` or `top-right`. Default is `top-left`.
  * @property {ol.style.IconAnchorUnits|undefined} anchorXUnits Units in which the anchor x value is specified.
  *     A value of `'fraction'` indicates the x value is a fraction of the icon.
  *     A value of `'pixels'` indicates the x value in pixels. Default is
@@ -947,6 +979,7 @@
  *     `'fraction'`.
  * @property {null|string|undefined} crossOrigin crossOrigin setting for image.
  * @property {number|undefined} scale Scale.
+ * @property {boolean|undefined} rotateWithView Whether to rotate the icon with the view. Default is `false`.
  * @property {number|undefined} rotation Rotation.
  * @property {ol.Size|undefined} size Icon size in pixel.
  * @property {string} src Image source URI.
