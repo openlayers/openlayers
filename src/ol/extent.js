@@ -1,7 +1,9 @@
 goog.provide('ol.Extent');
 goog.provide('ol.extent');
+goog.provide('ol.extent.Relationship');
 
 goog.require('goog.asserts');
+goog.require('goog.vec.Mat4');
 goog.require('ol.Coordinate');
 goog.require('ol.Size');
 goog.require('ol.TransformFunction');
@@ -13,6 +15,20 @@ goog.require('ol.TransformFunction');
  * @todo stability experimental
  */
 ol.Extent;
+
+
+/**
+ * Relationship to an extent.
+ * @enum {number}
+ */
+ol.extent.Relationship = {
+  UNKNOWN: 0,
+  INTERSECTING: 1,
+  ABOVE: 2,
+  RIGHT: 4,
+  BELOW: 8,
+  LEFT: 16
+};
 
 
 /**
@@ -147,6 +163,38 @@ ol.extent.containsCoordinate = function(extent, coordinate) {
 ol.extent.containsExtent = function(extent1, extent2) {
   return extent1[0] <= extent2[0] && extent2[2] <= extent1[2] &&
       extent1[1] <= extent2[1] && extent2[3] <= extent1[3];
+};
+
+
+/**
+ * Get the relationship between a coordinate and extent.
+ * @param {ol.Extent} extent The extent.
+ * @param {ol.Coordinate} coordinate The coordinate.
+ * @return {number} The relationship (bitwise compare with
+ *     ol.extent.Relationship).
+ */
+ol.extent.coordinateRelationship = function(extent, coordinate) {
+  var minX = extent[0];
+  var minY = extent[1];
+  var maxX = extent[2];
+  var maxY = extent[3];
+  var x = coordinate[0];
+  var y = coordinate[1];
+  var relationship = ol.extent.Relationship.UNKNOWN;
+  if (x < minX) {
+    relationship = relationship | ol.extent.Relationship.LEFT;
+  } else if (x > maxX) {
+    relationship = relationship | ol.extent.Relationship.RIGHT;
+  }
+  if (y < minY) {
+    relationship = relationship | ol.extent.Relationship.BELOW;
+  } else if (y > maxY) {
+    relationship = relationship | ol.extent.Relationship.ABOVE;
+  }
+  if (relationship === ol.extent.Relationship.UNKNOWN) {
+    relationship = ol.extent.Relationship.INTERSECTING;
+  }
+  return relationship;
 };
 
 
@@ -597,6 +645,59 @@ ol.extent.scaleFromCenter = function(extent, value) {
 
 
 /**
+ * Determine if the segment between two coordinates intersects (crosses,
+ * touches, or is contained by) the provided extent.
+ * @param {ol.Extent} extent The extent.
+ * @param {ol.Coordinate} start Segment start coordinate.
+ * @param {ol.Coordinate} end Segment end coordinate.
+ * @return {boolean} The segment intersects the extent.
+ */
+ol.extent.segmentIntersects = function(extent, start, end) {
+  var intersects = false;
+  var startRel = ol.extent.coordinateRelationship(extent, start);
+  var endRel = ol.extent.coordinateRelationship(extent, end);
+  if (startRel === ol.extent.Relationship.INTERSECTING ||
+      endRel === ol.extent.Relationship.INTERSECTING) {
+    intersects = true;
+  } else {
+    var minX = extent[0];
+    var minY = extent[1];
+    var maxX = extent[2];
+    var maxY = extent[3];
+    var startX = start[0];
+    var startY = start[1];
+    var endX = end[0];
+    var endY = end[1];
+    var slope = (endY - startY) / (endX - startX);
+    var x, y;
+    if (!!(endRel & ol.extent.Relationship.ABOVE) &&
+        !(startRel & ol.extent.Relationship.ABOVE)) {
+      // potentially intersects top
+      x = endX - ((endY - maxY) / slope);
+      intersects = x >= minX && x <= maxX;
+    } else if (!!(endRel & ol.extent.Relationship.RIGHT) &&
+        !(startRel & ol.extent.Relationship.RIGHT)) {
+      // potentially intersects right
+      y = endY - ((endX - maxX) * slope);
+      intersects = y >= minY && y <= maxY;
+    } else if (!!(endRel & ol.extent.Relationship.BELOW) &&
+        !(startRel & ol.extent.Relationship.BELOW)) {
+      // potentially intersects bottom
+      x = endX - ((endY - minY) / slope);
+      intersects = x >= minX && x <= maxX;
+    } else if (!!(endRel & ol.extent.Relationship.LEFT) &&
+        !(startRel & ol.extent.Relationship.LEFT)) {
+      // potentially intersects left
+      y = endY - ((endX - minX) * slope);
+      intersects = y >= minY && y <= maxY;
+    }
+
+  }
+  return intersects;
+};
+
+
+/**
  * @param {ol.Extent} extent1 Extent 1.
  * @param {ol.Extent} extent2 Extent 2.
  * @return {boolean} Touches.
@@ -628,4 +729,38 @@ ol.extent.transform = function(extent, transformFn, opt_extent) {
   var xs = [coordinates[0], coordinates[2], coordinates[4], coordinates[6]];
   var ys = [coordinates[1], coordinates[3], coordinates[5], coordinates[7]];
   return ol.extent.boundingExtentXYs_(xs, ys, opt_extent);
+};
+
+
+/**
+ * Apply a 2d transform to an extent.
+ * @param {ol.Extent} extent Input extent.
+ * @param {goog.vec.Mat4.Number} transform The transform matrix.
+ * @param {ol.Extent=} opt_extent Optional extent for return values.
+ * @return {ol.Extent} The transformed extent.
+ */
+ol.extent.transform2D = function(extent, transform, opt_extent) {
+  var dest = goog.isDef(opt_extent) ? opt_extent : [];
+  var m00 = goog.vec.Mat4.getElement(transform, 0, 0);
+  var m10 = goog.vec.Mat4.getElement(transform, 1, 0);
+  var m01 = goog.vec.Mat4.getElement(transform, 0, 1);
+  var m11 = goog.vec.Mat4.getElement(transform, 1, 1);
+  var m03 = goog.vec.Mat4.getElement(transform, 0, 3);
+  var m13 = goog.vec.Mat4.getElement(transform, 1, 3);
+  var xi = [0, 2, 0, 2];
+  var yi = [1, 1, 3, 3];
+  var xs = [];
+  var ys = [];
+  var i, x, y;
+  for (i = 0; i < 4; ++i) {
+    x = extent[xi[i]];
+    y = extent[yi[i]];
+    xs[i] = m00 * x + m01 * y + m03;
+    ys[i] = m10 * x + m11 * y + m13;
+  }
+  dest[0] = Math.min.apply(null, xs);
+  dest[1] = Math.min.apply(null, ys);
+  dest[2] = Math.max.apply(null, xs);
+  dest[3] = Math.max.apply(null, ys);
+  return dest;
 };
