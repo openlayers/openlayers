@@ -34,7 +34,7 @@ ol.layer.Heatmap = function(opt_options) {
 
   /**
    * @private
-   * @type {Uint32Array}
+   * @type {Uint8ClampedArray}
    */
   this.gradient_ = null;
 
@@ -89,7 +89,7 @@ ol.layer.Heatmap.DEFAULT_GRADIENT = ['#00f', '#0ff', '#0f0', '#ff0', '#f00'];
 
 /**
  * @param {Array.<string>} colors
- * @return {Uint32Array}
+ * @return {Uint8ClampedArray}
  * @private
  */
 ol.layer.Heatmap.createGradient_ = function(colors) {
@@ -108,11 +108,8 @@ ol.layer.Heatmap.createGradient_ = function(colors) {
 
   context.fillStyle = gradient;
   context.fillRect(0, 0, width, height);
-  var imageData = context.getImageData(0, 0, width, height).data;
-  for (var i = 0, ii = imageData.length; i < ii; i += 4) {
-    imageData[i + 3] = i / 4;
-  }
-  return new Uint32Array(imageData.buffer);
+
+  return context.getImageData(0, 0, width, height).data;
 };
 
 
@@ -172,13 +169,14 @@ ol.layer.Heatmap.prototype.handleRender_ = function(event) {
   var context = event.context;
   var canvas = context.canvas;
   var image = context.getImageData(0, 0, canvas.width, canvas.height);
-  var view32 = new Uint32Array(image.data.buffer);
   var view8 = image.data;
-  var i, ii, alpha;
-  for (i = 0, ii = view32.length; i < ii; ++i) {
-    alpha = view8[4 * i + 3];
+  var i, ii, alpha, offset;
+  for (i = 0, ii = view8.length; i < ii; i += 4) {
+    alpha = view8[i + 3] * 4;
     if (alpha) {
-      view32[i] = this.gradient_[alpha];
+      view8[i] = this.gradient_[alpha];
+      view8[i + 1] = this.gradient_[alpha + 1];
+      view8[i + 2] = this.gradient_[alpha + 2];
     }
   }
   context.putImageData(image, 0, 0);
