@@ -96,7 +96,14 @@ var vectorSource = new ol.source.GeoJSON(
             'type': 'Feature',
             'geometry': {
               'type': 'LineString',
-              'coordinates': [[4e6, -2e6], [8e6, 2e6]]
+              'coordinates': [[4e6, -2e6], [8e6, 2e6], [9e6, 2e6]]
+            }
+          },
+          {
+            'type': 'Feature',
+            'geometry': {
+              'type': 'LineString',
+              'coordinates': [[4e6, -2e6], [8e6, 2e6], [8e6, 3e6]]
             }
           },
           {
