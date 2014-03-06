@@ -90,6 +90,15 @@ ol.interaction.Draw = function(options) {
       options.snapTolerance : 12;
 
   /**
+   * The number of points that must be drawn before a polygon ring can be
+   * finished.  The default is 3.
+   * @type {number}
+   * @private
+   */
+  this.minPointsPerRing_ = goog.isDef(options.minPointsPerRing) ?
+      options.minPointsPerRing : 3;
+
+  /**
    * Geometry type.
    * @type {ol.geom.GeometryType}
    * @private
@@ -314,7 +323,8 @@ ol.interaction.Draw.prototype.atFinish_ = function(event) {
       potentiallyDone = geometry.getCoordinates().length > 2;
     } else if (this.mode_ === ol.interaction.DrawMode.POLYGON) {
       goog.asserts.assertInstanceof(geometry, ol.geom.Polygon);
-      potentiallyDone = geometry.getCoordinates()[0].length > 2;
+      potentiallyDone = geometry.getCoordinates()[0].length >
+          this.minPointsPerRing_;
       potentiallyFinishCoordinates = [this.sketchRawPolygon_[0][0],
         this.sketchRawPolygon_[0][this.sketchRawPolygon_[0].length - 2]];
     }
