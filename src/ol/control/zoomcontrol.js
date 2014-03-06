@@ -32,27 +32,56 @@ ol.control.Zoom = function(opt_options) {
 
   var delta = goog.isDef(options.delta) ? options.delta : 1;
 
-  var zoomInLabel = goog.isDef(options.zoomInLabel) ? options.zoomInLabel : '+',
-      zoomOutLabel =
-          goog.isDef(options.zoomOutLabel) ? options.zoomOutLabel : '-';
+  var zoomInLabel = goog.isDef(options.zoomInLabel) ?
+      options.zoomInLabel : '+';
+  var zoomOutLabel = goog.isDef(options.zoomOutLabel) ?
+      options.zoomOutLabel : '\u2212';
 
-  var inElement = goog.dom.createDom(goog.dom.TagName.A, {
-    'href': '#zoomIn',
-    'class': className + '-in'
-  }, zoomInLabel);
+  var zoomInTipLabel = goog.isDef(options.zoomInTipLabel) ?
+      options.zoomInTipLabel : 'Zoom in';
+  var zoomOutTipLabel = goog.isDef(options.zoomOutTipLabel) ?
+      options.zoomOutTipLabel : 'Zoom out';
+
+  var tTipZoomIn = goog.dom.createDom(goog.dom.TagName.SPAN, {
+    'role' : 'tooltip'
+  }, zoomInTipLabel);
+  var inElement = goog.dom.createDom(goog.dom.TagName.BUTTON, {
+    'class': className + '-in ol-has-tooltip',
+    'name' : 'ZoomIn',
+    'type' : 'button'
+  }, tTipZoomIn, zoomInLabel);
+
   goog.events.listen(inElement, [
     goog.events.EventType.TOUCHEND,
     goog.events.EventType.CLICK
   ], goog.partial(ol.control.Zoom.prototype.zoomByDelta_, delta), false, this);
 
-  var outElement = goog.dom.createDom(goog.dom.TagName.A, {
-    'href': '#zoomOut',
-    'class': className + '-out'
-  }, zoomOutLabel);
+  goog.events.listen(inElement, [
+    goog.events.EventType.MOUSEOUT,
+    goog.events.EventType.FOCUSOUT
+  ], function() {
+    this.blur();
+  }, false);
+
+  var tTipsZoomOut = goog.dom.createDom(goog.dom.TagName.SPAN, {
+    'role' : 'tooltip',
+    'type' : 'button'
+  }, zoomOutTipLabel);
+  var outElement = goog.dom.createDom(goog.dom.TagName.BUTTON, {
+    'class': className + '-out  ol-has-tooltip',
+    'name' : 'ZoomOut'
+  }, tTipsZoomOut, zoomOutLabel);
   goog.events.listen(outElement, [
     goog.events.EventType.TOUCHEND,
     goog.events.EventType.CLICK
   ], goog.partial(ol.control.Zoom.prototype.zoomByDelta_, -delta), false, this);
+
+  goog.events.listen(outElement, [
+    goog.events.EventType.MOUSEOUT,
+    goog.events.EventType.FOCUSOUT
+  ], function() {
+    this.blur();
+  }, false);
 
   var cssClasses = className + ' ' + ol.css.CLASS_UNSELECTABLE;
   var element = goog.dom.createDom(goog.dom.TagName.DIV, cssClasses, inElement,
@@ -79,8 +108,8 @@ goog.inherits(ol.control.Zoom, ol.control.Control);
  * @private
  */
 ol.control.Zoom.prototype.zoomByDelta_ = function(delta, browserEvent) {
-  // prevent the anchor from getting appended to the url
   browserEvent.preventDefault();
+  // prevent the anchor from getting appended to the url
   var map = this.getMap();
   // FIXME works for View2D only
   var view = map.getView();

@@ -32,7 +32,7 @@ describe('ol.format.TopoJSON', function() {
 
   describe('constructor', function() {
     it('creates a new format', function() {
-      expect(format).to.be.a(ol.format.Format);
+      expect(format).to.be.a(ol.format.Feature);
       expect(format).to.be.a(ol.format.TopoJSON);
     });
   });
@@ -97,5 +97,5 @@ describe('ol.format.TopoJSON', function() {
 goog.require('ol.Feature');
 goog.require('ol.geom.MultiPolygon');
 goog.require('ol.geom.Polygon');
-goog.require('ol.format.Format');
+goog.require('ol.format.Feature');
 goog.require('ol.format.TopoJSON');

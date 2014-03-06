@@ -1,6 +1,5 @@
 goog.require('ol.Map');
 goog.require('ol.Overlay');
-goog.require('ol.RendererHints');
 goog.require('ol.View2D');
 goog.require('ol.coordinate');
 goog.require('ol.layer.Tile');
@@ -48,7 +47,7 @@ var map = new ol.Map({
       })
     })
   ],
-  renderer: ol.RendererHints.createFromQueryData(),
+  renderer: exampleNS.getRendererFromQueryString(),
   overlays: [overlay],
   target: 'map',
   view: new ol.View2D({

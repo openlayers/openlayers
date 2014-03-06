@@ -94,7 +94,7 @@ ol.source.Stamen = function(options) {
   var layerConfig = ol.source.StamenLayerConfig[options.layer];
 
   var url = goog.isDef(options.url) ? options.url :
-      'http://{a-d}.tile.stamen.com/' + options.layer + '/{z}/{x}/{y}.' +
+      '//{a-d}.tile.stamen.com/' + options.layer + '/{z}/{x}/{y}.' +
       layerConfig.extension;
 
   goog.base(this, {

@@ -1,6 +1,7 @@
 goog.provide('ol.dom.Input');
 goog.provide('ol.dom.InputProperty');
 
+goog.require('goog.asserts');
 goog.require('goog.events');
 goog.require('goog.events.EventType');
 goog.require('ol.Object');
@@ -30,8 +31,6 @@ ol.dom.InputProperty = {
  * @param {Element} target Target element.
  * @todo stability experimental
  * @todo observable value {string} the value of the Input
- * @todo observable valueAsNumber {number} the value of the Input, converted to
- *       a number if possible
  * @todo observable checked {boolean} the checked state of the Input
  */
 ol.dom.Input = function(target) {
@@ -39,11 +38,12 @@ ol.dom.Input = function(target) {
 
   /**
    * @private
-   * @type {Element}
+   * @type {HTMLInputElement}
    */
-  this.target_ = target;
+  this.target_ = /** @type {HTMLInputElement} */ (target);
 
-  goog.events.listen(this.target_, goog.events.EventType.CHANGE,
+  goog.events.listen(this.target_,
+      [goog.events.EventType.CHANGE, goog.events.EventType.INPUT],
       this.handleInputChanged_, false, this);
 
   goog.events.listen(this,
@@ -113,9 +113,11 @@ goog.exportProperty(
 
 
 /**
+ * @param {goog.events.BrowserEvent} browserEvent Browser event.
  * @private
  */
-ol.dom.Input.prototype.handleInputChanged_ = function() {
+ol.dom.Input.prototype.handleInputChanged_ = function(browserEvent) {
+  goog.asserts.assert(browserEvent.currentTarget == this.target_);
   var target = this.target_;
   if (target.type === 'checkbox' || target.type === 'radio') {
     this.setChecked(target.checked);
@@ -126,16 +128,18 @@ ol.dom.Input.prototype.handleInputChanged_ = function() {
 
 
 /**
+ * @param {goog.events.Event} event Change event.
  * @private
  */
-ol.dom.Input.prototype.handleCheckedChanged_ = function() {
-  this.target_.checked = this.getChecked();
+ol.dom.Input.prototype.handleCheckedChanged_ = function(event) {
+  this.target_.checked = /** @type {boolean} */ (this.getChecked());
 };
 
 
 /**
+ * @param {goog.events.Event} event Change event.
  * @private
  */
-ol.dom.Input.prototype.handleValueChanged_ = function() {
-  this.target_.value = this.getValue();
+ol.dom.Input.prototype.handleValueChanged_ = function(event) {
+  this.target_.value =  /** @type {string} */ (this.getValue());
 };

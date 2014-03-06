@@ -17,6 +17,14 @@ ol.control.defaults = function(opt_options) {
 
   var controls = new ol.Collection();
 
+  var zoomControl = goog.isDef(options.zoom) ?
+      options.zoom : true;
+  if (zoomControl) {
+    var zoomControlOptions = goog.isDef(options.zoomOptions) ?
+        options.zoomOptions : undefined;
+    controls.push(new ol.control.Zoom(zoomControlOptions));
+  }
+
   var attributionControl = goog.isDef(options.attribution) ?
       options.attribution : true;
   if (attributionControl) {
@@ -31,14 +39,6 @@ ol.control.defaults = function(opt_options) {
     var logoControlOptions = goog.isDef(options.logoOptions) ?
         options.logoOptions : undefined;
     controls.push(new ol.control.Logo(logoControlOptions));
-  }
-
-  var zoomControl = goog.isDef(options.zoom) ?
-      options.zoom : true;
-  if (zoomControl) {
-    var zoomControlOptions = goog.isDef(options.zoomOptions) ?
-        options.zoomOptions : undefined;
-    controls.push(new ol.control.Zoom(zoomControlOptions));
   }
 
   return controls;

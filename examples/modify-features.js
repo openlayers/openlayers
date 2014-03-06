@@ -1,4 +1,3 @@
-goog.require('ol.FeatureOverlay');
 goog.require('ol.Map');
 goog.require('ol.View2D');
 goog.require('ol.interaction');
@@ -89,6 +88,13 @@ var vectorSource = new ol.source.GeoJSON(
           {
             'type': 'Feature',
             'geometry': {
+              'type': 'MultiPoint',
+              'coordinates': [[-2e6, 0], [0, -2e6]]
+            }
+          },
+          {
+            'type': 'Feature',
+            'geometry': {
               'type': 'LineString',
               'coordinates': [[4e6, -2e6], [8e6, 2e6]]
             }
@@ -154,7 +160,7 @@ var vectorSource = new ol.source.GeoJSON(
 
 var vectorLayer = new ol.layer.Vector({
   source: vectorSource,
-  styleFunction: styleFunction
+  style: styleFunction
 });
 
 var overlayStyle = (function() {
@@ -220,12 +226,14 @@ var overlayStyle = (function() {
   };
 })();
 
-var overlay = new ol.FeatureOverlay({
-  styleFunction: overlayStyle
+var select = new ol.interaction.Select({
+  style: overlayStyle
 });
 
-var modify = new ol.interaction.Modify({ featureOverlay: overlay });
-var select = new ol.interaction.Select({ featureOverlay: overlay });
+var modify = new ol.interaction.Modify({
+  features: select.getFeatures(),
+  style: overlayStyle
+});
 
 var map = new ol.Map({
   interactions: ol.interaction.defaults().extend([select, modify]),

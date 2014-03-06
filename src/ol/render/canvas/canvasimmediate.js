@@ -8,6 +8,7 @@ goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('goog.object');
 goog.require('goog.vec.Mat4');
+goog.require('ol.BrowserFeature');
 goog.require('ol.color');
 goog.require('ol.extent');
 goog.require('ol.geom.flat');
@@ -24,9 +25,11 @@ goog.require('ol.vec.Mat4');
  * @param {number} pixelRatio Pixel ratio.
  * @param {ol.Extent} extent Extent.
  * @param {goog.vec.Mat4.Number} transform Transform.
+ * @param {number} viewRotation View rotation.
  * @struct
  */
-ol.render.canvas.Immediate = function(context, pixelRatio, extent, transform) {
+ol.render.canvas.Immediate =
+    function(context, pixelRatio, extent, transform, viewRotation) {
 
   /**
    * @private
@@ -58,6 +61,12 @@ ol.render.canvas.Immediate = function(context, pixelRatio, extent, transform) {
    * @type {goog.vec.Mat4.Number}
    */
   this.transform_ = transform;
+
+  /**
+   * @private
+   * @type {number}
+   */
+  this.viewRotation_ = viewRotation;
 
   /**
    * @private
@@ -112,6 +121,18 @@ ol.render.canvas.Immediate = function(context, pixelRatio, extent, transform) {
    * @type {number}
    */
   this.imageHeight_ = 0;
+
+  /**
+   * @private
+   * @type {number}
+   */
+  this.imageOpacity_ = 0;
+
+  /**
+   * @private
+   * @type {boolean}
+   */
+  this.imageRotateWithView_ = false;
 
   /**
    * @private
@@ -206,6 +227,14 @@ ol.render.canvas.Immediate.prototype.drawImages_ =
       flatCoordinates, 2, this.transform_, this.pixelCoordinates_);
   var context = this.context_;
   var localTransform = this.tmpLocalTransform_;
+  var alpha = context.globalAlpha;
+  if (this.imageOpacity_ != 1) {
+    context.globalAlpha = alpha * this.imageOpacity_;
+  }
+  var rotation = this.imageRotation_;
+  if (this.imageRotateWithView_) {
+    rotation += this.viewRotation_;
+  }
   var i, ii;
   for (i = 0, ii = pixelCoordinates.length; i < ii; i += 2) {
     var x = pixelCoordinates[i] - this.imageAnchorX_;
@@ -214,12 +243,12 @@ ol.render.canvas.Immediate.prototype.drawImages_ =
       x = (x + 0.5) | 0;
       y = (y + 0.5) | 0;
     }
-    if (this.imageRotation_ !== 0 || this.imageScale_ != 1) {
+    if (rotation !== 0 || this.imageScale_ != 1) {
       var centerX = x + this.imageAnchorX_;
       var centerY = y + this.imageAnchorY_;
       ol.vec.Mat4.makeTransform2D(localTransform,
           centerX, centerY, this.imageScale_, this.imageScale_,
-          this.imageRotation_, -centerX, -centerY);
+          rotation, -centerX, -centerY);
       context.setTransform(
           goog.vec.Mat4.getElement(localTransform, 0, 0),
           goog.vec.Mat4.getElement(localTransform, 1, 0),
@@ -230,8 +259,11 @@ ol.render.canvas.Immediate.prototype.drawImages_ =
     }
     context.drawImage(this.image_, x, y, this.imageWidth_, this.imageHeight_);
   }
-  if (this.imageRotation_ !== 0 || this.imageScale_ != 1) {
+  if (rotation !== 0 || this.imageScale_ != 1) {
     context.setTransform(1, 0, 0, 1, 0, 0);
+  }
+  if (this.imageOpacity_ != 1) {
+    context.globalAlpha = alpha;
   }
 };
 
@@ -254,6 +286,7 @@ ol.render.canvas.Immediate.prototype.drawText_ =
   if (!goog.isNull(this.textStrokeState_)) {
     this.setContextStrokeState_(this.textStrokeState_);
   }
+  this.setContextTextState_(this.textState_);
   goog.asserts.assert(offset === 0);
   goog.asserts.assert(end == flatCoordinates.length);
   var pixelCoordinates = ol.geom.flat.transform2D(
@@ -638,7 +671,9 @@ ol.render.canvas.Immediate.prototype.setContextStrokeState_ =
   var contextStrokeState = this.contextStrokeState_;
   if (goog.isNull(contextStrokeState)) {
     context.lineCap = strokeState.lineCap;
-    context.lineDash = strokeState.lineDash;
+    if (ol.BrowserFeature.HAS_CANVAS_LINE_DASH) {
+      context.setLineDash(strokeState.lineDash);
+    }
     context.lineJoin = strokeState.lineJoin;
     context.lineWidth = strokeState.lineWidth;
     context.miterLimit = strokeState.miterLimit;
@@ -655,8 +690,11 @@ ol.render.canvas.Immediate.prototype.setContextStrokeState_ =
     if (contextStrokeState.lineCap != strokeState.lineCap) {
       contextStrokeState.lineCap = context.lineCap = strokeState.lineCap;
     }
-    if (contextStrokeState.lineDash != strokeState.lineDash) {
-      contextStrokeState.lineDash = context.lineDash = strokeState.lineDash;
+    if (ol.BrowserFeature.HAS_CANVAS_LINE_DASH) {
+      if (!goog.array.equals(
+          contextStrokeState.lineDash, strokeState.lineDash)) {
+        context.setLineDash(contextStrokeState.lineDash = strokeState.lineDash);
+      }
     }
     if (contextStrokeState.lineJoin != strokeState.lineJoin) {
       contextStrokeState.lineJoin = context.lineJoin = strokeState.lineJoin;
@@ -734,7 +772,7 @@ ol.render.canvas.Immediate.prototype.setFillStrokeStyle =
     this.strokeState_ = {
       lineCap: goog.isDef(strokeStyleLineCap) ?
           strokeStyleLineCap : ol.render.canvas.defaultLineCap,
-      lineDash: goog.isDef(strokeStyleLineDash) ?
+      lineDash: goog.isDefAndNotNull(strokeStyleLineDash) ?
           strokeStyleLineDash : ol.render.canvas.defaultLineDash,
       lineJoin: goog.isDef(strokeStyleLineJoin) ?
           strokeStyleLineJoin : ol.render.canvas.defaultLineJoin,
@@ -759,6 +797,8 @@ ol.render.canvas.Immediate.prototype.setImageStyle = function(imageStyle) {
     var imageAnchor = imageStyle.getAnchor();
     // FIXME pixel ratio
     var imageImage = imageStyle.getImage(1);
+    var imageOpacity = imageStyle.getOpacity();
+    var imageRotateWithView = imageStyle.getRotateWithView();
     var imageRotation = imageStyle.getRotation();
     var imageScale = imageStyle.getScale();
     var imageSize = imageStyle.getSize();
@@ -770,6 +810,9 @@ ol.render.canvas.Immediate.prototype.setImageStyle = function(imageStyle) {
     this.imageAnchorY_ = imageAnchor[1];
     this.imageHeight_ = imageSize[1];
     this.image_ = imageImage;
+    this.imageOpacity_ = goog.isDef(imageOpacity) ? imageOpacity : 1;
+    this.imageRotateWithView_ = goog.isDef(imageRotateWithView) ?
+        imageRotateWithView : false;
     this.imageRotation_ = goog.isDef(imageRotation) ? imageRotation : 0;
     this.imageScale_ = goog.isDef(imageScale) ? imageScale : 1;
     this.imageSnapToPixel_ = goog.isDef(imageSnapToPixel) ?
@@ -809,7 +852,7 @@ ol.render.canvas.Immediate.prototype.setTextStyle = function(textStyle) {
       this.textStrokeState_ = {
         lineCap: goog.isDef(textStrokeStyleLineCap) ?
             textStrokeStyleLineCap : ol.render.canvas.defaultLineCap,
-        lineDash: goog.isDef(textStrokeStyleLineDash) ?
+        lineDash: goog.isDefAndNotNull(textStrokeStyleLineDash) ?
             textStrokeStyleLineDash : ol.render.canvas.defaultLineDash,
         lineJoin: goog.isDef(textStrokeStyleLineJoin) ?
             textStrokeStyleLineJoin : ol.render.canvas.defaultLineJoin,

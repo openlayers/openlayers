@@ -26,7 +26,7 @@ ol.source.OSM = function(opt_options) {
       options.crossOrigin : 'anonymous';
 
   var url = goog.isDef(options.url) ?
-      options.url : 'http://{a-c}.tile.openstreetmap.org/{z}/{x}/{y}.png';
+      options.url : '//{a-c}.tile.openstreetmap.org/{z}/{x}/{y}.png';
 
   goog.base(this, {
     attributions: attributions,

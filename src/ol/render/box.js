@@ -102,6 +102,7 @@ ol.render.Box.prototype.handleMapPostCompose_ = function(event) {
   // use drawAsync(Infinity) to draw above everything
   event.vectorContext.drawAsync(Infinity, function(render) {
     render.setFillStrokeStyle(style.getFill(), style.getStroke());
+    render.setTextStyle(style.getText());
     render.drawPolygonGeometry(geometry, null);
   });
 };
@@ -122,7 +123,7 @@ ol.render.Box.prototype.requestMapRenderFrame_ = function() {
   if (!goog.isNull(this.map_) &&
       !goog.isNull(this.startPixel_) &&
       !goog.isNull(this.endPixel_)) {
-    this.map_.requestRenderFrame();
+    this.map_.render();
   }
 };
 
@@ -134,7 +135,7 @@ ol.render.Box.prototype.setMap = function(map) {
   if (!goog.isNull(this.postComposeListenerKey_)) {
     goog.events.unlistenByKey(this.postComposeListenerKey_);
     this.postComposeListenerKey_ = null;
-    this.map_.requestRenderFrame();
+    this.map_.render();
     this.map_ = null;
   }
   this.map_ = map;

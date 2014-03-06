@@ -177,7 +177,7 @@ vectorSource.addFeature(new ol.Feature(new ol.geom.Circle([5e6, 7e6], 1e6)));
 
 var vectorLayer = new ol.layer.Vector({
   source: vectorSource,
-  styleFunction: styleFunction
+  style: styleFunction
 });
 
 var map = new ol.Map({

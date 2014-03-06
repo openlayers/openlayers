@@ -71,7 +71,7 @@ ol.interaction.DragPan.prototype.handleDrag = function(mapBrowserEvent) {
   ol.coordinate.rotate(newCenter, view2DState.rotation);
   ol.coordinate.add(newCenter, this.startCenter);
   newCenter = view.constrainCenter(newCenter);
-  map.requestRenderFrame();
+  map.render();
   view.setCenter(newCenter);
 };
 
@@ -104,7 +104,7 @@ ol.interaction.DragPan.prototype.handleDragEnd = function(mapBrowserEvent) {
     dest = view2D.constrainCenter(dest);
     view2D.setCenter(dest);
   }
-  map.requestRenderFrame();
+  map.render();
 };
 
 
@@ -120,7 +120,7 @@ ol.interaction.DragPan.prototype.handleDragStart = function(mapBrowserEvent) {
     }
     var map = mapBrowserEvent.map;
     map.getView().setHint(ol.ViewHint.INTERACTING, 1);
-    map.requestRenderFrame();
+    map.render();
     return true;
   } else {
     return false;
@@ -139,7 +139,7 @@ ol.interaction.DragPan.prototype.handleDown = function(mapBrowserEvent) {
   goog.asserts.assert(!goog.isNull(mapBrowserEvent.frameState));
   if (!goog.isNull(this.kineticPreRenderFn_) &&
       map.removePreRenderFunction(this.kineticPreRenderFn_)) {
-    map.requestRenderFrame();
+    map.render();
     view.setCenter(mapBrowserEvent.frameState.view2DState.center);
     this.kineticPreRenderFn_ = null;
   }

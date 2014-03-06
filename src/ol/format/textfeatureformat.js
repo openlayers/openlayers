@@ -1,19 +1,19 @@
-goog.provide('ol.format.Text');
+goog.provide('ol.format.TextFeature');
 
 goog.require('goog.asserts');
-goog.require('ol.format.Format');
+goog.require('ol.format.Feature');
 goog.require('ol.format.FormatType');
 
 
 
 /**
  * @constructor
- * @extends {ol.format.Format}
+ * @extends {ol.format.Feature}
  */
-ol.format.Text = function() {
+ol.format.TextFeature = function() {
   goog.base(this);
 };
-goog.inherits(ol.format.Text, ol.format.Format);
+goog.inherits(ol.format.TextFeature, ol.format.Feature);
 
 
 /**
@@ -21,7 +21,7 @@ goog.inherits(ol.format.Text, ol.format.Format);
  * @private
  * @return {string} Text.
  */
-ol.format.Text.prototype.getText_ = function(source) {
+ol.format.TextFeature.prototype.getText_ = function(source) {
   if (goog.isString(source)) {
     return source;
   } else {
@@ -34,7 +34,7 @@ ol.format.Text.prototype.getText_ = function(source) {
 /**
  * @inheritDoc
  */
-ol.format.Text.prototype.getType = function() {
+ol.format.TextFeature.prototype.getType = function() {
   return ol.format.FormatType.TEXT;
 };
 
@@ -42,7 +42,7 @@ ol.format.Text.prototype.getType = function() {
 /**
  * @inheritDoc
  */
-ol.format.Text.prototype.readFeature = function(source) {
+ol.format.TextFeature.prototype.readFeature = function(source) {
   return this.readFeatureFromText(this.getText_(source));
 };
 
@@ -52,13 +52,13 @@ ol.format.Text.prototype.readFeature = function(source) {
  * @protected
  * @return {ol.Feature} Feature.
  */
-ol.format.Text.prototype.readFeatureFromText = goog.abstractMethod;
+ol.format.TextFeature.prototype.readFeatureFromText = goog.abstractMethod;
 
 
 /**
  * @inheritDoc
  */
-ol.format.Text.prototype.readFeatures = function(source) {
+ol.format.TextFeature.prototype.readFeatures = function(source) {
   return this.readFeaturesFromText(this.getText_(source));
 };
 
@@ -68,13 +68,13 @@ ol.format.Text.prototype.readFeatures = function(source) {
  * @protected
  * @return {Array.<ol.Feature>} Features.
  */
-ol.format.Text.prototype.readFeaturesFromText = goog.abstractMethod;
+ol.format.TextFeature.prototype.readFeaturesFromText = goog.abstractMethod;
 
 
 /**
  * @inheritDoc
  */
-ol.format.Text.prototype.readGeometry = function(source) {
+ol.format.TextFeature.prototype.readGeometry = function(source) {
   return this.readGeometryFromText(this.getText_(source));
 };
 
@@ -84,13 +84,13 @@ ol.format.Text.prototype.readGeometry = function(source) {
  * @protected
  * @return {ol.geom.Geometry} Geometry.
  */
-ol.format.Text.prototype.readGeometryFromText = goog.abstractMethod;
+ol.format.TextFeature.prototype.readGeometryFromText = goog.abstractMethod;
 
 
 /**
  * @inheritDoc
  */
-ol.format.Text.prototype.readProjection = function(source) {
+ol.format.TextFeature.prototype.readProjection = function(source) {
   return this.readProjectionFromText(this.getText_(source));
 };
 
@@ -100,13 +100,13 @@ ol.format.Text.prototype.readProjection = function(source) {
  * @protected
  * @return {ol.proj.Projection} Projection.
  */
-ol.format.Text.prototype.readProjectionFromText = goog.abstractMethod;
+ol.format.TextFeature.prototype.readProjectionFromText = goog.abstractMethod;
 
 
 /**
  * @inheritDoc
  */
-ol.format.Text.prototype.writeFeature = function(feature) {
+ol.format.TextFeature.prototype.writeFeature = function(feature) {
   return this.writeFeatureText(feature);
 };
 
@@ -116,13 +116,13 @@ ol.format.Text.prototype.writeFeature = function(feature) {
  * @protected
  * @return {string} Text.
  */
-ol.format.Text.prototype.writeFeatureText = goog.abstractMethod;
+ol.format.TextFeature.prototype.writeFeatureText = goog.abstractMethod;
 
 
 /**
  * @inheritDoc
  */
-ol.format.Text.prototype.writeFeatures = function(features) {
+ol.format.TextFeature.prototype.writeFeatures = function(features) {
   return this.writeFeaturesText(features);
 };
 
@@ -132,13 +132,13 @@ ol.format.Text.prototype.writeFeatures = function(features) {
  * @protected
  * @return {string} Text.
  */
-ol.format.Text.prototype.writeFeaturesText = goog.abstractMethod;
+ol.format.TextFeature.prototype.writeFeaturesText = goog.abstractMethod;
 
 
 /**
  * @inheritDoc
  */
-ol.format.Text.prototype.writeGeometry = function(geometry) {
+ol.format.TextFeature.prototype.writeGeometry = function(geometry) {
   return this.writeGeometryText(geometry);
 };
 
@@ -148,4 +148,4 @@ ol.format.Text.prototype.writeGeometry = function(geometry) {
  * @protected
  * @return {string} Text.
  */
-ol.format.Text.prototype.writeGeometryText = goog.abstractMethod;
+ol.format.TextFeature.prototype.writeGeometryText = goog.abstractMethod;

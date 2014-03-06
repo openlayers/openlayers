@@ -21,7 +21,8 @@
     "../externs/oli.js",
     "../externs/proj4js.js",
     "../externs/tilejson.js",
-    "../externs/topojson.js"
+    "../externs/topojson.js",
+    "../externs/vbarray.js"
   ],
 
   "inherits": "base.json",

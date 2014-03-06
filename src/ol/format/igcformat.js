@@ -5,7 +5,7 @@ goog.require('goog.asserts');
 goog.require('goog.string');
 goog.require('goog.string.newlines');
 goog.require('ol.Feature');
-goog.require('ol.format.Text');
+goog.require('ol.format.TextFeature');
 goog.require('ol.geom.LineString');
 goog.require('ol.proj');
 
@@ -23,7 +23,7 @@ ol.format.IGCZ = {
 
 /**
  * @constructor
- * @extends {ol.format.Text}
+ * @extends {ol.format.TextFeature}
  * @param {olx.format.IGCOptions=} opt_options Options.
  * @todo stability experimental
  */
@@ -41,7 +41,7 @@ ol.format.IGC = function(opt_options) {
       options.altitudeMode : ol.format.IGCZ.NONE;
 
 };
-goog.inherits(ol.format.IGC, ol.format.Text);
+goog.inherits(ol.format.IGC, ol.format.TextFeature);
 
 
 /**

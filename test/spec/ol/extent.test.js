@@ -234,7 +234,7 @@ describe('ol.extent', function() {
           .to.roughlyEqual(-1669792.3618991037, 1e-9);
       expect(destinationExtent[2]).to.roughlyEqual(5009377.085697311, 1e-9);
       expect(destinationExtent[1]).to.roughlyEqual(-3503549.843504376, 1e-8);
-      expect(destinationExtent[3]).to.roughlyEqual(8399737.889818361, 1e-9);
+      expect(destinationExtent[3]).to.roughlyEqual(8399737.889818361, 1e-8);
     });
 
     it('takes arbitrary function', function() {

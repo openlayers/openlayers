@@ -107,7 +107,7 @@ ol.interaction.TouchRotate.prototype.handleTouchMove =
     // FIXME works for View2D only
     var view = map.getView().getView2D();
     var view2DState = view.getView2DState();
-    map.requestRenderFrame();
+    map.render();
     ol.interaction.Interaction.rotateWithoutConstraints(map, view,
         view2DState.rotation + rotationDelta, this.anchor_);
   }
@@ -147,7 +147,7 @@ ol.interaction.TouchRotate.prototype.handleTouchStart =
     this.lastAngle_ = undefined;
     this.rotating_ = false;
     this.rotationDelta_ = 0.0;
-    map.requestRenderFrame();
+    map.render();
     return true;
   } else {
     return false;

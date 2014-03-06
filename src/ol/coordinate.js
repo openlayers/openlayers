@@ -7,7 +7,9 @@ goog.require('goog.math');
 
 
 /**
- * A function that formats a {@link ol.Coordinate} into a string.
+ * A function that takes a {@link ol.Coordinate} and transforms it into a
+ * `{string}`.
+ *
  * @typedef {function((ol.Coordinate|undefined)): string}
  * @todo stability experimental
  */

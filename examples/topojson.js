@@ -30,7 +30,7 @@ var vector = new ol.layer.Vector({
     projection: 'EPSG:3857',
     url: 'data/topojson/world-110m.json'
   }),
-  styleFunction: function(feature, resolution) {
+  style: function(feature, resolution) {
     // don't want to render the full world polygon, which repeats all countries
     return feature.getId() !== undefined ? styleArray : null;
   }

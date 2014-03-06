@@ -68,7 +68,7 @@ ol.interaction.KeyboardZoom.prototype.handleMapBrowserEvent =
         (charCode == '+'.charCodeAt(0) || charCode == '-'.charCodeAt(0))) {
       var map = mapBrowserEvent.map;
       var delta = (charCode == '+'.charCodeAt(0)) ? this.delta_ : -this.delta_;
-      map.requestRenderFrame();
+      map.render();
       // FIXME works for View2D only
       var view = map.getView().getView2D();
       ol.interaction.Interaction.zoomByDelta(
