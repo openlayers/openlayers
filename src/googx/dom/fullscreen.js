@@ -14,7 +14,7 @@
 
 /**
  * @fileoverview Functions for managing full screen status of the DOM.
- *
+ * @namespace googx
  */
 
 goog.provide('googx.dom.fullscreen');
