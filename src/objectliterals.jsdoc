@@ -955,9 +955,13 @@
 
  /**
  * @typedef {Object} olx.style.ShapeOptions
+ * @property {Array.<number>|undefined} anchor Anchor. Default value is `[0.5, 0.5]`
+ *     (icon center).
  * @property {ol.style.Fill|undefined} fill Fill style.
- * @property {number|undefined} rotation Rotation.
- * @property {ol.Size} size Shape size in pixel.
+ * @property {string|undefined} path Path of the shape: 'square', 'circle', 'triangle', 'star', 'cross', 'x' or custom SVG path.
+ * @property {boolean|undefined} rotateWithView Whether to rotate the shape with the view. Default is `false`.
+ * @property {number|undefined} rotation Rotation in radians (positive clockwise).
+ * @property {number|undefined} scale Scale.
  * @property {ol.style.Stroke|undefined} stroke Stroke style.
  */
 

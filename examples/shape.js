@@ -16,13 +16,16 @@ goog.require('ol.style.Style');
 /**
  * Shape inputs.
  */
-var typeSelect = document.getElementById('type');
-var widthInput = document.getElementById('width');
-var heightInput = document.getElementById('height');
+var pathSelect = document.getElementById('path');
+var svgRow = document.getElementById('svgrow');
+var svgpathInput = document.getElementById('svgpath');
+var scaleInput = document.getElementById('scale');
 var rotationInput = document.getElementById('rotation');
 var fillInput = document.getElementById('filled');
 var strokeInput = document.getElementById('stroked');
 var strokewidthInput = document.getElementById('strokewidth');
+var anchorXInput = document.getElementById('anchorX');
+var anchorYInput = document.getElementById('anchorY');
 
 
 /**
@@ -81,8 +84,8 @@ var map = new ol.Map({
 function getFeatureStyle() {
   return [new ol.style.Style({
     image: new ol.style.Shape(/** @type {olx.style.ShapeOptions} */({
-      type: typeSelect.value,
-      size: [parseInt(widthInput.value, 10), parseInt(heightInput.value, 10)],
+      path: pathSelect.value === 'svg' ? svgpathInput.value : pathSelect.value,
+      scale: parseInt(scaleInput.value, 10),
       rotation: parseInt(rotationInput.value, 10) * Math.PI / 180,
       fill: fillInput.checked ? new ol.style.Fill({
         color: '#f00'
@@ -90,20 +93,22 @@ function getFeatureStyle() {
       stroke: strokeInput.checked ? new ol.style.Stroke({
         color: '#00f',
         width: parseInt(strokewidthInput.value, 10)
-      }) : null
+      }) : null,
+      anchor: [parseInt(anchorXInput.value, 10),
+        parseInt(anchorYInput.value, 10)]
     }))
   })];
 }
 
-typeSelect.addEventListener('change', function() {
+pathSelect.addEventListener('change', function() {
   feature.dispatchChangeEvent();
 }, false);
 
-widthInput.addEventListener('change', function() {
+svgpathInput.addEventListener('change', function() {
   feature.dispatchChangeEvent();
 }, false);
 
-heightInput.addEventListener('change', function() {
+scaleInput.addEventListener('change', function() {
   feature.dispatchChangeEvent();
 }, false);
 
@@ -120,6 +125,14 @@ strokeInput.addEventListener('change', function() {
 }, false);
 
 strokewidthInput.addEventListener('change', function() {
+  feature.dispatchChangeEvent();
+}, false);
+
+anchorXInput.addEventListener('change', function() {
+  feature.dispatchChangeEvent();
+}, false);
+
+anchorYInput.addEventListener('change', function() {
   feature.dispatchChangeEvent();
 }, false);
 

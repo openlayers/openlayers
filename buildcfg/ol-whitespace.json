@@ -20,6 +20,7 @@
     "../externs/geojson.js",
     "../externs/oli.js",
     "../externs/proj4js.js",
+	"../externs/svg.js",
     "../externs/tilejson.js",
     "../externs/topojson.js",
     "../externs/vbarray.js"

@@ -64,55 +64,53 @@
                             <tbody>
                                 <tr>
                                     <td>
-                                        <label>type</label>
+                                        <label>path:</label>
                                     </td>
                                     <td>
-                                        <select id="type">
+                                        <select id="path">
                                             <option>square</option>
                                             <option>circle</option>
                                             <option>triangle</option>
                                             <option>star</option>
                                             <option>cross</option>
-                                            <option>x</option>
+                                            <option>svg</option>
                                         </select>
                                     </td>
                                 </tr>
-                                <tr>
+                                <tr id="svgrow">
                                     <td>
-                                        <label>width</label>
+                                        <label>svg:</label>
                                     </td>
                                     <td>
-                                        <input id="width" type="number" min="0" step="1" value="40" />
-
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <label>height</label>
-                                    </td>
-                                    <td>
-                                        <input id="height" type="number" min="0" step="1" value="40" />
+                                        <input id="svgpath" type="text" />
                                     </td>
                                 </tr>
                                 <tr>
                                     <td>
-                                        <label>rotation (degrees)</label>
+                                        <label>scale:</label>
+                                    </td>
+                                    <td>
+                                        <input id="scale" type="number" min="0" step="1" value="40" />
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <label>rotation: (degrees)</label>
                                     </td>
                                     <td>
                                         <input id="rotation" type="number" min="0" step="1" value="0" />
-
                                     </td>
                                 </tr>
                                 <tr>
                                     <td>
-                                        <label>fill</label></td>
+                                        <label>fill:</label></td>
                                     <td valign="middle">
                                         <input id="filled" type="checkbox" checked="checked" style="margin-bottom: 20px;" />
                                     </td>
                                 </tr>
                                 <tr>
                                     <td>
-                                        <label>stroke</label>
+                                        <label>stroke:</label>
                                     </td>
                                     <td valign="middle">
                                         <input id="stroked" type="checkbox" checked="checked" style="margin-bottom: 20px;" />
@@ -120,10 +118,20 @@
                                 </tr>
                                 <tr>
                                     <td>
-                                        <label>stroke width</label>
+                                        <label>stroke width:</label>
                                     </td>
                                     <td>
                                         <input id="strokewidth" type="number" min="0" step="1" value="1" />
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <label>anchor:</label>
+                                    </td>
+                                    <td>x:
+                                        <input id="anchorX" type="number" min="0" step="1" value="" style="width: 40px;" />&nbsp;
+                                        y:
+                                        <input id="anchorY" type="number" min="0" step="1" value="" style="width: 40px;" />
                                     </td>
                                 </tr>
                             </tbody>
