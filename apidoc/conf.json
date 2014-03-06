@@ -8,7 +8,13 @@
     },
     "source": {
         "includePattern": ".+\\.js(doc)?$",
-        "excludePattern": "(^|\\/|\\\\)_"
+        "excludePattern": "(^|\\/|\\\\)_",
+        "exclude": [
+            "src/googx/dom/fullscreen.js"
+        ],
+        "include": [
+            "src"
+        ]
     },
     "plugins": [
         "plugins/markdown",
