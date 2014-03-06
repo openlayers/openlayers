@@ -33,6 +33,28 @@ describe('ol.format.WFS', function() {
 
   });
 
+  describe('when parsing TransactionResponse', function() {
+    var response;
+    before(function(done) {
+      afterLoadText('spec/ol/format/wfs/TransactionResponse.xml',
+          function(xml) {
+            try {
+              response = new ol.format.WFS().readTransactionResponse(xml);
+            } catch (e) {
+              done(e);
+            }
+            done();
+          });
+    });
+    it('returns the correct TransactionResponse object', function() {
+      expect(response.transactionSummary.totalDeleted).to.equal(0);
+      expect(response.transactionSummary.totalInserted).to.equal(0);
+      expect(response.transactionSummary.totalUpdated).to.equal(1);
+      expect(response.insertIds).to.have.length(2);
+      expect(response.insertIds[0]).to.equal('parcelle.40');
+    });
+  });
+
   describe('when writing out a GetFeature request', function() {
 
     it('creates the expected output', function() {

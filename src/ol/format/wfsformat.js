@@ -1,6 +1,7 @@
 goog.provide('ol.format.WFS');
 
 goog.require('goog.asserts');
+goog.require('goog.dom.NodeType');
 goog.require('goog.object');
 goog.require('ol.format.GML');
 goog.require('ol.format.XMLFeature');
@@ -37,12 +38,20 @@ ol.format.WFS = function(opt_options) {
    * @type {string}
    */
   this.schemaLocation_ = goog.isDef(options.schemaLocation) ?
-      options.schemaLocation : ('http://www.opengis.net/wfs ' +
-          'http://schemas.opengis.net/wfs/1.1.0/wfs.xsd');
+      options.schemaLocation : ol.format.WFS.schemaLocation_;
 
   goog.base(this);
 };
 goog.inherits(ol.format.WFS, ol.format.XMLFeature);
+
+
+/**
+ * @const
+ * @type {string}
+ * @private
+ */
+ol.format.WFS.schemaLocation_ = 'http://www.opengis.net/wfs ' +
+    'http://schemas.opengis.net/wfs/1.1.0/wfs.xsd';
 
 
 /**
@@ -59,6 +68,145 @@ ol.format.WFS.prototype.readFeaturesFromNode = function(node) {
     features = [];
   }
   return features;
+};
+
+
+/**
+ * @param {ArrayBuffer|Document|Node|Object|string} source Source.
+ * @return {Object|undefined} Transaction response.
+ */
+ol.format.WFS.prototype.readTransactionResponse = function(source) {
+  if (ol.xml.isDocument(source)) {
+    return this.readTransactionResponseFromDocument(
+        /** @type {Document} */ (source));
+  } else if (ol.xml.isNode(source)) {
+    return this.readTransactionResponseFromNode(/** @type {Node} */ (source));
+  } else if (goog.isString(source)) {
+    var doc = ol.xml.load(source);
+    return this.readTransactionResponseFromDocument(doc);
+  } else {
+    goog.asserts.fail();
+    return null;
+  }
+};
+
+
+/**
+ * @const
+ * @type {Object.<string, Object.<string, ol.xml.Parser>>}
+ * @private
+ */
+ol.format.WFS.TRANSACTION_SUMMARY_PARSERS_ = {
+  'http://www.opengis.net/wfs': {
+    'totalInserted': ol.xml.makeObjectPropertySetter(
+        ol.format.XSD.readNonNegativeInteger),
+    'totalUpdated': ol.xml.makeObjectPropertySetter(
+        ol.format.XSD.readNonNegativeInteger),
+    'totalDeleted': ol.xml.makeObjectPropertySetter(
+        ol.format.XSD.readNonNegativeInteger)
+  }
+};
+
+
+/**
+ * @param {Node} node Node.
+ * @param {Array.<*>} objectStack Object stack.
+ * @return {Object|undefined} Transaction Summary.
+ * @private
+ */
+ol.format.WFS.readTransactionSummary_ = function(node, objectStack) {
+  return ol.xml.pushParseAndPop(
+      {}, ol.format.WFS.TRANSACTION_SUMMARY_PARSERS_, node, objectStack);
+};
+
+
+/**
+ * @const
+ * @type {Object.<string, Object.<string, ol.xml.Parser>>}
+ * @private
+ */
+ol.format.WFS.OGC_FID_PARSERS_ = {
+  'http://www.opengis.net/ogc': {
+    'FeatureId': ol.xml.makeArrayPusher(function(node, objectStack) {
+      return node.getAttribute('fid');
+    })
+  }
+};
+
+
+/**
+ * @param {Node} node Node.
+ * @param {Array.<*>} objectStack Object stack.
+ * @private
+ */
+ol.format.WFS.fidParser_ = function(node, objectStack) {
+  ol.xml.parse(ol.format.WFS.OGC_FID_PARSERS_, node, objectStack);
+};
+
+
+/**
+ * @const
+ * @type {Object.<string, Object.<string, ol.xml.Parser>>}
+ * @private
+ */
+ol.format.WFS.INSERT_RESULTS_PARSERS_ = {
+  'http://www.opengis.net/wfs': {
+    'Feature': ol.format.WFS.fidParser_
+  }
+};
+
+
+/**
+ * @param {Node} node Node.
+ * @param {Array.<*>} objectStack Object stack.
+ * @return {Object|undefined} Insert results.
+ * @private
+ */
+ol.format.WFS.readInsertResults_ = function(node, objectStack) {
+  return ol.xml.pushParseAndPop(
+      [], ol.format.WFS.INSERT_RESULTS_PARSERS_, node, objectStack);
+};
+
+
+/**
+ * @const
+ * @type {Object.<string, Object.<string, ol.xml.Parser>>}
+ * @private
+ */
+ol.format.WFS.TRANSACTION_RESPONSE_PARSERS_ = {
+  'http://www.opengis.net/wfs': {
+    'TransactionSummary': ol.xml.makeObjectPropertySetter(
+        ol.format.WFS.readTransactionSummary_, 'transactionSummary'),
+    'InsertResults': ol.xml.makeObjectPropertySetter(
+        ol.format.WFS.readInsertResults_, 'insertIds')
+  }
+};
+
+
+/**
+ * @param {Document} doc Document.
+ * @return {Object|undefined} Transaction response.
+ */
+ol.format.WFS.prototype.readTransactionResponseFromDocument = function(doc) {
+  goog.asserts.assert(doc.nodeType == goog.dom.NodeType.DOCUMENT);
+  for (var n = doc.firstChild; !goog.isNull(n); n = n.nextSibling) {
+    if (n.nodeType == goog.dom.NodeType.ELEMENT) {
+      return this.readTransactionResponseFromNode(n);
+    }
+  }
+  return null;
+};
+
+
+/**
+ * @param {Node} node Node.
+ * @return {Object|undefined} Transaction response.
+ */
+ol.format.WFS.prototype.readTransactionResponseFromNode = function(node) {
+  goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT);
+  goog.asserts.assert(node.localName == 'TransactionResponse');
+  return ol.xml.pushParseAndPop({},
+      ol.format.WFS.TRANSACTION_RESPONSE_PARSERS_, node, []);
 };
 
 
@@ -93,7 +241,7 @@ ol.format.WFS.writeQuery_ = function(node, featureType, objectStack) {
     node.setAttribute('xmlns:' + featurePrefix, featureNS);
   }
   var item = goog.object.clone(context);
-  goog.object.set(item, 'node', node);
+  item.node = node;
   ol.xml.pushSerializeAndPop(item,
       ol.format.WFS.QUERY_SERIALIZERS_,
       ol.xml.makeSimpleNodeFactory('PropertyName'), propertyNames,
