@@ -50,6 +50,13 @@ ol.interaction.Modify = function(options) {
   this.vertexFeature_ = null;
 
   /**
+   * Segments intersecting {@link this.vertexFeature_} by segment uid.
+   * @type {Object.<string, boolean>}
+   * @private
+   */
+  this.vertexSegments_ = null;
+
+  /**
    * @type {boolean}
    * @private
    */
@@ -379,8 +386,7 @@ ol.interaction.Modify.prototype.handleDragStart = function(evt) {
         this.dragSegments_.push([segmentDataMatch, 0]);
       } else if (ol.coordinate.equals(segment[1], vertex)) {
         this.dragSegments_.push([segmentDataMatch, 1]);
-      } else if (
-          ol.coordinate.squaredDistanceToSegment(vertex, segment) === 0) {
+      } else if (goog.getUid(segment) in this.vertexSegments_) {
         insertVertices.push([segmentDataMatch, vertex]);
       }
     }
@@ -518,6 +524,18 @@ ol.interaction.Modify.prototype.handleMouseAtPixel_ = function(pixel, map) {
         vertex = squaredDist1 > squaredDist2 ? segment[1] : segment[0];
       }
       this.createOrUpdateVertexFeature_(vertex);
+      var vertexSegments = {};
+      vertexSegments[goog.getUid(segment)] = true;
+      for (var i = 1, ii = nodes.length; i < ii; ++i) {
+        segment = nodes[i].segment;
+        if (ol.coordinate.equals(vertex,
+            ol.coordinate.closestOnSegment(pixelCoordinate, segment))) {
+          vertexSegments[goog.getUid(segment)] = true;
+        } else {
+          break;
+        }
+      }
+      this.vertexSegments_ = vertexSegments;
       this.modifiable_ = true;
       return;
     }
