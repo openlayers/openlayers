@@ -222,11 +222,20 @@ ol.renderer.canvas.VectorLayer.prototype.prepareFrame =
     this.dirty_ = this.dirty_ || dirty;
   };
   if (!goog.isNull(vectorLayerRenderOrder)) {
-    var features = vectorSource.getFeaturesInExtent(extent);
+    /** @type {Array.<ol.Feature>} */
+    var features = [];
+    vectorSource.forEachFeatureInExtentAtResolution(extent, resolution,
+        /**
+         * @param {ol.Feature} feature Feature.
+         */
+        function(feature) {
+          features.push(feature);
+        }, this);
     goog.array.sort(features, vectorLayerRenderOrder);
     goog.array.forEach(features, renderFeature, this);
   } else {
-    vectorSource.forEachFeatureInExtent(extent, renderFeature, this);
+    vectorSource.forEachFeatureInExtentAtResolution(
+        extent, resolution, renderFeature, this);
   }
   replayGroup.finish();
 
