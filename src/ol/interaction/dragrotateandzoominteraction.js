@@ -23,7 +23,10 @@ ol.interaction.DRAGROTATEANDZOOM_ANIMATION_DURATION = 400;
  * on the map.  By default, this interaction is limited to when the shift
  * key is held down.
  *
- * This interaction is not included in the default interactions.
+ * This interaction is only supported for mouse devices.
+ *
+ * And this interaction is not included in the default interactions.
+ *
  * @constructor
  * @extends {ol.interaction.Pointer}
  * @param {olx.interaction.DragRotateAndZoomOptions=} opt_options Options.
