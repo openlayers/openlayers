@@ -1,0 +1,209 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no, width=device-width">
+    <link rel="stylesheet" href="../css/ol.css" type="text/css">
+    <link rel="stylesheet" href="../resources/bootstrap/css/bootstrap.min.css" type="text/css">
+    <link rel="stylesheet" href="../resources/layout.css" type="text/css">
+    <link rel="stylesheet" href="../resources/bootstrap/css/bootstrap-responsive.min.css" type="text/css">
+    <style>
+      .example {
+        height: 140px;
+        padding: 3px;
+        background-color: #eee;
+        border-radius: 3px;
+        margin-bottom: 10px;
+        overflow: auto;
+      }
+      .example:hover {
+        background-color: #ddd;
+      }
+      .navbar-search.pull-left {
+        padding: 5px;
+      }
+
+      ::-webkit-scrollbar {
+        width: 8px;
+      }
+
+      ::-webkit-scrollbar-button {
+        width: 0;
+        height: 0;
+        display: none;
+      }
+
+      ::-webkit-scrollbar-thumb {
+        background-color: rgba(0, 0, 0, 0.2);
+        -webkit-box-shadow: inset 1px 1px 0 rgba(0, 0, 0, 0.10),inset 0 -1px 0 rgba(0, 0, 0, 0.07);
+      }
+
+      ::-webkit-scrollbar-thumb:hover {
+        background-color: rgba(0, 0, 0, 0.4);
+      }
+
+      ::-webkit-scrollbar-corner {
+        background-color: transparent;
+      }
+    </style>
+    <script type="text/javascript" src="Jugl.js"></script>
+    <script type="text/javascript" src="example-list.js"></script>
+    <script type="text/javascript">
+      var template, target;
+
+      function listExamples(examples) {
+        target.innerHTML = "";
+        var node = template.process({
+          context: {examples: examples},
+          clone: true,
+          parent: target
+        });
+        document.getElementById("count").innerHTML = "(" + examples.length + ")";
+      }
+
+      var timerId;
+      function inputChange() {
+        if (timerId) {
+          window.clearTimeout(timerId);
+        }
+        var text = this.value;
+        timerId = window.setTimeout(function() {
+          filterList(text);
+        }, 500);
+      }
+
+      function filterList(text) {
+        var examples;
+        if (text.length < 2) {
+          examples = info.examples;
+        } else {
+          var words = text.split(/\W+/);
+          var scores = {};
+          for(var i=0; i<words.length; ++i) {
+            var word = words[i].toLowerCase();
+            var dict = info.index[word];
+            var updateScores = function() {
+              for(exIndex in dict) {
+                var count = dict[exIndex];
+                if(scores[exIndex]) {
+                  if(scores[exIndex][word]) {
+                    scores[exIndex][word] += count;
+                  } else {
+                    scores[exIndex][word] = count;
+                  }
+                } else {
+                  scores[exIndex] = {};
+                  scores[exIndex][word] = count;
+                }
+              }
+            };
+            if (dict) {
+              updateScores();
+            } else {
+              var r;
+              for (idx in info.index) {
+                r = new RegExp(word);
+                if (r.test(idx)) {
+                  dict = info.index[idx];
+                  updateScores();
+                }
+              }
+            }
+          }
+          examples = [];
+          for (var j in scores) {
+            var ex = info.examples[j];
+            ex.score = scores[j];
+            examples.push(ex);
+          }
+          // sort examples by first by number of words matched, then
+          // by word frequency
+          examples.sort(function(a, b) {
+            var cmp;
+            var aWords = 0, bWords = 0;
+            var aScore = 0, bScore = 0;
+            for (var i in a.score) {
+              aScore += a.score[i];
+              aWords += 1;
+            }
+            for (var j in b.score) {
+              bScore += b.score[j];
+              bWords += 1;
+            }
+            if (aWords == bWords) {
+              cmp = bScore - aScore;
+            } else {
+              cmp = bWords - aWords;
+            }
+            return cmp;
+          });
+        }
+        listExamples(examples);
+      }
+
+      function parseQuery() {
+        var params = {};
+        var list = window.location.search.substring(1).split("&");
+        for (var i = 0; i < list.length; ++i) {
+          var pair = list[i].split("=");
+          if (pair.length == 2) {
+            params[decodeURIComponent(pair[0])] = decodeURIComponent(pair[1]);
+          }
+        }
+        if (params["q"]) {
+          var input = document.getElementById("keywords");
+          input.value = params["q"];
+          inputChange.call(input);
+        }
+      }
+
+      window.onload = function() {
+        for (var i = 0; i < info.examples.length; ++i) {
+          info.examples[i].link += window.location.search;
+        }
+        // document.getElementById('keywords').focus();
+        template = new jugl.Template("template");
+        target = document.getElementById("examples");
+        listExamples(info.examples);
+        document.getElementById("keywords").onkeyup = inputChange;
+        parseQuery();
+      };
+    </script>
+
+    <title>OpenLayers 3 Examples</title>
+  </head>
+  <body>
+
+    <div class="navbar navbar-inverse navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container">
+          <a class="brand" href="./"><img src="../resources/logo.png"> OpenLayers 3 Examples</a>
+          <form class="navbar-search pull-left">
+            <input name="q" type="text" id="keywords" class="search-query" placeholder="Search">
+            <span id="count"></span>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <div class="container-fluid">
+
+      <div id="examples"></div>
+
+      <div style="display: none;">
+        <div id="template">
+          <div class="span4 example" jugl:repeat="example examples">
+            <a jugl:attributes="href example.link" class="mainlink">
+              <strong><span jugl:replace="example.title">title</span></strong><br>
+              <small jugl:content="'(' + example.example + ')'"></small>
+            </a>
+            <p><div jugl:content="example.shortdesc"></div></p>
+            <p><small jugl:content="'tags: ' + example.tags"></small></p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </body>
+</html>

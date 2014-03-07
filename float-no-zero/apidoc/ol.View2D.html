@@ -1,0 +1,1700 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>OpenLayers 3 API Documentation - Class: ol.View2D</title>
+    
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-jsdoc.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+    <link rel="stylesheet" href="../resources/bootstrap/css/bootstrap.min.css" type="text/css">
+    <link rel="stylesheet" href="../resources/layout.css" type="text/css">
+    <link rel="stylesheet" href="../resources/bootstrap/css/bootstrap-responsive.min.css" type="text/css">
+    <link type="text/css" rel="stylesheet" href="styles/ol.css">
+</head>
+
+<body>
+
+<div class="navbar navbar-inverse navbar-fixed-top">
+  <div class="navbar-inner">
+    <div class="container">
+      <a class="brand" href="/"><img src="../resources/logo.png"> OpenLayers 3</a>
+    </div>
+  </div>
+</div>
+
+<div id="main">    
+    
+
+
+
+<section>
+    
+<header>
+    <h2>
+        <span class="ancestors"><a href="ol.html">ol</a>.</span>
+    
+    ol.View2D
+    </h2>
+    
+        <div class="class-description"><p>An ol.View2D object represents a simple 2D view of the map.</p>
+<p>This is the object to act upon to change the center, resolution,
+and rotation of the map.</p>
+<h3>The view states</h3>
+<p>An <code>ol.View2D</code> is determined by three states: <code>center</code>, <code>resolution</code>,
+and <code>rotation</code>. To each state corresponds a getter and a setter. E.g.
+<code>getCenter</code> and <code>setCenter</code> for the <code>center</code> state.</p>
+<p>An <code>ol.View2D</code> has a <code>projection</code>. The projection determines the
+coordinate system of the center, and its units determine the units of the
+resolution (projection units per pixel). The default projection is
+Spherical Mercator (EPSG:3857).</p>
+<h3>The constraints</h3>
+<p><code>setCenter</code>, <code>setResolution</code> and <code>setRotation</code> can be used to change the
+states of the view. Any value can be passed to the setters. And the value
+that is passed to a setter will effectively be the value set in the view,
+and returned by the corresponding getter.</p>
+<p>But an <code>ol.View2D</code> object also has a <em>resolution constraint</em> and a
+<em>rotation constraint</em>. There's currently no <em>center constraint</em>, but
+this may change in the future.</p>
+<p>As said above no constraints are applied when the setters are used to set
+new states for the view. Applying constraints is done explicitly through
+the use of the <code>constrain*</code> functions (<code>constrainResolution</code> and
+<code>constrainRotation</code>).</p>
+<p>The main users of the constraints are the interactions and the
+controls. For example, double-clicking on the map changes the view to
+the &quot;next&quot; resolution. And releasing the fingers after pinch-zooming
+snaps to the closest resolution (with an animation).</p>
+<p>So the <em>resolution constraint</em> snaps to specific resolutions. It is
+determined by the following options: <code>resolutions</code>, <code>maxResolution</code>,
+<code>maxZoom</code>, and <code>zoomFactor</code>. If <code>resolutions</code> is set, the other three
+options are ignored. See ol.View2DOptions for more information.</p>
+<p>The <em>rotation constaint</em> is currently not configurable. It snaps the
+rotation value to zero when approaching the horizontal.</p></div>
+    
+</header>  
+
+<article>
+    <div class="container-overview">
+    
+    
+    
+        
+<dt>
+    <h4 class="name" id="View2D"><span class="type-signature"></span>new View2D</h4>
+    
+    
+<div class="stability stability-experimental">Stability: experimental</div>
+
+
+
+    
+</dt>
+<dd>
+    
+    
+
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		<th>Argument</th>
+		
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>options</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type"><a href="olx.html#View2DOptions">olx.View2DOptions</a></span>
+
+
+            
+            </td>
+            
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+                    
+                
+                </td>
+            
+            
+            
+            
+            <td class="description last"><p>View2D options.</p></td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+    
+    
+<dl class="details">
+    
+        
+	
+	
+	
+
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source"><ul class="dummy"><li>view2d.js, line 95</li></ul></dd>
+	
+    
+    
+	
+	
+	
+	
+</dl>
+
+    
+    
+    
+    
+    
+    
+    
+    
+</dd>
+
+    
+    </div>
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+        <h3 class="subsection-title">Observable Properties</h3>
+        <dl>
+
+<table class="props">
+    <thead>
+  <tr>
+    <th>Name</th>
+    <th>Type</th>
+    <th>Settable</th>
+    <th>Event</th>
+    <th class="last">Description</th>
+  </tr>
+  </thead>
+
+  <tbody>
+  
+
+    <tr>
+      <td class="name"><code>center</code></td>
+      <td class="type">
+      
+      
+<span class="param-type"><a href="ol.html#Coordinate">ol.Coordinate</a></span>
+
+
+      
+      </td>
+      <td class="setter">yes</td>
+      <td class="event"><code>change:center</code></td>
+      <td class="description last">the center of the view</td>
+    </tr>
+    
+
+    <tr>
+      <td class="name"><code>projection</code></td>
+      <td class="type">
+      
+      
+<span class="param-type"><a href="ol.proj.Projection.html">ol.proj.Projection</a></span>
+
+
+      
+      </td>
+      <td class="setter">yes</td>
+      <td class="event"><code>change:projection</code></td>
+      <td class="description last">the projection of the view</td>
+    </tr>
+    
+
+    <tr>
+      <td class="name"><code>resolution</code></td>
+      <td class="type">
+      
+      
+<span class="param-type"><a href="global.html#number">number</a></span>
+
+
+      
+      </td>
+      <td class="setter">yes</td>
+      <td class="event"><code>change:resolution</code></td>
+      <td class="description last">the resolution of the view</td>
+    </tr>
+    
+
+    <tr>
+      <td class="name"><code>rotation</code></td>
+      <td class="type">
+      
+      
+<span class="param-type"><a href="global.html#number">number</a></span>
+
+
+      
+      </td>
+      <td class="setter">yes</td>
+      <td class="event"><code>change:rotation</code></td>
+      <td class="description last">the rotation of the view</td>
+    </tr>
+    
+  </tbody>
+</table>
+</dl>
+
+    
+
+    
+    
+    
+        <h3 class="subsection-title">Methods</h3>
+        
+        <dl>
+            
+<dt>
+    <h4 class="name" id="calculateExtent"><span class="type-signature"></span>calculateExtent</h4>
+    
+    
+<div class="stability stability-experimental">Stability: experimental</div>
+
+
+
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        <p>Calculate the extent for the given size in pixels, based on the current
+resolution and the current center.</p>
+    </div>
+    
+
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>size</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type"><a href="ol.html#Size">ol.Size</a></span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last"><p>Box pixel size.</p></td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+    
+    
+<dl class="details">
+    
+        
+	
+	
+	
+
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source"><ul class="dummy"><li>view2d.js, line 242</li></ul></dd>
+	
+    
+    
+	
+	
+	
+	
+</dl>
+
+    
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+<div class="param-desc">
+    <p>Extent.</p>
+</div>
+
+
+
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type"><a href="ol.html#Extent">ol.Extent</a></span>
+
+
+	</dd>
+</dl>
+
+        
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="constrainResolution"><span class="type-signature"></span>constrainResolution</h4>
+    
+    
+<div class="stability stability-experimental">Stability: experimental</div>
+
+
+
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        <p>Get the constrained the resolution of this view.</p>
+    </div>
+    
+
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		<th>Argument</th>
+		
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>resolution</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type"><a href="global.html#number">number</a></span>
+|
+
+<span class="param-type">undefined</span>
+
+
+            
+            </td>
+            
+            
+                <td class="attributes">
+                
+                    
+                
+                </td>
+            
+            
+            
+            
+            <td class="description last"><p>Resolution.</p></td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>delta</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type"><a href="global.html#number">number</a></span>
+
+
+            
+            </td>
+            
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+                    
+                
+                </td>
+            
+            
+            
+            
+            <td class="description last"><p>Delta. Default is <code>0</code>.</p></td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>direction</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type"><a href="global.html#number">number</a></span>
+
+
+            
+            </td>
+            
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+                    
+                
+                </td>
+            
+            
+            
+            
+            <td class="description last"><p>Direction. Default is <code>0</code>.</p></td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+    
+    
+<dl class="details">
+    
+        
+	
+	
+	
+
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source"><ul class="dummy"><li>view2d.js, line 201</li></ul></dd>
+	
+    
+    
+	
+	
+	
+	
+</dl>
+
+    
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+<div class="param-desc">
+    <p>Constrained resolution.</p>
+</div>
+
+
+
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type"><a href="global.html#number">number</a></span>
+|
+
+<span class="param-type">undefined</span>
+
+
+	</dd>
+</dl>
+
+        
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="constrainRotation"><span class="type-signature"></span>constrainRotation</h4>
+    
+    
+<div class="stability stability-experimental">Stability: experimental</div>
+
+
+
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        <p>Get the constrained rotation of this view.</p>
+    </div>
+    
+
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		<th>Argument</th>
+		
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>rotation</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type"><a href="global.html#number">number</a></span>
+|
+
+<span class="param-type">undefined</span>
+
+
+            
+            </td>
+            
+            
+                <td class="attributes">
+                
+                    
+                
+                </td>
+            
+            
+            
+            
+            <td class="description last"><p>Rotation.</p></td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>delta</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type"><a href="global.html#number">number</a></span>
+
+
+            
+            </td>
+            
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+                    
+                
+                </td>
+            
+            
+            
+            
+            <td class="description last"><p>Delta. Default is <code>0</code>.</p></td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+    
+    
+<dl class="details">
+    
+        
+	
+	
+	
+
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source"><ul class="dummy"><li>view2d.js, line 216</li></ul></dd>
+	
+    
+    
+	
+	
+	
+	
+</dl>
+
+    
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+<div class="param-desc">
+    <p>Constrained rotation.</p>
+</div>
+
+
+
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type"><a href="global.html#number">number</a></span>
+|
+
+<span class="param-type">undefined</span>
+
+
+	</dd>
+</dl>
+
+        
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="fitExtent"><span class="type-signature"></span>fitExtent</h4>
+    
+    
+<div class="stability stability-experimental">Stability: experimental</div>
+
+
+
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        <p>Fit the given extent based on the given map size.</p>
+    </div>
+    
+
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>extent</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type"><a href="ol.html#Extent">ol.Extent</a></span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last"><p>Extent.</p></td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>size</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type"><a href="ol.html#Size">ol.Size</a></span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last"><p>Box pixel size.</p></td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+    
+    
+<dl class="details">
+    
+        
+	
+	
+	
+
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source"><ul class="dummy"><li>view2d.js, line 419</li></ul></dd>
+	
+    
+    
+	
+	
+	
+	
+</dl>
+
+    
+    
+    
+    
+    
+    
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="getZoom"><span class="type-signature"></span>getZoom</h4>
+    
+    
+<div class="stability stability-experimental">Stability: experimental</div>
+
+
+
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        <p>Get the current zoom level. Return undefined if the current
+resolution is undefined or not a &quot;constrained resolution&quot;.</p>
+    </div>
+    
+
+    
+    
+    
+    
+    
+    
+    
+<dl class="details">
+    
+        
+	
+	
+	
+
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source"><ul class="dummy"><li>view2d.js, line 393</li></ul></dd>
+	
+    
+    
+	
+	
+	
+	
+</dl>
+
+    
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+<div class="param-desc">
+    <p>Zoom.</p>
+</div>
+
+
+
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type"><a href="global.html#number">number</a></span>
+|
+
+<span class="param-type">undefined</span>
+
+
+	</dd>
+</dl>
+
+        
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="setCenter"><span class="type-signature"></span>setCenter</h4>
+    
+    
+<div class="stability stability-experimental">Stability: experimental</div>
+
+
+
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        <p>Set the center of the current view.</p>
+    </div>
+    
+
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>center</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type"><a href="ol.html#Coordinate">ol.Coordinate</a></span>
+|
+
+<span class="param-type">undefined</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last"><p>Center.</p></td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+    
+    
+<dl class="details">
+    
+        
+	
+	
+	
+
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source"><ul class="dummy"><li>view2d.js, line 447</li></ul></dd>
+	
+    
+    
+	
+	
+	
+	
+</dl>
+
+    
+    
+    
+    
+    
+    
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="setProjection"><span class="type-signature"></span>setProjection</h4>
+    
+    
+<div class="stability stability-experimental">Stability: experimental</div>
+
+
+
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        <p>Set the projection of this view.
+Warning! This code is not yet implemented. Function should not be used.</p>
+    </div>
+    
+
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>projection</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type"><a href="ol.proj.Projection.html">ol.proj.Projection</a></span>
+|
+
+<span class="param-type">undefined</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last"><p>Projection.</p></td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+    
+    
+<dl class="details">
+    
+        
+	
+	
+	
+
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source"><ul class="dummy"><li>view2d.js, line 462</li></ul></dd>
+	
+    
+    
+	
+	
+	
+	
+</dl>
+
+    
+    
+    
+    
+    
+    
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="setResolution"><span class="type-signature"></span>setResolution</h4>
+    
+    
+<div class="stability stability-experimental">Stability: experimental</div>
+
+
+
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        <p>Set the resolution for this view.</p>
+    </div>
+    
+
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>resolution</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type"><a href="global.html#number">number</a></span>
+|
+
+<span class="param-type">undefined</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last"><p>Resolution.</p></td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+    
+    
+<dl class="details">
+    
+        
+	
+	
+	
+
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source"><ul class="dummy"><li>view2d.js, line 476</li></ul></dd>
+	
+    
+    
+	
+	
+	
+	
+</dl>
+
+    
+    
+    
+    
+    
+    
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="setRotation"><span class="type-signature"></span>setRotation</h4>
+    
+    
+<div class="stability stability-experimental">Stability: experimental</div>
+
+
+
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        <p>Set the rotation for this view.</p>
+    </div>
+    
+
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>rotation</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type"><a href="global.html#number">number</a></span>
+|
+
+<span class="param-type">undefined</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last"><p>Rotation.</p></td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+    
+    
+<dl class="details">
+    
+        
+	
+	
+	
+
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source"><ul class="dummy"><li>view2d.js, line 490</li></ul></dd>
+	
+    
+    
+	
+	
+	
+	
+</dl>
+
+    
+    
+    
+    
+    
+    
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="setZoom"><span class="type-signature"></span>setZoom</h4>
+    
+    
+<div class="stability stability-experimental">Stability: experimental</div>
+
+
+
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        <p>Zoom to a specific zoom level.</p>
+    </div>
+    
+
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>zoom</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type"><a href="global.html#number">number</a></span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last"><p>Zoom level.</p></td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+    
+    
+<dl class="details">
+    
+        
+	
+	
+	
+
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source"><ul class="dummy"><li>view2d.js, line 504</li></ul></dd>
+	
+    
+    
+	
+	
+	
+	
+</dl>
+
+    
+    
+    
+    
+    
+    
+    
+    
+</dd>
+
+        </dl>
+    
+    
+    
+    
+    
+</article>
+
+</section>  
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Index</a></h2><h3>Classes</h3><ul><li><a href="ol.Attribution.html">ol.Attribution</a></li><li><a href="ol.Collection.html">ol.Collection</a></li><li><a href="ol.DeviceOrientation.html">ol.DeviceOrientation</a></li><li><a href="ol.Feature.html">ol.Feature</a></li><li><a href="ol.FeatureOverlay.html">ol.FeatureOverlay</a></li><li><a href="ol.Geolocation.html">ol.Geolocation</a></li><li><a href="ol.Kinetic.html">ol.Kinetic</a></li><li><a href="ol.Map.html">ol.Map</a></li><li><a href="ol.MapBrowserEvent.html">ol.MapBrowserEvent</a></li><li><a href="ol.Object.html">ol.Object</a></li><li><a href="ol.Observable.html">ol.Observable</a></li><li><a href="ol.Overlay.html">ol.Overlay</a></li><li><a href="ol.View2D.html">ol.View2D</a></li><li><a href="ol.control.Attribution.html">ol.control.Attribution</a></li><li><a href="ol.control.Control.html">ol.control.Control</a></li><li><a href="ol.control.FullScreen.html">ol.control.FullScreen</a></li><li><a href="ol.control.Logo.html">ol.control.Logo</a></li><li><a href="ol.control.MousePosition.html">ol.control.MousePosition</a></li><li><a href="ol.control.ScaleLine.html">ol.control.ScaleLine</a></li><li><a href="ol.control.Zoom.html">ol.control.Zoom</a></li><li><a href="ol.control.ZoomSlider.html">ol.control.ZoomSlider</a></li><li><a href="ol.control.ZoomToExtent.html">ol.control.ZoomToExtent</a></li><li><a href="ol.dom.Input.html">ol.dom.Input</a></li><li><a href="ol.format.Feature.html">ol.format.Feature</a></li><li><a href="ol.format.GPX.html">ol.format.GPX</a></li><li><a href="ol.format.GeoJSON.html">ol.format.GeoJSON</a></li><li><a href="ol.format.IGC.html">ol.format.IGC</a></li><li><a href="ol.format.KML.html">ol.format.KML</a></li><li><a href="ol.format.TopoJSON.html">ol.format.TopoJSON</a></li><li><a href="ol.geom.Circle.html">ol.geom.Circle</a></li><li><a href="ol.geom.Geometry.html">ol.geom.Geometry</a></li><li><a href="ol.geom.GeometryCollection.html">ol.geom.GeometryCollection</a></li><li><a href="ol.geom.LineString.html">ol.geom.LineString</a></li><li><a href="ol.geom.LinearRing.html">ol.geom.LinearRing</a></li><li><a href="ol.geom.MultiLineString.html">ol.geom.MultiLineString</a></li><li><a href="ol.geom.MultiPoint.html">ol.geom.MultiPoint</a></li><li><a href="ol.geom.MultiPolygon.html">ol.geom.MultiPolygon</a></li><li><a href="ol.geom.Point.html">ol.geom.Point</a></li><li><a href="ol.geom.Polygon.html">ol.geom.Polygon</a></li><li><a href="ol.geom.SimpleGeometry.html">ol.geom.SimpleGeometry</a></li><li><a href="ol.interaction.DoubleClickZoom.html">ol.interaction.DoubleClickZoom</a></li><li><a href="ol.interaction.DragAndDrop.html">ol.interaction.DragAndDrop</a></li><li><a href="ol.interaction.DragBox.html">ol.interaction.DragBox</a></li><li><a href="ol.interaction.DragPan.html">ol.interaction.DragPan</a></li><li><a href="ol.interaction.DragRotate.html">ol.interaction.DragRotate</a></li><li><a href="ol.interaction.DragRotateAndZoom.html">ol.interaction.DragRotateAndZoom</a></li><li><a href="ol.interaction.DragZoom.html">ol.interaction.DragZoom</a></li><li><a href="ol.interaction.Draw.html">ol.interaction.Draw</a></li><li><a href="ol.interaction.KeyboardPan.html">ol.interaction.KeyboardPan</a></li><li><a href="ol.interaction.KeyboardZoom.html">ol.interaction.KeyboardZoom</a></li><li><a href="ol.interaction.Modify.html">ol.interaction.Modify</a></li><li><a href="ol.interaction.MouseWheelZoom.html">ol.interaction.MouseWheelZoom</a></li><li><a href="ol.interaction.Select.html">ol.interaction.Select</a></li><li><a href="ol.interaction.TouchPan.html">ol.interaction.TouchPan</a></li><li><a href="ol.interaction.TouchRotate.html">ol.interaction.TouchRotate</a></li><li><a href="ol.interaction.TouchZoom.html">ol.interaction.TouchZoom</a></li><li><a href="ol.layer.Group.html">ol.layer.Group</a></li><li><a href="ol.layer.Image.html">ol.layer.Image</a></li><li><a href="ol.layer.Layer.html">ol.layer.Layer</a></li><li><a href="ol.layer.Tile.html">ol.layer.Tile</a></li><li><a href="ol.layer.Vector.html">ol.layer.Vector</a></li><li><a href="ol.parser.ogc.WMSCapabilities.html">ol.parser.ogc.WMSCapabilities</a></li><li><a href="ol.proj.Projection.html">ol.proj.Projection</a></li><li><a href="ol.source.BingMaps.html">ol.source.BingMaps</a></li><li><a href="ol.source.GPX.html">ol.source.GPX</a></li><li><a href="ol.source.GeoJSON.html">ol.source.GeoJSON</a></li><li><a href="ol.source.IGC.html">ol.source.IGC</a></li><li><a href="ol.source.ImageCanvas.html">ol.source.ImageCanvas</a></li><li><a href="ol.source.ImageStatic.html">ol.source.ImageStatic</a></li><li><a href="ol.source.ImageVector.html">ol.source.ImageVector</a></li><li><a href="ol.source.ImageWMS.html">ol.source.ImageWMS</a></li><li><a href="ol.source.KML.html">ol.source.KML</a></li><li><a href="ol.source.MapGuide.html">ol.source.MapGuide</a></li><li><a href="ol.source.MapQuest.html">ol.source.MapQuest</a></li><li><a href="ol.source.OSM.html">ol.source.OSM</a></li><li><a href="ol.source.OSMXML.html">ol.source.OSMXML</a></li><li><a href="ol.source.Source.html">ol.source.Source</a></li><li><a href="ol.source.Stamen.html">ol.source.Stamen</a></li><li><a href="ol.source.Tile.html">ol.source.Tile</a></li><li><a href="ol.source.TileDebug.html">ol.source.TileDebug</a></li><li><a href="ol.source.TileJSON.html">ol.source.TileJSON</a></li><li><a href="ol.source.TileWMS.html">ol.source.TileWMS</a></li><li><a href="ol.source.TopoJSON.html">ol.source.TopoJSON</a></li><li><a href="ol.source.Vector.html">ol.source.Vector</a></li><li><a href="ol.source.VectorFile.html">ol.source.VectorFile</a></li><li><a href="ol.source.WMTS.html">ol.source.WMTS</a></li><li><a href="ol.source.XYZ.html">ol.source.XYZ</a></li><li><a href="ol.source.Zoomify.html">ol.source.Zoomify</a></li><li><a href="ol.style.Circle.html">ol.style.Circle</a></li><li><a href="ol.style.Fill.html">ol.style.Fill</a></li><li><a href="ol.style.Icon.html">ol.style.Icon</a></li><li><a href="ol.style.Image.html">ol.style.Image</a></li><li><a href="ol.style.Stroke.html">ol.style.Stroke</a></li><li><a href="ol.style.Style.html">ol.style.Style</a></li><li><a href="ol.style.Text.html">ol.style.Text</a></li><li><a href="ol.tilegrid.TileGrid.html">ol.tilegrid.TileGrid</a></li><li><a href="ol.tilegrid.WMTS.html">ol.tilegrid.WMTS</a></li><li><a href="ol.tilegrid.XYZ.html">ol.tilegrid.XYZ</a></li><li><a href="ol.tilegrid.Zoomify.html">ol.tilegrid.Zoomify</a></li><li><a href="ol.webgl.Context.html">ol.webgl.Context</a></li></ul><h3>Namespaces</h3><ul><li><a href="ol.html">ol</a></li><li><a href="ol.BrowserFeature.html">ol.BrowserFeature</a></li><li><a href="ol.animation.html">ol.animation</a></li><li><a href="ol.control.html">ol.control</a></li><li><a href="ol.events.condition.html">ol.events.condition</a></li><li><a href="ol.feature_.html">ol.feature</a></li><li><a href="ol.geom.html">ol.geom</a></li><li><a href="ol.interaction.html">ol.interaction</a></li><li><a href="ol.layer.html">ol.layer</a></li><li><a href="ol.proj.html">ol.proj</a></li><li><a href="ol.source.html">ol.source</a></li><li><a href="ol.tilegrid.html">ol.tilegrid</a></li><li><a href="olx.html">olx</a></li><li><a href="olx.animation.html">olx.animation</a></li><li><a href="olx.control.html">olx.control</a></li><li><a href="olx.format.html">olx.format</a></li><li><a href="olx.interaction.html">olx.interaction</a></li><li><a href="olx.layer.html">olx.layer</a></li><li><a href="olx.parser.html">olx.parser</a></li><li><a href="olx.render.html">olx.render</a></li><li><a href="olx.source.html">olx.source</a></li><li><a href="olx.style.html">olx.style</a></li><li><a href="olx.tilegrid.html">olx.tilegrid</a></li></ul><h3>Global</h3><ul><li><a href="global.html#grid">grid</a></li><li><a href="global.html#number">number</a></li></ul>
+</nav>
+
+<br clear="both">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3</a>
+</footer>
+
+<script> prettyPrint(); </script>
+</body>
+</html>

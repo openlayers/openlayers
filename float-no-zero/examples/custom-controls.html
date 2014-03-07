@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no, width=device-width">
+    <link rel="stylesheet" href="../css/ol.css" type="text/css">
+    <link rel="stylesheet" href="../resources/bootstrap/css/bootstrap.min.css" type="text/css">
+    <link rel="stylesheet" href="../resources/layout.css" type="text/css">
+    <link rel="stylesheet" href="../resources/bootstrap/css/bootstrap-responsive.min.css" type="text/css">
+    <style type="text/css">
+      .rotate-north {
+        position: absolute;
+        top: 65px;
+        left: 8px;
+        background: rgba(255,255,255,0.4);
+        border-radius: 4px;
+        padding: 2px;
+      }
+      .ol-touch .rotate-north {
+        top: 80px;
+      }
+      .rotate-north a {
+        display: block;
+        color: white;
+        font-size: 16px;
+        font-family: 'Lucida Grande',Verdana,Geneva,Lucida,Arial,Helvetica,sans-serif;
+        font-weight: bold;
+        margin: 1px;
+        text-decoration: none;
+        text-align: center;
+        border-radius: 2px;
+        height: 22px;
+        width: 22px;
+        background: rgba(0,60,136,0.5);
+      }
+      .ol-touch .rotate-north a {
+        font-size: 20px;
+        height: 30px;
+        width: 30px;
+        line-height: 26px;
+      }
+      .rotate-north a:hover {
+        background: rgba(0,60,136,0.7);
+      }
+    </style>
+    <title>ol3 custom controls example</title>
+  </head>
+  <body>
+
+    <div class="navbar navbar-inverse navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container">
+          <a class="brand" href="./"><img src="../resources/logo.png"> OpenLayers 3 Examples</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="container-fluid">
+
+      <div class="row-fluid">
+        <div class="span12">
+          <div id="map" class="map"></div>
+        </div>
+      </div>
+
+      <div class="row-fluid">
+        <div class="span12">
+          <h4 id="title">Custom controls</h4>
+          <p id="shortdesc">This example shows how to create custom controls.</p>
+          <div id="docs">
+            <p>
+              This example creates a "rotate to north" button.
+              See the <a href="custom-controls.js" target="_blank">custom-controls.js
+              source</a> to see how this is done.
+            </p>
+          </div>
+          <div id="tags">
+            custom, control
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="jquery.min.js" type="text/javascript"></script>
+    <script src="../resources/example-behaviour.js" type="text/javascript"></script>
+    <script src="loader.js?id=custom-controls" type="text/javascript"></script>
+
+  </body>
+
+</html>

@@ -1,0 +1,7 @@
+@exportSymbol ol.style.Stroke
+@exportProperty ol.style.Stroke.prototype.getColor
+@exportProperty ol.style.Stroke.prototype.getLineCap
+@exportProperty ol.style.Stroke.prototype.getLineDash
+@exportProperty ol.style.Stroke.prototype.getLineJoin
+@exportProperty ol.style.Stroke.prototype.getMiterLimit
+@exportProperty ol.style.Stroke.prototype.getWidth

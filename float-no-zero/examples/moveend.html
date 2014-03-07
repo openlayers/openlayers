@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no, width=device-width">
+    <link rel="stylesheet" href="../css/ol.css" type="text/css">
+    <link rel="stylesheet" href="../resources/bootstrap/css/bootstrap.min.css" type="text/css">
+    <link rel="stylesheet" href="../resources/layout.css" type="text/css">
+    <link rel="stylesheet" href="../resources/bootstrap/css/bootstrap-responsive.min.css" type="text/css">
+    <title>Moveend Example</title>
+  </head>
+  <body>
+
+    <div class="navbar navbar-inverse navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container">
+          <a class="brand" href="./"><img src="../resources/logo.png"> OpenLayers 3 Examples</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="container-fluid">
+      <div class="row-fluid">
+        <div class="span12">
+          <div id="map" class="map"></div>
+        </div>
+      </div>
+
+      <div class="row-fluid">
+        <div class="span12">
+          <h4 id="title">Move end example</h4>
+          <p id="shortdesc">Use of the moveend event.</p>
+          <div id="docs">
+            <p>In this example, a listener is registered for the map's <code>moveend</code> event.  Whenever this listener is called, it updates the inputs below with the map extent in decimal degrees.</p>
+            <p>See the <a href="moveend.js" target="_blank">moveend.js source</a> for details on how this is done.</p>
+          </div>
+          <div id="tags">moveend, map, event</div>
+          <label>top</label><input type="text" id="top">
+          <label>right</label><input type="text" id="right">
+          <label>bottom</label><input type="text" id="bottom">
+          <label>left</label><input type="text" id="left">
+        </div>
+
+      </div>
+
+    </div>
+
+    <script src="jquery.min.js" type="text/javascript"></script>
+    <script src="../resources/example-behaviour.js" type="text/javascript"></script>
+    <script src="loader.js?id=moveend" type="text/javascript"></script>
+
+  </body>
+</html>
