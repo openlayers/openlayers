@@ -625,7 +625,7 @@ virtual('apidoc', 'build/jsdoc-%(BRANCH)s-timestamp' % vars(variables))
         'build/src/external/src/exports.js', SRC, SHADER_SRC,
         ifind('apidoc/template'))
 def jsdoc_BRANCH_timestamp(t):
-    t.run('%(JSDOC)s', '-c', 'apidoc/conf.json', 'src', 'apidoc/index.md',
+    t.run('%(JSDOC)s', 'apidoc/index.md', '-c', 'apidoc/conf.json',
           '-d', 'build/hosted/%(BRANCH)s/apidoc')
     t.touch()
 

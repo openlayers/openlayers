@@ -10,7 +10,8 @@ goog.require('ol.render.IVectorContext');
  */
 ol.render.EventType = {
   POSTCOMPOSE: 'postcompose',
-  PRECOMPOSE: 'precompose'
+  PRECOMPOSE: 'precompose',
+  RENDER: 'render'
 };
 
 

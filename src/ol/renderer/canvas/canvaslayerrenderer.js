@@ -123,6 +123,19 @@ ol.renderer.canvas.Layer.prototype.dispatchPreComposeEvent =
 
 
 /**
+ * @param {CanvasRenderingContext2D} context Context.
+ * @param {ol.FrameState} frameState Frame state.
+ * @param {goog.vec.Mat4.Number=} opt_transform Transform.
+ * @protected
+ */
+ol.renderer.canvas.Layer.prototype.dispatchRenderEvent =
+    function(context, frameState, opt_transform) {
+  this.dispatchComposeEvent_(ol.render.EventType.RENDER, context,
+      frameState, opt_transform);
+};
+
+
+/**
  * @return {HTMLCanvasElement|HTMLVideoElement|Image} Canvas.
  */
 ol.renderer.canvas.Layer.prototype.getImage = goog.abstractMethod;

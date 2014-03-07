@@ -500,7 +500,7 @@ ol.interaction.Modify.prototype.handleMouseAtPixel_ = function(pixel, map) {
 
   this.modifiable_ = false;
   var rBush = this.rBush_;
-  var nodes = rBush.getAllInExtent(box);
+  var nodes = rBush.getInExtent(box);
   if (nodes.length > 0) {
     nodes.sort(sortByDistance);
     var node = nodes[0];

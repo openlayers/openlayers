@@ -546,7 +546,7 @@ ol.structs.RBush.prototype.getAll = function() {
  * @param {ol.Extent} extent Extent.
  * @return {Array.<T>} All in extent.
  */
-ol.structs.RBush.prototype.getAllInExtent = function(extent) {
+ol.structs.RBush.prototype.getInExtent = function(extent) {
   var values = [];
   this.forEachInExtent(extent,
       /**

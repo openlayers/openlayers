@@ -308,6 +308,21 @@
  * @typedef {Object} olx.format.GMLOptions
  * @property {string} featureNS Feature namespace.
  * @property {string} featureType Feature type to parse.
+ * @property {string} srsName srsName to use when writing geometries.
+ * @property {boolean|undefined} surface Write gml:Surface instead of
+ *     gml:Polygon elements. This also affects the elements in multi-part
+ *     geometries. Default is `false´.
+ * @property {boolean|undefined} curve Write gml:Curve instead of
+ *     gml:LineString elements. This also affects the elements in multi-part
+ *     geometries. Default is `false´.
+ * @property {boolean|undefined} multiCurve Write gml:MultiCurve instead of
+ *     gml:MultiLineString. Since the latter is deprecated in GML 3, the
+ *     default is `true´.
+ * @property {boolean|undefined} multiSurface Write gml:multiSurface instead
+ *     of gml:MultiPolygon. Since the latter is deprecated in GML 3, the
+ *     default is `true´.
+ * @property {string|undefined} schemaLocation Optional schemaLocation to use
+ *     when writing out the GML, this will override the default provided.
  */
 
 /**
@@ -400,6 +415,8 @@
  *     drawing finish (default is 12).
  * @property {ol.geom.GeometryType} type Drawing type ('Point', 'LineString',
  *     'Polygon', 'MultiPoint', 'MultiLineString', or 'MultiPolygon').
+ * @property {number|undefined} minPointsPerRing The number of points that must
+ *     be drawn before a polygon ring can be finished (default is 3).
  * @property {ol.style.Style|Array.<ol.style.Style>|ol.feature.StyleFunction|undefined} style
  *     Style for sketch features.
  * @todo stability experimental
@@ -524,6 +541,26 @@
  * @property {Array.<ol.layer.Base>|ol.Collection|undefined} layers Child layers.
  * @todo stability experimental
  */
+
+/**
+ * @typedef {Object} olx.layer.HeatmapOptions
+ * @property {number|undefined} brightness Brightness.
+ * @property {number|undefined} contrast Contrast.
+ * @property {number|undefined} hue Hue.
+ * @property {Array.<string>|undefined} gradient The color gradient of the heatmap,
+ *      specified as an array of CSS color strings. Default is `['#00f', '#0ff', '#0f0', '#ff0', '#f00']`.
+ * @property {number|undefined} minResolution The minimum resolution
+ *      (inclusive) at which this layer will be visible.
+ * @property {number|undefined} maxResolution The maximum resolution
+ *      (exclusive) below which this layer will be visible.
+ * @property {number|undefined} opacity Opacity. 0-1. Default is `1`.
+ * @property {number|undefined} saturation Saturation.
+ * @property {ol.source.Vector} source Source.
+ * @property {ol.style.Style|Array.<ol.style.Style>|ol.feature.StyleFunction|undefined} style Layer style.
+ * @property {boolean|undefined} visible Visibility. Default is `true` (visible).
+ * @todo stability experimental
+ */
+
 
 /**
  * @typedef {Object} olx.layer.TileOptions

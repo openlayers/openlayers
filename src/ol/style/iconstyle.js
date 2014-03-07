@@ -157,7 +157,7 @@ ol.style.Icon.prototype.getAnchor = function() {
     }
     if (this.anchorOrigin_ == ol.style.IconAnchorOrigin.BOTTOM_LEFT ||
         this.anchorOrigin_ == ol.style.IconAnchorOrigin.BOTTOM_RIGHT) {
-      anchor[1] += size[1];
+      anchor[1] = -anchor[1] + size[1];
     }
   }
   return anchor;
