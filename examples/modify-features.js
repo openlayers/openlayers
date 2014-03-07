@@ -148,7 +148,9 @@ var vectorSource = new ol.source.GeoJSON(
                 },
                 {
                   'type': 'Polygon',
-                  'coordinates': [[[1e6, -6e6], [2e6, -4e6], [3e6, -6e6]]]
+                  'coordinates': [
+                    [[1e6, -6e6], [2e6, -4e6], [3e6, -6e6], [1e6, -6e6]]
+                  ]
                 }
               ]
             }
