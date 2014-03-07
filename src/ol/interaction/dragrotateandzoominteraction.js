@@ -7,7 +7,6 @@ goog.require('goog.math.Vec2');
 goog.require('ol.ViewHint');
 goog.require('ol.events.ConditionType');
 goog.require('ol.events.condition');
-goog.require('ol.interaction.Drag');
 goog.require('ol.interaction.Interaction');
 goog.require('ol.interaction.Pointer');
 
