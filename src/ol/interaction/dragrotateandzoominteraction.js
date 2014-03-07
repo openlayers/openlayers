@@ -110,7 +110,7 @@ ol.interaction.DragRotateAndZoom.prototype.handlePointerDrag =
 ol.interaction.DragRotateAndZoom.prototype.handlePointerUp =
     function(mapBrowserEvent) {
   if (!ol.events.condition.mouseOnly(mapBrowserEvent)) {
-    return false;
+    return true;
   }
 
   var map = mapBrowserEvent.map;
@@ -125,7 +125,7 @@ ol.interaction.DragRotateAndZoom.prototype.handlePointerUp =
       undefined, ol.interaction.DRAGROTATEANDZOOM_ANIMATION_DURATION,
       direction);
   this.lastScaleDelta_ = 0;
-  return true;
+  return false;
 };
 
 

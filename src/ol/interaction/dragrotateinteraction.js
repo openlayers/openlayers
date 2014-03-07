@@ -83,7 +83,7 @@ ol.interaction.DragRotate.prototype.handlePointerDrag =
 ol.interaction.DragRotate.prototype.handlePointerUp =
     function(mapBrowserEvent) {
   if (!ol.events.condition.mouseOnly(mapBrowserEvent)) {
-    return false;
+    return true;
   }
 
   var map = mapBrowserEvent.map;
@@ -94,6 +94,7 @@ ol.interaction.DragRotate.prototype.handlePointerUp =
   var view2DState = view2D.getView2DState();
   ol.interaction.Interaction.rotate(map, view2D, view2DState.rotation,
       undefined, ol.interaction.DRAGROTATE_ANIMATION_DURATION);
+  return false;
 };
 
 

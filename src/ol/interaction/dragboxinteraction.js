@@ -142,7 +142,7 @@ ol.interaction.DragBox.prototype.onBoxEnd = goog.nullFunction;
 ol.interaction.DragBox.prototype.handlePointerUp =
     function(mapBrowserEvent) {
   if (!ol.events.condition.mouseOnly(mapBrowserEvent)) {
-    return false;
+    return true;
   }
 
   this.box_.setMap(null);
@@ -156,6 +156,7 @@ ol.interaction.DragBox.prototype.handlePointerUp =
     this.dispatchEvent(new ol.DragBoxEvent(ol.DragBoxEventType.BOXEND,
         mapBrowserEvent.coordinate));
   }
+  return false;
 };
 
 
