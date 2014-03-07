@@ -33,6 +33,43 @@ describe('ol.format.WFS', function() {
 
   });
 
+  describe('when parsing FeatureCollection', function() {
+    var response;
+    before(function(done) {
+      afterLoadText('spec/ol/format/wfs/NumberOfFeatures.xml',
+          function(xml) {
+            try {
+              response = new ol.format.WFS().readFeatureCollectionMetadata(xml);
+            } catch (e) {
+              done(e);
+            }
+            done();
+          });
+    });
+    it('returns the correct number of features', function() {
+      expect(response.numberOfFeatures).to.equal(625);
+    });
+  });
+
+  describe('when parsing FeatureCollection', function() {
+    var response;
+    before(function(done) {
+      afterLoadText('spec/ol/format/wfs/boundedBy.xml',
+          function(xml) {
+            try {
+              response = new ol.format.WFS().readFeatureCollectionMetadata(xml);
+            } catch (e) {
+              done(e);
+            }
+            done();
+          });
+    });
+    it('returns the correct bounds', function() {
+      expect(response.bounds).to.eql([3197.88, 306457.313,
+        280339.156, 613850.438]);
+    });
+  });
+
   describe('when parsing TransactionResponse', function() {
     var response;
     before(function(done) {

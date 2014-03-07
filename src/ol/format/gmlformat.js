@@ -146,9 +146,8 @@ ol.format.GML.FEATURE_COLLECTION_PARSERS = {
  * @param {Node} node Node.
  * @param {Array.<*>} objectStack Object stack.
  * @return {ol.geom.Geometry|undefined} Geometry.
- * @private
  */
-ol.format.GML.readGeometry_ = function(node, objectStack) {
+ol.format.GML.readGeometry = function(node, objectStack) {
   var context = objectStack[0];
   goog.asserts.assert(goog.isObject(context));
   goog.object.set(context, 'srsName',
@@ -188,7 +187,7 @@ ol.format.GML.readFeature_ = function(node, objectStack) {
       values[ol.xml.getLocalName(n)] = value;
     } else {
       geometryName = ol.xml.getLocalName(n);
-      values[geometryName] = ol.format.GML.readGeometry_(n, objectStack);
+      values[geometryName] = ol.format.GML.readGeometry(n, objectStack);
     }
   }
   var feature = new ol.Feature(values);
@@ -1016,7 +1015,7 @@ ol.format.GML.RING_PARSERS_ = {
  * @inheritDoc
  */
 ol.format.GML.prototype.readGeometryFromNode = function(node) {
-  var geometry = ol.format.GML.readGeometry_(node, [{}]);
+  var geometry = ol.format.GML.readGeometry(node, [{}]);
   return (goog.isDef(geometry)) ? geometry : null;
 };
 

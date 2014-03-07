@@ -92,6 +92,72 @@ ol.format.WFS.prototype.readTransactionResponse = function(source) {
 
 
 /**
+ * @param {ArrayBuffer|Document|Node|Object|string} source Source.
+ * @return {Object|undefined} FeatureCollection metadata.
+ */
+ol.format.WFS.prototype.readFeatureCollectionMetadata = function(source) {
+  if (ol.xml.isDocument(source)) {
+    return this.readFeatureCollectionMetadataFromDocument(
+        /** @type {Document} */ (source));
+  } else if (ol.xml.isNode(source)) {
+    return this.readFeatureCollectionMetadataFromNode(
+        /** @type {Node} */ (source));
+  } else if (goog.isString(source)) {
+    var doc = ol.xml.load(source);
+    return this.readFeatureCollectionMetadataFromDocument(doc);
+  } else {
+    goog.asserts.fail();
+    return null;
+  }
+};
+
+
+/**
+ * @param {Document} doc Document.
+ * @return {Object|undefined} FeatureCollection metadata.
+ */
+ol.format.WFS.prototype.readFeatureCollectionMetadataFromDocument =
+    function(doc) {
+  goog.asserts.assert(doc.nodeType == goog.dom.NodeType.DOCUMENT);
+  for (var n = doc.firstChild; !goog.isNull(n); n = n.nextSibling) {
+    if (n.nodeType == goog.dom.NodeType.ELEMENT) {
+      return this.readFeatureCollectionMetadataFromNode(n);
+    }
+  }
+  return null;
+};
+
+
+/**
+ * @const
+ * @type {Object.<string, Object.<string, ol.xml.Parser>>}
+ * @private
+ */
+ol.format.WFS.FEATURE_COLLECTION_PARSERS_ = {
+  'http://www.opengis.net/gml': {
+    'boundedBy': ol.xml.makeObjectPropertySetter(
+        ol.format.GML.readGeometry, 'bounds')
+  }
+};
+
+
+/**
+ * @param {Node} node Node.
+ * @return {Object|undefined} FeatureCollection metadata.
+ */
+ol.format.WFS.prototype.readFeatureCollectionMetadataFromNode = function(node) {
+  goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT);
+  goog.asserts.assert(node.localName == 'FeatureCollection');
+  var result = {};
+  var value = ol.format.XSD.readNonNegativeIntegerString(
+      node.getAttribute('numberOfFeatures'));
+  goog.object.set(result, 'numberOfFeatures', value);
+  return ol.xml.pushParseAndPop(
+      result, ol.format.WFS.FEATURE_COLLECTION_PARSERS_, node, []);
+};
+
+
+/**
  * @const
  * @type {Object.<string, Object.<string, ol.xml.Parser>>}
  * @private
