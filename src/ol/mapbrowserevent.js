@@ -405,18 +405,5 @@ ol.MapBrowserEvent.EventType = {
   POINTEROUT: 'pointerout',
   POINTERENTER: 'pointerenter',
   POINTERLEAVE: 'pointerleave',
-  POINTERCANCEL: 'pointercancel',
-
-  // TODO old types that should be removed once
-  // the interactions are adapted
-  CLICK: goog.events.EventType.CLICK,
-  DRAGSTART: 'dragstart',
-  DRAG: 'drag',
-  DRAGEND: 'dragend',
-  DOWN: 'down',
-  MOUSEMOVE: goog.events.EventType.MOUSEMOVE,
-
-  TOUCHSTART: goog.events.EventType.TOUCHSTART,
-  TOUCHMOVE: goog.events.EventType.TOUCHMOVE,
-  TOUCHEND: goog.events.EventType.TOUCHEND
+  POINTERCANCEL: 'pointercancel'
 };
