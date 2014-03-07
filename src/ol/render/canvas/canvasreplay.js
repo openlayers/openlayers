@@ -2,6 +2,7 @@
 // FIXME add option to apply snapToPixel to all coordinates?
 // FIXME can eliminate empty set styles and strokes (when all geoms skipped)
 
+goog.provide('ol.render.canvas.Replay');
 goog.provide('ol.render.canvas.ReplayGroup');
 
 goog.require('goog.array');
@@ -164,6 +165,12 @@ ol.render.canvas.Replay.prototype.appendFlatCoordinates =
     lastCoord[0] = nextCoord[0];
     lastCoord[1] = nextCoord[1];
     lastRel = nextRel;
+  }
+
+  // handle case where there is only one point to append
+  if (i === offset + stride) {
+    this.coordinates[myEnd++] = lastCoord[0];
+    this.coordinates[myEnd++] = lastCoord[1];
   }
 
   if (close) {
