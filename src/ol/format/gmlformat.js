@@ -1118,6 +1118,41 @@ ol.format.GML.writePoint_ = function(node, geometry, objectStack) {
 
 
 /**
+ * @type {Object.<string, Object.<string, ol.xml.Serializer>>}
+ * @private
+ */
+ol.format.GML.ENVELOPE_SERIALIZERS_ = {
+  'http://www.opengis.net/gml': {
+    'lowerCorner': ol.xml.makeChildAppender(ol.format.XSD.writeStringTextNode),
+    'upperCorner': ol.xml.makeChildAppender(ol.format.XSD.writeStringTextNode)
+  }
+};
+
+
+/**
+ * @param {Node} node Node.
+ * @param {ol.Extent} extent Extent.
+ * @param {Array.<*>} objectStack Node stack.
+ */
+ol.format.GML.writeEnvelope = function(node, extent, objectStack) {
+  goog.asserts.assert(extent.length == 4);
+  var context = objectStack[objectStack.length - 1];
+  goog.asserts.assert(goog.isObject(context));
+  var srsName = goog.object.get(context, 'srsName');
+  if (goog.isDef(srsName)) {
+    node.setAttribute('srsName', srsName);
+  }
+  var keys = ['lowerCorner', 'upperCorner'];
+  var values = [extent[0] + ' ' + extent[1], extent[2] + ' ' + extent[3]];
+  ol.xml.pushSerializeAndPop(/** @type {ol.xml.NodeStackItem} */
+      ({node: node}), ol.format.GML.ENVELOPE_SERIALIZERS_,
+      ol.xml.OBJECT_PROPERTY_NODE_FACTORY,
+      values,
+      objectStack, keys);
+};
+
+
+/**
  * @param {Node} node Node.
  * @param {ol.geom.LinearRing} geometry LinearRing geometry.
  * @param {Array.<*>} objectStack Node stack.
@@ -1366,11 +1401,10 @@ ol.format.GML.writeCurveSegments_ = function(node, line, objectStack) {
 
 /**
  * @param {Node} node Node.
- * @param {ol.geom.Geometry} geometry Geometry.
+ * @param {ol.geom.Geometry|ol.Extent} geometry Geometry.
  * @param {Array.<*>} objectStack Node stack.
- * @private
  */
-ol.format.GML.writeGeometry_ = function(node, geometry, objectStack) {
+ol.format.GML.writeGeometry = function(node, geometry, objectStack) {
   var context = objectStack[objectStack.length - 1];
   goog.asserts.assert(goog.isObject(context));
   var item = goog.object.clone(context);
@@ -1408,7 +1442,7 @@ ol.format.GML.writeFeature_ = function(node, feature, objectStack) {
     if (key == geometryName) {
       if (!(key in context.serializers[featureNS])) {
         context.serializers[featureNS][key] = ol.xml.makeChildAppender(
-            ol.format.GML.writeGeometry_);
+            ol.format.GML.writeGeometry);
       }
     } else {
       if (!(key in context.serializers[featureNS])) {
@@ -1524,7 +1558,9 @@ ol.format.GML.GEOMETRY_SERIALIZERS_ = {
         ol.format.GML.writeMultiSurfaceOrPolygon_),
     'Surface': ol.xml.makeChildAppender(ol.format.GML.writeSurfaceOrPolygon_),
     'MultiSurface': ol.xml.makeChildAppender(
-        ol.format.GML.writeMultiSurfaceOrPolygon_)
+        ol.format.GML.writeMultiSurfaceOrPolygon_),
+    'Envelope': ol.xml.makeChildAppender(
+        ol.format.GML.writeEnvelope)
   }
 };
 
@@ -1575,18 +1611,22 @@ ol.format.GML.GEOMETRY_NODE_FACTORY_ = function(value, objectStack,
   var surface = goog.object.get(context, 'surface');
   var curve = goog.object.get(context, 'curve');
   var multiCurve = goog.object.get(context, 'multiCurve');
-  goog.asserts.assertInstanceof(value, ol.geom.Geometry);
   var parentNode = objectStack[objectStack.length - 1].node;
   goog.asserts.assert(ol.xml.isNode(parentNode));
-  var nodeName = value.getType();
-  if (nodeName === 'MultiPolygon' && multiSurface === true) {
-    nodeName = 'MultiSurface';
-  } else if (nodeName === 'Polygon' && surface === true) {
-    nodeName = 'Surface';
-  } else if (nodeName === 'LineString' && curve === true) {
-    nodeName = 'Curve';
-  } else if (nodeName === 'MultiLineString' && multiCurve === true) {
-    nodeName = 'MultiCurve';
+  if (!goog.isArray(value)) {
+    goog.asserts.assertInstanceof(value, ol.geom.Geometry);
+    var nodeName = value.getType();
+    if (nodeName === 'MultiPolygon' && multiSurface === true) {
+      nodeName = 'MultiSurface';
+    } else if (nodeName === 'Polygon' && surface === true) {
+      nodeName = 'Surface';
+    } else if (nodeName === 'LineString' && curve === true) {
+      nodeName = 'Curve';
+    } else if (nodeName === 'MultiLineString' && multiCurve === true) {
+      nodeName = 'MultiCurve';
+    }
+  } else {
+    nodeName = 'Envelope';
   }
   return ol.xml.createElementNS('http://www.opengis.net/gml',
       nodeName);

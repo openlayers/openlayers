@@ -312,6 +312,43 @@ ol.format.WFS.writeQuery_ = function(node, featureType, objectStack) {
       ol.format.WFS.QUERY_SERIALIZERS_,
       ol.xml.makeSimpleNodeFactory('PropertyName'), propertyNames,
       objectStack);
+  var bbox = goog.object.get(context, 'bbox');
+  if (goog.isDef(bbox)) {
+    var child = ol.xml.createElementNS('http://www.opengis.net/ogc', 'Filter');
+    ol.format.WFS.writeBBOX_(child, bbox, objectStack);
+    node.appendChild(child);
+  }
+};
+
+
+/**
+ * @param {Node} node Node.
+ * @param {string} value PropertyName value.
+ * @param {Array.<*>} objectStack Node stack.
+ * @private
+ */
+ol.format.WFS.writeOgcPropertyName_ = function(node, value, objectStack) {
+  var property = ol.xml.createElementNS('http://www.opengis.net/ogc',
+      'PropertyName');
+  ol.format.XSD.writeStringTextNode(property, value);
+  node.appendChild(property);
+};
+
+
+/**
+ * @param {Node} node Node.
+ * @param {ol.Extent} bbox Bounding box.
+ * @param {Array.<*>} objectStack Node stack.
+ * @private
+ */
+ol.format.WFS.writeBBOX_ = function(node, bbox, objectStack) {
+  var context = objectStack[objectStack.length - 1];
+  goog.asserts.assert(goog.isObject(context));
+  var geometryName = goog.object.get(context, 'geometryName');
+  var bboxNode = ol.xml.createElementNS('http://www.opengis.net/ogc', 'BBOX');
+  node.appendChild(bboxNode);
+  ol.format.WFS.writeOgcPropertyName_(bboxNode, geometryName, objectStack);
+  ol.format.GML.writeGeometry(bboxNode, bbox, objectStack);
 };
 
 
@@ -337,7 +374,7 @@ ol.format.WFS.writeGetFeature_ = function(node, featureTypes, objectStack) {
   var context = objectStack[objectStack.length - 1];
   goog.asserts.assert(goog.isObject(context));
   var item = goog.object.clone(context);
-  goog.object.set(item, 'node', node);
+  item.node = node;
   ol.xml.pushSerializeAndPop(item,
       ol.format.WFS.GETFEATURE_SERIALIZERS_,
       ol.xml.makeSimpleNodeFactory('Query'), featureTypes,
@@ -382,6 +419,8 @@ ol.format.WFS.prototype.writeGetFeature = function(options) {
     featureNS: goog.isDef(options.featureNS) ?
         options.featureNS : this.featureNS_,
     featurePrefix: options.featurePrefix,
+    geometryName: options.geometryName,
+    bbox: options.bbox,
     propertyNames: goog.isDef(options.propertyNames) ?
         options.propertyNames : []
   };

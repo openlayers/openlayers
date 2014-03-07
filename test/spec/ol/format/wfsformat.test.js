@@ -146,6 +146,34 @@ describe('ol.format.WFS', function() {
       });
       expect(serialized).to.xmleql(ol.xml.load(text));
     });
+
+    it('creates a BBOX filter', function() {
+      var text =
+          '<wfs:Query xmlns:wfs="http://www.opengis.net/wfs" ' +
+          '    typeName="topp:states" srsName="urn:ogc:def:crs:EPSG::4326" ' +
+          '    xmlns:topp="http://www.openplans.org/topp">' +
+          '  <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">' +
+          '    <ogc:BBOX>' +
+          '      <ogc:PropertyName>the_geom</ogc:PropertyName>' +
+          '      <gml:Envelope xmlns:gml="http://www.opengis.net/gml" ' +
+          '          srsName="urn:ogc:def:crs:EPSG::4326">' +
+          '        <gml:lowerCorner>1 2</gml:lowerCorner>' +
+          '        <gml:upperCorner>3 4</gml:upperCorner>' +
+          '      </gml:Envelope>' +
+          '    </ogc:BBOX>' +
+          '  </ogc:Filter>' +
+          '</wfs:Query>';
+      var serialized = new ol.format.WFS().writeGetFeature({
+        srsName: 'urn:ogc:def:crs:EPSG::4326',
+        featureNS: 'http://www.openplans.org/topp',
+        featurePrefix: 'topp',
+        featureTypes: ['states'],
+        geometryName: 'the_geom',
+        bbox: [1, 2, 3, 4]
+      });
+      expect(serialized.firstElementChild).to.xmleql(ol.xml.load(text));
+    });
+
   });
 
 });

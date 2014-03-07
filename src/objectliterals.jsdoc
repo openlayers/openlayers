@@ -340,7 +340,10 @@
  *     set on geometries when this is not provided.
  * @property {string|undefined} handle Handle.
  * @property {string|undefined} outputFormat Output format.
- * @property {number} maxFeatures Maximum number of features to fetch.
+ * @property {number|undefined} maxFeatures Maximum number of features to fetch.
+ * @property {string|undefined} geometryName Geometry name to use in a BBOX
+ *     filter.
+ * @property {ol.Extent|undefined} bbox Extent to use for the BBOX filter.
  */
 
 /**
