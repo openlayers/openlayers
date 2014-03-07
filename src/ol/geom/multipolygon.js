@@ -215,13 +215,19 @@ ol.geom.MultiPolygon.prototype.getPolygons = function() {
   var endss = this.endss_;
   var polygons = [];
   var offset = 0;
-  var i, ii;
+  var i, ii, j, jj;
   for (i = 0, ii = endss.length; i < ii; ++i) {
     var ends = endss[i];
     var end = ends[ends.length - 1];
     var polygon = new ol.geom.Polygon(null);
+    var polygonEnds = ends.slice();
+    if (offset !== 0) {
+      for (j = 0, jj = polygonEnds.length; j < jj; ++j) {
+        polygonEnds[j] = polygonEnds[j] - offset;
+      }
+    }
     polygon.setFlatCoordinates(
-        layout, flatCoordinates.slice(offset, end), ends.slice());
+        layout, flatCoordinates.slice(offset, end), polygonEnds);
     polygons.push(polygon);
     offset = end;
   }
