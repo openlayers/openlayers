@@ -148,6 +148,14 @@ ol.MapBrowserEventHandler = function(map) {
    */
   this.pointerdownListenerKey_ = null;
 
+  if (ol.LEGACY_IE_SUPPORT && ol.IS_LEGACY_IE) {
+    /**
+     * @type {goog.events.Key}
+     * @private
+     */
+    this.ieDblclickListenerKey_ = null;
+  }
+
   /**
    * @type {ol.pointer.PointerEvent}
    * @private
@@ -194,6 +202,17 @@ ol.MapBrowserEventHandler = function(map) {
       [ol.pointer.EventType.POINTERMOVE],
       this.relayEvent_, false, this);
 
+  if (ol.LEGACY_IE_SUPPORT && ol.IS_LEGACY_IE) {
+    /*
+     * On legacy IE, double clicks do not produce two mousedown and
+     * mouseup events. That is why a separate DBLCLICK event listener
+     * is used.
+     */
+    this.ieDblclickListenerKey_ = goog.events.listen(element,
+        goog.events.EventType.DBLCLICK,
+        this.emulateClickLegacyIE_, false, this);
+  }
+
 };
 goog.inherits(ol.MapBrowserEventHandler, goog.events.EventTarget);
 
@@ -205,6 +224,20 @@ goog.inherits(ol.MapBrowserEventHandler, goog.events.EventTarget);
  */
 ol.MapBrowserEventHandler.prototype.getDown = function() {
   return this.down_;
+};
+
+
+/**
+ * @param {goog.events.BrowserEvent} browserEvent Pointer event.
+ * @private
+ */
+ol.MapBrowserEventHandler.prototype.emulateClickLegacyIE_ =
+    function(browserEvent) {
+  var pointerEvent = this.pointerEventHandler_.wrapMouseEvent(
+      ol.MapBrowserEvent.EventType.POINTERUP,
+      browserEvent
+      );
+  this.emulateClick_(pointerEvent);
 };
 
 
@@ -273,10 +306,25 @@ ol.MapBrowserEventHandler.prototype.handlePointerUp_ = function(pointerEvent) {
   // We emulate click event on left mouse button click, touch contact, and pen
   // contact. isMouseActionButton returns true in these cases (evt.button is set
   // to 0).
-  // See http://www.w3.org/TR/pointerevents/#button-states .
-  if (!this.dragged_ && pointerEvent.button == 0) {
+  // See http://www.w3.org/TR/pointerevents/#button-states
+  if (!this.dragged_ && this.isMouseActionButton_(pointerEvent)) {
     goog.asserts.assert(!goog.isNull(this.down_));
     this.emulateClick_(this.down_);
+  }
+};
+
+
+/**
+ * @param {ol.pointer.PointerEvent} pointerEvent Pointer event.
+ * @return {boolean} If the left mouse button was pressed.
+ * @private
+ */
+ol.MapBrowserEventHandler.prototype.isMouseActionButton_ =
+    function(pointerEvent) {
+  if (ol.LEGACY_IE_SUPPORT && ol.IS_LEGACY_IE) {
+    return pointerEvent.button == 1;
+  } else {
+    return pointerEvent.button == 0;
   }
 };
 
@@ -384,6 +432,11 @@ ol.MapBrowserEventHandler.prototype.disposeInternal = function() {
   if (!goog.isNull(this.pointerEventHandler_)) {
     goog.dispose(this.pointerEventHandler_);
     this.pointerEventHandler_ = null;
+  }
+  if (ol.LEGACY_IE_SUPPORT && ol.IS_LEGACY_IE &&
+      !goog.isNull(this.ieDblclickListenerKey_)) {
+    goog.events.unlistenByKey(this.ieDblclickListenerKey_);
+    this.ieDblclickListenerKey_ = null;
   }
   goog.base(this, 'disposeInternal');
 };

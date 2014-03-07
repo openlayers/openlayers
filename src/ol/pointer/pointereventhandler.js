@@ -364,7 +364,7 @@ ol.pointer.PointerEventHandler.prototype.contains_ =
 // EVENT CREATION AND TRACKING
 /**
  * Creates a new Event of type `inType`, based on the information in
- * `inEvent`.
+ * `pointerEventData`.
  *
  * @param {string} inType A string representing the type of event to create.
  * @param {Object} pointerEventData
@@ -409,6 +409,24 @@ ol.pointer.PointerEventHandler.prototype.fireNativeEvent =
   var e = this.makeEvent(nativeEvent.type, nativeEvent.getBrowserEvent(),
       nativeEvent);
   this.dispatchEvent(e);
+};
+
+
+/**
+ * Wrap a native mouse event into a pointer event.
+ * This proxy method is required for the legacy IE support.
+ * @param {string} eventType The pointer event type.
+ * @param {goog.events.BrowserEvent} browserEvent
+ * @return {ol.pointer.PointerEvent}
+ */
+ol.pointer.PointerEventHandler.prototype.wrapMouseEvent =
+    function(eventType, browserEvent) {
+  var pointerEvent = this.makeEvent(
+      eventType,
+      ol.pointer.MouseSource.prepareEvent(browserEvent, this),
+      browserEvent
+      );
+  return pointerEvent;
 };
 
 

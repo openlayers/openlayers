@@ -49,26 +49,6 @@ ol.pointer.MouseSource = function(dispatcher) {
   this.pointerMap = dispatcher.pointerMap;
 
   /**
-   * Radius around touchend that swallows mouse events.
-   *
-   * @const
-   * @type {number}
-   */
-  this.DEDUP_DIST = 25;
-
-  /**
-   * @const
-   * @type {number}
-   */
-  this.POINTER_ID = 1;
-
-  /**
-   * @const
-   * @type {string}
-   */
-  this.POINTER_TYPE = 'mouse';
-
-  /**
    * @const
    * @type {Array.<string>}
    */
@@ -99,6 +79,29 @@ ol.pointer.MouseSource = function(dispatcher) {
   this.lastTouches = [];
 };
 goog.inherits(ol.pointer.MouseSource, ol.pointer.EventSource);
+
+
+/**
+ * @const
+ * @type {number}
+ */
+ol.pointer.MouseSource.POINTER_ID = 1;
+
+
+/**
+ * @const
+ * @type {string}
+ */
+ol.pointer.MouseSource.POINTER_TYPE = 'mouse';
+
+
+/**
+ * Radius around touchend that swallows mouse events.
+ *
+ * @const
+ * @type {number}
+ */
+ol.pointer.MouseSource.DEDUP_DIST = 25;
 
 
 /** @inheritDoc */
@@ -144,7 +147,8 @@ ol.pointer.MouseSource.prototype.isEventSimulatedFromTouch_ =
   for (var i = 0, l = lts.length, t; i < l && (t = lts[i]); i++) {
     // simulated mouse events will be swallowed near a primary touchend
     var dx = Math.abs(x - t.x), dy = Math.abs(y - t.y);
-    if (dx <= this.DEDUP_DIST && dy <= this.DEDUP_DIST) {
+    if (dx <= ol.pointer.MouseSource.DEDUP_DIST &&
+        dy <= ol.pointer.MouseSource.DEDUP_DIST) {
       return true;
     }
   }
@@ -156,12 +160,12 @@ ol.pointer.MouseSource.prototype.isEventSimulatedFromTouch_ =
  * Creates a copy of the original event that will be used
  * for the fake pointer event.
  *
- * @private
  * @param {goog.events.BrowserEvent} inEvent
+ * @param {ol.pointer.PointerEventHandler} dispatcher
  * @return {Object}
  */
-ol.pointer.MouseSource.prototype.prepareEvent_ = function(inEvent) {
-  var e = this.dispatcher.cloneEvent(inEvent, inEvent.getBrowserEvent());
+ol.pointer.MouseSource.prepareEvent = function(inEvent, dispatcher) {
+  var e = dispatcher.cloneEvent(inEvent, inEvent.getBrowserEvent());
 
   // forward mouse preventDefault
   var pd = e.preventDefault;
@@ -170,9 +174,9 @@ ol.pointer.MouseSource.prototype.prepareEvent_ = function(inEvent) {
     pd();
   };
 
-  e.pointerId = this.POINTER_ID;
+  e.pointerId = ol.pointer.MouseSource.POINTER_ID;
   e.isPrimary = true;
-  e.pointerType = this.POINTER_TYPE;
+  e.pointerType = ol.pointer.MouseSource.POINTER_TYPE;
 
   return e;
 };
@@ -185,14 +189,14 @@ ol.pointer.MouseSource.prototype.prepareEvent_ = function(inEvent) {
  */
 ol.pointer.MouseSource.prototype.mousedown = function(inEvent) {
   if (!this.isEventSimulatedFromTouch_(inEvent)) {
-    var p = this.pointerMap.containsKey(this.POINTER_ID);
+    var p = this.pointerMap.containsKey(ol.pointer.MouseSource.POINTER_ID);
     // TODO(dfreedman) workaround for some elements not sending mouseup
     // http://crbug/149091
     if (p) {
       this.cancel(inEvent);
     }
-    var e = this.prepareEvent_(inEvent);
-    this.pointerMap.set(this.POINTER_ID, inEvent);
+    var e = ol.pointer.MouseSource.prepareEvent(inEvent, this.dispatcher);
+    this.pointerMap.set(ol.pointer.MouseSource.POINTER_ID, inEvent);
     this.dispatcher.down(e, inEvent);
   }
 };
@@ -205,7 +209,7 @@ ol.pointer.MouseSource.prototype.mousedown = function(inEvent) {
  */
 ol.pointer.MouseSource.prototype.mousemove = function(inEvent) {
   if (!this.isEventSimulatedFromTouch_(inEvent)) {
-    var e = this.prepareEvent_(inEvent);
+    var e = ol.pointer.MouseSource.prepareEvent(inEvent, this.dispatcher);
     this.dispatcher.move(e, inEvent);
   }
 };
@@ -218,10 +222,10 @@ ol.pointer.MouseSource.prototype.mousemove = function(inEvent) {
  */
 ol.pointer.MouseSource.prototype.mouseup = function(inEvent) {
   if (!this.isEventSimulatedFromTouch_(inEvent)) {
-    var p = this.pointerMap.get(this.POINTER_ID);
+    var p = this.pointerMap.get(ol.pointer.MouseSource.POINTER_ID);
 
     if (p && p.button === inEvent.button) {
-      var e = this.prepareEvent_(inEvent);
+      var e = ol.pointer.MouseSource.prepareEvent(inEvent, this.dispatcher);
       this.dispatcher.up(e, inEvent);
       this.cleanupMouse();
     }
@@ -236,7 +240,7 @@ ol.pointer.MouseSource.prototype.mouseup = function(inEvent) {
  */
 ol.pointer.MouseSource.prototype.mouseover = function(inEvent) {
   if (!this.isEventSimulatedFromTouch_(inEvent)) {
-    var e = this.prepareEvent_(inEvent);
+    var e = ol.pointer.MouseSource.prepareEvent(inEvent, this.dispatcher);
     this.dispatcher.enterOver(e, inEvent);
   }
 };
@@ -249,7 +253,7 @@ ol.pointer.MouseSource.prototype.mouseover = function(inEvent) {
  */
 ol.pointer.MouseSource.prototype.mouseout = function(inEvent) {
   if (!this.isEventSimulatedFromTouch_(inEvent)) {
-    var e = this.prepareEvent_(inEvent);
+    var e = ol.pointer.MouseSource.prepareEvent(inEvent, this.dispatcher);
     this.dispatcher.leaveOut(e, inEvent);
   }
 };
@@ -261,7 +265,7 @@ ol.pointer.MouseSource.prototype.mouseout = function(inEvent) {
  * @param {goog.events.BrowserEvent} inEvent
  */
 ol.pointer.MouseSource.prototype.cancel = function(inEvent) {
-  var e = this.prepareEvent_(inEvent);
+  var e = ol.pointer.MouseSource.prepareEvent(inEvent, this.dispatcher);
   this.dispatcher.cancel(e, inEvent);
   this.cleanupMouse();
 };
@@ -271,5 +275,5 @@ ol.pointer.MouseSource.prototype.cancel = function(inEvent) {
  * Remove the mouse from the list of active pointers.
  */
 ol.pointer.MouseSource.prototype.cleanupMouse = function() {
-  this.pointerMap.remove(this.POINTER_ID);
+  this.pointerMap.remove(ol.pointer.MouseSource.POINTER_ID);
 };
