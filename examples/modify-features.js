@@ -1,3 +1,4 @@
+goog.require('ol.Collection');
 goog.require('ol.Map');
 goog.require('ol.View2D');
 goog.require('ol.interaction');
@@ -162,6 +163,21 @@ var vectorLayer = new ol.layer.Vector({
   source: vectorSource,
   style: styleFunction
 });
+
+// FIXME Handle this elsewhere - this is only to not render selected features
+// on the original layer.
+vectorLayer.setRenderGeometryFunctions(new ol.Collection([
+  function(geometry, feature) {
+    var selected = select.getFeatures().getArray();
+    for (var i = 0, ii = selected.length; i < ii; ++i) {
+      if (selected[i] === feature) {
+        return false;
+      }
+    }
+    return true;
+  }
+]));
+
 
 var overlayStyle = (function() {
   var styles = {};
