@@ -189,14 +189,15 @@ ol.render.canvas.Replay.prototype.replay_ = function(
   while (i < ii) {
     var instruction = instructions[i];
     var type = /** @type {ol.render.canvas.Instruction} */ (instruction[0]);
-    var fill, geometry, stroke, text, x, y;
+    var end, fill, geometry, stroke, text, x, y;
     switch (type) {
       case ol.render.canvas.Instruction.BEGIN_GEOMETRY:
         geometry = /** @type {ol.geom.Geometry} */ (instruction[1]);
-        if (renderGeometryFunction(geometry)) {
+        end = instruction[2];
+        if (renderGeometryFunction(geometry, instructions[end][2])) {
           ++i;
         } else {
-          i = /** @type {number} */ (instruction[2]);
+          i = /** @type {number} */ (end);
         }
         break;
       case ol.render.canvas.Instruction.BEGIN_PATH:
