@@ -33,7 +33,7 @@ describe('ol.renderer.vector', function() {
 
         // call #1
         ol.renderer.vector.renderFeature(replayGroup, feature,
-            style, 1, feature, listener, listenerThis);
+            style, 1, listener, listenerThis);
 
         expect(iconStyleLoadSpy.calledOnce).to.be.ok();
         listeners = goog.events.getListeners(
@@ -42,7 +42,7 @@ describe('ol.renderer.vector', function() {
 
         // call #2
         ol.renderer.vector.renderFeature(replayGroup, feature,
-            style, 1, feature, listener, listenerThis);
+            style, 1, listener, listenerThis);
 
         expect(iconStyleLoadSpy.calledOnce).to.be.ok();
         listeners = goog.events.getListeners(

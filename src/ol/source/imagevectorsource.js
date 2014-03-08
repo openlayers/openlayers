@@ -230,7 +230,7 @@ ol.source.ImageVector.prototype.renderFeature_ =
   var i, ii, loading = false;
   for (i = 0, ii = styles.length; i < ii; ++i) {
     loading = ol.renderer.vector.renderFeature(
-        replayGroup, feature, styles[i], squaredTolerance, feature,
+        replayGroup, feature, styles[i], squaredTolerance,
         this.handleImageChange_, this) || loading;
   }
   return loading;

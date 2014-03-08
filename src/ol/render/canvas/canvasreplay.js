@@ -201,10 +201,10 @@ ol.render.canvas.Replay.prototype.beginGeometry = function(geometry) {
  * @param {number} pixelRatio Pixel ratio.
  * @param {goog.vec.Mat4.Number} transform Transform.
  * @param {number} viewRotation View rotation.
- * @param {function(ol.geom.Geometry): boolean} renderGeometryFunction Render
- *     geometry function.
+ * @param {function(ol.geom.Geometry, ol.Feature): boolean} renderGeometryFunction
+ *     Render geometry function.
  * @param {Array.<*>} instructions Instructions array.
- * @param {function(ol.geom.Geometry, Object): T|undefined} geometryCallback
+ * @param {function(ol.geom.Geometry, ol.Feature): T|undefined} geometryCallback
  *     Geometry callback.
  * @return {T|undefined} Callback result.
  * @template T
@@ -230,14 +230,15 @@ ol.render.canvas.Replay.prototype.replay_ = function(
   while (i < ii) {
     var instruction = instructions[i];
     var type = /** @type {ol.render.canvas.Instruction} */ (instruction[0]);
-    var fill, geometry, stroke, text, x, y;
+    var end, fill, geometry, stroke, text, x, y;
     switch (type) {
       case ol.render.canvas.Instruction.BEGIN_GEOMETRY:
         geometry = /** @type {ol.geom.Geometry} */ (instruction[1]);
-        if (renderGeometryFunction(geometry)) {
+        end = instruction[2];
+        if (renderGeometryFunction(geometry, instructions[end][2])) {
           ++i;
         } else {
-          i = /** @type {number} */ (instruction[2]);
+          i = /** @type {number} */ (end);
         }
         break;
       case ol.render.canvas.Instruction.BEGIN_PATH:
@@ -361,8 +362,8 @@ ol.render.canvas.Replay.prototype.replay_ = function(
       case ol.render.canvas.Instruction.END_GEOMETRY:
         if (goog.isDef(geometryCallback)) {
           geometry = /** @type {ol.geom.Geometry} */ (instruction[1]);
-          var data = /** @type {Object} */ (instruction[2]);
-          var result = geometryCallback(geometry, data);
+          var feature = /** @type {ol.Feature} */ (instruction[2]);
+          var result = geometryCallback(geometry, feature);
           if (result) {
             return result;
           }
@@ -436,8 +437,8 @@ ol.render.canvas.Replay.prototype.replay_ = function(
  * @param {number} pixelRatio Pixel ratio.
  * @param {goog.vec.Mat4.Number} transform Transform.
  * @param {number} viewRotation View rotation.
- * @param {function(ol.geom.Geometry): boolean} renderGeometryFunction Render
- *     geometry function.
+ * @param {function(ol.geom.Geometry, ol.Feature): boolean} renderGeometryFunction
+ *     Render geometry function.
  * @return {T|undefined} Callback result.
  * @template T
  */
@@ -453,9 +454,9 @@ ol.render.canvas.Replay.prototype.replay = function(
  * @param {CanvasRenderingContext2D} context Context.
  * @param {goog.vec.Mat4.Number} transform Transform.
  * @param {number} viewRotation View rotation.
- * @param {function(ol.geom.Geometry): boolean} renderGeometryFunction Render
- *     geometry function.
- * @param {function(ol.geom.Geometry, Object): T=} opt_geometryCallback
+ * @param {function(ol.geom.Geometry, ol.Feature): boolean} renderGeometryFunction
+ *     Render geometry function.
+ * @param {function(ol.geom.Geometry, ol.Feature): T=} opt_geometryCallback
  *     Geometry callback.
  * @return {T|undefined} Callback result.
  * @template T
@@ -490,6 +491,7 @@ ol.render.canvas.Replay.prototype.reverseHitDetectionInstructions_ =
       goog.asserts.assert(begin == -1);
       begin = i;
     } else if (type == ol.render.canvas.Instruction.BEGIN_GEOMETRY) {
+      instruction[2] = n - instruction[2];
       goog.asserts.assert(begin >= 0);
       ol.array.reverseSubArray(this.hitDetectionInstructions, begin, i);
       begin = -1;
@@ -569,10 +571,10 @@ ol.render.canvas.Replay.prototype.drawText = goog.abstractMethod;
 
 /**
  * @param {ol.geom.Geometry} geometry Geometry.
- * @param {Object} data Opaque data object.
+ * @param {ol.Feature} feature Feature.
  */
 ol.render.canvas.Replay.prototype.endGeometry =
-    function(geometry, data) {
+    function(geometry, feature) {
   goog.asserts.assert(!goog.isNull(this.beginGeometryInstruction1_));
   this.beginGeometryInstruction1_[2] = this.instructions.length;
   this.beginGeometryInstruction1_ = null;
@@ -580,7 +582,7 @@ ol.render.canvas.Replay.prototype.endGeometry =
   this.beginGeometryInstruction2_[2] = this.hitDetectionInstructions.length;
   this.beginGeometryInstruction2_ = null;
   var endGeometryInstruction =
-      [ol.render.canvas.Instruction.END_GEOMETRY, geometry, data];
+      [ol.render.canvas.Instruction.END_GEOMETRY, geometry, feature];
   this.instructions.push(endGeometryInstruction);
   this.hitDetectionInstructions.push(endGeometryInstruction);
 };
@@ -720,7 +722,7 @@ ol.render.canvas.ImageReplay.prototype.drawCoordinates_ =
  * @inheritDoc
  */
 ol.render.canvas.ImageReplay.prototype.drawPointGeometry =
-    function(pointGeometry, data) {
+    function(pointGeometry, feature) {
   if (goog.isNull(this.image_)) {
     return;
   }
@@ -754,7 +756,7 @@ ol.render.canvas.ImageReplay.prototype.drawPointGeometry =
     this.rotateWithView_, this.rotation_, this.scale_, this.snapToPixel_,
     this.width_
   ]);
-  this.endGeometry(pointGeometry, data);
+  this.endGeometry(pointGeometry, feature);
 };
 
 
@@ -762,7 +764,7 @@ ol.render.canvas.ImageReplay.prototype.drawPointGeometry =
  * @inheritDoc
  */
 ol.render.canvas.ImageReplay.prototype.drawMultiPointGeometry =
-    function(multiPointGeometry, data) {
+    function(multiPointGeometry, feature) {
   if (goog.isNull(this.image_)) {
     return;
   }
@@ -796,7 +798,7 @@ ol.render.canvas.ImageReplay.prototype.drawMultiPointGeometry =
     this.rotateWithView_, this.rotation_, this.scale_, this.snapToPixel_,
     this.width_
   ]);
-  this.endGeometry(multiPointGeometry, data);
+  this.endGeometry(multiPointGeometry, feature);
 };
 
 
@@ -963,7 +965,7 @@ ol.render.canvas.LineStringReplay.prototype.setStrokeStyle_ = function() {
  * @inheritDoc
  */
 ol.render.canvas.LineStringReplay.prototype.drawLineStringGeometry =
-    function(lineStringGeometry, data) {
+    function(lineStringGeometry, feature) {
   var state = this.state_;
   goog.asserts.assert(!goog.isNull(state));
   var strokeStyle = state.strokeStyle;
@@ -984,7 +986,7 @@ ol.render.canvas.LineStringReplay.prototype.drawLineStringGeometry =
   this.drawFlatCoordinates_(
       flatCoordinates, 0, flatCoordinates.length, stride);
   this.hitDetectionInstructions.push([ol.render.canvas.Instruction.STROKE]);
-  this.endGeometry(lineStringGeometry, data);
+  this.endGeometry(lineStringGeometry, feature);
 };
 
 
@@ -992,7 +994,7 @@ ol.render.canvas.LineStringReplay.prototype.drawLineStringGeometry =
  * @inheritDoc
  */
 ol.render.canvas.LineStringReplay.prototype.drawMultiLineStringGeometry =
-    function(multiLineStringGeometry, data) {
+    function(multiLineStringGeometry, feature) {
   var state = this.state_;
   goog.asserts.assert(!goog.isNull(state));
   var strokeStyle = state.strokeStyle;
@@ -1018,7 +1020,7 @@ ol.render.canvas.LineStringReplay.prototype.drawMultiLineStringGeometry =
         flatCoordinates, offset, ends[i], stride);
   }
   this.hitDetectionInstructions.push([ol.render.canvas.Instruction.STROKE]);
-  this.endGeometry(multiLineStringGeometry, data);
+  this.endGeometry(multiLineStringGeometry, feature);
 };
 
 
@@ -1165,7 +1167,7 @@ ol.render.canvas.PolygonReplay.prototype.drawFlatCoordinatess_ =
  * @inheritDoc
  */
 ol.render.canvas.PolygonReplay.prototype.drawCircleGeometry =
-    function(circleGeometry, data) {
+    function(circleGeometry, feature) {
   var state = this.state_;
   goog.asserts.assert(!goog.isNull(state));
   var fillStyle = state.fillStyle;
@@ -1197,7 +1199,7 @@ ol.render.canvas.PolygonReplay.prototype.drawCircleGeometry =
   var circleInstruction = [ol.render.canvas.Instruction.CIRCLE];
   this.instructions.push(beginPathInstruction, circleInstruction);
   this.hitDetectionInstructions.push(beginPathInstruction, circleInstruction);
-  this.endGeometry(circleGeometry, data);
+  this.endGeometry(circleGeometry, feature);
   var fillInstruction = [ol.render.canvas.Instruction.FILL];
   this.hitDetectionInstructions.push(fillInstruction);
   if (goog.isDef(state.fillStyle)) {
@@ -1216,7 +1218,7 @@ ol.render.canvas.PolygonReplay.prototype.drawCircleGeometry =
  * @inheritDoc
  */
 ol.render.canvas.PolygonReplay.prototype.drawPolygonGeometry =
-    function(polygonGeometry, data) {
+    function(polygonGeometry, feature) {
   var state = this.state_;
   goog.asserts.assert(!goog.isNull(state));
   var fillStyle = state.fillStyle;
@@ -1244,7 +1246,7 @@ ol.render.canvas.PolygonReplay.prototype.drawPolygonGeometry =
   var flatCoordinates = polygonGeometry.getOrientedFlatCoordinates();
   var stride = polygonGeometry.getStride();
   this.drawFlatCoordinatess_(flatCoordinates, 0, ends, stride);
-  this.endGeometry(polygonGeometry, data);
+  this.endGeometry(polygonGeometry, feature);
 };
 
 
@@ -1252,7 +1254,7 @@ ol.render.canvas.PolygonReplay.prototype.drawPolygonGeometry =
  * @inheritDoc
  */
 ol.render.canvas.PolygonReplay.prototype.drawMultiPolygonGeometry =
-    function(multiPolygonGeometry, data) {
+    function(multiPolygonGeometry, feature) {
   var state = this.state_;
   goog.asserts.assert(!goog.isNull(state));
   var fillStyle = state.fillStyle;
@@ -1285,7 +1287,7 @@ ol.render.canvas.PolygonReplay.prototype.drawMultiPolygonGeometry =
     offset = this.drawFlatCoordinatess_(
         flatCoordinates, offset, endss[i], stride);
   }
-  this.endGeometry(multiPolygonGeometry, data);
+  this.endGeometry(multiPolygonGeometry, feature);
 };
 
 
@@ -1474,7 +1476,7 @@ goog.inherits(ol.render.canvas.TextReplay, ol.render.canvas.Replay);
  * @inheritDoc
  */
 ol.render.canvas.TextReplay.prototype.drawText =
-    function(flatCoordinates, offset, end, stride, geometry, data) {
+    function(flatCoordinates, offset, end, stride, geometry, feature) {
   if (this.text_ === '' ||
       goog.isNull(this.textState_) ||
       (goog.isNull(this.textFillState_) &&
@@ -1501,7 +1503,7 @@ ol.render.canvas.TextReplay.prototype.drawText =
     this.textRotation_, this.textScale_, fill, stroke];
   this.instructions.push(drawTextInstruction);
   this.hitDetectionInstructions.push(drawTextInstruction);
-  this.endGeometry(geometry, data);
+  this.endGeometry(geometry, feature);
 };
 
 
@@ -1758,8 +1760,8 @@ ol.render.canvas.ReplayGroup = function(tolerance, maxExtent) {
  * @param {number} pixelRatio Pixel ratio.
  * @param {goog.vec.Mat4.Number} transform Transform.
  * @param {number} viewRotation View rotation.
- * @param {function(ol.geom.Geometry): boolean} renderGeometryFunction Render
- *     geometry function.
+ * @param {function(ol.geom.Geometry, ol.Feature): boolean} renderGeometryFunction
+ *     Render geometry function.
  * @return {T|undefined} Callback result.
  * @template T
  */
@@ -1780,9 +1782,9 @@ ol.render.canvas.ReplayGroup.prototype.replay = function(context, extent,
  * @param {ol.Extent} extent Extent.
  * @param {goog.vec.Mat4.Number} transform Transform.
  * @param {number} viewRotation View rotation.
- * @param {function(ol.geom.Geometry): boolean} renderGeometryFunction Render
- *     geometry function.
- * @param {function(ol.geom.Geometry, Object): T} geometryCallback Geometry
+ * @param {function(ol.geom.Geometry, ol.Feature): boolean} renderGeometryFunction
+ *     Render geometry function.
+ * @param {function(ol.geom.Geometry, ol.Feature): T} geometryCallback Geometry
  *     callback.
  * @return {T|undefined} Callback result.
  * @template T
@@ -1816,8 +1818,8 @@ ol.render.canvas.ReplayGroup.prototype.replayHitDetection_ = function(
  * @param {number} pixelRatio Pixel ratio.
  * @param {goog.vec.Mat4.Number} transform Transform.
  * @param {number} viewRotation View rotation.
- * @param {function(ol.geom.Geometry): boolean} renderGeometryFunction Render
- *     geometry function.
+ * @param {function(ol.geom.Geometry, ol.Feature): boolean} renderGeometryFunction
+ *     Render geometry function.
  * @return {T|undefined} Callback result.
  * @template T
  */
@@ -1867,8 +1869,8 @@ ol.render.canvas.ReplayGroup.prototype.replay_ = function(
  * @param {number} resolution Resolution.
  * @param {number} rotation Rotation.
  * @param {ol.Coordinate} coordinate Coordinate.
- * @param {function(ol.geom.Geometry): boolean} renderGeometryFunction Render
- *     geometry function.
+ * @param {function(ol.geom.Geometry, ol.Feature): boolean} renderGeometryFunction
+ *     Render geometry function.
  * @param {function(ol.geom.Geometry, Object): T} callback Geometry callback.
  * @return {T|undefined} Callback result.
  * @template T
@@ -1893,13 +1895,13 @@ ol.render.canvas.ReplayGroup.prototype.forEachGeometryAtPixel = function(
       rotation, renderGeometryFunction,
       /**
        * @param {ol.geom.Geometry} geometry Geometry.
-       * @param {Object} data Opaque data object.
+       * @param {ol.Feature} feature Feature.
        * @return {?} Callback result.
        */
-      function(geometry, data) {
+      function(geometry, feature) {
         var imageData = context.getImageData(0, 0, 1, 1).data;
         if (imageData[3] > 0) {
-          var result = callback(geometry, data);
+          var result = callback(geometry, feature);
           if (result) {
             return result;
           }
