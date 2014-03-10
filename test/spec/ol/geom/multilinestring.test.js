@@ -142,6 +142,17 @@ describe('ol.geom.MultiLineString', function() {
       expect(multiLineString.getStride()).to.be(3);
     });
 
+    it('can return individual line strings', function() {
+      var lineString0 = multiLineString.getLineString(0);
+      expect(lineString0).to.be.an(ol.geom.LineString);
+      expect(lineString0.getLayout()).to.be(ol.geom.GeometryLayout.XYM);
+      expect(lineString0.getCoordinates()).to.eql([[1, 2, 3], [4, 5, 6]]);
+      var lineString1 = multiLineString.getLineString(1);
+      expect(lineString1).to.be.an(ol.geom.LineString);
+      expect(lineString1.getLayout()).to.be(ol.geom.GeometryLayout.XYM);
+      expect(lineString1.getCoordinates()).to.eql([[7, 8, 9], [10, 11, 12]]);
+    });
+
     describe('#getCoordinateAtM', function() {
 
       describe('with extrapolation and interpolation', function() {

@@ -132,6 +132,22 @@ ol.geom.MultiLineString.prototype.getEnds = function() {
 
 
 /**
+ * @param {number} index Index.
+ * @return {ol.geom.LineString} LineString.
+ */
+ol.geom.MultiLineString.prototype.getLineString = function(index) {
+  goog.asserts.assert(0 <= index && index < this.ends_.length);
+  if (index < 0 || this.ends_.length <= index) {
+    return null;
+  }
+  var lineString = new ol.geom.LineString(null);
+  lineString.setFlatCoordinates(this.layout, this.flatCoordinates.slice(
+      index === 0 ? 0 : this.ends_[index - 1], this.ends_[index]));
+  return lineString;
+};
+
+
+/**
  * @return {Array.<ol.geom.LineString>} LineStrings.
  * @todo stability experimental
  */
