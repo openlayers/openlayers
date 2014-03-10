@@ -230,7 +230,8 @@ ol.pointer.TouchSource.prototype.touchToPointer_ =
 ol.pointer.TouchSource.prototype.processTouches_ =
     function(inEvent, inFunction) {
   var tl = inEvent.getBrowserEvent().changedTouches;
-  var pointers = goog.array.map(tl,
+  var touchesCopy = goog.array.clone(tl);
+  var pointers = goog.array.map(touchesCopy,
       goog.partial(this.touchToPointer_, inEvent), this);
   // forward touch preventDefaults
   goog.array.forEach(pointers, function(p) {
