@@ -91,10 +91,11 @@ ol.pointer.TouchSource = function(dispatcher, mouseSource) {
   this.resetId_ = null;
 
   /**
+   * @private
    * @const
    * @type {Object.<string, function(goog.events.BrowserEvent)>}
    */
-  this.mapping = {
+  this.mapping_ = {
     'touchstart': this.touchstart,
     'touchmove': this.touchmove,
     'touchend': this.touchend,
@@ -113,13 +114,13 @@ ol.pointer.TouchSource.POINTER_TYPE = 'touch';
 
 /** @inheritDoc */
 ol.pointer.TouchSource.prototype.getEvents = function() {
-  return goog.object.getKeys(this.mapping);
+  return goog.object.getKeys(this.mapping_);
 };
 
 
 /** @inheritDoc */
 ol.pointer.TouchSource.prototype.getMapping = function() {
-  return this.mapping;
+  return this.mapping_;
 };
 
 

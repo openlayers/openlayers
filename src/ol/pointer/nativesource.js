@@ -50,10 +50,11 @@ ol.pointer.NativeSource = function(dispatcher) {
   this.pointerMap = dispatcher.pointerMap;
 
   /**
+   * @private
    * @const
    * @type {Object.<string, function(goog.events.BrowserEvent)>}
    */
-  this.mapping = {
+  this.mapping_ = {
     'pointerdown': this.pointerDown,
     'pointermove': this.pointerMove,
     'pointerup': this.pointerUp,
@@ -69,13 +70,13 @@ goog.inherits(ol.pointer.NativeSource, ol.pointer.EventSource);
 
 /** @inheritDoc */
 ol.pointer.NativeSource.prototype.getEvents = function() {
-  return goog.object.getKeys(this.mapping);
+  return goog.object.getKeys(this.mapping_);
 };
 
 
 /** @inheritDoc */
 ol.pointer.NativeSource.prototype.getMapping = function() {
-  return this.mapping;
+  return this.mapping_;
 };
 
 

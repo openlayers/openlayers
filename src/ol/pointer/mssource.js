@@ -56,10 +56,11 @@ ol.pointer.MsSource = function(dispatcher) {
   this.HAS_BITMAP_TYPE = this.hasBitmapType();
 
   /**
+   * @private
    * @const
    * @type {Object.<string, function(goog.events.BrowserEvent)>}
    */
-  this.mapping = {
+  this.mapping_ = {
     'MSPointerDown': this.msPointerDown,
     'MSPointerMove': this.msPointerMove,
     'MSPointerUp': this.msPointerUp,
@@ -87,13 +88,13 @@ goog.inherits(ol.pointer.MsSource, ol.pointer.EventSource);
 
 /** @inheritDoc */
 ol.pointer.MsSource.prototype.getEvents = function() {
-  return goog.object.getKeys(this.mapping);
+  return goog.object.getKeys(this.mapping_);
 };
 
 
 /** @inheritDoc */
 ol.pointer.MsSource.prototype.getMapping = function() {
-  return this.mapping;
+  return this.mapping_;
 };
 
 

@@ -50,10 +50,11 @@ ol.pointer.MouseSource = function(dispatcher) {
   this.pointerMap = dispatcher.pointerMap;
 
   /**
+   * @private
    * @const
    * @type {Object.<string, function(goog.events.BrowserEvent)>}
    */
-  this.mapping = {
+  this.mapping_ = {
     'mousedown': this.mousedown,
     'mousemove': this.mousemove,
     'mouseup': this.mouseup,
@@ -95,13 +96,13 @@ ol.pointer.MouseSource.DEDUP_DIST = 25;
 
 /** @inheritDoc */
 ol.pointer.MouseSource.prototype.getEvents = function() {
-  return goog.object.getKeys(this.mapping);
+  return goog.object.getKeys(this.mapping_);
 };
 
 
 /** @inheritDoc */
 ol.pointer.MouseSource.prototype.getMapping = function() {
-  return this.mapping;
+  return this.mapping_;
 };
 
 
