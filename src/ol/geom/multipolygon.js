@@ -217,17 +217,16 @@ ol.geom.MultiPolygon.prototype.getPolygons = function() {
   var offset = 0;
   var i, ii, j, jj;
   for (i = 0, ii = endss.length; i < ii; ++i) {
-    var ends = endss[i];
+    var ends = endss[i].slice();
     var end = ends[ends.length - 1];
-    var polygon = new ol.geom.Polygon(null);
-    var polygonEnds = ends.slice();
     if (offset !== 0) {
-      for (j = 0, jj = polygonEnds.length; j < jj; ++j) {
-        polygonEnds[j] = polygonEnds[j] - offset;
+      for (j = 0, jj = ends.length; j < jj; ++j) {
+        ends[j] -= offset;
       }
     }
+    var polygon = new ol.geom.Polygon(null);
     polygon.setFlatCoordinates(
-        layout, flatCoordinates.slice(offset, end), polygonEnds);
+        layout, flatCoordinates.slice(offset, end), ends);
     polygons.push(polygon);
     offset = end;
   }
