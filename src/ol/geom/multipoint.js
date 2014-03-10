@@ -90,12 +90,16 @@ ol.geom.MultiPoint.prototype.getCoordinates = function() {
  * @todo stability experimental
  */
 ol.geom.MultiPoint.prototype.getPoints = function() {
-  // FIXME we should construct the points from the flat coordinates
-  var coordinates = this.getCoordinates();
+  var flatCoordinates = this.flatCoordinates;
+  var layout = this.layout;
+  var stride = this.stride;
+  /** @type {Array.<ol.geom.Point>} */
   var points = [];
   var i, ii;
-  for (i = 0, ii = coordinates.length; i < ii; ++i) {
-    points.push(new ol.geom.Point(coordinates[i]));
+  for (i = 0, ii = flatCoordinates.length; i < ii; i += stride) {
+    var point = new ol.geom.Point(null);
+    point.setFlatCoordinates(layout, flatCoordinates.slice(i, i + stride));
+    points.push(point);
   }
   return points;
 };
