@@ -259,6 +259,27 @@ describe('ol.format.WFS', function() {
       expect(serialized).to.xmleql(ol.xml.load(text));
     });
   });
+
+  describe('when writing out a GetFeature request', function() {
+    var text;
+    before(function(done) {
+      afterLoadText('spec/ol/format/wfs/GetFeatureMultiple.xml', function(xml) {
+        text = xml;
+        done();
+      });
+    });
+
+    it('handles writing multiple Query elements', function() {
+      var format = new ol.format.WFS();
+      var serialized = format.writeGetFeature({
+        featureNS: 'http://www.openplans.org/topp',
+        featureTypes: ['states', 'cities'],
+        featurePrefix: 'topp'
+      });
+      expect(serialized).to.xmleql(ol.xml.load(text));
+    });
+  });
+
 });
 
 

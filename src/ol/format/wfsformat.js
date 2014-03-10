@@ -442,7 +442,9 @@ ol.format.WFS.writeQuery_ = function(node, featureType, objectStack) {
   var srsName = goog.object.get(context, 'srsName');
   var prefix = goog.isDef(featurePrefix) ? featurePrefix + ':' : '';
   node.setAttribute('typeName', prefix + featureType);
-  node.setAttribute('srsName', srsName);
+  if (goog.isDef(srsName)) {
+    node.setAttribute('srsName', srsName);
+  }
   if (goog.isDef(featureNS)) {
     node.setAttribute('xmlns:' + featurePrefix, featureNS);
   }
