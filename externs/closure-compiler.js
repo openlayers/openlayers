@@ -52,3 +52,12 @@ Document.prototype.msFullscreenEnabled;
 
 /** @type {Element} */
 Document.prototype.msFullscreenElement;
+
+
+// @see https://code.google.com/p/closure-compiler/issues/detail?id=1276
+
+/**
+ * @type {boolean}
+ * @see http://www.w3.org/TR/pointerevents/#widl-Navigator-pointerEnabled
+ */
+Navigator.prototype.pointerEnabled;

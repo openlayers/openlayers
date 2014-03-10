@@ -173,7 +173,7 @@ ol.BrowserFeature.HAS_TOUCH = ol.ASSUME_TOUCH ||
  * @todo stability experimental
  */
 ol.BrowserFeature.HAS_POINTER =
-    !!(goog.global.navigator['pointerEnabled']);
+    !!(goog.global.navigator.pointerEnabled);
 
 
 /**
