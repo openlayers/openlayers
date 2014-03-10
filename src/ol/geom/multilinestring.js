@@ -48,6 +48,22 @@ goog.inherits(ol.geom.MultiLineString, ol.geom.SimpleGeometry);
 
 
 /**
+ * @param {ol.geom.LineString} lineString LineString.
+ */
+ol.geom.MultiLineString.prototype.appendLineString = function(lineString) {
+  goog.asserts.assert(lineString.getLayout() == this.layout);
+  if (goog.isNull(this.flatCoordinates)) {
+    this.flatCoordinates = lineString.getFlatCoordinates().slice();
+  } else {
+    goog.array.extend(
+        this.flatCoordinates, lineString.getFlatCoordinates().slice());
+  }
+  this.ends_.push(this.flatCoordinates.length);
+  this.dispatchChangeEvent();
+};
+
+
+/**
  * @inheritDoc
  */
 ol.geom.MultiLineString.prototype.clone = function() {

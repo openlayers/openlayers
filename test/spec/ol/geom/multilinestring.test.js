@@ -37,6 +37,17 @@ describe('ol.geom.MultiLineString', function() {
       expect(multiLineString.getStride()).to.be(2);
     });
 
+    it('can append line strings', function() {
+      multiLineString.appendLineString(
+          new ol.geom.LineString([[1, 2], [3, 4]]));
+      expect(multiLineString.getCoordinates()).to.eql(
+          [[[1, 2], [3, 4]]]);
+      multiLineString.appendLineString(
+          new ol.geom.LineString([[5, 6], [7, 8]]));
+      expect(multiLineString.getCoordinates()).to.eql(
+          [[[1, 2], [3, 4]], [[5, 6], [7, 8]]]);
+    });
+
   });
 
   describe('construct with 2D coordinates', function() {
