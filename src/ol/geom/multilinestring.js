@@ -136,12 +136,19 @@ ol.geom.MultiLineString.prototype.getEnds = function() {
  * @todo stability experimental
  */
 ol.geom.MultiLineString.prototype.getLineStrings = function() {
-  // FIXME we should construct the line strings from the flat coordinates
-  var coordinates = this.getCoordinates();
+  var flatCoordinates = this.flatCoordinates;
+  var ends = this.ends_;
+  var layout = this.layout;
+  /** @type {Array.<ol.geom.LineString>} */
   var lineStrings = [];
+  var offset = 0;
   var i, ii;
-  for (i = 0, ii = coordinates.length; i < ii; ++i) {
-    lineStrings.push(new ol.geom.LineString(coordinates[i]));
+  for (i = 0, ii = ends.length; i < ii; ++i) {
+    var end = ends[i];
+    var lineString = new ol.geom.LineString(null);
+    lineString.setFlatCoordinates(layout, flatCoordinates.slice(offset, end));
+    lineStrings.push(lineString);
+    offset = end;
   }
   return lineStrings;
 };
