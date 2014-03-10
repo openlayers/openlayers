@@ -132,6 +132,15 @@ describe('ol.geom.MultiPoint', function() {
       expect(multiPoint.getStride()).to.be(3);
     });
 
+    it('can return individual points', function() {
+      var point0 = multiPoint.getPoint(0);
+      expect(point0.getLayout()).to.be(ol.geom.GeometryLayout.XYM);
+      expect(point0.getCoordinates()).to.eql([1, 2, 3]);
+      var point1 = multiPoint.getPoint(1);
+      expect(point1.getLayout()).to.be(ol.geom.GeometryLayout.XYM);
+      expect(point1.getCoordinates()).to.eql([4, 5, 6]);
+    });
+
     it('can return all points', function() {
       var points = multiPoint.getPoints();
       expect(points).to.have.length(2);

@@ -86,6 +86,24 @@ ol.geom.MultiPoint.prototype.getCoordinates = function() {
 
 
 /**
+ * @param {number} index Index.
+ * @return {ol.geom.Point} Point.
+ */
+ol.geom.MultiPoint.prototype.getPoint = function(index) {
+  var n = goog.isNull(this.flatCoordinates) ?
+      0 : this.flatCoordinates.length / this.stride;
+  goog.asserts.assert(0 <= index && index < n);
+  if (index < 0 || n <= index) {
+    return null;
+  }
+  var point = new ol.geom.Point(null);
+  point.setFlatCoordinates(this.layout, this.flatCoordinates.slice(
+      index * this.stride, (index + 1) * this.stride));
+  return point;
+};
+
+
+/**
  * @return {Array.<ol.geom.Point>} Points.
  * @todo stability experimental
  */
