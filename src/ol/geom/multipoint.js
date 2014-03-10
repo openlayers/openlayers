@@ -1,5 +1,7 @@
 goog.provide('ol.geom.MultiPoint');
 
+goog.require('goog.array');
+goog.require('goog.asserts');
 goog.require('ol.extent');
 goog.require('ol.geom.GeometryType');
 goog.require('ol.geom.Point');
@@ -20,6 +22,20 @@ ol.geom.MultiPoint = function(coordinates, opt_layout) {
   this.setCoordinates(coordinates, opt_layout);
 };
 goog.inherits(ol.geom.MultiPoint, ol.geom.SimpleGeometry);
+
+
+/**
+ * @param {ol.geom.Point} point Point.
+ */
+ol.geom.MultiPoint.prototype.appendPoint = function(point) {
+  goog.asserts.assert(point.getLayout() == this.layout);
+  if (goog.isNull(this.flatCoordinates)) {
+    this.flatCoordinates = point.getFlatCoordinates().slice();
+  } else {
+    goog.array.extend(this.flatCoordinates, point.getFlatCoordinates());
+  }
+  this.dispatchChangeEvent();
+};
 
 
 /**

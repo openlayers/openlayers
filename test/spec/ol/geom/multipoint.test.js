@@ -37,6 +37,13 @@ describe('ol.geom.MultiPoint', function() {
       expect(multiPoint.getStride()).to.be(2);
     });
 
+    it('can append points', function() {
+      multiPoint.appendPoint(new ol.geom.Point([1, 2]));
+      expect(multiPoint.getCoordinates()).to.eql([[1, 2]]);
+      multiPoint.appendPoint(new ol.geom.Point([3, 4]));
+      expect(multiPoint.getCoordinates()).to.eql([[1, 2], [3, 4]]);
+    });
+
   });
 
   describe('construct with 2D coordinates', function() {
@@ -170,3 +177,4 @@ describe('ol.geom.MultiPoint', function() {
 
 goog.require('ol.extent');
 goog.require('ol.geom.MultiPoint');
+goog.require('ol.geom.Point');
