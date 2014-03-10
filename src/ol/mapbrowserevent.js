@@ -199,7 +199,7 @@ ol.MapBrowserEventHandler = function(map) {
       this.handlePointerDown_, false, this);
 
   this.relayedListenerKey_ = goog.events.listen(this.pointerEventHandler_,
-      [ol.pointer.EventType.POINTERMOVE],
+      ol.pointer.EventType.POINTERMOVE,
       this.relayEvent_, false, this);
 
   if (ol.LEGACY_IE_SUPPORT && ol.IS_LEGACY_IE) {
