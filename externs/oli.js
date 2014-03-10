@@ -104,7 +104,7 @@ oli.FrameState.prototype.time;
 oli.FrameState.prototype.usedTiles;
 
 
-/** @type {ol.View2DState} */
+/** @type {oli.View2DState} */
 oli.FrameState.prototype.view2DState;
 
 
@@ -139,6 +139,27 @@ oli.MapBrowserEvent.prototype.originalEvent;
 
 /** @type {ol.Pixel} */
 oli.MapBrowserEvent.prototype.pixel;
+
+
+
+/** @interface */
+oli.View2DState;
+
+
+/** @type {ol.Coordinate} */
+oli.View2DState.prototype.center;
+
+
+/** @type {ol.proj.Projection} */
+oli.View2DState.prototype.projection;
+
+
+/** @type {number} */
+oli.View2DState.prototype.resolution;
+
+
+/** @type {number} */
+oli.View2DState.prototype.rotation;
 
 
 
