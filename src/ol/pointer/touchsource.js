@@ -32,6 +32,7 @@ goog.provide('ol.pointer.TouchSource');
 
 goog.require('goog.array');
 goog.require('goog.math.Coordinate');
+goog.require('goog.object');
 goog.require('ol.pointer.EventSource');
 
 
@@ -97,17 +98,6 @@ ol.pointer.TouchSource = function(dispatcher, mouseSource) {
 
   /**
    * @const
-   * @type {Array.<string>}
-   */
-  this.events = [
-    'touchstart',
-    'touchmove',
-    'touchend',
-    'touchcancel'
-  ];
-
-  /**
-   * @const
    * @type {Object.<string, function(goog.events.BrowserEvent)>}
    */
   this.mapping = {
@@ -122,7 +112,7 @@ goog.inherits(ol.pointer.TouchSource, ol.pointer.EventSource);
 
 /** @inheritDoc */
 ol.pointer.TouchSource.prototype.getEvents = function() {
-  return this.events;
+  return goog.object.getKeys(this.mapping);
 };
 
 

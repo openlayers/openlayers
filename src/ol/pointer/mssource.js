@@ -30,6 +30,7 @@
 
 goog.provide('ol.pointer.MsSource');
 
+goog.require('goog.object');
 goog.require('ol.pointer.EventSource');
 
 
@@ -53,21 +54,6 @@ ol.pointer.MsSource = function(dispatcher) {
    * @type {boolean}
    */
   this.HAS_BITMAP_TYPE = this.hasBitmapType();
-
-  /**
-   * @const
-   * @type {Array.<string>}
-   */
-  this.events = [
-    'MSPointerDown',
-    'MSPointerMove',
-    'MSPointerUp',
-    'MSPointerOut',
-    'MSPointerOver',
-    'MSPointerCancel',
-    'MSGotPointerCapture',
-    'MSLostPointerCapture'
-  ];
 
   /**
    * @const
@@ -101,7 +87,7 @@ goog.inherits(ol.pointer.MsSource, ol.pointer.EventSource);
 
 /** @inheritDoc */
 ol.pointer.MsSource.prototype.getEvents = function() {
-  return this.events;
+  return goog.object.getKeys(this.mapping);
 };
 
 

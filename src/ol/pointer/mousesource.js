@@ -30,6 +30,7 @@
 
 goog.provide('ol.pointer.MouseSource');
 
+goog.require('goog.object');
 goog.require('ol.pointer.EventSource');
 
 
@@ -47,18 +48,6 @@ ol.pointer.MouseSource = function(dispatcher) {
    * @type {goog.structs.Map}
    */
   this.pointerMap = dispatcher.pointerMap;
-
-  /**
-   * @const
-   * @type {Array.<string>}
-   */
-  this.events = [
-    'mousedown',
-    'mousemove',
-    'mouseup',
-    'mouseover',
-    'mouseout'
-  ];
 
   /**
    * @const
@@ -106,7 +95,7 @@ ol.pointer.MouseSource.DEDUP_DIST = 25;
 
 /** @inheritDoc */
 ol.pointer.MouseSource.prototype.getEvents = function() {
-  return this.events;
+  return goog.object.getKeys(this.mapping);
 };
 
 

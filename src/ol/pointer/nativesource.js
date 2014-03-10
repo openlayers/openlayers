@@ -30,6 +30,7 @@
 
 goog.provide('ol.pointer.NativeSource');
 
+goog.require('goog.object');
 goog.require('ol.pointer.EventSource');
 
 
@@ -47,21 +48,6 @@ ol.pointer.NativeSource = function(dispatcher) {
    * @type {goog.structs.Map}
    */
   this.pointerMap = dispatcher.pointerMap;
-
-  /**
-   * @const
-   * @type {Array.<string>}
-   */
-  this.events = [
-    'pointerdown',
-    'pointermove',
-    'pointerup',
-    'pointerout',
-    'pointerover',
-    'pointercancel',
-    'gotpointercapture',
-    'lostpointercapture'
-  ];
 
   /**
    * @const
@@ -83,7 +69,7 @@ goog.inherits(ol.pointer.NativeSource, ol.pointer.EventSource);
 
 /** @inheritDoc */
 ol.pointer.NativeSource.prototype.getEvents = function() {
-  return this.events;
+  return goog.object.getKeys(this.mapping);
 };
 
 
