@@ -234,6 +234,31 @@ describe('ol.format.WFS', function() {
 
   });
 
+  describe('when writing out a Transaction request', function() {
+    var text;
+    before(function(done) {
+      afterLoadText('spec/ol/format/wfs/Native.xml', function(xml) {
+        text = xml;
+        done();
+      });
+    });
+
+    it('handles writing out Native', function() {
+      var format = new ol.format.WFS();
+      var serialized = format.writeTransaction(null, null, null, {
+        nativeElements: [{
+          vendorId: 'ORACLE',
+          safeToIgnore: true,
+          value: 'ALTER SESSION ENABLE PARALLEL DML'
+        }, {
+          vendorId: 'ORACLE',
+          safeToIgnore: false,
+          value: 'Another native line goes here'
+        }]
+      });
+      expect(serialized).to.xmleql(ol.xml.load(text));
+    });
+  });
 });
 
 

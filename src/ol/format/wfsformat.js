@@ -393,6 +393,26 @@ ol.format.WFS.writeProperty_ = function(node, pair, objectStack) {
 
 
 /**
+ * @param {Node} node Node.
+ * @param {{vendorId: string, safeToIgnore: boolean, value: string}}
+ *     nativeElement The native element.
+ * @param {Array.<*>} objectStack Node stack.
+ * @private
+ */
+ol.format.WFS.writeNative_ = function(node, nativeElement, objectStack) {
+  if (goog.isDef(nativeElement.vendorId)) {
+    node.setAttribute('vendorId', nativeElement.vendorId);
+  }
+  if (goog.isDef(nativeElement.safeToIgnore)) {
+    node.setAttribute('safeToIgnore', nativeElement.safeToIgnore);
+  }
+  if (goog.isDef(nativeElement.value)) {
+    ol.format.XSD.writeStringTextNode(node, nativeElement.value);
+  }
+};
+
+
+/**
  * @type {Object.<string, Object.<string, ol.xml.Serializer>>}
  * @private
  */
@@ -401,7 +421,8 @@ ol.format.WFS.TRANSACTION_SERIALIZERS_ = {
     'Insert': ol.xml.makeChildAppender(ol.format.WFS.writeFeature_),
     'Update': ol.xml.makeChildAppender(ol.format.WFS.writeUpdate_),
     'Delete': ol.xml.makeChildAppender(ol.format.WFS.writeDelete_),
-    'Property': ol.xml.makeChildAppender(ol.format.WFS.writeProperty_)
+    'Property': ol.xml.makeChildAppender(ol.format.WFS.writeProperty_),
+    'Native': ol.xml.makeChildAppender(ol.format.WFS.writeNative_)
   }
 };
 
@@ -558,6 +579,7 @@ ol.format.WFS.prototype.writeGetFeature = function(options) {
  */
 ol.format.WFS.prototype.writeTransaction = function(inserts, updates, deletes,
     options) {
+  var objectStack = [];
   var node = ol.xml.createElementNS('http://www.opengis.net/wfs',
       'Transaction');
   node.setAttribute('service', 'WFS');
@@ -574,21 +596,28 @@ ol.format.WFS.prototype.writeTransaction = function(inserts, updates, deletes,
       featureType: options.featureType},
     ol.format.WFS.TRANSACTION_SERIALIZERS_,
     ol.xml.makeSimpleNodeFactory('Insert'), inserts,
-    []);
+    objectStack);
   }
   if (goog.isDefAndNotNull(updates)) {
     ol.xml.pushSerializeAndPop({node: node, featureNS: options.featureNS,
       featureType: options.featureType, featurePrefix: options.featurePrefix},
     ol.format.WFS.TRANSACTION_SERIALIZERS_,
     ol.xml.makeSimpleNodeFactory('Update'), updates,
-    []);
+    objectStack);
   }
   if (goog.isDefAndNotNull(deletes)) {
     ol.xml.pushSerializeAndPop({node: node, featureNS: options.featureNS,
       featureType: options.featureType, featurePrefix: options.featurePrefix},
     ol.format.WFS.TRANSACTION_SERIALIZERS_,
     ol.xml.makeSimpleNodeFactory('Delete'), deletes,
-    []);
+    objectStack);
+  }
+  if (goog.isDef(options.nativeElements)) {
+    ol.xml.pushSerializeAndPop({node: node, featureNS: options.featureNS,
+      featureType: options.featureType, featurePrefix: options.featurePrefix},
+    ol.format.WFS.TRANSACTION_SERIALIZERS_,
+    ol.xml.makeSimpleNodeFactory('Native'), options.nativeElements,
+    objectStack);
   }
   return node;
 };
