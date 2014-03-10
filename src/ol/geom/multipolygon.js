@@ -206,6 +206,37 @@ ol.geom.MultiPolygon.prototype.getSimplifiedGeometryInternal =
 
 
 /**
+ * @param {number} index Index.
+ * @return {ol.geom.Polygon} Polygon.
+ */
+ol.geom.MultiPolygon.prototype.getPolygon = function(index) {
+  goog.asserts.assert(0 <= index && index < this.endss_.length);
+  if (index < 0 || this.endss_.length <= index) {
+    return null;
+  }
+  var offset;
+  if (index === 0) {
+    offset = 0;
+  } else {
+    var prevEnds = this.endss_[index - 1];
+    offset = prevEnds[prevEnds.length - 1];
+  }
+  var ends = this.endss_[index].slice();
+  var end = ends[ends.length - 1];
+  if (offset !== 0) {
+    var i, ii;
+    for (i = 0, ii = ends.length; i < ii; ++i) {
+      ends[i] -= offset;
+    }
+  }
+  var polygon = new ol.geom.Polygon(null);
+  polygon.setFlatCoordinates(
+      this.layout, this.flatCoordinates.slice(offset, end), ends);
+  return polygon;
+};
+
+
+/**
  * @return {Array.<ol.geom.Polygon>} Polygons.
  * @todo stability experimental
  */

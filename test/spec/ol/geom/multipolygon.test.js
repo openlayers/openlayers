@@ -20,6 +20,17 @@ describe('ol.geom.MultiPolygon', function() {
       ]);
     });
 
+    it('can return individual polygons', function() {
+      var polygon0 = multiPolygon.getPolygon(0);
+      expect(polygon0).to.be.an(ol.geom.Polygon);
+      expect(polygon0.getCoordinates()).to.eql(
+          [[[0, 0], [0, 2], [1, 1], [2, 0]]]);
+      var polygon1 = multiPolygon.getPolygon(1);
+      expect(polygon1).to.be.an(ol.geom.Polygon);
+      expect(polygon1.getCoordinates()).to.eql(
+          [[[3, 0], [4, 1], [5, 2], [5, 0]]]);
+    });
+
     it('can return all polygons', function() {
       var polygons = multiPolygon.getPolygons();
       expect(polygons).to.be.an(Array);
