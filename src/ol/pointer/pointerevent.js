@@ -82,72 +82,72 @@ ol.pointer.PointerEvent = function(type, browserEvent, opt_eventDict) {
   /**
    * @type {boolean}
    */
-  this.bubbles = this.getValue_('bubbles', eventDict);
+  this.bubbles = goog.object.get(eventDict, 'bubbles', false);
 
   /**
    * @type {boolean}
    */
-  this.cancelable = this.getValue_('cancelable', eventDict);
+  this.cancelable = goog.object.get(eventDict, 'cancelable', false);
 
   /**
    * @type {Object}
    */
-  this.view = this.getValue_('view', eventDict);
+  this.view = goog.object.get(eventDict, 'view', null);
 
   /**
    * @type {number}
    */
-  this.detail = this.getValue_('detail', eventDict);
+  this.detail = goog.object.get(eventDict, 'detail', null);
 
   /**
    * @type {number}
    */
-  this.screenX = this.getValue_('screenX', eventDict);
+  this.screenX = goog.object.get(eventDict, 'screenX', 0);
 
   /**
    * @type {number}
    */
-  this.screenY = this.getValue_('screenY', eventDict);
+  this.screenY = goog.object.get(eventDict, 'screenY', 0);
 
   /**
    * @type {number}
    */
-  this.clientX = this.getValue_('clientX', eventDict);
+  this.clientX = goog.object.get(eventDict, 'clientX', 0);
 
   /**
    * @type {number}
    */
-  this.clientY = this.getValue_('clientY', eventDict);
+  this.clientY = goog.object.get(eventDict, 'clientY', 0);
 
   /**
    * @type {boolean}
    */
-  this.ctrlKey = this.getValue_('ctrlKey', eventDict);
+  this.ctrlKey = goog.object.get(eventDict, 'ctrlKey', false);
 
   /**
    * @type {boolean}
    */
-  this.altKey = this.getValue_('altKey', eventDict);
+  this.altKey = goog.object.get(eventDict, 'altKey', false);
 
   /**
    * @type {boolean}
    */
-  this.shiftKey = this.getValue_('shiftKey', eventDict);
+  this.shiftKey = goog.object.get(eventDict, 'shiftKey', false);
 
   /**
    * @type {boolean}
    */
-  this.metaKey = this.getValue_('metaKey', eventDict);
+  this.metaKey = goog.object.get(eventDict, 'metaKey', false);
 
   /**
    * @type {number}
    */
-  this.button = this.getValue_('button', eventDict);
+  this.button = goog.object.get(eventDict, 'button', 0);
 
   /**
    * @type {Node}
    */
-  this.relatedTarget = this.getValue_('relatedTarget', eventDict);
+  this.relatedTarget = goog.object.get(eventDict, 'relatedTarget', null);
 
   // PointerEvent related properties
 
@@ -194,19 +194,6 @@ ol.pointer.PointerEvent = function(type, browserEvent, opt_eventDict) {
 
 };
 goog.inherits(ol.pointer.PointerEvent, goog.events.Event);
-
-
-/**
- * @private
- * @param {string} key
- * @param {Object.<string, ?>} eventDict
- * @return {string|number|?}
- */
-ol.pointer.PointerEvent.prototype.getValue_ = function(key, eventDict) {
-  return goog.isDefAndNotNull(eventDict[key]) ?
-      eventDict[key] :
-      ol.pointer.PointerEvent.MOUSE_DEFAULTS['relatedTarget'];
-};
 
 
 /**
@@ -307,25 +294,4 @@ ol.pointer.PointerEvent.HAS_BUTTONS = false;
  */
 ol.pointer.PointerEvent.createMouseEvent = function(inType, inDict) {
   return new MouseEvent(inType, inDict);
-};
-
-
-/**
- * List of default values when creating an event.
- */
-ol.pointer.PointerEvent.MOUSE_DEFAULTS = {
-  'bubbles': false,
-  'cancelable': false,
-  'view': null,
-  'detail': null,
-  'screenX': 0,
-  'screenY': 0,
-  'clientX': 0,
-  'clientY': 0,
-  'ctrlKey': false,
-  'altKey': false,
-  'shiftKey': false,
-  'metaKey': false,
-  'button': 0,
-  'relatedTarget': null
 };
