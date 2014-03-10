@@ -127,12 +127,16 @@ ol.format.WMSCapabilities.readEXGeographicBoundingBox_ =
       /** @type {ol.format.EXGeographicBoundingBoxType} */ ({}),
       ol.format.WMSCapabilities.EX_GEOGRAPHIC_BOUNDING_BOX_PARSERS_,
       node, objectStack);
-  return [
-    geographicBoundingBox.westBoundLongitude,
-    geographicBoundingBox.southBoundLatitude,
-    geographicBoundingBox.eastBoundLongitude,
-    geographicBoundingBox.northBoundLatitude
-  ];
+  if (goog.isDef(geographicBoundingBox)) {
+    return [
+      geographicBoundingBox.westBoundLongitude,
+      geographicBoundingBox.southBoundLatitude,
+      geographicBoundingBox.eastBoundLongitude,
+      geographicBoundingBox.northBoundLatitude
+    ];
+  } else {
+    return undefined;
+  }
 };
 
 
