@@ -37,6 +37,17 @@ describe('ol.geom.Polygon', function() {
       expect(polygon.getStride()).to.be(2);
     });
 
+    it('can append linear rings', function() {
+      polygon.appendLinearRing(
+          new ol.geom.LinearRing([[1, 2], [3, 4], [5, 6]]));
+      expect(polygon.getCoordinates()).to.eql(
+          [[[1, 2], [3, 4], [5, 6]]]);
+      polygon.appendLinearRing(
+          new ol.geom.LinearRing([[7, 8], [9, 10], [11, 12]]));
+      expect(polygon.getCoordinates()).to.eql(
+          [[[1, 2], [3, 4], [5, 6]], [[7, 8], [9, 10], [11, 12]]]);
+    });
+
   });
 
   describe('construct with 2D coordinates', function() {

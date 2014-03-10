@@ -1,5 +1,6 @@
 goog.provide('ol.geom.Polygon');
 
+goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('ol.extent');
 goog.require('ol.geom.GeometryType');
@@ -69,6 +70,21 @@ ol.geom.Polygon = function(coordinates, opt_layout) {
 
 };
 goog.inherits(ol.geom.Polygon, ol.geom.SimpleGeometry);
+
+
+/**
+ * @param {ol.geom.LinearRing} linearRing Linear ring.
+ */
+ol.geom.Polygon.prototype.appendLinearRing = function(linearRing) {
+  goog.asserts.assert(linearRing.getLayout() == this.layout);
+  if (goog.isNull(this.flatCoordinates)) {
+    this.flatCoordinates = linearRing.getFlatCoordinates().slice();
+  } else {
+    goog.array.extend(this.flatCoordinates, linearRing.getFlatCoordinates());
+  }
+  this.ends_.push(this.flatCoordinates.length);
+  this.dispatchChangeEvent();
+};
 
 
 /**
