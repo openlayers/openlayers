@@ -6,6 +6,7 @@ goog.require('goog.object');
 goog.require('ol.format.GML');
 goog.require('ol.format.XMLFeature');
 goog.require('ol.format.XSD');
+goog.require('ol.geom.Geometry');
 goog.require('ol.xml');
 
 
@@ -289,6 +290,124 @@ ol.format.WFS.QUERY_SERIALIZERS_ = {
 
 /**
  * @param {Node} node Node.
+ * @param {ol.Feature} feature Feature.
+ * @param {Array.<*>} objectStack Node stack.
+ * @private
+ */
+ol.format.WFS.writeFeature_ = function(node, feature, objectStack) {
+  var context = objectStack[objectStack.length - 1];
+  goog.asserts.assert(goog.isObject(context));
+  var featureType = goog.object.get(context, 'featureType');
+  var featureNS = goog.object.get(context, 'featureNS');
+  var child = ol.xml.createElementNS(featureNS, featureType);
+  node.appendChild(child);
+  ol.format.GML.writeFeature(child, feature, objectStack);
+};
+
+
+/**
+ * @param {Node} node Node.
+ * @param {number|string} fid Feature identifier.
+ * @param {Array.<*>} objectStack Node stack.
+ * @private
+ */
+ol.format.WFS.writeOgcFidFilter_ = function(node, fid, objectStack) {
+  var filter = ol.xml.createElementNS('http://www.opengis.net/ogc', 'Filter');
+  var child = ol.xml.createElementNS('http://www.opengis.net/ogc', 'FeatureId');
+  filter.appendChild(child);
+  child.setAttribute('fid', fid);
+  node.appendChild(filter);
+};
+
+
+/**
+ * @param {Node} node Node.
+ * @param {ol.Feature} feature Feature.
+ * @param {Array.<*>} objectStack Node stack.
+ * @private
+ */
+ol.format.WFS.writeDelete_ = function(node, feature, objectStack) {
+  var context = objectStack[objectStack.length - 1];
+  goog.asserts.assert(goog.isObject(context));
+  var featureType = goog.object.get(context, 'featureType');
+  var featurePrefix = goog.object.get(context, 'featurePrefix');
+  node.setAttribute('typeName', featurePrefix + ':' + featureType);
+  var fid = feature.getId();
+  if (goog.isDef(fid)) {
+    ol.format.WFS.writeOgcFidFilter_(node, fid, objectStack);
+  }
+};
+
+
+/**
+ * @param {Node} node Node.
+ * @param {ol.Feature} feature Feature.
+ * @param {Array.<*>} objectStack Node stack.
+ * @private
+ */
+ol.format.WFS.writeUpdate_ = function(node, feature, objectStack) {
+  var context = objectStack[objectStack.length - 1];
+  goog.asserts.assert(goog.isObject(context));
+  var featureType = goog.object.get(context, 'featureType');
+  var featurePrefix = goog.object.get(context, 'featurePrefix');
+  node.setAttribute('typeName', featurePrefix + ':' + featureType);
+  var fid = feature.getId();
+  if (goog.isDef(fid)) {
+    var keys = feature.getKeys();
+    var values = [];
+    for (var i = 0, ii = keys.length; i < ii; i++) {
+      var value = feature.get(keys[i]);
+      if (goog.isDef(value)) {
+        values.push({name: keys[i], value: value});
+      }
+    }
+    ol.xml.pushSerializeAndPop({node: node},
+        ol.format.WFS.TRANSACTION_SERIALIZERS_,
+        ol.xml.makeSimpleNodeFactory('Property'), values,
+        objectStack);
+    ol.format.WFS.writeOgcFidFilter_(node, fid, objectStack);
+  }
+};
+
+
+/**
+ * @param {Node} node Node.
+ * @param {Object} pair Property name and value.
+ * @param {Array.<*>} objectStack Node stack.
+ * @private
+ */
+ol.format.WFS.writeProperty_ = function(node, pair, objectStack) {
+  var name = ol.xml.createElementNS('http://www.opengis.net/wfs', 'Name');
+  node.appendChild(name);
+  ol.format.XSD.writeStringTextNode(name, pair.name);
+  if (goog.isDefAndNotNull(pair.value)) {
+    var value = ol.xml.createElementNS('http://www.opengis.net/wfs', 'Value');
+    node.appendChild(value);
+    if (pair.value instanceof ol.geom.Geometry) {
+      ol.format.GML.writeGeometry(value, pair.value, objectStack);
+    } else {
+      ol.format.XSD.writeStringTextNode(value, pair.value);
+    }
+  }
+};
+
+
+/**
+ * @type {Object.<string, Object.<string, ol.xml.Serializer>>}
+ * @private
+ */
+ol.format.WFS.TRANSACTION_SERIALIZERS_ = {
+  'http://www.opengis.net/wfs': {
+    'Insert': ol.xml.makeChildAppender(ol.format.WFS.writeFeature_),
+    'Update': ol.xml.makeChildAppender(ol.format.WFS.writeUpdate_),
+    'Delete': ol.xml.makeChildAppender(ol.format.WFS.writeDelete_),
+    'Property': ol.xml.makeChildAppender(ol.format.WFS.writeProperty_)
+  }
+};
+
+
+/**
+ * @param {Node} node Node.
  * @param {string} featureType Feature type.
  * @param {Array.<*>} objectStack Node stack.
  * @private
@@ -426,5 +545,50 @@ ol.format.WFS.prototype.writeGetFeature = function(options) {
   };
   goog.asserts.assert(goog.isArray(options.featureTypes));
   ol.format.WFS.writeGetFeature_(node, options.featureTypes, [context]);
+  return node;
+};
+
+
+/**
+ * @param {Array.<ol.Feature>} inserts The features to insert.
+ * @param {Array.<ol.Feature>} updates The features to update.
+ * @param {Array.<ol.Feature>} deletes The features to delete.
+ * @param {olx.format.WFSWriteTransactionOptions} options Write options.
+ * @return {ArrayBuffer|Node|Object|string} Result.
+ */
+ol.format.WFS.prototype.writeTransaction = function(inserts, updates, deletes,
+    options) {
+  var node = ol.xml.createElementNS('http://www.opengis.net/wfs',
+      'Transaction');
+  node.setAttribute('service', 'WFS');
+  node.setAttribute('version', '1.1.0');
+  if (goog.isDef(options)) {
+    if (goog.isDef(options.handle)) {
+      node.setAttribute('handle', options.handle);
+    }
+  }
+  ol.xml.setAttributeNS(node, 'http://www.w3.org/2001/XMLSchema-instance',
+      'xsi:schemaLocation', this.schemaLocation_);
+  if (goog.isDefAndNotNull(inserts)) {
+    ol.xml.pushSerializeAndPop({node: node, featureNS: options.featureNS,
+      featureType: options.featureType},
+    ol.format.WFS.TRANSACTION_SERIALIZERS_,
+    ol.xml.makeSimpleNodeFactory('Insert'), inserts,
+    []);
+  }
+  if (goog.isDefAndNotNull(updates)) {
+    ol.xml.pushSerializeAndPop({node: node, featureNS: options.featureNS,
+      featureType: options.featureType, featurePrefix: options.featurePrefix},
+    ol.format.WFS.TRANSACTION_SERIALIZERS_,
+    ol.xml.makeSimpleNodeFactory('Update'), updates,
+    []);
+  }
+  if (goog.isDefAndNotNull(deletes)) {
+    ol.xml.pushSerializeAndPop({node: node, featureNS: options.featureNS,
+      featureType: options.featureType, featurePrefix: options.featurePrefix},
+    ol.format.WFS.TRANSACTION_SERIALIZERS_,
+    ol.xml.makeSimpleNodeFactory('Delete'), deletes,
+    []);
+  }
   return node;
 };

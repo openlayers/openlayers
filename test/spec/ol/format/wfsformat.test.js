@@ -176,9 +176,69 @@ describe('ol.format.WFS', function() {
 
   });
 
+  describe('when writing out a Transaction request', function() {
+
+    it('creates a handle', function() {
+      var text =
+          '<wfs:Transaction xmlns:wfs="http://www.opengis.net/wfs" ' +
+          'xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" ' +
+          'service="WFS" version="1.1.0" handle="handle_t" ' +
+          'xsi:schemaLocation="http://www.opengis.net/wfs ' +
+          'http://schemas.opengis.net/wfs/1.1.0/wfs.xsd"/>';
+      var serialized = new ol.format.WFS().writeTransaction(null, null, null,
+          {handle: 'handle_t'});
+      expect(serialized).to.xmleql(ol.xml.load(text));
+    });
+
+  });
+
+  describe('when writing out a Transaction request', function() {
+    var text;
+    before(function(done) {
+      afterLoadText('spec/ol/format/wfs/TransactionMulti.xml', function(xml) {
+        text = xml;
+        done();
+      });
+    });
+
+    it('creates the correct transaction body', function() {
+      var format = new ol.format.WFS();
+      var insertFeature = new ol.Feature({
+        the_geom: new ol.geom.MultiPoint([[1, 2]]),
+        foo: 'bar',
+        nul: null
+      });
+      insertFeature.setGeometryName('the_geom');
+      var inserts = [insertFeature];
+      var updateFeature = new ol.Feature({
+        the_geom: new ol.geom.MultiPoint([[1, 2]]),
+        foo: 'bar',
+        // null value gets Property element with no Value
+        nul: null,
+        // undefined value means don't create a Property element
+        unwritten: undefined
+      });
+      updateFeature.setId('fid.42');
+      var updates = [updateFeature];
+
+      var deleteFeature = new ol.Feature();
+      deleteFeature.setId('fid.37');
+      var deletes = [deleteFeature];
+      var serialized = format.writeTransaction(inserts, updates, deletes, {
+        featureNS: 'http://www.openplans.org/topp',
+        featureType: 'states',
+        featurePrefix: 'topp'
+      });
+      expect(serialized).to.xmleql(ol.xml.load(text));
+    });
+
+  });
+
 });
 
 
 goog.require('ol.xml');
+goog.require('ol.Feature');
+goog.require('ol.geom.MultiPoint');
 goog.require('ol.geom.MultiPolygon');
 goog.require('ol.format.WFS');
