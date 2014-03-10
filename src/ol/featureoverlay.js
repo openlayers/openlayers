@@ -8,6 +8,7 @@ goog.require('goog.object');
 goog.require('ol.Collection');
 goog.require('ol.CollectionEventType');
 goog.require('ol.Feature');
+goog.require('ol.Observable');
 goog.require('ol.feature');
 goog.require('ol.render.EventType');
 
@@ -15,10 +16,12 @@ goog.require('ol.render.EventType');
 
 /**
  * @constructor
+ * @extends {ol.Observable};
  * @param {olx.FeatureOverlayOptions=} opt_options Options.
  * @todo stability experimental
  */
 ol.FeatureOverlay = function(opt_options) {
+  goog.base(this);
 
   var options = goog.isDef(opt_options) ? opt_options : {};
 
@@ -81,6 +84,7 @@ ol.FeatureOverlay = function(opt_options) {
   }
 
 };
+goog.inherits(ol.FeatureOverlay, ol.Observable);
 
 
 /**
@@ -180,6 +184,7 @@ ol.FeatureOverlay.prototype.removeFeature = function(feature) {
  * @private
  */
 ol.FeatureOverlay.prototype.render_ = function() {
+  this.dispatchChangeEvent();
   if (!goog.isNull(this.map_)) {
     this.map_.render();
   }
