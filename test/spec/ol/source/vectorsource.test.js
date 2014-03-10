@@ -233,6 +233,15 @@ describe('ol.source.Vector', function() {
       expect(vectorSource.getFeatures()).to.eql([feature]);
     });
 
+    it('fires a change event when setting a feature\'s property', function() {
+      var feature = new ol.Feature(new ol.geom.Point([1, 1]));
+      vectorSource.addFeature(feature);
+      var listener = sinon.spy();
+      goog.events.listen(vectorSource, 'change', listener);
+      feature.set('foo', 'bar');
+      expect(listener).to.be.called();
+    });
+
   });
 
 });
