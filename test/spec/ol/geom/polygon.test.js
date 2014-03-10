@@ -84,6 +84,11 @@ describe('ol.geom.Polygon', function() {
       expect(polygon.getStride()).to.be(2);
     });
 
+    it('can return individual rings', function() {
+      expect(polygon.getLinearRing(0).getCoordinates()).to.eql(outerRing);
+      expect(polygon.getLinearRing(1).getCoordinates()).to.eql(innerRing);
+    });
+
     it('has the expected rings', function() {
       var linearRings = polygon.getLinearRings();
       expect(linearRings).to.be.an(Array);

@@ -179,6 +179,22 @@ ol.geom.Polygon.prototype.getInteriorPoint = function() {
 
 
 /**
+ * @param {number} index Index.
+ * @return {ol.geom.LinearRing} Linear ring.
+ */
+ol.geom.Polygon.prototype.getLinearRing = function(index) {
+  goog.asserts.assert(0 <= index && index < this.ends_.length);
+  if (index < 0 || this.ends_.length <= index) {
+    return null;
+  }
+  var linearRing = new ol.geom.LinearRing(null);
+  linearRing.setFlatCoordinates(this.layout, this.flatCoordinates.slice(
+      index === 0 ? 0 : this.ends_[index - 1], this.ends_[index]));
+  return linearRing;
+};
+
+
+/**
  * @return {Array.<ol.geom.LinearRing>} Linear rings.
  * @todo stability experimental
  */
