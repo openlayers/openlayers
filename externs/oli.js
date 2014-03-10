@@ -36,6 +36,85 @@ oli.DrawEvent;
 oli.DrawEvent.prototype.feature;
 
 
+/** @interface */
+oli.FrameState;
+
+
+/** @type {boolean} */
+oli.FrameState.prototype.animate;
+
+
+/** @type {Object.<string, ol.Attribution>} */
+oli.FrameState.prototype.attributions;
+
+
+/** @type {goog.vec.Mat4.Number} */
+oli.FrameState.prototype.coordinateToPixelMatrix;
+
+
+/** @type {(null|ol.Extent)} */
+oli.FrameState.prototype.extent;
+
+
+/** @type {ol.Coordinate} */
+oli.FrameState.prototype.focus;
+
+
+/** @type {number} */
+oli.FrameState.prototype.index;
+
+
+/** @type {Array.<ol.layer.Layer>} */
+oli.FrameState.prototype.layersArray;
+
+
+/** @type {Object.<number, ol.layer.LayerState>} */
+oli.FrameState.prototype.layerStates;
+
+
+/** @type {Object.<string, string>} */
+oli.FrameState.prototype.logos;
+
+
+/** @type {number} */
+oli.FrameState.prototype.pixelRatio;
+
+
+/** @type {goog.vec.Mat4.Number} */
+oli.FrameState.prototype.pixelToCoordinateMatrix;
+
+
+/** @type {Array.<ol.PostRenderFunction>} */
+oli.FrameState.prototype.postRenderFunctions;
+
+
+/** @type {ol.Size} */
+oli.FrameState.prototype.size;
+
+
+/** @type {ol.TileQueue} */
+oli.FrameState.prototype.tileQueue;
+
+
+/** @type {number} */
+oli.FrameState.prototype.time;
+
+
+/** @type {Object.<string, Object.<string, ol.TileRange>>} */
+oli.FrameState.prototype.usedTiles;
+
+
+/** @type {ol.View2DState} */
+oli.FrameState.prototype.view2DState;
+
+
+/** @type {Array.<number>} */
+oli.FrameState.prototype.viewHints;
+
+
+/** @type {Object.<string, Object.<string, boolean>>} */
+oli.FrameState.prototype.wantedTiles;
+
 
 /** @interface */
 oli.ObjectEvent;
@@ -98,7 +177,7 @@ oli.render.Event = function() {};
 oli.render.Event.prototype.context;
 
 
-/** @type {ol.FrameState|undefined} */
+/** @type {oli.FrameState|undefined} */
 oli.render.Event.prototype.frameState;
 
 
