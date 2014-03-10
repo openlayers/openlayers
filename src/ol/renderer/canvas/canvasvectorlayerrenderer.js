@@ -146,7 +146,8 @@ ol.renderer.canvas.VectorLayer.prototype.forEachFeatureAtPixel =
 
 /**
  * @private
- * @return {function(ol.geom.Geometry): boolean} Render geometry function.
+ * @return {function(ol.geom.Geometry, Object): boolean} Render geometry
+ *     function.
  */
 ol.renderer.canvas.VectorLayer.prototype.getRenderGeometryFunction_ =
     function() {
@@ -166,12 +167,13 @@ ol.renderer.canvas.VectorLayer.prototype.getRenderGeometryFunction_ =
       return (
           /**
            * @param {ol.geom.Geometry} geometry Geometry.
+           * @param {Object} object Opaque data object.
            * @return {boolean} Render geometry.
            */
-          function(geometry) {
+          function(geometry, object) {
             var i, ii;
             for (i = 0, ii = renderGeometryFunctionsArray.length; i < ii; ++i) {
-              if (!renderGeometryFunctionsArray[i](geometry)) {
+              if (!renderGeometryFunctionsArray[i](geometry, object)) {
                 return false;
               }
             }
