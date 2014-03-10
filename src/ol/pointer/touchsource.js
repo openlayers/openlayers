@@ -73,12 +73,6 @@ ol.pointer.TouchSource = function(dispatcher, mouseSource) {
   this.CLICK_COUNT_TIMEOUT = 200;
 
   /**
-   * @const
-   * @type {string}
-   */
-  this.POINTER_TYPE = 'touch';
-
-  /**
    * @private
    * @type {?number}
    */
@@ -108,6 +102,13 @@ ol.pointer.TouchSource = function(dispatcher, mouseSource) {
   };
 };
 goog.inherits(ol.pointer.TouchSource, ol.pointer.EventSource);
+
+
+/**
+ * @const
+ * @type {string}
+ */
+ol.pointer.TouchSource.POINTER_TYPE = 'touch';
 
 
 /** @inheritDoc */
@@ -207,7 +208,7 @@ ol.pointer.TouchSource.prototype.touchToPointer_ =
   e.height = inTouch['webkitRadiusY'] || inTouch['radiusY'] || 0;
   e.pressure = inTouch['webkitForce'] || inTouch['force'] || 0.5;
   e.isPrimary = this.isPrimaryTouch_(inTouch);
-  e.pointerType = this.POINTER_TYPE;
+  e.pointerType = ol.pointer.TouchSource.POINTER_TYPE;
 
   // make sure that the properties that are different for
   // each `Touch` object are not copied from the BrowserEvent object
