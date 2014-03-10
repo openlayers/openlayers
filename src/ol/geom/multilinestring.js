@@ -222,6 +222,13 @@ ol.geom.MultiLineString.prototype.setCoordinates =
  */
 ol.geom.MultiLineString.prototype.setFlatCoordinates =
     function(layout, flatCoordinates, ends) {
+  if (goog.isNull(flatCoordinates)) {
+    goog.asserts.assert(!goog.isNull(ends) && ends.length === 0);
+  } else if (ends.length === 0) {
+    goog.asserts.assert(flatCoordinates.length === 0);
+  } else {
+    goog.asserts.assert(flatCoordinates.length == ends[ends.length - 1]);
+  }
   this.setFlatCoordinatesInternal(layout, flatCoordinates);
   this.ends_ = ends;
   this.dispatchChangeEvent();
