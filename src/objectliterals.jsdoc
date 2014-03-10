@@ -328,7 +328,10 @@
 /**
  * @typedef {Object} olx.format.WFSOptions
  * @property {string} featureNS The namespace URI used for features.
- * @property {string} featureType
+ * @property {string} featureType The feature type to parse. Only used for
+ *     read operations.
+ * @property {string|undefined} schemaLocation Optional schemaLocation to use
+ *     for serialization, this will override the default.
  */
 
 /**
