@@ -20,6 +20,18 @@ describe('ol.geom.MultiPolygon', function() {
       ]);
     });
 
+    it('can return all polygons', function() {
+      var polygons = multiPolygon.getPolygons();
+      expect(polygons).to.be.an(Array);
+      expect(polygons).to.have.length(2);
+      expect(polygons[0]).to.be.an(ol.geom.Polygon);
+      expect(polygons[0].getCoordinates()).to.eql(
+          [[[0, 0], [0, 2], [1, 1], [2, 0]]]);
+      expect(polygons[1]).to.be.an(ol.geom.Polygon);
+      expect(polygons[1].getCoordinates()).to.eql(
+          [[[3, 0], [4, 1], [5, 2], [5, 0]]]);
+    });
+
     describe('#getSimplifiedGeometry', function() {
 
       it('returns the expected result', function() {
@@ -38,3 +50,4 @@ describe('ol.geom.MultiPolygon', function() {
 
 
 goog.require('ol.geom.MultiPolygon');
+goog.require('ol.geom.Polygon');
