@@ -50,12 +50,6 @@ ol.pointer.MsSource = function(dispatcher) {
   this.pointerMap = dispatcher.pointerMap;
 
   /**
-   * @const
-   * @type {boolean}
-   */
-  this.HAS_BITMAP_TYPE = this.hasBitmapType();
-
-  /**
    * @private
    * @const
    * @type {Object.<string, function(goog.events.BrowserEvent)>}
@@ -99,16 +93,6 @@ ol.pointer.MsSource.prototype.getMapping = function() {
 
 
 /**
- * @suppress {missingProperties}
- * @return {boolean}
- */
-ol.pointer.MsSource.prototype.hasBitmapType = function() {
-  return window['MSPointerEvent'] &&
-      typeof window['MSPointerEvent']['MSPOINTER_TYPE_MOUSE'] === 'number';
-};
-
-
-/**
  * Creates a copy of the original event that will be used
  * for the fake pointer event.
  *
@@ -118,7 +102,7 @@ ol.pointer.MsSource.prototype.hasBitmapType = function() {
  */
 ol.pointer.MsSource.prototype.prepareEvent_ = function(inEvent) {
   var e = inEvent;
-  if (this.HAS_BITMAP_TYPE) {
+  if (goog.isNumber(inEvent.pointerType)) {
     e = this.dispatcher.cloneEvent(inEvent, inEvent.getBrowserEvent());
     e.pointerType = this.POINTER_TYPES[inEvent.pointerType];
   }
