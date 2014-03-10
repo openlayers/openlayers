@@ -4,7 +4,6 @@ goog.require('goog.dom');
 goog.require('goog.dom.TagName');
 goog.require('goog.object');
 goog.require('goog.style');
-goog.require('ol.FrameState');
 goog.require('ol.control.Control');
 goog.require('ol.css');
 
@@ -66,7 +65,7 @@ ol.control.Logo.prototype.handleMapPostrender = function(mapEvent) {
 
 
 /**
- * @param {?ol.FrameState} frameState Frame state.
+ * @param {?oli.FrameState} frameState Frame state.
  * @private
  */
 ol.control.Logo.prototype.updateElement_ = function(frameState) {

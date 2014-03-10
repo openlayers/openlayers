@@ -31,7 +31,7 @@ goog.inherits(ol.renderer.canvas.Layer, ol.renderer.Layer);
 
 
 /**
- * @param {ol.FrameState} frameState Frame state.
+ * @param {oli.FrameState} frameState Frame state.
  * @param {ol.layer.LayerState} layerState Layer state.
  * @param {CanvasRenderingContext2D} context Context.
  */
@@ -75,7 +75,7 @@ ol.renderer.canvas.Layer.prototype.composeFrame =
 /**
  * @param {ol.render.EventType} type Event type.
  * @param {CanvasRenderingContext2D} context Context.
- * @param {ol.FrameState} frameState Frame state.
+ * @param {oli.FrameState} frameState Frame state.
  * @param {goog.vec.Mat4.Number=} opt_transform Transform.
  * @private
  */
@@ -98,7 +98,7 @@ ol.renderer.canvas.Layer.prototype.dispatchComposeEvent_ =
 
 /**
  * @param {CanvasRenderingContext2D} context Context.
- * @param {ol.FrameState} frameState Frame state.
+ * @param {oli.FrameState} frameState Frame state.
  * @param {goog.vec.Mat4.Number=} opt_transform Transform.
  * @protected
  */
@@ -111,7 +111,7 @@ ol.renderer.canvas.Layer.prototype.dispatchPostComposeEvent =
 
 /**
  * @param {CanvasRenderingContext2D} context Context.
- * @param {ol.FrameState} frameState Frame state.
+ * @param {oli.FrameState} frameState Frame state.
  * @param {goog.vec.Mat4.Number=} opt_transform Transform.
  * @protected
  */
@@ -124,7 +124,7 @@ ol.renderer.canvas.Layer.prototype.dispatchPreComposeEvent =
 
 /**
  * @param {CanvasRenderingContext2D} context Context.
- * @param {ol.FrameState} frameState Frame state.
+ * @param {oli.FrameState} frameState Frame state.
  * @param {goog.vec.Mat4.Number=} opt_transform Transform.
  * @protected
  */
@@ -148,7 +148,7 @@ ol.renderer.canvas.Layer.prototype.getImageTransform = goog.abstractMethod;
 
 
 /**
- * @param {ol.FrameState} frameState Frame state.
+ * @param {oli.FrameState} frameState Frame state.
  * @protected
  * @return {!goog.vec.Mat4.Number} Transform.
  */
