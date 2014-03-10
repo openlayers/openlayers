@@ -259,72 +259,73 @@ ol.format.WMSCapabilities.readLayer_ = function(node, objectStack) {
   var layerObject = /**  @type {Object.<string,*>} */ (ol.xml.pushParseAndPop(
       {}, ol.format.WMSCapabilities.LAYER_PARSERS_, node, objectStack));
 
-  if (goog.isDef(layerObject)) {
-    var queryable =
-        ol.format.XSD.readBooleanString(node.getAttribute('queryable'));
-    if (!goog.isDef(queryable)) {
-      queryable = goog.object.get(parentLayerObject, 'queryable');
-    }
-    goog.object.set(
-        layerObject, 'queryable', goog.isDef(queryable) ? queryable : false);
-
-    var cascaded = ol.format.XSD.readNonNegativeIntegerString(
-        node.getAttribute('cascaded'));
-    if (!goog.isDef(cascaded)) {
-      cascaded = goog.object.get(parentLayerObject, 'cascaded');
-    }
-    goog.object.set(layerObject, 'cascaded', cascaded);
-
-    var opaque = ol.format.XSD.readBooleanString(node.getAttribute('opaque'));
-    if (!goog.isDef(opaque)) {
-      opaque = goog.object.get(parentLayerObject, 'opaque');
-    }
-    goog.object.set(layerObject, 'opaque', goog.isDef(opaque) ? opaque : false);
-
-    var noSubsets =
-        ol.format.XSD.readBooleanString(node.getAttribute('noSubsets'));
-    if (!goog.isDef(noSubsets)) {
-      noSubsets = goog.object.get(parentLayerObject, 'noSubsets');
-    }
-    goog.object.set(
-        layerObject, 'noSubsets', goog.isDef(noSubsets) ? noSubsets : false);
-
-    var fixedWidth =
-        ol.format.XSD.readDecimalString(node.getAttribute('fixedWidth'));
-    if (!goog.isDef(fixedWidth)) {
-      fixedWidth = goog.object.get(parentLayerObject, 'fixedWidth');
-    }
-    goog.object.set(layerObject, 'fixedWidth', fixedWidth);
-
-    var fixedHeight =
-        ol.format.XSD.readDecimalString(node.getAttribute('fixedHeight'));
-    if (!goog.isDef(fixedHeight)) {
-      fixedHeight = goog.object.get(parentLayerObject, 'fixedHeight');
-    }
-    goog.object.set(layerObject, 'fixedHeight', fixedHeight);
-
-    // See 7.2.4.8
-    var addKeys = ['Style', 'CRS', 'AuthorityURL'];
-    goog.array.forEach(addKeys, function(key) {
-      var parentValue = goog.object.get(parentLayerObject, key);
-      if (goog.isDef(parentValue)) {
-        var childValue = goog.object.setIfUndefined(layerObject, key, []);
-        childValue = childValue.concat(parentValue);
-      }
-    });
-
-    var replaceKeys = ['EX_GeographicBoundingBox', 'BoundingBox', 'Dimension',
-      'Attribution', 'MinScaleDenominator', 'MaxScaleDenominator'];
-    goog.array.forEach(replaceKeys, function(key) {
-      var childValue = goog.object.get(layerObject, key);
-      if (!goog.isDef(childValue)) {
-        var parentValue = goog.object.get(parentLayerObject, key);
-        goog.object.set(layerObject, key, parentValue);
-      }
-    });
-
-    return layerObject;
+  if (!goog.isDef(layerObject)) {
+    return undefined;
   }
+  var queryable =
+      ol.format.XSD.readBooleanString(node.getAttribute('queryable'));
+  if (!goog.isDef(queryable)) {
+    queryable = goog.object.get(parentLayerObject, 'queryable');
+  }
+  goog.object.set(
+      layerObject, 'queryable', goog.isDef(queryable) ? queryable : false);
+
+  var cascaded = ol.format.XSD.readNonNegativeIntegerString(
+      node.getAttribute('cascaded'));
+  if (!goog.isDef(cascaded)) {
+    cascaded = goog.object.get(parentLayerObject, 'cascaded');
+  }
+  goog.object.set(layerObject, 'cascaded', cascaded);
+
+  var opaque = ol.format.XSD.readBooleanString(node.getAttribute('opaque'));
+  if (!goog.isDef(opaque)) {
+    opaque = goog.object.get(parentLayerObject, 'opaque');
+  }
+  goog.object.set(layerObject, 'opaque', goog.isDef(opaque) ? opaque : false);
+
+  var noSubsets =
+      ol.format.XSD.readBooleanString(node.getAttribute('noSubsets'));
+  if (!goog.isDef(noSubsets)) {
+    noSubsets = goog.object.get(parentLayerObject, 'noSubsets');
+  }
+  goog.object.set(
+      layerObject, 'noSubsets', goog.isDef(noSubsets) ? noSubsets : false);
+
+  var fixedWidth =
+      ol.format.XSD.readDecimalString(node.getAttribute('fixedWidth'));
+  if (!goog.isDef(fixedWidth)) {
+    fixedWidth = goog.object.get(parentLayerObject, 'fixedWidth');
+  }
+  goog.object.set(layerObject, 'fixedWidth', fixedWidth);
+
+  var fixedHeight =
+      ol.format.XSD.readDecimalString(node.getAttribute('fixedHeight'));
+  if (!goog.isDef(fixedHeight)) {
+    fixedHeight = goog.object.get(parentLayerObject, 'fixedHeight');
+  }
+  goog.object.set(layerObject, 'fixedHeight', fixedHeight);
+
+  // See 7.2.4.8
+  var addKeys = ['Style', 'CRS', 'AuthorityURL'];
+  goog.array.forEach(addKeys, function(key) {
+    var parentValue = goog.object.get(parentLayerObject, key);
+    if (goog.isDef(parentValue)) {
+      var childValue = goog.object.setIfUndefined(layerObject, key, []);
+      childValue = childValue.concat(parentValue);
+    }
+  });
+
+  var replaceKeys = ['EX_GeographicBoundingBox', 'BoundingBox', 'Dimension',
+    'Attribution', 'MinScaleDenominator', 'MaxScaleDenominator'];
+  goog.array.forEach(replaceKeys, function(key) {
+    var childValue = goog.object.get(layerObject, key);
+    if (!goog.isDef(childValue)) {
+      var parentValue = goog.object.get(parentLayerObject, key);
+      goog.object.set(layerObject, key, parentValue);
+    }
+  });
+
+  return layerObject;
 };
 
 
