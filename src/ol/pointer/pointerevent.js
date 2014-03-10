@@ -33,6 +33,7 @@ goog.provide('ol.pointer.PointerEvent');
 
 goog.require('goog.events');
 goog.require('goog.events.Event');
+goog.require('goog.object');
 
 
 
@@ -154,42 +155,42 @@ ol.pointer.PointerEvent = function(type, browserEvent, opt_eventDict) {
    * @const
    * @type {number}
    */
-  this.pointerId = this.getValueOr_('pointerId', 0, eventDict);
+  this.pointerId = goog.object.get(eventDict, 'pointerId', 0);
 
   /**
    * @type {number}
    */
-  this.width = this.getValueOr_('width', 0, eventDict);
+  this.width = goog.object.get(eventDict, 'width', 0);
 
   /**
    * @type {number}
    */
-  this.height = this.getValueOr_('height', 0, eventDict);
+  this.height = goog.object.get(eventDict, 'height', 0);
 
   /**
    * @type {number}
    */
-  this.tiltX = this.getValueOr_('tiltX', 0, eventDict);
+  this.tiltX = goog.object.get(eventDict, 'tiltX', 0);
 
   /**
    * @type {number}
    */
-  this.tiltY = this.getValueOr_('tiltY', 0, eventDict);
+  this.tiltY = goog.object.get(eventDict, 'tiltY', 0);
 
   /**
    * @type {string}
    */
-  this.pointerType = this.getValueOr_('pointerType', '', eventDict);
+  this.pointerType = goog.object.get(eventDict, 'pointerType', '');
 
   /**
    * @type {number}
    */
-  this.hwTimestamp = this.getValueOr_('hwTimestamp', 0, eventDict);
+  this.hwTimestamp = goog.object.get(eventDict, 'hwTimestamp', 0);
 
   /**
    * @type {boolean}
    */
-  this.isPrimary = this.getValueOr_('isPrimary', false, eventDict);
+  this.isPrimary = goog.object.get(eventDict, 'isPrimary', false);
 
 };
 goog.inherits(ol.pointer.PointerEvent, goog.events.Event);
@@ -205,20 +206,6 @@ ol.pointer.PointerEvent.prototype.getValue_ = function(key, eventDict) {
   return goog.isDefAndNotNull(eventDict[key]) ?
       eventDict[key] :
       ol.pointer.PointerEvent.MOUSE_DEFAULTS['relatedTarget'];
-};
-
-
-/**
- * @private
- * @param {string} key
- * @param {*} defaultValue
- * @param {Object.<string, ?>} eventDict
- * @return {string|number|?}
- */
-ol.pointer.PointerEvent.prototype.getValueOr_ =
-    function(key, defaultValue, eventDict) {
-  return goog.isDefAndNotNull(eventDict[key]) ?
-      eventDict[key] : defaultValue;
 };
 
 
