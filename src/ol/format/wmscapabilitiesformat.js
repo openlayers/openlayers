@@ -93,17 +93,17 @@ ol.format.WMSCapabilities.readBoundingBox_ = function(node, objectStack) {
   goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT);
   goog.asserts.assert(node.localName == 'BoundingBox');
 
-  var extent = /** @type {ol.Extent} */ ([
+  var extent = [
     ol.format.XSD.readDecimalString(node.getAttribute('minx')),
     ol.format.XSD.readDecimalString(node.getAttribute('miny')),
     ol.format.XSD.readDecimalString(node.getAttribute('maxx')),
     ol.format.XSD.readDecimalString(node.getAttribute('maxy'))
-  ]);
+  ];
 
-  var resolutions = /** @type {Array.<number>} */ ([
+  var resolutions = [
     ol.format.XSD.readDecimalString(node.getAttribute('resx')),
     ol.format.XSD.readDecimalString(node.getAttribute('resy'))
-  ]);
+  ];
 
   return {
     'crs': node.getAttribute('CRS'),
@@ -127,12 +127,12 @@ ol.format.WMSCapabilities.readEXGeographicBoundingBox_ =
       /** @type {ol.format.EXGeographicBoundingBoxType} */ ({}),
       ol.format.WMSCapabilities.EX_GEOGRAPHIC_BOUNDING_BOX_PARSERS_,
       node, objectStack);
-  return /** @type {ol.Extent} */ ([
+  return [
     geographicBoundingBox.westBoundLongitude,
     geographicBoundingBox.southBoundLatitude,
     geographicBoundingBox.eastBoundLongitude,
     geographicBoundingBox.northBoundLatitude
-  ]);
+  ];
 };
 
 
@@ -431,10 +431,10 @@ ol.format.WMSCapabilities.readSizedFormatOnlineresource_ =
   var formatOnlineresource =
       ol.format.WMSCapabilities.readFormatOnlineresource_(node, objectStack);
   if (goog.isDef(formatOnlineresource)) {
-    var size = /** @type {ol.Size} */ ([
+    var size = [
       ol.format.XSD.readNonNegativeIntegerString(node.getAttribute('width')),
       ol.format.XSD.readNonNegativeIntegerString(node.getAttribute('height'))
-    ]);
+    ];
     goog.object.set(formatOnlineresource, 'size', size);
     return formatOnlineresource;
   }
