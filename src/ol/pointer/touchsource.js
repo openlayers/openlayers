@@ -32,7 +32,6 @@ goog.provide('ol.pointer.TouchSource');
 
 goog.require('goog.array');
 goog.require('goog.math.Coordinate');
-goog.require('goog.object');
 goog.require('ol.pointer.EventSource');
 
 
@@ -44,7 +43,13 @@ goog.require('ol.pointer.EventSource');
  * @extends {ol.pointer.EventSource}
  */
 ol.pointer.TouchSource = function(dispatcher, mouseSource) {
-  goog.base(this, dispatcher);
+  var mapping = {
+    'touchstart': this.touchstart,
+    'touchmove': this.touchmove,
+    'touchend': this.touchend,
+    'touchcancel': this.touchcancel
+  };
+  goog.base(this, dispatcher, mapping);
 
   /**
    * @const
@@ -89,18 +94,6 @@ ol.pointer.TouchSource = function(dispatcher, mouseSource) {
    * @type {?number}
    */
   this.resetId_ = null;
-
-  /**
-   * @private
-   * @const
-   * @type {Object.<string, function(goog.events.BrowserEvent)>}
-   */
-  this.mapping_ = {
-    'touchstart': this.touchstart,
-    'touchmove': this.touchmove,
-    'touchend': this.touchend,
-    'touchcancel': this.touchcancel
-  };
 };
 goog.inherits(ol.pointer.TouchSource, ol.pointer.EventSource);
 
@@ -110,18 +103,6 @@ goog.inherits(ol.pointer.TouchSource, ol.pointer.EventSource);
  * @type {string}
  */
 ol.pointer.TouchSource.POINTER_TYPE = 'touch';
-
-
-/** @inheritDoc */
-ol.pointer.TouchSource.prototype.getEvents = function() {
-  return goog.object.getKeys(this.mapping_);
-};
-
-
-/** @inheritDoc */
-ol.pointer.TouchSource.prototype.getMapping = function() {
-  return this.mapping_;
-};
 
 
 /**

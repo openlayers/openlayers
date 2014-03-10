@@ -30,7 +30,6 @@
 
 goog.provide('ol.pointer.MsSource');
 
-goog.require('goog.object');
 goog.require('ol.pointer.EventSource');
 
 
@@ -41,20 +40,7 @@ goog.require('ol.pointer.EventSource');
  * @extends {ol.pointer.EventSource}
  */
 ol.pointer.MsSource = function(dispatcher) {
-  goog.base(this, dispatcher);
-
-  /**
-   * @const
-   * @type {goog.structs.Map}
-   */
-  this.pointerMap = dispatcher.pointerMap;
-
-  /**
-   * @private
-   * @const
-   * @type {Object.<string, function(goog.events.BrowserEvent)>}
-   */
-  this.mapping_ = {
+  var mapping = {
     'MSPointerDown': this.msPointerDown,
     'MSPointerMove': this.msPointerMove,
     'MSPointerUp': this.msPointerUp,
@@ -64,6 +50,13 @@ ol.pointer.MsSource = function(dispatcher) {
     'MSGotPointerCapture': this.msGotPointerCapture,
     'MSLostPointerCapture': this.msLostPointerCapture
   };
+  goog.base(this, dispatcher, mapping);
+
+  /**
+   * @const
+   * @type {goog.structs.Map}
+   */
+  this.pointerMap = dispatcher.pointerMap;
 
   /**
    * @const
@@ -78,18 +71,6 @@ ol.pointer.MsSource = function(dispatcher) {
   ];
 };
 goog.inherits(ol.pointer.MsSource, ol.pointer.EventSource);
-
-
-/** @inheritDoc */
-ol.pointer.MsSource.prototype.getEvents = function() {
-  return goog.object.getKeys(this.mapping_);
-};
-
-
-/** @inheritDoc */
-ol.pointer.MsSource.prototype.getMapping = function() {
-  return this.mapping_;
-};
 
 
 /**

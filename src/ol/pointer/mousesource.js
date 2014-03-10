@@ -30,7 +30,6 @@
 
 goog.provide('ol.pointer.MouseSource');
 
-goog.require('goog.object');
 goog.require('ol.pointer.EventSource');
 
 
@@ -41,26 +40,20 @@ goog.require('ol.pointer.EventSource');
  * @extends {ol.pointer.EventSource}
  */
 ol.pointer.MouseSource = function(dispatcher) {
-  goog.base(this, dispatcher);
-
-  /**
-   * @const
-   * @type {goog.structs.Map}
-   */
-  this.pointerMap = dispatcher.pointerMap;
-
-  /**
-   * @private
-   * @const
-   * @type {Object.<string, function(goog.events.BrowserEvent)>}
-   */
-  this.mapping_ = {
+  var mapping = {
     'mousedown': this.mousedown,
     'mousemove': this.mousemove,
     'mouseup': this.mouseup,
     'mouseover': this.mouseover,
     'mouseout': this.mouseout
   };
+  goog.base(this, dispatcher, mapping);
+
+  /**
+   * @const
+   * @type {goog.structs.Map}
+   */
+  this.pointerMap = dispatcher.pointerMap;
 
   /**
    * @const
@@ -92,18 +85,6 @@ ol.pointer.MouseSource.POINTER_TYPE = 'mouse';
  * @type {number}
  */
 ol.pointer.MouseSource.DEDUP_DIST = 25;
-
-
-/** @inheritDoc */
-ol.pointer.MouseSource.prototype.getEvents = function() {
-  return goog.object.getKeys(this.mapping_);
-};
-
-
-/** @inheritDoc */
-ol.pointer.MouseSource.prototype.getMapping = function() {
-  return this.mapping_;
-};
 
 
 /**
