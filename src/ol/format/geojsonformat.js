@@ -21,6 +21,8 @@ goog.require('ol.proj');
 
 
 /**
+ * Provide access to features stored in the GeoJSON format.
+ *
  * @constructor
  * @extends {ol.format.JSONFeature}
  * @param {olx.format.GeoJSONOptions=} opt_options Options.
@@ -314,6 +316,28 @@ ol.format.GeoJSON.prototype.getExtensions = function() {
 
 
 /**
+ * Read a feature from a GeoJSON Feature source.  This method will throw
+ * an error if used with a FeatureCollection source.
+ *
+ * @function
+ * @param {ArrayBuffer|Document|Node|Object|string} source Source.
+ * @return {ol.Feature} Feature.
+ */
+ol.format.GeoJSON.prototype.readFeature;
+
+
+/**
+ * Read all features from a GeoJSON source.  Works with both Feature and
+ * FeatureCollection sources.
+ *
+ * @function
+ * @param {ArrayBuffer|Document|Node|Object|string} source Source.
+ * @return {Array.<ol.Feature>} Features.
+ */
+ol.format.GeoJSON.prototype.readFeatures;
+
+
+/**
  * @inheritDoc
  */
 ol.format.GeoJSON.prototype.readFeatureFromObject = function(object) {
@@ -357,6 +381,16 @@ ol.format.GeoJSON.prototype.readFeaturesFromObject = function(object) {
 
 
 /**
+ * Read a geometry from a GeoJSON source.
+ *
+ * @function
+ * @param {ArrayBuffer|Document|Node|Object|string} source Source.
+ * @return {ol.geom.Geometry} Geometry.
+ */
+ol.format.GeoJSON.prototype.readGeometry;
+
+
+/**
  * @inheritDoc
  */
 ol.format.GeoJSON.prototype.readGeometryFromObject = function(object) {
@@ -366,7 +400,10 @@ ol.format.GeoJSON.prototype.readGeometryFromObject = function(object) {
 
 
 /**
- * @inheritDoc
+ * Read the projection from the GeoJSON source file.
+ *
+ * @param {ArrayBuffer|Document|Node|Object|string} object Source.
+ * @return {ol.proj.Projection} Projection.
  */
 ol.format.GeoJSON.prototype.readProjection = function(object) {
   var geoJSONObject = /** @type {GeoJSONObject} */ (object);
@@ -388,6 +425,16 @@ ol.format.GeoJSON.prototype.readProjection = function(object) {
     return this.defaultProjection_;
   }
 };
+
+
+/**
+ * Encode a feature as a GeoJSON Feature object.
+ *
+ * @function
+ * @param {ol.Feature} feature Feature.
+ * @return {ArrayBuffer|Node|Object|string} Result.
+ */
+ol.format.GeoJSON.prototype.writeFeature;
 
 
 /**
@@ -413,6 +460,16 @@ ol.format.GeoJSON.prototype.writeFeatureObject = function(feature) {
   }
   return object;
 };
+
+
+/**
+ * Encode an array of features as GeoJSON.
+ *
+ * @function
+ * @param {Array.<ol.Feature>} features Features.
+ * @return {ArrayBuffer|Node|Object|string} Result.
+ */
+ol.format.GeoJSON.prototype.writeFeatures;
 
 
 /**
