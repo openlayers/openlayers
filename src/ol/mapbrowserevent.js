@@ -90,7 +90,7 @@ ol.MapBrowserEvent.prototype.stopPropagation = function() {
  * @param {string} type Event type.
  * @param {ol.Map} map Map.
  * @param {ol.pointer.PointerEvent} pointerEvent Pointer event.
- * @param {?ol.FrameState=} opt_frameState Frame state.
+ * @param {?oli.FrameState=} opt_frameState Frame state.
  * @todo stability experimental
  */
 ol.MapBrowserPointerEvent = function(type, map, pointerEvent, opt_frameState) {
