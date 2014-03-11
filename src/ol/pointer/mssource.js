@@ -102,9 +102,9 @@ ol.pointer.MsSource.prototype.getMapping = function() {
  */
 ol.pointer.MsSource.prototype.prepareEvent_ = function(inEvent) {
   var e = inEvent;
-  if (goog.isNumber(inEvent.pointerType)) {
+  if (goog.isNumber(inEvent.getBrowserEvent().pointerType)) {
     e = this.dispatcher.cloneEvent(inEvent, inEvent.getBrowserEvent());
-    e.pointerType = this.POINTER_TYPES[inEvent.pointerType];
+    e.pointerType = this.POINTER_TYPES[inEvent.getBrowserEvent().pointerType];
   }
 
   return e;
@@ -112,7 +112,7 @@ ol.pointer.MsSource.prototype.prepareEvent_ = function(inEvent) {
 
 
 /**
- * Remove the mouse from the list of active pointers.
+ * Remove this pointer from the list of active pointers.
  * @param {number} pointerId
  */
 ol.pointer.MsSource.prototype.cleanup = function(pointerId) {
@@ -126,7 +126,7 @@ ol.pointer.MsSource.prototype.cleanup = function(pointerId) {
  * @param {goog.events.BrowserEvent} inEvent
  */
 ol.pointer.MsSource.prototype.msPointerDown = function(inEvent) {
-  this.pointerMap.set(inEvent.pointerId, inEvent);
+  this.pointerMap.set(inEvent.getBrowserEvent().pointerId, inEvent);
   var e = this.prepareEvent_(inEvent);
   this.dispatcher.down(e, inEvent);
 };
@@ -151,7 +151,7 @@ ol.pointer.MsSource.prototype.msPointerMove = function(inEvent) {
 ol.pointer.MsSource.prototype.msPointerUp = function(inEvent) {
   var e = this.prepareEvent_(inEvent);
   this.dispatcher.up(e, inEvent);
-  this.cleanup(inEvent.pointerId);
+  this.cleanup(inEvent.getBrowserEvent().pointerId);
 };
 
 
@@ -185,7 +185,7 @@ ol.pointer.MsSource.prototype.msPointerOver = function(inEvent) {
 ol.pointer.MsSource.prototype.msPointerCancel = function(inEvent) {
   var e = this.prepareEvent_(inEvent);
   this.dispatcher.cancel(e, inEvent);
-  this.cleanup(inEvent.pointerId);
+  this.cleanup(inEvent.getBrowserEvent().pointerId);
 };
 
 
