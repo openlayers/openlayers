@@ -13,7 +13,6 @@ goog.require('goog.log.Logger');
 goog.require('goog.object');
 goog.require('goog.style');
 goog.require('goog.webgl');
-goog.require('ol.FrameState');
 goog.require('ol.Tile');
 goog.require('ol.css');
 goog.require('ol.layer.Image');
@@ -271,7 +270,7 @@ ol.renderer.webgl.Map.prototype.createLayerRenderer = function(layer) {
 
 /**
  * @param {ol.render.EventType} type Event type.
- * @param {ol.FrameState} frameState Frame state.
+ * @param {oli.FrameState} frameState Frame state.
  * @private
  */
 ol.renderer.webgl.Map.prototype.dispatchComposeEvent_ =
@@ -311,7 +310,7 @@ ol.renderer.webgl.Map.prototype.disposeInternal = function() {
 
 /**
  * @param {ol.Map} map Map.
- * @param {ol.FrameState} frameState Frame state.
+ * @param {oli.FrameState} frameState Frame state.
  * @private
  */
 ol.renderer.webgl.Map.prototype.expireCache_ = function(map, frameState) {

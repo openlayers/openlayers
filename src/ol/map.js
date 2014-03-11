@@ -31,7 +31,6 @@ goog.require('goog.vec.Mat4');
 goog.require('ol.BrowserFeature');
 goog.require('ol.Collection');
 goog.require('ol.CollectionEventType');
-goog.require('ol.FrameState');
 goog.require('ol.IView');
 goog.require('ol.MapBrowserEvent');
 goog.require('ol.MapBrowserEvent.EventType');
@@ -212,7 +211,7 @@ ol.Map = function(options) {
 
   /**
    * @private
-   * @type {?ol.FrameState}
+   * @type {?oli.FrameState}
    */
   this.frameState_ = null;
 
@@ -1152,7 +1151,7 @@ ol.Map.prototype.renderFrame_ = function(time) {
   var size = this.getSize();
   var view = this.getView();
   var view2D = goog.isDef(view) ? this.getView().getView2D() : undefined;
-  /** @type {?ol.FrameState} */
+  /** @type {?oli.FrameState} */
   var frameState = null;
   if (goog.isDef(size) && hasArea(size) &&
       goog.isDef(view2D) && view2D.isDef()) {
@@ -1167,7 +1166,7 @@ ol.Map.prototype.renderFrame_ = function(time) {
       layerStates[goog.getUid(layer)] = layerStatesArray[i];
     }
     view2DState = view2D.getView2DState();
-    frameState = {
+    frameState = /** @type {oli.FrameState} */ ({
       animate: false,
       attributions: {},
       coordinateToPixelMatrix: this.coordinateToPixelMatrix_,
@@ -1187,7 +1186,7 @@ ol.Map.prototype.renderFrame_ = function(time) {
       view2DState: view2DState,
       viewHints: viewHints,
       wantedTiles: {}
-    };
+    });
     if (this.ol3Logo_) {
       frameState.logos[ol.OL3_LOGO_URL] = ol.OL3_URL;
     }

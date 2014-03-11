@@ -21,7 +21,7 @@ ol.animation.bounce = function(options) {
   return (
       /**
        * @param {ol.Map} map Map.
-       * @param {?ol.FrameState} frameState Frame state.
+       * @param {?oli.FrameState} frameState Frame state.
        */
       function(map, frameState) {
         if (frameState.time < start) {
@@ -58,7 +58,7 @@ ol.animation.pan = function(options) {
   return (
       /**
        * @param {ol.Map} map Map.
-       * @param {?ol.FrameState} frameState Frame state.
+       * @param {?oli.FrameState} frameState Frame state.
        */
       function(map, frameState) {
         if (frameState.time < start) {
@@ -96,7 +96,7 @@ ol.animation.rotate = function(options) {
   return (
       /**
        * @param {ol.Map} map Map.
-       * @param {?ol.FrameState} frameState Frame state.
+       * @param {?oli.FrameState} frameState Frame state.
        */
       function(map, frameState) {
         if (frameState.time < start) {
@@ -132,7 +132,7 @@ ol.animation.zoom = function(options) {
   return (
       /**
        * @param {ol.Map} map Map.
-       * @param {?ol.FrameState} frameState Frame state.
+       * @param {?oli.FrameState} frameState Frame state.
        */
       function(map, frameState) {
         if (frameState.time < start) {
