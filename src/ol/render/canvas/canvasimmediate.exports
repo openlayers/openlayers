@@ -1,3 +1,4 @@
+@exportSymbol ol.render.canvas.Immediate
 @exportProperty ol.render.canvas.Immediate.prototype.drawAsync
 @exportProperty ol.render.canvas.Immediate.prototype.drawCircleGeometry
 @exportProperty ol.render.canvas.Immediate.prototype.drawFeature
