@@ -3,7 +3,6 @@ goog.provide('ol.interaction.Select');
 goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('goog.events');
-goog.require('goog.events.EventType');
 goog.require('goog.functions');
 goog.require('goog.object');
 goog.require('ol.Collection');
@@ -94,14 +93,6 @@ ol.interaction.Select = function(options) {
     style: options.style
   });
   this.addFeaturesListeners_(this.featureOverlay_.getFeatures());
-  goog.events.listen(this.featureOverlay_, goog.events.EventType.CHANGE,
-      this.handleFeaturesChanged_, false, this);
-
-  /**
-   * @type {ol.Collection}
-   * @private
-   */
-  this.observedFeatures_ = this.featureOverlay_.getFeatures();
 
   /**
    * @type {Object.<number, function(ol.geom.Geometry, Object): boolean>}
@@ -118,8 +109,6 @@ goog.inherits(ol.interaction.Select, ol.interaction.Interaction);
  */
 ol.interaction.Select.prototype.disposeInternal = function() {
   this.removeFeaturesListeners_(this.featureOverlay_.getFeatures());
-  goog.events.unlisten(this.featureOverlay_, goog.events.EventType.CHANGE,
-      this.handleFeaturesChanged_, false, this);
   goog.base(this, 'disposeInternal');
 };
 
@@ -215,20 +204,6 @@ ol.interaction.Select.prototype.handleFeatureRemoved_ = function(evt) {
           this.renderGeometryFunctions_[goog.getUid(layer)]);
       delete this.renderGeometryFunctions_[goog.getUid(layer)];
     }
-  }
-};
-
-
-/**
- * @param {goog.events.Event} evt Event
- * @private
- */
-ol.interaction.Select.prototype.handleFeaturesChanged_ = function(evt) {
-  var features = this.featureOverlay_.getFeatures();
-  if (features !== this.observedFeatures_) {
-    this.removeFeaturesListeners_(this.observedFeatures_);
-    this.addFeaturesListeners_(features);
-    this.observedFeatures_ = features;
   }
 };
 
