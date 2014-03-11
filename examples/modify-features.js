@@ -183,18 +183,6 @@ var realDataLayer = new ol.layer.Vector({
   style: styleFunction
 });
 
-// FIXME Handle this elsewhere - this is only to not render selected features
-// on the original layer, and it does not work for MultiGeometry geometries.
-vectorLayer.setRenderGeometryFunctions(new ol.Collection([function(geometry) {
-  var selected = select.getFeatures().getArray();
-  for (var i = 0, ii = selected.length; i < ii; ++i) {
-    if (selected[i].getGeometry() === geometry) {
-      return false;
-    }
-  }
-  return true;
-}]));
-
 var overlayStyle = (function() {
   var styles = {};
   styles['Polygon'] = [
