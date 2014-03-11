@@ -709,7 +709,7 @@
 
 /**
  * @typedef {Object} olx.source.MapQuestOptions
- * @property {string} layer Layer.
+ * @property {string} layer Layer. Possible values are `osm`, `sat`, and `hyb`.
  * @property {ol.TileLoadFunctionType|undefined} tileLoadFunction Optional
  *     function to load a tile given a URL.
  * @todo stability experimental
