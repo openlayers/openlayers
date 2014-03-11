@@ -490,7 +490,7 @@ ol.render.canvas.Replay.prototype.reverseHitDetectionInstructions_ =
       goog.asserts.assert(begin == -1);
       begin = i;
     } else if (type == ol.render.canvas.Instruction.BEGIN_GEOMETRY) {
-      instruction[2] = i + 1;
+      instruction[2] = i;
       goog.asserts.assert(begin >= 0);
       ol.array.reverseSubArray(this.hitDetectionInstructions, begin, i);
       begin = -1;

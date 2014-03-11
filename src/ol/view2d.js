@@ -431,6 +431,101 @@ ol.View2D.prototype.fitExtent = function(extent, size) {
 
 
 /**
+ * Fit the given geometry based on the given map size and border.
+ * Take care on the map angle.
+ * @param {ol.geom.SimpleGeometry} geometry Geometry.
+ * @param {ol.Size} size Box pixel size.
+ * @param {olx.View2D.fitGeometryOptions=} opt_options Options.
+ * @todo stability experimental
+ */
+ol.View2D.prototype.fitGeometry = function(geometry, size, opt_options) {
+  var options = goog.isDef(opt_options) ? opt_options : {};
+
+  var padding = goog.isDef(options.padding) ? options.padding : [0, 0, 0, 0];
+  var constrainResolution = goog.isDef(options.constrainResolution) ?
+      options.constrainResolution : true;
+  var nearest = goog.isDef(options.nearest) ? options.nearest : false;
+  var minResolution = goog.isDef(options.minResolution) ?
+      options.minResolution : 0;
+  var coords = geometry.getFlatCoordinates();
+
+  // calculate rotated extent
+  var rotation = this.getRotation();
+  goog.asserts.assert(goog.isDef(rotation));
+  var cosAngle = Math.cos(-rotation);
+  var sinAngle = Math.sin(-rotation);
+  var minRotX = +Infinity;
+  var minRotY = +Infinity;
+  var maxRotX = -Infinity;
+  var maxRotY = -Infinity;
+  var stride = geometry.getStride();
+  for (var i = 0, ii = coords.length; i < ii; i += stride) {
+    var rotX = coords[i] * cosAngle - coords[i + 1] * sinAngle;
+    var rotY = coords[i] * sinAngle + coords[i + 1] * cosAngle;
+    minRotX = Math.min(minRotX, rotX);
+    minRotY = Math.min(minRotY, rotY);
+    maxRotX = Math.max(maxRotX, rotX);
+    maxRotY = Math.max(maxRotY, rotY);
+  }
+
+  // calculate resolution
+  var resolution = this.getResolutionForExtent(
+      [minRotX, minRotY, maxRotX, maxRotY],
+      [size[0] - padding[1] - padding[3], size[1] - padding[0] - padding[2]]);
+  resolution = isNaN(resolution) ? minResolution :
+      Math.max(resolution, minResolution);
+  if (constrainResolution) {
+    var constrainedResolution = this.constrainResolution(resolution, 0, 0);
+    if (!nearest && constrainedResolution < resolution) {
+      constrainedResolution = this.constrainResolution(
+          constrainedResolution, -1, 0);
+    }
+    resolution = constrainedResolution;
+  }
+  this.setResolution(resolution);
+
+  // calculate center
+  sinAngle = -sinAngle; // go back to original rotation
+  var centerRotX = (minRotX + maxRotX) / 2;
+  var centerRotY = (minRotY + maxRotY) / 2;
+  centerRotX += (padding[1] - padding[3]) / 2 * resolution;
+  centerRotY += (padding[0] - padding[2]) / 2 * resolution;
+  var centerX = centerRotX * cosAngle - centerRotY * sinAngle;
+  var centerY = centerRotY * cosAngle + centerRotX * sinAngle;
+
+  this.setCenter([centerX, centerY]);
+};
+
+
+/**
+ * Center on coordinate and view position.
+ * Take care on the map angle.
+ * @param {ol.Coordinate} coordinate Coordinate.
+ * @param {ol.Size} size Box pixel size.
+ * @param {ol.Pixel} position Position on the view to center on.
+ * @todo stability experimental
+ */
+ol.View2D.prototype.centerOn = function(coordinate, size, position) {
+  // calculate rotated position
+  var rotation = this.getRotation();
+  var cosAngle = Math.cos(-rotation);
+  var sinAngle = Math.sin(-rotation);
+  var rotX = coordinate[0] * cosAngle - coordinate[1] * sinAngle;
+  var rotY = coordinate[1] * cosAngle + coordinate[0] * sinAngle;
+  var resolution = this.getResolution();
+  rotX += (size[0] / 2 - position[0]) * resolution;
+  rotY += (position[1] - size[1] / 2) * resolution;
+
+  // go back to original angle
+  sinAngle = -sinAngle; // go back to original rotation
+  var centerX = rotX * cosAngle - rotY * sinAngle;
+  var centerY = rotY * cosAngle + rotX * sinAngle;
+
+  this.setCenter([centerX, centerY]);
+};
+
+
+/**
  * @return {boolean} Is defined.
  */
 ol.View2D.prototype.isDef = function() {
