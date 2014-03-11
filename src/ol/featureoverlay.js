@@ -144,14 +144,18 @@ ol.FeatureOverlay.prototype.handleFeaturesRemove_ =
  * @private
  */
 ol.FeatureOverlay.prototype.handleMapPostCompose_ = function(event) {
-  if (goog.isNull(this.features_) || !goog.isDef(this.styleFunction_)) {
+  if (goog.isNull(this.features_)) {
     return;
+  }
+  var styleFunction = this.styleFunction_;
+  if (!goog.isDef(styleFunction)) {
+    styleFunction = ol.feature.defaultStyleFunction;
   }
   var resolution = event.frameState.view2DState.resolution;
   var vectorContext = event.vectorContext;
   var i, ii, feature, styles;
   this.features_.forEach(function(feature) {
-    styles = this.styleFunction_(feature, resolution);
+    styles = styleFunction(feature, resolution);
     if (!goog.isDefAndNotNull(styles)) {
       return;
     }
