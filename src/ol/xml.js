@@ -417,6 +417,36 @@ ol.xml.makeReplacer = function(valueReader, opt_this) {
  * @return {ol.xml.Parser} Parser.
  * @template T
  */
+ol.xml.makeObjectPropertyPusher =
+    function(valueReader, opt_property, opt_this) {
+  goog.asserts.assert(goog.isDef(valueReader));
+  return (
+      /**
+       * @param {Node} node Node.
+       * @param {Array.<*>} objectStack Object stack.
+       */
+      function(node, objectStack) {
+        var value = valueReader.call(opt_this, node, objectStack);
+        if (goog.isDef(value)) {
+          var object = /** @type {Object} */
+              (objectStack[objectStack.length - 1]);
+          var property = goog.isDef(opt_property) ?
+              opt_property : node.localName;
+          goog.asserts.assert(goog.isObject(object));
+          var array = goog.object.setIfUndefined(object, property, []);
+          array.push(value);
+        }
+      });
+};
+
+
+/**
+ * @param {function(this: T, Node, Array.<*>): *} valueReader Value reader.
+ * @param {string=} opt_property Property.
+ * @param {T=} opt_this The object to use as `this` in `valueReader`.
+ * @return {ol.xml.Parser} Parser.
+ * @template T
+ */
 ol.xml.makeObjectPropertySetter =
     function(valueReader, opt_property, opt_this) {
   goog.asserts.assert(goog.isDef(valueReader));

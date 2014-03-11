@@ -8,7 +8,6 @@ goog.require('goog.dom.TagName');
 goog.require('goog.object');
 goog.require('goog.style');
 goog.require('ol.Attribution');
-goog.require('ol.FrameState');
 goog.require('ol.control.Control');
 goog.require('ol.css');
 
@@ -68,7 +67,7 @@ goog.inherits(ol.control.Attribution, ol.control.Control);
 
 
 /**
- * @param {?ol.FrameState} frameState Frame state.
+ * @param {?oli.FrameState} frameState Frame state.
  * @return {Array.<Object.<string, ol.Attribution>>} Attributions.
  */
 ol.control.Attribution.prototype.getSourceAttributions =
@@ -120,7 +119,7 @@ ol.control.Attribution.prototype.handleMapPostrender = function(mapEvent) {
 
 /**
  * @private
- * @param {?ol.FrameState} frameState Frame state.
+ * @param {?oli.FrameState} frameState Frame state.
  */
 ol.control.Attribution.prototype.updateElement_ = function(frameState) {
 

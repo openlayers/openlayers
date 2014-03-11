@@ -57,6 +57,18 @@ ol.style.Text = function(opt_options) {
    * @type {ol.style.Stroke}
    */
   this.stroke_ = goog.isDef(options.stroke) ? options.stroke : null;
+
+  /**
+   * @private
+   * @type {number}
+   */
+  this.offsetX_ = goog.isDef(options.offsetX) ? options.offsetX : 0;
+
+  /**
+   * @private
+   * @type {number}
+   */
+  this.offsetY_ = goog.isDef(options.offsetY) ? options.offsetY : 0;
 };
 
 
@@ -65,6 +77,22 @@ ol.style.Text = function(opt_options) {
  */
 ol.style.Text.prototype.getFont = function() {
   return this.font_;
+};
+
+
+/**
+ * @return {number} Horizontal text offset.
+ */
+ol.style.Text.prototype.getOffsetX = function() {
+  return this.offsetX_;
+};
+
+
+/**
+ * @return {number} Vertical text offset.
+ */
+ol.style.Text.prototype.getOffsetY = function() {
+  return this.offsetY_;
 };
 
 

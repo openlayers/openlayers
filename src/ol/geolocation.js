@@ -3,13 +3,16 @@
 goog.provide('ol.Geolocation');
 goog.provide('ol.GeolocationProperty');
 
+goog.require('goog.asserts');
 goog.require('goog.events');
 goog.require('goog.events.EventType');
 goog.require('goog.math');
 goog.require('ol.BrowserFeature');
 goog.require('ol.Coordinate');
 goog.require('ol.Object');
+goog.require('ol.geom.Geometry');
 goog.require('ol.proj');
+goog.require('ol.sphere.WGS84');
 
 
 /**
@@ -17,6 +20,7 @@ goog.require('ol.proj');
  */
 ol.GeolocationProperty = {
   ACCURACY: 'accuracy',
+  ACCURACY_GEOMETRY: 'accuracyGeometry',
   ALTITUDE: 'altitude',
   ALTITUDE_ACCURACY: 'altitudeAccuracy',
   HEADING: 'heading',
@@ -50,6 +54,8 @@ ol.GeolocationProperty = {
  * @todo stability experimental
  * @todo observable accuracy {number} readonly the accuracy of the position
  *       measurement in meters
+ * @todo observable accuracyGeometry {ol.geom.Geometry} readonly a
+ *       geometry of the position accuracy.
  * @todo observable altitude {number} readonly the altitude of the position in
  *       meters above mean sea level
  * @todo observable altitudeAccuracy {number} readonly the accuracy of the
@@ -176,9 +182,14 @@ ol.Geolocation.prototype.positionChange_ = function(position) {
     this.position_[0] = coords.longitude;
     this.position_[1] = coords.latitude;
   }
-  this.set(ol.GeolocationProperty.POSITION, this.transform_(this.position_));
+  var projectedPosition = this.transform_(this.position_);
+  this.set(ol.GeolocationProperty.POSITION, projectedPosition);
   this.set(ol.GeolocationProperty.SPEED,
       goog.isNull(coords.speed) ? undefined : coords.speed);
+
+  var geometry = ol.sphere.WGS84.circle(this.position_, coords.accuracy);
+  geometry.transform(this.transform_);
+  this.set(ol.GeolocationProperty.ACCURACY_GEOMETRY, geometry);
 };
 
 
@@ -205,6 +216,21 @@ goog.exportProperty(
     ol.Geolocation.prototype,
     'getAccuracy',
     ol.Geolocation.prototype.getAccuracy);
+
+
+/**
+ * Get a geometry of the position accuracy.
+ * @return {?ol.geom.Geometry} Accuracy geometry.
+ * @todo stability experimental
+ */
+ol.Geolocation.prototype.getAccuracyGeometry = function() {
+  return /** @type {?ol.geom.Geometry} */ (
+      this.get(ol.GeolocationProperty.ACCURACY_GEOMETRY) || null);
+};
+goog.exportProperty(
+    ol.Geolocation.prototype,
+    'getAccuracyGeometry',
+    ol.Geolocation.prototype.getAccuracyGeometry);
 
 
 /**

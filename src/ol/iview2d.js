@@ -1,16 +1,6 @@
 goog.provide('ol.IView2D');
-goog.provide('ol.View2DState');
 
 goog.require('ol.Coordinate');
-
-
-/**
- * @typedef {{center: ol.Coordinate,
- *            projection: ol.proj.Projection,
- *            resolution: number,
- *            rotation: number}}
- */
-ol.View2DState;
 
 
 
@@ -55,7 +45,7 @@ ol.IView2D.prototype.getRotation = function() {
 
 
 /**
- * @return {ol.View2DState} View2D state.
+ * @return {oli.View2DState} View2D state.
  */
 ol.IView2D.prototype.getView2DState = function() {
 };

@@ -23,7 +23,7 @@ ol.render.EventType = {
  * @param {ol.render.EventType} type Type.
  * @param {Object=} opt_target Target.
  * @param {ol.render.IVectorContext=} opt_vectorContext Vector context.
- * @param {ol.FrameState=} opt_frameState Frame state.
+ * @param {oli.FrameState=} opt_frameState Frame state.
  * @param {?CanvasRenderingContext2D=} opt_context Context.
  * @param {?ol.webgl.Context=} opt_glContext WebGL Context.
  */
@@ -39,7 +39,7 @@ ol.render.Event = function(
   this.vectorContext = opt_vectorContext;
 
   /**
-   * @type {ol.FrameState|undefined}
+   * @type {oli.FrameState|undefined}
    */
   this.frameState = opt_frameState;
 

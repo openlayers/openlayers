@@ -325,16 +325,20 @@ ol.render.canvas.Replay.prototype.replay_ = function(
         goog.asserts.assert(goog.isString(instruction[3]));
         text = /** @type {string} */ (instruction[3]);
         goog.asserts.assert(goog.isNumber(instruction[4]));
-        rotation = /** @type {number} */ (instruction[4]);
+        var offsetX = /** @type {number} */ (instruction[4]);
         goog.asserts.assert(goog.isNumber(instruction[5]));
-        scale = /** @type {number} */ (instruction[5]) * pixelRatio;
-        goog.asserts.assert(goog.isBoolean(instruction[6]));
-        fill = /** @type {boolean} */ (instruction[6]);
-        goog.asserts.assert(goog.isBoolean(instruction[7]));
-        stroke = /** @type {boolean} */ (instruction[7]);
+        var offsetY = /** @type {number} */ (instruction[5]);
+        goog.asserts.assert(goog.isNumber(instruction[6]));
+        rotation = /** @type {number} */ (instruction[6]);
+        goog.asserts.assert(goog.isNumber(instruction[7]));
+        scale = /** @type {number} */ (instruction[7]) * pixelRatio;
+        goog.asserts.assert(goog.isBoolean(instruction[8]));
+        fill = /** @type {boolean} */ (instruction[8]);
+        goog.asserts.assert(goog.isBoolean(instruction[9]));
+        stroke = /** @type {boolean} */ (instruction[9]);
         for (; d < dd; d += 2) {
-          x = pixelCoordinates[d];
-          y = pixelCoordinates[d + 1];
+          x = pixelCoordinates[d] + offsetX;
+          y = pixelCoordinates[d + 1] + offsetY;
           if (scale != 1 || rotation !== 0) {
             ol.vec.Mat4.makeTransform2D(
                 localTransform, x, y, scale, scale, rotation, -x, -y);
@@ -1441,6 +1445,18 @@ ol.render.canvas.TextReplay = function(tolerance, maxExtent) {
    * @private
    * @type {number}
    */
+  this.textOffsetX_ = 0;
+
+  /**
+   * @private
+   * @type {number}
+   */
+  this.textOffsetY_ = 0;
+
+  /**
+   * @private
+   * @type {number}
+   */
   this.textRotation_ = 0;
 
   /**
@@ -1499,7 +1515,8 @@ ol.render.canvas.TextReplay.prototype.drawText =
   var stroke = !goog.isNull(this.textStrokeState_);
   var drawTextInstruction = [
     ol.render.canvas.Instruction.DRAW_TEXT, myBegin, myEnd, this.text_,
-    this.textRotation_, this.textScale_, fill, stroke];
+    this.textOffsetX_, this.textOffsetY_, this.textRotation_, this.textScale_,
+    fill, stroke];
   this.instructions.push(drawTextInstruction);
   this.hitDetectionInstructions.push(drawTextInstruction);
   this.endGeometry(geometry, data);
@@ -1670,6 +1687,8 @@ ol.render.canvas.TextReplay.prototype.setTextStyle = function(textStyle) {
       }
     }
     var textFont = textStyle.getFont();
+    var textOffsetX = textStyle.getOffsetX();
+    var textOffsetY = textStyle.getOffsetY();
     var textRotation = textStyle.getRotation();
     var textScale = textStyle.getScale();
     var textText = textStyle.getText();
@@ -1694,6 +1713,8 @@ ol.render.canvas.TextReplay.prototype.setTextStyle = function(textStyle) {
       textState.textBaseline = textBaseline;
     }
     this.text_ = goog.isDef(textText) ? textText : '';
+    this.textOffsetX_ = goog.isDef(textOffsetX) ? textOffsetX : 0;
+    this.textOffsetY_ = goog.isDef(textOffsetY) ? textOffsetY : 0;
     this.textRotation_ = goog.isDef(textRotation) ? textRotation : 0;
     this.textScale_ = goog.isDef(textScale) ? textScale : 1;
   }

@@ -168,6 +168,18 @@ ol.render.canvas.Immediate =
    * @private
    * @type {number}
    */
+  this.textOffsetX_ = 0;
+
+  /**
+   * @private
+   * @type {number}
+   */
+  this.textOffsetY_ = 0;
+
+  /**
+   * @private
+   * @type {number}
+   */
   this.textRotation_ = 0;
 
   /**
@@ -293,8 +305,8 @@ ol.render.canvas.Immediate.prototype.drawText_ =
       flatCoordinates, stride, this.transform_, this.pixelCoordinates_);
   var context = this.context_;
   for (; offset < end; offset += stride) {
-    var x = pixelCoordinates[offset];
-    var y = pixelCoordinates[offset + 1];
+    var x = pixelCoordinates[offset] + this.textOffsetX_;
+    var y = pixelCoordinates[offset + 1] + this.textOffsetY_;
     if (this.textRotation_ !== 0 || this.textScale_ != 1) {
       var localTransform = ol.vec.Mat4.makeTransform2D(this.tmpLocalTransform_,
           x, y, this.textScale_, this.textScale_, this.textRotation_, -x, -y);
@@ -932,6 +944,8 @@ ol.render.canvas.Immediate.prototype.setTextStyle = function(textStyle) {
       };
     }
     var textFont = textStyle.getFont();
+    var textOffsetX = textStyle.getOffsetX();
+    var textOffsetY = textStyle.getOffsetY();
     var textRotation = textStyle.getRotation();
     var textScale = textStyle.getScale();
     var textText = textStyle.getText();
@@ -946,6 +960,8 @@ ol.render.canvas.Immediate.prototype.setTextStyle = function(textStyle) {
           textTextBaseline : ol.render.canvas.defaultTextBaseline
     };
     this.text_ = goog.isDef(textText) ? textText : '';
+    this.textOffsetX_ = goog.isDef(textOffsetX) ? textOffsetX : 0;
+    this.textOffsetY_ = goog.isDef(textOffsetY) ? textOffsetY : 0;
     this.textRotation_ = goog.isDef(textRotation) ? textRotation : 0;
     this.textScale_ = this.pixelRatio_ * (goog.isDef(textScale) ?
         textScale : 1);

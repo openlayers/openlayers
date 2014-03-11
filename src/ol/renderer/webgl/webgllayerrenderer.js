@@ -2,7 +2,6 @@ goog.provide('ol.renderer.webgl.Layer');
 
 goog.require('goog.vec.Mat4');
 goog.require('goog.webgl');
-goog.require('ol.FrameState');
 goog.require('ol.color.Matrix');
 goog.require('ol.layer.Layer');
 goog.require('ol.render.Event');
@@ -89,7 +88,7 @@ goog.inherits(ol.renderer.webgl.Layer, ol.renderer.Layer);
 
 
 /**
- * @param {ol.FrameState} frameState Frame state.
+ * @param {oli.FrameState} frameState Frame state.
  * @param {number} framebufferDimension Framebuffer dimension.
  * @protected
  */
@@ -143,7 +142,7 @@ ol.renderer.webgl.Layer.prototype.bindFramebuffer =
 
 
 /**
- * @param {ol.FrameState} frameState Frame state.
+ * @param {oli.FrameState} frameState Frame state.
  * @param {ol.layer.LayerState} layerState Layer state.
  * @param {ol.webgl.Context} context Context.
  */
@@ -231,7 +230,7 @@ ol.renderer.webgl.Layer.prototype.composeFrame =
 /**
  * @param {ol.render.EventType} type Event type.
  * @param {ol.webgl.Context} context WebGL context.
- * @param {ol.FrameState} frameState Frame state.
+ * @param {oli.FrameState} frameState Frame state.
  * @private
  */
 ol.renderer.webgl.Layer.prototype.dispatchComposeEvent_ =

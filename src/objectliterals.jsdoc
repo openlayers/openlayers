@@ -1021,6 +1021,10 @@
 /**
  * @typedef {Object} olx.style.TextOptions
  * @property {string|undefined} font Font.
+ * @property {number|undefined} offsetX Horizontal text offset in pixels.
+ *     A positive will shift the text right. Default is `0`.
+ * @property {number|undefined} offsetY Vertical text offset in pixels.
+ *     A positive will shift the text down. Default is `0`.
  * @property {number|undefined} scale Scale.
  * @property {number|undefined} rotation Rotation.
  * @property {string|undefined} text Text.
