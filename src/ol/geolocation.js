@@ -10,8 +10,9 @@ goog.require('goog.math');
 goog.require('ol.BrowserFeature');
 goog.require('ol.Coordinate');
 goog.require('ol.Object');
-goog.require('ol.geom.Circle');
+goog.require('ol.geom.Geometry');
 goog.require('ol.proj');
+goog.require('ol.sphere.WGS84');
 
 
 /**
@@ -53,8 +54,8 @@ ol.GeolocationProperty = {
  * @todo stability experimental
  * @todo observable accuracy {number} readonly the accuracy of the position
  *       measurement in meters
- * @todo observable accuracyGeometry {ol.geom.Circle} readonly a
- *       `ol.geom.Circle` geometry of the position accuracy.
+ * @todo observable accuracyGeometry {ol.geom.Geometry} readonly a
+ *       geometry of the position accuracy.
  * @todo observable altitude {number} readonly the altitude of the position in
  *       meters above mean sea level
  * @todo observable altitudeAccuracy {number} readonly the accuracy of the
@@ -186,14 +187,9 @@ ol.Geolocation.prototype.positionChange_ = function(position) {
   this.set(ol.GeolocationProperty.SPEED,
       goog.isNull(coords.speed) ? undefined : coords.speed);
 
-  var accuracyGeometry = this.getAccuracyGeometry();
-  if (goog.isNull(accuracyGeometry)) {
-    accuracyGeometry = new ol.geom.Circle(projectedPosition, coords.accuracy);
-  } else {
-    goog.asserts.assertInstanceof(accuracyGeometry, ol.geom.Circle);
-    accuracyGeometry.setCenterAndRadius(projectedPosition, coords.accuracy);
-  }
-  this.set(ol.GeolocationProperty.ACCURACY_GEOMETRY, accuracyGeometry);
+  var geometry = ol.sphere.WGS84.circle(this.position_, coords.accuracy);
+  geometry.transform(this.transform_);
+  this.set(ol.GeolocationProperty.ACCURACY_GEOMETRY, geometry);
 };
 
 
@@ -223,12 +219,12 @@ goog.exportProperty(
 
 
 /**
- * Get a `ol.geom.Circle` geometry of the position accuracy.
- * @return {?ol.geom.Circle} Accuracy geometry.
+ * Get a geometry of the position accuracy.
+ * @return {?ol.geom.Geometry} Accuracy geometry.
  * @todo stability experimental
  */
 ol.Geolocation.prototype.getAccuracyGeometry = function() {
-  return /** @type {?ol.geom.Circle} */ (
+  return /** @type {?ol.geom.Geometry} */ (
       this.get(ol.GeolocationProperty.ACCURACY_GEOMETRY) || null);
 };
 goog.exportProperty(

@@ -1,7 +1,3 @@
-// FIXME use an ol.geom.Circle to display a circle with accuracy
-// FIXME this circle will need to compensate for the pointResolution of the
-// FIXME EPSG:3857 projection
-
 goog.require('ol.Feature');
 goog.require('ol.FeatureOverlay');
 goog.require('ol.Geolocation');
