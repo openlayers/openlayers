@@ -164,16 +164,11 @@ ol.BrowserFeature.HAS_TOUCH = ol.ASSUME_TOUCH ||
 
 /**
  * True if browser supports pointer events.
- *
- * `navigation.pointerEnabled` is actually not part of the
- * spec: https://www.w3.org/Bugs/Public/show_bug.cgi?id=22890#c3
- *
  * @const
  * @type {boolean}
  * @todo stability experimental
  */
-ol.BrowserFeature.HAS_POINTER =
-    !!(goog.global.navigator.pointerEnabled);
+ol.BrowserFeature.HAS_POINTER = 'PointerEvent' in goog.global;
 
 
 /**
