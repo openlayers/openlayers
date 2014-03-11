@@ -362,7 +362,12 @@ ol.render.canvas.Immediate.prototype.drawRings_ =
 
 
 /**
- * @inheritDoc
+ * Register a function to be called for rendering at a given zIndex.  The
+ * function will be called asynchronously.  The callback will receive a
+ * reference to {@link ol.render.canvas.Immediate} context for drawing.
+ *
+ * @param {number} zIndex Z index.
+ * @param {function(ol.render.canvas.Immediate)} callback Callback.
  */
 ol.render.canvas.Immediate.prototype.drawAsync = function(zIndex, callback) {
   var zIndexKey = zIndex.toString();
@@ -376,7 +381,12 @@ ol.render.canvas.Immediate.prototype.drawAsync = function(zIndex, callback) {
 
 
 /**
- * @inheritDoc
+ * Render a circle geometry into the canvas.  Rendering is immediate and uses
+ * the current fill and stroke styles.
+ *
+ * @param {ol.geom.Circle} circleGeometry Circle geometry.
+ * @param {Object} data Opaque data object,
+ * @todo stability experimental
  */
 ol.render.canvas.Immediate.prototype.drawCircleGeometry =
     function(circleGeometry, data) {
@@ -413,7 +423,15 @@ ol.render.canvas.Immediate.prototype.drawCircleGeometry =
 
 
 /**
- * @inheritDoc
+ * Render a feature into the canvas.  In order to respect the zIndex of the
+ * style this method draws asynchronously and thus *after* calls to
+ * drawXxxxGeometry have been finished, effectively drawing the feature
+ * *on top* of everything else.  You probably should be using
+ * {@link ol.FeatureOverlay} instead of calling this method directly.
+ *
+ * @param {ol.Feature} feature Feature.
+ * @param {ol.style.Style} style Style.
+ * @todo stability experimental
  */
 ol.render.canvas.Immediate.prototype.drawFeature = function(feature, style) {
   var geometry = feature.getGeometry();
@@ -438,7 +456,13 @@ ol.render.canvas.Immediate.prototype.drawFeature = function(feature, style) {
 
 
 /**
- * @inheritDoc
+ * Render a GeometryCollection to the canvas.  Rendering is immediate and
+ * uses the current styles appropriate for each geometry in the collection.
+ *
+ * @param {ol.geom.GeometryCollection} geometryCollectionGeometry Geometry
+ *     collection.
+ * @param {Object} data Opaque data object.
+ * @todo stability experimental
  */
 ol.render.canvas.Immediate.prototype.drawGeometryCollectionGeometry =
     function(geometryCollectionGeometry, data) {
@@ -455,7 +479,12 @@ ol.render.canvas.Immediate.prototype.drawGeometryCollectionGeometry =
 
 
 /**
- * @inheritDoc
+ * Render a Point geometry into the canvas.  Rendering is immediate and uses
+ * the current style.
+ *
+ * @param {ol.geom.Point} pointGeometry Point geometry.
+ * @param {Object} data Opaque data object.
+ * @todo stability experimental
  */
 ol.render.canvas.Immediate.prototype.drawPointGeometry =
     function(pointGeometry, data) {
@@ -471,7 +500,12 @@ ol.render.canvas.Immediate.prototype.drawPointGeometry =
 
 
 /**
- * @inheritDoc
+ * Render a MultiPoint geometry  into the canvas.  Rendering is immediate and
+ * uses the current style.
+ *
+ * @param {ol.geom.MultiPoint} multiPointGeometry MultiPoint geometry.
+ * @param {Object} data Opaque data object.
+ * @todo stability experimental
  */
 ol.render.canvas.Immediate.prototype.drawMultiPointGeometry =
     function(multiPointGeometry, data) {
@@ -487,7 +521,12 @@ ol.render.canvas.Immediate.prototype.drawMultiPointGeometry =
 
 
 /**
- * @inheritDoc
+ * Render a LineString into the canvas.  Rendering is immediate and uses
+ * the current style.
+ *
+ * @param {ol.geom.LineString} lineStringGeometry Line string geometry.
+ * @param {Object} data Opaque data object.
+ * @todo stability experimental
  */
 ol.render.canvas.Immediate.prototype.drawLineStringGeometry =
     function(lineStringGeometry, data) {
@@ -511,7 +550,13 @@ ol.render.canvas.Immediate.prototype.drawLineStringGeometry =
 
 
 /**
- * @inheritDoc
+ * Render a MultiLineString geometry into the canvas.  Rendering is immediate
+ * and uses the current style.
+ *
+ * @param {ol.geom.MultiLineString} multiLineStringGeometry
+ *     MultiLineString geometry.
+ * @param {Object} data Opaque data object.
+ * @todo stability experimental
  */
 ol.render.canvas.Immediate.prototype.drawMultiLineStringGeometry =
     function(multiLineStringGeometry, data) {
@@ -542,7 +587,12 @@ ol.render.canvas.Immediate.prototype.drawMultiLineStringGeometry =
 
 
 /**
- * @inheritDoc
+ * Render a Polygon geometry into the canvas.  Rendering is immediate and uses
+ * the current style.
+ *
+ * @param {ol.geom.Polygon} polygonGeometry Polygon geometry.
+ * @param {Object} data Opaque data object.
+ * @todo stability experimental
  */
 ol.render.canvas.Immediate.prototype.drawPolygonGeometry =
     function(polygonGeometry, data) {
@@ -577,7 +627,11 @@ ol.render.canvas.Immediate.prototype.drawPolygonGeometry =
 
 
 /**
- * @inheritDoc
+ * Render MultiPolygon geometry into the canvas.  Rendering is immediate and
+ * uses the current style.
+ * @param {ol.geom.MultiPolygon} multiPolygonGeometry MultiPolygon geometry.
+ * @param {Object} data Opaque data object.
+ * @todo stability experimental
  */
 ol.render.canvas.Immediate.prototype.drawMultiPolygonGeometry =
     function(multiPolygonGeometry, data) {
@@ -747,7 +801,12 @@ ol.render.canvas.Immediate.prototype.setContextTextState_ =
 
 
 /**
- * @inheritDoc
+ * Set the fill and stroke style for subsequent draw operations.  To clear
+ * either fill or stroke styles, pass null for the appropriate parameter.
+ *
+ * @param {ol.style.Fill} fillStyle Fill style.
+ * @param {ol.style.Stroke} strokeStyle Stroke style.
+ * @todo stability experimental
  */
 ol.render.canvas.Immediate.prototype.setFillStrokeStyle =
     function(fillStyle, strokeStyle) {
@@ -788,7 +847,11 @@ ol.render.canvas.Immediate.prototype.setFillStrokeStyle =
 
 
 /**
- * @inheritDoc
+ * Set the image style for subsequent draw operations.  Pass null to remove
+ * the image style.
+ *
+ * @param {ol.style.Image} imageStyle Image style.
+ * @todo stability experimental
  */
 ol.render.canvas.Immediate.prototype.setImageStyle = function(imageStyle) {
   if (goog.isNull(imageStyle)) {
@@ -823,7 +886,11 @@ ol.render.canvas.Immediate.prototype.setImageStyle = function(imageStyle) {
 
 
 /**
- * @inheritDoc
+ * Set the text style for subsequent draw operations.  Pass null to
+ * remove the text style.
+ *
+ * @param {ol.style.Text} textStyle Text style.
+ * @todo stability experimental
  */
 ol.render.canvas.Immediate.prototype.setTextStyle = function(textStyle) {
   if (goog.isNull(textStyle)) {
