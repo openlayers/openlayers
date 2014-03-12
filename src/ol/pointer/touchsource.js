@@ -437,12 +437,13 @@ ol.pointer.TouchSource.prototype.dedupSynthMouse_ = function(inEvent) {
     // remember x/y of last touch
     var lt = new goog.math.Coordinate(t.clientX, t.clientY);
     lts.push(lt);
-    var fn = goog.bind(function(lts, lt) {
+
+    goog.global.setTimeout(function() {
+      // remove touch after timeout
       var i = lts.indexOf(lt);
       if (i > -1) {
         lts.splice(i, 1);
       }
-    }, null, lts, lt);
-    goog.global.setTimeout(fn, this.DEDUP_TIMEOUT);
+    }, this.DEDUP_TIMEOUT);
   }
 };
