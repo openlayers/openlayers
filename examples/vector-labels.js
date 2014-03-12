@@ -17,9 +17,12 @@ var myDom = {
     'text': document.getElementById('points-text'),
     'align': document.getElementById('points-align'),
     'baseline': document.getElementById('points-baseline'),
+    'rotation': document.getElementById('points-rotation'),
     'font': document.getElementById('points-font'),
     'weight': document.getElementById('points-weight'),
     'size': document.getElementById('points-size'),
+    'offset-x': document.getElementById('points-offset-x'),
+    'offset-y': document.getElementById('points-offset-y'),
     'color': document.getElementById('points-color'),
     'outline': document.getElementById('points-outline'),
     'outline-width': document.getElementById('points-outline-width'),
@@ -29,9 +32,12 @@ var myDom = {
     'text': document.getElementById('lines-text'),
     'align': document.getElementById('lines-align'),
     'baseline': document.getElementById('lines-baseline'),
+    'rotation': document.getElementById('lines-rotation'),
     'font': document.getElementById('lines-font'),
     'weight': document.getElementById('lines-weight'),
     'size': document.getElementById('lines-size'),
+    'offset-x': document.getElementById('lines-offset-x'),
+    'offset-y': document.getElementById('lines-offset-y'),
     'color': document.getElementById('lines-color'),
     'outline': document.getElementById('lines-outline'),
     'outline-width': document.getElementById('lines-outline-width'),
@@ -41,9 +47,12 @@ var myDom = {
     'text': document.getElementById('polygons-text'),
     'align': document.getElementById('polygons-align'),
     'baseline': document.getElementById('polygons-baseline'),
+    'rotation': document.getElementById('polygons-rotation'),
     'font': document.getElementById('polygons-font'),
     'weight': document.getElementById('polygons-weight'),
     'size': document.getElementById('polygons-size'),
+    'offset-x': document.getElementById('polygons-offset-x'),
+    'offset-y': document.getElementById('polygons-offset-y'),
     'color': document.getElementById('polygons-color'),
     'outline': document.getElementById('polygons-outline'),
     'outline-width': document.getElementById('polygons-outline-width'),
@@ -74,7 +83,10 @@ var createTextStyle = function(feature, resolution, dom) {
   var align = dom['align'].value;
   var baseline = dom['baseline'].value;
   var size = dom['size'].value;
+  var offsetX = parseInt(dom['offset-x'].value, 10);
+  var offsetY = parseInt(dom['offset-y'].value, 10);
   var weight = dom['weight'].value;
+  var rotation = parseFloat(dom['rotation'].value);
   var font = weight + ' ' + size + ' ' + dom['font'].value;
   var fillColor = dom['color'].value;
   var outlineColor = dom['outline'].value;
@@ -86,7 +98,10 @@ var createTextStyle = function(feature, resolution, dom) {
     font: font,
     text: getText(feature, resolution, dom),
     fill: new ol.style.Fill({color: fillColor}),
-    stroke: new ol.style.Stroke({color: outlineColor, width: outlineWidth})
+    stroke: new ol.style.Stroke({color: outlineColor, width: outlineWidth}),
+    offsetX: offsetX,
+    offsetY: offsetY,
+    rotation: rotation
   });
 };
 
