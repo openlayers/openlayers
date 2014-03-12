@@ -115,6 +115,13 @@
             <option value="top">Top</option>
           </select>
           <br />
+          <label>Rotation: </label>
+          <select id="points-rotation">
+            <option value="0">0°</option>
+            <option value="0.785398164">45°</option>
+            <option value="1.570796327">90°</option>
+          </select>
+          <br />
           <label>Font: </label>
           <select id="points-font">
             <option value="Arial" selected="selected">Arial</option>
@@ -131,6 +138,12 @@
           <br />
           <label>Size: </label>
           <input type="text" value="12px" id="points-size" />
+          <br />
+          <label>Offset X:</label>
+          <input type="text" value="0" id="points-offset-x" />
+          <br />
+          <label>Offset Y:</label>
+          <input type="text" value="0" id="points-offset-y" />
           <br />
           <label>Color :</label>
           <input type="text" value="#aa3300" id="points-color" />
@@ -191,6 +204,13 @@
             <option value="top">Top</option>
           </select>
           <br />
+          <label>Rotation: </label>
+          <select id="lines-rotation">
+            <option value="0">0°</option>
+            <option value="0.785398164">45°</option>
+            <option value="1.570796327">90°</option>
+          </select>
+          <br />
           <label>Font: </label>
           <select id="lines-font">
             <option value="Arial">Arial</option>
@@ -207,6 +227,12 @@
           <br />
           <label>Size: </label>
           <input type="text" value="12px" id="lines-size" />
+          <br />
+          <label>Offset X:</label>
+          <input type="text" value="0" id="lines-offset-x" />
+          <br />
+          <label>Offset Y:</label>
+          <input type="text" value="0" id="lines-offset-y" />
           <br />
           <label>Color :</label>
           <input type="text" value="green" id="lines-color" />
@@ -267,6 +293,13 @@
             <option value="top">Top</option>
           </select>
           <br />
+          <label>Rotation: </label>
+          <select id="polygons-rotation">
+            <option value="0">0°</option>
+            <option value="0.785398164">45°</option>
+            <option value="1.570796327">90°</option>
+          </select>
+          <br />
           <label>Font: </label>
           <select id="polygons-font">
             <option value="Arial">Arial</option>
@@ -283,6 +316,12 @@
           <br />
           <label>Size: </label>
           <input type="text" value="10px" id="polygons-size" />
+          <br />
+          <label>Offset X:</label>
+          <input type="text" value="0" id="polygons-offset-x" />
+          <br />
+          <label>Offset Y:</label>
+          <input type="text" value="0" id="polygons-offset-y" />
           <br />
           <label>Color :</label>
           <input type="text" value="blue" id="polygons-color" />
@@ -304,7 +343,7 @@
           <p id="shortdesc">Example of GeoJSON features with labels.</p>
           <div id="docs">
             <p>See the <a href="vector-labels.js" target="_blank">vector-labels.js source</a> to see how this is done.</p>
-            <p><strong>Note:</strong> The 'Text/Wrap' option is currently not working properly.  It's supposed to add '\n' to allow multiline labels, but spaces are currently shown instead.</p>
+            <p><strong>Note:</strong> The 'Text/Wrap' option is currently not working properly.  This is because ol3 uses Canvas's strokeText and fillText functions that do not support text wrapping.</p>
           </div>
           <div id="tags">geojson, vector, openstreetmap, label</div>
         </div>
