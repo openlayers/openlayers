@@ -364,6 +364,16 @@ ol.format.GPX.WPT_PARSERS_ = ol.xml.makeParsersNS(
 
 
 /**
+ * Read the first feature from a GPX source.
+ *
+ * @function
+ * @param {ArrayBuffer|Document|Node|Object|string} source Source.
+ * @return {ol.Feature} Feature.
+ */
+ol.format.GPX.prototype.readFeature;
+
+
+/**
  * @inheritDoc
  */
 ol.format.GPX.prototype.readFeatureFromNode = function(node) {
@@ -382,6 +392,16 @@ ol.format.GPX.prototype.readFeatureFromNode = function(node) {
   }
   return feature;
 };
+
+
+/**
+ * Read all features from a GPX source.
+ *
+ * @function
+ * @param {ArrayBuffer|Document|Node|Object|string} source Source.
+ * @return {Array.<ol.Feature>} Features.
+ */
+ol.format.GPX.prototype.readFeatures;
 
 
 /**
@@ -405,6 +425,15 @@ ol.format.GPX.prototype.readFeaturesFromNode = function(node) {
   }
   return [];
 };
+
+
+/**
+ * Read the projection from a GPX source.
+ *
+ * @param {ArrayBuffer|Document|Node|Object|string} source Source.
+ * @return {ol.proj.Projection} Projection.
+ */
+ol.format.GPX.prototype.readProjection;
 
 
 /**
@@ -768,6 +797,16 @@ ol.format.GPX.V1_1 = function() {
   goog.base(this);
 };
 goog.inherits(ol.format.GPX.V1_1, ol.format.GPX);
+
+
+/**
+ * Encode an array of features in the GPX format.
+ *
+ * @function
+ * @param {Array.<ol.Feature>} features Features.
+ * @return {ArrayBuffer|Node|Object|string} Result.
+ */
+ol.format.GPX.prototype.writeFeatures;
 
 
 /**
