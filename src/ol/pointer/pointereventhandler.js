@@ -209,12 +209,12 @@ ol.pointer.PointerEventHandler.prototype.removeEvents_ = function(events) {
 ol.pointer.PointerEventHandler.prototype.cloneEvent =
     function(browserEvent, inEvent) {
   var eventCopy = {}, p;
-  for (var i = 0; i < ol.pointer.CLONE_PROPS.length; i++) {
-    p = ol.pointer.CLONE_PROPS[i];
+  for (var i = 0, ii = ol.pointer.CLONE_PROPS.length; i < ii; i++) {
+    p = ol.pointer.CLONE_PROPS[i][0];
     eventCopy[p] =
         browserEvent[p] ||
         inEvent[p] ||
-        ol.pointer.CLONE_DEFAULTS[i];
+        ol.pointer.CLONE_PROPS[i][1];
   }
 
   return eventCopy;
@@ -455,79 +455,40 @@ ol.pointer.EventType = {
 
 
 /**
- * List of properties to copy when cloning an event.
- * @type {Array.<string>}
+ * Properties to copy when cloning an event, with default values.
+ * @type {Array.<Array>}
  */
 ol.pointer.CLONE_PROPS = [
   // MouseEvent
-  'bubbles',
-  'cancelable',
-  'view',
-  'detail',
-  'screenX',
-  'screenY',
-  'clientX',
-  'clientY',
-  'ctrlKey',
-  'altKey',
-  'shiftKey',
-  'metaKey',
-  'button',
-  'relatedTarget',
+  ['bubbles', false],
+  ['cancelable', false],
+  ['view', null],
+  ['detail', null],
+  ['screenX', 0],
+  ['screenY', 0],
+  ['clientX', 0],
+  ['clientY', 0],
+  ['ctrlKey', false],
+  ['altKey', false],
+  ['shiftKey', false],
+  ['metaKey', false],
+  ['button', 0],
+  ['relatedTarget', null],
   // DOM Level 3
-  'buttons',
+  ['buttons', 0],
   // PointerEvent
-  'pointerId',
-  'width',
-  'height',
-  'pressure',
-  'tiltX',
-  'tiltY',
-  'pointerType',
-  'hwTimestamp',
-  'isPrimary',
+  ['pointerId', 0],
+  ['width', 0],
+  ['height', 0],
+  ['pressure', 0],
+  ['tiltX', 0],
+  ['tiltY', 0],
+  ['pointerType', ''],
+  ['hwTimestamp', 0],
+  ['isPrimary', false],
   // event instance
-  'type',
-  'target',
-  'currentTarget',
-  'which'
-];
-
-
-/**
- * List of default values when cloning an event.
- */
-ol.pointer.CLONE_DEFAULTS = [
-  // MouseEvent
-  false,
-  false,
-  null,
-  null,
-  0,
-  0,
-  0,
-  0,
-  false,
-  false,
-  false,
-  false,
-  0,
-  null,
-  // DOM Level 3
-  0,
-  // PointerEvent
-  0,
-  0,
-  0,
-  0,
-  0,
-  0,
-  '',
-  0,
-  false,
-  // event instance
-  '',
-  null,
-  null,
-  0
+  ['type', ''],
+  ['target', null],
+  ['currentTarget', null],
+  ['which', 0]
 ];
