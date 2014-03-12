@@ -4,7 +4,7 @@ goog.require('goog.asserts');
 goog.require('ol.extent');
 goog.require('ol.geom.GeometryType');
 goog.require('ol.geom.SimpleGeometry');
-goog.require('ol.geom.flat');
+goog.require('ol.geom.flat.deflate');
 
 
 
@@ -174,7 +174,7 @@ ol.geom.Circle.prototype.setCenterAndRadius =
     }
     /** @type {Array.<number>} */
     var flatCoordinates = this.flatCoordinates;
-    var offset = ol.geom.flat.deflateCoordinate(
+    var offset = ol.geom.flat.deflate.coordinate(
         flatCoordinates, 0, center, this.stride);
     flatCoordinates[offset++] = flatCoordinates[0] + radius;
     var i, ii;

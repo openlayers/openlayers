@@ -7,9 +7,15 @@ goog.require('ol.geom.GeometryType');
 goog.require('ol.geom.MultiPoint');
 goog.require('ol.geom.Polygon');
 goog.require('ol.geom.SimpleGeometry');
-goog.require('ol.geom.closest');
-goog.require('ol.geom.flat');
-goog.require('ol.geom.simplify');
+goog.require('ol.geom.flat.area');
+goog.require('ol.geom.flat.center');
+goog.require('ol.geom.flat.closest');
+goog.require('ol.geom.flat.contains');
+goog.require('ol.geom.flat.deflate');
+goog.require('ol.geom.flat.inflate');
+goog.require('ol.geom.flat.interiorpoint');
+goog.require('ol.geom.flat.orient');
+goog.require('ol.geom.flat.simplify');
 
 
 
@@ -118,11 +124,11 @@ ol.geom.MultiPolygon.prototype.closestPointXY =
     return minSquaredDistance;
   }
   if (this.maxDeltaRevision_ != this.getRevision()) {
-    this.maxDelta_ = Math.sqrt(ol.geom.closest.getssMaxSquaredDelta(
+    this.maxDelta_ = Math.sqrt(ol.geom.flat.closest.getssMaxSquaredDelta(
         this.flatCoordinates, 0, this.endss_, this.stride, 0));
     this.maxDeltaRevision_ = this.getRevision();
   }
-  return ol.geom.closest.getssClosestPoint(
+  return ol.geom.flat.closest.getssClosestPoint(
       this.getOrientedFlatCoordinates(), 0, this.endss_, this.stride,
       this.maxDelta_, true, x, y, closestPoint, minSquaredDistance);
 };
@@ -132,7 +138,7 @@ ol.geom.MultiPolygon.prototype.closestPointXY =
  * @inheritDoc
  */
 ol.geom.MultiPolygon.prototype.containsXY = function(x, y) {
-  return ol.geom.flat.linearRingssContainsXY(
+  return ol.geom.flat.contains.linearRingssContainsXY(
       this.getOrientedFlatCoordinates(), 0, this.endss_, this.stride, x, y);
 };
 
@@ -142,7 +148,7 @@ ol.geom.MultiPolygon.prototype.containsXY = function(x, y) {
  * @todo stability experimental
  */
 ol.geom.MultiPolygon.prototype.getArea = function() {
-  return ol.geom.flat.linearRingssArea(
+  return ol.geom.flat.area.linearRingss(
       this.getOrientedFlatCoordinates(), 0, this.endss_, this.stride);
 };
 
@@ -152,7 +158,7 @@ ol.geom.MultiPolygon.prototype.getArea = function() {
  * @todo stability experimental
  */
 ol.geom.MultiPolygon.prototype.getCoordinates = function() {
-  return ol.geom.flat.inflateCoordinatesss(
+  return ol.geom.flat.inflate.coordinatesss(
       this.flatCoordinates, 0, this.endss_, this.stride);
 };
 
@@ -170,9 +176,9 @@ ol.geom.MultiPolygon.prototype.getEndss = function() {
  */
 ol.geom.MultiPolygon.prototype.getFlatInteriorPoints = function() {
   if (this.flatInteriorPointsRevision_ != this.getRevision()) {
-    var flatCenters = ol.geom.flat.linearRingssGetFlatCenters(
+    var flatCenters = ol.geom.flat.center.linearRingss(
         this.flatCoordinates, 0, this.endss_, this.stride);
-    this.flatInteriorPoints_ = ol.geom.flat.linearRingssGetInteriorPoints(
+    this.flatInteriorPoints_ = ol.geom.flat.interiorpoint.linearRingss(
         this.getOrientedFlatCoordinates(), 0, this.endss_, this.stride,
         flatCenters);
     this.flatInteriorPointsRevision_ = this.getRevision();
@@ -203,8 +209,9 @@ ol.geom.MultiPolygon.prototype.getOrientedFlatCoordinates = function() {
       this.orientedFlatCoordinates_ = flatCoordinates;
     } else {
       this.orientedFlatCoordinates_ = flatCoordinates.slice();
-      this.orientedFlatCoordinates_.length = ol.geom.flat.orientLinearRingss(
-          this.orientedFlatCoordinates_, 0, this.endss_, this.stride);
+      this.orientedFlatCoordinates_.length =
+          ol.geom.flat.orient.orientLinearRingss(
+              this.orientedFlatCoordinates_, 0, this.endss_, this.stride);
     }
     this.orientedRevision_ = this.getRevision();
   }
@@ -219,7 +226,7 @@ ol.geom.MultiPolygon.prototype.getSimplifiedGeometryInternal =
     function(squaredTolerance) {
   var simplifiedFlatCoordinates = [];
   var simplifiedEndss = [];
-  simplifiedFlatCoordinates.length = ol.geom.simplify.quantizess(
+  simplifiedFlatCoordinates.length = ol.geom.flat.simplify.quantizess(
       this.flatCoordinates, 0, this.endss_, this.stride,
       Math.sqrt(squaredTolerance),
       simplifiedFlatCoordinates, 0, simplifiedEndss);
@@ -312,7 +319,7 @@ ol.geom.MultiPolygon.prototype.setCoordinates =
     if (goog.isNull(this.flatCoordinates)) {
       this.flatCoordinates = [];
     }
-    var endss = ol.geom.flat.deflateCoordinatesss(
+    var endss = ol.geom.flat.deflate.coordinatesss(
         this.flatCoordinates, 0, coordinates, this.stride, this.endss_);
     var lastEnds = endss[endss.length - 1];
     this.flatCoordinates.length = lastEnds.length === 0 ?

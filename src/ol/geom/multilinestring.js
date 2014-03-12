@@ -6,9 +6,11 @@ goog.require('ol.extent');
 goog.require('ol.geom.GeometryType');
 goog.require('ol.geom.LineString');
 goog.require('ol.geom.SimpleGeometry');
-goog.require('ol.geom.closest');
-goog.require('ol.geom.flat');
-goog.require('ol.geom.simplify');
+goog.require('ol.geom.flat.closest');
+goog.require('ol.geom.flat.deflate');
+goog.require('ol.geom.flat.inflate');
+goog.require('ol.geom.flat.interpolate');
+goog.require('ol.geom.flat.simplify');
 
 
 
@@ -84,11 +86,11 @@ ol.geom.MultiLineString.prototype.closestPointXY =
     return minSquaredDistance;
   }
   if (this.maxDeltaRevision_ != this.getRevision()) {
-    this.maxDelta_ = Math.sqrt(ol.geom.closest.getsMaxSquaredDelta(
+    this.maxDelta_ = Math.sqrt(ol.geom.flat.closest.getsMaxSquaredDelta(
         this.flatCoordinates, 0, this.ends_, this.stride, 0));
     this.maxDeltaRevision_ = this.getRevision();
   }
-  return ol.geom.closest.getsClosestPoint(
+  return ol.geom.flat.closest.getsClosestPoint(
       this.flatCoordinates, 0, this.ends_, this.stride,
       this.maxDelta_, false, x, y, closestPoint, minSquaredDistance);
 };
@@ -134,7 +136,7 @@ ol.geom.MultiLineString.prototype.getCoordinateAtM =
  * @todo stability experimental
  */
 ol.geom.MultiLineString.prototype.getCoordinates = function() {
-  return ol.geom.flat.inflateCoordinatess(
+  return ol.geom.flat.inflate.coordinatess(
       this.flatCoordinates, 0, this.ends_, this.stride);
 };
 
@@ -198,7 +200,7 @@ ol.geom.MultiLineString.prototype.getFlatMidpoints = function() {
   var i, ii;
   for (i = 0, ii = ends.length; i < ii; ++i) {
     var end = ends[i];
-    var midpoint = ol.geom.flat.lineStringInterpolate(
+    var midpoint = ol.geom.flat.interpolate.lineString(
         flatCoordinates, offset, end, stride, 0.5);
     goog.array.extend(midpoints, midpoint);
     offset = end;
@@ -214,7 +216,7 @@ ol.geom.MultiLineString.prototype.getSimplifiedGeometryInternal =
     function(squaredTolerance) {
   var simplifiedFlatCoordinates = [];
   var simplifiedEnds = [];
-  simplifiedFlatCoordinates.length = ol.geom.simplify.douglasPeuckers(
+  simplifiedFlatCoordinates.length = ol.geom.flat.simplify.douglasPeuckers(
       this.flatCoordinates, 0, this.ends_, this.stride, squaredTolerance,
       simplifiedFlatCoordinates, 0, simplifiedEnds);
   var simplifiedMultiLineString = new ol.geom.MultiLineString(null);
@@ -246,7 +248,7 @@ ol.geom.MultiLineString.prototype.setCoordinates =
     if (goog.isNull(this.flatCoordinates)) {
       this.flatCoordinates = [];
     }
-    var ends = ol.geom.flat.deflateCoordinatess(
+    var ends = ol.geom.flat.deflate.coordinatess(
         this.flatCoordinates, 0, coordinates, this.stride, this.ends_);
     this.flatCoordinates.length = ends.length === 0 ? 0 : ends[ends.length - 1];
     this.dispatchChangeEvent();

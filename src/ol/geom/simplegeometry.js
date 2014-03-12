@@ -5,7 +5,7 @@ goog.require('goog.functions');
 goog.require('goog.object');
 goog.require('ol.extent');
 goog.require('ol.geom.Geometry');
-goog.require('ol.geom.flat');
+goog.require('ol.geom.flat.transform');
 
 
 
@@ -260,7 +260,7 @@ ol.geom.transformSimpleGeometry2D =
     return null;
   } else {
     var stride = simpleGeometry.getStride();
-    return ol.geom.flat.transform2D(
+    return ol.geom.flat.transform.transform2D(
         flatCoordinates, stride, transform, opt_dest);
   }
 };
