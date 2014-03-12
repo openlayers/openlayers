@@ -3,14 +3,14 @@ goog.provide('ol.interaction');
 goog.require('ol.Collection');
 goog.require('ol.Kinetic');
 goog.require('ol.interaction.DoubleClickZoom');
+goog.require('ol.interaction.DragPan');
 goog.require('ol.interaction.DragRotate');
 goog.require('ol.interaction.DragZoom');
 goog.require('ol.interaction.KeyboardPan');
 goog.require('ol.interaction.KeyboardZoom');
 goog.require('ol.interaction.MouseWheelZoom');
-goog.require('ol.interaction.Pan');
-goog.require('ol.interaction.Rotate');
-goog.require('ol.interaction.Zoom');
+goog.require('ol.interaction.PinchRotate');
+goog.require('ol.interaction.PinchZoom');
 
 
 /**
@@ -50,24 +50,24 @@ ol.interaction.defaults = function(opt_options) {
     }));
   }
 
-  var pan = goog.isDef(options.pan) ?
-      options.pan : true;
-  if (pan) {
-    interactions.push(new ol.interaction.Pan({
+  var dragPan = goog.isDef(options.dragPan) ?
+      options.dragPan : true;
+  if (dragPan) {
+    interactions.push(new ol.interaction.DragPan({
       kinetic: kinetic
     }));
   }
 
-  var rotate = goog.isDef(options.rotate) ?
-      options.rotate : true;
-  if (rotate) {
-    interactions.push(new ol.interaction.Rotate());
+  var pinchRotate = goog.isDef(options.pinchRotate) ?
+      options.pinchRotate : true;
+  if (pinchRotate) {
+    interactions.push(new ol.interaction.PinchRotate());
   }
 
-  var zoom = goog.isDef(options.zoom) ?
-      options.zoom : true;
-  if (zoom) {
-    interactions.push(new ol.interaction.Zoom({
+  var pinchZoom = goog.isDef(options.pinchZoom) ?
+      options.pinchZoom : true;
+  if (pinchZoom) {
+    interactions.push(new ol.interaction.PinchZoom({
       duration: options.zoomDuration
     }));
   }

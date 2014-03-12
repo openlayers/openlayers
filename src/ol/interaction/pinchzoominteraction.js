@@ -1,6 +1,6 @@
 // FIXME works for View2D only
 
-goog.provide('ol.interaction.Zoom');
+goog.provide('ol.interaction.PinchZoom');
 
 goog.require('goog.asserts');
 goog.require('goog.style');
@@ -15,10 +15,10 @@ goog.require('ol.interaction.Pointer');
  * on a touch screen.
  * @constructor
  * @extends {ol.interaction.Pointer}
- * @param {olx.interaction.ZoomOptions=} opt_options Options.
+ * @param {olx.interaction.PinchZoomOptions=} opt_options Options.
  * @todo stability experimental
  */
-ol.interaction.Zoom = function(opt_options) {
+ol.interaction.PinchZoom = function(opt_options) {
 
   var options = goog.isDef(opt_options) ? opt_options : {};
 
@@ -49,13 +49,13 @@ ol.interaction.Zoom = function(opt_options) {
   this.lastScaleDelta_ = 1;
 
 };
-goog.inherits(ol.interaction.Zoom, ol.interaction.Pointer);
+goog.inherits(ol.interaction.PinchZoom, ol.interaction.Pointer);
 
 
 /**
  * @inheritDoc
  */
-ol.interaction.Zoom.prototype.handlePointerDrag =
+ol.interaction.PinchZoom.prototype.handlePointerDrag =
     function(mapBrowserEvent) {
   goog.asserts.assert(this.targetPointers.length >= 2);
   var scaleDelta = 1.0;
@@ -100,7 +100,7 @@ ol.interaction.Zoom.prototype.handlePointerDrag =
 /**
  * @inheritDoc
  */
-ol.interaction.Zoom.prototype.handlePointerUp =
+ol.interaction.PinchZoom.prototype.handlePointerUp =
     function(mapBrowserEvent) {
   if (this.targetPointers.length < 2) {
     var map = mapBrowserEvent.map;
@@ -123,7 +123,7 @@ ol.interaction.Zoom.prototype.handlePointerUp =
 /**
  * @inheritDoc
  */
-ol.interaction.Zoom.prototype.handlePointerDown =
+ol.interaction.PinchZoom.prototype.handlePointerDown =
     function(mapBrowserEvent) {
   if (this.targetPointers.length >= 2) {
     var map = mapBrowserEvent.map;

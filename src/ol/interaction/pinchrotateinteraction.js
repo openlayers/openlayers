@@ -1,6 +1,6 @@
 // FIXME works for View2D only
 
-goog.provide('ol.interaction.Rotate');
+goog.provide('ol.interaction.PinchRotate');
 
 goog.require('goog.asserts');
 goog.require('goog.style');
@@ -21,10 +21,10 @@ ol.interaction.ROTATE_ANIMATION_DURATION = 250;
  * on a touch screen.
  * @constructor
  * @extends {ol.interaction.Pointer}
- * @param {olx.interaction.RotateOptions=} opt_options Options.
+ * @param {olx.interaction.PinchRotateOptions=} opt_options Options.
  * @todo stability experimental
  */
-ol.interaction.Rotate = function(opt_options) {
+ol.interaction.PinchRotate = function(opt_options) {
 
   goog.base(this);
 
@@ -61,13 +61,13 @@ ol.interaction.Rotate = function(opt_options) {
   this.threshold_ = goog.isDef(options.threshold) ? options.threshold : 0.3;
 
 };
-goog.inherits(ol.interaction.Rotate, ol.interaction.Pointer);
+goog.inherits(ol.interaction.PinchRotate, ol.interaction.Pointer);
 
 
 /**
  * @inheritDoc
  */
-ol.interaction.Rotate.prototype.handlePointerDrag =
+ol.interaction.PinchRotate.prototype.handlePointerDrag =
     function(mapBrowserEvent) {
   goog.asserts.assert(this.targetPointers.length >= 2);
   var rotationDelta = 0.0;
@@ -118,7 +118,7 @@ ol.interaction.Rotate.prototype.handlePointerDrag =
 /**
  * @inheritDoc
  */
-ol.interaction.Rotate.prototype.handlePointerUp =
+ol.interaction.PinchRotate.prototype.handlePointerUp =
     function(mapBrowserEvent) {
   if (this.targetPointers.length < 2) {
     var map = mapBrowserEvent.map;
@@ -140,7 +140,7 @@ ol.interaction.Rotate.prototype.handlePointerUp =
 /**
  * @inheritDoc
  */
-ol.interaction.Rotate.prototype.handlePointerDown =
+ol.interaction.PinchRotate.prototype.handlePointerDown =
     function(mapBrowserEvent) {
   if (this.targetPointers.length >= 2) {
     var map = mapBrowserEvent.map;

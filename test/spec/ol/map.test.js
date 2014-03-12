@@ -144,9 +144,9 @@ describe('ol.Map', function() {
         keyboard: false,
         mouseWheelZoom: false,
         shiftDragZoom: false,
-        pan: false,
-        rotate: false,
-        zoom: false
+        dragPan: false,
+        pinchRotate: false,
+        pinchZoom: false
       };
     });
 

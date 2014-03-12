@@ -1,5 +1,5 @@
 // FIXME works for View2D only
-goog.provide('ol.interaction.Pan');
+goog.provide('ol.interaction.DragPan');
 
 goog.require('goog.asserts');
 goog.require('ol.Kinetic');
@@ -16,10 +16,10 @@ goog.require('ol.interaction.Pointer');
  * Allows the user to pan the map by dragging the map.
  * @constructor
  * @extends {ol.interaction.Pointer}
- * @param {olx.interaction.PanOptions=} opt_options Options.
+ * @param {olx.interaction.DragPanOptions=} opt_options Options.
  * @todo stability experimental
  */
-ol.interaction.Pan = function(opt_options) {
+ol.interaction.DragPan = function(opt_options) {
 
   goog.base(this);
 
@@ -56,13 +56,13 @@ ol.interaction.Pan = function(opt_options) {
   this.noKinetic_ = false;
 
 };
-goog.inherits(ol.interaction.Pan, ol.interaction.Pointer);
+goog.inherits(ol.interaction.DragPan, ol.interaction.Pointer);
 
 
 /**
  * @inheritDoc
  */
-ol.interaction.Pan.prototype.handlePointerDrag = function(mapBrowserEvent) {
+ol.interaction.DragPan.prototype.handlePointerDrag = function(mapBrowserEvent) {
   goog.asserts.assert(this.targetPointers.length >= 1);
   var centroid =
       ol.interaction.Pointer.centroid(this.targetPointers);
@@ -91,7 +91,7 @@ ol.interaction.Pan.prototype.handlePointerDrag = function(mapBrowserEvent) {
 /**
  * @inheritDoc
  */
-ol.interaction.Pan.prototype.handlePointerUp =
+ol.interaction.DragPan.prototype.handlePointerUp =
     function(mapBrowserEvent) {
   var map = mapBrowserEvent.map;
   var view2D = map.getView().getView2D();
@@ -124,7 +124,7 @@ ol.interaction.Pan.prototype.handlePointerUp =
 /**
  * @inheritDoc
  */
-ol.interaction.Pan.prototype.handlePointerDown =
+ol.interaction.DragPan.prototype.handlePointerDown =
     function(mapBrowserEvent) {
   if (this.targetPointers.length > 0 && this.condition_(mapBrowserEvent)) {
     var map = mapBrowserEvent.map;
