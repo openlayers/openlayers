@@ -86,6 +86,16 @@ ol.format.IGC.prototype.getExtensions = function() {
 
 
 /**
+ * Read the feature from the IGC source.
+ *
+ * @function
+ * @param {ArrayBuffer|Document|Node|Object|string} source Source.
+ * @return {ol.Feature} Feature.
+ */
+ol.format.IGC.prototype.readFeature;
+
+
+/**
  * @inheritDoc
  */
 ol.format.IGC.prototype.readFeatureFromText = function(text) {
@@ -157,6 +167,17 @@ ol.format.IGC.prototype.readFeatureFromText = function(text) {
 
 
 /**
+ * Read the feature from the source. As IGC sources contain a single
+ * feature, this will return the feature in an array.
+ *
+ * @function
+ * @param {ArrayBuffer|Document|Node|Object|string} source Source.
+ * @return {Array.<ol.Feature>} Features.
+ */
+ol.format.IGC.prototype.readFeatures;
+
+
+/**
  * @inheritDoc
  */
 ol.format.IGC.prototype.readFeaturesFromText = function(text) {
@@ -167,6 +188,16 @@ ol.format.IGC.prototype.readFeaturesFromText = function(text) {
     return [];
   }
 };
+
+
+/**
+ * Read the projection from the IGC source.
+ *
+ * @function
+ * @param {ArrayBuffer|Document|Node|Object|string} source Source.
+ * @return {ol.proj.Projection} Projection.
+ */
+ol.format.IGC.prototype.readProjection;
 
 
 /**
