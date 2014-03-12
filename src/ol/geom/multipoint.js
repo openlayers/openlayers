@@ -1,5 +1,7 @@
 goog.provide('ol.geom.MultiPoint');
 
+goog.require('goog.array');
+goog.require('goog.asserts');
 goog.require('ol.extent');
 goog.require('ol.geom.GeometryType');
 goog.require('ol.geom.Point');
@@ -20,6 +22,20 @@ ol.geom.MultiPoint = function(coordinates, opt_layout) {
   this.setCoordinates(coordinates, opt_layout);
 };
 goog.inherits(ol.geom.MultiPoint, ol.geom.SimpleGeometry);
+
+
+/**
+ * @param {ol.geom.Point} point Point.
+ */
+ol.geom.MultiPoint.prototype.appendPoint = function(point) {
+  goog.asserts.assert(point.getLayout() == this.layout);
+  if (goog.isNull(this.flatCoordinates)) {
+    this.flatCoordinates = point.getFlatCoordinates().slice();
+  } else {
+    goog.array.extend(this.flatCoordinates, point.getFlatCoordinates());
+  }
+  this.dispatchChangeEvent();
+};
 
 
 /**
@@ -70,16 +86,38 @@ ol.geom.MultiPoint.prototype.getCoordinates = function() {
 
 
 /**
+ * @param {number} index Index.
+ * @return {ol.geom.Point} Point.
+ */
+ol.geom.MultiPoint.prototype.getPoint = function(index) {
+  var n = goog.isNull(this.flatCoordinates) ?
+      0 : this.flatCoordinates.length / this.stride;
+  goog.asserts.assert(0 <= index && index < n);
+  if (index < 0 || n <= index) {
+    return null;
+  }
+  var point = new ol.geom.Point(null);
+  point.setFlatCoordinates(this.layout, this.flatCoordinates.slice(
+      index * this.stride, (index + 1) * this.stride));
+  return point;
+};
+
+
+/**
  * @return {Array.<ol.geom.Point>} Points.
  * @todo stability experimental
  */
 ol.geom.MultiPoint.prototype.getPoints = function() {
-  // FIXME we should construct the points from the flat coordinates
-  var coordinates = this.getCoordinates();
+  var flatCoordinates = this.flatCoordinates;
+  var layout = this.layout;
+  var stride = this.stride;
+  /** @type {Array.<ol.geom.Point>} */
   var points = [];
   var i, ii;
-  for (i = 0, ii = coordinates.length; i < ii; ++i) {
-    points.push(new ol.geom.Point(coordinates[i]));
+  for (i = 0, ii = flatCoordinates.length; i < ii; i += stride) {
+    var point = new ol.geom.Point(null);
+    point.setFlatCoordinates(layout, flatCoordinates.slice(i, i + stride));
+    points.push(point);
   }
   return points;
 };

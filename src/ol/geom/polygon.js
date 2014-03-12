@@ -1,5 +1,7 @@
 goog.provide('ol.geom.Polygon');
 
+goog.require('goog.array');
+goog.require('goog.asserts');
 goog.require('ol.extent');
 goog.require('ol.geom.GeometryType');
 goog.require('ol.geom.LinearRing');
@@ -68,6 +70,21 @@ ol.geom.Polygon = function(coordinates, opt_layout) {
 
 };
 goog.inherits(ol.geom.Polygon, ol.geom.SimpleGeometry);
+
+
+/**
+ * @param {ol.geom.LinearRing} linearRing Linear ring.
+ */
+ol.geom.Polygon.prototype.appendLinearRing = function(linearRing) {
+  goog.asserts.assert(linearRing.getLayout() == this.layout);
+  if (goog.isNull(this.flatCoordinates)) {
+    this.flatCoordinates = linearRing.getFlatCoordinates().slice();
+  } else {
+    goog.array.extend(this.flatCoordinates, linearRing.getFlatCoordinates());
+  }
+  this.ends_.push(this.flatCoordinates.length);
+  this.dispatchChangeEvent();
+};
 
 
 /**
@@ -158,6 +175,22 @@ ol.geom.Polygon.prototype.getFlatInteriorPoint = function() {
  */
 ol.geom.Polygon.prototype.getInteriorPoint = function() {
   return new ol.geom.Point(this.getFlatInteriorPoint());
+};
+
+
+/**
+ * @param {number} index Index.
+ * @return {ol.geom.LinearRing} Linear ring.
+ */
+ol.geom.Polygon.prototype.getLinearRing = function(index) {
+  goog.asserts.assert(0 <= index && index < this.ends_.length);
+  if (index < 0 || this.ends_.length <= index) {
+    return null;
+  }
+  var linearRing = new ol.geom.LinearRing(null);
+  linearRing.setFlatCoordinates(this.layout, this.flatCoordinates.slice(
+      index === 0 ? 0 : this.ends_[index - 1], this.ends_[index]));
+  return linearRing;
 };
 
 
@@ -257,6 +290,13 @@ ol.geom.Polygon.prototype.setCoordinates = function(coordinates, opt_layout) {
  */
 ol.geom.Polygon.prototype.setFlatCoordinates =
     function(layout, flatCoordinates, ends) {
+  if (goog.isNull(flatCoordinates)) {
+    goog.asserts.assert(!goog.isNull(ends) && ends.length === 0);
+  } else if (ends.length === 0) {
+    goog.asserts.assert(flatCoordinates.length === 0);
+  } else {
+    goog.asserts.assert(flatCoordinates.length == ends[ends.length - 1]);
+  }
   this.setFlatCoordinatesInternal(layout, flatCoordinates);
   this.ends_ = ends;
   this.dispatchChangeEvent();

@@ -326,6 +326,42 @@
  */
 
 /**
+ * @typedef {Object} olx.format.WFSOptions
+ * @property {string} featureNS The namespace URI used for features.
+ * @property {string} featureType The feature type to parse. Only used for
+ *     read operations.
+ * @property {string|undefined} schemaLocation Optional schemaLocation to use
+ *     for serialization, this will override the default.
+ */
+
+/**
+ * @typedef {Object} olx.format.WFSWriteGetFeatureOptions
+ * @property {string} featureNS The namespace URI used for features.
+ * @property {string} featurePrefix The prefix for the feature namespace.
+ * @property {Array.<string>} featureTypes The feature type names.
+ * @property {string|undefined} srsName SRS name. No srsName attribute will be
+ *     set on geometries when this is not provided.
+ * @property {string|undefined} handle Handle.
+ * @property {string|undefined} outputFormat Output format.
+ * @property {number|undefined} maxFeatures Maximum number of features to fetch.
+ * @property {string|undefined} geometryName Geometry name to use in a BBOX
+ *     filter.
+ * @property {ol.Extent|undefined} bbox Extent to use for the BBOX filter.
+ */
+
+/**
+ * @typedef {Object} olx.format.WFSWriteTransactionOptions
+ * @property {string} featureNS The namespace URI used for features.
+ * @property {string} featurePrefix The prefix for the feature namespace.
+ * @property {string} featureType The feature type name.
+ * @property {string|undefined} srsName SRS name. No srsName attribute will be
+ *     set on geometries when this is not provided.
+ * @property {string|undefined} handle Handle.
+ * @property {Array.<Object>} nativeElements Native elements. Currently not
+ *     supported.
+ */
+
+/**
  * @typedef {Object} olx.interaction.DoubleClickZoomOptions
  * @property {number|undefined} duration Animation duration in milliseconds. Default is `250`.
  * @property {number|undefined} delta The zoom delta applied on each double

@@ -149,7 +149,6 @@ ol.Feature.prototype.handleGeometryChanged_ = function() {
     this.geometryChangeKey_ = goog.events.listen(geometry,
         goog.events.EventType.CHANGE, this.handleGeometryChange_, false, this);
   }
-  this.dispatchChangeEvent();
 };
 
 
