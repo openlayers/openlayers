@@ -908,7 +908,7 @@
  * @typedef {Object} olx.source.RemoteVectorOptions
  * @property {Array.<ol.Attribution>|undefined} attributions Attributions.
  * @property {ol.Extent|undefined} extent Extent.
- * @property {function(ol.Extent, number): string} extentUrlFunction Extent URL function.
+ * @property {function(ol.Extent, number, ol.proj.Projection): string} extentUrlFunction Extent URL function.
  * @property {Object.<string, string>|undefined} headers Headers.
  * @property {ol.format.Feature} format Format.
  * @property {function(ol.Extent, number): Array.<ol.Extent>} loadingFunction Loading function.

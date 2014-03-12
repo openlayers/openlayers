@@ -38,7 +38,7 @@ ol.source.RemoteVector = function(options) {
 
   /**
    * @private
-   * @type {function(ol.Extent, number): string}
+   * @type {function(ol.Extent, number, ol.proj.Projection): string}
    */
   this.extentUrlFunction_ = options.extentUrlFunction;
 
@@ -74,7 +74,8 @@ ol.source.RemoteVector.prototype.addFeaturesInternal = function(features) {
 /**
  * @inheritDoc
  */
-ol.source.RemoteVector.prototype.loadFeatures = function(extent, resolution) {
+ol.source.RemoteVector.prototype.loadFeatures =
+    function(extent, resolution, projection) {
   var loadedExtents = this.loadedExtents_;
   var extentsToLoad = this.loadingFunction_(extent, resolution);
   var i, ii;
@@ -89,7 +90,7 @@ ol.source.RemoteVector.prototype.loadFeatures = function(extent, resolution) {
           return ol.extent.containsExtent(object.extent, extentToLoad);
         });
     if (!alreadyLoaded) {
-      var url = this.extentUrlFunction_(extentToLoad, resolution);
+      var url = this.extentUrlFunction_(extentToLoad, resolution, projection);
       this.loadFeaturesFromURL(url);
       loadedExtents.insert(extentToLoad, {extent: extentToLoad.slice()});
     }

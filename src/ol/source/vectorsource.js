@@ -13,6 +13,7 @@ goog.require('goog.events.Event');
 goog.require('goog.events.EventType');
 goog.require('goog.object');
 goog.require('ol.ObjectEventType');
+goog.require('ol.proj');
 goog.require('ol.source.Source');
 goog.require('ol.structs.RBush');
 
@@ -340,6 +341,7 @@ ol.source.Vector.prototype.isEmpty = function() {
 /**
  * @param {ol.Extent} extent Extent.
  * @param {number} resolution Resolution.
+ * @param {ol.proj.Projection} projection Projection.
  */
 ol.source.Vector.prototype.loadFeatures = goog.nullFunction;
 
