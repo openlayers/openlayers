@@ -363,8 +363,8 @@ ol.geom.flat.lineStringCoordinateAtM =
   coordinate = [];
   var i;
   for (i = 0; i < stride - 1; ++i) {
-    coordinate.push((1 - t) * flatCoordinates[(lo - 1) * stride + i] +
-        t * flatCoordinates[lo * stride + i]);
+    coordinate.push(goog.math.lerp(flatCoordinates[(lo - 1) * stride + i],
+        flatCoordinates[lo * stride + i], t));
   }
   coordinate.push(m);
   goog.asserts.assert(coordinate.length == stride);
