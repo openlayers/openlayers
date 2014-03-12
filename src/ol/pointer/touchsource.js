@@ -64,20 +64,6 @@ ol.pointer.TouchSource = function(dispatcher, mouseSource) {
   this.mouseSource = mouseSource;
 
   /**
-   * Mouse event timeout: This should be long enough to
-   * ignore compat mouse events made by touch.
-   * @const
-   * @type {number}
-   */
-  this.DEDUP_TIMEOUT = 2500;
-
-  /**
-   * @const
-   * @type {number}
-   */
-  this.CLICK_COUNT_TIMEOUT = 200;
-
-  /**
    * @private
    * @type {?number}
    */
@@ -96,6 +82,22 @@ ol.pointer.TouchSource = function(dispatcher, mouseSource) {
   this.resetId_ = null;
 };
 goog.inherits(ol.pointer.TouchSource, ol.pointer.EventSource);
+
+
+/**
+ * Mouse event timeout: This should be long enough to
+ * ignore compat mouse events made by touch.
+ * @const
+ * @type {number}
+ */
+ol.pointer.TouchSource.DEDUP_TIMEOUT = 2500;
+
+
+/**
+ * @const
+ * @type {number}
+ */
+ol.pointer.TouchSource.CLICK_COUNT_TIMEOUT = 200;
 
 
 /**
@@ -152,7 +154,7 @@ ol.pointer.TouchSource.prototype.resetClickCount_ = function() {
     this.resetId_ = null;
   };
   this.resetId_ = goog.global.setTimeout(goog.bind(fn, this),
-      this.CLICK_COUNT_TIMEOUT);
+      ol.pointer.TouchSource.CLICK_COUNT_TIMEOUT);
 };
 
 
@@ -444,6 +446,6 @@ ol.pointer.TouchSource.prototype.dedupSynthMouse_ = function(inEvent) {
       if (i > -1) {
         lts.splice(i, 1);
       }
-    }, this.DEDUP_TIMEOUT);
+    }, ol.pointer.TouchSource.DEDUP_TIMEOUT);
   }
 };

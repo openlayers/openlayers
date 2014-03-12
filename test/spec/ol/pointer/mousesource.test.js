@@ -47,8 +47,7 @@ describe('ol.pointer.MouseSource', function() {
 
     it('dispatches real mouse events after timeout', function() {
       // set the timeout to a lower value, to speed up the tests
-      var touchSource = handler.eventSourceList_[1];
-      touchSource.DEDUP_TIMEOUT = 100;
+      ol.pointer.TouchSource.DEDUP_TIMEOUT = 100;
 
       goog.events.listen(handler, 'pointerdown', eventSpy);
 
@@ -99,3 +98,4 @@ goog.require('ol.BrowserFeature');
 goog.require('ol.pointer.MouseSource');
 goog.require('ol.pointer.PointerEvent');
 goog.require('ol.pointer.PointerEventHandler');
+goog.require('ol.pointer.TouchSource');
