@@ -11,15 +11,6 @@ goog.require('ol.format.XSD');
 goog.require('ol.xml');
 
 
-/**
- * @typedef {{westBoundLongitude: number,
- *            southBoundLatitude: number,
- *            eastBoundLongitude: number,
- *            northBoundLatitude: number}}
- */
-ol.format.EXGeographicBoundingBoxType;
-
-
 
 /**
  * @constructor
@@ -124,19 +115,28 @@ ol.format.WMSCapabilities.readEXGeographicBoundingBox_ =
   goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT);
   goog.asserts.assert(node.localName == 'EX_GeographicBoundingBox');
   var geographicBoundingBox = ol.xml.pushParseAndPop(
-      /** @type {ol.format.EXGeographicBoundingBoxType} */ ({}),
+      {},
       ol.format.WMSCapabilities.EX_GEOGRAPHIC_BOUNDING_BOX_PARSERS_,
       node, objectStack);
-  if (goog.isDef(geographicBoundingBox)) {
-    return [
-      geographicBoundingBox.westBoundLongitude,
-      geographicBoundingBox.southBoundLatitude,
-      geographicBoundingBox.eastBoundLongitude,
-      geographicBoundingBox.northBoundLatitude
-    ];
-  } else {
+  if (!goog.isDef(geographicBoundingBox)) {
     return undefined;
   }
+  var westBoundLongitude = /** @type {number|undefined} */ (goog.object.get(
+      geographicBoundingBox, 'westBoundLongitude'));
+  var southBoundLatitude = /** @type {number|undefined} */ (goog.object.get(
+      geographicBoundingBox, 'southBoundLatitude'));
+  var eastBoundLongitude = /** @type {number|undefined} */ (goog.object.get(
+      geographicBoundingBox, 'eastBoundLongitude'));
+  var northBoundLatitude = /** @type {number|undefined} */ (goog.object.get(
+      geographicBoundingBox, 'northBoundLatitude'));
+  if (!goog.isDef(westBoundLongitude) || !goog.isDef(southBoundLatitude) ||
+      !goog.isDef(eastBoundLongitude) || !goog.isDef(northBoundLatitude)) {
+    return undefined;
+  }
+  return [
+    westBoundLongitude, southBoundLatitude,
+    eastBoundLongitude, northBoundLatitude
+  ];
 };
 
 
