@@ -4,7 +4,8 @@ goog.require('goog.asserts');
 goog.require('ol.extent');
 goog.require('ol.geom.GeometryType');
 goog.require('ol.geom.SimpleGeometry');
-goog.require('ol.geom.flat');
+goog.require('ol.geom.flat.deflate');
+goog.require('ol.math');
 
 
 
@@ -38,7 +39,7 @@ ol.geom.Point.prototype.clone = function() {
 ol.geom.Point.prototype.closestPointXY =
     function(x, y, closestPoint, minSquaredDistance) {
   var flatCoordinates = this.flatCoordinates;
-  var squaredDistance = ol.geom.flat.squaredDistance(
+  var squaredDistance = ol.math.squaredDistance(
       x, y, flatCoordinates[0], flatCoordinates[1]);
   if (squaredDistance < minSquaredDistance) {
     var stride = this.stride;
@@ -98,7 +99,7 @@ ol.geom.Point.prototype.setCoordinates = function(coordinates, opt_layout) {
     if (goog.isNull(this.flatCoordinates)) {
       this.flatCoordinates = [];
     }
-    this.flatCoordinates.length = ol.geom.flat.deflateCoordinate(
+    this.flatCoordinates.length = ol.geom.flat.deflate.coordinate(
         this.flatCoordinates, 0, coordinates, this.stride);
     this.dispatchChangeEvent();
   }

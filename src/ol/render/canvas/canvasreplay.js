@@ -16,8 +16,8 @@ goog.require('ol.array');
 goog.require('ol.color');
 goog.require('ol.extent');
 goog.require('ol.extent.Relationship');
-goog.require('ol.geom.flat');
-goog.require('ol.geom.simplify');
+goog.require('ol.geom.flat.simplify');
+goog.require('ol.geom.flat.transform');
 goog.require('ol.render.IReplayGroup');
 goog.require('ol.render.IVectorContext');
 goog.require('ol.render.canvas');
@@ -217,7 +217,7 @@ ol.render.canvas.Replay.prototype.replay_ = function(
   if (ol.vec.Mat4.equals2D(transform, this.renderedTransform_)) {
     pixelCoordinates = this.pixelCoordinates_;
   } else {
-    pixelCoordinates = ol.geom.flat.transform2D(
+    pixelCoordinates = ol.geom.flat.transform.transform2D(
         this.coordinates, 2, transform, this.pixelCoordinates_);
     goog.vec.Mat4.setFromArray(this.renderedTransform_, transform);
     goog.asserts.assert(pixelCoordinates === this.pixelCoordinates_);
@@ -1310,7 +1310,7 @@ ol.render.canvas.PolygonReplay.prototype.finish = function() {
     var coordinates = this.coordinates;
     var i, ii;
     for (i = 0, ii = coordinates.length; i < ii; ++i) {
-      coordinates[i] = ol.geom.simplify.snap(coordinates[i], tolerance);
+      coordinates[i] = ol.geom.flat.simplify.snap(coordinates[i], tolerance);
     }
   }
 };
@@ -1852,7 +1852,7 @@ ol.render.canvas.ReplayGroup.prototype.replay_ = function(
   var minY = maxExtent[1];
   var maxX = maxExtent[2];
   var maxY = maxExtent[3];
-  var flatClipCoords = ol.geom.flat.transform2D(
+  var flatClipCoords = ol.geom.flat.transform.transform2D(
       [minX, minY, minX, maxY, maxX, maxY, maxX, minY], 2, transform);
   context.save();
   context.beginPath();
