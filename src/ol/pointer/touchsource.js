@@ -65,9 +65,9 @@ ol.pointer.TouchSource = function(dispatcher, mouseSource) {
 
   /**
    * @private
-   * @type {?number}
+   * @type {number|undefined}
    */
-  this.firstTouchId_ = null;
+  this.firstTouchId_ = undefined;
 
   /**
    * @private
@@ -77,9 +77,9 @@ ol.pointer.TouchSource = function(dispatcher, mouseSource) {
 
   /**
    * @private
-   * @type {?number}
+   * @type {number|undefined}
    */
-  this.resetId_ = null;
+  this.resetId_ = undefined;
 };
 goog.inherits(ol.pointer.TouchSource, ol.pointer.EventSource);
 
@@ -137,7 +137,7 @@ ol.pointer.TouchSource.prototype.setPrimaryTouch_ = function(inTouch) {
  */
 ol.pointer.TouchSource.prototype.removePrimaryPointer_ = function(inPointer) {
   if (inPointer.isPrimary) {
-    this.firstTouchId_ = null;
+    this.firstTouchId_ = undefined;
     this.resetClickCount_();
   }
 };
@@ -149,7 +149,7 @@ ol.pointer.TouchSource.prototype.removePrimaryPointer_ = function(inPointer) {
 ol.pointer.TouchSource.prototype.resetClickCount_ = function() {
   var fn = function() {
     this.clickCount_ = 0;
-    this.resetId_ = null;
+    this.resetId_ = undefined;
   };
   this.resetId_ = goog.global.setTimeout(goog.bind(fn, this),
       ol.pointer.TouchSource.CLICK_COUNT_TIMEOUT);
@@ -160,7 +160,7 @@ ol.pointer.TouchSource.prototype.resetClickCount_ = function() {
  * @private
  */
 ol.pointer.TouchSource.prototype.cancelResetClickCount_ = function() {
-  if (this.resetId_) {
+  if (goog.isDef(this.resetId_)) {
     goog.global.clearTimeout(this.resetId_);
   }
 };
