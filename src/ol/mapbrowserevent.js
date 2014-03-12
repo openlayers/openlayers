@@ -449,7 +449,7 @@ ol.MapBrowserEventHandler.prototype.disposeInternal = function() {
 ol.MapBrowserEvent.EventType = {
   SINGLECLICK: 'singleclick',
   DBLCLICK: goog.events.EventType.DBLCLICK,
-  POINTERDRAG: 'pointermove',
+  POINTERDRAG: 'pointerdrag',
 
   POINTERMOVE: 'pointermove',
   POINTERDOWN: 'pointerdown',
