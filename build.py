@@ -5,7 +5,7 @@ import gzip
 import json
 import os
 import glob
-import regex as re
+import re
 import shutil
 import sys
 
