@@ -37,6 +37,17 @@ describe('ol.geom.MultiLineString', function() {
       expect(multiLineString.getStride()).to.be(2);
     });
 
+    it('can append line strings', function() {
+      multiLineString.appendLineString(
+          new ol.geom.LineString([[1, 2], [3, 4]]));
+      expect(multiLineString.getCoordinates()).to.eql(
+          [[[1, 2], [3, 4]]]);
+      multiLineString.appendLineString(
+          new ol.geom.LineString([[5, 6], [7, 8]]));
+      expect(multiLineString.getCoordinates()).to.eql(
+          [[[1, 2], [3, 4]], [[5, 6], [7, 8]]]);
+    });
+
   });
 
   describe('construct with 2D coordinates', function() {
@@ -140,6 +151,17 @@ describe('ol.geom.MultiLineString', function() {
 
     it('has stride the expected stride', function() {
       expect(multiLineString.getStride()).to.be(3);
+    });
+
+    it('can return individual line strings', function() {
+      var lineString0 = multiLineString.getLineString(0);
+      expect(lineString0).to.be.an(ol.geom.LineString);
+      expect(lineString0.getLayout()).to.be(ol.geom.GeometryLayout.XYM);
+      expect(lineString0.getCoordinates()).to.eql([[1, 2, 3], [4, 5, 6]]);
+      var lineString1 = multiLineString.getLineString(1);
+      expect(lineString1).to.be.an(ol.geom.LineString);
+      expect(lineString1.getLayout()).to.be(ol.geom.GeometryLayout.XYM);
+      expect(lineString1.getCoordinates()).to.eql([[7, 8, 9], [10, 11, 12]]);
     });
 
     describe('#getCoordinateAtM', function() {

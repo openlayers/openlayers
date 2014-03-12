@@ -73,6 +73,31 @@ goog.inherits(ol.geom.MultiPolygon, ol.geom.SimpleGeometry);
 
 
 /**
+ * @param {ol.geom.Polygon} polygon Polygon.
+ */
+ol.geom.MultiPolygon.prototype.appendPolygon = function(polygon) {
+  goog.asserts.assert(polygon.getLayout() == this.layout);
+  /** @type {Array.<number>} */
+  var ends;
+  if (goog.isNull(this.flatCoordinates)) {
+    this.flatCoordinates = polygon.getFlatCoordinates().slice();
+    ends = polygon.getEnds().slice();
+    this.endss_.push();
+  } else {
+    var offset = this.flatCoordinates.length;
+    goog.array.extend(this.flatCoordinates, polygon.getFlatCoordinates());
+    ends = polygon.getEnds().slice();
+    var i, ii;
+    for (i = 0, ii = ends.length; i < ii; ++i) {
+      ends[i] += offset;
+    }
+  }
+  this.endss_.push(ends);
+  this.dispatchChangeEvent();
+};
+
+
+/**
  * @inheritDoc
  */
 ol.geom.MultiPolygon.prototype.clone = function() {
@@ -206,6 +231,37 @@ ol.geom.MultiPolygon.prototype.getSimplifiedGeometryInternal =
 
 
 /**
+ * @param {number} index Index.
+ * @return {ol.geom.Polygon} Polygon.
+ */
+ol.geom.MultiPolygon.prototype.getPolygon = function(index) {
+  goog.asserts.assert(0 <= index && index < this.endss_.length);
+  if (index < 0 || this.endss_.length <= index) {
+    return null;
+  }
+  var offset;
+  if (index === 0) {
+    offset = 0;
+  } else {
+    var prevEnds = this.endss_[index - 1];
+    offset = prevEnds[prevEnds.length - 1];
+  }
+  var ends = this.endss_[index].slice();
+  var end = ends[ends.length - 1];
+  if (offset !== 0) {
+    var i, ii;
+    for (i = 0, ii = ends.length; i < ii; ++i) {
+      ends[i] -= offset;
+    }
+  }
+  var polygon = new ol.geom.Polygon(null);
+  polygon.setFlatCoordinates(
+      this.layout, this.flatCoordinates.slice(offset, end), ends);
+  return polygon;
+};
+
+
+/**
  * @return {Array.<ol.geom.Polygon>} Polygons.
  * @todo stability experimental
  */
@@ -217,17 +273,16 @@ ol.geom.MultiPolygon.prototype.getPolygons = function() {
   var offset = 0;
   var i, ii, j, jj;
   for (i = 0, ii = endss.length; i < ii; ++i) {
-    var ends = endss[i];
+    var ends = endss[i].slice();
     var end = ends[ends.length - 1];
-    var polygon = new ol.geom.Polygon(null);
-    var polygonEnds = ends.slice();
     if (offset !== 0) {
-      for (j = 0, jj = polygonEnds.length; j < jj; ++j) {
-        polygonEnds[j] = polygonEnds[j] - offset;
+      for (j = 0, jj = ends.length; j < jj; ++j) {
+        ends[j] -= offset;
       }
     }
+    var polygon = new ol.geom.Polygon(null);
     polygon.setFlatCoordinates(
-        layout, flatCoordinates.slice(offset, end), polygonEnds);
+        layout, flatCoordinates.slice(offset, end), ends);
     polygons.push(polygon);
     offset = end;
   }
@@ -274,6 +329,14 @@ ol.geom.MultiPolygon.prototype.setCoordinates =
  */
 ol.geom.MultiPolygon.prototype.setFlatCoordinates =
     function(layout, flatCoordinates, endss) {
+  goog.asserts.assert(!goog.isNull(endss));
+  if (goog.isNull(flatCoordinates) || flatCoordinates.length === 0) {
+    goog.asserts.assert(endss.length === 0);
+  } else {
+    goog.asserts.assert(endss.length > 0);
+    var ends = endss[endss.length - 1];
+    goog.asserts.assert(flatCoordinates.length == ends[ends.length - 1]);
+  }
   this.setFlatCoordinatesInternal(layout, flatCoordinates);
   this.endss_ = endss;
   this.dispatchChangeEvent();

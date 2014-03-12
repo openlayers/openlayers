@@ -48,6 +48,22 @@ goog.inherits(ol.geom.MultiLineString, ol.geom.SimpleGeometry);
 
 
 /**
+ * @param {ol.geom.LineString} lineString LineString.
+ */
+ol.geom.MultiLineString.prototype.appendLineString = function(lineString) {
+  goog.asserts.assert(lineString.getLayout() == this.layout);
+  if (goog.isNull(this.flatCoordinates)) {
+    this.flatCoordinates = lineString.getFlatCoordinates().slice();
+  } else {
+    goog.array.extend(
+        this.flatCoordinates, lineString.getFlatCoordinates().slice());
+  }
+  this.ends_.push(this.flatCoordinates.length);
+  this.dispatchChangeEvent();
+};
+
+
+/**
  * @inheritDoc
  */
 ol.geom.MultiLineString.prototype.clone = function() {
@@ -132,16 +148,39 @@ ol.geom.MultiLineString.prototype.getEnds = function() {
 
 
 /**
+ * @param {number} index Index.
+ * @return {ol.geom.LineString} LineString.
+ */
+ol.geom.MultiLineString.prototype.getLineString = function(index) {
+  goog.asserts.assert(0 <= index && index < this.ends_.length);
+  if (index < 0 || this.ends_.length <= index) {
+    return null;
+  }
+  var lineString = new ol.geom.LineString(null);
+  lineString.setFlatCoordinates(this.layout, this.flatCoordinates.slice(
+      index === 0 ? 0 : this.ends_[index - 1], this.ends_[index]));
+  return lineString;
+};
+
+
+/**
  * @return {Array.<ol.geom.LineString>} LineStrings.
  * @todo stability experimental
  */
 ol.geom.MultiLineString.prototype.getLineStrings = function() {
-  // FIXME we should construct the line strings from the flat coordinates
-  var coordinates = this.getCoordinates();
+  var flatCoordinates = this.flatCoordinates;
+  var ends = this.ends_;
+  var layout = this.layout;
+  /** @type {Array.<ol.geom.LineString>} */
   var lineStrings = [];
+  var offset = 0;
   var i, ii;
-  for (i = 0, ii = coordinates.length; i < ii; ++i) {
-    lineStrings.push(new ol.geom.LineString(coordinates[i]));
+  for (i = 0, ii = ends.length; i < ii; ++i) {
+    var end = ends[i];
+    var lineString = new ol.geom.LineString(null);
+    lineString.setFlatCoordinates(layout, flatCoordinates.slice(offset, end));
+    lineStrings.push(lineString);
+    offset = end;
   }
   return lineStrings;
 };
@@ -222,6 +261,13 @@ ol.geom.MultiLineString.prototype.setCoordinates =
  */
 ol.geom.MultiLineString.prototype.setFlatCoordinates =
     function(layout, flatCoordinates, ends) {
+  if (goog.isNull(flatCoordinates)) {
+    goog.asserts.assert(!goog.isNull(ends) && ends.length === 0);
+  } else if (ends.length === 0) {
+    goog.asserts.assert(flatCoordinates.length === 0);
+  } else {
+    goog.asserts.assert(flatCoordinates.length == ends[ends.length - 1]);
+  }
   this.setFlatCoordinatesInternal(layout, flatCoordinates);
   this.ends_ = ends;
   this.dispatchChangeEvent();

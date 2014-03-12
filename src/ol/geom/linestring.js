@@ -1,5 +1,7 @@
 goog.provide('ol.geom.LineString');
 
+goog.require('goog.array');
+goog.require('goog.asserts');
 goog.require('ol.extent');
 goog.require('ol.geom.GeometryType');
 goog.require('ol.geom.SimpleGeometry');
@@ -48,6 +50,20 @@ ol.geom.LineString = function(coordinates, opt_layout) {
 
 };
 goog.inherits(ol.geom.LineString, ol.geom.SimpleGeometry);
+
+
+/**
+ * @param {ol.Coordinate} coordinate Coordinate.
+ */
+ol.geom.LineString.prototype.appendCoordinate = function(coordinate) {
+  goog.asserts.assert(coordinate.length == this.stride);
+  if (goog.isNull(this.flatCoordinates)) {
+    this.flatCoordinates = coordinate.slice();
+  } else {
+    goog.array.extend(this.flatCoordinates, coordinate);
+  }
+  this.dispatchChangeEvent();
+};
 
 
 /**

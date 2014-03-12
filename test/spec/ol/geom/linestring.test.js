@@ -37,6 +37,13 @@ describe('ol.geom.LineString', function() {
       expect(lineString.getStride()).to.be(2);
     });
 
+    it('can append coordinates', function() {
+      lineString.appendCoordinate([1, 2]);
+      expect(lineString.getCoordinates()).to.eql([[1, 2]]);
+      lineString.appendCoordinate([3, 4]);
+      expect(lineString.getCoordinates()).to.eql([[1, 2], [3, 4]]);
+    });
+
   });
 
   describe('construct with 2D coordinates', function() {
