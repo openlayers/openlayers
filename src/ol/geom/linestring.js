@@ -8,6 +8,7 @@ goog.require('ol.geom.SimpleGeometry');
 goog.require('ol.geom.flat');
 goog.require('ol.geom.flat.closest');
 goog.require('ol.geom.flat.deflate');
+goog.require('ol.geom.flat.inflate');
 goog.require('ol.geom.flat.interpolate');
 goog.require('ol.geom.flat.length');
 goog.require('ol.geom.flat.simplify');
@@ -128,7 +129,7 @@ ol.geom.LineString.prototype.getCoordinateAtM = function(m, opt_extrapolate) {
  * @todo stability experimental
  */
 ol.geom.LineString.prototype.getCoordinates = function() {
-  return ol.geom.flat.inflateCoordinates(
+  return ol.geom.flat.inflate.coordinates(
       this.flatCoordinates, 0, this.flatCoordinates.length, this.stride);
 };
 

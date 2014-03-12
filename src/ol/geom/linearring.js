@@ -7,6 +7,7 @@ goog.require('ol.geom.flat');
 goog.require('ol.geom.flat.area');
 goog.require('ol.geom.flat.closest');
 goog.require('ol.geom.flat.deflate');
+goog.require('ol.geom.flat.inflate');
 goog.require('ol.geom.flat.simplify');
 
 
@@ -85,7 +86,7 @@ ol.geom.LinearRing.prototype.getArea = function() {
  * @todo stability experimental
  */
 ol.geom.LinearRing.prototype.getCoordinates = function() {
-  return ol.geom.flat.inflateCoordinates(
+  return ol.geom.flat.inflate.coordinates(
       this.flatCoordinates, 0, this.flatCoordinates.length, this.stride);
 };
 

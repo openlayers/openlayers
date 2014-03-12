@@ -3,25 +3,6 @@ goog.provide('ol.test.geom.flat');
 
 describe('ol.geom.flat', function() {
 
-  describe('ol.geom.flat.inflateCoordinates', function() {
-
-    it('inflates coordinates', function() {
-      var coordinates = ol.geom.flat.inflateCoordinates([1, 2, 3, 4], 0, 4, 2);
-      expect(coordinates).to.eql([[1, 2], [3, 4]]);
-    });
-
-  });
-
-  describe('ol.geom.flat.inflateCoordinatess', function() {
-
-    it('inflates arrays of coordinates', function() {
-      var coordinatess = ol.geom.flat.inflateCoordinatess(
-          [1, 2, 3, 4, 5, 6, 7, 8], 0, [4, 8], 2);
-      expect(coordinatess).to.eql([[[1, 2], [3, 4]], [[5, 6], [7, 8]]]);
-    });
-
-  });
-
   describe('ol.geom.flat.reverseCoordinates', function() {
 
     describe('with a stride of 2', function() {

@@ -12,6 +12,7 @@ goog.require('ol.geom.flat.area');
 goog.require('ol.geom.flat.closest');
 goog.require('ol.geom.flat.contains');
 goog.require('ol.geom.flat.deflate');
+goog.require('ol.geom.flat.inflate');
 goog.require('ol.geom.flat.interiorpoint');
 goog.require('ol.geom.flat.orient');
 goog.require('ol.geom.flat.simplify');
@@ -147,7 +148,7 @@ ol.geom.Polygon.prototype.getArea = function() {
  * @todo stability experimental
  */
 ol.geom.Polygon.prototype.getCoordinates = function() {
-  return ol.geom.flat.inflateCoordinatess(
+  return ol.geom.flat.inflate.coordinatess(
       this.flatCoordinates, 0, this.ends_, this.stride);
 };
 

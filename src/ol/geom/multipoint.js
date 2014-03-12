@@ -8,6 +8,7 @@ goog.require('ol.geom.Point');
 goog.require('ol.geom.SimpleGeometry');
 goog.require('ol.geom.flat');
 goog.require('ol.geom.flat.deflate');
+goog.require('ol.geom.flat.inflate');
 
 
 
@@ -81,7 +82,7 @@ ol.geom.MultiPoint.prototype.closestPointXY =
  * @todo stability experimental
  */
 ol.geom.MultiPoint.prototype.getCoordinates = function() {
-  return ol.geom.flat.inflateCoordinates(
+  return ol.geom.flat.inflate.coordinates(
       this.flatCoordinates, 0, this.flatCoordinates.length, this.stride);
 };
 

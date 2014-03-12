@@ -4,7 +4,7 @@ goog.require('goog.asserts');
 goog.require('ol.Feature');
 goog.require('ol.format.TextFeature');
 goog.require('ol.geom.LineString');
-goog.require('ol.geom.flat');
+goog.require('ol.geom.flat.inflate');
 goog.require('ol.proj');
 
 
@@ -279,7 +279,7 @@ ol.format.Polyline.prototype.readFeaturesFromText = function(text) {
  */
 ol.format.Polyline.prototype.readGeometryFromText = function(text) {
   var flatCoordinates = ol.format.Polyline.decodeFlatCoordinates(text, 2);
-  var coordinates = ol.geom.flat.inflateCoordinates(
+  var coordinates = ol.geom.flat.inflate.coordinates(
       flatCoordinates, 0, flatCoordinates.length, 2);
   return new ol.geom.LineString(coordinates);
 };
