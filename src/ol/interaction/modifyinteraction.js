@@ -50,6 +50,13 @@ ol.interaction.Modify = function(options) {
   this.vertexFeature_ = null;
 
   /**
+   * Segments intersecting {@link this.vertexFeature_} by segment uid.
+   * @type {Object.<string, boolean>}
+   * @private
+   */
+  this.vertexSegments_ = null;
+
+  /**
    * @type {boolean}
    * @private
    */
@@ -379,8 +386,7 @@ ol.interaction.Modify.prototype.handleDragStart = function(evt) {
         this.dragSegments_.push([segmentDataMatch, 0]);
       } else if (ol.coordinate.equals(segment[1], vertex)) {
         this.dragSegments_.push([segmentDataMatch, 1]);
-      } else if (
-          ol.coordinate.squaredDistanceToSegment(vertex, segment) === 0) {
+      } else if (goog.getUid(segment) in this.vertexSegments_) {
         insertVertices.push([segmentDataMatch, vertex]);
       }
     }
@@ -504,20 +510,37 @@ ol.interaction.Modify.prototype.handleMouseAtPixel_ = function(pixel, map) {
   if (nodes.length > 0) {
     nodes.sort(sortByDistance);
     var node = nodes[0];
-    var segment = node.segment; // the closest segment
-    var vertex = (ol.coordinate.closestOnSegment(pixelCoordinate, segment));
+    var closestSegment = node.segment;
+    var vertex = (ol.coordinate.closestOnSegment(pixelCoordinate,
+        closestSegment));
     var vertexPixel = map.getPixelFromCoordinate(vertex);
     if (Math.sqrt(ol.coordinate.squaredDistance(pixel, vertexPixel)) <=
         this.pixelTolerance_) {
-      var pixel1 = map.getPixelFromCoordinate(segment[0]);
-      var pixel2 = map.getPixelFromCoordinate(segment[1]);
+      var pixel1 = map.getPixelFromCoordinate(closestSegment[0]);
+      var pixel2 = map.getPixelFromCoordinate(closestSegment[1]);
       var squaredDist1 = ol.coordinate.squaredDistance(vertexPixel, pixel1);
       var squaredDist2 = ol.coordinate.squaredDistance(vertexPixel, pixel2);
       var dist = Math.sqrt(Math.min(squaredDist1, squaredDist2));
       if (dist <= 10) {
-        vertex = squaredDist1 > squaredDist2 ? segment[1] : segment[0];
+        vertex = squaredDist1 > squaredDist2 ?
+            closestSegment[1] : closestSegment[0];
       }
       this.createOrUpdateVertexFeature_(vertex);
+      var vertexSegments = {};
+      vertexSegments[goog.getUid(closestSegment)] = true;
+      var segment;
+      for (var i = 1, ii = nodes.length; i < ii; ++i) {
+        segment = nodes[i].segment;
+        if ((ol.coordinate.equals(closestSegment[0], segment[0]) &&
+            ol.coordinate.equals(closestSegment[1], segment[1]) ||
+            (ol.coordinate.equals(closestSegment[0], segment[1]) &&
+            ol.coordinate.equals(closestSegment[1], segment[0])))) {
+          vertexSegments[goog.getUid(segment)] = true;
+        } else {
+          break;
+        }
+      }
+      this.vertexSegments_ = vertexSegments;
       this.modifiable_ = true;
       return;
     }

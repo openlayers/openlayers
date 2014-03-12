@@ -26,6 +26,10 @@
       <div class="row-fluid">
         <div class="span12">
           <div id="map" class="map"></div>
+          <select id="layer-select">
+            <option selected>Test data</option>
+            <option>RealData (topology)</option>
+          </select>
         </div>
       </div>
 
@@ -33,8 +37,9 @@
 
         <div class="span12">
           <h4 id="title">Modify features example</h4>
-          <p id="shortdesc">Example of using the Modify interaction. Select a feature and drag the circle that appears when the cursor gets close to the selected geometry.</p>
+          <p id="shortdesc">Example of using the Modify interaction.</p>
           <div id="docs">
+            <p>Select a feature on the <b>Test&nbsp;Data</b> layer and drag the circle that appears when the cursor gets close to the selected geometry. On the <b>Real&nbsp;data&nbsp;(topology)</b> layer, editing adjacent countries that are selected preserves the topology.</p>
             <p>See the <a href="modify-features.js" target="_blank">modify-features.js source</a> to see how this is done.</p>
           </div>
           <div id="tags">modify, edit, vector</div>
