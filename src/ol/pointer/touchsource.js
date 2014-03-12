@@ -126,7 +126,6 @@ ol.pointer.TouchSource.prototype.setPrimaryTouch_ = function(inTouch) {
   if (this.pointerMap.getCount() === 0 ||
       (this.pointerMap.getCount() === 1 && this.pointerMap.containsKey(1))) {
     this.firstTouchId_ = inTouch.identifier;
-    this.firstXY = {X: inTouch.clientX, Y: inTouch.clientY};
     this.cancelResetClickCount_();
   }
 };
@@ -139,7 +138,6 @@ ol.pointer.TouchSource.prototype.setPrimaryTouch_ = function(inTouch) {
 ol.pointer.TouchSource.prototype.removePrimaryPointer_ = function(inPointer) {
   if (inPointer.isPrimary) {
     this.firstTouchId_ = null;
-    this.firstXY = null;
     this.resetClickCount_();
   }
 };
@@ -219,7 +217,6 @@ ol.pointer.TouchSource.prototype.processTouches_ =
   // forward touch preventDefaults
   goog.array.forEach(pointers, function(p) {
     p.preventDefault = function() {
-      this.firstXY = null;
       inEvent.preventDefault();
     };
   }, this);
