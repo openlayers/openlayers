@@ -10,6 +10,7 @@ goog.require('ol.geom.SimpleGeometry');
 goog.require('ol.geom.flat');
 goog.require('ol.geom.flat.area');
 goog.require('ol.geom.flat.closest');
+goog.require('ol.geom.flat.orient');
 goog.require('ol.geom.flat.simplify');
 
 
@@ -223,13 +224,14 @@ ol.geom.Polygon.prototype.getLinearRings = function() {
 ol.geom.Polygon.prototype.getOrientedFlatCoordinates = function() {
   if (this.orientedRevision_ != this.getRevision()) {
     var flatCoordinates = this.flatCoordinates;
-    if (ol.geom.flat.linearRingsAreOriented(
+    if (ol.geom.flat.orient.linearRingsAreOriented(
         flatCoordinates, 0, this.ends_, this.stride)) {
       this.orientedFlatCoordinates_ = flatCoordinates;
     } else {
       this.orientedFlatCoordinates_ = flatCoordinates.slice();
-      this.orientedFlatCoordinates_.length = ol.geom.flat.orientLinearRings(
-          this.orientedFlatCoordinates_, 0, this.ends_, this.stride);
+      this.orientedFlatCoordinates_.length =
+          ol.geom.flat.orient.orientLinearRings(
+              this.orientedFlatCoordinates_, 0, this.ends_, this.stride);
     }
     this.orientedRevision_ = this.getRevision();
   }
