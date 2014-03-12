@@ -7,8 +7,8 @@ goog.require('ol.geom.GeometryType');
 goog.require('ol.geom.LinearRing');
 goog.require('ol.geom.Point');
 goog.require('ol.geom.SimpleGeometry');
-goog.require('ol.geom.closest');
 goog.require('ol.geom.flat');
+goog.require('ol.geom.flat.closest');
 goog.require('ol.geom.simplify');
 
 
@@ -108,11 +108,11 @@ ol.geom.Polygon.prototype.closestPointXY =
     return minSquaredDistance;
   }
   if (this.maxDeltaRevision_ != this.getRevision()) {
-    this.maxDelta_ = Math.sqrt(ol.geom.closest.getsMaxSquaredDelta(
+    this.maxDelta_ = Math.sqrt(ol.geom.flat.closest.getsMaxSquaredDelta(
         this.flatCoordinates, 0, this.ends_, this.stride, 0));
     this.maxDeltaRevision_ = this.getRevision();
   }
-  return ol.geom.closest.getsClosestPoint(
+  return ol.geom.flat.closest.getsClosestPoint(
       this.flatCoordinates, 0, this.ends_, this.stride,
       this.maxDelta_, true, x, y, closestPoint, minSquaredDistance);
 };

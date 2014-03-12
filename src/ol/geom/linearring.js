@@ -3,8 +3,8 @@ goog.provide('ol.geom.LinearRing');
 goog.require('ol.extent');
 goog.require('ol.geom.GeometryType');
 goog.require('ol.geom.SimpleGeometry');
-goog.require('ol.geom.closest');
 goog.require('ol.geom.flat');
+goog.require('ol.geom.flat.closest');
 goog.require('ol.geom.simplify');
 
 
@@ -58,11 +58,11 @@ ol.geom.LinearRing.prototype.closestPointXY =
     return minSquaredDistance;
   }
   if (this.maxDeltaRevision_ != this.getRevision()) {
-    this.maxDelta_ = Math.sqrt(ol.geom.closest.getMaxSquaredDelta(
+    this.maxDelta_ = Math.sqrt(ol.geom.flat.closest.getMaxSquaredDelta(
         this.flatCoordinates, 0, this.flatCoordinates.length, this.stride, 0));
     this.maxDeltaRevision_ = this.getRevision();
   }
-  return ol.geom.closest.getClosestPoint(
+  return ol.geom.flat.closest.getClosestPoint(
       this.flatCoordinates, 0, this.flatCoordinates.length, this.stride,
       this.maxDelta_, true, x, y, closestPoint, minSquaredDistance);
 };

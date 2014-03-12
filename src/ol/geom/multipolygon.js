@@ -7,8 +7,8 @@ goog.require('ol.geom.GeometryType');
 goog.require('ol.geom.MultiPoint');
 goog.require('ol.geom.Polygon');
 goog.require('ol.geom.SimpleGeometry');
-goog.require('ol.geom.closest');
 goog.require('ol.geom.flat');
+goog.require('ol.geom.flat.closest');
 goog.require('ol.geom.simplify');
 
 
@@ -118,11 +118,11 @@ ol.geom.MultiPolygon.prototype.closestPointXY =
     return minSquaredDistance;
   }
   if (this.maxDeltaRevision_ != this.getRevision()) {
-    this.maxDelta_ = Math.sqrt(ol.geom.closest.getssMaxSquaredDelta(
+    this.maxDelta_ = Math.sqrt(ol.geom.flat.closest.getssMaxSquaredDelta(
         this.flatCoordinates, 0, this.endss_, this.stride, 0));
     this.maxDeltaRevision_ = this.getRevision();
   }
-  return ol.geom.closest.getssClosestPoint(
+  return ol.geom.flat.closest.getssClosestPoint(
       this.getOrientedFlatCoordinates(), 0, this.endss_, this.stride,
       this.maxDelta_, true, x, y, closestPoint, minSquaredDistance);
 };
