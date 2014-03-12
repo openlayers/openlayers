@@ -1444,6 +1444,16 @@ ol.format.KML.prototype.readSharedStyleMap_ = function(node, objectStack) {
 
 
 /**
+ * Read the first feature from a KML source.
+ *
+ * @function
+ * @param {ArrayBuffer|Document|Node|Object|string} source Source.
+ * @return {ol.Feature} Feature.
+ */
+ol.format.KML.prototype.readFeature;
+
+
+/**
  * @inheritDoc
  */
 ol.format.KML.prototype.readFeatureFromNode = function(node) {
@@ -1460,6 +1470,16 @@ ol.format.KML.prototype.readFeatureFromNode = function(node) {
     return null;
   }
 };
+
+
+/**
+ * Read all features from a KML source.
+ *
+ * @function
+ * @param {ArrayBuffer|Document|Node|Object|string} source Source.
+ * @return {Array.<ol.Feature>} Features.
+ */
+ol.format.KML.prototype.readFeatures;
 
 
 /**
@@ -1571,6 +1591,16 @@ ol.format.KML.prototype.readNameFromNode = function(node) {
   }
   return undefined;
 };
+
+
+/**
+ * Read the projection from a KML source.
+ *
+ * @function
+ * @param {ArrayBuffer|Document|Node|Object|string} source Source.
+ * @return {ol.proj.Projection} Projection.
+ */
+ol.format.KML.prototype.readProjection;
 
 
 /**
