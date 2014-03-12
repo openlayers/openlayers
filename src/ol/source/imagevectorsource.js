@@ -111,7 +111,8 @@ ol.source.ImageVector.prototype.canvasFunctionInternal_ =
     function(extent, resolution, pixelRatio, size, projection) {
 
   var tolerance = resolution / (2 * pixelRatio);
-  var replayGroup = new ol.render.canvas.ReplayGroup(tolerance, extent);
+  var replayGroup = new ol.render.canvas.ReplayGroup(tolerance, extent,
+      resolution);
 
   var loading = false;
   this.source_.forEachFeatureInExtent(extent,
