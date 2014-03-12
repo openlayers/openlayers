@@ -12,6 +12,7 @@ goog.require('goog.events');
 goog.require('goog.events.Event');
 goog.require('goog.events.EventType');
 goog.require('goog.object');
+goog.require('ol.ObjectEventType');
 goog.require('ol.source.Source');
 goog.require('ol.structs.RBush');
 
@@ -58,7 +59,7 @@ ol.source.Vector = function(opt_options) {
 
   /**
    * @private
-   * @type {Object.<string, goog.events.Key>}
+   * @type {Object.<string, Array.<goog.events.Key>>}
    */
   this.featureChangeKeys_ = {};
 
@@ -88,8 +89,14 @@ ol.source.Vector.prototype.addFeature = function(feature) {
 ol.source.Vector.prototype.addFeatureInternal = function(feature) {
   var featureKey = goog.getUid(feature).toString();
   goog.asserts.assert(!(featureKey in this.featureChangeKeys_));
-  this.featureChangeKeys_[featureKey] = goog.events.listen(feature,
-      goog.events.EventType.CHANGE, this.handleFeatureChange_, false, this);
+  this.featureChangeKeys_[featureKey] = [
+    goog.events.listen(feature,
+        goog.events.EventType.CHANGE,
+        this.handleFeatureChange_, false, this),
+    goog.events.listen(feature,
+        ol.ObjectEventType.PROPERTYCHANGE,
+        this.handleFeatureChange_, false, this)
+  ];
   var geometry = feature.getGeometry();
   if (goog.isNull(geometry)) {
     this.nullGeometryFeatures_[goog.getUid(feature).toString()] = feature;
@@ -343,7 +350,8 @@ ol.source.Vector.prototype.removeFeature = function(feature) {
 ol.source.Vector.prototype.removeFeatureInternal = function(feature) {
   var featureKey = goog.getUid(feature).toString();
   goog.asserts.assert(featureKey in this.featureChangeKeys_);
-  goog.events.unlistenByKey(this.featureChangeKeys_[featureKey]);
+  goog.array.forEach(this.featureChangeKeys_[featureKey],
+      goog.events.unlistenByKey);
   delete this.featureChangeKeys_[featureKey];
   this.dispatchEvent(new ol.source.VectorEvent(
       ol.source.VectorEventType.REMOVEFEATURE, feature));
