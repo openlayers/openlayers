@@ -1,6 +1,7 @@
 goog.provide('ol.geom.flat.orient');
 
 goog.require('ol.geom.flat');
+goog.require('ol.geom.flat.reverse');
 
 
 /**
@@ -89,7 +90,7 @@ ol.geom.flat.orient.orientLinearRings =
         flatCoordinates, offset, end, stride);
     var reverse = i === 0 ? !isClockwise : isClockwise;
     if (reverse) {
-      ol.geom.flat.reverseCoordinates(flatCoordinates, offset, end, stride);
+      ol.geom.flat.reverse.coordinates(flatCoordinates, offset, end, stride);
     }
     offset = end;
   }
