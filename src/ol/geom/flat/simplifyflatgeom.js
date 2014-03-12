@@ -27,6 +27,7 @@
 goog.provide('ol.geom.flat.simplify');
 
 goog.require('ol.geom.flat');
+goog.require('ol.math');
 
 
 /**
@@ -101,7 +102,7 @@ ol.geom.flat.simplify.douglasPeucker = function(flatCoordinates, offset, end,
     for (i = first + stride; i < last; i += stride) {
       var x = flatCoordinates[i];
       var y = flatCoordinates[i + 1];
-      var squaredDistance = ol.geom.flat.squaredSegmentDistance(
+      var squaredDistance = ol.math.squaredSegmentDistance(
           x, y, x1, y1, x2, y2);
       if (squaredDistance > maxSquaredDistance) {
         index = i;
@@ -219,7 +220,7 @@ ol.geom.flat.simplify.radialDistance = function(flatCoordinates, offset, end,
   for (offset += stride; offset < end; offset += stride) {
     x2 = flatCoordinates[offset];
     y2 = flatCoordinates[offset + 1];
-    if (ol.geom.flat.squaredDistance(x1, y1, x2, y2) > squaredTolerance) {
+    if (ol.math.squaredDistance(x1, y1, x2, y2) > squaredTolerance) {
       // copy point at offset
       simplifiedFlatCoordinates[simplifiedOffset++] = x2;
       simplifiedFlatCoordinates[simplifiedOffset++] = y2;

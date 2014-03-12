@@ -3,6 +3,7 @@ goog.provide('ol.geom.flat.closest');
 goog.require('goog.asserts');
 goog.require('goog.math');
 goog.require('ol.geom.flat');
+goog.require('ol.math');
 
 
 /**
@@ -65,7 +66,7 @@ ol.geom.flat.closest.getMaxSquaredDelta =
   for (offset += stride; offset < end; offset += stride) {
     var x2 = flatCoordinates[offset];
     var y2 = flatCoordinates[offset + 1];
-    var squaredDelta = ol.geom.flat.squaredDistance(x1, y1, x2, y2);
+    var squaredDelta = ol.math.squaredDistance(x1, y1, x2, y2);
     if (squaredDelta > maxSquaredDelta) {
       maxSquaredDelta = squaredDelta;
     }
@@ -141,7 +142,7 @@ ol.geom.flat.closest.getClosestPoint = function(flatCoordinates, offset, end,
   var i, squaredDistance;
   if (maxDelta === 0) {
     // All points are identical, so just test the first point.
-    squaredDistance = ol.geom.flat.squaredDistance(
+    squaredDistance = ol.math.squaredDistance(
         x, y, flatCoordinates[offset], flatCoordinates[offset + 1]);
     if (squaredDistance < minSquaredDistance) {
       for (i = 0; i < stride; ++i) {
@@ -159,8 +160,7 @@ ol.geom.flat.closest.getClosestPoint = function(flatCoordinates, offset, end,
   while (index < end) {
     ol.geom.flat.closest.point(
         flatCoordinates, index - stride, index, stride, x, y, tmpPoint);
-    squaredDistance = ol.geom.flat.squaredDistance(
-        x, y, tmpPoint[0], tmpPoint[1]);
+    squaredDistance = ol.math.squaredDistance(x, y, tmpPoint[0], tmpPoint[1]);
     if (squaredDistance < minSquaredDistance) {
       minSquaredDistance = squaredDistance;
       for (i = 0; i < stride; ++i) {
@@ -188,8 +188,7 @@ ol.geom.flat.closest.getClosestPoint = function(flatCoordinates, offset, end,
     // Check the closing segment.
     ol.geom.flat.closest.point(
         flatCoordinates, end - stride, offset, stride, x, y, tmpPoint);
-    squaredDistance = ol.geom.flat.squaredDistance(
-        x, y, tmpPoint[0], tmpPoint[1]);
+    squaredDistance = ol.math.squaredDistance(x, y, tmpPoint[0], tmpPoint[1]);
     if (squaredDistance < minSquaredDistance) {
       minSquaredDistance = squaredDistance;
       for (i = 0; i < stride; ++i) {

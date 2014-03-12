@@ -9,6 +9,7 @@ goog.require('ol.geom.SimpleGeometry');
 goog.require('ol.geom.flat');
 goog.require('ol.geom.flat.deflate');
 goog.require('ol.geom.flat.inflate');
+goog.require('ol.math');
 
 
 
@@ -63,7 +64,7 @@ ol.geom.MultiPoint.prototype.closestPointXY =
   var stride = this.stride;
   var i, ii, j;
   for (i = 0, ii = flatCoordinates.length; i < ii; i += stride) {
-    var squaredDistance = ol.geom.flat.squaredDistance(
+    var squaredDistance = ol.math.squaredDistance(
         x, y, flatCoordinates[i], flatCoordinates[i + 1]);
     if (squaredDistance < minSquaredDistance) {
       minSquaredDistance = squaredDistance;
