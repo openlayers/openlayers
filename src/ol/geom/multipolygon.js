@@ -10,6 +10,8 @@ goog.require('ol.geom.SimpleGeometry');
 goog.require('ol.geom.flat');
 goog.require('ol.geom.flat.area');
 goog.require('ol.geom.flat.closest');
+goog.require('ol.geom.flat.contains');
+goog.require('ol.geom.flat.interiorpoint');
 goog.require('ol.geom.flat.orient');
 goog.require('ol.geom.flat.simplify');
 
@@ -134,7 +136,7 @@ ol.geom.MultiPolygon.prototype.closestPointXY =
  * @inheritDoc
  */
 ol.geom.MultiPolygon.prototype.containsXY = function(x, y) {
-  return ol.geom.flat.linearRingssContainsXY(
+  return ol.geom.flat.contains.linearRingssContainsXY(
       this.getOrientedFlatCoordinates(), 0, this.endss_, this.stride, x, y);
 };
 
@@ -174,7 +176,7 @@ ol.geom.MultiPolygon.prototype.getFlatInteriorPoints = function() {
   if (this.flatInteriorPointsRevision_ != this.getRevision()) {
     var flatCenters = ol.geom.flat.linearRingssGetFlatCenters(
         this.flatCoordinates, 0, this.endss_, this.stride);
-    this.flatInteriorPoints_ = ol.geom.flat.linearRingssGetInteriorPoints(
+    this.flatInteriorPoints_ = ol.geom.flat.interiorpoint.linearRingss(
         this.getOrientedFlatCoordinates(), 0, this.endss_, this.stride,
         flatCenters);
     this.flatInteriorPointsRevision_ = this.getRevision();

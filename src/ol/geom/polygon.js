@@ -10,6 +10,8 @@ goog.require('ol.geom.SimpleGeometry');
 goog.require('ol.geom.flat');
 goog.require('ol.geom.flat.area');
 goog.require('ol.geom.flat.closest');
+goog.require('ol.geom.flat.contains');
+goog.require('ol.geom.flat.interiorpoint');
 goog.require('ol.geom.flat.orient');
 goog.require('ol.geom.flat.simplify');
 
@@ -124,7 +126,7 @@ ol.geom.Polygon.prototype.closestPointXY =
  * @inheritDoc
  */
 ol.geom.Polygon.prototype.containsXY = function(x, y) {
-  return ol.geom.flat.linearRingsContainsXY(
+  return ol.geom.flat.contains.linearRingsContainsXY(
       this.getOrientedFlatCoordinates(), 0, this.ends_, this.stride, x, y);
 };
 
@@ -163,7 +165,7 @@ ol.geom.Polygon.prototype.getEnds = function() {
 ol.geom.Polygon.prototype.getFlatInteriorPoint = function() {
   if (this.flatInteriorPointRevision_ != this.getRevision()) {
     var flatCenter = ol.extent.getCenter(this.getExtent());
-    this.flatInteriorPoint_ = ol.geom.flat.linearRingsGetInteriorPoint(
+    this.flatInteriorPoint_ = ol.geom.flat.interiorpoint.linearRings(
         this.getOrientedFlatCoordinates(), 0, this.ends_, this.stride,
         flatCenter, 0);
     this.flatInteriorPointRevision_ = this.getRevision();
