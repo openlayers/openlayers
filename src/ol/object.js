@@ -1,4 +1,3 @@
-
 /**
  * An implementation of Google Maps' MVCObject.
  * @see https://developers.google.com/maps/articles/mvcfun
