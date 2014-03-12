@@ -8,6 +8,7 @@ goog.require('ol.geom.LinearRing');
 goog.require('ol.geom.Point');
 goog.require('ol.geom.SimpleGeometry');
 goog.require('ol.geom.flat');
+goog.require('ol.geom.flat.area');
 goog.require('ol.geom.flat.closest');
 goog.require('ol.geom.flat.simplify');
 
@@ -132,7 +133,7 @@ ol.geom.Polygon.prototype.containsXY = function(x, y) {
  * @todo stability experimental
  */
 ol.geom.Polygon.prototype.getArea = function() {
-  return ol.geom.flat.linearRingsArea(
+  return ol.geom.flat.area.linearRings(
       this.getOrientedFlatCoordinates(), 0, this.ends_, this.stride);
 };
 

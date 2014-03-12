@@ -4,6 +4,7 @@ goog.require('ol.extent');
 goog.require('ol.geom.GeometryType');
 goog.require('ol.geom.SimpleGeometry');
 goog.require('ol.geom.flat');
+goog.require('ol.geom.flat.area');
 goog.require('ol.geom.flat.closest');
 goog.require('ol.geom.flat.simplify');
 
@@ -73,7 +74,7 @@ ol.geom.LinearRing.prototype.closestPointXY =
  * @todo stability experimental
  */
 ol.geom.LinearRing.prototype.getArea = function() {
-  return ol.geom.flat.linearRingArea(
+  return ol.geom.flat.area.linearRing(
       this.flatCoordinates, 0, this.flatCoordinates.length, this.stride);
 };
 

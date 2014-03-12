@@ -8,6 +8,7 @@ goog.require('ol.geom.MultiPoint');
 goog.require('ol.geom.Polygon');
 goog.require('ol.geom.SimpleGeometry');
 goog.require('ol.geom.flat');
+goog.require('ol.geom.flat.area');
 goog.require('ol.geom.flat.closest');
 goog.require('ol.geom.flat.simplify');
 
@@ -142,7 +143,7 @@ ol.geom.MultiPolygon.prototype.containsXY = function(x, y) {
  * @todo stability experimental
  */
 ol.geom.MultiPolygon.prototype.getArea = function() {
-  return ol.geom.flat.linearRingssArea(
+  return ol.geom.flat.area.linearRingss(
       this.getOrientedFlatCoordinates(), 0, this.endss_, this.stride);
 };
 

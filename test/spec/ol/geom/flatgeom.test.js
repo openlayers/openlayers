@@ -84,19 +84,6 @@ describe('ol.geom.flat', function() {
     });
 
   });
-  describe('ol.geom.flat.linearRingArea', function() {
-
-    it('calcaultes the area of a triangle', function() {
-      var area = ol.geom.flat.linearRingArea([0, 0, 0.5, 1, 1, 0], 0, 6, 2);
-      expect(area).to.be(0.5);
-    });
-
-    it('calculates the area of a unit square', function() {
-      var area = ol.geom.flat.linearRingArea([0, 0, 0, 1, 1, 1, 1, 0], 0, 8, 2);
-      expect(area).to.be(1);
-    });
-
-  });
 
   describe('ol.geom.flat.linearRingIsClockwise', function() {
 
@@ -112,16 +99,6 @@ describe('ol.geom.flat', function() {
       var isClockwise = ol.geom.flat.linearRingIsClockwise(
           flatCoordinates, 0, flatCoordinates.length, 2);
       expect(isClockwise).to.be(false);
-    });
-
-  });
-
-  describe('ol.geom.flat.linearRingsArea', function() {
-
-    it('calculates the area with holes', function() {
-      var area = ol.geom.flat.linearRingsArea(
-          [0, 0, 0, 3, 3, 3, 3, 0, 1, 1, 2, 1, 2, 2, 1, 2], 0, [8, 16], 2);
-      expect(area).to.be(8);
     });
 
   });
