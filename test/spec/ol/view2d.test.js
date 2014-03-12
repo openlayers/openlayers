@@ -167,9 +167,9 @@ describe('ol.View2D', function() {
             constrainResolution: false
           }
       );
-      expect(view.getResolution()).to.be(14.849242404917458);
-      expect(view.getCenter()[0]).to.be(5200.000000000011);
-      expect(view.getCenter()[1]).to.be(46300);
+      expect(view.getResolution()).to.roughlyEqual(14.849242404917458, 1e-9);
+      expect(view.getCenter()[0]).to.roughlyEqual(5200, 1e-9);
+      expect(view.getCenter()[1]).to.roughlyEqual(46300, 1e-9);
     });
   });
 
@@ -196,8 +196,8 @@ describe('ol.View2D', function() {
           [400, 400],
           [300, 300]
       );
-      expect(view.getCenter()[0]).to.be(4585.78643762691);
-      expect(view.getCenter()[1]).to.be(46000);
+      expect(view.getCenter()[0]).to.roughlyEqual(4585.78643762691, 1e-9);
+      expect(view.getCenter()[1]).to.roughlyEqual(46000, 1e-9);
     });
   });
 });
