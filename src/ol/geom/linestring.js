@@ -7,6 +7,7 @@ goog.require('ol.geom.GeometryType');
 goog.require('ol.geom.SimpleGeometry');
 goog.require('ol.geom.flat');
 goog.require('ol.geom.flat.closest');
+goog.require('ol.geom.flat.deflate');
 goog.require('ol.geom.flat.interpolate');
 goog.require('ol.geom.flat.length');
 goog.require('ol.geom.flat.simplify');
@@ -194,7 +195,7 @@ ol.geom.LineString.prototype.setCoordinates =
     if (goog.isNull(this.flatCoordinates)) {
       this.flatCoordinates = [];
     }
-    this.flatCoordinates.length = ol.geom.flat.deflateCoordinates(
+    this.flatCoordinates.length = ol.geom.flat.deflate.coordinates(
         this.flatCoordinates, 0, coordinates, this.stride);
     this.dispatchChangeEvent();
   }

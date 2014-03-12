@@ -3,38 +3,6 @@ goog.provide('ol.test.geom.flat');
 
 describe('ol.geom.flat', function() {
 
-  describe('ol.geom.flat.deflateCoordinates', function() {
-
-    var flatCoordinates;
-    beforeEach(function() {
-      flatCoordinates = [];
-    });
-
-    it('flattens coordinates', function() {
-      var offset = ol.geom.flat.deflateCoordinates(
-          flatCoordinates, 0, [[1, 2], [3, 4]], 2);
-      expect(offset).to.be(4);
-      expect(flatCoordinates).to.eql([1, 2, 3, 4]);
-    });
-
-  });
-
-  describe('ol.geom.flat.deflateCoordinatess', function() {
-
-    var flatCoordinates;
-    beforeEach(function() {
-      flatCoordinates = [];
-    });
-
-    it('flattens arrays of coordinates', function() {
-      var ends = ol.geom.flat.deflateCoordinatess(flatCoordinates, 0,
-          [[[1, 2], [3, 4]], [[5, 6], [7, 8]]], 2);
-      expect(ends).to.eql([4, 8]);
-      expect(flatCoordinates).to.eql([1, 2, 3, 4, 5, 6, 7, 8]);
-    });
-
-  });
-
   describe('ol.geom.flat.flipXY', function() {
 
     it('can flip XY coordinates', function() {

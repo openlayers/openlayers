@@ -11,6 +11,7 @@ goog.require('ol.geom.flat');
 goog.require('ol.geom.flat.area');
 goog.require('ol.geom.flat.closest');
 goog.require('ol.geom.flat.contains');
+goog.require('ol.geom.flat.deflate');
 goog.require('ol.geom.flat.interiorpoint');
 goog.require('ol.geom.flat.orient');
 goog.require('ol.geom.flat.simplify');
@@ -317,7 +318,7 @@ ol.geom.MultiPolygon.prototype.setCoordinates =
     if (goog.isNull(this.flatCoordinates)) {
       this.flatCoordinates = [];
     }
-    var endss = ol.geom.flat.deflateCoordinatesss(
+    var endss = ol.geom.flat.deflate.coordinatesss(
         this.flatCoordinates, 0, coordinates, this.stride, this.endss_);
     var lastEnds = endss[endss.length - 1];
     this.flatCoordinates.length = lastEnds.length === 0 ?

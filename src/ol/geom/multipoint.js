@@ -7,6 +7,7 @@ goog.require('ol.geom.GeometryType');
 goog.require('ol.geom.Point');
 goog.require('ol.geom.SimpleGeometry');
 goog.require('ol.geom.flat');
+goog.require('ol.geom.flat.deflate');
 
 
 
@@ -145,7 +146,7 @@ ol.geom.MultiPoint.prototype.setCoordinates =
     if (goog.isNull(this.flatCoordinates)) {
       this.flatCoordinates = [];
     }
-    this.flatCoordinates.length = ol.geom.flat.deflateCoordinates(
+    this.flatCoordinates.length = ol.geom.flat.deflate.coordinates(
         this.flatCoordinates, 0, coordinates, this.stride);
     this.dispatchChangeEvent();
   }

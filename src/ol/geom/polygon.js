@@ -11,6 +11,7 @@ goog.require('ol.geom.flat');
 goog.require('ol.geom.flat.area');
 goog.require('ol.geom.flat.closest');
 goog.require('ol.geom.flat.contains');
+goog.require('ol.geom.flat.deflate');
 goog.require('ol.geom.flat.interiorpoint');
 goog.require('ol.geom.flat.orient');
 goog.require('ol.geom.flat.simplify');
@@ -280,7 +281,7 @@ ol.geom.Polygon.prototype.setCoordinates = function(coordinates, opt_layout) {
     if (goog.isNull(this.flatCoordinates)) {
       this.flatCoordinates = [];
     }
-    var ends = ol.geom.flat.deflateCoordinatess(
+    var ends = ol.geom.flat.deflate.coordinatess(
         this.flatCoordinates, 0, coordinates, this.stride, this.ends_);
     this.flatCoordinates.length = ends.length === 0 ? 0 : ends[ends.length - 1];
     this.dispatchChangeEvent();

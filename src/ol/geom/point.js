@@ -5,6 +5,7 @@ goog.require('ol.extent');
 goog.require('ol.geom.GeometryType');
 goog.require('ol.geom.SimpleGeometry');
 goog.require('ol.geom.flat');
+goog.require('ol.geom.flat.deflate');
 
 
 
@@ -98,7 +99,7 @@ ol.geom.Point.prototype.setCoordinates = function(coordinates, opt_layout) {
     if (goog.isNull(this.flatCoordinates)) {
       this.flatCoordinates = [];
     }
-    this.flatCoordinates.length = ol.geom.flat.deflateCoordinate(
+    this.flatCoordinates.length = ol.geom.flat.deflate.coordinate(
         this.flatCoordinates, 0, coordinates, this.stride);
     this.dispatchChangeEvent();
   }
