@@ -288,9 +288,10 @@ ol.geom.flat.lineStringInterpolate =
       var t = (target - cumulativeLengths[-index - 2]) /
           (cumulativeLengths[-index - 1] - cumulativeLengths[-index - 2]);
       var o = offset + (-index - 2) * stride;
-      pointX = (1 - t) * flatCoordinates[o] + t * flatCoordinates[o + stride];
-      pointY = (1 - t) * flatCoordinates[o + 1] +
-          t * flatCoordinates[o + stride + 1];
+      pointX = goog.math.lerp(
+          flatCoordinates[o], flatCoordinates[o + stride], t);
+      pointY = goog.math.lerp(
+          flatCoordinates[o + 1], flatCoordinates[o + stride + 1], t);
     } else {
       pointX = flatCoordinates[offset + index * stride];
       pointY = flatCoordinates[offset + index * stride + 1];
