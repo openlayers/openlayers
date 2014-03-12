@@ -22,5 +22,4 @@ describe('ol.geom.flat.orient', function() {
 
 });
 
-goog.require('ol.geom.flat');
 goog.require('ol.geom.flat.orient');

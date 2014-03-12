@@ -36,5 +36,4 @@ describe('ol.geom.flat.deflate', function() {
 
 });
 
-goog.require('ol.geom.flat');
 goog.require('ol.geom.flat.deflate');

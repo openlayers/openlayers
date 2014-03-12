@@ -46,5 +46,4 @@ describe('ol.geom.flat.interpolate', function() {
 
 });
 
-goog.require('ol.geom.flat');
 goog.require('ol.geom.flat.interpolate');

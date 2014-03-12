@@ -2,7 +2,6 @@ goog.provide('ol.geom.flat.closest');
 
 goog.require('goog.asserts');
 goog.require('goog.math');
-goog.require('ol.geom.flat');
 goog.require('ol.math');
 
 

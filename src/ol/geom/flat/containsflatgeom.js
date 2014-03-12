@@ -1,7 +1,6 @@
 goog.provide('ol.geom.flat.contains');
 
 goog.require('goog.asserts');
-goog.require('ol.geom.flat');
 
 
 /**

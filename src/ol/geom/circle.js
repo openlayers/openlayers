@@ -4,7 +4,6 @@ goog.require('goog.asserts');
 goog.require('ol.extent');
 goog.require('ol.geom.GeometryType');
 goog.require('ol.geom.SimpleGeometry');
-goog.require('ol.geom.flat');
 goog.require('ol.geom.flat.deflate');
 
 

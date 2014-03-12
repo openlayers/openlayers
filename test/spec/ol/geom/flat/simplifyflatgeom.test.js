@@ -355,5 +355,4 @@ describe('ol.geom.flat.simplify', function() {
 });
 
 
-goog.require('ol.geom.flat');
 goog.require('ol.geom.flat.simplify');

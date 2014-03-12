@@ -127,5 +127,4 @@ describe('ol.geom.flat.reverse', function() {
 
 });
 
-goog.require('ol.geom.flat');
 goog.require('ol.geom.flat.reverse');

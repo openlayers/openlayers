@@ -26,7 +26,6 @@
 
 goog.provide('ol.geom.flat.simplify');
 
-goog.require('ol.geom.flat');
 goog.require('ol.math');
 
 

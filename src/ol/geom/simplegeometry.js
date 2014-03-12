@@ -5,7 +5,6 @@ goog.require('goog.functions');
 goog.require('goog.object');
 goog.require('ol.extent');
 goog.require('ol.geom.Geometry');
-goog.require('ol.geom.flat');
 goog.require('ol.geom.flat.transform');
 
 

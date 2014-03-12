@@ -11,7 +11,6 @@ goog.require('goog.vec.Mat4');
 goog.require('ol.BrowserFeature');
 goog.require('ol.color');
 goog.require('ol.extent');
-goog.require('ol.geom.flat');
 goog.require('ol.geom.flat.transform');
 goog.require('ol.render.IVectorContext');
 goog.require('ol.render.canvas');

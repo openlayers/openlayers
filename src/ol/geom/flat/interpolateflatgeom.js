@@ -3,7 +3,6 @@ goog.provide('ol.geom.flat.interpolate');
 goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('goog.math');
-goog.require('ol.geom.flat');
 
 
 /**

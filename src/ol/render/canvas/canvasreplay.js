@@ -16,7 +16,6 @@ goog.require('ol.array');
 goog.require('ol.color');
 goog.require('ol.extent');
 goog.require('ol.extent.Relationship');
-goog.require('ol.geom.flat');
 goog.require('ol.geom.flat.simplify');
 goog.require('ol.geom.flat.transform');
 goog.require('ol.render.IReplayGroup');

@@ -7,7 +7,6 @@ goog.require('ol.geom.GeometryType');
 goog.require('ol.geom.MultiPoint');
 goog.require('ol.geom.Polygon');
 goog.require('ol.geom.SimpleGeometry');
-goog.require('ol.geom.flat');
 goog.require('ol.geom.flat.area');
 goog.require('ol.geom.flat.center');
 goog.require('ol.geom.flat.closest');

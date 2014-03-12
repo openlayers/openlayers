@@ -35,5 +35,4 @@ describe('ol.geom.flat.flip', function() {
 
 });
 
-goog.require('ol.geom.flat');
 goog.require('ol.geom.flat.flip');

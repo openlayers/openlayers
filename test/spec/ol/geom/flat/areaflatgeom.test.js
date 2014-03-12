@@ -29,5 +29,4 @@ describe('ol.geom.flat.area', function() {
 
 });
 
-goog.require('ol.geom.flat');
 goog.require('ol.geom.flat.area');

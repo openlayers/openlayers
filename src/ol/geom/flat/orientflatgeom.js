@@ -1,6 +1,5 @@
 goog.provide('ol.geom.flat.orient');
 
-goog.require('ol.geom.flat');
 goog.require('ol.geom.flat.reverse');
 
 

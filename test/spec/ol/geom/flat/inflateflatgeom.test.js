@@ -23,5 +23,4 @@ describe('ol.geom.flat.inflate', function() {
 
 });
 
-goog.require('ol.geom.flat');
 goog.require('ol.geom.flat.inflate');

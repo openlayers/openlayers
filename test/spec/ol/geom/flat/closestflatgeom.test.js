@@ -143,5 +143,4 @@ describe('ol.geom.flat.closest', function() {
 });
 
 
-goog.require('ol.geom.flat');
 goog.require('ol.geom.flat.closest');

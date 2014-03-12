@@ -1,7 +1,6 @@
 goog.provide('ol.geom.flat.interiorpoint');
 
 goog.require('goog.asserts');
-goog.require('ol.geom.flat');
 goog.require('ol.geom.flat.contains');
 
 

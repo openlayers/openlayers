@@ -1,7 +1,5 @@
 goog.provide('ol.geom.flat.length');
 
-goog.require('ol.geom.flat');
-
 
 /**
  * @param {Array.<number>} flatCoordinates Flat coordinates.
