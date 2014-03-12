@@ -8,6 +8,7 @@ goog.require('ol.geom.LineString');
 goog.require('ol.geom.SimpleGeometry');
 goog.require('ol.geom.flat');
 goog.require('ol.geom.flat.closest');
+goog.require('ol.geom.flat.interpolate');
 goog.require('ol.geom.flat.simplify');
 
 
@@ -198,7 +199,7 @@ ol.geom.MultiLineString.prototype.getFlatMidpoints = function() {
   var i, ii;
   for (i = 0, ii = ends.length; i < ii; ++i) {
     var end = ends[i];
-    var midpoint = ol.geom.flat.lineStringInterpolate(
+    var midpoint = ol.geom.flat.interpolate.lineString(
         flatCoordinates, offset, end, stride, 0.5);
     goog.array.extend(midpoints, midpoint);
     offset = end;

@@ -7,6 +7,7 @@ goog.require('ol.geom.GeometryType');
 goog.require('ol.geom.SimpleGeometry');
 goog.require('ol.geom.flat');
 goog.require('ol.geom.flat.closest');
+goog.require('ol.geom.flat.interpolate');
 goog.require('ol.geom.flat.simplify');
 
 
@@ -145,7 +146,7 @@ ol.geom.LineString.prototype.getLength = function() {
  */
 ol.geom.LineString.prototype.getFlatMidpoint = function() {
   if (this.flatMidpointRevision_ != this.getRevision()) {
-    this.flatMidpoint_ = ol.geom.flat.lineStringInterpolate(
+    this.flatMidpoint_ = ol.geom.flat.interpolate.lineString(
         this.flatCoordinates, 0, this.flatCoordinates.length, this.stride,
         0.5, this.flatMidpoint_);
     this.flatMidpointRevision_ = this.getRevision();
