@@ -582,6 +582,7 @@ ol.interaction.Modify.prototype.insertVertex_ = function(segmentData, vertex) {
   for (var i = 0, ii = segmentDataMatches.length; i < ii; ++i) {
     var segmentDataMatch = segmentDataMatches[i];
     if (segmentDataMatch.geometry === geometry &&
+        segmentDataMatch.depth[0] == depth[0] &&
         segmentDataMatch.index > index) {
       ++segmentDataMatch.index;
     }
