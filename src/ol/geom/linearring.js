@@ -5,7 +5,7 @@ goog.require('ol.geom.GeometryType');
 goog.require('ol.geom.SimpleGeometry');
 goog.require('ol.geom.flat');
 goog.require('ol.geom.flat.closest');
-goog.require('ol.geom.simplify');
+goog.require('ol.geom.flat.simplify');
 
 
 
@@ -94,7 +94,7 @@ ol.geom.LinearRing.prototype.getCoordinates = function() {
 ol.geom.LinearRing.prototype.getSimplifiedGeometryInternal =
     function(squaredTolerance) {
   var simplifiedFlatCoordinates = [];
-  simplifiedFlatCoordinates.length = ol.geom.simplify.douglasPeucker(
+  simplifiedFlatCoordinates.length = ol.geom.flat.simplify.douglasPeucker(
       this.flatCoordinates, 0, this.flatCoordinates.length, this.stride,
       squaredTolerance, simplifiedFlatCoordinates, 0);
   var simplifiedLinearRing = new ol.geom.LinearRing(null);

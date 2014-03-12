@@ -8,7 +8,7 @@ goog.require('ol.geom.LineString');
 goog.require('ol.geom.SimpleGeometry');
 goog.require('ol.geom.flat');
 goog.require('ol.geom.flat.closest');
-goog.require('ol.geom.simplify');
+goog.require('ol.geom.flat.simplify');
 
 
 
@@ -214,7 +214,7 @@ ol.geom.MultiLineString.prototype.getSimplifiedGeometryInternal =
     function(squaredTolerance) {
   var simplifiedFlatCoordinates = [];
   var simplifiedEnds = [];
-  simplifiedFlatCoordinates.length = ol.geom.simplify.douglasPeuckers(
+  simplifiedFlatCoordinates.length = ol.geom.flat.simplify.douglasPeuckers(
       this.flatCoordinates, 0, this.ends_, this.stride, squaredTolerance,
       simplifiedFlatCoordinates, 0, simplifiedEnds);
   var simplifiedMultiLineString = new ol.geom.MultiLineString(null);

@@ -9,7 +9,7 @@ goog.require('ol.geom.Polygon');
 goog.require('ol.geom.SimpleGeometry');
 goog.require('ol.geom.flat');
 goog.require('ol.geom.flat.closest');
-goog.require('ol.geom.simplify');
+goog.require('ol.geom.flat.simplify');
 
 
 
@@ -219,7 +219,7 @@ ol.geom.MultiPolygon.prototype.getSimplifiedGeometryInternal =
     function(squaredTolerance) {
   var simplifiedFlatCoordinates = [];
   var simplifiedEndss = [];
-  simplifiedFlatCoordinates.length = ol.geom.simplify.quantizess(
+  simplifiedFlatCoordinates.length = ol.geom.flat.simplify.quantizess(
       this.flatCoordinates, 0, this.endss_, this.stride,
       Math.sqrt(squaredTolerance),
       simplifiedFlatCoordinates, 0, simplifiedEndss);

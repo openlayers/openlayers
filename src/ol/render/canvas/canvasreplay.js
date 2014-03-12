@@ -17,7 +17,7 @@ goog.require('ol.color');
 goog.require('ol.extent');
 goog.require('ol.extent.Relationship');
 goog.require('ol.geom.flat');
-goog.require('ol.geom.simplify');
+goog.require('ol.geom.flat.simplify');
 goog.require('ol.render.IReplayGroup');
 goog.require('ol.render.IVectorContext');
 goog.require('ol.render.canvas');
@@ -1310,7 +1310,7 @@ ol.render.canvas.PolygonReplay.prototype.finish = function() {
     var coordinates = this.coordinates;
     var i, ii;
     for (i = 0, ii = coordinates.length; i < ii; ++i) {
-      coordinates[i] = ol.geom.simplify.snap(coordinates[i], tolerance);
+      coordinates[i] = ol.geom.flat.simplify.snap(coordinates[i], tolerance);
     }
   }
 };
