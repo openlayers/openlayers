@@ -9,6 +9,7 @@ goog.require('ol.geom.Polygon');
 goog.require('ol.geom.SimpleGeometry');
 goog.require('ol.geom.flat');
 goog.require('ol.geom.flat.area');
+goog.require('ol.geom.flat.center');
 goog.require('ol.geom.flat.closest');
 goog.require('ol.geom.flat.contains');
 goog.require('ol.geom.flat.deflate');
@@ -176,7 +177,7 @@ ol.geom.MultiPolygon.prototype.getEndss = function() {
  */
 ol.geom.MultiPolygon.prototype.getFlatInteriorPoints = function() {
   if (this.flatInteriorPointsRevision_ != this.getRevision()) {
-    var flatCenters = ol.geom.flat.linearRingssGetFlatCenters(
+    var flatCenters = ol.geom.flat.center.linearRingss(
         this.flatCoordinates, 0, this.endss_, this.stride);
     this.flatInteriorPoints_ = ol.geom.flat.interiorpoint.linearRingss(
         this.getOrientedFlatCoordinates(), 0, this.endss_, this.stride,
