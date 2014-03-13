@@ -384,16 +384,7 @@ ol.pointer.PointerEventHandler.prototype.contains_ =
  */
 ol.pointer.PointerEventHandler.prototype.makeEvent =
     function(inType, pointerEventData, browserEvent) {
-  var e = new ol.pointer.PointerEvent(inType, browserEvent, pointerEventData);
-
-  // keep the semantics of preventDefault
-  if (browserEvent.preventDefault) {
-    e.preventDefault = function() {
-      browserEvent.preventDefault();
-    };
-  }
-
-  return e;
+  return new ol.pointer.PointerEvent(inType, browserEvent, pointerEventData);
 };
 
 

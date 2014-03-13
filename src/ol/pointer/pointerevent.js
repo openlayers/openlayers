@@ -192,6 +192,12 @@ ol.pointer.PointerEvent = function(type, browserEvent, opt_eventDict) {
    */
   this.isPrimary = goog.object.get(eventDict, 'isPrimary', false);
 
+  // keep the semantics of preventDefault
+  if (browserEvent.preventDefault) {
+    this.preventDefault = function() {
+      browserEvent.preventDefault();
+    };
+  }
 };
 goog.inherits(ol.pointer.PointerEvent, goog.events.Event);
 
