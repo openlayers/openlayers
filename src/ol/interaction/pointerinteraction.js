@@ -23,9 +23,9 @@ ol.interaction.Pointer = function() {
 
   /**
    * @type {boolean}
-   * @private
+   * @protected
    */
-  this.handlingDownUpSequence_ = false;
+  this.handlingDownUpSequence = false;
 
   /**
    * @type {Object.<number, ol.pointer.PointerEvent>}
@@ -139,25 +139,25 @@ ol.interaction.Pointer.prototype.handleMapBrowserEvent =
   var stopEvent = false;
   var view = mapBrowserEvent.map.getView();
   this.updateTrackedPointers_(mapBrowserPointerEvent);
-  if (this.handlingDownUpSequence_) {
+  if (this.handlingDownUpSequence) {
     if (mapBrowserPointerEvent.type ==
         ol.MapBrowserEvent.EventType.POINTERDRAG) {
       this.handlePointerDrag(mapBrowserEvent);
     } else if (mapBrowserPointerEvent.type ==
         ol.MapBrowserEvent.EventType.POINTERUP) {
-      this.handlingDownUpSequence_ =
+      this.handlingDownUpSequence =
           this.handlePointerUp(mapBrowserPointerEvent);
-      if (!this.handlingDownUpSequence_) {
+      if (!this.handlingDownUpSequence) {
         view.setHint(ol.ViewHint.INTERACTING, -1);
       }
     }
   }
   if (mapBrowserPointerEvent.type == ol.MapBrowserEvent.EventType.POINTERDOWN) {
     var handled = this.handlePointerDown(mapBrowserPointerEvent);
-    if (!this.handlingDownUpSequence_ && handled) {
+    if (!this.handlingDownUpSequence && handled) {
       view.setHint(ol.ViewHint.INTERACTING, 1);
     }
-    this.handlingDownUpSequence_ = handled;
+    this.handlingDownUpSequence = handled;
     stopEvent = this.shouldStopEvent(handled);
   }
   return !stopEvent;
