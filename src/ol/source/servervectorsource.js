@@ -1,6 +1,6 @@
 // FIXME cache expiration
 
-goog.provide('ol.source.RemoteVector');
+goog.provide('ol.source.ServerVector');
 
 goog.require('ol.extent');
 goog.require('ol.source.FormatVector');
@@ -11,9 +11,9 @@ goog.require('ol.structs.RBush');
 /**
  * @constructor
  * @extends {ol.source.FormatVector}
- * @param {olx.source.RemoteVectorOptions} options Options.
+ * @param {olx.source.ServerVectorOptions} options Options.
  */
-ol.source.RemoteVector = function(options) {
+ol.source.ServerVector = function(options) {
 
   goog.base(this, {
     attributions: options.attributions,
@@ -49,13 +49,13 @@ ol.source.RemoteVector = function(options) {
   this.loadedFeatures_ = {};
 
 };
-goog.inherits(ol.source.RemoteVector, ol.source.FormatVector);
+goog.inherits(ol.source.ServerVector, ol.source.FormatVector);
 
 
 /**
  * @inheritDoc
  */
-ol.source.RemoteVector.prototype.addFeaturesInternal = function(features) {
+ol.source.ServerVector.prototype.addFeaturesInternal = function(features) {
   /** @type {Array.<ol.Feature>} */
   var notLoadedFeatures = [];
   var i, ii;
@@ -74,7 +74,7 @@ ol.source.RemoteVector.prototype.addFeaturesInternal = function(features) {
 /**
  * @inheritDoc
  */
-ol.source.RemoteVector.prototype.loadFeatures =
+ol.source.ServerVector.prototype.loadFeatures =
     function(extent, resolution, projection) {
   var loadedExtents = this.loadedExtents_;
   var extentsToLoad = this.loadingFunction_(extent, resolution);

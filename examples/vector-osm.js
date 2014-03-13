@@ -6,7 +6,7 @@ goog.require('ol.layer.Vector');
 goog.require('ol.loading');
 goog.require('ol.proj');
 goog.require('ol.source.BingMaps');
-goog.require('ol.source.RemoteVector');
+goog.require('ol.source.ServerVector');
 goog.require('ol.style.Circle');
 goog.require('ol.style.Fill');
 goog.require('ol.style.Stroke');
@@ -88,7 +88,7 @@ var styles = {
 };
 
 var epsg3857ToEPSG4326 = ol.proj.getTransform('EPSG:3857', 'EPSG:4326');
-var vectorSource = new ol.source.RemoteVector({
+var vectorSource = new ol.source.ServerVector({
   extentUrlFunction: function(extent, resolution) {
     var epsg4326Extent = epsg3857ToEPSG4326(extent, []);
     return 'http://overpass-api.de/api/xapi?map?bbox=' +
