@@ -5,6 +5,7 @@ goog.provide('ol.interaction.PinchZoom');
 goog.require('goog.asserts');
 goog.require('goog.style');
 goog.require('ol.Coordinate');
+goog.require('ol.ViewHint');
 goog.require('ol.interaction.Interaction');
 goog.require('ol.interaction.Pointer');
 
@@ -104,14 +105,16 @@ ol.interaction.PinchZoom.prototype.handlePointerUp =
     function(mapBrowserEvent) {
   if (this.targetPointers.length < 2) {
     var map = mapBrowserEvent.map;
+    var view = map.getView();
+    view.setHint(ol.ViewHint.INTERACTING, -1);
     // FIXME works for View2D only
-    var view = map.getView().getView2D();
-    var view2DState = view.getView2DState();
+    var view2D = view.getView2D();
+    var view2DState = view2D.getView2DState();
     // Zoom to final resolution, with an animation, and provide a
     // direction not to zoom out/in if user was pinching in/out.
     // Direction is > 0 if pinching out, and < 0 if pinching in.
     var direction = this.lastScaleDelta_ - 1;
-    ol.interaction.Interaction.zoom(map, view, view2DState.resolution,
+    ol.interaction.Interaction.zoom(map, view2D, view2DState.resolution,
         this.anchor_, this.duration_, direction);
     return false;
   } else {
@@ -130,6 +133,9 @@ ol.interaction.PinchZoom.prototype.handlePointerDown =
     this.anchor_ = null;
     this.lastDistance_ = undefined;
     this.lastScaleDelta_ = 1;
+    if (!this.handlingDownUpSequence) {
+      map.getView().setHint(ol.ViewHint.INTERACTING, 1);
+    }
     map.render();
     return true;
   } else {
