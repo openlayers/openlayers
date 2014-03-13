@@ -31,6 +31,7 @@
 goog.provide('ol.pointer.TouchSource');
 
 goog.require('goog.array');
+goog.require('goog.asserts');
 goog.require('goog.math.Coordinate');
 goog.require('ol.pointer.EventSource');
 
