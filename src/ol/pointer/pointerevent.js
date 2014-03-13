@@ -258,13 +258,6 @@ ol.pointer.PointerEvent.prototype.getPressure_ = function(eventDict, buttons) {
 
 
 /**
- * Does the browser support the `MouseEvent` type?
- * @type {boolean}
- */
-ol.pointer.PointerEvent.NEW_MOUSE_EVENT = false;
-
-
-/**
  * Is the `buttons` property supported?
  * @type {boolean}
  */
@@ -272,12 +265,11 @@ ol.pointer.PointerEvent.HAS_BUTTONS = false;
 
 
 /**
- * Checks if the `MouseEvent` type is supported.
+ * Checks if the `buttons` property is supported.
  */
 (function() {
   try {
     var ev = ol.pointer.PointerEvent.createMouseEvent('click', {buttons: 1});
-    ol.pointer.PointerEvent.NEW_MOUSE_EVENT = true;
     ol.pointer.PointerEvent.HAS_BUTTONS = ev.buttons === 1;
   } catch (e) {
   }
