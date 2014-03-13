@@ -161,7 +161,6 @@ ol.pointer.TouchSource.prototype.removePrimaryPointer_ = function(inPointer) {
  * @private
  */
 ol.pointer.TouchSource.prototype.resetClickCount_ = function() {
-  goog.asserts.assert(!goog.isDef(this.resetId_));
   this.resetId_ = goog.global.setTimeout(this.resetClickCountHandler_,
       ol.pointer.TouchSource.CLICK_COUNT_TIMEOUT);
 };
