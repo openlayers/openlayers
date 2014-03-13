@@ -6,6 +6,7 @@ goog.require('ol.Kinetic');
 goog.require('ol.Pixel');
 goog.require('ol.PreRenderFunction');
 goog.require('ol.View2D');
+goog.require('ol.ViewHint');
 goog.require('ol.coordinate');
 goog.require('ol.events.condition');
 goog.require('ol.interaction.Pointer');
@@ -112,6 +113,7 @@ ol.interaction.DragPan.prototype.handlePointerUp =
       dest = view2D.constrainCenter(dest);
       view2D.setCenter(dest);
     }
+    view2D.setHint(ol.ViewHint.INTERACTING, -1);
     map.render();
     return false;
   } else {
@@ -131,6 +133,9 @@ ol.interaction.DragPan.prototype.handlePointerDown =
     var view2D = map.getView().getView2D();
     goog.asserts.assertInstanceof(view2D, ol.View2D);
     this.lastCentroid = null;
+    if (!this.handlingDownUpSequence) {
+      view2D.setHint(ol.ViewHint.INTERACTING, 1);
+    }
     map.render();
     if (!goog.isNull(this.kineticPreRenderFn_) &&
         map.removePreRenderFunction(this.kineticPreRenderFn_)) {
