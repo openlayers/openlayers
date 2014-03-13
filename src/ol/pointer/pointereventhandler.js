@@ -138,8 +138,10 @@ ol.pointer.PointerEventHandler.prototype.registerSource =
  */
 ol.pointer.PointerEventHandler.prototype.register_ = function() {
   var l = this.eventSourceList_.length;
-  for (var i = 0, es; (i < l) && (es = this.eventSourceList_[i]); i++) {
-    this.addEvents_(es.getEvents());
+  var eventSource;
+  for (var i = 0; i < l; i++) {
+    eventSource = this.eventSourceList_[i];
+    this.addEvents_(eventSource.getEvents());
   }
 };
 
@@ -150,8 +152,10 @@ ol.pointer.PointerEventHandler.prototype.register_ = function() {
  */
 ol.pointer.PointerEventHandler.prototype.unregister_ = function() {
   var l = this.eventSourceList_.length;
-  for (var i = 0, es; (i < l) && (es = this.eventSourceList_[i]); i++) {
-    this.removeEvents_(es.getEvents());
+  var eventSource;
+  for (var i = 0; i < l; i++) {
+    eventSource = this.eventSourceList_[i];
+    this.removeEvents_(eventSource.getEvents());
   }
 };
 
