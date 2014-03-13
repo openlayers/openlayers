@@ -80,6 +80,15 @@ ol.pointer.TouchSource = function(dispatcher, mouseSource) {
    * @type {number|undefined}
    */
   this.resetId_ = undefined;
+
+  /**
+   * @private
+   * @type {function()}
+   */
+  this.resetClickCountHandler_ = goog.bind(function() {
+    this.clickCount_ = 0;
+    this.resetId_ = undefined;
+  }, this);
 };
 goog.inherits(ol.pointer.TouchSource, ol.pointer.EventSource);
 
@@ -147,11 +156,7 @@ ol.pointer.TouchSource.prototype.removePrimaryPointer_ = function(inPointer) {
  * @private
  */
 ol.pointer.TouchSource.prototype.resetClickCount_ = function() {
-  var fn = function() {
-    this.clickCount_ = 0;
-    this.resetId_ = undefined;
-  };
-  this.resetId_ = goog.global.setTimeout(goog.bind(fn, this),
+  this.resetId_ = goog.global.setTimeout(this.resetClickCountHandler_,
       ol.pointer.TouchSource.CLICK_COUNT_TIMEOUT);
 };
 
