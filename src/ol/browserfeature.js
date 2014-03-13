@@ -75,6 +75,7 @@ ol.BrowserFeature.DEVICE_PIXEL_RATIO = goog.global.devicePixelRatio || 1;
 
 /**
  * True if the browser supports ArrayBuffers.
+ * @const
  * @type {boolean}
  * @todo stability experimental
  */
