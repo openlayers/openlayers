@@ -8,8 +8,12 @@
 
 /**
  * @typedef {Object} olx.DeviceOptions
- * @property {boolean|undefined} loadTilesWhileAnimating When set to false, no tiles will be loaded while animating, which improves responsiveness on devices with slow memory. Default is `true`.
- * @property {boolean|undefined} loadTilesWhileInteracting When set to false, no tiles will be loaded while interacting, which improves responsiveness on devices with slow memory. Default is `true`.
+ * @property {boolean|undefined} loadTilesWhileAnimating When set to false,
+ *     no tiles will be loaded while animating, which improves responsiveness
+ *     on devices with slow memory. Default is `true`.
+ * @property {boolean|undefined} loadTilesWhileInteracting When set to false,
+ *     no tiles will be loaded while interacting, which improves responsiveness
+ *     on devices with slow memory. Default is `true`.
  * @todo stability experimental
  */
 
@@ -589,6 +593,9 @@
  * @property {number|undefined} hue Hue.
  * @property {Array.<string>|undefined} gradient The color gradient of the heatmap,
  *      specified as an array of CSS color strings. Default is `['#00f', '#0ff', '#0f0', '#ff0', '#f00']`.
+ * @property {number|undefined} radius Radius size in pixels. Default is `8`.
+ * @property {number|undefined} blur Blur size in pixels. Default is `15`.
+ * @property {number|undefined} shadow Shadow size in pixels. Default is `250`.
  * @property {number|undefined} minResolution The minimum resolution
  *      (inclusive) at which this layer will be visible.
  * @property {number|undefined} maxResolution The maximum resolution
@@ -596,7 +603,6 @@
  * @property {number|undefined} opacity Opacity. 0-1. Default is `1`.
  * @property {number|undefined} saturation Saturation.
  * @property {ol.source.Vector} source Source.
- * @property {ol.style.Style|Array.<ol.style.Style>|ol.feature.StyleFunction|undefined} style Layer style.
  * @property {boolean|undefined} visible Visibility. Default is `true` (visible).
  * @todo stability experimental
  */
