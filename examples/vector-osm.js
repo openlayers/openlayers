@@ -3,7 +3,7 @@ goog.require('ol.View2D');
 goog.require('ol.format.OSMXML');
 goog.require('ol.layer.Tile');
 goog.require('ol.layer.Vector');
-goog.require('ol.loading');
+goog.require('ol.loadingstrategy');
 goog.require('ol.proj');
 goog.require('ol.source.BingMaps');
 goog.require('ol.source.ServerVector');
@@ -95,7 +95,7 @@ var vectorSource = new ol.source.ServerVector({
         epsg4326Extent.join(',');
   },
   format: new ol.format.OSMXML(),
-  loadingFunction: ol.loading.createTile(new ol.tilegrid.XYZ({
+  loadingStrategy: ol.loadingstrategy.createTile(new ol.tilegrid.XYZ({
     maxZoom: 19
   })),
   projection: 'EPSG:3857'

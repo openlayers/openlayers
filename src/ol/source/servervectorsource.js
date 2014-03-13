@@ -34,7 +34,7 @@ ol.source.ServerVector = function(options) {
    * @private
    * @type {function(ol.Extent, number): Array.<ol.Extent>}
    */
-  this.loadingFunction_ = options.loadingFunction;
+  this.loadingStrategy_ = options.loadingStrategy;
 
   /**
    * @private
@@ -77,7 +77,7 @@ ol.source.ServerVector.prototype.addFeaturesInternal = function(features) {
 ol.source.ServerVector.prototype.loadFeatures =
     function(extent, resolution, projection) {
   var loadedExtents = this.loadedExtents_;
-  var extentsToLoad = this.loadingFunction_(extent, resolution);
+  var extentsToLoad = this.loadingStrategy_(extent, resolution);
   var i, ii;
   for (i = 0, ii = extentsToLoad.length; i < ii; ++i) {
     var extentToLoad = extentsToLoad[i];

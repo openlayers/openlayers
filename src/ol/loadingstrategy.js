@@ -1,4 +1,4 @@
-goog.provide('ol.loading');
+goog.provide('ol.loadingstrategy');
 
 goog.require('ol.TileCoord');
 
@@ -8,7 +8,7 @@ goog.require('ol.TileCoord');
  * @param {number} resolution Resolution.
  * @return {Array.<ol.Extent>} Extents.
  */
-ol.loading.all = function(extent, resolution) {
+ol.loadingstrategy.all = function(extent, resolution) {
   return [[-Infinity, -Infinity, Infinity, Infinity]];
 };
 
@@ -18,7 +18,7 @@ ol.loading.all = function(extent, resolution) {
  * @param {number} resolution Resolution.
  * @return {Array.<ol.Extent>} Extents.
  */
-ol.loading.bbox = function(extent, resolution) {
+ol.loadingstrategy.bbox = function(extent, resolution) {
   return [extent];
 };
 
@@ -27,7 +27,7 @@ ol.loading.bbox = function(extent, resolution) {
  * @param {ol.tilegrid.TileGrid} tileGrid Tile grid.
  * @return {function(ol.Extent, number): Array.<ol.Extent>} Loading strategy.
  */
-ol.loading.createTile = function(tileGrid) {
+ol.loadingstrategy.createTile = function(tileGrid) {
   return (
       /**
        * @param {ol.Extent} extent Extent.
