@@ -1,4 +1,3 @@
-
 goog.provide('ol.pointer.EventSource');
 
 goog.require('goog.events.BrowserEvent');
