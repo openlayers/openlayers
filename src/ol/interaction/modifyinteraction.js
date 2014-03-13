@@ -23,8 +23,9 @@ goog.require('ol.structs.RBush');
 
 
 /**
- * @typedef {{feature: ol.Feature,
- *            geometry: ol.geom.Geometry,
+ * @typedef {{depth: (Array.<number>|undefined),
+ *            feature: ol.Feature,
+ *            geometry: ol.geom.SimpleGeometry,
  *            index: (number|undefined),
  *            segment: Array.<ol.Extent>}}
  */
@@ -257,17 +258,20 @@ ol.interaction.Modify.prototype.writeMultiLineStringGeometry_ =
 ol.interaction.Modify.prototype.writePolygonGeometry_ =
     function(feature, geometry) {
   var rings = geometry.getCoordinates();
-  var coordinates = rings[0];
-  var i, ii, segment, segmentData;
-  for (i = 0, ii = coordinates.length - 1; i < ii; ++i) {
-    segment = coordinates.slice(i, i + 2);
-    segmentData = /** @type {ol.interaction.SegmentDataType} */ ({
-      feature: feature,
-      geometry: geometry,
-      index: i,
-      segment: segment
-    });
-    this.rBush_.insert(ol.extent.boundingExtent(segment), segmentData);
+  var coordinates, i, ii, j, jj, segment, segmentData;
+  for (j = 0, jj = rings.length; j < jj; ++j) {
+    coordinates = rings[j];
+    for (i = 0, ii = coordinates.length - 1; i < ii; ++i) {
+      segment = coordinates.slice(i, i + 2);
+      segmentData = /** @type {ol.interaction.SegmentDataType} */ ({
+        feature: feature,
+        geometry: geometry,
+        depth: [j],
+        index: i,
+        segment: segment
+      });
+      this.rBush_.insert(ol.extent.boundingExtent(segment), segmentData);
+    }
   }
 };
 
@@ -280,19 +284,22 @@ ol.interaction.Modify.prototype.writePolygonGeometry_ =
 ol.interaction.Modify.prototype.writeMultiPolygonGeometry_ =
     function(feature, geometry) {
   var polygons = geometry.getCoordinates();
-  var coordinates, i, ii, j, jj, segment, segmentData;
-  for (j = 0, jj = polygons.length; j < jj; ++j) {
-    coordinates = polygons[j][0];
-    for (i = 0, ii = coordinates.length - 1; i < ii; ++i) {
-      segment = coordinates.slice(i, i + 2);
-      segmentData = /** @type {ol.interaction.SegmentDataType} */ ({
-        feature: feature,
-        geometry: geometry,
-        depth: [j],
-        index: i,
-        segment: segment
-      });
-      this.rBush_.insert(ol.extent.boundingExtent(segment), segmentData);
+  var coordinates, i, ii, j, jj, k, kk, rings, segment, segmentData;
+  for (k = 0, kk = polygons.length; k < kk; ++k) {
+    rings = polygons[k];
+    for (j = 0, jj = rings.length; j < jj; ++j) {
+      coordinates = rings[j];
+      for (i = 0, ii = coordinates.length - 1; i < ii; ++i) {
+        segment = coordinates.slice(i, i + 2);
+        segmentData = /** @type {ol.interaction.SegmentDataType} */ ({
+          feature: feature,
+          geometry: geometry,
+          depth: [j, k],
+          index: i,
+          segment: segment
+        });
+        this.rBush_.insert(ol.extent.boundingExtent(segment), segmentData);
+      }
     }
   }
 };
@@ -430,11 +437,11 @@ ol.interaction.Modify.prototype.handleDrag = function(evt) {
         segment[index] = vertex;
         break;
       case ol.geom.GeometryType.POLYGON:
-        coordinates[0][segmentData.index + index] = vertex;
+        coordinates[depth[0]][segmentData.index + index] = vertex;
         segment[index] = vertex;
         break;
       case ol.geom.GeometryType.MULTI_POLYGON:
-        coordinates[depth[0]][0][segmentData.index + index] = vertex;
+        coordinates[depth[1]][depth[0]][segmentData.index + index] = vertex;
         segment[index] = vertex;
         break;
     }
@@ -574,12 +581,12 @@ ol.interaction.Modify.prototype.insertVertex_ = function(segmentData, vertex) {
     case ol.geom.GeometryType.POLYGON:
       goog.asserts.assertInstanceof(geometry, ol.geom.Polygon);
       coordinates = geometry.getCoordinates();
-      coordinates[0].splice(index + 1, 0, vertex);
+      coordinates[depth[0]].splice(index + 1, 0, vertex);
       break;
     case ol.geom.GeometryType.MULTI_POLYGON:
       goog.asserts.assertInstanceof(geometry, ol.geom.MultiPolygon);
       coordinates = geometry.getCoordinates();
-      coordinates[depth[0]][0].splice(index + 1, 0, vertex);
+      coordinates[depth[1]][depth[0]].splice(index + 1, 0, vertex);
       break;
     case ol.geom.GeometryType.LINE_STRING:
       goog.asserts.assertInstanceof(geometry, ol.geom.LineString);
@@ -605,7 +612,8 @@ ol.interaction.Modify.prototype.insertVertex_ = function(segmentData, vertex) {
   for (var i = 0, ii = segmentDataMatches.length; i < ii; ++i) {
     var segmentDataMatch = segmentDataMatches[i];
     if (segmentDataMatch.geometry === geometry &&
-        segmentDataMatch.depth[0] == depth[0] &&
+        (!goog.isDef(depth) ||
+        goog.array.equals(segmentDataMatch.depth, depth)) &&
         segmentDataMatch.index > index) {
       ++segmentDataMatch.index;
     }
