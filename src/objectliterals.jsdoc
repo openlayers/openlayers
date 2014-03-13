@@ -74,6 +74,10 @@
  *     overlay is placed in the same container as that of the controls (see
  *     the `stopEvent` option) you will probably set `insertFirst` to `true`
  *     so the overlay is displayed below the controls.
+ * @property {number|undefined} offsetX Horizontal offset in pixels.
+ *     A positive will shift the overlay right. Default is `0`.
+ * @property {number|undefined} offsetY Vertical offset in pixels.
+ *     A positive will shift the overlay down. Default is `0`.
  * @todo stability experimental
  */
 
