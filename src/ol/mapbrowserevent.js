@@ -10,7 +10,6 @@ goog.require('goog.events.BrowserEvent');
 goog.require('goog.events.EventTarget');
 goog.require('goog.events.EventType');
 goog.require('goog.object');
-
 goog.require('ol.Coordinate');
 goog.require('ol.MapEvent');
 goog.require('ol.Pixel');
@@ -447,10 +446,12 @@ ol.MapBrowserEventHandler.prototype.disposeInternal = function() {
  * @enum {string}
  */
 ol.MapBrowserEvent.EventType = {
+  // derived event types
   SINGLECLICK: 'singleclick',
   DBLCLICK: goog.events.EventType.DBLCLICK,
   POINTERDRAG: 'pointerdrag',
 
+  // original pointer event types
   POINTERMOVE: 'pointermove',
   POINTERDOWN: 'pointerdown',
   POINTERUP: 'pointerup',
