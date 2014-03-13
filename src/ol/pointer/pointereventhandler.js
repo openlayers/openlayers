@@ -35,7 +35,6 @@ goog.require('goog.events');
 goog.require('goog.events.BrowserEvent');
 goog.require('goog.events.Event');
 goog.require('goog.events.EventTarget');
-goog.require('goog.structs.Map');
 
 goog.require('ol.BrowserFeature');
 goog.require('ol.pointer.MouseSource');
@@ -63,9 +62,9 @@ ol.pointer.PointerEventHandler = function(element) {
 
   /**
    * @const
-   * @type {goog.structs.Map}
+   * @type {Object.<string, goog.events.BrowserEvent|Object>}
    */
-  this.pointerMap = new goog.structs.Map();
+  this.pointerMap = {};
 
   /**
    * @type {Object.<string, function(goog.events.BrowserEvent)>}

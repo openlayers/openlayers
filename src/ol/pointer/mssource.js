@@ -30,6 +30,7 @@
 
 goog.provide('ol.pointer.MsSource');
 
+goog.require('goog.object');
 goog.require('ol.pointer.EventSource');
 
 
@@ -54,7 +55,7 @@ ol.pointer.MsSource = function(dispatcher) {
 
   /**
    * @const
-   * @type {goog.structs.Map}
+   * @type {Object.<string, goog.events.BrowserEvent|Object>}
    */
   this.pointerMap = dispatcher.pointerMap;
 
@@ -97,7 +98,7 @@ ol.pointer.MsSource.prototype.prepareEvent_ = function(inEvent) {
  * @param {number} pointerId
  */
 ol.pointer.MsSource.prototype.cleanup = function(pointerId) {
-  this.pointerMap.remove(pointerId);
+  goog.object.remove(this.pointerMap, pointerId);
 };
 
 
@@ -107,7 +108,8 @@ ol.pointer.MsSource.prototype.cleanup = function(pointerId) {
  * @param {goog.events.BrowserEvent} inEvent
  */
 ol.pointer.MsSource.prototype.msPointerDown = function(inEvent) {
-  this.pointerMap.set(inEvent.getBrowserEvent().pointerId, inEvent);
+  goog.object.set(this.pointerMap,
+      inEvent.getBrowserEvent().pointerId, inEvent);
   var e = this.prepareEvent_(inEvent);
   this.dispatcher.down(e, inEvent);
 };
