@@ -19,7 +19,6 @@ ol.source.ServerVector = function(options) {
     attributions: options.attributions,
     extent: options.extent,
     format: options.format,
-    headers: options.headers,
     logo: options.logo,
     projection: options.projection
   });
@@ -32,15 +31,16 @@ ol.source.ServerVector = function(options) {
 
   /**
    * @private
-   * @type {function(ol.Extent, number): Array.<ol.Extent>}
+   * @type {function(this: ol.source.ServerVector, ol.Extent, number,
+   *                 ol.proj.Projection): string}
    */
-  this.loadingStrategy_ = options.loadingStrategy;
+  this.loadingFunction_ = options.loadingFunction;
 
   /**
    * @private
-   * @type {function(ol.Extent, number, ol.proj.Projection): string}
+   * @type {function(ol.Extent, number): Array.<ol.Extent>}
    */
-  this.extentUrlFunction_ = options.extentUrlFunction;
+  this.loadingStrategy_ = options.loadingStrategy;
 
   /**
    * @private
@@ -90,8 +90,7 @@ ol.source.ServerVector.prototype.loadFeatures =
           return ol.extent.containsExtent(object.extent, extentToLoad);
         });
     if (!alreadyLoaded) {
-      var url = this.extentUrlFunction_(extentToLoad, resolution, projection);
-      this.loadFeaturesFromURL(url);
+      this.loadingFunction_.call(this, extentToLoad, resolution, projection);
       loadedExtents.insert(extentToLoad, {extent: extentToLoad.slice()});
     }
   }

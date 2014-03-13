@@ -87,14 +87,17 @@ var styles = {
   }
 };
 
-var epsg3857ToEPSG4326 = ol.proj.getTransform('EPSG:3857', 'EPSG:4326');
 var vectorSource = new ol.source.ServerVector({
-  extentUrlFunction: function(extent, resolution) {
-    var epsg4326Extent = epsg3857ToEPSG4326(extent, []);
-    return 'http://overpass-api.de/api/xapi?map?bbox=' +
-        epsg4326Extent.join(',');
-  },
   format: new ol.format.OSMXML(),
+  loadingFunction: function(extent, resolution, projection) {
+    var transform = ol.proj.getTransform(projection, 'EPSG:4326');
+    var epsg4326Extent = transform(extent, []);
+    var url = 'http://overpass-api.de/api/xapi?map?bbox=' +
+        epsg4326Extent.join(',');
+    $.ajax(url).then(function(response) {
+      vectorSource.readFeatures(response);
+    });
+  },
   loadingStrategy: ol.loadingstrategy.createTile(new ol.tilegrid.XYZ({
     maxZoom: 19
   })),
