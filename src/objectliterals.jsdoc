@@ -8,8 +8,12 @@
 
 /**
  * @typedef {Object} olx.DeviceOptions
- * @property {boolean|undefined} loadTilesWhileAnimating When set to false, no tiles will be loaded while animating, which improves responsiveness on devices with slow memory. Default is `true`.
- * @property {boolean|undefined} loadTilesWhileInteracting When set to false, no tiles will be loaded while interacting, which improves responsiveness on devices with slow memory. Default is `true`.
+ * @property {boolean|undefined} loadTilesWhileAnimating When set to false,
+ *     no tiles will be loaded while animating, which improves responsiveness
+ *     on devices with slow memory. Default is `true`.
+ * @property {boolean|undefined} loadTilesWhileInteracting When set to false,
+ *     no tiles will be loaded while interacting, which improves responsiveness
+ *     on devices with slow memory. Default is `true`.
  * @todo stability experimental
  */
 
