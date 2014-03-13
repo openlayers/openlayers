@@ -449,10 +449,7 @@ ol.pointer.TouchSource.prototype.dedupSynthMouse_ = function(inEvent) {
 
     goog.global.setTimeout(function() {
       // remove touch after timeout
-      var i = lts.indexOf(lt);
-      if (i > -1) {
-        lts.splice(i, 1);
-      }
+      goog.array.remove(lts, lt);
     }, ol.pointer.TouchSource.DEDUP_TIMEOUT);
   }
 };
