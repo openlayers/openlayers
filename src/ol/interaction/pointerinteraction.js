@@ -7,7 +7,6 @@ goog.require('ol.MapBrowserEvent');
 goog.require('ol.MapBrowserEvent.EventType');
 goog.require('ol.MapBrowserPointerEvent');
 goog.require('ol.Pixel');
-goog.require('ol.ViewHint');
 goog.require('ol.interaction.Interaction');
 
 
@@ -137,7 +136,6 @@ ol.interaction.Pointer.prototype.handleMapBrowserEvent =
       /** @type {ol.MapBrowserPointerEvent} */ (mapBrowserEvent);
 
   var stopEvent = false;
-  var view = mapBrowserEvent.map.getView();
   this.updateTrackedPointers_(mapBrowserPointerEvent);
   if (this.handlingDownUpSequence) {
     if (mapBrowserPointerEvent.type ==
@@ -147,16 +145,10 @@ ol.interaction.Pointer.prototype.handleMapBrowserEvent =
         ol.MapBrowserEvent.EventType.POINTERUP) {
       this.handlingDownUpSequence =
           this.handlePointerUp(mapBrowserPointerEvent);
-      if (!this.handlingDownUpSequence) {
-        view.setHint(ol.ViewHint.INTERACTING, -1);
-      }
     }
   }
   if (mapBrowserPointerEvent.type == ol.MapBrowserEvent.EventType.POINTERDOWN) {
     var handled = this.handlePointerDown(mapBrowserPointerEvent);
-    if (!this.handlingDownUpSequence && handled) {
-      view.setHint(ol.ViewHint.INTERACTING, 1);
-    }
     this.handlingDownUpSequence = handled;
     stopEvent = this.shouldStopEvent(handled);
   }
