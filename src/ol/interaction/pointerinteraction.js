@@ -132,23 +132,20 @@ ol.interaction.Pointer.prototype.handleMapBrowserEvent =
     return true;
   }
 
-  var mapBrowserPointerEvent =
-      /** @type {ol.MapBrowserPointerEvent} */ (mapBrowserEvent);
-
   var stopEvent = false;
-  this.updateTrackedPointers_(mapBrowserPointerEvent);
+  this.updateTrackedPointers_(mapBrowserEvent);
   if (this.handlingDownUpSequence) {
-    if (mapBrowserPointerEvent.type ==
+    if (mapBrowserEvent.type ==
         ol.MapBrowserEvent.EventType.POINTERDRAG) {
       this.handlePointerDrag(mapBrowserEvent);
-    } else if (mapBrowserPointerEvent.type ==
+    } else if (mapBrowserEvent.type ==
         ol.MapBrowserEvent.EventType.POINTERUP) {
       this.handlingDownUpSequence =
-          this.handlePointerUp(mapBrowserPointerEvent);
+          this.handlePointerUp(mapBrowserEvent);
     }
   }
-  if (mapBrowserPointerEvent.type == ol.MapBrowserEvent.EventType.POINTERDOWN) {
-    var handled = this.handlePointerDown(mapBrowserPointerEvent);
+  if (mapBrowserEvent.type == ol.MapBrowserEvent.EventType.POINTERDOWN) {
+    var handled = this.handlePointerDown(mapBrowserEvent);
     this.handlingDownUpSequence = handled;
     stopEvent = this.shouldStopEvent(handled);
   }
