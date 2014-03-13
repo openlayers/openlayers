@@ -238,8 +238,11 @@ ol.pointer.TouchSource.prototype.processTouches_ =
  * @return {boolean} True, if the `Touch` with the given id is in the list.
  */
 ol.pointer.TouchSource.prototype.findTouch_ = function(touchList, searchId) {
-  for (var i = 0, l = touchList.length, t; i < l && (t = touchList[i]); i++) {
-    if (t.identifier === searchId) {
+  var l = touchList.length;
+  var touch;
+  for (var i = 0; i < l; i++) {
+    touch = touchList[i];
+    if (touch.identifier === searchId) {
       return true;
     }
   }
