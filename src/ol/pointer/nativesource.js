@@ -52,13 +52,6 @@ ol.pointer.NativeSource = function(dispatcher) {
     'lostpointercapture': this.lostPointerCapture
   };
   goog.base(this, dispatcher, mapping);
-
-  /**
-   * @const
-   * @type {goog.structs.Map}
-   */
-  this.pointerMap = dispatcher.pointerMap;
-
 };
 goog.inherits(ol.pointer.NativeSource, ol.pointer.EventSource);
 
