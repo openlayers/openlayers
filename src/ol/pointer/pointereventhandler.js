@@ -234,7 +234,8 @@ ol.pointer.PointerEventHandler.prototype.cloneEvent =
  */
 ol.pointer.PointerEventHandler.prototype.down =
     function(pointerEventData, browserEvent) {
-  this.fireEvent('pointerdown', pointerEventData, browserEvent);
+  this.fireEvent(ol.pointer.EventType.POINTERDOWN,
+      pointerEventData, browserEvent);
 };
 
 
@@ -245,7 +246,8 @@ ol.pointer.PointerEventHandler.prototype.down =
  */
 ol.pointer.PointerEventHandler.prototype.move =
     function(pointerEventData, browserEvent) {
-  this.fireEvent('pointermove', pointerEventData, browserEvent);
+  this.fireEvent(ol.pointer.EventType.POINTERMOVE,
+      pointerEventData, browserEvent);
 };
 
 
@@ -256,7 +258,8 @@ ol.pointer.PointerEventHandler.prototype.move =
  */
 ol.pointer.PointerEventHandler.prototype.up =
     function(pointerEventData, browserEvent) {
-  this.fireEvent('pointerup', pointerEventData, browserEvent);
+  this.fireEvent(ol.pointer.EventType.POINTERUP,
+      pointerEventData, browserEvent);
 };
 
 
@@ -268,7 +271,8 @@ ol.pointer.PointerEventHandler.prototype.up =
 ol.pointer.PointerEventHandler.prototype.enter =
     function(pointerEventData, browserEvent) {
   pointerEventData.bubbles = false;
-  this.fireEvent('pointerenter', pointerEventData, browserEvent);
+  this.fireEvent(ol.pointer.EventType.POINTERENTER,
+      pointerEventData, browserEvent);
 };
 
 
@@ -280,7 +284,8 @@ ol.pointer.PointerEventHandler.prototype.enter =
 ol.pointer.PointerEventHandler.prototype.leave =
     function(pointerEventData, browserEvent) {
   pointerEventData.bubbles = false;
-  this.fireEvent('pointerleave', pointerEventData, browserEvent);
+  this.fireEvent(ol.pointer.EventType.POINTERLEAVE,
+      pointerEventData, browserEvent);
 };
 
 
@@ -292,7 +297,8 @@ ol.pointer.PointerEventHandler.prototype.leave =
 ol.pointer.PointerEventHandler.prototype.over =
     function(pointerEventData, browserEvent) {
   pointerEventData.bubbles = true;
-  this.fireEvent('pointerover', pointerEventData, browserEvent);
+  this.fireEvent(ol.pointer.EventType.POINTEROVER,
+      pointerEventData, browserEvent);
 };
 
 
@@ -304,7 +310,8 @@ ol.pointer.PointerEventHandler.prototype.over =
 ol.pointer.PointerEventHandler.prototype.out =
     function(pointerEventData, browserEvent) {
   pointerEventData.bubbles = true;
-  this.fireEvent('pointerout', pointerEventData, browserEvent);
+  this.fireEvent(ol.pointer.EventType.POINTEROUT,
+      pointerEventData, browserEvent);
 };
 
 
@@ -315,7 +322,8 @@ ol.pointer.PointerEventHandler.prototype.out =
  */
 ol.pointer.PointerEventHandler.prototype.cancel =
     function(pointerEventData, browserEvent) {
-  this.fireEvent('pointercancel', pointerEventData, browserEvent);
+  this.fireEvent(ol.pointer.EventType.POINTERCANCEL,
+      pointerEventData, browserEvent);
 };
 
 
@@ -451,6 +459,7 @@ ol.pointer.EventType = {
   POINTERDOWN: 'pointerdown',
   POINTERUP: 'pointerup',
   POINTEROVER: 'pointerover',
+  POINTEROUT: 'pointerout',
   POINTERENTER: 'pointerenter',
   POINTERLEAVE: 'pointerleave',
   POINTERCANCEL: 'pointercancel'
