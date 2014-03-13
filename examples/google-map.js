@@ -3,7 +3,7 @@
 goog.require('ol.Map');
 goog.require('ol.View2D');
 goog.require('ol.interaction');
-goog.require('ol.interaction.Pan');
+goog.require('ol.interaction.DragPan');
 goog.require('ol.layer.Vector');
 goog.require('ol.proj');
 goog.require('ol.source.GeoJSON');
@@ -53,7 +53,7 @@ var map = new ol.Map({
     altShiftDragRotate: false,
     pan: false,
     rotate: false
-  }).extend([new ol.interaction.Pan({kinetic: false})]),
+  }).extend([new ol.interaction.DragPan({kinetic: false})]),
   renderer: 'canvas',
   target: olMapDiv,
   view: view
