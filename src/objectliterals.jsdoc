@@ -370,56 +370,6 @@
  */
 
 /**
- * @typedef {Object} olx.interaction.DoubleClickZoomOptions
- * @property {number|undefined} duration Animation duration in milliseconds. Default is `250`.
- * @property {number|undefined} delta The zoom delta applied on each double
- *     click, default is `1`.
- * @todo stability experimental
- */
-
-/**
- * @typedef {Object} olx.interaction.DragAndDropOptions
- * @property {Array.<function(new: ol.format.Feature)>|undefined} formatConstructors
- *     Format constructors.
- * @property {ol.proj.ProjectionLike} reprojectTo Target projection. By
- *     default, the map's view's projection is used.
- */
-
-/**
- * @typedef {Object} olx.interaction.DragRotateOptions
- * @property {ol.events.ConditionType|undefined} condition A conditional
- *     modifier (i.e. Shift key) that determines if the interaction is active
- *     or not, default is both shift and alt keys.
- * @todo stability experimental
- */
-
-/**
- * @typedef {Object} olx.interaction.DragRotateAndZoomOptions
- * @property {ol.events.ConditionType|undefined} condition A conditional
- *     modifier (i.e. Shift key) that determines if the interaction is active
- *     or not, default is shify key.
- * @todo stability experimental
- */
-
-/**
- * @typedef {Object} olx.interaction.DragBoxOptions
- * @property {ol.events.ConditionType|undefined} condition A conditional
- *     modifier (i.e. Shift key) that determines if the interaction is active
- *     or not, default is always.
- * @property {ol.style.Style} style Style for the box.
- * @todo stability experimental
- */
-
-/**
- * @typedef {Object} olx.interaction.DragZoomOptions
- * @property {ol.events.ConditionType|undefined} condition A conditional
- *     modifier (i.e. Shift key) that determines if the interaction is active
- *     or not, default is shift key.
- * @property {ol.style.Style} style Style for the box.
- * @todo stability experimental
- */
-
-/**
  * Interactions for the map. Default is `true` for all options.
  * @typedef {Object} olx.interaction.DefaultsOptions
  * @property {boolean|undefined} altShiftDragRotate Whether Alt-Shift-drag
@@ -440,6 +390,63 @@
  *     desired. Default is `true`.
  * @property {number|undefined} zoomDelta Zoom delta.
  * @property {number|undefined} zoomDuration Zoom duration.
+ * @todo stability experimental
+ */
+
+/**
+ * @typedef {Object} olx.interaction.DoubleClickZoomOptions
+ * @property {number|undefined} duration Animation duration in milliseconds. Default is `250`.
+ * @property {number|undefined} delta The zoom delta applied on each double
+ *     click, default is `1`.
+ * @todo stability experimental
+ */
+
+/**
+ * @typedef {Object} olx.interaction.DragAndDropOptions
+ * @property {Array.<function(new: ol.format.Feature)>|undefined} formatConstructors
+ *     Format constructors.
+ * @property {ol.proj.ProjectionLike} reprojectTo Target projection. By
+ *     default, the map's view's projection is used.
+ */
+
+/**
+ * @typedef {Object} olx.interaction.DragBoxOptions
+ * @property {ol.events.ConditionType|undefined} condition A conditional
+ *     modifier (i.e. Shift key) that determines if the interaction is active
+ *     or not, default is always.
+ * @property {ol.style.Style} style Style for the box.
+ * @todo stability experimental
+ */
+
+/**
+ * @typedef {Object} olx.interaction.DragPanOptions
+ * @property {ol.Kinetic|undefined} kinetic Kinetic inertia to apply to the
+ *     pan.
+ * @todo stability experimental
+ */
+
+/**
+ * @typedef {Object} olx.interaction.DragRotateAndZoomOptions
+ * @property {ol.events.ConditionType|undefined} condition A conditional
+ *     modifier (i.e. Shift key) that determines if the interaction is active
+ *     or not, default is shify key.
+ * @todo stability experimental
+ */
+
+/**
+ * @typedef {Object} olx.interaction.DragRotateOptions
+ * @property {ol.events.ConditionType|undefined} condition A conditional
+ *     modifier (i.e. Shift key) that determines if the interaction is active
+ *     or not, default is both shift and alt keys.
+ * @todo stability experimental
+ */
+
+/**
+ * @typedef {Object} olx.interaction.DragZoomOptions
+ * @property {ol.events.ConditionType|undefined} condition A conditional
+ *     modifier (i.e. Shift key) that determines if the interaction is active
+ *     or not, default is shift key.
+ * @property {ol.style.Style} style Style for the box.
  * @todo stability experimental
  */
 
@@ -478,9 +485,30 @@
  * @todo stability experimental
  */
 
+ /**
+ * @typedef {Object} olx.interaction.ModifyOptions
+ * @property {number|undefined} pixelTolerance Pixel tolerance for considering
+ *     the pointer close enough to a vertex for editing. Default is 20 pixels.
+ * @property {ol.style.Style|Array.<ol.style.Style>|ol.feature.StyleFunction|undefined} style FeatureOverlay style.
+ * @property {ol.Collection} features The features the interaction works on.
+ */
+
 /**
  * @typedef {Object} olx.interaction.MouseWheelZoomOptions
  * @property {number|undefined} duration Animation duration in milliseconds. Default is `250`.
+ * @todo stability experimental
+ */
+
+/**
+ * @typedef {Object} olx.interaction.PinchRotateOptions
+ * @property {number|undefined} threshold Minimal angle in radians to start a rotation.
+ *     Default is `0.3`.
+ * @todo stability experimental
+ */
+
+/**
+ * @typedef {Object} olx.interaction.PinchZoomOptions
+ * @property {number|undefined} duration Animation duration in milliseconds. Default is `400`.
  * @todo stability experimental
  */
 
@@ -501,34 +529,6 @@
  * @property {Array.<ol.layer.Layer>|undefined} layers Layers.  Zero or more
  *     layers from which features should be selected.
  * @property {ol.style.Style|Array.<ol.style.Style>|ol.feature.StyleFunction|undefined} style FeatureOverlay style.
- */
-
-/**
- * @typedef {Object} olx.interaction.DragPanOptions
- * @property {ol.Kinetic|undefined} kinetic Kinetic inertia to apply to the
- *     pan.
- * @todo stability experimental
- */
-
- /**
- * @typedef {Object} olx.interaction.ModifyOptions
- * @property {number|undefined} pixelTolerance Pixel tolerance for considering
- *     the pointer close enough to a vertex for editing. Default is 20 pixels.
- * @property {ol.style.Style|Array.<ol.style.Style>|ol.feature.StyleFunction|undefined} style FeatureOverlay style.
- * @property {ol.Collection} features The features the interaction works on.
- */
-
-/**
- * @typedef {Object} olx.interaction.PinchRotateOptions
- * @property {number|undefined} threshold Minimal angle in radians to start a rotation.
- *     Default is `0.3`.
- * @todo stability experimental
- */
-
-/**
- * @typedef {Object} olx.interaction.PinchZoomOptions
- * @property {number|undefined} duration Animation duration in milliseconds. Default is `400`.
- * @todo stability experimental
  */
 
 /**
