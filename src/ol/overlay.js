@@ -371,7 +371,7 @@ ol.Overlay.prototype.updatePixelPosition_ = function() {
     if (positioning == ol.OverlayPositioning.BOTTOM_CENTER ||
         positioning == ol.OverlayPositioning.CENTER_CENTER ||
         positioning == ol.OverlayPositioning.TOP_CENTER) {
-      offsetX = goog.style.getSize(this.element_).width / 2;
+      offsetX += goog.style.getSize(this.element_).width / 2;
     }
     var left = Math.round(pixel[0] - offsetX) + 'px';
     if (this.rendered_.left_ != left) {
@@ -396,7 +396,7 @@ ol.Overlay.prototype.updatePixelPosition_ = function() {
     if (positioning == ol.OverlayPositioning.CENTER_LEFT ||
         positioning == ol.OverlayPositioning.CENTER_CENTER ||
         positioning == ol.OverlayPositioning.CENTER_RIGHT) {
-      offsetY = goog.style.getSize(this.element_).height / 2;
+      offsetY += goog.style.getSize(this.element_).height / 2;
     }
     var top = Math.round(pixel[1] - offsetY) + 'px';
     if (this.rendered_.top_ != top) {
