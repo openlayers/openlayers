@@ -5,6 +5,7 @@ goog.provide('ol.interaction.PinchRotate');
 goog.require('goog.asserts');
 goog.require('goog.style');
 goog.require('ol.Coordinate');
+goog.require('ol.ViewHint');
 goog.require('ol.interaction.Interaction');
 goog.require('ol.interaction.Pointer');
 
@@ -122,12 +123,14 @@ ol.interaction.PinchRotate.prototype.handlePointerUp =
     function(mapBrowserEvent) {
   if (this.targetPointers.length < 2) {
     var map = mapBrowserEvent.map;
-    // FIXME works for View2D only
-    var view = map.getView().getView2D();
-    var view2DState = view.getView2DState();
+    var view = map.getView();
+    view.setHint(ol.ViewHint.INTERACTING, -1);
     if (this.rotating_) {
+      // FIXME works for View2D only
+      var view2D = view.getView2D();
+      var view2DState = view2D.getView2DState();
       ol.interaction.Interaction.rotate(
-          map, view, view2DState.rotation, this.anchor_,
+          map, view2D, view2DState.rotation, this.anchor_,
           ol.interaction.ROTATE_ANIMATION_DURATION);
     }
     return false;
@@ -148,6 +151,9 @@ ol.interaction.PinchRotate.prototype.handlePointerDown =
     this.lastAngle_ = undefined;
     this.rotating_ = false;
     this.rotationDelta_ = 0.0;
+    if (!this.handlingDownUpSequence) {
+      map.getView().setHint(ol.ViewHint.INTERACTING, 1);
+    }
     map.render();
     return true;
   } else {
