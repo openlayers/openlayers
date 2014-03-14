@@ -67,7 +67,7 @@ ol.interaction.Modify = function(options) {
    * @type {ol.Pixel}
    * @private
    */
-  this.lastPixel_ = null;
+  this.lastPixel_ = [0, 0];
 
   /**
    * Segment RTree for each layer
