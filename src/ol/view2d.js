@@ -241,6 +241,21 @@ goog.exportProperty(
 
 
 /**
+ * Get the LatLng of the current center.
+ * @return {ol.LatLng} LatLng.
+ * @todo stability experimental
+ */
+ol.View2D.prototype.getCenterLatLng = function() {
+  var center = this.getCenter();
+  if (!goog.isDef(center)) {
+    return null;
+  }
+  var lnglat = ol.proj.transform(center, this.getProjection(), 'EPSG:4326');
+  return [lnglat[1], lnglat[0]];
+};
+
+
+/**
  * Calculate the extent for the given size in pixels, based on the current
  * resolution and the current center.
  * @param {ol.Size} size Box pixel size.
