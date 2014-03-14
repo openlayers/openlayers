@@ -101,12 +101,12 @@ def build_ga_whitespace_js(t):
     
 @target('build/layersconfig')
 def get_layersconfig(t):
-    api_url = os.environ.get('API_URL') or 'http://api3.geo.admin.ch/'
+    api_url = os.environ.get('API_URL') or '//api3.geo.admin.ch/'
     for lang in AVAILABLE_LANGS:
         name = "%s.%s.js" % (t.name, lang)
         t.info('downloading %r', t.name)
 
-        t.download(api_url + 'rest/services/api/MapServer/layersConfig?lang=%s' % lang)
+        t.download('http:' + api_url + 'rest/services/api/MapServer/layersConfig?lang=%s' % lang)
         os.rename(t.name, name)
         t.info('downloaded %r', name)
         prepend(name, """var GeoAdmin={}; GeoAdmin.serviceUrl='"""+ api_url   + """';GeoAdmin.getConfig=function(){ return %s } """)
