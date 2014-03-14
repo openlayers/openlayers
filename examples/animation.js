@@ -3,20 +3,20 @@ goog.require('ol.View2D');
 goog.require('ol.animation');
 goog.require('ol.easing');
 goog.require('ol.layer.Tile');
-goog.require('ol.proj');
 goog.require('ol.source.OSM');
 
 
-var london = ol.proj.transform([-0.12755, 51.507222], 'EPSG:4326', 'EPSG:3857');
-var moscow = ol.proj.transform([37.6178, 55.7517], 'EPSG:4326', 'EPSG:3857');
-var istanbul = ol.proj.transform([28.9744, 41.0128], 'EPSG:4326', 'EPSG:3857');
-var rome = ol.proj.transform([12.5, 41.9], 'EPSG:4326', 'EPSG:3857');
-var bern = ol.proj.transform([7.4458, 46.95], 'EPSG:4326', 'EPSG:3857');
-var madrid = ol.proj.transform([-3.683333, 40.4], 'EPSG:4326', 'EPSG:3857');
+// LatLng coordinates
+var london = [51.507222, -0.12755];
+var moscow = [55.7517, 37.6178];
+var istanbul = [41.0128, 28.9744];
+var rome = [41.9, 12.5];
+var bern = [46.95, 7.4458];
+var madrid = [40.4, -3.683333];
 
 var view = new ol.View2D({
   // the view's initial state
-  center: istanbul,
+  centerLatLng: istanbul,
   zoom: 6
 });
 
@@ -57,7 +57,7 @@ panToLondon.addEventListener('click', function() {
     source: /** @type {ol.Coordinate} */ (view.getCenter())
   });
   map.beforeRender(pan);
-  view.setCenter(london);
+  view.setCenterLatLng(london);
 }, false);
 
 var elasticToMoscow = document.getElementById('elastic-to-moscow');
@@ -68,7 +68,7 @@ elasticToMoscow.addEventListener('click', function() {
     source: /** @type {ol.Coordinate} */ (view.getCenter())
   });
   map.beforeRender(pan);
-  view.setCenter(moscow);
+  view.setCenterLatLng(moscow);
 }, false);
 
 var bounceToIstanbul = document.getElementById('bounce-to-istanbul');
@@ -79,7 +79,7 @@ bounceToIstanbul.addEventListener('click', function() {
     source: /** @type {ol.Coordinate} */ (view.getCenter())
   });
   map.beforeRender(pan);
-  view.setCenter(istanbul);
+  view.setCenterLatLng(istanbul);
 }, false);
 
 var spinToRome = document.getElementById('spin-to-rome');
@@ -97,7 +97,7 @@ spinToRome.addEventListener('click', function() {
     start: start
   });
   map.beforeRender(pan, rotate);
-  view.setCenter(rome);
+  view.setCenterLatLng(rome);
 }, false);
 
 var flyToBern = document.getElementById('fly-to-bern');
@@ -115,7 +115,7 @@ flyToBern.addEventListener('click', function() {
     start: start
   });
   map.beforeRender(pan, bounce);
-  view.setCenter(bern);
+  view.setCenterLatLng(bern);
 }, false);
 
 var spiralToMadrid = document.getElementById('spiral-to-madrid');
@@ -138,5 +138,5 @@ spiralToMadrid.addEventListener('click', function() {
     start: start
   });
   map.beforeRender(pan, bounce, rotate);
-  view.setCenter(madrid);
+  view.setCenterLatLng(madrid);
 }, false);
