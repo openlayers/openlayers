@@ -16,12 +16,13 @@ goog.require('ol.math');
  * @constructor
  * @extends {ol.geom.SimpleGeometry}
  * @param {ol.geom.RawMultiPoint} coordinates Coordinates.
- * @param {ol.geom.GeometryLayout=} opt_layout Layout.
+ * @param {ol.geom.GeometryLayout|string=} opt_layout Layout.
  * @todo stability experimental
  */
 ol.geom.MultiPoint = function(coordinates, opt_layout) {
   goog.base(this);
-  this.setCoordinates(coordinates, opt_layout);
+  this.setCoordinates(coordinates,
+      /** @type {ol.geom.GeometryLayout|undefined} */ (opt_layout));
 };
 goog.inherits(ol.geom.MultiPoint, ol.geom.SimpleGeometry);
 

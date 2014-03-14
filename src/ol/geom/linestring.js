@@ -18,7 +18,7 @@ goog.require('ol.geom.flat.simplify');
  * @constructor
  * @extends {ol.geom.SimpleGeometry}
  * @param {ol.geom.RawLineString} coordinates Coordinates.
- * @param {ol.geom.GeometryLayout=} opt_layout Layout.
+ * @param {ol.geom.GeometryLayout|string=} opt_layout Layout.
  * @todo stability experimental
  */
 ol.geom.LineString = function(coordinates, opt_layout) {
@@ -49,7 +49,8 @@ ol.geom.LineString = function(coordinates, opt_layout) {
    */
   this.maxDeltaRevision_ = -1;
 
-  this.setCoordinates(coordinates, opt_layout);
+  this.setCoordinates(coordinates,
+      /** @type {ol.geom.GeometryLayout|undefined} */ (opt_layout));
 
 };
 goog.inherits(ol.geom.LineString, ol.geom.SimpleGeometry);
