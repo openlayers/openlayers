@@ -10,7 +10,6 @@ goog.require('goog.events.EventTarget');
 goog.require('goog.events.EventType');
 goog.require('goog.object');
 goog.require('ol.Coordinate');
-goog.require('ol.FrameState');
 goog.require('ol.MapEvent');
 goog.require('ol.Pixel');
 
@@ -23,7 +22,7 @@ goog.require('ol.Pixel');
  * @param {string} type Event type.
  * @param {ol.Map} map Map.
  * @param {goog.events.BrowserEvent} browserEvent Browser event.
- * @param {?ol.FrameState=} opt_frameState Frame state.
+ * @param {?oli.FrameState=} opt_frameState Frame state.
  * @todo stability experimental
  */
 ol.MapBrowserEvent = function(type, map, browserEvent, opt_frameState) {

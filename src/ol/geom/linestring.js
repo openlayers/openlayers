@@ -1,11 +1,16 @@
 goog.provide('ol.geom.LineString');
 
+goog.require('goog.array');
+goog.require('goog.asserts');
 goog.require('ol.extent');
 goog.require('ol.geom.GeometryType');
 goog.require('ol.geom.SimpleGeometry');
-goog.require('ol.geom.closest');
-goog.require('ol.geom.flat');
-goog.require('ol.geom.simplify');
+goog.require('ol.geom.flat.closest');
+goog.require('ol.geom.flat.deflate');
+goog.require('ol.geom.flat.inflate');
+goog.require('ol.geom.flat.interpolate');
+goog.require('ol.geom.flat.length');
+goog.require('ol.geom.flat.simplify');
 
 
 
@@ -51,6 +56,20 @@ goog.inherits(ol.geom.LineString, ol.geom.SimpleGeometry);
 
 
 /**
+ * @param {ol.Coordinate} coordinate Coordinate.
+ */
+ol.geom.LineString.prototype.appendCoordinate = function(coordinate) {
+  goog.asserts.assert(coordinate.length == this.stride);
+  if (goog.isNull(this.flatCoordinates)) {
+    this.flatCoordinates = coordinate.slice();
+  } else {
+    goog.array.extend(this.flatCoordinates, coordinate);
+  }
+  this.dispatchChangeEvent();
+};
+
+
+/**
  * @inheritDoc
  */
 ol.geom.LineString.prototype.clone = function() {
@@ -70,11 +89,11 @@ ol.geom.LineString.prototype.closestPointXY =
     return minSquaredDistance;
   }
   if (this.maxDeltaRevision_ != this.getRevision()) {
-    this.maxDelta_ = Math.sqrt(ol.geom.closest.getMaxSquaredDelta(
+    this.maxDelta_ = Math.sqrt(ol.geom.flat.closest.getMaxSquaredDelta(
         this.flatCoordinates, 0, this.flatCoordinates.length, this.stride, 0));
     this.maxDeltaRevision_ = this.getRevision();
   }
-  return ol.geom.closest.getClosestPoint(
+  return ol.geom.flat.closest.getClosestPoint(
       this.flatCoordinates, 0, this.flatCoordinates.length, this.stride,
       this.maxDelta_, false, x, y, closestPoint, minSquaredDistance);
 };
@@ -109,7 +128,7 @@ ol.geom.LineString.prototype.getCoordinateAtM = function(m, opt_extrapolate) {
  * @todo stability experimental
  */
 ol.geom.LineString.prototype.getCoordinates = function() {
-  return ol.geom.flat.inflateCoordinates(
+  return ol.geom.flat.inflate.coordinates(
       this.flatCoordinates, 0, this.flatCoordinates.length, this.stride);
 };
 
@@ -119,7 +138,7 @@ ol.geom.LineString.prototype.getCoordinates = function() {
  * @todo stability experimental
  */
 ol.geom.LineString.prototype.getLength = function() {
-  return ol.geom.flat.lineStringLength(
+  return ol.geom.flat.length.lineString(
       this.flatCoordinates, 0, this.flatCoordinates.length, this.stride);
 };
 
@@ -129,7 +148,7 @@ ol.geom.LineString.prototype.getLength = function() {
  */
 ol.geom.LineString.prototype.getFlatMidpoint = function() {
   if (this.flatMidpointRevision_ != this.getRevision()) {
-    this.flatMidpoint_ = ol.geom.flat.lineStringInterpolate(
+    this.flatMidpoint_ = ol.geom.flat.interpolate.lineString(
         this.flatCoordinates, 0, this.flatCoordinates.length, this.stride,
         0.5, this.flatMidpoint_);
     this.flatMidpointRevision_ = this.getRevision();
@@ -144,7 +163,7 @@ ol.geom.LineString.prototype.getFlatMidpoint = function() {
 ol.geom.LineString.prototype.getSimplifiedGeometryInternal =
     function(squaredTolerance) {
   var simplifiedFlatCoordinates = [];
-  simplifiedFlatCoordinates.length = ol.geom.simplify.douglasPeucker(
+  simplifiedFlatCoordinates.length = ol.geom.flat.simplify.douglasPeucker(
       this.flatCoordinates, 0, this.flatCoordinates.length, this.stride,
       squaredTolerance, simplifiedFlatCoordinates, 0);
   var simplifiedLineString = new ol.geom.LineString(null);
@@ -176,7 +195,7 @@ ol.geom.LineString.prototype.setCoordinates =
     if (goog.isNull(this.flatCoordinates)) {
       this.flatCoordinates = [];
     }
-    this.flatCoordinates.length = ol.geom.flat.deflateCoordinates(
+    this.flatCoordinates.length = ol.geom.flat.deflate.coordinates(
         this.flatCoordinates, 0, coordinates, this.stride);
     this.dispatchChangeEvent();
   }

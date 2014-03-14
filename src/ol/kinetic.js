@@ -1,4 +1,3 @@
-
 goog.provide('ol.Kinetic');
 
 goog.require('ol.Coordinate');

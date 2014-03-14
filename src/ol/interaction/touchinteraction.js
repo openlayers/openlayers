@@ -1,4 +1,3 @@
-
 goog.provide('ol.interaction.Touch');
 
 goog.require('goog.asserts');

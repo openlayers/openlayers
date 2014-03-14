@@ -11,7 +11,6 @@ goog.require('goog.math');
 goog.require('goog.style');
 goog.require('ol.Object');
 goog.require('ol.TransformFunction');
-goog.require('ol.View2DState');
 goog.require('ol.control.Control');
 goog.require('ol.css');
 goog.require('ol.proj');
@@ -79,7 +78,7 @@ ol.control.ScaleLine = function(opt_options) {
 
   /**
    * @private
-   * @type {?ol.View2DState}
+   * @type {?oli.View2DState}
    */
   this.view2DState_ = null;
 

@@ -450,7 +450,7 @@ ol.format.KML.IconStyleParser_ = function(node, objectStack) {
     anchorXUnits = ol.format.KML.DEFAULT_IMAGE_STYLE_ANCHOR_X_UNITS_;
     anchorYUnits = ol.format.KML.DEFAULT_IMAGE_STYLE_ANCHOR_Y_UNITS_;
   } else if (/^http:\/\/maps\.(?:google|gstatic)\.com\//.test(src)) {
-    anchor = [0.5, 1];
+    anchor = [0.5, 0];
     anchorXUnits = ol.style.IconAnchorUnits.FRACTION;
     anchorYUnits = ol.style.IconAnchorUnits.FRACTION;
   }
@@ -471,7 +471,7 @@ ol.format.KML.IconStyleParser_ = function(node, objectStack) {
 
   var imageStyle = new ol.style.Icon({
     anchor: anchor,
-    anchorOrigin: ol.style.IconAnchorOrigin.TOP_LEFT,
+    anchorOrigin: ol.style.IconAnchorOrigin.BOTTOM_LEFT,
     anchorXUnits: anchorXUnits,
     anchorYUnits: anchorYUnits,
     crossOrigin: 'anonymous', // FIXME should this be configurable?
@@ -1444,6 +1444,16 @@ ol.format.KML.prototype.readSharedStyleMap_ = function(node, objectStack) {
 
 
 /**
+ * Read the first feature from a KML source.
+ *
+ * @function
+ * @param {ArrayBuffer|Document|Node|Object|string} source Source.
+ * @return {ol.Feature} Feature.
+ */
+ol.format.KML.prototype.readFeature;
+
+
+/**
  * @inheritDoc
  */
 ol.format.KML.prototype.readFeatureFromNode = function(node) {
@@ -1460,6 +1470,16 @@ ol.format.KML.prototype.readFeatureFromNode = function(node) {
     return null;
   }
 };
+
+
+/**
+ * Read all features from a KML source.
+ *
+ * @function
+ * @param {ArrayBuffer|Document|Node|Object|string} source Source.
+ * @return {Array.<ol.Feature>} Features.
+ */
+ol.format.KML.prototype.readFeatures;
 
 
 /**
@@ -1571,6 +1591,16 @@ ol.format.KML.prototype.readNameFromNode = function(node) {
   }
   return undefined;
 };
+
+
+/**
+ * Read the projection from a KML source.
+ *
+ * @function
+ * @param {ArrayBuffer|Document|Node|Object|string} source Source.
+ * @return {ol.proj.Projection} Projection.
+ */
+ol.format.KML.prototype.readProjection;
 
 
 /**

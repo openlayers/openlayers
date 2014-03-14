@@ -10,7 +10,9 @@
 
 goog.provide('ol.Sphere');
 
+goog.require('goog.array');
 goog.require('goog.math');
+goog.require('ol.geom.Polygon');
 
 
 
@@ -25,6 +27,32 @@ ol.Sphere = function(radius) {
    */
   this.radius = radius;
 
+};
+
+
+/**
+ * Returns an approximation to a circle centered on `center` with radius
+ * `radius` with `n` distinct points.
+ *
+ * @param {ol.Coordinate} center Center.
+ * @param {number} radius Radius.
+ * @param {number=} opt_n N.
+ * @return {ol.geom.Geometry} Circle geometry.
+ */
+ol.Sphere.prototype.circle = function(center, radius, opt_n) {
+  var n = goog.isDef(opt_n) ? opt_n : 32;
+  /** @type {Array.<number>} */
+  var flatCoordinates = [];
+  var i;
+  for (i = 0; i < n; ++i) {
+    goog.array.extend(
+        flatCoordinates, this.offset(center, radius, 2 * Math.PI * i / n));
+  }
+  flatCoordinates.push(flatCoordinates[0], flatCoordinates[1]);
+  var polygon = new ol.geom.Polygon(null);
+  polygon.setFlatCoordinates(
+      ol.geom.GeometryLayout.XY, flatCoordinates, [flatCoordinates.length]);
+  return polygon;
 };
 
 

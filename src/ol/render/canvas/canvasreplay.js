@@ -2,6 +2,7 @@
 // FIXME add option to apply snapToPixel to all coordinates?
 // FIXME can eliminate empty set styles and strokes (when all geoms skipped)
 
+goog.provide('ol.render.canvas.Replay');
 goog.provide('ol.render.canvas.ReplayGroup');
 
 goog.require('goog.array');
@@ -14,8 +15,9 @@ goog.require('ol.BrowserFeature');
 goog.require('ol.array');
 goog.require('ol.color');
 goog.require('ol.extent');
-goog.require('ol.geom.flat');
-goog.require('ol.geom.simplify');
+goog.require('ol.extent.Relationship');
+goog.require('ol.geom.flat.simplify');
+goog.require('ol.geom.flat.transform');
 goog.require('ol.render.IReplayGroup');
 goog.require('ol.render.IVectorContext');
 goog.require('ol.render.canvas');
@@ -47,16 +49,23 @@ ol.render.canvas.Instruction = {
  * @constructor
  * @implements {ol.render.IVectorContext}
  * @param {number} tolerance Tolerance.
+ * @param {ol.Extent} maxExtent Maximum extent.
  * @protected
  * @struct
  */
-ol.render.canvas.Replay = function(tolerance) {
+ol.render.canvas.Replay = function(tolerance, maxExtent) {
 
   /**
    * @protected
    * @type {number}
    */
   this.tolerance = tolerance;
+
+  /**
+   * @protected
+   * @type {ol.Extent}
+   */
+  this.maxExtent = maxExtent;
 
   /**
    * @private
@@ -126,12 +135,44 @@ ol.render.canvas.Replay = function(tolerance) {
  */
 ol.render.canvas.Replay.prototype.appendFlatCoordinates =
     function(flatCoordinates, offset, end, stride, close) {
+
   var myEnd = this.coordinates.length;
-  var i;
-  for (i = offset; i < end; i += stride) {
-    this.coordinates[myEnd++] = flatCoordinates[i];
-    this.coordinates[myEnd++] = flatCoordinates[i + 1];
+  var extent = this.maxExtent;
+  var lastCoord = [flatCoordinates[offset], flatCoordinates[offset + 1]];
+  var nextCoord = [NaN, NaN];
+  var skipped = true;
+
+  var i, lastRel, nextRel;
+  for (i = offset + stride; i < end; i += stride) {
+    nextCoord[0] = flatCoordinates[i];
+    nextCoord[1] = flatCoordinates[i + 1];
+    nextRel = ol.extent.coordinateRelationship(extent, nextCoord);
+    if (nextRel !== lastRel) {
+      if (skipped) {
+        this.coordinates[myEnd++] = lastCoord[0];
+        this.coordinates[myEnd++] = lastCoord[1];
+      }
+      this.coordinates[myEnd++] = nextCoord[0];
+      this.coordinates[myEnd++] = nextCoord[1];
+      skipped = false;
+    } else if (nextRel === ol.extent.Relationship.INTERSECTING) {
+      this.coordinates[myEnd++] = nextCoord[0];
+      this.coordinates[myEnd++] = nextCoord[1];
+      skipped = false;
+    } else {
+      skipped = true;
+    }
+    lastCoord[0] = nextCoord[0];
+    lastCoord[1] = nextCoord[1];
+    lastRel = nextRel;
   }
+
+  // handle case where there is only one point to append
+  if (i === offset + stride) {
+    this.coordinates[myEnd++] = lastCoord[0];
+    this.coordinates[myEnd++] = lastCoord[1];
+  }
+
   if (close) {
     this.coordinates[myEnd++] = flatCoordinates[offset];
     this.coordinates[myEnd++] = flatCoordinates[offset + 1];
@@ -176,7 +217,7 @@ ol.render.canvas.Replay.prototype.replay_ = function(
   if (ol.vec.Mat4.equals2D(transform, this.renderedTransform_)) {
     pixelCoordinates = this.pixelCoordinates_;
   } else {
-    pixelCoordinates = ol.geom.flat.transform2D(
+    pixelCoordinates = ol.geom.flat.transform.transform2D(
         this.coordinates, 2, transform, this.pixelCoordinates_);
     goog.vec.Mat4.setFromArray(this.renderedTransform_, transform);
     goog.asserts.assert(pixelCoordinates === this.pixelCoordinates_);
@@ -284,16 +325,20 @@ ol.render.canvas.Replay.prototype.replay_ = function(
         goog.asserts.assert(goog.isString(instruction[3]));
         text = /** @type {string} */ (instruction[3]);
         goog.asserts.assert(goog.isNumber(instruction[4]));
-        rotation = /** @type {number} */ (instruction[4]);
+        var offsetX = /** @type {number} */ (instruction[4]);
         goog.asserts.assert(goog.isNumber(instruction[5]));
-        scale = /** @type {number} */ (instruction[5]) * pixelRatio;
-        goog.asserts.assert(goog.isBoolean(instruction[6]));
-        fill = /** @type {boolean} */ (instruction[6]);
-        goog.asserts.assert(goog.isBoolean(instruction[7]));
-        stroke = /** @type {boolean} */ (instruction[7]);
+        var offsetY = /** @type {number} */ (instruction[5]);
+        goog.asserts.assert(goog.isNumber(instruction[6]));
+        rotation = /** @type {number} */ (instruction[6]);
+        goog.asserts.assert(goog.isNumber(instruction[7]));
+        scale = /** @type {number} */ (instruction[7]) * pixelRatio;
+        goog.asserts.assert(goog.isBoolean(instruction[8]));
+        fill = /** @type {boolean} */ (instruction[8]);
+        goog.asserts.assert(goog.isBoolean(instruction[9]));
+        stroke = /** @type {boolean} */ (instruction[9]);
         for (; d < dd; d += 2) {
-          x = pixelCoordinates[d];
-          y = pixelCoordinates[d + 1];
+          x = pixelCoordinates[d] + offsetX;
+          y = pixelCoordinates[d + 1] + offsetY;
           if (scale != 1 || rotation !== 0) {
             ol.vec.Mat4.makeTransform2D(
                 localTransform, x, y, scale, scale, rotation, -x, -y);
@@ -449,6 +494,7 @@ ol.render.canvas.Replay.prototype.reverseHitDetectionInstructions_ =
       goog.asserts.assert(begin == -1);
       begin = i;
     } else if (type == ol.render.canvas.Instruction.BEGIN_GEOMETRY) {
+      instruction[2] = i;
       goog.asserts.assert(begin >= 0);
       ol.array.reverseSubArray(this.hitDetectionInstructions, begin, i);
       begin = -1;
@@ -582,12 +628,13 @@ ol.render.canvas.Replay.prototype.setTextStyle = goog.abstractMethod;
  * @constructor
  * @extends {ol.render.canvas.Replay}
  * @param {number} tolerance Tolerance.
+ * @param {ol.Extent} maxExtent Maximum extent.
  * @protected
  * @struct
  */
-ol.render.canvas.ImageReplay = function(tolerance) {
+ol.render.canvas.ImageReplay = function(tolerance, maxExtent) {
 
-  goog.base(this, tolerance);
+  goog.base(this, tolerance, maxExtent);
 
   /**
    * @private
@@ -810,12 +857,13 @@ ol.render.canvas.ImageReplay.prototype.setImageStyle = function(imageStyle) {
  * @constructor
  * @extends {ol.render.canvas.Replay}
  * @param {number} tolerance Tolerance.
+ * @param {ol.Extent} maxExtent Maximum extent.
  * @protected
  * @struct
  */
-ol.render.canvas.LineStringReplay = function(tolerance) {
+ol.render.canvas.LineStringReplay = function(tolerance, maxExtent) {
 
-  goog.base(this, tolerance);
+  goog.base(this, tolerance, maxExtent);
 
   /**
    * @private
@@ -1027,12 +1075,13 @@ ol.render.canvas.LineStringReplay.prototype.setFillStrokeStyle =
  * @constructor
  * @extends {ol.render.canvas.Replay}
  * @param {number} tolerance Tolerance.
+ * @param {ol.Extent} maxExtent Maximum extent.
  * @protected
  * @struct
  */
-ol.render.canvas.PolygonReplay = function(tolerance) {
+ol.render.canvas.PolygonReplay = function(tolerance, maxExtent) {
 
-  goog.base(this, tolerance);
+  goog.base(this, tolerance, maxExtent);
 
   /**
    * @private
@@ -1261,7 +1310,7 @@ ol.render.canvas.PolygonReplay.prototype.finish = function() {
     var coordinates = this.coordinates;
     var i, ii;
     for (i = 0, ii = coordinates.length; i < ii; ++i) {
-      coordinates[i] = ol.geom.simplify.snap(coordinates[i], tolerance);
+      coordinates[i] = ol.geom.flat.simplify.snap(coordinates[i], tolerance);
     }
   }
 };
@@ -1360,12 +1409,13 @@ ol.render.canvas.PolygonReplay.prototype.setFillStrokeStyles_ = function() {
  * @constructor
  * @extends {ol.render.canvas.Replay}
  * @param {number} tolerance Tolerance.
+ * @param {ol.Extent} maxExtent Maximum extent.
  * @protected
  * @struct
  */
-ol.render.canvas.TextReplay = function(tolerance) {
+ol.render.canvas.TextReplay = function(tolerance, maxExtent) {
 
-  goog.base(this, tolerance);
+  goog.base(this, tolerance, maxExtent);
 
   /**
    * @private
@@ -1390,6 +1440,18 @@ ol.render.canvas.TextReplay = function(tolerance) {
    * @type {string}
    */
   this.text_ = '';
+
+  /**
+   * @private
+   * @type {number}
+   */
+  this.textOffsetX_ = 0;
+
+  /**
+   * @private
+   * @type {number}
+   */
+  this.textOffsetY_ = 0;
 
   /**
    * @private
@@ -1453,7 +1515,8 @@ ol.render.canvas.TextReplay.prototype.drawText =
   var stroke = !goog.isNull(this.textStrokeState_);
   var drawTextInstruction = [
     ol.render.canvas.Instruction.DRAW_TEXT, myBegin, myEnd, this.text_,
-    this.textRotation_, this.textScale_, fill, stroke];
+    this.textOffsetX_, this.textOffsetY_, this.textRotation_, this.textScale_,
+    fill, stroke];
   this.instructions.push(drawTextInstruction);
   this.hitDetectionInstructions.push(drawTextInstruction);
   this.endGeometry(geometry, data);
@@ -1624,6 +1687,8 @@ ol.render.canvas.TextReplay.prototype.setTextStyle = function(textStyle) {
       }
     }
     var textFont = textStyle.getFont();
+    var textOffsetX = textStyle.getOffsetX();
+    var textOffsetY = textStyle.getOffsetY();
     var textRotation = textStyle.getRotation();
     var textScale = textStyle.getScale();
     var textText = textStyle.getText();
@@ -1648,6 +1713,8 @@ ol.render.canvas.TextReplay.prototype.setTextStyle = function(textStyle) {
       textState.textBaseline = textBaseline;
     }
     this.text_ = goog.isDef(textText) ? textText : '';
+    this.textOffsetX_ = goog.isDef(textOffsetX) ? textOffsetX : 0;
+    this.textOffsetY_ = goog.isDef(textOffsetY) ? textOffsetY : 0;
     this.textRotation_ = goog.isDef(textRotation) ? textRotation : 0;
     this.textScale_ = goog.isDef(textScale) ? textScale : 1;
   }
@@ -1659,15 +1726,22 @@ ol.render.canvas.TextReplay.prototype.setTextStyle = function(textStyle) {
  * @constructor
  * @implements {ol.render.IReplayGroup}
  * @param {number} tolerance Tolerance.
+ * @param {ol.Extent} maxExtent Max extent.
  * @struct
  */
-ol.render.canvas.ReplayGroup = function(tolerance) {
+ol.render.canvas.ReplayGroup = function(tolerance, maxExtent) {
 
   /**
    * @private
    * @type {number}
    */
   this.tolerance_ = tolerance;
+
+  /**
+   * @private
+   * @type {ol.Extent}
+   */
+  this.maxExtent_ = maxExtent;
 
   /**
    * @private
@@ -1772,6 +1846,23 @@ ol.render.canvas.ReplayGroup.prototype.replayHitDetection_ = function(
 ol.render.canvas.ReplayGroup.prototype.replay_ = function(
     zs, context, extent, pixelRatio, transform, viewRotation,
     renderGeometryFunction) {
+
+  var maxExtent = this.maxExtent_;
+  var minX = maxExtent[0];
+  var minY = maxExtent[1];
+  var maxX = maxExtent[2];
+  var maxY = maxExtent[3];
+  var flatClipCoords = ol.geom.flat.transform.transform2D(
+      [minX, minY, minX, maxY, maxX, maxY, maxX, minY], 2, transform);
+  context.save();
+  context.beginPath();
+  context.moveTo(flatClipCoords[0], flatClipCoords[1]);
+  context.lineTo(flatClipCoords[2], flatClipCoords[3]);
+  context.lineTo(flatClipCoords[4], flatClipCoords[5]);
+  context.lineTo(flatClipCoords[6], flatClipCoords[7]);
+  context.closePath();
+  context.clip();
+
   var i, ii, j, jj, replays, replayType, replay, result;
   for (i = 0, ii = zs.length; i < ii; ++i) {
     replays = this.replaysByZIndex_[zs[i].toString()];
@@ -1787,6 +1878,8 @@ ol.render.canvas.ReplayGroup.prototype.replay_ = function(
       }
     }
   }
+
+  context.restore();
   return undefined;
 };
 
@@ -1866,9 +1959,9 @@ ol.render.canvas.ReplayGroup.prototype.getReplay =
   }
   var replay = replays[replayType];
   if (!goog.isDef(replay)) {
-    var constructor = ol.render.canvas.BATCH_CONSTRUCTORS_[replayType];
-    goog.asserts.assert(goog.isDef(constructor));
-    replay = new constructor(this.tolerance_);
+    var Constructor = ol.render.canvas.BATCH_CONSTRUCTORS_[replayType];
+    goog.asserts.assert(goog.isDef(Constructor));
+    replay = new Constructor(this.tolerance_, this.maxExtent_);
     replays[replayType] = replay;
   }
   return replay;
@@ -1887,7 +1980,7 @@ ol.render.canvas.ReplayGroup.prototype.isEmpty = function() {
  * @const
  * @private
  * @type {Object.<ol.render.ReplayType,
- *                function(new: ol.render.canvas.Replay, number)>}
+ *                function(new: ol.render.canvas.Replay, number, ol.Extent)>}
  */
 ol.render.canvas.BATCH_CONSTRUCTORS_ = {
   'Image': ol.render.canvas.ImageReplay,

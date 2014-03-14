@@ -8,8 +8,12 @@
 
 /**
  * @typedef {Object} olx.DeviceOptions
- * @property {boolean|undefined} loadTilesWhileAnimating When set to false, no tiles will be loaded while animating, which improves responsiveness on devices with slow memory. Default is `true`.
- * @property {boolean|undefined} loadTilesWhileInteracting When set to false, no tiles will be loaded while interacting, which improves responsiveness on devices with slow memory. Default is `true`.
+ * @property {boolean|undefined} loadTilesWhileAnimating When set to false,
+ *     no tiles will be loaded while animating, which improves responsiveness
+ *     on devices with slow memory. Default is `true`.
+ * @property {boolean|undefined} loadTilesWhileInteracting When set to false,
+ *     no tiles will be loaded while interacting, which improves responsiveness
+ *     on devices with slow memory. Default is `true`.
  * @todo stability experimental
  */
 
@@ -74,6 +78,10 @@
  *     overlay is placed in the same container as that of the controls (see
  *     the `stopEvent` option) you will probably set `insertFirst` to `true`
  *     so the overlay is displayed below the controls.
+ * @property {number|undefined} offsetX Horizontal offset in pixels.
+ *     A positive will shift the overlay right. Default is `0`.
+ * @property {number|undefined} offsetY Vertical offset in pixels.
+ *     A positive will shift the overlay down. Default is `0`.
  * @todo stability experimental
  */
 
@@ -326,6 +334,42 @@
  */
 
 /**
+ * @typedef {Object} olx.format.WFSOptions
+ * @property {string} featureNS The namespace URI used for features.
+ * @property {string} featureType The feature type to parse. Only used for
+ *     read operations.
+ * @property {string|undefined} schemaLocation Optional schemaLocation to use
+ *     for serialization, this will override the default.
+ */
+
+/**
+ * @typedef {Object} olx.format.WFSWriteGetFeatureOptions
+ * @property {string} featureNS The namespace URI used for features.
+ * @property {string} featurePrefix The prefix for the feature namespace.
+ * @property {Array.<string>} featureTypes The feature type names.
+ * @property {string|undefined} srsName SRS name. No srsName attribute will be
+ *     set on geometries when this is not provided.
+ * @property {string|undefined} handle Handle.
+ * @property {string|undefined} outputFormat Output format.
+ * @property {number|undefined} maxFeatures Maximum number of features to fetch.
+ * @property {string|undefined} geometryName Geometry name to use in a BBOX
+ *     filter.
+ * @property {ol.Extent|undefined} bbox Extent to use for the BBOX filter.
+ */
+
+/**
+ * @typedef {Object} olx.format.WFSWriteTransactionOptions
+ * @property {string} featureNS The namespace URI used for features.
+ * @property {string} featurePrefix The prefix for the feature namespace.
+ * @property {string} featureType The feature type name.
+ * @property {string|undefined} srsName SRS name. No srsName attribute will be
+ *     set on geometries when this is not provided.
+ * @property {string|undefined} handle Handle.
+ * @property {Array.<Object>} nativeElements Native elements. Currently not
+ *     supported.
+ */
+
+/**
  * @typedef {Object} olx.interaction.DoubleClickZoomOptions
  * @property {number|undefined} duration Animation duration in milliseconds. Default is `250`.
  * @property {number|undefined} delta The zoom delta applied on each double
@@ -415,6 +459,8 @@
  *     drawing finish (default is 12).
  * @property {ol.geom.GeometryType} type Drawing type ('Point', 'LineString',
  *     'Polygon', 'MultiPoint', 'MultiLineString', or 'MultiPolygon').
+ * @property {number|undefined} minPointsPerRing The number of points that must
+ *     be drawn before a polygon ring can be finished (default is 3).
  * @property {ol.style.Style|Array.<ol.style.Style>|ol.feature.StyleFunction|undefined} style
  *     Style for sketch features.
  * @todo stability experimental
@@ -539,6 +585,28 @@
  * @property {Array.<ol.layer.Base>|ol.Collection|undefined} layers Child layers.
  * @todo stability experimental
  */
+
+/**
+ * @typedef {Object} olx.layer.HeatmapOptions
+ * @property {number|undefined} brightness Brightness.
+ * @property {number|undefined} contrast Contrast.
+ * @property {number|undefined} hue Hue.
+ * @property {Array.<string>|undefined} gradient The color gradient of the heatmap,
+ *      specified as an array of CSS color strings. Default is `['#00f', '#0ff', '#0f0', '#ff0', '#f00']`.
+ * @property {number|undefined} radius Radius size in pixels. Default is `8`.
+ * @property {number|undefined} blur Blur size in pixels. Default is `15`.
+ * @property {number|undefined} shadow Shadow size in pixels. Default is `250`.
+ * @property {number|undefined} minResolution The minimum resolution
+ *      (inclusive) at which this layer will be visible.
+ * @property {number|undefined} maxResolution The maximum resolution
+ *      (exclusive) below which this layer will be visible.
+ * @property {number|undefined} opacity Opacity. 0-1. Default is `1`.
+ * @property {number|undefined} saturation Saturation.
+ * @property {ol.source.Vector} source Source.
+ * @property {boolean|undefined} visible Visibility. Default is `true` (visible).
+ * @todo stability experimental
+ */
+
 
 /**
  * @typedef {Object} olx.layer.TileOptions
@@ -687,7 +755,7 @@
 
 /**
  * @typedef {Object} olx.source.MapQuestOptions
- * @property {string} layer Layer.
+ * @property {string} layer Layer. Possible values are `osm`, `sat`, and `hyb`.
  * @property {ol.TileLoadFunctionType|undefined} tileLoadFunction Optional
  *     function to load a tile given a URL.
  * @todo stability experimental
@@ -999,6 +1067,10 @@
 /**
  * @typedef {Object} olx.style.TextOptions
  * @property {string|undefined} font Font.
+ * @property {number|undefined} offsetX Horizontal text offset in pixels.
+ *     A positive will shift the text right. Default is `0`.
+ * @property {number|undefined} offsetY Vertical text offset in pixels.
+ *     A positive will shift the text down. Default is `0`.
  * @property {number|undefined} scale Scale.
  * @property {number|undefined} rotation Rotation.
  * @property {string|undefined} text Text.
@@ -1050,5 +1122,14 @@
 /**
  * @typedef {Object} olx.tilegrid.ZoomifyOptions
  * @property {!Array.<number>} resolutions Resolutions.
+ * @todo stability experimental
+ */
+
+/**
+ * @typedef {Object} olx.View2D.fitGeometryOptions
+ * @property {!Array.<number>} padding Padding (in pixels) to be cleared inside the view.  Values in the array are top, right, bottom and left padding.  Default is `[0, 0, 0, 0]`.
+ * @property {boolean|undefined} constrainResolution Constrain the resolution.  Default is `true`.
+ * @property {boolean|undefined} nearest Get the nearest extent.  Default is `false`.
+ * @property {number|undefined} minResolution Minimum resolution that we zoom to.  Default is `0`.
  * @todo stability experimental
  */
