@@ -93,7 +93,7 @@ ga.Map = function(options) {
   this.addControl(new ol.control.ScaleLine());
 
 
-  this.serviceUrl = '//api3.geo.admin.ch';
+  this.serviceUrl = '//api3.geo.admin.ch/';
   if (goog.isDef(GeoAdmin) && goog.isDefAndNotNull(GeoAdmin.serviceUrl)) {
     this.serviceUrl = GeoAdmin.serviceUrl;
   };
@@ -117,7 +117,7 @@ goog.inherits(ga.Map, ol.Map);
  */
 ga.Map.prototype.geocode = function(text) {
   var jsonp = new goog.net.Jsonp(
-    this.serviceUrl + '/rest/services/api/SearchServer');
+    this.serviceUrl + 'rest/services/api/SearchServer');
   var payload = { 'searchText': text,
                   'type': 'locations',
                   'returnGeometry': true
@@ -150,7 +150,7 @@ ga.Map.prototype.handleGeocodeError_ = function(response) {
  */
 ga.Map.prototype.recenterFeature = function(layerId, featureId) {
   var jsonp = new goog.net.Jsonp(
-    this.serviceUrl + '/rest/services/api/MapServer/' +
+    this.serviceUrl + 'rest/services/api/MapServer/' +
     layerId + '/' + featureId);
   var payload = { 'geometryFormat': 'geojson' };
   jsonp.send(payload, 
@@ -182,7 +182,7 @@ ga.Map.prototype.recenterToFeature_ = function(feature) {
  */
 ga.Map.prototype.highlightFeature = function(layerId, featureId) {
   var jsonp = new goog.net.Jsonp(
-    this.serviceUrl + '/rest/services/api/MapServer/' +
+    this.serviceUrl + 'rest/services/api/MapServer/' +
     layerId + '/' + featureId);
   var payload = { 'geometryFormat': 'geojson' };
   jsonp.send(payload, 
