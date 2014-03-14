@@ -1,3 +1,4 @@
+goog.require('ol.Collection');
 goog.require('ol.Map');
 goog.require('ol.View2D');
 goog.require('ol.interaction');
@@ -111,7 +112,8 @@ var testDataSource = new ol.source.GeoJSON(
             'geometry': {
               'type': 'Polygon',
               'coordinates': [[[-5e6, -1e6], [-4e6, 1e6],
-                  [-3e6, -1e6], [-5e6, -1e6]]]
+                  [-3e6, -1e6], [-5e6, -1e6]], [[-4.5e6, -0.5e6],
+                  [-3.5e6, -0.5e6], [-4e6, 0.5e6], [-4.5e6, -0.5e6]]]
             }
           },
           {

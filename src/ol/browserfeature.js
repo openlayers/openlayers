@@ -159,7 +159,25 @@ ol.BrowserFeature.HAS_GEOLOCATION = 'geolocation' in goog.global.navigator;
  */
 ol.BrowserFeature.HAS_TOUCH = ol.ASSUME_TOUCH ||
     (goog.global.document &&
-    'ontouchstart' in goog.global.document.documentElement) ||
+    'ontouchstart' in goog.global.document.documentElement);
+
+
+/**
+ * True if browser supports pointer events.
+ * @const
+ * @type {boolean}
+ * @todo stability experimental
+ */
+ol.BrowserFeature.HAS_POINTER = 'PointerEvent' in goog.global;
+
+
+/**
+ * True if browser supports ms pointer events (IE 10).
+ * @const
+ * @type {boolean}
+ * @todo stability experimental
+ */
+ol.BrowserFeature.HAS_MSPOINTER =
     !!(goog.global.navigator.msPointerEnabled);
 
 
