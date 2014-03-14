@@ -67,7 +67,7 @@ ol.interaction.Modify = function(options) {
    * @type {ol.Pixel}
    * @private
    */
-  this.lastPixel_ = null;
+  this.lastPixel_ = [0, 0];
 
   /**
    * Segment RTree for each layer
@@ -158,9 +158,7 @@ ol.interaction.Modify.prototype.addFeature_ = function(evt) {
   if (goog.isDef(this.SEGMENT_WRITERS_[geometry.getType()])) {
     this.SEGMENT_WRITERS_[geometry.getType()].call(this, feature, geometry);
   }
-  if (!goog.isNull(this.lastPixel_)) {
-    this.handlePointerAtPixel_(this.lastPixel_, this.getMap());
-  }
+  this.handlePointerAtPixel_(this.lastPixel_, this.getMap());
 };
 
 
