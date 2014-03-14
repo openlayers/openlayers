@@ -101,10 +101,17 @@ ol.View2D = function(opt_options) {
    * @type {Object.<string, *>}
    */
   var values = {};
-  values[ol.View2DProperty.CENTER] = goog.isDef(options.center) ?
-      options.center : null;
-  values[ol.View2DProperty.PROJECTION] = ol.proj.createProjection(
-      options.projection, 'EPSG:3857');
+  var projection = ol.proj.createProjection(options.projection, 'EPSG:3857');
+  if (goog.isDef(options.center)) {
+    values[ol.View2DProperty.CENTER] = options.center;
+  } else if (goog.isDef(options.centerLatLng)) {
+    values[ol.View2DProperty.CENTER] = ol.proj.transform(
+        [options.centerLatLng[1], options.centerLatLng[0]],
+        ol.proj.get('EPSG:4326'), projection);
+  } else {
+    values[ol.View2DProperty.CENTER] = null;
+  }
+  values[ol.View2DProperty.PROJECTION] = projection;
 
   var resolutionConstraintInfo = ol.View2D.createResolutionConstraint_(
       options);
