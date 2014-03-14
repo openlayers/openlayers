@@ -4,6 +4,8 @@ from build import *
 
 from pake import targets,TargetCollection, DuplicateTargetError
 
+
+
 def prepend(name, template):
      f = open(name,'r')
      temp = f.read()
@@ -99,13 +101,15 @@ def build_ga_whitespace_js(t):
     
 @target('build/layersconfig')
 def get_layersconfig(t):
+    api_url = os.environ.get('API_URL') or '//api3.geo.admin.ch'
     for lang in AVAILABLE_LANGS:
         name = "%s.%s.js" % (t.name, lang)
         t.info('downloading %r', t.name)
         t.download('http://api3.geo.admin.ch/rest/services/api/MapServer/layersConfig?lang=%s' % lang)
         os.rename(t.name, name)
         t.info('downloaded %r', name)
-        prepend(name, """function getConfig(){ return %s } """)
+        #api_url = api_url if api_url is not None else '//api3.geo.admin.ch'
+        prepend(name, """var GeoAdmin={}; GeoAdmin.serviceUrl='"""+ api_url   + """';GeoAdmin.getConfig=function(){ return %s } """)
         
 @target('serve', PLOVR_JAR, 'test-deps', 'examples')
 def serve(t):
