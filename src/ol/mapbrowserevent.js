@@ -357,6 +357,19 @@ ol.MapBrowserEventHandler.prototype.handlePointerDown_ =
       goog.events.listen(this.documentPointerEventHandler_,
           ol.MapBrowserEvent.EventType.POINTERUP,
           this.handlePointerUp_, false, this),
+      /* Note that the listener for `pointercancel is set up on
+       * `pointerEventHandler_` and not `documentPointerEventHandler_` like
+       * the `pointerup` and `pointermove` listeners.
+       *
+       * The reason for this is the following: `TouchSource.vacuumTouches_()`
+       * issues `pointercancel` events, when there was no `touchend` for a
+       * `touchstart`. Now, let's say a first `touchstart` is registered on
+       * `pointerEventHandler_`. The `documentPointerEventHandler_` is set up.
+       * But `documentPointerEventHandler_` doesn't know about the first
+       * `touchstart`. If there is no `touchend` for the `touchstart`, we can
+       * only receive a `touchcancel` from `pointerEventHandler_`, because it is
+       * only registered there.
+       */
       goog.events.listen(this.pointerEventHandler_,
           ol.MapBrowserEvent.EventType.POINTERCANCEL,
           this.handlePointerUp_, false, this)
