@@ -141,13 +141,12 @@ describe('ol.Map', function() {
       options = {
         altShiftDragRotate: false,
         doubleClickZoom: false,
-        dragPan: false,
         keyboard: false,
         mouseWheelZoom: false,
         shiftDragZoom: false,
-        touchPan: false,
-        touchRotate: false,
-        touchZoom: false
+        dragPan: false,
+        pinchRotate: false,
+        pinchZoom: false
       };
     });
 

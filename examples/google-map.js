@@ -51,8 +51,8 @@ var map = new ol.Map({
   layers: [vector],
   interactions: ol.interaction.defaults({
     altShiftDragRotate: false,
-    dragPan: false,
-    touchRotate: false
+    pan: false,
+    rotate: false
   }).extend([new ol.interaction.DragPan({kinetic: false})]),
   renderer: 'canvas',
   target: olMapDiv,

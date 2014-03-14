@@ -18,7 +18,7 @@ goog.require('ol.geom.MultiPoint');
 goog.require('ol.geom.MultiPolygon');
 goog.require('ol.geom.Point');
 goog.require('ol.geom.Polygon');
-goog.require('ol.interaction.Drag');
+goog.require('ol.interaction.Pointer');
 goog.require('ol.structs.RBush');
 
 
@@ -35,7 +35,7 @@ ol.interaction.SegmentDataType;
 
 /**
  * @constructor
- * @extends {ol.interaction.Drag}
+ * @extends {ol.interaction.Pointer}
  * @param {olx.interaction.ModifyOptions} options Options.
  */
 ol.interaction.Modify = function(options) {
@@ -126,7 +126,7 @@ ol.interaction.Modify = function(options) {
   };
 
 };
-goog.inherits(ol.interaction.Modify, ol.interaction.Drag);
+goog.inherits(ol.interaction.Modify, ol.interaction.Pointer);
 
 
 /**
@@ -158,7 +158,7 @@ ol.interaction.Modify.prototype.addFeature_ = function(evt) {
   if (goog.isDef(this.SEGMENT_WRITERS_[geometry.getType()])) {
     this.SEGMENT_WRITERS_[geometry.getType()].call(this, feature, geometry);
   }
-  this.handleMouseAtPixel_(this.lastPixel_, this.getMap());
+  this.handlePointerAtPixel_(this.lastPixel_, this.getMap());
 };
 
 
@@ -368,7 +368,8 @@ ol.interaction.Modify.prototype.createOrUpdateVertexFeature_ =
 /**
  * @inheritDoc
  */
-ol.interaction.Modify.prototype.handleDragStart = function(evt) {
+ol.interaction.Modify.prototype.handlePointerDown = function(evt) {
+  this.handlePointerAtPixel_(evt.pixel, evt.map);
   this.dragSegments_ = [];
   var vertexFeature = this.vertexFeature_;
   if (!goog.isNull(vertexFeature)) {
@@ -408,7 +409,7 @@ ol.interaction.Modify.prototype.handleDragStart = function(evt) {
 /**
  * @inheritDoc
  */
-ol.interaction.Modify.prototype.handleDrag = function(evt) {
+ol.interaction.Modify.prototype.handlePointerDrag = function(evt) {
   var vertex = evt.coordinate;
   for (var i = 0, ii = this.dragSegments_.length; i < ii; ++i) {
     var dragSegment = this.dragSegments_[i];
@@ -458,13 +459,14 @@ ol.interaction.Modify.prototype.handleDrag = function(evt) {
 /**
  * @inheritDoc
  */
-ol.interaction.Modify.prototype.handleDragEnd = function(evt) {
+ol.interaction.Modify.prototype.handlePointerUp = function(evt) {
   var segmentData;
   for (var i = this.dragSegments_.length - 1; i >= 0; --i) {
     segmentData = this.dragSegments_[i][0];
     this.rBush_.update(ol.extent.boundingExtent(segmentData.segment),
         segmentData);
   }
+  return false;
 };
 
 
@@ -474,12 +476,11 @@ ol.interaction.Modify.prototype.handleDragEnd = function(evt) {
 ol.interaction.Modify.prototype.handleMapBrowserEvent =
     function(mapBrowserEvent) {
   if (!mapBrowserEvent.map.getView().getHints()[ol.ViewHint.INTERACTING] &&
-      !this.getDragging() &&
-      mapBrowserEvent.type == ol.MapBrowserEvent.EventType.MOUSEMOVE) {
-    this.handleMouseMove_(mapBrowserEvent);
+      mapBrowserEvent.type == ol.MapBrowserEvent.EventType.POINTERMOVE) {
+    this.handlePointerMove_(mapBrowserEvent);
   }
-  goog.base(this, 'handleMapBrowserEvent', mapBrowserEvent);
-  return !this.modifiable_;
+  return (goog.base(this, 'handleMapBrowserEvent', mapBrowserEvent) &&
+      !this.modifiable_);
 };
 
 
@@ -487,9 +488,9 @@ ol.interaction.Modify.prototype.handleMapBrowserEvent =
  * @param {ol.MapBrowserEvent} evt Event.
  * @private
  */
-ol.interaction.Modify.prototype.handleMouseMove_ = function(evt) {
+ol.interaction.Modify.prototype.handlePointerMove_ = function(evt) {
   this.lastPixel_ = evt.pixel;
-  this.handleMouseAtPixel_(evt.pixel, evt.map);
+  this.handlePointerAtPixel_(evt.pixel, evt.map);
 };
 
 
@@ -498,7 +499,7 @@ ol.interaction.Modify.prototype.handleMouseMove_ = function(evt) {
  * @param {ol.Map} map Map.
  * @private
  */
-ol.interaction.Modify.prototype.handleMouseAtPixel_ = function(pixel, map) {
+ol.interaction.Modify.prototype.handlePointerAtPixel_ = function(pixel, map) {
   var pixelCoordinate = map.getCoordinateFromPixel(pixel);
   var sortByDistance = function(a, b) {
     return ol.coordinate.squaredDistanceToSegment(pixelCoordinate, a.segment) -
