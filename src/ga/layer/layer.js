@@ -57,7 +57,8 @@ ga.layer.create = function(layer) {
           minResolution: layerConfig.minResolution,
           maxResolution: layerConfig.maxResolution,
           opacity: layerConfig.opacity,
-          source: ga.source.wms(layer, layerConfig)
+          source: ga.source.wms(layer, layerConfig),
+          useInterimTilesOnError: false
         });
       }     
     } else if (layerConfig.type == 'wmts') {
@@ -65,7 +66,8 @@ ga.layer.create = function(layer) {
         minResolution: layerConfig.minResolution,
         maxResolution: layerConfig.maxResolution,
         opacity: layerConfig.opacity,
-        source: ga.source.wmts(layer, layerConfig)
+        source: ga.source.wmts(layer, layerConfig),
+        useInterimTilesOnError: false
       });
     }
   }
