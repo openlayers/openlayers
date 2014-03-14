@@ -31,7 +31,8 @@ geolocation.bindTo('projection', view);
 var track = new ol.dom.Input(document.getElementById('track'));
 track.bindTo('checked', geolocation, 'tracking');
 
-geolocation.on('propertychange', function() {
+// update the HTML page when the position changes.
+geolocation.on('change', function() {
   $('#accuracy').text(geolocation.getAccuracy() + ' [m]');
   $('#altitude').text(geolocation.getAltitude() + ' [m]');
   $('#altitudeAccuracy').text(geolocation.getAltitudeAccuracy() + ' [m]');
@@ -39,12 +40,12 @@ geolocation.on('propertychange', function() {
   $('#speed').text(geolocation.getSpeed() + ' [m/s]');
 });
 
+// handle geolocation error.
 geolocation.on('error', function(error) {
   var info = document.getElementById('info');
   info.innerHTML = error.message;
   info.style.display = '';
 });
-
 
 var accuracyFeature = new ol.Feature();
 accuracyFeature.bindTo('geometry', geolocation, 'accuracyGeometry');
