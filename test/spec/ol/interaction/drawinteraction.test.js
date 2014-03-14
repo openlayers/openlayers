@@ -48,12 +48,13 @@ describe('ol.interaction.Draw', function() {
     var viewport = map.getViewport();
     // calculated in case body has top < 0 (test runner with small window)
     var position = goog.style.getClientPosition(viewport);
-    var event = new goog.events.BrowserEvent({
-      type: type,
-      clientX: position.x + x + width / 2,
-      clientY: position.y + y + height / 2
-    });
-    goog.events.fireListeners(viewport, type, false, event);
+    var event = new ol.MapBrowserPointerEvent(type, map,
+        new ol.pointer.PointerEvent(type,
+            new goog.events.BrowserEvent({
+              clientX: position.x + x + width / 2,
+              clientY: position.y + y + height / 2
+            })));
+    map.handleMapBrowserEvent(event);
   }
 
   describe('constructor', function() {
@@ -81,10 +82,9 @@ describe('ol.interaction.Draw', function() {
     });
 
     it('draws a point on click', function() {
-      simulateEvent('mousemove', 10, 20);
-      simulateEvent('mousedown', 10, 20);
-      simulateEvent('mouseup', 10, 20);
-      simulateEvent('click', 10, 20);
+      simulateEvent('pointermove', 10, 20);
+      simulateEvent('pointerdown', 10, 20);
+      simulateEvent('pointerup', 10, 20);
       var features = source.getFeatures();
       expect(features).to.have.length(1);
       var geometry = features[0].getGeometry();
@@ -93,11 +93,10 @@ describe('ol.interaction.Draw', function() {
     });
 
     it('does not draw a point with a significant drag', function() {
-      simulateEvent('mousemove', 10, 20);
-      simulateEvent('mousedown', 10, 20);
-      simulateEvent('mousemove', 15, 20);
-      simulateEvent('mouseup', 15, 20);
-      simulateEvent('click', 15, 20);
+      simulateEvent('pointermove', 10, 20);
+      simulateEvent('pointerdown', 10, 20);
+      simulateEvent('pointermove', 15, 20);
+      simulateEvent('pointerup', 15, 20);
       var features = source.getFeatures();
       expect(features).to.have.length(0);
     });
@@ -107,11 +106,10 @@ describe('ol.interaction.Draw', function() {
       var de = sinon.spy();
       goog.events.listen(draw, ol.DrawEventType.DRAWSTART, ds);
       goog.events.listen(draw, ol.DrawEventType.DRAWEND, de);
-      simulateEvent('mousemove', 10, 20);
-      simulateEvent('mousedown', 10, 20);
-      simulateEvent('mouseup', 10, 20);
-      simulateEvent('click', 10, 20);
-      simulateEvent('mousemove', 20, 20);
+      simulateEvent('pointermove', 10, 20);
+      simulateEvent('pointerdown', 10, 20);
+      simulateEvent('pointerup', 10, 20);
+      simulateEvent('pointermove', 20, 20);
       expect(ds).to.be.called(2);
       expect(de).to.be.called(1);
     });
@@ -128,10 +126,9 @@ describe('ol.interaction.Draw', function() {
     });
 
     it('draws multipoint on click', function() {
-      simulateEvent('mousemove', 30, 15);
-      simulateEvent('mousedown', 30, 15);
-      simulateEvent('mouseup', 30, 15);
-      simulateEvent('click', 30, 15);
+      simulateEvent('pointermove', 30, 15);
+      simulateEvent('pointerdown', 30, 15);
+      simulateEvent('pointerup', 30, 15);
       var features = source.getFeatures();
       expect(features).to.have.length(1);
       var geometry = features[0].getGeometry();
@@ -154,21 +151,18 @@ describe('ol.interaction.Draw', function() {
 
     it('draws linestring with clicks, finishing on last point', function() {
       // first point
-      simulateEvent('mousemove', 10, 20);
-      simulateEvent('mousedown', 10, 20);
-      simulateEvent('mouseup', 10, 20);
-      simulateEvent('click', 10, 20);
+      simulateEvent('pointermove', 10, 20);
+      simulateEvent('pointerdown', 10, 20);
+      simulateEvent('pointerup', 10, 20);
 
       // second point
-      simulateEvent('mousemove', 30, 20);
-      simulateEvent('mousedown', 30, 20);
-      simulateEvent('mouseup', 30, 20);
-      simulateEvent('click', 30, 20);
+      simulateEvent('pointermove', 30, 20);
+      simulateEvent('pointerdown', 30, 20);
+      simulateEvent('pointerup', 30, 20);
 
       // finish on second point
-      simulateEvent('mousedown', 30, 20);
-      simulateEvent('mouseup', 30, 20);
-      simulateEvent('click', 30, 20);
+      simulateEvent('pointerdown', 30, 20);
+      simulateEvent('pointerup', 30, 20);
 
       var features = source.getFeatures();
       expect(features).to.have.length(1);
@@ -179,29 +173,24 @@ describe('ol.interaction.Draw', function() {
 
     it('does not add a point with a significant drag', function() {
       // first point
-      simulateEvent('mousemove', 10, 20);
-      simulateEvent('mousedown', 10, 20);
-      simulateEvent('mouseup', 10, 20);
-      simulateEvent('click', 10, 20);
+      simulateEvent('pointermove', 10, 20);
+      simulateEvent('pointerdown', 10, 20);
+      simulateEvent('pointerup', 10, 20);
 
       // drag map
-      simulateEvent('mousemove', 15, 20);
-      simulateEvent('mousedown', 15, 20);
-      simulateEvent('mousemove', 20, 20);
-      simulateEvent('mouseup', 20, 20);
-      simulateEvent('click', 20, 20);
-
+      simulateEvent('pointermove', 15, 20);
+      simulateEvent('pointerdown', 15, 20);
+      simulateEvent('pointermove', 20, 20);
+      simulateEvent('pointerup', 20, 20);
 
       // second point
-      simulateEvent('mousemove', 30, 20);
-      simulateEvent('mousedown', 30, 20);
-      simulateEvent('mouseup', 30, 20);
-      simulateEvent('click', 30, 20);
+      simulateEvent('pointermove', 30, 20);
+      simulateEvent('pointerdown', 30, 20);
+      simulateEvent('pointerup', 30, 20);
 
       // finish on second point
-      simulateEvent('mousedown', 30, 20);
-      simulateEvent('mouseup', 30, 20);
-      simulateEvent('click', 30, 20);
+      simulateEvent('pointerdown', 30, 20);
+      simulateEvent('pointerup', 30, 20);
 
       var features = source.getFeatures();
       expect(features).to.have.length(1);
@@ -217,22 +206,19 @@ describe('ol.interaction.Draw', function() {
       goog.events.listen(draw, ol.DrawEventType.DRAWEND, de);
 
       // first point
-      simulateEvent('mousemove', 10, 20);
-      simulateEvent('mousedown', 10, 20);
-      simulateEvent('mouseup', 10, 20);
-      simulateEvent('click', 10, 20);
+      simulateEvent('pointermove', 10, 20);
+      simulateEvent('pointerdown', 10, 20);
+      simulateEvent('pointerup', 10, 20);
 
       // second point
-      simulateEvent('mousemove', 30, 20);
-      simulateEvent('mousedown', 30, 20);
-      simulateEvent('mouseup', 30, 20);
-      simulateEvent('click', 30, 20);
+      simulateEvent('pointermove', 30, 20);
+      simulateEvent('pointerdown', 30, 20);
+      simulateEvent('pointerup', 30, 20);
 
       // finish on second point
-      simulateEvent('mousedown', 30, 20);
-      simulateEvent('mouseup', 30, 20);
-      simulateEvent('click', 30, 20);
-      simulateEvent('mousemove', 10, 20);
+      simulateEvent('pointerdown', 30, 20);
+      simulateEvent('pointerup', 30, 20);
+      simulateEvent('pointermove', 10, 20);
 
       expect(ds).to.be.called(1);
       expect(de).to.be.called(1);
@@ -251,21 +237,18 @@ describe('ol.interaction.Draw', function() {
 
     it('draws multi with clicks, finishing on last point', function() {
       // first point
-      simulateEvent('mousemove', 10, 20);
-      simulateEvent('mousedown', 10, 20);
-      simulateEvent('mouseup', 10, 20);
-      simulateEvent('click', 10, 20);
+      simulateEvent('pointermove', 10, 20);
+      simulateEvent('pointerdown', 10, 20);
+      simulateEvent('pointerup', 10, 20);
 
       // second point
-      simulateEvent('mousemove', 30, 20);
-      simulateEvent('mousedown', 30, 20);
-      simulateEvent('mouseup', 30, 20);
-      simulateEvent('click', 30, 20);
+      simulateEvent('pointermove', 30, 20);
+      simulateEvent('pointerdown', 30, 20);
+      simulateEvent('pointerup', 30, 20);
 
       // finish on second point
-      simulateEvent('mousedown', 30, 20);
-      simulateEvent('mouseup', 30, 20);
-      simulateEvent('click', 30, 20);
+      simulateEvent('pointerdown', 30, 20);
+      simulateEvent('pointerup', 30, 20);
 
       var features = source.getFeatures();
       expect(features).to.have.length(1);
@@ -289,28 +272,24 @@ describe('ol.interaction.Draw', function() {
 
     it('draws polygon with clicks, finishing on first point', function() {
       // first point
-      simulateEvent('mousemove', 10, 20);
-      simulateEvent('mousedown', 10, 20);
-      simulateEvent('mouseup', 10, 20);
-      simulateEvent('click', 10, 20);
+      simulateEvent('pointermove', 10, 20);
+      simulateEvent('pointerdown', 10, 20);
+      simulateEvent('pointerup', 10, 20);
 
       // second point
-      simulateEvent('mousemove', 30, 20);
-      simulateEvent('mousedown', 30, 20);
-      simulateEvent('mouseup', 30, 20);
-      simulateEvent('click', 30, 20);
+      simulateEvent('pointermove', 30, 20);
+      simulateEvent('pointerdown', 30, 20);
+      simulateEvent('pointerup', 30, 20);
 
       // third point
-      simulateEvent('mousemove', 40, 10);
-      simulateEvent('mousedown', 40, 10);
-      simulateEvent('mouseup', 40, 10);
-      simulateEvent('click', 40, 10);
+      simulateEvent('pointermove', 40, 10);
+      simulateEvent('pointerdown', 40, 10);
+      simulateEvent('pointerup', 40, 10);
 
       // finish on first point
-      simulateEvent('mousemove', 10, 20);
-      simulateEvent('mousedown', 10, 20);
-      simulateEvent('mouseup', 10, 20);
-      simulateEvent('click', 10, 20);
+      simulateEvent('pointermove', 10, 20);
+      simulateEvent('pointerdown', 10, 20);
+      simulateEvent('pointerup', 10, 20);
 
       var features = source.getFeatures();
       expect(features).to.have.length(1);
@@ -324,27 +303,23 @@ describe('ol.interaction.Draw', function() {
 
     it('draws polygon with clicks, finishing on last point', function() {
       // first point
-      simulateEvent('mousemove', 10, 20);
-      simulateEvent('mousedown', 10, 20);
-      simulateEvent('mouseup', 10, 20);
-      simulateEvent('click', 10, 20);
+      simulateEvent('pointermove', 10, 20);
+      simulateEvent('pointerdown', 10, 20);
+      simulateEvent('pointerup', 10, 20);
 
       // second point
-      simulateEvent('mousemove', 30, 20);
-      simulateEvent('mousedown', 30, 20);
-      simulateEvent('mouseup', 30, 20);
-      simulateEvent('click', 30, 20);
+      simulateEvent('pointermove', 30, 20);
+      simulateEvent('pointerdown', 30, 20);
+      simulateEvent('pointerup', 30, 20);
 
       // third point
-      simulateEvent('mousemove', 40, 10);
-      simulateEvent('mousedown', 40, 10);
-      simulateEvent('mouseup', 40, 10);
-      simulateEvent('click', 40, 10);
+      simulateEvent('pointermove', 40, 10);
+      simulateEvent('pointerdown', 40, 10);
+      simulateEvent('pointerup', 40, 10);
 
       // finish on last point
-      simulateEvent('mousedown', 40, 10);
-      simulateEvent('mouseup', 40, 10);
-      simulateEvent('click', 40, 11);
+      simulateEvent('pointerdown', 40, 10);
+      simulateEvent('pointerup', 40, 10);
 
       var features = source.getFeatures();
       expect(features).to.have.length(1);
@@ -363,28 +338,24 @@ describe('ol.interaction.Draw', function() {
       goog.events.listen(draw, ol.DrawEventType.DRAWEND, de);
 
       // first point
-      simulateEvent('mousemove', 10, 20);
-      simulateEvent('mousedown', 10, 20);
-      simulateEvent('mouseup', 10, 20);
-      simulateEvent('click', 10, 20);
+      simulateEvent('pointermove', 10, 20);
+      simulateEvent('pointerdown', 10, 20);
+      simulateEvent('pointerup', 10, 20);
 
       // second point
-      simulateEvent('mousemove', 30, 20);
-      simulateEvent('mousedown', 30, 20);
-      simulateEvent('mouseup', 30, 20);
-      simulateEvent('click', 30, 20);
+      simulateEvent('pointermove', 30, 20);
+      simulateEvent('pointerdown', 30, 20);
+      simulateEvent('pointerup', 30, 20);
 
       // third point
-      simulateEvent('mousemove', 30, 10);
-      simulateEvent('mousedown', 30, 10);
-      simulateEvent('mouseup', 30, 10);
-      simulateEvent('click', 30, 10);
+      simulateEvent('pointermove', 30, 10);
+      simulateEvent('pointerdown', 30, 10);
+      simulateEvent('pointerup', 30, 10);
 
       // finish on first point
-      simulateEvent('mousemove', 10, 20);
-      simulateEvent('mousedown', 10, 20);
-      simulateEvent('mouseup', 10, 20);
-      simulateEvent('click', 10, 20);
+      simulateEvent('pointermove', 10, 20);
+      simulateEvent('pointerdown', 10, 20);
+      simulateEvent('pointerup', 10, 20);
 
       expect(ds).to.be.called(1);
       expect(de).to.be.called(1);
@@ -403,28 +374,24 @@ describe('ol.interaction.Draw', function() {
 
     it('draws multi with clicks, finishing on first point', function() {
       // first point
-      simulateEvent('mousemove', 10, 20);
-      simulateEvent('mousedown', 10, 20);
-      simulateEvent('mouseup', 10, 20);
-      simulateEvent('click', 10, 20);
+      simulateEvent('pointermove', 10, 20);
+      simulateEvent('pointerdown', 10, 20);
+      simulateEvent('pointerup', 10, 20);
 
       // second point
-      simulateEvent('mousemove', 30, 20);
-      simulateEvent('mousedown', 30, 20);
-      simulateEvent('mouseup', 30, 20);
-      simulateEvent('click', 30, 20);
+      simulateEvent('pointermove', 30, 20);
+      simulateEvent('pointerdown', 30, 20);
+      simulateEvent('pointerup', 30, 20);
 
       // third point
-      simulateEvent('mousemove', 40, 10);
-      simulateEvent('mousedown', 40, 10);
-      simulateEvent('mouseup', 40, 10);
-      simulateEvent('click', 40, 10);
+      simulateEvent('pointermove', 40, 10);
+      simulateEvent('pointerdown', 40, 10);
+      simulateEvent('pointerup', 40, 10);
 
       // finish on first point
-      simulateEvent('mousemove', 10, 20);
-      simulateEvent('mousedown', 10, 20);
-      simulateEvent('mouseup', 10, 20);
-      simulateEvent('click', 10, 20);
+      simulateEvent('pointermove', 10, 20);
+      simulateEvent('pointerdown', 10, 20);
+      simulateEvent('pointerup', 10, 20);
 
       var features = source.getFeatures();
       expect(features).to.have.length(1);
@@ -440,27 +407,23 @@ describe('ol.interaction.Draw', function() {
 
     it('draws multi with clicks, finishing on last point', function() {
       // first point
-      simulateEvent('mousemove', 10, 20);
-      simulateEvent('mousedown', 10, 20);
-      simulateEvent('mouseup', 10, 20);
-      simulateEvent('click', 10, 20);
+      simulateEvent('pointermove', 10, 20);
+      simulateEvent('pointerdown', 10, 20);
+      simulateEvent('pointerup', 10, 20);
 
       // second point
-      simulateEvent('mousemove', 30, 20);
-      simulateEvent('mousedown', 30, 20);
-      simulateEvent('mouseup', 30, 20);
-      simulateEvent('click', 30, 20);
+      simulateEvent('pointermove', 30, 20);
+      simulateEvent('pointerdown', 30, 20);
+      simulateEvent('pointerup', 30, 20);
 
       // third point
-      simulateEvent('mousemove', 40, 10);
-      simulateEvent('mousedown', 40, 10);
-      simulateEvent('mouseup', 40, 10);
-      simulateEvent('click', 40, 10);
+      simulateEvent('pointermove', 40, 10);
+      simulateEvent('pointerdown', 40, 10);
+      simulateEvent('pointerup', 40, 10);
 
       // finish on last point
-      simulateEvent('mousedown', 40, 10);
-      simulateEvent('mouseup', 40, 10);
-      simulateEvent('click', 40, 10);
+      simulateEvent('pointerdown', 40, 10);
+      simulateEvent('pointerup', 40, 10);
 
       var features = source.getFeatures();
       expect(features).to.have.length(1);
@@ -483,6 +446,7 @@ goog.require('goog.events');
 goog.require('goog.events.BrowserEvent');
 goog.require('goog.style');
 goog.require('ol.Map');
+goog.require('ol.MapBrowserPointerEvent');
 goog.require('ol.RendererHint');
 goog.require('ol.View2D');
 goog.require('ol.geom.GeometryType');
@@ -495,4 +459,5 @@ goog.require('ol.geom.Polygon');
 goog.require('ol.interaction.Draw');
 goog.require('ol.interaction.Interaction');
 goog.require('ol.layer.Vector');
+goog.require('ol.pointer.PointerEvent');
 goog.require('ol.source.Vector');

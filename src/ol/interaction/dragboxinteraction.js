@@ -8,7 +8,7 @@ goog.require('goog.asserts');
 goog.require('goog.events.Event');
 goog.require('ol.events.ConditionType');
 goog.require('ol.events.condition');
-goog.require('ol.interaction.Drag');
+goog.require('ol.interaction.Pointer');
 goog.require('ol.render.Box');
 
 
@@ -62,8 +62,14 @@ goog.inherits(ol.DragBoxEvent, goog.events.Event);
 
 
 /**
+ * Allows the user to zoom the map by clicking and dragging on the map,
+ * normally combined with an {@link ol.events.condition} that limits
+ * it to when the shift key is held down.
+ *
+ * This interaction is only supported for mouse devices.
+ *
  * @constructor
- * @extends {ol.interaction.Drag}
+ * @extends {ol.interaction.Pointer}
  * @param {olx.interaction.DragBoxOptions=} opt_options Options.
  * @todo stability experimental
  */
@@ -99,13 +105,17 @@ ol.interaction.DragBox = function(opt_options) {
       options.condition : ol.events.condition.always;
 
 };
-goog.inherits(ol.interaction.DragBox, ol.interaction.Drag);
+goog.inherits(ol.interaction.DragBox, ol.interaction.Pointer);
 
 
 /**
  * @inheritDoc
  */
-ol.interaction.DragBox.prototype.handleDrag = function(mapBrowserEvent) {
+ol.interaction.DragBox.prototype.handlePointerDrag = function(mapBrowserEvent) {
+  if (!ol.events.condition.mouseOnly(mapBrowserEvent)) {
+    return;
+  }
+
   this.box_.setPixels(this.startPixel_, mapBrowserEvent.pixel);
 };
 
@@ -129,23 +139,36 @@ ol.interaction.DragBox.prototype.onBoxEnd = goog.nullFunction;
 /**
  * @inheritDoc
  */
-ol.interaction.DragBox.prototype.handleDragEnd =
+ol.interaction.DragBox.prototype.handlePointerUp =
     function(mapBrowserEvent) {
+  if (!ol.events.condition.mouseOnly(mapBrowserEvent)) {
+    return true;
+  }
+
   this.box_.setMap(null);
-  if (this.deltaX * this.deltaX + this.deltaY * this.deltaY >=
+
+  var deltaX = mapBrowserEvent.pixel[0] - this.startPixel_[0];
+  var deltaY = mapBrowserEvent.pixel[1] - this.startPixel_[1];
+
+  if (deltaX * deltaX + deltaY * deltaY >=
       ol.DRAG_BOX_HYSTERESIS_PIXELS_SQUARED) {
     this.onBoxEnd(mapBrowserEvent);
     this.dispatchEvent(new ol.DragBoxEvent(ol.DragBoxEventType.BOXEND,
         mapBrowserEvent.coordinate));
   }
+  return false;
 };
 
 
 /**
  * @inheritDoc
  */
-ol.interaction.DragBox.prototype.handleDragStart =
+ol.interaction.DragBox.prototype.handlePointerDown =
     function(mapBrowserEvent) {
+  if (!ol.events.condition.mouseOnly(mapBrowserEvent)) {
+    return false;
+  }
+
   var browserEvent = mapBrowserEvent.browserEvent;
   if (browserEvent.isMouseActionButton() && this.condition_(mapBrowserEvent)) {
     this.startPixel_ = mapBrowserEvent.pixel;

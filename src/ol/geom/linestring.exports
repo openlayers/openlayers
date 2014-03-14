@@ -1,4 +1,5 @@
 @exportSymbol ol.geom.LineString
+@exportProperty ol.geom.LineString.prototype.appendCoordinate
 @exportProperty ol.geom.LineString.prototype.clone
 @exportProperty ol.geom.LineString.prototype.getCoordinateAtM
 @exportProperty ol.geom.LineString.prototype.getCoordinates

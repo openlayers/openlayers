@@ -261,7 +261,8 @@ ol.Map = function(options) {
     goog.events.EventType.DBLCLICK,
     goog.events.EventType.MOUSEDOWN,
     goog.events.EventType.TOUCHSTART,
-    goog.events.EventType.MSPOINTERDOWN
+    goog.events.EventType.MSPOINTERDOWN,
+    'pointerdown'
   ], goog.events.Event.stopPropagation);
   goog.dom.appendChild(this.viewport_, this.overlayContainerStopEvent_);
 

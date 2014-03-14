@@ -7,9 +7,15 @@ goog.require('ol.geom.GeometryType');
 goog.require('ol.geom.MultiPoint');
 goog.require('ol.geom.Polygon');
 goog.require('ol.geom.SimpleGeometry');
-goog.require('ol.geom.closest');
-goog.require('ol.geom.flat');
-goog.require('ol.geom.simplify');
+goog.require('ol.geom.flat.area');
+goog.require('ol.geom.flat.center');
+goog.require('ol.geom.flat.closest');
+goog.require('ol.geom.flat.contains');
+goog.require('ol.geom.flat.deflate');
+goog.require('ol.geom.flat.inflate');
+goog.require('ol.geom.flat.interiorpoint');
+goog.require('ol.geom.flat.orient');
+goog.require('ol.geom.flat.simplify');
 
 
 
@@ -73,6 +79,31 @@ goog.inherits(ol.geom.MultiPolygon, ol.geom.SimpleGeometry);
 
 
 /**
+ * @param {ol.geom.Polygon} polygon Polygon.
+ */
+ol.geom.MultiPolygon.prototype.appendPolygon = function(polygon) {
+  goog.asserts.assert(polygon.getLayout() == this.layout);
+  /** @type {Array.<number>} */
+  var ends;
+  if (goog.isNull(this.flatCoordinates)) {
+    this.flatCoordinates = polygon.getFlatCoordinates().slice();
+    ends = polygon.getEnds().slice();
+    this.endss_.push();
+  } else {
+    var offset = this.flatCoordinates.length;
+    goog.array.extend(this.flatCoordinates, polygon.getFlatCoordinates());
+    ends = polygon.getEnds().slice();
+    var i, ii;
+    for (i = 0, ii = ends.length; i < ii; ++i) {
+      ends[i] += offset;
+    }
+  }
+  this.endss_.push(ends);
+  this.dispatchChangeEvent();
+};
+
+
+/**
  * @inheritDoc
  */
 ol.geom.MultiPolygon.prototype.clone = function() {
@@ -93,11 +124,11 @@ ol.geom.MultiPolygon.prototype.closestPointXY =
     return minSquaredDistance;
   }
   if (this.maxDeltaRevision_ != this.getRevision()) {
-    this.maxDelta_ = Math.sqrt(ol.geom.closest.getssMaxSquaredDelta(
+    this.maxDelta_ = Math.sqrt(ol.geom.flat.closest.getssMaxSquaredDelta(
         this.flatCoordinates, 0, this.endss_, this.stride, 0));
     this.maxDeltaRevision_ = this.getRevision();
   }
-  return ol.geom.closest.getssClosestPoint(
+  return ol.geom.flat.closest.getssClosestPoint(
       this.getOrientedFlatCoordinates(), 0, this.endss_, this.stride,
       this.maxDelta_, true, x, y, closestPoint, minSquaredDistance);
 };
@@ -107,7 +138,7 @@ ol.geom.MultiPolygon.prototype.closestPointXY =
  * @inheritDoc
  */
 ol.geom.MultiPolygon.prototype.containsXY = function(x, y) {
-  return ol.geom.flat.linearRingssContainsXY(
+  return ol.geom.flat.contains.linearRingssContainsXY(
       this.getOrientedFlatCoordinates(), 0, this.endss_, this.stride, x, y);
 };
 
@@ -117,7 +148,7 @@ ol.geom.MultiPolygon.prototype.containsXY = function(x, y) {
  * @todo stability experimental
  */
 ol.geom.MultiPolygon.prototype.getArea = function() {
-  return ol.geom.flat.linearRingssArea(
+  return ol.geom.flat.area.linearRingss(
       this.getOrientedFlatCoordinates(), 0, this.endss_, this.stride);
 };
 
@@ -127,7 +158,7 @@ ol.geom.MultiPolygon.prototype.getArea = function() {
  * @todo stability experimental
  */
 ol.geom.MultiPolygon.prototype.getCoordinates = function() {
-  return ol.geom.flat.inflateCoordinatesss(
+  return ol.geom.flat.inflate.coordinatesss(
       this.flatCoordinates, 0, this.endss_, this.stride);
 };
 
@@ -145,9 +176,9 @@ ol.geom.MultiPolygon.prototype.getEndss = function() {
  */
 ol.geom.MultiPolygon.prototype.getFlatInteriorPoints = function() {
   if (this.flatInteriorPointsRevision_ != this.getRevision()) {
-    var flatCenters = ol.geom.flat.linearRingssGetFlatCenters(
+    var flatCenters = ol.geom.flat.center.linearRingss(
         this.flatCoordinates, 0, this.endss_, this.stride);
-    this.flatInteriorPoints_ = ol.geom.flat.linearRingssGetInteriorPoints(
+    this.flatInteriorPoints_ = ol.geom.flat.interiorpoint.linearRingss(
         this.getOrientedFlatCoordinates(), 0, this.endss_, this.stride,
         flatCenters);
     this.flatInteriorPointsRevision_ = this.getRevision();
@@ -178,8 +209,9 @@ ol.geom.MultiPolygon.prototype.getOrientedFlatCoordinates = function() {
       this.orientedFlatCoordinates_ = flatCoordinates;
     } else {
       this.orientedFlatCoordinates_ = flatCoordinates.slice();
-      this.orientedFlatCoordinates_.length = ol.geom.flat.orientLinearRingss(
-          this.orientedFlatCoordinates_, 0, this.endss_, this.stride);
+      this.orientedFlatCoordinates_.length =
+          ol.geom.flat.orient.orientLinearRingss(
+              this.orientedFlatCoordinates_, 0, this.endss_, this.stride);
     }
     this.orientedRevision_ = this.getRevision();
   }
@@ -194,7 +226,7 @@ ol.geom.MultiPolygon.prototype.getSimplifiedGeometryInternal =
     function(squaredTolerance) {
   var simplifiedFlatCoordinates = [];
   var simplifiedEndss = [];
-  simplifiedFlatCoordinates.length = ol.geom.simplify.quantizess(
+  simplifiedFlatCoordinates.length = ol.geom.flat.simplify.quantizess(
       this.flatCoordinates, 0, this.endss_, this.stride,
       Math.sqrt(squaredTolerance),
       simplifiedFlatCoordinates, 0, simplifiedEndss);
@@ -202,6 +234,37 @@ ol.geom.MultiPolygon.prototype.getSimplifiedGeometryInternal =
   simplifiedMultiPolygon.setFlatCoordinates(
       ol.geom.GeometryLayout.XY, simplifiedFlatCoordinates, simplifiedEndss);
   return simplifiedMultiPolygon;
+};
+
+
+/**
+ * @param {number} index Index.
+ * @return {ol.geom.Polygon} Polygon.
+ */
+ol.geom.MultiPolygon.prototype.getPolygon = function(index) {
+  goog.asserts.assert(0 <= index && index < this.endss_.length);
+  if (index < 0 || this.endss_.length <= index) {
+    return null;
+  }
+  var offset;
+  if (index === 0) {
+    offset = 0;
+  } else {
+    var prevEnds = this.endss_[index - 1];
+    offset = prevEnds[prevEnds.length - 1];
+  }
+  var ends = this.endss_[index].slice();
+  var end = ends[ends.length - 1];
+  if (offset !== 0) {
+    var i, ii;
+    for (i = 0, ii = ends.length; i < ii; ++i) {
+      ends[i] -= offset;
+    }
+  }
+  var polygon = new ol.geom.Polygon(null);
+  polygon.setFlatCoordinates(
+      this.layout, this.flatCoordinates.slice(offset, end), ends);
+  return polygon;
 };
 
 
@@ -217,17 +280,16 @@ ol.geom.MultiPolygon.prototype.getPolygons = function() {
   var offset = 0;
   var i, ii, j, jj;
   for (i = 0, ii = endss.length; i < ii; ++i) {
-    var ends = endss[i];
+    var ends = endss[i].slice();
     var end = ends[ends.length - 1];
-    var polygon = new ol.geom.Polygon(null);
-    var polygonEnds = ends.slice();
     if (offset !== 0) {
-      for (j = 0, jj = polygonEnds.length; j < jj; ++j) {
-        polygonEnds[j] = polygonEnds[j] - offset;
+      for (j = 0, jj = ends.length; j < jj; ++j) {
+        ends[j] -= offset;
       }
     }
+    var polygon = new ol.geom.Polygon(null);
     polygon.setFlatCoordinates(
-        layout, flatCoordinates.slice(offset, end), polygonEnds);
+        layout, flatCoordinates.slice(offset, end), ends);
     polygons.push(polygon);
     offset = end;
   }
@@ -257,7 +319,7 @@ ol.geom.MultiPolygon.prototype.setCoordinates =
     if (goog.isNull(this.flatCoordinates)) {
       this.flatCoordinates = [];
     }
-    var endss = ol.geom.flat.deflateCoordinatesss(
+    var endss = ol.geom.flat.deflate.coordinatesss(
         this.flatCoordinates, 0, coordinates, this.stride, this.endss_);
     var lastEnds = endss[endss.length - 1];
     this.flatCoordinates.length = lastEnds.length === 0 ?
@@ -274,6 +336,14 @@ ol.geom.MultiPolygon.prototype.setCoordinates =
  */
 ol.geom.MultiPolygon.prototype.setFlatCoordinates =
     function(layout, flatCoordinates, endss) {
+  goog.asserts.assert(!goog.isNull(endss));
+  if (goog.isNull(flatCoordinates) || flatCoordinates.length === 0) {
+    goog.asserts.assert(endss.length === 0);
+  } else {
+    goog.asserts.assert(endss.length > 0);
+    var ends = endss[endss.length - 1];
+    goog.asserts.assert(flatCoordinates.length == ends[ends.length - 1]);
+  }
   this.setFlatCoordinatesInternal(layout, flatCoordinates);
   this.endss_ = endss;
   this.dispatchChangeEvent();

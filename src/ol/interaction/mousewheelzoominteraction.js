@@ -83,7 +83,7 @@ ol.interaction.MouseWheelZoom.prototype.handleMapBrowserEvent =
     goog.asserts.assertInstanceof(mouseWheelEvent, goog.events.MouseWheelEvent);
 
     this.lastAnchor_ = mapBrowserEvent.coordinate;
-    this.delta_ += mouseWheelEvent.deltaY / 3;
+    this.delta_ += mouseWheelEvent.deltaY;
 
     if (!goog.isDef(this.startTime_)) {
       this.startTime_ = goog.now();

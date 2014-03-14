@@ -1,4 +1,3 @@
-
 /**
  * An implementation of Google Maps' MVCArray.
  * @see https://developers.google.com/maps/documentation/javascript/reference

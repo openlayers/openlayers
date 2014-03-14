@@ -5,7 +5,7 @@ import gzip
 import json
 import os
 import glob
-import regex as re
+import re
 import shutil
 import sys
 
@@ -373,7 +373,7 @@ virtual('lint', 'build/lint-timestamp', 'build/lint-generated-timestamp',
 def build_lint_src_timestamp(t):
     t.run('%(GJSLINT)s',
           '--jslint_error=all',
-          '--custom_jsdoc_tags=todo',
+          '--custom_jsdoc_tags=todo,function',
           '--strict',
           t.newer(t.dependencies))
     t.touch()
@@ -582,6 +582,7 @@ def build_check_requires_timestamp(t):
         precious=True)
 def build_check_whitespace_timestamp(t):
     CR_RE = re.compile(r'\r')
+    LEADING_WHITESPACE_RE = re.compile(r'\s+')
     TRAILING_WHITESPACE_RE = re.compile(r'\s+\n\Z')
     NO_NEWLINE_RE = re.compile(r'[^\n]\Z')
     ALL_WHITESPACE_RE = re.compile(r'\s+\Z')
@@ -589,6 +590,9 @@ def build_check_whitespace_timestamp(t):
     for filename in sorted(t.newer(t.dependencies)):
         whitespace = False
         for lineno, line in enumerate(open(filename, 'rU')):
+            if lineno == 0 and LEADING_WHITESPACE_RE.match(line):
+                t.info('%s:%d: leading whitespace', filename, lineno + 1)
+                errors += 1
             if CR_RE.search(line):
                 t.info('%s:%d: carriage return character in line', filename, lineno + 1)
                 errors += 1

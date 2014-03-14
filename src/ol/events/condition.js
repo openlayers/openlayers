@@ -5,6 +5,7 @@ goog.require('goog.asserts');
 goog.require('goog.dom.TagName');
 goog.require('goog.functions');
 goog.require('ol.MapBrowserEvent.EventType');
+goog.require('ol.MapBrowserPointerEvent');
 
 
 /**
@@ -119,4 +120,18 @@ ol.events.condition.targetNotEditable = function(mapBrowserEvent) {
       tagName !== goog.dom.TagName.INPUT &&
       tagName !== goog.dom.TagName.SELECT &&
       tagName !== goog.dom.TagName.TEXTAREA);
+};
+
+
+/**
+ * @param {ol.MapBrowserEvent} mapBrowserEvent Map browser event.
+ * @return {boolean} True if the event originates from a mouse device.
+ * @todo stability experimental
+ */
+ol.events.condition.mouseOnly = function(mapBrowserEvent) {
+  goog.asserts.assertInstanceof(mapBrowserEvent, ol.MapBrowserPointerEvent);
+  /* pointerId must be 1 for mouse devices,
+   * see: http://www.w3.org/Submission/pointer-events/#pointerevent-interface
+   */
+  return mapBrowserEvent.pointerEvent.pointerId == 1;
 };

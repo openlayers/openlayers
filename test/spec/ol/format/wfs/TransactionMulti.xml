@@ -1,0 +1,45 @@
+<wfs:Transaction xmlns:wfs="http://www.opengis.net/wfs" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" service="WFS" version="1.1.0" xsi:schemaLocation="http://www.opengis.net/wfs http://schemas.opengis.net/wfs/1.1.0/wfs.xsd">
+    <wfs:Insert>
+        <feature:states xmlns:feature="http://www.openplans.org/topp">
+            <feature:the_geom>
+                <gml:MultiPoint xmlns:gml="http://www.opengis.net/gml">
+                    <gml:pointMember>
+                        <gml:Point>
+                            <gml:pos>1 2</gml:pos>
+                        </gml:Point>
+                    </gml:pointMember>
+                </gml:MultiPoint>
+            </feature:the_geom>
+            <feature:foo>bar</feature:foo>
+        </feature:states>
+    </wfs:Insert>
+    <wfs:Update xmlns:wfs="http://www.opengis.net/wfs" typeName="topp:states" xmlns:topp="http://www.openplans.org/topp">
+        <wfs:Property>
+            <wfs:Name>the_geom</wfs:Name>
+            <wfs:Value>
+                <gml:MultiPoint xmlns:gml="http://www.opengis.net/gml">
+                    <gml:pointMember>
+                        <gml:Point>
+                            <gml:pos>1 2</gml:pos>
+                        </gml:Point>
+                    </gml:pointMember>
+                </gml:MultiPoint>
+            </wfs:Value>
+        </wfs:Property>
+        <wfs:Property>
+            <wfs:Name>foo</wfs:Name>
+            <wfs:Value>bar</wfs:Value>
+        </wfs:Property>
+        <wfs:Property>
+            <wfs:Name>nul</wfs:Name>
+        </wfs:Property>
+        <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
+            <ogc:FeatureId fid="fid.42"/>
+        </ogc:Filter>
+    </wfs:Update>
+    <wfs:Delete xmlns:wfs="http://www.opengis.net/wfs" typeName="topp:states" xmlns:topp="http://www.openplans.org/topp">
+        <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
+            <ogc:FeatureId fid="fid.37"/>
+        </ogc:Filter>
+    </wfs:Delete>
+</wfs:Transaction>

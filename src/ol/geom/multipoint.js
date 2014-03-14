@@ -1,10 +1,14 @@
 goog.provide('ol.geom.MultiPoint');
 
+goog.require('goog.array');
+goog.require('goog.asserts');
 goog.require('ol.extent');
 goog.require('ol.geom.GeometryType');
 goog.require('ol.geom.Point');
 goog.require('ol.geom.SimpleGeometry');
-goog.require('ol.geom.flat');
+goog.require('ol.geom.flat.deflate');
+goog.require('ol.geom.flat.inflate');
+goog.require('ol.math');
 
 
 
@@ -20,6 +24,20 @@ ol.geom.MultiPoint = function(coordinates, opt_layout) {
   this.setCoordinates(coordinates, opt_layout);
 };
 goog.inherits(ol.geom.MultiPoint, ol.geom.SimpleGeometry);
+
+
+/**
+ * @param {ol.geom.Point} point Point.
+ */
+ol.geom.MultiPoint.prototype.appendPoint = function(point) {
+  goog.asserts.assert(point.getLayout() == this.layout);
+  if (goog.isNull(this.flatCoordinates)) {
+    this.flatCoordinates = point.getFlatCoordinates().slice();
+  } else {
+    goog.array.extend(this.flatCoordinates, point.getFlatCoordinates());
+  }
+  this.dispatchChangeEvent();
+};
 
 
 /**
@@ -45,7 +63,7 @@ ol.geom.MultiPoint.prototype.closestPointXY =
   var stride = this.stride;
   var i, ii, j;
   for (i = 0, ii = flatCoordinates.length; i < ii; i += stride) {
-    var squaredDistance = ol.geom.flat.squaredDistance(
+    var squaredDistance = ol.math.squaredDistance(
         x, y, flatCoordinates[i], flatCoordinates[i + 1]);
     if (squaredDistance < minSquaredDistance) {
       minSquaredDistance = squaredDistance;
@@ -64,8 +82,26 @@ ol.geom.MultiPoint.prototype.closestPointXY =
  * @todo stability experimental
  */
 ol.geom.MultiPoint.prototype.getCoordinates = function() {
-  return ol.geom.flat.inflateCoordinates(
+  return ol.geom.flat.inflate.coordinates(
       this.flatCoordinates, 0, this.flatCoordinates.length, this.stride);
+};
+
+
+/**
+ * @param {number} index Index.
+ * @return {ol.geom.Point} Point.
+ */
+ol.geom.MultiPoint.prototype.getPoint = function(index) {
+  var n = goog.isNull(this.flatCoordinates) ?
+      0 : this.flatCoordinates.length / this.stride;
+  goog.asserts.assert(0 <= index && index < n);
+  if (index < 0 || n <= index) {
+    return null;
+  }
+  var point = new ol.geom.Point(null);
+  point.setFlatCoordinates(this.layout, this.flatCoordinates.slice(
+      index * this.stride, (index + 1) * this.stride));
+  return point;
 };
 
 
@@ -74,12 +110,16 @@ ol.geom.MultiPoint.prototype.getCoordinates = function() {
  * @todo stability experimental
  */
 ol.geom.MultiPoint.prototype.getPoints = function() {
-  // FIXME we should construct the points from the flat coordinates
-  var coordinates = this.getCoordinates();
+  var flatCoordinates = this.flatCoordinates;
+  var layout = this.layout;
+  var stride = this.stride;
+  /** @type {Array.<ol.geom.Point>} */
   var points = [];
   var i, ii;
-  for (i = 0, ii = coordinates.length; i < ii; ++i) {
-    points.push(new ol.geom.Point(coordinates[i]));
+  for (i = 0, ii = flatCoordinates.length; i < ii; i += stride) {
+    var point = new ol.geom.Point(null);
+    point.setFlatCoordinates(layout, flatCoordinates.slice(i, i + stride));
+    points.push(point);
   }
   return points;
 };
@@ -107,7 +147,7 @@ ol.geom.MultiPoint.prototype.setCoordinates =
     if (goog.isNull(this.flatCoordinates)) {
       this.flatCoordinates = [];
     }
-    this.flatCoordinates.length = ol.geom.flat.deflateCoordinates(
+    this.flatCoordinates.length = ol.geom.flat.deflate.coordinates(
         this.flatCoordinates, 0, coordinates, this.stride);
     this.dispatchChangeEvent();
   }

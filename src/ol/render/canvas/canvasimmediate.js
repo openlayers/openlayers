@@ -1,6 +1,6 @@
 // FIXME test, especially polygons with holes and multipolygons
 // FIXME need to handle large thick features (where pixel size matters)
-// FIXME add offset and end to ol.geom.flat.transform2D?
+// FIXME add offset and end to ol.geom.flat.transform.transform2D?
 
 goog.provide('ol.render.canvas.Immediate');
 
@@ -11,7 +11,7 @@ goog.require('goog.vec.Mat4');
 goog.require('ol.BrowserFeature');
 goog.require('ol.color');
 goog.require('ol.extent');
-goog.require('ol.geom.flat');
+goog.require('ol.geom.flat.transform');
 goog.require('ol.render.IVectorContext');
 goog.require('ol.render.canvas');
 goog.require('ol.vec.Mat4');
@@ -235,7 +235,7 @@ ol.render.canvas.Immediate.prototype.drawImages_ =
   }
   goog.asserts.assert(offset === 0);
   goog.asserts.assert(end == flatCoordinates.length);
-  var pixelCoordinates = ol.geom.flat.transform2D(
+  var pixelCoordinates = ol.geom.flat.transform.transform2D(
       flatCoordinates, 2, this.transform_, this.pixelCoordinates_);
   var context = this.context_;
   var localTransform = this.tmpLocalTransform_;
@@ -301,7 +301,7 @@ ol.render.canvas.Immediate.prototype.drawText_ =
   this.setContextTextState_(this.textState_);
   goog.asserts.assert(offset === 0);
   goog.asserts.assert(end == flatCoordinates.length);
-  var pixelCoordinates = ol.geom.flat.transform2D(
+  var pixelCoordinates = ol.geom.flat.transform.transform2D(
       flatCoordinates, stride, this.transform_, this.pixelCoordinates_);
   var context = this.context_;
   for (; offset < end; offset += stride) {

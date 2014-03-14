@@ -83,6 +83,18 @@ ol.Overlay = function(options) {
 
   /**
    * @private
+   * @type {number}
+   */
+  this.offsetX_ = goog.isDef(options.offsetX) ? options.offsetX : 0;
+
+  /**
+   * @private
+   * @type {number}
+   */
+  this.offsetY_ = goog.isDef(options.offsetY) ? options.offsetY : 0;
+
+  /**
+   * @private
    * @type {Element}
    */
   this.element_ = goog.dom.createElement(goog.dom.TagName.DIV);
@@ -355,11 +367,11 @@ ol.Overlay.prototype.updatePixelPosition_ = function() {
     if (this.rendered_.right_ !== '') {
       this.rendered_.right_ = style.right = '';
     }
-    var offsetX = 0;
+    var offsetX = -this.offsetX_;
     if (positioning == ol.OverlayPositioning.BOTTOM_CENTER ||
         positioning == ol.OverlayPositioning.CENTER_CENTER ||
         positioning == ol.OverlayPositioning.TOP_CENTER) {
-      offsetX = goog.style.getSize(this.element_).width / 2;
+      offsetX += goog.style.getSize(this.element_).width / 2;
     }
     var left = Math.round(pixel[0] - offsetX) + 'px';
     if (this.rendered_.left_ != left) {
@@ -380,11 +392,11 @@ ol.Overlay.prototype.updatePixelPosition_ = function() {
     if (this.rendered_.bottom_ !== '') {
       this.rendered_.bottom_ = style.bottom = '';
     }
-    var offsetY = 0;
+    var offsetY = -this.offsetY_;
     if (positioning == ol.OverlayPositioning.CENTER_LEFT ||
         positioning == ol.OverlayPositioning.CENTER_CENTER ||
         positioning == ol.OverlayPositioning.CENTER_RIGHT) {
-      offsetY = goog.style.getSize(this.element_).height / 2;
+      offsetY += goog.style.getSize(this.element_).height / 2;
     }
     var top = Math.round(pixel[1] - offsetY) + 'px';
     if (this.rendered_.top_ != top) {

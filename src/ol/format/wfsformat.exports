@@ -1,0 +1,6 @@
+@exportSymbol ol.format.WFS
+@exportProperty ol.format.WFS.prototype.readFeatures
+@exportProperty ol.format.WFS.prototype.readTransactionResponse
+@exportProperty ol.format.WFS.prototype.readFeatureCollectionMetadata
+@exportProperty ol.format.WFS.prototype.writeGetFeature
+@exportProperty ol.format.WFS.prototype.writeTransaction
