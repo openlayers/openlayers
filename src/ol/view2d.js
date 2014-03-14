@@ -8,6 +8,7 @@ goog.require('ol.CenterConstraint');
 goog.require('ol.Constraints');
 goog.require('ol.IView2D');
 goog.require('ol.IView3D');
+goog.require('ol.LatLng');
 goog.require('ol.ResolutionConstraint');
 goog.require('ol.RotationConstraint');
 goog.require('ol.RotationConstraintType');
@@ -546,6 +547,18 @@ goog.exportProperty(
     ol.View2D.prototype,
     'setCenter',
     ol.View2D.prototype.setCenter);
+
+
+/**
+ * Set the center of the view to a given LatLng.
+ * @param {ol.LatLng} latLng LatLng.
+ * @todo stability experimental
+ */
+ol.View2D.prototype.setCenterLatLng = function(latLng) {
+  var center = ol.proj.transform([latLng[1], latLng[0]],
+      ol.proj.get('EPSG:4326'), this.getProjection());
+  this.setCenter(center);
+};
 
 
 /**
