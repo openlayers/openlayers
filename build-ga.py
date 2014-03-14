@@ -40,7 +40,7 @@ targets.add = MethodType(add, targets, TargetCollection)
 
 # We redefine 'build'
 virtual('build', 'build/ga.css', 'build/src/internal/src/requireallga.js', 'build/ga.js',
-        'build/ga-whitespace.js','build/layersconfig')
+        'build/ga-whitespace.js','build/layersconfig', 'build/serverconfig.js')
 
 # We redifine 'apidoc'
 JSDOC = 'node_modules/.bin/jsdoc'
@@ -69,6 +69,8 @@ SRC.extend([path for path in ifind('src/ga')
        if path not in SHADER_SRC])
 
 AVAILABLE_LANGS = ['de','fr','en','it','rm']
+
+api_url = os.environ.get('API_URL', '//api3.geo.admin.ch/')
 
 # Custom target for ga
 @target('build/src/internal/src/requireallga.js', SRC, SHADER_SRC,
@@ -101,15 +103,18 @@ def build_ga_whitespace_js(t):
     
 @target('build/layersconfig')
 def get_layersconfig(t):
-    api_url = os.environ.get('API_URL') or '//api3.geo.admin.ch/'
     for lang in AVAILABLE_LANGS:
         name = "%s.%s.js" % (t.name, lang)
         t.info('downloading %r', t.name)
-
         t.download('http:' + api_url + 'rest/services/api/MapServer/layersConfig?lang=%s' % lang)
         os.rename(t.name, name)
         t.info('downloaded %r', name)
-        prepend(name, """var GeoAdmin={}; GeoAdmin.serviceUrl='"""+ api_url   + """';GeoAdmin.getConfig=function(){ return %s } """)
+        prepend(name, """var GeoAdmin=GeoAdmin || {}; GeoAdmin.getConfig=function(){ return %s } """)
+
+@target('build/serverconfig.js')
+def serverconfig(t):
+    with open(t.name, 'w') as f:
+        f.write( """var GeoAdmin=GeoAdmin || {}; GeoAdmin.serviceUrl='"""+ api_url   + """'; """)
         
 @target('serve', PLOVR_JAR, 'test-deps', 'examples')
 def serve(t):
