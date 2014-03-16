@@ -106,7 +106,7 @@ def get_layersconfig(t):
     for lang in AVAILABLE_LANGS:
         name = "%s.%s.js" % (t.name, lang)
         t.info('downloading %r', t.name)
-        t.download('http:' + api_url + 'rest/services/api/MapServer/layersConfig?lang=%s' % lang)
+        t.download('http:' + api_url + '/rest/services/api/MapServer/layersConfig?lang=%s' % lang)
         os.rename(t.name, name)
         t.info('downloaded %r', name)
         prepend(name, """var GeoAdmin=GeoAdmin || {}; GeoAdmin.getConfig=function(){ return %s } """)
