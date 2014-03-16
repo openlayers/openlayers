@@ -159,16 +159,6 @@ ol.format.OWSCapabilities.readGet_ = function(node, objectStack) {
 ol.format.OWSCapabilities.readHttp_ = function(node, objectStack) {
   goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT);
   goog.asserts.assert(node.localName == 'HTTP');
-  /*var rawArray = ol.xml.pushParseAndPop([],
-      ol.format.OWSCapabilities.HTTP_PARSERS_, node, objectStack);
-  var object = {};
-  goog.array.forEach(rawArray,function(item){
-    if(goog.isDef(object[item.method])){
-        object[item.method].push(item.url);
-    } else {
-        object[item.method] = [item.url];
-    }
-  });*/
   return ol.xml.pushParseAndPop({}, ol.format.OWSCapabilities.HTTP_PARSERS_,
       node, objectStack);
 };
