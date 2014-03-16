@@ -70,7 +70,7 @@ SRC.extend([path for path in ifind('src/ga')
 
 AVAILABLE_LANGS = ['de','fr','en','it','rm']
 
-api_url = os.environ.get('API_URL', '//api3.geo.admin.ch/')
+api_url = os.environ.get('API_URL', '//api3.geo.admin.ch')
 
 # Custom target for ga
 @target('build/src/internal/src/requireallga.js', SRC, SHADER_SRC,
