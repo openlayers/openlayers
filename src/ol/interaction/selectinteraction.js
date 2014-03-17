@@ -30,7 +30,21 @@ ol.interaction.Select = function(options) {
    * @type {ol.events.ConditionType}
    */
   this.addCondition_ = goog.isDef(options.addCondition) ?
-      options.addCondition : ol.events.condition.shiftKeyOnly;
+      options.addCondition : ol.events.condition.never;
+
+  /**
+   * @private
+   * @type {ol.events.ConditionType}
+   */
+  this.removeCondition_ = goog.isDef(options.removeCondition) ?
+      options.removeCondition : ol.events.condition.never;
+
+  /**
+   * @private
+   * @type {ol.events.ConditionType}
+   */
+  this.toggleCondition_ = goog.isDef(options.toggleCondition) ?
+      options.toggleCondition : ol.events.condition.shiftKeyOnly;
 
   var layerFilter;
   if (goog.isDef(options.layerFilter)) {
@@ -95,20 +109,14 @@ ol.interaction.Select.prototype.handleMapBrowserEvent =
     return true;
   }
   var add = this.addCondition_(mapBrowserEvent);
+  var remove = this.removeCondition_(mapBrowserEvent);
+  var toggle = this.toggleCondition_(mapBrowserEvent);
+  var set = !add && !remove && !toggle;
   var map = mapBrowserEvent.map;
   var features = this.featureOverlay_.getFeatures();
-  if (add) {
-    map.forEachFeatureAtPixel(mapBrowserEvent.pixel,
-        /**
-         * @param {ol.Feature} feature Feature.
-         * @param {ol.layer.Layer} layer Layer.
-         */
-        function(feature, layer) {
-          if (goog.array.indexOf(features.getArray(), feature) == -1) {
-            features.push(feature);
-          }
-        }, undefined, this.layerFilter_);
-  } else {
+  if (set) {
+    // Replace the currently selected feature(s) with the feature at the pixel,
+    // or clear the selected feature(s) if there is no feature at the pixel.
     /** @type {ol.Feature|undefined} */
     var feature = map.forEachFeatureAtPixel(mapBrowserEvent.pixel,
         /**
@@ -134,6 +142,25 @@ ol.interaction.Select.prototype.handleMapBrowserEvent =
         features.clear();
       }
     }
+  } else {
+    // Modify the currently selected feature(s).
+    map.forEachFeatureAtPixel(mapBrowserEvent.pixel,
+        /**
+         * @param {ol.Feature} feature Feature.
+         * @param {ol.layer.Layer} layer Layer.
+         */
+        function(feature, layer) {
+          var index = goog.array.indexOf(features.getArray(), feature);
+          if (index == -1) {
+            if (add || toggle) {
+              features.push(feature);
+            }
+          } else {
+            if (remove || toggle) {
+              features.removeAt(index);
+            }
+          }
+        }, undefined, this.layerFilter_);
   }
   return false;
 };
