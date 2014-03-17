@@ -40,7 +40,7 @@ describe('ol.pointer.MouseSource', function() {
 
       // the two events are at different positions
       simulateTouchEvent('touchstart', 10, 20);
-      simulateEvent('mousedown', 10, 40);
+      simulateEvent('mousedown', 10, 50);
 
       expect(eventSpy.calledTwice).to.be.ok();
     });
