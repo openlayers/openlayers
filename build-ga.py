@@ -40,7 +40,7 @@ targets.add = MethodType(add, targets, TargetCollection)
 
 # We redefine 'build'
 virtual('build', 'build/ga.css', 'build/src/internal/src/requireallga.js', 'build/ga.js',
-        'build/ga-whitespace.js','build/layersconfig', 'build/serverconfig.js')
+        'build/ga-whitespace.js','build/layersconfig', 'build/serverconfig')
 
 # We redifine 'apidoc'
 JSDOC = 'node_modules/.bin/jsdoc'
@@ -111,9 +111,9 @@ def get_layersconfig(t):
         t.info('downloaded %r', name)
         prepend(name, """var GeoAdmin=GeoAdmin || {}; GeoAdmin.getConfig=function(){ return %s } """)
 
-@target('build/serverconfig.js')
+@target('build/serverconfig')
 def serverconfig(t):
-    with open(t.name, 'w') as f:
+    with open(t.name + '.js', 'w') as f:
         f.write( """var GeoAdmin=GeoAdmin || {}; GeoAdmin.serviceUrl='"""+ api_url   + """'; """)
         
 @target('serve', PLOVR_JAR, 'test-deps', 'examples')
