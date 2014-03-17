@@ -198,7 +198,7 @@ ga.Tooltip.prototype.handleIdentifyResponse_ = function(response) {
       new goog.Uri( window['GeoAdmin']['serviceUrl'] + '/rest/services/api/MapServer/' +
         response['results'][i]['layerBodId'] + '/' +
         response['results'][i]['featureId'] + '/' +
-        '/htmlPopup?lang=' + lang),
+        'htmlPopup?lang=' + lang),
       'callback');
     jsonp.send({},
       goog.bind(this.handleHtmlpopupResponse_, this),
