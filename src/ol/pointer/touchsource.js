@@ -31,7 +31,6 @@
 goog.provide('ol.pointer.TouchSource');
 
 goog.require('goog.array');
-goog.require('goog.math.Coordinate');
 goog.require('goog.object');
 goog.require('ol.pointer.EventSource');
 goog.require('ol.pointer.MouseSource');
@@ -434,7 +433,7 @@ ol.pointer.TouchSource.prototype.dedupSynthMouse_ = function(inEvent) {
   // only the primary finger will synth mouse events
   if (this.isPrimaryTouch_(t)) {
     // remember x/y of last touch
-    var lt = new goog.math.Coordinate(t.clientX, t.clientY);
+    var lt = /** @type {ol.Pixel} */ ([t.clientX, t.clientY]);
     lts.push(lt);
 
     goog.global.setTimeout(function() {

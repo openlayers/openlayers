@@ -58,7 +58,7 @@ ol.pointer.MouseSource = function(dispatcher) {
 
   /**
    * @const
-   * @type {Array.<goog.math.Coordinate>}
+   * @type {Array.<ol.Pixel>}
    */
   this.lastTouches = [];
 };
@@ -118,7 +118,7 @@ ol.pointer.MouseSource.prototype.isEventSimulatedFromTouch_ =
   var x = inEvent.clientX, y = inEvent.clientY;
   for (var i = 0, l = lts.length, t; i < l && (t = lts[i]); i++) {
     // simulated mouse events will be swallowed near a primary touchend
-    var dx = Math.abs(x - t.x), dy = Math.abs(y - t.y);
+    var dx = Math.abs(x - t[0]), dy = Math.abs(y - t[1]);
     if (dx <= ol.pointer.MouseSource.DEDUP_DIST &&
         dy <= ol.pointer.MouseSource.DEDUP_DIST) {
       return true;
