@@ -90,6 +90,9 @@ ol.format.OWSCapabilities.readConstraint_ = function(node, objectStack) {
   var value = ol.xml.pushParseAndPop({},
       ol.format.OWSCapabilities.CONSTRAINT_PARSERS_, node,
       objectStack);
+  if (!goog.isDef(value)) {
+    return undefined;
+  }
   if (!goog.isDef(object.constraints)) {
     object.constraints = {};
   }
@@ -140,11 +143,15 @@ ol.format.OWSCapabilities.readGet_ = function(node, objectStack) {
   goog.asserts.assert(goog.isObject(object));
   var value = ol.xml.pushParseAndPop({'url': url},
       ol.format.OWSCapabilities.REQUEST_METHOD_PARSERS_, node, objectStack);
-  if (!goog.isDef(object.get)) {
+  if (!goog.isDef(value)) {
+    return undefined;
+  }
+  var get = goog.object.get(object, 'get');
+  if (!goog.isDef(get)) {
     goog.object.set(object, 'get', [value]);
   }else {
-    goog.asserts.assert(goog.isArray(object.get));
-    object.get.push(value);
+    goog.asserts.assert(goog.isArray(get));
+    get.push(value);
   }
 
 };
@@ -176,6 +183,9 @@ ol.format.OWSCapabilities.readOperation_ = function(node, objectStack) {
   var name = node.getAttribute('name');
   var value = ol.xml.pushParseAndPop({},
       ol.format.OWSCapabilities.OPERATION_PARSERS_, node, objectStack);
+  if (!goog.isDef(value)) {
+    return undefined;
+  }
   var object = /** @type {Object} */
       (objectStack[objectStack.length - 1]);
   goog.asserts.assert(goog.isObject(object));
@@ -271,7 +281,10 @@ ol.format.OWSCapabilities.readValue_ = function(node, objectStack) {
   goog.asserts.assert(node.localName == 'Value');
   var object = objectStack[objectStack.length - 1];
   goog.asserts.assert(goog.isObject(object));
-  var key = /** @type {string} */ (ol.format.XSD.readString(node));
+  var key = ol.format.XSD.readString(node);
+  if (!goog.isDef(key)) {
+    return undefined;
+  }
   goog.object.set(object, key, true);
 };
 
@@ -294,17 +307,16 @@ ol.format.OWSCapabilities.NAMESPACE_URIS_ = [
  */
 ol.format.OWSCapabilities.PARSERS_ = ol.xml.makeParsersNS(
     ol.format.OWSCapabilities.NAMESPACE_URIS_, {
-      'ServiceIdentification' : ol.xml.makeObjectPropertySetter(
+      'ServiceIdentification': ol.xml.makeObjectPropertySetter(
           ol.format.OWSCapabilities.readServiceIdentification_,
           'serviceIdentification'),
-      'ServiceProvider' : ol.xml.makeObjectPropertySetter(
+      'ServiceProvider': ol.xml.makeObjectPropertySetter(
           ol.format.OWSCapabilities.readServiceProvider_,
           'serviceProvider'),
       'OperationsMetadata': ol.xml.makeObjectPropertySetter(
           ol.format.OWSCapabilities.readOperationsMetadata_,
           'operationsMetadata')
-    }
-    );
+    });
 
 
 /**
@@ -314,17 +326,17 @@ ol.format.OWSCapabilities.PARSERS_ = ol.xml.makeParsersNS(
  */
 ol.format.OWSCapabilities.ADDRESS_PARSERS_ = ol.xml.makeParsersNS(
     ol.format.OWSCapabilities.NAMESPACE_URIS_, {
-      'DeliveryPoint' : ol.xml.makeObjectPropertySetter(
+      'DeliveryPoint': ol.xml.makeObjectPropertySetter(
           ol.format.XSD.readString, 'deliveryPoint'),
-      'City' : ol.xml.makeObjectPropertySetter(ol.format.XSD.readString,
+      'City': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString,
           'city'),
-      'AdministrativeArea' : ol.xml.makeObjectPropertySetter(
+      'AdministrativeArea': ol.xml.makeObjectPropertySetter(
           ol.format.XSD.readString, 'administrativeArea'),
-      'PostalCode' : ol.xml.makeObjectPropertySetter(ol.format.XSD.readString,
+      'PostalCode': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString,
           'postalCode'),
-      'Country' : ol.xml.makeObjectPropertySetter(
+      'Country': ol.xml.makeObjectPropertySetter(
           ol.format.XSD.readString, 'country'),
-      'ElectronicMailAddress' : ol.xml.makeObjectPropertySetter(
+      'ElectronicMailAddress': ol.xml.makeObjectPropertySetter(
           ol.format.XSD.readString, 'electronicMailAddress')
     }
     );
@@ -363,9 +375,9 @@ ol.format.OWSCapabilities.CONSTRAINT_PARSERS_ = ol.xml.makeParsersNS(
  */
 ol.format.OWSCapabilities.CONTACT_INFO_PARSERS_ = ol.xml.makeParsersNS(
     ol.format.OWSCapabilities.NAMESPACE_URIS_, {
-      'Phone' : ol.xml.makeObjectPropertySetter(
+      'Phone': ol.xml.makeObjectPropertySetter(
           ol.format.OWSCapabilities.readPhone_, 'phone'),
-      'Address' : ol.xml.makeObjectPropertySetter(
+      'Address': ol.xml.makeObjectPropertySetter(
           ol.format.OWSCapabilities.readAddress_, 'address')
     }
     );
@@ -378,7 +390,7 @@ ol.format.OWSCapabilities.CONTACT_INFO_PARSERS_ = ol.xml.makeParsersNS(
  */
 ol.format.OWSCapabilities.DCP_PARSERS_ = ol.xml.makeParsersNS(
     ol.format.OWSCapabilities.NAMESPACE_URIS_, {
-      'HTTP' : ol.xml.makeObjectPropertySetter(
+      'HTTP': ol.xml.makeObjectPropertySetter(
           ol.format.OWSCapabilities.readHttp_, 'http')
     }
     );
@@ -404,7 +416,7 @@ ol.format.OWSCapabilities.HTTP_PARSERS_ = ol.xml.makeParsersNS(
  */
 ol.format.OWSCapabilities.OPERATION_PARSERS_ = ol.xml.makeParsersNS(
     ol.format.OWSCapabilities.NAMESPACE_URIS_, {
-      'DCP' : ol.xml.makeObjectPropertySetter(
+      'DCP': ol.xml.makeObjectPropertySetter(
           ol.format.OWSCapabilities.readDcp_, 'dcp')
     }
     );
@@ -417,7 +429,7 @@ ol.format.OWSCapabilities.OPERATION_PARSERS_ = ol.xml.makeParsersNS(
  */
 ol.format.OWSCapabilities.OPERATIONS_METADATA_PARSERS_ = ol.xml.makeParsersNS(
     ol.format.OWSCapabilities.NAMESPACE_URIS_, {
-      'Operation' : ol.format.OWSCapabilities.readOperation_
+      'Operation': ol.format.OWSCapabilities.readOperation_
     }
     );
 
@@ -429,9 +441,9 @@ ol.format.OWSCapabilities.OPERATIONS_METADATA_PARSERS_ = ol.xml.makeParsersNS(
  */
 ol.format.OWSCapabilities.PHONE_PARSERS_ = ol.xml.makeParsersNS(
     ol.format.OWSCapabilities.NAMESPACE_URIS_, {
-      'Voice' : ol.xml.makeObjectPropertySetter(ol.format.XSD.readString,
+      'Voice': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString,
           'voice'),
-      'Facsimile' : ol.xml.makeObjectPropertySetter(ol.format.XSD.readString,
+      'Facsimile': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString,
           'facsimile')
     }
     );
@@ -456,11 +468,11 @@ ol.format.OWSCapabilities.REQUEST_METHOD_PARSERS_ = ol.xml.makeParsersNS(
 ol.format.OWSCapabilities.SERVICE_CONTACT_PARSERS_ =
     ol.xml.makeParsersNS(
     ol.format.OWSCapabilities.NAMESPACE_URIS_, {
-      'IndividualName' : ol.xml.makeObjectPropertySetter(
+      'IndividualName': ol.xml.makeObjectPropertySetter(
           ol.format.XSD.readString, 'individualName'),
-      'PositionName' : ol.xml.makeObjectPropertySetter(ol.format.XSD.readString,
+      'PositionName': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString,
           'positionName'),
-      'ContactInfo' : ol.xml.makeObjectPropertySetter(
+      'ContactInfo': ol.xml.makeObjectPropertySetter(
           ol.format.OWSCapabilities.readContactInfo_, 'contactInfo')
     }
     );
@@ -474,11 +486,11 @@ ol.format.OWSCapabilities.SERVICE_CONTACT_PARSERS_ =
 ol.format.OWSCapabilities.SERVICE_IDENTIFICATION_PARSERS_ =
     ol.xml.makeParsersNS(
     ol.format.OWSCapabilities.NAMESPACE_URIS_, {
-      'Title' : ol.xml.makeObjectPropertySetter(ol.format.XSD.readString,
+      'Title': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString,
           'title'),
-      'ServiceTypeVersion' : ol.xml.makeObjectPropertySetter(
+      'ServiceTypeVersion': ol.xml.makeObjectPropertySetter(
           ol.format.XSD.readString, 'serviceTypeVersion'),
-      'ServiceType' : ol.xml.makeObjectPropertySetter(
+      'ServiceType': ol.xml.makeObjectPropertySetter(
           ol.format.XSD.readString, 'serviceType')
     });
 
@@ -491,11 +503,11 @@ ol.format.OWSCapabilities.SERVICE_IDENTIFICATION_PARSERS_ =
 ol.format.OWSCapabilities.SERVICE_PROVIDER_PARSERS_ =
     ol.xml.makeParsersNS(
     ol.format.OWSCapabilities.NAMESPACE_URIS_, {
-      'ProviderName' : ol.xml.makeObjectPropertySetter(ol.format.XSD.readString,
+      'ProviderName': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString,
           'providerName'),
-      'ProviderSite' : ol.xml.makeObjectPropertySetter(ol.format.XLink.readHref,
+      'ProviderSite': ol.xml.makeObjectPropertySetter(ol.format.XLink.readHref,
           'providerSite'),
-      'ServiceContact' : ol.xml.makeObjectPropertySetter(
+      'ServiceContact': ol.xml.makeObjectPropertySetter(
           ol.format.OWSCapabilities.readServiceContact_, 'serviceContact')
     }
     );
