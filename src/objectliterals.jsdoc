@@ -515,9 +515,9 @@
 /**
  * @typedef {Object} olx.interaction.SelectOptions
  * @property {ol.events.ConditionType|undefined} addCondition A conditional
- *     modifier (e.g. shift key) that determines if the selection is added to
- *     the current selection. By default, a shift-click adds to the current
- *     selection.
+ *     modifier (e.g. alt key) that determines if the feature is added to
+ *     the current selection. By default, this is never.  Note that the default
+ *     toggle condition allows features to be added.
  * @property {ol.events.ConditionType|undefined} condition A conditional
  *     modifier (e.g. shift key) that determines if the interaction is active
  *     (i.e. selection occurs) or not. By default, a click with no modifier keys
@@ -529,6 +529,13 @@
  * @property {Array.<ol.layer.Layer>|undefined} layers Layers.  Zero or more
  *     layers from which features should be selected.
  * @property {ol.style.Style|Array.<ol.style.Style>|ol.feature.StyleFunction|undefined} style FeatureOverlay style.
+ * @property {ol.events.ConditionType|undefined} removeCondition A conditional
+ *     modifier (e.g. alt key) that determines if the feature is removed from
+ *     the current selection. By default, this is never.
+ * @property {ol.events.ConditionType|undefined} toggleCondition A conditional
+ *     modifier (e.g. shift key) that determines if the selection is toggled in
+ *     the current selection. By default, a shift-click toggles the feature in
+ *     the current selection.
  */
 
 /**
