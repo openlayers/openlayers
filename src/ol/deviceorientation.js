@@ -140,6 +140,7 @@ ol.DeviceOrientation.prototype.orientationChange_ = function(browserEvent) {
     this.set(ol.DeviceOrientationProperty.GAMMA,
         goog.math.toRadians(event.gamma));
   }
+  this.dispatchChangeEvent();
 };
 
 
