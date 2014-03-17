@@ -1,4 +1,4 @@
-goog.provide('ol.format.OWSCapabilities');
+goog.provide('ol.format.OWS');
 
 goog.require('goog.asserts');
 goog.require('goog.dom.NodeType');
@@ -14,17 +14,17 @@ goog.require('ol.xml');
  * @constructor
  * @extends {ol.format.XML}
  */
-ol.format.OWSCapabilities = function() {
+ol.format.OWS = function() {
   goog.base(this);
 };
-goog.inherits(ol.format.OWSCapabilities, ol.format.XML);
+goog.inherits(ol.format.OWS, ol.format.XML);
 
 
 /**
  * @param {Document} doc Document.
  * @return {Object} OWS object.
  */
-ol.format.OWSCapabilities.prototype.readFromDocument = function(doc) {
+ol.format.OWS.prototype.readFromDocument = function(doc) {
   goog.asserts.assert(doc.nodeType == goog.dom.NodeType.DOCUMENT);
   for (var n = doc.firstChild; !goog.isNull(n); n = n.nextSibling) {
     if (n.nodeType == goog.dom.NodeType.ELEMENT) {
@@ -39,10 +39,10 @@ ol.format.OWSCapabilities.prototype.readFromDocument = function(doc) {
  * @param {Node} node Node.
  * @return {Object} OWS object.
  */
-ol.format.OWSCapabilities.prototype.readFromNode = function(node) {
+ol.format.OWS.prototype.readFromNode = function(node) {
   goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT);
   var owsObject = ol.xml.pushParseAndPop({},
-      ol.format.OWSCapabilities.PARSERS_, node, []);
+      ol.format.OWS.PARSERS_, node, []);
   return goog.isDef(owsObject) ? owsObject : null;
 };
 
@@ -53,11 +53,11 @@ ol.format.OWSCapabilities.prototype.readFromNode = function(node) {
  * @private
  * @return {Object|undefined}
  */
-ol.format.OWSCapabilities.readAddress_ = function(node, objectStack) {
+ol.format.OWS.readAddress_ = function(node, objectStack) {
   goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT);
   goog.asserts.assert(node.localName == 'Address');
   return ol.xml.pushParseAndPop({},
-      ol.format.OWSCapabilities.ADDRESS_PARSERS_, node, objectStack);
+      ol.format.OWS.ADDRESS_PARSERS_, node, objectStack);
 };
 
 
@@ -67,11 +67,11 @@ ol.format.OWSCapabilities.readAddress_ = function(node, objectStack) {
  * @private
  * @return {Object|undefined}
  */
-ol.format.OWSCapabilities.readAllowedValues_ = function(node, objectStack) {
+ol.format.OWS.readAllowedValues_ = function(node, objectStack) {
   goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT);
   goog.asserts.assert(node.localName == 'AllowedValues');
   return ol.xml.pushParseAndPop({},
-      ol.format.OWSCapabilities.ALLOWED_VALUES_PARSERS_, node, objectStack);
+      ol.format.OWS.ALLOWED_VALUES_PARSERS_, node, objectStack);
 };
 
 
@@ -81,14 +81,14 @@ ol.format.OWSCapabilities.readAllowedValues_ = function(node, objectStack) {
  * @private
  * @return {Object|undefined}
  */
-ol.format.OWSCapabilities.readConstraint_ = function(node, objectStack) {
+ol.format.OWS.readConstraint_ = function(node, objectStack) {
   goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT);
   goog.asserts.assert(node.localName == 'Constraint');
   var object = objectStack[objectStack.length - 1];
   goog.asserts.assert(goog.isObject(object));
   var name = node.getAttribute('name');
   var value = ol.xml.pushParseAndPop({},
-      ol.format.OWSCapabilities.CONSTRAINT_PARSERS_, node,
+      ol.format.OWS.CONSTRAINT_PARSERS_, node,
       objectStack);
   if (!goog.isDef(value)) {
     return undefined;
@@ -107,11 +107,11 @@ ol.format.OWSCapabilities.readConstraint_ = function(node, objectStack) {
  * @private
  * @return {Object|undefined}
  */
-ol.format.OWSCapabilities.readContactInfo_ = function(node, objectStack) {
+ol.format.OWS.readContactInfo_ = function(node, objectStack) {
   goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT);
   goog.asserts.assert(node.localName == 'ContactInfo');
   return ol.xml.pushParseAndPop({},
-      ol.format.OWSCapabilities.CONTACT_INFO_PARSERS_, node, objectStack);
+      ol.format.OWS.CONTACT_INFO_PARSERS_, node, objectStack);
 };
 
 
@@ -121,11 +121,11 @@ ol.format.OWSCapabilities.readContactInfo_ = function(node, objectStack) {
  * @private
  * @return {Object|undefined}
  */
-ol.format.OWSCapabilities.readDcp_ = function(node, objectStack) {
+ol.format.OWS.readDcp_ = function(node, objectStack) {
   goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT);
   goog.asserts.assert(node.localName == 'DCP');
   return ol.xml.pushParseAndPop({},
-      ol.format.OWSCapabilities.DCP_PARSERS_, node, objectStack);
+      ol.format.OWS.DCP_PARSERS_, node, objectStack);
 };
 
 
@@ -135,14 +135,14 @@ ol.format.OWSCapabilities.readDcp_ = function(node, objectStack) {
  * @private
  * @return {Object|undefined}
  */
-ol.format.OWSCapabilities.readGet_ = function(node, objectStack) {
+ol.format.OWS.readGet_ = function(node, objectStack) {
   goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT);
   goog.asserts.assert(node.localName == 'Get');
   var object = objectStack[objectStack.length - 1];
   var url = ol.format.XLink.readHref(node);
   goog.asserts.assert(goog.isObject(object));
   var value = ol.xml.pushParseAndPop({'url': url},
-      ol.format.OWSCapabilities.REQUEST_METHOD_PARSERS_, node, objectStack);
+      ol.format.OWS.REQUEST_METHOD_PARSERS_, node, objectStack);
   if (!goog.isDef(value)) {
     return undefined;
   }
@@ -163,10 +163,10 @@ ol.format.OWSCapabilities.readGet_ = function(node, objectStack) {
  * @private
  * @return {Object|undefined}
  */
-ol.format.OWSCapabilities.readHttp_ = function(node, objectStack) {
+ol.format.OWS.readHttp_ = function(node, objectStack) {
   goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT);
   goog.asserts.assert(node.localName == 'HTTP');
-  return ol.xml.pushParseAndPop({}, ol.format.OWSCapabilities.HTTP_PARSERS_,
+  return ol.xml.pushParseAndPop({}, ol.format.OWS.HTTP_PARSERS_,
       node, objectStack);
 };
 
@@ -177,12 +177,12 @@ ol.format.OWSCapabilities.readHttp_ = function(node, objectStack) {
  * @private
  * @return {Object|undefined}
  */
-ol.format.OWSCapabilities.readOperation_ = function(node, objectStack) {
+ol.format.OWS.readOperation_ = function(node, objectStack) {
   goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT);
   goog.asserts.assert(node.localName == 'Operation');
   var name = node.getAttribute('name');
   var value = ol.xml.pushParseAndPop({},
-      ol.format.OWSCapabilities.OPERATION_PARSERS_, node, objectStack);
+      ol.format.OWS.OPERATION_PARSERS_, node, objectStack);
   if (!goog.isDef(value)) {
     return undefined;
   }
@@ -200,12 +200,12 @@ ol.format.OWSCapabilities.readOperation_ = function(node, objectStack) {
  * @private
  * @return {Object|undefined}
  */
-ol.format.OWSCapabilities.readOperationsMetadata_ = function(node,
+ol.format.OWS.readOperationsMetadata_ = function(node,
     objectStack) {
   goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT);
   goog.asserts.assert(node.localName == 'OperationsMetadata');
   return ol.xml.pushParseAndPop({},
-      ol.format.OWSCapabilities.OPERATIONS_METADATA_PARSERS_, node,
+      ol.format.OWS.OPERATIONS_METADATA_PARSERS_, node,
       objectStack);
 };
 
@@ -216,11 +216,11 @@ ol.format.OWSCapabilities.readOperationsMetadata_ = function(node,
  * @private
  * @return {Object|undefined}
  */
-ol.format.OWSCapabilities.readPhone_ = function(node, objectStack) {
+ol.format.OWS.readPhone_ = function(node, objectStack) {
   goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT);
   goog.asserts.assert(node.localName == 'Phone');
   return ol.xml.pushParseAndPop({},
-      ol.format.OWSCapabilities.PHONE_PARSERS_, node, objectStack);
+      ol.format.OWS.PHONE_PARSERS_, node, objectStack);
 };
 
 
@@ -230,12 +230,12 @@ ol.format.OWSCapabilities.readPhone_ = function(node, objectStack) {
  * @private
  * @return {Object|undefined}
  */
-ol.format.OWSCapabilities.readServiceIdentification_ = function(node,
+ol.format.OWS.readServiceIdentification_ = function(node,
     objectStack) {
   goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT);
   goog.asserts.assert(node.localName == 'ServiceIdentification');
   return ol.xml.pushParseAndPop(
-      {}, ol.format.OWSCapabilities.SERVICE_IDENTIFICATION_PARSERS_, node,
+      {}, ol.format.OWS.SERVICE_IDENTIFICATION_PARSERS_, node,
       objectStack);
 };
 
@@ -246,11 +246,11 @@ ol.format.OWSCapabilities.readServiceIdentification_ = function(node,
  * @private
  * @return {Object|undefined}
  */
-ol.format.OWSCapabilities.readServiceContact_ = function(node, objectStack) {
+ol.format.OWS.readServiceContact_ = function(node, objectStack) {
   goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT);
   goog.asserts.assert(node.localName == 'ServiceContact');
   return ol.xml.pushParseAndPop(
-      {}, ol.format.OWSCapabilities.SERVICE_CONTACT_PARSERS_, node,
+      {}, ol.format.OWS.SERVICE_CONTACT_PARSERS_, node,
       objectStack);
 };
 
@@ -261,11 +261,11 @@ ol.format.OWSCapabilities.readServiceContact_ = function(node, objectStack) {
  * @private
  * @return {Object|undefined}
  */
-ol.format.OWSCapabilities.readServiceProvider_ = function(node, objectStack) {
+ol.format.OWS.readServiceProvider_ = function(node, objectStack) {
   goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT);
   goog.asserts.assert(node.localName == 'ServiceProvider');
   return ol.xml.pushParseAndPop(
-      {}, ol.format.OWSCapabilities.SERVICE_PROVIDER_PARSERS_, node,
+      {}, ol.format.OWS.SERVICE_PROVIDER_PARSERS_, node,
       objectStack);
 };
 
@@ -276,7 +276,7 @@ ol.format.OWSCapabilities.readServiceProvider_ = function(node, objectStack) {
  * @private
  * @return {Object|undefined}
  */
-ol.format.OWSCapabilities.readValue_ = function(node, objectStack) {
+ol.format.OWS.readValue_ = function(node, objectStack) {
   goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT);
   goog.asserts.assert(node.localName == 'Value');
   var object = objectStack[objectStack.length - 1];
@@ -294,7 +294,7 @@ ol.format.OWSCapabilities.readValue_ = function(node, objectStack) {
  * @type {Array.<string>}
  * @private
  */
-ol.format.OWSCapabilities.NAMESPACE_URIS_ = [
+ol.format.OWS.NAMESPACE_URIS_ = [
   null,
   'http://www.opengis.net/ows/1.1'
 ];
@@ -305,16 +305,16 @@ ol.format.OWSCapabilities.NAMESPACE_URIS_ = [
  * @type {Object.<string, Object.<string, ol.xml.Parser>>}
  * @private
  */
-ol.format.OWSCapabilities.PARSERS_ = ol.xml.makeParsersNS(
-    ol.format.OWSCapabilities.NAMESPACE_URIS_, {
+ol.format.OWS.PARSERS_ = ol.xml.makeParsersNS(
+    ol.format.OWS.NAMESPACE_URIS_, {
       'ServiceIdentification': ol.xml.makeObjectPropertySetter(
-          ol.format.OWSCapabilities.readServiceIdentification_,
+          ol.format.OWS.readServiceIdentification_,
           'serviceIdentification'),
       'ServiceProvider': ol.xml.makeObjectPropertySetter(
-          ol.format.OWSCapabilities.readServiceProvider_,
+          ol.format.OWS.readServiceProvider_,
           'serviceProvider'),
       'OperationsMetadata': ol.xml.makeObjectPropertySetter(
-          ol.format.OWSCapabilities.readOperationsMetadata_,
+          ol.format.OWS.readOperationsMetadata_,
           'operationsMetadata')
     });
 
@@ -324,8 +324,8 @@ ol.format.OWSCapabilities.PARSERS_ = ol.xml.makeParsersNS(
  * @type {Object.<string, Object.<string, ol.xml.Parser>>}
  * @private
  */
-ol.format.OWSCapabilities.ADDRESS_PARSERS_ = ol.xml.makeParsersNS(
-    ol.format.OWSCapabilities.NAMESPACE_URIS_, {
+ol.format.OWS.ADDRESS_PARSERS_ = ol.xml.makeParsersNS(
+    ol.format.OWS.NAMESPACE_URIS_, {
       'DeliveryPoint': ol.xml.makeObjectPropertySetter(
           ol.format.XSD.readString, 'deliveryPoint'),
       'City': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString,
@@ -347,9 +347,9 @@ ol.format.OWSCapabilities.ADDRESS_PARSERS_ = ol.xml.makeParsersNS(
  * @type {Object.<string, Object.<string, ol.xml.Parser>>}
  * @private
  */
-ol.format.OWSCapabilities.ALLOWED_VALUES_PARSERS_ = ol.xml.makeParsersNS(
-    ol.format.OWSCapabilities.NAMESPACE_URIS_, {
-      'Value': ol.format.OWSCapabilities.readValue_
+ol.format.OWS.ALLOWED_VALUES_PARSERS_ = ol.xml.makeParsersNS(
+    ol.format.OWS.NAMESPACE_URIS_, {
+      'Value': ol.format.OWS.readValue_
     }
     );
 
@@ -359,10 +359,10 @@ ol.format.OWSCapabilities.ALLOWED_VALUES_PARSERS_ = ol.xml.makeParsersNS(
  * @type {Object.<string, Object.<string, ol.xml.Parser>>}
  * @private
  */
-ol.format.OWSCapabilities.CONSTRAINT_PARSERS_ = ol.xml.makeParsersNS(
-    ol.format.OWSCapabilities.NAMESPACE_URIS_, {
+ol.format.OWS.CONSTRAINT_PARSERS_ = ol.xml.makeParsersNS(
+    ol.format.OWS.NAMESPACE_URIS_, {
       'AllowedValues': ol.xml.makeObjectPropertySetter(
-          ol.format.OWSCapabilities.readAllowedValues_, 'allowedValues'
+          ol.format.OWS.readAllowedValues_, 'allowedValues'
       )
     }
     );
@@ -373,12 +373,12 @@ ol.format.OWSCapabilities.CONSTRAINT_PARSERS_ = ol.xml.makeParsersNS(
  * @type {Object.<string, Object.<string, ol.xml.Parser>>}
  * @private
  */
-ol.format.OWSCapabilities.CONTACT_INFO_PARSERS_ = ol.xml.makeParsersNS(
-    ol.format.OWSCapabilities.NAMESPACE_URIS_, {
+ol.format.OWS.CONTACT_INFO_PARSERS_ = ol.xml.makeParsersNS(
+    ol.format.OWS.NAMESPACE_URIS_, {
       'Phone': ol.xml.makeObjectPropertySetter(
-          ol.format.OWSCapabilities.readPhone_, 'phone'),
+          ol.format.OWS.readPhone_, 'phone'),
       'Address': ol.xml.makeObjectPropertySetter(
-          ol.format.OWSCapabilities.readAddress_, 'address')
+          ol.format.OWS.readAddress_, 'address')
     }
     );
 
@@ -388,10 +388,10 @@ ol.format.OWSCapabilities.CONTACT_INFO_PARSERS_ = ol.xml.makeParsersNS(
  * @type {Object.<string, Object.<string, ol.xml.Parser>>}
  * @private
  */
-ol.format.OWSCapabilities.DCP_PARSERS_ = ol.xml.makeParsersNS(
-    ol.format.OWSCapabilities.NAMESPACE_URIS_, {
+ol.format.OWS.DCP_PARSERS_ = ol.xml.makeParsersNS(
+    ol.format.OWS.NAMESPACE_URIS_, {
       'HTTP': ol.xml.makeObjectPropertySetter(
-          ol.format.OWSCapabilities.readHttp_, 'http')
+          ol.format.OWS.readHttp_, 'http')
     }
     );
 
@@ -401,9 +401,9 @@ ol.format.OWSCapabilities.DCP_PARSERS_ = ol.xml.makeParsersNS(
  * @type {Object.<string, Object.<string, ol.xml.Parser>>}
  * @private
  */
-ol.format.OWSCapabilities.HTTP_PARSERS_ = ol.xml.makeParsersNS(
-    ol.format.OWSCapabilities.NAMESPACE_URIS_, {
-      'Get': ol.format.OWSCapabilities.readGet_,
+ol.format.OWS.HTTP_PARSERS_ = ol.xml.makeParsersNS(
+    ol.format.OWS.NAMESPACE_URIS_, {
+      'Get': ol.format.OWS.readGet_,
       'Post': undefined // TODO
     }
     );
@@ -414,10 +414,10 @@ ol.format.OWSCapabilities.HTTP_PARSERS_ = ol.xml.makeParsersNS(
  * @type {Object.<string, Object.<string, ol.xml.Parser>>}
  * @private
  */
-ol.format.OWSCapabilities.OPERATION_PARSERS_ = ol.xml.makeParsersNS(
-    ol.format.OWSCapabilities.NAMESPACE_URIS_, {
+ol.format.OWS.OPERATION_PARSERS_ = ol.xml.makeParsersNS(
+    ol.format.OWS.NAMESPACE_URIS_, {
       'DCP': ol.xml.makeObjectPropertySetter(
-          ol.format.OWSCapabilities.readDcp_, 'dcp')
+          ol.format.OWS.readDcp_, 'dcp')
     }
     );
 
@@ -427,9 +427,9 @@ ol.format.OWSCapabilities.OPERATION_PARSERS_ = ol.xml.makeParsersNS(
  * @type {Object.<string, Object.<string, ol.xml.Parser>>}
  * @private
  */
-ol.format.OWSCapabilities.OPERATIONS_METADATA_PARSERS_ = ol.xml.makeParsersNS(
-    ol.format.OWSCapabilities.NAMESPACE_URIS_, {
-      'Operation': ol.format.OWSCapabilities.readOperation_
+ol.format.OWS.OPERATIONS_METADATA_PARSERS_ = ol.xml.makeParsersNS(
+    ol.format.OWS.NAMESPACE_URIS_, {
+      'Operation': ol.format.OWS.readOperation_
     }
     );
 
@@ -439,8 +439,8 @@ ol.format.OWSCapabilities.OPERATIONS_METADATA_PARSERS_ = ol.xml.makeParsersNS(
  * @type {Object.<string, Object.<string, ol.xml.Parser>>}
  * @private
  */
-ol.format.OWSCapabilities.PHONE_PARSERS_ = ol.xml.makeParsersNS(
-    ol.format.OWSCapabilities.NAMESPACE_URIS_, {
+ol.format.OWS.PHONE_PARSERS_ = ol.xml.makeParsersNS(
+    ol.format.OWS.NAMESPACE_URIS_, {
       'Voice': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString,
           'voice'),
       'Facsimile': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString,
@@ -454,9 +454,9 @@ ol.format.OWSCapabilities.PHONE_PARSERS_ = ol.xml.makeParsersNS(
  * @type {Object.<string, Object.<string, ol.xml.Parser>>}
  * @private
  */
-ol.format.OWSCapabilities.REQUEST_METHOD_PARSERS_ = ol.xml.makeParsersNS(
-    ol.format.OWSCapabilities.NAMESPACE_URIS_, {
-      'Constraint': ol.format.OWSCapabilities.readConstraint_
+ol.format.OWS.REQUEST_METHOD_PARSERS_ = ol.xml.makeParsersNS(
+    ol.format.OWS.NAMESPACE_URIS_, {
+      'Constraint': ol.format.OWS.readConstraint_
     });
 
 
@@ -465,15 +465,15 @@ ol.format.OWSCapabilities.REQUEST_METHOD_PARSERS_ = ol.xml.makeParsersNS(
  * @type {Object.<string, Object.<string, ol.xml.Parser>>}
  * @private
  */
-ol.format.OWSCapabilities.SERVICE_CONTACT_PARSERS_ =
+ol.format.OWS.SERVICE_CONTACT_PARSERS_ =
     ol.xml.makeParsersNS(
-    ol.format.OWSCapabilities.NAMESPACE_URIS_, {
+    ol.format.OWS.NAMESPACE_URIS_, {
       'IndividualName': ol.xml.makeObjectPropertySetter(
           ol.format.XSD.readString, 'individualName'),
       'PositionName': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString,
           'positionName'),
       'ContactInfo': ol.xml.makeObjectPropertySetter(
-          ol.format.OWSCapabilities.readContactInfo_, 'contactInfo')
+          ol.format.OWS.readContactInfo_, 'contactInfo')
     }
     );
 
@@ -483,9 +483,9 @@ ol.format.OWSCapabilities.SERVICE_CONTACT_PARSERS_ =
  * @type {Object.<string, Object.<string, ol.xml.Parser>>}
  * @private
  */
-ol.format.OWSCapabilities.SERVICE_IDENTIFICATION_PARSERS_ =
+ol.format.OWS.SERVICE_IDENTIFICATION_PARSERS_ =
     ol.xml.makeParsersNS(
-    ol.format.OWSCapabilities.NAMESPACE_URIS_, {
+    ol.format.OWS.NAMESPACE_URIS_, {
       'Title': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString,
           'title'),
       'ServiceTypeVersion': ol.xml.makeObjectPropertySetter(
@@ -500,14 +500,14 @@ ol.format.OWSCapabilities.SERVICE_IDENTIFICATION_PARSERS_ =
  * @type {Object.<string, Object.<string, ol.xml.Parser>>}
  * @private
  */
-ol.format.OWSCapabilities.SERVICE_PROVIDER_PARSERS_ =
+ol.format.OWS.SERVICE_PROVIDER_PARSERS_ =
     ol.xml.makeParsersNS(
-    ol.format.OWSCapabilities.NAMESPACE_URIS_, {
+    ol.format.OWS.NAMESPACE_URIS_, {
       'ProviderName': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString,
           'providerName'),
       'ProviderSite': ol.xml.makeObjectPropertySetter(ol.format.XLink.readHref,
           'providerSite'),
       'ServiceContact': ol.xml.makeObjectPropertySetter(
-          ol.format.OWSCapabilities.readServiceContact_, 'serviceContact')
+          ol.format.OWS.readServiceContact_, 'serviceContact')
     }
     );

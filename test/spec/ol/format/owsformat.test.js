@@ -1,10 +1,10 @@
-goog.provide('ol.test.format.OWSCapabilities');
+goog.provide('ol.test.format.OWS');
 
 goog.require('ol.xml');
 
-describe('ol.format.OWSCapabilities 1.1', function() {
+describe('ol.format.OWS 1.1', function() {
 
-  var parser = new ol.format.OWSCapabilities();
+  var parser = new ol.format.OWS();
 
   it('should read ServiceProvider tag properly', function() {
     var doc = ol.xml.load(
@@ -151,4 +151,4 @@ describe('ol.format.OWSCapabilities 1.1', function() {
 
 });
 
-goog.require('ol.format.OWSCapabilities');
+goog.require('ol.format.OWS');
