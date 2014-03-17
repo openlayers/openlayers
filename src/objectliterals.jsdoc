@@ -996,6 +996,8 @@
  * @property {string|undefined} url URL template.  Must include `{x}`, `{y}`,
  *     and `{z}` placeholders.
  * @property {Array.<string>|undefined} urls An array of URL templates.
+ * @property {boolean|undefined} wrapX Whether to wrap the world horizontally.
+ *     Default is `true`.
  * @todo stability experimental
  */
 

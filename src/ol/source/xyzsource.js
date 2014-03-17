@@ -3,7 +3,6 @@ goog.provide('ol.source.XYZ');
 goog.require('ol.Attribution');
 goog.require('ol.TileUrlFunction');
 goog.require('ol.TileUrlFunctionType');
-goog.require('ol.proj');
 goog.require('ol.source.TileImage');
 goog.require('ol.tilegrid.XYZ');
 
@@ -17,7 +16,8 @@ goog.require('ol.tilegrid.XYZ');
  */
 ol.source.XYZ = function(options) {
 
-  var projection = options.projection || ol.proj.get('EPSG:3857');
+  var projection = goog.isDef(options.projection) ?
+      options.projection : 'EPSG:3857';
 
   var maxZoom = goog.isDef(options.maxZoom) ? options.maxZoom : 18;
 
@@ -41,7 +41,8 @@ ol.source.XYZ = function(options) {
    * @type {ol.TileCoordTransformType}
    */
   this.tileCoordTransform_ = tileGrid.createTileCoordTransform({
-    extent: options.extent
+    extent: options.extent,
+    wrapX: options.wrapX
   });
 
   if (goog.isDef(options.tileUrlFunction)) {
