@@ -157,9 +157,7 @@ ol.BrowserFeature.HAS_GEOLOCATION = 'geolocation' in goog.global.navigator;
  * @type {boolean}
  * @todo stability experimental
  */
-ol.BrowserFeature.HAS_TOUCH = ol.ASSUME_TOUCH ||
-    (goog.global.document &&
-    'ontouchstart' in goog.global.document.documentElement);
+ol.BrowserFeature.HAS_TOUCH = ol.ASSUME_TOUCH || 'ontouchstart' in goog.global;
 
 
 /**
