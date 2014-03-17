@@ -41,7 +41,8 @@ ol.source.XYZ = function(options) {
    * @type {ol.TileCoordTransformType}
    */
   this.tileCoordTransform_ = tileGrid.createTileCoordTransform({
-    extent: options.extent
+    extent: options.extent,
+    wrapX: options.wrapX
   });
 
   if (goog.isDef(options.tileUrlFunction)) {
