@@ -338,8 +338,7 @@ ol.format.OWS.ADDRESS_PARSERS_ = ol.xml.makeParsersNS(
           ol.format.XSD.readString, 'country'),
       'ElectronicMailAddress': ol.xml.makeObjectPropertySetter(
           ol.format.XSD.readString, 'electronicMailAddress')
-    }
-    );
+    });
 
 
 /**
@@ -350,8 +349,7 @@ ol.format.OWS.ADDRESS_PARSERS_ = ol.xml.makeParsersNS(
 ol.format.OWS.ALLOWED_VALUES_PARSERS_ = ol.xml.makeParsersNS(
     ol.format.OWS.NAMESPACE_URIS_, {
       'Value': ol.format.OWS.readValue_
-    }
-    );
+    });
 
 
 /**
@@ -364,8 +362,7 @@ ol.format.OWS.CONSTRAINT_PARSERS_ = ol.xml.makeParsersNS(
       'AllowedValues': ol.xml.makeObjectPropertySetter(
           ol.format.OWS.readAllowedValues_, 'allowedValues'
       )
-    }
-    );
+    });
 
 
 /**
@@ -379,8 +376,7 @@ ol.format.OWS.CONTACT_INFO_PARSERS_ = ol.xml.makeParsersNS(
           ol.format.OWS.readPhone_, 'phone'),
       'Address': ol.xml.makeObjectPropertySetter(
           ol.format.OWS.readAddress_, 'address')
-    }
-    );
+    });
 
 
 /**
@@ -392,8 +388,7 @@ ol.format.OWS.DCP_PARSERS_ = ol.xml.makeParsersNS(
     ol.format.OWS.NAMESPACE_URIS_, {
       'HTTP': ol.xml.makeObjectPropertySetter(
           ol.format.OWS.readHttp_, 'http')
-    }
-    );
+    });
 
 
 /**
@@ -405,8 +400,7 @@ ol.format.OWS.HTTP_PARSERS_ = ol.xml.makeParsersNS(
     ol.format.OWS.NAMESPACE_URIS_, {
       'Get': ol.format.OWS.readGet_,
       'Post': undefined // TODO
-    }
-    );
+    });
 
 
 /**
@@ -418,8 +412,7 @@ ol.format.OWS.OPERATION_PARSERS_ = ol.xml.makeParsersNS(
     ol.format.OWS.NAMESPACE_URIS_, {
       'DCP': ol.xml.makeObjectPropertySetter(
           ol.format.OWS.readDcp_, 'dcp')
-    }
-    );
+    });
 
 
 /**
@@ -430,8 +423,7 @@ ol.format.OWS.OPERATION_PARSERS_ = ol.xml.makeParsersNS(
 ol.format.OWS.OPERATIONS_METADATA_PARSERS_ = ol.xml.makeParsersNS(
     ol.format.OWS.NAMESPACE_URIS_, {
       'Operation': ol.format.OWS.readOperation_
-    }
-    );
+    });
 
 
 /**
@@ -445,8 +437,7 @@ ol.format.OWS.PHONE_PARSERS_ = ol.xml.makeParsersNS(
           'voice'),
       'Facsimile': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString,
           'facsimile')
-    }
-    );
+    });
 
 
 /**
@@ -474,8 +465,7 @@ ol.format.OWS.SERVICE_CONTACT_PARSERS_ =
           'positionName'),
       'ContactInfo': ol.xml.makeObjectPropertySetter(
           ol.format.OWS.readContactInfo_, 'contactInfo')
-    }
-    );
+    });
 
 
 /**
@@ -509,5 +499,4 @@ ol.format.OWS.SERVICE_PROVIDER_PARSERS_ =
           'providerSite'),
       'ServiceContact': ol.xml.makeObjectPropertySetter(
           ol.format.OWS.readServiceContact_, 'serviceContact')
-    }
-    );
+    });
