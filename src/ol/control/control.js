@@ -16,7 +16,7 @@ goog.require('ol.Object');
  * @extends {ol.Object}
  * @implements {oli.control.Control}
  * @param {olx.control.ControlOptions} options Control options.
- * @todo stability experimental
+ * @todo stability stable
  */
 ol.control.Control = function(options) {
 
@@ -84,7 +84,7 @@ ol.control.Control.prototype.handleMapPostrender = goog.nullFunction;
  * Subclasses may set up event handlers to get notified about changes to
  * the map here.
  * @param {ol.Map} map Map.
- * @todo stability experimental
+ * @todo stability stable
  */
 ol.control.Control.prototype.setMap = function(map) {
   if (!goog.isNull(this.map_)) {
