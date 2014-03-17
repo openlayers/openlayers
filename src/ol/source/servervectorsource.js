@@ -3,6 +3,7 @@
 goog.provide('ol.source.ServerVector');
 
 goog.require('ol.extent');
+goog.require('ol.loadingstrategy');
 goog.require('ol.source.FormatVector');
 goog.require('ol.structs.RBush');
 
@@ -40,7 +41,8 @@ ol.source.ServerVector = function(options) {
    * @private
    * @type {function(ol.Extent, number): Array.<ol.Extent>}
    */
-  this.loadingStrategy_ = options.loadingStrategy;
+  this.loadingStrategy_ = goog.isDef(options.loadingStrategy) ?
+      options.loadingStrategy : ol.loadingstrategy.bbox;
 
   /**
    * @private
