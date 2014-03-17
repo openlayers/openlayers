@@ -66,7 +66,7 @@ describe('ol.pointer.MouseSource', function() {
       {
         identifier: 4,
         clientX: x,
-        clientX: y,
+        clientY: y,
         target: target
       }
     ];
