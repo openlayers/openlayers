@@ -50,10 +50,11 @@ ol.render.canvas.Instruction = {
  * @implements {ol.render.IVectorContext}
  * @param {number} tolerance Tolerance.
  * @param {ol.Extent} maxExtent Maximum extent.
+ * @param {number} resolution Resolution.
  * @protected
  * @struct
  */
-ol.render.canvas.Replay = function(tolerance, maxExtent) {
+ol.render.canvas.Replay = function(tolerance, maxExtent, resolution) {
 
   /**
    * @protected
@@ -66,6 +67,18 @@ ol.render.canvas.Replay = function(tolerance, maxExtent) {
    * @type {ol.Extent}
    */
   this.maxExtent = maxExtent;
+
+  /**
+   * @protected
+   * @type {number}
+   */
+  this.maxLineWidth = 0;
+
+  /**
+   * @protected
+   * @type {number}
+   */
+  this.resolution = resolution;
 
   /**
    * @private
@@ -137,7 +150,7 @@ ol.render.canvas.Replay.prototype.appendFlatCoordinates =
     function(flatCoordinates, offset, end, stride, close) {
 
   var myEnd = this.coordinates.length;
-  var extent = this.maxExtent;
+  var extent = this.getBufferedMaxExtent();
   var lastCoord = [flatCoordinates[offset], flatCoordinates[offset + 1]];
   var nextCoord = [NaN, NaN];
   var skipped = true;
@@ -598,6 +611,18 @@ ol.render.canvas.Replay.prototype.finish = goog.nullFunction;
 
 
 /**
+ * Get the buffered rendering extent.  Rendering will be clipped to the extent
+ * provided to the constructor.  To account for symbolizers that may intersect
+ * this extent, we calculate a buffered extent (e.g. based on stroke width).
+ * @return {ol.Extent} The buffered rendering extent.
+ * @protected
+ */
+ol.render.canvas.Replay.prototype.getBufferedMaxExtent = function() {
+  return this.maxExtent;
+};
+
+
+/**
  * @return {ol.Extent} Extent.
  */
 ol.render.canvas.Replay.prototype.getExtent = function() {
@@ -629,12 +654,13 @@ ol.render.canvas.Replay.prototype.setTextStyle = goog.abstractMethod;
  * @extends {ol.render.canvas.Replay}
  * @param {number} tolerance Tolerance.
  * @param {ol.Extent} maxExtent Maximum extent.
+ * @param {number} resolution Resolution.
  * @protected
  * @struct
  */
-ol.render.canvas.ImageReplay = function(tolerance, maxExtent) {
+ol.render.canvas.ImageReplay = function(tolerance, maxExtent, resolution) {
 
-  goog.base(this, tolerance, maxExtent);
+  goog.base(this, tolerance, maxExtent, resolution);
 
   /**
    * @private
@@ -858,12 +884,13 @@ ol.render.canvas.ImageReplay.prototype.setImageStyle = function(imageStyle) {
  * @extends {ol.render.canvas.Replay}
  * @param {number} tolerance Tolerance.
  * @param {ol.Extent} maxExtent Maximum extent.
+ * @param {number} resolution Resolution.
  * @protected
  * @struct
  */
-ol.render.canvas.LineStringReplay = function(tolerance, maxExtent) {
+ol.render.canvas.LineStringReplay = function(tolerance, maxExtent, resolution) {
 
-  goog.base(this, tolerance, maxExtent);
+  goog.base(this, tolerance, maxExtent, resolution);
 
   /**
    * @private
@@ -919,6 +946,19 @@ ol.render.canvas.LineStringReplay.prototype.drawFlatCoordinates_ =
   this.instructions.push(moveToLineToInstruction);
   this.hitDetectionInstructions.push(moveToLineToInstruction);
   return end;
+};
+
+
+/**
+ * @inheritDoc
+ */
+ol.render.canvas.LineStringReplay.prototype.getBufferedMaxExtent = function() {
+  var extent = this.maxExtent;
+  if (this.maxLineWidth) {
+    extent = ol.extent.buffer(
+        extent, this.resolution * (this.maxLineWidth + 1) / 2);
+  }
+  return extent;
 };
 
 
@@ -1067,6 +1107,7 @@ ol.render.canvas.LineStringReplay.prototype.setFillStrokeStyle =
   var strokeStyleMiterLimit = strokeStyle.getMiterLimit();
   this.state_.miterLimit = goog.isDef(strokeStyleMiterLimit) ?
       strokeStyleMiterLimit : ol.render.canvas.defaultMiterLimit;
+  this.maxLineWidth = Math.max(this.maxLineWidth, this.state_.lineWidth);
 };
 
 
@@ -1076,12 +1117,13 @@ ol.render.canvas.LineStringReplay.prototype.setFillStrokeStyle =
  * @extends {ol.render.canvas.Replay}
  * @param {number} tolerance Tolerance.
  * @param {ol.Extent} maxExtent Maximum extent.
+ * @param {number} resolution Resolution.
  * @protected
  * @struct
  */
-ol.render.canvas.PolygonReplay = function(tolerance, maxExtent) {
+ol.render.canvas.PolygonReplay = function(tolerance, maxExtent, resolution) {
 
-  goog.base(this, tolerance, maxExtent);
+  goog.base(this, tolerance, maxExtent, resolution);
 
   /**
    * @private
@@ -1319,6 +1361,19 @@ ol.render.canvas.PolygonReplay.prototype.finish = function() {
 /**
  * @inheritDoc
  */
+ol.render.canvas.PolygonReplay.prototype.getBufferedMaxExtent = function() {
+  var extent = this.maxExtent;
+  if (this.maxLineWidth) {
+    extent = ol.extent.buffer(
+        extent, this.resolution * (this.maxLineWidth + 1) / 2);
+  }
+  return extent;
+};
+
+
+/**
+ * @inheritDoc
+ */
 ol.render.canvas.PolygonReplay.prototype.setFillStrokeStyle =
     function(fillStyle, strokeStyle) {
   goog.asserts.assert(!goog.isNull(this.state_));
@@ -1350,6 +1405,7 @@ ol.render.canvas.PolygonReplay.prototype.setFillStrokeStyle =
     var strokeStyleMiterLimit = strokeStyle.getMiterLimit();
     state.miterLimit = goog.isDef(strokeStyleMiterLimit) ?
         strokeStyleMiterLimit : ol.render.canvas.defaultMiterLimit;
+    this.maxLineWidth = Math.max(this.maxLineWidth, state.lineWidth);
   } else {
     state.strokeStyle = undefined;
     state.lineCap = undefined;
@@ -1410,12 +1466,13 @@ ol.render.canvas.PolygonReplay.prototype.setFillStrokeStyles_ = function() {
  * @extends {ol.render.canvas.Replay}
  * @param {number} tolerance Tolerance.
  * @param {ol.Extent} maxExtent Maximum extent.
+ * @param {number} resolution Resolution.
  * @protected
  * @struct
  */
-ol.render.canvas.TextReplay = function(tolerance, maxExtent) {
+ol.render.canvas.TextReplay = function(tolerance, maxExtent, resolution) {
 
-  goog.base(this, tolerance, maxExtent);
+  goog.base(this, tolerance, maxExtent, resolution);
 
   /**
    * @private
@@ -1727,9 +1784,10 @@ ol.render.canvas.TextReplay.prototype.setTextStyle = function(textStyle) {
  * @implements {ol.render.IReplayGroup}
  * @param {number} tolerance Tolerance.
  * @param {ol.Extent} maxExtent Max extent.
+ * @param {number} resolution Resolution.
  * @struct
  */
-ol.render.canvas.ReplayGroup = function(tolerance, maxExtent) {
+ol.render.canvas.ReplayGroup = function(tolerance, maxExtent, resolution) {
 
   /**
    * @private
@@ -1742,6 +1800,12 @@ ol.render.canvas.ReplayGroup = function(tolerance, maxExtent) {
    * @type {ol.Extent}
    */
   this.maxExtent_ = maxExtent;
+
+  /**
+   * @private
+   * @type {number}
+   */
+  this.resolution_ = resolution;
 
   /**
    * @private
@@ -1961,7 +2025,8 @@ ol.render.canvas.ReplayGroup.prototype.getReplay =
   if (!goog.isDef(replay)) {
     var Constructor = ol.render.canvas.BATCH_CONSTRUCTORS_[replayType];
     goog.asserts.assert(goog.isDef(Constructor));
-    replay = new Constructor(this.tolerance_, this.maxExtent_);
+    replay = new Constructor(this.tolerance_, this.maxExtent_,
+        this.resolution_);
     replays[replayType] = replay;
   }
   return replay;
@@ -1980,7 +2045,8 @@ ol.render.canvas.ReplayGroup.prototype.isEmpty = function() {
  * @const
  * @private
  * @type {Object.<ol.render.ReplayType,
- *                function(new: ol.render.canvas.Replay, number, ol.Extent)>}
+ *                function(new: ol.render.canvas.Replay, number, ol.Extent,
+ *                number)>}
  */
 ol.render.canvas.BATCH_CONSTRUCTORS_ = {
   'Image': ol.render.canvas.ImageReplay,
