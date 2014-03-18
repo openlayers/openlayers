@@ -691,7 +691,13 @@ ol.format.GML.readFlatPos_ = function(node, objectStack) {
     axisOrientation = proj.getAxisOrientation();
   }
   if (axisOrientation === 'neu') {
-    flatCoordinates = flatCoordinates.reverse();
+    var i, ii;
+    for (i = 0, ii = flatCoordinates.length; i < ii; i += 3) {
+      var y = flatCoordinates[i];
+      var x = flatCoordinates[i + 1];
+      flatCoordinates[i] = x;
+      flatCoordinates[i + 1] = y;
+    }
   }
   var len = flatCoordinates.length;
   if (len == 2) {
