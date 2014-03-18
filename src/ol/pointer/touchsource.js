@@ -124,10 +124,9 @@ ol.pointer.TouchSource.prototype.isPrimaryTouch_ = function(inTouch) {
  * @private
  */
 ol.pointer.TouchSource.prototype.setPrimaryTouch_ = function(inTouch) {
-  if (goog.object.getCount(this.pointerMap) === 0 ||
-      (goog.object.getCount(this.pointerMap) === 1 &&
-       goog.object.containsKey(this.pointerMap,
-          ol.pointer.MouseSource.POINTER_ID.toString()))) {
+  var count = goog.object.getCount(this.pointerMap);
+  if (count === 0 || (count === 1 && goog.object.containsKey(this.pointerMap,
+      ol.pointer.MouseSource.POINTER_ID.toString()))) {
     this.firstTouchId_ = inTouch.identifier;
     this.cancelResetClickCount_();
   }
