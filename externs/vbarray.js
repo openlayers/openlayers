@@ -26,10 +26,10 @@ VBArray.prototype.getItem = function(var_args) {};
 
 
 /**
- * @param {number} dimension
+ * @param {number=} opt_dimension
  * @return {*}
  */
-VBArray.prototype.lbound = function(dimension) {};
+VBArray.prototype.lbound = function(opt_dimension) {};
 
 
 /**
@@ -39,7 +39,7 @@ VBArray.prototype.toArray = function() {};
 
 
 /**
- * @param {number} dimension
+ * @param {number=} opt_dimension
  * @return {*}
  */
-VBArray.prototype.ubound = function(dimension) {};
+VBArray.prototype.ubound = function(opt_dimension) {};
