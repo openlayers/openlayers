@@ -7,7 +7,6 @@ goog.require('ol.Feature');
 goog.require('ol.FeatureOverlay');
 goog.require('ol.events.condition');
 goog.require('ol.interaction.Interaction');
-goog.require('ol.layer.Vector');
 
 
 
@@ -90,12 +89,6 @@ ol.interaction.Select = function(options) {
     style: options.style
   });
 
-  /**
-   * @private
-   * @type {Object}
-   */
-  this.featuresLayerHash_ = {};
-
 };
 goog.inherits(ol.interaction.Select, ol.interaction.Interaction);
 
@@ -127,7 +120,7 @@ ol.interaction.Select.prototype.handleMapBrowserEvent =
         * @param {ol.layer.Layer} layer Layer.
         */
       function(feature, layer) {
-        this.addFeature_(feature, layer, add, remove, toggle);
+        this.addFeature_(feature, add, remove, toggle);
         return feature;
       }, this, this.layerFilter_);
   if (!goog.isDef(feature) && !add && !remove) {
@@ -139,17 +132,15 @@ ol.interaction.Select.prototype.handleMapBrowserEvent =
 
 /**
  * @param {?ol.Feature|undefined} feature Feature.
- * @param {ol.layer.Layer} layer Layer.
  * @param {Boolean} add Add
  * @param {Boolean} remove Remove
  * @param {Boolean} toggle Toggle
  * @private
  * @todo stability experimental
  */
-ol.interaction.Select.prototype.addFeature_ = function(feature, layer, add,
+ol.interaction.Select.prototype.addFeature_ = function(feature, add,
     remove, toggle) {
   var features = this.featureOverlay_.getFeatures(),
-      hash = this.featuresLayerHash_,
       uid, index = -1,
       i, ii;
   if ((!goog.isDef(feature) || goog.isNull(feature)) && !add) {
@@ -176,14 +167,10 @@ ol.interaction.Select.prototype.addFeature_ = function(feature, layer, add,
   if (remove) {
     return;
   }
-  if (index >= 0) {
-    goog.array.insert(hash[uid], layer);
-    return;
+  if (index == -1) {
+    features.push(feature);
+    this.getMap().getSkippedFeatures().push(feature);
   }
-  features.push(feature);
-  goog.asserts.assertInstanceof(layer, ol.layer.Vector);
-  layer.getSkippedFeatures().push(feature);
-  hash[uid] = [layer];
 };
 
 
@@ -193,19 +180,8 @@ ol.interaction.Select.prototype.addFeature_ = function(feature, layer, add,
  * @todo stability experimental
  */
 ol.interaction.Select.prototype.removeFeature_ = function(feature) {
-  var features = this.featureOverlay_.getFeatures(),
-      hash = this.featuresLayerHash_,
-      uid = goog.getUid(feature),
-      i, ii, layer;
-  features.remove(feature);
-  for (i = 0, ii = hash[uid].length; i < ii; i++) {
-    layer = hash[uid][i];
-    if (!goog.isNull(layer)) {
-      goog.asserts.assertInstanceof(layer, ol.layer.Vector);
-      layer.getSkippedFeatures().remove(feature);
-    }
-  }
-  delete hash[uid];
+  this.featureOverlay_.getFeatures().remove(feature);
+  this.getMap().getSkippedFeatures().remove(feature);
 };
 
 

@@ -95,13 +95,10 @@ ol.renderer.canvas.VectorLayer.prototype.composeFrame =
     } else {
       replayContext = context;
     }
-    goog.asserts.assertInstanceof(layer, ol.layer.Vector);
-    var skippedFeaturesIds = layer.getSkippedFeaturesIds();
-    goog.asserts.assert(goog.isArray(skippedFeaturesIds));
     replayContext.globalAlpha = layerState.opacity;
     replayGroup.replay(
         replayContext, frameState.extent, frameState.pixelRatio, transform,
-        frameState.view2DState.rotation, skippedFeaturesIds);
+        frameState.view2DState.rotation, frameState.skippedFeaturesIds);
 
     if (replayContext != context) {
       this.dispatchRenderEvent(replayContext, frameState, transform);
@@ -126,11 +123,8 @@ ol.renderer.canvas.VectorLayer.prototype.forEachFeatureAtPixel =
     var resolution = frameState.view2DState.resolution;
     var rotation = frameState.view2DState.rotation;
     var layer = this.getLayer();
-    goog.asserts.assertInstanceof(layer, ol.layer.Vector);
-    var skippedFeaturesIds = layer.getSkippedFeaturesIds();
-    goog.asserts.assert(goog.isArray(skippedFeaturesIds));
     return this.replayGroup_.forEachGeometryAtPixel(extent, resolution,
-        rotation, coordinate, skippedFeaturesIds,
+        rotation, coordinate, frameState.skippedFeaturesIds,
         /**
          * @param {ol.geom.Geometry} geometry Geometry.
          * @param {Object} data Data.

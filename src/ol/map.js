@@ -359,6 +359,13 @@ ol.Map = function(options) {
       goog.bind(this.getTilePriority, this),
       goog.bind(this.handleTileChange_, this));
 
+  /**
+   * Collection of Features to skip drawing.
+   * @type {ol.Collection}
+   * @private
+   */
+  this.skippedFeatures_ = new ol.Collection();
+
   goog.events.listen(
       this, ol.Object.getChangeEventType(ol.MapProperty.LAYERGROUP),
       this.handleLayerGroupChanged_, false, this);
@@ -798,6 +805,16 @@ ol.Map.prototype.getTilePriority =
 
 
 /**
+ * Get the collection of features to be skipped.
+ * @return {ol.Collection} Features collection.
+ * @todo stability experimental
+ */
+ol.Map.prototype.getSkippedFeatures = function() {
+  return this.skippedFeatures_;
+};
+
+
+/**
  * @param {goog.events.BrowserEvent} browserEvent Browser event.
  * @param {string=} opt_type Type.
  */
@@ -1181,6 +1198,8 @@ ol.Map.prototype.renderFrame_ = function(time) {
       pixelToCoordinateMatrix: this.pixelToCoordinateMatrix_,
       postRenderFunctions: [],
       size: size,
+      skippedFeaturesIds: goog.array.map(
+          this.skippedFeatures_.getArray(), goog.getUid),
       tileQueue: this.tileQueue_,
       time: time,
       usedTiles: {},
