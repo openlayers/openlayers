@@ -214,8 +214,8 @@ ol.render.canvas.Replay.prototype.beginGeometry = function(geometry) {
  * @param {number} pixelRatio Pixel ratio.
  * @param {goog.vec.Mat4.Number} transform Transform.
  * @param {number} viewRotation View rotation.
- * @param {function(ol.geom.Geometry): boolean} renderGeometryFunction Render
- *     geometry function.
+ * @param {function(ol.geom.Geometry, Object): boolean} renderGeometryFunction
+ *     Render geometry function.
  * @param {Array.<*>} instructions Instructions array.
  * @param {function(ol.geom.Geometry, Object): T|undefined} geometryCallback
  *     Geometry callback.
@@ -240,6 +240,7 @@ ol.render.canvas.Replay.prototype.replay_ = function(
   var d = 0; // data index
   var dd; // end of per-instruction data
   var localTransform = this.tmpLocalTransform_;
+  var data;
   while (i < ii) {
     var instruction = instructions[i];
     var type = /** @type {ol.render.canvas.Instruction} */ (instruction[0]);
@@ -247,7 +248,9 @@ ol.render.canvas.Replay.prototype.replay_ = function(
     switch (type) {
       case ol.render.canvas.Instruction.BEGIN_GEOMETRY:
         geometry = /** @type {ol.geom.Geometry} */ (instruction[1]);
-        if (renderGeometryFunction(geometry)) {
+        var end = instruction[2];
+        data = instructions[end][2];
+        if (renderGeometryFunction(geometry, data)) {
           ++i;
         } else {
           i = /** @type {number} */ (instruction[2]);
@@ -378,7 +381,7 @@ ol.render.canvas.Replay.prototype.replay_ = function(
       case ol.render.canvas.Instruction.END_GEOMETRY:
         if (goog.isDef(geometryCallback)) {
           geometry = /** @type {ol.geom.Geometry} */ (instruction[1]);
-          var data = /** @type {Object} */ (instruction[2]);
+          data = /** @type {Object} */ (instruction[2]);
           var result = geometryCallback(geometry, data);
           if (result) {
             return result;
@@ -453,8 +456,8 @@ ol.render.canvas.Replay.prototype.replay_ = function(
  * @param {number} pixelRatio Pixel ratio.
  * @param {goog.vec.Mat4.Number} transform Transform.
  * @param {number} viewRotation View rotation.
- * @param {function(ol.geom.Geometry): boolean} renderGeometryFunction Render
- *     geometry function.
+ * @param {function(ol.geom.Geometry, Object): boolean} renderGeometryFunction
+ *     Render geometry function.
  * @return {T|undefined} Callback result.
  * @template T
  */
@@ -470,8 +473,8 @@ ol.render.canvas.Replay.prototype.replay = function(
  * @param {CanvasRenderingContext2D} context Context.
  * @param {goog.vec.Mat4.Number} transform Transform.
  * @param {number} viewRotation View rotation.
- * @param {function(ol.geom.Geometry): boolean} renderGeometryFunction Render
- *     geometry function.
+ * @param {function(ol.geom.Geometry, Object): boolean} renderGeometryFunction
+ *     Render geometry function.
  * @param {function(ol.geom.Geometry, Object): T=} opt_geometryCallback
  *     Geometry callback.
  * @return {T|undefined} Callback result.
@@ -1844,8 +1847,8 @@ ol.render.canvas.ReplayGroup = function(tolerance, maxExtent, resolution) {
  * @param {number} pixelRatio Pixel ratio.
  * @param {goog.vec.Mat4.Number} transform Transform.
  * @param {number} viewRotation View rotation.
- * @param {function(ol.geom.Geometry): boolean} renderGeometryFunction Render
- *     geometry function.
+ * @param {function(ol.geom.Geometry, Object): boolean} renderGeometryFunction
+ *     Render geometry function.
  * @return {T|undefined} Callback result.
  * @template T
  */
@@ -1866,8 +1869,8 @@ ol.render.canvas.ReplayGroup.prototype.replay = function(context, extent,
  * @param {ol.Extent} extent Extent.
  * @param {goog.vec.Mat4.Number} transform Transform.
  * @param {number} viewRotation View rotation.
- * @param {function(ol.geom.Geometry): boolean} renderGeometryFunction Render
- *     geometry function.
+ * @param {function(ol.geom.Geometry, Object): boolean} renderGeometryFunction
+ *     Render geometry function.
  * @param {function(ol.geom.Geometry, Object): T} geometryCallback Geometry
  *     callback.
  * @return {T|undefined} Callback result.
@@ -1902,8 +1905,8 @@ ol.render.canvas.ReplayGroup.prototype.replayHitDetection_ = function(
  * @param {number} pixelRatio Pixel ratio.
  * @param {goog.vec.Mat4.Number} transform Transform.
  * @param {number} viewRotation View rotation.
- * @param {function(ol.geom.Geometry): boolean} renderGeometryFunction Render
- *     geometry function.
+ * @param {function(ol.geom.Geometry, Object): boolean} renderGeometryFunction
+ *     Render geometry function.
  * @return {T|undefined} Callback result.
  * @template T
  */
@@ -1953,8 +1956,8 @@ ol.render.canvas.ReplayGroup.prototype.replay_ = function(
  * @param {number} resolution Resolution.
  * @param {number} rotation Rotation.
  * @param {ol.Coordinate} coordinate Coordinate.
- * @param {function(ol.geom.Geometry): boolean} renderGeometryFunction Render
- *     geometry function.
+ * @param {function(ol.geom.Geometry, Object): boolean} renderGeometryFunction
+ *     Render geometry function.
  * @param {function(ol.geom.Geometry, Object): T} callback Geometry callback.
  * @return {T|undefined} Callback result.
  * @template T
