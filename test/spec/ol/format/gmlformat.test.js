@@ -33,6 +33,19 @@ describe('ol.format.GML', function() {
         expect(serialized.firstElementChild).to.xmleql(ol.xml.load(text));
       });
 
+      it('can read and write a point geometry in EPSG:4326', function() {
+        var text =
+            '<gml:Point xmlns:gml="http://www.opengis.net/gml" ' +
+            '    srsName="urn:x-ogc:def:crs:EPSG:4326">' +
+            '  <gml:pos>2 1</gml:pos>' +
+            '</gml:Point>';
+        var g = readGeometry(formatWGS84, text);
+        expect(g).to.be.an(ol.geom.Point);
+        expect(g.getCoordinates()).to.eql([1, 2, 0]);
+        var serialized = formatWGS84.writeGeometry(g);
+        expect(serialized.firstElementChild).to.xmleql(ol.xml.load(text));
+      });
+
     });
 
     describe('linestring', function() {
@@ -47,6 +60,19 @@ describe('ol.format.GML', function() {
         expect(g).to.be.an(ol.geom.LineString);
         expect(g.getCoordinates()).to.eql([[1, 2, 0], [3, 4, 0]]);
         var serialized = format.writeGeometry(g);
+        expect(serialized.firstElementChild).to.xmleql(ol.xml.load(text));
+      });
+
+      it('can read and write a linestring geometry in EPSG:4326', function() {
+        var text =
+            '<gml:LineString xmlns:gml="http://www.opengis.net/gml" ' +
+            '    srsName="urn:x-ogc:def:crs:EPSG:4326">' +
+            '  <gml:posList>2 1 4 3</gml:posList>' +
+            '</gml:LineString>';
+        var g = readGeometry(formatWGS84, text);
+        expect(g).to.be.an(ol.geom.LineString);
+        expect(g.getCoordinates()).to.eql([[1, 2, 0], [3, 4, 0]]);
+        var serialized = formatWGS84.writeGeometry(g);
         expect(serialized.firstElementChild).to.xmleql(ol.xml.load(text));
       });
 

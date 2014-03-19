@@ -680,8 +680,18 @@ ol.format.GML.readFlatCoordinatesFromNode_ = function(node, objectStack) {
  * @return {Array.<number>|undefined} Flat coordinates.
  */
 ol.format.GML.readFlatPos_ = function(node, objectStack) {
-  var s = ol.xml.getAllTextContent(node, false).replace(/^\s*|\s*$/g, '');
-  var flatCoordinates = goog.array.map(s.split(/\s+/), parseFloat);
+  var s = ol.xml.getAllTextContent(node, false);
+  var re = /^\s*([+\-]?\d*\.?\d+(?:e[+\-]?\d+)?)\s*/;
+  /** @type {Array.<number>} */
+  var flatCoordinates = [];
+  var m;
+  while ((m = re.exec(s))) {
+    flatCoordinates.push(parseFloat(m[1]));
+    s = s.substr(m[0].length);
+  }
+  if (s !== '') {
+    return undefined;
+  }
   var context = objectStack[0];
   goog.asserts.assert(goog.isObject(context));
   var containerSrs = goog.object.get(context, 'srsName');
@@ -691,7 +701,13 @@ ol.format.GML.readFlatPos_ = function(node, objectStack) {
     axisOrientation = proj.getAxisOrientation();
   }
   if (axisOrientation === 'neu') {
-    flatCoordinates = flatCoordinates.reverse();
+    var i, ii;
+    for (i = 0, ii = flatCoordinates.length; i < ii; i += 3) {
+      var y = flatCoordinates[i];
+      var x = flatCoordinates[i + 1];
+      flatCoordinates[i] = x;
+      flatCoordinates[i + 1] = y;
+    }
   }
   var len = flatCoordinates.length;
   if (len == 2) {
