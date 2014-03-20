@@ -92,8 +92,8 @@ oli.FrameState.prototype.postRenderFunctions;
 oli.FrameState.prototype.size;
 
 
-/** @type {Array.<number>} */
-oli.FrameState.prototype.skippedFeaturesIds_;
+/** @type {Object} */
+oli.FrameState.prototype.skippedFeaturesHash_;
 
 
 /** @type {ol.TileQueue} */

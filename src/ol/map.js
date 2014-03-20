@@ -366,9 +366,16 @@ ol.Map = function(options) {
    */
   this.skippedFeatures_ = new ol.Collection();
   goog.events.listen(this.skippedFeatures_,
-      [ol.CollectionEventType.ADD, ol.CollectionEventType.remove],
-      this.render, false, this);
+      [ol.CollectionEventType.ADD, ol.CollectionEventType.REMOVE],
+      this.handleSkippedFeaturesChange_, false, this);
   this.registerDisposable(this.skippedFeatures_);
+
+  /**
+   * Hash of features uid to skip drawing.
+   * @type {Object}
+   * @private
+   */
+  this.skippedFeaturesHash_ = {};
 
   goog.events.listen(
       this, ol.Object.getChangeEventType(ol.MapProperty.LAYERGROUP),
@@ -819,6 +826,16 @@ ol.Map.prototype.getSkippedFeatures = function() {
 
 
 /**
+ * Get the hash of features uids to be skipped.
+ * @return {Object} Features uids hash
+ * @todo stability experimental
+ */
+ol.Map.prototype.getSkippedFeaturesHash = function() {
+  return this.skippedFeaturesHash_;
+};
+
+
+/**
  * @param {goog.events.BrowserEvent} browserEvent Browser event.
  * @param {string=} opt_type Type.
  */
@@ -913,6 +930,18 @@ ol.Map.prototype.handlePostRender = function() {
  * @private
  */
 ol.Map.prototype.handleSizeChanged_ = function() {
+  this.render();
+};
+
+
+/**
+ * @private
+ */
+ol.Map.prototype.handleSkippedFeaturesChange_ = function() {
+  this.skippedFeaturesHash_ = {};
+  this.skippedFeatures_.forEach(function(feature) {
+    this.skippedFeaturesHash_[goog.getUid(feature).toString()] = true;
+  }, this);
   this.render();
 };
 
@@ -1202,8 +1231,7 @@ ol.Map.prototype.renderFrame_ = function(time) {
       pixelToCoordinateMatrix: this.pixelToCoordinateMatrix_,
       postRenderFunctions: [],
       size: size,
-      skippedFeaturesIds: goog.array.map(
-          this.skippedFeatures_.getArray(), goog.getUid),
+      skippedFeaturesHash_: this.skippedFeaturesHash_,
       tileQueue: this.tileQueue_,
       time: time,
       usedTiles: {},

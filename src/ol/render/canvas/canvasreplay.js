@@ -209,7 +209,7 @@ ol.render.canvas.Replay.prototype.beginGeometry = function(geometry, uid) {
   this.beginGeometryInstruction1_ =
       [ol.render.canvas.Instruction.BEGIN_GEOMETRY, geometry, 0];
   this.instructions.push(this.beginGeometryInstruction1_);
-  this.instructionIndices_[this.instructions.length - 1] = uid;
+  this.instructionIndices_[this.instructions.length - 1] = uid.toString();
   this.beginGeometryInstruction2_ =
       [ol.render.canvas.Instruction.BEGIN_GEOMETRY, geometry, 0];
   this.hitDetectionInstructions.push(this.beginGeometryInstruction2_);
@@ -222,7 +222,7 @@ ol.render.canvas.Replay.prototype.beginGeometry = function(geometry, uid) {
  * @param {number} pixelRatio Pixel ratio.
  * @param {goog.vec.Mat4.Number} transform Transform.
  * @param {number} viewRotation View rotation.
- * @param {Array.<number>} skippedFeaturesIds Ids of features to skip.
+ * @param {Object} skippedFeaturesHash Ids of features to skip.
  * @param {Array.<*>} instructions Instructions array.
  * @param {function(ol.geom.Geometry, Object): T|undefined} geometryCallback
  *     Geometry callback.
@@ -230,7 +230,7 @@ ol.render.canvas.Replay.prototype.beginGeometry = function(geometry, uid) {
  * @template T
  */
 ol.render.canvas.Replay.prototype.replay_ = function(
-    context, pixelRatio, transform, viewRotation, skippedFeaturesIds,
+    context, pixelRatio, transform, viewRotation, skippedFeaturesHash,
     instructions, geometryCallback) {
   /** @type {Array.<number>} */
   var pixelCoordinates;
@@ -254,8 +254,8 @@ ol.render.canvas.Replay.prototype.replay_ = function(
     switch (type) {
       case ol.render.canvas.Instruction.BEGIN_GEOMETRY:
         geometry = /** @type {ol.geom.Geometry} */ (instruction[1]);
-        if (!goog.array.contains(skippedFeaturesIds,
-            this.instructionIndices_[i])) {
+        if (!goog.isDef(goog.object.get(skippedFeaturesHash,
+            this.instructionIndices_[i]))) {
           ++i;
         } else {
           i = /** @type {number} */ (instruction[2]);
@@ -461,15 +461,15 @@ ol.render.canvas.Replay.prototype.replay_ = function(
  * @param {number} pixelRatio Pixel ratio.
  * @param {goog.vec.Mat4.Number} transform Transform.
  * @param {number} viewRotation View rotation.
- * @param {Array.<number>} skippedFeaturesIds Ids of features to skip
+ * @param {Object} skippedFeaturesHash Ids of features to skip
  * @return {T|undefined} Callback result.
  * @template T
  */
 ol.render.canvas.Replay.prototype.replay = function(
-    context, pixelRatio, transform, viewRotation, skippedFeaturesIds) {
+    context, pixelRatio, transform, viewRotation, skippedFeaturesHash) {
   var instructions = this.instructions;
   return this.replay_(context, pixelRatio, transform, viewRotation,
-      skippedFeaturesIds, instructions, undefined);
+      skippedFeaturesHash, instructions, undefined);
 };
 
 
@@ -477,18 +477,18 @@ ol.render.canvas.Replay.prototype.replay = function(
  * @param {CanvasRenderingContext2D} context Context.
  * @param {goog.vec.Mat4.Number} transform Transform.
  * @param {number} viewRotation View rotation.
- * @param {Array.<number>} skippedFeaturesIds Ids of features to skip
+ * @param {Object} skippedFeaturesHash Ids of features to skip
  * @param {function(ol.geom.Geometry, Object): T=} opt_geometryCallback
  *     Geometry callback.
  * @return {T|undefined} Callback result.
  * @template T
  */
 ol.render.canvas.Replay.prototype.replayHitDetection = function(
-    context, transform, viewRotation, skippedFeaturesIds,
+    context, transform, viewRotation, skippedFeaturesHash,
     opt_geometryCallback) {
   var instructions = this.hitDetectionInstructions;
   return this.replay_(context, 1, transform, viewRotation,
-      skippedFeaturesIds, instructions, opt_geometryCallback);
+      skippedFeaturesHash, instructions, opt_geometryCallback);
 };
 
 
@@ -1850,17 +1850,17 @@ ol.render.canvas.ReplayGroup = function(tolerance, maxExtent, resolution) {
  * @param {number} pixelRatio Pixel ratio.
  * @param {goog.vec.Mat4.Number} transform Transform.
  * @param {number} viewRotation View rotation.
- * @param {Array.<number>} skippedFeaturesIds Ids of features to skip
+ * @param {Object} skippedFeaturesHash Ids of features to skip
  * @return {T|undefined} Callback result.
  * @template T
  */
 ol.render.canvas.ReplayGroup.prototype.replay = function(context, extent,
-    pixelRatio, transform, viewRotation, skippedFeaturesIds) {
+    pixelRatio, transform, viewRotation, skippedFeaturesHash) {
   /** @type {Array.<number>} */
   var zs = goog.array.map(goog.object.getKeys(this.replaysByZIndex_), Number);
   goog.array.sort(zs);
   return this.replay_(zs, context, extent, pixelRatio, transform,
-      viewRotation, skippedFeaturesIds);
+      viewRotation, skippedFeaturesHash);
 };
 
 
@@ -1871,14 +1871,14 @@ ol.render.canvas.ReplayGroup.prototype.replay = function(context, extent,
  * @param {ol.Extent} extent Extent.
  * @param {goog.vec.Mat4.Number} transform Transform.
  * @param {number} viewRotation View rotation.
- * @param {Array.<number>} skippedFeaturesIds Ids of features to skip
+ * @param {Object} skippedFeaturesHash Ids of features to skip
  * @param {function(ol.geom.Geometry, Object): T} geometryCallback Geometry
  *     callback.
  * @return {T|undefined} Callback result.
  * @template T
  */
 ol.render.canvas.ReplayGroup.prototype.replayHitDetection_ = function(
-    zs, context, extent, transform, viewRotation, skippedFeaturesIds,
+    zs, context, extent, transform, viewRotation, skippedFeaturesHash,
     geometryCallback) {
   var i, ii, replays, replayType, replay, result;
   for (i = 0, ii = zs.length; i < ii; ++i) {
@@ -1887,7 +1887,7 @@ ol.render.canvas.ReplayGroup.prototype.replayHitDetection_ = function(
       replay = replays[replayType];
       if (ol.extent.intersects(extent, replay.getExtent())) {
         result = replay.replayHitDetection(context, transform, viewRotation,
-            skippedFeaturesIds, geometryCallback);
+            skippedFeaturesHash, geometryCallback);
         if (result) {
           return result;
         }
@@ -1906,13 +1906,13 @@ ol.render.canvas.ReplayGroup.prototype.replayHitDetection_ = function(
  * @param {number} pixelRatio Pixel ratio.
  * @param {goog.vec.Mat4.Number} transform Transform.
  * @param {number} viewRotation View rotation.
- * @param {Array.<number>} skippedFeaturesIds Ids of features to skip
+ * @param {Object} skippedFeaturesHash Ids of features to skip
  * @return {T|undefined} Callback result.
  * @template T
  */
 ol.render.canvas.ReplayGroup.prototype.replay_ = function(
     zs, context, extent, pixelRatio, transform, viewRotation,
-    skippedFeaturesIds) {
+    skippedFeaturesHash) {
 
   var maxExtent = this.maxExtent_;
   var minX = maxExtent[0];
@@ -1938,7 +1938,7 @@ ol.render.canvas.ReplayGroup.prototype.replay_ = function(
       if (goog.isDef(replay) &&
           ol.extent.intersects(extent, replay.getExtent())) {
         result = replay.replay(context, pixelRatio, transform, viewRotation,
-            skippedFeaturesIds);
+            skippedFeaturesHash);
         if (result) {
           return result;
         }
@@ -1956,14 +1956,14 @@ ol.render.canvas.ReplayGroup.prototype.replay_ = function(
  * @param {number} resolution Resolution.
  * @param {number} rotation Rotation.
  * @param {ol.Coordinate} coordinate Coordinate.
- * @param {Array.<number>} skippedFeaturesIds Ids of features to skip
+ * @param {Object} skippedFeaturesHash Ids of features to skip
  * @param {function(ol.geom.Geometry, Object): T} callback Geometry callback.
  * @return {T|undefined} Callback result.
  * @template T
  */
 ol.render.canvas.ReplayGroup.prototype.forEachGeometryAtPixel = function(
     extent, resolution, rotation, coordinate,
-    skippedFeaturesIds, callback) {
+    skippedFeaturesHash, callback) {
 
   var transform = this.hitDetectionTransform_;
   ol.vec.Mat4.makeTransform2D(transform, 0.5, 0.5,
@@ -1978,7 +1978,7 @@ ol.render.canvas.ReplayGroup.prototype.forEachGeometryAtPixel = function(
   context.clearRect(0, 0, 1, 1);
 
   return this.replayHitDetection_(zs, context, extent, transform,
-      rotation, skippedFeaturesIds,
+      rotation, skippedFeaturesHash,
       /**
        * @param {ol.geom.Geometry} geometry Geometry.
        * @param {Object} data Opaque data object.
