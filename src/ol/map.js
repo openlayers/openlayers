@@ -826,16 +826,6 @@ ol.Map.prototype.getSkippedFeatures = function() {
 
 
 /**
- * Get the uids of features to skip.
- * @return {Object} Feature uids.
- * @todo stability experimental
- */
-ol.Map.prototype.getSkippedFeatureUids = function() {
-  return this.skippedFeatureUids_;
-};
-
-
-/**
  * @param {goog.events.BrowserEvent} browserEvent Browser event.
  * @param {string=} opt_type Type.
  */
