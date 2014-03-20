@@ -910,7 +910,7 @@
  * @property {ol.Extent|undefined} extent Extent.
  * @property {ol.format.Feature} format Format.
  * @property {function(this: ol.source.ServerVector, ol.Extent, number, ol.proj.Projection)} loader Loading function.
- * @property {function(ol.Extent, number): Array.<ol.Extent>|undefined} loadingStrategy Loading strategy.  Default is `ol.loadingstrategy.bbox`.
+ * @property {function(ol.Extent, number): Array.<ol.Extent>|undefined} strategy Loading strategy.  Default is `ol.loadingstrategy.bbox`.
  * @property {string|undefined} logo Logo.
  * @property {ol.proj.ProjectionLike} projection Projection.
  */

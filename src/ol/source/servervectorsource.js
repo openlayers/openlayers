@@ -41,8 +41,8 @@ ol.source.ServerVector = function(options) {
    * @private
    * @type {function(ol.Extent, number): Array.<ol.Extent>}
    */
-  this.loadingStrategy_ = goog.isDef(options.loadingStrategy) ?
-      options.loadingStrategy : ol.loadingstrategy.bbox;
+  this.strategy_ = goog.isDef(options.strategy) ?
+      options.strategy : ol.loadingstrategy.bbox;
 
   /**
    * @private
@@ -79,7 +79,7 @@ ol.source.ServerVector.prototype.addFeaturesInternal = function(features) {
 ol.source.ServerVector.prototype.loadFeatures =
     function(extent, resolution, projection) {
   var loadedExtents = this.loadedExtents_;
-  var extentsToLoad = this.loadingStrategy_(extent, resolution);
+  var extentsToLoad = this.strategy_(extent, resolution);
   var i, ii;
   for (i = 0, ii = extentsToLoad.length; i < ii; ++i) {
     var extentToLoad = extentsToLoad[i];

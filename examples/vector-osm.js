@@ -98,7 +98,7 @@ var vectorSource = new ol.source.ServerVector({
       vectorSource.readFeatures(response);
     });
   },
-  loadingStrategy: ol.loadingstrategy.createTile(new ol.tilegrid.XYZ({
+  strategy: ol.loadingstrategy.createTile(new ol.tilegrid.XYZ({
     maxZoom: 19
   })),
   projection: 'EPSG:3857'
