@@ -31,7 +31,6 @@
 goog.provide('ol.pointer.TouchSource');
 
 goog.require('goog.array');
-goog.require('goog.math.Coordinate');
 goog.require('goog.object');
 goog.require('ol.pointer.EventSource');
 goog.require('ol.pointer.MouseSource');
@@ -82,15 +81,6 @@ ol.pointer.TouchSource = function(dispatcher, mouseSource) {
    * @type {number|undefined}
    */
   this.resetId_ = undefined;
-
-  /**
-   * @private
-   * @type {function()}
-   */
-  this.resetClickCountHandler_ = goog.bind(function() {
-    this.clickCount_ = 0;
-    this.resetId_ = undefined;
-  }, this);
 };
 goog.inherits(ol.pointer.TouchSource, ol.pointer.EventSource);
 
@@ -134,10 +124,9 @@ ol.pointer.TouchSource.prototype.isPrimaryTouch_ = function(inTouch) {
  * @private
  */
 ol.pointer.TouchSource.prototype.setPrimaryTouch_ = function(inTouch) {
-  if (goog.object.getCount(this.pointerMap) === 0 ||
-      (goog.object.getCount(this.pointerMap) === 1 &&
-       goog.object.containsKey(this.pointerMap,
-          ol.pointer.MouseSource.POINTER_ID.toString()))) {
+  var count = goog.object.getCount(this.pointerMap);
+  if (count === 0 || (count === 1 && goog.object.containsKey(this.pointerMap,
+      ol.pointer.MouseSource.POINTER_ID.toString()))) {
     this.firstTouchId_ = inTouch.identifier;
     this.cancelResetClickCount_();
   }
@@ -162,6 +151,15 @@ ol.pointer.TouchSource.prototype.removePrimaryPointer_ = function(inPointer) {
 ol.pointer.TouchSource.prototype.resetClickCount_ = function() {
   this.resetId_ = goog.global.setTimeout(this.resetClickCountHandler_,
       ol.pointer.TouchSource.CLICK_COUNT_TIMEOUT);
+};
+
+
+/**
+ * @private
+ */
+ol.pointer.TouchSource.prototype.resetClickCountHandler_ = function() {
+  this.clickCount_ = 0;
+  this.resetId_ = undefined;
 };
 
 
@@ -434,7 +432,7 @@ ol.pointer.TouchSource.prototype.dedupSynthMouse_ = function(inEvent) {
   // only the primary finger will synth mouse events
   if (this.isPrimaryTouch_(t)) {
     // remember x/y of last touch
-    var lt = new goog.math.Coordinate(t.clientX, t.clientY);
+    var lt = /** @type {ol.Pixel} */ ([t.clientX, t.clientY]);
     lts.push(lt);
 
     goog.global.setTimeout(function() {

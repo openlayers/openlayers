@@ -59,12 +59,6 @@ ol.pointer.PointerEvent = function(type, browserEvent, opt_eventDict) {
    */
   this.browserEvent = browserEvent;
 
-  /**
-   * @const
-   * @type {Event}
-   */
-  this.originalEvent = browserEvent.getBrowserEvent();
-
   var eventDict = goog.isDef(opt_eventDict) ? opt_eventDict : {};
 
   /**
