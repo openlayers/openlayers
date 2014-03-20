@@ -106,6 +106,14 @@ ol.style.Image.prototype.getSnapToPixel = function() {
 
 
 /**
+ * @param {number} opacity Opacity.
+ */
+ol.style.Image.prototype.setOpacity = function(opacity) {
+  this.opacity_ = opacity;
+};
+
+
+/**
  * @return {Array.<number>} Anchor.
  */
 ol.style.Image.prototype.getAnchor = goog.abstractMethod;
