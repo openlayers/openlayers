@@ -140,15 +140,14 @@ ol.interaction.Select.prototype.handleMapBrowserEvent =
  */
 ol.interaction.Select.prototype.addFeature_ = function(feature, add,
     remove, toggle) {
-  var features = this.featureOverlay_.getFeatures(),
-      uid, index = -1,
-      i, ii;
+  var features = this.featureOverlay_.getFeatures();
+  var index = -1;
+  var i, ii;
   if ((!goog.isDef(feature) || goog.isNull(feature)) && !add) {
     this.removeAllFeatures_();
     return;
   }
   goog.asserts.assertInstanceof(feature, ol.Feature);
-  uid = goog.getUid(feature);
   index = features.getArray().indexOf(feature);
   if (index == -1) {
     if (!add && !remove && (features.getLength() > 0)) {
