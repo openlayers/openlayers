@@ -365,6 +365,10 @@ ol.Map = function(options) {
    * @private
    */
   this.skippedFeatures_ = new ol.Collection();
+  goog.events.listen(this.skippedFeatures_,
+      [ol.CollectionEventType.ADD, ol.CollectionEventType.remove],
+      this.render, false, this);
+  this.registerDisposable(this.skippedFeatures_);
 
   goog.events.listen(
       this, ol.Object.getChangeEventType(ol.MapProperty.LAYERGROUP),
