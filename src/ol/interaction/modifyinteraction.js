@@ -448,10 +448,7 @@ ol.interaction.Modify.prototype.handlePointerDrag = function(evt) {
     }
 
     geometry.setCoordinates(coordinates);
-    var newBounds = ol.extent.boundingExtent(segment);
     this.createOrUpdateVertexFeature_(vertex);
-    this.rBush_.remove(segmentData);
-    this.rBush_.insert(newBounds, segmentData);
   }
 };
 
