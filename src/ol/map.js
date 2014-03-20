@@ -375,7 +375,7 @@ ol.Map = function(options) {
    * @type {Object.<string, boolean>}
    * @private
    */
-  this.skippedFeaturesHash_ = {};
+  this.skippedFeatureUids_ = {};
 
   goog.events.listen(
       this, ol.Object.getChangeEventType(ol.MapProperty.LAYERGROUP),
@@ -830,8 +830,8 @@ ol.Map.prototype.getSkippedFeatures = function() {
  * @return {Object} Feature uids.
  * @todo stability experimental
  */
-ol.Map.prototype.getSkippedFeaturesHash = function() {
-  return this.skippedFeaturesHash_;
+ol.Map.prototype.getSkippedFeatureUids = function() {
+  return this.skippedFeatureUids_;
 };
 
 
@@ -938,14 +938,14 @@ ol.Map.prototype.handleSizeChanged_ = function() {
  * @private
  */
 ol.Map.prototype.handleSkippedFeaturesChange_ = function() {
-  this.skippedFeaturesHash_ = {};
+  this.skippedFeatureUids_ = {};
   this.skippedFeatures_.forEach(
       /**
        * @param {ol.Feature} feature Feature.
        * @this {ol.Map}
        */
       function(feature) {
-        this.skippedFeaturesHash_[goog.getUid(feature).toString()] = true;
+        this.skippedFeatureUids_[goog.getUid(feature).toString()] = true;
       }, this);
   this.render();
 };
@@ -1236,7 +1236,7 @@ ol.Map.prototype.renderFrame_ = function(time) {
       pixelToCoordinateMatrix: this.pixelToCoordinateMatrix_,
       postRenderFunctions: [],
       size: size,
-      skippedFeaturesHash_: this.skippedFeaturesHash_,
+      skippedFeatureUids_: this.skippedFeatureUids_,
       tileQueue: this.tileQueue_,
       time: time,
       usedTiles: {},
