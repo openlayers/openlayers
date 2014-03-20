@@ -53,25 +53,13 @@ ol.layer.Heatmap = function(opt_options) {
     image: ol.layer.Heatmap.createIcon_(radius, blur, shadow)
   });
 
-  // FIXME: styles are immutable
-  // /**
-  //  * @param {ol.Feature} feature
-  //  * @param {number} resolution
-  //  * @return {number} weight
-  //  */
-  // var weightFunction = function(feature, resolution) {
-  //   var weight = /** @type {number} */ (feature.get('weight'));
-  //   return goog.isDef(weight) ? weight : 1;
-  // };
-  //
-  // var styleArray = [style];
-  // this.setStyle(function(feature, resolution) {
-  //   var image = style.getImage();
-  //   image.setOpacity(weightFunction(feature, resolution));
-  //   return styleArray;
-  // });
-
-  this.setStyle(style);
+  var styleArray = [style];
+  this.setStyle(function(feature, resolution) {
+    var image = style.getImage();
+    var weight = feature.get('weight');
+    image.setOpacity(goog.isDef(weight) ? weight : 1);
+    return styleArray;
+  });
 
   goog.events.listen(this, ol.render.EventType.RENDER,
       this.handleRender_, false, this);
