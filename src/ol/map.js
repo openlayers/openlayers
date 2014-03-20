@@ -372,7 +372,7 @@ ol.Map = function(options) {
 
   /**
    * Hash of features uid to skip drawing.
-   * @type {Object}
+   * @type {Object.<string, boolean>}
    * @private
    */
   this.skippedFeaturesHash_ = {};
@@ -939,9 +939,14 @@ ol.Map.prototype.handleSizeChanged_ = function() {
  */
 ol.Map.prototype.handleSkippedFeaturesChange_ = function() {
   this.skippedFeaturesHash_ = {};
-  this.skippedFeatures_.forEach(function(feature) {
-    this.skippedFeaturesHash_[goog.getUid(feature).toString()] = true;
-  }, this);
+  this.skippedFeatures_.forEach(
+      /**
+       * @param {ol.Feature} feature Feature.
+       * @this {ol.Map}
+       */
+      function(feature) {
+        this.skippedFeaturesHash_[goog.getUid(feature).toString()] = true;
+      }, this);
   this.render();
 };
 

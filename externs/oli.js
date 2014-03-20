@@ -92,7 +92,7 @@ oli.FrameState.prototype.postRenderFunctions;
 oli.FrameState.prototype.size;
 
 
-/** @type {Object} */
+/** @type {Object.<string, boolean>} */
 oli.FrameState.prototype.skippedFeaturesHash_;
 
 
