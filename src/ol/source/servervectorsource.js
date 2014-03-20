@@ -35,7 +35,7 @@ ol.source.ServerVector = function(options) {
    * @type {function(this: ol.source.ServerVector, ol.Extent, number,
    *                 ol.proj.Projection): string}
    */
-  this.loadingFunction_ = options.loadingFunction;
+  this.loader_ = options.loader;
 
   /**
    * @private
@@ -92,7 +92,7 @@ ol.source.ServerVector.prototype.loadFeatures =
           return ol.extent.containsExtent(object.extent, extentToLoad);
         });
     if (!alreadyLoaded) {
-      this.loadingFunction_.call(this, extentToLoad, resolution, projection);
+      this.loader_.call(this, extentToLoad, resolution, projection);
       loadedExtents.insert(extentToLoad, {extent: extentToLoad.slice()});
     }
   }
