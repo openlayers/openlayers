@@ -93,7 +93,7 @@ oli.FrameState.prototype.size;
 
 
 /** @type {Array.<number>} */
-oli.FrameState.prototype.skippedFeaturesIds;
+oli.FrameState.prototype.skippedFeaturesIds_;
 
 
 /** @type {ol.TileQueue} */
