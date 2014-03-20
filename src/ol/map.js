@@ -360,7 +360,7 @@ ol.Map = function(options) {
       goog.bind(this.handleTileChange_, this));
 
   /**
-   * Collection of Features to skip drawing.
+   * Features to skip at rendering time.
    * @type {ol.Collection}
    * @private
    */
@@ -371,7 +371,7 @@ ol.Map = function(options) {
   this.registerDisposable(this.skippedFeatures_);
 
   /**
-   * Hash of features uid to skip drawing.
+   * Uids of features to skip at rendering time.
    * @type {Object.<string, boolean>}
    * @private
    */
@@ -816,7 +816,7 @@ ol.Map.prototype.getTilePriority =
 
 
 /**
- * Get the collection of features to be skipped.
+ * Get the collection of features to skip.
  * @return {ol.Collection} Features collection.
  * @todo stability experimental
  */
@@ -826,8 +826,8 @@ ol.Map.prototype.getSkippedFeatures = function() {
 
 
 /**
- * Get the hash of features uids to be skipped.
- * @return {Object} Features uids hash
+ * Get the uids of features to skip.
+ * @return {Object} Feature uids.
  * @todo stability experimental
  */
 ol.Map.prototype.getSkippedFeaturesHash = function() {
