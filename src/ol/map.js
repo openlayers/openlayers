@@ -359,6 +359,24 @@ ol.Map = function(options) {
       goog.bind(this.getTilePriority, this),
       goog.bind(this.handleTileChange_, this));
 
+  /**
+   * Features to skip at rendering time.
+   * @type {ol.Collection}
+   * @private
+   */
+  this.skippedFeatures_ = new ol.Collection();
+  goog.events.listen(this.skippedFeatures_,
+      [ol.CollectionEventType.ADD, ol.CollectionEventType.REMOVE],
+      this.handleSkippedFeaturesChange_, false, this);
+  this.registerDisposable(this.skippedFeatures_);
+
+  /**
+   * Uids of features to skip at rendering time.
+   * @type {Object.<string, boolean>}
+   * @private
+   */
+  this.skippedFeatureUids_ = {};
+
   goog.events.listen(
       this, ol.Object.getChangeEventType(ol.MapProperty.LAYERGROUP),
       this.handleLayerGroupChanged_, false, this);
@@ -798,6 +816,16 @@ ol.Map.prototype.getTilePriority =
 
 
 /**
+ * Get the collection of features to skip.
+ * @return {ol.Collection} Features collection.
+ * @todo stability experimental
+ */
+ol.Map.prototype.getSkippedFeatures = function() {
+  return this.skippedFeatures_;
+};
+
+
+/**
  * @param {goog.events.BrowserEvent} browserEvent Browser event.
  * @param {string=} opt_type Type.
  */
@@ -892,6 +920,23 @@ ol.Map.prototype.handlePostRender = function() {
  * @private
  */
 ol.Map.prototype.handleSizeChanged_ = function() {
+  this.render();
+};
+
+
+/**
+ * @private
+ */
+ol.Map.prototype.handleSkippedFeaturesChange_ = function() {
+  this.skippedFeatureUids_ = {};
+  this.skippedFeatures_.forEach(
+      /**
+       * @param {ol.Feature} feature Feature.
+       * @this {ol.Map}
+       */
+      function(feature) {
+        this.skippedFeatureUids_[goog.getUid(feature).toString()] = true;
+      }, this);
   this.render();
 };
 
@@ -1181,6 +1226,7 @@ ol.Map.prototype.renderFrame_ = function(time) {
       pixelToCoordinateMatrix: this.pixelToCoordinateMatrix_,
       postRenderFunctions: [],
       size: size,
+      skippedFeatureUids_: this.skippedFeatureUids_,
       tileQueue: this.tileQueue_,
       time: time,
       usedTiles: {},

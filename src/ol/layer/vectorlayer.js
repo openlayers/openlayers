@@ -1,16 +1,9 @@
 goog.provide('ol.layer.Vector');
 
+goog.require('goog.array');
 goog.require('goog.object');
 goog.require('ol.feature');
 goog.require('ol.layer.Layer');
-
-
-/**
- * @enum {string}
- */
-ol.layer.VectorProperty = {
-  RENDER_GEOMETRY_FUNCTIONS: 'renderGeometryFunctions'
-};
 
 
 
@@ -53,20 +46,6 @@ goog.inherits(ol.layer.Vector, ol.layer.Layer);
 
 
 /**
- * @return {ol.Collection|undefined} Render geometry functions.
- * @todo stability experimental
- */
-ol.layer.Vector.prototype.getRenderGeometryFunctions = function() {
-  return /** @type {ol.Collection|undefined} */ (
-      this.get(ol.layer.VectorProperty.RENDER_GEOMETRY_FUNCTIONS));
-};
-goog.exportProperty(
-    ol.layer.Vector.prototype,
-    'getRenderGeometryFunctions',
-    ol.layer.Vector.prototype.getRenderGeometryFunctions);
-
-
-/**
  * Get the style for features.  This returns whatever was passed to the `style`
  * option at construction or to the `setStyle` method.
  * @return {ol.style.Style|Array.<ol.style.Style>|ol.feature.StyleFunction}
@@ -85,22 +64,6 @@ ol.layer.Vector.prototype.getStyle = function() {
 ol.layer.Vector.prototype.getStyleFunction = function() {
   return this.styleFunction_;
 };
-
-
-/**
- * @param {ol.Collection|undefined} renderGeometryFunctions Render geometry
- *     functions.
- * @todo stability experimental
- */
-ol.layer.Vector.prototype.setRenderGeometryFunctions =
-    function(renderGeometryFunctions) {
-  this.set(ol.layer.VectorProperty.RENDER_GEOMETRY_FUNCTIONS,
-      renderGeometryFunctions);
-};
-goog.exportProperty(
-    ol.layer.Vector.prototype,
-    'setRenderGeometryFunctions',
-    ol.layer.Vector.prototype.setRenderGeometryFunctions);
 
 
 /**

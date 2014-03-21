@@ -141,7 +141,7 @@ ol.source.ImageVector.prototype.canvasFunctionInternal_ =
   var transform = this.getTransform_(ol.extent.getCenter(extent),
       resolution, pixelRatio, size);
   replayGroup.replay(this.canvasContext_, extent, pixelRatio, transform, 0,
-      goog.functions.TRUE);
+      {});
 
   this.replayGroup_ = replayGroup;
 
@@ -158,7 +158,7 @@ ol.source.ImageVector.prototype.forEachFeatureAtPixel =
     return undefined;
   } else {
     return this.replayGroup_.forEachGeometryAtPixel(
-        extent, resolution, 0, coordinate, goog.functions.TRUE,
+        extent, resolution, 0, coordinate, {},
         /**
          * @param {ol.geom.Geometry} geometry Geometry.
          * @param {Object} data Data.

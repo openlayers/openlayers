@@ -92,6 +92,10 @@ oli.FrameState.prototype.postRenderFunctions;
 oli.FrameState.prototype.size;
 
 
+/** @type {Object.<string, boolean>} */
+oli.FrameState.prototype.skippedFeatureUids_;
+
+
 /** @type {ol.TileQueue} */
 oli.FrameState.prototype.tileQueue;
 
