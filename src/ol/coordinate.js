@@ -66,7 +66,7 @@ ol.coordinate.closestOnSegment = function(coordinate, segment) {
   var y2 = end[1];
   var dx = x2 - x1;
   var dy = y2 - y1;
-  var along = (dx == 0 && dy == 0) ? 0 :
+  var along = (dx === 0 && dy === 0) ? 0 :
       ((dx * (x0 - x1)) + (dy * (y0 - y1))) / ((dx * dx + dy * dy) || 0);
   var x, y;
   if (along <= 0) {
