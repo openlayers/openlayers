@@ -193,9 +193,9 @@ ol.pointer.TouchSource.prototype.touchToPointer_ =
   e.detail = this.clickCount_;
   e.button = 0;
   e.buttons = 1;
-  e.width = inTouch['webkitRadiusX'] || inTouch['radiusX'] || 0;
-  e.height = inTouch['webkitRadiusY'] || inTouch['radiusY'] || 0;
-  e.pressure = inTouch['webkitForce'] || inTouch['force'] || 0.5;
+  e.width = inTouch.webkitRadiusX || inTouch.radiusX || 0;
+  e.height = inTouch.webkitRadiusY || inTouch.radiusY || 0;
+  e.pressure = inTouch.webkitForce || inTouch.force || 0.5;
   e.isPrimary = this.isPrimaryTouch_(inTouch);
   e.pointerType = ol.pointer.TouchSource.POINTER_TYPE;
 
