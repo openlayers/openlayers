@@ -243,6 +243,8 @@ ol.source.WMTS.prototype.updateDimensions = function(dimensions) {
  */
 ol.source.WMTS.optionsFromCapabilities = function(wmtsCap, layer) {
 
+  /* jshint -W069 */
+
   // TODO: add support for TileMatrixLimits
 
   var layers = wmtsCap['contents']['layers'];
@@ -328,4 +330,7 @@ ol.source.WMTS.optionsFromCapabilities = function(wmtsCap, layer) {
     style: style,
     dimensions: dimensions
   };
+
+  /* jshint +W069 */
+
 };
