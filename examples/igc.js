@@ -174,7 +174,7 @@ $('#time').on('input', function(event) {
     var geometry = /** @type {ol.geom.LineString} */ (feature.getGeometry());
     var coordinate = geometry.getCoordinateAtM(m, true);
     var highlight = feature.get('highlight');
-    if (highlight == undefined) {
+    if (highlight === undefined) {
       highlight = new ol.Feature(new ol.geom.Point(coordinate));
       feature.set('highlight', highlight);
       featureOverlay.addFeature(highlight);
