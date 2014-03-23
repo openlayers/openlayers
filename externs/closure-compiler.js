@@ -52,3 +52,22 @@ Document.prototype.msFullscreenEnabled;
 
 /** @type {Element} */
 Document.prototype.msFullscreenElement;
+
+
+/** @type {number} */
+Touch.prototype.force;
+
+/** @type {number} */
+Touch.prototype.radiusX;
+
+/** @type {number} */
+Touch.prototype.radiusY;
+
+/** @type {number} */
+Touch.prototype.webkitForce;
+
+/** @type {number} */
+Touch.prototype.webkitRadiusX;
+
+/** @type {number} */
+Touch.prototype.webkitRadiusY;
