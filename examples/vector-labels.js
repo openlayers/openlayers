@@ -195,17 +195,17 @@ var map = new ol.Map({
   })
 });
 
-var refreshPoints = function() {
+$('#refresh-points').click(function() {
   vectorPoints.setStyle(createPointStyleFunction());
-};
+});
 
-var refreshLines = function() {
+$('#refresh-lines').click(function() {
   vectorLines.setStyle(createLineStyleFunction());
-};
+});
 
-var refreshPolygons = function() {
+$('#refresh-polygons').click(function() {
   vectorPolygons.setStyle(createPolygonStyleFunction());
-};
+});
 
 
 /**
