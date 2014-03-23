@@ -167,7 +167,7 @@ def report_sizes(t):
 virtual('default', 'build')
 
 
-virtual('integration-test', 'lint', 'build', 'build-all',
+virtual('integration-test', 'lint', 'jshint', 'build', 'build-all',
         'test', 'build/examples/all.combined.js', 'check-examples', 'apidoc')
 
 
@@ -175,7 +175,7 @@ virtual('build', 'build/ol.css', 'build/ol.js',
         'build/ol-simple.js', 'build/ol-whitespace.js')
 
 
-virtual('check', 'lint', 'build/ol-all.js', 'test')
+virtual('check', 'lint', 'jshint', 'build/ol-all.js', 'test')
 
 
 virtual('todo', 'fixme')
