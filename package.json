@@ -17,6 +17,7 @@
   "devDependencies": {
     "closure-util": "~0.8.2",
     "async": "~0.2.10",
-    "htmlparser2": "~3.4.0"
+    "htmlparser2": "~3.4.0",
+    "jshint": "~2.4.4"
   }
 }
