@@ -21,6 +21,7 @@ if sys.platform == 'win32':
         'JAVA': 'java.exe',
         'JAR': 'jar.exe',
         'JSDOC': 'jsdoc.cmd',
+        'JSHINT': './node_modules/.bin/jshint',
         'PYTHON': 'python.exe',
         'PHANTOMJS': 'phantomjs.cmd'
     }
@@ -71,6 +72,7 @@ if sys.platform == 'win32':
 else:
     variables.GIT = 'git'
     variables.GJSLINT = 'gjslint'
+    variables.JSHINT = './node_modules/.bin/jshint'
     variables.JAVA = 'java'
     variables.JAR = 'jar'
     variables.JSDOC = 'jsdoc'
@@ -81,7 +83,8 @@ variables.BRANCH = output(
     '%(GIT)s', 'rev-parse', '--abbrev-ref', 'HEAD').strip()
 
 EXECUTABLES = [variables.GIT, variables.GJSLINT, variables.JAVA, variables.JAR,
-               variables.JSDOC, variables.PYTHON, variables.PHANTOMJS]
+               variables.JSDOC, variables.JSHINT, variables.PYTHON,
+               variables.PHANTOMJS]
 
 EXPORTS = [path
            for path in ifind('src')
@@ -406,6 +409,15 @@ def build_lint_libtess_js_timestamp(t):
           '--disable=110',
           '--strict',
           t.newer(t.dependencies))
+    t.touch()
+
+
+virtual('jshint', 'build/jshint-timestamp')
+
+
+@target('build/jshint-timestamp', SRC, EXAMPLES_SRC, SPEC, precious=True)
+def build_jshint_timestamp(t):
+    t.run(variables.JSHINT, '--verbose', t.newer(t.dependencies))
     t.touch()
 
 
