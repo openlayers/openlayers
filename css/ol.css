@@ -226,7 +226,7 @@ button.ol-full-screen-true:after {
 }
 .ol-zoom .ol-has-tooltip:hover [role=tooltip],
 .ol-zoom .ol-has-tooltip:focus [role=tooltip] {
-  bottom: 1.1em;
+  top: 1.1em;
 }
 .ol-full-screen .ol-has-tooltip:hover [role=tooltip],
 .ol-full-screen .ol-has-tooltip:focus [role=tooltip] {
@@ -237,31 +237,44 @@ button.ol-full-screen-true:after {
 
 .ol-zoomslider {
   position: absolute;
-  top: 67px;
-  left: 8px;
+  top: 4.5em;
+  left: .5em;
+
   background: #eee;
   background: rgba(255, 255, 255, 0.4);
   border-radius: 4px;
-  width: 28px;
-  height: 200px;
   outline: none;
   overflow: hidden;
-  padding: 0;
+  
+  width: 1.5675em;
+  height: 200px;
+  padding: 3px;
   margin: 0;
 }
 .ol-zoomslider-thumb {
   position: absolute;
   display: block;
-  padding: 0;
-  margin: 2px;
   background: #7b98bc;
   background: rgba(0,60,136,0.5);
   border-radius: 2px;
   outline: none;
   overflow: hidden;
-  height: 20px;
-  width: 24px;
+  cursor: pointer;
+
+  font-size: 1.14em;
+  height: 1em;
+  width: 1.375em;
+  margin: 3px;
+  padding: 0;
 }
+.ol-touch .ol-zoomslider {
+  top: 5.5em;
+  width: 2.052em;
+}
+.ol-touch .ol-zoomslider-thumb {
+  width: 1.8em;
+}
+
 .ol-zoom-extent button,
 .ol-attribution,
 .ol-full-screen button,
