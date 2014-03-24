@@ -24,7 +24,7 @@ goog.require('ol.geom.flat.simplify');
  * @constructor
  * @extends {ol.geom.SimpleGeometry}
  * @param {ol.geom.RawMultiPolygon} coordinates Coordinates.
- * @param {ol.geom.GeometryLayout=} opt_layout Layout.
+ * @param {ol.geom.GeometryLayout|string=} opt_layout Layout.
  * @todo stability experimental
  */
 ol.geom.MultiPolygon = function(coordinates, opt_layout) {
@@ -73,7 +73,8 @@ ol.geom.MultiPolygon = function(coordinates, opt_layout) {
    */
   this.orientedFlatCoordinates_ = null;
 
-  this.setCoordinates(coordinates, opt_layout);
+  this.setCoordinates(coordinates,
+      /** @type {ol.geom.GeometryLayout|undefined} */ (opt_layout));
 
 };
 goog.inherits(ol.geom.MultiPolygon, ol.geom.SimpleGeometry);
