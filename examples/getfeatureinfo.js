@@ -28,7 +28,7 @@ var map = new ol.Map({
   view: view
 });
 
-map.on('singleclick', function(evt) {
+map.on('click', function(evt) {
   document.getElementById('info').innerHTML = '';
   var viewResolution = /** @type {number} */ (view.getResolution());
   var url = wmsSource.getGetFeatureInfoUrl(

@@ -96,6 +96,6 @@ $(map.getViewport()).on('mousemove', function(evt) {
   displayFeatureInfo(map.getEventPixel(evt.originalEvent));
 });
 
-map.on('singleclick', function(evt) {
+map.on('click', function(evt) {
   displayFeatureInfo(evt.pixel);
 });

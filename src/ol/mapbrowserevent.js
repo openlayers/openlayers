@@ -248,11 +248,15 @@ ol.MapBrowserEventHandler.prototype.emulateClickLegacyIE_ =
  * @private
  */
 ol.MapBrowserEventHandler.prototype.emulateClick_ = function(pointerEvent) {
+  var newEvent;
+  newEvent = new ol.MapBrowserPointerEvent(
+      ol.MapBrowserEvent.EventType.CLICK, this.map_, pointerEvent);
+  this.dispatchEvent(newEvent);
   if (this.clickTimeoutId_ !== 0) {
     // double-click
     goog.global.clearTimeout(this.clickTimeoutId_);
     this.clickTimeoutId_ = 0;
-    var newEvent = new ol.MapBrowserPointerEvent(
+    newEvent = new ol.MapBrowserPointerEvent(
         ol.MapBrowserEvent.EventType.DBLCLICK, this.map_, pointerEvent);
     this.dispatchEvent(newEvent);
   } else {
@@ -470,6 +474,12 @@ ol.MapBrowserEvent.EventType = {
    * @todo stability experimental
    */
   SINGLECLICK: 'singleclick',
+  /**
+   * A click with no dragging. A double click will fire two of this.
+   * @event ol.MapBrowserEvent#click
+   * @todo stability experimental
+   */
+  CLICK: goog.events.EventType.CLICK,
   /**
    * A true double click, with no dragging.
    * @event ol.MapBrowserEvent#dblclick

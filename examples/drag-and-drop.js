@@ -146,6 +146,6 @@ $(map.getViewport()).on('mousemove', function(evt) {
   displayFeatureInfo(pixel);
 });
 
-map.on('singleclick', function(evt) {
+map.on('click', function(evt) {
   displayFeatureInfo(evt.pixel);
 });

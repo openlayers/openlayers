@@ -54,12 +54,13 @@ describe('ol.MapBrowserEventHandler', function() {
     });
 
     it('emulates dblclick', function() {
-      handler.emulateClick_({
-        type: 'mousedown',
-        target: target,
-        clientX: 0,
-        clientY: 0
-      });
+      handler.emulateClick_(new ol.pointer.PointerEvent('pointerdown',
+          new goog.events.BrowserEvent({
+            type: 'mousedown',
+            target: target,
+            clientX: 0,
+            clientY: 0
+          })));
       expect(singleclickSpy.called).to.not.be.ok();
       expect(dblclickSpy.called).to.not.be.ok();
 
