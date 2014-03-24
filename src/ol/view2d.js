@@ -8,6 +8,7 @@ goog.require('ol.CenterConstraint');
 goog.require('ol.Constraints');
 goog.require('ol.IView2D');
 goog.require('ol.IView3D');
+goog.require('ol.LatLng');
 goog.require('ol.ResolutionConstraint');
 goog.require('ol.RotationConstraint');
 goog.require('ol.RotationConstraintType');
@@ -100,10 +101,17 @@ ol.View2D = function(opt_options) {
    * @type {Object.<string, *>}
    */
   var values = {};
-  values[ol.View2DProperty.CENTER] = goog.isDef(options.center) ?
-      options.center : null;
-  values[ol.View2DProperty.PROJECTION] = ol.proj.createProjection(
-      options.projection, 'EPSG:3857');
+  var projection = ol.proj.createProjection(options.projection, 'EPSG:3857');
+  if (goog.isDef(options.center)) {
+    values[ol.View2DProperty.CENTER] = options.center;
+  } else if (goog.isDef(options.centerLatLng)) {
+    values[ol.View2DProperty.CENTER] = ol.proj.transform(
+        [options.centerLatLng[1], options.centerLatLng[0]],
+        ol.proj.get('EPSG:4326'), projection);
+  } else {
+    values[ol.View2DProperty.CENTER] = null;
+  }
+  values[ol.View2DProperty.PROJECTION] = projection;
 
   var resolutionConstraintInfo = ol.View2D.createResolutionConstraint_(
       options);
@@ -230,6 +238,21 @@ goog.exportProperty(
     ol.View2D.prototype,
     'getCenter',
     ol.View2D.prototype.getCenter);
+
+
+/**
+ * Get the LatLng of the current center.
+ * @return {ol.LatLng} LatLng.
+ * @todo stability experimental
+ */
+ol.View2D.prototype.getCenterLatLng = function() {
+  var center = this.getCenter();
+  if (!goog.isDef(center)) {
+    return null;
+  }
+  var lnglat = ol.proj.transform(center, this.getProjection(), 'EPSG:4326');
+  return [lnglat[1], lnglat[0]];
+};
 
 
 /**
@@ -546,6 +569,18 @@ goog.exportProperty(
     ol.View2D.prototype,
     'setCenter',
     ol.View2D.prototype.setCenter);
+
+
+/**
+ * Set the center of the view to a given LatLng.
+ * @param {ol.LatLng} latLng LatLng.
+ * @todo stability experimental
+ */
+ol.View2D.prototype.setCenterLatLng = function(latLng) {
+  var center = ol.proj.transform([latLng[1], latLng[0]],
+      ol.proj.get('EPSG:4326'), this.getProjection());
+  this.setCenter(center);
+};
 
 
 /**

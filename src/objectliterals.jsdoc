@@ -115,6 +115,8 @@
  *     The coordinate system for the center is specified with the `projection`
  *     option. Default is `undefined`, and layer sources will not be fetched if
  *     this is not set.
+ * @property {ol.LatLng|undefined} centerLatLng The initial center for the
+ *     view, defined as lat/lon (EPSG:4326) coordinates.
  * @property {boolean|number|undefined} constrainRotation Rotation constraint.
  *     `false` means no constraint. `true` means no constraint, but snap to
  *     zero near zero. A number constraints the rotation to that number of
