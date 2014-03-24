@@ -20,7 +20,8 @@ ol.source.MapQuest = function(opt_options) {
 
   var layerConfig = ol.source.MapQuestConfig[options.layer];
 
-  var url = '//otile{1-4}-s.mqcdn.com/tiles/1.0.0/' +
+  var protocol = ol.IS_HTTPS ? 'https:' : 'http:';
+  var url = protocol + '//otile{1-4}-s.mqcdn.com/tiles/1.0.0/' +
       options.layer + '/{z}/{x}/{y}.jpg';
 
   goog.base(this, {

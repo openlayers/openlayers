@@ -55,6 +55,14 @@ ol.LEGACY_IE_SUPPORT = false;
 
 
 /**
+ * The page is loaded using HTTPS.
+ * @const
+ * @type {boolean}
+ */
+ol.IS_HTTPS = goog.global.location.protocol === 'https:';
+
+
+/**
  * Whether the current browser is legacy IE
  * @const
  * @type {boolean}

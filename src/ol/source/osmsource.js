@@ -25,8 +25,9 @@ ol.source.OSM = function(opt_options) {
   var crossOrigin = goog.isDef(options.crossOrigin) ?
       options.crossOrigin : 'anonymous';
 
+  var protocol = ol.IS_HTTPS ? 'https:' : 'http:';
   var url = goog.isDef(options.url) ?
-      options.url : '//{a-c}.tile.openstreetmap.org/{z}/{x}/{y}.png';
+      options.url : protocol + '//{a-c}.tile.openstreetmap.org/{z}/{x}/{y}.png';
 
   goog.base(this, {
     attributions: attributions,
