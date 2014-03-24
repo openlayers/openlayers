@@ -4,6 +4,7 @@ describe('ol.MapBrowserEventHandler', function() {
   describe('#emulateClick_', function() {
     var clock;
     var handler;
+    var clickSpy;
     var singleclickSpy;
     var dblclickSpy;
     var target;
@@ -14,6 +15,9 @@ describe('ol.MapBrowserEventHandler', function() {
       handler = new ol.MapBrowserEventHandler(new ol.Map({
         target: target
       }));
+
+      clickSpy = sinon.spy();
+      goog.events.listen(handler, 'click', clickSpy);
 
       singleclickSpy = sinon.spy();
       goog.events.listen(handler, 'singleclick', singleclickSpy);
@@ -28,6 +32,17 @@ describe('ol.MapBrowserEventHandler', function() {
     });
 
     it('emulates click', function() {
+      handler.emulateClick_(new ol.pointer.PointerEvent('pointerdown',
+          new goog.events.BrowserEvent({
+            type: 'mousedown',
+            target: target,
+            clientX: 0,
+            clientY: 0
+          })));
+      expect(clickSpy.called).to.be.ok();
+    });
+
+    it('emulates singleclick', function() {
       handler.emulateClick_(new ol.pointer.PointerEvent('pointerdown',
           new goog.events.BrowserEvent({
             type: 'mousedown',
