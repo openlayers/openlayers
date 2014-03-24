@@ -26,6 +26,19 @@ goog.require('ol.pointer.PointerEventHandler');
  * @param {ol.Map} map Map.
  * @param {goog.events.BrowserEvent} browserEvent Browser event.
  * @param {?oli.FrameState=} opt_frameState Frame state.
+ * @event singleclick A true single click with no dragging and no double click.
+ *     Note that this event is delayed by 250 ms to ensure that it is not a
+ *     double click.
+ * @event dblclick A true double click, with no dragging.
+ * @event pointerdrag Triggered when a pointer is dragged.
+ * @event pointermove Triggered when a pointer is moved.
+ * @event pointerdown Triggered on pointer down.
+ * @event pointerup Triggered on pointer up.
+ * @event pointerover Triggered when a pointer is over the map's `target`.
+ * @event pointerout Triggered when a pointer is outside the map's `target`.
+ * @event pointerenter Triggered when a pointer enters the map's `target`.
+ * @event pointerleave Triggered when a pointer leaves the map's `target`.
+ * @event pointercancel Triggered when a pointer is no longer registered.
  * @todo stability experimental
  */
 ol.MapBrowserEvent = function(type, map, browserEvent, opt_frameState) {
