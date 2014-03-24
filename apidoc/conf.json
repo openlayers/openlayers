@@ -21,6 +21,7 @@
         "apidoc/plugins/inheritdoc",
         "apidoc/plugins/exports",
         "apidoc/plugins/todo",
+        "apidoc/plugins/event",
         "apidoc/plugins/observable",
         "apidoc/plugins/stability"
     ],

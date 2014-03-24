@@ -102,6 +102,18 @@
     <?js } ?>
 
     <?js
+        var events = doc.events;
+        if (events && events.length && events.forEach) {
+    ?>
+        <h3 class="subsection-title">Events</h3>
+        <?js if (observables && observables.length) { ?>
+        <p>These events are available in addition to the <b>Observable Properties</b> events listed above.</p>
+        <?js } ?>
+        <dl><?js= self.partial('events.tmpl', events) ?></dl>
+
+    <?js } ?>
+
+    <?js
         var members = self.find({kind: 'member', memberof: title === 'Globals'? {isUndefined: true} : doc.longname});
         if (members && members.length && members.forEach) { 
     ?>

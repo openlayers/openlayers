@@ -1,0 +1,21 @@
+<table class="props">
+    <thead>
+  <tr>
+    <th>Name</th>
+    <th class="last">Description</th>
+  </tr>
+  </thead>
+
+  <tbody>
+  <?js
+      obj.forEach(function(prop) {
+        if (!prop) { return; }
+        var setter = prop.readonly ? 'no' : 'yes';
+  ?>
+    <tr>
+      <td class="name"><code><?js= prop.name ?></code></td>
+      <td class="description last"><?js= prop.description ?></td>
+    </tr>
+    <?js }); ?>
+  </tbody>
+</table>

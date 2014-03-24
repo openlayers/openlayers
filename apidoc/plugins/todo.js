@@ -22,6 +22,14 @@ exports.defineTags = function(dictionary) {
           description: description,
           readonly: readonly
         });
+      } else if (parts[0] === 'event') {
+        if (!doclet.events) {
+          doclet.events = [];
+        }
+        doclet.events.push({
+          name: parts[1],
+          description: parts.slice(2).join(' ')
+        });
       }
     }
   });
