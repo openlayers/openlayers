@@ -28,9 +28,23 @@ function collectExports(source) {
   }
 }
 
+function collectOliExports(source) {
+  var oli = source.match(/[^\{]oli\.([^;^ ]*);? ?/g);
+  if (oli) {
+    i = 0; ii = oli.length;
+    for (; i < ii; ++i) {
+      property = 'ol.' + oli[i].match(/oli.([^;]*)/)[1]
+          .replace('.prototype.', '#');
+      api.push(property);
+      unexported.push(property);
+    }
+  }
+}
+
 var encoding = env.conf.encoding || 'utf8';
 var fs = require('jsdoc/fs');
 collectExports(fs.readFileSync('build/src/external/src/exports.js', encoding));
+collectOliExports(fs.readFileSync('externs/oli.js', encoding));
 
 
 exports.handlers = {
