@@ -323,7 +323,7 @@ ol.MapBrowserEventHandler.prototype.isMouseActionButton_ =
   if (ol.LEGACY_IE_SUPPORT && ol.IS_LEGACY_IE) {
     return pointerEvent.button == 1;
   } else {
-    return pointerEvent.button == 0;
+    return pointerEvent.button === 0;
   }
 };
 

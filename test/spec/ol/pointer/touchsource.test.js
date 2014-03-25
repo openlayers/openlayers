@@ -118,8 +118,7 @@ describe('ol.pointer.TouchSource', function() {
   });
 
   function simulateTouchEvent(type, changedTouches, touches) {
-    var touches = goog.isDef(touches) ?
-        touches : changedTouches;
+    touches = goog.isDef(touches) ? touches : changedTouches;
 
     var event = new goog.events.BrowserEvent({
       type: type,

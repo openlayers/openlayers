@@ -1632,9 +1632,10 @@ ol.format.GML.GEOMETRY_NODE_FACTORY_ = function(value, objectStack,
   var multiCurve = goog.object.get(context, 'multiCurve');
   var parentNode = objectStack[objectStack.length - 1].node;
   goog.asserts.assert(ol.xml.isNode(parentNode));
+  var nodeName;
   if (!goog.isArray(value)) {
     goog.asserts.assertInstanceof(value, ol.geom.Geometry);
-    var nodeName = value.getType();
+    nodeName = value.getType();
     if (nodeName === 'MultiPolygon' && multiSurface === true) {
       nodeName = 'MultiSurface';
     } else if (nodeName === 'Polygon' && surface === true) {

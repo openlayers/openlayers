@@ -5,6 +5,7 @@ before_install:
   - "git fetch origin refs/tags/v3.2.2:refs/tags/v3.2.2"
   - "git checkout tags/v3.2.2"
   - "cd ../.."
+  - "npm install"
 
 before_script:
   - "./build.py plovr"

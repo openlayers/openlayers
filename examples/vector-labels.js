@@ -13,56 +13,56 @@ goog.require('ol.style.Text');
 
 
 var myDom = {
-  'points': {
-    'text': document.getElementById('points-text'),
-    'align': document.getElementById('points-align'),
-    'baseline': document.getElementById('points-baseline'),
-    'rotation': document.getElementById('points-rotation'),
-    'font': document.getElementById('points-font'),
-    'weight': document.getElementById('points-weight'),
-    'size': document.getElementById('points-size'),
-    'offset-x': document.getElementById('points-offset-x'),
-    'offset-y': document.getElementById('points-offset-y'),
-    'color': document.getElementById('points-color'),
-    'outline': document.getElementById('points-outline'),
-    'outline-width': document.getElementById('points-outline-width'),
-    'maxreso': document.getElementById('points-maxreso')
+  points: {
+    text: document.getElementById('points-text'),
+    align: document.getElementById('points-align'),
+    baseline: document.getElementById('points-baseline'),
+    rotation: document.getElementById('points-rotation'),
+    font: document.getElementById('points-font'),
+    weight: document.getElementById('points-weight'),
+    size: document.getElementById('points-size'),
+    offsetX: document.getElementById('points-offset-x'),
+    offsetY: document.getElementById('points-offset-y'),
+    color: document.getElementById('points-color'),
+    outline: document.getElementById('points-outline'),
+    outlineWidth: document.getElementById('points-outline-width'),
+    maxreso: document.getElementById('points-maxreso')
   },
-  'lines': {
-    'text': document.getElementById('lines-text'),
-    'align': document.getElementById('lines-align'),
-    'baseline': document.getElementById('lines-baseline'),
-    'rotation': document.getElementById('lines-rotation'),
-    'font': document.getElementById('lines-font'),
-    'weight': document.getElementById('lines-weight'),
-    'size': document.getElementById('lines-size'),
-    'offset-x': document.getElementById('lines-offset-x'),
-    'offset-y': document.getElementById('lines-offset-y'),
-    'color': document.getElementById('lines-color'),
-    'outline': document.getElementById('lines-outline'),
-    'outline-width': document.getElementById('lines-outline-width'),
-    'maxreso': document.getElementById('lines-maxreso')
+  lines: {
+    text: document.getElementById('lines-text'),
+    align: document.getElementById('lines-align'),
+    baseline: document.getElementById('lines-baseline'),
+    rotation: document.getElementById('lines-rotation'),
+    font: document.getElementById('lines-font'),
+    weight: document.getElementById('lines-weight'),
+    size: document.getElementById('lines-size'),
+    offsetX: document.getElementById('lines-offset-x'),
+    offsetY: document.getElementById('lines-offset-y'),
+    color: document.getElementById('lines-color'),
+    outline: document.getElementById('lines-outline'),
+    outlineWidth: document.getElementById('lines-outline-width'),
+    maxreso: document.getElementById('lines-maxreso')
   },
-  'polygons': {
-    'text': document.getElementById('polygons-text'),
-    'align': document.getElementById('polygons-align'),
-    'baseline': document.getElementById('polygons-baseline'),
-    'rotation': document.getElementById('polygons-rotation'),
-    'font': document.getElementById('polygons-font'),
-    'weight': document.getElementById('polygons-weight'),
-    'size': document.getElementById('polygons-size'),
-    'offset-x': document.getElementById('polygons-offset-x'),
-    'offset-y': document.getElementById('polygons-offset-y'),
-    'color': document.getElementById('polygons-color'),
-    'outline': document.getElementById('polygons-outline'),
-    'outline-width': document.getElementById('polygons-outline-width'),
-    'maxreso': document.getElementById('polygons-maxreso')
+  polygons: {
+    text: document.getElementById('polygons-text'),
+    align: document.getElementById('polygons-align'),
+    baseline: document.getElementById('polygons-baseline'),
+    rotation: document.getElementById('polygons-rotation'),
+    font: document.getElementById('polygons-font'),
+    weight: document.getElementById('polygons-weight'),
+    size: document.getElementById('polygons-size'),
+    offsetX: document.getElementById('polygons-offset-x'),
+    offsetY: document.getElementById('polygons-offset-y'),
+    color: document.getElementById('polygons-color'),
+    outline: document.getElementById('polygons-outline'),
+    outlineWidth: document.getElementById('polygons-outline-width'),
+    maxreso: document.getElementById('polygons-maxreso')
   }
 };
 
 var getText = function(feature, resolution, dom) {
-  var type = dom['text'].value;
-  var maxResolution = dom['maxreso'].value;
+  var type = dom.text.value;
+  var maxResolution = dom.maxreso.value;
   var text = feature.getProperties().name;
 
   if (resolution > maxResolution) {
@@ -80,17 +80,17 @@ var getText = function(feature, resolution, dom) {
 
 
 var createTextStyle = function(feature, resolution, dom) {
-  var align = dom['align'].value;
-  var baseline = dom['baseline'].value;
-  var size = dom['size'].value;
-  var offsetX = parseInt(dom['offset-x'].value, 10);
-  var offsetY = parseInt(dom['offset-y'].value, 10);
-  var weight = dom['weight'].value;
-  var rotation = parseFloat(dom['rotation'].value);
-  var font = weight + ' ' + size + ' ' + dom['font'].value;
-  var fillColor = dom['color'].value;
-  var outlineColor = dom['outline'].value;
-  var outlineWidth = parseInt(dom['outline-width'].value, 10);
+  var align = dom.align.value;
+  var baseline = dom.baseline.value;
+  var size = dom.size.value;
+  var offsetX = parseInt(dom.offsetX.value, 10);
+  var offsetY = parseInt(dom.offsetY.value, 10);
+  var weight = dom.weight.value;
+  var rotation = parseFloat(dom.rotation.value);
+  var font = weight + ' ' + size + ' ' + dom.font.value;
+  var fillColor = dom.color.value;
+  var outlineColor = dom.outline.value;
+  var outlineWidth = parseInt(dom.outlineWidth.value, 10);
 
   return new ol.style.Text({
     textAlign: align,
@@ -195,17 +195,17 @@ var map = new ol.Map({
   })
 });
 
-var refreshPoints = function() {
+$('#refresh-points').click(function() {
   vectorPoints.setStyle(createPointStyleFunction());
-};
+});
 
-var refreshLines = function() {
+$('#refresh-lines').click(function() {
   vectorLines.setStyle(createLineStyleFunction());
-};
+});
 
-var refreshPolygons = function() {
+$('#refresh-polygons').click(function() {
   vectorPolygons.setStyle(createPolygonStyleFunction());
-};
+});
 
 
 /**
