@@ -5,6 +5,7 @@
  */
 
 var api = [];
+var unexported = [];
 
 function collectExports(source) {
   var i, ii, symbol, property;
@@ -56,7 +57,7 @@ exports.handlers = {
       }
     }
     if (api.indexOf(e.doclet.longname) > -1) {
-      // Add params of API symbols to the API
+      // Add params and events of API symbols to the API
       var names, name;
       var params = e.doclet.params;
       if (params) {
@@ -66,9 +67,20 @@ exports.handlers = {
             for (j = 0, jj=names.length; j < jj; ++j) {
               name = names[j];
               if (api.indexOf(name) === -1) {
-                api.push(name);
+                unexported.push(name);
               }
             }
+          }
+        }
+      }
+      var fires = e.doclet.fires;
+      var event;
+      if (fires) {
+        for (i = 0, ii = fires.length; i < ii; ++i) {
+          event = fires[i].split(' ').pop();
+          name = event.replace('event:', '');
+          if (api.indexOf(name) === -1) {
+            unexported.push(name);
           }
         }
       }
@@ -82,7 +94,8 @@ function filter(e) {
   if (e.doclet) {
     var fqn = e.doclet.longname;
     if (fqn) {
-      e.doclet.undocumented = (api.indexOf(fqn) === -1);
+      e.doclet.undocumented = (api.indexOf(fqn) === -1 && unexported.indexOf(fqn) === -1);
+      e.doclet.unexported = (unexported.indexOf(fqn) !== -1);
       // Remove parents that are not part of the API
       var parent;
       var parents = e.doclet.augments;
