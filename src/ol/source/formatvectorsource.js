@@ -40,62 +40,18 @@ ol.source.FormatVector = function(options) {
    */
   this.format = options.format;
 
-  /**
-   * @protected
-   * @type {function(Event)}
-   */
-  this.handleXhrIo = goog.bind(this.handleXhrIo_, this);
-
 };
 goog.inherits(ol.source.FormatVector, ol.source.Vector);
 
 
 /**
- * @param {Event} event Event.
- * @private
- */
-ol.source.FormatVector.prototype.handleXhrIo_ = function(event) {
-  var xhrIo = event.target;
-  goog.asserts.assertInstanceof(xhrIo, goog.net.XhrIo);
-  if (xhrIo.isSuccess()) {
-    var type = this.format.getType();
-    /** @type {ArrayBuffer|Document|Node|Object|string|undefined} */
-    var source;
-    if (type == ol.format.FormatType.BINARY &&
-        ol.BrowserFeature.HAS_ARRAY_BUFFER) {
-      source = xhrIo.getResponse();
-      goog.asserts.assertInstanceof(source, ArrayBuffer);
-    } else if (type == ol.format.FormatType.JSON) {
-      source = xhrIo.getResponseText();
-    } else if (type == ol.format.FormatType.TEXT) {
-      source = xhrIo.getResponseText();
-    } else if (type == ol.format.FormatType.XML) {
-      if (!goog.userAgent.IE) {
-        source = xhrIo.getResponseXml();
-      }
-      if (!goog.isDefAndNotNull(source)) {
-        source = ol.xml.load(xhrIo.getResponseText());
-      }
-    } else {
-      goog.asserts.fail();
-    }
-    if (goog.isDefAndNotNull(source)) {
-      this.readFeatures(source);
-    } else {
-      this.setState(ol.source.State.ERROR);
-      goog.asserts.fail();
-    }
-  } else {
-    this.setState(ol.source.State.ERROR);
-  }
-  goog.dispose(xhrIo);
-};
-
-
-/**
  * @param {goog.Uri|string} url URL.
+ * @param {function(this: T, Array.<ol.Feature>)} callback Callback.
+ * @param {T} thisArg Value to use as `this` when executing `callback`.
+ * @template T
  */
-ol.source.FormatVector.prototype.loadFeaturesFromURL = function(url) {
+ol.source.FormatVector.prototype.loadFeaturesFromURL =
+    function(url, callback, thisArg) {
   var xhrIo = new goog.net.XhrIo();
   var type = this.format.getType();
   var responseType;
@@ -107,13 +63,55 @@ ol.source.FormatVector.prototype.loadFeaturesFromURL = function(url) {
     responseType = goog.net.XhrIo.ResponseType.TEXT;
   }
   xhrIo.setResponseType(responseType);
-  goog.events.listen(xhrIo, goog.net.EventType.COMPLETE, this.handleXhrIo);
+  goog.events.listen(xhrIo, goog.net.EventType.COMPLETE,
+      /**
+       * @param {Event} event Event.
+       * @private
+       * @this {ol.source.FormatVector}
+       */
+      function(event) {
+        var xhrIo = event.target;
+        goog.asserts.assertInstanceof(xhrIo, goog.net.XhrIo);
+        if (xhrIo.isSuccess()) {
+          var type = this.format.getType();
+          /** @type {ArrayBuffer|Document|Node|Object|string|undefined} */
+          var source;
+          if (type == ol.format.FormatType.BINARY &&
+              ol.BrowserFeature.HAS_ARRAY_BUFFER) {
+            source = xhrIo.getResponse();
+            goog.asserts.assertInstanceof(source, ArrayBuffer);
+          } else if (type == ol.format.FormatType.JSON) {
+            source = xhrIo.getResponseText();
+          } else if (type == ol.format.FormatType.TEXT) {
+            source = xhrIo.getResponseText();
+          } else if (type == ol.format.FormatType.XML) {
+            if (!goog.userAgent.IE) {
+              source = xhrIo.getResponseXml();
+            }
+            if (!goog.isDefAndNotNull(source)) {
+              source = ol.xml.load(xhrIo.getResponseText());
+            }
+          } else {
+            goog.asserts.fail();
+          }
+          if (goog.isDefAndNotNull(source)) {
+            callback.call(thisArg, this.readFeatures(source));
+          } else {
+            this.setState(ol.source.State.ERROR);
+            goog.asserts.fail();
+          }
+        } else {
+          this.setState(ol.source.State.ERROR);
+        }
+        goog.dispose(xhrIo);
+      }, false, this);
   xhrIo.send(url);
 };
 
 
 /**
  * @param {ArrayBuffer|Document|Node|Object|string} source Source.
+ * @return {Array.<ol.Feature>} Features.
  */
 ol.source.FormatVector.prototype.readFeatures = function(source) {
   var format = this.format;
@@ -133,6 +131,5 @@ ol.source.FormatVector.prototype.readFeatures = function(source) {
       }
     }
   }
-  this.addFeaturesInternal(features);
-  this.setState(ol.source.State.READY);
+  return features;
 };

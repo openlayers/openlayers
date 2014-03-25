@@ -95,7 +95,7 @@ var vectorSource = new ol.source.ServerVector({
     var url = 'http://overpass-api.de/api/xapi?map?bbox=' +
         epsg4326Extent.join(',');
     $.ajax(url).then(function(response) {
-      vectorSource.readFeatures(response);
+      vectorSource.addFeatures(vectorSource.readFeatures(response));
     });
   },
   strategy: ol.loadingstrategy.createTile(new ol.tilegrid.XYZ({
