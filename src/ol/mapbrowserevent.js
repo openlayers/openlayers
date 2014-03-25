@@ -41,16 +41,19 @@ ol.MapBrowserEvent = function(type, map, browserEvent, opt_frameState) {
   /**
    * @const
    * @type {Event}
+   * @todo stability experimental
    */
   this.originalEvent = browserEvent.getBrowserEvent();
 
   /**
    * @type {ol.Coordinate}
+   * @todo stability experimental
    */
   this.coordinate = map.getEventCoordinate(this.originalEvent);
 
   /**
    * @type {ol.Pixel}
+   * @todo stability experimental
    */
   this.pixel = map.getEventPixel(this.originalEvent);
 
@@ -464,16 +467,19 @@ ol.MapBrowserEvent.EventType = {
    * A true single click with no dragging and no double click. Note that this
    * event is delayed by 250 ms to ensure that it is not a double click.
    * @event ol.MapBrowserEvent#singleclick
+   * @todo stability experimental
    */
   SINGLECLICK: 'singleclick',
   /**
    * A true double click, with no dragging.
    * @event ol.MapBrowserEvent#dblclick
+   * @todo stability experimental
    */
   DBLCLICK: goog.events.EventType.DBLCLICK,
   /**
    * Triggered when a pointer is dragged.
    * @event ol.MapBrowserEvent#pointerdrag
+   * @todo stability experimental
    */
   POINTERDRAG: 'pointerdrag',
 
@@ -481,6 +487,7 @@ ol.MapBrowserEvent.EventType = {
   /**
    * Triggered when a pointer is moved.
    * @event ol.MapBrowserEvent#pointermove
+   * @todo stability experimental
    */
   POINTERMOVE: 'pointermove',
   POINTERDOWN: 'pointerdown',
@@ -491,4 +498,3 @@ ol.MapBrowserEvent.EventType = {
   POINTERLEAVE: 'pointerleave',
   POINTERCANCEL: 'pointercancel'
 };
-
