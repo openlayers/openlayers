@@ -708,6 +708,26 @@
  */
 
 /**
+ * @typedef {Object} olx.source.TileVectorOptions
+ * @property {Array.<ol.Attribution>|undefined} attributions Attributions.
+ * @property {ol.proj.ProjectionLike} defaultProjection Default projection.
+ * @property {ol.Extent|undefined} extent Extent.
+ * @property {string|undefined} logo Logo.
+ * @property {GeoJSONObject|undefined} object Object.
+ * @property {ol.proj.ProjectionLike} projection Destination projection.  If
+ *     provided, features will be transformed to this projection.  If not
+ *     provided, features will not be transformed.
+ * @property {ol.tilegrid.TileGrid} tileGrid Tile grid.
+ * @property {ol.TileUrlFunctionType|undefined} tileUrlFunction Optional
+ *     function to get tile URL given a tile coordinate and the projection.
+ *     Required if url or urls are not provided.
+ * @property {string|undefined} url URL template.  Must include `{x}`, `{y}`,
+ *     and `{z}` placeholders.
+ * @property {Array.<string>|undefined} urls An array of URL templates.
+ * @property {number} z Z value of tiles to request. FIXME remove!
+ */
+
+/**
  * @typedef {Object} olx.source.TopoJSONOptions
  * @property {Array.<ol.Attribution>|undefined} attributions Attributions.
  * @property {ol.proj.ProjectionLike} defaultProjection Default projection.
