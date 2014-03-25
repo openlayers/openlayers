@@ -2,7 +2,9 @@ goog.provide('ol.DrawEvent');
 goog.provide('ol.interaction.Draw');
 
 goog.require('goog.asserts');
+goog.require('goog.events');
 goog.require('goog.events.Event');
+goog.require('goog.events.EventType');
 goog.require('ol.Collection');
 goog.require('ol.Coordinate');
 goog.require('ol.Feature');
@@ -242,6 +244,11 @@ ol.interaction.Draw.prototype.setMap = function(map) {
     // removing from a map, clean up
     this.abortDrawing_();
   }
+  else {
+    var viewport = map.getViewport();
+    goog.events.listen(viewport, goog.events.EventType.MOUSEOUT,
+        this.handleMouseOut, false, this);
+  }
   this.overlay_.setMap(map);
   goog.base(this, 'setMap', map);
 };
@@ -318,6 +325,16 @@ ol.interaction.Draw.prototype.handlePointerMove_ = function(event) {
     this.modifyDrawing_(event);
   }
   return true;
+};
+
+
+/**
+ * Handle viewport mouseout during drawing
+ */
+ol.interaction.Draw.prototype.handleMouseOut = function() {
+  if (this.mode_ === ol.interaction.DrawMode.POINT) {
+    this.abortDrawing_();
+  }
 };
 
 
