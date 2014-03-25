@@ -153,14 +153,11 @@ ol.MapProperty = {
  * The above snippet creates a map with a MapQuest OSM layer on a 2D view and
  * renders it to a DOM element with the id `map`.
  *
- * In addition to the events listed below, the map relays
- * {@link ol.MapBrowserEvent} events.
- *
  * @constructor
  * @extends {ol.Object}
  * @param {olx.MapOptions} options Map options.
- * @event moveend Triggered after the map is moved.
- * @event postrender Triggered after a map frame is rendered.
+ * @fires {@link ol.MapEvent} ol.MapEvent
+ * @fires {@link ol.MapBrowserEvent} ol.MapBrowserEvent
  * @todo stability experimental
  * @todo observable layergroup {ol.layer.LayerGroup} a layer group containing
  *       the layers in this map.

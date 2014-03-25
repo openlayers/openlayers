@@ -22,14 +22,12 @@ exports.defineTags = function(dictionary) {
           description: description,
           readonly: readonly
         });
-      } else if (parts[0] === 'event') {
-        if (!doclet.events) {
-          doclet.events = [];
+        if (!doclet.fires) {
+          doclet.fires = [];
         }
-        doclet.events.push({
-          name: parts[1],
-          description: parts.slice(2).join(' ')
-        });
+        if (doclet.fires.indexOf('{@link ol.ObjectEvent} ol.event:ObjectEvent') === -1) {
+          doclet.fires.push('{@link ol.ObjectEvent} ol.event:ObjectEvent');
+        }
       }
     }
   });
