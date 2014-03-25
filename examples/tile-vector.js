@@ -6,6 +6,8 @@ goog.require('ol.layer.Vector');
 goog.require('ol.proj');
 goog.require('ol.source.Stamen');
 goog.require('ol.source.TileVector');
+goog.require('ol.style.Stroke');
+goog.require('ol.style.Style');
 goog.require('ol.tilegrid.XYZ');
 
 var vectorSource = new ol.source.TileVector({
@@ -20,8 +22,24 @@ var vectorSource = new ol.source.TileVector({
   z: 11
 });
 
+var styleCache = {};
+
 var vector = new ol.layer.Vector({
-  source: vectorSource
+  source: vectorSource,
+  style: function(feature, resolution) {
+    var strahler = feature.get('strahler');
+    var styleArray = styleCache[strahler];
+    if (!styleArray) {
+      styleArray = [new ol.style.Style({
+        stroke: new ol.style.Stroke({
+          color: '#29439c',
+          width: strahler
+        })
+      })];
+      styleCache[strahler] = styleArray;
+    }
+    return styleArray;
+  }
 });
 
 var raster = new ol.layer.Tile({
