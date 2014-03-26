@@ -73,7 +73,7 @@ exports.handlers = {
       }
     }
     if (api.indexOf(e.doclet.longname) > -1) {
-      // Add params and events of API symbols to the API
+      // Add params, links and events of API symbols to the API
       var names, name;
       var params = e.doclet.params;
       if (params) {
@@ -82,10 +82,18 @@ exports.handlers = {
           if (names) {
             for (j = 0, jj=names.length; j < jj; ++j) {
               name = names[j];
-              if (api.indexOf(name) === -1) {
+              if (unexported.indexOf(name) === -1) {
                 unexported.push(name);
               }
             }
+          }
+        }
+      }
+      var links = e.doclet.comment.match(/\{@link ([^\}]*)\}/g);
+      if (links) {
+        for (i=0, ii=links.length; i < ii; ++i) {
+          if (unexported.indexOf(links[i]) === -1) {
+            unexported.push(links[i].match(/\{@link (.*)\}/)[1]);
           }
         }
       }
@@ -95,42 +103,40 @@ exports.handlers = {
         for (i = 0, ii = fires.length; i < ii; ++i) {
           event = fires[i].split(' ').pop();
           name = event.replace('event:', '');
-          if (api.indexOf(name) === -1) {
+          if (unexported.indexOf(name) === -1) {
             unexported.push(name);
           }
         }
       }
     }
-  }
+  },
   
-};
-
-
-function filter(e) {
-  if (e.doclet) {
-    var fqn = e.doclet.longname;
-    if (fqn) {
-      e.doclet.undocumented = (api.indexOf(fqn) === -1 && unexported.indexOf(fqn) === -1);
-      e.doclet.unexported = (unexported.indexOf(fqn) !== -1);
-      // Remove parents that are not part of the API
-      var parent;
-      var parents = e.doclet.augments;
-      if (parents) {
-        for (var i = parents.length - 1; i >= 0; --i) {
-          parent = parents[i];
-          if (api.indexOf(parent) === -1) {
-            parents.splice(i, 1);
+  parseComplete: function(e) {
+    for (var j = e.doclets.length - 1; j >= 0; --j) {
+      var doclet = e.doclets[j];
+      if (doclet.kind == 'namespace') {
+        continue;
+      }
+      var fqn = doclet.longname;
+      if (fqn) {
+        doclet.unexported = (unexported.indexOf(fqn) !== -1);
+        var undocumented = (api.indexOf(fqn) === -1 && !doclet.unexported);
+        // Remove parents that are not part of the API
+        var parent;
+        var parents = doclet.augments;
+        if (parents) {
+          for (var i = parents.length - 1; i >= 0; --i) {
+            parent = parents[i];
+            if (api.indexOf(parent) === -1 && unexported.indexOf(parent) === -1) {
+              parents.splice(i, 1);
+            }
           }
+        }
+        if (undocumented) {
+          e.doclets.splice(j, 1);
         }
       }
     }
   }
-}
 
-exports.nodeVisitor = {
-
-  visitNode: function(node, e, parser, currentSourceName) {
-    // filter out non-API symbols before the addDocletRef finisher is called
-    e.finishers.unshift(filter);
-  }
 };
