@@ -82,7 +82,7 @@ exports.handlers = {
           if (names) {
             for (j = 0, jj=names.length; j < jj; ++j) {
               name = names[j];
-              if (api.indexOf(name) === -1) {
+              if (unexported.indexOf(name) === -1) {
                 unexported.push(name);
               }
             }
@@ -95,7 +95,7 @@ exports.handlers = {
         for (i = 0, ii = fires.length; i < ii; ++i) {
           event = fires[i].split(' ').pop();
           name = event.replace('event:', '');
-          if (api.indexOf(name) === -1) {
+          if (unexported.indexOf(name) === -1) {
             unexported.push(name);
           }
         }
