@@ -1,7 +1,9 @@
 /*
- * This plugin parses goog.exportSymbol and goog.exportProperty calls to build
- * a list of API symbols and properties. Everything else is marked undocumented,
- * which will remove it from the docs.
+ * This plugin parses externs/oli.js as well as goog.exportSymbol and
+ * goog.exportProperty calls to build a list of API symbols and properties.
+ * Unexported modules linked from @param or @fires will be marked unexported,
+ * and the documentation will not contain the constructor. Everything else is
+ * marked undocumented, which will remove it from the docs.
  */
 
 var api = [];

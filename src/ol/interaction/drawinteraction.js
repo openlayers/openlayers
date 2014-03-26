@@ -29,7 +29,17 @@ goog.require('ol.style.Style');
  * @enum {string}
  */
 ol.DrawEventType = {
+  /**
+   * Triggered upon feature draw start
+   * @event ol.DrawEvent#drawstart
+   * @todo stability experimental
+   */
   DRAWSTART: 'drawstart',
+  /**
+   * Triggered upon feature draw end
+   * @event ol.DrawEvent#drawend
+   * @todo stability experimental
+   */
   DRAWEND: 'drawend'
 };
 
@@ -47,7 +57,9 @@ ol.DrawEvent = function(type, feature) {
   goog.base(this, type);
 
   /**
+   * The feature being drawn.
    * @type {ol.Feature}
+   * @todo stability experimental
    */
   this.feature = feature;
 
@@ -60,6 +72,7 @@ goog.inherits(ol.DrawEvent, goog.events.Event);
  * Interaction that allows drawing geometries
  * @constructor
  * @extends {ol.interaction.Pointer}
+ * @fires {@link ol.DrawEvent} ol.DrawEvent
  * @param {olx.interaction.DrawOptions} options Options.
  * @todo stability experimental
  */

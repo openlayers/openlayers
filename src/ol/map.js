@@ -156,8 +156,9 @@ ol.MapProperty = {
  * @constructor
  * @extends {ol.Object}
  * @param {olx.MapOptions} options Map options.
- * @fires {@link ol.MapEvent} ol.MapEvent
  * @fires {@link ol.MapBrowserEvent} ol.MapBrowserEvent
+ * @fires {@link ol.MapEvent} ol.MapEvent
+ * @fires {@link ol.render.Event} ol.render.Event
  * @todo stability experimental
  * @todo observable layergroup {ol.layer.LayerGroup} a layer group containing
  *       the layers in this map.
@@ -165,7 +166,7 @@ ol.MapProperty = {
  * @todo observable target {string|Element} the Element or id of the Element
  *       that the map is rendered in.
  * @todo observable view {ol.IView} the view that controls this map
-† */
+ */
 ol.Map = function(options) {
 
   goog.base(this);

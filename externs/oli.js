@@ -11,7 +11,7 @@ var oli;
 
 
 /** @interface */
-oli.CollectionEvent = function() {};
+oli.CollectionEvent;
 
 
 /** @type {*} */
@@ -170,7 +170,7 @@ oli.View2DState.prototype.rotation;
 /**
  * @interface
  */
-oli.control.Control = function() {};
+oli.control.Control;
 
 
 /**
@@ -182,7 +182,7 @@ oli.control.Control.prototype.setMap = function(map) {};
 
 
 /** @interface */
-oli.interaction.DragAndDropEvent = function() {};
+oli.interaction.DragAndDropEvent;
 
 
 /** @type {Array.<ol.Feature>} */
@@ -195,7 +195,7 @@ oli.interaction.DragAndDropEvent.prototype.projection;
 
 
 /** @interface */
-oli.render.Event = function() {};
+oli.render.Event;
 
 
 /** @type {CanvasRenderingContext2D|null|undefined} */

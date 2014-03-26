@@ -8,7 +8,8 @@ goog.require('goog.events.EventType');
 
 /**
  * An event target providing convenient methods for listener registration
- * and unregistration.
+ * and unregistration. A generic `change` event is always available through
+ * {@link ol.Observable#dispatchChangeEvent}.
  * @constructor
  * @extends {goog.events.EventTarget}
  * @suppress {checkStructDictInheritance}
@@ -30,6 +31,9 @@ goog.inherits(ol.Observable, goog.events.EventTarget);
 
 
 /**
+ * Dispatches a `change` event. Register a listener for this event to get
+ * notified of changes.
+ * @fires change
  * @todo stability experimental
  */
 ol.Observable.prototype.dispatchChangeEvent = function() {

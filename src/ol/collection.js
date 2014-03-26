@@ -16,7 +16,17 @@ goog.require('ol.Object');
  * @enum {string}
  */
 ol.CollectionEventType = {
+  /**
+   * Triggered when an item is added to the collection.
+   * @event ol.CollectionEvent#add
+   * @todo stability experimental
+   */
   ADD: 'add',
+  /**
+   * Triggered when an item is removed from the collection.
+   * @event ol.CollectionEvent#remove
+   * @todo stability experimental
+   */
   REMOVE: 'remove'
 };
 
@@ -35,7 +45,9 @@ ol.CollectionEvent = function(type, opt_element, opt_target) {
   goog.base(this, type, opt_target);
 
   /**
+   * The element that is added to or removed from the collection.
    * @type {*}
+   * @todo stability experimental
    */
   this.element = opt_element;
 
@@ -56,6 +68,7 @@ ol.CollectionProperty = {
  * A mutable MVC Array.
  * @constructor
  * @extends {ol.Object}
+ * @fires {@link ol.CollectionEvent} ol.CollectionEvent
  * @param {Array=} opt_array Array.
  * @todo stability experimental
  * @todo observable length {number} readonly the length of the array
