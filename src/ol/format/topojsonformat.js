@@ -51,10 +51,11 @@ ol.format.TopoJSON.EXTENSIONS_ = ['.topojson'];
  *     values indicate arcs need to be reversed.
  * @param {Array.<Array.<ol.Coordinate>>} arcs Array of arcs (already
  *     transformed).
- * @return {Array.<Array.<ol.Coordinate>>} Coordinates array.
+ * @return {Array.<ol.Coordinate>} Coordinates array.
  * @private
  */
 ol.format.TopoJSON.concatenateArcs_ = function(indices, arcs) {
+  /** @type {Array.<ol.Coordinate>} */
   var coordinates = [];
   var index, arc;
   var i, ii;
@@ -133,7 +134,7 @@ ol.format.TopoJSON.readMultiPointGeometry_ = function(object, scale,
  */
 ol.format.TopoJSON.readLineStringGeometry_ = function(object, arcs) {
   var coordinates = ol.format.TopoJSON.concatenateArcs_(object.arcs, arcs);
-  return new ol.geom.LineString(goog.array.flatten(coordinates));
+  return new ol.geom.LineString(coordinates);
 };
 
 
