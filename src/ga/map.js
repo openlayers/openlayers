@@ -13,6 +13,7 @@ goog.require('ol.Map');
 goog.require('ol.RendererHint');
 goog.require('ol.View2D');
 goog.require('ol.control.ScaleLine');
+goog.require('ol.interaction');
 goog.require('ol.proj.EPSG21781');
 goog.require('ol.source.State');
 goog.require('ol.extent');
@@ -88,6 +89,8 @@ ga.Map = function(options) {
   }
   options.view = view;
   options.ol3Logo = false;
+  options.interactions = goog.isDef(options.interactions) ? options.interactions : ol.interaction.defaults();
+
   goog.base(this, options);
 
   this.addControl(new ol.control.ScaleLine());
@@ -101,10 +104,14 @@ ga.Map = function(options) {
   this.geocoderCrossElement_ = null;
   this.geocoderOverlay_ = null;
   this.createGeocoderDialog_();
-
-  var tooltip = new ga.Tooltip();
-  tooltip.setMap(this);
-  this.registerDisposable(tooltip);
+  
+  options.tooltip = goog.isDefAndNotNull(options.tooltip) ? options.tooltip : true;
+  
+  if (options.tooltip) {
+    var tooltip = new ga.Tooltip();
+    tooltip.setMap(this);
+    this.registerDisposable(tooltip);
+  }
 };
 goog.inherits(ga.Map, ol.Map);
 
