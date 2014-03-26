@@ -115,7 +115,8 @@ ol.source.ImageVector.prototype.canvasFunctionInternal_ =
       resolution);
 
   var loading = false;
-  this.source_.forEachFeatureInExtent(extent,
+  this.source_.forEachFeatureInExtentAtResolution(
+      extent, resolution / pixelRatio,
       /**
        * @param {ol.Feature} feature Feature.
        */
