@@ -55,8 +55,19 @@ ol.layer.Heatmap = function(opt_options) {
    */
   var styleCache = new Array(256);
 
+  var weight = goog.isDef(options.weight) ? options.weight : 'weight';
+  var weightFunction;
+  if (goog.isString(weight)) {
+    weightFunction = function(feature) {
+      return feature.get(weight);
+    };
+  } else {
+    weightFunction = weight;
+  }
+  goog.asserts.assert(goog.isFunction(weightFunction));
+
   this.setStyle(function(feature, resolution) {
-    var weight = feature.get('weight');
+    var weight = weightFunction(feature);
     var opacity = goog.isDef(weight) ? weight : 1;
     // cast to 8 bits
     var index = (255 * opacity) | 0;

@@ -595,6 +595,8 @@
  * @property {number|undefined} radius Radius size in pixels. Default is `8`.
  * @property {number|undefined} blur Blur size in pixels. Default is `15`.
  * @property {number|undefined} shadow Shadow size in pixels. Default is `250`.
+ * @property {string|function(ol.Feature):number|undefined} weight The feature attribute to use for the
+ *     weight or a function that returns a weight from a feature. Default is `weight`.
  * @property {number|undefined} minResolution The minimum resolution
  *      (inclusive) at which this layer will be visible.
  * @property {number|undefined} maxResolution The maximum resolution
