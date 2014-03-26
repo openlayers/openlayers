@@ -2,6 +2,7 @@ goog.provide('ol.format.JSONFeature');
 
 goog.require('goog.asserts');
 goog.require('goog.json');
+goog.require('ol.BrowserFeature');
 goog.require('ol.format.Feature');
 goog.require('ol.format.FormatType');
 
@@ -26,7 +27,12 @@ ol.format.JSONFeature.prototype.getObject_ = function(source) {
   if (goog.isObject(source)) {
     return source;
   } else if (goog.isString(source)) {
-    var object = goog.json.parse(source);
+    var object;
+    if (ol.BrowserFeature.HAS_JSON_PARSE) {
+      object = /** @type {Object} */ (JSON.parse(source));
+    } else {
+      object = goog.json.parse(source);
+    }
     return goog.isDef(object) ? object : null;
   } else {
     goog.asserts.fail();

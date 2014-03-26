@@ -115,7 +115,7 @@ ol.source.VectorFile.prototype.handleXhrIo_ = function(event) {
       source = xhrIo.getResponse();
       goog.asserts.assertInstanceof(source, ArrayBuffer);
     } else if (type == ol.format.FormatType.JSON) {
-      source = xhrIo.getResponseJson();
+      source = xhrIo.getResponseText();
     } else if (type == ol.format.FormatType.TEXT) {
       source = xhrIo.getResponseText();
     } else if (type == ol.format.FormatType.XML) {
