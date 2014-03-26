@@ -12,6 +12,7 @@ goog.require('ol.source.Source');
 /**
  * @constructor
  * @extends {ol.layer.Base}
+ * @fires {@link ol.render.Event} ol.render.Event
  * @param {olx.layer.LayerOptions} options Layer options.
  * @todo stability experimental
  * @todo observable brightness {number} the brightness of the layer

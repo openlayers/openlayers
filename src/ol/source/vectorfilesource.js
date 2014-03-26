@@ -22,6 +22,7 @@ goog.require('ol.xml');
 /**
  * @constructor
  * @extends {ol.source.Vector}
+ * @fires {@link ol.source.VectorEvent} ol.source.VectorEvent
  * @param {olx.source.VectorFileOptions=} opt_options Options.
  * @todo stability experimental
  */

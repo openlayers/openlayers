@@ -1,10 +1,13 @@
 /*
- * This plugin parses goog.exportSymbol and goog.exportProperty calls to build
- * a list of API symbols and properties. Everything else is marked undocumented,
- * which will remove it from the docs.
+ * This plugin parses externs/oli.js as well as goog.exportSymbol and
+ * goog.exportProperty calls to build a list of API symbols and properties.
+ * Unexported modules linked from @param or @fires will be marked unexported,
+ * and the documentation will not contain the constructor. Everything else is
+ * marked undocumented, which will remove it from the docs.
  */
 
 var api = [];
+var unexported = [];
 
 function collectExports(source) {
   var i, ii, symbol, property;
@@ -27,9 +30,23 @@ function collectExports(source) {
   }
 }
 
+function collectOliExports(source) {
+  var oli = source.match(/[^\{]oli\.([^;^ ]*);? ?/g);
+  if (oli) {
+    i = 0; ii = oli.length;
+    for (; i < ii; ++i) {
+      property = 'ol.' + oli[i].match(/oli.([^;]*)/)[1]
+          .replace('.prototype.', '#');
+      api.push(property);
+      unexported.push(property);
+    }
+  }
+}
+
 var encoding = env.conf.encoding || 'utf8';
 var fs = require('jsdoc/fs');
 collectExports(fs.readFileSync('build/src/external/src/exports.js', encoding));
+collectOliExports(fs.readFileSync('externs/oli.js', encoding));
 
 
 exports.handlers = {
@@ -56,7 +73,7 @@ exports.handlers = {
       }
     }
     if (api.indexOf(e.doclet.longname) > -1) {
-      // Add params of API symbols to the API
+      // Add params and events of API symbols to the API
       var names, name;
       var params = e.doclet.params;
       if (params) {
@@ -66,9 +83,20 @@ exports.handlers = {
             for (j = 0, jj=names.length; j < jj; ++j) {
               name = names[j];
               if (api.indexOf(name) === -1) {
-                api.push(name);
+                unexported.push(name);
               }
             }
+          }
+        }
+      }
+      var fires = e.doclet.fires;
+      var event;
+      if (fires) {
+        for (i = 0, ii = fires.length; i < ii; ++i) {
+          event = fires[i].split(' ').pop();
+          name = event.replace('event:', '');
+          if (api.indexOf(name) === -1) {
+            unexported.push(name);
           }
         }
       }
@@ -82,7 +110,8 @@ function filter(e) {
   if (e.doclet) {
     var fqn = e.doclet.longname;
     if (fqn) {
-      e.doclet.undocumented = (api.indexOf(fqn) === -1);
+      e.doclet.undocumented = (api.indexOf(fqn) === -1 && unexported.indexOf(fqn) === -1);
+      e.doclet.unexported = (unexported.indexOf(fqn) !== -1);
       // Remove parents that are not part of the API
       var parent;
       var parents = e.doclet.augments;

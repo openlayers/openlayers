@@ -8,6 +8,7 @@ goog.require('ol.source.VectorFile');
 /**
  * @constructor
  * @extends {ol.source.VectorFile}
+ * @fires {@link ol.source.VectorEvent} ol.source.VectorEvent
  * @param {olx.source.GeoJSONOptions=} opt_options Options.
  * @todo stability experimental
  */

@@ -31,7 +31,17 @@ ol.DRAG_BOX_HYSTERESIS_PIXELS_SQUARED =
  * @enum {string}
  */
 ol.DragBoxEventType = {
+  /**
+   * Triggered upon drag box start.
+   * @event ol.DragBoxEvent#boxstart
+   * @todo stability experimental
+   */
   BOXSTART: 'boxstart',
+  /**
+   * Triggered upon drag box end.
+   * @event ol.DragBoxEvent#boxstart
+   * @todo stability experimental
+   */
   BOXEND: 'boxend'
 };
 
@@ -70,6 +80,7 @@ goog.inherits(ol.DragBoxEvent, goog.events.Event);
  *
  * @constructor
  * @extends {ol.interaction.Pointer}
+ * @fires {@link ol.DragBoxEvent} ol.DragBoxEvent
  * @param {olx.interaction.DragBoxOptions=} opt_options Options.
  * @todo stability experimental
  */

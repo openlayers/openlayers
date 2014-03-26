@@ -156,6 +156,9 @@ ol.MapProperty = {
  * @constructor
  * @extends {ol.Object}
  * @param {olx.MapOptions} options Map options.
+ * @fires {@link ol.MapBrowserEvent} ol.MapBrowserEvent
+ * @fires {@link ol.MapEvent} ol.MapEvent
+ * @fires {@link ol.render.Event} ol.render.Event
  * @todo stability experimental
  * @todo observable layergroup {ol.layer.LayerGroup} a layer group containing
  *       the layers in this map.
@@ -766,7 +769,8 @@ ol.Map.prototype.getViewport = function() {
 /**
  * @return {Element} The map's overlay container. Elements added to this
  * container will let mousedown and touchstart events through to the map, so
- * clicks and gestures on an overlay will trigger MapBrowserEvent events.
+ * clicks and gestures on an overlay will trigger {@link ol.MapBrowserEvent}
+ * events.
  */
 ol.Map.prototype.getOverlayContainer = function() {
   return this.overlayContainer_;
@@ -776,7 +780,8 @@ ol.Map.prototype.getOverlayContainer = function() {
 /**
  * @return {Element} The map's overlay container. Elements added to this
  * container won't let mousedown and touchstart events through to the map, so
- * clicks and gestures on an overlay don't trigger any MapBrowserEvent.
+ * clicks and gestures on an overlay don't trigger any
+ * {@link ol.MapBrowserEvent}.
  */
 ol.Map.prototype.getOverlayContainerStopEvent = function() {
   return this.overlayContainerStopEvent_;

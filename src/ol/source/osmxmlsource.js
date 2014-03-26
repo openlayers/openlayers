@@ -8,6 +8,7 @@ goog.require('ol.source.VectorFile');
 /**
  * @constructor
  * @extends {ol.source.VectorFile}
+ * @fires {@link ol.source.VectorEvent} ol.source.VectorEvent
  * @param {olx.source.OSMXMLOptions=} opt_options Options.
  */
 ol.source.OSMXML = function(opt_options) {

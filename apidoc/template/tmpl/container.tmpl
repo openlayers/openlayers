@@ -27,8 +27,7 @@
     <?js if (doc.kind === 'module' && doc.module) { ?>
         <?js= self.partial('method.tmpl', doc.module) ?>
     <?js } ?>
-    
-    <?js if (doc.kind === 'class') { ?>
+    <?js if (!doc.unexported && doc.kind === 'class') { ?>
         <?js= self.partial('method.tmpl', doc) ?>
     <?js } else { ?>
         <?js if (doc.description) { ?>
@@ -98,6 +97,18 @@
     ?>
         <h3 class="subsection-title">Observable Properties</h3>
         <dl><?js= self.partial('observables.tmpl', observables) ?></dl>
+
+    <?js } ?>
+
+    <?js
+        var events = doc.events;
+        if (events && events.length && events.forEach) {
+    ?>
+        <h3 class="subsection-title">Events</h3>
+        <?js if (observables && observables.length) { ?>
+        <p>These events are available in addition to the <b>Observable Properties</b> events listed above.</p>
+        <?js } ?>
+        <dl><?js= self.partial('events.tmpl', events) ?></dl>
 
     <?js } ?>
 

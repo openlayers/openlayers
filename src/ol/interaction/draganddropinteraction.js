@@ -19,6 +19,8 @@ goog.require('ol.proj');
 /**
  * @constructor
  * @extends {ol.interaction.Interaction}
+ * @fires {@link ol.interaction.DragAndDropEvent}
+ *     ol.interaction.DragAndDropEvent
  * @param {olx.interaction.DragAndDropOptions=} opt_options Options.
  */
 ol.interaction.DragAndDrop = function(opt_options) {
@@ -175,6 +177,11 @@ ol.interaction.DragAndDrop.prototype.tryReadFeatures_ = function(format, text) {
  * @enum {string}
  */
 ol.interaction.DragAndDropEventType = {
+  /**
+   * Triggered when features are added
+   * @event ol.interaction.DragAndDropEvent#addfeatures
+   * @todo stability experimental
+   */
   ADD_FEATURES: 'addfeatures'
 };
 
@@ -196,11 +203,13 @@ ol.interaction.DragAndDropEvent =
 
   /**
    * @type {Array.<ol.Feature>|undefined}
+   * @todo stability experimental
    */
   this.features = opt_features;
 
   /**
    * @type {ol.proj.Projection|undefined}
+   * @todo stability experimental
    */
   this.projection = opt_projection;
 

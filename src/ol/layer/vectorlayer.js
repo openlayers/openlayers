@@ -10,6 +10,7 @@ goog.require('ol.layer.Layer');
 /**
  * @constructor
  * @extends {ol.layer.Layer}
+ * @fires {@link ol.render.Event} ol.render.Event
  * @param {olx.layer.VectorOptions=} opt_options Options.
  * @todo stability experimental
  */

@@ -21,7 +21,17 @@ goog.require('ol.structs.RBush');
  * @enum {string}
  */
 ol.source.VectorEventType = {
+  /**
+   * Triggered when a feature is added to the source.
+   * @event ol.source.VectorEvent#addfeature
+   * @todo stability experimental
+   */
   ADDFEATURE: 'addfeature',
+  /**
+   * Triggered when a feature is removed from the source.
+   * @event ol.source.VectorEvent#removefeature
+   * @todo stability experimental
+   */
   REMOVEFEATURE: 'removefeature'
 };
 
@@ -30,6 +40,7 @@ ol.source.VectorEventType = {
 /**
  * @constructor
  * @extends {ol.source.Source}
+ * @fires {@link ol.source.VectorEvent} ol.source.VectorEvent
  * @param {olx.source.VectorOptions=} opt_options Vector source options.
  * @todo stability experimental
  */
@@ -372,7 +383,9 @@ ol.source.VectorEvent = function(type, opt_feature) {
   goog.base(this, type);
 
   /**
+   * The feature being added or removed.
    * @type {ol.Feature|undefined}
+   * @todo stability experimental
    */
   this.feature = opt_feature;
 
