@@ -1,6 +1,6 @@
 goog.require('ol.Map');
 goog.require('ol.View2D');
-goog.require('ol.format.GeoJSON');
+goog.require('ol.format.TopoJSON');
 goog.require('ol.layer.Vector');
 goog.require('ol.proj');
 goog.require('ol.source.TileVector');
@@ -9,14 +9,15 @@ goog.require('ol.style.Style');
 goog.require('ol.tilegrid.XYZ');
 
 var vectorSource = new ol.source.TileVector({
-  format: new ol.format.GeoJSON({
+  format: new ol.format.TopoJSON({
     defaultProjection: 'EPSG:4326'
   }),
   projection: 'EPSG:3857',
   tileGrid: new ol.tilegrid.XYZ({
     maxZoom: 19
   }),
-  url: 'http://{a-c}.tile.openstreetmap.us/vectiles-highroad/{z}/{x}/{y}.json'
+  url: 'http://{a-c}.tile.openstreetmap.us/' +
+      'vectiles-highroad/{z}/{x}/{y}.topojson'
 });
 
 var styleCache = {};
