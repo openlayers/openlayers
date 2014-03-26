@@ -101,36 +101,34 @@ exports.handlers = {
         }
       }
     }
-  }
+  },
   
-};
-
-
-function filter(e) {
-  if (e.doclet) {
-    var fqn = e.doclet.longname;
-    if (fqn) {
-      e.doclet.undocumented = (api.indexOf(fqn) === -1 && unexported.indexOf(fqn) === -1);
-      e.doclet.unexported = (unexported.indexOf(fqn) !== -1);
-      // Remove parents that are not part of the API
-      var parent;
-      var parents = e.doclet.augments;
-      if (parents) {
-        for (var i = parents.length - 1; i >= 0; --i) {
-          parent = parents[i];
-          if (api.indexOf(parent) === -1) {
-            parents.splice(i, 1);
+  parseComplete: function(e) {
+    for (var j = e.doclets.length - 1; j >= 0; --j) {
+      var doclet = e.doclets[j];
+      if (doclet.kind == 'namespace') {
+        continue;
+      }
+      var fqn = doclet.longname;
+      if (fqn) {
+        var undocumented = (api.indexOf(fqn) === -1 && unexported.indexOf(fqn) === -1);
+        doclet.unexported = (unexported.indexOf(fqn) !== -1);
+        // Remove parents that are not part of the API
+        var parent;
+        var parents = doclet.augments;
+        if (parents) {
+          for (var i = parents.length - 1; i >= 0; --i) {
+            parent = parents[i];
+            if (api.indexOf(parent) === -1 && unexported.indexOf(parent) === -1) {
+              parents.splice(i, 1);
+            }
           }
+        }
+        if (undocumented) {
+          e.doclets.splice(j, 1);
         }
       }
     }
   }
-}
 
-exports.nodeVisitor = {
-
-  visitNode: function(node, e, parser, currentSourceName) {
-    // filter out non-API symbols before the addDocletRef finisher is called
-    e.finishers.unshift(filter);
-  }
 };
