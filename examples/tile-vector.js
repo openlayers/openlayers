@@ -1,10 +1,8 @@
 goog.require('ol.Map');
 goog.require('ol.View2D');
 goog.require('ol.format.GeoJSON');
-goog.require('ol.layer.Tile');
 goog.require('ol.layer.Vector');
 goog.require('ol.proj');
-goog.require('ol.source.Stamen');
 goog.require('ol.source.TileVector');
 goog.require('ol.style.Stroke');
 goog.require('ol.style.Style');
@@ -18,42 +16,53 @@ var vectorSource = new ol.source.TileVector({
   tileGrid: new ol.tilegrid.XYZ({
     maxZoom: 19
   }),
-  url: 'http://www.somebits.com:8001/rivers/{z}/{x}/{y}.json'
+  url: 'http://{a-c}.tile.openstreetmap.us/vectiles-highroad/{z}/{x}/{y}.json'
 });
 
 var styleCache = {};
+var styleFunction = function(feature, resolution) {
+  var kind = feature.get('kind');
+  var railway = feature.get('railway');
+  var sort_key = feature.get('sort_key');
+  var styleKey = kind + '/' + railway + '/' + sort_key;
+  var styleArray = styleCache[styleKey];
+  if (!styleArray) {
+    var color, width;
+    if (railway) {
+      color = '#7de';
+      width = 1;
+    } else {
+      color = {
+        'major_road': '#776',
+        'minor_road': '#ccb',
+        'highway': '#f39'
+      }[kind];
+      width = kind == 'highway' ? 1.5 : 1;
+    }
+    styleArray = [new ol.style.Style({
+      stroke: new ol.style.Stroke({
+        color: color,
+        width: width
+      }),
+      zIndex: sort_key
+    })];
+    styleCache[styleKey] = styleArray;
+  }
+  return styleArray;
+};
 
 var vector = new ol.layer.Vector({
   source: vectorSource,
-  style: function(feature, resolution) {
-    var strahler = feature.get('strahler');
-    var styleArray = styleCache[strahler];
-    if (!styleArray) {
-      styleArray = [new ol.style.Style({
-        stroke: new ol.style.Stroke({
-          color: '#29439c',
-          width: strahler
-        })
-      })];
-      styleCache[strahler] = styleArray;
-    }
-    return styleArray;
-  }
-});
-
-var raster = new ol.layer.Tile({
-  source: new ol.source.Stamen({
-    layer: 'terrain'
-  })
+  style: styleFunction
 });
 
 var map = new ol.Map({
-  layers: [raster, vector],
+  layers: [vector],
   renderer: 'canvas',
   target: document.getElementById('map'),
   view: new ol.View2D({
-    center: ol.proj.transform([-120.976, 37.958], 'EPSG:4326', 'EPSG:3857'),
+    center: ol.proj.transform([-74.0064, 40.7142], 'EPSG:4326', 'EPSG:3857'),
     maxZoom: 19,
-    zoom: 11
+    zoom: 14
   })
 });
