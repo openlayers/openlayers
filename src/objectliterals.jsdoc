@@ -724,7 +724,6 @@
  * @property {string|undefined} url URL template.  Must include `{x}`, `{y}`,
  *     and `{z}` placeholders.
  * @property {Array.<string>|undefined} urls An array of URL templates.
- * @property {number} z Z value of tiles to request. FIXME remove!
  */
 
 /**

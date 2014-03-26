@@ -1,7 +1,3 @@
-// FIXME implement getClosestFeatureToCoordinate
-// FIXME implement getExtent
-// FIXME handle different Zs
-
 goog.provide('ol.source.TileVector');
 
 goog.require('goog.array');
@@ -30,13 +26,6 @@ ol.source.TileVector = function(options) {
   });
 
   var tileGrid = options.tileGrid;
-  var z = options.z;
-
-  /**
-   * @private
-   * @type {number}
-   */
-  this.resolution_ = tileGrid.getResolution(z);
 
   /**
    * @private
@@ -63,12 +52,6 @@ ol.source.TileVector = function(options) {
    * @type {Object.<string, Array.<ol.Feature>>}
    */
   this.tiles_ = {};
-
-  /**
-   * @private
-   * @type {number}
-   */
-  this.z_ = z;
 
   if (goog.isDef(options.tileUrlFunction)) {
     this.setTileUrlFunction(options.tileUrlFunction);
@@ -105,34 +88,24 @@ ol.source.TileVector.prototype.clear = function() {
 /**
  * @inheritDoc
  */
-ol.source.TileVector.prototype.forEachFeature = function(f, opt_this) {
-  var tiles = this.tiles_;
-  var tileKey;
-  for (tileKey in tiles) {
-    var features = tiles[tileKey];
-    var i, ii;
-    for (i = 0, ii = features.length; i < ii; ++i) {
-      var result = f.call(opt_this, features[i]);
-      if (result) {
-        return result;
-      }
-    }
-  }
-  return undefined;
-};
+ol.source.TileVector.prototype.forEachFeature = goog.abstractMethod;
 
 
 /**
  * @inheritDoc
  */
-ol.source.TileVector.prototype.forEachFeatureInExtent =
-    function(extent, f, opt_this) {
-  var resolution = this.resolution_;
+ol.source.TileVector.prototype.forEachFeatureInExtent = goog.abstractMethod;
+
+
+/**
+ * @inheritDoc
+ */
+ol.source.TileVector.prototype.forEachFeatureInExtentAtResolution =
+    function(extent, resolution, f, opt_this) {
   var tileGrid = this.tileGrid_;
   var tiles = this.tiles_;
-  var z = this.z_;
-  var tileRange =
-      tileGrid.getTileRangeForExtentAndResolution(extent, resolution);
+  var z = tileGrid.getZForResolution(resolution);
+  var tileRange = tileGrid.getTileRangeForExtentAndZ(extent, z);
   var x, y;
   for (x = tileRange.minX; x <= tileRange.maxX; ++x) {
     for (y = tileRange.minY; y <= tileRange.maxY; ++y) {
@@ -183,17 +156,7 @@ ol.source.TileVector.prototype.getFeatures = function() {
 /**
  * @inheritDoc
  */
-ol.source.TileVector.prototype.getFeaturesInExtent = function(extent) {
-  var features = [];
-  this.forEachFeatureInExtent(extent,
-      /**
-       * @param {ol.Feature} feature Feature.
-       */
-      function(feature) {
-        features.push(feature);
-      });
-  return features;
-};
+ol.source.TileVector.prototype.getFeaturesInExtent = goog.abstractMethod;
 
 
 /**
@@ -213,14 +176,12 @@ ol.source.TileVector.prototype.getTileKeyZXY_ = function(z, x, y) {
  */
 ol.source.TileVector.prototype.loadFeatures =
     function(extent, resolution, projection) {
-  // FIXME should use resolution argument rather than this.resolution_
   var tileCoordTransform = this.tileCoordTransform_;
   var tileGrid = this.tileGrid_;
   var tileUrlFunction = this.tileUrlFunction_;
   var tiles = this.tiles_;
-  var z = this.z_;
-  var tileRange =
-      tileGrid.getTileRangeForExtentAndResolution(extent, this.resolution_);
+  var z = tileGrid.getZForResolution(resolution);
+  var tileRange = tileGrid.getTileRangeForExtentAndZ(extent, z);
   var tileCoord = new ol.TileCoord(z, 0, 0);
   var x, y;
   for (x = tileRange.minX; x <= tileRange.maxX; ++x) {

@@ -18,8 +18,7 @@ var vectorSource = new ol.source.TileVector({
   tileGrid: new ol.tilegrid.XYZ({
     maxZoom: 19
   }),
-  url: 'http://www.somebits.com:8001/rivers/{z}/{x}/{y}.json',
-  z: 11
+  url: 'http://www.somebits.com:8001/rivers/{z}/{x}/{y}.json'
 });
 
 var styleCache = {};
