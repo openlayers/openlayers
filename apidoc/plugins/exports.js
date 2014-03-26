@@ -73,7 +73,7 @@ exports.handlers = {
       }
     }
     if (api.indexOf(e.doclet.longname) > -1) {
-      // Add params and events of API symbols to the API
+      // Add params, links and events of API symbols to the API
       var names, name;
       var params = e.doclet.params;
       if (params) {
@@ -86,6 +86,14 @@ exports.handlers = {
                 unexported.push(name);
               }
             }
+          }
+        }
+      }
+      var links = e.doclet.comment.match(/\{@link ([^\}]*)\}/g);
+      if (links) {
+        for (i=0, ii=links.length; i < ii; ++i) {
+          if (unexported.indexOf(links[i]) === -1) {
+            unexported.push(links[i].match(/\{@link (.*)\}/)[1]);
           }
         }
       }
