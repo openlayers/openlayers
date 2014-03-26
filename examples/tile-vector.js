@@ -4,61 +4,77 @@ goog.require('ol.format.TopoJSON');
 goog.require('ol.layer.Vector');
 goog.require('ol.proj');
 goog.require('ol.source.TileVector');
+goog.require('ol.style.Fill');
 goog.require('ol.style.Stroke');
 goog.require('ol.style.Style');
 goog.require('ol.tilegrid.XYZ');
 
-var vectorSource = new ol.source.TileVector({
-  format: new ol.format.TopoJSON({
-    defaultProjection: 'EPSG:4326'
+var waterLayer = new ol.layer.Vector({
+  source: new ol.source.TileVector({
+    format: new ol.format.TopoJSON({
+      defaultProjection: 'EPSG:4326'
+    }),
+    projection: 'EPSG:3857',
+    tileGrid: new ol.tilegrid.XYZ({
+      maxZoom: 19
+    }),
+    url: 'http://{a-c}.tile.openstreetmap.us/' +
+        'vectiles-water-areas/{z}/{x}/{y}.topojson'
   }),
-  projection: 'EPSG:3857',
-  tileGrid: new ol.tilegrid.XYZ({
-    maxZoom: 19
-  }),
-  url: 'http://{a-c}.tile.openstreetmap.us/' +
-      'vectiles-highroad/{z}/{x}/{y}.topojson'
+  style: new ol.style.Style({
+    fill: new ol.style.Fill({
+      color: '#9db9e8'
+    })
+  })
 });
 
-var styleCache = {};
-var styleFunction = function(feature, resolution) {
-  var kind = feature.get('kind');
-  var railway = feature.get('railway');
-  var sort_key = feature.get('sort_key');
-  var styleKey = kind + '/' + railway + '/' + sort_key;
-  var styleArray = styleCache[styleKey];
-  if (!styleArray) {
-    var color, width;
-    if (railway) {
-      color = '#7de';
-      width = 1;
-    } else {
-      color = {
-        'major_road': '#776',
-        'minor_road': '#ccb',
-        'highway': '#f39'
-      }[kind];
-      width = kind == 'highway' ? 1.5 : 1;
+var roadStyleCache = {};
+var roadLayer = new ol.layer.Vector({
+  source: new ol.source.TileVector({
+    format: new ol.format.TopoJSON({
+      defaultProjection: 'EPSG:4326'
+    }),
+    projection: 'EPSG:3857',
+    tileGrid: new ol.tilegrid.XYZ({
+      maxZoom: 19
+    }),
+    url: 'http://{a-c}.tile.openstreetmap.us/' +
+        'vectiles-highroad/{z}/{x}/{y}.topojson'
+  }),
+  style: function(feature, resolution) {
+    var kind = feature.get('kind');
+    var railway = feature.get('railway');
+    var sort_key = feature.get('sort_key');
+    var styleKey = kind + '/' + railway + '/' + sort_key;
+    var styleArray = roadStyleCache[styleKey];
+    if (!styleArray) {
+      var color, width;
+      if (railway) {
+        color = '#7de';
+        width = 1;
+      } else {
+        color = {
+          'major_road': '#776',
+          'minor_road': '#ccb',
+          'highway': '#f39'
+        }[kind];
+        width = kind == 'highway' ? 1.5 : 1;
+      }
+      styleArray = [new ol.style.Style({
+        stroke: new ol.style.Stroke({
+          color: color,
+          width: width
+        }),
+        zIndex: sort_key
+      })];
+      roadStyleCache[styleKey] = styleArray;
     }
-    styleArray = [new ol.style.Style({
-      stroke: new ol.style.Stroke({
-        color: color,
-        width: width
-      }),
-      zIndex: sort_key
-    })];
-    styleCache[styleKey] = styleArray;
+    return styleArray;
   }
-  return styleArray;
-};
-
-var vector = new ol.layer.Vector({
-  source: vectorSource,
-  style: styleFunction
 });
 
 var map = new ol.Map({
-  layers: [vector],
+  layers: [waterLayer, roadLayer],
   renderer: 'canvas',
   target: document.getElementById('map'),
   view: new ol.View2D({
