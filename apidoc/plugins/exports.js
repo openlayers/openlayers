@@ -119,8 +119,8 @@ exports.handlers = {
       }
       var fqn = doclet.longname;
       if (fqn) {
-        var undocumented = (api.indexOf(fqn) === -1 && unexported.indexOf(fqn) === -1);
         doclet.unexported = (unexported.indexOf(fqn) !== -1);
+        var undocumented = (api.indexOf(fqn) === -1 && !doclet.unexported);
         // Remove parents that are not part of the API
         var parent;
         var parents = doclet.augments;
