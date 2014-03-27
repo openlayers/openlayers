@@ -633,6 +633,10 @@
  * @typedef {Object} olx.layer.VectorOptions
  * @property {number|undefined} brightness Brightness.
  * @property {number|undefined} contrast Contrast.
+ * @property {function(ol.Feature, ol.Feature):number|null|undefined} renderOrder Render order.
+ *     Function to be used when sorting features before rendering. By default
+ *     features are drawn in the order that they are created. Use `null` to
+ *     avoid the sort, but get an undefined draw order.
  * @property {number|undefined} hue Hue.
  * @property {number|undefined} minResolution The minimum resolution
  *      (inclusive) at which this layer will be visible.
