@@ -120,19 +120,7 @@ exports.handlers = {
       var fqn = doclet.longname;
       if (fqn) {
         doclet.unexported = (unexported.indexOf(fqn) !== -1);
-        var undocumented = (api.indexOf(fqn) === -1 && !doclet.unexported);
-        // Remove parents that are not part of the API
-        var parent;
-        var parents = doclet.augments;
-        if (parents) {
-          for (var i = parents.length - 1; i >= 0; --i) {
-            parent = parents[i];
-            if (api.indexOf(parent) === -1 && unexported.indexOf(parent) === -1) {
-              parents.splice(i, 1);
-            }
-          }
-        }
-        if (undocumented) {
+        if (api.indexOf(fqn) === -1 && !doclet.unexported) {
           e.doclets.splice(j, 1);
         }
       }
