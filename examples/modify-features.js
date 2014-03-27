@@ -1,6 +1,7 @@
 goog.require('ol.Collection');
 goog.require('ol.Map');
 goog.require('ol.View2D');
+goog.require('ol.events.condition');
 goog.require('ol.interaction');
 goog.require('ol.interaction.Modify');
 goog.require('ol.interaction.Select');
@@ -30,6 +31,7 @@ var vector = new ol.layer.Vector({
 });
 
 var select = new ol.interaction.Select({
+  addCondition: ol.events.condition.shiftKeyOnly,
   style: new ol.style.Style({
     stroke: new ol.style.Stroke({
       color: '#3399CC',
