@@ -48,12 +48,6 @@ ol.ObjectEventType = {
 ol.ObjectEvent = function(type, key) {
   goog.base(this, type);
 
-  // Call goog.getUid to ensure that the order of objects' ids is the same as
-  // the order in which they were created.  This also helps to ensure that
-  // object properties are always added in the same order, which helps many
-  // JavaScript engines generate faster code.
-  goog.getUid(this);
-
   /**
    * The name of the property whose value is changing.
    * @type {string}
@@ -120,6 +114,12 @@ ol.ObjectAccessor.prototype.transform = function(from, to) {
  */
 ol.Object = function(opt_values) {
   goog.base(this);
+
+  // Call goog.getUid to ensure that the order of objects' ids is the same as
+  // the order in which they were created.  This also helps to ensure that
+  // object properties are always added in the same order, which helps many
+  // JavaScript engines generate faster code.
+  goog.getUid(this);
 
   /**
    * @private
