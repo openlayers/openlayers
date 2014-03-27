@@ -37,8 +37,11 @@ ol.source.BingMaps = function(options) {
    */
   this.culture_ = goog.isDef(options.culture) ? options.culture : 'en-us';
 
+  var protocol = ol.IS_HTTPS ? 'https:' : 'http:';
   var uri = new goog.Uri(
-      '//dev.virtualearth.net/REST/v1/Imagery/Metadata/' + options.imagerySet);
+      protocol + '//dev.virtualearth.net/REST/v1/Imagery/Metadata/' +
+      options.imagerySet);
+
   var jsonp = new goog.net.Jsonp(uri, 'jsonp');
   jsonp.send({
     'include': 'ImageryProviders',
