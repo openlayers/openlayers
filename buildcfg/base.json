@@ -47,7 +47,6 @@
   "disambiguate-properties": true,
 
   "externs": [
-    "//json.js",
     "../externs/bingmaps.js",
     "../externs/closure-compiler.js",
     "../externs/geojson.js",

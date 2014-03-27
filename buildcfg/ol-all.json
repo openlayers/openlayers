@@ -3,7 +3,6 @@
   "id": "ol-all",
 
   "externs": [
-    "//json.js",
     "../build/src/external/externs/types.js",
     "../externs/bingmaps.js",
     "../externs/closure-compiler.js",

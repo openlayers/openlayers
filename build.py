@@ -321,7 +321,6 @@ def examples_star_json(name, match):
                 '../build/src/internal/src/types.js',
             ],
             'externs': [
-                '//json.js',
                 '//jquery-1.7.js',
                 '../externs/bingmaps.js',
                 '../externs/bootstrap.js',
