@@ -1,0 +1,2 @@
+@exportProperty ol.source.Tile.prototype.getTileGrid
+@exportProperty ol.source.Tile.prototype.getSupportedPixelRatio

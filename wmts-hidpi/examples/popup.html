@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no, width=device-width">
+    <link rel="stylesheet" href="../css/ol.css" type="text/css">
+    <link rel="stylesheet" href="../resources/bootstrap/css/bootstrap.min.css" type="text/css">
+    <link rel="stylesheet" href="../resources/layout.css" type="text/css">
+    <link rel="stylesheet" href="../resources/bootstrap/css/bootstrap-responsive.min.css" type="text/css">
+    <style type="text/css">
+      .ol-popup {
+        display: none;
+        position: absolute;
+        background-color: white;
+        -moz-box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+        -webkit-filter: drop-shadow(0 1px 4px rgba(0,0,0,0.2));
+        filter: drop-shadow(0 1px 4px rgba(0,0,0,0.2));
+        padding: 15px;
+        border-radius: 10px;
+        border: 1px solid #cccccc;
+        bottom: 12px;
+        left: -50px;
+      }
+      .ol-popup:after, .ol-popup:before {
+        top: 100%;
+        border: solid transparent;
+        content: " ";
+        height: 0;
+        width: 0;
+        position: absolute;
+        pointer-events: none;
+      }
+      .ol-popup:after {
+        border-top-color: white;
+        border-width: 10px;
+        left: 48px;
+        margin-left: -10px;
+      }
+      .ol-popup:before {
+        border-top-color: #cccccc;
+        border-width: 11px;
+        left: 48px;
+        margin-left: -11px;
+      }
+      .ol-popup-closer {
+        text-decoration: none;
+        position: absolute;
+        top: 2px;
+        right: 8px;
+      }
+      .ol-popup-closer:after {
+        content: "✖";
+      }
+    </style>
+    <title>Popup example</title>
+  </head>
+  <body>
+
+    <div class="navbar navbar-inverse navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container">
+          <a class="brand" href="./"><img src="../resources/logo.png"> OpenLayers 3 Examples</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="container-fluid">
+
+      <div class="row-fluid">
+        <div class="span12">
+          <div id="map" class="map">
+            <div id="popup" class="ol-popup">
+                <a href="#" id="popup-closer" class="ol-popup-closer"></a>
+                <div id="popup-content"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row-fluid">
+
+        <div class="span12">
+          <h4 id="title">Popup example</h4>
+          <p id="shortdesc">Uses an overlay to create a popup.</p>
+          <div id="docs">
+            <p>
+              Click on the map to get a popup.  The popup is composed of a few basic elements: a container, a close button, and a place for the content.  To anchor the popup to the map, an <code>ol.Overlay</code> is created with the popup container.  A listener is registered for the map's <code>click</code> event to display the popup, and another listener is set as the <code>click</code> handler for the close button to hide the popup.
+            </p>
+            <p>
+              See the <a href="popup.js" target="_blank">popup.js source</a> to see how this is done.
+            </p>
+          </div>
+          <div id="tags">overlay, popup, mapquest, openaerial</div>
+        </div>
+
+      </div>
+
+    </div>
+
+    <script src="jquery.min.js" type="text/javascript"></script>
+    <script src="../resources/example-behaviour.js" type="text/javascript"></script>
+    <script src="loader.js?id=popup" type="text/javascript"></script>
+
+  </body>
+</html>

@@ -1,0 +1,4 @@
+@exportSymbol ol.source.WMTS
+@exportProperty ol.source.WMTS.prototype.getDimensions
+@exportProperty ol.source.WMTS.prototype.updateDimensions
+@exportSymbol ol.source.WMTS.optionsFromCapabilities

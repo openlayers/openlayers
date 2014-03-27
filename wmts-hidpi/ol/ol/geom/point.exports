@@ -1,0 +1,5 @@
+@exportSymbol ol.geom.Point
+@exportProperty ol.geom.Point.prototype.clone
+@exportProperty ol.geom.Point.prototype.getCoordinates
+@exportProperty ol.geom.Point.prototype.getType
+@exportProperty ol.geom.Point.prototype.setCoordinates

@@ -1,0 +1,4 @@
+@exportSymbol ol.format.IGC
+@exportProperty ol.format.IGC.prototype.readFeature
+@exportProperty ol.format.IGC.prototype.readFeatures
+@exportProperty ol.format.IGC.prototype.readProjection
