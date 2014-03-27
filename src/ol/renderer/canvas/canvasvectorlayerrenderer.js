@@ -1,5 +1,6 @@
 goog.provide('ol.renderer.canvas.VectorLayer');
 
+goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('goog.dom');
 goog.require('goog.dom.TagName');
@@ -49,6 +50,12 @@ ol.renderer.canvas.VectorLayer = function(mapRenderer, vectorLayer) {
    * @type {ol.Extent}
    */
   this.renderedExtent_ = ol.extent.createEmpty();
+
+  /**
+   * @private
+   * @type {function(ol.Feature, ol.Feature): number|null}
+   */
+  this.renderedRenderOrder_ = null;
 
   /**
    * @private
@@ -174,10 +181,23 @@ ol.renderer.canvas.VectorLayer.prototype.prepareFrame =
   var frameStateResolution = frameState.view2DState.resolution;
   var pixelRatio = frameState.pixelRatio;
   var vectorLayerRevision = vectorLayer.getRevision();
+  var vectorLayerRenderOrder = vectorLayer.getRenderOrder();
+  if (!goog.isDef(vectorLayerRenderOrder)) {
+    vectorLayerRenderOrder =
+        /**
+         * @param {ol.Feature} feature1 Feature 1.
+         * @param {ol.Feature} feature2 Feature 2.
+         * @return {number} Order.
+         */
+        function(feature1, feature2) {
+      return goog.getUid(feature1) - goog.getUid(feature2);
+    };
+  }
 
   if (!this.dirty_ &&
       this.renderedResolution_ == frameStateResolution &&
       this.renderedRevision_ == vectorLayerRevision &&
+      this.renderedRenderOrder_ == vectorLayerRenderOrder &&
       ol.extent.containsExtent(this.renderedExtent_, frameStateExtent)) {
     return;
   }
@@ -203,20 +223,29 @@ ol.renderer.canvas.VectorLayer.prototype.prepareFrame =
   var tolerance = frameStateResolution / (2 * pixelRatio);
   var replayGroup = new ol.render.canvas.ReplayGroup(tolerance, extent,
       frameStateResolution);
-  vectorSource.forEachFeatureInExtent(extent,
+  var renderFeature =
       /**
        * @param {ol.Feature} feature Feature.
+       * @this {ol.renderer.canvas.VectorLayer}
        */
       function(feature) {
-        var dirty =
-            this.renderFeature(feature, frameStateResolution, pixelRatio,
-                styleFunction, replayGroup);
-        this.dirty_ = this.dirty_ || dirty;
-      }, this);
+    goog.asserts.assert(goog.isDef(styleFunction));
+    var dirty = this.renderFeature(
+        feature, frameStateResolution, pixelRatio, styleFunction, replayGroup);
+    this.dirty_ = this.dirty_ || dirty;
+  };
+  if (goog.isDef(vectorLayerRenderOrder)) {
+    var features = vectorSource.getFeaturesInExtent(extent);
+    goog.array.sort(features, vectorLayerRenderOrder);
+    goog.array.forEach(features, renderFeature, this);
+  } else {
+    vectorSource.forEachFeatureInExtent(extent, renderFeature, this);
+  }
   replayGroup.finish();
 
   this.renderedResolution_ = frameStateResolution;
   this.renderedRevision_ = vectorLayerRevision;
+  this.renderedRenderOrder_ = vectorLayerRenderOrder;
   this.replayGroup_ = replayGroup;
 
 };
