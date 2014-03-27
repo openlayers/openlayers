@@ -114,7 +114,7 @@ exports.handlers = {
   parseComplete: function(e) {
     for (var j = e.doclets.length - 1; j >= 0; --j) {
       var doclet = e.doclets[j];
-      if (doclet.kind == 'namespace') {
+      if (doclet.kind == 'namespace' || doclet.kind == 'event' || doclet.fires) {
         continue;
       }
       var fqn = doclet.longname;
