@@ -132,9 +132,9 @@ ol.interaction.Select.prototype.handleMapBrowserEvent =
 
 /**
  * @param {?ol.Feature|undefined} feature Feature.
- * @param {Boolean} add Add
- * @param {Boolean} remove Remove
- * @param {Boolean} toggle Toggle
+ * @param {boolean} add Add.
+ * @param {boolean} remove Remove.
+ * @param {boolean} toggle Toggle.
  * @private
  * @todo stability experimental
  */
