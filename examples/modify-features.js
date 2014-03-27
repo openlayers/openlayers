@@ -32,6 +32,7 @@ var vector = new ol.layer.Vector({
 
 var select = new ol.interaction.Select({
   addCondition: ol.events.condition.shiftKeyOnly,
+  toggleCondition: ol.events.condition.always,
   style: new ol.style.Style({
     stroke: new ol.style.Stroke({
       color: '#3399CC',
