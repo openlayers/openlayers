@@ -4,6 +4,7 @@ goog.require('goog.asserts');
 goog.require('goog.dom');
 goog.require('goog.dom.TagName');
 goog.require('goog.events');
+goog.require('goog.math');
 goog.require('ol.Object');
 goog.require('ol.layer.Vector');
 goog.require('ol.render.EventType');
@@ -68,7 +69,7 @@ ol.layer.Heatmap = function(opt_options) {
 
   this.setStyle(function(feature, resolution) {
     var weight = weightFunction(feature);
-    var opacity = goog.isDef(weight) ? weight : 1;
+    var opacity = goog.math.clamp(goog.isDef(weight) ? weight : 1, 0, 1);
     // cast to 8 bits
     var index = (255 * opacity) | 0;
     var style = styleCache[index];
