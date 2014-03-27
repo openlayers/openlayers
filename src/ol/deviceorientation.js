@@ -23,7 +23,7 @@ ol.DeviceOrientationProperty = {
 /**
  * The ol.DeviceOrientation class provides access to DeviceOrientation
  * information and events, see the [HTML 5 DeviceOrientation Specification](
- * http://dev.w3.org/geo/api/spec-source-orientation) for more details.
+ * http://www.w3.org/TR/orientation-event/) for more details.
  *
  * Many new computers, and especially mobile phones
  * and tablets, provide hardware support for device orientation. Web
@@ -64,7 +64,7 @@ ol.DeviceOrientationProperty = {
  * equivalent properties in ol.DeviceOrientation are in radians for consistency
  * with all other uses of angles throughout OpenLayers.
  *
- * @see http://dev.w3.org/geo/api/spec-source-orientation
+ * @see http://www.w3.org/TR/orientation-event/
  *
  * @constructor
  * @extends {ol.Object}
