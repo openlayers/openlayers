@@ -35,7 +35,7 @@ ol.GeolocationProperty = {
 
 /**
  * Helper class for providing HTML5 Geolocation capabilities.
- * The [Geolocation API](http://dev.w3.org/geo/api/spec-source.html)
+ * The [Geolocation API](http://www.w3.org/TR/geolocation-API/)
  * is used to locate a user's position.
  *
  * Example:
@@ -71,7 +71,7 @@ ol.GeolocationProperty = {
  * @todo observable tracking {number} track the device's position.
  * @todo observable trackingOptions {GeolocationPositionOptions} PositionOptions
  *       as defined by the HTML5 Geolocation spec at
- *       http://dev.w3.org/geo/api/spec-source.html
+ *       http://www.w3.org/TR/geolocation-API/#position_options_interface
  */
 ol.Geolocation = function(opt_options) {
 
