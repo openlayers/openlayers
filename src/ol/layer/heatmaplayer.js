@@ -69,7 +69,7 @@ ol.layer.Heatmap = function(opt_options) {
 
   this.setStyle(function(feature, resolution) {
     var weight = weightFunction(feature);
-    var opacity = goog.math.clamp(goog.isDef(weight) ? weight : 1, 0, 1);
+    var opacity = goog.isDef(weight) ? goog.math.clamp(weight, 0, 1) : 1;
     // cast to 8 bits
     var index = (255 * opacity) | 0;
     var style = styleCache[index];
