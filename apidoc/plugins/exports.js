@@ -37,7 +37,6 @@ function collectOliExports(source) {
     for (; i < ii; ++i) {
       property = 'ol.' + oli[i].match(/oli.([^;]*)/)[1]
           .replace('.prototype.', '#');
-      api.push(property);
       unexported.push(property);
     }
   }
@@ -73,7 +72,6 @@ exports.handlers = {
       }
     }
     if (api.indexOf(e.doclet.longname) > -1) {
-      // Add params, links and events of API symbols to the API
       var names, name;
       var params = e.doclet.params;
       if (params) {
@@ -92,19 +90,9 @@ exports.handlers = {
       var links = e.doclet.comment.match(/\{@link ([^\}]*)\}/g);
       if (links) {
         for (i=0, ii=links.length; i < ii; ++i) {
-          if (unexported.indexOf(links[i]) === -1) {
-            unexported.push(links[i].match(/\{@link (.*)\}/)[1]);
-          }
-        }
-      }
-      var fires = e.doclet.fires;
-      var event;
-      if (fires) {
-        for (i = 0, ii = fires.length; i < ii; ++i) {
-          event = fires[i].split(' ').pop();
-          name = event.replace('event:', '');
-          if (unexported.indexOf(name) === -1) {
-            unexported.push(name);
+          var link = links[i].match(/\{@link (.*)\}/)[1];
+          if (unexported.indexOf(link) === -1) {
+            unexported.push(link);
           }
         }
       }
@@ -119,8 +107,8 @@ exports.handlers = {
       }
       var fqn = doclet.longname;
       if (fqn) {
-        doclet.unexported = (unexported.indexOf(fqn) !== -1);
-        if (api.indexOf(fqn) === -1 && !doclet.unexported) {
+        doclet.unexported = (api.indexOf(fqn) === -1 && unexported.indexOf(fqn) !== -1);
+        if (api.indexOf(fqn) === -1 && unexported.indexOf(fqn) === -1) {
           e.doclets.splice(j, 1);
         }
       }
