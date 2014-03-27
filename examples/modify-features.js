@@ -14,7 +14,6 @@ goog.require('ol.style.Style');
 
 
 var raster = new ol.layer.Tile({
-  style: 'Aerial',
   source: new ol.source.MapQuest({
     layer: 'sat'
   })
