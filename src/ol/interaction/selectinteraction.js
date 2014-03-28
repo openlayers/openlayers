@@ -14,12 +14,14 @@ goog.require('ol.interaction.Interaction');
 /**
  * @constructor
  * @extends {ol.interaction.Interaction}
- * @param {olx.interaction.SelectOptions} options Options.
+ * @param {olx.interaction.SelectOptions=} opt_options Options.
  * @todo stability experimental
  */
-ol.interaction.Select = function(options) {
+ol.interaction.Select = function(opt_options) {
 
   goog.base(this);
+
+  var options = goog.isDef(opt_options) ? opt_options : {};
 
   /**
    * @private
