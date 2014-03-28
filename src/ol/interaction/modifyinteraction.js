@@ -655,7 +655,7 @@ ol.interaction.Modify.prototype.removeVertex_ = function() {
     coordinates = geometry.getCoordinates();
     uid = goog.getUid(segmentData.feature);
     left = right = index = undefined;
-    if (dragSegment[1] == 0) {
+    if (dragSegment[1] === 0) {
       right = segmentData;
       index = segmentData.index;
     } else if (dragSegment[1] == 1) {
@@ -687,6 +687,7 @@ ol.interaction.Modify.prototype.removeVertex_ = function() {
           break;
         case ol.geom.GeometryType.MULTI_POLYGON:
           component = component[segmentData.depth[1]];
+          /* falls through */
         case ol.geom.GeometryType.POLYGON:
           component = component[segmentData.depth[0]];
           if (component.length > 4) {
