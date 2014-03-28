@@ -87,7 +87,7 @@ ol.interaction.Modify = function(options) {
    * @private
    */
   this.pixelTolerance_ = goog.isDef(options.pixelTolerance) ?
-      options.pixelTolerance : 20;
+      options.pixelTolerance : 10;
 
   /**
    * @type {Array}
