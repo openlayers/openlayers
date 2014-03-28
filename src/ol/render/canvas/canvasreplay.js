@@ -346,9 +346,9 @@ ol.render.canvas.Replay.prototype.replay_ = function(
         goog.asserts.assert(goog.isString(instruction[3]));
         text = /** @type {string} */ (instruction[3]);
         goog.asserts.assert(goog.isNumber(instruction[4]));
-        var offsetX = /** @type {number} */ (instruction[4]);
+        var offsetX = /** @type {number} */ (instruction[4]) * pixelRatio;
         goog.asserts.assert(goog.isNumber(instruction[5]));
-        var offsetY = /** @type {number} */ (instruction[5]);
+        var offsetY = /** @type {number} */ (instruction[5]) * pixelRatio;
         goog.asserts.assert(goog.isNumber(instruction[6]));
         rotation = /** @type {number} */ (instruction[6]);
         goog.asserts.assert(goog.isNumber(instruction[7]));
