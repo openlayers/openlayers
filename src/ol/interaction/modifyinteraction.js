@@ -80,7 +80,7 @@ ol.interaction.Modify = function(options) {
    * @type {Object.<*, ol.structs.RBush>}
    * @private
    */
-  this.rBush_ = null;
+  this.rBush_ = new ol.structs.RBush();
 
   /**
    * @type {number}
@@ -140,15 +140,6 @@ goog.inherits(ol.interaction.Modify, ol.interaction.Pointer);
  * @inheritDoc
  */
 ol.interaction.Modify.prototype.setMap = function(map) {
-  if (!goog.isNull(map)) {
-    if (goog.isNull(this.rBush_)) {
-      this.rBush_ = new ol.structs.RBush();
-    }
-  } else {
-    // removing from a map, clean up
-    this.rBush_ = null;
-  }
-
   this.overlay_.setMap(map);
   goog.base(this, 'setMap', map);
 };
