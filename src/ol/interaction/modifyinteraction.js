@@ -110,6 +110,7 @@ ol.interaction.Modify = function(options) {
    */
   this.features_ = options.features;
 
+  this.features_.forEach(this.addFeature_, this);
   goog.events.listen(this.features_, ol.CollectionEventType.ADD,
       this.addFeature_, false, this);
   goog.events.listen(this.features_, ol.CollectionEventType.REMOVE,
