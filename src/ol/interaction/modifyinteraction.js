@@ -80,7 +80,7 @@ ol.interaction.Modify = function(options) {
    * @type {Object.<*, ol.structs.RBush>}
    * @private
    */
-  this.rBush_ = null;
+  this.rBush_ = new ol.structs.RBush();
 
   /**
    * @type {number}
@@ -110,6 +110,7 @@ ol.interaction.Modify = function(options) {
    */
   this.features_ = options.features;
 
+  this.features_.forEach(this.addFeature_, this);
   goog.events.listen(this.features_, ol.CollectionEventType.ADD,
       this.addFeature_, false, this);
   goog.events.listen(this.features_, ol.CollectionEventType.REMOVE,
@@ -139,15 +140,6 @@ goog.inherits(ol.interaction.Modify, ol.interaction.Pointer);
  * @inheritDoc
  */
 ol.interaction.Modify.prototype.setMap = function(map) {
-  if (!goog.isNull(map)) {
-    if (goog.isNull(this.rBush_)) {
-      this.rBush_ = new ol.structs.RBush();
-    }
-  } else {
-    // removing from a map, clean up
-    this.rBush_ = null;
-  }
-
   this.overlay_.setMap(map);
   goog.base(this, 'setMap', map);
 };
@@ -164,7 +156,10 @@ ol.interaction.Modify.prototype.addFeature_ = function(evt) {
   if (goog.isDef(this.SEGMENT_WRITERS_[geometry.getType()])) {
     this.SEGMENT_WRITERS_[geometry.getType()].call(this, feature, geometry);
   }
-  this.handlePointerAtPixel_(this.lastPixel_, this.getMap());
+  var map = this.getMap();
+  if (!goog.isNull(map)) {
+    this.handlePointerAtPixel_(this.lastPixel_, map);
+  }
 };
 
 
