@@ -6,6 +6,7 @@ goog.provide('ol.interaction.DragBox');
 
 goog.require('goog.asserts');
 goog.require('goog.events.Event');
+goog.require('ol.ViewHint');
 goog.require('ol.events.ConditionType');
 goog.require('ol.events.condition');
 goog.require('ol.interaction.Pointer');
@@ -166,6 +167,7 @@ ol.interaction.DragBox.prototype.handlePointerUp =
     this.onBoxEnd(mapBrowserEvent);
     this.dispatchEvent(new ol.DragBoxEvent(ol.DragBoxEventType.BOXEND,
         mapBrowserEvent.coordinate));
+    mapBrowserEvent.map.getView().setHint(ol.ViewHint.INTERACTING, -1);
   }
   return false;
 };
@@ -187,6 +189,7 @@ ol.interaction.DragBox.prototype.handlePointerDown =
     this.box_.setPixels(this.startPixel_, this.startPixel_);
     this.dispatchEvent(new ol.DragBoxEvent(ol.DragBoxEventType.BOXSTART,
         mapBrowserEvent.coordinate));
+    mapBrowserEvent.map.getView().setHint(ol.ViewHint.INTERACTING, 1);
     return true;
   } else {
     return false;
