@@ -156,7 +156,10 @@ ol.interaction.Modify.prototype.addFeature_ = function(evt) {
   if (goog.isDef(this.SEGMENT_WRITERS_[geometry.getType()])) {
     this.SEGMENT_WRITERS_[geometry.getType()].call(this, feature, geometry);
   }
-  this.handlePointerAtPixel_(this.lastPixel_, this.getMap());
+  var map = this.getMap();
+  if (!goog.isNull(map)) {
+    this.handlePointerAtPixel_(this.lastPixel_, map);
+  }
 };
 
 
