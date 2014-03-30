@@ -536,7 +536,8 @@ ol.interaction.Modify.prototype.handlePointerAtPixel_ = function(pixel, map) {
       var squaredDist1 = ol.coordinate.squaredDistance(vertexPixel, pixel1);
       var squaredDist2 = ol.coordinate.squaredDistance(vertexPixel, pixel2);
       var dist = Math.sqrt(Math.min(squaredDist1, squaredDist2));
-      if (dist <= 10) {
+      this.snappedToVertex_ = dist <= this.pixelTolerance_;
+      if (this.snappedToVertex_) {
         vertex = squaredDist1 > squaredDist2 ?
             closestSegment[1] : closestSegment[0];
       }
