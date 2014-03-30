@@ -10,6 +10,7 @@ goog.require('ol.FeatureOverlay');
 goog.require('ol.MapBrowserEvent.EventType');
 goog.require('ol.ViewHint');
 goog.require('ol.coordinate');
+goog.require('ol.events.condition');
 goog.require('ol.extent');
 goog.require('ol.feature');
 goog.require('ol.geom.GeometryType');
@@ -45,6 +46,14 @@ ol.interaction.Modify = function(options) {
 
 
   /**
+   * @type {ol.events.ConditionType}
+   * @private
+   */
+  this.deleteCondition_ = goog.isDef(options.deleteCondition) ?
+      options.pixelTolerance : goog.functions.and(
+          ol.events.condition.noModifierKeys, ol.events.condition.singleClick);
+
+  /**
    * Editing vertex.
    * @type {ol.Feature}
    * @private
@@ -57,18 +66,6 @@ ol.interaction.Modify = function(options) {
    * @private
    */
   this.vertexSegments_ = null;
-
-  /**
-   * @type {boolean}
-   * @private
-   */
-  this.modifiable_ = false;
-
-  /**
-   * @type {ol.Coordinate}
-   * @private
-   */
-  this.lastVertexCoordinate_;
 
   /**
    * @type {ol.Pixel}
@@ -89,6 +86,12 @@ ol.interaction.Modify = function(options) {
    */
   this.pixelTolerance_ = goog.isDef(options.pixelTolerance) ?
       options.pixelTolerance : 10;
+
+  /**
+   * @type {boolean}
+   * @private
+   */
+  this.snappedToVertex_;
 
   /**
    * @type {Array}
@@ -404,9 +407,8 @@ ol.interaction.Modify.prototype.handlePointerDown = function(evt) {
     for (i = insertVertices.length - 1; i >= 0; --i) {
       this.insertVertex_.apply(this, insertVertices[i]);
     }
-    this.lastVertexCoordinate_ = goog.array.clone(vertex);
   }
-  return this.modifiable_;
+  return !goog.isNull(this.vertexFeature_);
 };
 
 
@@ -461,20 +463,12 @@ ol.interaction.Modify.prototype.handlePointerDrag = function(evt) {
  * @inheritDoc
  */
 ol.interaction.Modify.prototype.handlePointerUp = function(evt) {
-  var geometry = this.vertexFeature_.getGeometry();
-  goog.asserts.assertInstanceof(geometry, ol.geom.Point);
-  if (goog.array.equals(this.lastVertexCoordinate_,
-      geometry.getCoordinates())) {
-    this.removeVertex_();
-  } else {
-    var segmentData;
-    for (var i = this.dragSegments_.length - 1; i >= 0; --i) {
-      segmentData = this.dragSegments_[i][0];
-      this.rBush_.update(ol.extent.boundingExtent(segmentData.segment),
-          segmentData);
-    }
+  var segmentData;
+  for (var i = this.dragSegments_.length - 1; i >= 0; --i) {
+    segmentData = this.dragSegments_[i][0];
+    this.rBush_.update(ol.extent.boundingExtent(segmentData.segment),
+        segmentData);
   }
-  return false;
 };
 
 
@@ -483,12 +477,18 @@ ol.interaction.Modify.prototype.handlePointerUp = function(evt) {
  */
 ol.interaction.Modify.prototype.handleMapBrowserEvent =
     function(mapBrowserEvent) {
+  var handled;
   if (!mapBrowserEvent.map.getView().getHints()[ol.ViewHint.INTERACTING] &&
       mapBrowserEvent.type == ol.MapBrowserEvent.EventType.POINTERMOVE) {
     this.handlePointerMove_(mapBrowserEvent);
   }
-  return (goog.base(this, 'handleMapBrowserEvent', mapBrowserEvent) &&
-      !this.modifiable_);
+  if (!goog.isNull(this.vertexFeature_) && this.snappedToVertex_ &&
+      this.deleteCondition_(mapBrowserEvent)) {
+    var geometry = this.vertexFeature_.getGeometry();
+    goog.asserts.assertInstanceof(geometry, ol.geom.Point);
+    handled = this.removeVertex_();
+  }
+  return goog.base(this, 'handleMapBrowserEvent', mapBrowserEvent) && !handled;
 };
 
 
@@ -520,7 +520,6 @@ ol.interaction.Modify.prototype.handlePointerAtPixel_ = function(pixel, map) {
       [pixel[0] + this.pixelTolerance_, pixel[1] - this.pixelTolerance_]);
   var box = ol.extent.boundingExtent([lowerLeft, upperRight]);
 
-  this.modifiable_ = false;
   var rBush = this.rBush_;
   var nodes = rBush.getInExtent(box);
   if (nodes.length > 0) {
@@ -557,7 +556,6 @@ ol.interaction.Modify.prototype.handlePointerAtPixel_ = function(pixel, map) {
         }
       }
       this.vertexSegments_ = vertexSegments;
-      this.modifiable_ = true;
       return;
     }
   }
@@ -638,6 +636,7 @@ ol.interaction.Modify.prototype.insertVertex_ = function(segmentData, vertex) {
 
 /**
  * Removes a vertex from all matching features.
+ * @return {boolean} True when a vertex was removed.
  * @private
  */
 ol.interaction.Modify.prototype.removeVertex_ = function() {
@@ -724,6 +723,15 @@ ol.interaction.Modify.prototype.removeVertex_ = function() {
       }
     }
   }
+  return deleted;
+};
+
+
+/**
+ * @inheritDoc
+ */
+ol.interaction.Modify.prototype.shouldStopEvent = function(handled) {
+  return handled;
 };
 
 
