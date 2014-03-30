@@ -487,9 +487,9 @@
 
  /**
  * @typedef {Object} olx.interaction.ModifyOptions
- * @property {ol.events.ConditionType} deleteCondition Condition that determines
- *     which event results in a vertex deletion. Default is a `singleclick`
- *     event with no modifier keys.
+ * @property {ol.events.ConditionType|undefined} deleteCondition Condition that
+ *     determines which event results in a vertex deletion. Default is a
+ *     `singleclick` event with no modifier keys.
  * @property {number|undefined} pixelTolerance Pixel tolerance for considering
  *     the pointer close enough to a segment or vertex for editing. Default is
  *     10 pixels.

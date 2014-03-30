@@ -3,6 +3,7 @@ goog.provide('ol.interaction.Modify');
 goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('goog.events');
+goog.require('goog.functions');
 goog.require('ol.Collection');
 goog.require('ol.CollectionEventType');
 goog.require('ol.Feature');
@@ -50,8 +51,10 @@ ol.interaction.Modify = function(options) {
    * @private
    */
   this.deleteCondition_ = goog.isDef(options.deleteCondition) ?
-      options.pixelTolerance : goog.functions.and(
-          ol.events.condition.noModifierKeys, ol.events.condition.singleClick);
+      options.deleteCondition :
+      /** @type {ol.events.ConditionType} */ (goog.functions.and(
+          ol.events.condition.noModifierKeys,
+          ol.events.condition.singleClick));
 
   /**
    * Editing vertex.
@@ -643,7 +646,8 @@ ol.interaction.Modify.prototype.insertVertex_ = function(segmentData, vertex) {
 ol.interaction.Modify.prototype.removeVertex_ = function() {
   var dragSegments = this.dragSegments_;
   var segmentsByFeature = {};
-  var component, coordinates, deleted, dragSegment, geometry, i, index, left;
+  var deleted = false;
+  var component, coordinates, dragSegment, geometry, i, index, left;
   var newIndex, newSegment, right, segmentData, uid;
   for (i = dragSegments.length - 1; i >= 0; --i) {
     dragSegment = dragSegments[i];
