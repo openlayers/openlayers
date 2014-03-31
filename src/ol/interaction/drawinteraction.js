@@ -37,7 +37,13 @@ ol.DrawEventType = {
    * @event ol.DrawEvent#drawend
    * @todo stability experimental
    */
-  DRAWEND: 'drawend'
+  DRAWEND: 'drawend',
+  /**
+   * Triggered upon change of the preview
+   * @event ol.DrawEvent#drawchange
+   * @todo stability experimental
+   */
+  DRAWCHANGE: 'drawchange'  
 };
 
 
@@ -281,6 +287,8 @@ ol.interaction.Draw.prototype.handlePointerMove_ = function(event) {
   } else if (!goog.isNull(this.finishCoordinate_)) {
     this.modifyDrawing_(event);
   }
+  this.dispatchEvent(new ol.DrawEvent(ol.DrawEventType.DRAWCHANGE,
+      this.sketchFeature_));
   return true;
 };
 
