@@ -394,6 +394,11 @@
  */
 
 /**
+ * @typedef {Object} olx.format.TWKBOptions
+ * @property {ol.proj.ProjectionLike} defaultProjection Default projection.
+ */
+
+/**
  * @typedef {Object} olx.interaction.DoubleClickZoomOptions
  * @property {number|undefined} duration Animation duration in milliseconds. Default is `250`.
  * @property {number|undefined} delta The zoom delta applied on each double
@@ -773,6 +778,18 @@
  * @property {ol.proj.ProjectionLike} projection Projection.
  * @property {ol.tilegrid.TileGrid|undefined} tileGrid Tile grid.
  * @todo stability experimental
+ */
+
+/**
+ * @typedef {Object} olx.source.TWKBOptions
+ * @property {ArrayBuffer|undefined} arrayBuffer Array buffer.
+ * @property {ol.proj.ProjectionLike} defaultProjection Default projection.
+ * @property {ol.Extent|undefined} extent Extent.
+ * @property {string|undefined} logo Logo.
+ * @property {ol.proj.ProjectionLike} projection Projection.
+ * @property {string|undefined} text Text.
+ * @property {string|undefined} url URL.
+ * @property {Array.<string>|undefined} urls URLs.
  */
 
 /**
