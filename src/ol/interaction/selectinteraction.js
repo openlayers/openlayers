@@ -5,6 +5,8 @@ goog.require('goog.functions');
 goog.require('ol.Feature');
 goog.require('ol.FeatureOverlay');
 goog.require('ol.events.condition');
+goog.require('ol.feature');
+goog.require('ol.geom.GeometryType');
 goog.require('ol.interaction.Interaction');
 
 
@@ -12,12 +14,14 @@ goog.require('ol.interaction.Interaction');
 /**
  * @constructor
  * @extends {ol.interaction.Interaction}
- * @param {olx.interaction.SelectOptions} options Options.
+ * @param {olx.interaction.SelectOptions=} opt_options Options.
  * @todo stability experimental
  */
-ol.interaction.Select = function(options) {
+ol.interaction.Select = function(opt_options) {
 
   goog.base(this);
+
+  var options = goog.isDef(opt_options) ? opt_options : {};
 
   /**
    * @private
@@ -85,7 +89,8 @@ ol.interaction.Select = function(options) {
    * @type {ol.FeatureOverlay}
    */
   this.featureOverlay_ = new ol.FeatureOverlay({
-    style: options.style
+    style: (goog.isDef(options.style)) ? options.style :
+        ol.interaction.Select.getDefaultStyleFunction()
   });
 
 };
@@ -176,4 +181,20 @@ ol.interaction.Select.prototype.handleMapBrowserEvent =
 ol.interaction.Select.prototype.setMap = function(map) {
   goog.base(this, 'setMap', map);
   this.featureOverlay_.setMap(map);
+};
+
+
+/**
+ * @return {ol.feature.StyleFunction} Styles.
+ */
+ol.interaction.Select.getDefaultStyleFunction = function() {
+  var styles = ol.feature.createDefaultEditingStyles();
+  goog.array.extend(styles[ol.geom.GeometryType.POLYGON],
+      styles[ol.geom.GeometryType.LINE_STRING]);
+  goog.array.extend(styles[ol.geom.GeometryType.GEOMETRY_COLLECTION],
+      styles[ol.geom.GeometryType.LINE_STRING]);
+
+  return function(feature, resolution) {
+    return styles[feature.getGeometry().getType()];
+  };
 };
