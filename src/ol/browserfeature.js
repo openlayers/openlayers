@@ -3,6 +3,7 @@ goog.provide('ol.BrowserFeature');
 goog.require('goog.dom');
 goog.require('goog.dom.TagName');
 goog.require('goog.userAgent');
+goog.require('ol.dom');
 goog.require('ol.webgl');
 
 
@@ -113,10 +114,7 @@ ol.BrowserFeature.HAS_CANVAS = ol.ENABLE_CANVAS && (
         return false;
       }
       try {
-        var canvas = /** @type {HTMLCanvasElement} */
-            (goog.dom.createElement(goog.dom.TagName.CANVAS));
-        var context = /** @type {CanvasRenderingContext2D} */
-            (canvas.getContext('2d'));
+        var context = ol.dom.createCanvasContext2D();
         if (goog.isNull(context)) {
           return false;
         } else {

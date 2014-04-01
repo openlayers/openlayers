@@ -1,11 +1,10 @@
 goog.provide('ol.source.ImageVector');
 
 goog.require('goog.asserts');
-goog.require('goog.dom');
-goog.require('goog.dom.TagName');
 goog.require('goog.events');
 goog.require('goog.events.EventType');
 goog.require('goog.vec.Mat4');
+goog.require('ol.dom');
 goog.require('ol.extent');
 goog.require('ol.feature');
 goog.require('ol.render.canvas.ReplayGroup');
@@ -56,17 +55,9 @@ ol.source.ImageVector = function(options) {
 
   /**
    * @private
-   * @type {HTMLCanvasElement}
-   */
-  this.canvasElement_ = /** @type {HTMLCanvasElement} */
-      (goog.dom.createElement(goog.dom.TagName.CANVAS));
-
-  /**
-   * @private
    * @type {CanvasRenderingContext2D}
    */
-  this.canvasContext_ = /** @type {CanvasRenderingContext2D} */
-      (this.canvasElement_.getContext('2d'));
+  this.canvasContext_ = ol.dom.createCanvasContext2D();
 
   /**
    * @private
@@ -130,8 +121,8 @@ ol.source.ImageVector.prototype.canvasFunctionInternal_ =
   }
 
   if (this.canvasSize_[0] != size[0] || this.canvasSize_[1] != size[1]) {
-    this.canvasElement_.width = size[0];
-    this.canvasElement_.height = size[1];
+    this.canvasContext_.canvas.width = size[0];
+    this.canvasContext_.canvas.height = size[1];
     this.canvasSize_[0] = size[0];
     this.canvasSize_[1] = size[1];
   } else {
@@ -145,7 +136,7 @@ ol.source.ImageVector.prototype.canvasFunctionInternal_ =
 
   this.replayGroup_ = replayGroup;
 
-  return this.canvasElement_;
+  return this.canvasContext_.canvas;
 };
 
 

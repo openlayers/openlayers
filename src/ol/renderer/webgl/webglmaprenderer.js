@@ -15,6 +15,7 @@ goog.require('goog.style');
 goog.require('goog.webgl');
 goog.require('ol.Tile');
 goog.require('ol.css');
+goog.require('ol.dom');
 goog.require('ol.layer.Image');
 goog.require('ol.layer.Tile');
 goog.require('ol.render.Event');
@@ -68,13 +69,6 @@ ol.renderer.webgl.Map = function(container, map) {
 
   /**
    * @private
-   * @type {HTMLCanvasElement}
-   */
-  this.clipTileCanvas_ = /** @type {HTMLCanvasElement} */
-      (goog.dom.createElement(goog.dom.TagName.CANVAS));
-
-  /**
-   * @private
    * @type {number}
    */
   this.clipTileCanvasSize_ = 0;
@@ -83,8 +77,7 @@ ol.renderer.webgl.Map = function(container, map) {
    * @private
    * @type {CanvasRenderingContext2D}
    */
-  this.clipTileContext_ = /** @type {CanvasRenderingContext2D} */
-      (this.clipTileCanvas_.getContext('2d'));
+  this.clipTileContext_ = ol.dom.createCanvasContext2D();
 
   /**
    * @private
@@ -217,7 +210,7 @@ ol.renderer.webgl.Map.prototype.bindTileTexture =
     var texture = gl.createTexture();
     gl.bindTexture(goog.webgl.TEXTURE_2D, texture);
     if (tileGutter > 0) {
-      var clipTileCanvas = this.clipTileCanvas_;
+      var clipTileCanvas = this.clipTileContext_.canvas;
       var clipTileContext = this.clipTileContext_;
       if (this.clipTileCanvasSize_ != tileSize) {
         clipTileCanvas.width = tileSize;

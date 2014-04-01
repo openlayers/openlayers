@@ -12,6 +12,24 @@ goog.require('goog.vec.Mat4');
 
 
 /**
+ * Create an html canvas element and returns its 2d context.
+ * @param {number=} opt_width Canvas width.
+ * @param {number=} opt_height Canvas height.
+ * @return {CanvasRenderingContext2D}
+ */
+ol.dom.createCanvasContext2D = function(opt_width, opt_height) {
+  var canvas = goog.dom.createElement(goog.dom.TagName.CANVAS);
+  if (goog.isDef(opt_width)) {
+    canvas.width = opt_width;
+  }
+  if (goog.isDef(opt_height)) {
+    canvas.height = opt_height;
+  }
+  return canvas.getContext('2d');
+};
+
+
+/**
  * @enum {boolean}
  */
 ol.dom.BrowserFeature = {

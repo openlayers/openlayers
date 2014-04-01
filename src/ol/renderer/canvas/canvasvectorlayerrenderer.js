@@ -2,10 +2,9 @@ goog.provide('ol.renderer.canvas.VectorLayer');
 
 goog.require('goog.array');
 goog.require('goog.asserts');
-goog.require('goog.dom');
-goog.require('goog.dom.TagName');
 goog.require('goog.events');
 goog.require('ol.ViewHint');
+goog.require('ol.dom');
 goog.require('ol.extent');
 goog.require('ol.feature');
 goog.require('ol.layer.Vector');
@@ -64,17 +63,10 @@ ol.renderer.canvas.VectorLayer = function(mapRenderer, vectorLayer) {
   this.replayGroup_ = null;
 
   /**
-   * @type {HTMLCanvasElement}
-   */
-  var canvas = /** @type {HTMLCanvasElement} */
-      (goog.dom.createElement(goog.dom.TagName.CANVAS));
-
-  /**
    * @private
    * @type {CanvasRenderingContext2D}
    */
-  this.context_ = /** @type {CanvasRenderingContext2D} */
-      (canvas.getContext('2d'));
+  this.context_ = ol.dom.createCanvasContext2D();
 
 };
 goog.inherits(ol.renderer.canvas.VectorLayer, ol.renderer.canvas.Layer);
