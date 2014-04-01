@@ -796,7 +796,7 @@
  * @property {Document|undefined} doc Document.
  * @property {ol.Extent|undefined} extent Extent.
  * @property {string|undefined} logo Logo.
- * @property {Node|undefined| node Node.
+ * @property {Node|undefined} node Node.
  * @property {ol.proj.ProjectionLike} projection Projection.
  * @property {ol.proj.ProjectionLike} reprojectTo Re-project to.
  * @property {string|undefined} text Text.
