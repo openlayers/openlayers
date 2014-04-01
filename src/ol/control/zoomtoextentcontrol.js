@@ -9,6 +9,7 @@ goog.require('goog.events');
 goog.require('goog.events.EventType');
 goog.require('ol.control.Control');
 goog.require('ol.css');
+goog.require('ol.pointer.PointerEventHandler');
 
 
 
@@ -47,10 +48,10 @@ ol.control.ZoomToExtent = function(opt_options) {
   goog.dom.appendChild(button, tip);
   goog.dom.appendChild(element, button);
 
-  goog.events.listen(button, [
-    goog.events.EventType.TOUCHEND,
-    goog.events.EventType.CLICK
-  ], this.handleZoomToExtent_, false, this);
+  var buttonHandler = new ol.pointer.PointerEventHandler(button);
+  this.registerDisposable(buttonHandler);
+  goog.events.listen(buttonHandler, ol.pointer.EventType.POINTERUP,
+      this.handleZoomToExtent_, false, this);
 
   goog.events.listen(button, [
     goog.events.EventType.MOUSEOUT,
@@ -68,11 +69,11 @@ goog.inherits(ol.control.ZoomToExtent, ol.control.Control);
 
 
 /**
- * @param {goog.events.BrowserEvent} browserEvent Browser event.
+ * @param {ol.pointer.PointerEvent} pointerEvent Pointer event.
  * @private
  */
-ol.control.ZoomToExtent.prototype.handleZoomToExtent_ = function(browserEvent) {
-  browserEvent.preventDefault();
+ol.control.ZoomToExtent.prototype.handleZoomToExtent_ = function(pointerEvent) {
+  pointerEvent.browserEvent.preventDefault();
   // prevent #zoomExtent anchor from getting appended to the url
   var map = this.getMap();
   var view = map.getView();
