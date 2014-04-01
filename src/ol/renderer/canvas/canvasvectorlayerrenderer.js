@@ -183,15 +183,7 @@ ol.renderer.canvas.VectorLayer.prototype.prepareFrame =
   var vectorLayerRevision = vectorLayer.getRevision();
   var vectorLayerRenderOrder = vectorLayer.getRenderOrder();
   if (!goog.isDef(vectorLayerRenderOrder)) {
-    vectorLayerRenderOrder =
-        /**
-         * @param {ol.Feature} feature1 Feature 1.
-         * @param {ol.Feature} feature2 Feature 2.
-         * @return {number} Order.
-         */
-        function(feature1, feature2) {
-      return goog.getUid(feature1) - goog.getUid(feature2);
-    };
+    vectorLayerRenderOrder = ol.renderer.vector.defaultOrder;
   }
 
   if (!this.dirty_ &&

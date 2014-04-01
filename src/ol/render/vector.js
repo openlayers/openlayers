@@ -15,6 +15,16 @@ goog.require('ol.style.Style');
 
 
 /**
+ * @param {ol.Feature} feature1 Feature 1.
+ * @param {ol.Feature} feature2 Feature 2.
+ * @return {number} Order.
+ */
+ol.renderer.vector.defaultOrder = function(feature1, feature2) {
+  return goog.getUid(feature1) - goog.getUid(feature2);
+};
+
+
+/**
  * @param {ol.render.IReplayGroup} replayGroup Replay group.
  * @param {ol.geom.Geometry} geometry Geometry.
  * @param {ol.style.Style} style Style.
