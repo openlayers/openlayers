@@ -43,7 +43,7 @@ ol.DrawEventType = {
    * @event ol.DrawEvent#drawchange
    * @todo stability experimental
    */
-  DRAWCHANGE: 'drawchange'  
+  DRAWCHANGE: 'drawchange'
 };
 
 
