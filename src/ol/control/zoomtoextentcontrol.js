@@ -48,8 +48,9 @@ ol.control.ZoomToExtent = function(opt_options) {
   goog.dom.appendChild(button, tip);
   goog.dom.appendChild(element, button);
 
-  goog.events.listen(new ol.pointer.PointerEventHandler(button),
-      ol.pointer.EventType.POINTERUP,
+  var buttonHandler = new ol.pointer.PointerEventHandler(button);
+  this.registerDisposable(buttonHandler);
+  goog.events.listen(buttonHandler, ol.pointer.EventType.POINTERUP,
       this.handleZoomToExtent_, false, this);
 
   goog.events.listen(button, [

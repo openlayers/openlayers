@@ -48,7 +48,9 @@ ol.control.FullScreen = function(opt_options) {
         ' ol-has-tooltip'
   });
   goog.dom.appendChild(button, tip);
-  goog.events.listen(new ol.pointer.PointerEventHandler(button),
+  var buttonHandler = new ol.pointer.PointerEventHandler(button);
+  this.registerDisposable(buttonHandler);
+  goog.events.listen(buttonHandler,
       ol.pointer.EventType.POINTERUP, this.handleClick_, false, this);
 
   goog.events.listen(button, [

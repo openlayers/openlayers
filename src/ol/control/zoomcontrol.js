@@ -52,7 +52,9 @@ ol.control.Zoom = function(opt_options) {
     'type' : 'button'
   }, tTipZoomIn, zoomInLabel);
 
-  goog.events.listen(new ol.pointer.PointerEventHandler(inElement),
+  var inElementHandler = new ol.pointer.PointerEventHandler(inElement);
+  this.registerDisposable(inElementHandler);
+  goog.events.listen(inElementHandler,
       ol.pointer.EventType.POINTERUP, goog.partial(
           ol.control.Zoom.prototype.zoomByDelta_, delta), false, this);
 
@@ -72,7 +74,9 @@ ol.control.Zoom = function(opt_options) {
     'name' : 'ZoomOut'
   }, tTipsZoomOut, zoomOutLabel);
 
-  goog.events.listen(new ol.pointer.PointerEventHandler(outElement),
+  var outElementHandler = new ol.pointer.PointerEventHandler(outElement);
+  this.registerDisposable(outElementHandler);
+  goog.events.listen(outElementHandler,
       ol.pointer.EventType.POINTERUP, goog.partial(
           ol.control.Zoom.prototype.zoomByDelta_, -delta), false, this);
 
