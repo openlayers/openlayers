@@ -226,7 +226,7 @@ ol.renderer.canvas.VectorLayer.prototype.prepareFrame =
         feature, frameStateResolution, pixelRatio, styleFunction, replayGroup);
     this.dirty_ = this.dirty_ || dirty;
   };
-  if (goog.isDef(vectorLayerRenderOrder)) {
+  if (!goog.isNull(vectorLayerRenderOrder)) {
     var features = vectorSource.getFeaturesInExtent(extent);
     goog.array.sort(features, vectorLayerRenderOrder);
     goog.array.forEach(features, renderFeature, this);
