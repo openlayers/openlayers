@@ -86,6 +86,10 @@ ol.layer.Heatmap = function(opt_options) {
     return style;
   });
 
+  // For performance reasons, don't sort the features before rendering.
+  // The render order is not relevant for a heatmap representation.
+  this.setRenderOrder(null);
+
   goog.events.listen(this, ol.render.EventType.RENDER,
       this.handleRender_, false, this);
 
