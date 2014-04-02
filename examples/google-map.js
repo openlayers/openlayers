@@ -54,7 +54,6 @@ var map = new ol.Map({
     pan: false,
     rotate: false
   }).extend([new ol.interaction.DragPan({kinetic: false})]),
-  renderer: 'canvas',
   target: olMapDiv,
   view: view
 });

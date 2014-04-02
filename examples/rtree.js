@@ -97,7 +97,6 @@ var rtree = new ol.layer.Vector({
 
 var map = new ol.Map({
   layers: [vector, rtree],
-  renderer: 'canvas',
   target: 'map',
   view: new ol.View2D({
     center: [0, 0],

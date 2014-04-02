@@ -20,7 +20,6 @@ var map = new ol.Map({
       source: new ol.source.OSM()
     })
   ],
-  renderer: 'canvas',
   target: 'map',
   view: view
 });

@@ -21,7 +21,6 @@ var vector = new ol.layer.Vector({
 
 var map = new ol.Map({
   layers: [raster, vector],
-  renderer: 'canvas',
   target: document.getElementById('map'),
   view: new ol.View2D({
     center: [876970.8463461736, 5859807.853963373],

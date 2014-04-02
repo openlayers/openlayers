@@ -32,7 +32,6 @@ var map = new ol.Map({
       })
     })
   ],
-  renderer: 'canvas',
   target: 'map',
   view: new ol.View2D({
     projection: pixelProjection,

@@ -32,7 +32,6 @@ var modify = new ol.interaction.Modify({
 var map = new ol.Map({
   interactions: ol.interaction.defaults().extend([select, modify]),
   layers: [raster, vector],
-  renderer: 'canvas',
   target: 'map',
   view: new ol.View2D({
     center: [0, 0],

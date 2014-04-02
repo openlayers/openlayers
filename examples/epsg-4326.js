@@ -26,8 +26,6 @@ var map = new ol.Map({
     })
   ]),
   layers: layers,
-  // The OSgeo server does not set cross origin headers, so we cannot use WebGL
-  renderer: ['canvas', 'dom'],
   target: 'map',
   view: new ol.View2D({
     projection: 'EPSG:4326',

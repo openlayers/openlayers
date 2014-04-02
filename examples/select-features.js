@@ -23,7 +23,6 @@ var select = new ol.interaction.Select();
 var map = new ol.Map({
   interactions: ol.interaction.defaults().extend([select]),
   layers: [raster, vector],
-  renderer: 'canvas',
   target: 'map',
   view: new ol.View2D({
     center: [0, 0],

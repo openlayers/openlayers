@@ -52,7 +52,6 @@ var map = new ol.Map({
     }),
     vectorLayer
   ],
-  renderer: 'canvas',
   target: 'map',
   view: new ol.View2D({
     center: [0, 0],
