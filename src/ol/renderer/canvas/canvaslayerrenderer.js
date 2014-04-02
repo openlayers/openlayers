@@ -1,5 +1,6 @@
 goog.provide('ol.renderer.canvas.Layer');
 
+goog.require('goog.array');
 goog.require('goog.vec.Mat4');
 goog.require('ol.layer.Layer');
 goog.require('ol.render.Event');
@@ -19,6 +20,12 @@ goog.require('ol.vec.Mat4');
 ol.renderer.canvas.Layer = function(mapRenderer, layer) {
 
   goog.base(this, mapRenderer, layer);
+
+  /**
+   * @private
+   * @type {ImageData}
+   */
+  this.testImageData_ = null;
 
   /**
    * @private
@@ -162,4 +169,31 @@ ol.renderer.canvas.Layer.prototype.getTransform = function(frameState) {
       -pixelRatio / view2DState.resolution,
       -view2DState.rotation,
       -view2DState.center[0], -view2DState.center[1]);
+};
+
+
+/**
+ * @param {CanvasRenderingContext2D} context Context.
+ * @param {ol.Size} size Size.
+ * @return {boolean} True when the canvas with the current size does not exceed
+ *     the maximum dimensions.
+ * @protected
+ */
+ol.renderer.canvas.Layer.prototype.testCanvasSize = function(context, size) {
+  var x = size[0] - 1;
+  var y = size[1] - 1;
+  var originalImageData = context.getImageData(x, y, 1, 1);
+  if (goog.isNull(this.testImageData_)) {
+    this.testImageData_ = context.createImageData(1, 1);
+    var data = this.testImageData_.data;
+    data[0] = 42;
+    data[1] = 84;
+    data[2] = 126;
+    data[3] = 255;
+  }
+  context.putImageData(this.testImageData_, x, y);
+  var result = context.getImageData(x, y, 1, 1);
+  var good = goog.array.equals(this.testImageData_.data, result.data);
+  context.putImageData(originalImageData, x, y);
+  return good;
 };
