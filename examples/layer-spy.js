@@ -16,7 +16,6 @@ var imagery = new ol.layer.Tile({
 
 var map = new ol.Map({
   layers: [roads, imagery],
-  renderer: 'canvas',
   target: 'map',
   view: new ol.View2D({
     center: ol.proj.transform([-109, 46.5], 'EPSG:4326', 'EPSG:3857'),

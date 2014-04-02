@@ -243,7 +243,6 @@ var modify = new ol.interaction.Modify({
 var map = new ol.Map({
   interactions: ol.interaction.defaults().extend([select, modify]),
   layers: [layer],
-  renderer: 'canvas',
   target: 'map',
   view: new ol.View2D({
     center: [0, 1000000],

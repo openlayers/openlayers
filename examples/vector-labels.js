@@ -187,7 +187,6 @@ var map = new ol.Map({
     vectorLines,
     vectorPoints
   ],
-  renderer: 'canvas',
   target: 'map',
   view: new ol.View2D({
     center: [-8161939, 6095025],

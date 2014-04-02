@@ -4,7 +4,6 @@
 
 goog.provide('ol.Map');
 goog.provide('ol.MapProperty');
-goog.provide('ol.RendererHint');
 
 goog.require('goog.Uri.QueryData');
 goog.require('goog.array');
@@ -114,8 +113,8 @@ ol.RendererHint = {
  * @type {Array.<ol.RendererHint>}
  */
 ol.DEFAULT_RENDERER_HINTS = [
-  ol.RendererHint.WEBGL,
   ol.RendererHint.CANVAS,
+  ol.RendererHint.WEBGL,
   ol.RendererHint.DOM
 ];
 

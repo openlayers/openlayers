@@ -82,7 +82,6 @@ var map = new ol.Map({
       style: styleFunction
     })
   ],
-  renderer: 'canvas',
   target: 'map',
   view: new ol.View2D({
     center: [703365.7089403362, 5714629.865071137],

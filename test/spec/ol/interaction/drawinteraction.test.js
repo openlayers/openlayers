@@ -19,7 +19,6 @@ describe('ol.interaction.Draw', function() {
     var layer = new ol.layer.Vector({source: source});
     map = new ol.Map({
       target: target,
-      renderer: ol.RendererHint.CANVAS,
       layers: [layer],
       view: new ol.View2D({
         projection: 'EPSG:4326',
@@ -447,7 +446,6 @@ goog.require('goog.events.BrowserEvent');
 goog.require('goog.style');
 goog.require('ol.Map');
 goog.require('ol.MapBrowserPointerEvent');
-goog.require('ol.RendererHint');
 goog.require('ol.View2D');
 goog.require('ol.geom.GeometryType');
 goog.require('ol.geom.LineString');
