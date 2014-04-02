@@ -7,13 +7,12 @@ goog.provide('ol.render.canvas.ReplayGroup');
 
 goog.require('goog.array');
 goog.require('goog.asserts');
-goog.require('goog.dom');
-goog.require('goog.dom.TagName');
 goog.require('goog.object');
 goog.require('goog.vec.Mat4');
 goog.require('ol.BrowserFeature');
 goog.require('ol.array');
 goog.require('ol.color');
+goog.require('ol.dom');
 goog.require('ol.extent');
 goog.require('ol.extent.Relationship');
 goog.require('ol.geom.flat.simplify');
@@ -1821,19 +1820,10 @@ ol.render.canvas.ReplayGroup = function(tolerance, maxExtent, resolution) {
   this.replaysByZIndex_ = {};
 
   /**
-   * @type {HTMLCanvasElement}
-   */
-  var hitDetectionCanvas = /** @type {HTMLCanvasElement} */
-      (goog.dom.createElement(goog.dom.TagName.CANVAS));
-  hitDetectionCanvas.width = 1;
-  hitDetectionCanvas.height = 1;
-
-  /**
    * @private
    * @type {CanvasRenderingContext2D}
    */
-  this.hitDetectionContext_ = /** @type {CanvasRenderingContext2D} */
-      (hitDetectionCanvas.getContext('2d'));
+  this.hitDetectionContext_ = ol.dom.createCanvasContext2D(1, 1);
 
   /**
    * @private

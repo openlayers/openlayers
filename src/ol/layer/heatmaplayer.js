@@ -1,11 +1,10 @@
 goog.provide('ol.layer.Heatmap');
 
 goog.require('goog.asserts');
-goog.require('goog.dom');
-goog.require('goog.dom.TagName');
 goog.require('goog.events');
 goog.require('goog.math');
 goog.require('ol.Object');
+goog.require('ol.dom');
 goog.require('ol.layer.Vector');
 goog.require('ol.render.EventType');
 goog.require('ol.style.Icon');
@@ -107,12 +106,9 @@ ol.layer.Heatmap.DEFAULT_GRADIENT = ['#00f', '#0ff', '#0f0', '#ff0', '#f00'];
  * @private
  */
 ol.layer.Heatmap.createGradient_ = function(colors) {
-  var canvas = goog.dom.createElement(goog.dom.TagName.CANVAS);
-  var context = canvas.getContext('2d');
   var width = 1;
   var height = 256;
-  canvas.width = width;
-  canvas.height = height;
+  var context = ol.dom.createCanvasContext2D(width, height);
 
   var gradient = context.createLinearGradient(0, 0, width, height);
   var step = 1 / (colors.length - 1);
@@ -135,11 +131,9 @@ ol.layer.Heatmap.createGradient_ = function(colors) {
  * @private
  */
 ol.layer.Heatmap.createCircle_ = function(radius, blur, shadow) {
-  var canvas =  /** @type {HTMLCanvasElement} */
-      (goog.dom.createElement(goog.dom.TagName.CANVAS));
-  var context = canvas.getContext('2d');
   var halfSize = radius + blur + 1;
-  canvas.width = canvas.height = halfSize * 2;
+  var size = 2 * halfSize;
+  var context = ol.dom.createCanvasContext2D(size, size);
   context.shadowOffsetX = context.shadowOffsetY = shadow;
   context.shadowBlur = blur;
   context.shadowColor = '#000';
@@ -147,7 +141,7 @@ ol.layer.Heatmap.createCircle_ = function(radius, blur, shadow) {
   var center = halfSize - shadow;
   context.arc(center, center, radius, 0, Math.PI * 2, true);
   context.fill();
-  return canvas.toDataURL();
+  return context.canvas.toDataURL();
 };
 
 

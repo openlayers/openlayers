@@ -7,11 +7,10 @@ goog.provide('ol.style.IconImageCache');
 
 goog.require('goog.array');
 goog.require('goog.asserts');
-goog.require('goog.dom');
-goog.require('goog.dom.TagName');
 goog.require('goog.events');
 goog.require('goog.events.EventTarget');
 goog.require('goog.events.EventType');
+goog.require('ol.dom');
 goog.require('ol.style.Image');
 goog.require('ol.style.ImageState');
 
@@ -312,12 +311,7 @@ ol.style.IconImage_.get = function(src, crossOrigin) {
  * @private
  */
 ol.style.IconImage_.prototype.determineTainting_ = function() {
-  var canvas = /** @type {HTMLCanvasElement} */
-      (goog.dom.createElement(goog.dom.TagName.CANVAS));
-  canvas.width = 1;
-  canvas.height = 1;
-  var context = /** @type {CanvasRenderingContext2D} */
-      (canvas.getContext('2d'));
+  var context = ol.dom.createCanvasContext2D(1, 1);
   context.drawImage(this.image_, 0, 0);
   try {
     context.getImageData(0, 0, 1, 1);
@@ -381,16 +375,11 @@ ol.style.IconImage_.prototype.getImageState = function() {
 ol.style.IconImage_.prototype.getHitDetectionImage = function(pixelRatio) {
   if (goog.isNull(this.hitDetectionImage_)) {
     if (this.tainting_) {
-      var canvas = /** @type {HTMLCanvasElement} */
-          (goog.dom.createElement(goog.dom.TagName.CANVAS));
       var width = this.size_[0];
       var height = this.size_[1];
-      canvas.width = width;
-      canvas.height = height;
-      var context = /** @type {CanvasRenderingContext2D} */
-          (canvas.getContext('2d'));
+      var context = ol.dom.createCanvasContext2D(width, height);
       context.fillRect(0, 0, width, height);
-      this.hitDetectionImage_ = canvas;
+      this.hitDetectionImage_ = context.canvas;
     } else {
       this.hitDetectionImage_ = this.image_;
     }
