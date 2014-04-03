@@ -97,11 +97,16 @@ ol.renderer.Map.prototype.disposeInternal = function() {
 ol.renderer.Map.prototype.forEachFeatureAtPixel =
     function(coordinate, frameState, callback, thisArg,
         layerFilter, thisArg2) {
-  var layersArray = this.map_.getLayerGroup().getLayersArray();
+  var obj = this.map_.getLayerGroup().getLayerStatesArray();
+  var layers = obj.layers;
+  var layerStates = obj.layerStates;
+  goog.asserts.assert(layers.length == layerStates.length);
+  var numLayers = layers.length;
   var i;
-  for (i = layersArray.length - 1; i >= 0; --i) {
-    var layer = layersArray[i];
-    if (layer.getVisible() && layerFilter.call(thisArg2, layer)) {
+  for (i = numLayers - 1; i >= 0; --i) {
+    var layerState = layerStates[i];
+    var layer = layers[i];
+    if (layerState.visible && layerFilter.call(thisArg2, layer)) {
       var layerRenderer = this.getLayerRenderer(layer);
       var result = layerRenderer.forEachFeatureAtPixel(
           coordinate, frameState, callback, thisArg);
