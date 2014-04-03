@@ -46,6 +46,12 @@ ol.renderer.canvas.TileLayer = function(mapRenderer, tileLayer) {
 
   /**
    * @private
+   * @type {boolean}
+   */
+  this.canvasTooBig_ = false;
+
+  /**
+   * @private
    * @type {CanvasRenderingContext2D}
    */
   this.context_ = null;
@@ -203,17 +209,23 @@ ol.renderer.canvas.TileLayer.prototype.prepareFrame =
     this.canvas_ = context.canvas;
     this.canvasSize_ = [canvasWidth, canvasHeight];
     this.context_ = context;
+    this.canvasTooBig_ =
+        !ol.renderer.canvas.Layer.testCanvasSize(context, this.canvasSize_);
   } else {
     goog.asserts.assert(!goog.isNull(this.canvasSize_));
     goog.asserts.assert(!goog.isNull(this.context_));
     canvas = this.canvas_;
     context = this.context_;
     if (this.canvasSize_[0] < canvasWidth ||
-        this.canvasSize_[1] < canvasHeight) {
-      // Canvas is too small, make it bigger
+        this.canvasSize_[1] < canvasHeight ||
+        (this.canvasTooBig_ && (this.canvasSize_[0] > canvasWidth ||
+        this.canvasSize_[1] > canvasHeight))) {
+      // Canvas is too small or too big, resize it
       canvas.width = canvasWidth;
       canvas.height = canvasHeight;
       this.canvasSize_ = [canvasWidth, canvasHeight];
+      this.canvasTooBig_ =
+          !ol.renderer.canvas.Layer.testCanvasSize(context, this.canvasSize_);
       this.renderedCanvasTileRange_ = null;
     } else {
       canvasWidth = this.canvasSize_[0];

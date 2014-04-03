@@ -1,5 +1,6 @@
 goog.provide('ol.renderer.canvas.Layer');
 
+goog.require('goog.array');
 goog.require('goog.vec.Mat4');
 goog.require('ol.layer.Layer');
 goog.require('ol.render.Event');
@@ -163,3 +164,37 @@ ol.renderer.canvas.Layer.prototype.getTransform = function(frameState) {
       -view2DState.rotation,
       -view2DState.center[0], -view2DState.center[1]);
 };
+
+
+/**
+ * @param {CanvasRenderingContext2D} context Context.
+ * @param {ol.Size} size Size.
+ * @return {boolean} True when the canvas with the current size does not exceed
+ *     the maximum dimensions.
+ */
+ol.renderer.canvas.Layer.testCanvasSize = (function() {
+
+  /**
+   * @type {ImageData}
+   */
+  var testImageData = null;
+
+  return function(context, size) {
+    var x = size[0] - 1;
+    var y = size[1] - 1;
+    var originalImageData = context.getImageData(x, y, 1, 1);
+    if (goog.isNull(testImageData)) {
+      testImageData = context.createImageData(1, 1);
+      var data = testImageData.data;
+      data[0] = 42;
+      data[1] = 84;
+      data[2] = 126;
+      data[3] = 255;
+    }
+    context.putImageData(testImageData, x, y);
+    var result = context.getImageData(x, y, 1, 1);
+    var good = goog.array.equals(testImageData.data, result.data);
+    context.putImageData(originalImageData, x, y);
+    return good;
+  };
+})();
