@@ -94,7 +94,7 @@ $(map.getViewport()).on('mousemove', function(evt) {
   displaySnap(coordinate);
 });
 
-map.on('singleclick', function(evt) {
+map.on('click', function(evt) {
   displaySnap(evt.coordinate);
 });
 
