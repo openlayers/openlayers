@@ -48,7 +48,7 @@ ol.renderer.canvas.TileLayer = function(mapRenderer, tileLayer) {
    * @private
    * @type {boolean}
    */
-  this.canvasTooBig_;
+  this.canvasTooBig_ = false;
 
   /**
    * @private
@@ -209,7 +209,8 @@ ol.renderer.canvas.TileLayer.prototype.prepareFrame =
     this.canvas_ = context.canvas;
     this.canvasSize_ = [canvasWidth, canvasHeight];
     this.context_ = context;
-    this.canvasTooBig_ = !this.testCanvasSize(context, this.canvasSize_);
+    this.canvasTooBig_ =
+        !ol.renderer.canvas.Layer.testCanvasSize(context, this.canvasSize_);
   } else {
     goog.asserts.assert(!goog.isNull(this.canvasSize_));
     goog.asserts.assert(!goog.isNull(this.context_));
@@ -223,7 +224,8 @@ ol.renderer.canvas.TileLayer.prototype.prepareFrame =
       canvas.width = canvasWidth;
       canvas.height = canvasHeight;
       this.canvasSize_ = [canvasWidth, canvasHeight];
-      this.canvasTooBig_ = !this.testCanvasSize(context, this.canvasSize_);
+      this.canvasTooBig_ =
+          !ol.renderer.canvas.Layer.testCanvasSize(context, this.canvasSize_);
       this.renderedCanvasTileRange_ = null;
     } else {
       canvasWidth = this.canvasSize_[0];
