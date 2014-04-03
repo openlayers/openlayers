@@ -13,6 +13,7 @@ goog.require('goog.events.Event');
 goog.require('goog.events.EventType');
 goog.require('goog.object');
 goog.require('ol.ObjectEventType');
+goog.require('ol.proj');
 goog.require('ol.source.Source');
 goog.require('ol.structs.RBush');
 
@@ -208,6 +209,21 @@ ol.source.Vector.prototype.forEachFeatureInExtent =
 
 
 /**
+ * @param {ol.Extent} extent Extent.
+ * @param {number} resolution Resolution.
+ * @param {function(this: T, ol.Feature): S} f Callback.
+ * @param {T=} opt_this The object to use as `this` in `f`.
+ * @return {S|undefined}
+ * @template T,S
+ * @todo stability experimental
+ */
+ol.source.Vector.prototype.forEachFeatureInExtentAtResolution =
+    function(extent, resolution, f, opt_this) {
+  return this.forEachFeatureInExtent(extent, f, opt_this);
+};
+
+
+/**
  * @return {Array.<ol.Feature>} Features.
  * @todo stability experimental
  */
@@ -335,6 +351,14 @@ ol.source.Vector.prototype.isEmpty = function() {
   return this.rBush_.isEmpty() &&
       goog.object.isEmpty(this.nullGeometryFeatures_);
 };
+
+
+/**
+ * @param {ol.Extent} extent Extent.
+ * @param {number} resolution Resolution.
+ * @param {ol.proj.Projection} projection Projection.
+ */
+ol.source.Vector.prototype.loadFeatures = goog.nullFunction;
 
 
 /**

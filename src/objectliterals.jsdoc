@@ -669,6 +669,15 @@
  */
 
 /**
+ * @typedef {Object} olx.source.FormatVectorOptions
+ * @property {Array.<ol.Attribution>|undefined} attributions Attributions.
+ * @property {ol.Extent|undefined} extent Extent.
+ * @property {ol.format.Feature} format Format.
+ * @property {string|undefined} logo Logo.
+ * @property {ol.proj.ProjectionLike} projection Projection.
+ */
+
+/**
  * @typedef {Object} olx.source.GeoJSONOptions
  * @property {Array.<ol.Attribution>|undefined} attributions Attributions.
  * @property {ol.proj.ProjectionLike} defaultProjection Default projection.
@@ -696,6 +705,25 @@
  * @property {string|undefined} text Text.
  * @property {string|undefined} url URL.
  * @property {Array.<string>|undefined} urls URLs.
+ */
+
+/**
+ * @typedef {Object} olx.source.TileVectorOptions
+ * @property {Array.<ol.Attribution>|undefined} attributions Attributions.
+ * @property {ol.proj.ProjectionLike} defaultProjection Default projection.
+ * @property {ol.Extent|undefined} extent Extent.
+ * @property {string|undefined} logo Logo.
+ * @property {GeoJSONObject|undefined} object Object.
+ * @property {ol.proj.ProjectionLike} projection Destination projection.  If
+ *     provided, features will be transformed to this projection.  If not
+ *     provided, features will not be transformed.
+ * @property {ol.tilegrid.TileGrid} tileGrid Tile grid.
+ * @property {ol.TileUrlFunctionType|undefined} tileUrlFunction Optional
+ *     function to get tile URL given a tile coordinate and the projection.
+ *     Required if url or urls are not provided.
+ * @property {string|undefined} url URL template.  Must include `{x}`, `{y}`,
+ *     and `{z}` placeholders.
+ * @property {Array.<string>|undefined} urls An array of URL templates.
  */
 
 /**
@@ -896,6 +924,17 @@
  */
 
 /**
+ * @typedef {Object} olx.source.ServerVectorOptions
+ * @property {Array.<ol.Attribution>|undefined} attributions Attributions.
+ * @property {ol.Extent|undefined} extent Extent.
+ * @property {ol.format.Feature} format Format.
+ * @property {function(this: ol.source.ServerVector, ol.Extent, number, ol.proj.Projection)} loader Loading function.
+ * @property {function(ol.Extent, number): Array.<ol.Extent>|undefined} strategy Loading strategy.  Default is `ol.loadingstrategy.bbox`.
+ * @property {string|undefined} logo Logo.
+ * @property {ol.proj.ProjectionLike} projection Projection.
+ */
+
+/**
  * @typedef {Object} olx.source.TileJSONOptions
  * @property {null|string|undefined} crossOrigin crossOrigin setting for image
  *     requests.
@@ -952,7 +991,7 @@
  */
 
 /**
- * @typedef {Object} olx.source.VectorFileOptions
+ * @typedef {Object} olx.source.StaticVectorOptions
  * @property {ArrayBuffer|undefined} arrayBuffer Array buffer.
  * @property {Array.<ol.Attribution>|undefined} attributions Attributions.
  * @property {Document|undefined} doc Document.

@@ -10,11 +10,10 @@ goog.require('ol.TileCoord');
  * A function that takes an {@link ol.TileCoord} for the tile coordinate,
  * a `{number}` representing the pixel ratio and an {@link ol.proj.Projection}
  * for the projection  as arguments and returns a `{string}` or
- * undefined representing the tile URL. The this keyword inside the function
- * references the {@link ol.source.TileImage}.
+ * undefined representing the tile URL.
  *
- * @typedef {function(this: ol.source.TileImage, ol.TileCoord,
- *     number, ol.proj.Projection): (string|undefined)}
+ * @typedef {function(ol.TileCoord, number,
+ *           ol.proj.Projection): (string|undefined)}
  * @todo stability experimental
  */
 ol.TileUrlFunctionType;
@@ -34,7 +33,6 @@ ol.TileCoordTransformType;
 ol.TileUrlFunction.createFromTemplate = function(template) {
   return (
       /**
-       * @this {ol.source.TileImage}
        * @param {ol.TileCoord} tileCoord Tile Coordinate.
        * @param {number} pixelRatio Pixel ratio.
        * @param {ol.proj.Projection} projection Projection.
@@ -72,7 +70,6 @@ ol.TileUrlFunction.createFromTileUrlFunctions = function(tileUrlFunctions) {
   }
   return (
       /**
-       * @this {ol.source.TileImage}
        * @param {ol.TileCoord} tileCoord Tile Coordinate.
        * @param {number} pixelRatio Pixel ratio.
        * @param {ol.proj.Projection} projection Projection.
@@ -84,15 +81,13 @@ ol.TileUrlFunction.createFromTileUrlFunctions = function(tileUrlFunctions) {
         } else {
           var index =
               goog.math.modulo(tileCoord.hash(), tileUrlFunctions.length);
-          return tileUrlFunctions[index].call(
-              this, tileCoord, pixelRatio, projection);
+          return tileUrlFunctions[index](tileCoord, pixelRatio, projection);
         }
       });
 };
 
 
 /**
- * @this {ol.source.TileImage}
  * @param {ol.TileCoord} tileCoord Tile coordinate.
  * @param {number} pixelRatio Pixel ratio.
  * @param {ol.proj.Projection} projection Projection.
@@ -114,7 +109,6 @@ ol.TileUrlFunction.withTileCoordTransform =
   var tmpTileCoord = new ol.TileCoord(0, 0, 0);
   return (
       /**
-       * @this {ol.source.TileImage}
        * @param {ol.TileCoord} tileCoord Tile Coordinate.
        * @param {number} pixelRatio Pixel ratio.
        * @param {ol.proj.Projection} projection Projection.
@@ -124,9 +118,8 @@ ol.TileUrlFunction.withTileCoordTransform =
         if (goog.isNull(tileCoord)) {
           return undefined;
         } else {
-          return tileUrlFunction.call(
-              this,
-              transformFn.call(this, tileCoord, projection, tmpTileCoord),
+          return tileUrlFunction(
+              transformFn(tileCoord, projection, tmpTileCoord),
               pixelRatio,
               projection);
         }
