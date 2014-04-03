@@ -176,7 +176,9 @@
 
 /**
  * @typedef {Object} olx.animation.RotateOptions
- * @property {number} rotation The rotation to apply, in radians.
+ * @property {ol.Coordinate|undefined} anchor The rotation center/anchor.  The map rotates around the center of the view
+ *     if unspecified.
+ * @property {number|undefined} rotation The rotation value (in radians) to begin rotating from, typically `map.getView().getRotation()`.  If `undefined` then `0` is assumed.
  * @property {number|undefined} start The start time of the animation. Default is immediately.
  * @property {number|undefined} duration The duration of the animation in milliseconds.  Default is `1000`.
  * @property {function(number):number|undefined} easing The easing function to use.  Default is `ol.easing.inAndOut`
