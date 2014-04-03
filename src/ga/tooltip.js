@@ -132,7 +132,7 @@ ga.Tooltip.prototype.handleClick_ = function(mapBrowserEvent) {
       'callback');
   var layerList = new Array();
   var layer;
-  for (var i in this.map_.getLayers().getArray()) {
+  for (var i = 0, ii = this.map_.getLayers().getArray().length; i < ii; i++) {
     layer = this.map_.getLayers().getArray()[i];
     if (layer['queryable'] && layer.getVisible()) {
       layerList.push(layer.id);
@@ -192,7 +192,7 @@ ga.Tooltip.prototype.handleIdentifyResponse_ = function(response) {
   }
 
   // Show popup
-  for (var i in response['results']) {
+  for (var i = 0, ii = response['results'].length; i < ii; i++) {
     var lang = window.GeoAdmin && window.GeoAdmin.lang ? window.GeoAdmin.lang : "de";
     var jsonp = new goog.net.Jsonp(
       new goog.Uri( window['GeoAdmin']['serviceUrl'] + '/rest/services/api/MapServer/' +
@@ -223,65 +223,17 @@ ga.Tooltip.prototype.handleHtmlpopupError_ = function(payload) {
 };
 
 ga.Tooltip.prototype.createFeatures_ = function(response) {
-  if (response['results'].length > 0) {
-    var features = new Array();
-    for (var i in response['results']) {
-      var feature;
-      if (response['results'][i].geometry.type === 'Point') {
-        feature = new ol.Feature({
-          geometry: new ol.geom.Point(
-            response['results'][i].geometry.coordinates
-          )
-        });
-      }
-      if (response['results'][i].geometry.type === 'LineString') {
-        feature = new ol.Feature({
-          geometry: new ol.geom.LineString(
-            response['results'][i].geometry.coordinates
-          )
-        });
-      }
-      if (response['results'][i].geometry.type === 'Polygon') {
-        feature = new ol.Feature({
-          geometry: new ol.geom.Polygon(
-            response['results'][i].geometry.coordinates
-          )
-        });
-      }
-      if (response['results'][i].geometry.type === 'MultiPoint') {
-        feature = new ol.Feature({
-          geometry: new ol.geom.MultiPoint(
-            response['results'][i].geometry.coordinates
-          )
-        });
-      }
-      if (response['results'][i].geometry.type === 'MultiLineString') {
-        feature = new ol.Feature({
-          geometry: new ol.geom.MultiLineString(
-            response['results'][i].geometry.coordinates
-          )
-        });
-      }
-      if (response['results'][i].geometry.type === 'MultiPolygon') {
-        feature = new ol.Feature({
-          geometry: new ol.geom.MultiPolygon(
-            response['results'][i].geometry.coordinates
-          )
-        });
-      }
-      if (response['results'][i].geometry.type === 'GeometryCollection') {
-        feature = new ol.Feature({
-          geometry: new ol.geom.GeometryCollection(
-            response['results'][i].geometry.coordinates
-          )
-        });
-      }
-      features.push(feature);
+  var features = [];
+  var results = response['results'] || [];
+  for (var i = 0, ii = results.length; i < ii; i++) {
+    var result = results[i];
+    if (ol.geom[result.geometry.type] && result.geometry.coordinates) {
+      features.push(new ol.Feature({
+        geometry: new ol.geom[result.geometry.type](result.geometry.coordinates)
+      }));
     }
-    return features;
-  } else {
-    return null;
   }
+  return (features.length > 0) ? features : null;
 };
 
 
