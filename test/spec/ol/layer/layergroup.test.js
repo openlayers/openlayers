@@ -44,6 +44,7 @@ describe('ol.layer.Group', function() {
 
     it('provides default layerState', function() {
       expect(layerGroup.getLayerState()).to.eql({
+        layer: layerGroup,
         brightness: 0,
         contrast: 1,
         hue: 0,
@@ -170,6 +171,7 @@ describe('ol.layer.Group', function() {
       expect(layerGroup.getMaxResolution()).to.be(500);
       expect(layerGroup.getMinResolution()).to.be(0.25);
       expect(layerGroup.getLayerState()).to.eql({
+        layer: layerGroup,
         brightness: 0.5,
         contrast: 10,
         hue: 180,
@@ -212,6 +214,7 @@ describe('ol.layer.Group', function() {
       layerGroup.setMaxResolution(500);
       layerGroup.setMinResolution(0.25);
       expect(layerGroup.getLayerState()).to.eql({
+        layer: layerGroup,
         brightness: -0.7,
         contrast: 0.3,
         hue: -0.3,
@@ -232,6 +235,7 @@ describe('ol.layer.Group', function() {
       layerGroup.setSaturation(-0.7);
       layerGroup.setVisible(false);
       expect(layerGroup.getLayerState()).to.eql({
+        layer: layerGroup,
         brightness: 1,
         contrast: 0,
         hue: 42,
@@ -250,6 +254,7 @@ describe('ol.layer.Group', function() {
       layerGroup.setSaturation(42);
       layerGroup.setVisible(true);
       expect(layerGroup.getLayerState()).to.eql({
+        layer: layerGroup,
         brightness: -1,
         contrast: 42,
         hue: -100,
@@ -345,7 +350,14 @@ describe('ol.layer.Group', function() {
       expect(layerStatesArray).to.be.a(Array);
       expect(layerStatesArray.length).to.be(2);
       expect(layerStatesArray[0]).to.eql(layer1.getLayerState());
-      expect(layerStatesArray[0]).to.eql(layerGroup.getLayerState());
+
+      // layer state should match except for layer reference
+      var layerState = goog.object.clone(layerStatesArray[0]);
+      delete layerState.layer;
+      var groupState = goog.object.clone(layerGroup.getLayerState());
+      delete groupState.layer;
+      expect(layerState).to.eql(groupState);
+
       expect(layerStatesArray[1]).to.eql(layer2.getLayerState());
 
       goog.dispose(layerGroup);
@@ -367,8 +379,21 @@ describe('ol.layer.Group', function() {
       obj = layerGroup.getLayerStatesArray();
       layersArray = obj.layers;
       layerStatesArray = obj.layerStates;
-      expect(layerStatesArray[0]).to.eql(layerGroup.getLayerState());
-      expect(layerStatesArray[1]).to.eql({
+
+      // compare layer state to group state
+      var groupState, layerState;
+
+      // layer state should match except for layer reference
+      layerState = goog.object.clone(layerStatesArray[0]);
+      delete layerState.layer;
+      groupState = goog.object.clone(layerGroup.getLayerState());
+      delete groupState.layer;
+      expect(layerState).to.eql(groupState);
+
+      // layer state should be transformed (and we ignore layer reference)
+      layerState = goog.object.clone(layerStatesArray[1]);
+      delete layerState.layer;
+      expect(layerState).to.eql({
         brightness: 1,
         contrast: 100,
         hue: 360,
@@ -392,6 +417,7 @@ describe('ol.layer.Group', function() {
 
 goog.require('goog.dispose');
 goog.require('goog.events.EventType');
+goog.require('goog.object');
 goog.require('ol.ObjectEventType');
 goog.require('ol.layer.Layer');
 goog.require('ol.layer.Group');

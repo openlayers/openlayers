@@ -48,6 +48,7 @@ describe('ol.layer.Layer', function() {
 
     it('provides default layerState', function() {
       expect(layer.getLayerState()).to.eql({
+        layer: layer,
         brightness: 0,
         contrast: 1,
         hue: 0,
@@ -90,6 +91,7 @@ describe('ol.layer.Layer', function() {
       expect(layer.getMinResolution()).to.be(0.25);
       expect(layer.get('foo')).to.be(42);
       expect(layer.getLayerState()).to.eql({
+        layer: layer,
         brightness: 0.5,
         contrast: 10,
         hue: 180,
@@ -132,6 +134,7 @@ describe('ol.layer.Layer', function() {
       layer.setMaxResolution(500);
       layer.setMinResolution(0.25);
       expect(layer.getLayerState()).to.eql({
+        layer: layer,
         brightness: -0.7,
         contrast: 0.3,
         hue: -0.3,
@@ -152,6 +155,7 @@ describe('ol.layer.Layer', function() {
       layer.setSaturation(-0.7);
       layer.setVisible(false);
       expect(layer.getLayerState()).to.eql({
+        layer: layer,
         brightness: 1,
         contrast: 0,
         hue: 42,
@@ -170,6 +174,7 @@ describe('ol.layer.Layer', function() {
       layer.setSaturation(42);
       layer.setVisible(true);
       expect(layer.getLayerState()).to.eql({
+        layer: layer,
         brightness: -1,
         contrast: 42,
         hue: -100,

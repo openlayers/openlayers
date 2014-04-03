@@ -25,7 +25,8 @@ ol.layer.LayerProperty = {
 
 
 /**
- * @typedef {{brightness: number,
+ * @typedef {{layer: ol.layer.Layer,
+ *            brightness: number,
  *            contrast: number,
  *            hue: number,
  *            opacity: number,
@@ -126,6 +127,7 @@ ol.layer.Base.prototype.getLayerState = function() {
   var maxResolution = this.getMaxResolution();
   var minResolution = this.getMinResolution();
   return {
+    layer: /** @type {ol.layer.Layer} */ (this),
     brightness: goog.isDef(brightness) ? goog.math.clamp(brightness, -1, 1) : 0,
     contrast: goog.isDef(contrast) ? Math.max(contrast, 0) : 1,
     hue: goog.isDef(hue) ? hue : 0,
