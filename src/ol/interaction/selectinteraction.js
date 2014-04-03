@@ -179,8 +179,20 @@ ol.interaction.Select.prototype.handleMapBrowserEvent =
  * @inheritDoc
  */
 ol.interaction.Select.prototype.setMap = function(map) {
+  var currentMap = this.getMap();
+  var selectedFeatures = this.featureOverlay_.getFeatures();
+  if (!goog.isNull(currentMap)) {
+    selectedFeatures.forEach(function(feature) {
+      currentMap.getSkippedFeatures().remove(feature);
+    });
+  }
   goog.base(this, 'setMap', map);
   this.featureOverlay_.setMap(map);
+  if (!goog.isNull(map)) {
+    selectedFeatures.forEach(function(feature) {
+      map.getSkippedFeatures().push(feature);
+    });
+  }
 };
 
 
