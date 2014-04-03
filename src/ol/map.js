@@ -1224,7 +1224,6 @@ ol.Map.prototype.renderFrame_ = function(time) {
       extent: null,
       focus: goog.isNull(this.focus_) ? view2DState.center : this.focus_,
       index: this.frameIndex_++,
-      layersArray: layersArray,
       layerStates: layerStates,
       layerStatesArray: layerStatesArray,
       logos: {},
