@@ -297,19 +297,10 @@ describe('ol.layer.Group', function() {
 
   describe('#getLayerStatesArray', function() {
 
-    var layerGroup;
-    var layersArray;
-    var layerStatesArray;
-    var obj;
-
     it('returns an empty array if no layer', function() {
-      layerGroup = new ol.layer.Group();
+      var layerGroup = new ol.layer.Group();
 
-      obj = layerGroup.getLayerStatesArray();
-      layersArray = obj.layers;
-      layerStatesArray = obj.layerStates;
-      expect(layersArray).to.be.a(Array);
-      expect(layersArray.length).to.be(0);
+      var layerStatesArray = layerGroup.getLayerStatesArray();
       expect(layerStatesArray).to.be.a(Array);
       expect(layerStatesArray.length).to.be(0);
 
@@ -336,17 +327,11 @@ describe('ol.layer.Group', function() {
     });
 
     it('does not transform layerStates by default', function() {
-      layerGroup = new ol.layer.Group({
+      var layerGroup = new ol.layer.Group({
         layers: [layer1, layer2]
       });
 
-      obj = layerGroup.getLayerStatesArray();
-      layersArray = obj.layers;
-      layerStatesArray = obj.layerStates;
-      expect(layersArray).to.be.a(Array);
-      expect(layersArray.length).to.be(2);
-      expect(layersArray[0]).to.be(layer1);
-      expect(layersArray[1]).to.be(layer2);
+      var layerStatesArray = layerGroup.getLayerStatesArray();
       expect(layerStatesArray).to.be.a(Array);
       expect(layerStatesArray.length).to.be(2);
       expect(layerStatesArray[0]).to.eql(layer1.getLayerState());
@@ -364,7 +349,7 @@ describe('ol.layer.Group', function() {
     });
 
     it('transforms layerStates correctly', function() {
-      layerGroup = new ol.layer.Group({
+      var layerGroup = new ol.layer.Group({
         layers: [layer1, layer2],
         brightness: 0.5,
         contrast: 10,
@@ -376,9 +361,7 @@ describe('ol.layer.Group', function() {
         minResolution: 0.2
       });
 
-      obj = layerGroup.getLayerStatesArray();
-      layersArray = obj.layers;
-      layerStatesArray = obj.layerStates;
+      var layerStatesArray = layerGroup.getLayerStatesArray();
 
       // compare layer state to group state
       var groupState, layerState;

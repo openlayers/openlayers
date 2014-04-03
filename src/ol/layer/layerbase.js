@@ -150,14 +150,9 @@ ol.layer.Base.prototype.getLayersArray = goog.abstractMethod;
 
 
 /**
- * @param {{
- *     layers: Array.<ol.layer.Layer>,
- *     layerStates: Array.<ol.layer.LayerState>}=} opt_obj Object that store
- *     both the layers and the layerStates (to be modified in place).
- * @return {{
- *     layers: Array.<ol.layer.Layer>,
- *     layerStates: Array.<ol.layer.LayerState>}} Object that store both the
- *     layers and the layerStates.
+ * @param {Array.<ol.layer.LayerState>=} opt_states Optional list of layer
+ *     states (to be modified in place).
+ * @return {Array.<ol.layer.LayerState>} List of layer states.
  */
 ol.layer.Base.prototype.getLayerStatesArray = goog.abstractMethod;
 
