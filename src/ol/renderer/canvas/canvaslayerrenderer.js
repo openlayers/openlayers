@@ -23,12 +23,6 @@ ol.renderer.canvas.Layer = function(mapRenderer, layer) {
 
   /**
    * @private
-   * @type {ImageData}
-   */
-  this.testImageData_ = null;
-
-  /**
-   * @private
    * @type {!goog.vec.Mat4.Number}
    */
   this.transform_ = goog.vec.Mat4.createNumber();
@@ -177,23 +171,30 @@ ol.renderer.canvas.Layer.prototype.getTransform = function(frameState) {
  * @param {ol.Size} size Size.
  * @return {boolean} True when the canvas with the current size does not exceed
  *     the maximum dimensions.
- * @protected
  */
-ol.renderer.canvas.Layer.prototype.testCanvasSize = function(context, size) {
-  var x = size[0] - 1;
-  var y = size[1] - 1;
-  var originalImageData = context.getImageData(x, y, 1, 1);
-  if (goog.isNull(this.testImageData_)) {
-    this.testImageData_ = context.createImageData(1, 1);
-    var data = this.testImageData_.data;
-    data[0] = 42;
-    data[1] = 84;
-    data[2] = 126;
-    data[3] = 255;
-  }
-  context.putImageData(this.testImageData_, x, y);
-  var result = context.getImageData(x, y, 1, 1);
-  var good = goog.array.equals(this.testImageData_.data, result.data);
-  context.putImageData(originalImageData, x, y);
-  return good;
-};
+ol.renderer.canvas.Layer.testCanvasSize = (function() {
+
+  /**
+   * @type {ImageData}
+   */
+  var testImageData = null;
+
+  return function(context, size) {
+    var x = size[0] - 1;
+    var y = size[1] - 1;
+    var originalImageData = context.getImageData(x, y, 1, 1);
+    if (goog.isNull(testImageData)) {
+      testImageData = context.createImageData(1, 1);
+      var data = testImageData.data;
+      data[0] = 42;
+      data[1] = 84;
+      data[2] = 126;
+      data[3] = 255;
+    }
+    context.putImageData(testImageData, x, y);
+    var result = context.getImageData(x, y, 1, 1);
+    var good = goog.array.equals(testImageData.data, result.data);
+    context.putImageData(originalImageData, x, y);
+    return good;
+  };
+})();
