@@ -117,21 +117,21 @@ ol.renderer.dom.Map.prototype.renderFrame = function(frameState) {
         });
   }
 
-  var layerStates = frameState.layerStates;
-  var layersArray = frameState.layersArray;
+  var layerStatesArray = frameState.layerStatesArray;
   var i, ii, layer, layerRenderer, layerState;
-  for (i = 0, ii = layersArray.length; i < ii; ++i) {
-    layer = layersArray[i];
+  for (i = 0, ii = layerStatesArray.length; i < ii; ++i) {
+    layerState = layerStatesArray[i];
+    layer = layerState.layer;
     layerRenderer = /** @type {ol.renderer.dom.Layer} */ (
         this.getLayerRenderer(layer));
     goog.asserts.assertInstanceof(layerRenderer, ol.renderer.dom.Layer);
     addChild.call(this, layerRenderer.getTarget(), i);
-    layerState = frameState.layerStates[goog.getUid(layer)];
     if (layerState.sourceState == ol.source.State.READY) {
       layerRenderer.prepareFrame(frameState, layerState);
     }
   }
 
+  var layerStates = frameState.layerStates;
   var layerKey;
   for (layerKey in this.getLayerRenderers()) {
     if (!(layerKey in layerStates)) {

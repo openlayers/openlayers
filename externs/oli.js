@@ -72,6 +72,10 @@ oli.FrameState.prototype.layersArray;
 oli.FrameState.prototype.layerStates;
 
 
+/** @type {Array.<ol.layer.LayerState>} */
+oli.FrameState.prototype.layerStatesArray;
+
+
 /** @type {Object.<string, string>} */
 oli.FrameState.prototype.logos;
 

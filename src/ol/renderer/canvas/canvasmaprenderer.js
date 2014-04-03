@@ -151,15 +151,14 @@ ol.renderer.canvas.Map.prototype.renderFrame = function(frameState) {
 
   this.dispatchComposeEvent_(ol.render.EventType.PRECOMPOSE, frameState);
 
-  var layerStates = frameState.layerStates;
-  var layersArray = frameState.layersArray;
+  var layerStatesArray = frameState.layerStatesArray;
   var viewResolution = frameState.view2DState.resolution;
   var i, ii, layer, layerRenderer, layerState;
-  for (i = 0, ii = layersArray.length; i < ii; ++i) {
-    layer = layersArray[i];
+  for (i = 0, ii = layerStatesArray.length; i < ii; ++i) {
+    layerState = layerStatesArray[i];
+    layer = layerState.layer;
     layerRenderer = this.getLayerRenderer(layer);
     goog.asserts.assertInstanceof(layerRenderer, ol.renderer.canvas.Layer);
-    layerState = layerStates[goog.getUid(layer)];
     if (!layerState.visible ||
         layerState.sourceState != ol.source.State.READY ||
         viewResolution >= layerState.maxResolution ||

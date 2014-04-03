@@ -1226,6 +1226,7 @@ ol.Map.prototype.renderFrame_ = function(time) {
       index: this.frameIndex_++,
       layersArray: layersArray,
       layerStates: layerStates,
+      layerStatesArray: layerStatesArray,
       logos: {},
       pixelRatio: this.pixelRatio_,
       pixelToCoordinateMatrix: this.pixelToCoordinateMatrix_,
