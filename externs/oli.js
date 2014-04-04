@@ -64,12 +64,12 @@ oli.FrameState.prototype.focus;
 oli.FrameState.prototype.index;
 
 
-/** @type {Array.<ol.layer.Layer>} */
-oli.FrameState.prototype.layersArray;
-
-
 /** @type {Object.<number, ol.layer.LayerState>} */
 oli.FrameState.prototype.layerStates;
+
+
+/** @type {Array.<ol.layer.LayerState>} */
+oli.FrameState.prototype.layerStatesArray;
 
 
 /** @type {Object.<string, string>} */

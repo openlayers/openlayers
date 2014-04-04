@@ -1207,14 +1207,10 @@ ol.Map.prototype.renderFrame_ = function(time) {
   if (goog.isDef(size) && hasArea(size) &&
       goog.isDef(view2D) && view2D.isDef()) {
     var viewHints = view.getHints();
-    var obj = this.getLayerGroup().getLayerStatesArray();
-    var layersArray = obj.layers;
-    var layerStatesArray = obj.layerStates;
+    var layerStatesArray = this.getLayerGroup().getLayerStatesArray();
     var layerStates = {};
-    var layer;
-    for (i = 0, ii = layersArray.length; i < ii; ++i) {
-      layer = layersArray[i];
-      layerStates[goog.getUid(layer)] = layerStatesArray[i];
+    for (i = 0, ii = layerStatesArray.length; i < ii; ++i) {
+      layerStates[goog.getUid(layerStatesArray[i].layer)] = layerStatesArray[i];
     }
     view2DState = view2D.getView2DState();
     frameState = /** @type {oli.FrameState} */ ({
@@ -1224,8 +1220,8 @@ ol.Map.prototype.renderFrame_ = function(time) {
       extent: null,
       focus: goog.isNull(this.focus_) ? view2DState.center : this.focus_,
       index: this.frameIndex_++,
-      layersArray: layersArray,
       layerStates: layerStates,
+      layerStatesArray: layerStatesArray,
       logos: {},
       pixelRatio: this.pixelRatio_,
       pixelToCoordinateMatrix: this.pixelToCoordinateMatrix_,
