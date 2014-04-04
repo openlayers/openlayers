@@ -16,6 +16,6 @@
     "inherits": "base.json", 
     "inputs": [
         "../build/examples/all.js", 
-        "../build/src/internal/src/types.js"
+        "../externs/olx.js"
     ]
 }

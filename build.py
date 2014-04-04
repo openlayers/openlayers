@@ -90,9 +90,7 @@ EXPORTS = [path
            for path in ifind('src')
            if path.endswith('.exports')]
 
-EXTERNAL_SRC = [
-    'build/src/external/externs/types.js',
-    'build/src/external/src/exports.js']
+EXTERNAL_SRC = ['build/src/external/src/exports.js']
 
 EXAMPLES = [path
             for path in ifind('examples')
@@ -115,9 +113,7 @@ EXAMPLES_JSON = ['build/' + example.replace('.html', '.json')
 EXAMPLES_COMBINED = ['build/' + example.replace('.html', '.combined.js')
                      for example in EXAMPLES]
 
-INTERNAL_SRC = [
-    'build/src/internal/src/requireall.js',
-    'build/src/internal/src/types.js']
+INTERNAL_SRC = ['build/src/internal/src/requireall.js']
 
 GLSL_SRC = [path
             for path in ifind('src')
@@ -223,18 +219,9 @@ def build_ol_all_js(t):
             PLOVR_JAR, 'build', 'buildcfg/ol-all.json')
 
 
-@target('build/src/external/externs/types.js', 'bin/generate-exports.py',
-        'src/objectliterals.jsdoc')
-def build_src_external_externs_types_js(t):
-    t.output('%(PYTHON)s', 'bin/generate-exports.py',
-             '--externs', 'src/objectliterals.jsdoc')
-
-
-@target('build/src/external/src/exports.js', 'bin/generate-exports.py',
-        'src/objectliterals.jsdoc', EXPORTS)
+@target('build/src/external/src/exports.js', 'bin/generate-exports.py', EXPORTS)
 def build_src_external_src_exports_js(t):
-    t.output('%(PYTHON)s', 'bin/generate-exports.py',
-             '--exports', 'src/objectliterals.jsdoc', EXPORTS)
+    t.output('%(PYTHON)s', 'bin/generate-exports.py', '--exports', EXPORTS)
 
 
 for glsl_src in GLSL_SRC:
@@ -270,13 +257,6 @@ def build_src_internal_src_requireall_js(t):
 @target('build/test/requireall.js', SPEC)
 def build_test_requireall_js(t):
     _build_require_list(t.dependencies, t.name)
-
-
-@target('build/src/internal/src/types.js', 'bin/generate-exports.py',
-        'src/objectliterals.jsdoc')
-def build_src_internal_types_js(t):
-    t.output('%(PYTHON)s', 'bin/generate-exports.py',
-             '--typedef', 'src/objectliterals.jsdoc')
 
 
 virtual('build-examples', 'examples', 'build/examples/all.combined.js',
@@ -318,7 +298,7 @@ def examples_star_json(name, match):
             'inherits': '../../buildcfg/base.json',
             'inputs': [
                 '../examples/%(id)s.js' % match.groupdict(),
-                '../build/src/internal/src/types.js',
+                '../externs/olx.js',
             ],
             'externs': [
                 '//jquery-1.7.js',
@@ -386,7 +366,7 @@ def build_lint_src_timestamp(t):
 def build_lint_generated_timestamp(t):
     limited_doc_files = [
         path
-        for path in ifind('externs', 'build/src/external/externs')
+        for path in ifind('externs')
         if path.endswith('.js')]
     t.run('%(GJSLINT)s',
           '--jslint_error=all',
