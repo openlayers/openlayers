@@ -4,6 +4,7 @@
  */
 
 
+
 /**
  * FIXME check argument type
  * @constructor
@@ -15,7 +16,7 @@ var VBArray = function(safeArray) {};
 /**
  * @return {number}
  */
-VBArray.prototype.dimensions = function() {};
+VBArray.prototype.dimensions = function() {return 0;};
 
 
 /**
@@ -35,7 +36,7 @@ VBArray.prototype.lbound = function(opt_dimension) {};
 /**
  * @return {Array.<number>}
  */
-VBArray.prototype.toArray = function() {};
+VBArray.prototype.toArray = function() {return null;};
 
 
 /**

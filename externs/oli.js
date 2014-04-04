@@ -36,6 +36,7 @@ oli.DrawEvent;
 oli.DrawEvent.prototype.feature;
 
 
+
 /** @interface */
 oli.FrameState;
 
@@ -118,6 +119,7 @@ oli.FrameState.prototype.viewHints;
 
 /** @type {Object.<string, Object.<string, boolean>>} */
 oli.FrameState.prototype.wantedTiles;
+
 
 
 /** @interface */
