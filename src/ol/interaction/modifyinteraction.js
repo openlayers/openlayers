@@ -94,7 +94,7 @@ ol.interaction.Modify = function(options) {
    * @type {boolean}
    * @private
    */
-  this.snappedToVertex_;
+  this.snappedToVertex_ = false;
 
   /**
    * @type {Array}
