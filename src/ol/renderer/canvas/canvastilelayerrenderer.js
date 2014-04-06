@@ -220,7 +220,8 @@ ol.renderer.canvas.TileLayer.prototype.prepareFrame =
         this.canvasSize_[1] < canvasHeight ||
         (this.canvasTooBig_ && (this.canvasSize_[0] > canvasWidth ||
         this.canvasSize_[1] > canvasHeight))) {
-      // Canvas is too small or too big, resize it
+      // Canvas is too small, resize it. We never shrink the canvas, unless
+      // we know that the current canvas size exceeds the maximum size
       canvas.width = canvasWidth;
       canvas.height = canvasHeight;
       this.canvasSize_ = [canvasWidth, canvasHeight];
