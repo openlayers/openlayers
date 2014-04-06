@@ -201,12 +201,16 @@ ol.renderer.canvas.Layer.testCanvasSize = (function() {
       data[2] = 126;
       data[3] = 255;
     }
-    canvas.width = size[0];
-    canvas.height = size[1];
-    var x = size[0] - 1;
-    var y = size[1] - 1;
-    context.putImageData(imageData, x, y);
-    var result = context.getImageData(x, y, 1, 1);
-    return goog.array.equals(imageData.data, result.data);
+    var good = size[0] <= canvas.width && size[1] <= canvas.height;
+    if (!good) {
+      canvas.width = size[0];
+      canvas.height = size[1];
+      var x = size[0] - 1;
+      var y = size[1] - 1;
+      context.putImageData(imageData, x, y);
+      var result = context.getImageData(x, y, 1, 1);
+      good = goog.array.equals(imageData.data, result.data);
+    }
+    return good;
   };
 })();
