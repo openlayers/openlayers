@@ -210,7 +210,7 @@ ol.renderer.canvas.TileLayer.prototype.prepareFrame =
     this.canvasSize_ = [canvasWidth, canvasHeight];
     this.context_ = context;
     this.canvasTooBig_ =
-        !ol.renderer.canvas.Layer.testCanvasSize(context, this.canvasSize_);
+        !ol.renderer.canvas.Layer.testCanvasSize(this.canvasSize_);
   } else {
     goog.asserts.assert(!goog.isNull(this.canvasSize_));
     goog.asserts.assert(!goog.isNull(this.context_));
@@ -225,7 +225,7 @@ ol.renderer.canvas.TileLayer.prototype.prepareFrame =
       canvas.height = canvasHeight;
       this.canvasSize_ = [canvasWidth, canvasHeight];
       this.canvasTooBig_ =
-          !ol.renderer.canvas.Layer.testCanvasSize(context, this.canvasSize_);
+          !ol.renderer.canvas.Layer.testCanvasSize(this.canvasSize_);
       this.renderedCanvasTileRange_ = null;
     } else {
       canvasWidth = this.canvasSize_[0];

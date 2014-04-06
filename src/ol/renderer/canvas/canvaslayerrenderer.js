@@ -167,7 +167,6 @@ ol.renderer.canvas.Layer.prototype.getTransform = function(frameState) {
 
 
 /**
- * @param {CanvasRenderingContext2D} context Context.
  * @param {ol.Size} size Size.
  * @return {boolean} True when the canvas with the current size does not exceed
  *     the maximum dimensions.
@@ -175,26 +174,39 @@ ol.renderer.canvas.Layer.prototype.getTransform = function(frameState) {
 ol.renderer.canvas.Layer.testCanvasSize = (function() {
 
   /**
+   * @type {HTMLCanvasElement}
+   */
+  var canvas = null;
+
+  /**
+   * @type {CanvasRenderingContext2D}
+   */
+  var context = null;
+
+  /**
    * @type {ImageData}
    */
-  var testImageData = null;
+  var imageData = null;
 
-  return function(context, size) {
-    var x = size[0] - 1;
-    var y = size[1] - 1;
-    var originalImageData = context.getImageData(x, y, 1, 1);
-    if (goog.isNull(testImageData)) {
-      testImageData = context.createImageData(1, 1);
-      var data = testImageData.data;
+  return function(size) {
+    if (goog.isNull(canvas)) {
+      canvas = /** @type {HTMLCanvasElement} */
+          (document.createElement('canvas'));
+      context = /** @type {CanvasRenderingContext2D} */
+          (canvas.getContext('2d'));
+      imageData = context.createImageData(1, 1);
+      var data = imageData.data;
       data[0] = 42;
       data[1] = 84;
       data[2] = 126;
       data[3] = 255;
     }
-    context.putImageData(testImageData, x, y);
+    canvas.width = size[0];
+    canvas.height = size[1];
+    var x = size[0] - 1;
+    var y = size[1] - 1;
+    context.putImageData(imageData, x, y);
     var result = context.getImageData(x, y, 1, 1);
-    var good = goog.array.equals(testImageData.data, result.data);
-    context.putImageData(originalImageData, x, y);
-    return good;
+    return goog.array.equals(imageData.data, result.data);
   };
 })();
