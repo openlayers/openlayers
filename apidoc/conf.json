@@ -17,7 +17,7 @@
         ]
     },
     "plugins": [
-        "plugins/markdown",
+        "node_modules/jsdoc/plugins/markdown",
         "apidoc/plugins/inheritdoc",
         "apidoc/plugins/exports",
         "apidoc/plugins/todo",
