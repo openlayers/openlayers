@@ -81,6 +81,6 @@ exampleNS.getRendererFromQueryString = function() {
   } else if ('renderer' in obj) {
     return [obj['renderer']];
   } else {
-    return ['webgl', 'canvas', 'dom'];
+    return undefined;
   }
 };
