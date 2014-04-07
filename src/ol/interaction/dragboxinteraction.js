@@ -6,6 +6,7 @@ goog.provide('ol.interaction.DragBox');
 
 goog.require('goog.asserts');
 goog.require('goog.events.Event');
+goog.require('goog.functions');
 goog.require('ol.events.ConditionType');
 goog.require('ol.events.condition');
 goog.require('ol.interaction.Pointer');
@@ -192,3 +193,9 @@ ol.interaction.DragBox.prototype.handlePointerDown =
     return false;
   }
 };
+
+
+/**
+ * @inheritDoc
+ */
+ol.interaction.DragBox.prototype.shouldStopEvent = goog.functions.identity;
