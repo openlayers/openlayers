@@ -735,9 +735,7 @@ ol.interaction.Modify.prototype.removeVertex_ = function() {
 /**
  * @inheritDoc
  */
-ol.interaction.Modify.prototype.shouldStopEvent = function(handled) {
-  return handled;
-};
+ol.interaction.Modify.prototype.shouldStopEvent = goog.functions.identity;
 
 
 /**
