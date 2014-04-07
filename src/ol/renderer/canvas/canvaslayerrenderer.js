@@ -2,6 +2,7 @@ goog.provide('ol.renderer.canvas.Layer');
 
 goog.require('goog.array');
 goog.require('goog.vec.Mat4');
+goog.require('ol.dom');
 goog.require('ol.layer.Layer');
 goog.require('ol.render.Event');
 goog.require('ol.render.EventType');
@@ -174,11 +175,6 @@ ol.renderer.canvas.Layer.prototype.getTransform = function(frameState) {
 ol.renderer.canvas.Layer.testCanvasSize = (function() {
 
   /**
-   * @type {HTMLCanvasElement}
-   */
-  var canvas = null;
-
-  /**
    * @type {CanvasRenderingContext2D}
    */
   var context = null;
@@ -189,11 +185,8 @@ ol.renderer.canvas.Layer.testCanvasSize = (function() {
   var imageData = null;
 
   return function(size) {
-    if (goog.isNull(canvas)) {
-      canvas = /** @type {HTMLCanvasElement} */
-          (document.createElement('canvas'));
-      context = /** @type {CanvasRenderingContext2D} */
-          (canvas.getContext('2d'));
+    if (goog.isNull(context)) {
+      context = ol.dom.createCanvasContext2D(1, 1);
       imageData = context.createImageData(1, 1);
       var data = imageData.data;
       data[0] = 42;
@@ -201,6 +194,7 @@ ol.renderer.canvas.Layer.testCanvasSize = (function() {
       data[2] = 126;
       data[3] = 255;
     }
+    var canvas = context.canvas;
     var good = size[0] <= canvas.width && size[1] <= canvas.height;
     if (!good) {
       canvas.width = size[0];
