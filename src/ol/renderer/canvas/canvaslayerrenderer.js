@@ -2,6 +2,7 @@ goog.provide('ol.renderer.canvas.Layer');
 
 goog.require('goog.array');
 goog.require('goog.vec.Mat4');
+goog.require('ol.dom');
 goog.require('ol.layer.Layer');
 goog.require('ol.render.Event');
 goog.require('ol.render.EventType');
@@ -167,7 +168,6 @@ ol.renderer.canvas.Layer.prototype.getTransform = function(frameState) {
 
 
 /**
- * @param {CanvasRenderingContext2D} context Context.
  * @param {ol.Size} size Size.
  * @return {boolean} True when the canvas with the current size does not exceed
  *     the maximum dimensions.
@@ -175,26 +175,36 @@ ol.renderer.canvas.Layer.prototype.getTransform = function(frameState) {
 ol.renderer.canvas.Layer.testCanvasSize = (function() {
 
   /**
+   * @type {CanvasRenderingContext2D}
+   */
+  var context = null;
+
+  /**
    * @type {ImageData}
    */
-  var testImageData = null;
+  var imageData = null;
 
-  return function(context, size) {
-    var x = size[0] - 1;
-    var y = size[1] - 1;
-    var originalImageData = context.getImageData(x, y, 1, 1);
-    if (goog.isNull(testImageData)) {
-      testImageData = context.createImageData(1, 1);
-      var data = testImageData.data;
+  return function(size) {
+    if (goog.isNull(context)) {
+      context = ol.dom.createCanvasContext2D(1, 1);
+      imageData = context.createImageData(1, 1);
+      var data = imageData.data;
       data[0] = 42;
       data[1] = 84;
       data[2] = 126;
       data[3] = 255;
     }
-    context.putImageData(testImageData, x, y);
-    var result = context.getImageData(x, y, 1, 1);
-    var good = goog.array.equals(testImageData.data, result.data);
-    context.putImageData(originalImageData, x, y);
+    var canvas = context.canvas;
+    var good = size[0] <= canvas.width && size[1] <= canvas.height;
+    if (!good) {
+      canvas.width = size[0];
+      canvas.height = size[1];
+      var x = size[0] - 1;
+      var y = size[1] - 1;
+      context.putImageData(imageData, x, y);
+      var result = context.getImageData(x, y, 1, 1);
+      good = goog.array.equals(imageData.data, result.data);
+    }
     return good;
   };
 })();
