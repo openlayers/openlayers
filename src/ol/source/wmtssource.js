@@ -42,7 +42,7 @@ ol.source.WMTS = function(options) {
    * @private
    * @type {Object}
    */
-  this.dimensions_ = options.dimensions || {};
+  this.dimensions_ = goog.isDef(options.dimensions) ? options.dimensions : {};
 
   /**
    * @private

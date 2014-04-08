@@ -94,7 +94,7 @@ ol.View2DProperty = {
  */
 ol.View2D = function(opt_options) {
   goog.base(this);
-  var options = opt_options || {};
+  var options = goog.isDef(opt_options) ? opt_options : {};
 
   /**
    * @type {Object.<string, *>}
