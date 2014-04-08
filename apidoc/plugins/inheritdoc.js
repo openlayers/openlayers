@@ -5,7 +5,7 @@
  * TODO: Remove this hack when https://github.com/jsdoc3/jsdoc/issues/53
  * is addressed.
  */
-exports.nodeVisitor = {
+exports.astNodeVisitor = {
 
   visitNode: function(node, e, parser, currentSourceName) {
     if (/@(inheritDoc)(\n|\r)/.test(e.comment)) {

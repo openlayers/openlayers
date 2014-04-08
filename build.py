@@ -20,7 +20,7 @@ if sys.platform == 'win32':
         'GJSLINT': 'gjslint.exe',
         'JAVA': 'java.exe',
         'JAR': 'jar.exe',
-        'JSDOC': 'jsdoc.cmd',
+        'JSDOC': './node_modules/.bin/jsdoc',
         'JSHINT': './node_modules/.bin/jshint',
         'PYTHON': 'python.exe',
         'PHANTOMJS': 'phantomjs.cmd'
@@ -75,7 +75,7 @@ else:
     variables.JSHINT = './node_modules/.bin/jshint'
     variables.JAVA = 'java'
     variables.JAR = 'jar'
-    variables.JSDOC = 'jsdoc'
+    variables.JSDOC = './node_modules/.bin/jsdoc'
     variables.PYTHON = 'python'
     variables.PHANTOMJS = 'phantomjs'
 
