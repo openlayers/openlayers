@@ -1,2 +1,0 @@
-@exportSymbol ol.format.WMSCapabilities
-@exportProperty ol.format.WMSCapabilities.prototype.read

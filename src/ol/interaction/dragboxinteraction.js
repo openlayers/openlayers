@@ -84,6 +84,7 @@ goog.inherits(ol.DragBoxEvent, goog.events.Event);
  * @fires {@link ol.DragBoxEvent} ol.DragBoxEvent
  * @param {olx.interaction.DragBoxOptions=} opt_options Options.
  * @todo stability experimental
+ * @todo api
  */
 ol.interaction.DragBox = function(opt_options) {
 
@@ -135,6 +136,7 @@ ol.interaction.DragBox.prototype.handlePointerDrag = function(mapBrowserEvent) {
 /**
  * Returns geometry of last drawn box.
  * @return {ol.geom.Geometry} Geometry.
+ * @todo api
  */
 ol.interaction.DragBox.prototype.getGeometry = function() {
   return this.box_.getGeometry();

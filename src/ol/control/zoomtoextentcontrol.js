@@ -21,6 +21,7 @@ goog.require('ol.pointer.PointerEventHandler');
  * @extends {ol.control.Control}
  * @param {olx.control.ZoomToExtentOptions=} opt_options Options.
  * @todo stability experimental
+ * @todo api
  */
 ol.control.ZoomToExtent = function(opt_options) {
   var options = goog.isDef(opt_options) ? opt_options : {};

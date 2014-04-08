@@ -16,6 +16,7 @@ goog.require('ol.geom.GeometryType');
  * @extends {ol.geom.Geometry}
  * @param {Array.<ol.geom.Geometry>=} opt_geometries Geometries.
  * @todo stability experimental
+ * @todo api
  */
 ol.geom.GeometryCollection = function(opt_geometries) {
 
@@ -81,6 +82,7 @@ ol.geom.GeometryCollection.prototype.listenGeometriesChange_ = function() {
 
 /**
  * @inheritDoc
+ * @todo api
  */
 ol.geom.GeometryCollection.prototype.clone = function() {
   var geometryCollection = new ol.geom.GeometryCollection(null);
@@ -125,6 +127,7 @@ ol.geom.GeometryCollection.prototype.containsXY = function(x, y) {
 
 /**
  * @inheritDoc
+ * @todo api
  */
 ol.geom.GeometryCollection.prototype.getExtent = function(opt_extent) {
   if (this.extentRevision != this.getRevision()) {
@@ -145,6 +148,7 @@ ol.geom.GeometryCollection.prototype.getExtent = function(opt_extent) {
 /**
  * @return {Array.<ol.geom.Geometry>} Geometries.
  * @todo stability experimental
+ * @todo api
  */
 ol.geom.GeometryCollection.prototype.getGeometries = function() {
   return ol.geom.GeometryCollection.cloneGeometries_(this.geometries_);
@@ -161,6 +165,7 @@ ol.geom.GeometryCollection.prototype.getGeometriesArray = function() {
 
 /**
  * @inheritDoc
+ * @todo api
  */
 ol.geom.GeometryCollection.prototype.getSimplifiedGeometry =
     function(squaredTolerance) {
@@ -205,6 +210,7 @@ ol.geom.GeometryCollection.prototype.getSimplifiedGeometry =
 
 /**
  * @inheritDoc
+ * @todo api
  */
 ol.geom.GeometryCollection.prototype.getType = function() {
   return ol.geom.GeometryType.GEOMETRY_COLLECTION;
@@ -223,6 +229,7 @@ ol.geom.GeometryCollection.prototype.isEmpty = function() {
 /**
  * @param {Array.<ol.geom.Geometry>} geometries Geometries.
  * @todo stability experimental
+ * @todo api
  */
 ol.geom.GeometryCollection.prototype.setGeometries = function(geometries) {
   this.setGeometriesArray(

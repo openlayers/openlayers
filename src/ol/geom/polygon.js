@@ -25,6 +25,7 @@ goog.require('ol.geom.flat.simplify');
  * @param {ol.geom.RawPolygon} coordinates Coordinates.
  * @param {ol.geom.GeometryLayout|string=} opt_layout Layout.
  * @todo stability experimental
+ * @todo api
  */
 ol.geom.Polygon = function(coordinates, opt_layout) {
 
@@ -81,6 +82,7 @@ goog.inherits(ol.geom.Polygon, ol.geom.SimpleGeometry);
 
 /**
  * @param {ol.geom.LinearRing} linearRing Linear ring.
+ * @todo api
  */
 ol.geom.Polygon.prototype.appendLinearRing = function(linearRing) {
   goog.asserts.assert(linearRing.getLayout() == this.layout);
@@ -96,6 +98,7 @@ ol.geom.Polygon.prototype.appendLinearRing = function(linearRing) {
 
 /**
  * @inheritDoc
+ * @todo api
  */
 ol.geom.Polygon.prototype.clone = function() {
   var polygon = new ol.geom.Polygon(null);
@@ -137,6 +140,7 @@ ol.geom.Polygon.prototype.containsXY = function(x, y) {
 /**
  * @return {number} Area.
  * @todo stability experimental
+ * @todo api
  */
 ol.geom.Polygon.prototype.getArea = function() {
   return ol.geom.flat.area.linearRings(
@@ -147,6 +151,7 @@ ol.geom.Polygon.prototype.getArea = function() {
 /**
  * @return {ol.geom.RawPolygon} Coordinates.
  * @todo stability experimental
+ * @todo api
  */
 ol.geom.Polygon.prototype.getCoordinates = function() {
   return ol.geom.flat.inflate.coordinatess(
@@ -179,6 +184,7 @@ ol.geom.Polygon.prototype.getFlatInteriorPoint = function() {
 
 /**
  * @return {ol.geom.Point} Interior point.
+ * @todo api
  */
 ol.geom.Polygon.prototype.getInteriorPoint = function() {
   return new ol.geom.Point(this.getFlatInteriorPoint());
@@ -188,6 +194,7 @@ ol.geom.Polygon.prototype.getInteriorPoint = function() {
 /**
  * @param {number} index Index.
  * @return {ol.geom.LinearRing} Linear ring.
+ * @todo api
  */
 ol.geom.Polygon.prototype.getLinearRing = function(index) {
   goog.asserts.assert(0 <= index && index < this.ends_.length);
@@ -204,6 +211,7 @@ ol.geom.Polygon.prototype.getLinearRing = function(index) {
 /**
  * @return {Array.<ol.geom.LinearRing>} Linear rings.
  * @todo stability experimental
+ * @todo api
  */
 ol.geom.Polygon.prototype.getLinearRings = function() {
   var layout = this.layout;
@@ -264,6 +272,7 @@ ol.geom.Polygon.prototype.getSimplifiedGeometryInternal =
 
 /**
  * @inheritDoc
+ * @todo api
  */
 ol.geom.Polygon.prototype.getType = function() {
   return ol.geom.GeometryType.POLYGON;
@@ -274,6 +283,7 @@ ol.geom.Polygon.prototype.getType = function() {
  * @param {ol.geom.RawPolygon} coordinates Coordinates.
  * @param {ol.geom.GeometryLayout=} opt_layout Layout.
  * @todo stability experimental
+ * @todo api
  */
 ol.geom.Polygon.prototype.setCoordinates = function(coordinates, opt_layout) {
   if (goog.isNull(coordinates)) {

@@ -21,6 +21,7 @@ goog.require('ol.geom.flat.simplify');
  * @param {ol.geom.RawLineString} coordinates Coordinates.
  * @param {ol.geom.GeometryLayout|string=} opt_layout Layout.
  * @todo stability experimental
+ * @todo api
  */
 ol.geom.LineString = function(coordinates, opt_layout) {
 
@@ -59,6 +60,7 @@ goog.inherits(ol.geom.LineString, ol.geom.SimpleGeometry);
 
 /**
  * @param {ol.Coordinate} coordinate Coordinate.
+ * @todo api
  */
 ol.geom.LineString.prototype.appendCoordinate = function(coordinate) {
   goog.asserts.assert(coordinate.length == this.stride);
@@ -73,6 +75,7 @@ ol.geom.LineString.prototype.appendCoordinate = function(coordinate) {
 
 /**
  * @inheritDoc
+ * @todo api
  */
 ol.geom.LineString.prototype.clone = function() {
   var lineString = new ol.geom.LineString(null);
@@ -113,6 +116,7 @@ ol.geom.LineString.prototype.closestPointXY =
  * @param {number} m M.
  * @param {boolean=} opt_extrapolate Extrapolate.
  * @return {ol.Coordinate} Coordinate.
+ * @todo api
  */
 ol.geom.LineString.prototype.getCoordinateAtM = function(m, opt_extrapolate) {
   if (this.layout != ol.geom.GeometryLayout.XYM &&
@@ -128,6 +132,7 @@ ol.geom.LineString.prototype.getCoordinateAtM = function(m, opt_extrapolate) {
 /**
  * @return {ol.geom.RawLineString} Coordinates.
  * @todo stability experimental
+ * @todo api
  */
 ol.geom.LineString.prototype.getCoordinates = function() {
   return ol.geom.flat.inflate.coordinates(
@@ -138,6 +143,7 @@ ol.geom.LineString.prototype.getCoordinates = function() {
 /**
  * @return {number} Length.
  * @todo stability experimental
+ * @todo api
  */
 ol.geom.LineString.prototype.getLength = function() {
   return ol.geom.flat.length.lineString(
@@ -177,6 +183,7 @@ ol.geom.LineString.prototype.getSimplifiedGeometryInternal =
 
 /**
  * @inheritDoc
+ * @todo api
  */
 ol.geom.LineString.prototype.getType = function() {
   return ol.geom.GeometryType.LINE_STRING;
@@ -187,6 +194,7 @@ ol.geom.LineString.prototype.getType = function() {
  * @param {ol.geom.RawLineString} coordinates Coordinates.
  * @param {ol.geom.GeometryLayout=} opt_layout Layout.
  * @todo stability experimental
+ * @todo api
  */
 ol.geom.LineString.prototype.setCoordinates =
     function(coordinates, opt_layout) {

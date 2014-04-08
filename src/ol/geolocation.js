@@ -72,6 +72,7 @@ ol.GeolocationProperty = {
  * @todo observable trackingOptions {GeolocationPositionOptions} PositionOptions
  *       as defined by the HTML5 Geolocation spec at
  *       http://www.w3.org/TR/geolocation-API/#position_options_interface
+ * @todo api
  */
 ol.Geolocation = function(opt_options) {
 

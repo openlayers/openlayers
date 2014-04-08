@@ -11,6 +11,7 @@ goog.require('ol.source.StaticVector');
  * @fires {@link ol.source.VectorEvent} ol.source.VectorEvent
  * @param {olx.source.IGCOptions=} opt_options Options.
  * @todo stability experimental
+ * @todo api
  */
 ol.source.IGC = function(opt_options) {
 

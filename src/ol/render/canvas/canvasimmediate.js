@@ -380,6 +380,7 @@ ol.render.canvas.Immediate.prototype.drawRings_ =
  *
  * @param {number} zIndex Z index.
  * @param {function(ol.render.canvas.Immediate)} callback Callback.
+ * @todo api
  */
 ol.render.canvas.Immediate.prototype.drawAsync = function(zIndex, callback) {
   var zIndexKey = zIndex.toString();
@@ -399,6 +400,7 @@ ol.render.canvas.Immediate.prototype.drawAsync = function(zIndex, callback) {
  * @param {ol.geom.Circle} circleGeometry Circle geometry.
  * @param {Object} data Opaque data object,
  * @todo stability experimental
+ * @todo api
  */
 ol.render.canvas.Immediate.prototype.drawCircleGeometry =
     function(circleGeometry, data) {
@@ -444,6 +446,7 @@ ol.render.canvas.Immediate.prototype.drawCircleGeometry =
  * @param {ol.Feature} feature Feature.
  * @param {ol.style.Style} style Style.
  * @todo stability experimental
+ * @todo api
  */
 ol.render.canvas.Immediate.prototype.drawFeature = function(feature, style) {
   var geometry = feature.getGeometry();
@@ -497,6 +500,7 @@ ol.render.canvas.Immediate.prototype.drawGeometryCollectionGeometry =
  * @param {ol.geom.Point} pointGeometry Point geometry.
  * @param {Object} data Opaque data object.
  * @todo stability experimental
+ * @todo api
  */
 ol.render.canvas.Immediate.prototype.drawPointGeometry =
     function(pointGeometry, data) {
@@ -518,6 +522,7 @@ ol.render.canvas.Immediate.prototype.drawPointGeometry =
  * @param {ol.geom.MultiPoint} multiPointGeometry MultiPoint geometry.
  * @param {Object} data Opaque data object.
  * @todo stability experimental
+ * @todo api
  */
 ol.render.canvas.Immediate.prototype.drawMultiPointGeometry =
     function(multiPointGeometry, data) {
@@ -539,6 +544,7 @@ ol.render.canvas.Immediate.prototype.drawMultiPointGeometry =
  * @param {ol.geom.LineString} lineStringGeometry Line string geometry.
  * @param {Object} data Opaque data object.
  * @todo stability experimental
+ * @todo api
  */
 ol.render.canvas.Immediate.prototype.drawLineStringGeometry =
     function(lineStringGeometry, data) {
@@ -569,6 +575,7 @@ ol.render.canvas.Immediate.prototype.drawLineStringGeometry =
  *     MultiLineString geometry.
  * @param {Object} data Opaque data object.
  * @todo stability experimental
+ * @todo api
  */
 ol.render.canvas.Immediate.prototype.drawMultiLineStringGeometry =
     function(multiLineStringGeometry, data) {
@@ -605,6 +612,7 @@ ol.render.canvas.Immediate.prototype.drawMultiLineStringGeometry =
  * @param {ol.geom.Polygon} polygonGeometry Polygon geometry.
  * @param {Object} data Opaque data object.
  * @todo stability experimental
+ * @todo api
  */
 ol.render.canvas.Immediate.prototype.drawPolygonGeometry =
     function(polygonGeometry, data) {
@@ -644,6 +652,7 @@ ol.render.canvas.Immediate.prototype.drawPolygonGeometry =
  * @param {ol.geom.MultiPolygon} multiPolygonGeometry MultiPolygon geometry.
  * @param {Object} data Opaque data object.
  * @todo stability experimental
+ * @todo api
  */
 ol.render.canvas.Immediate.prototype.drawMultiPolygonGeometry =
     function(multiPolygonGeometry, data) {
@@ -819,6 +828,7 @@ ol.render.canvas.Immediate.prototype.setContextTextState_ =
  * @param {ol.style.Fill} fillStyle Fill style.
  * @param {ol.style.Stroke} strokeStyle Stroke style.
  * @todo stability experimental
+ * @todo api
  */
 ol.render.canvas.Immediate.prototype.setFillStrokeStyle =
     function(fillStyle, strokeStyle) {
@@ -864,6 +874,7 @@ ol.render.canvas.Immediate.prototype.setFillStrokeStyle =
  *
  * @param {ol.style.Image} imageStyle Image style.
  * @todo stability experimental
+ * @todo api
  */
 ol.render.canvas.Immediate.prototype.setImageStyle = function(imageStyle) {
   if (goog.isNull(imageStyle)) {
@@ -903,6 +914,7 @@ ol.render.canvas.Immediate.prototype.setImageStyle = function(imageStyle) {
  *
  * @param {ol.style.Text} textStyle Text style.
  * @todo stability experimental
+ * @todo api
  */
 ol.render.canvas.Immediate.prototype.setTextStyle = function(textStyle) {
   if (goog.isNull(textStyle)) {

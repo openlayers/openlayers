@@ -131,6 +131,7 @@ ol.source.Source.prototype.getResolutions = goog.abstractMethod;
 
 /**
  * @return {ol.source.State} State.
+ * @todo api
  */
 ol.source.Source.prototype.getState = function() {
   return this.state_;

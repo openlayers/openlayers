@@ -91,6 +91,7 @@ ol.View2DProperty = {
  * @todo observable projection {ol.proj.Projection} the projection of the view
  * @todo observable resolution {number} the resolution of the view
  * @todo observable rotation {number} the rotation of the view
+ * @todo api
  */
 ol.View2D = function(opt_options) {
   goog.base(this);
@@ -197,6 +198,7 @@ ol.View2D.prototype.constrainCenter = function(center) {
  * @param {number=} opt_direction Direction. Default is `0`.
  * @return {number|undefined} Constrained resolution.
  * @todo stability experimental
+ * @todo api
  */
 ol.View2D.prototype.constrainResolution = function(
     resolution, opt_delta, opt_direction) {
@@ -212,6 +214,7 @@ ol.View2D.prototype.constrainResolution = function(
  * @param {number=} opt_delta Delta. Default is `0`.
  * @return {number|undefined} Constrained rotation.
  * @todo stability experimental
+ * @todo api
  */
 ol.View2D.prototype.constrainRotation = function(rotation, opt_delta) {
   var delta = opt_delta || 0;
@@ -238,6 +241,7 @@ goog.exportProperty(
  * @param {ol.Size} size Box pixel size.
  * @return {ol.Extent} Extent.
  * @todo stability experimental
+ * @todo api
  */
 ol.View2D.prototype.calculateExtent = function(size) {
   goog.asserts.assert(this.isDef());
@@ -353,6 +357,7 @@ ol.View2D.prototype.getValueForResolutionFunction = function(opt_power) {
 
 /**
  * @inheritDoc
+ * @todo api
  */
 ol.View2D.prototype.getView2D = function() {
   return this;
@@ -389,6 +394,7 @@ ol.View2D.prototype.getView3D = function() {
  * resolution is undefined or not a "constrained resolution".
  * @return {number|undefined} Zoom.
  * @todo stability experimental
+ * @todo api
  */
 ol.View2D.prototype.getZoom = function() {
   var zoom;
@@ -415,6 +421,7 @@ ol.View2D.prototype.getZoom = function() {
  * @param {ol.Extent} extent Extent.
  * @param {ol.Size} size Box pixel size.
  * @todo stability experimental
+ * @todo api
  */
 ol.View2D.prototype.fitExtent = function(extent, size) {
   if (!ol.extent.isEmpty(extent)) {
@@ -437,6 +444,7 @@ ol.View2D.prototype.fitExtent = function(extent, size) {
  * @param {ol.Size} size Box pixel size.
  * @param {olx.View2D.fitGeometryOptions=} opt_options Options.
  * @todo stability experimental
+ * @todo api
  */
 ol.View2D.prototype.fitGeometry = function(geometry, size, opt_options) {
   var options = goog.isDef(opt_options) ? opt_options : {};
@@ -504,6 +512,7 @@ ol.View2D.prototype.fitGeometry = function(geometry, size, opt_options) {
  * @param {ol.Size} size Box pixel size.
  * @param {ol.Pixel} position Position on the view to center on.
  * @todo stability experimental
+ * @todo api
  */
 ol.View2D.prototype.centerOn = function(coordinate, size, position) {
   // calculate rotated position
@@ -538,6 +547,7 @@ ol.View2D.prototype.isDef = function() {
  * Rotate the view around a given coordinate.
  * @param {number} rotation New rotation value for the view.
  * @param {ol.Coordinate=} opt_anchor The rotation center.
+ * @todo api
  */
 ol.View2D.prototype.rotate = function(rotation, opt_anchor) {
   if (goog.isDef(opt_anchor)) {
@@ -609,6 +619,7 @@ goog.exportProperty(
  * Zoom to a specific zoom level.
  * @param {number} zoom Zoom level.
  * @todo stability experimental
+ * @todo api
  */
 ol.View2D.prototype.setZoom = function(zoom) {
   var resolution = this.constrainResolution(this.maxResolution_, zoom, 0);

@@ -39,6 +39,7 @@ ol.control.ZOOMSLIDER_ANIMATION_DURATION = 200;
  * @extends {ol.control.Control}
  * @param {olx.control.ZoomSliderOptions=} opt_options Zoom slider options.
  * @todo stability experimental
+ * @todo api
  */
 ol.control.ZoomSlider = function(opt_options) {
 

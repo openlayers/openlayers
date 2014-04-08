@@ -1,3 +1,0 @@
-@exportSymbol ol.interaction.Select
-@exportProperty ol.interaction.Select.prototype.getFeatures
-@exportProperty ol.interaction.Select.prototype.setMap

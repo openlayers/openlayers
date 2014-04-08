@@ -1,9 +1,0 @@
-@exportSymbol ol.FeatureOverlay
-@exportProperty ol.FeatureOverlay.prototype.addFeature
-@exportProperty ol.FeatureOverlay.prototype.getFeatures
-@exportProperty ol.FeatureOverlay.prototype.getStyle
-@exportProperty ol.FeatureOverlay.prototype.getStyleFunction
-@exportProperty ol.FeatureOverlay.prototype.removeFeature
-@exportProperty ol.FeatureOverlay.prototype.setFeatures
-@exportProperty ol.FeatureOverlay.prototype.setMap
-@exportProperty ol.FeatureOverlay.prototype.setStyle

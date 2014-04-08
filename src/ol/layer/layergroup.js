@@ -31,6 +31,7 @@ ol.layer.GroupProperty = {
  * @todo stability experimental
  * @todo observable layers {ol.Collection} collection of layers that are part
  *       of this group
+ * @todo api
  */
 ol.layer.Group = function(opt_options) {
 

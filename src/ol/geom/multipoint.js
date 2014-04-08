@@ -19,6 +19,7 @@ goog.require('ol.math');
  * @param {ol.geom.RawMultiPoint} coordinates Coordinates.
  * @param {ol.geom.GeometryLayout|string=} opt_layout Layout.
  * @todo stability experimental
+ * @todo api
  */
 ol.geom.MultiPoint = function(coordinates, opt_layout) {
   goog.base(this);
@@ -30,6 +31,7 @@ goog.inherits(ol.geom.MultiPoint, ol.geom.SimpleGeometry);
 
 /**
  * @param {ol.geom.Point} point Point.
+ * @todo api
  */
 ol.geom.MultiPoint.prototype.appendPoint = function(point) {
   goog.asserts.assert(point.getLayout() == this.layout);
@@ -44,6 +46,7 @@ ol.geom.MultiPoint.prototype.appendPoint = function(point) {
 
 /**
  * @inheritDoc
+ * @todo api
  */
 ol.geom.MultiPoint.prototype.clone = function() {
   var multiPoint = new ol.geom.MultiPoint(null);
@@ -82,6 +85,7 @@ ol.geom.MultiPoint.prototype.closestPointXY =
 /**
  * @return {ol.geom.RawMultiPoint} Coordinates.
  * @todo stability experimental
+ * @todo api
  */
 ol.geom.MultiPoint.prototype.getCoordinates = function() {
   return ol.geom.flat.inflate.coordinates(
@@ -92,6 +96,7 @@ ol.geom.MultiPoint.prototype.getCoordinates = function() {
 /**
  * @param {number} index Index.
  * @return {ol.geom.Point} Point.
+ * @todo api
  */
 ol.geom.MultiPoint.prototype.getPoint = function(index) {
   var n = goog.isNull(this.flatCoordinates) ?
@@ -110,6 +115,7 @@ ol.geom.MultiPoint.prototype.getPoint = function(index) {
 /**
  * @return {Array.<ol.geom.Point>} Points.
  * @todo stability experimental
+ * @todo api
  */
 ol.geom.MultiPoint.prototype.getPoints = function() {
   var flatCoordinates = this.flatCoordinates;
@@ -129,6 +135,7 @@ ol.geom.MultiPoint.prototype.getPoints = function() {
 
 /**
  * @inheritDoc
+ * @todo api
  */
 ol.geom.MultiPoint.prototype.getType = function() {
   return ol.geom.GeometryType.MULTI_POINT;
@@ -139,6 +146,7 @@ ol.geom.MultiPoint.prototype.getType = function() {
  * @param {ol.geom.RawMultiPoint} coordinates Coordinates.
  * @param {ol.geom.GeometryLayout=} opt_layout Layout.
  * @todo stability experimental
+ * @todo api
  */
 ol.geom.MultiPoint.prototype.setCoordinates =
     function(coordinates, opt_layout) {

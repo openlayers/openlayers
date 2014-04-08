@@ -24,6 +24,7 @@ goog.require('ol.pointer.PointerEventHandler');
  * @extends {ol.control.Control}
  * @param {olx.control.ZoomOptions=} opt_options Zoom options.
  * @todo stability experimental
+ * @todo api
  */
 ol.control.Zoom = function(opt_options) {
 

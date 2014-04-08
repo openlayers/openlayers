@@ -55,6 +55,7 @@ ol.format.KMLGxTrackObject_;
  * @extends {ol.format.XMLFeature}
  * @param {olx.format.KMLOptions=} opt_options Options.
  * @todo stability experimental
+ * @todo api
  */
 ol.format.KML = function(opt_options) {
 
@@ -1450,6 +1451,7 @@ ol.format.KML.prototype.readSharedStyleMap_ = function(node, objectStack) {
  * @function
  * @param {ArrayBuffer|Document|Node|Object|string} source Source.
  * @return {ol.Feature} Feature.
+ * @todo api
  */
 ol.format.KML.prototype.readFeature;
 
@@ -1478,6 +1480,7 @@ ol.format.KML.prototype.readFeatureFromNode = function(node) {
  * @function
  * @param {ArrayBuffer|Document|Node|Object|string} source Source.
  * @return {Array.<ol.Feature>} Features.
+ * @todo api
  */
 ol.format.KML.prototype.readFeatures;
 
@@ -1596,6 +1599,7 @@ ol.format.KML.prototype.readNameFromNode = function(node) {
  * @function
  * @param {ArrayBuffer|Document|Node|Object|string} source Source.
  * @return {ol.proj.Projection} Projection.
+ * @todo api
  */
 ol.format.KML.prototype.readProjection;
 

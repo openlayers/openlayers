@@ -19,6 +19,7 @@ goog.require('ol.interaction.Interaction');
  * @extends {ol.interaction.Interaction}
  * @param {olx.interaction.SelectOptions=} opt_options Options.
  * @todo stability experimental
+ * @todo api
  */
 ol.interaction.Select = function(opt_options) {
 
@@ -101,6 +102,7 @@ goog.inherits(ol.interaction.Select, ol.interaction.Interaction);
 /**
  * @return {ol.Collection} Features collection.
  * @todo stability experimental
+ * @todo api
  */
 ol.interaction.Select.prototype.getFeatures = function() {
   return this.featureOverlay_.getFeatures();
@@ -171,6 +173,7 @@ ol.interaction.Select.prototype.handleMapBrowserEvent =
 
 /**
  * @inheritDoc
+ * @todo api
  */
 ol.interaction.Select.prototype.setMap = function(map) {
   var currentMap = this.getMap();

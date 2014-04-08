@@ -23,6 +23,7 @@ goog.require('ol.TileRange');
  * @param {olx.AttributionOptions} options Attribution options.
  * @struct
  * @todo stability experimental
+ * @todo api
  */
 ol.Attribution = function(options) {
 

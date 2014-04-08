@@ -66,6 +66,7 @@ goog.inherits(ol.MapBrowserEvent, ol.MapEvent);
  * @see https://developer.mozilla.org/en-US/docs/Web/API/event.preventDefault
  * @override
  * @todo stability experimental
+ * @todo api
  */
 ol.MapBrowserEvent.prototype.preventDefault = function() {
   goog.base(this, 'preventDefault');
@@ -78,6 +79,7 @@ ol.MapBrowserEvent.prototype.preventDefault = function() {
  * @see https://developer.mozilla.org/en-US/docs/Web/API/event.stopPropagation
  * @override
  * @todo stability experimental
+ * @todo api
  */
 ol.MapBrowserEvent.prototype.stopPropagation = function() {
   goog.base(this, 'stopPropagation');

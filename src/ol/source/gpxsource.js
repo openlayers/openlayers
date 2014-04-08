@@ -11,6 +11,7 @@ goog.require('ol.source.StaticVector');
  * @fires {@link ol.source.VectorEvent} ol.source.VectorEvent
  * @param {olx.source.GPXOptions=} opt_options Options.
  * @todo stability experimental
+ * @todo api
  */
 ol.source.GPX = function(opt_options) {
 

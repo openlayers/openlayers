@@ -17,6 +17,7 @@ goog.require('ol.Object');
  * @implements {oli.control.Control}
  * @param {olx.control.ControlOptions} options Control options.
  * @todo stability stable
+ * @todo api
  */
 ol.control.Control = function(options) {
 
@@ -64,6 +65,7 @@ ol.control.Control.prototype.disposeInternal = function() {
  * Get the map associated with this control.
  * @return {ol.Map} Map.
  * @todo stability experimental
+ * @todo api
  */
 ol.control.Control.prototype.getMap = function() {
   return this.map_;
@@ -85,6 +87,7 @@ ol.control.Control.prototype.handleMapPostrender = goog.nullFunction;
  * the map here.
  * @param {ol.Map} map Map.
  * @todo stability stable
+ * @todo api
  */
 ol.control.Control.prototype.setMap = function(map) {
   if (!goog.isNull(this.map_)) {

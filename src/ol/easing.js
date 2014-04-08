@@ -7,6 +7,7 @@ goog.require('goog.fx.easing');
  * from https://raw.github.com/DmitryBaranovskiy/raphael/master/raphael.js
  * @param {number} t Input between 0 and 1.
  * @return {number} Output between 0 and 1.
+ * @todo api
  */
 ol.easing.bounce = function(t) {
   var s = 7.5625, p = 2.75, l;
@@ -33,6 +34,7 @@ ol.easing.bounce = function(t) {
 /**
  * @param {number} t Input between 0 and 1.
  * @return {number} Output between 0 and 1.
+ * @todo api
  */
 ol.easing.easeIn = goog.fx.easing.easeIn;
 
@@ -40,6 +42,7 @@ ol.easing.easeIn = goog.fx.easing.easeIn;
 /**
  * @param {number} t Input between 0 and 1.
  * @return {number} Output between 0 and 1.
+ * @todo api
  */
 ol.easing.easeOut = goog.fx.easing.easeOut;
 
@@ -48,6 +51,7 @@ ol.easing.easeOut = goog.fx.easing.easeOut;
  * from https://raw.github.com/DmitryBaranovskiy/raphael/master/raphael.js
  * @param {number} t Input between 0 and 1.
  * @return {number} Output between 0 and 1.
+ * @todo api
  */
 ol.easing.elastic = function(t) {
   return Math.pow(2, -10 * t) * Math.sin((t - 0.075) * (2 * Math.PI) / 0.3) + 1;
@@ -57,6 +61,7 @@ ol.easing.elastic = function(t) {
 /**
  * @param {number} t Input between 0 and 1.
  * @return {number} Output between 0 and 1.
+ * @todo api
  */
 ol.easing.inAndOut = goog.fx.easing.inAndOut;
 
@@ -64,6 +69,7 @@ ol.easing.inAndOut = goog.fx.easing.inAndOut;
 /**
  * @param {number} t Input between 0 and 1.
  * @return {number} Output between 0 and 1.
+ * @todo api
  */
 ol.easing.linear = function(t) {
   return t;
@@ -73,6 +79,7 @@ ol.easing.linear = function(t) {
 /**
  * @param {number} t Input between 0 and 1.
  * @return {number} Output between 0 and 1.
+ * @todo api
  */
 ol.easing.upAndDown = function(t) {
   if (t < 0.5) {

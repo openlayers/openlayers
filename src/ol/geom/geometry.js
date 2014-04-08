@@ -38,6 +38,7 @@ ol.geom.GeometryLayout = {
  * @constructor
  * @extends {ol.Observable}
  * @todo stability experimental
+ * @todo api
  */
 ol.geom.Geometry = function() {
 
@@ -99,6 +100,7 @@ ol.geom.Geometry.prototype.closestPointXY = goog.abstractMethod;
  * @param {ol.Coordinate=} opt_closestPoint Closest point.
  * @return {ol.Coordinate} Closest point.
  * @todo stability experimental
+ * @todo api
  */
 ol.geom.Geometry.prototype.getClosestPoint = function(point, opt_closestPoint) {
   var closestPoint = goog.isDef(opt_closestPoint) ?
@@ -144,6 +146,7 @@ ol.geom.Geometry.prototype.getSimplifiedGeometry = goog.abstractMethod;
 /**
  * @return {ol.geom.GeometryType} Geometry type.
  * @todo stability experimental
+ * @todo api
  */
 ol.geom.Geometry.prototype.getType = goog.abstractMethod;
 

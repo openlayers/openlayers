@@ -14,6 +14,7 @@ goog.require('ol.animation');
  *     initial values (milliseconds).
  * @struct
  * @todo stability experimental
+ * @todo api
  */
 ol.Kinetic = function(decay, minVelocity, delay) {
 

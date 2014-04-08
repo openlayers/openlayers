@@ -10,6 +10,7 @@ goog.provide('ol');
  *
  * "Missing newline between constructor and goog.inherits"
  * @todo stability experimental
+ * @todo api
  */
 ol.inherits =
     goog.inherits;

@@ -52,6 +52,7 @@ ol.control.ScaleLineUnits = {
  * @todo stability experimental
  * @todo observable units {ol.control.ScaleLineUnits} the units to use in the
  *       scale line
+ * @todo api
  */
 ol.control.ScaleLine = function(opt_options) {
 

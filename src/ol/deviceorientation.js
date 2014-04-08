@@ -80,6 +80,7 @@ ol.DeviceOrientationProperty = {
  *       device from the planar Y axis
  * @todo observable tracking {boolean} the status of tracking changes to alpha,
  *       beta and gamma.  If true, changes are tracked and reported immediately.
+ * @todo api
  */
 ol.DeviceOrientation = function(opt_options) {
 

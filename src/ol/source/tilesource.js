@@ -29,6 +29,7 @@ ol.source.TileOptions;
  * @extends {ol.source.Source}
  * @param {ol.source.TileOptions} options Tile source options.
  * @todo stability experimental
+ * @todo api
  */
 ol.source.Tile = function(options) {
 
@@ -153,6 +154,7 @@ ol.source.Tile.prototype.getTile = goog.abstractMethod;
 
 /**
  * @return {ol.tilegrid.TileGrid} Tile grid.
+ * @todo api
  */
 ol.source.Tile.prototype.getTileGrid = function() {
   return this.tileGrid;

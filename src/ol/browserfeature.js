@@ -78,6 +78,7 @@ ol.IS_LEGACY_IE = goog.userAgent.IE &&
  * @const
  * @type {number}
  * @todo stability experimental
+ * @todo api
  */
 ol.BrowserFeature.DEVICE_PIXEL_RATIO = goog.global.devicePixelRatio || 1;
 
@@ -104,6 +105,7 @@ ol.BrowserFeature.HAS_CANVAS_LINE_DASH = false;
  * @const
  * @type {boolean}
  * @todo stability experimental
+ * @todo api
  */
 ol.BrowserFeature.HAS_CANVAS = ol.ENABLE_CANVAS && (
     /**
@@ -134,6 +136,7 @@ ol.BrowserFeature.HAS_CANVAS = ol.ENABLE_CANVAS && (
  * @const
  * @type {boolean}
  * @todo stability experimental
+ * @todo api
  */
 ol.BrowserFeature.HAS_DEVICE_ORIENTATION =
     'DeviceOrientationEvent' in goog.global;
@@ -153,6 +156,7 @@ ol.BrowserFeature.HAS_DOM = ol.ENABLE_DOM;
  * @const
  * @type {boolean}
  * @todo stability experimental
+ * @todo api
  */
 ol.BrowserFeature.HAS_GEOLOCATION = 'geolocation' in goog.global.navigator;
 
@@ -171,6 +175,7 @@ ol.BrowserFeature.HAS_JSON_PARSE =
  * @const
  * @type {boolean}
  * @todo stability experimental
+ * @todo api
  */
 ol.BrowserFeature.HAS_TOUCH = ol.ASSUME_TOUCH || 'ontouchstart' in goog.global;
 

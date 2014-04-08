@@ -43,6 +43,7 @@ ol.control.MousePositionProperty = {
  *       mouse position in
  * @todo observable coordinateFormat {ol.CoordinateFormatType} the format to
  *       render the current position in
+ * @todo api
  */
 ol.control.MousePosition = function(opt_options) {
 
@@ -184,6 +185,7 @@ ol.control.MousePosition.prototype.handleMouseOut = function(browserEvent) {
 
 /**
  * @inheritDoc
+ * @todo api
  */
 ol.control.MousePosition.prototype.setMap = function(map) {
   goog.base(this, 'setMap', map);

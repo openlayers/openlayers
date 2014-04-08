@@ -72,6 +72,7 @@ ol.CollectionProperty = {
  * @param {Array=} opt_array Array.
  * @todo stability experimental
  * @todo observable length {number} readonly the length of the array
+ * @todo api
  */
 ol.Collection = function(opt_array) {
 
@@ -92,6 +93,7 @@ goog.inherits(ol.Collection, ol.Object);
 /**
  * Remove all elements from the collection.
  * @todo stability experimental
+ * @todo api
  */
 ol.Collection.prototype.clear = function() {
   while (this.getLength() > 0) {
@@ -104,6 +106,7 @@ ol.Collection.prototype.clear = function() {
  * @param {Array} arr Array.
  * @return {ol.Collection} This collection.
  * @todo stability experimental
+ * @todo api
  */
 ol.Collection.prototype.extend = function(arr) {
   var i, ii;
@@ -122,6 +125,7 @@ ol.Collection.prototype.extend = function(arr) {
  * @param {S=} opt_this The object to use as `this` in `f`.
  * @template T,S
  * @todo stability experimental
+ * @todo api
  */
 ol.Collection.prototype.forEach = function(f, opt_this) {
   goog.array.forEach(this.array_, f, opt_this);
@@ -135,6 +139,7 @@ ol.Collection.prototype.forEach = function(f, opt_this) {
  * of the array.
  * @return {Array} Array.
  * @todo stability experimental
+ * @todo api
  */
 ol.Collection.prototype.getArray = function() {
   return this.array_;
@@ -146,6 +151,7 @@ ol.Collection.prototype.getArray = function() {
  * @param {number} index Index.
  * @return {*} Element.
  * @todo stability experimental
+ * @todo api
  */
 ol.Collection.prototype.getAt = function(index) {
   return this.array_[index];
@@ -156,6 +162,7 @@ ol.Collection.prototype.getAt = function(index) {
  * Get the length of this collection.
  * @return {number} Length.
  * @todo stability experimental
+ * @todo api
  */
 ol.Collection.prototype.getLength = function() {
   return /** @type {number} */ (this.get(ol.CollectionProperty.LENGTH));
@@ -167,6 +174,7 @@ ol.Collection.prototype.getLength = function() {
  * @param {number} index Index.
  * @param {*} elem Element.
  * @todo stability experimental
+ * @todo api
  */
 ol.Collection.prototype.insertAt = function(index, elem) {
   goog.array.insertAt(this.array_, elem, index);
@@ -180,6 +188,7 @@ ol.Collection.prototype.insertAt = function(index, elem) {
  * Remove the last element of the collection.
  * @return {*} Element.
  * @todo stability experimental
+ * @todo api
  */
 ol.Collection.prototype.pop = function() {
   return this.removeAt(this.getLength() - 1);
@@ -191,6 +200,7 @@ ol.Collection.prototype.pop = function() {
  * @param {*} elem Element.
  * @return {number} Length.
  * @todo stability experimental
+ * @todo api
  */
 ol.Collection.prototype.push = function(elem) {
   var n = this.array_.length;
@@ -204,6 +214,7 @@ ol.Collection.prototype.push = function(elem) {
  * @param {*} elem Element.
  * @return {*} The removed element or undefined if elem was not found.
  * @todo stability experimental
+ * @todo api
  */
 ol.Collection.prototype.remove = function(elem) {
   var arr = this.array_;
@@ -222,6 +233,7 @@ ol.Collection.prototype.remove = function(elem) {
  * @param {number} index Index.
  * @return {*} Value.
  * @todo stability experimental
+ * @todo api
  */
 ol.Collection.prototype.removeAt = function(index) {
   var prev = this.array_[index];
@@ -238,6 +250,7 @@ ol.Collection.prototype.removeAt = function(index) {
  * @param {number} index Index.
  * @param {*} elem Element.
  * @todo stability experimental
+ * @todo api
  */
 ol.Collection.prototype.setAt = function(index, elem) {
   var n = this.getLength();

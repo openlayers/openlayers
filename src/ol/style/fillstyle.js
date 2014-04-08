@@ -7,6 +7,7 @@ goog.require('ol.color');
 /**
  * @constructor
  * @param {olx.style.FillOptions=} opt_options Options.
+ * @todo api
  */
 ol.style.Fill = function(opt_options) {
 
@@ -22,6 +23,7 @@ ol.style.Fill = function(opt_options) {
 
 /**
  * @return {ol.Color|string} Color.
+ * @todo api
  */
 ol.style.Fill.prototype.getColor = function() {
   return this.color_;

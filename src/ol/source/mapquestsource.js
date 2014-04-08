@@ -12,6 +12,7 @@ goog.require('ol.source.XYZ');
  * @extends {ol.source.XYZ}
  * @param {olx.source.MapQuestOptions=} opt_options MapQuest options.
  * @todo stability experimental
+ * @todo api
  */
 ol.source.MapQuest = function(opt_options) {
 

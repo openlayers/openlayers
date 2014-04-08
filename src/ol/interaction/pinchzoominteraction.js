@@ -18,6 +18,7 @@ goog.require('ol.interaction.Pointer');
  * @extends {ol.interaction.Pointer}
  * @param {olx.interaction.PinchZoomOptions=} opt_options Options.
  * @todo stability experimental
+ * @todo api
  */
 ol.interaction.PinchZoom = function(opt_options) {
 

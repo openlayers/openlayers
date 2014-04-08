@@ -51,6 +51,7 @@ ol.proj.Units = {
  * Meters per unit lookup table.
  * @const
  * @type {Object.<ol.proj.Units, number>}
+ * @todo api
  */
 ol.proj.METERS_PER_UNIT[ol.proj.Units.DEGREES] =
     2 * Math.PI * ol.sphere.NORMAL.radius / 360;
@@ -64,6 +65,7 @@ ol.proj.METERS_PER_UNIT[ol.proj.Units.METERS] = 1;
  * @param {olx.ProjectionOptions} options Projection options.
  * @struct
  * @todo stability experimental
+ * @todo api
  */
 ol.proj.Projection = function(options) {
 
@@ -110,6 +112,7 @@ ol.proj.Projection = function(options) {
 /**
  * Get the code for this projection, e.g. 'EPSG:4326'.
  * @return {string} Code.
+ * @todo api
  */
 ol.proj.Projection.prototype.getCode = function() {
   return this.code_;
@@ -119,6 +122,7 @@ ol.proj.Projection.prototype.getCode = function() {
 /**
  * Get the validity extent for this projection.
  * @return {ol.Extent} Extent.
+ * @todo api
  */
 ol.proj.Projection.prototype.getExtent = function() {
   return this.extent_;
@@ -141,6 +145,7 @@ ol.proj.Projection.prototype.getPointResolution = goog.abstractMethod;
 /**
  * Get the units of this projection.
  * @return {ol.proj.Units} Units.
+ * @todo api
  */
 ol.proj.Projection.prototype.getUnits = function() {
   return this.units_;
@@ -372,6 +377,7 @@ ol.proj.addProj4jsProjection_ = function(proj4jsProjection) {
 /**
  * @param {ol.proj.Projection} projection Projection.
  * @todo stability experimental
+ * @todo api
  */
 ol.proj.addProjection = function(projection) {
   var projections = ol.proj.projections_;
@@ -470,6 +476,7 @@ ol.proj.removeTransform = function(source, destination) {
  *     existing projection object, or undefined.
  * @return {ol.proj.Projection} Projection.
  * @todo stability experimental
+ * @todo api
  */
 ol.proj.get = function(projectionLike) {
   var projection;
@@ -552,6 +559,7 @@ ol.proj.equivalent = function(projection1, projection2) {
  * @param {ol.proj.ProjectionLike} destination Destination.
  * @return {ol.TransformFunction} Transform.
  * @todo stability experimental
+ * @todo api
  */
 ol.proj.getTransform = function(source, destination) {
   var sourceProjection = ol.proj.get(source);
@@ -569,6 +577,7 @@ ol.proj.getTransform = function(source, destination) {
  * @param {ol.proj.Projection} destinationProjection Destination projection.
  * @return {ol.TransformFunction} Transform.
  * @todo stability experimental
+ * @todo api
  */
 ol.proj.getTransformFromProjections =
     function(sourceProjection, destinationProjection) {
@@ -689,6 +698,7 @@ ol.proj.cloneTransform = function(input, opt_output, opt_dimension) {
  * @param {ol.proj.ProjectionLike} destination Destination.
  * @return {ol.Coordinate} Point.
  * @todo stability experimental
+ * @todo api
  */
 ol.proj.transform = function(point, source, destination) {
   var transformFn = ol.proj.getTransform(source, destination);
@@ -704,6 +714,7 @@ ol.proj.transform = function(point, source, destination) {
  * @param {ol.proj.Projection} destinationProjection Destination projection.
  * @return {ol.Coordinate} Point.
  * @todo stability experimental
+ * @todo api
  */
 ol.proj.transformWithProjections =
     function(point, sourceProjection, destinationProjection) {
@@ -717,6 +728,7 @@ ol.proj.transformWithProjections =
  * @param {olx.Proj4jsProjectionOptions} options Proj4js projection options.
  * @return {ol.proj.Projection} Proj4js projection.
  * @todo stability experimental
+ * @todo api
  */
 ol.proj.configureProj4jsProjection = function(options) {
   goog.asserts.assert(!goog.object.containsKey(

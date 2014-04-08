@@ -63,6 +63,7 @@ ol.OverlayPositioning = {
  *       is anchored at
  * @todo observable positioning {ol.OverlayPositioning} how the overlay is
  *       positioned relative to its point on the map
+ * @todo api
  */
 ol.Overlay = function(options) {
 

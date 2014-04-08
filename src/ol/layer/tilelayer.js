@@ -20,6 +20,7 @@ ol.layer.TileProperty = {
  * @param {olx.layer.TileOptions} options Tile layer options.
  * @todo stability experimental
  * @todo observable preload {number} the level to preload tiles up to
+ * @todo api
  */
 ol.layer.Tile = function(options) {
   goog.base(this, options);

@@ -32,6 +32,7 @@ ol.dom.InputProperty = {
  * @todo stability experimental
  * @todo observable value {string} the value of the Input
  * @todo observable checked {boolean} the checked state of the Input
+ * @todo api
  */
 ol.dom.Input = function(target) {
   goog.base(this);
