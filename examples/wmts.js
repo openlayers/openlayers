@@ -1,3 +1,4 @@
+goog.require('ol.Attribution');
 goog.require('ol.Map');
 goog.require('ol.View2D');
 goog.require('ol.extent');
@@ -8,16 +9,22 @@ goog.require('ol.source.WMTS');
 goog.require('ol.tilegrid.WMTS');
 
 
-var projection = ol.proj.get('EPSG:900913');
+var projection = ol.proj.get('EPSG:3857');
 var projectionExtent = projection.getExtent();
 var size = ol.extent.getWidth(projectionExtent) / 256;
-var resolutions = new Array(18);
-var matrixIds = new Array(18);
-for (var z = 0; z < 18; ++z) {
+var resolutions = new Array(14);
+var matrixIds = new Array(14);
+for (var z = 0; z < 14; ++z) {
   // generate resolutions and matrixIds arrays for this WMTS
   resolutions[z] = size / Math.pow(2, z);
   matrixIds[z] = z;
 }
+
+var attribution = new ol.Attribution({
+  html: 'Tiles &copy; <a href="http://services.arcgisonline.com/arcgis/rest/' +
+      'services/Demographics/USA_Population_Density/MapServer/">ArcGIS</a>'
+});
+
 
 var map = new ol.Map({
   layers: [
@@ -28,25 +35,26 @@ var map = new ol.Map({
     new ol.layer.Tile({
       opacity: 0.7,
       source: new ol.source.WMTS({
-        url: 'http://demo-apollo.geospatial.intergraph.com/erdas-iws/ogc/wmts/',
-        layer: 'sampleiws_images_geodetic_worldgeodemo.ecw',
-        matrixSet: 'ogc:1.0:googlemapscompatible',
-        format: 'image/jpeg',
+        attributions: [attribution],
+        url: 'http://services.arcgisonline.com/arcgis/rest/' +
+            'services/Demographics/USA_Population_Density/MapServer/WMTS/',
+        layer: '0',
+        matrixSet: 'EPSG:3857',
+        format: 'image/png',
         projection: projection,
         tileGrid: new ol.tilegrid.WMTS({
           origin: ol.extent.getTopLeft(projectionExtent),
           resolutions: resolutions,
           matrixIds: matrixIds
         }),
-        extent: [-20037508.34, -20037508.34, 20037508.34, 20037508.34],
+        extent: projectionExtent,
         style: 'default'
       })
     })
   ],
   target: 'map',
   view: new ol.View2D({
-    center: [0, 0],
-    zoom: 0,
-    maxResolution: resolutions[1]
+    center: [-11158582, 4813697],
+    zoom: 4
   })
 });
