@@ -90,7 +90,7 @@ EXPORTS = [path
            for path in ifind('src')
            if path.endswith('.exports')]
 
-EXTERNAL_SRC = ['build/src/external/src/exports.js']
+EXTERNAL_SRC = ['build/exports.js']
 
 EXAMPLES = [path
             for path in ifind('examples')
@@ -182,7 +182,7 @@ def build_ol_css(t):
     t.touch()
 
 
-@target('build/ol.js', PLOVR_JAR, SRC, EXTERNAL_SRC, SHADER_SRC,
+@target('build/ol.js', PLOVR_JAR, SRC, INTERNAL_SRC, EXTERNAL_SRC, SHADER_SRC,
         LIBTESS_JS_SRC, 'buildcfg/base.json', 'buildcfg/ol.json')
 def build_ol_js(t):
     t.output('%(JAVA)s', '-server', '-XX:+TieredCompilation', '-jar',
@@ -219,9 +219,9 @@ def build_ol_all_js(t):
             PLOVR_JAR, 'build', 'buildcfg/ol-all.json')
 
 
-@target('build/src/external/src/exports.js', 'bin/generate-exports.py', EXPORTS)
+@target('build/exports.js', 'tasks/generate-exports.js')
 def build_src_external_src_exports_js(t):
-    t.output('%(PYTHON)s', 'bin/generate-exports.py', '--exports', EXPORTS)
+    t.run('node', 'tasks/generate-exports.js')
 
 
 for glsl_src in GLSL_SRC:
@@ -622,7 +622,7 @@ virtual('apidoc', 'build/jsdoc-%(BRANCH)s-timestamp' % vars(variables))
 
 
 @target('build/jsdoc-%(BRANCH)s-timestamp' % vars(variables), 'host-resources',
-        'build/src/external/src/exports.js', SRC, SHADER_SRC,
+        'build/exports.js', SRC, SHADER_SRC,
         ifind('apidoc/template'))
 def jsdoc_BRANCH_timestamp(t):
     t.run('%(JSDOC)s', 'apidoc/index.md', '-c', 'apidoc/conf.json',

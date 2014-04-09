@@ -18,7 +18,7 @@
 
   "inputs": [
     "../build/src/internal/src/requireall.js",
-    "../build/src/external/src/exports.js"
+    "../build/exports.js"
   ]
 
 }

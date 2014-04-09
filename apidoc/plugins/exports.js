@@ -44,7 +44,7 @@ function collectOliExports(source) {
 
 var encoding = env.conf.encoding || 'utf8';
 var fs = require('jsdoc/fs');
-collectExports(fs.readFileSync('build/src/external/src/exports.js', encoding));
+collectExports(fs.readFileSync('build/exports.js', encoding));
 collectOliExports(fs.readFileSync('externs/oli.js', encoding));
 
 
