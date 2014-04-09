@@ -298,7 +298,7 @@ def examples_star_json(name, match):
             'inherits': '../../buildcfg/base.json',
             'inputs': [
                 '../examples/%(id)s.js' % match.groupdict(),
-                '../externs/olx.js',
+                '../externs/olx.js', # compiled with src for @typedef's
             ],
             'externs': [
                 '//jquery-1.7.js',
