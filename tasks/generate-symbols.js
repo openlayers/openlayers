@@ -145,15 +145,27 @@ function writeSymbols(symbols, output, callback) {
 /**
  * Determine which source files have been changed, run JSDoc against those,
  * write out exported symbols, and clean up the build dir.
+ *
+ * @param {function(Error)} callback Called when the symbols file has been
+ *     written (or if an error occurs).
  */
-async.waterfall([
-  readSymbols,
-  getNewer,
-  spawnJSDoc,
-  writeSymbols
-], function(err) {
-  if (err) {
-    console.error(err.message);
-    process.exit(1);
-  }
-});
+exports.main = function(callback) {
+  async.waterfall([
+    readSymbols,
+    getNewer,
+    spawnJSDoc,
+    writeSymbols
+  ], callback);
+};
+
+
+if (require.main === module) {
+  exports.main(function(err) {
+    if (err) {
+      console.error(err.message);
+      process.exit(1);
+    } else {
+      process.exit(0);
+    }
+  });
+}
