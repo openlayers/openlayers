@@ -13,7 +13,8 @@
             "src/googx/dom/fullscreen.js"
         ],
         "include": [
-            "src"
+            "src",
+            "externs/olx.js"
         ]
     },
     "plugins": [

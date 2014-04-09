@@ -58,18 +58,8 @@ exports.handlers = {
   
   newDoclet: function(e) {
     var i, ii, j, jj;
-    if (e.doclet.meta.filename == "objectliterals.jsdoc" && e.doclet.properties) {
-      for (i = 0, ii = e.doclet.properties.length; i < ii; ++i) {
-        if (e.doclet.properties[i].type && e.doclet.properties[i].type.names) {
-          for (j = 0, jj = e.doclet.properties[i].type.names.length; j < jj; ++j) {
-            if (e.doclet.properties[i].type.names[j].indexOf('ol') == 0) {
-              if (api.indexOf(e.doclet.properties[i].type.names[j]) === -1) {
-                api.push(e.doclet.properties[i].type.names[j]);
-              }
-            }
-          }
-        }
-      }
+    if (e.doclet.meta.filename == "olx.js" && e.doclet.longname != 'olx') {
+      api.push(e.doclet.longname);
     }
     if (api.indexOf(e.doclet.longname) > -1) {
       var names, name;
@@ -102,6 +92,18 @@ exports.handlers = {
   parseComplete: function(e) {
     for (var j = e.doclets.length - 1; j >= 0; --j) {
       var doclet = e.doclets[j];
+      if (doclet.meta.filename == 'olx.js' && doclet.kind == 'typedef') {
+        for (var i = e.doclets.length - 1; i >= 0; --i) {
+          var propertyDoclet = e.doclets[i];
+          if (propertyDoclet.memberof == doclet.longname) {
+            if (!doclet.properties) {
+              doclet.properties = [];
+            }
+            doclet.properties.unshift(propertyDoclet);
+            e.doclets.splice(i, 1)
+          }
+        }
+      }
       if (doclet.kind == 'namespace' || doclet.kind == 'event' || doclet.fires) {
         continue;
       }

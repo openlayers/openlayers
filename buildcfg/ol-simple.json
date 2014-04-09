@@ -13,11 +13,11 @@
   "id": "ol-simple",
 
   "externs": [
-    "../build/src/external/externs/types.js",
     "../externs/bingmaps.js",
     "../externs/closure-compiler.js",
     "../externs/geojson.js",
     "../externs/oli.js",
+    "../externs/olx.js",
     "../externs/proj4js.js",
     "../externs/tilejson.js",
     "../externs/topojson.js",
