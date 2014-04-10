@@ -303,6 +303,16 @@ ol.source.TileWMS.prototype.getTilePixelSize =
 
 
 /**
+ * Return the URLs used for this WMS source.
+ * @return {Array.<string>|undefined} URLs.
+ * @todo stability experimental
+ */
+ol.source.TileWMS.prototype.getUrls = function() {
+  return this.urls_;
+};
+
+
+/**
  * @private
  */
 ol.source.TileWMS.prototype.resetCoordKeyPrefix_ = function() {
