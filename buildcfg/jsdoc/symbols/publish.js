@@ -17,7 +17,7 @@ exports.publish = function(data, opts) {
   // get all doclets with the "api" property.
   var docs = data({api: {isString: true}}).get();
 
-  // get sorted symbols, filter out those that are members of private classes
+  // get symbols data, filter out those that are members of private classes
   var symbols = docs.filter(function(doc) {
     var include = true;
     var constructor = doc.memberof;
@@ -30,10 +30,9 @@ exports.publish = function(data, opts) {
   }).map(function(doc) {
     return {
       name: doc.longname,
+      extends: doc.augments,
       path: path.join(doc.meta.path, doc.meta.filename)
     };
-  }).sort(function(a, b) {
-    return a.name < b.name ? -1 : 1;
   });
 
   process.stdout.write(JSON.stringify({symbols: symbols}, null, 2));

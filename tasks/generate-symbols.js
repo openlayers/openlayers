@@ -39,6 +39,15 @@ function readSymbols(callback) {
 }
 
 
+function makeUnique(array) {
+  var values = {};
+  array.forEach(function(value) {
+    values[value] = true;
+  });
+  return Object.keys(values);
+}
+
+
 /**
  * Generate a list of .js paths in the source directory that are newer than
  * the symbols file.
@@ -48,16 +57,16 @@ function readSymbols(callback) {
  *     any error, the symbols array, and the array of newer source paths.
  */
 function getNewer(symbols, date, callback) {
-  var all = [];
-  var newer = [];
+  var allPaths = [];
+  var newerPaths = [];
 
   var walker = walk(sourceDir);
   walker.on('file', function(root, stats, next) {
     var sourcePath = path.join(root, stats.name);
     if (/\.js$/.test(sourcePath)) {
-      all.push(sourcePath);
+      allPaths.push(sourcePath);
       if (stats.mtime > date) {
-        newer.push(sourcePath);
+        newerPaths.push(sourcePath);
       }
     }
     next();
@@ -67,10 +76,47 @@ function getNewer(symbols, date, callback) {
   });
   walker.on('end', function() {
     // prune symbols if file no longer exists or has been modified
-    symbols = symbols.filter(function(symbol) {
-      return newer.indexOf(symbol.path) < 0 && all.indexOf(symbol.path) >= 0;
+    var lookup = {};
+    symbols.forEach(function(symbol) {
+      lookup[symbol.name] = symbol;
     });
-    callback(null, symbols, newer);
+
+    /**
+     * Gather paths for all parent symbols.
+     * @param {Object} symbol Symbol to check.
+     * @param {Array.<string>} paths Current paths.
+     */
+    function gatherParentPaths(symbol, paths) {
+      if (symbol.extends) {
+        symbol.extends.forEach(function(name) {
+          if (name in lookup) {
+            var parent = lookup[name];
+            paths.push(parent.path);
+            gatherParentPaths(parent, paths);
+          }
+        });
+      }
+    }
+
+    var dirtyPaths = [];
+
+    symbols = symbols.filter(function(symbol) {
+      var dirty = allPaths.indexOf(symbol.path) < 0;
+      if (!dirty) {
+        // confirm that symbol and all parent paths are not newer
+        var paths = [symbol.path];
+        gatherParentPaths(symbol, paths);
+        dirty = paths.some(function(p) {
+          return newerPaths.indexOf(p) >= 0;
+        });
+        if (dirty) {
+          dirtyPaths.push(symbol.path);
+        }
+      }
+      return !dirty;
+    });
+
+    callback(null, symbols, makeUnique(newerPaths.concat(dirtyPaths)));
   });
 }
 
@@ -135,7 +181,9 @@ function writeSymbols(symbols, output, callback) {
     return;
   }
 
-  symbols = symbols.concat(data.symbols);
+  symbols = symbols.concat(data.symbols).sort(function(a, b) {
+    return a.name < b.name ? -1 : 1;
+  });
 
   var str = JSON.stringify({symbols: symbols}, null, '  ');
   fse.outputFile(destPath, str, callback);
