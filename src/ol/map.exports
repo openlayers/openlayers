@@ -13,6 +13,7 @@
 @exportProperty ol.Map.prototype.getLayers
 @exportProperty ol.Map.prototype.getOverlays
 @exportProperty ol.Map.prototype.getPixelFromCoordinate
+@exportProperty ol.Map.prototype.getSkippedFeatures
 @exportProperty ol.Map.prototype.getViewport
 @exportProperty ol.Map.prototype.removeControl
 @exportProperty ol.Map.prototype.removeInteraction
