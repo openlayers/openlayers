@@ -297,8 +297,7 @@ def examples_star_json(name, match):
             'id': match.group('id'),
             'inherits': '../../buildcfg/base.json',
             'inputs': [
-                '../examples/%(id)s.js' % match.groupdict(),
-                '../externs/olx.js', # compiled with src for @typedef's
+                '../examples/%(id)s.js' % match.groupdict()
             ],
             'externs': [
                 '//jquery-1.7.js',
@@ -308,6 +307,7 @@ def examples_star_json(name, match):
                 '../externs/example.js',
                 '../externs/geojson.js',
                 '../externs/oli.js',
+                '../externs/olx.js',
                 '../externs/proj4js.js',
                 '../externs/tilejson.js',
                 '../externs/topojson.js',
