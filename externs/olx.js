@@ -2601,6 +2601,96 @@ olx.source.GPXOptions.prototype.urls;
 
 /**
  * @typedef {{attributions: (Array.<ol.Attribution>|undefined),
+ *            crossOrigin: (null|string|undefined),
+ *            extent: (ol.Extent|undefined),
+ *            logo: (string|undefined),
+ *            opaque: (boolean|undefined),
+ *            projection: ol.proj.ProjectionLike,
+ *            tileClass: (function(new: ol.ImageTile, ol.TileCoord,
+ *                                 ol.TileState, string, ?string,
+ *                                 ol.TileLoadFunctionType)|undefined),
+ *            tileGrid: (ol.tilegrid.TileGrid|undefined),
+ *            tileLoadFunction: (ol.TileLoadFunctionType|undefined),
+ *            tileUrlFunction: (ol.TileUrlFunctionType|undefined)}}
+ * @todo stability experimental
+ */
+olx.source.TileImageOptions;
+
+
+/**
+ * Attributions.
+ * @type {Array.<ol.Attribution>|undefined}
+ */
+olx.source.TileImageOptions.prototype.attributions;
+
+
+/**
+ * crossOrigin setting for image requests. Default is `null`.
+ * @type {null|string|undefined}
+ */
+olx.source.TileImageOptions.prototype.crossOrigin;
+
+
+/**
+ * Extent.
+ * @type {ol.Extent|undefined}
+ */
+olx.source.TileImageOptions.prototype.extent;
+
+
+/**
+ * Logo.
+ * @type {string|undefined}
+ */
+olx.source.TileImageOptions.prototype.logo;
+
+
+/**
+ * Whether the layer is opaque.
+ * @type {boolean|undefined}
+ */
+olx.source.TileImageOptions.prototype.opaque;
+
+
+/**
+ * Projection.
+ * @type {ol.proj.ProjectionLike}
+ */
+olx.source.TileImageOptions.prototype.projection;
+
+
+/**
+ * tile class
+ * @type {function(new: ol.ImageTile, ol.TileCoord,
+ *                 ol.TileState, string, ?string,
+ *                 ol.TileLoadFunctionType)|undefined}
+ */
+olx.source.TileImageOptions.prototype.tileClass;
+
+
+/**
+ * Tile grid.
+ * @type {ol.tilegrid.TileGrid|undefined}
+ */
+olx.source.TileImageOptions.prototype.tileGrid;
+
+
+/**
+ * Optional function to load a tile given a URL.
+ * @type {ol.TileLoadFunctionType|undefined}
+ */
+olx.source.TileImageOptions.prototype.tileLoadFunction;
+
+
+/**
+ * Optional function to get tile URL given a tile coordinate and the projection.
+ * @type {ol.TileUrlFunctionType|undefined}
+ */
+olx.source.TileImageOptions.prototype.tileUrlFunction;
+
+
+/**
+ * @typedef {{attributions: (Array.<ol.Attribution>|undefined),
  *     defaultProjection: ol.proj.ProjectionLike,
  *     extent: (ol.Extent|undefined),
  *     logo: (string|undefined),

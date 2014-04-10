@@ -1,8 +1,6 @@
 goog.provide('ol.source.TileImage');
 
 goog.require('goog.asserts');
-goog.require('ol.Attribution');
-goog.require('ol.Extent');
 goog.require('ol.ImageTile');
 goog.require('ol.Tile');
 goog.require('ol.TileCache');
@@ -12,32 +10,13 @@ goog.require('ol.TileState');
 goog.require('ol.TileUrlFunction');
 goog.require('ol.TileUrlFunctionType');
 goog.require('ol.source.Tile');
-goog.require('ol.tilegrid.TileGrid');
-
-
-/**
- * @typedef {{attributions: (Array.<ol.Attribution>|undefined),
- *            crossOrigin: (null|string|undefined),
- *            extent: (ol.Extent|undefined),
- *            logo: (string|undefined),
- *            opaque: (boolean|undefined),
- *            projection: ol.proj.ProjectionLike,
- *            tileClass: (function(new: ol.ImageTile, ol.TileCoord,
- *                                 ol.TileState, string, ?string,
- *                                 ol.TileLoadFunctionType)|undefined),
- *            tileGrid: (ol.tilegrid.TileGrid|undefined),
- *            tileLoadFunction: (ol.TileLoadFunctionType|undefined),
- *            tileUrlFunction: (ol.TileUrlFunctionType|undefined)}}
- * @todo stability experimental
- */
-ol.source.TileImageOptions;
 
 
 
 /**
  * @constructor
  * @extends {ol.source.Tile}
- * @param {ol.source.TileImageOptions} options Image tile options.
+ * @param {olx.source.TileImageOptions} options Image tile options.
  * @todo stability experimental
  */
 ol.source.TileImage = function(options) {
