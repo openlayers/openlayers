@@ -113,18 +113,6 @@ ol.interaction.Modify = function(options) {
   });
 
   /**
-   * @type {ol.Collection}
-   * @private
-   */
-  this.features_ = options.features;
-
-  this.features_.forEach(this.addFeature_, this);
-  goog.events.listen(this.features_, ol.CollectionEventType.ADD,
-      this.addFeature_, false, this);
-  goog.events.listen(this.features_, ol.CollectionEventType.REMOVE,
-      this.removeFeature_, false, this);
-
-  /**
   * @const
   * @private
   * @type {Object.<string, function(ol.Feature, ol.geom.Geometry)> }
@@ -140,8 +128,36 @@ ol.interaction.Modify = function(options) {
     'GeometryCollection': this.writeGeometryCollectionGeometry_
   };
 
+  /**
+   * @type {ol.Collection}
+   * @private
+   */
+  this.features_ = options.features;
+
+  this.features_.forEach(this.addFeature_, this);
+  goog.events.listen(this.features_, ol.CollectionEventType.ADD,
+      this.handleFeatureAdd_, false, this);
+  goog.events.listen(this.features_, ol.CollectionEventType.REMOVE,
+      this.handleFeatureRemove_, false, this);
+
 };
 goog.inherits(ol.interaction.Modify, ol.interaction.Pointer);
+
+
+/**
+ * @param {ol.Feature} feature Feature.
+ * @private
+ */
+ol.interaction.Modify.prototype.addFeature_ = function(feature) {
+  var geometry = feature.getGeometry();
+  if (goog.isDef(this.SEGMENT_WRITERS_[geometry.getType()])) {
+    this.SEGMENT_WRITERS_[geometry.getType()].call(this, feature, geometry);
+  }
+  var map = this.getMap();
+  if (!goog.isNull(map)) {
+    this.handlePointerAtPixel_(this.lastPixel_, map);
+  }
+};
 
 
 /**
@@ -157,16 +173,34 @@ ol.interaction.Modify.prototype.setMap = function(map) {
  * @param {ol.CollectionEvent} evt Event.
  * @private
  */
-ol.interaction.Modify.prototype.addFeature_ = function(evt) {
+ol.interaction.Modify.prototype.handleFeatureAdd_ = function(evt) {
   var feature = evt.element;
   goog.asserts.assertInstanceof(feature, ol.Feature);
-  var geometry = feature.getGeometry();
-  if (goog.isDef(this.SEGMENT_WRITERS_[geometry.getType()])) {
-    this.SEGMENT_WRITERS_[geometry.getType()].call(this, feature, geometry);
+  this.addFeature_(feature);
+};
+
+
+/**
+ * @param {ol.CollectionEvent} evt Event.
+ * @private
+ */
+ol.interaction.Modify.prototype.handleFeatureRemove_ = function(evt) {
+  var feature = evt.element;
+  var rBush = this.rBush_;
+  var i, nodesToRemove = [];
+  rBush.forEachInExtent(feature.getGeometry().getExtent(), function(node) {
+    if (feature === node.feature) {
+      nodesToRemove.push(node);
+    }
+  });
+  for (i = nodesToRemove.length - 1; i >= 0; --i) {
+    rBush.remove(nodesToRemove[i]);
   }
-  var map = this.getMap();
-  if (!goog.isNull(map)) {
-    this.handlePointerAtPixel_(this.lastPixel_, map);
+  // There remains only vertexFeature…
+  if (!goog.isNull(this.vertexFeature_) &&
+      this.features_.getLength() === 0) {
+    this.overlay_.removeFeature(this.vertexFeature_);
+    this.vertexFeature_ = null;
   }
 };
 
@@ -325,31 +359,6 @@ ol.interaction.Modify.prototype.writeGeometryCollectionGeometry_ =
   for (i = 0; i < geometries.length; ++i) {
     this.SEGMENT_WRITERS_[geometries[i].getType()].call(
         this, feature, geometries[i]);
-  }
-};
-
-
-/**
- * @param {ol.CollectionEvent} evt Event.
- * @private
- */
-ol.interaction.Modify.prototype.removeFeature_ = function(evt) {
-  var feature = evt.element;
-  var rBush = this.rBush_;
-  var i, nodesToRemove = [];
-  rBush.forEachInExtent(feature.getGeometry().getExtent(), function(node) {
-    if (feature === node.feature) {
-      nodesToRemove.push(node);
-    }
-  });
-  for (i = nodesToRemove.length - 1; i >= 0; --i) {
-    rBush.remove(nodesToRemove[i]);
-  }
-  // There remains only vertexFeature…
-  if (!goog.isNull(this.vertexFeature_) &&
-      this.features_.getLength() === 0) {
-    this.overlay_.removeFeature(this.vertexFeature_);
-    this.vertexFeature_ = null;
   }
 };
 
