@@ -218,9 +218,13 @@ def build_ol_all_js(t):
     t.output('%(JAVA)s', '-server', '-XX:+TieredCompilation', '-jar',
             PLOVR_JAR, 'build', 'buildcfg/ol-all.json')
 
+@target('build/symbols.json', 'tasks/generate-symbols.js', SRC)
+def build_symbols_js(t):
+    t.run('node', 'tasks/generate-symbols.js')
 
-@target('build/exports.js', 'tasks/generate-exports.js')
-def build_src_external_src_exports_js(t):
+
+@target('build/exports.js', 'tasks/generate-exports.js', 'build/symbols.json')
+def build_exports_js(t):
     t.run('node', 'tasks/generate-exports.js')
 
 
