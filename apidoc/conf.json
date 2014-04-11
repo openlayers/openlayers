@@ -14,12 +14,14 @@
         ],
         "include": [
             "src",
+            "externs/oli.js",
             "externs/olx.js"
         ]
     },
     "plugins": [
         "node_modules/jsdoc/plugins/markdown",
         "apidoc/plugins/inheritdoc",
+        "apidoc/plugins/interface",
         "apidoc/plugins/exports",
         "apidoc/plugins/todo",
         "apidoc/plugins/observable",

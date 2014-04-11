@@ -1,6 +1,5 @@
 /*
- * This plugin parses externs/oli.js as well as goog.exportSymbol and
- * goog.exportProperty calls to build a list of API symbols and properties.
+ * This plugin removes unexported symbols from the documentation.
  * Unexported modules linked from @param or @fires will be marked unexported,
  * and the documentation will not contain the constructor. Everything else is
  * marked undocumented, which will remove it from the docs.
@@ -17,22 +16,9 @@ function collectExports(source) {
   }
 }
 
-function collectOliExports(source) {
-  var oli = source.match(/[^\{]oli\.([^;^ ]*);? ?/g);
-  if (oli) {
-    i = 0; ii = oli.length;
-    for (; i < ii; ++i) {
-      property = 'ol.' + oli[i].match(/oli.([^;]*)/)[1]
-          .replace('.prototype.', '#');
-      unexported.push(property);
-    }
-  }
-}
-
 var encoding = env.conf.encoding || 'utf8';
 var fs = require('jsdoc/fs');
 collectExports(fs.readFileSync('build/symbols.json', encoding));
-collectOliExports(fs.readFileSync('externs/oli.js', encoding));
 
 
 exports.handlers = {
@@ -41,6 +27,9 @@ exports.handlers = {
     var i, ii, j, jj;
     if (e.doclet.meta.filename == "olx.js" && e.doclet.longname != 'olx') {
       api.push(e.doclet.longname);
+    }
+    if (e.doclet.longname.indexOf('oli.') === 0) {
+      unexported.push(e.doclet.longname.replace(/^oli\./, 'ol.'));
     }
     if (api.indexOf(e.doclet.longname) > -1) {
       var names, name;
@@ -87,7 +76,7 @@ exports.handlers = {
               doclet.properties = [];
             }
             doclet.properties.unshift(propertyDoclet);
-            e.doclets.splice(i, 1)
+            e.doclets.splice(i, 1);
           }
         }
       }
@@ -103,6 +92,11 @@ exports.handlers = {
             // Always document getters/setters of observables
             continue;
           }
+        }
+        if (doclet.memberof && doclet.memberof.indexOf('oli.') === 0 &&
+            unexported.indexOf(doclet.memberof) > -1) {
+          // Always document members of referenced oli interfaces
+          continue;
         }
         doclet.unexported = (api.indexOf(fqn) === -1 && unexported.indexOf(fqn) !== -1);
         if (api.indexOf(fqn) === -1 && unexported.indexOf(fqn) === -1) {
