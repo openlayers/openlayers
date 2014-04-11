@@ -7,6 +7,7 @@ var path = require('path');
 var async = require('async');
 var closure = require('closure-util');
 var fse = require('fs-extra');
+var nomnom = require('nomnom');
 
 var generateExports = require('./generate-exports');
 
@@ -66,7 +67,7 @@ function readConfig(configPath, callback) {
  *     or any error.
  */
 function getDependencies(callback) {
-  log.info('ol', 'Parsing dependencies ...');
+  log.info('ol', 'Parsing dependencies');
   closure.getDependencies({lib: ['src/**/*.js']}, function(err, paths) {
     if (err) {
       callback(err);
@@ -86,7 +87,7 @@ function getDependencies(callback) {
  *     any error.
  */
 function build(options, paths, callback) {
-  log.info('ol', 'Compiling ...');
+  log.info('ol', 'Compiling ' + paths.length + ' sources');
   options.js = paths;
   closure.compile(options, callback);
 }
@@ -114,12 +115,37 @@ function main(config, callback) {
  * function.
  */
 if (require.main === module) {
-  var configPath = process.argv[2];
-  var outputPath = process.argv[3];
+  var options = nomnom.options({
+    config: {
+      position: 0,
+      required: true,
+      help: 'Path to JSON config file'
+    },
+    output: {
+      position: 1,
+      required: true,
+      help: 'Output file path'
+    },
+    loglevel: {
+      abbr: 'l',
+      choices: ['silly', 'verbose', 'info', 'warn', 'error'],
+      default: 'info',
+      help: 'Log level',
+      metavar: 'LEVEL'
+    }
+  }).parse();
+
+  /**
+   * Set the log level.
+   * @type {string}
+   */
+  log.level = options.loglevel;
+
+  // read the config, run the main function, and write the output file
   async.waterfall([
-    readConfig.bind(null, configPath),
+    readConfig.bind(null, options.config),
     main,
-    fse.outputFile.bind(fse, outputPath)
+    fse.outputFile.bind(fse, options.output)
   ], function(err) {
     if (err) {
       log.error(err.message);
