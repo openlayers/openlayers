@@ -30,6 +30,10 @@ function assertValidConfig(config, callback) {
       callback(new Error('Config missing "compile" object'));
       return;
     }
+    if (config.src && !Array.isArray(config.src)) {
+      callback(new Error('Config "src" must be an array'));
+      return;
+    }
     callback(null);
   });
 }
@@ -63,12 +67,15 @@ function readConfig(configPath, callback) {
 
 /**
  * Get the list of sources sorted in dependency order.
+ * @param {Array.<string>} src List of paths or patterns to source files.  By
+ *     default, all .js files in the src directory are included.
  * @param {function(Error, Array.<string>)} callback Called with a list of paths
  *     or any error.
  */
-function getDependencies(callback) {
+function getDependencies(src, callback) {
   log.info('ol', 'Parsing dependencies');
-  closure.getDependencies({lib: ['src/**/*.js']}, function(err, paths) {
+  src = src || ['src/**/*.js'];
+  closure.getDependencies({lib: src}, function(err, paths) {
     if (err) {
       callback(err);
       return;
@@ -88,7 +95,7 @@ function getDependencies(callback) {
  */
 function build(options, paths, callback) {
   log.info('ol', 'Compiling ' + paths.length + ' sources');
-  options.js = paths;
+  options.js = paths.concat(options.js || []);
   closure.compile(options, callback);
 }
 
@@ -104,7 +111,7 @@ function main(config, callback) {
   async.waterfall([
     assertValidConfig.bind(null, config),
     generateExports.bind(null, config.exports),
-    getDependencies,
+    getDependencies.bind(null, config.src),
     build.bind(null, config.compile)
   ], callback);
 }
