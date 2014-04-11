@@ -3,13 +3,65 @@ var path = require('path');
 
 var async = require('async');
 
+var generateSymbols = require('./generate-symbols');
+
 var build = path.join(__dirname, '..', 'build');
 
-var symbols = require('../build/symbols.json').symbols;
-var lookup = {};
-symbols.forEach(function(symbol) {
-  lookup[symbol.name] = symbol;
-});
+
+/**
+ * Get a list of patterns from the config file.  If configPath is provided
+ * it is assumed to be a JSON file with an 'exports' member that is a list
+ * of symbol names or patterns.
+ *
+ * @param {string} configPath Path to config file.
+ * @param {function(Error, Array.<string>)} callback Called with the list of
+ *     patterns.
+ */
+function getPatterns(configPath, callback) {
+  if (configPath) {
+    fs.readFile(configPath, function(err, data) {
+      if (err) {
+        callback(err);
+        return;
+      }
+      var obj;
+      try {
+        obj = JSON.parse(String(data));
+      } catch (err) {
+        callback(new Error('Trouble parsing file as JSON: ' + options.config));
+        return;
+      }
+      var patterns = obj.exports;
+      if (patterns && !Array.isArray(patterns)) {
+        callback(new Error('Expected an exports array, got: ' + patterns));
+        return;
+      }
+      callback(null, patterns);
+    });
+  } else {
+    process.nextTick(function() {
+      callback(null, ['*']);
+    });
+  }
+}
+
+
+/**
+ * Read the symbols file.
+ * @param {Array.<string>} patterns List of patterns to pass along.
+ * @param {funciton(Error, Array.<string>, Array.<Object>)} callback Called
+ *     with the patterns and symbols (or any error).
+ */
+function getSymbols(patterns, callback) {
+  generateSymbols(function(err) {
+    if (err) {
+      callback(new Error('Trouble generating symbols: ' + err.message));
+      return;
+    }
+    var symbols = require('../build/symbols.json').symbols;
+    callback(null, patterns, symbols);
+  });
+}
 
 
 /**
@@ -20,11 +72,17 @@ symbols.forEach(function(symbol) {
  *
  * @param {Array.<string>} patterns A list of symbol names to match.  Wildcards
  *     at the end of a string will match multiple names.
+ * @param {Array.<Object>} symbols List of symbols.
  * @param {function(Error, Array.<string>)} callback Called with the filtered
  *     list of symbol names (or any error).
  */
-function filterSymbols(patterns, callback) {
+function filterSymbols(patterns, symbols, callback) {
   var matches = [];
+
+  var lookup = {};
+  symbols.forEach(function(symbol) {
+    lookup[symbol.name] = symbol;
+  });
 
   patterns.forEach(function(name) {
     var match = false;
@@ -51,43 +109,6 @@ function filterSymbols(patterns, callback) {
   });
 
   callback(null, matches);
-}
-
-
-/**
- * Get a list of patterns from the options arg.  If options.config is provided
- * it is assumed to be a JSON file with an 'exports' member that is a list
- * of symbol names or patterns.
- *
- * @param {Object} options Options.
- * @param {function(Error, Array.<string>)} callback Callback.
- */
-function getPatterns(options, callback) {
-  if (options.config) {
-    fs.readFile(options.config, function(err, data) {
-      if (err) {
-        callback(err);
-        return;
-      }
-      var obj;
-      try {
-        obj = JSON.parse(String(data));
-      } catch (err) {
-        callback(new Error('Trouble parsing file as JSON: ' + options.config));
-        return;
-      }
-      var patterns = obj.exports;
-      if (patterns && !Array.isArray(patterns)) {
-        callback(new Error('Expected an exports array, got: ' + patterns));
-        return;
-      }
-      callback(null, patterns);
-    });
-  } else {
-    process.nextTick(function() {
-      callback(null, ['*']);
-    });
-  }
 }
 
 
@@ -120,35 +141,30 @@ function formatPropertyExport(name) {
 
 
 /**
- * Generate export code given a list of patterns that match symbol names.
- * @param {Array.<string>} patterns List of patterns.
- * @param {function(Error, string)} callback Callback called with export code
- *     (or any error).
+ * Generate export code given a list symbol names.
+ * @param {Array.<string>} names List of symbol names.
+ * @return {string} Export code.
  */
-function generateExports(patterns, callback) {
-  filterSymbols(patterns, function(err, symbols) {
-    if (err) {
-      return callback(err);
+function generateExports(names) {
+  var blocks = [];
+  names.forEach(function(name) {
+    if (name.indexOf('#') > 0) {
+      blocks.push(formatPropertyExport(name));
+    } else {
+      blocks.push(formatSymbolExport(name));
     }
-    var blocks = [];
-    symbols.forEach(function(name) {
-      if (name.indexOf('#') > 0) {
-        blocks.push(formatPropertyExport(name));
-      } else {
-        blocks.push(formatSymbolExport(name));
-      }
-    });
-    callback(null, blocks.join('\n'));
   });
+  return blocks.join('\n');
 }
 
 
 /**
  * Write the build/exports.js file.
- * @param {string} code Exports code.
+ * @param {Array.<string>} names List of symbol names.
  * @param {function(Error)} callback Callback.
  */
-function writeExports(code, callback) {
+function writeExports(names, callback) {
+  var code = generateExports(names);
   fs.writeFile(path.join(build, 'exports.js'), code, callback);
 }
 
@@ -158,29 +174,42 @@ function writeExports(code, callback) {
  * it is assumed to be a path to a JSON file with an 'exports' member whose
  * value is an array of symbol names or patterns.
  *
- * @param {Object} options Options.
+ * @param {Array.<string>} patterns List of symbol names or patterns.
  * @param {function(Error)} callback Callback.
  */
-exports.main = function(options, callback) {
+function main(patterns, callback) {
   async.waterfall([
-    getPatterns.bind(null, options),
-    generateExports,
+    getSymbols.bind(null, patterns),
+    filterSymbols,
     writeExports
   ], callback);
-};
+}
 
 
+/**
+ * If running this module directly, read the config file and call the main
+ * function.
+ */
 if (require.main === module) {
-  var options = {
-    config: process.argv[2]
-  };
-
-  exports.main(options, function(err) {
+  var configPath = process.argv[2];
+  getPatterns(configPath, function(err, patterns) {
     if (err) {
       console.error(err.message);
       process.exit(1);
-    } else {
-      process.exit(0);
     }
+    main(patterns, function(err) {
+      if (err) {
+        console.error(err.message);
+        process.exit(1);
+      } else {
+        process.exit(0);
+      }
+    });
   });
 }
+
+
+/**
+ * Export main function.
+ */
+module.exports = main;

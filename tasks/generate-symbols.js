@@ -197,18 +197,22 @@ function writeSymbols(symbols, output, callback) {
  * @param {function(Error)} callback Called when the symbols file has been
  *     written (or if an error occurs).
  */
-exports.main = function(callback) {
+function main(callback) {
   async.waterfall([
     readSymbols,
     getNewer,
     spawnJSDoc,
     writeSymbols
   ], callback);
-};
+}
 
 
+/**
+ * If running this module directly, read the config file and call the main
+ * function.
+ */
 if (require.main === module) {
-  exports.main(function(err) {
+  main(function(err) {
     if (err) {
       console.error(err.message);
       process.exit(1);
@@ -217,3 +221,9 @@ if (require.main === module) {
     }
   });
 }
+
+
+/**
+ * Export main function.
+ */
+module.exports = main;
