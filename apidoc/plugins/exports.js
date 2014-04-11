@@ -61,7 +61,7 @@ exports.handlers = {
     if (e.doclet.meta.filename == "olx.js" && e.doclet.longname != 'olx') {
       api.push(e.doclet.longname);
     }
-    if (api.indexOf(e.doclet.longname) > -1) {
+    if (api.indexOf(e.doclet.longname) > -1 || unexported.indexOf(e.doclet.longname) > -1) {
       var names, name;
       var params = e.doclet.params;
       if (params) {
