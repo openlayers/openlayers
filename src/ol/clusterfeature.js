@@ -1,5 +1,6 @@
 goog.provide('ol.ClusterFeature');
 
+goog.require('goog.asserts');
 goog.require('ol.Feature');
 goog.require('ol.extent');
 goog.require('ol.geom.Point');
@@ -8,7 +9,7 @@ goog.require('ol.geom.Point');
 
 /**
  * @constructor
- * @param {Object} options
+ * @param {olx.ClusterFeatureOptions} options
  * @extends {ol.Feature}
  */
 ol.ClusterFeature = function(options) {
@@ -39,7 +40,8 @@ ol.ClusterFeature.prototype.calculateBbox = function() {
   for (var i = 0; i < this.features.length; i++) {
     var feature = this.features[i];
     var geom = feature.getGeometry();
-    var coords = geom.getFlatCoordinates();
+    goog.asserts.assert(geom instanceof ol.geom.Point);
+    var coords = geom.getCoordinates();
     coordsArray.push(coords);
   }
   var extent = ol.extent.boundingExtent(coordsArray);
@@ -56,7 +58,8 @@ ol.ClusterFeature.prototype.calculateCoordinates = function() {
   for (var i = 0; i < this.features.length; i++) {
     var feature = this.features[i];
     var geom = feature.getGeometry();
-    var coords = geom.getFlatCoordinates();
+    goog.asserts.assert(geom instanceof ol.geom.Point);
+    var coords = geom.getCoordinates();
     xSum += coords[0];
     ySum += coords[1];
   }

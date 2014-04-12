@@ -12,7 +12,7 @@ goog.require('ol.source.Vector');
 
 /**
  * @constructor
- * @param {Object} options
+ * @param {olx.source.ClusterOptions} options
  * @extends {ol.source.Vector}
  */
 ol.source.Cluster = function(options) {
@@ -37,14 +37,13 @@ ol.source.Cluster = function(options) {
 
 
   /**
-   * TODO typedef for  a single cluster
-   * {Array.<Array>}
+   * @type {Array.<Array.<ol.Feature>>}
    */
   this.clusters = [];
 
 
   /**
-   * {Array.<ol.ClusterFeature>}
+   * @type {Array.<ol.ClusterFeature>}
    */
   this.features = [];
 
@@ -55,8 +54,7 @@ ol.source.Cluster = function(options) {
 
 
   /**
-   * TODO features must be points
-   * {Array.<ol.Feature>}
+   * @type {Array.<ol.Feature>}
    */
   this.data = options.data;
 };
@@ -88,7 +86,8 @@ ol.source.Cluster.prototype.cluster = function(extent, resolution) {
   for (var i = 0; i < this.data.length; i++) {
     var feature = this.data[i];
     var geom = feature.getGeometry();
-    var coord = geom.getFlatCoordinates();
+    goog.asserts.assert(geom instanceof ol.geom.Point);
+    var coord = geom.getCoordinates();
     if (!ol.extent.containsCoordinate(extent, coord)) {
       continue;
     }
@@ -202,11 +201,9 @@ ol.source.Cluster.prototype.clusterFeatures = function(newFeature,
   var newCluster = this.getClusterByFeature(newFeature);
   if (origCluster !== -1 && newCluster !== -1) {
     this.joinClusters(origCluster, newCluster);
-  }
-  else if (origCluster !== -1) {
+  } else if (origCluster !== -1) {
     this.addFeatureToCluster(newFeature, origCluster);
-  }
-  else if (newCluster !== -1) {
+  } else if (newCluster !== -1) {
     this.addFeatureToCluster(origFeature, newCluster);
   } else {
     var cluster = [newFeature, origFeature];
