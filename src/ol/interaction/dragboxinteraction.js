@@ -136,6 +136,7 @@ ol.interaction.DragBox.prototype.handlePointerDrag = function(mapBrowserEvent) {
 /**
  * Returns geometry of last drawn box.
  * @return {ol.geom.Geometry} Geometry.
+ * @todo stability experimental
  * @todo api
  */
 ol.interaction.DragBox.prototype.getGeometry = function() {

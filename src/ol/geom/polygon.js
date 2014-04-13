@@ -82,6 +82,7 @@ goog.inherits(ol.geom.Polygon, ol.geom.SimpleGeometry);
 
 /**
  * @param {ol.geom.LinearRing} linearRing Linear ring.
+ * @todo stability experimental
  * @todo api
  */
 ol.geom.Polygon.prototype.appendLinearRing = function(linearRing) {
@@ -184,6 +185,7 @@ ol.geom.Polygon.prototype.getFlatInteriorPoint = function() {
 
 /**
  * @return {ol.geom.Point} Interior point.
+ * @todo stability experimental
  * @todo api
  */
 ol.geom.Polygon.prototype.getInteriorPoint = function() {
@@ -194,6 +196,7 @@ ol.geom.Polygon.prototype.getInteriorPoint = function() {
 /**
  * @param {number} index Index.
  * @return {ol.geom.LinearRing} Linear ring.
+ * @todo stability experimental
  * @todo api
  */
 ol.geom.Polygon.prototype.getLinearRing = function(index) {

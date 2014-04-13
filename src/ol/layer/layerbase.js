@@ -41,6 +41,8 @@ ol.layer.LayerState;
 
 
 /**
+ * Base class for all layers. The most basic implementation is
+ * {@link ol.layer.Layer}. See {@link ol.layer} for all implementations.
  * @constructor
  * @extends {ol.Object}
  * @param {olx.layer.BaseOptions} options Layer options.
@@ -77,6 +79,7 @@ goog.inherits(ol.layer.Base, ol.Object);
 
 /**
  * @return {number|undefined} Brightness.
+ * @todo stability experimental
  */
 ol.layer.Base.prototype.getBrightness = function() {
   return /** @type {number|undefined} */ (
@@ -90,6 +93,7 @@ goog.exportProperty(
 
 /**
  * @return {number|undefined} Contrast.
+ * @todo stability experimental
  */
 ol.layer.Base.prototype.getContrast = function() {
   return /** @type {number|undefined} */ (
@@ -103,6 +107,7 @@ goog.exportProperty(
 
 /**
  * @return {number|undefined} Hue.
+ * @todo stability experimental
  */
 ol.layer.Base.prototype.getHue = function() {
   return /** @type {number|undefined} */ (this.get(ol.layer.LayerProperty.HUE));
@@ -159,6 +164,7 @@ ol.layer.Base.prototype.getLayerStatesArray = goog.abstractMethod;
 
 /**
  * @return {number|undefined} MaxResolution.
+ * @todo stability experimental
  */
 ol.layer.Base.prototype.getMaxResolution = function() {
   return /** @type {number|undefined} */ (
@@ -172,6 +178,7 @@ goog.exportProperty(
 
 /**
  * @return {number|undefined} MinResolution.
+ * @todo stability experimental
  */
 ol.layer.Base.prototype.getMinResolution = function() {
   return /** @type {number|undefined} */ (
@@ -185,6 +192,7 @@ goog.exportProperty(
 
 /**
  * @return {number|undefined} Opacity.
+ * @todo stability experimental
  */
 ol.layer.Base.prototype.getOpacity = function() {
   return /** @type {number|undefined} */ (
@@ -198,6 +206,7 @@ goog.exportProperty(
 
 /**
  * @return {number|undefined} Saturation.
+ * @todo stability experimental
  */
 ol.layer.Base.prototype.getSaturation = function() {
   return /** @type {number|undefined} */ (
@@ -217,6 +226,7 @@ ol.layer.Base.prototype.getSourceState = goog.abstractMethod;
 
 /**
  * @return {boolean|undefined} Visible.
+ * @todo stability experimental
  */
 ol.layer.Base.prototype.getVisible = function() {
   return /** @type {boolean|undefined} */ (
@@ -247,6 +257,7 @@ goog.exportProperty(
  * [3] https://www.w3.org/Bugs/Public/show_bug.cgi?id=15647
  *
  * @param {number|undefined} brightness Brightness.
+ * @todo stability experimental
  */
 ol.layer.Base.prototype.setBrightness = function(brightness) {
   this.set(ol.layer.LayerProperty.BRIGHTNESS, brightness);
@@ -263,6 +274,7 @@ goog.exportProperty(
  * linear multipliers on the effect (and values over 1 are permitted).
  *
  * @param {number|undefined} contrast Contrast.
+ * @todo stability experimental
  */
 ol.layer.Base.prototype.setContrast = function(contrast) {
   this.set(ol.layer.LayerProperty.CONTRAST, contrast);
@@ -277,6 +289,7 @@ goog.exportProperty(
  * Apply a hue-rotation to the layer.  A value of 0 will leave the hue
  * unchanged.  Other values are radians around the color circle.
  * @param {number|undefined} hue Hue.
+ * @todo stability experimental
  */
 ol.layer.Base.prototype.setHue = function(hue) {
   this.set(ol.layer.LayerProperty.HUE, hue);
@@ -289,6 +302,7 @@ goog.exportProperty(
 
 /**
  * @param {number|undefined} maxResolution MaxResolution.
+ * @todo stability experimental
  */
 ol.layer.Base.prototype.setMaxResolution = function(maxResolution) {
   this.set(ol.layer.LayerProperty.MAX_RESOLUTION, maxResolution);
@@ -301,6 +315,7 @@ goog.exportProperty(
 
 /**
  * @param {number|undefined} minResolution MinResolution.
+ * @todo stability experimental
  */
 ol.layer.Base.prototype.setMinResolution = function(minResolution) {
   this.set(ol.layer.LayerProperty.MIN_RESOLUTION, minResolution);
@@ -313,6 +328,7 @@ goog.exportProperty(
 
 /**
  * @param {number|undefined} opacity Opacity.
+ * @todo stability experimental
  */
 ol.layer.Base.prototype.setOpacity = function(opacity) {
   this.set(ol.layer.LayerProperty.OPACITY, opacity);
@@ -330,6 +346,7 @@ goog.exportProperty(
  * permitted).
  *
  * @param {number|undefined} saturation Saturation.
+ * @todo stability experimental
  */
 ol.layer.Base.prototype.setSaturation = function(saturation) {
   this.set(ol.layer.LayerProperty.SATURATION, saturation);
@@ -342,6 +359,7 @@ goog.exportProperty(
 
 /**
  * @param {boolean|undefined} visible Visible.
+ * @todo stability experimental
  */
 ol.layer.Base.prototype.setVisible = function(visible) {
   this.set(ol.layer.LayerProperty.VISIBLE, visible);

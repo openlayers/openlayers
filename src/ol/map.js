@@ -158,13 +158,13 @@ ol.MapProperty = {
  * @fires {@link ol.MapBrowserEvent} ol.MapBrowserEvent
  * @fires {@link ol.MapEvent} ol.MapEvent
  * @fires {@link ol.render.Event} ol.render.Event
- * @todo stability experimental
- * @todo observable layergroup {ol.layer.LayerGroup} a layer group containing
- *       the layers in this map.
+ * @todo observable layergroup {ol.layer.Group} a layer group containing the
+ *       layers in this map.
  * @todo observable size {ol.Size} the size in pixels of the map in the DOM
  * @todo observable target {string|Element} the Element or id of the Element
  *       that the map is rendered in.
  * @todo observable view {ol.IView} the view that controls this map
+ * @todo stability experimental
  * @todo api
  */
 ol.Map = function(options) {

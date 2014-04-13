@@ -265,6 +265,7 @@ ol.FeatureOverlay.prototype.setStyle = function(style) {
  * option at construction or to the `setStyle` method.
  * @return {ol.style.Style|Array.<ol.style.Style>|ol.feature.StyleFunction}
  *     Overlay style.
+ * @todo stability experimental
  * @todo api
  */
 ol.FeatureOverlay.prototype.getStyle = function() {
@@ -275,6 +276,7 @@ ol.FeatureOverlay.prototype.getStyle = function() {
 /**
  * Get the style function.
  * @return {ol.feature.StyleFunction|undefined} Style function.
+ * @todo stability experimental
  * @todo api
  */
 ol.FeatureOverlay.prototype.getStyleFunction = function() {

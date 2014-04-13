@@ -34,7 +34,6 @@ ol.source.SourceOptions;
  * @constructor
  * @extends {ol.Observable}
  * @param {ol.source.SourceOptions} options Source options.
- * @todo stability experimental
  */
 ol.source.Source = function(options) {
 
@@ -131,6 +130,7 @@ ol.source.Source.prototype.getResolutions = goog.abstractMethod;
 
 /**
  * @return {ol.source.State} State.
+ * @todo stability experimental
  * @todo api
  */
 ol.source.Source.prototype.getState = function() {

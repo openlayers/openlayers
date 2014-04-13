@@ -103,6 +103,7 @@ ol.geom.SimpleGeometry.prototype.getExtent = function(opt_extent) {
 
 /**
  * @return {ol.Coordinate} First coordinate.
+ * @todo stability experimental
  * @todo api
  */
 ol.geom.SimpleGeometry.prototype.getFirstCoordinate = function() {
@@ -120,6 +121,7 @@ ol.geom.SimpleGeometry.prototype.getFlatCoordinates = function() {
 
 /**
  * @return {ol.Coordinate} Last point.
+ * @todo stability experimental
  * @todo api
  */
 ol.geom.SimpleGeometry.prototype.getLastCoordinate = function() {

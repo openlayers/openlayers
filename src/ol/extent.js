@@ -54,7 +54,6 @@ ol.extent.boundingExtent = function(coordinates) {
  * @param {ol.Extent=} opt_extent Destination extent.
  * @private
  * @return {ol.Extent} Extent.
- * @todo stability experimental
  */
 ol.extent.boundingExtentXYs_ = function(xs, ys, opt_extent) {
   goog.asserts.assert(xs.length > 0);
@@ -73,6 +72,7 @@ ol.extent.boundingExtentXYs_ = function(xs, ys, opt_extent) {
  * @param {number} value The amount by wich the extent should be buffered.
  * @param {ol.Extent=} opt_extent Extent.
  * @return {ol.Extent} Extent.
+ * @todo stability experimental
  * @todo api
  */
 ol.extent.buffer = function(extent, value, opt_extent) {
@@ -99,7 +99,6 @@ ol.extent.buffer = function(extent, value, opt_extent) {
  * @param {ol.Extent} extent Extent to clone.
  * @param {ol.Extent=} opt_extent Extent.
  * @return {ol.Extent} The clone.
- * @todo stability experimental
  */
 ol.extent.clone = function(extent, opt_extent) {
   if (goog.isDef(opt_extent)) {
@@ -219,7 +218,6 @@ ol.extent.createEmpty = function() {
  * @param {number} maxY Maximum Y.
  * @param {ol.Extent=} opt_extent Destination extent.
  * @return {ol.Extent} Extent.
- * @todo stability experimental
  */
 ol.extent.createOrUpdate = function(minX, minY, maxX, maxY, opt_extent) {
   if (goog.isDef(opt_extent)) {
@@ -298,7 +296,6 @@ ol.extent.createOrUpdateFromRings = function(rings, opt_extent) {
  * Empties extent in place.
  * @param {ol.Extent} extent Extent.
  * @return {ol.Extent} Extent.
- * @todo stability experimental
  */
 ol.extent.empty = function(extent) {
   extent[0] = extent[1] = Infinity;
@@ -347,7 +344,6 @@ ol.extent.extend = function(extent1, extent2) {
 /**
  * @param {ol.Extent} extent Extent.
  * @param {ol.Coordinate} coordinate Coordinate.
- * @todo stability experimental
  */
 ol.extent.extendCoordinate = function(extent, coordinate) {
   if (coordinate[0] < extent[0]) {
@@ -487,7 +483,6 @@ ol.extent.getEnlargedArea = function(extent1, extent2) {
  * @param {ol.Size} size Size.
  * @param {ol.Extent=} opt_extent Destination extent.
  * @return {ol.Extent} Extent.
- * @todo stability experimental
  */
 ol.extent.getForView2DAndSize =
     function(center, resolution, rotation, size, opt_extent) {
@@ -617,7 +612,6 @@ ol.extent.isEmpty = function(extent) {
 /**
  * @param {ol.Extent} extent Extent.
  * @return {boolean} Is infinite.
- * @todo stability experimental
  */
 ol.extent.isInfinite = function(extent) {
   return extent[0] == -Infinity || extent[1] == -Infinity ||
@@ -629,7 +623,6 @@ ol.extent.isInfinite = function(extent) {
  * @param {ol.Extent} extent Extent.
  * @param {ol.Coordinate} coordinate Coordinate.
  * @return {ol.Coordinate} Coordinate.
- * @todo stability experimental
  */
 ol.extent.normalize = function(extent, coordinate) {
   return [
@@ -660,7 +653,6 @@ ol.extent.returnOrUpdate = function(extent, opt_extent) {
 /**
  * @param {ol.Extent} extent Extent.
  * @param {number} value Value.
- * @todo stability experimental
  */
 ol.extent.scaleFromCenter = function(extent, value) {
   var deltaX = ((extent[2] - extent[0]) / 2) * (value - 1);
@@ -729,7 +721,6 @@ ol.extent.segmentIntersects = function(extent, start, end) {
  * @param {ol.Extent} extent1 Extent 1.
  * @param {ol.Extent} extent2 Extent 2.
  * @return {boolean} Touches.
- * @todo stability experimental
  */
 ol.extent.touches = function(extent1, extent2) {
   var intersects = ol.extent.intersects(extent1, extent2);

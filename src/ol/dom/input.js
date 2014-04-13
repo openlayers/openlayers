@@ -29,9 +29,9 @@ ol.dom.InputProperty = {
  * @constructor
  * @extends {ol.Object}
  * @param {Element} target Target element.
- * @todo stability experimental
  * @todo observable value {string} the value of the Input
  * @todo observable checked {boolean} the checked state of the Input
+ * @todo stability experimental
  * @todo api
  */
 ol.dom.Input = function(target) {

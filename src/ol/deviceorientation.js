@@ -69,7 +69,6 @@ ol.DeviceOrientationProperty = {
  * @constructor
  * @extends {ol.Object}
  * @param {olx.DeviceOrientationOptions=} opt_options Options.
- * @todo stability experimental
  * @todo observable alpha {number} readonly the euler angle in radians of the
  *       device from the standard X axis
  * @todo observable beta {number} readonly the euler angle in radians of the
@@ -80,6 +79,7 @@ ol.DeviceOrientationProperty = {
  *       device from the planar Y axis
  * @todo observable tracking {boolean} the status of tracking changes to alpha,
  *       beta and gamma.  If true, changes are tracked and reported immediately.
+ * @todo stability experimental
  * @todo api
  */
 ol.DeviceOrientation = function(opt_options) {

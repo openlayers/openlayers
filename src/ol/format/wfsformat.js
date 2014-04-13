@@ -93,6 +93,7 @@ ol.format.WFS.prototype.readFeaturesFromNode = function(node) {
 /**
  * @param {ArrayBuffer|Document|Node|Object|string} source Source.
  * @return {ol.format.WFS.TransactionResponse|undefined} Transaction response.
+ * @todo stability experimental
  * @todo api
  */
 ol.format.WFS.prototype.readTransactionResponse = function(source) {
@@ -115,6 +116,7 @@ ol.format.WFS.prototype.readTransactionResponse = function(source) {
  * @param {ArrayBuffer|Document|Node|Object|string} source Source.
  * @return {ol.format.WFS.FeatureCollectionMetadata|undefined}
  *     FeatureCollection metadata.
+ * @todo stability experimental
  * @todo api
  */
 ol.format.WFS.prototype.readFeatureCollectionMetadata = function(source) {
@@ -552,6 +554,7 @@ ol.format.WFS.writeGetFeature_ = function(node, featureTypes, objectStack) {
 /**
  * @param {olx.format.WFSWriteGetFeatureOptions} options Options.
  * @return {Node} Result.
+ * @todo stability experimental
  * @todo api
  */
 ol.format.WFS.prototype.writeGetFeature = function(options) {
@@ -604,6 +607,7 @@ ol.format.WFS.prototype.writeGetFeature = function(options) {
  * @param {Array.<ol.Feature>} deletes The features to delete.
  * @param {olx.format.WFSWriteTransactionOptions} options Write options.
  * @return {Node} Result.
+ * @todo stability experimental
  * @todo api
  */
 ol.format.WFS.prototype.writeTransaction = function(inserts, updates, deletes,

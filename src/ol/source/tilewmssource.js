@@ -125,6 +125,7 @@ goog.inherits(ol.source.TileWMS, ol.source.TileImage);
  *     in the `LAYERS` parameter will be used. `VERSION` should not be
  *     specified here.
  * @return {string|undefined} GetFeatureInfo URL.
+ * @todo stability experimental
  * @todo api
  */
 ol.source.TileWMS.prototype.getGetFeatureInfoUrl =

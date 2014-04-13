@@ -149,7 +149,7 @@ ol.source.Vector.prototype.addFeaturesInternal = function(features) {
 
 
 /**
- * @todo stability experimental
+ * Clear the source
  */
 ol.source.Vector.prototype.clear = function() {
   this.rBush_.forEach(this.removeFeatureInternal, this);
@@ -181,7 +181,6 @@ ol.source.Vector.prototype.forEachFeature = function(f, opt_this) {
  * @param {T=} opt_this The object to use as `this` in `f`.
  * @return {S|undefined}
  * @template T,S
- * @todo stability experimental
  */
 ol.source.Vector.prototype.forEachFeatureAtCoordinate =
     function(coordinate, f, opt_this) {
@@ -220,7 +219,6 @@ ol.source.Vector.prototype.forEachFeatureInExtent =
  * @param {T=} opt_this The object to use as `this` in `f`.
  * @return {S|undefined}
  * @template T,S
- * @todo stability experimental
  */
 ol.source.Vector.prototype.forEachFeatureInExtentAtResolution =
     function(extent, resolution, f, opt_this) {
@@ -261,7 +259,6 @@ ol.source.Vector.prototype.getFeaturesAtCoordinate = function(coordinate) {
 /**
  * @param {ol.Extent} extent Extent.
  * @return {Array.<ol.Feature>} Features.
- * @todo stability experimental
  */
 ol.source.Vector.prototype.getFeaturesInExtent = function(extent) {
   return this.rBush_.getInExtent(extent);
@@ -354,7 +351,6 @@ ol.source.Vector.prototype.handleFeatureChange_ = function(event) {
 
 /**
  * @return {boolean} Is empty.
- * @todo stability experimental
  */
 ol.source.Vector.prototype.isEmpty = function() {
   return this.rBush_.isEmpty() &&

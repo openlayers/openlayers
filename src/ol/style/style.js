@@ -50,6 +50,7 @@ ol.style.Style = function(opt_options) {
 
 /**
  * @return {ol.style.Fill} Fill style.
+ * @todo stability experimental
  * @todo api
  */
 ol.style.Style.prototype.getFill = function() {
@@ -59,6 +60,7 @@ ol.style.Style.prototype.getFill = function() {
 
 /**
  * @return {ol.style.Image} Image style.
+ * @todo stability experimental
  * @todo api
  */
 ol.style.Style.prototype.getImage = function() {
@@ -68,6 +70,7 @@ ol.style.Style.prototype.getImage = function() {
 
 /**
  * @return {ol.style.Stroke} Stroke style.
+ * @todo stability experimental
  * @todo api
  */
 ol.style.Style.prototype.getStroke = function() {
@@ -77,6 +80,7 @@ ol.style.Style.prototype.getStroke = function() {
 
 /**
  * @return {ol.style.Text} Text style.
+ * @todo stability experimental
  * @todo api
  */
 ol.style.Style.prototype.getText = function() {
@@ -86,6 +90,7 @@ ol.style.Style.prototype.getText = function() {
 
 /**
  * @return {number|undefined} ZIndex.
+ * @todo stability experimental
  * @todo api
  */
 ol.style.Style.prototype.getZIndex = function() {

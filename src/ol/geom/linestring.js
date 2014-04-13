@@ -60,6 +60,7 @@ goog.inherits(ol.geom.LineString, ol.geom.SimpleGeometry);
 
 /**
  * @param {ol.Coordinate} coordinate Coordinate.
+ * @todo stability experimental
  * @todo api
  */
 ol.geom.LineString.prototype.appendCoordinate = function(coordinate) {
@@ -116,6 +117,7 @@ ol.geom.LineString.prototype.closestPointXY =
  * @param {number} m M.
  * @param {boolean=} opt_extrapolate Extrapolate.
  * @return {ol.Coordinate} Coordinate.
+ * @todo stability experimental
  * @todo api
  */
 ol.geom.LineString.prototype.getCoordinateAtM = function(m, opt_extrapolate) {

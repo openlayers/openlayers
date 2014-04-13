@@ -29,6 +29,7 @@ ol.style.ImageOptions;
 /**
  * @constructor
  * @param {ol.style.ImageOptions} options Options.
+ * @todo stability experimental
  * @todo api
  */
 ol.style.Image = function(options) {
@@ -84,6 +85,7 @@ ol.style.Image.prototype.getRotateWithView = function() {
 
 /**
  * @return {number} Rotation.
+ * @todo stability experimental
  * @todo api
  */
 ol.style.Image.prototype.getRotation = function() {
@@ -93,6 +95,7 @@ ol.style.Image.prototype.getRotation = function() {
 
 /**
  * @return {number} Scale.
+ * @todo stability experimental
  * @todo api
  */
 ol.style.Image.prototype.getScale = function() {
@@ -109,14 +112,18 @@ ol.style.Image.prototype.getSnapToPixel = function() {
 
 
 /**
+ * @function
  * @return {Array.<number>} Anchor.
+ * @todo stability experimental
  */
 ol.style.Image.prototype.getAnchor = goog.abstractMethod;
 
 
 /**
+ * @function
  * @param {number} pixelRatio Pixel ratio.
  * @return {HTMLCanvasElement|HTMLVideoElement|Image} Image element.
+ * @todo stability experimental
  */
 ol.style.Image.prototype.getImage = goog.abstractMethod;
 
@@ -135,7 +142,9 @@ ol.style.Image.prototype.getHitDetectionImage = goog.abstractMethod;
 
 
 /**
+ * @function
  * @return {ol.Size} Size.
+ * @todo stability experimental
  */
 ol.style.Image.prototype.getSize = goog.abstractMethod;
 

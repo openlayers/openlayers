@@ -154,6 +154,7 @@ ol.source.Tile.prototype.getTile = goog.abstractMethod;
 
 /**
  * @return {ol.tilegrid.TileGrid} Tile grid.
+ * @todo stability experimental
  * @todo api
  */
 ol.source.Tile.prototype.getTileGrid = function() {

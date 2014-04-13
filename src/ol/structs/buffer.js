@@ -29,7 +29,6 @@ ol.BUFFER_REPLACE_UNUSED_ENTRIES_WITH_NANS = goog.DEBUG;
  * @param {number=} opt_used Used.
  * @param {number=} opt_usage Usage.
  * @struct
- * @todo stability experimental
  */
 ol.structs.Buffer = function(opt_arr, opt_used, opt_usage) {
 

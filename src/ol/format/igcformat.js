@@ -92,6 +92,7 @@ ol.format.IGC.prototype.getExtensions = function() {
  * @function
  * @param {ArrayBuffer|Document|Node|Object|string} source Source.
  * @return {ol.Feature} Feature.
+ * @todo stability experimental
  * @todo api
  */
 ol.format.IGC.prototype.readFeature;
@@ -178,6 +179,7 @@ ol.format.IGC.prototype.readFeatureFromText = function(text) {
  * @function
  * @param {ArrayBuffer|Document|Node|Object|string} source Source.
  * @return {Array.<ol.Feature>} Features.
+ * @todo stability experimental
  * @todo api
  */
 ol.format.IGC.prototype.readFeatures;
@@ -202,6 +204,7 @@ ol.format.IGC.prototype.readFeaturesFromText = function(text) {
  * @function
  * @param {ArrayBuffer|Document|Node|Object|string} source Source.
  * @return {ol.proj.Projection} Projection.
+ * @todo stability experimental
  * @todo api
  */
 ol.format.IGC.prototype.readProjection;

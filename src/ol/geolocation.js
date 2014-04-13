@@ -51,7 +51,6 @@ ol.GeolocationProperty = {
  * @constructor
  * @extends {ol.Object}
  * @param {olx.GeolocationOptions=} opt_options Options.
- * @todo stability experimental
  * @todo observable accuracy {number} readonly the accuracy of the position
  *       measurement in meters
  * @todo observable accuracyGeometry {ol.geom.Geometry} readonly a
@@ -72,6 +71,7 @@ ol.GeolocationProperty = {
  * @todo observable trackingOptions {GeolocationPositionOptions} PositionOptions
  *       as defined by the HTML5 Geolocation spec at
  *       http://www.w3.org/TR/geolocation-API/#position_options_interface
+ * @todo stability experimental
  * @todo api
  */
 ol.Geolocation = function(opt_options) {

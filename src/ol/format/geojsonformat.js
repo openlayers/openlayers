@@ -323,6 +323,7 @@ ol.format.GeoJSON.prototype.getExtensions = function() {
  * @function
  * @param {ArrayBuffer|Document|Node|Object|string} source Source.
  * @return {ol.Feature} Feature.
+ * @todo stability experimental
  * @todo api
  */
 ol.format.GeoJSON.prototype.readFeature;
@@ -335,6 +336,7 @@ ol.format.GeoJSON.prototype.readFeature;
  * @function
  * @param {ArrayBuffer|Document|Node|Object|string} source Source.
  * @return {Array.<ol.Feature>} Features.
+ * @todo stability experimental
  * @todo api
  */
 ol.format.GeoJSON.prototype.readFeatures;
@@ -389,6 +391,7 @@ ol.format.GeoJSON.prototype.readFeaturesFromObject = function(object) {
  * @function
  * @param {ArrayBuffer|Document|Node|Object|string} source Source.
  * @return {ol.geom.Geometry} Geometry.
+ * @todo stability experimental
  * @todo api
  */
 ol.format.GeoJSON.prototype.readGeometry;
@@ -408,6 +411,7 @@ ol.format.GeoJSON.prototype.readGeometryFromObject = function(object) {
  *
  * @param {ArrayBuffer|Document|Node|Object|string} object Source.
  * @return {ol.proj.Projection} Projection.
+ * @todo stability experimental
  * @todo api
  */
 ol.format.GeoJSON.prototype.readProjection = function(object) {
@@ -438,6 +442,7 @@ ol.format.GeoJSON.prototype.readProjection = function(object) {
  * @function
  * @param {ol.Feature} feature Feature.
  * @return {ArrayBuffer|Node|Object|string} Result.
+ * @todo stability experimental
  * @todo api
  */
 ol.format.GeoJSON.prototype.writeFeature;
@@ -474,6 +479,7 @@ ol.format.GeoJSON.prototype.writeFeatureObject = function(feature) {
  * @function
  * @param {Array.<ol.Feature>} features Features.
  * @return {ArrayBuffer|Node|Object|string} Result.
+ * @todo stability experimental
  * @todo api
  */
 ol.format.GeoJSON.prototype.writeFeatures;

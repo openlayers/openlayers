@@ -36,6 +36,7 @@ ol.CoordinateArray;
  * @param {ol.Coordinate} coordinate Coordinate.
  * @param {ol.Coordinate} delta Delta.
  * @return {ol.Coordinate} Coordinate.
+ * @todo stability experimental
  * @todo api
  */
 ol.coordinate.add = function(coordinate, delta) {
@@ -161,6 +162,7 @@ ol.coordinate.equals = function(coordinate1, coordinate2) {
  * @param {ol.Coordinate} coordinate Coordinate.
  * @param {number} angle Angle.
  * @return {ol.Coordinate} Coordinate.
+ * @todo stability experimental
  * @todo api
  */
 ol.coordinate.rotate = function(coordinate, angle) {

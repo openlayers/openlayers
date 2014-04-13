@@ -219,7 +219,6 @@ ol.geom.GeometryCollection.prototype.getType = function() {
 
 /**
  * @return {boolean} Is empty.
- * @todo stability experimental
  */
 ol.geom.GeometryCollection.prototype.isEmpty = function() {
   return goog.array.isEmpty(this.geometries_);

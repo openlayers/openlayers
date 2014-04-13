@@ -71,6 +71,7 @@ ol.layer.Vector.prototype.getRenderOrder = function() {
  * option at construction or to the `setStyle` method.
  * @return {ol.style.Style|Array.<ol.style.Style>|ol.feature.StyleFunction}
  *     Layer style.
+ * @todo stability experimental
  * @todo api
  */
 ol.layer.Vector.prototype.getStyle = function() {

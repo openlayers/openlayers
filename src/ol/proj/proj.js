@@ -51,6 +51,7 @@ ol.proj.Units = {
  * Meters per unit lookup table.
  * @const
  * @type {Object.<ol.proj.Units, number>}
+ * @todo stability experimental
  * @todo api
  */
 ol.proj.METERS_PER_UNIT[ol.proj.Units.DEGREES] =
@@ -112,6 +113,7 @@ ol.proj.Projection = function(options) {
 /**
  * Get the code for this projection, e.g. 'EPSG:4326'.
  * @return {string} Code.
+ * @todo stability experimental
  * @todo api
  */
 ol.proj.Projection.prototype.getCode = function() {
@@ -122,6 +124,7 @@ ol.proj.Projection.prototype.getCode = function() {
 /**
  * Get the validity extent for this projection.
  * @return {ol.Extent} Extent.
+ * @todo stability experimental
  * @todo api
  */
 ol.proj.Projection.prototype.getExtent = function() {
@@ -145,6 +148,7 @@ ol.proj.Projection.prototype.getPointResolution = goog.abstractMethod;
 /**
  * Get the units of this projection.
  * @return {ol.proj.Units} Units.
+ * @todo stability experimental
  * @todo api
  */
 ol.proj.Projection.prototype.getUnits = function() {

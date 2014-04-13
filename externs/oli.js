@@ -77,7 +77,10 @@ oli.FrameState.prototype.layerStatesArray;
 oli.FrameState.prototype.logos;
 
 
-/** @type {number} */
+/**
+ * @type {number}
+ * @todo stability experimental
+ */
 oli.FrameState.prototype.pixelRatio;
 
 
@@ -101,7 +104,10 @@ oli.FrameState.prototype.skippedFeatureUids_;
 oli.FrameState.prototype.tileQueue;
 
 
-/** @type {number} */
+/**
+ * @type {number}
+ * @todo stability experimental
+ */
 oli.FrameState.prototype.time;
 
 
@@ -109,7 +115,10 @@ oli.FrameState.prototype.time;
 oli.FrameState.prototype.usedTiles;
 
 
-/** @type {oli.View2DState} */
+/**
+ * @type {oli.View2DState}
+ * @todo stability experimental
+ */
 oli.FrameState.prototype.view2DState;
 
 

@@ -7,6 +7,7 @@ goog.require('ol.color');
 /**
  * @constructor
  * @param {olx.style.StrokeOptions=} opt_options Options.
+ * @todo stability experimental
  * @todo api
  */
 ol.style.Stroke = function(opt_options) {
@@ -53,6 +54,7 @@ ol.style.Stroke = function(opt_options) {
 
 /**
  * @return {ol.Color|string} Color.
+ * @todo stability experimental
  * @todo api
  */
 ol.style.Stroke.prototype.getColor = function() {
@@ -62,6 +64,7 @@ ol.style.Stroke.prototype.getColor = function() {
 
 /**
  * @return {string|undefined} Line cap.
+ * @todo stability experimental
  * @todo api
  */
 ol.style.Stroke.prototype.getLineCap = function() {
@@ -71,6 +74,7 @@ ol.style.Stroke.prototype.getLineCap = function() {
 
 /**
  * @return {Array.<number>} Line dash.
+ * @todo stability experimental
  * @todo api
  */
 ol.style.Stroke.prototype.getLineDash = function() {
@@ -80,6 +84,7 @@ ol.style.Stroke.prototype.getLineDash = function() {
 
 /**
  * @return {string|undefined} Line join.
+ * @todo stability experimental
  * @todo api
  */
 ol.style.Stroke.prototype.getLineJoin = function() {
@@ -89,6 +94,7 @@ ol.style.Stroke.prototype.getLineJoin = function() {
 
 /**
  * @return {number|undefined} Miter limit.
+ * @todo stability experimental
  * @todo api
  */
 ol.style.Stroke.prototype.getMiterLimit = function() {
@@ -98,6 +104,7 @@ ol.style.Stroke.prototype.getMiterLimit = function() {
 
 /**
  * @return {number|undefined} Width.
+ * @todo stability experimental
  * @todo api
  */
 ol.style.Stroke.prototype.getWidth = function() {

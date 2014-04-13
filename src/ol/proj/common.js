@@ -7,6 +7,7 @@ goog.require('ol.proj.EPSG4326');
 
 /**
  * FIXME empty description for jsdoc
+ * @todo stability experimental
  * @todo api
  */
 ol.proj.common.add = function() {

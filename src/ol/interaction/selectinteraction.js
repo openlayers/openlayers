@@ -172,7 +172,9 @@ ol.interaction.Select.prototype.handleMapBrowserEvent =
 
 
 /**
- * @inheritDoc
+ * Remove the interaction from its current map, if any,  and attach it to a new
+ * map, if any. Pass `null` to just remove the interaction from the current map.
+ * @param {ol.Map} map Map.
  * @todo api
  */
 ol.interaction.Select.prototype.setMap = function(map) {

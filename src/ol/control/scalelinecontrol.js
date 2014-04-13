@@ -49,9 +49,9 @@ ol.control.ScaleLineUnits = {
  * @constructor
  * @extends {ol.control.Control}
  * @param {olx.control.ScaleLineOptions=} opt_options Scale line options.
- * @todo stability experimental
  * @todo observable units {ol.control.ScaleLineUnits} the units to use in the
  *       scale line
+ * @todo stability experimental
  * @todo api
  */
 ol.control.ScaleLine = function(opt_options) {

@@ -31,6 +31,7 @@ goog.inherits(ol.geom.MultiPoint, ol.geom.SimpleGeometry);
 
 /**
  * @param {ol.geom.Point} point Point.
+ * @todo stability experimental
  * @todo api
  */
 ol.geom.MultiPoint.prototype.appendPoint = function(point) {
@@ -96,6 +97,7 @@ ol.geom.MultiPoint.prototype.getCoordinates = function() {
 /**
  * @param {number} index Index.
  * @return {ol.geom.Point} Point.
+ * @todo stability experimental
  * @todo api
  */
 ol.geom.MultiPoint.prototype.getPoint = function(index) {

@@ -28,9 +28,9 @@ ol.layer.GroupProperty = {
  * @constructor
  * @extends {ol.layer.Base}
  * @param {olx.layer.GroupOptions=} opt_options Layer options.
+ * @todo observable layers {ol.Collection} collection of {@link ol.layer} layers
+ *       that are part of this group
  * @todo stability experimental
- * @todo observable layers {ol.Collection} collection of layers that are part
- *       of this group
  * @todo api
  */
 ol.layer.Group = function(opt_options) {

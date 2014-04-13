@@ -83,6 +83,7 @@ goog.inherits(ol.geom.MultiPolygon, ol.geom.SimpleGeometry);
 
 /**
  * @param {ol.geom.Polygon} polygon Polygon.
+ * @todo stability experimental
  * @todo api
  */
 ol.geom.MultiPolygon.prototype.appendPolygon = function(polygon) {
@@ -196,6 +197,7 @@ ol.geom.MultiPolygon.prototype.getFlatInteriorPoints = function() {
 
 /**
  * @return {ol.geom.MultiPoint} Interior points.
+ * @todo stability experimental
  * @todo api
  */
 ol.geom.MultiPolygon.prototype.getInteriorPoints = function() {
@@ -248,6 +250,7 @@ ol.geom.MultiPolygon.prototype.getSimplifiedGeometryInternal =
 /**
  * @param {number} index Index.
  * @return {ol.geom.Polygon} Polygon.
+ * @todo stability experimental
  * @todo api
  */
 ol.geom.MultiPolygon.prototype.getPolygon = function(index) {
@@ -364,7 +367,6 @@ ol.geom.MultiPolygon.prototype.setFlatCoordinates =
 
 /**
  * @param {Array.<ol.geom.Polygon>} polygons Polygons.
- * @todo stability experimental
  */
 ol.geom.MultiPolygon.prototype.setPolygons = function(polygons) {
   var layout = ol.geom.GeometryLayout.XY;

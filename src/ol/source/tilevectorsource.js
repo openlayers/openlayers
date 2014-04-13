@@ -14,6 +14,7 @@ goog.require('ol.tilegrid.TileGrid');
  * @constructor
  * @extends {ol.source.FormatVector}
  * @param {olx.source.TileVectorOptions} options Options.
+ * @todo stability experimental
  * @todo api
  */
 ol.source.TileVector = function(options) {
@@ -230,7 +231,6 @@ ol.source.TileVector.prototype.setTileUrlFunction = function(tileUrlFunction) {
 
 /**
  * @param {string} url URL.
- * @todo stability experimental
  */
 ol.source.TileVector.prototype.setUrl = function(url) {
   this.setTileUrlFunction(ol.TileUrlFunction.createFromTemplates(

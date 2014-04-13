@@ -380,6 +380,7 @@ ol.render.canvas.Immediate.prototype.drawRings_ =
  *
  * @param {number} zIndex Z index.
  * @param {function(ol.render.canvas.Immediate)} callback Callback.
+ * @todo stability experimental
  * @todo api
  */
 ol.render.canvas.Immediate.prototype.drawAsync = function(zIndex, callback) {
@@ -477,7 +478,6 @@ ol.render.canvas.Immediate.prototype.drawFeature = function(feature, style) {
  * @param {ol.geom.GeometryCollection} geometryCollectionGeometry Geometry
  *     collection.
  * @param {Object} data Opaque data object.
- * @todo stability experimental
  */
 ol.render.canvas.Immediate.prototype.drawGeometryCollectionGeometry =
     function(geometryCollectionGeometry, data) {

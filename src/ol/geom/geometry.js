@@ -8,6 +8,7 @@ goog.require('ol.Observable');
 
 /**
  * @enum {string}
+ * @todo stability experimental
  */
 ol.geom.GeometryType = {
   POINT: 'Point',
@@ -24,6 +25,7 @@ ol.geom.GeometryType = {
 
 /**
  * @enum {string}
+ * @todo stability experimental
  */
 ol.geom.GeometryLayout = {
   XY: 'XY',
@@ -79,6 +81,7 @@ goog.inherits(ol.geom.Geometry, ol.Observable);
 
 
 /**
+ * @function
  * @return {ol.geom.Geometry} Clone.
  * @todo stability experimental
  */
@@ -113,7 +116,6 @@ ol.geom.Geometry.prototype.getClosestPoint = function(point, opt_closestPoint) {
 /**
  * @param {ol.Coordinate} coordinate Coordinate.
  * @return {boolean} Contains coordinate.
- * @todo stability experimental
  */
 ol.geom.Geometry.prototype.containsCoordinate = function(coordinate) {
   return this.containsXY(coordinate[0], coordinate[1]);
@@ -129,6 +131,7 @@ ol.geom.Geometry.prototype.containsXY = goog.functions.FALSE;
 
 
 /**
+ * @function
  * @param {ol.Extent=} opt_extent Extent.
  * @return {ol.Extent} extent Extent.
  * @todo stability experimental
@@ -137,21 +140,24 @@ ol.geom.Geometry.prototype.getExtent = goog.abstractMethod;
 
 
 /**
+ * @function
  * @param {number} squaredTolerance Squared tolerance.
  * @return {ol.geom.Geometry} Simplified geometry.
+ * @todo stability experimental
  */
 ol.geom.Geometry.prototype.getSimplifiedGeometry = goog.abstractMethod;
 
 
 /**
+ * @function
  * @return {ol.geom.GeometryType} Geometry type.
  * @todo stability experimental
- * @todo api
  */
 ol.geom.Geometry.prototype.getType = goog.abstractMethod;
 
 
 /**
+ * @function
  * @param {ol.TransformFunction} transformFn Transform.
  * @todo stability experimental
  */

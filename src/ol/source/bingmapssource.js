@@ -56,6 +56,7 @@ goog.inherits(ol.source.BingMaps, ol.source.TileImage);
 /**
  * @const
  * @type {ol.Attribution}
+ * @todo stability experimental
  * @todo api
  */
 ol.source.BingMaps.TOS_ATTRIBUTION = new ol.Attribution({

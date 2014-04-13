@@ -22,7 +22,8 @@
         "node_modules/jsdoc/plugins/markdown",
         "apidoc/plugins/inheritdoc",
         "apidoc/plugins/interface",
-        "apidoc/plugins/exports",
+        "apidoc/plugins/api",
+        "apidoc/plugins/olx-typedefs",
         "apidoc/plugins/todo",
         "apidoc/plugins/observable",
         "apidoc/plugins/stability"

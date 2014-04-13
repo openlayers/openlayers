@@ -231,7 +231,6 @@ ol.feature.FeatureStyleFunction;
  * @param {number} resolution Resolution.
  * @return {Array.<ol.style.Style>} Style.
  * @this {ol.Feature}
- * @todo stability experimental
  */
 ol.feature.defaultFeatureStyleFunction = function(resolution) {
   var fill = new ol.style.Fill({
@@ -280,7 +279,6 @@ ol.feature.StyleFunction;
  * @param {ol.Feature} feature Feature.
  * @param {number} resolution Resolution.
  * @return {Array.<ol.style.Style>} Style.
- * @todo stability experimental
  */
 ol.feature.defaultStyleFunction = function(feature, resolution) {
   var featureStyleFunction = feature.getStyleFunction();
@@ -361,7 +359,6 @@ ol.feature.createStyleFunction = function(obj) {
 /**
  * Default styles for editing features.
  * @return {Object.<ol.geom.GeometryType, Array.<ol.style.Style>>} Styles
- * @todo stability experimental
  */
 ol.feature.createDefaultEditingStyles = function() {
   /** @type {Object.<ol.geom.GeometryType, Array.<ol.style.Style>>} */

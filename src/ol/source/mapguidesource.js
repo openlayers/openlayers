@@ -13,6 +13,7 @@ goog.require('ol.source.Image');
  * @constructor
  * @extends {ol.source.Image}
  * @param {olx.source.MapGuideOptions} options Options.
+ * @todo stability experimental
  * @todo api
  */
 ol.source.MapGuide = function(options) {

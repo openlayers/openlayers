@@ -25,6 +25,7 @@ ol.interaction.DRAGROTATE_ANIMATION_DURATION = 250;
  * @constructor
  * @extends {ol.interaction.Pointer}
  * @param {olx.interaction.DragRotateOptions=} opt_options Options.
+ * @todo stability experimental
  * @todo api
  */
 ol.interaction.DragRotate = function(opt_options) {

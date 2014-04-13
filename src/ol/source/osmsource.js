@@ -46,6 +46,7 @@ goog.inherits(ol.source.OSM, ol.source.XYZ);
 /**
  * @const
  * @type {ol.Attribution}
+ * @todo stability experimental
  * @todo api
  */
 ol.source.OSM.DATA_ATTRIBUTION = new ol.Attribution({
@@ -59,6 +60,7 @@ ol.source.OSM.DATA_ATTRIBUTION = new ol.Attribution({
 /**
  * @const
  * @type {ol.Attribution}
+ * @todo stability experimental
  * @todo api
  */
 ol.source.OSM.TILE_ATTRIBUTION = new ol.Attribution({

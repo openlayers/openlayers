@@ -54,6 +54,7 @@ goog.inherits(ol.geom.MultiLineString, ol.geom.SimpleGeometry);
 
 /**
  * @param {ol.geom.LineString} lineString LineString.
+ * @todo stability experimental
  * @todo api
  */
 ol.geom.MultiLineString.prototype.appendLineString = function(lineString) {
@@ -121,6 +122,7 @@ ol.geom.MultiLineString.prototype.closestPointXY =
  * @param {boolean=} opt_extrapolate Extrapolate.
  * @param {boolean=} opt_interpolate Interpolate.
  * @return {ol.Coordinate} Coordinate.
+ * @todo stability experimental
  * @todo api
  */
 ol.geom.MultiLineString.prototype.getCoordinateAtM =
@@ -159,6 +161,7 @@ ol.geom.MultiLineString.prototype.getEnds = function() {
 /**
  * @param {number} index Index.
  * @return {ol.geom.LineString} LineString.
+ * @todo stability experimental
  * @todo api
  */
 ol.geom.MultiLineString.prototype.getLineString = function(index) {
@@ -289,7 +292,6 @@ ol.geom.MultiLineString.prototype.setFlatCoordinates =
 
 /**
  * @param {Array.<ol.geom.LineString>} lineStrings LineStrings.
- * @todo stability experimental
  */
 ol.geom.MultiLineString.prototype.setLineStrings = function(lineStrings) {
   var layout = ol.geom.GeometryLayout.XY;

@@ -40,6 +40,7 @@ ol.style.IconAnchorUnits = {
  * @constructor
  * @param {olx.style.IconOptions=} opt_options Options.
  * @extends {ol.style.Image}
+ * @todo stability experimental
  * @todo api
  */
 ol.style.Icon = function(opt_options) {
@@ -192,6 +193,7 @@ ol.style.Icon.prototype.getHitDetectionImage = function(pixelRatio) {
 
 /**
  * @return {string|undefined} Image src.
+ * @todo stability experimental
  * @todo api
  */
 ol.style.Icon.prototype.getSrc = function() {

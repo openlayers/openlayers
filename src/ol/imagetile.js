@@ -20,7 +20,6 @@ goog.require('ol.TileState');
  * @param {string} src Image source URI.
  * @param {?string} crossOrigin Cross origin.
  * @param {ol.TileLoadFunctionType} tileLoadFunction Tile load function.
- * @todo stability experimental
  */
 ol.ImageTile =
     function(tileCoord, state, src, crossOrigin, tileLoadFunction) {

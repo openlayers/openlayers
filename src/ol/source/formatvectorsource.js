@@ -23,7 +23,6 @@ goog.require('ol.xml');
  * @constructor
  * @extends {ol.source.Vector}
  * @param {olx.source.FormatVectorOptions} options Options.
- * @todo stability experimental
  */
 ol.source.FormatVector = function(options) {
 
