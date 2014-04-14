@@ -313,6 +313,16 @@ ol.source.ImageWMS.prototype.getRequestUrl_ =
 
 
 /**
+ * Return the URL used for this WMS source.
+ * @return {string|undefined} URL.
+ * @todo stability experimental
+ */
+ol.source.ImageWMS.prototype.getUrl = function() {
+  return this.url_;
+};
+
+
+/**
  * @param {string|undefined} url URL.
  */
 ol.source.ImageWMS.prototype.setUrl = function(url) {
