@@ -125,8 +125,8 @@ ol.interaction.DragAndDrop.prototype.handleResult_ = function(file, result) {
   }
   this.dispatchEvent(
       new ol.interaction.DragAndDropEvent(
-          ol.interaction.DragAndDropEventType.ADD_FEATURES, this, features,
-          projection, file));
+          ol.interaction.DragAndDropEventType.ADD_FEATURES, this, file,
+          features, projection));
 };
 
 
@@ -194,15 +194,15 @@ ol.interaction.DragAndDropEventType = {
  * @extends {goog.events.Event}
  * @implements {oli.interaction.DragAndDropEvent}
  * @param {ol.interaction.DragAndDropEventType} type Type.
- * @param {Object=} opt_target Target.
+ * @param {Object} target Target.
+ * @param {File} file File.
  * @param {Array.<ol.Feature>=} opt_features Features.
  * @param {ol.proj.Projection=} opt_projection Projection.
- * @param {File=} opt_file File.
  */
 ol.interaction.DragAndDropEvent =
-    function(type, opt_target, opt_features, opt_projection, opt_file) {
+    function(type, target, file, opt_features, opt_projection) {
 
-  goog.base(this, type, opt_target);
+  goog.base(this, type, target);
 
   /**
    * @type {Array.<ol.Feature>|undefined}
@@ -211,16 +211,16 @@ ol.interaction.DragAndDropEvent =
   this.features = opt_features;
 
   /**
+   * @type {File}
+   * @todo stability experimental
+   */
+  this.file = file;
+
+  /**
    * @type {ol.proj.Projection|undefined}
    * @todo stability experimental
    */
   this.projection = opt_projection;
-
-  /**
-   * @type {File|undefined}
-   * @todo stability experimental
-   */
-  this.file = opt_file;
 
 };
 goog.inherits(ol.interaction.DragAndDropEvent, goog.events.Event);
