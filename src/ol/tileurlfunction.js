@@ -44,7 +44,11 @@ ol.TileUrlFunction.createFromTemplate = function(template) {
         } else {
           return template.replace('{z}', tileCoord.z.toString())
                          .replace('{x}', tileCoord.x.toString())
-                         .replace('{y}', tileCoord.y.toString());
+                         .replace('{y}', tileCoord.y.toString())
+                         .replace('{-y}', function() {
+                           var y = (1 << tileCoord.z) - tileCoord.y - 1;
+                           return y.toString();
+                         });
         }
       });
 };
