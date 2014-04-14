@@ -2774,7 +2774,7 @@ olx.source.TileVectorOptions.prototype.tileUrlFunction;
 
 
 /**
- * URL template. Must include `{x}`, `{y}`, and `{z}` placeholders.
+ * URL template. Must include `{x}`, `{y}` or `{-y}`, and `{z}` placeholders.
  * @type {string|undefined}
  */
 olx.source.TileVectorOptions.prototype.url;
@@ -3173,8 +3173,8 @@ olx.source.OSMOptions.prototype.tileLoadFunction;
 
 
 /**
- * URL template. Must include `{x}`, `{y}`, and `{z}` placeholders. Default is
- * `//{a-c}.tile.openstreetmap.org/{z}/{x}/{y}.png`.
+ * URL template. Must include `{x}`, `{y}` or `{-y}`, and `{z}` placeholders.
+ * Default is `//{a-c}.tile.openstreetmap.org/{z}/{x}/{y}.png`.
  * @type {string|undefined}
  */
 olx.source.OSMOptions.prototype.url;
@@ -3573,7 +3573,7 @@ olx.source.StamenOptions.prototype.tileLoadFunction;
 
 
 /**
- * URL template. Must include `{x}`, `{y}`, and `{z}` placeholders.
+ * URL template. Must include `{x}`, `{y}` or `{-y}`, and `{z}` placeholders.
  * @type {string|undefined}
  */
 olx.source.StamenOptions.prototype.url;
@@ -4252,7 +4252,7 @@ olx.source.XYZOptions.prototype.tileUrlFunction;
 
 
 /**
- * URL template. Must include `{x}`, `{y}`, and `{z}` placeholders.
+ * URL template. Must include `{x}`, `{y}` or `{-y}`, and `{z}` placeholders.
  * @type {string|undefined}
  */
 olx.source.XYZOptions.prototype.url;
