@@ -195,6 +195,9 @@ oli.interaction.DragAndDropEvent.prototype.features;
 oli.interaction.DragAndDropEvent.prototype.projection;
 
 
+/** @type {File} */
+oli.interaction.DragAndDropEvent.prototype.file;
+
 
 /** @interface */
 oli.render.Event;
