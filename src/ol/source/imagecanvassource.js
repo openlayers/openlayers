@@ -71,8 +71,8 @@ ol.source.ImageCanvas.prototype.getImage =
 
   extent = extent.slice();
   ol.extent.scaleFromCenter(extent, this.ratio_);
-  var width = (extent[2] - extent[0]) / resolution;
-  var height = (extent[3] - extent[1]) / resolution;
+  var width = ol.extent.getWidth(extent) / resolution;
+  var height = ol.extent.getHeight(extent) / resolution;
   var size = [width * pixelRatio, height * pixelRatio];
 
   var canvasElement = this.canvasFunction_(

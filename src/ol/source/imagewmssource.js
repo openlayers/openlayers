@@ -217,8 +217,8 @@ ol.source.ImageWMS.prototype.getImage =
   var centerX = (extent[0] + extent[2]) / 2;
   var centerY = (extent[1] + extent[3]) / 2;
   if (this.ratio_ != 1) {
-    var halfWidth = this.ratio_ * (extent[2] - extent[0]) / 2;
-    var halfHeight = this.ratio_ * (extent[3] - extent[1]) / 2;
+    var halfWidth = this.ratio_ * ol.extent.getWidth(extent) / 2;
+    var halfHeight = this.ratio_ * ol.extent.getHeight(extent) / 2;
     extent[0] = centerX - halfWidth;
     extent[1] = centerY - halfHeight;
     extent[2] = centerX + halfWidth;
@@ -228,8 +228,8 @@ ol.source.ImageWMS.prototype.getImage =
   var imageResolution = resolution / pixelRatio;
 
   // Compute an integer width and height.
-  var width = Math.ceil((extent[2] - extent[0]) / imageResolution);
-  var height = Math.ceil((extent[3] - extent[1]) / imageResolution);
+  var width = Math.ceil(ol.extent.getWidth(extent) / imageResolution);
+  var height = Math.ceil(ol.extent.getHeight(extent) / imageResolution);
 
   // Modify the extent to match the integer width and height.
   extent[0] = centerX - imageResolution * width / 2;
