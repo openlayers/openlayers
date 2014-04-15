@@ -57,7 +57,6 @@ var popup = new ol.Overlay({
 
 var map = new ol.Map({
   layers: [vector],
-  renderer: 'canvas',
   target: document.getElementById('map'),
   view: new ol.View2D({
     center: [0, 0],
@@ -95,7 +94,7 @@ $(map.getViewport()).on('mousemove', function(evt) {
   displaySnap(coordinate);
 });
 
-map.on('singleclick', function(evt) {
+map.on('click', function(evt) {
   displaySnap(evt.coordinate);
 });
 

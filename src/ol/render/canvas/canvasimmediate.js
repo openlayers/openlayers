@@ -960,8 +960,10 @@ ol.render.canvas.Immediate.prototype.setTextStyle = function(textStyle) {
           textTextBaseline : ol.render.canvas.defaultTextBaseline
     };
     this.text_ = goog.isDef(textText) ? textText : '';
-    this.textOffsetX_ = goog.isDef(textOffsetX) ? textOffsetX : 0;
-    this.textOffsetY_ = goog.isDef(textOffsetY) ? textOffsetY : 0;
+    this.textOffsetX_ =
+        goog.isDef(textOffsetX) ? (this.pixelRatio_ * textOffsetX) : 0;
+    this.textOffsetY_ =
+        goog.isDef(textOffsetY) ? (this.pixelRatio_ * textOffsetY) : 0;
     this.textRotation_ = goog.isDef(textRotation) ? textRotation : 0;
     this.textScale_ = this.pixelRatio_ * (goog.isDef(textScale) ?
         textScale : 1);

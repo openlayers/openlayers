@@ -52,7 +52,6 @@ var map = new ol.Map({
     }),
     vectorLayer
   ],
-  renderer: 'canvas',
   target: 'map',
   view: new ol.View2D({
     center: [0, 0],
@@ -123,6 +122,6 @@ $(map.getViewport()).on('mousemove', function(evt) {
   displayFeatureInfo(pixel);
 });
 
-map.on('singleclick', function(evt) {
+map.on('click', function(evt) {
   displayFeatureInfo(evt.pixel);
 });

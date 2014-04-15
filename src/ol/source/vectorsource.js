@@ -13,6 +13,7 @@ goog.require('goog.events.Event');
 goog.require('goog.events.EventType');
 goog.require('goog.object');
 goog.require('ol.ObjectEventType');
+goog.require('ol.proj');
 goog.require('ol.source.Source');
 goog.require('ol.structs.RBush');
 
@@ -21,7 +22,17 @@ goog.require('ol.structs.RBush');
  * @enum {string}
  */
 ol.source.VectorEventType = {
+  /**
+   * Triggered when a feature is added to the source.
+   * @event ol.source.VectorEvent#addfeature
+   * @todo stability experimental
+   */
   ADDFEATURE: 'addfeature',
+  /**
+   * Triggered when a feature is removed from the source.
+   * @event ol.source.VectorEvent#removefeature
+   * @todo stability experimental
+   */
   REMOVEFEATURE: 'removefeature'
 };
 
@@ -30,6 +41,7 @@ ol.source.VectorEventType = {
 /**
  * @constructor
  * @extends {ol.source.Source}
+ * @fires {@link ol.source.VectorEvent} ol.source.VectorEvent
  * @param {olx.source.VectorOptions=} opt_options Vector source options.
  * @todo stability experimental
  */
@@ -197,6 +209,21 @@ ol.source.Vector.prototype.forEachFeatureInExtent =
 
 
 /**
+ * @param {ol.Extent} extent Extent.
+ * @param {number} resolution Resolution.
+ * @param {function(this: T, ol.Feature): S} f Callback.
+ * @param {T=} opt_this The object to use as `this` in `f`.
+ * @return {S|undefined}
+ * @template T,S
+ * @todo stability experimental
+ */
+ol.source.Vector.prototype.forEachFeatureInExtentAtResolution =
+    function(extent, resolution, f, opt_this) {
+  return this.forEachFeatureInExtent(extent, f, opt_this);
+};
+
+
+/**
  * @return {Array.<ol.Feature>} Features.
  * @todo stability experimental
  */
@@ -327,6 +354,14 @@ ol.source.Vector.prototype.isEmpty = function() {
 
 
 /**
+ * @param {ol.Extent} extent Extent.
+ * @param {number} resolution Resolution.
+ * @param {ol.proj.Projection} projection Projection.
+ */
+ol.source.Vector.prototype.loadFeatures = goog.nullFunction;
+
+
+/**
  * @param {ol.Feature} feature Feature.
  * @todo stability experimental
  */
@@ -372,7 +407,9 @@ ol.source.VectorEvent = function(type, opt_feature) {
   goog.base(this, type);
 
   /**
+   * The feature being added or removed.
    * @type {ol.Feature|undefined}
+   * @todo stability experimental
    */
   this.feature = opt_feature;
 

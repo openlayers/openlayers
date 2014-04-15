@@ -272,7 +272,9 @@ ol.source.ImageWMS.prototype.getRequestUrl_ =
   params[this.v13_ ? 'CRS' : 'SRS'] = projection.getCode();
 
   if (!('STYLES' in this.params_)) {
+    /* jshint -W053 */
     goog.object.set(params, 'STYLES', new String(''));
+    /* jshint +W053 */
   }
 
   if (pixelRatio != 1) {
@@ -307,6 +309,16 @@ ol.source.ImageWMS.prototype.getRequestUrl_ =
   goog.object.set(params, 'BBOX', bbox.join(','));
 
   return goog.uri.utils.appendParamsFromMap(this.url_, params);
+};
+
+
+/**
+ * Return the URL used for this WMS source.
+ * @return {string|undefined} URL.
+ * @todo stability experimental
+ */
+ol.source.ImageWMS.prototype.getUrl = function() {
+  return this.url_;
 };
 
 

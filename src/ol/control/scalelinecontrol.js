@@ -55,7 +55,7 @@ ol.control.ScaleLineUnits = {
  */
 ol.control.ScaleLine = function(opt_options) {
 
-  var options = opt_options || {};
+  var options = goog.isDef(opt_options) ? opt_options : {};
 
   var className = goog.isDef(options.className) ?
       options.className : 'ol-scale-line';

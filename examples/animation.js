@@ -49,6 +49,17 @@ rotateRight.addEventListener('click', function() {
   map.beforeRender(rotateRight);
 }, false);
 
+var rotateAroundRome = document.getElementById('rotate-around-rome');
+rotateAroundRome.addEventListener('click', function() {
+  var currentRotation = view.getRotation();
+  var rotateAroundRome = ol.animation.rotate({
+    anchor: rome,
+    duration: 1000,
+    rotation: currentRotation
+  });
+  map.beforeRender(rotateAroundRome);
+  view.rotate(currentRotation + (Math.PI / 2), rome);
+}, false);
 
 var panToLondon = document.getElementById('pan-to-london');
 panToLondon.addEventListener('click', function() {

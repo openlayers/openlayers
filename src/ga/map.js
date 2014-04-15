@@ -10,7 +10,6 @@ goog.require('goog.ui.MenuItem');
 goog.require('goog.dom');
 
 goog.require('ol.Map');
-goog.require('ol.RendererHint');
 goog.require('ol.View2D');
 goog.require('ol.control.ScaleLine');
 goog.require('ol.interaction');
@@ -56,7 +55,7 @@ goog.require('ga.Lang');
  */
 ga.Map = function(options) {
 
-  var renderer = ol.RendererHint.CANVAS;
+  var renderer = 'canvas';
 
   if (goog.isDefAndNotNull(options.renderer)) {
     renderer = options.renderer;

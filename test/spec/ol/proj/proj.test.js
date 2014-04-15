@@ -285,7 +285,7 @@ describe('ol.proj', function() {
         units: units,
         extent: extent
       });
-      var transform = function(input, output, dimension) {return input};
+      var transform = function(input, output, dimension) {return input;};
       ol.proj.addTransform(foo, bar, transform);
       expect(ol.proj.transforms_).not.to.be(undefined);
       expect(ol.proj.transforms_.foo).not.to.be(undefined);

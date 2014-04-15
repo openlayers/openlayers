@@ -1,5 +1,6 @@
 goog.provide('ol.layer.Vector');
 
+goog.require('goog.array');
 goog.require('goog.object');
 goog.require('ol.feature');
 goog.require('ol.layer.Layer');
@@ -9,14 +10,16 @@ goog.require('ol.layer.Layer');
  * @enum {string}
  */
 ol.layer.VectorProperty = {
-  RENDER_GEOMETRY_FUNCTIONS: 'renderGeometryFunctions'
+  RENDER_ORDER: 'renderOrder'
 };
 
 
 
 /**
+ *
  * @constructor
  * @extends {ol.layer.Layer}
+ * @fires {@link ol.render.Event} ol.render.Event
  * @param {olx.layer.VectorOptions=} opt_options Options.
  * @todo stability experimental
  */
@@ -53,17 +56,13 @@ goog.inherits(ol.layer.Vector, ol.layer.Layer);
 
 
 /**
- * @return {ol.Collection|undefined} Render geometry functions.
- * @todo stability experimental
+ * @return {function(ol.Feature, ol.Feature): number|null|undefined} Render
+ *     order.
  */
-ol.layer.Vector.prototype.getRenderGeometryFunctions = function() {
-  return /** @type {ol.Collection|undefined} */ (
-      this.get(ol.layer.VectorProperty.RENDER_GEOMETRY_FUNCTIONS));
+ol.layer.Vector.prototype.getRenderOrder = function() {
+  return /** @type {function(ol.Feature, ol.Feature):number|null|undefined} */ (
+      this.get(ol.layer.VectorProperty.RENDER_ORDER));
 };
-goog.exportProperty(
-    ol.layer.Vector.prototype,
-    'getRenderGeometryFunctions',
-    ol.layer.Vector.prototype.getRenderGeometryFunctions);
 
 
 /**
@@ -88,19 +87,12 @@ ol.layer.Vector.prototype.getStyleFunction = function() {
 
 
 /**
- * @param {ol.Collection|undefined} renderGeometryFunctions Render geometry
- *     functions.
- * @todo stability experimental
+ * @param {function(ol.Feature, ol.Feature):number|null|undefined} renderOrder
+ *     Render order.
  */
-ol.layer.Vector.prototype.setRenderGeometryFunctions =
-    function(renderGeometryFunctions) {
-  this.set(ol.layer.VectorProperty.RENDER_GEOMETRY_FUNCTIONS,
-      renderGeometryFunctions);
+ol.layer.Vector.prototype.setRenderOrder = function(renderOrder) {
+  this.set(ol.layer.VectorProperty.RENDER_ORDER, renderOrder);
 };
-goog.exportProperty(
-    ol.layer.Vector.prototype,
-    'setRenderGeometryFunctions',
-    ol.layer.Vector.prototype.setRenderGeometryFunctions);
 
 
 /**

@@ -55,7 +55,6 @@ var vector = new ol.layer.Vector({
 
 var map = new ol.Map({
   layers: [raster, vector],
-  renderer: 'canvas',
   target: document.getElementById('map'),
   view: new ol.View2D({
     center: [-7916041.528716288, 5228379.045749711],
@@ -87,6 +86,6 @@ $(map.getViewport()).on('mousemove', function(evt) {
   displayFeatureInfo(pixel);
 });
 
-map.on('singleclick', function(evt) {
+map.on('click', function(evt) {
   displayFeatureInfo(evt.pixel);
 });

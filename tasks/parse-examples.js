@@ -49,21 +49,25 @@ function parseExamples(examplePaths, callback) {
         tags: ''
       };
       var key;
+      var openTag;
       var parser = new Parser({
-        onopentag: function(name, attrs) {
+        onopentag: function(tag, attrs) {
           if (attrs.id in info) {
             key = attrs.id;
-          } else {
-            key = undefined;
+            openTag = tag;
           }
         },
         ontext: function(text) {
           if (key) {
-            info[key] = text.replace(/\n/g, '').trim();
+            info[key] += text.replace(/\n/g, '').trim() + ' ';
           }
         },
-        onclosetag: function(name) {
-          key = undefined;
+        onclosetag: function(tag) {
+          if (tag === openTag) {
+            info[key] = info[key].trim();
+            key = undefined;
+            openTag = undefined;
+          }
         },
         onerror: function(err2) {
           var message = 'Trouble parsing ' + examplePath + '\n' + err2.message;

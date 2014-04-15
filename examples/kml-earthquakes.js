@@ -53,7 +53,6 @@ var raster = new ol.layer.Tile({
 
 var map = new ol.Map({
   layers: [raster, vector],
-  renderer: 'canvas',
   target: 'map',
   view: new ol.View2D({
     center: [0, 0],
@@ -89,6 +88,6 @@ $(map.getViewport()).on('mousemove', function(evt) {
   displayFeatureInfo(map.getEventPixel(evt.originalEvent));
 });
 
-map.on('singleclick', function(evt) {
+map.on('click', function(evt) {
   displayFeatureInfo(evt.pixel);
 });

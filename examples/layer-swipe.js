@@ -16,7 +16,6 @@ var bing = new ol.layer.Tile({
 
 var map = new ol.Map({
   layers: [osm, bing],
-  renderer: 'canvas',
   target: 'map',
   view: new ol.View2D({
     center: [0, 0],

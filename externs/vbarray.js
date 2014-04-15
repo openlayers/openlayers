@@ -4,6 +4,7 @@
  */
 
 
+
 /**
  * FIXME check argument type
  * @constructor
@@ -15,7 +16,7 @@ var VBArray = function(safeArray) {};
 /**
  * @return {number}
  */
-VBArray.prototype.dimensions = function() {};
+VBArray.prototype.dimensions = function() {return 0;};
 
 
 /**
@@ -26,20 +27,20 @@ VBArray.prototype.getItem = function(var_args) {};
 
 
 /**
- * @param {number} dimension
+ * @param {number=} opt_dimension
  * @return {*}
  */
-VBArray.prototype.lbound = function(dimension) {};
+VBArray.prototype.lbound = function(opt_dimension) {};
 
 
 /**
  * @return {Array.<number>}
  */
-VBArray.prototype.toArray = function() {};
+VBArray.prototype.toArray = function() {return null;};
 
 
 /**
- * @param {number} dimension
+ * @param {number=} opt_dimension
  * @return {*}
  */
-VBArray.prototype.ubound = function(dimension) {};
+VBArray.prototype.ubound = function(opt_dimension) {};

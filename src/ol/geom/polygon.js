@@ -2,6 +2,7 @@ goog.provide('ol.geom.Polygon');
 
 goog.require('goog.array');
 goog.require('goog.asserts');
+goog.require('ol.array');
 goog.require('ol.extent');
 goog.require('ol.geom.GeometryType');
 goog.require('ol.geom.LinearRing');
@@ -22,7 +23,7 @@ goog.require('ol.geom.flat.simplify');
  * @constructor
  * @extends {ol.geom.SimpleGeometry}
  * @param {ol.geom.RawPolygon} coordinates Coordinates.
- * @param {ol.geom.GeometryLayout=} opt_layout Layout.
+ * @param {ol.geom.GeometryLayout|string=} opt_layout Layout.
  * @todo stability experimental
  */
 ol.geom.Polygon = function(coordinates, opt_layout) {
@@ -71,7 +72,8 @@ ol.geom.Polygon = function(coordinates, opt_layout) {
    */
   this.orientedFlatCoordinates_ = null;
 
-  this.setCoordinates(coordinates, opt_layout);
+  this.setCoordinates(coordinates,
+      /** @type {ol.geom.GeometryLayout|undefined} */ (opt_layout));
 
 };
 goog.inherits(ol.geom.Polygon, ol.geom.SimpleGeometry);
@@ -85,7 +87,7 @@ ol.geom.Polygon.prototype.appendLinearRing = function(linearRing) {
   if (goog.isNull(this.flatCoordinates)) {
     this.flatCoordinates = linearRing.getFlatCoordinates().slice();
   } else {
-    goog.array.extend(this.flatCoordinates, linearRing.getFlatCoordinates());
+    ol.array.safeExtend(this.flatCoordinates, linearRing.getFlatCoordinates());
   }
   this.ends_.push(this.flatCoordinates.length);
   this.dispatchChangeEvent();

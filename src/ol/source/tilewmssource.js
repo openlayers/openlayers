@@ -237,7 +237,9 @@ ol.source.TileWMS.prototype.getRequestUrl_ =
   params[this.v13_ ? 'CRS' : 'SRS'] = projection.getCode();
 
   if (!('STYLES' in this.params_)) {
+    /* jshint -W053 */
     goog.object.set(params, 'STYLES', new String(''));
+    /* jshint +W053 */
   }
 
   if (pixelRatio != 1) {
@@ -297,6 +299,16 @@ ol.source.TileWMS.prototype.getTilePixelSize =
   } else {
     return (tileSize * pixelRatio + 0.5) | 0;
   }
+};
+
+
+/**
+ * Return the URLs used for this WMS source.
+ * @return {Array.<string>|undefined} URLs.
+ * @todo stability experimental
+ */
+ol.source.TileWMS.prototype.getUrls = function() {
+  return this.urls_;
 };
 
 

@@ -547,7 +547,7 @@ ol.format.WFS.writeGetFeature_ = function(node, featureTypes, objectStack) {
 
 /**
  * @param {olx.format.WFSWriteGetFeatureOptions} options Options.
- * @return {ArrayBuffer|Node|Object|string} Result.
+ * @return {Node} Result.
  */
 ol.format.WFS.prototype.writeGetFeature = function(options) {
   var node = ol.xml.createElementNS('http://www.opengis.net/wfs',
@@ -598,7 +598,7 @@ ol.format.WFS.prototype.writeGetFeature = function(options) {
  * @param {Array.<ol.Feature>} updates The features to update.
  * @param {Array.<ol.Feature>} deletes The features to delete.
  * @param {olx.format.WFSWriteTransactionOptions} options Write options.
- * @return {ArrayBuffer|Node|Object|string} Result.
+ * @return {Node} Result.
  */
 ol.format.WFS.prototype.writeTransaction = function(inserts, updates, deletes,
     options) {

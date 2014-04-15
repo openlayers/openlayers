@@ -12,6 +12,7 @@ goog.require('ol.source.Source');
 /**
  * @constructor
  * @extends {ol.layer.Base}
+ * @fires {@link ol.render.Event} ol.render.Event
  * @param {olx.layer.LayerOptions} options Layer options.
  * @todo stability experimental
  * @todo observable brightness {number} the brightness of the layer
@@ -56,15 +57,10 @@ ol.layer.Layer.prototype.getLayersArray = function(opt_array) {
 /**
  * @inheritDoc
  */
-ol.layer.Layer.prototype.getLayerStatesArray = function(opt_obj) {
-  var obj = (goog.isDef(opt_obj)) ? opt_obj : {
-    layers: [],
-    layerStates: []
-  };
-  goog.asserts.assert(obj.layers.length === obj.layerStates.length);
-  obj.layers.push(this);
-  obj.layerStates.push(this.getLayerState());
-  return obj;
+ol.layer.Layer.prototype.getLayerStatesArray = function(opt_states) {
+  var states = (goog.isDef(opt_states)) ? opt_states : [];
+  states.push(this.getLayerState());
+  return states;
 };
 
 

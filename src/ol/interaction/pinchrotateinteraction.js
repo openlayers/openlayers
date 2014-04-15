@@ -1,18 +1,19 @@
 // FIXME works for View2D only
 
-goog.provide('ol.interaction.TouchRotate');
+goog.provide('ol.interaction.PinchRotate');
 
 goog.require('goog.asserts');
 goog.require('goog.style');
 goog.require('ol.Coordinate');
+goog.require('ol.ViewHint');
 goog.require('ol.interaction.Interaction');
-goog.require('ol.interaction.Touch');
+goog.require('ol.interaction.Pointer');
 
 
 /**
  * @define {number} Animation duration.
  */
-ol.interaction.TOUCHROTATE_ANIMATION_DURATION = 250;
+ol.interaction.ROTATE_ANIMATION_DURATION = 250;
 
 
 
@@ -20,11 +21,11 @@ ol.interaction.TOUCHROTATE_ANIMATION_DURATION = 250;
  * Allows the user to rotate the map by twisting with two fingers
  * on a touch screen.
  * @constructor
- * @extends {ol.interaction.Touch}
- * @param {olx.interaction.TouchRotateOptions=} opt_options Options.
+ * @extends {ol.interaction.Pointer}
+ * @param {olx.interaction.PinchRotateOptions=} opt_options Options.
  * @todo stability experimental
  */
-ol.interaction.TouchRotate = function(opt_options) {
+ol.interaction.PinchRotate = function(opt_options) {
 
   goog.base(this);
 
@@ -61,19 +62,19 @@ ol.interaction.TouchRotate = function(opt_options) {
   this.threshold_ = goog.isDef(options.threshold) ? options.threshold : 0.3;
 
 };
-goog.inherits(ol.interaction.TouchRotate, ol.interaction.Touch);
+goog.inherits(ol.interaction.PinchRotate, ol.interaction.Pointer);
 
 
 /**
  * @inheritDoc
  */
-ol.interaction.TouchRotate.prototype.handleTouchMove =
+ol.interaction.PinchRotate.prototype.handlePointerDrag =
     function(mapBrowserEvent) {
-  goog.asserts.assert(this.targetTouches.length >= 2);
+  goog.asserts.assert(this.targetPointers.length >= 2);
   var rotationDelta = 0.0;
 
-  var touch0 = this.targetTouches[0];
-  var touch1 = this.targetTouches[1];
+  var touch0 = this.targetPointers[0];
+  var touch1 = this.targetPointers[1];
 
   // angle between touches
   var angle = Math.atan2(
@@ -97,7 +98,8 @@ ol.interaction.TouchRotate.prototype.handleTouchMove =
   // FIXME: should be the intersection point between the lines:
   //     touch0,touch1 and previousTouch0,previousTouch1
   var viewportPosition = goog.style.getClientPosition(map.getViewport());
-  var centroid = ol.interaction.Touch.centroid(this.targetTouches);
+  var centroid =
+      ol.interaction.Pointer.centroid(this.targetPointers);
   centroid[0] -= viewportPosition.x;
   centroid[1] -= viewportPosition.y;
   this.anchor_ = map.getCoordinateFromPixel(centroid);
@@ -117,17 +119,19 @@ ol.interaction.TouchRotate.prototype.handleTouchMove =
 /**
  * @inheritDoc
  */
-ol.interaction.TouchRotate.prototype.handleTouchEnd =
+ol.interaction.PinchRotate.prototype.handlePointerUp =
     function(mapBrowserEvent) {
-  if (this.targetTouches.length < 2) {
+  if (this.targetPointers.length < 2) {
     var map = mapBrowserEvent.map;
-    // FIXME works for View2D only
-    var view = map.getView().getView2D();
-    var view2DState = view.getView2DState();
+    var view = map.getView();
+    view.setHint(ol.ViewHint.INTERACTING, -1);
     if (this.rotating_) {
+      // FIXME works for View2D only
+      var view2D = view.getView2D();
+      var view2DState = view2D.getView2DState();
       ol.interaction.Interaction.rotate(
-          map, view, view2DState.rotation, this.anchor_,
-          ol.interaction.TOUCHROTATE_ANIMATION_DURATION);
+          map, view2D, view2DState.rotation, this.anchor_,
+          ol.interaction.ROTATE_ANIMATION_DURATION);
     }
     return false;
   } else {
@@ -139,14 +143,17 @@ ol.interaction.TouchRotate.prototype.handleTouchEnd =
 /**
  * @inheritDoc
  */
-ol.interaction.TouchRotate.prototype.handleTouchStart =
+ol.interaction.PinchRotate.prototype.handlePointerDown =
     function(mapBrowserEvent) {
-  if (this.targetTouches.length >= 2) {
+  if (this.targetPointers.length >= 2) {
     var map = mapBrowserEvent.map;
     this.anchor_ = null;
     this.lastAngle_ = undefined;
     this.rotating_ = false;
     this.rotationDelta_ = 0.0;
+    if (!this.handlingDownUpSequence) {
+      map.getView().setHint(ol.ViewHint.INTERACTING, 1);
+    }
     map.render();
     return true;
   } else {

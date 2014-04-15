@@ -56,7 +56,7 @@ ol.OverlayPositioning = {
  * @constructor
  * @extends {ol.Object}
  * @param {olx.OverlayOptions} options Overlay options.
- * @todo stability experimental
+ * @todo stability stable
  * @todo observable element {Element} the Element containing the overlay
  * @todo observable map {ol.Map} the map that the overlay is part of
  * @todo observable position {ol.Coordinate} the spatial point that the overlay
@@ -307,7 +307,7 @@ goog.exportProperty(
 /**
  * Set the position for this overlay.
  * @param {ol.Coordinate|undefined} position Position.
- * @todo stability experimental
+ * @todo stability stable
  */
 ol.Overlay.prototype.setPosition = function(position) {
   this.set(ol.OverlayProperty.POSITION, position);

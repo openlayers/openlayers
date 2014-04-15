@@ -42,7 +42,7 @@ ol.source.WMTS = function(options) {
    * @private
    * @type {Object}
    */
-  this.dimensions_ = options.dimensions || {};
+  this.dimensions_ = goog.isDef(options.dimensions) ? options.dimensions : {};
 
   /**
    * @private
@@ -76,6 +76,8 @@ ol.source.WMTS = function(options) {
     });
   }
 
+  var dimensions = this.dimensions_;
+
   /**
    * @param {string} template Template.
    * @return {ol.TileUrlFunctionType} Tile URL function.
@@ -94,7 +96,6 @@ ol.source.WMTS = function(options) {
 
     return (
         /**
-         * @this {ol.source.WMTS}
          * @param {ol.TileCoord} tileCoord Tile coordinate.
          * @param {number} pixelRatio Pixel ratio.
          * @param {ol.proj.Projection} projection Projection.
@@ -109,7 +110,7 @@ ol.source.WMTS = function(options) {
               'TileCol': tileCoord.x,
               'TileRow': tileCoord.y
             };
-            goog.object.extend(localContext, this.dimensions_);
+            goog.object.extend(localContext, dimensions);
             var url = template;
             if (requestEncoding == ol.source.WMTSRequestEncoding.KVP) {
               url = goog.uri.utils.appendParamsFromMap(url, localContext);
@@ -143,7 +144,6 @@ ol.source.WMTS = function(options) {
        * @return {ol.TileCoord} Tile coordinate.
        */
       function(tileCoord, projection, opt_tileCoord) {
-        var tileGrid = this.getTileGrid();
         goog.asserts.assert(!goog.isNull(tileGrid));
         if (tileGrid.getResolutions().length <= tileCoord.z) {
           return null;
@@ -243,6 +243,8 @@ ol.source.WMTS.prototype.updateDimensions = function(dimensions) {
  */
 ol.source.WMTS.optionsFromCapabilities = function(wmtsCap, layer) {
 
+  /* jshint -W069 */
+
   // TODO: add support for TileMatrixLimits
 
   var layers = wmtsCap['contents']['layers'];
@@ -328,4 +330,7 @@ ol.source.WMTS.optionsFromCapabilities = function(wmtsCap, layer) {
     style: style,
     dimensions: dimensions
   };
+
+  /* jshint +W069 */
+
 };
