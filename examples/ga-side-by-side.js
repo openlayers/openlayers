@@ -1,7 +1,6 @@
 goog.require('ga.Map');
 goog.require('ga.layer');
 goog.require('ol.BrowserFeature');
-goog.require('ol.RendererHint');
 goog.require('ol.View2D');
 
 
@@ -10,7 +9,7 @@ var domMap = new ga.Map({
   layers: [
     ga.layer.create('ch.swisstopo.pixelkarte-farbe')
   ],
-  renderer: ol.RendererHint.DOM,
+  renderer: 'dom',
   view: new ol.View2D({
     // Define the default resolution
     // 10 means that one pixel is 10m width and height
@@ -24,7 +23,7 @@ var domMap = new ga.Map({
 
 if (ol.BrowserFeature.HAS_WEBGL) {
   var webglMap = new ga.Map({
-    renderer: ol.RendererHint.WEBGL,
+    renderer: 'webgl',
     target: 'webglMap'
   });
   webglMap.bindTo('layergroup', domMap);
@@ -38,7 +37,7 @@ if (ol.BrowserFeature.HAS_WEBGL) {
 }
 
 var canvasMap = new ga.Map({
-  renderer: ol.RendererHint.CANVAS,
+  renderer: 'canvas',
   target: 'canvasMap'
 });
 canvasMap.bindTo('layergroup', domMap);

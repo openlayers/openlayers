@@ -3,15 +3,15 @@
   "id": "ga-all",
 
   "externs": [
-    "//json.js",
-    "../build/src/external/externs/types.js",
     "../externs/bingmaps.js",
+    "../externs/closure-compiler.js",
     "../externs/geojson.js",
-    "../externs/topojson.js",
     "../externs/oli.js",
+    "../externs/olx.js",
     "../externs/proj4js.js",
     "../externs/tilejson.js",
-    "../externs/closure-compiler.js",
+    "../externs/topojson.js",
+    "../externs/vbarray.js",
      "../externs/ga.js"
   ],
 
@@ -19,7 +19,6 @@
 
   "inputs": [
     "../build/src/internal/src/requireall.js",
-    "../build/src/internal/src/types.js",
     "../build/src/external/src/exports.js"
   ]
 
