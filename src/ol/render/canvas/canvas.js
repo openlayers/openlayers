@@ -1,7 +1,5 @@
 goog.provide('ol.render.canvas');
 
-goog.require('ol.color');
-
 
 /**
  * @typedef {{fillStyle: string}}
@@ -39,7 +37,7 @@ ol.render.canvas.defaultFont = '10px sans-serif';
  * @const
  * @type {ol.Color}
  */
-ol.render.canvas.defaultFillStyle = ol.color.fromString('black');
+ol.render.canvas.defaultFillStyle = [0, 0, 0, 1];
 
 
 /**
