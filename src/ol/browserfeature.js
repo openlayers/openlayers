@@ -77,7 +77,6 @@ ol.IS_LEGACY_IE = goog.userAgent.IE &&
  * (dips) on the device (`window.devicePixelRatio`).
  * @const
  * @type {number}
- * @todo stability experimental
  * @todo api
  */
 ol.BrowserFeature.DEVICE_PIXEL_RATIO = goog.global.devicePixelRatio || 1;
@@ -102,7 +101,6 @@ ol.BrowserFeature.HAS_CANVAS_LINE_DASH = false;
  * True if browser supports Canvas.
  * @const
  * @type {boolean}
- * @todo stability experimental
  * @todo api
  */
 ol.BrowserFeature.HAS_CANVAS = ol.ENABLE_CANVAS && (
@@ -133,7 +131,6 @@ ol.BrowserFeature.HAS_CANVAS = ol.ENABLE_CANVAS && (
  * Indicates if DeviceOrientation is supported in the user's browser.
  * @const
  * @type {boolean}
- * @todo stability experimental
  * @todo api
  */
 ol.BrowserFeature.HAS_DEVICE_ORIENTATION =
@@ -152,7 +149,6 @@ ol.BrowserFeature.HAS_DOM = ol.ENABLE_DOM;
  * Is HTML5 geolocation supported in the current browser?
  * @const
  * @type {boolean}
- * @todo stability experimental
  * @todo api
  */
 ol.BrowserFeature.HAS_GEOLOCATION = 'geolocation' in goog.global.navigator;
@@ -170,7 +166,6 @@ ol.BrowserFeature.HAS_JSON_PARSE =
  * True if browser supports touch events.
  * @const
  * @type {boolean}
- * @todo stability experimental
  * @todo api
  */
 ol.BrowserFeature.HAS_TOUCH = ol.ASSUME_TOUCH || 'ontouchstart' in goog.global;

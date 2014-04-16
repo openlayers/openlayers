@@ -13,7 +13,10 @@ For events, we make properties available to the application. Other than methods,
 /** @interface */
 oli.MapBrowserEvent;
 
-/** @type {ol.Coordinate} */
+/**
+ * @type {ol.Coordinate}
+ * @todo api
+ */
 oli.MapBrowserEvent.prototype.coordinate;
 ```
 In the source file (`src/ol/MapBrowserEvent.js`), the class needs to implement this interface:
@@ -29,13 +32,13 @@ ol.MapBrowserEvent = function(type, map, browserEvent, opt_frameState) {
 
   /**
    * @type {ol.Coordinate}
-   * @todo stability experimental
    */
   this.coordinate = map.getEventCoordinate(this.originalEvent);
 
   // ...
 
 };
+```
 
 ### Override methods in custom classes
 
@@ -69,7 +72,7 @@ ol.control.Control = function(options) {
 /**
  * Application subclasses may override this.
  * @param {ol.Map} map Map.
- * @todo stability experimental
+ * @todo api
  */
 ol.control.Control.prototype.setMap = function(map) {
   // ...
@@ -83,7 +86,7 @@ Object literals cannot be exported like classes. To make sure that their propert
 /**
  * @typedef {{element: (Element|undefined),
  *     target: (Element|string|undefined)}}
- * @todo stability experimental
+ * @todo api
  */
 olx.control.ControlOptions;
 
@@ -103,6 +106,7 @@ olx.control.ControlOptions.prototype.target;
 ```
 In the source code, the name used for the typedef is used as type whenever this object literal is expected:
 ```js
+/**
  * ...
  * @param {olx.control.ControlOptions} options Control options.
  */

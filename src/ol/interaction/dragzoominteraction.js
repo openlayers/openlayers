@@ -23,7 +23,6 @@ ol.interaction.DRAGZOOM_ANIMATION_DURATION = 200;
  * @constructor
  * @extends {ol.interaction.DragBox}
  * @param {olx.interaction.DragZoomOptions=} opt_options Options.
- * @todo stability experimental
  * @todo api
  */
 ol.interaction.DragZoom = function(opt_options) {

@@ -72,7 +72,6 @@ ol.Tile.prototype.getKey = function() {
 
 /**
  * @return {ol.TileCoord}
- * @todo stability experimental
  * @todo api
  */
 ol.Tile.prototype.getTileCoord = function() {

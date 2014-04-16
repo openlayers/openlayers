@@ -15,7 +15,6 @@ goog.require('ol.geom.GeometryType');
  * @constructor
  * @extends {ol.geom.Geometry}
  * @param {Array.<ol.geom.Geometry>=} opt_geometries Geometries.
- * @todo stability experimental
  * @todo api
  */
 ol.geom.GeometryCollection = function(opt_geometries) {
@@ -147,7 +146,6 @@ ol.geom.GeometryCollection.prototype.getExtent = function(opt_extent) {
 
 /**
  * @return {Array.<ol.geom.Geometry>} Geometries.
- * @todo stability experimental
  * @todo api
  */
 ol.geom.GeometryCollection.prototype.getGeometries = function() {
@@ -227,7 +225,6 @@ ol.geom.GeometryCollection.prototype.isEmpty = function() {
 
 /**
  * @param {Array.<ol.geom.Geometry>} geometries Geometries.
- * @todo stability experimental
  * @todo api
  */
 ol.geom.GeometryCollection.prototype.setGeometries = function(geometries) {

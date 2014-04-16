@@ -12,7 +12,6 @@ goog.require('ol.geom.flat.transform');
 /**
  * @constructor
  * @extends {ol.geom.Geometry}
- * @todo stability experimental
  * @todo api
  */
 ol.geom.SimpleGeometry = function() {
@@ -103,7 +102,6 @@ ol.geom.SimpleGeometry.prototype.getExtent = function(opt_extent) {
 
 /**
  * @return {ol.Coordinate} First coordinate.
- * @todo stability experimental
  * @todo api
  */
 ol.geom.SimpleGeometry.prototype.getFirstCoordinate = function() {
@@ -121,7 +119,6 @@ ol.geom.SimpleGeometry.prototype.getFlatCoordinates = function() {
 
 /**
  * @return {ol.Coordinate} Last point.
- * @todo stability experimental
  * @todo api
  */
 ol.geom.SimpleGeometry.prototype.getLastCoordinate = function() {
@@ -131,7 +128,6 @@ ol.geom.SimpleGeometry.prototype.getLastCoordinate = function() {
 
 /**
  * @return {ol.geom.GeometryLayout} Layout.
- * @todo stability experimental
  * @todo api
  */
 ol.geom.SimpleGeometry.prototype.getLayout = function() {

@@ -26,7 +26,6 @@ ol.source.ZoomifyTierSizeCalculation = {
  * @constructor
  * @extends {ol.source.TileImage}
  * @param {olx.source.ZoomifyOptions=} opt_options Options.
- * @todo stability experimental
  * @todo api
  */
 ol.source.Zoomify = function(opt_options) {

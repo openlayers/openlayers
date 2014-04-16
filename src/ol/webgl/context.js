@@ -23,7 +23,6 @@ ol.webgl.BufferCacheEntry;
  * @extends {goog.events.EventTarget}
  * @param {HTMLCanvasElement} canvas Canvas.
  * @param {WebGLRenderingContext} gl GL.
- * @todo stability experimental
  * @todo api
  */
 ol.webgl.Context = function(canvas, gl) {
@@ -161,7 +160,6 @@ ol.webgl.Context.prototype.getCanvas = function() {
 
 /**
  * @return {WebGLRenderingContext} GL.
- * @todo stability experimental
  * @todo api
  */
 ol.webgl.Context.prototype.getGL = function() {
@@ -250,7 +248,6 @@ ol.webgl.Context.prototype.handleWebGLContextRestored = function() {
 /**
  * @param {WebGLProgram} program Program.
  * @return {boolean} Changed.
- * @todo stability experimental
  * @todo api
  */
 ol.webgl.Context.prototype.useProgram = function(program) {

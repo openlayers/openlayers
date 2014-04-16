@@ -16,7 +16,6 @@ goog.require('ol.geom.flat.simplify');
  * @extends {ol.geom.SimpleGeometry}
  * @param {ol.geom.RawLinearRing} coordinates Coordinates.
  * @param {ol.geom.GeometryLayout|string=} opt_layout Layout.
- * @todo stability experimental
  * @todo api
  */
 ol.geom.LinearRing = function(coordinates, opt_layout) {
@@ -75,7 +74,6 @@ ol.geom.LinearRing.prototype.closestPointXY =
 
 /**
  * @return {number} Area.
- * @todo stability experimental
  * @todo api
  */
 ol.geom.LinearRing.prototype.getArea = function() {
@@ -86,7 +84,6 @@ ol.geom.LinearRing.prototype.getArea = function() {
 
 /**
  * @return {ol.geom.RawLinearRing} Coordinates.
- * @todo stability experimental
  * @todo api
  */
 ol.geom.LinearRing.prototype.getCoordinates = function() {
@@ -123,7 +120,6 @@ ol.geom.LinearRing.prototype.getType = function() {
 /**
  * @param {ol.geom.RawLinearRing} coordinates Coordinates.
  * @param {ol.geom.GeometryLayout=} opt_layout Layout.
- * @todo stability experimental
  * @todo api
  */
 ol.geom.LinearRing.prototype.setCoordinates =

@@ -5,7 +5,6 @@ goog.provide('ol.style.Text');
 /**
  * @constructor
  * @param {olx.style.TextOptions=} opt_options Options.
- * @todo stability experimental
  * @todo api
  */
 ol.style.Text = function(opt_options) {
@@ -76,7 +75,6 @@ ol.style.Text = function(opt_options) {
 
 /**
  * @return {string|undefined} Font.
- * @todo stability experimental
  * @todo api
  */
 ol.style.Text.prototype.getFont = function() {
@@ -102,7 +100,6 @@ ol.style.Text.prototype.getOffsetY = function() {
 
 /**
  * @return {ol.style.Fill} Fill style.
- * @todo stability experimental
  * @todo api
  */
 ol.style.Text.prototype.getFill = function() {
@@ -112,7 +109,6 @@ ol.style.Text.prototype.getFill = function() {
 
 /**
  * @return {number|undefined} Rotation.
- * @todo stability experimental
  * @todo api
  */
 ol.style.Text.prototype.getRotation = function() {
@@ -122,7 +118,6 @@ ol.style.Text.prototype.getRotation = function() {
 
 /**
  * @return {number|undefined} Scale.
- * @todo stability experimental
  * @todo api
  */
 ol.style.Text.prototype.getScale = function() {
@@ -132,7 +127,6 @@ ol.style.Text.prototype.getScale = function() {
 
 /**
  * @return {ol.style.Stroke} Stroke style.
- * @todo stability experimental
  * @todo api
  */
 ol.style.Text.prototype.getStroke = function() {
@@ -142,7 +136,6 @@ ol.style.Text.prototype.getStroke = function() {
 
 /**
  * @return {string|undefined} Text.
- * @todo stability experimental
  * @todo api
  */
 ol.style.Text.prototype.getText = function() {
@@ -152,7 +145,6 @@ ol.style.Text.prototype.getText = function() {
 
 /**
  * @return {string|undefined} Text align.
- * @todo stability experimental
  * @todo api
  */
 ol.style.Text.prototype.getTextAlign = function() {
@@ -162,7 +154,6 @@ ol.style.Text.prototype.getTextAlign = function() {
 
 /**
  * @return {string|undefined} Text baseline.
- * @todo stability experimental
  * @todo api
  */
 ol.style.Text.prototype.getTextBaseline = function() {

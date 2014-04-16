@@ -14,7 +14,6 @@ goog.require('ol.math');
  * @extends {ol.geom.SimpleGeometry}
  * @param {ol.geom.RawPoint} coordinates Coordinates.
  * @param {ol.geom.GeometryLayout|string=} opt_layout Layout.
- * @todo stability experimental
  * @todo api
  */
 ol.geom.Point = function(coordinates, opt_layout) {
@@ -60,7 +59,6 @@ ol.geom.Point.prototype.closestPointXY =
 
 /**
  * @return {ol.geom.RawPoint} Coordinates.
- * @todo stability experimental
  * @todo api
  */
 ol.geom.Point.prototype.getCoordinates = function() {
@@ -94,7 +92,6 @@ ol.geom.Point.prototype.getType = function() {
 /**
  * @param {ol.geom.RawPoint} coordinates Coordinates.
  * @param {ol.geom.GeometryLayout=} opt_layout Layout.
- * @todo stability experimental
  * @todo api
  */
 ol.geom.Point.prototype.setCoordinates = function(coordinates, opt_layout) {

@@ -25,7 +25,6 @@ ol.layer.HeatmapLayerProperty = {
  * @extends {ol.layer.Vector}
  * @fires {@link ol.render.Event} ol.render.Event
  * @param {olx.layer.HeatmapOptions=} opt_options Options.
- * @todo stability experimental
  * @todo api
  */
 ol.layer.Heatmap = function(opt_options) {

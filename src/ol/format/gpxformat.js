@@ -19,7 +19,6 @@ goog.require('ol.xml');
 /**
  * @constructor
  * @extends {ol.format.XMLFeature}
- * @todo stability experimental
  * @todo api
  */
 ol.format.GPX = function() {
@@ -370,7 +369,6 @@ ol.format.GPX.WPT_PARSERS_ = ol.xml.makeParsersNS(
  * @function
  * @param {ArrayBuffer|Document|Node|Object|string} source Source.
  * @return {ol.Feature} Feature.
- * @todo stability experimental
  * @todo api
  */
 ol.format.GPX.prototype.readFeature;
@@ -402,7 +400,6 @@ ol.format.GPX.prototype.readFeatureFromNode = function(node) {
  * @function
  * @param {ArrayBuffer|Document|Node|Object|string} source Source.
  * @return {Array.<ol.Feature>} Features.
- * @todo stability experimental
  * @todo api
  */
 ol.format.GPX.prototype.readFeatures;
@@ -435,7 +432,6 @@ ol.format.GPX.prototype.readFeaturesFromNode = function(node) {
  *
  * @param {ArrayBuffer|Document|Node|Object|string} source Source.
  * @return {ol.proj.Projection} Projection.
- * @todo stability experimental
  * @todo api
  */
 ol.format.GPX.prototype.readProjection;
@@ -811,7 +807,6 @@ goog.inherits(ol.format.GPX.V1_1, ol.format.GPX);
  * @function
  * @param {Array.<ol.Feature>} features Features.
  * @return {ArrayBuffer|Node|Object|string} Result.
- * @todo stability experimental
  * @todo api
  */
 ol.format.GPX.prototype.writeFeatures;

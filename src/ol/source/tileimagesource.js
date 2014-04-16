@@ -17,7 +17,6 @@ goog.require('ol.source.Tile');
  * @constructor
  * @extends {ol.source.Tile}
  * @param {olx.source.TileImageOptions} options Image tile options.
- * @todo stability experimental
  * @todo api
  */
 ol.source.TileImage = function(options) {

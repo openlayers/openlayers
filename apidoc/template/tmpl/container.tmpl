@@ -142,7 +142,7 @@
         <h3 class="subsection-title">TypeDefs</h3>
         
         <dl><?js typedefs.forEach(function(e) { ?>
-            <?js= self.partial('members.tmpl', e) ?>
+            <?js= self.partial(e.params ? 'method.tmpl' : 'members.tmpl', e) ?>
         <?js }); ?></dl>
     <?js } ?>
     

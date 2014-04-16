@@ -1,3 +1,29 @@
+/**
+ * Define an @api tag
+ */
+var conf = env.conf.stability;
+var defaultLevels = ["deprecated","experimental","unstable","stable","frozen","locked"];
+var levels = conf.levels || defaultLevels;
+var util = require('util');
+exports.defineTags = function(dictionary) {
+  dictionary.defineTag('api', {
+    mustHaveValue: false,
+    canHaveType: false,
+    canHaveName: false,
+    onTagged: function(doclet, tag) {
+      var level = tag.text || "experimental";
+      if (levels.indexOf(level) >= 0) {
+        doclet.stability = level;
+      } else {
+        var errorText = util.format('Invalid stability level (%s) in %s line %s', tag.text, doclet.meta.filename, doclet.meta.lineno);
+        require('jsdoc/util/error').handle( new Error(errorText) );
+      }
+    }
+  });
+};
+
+
+
 /*
  * Based on @stability annotations, and assuming that items with no @stability
  * annotation should not be documented, this plugin removes undocumented symbols

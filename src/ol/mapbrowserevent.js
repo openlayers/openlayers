@@ -40,19 +40,16 @@ ol.MapBrowserEvent = function(type, map, browserEvent, opt_frameState) {
   /**
    * @const
    * @type {Event}
-   * @todo stability experimental
    */
   this.originalEvent = browserEvent.getBrowserEvent();
 
   /**
    * @type {ol.Coordinate}
-   * @todo stability experimental
    */
   this.coordinate = map.getEventCoordinate(this.originalEvent);
 
   /**
    * @type {ol.Pixel}
-   * @todo stability experimental
    */
   this.pixel = map.getEventPixel(this.originalEvent);
 
@@ -64,7 +61,6 @@ goog.inherits(ol.MapBrowserEvent, ol.MapEvent);
  * Prevents the default browser action.
  * @see https://developer.mozilla.org/en-US/docs/Web/API/event.preventDefault
  * @override
- * @todo stability experimental
  * @todo api
  */
 ol.MapBrowserEvent.prototype.preventDefault = function() {
@@ -77,7 +73,6 @@ ol.MapBrowserEvent.prototype.preventDefault = function() {
  * Prevents further propagation of the current event.
  * @see https://developer.mozilla.org/en-US/docs/Web/API/event.stopPropagation
  * @override
- * @todo stability experimental
  * @todo api
  */
 ol.MapBrowserEvent.prototype.stopPropagation = function() {
@@ -471,25 +466,25 @@ ol.MapBrowserEvent.EventType = {
    * A true single click with no dragging and no double click. Note that this
    * event is delayed by 250 ms to ensure that it is not a double click.
    * @event ol.MapBrowserEvent#singleclick
-   * @todo stability experimental
+   * @todo api
    */
   SINGLECLICK: 'singleclick',
   /**
    * A click with no dragging. A double click will fire two of this.
    * @event ol.MapBrowserEvent#click
-   * @todo stability experimental
+   * @todo api
    */
   CLICK: goog.events.EventType.CLICK,
   /**
    * A true double click, with no dragging.
    * @event ol.MapBrowserEvent#dblclick
-   * @todo stability experimental
+   * @todo api
    */
   DBLCLICK: goog.events.EventType.DBLCLICK,
   /**
    * Triggered when a pointer is dragged.
    * @event ol.MapBrowserEvent#pointerdrag
-   * @todo stability experimental
+   * @todo api
    */
   POINTERDRAG: 'pointerdrag',
 
@@ -497,7 +492,7 @@ ol.MapBrowserEvent.EventType = {
   /**
    * Triggered when a pointer is moved.
    * @event ol.MapBrowserEvent#pointermove
-   * @todo stability experimental
+   * @todo api
    */
   POINTERMOVE: 'pointermove',
   POINTERDOWN: 'pointerdown',

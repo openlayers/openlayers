@@ -11,13 +11,13 @@ ol.MapEventType = {
   /**
    * Triggered after a map frame is rendered.
    * @event ol.MapEvent#postrender
-   * @todo stability experimental
+   * @todo api
    */
   POSTRENDER: 'postrender',
   /**
    * Triggered after the map is moved.
    * @event ol.MapEvent#moveend
-   * @todo stability experimental
+   * @todo api
    */
   MOVEEND: 'moveend'
 };

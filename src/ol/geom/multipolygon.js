@@ -25,7 +25,6 @@ goog.require('ol.geom.flat.simplify');
  * @extends {ol.geom.SimpleGeometry}
  * @param {ol.geom.RawMultiPolygon} coordinates Coordinates.
  * @param {ol.geom.GeometryLayout|string=} opt_layout Layout.
- * @todo stability experimental
  * @todo api
  */
 ol.geom.MultiPolygon = function(coordinates, opt_layout) {
@@ -83,7 +82,6 @@ goog.inherits(ol.geom.MultiPolygon, ol.geom.SimpleGeometry);
 
 /**
  * @param {ol.geom.Polygon} polygon Polygon.
- * @todo stability experimental
  * @todo api
  */
 ol.geom.MultiPolygon.prototype.appendPolygon = function(polygon) {
@@ -151,7 +149,6 @@ ol.geom.MultiPolygon.prototype.containsXY = function(x, y) {
 
 /**
  * @return {number} Area.
- * @todo stability experimental
  * @todo api
  */
 ol.geom.MultiPolygon.prototype.getArea = function() {
@@ -162,7 +159,6 @@ ol.geom.MultiPolygon.prototype.getArea = function() {
 
 /**
  * @return {ol.geom.RawMultiPolygon} Coordinates.
- * @todo stability experimental
  * @todo api
  */
 ol.geom.MultiPolygon.prototype.getCoordinates = function() {
@@ -197,7 +193,6 @@ ol.geom.MultiPolygon.prototype.getFlatInteriorPoints = function() {
 
 /**
  * @return {ol.geom.MultiPoint} Interior points.
- * @todo stability experimental
  * @todo api
  */
 ol.geom.MultiPolygon.prototype.getInteriorPoints = function() {
@@ -250,7 +245,6 @@ ol.geom.MultiPolygon.prototype.getSimplifiedGeometryInternal =
 /**
  * @param {number} index Index.
  * @return {ol.geom.Polygon} Polygon.
- * @todo stability experimental
  * @todo api
  */
 ol.geom.MultiPolygon.prototype.getPolygon = function(index) {
@@ -282,7 +276,6 @@ ol.geom.MultiPolygon.prototype.getPolygon = function(index) {
 
 /**
  * @return {Array.<ol.geom.Polygon>} Polygons.
- * @todo stability experimental
  * @todo api
  */
 ol.geom.MultiPolygon.prototype.getPolygons = function() {
@@ -322,7 +315,6 @@ ol.geom.MultiPolygon.prototype.getType = function() {
 /**
  * @param {ol.geom.RawMultiPolygon} coordinates Coordinates.
  * @param {ol.geom.GeometryLayout=} opt_layout Layout.
- * @todo stability experimental
  * @todo api
  */
 ol.geom.MultiPolygon.prototype.setCoordinates =

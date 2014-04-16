@@ -103,7 +103,6 @@ ol.color.blend = function(dst, src, opt_color) {
 /**
  * @param {ol.Color|string} color Color.
  * @return {ol.Color} Color.
- * @todo stability experimental
  * @todo api
  */
 ol.color.asArray = function(color) {
@@ -119,7 +118,6 @@ ol.color.asArray = function(color) {
 /**
  * @param {ol.Color|string} color Color.
  * @return {string} String.
- * @todo stability experimental
  * @todo api
  */
 ol.color.asString = function(color) {

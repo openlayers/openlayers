@@ -20,7 +20,6 @@ goog.require('ol.geom.flat.simplify');
  * @extends {ol.geom.SimpleGeometry}
  * @param {ol.geom.RawLineString} coordinates Coordinates.
  * @param {ol.geom.GeometryLayout|string=} opt_layout Layout.
- * @todo stability experimental
  * @todo api
  */
 ol.geom.LineString = function(coordinates, opt_layout) {
@@ -60,7 +59,6 @@ goog.inherits(ol.geom.LineString, ol.geom.SimpleGeometry);
 
 /**
  * @param {ol.Coordinate} coordinate Coordinate.
- * @todo stability experimental
  * @todo api
  */
 ol.geom.LineString.prototype.appendCoordinate = function(coordinate) {
@@ -117,7 +115,6 @@ ol.geom.LineString.prototype.closestPointXY =
  * @param {number} m M.
  * @param {boolean=} opt_extrapolate Extrapolate.
  * @return {ol.Coordinate} Coordinate.
- * @todo stability experimental
  * @todo api
  */
 ol.geom.LineString.prototype.getCoordinateAtM = function(m, opt_extrapolate) {
@@ -133,7 +130,6 @@ ol.geom.LineString.prototype.getCoordinateAtM = function(m, opt_extrapolate) {
 
 /**
  * @return {ol.geom.RawLineString} Coordinates.
- * @todo stability experimental
  * @todo api
  */
 ol.geom.LineString.prototype.getCoordinates = function() {
@@ -144,7 +140,6 @@ ol.geom.LineString.prototype.getCoordinates = function() {
 
 /**
  * @return {number} Length.
- * @todo stability experimental
  * @todo api
  */
 ol.geom.LineString.prototype.getLength = function() {
@@ -195,7 +190,6 @@ ol.geom.LineString.prototype.getType = function() {
 /**
  * @param {ol.geom.RawLineString} coordinates Coordinates.
  * @param {ol.geom.GeometryLayout=} opt_layout Layout.
- * @todo stability experimental
  * @todo api
  */
 ol.geom.LineString.prototype.setCoordinates =

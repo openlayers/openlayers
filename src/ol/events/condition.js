@@ -13,7 +13,7 @@ goog.require('ol.MapBrowserPointerEvent');
  * `{boolean}`. If the condition is met, true should be returned.
  *
  * @typedef {function(ol.MapBrowserEvent): boolean}
- * @todo stability experimental
+ * @todo api
  */
 ol.events.ConditionType;
 
@@ -21,7 +21,6 @@ ol.events.ConditionType;
 /**
  * @param {ol.MapBrowserEvent} mapBrowserEvent Map browser event.
  * @return {boolean} True if only the alt key is pressed.
- * @todo stability experimental
  * @todo api
  */
 ol.events.condition.altKeyOnly = function(mapBrowserEvent) {
@@ -36,7 +35,6 @@ ol.events.condition.altKeyOnly = function(mapBrowserEvent) {
 /**
  * @param {ol.MapBrowserEvent} mapBrowserEvent Map browser event.
  * @return {boolean} True if only the alt and shift keys are pressed.
- * @todo stability experimental
  * @todo api
  */
 ol.events.condition.altShiftKeysOnly = function(mapBrowserEvent) {
@@ -52,7 +50,6 @@ ol.events.condition.altShiftKeysOnly = function(mapBrowserEvent) {
  * Always true.
  * @param {ol.MapBrowserEvent} mapBrowserEvent Map browser event.
  * @return {boolean} True.
- * @todo stability experimental
  * @todo api
  */
 ol.events.condition.always = goog.functions.TRUE;
@@ -62,7 +59,6 @@ ol.events.condition.always = goog.functions.TRUE;
  * Always false.
  * @param {ol.MapBrowserEvent} mapBrowserEvent Map browser event.
  * @return {boolean} False.
- * @todo stability experimental
  * @todo api
  */
 ol.events.condition.never = goog.functions.FALSE;
@@ -80,7 +76,6 @@ ol.events.condition.singleClick = function(mapBrowserEvent) {
 /**
  * @param {ol.MapBrowserEvent} mapBrowserEvent Map browser event.
  * @return {boolean} True only if there no modifier keys are pressed.
- * @todo stability experimental
  * @todo api
  */
 ol.events.condition.noModifierKeys = function(mapBrowserEvent) {
@@ -95,7 +90,6 @@ ol.events.condition.noModifierKeys = function(mapBrowserEvent) {
 /**
  * @param {ol.MapBrowserEvent} mapBrowserEvent Map browser event.
  * @return {boolean} True if only the platform modifier key is pressed.
- * @todo stability experimental
  * @todo api
  */
 ol.events.condition.platformModifierKeyOnly = function(mapBrowserEvent) {
@@ -110,7 +104,6 @@ ol.events.condition.platformModifierKeyOnly = function(mapBrowserEvent) {
 /**
  * @param {ol.MapBrowserEvent} mapBrowserEvent Map browser event.
  * @return {boolean} True if only the shift key is pressed.
- * @todo stability experimental
  * @todo api
  */
 ol.events.condition.shiftKeyOnly = function(mapBrowserEvent) {
@@ -125,7 +118,6 @@ ol.events.condition.shiftKeyOnly = function(mapBrowserEvent) {
 /**
  * @param {ol.MapBrowserEvent} mapBrowserEvent Map browser event.
  * @return {boolean} True only if the target element is not editable.
- * @todo stability experimental
  * @todo api
  */
 ol.events.condition.targetNotEditable = function(mapBrowserEvent) {

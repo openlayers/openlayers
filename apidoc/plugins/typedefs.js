@@ -1,5 +1,6 @@
 /*
  * Converts olx.js @type annotations into properties of the previous @typedef.
+ * Changes @enum annotations into @typedef.
  */
 
 var lastOlxTypedef = null;
@@ -13,8 +14,9 @@ function addSubparams(params) {
       var name = types[k];
       if (name in olxTypes) {
         param.subparams = olxTypes[name];
-        addSubparams(param.subparams);
-        types[k] = 'Object';
+        // TODO Change template before recursing here, because the table gets
+        // too wide.
+        //addSubparams(param.subparams);
         // TODO Do we need to support multiple object literal types per
         // param?
         break;
@@ -38,6 +40,10 @@ exports.handlers = {
       } else {
         lastOlxTypedef = null;
       }
+    } else if (doclet.isEnum) {
+      // We never export enums, so we document them like typedefs
+      doclet.kind = 'typedef';
+      delete doclet.isEnum;
     }
   },
 

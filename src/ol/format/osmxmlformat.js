@@ -18,7 +18,6 @@ goog.require('ol.xml');
 /**
  * @constructor
  * @extends {ol.format.XMLFeature}
- * @todo stability experimental
  * @todo api
  */
 ol.format.OSMXML = function() {

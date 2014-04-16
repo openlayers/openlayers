@@ -18,7 +18,6 @@ goog.require('ol.interaction.Interaction');
  * @constructor
  * @extends {ol.interaction.Interaction}
  * @param {olx.interaction.SelectOptions=} opt_options Options.
- * @todo stability experimental
  * @todo api
  */
 ol.interaction.Select = function(opt_options) {
@@ -101,7 +100,6 @@ goog.inherits(ol.interaction.Select, ol.interaction.Interaction);
 
 /**
  * @return {ol.Collection} Features collection.
- * @todo stability experimental
  * @todo api
  */
 ol.interaction.Select.prototype.getFeatures = function() {

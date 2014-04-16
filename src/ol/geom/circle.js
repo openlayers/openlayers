@@ -14,7 +14,6 @@ goog.require('ol.geom.flat.deflate');
  * @param {ol.geom.RawPoint} center Center.
  * @param {number=} opt_radius Radius.
  * @param {ol.geom.GeometryLayout|string=} opt_layout Layout.
- * @todo stability experimental
  * @todo api
  */
 ol.geom.Circle = function(center, opt_radius, opt_layout) {
@@ -81,7 +80,6 @@ ol.geom.Circle.prototype.containsXY = function(x, y) {
 
 /**
  * @return {ol.geom.RawPoint} Center.
- * @todo stability experimental
  * @todo api
  */
 ol.geom.Circle.prototype.getCenter = function() {
@@ -110,7 +108,6 @@ ol.geom.Circle.prototype.getExtent = function(opt_extent) {
 
 /**
  * @return {number} Radius.
- * @todo stability experimental
  * @todo api
  */
 ol.geom.Circle.prototype.getRadius = function() {
@@ -149,7 +146,6 @@ ol.geom.Circle.prototype.getType = function() {
 
 /**
  * @param {ol.geom.RawPoint} center Center.
- * @todo stability experimental
  * @todo api
  */
 ol.geom.Circle.prototype.setCenter = function(center) {
@@ -170,7 +166,6 @@ ol.geom.Circle.prototype.setCenter = function(center) {
  * @param {ol.geom.RawPoint} center Center.
  * @param {number} radius Radius.
  * @param {ol.geom.GeometryLayout=} opt_layout Layout.
- * @todo stability experimental
  * @todo api
  */
 ol.geom.Circle.prototype.setCenterAndRadius =
@@ -210,7 +205,6 @@ ol.geom.Circle.prototype.setFlatCoordinates =
 
 /**
  * @param {number} radius Radius.
- * @todo stability experimental
  * @todo api
  */
 ol.geom.Circle.prototype.setRadius = function(radius) {

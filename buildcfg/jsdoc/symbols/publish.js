@@ -14,8 +14,13 @@ var path = require('path');
 exports.publish = function(data, opts) {
   var cwd = process.cwd();
 
-  // get all doclets with the "api" property.
-  var docs = data({api: {isString: true}}).get();
+  // get all doclets with the "api" property, but no enums, typedefs and events.
+  var docs = data(
+    {api: {isString: true}},
+    {isEnum: {'!is': true}},
+    {kind: {'!is': 'typedef'}},
+    {kind: {'!is': 'event'}}
+  ).get();
 
   // get symbols data, filter out those that are members of private classes
   var symbols = docs.filter(function(doc) {

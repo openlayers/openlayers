@@ -24,7 +24,6 @@ ol.source.State = {
  *            logo: (string|undefined),
  *            projection: ol.proj.ProjectionLike,
  *            state: (ol.source.State|string|undefined)}}
- * @todo stability experimental
  */
 ol.source.SourceOptions;
 
@@ -130,7 +129,6 @@ ol.source.Source.prototype.getResolutions = goog.abstractMethod;
 
 /**
  * @return {ol.source.State} State.
- * @todo stability experimental
  * @todo api
  */
 ol.source.Source.prototype.getState = function() {

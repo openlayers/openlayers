@@ -14,7 +14,6 @@ goog.require('ol.tilegrid.TileGrid');
  * @constructor
  * @extends {ol.source.FormatVector}
  * @param {olx.source.TileVectorOptions} options Options.
- * @todo stability experimental
  * @todo api
  */
 ol.source.TileVector = function(options) {

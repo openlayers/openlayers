@@ -11,7 +11,6 @@ goog.require('ol.source.Image');
  * @constructor
  * @extends {ol.source.Image}
  * @param {olx.source.ImageStaticOptions} options Options.
- * @todo stability experimental
  * @todo api
  */
 ol.source.ImageStatic = function(options) {

@@ -7,7 +7,7 @@ var olx;
 /**
  * @typedef {{html: string,
  *     tileRanges: (Object.<string, Array.<ol.TileRange>>|undefined)}}
- * @todo stability experimental
+ * @todo api
  */
 olx.AttributionOptions;
 
@@ -29,7 +29,7 @@ olx.AttributionOptions.prototype.tileRanges;
 /**
  * @typedef {{loadTilesWhileAnimating: (boolean|undefined),
  *     loadTilesWhileInteracting: (boolean|undefined)}}
- * @todo stability experimental
+ * @todo api
  */
 olx.DeviceOptions;
 
@@ -52,7 +52,7 @@ olx.DeviceOptions.prototype.loadTilesWhileInteracting;
 
 /**
  * @typedef {{tracking: (boolean|undefined)}}
- * @todo stability experimental
+ * @todo api
  */
 olx.DeviceOrientationOptions;
 
@@ -68,7 +68,7 @@ olx.DeviceOrientationOptions.prototype.tracking;
  * @typedef {{tracking: (boolean|undefined),
  *     trackingOptions: (GeolocationPositionOptions|undefined),
  *     projection: ol.proj.ProjectionLike}}
- * @todo stability experimental
+ * @todo api
  */
 olx.GeolocationOptions;
 
@@ -107,7 +107,7 @@ olx.GeolocationOptions.prototype.projection;
  *     renderer: (ol.RendererHint|Array.<ol.RendererHint|string>|string|undefined),
  *     target: (Element|string|undefined),
  *     view: (ol.IView|undefined)}}
- * @todo stability experimental
+ * @todo api
  */
 olx.MapOptions;
 
@@ -155,7 +155,8 @@ olx.MapOptions.prototype.keyboardEventTarget;
 
 
 /**
- * Layers.
+ * Layers. Array or {@link ol.Collection} items are instances of
+ * {@link ol.layer.Layer} or any of its {@link ol.layer} subclasses.
  * @type {Array.<ol.layer.Base>|ol.Collection|undefined}
  */
 olx.MapOptions.prototype.layers;
@@ -205,7 +206,7 @@ olx.MapOptions.prototype.view;
  *     insertFirst: (boolean|undefined),
  *     offsetX: (number|undefined),
  *     offsetY: (number|undefined)}}
- * @todo stability experimental
+ * @todo api
  */
 olx.OverlayOptions;
 
@@ -271,7 +272,7 @@ olx.OverlayOptions.prototype.offsetY;
  * @typedef {{code: string,
  *     extent: (ol.Extent|undefined),
  *     global: (boolean|undefined)}}
- * @todo stability experimental
+ * @todo api
  */
 olx.Proj4jsProjectionOptions;
 
@@ -304,7 +305,7 @@ olx.Proj4jsProjectionOptions.prototype.global;
  *     extent: (ol.Extent|undefined),
  *     axisOrientation: (string|undefined),
  *     global: (boolean|undefined)}}
- * @todo stability experimental
+ * @todo api
  */
 olx.ProjectionOptions;
 
@@ -358,7 +359,7 @@ olx.ProjectionOptions.prototype.global;
  *     rotation: (number|undefined),
  *     zoom: (number|undefined),
  *     zoomFactor: (number|undefined)}}
- * @todo stability experimental
+ * @todo api
  */
 olx.View2DOptions;
 
@@ -471,7 +472,7 @@ olx.View2DOptions.prototype.zoomFactor;
  *     start: (number|undefined),
  *     duration: (number|undefined),
  *     easing: (function(number):number|undefined)}}
- * @todo stability experimental
+ * @todo api
  */
 olx.animation.BounceOptions;
 
@@ -510,7 +511,7 @@ olx.animation.BounceOptions.prototype.easing;
  *     start: (number|undefined),
  *     duration: (number|undefined),
  *     easing: (function(number):number|undefined)}}
- * @todo stability experimental
+ * @todo api
  */
 olx.animation.PanOptions;
 
@@ -549,7 +550,7 @@ olx.animation.PanOptions.prototype.easing;
  *     start: (number|undefined),
  *     duration: (number|undefined),
  *     easing: (function(number):number|undefined)}}
- * @todo stability experimental
+ * @todo api
  */
 olx.animation.RotateOptions;
 
@@ -596,7 +597,7 @@ olx.animation.RotateOptions.prototype.easing;
  *     start: (number|undefined),
  *     duration: (number|undefined),
  *     easing: (function(number):number|undefined)}}
- * @todo stability experimental
+ * @todo api
  */
 olx.animation.ZoomOptions;
 
@@ -633,7 +634,7 @@ olx.animation.ZoomOptions.prototype.easing;
 /**
  * @typedef {{className: (string|undefined),
  *     target: (Element|undefined)}}
- * @todo stability experimental
+ * @todo api
  */
 olx.control.AttributionOptions;
 
@@ -655,7 +656,7 @@ olx.control.AttributionOptions.prototype.target;
 /**
  * @typedef {{element: (Element|undefined),
  *     target: (Element|string|undefined)}}
- * @todo stability experimental
+ * @todo api
  */
 olx.control.ControlOptions;
 
@@ -683,7 +684,7 @@ olx.control.ControlOptions.prototype.target;
  *     logoOptions: (olx.control.LogoOptions|undefined),
  *     zoom: (boolean|undefined),
  *     zoomOptions: (olx.control.ZoomOptions|undefined)}}
- * @todo stability experimental
+ * @todo api
  */
 olx.control.DefaultsOptions;
 
@@ -735,7 +736,7 @@ olx.control.DefaultsOptions.prototype.zoomOptions;
  *     tipLabel: (string|undefined),
  *     keys: (boolean|undefined),
  *     target: (Element|undefined)}}
- * @todo stability experimental
+ * @todo api
  */
 olx.control.FullScreenOptions;
 
@@ -771,7 +772,7 @@ olx.control.FullScreenOptions.prototype.target;
 /**
  * @typedef {{className: (string|undefined),
  *     target: (Element|undefined)}}
- * @todo stability experimental
+ * @todo api
  */
 olx.control.LogoOptions;
 
@@ -796,7 +797,7 @@ olx.control.LogoOptions.prototype.target;
  *     projection: ol.proj.ProjectionLike,
  *     target: (Element|undefined),
  *     undefinedHTML: (string|undefined)}}
- * @todo stability experimental
+ * @todo api
  */
 olx.control.MousePositionOptions;
 
@@ -841,7 +842,7 @@ olx.control.MousePositionOptions.prototype.undefinedHTML;
  *     minWidth: (number|undefined),
  *     target: (Element|undefined),
  *     units: (ol.control.ScaleLineUnits|string|undefined)}}
- * @todo stability experimental
+ * @todo api
  */
 olx.control.ScaleLineOptions;
 
@@ -883,7 +884,7 @@ olx.control.ScaleLineOptions.prototype.units;
  *     zoomOutTipLabel: (string|undefined),
  *     delta: (number|undefined),
  *     target: (Element|undefined)}}
- * @todo stability experimental
+ * @todo api
  */
 olx.control.ZoomOptions;
 
@@ -948,7 +949,7 @@ olx.control.ZoomOptions.prototype.target;
  * @typedef {{className: (string|undefined),
  *     maxResolution: (number|undefined),
  *     minResolution: (number|undefined)}}
- * @todo stability experimental
+ * @todo api
  */
 olx.control.ZoomSliderOptions;
 
@@ -979,7 +980,7 @@ olx.control.ZoomSliderOptions.prototype.minResolution;
  *     target: (Element|undefined),
  *     tipLabel: (string|undefined),
  *     extent: (ol.Extent|undefined)}}
- * @todo stability experimental
+ * @todo api
  */
 olx.control.ZoomToExtentOptions;
 
@@ -1015,7 +1016,7 @@ olx.control.ZoomToExtentOptions.prototype.extent;
 
 /**
  * @typedef {{defaultProjection: ol.proj.ProjectionLike}}
- * @todo stability experimental
+ * @todo api
  */
 olx.format.GeoJSONOptions;
 
@@ -1029,7 +1030,7 @@ olx.format.GeoJSONOptions.prototype.defaultProjection;
 
 /**
  * @typedef {{defaultProjection: ol.proj.ProjectionLike}}
- * @todo stability experimental
+ * @todo api
  */
 olx.format.TopoJSONOptions;
 
@@ -1043,7 +1044,7 @@ olx.format.TopoJSONOptions.prototype.defaultProjection;
 
 /**
  * @typedef {{altitudeMode: (ol.format.IGCZ|undefined)}}
- * @todo stability experimental
+ * @todo api
  */
 olx.format.IGCOptions;
 
@@ -1058,7 +1059,7 @@ olx.format.IGCOptions.prototype.altitudeMode;
 
 /**
  * @typedef {{defaultStyle: (Array.<ol.style.Style>|undefined)}}
- * @todo stability experimental
+ * @todo api
  */
 olx.format.KMLOptions;
 
@@ -1079,7 +1080,7 @@ olx.format.KMLOptions.prototype.defaultStyle;
  *     multiCurve: (boolean|undefined),
  *     multiSurface: (boolean|undefined),
  *     schemaLocation: (string|undefined)}}
- * @todo stability experimental
+ * @todo api
  */
 olx.format.GMLOptions;
 
@@ -1149,7 +1150,7 @@ olx.format.GMLOptions.prototype.schemaLocation;
  * @typedef {{featureNS: string,
  *     featureType: string,
  *     schemaLocation: (string|undefined)}}
- * @todo stability experimental
+ * @todo api
  */
 olx.format.WFSOptions;
 
@@ -1186,7 +1187,7 @@ olx.format.WFSOptions.prototype.schemaLocation;
  *     maxFeatures: (number|undefined),
  *     geometryName: (string|undefined),
  *     bbox: (ol.Extent|undefined)}}
- * @todo stability experimental
+ * @todo api
  */
 olx.format.WFSWriteGetFeatureOptions;
 
@@ -1262,7 +1263,7 @@ olx.format.WFSWriteGetFeatureOptions.prototype.bbox;
  *     srsName: (string|undefined),
  *     handle: (string|undefined),
  *     nativeElements: Array.<Object>}}
- * @todo stability experimental
+ * @todo api
  */
 olx.format.WFSWriteTransactionOptions;
 
@@ -1322,7 +1323,7 @@ olx.format.WFSWriteTransactionOptions.prototype.nativeElements;
  *     pinchZoom: (boolean|undefined),
  *     zoomDelta: (number|undefined),
  *     zoomDuration: (number|undefined)}}
- * @todo stability experimental
+ * @todo api
  */
 olx.interaction.DefaultsOptions;
 
@@ -1400,7 +1401,7 @@ olx.interaction.DefaultsOptions.prototype.zoomDuration;
 /**
  * @typedef {{duration: (number|undefined),
  *     delta: (number|undefined)}}
- * @todo stability experimental
+ * @todo api
  */
 olx.interaction.DoubleClickZoomOptions;
 
@@ -1422,7 +1423,7 @@ olx.interaction.DoubleClickZoomOptions.prototype.delta;
 /**
  * @typedef {{formatConstructors: (Array.<function(new: ol.format.Feature)>|undefined),
  *     reprojectTo: ol.proj.ProjectionLike}}
- * @todo stability experimental
+ * @todo api
  */
 olx.interaction.DragAndDropOptions;
 
@@ -1444,7 +1445,7 @@ olx.interaction.DragAndDropOptions.prototype.reprojectTo;
 /**
  * @typedef {{condition: (ol.events.ConditionType|undefined),
  *     style: ol.style.Style}}
- * @todo stability experimental
+ * @todo api
  */
 olx.interaction.DragBoxOptions;
 
@@ -1466,7 +1467,7 @@ olx.interaction.DragBoxOptions.prototype.style;
 
 /**
  * @typedef {{kinetic: (ol.Kinetic|undefined)}}
- * @todo stability experimental
+ * @todo api
  */
 olx.interaction.DragPanOptions;
 
@@ -1480,7 +1481,7 @@ olx.interaction.DragPanOptions.prototype.kinetic;
 
 /**
  * @typedef {{condition: (ol.events.ConditionType|undefined)}}
- * @todo stability experimental
+ * @todo api
  */
 olx.interaction.DragRotateAndZoomOptions;
 
@@ -1495,7 +1496,7 @@ olx.interaction.DragRotateAndZoomOptions.prototype.condition;
 
 /**
  * @typedef {{condition: (ol.events.ConditionType|undefined)}}
- * @todo stability experimental
+ * @todo api
  */
 olx.interaction.DragRotateOptions;
 
@@ -1511,7 +1512,7 @@ olx.interaction.DragRotateOptions.prototype.condition;
 /**
  * @typedef {{condition: (ol.events.ConditionType|undefined),
  *     style: ol.style.Style}}
- * @todo stability experimental
+ * @todo api
  */
 olx.interaction.DragZoomOptions;
 
@@ -1538,7 +1539,7 @@ olx.interaction.DragZoomOptions.prototype.style;
  *     type: ol.geom.GeometryType,
  *     minPointsPerRing: (number|undefined),
  *     style: (ol.style.Style|Array.<ol.style.Style>|ol.feature.StyleFunction|undefined)}}
- * @todo stability experimental
+ * @todo api
  */
 olx.interaction.DrawOptions;
 
@@ -1590,7 +1591,7 @@ olx.interaction.DrawOptions.prototype.style;
 /**
  * @typedef {{condition: (ol.events.ConditionType|undefined),
  *     pixelDelta: (number|undefined)}}
- * @todo stability experimental
+ * @todo api
  */
 olx.interaction.KeyboardPanOptions;
 
@@ -1614,7 +1615,7 @@ olx.interaction.KeyboardPanOptions.prototype.pixelDelta;
  * @typedef {{duration: (number|undefined),
  *     condition: (ol.events.ConditionType|undefined),
  *     delta: (number|undefined)}}
- * @todo stability experimental
+ * @todo api
  */
 olx.interaction.KeyboardZoomOptions;
 
@@ -1646,7 +1647,7 @@ olx.interaction.KeyboardZoomOptions.prototype.delta;
  *     pixelTolerance: (number|undefined),
  *     style: (ol.style.Style|Array.<ol.style.Style>|ol.feature.StyleFunction|undefined),
  *     features: ol.Collection}}
- * @todo stability experimental
+ * @todo api
  */
 olx.interaction.ModifyOptions;
 
@@ -1683,7 +1684,7 @@ olx.interaction.ModifyOptions.prototype.features;
 
 /**
  * @typedef {{duration: (number|undefined)}}
- * @todo stability experimental
+ * @todo api
  */
 olx.interaction.MouseWheelZoomOptions;
 
@@ -1697,7 +1698,7 @@ olx.interaction.MouseWheelZoomOptions.prototype.duration;
 
 /**
  * @typedef {{threshold: (number|undefined)}}
- * @todo stability experimental
+ * @todo api
  */
 olx.interaction.PinchRotateOptions;
 
@@ -1711,7 +1712,7 @@ olx.interaction.PinchRotateOptions.prototype.threshold;
 
 /**
  * @typedef {{duration: (number|undefined)}}
- * @todo stability experimental
+ * @todo api
  */
 olx.interaction.PinchZoomOptions;
 
@@ -1730,7 +1731,7 @@ olx.interaction.PinchZoomOptions.prototype.duration;
  *     style: (ol.style.Style|Array.<ol.style.Style>|ol.feature.StyleFunction|undefined),
  *     removeCondition: (ol.events.ConditionType|undefined),
  *     toggleCondition: (ol.events.ConditionType|undefined)}}
- * @todo stability experimental
+ * @todo api
  */
 olx.interaction.SelectOptions;
 
@@ -1797,7 +1798,7 @@ olx.interaction.SelectOptions.prototype.toggleCondition;
  *     visible: (boolean|undefined),
  *     minResolution: (number|undefined),
  *     maxResolution: (number|undefined)}}
- * @todo stability experimental
+ * @todo api
  */
 olx.layer.BaseOptions;
 
@@ -1868,7 +1869,7 @@ olx.layer.BaseOptions.prototype.maxResolution;
  *     visible: (boolean|undefined),
  *     minResolution: (number|undefined),
  *     maxResolution: (number|undefined)}}
- * @todo stability experimental
+ * @todo api
  */
 olx.layer.LayerOptions;
 
@@ -1946,7 +1947,7 @@ olx.layer.LayerOptions.prototype.maxResolution;
  *     minResolution: (number|undefined),
  *     maxResolution: (number|undefined),
  *     layers: (Array.<ol.layer.Base>|ol.Collection|undefined)}}
- * @todo stability experimental
+ * @todo api
  */
 olx.layer.GroupOptions;
 
@@ -2029,7 +2030,7 @@ olx.layer.GroupOptions.prototype.layers;
  *     saturation: (number|undefined),
  *     source: ol.source.Vector,
  *     visible: (boolean|undefined)}}
- * @todo stability experimental
+ * @todo api
  */
 olx.layer.HeatmapOptions;
 
@@ -2147,7 +2148,7 @@ olx.layer.HeatmapOptions.prototype.visible;
  *     minResolution: (number|undefined),
  *     maxResolution: (number|undefined),
  *     useInterimTilesOnError: (boolean|undefined)}}
- * @todo stability experimental
+ * @todo api
  */
 olx.layer.TileOptions;
 
@@ -2241,7 +2242,7 @@ olx.layer.TileOptions.prototype.useInterimTilesOnError;
  *     source: ol.source.Vector,
  *     style: (ol.style.Style|Array.<ol.style.Style>|ol.feature.StyleFunction|undefined),
  *     visible: (boolean|undefined)}}
- * @todo stability experimental
+ * @todo api
  */
 olx.layer.VectorOptions;
 
@@ -2329,7 +2330,7 @@ olx.layer.VectorOptions.prototype.visible;
  * @typedef {{features: (Array.<ol.Feature>|ol.Collection|undefined),
  *     map: (ol.Map|undefined),
  *     style: (ol.style.Style|Array.<ol.style.Style>|ol.feature.StyleFunction|undefined)}}
- * @todo stability experimental
+ * @todo api
  */
 olx.FeatureOverlayOptions;
 
@@ -2360,7 +2361,7 @@ olx.FeatureOverlayOptions.prototype.style;
  *     key: string,
  *     imagerySet: string,
  *     tileLoadFunction: (ol.TileLoadFunctionType|undefined)}}
- * @todo stability experimental
+ * @todo api
  */
 olx.source.BingMapsOptions;
 
@@ -2399,7 +2400,7 @@ olx.source.BingMapsOptions.prototype.tileLoadFunction;
  *     format: ol.format.Feature,
  *     logo: (string|undefined),
  *     projection: ol.proj.ProjectionLike}}
- * @todo stability experimental
+ * @todo api
  */
 olx.source.FormatVectorOptions;
 
@@ -2449,7 +2450,7 @@ olx.source.FormatVectorOptions.prototype.projection;
  *     text: (string|undefined),
  *     url: (string|undefined),
  *     urls: (Array.<string>|undefined)}}
- * @todo stability experimental
+ * @todo api
  */
 olx.source.GeoJSONOptions;
 
@@ -2528,7 +2529,7 @@ olx.source.GeoJSONOptions.prototype.urls;
  *     text: (string|undefined),
  *     url: (string|undefined),
  *     urls: (Array.<string>|undefined)}}
- * @todo stability experimental
+ * @todo api
  */
 olx.source.GPXOptions;
 
@@ -2610,7 +2611,7 @@ olx.source.GPXOptions.prototype.urls;
  *            tileGrid: (ol.tilegrid.TileGrid|undefined),
  *            tileLoadFunction: (ol.TileLoadFunctionType|undefined),
  *            tileUrlFunction: (ol.TileUrlFunctionType|undefined)}}
- * @todo stability experimental
+ * @todo api
  */
 olx.source.TileImageOptions;
 
@@ -2698,7 +2699,7 @@ olx.source.TileImageOptions.prototype.tileUrlFunction;
  *     tileUrlFunction: (ol.TileUrlFunctionType|undefined),
  *     url: (string|undefined),
  *     urls: (Array.<string>|undefined)}}
- * @todo stability experimental
+ * @todo api
  */
 olx.source.TileVectorOptions;
 
@@ -2784,7 +2785,7 @@ olx.source.TileVectorOptions.prototype.urls;
  *     projection: ol.proj.ProjectionLike,
  *     text: (string|undefined),
  *     url: (string|undefined)}}
- * @todo stability experimental
+ * @todo api
  */
 olx.source.TopoJSONOptions;
 
@@ -2852,7 +2853,7 @@ olx.source.TopoJSONOptions.prototype.url;
  *     text: (string|undefined),
  *     url: (string|undefined),
  *     urls: (Array.<string>|undefined)}}
- * @todo stability experimental
+ * @todo api
  */
 olx.source.IGCOptions;
 
@@ -2905,7 +2906,7 @@ olx.source.IGCOptions.prototype.urls;
  *     ratio: (number|undefined),
  *     resolutions: (Array.<number>|undefined),
  *     params: (Object|undefined)}}
- * @todo stability experimental
+ * @todo api
  */
 olx.source.MapGuideOptions;
 
@@ -2993,7 +2994,7 @@ olx.source.MapGuideOptions.prototype.params;
  *     text: (string|undefined),
  *     url: (string|undefined),
  *     urls: (Array.<string>|undefined)}}
- * @todo stability experimental
+ * @todo api
  */
 olx.source.KMLOptions;
 
@@ -3072,7 +3073,7 @@ olx.source.KMLOptions.prototype.urls;
 /**
  * @typedef {{layer: string,
  *     tileLoadFunction: (ol.TileLoadFunctionType|undefined)}}
- * @todo stability experimental
+ * @todo api
  */
 olx.source.MapQuestOptions;
 
@@ -3095,7 +3096,7 @@ olx.source.MapQuestOptions.prototype.tileLoadFunction;
  * @typedef {{extent: (ol.Extent|undefined),
  *     projection: ol.proj.ProjectionLike,
  *     tileGrid: (ol.tilegrid.TileGrid|undefined)}}
- * @todo stability experimental
+ * @todo api
  */
 olx.source.TileDebugOptions;
 
@@ -3127,7 +3128,7 @@ olx.source.TileDebugOptions.prototype.tileGrid;
  *     maxZoom: (number|undefined),
  *     tileLoadFunction: (ol.TileLoadFunctionType|undefined),
  *     url: (string|undefined)}}
- * @todo stability experimental
+ * @todo api
  */
 olx.source.OSMOptions;
 
@@ -3180,7 +3181,7 @@ olx.source.OSMOptions.prototype.url;
  *     text: (string|undefined),
  *     url: (string|undefined),
  *     urls: (Array.<string>|undefined)}}
- * @todo stability experimental
+ * @todo api
  */
 olx.source.OSMXMLOptions;
 
@@ -3271,7 +3272,7 @@ olx.source.OSMXMLOptions.prototype.urls;
  *     ratio: (number|undefined),
  *     resolutions: (Array.<number>|undefined),
  *     state: (ol.source.State|string|undefined)}}
- * @todo stability experimental
+ * @todo api
  */
 olx.source.ImageCanvasOptions;
 
@@ -3350,7 +3351,7 @@ olx.source.ImageCanvasOptions.prototype.state;
  *     resolutions: (Array.<number>|undefined),
  *     source: ol.source.Vector,
  *     style: (ol.style.Style|Array.<ol.style.Style>|ol.feature.StyleFunction|undefined)}}
- * @todo stability experimental
+ * @todo api
  */
 olx.source.ImageVectorOptions;
 
@@ -3426,7 +3427,7 @@ olx.source.ImageVectorOptions.prototype.style;
  *     ratio: (number|undefined),
  *     resolutions: (Array.<number>|undefined),
  *     url: (string|undefined)}}
- * @todo stability experimental
+ * @todo api
  */
 olx.source.ImageWMSOptions;
 
@@ -3520,7 +3521,7 @@ olx.source.ImageWMSOptions.prototype.url;
  *     opaque: (boolean|undefined),
  *     tileLoadFunction: (ol.TileLoadFunctionType|undefined),
  *     url: (string|undefined)}}
- * @todo stability experimental
+ * @todo api
  */
 olx.source.StamenOptions;
 
@@ -3576,7 +3577,7 @@ olx.source.StamenOptions.prototype.url;
  *     logo: (string|undefined),
  *     projection: ol.proj.ProjectionLike,
  *     url: string}}
- * @todo stability experimental
+ * @todo api
  */
 olx.source.ImageStaticOptions;
 
@@ -3645,7 +3646,7 @@ olx.source.ImageStaticOptions.prototype.url;
  *     strategy: (function(ol.Extent, number): Array.<ol.Extent>|undefined),
  *     logo: (string|undefined),
  *     projection: ol.proj.ProjectionLike}}
- * @todo stability experimental
+ * @todo api
  */
 olx.source.ServerVectorOptions;
 
@@ -3703,7 +3704,7 @@ olx.source.ServerVectorOptions.prototype.projection;
  * @typedef {{crossOrigin: (null|string|undefined),
  *     tileLoadFunction: (ol.TileLoadFunctionType|undefined),
  *     url: string}}
- * @todo stability experimental
+ * @todo api
  */
 olx.source.TileJSONOptions;
 
@@ -3744,7 +3745,7 @@ olx.source.TileJSONOptions.prototype.url;
  *     tileLoadFunction: (ol.TileLoadFunctionType|undefined),
  *     url: (string|undefined),
  *     urls: (Array.<string>|undefined)}}
- * @todo stability experimental
+ * @todo api
  */
 olx.source.TileWMSOptions;
 
@@ -3866,7 +3867,7 @@ olx.source.TileWMSOptions.prototype.urls;
  *     logo: (string|undefined),
  *     projection: ol.proj.ProjectionLike,
  *     state: (ol.source.State|string|undefined)}}
- * @todo stability experimental
+ * @todo api
  */
 olx.source.VectorOptions;
 
@@ -3926,7 +3927,7 @@ olx.source.VectorOptions.prototype.state;
  *     text: (string|undefined),
  *     url: (string|undefined),
  *     urls: (Array.<string>|undefined)}}
- * @todo stability experimental
+ * @todo api
  */
 olx.source.StaticVectorOptions;
 
@@ -4033,7 +4034,7 @@ olx.source.StaticVectorOptions.prototype.urls;
  *     maxZoom: (number|undefined),
  *     tileLoadFunction: (ol.TileLoadFunctionType|undefined),
  *     urls: (Array.<string>|undefined)}}
- * @todo stability experimental
+ * @todo api
  */
 olx.source.WMTSOptions;
 
@@ -4170,7 +4171,7 @@ olx.source.WMTSOptions.prototype.urls;
  *     url: (string|undefined),
  *     urls: (Array.<string>|undefined),
  *     wrapX: (boolean|undefined)}}
- * @todo stability experimental
+ * @todo api
  */
 olx.source.XYZOptions;
 
@@ -4267,7 +4268,7 @@ olx.source.XYZOptions.prototype.wrapX;
  *     url: !string,
  *     tierSizeCalculation: (string|undefined),
  *     size: ol.Size}}
- * @todo stability experimental
+ * @todo api
  */
 olx.source.ZoomifyOptions;
 
@@ -4318,7 +4319,7 @@ olx.source.ZoomifyOptions.prototype.size;
  * @typedef {{fill: (ol.style.Fill|undefined),
  *     radius: number,
  *     stroke: (ol.style.Stroke|undefined)}}
- * @todo stability experimental
+ * @todo api
  */
 olx.style.CircleOptions;
 
@@ -4346,7 +4347,7 @@ olx.style.CircleOptions.prototype.stroke;
 
 /**
  * @typedef {{color: (ol.Color|string|undefined)}}
- * @todo stability experimental
+ * @todo api
  */
 olx.style.FillOptions;
 
@@ -4369,7 +4370,7 @@ olx.style.FillOptions.prototype.color;
  *     rotation: (number|undefined),
  *     size: (ol.Size|undefined),
  *     src: string}}
- * @todo stability experimental
+ * @todo api
  */
 olx.style.IconOptions;
 
@@ -4456,7 +4457,7 @@ olx.style.IconOptions.prototype.src;
  *     lineDash: (Array.<number>|undefined),
  *     miterLimit: (number|undefined),
  *     width: (number|undefined)}}
- * @todo stability experimental
+ * @todo api
  */
 olx.style.StrokeOptions;
 
@@ -4514,7 +4515,7 @@ olx.style.StrokeOptions.prototype.width;
  *     textBaseline: (string|undefined),
  *     fill: (ol.style.Fill|undefined),
  *     stroke: (ol.style.Stroke|undefined)}}
- * @todo stability experimental
+ * @todo api
  */
 olx.style.TextOptions;
 
@@ -4597,7 +4598,7 @@ olx.style.TextOptions.prototype.stroke;
  *     stroke: (ol.style.Stroke|undefined),
  *     text: (ol.style.Text|undefined),
  *     zIndex: (number|undefined)}}
- * @todo stability experimental
+ * @todo api
  */
 olx.style.StyleOptions;
 
@@ -4644,7 +4645,7 @@ olx.style.StyleOptions.prototype.zIndex;
  *     resolutions: !Array.<number>,
  *     tileSize: (number|undefined),
  *     tileSizes: (Array.<number>|undefined)}}
- * @todo stability experimental
+ * @todo api
  */
 olx.tilegrid.TileGridOptions;
 
@@ -4698,7 +4699,7 @@ olx.tilegrid.TileGridOptions.prototype.tileSizes;
  *     matrixIds: !Array.<string>,
  *     tileSize: (number|undefined),
  *     tileSizes: (Array.<number>|undefined)}}
- * @todo stability experimental
+ * @todo api
  */
 olx.tilegrid.WMTSOptions;
 
@@ -4747,7 +4748,7 @@ olx.tilegrid.WMTSOptions.prototype.tileSizes;
 
 /**
  * @typedef {{maxZoom: number}}
- * @todo stability experimental
+ * @todo api
  */
 olx.tilegrid.XYZOptions;
 
@@ -4761,7 +4762,7 @@ olx.tilegrid.XYZOptions.prototype.maxZoom;
 
 /**
  * @typedef {{resolutions: !Array.<number>}}
- * @todo stability experimental
+ * @todo api
  */
 olx.tilegrid.ZoomifyOptions;
 
@@ -4778,7 +4779,7 @@ olx.tilegrid.ZoomifyOptions.prototype.resolutions;
  *     constrainResolution: (boolean|undefined),
  *     nearest: (boolean|undefined),
  *     minResolution: (number|undefined)}}
- * @todo stability experimental
+ * @todo api
  */
 olx.View2D.fitGeometryOptions;
 

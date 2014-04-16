@@ -19,7 +19,6 @@ ol.layer.TileProperty = {
  * @fires {@link ol.render.Event} ol.render.Event
  * @param {olx.layer.TileOptions} options Tile layer options.
  * @todo observable preload {number} the level to preload tiles up to
- * @todo stability experimental
  * @todo api
  */
 ol.layer.Tile = function(options) {

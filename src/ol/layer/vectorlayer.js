@@ -21,7 +21,6 @@ ol.layer.VectorProperty = {
  * @extends {ol.layer.Layer}
  * @fires {@link ol.render.Event} ol.render.Event
  * @param {olx.layer.VectorOptions=} opt_options Options.
- * @todo stability experimental
  * @todo api
  */
 ol.layer.Vector = function(opt_options) {
@@ -71,7 +70,6 @@ ol.layer.Vector.prototype.getRenderOrder = function() {
  * option at construction or to the `setStyle` method.
  * @return {ol.style.Style|Array.<ol.style.Style>|ol.feature.StyleFunction}
  *     Layer style.
- * @todo stability experimental
  * @todo api
  */
 ol.layer.Vector.prototype.getStyle = function() {
@@ -82,7 +80,6 @@ ol.layer.Vector.prototype.getStyle = function() {
 /**
  * Get the style function.
  * @return {ol.feature.StyleFunction|undefined} Layer style function.
- * @todo stability experimental
  * @todo api
  */
 ol.layer.Vector.prototype.getStyleFunction = function() {
@@ -105,7 +102,6 @@ ol.layer.Vector.prototype.setRenderOrder = function(renderOrder) {
  * an array of styles.
  * @param {ol.style.Style|Array.<ol.style.Style>|ol.feature.StyleFunction} style
  *     Layer style.
- * @todo stability experimental
  * @todo api
  */
 ol.layer.Vector.prototype.setStyle = function(style) {

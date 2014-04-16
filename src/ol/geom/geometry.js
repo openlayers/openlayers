@@ -7,8 +7,11 @@ goog.require('ol.Observable');
 
 
 /**
+ * The geometry type. One of `'Point'`, `'LineString'`, `'LinearRing'`,
+ * `'Polygon'`, `'MultiPoint'`, `'MultiLineString'`, `'MultiPolygon'`,
+ * `'GeometryCollection'`, `'Circle'`.
  * @enum {string}
- * @todo stability experimental
+ * @todo api
  */
 ol.geom.GeometryType = {
   POINT: 'Point',
@@ -24,8 +27,11 @@ ol.geom.GeometryType = {
 
 
 /**
+ * The coordinate layout for geometries, indicating whether a 3rd or 4th z ('Z')
+ * or measure ('M') coordinate is available. Supported values are `'XY'`,
+ * `'XYZ'`, `'XYM'`, `'XYZM'`.
  * @enum {string}
- * @todo stability experimental
+ * @todo api
  */
 ol.geom.GeometryLayout = {
   XY: 'XY',
@@ -39,7 +45,6 @@ ol.geom.GeometryLayout = {
 /**
  * @constructor
  * @extends {ol.Observable}
- * @todo stability experimental
  * @todo api
  */
 ol.geom.Geometry = function() {
@@ -83,7 +88,6 @@ goog.inherits(ol.geom.Geometry, ol.Observable);
 /**
  * @function
  * @return {ol.geom.Geometry} Clone.
- * @todo stability experimental
  */
 ol.geom.Geometry.prototype.clone = goog.abstractMethod;
 
@@ -102,7 +106,6 @@ ol.geom.Geometry.prototype.closestPointXY = goog.abstractMethod;
  * @param {ol.Coordinate} point Point.
  * @param {ol.Coordinate=} opt_closestPoint Closest point.
  * @return {ol.Coordinate} Closest point.
- * @todo stability experimental
  * @todo api
  */
 ol.geom.Geometry.prototype.getClosestPoint = function(point, opt_closestPoint) {
@@ -131,10 +134,11 @@ ol.geom.Geometry.prototype.containsXY = goog.functions.FALSE;
 
 
 /**
+ * Get the extent of the geometry.
  * @function
  * @param {ol.Extent=} opt_extent Extent.
  * @return {ol.Extent} extent Extent.
- * @todo stability experimental
+ * @todo api
  */
 ol.geom.Geometry.prototype.getExtent = goog.abstractMethod;
 
@@ -143,7 +147,6 @@ ol.geom.Geometry.prototype.getExtent = goog.abstractMethod;
  * @function
  * @param {number} squaredTolerance Squared tolerance.
  * @return {ol.geom.Geometry} Simplified geometry.
- * @todo stability experimental
  */
 ol.geom.Geometry.prototype.getSimplifiedGeometry = goog.abstractMethod;
 
@@ -151,7 +154,6 @@ ol.geom.Geometry.prototype.getSimplifiedGeometry = goog.abstractMethod;
 /**
  * @function
  * @return {ol.geom.GeometryType} Geometry type.
- * @todo stability experimental
  */
 ol.geom.Geometry.prototype.getType = goog.abstractMethod;
 
@@ -159,7 +161,6 @@ ol.geom.Geometry.prototype.getType = goog.abstractMethod;
 /**
  * @function
  * @param {ol.TransformFunction} transformFn Transform.
- * @todo stability experimental
  */
 ol.geom.Geometry.prototype.transform = goog.abstractMethod;
 

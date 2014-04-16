@@ -99,8 +99,9 @@ ol.OL3_LOGO_URL = 'data:image/png;base64,' +
 
 
 /**
+ * Available renderers: `'canvas'`, `'dom'` or `'webgl'`.
  * @enum {string}
- * @todo stability experimental
+ * @todo api
  */
 ol.RendererHint = {
   CANVAS: 'canvas',
@@ -164,7 +165,6 @@ ol.MapProperty = {
  * @todo observable target {string|Element} the Element or id of the Element
  *       that the map is rendered in.
  * @todo observable view {ol.IView} the view that controls this map
- * @todo stability experimental
  * @todo api
  */
 ol.Map = function(options) {
@@ -466,7 +466,6 @@ goog.inherits(ol.Map, ol.Object);
 /**
  * Add the given control to the map.
  * @param {ol.control.Control} control Control.
- * @todo stability experimental
  * @todo api
  */
 ol.Map.prototype.addControl = function(control) {
@@ -491,7 +490,6 @@ ol.Map.prototype.addInteraction = function(interaction) {
 /**
  * Adds the given layer to the top of this map.
  * @param {ol.layer.Base} layer Layer.
- * @todo stability experimental
  * @todo api
  */
 ol.Map.prototype.addLayer = function(layer) {
@@ -504,7 +502,6 @@ ol.Map.prototype.addLayer = function(layer) {
 /**
  * Add the given overlay to the map.
  * @param {ol.Overlay} overlay Overlay.
- * @todo stability experimental
  * @todo api
  */
 ol.Map.prototype.addOverlay = function(overlay) {
@@ -519,7 +516,6 @@ ol.Map.prototype.addOverlay = function(overlay) {
  * animations before updating the map's view.  The {@link ol.animation}
  * namespace provides several static methods for creating prerender functions.
  * @param {...ol.PreRenderFunction} var_args Any number of pre-render functions.
- * @todo stability experimental
  * @todo api
  */
 ol.Map.prototype.beforeRender = function(var_args) {
@@ -581,7 +577,6 @@ ol.Map.prototype.forEachFeatureAtPixel =
  * Returns the geographical coordinate for a browser event.
  * @param {Event} event Event.
  * @return {ol.Coordinate} Coordinate.
- * @todo stability experimental
  * @todo api
  */
 ol.Map.prototype.getEventCoordinate = function(event) {
@@ -593,7 +588,6 @@ ol.Map.prototype.getEventCoordinate = function(event) {
  * Returns the map pixel position for a browser event.
  * @param {Event} event Event.
  * @return {ol.Pixel} Pixel.
- * @todo stability experimental
  * @todo api
  */
 ol.Map.prototype.getEventPixel = function(event) {
@@ -621,7 +615,7 @@ ol.Map.prototype.getEventPixel = function(event) {
  * Note that this returns what is entered as an option or in setTarget:
  * if that was an element, it returns an element; if a string, it returns that.
  * @return {Element|string|undefined} Target.
- * @todo stability experimental
+ * @todo api
  */
 ol.Map.prototype.getTarget = function() {
   return /** @type {Element|string|undefined} */ (
@@ -651,7 +645,6 @@ ol.Map.prototype.getCoordinateFromPixel = function(pixel) {
 
 /**
  * @return {ol.Collection} Controls.
- * @todo stability experimental
  * @todo api
  */
 ol.Map.prototype.getControls = function() {
@@ -661,7 +654,6 @@ ol.Map.prototype.getControls = function() {
 
 /**
  * @return {ol.Collection} Overlays.
- * @todo stability experimental
  * @todo api
  */
 ol.Map.prototype.getOverlays = function() {
@@ -677,7 +669,6 @@ ol.Map.prototype.getOverlays = function() {
  *
  * Interactions are used for e.g. pan, zoom and rotate.
  * @return {ol.Collection} Interactions.
- * @todo stability experimental
  * @todo api
  */
 ol.Map.prototype.getInteractions = function() {
@@ -688,7 +679,7 @@ ol.Map.prototype.getInteractions = function() {
 /**
  * Get the layergroup associated with this map.
  * @return {ol.layer.Group} LayerGroup.
- * @todo stability experimental
+ * @todo api
  */
 ol.Map.prototype.getLayerGroup = function() {
   return /** @type {ol.layer.Group} */ (
@@ -703,7 +694,6 @@ goog.exportProperty(
 /**
  * Get the collection of layers associated with this map.
  * @return {ol.Collection|undefined} Layers.
- * @todo stability experimental
  * @todo api
  */
 ol.Map.prototype.getLayers = function() {
@@ -735,7 +725,7 @@ ol.Map.prototype.getPixelFromCoordinate = function(coordinate) {
 /**
  * Get the size of this map.
  * @return {ol.Size|undefined} Size.
- * @todo stability experimental
+ * @todo api
  */
 ol.Map.prototype.getSize = function() {
   return /** @type {ol.Size|undefined} */ (this.get(ol.MapProperty.SIZE));
@@ -750,7 +740,7 @@ goog.exportProperty(
  * Get the view associated with this map. This can be a 2D or 3D view. A 2D
  * view manages properties such as center and resolution.
  * @return {ol.View|undefined} View.
- * @todo stability experimental
+ * @todo api
  */
 ol.Map.prototype.getView = function() {
   return /** @type {ol.View} */ (this.get(ol.MapProperty.VIEW));
@@ -763,7 +753,6 @@ goog.exportProperty(
 
 /**
  * @return {Element} Viewport.
- * @todo stability experimental
  * @todo api
  */
 ol.Map.prototype.getViewport = function() {
@@ -1097,7 +1086,6 @@ ol.Map.prototype.render = function() {
  * @param {ol.control.Control} control Control.
  * @return {ol.control.Control|undefined} The removed control of undefined
  *     if the control was not found.
- * @todo stability experimental
  * @todo api
  */
 ol.Map.prototype.removeControl = function(control) {
@@ -1133,7 +1121,6 @@ ol.Map.prototype.removeInteraction = function(interaction) {
  * @param {ol.layer.Base} layer Layer.
  * @return {ol.layer.Base|undefined} The removed layer or undefined if the
  *     layer was not found.
- * @todo stability experimental
  * @todo api
  */
 ol.Map.prototype.removeLayer = function(layer) {
@@ -1148,7 +1135,6 @@ ol.Map.prototype.removeLayer = function(layer) {
  * @param {ol.Overlay} overlay Overlay.
  * @return {ol.Overlay|undefined} The removed overlay of undefined
  *     if the overlay was not found.
- * @todo stability experimental
  * @todo api
  */
 ol.Map.prototype.removeOverlay = function(overlay) {
@@ -1271,7 +1257,7 @@ ol.Map.prototype.renderFrame_ = function(time) {
 /**
  * Sets the layergroup of this map.
  * @param {ol.layer.Group} layerGroup Layergroup.
- * @todo stability experimental
+ * @todo api
  */
 ol.Map.prototype.setLayerGroup = function(layerGroup) {
   this.set(ol.MapProperty.LAYERGROUP, layerGroup);
@@ -1285,7 +1271,7 @@ goog.exportProperty(
 /**
  * Set the size of this map.
  * @param {ol.Size|undefined} size Size.
- * @todo stability experimental
+ * @todo api
  */
 ol.Map.prototype.setSize = function(size) {
   this.set(ol.MapProperty.SIZE, size);
@@ -1299,7 +1285,7 @@ goog.exportProperty(
 /**
  * Set the target element to render this map into.
  * @param {Element|string|undefined} target Target.
- * @todo stability experimental
+ * @todo api
  */
 ol.Map.prototype.setTarget = function(target) {
   this.set(ol.MapProperty.TARGET, target);
@@ -1311,9 +1297,9 @@ goog.exportProperty(
 
 
 /**
- * Set the view for this map.
+ * Set the view for this map. Currently {@link ol.View2D} is implememnted.
  * @param {ol.IView} view View.
- * @todo stability experimental
+ * @todo api
  */
 ol.Map.prototype.setView = function(view) {
   this.set(ol.MapProperty.VIEW, view);
@@ -1337,7 +1323,6 @@ ol.Map.prototype.skipFeature = function(feature) {
 /**
  * Force a recalculation of the map viewport size.  This should be called when
  * third-party code changes the size of the map viewport.
- * @todo stability experimental
  * @todo api
  */
 ol.Map.prototype.updateSize = function() {

@@ -19,7 +19,6 @@ goog.require('ol.source.wms.ServerType');
  * @constructor
  * @extends {ol.source.Image}
  * @param {olx.source.ImageWMSOptions=} opt_options Options.
- * @todo stability experimental
  * @todo api
  */
 ol.source.ImageWMS = function(opt_options) {
@@ -125,7 +124,6 @@ goog.inherits(ol.source.ImageWMS, ol.source.Image);
  *     in the `LAYERS` parameter will be used. `VERSION` should not be
  *     specified here.
  * @return {string|undefined} GetFeatureInfo URL.
- * @todo stability experimental
  * @todo api
  */
 ol.source.ImageWMS.prototype.getGetFeatureInfoUrl =
@@ -176,7 +174,6 @@ ol.source.ImageWMS.prototype.getGetFeatureInfoUrl =
  * Get the user-provided params, i.e. those passed to the constructor through
  * the "params" option, and possibly updated using the updateParams method.
  * @return {Object} Params.
- * @todo stability experimental
  * @todo api
  */
 ol.source.ImageWMS.prototype.getParams = function() {
@@ -320,7 +317,6 @@ ol.source.ImageWMS.prototype.getRequestUrl_ =
 /**
  * Return the URL used for this WMS source.
  * @return {string|undefined} URL.
- * @todo stability experimental
  * @todo api
  */
 ol.source.ImageWMS.prototype.getUrl = function() {
@@ -330,7 +326,6 @@ ol.source.ImageWMS.prototype.getUrl = function() {
 
 /**
  * @param {string|undefined} url URL.
- * @todo stability experimental
  * @todo api
  */
 ol.source.ImageWMS.prototype.setUrl = function(url) {
@@ -345,7 +340,6 @@ ol.source.ImageWMS.prototype.setUrl = function(url) {
 /**
  * Update the user-provided params.
  * @param {Object} params Params.
- * @todo stability experimental
  * @todo api
  */
 ol.source.ImageWMS.prototype.updateParams = function(params) {

@@ -17,7 +17,6 @@ goog.require('ol.style.Stroke');
  * @constructor
  * @param {olx.style.CircleOptions=} opt_options Options.
  * @extends {ol.style.Image}
- * @todo stability experimental
  * @todo api
  */
 ol.style.Circle = function(opt_options) {
@@ -92,7 +91,6 @@ ol.style.Circle.prototype.getAnchor = function() {
 
 /**
  * @return {ol.style.Fill} Fill style.
- * @todo stability experimental
  * @todo api
  */
 ol.style.Circle.prototype.getFill = function() {
@@ -127,7 +125,6 @@ ol.style.Circle.prototype.getImageState = function() {
 
 /**
  * @return {number} Radius.
- * @todo stability experimental
  * @todo api
  */
 ol.style.Circle.prototype.getRadius = function() {
@@ -146,7 +143,6 @@ ol.style.Circle.prototype.getSize = function() {
 
 /**
  * @return {ol.style.Stroke} Stroke style.
- * @todo stability experimental
  * @todo api
  */
 ol.style.Circle.prototype.getStroke = function() {

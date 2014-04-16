@@ -14,7 +14,11 @@ var oli;
 oli.CollectionEvent;
 
 
-/** @type {*} */
+/**
+ * The element that is added to or removed from the collection.
+ * @type {*}
+ * @todo api
+ */
 oli.CollectionEvent.prototype.element;
 
 
@@ -23,7 +27,10 @@ oli.CollectionEvent.prototype.element;
 oli.DragBoxEvent;
 
 
-/** @type {ol.Coordinate} */
+/**
+ * @type {ol.Coordinate}
+ * @todo api
+ */
 oli.DragBoxEvent.prototype.coordinate;
 
 
@@ -32,7 +39,11 @@ oli.DragBoxEvent.prototype.coordinate;
 oli.DrawEvent;
 
 
-/** @type {ol.Feature} */
+/**
+ * The feature being drawn.
+ * @type {ol.Feature}
+ * @todo api
+ */
 oli.DrawEvent.prototype.feature;
 
 
@@ -79,7 +90,7 @@ oli.FrameState.prototype.logos;
 
 /**
  * @type {number}
- * @todo stability experimental
+ * @todo api
  */
 oli.FrameState.prototype.pixelRatio;
 
@@ -106,7 +117,7 @@ oli.FrameState.prototype.tileQueue;
 
 /**
  * @type {number}
- * @todo stability experimental
+ * @todo api
  */
 oli.FrameState.prototype.time;
 
@@ -117,7 +128,7 @@ oli.FrameState.prototype.usedTiles;
 
 /**
  * @type {oli.View2DState}
- * @todo stability experimental
+ * @todo api
  */
 oli.FrameState.prototype.view2DState;
 
@@ -144,15 +155,24 @@ oli.ObjectEvent.prototype.key;
 oli.MapBrowserEvent;
 
 
-/** @type {ol.Coordinate} */
+/**
+ * @type {ol.Coordinate}
+ * @todo api
+ */
 oli.MapBrowserEvent.prototype.coordinate;
 
 
-/** @type {Event} */
+/**
+ * @type {Event}
+ * @todo api
+ */
 oli.MapBrowserEvent.prototype.originalEvent;
 
 
-/** @type {ol.Pixel} */
+/**
+ * @type {ol.Pixel}
+ * @todo api
+ */
 oli.MapBrowserEvent.prototype.pixel;
 
 
@@ -196,15 +216,24 @@ oli.control.Control.prototype.setMap = function(map) {};
 oli.interaction.DragAndDropEvent;
 
 
-/** @type {Array.<ol.Feature>} */
+/**
+ * @type {Array.<ol.Feature>|undefined}
+ * @todo api
+ */
 oli.interaction.DragAndDropEvent.prototype.features;
 
 
-/** @type {ol.proj.Projection} */
+/**
+ * @type {ol.proj.Projection|undefined}
+ * @todo api
+ */
 oli.interaction.DragAndDropEvent.prototype.projection;
 
 
-/** @type {File} */
+/**
+ * @type {File}
+ * @todo api
+ */
 oli.interaction.DragAndDropEvent.prototype.file;
 
 
@@ -212,19 +241,35 @@ oli.interaction.DragAndDropEvent.prototype.file;
 oli.render.Event;
 
 
-/** @type {CanvasRenderingContext2D|null|undefined} */
+/**
+ * Canvas context. Only available when a Canvas renderer is used, null
+ * otherwise.
+ * @type {CanvasRenderingContext2D|null|undefined}
+ * @todo api
+ */
 oli.render.Event.prototype.context;
 
 
-/** @type {oli.FrameState|undefined} */
+/**
+ * @type {oli.FrameState|undefined}
+ * @todo api
+ */
 oli.render.Event.prototype.frameState;
 
 
-/** @type {ol.webgl.Context|null|undefined} */
+/**
+ * WebGL context. Only available when a WebGL renderer is used, null otherwise.
+ * @type {ol.webgl.Context|null|undefined}
+ * @todo api
+ */
 oli.render.Event.prototype.glContext;
 
 
-/** @type {ol.render.IVectorContext|undefined} */
+/**
+ * For canvas, this is an instance of {@link ol.render.canvas.Immediate}.
+ * @type {ol.render.IVectorContext|undefined}
+ * @todo api
+ */
 oli.render.Event.prototype.vectorContext;
 
 
@@ -233,5 +278,9 @@ oli.render.Event.prototype.vectorContext;
 oli.source.VectorEvent;
 
 
-/** @type {ol.Feature} */
+/**
+ * The feature being added or removed.
+ * @type {ol.Feature}
+ * @todo api
+ */
 oli.source.VectorEvent.prototype.feature;

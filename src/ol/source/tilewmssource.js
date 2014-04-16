@@ -23,7 +23,6 @@ goog.require('ol.source.wms.ServerType');
  * @constructor
  * @extends {ol.source.TileImage}
  * @param {olx.source.TileWMSOptions=} opt_options Tile WMS options.
- * @todo stability experimental
  * @todo api
  */
 ol.source.TileWMS = function(opt_options) {
@@ -125,7 +124,6 @@ goog.inherits(ol.source.TileWMS, ol.source.TileImage);
  *     in the `LAYERS` parameter will be used. `VERSION` should not be
  *     specified here.
  * @return {string|undefined} GetFeatureInfo URL.
- * @todo stability experimental
  * @todo api
  */
 ol.source.TileWMS.prototype.getGetFeatureInfoUrl =
@@ -208,7 +206,6 @@ ol.source.TileWMS.prototype.getKeyZXY = function(z, x, y) {
  * Get the user-provided params, i.e. those passed to the constructor through
  * the "params" option, and possibly updated using the updateParams method.
  * @return {Object} Params.
- * @todo stability experimental
  * @todo api
  */
 ol.source.TileWMS.prototype.getParams = function() {
@@ -309,7 +306,6 @@ ol.source.TileWMS.prototype.getTilePixelSize =
 /**
  * Return the URLs used for this WMS source.
  * @return {Array.<string>|undefined} URLs.
- * @todo stability experimental
  * @todo api
  */
 ol.source.TileWMS.prototype.getUrls = function() {
@@ -394,7 +390,6 @@ ol.source.TileWMS.prototype.tileUrlFunction_ =
 /**
  * Update the user-provided params.
  * @param {Object} params Params.
- * @todo stability experimental
  * @todo api
  */
 ol.source.TileWMS.prototype.updateParams = function(params) {

@@ -12,7 +12,7 @@ goog.require('ol.TransformFunction');
 /**
  * An array of numbers representing an extent: `[minx, miny, maxx, maxy]`.
  * @typedef {Array.<number>}
- * @todo stability experimental
+ * @todo api
  */
 ol.Extent;
 
@@ -36,7 +36,6 @@ ol.extent.Relationship = {
  *
  * @param {Array.<ol.Coordinate>} coordinates Coordinates.
  * @return {ol.Extent} Bounding extent.
- * @todo stability experimental
  * @todo api
  */
 ol.extent.boundingExtent = function(coordinates) {
@@ -72,7 +71,6 @@ ol.extent.boundingExtentXYs_ = function(xs, ys, opt_extent) {
  * @param {number} value The amount by wich the extent should be buffered.
  * @param {ol.Extent=} opt_extent Extent.
  * @return {ol.Extent} Extent.
- * @todo stability experimental
  * @todo api
  */
 ol.extent.buffer = function(extent, value, opt_extent) {
@@ -145,7 +143,6 @@ ol.extent.closestSquaredDistanceXY = function(extent, x, y) {
  * @param {ol.Extent} extent Extent.
  * @param {ol.Coordinate} coordinate Coordinate.
  * @return {boolean} Contains.
- * @todo stability experimental
  * @todo api
  */
 ol.extent.containsCoordinate = function(extent, coordinate) {
@@ -160,7 +157,6 @@ ol.extent.containsCoordinate = function(extent, coordinate) {
  * @param {ol.Extent} extent1 Extent 1.
  * @param {ol.Extent} extent2 Extent 2.
  * @return {boolean} Contains.
- * @todo stability experimental
  * @todo api
  */
 ol.extent.containsExtent = function(extent1, extent2) {
@@ -203,7 +199,6 @@ ol.extent.coordinateRelationship = function(extent, coordinate) {
 
 /**
  * @return {ol.Extent} Empty extent.
- * @todo stability experimental
  * @todo api
  */
 ol.extent.createEmpty = function() {
@@ -308,7 +303,6 @@ ol.extent.empty = function(extent) {
  * @param {ol.Extent} extent1 Extent 1.
  * @param {ol.Extent} extent2 Extent 2.
  * @return {boolean} Equals.
- * @todo stability experimental
  * @todo api
  */
 ol.extent.equals = function(extent1, extent2) {
@@ -321,7 +315,6 @@ ol.extent.equals = function(extent1, extent2) {
  * @param {ol.Extent} extent1 Extent 1.
  * @param {ol.Extent} extent2 Extent 2.
  * @return {ol.Extent} Extent.
- * @todo stability experimental
  * @todo api
  */
 ol.extent.extend = function(extent1, extent2) {
@@ -432,7 +425,6 @@ ol.extent.getArea = function(extent) {
 /**
  * @param {ol.Extent} extent Extent.
  * @return {ol.Coordinate} Bottom left coordinate.
- * @todo stability experimental
  * @todo api
  */
 ol.extent.getBottomLeft = function(extent) {
@@ -443,7 +435,6 @@ ol.extent.getBottomLeft = function(extent) {
 /**
  * @param {ol.Extent} extent Extent.
  * @return {ol.Coordinate} Bottom right coordinate.
- * @todo stability experimental
  * @todo api
  */
 ol.extent.getBottomRight = function(extent) {
@@ -454,7 +445,6 @@ ol.extent.getBottomRight = function(extent) {
 /**
  * @param {ol.Extent} extent Extent.
  * @return {ol.Coordinate} Center.
- * @todo stability experimental
  * @todo api
  */
 ol.extent.getCenter = function(extent) {
@@ -508,7 +498,6 @@ ol.extent.getForView2DAndSize =
 /**
  * @param {ol.Extent} extent Extent.
  * @return {number} Height.
- * @todo stability experimental
  * @todo api
  */
 ol.extent.getHeight = function(extent) {
@@ -542,7 +531,6 @@ ol.extent.getMargin = function(extent) {
 /**
  * @param {ol.Extent} extent Extent.
  * @return {ol.Size} Size.
- * @todo stability experimental
  * @todo api
  */
 ol.extent.getSize = function(extent) {
@@ -553,7 +541,6 @@ ol.extent.getSize = function(extent) {
 /**
  * @param {ol.Extent} extent Extent.
  * @return {ol.Coordinate} Top left coordinate.
- * @todo stability experimental
  * @todo api
  */
 ol.extent.getTopLeft = function(extent) {
@@ -564,7 +551,6 @@ ol.extent.getTopLeft = function(extent) {
 /**
  * @param {ol.Extent} extent Extent.
  * @return {ol.Coordinate} Top right coordinate.
- * @todo stability experimental
  * @todo api
  */
 ol.extent.getTopRight = function(extent) {
@@ -575,7 +561,6 @@ ol.extent.getTopRight = function(extent) {
 /**
  * @param {ol.Extent} extent Extent.
  * @return {number} Width.
- * @todo stability experimental
  * @todo api
  */
 ol.extent.getWidth = function(extent) {
@@ -587,7 +572,6 @@ ol.extent.getWidth = function(extent) {
  * @param {ol.Extent} extent1 Extent 1.
  * @param {ol.Extent} extent2 Extent.
  * @return {boolean} Intersects.
- * @todo stability experimental
  * @todo api
  */
 ol.extent.intersects = function(extent1, extent2) {
@@ -601,7 +585,6 @@ ol.extent.intersects = function(extent1, extent2) {
 /**
  * @param {ol.Extent} extent Extent.
  * @return {boolean} Is empty.
- * @todo stability experimental
  * @todo api
  */
 ol.extent.isEmpty = function(extent) {
@@ -735,7 +718,6 @@ ol.extent.touches = function(extent1, extent2) {
  * @param {ol.TransformFunction} transformFn Transform function.
  * @param {ol.Extent=} opt_extent Destination extent.
  * @return {ol.Extent} Extent.
- * @todo stability experimental
  * @todo api
  */
 ol.extent.transform = function(extent, transformFn, opt_extent) {

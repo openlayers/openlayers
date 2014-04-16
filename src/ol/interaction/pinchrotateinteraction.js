@@ -23,7 +23,6 @@ ol.interaction.ROTATE_ANIMATION_DURATION = 250;
  * @constructor
  * @extends {ol.interaction.Pointer}
  * @param {olx.interaction.PinchRotateOptions=} opt_options Options.
- * @todo stability experimental
  * @todo api
  */
 ol.interaction.PinchRotate = function(opt_options) {
