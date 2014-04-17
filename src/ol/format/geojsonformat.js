@@ -62,7 +62,7 @@ ol.format.GeoJSON.readGeometry_ = function(object) {
   if (goog.isNull(object)) {
     return null;
   }
-  var geometryReader = ol.format.GeoJSON.GEOMETRY_READERS_[object.type];
+  var geometryReader = ol.format.GeoJSON.GEOMETRY_READERS_[object['type']];
   goog.asserts.assert(goog.isDef(geometryReader));
   return geometryReader(object);
 };
@@ -74,9 +74,9 @@ ol.format.GeoJSON.readGeometry_ = function(object) {
  * @return {ol.geom.GeometryCollection} Geometry collection.
  */
 ol.format.GeoJSON.readGeometryCollectionGeometry_ = function(object) {
-  goog.asserts.assert(object.type == 'GeometryCollection');
+  goog.asserts.assert(object['type'] == 'GeometryCollection');
   var geometries = goog.array.map(
-      object.geometries, ol.format.GeoJSON.readGeometry_);
+      object['geometries'], ol.format.GeoJSON.readGeometry_);
   return new ol.geom.GeometryCollection(geometries);
 };
 
@@ -87,8 +87,8 @@ ol.format.GeoJSON.readGeometryCollectionGeometry_ = function(object) {
  * @return {ol.geom.Point} Point.
  */
 ol.format.GeoJSON.readPointGeometry_ = function(object) {
-  goog.asserts.assert(object.type == 'Point');
-  return new ol.geom.Point(object.coordinates);
+  goog.asserts.assert(object['type'] == 'Point');
+  return new ol.geom.Point(object['coordinates']);
 };
 
 
@@ -98,8 +98,8 @@ ol.format.GeoJSON.readPointGeometry_ = function(object) {
  * @return {ol.geom.LineString} LineString.
  */
 ol.format.GeoJSON.readLineStringGeometry_ = function(object) {
-  goog.asserts.assert(object.type == 'LineString');
-  return new ol.geom.LineString(object.coordinates);
+  goog.asserts.assert(object['type'] == 'LineString');
+  return new ol.geom.LineString(object['coordinates']);
 };
 
 
@@ -109,8 +109,8 @@ ol.format.GeoJSON.readLineStringGeometry_ = function(object) {
  * @return {ol.geom.MultiLineString} MultiLineString.
  */
 ol.format.GeoJSON.readMultiLineStringGeometry_ = function(object) {
-  goog.asserts.assert(object.type == 'MultiLineString');
-  return new ol.geom.MultiLineString(object.coordinates);
+  goog.asserts.assert(object['type'] == 'MultiLineString');
+  return new ol.geom.MultiLineString(object['coordinates']);
 };
 
 
@@ -120,8 +120,8 @@ ol.format.GeoJSON.readMultiLineStringGeometry_ = function(object) {
  * @return {ol.geom.MultiPoint} MultiPoint.
  */
 ol.format.GeoJSON.readMultiPointGeometry_ = function(object) {
-  goog.asserts.assert(object.type == 'MultiPoint');
-  return new ol.geom.MultiPoint(object.coordinates);
+  goog.asserts.assert(object['type'] == 'MultiPoint');
+  return new ol.geom.MultiPoint(object['coordinates']);
 };
 
 
@@ -131,8 +131,8 @@ ol.format.GeoJSON.readMultiPointGeometry_ = function(object) {
  * @return {ol.geom.MultiPolygon} MultiPolygon.
  */
 ol.format.GeoJSON.readMultiPolygonGeometry_ = function(object) {
-  goog.asserts.assert(object.type == 'MultiPolygon');
-  return new ol.geom.MultiPolygon(object.coordinates);
+  goog.asserts.assert(object['type'] == 'MultiPolygon');
+  return new ol.geom.MultiPolygon(object['coordinates']);
 };
 
 
@@ -142,8 +142,8 @@ ol.format.GeoJSON.readMultiPolygonGeometry_ = function(object) {
  * @return {ol.geom.Polygon} Polygon.
  */
 ol.format.GeoJSON.readPolygonGeometry_ = function(object) {
-  goog.asserts.assert(object.type == 'Polygon');
-  return new ol.geom.Polygon(object.coordinates);
+  goog.asserts.assert(object['type'] == 'Polygon');
+  return new ol.geom.Polygon(object['coordinates']);
 };
 
 
@@ -342,14 +342,14 @@ ol.format.GeoJSON.prototype.readFeatures;
  */
 ol.format.GeoJSON.prototype.readFeatureFromObject = function(object) {
   var geoJSONFeature = /** @type {GeoJSONFeature} */ (object);
-  goog.asserts.assert(geoJSONFeature.type == 'Feature');
-  var geometry = ol.format.GeoJSON.readGeometry_(geoJSONFeature.geometry);
+  goog.asserts.assert(geoJSONFeature['type'] == 'Feature');
+  var geometry = ol.format.GeoJSON.readGeometry_(geoJSONFeature['geometry']);
   var feature = new ol.Feature(geometry);
-  if (goog.isDef(geoJSONFeature.id)) {
-    feature.setId(geoJSONFeature.id);
+  if (goog.isDef(geoJSONFeature['id'])) {
+    feature.setId(geoJSONFeature['id']);
   }
-  if (goog.isDef(geoJSONFeature.properties)) {
-    feature.setValues(geoJSONFeature.properties);
+  if (goog.isDef(geoJSONFeature['properties'])) {
+    feature.setValues(geoJSONFeature['properties']);
   }
   return feature;
 };
@@ -360,14 +360,14 @@ ol.format.GeoJSON.prototype.readFeatureFromObject = function(object) {
  */
 ol.format.GeoJSON.prototype.readFeaturesFromObject = function(object) {
   var geoJSONObject = /** @type {GeoJSONObject} */ (object);
-  if (geoJSONObject.type == 'Feature') {
+  if (geoJSONObject['type'] == 'Feature') {
     return [this.readFeatureFromObject(object)];
-  } else if (geoJSONObject.type == 'FeatureCollection') {
+  } else if (geoJSONObject['type'] == 'FeatureCollection') {
     var geoJSONFeatureCollection = /** @type {GeoJSONFeatureCollection} */
         (object);
     /** @type {Array.<ol.Feature>} */
     var features = [];
-    var geoJSONFeatures = geoJSONFeatureCollection.features;
+    var geoJSONFeatures = geoJSONFeatureCollection['features'];
     var i, ii;
     for (i = 0, ii = geoJSONFeatures.length; i < ii; ++i) {
       features.push(this.readFeatureFromObject(geoJSONFeatures[i]));
@@ -407,16 +407,16 @@ ol.format.GeoJSON.prototype.readGeometryFromObject = function(object) {
  */
 ol.format.GeoJSON.prototype.readProjection = function(object) {
   var geoJSONObject = /** @type {GeoJSONObject} */ (object);
-  var crs = geoJSONObject.crs;
+  var crs = geoJSONObject['crs'];
   if (goog.isDefAndNotNull(crs)) {
-    if (crs.type == 'name') {
-      return ol.proj.get(crs.properties.name);
-    } else if (crs.type == 'EPSG') {
+    if (crs['type'] == 'name') {
+      return ol.proj.get(crs['properties']['name']);
+    } else if (crs['type'] == 'EPSG') {
       // 'EPSG' is not part of the GeoJSON specification, but is generated by
       // GeoServer.
       // TODO: remove this when http://jira.codehaus.org/browse/GEOS-5996
       // is fixed and widely deployed.
-      return ol.proj.get('EPSG:' + crs.properties.code);
+      return ol.proj.get('EPSG:' + crs['properties']['code']);
     } else {
       goog.asserts.fail();
       return null;
