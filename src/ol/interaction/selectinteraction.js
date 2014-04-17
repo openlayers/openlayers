@@ -57,16 +57,6 @@ ol.interaction.Select = function(opt_options) {
   var layerFilter;
   if (goog.isDef(options.layerFilter)) {
     layerFilter = options.layerFilter;
-  } else if (goog.isDef(options.layer)) {
-    var layer = options.layer;
-    layerFilter =
-        /**
-         * @param {ol.layer.Layer} l Layer.
-         * @return {boolean} Include.
-         */
-        function(l) {
-      return l === layer;
-    };
   } else if (goog.isDef(options.layers)) {
     var layers = options.layers;
     layerFilter =

@@ -1727,7 +1727,6 @@ olx.interaction.PinchZoomOptions.prototype.duration;
  * @typedef {{addCondition: (ol.events.ConditionType|undefined),
  *     condition: (ol.events.ConditionType|undefined),
  *     layerFilter: (function(ol.layer.Layer): boolean|undefined),
- *     layer: (ol.layer.Layer|undefined),
  *     layers: (Array.<ol.layer.Layer>|undefined),
  *     style: (ol.style.Style|Array.<ol.style.Style>|ol.feature.StyleFunction|undefined),
  *     removeCondition: (ol.events.ConditionType|undefined),
@@ -1760,13 +1759,6 @@ olx.interaction.SelectOptions.prototype.condition;
  * @type {function(ol.layer.Layer): boolean|undefined}
  */
 olx.interaction.SelectOptions.prototype.layerFilter;
-
-
-/**
- * Layer. The single layer from which features should be selected.
- * @type {ol.layer.Layer|undefined}
- */
-olx.interaction.SelectOptions.prototype.layer;
 
 
 /**
