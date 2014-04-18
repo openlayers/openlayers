@@ -368,9 +368,10 @@ ol.Map = function(options) {
    * @private
    */
   this.skippedFeatures_ = new ol.Collection();
-  goog.events.listen(this.skippedFeatures_,
-      [ol.CollectionEventType.ADD, ol.CollectionEventType.REMOVE],
-      this.handleSkippedFeaturesChange_, false, this);
+  goog.events.listen(this.skippedFeatures_, ol.CollectionEventType.ADD,
+      this.handleSkippedFeaturesAdd_, false, this);
+  goog.events.listen(this.skippedFeatures_, ol.CollectionEventType.REMOVE,
+      this.handleSkippedFeaturesRemove_, false, this);
   this.registerDisposable(this.skippedFeatures_);
 
   /**
@@ -931,17 +932,24 @@ ol.Map.prototype.handleSizeChanged_ = function() {
 
 /**
  * @private
+ * @param {ol.CollectionEvent} event Collection "add" event.
  */
-ol.Map.prototype.handleSkippedFeaturesChange_ = function() {
-  this.skippedFeatureUids_ = {};
-  this.skippedFeatures_.forEach(
-      /**
-       * @param {ol.Feature} feature Feature.
-       * @this {ol.Map}
-       */
-      function(feature) {
-        this.skippedFeatureUids_[goog.getUid(feature).toString()] = true;
-      }, this);
+ol.Map.prototype.handleSkippedFeaturesAdd_ = function(event) {
+  var feature = /** @type {ol.Feature} */ (event.element);
+  var featureUid = goog.getUid(feature).toString();
+  this.skippedFeatureUids_[featureUid] = true;
+  this.render();
+};
+
+
+/**
+ * @private
+ * @param {ol.CollectionEvent} event Collection "remove" event.
+ */
+ol.Map.prototype.handleSkippedFeaturesRemove_ = function(event) {
+  var feature = /** @type {ol.Feature} */ (event.element);
+  var featureUid = goog.getUid(feature).toString();
+  delete this.skippedFeatureUids_[featureUid];
   this.render();
 };
 
