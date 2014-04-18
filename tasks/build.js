@@ -30,6 +30,10 @@ function assertValidConfig(config, callback) {
       callback(new Error('Config missing "compile" object'));
       return;
     }
+    if (config.jvm && !Array.isArray(config.jvm)) {
+      callback(new Error('Config "jvm" must be an array'));
+      return;
+    }
     if (config.src && !Array.isArray(config.src)) {
       callback(new Error('Config "src" must be an array'));
       return;
@@ -88,15 +92,20 @@ function getDependencies(src, callback) {
 
 /**
  * Run the compiler.
- * @param {Object} options Options for Closure Compiler.
+ * @param {Object} config Build configuration object.
  * @param {Array.<string>} paths List of paths to source files.
  * @param {function(Error, string)} callback Called with the compiled output or
  *     any error.
  */
-function build(options, paths, callback) {
+function build(config, paths, callback) {
   log.info('ol', 'Compiling ' + paths.length + ' sources');
+  var options = config.compile;
   options.js = paths.concat(options.js || []);
-  closure.compile(options, callback);
+  if (config.jvm) {
+    closure.compile(options, config.jvm, callback);
+  } else {
+    closure.compile(options, callback);
+  }
 }
 
 
@@ -112,7 +121,7 @@ function main(config, callback) {
     assertValidConfig.bind(null, config),
     generateExports.bind(null, config.exports),
     getDependencies.bind(null, config.src),
-    build.bind(null, config.compile)
+    build.bind(null, config)
   ], callback);
 }
 

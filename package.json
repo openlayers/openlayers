@@ -15,7 +15,7 @@
     "url": "https://github.com/openlayers/ol3/issues"
   },
   "devDependencies": {
-    "closure-util": "~0.10.0",
+    "closure-util": "~0.11.0",
     "async": "~0.2.10",
     "htmlparser2": "~3.7.1",
     "jshint": "~2.4.4",
