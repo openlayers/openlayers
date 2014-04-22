@@ -9,7 +9,7 @@ goog.provide('ol.source.TileJSON');
 goog.provide('ol.tilejson');
 
 goog.require('goog.asserts');
-goog.require('goog.net.jsloader');
+goog.require('goog.net.Jsonp');
 goog.require('ol.Attribution');
 goog.require('ol.TileRange');
 goog.require('ol.TileUrlFunction');
@@ -18,22 +18,6 @@ goog.require('ol.proj');
 goog.require('ol.source.State');
 goog.require('ol.source.TileImage');
 goog.require('ol.tilegrid.XYZ');
-
-
-/**
- * @private
- * @type {Array.<TileJSON>}
- */
-ol.tilejson.grids_ = [];
-
-
-/**
- * @param {TileJSON} tileJSON Tile JSON.
- */
-var grid = function(tileJSON) {
-  ol.tilejson.grids_.push(tileJSON);
-};
-goog.exportSymbol('grid', grid);
 
 
 
@@ -52,12 +36,8 @@ ol.source.TileJSON = function(options) {
     tileLoadFunction: options.tileLoadFunction
   });
 
-  /**
-   * @private
-   * @type {!goog.async.Deferred}
-   */
-  this.deferred_ = goog.net.jsloader.load(options.url, {cleanupWhenDone: true});
-  this.deferred_.addCallback(this.handleTileJSONResponse, this);
+  var request = new goog.net.Jsonp(options.url);
+  request.send(undefined, goog.bind(this.handleTileJSONResponse, this));
 
 };
 goog.inherits(ol.source.TileJSON, ol.source.TileImage);
@@ -65,9 +45,9 @@ goog.inherits(ol.source.TileJSON, ol.source.TileImage);
 
 /**
  * @protected
+ * @param {TileJSON} tileJSON Tile JSON.
  */
-ol.source.TileJSON.prototype.handleTileJSONResponse = function() {
-  var tileJSON = ol.tilejson.grids_.pop();
+ol.source.TileJSON.prototype.handleTileJSONResponse = function(tileJSON) {
 
   var epsg4326Projection = ol.proj.get('EPSG:4326');
 
