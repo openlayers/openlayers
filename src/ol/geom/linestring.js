@@ -2,6 +2,7 @@ goog.provide('ol.geom.LineString');
 
 goog.require('goog.array');
 goog.require('goog.asserts');
+goog.require('ol.array');
 goog.require('ol.extent');
 goog.require('ol.geom.GeometryType');
 goog.require('ol.geom.SimpleGeometry');
@@ -18,7 +19,7 @@ goog.require('ol.geom.flat.simplify');
  * @constructor
  * @extends {ol.geom.SimpleGeometry}
  * @param {ol.geom.RawLineString} coordinates Coordinates.
- * @param {ol.geom.GeometryLayout=} opt_layout Layout.
+ * @param {ol.geom.GeometryLayout|string=} opt_layout Layout.
  * @todo stability experimental
  */
 ol.geom.LineString = function(coordinates, opt_layout) {
@@ -49,7 +50,8 @@ ol.geom.LineString = function(coordinates, opt_layout) {
    */
   this.maxDeltaRevision_ = -1;
 
-  this.setCoordinates(coordinates, opt_layout);
+  this.setCoordinates(coordinates,
+      /** @type {ol.geom.GeometryLayout|undefined} */ (opt_layout));
 
 };
 goog.inherits(ol.geom.LineString, ol.geom.SimpleGeometry);
@@ -63,7 +65,7 @@ ol.geom.LineString.prototype.appendCoordinate = function(coordinate) {
   if (goog.isNull(this.flatCoordinates)) {
     this.flatCoordinates = coordinate.slice();
   } else {
-    goog.array.extend(this.flatCoordinates, coordinate);
+    ol.array.safeExtend(this.flatCoordinates, coordinate);
   }
   this.dispatchChangeEvent();
 };

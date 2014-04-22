@@ -82,7 +82,6 @@ var map = new ol.Map({
       style: styleFunction
     })
   ],
-  renderer: 'canvas',
   target: 'map',
   view: new ol.View2D({
     center: [703365.7089403362, 5714629.865071137],
@@ -126,7 +125,7 @@ $(map.getViewport()).on('mousemove', function(evt) {
   displaySnap(coordinate);
 });
 
-map.on('singleclick', function(evt) {
+map.on('click', function(evt) {
   displaySnap(evt.coordinate);
 });
 
@@ -174,7 +173,7 @@ $('#time').on('input', function(event) {
     var geometry = /** @type {ol.geom.LineString} */ (feature.getGeometry());
     var coordinate = geometry.getCoordinateAtM(m, true);
     var highlight = feature.get('highlight');
-    if (highlight == undefined) {
+    if (highlight === undefined) {
       highlight = new ol.Feature(new ol.geom.Point(coordinate));
       feature.set('highlight', highlight);
       featureOverlay.addFeature(highlight);

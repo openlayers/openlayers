@@ -46,7 +46,6 @@ var rasterLayer = new ol.layer.Tile({
 
 var map = new ol.Map({
   layers: [rasterLayer, vectorLayer],
-  renderer: 'canvas',
   target: document.getElementById('map'),
   view: new ol.View2D({
     center: [0, 0],
@@ -64,7 +63,7 @@ var popup = new ol.Overlay({
 map.addOverlay(popup);
 
 // display popup on click
-map.on('singleclick', function(evt) {
+map.on('click', function(evt) {
   var feature = map.forEachFeatureAtPixel(evt.pixel,
       function(feature, layer) {
         return feature;

@@ -599,6 +599,17 @@ ol.extent.isEmpty = function(extent) {
 
 /**
  * @param {ol.Extent} extent Extent.
+ * @return {boolean} Is infinite.
+ * @todo stability experimental
+ */
+ol.extent.isInfinite = function(extent) {
+  return extent[0] == -Infinity || extent[1] == -Infinity ||
+      extent[2] == Infinity || extent[3] == Infinity;
+};
+
+
+/**
+ * @param {ol.Extent} extent Extent.
  * @param {ol.Coordinate} coordinate Coordinate.
  * @return {ol.Coordinate} Coordinate.
  * @todo stability experimental

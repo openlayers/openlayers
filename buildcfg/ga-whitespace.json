@@ -14,22 +14,22 @@
   "disambiguate-properties": false,
 
   "externs": [
-    "//json.js",
     "../externs/bingmaps.js",
+    "../externs/closure-compiler.js",
     "../externs/geojson.js",
-    "../externs/topojson.js",
     "../externs/oli.js",
+    "../externs/olx.js",
     "../externs/proj4js.js",
     "../externs/tilejson.js",
-    "../externs/closure-compiler.js",
+    "../externs/topojson.js",
+    "../externs/vbarray.js",
     "../externs/ga.js"
   ],
 
   "inherits": "ol.json",
 
   "inputs": [
-    "../build/src/internal/src/requireallga.js",
-    "../build/src/internal/src/types.js"
+    "../build/src/internal/src/requireallga.js"
   ],
 
   "mode": "WHITESPACE",

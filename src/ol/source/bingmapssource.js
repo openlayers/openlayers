@@ -37,8 +37,11 @@ ol.source.BingMaps = function(options) {
    */
   this.culture_ = goog.isDef(options.culture) ? options.culture : 'en-us';
 
+  var protocol = ol.IS_HTTPS ? 'https:' : 'http:';
   var uri = new goog.Uri(
-      '//dev.virtualearth.net/REST/v1/Imagery/Metadata/' + options.imagerySet);
+      protocol + '//dev.virtualearth.net/REST/v1/Imagery/Metadata/' +
+      options.imagerySet);
+
   var jsonp = new goog.net.Jsonp(uri, 'jsonp');
   jsonp.send({
     'include': 'ImageryProviders',
@@ -88,6 +91,7 @@ ol.source.BingMaps.prototype.handleImageryMetadataResponse =
   this.tileGrid = tileGrid;
 
   var culture = this.culture_;
+  var sourceProjection = this.getProjection();
   this.tileUrlFunction = ol.TileUrlFunction.withTileCoordTransform(
       tileGrid.createTileCoordTransform(),
       ol.TileUrlFunction.createFromTileUrlFunctions(
@@ -99,7 +103,6 @@ ol.source.BingMaps.prototype.handleImageryMetadataResponse =
                     .replace('{culture}', culture);
                 return (
                     /**
-                     * @this {ol.source.BingMaps}
                      * @param {ol.TileCoord} tileCoord Tile coordinate.
                      * @param {number} pixelRatio Pixel ratio.
                      * @param {ol.proj.Projection} projection Projection.
@@ -107,7 +110,7 @@ ol.source.BingMaps.prototype.handleImageryMetadataResponse =
                      */
                     function(tileCoord, pixelRatio, projection) {
                       goog.asserts.assert(ol.proj.equivalent(
-                          projection, this.getProjection()));
+                          projection, sourceProjection));
                       if (goog.isNull(tileCoord)) {
                         return undefined;
                       } else {

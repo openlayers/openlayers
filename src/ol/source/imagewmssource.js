@@ -217,8 +217,8 @@ ol.source.ImageWMS.prototype.getImage =
   var centerX = (extent[0] + extent[2]) / 2;
   var centerY = (extent[1] + extent[3]) / 2;
   if (this.ratio_ != 1) {
-    var halfWidth = this.ratio_ * (extent[2] - extent[0]) / 2;
-    var halfHeight = this.ratio_ * (extent[3] - extent[1]) / 2;
+    var halfWidth = this.ratio_ * ol.extent.getWidth(extent) / 2;
+    var halfHeight = this.ratio_ * ol.extent.getHeight(extent) / 2;
     extent[0] = centerX - halfWidth;
     extent[1] = centerY - halfHeight;
     extent[2] = centerX + halfWidth;
@@ -228,8 +228,8 @@ ol.source.ImageWMS.prototype.getImage =
   var imageResolution = resolution / pixelRatio;
 
   // Compute an integer width and height.
-  var width = Math.ceil((extent[2] - extent[0]) / imageResolution);
-  var height = Math.ceil((extent[3] - extent[1]) / imageResolution);
+  var width = Math.ceil(ol.extent.getWidth(extent) / imageResolution);
+  var height = Math.ceil(ol.extent.getHeight(extent) / imageResolution);
 
   // Modify the extent to match the integer width and height.
   extent[0] = centerX - imageResolution * width / 2;
@@ -272,7 +272,9 @@ ol.source.ImageWMS.prototype.getRequestUrl_ =
   params[this.v13_ ? 'CRS' : 'SRS'] = projection.getCode();
 
   if (!('STYLES' in this.params_)) {
+    /* jshint -W053 */
     goog.object.set(params, 'STYLES', new String(''));
+    /* jshint +W053 */
   }
 
   if (pixelRatio != 1) {
@@ -307,6 +309,16 @@ ol.source.ImageWMS.prototype.getRequestUrl_ =
   goog.object.set(params, 'BBOX', bbox.join(','));
 
   return goog.uri.utils.appendParamsFromMap(this.url_, params);
+};
+
+
+/**
+ * Return the URL used for this WMS source.
+ * @return {string|undefined} URL.
+ * @todo stability experimental
+ */
+ol.source.ImageWMS.prototype.getUrl = function() {
+  return this.url_;
 };
 
 

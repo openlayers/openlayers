@@ -13,11 +13,12 @@
             "src/googx/dom/fullscreen.js"
         ],
         "include": [
-            "src"
+            "src",
+            "externs/olx.js"
         ]
     },
     "plugins": [
-        "plugins/markdown",
+        "node_modules/jsdoc/plugins/markdown",
         "apidoc/plugins/inheritdoc",
         "apidoc/plugins/exports",
         "apidoc/plugins/todo",

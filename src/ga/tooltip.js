@@ -230,13 +230,29 @@ ga.Tooltip.prototype.createFeatures_ = function(response) {
   var results = response['results'] || [];
   for (var i = 0, ii = results.length; i < ii; i++) {
     var result = results[i];
-    if (ol.geom[result.geometry.type] && result.geometry.coordinates) {
-      features.push(new ol.Feature({
-        geometry: new ol.geom[result.geometry.type](result.geometry.coordinates)
-      }));
+    var coords = result.geometry.coordinates;
+    if (coords) {
+      var geom;
+
+      switch(result.geometry.type) {
+        case 'Point': geom = new ol.geom.Point(coords);break;
+        case 'LineString': geom = new ol.geom.LineString(coords);break;
+        case 'Polygon': geom = new ol.geom.Polygon(coords);break;
+        case 'MultiPoint': geom = new ol.geom.MultiPoint(coords);break;
+        case 'MultiLineString': geom = new ol.geom.MultiLineString(coords);break;
+        case 'MultiPolygon': geom = new ol.geom.MultiPolygon(coords);break;
+        case 'GeometryCollection': geom = new ol.geom.GeometryCollection(coords);break;
+        default: break;
+      }
+      
+      if (geom) {
+        features.push(new ol.Feature({
+          geometry: geom
+        }));
+      }
     }
   }
-  return (features.length > 0) ? features : null;
+  return features;
 };
 
 

@@ -64,6 +64,31 @@ describe('ol.format.TopoJSON', function() {
 
   describe('#readFeatures()', function() {
 
+    it('parses simple.json', function(done) {
+      afterLoadText('spec/ol/format/topojson/simple.json', function(text) {
+        var features = format.readFeatures(text);
+        expect(features.length).to.be(3);
+
+        var point = features[0].getGeometry();
+        expect(point.getType()).to.be('Point');
+        expect(point.getFlatCoordinates()).to.eql([102, 0.5]);
+
+        var line = features[1].getGeometry();
+        expect(line.getType()).to.be('LineString');
+        expect(line.getFlatCoordinates()).to.eql([
+          102, 0, 103, 1, 104, 0, 105, 1
+        ]);
+
+        var polygon = features[2].getGeometry();
+        expect(polygon.getType()).to.be('Polygon');
+        expect(polygon.getFlatCoordinates()).to.eql([
+          100, 0, 100, 1, 101, 1, 101, 0, 100, 0
+        ]);
+
+        done();
+      });
+    });
+
     it('parses world-110m.json', function(done) {
       afterLoadText('spec/ol/format/topojson/world-110m.json', function(text) {
 

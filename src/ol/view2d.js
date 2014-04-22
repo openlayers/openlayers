@@ -94,7 +94,7 @@ ol.View2DProperty = {
  */
 ol.View2D = function(opt_options) {
   goog.base(this);
-  var options = opt_options || {};
+  var options = goog.isDef(opt_options) ? opt_options : {};
 
   /**
    * @type {Object.<string, *>}
@@ -283,8 +283,8 @@ goog.exportProperty(
  * @return {number} Resolution.
  */
 ol.View2D.prototype.getResolutionForExtent = function(extent, size) {
-  var xResolution = (extent[2] - extent[0]) / size[0];
-  var yResolution = (extent[3] - extent[1]) / size[1];
+  var xResolution = ol.extent.getWidth(extent) / size[0];
+  var yResolution = ol.extent.getHeight(extent) / size[1];
   return Math.max(xResolution, yResolution);
 };
 
@@ -531,6 +531,20 @@ ol.View2D.prototype.centerOn = function(coordinate, size, position) {
 ol.View2D.prototype.isDef = function() {
   return goog.isDefAndNotNull(this.getCenter()) &&
       goog.isDef(this.getResolution());
+};
+
+
+/**
+ * Rotate the view around a given coordinate.
+ * @param {number} rotation New rotation value for the view.
+ * @param {ol.Coordinate=} opt_anchor The rotation center.
+ */
+ol.View2D.prototype.rotate = function(rotation, opt_anchor) {
+  if (goog.isDef(opt_anchor)) {
+    var center = this.calculateCenterRotate(rotation, opt_anchor);
+    this.setCenter(center);
+  }
+  this.setRotation(rotation);
 };
 
 

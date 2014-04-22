@@ -4,7 +4,6 @@
 
 goog.provide('ol.Map');
 goog.provide('ol.MapProperty');
-goog.provide('ol.RendererHint');
 
 goog.require('goog.Uri.QueryData');
 goog.require('goog.array');
@@ -114,8 +113,8 @@ ol.RendererHint = {
  * @type {Array.<ol.RendererHint>}
  */
 ol.DEFAULT_RENDERER_HINTS = [
-  ol.RendererHint.WEBGL,
   ol.RendererHint.CANVAS,
+  ol.RendererHint.WEBGL,
   ol.RendererHint.DOM
 ];
 
@@ -156,6 +155,9 @@ ol.MapProperty = {
  * @constructor
  * @extends {ol.Object}
  * @param {olx.MapOptions} options Map options.
+ * @fires {@link ol.MapBrowserEvent} ol.MapBrowserEvent
+ * @fires {@link ol.MapEvent} ol.MapEvent
+ * @fires {@link ol.render.Event} ol.render.Event
  * @todo stability experimental
  * @todo observable layergroup {ol.layer.LayerGroup} a layer group containing
  *       the layers in this map.
@@ -262,7 +264,8 @@ ol.Map = function(options) {
     goog.events.EventType.MOUSEDOWN,
     goog.events.EventType.TOUCHSTART,
     goog.events.EventType.MSPOINTERDOWN,
-    'pointerdown'
+    ol.MapBrowserEvent.EventType.POINTERDOWN,
+    goog.events.MouseWheelHandler.EventType.MOUSEWHEEL
   ], goog.events.Event.stopPropagation);
   goog.dom.appendChild(this.viewport_, this.overlayContainerStopEvent_);
 
@@ -358,6 +361,25 @@ ol.Map = function(options) {
   this.tileQueue_ = new ol.TileQueue(
       goog.bind(this.getTilePriority, this),
       goog.bind(this.handleTileChange_, this));
+
+  /**
+   * Features to skip at rendering time.
+   * @type {ol.Collection}
+   * @private
+   */
+  this.skippedFeatures_ = new ol.Collection();
+  goog.events.listen(this.skippedFeatures_, ol.CollectionEventType.ADD,
+      this.handleSkippedFeaturesAdd_, false, this);
+  goog.events.listen(this.skippedFeatures_, ol.CollectionEventType.REMOVE,
+      this.handleSkippedFeaturesRemove_, false, this);
+  this.registerDisposable(this.skippedFeatures_);
+
+  /**
+   * Uids of features to skip at rendering time.
+   * @type {Object.<string, boolean>}
+   * @private
+   */
+  this.skippedFeatureUids_ = {};
 
   goog.events.listen(
       this, ol.Object.getChangeEventType(ol.MapProperty.LAYERGROUP),
@@ -748,7 +770,8 @@ ol.Map.prototype.getViewport = function() {
 /**
  * @return {Element} The map's overlay container. Elements added to this
  * container will let mousedown and touchstart events through to the map, so
- * clicks and gestures on an overlay will trigger MapBrowserEvent events.
+ * clicks and gestures on an overlay will trigger {@link ol.MapBrowserEvent}
+ * events.
  */
 ol.Map.prototype.getOverlayContainer = function() {
   return this.overlayContainer_;
@@ -758,7 +781,8 @@ ol.Map.prototype.getOverlayContainer = function() {
 /**
  * @return {Element} The map's overlay container. Elements added to this
  * container won't let mousedown and touchstart events through to the map, so
- * clicks and gestures on an overlay don't trigger any MapBrowserEvent.
+ * clicks and gestures on an overlay don't trigger any
+ * {@link ol.MapBrowserEvent}.
  */
 ol.Map.prototype.getOverlayContainerStopEvent = function() {
   return this.overlayContainerStopEvent_;
@@ -794,6 +818,16 @@ ol.Map.prototype.getTilePriority =
   var deltaY = tileCenter[1] - frameState.focus[1];
   return 65536 * Math.log(tileResolution) +
       Math.sqrt(deltaX * deltaX + deltaY * deltaY) / tileResolution;
+};
+
+
+/**
+ * Get the collection of features to skip.
+ * @return {ol.Collection} Features collection.
+ * @todo stability experimental
+ */
+ol.Map.prototype.getSkippedFeatures = function() {
+  return this.skippedFeatures_;
 };
 
 
@@ -892,6 +926,30 @@ ol.Map.prototype.handlePostRender = function() {
  * @private
  */
 ol.Map.prototype.handleSizeChanged_ = function() {
+  this.render();
+};
+
+
+/**
+ * @private
+ * @param {ol.CollectionEvent} event Collection "add" event.
+ */
+ol.Map.prototype.handleSkippedFeaturesAdd_ = function(event) {
+  var feature = /** @type {ol.Feature} */ (event.element);
+  var featureUid = goog.getUid(feature).toString();
+  this.skippedFeatureUids_[featureUid] = true;
+  this.render();
+};
+
+
+/**
+ * @private
+ * @param {ol.CollectionEvent} event Collection "remove" event.
+ */
+ol.Map.prototype.handleSkippedFeaturesRemove_ = function(event) {
+  var feature = /** @type {ol.Feature} */ (event.element);
+  var featureUid = goog.getUid(feature).toString();
+  delete this.skippedFeatureUids_[featureUid];
   this.render();
 };
 
@@ -1157,14 +1215,10 @@ ol.Map.prototype.renderFrame_ = function(time) {
   if (goog.isDef(size) && hasArea(size) &&
       goog.isDef(view2D) && view2D.isDef()) {
     var viewHints = view.getHints();
-    var obj = this.getLayerGroup().getLayerStatesArray();
-    var layersArray = obj.layers;
-    var layerStatesArray = obj.layerStates;
+    var layerStatesArray = this.getLayerGroup().getLayerStatesArray();
     var layerStates = {};
-    var layer;
-    for (i = 0, ii = layersArray.length; i < ii; ++i) {
-      layer = layersArray[i];
-      layerStates[goog.getUid(layer)] = layerStatesArray[i];
+    for (i = 0, ii = layerStatesArray.length; i < ii; ++i) {
+      layerStates[goog.getUid(layerStatesArray[i].layer)] = layerStatesArray[i];
     }
     view2DState = view2D.getView2DState();
     frameState = /** @type {oli.FrameState} */ ({
@@ -1174,13 +1228,14 @@ ol.Map.prototype.renderFrame_ = function(time) {
       extent: null,
       focus: goog.isNull(this.focus_) ? view2DState.center : this.focus_,
       index: this.frameIndex_++,
-      layersArray: layersArray,
       layerStates: layerStates,
+      layerStatesArray: layerStatesArray,
       logos: {},
       pixelRatio: this.pixelRatio_,
       pixelToCoordinateMatrix: this.pixelToCoordinateMatrix_,
       postRenderFunctions: [],
       size: size,
+      skippedFeatureUids_: this.skippedFeatureUids_,
       tileQueue: this.tileQueue_,
       time: time,
       usedTiles: {},
@@ -1219,7 +1274,7 @@ ol.Map.prototype.renderFrame_ = function(time) {
     Array.prototype.push.apply(
         this.postRenderFunctions_, frameState.postRenderFunctions);
 
-    var idle = this.preRenderFunctions_.length == 0 &&
+    var idle = this.preRenderFunctions_.length === 0 &&
         !frameState.animate &&
         !frameState.viewHints[ol.ViewHint.ANIMATING] &&
         !frameState.viewHints[ol.ViewHint.INTERACTING];

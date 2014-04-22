@@ -20,7 +20,17 @@ goog.require('ol.Observable');
  * @enum {string}
  */
 ol.ObjectEventType = {
+  /**
+   * Triggered before a property is changed.
+   * @event ol.ObjectEvent#beforepropertychange
+   * @todo stability experimental
+   */
   BEFOREPROPERTYCHANGE: 'beforepropertychange',
+  /**
+   * Triggered when a property is changed.
+   * @event ol.ObjectEvent#propertychange
+   * @todo stability experimental
+   */
   PROPERTYCHANGE: 'propertychange'
 };
 
@@ -99,10 +109,17 @@ ol.ObjectAccessor.prototype.transform = function(from, to) {
  * @constructor
  * @extends {ol.Observable}
  * @param {Object.<string, *>=} opt_values Values.
+ * @fires {@link ol.ObjectEvent} ol.ObjectEvent
  * @todo stability experimental
  */
 ol.Object = function(opt_values) {
   goog.base(this);
+
+  // Call goog.getUid to ensure that the order of objects' ids is the same as
+  // the order in which they were created.  This also helps to ensure that
+  // object properties are always added in the same order, which helps many
+  // JavaScript engines generate faster code.
+  goog.getUid(this);
 
   /**
    * @private

@@ -128,11 +128,7 @@ ol.interaction.Interaction.rotateWithoutConstraints =
       }
     }
     goog.asserts.assertInstanceof(view, ol.View2D);
-    if (goog.isDefAndNotNull(opt_anchor)) {
-      var center = view.calculateCenterRotate(rotation, opt_anchor);
-      view.setCenter(center);
-    }
-    view.setRotation(rotation);
+    view.rotate(rotation, opt_anchor);
   }
 };
 

@@ -490,6 +490,7 @@ ol.format.GPX.writeWptType_ = function(node, coordinate, objectStack) {
   ol.xml.setAttributeNS(node, null, 'lat', coordinate[1]);
   ol.xml.setAttributeNS(node, null, 'lon', coordinate[0]);
   var geometryLayout = goog.object.get(context, 'geometryLayout');
+  /* jshint -W086 */
   switch (geometryLayout) {
     case ol.geom.GeometryLayout.XYZM:
       if (coordinate[3] !== 0) {
@@ -505,6 +506,7 @@ ol.format.GPX.writeWptType_ = function(node, coordinate, objectStack) {
         goog.object.set(properties, 'time', coordinate[2]);
       }
   }
+  /* jshint +W086 */
   var orderedKeys = ol.format.GPX.WPT_TYPE_SEQUENCE_[namespaceURI];
   var values = ol.xml.makeSequence(properties, orderedKeys);
   ol.xml.pushSerializeAndPop(/** @type {ol.xml.NodeStackItem} */

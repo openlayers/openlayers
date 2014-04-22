@@ -5,8 +5,6 @@ goog.provide('ol.renderer.canvas.TileLayer');
 
 goog.require('goog.array');
 goog.require('goog.asserts');
-goog.require('goog.dom');
-goog.require('goog.dom.TagName');
 goog.require('goog.object');
 goog.require('goog.vec.Mat4');
 goog.require('ol.Size');
@@ -14,6 +12,7 @@ goog.require('ol.Tile');
 goog.require('ol.TileCoord');
 goog.require('ol.TileRange');
 goog.require('ol.TileState');
+goog.require('ol.dom');
 goog.require('ol.extent');
 goog.require('ol.layer.Tile');
 goog.require('ol.renderer.Map');
@@ -44,6 +43,12 @@ ol.renderer.canvas.TileLayer = function(mapRenderer, tileLayer) {
    * @type {ol.Size}
    */
   this.canvasSize_ = null;
+
+  /**
+   * @private
+   * @type {boolean}
+   */
+  this.canvasTooBig_ = false;
 
   /**
    * @private
@@ -200,25 +205,28 @@ ol.renderer.canvas.TileLayer.prototype.prepareFrame =
     goog.asserts.assert(goog.isNull(this.canvasSize_));
     goog.asserts.assert(goog.isNull(this.context_));
     goog.asserts.assert(goog.isNull(this.renderedCanvasTileRange_));
-    canvas = /** @type {HTMLCanvasElement} */
-        (goog.dom.createElement(goog.dom.TagName.CANVAS));
-    canvas.width = canvasWidth;
-    canvas.height = canvasHeight;
-    context = /** @type {CanvasRenderingContext2D} */ (canvas.getContext('2d'));
-    this.canvas_ = canvas;
+    context = ol.dom.createCanvasContext2D(canvasWidth, canvasHeight);
+    this.canvas_ = context.canvas;
     this.canvasSize_ = [canvasWidth, canvasHeight];
     this.context_ = context;
+    this.canvasTooBig_ =
+        !ol.renderer.canvas.Layer.testCanvasSize(this.canvasSize_);
   } else {
     goog.asserts.assert(!goog.isNull(this.canvasSize_));
     goog.asserts.assert(!goog.isNull(this.context_));
     canvas = this.canvas_;
     context = this.context_;
     if (this.canvasSize_[0] < canvasWidth ||
-        this.canvasSize_[1] < canvasHeight) {
-      // Canvas is too small, make it bigger
+        this.canvasSize_[1] < canvasHeight ||
+        (this.canvasTooBig_ && (this.canvasSize_[0] > canvasWidth ||
+        this.canvasSize_[1] > canvasHeight))) {
+      // Canvas is too small, resize it. We never shrink the canvas, unless
+      // we know that the current canvas size exceeds the maximum size
       canvas.width = canvasWidth;
       canvas.height = canvasHeight;
       this.canvasSize_ = [canvasWidth, canvasHeight];
+      this.canvasTooBig_ =
+          !ol.renderer.canvas.Layer.testCanvasSize(this.canvasSize_);
       this.renderedCanvasTileRange_ = null;
     } else {
       canvasWidth = this.canvasSize_[0];

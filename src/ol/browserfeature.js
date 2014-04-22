@@ -3,6 +3,7 @@ goog.provide('ol.BrowserFeature');
 goog.require('goog.dom');
 goog.require('goog.dom.TagName');
 goog.require('goog.userAgent');
+goog.require('ol.dom');
 goog.require('ol.webgl');
 
 
@@ -52,6 +53,14 @@ ol.ENABLE_WEBGL = true;
  * @define {boolean} Whether to support legacy IE (7-8).
  */
 ol.LEGACY_IE_SUPPORT = false;
+
+
+/**
+ * The page is loaded using HTTPS.
+ * @const
+ * @type {boolean}
+ */
+ol.IS_HTTPS = goog.global.location.protocol === 'https:';
 
 
 /**
@@ -105,10 +114,7 @@ ol.BrowserFeature.HAS_CANVAS = ol.ENABLE_CANVAS && (
         return false;
       }
       try {
-        var canvas = /** @type {HTMLCanvasElement} */
-            (goog.dom.createElement(goog.dom.TagName.CANVAS));
-        var context = /** @type {CanvasRenderingContext2D} */
-            (canvas.getContext('2d'));
+        var context = ol.dom.createCanvasContext2D();
         if (goog.isNull(context)) {
           return false;
         } else {
@@ -152,14 +158,39 @@ ol.BrowserFeature.HAS_GEOLOCATION = 'geolocation' in goog.global.navigator;
 
 
 /**
+ * @const
+ * @type {boolean}
+ * @todo stability experimental
+ */
+ol.BrowserFeature.HAS_JSON_PARSE =
+    'JSON' in goog.global && 'parse' in goog.global.JSON;
+
+
+/**
  * True if browser supports touch events.
  * @const
  * @type {boolean}
  * @todo stability experimental
  */
-ol.BrowserFeature.HAS_TOUCH = ol.ASSUME_TOUCH ||
-    (goog.global.document &&
-    'ontouchstart' in goog.global.document.documentElement) ||
+ol.BrowserFeature.HAS_TOUCH = ol.ASSUME_TOUCH || 'ontouchstart' in goog.global;
+
+
+/**
+ * True if browser supports pointer events.
+ * @const
+ * @type {boolean}
+ * @todo stability experimental
+ */
+ol.BrowserFeature.HAS_POINTER = 'PointerEvent' in goog.global;
+
+
+/**
+ * True if browser supports ms pointer events (IE 10).
+ * @const
+ * @type {boolean}
+ * @todo stability experimental
+ */
+ol.BrowserFeature.HAS_MSPOINTER =
     !!(goog.global.navigator.msPointerEnabled);
 
 

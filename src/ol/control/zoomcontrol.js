@@ -12,6 +12,7 @@ goog.require('ol.animation');
 goog.require('ol.control.Control');
 goog.require('ol.css');
 goog.require('ol.easing');
+goog.require('ol.pointer.PointerEventHandler');
 
 
 
@@ -51,10 +52,11 @@ ol.control.Zoom = function(opt_options) {
     'type' : 'button'
   }, tTipZoomIn, zoomInLabel);
 
-  goog.events.listen(inElement, [
-    goog.events.EventType.TOUCHEND,
-    goog.events.EventType.CLICK
-  ], goog.partial(ol.control.Zoom.prototype.zoomByDelta_, delta), false, this);
+  var inElementHandler = new ol.pointer.PointerEventHandler(inElement);
+  this.registerDisposable(inElementHandler);
+  goog.events.listen(inElementHandler,
+      ol.pointer.EventType.POINTERUP, goog.partial(
+          ol.control.Zoom.prototype.zoomByDelta_, delta), false, this);
 
   goog.events.listen(inElement, [
     goog.events.EventType.MOUSEOUT,
@@ -71,10 +73,12 @@ ol.control.Zoom = function(opt_options) {
     'class': className + '-out  ol-has-tooltip',
     'name' : 'ZoomOut'
   }, tTipsZoomOut, zoomOutLabel);
-  goog.events.listen(outElement, [
-    goog.events.EventType.TOUCHEND,
-    goog.events.EventType.CLICK
-  ], goog.partial(ol.control.Zoom.prototype.zoomByDelta_, -delta), false, this);
+
+  var outElementHandler = new ol.pointer.PointerEventHandler(outElement);
+  this.registerDisposable(outElementHandler);
+  goog.events.listen(outElementHandler,
+      ol.pointer.EventType.POINTERUP, goog.partial(
+          ol.control.Zoom.prototype.zoomByDelta_, -delta), false, this);
 
   goog.events.listen(outElement, [
     goog.events.EventType.MOUSEOUT,
@@ -104,11 +108,11 @@ goog.inherits(ol.control.Zoom, ol.control.Control);
 
 /**
  * @param {number} delta Zoom delta.
- * @param {goog.events.BrowserEvent} browserEvent The browser event to handle.
+ * @param {ol.pointer.PointerEvent} pointerEvent The pointer event to handle.
  * @private
  */
-ol.control.Zoom.prototype.zoomByDelta_ = function(delta, browserEvent) {
-  browserEvent.preventDefault();
+ol.control.Zoom.prototype.zoomByDelta_ = function(delta, pointerEvent) {
+  pointerEvent.browserEvent.preventDefault();
   // prevent the anchor from getting appended to the url
   var map = this.getMap();
   // FIXME works for View2D only

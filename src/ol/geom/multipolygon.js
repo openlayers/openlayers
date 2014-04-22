@@ -2,6 +2,7 @@ goog.provide('ol.geom.MultiPolygon');
 
 goog.require('goog.array');
 goog.require('goog.asserts');
+goog.require('ol.array');
 goog.require('ol.extent');
 goog.require('ol.geom.GeometryType');
 goog.require('ol.geom.MultiPoint');
@@ -23,7 +24,7 @@ goog.require('ol.geom.flat.simplify');
  * @constructor
  * @extends {ol.geom.SimpleGeometry}
  * @param {ol.geom.RawMultiPolygon} coordinates Coordinates.
- * @param {ol.geom.GeometryLayout=} opt_layout Layout.
+ * @param {ol.geom.GeometryLayout|string=} opt_layout Layout.
  * @todo stability experimental
  */
 ol.geom.MultiPolygon = function(coordinates, opt_layout) {
@@ -72,7 +73,8 @@ ol.geom.MultiPolygon = function(coordinates, opt_layout) {
    */
   this.orientedFlatCoordinates_ = null;
 
-  this.setCoordinates(coordinates, opt_layout);
+  this.setCoordinates(coordinates,
+      /** @type {ol.geom.GeometryLayout|undefined} */ (opt_layout));
 
 };
 goog.inherits(ol.geom.MultiPolygon, ol.geom.SimpleGeometry);
@@ -91,7 +93,7 @@ ol.geom.MultiPolygon.prototype.appendPolygon = function(polygon) {
     this.endss_.push();
   } else {
     var offset = this.flatCoordinates.length;
-    goog.array.extend(this.flatCoordinates, polygon.getFlatCoordinates());
+    ol.array.safeExtend(this.flatCoordinates, polygon.getFlatCoordinates());
     ends = polygon.getEnds().slice();
     var i, ii;
     for (i = 0, ii = ends.length; i < ii; ++i) {
@@ -373,7 +375,7 @@ ol.geom.MultiPolygon.prototype.setPolygons = function(polygons) {
     for (j = 0, jj = ends.length; j < jj; ++j) {
       ends[j] += offset;
     }
-    goog.array.extend(flatCoordinates, polygon.getFlatCoordinates());
+    ol.array.safeExtend(flatCoordinates, polygon.getFlatCoordinates());
     endss.push(ends);
   }
   this.setFlatCoordinates(layout, flatCoordinates, endss);

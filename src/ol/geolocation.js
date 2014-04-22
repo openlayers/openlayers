@@ -35,7 +35,7 @@ ol.GeolocationProperty = {
 
 /**
  * Helper class for providing HTML5 Geolocation capabilities.
- * The [Geolocation API](http://dev.w3.org/geo/api/spec-source.html)
+ * The [Geolocation API](http://www.w3.org/TR/geolocation-API/)
  * is used to locate a user's position.
  *
  * Example:
@@ -44,7 +44,7 @@ ol.GeolocationProperty = {
  *     // take the projection to use from the map's view
  *     geolocation.bindTo('projection', map.getView());
  *     // listen to changes in position
- *     geolocation.on('change:position', function(evt) {
+ *     geolocation.on('change', function(evt) {
  *       window.console.log(geolocation.getPosition());
  *     });
  *
@@ -71,7 +71,7 @@ ol.GeolocationProperty = {
  * @todo observable tracking {number} track the device's position.
  * @todo observable trackingOptions {GeolocationPositionOptions} PositionOptions
  *       as defined by the HTML5 Geolocation spec at
- *       http://dev.w3.org/geo/api/spec-source.html
+ *       http://www.w3.org/TR/geolocation-API/#position_options_interface
  */
 ol.Geolocation = function(opt_options) {
 
@@ -186,10 +186,10 @@ ol.Geolocation.prototype.positionChange_ = function(position) {
   this.set(ol.GeolocationProperty.POSITION, projectedPosition);
   this.set(ol.GeolocationProperty.SPEED,
       goog.isNull(coords.speed) ? undefined : coords.speed);
-
   var geometry = ol.sphere.WGS84.circle(this.position_, coords.accuracy);
   geometry.transform(this.transform_);
   this.set(ol.GeolocationProperty.ACCURACY_GEOMETRY, geometry);
+  this.dispatchChangeEvent();
 };
 
 

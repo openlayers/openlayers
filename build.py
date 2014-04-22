@@ -20,7 +20,8 @@ if sys.platform == 'win32':
         'GJSLINT': 'gjslint.exe',
         'JAVA': 'java.exe',
         'JAR': 'jar.exe',
-        'JSDOC': 'jsdoc.cmd',
+        'JSDOC': './node_modules/.bin/jsdoc',
+        'JSHINT': './node_modules/.bin/jshint',
         'PYTHON': 'python.exe',
         'PHANTOMJS': 'phantomjs.cmd'
     }
@@ -71,9 +72,10 @@ if sys.platform == 'win32':
 else:
     variables.GIT = 'git'
     variables.GJSLINT = 'gjslint'
+    variables.JSHINT = './node_modules/.bin/jshint'
     variables.JAVA = 'java'
     variables.JAR = 'jar'
-    variables.JSDOC = 'jsdoc'
+    variables.JSDOC = './node_modules/.bin/jsdoc'
     variables.PYTHON = 'python'
     variables.PHANTOMJS = 'phantomjs'
 
@@ -81,15 +83,14 @@ variables.BRANCH = output(
     '%(GIT)s', 'rev-parse', '--abbrev-ref', 'HEAD').strip()
 
 EXECUTABLES = [variables.GIT, variables.GJSLINT, variables.JAVA, variables.JAR,
-               variables.JSDOC, variables.PYTHON, variables.PHANTOMJS]
+               variables.JSDOC, variables.JSHINT, variables.PYTHON,
+               variables.PHANTOMJS]
 
 EXPORTS = [path
            for path in ifind('src')
            if path.endswith('.exports')]
 
-EXTERNAL_SRC = [
-    'build/src/external/externs/types.js',
-    'build/src/external/src/exports.js']
+EXTERNAL_SRC = ['build/src/external/src/exports.js']
 
 EXAMPLES = [path
             for path in ifind('examples')
@@ -112,9 +113,7 @@ EXAMPLES_JSON = ['build/' + example.replace('.html', '.json')
 EXAMPLES_COMBINED = ['build/' + example.replace('.html', '.combined.js')
                      for example in EXAMPLES]
 
-INTERNAL_SRC = [
-    'build/src/internal/src/requireall.js',
-    'build/src/internal/src/types.js']
+INTERNAL_SRC = ['build/src/internal/src/requireall.js']
 
 GLSL_SRC = [path
             for path in ifind('src')
@@ -164,7 +163,7 @@ def report_sizes(t):
 virtual('default', 'build')
 
 
-virtual('integration-test', 'lint', 'build', 'build-all',
+virtual('integration-test', 'lint', 'jshint', 'build', 'build-all',
         'test', 'build/examples/all.combined.js', 'check-examples', 'apidoc')
 
 
@@ -172,7 +171,7 @@ virtual('build', 'build/ol.css', 'build/ol.js',
         'build/ol-simple.js', 'build/ol-whitespace.js')
 
 
-virtual('check', 'lint', 'build/ol-all.js', 'test')
+virtual('check', 'lint', 'jshint', 'build/ol-all.js', 'test')
 
 
 virtual('todo', 'fixme')
@@ -220,18 +219,9 @@ def build_ol_all_js(t):
             PLOVR_JAR, 'build', 'buildcfg/ol-all.json')
 
 
-@target('build/src/external/externs/types.js', 'bin/generate-exports.py',
-        'src/objectliterals.jsdoc')
-def build_src_external_externs_types_js(t):
-    t.output('%(PYTHON)s', 'bin/generate-exports.py',
-             '--externs', 'src/objectliterals.jsdoc')
-
-
-@target('build/src/external/src/exports.js', 'bin/generate-exports.py',
-        'src/objectliterals.jsdoc', EXPORTS)
+@target('build/src/external/src/exports.js', 'bin/generate-exports.py', EXPORTS)
 def build_src_external_src_exports_js(t):
-    t.output('%(PYTHON)s', 'bin/generate-exports.py',
-             '--exports', 'src/objectliterals.jsdoc', EXPORTS)
+    t.output('%(PYTHON)s', 'bin/generate-exports.py', '--exports', EXPORTS)
 
 
 for glsl_src in GLSL_SRC:
@@ -269,13 +259,6 @@ def build_test_requireall_js(t):
     _build_require_list(t.dependencies, t.name)
 
 
-@target('build/src/internal/src/types.js', 'bin/generate-exports.py',
-        'src/objectliterals.jsdoc')
-def build_src_internal_types_js(t):
-    t.output('%(PYTHON)s', 'bin/generate-exports.py',
-             '--typedef', 'src/objectliterals.jsdoc')
-
-
 virtual('build-examples', 'examples', 'build/examples/all.combined.js',
         EXAMPLES_COMBINED)
 
@@ -310,15 +293,18 @@ def build_examples_all_js(t):
 @rule(r'\Abuild/examples/(?P<id>.*).json\Z')
 def examples_star_json(name, match):
     def action(t):
+        # It would make more sense to use olx.js as an input file here. We use
+        # it as an externs file instead to prevent "Cannot read property '*' of
+        # undefined" error when running examples in "raw" or "whitespace" mode.
+        # Note that we use the proper way in buildcfg/examples-all.json, which
+        # is only used to check the examples code using the compiler.
         content = json.dumps({
             'id': match.group('id'),
             'inherits': '../../buildcfg/base.json',
             'inputs': [
-                '../examples/%(id)s.js' % match.groupdict(),
-                '../build/src/internal/src/types.js',
+                '../examples/%(id)s.js' % match.groupdict()
             ],
             'externs': [
-                '//json.js',
                 '//jquery-1.7.js',
                 '../externs/bingmaps.js',
                 '../externs/bootstrap.js',
@@ -326,6 +312,7 @@ def examples_star_json(name, match):
                 '../externs/example.js',
                 '../externs/geojson.js',
                 '../externs/oli.js',
+                '../externs/olx.js',
                 '../externs/proj4js.js',
                 '../externs/tilejson.js',
                 '../externs/topojson.js',
@@ -373,7 +360,7 @@ virtual('lint', 'build/lint-timestamp', 'build/lint-generated-timestamp',
 def build_lint_src_timestamp(t):
     t.run('%(GJSLINT)s',
           '--jslint_error=all',
-          '--custom_jsdoc_tags=todo,function',
+          '--custom_jsdoc_tags=event,fires,todo,function',
           '--strict',
           t.newer(t.dependencies))
     t.touch()
@@ -384,7 +371,7 @@ def build_lint_src_timestamp(t):
 def build_lint_generated_timestamp(t):
     limited_doc_files = [
         path
-        for path in ifind('externs', 'build/src/external/externs')
+        for path in ifind('externs')
         if path.endswith('.js')]
     t.run('%(GJSLINT)s',
           '--jslint_error=all',
@@ -406,6 +393,15 @@ def build_lint_libtess_js_timestamp(t):
           '--disable=110',
           '--strict',
           t.newer(t.dependencies))
+    t.touch()
+
+
+virtual('jshint', 'build/jshint-timestamp')
+
+
+@target('build/jshint-timestamp', SRC, EXAMPLES_SRC, SPEC, precious=True)
+def build_jshint_timestamp(t):
+    t.run(variables.JSHINT, '--verbose', t.newer(t.dependencies))
     t.touch()
 
 

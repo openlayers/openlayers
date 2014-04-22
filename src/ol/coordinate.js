@@ -66,7 +66,7 @@ ol.coordinate.closestOnSegment = function(coordinate, segment) {
   var y2 = end[1];
   var dx = x2 - x1;
   var dy = y2 - y1;
-  var along = (dx == 0 && dy == 0) ? 0 :
+  var along = (dx === 0 && dy === 0) ? 0 :
       ((dx * (x0 - x1)) + (dy * (y0 - y1))) / ((dx * dx + dy * dy) || 0);
   var x, y;
   if (along <= 0) {
@@ -178,6 +178,18 @@ ol.coordinate.rotate = function(coordinate, angle) {
 ol.coordinate.scale = function(coordinate, s) {
   coordinate[0] *= s;
   coordinate[1] *= s;
+  return coordinate;
+};
+
+
+/**
+ * @param {ol.Coordinate} coordinate Coordinate.
+ * @param {ol.Coordinate} delta Delta.
+ * @return {ol.Coordinate} Coordinate.
+ */
+ol.coordinate.sub = function(coordinate, delta) {
+  coordinate[0] -= delta[0];
+  coordinate[1] -= delta[1];
   return coordinate;
 };
 

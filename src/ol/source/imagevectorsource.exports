@@ -1,1 +1,2 @@
 @exportSymbol ol.source.ImageVector
+@exportProperty ol.source.ImageVector.prototype.getSource

@@ -22,6 +22,12 @@ exports.defineTags = function(dictionary) {
           description: description,
           readonly: readonly
         });
+        if (!doclet.fires) {
+          doclet.fires = [];
+        }
+        if (doclet.fires.indexOf('{@link ol.ObjectEvent} ol.event:ObjectEvent') === -1) {
+          doclet.fires.push('{@link ol.ObjectEvent} ol.event:ObjectEvent');
+        }
       }
     }
   });
