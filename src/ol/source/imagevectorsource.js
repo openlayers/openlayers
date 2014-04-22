@@ -164,6 +164,15 @@ ol.source.ImageVector.prototype.forEachFeatureAtPixel =
 
 
 /**
+ * @return {ol.source.Vector} Source.
+ * @todo stability experimental
+ */
+ol.source.ImageVector.prototype.getSource = function() {
+  return this.source_;
+};
+
+
+/**
  * @param {ol.Coordinate} center Center.
  * @param {number} resolution Resolution.
  * @param {number} pixelRatio Pixel ratio.

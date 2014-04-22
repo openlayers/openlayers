@@ -13,9 +13,11 @@ describe('ol.color', function() {
       ol.color.fromStringInternal_.restore();
     });
 
-    it('can parse named colors', function() {
-      expect(ol.color.fromString('red')).to.eql([255, 0, 0, 1]);
-    });
+    if (ol.color.ENABLE_NAMED_COLORS) {
+      it('can parse named colors', function() {
+        expect(ol.color.fromString('red')).to.eql([255, 0, 0, 1]);
+      });
+    }
 
     it('can parse 3-digit hex colors', function() {
       expect(ol.color.fromString('#087')).to.eql([0, 136, 119, 1]);
@@ -34,13 +36,15 @@ describe('ol.color', function() {
           [255, 255, 0, 0.1]);
     });
 
-    it('caches parsed values', function() {
-      var count = ol.color.fromStringInternal_.callCount;
-      ol.color.fromString('aquamarine');
-      expect(ol.color.fromStringInternal_.callCount).to.be(count + 1);
-      ol.color.fromString('aquamarine');
-      expect(ol.color.fromStringInternal_.callCount).to.be(count + 1);
-    });
+    if (ol.color.ENABLE_NAMED_COLORS) {
+      it('caches parsed values', function() {
+        var count = ol.color.fromStringInternal_.callCount;
+        ol.color.fromString('aquamarine');
+        expect(ol.color.fromStringInternal_.callCount).to.be(count + 1);
+        ol.color.fromString('aquamarine');
+        expect(ol.color.fromStringInternal_.callCount).to.be(count + 1);
+      });
+    }
 
     it('throws an error on invalid colors', function() {
       var invalidColors = ['tuesday', '#1234567', 'rgb(255.0,0,0)'];

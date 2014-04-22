@@ -283,8 +283,8 @@ goog.exportProperty(
  * @return {number} Resolution.
  */
 ol.View2D.prototype.getResolutionForExtent = function(extent, size) {
-  var xResolution = (extent[2] - extent[0]) / size[0];
-  var yResolution = (extent[3] - extent[1]) / size[1];
+  var xResolution = ol.extent.getWidth(extent) / size[0];
+  var yResolution = ol.extent.getHeight(extent) / size[1];
   return Math.max(xResolution, yResolution);
 };
 

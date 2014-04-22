@@ -159,8 +159,8 @@ ol.source.WMTS = function(options) {
             extent[0] === projectionExtent[0] &&
             extent[2] === projectionExtent[2]) {
           var numCols = Math.ceil(
-              (extent[2] - extent[0]) /
-              (tileExtent[2] - tileExtent[0]));
+              ol.extent.getWidth(extent) /
+              ol.extent.getWidth(tileExtent));
           x = goog.math.modulo(x, numCols);
           tmpTileCoord.z = tileCoord.z;
           tmpTileCoord.x = x;
