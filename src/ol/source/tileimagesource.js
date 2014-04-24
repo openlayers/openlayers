@@ -120,6 +120,15 @@ ol.source.TileImage.prototype.getTile =
 
 
 /**
+ * @return {ol.TileUrlFunctionType} TileUrlFunction
+ * @todo stability experimental
+ */
+ol.source.TileImage.prototype.getTileUrlFunction = function() {
+  return this.tileUrlFunction;
+};
+
+
+/**
  * @param {ol.TileUrlFunctionType} tileUrlFunction Tile URL function.
  */
 ol.source.TileImage.prototype.setTileUrlFunction = function(tileUrlFunction) {
