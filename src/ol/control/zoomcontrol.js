@@ -66,12 +66,12 @@ ol.control.Zoom = function(opt_options) {
   }, false);
 
   var tTipsZoomOut = goog.dom.createDom(goog.dom.TagName.SPAN, {
-    'role' : 'tooltip',
-    'type' : 'button'
+    'role' : 'tooltip'
   }, zoomOutTipLabel);
   var outElement = goog.dom.createDom(goog.dom.TagName.BUTTON, {
     'class': className + '-out  ol-has-tooltip',
-    'name' : 'ZoomOut'
+    'name' : 'ZoomOut',
+    'type' : 'button'
   }, tTipsZoomOut, zoomOutLabel);
 
   var outElementHandler = new ol.pointer.PointerEventHandler(outElement);
