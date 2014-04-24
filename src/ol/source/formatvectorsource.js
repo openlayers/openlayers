@@ -118,7 +118,7 @@ ol.source.FormatVector.prototype.readFeatures = function(source) {
   var features = format.readFeatures(source);
   var featureProjection = format.readProjection(source);
   var projection = this.getProjection();
-  if (!goog.isNull(projection)) {
+  if (!goog.isNull(projection) && !goog.isNull(featureProjection)) {
     if (!ol.proj.equivalent(featureProjection, projection)) {
       var transform = ol.proj.getTransform(featureProjection, projection);
       var i, ii;

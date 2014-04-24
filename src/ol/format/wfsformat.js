@@ -7,6 +7,7 @@ goog.require('ol.format.GML');
 goog.require('ol.format.XMLFeature');
 goog.require('ol.format.XSD');
 goog.require('ol.geom.Geometry');
+goog.require('ol.proj');
 goog.require('ol.xml');
 
 
@@ -643,4 +644,51 @@ ol.format.WFS.prototype.writeTransaction = function(inserts, updates, deletes,
     objectStack);
   }
   return node;
+};
+
+
+/**
+ * Read the projection from a WFS source.
+ *
+ * @function
+ * @param {ArrayBuffer|Document|Node|Object|string} source Source.
+ * @return {?ol.proj.Projection} Projection.
+ */
+ol.format.WFS.prototype.readProjection;
+
+
+/**
+ * @inheritDoc
+ */
+ol.format.WFS.prototype.readProjectionFromDocument = function(doc) {
+  goog.asserts.assert(doc.nodeType == goog.dom.NodeType.DOCUMENT);
+  for (var n = doc.firstChild; !goog.isNull(n); n = n.nextSibling) {
+    if (n.nodeType == goog.dom.NodeType.ELEMENT) {
+      return this.readProjectionFromNode(n);
+    }
+  }
+  return null;
+};
+
+
+/**
+ * @inheritDoc
+ */
+ol.format.WFS.prototype.readProjectionFromNode = function(node) {
+  goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT);
+  goog.asserts.assert(node.localName == 'FeatureCollection');
+  node = node.firstElementChild.firstElementChild;
+  if (goog.isDefAndNotNull(node)) {
+    for (var n = node.firstElementChild; !goog.isNull(n);
+        n = n.nextElementSibling) {
+      if (!(n.childNodes.length === 0 ||
+          (n.childNodes.length === 1 &&
+          n.firstChild.nodeType === 3))) {
+        var objectStack = [{}];
+        ol.format.GML.readGeometry(n, objectStack);
+        return ol.proj.get(objectStack.pop().srsName);
+      }
+    }
+  }
+  return null;
 };
