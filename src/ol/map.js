@@ -363,18 +363,6 @@ ol.Map = function(options) {
       goog.bind(this.handleTileChange_, this));
 
   /**
-   * Features to skip at rendering time.
-   * @type {ol.Collection}
-   * @private
-   */
-  this.skippedFeatures_ = new ol.Collection();
-  goog.events.listen(this.skippedFeatures_, ol.CollectionEventType.ADD,
-      this.handleSkippedFeaturesAdd_, false, this);
-  goog.events.listen(this.skippedFeatures_, ol.CollectionEventType.REMOVE,
-      this.handleSkippedFeaturesRemove_, false, this);
-  this.registerDisposable(this.skippedFeatures_);
-
-  /**
    * Uids of features to skip at rendering time.
    * @type {Object.<string, boolean>}
    * @private
@@ -822,16 +810,6 @@ ol.Map.prototype.getTilePriority =
 
 
 /**
- * Get the collection of features to skip.
- * @return {ol.Collection} Features collection.
- * @todo stability experimental
- */
-ol.Map.prototype.getSkippedFeatures = function() {
-  return this.skippedFeatures_;
-};
-
-
-/**
  * @param {goog.events.BrowserEvent} browserEvent Browser event.
  * @param {string=} opt_type Type.
  */
@@ -926,30 +904,6 @@ ol.Map.prototype.handlePostRender = function() {
  * @private
  */
 ol.Map.prototype.handleSizeChanged_ = function() {
-  this.render();
-};
-
-
-/**
- * @private
- * @param {ol.CollectionEvent} event Collection "add" event.
- */
-ol.Map.prototype.handleSkippedFeaturesAdd_ = function(event) {
-  var feature = /** @type {ol.Feature} */ (event.element);
-  var featureUid = goog.getUid(feature).toString();
-  this.skippedFeatureUids_[featureUid] = true;
-  this.render();
-};
-
-
-/**
- * @private
- * @param {ol.CollectionEvent} event Collection "remove" event.
- */
-ol.Map.prototype.handleSkippedFeaturesRemove_ = function(event) {
-  var feature = /** @type {ol.Feature} */ (event.element);
-  var featureUid = goog.getUid(feature).toString();
-  delete this.skippedFeatureUids_[featureUid];
   this.render();
 };
 
@@ -1349,6 +1303,16 @@ goog.exportProperty(
 
 
 /**
+ * @param {ol.Feature} feature Feature.
+ */
+ol.Map.prototype.skipFeature = function(feature) {
+  var featureUid = goog.getUid(feature).toString();
+  this.skippedFeatureUids_[featureUid] = true;
+  this.render();
+};
+
+
+/**
  * Force a recalculation of the map viewport size.  This should be called when
  * third-party code changes the size of the map viewport.
  * @todo stability experimental
@@ -1368,6 +1332,16 @@ ol.Map.prototype.updateSize = function() {
     var size = goog.style.getContentBoxSize(targetElement);
     this.setSize([size.width, size.height]);
   }
+};
+
+
+/**
+ * @param {ol.Feature} feature Feature.
+ */
+ol.Map.prototype.unskipFeature = function(feature) {
+  var featureUid = goog.getUid(feature).toString();
+  delete this.skippedFeatureUids_[featureUid];
+  this.render();
 };
 
 
