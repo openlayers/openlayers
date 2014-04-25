@@ -280,6 +280,38 @@ describe('ol.format.WFS', function() {
     });
   });
 
+  describe('when parsing GML from MapServer', function() {
+
+    var features, feature;
+    before(function(done) {
+      afterLoadText('spec/ol/format/wfs/mapserver.xml', function(xml) {
+        try {
+          var config = {
+            'featureNS': 'http://mapserver.gis.umn.edu/mapserver',
+            'featureType': 'Historische_Messtischblaetter_WFS'
+          };
+          features = new ol.format.WFS(config).readFeatures(xml);
+        } catch (e) {
+          done(e);
+        }
+        done();
+      });
+    });
+
+    it('creates 7 features', function() {
+      expect(features).to.have.length(7);
+    });
+
+    it('creates a polygon for Arnstadt', function() {
+      feature = features[0];
+      var fid = 'Historische_Messtischblaetter_WFS.71055885';
+      expect(feature.getId()).to.equal(fid);
+      expect(feature.get('titel')).to.equal('Arnstadt');
+      expect(feature.getGeometry()).to.be.an(ol.geom.Polygon);
+    });
+
+  });
+
 });
 
 
@@ -287,4 +319,5 @@ goog.require('ol.xml');
 goog.require('ol.Feature');
 goog.require('ol.geom.MultiPoint');
 goog.require('ol.geom.MultiPolygon');
+goog.require('ol.geom.Polygon');
 goog.require('ol.format.WFS');
