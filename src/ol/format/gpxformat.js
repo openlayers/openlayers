@@ -378,8 +378,7 @@ ol.format.GPX.prototype.readFeature;
  */
 ol.format.GPX.prototype.readFeatureFromNode = function(node) {
   goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT);
-  if (goog.array.indexOf(ol.format.GPX.NAMESPACE_URIS_, node.namespaceURI) ==
-      -1) {
+  if (!goog.array.contains(ol.format.GPX.NAMESPACE_URIS_, node.namespaceURI)) {
     return null;
   }
   var featureReader = ol.format.GPX.FEATURE_READER_[node.localName];
@@ -409,8 +408,7 @@ ol.format.GPX.prototype.readFeatures;
  */
 ol.format.GPX.prototype.readFeaturesFromNode = function(node) {
   goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT);
-  if (goog.array.indexOf(ol.format.GPX.NAMESPACE_URIS_, node.namespaceURI) ==
-      -1) {
+  if (!goog.array.contains(ol.format.GPX.NAMESPACE_URIS_, node.namespaceURI)) {
     return [];
   }
   if (node.localName == 'gpx') {

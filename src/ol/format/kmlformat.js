@@ -568,8 +568,8 @@ ol.format.KML.readFlatLinearRing_ = function(node, objectStack) {
  */
 ol.format.KML.gxCoordParser_ = function(node, objectStack) {
   goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT);
-  goog.asserts.assert(goog.array.indexOf(
-      ol.format.KML.GX_NAMESPACE_URIS_, node.namespaceURI) != -1);
+  goog.asserts.assert(goog.array.contains(
+      ol.format.KML.GX_NAMESPACE_URIS_, node.namespaceURI));
   goog.asserts.assert(node.localName == 'coord');
   var gxTrackObject = /** @type {ol.format.KMLGxTrackObject_} */
       (objectStack[objectStack.length - 1]);
@@ -598,8 +598,8 @@ ol.format.KML.gxCoordParser_ = function(node, objectStack) {
  */
 ol.format.KML.readGxMultiTrack_ = function(node, objectStack) {
   goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT);
-  goog.asserts.assert(goog.array.indexOf(
-      ol.format.KML.GX_NAMESPACE_URIS_, node.namespaceURI) != -1);
+  goog.asserts.assert(goog.array.contains(
+      ol.format.KML.GX_NAMESPACE_URIS_, node.namespaceURI));
   goog.asserts.assert(node.localName == 'MultiTrack');
   var lineStrings = ol.xml.pushParseAndPop(
       /** @type {Array.<ol.geom.LineString>} */ ([]),
@@ -621,8 +621,8 @@ ol.format.KML.readGxMultiTrack_ = function(node, objectStack) {
  */
 ol.format.KML.readGxTrack_ = function(node, objectStack) {
   goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT);
-  goog.asserts.assert(goog.array.indexOf(
-      ol.format.KML.GX_NAMESPACE_URIS_, node.namespaceURI) != -1);
+  goog.asserts.assert(goog.array.contains(
+      ol.format.KML.GX_NAMESPACE_URIS_, node.namespaceURI));
   goog.asserts.assert(node.localName == 'Track');
   var gxTrackObject = ol.xml.pushParseAndPop(
       /** @type {ol.format.KMLGxTrackObject_} */ ({
@@ -1459,8 +1459,7 @@ ol.format.KML.prototype.readFeature;
  */
 ol.format.KML.prototype.readFeatureFromNode = function(node) {
   goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT);
-  if (goog.array.indexOf(ol.format.KML.NAMESPACE_URIS_, node.namespaceURI) ==
-      -1) {
+  if (!goog.array.contains(ol.format.KML.NAMESPACE_URIS_, node.namespaceURI)) {
     return null;
   }
   goog.asserts.assert(node.localName == 'Placemark');
@@ -1488,8 +1487,7 @@ ol.format.KML.prototype.readFeatures;
  */
 ol.format.KML.prototype.readFeaturesFromNode = function(node) {
   goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT);
-  if (goog.array.indexOf(ol.format.KML.NAMESPACE_URIS_, node.namespaceURI) ==
-      -1) {
+  if (!goog.array.contains(ol.format.KML.NAMESPACE_URIS_, node.namespaceURI)) {
     return [];
   }
   var features;
@@ -1570,16 +1568,14 @@ ol.format.KML.prototype.readNameFromDocument = function(doc) {
 ol.format.KML.prototype.readNameFromNode = function(node) {
   var n;
   for (n = node.firstElementChild; !goog.isNull(n); n = n.nextElementSibling) {
-    if (goog.array.indexOf(ol.format.KML.NAMESPACE_URIS_,
-                           n.namespaceURI) != -1 &&
+    if (goog.array.contains(ol.format.KML.NAMESPACE_URIS_, n.namespaceURI) &&
         n.localName == 'name') {
       return ol.format.XSD.readString(n);
     }
   }
   for (n = node.firstElementChild; !goog.isNull(n); n = n.nextElementSibling) {
     var localName = ol.xml.getLocalName(n);
-    if (goog.array.indexOf(ol.format.KML.NAMESPACE_URIS_,
-                           n.namespaceURI) != -1 &&
+    if (goog.array.contains(ol.format.KML.NAMESPACE_URIS_, n.namespaceURI) &&
         (localName == 'Document' ||
          localName == 'Folder' ||
          localName == 'Placemark' ||

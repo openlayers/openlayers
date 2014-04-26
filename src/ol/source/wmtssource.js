@@ -269,7 +269,7 @@ ol.source.WMTS.optionsFromCapabilities = function(wmtsCap, layer) {
     var key = elt['identifier'];
     var value = elt['default'];
     if (goog.isDef(value)) {
-      goog.asserts.assert(goog.array.indexOf(elt['values'], value) >= 0);
+      goog.asserts.assert(goog.array.contains(elt['values'], value));
     } else {
       value = elt['values'][0];
     }
