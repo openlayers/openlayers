@@ -153,7 +153,7 @@ ol.FeatureOverlay.prototype.handleMapPostCompose_ = function(event) {
   }
   var resolution = event.frameState.view2DState.resolution;
   var vectorContext = event.vectorContext;
-  var i, ii, feature, styles;
+  var i, ii, styles;
   this.features_.forEach(function(feature) {
     styles = styleFunction(feature, resolution);
     if (!goog.isDefAndNotNull(styles)) {
