@@ -20,7 +20,7 @@ var vectorSource = new ol.source.ServerVector({
     var url = 'http://demo.opengeo.org/geoserver/wfs?service=WFS&' +
         'version=1.1.0&request=GetFeature&typename=osm:water_areas&' +
         'outputFormat=text/javascript&format_options=callback:loadFeatures' +
-        '&srsname=EPSG:3857&bbox=' + extent.join(',');
+        '&srsname=EPSG:3857&bbox=' + extent.join(',') + ',EPSG:3857';
     $.ajax({
       url: url,
       dataType: 'jsonp'
