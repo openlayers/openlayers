@@ -75,7 +75,7 @@ ol.interaction.Select = function(opt_options) {
          * @return {boolean} Include.
          */
         function(layer) {
-      return goog.array.indexOf(layers, layer) != -1;
+      return goog.array.contains(layers, layer);
     };
   } else {
     layerFilter = goog.functions.TRUE;
