@@ -163,7 +163,7 @@ ol.FeatureOverlay.prototype.handleMapPostCompose_ = function(event) {
     for (i = 0; i < ii; ++i) {
       vectorContext.drawFeature(feature, styles[i]);
     }
-  }, this);
+  });
 };
 
 
