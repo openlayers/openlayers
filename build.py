@@ -182,7 +182,7 @@ def build_ol_css(t):
     t.touch()
 
 
-@target('build/ol.js', PLOVR_JAR, SRC, INTERNAL_SRC, EXTERNAL_SRC, SHADER_SRC,
+@target('build/ol.js', PLOVR_JAR, SRC, EXTERNAL_SRC, SHADER_SRC,
         LIBTESS_JS_SRC, 'buildcfg/base.json', 'buildcfg/ol.json')
 def build_ol_js(t):
     t.output('%(JAVA)s', '-server', '-XX:+TieredCompilation', '-jar',
@@ -448,7 +448,7 @@ def build_check_requires_timestamp(t):
                 if m:
                     all_provides.add(m.group(1))
     for filename in sorted(t.dependencies):
-        if filename == 'build/src/internal/src/requireall.js':
+        if filename in INTERNAL_SRC or filename in EXTERNAL_SRC:
             continue
         require_linenos = {}
         uses = set()
