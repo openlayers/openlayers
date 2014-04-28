@@ -80,7 +80,7 @@ ol.format.WFS.prototype.readFeaturesFromNode = function(node) {
     'featureType': this.featureType_,
     'featureNS': this.featureNS_
   }];
-  var features = ol.xml.pushParseAndPop(null,
+  var features = ol.xml.pushParseAndPop([],
       ol.format.GML.FEATURE_COLLECTION_PARSERS, node, objectStack);
   if (!goog.isDef(features)) {
     features = [];
