@@ -184,8 +184,10 @@ ol.View2D.prototype.calculateCenterZoom = function(resolution, anchor) {
 
 
 /**
+ * Get the constrained center of this view.
  * @param {ol.Coordinate|undefined} center Center.
  * @return {ol.Coordinate|undefined} Constrained center.
+ * @todo api
  */
 ol.View2D.prototype.constrainCenter = function(center) {
   return this.constraints_.center(center);
