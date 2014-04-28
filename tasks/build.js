@@ -8,6 +8,7 @@ var async = require('async');
 var closure = require('closure-util');
 var fse = require('fs-extra');
 var nomnom = require('nomnom');
+var temp = require('temp').track();
 
 var generateExports = require('./generate-exports');
 
@@ -70,22 +71,59 @@ function readConfig(configPath, callback) {
 
 
 /**
- * Get the list of sources sorted in dependency order.
- * @param {Array.<string>} src List of paths or patterns to source files.  By
- *     default, all .js files in the src directory are included.
- * @param {function(Error, Array.<string>)} callback Called with a list of paths
- *     or any error.
+ * Write the exports code to a temporary file.
+ * @param {string} exports Exports code.
+ * @param {function(Error, string)} callback Called with the path to the temp
+ *     file (or any error).
  */
-function getDependencies(src, callback) {
-  log.info('ol', 'Parsing dependencies');
-  src = src || ['src/**/*.js'];
-  closure.getDependencies({lib: src}, function(err, paths) {
+function writeExports(exports, callback) {
+  temp.open({prefix: 'exports', suffix: '.js'}, function(err, info) {
     if (err) {
       callback(err);
       return;
     }
-    paths.push(path.join(root, 'build', 'exports.js'));
-    callback(null, paths);
+    log.verbose('build', 'Writing exports: ' + info.path);
+    fs.writeFile(info.path, exports, function(err) {
+      if (err) {
+        callback(err);
+        return;
+      }
+      fs.close(info.fd, function(err) {
+        if (err) {
+          callback(err);
+          return;
+        }
+        callback(null, info.path);
+      });
+    });
+  });
+}
+
+
+/**
+ * Get the list of sources sorted in dependency order.
+ * @param {Array.<string>} src List of paths or patterns to source files.  By
+ *     default, all .js files in the src directory are included.
+ * @param {string} exports Exports code (with goog.exportSymbol calls).
+ * @param {function(Error, Array.<string>)} callback Called with a list of paths
+ *     or any error.
+ */
+function getDependencies(src, exports, callback) {
+  writeExports(exports, function(err, exportsPath) {
+    if (err) {
+      callback(err);
+      return;
+    }
+    log.info('ol', 'Parsing dependencies');
+    src = src || ['src/**/*.js'];
+    closure.getDependencies({lib: src}, function(err, paths) {
+      if (err) {
+        callback(err);
+        return;
+      }
+      paths.push(exportsPath);
+      callback(null, paths);
+    });
   });
 }
 

@@ -221,7 +221,7 @@ def build_ol_all_js(t):
 
 @target('build/exports.js', SRC)
 def build_exports_js(t):
-    t.run('node', 'tasks/generate-exports.js')
+    t.run('node', 'tasks/generate-exports.js', 'build/exports.js')
 
 
 for glsl_src in GLSL_SRC:

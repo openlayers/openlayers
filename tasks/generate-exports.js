@@ -2,6 +2,8 @@ var fs = require('fs');
 var path = require('path');
 
 var async = require('async');
+var fse = require('fs-extra');
+var nomnom = require('nomnom');
 
 var generateSymbols = require('./generate-symbols');
 
@@ -159,52 +161,58 @@ function generateExports(names) {
 
 
 /**
- * Write the build/exports.js file.
- * @param {Array.<string>} names List of symbol names.
- * @param {function(Error)} callback Callback.
- */
-function writeExports(names, callback) {
-  var code = generateExports(names);
-  fs.writeFile(path.join(build, 'exports.js'), code, callback);
-}
-
-
-/**
- * Generate the build/exports.js file.  If the options.config value is provided,
- * it is assumed to be a path to a JSON file with an 'exports' member whose
- * value is an array of symbol names or patterns.
+ * Generate the exports code.
  *
  * @param {Array.<string>} patterns List of symbol names or patterns.
- * @param {function(Error)} callback Callback.
+ * @param {function(Error, string)} callback Called with the exports code or any
+ *     error generating it.
  */
 function main(patterns, callback) {
   async.waterfall([
     getSymbols.bind(null, patterns),
     filterSymbols,
-    writeExports
+    function(names, done) {
+      var code, err;
+      try {
+        code = generateExports(names);
+      } catch (e) {
+        err = e;
+      }
+      done(err, code);
+    }
   ], callback);
 }
 
 
 /**
- * If running this module directly, read the config file and call the main
- * function.
+ * If running this module directly, read the config file, call the main
+ * function, and write the output file.
  */
 if (require.main === module) {
-  var configPath = process.argv[2];
-  getPatterns(configPath, function(err, patterns) {
+  var options = nomnom.options({
+    output: {
+      position: 0,
+      required: true,
+      help: 'Output file path'
+    },
+    config: {
+      abbr: 'c',
+      help: 'Path to JSON config file',
+      metavar: 'CONFIG'
+    }
+  }).parse();
+
+  async.waterfall([
+    getPatterns.bind(null, options.config),
+    main,
+    fse.outputFile.bind(fse, options.output)
+  ], function(err) {
     if (err) {
       console.error(err.message);
       process.exit(1);
+    } else {
+      process.exit(0);
     }
-    main(patterns, function(err) {
-      if (err) {
-        console.error(err.message);
-        process.exit(1);
-      } else {
-        process.exit(0);
-      }
-    });
   });
 }
 
