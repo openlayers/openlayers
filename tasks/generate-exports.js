@@ -75,8 +75,8 @@ function getSymbols(patterns, callback) {
  * @param {Array.<string>} patterns A list of symbol names to match.  Wildcards
  *     at the end of a string will match multiple names.
  * @param {Array.<Object>} symbols List of symbols.
- * @param {function(Error, Array.<string>)} callback Called with the filtered
- *     list of symbol names (or any error).
+ * @param {function(Error, Array.<Object>)} callback Called with the filtered
+ *     list of symbols (or any error).
  */
 function filterSymbols(patterns, symbols, callback) {
   var matches = [];
@@ -93,14 +93,14 @@ function filterSymbols(patterns, symbols, callback) {
       name = name.substr(0, name.length - 1);
       symbols.forEach(function(symbol) {
         if (symbol.name.indexOf(name) === 0) {
-          matches.push(symbol.name);
+          matches.push(symbol);
           match = true;
         }
       });
     } else {
       var symbol = lookup[name];
       if (symbol) {
-        matches.push(symbol.name);
+        matches.push(symbol);
         match = true;
       }
     }
@@ -144,17 +144,26 @@ function formatPropertyExport(name) {
 
 /**
  * Generate export code given a list symbol names.
- * @param {Array.<string>} names List of symbol names.
+ * @param {Array.<Object>} symbols List of symbols.
  * @return {string} Export code.
  */
-function generateExports(names) {
+function generateExports(symbols) {
   var blocks = [];
-  names.forEach(function(name) {
+  var requires = {};
+  symbols.forEach(function(symbol) {
+    symbol.provides.forEach(function(provide) {
+      requires[provide] = true;
+    });
+    var name = symbol.name;
     if (name.indexOf('#') > 0) {
       blocks.push(formatPropertyExport(name));
     } else {
       blocks.push(formatSymbolExport(name));
     }
+  });
+  blocks.unshift('\n');
+  Object.keys(requires).sort().reverse().forEach(function(name) {
+    blocks.unshift('goog.require(\'' + name + '\');');
   });
   return blocks.join('\n');
 }
@@ -171,10 +180,10 @@ function main(patterns, callback) {
   async.waterfall([
     getSymbols.bind(null, patterns),
     filterSymbols,
-    function(names, done) {
+    function(symbols, done) {
       var code, err;
       try {
-        code = generateExports(names);
+        code = generateExports(symbols);
       } catch (e) {
         err = e;
       }
