@@ -113,8 +113,7 @@ ol.FeatureOverlay.prototype.handleFeatureChange_ = function() {
  * @private
  * @param {ol.CollectionEvent} collectionEvent Collection event.
  */
-ol.FeatureOverlay.prototype.handleFeaturesAdd_ =
-    function(collectionEvent) {
+ol.FeatureOverlay.prototype.handleFeaturesAdd_ = function(collectionEvent) {
   goog.asserts.assert(!goog.isNull(this.featureChangeListenerKeys_));
   var feature = /** @type {ol.Feature} */ (collectionEvent.element);
   this.featureChangeListenerKeys_[goog.getUid(feature).toString()] =
@@ -128,8 +127,7 @@ ol.FeatureOverlay.prototype.handleFeaturesAdd_ =
  * @private
  * @param {ol.CollectionEvent} collectionEvent Collection event.
  */
-ol.FeatureOverlay.prototype.handleFeaturesRemove_ =
-    function(collectionEvent) {
+ol.FeatureOverlay.prototype.handleFeaturesRemove_ = function(collectionEvent) {
   goog.asserts.assert(!goog.isNull(this.featureChangeListenerKeys_));
   var feature = /** @type {ol.Feature} */ (collectionEvent.element);
   var key = goog.getUid(feature).toString();
