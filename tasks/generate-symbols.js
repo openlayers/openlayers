@@ -157,12 +157,55 @@ function spawnJSDoc(symbols, newerSources, callback) {
 
 
 /**
- * Write symbol metadata to the symbols file.
- * @param {Array} symbols Symbols.
- * @param {string} output Output from JSDoc.
- * @param {function(Error, Array.<string>)} callback Callback.
+ * Given the path to a source file, get the list of provides.
+ * @param {string} srcPath Path to source file.
+ * @param {function(Error, Array.<string>)} callback Called with a list of
+ *     provides or any error.
  */
-function writeSymbols(symbols, output, callback) {
+var getProvides = async.memoize(function(srcPath, callback) {
+  fs.readFile(srcPath, function(err, data) {
+    if (err) {
+      callback(err);
+      return;
+    }
+    var provides = [];
+    var matcher = /goog\.provide\('(.*)'\)/;
+    String(data).split('\n').forEach(function(line) {
+      var match = line.match(matcher);
+      if (match) {
+        provides.push(match[1]);
+      }
+    });
+    callback(null, provides);
+  });
+});
+
+
+/**
+ * Add provides to a symbol.
+ * @param {Object} symbol Symbol object.
+ * @param {function(Error, Object)} callback Called with the augmented symbol or
+ *     any error.
+ */
+function addProvides(symbol, callback) {
+  getProvides(symbol.path, function(err, provides) {
+    if (err) {
+      callback(err);
+      return;
+    }
+    symbol.provides = provides;
+    callback(null, symbol);
+  });
+}
+
+
+/**
+ * Parse JSDoc output and add provides data to each symbol.
+ * @param {Array} symbols Existing symbols.
+ * @param {string} output Output from JSDoc.
+ * @param {function(Error, Array)} callback Concatenated symbols.
+ */
+function addAllProvides(symbols, output, callback) {
   if (!output) {
     callback(new Error('Expected JSON output'));
     return;
@@ -181,7 +224,21 @@ function writeSymbols(symbols, output, callback) {
     return;
   }
 
-  symbols = symbols.concat(data.symbols).sort(function(a, b) {
+  async.map(data.symbols, addProvides, function(err, newSymbols) {
+    callback(err, symbols, newSymbols);
+  });
+}
+
+
+/**
+ * Write symbol metadata to the symbols file.
+ * @param {Array} symbols Existing symbols.
+ * @param {Array} newSymbols New symbols.
+ * @param {function(Error)} callback Callback.
+ */
+function writeSymbols(symbols, newSymbols, callback) {
+
+  symbols = symbols.concat(newSymbols).sort(function(a, b) {
     return a.name < b.name ? -1 : 1;
   });
 
@@ -202,6 +259,7 @@ function main(callback) {
     readSymbols,
     getNewer,
     spawnJSDoc,
+    addAllProvides,
     writeSymbols
   ], callback);
 }
