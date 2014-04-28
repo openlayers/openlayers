@@ -208,15 +208,11 @@ ol.FeatureOverlay.prototype.setFeatures = function(features) {
           this.handleFeaturesRemove_, false, this)
     ];
     this.featureChangeListenerKeys_ = {};
-    var featuresArray = features.getArray();
-    var i, ii = featuresArray.length;
-    var feature;
-    for (i = 0; i < ii; ++i) {
-      feature = featuresArray[i];
+    features.forEach(function(feature) {
       this.featureChangeListenerKeys_[goog.getUid(feature).toString()] =
           goog.events.listen(feature, goog.events.EventType.CHANGE,
           this.handleFeatureChange_, false, this);
-    }
+    }, this);
   }
   this.render_();
 };
