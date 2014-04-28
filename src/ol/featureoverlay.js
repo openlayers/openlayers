@@ -113,8 +113,7 @@ ol.FeatureOverlay.prototype.handleFeatureChange_ = function() {
  * @private
  * @param {ol.CollectionEvent} collectionEvent Collection event.
  */
-ol.FeatureOverlay.prototype.handleFeaturesAdd_ =
-    function(collectionEvent) {
+ol.FeatureOverlay.prototype.handleFeaturesAdd_ = function(collectionEvent) {
   goog.asserts.assert(!goog.isNull(this.featureChangeListenerKeys_));
   var feature = /** @type {ol.Feature} */ (collectionEvent.element);
   this.featureChangeListenerKeys_[goog.getUid(feature).toString()] =
@@ -128,8 +127,7 @@ ol.FeatureOverlay.prototype.handleFeaturesAdd_ =
  * @private
  * @param {ol.CollectionEvent} collectionEvent Collection event.
  */
-ol.FeatureOverlay.prototype.handleFeaturesRemove_ =
-    function(collectionEvent) {
+ol.FeatureOverlay.prototype.handleFeaturesRemove_ = function(collectionEvent) {
   goog.asserts.assert(!goog.isNull(this.featureChangeListenerKeys_));
   var feature = /** @type {ol.Feature} */ (collectionEvent.element);
   var key = goog.getUid(feature).toString();
@@ -153,7 +151,7 @@ ol.FeatureOverlay.prototype.handleMapPostCompose_ = function(event) {
   }
   var resolution = event.frameState.view2DState.resolution;
   var vectorContext = event.vectorContext;
-  var i, ii, feature, styles;
+  var i, ii, styles;
   this.features_.forEach(function(feature) {
     styles = styleFunction(feature, resolution);
     if (!goog.isDefAndNotNull(styles)) {
@@ -163,7 +161,7 @@ ol.FeatureOverlay.prototype.handleMapPostCompose_ = function(event) {
     for (i = 0; i < ii; ++i) {
       vectorContext.drawFeature(feature, styles[i]);
     }
-  }, this);
+  });
 };
 
 
@@ -210,15 +208,11 @@ ol.FeatureOverlay.prototype.setFeatures = function(features) {
           this.handleFeaturesRemove_, false, this)
     ];
     this.featureChangeListenerKeys_ = {};
-    var featuresArray = features.getArray();
-    var i, ii = featuresArray.length;
-    var feature;
-    for (i = 0; i < ii; ++i) {
-      feature = featuresArray[i];
+    features.forEach(function(feature) {
       this.featureChangeListenerKeys_[goog.getUid(feature).toString()] =
           goog.events.listen(feature, goog.events.EventType.CHANGE,
           this.handleFeatureChange_, false, this);
-    }
+    }, this);
   }
   this.render_();
 };
