@@ -13,6 +13,7 @@ goog.require('ol.proj.Units');
  * @constructor
  * @extends {ol.proj.Projection}
  * @param {string} code Code.
+ * @todo api
  */
 ol.proj.EPSG3857 = function(code) {
   goog.base(this, {
