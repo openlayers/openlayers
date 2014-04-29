@@ -156,6 +156,9 @@ ol.format.IGC.prototype.readFeatureFromText = function(text) {
       }
     }
   }
+  if (flatCoordinates.length === 0) {
+    return null;
+  }
   var lineString = new ol.geom.LineString(null);
   var layout = altitudeMode == ol.format.IGCZ.NONE ?
       ol.geom.GeometryLayout.XYM : ol.geom.GeometryLayout.XYZM;
