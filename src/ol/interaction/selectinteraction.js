@@ -55,28 +55,20 @@ ol.interaction.Select = function(opt_options) {
       options.toggleCondition : ol.events.condition.shiftKeyOnly;
 
   var layerFilter;
-  if (goog.isDef(options.layerFilter)) {
-    layerFilter = options.layerFilter;
-  } else if (goog.isDef(options.layer)) {
-    var layer = options.layer;
-    layerFilter =
-        /**
-         * @param {ol.layer.Layer} l Layer.
-         * @return {boolean} Include.
-         */
-        function(l) {
-      return l === layer;
-    };
-  } else if (goog.isDef(options.layers)) {
-    var layers = options.layers;
-    layerFilter =
-        /**
-         * @param {ol.layer.Layer} layer Layer.
-         * @return {boolean} Include.
-         */
-        function(layer) {
-      return goog.array.contains(layers, layer);
-    };
+  if (goog.isDef(options.layers)) {
+    if (goog.isFunction(options.layers)) {
+      layerFilter = options.layers;
+    } else {
+      var layers = options.layers;
+      layerFilter =
+          /**
+           * @param {ol.layer.Layer} layer Layer.
+           * @return {boolean} Include.
+           */
+          function(layer) {
+        return goog.array.contains(layers, layer);
+      };
+    }
   } else {
     layerFilter = goog.functions.TRUE;
   }
