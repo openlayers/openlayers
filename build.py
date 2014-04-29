@@ -113,8 +113,6 @@ EXAMPLES_JSON = ['build/' + example.replace('.html', '.json')
 EXAMPLES_COMBINED = ['build/' + example.replace('.html', '.combined.js')
                      for example in EXAMPLES]
 
-INTERNAL_SRC = ['build/src/internal/src/requireall.js']
-
 GLSL_SRC = [path
             for path in ifind('src')
             if path.endswith('.glsl')]
@@ -190,18 +188,16 @@ def build_ol_js(t):
     report_sizes(t)
 
 
-@target('build/ol-simple.js', PLOVR_JAR, SRC, INTERNAL_SRC, SHADER_SRC,
-        LIBTESS_JS_SRC, 'buildcfg/base.json', 'buildcfg/ol.json',
-        'buildcfg/ol-simple.json')
+@target('build/ol-simple.js', PLOVR_JAR, SRC, SHADER_SRC, LIBTESS_JS_SRC,
+        'buildcfg/base.json', 'buildcfg/ol.json', 'buildcfg/ol-simple.json')
 def build_ol_simple_js(t):
     t.output('%(JAVA)s', '-server', '-XX:+TieredCompilation', '-jar',
             PLOVR_JAR, 'build', 'buildcfg/ol-simple.json')
     report_sizes(t)
 
 
-@target('build/ol-whitespace.js', PLOVR_JAR, SRC, INTERNAL_SRC, SHADER_SRC,
-        LIBTESS_JS_SRC, 'buildcfg/base.json', 'buildcfg/ol.json',
-        'buildcfg/ol-whitespace.json')
+@target('build/ol-whitespace.js', PLOVR_JAR, SRC, SHADER_SRC, LIBTESS_JS_SRC,
+        'buildcfg/base.json', 'buildcfg/ol.json', 'buildcfg/ol-whitespace.json')
 def build_ol_whitespace_js(t):
     t.output('%(JAVA)s', '-server', '-XX:+TieredCompilation', '-jar',
             PLOVR_JAR, 'build', 'buildcfg/ol-whitespace.json')
@@ -211,9 +207,8 @@ def build_ol_whitespace_js(t):
 virtual('build-all', 'build/ol-all.js')
 
 
-@target('build/ol-all.js', PLOVR_JAR, SRC, EXTERNAL_SRC, INTERNAL_SRC,
-        SHADER_SRC, LIBTESS_JS_SRC, 'buildcfg/base.json',
-        'buildcfg/ol-all.json')
+@target('build/ol-all.js', PLOVR_JAR, SRC, EXTERNAL_SRC, SHADER_SRC,
+        LIBTESS_JS_SRC, 'buildcfg/base.json', 'buildcfg/ol-all.json')
 def build_ol_all_js(t):
     t.output('%(JAVA)s', '-server', '-XX:+TieredCompilation', '-jar',
             PLOVR_JAR, 'build', 'buildcfg/ol-all.json')
@@ -236,27 +231,17 @@ for glsl_src in GLSL_SRC:
     shader_src_helper(glsl_src)
 
 
-def _build_require_list(dependencies, output_file_name):
+@target('build/test/requireall.js', SPEC)
+def build_test_requireall_js(t):
     requires = set()
-    for dependency in dependencies:
+    for dependency in t.dependencies:
         for line in open(dependency, 'rU'):
             match = re.match(r'goog\.provide\(\'(.*)\'\);', line)
             if match:
                 requires.add(match.group(1))
-    with open(output_file_name, 'wb') as f:
+    with open(t.name, 'wb') as f:
         for require in sorted(requires):
             f.write('goog.require(\'%s\');\n' % (require,))
-
-
-@target('build/src/internal/src/requireall.js', SRC, SHADER_SRC,
-        LIBTESS_JS_SRC)
-def build_src_internal_src_requireall_js(t):
-    _build_require_list(t.dependencies, t.name)
-
-
-@target('build/test/requireall.js', SPEC)
-def build_test_requireall_js(t):
-    _build_require_list(t.dependencies, t.name)
 
 
 virtual('build-examples', 'examples', 'build/examples/all.combined.js',
@@ -277,7 +262,7 @@ def examples_examples_list_js(t):
 
 
 @target('build/examples/all.combined.js', 'build/examples/all.js', PLOVR_JAR,
-        SRC, INTERNAL_SRC, SHADER_SRC, LIBTESS_JS_SRC,
+        SRC, SHADER_SRC, LIBTESS_JS_SRC,
         'buildcfg/base.json', 'build/examples/all.json')
 def build_examples_all_combined_js(t):
     t.output('%(JAVA)s', '-server', '-XX:+TieredCompilation', '-jar',
@@ -332,7 +317,7 @@ def examples_star_combined_js(name, match):
                 PLOVR_JAR, 'build', 'build/examples/%(id)s.json' %
                 match.groupdict())
         report_sizes(t)
-    dependencies = [PLOVR_JAR, SRC, INTERNAL_SRC, SHADER_SRC, LIBTESS_JS_SRC,
+    dependencies = [PLOVR_JAR, SRC, SHADER_SRC, LIBTESS_JS_SRC,
                     'buildcfg/base.json',
                     'examples/%(id)s.js' % match.groupdict(),
                     'build/examples/%(id)s.json' % match.groupdict()]
@@ -345,7 +330,7 @@ def serve(t):
           'buildcfg/ol-all.json', EXAMPLES_JSON, 'buildcfg/test.json')
 
 
-@target('serve-integration-test', PLOVR_JAR, INTERNAL_SRC)
+@target('serve-integration-test', PLOVR_JAR)
 def serve_precommit(t):
     t.run('%(JAVA)s', '-jar', PLOVR_JAR, 'serve',
           'buildcfg/ol-all.json', 'buildcfg/test.json')
@@ -366,8 +351,7 @@ def build_lint_src_timestamp(t):
     t.touch()
 
 
-@target('build/lint-generated-timestamp', INTERNAL_SRC, EXTERNAL_SRC,
-        precious=True)
+@target('build/lint-generated-timestamp', EXTERNAL_SRC, precious=True)
 def build_lint_generated_timestamp(t):
     limited_doc_files = [
         path
@@ -428,8 +412,8 @@ def _strip_comments(lines):
                 yield lineno, line
 
 
-@target('build/check-requires-timestamp', SRC, INTERNAL_SRC, EXTERNAL_SRC,
-        EXAMPLES_SRC, SHADER_SRC, LIBTESS_JS_SRC, SPEC)
+@target('build/check-requires-timestamp', SRC, EXTERNAL_SRC, EXAMPLES_SRC,
+        SHADER_SRC, LIBTESS_JS_SRC, SPEC)
 def build_check_requires_timestamp(t):
     from zipfile import ZipFile
     unused_count = 0
@@ -448,7 +432,7 @@ def build_check_requires_timestamp(t):
                 if m:
                     all_provides.add(m.group(1))
     for filename in sorted(t.dependencies):
-        if filename in INTERNAL_SRC or filename in EXTERNAL_SRC:
+        if filename in EXTERNAL_SRC:
             continue
         require_linenos = {}
         uses = set()
@@ -529,7 +513,7 @@ def build_check_requires_timestamp(t):
                    for key, child in root.children.iteritems()]
     missing_count = 0
     for filename in sorted(t.dependencies):
-        if filename in INTERNAL_SRC or filename in EXTERNAL_SRC:
+        if filename in EXTERNAL_SRC:
             continue
         provides = set()
         requires = set()
@@ -573,9 +557,8 @@ def build_check_requires_timestamp(t):
     t.touch()
 
 
-@target('build/check-whitespace-timestamp', SRC, INTERNAL_SRC, EXTERNAL_SRC,
-        EXAMPLES_SRC, SPEC, EXPORTS, JSDOC_SRC, LIBTESS_JS_SRC,
-        precious=True)
+@target('build/check-whitespace-timestamp', SRC, EXTERNAL_SRC, EXAMPLES_SRC,
+        SPEC, EXPORTS, JSDOC_SRC, LIBTESS_JS_SRC, precious=True)
 def build_check_whitespace_timestamp(t):
     CR_RE = re.compile(r'\r')
     LEADING_WHITESPACE_RE = re.compile(r'\s+')
@@ -735,7 +718,7 @@ def proj4js_zip(t):
     t.info('downloaded %r', t.name)
 
 
-virtual('test-deps', INTERNAL_SRC, PROJ4JS, 'build/test/requireall.js')
+virtual('test-deps', PROJ4JS, 'build/test/requireall.js')
 
 
 @target('test', 'test-deps', phony=True)
