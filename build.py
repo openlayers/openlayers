@@ -86,11 +86,7 @@ EXECUTABLES = [variables.GIT, variables.GJSLINT, variables.JAVA, variables.JAR,
                variables.JSDOC, variables.JSHINT, variables.PYTHON,
                variables.PHANTOMJS]
 
-EXPORTS = [path
-           for path in ifind('src')
-           if path.endswith('.exports')]
-
-EXTERNAL_SRC = ['build/exports.js']
+EXPORTS = 'build/exports.js'
 
 EXAMPLES = [path
             for path in ifind('examples')
@@ -180,24 +176,26 @@ def build_ol_css(t):
     t.touch()
 
 
-@target('build/ol.js', PLOVR_JAR, SRC, EXTERNAL_SRC, SHADER_SRC,
-        LIBTESS_JS_SRC, 'buildcfg/base.json', 'buildcfg/ol.json')
+@target('build/ol.js', PLOVR_JAR, SRC, EXPORTS, SHADER_SRC, LIBTESS_JS_SRC,
+        'buildcfg/base.json', 'buildcfg/ol.json')
 def build_ol_js(t):
     t.output('%(JAVA)s', '-server', '-XX:+TieredCompilation', '-jar',
             PLOVR_JAR, 'build', 'buildcfg/ol.json')
     report_sizes(t)
 
 
-@target('build/ol-simple.js', PLOVR_JAR, SRC, SHADER_SRC, LIBTESS_JS_SRC,
-        'buildcfg/base.json', 'buildcfg/ol.json', 'buildcfg/ol-simple.json')
+@target('build/ol-simple.js', PLOVR_JAR, SRC, EXPORTS, SHADER_SRC,
+        LIBTESS_JS_SRC, 'buildcfg/base.json', 'buildcfg/ol.json',
+        'buildcfg/ol-simple.json')
 def build_ol_simple_js(t):
     t.output('%(JAVA)s', '-server', '-XX:+TieredCompilation', '-jar',
             PLOVR_JAR, 'build', 'buildcfg/ol-simple.json')
     report_sizes(t)
 
 
-@target('build/ol-whitespace.js', PLOVR_JAR, SRC, SHADER_SRC, LIBTESS_JS_SRC,
-        'buildcfg/base.json', 'buildcfg/ol.json', 'buildcfg/ol-whitespace.json')
+@target('build/ol-whitespace.js', PLOVR_JAR, SRC, EXPORTS,
+        SHADER_SRC, LIBTESS_JS_SRC, 'buildcfg/base.json', 'buildcfg/ol.json',
+        'buildcfg/ol-whitespace.json')
 def build_ol_whitespace_js(t):
     t.output('%(JAVA)s', '-server', '-XX:+TieredCompilation', '-jar',
             PLOVR_JAR, 'build', 'buildcfg/ol-whitespace.json')
@@ -207,16 +205,16 @@ def build_ol_whitespace_js(t):
 virtual('build-all', 'build/ol-all.js')
 
 
-@target('build/ol-all.js', PLOVR_JAR, SRC, EXTERNAL_SRC, SHADER_SRC,
-        LIBTESS_JS_SRC, 'buildcfg/base.json', 'buildcfg/ol-all.json')
+@target('build/ol-all.js', PLOVR_JAR, SRC, EXPORTS, SHADER_SRC, LIBTESS_JS_SRC,
+        'buildcfg/base.json', 'buildcfg/ol-all.json')
 def build_ol_all_js(t):
     t.output('%(JAVA)s', '-server', '-XX:+TieredCompilation', '-jar',
             PLOVR_JAR, 'build', 'buildcfg/ol-all.json')
 
 
-@target('build/exports.js', SRC)
+@target(EXPORTS, SRC)
 def build_exports_js(t):
-    t.run('node', 'tasks/generate-exports.js', 'build/exports.js')
+    t.run('node', 'tasks/generate-exports.js', EXPORTS)
 
 
 for glsl_src in GLSL_SRC:
@@ -336,35 +334,15 @@ def serve_precommit(t):
           'buildcfg/ol-all.json', 'buildcfg/test.json')
 
 
-virtual('lint', 'build/lint-timestamp', 'build/lint-generated-timestamp',
-        'build/lint-libtess.js-timestamp', 'build/check-requires-timestamp',
-        'build/check-whitespace-timestamp')
+virtual('lint', 'build/lint-timestamp', 'build/lint-libtess.js-timestamp',
+        'build/check-requires-timestamp', 'build/check-whitespace-timestamp')
 
 
-@target('build/lint-timestamp', SRC, EXAMPLES_SRC, SPEC, precious=True)
+@target('build/lint-timestamp', SRC, EXPORTS, EXAMPLES_SRC, SPEC, precious=True)
 def build_lint_src_timestamp(t):
     t.run('%(GJSLINT)s',
           '--jslint_error=all',
           '--custom_jsdoc_tags=event,fires,todo,function',
-          '--strict',
-          t.newer(t.dependencies))
-    t.touch()
-
-
-@target('build/lint-generated-timestamp', EXTERNAL_SRC, precious=True)
-def build_lint_generated_timestamp(t):
-    limited_doc_files = [
-        path
-        for path in ifind('externs')
-        if path.endswith('.js')]
-    t.run('%(GJSLINT)s',
-          '--jslint_error=all',
-          # ignore error for max line length (for these auto-generated sources)
-          '--disable=110',
-          '--custom_jsdoc_tags=todo',
-          # for a complete list of error codes to allow, see
-          # http://closure-linter.googlecode.com/svn/trunk/closure_linter/errors.py
-          '--limited_doc_files=%s' % (','.join(limited_doc_files),),
           '--strict',
           t.newer(t.dependencies))
     t.touch()
@@ -382,8 +360,8 @@ def build_lint_libtess_js_timestamp(t):
 
 virtual('jshint', 'build/jshint-timestamp')
 
-
-@target('build/jshint-timestamp', SRC, EXAMPLES_SRC, SPEC, precious=True)
+@target('build/jshint-timestamp', SRC, EXPORTS, EXAMPLES_SRC, SPEC,
+        precious=True)
 def build_jshint_timestamp(t):
     t.run(variables.JSHINT, '--verbose', t.newer(t.dependencies))
     t.touch()
@@ -412,7 +390,7 @@ def _strip_comments(lines):
                 yield lineno, line
 
 
-@target('build/check-requires-timestamp', SRC, EXTERNAL_SRC, EXAMPLES_SRC,
+@target('build/check-requires-timestamp', SRC, EXAMPLES_SRC,
         SHADER_SRC, LIBTESS_JS_SRC, SPEC)
 def build_check_requires_timestamp(t):
     from zipfile import ZipFile
@@ -432,8 +410,6 @@ def build_check_requires_timestamp(t):
                 if m:
                     all_provides.add(m.group(1))
     for filename in sorted(t.dependencies):
-        if filename in EXTERNAL_SRC:
-            continue
         require_linenos = {}
         uses = set()
         lines = open(filename, 'rU').readlines()
@@ -513,8 +489,6 @@ def build_check_requires_timestamp(t):
                    for key, child in root.children.iteritems()]
     missing_count = 0
     for filename in sorted(t.dependencies):
-        if filename in EXTERNAL_SRC:
-            continue
         provides = set()
         requires = set()
         uses = set()
@@ -557,8 +531,8 @@ def build_check_requires_timestamp(t):
     t.touch()
 
 
-@target('build/check-whitespace-timestamp', SRC, EXTERNAL_SRC, EXAMPLES_SRC,
-        SPEC, EXPORTS, JSDOC_SRC, LIBTESS_JS_SRC, precious=True)
+@target('build/check-whitespace-timestamp', SRC, EXPORTS, EXAMPLES_SRC,
+        SPEC, JSDOC_SRC, LIBTESS_JS_SRC, precious=True)
 def build_check_whitespace_timestamp(t):
     CR_RE = re.compile(r'\r')
     LEADING_WHITESPACE_RE = re.compile(r'\s+')
@@ -605,7 +579,7 @@ virtual('apidoc', 'build/jsdoc-%(BRANCH)s-timestamp' % vars(variables))
 
 
 @target('build/jsdoc-%(BRANCH)s-timestamp' % vars(variables), 'host-resources',
-        'build/exports.js', SRC, SHADER_SRC,
+        EXPORTS, SRC, SHADER_SRC,
         ifind('apidoc/template'))
 def jsdoc_BRANCH_timestamp(t):
     t.run('%(JSDOC)s', 'apidoc/index.md', '-c', 'apidoc/conf.json',
