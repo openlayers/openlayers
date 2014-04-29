@@ -1,3 +1,0 @@
-@exportSymbol ol.source.OSM
-@exportProperty ol.source.OSM.DATA_ATTRIBUTION
-@exportProperty ol.source.OSM.TILE_ATTRIBUTION

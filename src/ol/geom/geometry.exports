@@ -1,3 +1,0 @@
-@exportSymbol ol.geom.Geometry
-@exportProperty ol.geom.Geometry.prototype.getClosestPoint
-@exportProperty ol.geom.Geometry.prototype.getType

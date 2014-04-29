@@ -14,7 +14,6 @@ goog.require('ol.source.Source');
  * @extends {ol.layer.Base}
  * @fires {@link ol.render.Event} ol.render.Event
  * @param {olx.layer.LayerOptions} options Layer options.
- * @todo stability experimental
  * @todo observable brightness {number} the brightness of the layer
  * @todo observable contrast {number} the contrast of the layer
  * @todo observable hue {number} the hue of the layer
@@ -23,6 +22,7 @@ goog.require('ol.source.Source');
  * @todo observable visible {boolean} the visiblity of the layer
  * @todo observable maxResolution {number} the maximum resolution of the layer
  * @todo observable minResolution {number} the minimum resolution of the layer
+ * @todo api
  */
 ol.layer.Layer = function(options) {
 
@@ -66,7 +66,7 @@ ol.layer.Layer.prototype.getLayerStatesArray = function(opt_states) {
 
 /**
  * @return {ol.source.Source} Source.
- * @todo stability experimental
+ * @todo api
  */
 ol.layer.Layer.prototype.getSource = function() {
   return this.source_;

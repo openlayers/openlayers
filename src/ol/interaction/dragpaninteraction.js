@@ -18,7 +18,7 @@ goog.require('ol.interaction.Pointer');
  * @constructor
  * @extends {ol.interaction.Pointer}
  * @param {olx.interaction.DragPanOptions=} opt_options Options.
- * @todo stability experimental
+ * @todo api
  */
 ol.interaction.DragPan = function(opt_options) {
 

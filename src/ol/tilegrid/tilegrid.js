@@ -29,7 +29,7 @@ ol.DEFAULT_MAX_ZOOM = 42;
  * @constructor
  * @param {olx.tilegrid.TileGridOptions} options Tile grid options.
  * @struct
- * @todo stability experimental
+ * @todo api
  */
 ol.tilegrid.TileGrid = function(options) {
 
@@ -139,7 +139,6 @@ ol.tilegrid.TileGrid.prototype.forEachTileCoordParentTileRange =
 
 /**
  * @return {number} Max zoom.
- * @todo stability experimental
  */
 ol.tilegrid.TileGrid.prototype.getMaxZoom = function() {
   return this.maxZoom;
@@ -148,7 +147,7 @@ ol.tilegrid.TileGrid.prototype.getMaxZoom = function() {
 
 /**
  * @return {number} Min zoom.
- * @todo stability experimental
+ * @todo api
  */
 ol.tilegrid.TileGrid.prototype.getMinZoom = function() {
   return this.minZoom;
@@ -158,7 +157,7 @@ ol.tilegrid.TileGrid.prototype.getMinZoom = function() {
 /**
  * @param {number} z Z.
  * @return {ol.Coordinate} Origin.
- * @todo stability experimental
+ * @todo api
  */
 ol.tilegrid.TileGrid.prototype.getOrigin = function(z) {
   if (!goog.isNull(this.origin_)) {
@@ -174,6 +173,7 @@ ol.tilegrid.TileGrid.prototype.getOrigin = function(z) {
 /**
  * @param {number} z Z.
  * @return {number} Resolution.
+ * @todo api
  */
 ol.tilegrid.TileGrid.prototype.getResolution = function(z) {
   goog.asserts.assert(this.minZoom <= z && z <= this.maxZoom);
@@ -183,7 +183,6 @@ ol.tilegrid.TileGrid.prototype.getResolution = function(z) {
 
 /**
  * @return {Array.<number>} Resolutions.
- * @todo stability experimental
  */
 ol.tilegrid.TileGrid.prototype.getResolutions = function() {
   return this.resolutions_;
@@ -372,7 +371,7 @@ ol.tilegrid.TileGrid.prototype.getTileCoordResolution = function(tileCoord) {
 /**
  * @param {number} z Z.
  * @return {number} Tile size.
- * @todo stability experimental
+ * @todo api
  */
 ol.tilegrid.TileGrid.prototype.getTileSize = function(z) {
   if (goog.isDef(this.tileSize_)) {

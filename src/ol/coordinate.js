@@ -11,7 +11,7 @@ goog.require('goog.math');
  * `{string}`.
  *
  * @typedef {function((ol.Coordinate|undefined)): string}
- * @todo stability experimental
+ * @todo api
  */
 ol.CoordinateFormatType;
 
@@ -19,7 +19,7 @@ ol.CoordinateFormatType;
 /**
  * An array of numbers representing a coordinate.
  * @typedef {Array.<number>} ol.Coordinate
- * @todo stability experimental
+ * @todo api
  */
 ol.Coordinate;
 
@@ -27,7 +27,7 @@ ol.Coordinate;
 /**
  * An array of coordinate arrays.
  * @typedef {Array.<ol.Coordinate>}
- * @todo stability experimental
+ * @todo api
  */
 ol.CoordinateArray;
 
@@ -36,6 +36,7 @@ ol.CoordinateArray;
  * @param {ol.Coordinate} coordinate Coordinate.
  * @param {ol.Coordinate} delta Delta.
  * @return {ol.Coordinate} Coordinate.
+ * @todo api
  */
 ol.coordinate.add = function(coordinate, delta) {
   coordinate[0] += delta[0];
@@ -87,7 +88,7 @@ ol.coordinate.closestOnSegment = function(coordinate, segment) {
  * @param {number=} opt_fractionDigits The number of digits to include
  *    after the decimal point. Default is `0`.
  * @return {ol.CoordinateFormatType} Coordinate format.
- * @todo stability experimental
+ * @todo api
  */
 ol.coordinate.createStringXY = function(opt_fractionDigits) {
   return (
@@ -124,7 +125,7 @@ ol.coordinate.degreesToStringHDMS_ = function(degrees, hemispheres) {
  * @param {number=} opt_fractionDigits The number of digits to include
  *    after the decimal point. Default is `0`.
  * @return {string} Formated coordinate.
- * @todo stability experimental
+ * @todo api
  */
 ol.coordinate.format = function(coordinate, template, opt_fractionDigits) {
   if (goog.isDef(coordinate)) {
@@ -158,6 +159,7 @@ ol.coordinate.equals = function(coordinate1, coordinate2) {
  * @param {ol.Coordinate} coordinate Coordinate.
  * @param {number} angle Angle.
  * @return {ol.Coordinate} Coordinate.
+ * @todo api
  */
 ol.coordinate.rotate = function(coordinate, angle) {
   var cosAngle = Math.cos(angle);
@@ -222,7 +224,7 @@ ol.coordinate.squaredDistanceToSegment = function(coordinate, segment) {
 /**
  * @param {ol.Coordinate|undefined} coordinate Coordinate.
  * @return {string} Hemisphere, degrees, minutes and seconds.
- * @todo stability experimental
+ * @todo api
  */
 ol.coordinate.toStringHDMS = function(coordinate) {
   if (goog.isDef(coordinate)) {
@@ -239,7 +241,7 @@ ol.coordinate.toStringHDMS = function(coordinate) {
  * @param {number=} opt_fractionDigits The number of digits to include
  *    after the decimal point. Default is `0`.
  * @return {string} XY.
- * @todo stability experimental
+ * @todo api
  */
 ol.coordinate.toStringXY = function(coordinate, opt_fractionDigits) {
   return ol.coordinate.format(coordinate, '{x}, {y}', opt_fractionDigits);
@@ -251,7 +253,7 @@ ol.coordinate.toStringXY = function(coordinate, opt_fractionDigits) {
  * @param {Array} array The array with coordinates.
  * @param {string} axis the axis info.
  * @return {ol.Coordinate} The coordinate created.
- * @todo stability experimental
+ * @todo api
  */
 ol.coordinate.fromProjectedArray = function(array, axis) {
   var firstAxis = axis.charAt(0);

@@ -11,17 +11,17 @@ goog.require('ol.render.IVectorContext');
 ol.render.EventType = {
   /**
    * @event ol.render.Event#postcompose
-   * @todo stability experimental
+   * @todo api
    */
   POSTCOMPOSE: 'postcompose',
   /**
    * @event ol.render.Event#precompose
-   * @todo stability experimental
+   * @todo api
    */
   PRECOMPOSE: 'precompose',
   /**
    * @event ol.render.Event#render
-   * @todo stability experimental
+   * @todo api
    */
   RENDER: 'render'
 };
@@ -47,13 +47,11 @@ ol.render.Event = function(
 
   /**
    * @type {ol.render.IVectorContext|undefined}
-   * @todo stability experimental
    */
   this.vectorContext = opt_vectorContext;
 
   /**
    * @type {oli.FrameState|undefined}
-   * @todo stability experimental
    */
   this.frameState = opt_frameState;
 
@@ -61,7 +59,6 @@ ol.render.Event = function(
    * Canvas context. Only available when a Canvas renderer is used,
    * null otherwise.
    * @type {CanvasRenderingContext2D|null|undefined}
-   * @todo stability experimental
    */
   this.context = opt_context;
 
@@ -69,7 +66,6 @@ ol.render.Event = function(
    * WebGL context. Only available when a WebGL renderer is used, null
    * otherwise.
    * @type {ol.webgl.Context|null|undefined}
-   * @todo stability experimental
    */
   this.glContext = opt_glContext;
 

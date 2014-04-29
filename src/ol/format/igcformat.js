@@ -25,7 +25,7 @@ ol.format.IGCZ = {
  * @constructor
  * @extends {ol.format.TextFeature}
  * @param {olx.format.IGCOptions=} opt_options Options.
- * @todo stability experimental
+ * @todo api
  */
 ol.format.IGC = function(opt_options) {
 
@@ -91,6 +91,7 @@ ol.format.IGC.prototype.getExtensions = function() {
  * @function
  * @param {ArrayBuffer|Document|Node|Object|string} source Source.
  * @return {ol.Feature} Feature.
+ * @todo api
  */
 ol.format.IGC.prototype.readFeature;
 
@@ -176,6 +177,7 @@ ol.format.IGC.prototype.readFeatureFromText = function(text) {
  * @function
  * @param {ArrayBuffer|Document|Node|Object|string} source Source.
  * @return {Array.<ol.Feature>} Features.
+ * @todo api
  */
 ol.format.IGC.prototype.readFeatures;
 
@@ -199,6 +201,7 @@ ol.format.IGC.prototype.readFeaturesFromText = function(text) {
  * @function
  * @param {ArrayBuffer|Document|Node|Object|string} source Source.
  * @return {ol.proj.Projection} Projection.
+ * @todo api
  */
 ol.format.IGC.prototype.readProjection;
 

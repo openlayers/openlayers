@@ -1,2 +1,0 @@
-@exportSymbol ol.source.Tile
-@exportProperty ol.source.Tile.prototype.getTileGrid

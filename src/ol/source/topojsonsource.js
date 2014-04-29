@@ -10,7 +10,7 @@ goog.require('ol.source.StaticVector');
  * @extends {ol.source.StaticVector}
  * @fires {@link ol.source.VectorEvent} ol.source.VectorEvent
  * @param {olx.source.TopoJSONOptions=} opt_options Options.
- * @todo stability experimental
+ * @todo api
  */
 ol.source.TopoJSON = function(opt_options) {
 

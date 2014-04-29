@@ -14,7 +14,7 @@ goog.require('ol.math');
  * @extends {ol.geom.SimpleGeometry}
  * @param {ol.geom.RawPoint} coordinates Coordinates.
  * @param {ol.geom.GeometryLayout|string=} opt_layout Layout.
- * @todo stability experimental
+ * @todo api
  */
 ol.geom.Point = function(coordinates, opt_layout) {
   goog.base(this);
@@ -26,6 +26,7 @@ goog.inherits(ol.geom.Point, ol.geom.SimpleGeometry);
 
 /**
  * @inheritDoc
+ * @todo api
  */
 ol.geom.Point.prototype.clone = function() {
   var point = new ol.geom.Point(null);
@@ -58,7 +59,7 @@ ol.geom.Point.prototype.closestPointXY =
 
 /**
  * @return {ol.geom.RawPoint} Coordinates.
- * @todo stability experimental
+ * @todo api
  */
 ol.geom.Point.prototype.getCoordinates = function() {
   return this.flatCoordinates.slice();
@@ -81,6 +82,7 @@ ol.geom.Point.prototype.getExtent = function(opt_extent) {
 
 /**
  * @inheritDoc
+ * @todo api
  */
 ol.geom.Point.prototype.getType = function() {
   return ol.geom.GeometryType.POINT;
@@ -90,7 +92,7 @@ ol.geom.Point.prototype.getType = function() {
 /**
  * @param {ol.geom.RawPoint} coordinates Coordinates.
  * @param {ol.geom.GeometryLayout=} opt_layout Layout.
- * @todo stability experimental
+ * @todo api
  */
 ol.geom.Point.prototype.setCoordinates = function(coordinates, opt_layout) {
   if (goog.isNull(coordinates)) {

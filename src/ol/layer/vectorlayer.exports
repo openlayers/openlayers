@@ -1,4 +1,0 @@
-@exportSymbol ol.layer.Vector
-@exportProperty ol.layer.Vector.prototype.getStyle
-@exportProperty ol.layer.Vector.prototype.getStyleFunction
-@exportProperty ol.layer.Vector.prototype.setStyle

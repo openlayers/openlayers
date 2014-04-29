@@ -17,7 +17,7 @@ goog.require('ol.css');
  * @constructor
  * @extends {ol.control.Control}
  * @param {olx.control.LogoOptions=} opt_options Logo options.
- * @todo stability experimental
+ * @todo api
  */
 ol.control.Logo = function(opt_options) {
 

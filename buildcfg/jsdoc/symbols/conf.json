@@ -1,0 +1,15 @@
+{
+    "opts": {
+        "recurse": true,
+        "template": "buildcfg/jsdoc/symbols"
+    },
+    "tags": {
+        "allowUnknownTags": true
+    },
+    "source": {
+        "includePattern": "\\.js$"
+    },
+    "plugins": [
+        "buildcfg/jsdoc/symbols/todo-plugin"
+    ]
+}

@@ -31,7 +31,7 @@ ol.interaction.DRAGROTATEANDZOOM_ANIMATION_DURATION = 400;
  * @constructor
  * @extends {ol.interaction.Pointer}
  * @param {olx.interaction.DragRotateAndZoomOptions=} opt_options Options.
- * @todo stability experimental
+ * @todo api
  */
 ol.interaction.DragRotateAndZoom = function(opt_options) {
 

@@ -6,7 +6,7 @@ goog.require('goog.math');
 
 /**
  * @typedef {function((ol.Coordinate|undefined)): (ol.Coordinate|undefined)}
- * @todo stability experimental
+ * @todo api
  */
 ol.CenterConstraintType;
 

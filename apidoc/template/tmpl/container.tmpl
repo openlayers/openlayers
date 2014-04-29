@@ -27,7 +27,7 @@
     <?js if (doc.kind === 'module' && doc.module) { ?>
         <?js= self.partial('method.tmpl', doc.module) ?>
     <?js } ?>
-    <?js if (!doc.unexported && doc.kind === 'class') { ?>
+    <?js if (doc.kind === 'class' && !doc.hideConstructor && !doc.interface) { ?>
         <?js= self.partial('method.tmpl', doc) ?>
     <?js } else { ?>
         <?js if (doc.description) { ?>
@@ -47,7 +47,8 @@
         <h3 class="subsection-title">Extends</h3>
         
         <ul><?js doc.augments.forEach(function(a) { ?>
-            <li><?js= self.linkto(a, a) ?></li>
+            <li><?js= self.linkto(a, a) ?>
+              <?js= (doc.implements&&doc.implements.indexOf(a)>-1?'(Interface)':'') ?></li>
         <?js }); ?></ul>
     <?js } ?>
     
@@ -141,7 +142,7 @@
         <h3 class="subsection-title">TypeDefs</h3>
         
         <dl><?js typedefs.forEach(function(e) { ?>
-            <?js= self.partial('members.tmpl', e) ?>
+            <?js= self.partial(e.params ? 'method.tmpl' : 'members.tmpl', e) ?>
         <?js }); ?></dl>
     <?js } ?>
     

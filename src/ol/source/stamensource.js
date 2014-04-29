@@ -81,7 +81,7 @@ ol.source.StamenProviderConfig = {
  * @constructor
  * @extends {ol.source.XYZ}
  * @param {olx.source.StamenOptions} options Stamen options.
- * @todo stability experimental
+ * @todo api
  */
 ol.source.Stamen = function(options) {
 

@@ -103,6 +103,7 @@ ol.color.blend = function(dst, src, opt_color) {
 /**
  * @param {ol.Color|string} color Color.
  * @return {ol.Color} Color.
+ * @todo api
  */
 ol.color.asArray = function(color) {
   if (goog.isArray(color)) {
@@ -117,6 +118,7 @@ ol.color.asArray = function(color) {
 /**
  * @param {ol.Color|string} color Color.
  * @return {string} String.
+ * @todo api
  */
 ol.color.asString = function(color) {
   if (goog.isString(color)) {

@@ -19,7 +19,7 @@ goog.require('ol.tilegrid.XYZ');
  * @constructor
  * @extends {ol.source.TileImage}
  * @param {olx.source.BingMapsOptions} options Bing Maps options.
- * @todo stability experimental
+ * @todo api
  */
 ol.source.BingMaps = function(options) {
 
@@ -55,6 +55,7 @@ goog.inherits(ol.source.BingMaps, ol.source.TileImage);
 /**
  * @const
  * @type {ol.Attribution}
+ * @todo api
  */
 ol.source.BingMaps.TOS_ATTRIBUTION = new ol.Attribution({
   html: '<a class="ol-attribution-bing-tos" target="_blank" ' +

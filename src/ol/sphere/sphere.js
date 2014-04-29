@@ -38,6 +38,7 @@ ol.Sphere = function(radius) {
  * @param {number} radius Radius.
  * @param {number=} opt_n N.
  * @return {ol.geom.Geometry} Circle geometry.
+ * @todo api
  */
 ol.Sphere.prototype.circle = function(center, radius, opt_n) {
   var n = goog.isDef(opt_n) ? opt_n : 32;

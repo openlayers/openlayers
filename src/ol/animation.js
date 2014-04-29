@@ -11,7 +11,7 @@ goog.require('ol.easing');
 /**
  * @param {olx.animation.BounceOptions} options Bounce options.
  * @return {ol.PreRenderFunction} Pre-render function.
- * @todo stability experimental
+ * @todo api
  */
 ol.animation.bounce = function(options) {
   var resolution = options.resolution;
@@ -46,7 +46,7 @@ ol.animation.bounce = function(options) {
 /**
  * @param {olx.animation.PanOptions} options Pan options.
  * @return {ol.PreRenderFunction} Pre-render function.
- * @todo stability experimental
+ * @todo api
  */
 ol.animation.pan = function(options) {
   var source = options.source;
@@ -85,7 +85,7 @@ ol.animation.pan = function(options) {
 /**
  * @param {olx.animation.RotateOptions} options Rotate options.
  * @return {ol.PreRenderFunction} Pre-render function.
- * @todo stability experimental
+ * @todo api
  */
 ol.animation.rotate = function(options) {
   var sourceRotation = goog.isDef(options.rotation) ? options.rotation : 0;
@@ -130,7 +130,7 @@ ol.animation.rotate = function(options) {
 /**
  * @param {olx.animation.ZoomOptions} options Zoom options.
  * @return {ol.PreRenderFunction} Pre-render function.
- * @todo stability experimental
+ * @todo api
  */
 ol.animation.zoom = function(options) {
   var sourceResolution = options.resolution;

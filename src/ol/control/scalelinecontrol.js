@@ -20,7 +20,6 @@ goog.require('ol.sphere.NORMAL');
 
 /**
  * @enum {string}
- * @todo stability experimental
  */
 ol.control.ScaleLineProperty = {
   UNITS: 'units'
@@ -28,8 +27,10 @@ ol.control.ScaleLineProperty = {
 
 
 /**
+ * Units for the scale line. Supported values are `'degrees'`, `'imperial'`,
+ * `'nautical'`, `'metric'`, `'us'`.
  * @enum {string}
- * @todo stability experimental
+ * @todo api
  */
 ol.control.ScaleLineUnits = {
   DEGREES: 'degrees',
@@ -49,9 +50,9 @@ ol.control.ScaleLineUnits = {
  * @constructor
  * @extends {ol.control.Control}
  * @param {olx.control.ScaleLineOptions=} opt_options Scale line options.
- * @todo stability experimental
  * @todo observable units {ol.control.ScaleLineUnits} the units to use in the
  *       scale line
+ * @todo api
  */
 ol.control.ScaleLine = function(opt_options) {
 
@@ -131,14 +132,13 @@ goog.inherits(ol.control.ScaleLine, ol.control.Control);
 /**
  * @const
  * @type {Array.<number>}
- * @todo stability experimental
  */
 ol.control.ScaleLine.LEADING_DIGITS = [1, 2, 5];
 
 
 /**
  * @return {ol.control.ScaleLineUnits|undefined} units.
- * @todo stability experimental
+ * @todo api
  */
 ol.control.ScaleLine.prototype.getUnits = function() {
   return /** @type {ol.control.ScaleLineUnits|undefined} */ (
@@ -174,7 +174,7 @@ ol.control.ScaleLine.prototype.handleUnitsChanged_ = function() {
 
 /**
  * @param {ol.control.ScaleLineUnits} units Units.
- * @todo stability experimental
+ * @todo api
  */
 ol.control.ScaleLine.prototype.setUnits = function(units) {
   this.set(ol.control.ScaleLineProperty.UNITS, units);

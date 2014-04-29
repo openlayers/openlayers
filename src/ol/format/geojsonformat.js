@@ -26,7 +26,7 @@ goog.require('ol.proj');
  * @constructor
  * @extends {ol.format.JSONFeature}
  * @param {olx.format.GeoJSONOptions=} opt_options Options.
- * @todo stability experimental
+ * @todo api
  */
 ol.format.GeoJSON = function(opt_options) {
 
@@ -322,6 +322,7 @@ ol.format.GeoJSON.prototype.getExtensions = function() {
  * @function
  * @param {ArrayBuffer|Document|Node|Object|string} source Source.
  * @return {ol.Feature} Feature.
+ * @todo api
  */
 ol.format.GeoJSON.prototype.readFeature;
 
@@ -333,6 +334,7 @@ ol.format.GeoJSON.prototype.readFeature;
  * @function
  * @param {ArrayBuffer|Document|Node|Object|string} source Source.
  * @return {Array.<ol.Feature>} Features.
+ * @todo api
  */
 ol.format.GeoJSON.prototype.readFeatures;
 
@@ -386,6 +388,7 @@ ol.format.GeoJSON.prototype.readFeaturesFromObject = function(object) {
  * @function
  * @param {ArrayBuffer|Document|Node|Object|string} source Source.
  * @return {ol.geom.Geometry} Geometry.
+ * @todo api
  */
 ol.format.GeoJSON.prototype.readGeometry;
 
@@ -404,6 +407,7 @@ ol.format.GeoJSON.prototype.readGeometryFromObject = function(object) {
  *
  * @param {ArrayBuffer|Document|Node|Object|string} object Source.
  * @return {ol.proj.Projection} Projection.
+ * @todo api
  */
 ol.format.GeoJSON.prototype.readProjection = function(object) {
   var geoJSONObject = /** @type {GeoJSONObject} */ (object);
@@ -433,6 +437,7 @@ ol.format.GeoJSON.prototype.readProjection = function(object) {
  * @function
  * @param {ol.Feature} feature Feature.
  * @return {ArrayBuffer|Node|Object|string} Result.
+ * @todo api
  */
 ol.format.GeoJSON.prototype.writeFeature;
 
@@ -468,6 +473,7 @@ ol.format.GeoJSON.prototype.writeFeatureObject = function(feature) {
  * @function
  * @param {Array.<ol.Feature>} features Features.
  * @return {ArrayBuffer|Node|Object|string} Result.
+ * @todo api
  */
 ol.format.GeoJSON.prototype.writeFeatures;
 

@@ -6,8 +6,8 @@ exports.defineTags = function(dictionary) {
     canHaveName: true,
     onTagged: function(doclet, tag) {
       var parts = tag.text.split(' ');
-      if (parts[0] === 'stability') {
-        doclet.stability = parts.slice(1).join(' ');
+      if (parts[0] === 'api') {
+        doclet.stability = parts.slice(1).join(' ') || 'experimental';
       } else if (parts[0] === 'observable') {
         if (!doclet.observables) {
           doclet.observables = [];

@@ -21,7 +21,7 @@ goog.require('ol.css');
  * @constructor
  * @extends {ol.control.Control}
  * @param {olx.control.AttributionOptions=} opt_options Attribution options.
- * @todo stability experimental
+ * @todo api
  */
 ol.control.Attribution = function(opt_options) {
 

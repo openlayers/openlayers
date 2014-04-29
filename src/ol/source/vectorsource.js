@@ -25,13 +25,13 @@ ol.source.VectorEventType = {
   /**
    * Triggered when a feature is added to the source.
    * @event ol.source.VectorEvent#addfeature
-   * @todo stability experimental
+   * @todo api
    */
   ADDFEATURE: 'addfeature',
   /**
    * Triggered when a feature is removed from the source.
    * @event ol.source.VectorEvent#removefeature
-   * @todo stability experimental
+   * @todo api
    */
   REMOVEFEATURE: 'removefeature'
 };
@@ -43,7 +43,7 @@ ol.source.VectorEventType = {
  * @extends {ol.source.Source}
  * @fires {@link ol.source.VectorEvent} ol.source.VectorEvent
  * @param {olx.source.VectorOptions=} opt_options Vector source options.
- * @todo stability experimental
+ * @todo api
  */
 ol.source.Vector = function(opt_options) {
 
@@ -85,7 +85,7 @@ goog.inherits(ol.source.Vector, ol.source.Source);
 
 /**
  * @param {ol.Feature} feature Feature.
- * @todo stability experimental
+ * @todo api
  */
 ol.source.Vector.prototype.addFeature = function(feature) {
   this.addFeatureInternal(feature);
@@ -123,7 +123,7 @@ ol.source.Vector.prototype.addFeatureInternal = function(feature) {
 
 /**
  * @param {Array.<ol.Feature>} features Features.
- * @todo stability experimental
+ * @todo api
  */
 ol.source.Vector.prototype.addFeatures = function(features) {
   this.addFeaturesInternal(features);
@@ -146,7 +146,7 @@ ol.source.Vector.prototype.addFeaturesInternal = function(features) {
 
 
 /**
- * @todo stability experimental
+ * Clear the source
  */
 ol.source.Vector.prototype.clear = function() {
   this.rBush_.forEach(this.removeFeatureInternal, this);
@@ -164,7 +164,7 @@ ol.source.Vector.prototype.clear = function() {
  * @param {T=} opt_this The object to use as `this` in `f`.
  * @return {S|undefined}
  * @template T,S
- * @todo stability experimental
+ * @todo api
  */
 ol.source.Vector.prototype.forEachFeature = function(f, opt_this) {
   return this.rBush_.forEach(f, opt_this);
@@ -177,7 +177,6 @@ ol.source.Vector.prototype.forEachFeature = function(f, opt_this) {
  * @param {T=} opt_this The object to use as `this` in `f`.
  * @return {S|undefined}
  * @template T,S
- * @todo stability experimental
  */
 ol.source.Vector.prototype.forEachFeatureAtCoordinate =
     function(coordinate, f, opt_this) {
@@ -200,7 +199,7 @@ ol.source.Vector.prototype.forEachFeatureAtCoordinate =
  * @param {T=} opt_this The object to use as `this` in `f`.
  * @return {S|undefined}
  * @template T,S
- * @todo stability experimental
+ * @todo api
  */
 ol.source.Vector.prototype.forEachFeatureInExtent =
     function(extent, f, opt_this) {
@@ -215,7 +214,6 @@ ol.source.Vector.prototype.forEachFeatureInExtent =
  * @param {T=} opt_this The object to use as `this` in `f`.
  * @return {S|undefined}
  * @template T,S
- * @todo stability experimental
  */
 ol.source.Vector.prototype.forEachFeatureInExtentAtResolution =
     function(extent, resolution, f, opt_this) {
@@ -225,7 +223,7 @@ ol.source.Vector.prototype.forEachFeatureInExtentAtResolution =
 
 /**
  * @return {Array.<ol.Feature>} Features.
- * @todo stability experimental
+ * @todo api
  */
 ol.source.Vector.prototype.getFeatures = function() {
   var features = this.rBush_.getAll();
@@ -240,7 +238,7 @@ ol.source.Vector.prototype.getFeatures = function() {
 /**
  * @param {ol.Coordinate} coordinate Coordinate.
  * @return {Array.<ol.Feature>} Features.
- * @todo stability experimental
+ * @todo api
  */
 ol.source.Vector.prototype.getFeaturesAtCoordinate = function(coordinate) {
   var features = [];
@@ -254,7 +252,6 @@ ol.source.Vector.prototype.getFeaturesAtCoordinate = function(coordinate) {
 /**
  * @param {ol.Extent} extent Extent.
  * @return {Array.<ol.Feature>} Features.
- * @todo stability experimental
  */
 ol.source.Vector.prototype.getFeaturesInExtent = function(extent) {
   return this.rBush_.getInExtent(extent);
@@ -264,7 +261,7 @@ ol.source.Vector.prototype.getFeaturesInExtent = function(extent) {
 /**
  * @param {ol.Coordinate} coordinate Coordinate.
  * @return {ol.Feature} Closest feature.
- * @todo stability experimental
+ * @todo api
  */
 ol.source.Vector.prototype.getClosestFeatureToCoordinate =
     function(coordinate) {
@@ -310,7 +307,7 @@ ol.source.Vector.prototype.getClosestFeatureToCoordinate =
 
 /**
  * @return {ol.Extent} Extent.
- * @todo stability experimental
+ * @todo api
  */
 ol.source.Vector.prototype.getExtent = function() {
   return this.rBush_.getExtent();
@@ -345,7 +342,6 @@ ol.source.Vector.prototype.handleFeatureChange_ = function(event) {
 
 /**
  * @return {boolean} Is empty.
- * @todo stability experimental
  */
 ol.source.Vector.prototype.isEmpty = function() {
   return this.rBush_.isEmpty() &&
@@ -363,7 +359,7 @@ ol.source.Vector.prototype.loadFeatures = goog.nullFunction;
 
 /**
  * @param {ol.Feature} feature Feature.
- * @todo stability experimental
+ * @todo api
  */
 ol.source.Vector.prototype.removeFeature = function(feature) {
   var featureKey = goog.getUid(feature).toString();
@@ -400,7 +396,6 @@ ol.source.Vector.prototype.removeFeatureInternal = function(feature) {
  * @implements {oli.source.VectorEvent}
  * @param {string} type Type.
  * @param {ol.Feature=} opt_feature Feature.
- * @todo stability experimental
  */
 ol.source.VectorEvent = function(type, opt_feature) {
 
@@ -409,7 +404,6 @@ ol.source.VectorEvent = function(type, opt_feature) {
   /**
    * The feature being added or removed.
    * @type {ol.Feature|undefined}
-   * @todo stability experimental
    */
   this.feature = opt_feature;
 
