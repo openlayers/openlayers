@@ -11,14 +11,7 @@ goog.require('goog.color');
 goog.require('goog.color.names');
 goog.require('goog.math');
 goog.require('goog.vec.Mat4');
-
-
-/**
- * @define {boolean} Enable named colors.
- * Enabling named colors adds about 3KB uncompressed / 1.5KB compressed to the
- * final build size.
- */
-ol.color.ENABLE_NAMED_COLORS = true;
+goog.require('ol');
 
 
 /**
@@ -212,7 +205,7 @@ ol.color.fromString = (
 ol.color.fromStringInternal_ = function(s) {
 
   var isHex = false;
-  if (ol.color.ENABLE_NAMED_COLORS && goog.color.names.hasOwnProperty(s)) {
+  if (ol.ENABLE_NAMED_COLORS && goog.color.names.hasOwnProperty(s)) {
     // goog.color.names does not have a type declaration, so add a typecast
     s = /** @type {string} */ (goog.color.names[s]);
     isHex = true;

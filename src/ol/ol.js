@@ -34,6 +34,30 @@ ol.DEFAULT_TILE_SIZE = 256;
 
 
 /**
+ * @define {string} Default WMS version.
+ */
+ol.DEFAULT_WMS_VERSION = '1.3.0';
+
+
+/**
+ * @define {number} Drag-rotate-zoom animation duration.
+ */
+ol.DRAGROTATEANDZOOM_ANIMATION_DURATION = 400;
+
+
+/**
+ * @define {number} Drag-rotate animation duration.
+ */
+ol.DRAGROTATE_ANIMATION_DURATION = 250;
+
+
+/**
+ * @define {number} Drag-zoom animation duration.
+ */
+ol.DRAGZOOM_ANIMATION_DURATION = 200;
+
+
+/**
  * @define {number} Hysterisis pixels.
  */
 ol.DRAG_BOX_HYSTERESIS_PIXELS = 8;
@@ -55,6 +79,14 @@ ol.ENABLE_DOM = true;
  * @define {boolean} Whether to enable rendering of image layers.
  */
 ol.ENABLE_IMAGE = true;
+
+
+/**
+ * @define {boolean} Enable named colors.
+ * Enabling named colors adds about 3KB uncompressed / 1.5KB compressed to the
+ * final build size.
+ */
+ol.ENABLE_NAMED_COLORS = true;
 
 
 /**
@@ -105,9 +137,39 @@ ol.IS_LEGACY_IE = goog.userAgent.IE &&
 
 
 /**
+ * @define {number} Keyboard pan duration.
+ */
+ol.KEYBOARD_PAN_DURATION = 100;
+
+
+/**
+ * @define {number} Maximum mouse wheel delta.
+ */
+ol.MOUSEWHEELZOOM_MAXDELTA = 1;
+
+
+/**
+ * @define {number} Mouse wheel timeout duration.
+ */
+ol.MOUSEWHEELZOOM_TIMEOUT_DURATION = 80;
+
+
+/**
+ * @define {number} Rotate animation duration.
+ */
+ol.ROTATE_ANIMATION_DURATION = 250;
+
+
+/**
  * @define {number} Texture cache high water mark.
  */
 ol.WEBGL_TEXTURE_CACHE_HIGH_WATER_MARK = 1024;
+
+
+/**
+ * @define {number} Zoom slider animation duration.
+ */
+ol.ZOOMSLIDER_ANIMATION_DURATION = 200;
 
 
 /**
