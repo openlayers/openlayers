@@ -88,6 +88,7 @@
 
 .ol-zoom,
 .ol-zoom-extent,
+.ol-rotate,
 .ol-full-screen {
   position: absolute;
   background-color: #eee;
@@ -97,12 +98,18 @@
 }
 .ol-zoom:hover,
 .ol-zoom-extent:hover,
+.ol-rotate:hover,
 .ol-full-screen:hover {
   background-color: rgba(255,255,255,0.6);
 }
 .ol-zoom {
   top: .5em;
   left: .5em;
+}
+.ol-rotate {
+  top: .5em;
+  right: .5em;
+  transition: opacity .25s;
 }
 .ol-zoom-extent {
   top: 4.643em;
@@ -122,6 +129,7 @@
 
 .ol-zoom button,
 .ol-zoom-extent button,
+.ol-rotate button,
 .ol-full-screen button {
   display: block;
   margin: 1px;
@@ -137,9 +145,11 @@
   background-color: #7b98bc;
   background-color: rgba(0,60,136,0.5);
   border: none;
+  border-radius: 2px;
 }
 .ol-zoom button::-moz-focus-inner,
 .ol-zoom-extent button::-moz-focus-inner,
+.ol-rotate button::-moz-focus-inner,
 .ol-full-screen button::-moz-focus-inner {
   border: none;
   padding: 0;
@@ -147,8 +157,15 @@
 .ol-zoom-extent button {
   line-height: 1.4em;
 }
+.ol-compass {
+  display: block;
+  font-family: Arial;
+  font-weight: normal;
+  font-size: 1.2em;
+}
 .ol-touch .ol-zoom button,
 .ol-touch .ol-full-screen button,
+.ol-touch .ol-rotate button,
 .ol-touch .ol-zoom-extent button {
   font-size: 1.5em;
 }
@@ -159,6 +176,8 @@
 .ol-zoom button:focus,
 .ol-zoom-extent button:hover,
 .ol-zoom-extent button:focus,
+.ol-rotate button:hover,
+.ol-rotate button:focus,
 .ol-full-screen button:hover,
 .ol-full-screen button:focus {
   text-decoration: none;
@@ -168,10 +187,10 @@
 .ol-zoom-extent button:after {
     content: "E";
 }
-.ol-zoom-in {
+.ol-zoom .ol-zoom-in {
   border-radius: 2px 2px 0 0;
 }
-.ol-zoom-out {
+.ol-zoom .ol-zoom-out {
   border-radius: 0 0 2px 2px;
 }
 button.ol-full-screen-false:after {
@@ -228,6 +247,8 @@ button.ol-full-screen-true:after {
 .ol-zoom .ol-has-tooltip:focus [role=tooltip] {
   top: 1.1em;
 }
+.ol-rotate .ol-has-tooltip:hover [role=tooltip],
+.ol-rotate .ol-has-tooltip:focus [role=tooltip],
 .ol-full-screen .ol-has-tooltip:hover [role=tooltip],
 .ol-full-screen .ol-has-tooltip:focus [role=tooltip] {
   right: 2.2em;

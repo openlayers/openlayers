@@ -878,6 +878,61 @@ olx.control.ScaleLineOptions.prototype.units;
 /**
  * @typedef {{duration: (number|undefined),
  *     className: (string|undefined),
+ *     label: (string|undefined),
+ *     tipLabel: (string|undefined),
+ *     target: (Element|undefined),
+ *     autoHide: (boolean|undefined),
+ *     duration: (number|undefined)}}
+ * @todo stability experimental
+ */
+olx.control.RotateOptions;
+
+
+/**
+ * CSS class name. Default is `ol-rotate`.
+ * @type {string|undefined}
+ */
+olx.control.RotateOptions.prototype.className;
+
+
+/**
+ * Text label to use for the rotate button. Default is `⇧`
+ * @type {string|undefined}
+ */
+olx.control.RotateOptions.prototype.label;
+
+
+/**
+ * Text label to use for the rotate tip. Default is `Reset rotation`
+ * @type {string|undefined}
+ */
+olx.control.RotateOptions.prototype.tipLabel;
+
+
+/**
+ * Animation duration in milliseconds. Default is `250`.
+ * @type {number|undefined}
+ */
+olx.control.RotateOptions.prototype.duration;
+
+
+/**
+ * Hide the control when rotation is 0. Default is `true`.
+ * @type {boolean|undefined}
+ */
+olx.control.RotateOptions.prototype.autoHide;
+
+
+/**
+ * Target.
+ * @type {Element|undefined}
+ */
+olx.control.RotateOptions.prototype.target;
+
+
+/**
+ * @typedef {{duration: (number|undefined),
+ *     className: (string|undefined),
  *     zoomInLabel: (string|undefined),
  *     zoomOutLabel: (string|undefined),
  *     zoomInTipLabel: (string|undefined),
