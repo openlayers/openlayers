@@ -683,6 +683,7 @@ olx.control.ControlOptions.prototype.target;
  *     logo: (boolean|undefined),
  *     logoOptions: (olx.control.LogoOptions|undefined),
  *     zoom: (boolean|undefined),
+ *     rotateOptions: (olx.control.RotateOptions|undefined)}}
  *     zoomOptions: (olx.control.ZoomOptions|undefined)}}
  * @todo api
  */
@@ -722,6 +723,13 @@ olx.control.DefaultsOptions.prototype.logoOptions;
  * @type {boolean|undefined}
  */
 olx.control.DefaultsOptions.prototype.zoom;
+
+
+/**
+ * Rotate options.
+ * @type {olx.control.RotateOptions|undefined}
+ */
+olx.control.DefaultsOptions.prototype.rotateOptions;
 
 
 /**

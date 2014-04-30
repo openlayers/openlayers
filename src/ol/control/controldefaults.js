@@ -3,6 +3,7 @@ goog.provide('ol.control');
 goog.require('ol.Collection');
 goog.require('ol.control.Attribution');
 goog.require('ol.control.Logo');
+goog.require('ol.control.Rotate');
 goog.require('ol.control.Zoom');
 
 
@@ -23,6 +24,14 @@ ol.control.defaults = function(opt_options) {
     var zoomControlOptions = goog.isDef(options.zoomOptions) ?
         options.zoomOptions : undefined;
     controls.push(new ol.control.Zoom(zoomControlOptions));
+  }
+
+  var rotateControl = goog.isDef(options.rotate) ?
+      options.rotate : true;
+  if (rotateControl) {
+    var rotateControlOptions = goog.isDef(options.rotateOptions) ?
+        options.rotateOptions : undefined;
+    controls.push(new ol.control.Rotate(rotateControlOptions));
   }
 
   var attributionControl = goog.isDef(options.attribution) ?
