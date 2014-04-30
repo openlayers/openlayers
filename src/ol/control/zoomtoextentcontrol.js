@@ -39,14 +39,10 @@ ol.control.ZoomToExtent = function(opt_options) {
   var tip = goog.dom.createDom(goog.dom.TagName.SPAN, {
     'role' : 'tooltip'
   }, tipLabel);
-  var element = goog.dom.createDom(goog.dom.TagName.DIV, {
-    'class': className + ' ' + ol.css.CLASS_UNSELECTABLE
-  });
   var button = goog.dom.createDom(goog.dom.TagName.BUTTON, {
     'class': 'ol-has-tooltip'
   });
   goog.dom.appendChild(button, tip);
-  goog.dom.appendChild(element, button);
 
   var buttonHandler = new ol.pointer.PointerEventHandler(button);
   this.registerDisposable(buttonHandler);
@@ -59,6 +55,10 @@ ol.control.ZoomToExtent = function(opt_options) {
   ], function() {
     this.blur();
   }, false);
+
+  var cssClasses = className + ' ' + ol.css.CLASS_UNSELECTABLE + ' ' +
+      ol.css.CLASS_CONTROL;
+  var element = goog.dom.createDom(goog.dom.TagName.DIV, cssClasses, button);
 
   goog.base(this, {
     element: element,

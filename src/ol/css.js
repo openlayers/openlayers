@@ -17,3 +17,12 @@ ol.css.CLASS_UNSELECTABLE = 'ol-unselectable';
  * @type {string}
  */
 ol.css.CLASS_UNSUPPORTED = 'ol-unsupported';
+
+
+/**
+ * The CSS class for controls.
+ *
+ * @const
+ * @type {string}
+ */
+ol.css.CLASS_CONTROL = 'ol-control';
