@@ -23,7 +23,6 @@
         "apidoc/plugins/inheritdoc",
         "apidoc/plugins/interface",
         "apidoc/plugins/typedefs",
-        "apidoc/plugins/inheritdoc",
         "apidoc/plugins/api",
         "apidoc/plugins/todo",
         "apidoc/plugins/observable"
