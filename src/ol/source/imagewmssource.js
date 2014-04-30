@@ -6,6 +6,7 @@ goog.require('goog.asserts');
 goog.require('goog.object');
 goog.require('goog.string');
 goog.require('goog.uri.utils');
+goog.require('ol');
 goog.require('ol.Image');
 goog.require('ol.extent');
 goog.require('ol.proj');
@@ -150,7 +151,7 @@ ol.source.ImageWMS.prototype.getGetFeatureInfoUrl =
 
   var baseParams = {
     'SERVICE': 'WMS',
-    'VERSION': ol.source.wms.DEFAULT_VERSION,
+    'VERSION': ol.DEFAULT_WMS_VERSION,
     'REQUEST': 'GetFeatureInfo',
     'FORMAT': 'image/png',
     'TRANSPARENT': true,
@@ -208,7 +209,7 @@ ol.source.ImageWMS.prototype.getImage =
 
   var params = {
     'SERVICE': 'WMS',
-    'VERSION': ol.source.wms.DEFAULT_VERSION,
+    'VERSION': ol.DEFAULT_WMS_VERSION,
     'REQUEST': 'GetMap',
     'FORMAT': 'image/png',
     'TRANSPARENT': true
@@ -355,6 +356,6 @@ ol.source.ImageWMS.prototype.updateParams = function(params) {
  */
 ol.source.ImageWMS.prototype.updateV13_ = function() {
   var version =
-      goog.object.get(this.params_, 'VERSION', ol.source.wms.DEFAULT_VERSION);
+      goog.object.get(this.params_, 'VERSION', ol.DEFAULT_WMS_VERSION);
   this.v13_ = goog.string.compareVersions(version, '1.3') >= 0;
 };

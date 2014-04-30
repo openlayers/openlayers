@@ -7,16 +7,11 @@ goog.provide('ol.interaction.DragBox');
 goog.require('goog.asserts');
 goog.require('goog.events.Event');
 goog.require('goog.functions');
+goog.require('ol');
 goog.require('ol.events.ConditionType');
 goog.require('ol.events.condition');
 goog.require('ol.interaction.Pointer');
 goog.require('ol.render.Box');
-
-
-/**
- * @define {number} Hysterisis pixels.
- */
-ol.DRAG_BOX_HYSTERESIS_PIXELS = 8;
 
 
 /**

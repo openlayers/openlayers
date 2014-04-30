@@ -10,6 +10,7 @@ goog.require('goog.math');
 goog.require('goog.object');
 goog.require('goog.string');
 goog.require('goog.uri.utils');
+goog.require('ol');
 goog.require('ol.TileCoord');
 goog.require('ol.TileUrlFunction');
 goog.require('ol.extent');
@@ -165,7 +166,7 @@ ol.source.TileWMS.prototype.getGetFeatureInfoUrl =
 
   var baseParams = {
     'SERVICE': 'WMS',
-    'VERSION': ol.source.wms.DEFAULT_VERSION,
+    'VERSION': ol.DEFAULT_WMS_VERSION,
     'REQUEST': 'GetFeatureInfo',
     'FORMAT': 'image/png',
     'TRANSPARENT': true,
@@ -373,7 +374,7 @@ ol.source.TileWMS.prototype.tileUrlFunction_ =
 
   var baseParams = {
     'SERVICE': 'WMS',
-    'VERSION': ol.source.wms.DEFAULT_VERSION,
+    'VERSION': ol.DEFAULT_WMS_VERSION,
     'REQUEST': 'GetMap',
     'FORMAT': 'image/png',
     'TRANSPARENT': true
@@ -405,6 +406,6 @@ ol.source.TileWMS.prototype.updateParams = function(params) {
  */
 ol.source.TileWMS.prototype.updateV13_ = function() {
   var version =
-      goog.object.get(this.params_, 'VERSION', ol.source.wms.DEFAULT_VERSION);
+      goog.object.get(this.params_, 'VERSION', ol.DEFAULT_WMS_VERSION);
   this.v13_ = goog.string.compareVersions(version, '1.3') >= 0;
 };

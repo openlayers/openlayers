@@ -5,17 +5,12 @@ goog.provide('ol.interaction.DragRotateAndZoom');
 goog.require('goog.asserts');
 goog.require('goog.functions');
 goog.require('goog.math.Vec2');
+goog.require('ol');
 goog.require('ol.ViewHint');
 goog.require('ol.events.ConditionType');
 goog.require('ol.events.condition');
 goog.require('ol.interaction.Interaction');
 goog.require('ol.interaction.Pointer');
-
-
-/**
- * @define {number} Animation duration.
- */
-ol.interaction.DRAGROTATEANDZOOM_ANIMATION_DURATION = 400;
 
 
 
@@ -125,7 +120,7 @@ ol.interaction.DragRotateAndZoom.prototype.handlePointerUp =
   var direction = this.lastScaleDelta_ - 1;
   ol.interaction.Interaction.rotate(map, view2D, view2DState.rotation);
   ol.interaction.Interaction.zoom(map, view2D, view2DState.resolution,
-      undefined, ol.interaction.DRAGROTATEANDZOOM_ANIMATION_DURATION,
+      undefined, ol.DRAGROTATEANDZOOM_ANIMATION_DURATION,
       direction);
   this.lastScaleDelta_ = 0;
   return false;

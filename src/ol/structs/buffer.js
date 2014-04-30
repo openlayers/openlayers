@@ -3,6 +3,7 @@ goog.provide('ol.structs.Buffer');
 goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('goog.webgl');
+goog.require('ol');
 goog.require('ol.structs.IntegerSet');
 
 
@@ -14,12 +15,6 @@ ol.structs.BufferUsage = {
   STREAM_DRAW: goog.webgl.STREAM_DRAW,
   DYNAMIC_DRAW: goog.webgl.DYNAMIC_DRAW
 };
-
-
-/**
- * @define {boolean} Replace unused entries with NaNs.
- */
-ol.BUFFER_REPLACE_UNUSED_ENTRIES_WITH_NANS = goog.DEBUG;
 
 
 

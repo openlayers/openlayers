@@ -4,16 +4,11 @@ goog.provide('ol.interaction.PinchRotate');
 
 goog.require('goog.asserts');
 goog.require('goog.style');
+goog.require('ol');
 goog.require('ol.Coordinate');
 goog.require('ol.ViewHint');
 goog.require('ol.interaction.Interaction');
 goog.require('ol.interaction.Pointer');
-
-
-/**
- * @define {number} Animation duration.
- */
-ol.interaction.ROTATE_ANIMATION_DURATION = 250;
 
 
 
@@ -131,7 +126,7 @@ ol.interaction.PinchRotate.prototype.handlePointerUp =
       var view2DState = view2D.getView2DState();
       ol.interaction.Interaction.rotate(
           map, view2D, view2DState.rotation, this.anchor_,
-          ol.interaction.ROTATE_ANIMATION_DURATION);
+          ol.ROTATE_ANIMATION_DURATION);
     }
     return false;
   } else {

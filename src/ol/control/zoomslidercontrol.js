@@ -15,16 +15,11 @@ goog.require('goog.fx.Dragger.EventType');
 goog.require('goog.math');
 goog.require('goog.math.Rect');
 goog.require('goog.style');
+goog.require('ol');
 goog.require('ol.animation');
 goog.require('ol.control.Control');
 goog.require('ol.css');
 goog.require('ol.easing');
-
-
-/**
- * @define {number} Animation duration.
- */
-ol.control.ZOOMSLIDER_ANIMATION_DURATION = 200;
 
 
 
@@ -190,7 +185,7 @@ ol.control.ZoomSlider.prototype.handleContainerClick_ = function(browserEvent) {
   goog.asserts.assert(goog.isDef(resolution));
   map.beforeRender(ol.animation.zoom({
     resolution: resolution,
-    duration: ol.control.ZOOMSLIDER_ANIMATION_DURATION,
+    duration: ol.ZOOMSLIDER_ANIMATION_DURATION,
     easing: ol.easing.easeOut
   }));
   resolution = view.constrainResolution(resolution);
@@ -295,7 +290,7 @@ ol.control.ZoomSlider.prototype.handleSliderChange_ = function(e) {
     goog.asserts.assert(goog.isDef(this.currentResolution_));
     map.beforeRender(ol.animation.zoom({
       resolution: this.currentResolution_,
-      duration: ol.control.ZOOMSLIDER_ANIMATION_DURATION,
+      duration: ol.ZOOMSLIDER_ANIMATION_DURATION,
       easing: ol.easing.easeOut
     }));
     resolution = view.constrainResolution(this.currentResolution_);

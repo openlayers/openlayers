@@ -7,15 +7,10 @@ goog.provide('ol.proj.Units');
 goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('goog.object');
+goog.require('ol');
 goog.require('ol.Extent');
 goog.require('ol.TransformFunction');
 goog.require('ol.sphere.NORMAL');
-
-
-/**
- * @define {boolean} Enable Proj4js.
- */
-ol.ENABLE_PROJ4JS = true;
 
 
 /**

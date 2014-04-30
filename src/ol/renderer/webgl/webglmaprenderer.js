@@ -13,6 +13,7 @@ goog.require('goog.log.Logger');
 goog.require('goog.object');
 goog.require('goog.style');
 goog.require('goog.webgl');
+goog.require('ol');
 goog.require('ol.Tile');
 goog.require('ol.css');
 goog.require('ol.dom');
@@ -31,12 +32,6 @@ goog.require('ol.structs.PriorityQueue');
 goog.require('ol.webgl');
 goog.require('ol.webgl.Context');
 goog.require('ol.webgl.WebGLContextEventType');
-
-
-/**
- * @define {number} Texture cache high water mark.
- */
-ol.WEBGL_TEXTURE_CACHE_HIGH_WATER_MARK = 1024;
 
 
 /**
