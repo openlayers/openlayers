@@ -19,7 +19,7 @@ ol.layer.VectorProperty = {
  *
  * @constructor
  * @extends {ol.layer.Layer}
- * @fires {@link ol.render.Event} ol.render.Event
+ * @fires ol.render.Event
  * @param {olx.layer.VectorOptions=} opt_options Options.
  * @todo api
  */

@@ -156,10 +156,10 @@ ol.MapProperty = {
  * @constructor
  * @extends {ol.Object}
  * @param {olx.MapOptions} options Map options.
- * @fires {@link ol.MapBrowserEvent} ol.MapBrowserEvent
- * @fires {@link ol.MapEvent} ol.MapEvent
- * @fires {@link ol.render.Event} ol.render.Event
  * @todo observable layergroup {ol.layer.Group} a layer group containing the
+ * @fires ol.MapBrowserEvent
+ * @fires ol.MapEvent
+ * @fires ol.render.Event
  *       layers in this map.
  * @todo observable size {ol.Size} the size in pixels of the map in the DOM
  * @todo observable target {string|Element} the Element or id of the Element

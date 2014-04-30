@@ -43,7 +43,7 @@ var self = this;
     <?js if (data.fires && fires.length) { ?>
     <h5>Fires:</h5>
     <ul><?js fires.forEach(function(f) { ?>
-        <?js= self.partial('fires.tmpl', self.linkto(f) ) ?>
+        <?js= self.partial('fires.tmpl', self.linkto(f.replace('event:', '')) ) ?>
     <?js }); ?></ul>
     <?js } ?>
     

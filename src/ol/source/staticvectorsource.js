@@ -8,7 +8,7 @@ goog.require('ol.source.State');
 /**
  * @constructor
  * @extends {ol.source.FormatVector}
- * @fires {@link ol.source.VectorEvent} ol.source.VectorEvent
+ * @fires ol.source.VectorEvent
  * @param {olx.source.StaticVectorOptions} options Options.
  * @todo api
  */

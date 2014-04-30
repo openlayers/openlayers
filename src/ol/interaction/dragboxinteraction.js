@@ -76,7 +76,7 @@ goog.inherits(ol.DragBoxEvent, goog.events.Event);
  *
  * @constructor
  * @extends {ol.interaction.Pointer}
- * @fires {@link ol.DragBoxEvent} ol.DragBoxEvent
+ * @fires ol.DragBoxEvent
  * @param {olx.interaction.DragBoxOptions=} opt_options Options.
  * @todo api
  */

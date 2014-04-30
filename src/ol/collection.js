@@ -67,7 +67,7 @@ ol.CollectionProperty = {
  * A mutable MVC Array.
  * @constructor
  * @extends {ol.Object}
- * @fires {@link ol.CollectionEvent} ol.CollectionEvent
+ * @fires ol.CollectionEvent
  * @param {Array=} opt_array Array.
  * @todo observable length {number} readonly the length of the array
  * @todo api

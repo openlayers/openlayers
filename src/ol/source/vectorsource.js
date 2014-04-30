@@ -41,7 +41,7 @@ ol.source.VectorEventType = {
 /**
  * @constructor
  * @extends {ol.source.Source}
- * @fires {@link ol.source.VectorEvent} ol.source.VectorEvent
+ * @fires ol.source.VectorEvent
  * @param {olx.source.VectorOptions=} opt_options Vector source options.
  * @todo api
  */

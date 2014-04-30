@@ -7,7 +7,7 @@ goog.require('ol.layer.Layer');
 /**
  * @constructor
  * @extends {ol.layer.Layer}
- * @fires {@link ol.render.Event} ol.render.Event
+ * @fires ol.render.Event
  * @param {olx.layer.LayerOptions} options Layer options.
  * @todo api
  */
