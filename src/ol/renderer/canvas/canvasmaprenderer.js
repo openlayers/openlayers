@@ -6,6 +6,7 @@ goog.require('goog.asserts');
 goog.require('goog.dom');
 goog.require('goog.style');
 goog.require('goog.vec.Mat4');
+goog.require('ol');
 goog.require('ol.css');
 goog.require('ol.dom');
 goog.require('ol.layer.Image');

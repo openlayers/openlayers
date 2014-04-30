@@ -1,6 +1,7 @@
 goog.provide('ol.source.MapQuest');
 
 goog.require('goog.asserts');
+goog.require('ol');
 goog.require('ol.Attribution');
 goog.require('ol.source.OSM');
 goog.require('ol.source.XYZ');

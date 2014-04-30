@@ -13,6 +13,7 @@ goog.require('goog.log.Logger');
 goog.require('goog.object');
 goog.require('goog.style');
 goog.require('goog.webgl');
+goog.require('ol');
 goog.require('ol.Tile');
 goog.require('ol.css');
 goog.require('ol.dom');
