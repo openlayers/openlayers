@@ -10,6 +10,36 @@ ol.ASSUME_TOUCH = false;
 
 
 /**
+ * @define {boolean} Replace unused entries with NaNs.
+ */
+ol.BUFFER_REPLACE_UNUSED_ENTRIES_WITH_NANS = goog.DEBUG;
+
+
+/**
+ * @define {number} Default maximum zoom for default tile grids.
+ */
+ol.DEFAULT_MAX_ZOOM = 42;
+
+
+/**
+ * @define {number} Default high water mark.
+ */
+ol.DEFAULT_TILE_CACHE_HIGH_WATER_MARK = 2048;
+
+
+/**
+ * @define {number} Default tile size.
+ */
+ol.DEFAULT_TILE_SIZE = 256;
+
+
+/**
+ * @define {number} Hysterisis pixels.
+ */
+ol.DRAG_BOX_HYSTERESIS_PIXELS = 8;
+
+
+/**
  * @define {boolean} Whether to enable canvas.
  */
 ol.ENABLE_CANVAS = true;
@@ -25,6 +55,12 @@ ol.ENABLE_DOM = true;
  * @define {boolean} Whether to enable rendering of image layers.
  */
 ol.ENABLE_IMAGE = true;
+
+
+/**
+ * @define {boolean} Enable Proj4js.
+ */
+ol.ENABLE_PROJ4JS = true;
 
 
 /**
@@ -66,6 +102,12 @@ ol.IS_HTTPS = goog.global.location.protocol === 'https:';
  */
 ol.IS_LEGACY_IE = goog.userAgent.IE &&
     !goog.userAgent.isVersionOrHigher('9.0') && goog.userAgent.VERSION !== '';
+
+
+/**
+ * @define {number} Texture cache high water mark.
+ */
+ol.WEBGL_TEXTURE_CACHE_HIGH_WATER_MARK = 1024;
 
 
 /**

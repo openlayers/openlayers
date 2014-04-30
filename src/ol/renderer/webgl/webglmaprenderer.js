@@ -35,12 +35,6 @@ goog.require('ol.webgl.WebGLContextEventType');
 
 
 /**
- * @define {number} Texture cache high water mark.
- */
-ol.WEBGL_TEXTURE_CACHE_HIGH_WATER_MARK = 1024;
-
-
-/**
  * @typedef {{magFilter: number, minFilter: number, texture: WebGLTexture}}
  */
 ol.renderer.webgl.TextureCacheEntry;
