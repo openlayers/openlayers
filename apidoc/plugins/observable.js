@@ -24,9 +24,6 @@ exports.defineTags = function(dictionary) {
       if (!doclet.fires) {
         doclet.fires = [];
       }
-      if (doclet.fires.indexOf('{@link ol.ObjectEvent} ol.event:ObjectEvent') === -1) {
-        doclet.fires.push('{@link ol.ObjectEvent} ol.event:ObjectEvent');
-      }
     }
   });
 };
