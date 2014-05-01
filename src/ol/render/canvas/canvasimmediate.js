@@ -34,9 +34,10 @@ ol.render.canvas.Immediate =
   /**
    * @private
    * @type {Object.<string,
-   *        Array.<function(ol.render.canvas.Immediate)>>}
+   *                Array.<{feature: ol.Feature,
+   *                        callback: function(ol.render.canvas.Immediate)}>>}
    */
-  this.callbacksByZIndex_ = {};
+  this.callbackObjectsByZIndex_ = {};
 
   /**
    * @private
@@ -218,6 +219,12 @@ ol.render.canvas.Immediate =
    */
   this.tmpLocalTransform_ = goog.vec.Mat4.createNumber();
 
+  /**
+   * @private
+   * @type {boolean}
+   */
+  this.hitDetectionMode_ = false;
+
 };
 
 
@@ -382,13 +389,16 @@ ol.render.canvas.Immediate.prototype.drawRings_ =
  * @param {function(ol.render.canvas.Immediate)} callback Callback.
  * @todo api
  */
-ol.render.canvas.Immediate.prototype.drawAsync = function(zIndex, callback) {
+ol.render.canvas.Immediate.prototype.drawAsync =
+    function(zIndex, callback, opt_feature) {
+  var feature = goog.isDef(opt_feature) ? opt_feature : null;
   var zIndexKey = zIndex.toString();
-  var callbacks = this.callbacksByZIndex_[zIndexKey];
-  if (goog.isDef(callbacks)) {
-    callbacks.push(callback);
+  var callbackObjects = this.callbackObjectsByZIndex_[zIndexKey];
+  if (goog.isDef(callbackObjects)) {
+    callbackObjects.push({callback: callback, feature: feature});
   } else {
-    this.callbacksByZIndex_[zIndexKey] = [callback];
+    this.callbackObjectsByZIndex_[zIndexKey] =
+        [{callback: callback, feature: feature}];
   }
 };
 
@@ -464,7 +474,7 @@ ol.render.canvas.Immediate.prototype.drawFeature = function(feature, style) {
         ol.render.canvas.Immediate.GEOMETRY_RENDERES_[geometry.getType()];
     goog.asserts.assert(goog.isDef(renderGeometry));
     renderGeometry.call(render, geometry, null);
-  });
+  }, feature);
 };
 
 
@@ -694,15 +704,46 @@ ol.render.canvas.Immediate.prototype.drawText = goog.abstractMethod;
  */
 ol.render.canvas.Immediate.prototype.flush = function() {
   /** @type {Array.<number>} */
-  var zs = goog.array.map(goog.object.getKeys(this.callbacksByZIndex_), Number);
+  var zs = goog.array.map(
+      goog.object.getKeys(this.callbackObjectsByZIndex_), Number);
   goog.array.sort(zs);
-  var i, ii, callbacks, j, jj;
+  var i, ii, callbackObjects, j, jj;
   for (i = 0, ii = zs.length; i < ii; ++i) {
-    callbacks = this.callbacksByZIndex_[zs[i].toString()];
-    for (j = 0, jj = callbacks.length; j < jj; ++j) {
-      callbacks[j](this);
+    callbackObjects = this.callbackObjectsByZIndex_[zs[i].toString()];
+    for (j = 0, jj = callbackObjects.length; j < jj; ++j) {
+      callbackObjects[j].callback(this);
     }
   }
+};
+
+
+/**
+ * @param {function(ol.Feature): T} callback Feature callback.
+ * @return {T} Callback result.
+ * @template T
+ */
+ol.render.canvas.Immediate.prototype.flushHitDetection = function(callback) {
+  this.hitDetectionMode_ = true;
+  /** @type {Array.<number>} */
+  var zs = goog.array.map(
+      goog.object.getKeys(this.callbackObjectsByZIndex_), Number);
+  goog.array.sort(zs, function(a, b) { return b - a; });
+  var i, ii, callbackObject, callbackObjects, feature, j, result;
+  for (i = 0, ii = zs.length; i < ii; ++i) {
+    callbackObjects = this.callbackObjectsByZIndex_[zs[i].toString()];
+    for (j = callbackObjects.length - 1; j >= 0; --j) {
+      callbackObject = callbackObjects[j];
+      feature = callbackObject.feature;
+      if (!goog.isNull(feature)) {
+        callbackObject.callback(this);
+        result = callback(feature);
+        if (result) {
+          return result;
+        }
+      }
+    }
+  }
+  return undefined;
 };
 
 
@@ -823,7 +864,13 @@ ol.render.canvas.Immediate.prototype.setContextTextState_ =
 ol.render.canvas.Immediate.prototype.setFillStrokeStyle =
     function(fillStyle, strokeStyle) {
   if (goog.isNull(fillStyle)) {
-    this.fillState_ = null;
+    if (this.hitDetectionMode_) {
+      this.fillState_ = {
+        fillStyle: ol.color.asString(ol.render.canvas.defaultFillStyle)
+      };
+    } else {
+      this.fillState_ = null;
+    }
   } else {
     var fillStyleColor = fillStyle.getColor();
     this.fillState_ = {
@@ -871,7 +918,8 @@ ol.render.canvas.Immediate.prototype.setImageStyle = function(imageStyle) {
   } else {
     var imageAnchor = imageStyle.getAnchor();
     // FIXME pixel ratio
-    var imageImage = imageStyle.getImage(1);
+    var imageImage = this.hitDetectionMode_ ?
+        imageStyle.getHitDetectionImage(1) : imageStyle.getImage(1);
     var imageOpacity = imageStyle.getOpacity();
     var imageRotateWithView = imageStyle.getRotateWithView();
     var imageRotation = imageStyle.getRotation();

@@ -64,6 +64,27 @@ ol.renderer.canvas.Map = function(container, map) {
    */
   this.transform_ = goog.vec.Mat4.createNumber();
 
+  /**
+   * @type {HTMLCanvasElement}
+   */
+  var hitDetectionCanvas = /** @type {HTMLCanvasElement} */
+      (goog.dom.createElement(goog.dom.TagName.CANVAS));
+  hitDetectionCanvas.width = 1;
+  hitDetectionCanvas.height = 1;
+
+  /**
+   * @private
+   * @type {CanvasRenderingContext2D}
+   */
+  this.hitDetectionContext_ = /** @type {CanvasRenderingContext2D} */
+      (hitDetectionCanvas.getContext('2d'));
+
+  /**
+   * @private
+   * @type {!goog.vec.Mat4.Number}
+   */
+  this.hitDetectionTransform_ = goog.vec.Mat4.createNumber();
+
 };
 goog.inherits(ol.renderer.canvas.Map, ol.renderer.Map);
 
@@ -111,6 +132,72 @@ ol.renderer.canvas.Map.prototype.dispatchComposeEvent_ =
     map.dispatchEvent(composeEvent);
     render.flush();
   }
+};
+
+
+/**
+ * @param {ol.Coordinate} coordinate Coordinate.
+ * @param {ol.FrameState} frameState Frame state.
+ * @param {function(this: S, ol.Feature, ol.layer.Layer): T} callback Callback.
+ * @param {S} thisArg Value to use as `this` when executing `callback`.
+ * @return {T} Callback result.
+ * @template S, T
+ * @private
+ */
+ol.renderer.canvas.Map.prototype.postComposeHitDetection_ =
+    function(coordinate, frameState, callback, thisArg) {
+  var map = this.getMap();
+  if (map.hasListener(ol.render.EventType.POSTCOMPOSE)) {
+    var context = this.hitDetectionContext_;
+    var view2DState = frameState.view2DState;
+    var pixelRatio = frameState.pixelRatio;
+    var transform = this.hitDetectionTransform_;
+    ol.vec.Mat4.makeTransform2D(transform,
+        0.5, 0.5,
+        pixelRatio / view2DState.resolution,
+        -pixelRatio / view2DState.resolution,
+        -view2DState.rotation,
+        -coordinate[0], -coordinate[1]);
+    var render = new ol.render.canvas.Immediate(context, pixelRatio,
+        frameState.extent, transform, view2DState.rotation);
+    var composeEvent = new ol.render.Event(ol.render.EventType.POSTCOMPOSE,
+        map, render, frameState, context, null);
+    map.dispatchEvent(composeEvent);
+    context.clearRect(0, 0, 1, 1);
+    return render.flushHitDetection(
+        /**
+         * @param {ol.Feature} feature Feature.
+         * @return {T} Callback result.
+         * @template T
+         */
+        function(feature) {
+          var imageData = context.getImageData(0, 0, 1, 1).data;
+          if (imageData[3] > 0) {
+            var result = callback.call(thisArg, feature, null);
+            if (result) {
+              return result;
+            }
+            context.clearRect(0, 0, 1, 1);
+          }
+        });
+  }
+  return undefined;
+};
+
+
+/**
+ * @inheritDoc
+ */
+ol.renderer.canvas.Map.prototype.forEachFeatureAtPixel =
+    function(coordinate, frameState, callback, thisArg,
+        layerFilter, thisArg2) {
+  var result = this.postComposeHitDetection_(
+      coordinate, frameState, callback, thisArg);
+  if (result) {
+    return result;
+  }
+  return goog.base(this, 'forEachFeatureAtPixel', coordinate, frameState,
+      callback, thisArg, layerFilter, thisArg2);
 };
 
 
