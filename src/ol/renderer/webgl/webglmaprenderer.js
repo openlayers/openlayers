@@ -347,6 +347,14 @@ ol.renderer.webgl.Map.prototype.getTileTextureQueue = function() {
 
 
 /**
+ * @inheritDoc
+ */
+ol.renderer.webgl.Map.prototype.getType = function() {
+  return 'webgl';
+};
+
+
+/**
  * @param {goog.events.Event} event Event.
  * @protected
  */

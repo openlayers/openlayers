@@ -164,6 +164,12 @@ ol.renderer.Map.prototype.getMap = function() {
 
 
 /**
+ * @return {string} Type
+ */
+ol.renderer.Map.prototype.getType = goog.abstractMethod;
+
+
+/**
  * @param {string} layerKey Layer key.
  * @return {ol.renderer.Layer} Layer renderer.
  * @private

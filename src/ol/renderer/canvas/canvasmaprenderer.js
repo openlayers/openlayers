@@ -129,6 +129,14 @@ ol.renderer.canvas.Map.prototype.getCanvasLayerRenderer = function(layer) {
 /**
  * @inheritDoc
  */
+ol.renderer.canvas.Map.prototype.getType = function() {
+  return 'canvas';
+};
+
+
+/**
+ * @inheritDoc
+ */
 ol.renderer.canvas.Map.prototype.renderFrame = function(frameState) {
 
   if (goog.isNull(frameState)) {

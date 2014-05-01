@@ -78,6 +78,14 @@ ol.renderer.dom.Map.prototype.createLayerRenderer = function(layer) {
 /**
  * @inheritDoc
  */
+ol.renderer.dom.Map.prototype.getType = function() {
+  return 'dom';
+};
+
+
+/**
+ * @inheritDoc
+ */
 ol.renderer.dom.Map.prototype.renderFrame = function(frameState) {
 
   if (goog.isNull(frameState)) {

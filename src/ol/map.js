@@ -727,6 +727,15 @@ ol.Map.prototype.getPixelFromCoordinate = function(coordinate) {
 
 
 /**
+ * Get the map renderer.
+ * @return {ol.renderer.Map} Renderer
+ */
+ol.Map.prototype.getRenderer = function() {
+  return this.renderer_;
+};
+
+
+/**
  * Get the size of this map.
  * @return {ol.Size|undefined} The size in pixels of the map in the DOM.
  * @todo observable
