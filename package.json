@@ -14,10 +14,12 @@
   "bugs": {
     "url": "https://github.com/openlayers/ol3/issues"
   },
+  "dependencies": {
+    "async": "~0.2.10",
+    "htmlparser2": "~3.7.1"
+  },
   "devDependencies": {
     "closure-util": "~0.11.0",
-    "async": "~0.2.10",
-    "htmlparser2": "~3.7.1",
     "jshint": "~2.4.4",
     "jsdoc": "~3.3.0-alpha5",
     "walk": "~2.3.1",
