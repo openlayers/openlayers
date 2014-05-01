@@ -69,7 +69,7 @@ exports.handlers = {
         doclet.hideConstructor = true;
       } else {
         // Remove all other undocumented symbols
-        doclets.splice(i, 1);
+        doclet.undocumented = true;
       }
     }
   }
