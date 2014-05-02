@@ -242,9 +242,8 @@ ol.geom.SimpleGeometry.prototype.setLayout =
 
 /**
  * @inheritDoc
- * @todo api
  */
-ol.geom.SimpleGeometry.prototype.transform = function(transformFn) {
+ol.geom.SimpleGeometry.prototype.applyTransform = function(transformFn) {
   if (!goog.isNull(this.flatCoordinates)) {
     transformFn(this.flatCoordinates, this.flatCoordinates, this.stride);
     this.dispatchChangeEvent();

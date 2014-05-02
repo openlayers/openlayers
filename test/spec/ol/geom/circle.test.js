@@ -207,7 +207,7 @@ describe('ol.geom.Circle', function() {
 
       it('throws an exception', function() {
         expect(function() {
-          circle.transform(ol.proj.identityTransform);
+          circle.applyTransform(ol.proj.identityTransform);
         }).to.throwException();
       });
 
