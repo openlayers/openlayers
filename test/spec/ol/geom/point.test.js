@@ -106,6 +106,42 @@ describe('ol.geom.Point', function() {
 
   });
 
+  describe('#applyTransform()', function() {
+
+    var point, transform;
+    beforeEach(function() {
+      point = new ol.geom.Point([1, 2]);
+      transform = sinon.spy();
+    });
+
+    it('calls a transform function', function() {
+      point.applyTransform(transform);
+      expect(transform.calledOnce).to.be(true);
+      var args = transform.firstCall.args;
+      expect(args).to.have.length(3);
+
+      expect(args[0]).to.be(point.getFlatCoordinates()); // input coords
+      expect(args[1]).to.be(point.getFlatCoordinates()); // output coords
+      expect(args[2]).to.be(2); // dimension
+    });
+
+    it('allows for modification of coordinates', function() {
+      var mod = function(input, output, dimension) {
+        var copy = input.slice();
+        output[1] = copy[0];
+        output[0] = copy[1];
+      };
+      point.applyTransform(mod);
+      expect(point.getCoordinates()).to.eql([2, 1]);
+    });
+
+    it('returns undefined', function() {
+      var got = point.applyTransform(transform);
+      expect(got).to.be(undefined);
+    });
+
+  });
+
 });
 
 

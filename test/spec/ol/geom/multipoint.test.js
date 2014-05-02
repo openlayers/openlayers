@@ -192,6 +192,44 @@ describe('ol.geom.MultiPoint', function() {
 
   });
 
+  describe('#applyTransform()', function() {
+
+    var multi, transform;
+    beforeEach(function() {
+      multi = new ol.geom.MultiPoint([[1, 2], [3, 4]]);
+      transform = sinon.spy();
+    });
+
+    it('calls a transform function', function() {
+      multi.applyTransform(transform);
+      expect(transform.calledOnce).to.be(true);
+      var args = transform.firstCall.args;
+      expect(args).to.have.length(3);
+
+      expect(args[0]).to.be(multi.getFlatCoordinates()); // input coords
+      expect(args[1]).to.be(multi.getFlatCoordinates()); // output coords
+      expect(args[2]).to.be(2); // dimension
+    });
+
+    it('allows for modification of coordinates', function() {
+      var mod = function(input, output, dimension) {
+        var copy = input.slice();
+        for (var i = 0, ii = copy.length; i < ii; i += dimension) {
+          output[i] = copy[i + 1];
+          output[i + 1] = copy[i];
+        }
+      };
+      multi.applyTransform(mod);
+      expect(multi.getCoordinates()).to.eql([[2, 1], [4, 3]]);
+    });
+
+    it('returns undefined', function() {
+      var got = multi.applyTransform(transform);
+      expect(got).to.be(undefined);
+    });
+
+  });
+
 });
 
 
