@@ -714,13 +714,15 @@ ol.extent.touches = function(extent1, extent2) {
 
 
 /**
+ * Apply a transform function to the extent.
  * @param {ol.Extent} extent Extent.
- * @param {ol.TransformFunction} transformFn Transform function.
+ * @param {ol.TransformFunction} transformFn Transform function.  Called with
+ * [minX, minY, maxX, maxY] extent coordinates.
  * @param {ol.Extent=} opt_extent Destination extent.
  * @return {ol.Extent} Extent.
  * @todo api
  */
-ol.extent.transform = function(extent, transformFn, opt_extent) {
+ol.extent.applyTransform = function(extent, transformFn, opt_extent) {
   var coordinates = [
     extent[0], extent[1],
     extent[0], extent[3],
