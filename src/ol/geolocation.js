@@ -11,6 +11,7 @@ goog.require('ol.BrowserFeature');
 goog.require('ol.Coordinate');
 goog.require('ol.Object');
 goog.require('ol.geom.Geometry');
+goog.require('ol.geom.Polygon');
 goog.require('ol.proj');
 goog.require('ol.sphere.WGS84');
 
@@ -186,7 +187,8 @@ ol.Geolocation.prototype.positionChange_ = function(position) {
   this.set(ol.GeolocationProperty.POSITION, projectedPosition);
   this.set(ol.GeolocationProperty.SPEED,
       goog.isNull(coords.speed) ? undefined : coords.speed);
-  var geometry = ol.sphere.WGS84.circle(this.position_, coords.accuracy);
+  var geometry = ol.geom.Polygon.circular(
+      ol.sphere.WGS84, this.position_, coords.accuracy);
   geometry.applyTransform(this.transform_);
   this.set(ol.GeolocationProperty.ACCURACY_GEOMETRY, geometry);
   this.dispatchChangeEvent();
