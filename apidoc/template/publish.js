@@ -23,7 +23,21 @@ function getAncestorLinks(doclet) {
     return helper.getAncestorLinks(data, doclet);
 }
 
-var linkto = helper.linkto;
+function linkto(longname, linkText, cssClass, fragmentId) {
+  var markup = helper.linkto.apply(this, arguments);
+  var links = markup.match(/<a [^>]*>[^<]*<\/a>/g);
+  if (links) {
+    for (var i = links.length - 1; i >= 0; --i) {
+      var link = links[i];
+      var linkLongname = link.match(/<a [^>]*>([^<]*)<\/a>/)[1];
+      var doclet = find({longname: linkLongname})[0];
+      if (!doclet) {
+        markup = markup.replace(link, linkLongname);
+      }
+    }
+  }
+  return markup;
+}
 
 var htmlsafe = helper.htmlsafe;
 
