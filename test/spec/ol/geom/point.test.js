@@ -142,6 +142,31 @@ describe('ol.geom.Point', function() {
 
   });
 
+  describe('#transform()', function() {
+
+    it('transforms a geometry given CRS identifiers', function() {
+      var point = new ol.geom.Point([-111, 45]).transform(
+          'EPSG:4326', 'EPSG:3857');
+
+      expect(point).to.be.a(ol.geom.Point);
+
+      var coords = point.getCoordinates();
+
+      expect(coords[0]).to.roughlyEqual(-12356463.47, 1e-2);
+      expect(coords[1]).to.roughlyEqual(5621521.48, 1e-2);
+    });
+
+    it('modifies the original', function() {
+      var point = new ol.geom.Point([-111, 45]);
+      point.transform('EPSG:4326', 'EPSG:3857');
+      var coords = point.getCoordinates();
+
+      expect(coords[0]).to.roughlyEqual(-12356463.47, 1e-2);
+      expect(coords[1]).to.roughlyEqual(5621521.48, 1e-2);
+    });
+
+  });
+
 });
 
 

@@ -4,6 +4,7 @@ goog.provide('ol.geom.GeometryType');
 goog.require('goog.asserts');
 goog.require('goog.functions');
 goog.require('ol.Observable');
+goog.require('ol.proj');
 
 
 /**
@@ -164,6 +165,24 @@ ol.geom.Geometry.prototype.getType = goog.abstractMethod;
  * @param {ol.TransformFunction} transformFn Transform.
  */
 ol.geom.Geometry.prototype.applyTransform = goog.abstractMethod;
+
+
+/**
+ * Transform a geometry from one coordinate reference system to another.
+ * Modifies the geometry in place.
+ *
+ * @param {ol.proj.ProjectionLike} source The current projection.  Can be a
+ *     string identifier or a {@link ol.proj.Projection} object.
+ * @param {ol.proj.ProjectionLike} destination The desired projection.  Can be a
+ *     string identifier or a {@link ol.proj.Projection} object.
+ * @return {ol.geom.Geometry} This geometry.  Note that original geometry is
+ *     modified in place.
+ * @todo api
+ */
+ol.geom.Geometry.prototype.transform = function(source, destination) {
+  this.applyTransform(ol.proj.getTransform(source, destination));
+  return this;
+};
 
 
 /**

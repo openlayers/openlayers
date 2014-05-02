@@ -230,6 +230,25 @@ describe('ol.geom.MultiPoint', function() {
 
   });
 
+  describe('#transform()', function() {
+
+    it('transforms a geometry given CRS identifiers', function() {
+      var multi = new ol.geom.MultiPoint([[-111, 45], [111, -45]]).transform(
+          'EPSG:4326', 'EPSG:3857');
+
+      expect(multi).to.be.a(ol.geom.MultiPoint);
+
+      var coords = multi.getCoordinates();
+
+      expect(coords[0][0]).to.roughlyEqual(-12356463.47, 1e-2);
+      expect(coords[0][1]).to.roughlyEqual(5621521.48, 1e-2);
+
+      expect(coords[1][0]).to.roughlyEqual(12356463.47, 1e-2);
+      expect(coords[1][1]).to.roughlyEqual(-5621521.48, 1e-2);
+    });
+
+  });
+
 });
 
 
