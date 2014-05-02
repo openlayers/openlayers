@@ -217,4 +217,4 @@ ol.geom.Circle.prototype.setRadius = function(radius) {
 /**
  * @inheritDoc
  */
-ol.geom.Circle.prototype.transform = goog.abstractMethod;
+ol.geom.Circle.prototype.applyTransform = goog.abstractMethod;

@@ -247,11 +247,11 @@ ol.geom.GeometryCollection.prototype.setGeometriesArray = function(geometries) {
 /**
  * @inheritDoc
  */
-ol.geom.GeometryCollection.prototype.transform = function(transformFn) {
+ol.geom.GeometryCollection.prototype.applyTransform = function(transformFn) {
   var geometries = this.geometries_;
   var i, ii;
   for (i = 0, ii = geometries.length; i < ii; ++i) {
-    geometries[i].transform(transformFn);
+    geometries[i].applyTransform(transformFn);
   }
   this.dispatchChangeEvent();
 };

@@ -187,7 +187,7 @@ ol.Geolocation.prototype.positionChange_ = function(position) {
   this.set(ol.GeolocationProperty.SPEED,
       goog.isNull(coords.speed) ? undefined : coords.speed);
   var geometry = ol.sphere.WGS84.circle(this.position_, coords.accuracy);
-  geometry.transform(this.transform_);
+  geometry.applyTransform(this.transform_);
   this.set(ol.GeolocationProperty.ACCURACY_GEOMETRY, geometry);
   this.dispatchChangeEvent();
 };

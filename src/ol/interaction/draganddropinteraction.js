@@ -118,7 +118,7 @@ ol.interaction.DragAndDrop.prototype.handleResult_ = function(file, result) {
         var feature = readFeatures[j];
         var geometry = feature.getGeometry();
         if (!goog.isNull(geometry)) {
-          geometry.transform(transform);
+          geometry.applyTransform(transform);
         }
         features.push(feature);
       }

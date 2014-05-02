@@ -125,7 +125,7 @@ ol.source.FormatVector.prototype.readFeatures = function(source) {
         var feature = features[i];
         var geometry = feature.getGeometry();
         if (!goog.isNull(geometry)) {
-          geometry.transform(transform);
+          geometry.applyTransform(transform);
         }
       }
     }

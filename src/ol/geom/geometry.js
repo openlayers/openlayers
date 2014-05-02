@@ -159,10 +159,11 @@ ol.geom.Geometry.prototype.getType = goog.abstractMethod;
 
 
 /**
+ * Apply a transform function to the geometry.  Modifies the geometry in place.
  * @function
  * @param {ol.TransformFunction} transformFn Transform.
  */
-ol.geom.Geometry.prototype.transform = goog.abstractMethod;
+ol.geom.Geometry.prototype.applyTransform = goog.abstractMethod;
 
 
 /**
