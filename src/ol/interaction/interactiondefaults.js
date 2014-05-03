@@ -19,9 +19,9 @@ goog.require('ol.interaction.PinchZoom');
  * setting the appropriate option to false in the constructor options,
  * but the order of the interactions is fixed.  If you want to specify a
  * different order for interactions, you will need to create your own
- * {@link ol.interaction} instances and insert them into an
- * {@link ol.Collection} in the order you want before creating your ol.Map
- * instance.
+ * {@link ol.interaction.Interaction} instances and insert them into a
+ * {@link ol.Collection} in the order you want before creating your
+ * {@link ol.Map} instance.
  * @param {olx.interaction.DefaultsOptions=} opt_options Defaults options.
  * @return {ol.Collection} A collection of interactions to be used with
  * the ol.Map constructor's interactions option.

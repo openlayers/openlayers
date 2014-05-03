@@ -156,8 +156,7 @@ olx.MapOptions.prototype.keyboardEventTarget;
 
 
 /**
- * Layers. Array or {@link ol.Collection} items are instances of
- * {@link ol.layer.Layer} or any of its {@link ol.layer} subclasses.
+ * Layers.
  * @type {Array.<ol.layer.Base>|ol.Collection|undefined}
  */
 olx.MapOptions.prototype.layers;
@@ -192,7 +191,7 @@ olx.MapOptions.prototype.target;
 
 
 /**
- * The map's view. Currently {@link ol.View2D} is available as view.
+ * The map's view.
  * @type {ol.IView|undefined}
  */
 olx.MapOptions.prototype.view;

@@ -662,13 +662,12 @@ ol.Map.prototype.getOverlays = function() {
 
 
 /**
- * Gets the collection of
- * {@link ol.interaction|ol.interaction.Interaction} instances
- * associated with this map.  Modifying this collection
- * changes the interactions associated with the map.
+ * Gets the collection of {@link ol.interaction.Interaction} instances
+ * associated with this map. Modifying this collection changes the interactions
+ * associated with the map.
  *
  * Interactions are used for e.g. pan, zoom and rotate.
- * @return {ol.Collection} Interactions.
+ * @return {ol.Collection} {@link ol.interaction.Interaction Interactions}.
  * @todo api
  */
 ol.Map.prototype.getInteractions = function() {

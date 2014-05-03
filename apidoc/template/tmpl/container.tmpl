@@ -43,6 +43,20 @@
     <?js } ?>
     </div>
     
+    <?js if (doc.kind == 'class') {
+      var subclasses = self.find(function() {
+        return this.augments && this.augments.indexOf(doc.longname) > -1;
+      })
+      if (subclasses.length) {
+    ?>
+        <h3 class="subsection-title">Subclasses</h3>
+        <ul><?js subclasses.forEach(function(s) { ?>
+          <li><?js= self.linkto(s.longname, s.longname) ?>
+            <?js= (s.interface ? '(Interface)' : '') ?>
+          </li>
+        <?js }); ?></ul>
+    <?js } } ?>
+
     <?js if (doc.augments && doc.augments.length) { ?>
         <h3 class="subsection-title">Extends</h3>
         
@@ -67,7 +81,7 @@
             <li><?js= self.linkto(r, r) ?></li>
         <?js }); ?></ul>
     <?js } ?>
-    
+        
     <?js
         var classes = self.find({kind: 'class', memberof: doc.longname}); 
         if (doc.kind !== 'globalobj' && classes && classes.length) { 
