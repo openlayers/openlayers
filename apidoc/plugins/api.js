@@ -36,7 +36,23 @@ function hasApiMembers(doclet) {
   return doclet.longname.split('#')[0] == this.longname;
 }
 
+function includeAugments(doclet) {
+  var augments = doclet.augments;
+  if (augments) {
+    var cls;
+    for (var i = augments.length - 1; i >= 0; --i) {
+      cls = classes[augments[i]];
+      if (cls) {
+        cls.hideConstructor = true;
+        includeAugments(cls);
+      }
+    }
+  }
+}
+
 var api = [];
+var augments = {};
+var classes = {};
 
 exports.handlers = {
 
@@ -52,14 +68,20 @@ exports.handlers = {
     if (/.*\.jsdoc$/.test(doclet.meta.filename) && doclet.kind == 'namespace') {
       doclet.namespace_ = true;
     }
+    if (doclet.kind == 'class') {
+      classes[doclet.longname] = doclet;
+    }
   },
 
   parseComplete: function(e) {
     var doclets = e.doclets;
     for (var i = doclets.length - 1; i >= 0; --i) {
       var doclet = doclets[i];
-      // Always document namespaces and items with stability annotation
       if (doclet.stability || doclet.namespace_) {
+        if (doclet.kind == 'class') {
+          includeAugments(doclet);
+        }
+        // Always document namespaces and items with stability annotation
         continue;
       }
       if (doclet.kind == 'class' && api.some(hasApiMembers, doclet)) {
@@ -67,7 +89,8 @@ exports.handlers = {
         // This is used in ../template/tmpl/container.tmpl to hide the
         // constructor from the docs.
         doclet.hideConstructor = true;
-      } else {
+        includeAugments(doclet);
+      } else if (!doclet.hideConstructor) {
         // Remove all other undocumented symbols
         doclet.undocumented = true;
       }
