@@ -14,14 +14,6 @@ goog.require('ol.source.Source');
  * @extends {ol.layer.Base}
  * @fires ol.render.Event
  * @param {olx.layer.LayerOptions} options Layer options.
- * @todo observable brightness {number} the brightness of the layer
- * @todo observable contrast {number} the contrast of the layer
- * @todo observable hue {number} the hue of the layer
- * @todo observable opacity {number} the opacity of the layer
- * @todo observable saturation {number} the saturation of the layer
- * @todo observable visible {boolean} the visiblity of the layer
- * @todo observable maxResolution {number} the maximum resolution of the layer
- * @todo observable minResolution {number} the minimum resolution of the layer
  * @todo api
  */
 ol.layer.Layer = function(options) {

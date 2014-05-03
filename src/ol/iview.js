@@ -8,6 +8,7 @@ goog.require('ol.IView3D');
 /**
  * Interface for views.
  * @interface
+ * @extends {goog.events.Listenable}
  */
 ol.IView = function() {
 };

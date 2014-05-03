@@ -69,7 +69,6 @@ ol.CollectionProperty = {
  * @extends {ol.Object}
  * @fires ol.CollectionEvent
  * @param {Array=} opt_array Array.
- * @todo observable length {number} readonly the length of the array
  * @todo api
  */
 ol.Collection = function(opt_array) {
@@ -153,7 +152,8 @@ ol.Collection.prototype.getAt = function(index) {
 
 /**
  * Get the length of this collection.
- * @return {number} Length.
+ * @return {number} The length of the array.
+ * @todo observable
  * @todo api
  */
 ol.Collection.prototype.getLength = function() {

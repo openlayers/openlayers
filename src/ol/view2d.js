@@ -86,10 +86,6 @@ ol.View2DProperty = {
  * @implements {ol.IView3D}
  * @extends {ol.View}
  * @param {olx.View2DOptions=} opt_options View2D options.
- * @todo observable center {ol.Coordinate} the center of the view
- * @todo observable projection {ol.proj.Projection} the projection of the view
- * @todo observable resolution {number} the resolution of the view
- * @todo observable rotation {number} the rotation of the view
  * @todo api
  */
 ol.View2D = function(opt_options) {
@@ -221,6 +217,7 @@ ol.View2D.prototype.constrainRotation = function(rotation, opt_delta) {
 
 /**
  * @inheritDoc
+ * @todo observable
  * @todo api
  */
 ol.View2D.prototype.getCenter = function() {
@@ -254,6 +251,7 @@ ol.View2D.prototype.calculateExtent = function(size) {
 
 /**
  * @inheritDoc
+ * @todo observable
  * @todo api
  */
 ol.View2D.prototype.getProjection = function() {
@@ -268,6 +266,7 @@ goog.exportProperty(
 
 /**
  * @inheritDoc
+ * @todo observable
  * @todo api
  */
 ol.View2D.prototype.getResolution = function() {
@@ -319,6 +318,7 @@ ol.View2D.prototype.getResolutionForValueFunction = function(opt_power) {
 
 /**
  * @inheritDoc
+ * @todo observable
  * @todo api
  */
 ol.View2D.prototype.getRotation = function() {
@@ -556,7 +556,8 @@ ol.View2D.prototype.rotate = function(rotation, opt_anchor) {
 
 /**
  * Set the center of the current view.
- * @param {ol.Coordinate|undefined} center Center.
+ * @param {ol.Coordinate|undefined} center The center of the view.
+ * @todo observable
  * @todo api
  */
 ol.View2D.prototype.setCenter = function(center) {
@@ -571,7 +572,8 @@ goog.exportProperty(
 /**
  * Set the projection of this view.
  * Warning! This code is not yet implemented. Function should not be used.
- * @param {ol.proj.Projection|undefined} projection Projection.
+ * @param {ol.proj.Projection|undefined} projection The projection of the view.
+ * @todo observable
  * @todo api
  */
 ol.View2D.prototype.setProjection = function(projection) {
@@ -585,7 +587,8 @@ goog.exportProperty(
 
 /**
  * Set the resolution for this view.
- * @param {number|undefined} resolution Resolution.
+ * @param {number|undefined} resolution The resolution of the view.
+ * @todo observable
  * @todo api
  */
 ol.View2D.prototype.setResolution = function(resolution) {
@@ -599,7 +602,8 @@ goog.exportProperty(
 
 /**
  * Set the rotation for this view.
- * @param {number|undefined} rotation Rotation.
+ * @param {number|undefined} rotation The rotation of the view.
+ * @todo observable
  * @todo api
  */
 ol.View2D.prototype.setRotation = function(rotation) {

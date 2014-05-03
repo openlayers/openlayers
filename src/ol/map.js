@@ -156,15 +156,9 @@ ol.MapProperty = {
  * @constructor
  * @extends {ol.Object}
  * @param {olx.MapOptions} options Map options.
- * @todo observable layergroup {ol.layer.Group} a layer group containing the
  * @fires ol.MapBrowserEvent
  * @fires ol.MapEvent
  * @fires ol.render.Event
- *       layers in this map.
- * @todo observable size {ol.Size} the size in pixels of the map in the DOM
- * @todo observable target {string|Element} the Element or id of the Element
- *       that the map is rendered in.
- * @todo observable view {ol.IView} the view that controls this map
  * @todo api
  */
 ol.Map = function(options) {
@@ -614,7 +608,9 @@ ol.Map.prototype.getEventPixel = function(event) {
  * Get the target in which this map is rendered.
  * Note that this returns what is entered as an option or in setTarget:
  * if that was an element, it returns an element; if a string, it returns that.
- * @return {Element|string|undefined} Target.
+ * @return {Element|string|undefined} The Element or id of the Element that the
+ *     map is rendered in.
+ * @todo observable
  * @todo api
  */
 ol.Map.prototype.getTarget = function() {
@@ -677,7 +673,8 @@ ol.Map.prototype.getInteractions = function() {
 
 /**
  * Get the layergroup associated with this map.
- * @return {ol.layer.Group} LayerGroup.
+ * @return {ol.layer.Group} A layer group containing the layers in this map.
+ * @todo observable
  * @todo api
  */
 ol.Map.prototype.getLayerGroup = function() {
@@ -723,7 +720,8 @@ ol.Map.prototype.getPixelFromCoordinate = function(coordinate) {
 
 /**
  * Get the size of this map.
- * @return {ol.Size|undefined} Size.
+ * @return {ol.Size|undefined} The size in pixels of the map in the DOM.
+ * @todo observable
  * @todo api
  */
 ol.Map.prototype.getSize = function() {
@@ -738,11 +736,12 @@ goog.exportProperty(
 /**
  * Get the view associated with this map. This can be a 2D or 3D view. A 2D
  * view manages properties such as center and resolution.
- * @return {ol.View|undefined} View.
+ * @return {ol.IView|undefined} The view that controls this map.
+ * @todo observable
  * @todo api
  */
 ol.Map.prototype.getView = function() {
-  return /** @type {ol.View} */ (this.get(ol.MapProperty.VIEW));
+  return /** @type {ol.IView} */ (this.get(ol.MapProperty.VIEW));
 };
 goog.exportProperty(
     ol.Map.prototype,
@@ -1255,7 +1254,9 @@ ol.Map.prototype.renderFrame_ = function(time) {
 
 /**
  * Sets the layergroup of this map.
- * @param {ol.layer.Group} layerGroup Layergroup.
+ * @param {ol.layer.Group} layerGroup A layer group containing the layers in
+ *     this map.
+ * @todo observable
  * @todo api
  */
 ol.Map.prototype.setLayerGroup = function(layerGroup) {
@@ -1269,7 +1270,8 @@ goog.exportProperty(
 
 /**
  * Set the size of this map.
- * @param {ol.Size|undefined} size Size.
+ * @param {ol.Size|undefined} size The size in pixels of the map in the DOM.
+ * @todo observable
  * @todo api
  */
 ol.Map.prototype.setSize = function(size) {
@@ -1283,7 +1285,9 @@ goog.exportProperty(
 
 /**
  * Set the target element to render this map into.
- * @param {Element|string|undefined} target Target.
+ * @param {Element|string|undefined} target The Element or id of the Element
+ *     that the map is rendered in.
+ * @todo observable
  * @todo api
  */
 ol.Map.prototype.setTarget = function(target) {
@@ -1296,8 +1300,9 @@ goog.exportProperty(
 
 
 /**
- * Set the view for this map. Currently {@link ol.View2D} is implememnted.
- * @param {ol.IView} view View.
+ * Set the view for this map.
+ * @param {ol.IView} view The view that controls this map.
+ * @todo observable
  * @todo api
  */
 ol.Map.prototype.setView = function(view) {

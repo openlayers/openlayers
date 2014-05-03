@@ -50,8 +50,6 @@ ol.control.ScaleLineUnits = {
  * @constructor
  * @extends {ol.control.Control}
  * @param {olx.control.ScaleLineOptions=} opt_options Scale line options.
- * @todo observable units {ol.control.ScaleLineUnits} the units to use in the
- *       scale line
  * @todo api
  */
 ol.control.ScaleLine = function(opt_options) {
@@ -137,7 +135,9 @@ ol.control.ScaleLine.LEADING_DIGITS = [1, 2, 5];
 
 
 /**
- * @return {ol.control.ScaleLineUnits|undefined} units.
+ * @return {ol.control.ScaleLineUnits|undefined} The units to use in the scale
+ *     line.
+ * @todo observable
  * @todo api
  */
 ol.control.ScaleLine.prototype.getUnits = function() {
@@ -173,7 +173,8 @@ ol.control.ScaleLine.prototype.handleUnitsChanged_ = function() {
 
 
 /**
- * @param {ol.control.ScaleLineUnits} units Units.
+ * @param {ol.control.ScaleLineUnits} units The units to use in the scale line.
+ * @todo observable
  * @todo api
  */
 ol.control.ScaleLine.prototype.setUnits = function(units) {

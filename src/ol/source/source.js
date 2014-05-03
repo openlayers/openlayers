@@ -9,7 +9,10 @@ goog.require('ol.proj');
 
 
 /**
+ * State of the source. `0` means 'loading', `1` means 'ready', and `2` means
+ * 'error'.
  * @enum {number}
+ * @todo api
  */
 ol.source.State = {
   LOADING: 0,
