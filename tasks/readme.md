@@ -66,9 +66,9 @@ To generate a build named `ol.min.js` with the `build.json`, you would run this:
 Called internally to generate a `build/exports.js` file optionally with a limited set of exports.
 
 
-## `generate-symbols.js`
+## `generate-info.js`
 
-Called internally to parse the library for API annotations and write out a `build/symbols.json` file.
+Called internally to parse the library for annotations and write out a `build/info.json` file.
 
 
 ## `parse-examples.js`
