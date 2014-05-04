@@ -41,12 +41,6 @@ exports.handlers = {
         if (cls.observables.indexOf(observable) == -1) {
           cls.observables.push(observable);
         }
-        if (!cls.fires) {
-          cls.fires = [];
-        }
-        if (cls.fires.indexOf('ol.ObjectEvent') === -1) {
-          cls.fires.push('ol.ObjectEvent');
-        }
       }
     }
   }

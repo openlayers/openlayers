@@ -1,6 +1,36 @@
 <?js
     var self = this;
     docs.forEach(function(doc, i) {
+
+      var observables, fires;
+      if (doc.kind == 'class') {
+        observables = doc.observables || [];
+        fires = doc.fires || [];
+        var parents = doc.augments;
+        if (parents) {
+          for (var i = parents.length - 1; i >= 0; --i) {
+            var parent = parents[i];
+            while (parent) {
+              parent = self.find({longname: parent})[0];
+              if (!parent) { break; }
+              if (parent.observables) {
+                observables = observables.concat(parent.observables);
+              }
+              if (parent.fires) {
+                fires = fires.concat(parent.fires);
+              }
+              parent = parent.augments;
+            }
+          }
+        }
+        observables.sort();
+        observables.forEach(function(o) {
+          fires.push('ol.ObjectEvent#event:change:' + o.name.toLowerCase());
+        });
+        fires.sort(function(a, b) {
+          return a.split('event:')[1] < b.split('event:')[1] ? -1 : 1;
+        });
+      }
 ?>
 
 <?js if (doc.kind === 'mainpage' || (doc.kind === 'package')) { ?>
@@ -41,6 +71,7 @@
             <?js= self.partial('examples.tmpl', doc.examples) ?>
         <?js } ?>
     <?js } ?>
+
     </div>
     
     <?js if (doc.kind == 'class') {
@@ -107,24 +138,6 @@
     <?js } ?>
     
     <?js
-        var observables;
-        if (doc.kind == 'class') {
-          observables = doc.observables || [];
-          var parents = doc.augments;
-          if (parents) {
-            for (var i = parents.length - 1; i >= 0; --i) {
-              var parent = parents[i];
-              while (parent) {
-                parent = self.find({longname: parent})[0];
-                if (!parent) { break; }
-                if (parent.observables) {
-                  observables = observables.concat(parent.observables);
-                }
-                parent = parent.augments;
-              }
-            }
-          }
-        }
         if (observables && observables.length && observables.forEach) {
     ?>
         <h3 class="subsection-title">Observable Properties</h3>
@@ -132,6 +145,13 @@
 
     <?js } ?>
 
+    <?js if (fires && fires.length) { ?>
+    <h3 class="subsection-title">Fires</h3>
+    <ul><?js fires.forEach(function(f) { ?>
+        <?js= self.partial('fires.tmpl', self.linkto(f, f.split('event:')[1]) ) ?>
+    <?js }); ?></ul>
+    <?js } ?>
+    
     <?js
         var events = doc.events;
         if (events && events.length && events.forEach) {
