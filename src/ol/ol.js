@@ -4,7 +4,7 @@ goog.provide('ol');
 
 
 /**
- * @define {boolean} Assume touch.
+ * @define {boolean} Assume touch.  Default is `false`.
  */
 ol.ASSUME_TOUCH = false;
 
@@ -64,19 +64,20 @@ ol.DRAG_BOX_HYSTERESIS_PIXELS = 8;
 
 
 /**
- * @define {boolean} Whether to enable canvas.
+ * @define {boolean} Whether to enable canvas.  Default is `true`.
  */
 ol.ENABLE_CANVAS = true;
 
 
 /**
- * @define {boolean} Whether to enable DOM.
+ * @define {boolean} Whether to enable DOM.  Default is `true`.
  */
 ol.ENABLE_DOM = true;
 
 
 /**
- * @define {boolean} Whether to enable rendering of image layers.
+ * @define {boolean} Whether to enable rendering of image layers.  Default is
+ *     `true`.
  */
 ol.ENABLE_IMAGE = true;
 
@@ -84,37 +85,39 @@ ol.ENABLE_IMAGE = true;
 /**
  * @define {boolean} Enable named colors.
  * Enabling named colors adds about 3KB uncompressed / 1.5KB compressed to the
- * final build size.
+ * final build size.  Default is `true`.
  */
 ol.ENABLE_NAMED_COLORS = true;
 
 
 /**
- * @define {boolean} Enable Proj4js.
+ * @define {boolean} Enable Proj4js.  Default is `true`.
  */
 ol.ENABLE_PROJ4JS = true;
 
 
 /**
- * @define {boolean} Whether to enable rendering of tile layers.
+ * @define {boolean} Whether to enable rendering of tile layers.  Default is
+ *     `true`.
  */
 ol.ENABLE_TILE = true;
 
 
 /**
- * @define {boolean} Whether to enable rendering of vector layers.
+ * @define {boolean} Whether to enable rendering of vector layers.  Default is
+ *     `true`.
  */
 ol.ENABLE_VECTOR = true;
 
 
 /**
- * @define {boolean} Whether to enable WebGL.
+ * @define {boolean} Whether to enable WebGL.  Default is `true`.
  */
 ol.ENABLE_WEBGL = true;
 
 
 /**
- * @define {boolean} Whether to support legacy IE (7-8).
+ * @define {boolean} Whether to support legacy IE (7-8).  Default is `false`.
  */
 ol.LEGACY_IE_SUPPORT = false;
 

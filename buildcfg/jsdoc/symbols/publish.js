@@ -1,5 +1,6 @@
 /**
- * @fileoverview Generates JSON output based on doclets with the "api" tag.
+ * @fileoverview Generates JSON output based on exportable symbols (those with
+ * an api tag) and boolean defines (with a define tag and a default value).
  */
 var assert = require('assert');
 var fs = require('fs');
@@ -14,16 +15,18 @@ var path = require('path');
 exports.publish = function(data, opts) {
   var cwd = process.cwd();
 
-  // get all doclets with the "api" property, but no enums, typedefs and events.
+  // get all doclets with the "api" property or define (excluding enums,
+  // typedefs and events)
   var docs = data(
-      {api: {isString: true}},
+      [{define: {isObject: true}}, {api: {isString: true}}],
       {isEnum: {'!is': true}},
       {kind: {'!is': 'typedef'}},
-      {kind: {'!is': 'event'}}
-      ).get();
+      {kind: {'!is': 'event'}}).get();
 
   // get symbols data, filter out those that are members of private classes
-  var symbols = docs.filter(function(doc) {
+  var symbols = [];
+  var defines = [];
+  docs.filter(function(doc) {
     var include = true;
     var constructor = doc.memberof;
     if (constructor && constructor.substr(-1) === '_') {
@@ -32,14 +35,23 @@ exports.publish = function(data, opts) {
       include = false;
     }
     return include;
-  }).map(function(doc) {
-    return {
-      name: doc.longname,
-      extends: doc.augments,
-      path: path.join(doc.meta.path, doc.meta.filename)
-    };
+  }).forEach(function(doc) {
+    if (doc.define) {
+      defines.push({
+        name: doc.longname,
+        path: path.join(doc.meta.path, doc.meta.filename),
+        default: doc.define.default
+      });
+    } else {
+      symbols.push({
+        name: doc.longname,
+        extends: doc.augments,
+        path: path.join(doc.meta.path, doc.meta.filename)
+      });
+    }
   });
 
-  process.stdout.write(JSON.stringify({symbols: symbols}, null, 2));
+  process.stdout.write(
+      JSON.stringify({symbols: symbols, defines: defines}, null, 2));
 
 };

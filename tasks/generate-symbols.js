@@ -7,31 +7,40 @@ var fse = require('fs-extra');
 var walk = require('walk').walk;
 
 var sourceDir = path.join(__dirname, '..', 'src', 'ol');
-var destPath = path.join(__dirname, '..', 'build', 'symbols.json');
+var infoPath = path.join(__dirname, '..', 'build', 'symbols.json');
 var jsdoc = path.join(__dirname, '..', 'node_modules', '.bin', 'jsdoc');
 var jsdocConfig = path.join(
     __dirname, '..', 'buildcfg', 'jsdoc', 'symbols', 'conf.json');
 
 
 /**
- * Read symbols from dest file.
- * @param {function(Error, Array, Date)} callback Callback called with any
- *     error, the symbols array, and the mtime of the symbols file.
+ * Create a new metadata object.
+ * @return {Object} New metadata.
  */
-function readSymbols(callback) {
-  fs.stat(destPath, function(err, stats) {
+function createInfo() {
+  return {symbols: [], defines: []};
+}
+
+
+/**
+ * Read symbols & defines metadata from info file.
+ * @param {function(Error, Object, Date)} callback Callback called with any
+ *     error, the metadata, and the mtime of the info file.
+ */
+function readInfo(callback) {
+  fs.stat(infoPath, function(err, stats) {
     if (err) {
       if (err.code === 'ENOENT') {
-        callback(null, [], new Date(0));
+        callback(null, createInfo(), new Date(0));
       } else {
         callback(err);
       }
     } else {
-      fs.readFile(destPath, function(err, data) {
+      fs.readFile(infoPath, function(err, data) {
         if (err) {
           callback(err);
         } else {
-          callback(null, JSON.parse(String(data)).symbols, stats.mtime);
+          callback(null, JSON.parse(String(data)), stats.mtime);
         }
       });
     }
@@ -50,13 +59,13 @@ function makeUnique(array) {
 
 /**
  * Generate a list of .js paths in the source directory that are newer than
- * the symbols file.
- * @param {Array} symbols Array of symbol metadata.
- * @param {Date} date Modification time of symbols file.
- * @param {function(Error, Array, Array.<string>)} callback Callback called with
- *     any error, the symbols array, and the array of newer source paths.
+ * the info file.
+ * @param {Object} info Symbol and defines metadata.
+ * @param {Date} date Modification time of info file.
+ * @param {function(Error, Object, Array.<string>)} callback Called with any
+ *     error, the info object, and the array of newer source paths.
  */
-function getNewer(symbols, date, callback) {
+function getNewer(info, date, callback) {
   var allPaths = [];
   var newerPaths = [];
 
@@ -77,7 +86,7 @@ function getNewer(symbols, date, callback) {
   walker.on('end', function() {
     // prune symbols if file no longer exists or has been modified
     var lookup = {};
-    symbols.forEach(function(symbol) {
+    info.symbols.forEach(function(symbol) {
       lookup[symbol.name] = symbol;
     });
 
@@ -100,7 +109,7 @@ function getNewer(symbols, date, callback) {
 
     var dirtyPaths = [];
 
-    symbols = symbols.filter(function(symbol) {
+    info.symbols = info.symbols.filter(function(symbol) {
       var dirty = allPaths.indexOf(symbol.path) < 0;
       if (!dirty) {
         // confirm that symbol and all parent paths are not newer
@@ -116,21 +125,30 @@ function getNewer(symbols, date, callback) {
       return !dirty;
     });
 
-    callback(null, symbols, makeUnique(newerPaths.concat(dirtyPaths)));
+    info.defines = info.defines.filter(function(define) {
+      var dirty = allPaths.indexOf(define.path) < 0 ||
+          newerPaths.indexOf(define.path) >= 0;
+      if (dirty) {
+        dirtyPaths.push(define.path);
+      }
+      return !dirty;
+    });
+
+    callback(null, info, makeUnique(newerPaths.concat(dirtyPaths)));
   });
 }
 
 
 /**
  * Spawn JSDoc.
- * @param {Array} symbols Array of symbol metadata.
+ * @param {Object} info Symbol and defines metadata.
  * @param {Array.<string>} newerSources Paths to newer source files.
  * @param {function(Error, Array, string)} callback Callback called with any
- *     error, existing symbols, and the JSDoc output.
+ *     error, existing metadata, and the JSDoc output (new metadata).
  */
-function spawnJSDoc(symbols, newerSources, callback) {
+function spawnJSDoc(info, newerSources, callback) {
   if (newerSources.length === 0) {
-    callback(null, symbols, JSON.stringify({symbols: []}));
+    callback(null, info, JSON.stringify(createInfo()));
     return;
   }
 
@@ -150,8 +168,45 @@ function spawnJSDoc(symbols, newerSources, callback) {
     if (code) {
       callback(new Error(errors || 'JSDoc failed with no output'));
     } else {
-      callback(null, symbols, output);
+      callback(null, info, output);
     }
+  });
+}
+
+
+/**
+ * Parse the JSDoc output.
+ * @param {Object} info Existing metadata.
+ * @param {string} output JSDoc output
+ * @param {function(Error, Object, Object)} callback Called with any error,
+ *     existing metadata, and new metadata.
+ */
+function parseOutput(info, output, callback) {
+  if (!output) {
+    callback(new Error('Expected JSON output'));
+    return;
+  }
+
+  var newInfo;
+  try {
+    newInfo = JSON.parse(String(output));
+  } catch (err) {
+    callback(new Error('Failed to parse output as JSON: ' + output));
+    return;
+  }
+
+  if (!Array.isArray(newInfo.symbols)) {
+    callback(new Error('Expected symbols array: ' + output));
+    return;
+  }
+
+  if (!Array.isArray(newInfo.defines)) {
+    callback(new Error('Expected defines array: ' + output));
+    return;
+  }
+
+  process.nextTick(function() {
+    callback(null, info, newInfo);
   });
 }
 
@@ -182,85 +237,67 @@ var getProvides = async.memoize(function(srcPath, callback) {
 
 
 /**
- * Add provides to a symbol.
- * @param {Object} symbol Symbol object.
- * @param {function(Error, Object)} callback Called with the augmented symbol or
- *     any error.
+ * Add provides data to new symbols.
+ * @param {Object} info Existing symbols and defines metadata.
+ * @param {Object} newInfo New metadata.
+ * @param {function(Error, Object)} callback Updated metadata.
  */
-function addProvides(symbol, callback) {
-  getProvides(symbol.path, function(err, provides) {
-    if (err) {
-      callback(err);
-      return;
-    }
-    symbol.provides = provides;
-    callback(null, symbol);
+function addSymbolProvides(info, newInfo, callback) {
+
+  function addProvides(symbol, callback) {
+    getProvides(symbol.path, function(err, provides) {
+      if (err) {
+        callback(err);
+        return;
+      }
+      symbol.provides = provides;
+      callback(null, symbol);
+    });
+  }
+
+  async.map(newInfo.symbols, addProvides, function(err, newSymbols) {
+    newInfo.symbols = newSymbols;
+    callback(err, info, newInfo);
   });
 }
 
 
 /**
- * Parse JSDoc output and add provides data to each symbol.
- * @param {Array} symbols Existing symbols.
- * @param {string} output Output from JSDoc.
- * @param {function(Error, Array)} callback Concatenated symbols.
- */
-function addAllProvides(symbols, output, callback) {
-  if (!output) {
-    callback(new Error('Expected JSON output'));
-    return;
-  }
-
-  var data;
-  try {
-    data = JSON.parse(String(output));
-  } catch (err) {
-    callback(new Error('Failed to parse output as JSON: ' + output));
-    return;
-  }
-
-  if (!data || !Array.isArray(data.symbols)) {
-    callback(new Error('Expected symbols array: ' + output));
-    return;
-  }
-
-  async.map(data.symbols, addProvides, function(err, newSymbols) {
-    callback(err, symbols, newSymbols);
-  });
-}
-
-
-/**
- * Write symbol metadata to the symbols file.
- * @param {Array} symbols Existing symbols.
- * @param {Array} newSymbols New symbols.
+ * Write symbol and define metadata to the info file.
+ * @param {Object} info Existing metadata.
+ * @param {Object} newInfo New meatadat.
  * @param {function(Error)} callback Callback.
  */
-function writeSymbols(symbols, newSymbols, callback) {
+function writeInfo(info, newInfo, callback) {
 
-  symbols = symbols.concat(newSymbols).sort(function(a, b) {
+  info.symbols = info.symbols.concat(newInfo.symbols).sort(function(a, b) {
     return a.name < b.name ? -1 : 1;
   });
 
-  var str = JSON.stringify({symbols: symbols}, null, '  ');
-  fse.outputFile(destPath, str, callback);
+  info.defines = info.defines.concat(newInfo.defines).sort(function(a, b) {
+    return a.name < b.name ? -1 : 1;
+  });
+
+  var str = JSON.stringify(info, null, '  ');
+  fse.outputFile(infoPath, str, callback);
 }
 
 
 /**
- * Determine which source files have been changed, run JSDoc against those,
- * write out exported symbols, and clean up the build dir.
+ * Determine which source files have been changed, run JSDoc against those, and
+ * write out updated info.
  *
- * @param {function(Error)} callback Called when the symbols file has been
- *     written (or if an error occurs).
+ * @param {function(Error)} callback Called when the info file has been written
+ *     (or an error occurs).
  */
 function main(callback) {
   async.waterfall([
-    readSymbols,
+    readInfo,
     getNewer,
     spawnJSDoc,
-    addAllProvides,
-    writeSymbols
+    parseOutput,
+    addSymbolProvides,
+    writeInfo
   ], callback);
 }
 
