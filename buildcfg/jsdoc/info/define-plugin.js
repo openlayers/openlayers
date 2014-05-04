@@ -26,6 +26,7 @@ exports.defineTags = function(dictionary) {
           doclet.define = {
             default: match[1] === 'true'
           };
+          doclet.description = tag.value.description;
         }
       }
     }

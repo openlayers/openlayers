@@ -39,12 +39,14 @@ exports.publish = function(data, opts) {
     if (doc.define) {
       defines.push({
         name: doc.longname,
+        description: doc.description,
         path: path.join(doc.meta.path, doc.meta.filename),
         default: doc.define.default
       });
     } else {
       symbols.push({
         name: doc.longname,
+        description: doc.description,
         extends: doc.augments,
         path: path.join(doc.meta.path, doc.meta.filename)
       });
