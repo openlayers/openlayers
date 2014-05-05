@@ -1,3 +1,9 @@
+.name {
+  padding-top: 50px;
+  margin-top: -50px;
+  display: inline-block; /* required for webkit browsers */
+}
+
 a:visited {
   color: #08c;
 }
