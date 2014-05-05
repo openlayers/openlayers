@@ -1,4 +1,16 @@
-<?js var data = obj; ?>
+<?js
+    var data = obj;
+    var self = this;
+    var parts = data.split(/#?event:/);
+    var link = self.linkto(parts[0], parts[0]);
+?>
 <li>
-    <?js= data ?>
+    <code><?js= parts[1] ?></code>
+    <?js if (link !== parts[0]) { ?>(<?js= self.linkto(parts[0], parts[0]) ?>)<?js } ?>
+    <?js var eventCls = self.find({longname: data})[0];
+    if (eventCls && eventCls.description) { ?>
+      <?js= (eventCls.description) ?>
+    <?js } else { ?>
+      <p>
+    <?js } ?>
 </li>

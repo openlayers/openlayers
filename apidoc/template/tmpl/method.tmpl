@@ -40,10 +40,10 @@ var self = this;
     
     <?js= this.partial('details.tmpl', data) ?>
     
-    <?js if (data.fires && fires.length) { ?>
+    <?js if (data.kind !== 'class' && data.fires && fires.length) { ?>
     <h5>Fires:</h5>
     <ul><?js fires.forEach(function(f) { ?>
-        <?js= self.partial('fires.tmpl', self.linkto(f.replace('event:', '')) ) ?>
+        <?js= self.partial('fires.tmpl', f) ?>
     <?js }); ?></ul>
     <?js } ?>
     

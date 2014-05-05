@@ -25,6 +25,7 @@
         "apidoc/plugins/typedefs",
         "apidoc/plugins/api",
         "apidoc/plugins/todo",
+        "apidoc/plugins/events",
         "apidoc/plugins/observable"
     ],
     "markdown": {
