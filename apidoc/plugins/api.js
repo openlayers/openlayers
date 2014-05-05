@@ -44,6 +44,7 @@ function includeAugments(doclet) {
       cls = classes[augments[i]];
       if (cls) {
         cls.hideConstructor = true;
+        delete cls.undocumented;
         includeAugments(cls);
       }
     }
