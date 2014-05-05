@@ -72,3 +72,6 @@ ol.Map = function(options) {
 };
 ```
 
+### Observable Properties
+
+Observable properties are documented using the `@observable` annotation. This annotation is added to the getter of an observable property. If an observable property is also settable, the setter is annotated with `@observable` as well.
