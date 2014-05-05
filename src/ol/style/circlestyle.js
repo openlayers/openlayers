@@ -70,6 +70,7 @@ ol.style.Circle = function(opt_options) {
 
   goog.base(this, {
     opacity: 1,
+    origin: [0, 0],
     rotateWithView: false,
     rotation: 0,
     scale: 1,
