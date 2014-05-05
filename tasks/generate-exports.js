@@ -5,7 +5,7 @@ var async = require('async');
 var fse = require('fs-extra');
 var nomnom = require('nomnom');
 
-var generateSymbols = require('./generate-symbols');
+var generateInfo = require('./generate-info');
 
 var build = path.join(__dirname, '..', 'build');
 
@@ -49,18 +49,18 @@ function getPatterns(configPath, callback) {
 
 
 /**
- * Read the symbols file.
+ * Read the symbols from info file.
  * @param {Array.<string>} patterns List of patterns to pass along.
  * @param {funciton(Error, Array.<string>, Array.<Object>)} callback Called
  *     with the patterns and symbols (or any error).
  */
 function getSymbols(patterns, callback) {
-  generateSymbols(function(err) {
+  generateInfo(function(err) {
     if (err) {
-      callback(new Error('Trouble generating symbols: ' + err.message));
+      callback(new Error('Trouble generating info: ' + err.message));
       return;
     }
-    var symbols = require('../build/symbols.json').symbols;
+    var symbols = require('../build/info.json').symbols;
     callback(null, patterns, symbols);
   });
 }
