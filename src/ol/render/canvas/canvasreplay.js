@@ -286,11 +286,13 @@ ol.render.canvas.Replay.prototype.replay_ = function(
         var anchorY = /** @type {number} */ (instruction[5]) * pixelRatio;
         var height = /** @type {number} */ (instruction[6]) * pixelRatio;
         var opacity = /** @type {number} */ (instruction[7]);
-        var rotateWithView = /** @type {boolean} */ (instruction[8]);
-        var rotation = /** @type {number} */ (instruction[9]);
-        var scale = /** @type {number} */ (instruction[10]);
-        var snapToPixel = /** @type {boolean|undefined} */ (instruction[11]);
-        var width = /** @type {number} */ (instruction[12]) * pixelRatio;
+        var originX = /** @type {number} */ (instruction[8]);
+        var originY = /** @type {number} */ (instruction[9]);
+        var rotateWithView = /** @type {boolean} */ (instruction[10]);
+        var rotation = /** @type {number} */ (instruction[11]);
+        var scale = /** @type {number} */ (instruction[12]);
+        var snapToPixel = /** @type {boolean|undefined} */ (instruction[13]);
+        var width = /** @type {number} */ (instruction[14]) * pixelRatio;
         if (rotateWithView) {
           rotation += viewRotation;
         }
@@ -320,7 +322,8 @@ ol.render.canvas.Replay.prototype.replay_ = function(
             context.globalAlpha = alpha * opacity;
           }
 
-          context.drawImage(image, x, y, width, height);
+          context.drawImage(image, originX, originY, width, height,
+              x, y, width, height);
 
           if (opacity != 1) {
             context.globalAlpha = alpha;
@@ -699,6 +702,18 @@ ol.render.canvas.ImageReplay = function(tolerance, maxExtent, resolution) {
 
   /**
    * @private
+   * @type {number|undefined}
+   */
+  this.originX_ = undefined;
+
+  /**
+   * @private
+   * @type {number|undefined}
+   */
+  this.originY_ = undefined;
+
+  /**
+   * @private
    * @type {boolean|undefined}
    */
   this.rotateWithView_ = undefined;
@@ -758,6 +773,8 @@ ol.render.canvas.ImageReplay.prototype.drawPointGeometry =
   goog.asserts.assert(goog.isDef(this.anchorY_));
   goog.asserts.assert(goog.isDef(this.height_));
   goog.asserts.assert(goog.isDef(this.opacity_));
+  goog.asserts.assert(goog.isDef(this.originX_));
+  goog.asserts.assert(goog.isDef(this.originY_));
   goog.asserts.assert(goog.isDef(this.rotateWithView_));
   goog.asserts.assert(goog.isDef(this.rotation_));
   goog.asserts.assert(goog.isDef(this.scale_));
@@ -773,16 +790,16 @@ ol.render.canvas.ImageReplay.prototype.drawPointGeometry =
     ol.render.canvas.Instruction.DRAW_IMAGE, myBegin, myEnd, this.image_,
     // Remaining arguments to DRAW_IMAGE are in alphabetical order
     this.anchorX_, this.anchorY_, this.height_, this.opacity_,
-    this.rotateWithView_, this.rotation_, this.scale_, this.snapToPixel_,
-    this.width_
+    this.originX_, this.originY_, this.rotateWithView_, this.rotation_,
+    this.scale_, this.snapToPixel_, this.width_
   ]);
   this.hitDetectionInstructions.push([
     ol.render.canvas.Instruction.DRAW_IMAGE, myBegin, myEnd,
     this.hitDetectionImage_,
     // Remaining arguments to DRAW_IMAGE are in alphabetical order
     this.anchorX_, this.anchorY_, this.height_, this.opacity_,
-    this.rotateWithView_, this.rotation_, this.scale_, this.snapToPixel_,
-    this.width_
+    this.originX_, this.originY_, this.rotateWithView_, this.rotation_,
+    this.scale_, this.snapToPixel_, this.width_
   ]);
   this.endGeometry(pointGeometry, data);
 };
@@ -800,6 +817,8 @@ ol.render.canvas.ImageReplay.prototype.drawMultiPointGeometry =
   goog.asserts.assert(goog.isDef(this.anchorY_));
   goog.asserts.assert(goog.isDef(this.height_));
   goog.asserts.assert(goog.isDef(this.opacity_));
+  goog.asserts.assert(goog.isDef(this.originX_));
+  goog.asserts.assert(goog.isDef(this.originY_));
   goog.asserts.assert(goog.isDef(this.rotateWithView_));
   goog.asserts.assert(goog.isDef(this.rotation_));
   goog.asserts.assert(goog.isDef(this.scale_));
@@ -815,16 +834,16 @@ ol.render.canvas.ImageReplay.prototype.drawMultiPointGeometry =
     ol.render.canvas.Instruction.DRAW_IMAGE, myBegin, myEnd, this.image_,
     // Remaining arguments to DRAW_IMAGE are in alphabetical order
     this.anchorX_, this.anchorY_, this.height_, this.opacity_,
-    this.rotateWithView_, this.rotation_, this.scale_, this.snapToPixel_,
-    this.width_
+    this.originX_, this.originY_, this.rotateWithView_, this.rotation_,
+    this.scale_, this.snapToPixel_, this.width_
   ]);
   this.hitDetectionInstructions.push([
     ol.render.canvas.Instruction.DRAW_IMAGE, myBegin, myEnd,
     this.hitDetectionImage_,
     // Remaining arguments to DRAW_IMAGE are in alphabetical order
     this.anchorX_, this.anchorY_, this.height_, this.opacity_,
-    this.rotateWithView_, this.rotation_, this.scale_, this.snapToPixel_,
-    this.width_
+    this.originX_, this.originY_, this.rotateWithView_, this.rotation_,
+    this.scale_, this.snapToPixel_, this.width_
   ]);
   this.endGeometry(multiPointGeometry, data);
 };
@@ -843,6 +862,8 @@ ol.render.canvas.ImageReplay.prototype.finish = function() {
   this.height_ = undefined;
   this.scale_ = undefined;
   this.opacity_ = undefined;
+  this.originX_ = undefined;
+  this.originY_ = undefined;
   this.rotateWithView_ = undefined;
   this.rotation_ = undefined;
   this.snapToPixel_ = undefined;
@@ -863,12 +884,16 @@ ol.render.canvas.ImageReplay.prototype.setImageStyle = function(imageStyle) {
   goog.asserts.assert(!goog.isNull(hitDetectionImage));
   var image = imageStyle.getImage(1);
   goog.asserts.assert(!goog.isNull(image));
+  var origin = imageStyle.getOrigin();
+  goog.asserts.assert(!goog.isNull(origin));
   this.anchorX_ = anchor[0];
   this.anchorY_ = anchor[1];
   this.hitDetectionImage_ = hitDetectionImage;
   this.image_ = image;
   this.height_ = size[1];
   this.opacity_ = imageStyle.getOpacity();
+  this.originX_ = origin[0];
+  this.originY_ = origin[1];
   this.rotateWithView_ = imageStyle.getRotateWithView();
   this.rotation_ = imageStyle.getRotation();
   this.scale_ = imageStyle.getScale();

@@ -130,6 +130,18 @@ ol.render.canvas.Immediate =
 
   /**
    * @private
+   * @type {number}
+   */
+  this.imageOriginX_ = 0;
+
+  /**
+   * @private
+   * @type {number}
+   */
+  this.imageOriginY_ = 0;
+
+  /**
+   * @private
    * @type {boolean}
    */
   this.imageRotateWithView_ = false;
@@ -269,7 +281,9 @@ ol.render.canvas.Immediate.prototype.drawImages_ =
           goog.vec.Mat4.getElement(localTransform, 0, 3),
           goog.vec.Mat4.getElement(localTransform, 1, 3));
     }
-    context.drawImage(this.image_, x, y, this.imageWidth_, this.imageHeight_);
+    context.drawImage(this.image_, this.imageOriginX_, this.imageOriginY_,
+        this.imageWidth_, this.imageHeight_, x, y,
+        this.imageWidth_, this.imageHeight_);
   }
   if (rotation !== 0 || this.imageScale_ != 1) {
     context.setTransform(1, 0, 0, 1, 0, 0);
@@ -873,6 +887,7 @@ ol.render.canvas.Immediate.prototype.setImageStyle = function(imageStyle) {
     // FIXME pixel ratio
     var imageImage = imageStyle.getImage(1);
     var imageOpacity = imageStyle.getOpacity();
+    var imageOrigin = imageStyle.getOrigin();
     var imageRotateWithView = imageStyle.getRotateWithView();
     var imageRotation = imageStyle.getRotation();
     var imageScale = imageStyle.getScale();
@@ -880,12 +895,15 @@ ol.render.canvas.Immediate.prototype.setImageStyle = function(imageStyle) {
     var imageSnapToPixel = imageStyle.getSnapToPixel();
     goog.asserts.assert(!goog.isNull(imageAnchor));
     goog.asserts.assert(!goog.isNull(imageImage));
+    goog.asserts.assert(!goog.isNull(imageOrigin));
     goog.asserts.assert(!goog.isNull(imageSize));
     this.imageAnchorX_ = imageAnchor[0];
     this.imageAnchorY_ = imageAnchor[1];
     this.imageHeight_ = imageSize[1];
     this.image_ = imageImage;
     this.imageOpacity_ = goog.isDef(imageOpacity) ? imageOpacity : 1;
+    this.imageOriginX_ = imageOrigin[0];
+    this.imageOriginY_ = imageOrigin[1];
     this.imageRotateWithView_ = goog.isDef(imageRotateWithView) ?
         imageRotateWithView : false;
     this.imageRotation_ = goog.isDef(imageRotation) ? imageRotation : 0;

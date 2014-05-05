@@ -4365,6 +4365,7 @@ olx.style.FillOptions.prototype.color;
  *     anchorXUnits: (ol.style.IconAnchorUnits|undefined),
  *     anchorYUnits: (ol.style.IconAnchorUnits|undefined),
  *     crossOrigin: (null|string|undefined),
+ *     origin: (Array.<number>|undefined),
  *     scale: (number|undefined),
  *     rotateWithView: (boolean|undefined),
  *     rotation: (number|undefined),
@@ -4413,6 +4414,15 @@ olx.style.IconOptions.prototype.anchorYUnits;
  * @type {null|string|undefined}
  */
 olx.style.IconOptions.prototype.crossOrigin;
+
+
+/**
+ * The top left corner, which, together with the size, define the
+ * sub-rectangle to use from the original icon image. Default value
+ * is `[0, 0]`.
+ * @type {Array.<number>|undefined}
+ */
+olx.style.IconOptions.prototype.origin;
 
 
 /**
