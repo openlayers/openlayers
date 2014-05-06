@@ -9,6 +9,7 @@ goog.require('ol.Coordinate');
  * @constructor
  * @param {number} a Major radius.
  * @param {number} flattening Flattening.
+ * @todo api
  */
 ol.Ellipsoid = function(a, flattening) {
 
@@ -50,8 +51,9 @@ ol.Ellipsoid = function(a, flattening) {
  * @param {ol.Coordinate} c2 Coordinate 1.
  * @param {number=} opt_minDeltaLambda Minimum delta lambda for convergence.
  * @param {number=} opt_maxIterations Maximum iterations.
- * @return {!olx.ellipsoid.VincentyResults}
+ * @return {{distance: number, initialBearing: number, finalBearing: number}}
  *     Vincenty.
+ * @todo api
  */
 ol.Ellipsoid.prototype.vincenty =
     function(c1, c2, opt_minDeltaLambda, opt_maxIterations) {
@@ -145,6 +147,7 @@ ol.Ellipsoid.prototype.vincenty =
  * @param {number=} opt_minDeltaLambda Minimum delta lambda for convergence.
  * @param {number=} opt_maxIterations Maximum iterations.
  * @return {number} Vincenty distance.
+ * @todo api
  */
 ol.Ellipsoid.prototype.vincentyDistance =
     function(c1, c2, opt_minDeltaLambda, opt_maxIterations) {
@@ -161,6 +164,7 @@ ol.Ellipsoid.prototype.vincentyDistance =
  * @param {number=} opt_minDeltaLambda Minimum delta lambda for convergence.
  * @param {number=} opt_maxIterations Maximum iterations.
  * @return {number} Initial bearing.
+ * @todo api
  */
 ol.Ellipsoid.prototype.vincentyFinalBearing =
     function(c1, c2, opt_minDeltaLambda, opt_maxIterations) {
@@ -177,6 +181,7 @@ ol.Ellipsoid.prototype.vincentyFinalBearing =
  * @param {number=} opt_minDeltaLambda Minimum delta lambda for convergence.
  * @param {number=} opt_maxIterations Maximum iterations.
  * @return {number} Initial bearing.
+ * @todo api
  */
 ol.Ellipsoid.prototype.vincentyInitialBearing =
     function(c1, c2, opt_minDeltaLambda, opt_maxIterations) {
@@ -194,6 +199,7 @@ ol.Ellipsoid.prototype.vincentyInitialBearing =
  * @param {number=} opt_minDeltaSigma Minimum delta sigma for convergence.
  * @param {number=} opt_maxIterations Maximum iterations.
  * @return {ol.Coordinate}
+ * @todo api
  */
 ol.Ellipsoid.prototype.vincentyDirect =
     function(c, distance, bearing, opt_minDeltaSigma, opt_maxIterations) {
@@ -217,13 +223,14 @@ ol.Ellipsoid.prototype.vincentyDirect =
   var uSq = cosSqAlpha * (a * a - b * b) / (b * b);
   var A = 1 + uSq / 16384 * (4096 + uSq * (-768 + uSq * (320 - 175 * uSq)));
   var B = uSq / 1024 * (256 + uSq * (-128 + uSq * (74 - 47 * uSq)));
+  var cos2SigmaM, sinSigma, cosSigma, deltaSigma, tmp, lat2, lambda, C, L, lon2;
 
   var sigma = s / (b * A), sigmaP = 2 * Math.PI;
   while (Math.abs(sigma - sigmaP) > minDeltaSigma && maxIterations-- > 0) {
-    var cos2SigmaM = Math.cos(2 * sigma1 + sigma);
-    var sinSigma = Math.sin(sigma);
-    var cosSigma = Math.cos(sigma);
-    var deltaSigma =
+    cos2SigmaM = Math.cos(2 * sigma1 + sigma);
+    sinSigma = Math.sin(sigma);
+    cosSigma = Math.cos(sigma);
+    deltaSigma =
         B * sinSigma * (cos2SigmaM + B / 4 *
         (cosSigma * (-1 + 2 * cos2SigmaM * cos2SigmaM) -
         B / 6 * cos2SigmaM * (-3 + 4 * sinSigma * sinSigma) *
@@ -232,16 +239,16 @@ ol.Ellipsoid.prototype.vincentyDirect =
     sigma = s / (b * A) + deltaSigma;
   }
 
-  var tmp = sinU1 * sinSigma - cosU1 * cosSigma * cosAlpha1;
-  var lat2 = Math.atan2(sinU1 * cosSigma + cosU1 * sinSigma * cosAlpha1,
+  tmp = sinU1 * sinSigma - cosU1 * cosSigma * cosAlpha1;
+  lat2 = Math.atan2(sinU1 * cosSigma + cosU1 * sinSigma * cosAlpha1,
       (1 - f) * Math.sqrt(sinAlpha * sinAlpha + tmp * tmp));
-  var lambda = Math.atan2(sinSigma * sinAlpha1,
+  lambda = Math.atan2(sinSigma * sinAlpha1,
       cosU1 * cosSigma - sinU1 * sinSigma * cosAlpha1);
-  var C = f / 16 * cosSqAlpha * (4 + f * (4 - 3 * cosSqAlpha));
-  var L = lambda - (1 - C) * f * sinAlpha *
+  C = f / 16 * cosSqAlpha * (4 + f * (4 - 3 * cosSqAlpha));
+  L = lambda - (1 - C) * f * sinAlpha *
       (sigma + C * sinSigma * (cos2SigmaM + C * cosSigma *
       (-1 + 2 * cos2SigmaM * cos2SigmaM)));
-  var lon2 = (goog.math.toRadians(c[0]) + L + 3 * Math.PI) %
+  lon2 = (goog.math.toRadians(c[0]) + L + 3 * Math.PI) %
       (2 * Math.PI) - Math.PI;
 
   return [goog.math.toDegrees(lon2), goog.math.toDegrees(lat2)];
