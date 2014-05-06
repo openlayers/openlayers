@@ -10,10 +10,13 @@ goog.require('ol.math');
 
 
 /**
+ * @classdesc
+ * Point geometry.
+ *
  * @constructor
  * @extends {ol.geom.SimpleGeometry}
  * @param {ol.geom.RawPoint} coordinates Coordinates.
- * @param {ol.geom.GeometryLayout|string=} opt_layout Layout.
+ * @param {ol.geom.GeometryLayout=} opt_layout Layout.
  * @todo api
  */
 ol.geom.Point = function(coordinates, opt_layout) {

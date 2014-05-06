@@ -6,6 +6,9 @@ goog.require('ol.style.Image');
 
 
 /**
+ * @classdesc
+ * Base class for vector feature rendering styles.
+ *
  * @constructor
  * @param {olx.style.StyleOptions=} opt_options Style options.
  * @todo api

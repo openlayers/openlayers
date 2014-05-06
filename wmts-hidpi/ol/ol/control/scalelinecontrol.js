@@ -2,7 +2,6 @@ goog.provide('ol.control.ScaleLine');
 goog.provide('ol.control.ScaleLineProperty');
 goog.provide('ol.control.ScaleLineUnits');
 
-goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('goog.dom');
 goog.require('goog.dom.TagName');
@@ -43,15 +42,14 @@ ol.control.ScaleLineUnits = {
 
 
 /**
- * Create a control to help users estimate distances on a map.
- * By default it will show in the bottom left portion of the map, but it can
- * be changed by using a css selector for `.ol-scale-line`.
+ * @classdesc
+ * A control displaying rough x-axis distances.
+ * By default it will show in the bottom left portion of the map, but this can
+ * be changed by using the css selector `.ol-scale-line`.
  *
  * @constructor
  * @extends {ol.control.Control}
  * @param {olx.control.ScaleLineOptions=} opt_options Scale line options.
- * @todo observable units {ol.control.ScaleLineUnits} the units to use in the
- *       scale line
  * @todo api
  */
 ol.control.ScaleLine = function(opt_options) {
@@ -79,7 +77,7 @@ ol.control.ScaleLine = function(opt_options) {
 
   /**
    * @private
-   * @type {?oli.View2DState}
+   * @type {?olx.View2DState}
    */
   this.view2DState_ = null;
 
@@ -137,7 +135,9 @@ ol.control.ScaleLine.LEADING_DIGITS = [1, 2, 5];
 
 
 /**
- * @return {ol.control.ScaleLineUnits|undefined} units.
+ * @return {ol.control.ScaleLineUnits|undefined} The units to use in the scale
+ *     line.
+ * @todo observable
  * @todo api
  */
 ol.control.ScaleLine.prototype.getUnits = function() {
@@ -173,7 +173,8 @@ ol.control.ScaleLine.prototype.handleUnitsChanged_ = function() {
 
 
 /**
- * @param {ol.control.ScaleLineUnits} units Units.
+ * @param {ol.control.ScaleLineUnits} units The units to use in the scale line.
+ * @todo observable
  * @todo api
  */
 ol.control.ScaleLine.prototype.setUnits = function(units) {

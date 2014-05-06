@@ -1,6 +1,5 @@
 goog.provide('ol.layer.Vector');
 
-goog.require('goog.array');
 goog.require('goog.object');
 goog.require('ol.feature');
 goog.require('ol.layer.Layer');
@@ -16,10 +15,12 @@ ol.layer.VectorProperty = {
 
 
 /**
+ * @classdesc
+ * Vector data that is rendered client-side.
  *
  * @constructor
  * @extends {ol.layer.Layer}
- * @fires {@link ol.render.Event} ol.render.Event
+ * @fires ol.render.Event
  * @param {olx.layer.VectorOptions=} opt_options Options.
  * @todo api
  */

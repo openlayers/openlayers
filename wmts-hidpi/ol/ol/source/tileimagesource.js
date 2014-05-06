@@ -14,6 +14,9 @@ goog.require('ol.source.Tile');
 
 
 /**
+ * @classdesc
+ * Base class for sources providing images divided into a tile grid.
+ *
  * @constructor
  * @extends {ol.source.Tile}
  * @param {olx.source.TileImageOptions} options Image tile options.
@@ -26,7 +29,7 @@ ol.source.TileImage = function(options) {
     extent: options.extent,
     logo: options.logo,
     opaque: options.opaque,
-    pixelRatios: options.pixelRatios,
+    pixelRatio: options.pixelRatio,
     projection: options.projection,
     tileGrid: options.tileGrid
   });
@@ -121,7 +124,37 @@ ol.source.TileImage.prototype.getTile =
 
 
 /**
+ * @return {ol.TileLoadFunctionType} TileLoadFunction
+ * @todo api
+ */
+ol.source.TileImage.prototype.getTileLoadFunction = function() {
+  return this.tileLoadFunction;
+};
+
+
+/**
+ * @return {ol.TileUrlFunctionType} TileUrlFunction
+ * @todo api
+ */
+ol.source.TileImage.prototype.getTileUrlFunction = function() {
+  return this.tileUrlFunction;
+};
+
+
+/**
+ * @param {ol.TileLoadFunctionType} tileLoadFunction Tile load function.
+ * @todo api
+ */
+ol.source.TileImage.prototype.setTileLoadFunction = function(tileLoadFunction) {
+  this.tileCache.clear();
+  this.tileLoadFunction = tileLoadFunction;
+  this.dispatchChangeEvent();
+};
+
+
+/**
  * @param {ol.TileUrlFunctionType} tileUrlFunction Tile URL function.
+ * @todo api
  */
 ol.source.TileImage.prototype.setTileUrlFunction = function(tileUrlFunction) {
   // FIXME It should be possible to be more intelligent and avoid clearing the

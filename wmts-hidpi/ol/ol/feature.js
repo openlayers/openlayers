@@ -16,8 +16,15 @@ goog.require('ol.style.Style');
 
 
 /**
+ * @classdesc
+ * A vector object for geographical features with a geometry and other
+ * attribute properties, similar to the features in vector file formats like
+ * GeoJSON.
+ * Features can be styled individually or use the style of their vector layer.
+ *
  * @constructor
  * @extends {ol.Object}
+ * @fires change Triggered when the geometry or style of the feature changes.
  * @param {ol.geom.Geometry|Object.<string, *>=} opt_geometryOrValues
  *     Values or geometry.
  * @todo api
@@ -62,8 +69,9 @@ ol.Feature = function(opt_geometryOrValues) {
       this, ol.Object.getChangeEventType(this.geometryName_),
       this.handleGeometryChanged_, false, this);
 
-  if (goog.isDefAndNotNull(opt_geometryOrValues)) {
-    if (opt_geometryOrValues instanceof ol.geom.Geometry) {
+  if (goog.isDef(opt_geometryOrValues)) {
+    if (opt_geometryOrValues instanceof ol.geom.Geometry ||
+        goog.isNull(opt_geometryOrValues)) {
       var geometry = /** @type {ol.geom.Geometry} */ (opt_geometryOrValues);
       this.setGeometry(geometry);
     } else {
@@ -71,8 +79,6 @@ ol.Feature = function(opt_geometryOrValues) {
       var values = /** @type {Object.<string, *>} */ (opt_geometryOrValues);
       this.setValues(values);
     }
-  } else {
-    this.setGeometry(null);
   }
 };
 goog.inherits(ol.Feature, ol.Object);
@@ -185,6 +191,7 @@ ol.Feature.prototype.setStyle = function(style) {
  */
 ol.Feature.prototype.setId = function(id) {
   this.id_ = id;
+  this.dispatchChangeEvent();
 };
 
 

@@ -13,6 +13,9 @@ goog.require('ol.xml');
 
 
 /**
+ * @classdesc
+ * Feature format for reading and writing data in the WFS format.
+ *
  * @constructor
  * @param {olx.format.WFSOptions=} opt_options
  *     Optional configuration object.
@@ -48,6 +51,20 @@ goog.inherits(ol.format.WFS, ol.format.XMLFeature);
 
 
 /**
+ * @const
+ * @type {string}
+ */
+ol.format.WFS.featurePrefix = 'feature';
+
+
+/**
+ * @const
+ * @type {string}
+ */
+ol.format.WFS.xmlns = 'http://www.w3.org/2000/xmlns/';
+
+
+/**
  * @typedef {{numberOfFeatures: number,
  *            bounds: ol.Extent}}
  */
@@ -70,6 +87,17 @@ ol.format.WFS.TransactionResponse;
  */
 ol.format.WFS.schemaLocation_ = 'http://www.opengis.net/wfs ' +
     'http://schemas.opengis.net/wfs/1.1.0/wfs.xsd';
+
+
+/**
+ * Read all features from a WFS FeatureCollection.
+ *
+ * @function
+ * @param {ArrayBuffer|Document|Node|Object|string} source Source.
+ * @return {Array.<ol.Feature>} Features.
+ * @todo api
+ */
+ol.format.WFS.prototype.readFeatures;
 
 
 /**
@@ -355,7 +383,12 @@ ol.format.WFS.writeDelete_ = function(node, feature, objectStack) {
   goog.asserts.assert(goog.isObject(context));
   var featureType = goog.object.get(context, 'featureType');
   var featurePrefix = goog.object.get(context, 'featurePrefix');
+  featurePrefix = goog.isDef(featurePrefix) ? featurePrefix :
+      ol.format.WFS.featurePrefix;
+  var featureNS = goog.object.get(context, 'featureNS');
   node.setAttribute('typeName', featurePrefix + ':' + featureType);
+  ol.xml.setAttributeNS(node, ol.format.WFS.xmlns, 'xmlns:' + featurePrefix,
+      featureNS);
   var fid = feature.getId();
   if (goog.isDef(fid)) {
     ol.format.WFS.writeOgcFidFilter_(node, fid, objectStack);
@@ -374,7 +407,12 @@ ol.format.WFS.writeUpdate_ = function(node, feature, objectStack) {
   goog.asserts.assert(goog.isObject(context));
   var featureType = goog.object.get(context, 'featureType');
   var featurePrefix = goog.object.get(context, 'featurePrefix');
+  featurePrefix = goog.isDef(featurePrefix) ? featurePrefix :
+      ol.format.WFS.featurePrefix;
+  var featureNS = goog.object.get(context, 'featureNS');
   node.setAttribute('typeName', featurePrefix + ':' + featureType);
+  ol.xml.setAttributeNS(node, ol.format.WFS.xmlns, 'xmlns:' + featurePrefix,
+      featureNS);
   var fid = feature.getId();
   if (goog.isDef(fid)) {
     var keys = feature.getKeys();
@@ -385,10 +423,11 @@ ol.format.WFS.writeUpdate_ = function(node, feature, objectStack) {
         values.push({name: keys[i], value: value});
       }
     }
-    ol.xml.pushSerializeAndPop({node: node},
-        ol.format.WFS.TRANSACTION_SERIALIZERS_,
-        ol.xml.makeSimpleNodeFactory('Property'), values,
-        objectStack);
+    ol.xml.pushSerializeAndPop({node: node, srsName:
+          goog.object.get(context, 'srsName')},
+    ol.format.WFS.TRANSACTION_SERIALIZERS_,
+    ol.xml.makeSimpleNodeFactory('Property'), values,
+    objectStack);
     ol.format.WFS.writeOgcFidFilter_(node, fid, objectStack);
   }
 };
@@ -470,7 +509,8 @@ ol.format.WFS.writeQuery_ = function(node, featureType, objectStack) {
     node.setAttribute('srsName', srsName);
   }
   if (goog.isDef(featureNS)) {
-    node.setAttribute('xmlns:' + featurePrefix, featureNS);
+    ol.xml.setAttributeNS(node, ol.format.WFS.xmlns, 'xmlns:' + featurePrefix,
+        featureNS);
   }
   var item = goog.object.clone(context);
   item.node = node;
@@ -612,7 +652,9 @@ ol.format.WFS.prototype.writeTransaction = function(inserts, updates, deletes,
       'Transaction');
   node.setAttribute('service', 'WFS');
   node.setAttribute('version', '1.1.0');
+  var baseObj, obj;
   if (goog.isDef(options)) {
+    baseObj = goog.isDef(options.gmlOptions) ? options.gmlOptions : {};
     if (goog.isDef(options.handle)) {
       node.setAttribute('handle', options.handle);
     }
@@ -620,18 +662,22 @@ ol.format.WFS.prototype.writeTransaction = function(inserts, updates, deletes,
   ol.xml.setAttributeNS(node, 'http://www.w3.org/2001/XMLSchema-instance',
       'xsi:schemaLocation', this.schemaLocation_);
   if (goog.isDefAndNotNull(inserts)) {
-    ol.xml.pushSerializeAndPop({node: node, featureNS: options.featureNS,
-      featureType: options.featureType},
-    ol.format.WFS.TRANSACTION_SERIALIZERS_,
-    ol.xml.makeSimpleNodeFactory('Insert'), inserts,
-    objectStack);
+    obj = {node: node, featureNS: options.featureNS,
+      featureType: options.featureType, featurePrefix: options.featurePrefix};
+    goog.object.extend(obj, baseObj);
+    ol.xml.pushSerializeAndPop(obj,
+        ol.format.WFS.TRANSACTION_SERIALIZERS_,
+        ol.xml.makeSimpleNodeFactory('Insert'), inserts,
+        objectStack);
   }
   if (goog.isDefAndNotNull(updates)) {
-    ol.xml.pushSerializeAndPop({node: node, featureNS: options.featureNS,
-      featureType: options.featureType, featurePrefix: options.featurePrefix},
-    ol.format.WFS.TRANSACTION_SERIALIZERS_,
-    ol.xml.makeSimpleNodeFactory('Update'), updates,
-    objectStack);
+    obj = {node: node, featureNS: options.featureNS,
+      featureType: options.featureType, featurePrefix: options.featurePrefix};
+    goog.object.extend(obj, baseObj);
+    ol.xml.pushSerializeAndPop(obj,
+        ol.format.WFS.TRANSACTION_SERIALIZERS_,
+        ol.xml.makeSimpleNodeFactory('Update'), updates,
+        objectStack);
   }
   if (goog.isDefAndNotNull(deletes)) {
     ol.xml.pushSerializeAndPop({node: node, featureNS: options.featureNS,
@@ -657,6 +703,7 @@ ol.format.WFS.prototype.writeTransaction = function(inserts, updates, deletes,
  * @function
  * @param {ArrayBuffer|Document|Node|Object|string} source Source.
  * @return {?ol.proj.Projection} Projection.
+ * @todo api
  */
 ol.format.WFS.prototype.readProjection;
 

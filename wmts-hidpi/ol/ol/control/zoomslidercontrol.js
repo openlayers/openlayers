@@ -3,7 +3,6 @@
 
 goog.provide('ol.control.ZoomSlider');
 
-goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('goog.dom');
 goog.require('goog.dom.TagName');
@@ -24,6 +23,7 @@ goog.require('ol.easing');
 
 
 /**
+ * @classdesc
  * A slider type of control for zooming.
  *
  * Example:

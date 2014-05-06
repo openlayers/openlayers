@@ -127,6 +127,7 @@ ol.BrowserFeature.HAS_MSPOINTER =
  * True if browser supports WebGL.
  * @const
  * @type {boolean}
+ * @todo api
  */
 ol.BrowserFeature.HAS_WEBGL = ol.ENABLE_WEBGL && (
     /**

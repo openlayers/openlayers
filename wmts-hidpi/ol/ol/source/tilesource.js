@@ -1,8 +1,6 @@
 goog.provide('ol.source.Tile');
 goog.provide('ol.source.TileOptions');
 
-goog.require('goog.array');
-goog.require('goog.asserts');
 goog.require('goog.functions');
 goog.require('ol.Attribution');
 goog.require('ol.Extent');
@@ -18,19 +16,21 @@ goog.require('ol.tilegrid.TileGrid');
  *            extent: (ol.Extent|undefined),
  *            logo: (string|undefined),
  *            opaque: (boolean|undefined),
+ *            pixelRatio: (number|undefined),
  *            projection: ol.proj.ProjectionLike,
- *            tileGrid: (ol.tilegrid.TileGrid|undefined),
- *            pixelRatios: (Array.<number>|undefined)}}
+ *            tileGrid: (ol.tilegrid.TileGrid|undefined)}}
  */
 ol.source.TileOptions;
 
 
 
 /**
+ * @classdesc
+ * Abstract base class for sources providing images divided into a tile grid.
+ *
  * @constructor
  * @extends {ol.source.Source}
  * @param {ol.source.TileOptions} options Tile source options.
- * @todo api
  */
 ol.source.Tile = function(options) {
 
@@ -48,14 +48,11 @@ ol.source.Tile = function(options) {
   this.opaque_ = goog.isDef(options.opaque) ? options.opaque : false;
 
   /**
-   * @private
-   * @type {!Array.<number>}
+   * @protected
+   * @type {number}
    */
-  this.pixelRatios_ = goog.isDefAndNotNull(options.pixelRatios) ?
-      options.pixelRatios : [1];
-  goog.asserts.assert(goog.array.isSorted(this.pixelRatios_, function(a, b) {
-    return a - b;
-  }, true));
+  this.pixelRatio = goog.isDefAndNotNull(options.pixelRatio) ?
+      options.pixelRatio : 1;
 
   /**
    * @protected
@@ -153,23 +150,6 @@ ol.source.Tile.prototype.getResolutions = function() {
 
 
 /**
- * @param {number} pixelRatio Requested pixel ratio.
- * @return {number} Supported pixel ratio.
- * @todo stability experimental
- */
-ol.source.Tile.prototype.getSupportedPixelRatio = function(pixelRatio) {
-  var supportedPixelRatio = 1;
-  for (var i = 0, ii = this.pixelRatios_.length; i < ii; ++ i) {
-    supportedPixelRatio = this.pixelRatios_[i];
-    if (supportedPixelRatio >= pixelRatio) {
-      break;
-    }
-  }
-  return supportedPixelRatio;
-};
-
-
-/**
  * @param {number} z Tile coordinate z.
  * @param {number} x Tile coordinate x.
  * @param {number} y Tile coordinate y.
@@ -212,11 +192,10 @@ ol.source.Tile.prototype.getTilePixelSize =
     function(z, pixelRatio, projection) {
   var tileGrid = this.getTileGridForProjection(projection);
   var tileSize = tileGrid.getTileSize(z);
-  var supportedPixelRatio = this.getSupportedPixelRatio(pixelRatio);
-  if (supportedPixelRatio == 1) {
+  if (this.pixelRatio == 1) {
     return tileSize;
   } else {
-    return (tileSize * supportedPixelRatio + 0.5) | 0;
+    return (tileSize * this.pixelRatio + 0.5) | 0;
   }
 };
 

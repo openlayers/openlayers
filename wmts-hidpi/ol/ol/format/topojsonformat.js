@@ -1,6 +1,5 @@
 goog.provide('ol.format.TopoJSON');
 
-goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('goog.object');
 goog.require('ol.Feature');
@@ -16,6 +15,9 @@ goog.require('ol.proj');
 
 
 /**
+ * @classdesc
+ * Feature format for reading and writing data in the TopoJSON format.
+ *
  * @constructor
  * @extends {ol.format.JSONFeature}
  * @param {olx.format.TopoJSONOptions=} opt_options Options.

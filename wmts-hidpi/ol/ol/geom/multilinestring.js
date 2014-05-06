@@ -1,6 +1,5 @@
 goog.provide('ol.geom.MultiLineString');
 
-goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('ol.array');
 goog.require('ol.extent');
@@ -16,10 +15,13 @@ goog.require('ol.geom.flat.simplify');
 
 
 /**
+ * @classdesc
+ * Multi-linestring geometry.
+ *
  * @constructor
  * @extends {ol.geom.SimpleGeometry}
  * @param {ol.geom.RawMultiLineString} coordinates Coordinates.
- * @param {ol.geom.GeometryLayout|string=} opt_layout Layout.
+ * @param {ol.geom.GeometryLayout=} opt_layout Layout.
  * @todo api
  */
 ol.geom.MultiLineString = function(coordinates, opt_layout) {

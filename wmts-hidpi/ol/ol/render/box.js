@@ -96,7 +96,7 @@ ol.render.Box.prototype.disposeInternal = function() {
  */
 ol.render.Box.prototype.handleMapPostCompose_ = function(event) {
   var geometry = this.geometry_;
-  goog.asserts.assert(!goog.isNull(geometry));
+  goog.asserts.assert(goog.isDefAndNotNull(geometry));
   var style = this.style_;
   goog.asserts.assert(!goog.isNull(style));
   // use drawAsync(Infinity) to draw above everything

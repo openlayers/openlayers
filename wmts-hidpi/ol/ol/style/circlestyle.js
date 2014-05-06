@@ -1,5 +1,3 @@
-// FIXME decide default value for snapToPixel
-
 goog.provide('ol.style.Circle');
 
 goog.require('goog.dom');
@@ -14,6 +12,9 @@ goog.require('ol.style.Stroke');
 
 
 /**
+ * @classdesc
+ * Set circle style for vector features.
+ *
  * @constructor
  * @param {olx.style.CircleOptions=} opt_options Options.
  * @extends {ol.style.Image}
@@ -44,6 +45,12 @@ ol.style.Circle = function(opt_options) {
 
   /**
    * @private
+   * @type {Array.<number>}
+   */
+  this.origin_ = [0, 0];
+
+  /**
+   * @private
    * @type {number}
    */
   this.radius_ = options.radius;
@@ -68,13 +75,18 @@ ol.style.Circle = function(opt_options) {
    */
   this.size_ = [size, size];
 
+  /**
+   * @type {boolean}
+   */
+  var snapToPixel = goog.isDef(options.snapToPixel) ?
+      options.snapToPixel : true;
+
   goog.base(this, {
     opacity: 1,
-    origin: [0, 0],
     rotateWithView: false,
     rotation: 0,
     scale: 1,
-    snapToPixel: undefined
+    snapToPixel: snapToPixel
   });
 
 };
@@ -121,6 +133,15 @@ ol.style.Circle.prototype.getImage = function(pixelRatio) {
  */
 ol.style.Circle.prototype.getImageState = function() {
   return ol.style.ImageState.LOADED;
+};
+
+
+/**
+ * @inheritDoc
+ * @todo api
+ */
+ol.style.Circle.prototype.getOrigin = function() {
+  return this.origin_;
 };
 
 

@@ -1,6 +1,5 @@
 goog.provide('ol.geom.MultiPoint');
 
-goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('ol.array');
 goog.require('ol.extent');
@@ -14,10 +13,13 @@ goog.require('ol.math');
 
 
 /**
+ * @classdesc
+ * Multi-point geometry.
+ *
  * @constructor
  * @extends {ol.geom.SimpleGeometry}
  * @param {ol.geom.RawMultiPoint} coordinates Coordinates.
- * @param {ol.geom.GeometryLayout|string=} opt_layout Layout.
+ * @param {ol.geom.GeometryLayout=} opt_layout Layout.
  * @todo api
  */
 ol.geom.MultiPoint = function(coordinates, opt_layout) {

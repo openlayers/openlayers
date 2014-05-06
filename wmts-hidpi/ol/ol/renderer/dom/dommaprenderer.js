@@ -6,6 +6,7 @@ goog.require('goog.dom.TagName');
 goog.require('goog.functions');
 goog.require('goog.style');
 goog.require('ol');
+goog.require('ol.RendererType');
 goog.require('ol.css');
 goog.require('ol.layer.Image');
 goog.require('ol.layer.Tile');
@@ -72,6 +73,14 @@ ol.renderer.dom.Map.prototype.createLayerRenderer = function(layer) {
     return null;
   }
   return layerRenderer;
+};
+
+
+/**
+ * @inheritDoc
+ */
+ol.renderer.dom.Map.prototype.getType = function() {
+  return ol.RendererType.DOM;
 };
 
 

@@ -17,6 +17,9 @@ goog.require('ol.xml');
 
 
 /**
+ * @classdesc
+ * Feature format for reading and writing data in the GPX format.
+ *
  * @constructor
  * @extends {ol.format.XMLFeature}
  * @todo api
@@ -430,6 +433,7 @@ ol.format.GPX.prototype.readFeaturesFromNode = function(node) {
 /**
  * Read the projection from a GPX source.
  *
+ * @function
  * @param {ArrayBuffer|Document|Node|Object|string} source Source.
  * @return {ol.proj.Projection} Projection.
  * @todo api

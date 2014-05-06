@@ -9,11 +9,14 @@ goog.require('ol.geom.flat.deflate');
 
 
 /**
+ * @classdesc
+ * Circle geometry.
+ *
  * @constructor
  * @extends {ol.geom.SimpleGeometry}
  * @param {ol.geom.RawPoint} center Center.
  * @param {number=} opt_radius Radius.
- * @param {ol.geom.GeometryLayout|string=} opt_layout Layout.
+ * @param {ol.geom.GeometryLayout=} opt_layout Layout.
  * @todo api
  */
 ol.geom.Circle = function(center, opt_radius, opt_layout) {
@@ -123,15 +126,6 @@ ol.geom.Circle.prototype.getRadiusSquared_ = function() {
   var dx = this.flatCoordinates[this.stride] - this.flatCoordinates[0];
   var dy = this.flatCoordinates[this.stride + 1] - this.flatCoordinates[1];
   return dx * dx + dy * dy;
-};
-
-
-/**
- * @inheritDoc
- * @todo api
- */
-ol.geom.Circle.prototype.getSimplifiedGeometry = function(squaredTolerance) {
-  return this;
 };
 
 

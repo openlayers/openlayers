@@ -2,7 +2,6 @@
 
 goog.provide('ol.renderer.webgl.Map');
 
-goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('goog.dom');
 goog.require('goog.dom.TagName');
@@ -14,10 +13,12 @@ goog.require('goog.object');
 goog.require('goog.style');
 goog.require('goog.webgl');
 goog.require('ol');
+goog.require('ol.RendererType');
 goog.require('ol.Tile');
 goog.require('ol.css');
 goog.require('ol.dom');
 goog.require('ol.layer.Image');
+goog.require('ol.layer.Layer');
 goog.require('ol.layer.Tile');
 goog.require('ol.render.Event');
 goog.require('ol.render.EventType');
@@ -258,7 +259,7 @@ ol.renderer.webgl.Map.prototype.createLayerRenderer = function(layer) {
 
 /**
  * @param {ol.render.EventType} type Event type.
- * @param {oli.FrameState} frameState Frame state.
+ * @param {olx.FrameState} frameState Frame state.
  * @private
  */
 ol.renderer.webgl.Map.prototype.dispatchComposeEvent_ =
@@ -298,7 +299,7 @@ ol.renderer.webgl.Map.prototype.disposeInternal = function() {
 
 /**
  * @param {ol.Map} map Map.
- * @param {oli.FrameState} frameState Frame state.
+ * @param {olx.FrameState} frameState Frame state.
  * @private
  */
 ol.renderer.webgl.Map.prototype.expireCache_ = function(map, frameState) {
@@ -343,6 +344,14 @@ ol.renderer.webgl.Map.prototype.getGL = function() {
  */
 ol.renderer.webgl.Map.prototype.getTileTextureQueue = function() {
   return this.tileTextureQueue_;
+};
+
+
+/**
+ * @inheritDoc
+ */
+ol.renderer.webgl.Map.prototype.getType = function() {
+  return ol.RendererType.WEBGL;
 };
 
 
@@ -443,10 +452,8 @@ ol.renderer.webgl.Map.prototype.renderFrame = function(frameState) {
   var i, ii, layerState;
   for (i = 0, ii = layerStatesArray.length; i < ii; ++i) {
     layerState = layerStatesArray[i];
-    if (layerState.visible &&
-        layerState.sourceState == ol.source.State.READY &&
-        viewResolution < layerState.maxResolution &&
-        viewResolution >= layerState.minResolution) {
+    if (ol.layer.Layer.visibleAtResolution(layerState, viewResolution) &&
+        layerState.sourceState == ol.source.State.READY) {
       layerStatesToDraw.push(layerState);
     }
   }

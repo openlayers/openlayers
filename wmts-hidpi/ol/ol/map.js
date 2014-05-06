@@ -42,6 +42,7 @@ goog.require('ol.ObjectEventType');
 goog.require('ol.Pixel');
 goog.require('ol.PostRenderFunction');
 goog.require('ol.PreRenderFunction');
+goog.require('ol.RendererType');
 goog.require('ol.Size');
 goog.require('ol.Tile');
 goog.require('ol.TileQueue');
@@ -99,24 +100,12 @@ ol.OL3_LOGO_URL = 'data:image/png;base64,' +
 
 
 /**
- * Available renderers: `'canvas'`, `'dom'` or `'webgl'`.
- * @enum {string}
- * @todo api
+ * @type {Array.<ol.RendererType>}
  */
-ol.RendererHint = {
-  CANVAS: 'canvas',
-  DOM: 'dom',
-  WEBGL: 'webgl'
-};
-
-
-/**
- * @type {Array.<ol.RendererHint>}
- */
-ol.DEFAULT_RENDERER_HINTS = [
-  ol.RendererHint.CANVAS,
-  ol.RendererHint.WEBGL,
-  ol.RendererHint.DOM
+ol.DEFAULT_RENDERER_TYPES = [
+  ol.RendererType.CANVAS,
+  ol.RendererType.WEBGL,
+  ol.RendererType.DOM
 ];
 
 
@@ -133,7 +122,7 @@ ol.MapProperty = {
 
 
 /**
- * @class
+ * @classdesc
  * The map is the core component of OpenLayers. In its minimal configuration it
  * needs a view, one or more layers, and a target container:
  *
@@ -144,7 +133,7 @@ ol.MapProperty = {
  *       }),
  *       layers: [
  *         new ol.layer.Tile({
- *           source: new ol.source.MapQuestOSM()
+ *           source: new ol.source.MapQuest({layer: 'osm'})
  *         })
  *       ],
  *       target: 'map'
@@ -156,15 +145,10 @@ ol.MapProperty = {
  * @constructor
  * @extends {ol.Object}
  * @param {olx.MapOptions} options Map options.
- * @fires {@link ol.MapBrowserEvent} ol.MapBrowserEvent
- * @fires {@link ol.MapEvent} ol.MapEvent
- * @fires {@link ol.render.Event} ol.render.Event
- * @todo observable layergroup {ol.layer.Group} a layer group containing the
- *       layers in this map.
- * @todo observable size {ol.Size} the size in pixels of the map in the DOM
- * @todo observable target {string|Element} the Element or id of the Element
- *       that the map is rendered in.
- * @todo observable view {ol.IView} the view that controls this map
+ * @fires ol.MapBrowserEvent
+ * @fires ol.MapEvent
+ * @fires ol.render.Event#postcompose
+ * @fires ol.render.Event#precompose
  * @todo api
  */
 ol.Map = function(options) {
@@ -214,9 +198,16 @@ ol.Map = function(options) {
 
   /**
    * @private
-   * @type {?oli.FrameState}
+   * @type {?olx.FrameState}
    */
   this.frameState_ = null;
+
+  /**
+   * The extent at the previous 'moveend' event.
+   * @private
+   * @type {ol.Extent}
+   */
+  this.previousExtent_ = null;
 
   /**
    * @private
@@ -614,7 +605,9 @@ ol.Map.prototype.getEventPixel = function(event) {
  * Get the target in which this map is rendered.
  * Note that this returns what is entered as an option or in setTarget:
  * if that was an element, it returns an element; if a string, it returns that.
- * @return {Element|string|undefined} Target.
+ * @return {Element|string|undefined} The Element or id of the Element that the
+ *     map is rendered in.
+ * @todo observable
  * @todo api
  */
 ol.Map.prototype.getTarget = function() {
@@ -662,13 +655,12 @@ ol.Map.prototype.getOverlays = function() {
 
 
 /**
- * Gets the collection of
- * {@link ol.interaction|ol.interaction.Interaction} instances
- * associated with this map.  Modifying this collection
- * changes the interactions associated with the map.
+ * Gets the collection of {@link ol.interaction.Interaction} instances
+ * associated with this map. Modifying this collection changes the interactions
+ * associated with the map.
  *
  * Interactions are used for e.g. pan, zoom and rotate.
- * @return {ol.Collection} Interactions.
+ * @return {ol.Collection} {@link ol.interaction.Interaction Interactions}.
  * @todo api
  */
 ol.Map.prototype.getInteractions = function() {
@@ -678,7 +670,8 @@ ol.Map.prototype.getInteractions = function() {
 
 /**
  * Get the layergroup associated with this map.
- * @return {ol.layer.Group} LayerGroup.
+ * @return {ol.layer.Group} A layer group containing the layers in this map.
+ * @todo observable
  * @todo api
  */
 ol.Map.prototype.getLayerGroup = function() {
@@ -723,8 +716,18 @@ ol.Map.prototype.getPixelFromCoordinate = function(coordinate) {
 
 
 /**
+ * Get the map renderer.
+ * @return {ol.renderer.Map} Renderer
+ */
+ol.Map.prototype.getRenderer = function() {
+  return this.renderer_;
+};
+
+
+/**
  * Get the size of this map.
- * @return {ol.Size|undefined} Size.
+ * @return {ol.Size|undefined} The size in pixels of the map in the DOM.
+ * @todo observable
  * @todo api
  */
 ol.Map.prototype.getSize = function() {
@@ -739,11 +742,12 @@ goog.exportProperty(
 /**
  * Get the view associated with this map. This can be a 2D or 3D view. A 2D
  * view manages properties such as center and resolution.
- * @return {ol.View|undefined} View.
+ * @return {ol.IView|undefined} The view that controls this map.
+ * @todo observable
  * @todo api
  */
 ol.Map.prototype.getView = function() {
-  return /** @type {ol.View} */ (this.get(ol.MapProperty.VIEW));
+  return /** @type {ol.IView} */ (this.get(ol.MapProperty.VIEW));
 };
 goog.exportProperty(
     ol.Map.prototype,
@@ -1062,7 +1066,7 @@ ol.Map.prototype.isRendered = function() {
 
 
 /**
- * Render.
+ * Requests an immediate render in a synchronous manner.
  * @todo api
  */
 ol.Map.prototype.renderSync = function() {
@@ -1071,7 +1075,8 @@ ol.Map.prototype.renderSync = function() {
 
 
 /**
- * Request that renderFrame_ be called some time in the future.
+ * Requests a render frame; rendering will effectively occur at the next browser
+ * animation frame.
  * @todo api
  */
 ol.Map.prototype.render = function() {
@@ -1172,7 +1177,7 @@ ol.Map.prototype.renderFrame_ = function(time) {
   var size = this.getSize();
   var view = this.getView();
   var view2D = goog.isDef(view) ? this.getView().getView2D() : undefined;
-  /** @type {?oli.FrameState} */
+  /** @type {?olx.FrameState} */
   var frameState = null;
   if (goog.isDef(size) && hasArea(size) &&
       goog.isDef(view2D) && view2D.isDef()) {
@@ -1183,7 +1188,7 @@ ol.Map.prototype.renderFrame_ = function(time) {
       layerStates[goog.getUid(layerStatesArray[i].layer)] = layerStatesArray[i];
     }
     view2DState = view2D.getView2DState();
-    frameState = /** @type {oli.FrameState} */ ({
+    frameState = /** @type {olx.FrameState} */ ({
       animate: false,
       attributions: {},
       coordinateToPixelMatrix: this.coordinateToPixelMatrix_,
@@ -1237,12 +1242,15 @@ ol.Map.prototype.renderFrame_ = function(time) {
         this.postRenderFunctions_, frameState.postRenderFunctions);
 
     var idle = this.preRenderFunctions_.length === 0 &&
-        !frameState.animate &&
         !frameState.viewHints[ol.ViewHint.ANIMATING] &&
-        !frameState.viewHints[ol.ViewHint.INTERACTING];
+        !frameState.viewHints[ol.ViewHint.INTERACTING] &&
+        (!this.previousExtent_ ||
+            !ol.extent.equals(frameState.extent, this.previousExtent_));
 
     if (idle) {
-      this.dispatchEvent(new ol.MapEvent(ol.MapEventType.MOVEEND, this));
+      this.dispatchEvent(
+          new ol.MapEvent(ol.MapEventType.MOVEEND, this, frameState));
+      this.previousExtent_ = ol.extent.clone(frameState.extent);
     }
   }
 
@@ -1256,7 +1264,9 @@ ol.Map.prototype.renderFrame_ = function(time) {
 
 /**
  * Sets the layergroup of this map.
- * @param {ol.layer.Group} layerGroup Layergroup.
+ * @param {ol.layer.Group} layerGroup A layer group containing the layers in
+ *     this map.
+ * @todo observable
  * @todo api
  */
 ol.Map.prototype.setLayerGroup = function(layerGroup) {
@@ -1270,7 +1280,8 @@ goog.exportProperty(
 
 /**
  * Set the size of this map.
- * @param {ol.Size|undefined} size Size.
+ * @param {ol.Size|undefined} size The size in pixels of the map in the DOM.
+ * @todo observable
  * @todo api
  */
 ol.Map.prototype.setSize = function(size) {
@@ -1284,7 +1295,9 @@ goog.exportProperty(
 
 /**
  * Set the target element to render this map into.
- * @param {Element|string|undefined} target Target.
+ * @param {Element|string|undefined} target The Element or id of the Element
+ *     that the map is rendered in.
+ * @todo observable
  * @todo api
  */
 ol.Map.prototype.setTarget = function(target) {
@@ -1297,8 +1310,9 @@ goog.exportProperty(
 
 
 /**
- * Set the view for this map. Currently {@link ol.View2D} is implememnted.
- * @param {ol.IView} view View.
+ * Set the view for this map.
+ * @param {ol.IView} view The view that controls this map.
+ * @todo observable
  * @todo api
  */
 ol.Map.prototype.setView = function(view) {
@@ -1407,36 +1421,36 @@ ol.Map.createOptionsInternal = function(options) {
   var rendererConstructor = ol.renderer.Map;
 
   /**
-   * @type {Array.<ol.RendererHint>}
+   * @type {Array.<ol.RendererType>}
    */
-  var rendererHints;
+  var rendererTypes;
   if (goog.isDef(options.renderer)) {
     if (goog.isArray(options.renderer)) {
-      rendererHints = options.renderer;
+      rendererTypes = options.renderer;
     } else if (goog.isString(options.renderer)) {
-      rendererHints = [options.renderer];
+      rendererTypes = [options.renderer];
     } else {
       goog.asserts.fail('Incorrect format for renderer option');
     }
   } else {
-    rendererHints = ol.DEFAULT_RENDERER_HINTS;
+    rendererTypes = ol.DEFAULT_RENDERER_TYPES;
   }
 
   var i, ii;
-  for (i = 0, ii = rendererHints.length; i < ii; ++i) {
-    /** @type {ol.RendererHint} */
-    var rendererHint = rendererHints[i];
-    if (ol.ENABLE_CANVAS && rendererHint == ol.RendererHint.CANVAS) {
+  for (i = 0, ii = rendererTypes.length; i < ii; ++i) {
+    /** @type {ol.RendererType} */
+    var rendererType = rendererTypes[i];
+    if (ol.ENABLE_CANVAS && rendererType == ol.RendererType.CANVAS) {
       if (ol.BrowserFeature.HAS_CANVAS) {
         rendererConstructor = ol.renderer.canvas.Map;
         break;
       }
-    } else if (ol.ENABLE_DOM && rendererHint == ol.RendererHint.DOM) {
+    } else if (ol.ENABLE_DOM && rendererType == ol.RendererType.DOM) {
       if (ol.BrowserFeature.HAS_DOM) {
         rendererConstructor = ol.renderer.dom.Map;
         break;
       }
-    } else if (ol.ENABLE_WEBGL && rendererHint == ol.RendererHint.WEBGL) {
+    } else if (ol.ENABLE_WEBGL && rendererType == ol.RendererType.WEBGL) {
       if (ol.BrowserFeature.HAS_WEBGL) {
         rendererConstructor = ol.renderer.webgl.Map;
         break;

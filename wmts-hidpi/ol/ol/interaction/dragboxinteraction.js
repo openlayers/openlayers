@@ -35,7 +35,7 @@ ol.DragBoxEventType = {
   BOXSTART: 'boxstart',
   /**
    * Triggered upon drag box end.
-   * @event ol.DragBoxEvent#boxstart
+   * @event ol.DragBoxEvent#boxend
    * @todo api
    */
   BOXEND: 'boxend'
@@ -44,6 +44,7 @@ ol.DragBoxEventType = {
 
 
 /**
+ * @classdesc
  * Object representing a dragbox event.
  *
  * @param {string} type The event type.
@@ -59,6 +60,7 @@ ol.DragBoxEvent = function(type, coordinate) {
    * The coordinate of the drag event.
    * @const
    * @type {ol.Coordinate}
+   * @todo api
    */
   this.coordinate = coordinate;
 
@@ -68,6 +70,7 @@ goog.inherits(ol.DragBoxEvent, goog.events.Event);
 
 
 /**
+ * @classdesc
  * Allows the user to zoom the map by clicking and dragging on the map,
  * normally combined with an {@link ol.events.condition} that limits
  * it to when the shift key is held down.
@@ -76,7 +79,7 @@ goog.inherits(ol.DragBoxEvent, goog.events.Event);
  *
  * @constructor
  * @extends {ol.interaction.Pointer}
- * @fires {@link ol.DragBoxEvent} ol.DragBoxEvent
+ * @fires ol.DragBoxEvent
  * @param {olx.interaction.DragBoxOptions=} opt_options Options.
  * @todo api
  */
@@ -139,6 +142,7 @@ ol.interaction.DragBox.prototype.getGeometry = function() {
 
 /**
  * To be overriden by child classes.
+ * @param {ol.MapBrowserEvent} mapBrowserEvent Map browser event.
  * @protected
  */
 ol.interaction.DragBox.prototype.onBoxEnd = goog.nullFunction;

@@ -6,9 +6,12 @@ goog.require('ol.source.StaticVector');
 
 
 /**
+ * @classdesc
+ * Static vector source in IGC format
+ *
  * @constructor
  * @extends {ol.source.StaticVector}
- * @fires {@link ol.source.VectorEvent} ol.source.VectorEvent
+ * @fires ol.source.VectorEvent
  * @param {olx.source.IGCOptions=} opt_options Options.
  * @todo api
  */

@@ -9,8 +9,12 @@ goog.require('ol.Object');
 
 
 /**
- * Something to be painted over the map to provide a means for interaction
- * (buttons) or to show annotations (status bars).
+ * @classdesc
+ * Abstract parent class for controls.
+ * A control is a visible widget with a DOM element in a fixed position on the
+ * screen. They can involve user input (buttons), or be informational only;
+ * the position is determined using CSS. By default these are part of the map
+ * container, but can use any outside DOM element.
  *
  * @constructor
  * @extends {ol.Object}

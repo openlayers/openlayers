@@ -27,21 +27,26 @@ ol.MapEventType = {
 /**
  * @constructor
  * @extends {goog.events.Event}
+ * @implements {oli.MapEvent}
  * @param {string} type Event type.
  * @param {ol.Map} map Map.
- * @param {?oli.FrameState=} opt_frameState Frame state.
+ * @param {?olx.FrameState=} opt_frameState Frame state.
  */
 ol.MapEvent = function(type, map, opt_frameState) {
 
   goog.base(this, type);
 
   /**
+   * The map where the event occurred.
    * @type {ol.Map}
+   * @todo api
    */
   this.map = map;
 
   /**
-   * @type {?oli.FrameState}
+   * The frame state at the time of the event.
+   * @type {?olx.FrameState}
+   * @todo api
    */
   this.frameState = goog.isDef(opt_frameState) ? opt_frameState : null;
 

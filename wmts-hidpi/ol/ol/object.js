@@ -8,7 +8,6 @@ goog.provide('ol.Object');
 goog.provide('ol.ObjectEvent');
 goog.provide('ol.ObjectEventType');
 
-goog.require('goog.array');
 goog.require('goog.events');
 goog.require('goog.events.Event');
 goog.require('goog.functions');
@@ -51,6 +50,7 @@ ol.ObjectEvent = function(type, key) {
   /**
    * The name of the property whose value is changing.
    * @type {string}
+   * @todo api
    */
   this.key = key;
 
@@ -104,11 +104,21 @@ ol.ObjectAccessor.prototype.transform = function(from, to) {
 
 
 /**
- * Base class implementing KVO (Key Value Observing).
+ * @classdesc
+ * Abstract base class from which all non-trivial classes inherit.
+ *
+ * It provides standardised get/set methods, and implements a form of
+ * Key Value Observing. Setting a value triggers a change event, and 2 objects
+ * can be bound together such that a change in one will automatically be
+ * reflected in the other.
+ *
+ * See {@link ol.dom.Input} for specific case of binding an object with an
+ * HTML element.
+ *
  * @constructor
  * @extends {ol.Observable}
  * @param {Object.<string, *>=} opt_values Values.
- * @fires {@link ol.ObjectEvent} ol.ObjectEvent
+ * @fires ol.ObjectEvent
  * @todo api
  */
 ol.Object = function(opt_values) {

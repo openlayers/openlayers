@@ -13,7 +13,9 @@ goog.require('ol.interaction.Interaction');
 
 
 /**
+ * @classdesc
  * Allows the user to zoom the map by scrolling the mouse wheel.
+ *
  * @constructor
  * @extends {ol.interaction.Interaction}
  * @param {olx.interaction.MouseWheelZoomOptions=} opt_options Options.

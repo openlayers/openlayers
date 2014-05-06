@@ -11,6 +11,7 @@ goog.require('ol.interaction.Pointer');
 
 
 /**
+ * @classdesc
  * Allows the user to rotate the map by clicking and dragging on the map,
  * normally combined with an {@link ol.events.condition} that limits
  * it to when the alt and shift keys are held down.

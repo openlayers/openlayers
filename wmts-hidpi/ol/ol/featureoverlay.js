@@ -10,10 +10,19 @@ goog.require('ol.CollectionEventType');
 goog.require('ol.Feature');
 goog.require('ol.feature');
 goog.require('ol.render.EventType');
+goog.require('ol.style.ImageState');
 
 
 
 /**
+ * @classdesc
+ * A mechanism for changing the style of a small number of features on a
+ * temporary basis, for example highlighting. This is necessary with the Canvas
+ * renderer, where, unlike in SVG, features cannot be individually referenced.
+ * See examples/vector-layers for an example: create a FeatureOverlay with a
+ * different style, copy the feature(s) you want rendered in this different
+ * style into it, and then remove them again when you're finished.
+ *
  * @constructor
  * @param {olx.FeatureOverlayOptions=} opt_options Options.
  * @todo api
@@ -93,6 +102,37 @@ ol.FeatureOverlay.prototype.addFeature = function(feature) {
 
 
 /**
+ * @param {ol.render.IVectorContext|undefined} vectorContext Vector context.
+ * @param {ol.Feature} feature Feature.
+ * @param {ol.style.Style} style Style.
+ * @private
+ */
+ol.FeatureOverlay.prototype.drawFeature_ = function(vectorContext, feature,
+    style) {
+  var imageStyle = style.getImage();
+  if (!goog.isNull(imageStyle)) {
+    var imageState = imageStyle.getImageState();
+    if (imageState == ol.style.ImageState.LOADED ||
+        imageState == ol.style.ImageState.ERROR) {
+      imageStyle.unlistenImageChange(this.handleImageChange_, this);
+      if (imageState == ol.style.ImageState.LOADED) {
+        vectorContext.drawFeature(feature, style);
+      }
+    } else {
+      if (imageState == ol.style.ImageState.IDLE) {
+        imageStyle.load();
+      }
+      imageState = imageStyle.getImageState();
+      goog.asserts.assert(imageState == ol.style.ImageState.LOADING);
+      imageStyle.listenImageChange(this.handleImageChange_, this);
+    }
+  } else {
+    vectorContext.drawFeature(feature, style);
+  }
+};
+
+
+/**
  * @return {ol.Collection} Features collection.
  * @todo api
  */
@@ -138,6 +178,16 @@ ol.FeatureOverlay.prototype.handleFeaturesRemove_ = function(collectionEvent) {
 
 
 /**
+ * Handle changes in image style state.
+ * @param {goog.events.Event} event Image style change event.
+ * @private
+ */
+ol.FeatureOverlay.prototype.handleImageChange_ = function(event) {
+  this.render_();
+};
+
+
+/**
  * @param {ol.render.Event} event Event.
  * @private
  */
@@ -159,9 +209,9 @@ ol.FeatureOverlay.prototype.handleMapPostCompose_ = function(event) {
     }
     ii = styles.length;
     for (i = 0; i < ii; ++i) {
-      vectorContext.drawFeature(feature, styles[i]);
+      this.drawFeature_(vectorContext, feature, styles[i]);
     }
-  });
+  }, this);
 };
 
 

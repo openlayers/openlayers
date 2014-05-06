@@ -16,6 +16,7 @@ goog.require('ol.vec.Mat4');
 
 
 /**
+ * @classdesc
  * An image source whose images are canvas elements into which vector features
  * read from a vector source (`ol.source.Vector`) are drawn. An
  * `ol.source.ImageVector` object is to be used as the `source` of an image
@@ -143,13 +144,13 @@ ol.source.ImageVector.prototype.canvasFunctionInternal_ =
 /**
  * @inheritDoc
  */
-ol.source.ImageVector.prototype.forEachFeatureAtPixel =
-    function(extent, resolution, rotation, coordinate, callback) {
+ol.source.ImageVector.prototype.forEachFeatureAtPixel = function(
+    extent, resolution, rotation, coordinate, skippedFeatureUids, callback) {
   if (goog.isNull(this.replayGroup_)) {
     return undefined;
   } else {
     return this.replayGroup_.forEachGeometryAtPixel(
-        extent, resolution, 0, coordinate, {},
+        extent, resolution, 0, coordinate, skippedFeatureUids,
         /**
          * @param {ol.geom.Geometry} geometry Geometry.
          * @param {Object} data Data.

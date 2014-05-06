@@ -10,6 +10,9 @@ goog.require('ol.geom.flat.transform');
 
 
 /**
+ * @classdesc
+ * Abstract base class for geometry objects
+ *
  * @constructor
  * @extends {ol.geom.Geometry}
  * @todo api

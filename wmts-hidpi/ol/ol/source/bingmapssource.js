@@ -17,6 +17,9 @@ goog.require('ol.tilegrid.XYZ');
 
 
 /**
+ * @classdesc
+ * Layer source for Bing Maps tile data.
+ *
  * @constructor
  * @extends {ol.source.TileImage}
  * @param {olx.source.BingMapsOptions} options Bing Maps options.

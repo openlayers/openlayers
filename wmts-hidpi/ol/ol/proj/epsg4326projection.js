@@ -7,6 +7,9 @@ goog.require('ol.proj.Units');
 
 
 /**
+ * @classdesc
+ * Projection object for WGS84 geographic coordinates (EPSG:4326).
+ *
  * @constructor
  * @extends {ol.proj.Projection}
  * @param {string} code Code.

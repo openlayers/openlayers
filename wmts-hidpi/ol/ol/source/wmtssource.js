@@ -26,6 +26,9 @@ ol.source.WMTSRequestEncoding = {
 
 
 /**
+ * @classdesc
+ * Layer source for tile data from WMTS servers.
+ *
  * @constructor
  * @extends {ol.source.TileImage}
  * @param {olx.source.WMTSOptions} options WMTS options.
@@ -180,6 +183,7 @@ ol.source.WMTS = function(options) {
     crossOrigin: options.crossOrigin,
     extent: options.extent,
     logo: options.logo,
+    pixelRatio: goog.isDef(options.pixelRatio) ? options.pixelRatio : 1,
     projection: options.projection,
     tileGrid: tileGrid,
     tileLoadFunction: options.tileLoadFunction,

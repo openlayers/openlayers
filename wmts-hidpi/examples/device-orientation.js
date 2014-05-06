@@ -1,5 +1,8 @@
+var projection = ol.proj.get('EPSG:3857');
 var view = new ol.View2D({
   center: [0, 0],
+  projection: projection,
+  extent: projection.getExtent(),
   zoom: 2
 });
 var map = new ol.Map({
@@ -34,5 +37,5 @@ deviceOrientation.on(['change:beta', 'change:gamma'], function(event) {
   center[0] -= resolution * gamma * 25;
   center[1] += resolution * beta * 25;
 
-  view.setCenter(center);
+  view.setCenter(view.constrainCenter(center));
 });

@@ -149,7 +149,8 @@ ol.pointer.TouchSource.prototype.removePrimaryPointer_ = function(inPointer) {
  * @private
  */
 ol.pointer.TouchSource.prototype.resetClickCount_ = function() {
-  this.resetId_ = goog.global.setTimeout(this.resetClickCountHandler_,
+  this.resetId_ = goog.global.setTimeout(
+      goog.bind(this.resetClickCountHandler_, this),
       ol.pointer.TouchSource.CLICK_COUNT_TIMEOUT);
 };
 
@@ -217,17 +218,19 @@ ol.pointer.TouchSource.prototype.touchToPointer_ =
  */
 ol.pointer.TouchSource.prototype.processTouches_ =
     function(inEvent, inFunction) {
-  var tl = inEvent.getBrowserEvent().changedTouches;
-  var touchesCopy = goog.array.clone(tl);
-  var pointers = goog.array.map(touchesCopy,
-      goog.partial(this.touchToPointer_, inEvent), this);
-  // forward touch preventDefaults
-  goog.array.forEach(pointers, function(p) {
-    p.preventDefault = function() {
-      inEvent.preventDefault();
-    };
-  }, this);
-  goog.array.forEach(pointers, goog.partial(inFunction, inEvent), this);
+  var touches = Array.prototype.slice.call(
+      inEvent.getBrowserEvent().changedTouches);
+  var count = touches.length;
+  function preventDefault() {
+    inEvent.preventDefault();
+  }
+  var i, pointer;
+  for (i = 0; i < count; ++i) {
+    pointer = this.touchToPointer_(inEvent, touches[i]);
+    // forward touch preventDefaults
+    pointer.preventDefault = preventDefault;
+    inFunction.call(this, inEvent, pointer);
+  }
 };
 
 
@@ -265,9 +268,14 @@ ol.pointer.TouchSource.prototype.vacuumTouches_ = function(inEvent) {
   var touchList = inEvent.getBrowserEvent().touches;
   // pointerMap.getCount() should be < touchList.length here,
   // as the touchstart has not been processed yet.
-  if (goog.object.getCount(this.pointerMap) >= touchList.length) {
+  var keys = goog.object.getKeys(this.pointerMap);
+  var count = keys.length;
+  if (count >= touchList.length) {
     var d = [];
-    goog.object.forEach(this.pointerMap, function(value, key) {
+    var i, key, value;
+    for (i = 0; i < count; ++i) {
+      key = keys[i];
+      value = this.pointerMap[key];
       // Never remove pointerId == 1, which is mouse.
       // Touch identifiers are 2 smaller than their pointerId, which is the
       // index in pointermap.
@@ -275,8 +283,10 @@ ol.pointer.TouchSource.prototype.vacuumTouches_ = function(inEvent) {
           !this.findTouch_(touchList, key - 2)) {
         d.push(value.out);
       }
-    }, this);
-    goog.array.forEach(d, goog.partial(this.cancelOut_, inEvent), this);
+    }
+    for (i = 0; i < d.length; ++i) {
+      this.cancelOut_(inEvent, d[i]);
+    }
   }
 };
 

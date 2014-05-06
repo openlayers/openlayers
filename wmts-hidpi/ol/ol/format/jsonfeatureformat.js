@@ -9,6 +9,9 @@ goog.require('ol.format.FormatType');
 
 
 /**
+ * @classdesc
+ * Abstract base class for JSON feature formats.
+ *
  * @constructor
  * @extends {ol.format.Feature}
  */

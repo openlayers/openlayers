@@ -5,7 +5,6 @@
 
 goog.provide('ol.color');
 
-goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('goog.color');
 goog.require('goog.color.names');

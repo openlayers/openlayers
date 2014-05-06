@@ -15,6 +15,7 @@ goog.require('ol.interaction.Pointer');
 
 
 /**
+ * @classdesc
  * Allows the user to zoom and rotate the map by clicking and dragging
  * on the map.  By default, this interaction is limited to when the shift
  * key is held down.

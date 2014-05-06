@@ -21,6 +21,9 @@ goog.require('ol.source.wms.ServerType');
 
 
 /**
+ * @classdesc
+ * Layer source for tile data from WMS servers.
+ *
  * @constructor
  * @extends {ol.source.TileImage}
  * @param {olx.source.TileWMSOptions=} opt_options Tile WMS options.
@@ -68,12 +71,6 @@ ol.source.TileWMS = function(opt_options) {
    * @type {Object}
    */
   this.params_ = params;
-
-  /**
-   * @private
-   * @type {number}
-   */
-  this.pixelRatio_ = NaN;
 
   /**
    * @private
@@ -132,11 +129,6 @@ ol.source.TileWMS.prototype.getGetFeatureInfoUrl =
 
   goog.asserts.assert(!('VERSION' in params));
 
-  var pixelRatio = this.pixelRatio_;
-  if (isNaN(this.pixelRatio_)) {
-    return undefined;
-  }
-
   var tileGrid = this.getTileGrid();
   if (goog.isNull(tileGrid)) {
     tileGrid = this.getTileGridForProjection(projection);
@@ -160,6 +152,7 @@ ol.source.TileWMS.prototype.getGetFeatureInfoUrl =
     tileExtent = ol.extent.buffer(tileExtent,
         tileResolution * gutter, tileExtent);
   }
+  var pixelRatio = this.pixelRatio;
   if (pixelRatio != 1) {
     tileSize = (tileSize * pixelRatio + 0.5) | 0;
   }
@@ -381,7 +374,7 @@ ol.source.TileWMS.prototype.tileUrlFunction_ =
   };
   goog.object.extend(baseParams, this.params_);
 
-  this.pixelRatio_ = pixelRatio;
+  this.pixelRatio = pixelRatio;
 
   return this.getRequestUrl_(tileCoord, tileSize, tileExtent,
       pixelRatio, projection, baseParams);

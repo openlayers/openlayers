@@ -12,8 +12,10 @@ goog.require('ol.interaction.Pointer');
 
 
 /**
+ * @classdesc
  * Allows the user to zoom the map by pinching with two fingers
  * on a touch screen.
+ *
  * @constructor
  * @extends {ol.interaction.Pointer}
  * @param {olx.interaction.PinchZoomOptions=} opt_options Options.

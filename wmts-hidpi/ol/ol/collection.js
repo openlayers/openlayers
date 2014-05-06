@@ -47,6 +47,7 @@ ol.CollectionEvent = function(type, opt_element, opt_target) {
   /**
    * The element that is added to or removed from the collection.
    * @type {*}
+   * @todo api
    */
   this.element = opt_element;
 
@@ -64,12 +65,16 @@ ol.CollectionProperty = {
 
 
 /**
- * A mutable MVC Array.
+ * @classdesc
+ * Adds methods to standard Array; changes (add/remove) to the Collection
+ * trigger events. Because a Collection is itself an {@link ol.Object}, it
+ * can be bound to any other Object or Collection such that a change in one
+ * will automatically be reflected in the other.
+ *
  * @constructor
  * @extends {ol.Object}
- * @fires {@link ol.CollectionEvent} ol.CollectionEvent
+ * @fires ol.CollectionEvent
  * @param {Array=} opt_array Array.
- * @todo observable length {number} readonly the length of the array
  * @todo api
  */
 ol.Collection = function(opt_array) {
@@ -144,16 +149,17 @@ ol.Collection.prototype.getArray = function() {
  * Get the element at the provided index.
  * @param {number} index Index.
  * @return {*} Element.
- * @todo api
+ * @todo api stable
  */
-ol.Collection.prototype.getAt = function(index) {
+ol.Collection.prototype.item = function(index) {
   return this.array_[index];
 };
 
 
 /**
  * Get the length of this collection.
- * @return {number} Length.
+ * @return {number} The length of the array.
+ * @todo observable
  * @todo api
  */
 ol.Collection.prototype.getLength = function() {

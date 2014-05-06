@@ -8,6 +8,9 @@ goog.require('ol.tilegrid.TileGrid');
 
 
 /**
+ * @classdesc
+ * Set the grid pattern for sources accessing Zoomify tiled-image servers.
+ *
  * @constructor
  * @extends {ol.tilegrid.TileGrid}
  * @param {olx.tilegrid.ZoomifyOptions=} opt_options Options.

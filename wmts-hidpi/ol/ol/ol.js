@@ -16,9 +16,17 @@ ol.BUFFER_REPLACE_UNUSED_ENTRIES_WITH_NANS = goog.DEBUG;
 
 
 /**
+ * TODO: rename this to something having to do with tile grids
+ * see https://github.com/openlayers/ol3/issues/2076
  * @define {number} Default maximum zoom for default tile grids.
  */
 ol.DEFAULT_MAX_ZOOM = 42;
+
+
+/**
+ * @define {number} Default min zoom level for the map view.  Default is `0`.
+ */
+ol.DEFAULT_MIN_ZOOM = 0;
 
 
 /**
@@ -86,9 +94,9 @@ ol.ENABLE_IMAGE = true;
 /**
  * @define {boolean} Enable named colors.  Enabling named colors adds about 3KB
  *     uncompressed / 1.5KB compressed to the final build size.  Default is
- *     `true`.
+ *     `false`.
  */
-ol.ENABLE_NAMED_COLORS = true;
+ol.ENABLE_NAMED_COLORS = false;
 
 
 /**
