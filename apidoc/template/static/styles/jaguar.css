@@ -165,6 +165,9 @@ li {
   font-size: 0.7em;
   padding: 2px 4px;
 }
+.main h4.name span.type-signature.type a {
+  color: #e9e6ff;
+}
 .main h4.name span.type {
   margin-left: 5px;
 }
