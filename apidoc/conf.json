@@ -40,7 +40,7 @@
         "default": {
             "outputSourceFiles": true
         },
-    		"applicationName": "OpenLayers 3"
+        "applicationName": "OpenLayers 3"
     },
     "jsVersion": 180
 }
