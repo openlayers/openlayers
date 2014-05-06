@@ -1,5 +1,4 @@
 goog.require('ol.Map');
-goog.require('ol.RendererHints');
 goog.require('ol.View2D');
 goog.require('ol.animation');
 goog.require('ol.easing');
@@ -28,7 +27,7 @@ var map = new ol.Map({
       source: new ol.source.OSM()
     })
   ],
-  renderers: ol.RendererHints.createFromQueryData(),
+  renderer: exampleNS.getRendererFromQueryString(),
   target: 'map',
   view: view
 });
@@ -50,6 +49,17 @@ rotateRight.addEventListener('click', function() {
   map.beforeRender(rotateRight);
 }, false);
 
+var rotateAroundRome = document.getElementById('rotate-around-rome');
+rotateAroundRome.addEventListener('click', function() {
+  var currentRotation = view.getRotation();
+  var rotateAroundRome = ol.animation.rotate({
+    anchor: rome,
+    duration: 1000,
+    rotation: currentRotation
+  });
+  map.beforeRender(rotateAroundRome);
+  view.rotate(currentRotation + (Math.PI / 2), rome);
+}, false);
 
 var panToLondon = document.getElementById('pan-to-london');
 panToLondon.addEventListener('click', function() {

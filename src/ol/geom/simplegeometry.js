@@ -5,13 +5,14 @@ goog.require('goog.functions');
 goog.require('goog.object');
 goog.require('ol.extent');
 goog.require('ol.geom.Geometry');
-goog.require('ol.geom.flat');
+goog.require('ol.geom.flat.transform');
 
 
 
 /**
  * @constructor
  * @extends {ol.geom.Geometry}
+ * @todo api
  */
 ol.geom.SimpleGeometry = function() {
 
@@ -85,15 +86,26 @@ ol.geom.SimpleGeometry.prototype.containsXY = goog.functions.FALSE;
 
 /**
  * @inheritDoc
+ * @todo api
  */
 ol.geom.SimpleGeometry.prototype.getExtent = function(opt_extent) {
   if (this.extentRevision != this.getRevision()) {
     this.extent = ol.extent.createOrUpdateFromFlatCoordinates(
-        this.flatCoordinates, this.stride, this.extent);
+        this.flatCoordinates, 0, this.flatCoordinates.length, this.stride,
+        this.extent);
     this.extentRevision = this.getRevision();
   }
   goog.asserts.assert(goog.isDef(this.extent));
   return ol.extent.returnOrUpdate(this.extent, opt_extent);
+};
+
+
+/**
+ * @return {ol.Coordinate} First coordinate.
+ * @todo api
+ */
+ol.geom.SimpleGeometry.prototype.getFirstCoordinate = function() {
+  return this.flatCoordinates.slice(0, this.stride);
 };
 
 
@@ -106,7 +118,17 @@ ol.geom.SimpleGeometry.prototype.getFlatCoordinates = function() {
 
 
 /**
+ * @return {ol.Coordinate} Last point.
+ * @todo api
+ */
+ol.geom.SimpleGeometry.prototype.getLastCoordinate = function() {
+  return this.flatCoordinates.slice(this.flatCoordinates.length - this.stride);
+};
+
+
+/**
  * @return {ol.geom.GeometryLayout} Layout.
+ * @todo api
  */
 ol.geom.SimpleGeometry.prototype.getLayout = function() {
   return this.layout;
@@ -115,6 +137,7 @@ ol.geom.SimpleGeometry.prototype.getLayout = function() {
 
 /**
  * @inheritDoc
+ * @todo api
  */
 ol.geom.SimpleGeometry.prototype.getSimplifiedGeometry =
     function(squaredTolerance) {
@@ -220,7 +243,7 @@ ol.geom.SimpleGeometry.prototype.setLayout =
 /**
  * @inheritDoc
  */
-ol.geom.SimpleGeometry.prototype.transform = function(transformFn) {
+ol.geom.SimpleGeometry.prototype.applyTransform = function(transformFn) {
   if (!goog.isNull(this.flatCoordinates)) {
     transformFn(this.flatCoordinates, this.flatCoordinates, this.stride);
     this.dispatchChangeEvent();
@@ -241,7 +264,7 @@ ol.geom.transformSimpleGeometry2D =
     return null;
   } else {
     var stride = simpleGeometry.getStride();
-    return ol.geom.flat.transform2D(
+    return ol.geom.flat.transform.transform2D(
         flatCoordinates, stride, transform, opt_dest);
   }
 };

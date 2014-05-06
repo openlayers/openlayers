@@ -9,9 +9,8 @@ goog.require('ol.interaction.DragZoom');
 goog.require('ol.interaction.KeyboardPan');
 goog.require('ol.interaction.KeyboardZoom');
 goog.require('ol.interaction.MouseWheelZoom');
-goog.require('ol.interaction.TouchPan');
-goog.require('ol.interaction.TouchRotate');
-goog.require('ol.interaction.TouchZoom');
+goog.require('ol.interaction.PinchRotate');
+goog.require('ol.interaction.PinchZoom');
 
 
 /**
@@ -26,7 +25,7 @@ goog.require('ol.interaction.TouchZoom');
  * @param {olx.interaction.DefaultsOptions=} opt_options Defaults options.
  * @return {ol.Collection} A collection of interactions to be used with
  * the ol.Map constructor's interactions option.
- * @todo stability experimental
+ * @todo api
  */
 ol.interaction.defaults = function(opt_options) {
 
@@ -51,33 +50,25 @@ ol.interaction.defaults = function(opt_options) {
     }));
   }
 
-  var touchPan = goog.isDef(options.touchPan) ?
-      options.touchPan : true;
-  if (touchPan) {
-    interactions.push(new ol.interaction.TouchPan({
-      kinetic: kinetic
-    }));
-  }
-
-  var touchRotate = goog.isDef(options.touchRotate) ?
-      options.touchRotate : true;
-  if (touchRotate) {
-    interactions.push(new ol.interaction.TouchRotate());
-  }
-
-  var touchZoom = goog.isDef(options.touchZoom) ?
-      options.touchZoom : true;
-  if (touchZoom) {
-    interactions.push(new ol.interaction.TouchZoom({
-      duration: options.zoomDuration
-    }));
-  }
-
   var dragPan = goog.isDef(options.dragPan) ?
       options.dragPan : true;
   if (dragPan) {
     interactions.push(new ol.interaction.DragPan({
       kinetic: kinetic
+    }));
+  }
+
+  var pinchRotate = goog.isDef(options.pinchRotate) ?
+      options.pinchRotate : true;
+  if (pinchRotate) {
+    interactions.push(new ol.interaction.PinchRotate());
+  }
+
+  var pinchZoom = goog.isDef(options.pinchZoom) ?
+      options.pinchZoom : true;
+  if (pinchZoom) {
+    interactions.push(new ol.interaction.PinchZoom({
+      duration: options.zoomDuration
     }));
   }
 

@@ -28,9 +28,9 @@ ol.layer.GroupProperty = {
  * @constructor
  * @extends {ol.layer.Base}
  * @param {olx.layer.GroupOptions=} opt_options Layer options.
- * @todo stability experimental
- * @todo observable layers {ol.Collection} collection of layers that are part
- *       of this group
+ * @todo observable layers {ol.Collection} collection of {@link ol.layer} layers
+ *       that are part of this group
+ * @todo api
  */
 ol.layer.Group = function(opt_options) {
 
@@ -143,7 +143,6 @@ ol.layer.Group.prototype.handleLayersRemove_ = function(collectionEvent) {
 
 /**
  * @return {ol.Collection|undefined} Collection of layers.
- * @todo stability experimental
  */
 ol.layer.Group.prototype.getLayers = function() {
   return /** @type {ol.Collection|undefined} */ (this.get(
@@ -157,7 +156,6 @@ goog.exportProperty(
 
 /**
  * @param {ol.Collection|undefined} layers Collection of layers.
- * @todo stability experimental
  */
 ol.layer.Group.prototype.setLayers = function(layers) {
   this.set(ol.layer.GroupProperty.LAYERS, layers);
@@ -183,22 +181,19 @@ ol.layer.Group.prototype.getLayersArray = function(opt_array) {
 /**
  * @inheritDoc
  */
-ol.layer.Group.prototype.getLayerStatesArray = function(opt_obj) {
-  var obj = (goog.isDef(opt_obj)) ? opt_obj : {
-    layers: [],
-    layerStates: []
-  };
-  goog.asserts.assert(obj.layers.length === obj.layerStates.length);
-  var pos = obj.layers.length;
+ol.layer.Group.prototype.getLayerStatesArray = function(opt_states) {
+  var states = (goog.isDef(opt_states)) ? opt_states : [];
+
+  var pos = states.length;
 
   this.getLayers().forEach(function(layer) {
-    layer.getLayerStatesArray(obj);
+    layer.getLayerStatesArray(states);
   });
 
   var ownLayerState = this.getLayerState();
   var i, ii, layerState;
-  for (i = pos, ii = obj.layerStates.length; i < ii; i++) {
-    layerState = obj.layerStates[i];
+  for (i = pos, ii = states.length; i < ii; i++) {
+    layerState = states[i];
     layerState.brightness = goog.math.clamp(
         layerState.brightness + ownLayerState.brightness, -1, 1);
     layerState.contrast *= ownLayerState.contrast;
@@ -212,7 +207,7 @@ ol.layer.Group.prototype.getLayerStatesArray = function(opt_obj) {
         layerState.minResolution, ownLayerState.minResolution);
   }
 
-  return obj;
+  return states;
 };
 
 

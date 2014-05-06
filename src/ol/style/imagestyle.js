@@ -2,9 +2,6 @@ goog.provide('ol.style.Image');
 goog.provide('ol.style.ImageState');
 
 goog.require('goog.array');
-goog.require('goog.events');
-goog.require('goog.events.EventTarget');
-goog.require('goog.events.EventType');
 
 
 /**
@@ -19,13 +16,12 @@ ol.style.ImageState = {
 
 
 /**
- * @typedef {{anchor: Array.<number>,
- *            imageState: ol.style.ImageState,
+ * @typedef {{opacity: number,
+ *            origin: Array.<number>,
+ *            rotateWithView: boolean,
  *            rotation: number,
  *            scale: number,
- *            size: ol.Size,
- *            snapToPixel: (boolean|undefined),
- *            subtractViewRotation: boolean}}
+ *            snapToPixel: (boolean|undefined)}}
  */
 ol.style.ImageOptions;
 
@@ -34,23 +30,27 @@ ol.style.ImageOptions;
 /**
  * @constructor
  * @param {ol.style.ImageOptions} options Options.
- * @extends {goog.events.EventTarget}
+ * @todo api
  */
 ol.style.Image = function(options) {
 
-  goog.base(this);
+  /**
+   * @private
+   * @type {number}
+   */
+  this.opacity_ = options.opacity;
 
   /**
-   * @protected
+   * @private
    * @type {Array.<number>}
    */
-  this.anchor = options.anchor;
+  this.origin_ = options.origin;
 
   /**
-   * @protected
-   * @type {ol.style.ImageState}
+   * @private
+   * @type {boolean}
    */
-  this.imageState = options.imageState;
+  this.rotateWithView_ = options.rotateWithView;
 
   /**
    * @private
@@ -65,53 +65,41 @@ ol.style.Image = function(options) {
   this.scale_ = options.scale;
 
   /**
-   * @protected
-   * @type {ol.Size}
-   */
-  this.size = options.size;
-
-  /**
    * @private
    * @type {boolean|undefined}
    */
   this.snapToPixel_ = options.snapToPixel;
 
-  /**
-   * @private
-   * @type {boolean|undefined}
-   */
-  this.subtractViewRotation_ = options.subtractViewRotation;
-
-};
-goog.inherits(ol.style.Image, goog.events.EventTarget);
-
-
-/**
- * @protected
- */
-ol.style.Image.prototype.dispatchChangeEvent = function() {
-  this.dispatchEvent(goog.events.EventType.CHANGE);
 };
 
 
 /**
- * @return {Array.<number>} Anchor.
+ * @return {number} Opacity.
  */
-ol.style.Image.prototype.getAnchor = function() {
-  return this.anchor;
+ol.style.Image.prototype.getOpacity = function() {
+  return this.opacity_;
 };
 
 
 /**
- * @return {ol.style.ImageState} Image state.
+ * @return {Array.<number>} Origin.
  */
-ol.style.Image.prototype.getImageState = function() {
-  return this.imageState;
+ol.style.Image.prototype.getOrigin = function() {
+  return this.origin_;
+};
+
+
+/**
+ * @return {boolean} Rotate with map.
+ */
+ol.style.Image.prototype.getRotateWithView = function() {
+  return this.rotateWithView_;
 };
 
 
 /**
  * @return {number} Rotation.
+ * @todo api
  */
 ol.style.Image.prototype.getRotation = function() {
   return this.rotation_;
@@ -120,17 +108,10 @@ ol.style.Image.prototype.getRotation = function() {
 
 /**
  * @return {number} Scale.
+ * @todo api
  */
 ol.style.Image.prototype.getScale = function() {
   return this.scale_;
-};
-
-
-/**
- * @return {ol.Size} Size.
- */
-ol.style.Image.prototype.getSize = function() {
-  return this.size;
 };
 
 
@@ -143,18 +124,24 @@ ol.style.Image.prototype.getSnapToPixel = function() {
 
 
 /**
- * @return {boolean|undefined} Subtract view rotation?
+ * @function
+ * @return {Array.<number>} Anchor.
  */
-ol.style.Image.prototype.getSubtractViewRotation = function() {
-  return this.subtractViewRotation_;
-};
+ol.style.Image.prototype.getAnchor = goog.abstractMethod;
 
 
 /**
+ * @function
  * @param {number} pixelRatio Pixel ratio.
  * @return {HTMLCanvasElement|HTMLVideoElement|Image} Image element.
  */
 ol.style.Image.prototype.getImage = goog.abstractMethod;
+
+
+/**
+ * @return {ol.style.ImageState} Image state.
+ */
+ol.style.Image.prototype.getImageState = goog.abstractMethod;
 
 
 /**
@@ -165,6 +152,30 @@ ol.style.Image.prototype.getHitDetectionImage = goog.abstractMethod;
 
 
 /**
+ * @function
+ * @return {ol.Size} Size.
+ */
+ol.style.Image.prototype.getSize = goog.abstractMethod;
+
+
+/**
+ * @param {function(this: T, goog.events.Event)} listener Listener function.
+ * @param {T} thisArg Value to use as `this` when executing `listener`.
+ * @return {goog.events.Key|undefined} Listener key.
+ * @template T
+ */
+ol.style.Image.prototype.listenImageChange = goog.abstractMethod;
+
+
+/**
  * Load not yet loaded URI.
  */
 ol.style.Image.prototype.load = goog.abstractMethod;
+
+
+/**
+ * @param {function(this: T, goog.events.Event)} listener Listener function.
+ * @param {T} thisArg Value to use as `this` when executing `listener`.
+ * @template T
+ */
+ol.style.Image.prototype.unlistenImageChange = goog.abstractMethod;

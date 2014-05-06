@@ -1,7 +1,6 @@
 goog.require('ol.Feature');
 goog.require('ol.Map');
 goog.require('ol.Overlay');
-goog.require('ol.RendererHint');
 goog.require('ol.View2D');
 goog.require('ol.geom.LineString');
 goog.require('ol.geom.Point');
@@ -47,7 +46,7 @@ var vectorSource = new ol.source.Vector({
 });
 var vector = new ol.layer.Vector({
   source: vectorSource,
-  styleFunction: function(feature, resolution) {
+  style: function(feature, resolution) {
     return styles[feature.get('size')];
   }
 });
@@ -58,7 +57,6 @@ var popup = new ol.Overlay({
 
 var map = new ol.Map({
   layers: [vector],
-  renderer: ol.RendererHint.CANVAS,
   target: document.getElementById('map'),
   view: new ol.View2D({
     center: [0, 0],
@@ -88,7 +86,7 @@ var displaySnap = function(coordinate) {
       line.setCoordinates([coordinate, closestPoint]);
     }
   }
-  map.requestRenderFrame();
+  map.render();
 };
 
 $(map.getViewport()).on('mousemove', function(evt) {
@@ -96,7 +94,7 @@ $(map.getViewport()).on('mousemove', function(evt) {
   displaySnap(coordinate);
 });
 
-map.on('singleclick', function(evt) {
+map.on('click', function(evt) {
   displaySnap(evt.coordinate);
 });
 
@@ -113,14 +111,14 @@ var strokeStyle = new ol.style.Stroke({
   width: 3
 });
 map.on('postcompose', function(evt) {
-  var render = evt.render;
+  var vectorContext = evt.vectorContext;
   if (point !== null) {
-    render.setImageStyle(imageStyle);
-    render.drawPointGeometry(point);
+    vectorContext.setImageStyle(imageStyle);
+    vectorContext.drawPointGeometry(point);
   }
   if (line !== null) {
-    render.setFillStrokeStyle(null, strokeStyle);
-    render.drawLineStringGeometry(line);
+    vectorContext.setFillStrokeStyle(null, strokeStyle);
+    vectorContext.drawLineStringGeometry(line);
   }
 });
 

@@ -1,6 +1,5 @@
 goog.require('ol.Geolocation');
 goog.require('ol.Map');
-goog.require('ol.RendererHints');
 goog.require('ol.View2D');
 goog.require('ol.layer.Tile');
 goog.require('ol.source.BingMaps');
@@ -20,7 +19,7 @@ var map = new ol.Map({
       })
     })
   ],
-  renderers: ol.RendererHints.createFromQueryData(),
+  renderer: exampleNS.getRendererFromQueryString(),
   target: 'map',
   view: view
 });

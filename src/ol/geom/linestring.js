@@ -1,11 +1,17 @@
 goog.provide('ol.geom.LineString');
 
+goog.require('goog.array');
+goog.require('goog.asserts');
+goog.require('ol.array');
 goog.require('ol.extent');
 goog.require('ol.geom.GeometryType');
 goog.require('ol.geom.SimpleGeometry');
-goog.require('ol.geom.closest');
-goog.require('ol.geom.flat');
-goog.require('ol.geom.simplify');
+goog.require('ol.geom.flat.closest');
+goog.require('ol.geom.flat.deflate');
+goog.require('ol.geom.flat.inflate');
+goog.require('ol.geom.flat.interpolate');
+goog.require('ol.geom.flat.length');
+goog.require('ol.geom.flat.simplify');
 
 
 
@@ -13,11 +19,24 @@ goog.require('ol.geom.simplify');
  * @constructor
  * @extends {ol.geom.SimpleGeometry}
  * @param {ol.geom.RawLineString} coordinates Coordinates.
- * @param {ol.geom.GeometryLayout=} opt_layout Layout.
+ * @param {ol.geom.GeometryLayout|string=} opt_layout Layout.
+ * @todo api
  */
 ol.geom.LineString = function(coordinates, opt_layout) {
 
   goog.base(this);
+
+  /**
+   * @private
+   * @type {ol.Coordinate}
+   */
+  this.flatMidpoint_ = null;
+
+  /**
+   * @private
+   * @type {number}
+   */
+  this.flatMidpointRevision_ = -1;
 
   /**
    * @private
@@ -31,14 +50,31 @@ ol.geom.LineString = function(coordinates, opt_layout) {
    */
   this.maxDeltaRevision_ = -1;
 
-  this.setCoordinates(coordinates, opt_layout);
+  this.setCoordinates(coordinates,
+      /** @type {ol.geom.GeometryLayout|undefined} */ (opt_layout));
 
 };
 goog.inherits(ol.geom.LineString, ol.geom.SimpleGeometry);
 
 
 /**
+ * @param {ol.Coordinate} coordinate Coordinate.
+ * @todo api
+ */
+ol.geom.LineString.prototype.appendCoordinate = function(coordinate) {
+  goog.asserts.assert(coordinate.length == this.stride);
+  if (goog.isNull(this.flatCoordinates)) {
+    this.flatCoordinates = coordinate.slice();
+  } else {
+    ol.array.safeExtend(this.flatCoordinates, coordinate);
+  }
+  this.dispatchChangeEvent();
+};
+
+
+/**
  * @inheritDoc
+ * @todo api
  */
 ol.geom.LineString.prototype.clone = function() {
   var lineString = new ol.geom.LineString(null);
@@ -57,31 +93,72 @@ ol.geom.LineString.prototype.closestPointXY =
     return minSquaredDistance;
   }
   if (this.maxDeltaRevision_ != this.getRevision()) {
-    this.maxDelta_ = Math.sqrt(ol.geom.closest.getMaxSquaredDelta(
+    this.maxDelta_ = Math.sqrt(ol.geom.flat.closest.getMaxSquaredDelta(
         this.flatCoordinates, 0, this.flatCoordinates.length, this.stride, 0));
     this.maxDeltaRevision_ = this.getRevision();
   }
-  return ol.geom.closest.getClosestPoint(
+  return ol.geom.flat.closest.getClosestPoint(
       this.flatCoordinates, 0, this.flatCoordinates.length, this.stride,
       this.maxDelta_, false, x, y, closestPoint, minSquaredDistance);
 };
 
 
 /**
+ * Returns the coordinate at `m` using linear interpolation, or `null` if no
+ * such coordinate exists.
+ *
+ * `opt_extrapolate` controls extrapolation beyond the range of Ms in the
+ * MultiLineString. If `opt_extrapolate` is `true` then Ms less than the first
+ * M will return the first coordinate and Ms greater than the last M will
+ * return the last coordinate.
+ *
+ * @param {number} m M.
+ * @param {boolean=} opt_extrapolate Extrapolate.
+ * @return {ol.Coordinate} Coordinate.
+ * @todo api
+ */
+ol.geom.LineString.prototype.getCoordinateAtM = function(m, opt_extrapolate) {
+  if (this.layout != ol.geom.GeometryLayout.XYM &&
+      this.layout != ol.geom.GeometryLayout.XYZM) {
+    return null;
+  }
+  var extrapolate = goog.isDef(opt_extrapolate) ? opt_extrapolate : false;
+  return ol.geom.flat.lineStringCoordinateAtM(this.flatCoordinates, 0,
+      this.flatCoordinates.length, this.stride, m, extrapolate);
+};
+
+
+/**
  * @return {ol.geom.RawLineString} Coordinates.
+ * @todo api
  */
 ol.geom.LineString.prototype.getCoordinates = function() {
-  return ol.geom.flat.inflateCoordinates(
+  return ol.geom.flat.inflate.coordinates(
       this.flatCoordinates, 0, this.flatCoordinates.length, this.stride);
 };
 
 
 /**
  * @return {number} Length.
+ * @todo api
  */
 ol.geom.LineString.prototype.getLength = function() {
-  return ol.geom.flat.lineStringLength(
+  return ol.geom.flat.length.lineString(
       this.flatCoordinates, 0, this.flatCoordinates.length, this.stride);
+};
+
+
+/**
+ * @return {Array.<number>} Flat midpoint.
+ */
+ol.geom.LineString.prototype.getFlatMidpoint = function() {
+  if (this.flatMidpointRevision_ != this.getRevision()) {
+    this.flatMidpoint_ = ol.geom.flat.interpolate.lineString(
+        this.flatCoordinates, 0, this.flatCoordinates.length, this.stride,
+        0.5, this.flatMidpoint_);
+    this.flatMidpointRevision_ = this.getRevision();
+  }
+  return this.flatMidpoint_;
 };
 
 
@@ -91,7 +168,7 @@ ol.geom.LineString.prototype.getLength = function() {
 ol.geom.LineString.prototype.getSimplifiedGeometryInternal =
     function(squaredTolerance) {
   var simplifiedFlatCoordinates = [];
-  simplifiedFlatCoordinates.length = ol.geom.simplify.douglasPeucker(
+  simplifiedFlatCoordinates.length = ol.geom.flat.simplify.douglasPeucker(
       this.flatCoordinates, 0, this.flatCoordinates.length, this.stride,
       squaredTolerance, simplifiedFlatCoordinates, 0);
   var simplifiedLineString = new ol.geom.LineString(null);
@@ -103,6 +180,7 @@ ol.geom.LineString.prototype.getSimplifiedGeometryInternal =
 
 /**
  * @inheritDoc
+ * @todo api
  */
 ol.geom.LineString.prototype.getType = function() {
   return ol.geom.GeometryType.LINE_STRING;
@@ -112,6 +190,7 @@ ol.geom.LineString.prototype.getType = function() {
 /**
  * @param {ol.geom.RawLineString} coordinates Coordinates.
  * @param {ol.geom.GeometryLayout=} opt_layout Layout.
+ * @todo api
  */
 ol.geom.LineString.prototype.setCoordinates =
     function(coordinates, opt_layout) {
@@ -122,7 +201,7 @@ ol.geom.LineString.prototype.setCoordinates =
     if (goog.isNull(this.flatCoordinates)) {
       this.flatCoordinates = [];
     }
-    this.flatCoordinates.length = ol.geom.flat.deflateCoordinates(
+    this.flatCoordinates.length = ol.geom.flat.deflate.coordinates(
         this.flatCoordinates, 0, coordinates, this.stride);
     this.dispatchChangeEvent();
   }

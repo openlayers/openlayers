@@ -19,6 +19,14 @@ describe('ol.format.GeoJSON', function() {
     }
   };
 
+  var nullGeometryGeoJSON = {
+    'type': 'Feature',
+    'geometry': null,
+    'properties': {
+      'prop0': 'value0'
+    }
+  };
+
   var lineStringGeoJSON = {
     'type': 'Feature',
     'geometry': {
@@ -148,6 +156,14 @@ describe('ol.format.GeoJSON', function() {
       ]]);
       expect(feature.get('prop0')).to.be('value0');
       expect(feature.get('prop1')).to.eql({'this': 'that'});
+    });
+
+    it('can read a feature with null geometry', function() {
+      var feature = format.readFeature(nullGeometryGeoJSON);
+      expect(feature).to.be.an(ol.Feature);
+      var geometry = feature.getGeometry();
+      expect(geometry).to.eql(null);
+      expect(feature.get('prop0')).to.be('value0');
     });
 
     it('can read a feature collection', function() {

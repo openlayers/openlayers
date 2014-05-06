@@ -13,9 +13,10 @@ goog.require('goog.log.Logger');
 goog.require('goog.object');
 goog.require('goog.style');
 goog.require('goog.webgl');
-goog.require('ol.FrameState');
+goog.require('ol');
 goog.require('ol.Tile');
 goog.require('ol.css');
+goog.require('ol.dom');
 goog.require('ol.layer.Image');
 goog.require('ol.layer.Tile');
 goog.require('ol.render.Event');
@@ -31,12 +32,6 @@ goog.require('ol.structs.PriorityQueue');
 goog.require('ol.webgl');
 goog.require('ol.webgl.Context');
 goog.require('ol.webgl.WebGLContextEventType');
-
-
-/**
- * @define {number} Texture cache high water mark.
- */
-ol.WEBGL_TEXTURE_CACHE_HIGH_WATER_MARK = 1024;
 
 
 /**
@@ -69,13 +64,6 @@ ol.renderer.webgl.Map = function(container, map) {
 
   /**
    * @private
-   * @type {HTMLCanvasElement}
-   */
-  this.clipTileCanvas_ = /** @type {HTMLCanvasElement} */
-      (goog.dom.createElement(goog.dom.TagName.CANVAS));
-
-  /**
-   * @private
    * @type {number}
    */
   this.clipTileCanvasSize_ = 0;
@@ -84,8 +72,7 @@ ol.renderer.webgl.Map = function(container, map) {
    * @private
    * @type {CanvasRenderingContext2D}
    */
-  this.clipTileContext_ = /** @type {CanvasRenderingContext2D} */
-      (this.clipTileCanvas_.getContext('2d'));
+  this.clipTileContext_ = ol.dom.createCanvasContext2D();
 
   /**
    * @private
@@ -218,7 +205,7 @@ ol.renderer.webgl.Map.prototype.bindTileTexture =
     var texture = gl.createTexture();
     gl.bindTexture(goog.webgl.TEXTURE_2D, texture);
     if (tileGutter > 0) {
-      var clipTileCanvas = this.clipTileCanvas_;
+      var clipTileCanvas = this.clipTileContext_.canvas;
       var clipTileContext = this.clipTileContext_;
       if (this.clipTileCanvasSize_ != tileSize) {
         clipTileCanvas.width = tileSize;
@@ -258,10 +245,10 @@ ol.renderer.webgl.Map.prototype.bindTileTexture =
  * @inheritDoc
  */
 ol.renderer.webgl.Map.prototype.createLayerRenderer = function(layer) {
-  if (layer instanceof ol.layer.Tile) {
-    return new ol.renderer.webgl.TileLayer(this, layer);
-  } else if (layer instanceof ol.layer.Image) {
+  if (ol.ENABLE_IMAGE && layer instanceof ol.layer.Image) {
     return new ol.renderer.webgl.ImageLayer(this, layer);
+  } else if (ol.ENABLE_TILE && layer instanceof ol.layer.Tile) {
+    return new ol.renderer.webgl.TileLayer(this, layer);
   } else {
     goog.asserts.fail();
     return null;
@@ -271,7 +258,7 @@ ol.renderer.webgl.Map.prototype.createLayerRenderer = function(layer) {
 
 /**
  * @param {ol.render.EventType} type Event type.
- * @param {ol.FrameState} frameState Frame state.
+ * @param {oli.FrameState} frameState Frame state.
  * @private
  */
 ol.renderer.webgl.Map.prototype.dispatchComposeEvent_ =
@@ -311,7 +298,7 @@ ol.renderer.webgl.Map.prototype.disposeInternal = function() {
 
 /**
  * @param {ol.Map} map Map.
- * @param {ol.FrameState} frameState Frame state.
+ * @param {oli.FrameState} frameState Frame state.
  * @private
  */
 ol.renderer.webgl.Map.prototype.expireCache_ = function(map, frameState) {
@@ -449,27 +436,26 @@ ol.renderer.webgl.Map.prototype.renderFrame = function(frameState) {
   this.textureCache_.set((-frameState.index).toString(), null);
   ++this.textureCacheFrameMarkerCount_;
 
-  /** @type {Array.<ol.layer.Layer>} */
-  var layersToDraw = [];
-  var layersArray = frameState.layersArray;
+  /** @type {Array.<ol.layer.LayerState>} */
+  var layerStatesToDraw = [];
+  var layerStatesArray = frameState.layerStatesArray;
   var viewResolution = frameState.view2DState.resolution;
-  var i, ii, layer, layerRenderer, layerState;
-  for (i = 0, ii = layersArray.length; i < ii; ++i) {
-    layer = layersArray[i];
-    layerState = frameState.layerStates[goog.getUid(layer)];
+  var i, ii, layerState;
+  for (i = 0, ii = layerStatesArray.length; i < ii; ++i) {
+    layerState = layerStatesArray[i];
     if (layerState.visible &&
         layerState.sourceState == ol.source.State.READY &&
         viewResolution < layerState.maxResolution &&
         viewResolution >= layerState.minResolution) {
-      layersToDraw.push(layer);
+      layerStatesToDraw.push(layerState);
     }
   }
 
-  for (i = 0, ii = layersToDraw.length; i < ii; ++i) {
-    layer = layersToDraw[i];
-    layerRenderer = this.getLayerRenderer(layer);
+  var layerRenderer;
+  for (i = 0, ii = layerStatesToDraw.length; i < ii; ++i) {
+    layerState = layerStatesToDraw[i];
+    layerRenderer = this.getLayerRenderer(layerState.layer);
     goog.asserts.assertInstanceof(layerRenderer, ol.renderer.webgl.Layer);
-    layerState = frameState.layerStates[goog.getUid(layer)];
     layerRenderer.prepareFrame(frameState, layerState);
   }
 
@@ -489,10 +475,9 @@ ol.renderer.webgl.Map.prototype.renderFrame = function(frameState) {
 
   this.dispatchComposeEvent_(ol.render.EventType.PRECOMPOSE, frameState);
 
-  for (i = 0, ii = layersToDraw.length; i < ii; ++i) {
-    layer = layersToDraw[i];
-    layerState = frameState.layerStates[goog.getUid(layer)];
-    layerRenderer = this.getLayerRenderer(layer);
+  for (i = 0, ii = layerStatesToDraw.length; i < ii; ++i) {
+    layerState = layerStatesToDraw[i];
+    layerRenderer = this.getLayerRenderer(layerState.layer);
     goog.asserts.assertInstanceof(layerRenderer, ol.renderer.webgl.Layer);
     layerRenderer.composeFrame(frameState, layerState, context);
   }
@@ -517,5 +502,6 @@ ol.renderer.webgl.Map.prototype.renderFrame = function(frameState) {
   this.dispatchComposeEvent_(ol.render.EventType.POSTCOMPOSE, frameState);
 
   this.scheduleRemoveUnusedLayerRenderers(frameState);
+  this.scheduleExpireIconCache(frameState);
 
 };

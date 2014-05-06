@@ -1,7 +1,7 @@
 goog.provide('ol.render.IReplayGroup');
 
 goog.require('goog.functions');
-goog.require('ol.render.IRender');
+goog.require('ol.render.IVectorContext');
 
 
 /**
@@ -10,7 +10,8 @@ goog.require('ol.render.IRender');
 ol.render.ReplayType = {
   IMAGE: 'Image',
   LINE_STRING: 'LineString',
-  POLYGON: 'Polygon'
+  POLYGON: 'Polygon',
+  TEXT: 'Text'
 };
 
 
@@ -21,7 +22,8 @@ ol.render.ReplayType = {
 ol.render.REPLAY_ORDER = [
   ol.render.ReplayType.POLYGON,
   ol.render.ReplayType.LINE_STRING,
-  ol.render.ReplayType.IMAGE
+  ol.render.ReplayType.IMAGE,
+  ol.render.ReplayType.TEXT
 ];
 
 
@@ -43,7 +45,7 @@ ol.render.IReplayGroup.prototype.finish = function() {
 /**
  * @param {number|undefined} zIndex Z index.
  * @param {ol.render.ReplayType} replayType Replay type.
- * @return {ol.render.IRender} Replay.
+ * @return {ol.render.IVectorContext} Replay.
  */
 ol.render.IReplayGroup.prototype.getReplay = function(zIndex, replayType) {
 };

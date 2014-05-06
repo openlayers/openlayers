@@ -1,4 +1,0 @@
-@exportSymbol ol.animation.bounce
-@exportSymbol ol.animation.pan
-@exportSymbol ol.animation.rotate
-@exportSymbol ol.animation.zoom

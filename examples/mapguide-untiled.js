@@ -1,5 +1,4 @@
 goog.require('ol.Map');
-goog.require('ol.RendererHint');
 goog.require('ol.View2D');
 goog.require('ol.layer.Image');
 goog.require('ol.source.MapGuide');
@@ -30,7 +29,6 @@ var map = new ol.Map({
       })
     })
   ],
-  renderer: ol.RendererHint.CANVAS,
   target: 'map',
   view: new ol.View2D({
     center: [-87.7302542509315, 43.744459064634],

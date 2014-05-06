@@ -5,6 +5,7 @@ goog.provide('ol.style.Text');
 /**
  * @constructor
  * @param {olx.style.TextOptions=} opt_options Options.
+ * @todo api
  */
 ol.style.Text = function(opt_options) {
 
@@ -21,6 +22,12 @@ ol.style.Text = function(opt_options) {
    * @type {number|undefined}
    */
   this.rotation_ = options.rotation;
+
+  /**
+   * @private
+   * @type {number|undefined}
+   */
+  this.scale_ = options.scale;
 
   /**
    * @private
@@ -51,37 +58,24 @@ ol.style.Text = function(opt_options) {
    * @type {ol.style.Stroke}
    */
   this.stroke_ = goog.isDef(options.stroke) ? options.stroke : null;
-};
 
+  /**
+   * @private
+   * @type {number}
+   */
+  this.offsetX_ = goog.isDef(options.offsetX) ? options.offsetX : 0;
 
-/**
- * @param {ol.style.Text} textStyle1 Text style 1.
- * @param {ol.style.Text} textStyle2 Text style 2.
- * @return {boolean} Equals.
- */
-ol.style.Text.equals = function(textStyle1, textStyle2) {
-  if (!goog.isNull(textStyle1)) {
-    if (!goog.isNull(textStyle2)) {
-      return textStyle1 === textStyle2 || (
-          textStyle1.getFont() == textStyle2.getFont() &&
-          textStyle1.getText() == textStyle2.getText() &&
-          textStyle1.getTextAlign() == textStyle2.getTextAlign() &&
-          textStyle1.getTextBaseline() == textStyle2.getTextBaseline());
-    } else {
-      return false;
-    }
-  } else {
-    if (!goog.isNull(textStyle2)) {
-      return false;
-    } else {
-      return true;
-    }
-  }
+  /**
+   * @private
+   * @type {number}
+   */
+  this.offsetY_ = goog.isDef(options.offsetY) ? options.offsetY : 0;
 };
 
 
 /**
  * @return {string|undefined} Font.
+ * @todo api
  */
 ol.style.Text.prototype.getFont = function() {
   return this.font_;
@@ -89,7 +83,24 @@ ol.style.Text.prototype.getFont = function() {
 
 
 /**
+ * @return {number} Horizontal text offset.
+ */
+ol.style.Text.prototype.getOffsetX = function() {
+  return this.offsetX_;
+};
+
+
+/**
+ * @return {number} Vertical text offset.
+ */
+ol.style.Text.prototype.getOffsetY = function() {
+  return this.offsetY_;
+};
+
+
+/**
  * @return {ol.style.Fill} Fill style.
+ * @todo api
  */
 ol.style.Text.prototype.getFill = function() {
   return this.fill_;
@@ -98,6 +109,7 @@ ol.style.Text.prototype.getFill = function() {
 
 /**
  * @return {number|undefined} Rotation.
+ * @todo api
  */
 ol.style.Text.prototype.getRotation = function() {
   return this.rotation_;
@@ -105,7 +117,17 @@ ol.style.Text.prototype.getRotation = function() {
 
 
 /**
+ * @return {number|undefined} Scale.
+ * @todo api
+ */
+ol.style.Text.prototype.getScale = function() {
+  return this.scale_;
+};
+
+
+/**
  * @return {ol.style.Stroke} Stroke style.
+ * @todo api
  */
 ol.style.Text.prototype.getStroke = function() {
   return this.stroke_;
@@ -114,6 +136,7 @@ ol.style.Text.prototype.getStroke = function() {
 
 /**
  * @return {string|undefined} Text.
+ * @todo api
  */
 ol.style.Text.prototype.getText = function() {
   return this.text_;
@@ -122,6 +145,7 @@ ol.style.Text.prototype.getText = function() {
 
 /**
  * @return {string|undefined} Text align.
+ * @todo api
  */
 ol.style.Text.prototype.getTextAlign = function() {
   return this.textAlign_;
@@ -130,6 +154,7 @@ ol.style.Text.prototype.getTextAlign = function() {
 
 /**
  * @return {string|undefined} Text baseline.
+ * @todo api
  */
 ol.style.Text.prototype.getTextBaseline = function() {
   return this.textBaseline_;

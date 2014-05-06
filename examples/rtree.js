@@ -2,7 +2,6 @@
 // FIXME this example dives into private members and will never compile :)
 goog.require('ol.Feature');
 goog.require('ol.Map');
-goog.require('ol.RendererHint');
 goog.require('ol.View2D');
 goog.require('ol.extent');
 goog.require('ol.geom.Point');
@@ -37,7 +36,7 @@ var styleArray = [new ol.style.Style({
   })
 })];
 
-var colors = ['red', 'orange', 'yellow', 'blue', 'green', 'indigo', 'violet'];
+var colors = ['red', 'orange', 'yellow', 'green', 'blue', 'indigo', 'violet'];
 var depthStyle = [];
 for (i = 0, ii = colors.length; i < ii; ++i) {
   depthStyle[i] = new ol.style.Style({
@@ -84,23 +83,20 @@ for (i = 0, ii = extentsByDepth.length; i < ii; ++i) {
 
 var vector = new ol.layer.Vector({
   source: vectorSource,
-  styleFunction: function(feature, resolution) {
-    return styleArray;
-  }
+  style: styleArray
 });
 
 var rtree = new ol.layer.Vector({
   source: new ol.source.Vector({
     features: rtreeExtentFeatures
   }),
-  styleFunction: function(feature, resolution) {
+  style: function(feature, resolution) {
     return feature.get('styleArray');
   }
 });
 
 var map = new ol.Map({
   layers: [vector, rtree],
-  renderer: ol.RendererHint.CANVAS,
   target: 'map',
   view: new ol.View2D({
     center: [0, 0],

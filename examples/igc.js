@@ -1,6 +1,7 @@
 goog.require('ol.Attribution');
+goog.require('ol.Feature');
+goog.require('ol.FeatureOverlay');
 goog.require('ol.Map');
-goog.require('ol.RendererHint');
 goog.require('ol.View2D');
 goog.require('ol.geom.LineString');
 goog.require('ol.geom.Point');
@@ -9,6 +10,7 @@ goog.require('ol.layer.Vector');
 goog.require('ol.source.IGC');
 goog.require('ol.source.OSM');
 goog.require('ol.style.Circle');
+goog.require('ol.style.Fill');
 goog.require('ol.style.Stroke');
 goog.require('ol.style.Style');
 
@@ -38,6 +40,7 @@ var styleFunction = function(feature, resolution) {
 };
 
 var vectorSource = new ol.source.IGC({
+  projection: 'EPSG:3857',
   urls: [
     'data/igc/Clement-Latour.igc',
     'data/igc/Damien-de-Baenst.igc',
@@ -46,6 +49,19 @@ var vectorSource = new ol.source.IGC({
     'data/igc/Ulrich-Prinz.igc'
   ]
 });
+
+var time = {
+  start: Infinity,
+  stop: -Infinity,
+  duration: 0
+};
+vectorSource.on('addfeature', function(event) {
+  var geometry = event.feature.getGeometry();
+  time.start = Math.min(time.start, geometry.getFirstCoordinate()[2]);
+  time.stop = Math.max(time.stop, geometry.getLastCoordinate()[2]);
+  time.duration = time.stop - time.start;
+});
+
 
 var map = new ol.Map({
   layers: [
@@ -63,10 +79,9 @@ var map = new ol.Map({
     }),
     new ol.layer.Vector({
       source: vectorSource,
-      styleFunction: styleFunction
+      style: styleFunction
     })
   ],
-  renderer: ol.RendererHint.CANVAS,
   target: 'map',
   view: new ol.View2D({
     center: [703365.7089403362, 5714629.865071137],
@@ -102,7 +117,7 @@ var displaySnap = function(coordinate) {
       line.setCoordinates(coordinates);
     }
   }
-  map.requestRenderFrame();
+  map.render();
 };
 
 $(map.getViewport()).on('mousemove', function(evt) {
@@ -110,7 +125,7 @@ $(map.getViewport()).on('mousemove', function(evt) {
   displaySnap(coordinate);
 });
 
-map.on('singleclick', function(evt) {
+map.on('click', function(evt) {
   displaySnap(evt.coordinate);
 });
 
@@ -127,13 +142,44 @@ var strokeStyle = new ol.style.Stroke({
   width: 1
 });
 map.on('postcompose', function(evt) {
-  var render = evt.render;
+  var vectorContext = evt.vectorContext;
   if (point !== null) {
-    render.setImageStyle(imageStyle);
-    render.drawPointGeometry(point);
+    vectorContext.setImageStyle(imageStyle);
+    vectorContext.drawPointGeometry(point);
   }
   if (line !== null) {
-    render.setFillStrokeStyle(null, strokeStyle);
-    render.drawLineStringGeometry(line);
+    vectorContext.setFillStrokeStyle(null, strokeStyle);
+    vectorContext.drawLineStringGeometry(line);
   }
+});
+
+var featureOverlay = new ol.FeatureOverlay({
+  map: map,
+  style: new ol.style.Style({
+    image: new ol.style.Circle({
+      radius: 5,
+      fill: new ol.style.Fill({
+        color: 'rgba(255,0,0,0.9)'
+      }),
+      stroke: null
+    })
+  })
+});
+
+$('#time').on('input', function(event) {
+  var value = parseInt($(this).val(), 10) / 100;
+  var m = time.start + (time.duration * value);
+  vectorSource.forEachFeature(function(feature) {
+    var geometry = /** @type {ol.geom.LineString} */ (feature.getGeometry());
+    var coordinate = geometry.getCoordinateAtM(m, true);
+    var highlight = feature.get('highlight');
+    if (highlight === undefined) {
+      highlight = new ol.Feature(new ol.geom.Point(coordinate));
+      feature.set('highlight', highlight);
+      featureOverlay.addFeature(highlight);
+    } else {
+      highlight.getGeometry().setCoordinates(coordinate);
+    }
+  });
+  map.render();
 });

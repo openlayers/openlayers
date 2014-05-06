@@ -1,14 +1,16 @@
 goog.provide('ol.source.TopoJSON');
 
 goog.require('ol.format.TopoJSON');
-goog.require('ol.source.VectorFile');
+goog.require('ol.source.StaticVector');
 
 
 
 /**
  * @constructor
- * @extends {ol.source.VectorFile}
+ * @extends {ol.source.StaticVector}
+ * @fires {@link ol.source.VectorEvent} ol.source.VectorEvent
  * @param {olx.source.TopoJSONOptions=} opt_options Options.
+ * @todo api
  */
 ol.source.TopoJSON = function(opt_options) {
 
@@ -23,10 +25,9 @@ ol.source.TopoJSON = function(opt_options) {
     logo: options.logo,
     object: options.object,
     projection: options.projection,
-    reprojectTo: options.reprojectTo,
     text: options.text,
     url: options.url
   });
 
 };
-goog.inherits(ol.source.TopoJSON, ol.source.VectorFile);
+goog.inherits(ol.source.TopoJSON, ol.source.StaticVector);

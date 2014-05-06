@@ -1,7 +1,0 @@
-@exportProperty ol.source.Source.prototype.getExtent
-@exportProperty ol.source.Source.prototype.getState
-
-@exportSymbol ol.source.State
-@exportProperty ol.source.State.LOADING
-@exportProperty ol.source.State.READY
-@exportProperty ol.source.State.ERROR

@@ -6,8 +6,8 @@ exports.defineTags = function(dictionary) {
     canHaveName: true,
     onTagged: function(doclet, tag) {
       var parts = tag.text.split(' ');
-      if (parts[0] === 'stability') {
-        doclet.stability = parts.slice(1).join(' ');
+      if (parts[0] === 'api') {
+        doclet.stability = parts.slice(1).join(' ') || 'experimental';
       } else if (parts[0] === 'observable') {
         if (!doclet.observables) {
           doclet.observables = [];
@@ -22,6 +22,12 @@ exports.defineTags = function(dictionary) {
           description: description,
           readonly: readonly
         });
+        if (!doclet.fires) {
+          doclet.fires = [];
+        }
+        if (doclet.fires.indexOf('{@link ol.ObjectEvent} ol.event:ObjectEvent') === -1) {
+          doclet.fires.push('{@link ol.ObjectEvent} ol.event:ObjectEvent');
+        }
       }
     }
   });

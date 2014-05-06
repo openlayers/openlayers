@@ -47,14 +47,15 @@
   "disambiguate-properties": true,
 
   "externs": [
-    "//json.js",
     "../externs/bingmaps.js",
     "../externs/closure-compiler.js",
     "../externs/geojson.js",
     "../externs/oli.js",
+    "../externs/olx.js",
     "../externs/proj4js.js",
     "../externs/tilejson.js",
-    "../externs/topojson.js"
+    "../externs/topojson.js",
+    "../externs/vbarray.js"
   ],
 
   "level": "VERBOSE",
@@ -67,7 +68,6 @@
   ],
 
   "paths": [
-    "../build/src/internal/src",
     "../src"
   ],
 

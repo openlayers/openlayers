@@ -1,6 +1,5 @@
 goog.require('ol.BrowserFeature');
 goog.require('ol.Map');
-goog.require('ol.RendererHint');
 goog.require('ol.View2D');
 goog.require('ol.layer.Tile');
 goog.require('ol.source.MapQuest');
@@ -12,7 +11,7 @@ var domMap = new ol.Map({
       source: new ol.source.MapQuest({layer: 'sat'})
     })
   ],
-  renderer: ol.RendererHint.DOM,
+  renderer: 'dom',
   target: 'domMap',
   view: new ol.View2D({
     center: [0, 0],
@@ -22,7 +21,7 @@ var domMap = new ol.Map({
 
 if (ol.BrowserFeature.HAS_WEBGL) {
   var webglMap = new ol.Map({
-    renderer: ol.RendererHint.WEBGL,
+    renderer: 'webgl',
     target: 'webglMap'
   });
   webglMap.bindTo('layergroup', domMap);
@@ -36,7 +35,6 @@ if (ol.BrowserFeature.HAS_WEBGL) {
 }
 
 var canvasMap = new ol.Map({
-  renderer: ol.RendererHint.CANVAS,
   target: 'canvasMap'
 });
 canvasMap.bindTo('layergroup', domMap);

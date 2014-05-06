@@ -2,15 +2,28 @@ goog.provide('ol.render.Event');
 goog.provide('ol.render.EventType');
 
 goog.require('goog.events.Event');
-goog.require('ol.render.IRender');
+goog.require('ol.render.IVectorContext');
 
 
 /**
  * @enum {string}
  */
 ol.render.EventType = {
+  /**
+   * @event ol.render.Event#postcompose
+   * @todo api
+   */
   POSTCOMPOSE: 'postcompose',
-  PRECOMPOSE: 'precompose'
+  /**
+   * @event ol.render.Event#precompose
+   * @todo api
+   */
+  PRECOMPOSE: 'precompose',
+  /**
+   * @event ol.render.Event#render
+   * @todo api
+   */
+  RENDER: 'render'
 };
 
 
@@ -21,33 +34,37 @@ ol.render.EventType = {
  * @implements {oli.render.Event}
  * @param {ol.render.EventType} type Type.
  * @param {Object=} opt_target Target.
- * @param {ol.render.IRender=} opt_render Render.
- * @param {ol.FrameState=} opt_frameState Frame state.
+ * @param {ol.render.IVectorContext=} opt_vectorContext Vector context.
+ * @param {oli.FrameState=} opt_frameState Frame state.
  * @param {?CanvasRenderingContext2D=} opt_context Context.
  * @param {?ol.webgl.Context=} opt_glContext WebGL Context.
  */
 ol.render.Event = function(
-    type, opt_target, opt_render, opt_frameState, opt_context,
+    type, opt_target, opt_vectorContext, opt_frameState, opt_context,
     opt_glContext) {
 
   goog.base(this, type, opt_target);
 
   /**
-   * @type {ol.render.IRender|undefined}
+   * @type {ol.render.IVectorContext|undefined}
    */
-  this.render = opt_render;
+  this.vectorContext = opt_vectorContext;
 
   /**
-   * @type {ol.FrameState|undefined}
+   * @type {oli.FrameState|undefined}
    */
   this.frameState = opt_frameState;
 
   /**
+   * Canvas context. Only available when a Canvas renderer is used,
+   * null otherwise.
    * @type {CanvasRenderingContext2D|null|undefined}
    */
   this.context = opt_context;
 
   /**
+   * WebGL context. Only available when a WebGL renderer is used, null
+   * otherwise.
    * @type {ol.webgl.Context|null|undefined}
    */
   this.glContext = opt_glContext;

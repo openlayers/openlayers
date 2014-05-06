@@ -1,6 +1,5 @@
 goog.require('ol.Attribution');
 goog.require('ol.Map');
-goog.require('ol.RendererHint');
 goog.require('ol.View2D');
 goog.require('ol.layer.Tile');
 goog.require('ol.proj');
@@ -23,7 +22,6 @@ var map = new ol.Map({
       })
     })
   ],
-  renderer: ol.RendererHint.CANVAS,
   view: new ol.View2D({
     center: ol.proj.transform([-121.1, 47.5], 'EPSG:4326', 'EPSG:3857'),
     zoom: 7

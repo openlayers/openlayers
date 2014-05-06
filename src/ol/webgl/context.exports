@@ -1,3 +1,0 @@
-@exportSymbol ol.webgl.Context
-@exportProperty ol.webgl.Context.prototype.getGL
-@exportProperty ol.webgl.Context.prototype.useProgram

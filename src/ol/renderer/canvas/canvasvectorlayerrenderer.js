@@ -1,18 +1,18 @@
 goog.provide('ol.renderer.canvas.VectorLayer');
 
+goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('goog.events');
-goog.require('goog.events.EventType');
-goog.require('goog.functions');
 goog.require('ol.ViewHint');
+goog.require('ol.dom');
 goog.require('ol.extent');
 goog.require('ol.feature');
 goog.require('ol.layer.Vector');
+goog.require('ol.render.EventType');
 goog.require('ol.render.canvas.ReplayGroup');
 goog.require('ol.renderer.canvas.Layer');
 goog.require('ol.renderer.vector');
 goog.require('ol.source.Vector');
-goog.require('ol.style.ImageState');
 
 
 
@@ -52,9 +52,21 @@ ol.renderer.canvas.VectorLayer = function(mapRenderer, vectorLayer) {
 
   /**
    * @private
+   * @type {function(ol.Feature, ol.Feature): number|null}
+   */
+  this.renderedRenderOrder_ = null;
+
+  /**
+   * @private
    * @type {ol.render.canvas.ReplayGroup}
    */
   this.replayGroup_ = null;
+
+  /**
+   * @private
+   * @type {CanvasRenderingContext2D}
+   */
+  this.context_ = ol.dom.createCanvasContext2D();
 
 };
 goog.inherits(ol.renderer.canvas.VectorLayer, ol.renderer.canvas.Layer);
@@ -71,13 +83,26 @@ ol.renderer.canvas.VectorLayer.prototype.composeFrame =
   this.dispatchPreComposeEvent(context, frameState, transform);
 
   var replayGroup = this.replayGroup_;
-  if (!goog.isNull(replayGroup)) {
-    var renderGeometryFunction = this.getRenderGeometryFunction_();
-    goog.asserts.assert(goog.isFunction(renderGeometryFunction));
-    context.globalAlpha = layerState.opacity;
+  if (!goog.isNull(replayGroup) && !replayGroup.isEmpty()) {
+    var layer = this.getLayer();
+    var replayContext;
+    if (layer.hasListener(ol.render.EventType.RENDER)) {
+      // resize and clear
+      this.context_.canvas.width = context.canvas.width;
+      this.context_.canvas.height = context.canvas.height;
+      replayContext = this.context_;
+    } else {
+      replayContext = context;
+    }
+    replayContext.globalAlpha = layerState.opacity;
     replayGroup.replay(
-        context, frameState.extent, frameState.pixelRatio, transform,
-        renderGeometryFunction);
+        replayContext, frameState.extent, frameState.pixelRatio, transform,
+        frameState.view2DState.rotation, frameState.skippedFeatureUids_);
+
+    if (replayContext != context) {
+      this.dispatchRenderEvent(replayContext, frameState, transform);
+      context.drawImage(replayContext.canvas, 0, 0);
+    }
   }
 
   this.dispatchPostComposeEvent(context, frameState, transform);
@@ -97,10 +122,8 @@ ol.renderer.canvas.VectorLayer.prototype.forEachFeatureAtPixel =
     var resolution = frameState.view2DState.resolution;
     var rotation = frameState.view2DState.rotation;
     var layer = this.getLayer();
-    var renderGeometryFunction = this.getRenderGeometryFunction_();
-    goog.asserts.assert(goog.isFunction(renderGeometryFunction));
     return this.replayGroup_.forEachGeometryAtPixel(extent, resolution,
-        rotation, coordinate, renderGeometryFunction,
+        rotation, coordinate, frameState.skippedFeatureUids_,
         /**
          * @param {ol.geom.Geometry} geometry Geometry.
          * @param {Object} data Data.
@@ -116,53 +139,13 @@ ol.renderer.canvas.VectorLayer.prototype.forEachFeatureAtPixel =
 
 
 /**
- * @private
- * @return {function(ol.geom.Geometry): boolean} Render geometry function.
- */
-ol.renderer.canvas.VectorLayer.prototype.getRenderGeometryFunction_ =
-    function() {
-  var vectorLayer = this.getLayer();
-  goog.asserts.assertInstanceof(vectorLayer, ol.layer.Vector);
-  var renderGeometryFunctions = vectorLayer.getRenderGeometryFunctions();
-  if (!goog.isDef(renderGeometryFunctions)) {
-    return goog.functions.TRUE;
-  }
-  var renderGeometryFunctionsArray = renderGeometryFunctions.getArray();
-  switch (renderGeometryFunctionsArray.length) {
-    case 0:
-      return goog.functions.TRUE;
-    case 1:
-      return renderGeometryFunctionsArray[0];
-    default:
-      return (
-          /**
-           * @param {ol.geom.Geometry} geometry Geometry.
-           * @return {boolean} Render geometry.
-           */
-          function(geometry) {
-            var i, ii;
-            for (i = 0, ii = renderGeometryFunctionsArray.length; i < ii; ++i) {
-              if (!renderGeometryFunctionsArray[i](geometry)) {
-                return false;
-              }
-            }
-            return true;
-          });
-  }
-};
-
-
-/**
  * Handle changes in image style state.
  * @param {goog.events.Event} event Image style change event.
  * @private
  */
-ol.renderer.canvas.VectorLayer.prototype.handleImageStyleChange_ =
+ol.renderer.canvas.VectorLayer.prototype.handleImageChange_ =
     function(event) {
-  var imageStyle = /** @type {ol.style.Image} */ (event.target);
-  if (imageStyle.getImageState() == ol.style.ImageState.LOADED) {
-    this.renderIfReadyAndVisible();
-  }
+  this.renderIfReadyAndVisible();
 };
 
 
@@ -187,13 +170,20 @@ ol.renderer.canvas.VectorLayer.prototype.prepareFrame =
   }
 
   var frameStateExtent = frameState.extent;
-  var frameStateResolution = frameState.view2DState.resolution;
+  var view2DState = frameState.view2DState;
+  var projection = view2DState.projection;
+  var resolution = view2DState.resolution;
   var pixelRatio = frameState.pixelRatio;
   var vectorLayerRevision = vectorLayer.getRevision();
+  var vectorLayerRenderOrder = vectorLayer.getRenderOrder();
+  if (!goog.isDef(vectorLayerRenderOrder)) {
+    vectorLayerRenderOrder = ol.renderer.vector.defaultOrder;
+  }
 
   if (!this.dirty_ &&
-      this.renderedResolution_ == frameStateResolution &&
+      this.renderedResolution_ == resolution &&
       this.renderedRevision_ == vectorLayerRevision &&
+      this.renderedRenderOrder_ == vectorLayerRenderOrder &&
       ol.extent.containsExtent(this.renderedExtent_, frameStateExtent)) {
     return;
   }
@@ -216,25 +206,43 @@ ol.renderer.canvas.VectorLayer.prototype.prepareFrame =
   if (!goog.isDef(styleFunction)) {
     styleFunction = ol.feature.defaultStyleFunction;
   }
-  var tolerance = frameStateResolution / (2 * pixelRatio);
-  var replayGroup = new ol.render.canvas.ReplayGroup(tolerance);
-  vectorSource.forEachFeatureInExtent(extent,
+  var tolerance = resolution / (2 * pixelRatio);
+  var replayGroup =
+      new ol.render.canvas.ReplayGroup(tolerance, extent, resolution);
+  vectorSource.loadFeatures(extent, resolution, projection);
+  var renderFeature =
       /**
        * @param {ol.Feature} feature Feature.
+       * @this {ol.renderer.canvas.VectorLayer}
        */
       function(feature) {
-        var dirty =
-            this.renderFeature(feature, frameStateResolution, pixelRatio,
-                styleFunction, replayGroup);
-        this.dirty_ = this.dirty_ || dirty;
-      }, this);
+    goog.asserts.assert(goog.isDef(styleFunction));
+    var dirty = this.renderFeature(
+        feature, resolution, pixelRatio, styleFunction, replayGroup);
+    this.dirty_ = this.dirty_ || dirty;
+  };
+  if (!goog.isNull(vectorLayerRenderOrder)) {
+    /** @type {Array.<ol.Feature>} */
+    var features = [];
+    vectorSource.forEachFeatureInExtentAtResolution(extent, resolution,
+        /**
+         * @param {ol.Feature} feature Feature.
+         */
+        function(feature) {
+          features.push(feature);
+        }, this);
+    goog.array.sort(features, vectorLayerRenderOrder);
+    goog.array.forEach(features, renderFeature, this);
+  } else {
+    vectorSource.forEachFeatureInExtentAtResolution(
+        extent, resolution, renderFeature, this);
+  }
   replayGroup.finish();
 
-  this.renderedResolution_ = frameStateResolution;
+  this.renderedResolution_ = resolution;
   this.renderedRevision_ = vectorLayerRevision;
-  if (!replayGroup.isEmpty()) {
-    this.replayGroup_ = replayGroup;
-  }
+  this.renderedRenderOrder_ = vectorLayerRenderOrder;
+  this.replayGroup_ = replayGroup;
 
 };
 
@@ -249,35 +257,18 @@ ol.renderer.canvas.VectorLayer.prototype.prepareFrame =
  */
 ol.renderer.canvas.VectorLayer.prototype.renderFeature =
     function(feature, resolution, pixelRatio, styleFunction, replayGroup) {
-  var loading = false;
   var styles = styleFunction(feature, resolution);
-  // FIXME if styles is null, should we use the default style?
   if (!goog.isDefAndNotNull(styles)) {
     return false;
   }
   // simplify to a tolerance of half a device pixel
   var squaredTolerance =
       resolution * resolution / (4 * pixelRatio * pixelRatio);
-  var i, ii, style, imageStyle, imageState;
+  var i, ii, loading = false;
   for (i = 0, ii = styles.length; i < ii; ++i) {
-    style = styles[i];
-    imageStyle = style.getImage();
-    if (!goog.isNull(imageStyle)) {
-      if (imageStyle.getImageState() == ol.style.ImageState.IDLE) {
-        goog.events.listenOnce(imageStyle, goog.events.EventType.CHANGE,
-            this.handleImageStyleChange_, false, this);
-        imageStyle.load();
-      } else if (imageStyle.getImageState() == ol.style.ImageState.LOADED) {
-        ol.renderer.vector.renderFeature(
-            replayGroup, feature, style, squaredTolerance, feature);
-      }
-      goog.asserts.assert(
-          imageStyle.getImageState() != ol.style.ImageState.IDLE);
-      loading = imageStyle.getImageState() == ol.style.ImageState.LOADING;
-    } else {
-      ol.renderer.vector.renderFeature(
-          replayGroup, feature, style, squaredTolerance, feature);
-    }
+    loading = ol.renderer.vector.renderFeature(
+        replayGroup, feature, styles[i], squaredTolerance, feature,
+        this.handleImageChange_, this) || loading;
   }
   return loading;
 };

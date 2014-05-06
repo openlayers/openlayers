@@ -1,5 +1,4 @@
 goog.require('ol.Map');
-goog.require('ol.RendererHint');
 goog.require('ol.View2D');
 goog.require('ol.layer.Tile');
 goog.require('ol.source.MapQuest');
@@ -20,7 +19,6 @@ var layers = [
   })
 ];
 var map = new ol.Map({
-  renderer: ol.RendererHint.CANVAS,
   layers: layers,
   target: 'map',
   view: new ol.View2D({

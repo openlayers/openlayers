@@ -1,15 +1,25 @@
 goog.provide('ol.source.Zoomify');
 
 goog.require('goog.array');
-goog.require('goog.dom');
-goog.require('goog.dom.TagName');
+goog.require('goog.asserts');
+goog.require('ol');
 goog.require('ol.ImageTile');
 goog.require('ol.TileCoord');
 goog.require('ol.TileState');
 goog.require('ol.TileUrlFunction');
+goog.require('ol.dom');
 goog.require('ol.proj');
 goog.require('ol.source.TileImage');
 goog.require('ol.tilegrid.Zoomify');
+
+
+/**
+ * @enum {string}
+ */
+ol.source.ZoomifyTierSizeCalculation = {
+  DEFAULT: 'default',
+  TRUNCATED: 'truncated'
+};
 
 
 
@@ -17,25 +27,49 @@ goog.require('ol.tilegrid.Zoomify');
  * @constructor
  * @extends {ol.source.TileImage}
  * @param {olx.source.ZoomifyOptions=} opt_options Options.
- * @todo stability experimental
+ * @todo api
  */
 ol.source.Zoomify = function(opt_options) {
 
   var options = goog.isDef(opt_options) ? opt_options : {};
 
   var size = options.size;
+  var tierSizeCalculation = goog.isDef(options.tierSizeCalculation) ?
+      options.tierSizeCalculation :
+      ol.source.ZoomifyTierSizeCalculation.DEFAULT;
+
   var imageWidth = size[0];
   var imageHeight = size[1];
-
   var tierSizeInTiles = [];
   var tileSize = ol.DEFAULT_TILE_SIZE;
-  while (imageWidth > tileSize || imageHeight > tileSize) {
-    tierSizeInTiles.push([
-      Math.ceil(imageWidth / tileSize),
-      Math.ceil(imageHeight / tileSize)
-    ]);
-    tileSize += tileSize;
+
+  switch (tierSizeCalculation) {
+    case ol.source.ZoomifyTierSizeCalculation.DEFAULT:
+      while (imageWidth > tileSize || imageHeight > tileSize) {
+        tierSizeInTiles.push([
+          Math.ceil(imageWidth / tileSize),
+          Math.ceil(imageHeight / tileSize)
+        ]);
+        tileSize += tileSize;
+      }
+      break;
+    case ol.source.ZoomifyTierSizeCalculation.TRUNCATED:
+      var width = imageWidth;
+      var height = imageHeight;
+      while (width > tileSize || height > tileSize) {
+        tierSizeInTiles.push([
+          Math.ceil(width / tileSize),
+          Math.ceil(height / tileSize)
+        ]);
+        width >>= 1;
+        height >>= 1;
+      }
+      break;
+    default:
+      goog.asserts.fail();
+      break;
   }
+
   tierSizeInTiles.push([1, 1]);
   tierSizeInTiles.reverse();
 
@@ -122,26 +156,21 @@ goog.inherits(ol.source.ZoomifyTile_, ol.ImageTile);
  * @inheritDoc
  */
 ol.source.ZoomifyTile_.prototype.getImage = function(opt_context) {
+  var tileSize = ol.DEFAULT_TILE_SIZE;
   var key = goog.isDef(opt_context) ? goog.getUid(opt_context).toString() : '';
   if (key in this.zoomifyImageByContext_) {
     return this.zoomifyImageByContext_[key];
   } else {
     var image = goog.base(this, 'getImage', opt_context);
     if (this.state == ol.TileState.LOADED) {
-      if (image.width == ol.DEFAULT_TILE_SIZE &&
-          image.height == ol.DEFAULT_TILE_SIZE) {
+      if (image.width == tileSize && image.height == tileSize) {
         this.zoomifyImageByContext_[key] = image;
         return image;
       } else {
-        var canvas = /** @type {HTMLCanvasElement} */
-            (goog.dom.createElement(goog.dom.TagName.CANVAS));
-        canvas.width = ol.DEFAULT_TILE_SIZE;
-        canvas.height = ol.DEFAULT_TILE_SIZE;
-        var context = /** @type {CanvasRenderingContext2D} */
-            (canvas.getContext('2d'));
+        var context = ol.dom.createCanvasContext2D(tileSize, tileSize);
         context.drawImage(image, 0, 0);
-        this.zoomifyImageByContext_[key] = canvas;
-        return canvas;
+        this.zoomifyImageByContext_[key] = context.canvas;
+        return context.canvas;
       }
     } else {
       return image;

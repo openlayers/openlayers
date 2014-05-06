@@ -4,10 +4,11 @@ goog.provide('ol.renderer.canvas.Map');
 
 goog.require('goog.asserts');
 goog.require('goog.dom');
-goog.require('goog.dom.TagName');
 goog.require('goog.style');
 goog.require('goog.vec.Mat4');
+goog.require('ol');
 goog.require('ol.css');
+goog.require('ol.dom');
 goog.require('ol.layer.Image');
 goog.require('ol.layer.Tile');
 goog.require('ol.layer.Vector');
@@ -36,10 +37,16 @@ ol.renderer.canvas.Map = function(container, map) {
 
   /**
    * @private
+   * @type {CanvasRenderingContext2D}
+   */
+  this.context_ = ol.dom.createCanvasContext2D();
+
+  /**
+   * @private
    * @type {HTMLCanvasElement}
    */
-  this.canvas_ = /** @type {HTMLCanvasElement} */
-      (goog.dom.createElement(goog.dom.TagName.CANVAS));
+  this.canvas_ = this.context_.canvas;
+
   this.canvas_.style.width = '100%';
   this.canvas_.style.height = '100%';
   this.canvas_.className = ol.css.CLASS_UNSELECTABLE;
@@ -50,13 +57,6 @@ ol.renderer.canvas.Map = function(container, map) {
    * @type {boolean}
    */
   this.renderedVisible_ = true;
-
-  /**
-   * @private
-   * @type {CanvasRenderingContext2D}
-   */
-  this.context_ = /** @type {CanvasRenderingContext2D} */
-      (this.canvas_.getContext('2d'));
 
   /**
    * @private
@@ -72,11 +72,11 @@ goog.inherits(ol.renderer.canvas.Map, ol.renderer.Map);
  * @inheritDoc
  */
 ol.renderer.canvas.Map.prototype.createLayerRenderer = function(layer) {
-  if (layer instanceof ol.layer.Image) {
+  if (ol.ENABLE_IMAGE && layer instanceof ol.layer.Image) {
     return new ol.renderer.canvas.ImageLayer(this, layer);
-  } else if (layer instanceof ol.layer.Tile) {
+  } else if (ol.ENABLE_TILE && layer instanceof ol.layer.Tile) {
     return new ol.renderer.canvas.TileLayer(this, layer);
-  } else if (layer instanceof ol.layer.Vector) {
+  } else if (ol.ENABLE_VECTOR && layer instanceof ol.layer.Vector) {
     return new ol.renderer.canvas.VectorLayer(this, layer);
   } else {
     goog.asserts.fail();
@@ -87,7 +87,7 @@ ol.renderer.canvas.Map.prototype.createLayerRenderer = function(layer) {
 
 /**
  * @param {ol.render.EventType} type Event type.
- * @param {ol.FrameState} frameState Frame state.
+ * @param {oli.FrameState} frameState Frame state.
  * @private
  */
 ol.renderer.canvas.Map.prototype.dispatchComposeEvent_ =
@@ -104,8 +104,8 @@ ol.renderer.canvas.Map.prototype.dispatchComposeEvent_ =
         -pixelRatio / view2DState.resolution,
         -view2DState.rotation,
         -view2DState.center[0], -view2DState.center[1]);
-    var render = new ol.render.canvas.Immediate(
-        context, pixelRatio, frameState.extent, this.transform_);
+    var render = new ol.render.canvas.Immediate(context, pixelRatio,
+        frameState.extent, this.transform_, view2DState.rotation);
     var composeEvent = new ol.render.Event(type, map, render, frameState,
         context, null);
     map.dispatchEvent(composeEvent);
@@ -152,15 +152,14 @@ ol.renderer.canvas.Map.prototype.renderFrame = function(frameState) {
 
   this.dispatchComposeEvent_(ol.render.EventType.PRECOMPOSE, frameState);
 
-  var layerStates = frameState.layerStates;
-  var layersArray = frameState.layersArray;
+  var layerStatesArray = frameState.layerStatesArray;
   var viewResolution = frameState.view2DState.resolution;
   var i, ii, layer, layerRenderer, layerState;
-  for (i = 0, ii = layersArray.length; i < ii; ++i) {
-    layer = layersArray[i];
+  for (i = 0, ii = layerStatesArray.length; i < ii; ++i) {
+    layerState = layerStatesArray[i];
+    layer = layerState.layer;
     layerRenderer = this.getLayerRenderer(layer);
     goog.asserts.assertInstanceof(layerRenderer, ol.renderer.canvas.Layer);
-    layerState = layerStates[goog.getUid(layer)];
     if (!layerState.visible ||
         layerState.sourceState != ol.source.State.READY ||
         viewResolution >= layerState.maxResolution ||
@@ -179,5 +178,5 @@ ol.renderer.canvas.Map.prototype.renderFrame = function(frameState) {
   }
 
   this.scheduleRemoveUnusedLayerRenderers(frameState);
-
+  this.scheduleExpireIconCache(frameState);
 };

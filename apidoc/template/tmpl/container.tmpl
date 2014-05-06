@@ -27,8 +27,7 @@
     <?js if (doc.kind === 'module' && doc.module) { ?>
         <?js= self.partial('method.tmpl', doc.module) ?>
     <?js } ?>
-    
-    <?js if (doc.kind === 'class') { ?>
+    <?js if (doc.kind === 'class' && !doc.hideConstructor && !doc.interface) { ?>
         <?js= self.partial('method.tmpl', doc) ?>
     <?js } else { ?>
         <?js if (doc.description) { ?>
@@ -48,7 +47,8 @@
         <h3 class="subsection-title">Extends</h3>
         
         <ul><?js doc.augments.forEach(function(a) { ?>
-            <li><?js= self.linkto(a, a) ?></li>
+            <li><?js= self.linkto(a, a) ?>
+              <?js= (doc.implements&&doc.implements.indexOf(a)>-1?'(Interface)':'') ?></li>
         <?js }); ?></ul>
     <?js } ?>
     
@@ -102,6 +102,18 @@
     <?js } ?>
 
     <?js
+        var events = doc.events;
+        if (events && events.length && events.forEach) {
+    ?>
+        <h3 class="subsection-title">Events</h3>
+        <?js if (observables && observables.length) { ?>
+        <p>These events are available in addition to the <b>Observable Properties</b> events listed above.</p>
+        <?js } ?>
+        <dl><?js= self.partial('events.tmpl', events) ?></dl>
+
+    <?js } ?>
+
+    <?js
         var members = self.find({kind: 'member', memberof: title === 'Globals'? {isUndefined: true} : doc.longname});
         if (members && members.length && members.forEach) { 
     ?>
@@ -130,7 +142,7 @@
         <h3 class="subsection-title">TypeDefs</h3>
         
         <dl><?js typedefs.forEach(function(e) { ?>
-            <?js= self.partial('members.tmpl', e) ?>
+            <?js= self.partial(e.params ? 'method.tmpl' : 'members.tmpl', e) ?>
         <?js }); ?></dl>
     <?js } ?>
     

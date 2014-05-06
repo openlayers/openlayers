@@ -1,6 +1,5 @@
 goog.require('ol.Feature');
 goog.require('ol.Map');
-goog.require('ol.RendererHint');
 goog.require('ol.View2D');
 goog.require('ol.geom.Circle');
 goog.require('ol.layer.Tile');
@@ -178,7 +177,7 @@ vectorSource.addFeature(new ol.Feature(new ol.geom.Circle([5e6, 7e6], 1e6)));
 
 var vectorLayer = new ol.layer.Vector({
   source: vectorSource,
-  styleFunction: styleFunction
+  style: styleFunction
 });
 
 var map = new ol.Map({
@@ -188,7 +187,6 @@ var map = new ol.Map({
     }),
     vectorLayer
   ],
-  renderer: ol.RendererHint.CANVAS,
   target: 'map',
   view: new ol.View2D({
     center: [0, 0],

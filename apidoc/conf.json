@@ -8,15 +8,25 @@
     },
     "source": {
         "includePattern": ".+\\.js(doc)?$",
-        "excludePattern": "(^|\\/|\\\\)_"
+        "excludePattern": "(^|\\/|\\\\)_",
+        "exclude": [
+            "src/googx/dom/fullscreen.js"
+        ],
+        "include": [
+            "src",
+            "externs/oli.js",
+            "externs/olx.js"
+        ]
     },
     "plugins": [
-        "plugins/markdown",
+        "node_modules/jsdoc/plugins/markdown",
         "apidoc/plugins/inheritdoc",
-        "apidoc/plugins/exports",
+        "apidoc/plugins/interface",
+        "apidoc/plugins/typedefs",
+        "apidoc/plugins/inheritdoc",
+        "apidoc/plugins/api",
         "apidoc/plugins/todo",
-        "apidoc/plugins/observable",
-        "apidoc/plugins/stability"
+        "apidoc/plugins/observable"
     ],
     "markdown": {
         "parser": "gfm"

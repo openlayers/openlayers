@@ -13,22 +13,21 @@
   "id": "ol-simple",
 
   "externs": [
-    "//json.js",
-    "../build/src/external/externs/types.js",
     "../externs/bingmaps.js",
     "../externs/closure-compiler.js",
     "../externs/geojson.js",
     "../externs/oli.js",
+    "../externs/olx.js",
     "../externs/proj4js.js",
     "../externs/tilejson.js",
-    "../externs/topojson.js"
+    "../externs/topojson.js",
+    "../externs/vbarray.js"
   ],
 
   "inherits": "ol.json",
 
   "inputs": [
-    "../build/src/internal/src/requireall.js",
-    "../build/src/external/src/exports.js"
+    "../build/exports.js"
   ],
 
   "mode": "SIMPLE",

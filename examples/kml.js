@@ -1,5 +1,4 @@
 goog.require('ol.Map');
-goog.require('ol.RendererHint');
 goog.require('ol.View2D');
 goog.require('ol.layer.Tile');
 goog.require('ol.layer.Vector');
@@ -15,14 +14,13 @@ var raster = new ol.layer.Tile({
 
 var vector = new ol.layer.Vector({
   source: new ol.source.KML({
-    reprojectTo: 'EPSG:3857',
+    projection: 'EPSG:3857',
     url: 'data/kml/2012-02-10.kml'
   })
 });
 
 var map = new ol.Map({
   layers: [raster, vector],
-  renderer: ol.RendererHint.CANVAS,
   target: document.getElementById('map'),
   view: new ol.View2D({
     center: [876970.8463461736, 5859807.853963373],
@@ -54,6 +52,6 @@ $(map.getViewport()).on('mousemove', function(evt) {
   displayFeatureInfo(pixel);
 });
 
-map.on('singleclick', function(evt) {
+map.on('click', function(evt) {
   displayFeatureInfo(evt.pixel);
 });

@@ -1,53 +1,4 @@
 goog.provide('ol.test.Map');
-goog.provide('ol.test.RendererHints');
-
-describe('ol.RendererHints', function() {
-
-  describe('#createFromQueryData()', function() {
-
-    var savedGoogGlobal;
-
-    beforeEach(function() {
-      savedGoogGlobal = goog.global;
-      goog.global = {};
-    });
-
-    afterEach(function() {
-      goog.global = savedGoogGlobal;
-    });
-
-    it('returns defaults when no query string', function() {
-      goog.global.location = {search: ''};
-      var hints = ol.RendererHints.createFromQueryData();
-      expect(hints).to.be(ol.DEFAULT_RENDERER_HINTS);
-    });
-
-    it('returns defaults when no "renderer" or "renderers"', function() {
-      goog.global.location = {search: '?foo=bar'};
-      var hints = ol.RendererHints.createFromQueryData();
-      expect(hints).to.be(ol.DEFAULT_RENDERER_HINTS);
-    });
-
-    it('returns array of one for "renderer"', function() {
-      goog.global.location = {search: '?renderer=bogus'};
-      var hints = ol.RendererHints.createFromQueryData();
-      expect(hints).to.eql(['bogus']);
-    });
-
-    it('accepts comma delimited list for "renderers"', function() {
-      goog.global.location = {search: '?renderers=one,two'};
-      var hints = ol.RendererHints.createFromQueryData();
-      expect(hints).to.eql(['one', 'two']);
-    });
-
-    it('works with "renderer" in second position', function() {
-      goog.global.location = {search: '?foo=bar&renderer=one'};
-      var hints = ol.RendererHints.createFromQueryData();
-      expect(hints).to.eql(['one']);
-    });
-
-  });
-});
 
 describe('ol.Map', function() {
 
@@ -97,7 +48,7 @@ describe('ol.Map', function() {
     });
   });
 
-  describe('#requestRenderFrame()', function() {
+  describe('#render()', function() {
 
     var target, map;
 
@@ -127,7 +78,7 @@ describe('ol.Map', function() {
 
     it('results in an postrender event', function(done) {
 
-      map.requestRenderFrame();
+      map.render();
       map.on('postrender', function(event) {
         expect(event).to.be.a(ol.MapEvent);
         var frameState = event.frameState;
@@ -141,7 +92,7 @@ describe('ol.Map', function() {
       target.style.height = '0px';
       map.updateSize();
 
-      map.requestRenderFrame();
+      map.render();
       map.on('postrender', function(event) {
         expect(event).to.be.a(ol.MapEvent);
         var frameState = event.frameState;
@@ -155,7 +106,7 @@ describe('ol.Map', function() {
       target.style.width = '0px';
       map.updateSize();
 
-      map.requestRenderFrame();
+      map.render();
       map.on('postrender', function(event) {
         expect(event).to.be.a(ol.MapEvent);
         var frameState = event.frameState;
@@ -190,13 +141,12 @@ describe('ol.Map', function() {
       options = {
         altShiftDragRotate: false,
         doubleClickZoom: false,
-        dragPan: false,
         keyboard: false,
         mouseWheelZoom: false,
         shiftDragZoom: false,
-        touchPan: false,
-        touchRotate: false,
-        touchZoom: false
+        dragPan: false,
+        pinchRotate: false,
+        pinchZoom: false
       };
     });
 
@@ -242,8 +192,6 @@ goog.require('goog.dispose');
 goog.require('goog.dom');
 goog.require('ol.Map');
 goog.require('ol.MapEvent');
-goog.require('ol.RendererHint');
-goog.require('ol.RendererHints');
 goog.require('ol.View2D');
 goog.require('ol.interaction');
 goog.require('ol.interaction.Interaction');

@@ -1,6 +1,29 @@
 goog.provide('ol.render.canvas');
 
-goog.require('ol.color');
+
+/**
+ * @typedef {{fillStyle: string}}
+ */
+ol.render.canvas.FillState;
+
+
+/**
+ * @typedef {{lineCap: string,
+ *            lineDash: Array.<number>,
+ *            lineJoin: string,
+ *            lineWidth: number,
+ *            miterLimit: number,
+ *            strokeStyle: string}}
+ */
+ol.render.canvas.StrokeState;
+
+
+/**
+ * @typedef {{font: string,
+ *            textAlign: string,
+ *            textBaseline: string}}
+ */
+ol.render.canvas.TextState;
 
 
 /**
@@ -14,7 +37,7 @@ ol.render.canvas.defaultFont = '10px sans-serif';
  * @const
  * @type {ol.Color}
  */
-ol.render.canvas.defaultFillStyle = ol.color.fromString('black');
+ol.render.canvas.defaultFillStyle = [0, 0, 0, 1];
 
 
 /**
@@ -49,21 +72,21 @@ ol.render.canvas.defaultMiterLimit = 10;
  * @const
  * @type {ol.Color}
  */
-ol.render.canvas.defaultStrokeStyle = ol.color.fromString('black');
+ol.render.canvas.defaultStrokeStyle = [0, 0, 0, 1];
 
 
 /**
  * @const
  * @type {string}
  */
-ol.render.canvas.defaultTextAlign = 'start';
+ol.render.canvas.defaultTextAlign = 'center';
 
 
 /**
  * @const
  * @type {string}
  */
-ol.render.canvas.defaultTextBaseline = 'alphabetic';
+ol.render.canvas.defaultTextBaseline = 'middle';
 
 
 /**

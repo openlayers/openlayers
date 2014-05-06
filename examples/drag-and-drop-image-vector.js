@@ -1,5 +1,4 @@
 goog.require('ol.Map');
-goog.require('ol.RendererHints');
 goog.require('ol.View2D');
 goog.require('ol.format.GPX');
 goog.require('ol.format.GeoJSON');
@@ -105,7 +104,7 @@ var map = new ol.Map({
       })
     })
   ],
-  renderers: ol.RendererHints.createFromQueryData(),
+  renderer: exampleNS.getRendererFromQueryString(),
   target: 'map',
   view: new ol.View2D({
     center: [0, 0],
@@ -121,7 +120,7 @@ dragAndDropInteraction.on('addfeatures', function(event) {
   map.getLayers().push(new ol.layer.Image({
     source: new ol.source.ImageVector({
       source: vectorSource,
-      styleFunction: styleFunction
+      style: styleFunction
     })
   }));
   var view2D = map.getView().getView2D();
@@ -150,6 +149,6 @@ $(map.getViewport()).on('mousemove', function(evt) {
   displayFeatureInfo(pixel);
 });
 
-map.on('singleclick', function(evt) {
+map.on('click', function(evt) {
   displayFeatureInfo(evt.pixel);
 });

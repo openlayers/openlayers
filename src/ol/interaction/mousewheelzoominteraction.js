@@ -6,20 +6,9 @@ goog.require('goog.asserts');
 goog.require('goog.events.MouseWheelEvent');
 goog.require('goog.events.MouseWheelHandler.EventType');
 goog.require('goog.math');
+goog.require('ol');
 goog.require('ol.Coordinate');
 goog.require('ol.interaction.Interaction');
-
-
-/**
- * @define {number} Maximum delta.
- */
-ol.interaction.MOUSEWHEELZOOM_MAXDELTA = 1;
-
-
-/**
- * @define {number} Timeout duration.
- */
-ol.interaction.MOUSEWHEELZOOM_TIMEOUT_DURATION = 80;
 
 
 
@@ -28,7 +17,7 @@ ol.interaction.MOUSEWHEELZOOM_TIMEOUT_DURATION = 80;
  * @constructor
  * @extends {ol.interaction.Interaction}
  * @param {olx.interaction.MouseWheelZoomOptions=} opt_options Options.
- * @todo stability experimental
+ * @todo api
  */
 ol.interaction.MouseWheelZoom = function(opt_options) {
 
@@ -83,13 +72,13 @@ ol.interaction.MouseWheelZoom.prototype.handleMapBrowserEvent =
     goog.asserts.assertInstanceof(mouseWheelEvent, goog.events.MouseWheelEvent);
 
     this.lastAnchor_ = mapBrowserEvent.coordinate;
-    this.delta_ += mouseWheelEvent.deltaY / 3;
+    this.delta_ += mouseWheelEvent.deltaY;
 
     if (!goog.isDef(this.startTime_)) {
       this.startTime_ = goog.now();
     }
 
-    var duration = ol.interaction.MOUSEWHEELZOOM_TIMEOUT_DURATION;
+    var duration = ol.MOUSEWHEELZOOM_TIMEOUT_DURATION;
     var timeLeft = Math.max(duration - (goog.now() - this.startTime_), 0);
 
     goog.global.clearTimeout(this.timeoutId_);
@@ -108,13 +97,13 @@ ol.interaction.MouseWheelZoom.prototype.handleMapBrowserEvent =
  * @param {ol.Map} map Map.
  */
 ol.interaction.MouseWheelZoom.prototype.doZoom_ = function(map) {
-  var maxDelta = ol.interaction.MOUSEWHEELZOOM_MAXDELTA;
+  var maxDelta = ol.MOUSEWHEELZOOM_MAXDELTA;
   var delta = goog.math.clamp(this.delta_, -maxDelta, maxDelta);
 
   // FIXME works for View2D only
   var view = map.getView().getView2D();
 
-  map.requestRenderFrame();
+  map.render();
   ol.interaction.Interaction.zoomByDelta(map, view, -delta, this.lastAnchor_,
       this.duration_);
 

@@ -373,6 +373,39 @@ describe('ol.format.KML', function() {
         expect(gs).to.have.length(2);
         expect(gs[0]).to.be.an(ol.geom.LineString);
       });
+
+      it('can read dateTime', function() {
+        var text =
+            '<kml xmlns="http://earth.google.com/kml/2.2"' +
+            '     xmlns:gx="http://www.google.com/kml/ext/2.2">' +
+            '  <Placemark>' +
+            '    <gx:Track>' +
+            '      <when>2014</when>' +
+            '      <when>2014-02</when>' +
+            '      <when>2014-02-06</when>' +
+            '      <when>2014-02-06T19:39:03Z</when>' +
+            '      <when>2014-02-06T19:39:10+03:00</when>' +
+            '      <gx:coord>8.1 46.1 1909.9</gx:coord>' +
+            '      <gx:coord>8.2 46.2 1925.2</gx:coord>' +
+            '      <gx:coord>8.3 46.3 1926.2</gx:coord>' +
+            '      <gx:coord>8.4 46.4 1927.2</gx:coord>' +
+            '      <gx:coord>8.5 46.5 1928.2</gx:coord>' +
+            '    </gx:Track>' +
+            '  </Placemark>' +
+            '</kml>';
+        var fs = format.readFeatures(text);
+        var f = fs[0];
+        var g = f.getGeometry();
+        var flatCoordinates = g.flatCoordinates;
+        expect(flatCoordinates[3]).to.be.eql(Date.UTC(2014, 0, 1, 0, 0, 0));
+        expect(flatCoordinates[7]).to.be.eql(Date.UTC(2014, 1, 1, 0, 0, 0));
+        expect(flatCoordinates[11]).to.be.eql(Date.UTC(2014, 1, 6, 0, 0, 0));
+        expect(flatCoordinates[15]).to.be.eql(Date.UTC(2014, 1, 6, 19, 39, 3));
+        expect(flatCoordinates[19]).to.be.eql(
+            Date.UTC(2014, 1, 6, 19, 39, 10) + 3 * 60
+        );
+      });
+
     });
 
     describe('attributes', function() {
@@ -555,7 +588,7 @@ describe('ol.format.KML', function() {
         var imageStyle = style.getImage();
         expect(imageStyle).to.be.an(ol.style.Icon);
         expect(imageStyle.getSrc()).to.eql('http://foo.png');
-        expect(imageStyle.getAnchor()).to.eql([0.5, 0.5]);
+        expect(imageStyle.getAnchor()).to.be(null);
         expect(imageStyle.getRotation()).to.eql(0);
         expect(imageStyle.getSize()).to.be(null);
         expect(style.getText()).to.be(null);
@@ -884,7 +917,7 @@ describe('ol.format.KML', function() {
         expect(s.getFill().getColor()).to.eql([0, 0, 0, 0]);
       });
 
-      it('can read a normal styleUrls', function() {
+      it('can read normal styleUrls', function() {
         var text =
             '<kml xmlns="http://earth.google.com/kml/2.2">' +
             '  <Document>' +
@@ -949,6 +982,41 @@ describe('ol.format.KML', function() {
         var s = styleArray[0];
         expect(s).to.be.an(ol.style.Style);
         expect(s).to.be(ol.format.KML.DEFAULT_STYLE_);
+      });
+
+      it('can use Styles in StyleMaps before they are defined', function() {
+        var text =
+            '<kml xmlns="http://earth.google.com/kml/2.2">' +
+            '  <Document>' +
+            '    <StyleMap id="fooMap">' +
+            '      <Pair>' +
+            '        <key>normal</key>' +
+            '        <styleUrl>#foo</styleUrl>' +
+            '       </Pair>' +
+            '    </StyleMap>' +
+            '    <Style id="foo">' +
+            '      <PolyStyle>' +
+            '        <color>12345678</color>' +
+            '      </PolyStyle>' +
+            '    </Style>' +
+            '    <Placemark>' +
+            '      <styleUrl>#fooMap</styleUrl>' +
+            '    </Placemark>' +
+            '  </Document>' +
+            '</kml>';
+        var fs = format.readFeatures(text);
+        expect(fs).to.have.length(1);
+        var f = fs[0];
+        expect(f).to.be.an(ol.Feature);
+        var styleFunction = f.getStyleFunction();
+        expect(styleFunction).not.to.be(undefined);
+        var styleArray = styleFunction.call(f, 0);
+        expect(styleArray).to.be.an(Array);
+        expect(styleArray).to.have.length(1);
+        var s = styleArray[0];
+        expect(s).to.be.an(ol.style.Style);
+        expect(s.getFill()).not.to.be(null);
+        expect(s.getFill().getColor()).to.eql([120, 86, 52, 18 / 255]);
       });
 
     });
@@ -1365,7 +1433,7 @@ describe('ol.format.KML', function() {
 
     var features;
     before(function(done) {
-      afterLoadXml('spec/ol/format/kml/states.kml', function(xml) {
+      afterLoadText('spec/ol/format/kml/states.kml', function(xml) {
         try {
           features = format.readFeatures(xml);
         } catch (e) {
@@ -1411,7 +1479,7 @@ describe('ol.format.KML', function() {
           '    <Folder>' +
           '     <Placemark/>' +
           '    </Folder>' +
-          '  <Document>' +
+          '  </Document>' +
           '</kml>';
       expect(format.readName(kml)).to.be(undefined);
     });

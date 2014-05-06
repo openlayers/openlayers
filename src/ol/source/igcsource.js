@@ -1,14 +1,16 @@
 goog.provide('ol.source.IGC');
 
 goog.require('ol.format.IGC');
-goog.require('ol.source.VectorFile');
+goog.require('ol.source.StaticVector');
 
 
 
 /**
  * @constructor
- * @extends {ol.source.VectorFile}
+ * @extends {ol.source.StaticVector}
+ * @fires {@link ol.source.VectorEvent} ol.source.VectorEvent
  * @param {olx.source.IGCOptions=} opt_options Options.
+ * @todo api
  */
 ol.source.IGC = function(opt_options) {
 
@@ -18,10 +20,11 @@ ol.source.IGC = function(opt_options) {
     format: new ol.format.IGC({
       altitudeMode: options.altitudeMode
     }),
+    projection: options.projection,
     text: options.text,
     url: options.url,
     urls: options.urls
   });
 
 };
-goog.inherits(ol.source.IGC, ol.source.VectorFile);
+goog.inherits(ol.source.IGC, ol.source.StaticVector);

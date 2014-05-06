@@ -1,5 +1,4 @@
 goog.require('ol.Map');
-goog.require('ol.RendererHint');
 goog.require('ol.View2D');
 goog.require('ol.layer.Tile');
 goog.require('ol.layer.Vector');
@@ -47,9 +46,10 @@ var styleFunction = function(feature, resolution) {
 
 var vector = new ol.layer.Vector({
   source: new ol.source.KML({
+    projection: 'EPSG:3857',
     url: 'data/kml/timezones.kml'
   }),
-  styleFunction: styleFunction
+  style: styleFunction
 });
 
 var raster = new ol.layer.Tile({
@@ -60,7 +60,6 @@ var raster = new ol.layer.Tile({
 
 var map = new ol.Map({
   layers: [raster, vector],
-  renderer: ol.RendererHint.CANVAS,
   target: 'map',
   view: new ol.View2D({
     center: [0, 0],
@@ -96,6 +95,6 @@ $(map.getViewport()).on('mousemove', function(evt) {
   displayFeatureInfo(map.getEventPixel(evt.originalEvent));
 });
 
-map.on('singleclick', function(evt) {
+map.on('click', function(evt) {
   displayFeatureInfo(evt.pixel);
 });

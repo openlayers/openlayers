@@ -1,7 +1,6 @@
 goog.provide('ol.renderer.Layer');
 
 goog.require('goog.Disposable');
-goog.require('ol.FrameState');
 goog.require('ol.Image');
 goog.require('ol.ImageState');
 goog.require('ol.Tile');
@@ -46,7 +45,7 @@ goog.inherits(ol.renderer.Layer, goog.Disposable);
 
 /**
  * @param {ol.Coordinate} coordinate Coordinate.
- * @param {ol.FrameState} frameState Frame state.
+ * @param {oli.FrameState} frameState Frame state.
  * @param {function(this: S, ol.Feature, ol.layer.Layer): T} callback Feature
  *     callback.
  * @param {S} thisArg Value to use as `this` when executing `callback`.
@@ -97,7 +96,7 @@ ol.renderer.Layer.prototype.handleImageChange = function(event) {
 
 
 /**
- * @param {ol.FrameState} frameState Frame state.
+ * @param {oli.FrameState} frameState Frame state.
  * @param {ol.layer.LayerState} layerState Layer state.
  */
 ol.renderer.Layer.prototype.prepareFrame = goog.abstractMethod;
@@ -115,7 +114,7 @@ ol.renderer.Layer.prototype.renderIfReadyAndVisible = function() {
 
 
 /**
- * @param {ol.FrameState} frameState Frame state.
+ * @param {oli.FrameState} frameState Frame state.
  * @param {ol.source.Tile} tileSource Tile source.
  * @protected
  */
@@ -127,7 +126,7 @@ ol.renderer.Layer.prototype.scheduleExpireCache =
             /**
              * @param {ol.source.Tile} tileSource Tile source.
              * @param {ol.Map} map Map.
-             * @param {ol.FrameState} frameState Frame state.
+             * @param {oli.FrameState} frameState Frame state.
              */
             function(tileSource, map, frameState) {
               var tileSourceKey = goog.getUid(tileSource).toString();
@@ -156,7 +155,7 @@ ol.renderer.Layer.prototype.updateAttributions =
 
 
 /**
- * @param {ol.FrameState} frameState Frame state.
+ * @param {oli.FrameState} frameState Frame state.
  * @param {ol.source.Source} source Source.
  * @protected
  */
@@ -242,14 +241,15 @@ ol.renderer.Layer.prototype.snapCenterToPixel =
  * - registers idle tiles in frameState.wantedTiles so that they are not
  *   discarded by the tile queue
  * - enqueues missing tiles
- * @param {ol.FrameState} frameState Frame state.
+ * @param {oli.FrameState} frameState Frame state.
  * @param {ol.source.Tile} tileSource Tile source.
  * @param {ol.tilegrid.TileGrid} tileGrid Tile grid.
  * @param {number} pixelRatio Pixel ratio.
  * @param {ol.proj.Projection} projection Projection.
  * @param {ol.Extent} extent Extent.
  * @param {number} currentZ Current Z.
- * @param {number} preload Load low resolution tiles up to 'preload' levels.
+ * @param {number|undefined} preload Load low resolution tiles up to 'preload'
+ *     levels.
  * @param {function(this: T, ol.Tile)=} opt_tileCallback Tile callback.
  * @param {T=} opt_this Object to use as `this` in `opt_tileCallback`.
  * @protected
@@ -266,6 +266,9 @@ ol.renderer.Layer.prototype.manageTilePyramid = function(
   var tileQueue = frameState.tileQueue;
   var minZoom = tileGrid.getMinZoom();
   var tile, tileRange, tileResolution, x, y, z;
+  if (!goog.isDef(preload)) {
+    preload = 0;
+  }
   for (z = currentZ; z >= minZoom; --z) {
     tileRange = tileGrid.getTileRangeForExtentAndZ(extent, z);
     tileResolution = tileGrid.getResolution(z);

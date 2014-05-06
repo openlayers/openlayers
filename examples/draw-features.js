@@ -1,5 +1,4 @@
 goog.require('ol.Map');
-goog.require('ol.RendererHint');
 goog.require('ol.View2D');
 goog.require('ol.interaction');
 goog.require('ol.interaction.Draw');
@@ -16,34 +15,29 @@ var raster = new ol.layer.Tile({
   source: new ol.source.MapQuest({layer: 'sat'})
 });
 
-var styleArray = [new ol.style.Style({
-  fill: new ol.style.Fill({
-    color: 'rgba(255, 255, 255, 0.2)'
-  }),
-  stroke: new ol.style.Stroke({
-    color: '#ffcc33',
-    width: 2
-  }),
-  image: new ol.style.Circle({
-    radius: 7,
-    fill: new ol.style.Fill({
-      color: '#ffcc33'
-    })
-  })
-})];
-
 var source = new ol.source.Vector();
 
 var vector = new ol.layer.Vector({
   source: source,
-  styleFunction: function(feature, resolution) {
-    return styleArray;
-  }
+  style: new ol.style.Style({
+    fill: new ol.style.Fill({
+      color: 'rgba(255, 255, 255, 0.2)'
+    }),
+    stroke: new ol.style.Stroke({
+      color: '#ffcc33',
+      width: 2
+    }),
+    image: new ol.style.Circle({
+      radius: 7,
+      fill: new ol.style.Fill({
+        color: '#ffcc33'
+      })
+    })
+  })
 });
 
 var map = new ol.Map({
   layers: [raster, vector],
-  renderer: ol.RendererHint.CANVAS,
   target: 'map',
   view: new ol.View2D({
     center: [-11000000, 4600000],

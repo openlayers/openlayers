@@ -8,7 +8,6 @@ goog.require('goog.dom.TagName');
 goog.require('goog.object');
 goog.require('goog.style');
 goog.require('ol.Attribution');
-goog.require('ol.FrameState');
 goog.require('ol.control.Control');
 goog.require('ol.css');
 
@@ -22,7 +21,7 @@ goog.require('ol.css');
  * @constructor
  * @extends {ol.control.Control}
  * @param {olx.control.AttributionOptions=} opt_options Attribution options.
- * @todo stability experimental
+ * @todo api
  */
 ol.control.Attribution = function(opt_options) {
 
@@ -68,20 +67,20 @@ goog.inherits(ol.control.Attribution, ol.control.Control);
 
 
 /**
- * @param {?ol.FrameState} frameState Frame state.
+ * @param {?oli.FrameState} frameState Frame state.
  * @return {Array.<Object.<string, ol.Attribution>>} Attributions.
  */
 ol.control.Attribution.prototype.getSourceAttributions =
     function(frameState) {
   var i, ii, j, jj, tileRanges, source, sourceAttribution,
       sourceAttributionKey, sourceAttributions, sourceKey;
-  var layers = frameState.layersArray;
+  var layerStatesArray = frameState.layerStatesArray;
   /** @type {Object.<string, ol.Attribution>} */
   var attributions = goog.object.clone(frameState.attributions);
   /** @type {Object.<string, ol.Attribution>} */
   var hiddenAttributions = {};
-  for (i = 0, ii = layers.length; i < ii; i++) {
-    source = layers[i].getSource();
+  for (i = 0, ii = layerStatesArray.length; i < ii; i++) {
+    source = layerStatesArray[i].layer.getSource();
     sourceKey = goog.getUid(source).toString();
     sourceAttributions = source.getAttributions();
     if (goog.isNull(sourceAttributions)) {
@@ -120,7 +119,7 @@ ol.control.Attribution.prototype.handleMapPostrender = function(mapEvent) {
 
 /**
  * @private
- * @param {?ol.FrameState} frameState Frame state.
+ * @param {?oli.FrameState} frameState Frame state.
  */
 ol.control.Attribution.prototype.updateElement_ = function(frameState) {
 

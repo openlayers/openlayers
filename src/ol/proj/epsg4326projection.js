@@ -11,6 +11,7 @@ goog.require('ol.proj.Units');
  * @extends {ol.proj.Projection}
  * @param {string} code Code.
  * @param {string=} opt_axisOrientation Axis orientation.
+ * @todo api
  */
 ol.proj.EPSG4326 = function(code, opt_axisOrientation) {
   goog.base(this, {
@@ -53,7 +54,6 @@ ol.proj.EPSG4326.PROJECTIONS = [
 /**
  * @inheritDoc
  */
-ol.proj.EPSG4326.prototype.getPointResolution =
-    function(resolution, point) {
+ol.proj.EPSG4326.prototype.getPointResolution = function(resolution, point) {
   return resolution;
 };

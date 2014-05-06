@@ -4,12 +4,13 @@ goog.require('goog.asserts');
 goog.require('goog.dom');
 goog.require('goog.dom.TagName');
 goog.require('goog.dom.classes');
-goog.require('goog.dom.fullscreen');
-goog.require('goog.dom.fullscreen.EventType');
 goog.require('goog.events');
 goog.require('goog.events.EventType');
+goog.require('googx.dom.fullscreen');
+goog.require('googx.dom.fullscreen.EventType');
 goog.require('ol.control.Control');
 goog.require('ol.css');
+goog.require('ol.pointer.PointerEventHandler');
 
 
 
@@ -23,7 +24,7 @@ goog.require('ol.css');
  * @constructor
  * @extends {ol.control.Control}
  * @param {olx.control.FullScreenOptions=} opt_options Options.
- * @todo stability experimental
+ * @todo api
  */
 ol.control.FullScreen = function(opt_options) {
 
@@ -36,22 +37,37 @@ ol.control.FullScreen = function(opt_options) {
   this.cssClassName_ = goog.isDef(options.className) ?
       options.className : 'ol-full-screen';
 
-  var aElement = goog.dom.createDom(goog.dom.TagName.A, {
-    'href': '#fullScreen',
-    'class': this.cssClassName_ + '-' + goog.dom.fullscreen.isFullScreen()
-  });
-  goog.events.listen(aElement, [
-    goog.events.EventType.CLICK,
-    goog.events.EventType.TOUCHEND
-  ], this.handleClick_, false, this);
+  var tipLabel = goog.isDef(options.tipLabel) ?
+      options.tipLabel : 'Toggle full-screen';
+  var tip = goog.dom.createDom(goog.dom.TagName.SPAN, {
+    'role' : 'tooltip'
+  }, tipLabel);
 
-  goog.events.listen(goog.global.document, goog.dom.fullscreen.EventType.CHANGE,
+  var button = goog.dom.createDom(goog.dom.TagName.BUTTON, {
+    'class': this.cssClassName_ + '-' + googx.dom.fullscreen.isFullScreen() +
+        ' ol-has-tooltip'
+  });
+  goog.dom.appendChild(button, tip);
+  var buttonHandler = new ol.pointer.PointerEventHandler(button);
+  this.registerDisposable(buttonHandler);
+  goog.events.listen(buttonHandler,
+      ol.pointer.EventType.POINTERUP, this.handleClick_, false, this);
+
+  goog.events.listen(button, [
+    goog.events.EventType.MOUSEOUT,
+    goog.events.EventType.FOCUSOUT
+  ], function() {
+    this.blur();
+  }, false);
+
+  goog.events.listen(goog.global.document,
+      googx.dom.fullscreen.EventType.CHANGE,
       this.handleFullScreenChange_, false, this);
 
   var element = goog.dom.createDom(goog.dom.TagName.DIV, {
     'class': this.cssClassName_ + ' ' + ol.css.CLASS_UNSELECTABLE + ' ' +
-        (!goog.dom.fullscreen.isSupported() ? ol.css.CLASS_UNSUPPORTED : '')
-  }, aElement);
+        (!googx.dom.fullscreen.isSupported() ? ol.css.CLASS_UNSUPPORTED : '')
+  }, button);
 
   goog.base(this, {
     element: element,
@@ -69,29 +85,29 @@ goog.inherits(ol.control.FullScreen, ol.control.Control);
 
 
 /**
- * @param {goog.events.BrowserEvent} browserEvent Browser event.
+ * @param {ol.pointer.PointerEvent} pointerEvent Pointer event.
  * @private
  */
-ol.control.FullScreen.prototype.handleClick_ = function(browserEvent) {
-  if (!goog.dom.fullscreen.isSupported()) {
+ol.control.FullScreen.prototype.handleClick_ = function(pointerEvent) {
+  if (!googx.dom.fullscreen.isSupported()) {
     return;
   }
-  browserEvent.preventDefault();
+  pointerEvent.browserEvent.preventDefault();
   var map = this.getMap();
   if (goog.isNull(map)) {
     return;
   }
-  if (goog.dom.fullscreen.isFullScreen()) {
-    goog.dom.fullscreen.exitFullScreen();
+  if (googx.dom.fullscreen.isFullScreen()) {
+    googx.dom.fullscreen.exitFullScreen();
   } else {
     var target = map.getTarget();
     goog.asserts.assert(goog.isDefAndNotNull(target));
     var element = goog.dom.getElement(target);
     goog.asserts.assert(goog.isDefAndNotNull(element));
     if (this.keys_) {
-      goog.dom.fullscreen.requestFullScreenWithKeys(element);
+      googx.dom.fullscreen.requestFullScreenWithKeys(element);
     } else {
-      goog.dom.fullscreen.requestFullScreen(element);
+      googx.dom.fullscreen.requestFullScreen(element);
     }
   }
 };
@@ -104,9 +120,13 @@ ol.control.FullScreen.prototype.handleFullScreenChange_ = function() {
   var opened = this.cssClassName_ + '-true';
   var closed = this.cssClassName_ + '-false';
   var anchor = goog.dom.getFirstElementChild(this.element);
-  if (goog.dom.fullscreen.isFullScreen()) {
+  var map = this.getMap();
+  if (googx.dom.fullscreen.isFullScreen()) {
     goog.dom.classes.swap(anchor, closed, opened);
   } else {
     goog.dom.classes.swap(anchor, opened, closed);
+  }
+  if (!goog.isNull(map)) {
+    map.updateSize();
   }
 };

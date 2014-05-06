@@ -1,10 +1,16 @@
 goog.provide('ol.interaction.Select');
 
 goog.require('goog.array');
+goog.require('goog.asserts');
+goog.require('goog.events');
 goog.require('goog.functions');
+goog.require('ol.CollectionEventType');
+goog.require('ol.Feature');
+goog.require('ol.FeatureOverlay');
 goog.require('ol.events.condition');
+goog.require('ol.feature');
+goog.require('ol.geom.GeometryType');
 goog.require('ol.interaction.Interaction');
-goog.require('ol.render.FeaturesOverlay');
 
 
 
@@ -12,12 +18,13 @@ goog.require('ol.render.FeaturesOverlay');
  * @constructor
  * @extends {ol.interaction.Interaction}
  * @param {olx.interaction.SelectOptions=} opt_options Options.
+ * @todo api
  */
 ol.interaction.Select = function(opt_options) {
 
-  var options = goog.isDef(opt_options) ? opt_options : {};
-
   goog.base(this);
+
+  var options = goog.isDef(opt_options) ? opt_options : {};
 
   /**
    * @private
@@ -31,21 +38,37 @@ ol.interaction.Select = function(opt_options) {
    * @type {ol.events.ConditionType}
    */
   this.addCondition_ = goog.isDef(options.addCondition) ?
-      options.addCondition : ol.events.condition.shiftKeyOnly;
+      options.addCondition : ol.events.condition.never;
+
+  /**
+   * @private
+   * @type {ol.events.ConditionType}
+   */
+  this.removeCondition_ = goog.isDef(options.removeCondition) ?
+      options.removeCondition : ol.events.condition.never;
+
+  /**
+   * @private
+   * @type {ol.events.ConditionType}
+   */
+  this.toggleCondition_ = goog.isDef(options.toggleCondition) ?
+      options.toggleCondition : ol.events.condition.shiftKeyOnly;
 
   var layerFilter;
-  if (goog.isDef(options.layerFilter)) {
-    layerFilter = options.layerFilter;
-  } else if (goog.isDef(options.layer)) {
-    var layer = options.layer;
-    layerFilter = function(l) {
-      return l === layer;
-    };
-  } else if (goog.isDef(options.layers)) {
-    var layers = options.layers;
-    layerFilter = function(layer) {
-      return goog.array.indexOf(layers, layer) != -1;
-    };
+  if (goog.isDef(options.layers)) {
+    if (goog.isFunction(options.layers)) {
+      layerFilter = options.layers;
+    } else {
+      var layers = options.layers;
+      layerFilter =
+          /**
+           * @param {ol.layer.Layer} layer Layer.
+           * @return {boolean} Include.
+           */
+          function(layer) {
+        return goog.array.contains(layers, layer);
+      };
+    }
   } else {
     layerFilter = goog.functions.TRUE;
   }
@@ -58,19 +81,29 @@ ol.interaction.Select = function(opt_options) {
 
   /**
    * @private
-   * @type {ol.render.FeaturesOverlay}
+   * @type {ol.FeatureOverlay}
    */
-  this.featuresOverlay_ = options.featuresOverlay;
+  this.featureOverlay_ = new ol.FeatureOverlay({
+    style: (goog.isDef(options.style)) ? options.style :
+        ol.interaction.Select.getDefaultStyleFunction()
+  });
+
+  var features = this.featureOverlay_.getFeatures();
+  goog.events.listen(features, ol.CollectionEventType.ADD,
+      this.addFeature_, false, this);
+  goog.events.listen(features, ol.CollectionEventType.REMOVE,
+      this.removeFeature_, false, this);
 
 };
 goog.inherits(ol.interaction.Select, ol.interaction.Interaction);
 
 
 /**
- * @return {ol.render.FeaturesOverlay} Features overlay.
+ * @return {ol.Collection} Features collection.
+ * @todo api
  */
-ol.interaction.Select.prototype.getFeaturesOverlay = function() {
-  return this.featuresOverlay_;
+ol.interaction.Select.prototype.getFeatures = function() {
+  return this.featureOverlay_.getFeatures();
 };
 
 
@@ -83,59 +116,118 @@ ol.interaction.Select.prototype.handleMapBrowserEvent =
     return true;
   }
   var add = this.addCondition_(mapBrowserEvent);
+  var remove = this.removeCondition_(mapBrowserEvent);
+  var toggle = this.toggleCondition_(mapBrowserEvent);
+  var set = !add && !remove && !toggle;
   var map = mapBrowserEvent.map;
-  var features = this.featuresOverlay_.getFeatures();
-  map.withFrozenRendering(
-      /**
-       * @this {ol.interaction.Select}
-       */
-      function() {
-        if (add) {
-          map.forEachFeatureAtPixel(mapBrowserEvent.pixel,
-              /**
-               * @param {ol.Feature} feature Feature.
-               * @param {ol.layer.Layer} layer Layer.
-               */
-              function(feature, layer) {
-                if (goog.array.indexOf(features.getArray(), feature) == -1) {
-                  features.push(feature);
-                }
-              }, undefined, this.layerFilter_);
-        } else {
-          var feature = map.forEachFeatureAtPixel(mapBrowserEvent.pixel,
-              /**
-               * @param {ol.Feature} feature Feature.
-               * @param {ol.layer.Layer} layer Layer.
-               */
-              function(feature, layer) {
-                return feature;
-              }, undefined, this.layerFilter_);
-          if (goog.isDef(feature)) {
-            if (features.getLength() == 1) {
-              if (features.getAt(0) !== feature) {
-                features.setAt(0, feature);
-              }
-            } else {
-              if (features.getLength() != 1) {
-                features.clear();
-              }
+  var features = this.featureOverlay_.getFeatures();
+  if (set) {
+    // Replace the currently selected feature(s) with the feature at the pixel,
+    // or clear the selected feature(s) if there is no feature at the pixel.
+    /** @type {ol.Feature|undefined} */
+    var feature = map.forEachFeatureAtPixel(mapBrowserEvent.pixel,
+        /**
+         * @param {ol.Feature} feature Feature.
+         * @param {ol.layer.Layer} layer Layer.
+         */
+        function(feature, layer) {
+          return feature;
+        }, undefined, this.layerFilter_);
+    if (goog.isDef(feature) &&
+        features.getLength() == 1 &&
+        features.getAt(0) == feature) {
+      // No change
+    } else {
+      if (features.getLength() !== 0) {
+        features.clear();
+      }
+      if (goog.isDef(feature)) {
+        features.push(feature);
+      }
+    }
+  } else {
+    // Modify the currently selected feature(s).
+    map.forEachFeatureAtPixel(mapBrowserEvent.pixel,
+        /**
+         * @param {ol.Feature} feature Feature.
+         * @param {ol.layer.Layer} layer Layer.
+         */
+        function(feature, layer) {
+          var index = goog.array.indexOf(features.getArray(), feature);
+          if (index == -1) {
+            if (add || toggle) {
               features.push(feature);
             }
           } else {
-            if (features.getLength() !== 0) {
-              features.clear();
+            if (remove || toggle) {
+              features.removeAt(index);
             }
           }
-        }
-      }, this);
+        }, undefined, this.layerFilter_);
+  }
   return false;
 };
 
 
 /**
- * @inheritDoc
+ * Remove the interaction from its current map, if any,  and attach it to a new
+ * map, if any. Pass `null` to just remove the interaction from the current map.
+ * @param {ol.Map} map Map.
+ * @todo api
  */
 ol.interaction.Select.prototype.setMap = function(map) {
+  var currentMap = this.getMap();
+  var selectedFeatures = this.featureOverlay_.getFeatures();
+  if (!goog.isNull(currentMap)) {
+    selectedFeatures.forEach(currentMap.unskipFeature, currentMap);
+  }
   goog.base(this, 'setMap', map);
-  this.featuresOverlay_.setMap(map);
+  this.featureOverlay_.setMap(map);
+  if (!goog.isNull(map)) {
+    selectedFeatures.forEach(map.skipFeature, map);
+  }
+};
+
+
+/**
+ * @return {ol.feature.StyleFunction} Styles.
+ */
+ol.interaction.Select.getDefaultStyleFunction = function() {
+  var styles = ol.feature.createDefaultEditingStyles();
+  goog.array.extend(styles[ol.geom.GeometryType.POLYGON],
+      styles[ol.geom.GeometryType.LINE_STRING]);
+  goog.array.extend(styles[ol.geom.GeometryType.GEOMETRY_COLLECTION],
+      styles[ol.geom.GeometryType.LINE_STRING]);
+
+  return function(feature, resolution) {
+    return styles[feature.getGeometry().getType()];
+  };
+};
+
+
+/**
+ * @param {ol.CollectionEvent} evt Event.
+ * @private
+ */
+ol.interaction.Select.prototype.addFeature_ = function(evt) {
+  var feature = evt.element;
+  var map = this.getMap();
+  goog.asserts.assertInstanceof(feature, ol.Feature);
+  if (!goog.isNull(map)) {
+    map.skipFeature(feature);
+  }
+};
+
+
+/**
+ * @param {ol.CollectionEvent} evt Event.
+ * @private
+ */
+ol.interaction.Select.prototype.removeFeature_ = function(evt) {
+  var feature = evt.element;
+  var map = this.getMap();
+  goog.asserts.assertInstanceof(feature, ol.Feature);
+  if (!goog.isNull(map)) {
+    map.unskipFeature(feature);
+  }
 };

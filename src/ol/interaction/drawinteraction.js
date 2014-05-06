@@ -6,9 +6,11 @@ goog.require('goog.events.Event');
 goog.require('ol.Collection');
 goog.require('ol.Coordinate');
 goog.require('ol.Feature');
+goog.require('ol.FeatureOverlay');
 goog.require('ol.Map');
 goog.require('ol.MapBrowserEvent');
 goog.require('ol.MapBrowserEvent.EventType');
+goog.require('ol.feature');
 goog.require('ol.geom.GeometryType');
 goog.require('ol.geom.LineString');
 goog.require('ol.geom.MultiLineString');
@@ -16,20 +18,25 @@ goog.require('ol.geom.MultiPoint');
 goog.require('ol.geom.MultiPolygon');
 goog.require('ol.geom.Point');
 goog.require('ol.geom.Polygon');
-goog.require('ol.interaction.Interaction');
-goog.require('ol.render.FeaturesOverlay');
+goog.require('ol.interaction.Pointer');
 goog.require('ol.source.Vector');
-goog.require('ol.style.Circle');
-goog.require('ol.style.Fill');
-goog.require('ol.style.Stroke');
-goog.require('ol.style.Style');
 
 
 /**
  * @enum {string}
  */
 ol.DrawEventType = {
+  /**
+   * Triggered upon feature draw start
+   * @event ol.DrawEvent#drawstart
+   * @todo api
+   */
   DRAWSTART: 'drawstart',
+  /**
+   * Triggered upon feature draw end
+   * @event ol.DrawEvent#drawend
+   * @todo api
+   */
   DRAWEND: 'drawend'
 };
 
@@ -47,6 +54,7 @@ ol.DrawEvent = function(type, feature) {
   goog.base(this, type);
 
   /**
+   * The feature being drawn.
    * @type {ol.Feature}
    */
   this.feature = feature;
@@ -59,34 +67,58 @@ goog.inherits(ol.DrawEvent, goog.events.Event);
 /**
  * Interaction that allows drawing geometries
  * @constructor
- * @extends {ol.interaction.Interaction}
- * @param {olx.interaction.DrawOptions=} opt_options Options.
+ * @extends {ol.interaction.Pointer}
+ * @fires {@link ol.DrawEvent} ol.DrawEvent
+ * @param {olx.interaction.DrawOptions} options Options.
+ * @todo api
  */
-ol.interaction.Draw = function(opt_options) {
+ol.interaction.Draw = function(options) {
 
   goog.base(this);
+
+  /**
+   * @type {ol.Pixel}
+   * @private
+   */
+  this.downPx_ = null;
 
   /**
    * Target source for drawn features.
    * @type {ol.source.Vector}
    * @private
    */
-  this.source_ = goog.isDef(opt_options.source) ? opt_options.source : null;
+  this.source_ = goog.isDef(options.source) ? options.source : null;
+
+  /**
+   * Target collection for drawn features.
+   * @type {ol.Collection}
+   * @private
+   */
+  this.features_ = goog.isDef(options.features) ? options.features : null;
 
   /**
    * Pixel distance for snapping.
    * @type {number}
    * @private
    */
-  this.snapTolerance_ = goog.isDef(opt_options.snapTolerance) ?
-      opt_options.snapTolerance : 12;
+  this.snapTolerance_ = goog.isDef(options.snapTolerance) ?
+      options.snapTolerance : 12;
+
+  /**
+   * The number of points that must be drawn before a polygon ring can be
+   * finished.  The default is 3.
+   * @type {number}
+   * @private
+   */
+  this.minPointsPerRing_ = goog.isDef(options.minPointsPerRing) ?
+      options.minPointsPerRing : 3;
 
   /**
    * Geometry type.
    * @type {ol.geom.GeometryType}
    * @private
    */
-  this.type_ = opt_options.type;
+  this.type_ = options.type;
 
   /**
    * Drawing mode (derived from geometry type.
@@ -132,8 +164,8 @@ ol.interaction.Draw = function(opt_options) {
   this.sketchRawPolygon_ = null;
 
   /**
-   * Squared tolerance for handling click events.  If the squared distance
-   * between a down and click event is greater than this tolerance, click events
+   * Squared tolerance for handling up events.  If the squared distance
+   * between a down and up event is greater than this tolerance, up events
    * will not be handled.
    * @type {number}
    * @private
@@ -142,74 +174,27 @@ ol.interaction.Draw = function(opt_options) {
 
   /**
    * Draw overlay where are sketch features are drawn.
-   * @type {ol.render.FeaturesOverlay}
+   * @type {ol.FeatureOverlay}
    * @private
    */
-  this.overlay_ = new ol.render.FeaturesOverlay();
-  this.overlay_.setStyleFunction(goog.isDef(opt_options.styleFunction) ?
-      opt_options.styleFunction : ol.interaction.Draw.defaultStyleFunction
-  );
+  this.overlay_ = new ol.FeatureOverlay({
+    style: goog.isDef(options.style) ?
+        options.style : ol.interaction.Draw.getDefaultStyleFunction()
+  });
+
 };
-goog.inherits(ol.interaction.Draw, ol.interaction.Interaction);
+goog.inherits(ol.interaction.Draw, ol.interaction.Pointer);
 
 
 /**
- * @param {ol.Feature} feature Feature.
- * @param {number} resolution Resolution.
- * @return {Array.<ol.style.Style>} Styles.
+ * @return {ol.feature.StyleFunction} Styles.
  */
-ol.interaction.Draw.defaultStyleFunction = (function() {
-  /** @type {Object.<ol.geom.GeometryType, Array.<ol.style.Style>>} */
-  var styles = {};
-  styles[ol.geom.GeometryType.POLYGON] = [
-    new ol.style.Style({
-      fill: new ol.style.Fill({
-        color: [255, 255, 255, 0.5]
-      })
-    })
-  ];
-  styles[ol.geom.GeometryType.MULTI_POLYGON] =
-      styles[ol.geom.GeometryType.POLYGON];
-
-  styles[ol.geom.GeometryType.LINE_STRING] = [
-    new ol.style.Style({
-      stroke: new ol.style.Stroke({
-        color: [255, 255, 255, 1],
-        width: 5
-      })
-    }),
-    new ol.style.Style({
-      stroke: new ol.style.Stroke({
-        color: [0, 153, 255, 1],
-        width: 3
-      })
-    })
-  ];
-  styles[ol.geom.GeometryType.MULTI_LINE_STRING] =
-      styles[ol.geom.GeometryType.LINE_STRING];
-
-  styles[ol.geom.GeometryType.POINT] = [
-    new ol.style.Style({
-      image: new ol.style.Circle({
-        radius: 7,
-        fill: new ol.style.Fill({
-          color: [0, 153, 255, 1]
-        }),
-        stroke: new ol.style.Stroke({
-          color: [255, 255, 255, 0.75],
-          width: 1.5
-        })
-      }),
-      zIndex: 100000
-    })
-  ];
-  styles[ol.geom.GeometryType.MULTI_POINT] =
-      styles[ol.geom.GeometryType.POINT];
-
+ol.interaction.Draw.getDefaultStyleFunction = function() {
+  var styles = ol.feature.createDefaultEditingStyles();
   return function(feature, resolution) {
     return styles[feature.getGeometry().getType()];
   };
-})();
+};
 
 
 /**
@@ -234,31 +219,40 @@ ol.interaction.Draw.prototype.handleMapBrowserEvent = function(event) {
     return true;
   }
   var pass = true;
-  if (event.type === ol.MapBrowserEvent.EventType.CLICK) {
-    pass = this.handleClick_(event);
-  } else if (event.type === ol.MapBrowserEvent.EventType.MOUSEMOVE) {
-    pass = this.handleMove_(event);
+  if (event.type === ol.MapBrowserEvent.EventType.POINTERMOVE) {
+    pass = this.handlePointerMove_(event);
   } else if (event.type === ol.MapBrowserEvent.EventType.DBLCLICK) {
     pass = false;
   }
-  return pass;
+  return (goog.base(this, 'handleMapBrowserEvent', event) && pass);
 };
 
 
 /**
- * Handle click events.
- * @param {ol.MapBrowserEvent} event A click event.
+ * Handle down events.
+ * @param {ol.MapBrowserEvent} event A down event.
  * @return {boolean} Pass the event to other interactions.
- * @private
  */
-ol.interaction.Draw.prototype.handleClick_ = function(event) {
-  var downPx = event.map.getEventPixel(event.target.getDown());
+ol.interaction.Draw.prototype.handlePointerDown = function(event) {
+  this.downPx_ = event.pixel;
+  return true;
+};
+
+
+/**
+ * Handle up events.
+ * @param {ol.MapBrowserEvent} event An up event.
+ * @return {boolean} Pass the event to other interactions.
+ */
+ol.interaction.Draw.prototype.handlePointerUp = function(event) {
+  var downPx = this.downPx_;
   var clickPx = event.pixel;
   var dx = downPx[0] - clickPx[0];
   var dy = downPx[1] - clickPx[1];
   var squaredDistance = dx * dx + dy * dy;
   var pass = true;
   if (squaredDistance <= this.squaredClickTolerance_) {
+    this.handlePointerMove_(event);
     if (goog.isNull(this.finishCoordinate_)) {
       this.startDrawing_(event);
     } else if (this.mode_ === ol.interaction.DrawMode.POINT ||
@@ -274,12 +268,12 @@ ol.interaction.Draw.prototype.handleClick_ = function(event) {
 
 
 /**
- * Handle mousemove events.
- * @param {ol.MapBrowserEvent} event A mousemove event.
+ * Handle move events.
+ * @param {ol.MapBrowserEvent} event A move event.
  * @return {boolean} Pass the event to other interactions.
  * @private
  */
-ol.interaction.Draw.prototype.handleMove_ = function(event) {
+ol.interaction.Draw.prototype.handlePointerMove_ = function(event) {
   if (this.mode_ === ol.interaction.DrawMode.POINT &&
       goog.isNull(this.finishCoordinate_)) {
     this.startDrawing_(event);
@@ -307,7 +301,8 @@ ol.interaction.Draw.prototype.atFinish_ = function(event) {
       potentiallyDone = geometry.getCoordinates().length > 2;
     } else if (this.mode_ === ol.interaction.DrawMode.POLYGON) {
       goog.asserts.assertInstanceof(geometry, ol.geom.Polygon);
-      potentiallyDone = geometry.getCoordinates()[0].length > 2;
+      potentiallyDone = geometry.getCoordinates()[0].length >
+          this.minPointsPerRing_;
       potentiallyFinishCoordinates = [this.sketchRawPolygon_[0][0],
         this.sketchRawPolygon_[0][this.sketchRawPolygon_[0].length - 2]];
     }
@@ -473,11 +468,13 @@ ol.interaction.Draw.prototype.finishDrawing_ = function(event) {
     sketchFeature.setGeometry(new ol.geom.MultiPolygon([coordinates]));
   }
 
+  if (!goog.isNull(this.features_)) {
+    this.features_.push(sketchFeature);
+  }
   if (!goog.isNull(this.source_)) {
     this.source_.addFeature(sketchFeature);
   }
-  this.dispatchEvent(new ol.DrawEvent(ol.DrawEventType.DRAWEND,
-      this.sketchFeature_));
+  this.dispatchEvent(new ol.DrawEvent(ol.DrawEventType.DRAWEND, sketchFeature));
 };
 
 

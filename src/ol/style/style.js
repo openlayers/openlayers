@@ -8,7 +8,7 @@ goog.require('ol.style.Image');
 /**
  * @constructor
  * @param {olx.style.StyleOptions=} opt_options Style options.
- * @todo stability experimental
+ * @todo api
  */
 ol.style.Style = function(opt_options) {
 
@@ -49,6 +49,7 @@ ol.style.Style = function(opt_options) {
 
 /**
  * @return {ol.style.Fill} Fill style.
+ * @todo api
  */
 ol.style.Style.prototype.getFill = function() {
   return this.fill_;
@@ -57,6 +58,7 @@ ol.style.Style.prototype.getFill = function() {
 
 /**
  * @return {ol.style.Image} Image style.
+ * @todo api
  */
 ol.style.Style.prototype.getImage = function() {
   return this.image_;
@@ -65,6 +67,7 @@ ol.style.Style.prototype.getImage = function() {
 
 /**
  * @return {ol.style.Stroke} Stroke style.
+ * @todo api
  */
 ol.style.Style.prototype.getStroke = function() {
   return this.stroke_;
@@ -73,6 +76,7 @@ ol.style.Style.prototype.getStroke = function() {
 
 /**
  * @return {ol.style.Text} Text style.
+ * @todo api
  */
 ol.style.Style.prototype.getText = function() {
   return this.text_;
@@ -81,6 +85,7 @@ ol.style.Style.prototype.getText = function() {
 
 /**
  * @return {number|undefined} ZIndex.
+ * @todo api
  */
 ol.style.Style.prototype.getZIndex = function() {
   return this.zIndex_;

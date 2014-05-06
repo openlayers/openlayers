@@ -136,6 +136,41 @@ ol.structs.RBushNode.prototype.getChildrenExtent =
 
 
 /**
+ * @param {ol.Extent} extent Extent.
+ * @param {T} value Value.
+ * @param {Array.<ol.structs.RBushNode.<T>>} path Path.
+ * @return {boolean} Removed.
+ */
+ol.structs.RBushNode.prototype.remove = function(extent, value, path) {
+  var children = this.children;
+  var ii = children.length;
+  var child, i;
+  if (this.height == 1) {
+    for (i = 0; i < ii; ++i) {
+      child = children[i];
+      if (child.value === value) {
+        goog.array.removeAt(children, i);
+        return true;
+      }
+    }
+  } else {
+    goog.asserts.assert(this.height > 1);
+    for (i = 0; i < ii; ++i) {
+      child = children[i];
+      if (ol.extent.containsExtent(child.extent, extent)) {
+        path.push(child);
+        if (child.remove(extent, value, path)) {
+          return true;
+        }
+        path.pop();
+      }
+    }
+  }
+  return false;
+};
+
+
+/**
  * FIXME empty description for jsdoc
  */
 ol.structs.RBushNode.prototype.updateExtent = function() {
@@ -511,7 +546,7 @@ ol.structs.RBush.prototype.getAll = function() {
  * @param {ol.Extent} extent Extent.
  * @return {Array.<T>} All in extent.
  */
-ol.structs.RBush.prototype.getAllInExtent = function(extent) {
+ol.structs.RBush.prototype.getInExtent = function(extent) {
   var values = [];
   this.forEachInExtent(extent,
       /**
@@ -597,6 +632,7 @@ ol.structs.RBush.prototype.isEmpty = function() {
 
 /**
  * @param {T} value Value.
+ * @return {boolean} Removed.
  */
 ol.structs.RBush.prototype.remove = function(value) {
   if (goog.DEBUG && this.readers_) {
@@ -606,7 +642,7 @@ ol.structs.RBush.prototype.remove = function(value) {
   goog.asserts.assert(this.valueExtent_.hasOwnProperty(key));
   var extent = this.valueExtent_[key];
   delete this.valueExtent_[key];
-  this.remove_(extent, value);
+  return this.remove_(extent, value);
 };
 
 
@@ -614,52 +650,19 @@ ol.structs.RBush.prototype.remove = function(value) {
  * @param {ol.Extent} extent Extent.
  * @param {T} value Value.
  * @private
+ * @return {boolean} Removed.
  */
 ol.structs.RBush.prototype.remove_ = function(extent, value) {
-  var node = this.root_;
-  var index = 0;
-  /** @type {Array.<ol.structs.RBushNode.<T>>} */
-  var path = [node];
-  /** @type {Array.<number>} */
-  var indexes = [0];
-  var childrenDone, child, children, i, ii;
-  while (path.length > 0) {
-    childrenDone = false;
-    goog.asserts.assert(node.height > 0);
-    if (node.height == 1) {
-      children = node.children;
-      for (i = 0, ii = children.length; i < ii; ++i) {
-        child = children[i];
-        if (child.value === value) {
-          goog.array.removeAt(children, i);
-          this.condense_(path);
-          return;
-        }
-      }
-      childrenDone = true;
-    } else if (index < node.children.length) {
-      child = node.children[index];
-      if (ol.extent.containsExtent(child.extent, extent)) {
-        path.push(child);
-        indexes.push(index + 1);
-        node = child;
-        index = 0;
-      } else {
-        ++index;
-      }
-    } else {
-      childrenDone = true;
-    }
-    if (childrenDone) {
-      var lastPathIndex = path.length - 1;
-      node = path[lastPathIndex];
-      index = ++indexes[lastPathIndex];
-      if (index > node.children.length) {
-        path.pop();
-        indexes.pop();
-      }
-    }
+  var root = this.root_;
+  var path = [root];
+  var removed = root.remove(extent, value, path);
+  if (removed) {
+    this.condense_(path);
+  } else {
+    goog.asserts.assert(path.length == 1);
+    goog.asserts.assert(path[0] === root);
   }
+  return removed;
 };
 
 
@@ -712,7 +715,8 @@ ol.structs.RBush.prototype.update = function(extent, value) {
   var currentExtent = this.valueExtent_[key];
   goog.asserts.assert(goog.isDef(currentExtent));
   if (!ol.extent.equals(currentExtent, extent)) {
-    this.remove_(currentExtent, value);
+    var removed = this.remove_(currentExtent, value);
+    goog.asserts.assert(removed);
     this.insert_(extent, value, this.root_.height - 1);
     this.valueExtent_[key] = ol.extent.clone(extent, currentExtent);
   }

@@ -1,9 +1,8 @@
+goog.require('ol.FeatureOverlay');
 goog.require('ol.Map');
-goog.require('ol.RendererHint');
 goog.require('ol.View2D');
 goog.require('ol.layer.Image');
 goog.require('ol.layer.Tile');
-goog.require('ol.render.FeaturesOverlay');
 goog.require('ol.source.GeoJSON');
 goog.require('ol.source.ImageVector');
 goog.require('ol.source.MapQuest');
@@ -11,16 +10,6 @@ goog.require('ol.style.Fill');
 goog.require('ol.style.Stroke');
 goog.require('ol.style.Style');
 
-
-var styleArray = [new ol.style.Style({
-  fill: new ol.style.Fill({
-    color: 'rgba(255, 255, 255, 0.6)'
-  }),
-  stroke: new ol.style.Stroke({
-    color: '#319FD3',
-    width: 1
-  })
-})];
 
 var map = new ol.Map({
   layers: [
@@ -30,15 +19,21 @@ var map = new ol.Map({
     new ol.layer.Image({
       source: new ol.source.ImageVector({
         source: new ol.source.GeoJSON({
+          projection: 'EPSG:3857',
           url: 'data/geojson/countries.geojson'
         }),
-        styleFunction: function(feature, resolution) {
-          return styleArray;
-        }
+        style: new ol.style.Style({
+          fill: new ol.style.Fill({
+            color: 'rgba(255, 255, 255, 0.6)'
+          }),
+          stroke: new ol.style.Stroke({
+            color: '#319FD3',
+            width: 1
+          })
+        })
       })
     })
   ],
-  renderer: ol.RendererHint.CANVAS,
   target: 'map',
   view: new ol.View2D({
     center: [0, 0],
@@ -46,21 +41,17 @@ var map = new ol.Map({
   })
 });
 
-var highlightStyleArray = [new ol.style.Style({
-  stroke: new ol.style.Stroke({
-    color: '#f00',
-    width: 1
-  }),
-  fill: new ol.style.Fill({
-    color: 'rgba(255,0,0,0.1)'
-  })
-})];
-
-var featuresOverlay = new ol.render.FeaturesOverlay({
+var featureOverlay = new ol.FeatureOverlay({
   map: map,
-  styleFunction: function(feature, resolution) {
-    return highlightStyleArray;
-  }
+  style: new ol.style.Style({
+    stroke: new ol.style.Stroke({
+      color: '#f00',
+      width: 1
+    }),
+    fill: new ol.style.Fill({
+      color: 'rgba(255,0,0,0.1)'
+    })
+  })
 });
 
 var highlight;
@@ -79,10 +70,10 @@ var displayFeatureInfo = function(pixel) {
 
   if (feature !== highlight) {
     if (highlight) {
-      featuresOverlay.removeFeature(highlight);
+      featureOverlay.removeFeature(highlight);
     }
     if (feature) {
-      featuresOverlay.addFeature(feature);
+      featureOverlay.addFeature(feature);
     }
     highlight = feature;
   }
@@ -94,6 +85,6 @@ $(map.getViewport()).on('mousemove', function(evt) {
   displayFeatureInfo(pixel);
 });
 
-map.on('singleclick', function(evt) {
+map.on('click', function(evt) {
   displayFeatureInfo(evt.pixel);
 });

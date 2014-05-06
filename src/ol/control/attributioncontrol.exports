@@ -1,2 +1,0 @@
-@exportSymbol ol.control.Attribution
-@exportProperty ol.control.Attribution.prototype.setMap

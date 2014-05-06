@@ -37,6 +37,13 @@ describe('ol.geom.LineString', function() {
       expect(lineString.getStride()).to.be(2);
     });
 
+    it('can append coordinates', function() {
+      lineString.appendCoordinate([1, 2]);
+      expect(lineString.getCoordinates()).to.eql([[1, 2]]);
+      lineString.appendCoordinate([3, 4]);
+      expect(lineString.getCoordinates()).to.eql([[1, 2], [3, 4]]);
+    });
+
   });
 
   describe('construct with 2D coordinates', function() {
@@ -164,6 +171,34 @@ describe('ol.geom.LineString', function() {
           [[0, 0], [1.5, 1], [3, 3], [5, 1], [6, 3.5], [7, 5]]);
     });
 
+    describe('#getFirstCoordinate', function() {
+
+      it('returns the expected result', function() {
+        expect(lineString.getFirstCoordinate()).to.eql([0, 0]);
+      });
+
+    });
+
+    describe('#getFlatMidpoint', function() {
+
+      it('returns the expected result', function() {
+        var midpoint = lineString.getFlatMidpoint();
+        expect(midpoint).to.be.an(Array);
+        expect(midpoint).to.have.length(2);
+        expect(midpoint[0]).to.roughlyEqual(4, 1e-1);
+        expect(midpoint[1]).to.roughlyEqual(2, 1e-1);
+      });
+
+    });
+
+    describe('#getLastCoordinate', function() {
+
+      it('returns the expected result', function() {
+        expect(lineString.getLastCoordinate()).to.eql([7, 5]);
+      });
+
+    });
+
     describe('#getSimplifiedGeometry', function() {
 
       it('returns the expectedResult', function() {
@@ -194,6 +229,69 @@ describe('ol.geom.LineString', function() {
         var simplifiedGeometry2 = lineString.getSimplifiedGeometry(0.01);
         expect(lineString.getSimplifiedGeometryInternal.callCount).to.be(1);
         expect(simplifiedGeometry2).to.be(lineString);
+      });
+
+    });
+
+  });
+
+  describe('with a simple XYM coordinates', function() {
+
+    var lineString;
+    beforeEach(function() {
+      lineString = new ol.geom.LineString(
+          [[1, 2, 3], [4, 5, 6]], ol.geom.GeometryLayout.XYM);
+    });
+
+    describe('#getCoordinateAtM', function() {
+
+      it('returns the expected value', function() {
+        expect(lineString.getCoordinateAtM(2, false)).to.be(null);
+        expect(lineString.getCoordinateAtM(2, true)).to.eql([1, 2, 2]);
+        expect(lineString.getCoordinateAtM(3, false)).to.eql([1, 2, 3]);
+        expect(lineString.getCoordinateAtM(3, true)).to.eql([1, 2, 3]);
+        expect(lineString.getCoordinateAtM(4, false)).to.eql([2, 3, 4]);
+        expect(lineString.getCoordinateAtM(4, true)).to.eql([2, 3, 4]);
+        expect(lineString.getCoordinateAtM(5, false)).to.eql([3, 4, 5]);
+        expect(lineString.getCoordinateAtM(5, true)).to.eql([3, 4, 5]);
+        expect(lineString.getCoordinateAtM(6, false)).to.eql([4, 5, 6]);
+        expect(lineString.getCoordinateAtM(6, true)).to.eql([4, 5, 6]);
+        expect(lineString.getCoordinateAtM(7, false)).to.eql(null);
+        expect(lineString.getCoordinateAtM(7, true)).to.eql([4, 5, 7]);
+      });
+
+    });
+
+  });
+
+  describe('with several XYZM coordinates', function() {
+
+    var lineString;
+    beforeEach(function() {
+      lineString = new ol.geom.LineString([
+        [0, 0, 0, 0],
+        [1, -1, 2, 1],
+        [2, -2, 4, 2],
+        [4, -4, 8, 4],
+        [8, -8, 16, 8],
+        [12, -12, 24, 12],
+        [14, -14, 28, 14],
+        [15, -15, 30, 15],
+        [16, -16, 32, 16],
+        [18, -18, 36, 18],
+        [22, -22, 44, 22]
+      ]);
+    });
+
+    describe('#getCoordinateAtM', function() {
+
+      it('returns the expected value', function() {
+        expect(lineString.getLayout()).to.be(ol.geom.GeometryLayout.XYZM);
+        var m;
+        for (m = 0; m <= 22; m += 0.5) {
+          expect(lineString.getCoordinateAtM(m, true)).to.eql(
+              [m, -m, 2 * m, m]);
+        }
       });
 
     });

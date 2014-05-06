@@ -2,6 +2,8 @@ goog.provide('ol.geom.GeometryCollection');
 
 goog.require('goog.array');
 goog.require('goog.asserts');
+goog.require('goog.events');
+goog.require('goog.events.EventType');
 goog.require('goog.object');
 goog.require('ol.extent');
 goog.require('ol.geom.Geometry');
@@ -13,6 +15,7 @@ goog.require('ol.geom.GeometryType');
  * @constructor
  * @extends {ol.geom.Geometry}
  * @param {Array.<ol.geom.Geometry>=} opt_geometries Geometries.
+ * @todo api
  */
 ol.geom.GeometryCollection = function(opt_geometries) {
 
@@ -24,6 +27,7 @@ ol.geom.GeometryCollection = function(opt_geometries) {
    */
   this.geometries_ = goog.isDef(opt_geometries) ? opt_geometries : null;
 
+  this.listenGeometriesChange_();
 };
 goog.inherits(ol.geom.GeometryCollection, ol.geom.Geometry);
 
@@ -44,7 +48,40 @@ ol.geom.GeometryCollection.cloneGeometries_ = function(geometries) {
 
 
 /**
+ * @private
+ */
+ol.geom.GeometryCollection.prototype.unlistenGeometriesChange_ = function() {
+  var i, ii;
+  if (goog.isNull(this.geometries_)) {
+    return;
+  }
+  for (i = 0, ii = this.geometries_.length; i < ii; ++i) {
+    goog.events.unlisten(
+        this.geometries_[i], goog.events.EventType.CHANGE,
+        this.dispatchChangeEvent, false, this);
+  }
+};
+
+
+/**
+ * @private
+ */
+ol.geom.GeometryCollection.prototype.listenGeometriesChange_ = function() {
+  var i, ii;
+  if (goog.isNull(this.geometries_)) {
+    return;
+  }
+  for (i = 0, ii = this.geometries_.length; i < ii; ++i) {
+    goog.events.listen(
+        this.geometries_[i], goog.events.EventType.CHANGE,
+        this.dispatchChangeEvent, false, this);
+  }
+};
+
+
+/**
  * @inheritDoc
+ * @todo api
  */
 ol.geom.GeometryCollection.prototype.clone = function() {
   var geometryCollection = new ol.geom.GeometryCollection(null);
@@ -89,6 +126,7 @@ ol.geom.GeometryCollection.prototype.containsXY = function(x, y) {
 
 /**
  * @inheritDoc
+ * @todo api
  */
 ol.geom.GeometryCollection.prototype.getExtent = function(opt_extent) {
   if (this.extentRevision != this.getRevision()) {
@@ -108,6 +146,7 @@ ol.geom.GeometryCollection.prototype.getExtent = function(opt_extent) {
 
 /**
  * @return {Array.<ol.geom.Geometry>} Geometries.
+ * @todo api
  */
 ol.geom.GeometryCollection.prototype.getGeometries = function() {
   return ol.geom.GeometryCollection.cloneGeometries_(this.geometries_);
@@ -124,6 +163,7 @@ ol.geom.GeometryCollection.prototype.getGeometriesArray = function() {
 
 /**
  * @inheritDoc
+ * @todo api
  */
 ol.geom.GeometryCollection.prototype.getSimplifiedGeometry =
     function(squaredTolerance) {
@@ -168,6 +208,7 @@ ol.geom.GeometryCollection.prototype.getSimplifiedGeometry =
 
 /**
  * @inheritDoc
+ * @todo api
  */
 ol.geom.GeometryCollection.prototype.getType = function() {
   return ol.geom.GeometryType.GEOMETRY_COLLECTION;
@@ -184,6 +225,7 @@ ol.geom.GeometryCollection.prototype.isEmpty = function() {
 
 /**
  * @param {Array.<ol.geom.Geometry>} geometries Geometries.
+ * @todo api
  */
 ol.geom.GeometryCollection.prototype.setGeometries = function(geometries) {
   this.setGeometriesArray(
@@ -195,7 +237,9 @@ ol.geom.GeometryCollection.prototype.setGeometries = function(geometries) {
  * @param {Array.<ol.geom.Geometry>} geometries Geometries.
  */
 ol.geom.GeometryCollection.prototype.setGeometriesArray = function(geometries) {
+  this.unlistenGeometriesChange_();
   this.geometries_ = geometries;
+  this.listenGeometriesChange_();
   this.dispatchChangeEvent();
 };
 
@@ -203,11 +247,20 @@ ol.geom.GeometryCollection.prototype.setGeometriesArray = function(geometries) {
 /**
  * @inheritDoc
  */
-ol.geom.GeometryCollection.prototype.transform = function(transformFn) {
+ol.geom.GeometryCollection.prototype.applyTransform = function(transformFn) {
   var geometries = this.geometries_;
   var i, ii;
   for (i = 0, ii = geometries.length; i < ii; ++i) {
-    geometries[i].transform(transformFn);
+    geometries[i].applyTransform(transformFn);
   }
   this.dispatchChangeEvent();
+};
+
+
+/**
+ * @inheritDoc
+ */
+ol.geom.GeometryCollection.prototype.disposeInternal = function() {
+  this.unlistenGeometriesChange_();
+  goog.base(this, 'disposeInternal');
 };

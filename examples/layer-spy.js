@@ -1,5 +1,4 @@
 goog.require('ol.Map');
-goog.require('ol.RendererHint');
 goog.require('ol.View2D');
 goog.require('ol.layer.Tile');
 goog.require('ol.proj');
@@ -17,7 +16,6 @@ var imagery = new ol.layer.Tile({
 
 var map = new ol.Map({
   layers: [roads, imagery],
-  renderer: ol.RendererHint.CANVAS,
   target: 'map',
   view: new ol.View2D({
     center: ol.proj.transform([-109, 46.5], 'EPSG:4326', 'EPSG:3857'),
@@ -29,10 +27,10 @@ var radius = 75;
 $(document).keydown(function(evt) {
   if (evt.which === 38) {
     radius = Math.min(radius + 5, 150);
-    map.requestRenderFrame();
+    map.render();
   } else if (evt.which === 40) {
     radius = Math.max(radius - 5, 25);
-    map.requestRenderFrame();
+    map.render();
   }
 });
 
@@ -40,21 +38,23 @@ $(document).keydown(function(evt) {
 var mousePosition = null;
 $(map.getViewport()).on('mousemove', function(evt) {
   mousePosition = map.getEventPixel(evt.originalEvent);
-  map.requestRenderFrame();
+  map.render();
 }).on('mouseout', function() {
   mousePosition = null;
-  map.requestRenderFrame();
+  map.render();
 });
 
 // before rendering the layer, do some clipping
 imagery.on('precompose', function(event) {
   var ctx = event.context;
+  var pixelRatio = event.frameState.pixelRatio;
   ctx.save();
   ctx.beginPath();
   if (mousePosition) {
     // only show a circle around the mouse
-    ctx.arc(mousePosition[0], mousePosition[1], radius, 0, 2 * Math.PI);
-    ctx.lineWidth = 5;
+    ctx.arc(mousePosition[0] * pixelRatio, mousePosition[1] * pixelRatio,
+        radius * pixelRatio, 0, 2 * Math.PI);
+    ctx.lineWidth = 5 * pixelRatio;
     ctx.strokeStyle = 'rgba(0,0,0,0.5)';
     ctx.stroke();
   }

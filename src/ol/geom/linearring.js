@@ -3,9 +3,11 @@ goog.provide('ol.geom.LinearRing');
 goog.require('ol.extent');
 goog.require('ol.geom.GeometryType');
 goog.require('ol.geom.SimpleGeometry');
-goog.require('ol.geom.closest');
-goog.require('ol.geom.flat');
-goog.require('ol.geom.simplify');
+goog.require('ol.geom.flat.area');
+goog.require('ol.geom.flat.closest');
+goog.require('ol.geom.flat.deflate');
+goog.require('ol.geom.flat.inflate');
+goog.require('ol.geom.flat.simplify');
 
 
 
@@ -13,7 +15,8 @@ goog.require('ol.geom.simplify');
  * @constructor
  * @extends {ol.geom.SimpleGeometry}
  * @param {ol.geom.RawLinearRing} coordinates Coordinates.
- * @param {ol.geom.GeometryLayout=} opt_layout Layout.
+ * @param {ol.geom.GeometryLayout|string=} opt_layout Layout.
+ * @todo api
  */
 ol.geom.LinearRing = function(coordinates, opt_layout) {
 
@@ -31,7 +34,8 @@ ol.geom.LinearRing = function(coordinates, opt_layout) {
    */
   this.maxDeltaRevision_ = -1;
 
-  this.setCoordinates(coordinates, opt_layout);
+  this.setCoordinates(coordinates,
+      /** @type {ol.geom.GeometryLayout|undefined} */ (opt_layout));
 
 };
 goog.inherits(ol.geom.LinearRing, ol.geom.SimpleGeometry);
@@ -39,6 +43,7 @@ goog.inherits(ol.geom.LinearRing, ol.geom.SimpleGeometry);
 
 /**
  * @inheritDoc
+ * @todo api
  */
 ol.geom.LinearRing.prototype.clone = function() {
   var linearRing = new ol.geom.LinearRing(null);
@@ -57,11 +62,11 @@ ol.geom.LinearRing.prototype.closestPointXY =
     return minSquaredDistance;
   }
   if (this.maxDeltaRevision_ != this.getRevision()) {
-    this.maxDelta_ = Math.sqrt(ol.geom.closest.getMaxSquaredDelta(
+    this.maxDelta_ = Math.sqrt(ol.geom.flat.closest.getMaxSquaredDelta(
         this.flatCoordinates, 0, this.flatCoordinates.length, this.stride, 0));
     this.maxDeltaRevision_ = this.getRevision();
   }
-  return ol.geom.closest.getClosestPoint(
+  return ol.geom.flat.closest.getClosestPoint(
       this.flatCoordinates, 0, this.flatCoordinates.length, this.stride,
       this.maxDelta_, true, x, y, closestPoint, minSquaredDistance);
 };
@@ -69,18 +74,20 @@ ol.geom.LinearRing.prototype.closestPointXY =
 
 /**
  * @return {number} Area.
+ * @todo api
  */
 ol.geom.LinearRing.prototype.getArea = function() {
-  return ol.geom.flat.linearRingArea(
+  return ol.geom.flat.area.linearRing(
       this.flatCoordinates, 0, this.flatCoordinates.length, this.stride);
 };
 
 
 /**
  * @return {ol.geom.RawLinearRing} Coordinates.
+ * @todo api
  */
 ol.geom.LinearRing.prototype.getCoordinates = function() {
-  return ol.geom.flat.inflateCoordinates(
+  return ol.geom.flat.inflate.coordinates(
       this.flatCoordinates, 0, this.flatCoordinates.length, this.stride);
 };
 
@@ -91,7 +98,7 @@ ol.geom.LinearRing.prototype.getCoordinates = function() {
 ol.geom.LinearRing.prototype.getSimplifiedGeometryInternal =
     function(squaredTolerance) {
   var simplifiedFlatCoordinates = [];
-  simplifiedFlatCoordinates.length = ol.geom.simplify.douglasPeucker(
+  simplifiedFlatCoordinates.length = ol.geom.flat.simplify.douglasPeucker(
       this.flatCoordinates, 0, this.flatCoordinates.length, this.stride,
       squaredTolerance, simplifiedFlatCoordinates, 0);
   var simplifiedLinearRing = new ol.geom.LinearRing(null);
@@ -103,6 +110,7 @@ ol.geom.LinearRing.prototype.getSimplifiedGeometryInternal =
 
 /**
  * @inheritDoc
+ * @todo api
  */
 ol.geom.LinearRing.prototype.getType = function() {
   return ol.geom.GeometryType.LINEAR_RING;
@@ -112,6 +120,7 @@ ol.geom.LinearRing.prototype.getType = function() {
 /**
  * @param {ol.geom.RawLinearRing} coordinates Coordinates.
  * @param {ol.geom.GeometryLayout=} opt_layout Layout.
+ * @todo api
  */
 ol.geom.LinearRing.prototype.setCoordinates =
     function(coordinates, opt_layout) {
@@ -122,7 +131,7 @@ ol.geom.LinearRing.prototype.setCoordinates =
     if (goog.isNull(this.flatCoordinates)) {
       this.flatCoordinates = [];
     }
-    this.flatCoordinates.length = ol.geom.flat.deflateCoordinates(
+    this.flatCoordinates.length = ol.geom.flat.deflate.coordinates(
         this.flatCoordinates, 0, coordinates, this.stride);
     this.dispatchChangeEvent();
   }

@@ -2,31 +2,9 @@ goog.provide('ol.BrowserFeature');
 
 goog.require('goog.dom');
 goog.require('goog.dom.TagName');
+goog.require('ol');
+goog.require('ol.dom');
 goog.require('ol.webgl');
-
-
-/**
- * @define {boolean} Assume touch.
- */
-ol.ASSUME_TOUCH = false;
-
-
-/**
- * @define {boolean} Whether to enable canvas.
- */
-ol.ENABLE_CANVAS = true;
-
-
-/**
- * @define {boolean} Whether to enable DOM.
- */
-ol.ENABLE_DOM = true;
-
-
-/**
- * @define {boolean} Whether to enable WebGL.
- */
-ol.ENABLE_WEBGL = true;
 
 
 /**
@@ -34,16 +12,31 @@ ol.ENABLE_WEBGL = true;
  * (dips) on the device (`window.devicePixelRatio`).
  * @const
  * @type {number}
- * @todo stability experimental
+ * @todo api
  */
 ol.BrowserFeature.DEVICE_PIXEL_RATIO = goog.global.devicePixelRatio || 1;
+
+
+/**
+ * True if the browser supports ArrayBuffers.
+ * @const
+ * @type {boolean}
+ */
+ol.BrowserFeature.HAS_ARRAY_BUFFER = 'ArrayBuffer' in goog.global;
+
+
+/**
+ * True if the browser's Canvas implementation implements {get,set}LineDash.
+ * @type {boolean}
+ */
+ol.BrowserFeature.HAS_CANVAS_LINE_DASH = false;
 
 
 /**
  * True if browser supports Canvas.
  * @const
  * @type {boolean}
- * @todo stability experimental
+ * @todo api
  */
 ol.BrowserFeature.HAS_CANVAS = ol.ENABLE_CANVAS && (
     /**
@@ -54,9 +47,15 @@ ol.BrowserFeature.HAS_CANVAS = ol.ENABLE_CANVAS && (
         return false;
       }
       try {
-        var canvas = /** @type {HTMLCanvasElement} */
-            (goog.dom.createElement(goog.dom.TagName.CANVAS));
-        return !goog.isNull(canvas.getContext('2d'));
+        var context = ol.dom.createCanvasContext2D();
+        if (goog.isNull(context)) {
+          return false;
+        } else {
+          if (goog.isDef(context.setLineDash)) {
+            ol.BrowserFeature.HAS_CANVAS_LINE_DASH = true;
+          }
+          return true;
+        }
       } catch (e) {
         return false;
       }
@@ -67,7 +66,7 @@ ol.BrowserFeature.HAS_CANVAS = ol.ENABLE_CANVAS && (
  * Indicates if DeviceOrientation is supported in the user's browser.
  * @const
  * @type {boolean}
- * @todo stability experimental
+ * @todo api
  */
 ol.BrowserFeature.HAS_DEVICE_ORIENTATION =
     'DeviceOrientationEvent' in goog.global;
@@ -77,7 +76,6 @@ ol.BrowserFeature.HAS_DEVICE_ORIENTATION =
  * True if browser supports DOM.
  * @const
  * @type {boolean}
- * @todo stability experimental
  */
 ol.BrowserFeature.HAS_DOM = ol.ENABLE_DOM;
 
@@ -86,20 +84,42 @@ ol.BrowserFeature.HAS_DOM = ol.ENABLE_DOM;
  * Is HTML5 geolocation supported in the current browser?
  * @const
  * @type {boolean}
- * @todo stability experimental
+ * @todo api
  */
 ol.BrowserFeature.HAS_GEOLOCATION = 'geolocation' in goog.global.navigator;
+
+
+/**
+ * @const
+ * @type {boolean}
+ */
+ol.BrowserFeature.HAS_JSON_PARSE =
+    'JSON' in goog.global && 'parse' in goog.global.JSON;
 
 
 /**
  * True if browser supports touch events.
  * @const
  * @type {boolean}
- * @todo stability experimental
+ * @todo api
  */
-ol.BrowserFeature.HAS_TOUCH = ol.ASSUME_TOUCH ||
-    (goog.global.document &&
-    'ontouchstart' in goog.global.document.documentElement) ||
+ol.BrowserFeature.HAS_TOUCH = ol.ASSUME_TOUCH || 'ontouchstart' in goog.global;
+
+
+/**
+ * True if browser supports pointer events.
+ * @const
+ * @type {boolean}
+ */
+ol.BrowserFeature.HAS_POINTER = 'PointerEvent' in goog.global;
+
+
+/**
+ * True if browser supports ms pointer events (IE 10).
+ * @const
+ * @type {boolean}
+ */
+ol.BrowserFeature.HAS_MSPOINTER =
     !!(goog.global.navigator.msPointerEnabled);
 
 
@@ -107,7 +127,6 @@ ol.BrowserFeature.HAS_TOUCH = ol.ASSUME_TOUCH ||
  * True if browser supports WebGL.
  * @const
  * @type {boolean}
- * @todo stability experimental
  */
 ol.BrowserFeature.HAS_WEBGL = ol.ENABLE_WEBGL && (
     /**

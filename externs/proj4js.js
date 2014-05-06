@@ -89,4 +89,4 @@ Proj4js.Proj.prototype.to_meter;
  * @param {Proj4js.Point|{x:number, y:number}} point
  * @return {Proj4js.Point}
  */
-Proj4js.transform = function(source, dest, point) {};
+Proj4js.transform = function(source, dest, point) {return null;};

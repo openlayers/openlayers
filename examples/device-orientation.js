@@ -1,6 +1,5 @@
 goog.require('ol.DeviceOrientation');
 goog.require('ol.Map');
-goog.require('ol.RendererHints');
 goog.require('ol.View2D');
 goog.require('ol.dom.Input');
 goog.require('ol.layer.Tile');
@@ -16,7 +15,7 @@ var map = new ol.Map({
       source: new ol.source.OSM()
     })
   ],
-  renderers: ol.RendererHints.createFromQueryData(),
+  renderer: exampleNS.getRendererFromQueryString(),
   target: 'map',
   view: view
 });
@@ -25,12 +24,11 @@ var deviceOrientation = new ol.DeviceOrientation();
 var track = new ol.dom.Input(document.getElementById('track'));
 track.bindTo('checked', deviceOrientation, 'tracking');
 
-deviceOrientation.on('propertychange', function(event) {
-  // event.key is the changed property name
-  var element = document.getElementById(event.key);
-  if (element) {
-    element.innerHTML = deviceOrientation.get(event.key);
-  }
+deviceOrientation.on('change', function(event) {
+  $('#alpha').text(deviceOrientation.getAlpha() + ' [rad]');
+  $('#beta').text(deviceOrientation.getBeta() + ' [rad]');
+  $('#gamma').text(deviceOrientation.getGamma() + ' [rad]');
+  $('#heading').text(deviceOrientation.getHeading() + ' [rad]');
 });
 
 // tilt the map

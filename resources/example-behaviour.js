@@ -2,7 +2,7 @@
   if (window.location.host === 'localhost:3000') {
     return;
   }
-  var container = document.querySelector('.navbar .navbar-inner .container'),
+  var container = $('.navbar .navbar-inner .container')[0],
       form = document.createElement('form'),
       select = document.createElement('select'),
       possibleModes = {
@@ -16,6 +16,10 @@
       mode,
       modeTxt,
       modeChangedMethod;
+
+  if (!container) {
+    return;
+  }
 
   modeChangedMethod = function() {
     var newMode = this.value,
@@ -54,11 +58,29 @@
     }
   }
 
-  select.addEventListener('change', modeChangedMethod);
+  $(select).change(modeChangedMethod);
   select.className = 'input-medium';
-  
+
   form.className = 'navbar-form pull-right';
   form.appendChild(select);
 
   container.appendChild(form);
 })();
+
+var exampleNS = {};
+
+exampleNS.getRendererFromQueryString = function() {
+  var obj = {}, queryString = location.search.slice(1),
+      re = /([^&=]+)=([^&]*)/g, m;
+
+  while (m = re.exec(queryString)) {
+    obj[decodeURIComponent(m[1])] = decodeURIComponent(m[2]);
+  }
+  if ('renderers' in obj) {
+    return obj['renderers'].split(',');
+  } else if ('renderer' in obj) {
+    return [obj['renderer']];
+  } else {
+    return undefined;
+  }
+};

@@ -4,8 +4,8 @@ from cStringIO import StringIO
 import gzip
 import json
 import os
-import os.path
-import regex as re
+import glob
+import re
 import shutil
 import sys
 
@@ -14,68 +14,68 @@ from pake import ifind, main, output, rule, target, variables, virtual, which
 
 
 if sys.platform == 'win32':
-    """ windows_defaults assumes that jsdoc was installed at a specific place
-        (C:\jsdoc). It also fixes a certain version (1.9.0) of phantomjs which
-        might not anymore be proposed on
-        http://code.google.com/p/phantomjs/downloads/list"""
 
-    windows_defaults = {
-        'ProgramFiles': os.environ.get('ProgramFiles', 'C:\\Program Files'),
-        'Python27': os.environ.get('SystemDrive', 'C:') + '\\Python27',
-        'jsdoc': os.environ.get('SystemDrive', 'C:') + '\\jsdoc3',
-        'phantomjs': (os.environ.get('SystemDrive', 'C:') +
-                      '\\phantomjs-1.9.0-windows')
+    win = {
+        'GIT': 'git.exe',
+        'GJSLINT': 'gjslint.exe',
+        'JAVA': 'java.exe',
+        'JAR': 'jar.exe',
+        'JSDOC': './node_modules/.bin/jsdoc',
+        'JSHINT': './node_modules/.bin/jshint',
+        'PYTHON': 'python.exe',
+        'PHANTOMJS': 'phantomjs.cmd'
     }
 
-    if which('git.exe'):
-        variables.GIT = 'git.exe'
-    else:
-        variables.GIT = os.path.join(windows_defaults['ProgramFiles'],
-                                     'Git', 'bin', 'git.exe')
+    sys_dir = os.environ.get('SYSTEMDRIVE')
+    program_files = os.environ.get('PROGRAMFILES')
+    java_home = os.environ.get('JAVA_HOME')
 
-    if which('gjslint.exe'):
-        variables.GJSLINT = 'gjslint.exe'
-    else:
-        variables.GJSLINT = os.path.join(windows_defaults['Python27'],
-                                         'Scripts', 'gjslint.exe')
+    if not java_home:
+        # Following lines choose sensible defaults to guess JAVA_HOME in
+        # 32/64bit Program Files folder opting for the most current version.
+        search_term = os.path.join(sys_dir, os.sep, 'Program Files*', 'Java', 'jdk*')
+        found_jdks = sorted(glob.glob(search_term), key=lambda x: x[-8:])
+        if found_jdks:
+            java_home = found_jdks[-1]
 
-    if which('java.exe'):
-        variables.JAVA = 'java.exe'
-    else:
-        variables.JAVA = os.path.join(windows_defaults['ProgramFiles'],
-                                      'Java', 'jre7', 'bin', 'java.exe')
+    if java_home:
+        if not which(win['JAVA']):
+            win['JAVA'] = os.path.join(java_home, 'bin', 'java.exe')
+        if not which(win['JAR']):
+            win['JAR'] = os.path.join(java_home, 'bin', 'jar.exe')
+    elif not which(win['JAVA']):
+        win['JAVA'] = os.path.join(program_files,
+                                   'Java', 'jre7', 'bin', 'java.exe')
 
-    if which('jar.exe'):
-        variables.JAR = 'jar.exe'
-    else:
-        variables.JAR = os.path.join(windows_defaults['ProgramFiles'],
-                                     'Java', 'jdk1.7.0_17', 'bin', 'jar.exe')
+    if not which(win['GIT']):
+        win['GIT'] = os.path.join(program_files, 'Git', 'cmd', 'git.exe')
+    if not which(win['GIT']):
+        win['GIT'] = os.path.join(program_files, 'Git', 'bin', 'git.exe')
 
-    if which('jsdoc.cmd'):
-        variables.JSDOC = 'jsdoc.cmd'
-    else:
-        variables.JSDOC = os.path.join(windows_defaults['jsdoc'],
-                                       'jsdoc.cmd')
+    if not which(win['PYTHON']):
+        win['PYTHON'] = os.path.join(sys_dir, 'Python27', 'python.exe')
 
-    if which('python.exe'):
-        variables.PYTHON = 'python.exe'
-    else:
-        variables.PYTHON = os.path.join(windows_defaults['Python27'],
-                                        'python.exe')
+    if not which(win['GJSLINT']):
+        win['GJSLINT'] = os.path.join(sys_dir, 'Python27', 'Scripts', 'gjslint.exe')
 
-    if which('phantomjs.exe'):
-        variables.PHANTOMJS = 'phantomjs.exe'
-    else:
-        variables.PHANTOMJS = os.path.join(windows_defaults['phantomjs'],
-                                           'phantomjs.exe')
+    if not which(win['PHANTOMJS']):
+        win['PHANTOMJS'] = 'phantomjs.exe'
+    if not which(win['PHANTOMJS']):
+        win['PHANTOMJS'] = os.path.join(sys_dir, 'phantomjs-1.9.7-windows', 'phantomjs.exe')
+
+    if not which(win['JSDOC']):
+        win['JSDOC'] = os.path.join(program_files, 'jsdoc3', 'jsdoc.cmd')
+
+    for program, path in win.iteritems():
+        setattr(variables, program, path)
 
 else:
     variables.GIT = 'git'
     variables.GJSLINT = 'gjslint'
+    variables.JSHINT = './node_modules/.bin/jshint'
     variables.JAVA = 'java'
     variables.JAR = 'jar'
-    variables.JSDOC = 'jsdoc'
-    variables.NODE = 'node'
+    variables.JSDOC = './node_modules/.bin/jsdoc'
     variables.PYTHON = 'python'
     variables.PHANTOMJS = 'phantomjs'
 
@@ -83,15 +83,10 @@ variables.BRANCH = output(
     '%(GIT)s', 'rev-parse', '--abbrev-ref', 'HEAD').strip()
 
 EXECUTABLES = [variables.GIT, variables.GJSLINT, variables.JAVA, variables.JAR,
-               variables.JSDOC, variables.PYTHON, variables.PHANTOMJS]
+               variables.JSDOC, variables.JSHINT, variables.PYTHON,
+               variables.PHANTOMJS]
 
-EXPORTS = [path
-           for path in ifind('src')
-           if path.endswith('.exports')]
-
-EXTERNAL_SRC = [
-    'build/src/external/externs/types.js',
-    'build/src/external/src/exports.js']
+EXPORTS = 'build/exports.js'
 
 EXAMPLES = [path
             for path in ifind('examples')
@@ -103,7 +98,6 @@ EXAMPLES_SRC = [path
                 if path.endswith('.js')
                 if not path.endswith('.combined.js')
                 if not path.startswith('examples/bootstrap')
-                if not path.startswith('examples/font-awesome')
                 if path != 'examples/Jugl.js'
                 if path != 'examples/jquery.min.js'
                 if path != 'examples/loader.js'
@@ -114,10 +108,6 @@ EXAMPLES_JSON = ['build/' + example.replace('.html', '.json')
 
 EXAMPLES_COMBINED = ['build/' + example.replace('.html', '.combined.js')
                      for example in EXAMPLES]
-
-INTERNAL_SRC = [
-    'build/src/internal/src/requireall.js',
-    'build/src/internal/src/types.js']
 
 GLSL_SRC = [path
             for path in ifind('src')
@@ -154,7 +144,7 @@ PROJ4JS_ZIP_MD5 = '17caad64cf6ebc6e6fe62f292b134897'
 def report_sizes(t):
     stringio = StringIO()
     gzipfile = gzip.GzipFile(t.name, 'w', 9, stringio)
-    with open(t.name) as f:
+    with open(t.name, 'rb') as f:
         shutil.copyfileobj(f, gzipfile)
     gzipfile.close()
     rawsize = os.stat(t.name).st_size
@@ -167,7 +157,7 @@ def report_sizes(t):
 virtual('default', 'build')
 
 
-virtual('integration-test', 'lint', 'build', 'build-all',
+virtual('integration-test', 'lint', 'jshint', 'build', 'build-all',
         'test', 'build/examples/all.combined.js', 'check-examples', 'apidoc')
 
 
@@ -175,7 +165,7 @@ virtual('build', 'build/ol.css', 'build/ol.js',
         'build/ol-simple.js', 'build/ol-whitespace.js')
 
 
-virtual('check', 'lint', 'build/ol-all.js', 'test')
+virtual('check', 'lint', 'jshint', 'build/ol-all.js', 'test')
 
 
 virtual('todo', 'fixme')
@@ -186,15 +176,15 @@ def build_ol_css(t):
     t.touch()
 
 
-@target('build/ol.js', PLOVR_JAR, SRC, EXTERNAL_SRC, SHADER_SRC,
-        LIBTESS_JS_SRC, 'buildcfg/base.json', 'buildcfg/ol.json')
+@target('build/ol.js', PLOVR_JAR, SRC, EXPORTS, SHADER_SRC, LIBTESS_JS_SRC,
+        'buildcfg/base.json', 'buildcfg/ol.json')
 def build_ol_js(t):
     t.output('%(JAVA)s', '-server', '-XX:+TieredCompilation', '-jar',
             PLOVR_JAR, 'build', 'buildcfg/ol.json')
     report_sizes(t)
 
 
-@target('build/ol-simple.js', PLOVR_JAR, SRC, INTERNAL_SRC, SHADER_SRC,
+@target('build/ol-simple.js', PLOVR_JAR, SRC, EXPORTS, SHADER_SRC,
         LIBTESS_JS_SRC, 'buildcfg/base.json', 'buildcfg/ol.json',
         'buildcfg/ol-simple.json')
 def build_ol_simple_js(t):
@@ -203,8 +193,8 @@ def build_ol_simple_js(t):
     report_sizes(t)
 
 
-@target('build/ol-whitespace.js', PLOVR_JAR, SRC, INTERNAL_SRC, SHADER_SRC,
-        LIBTESS_JS_SRC, 'buildcfg/base.json', 'buildcfg/ol.json',
+@target('build/ol-whitespace.js', PLOVR_JAR, SRC, EXPORTS,
+        SHADER_SRC, LIBTESS_JS_SRC, 'buildcfg/base.json', 'buildcfg/ol.json',
         'buildcfg/ol-whitespace.json')
 def build_ol_whitespace_js(t):
     t.output('%(JAVA)s', '-server', '-XX:+TieredCompilation', '-jar',
@@ -215,26 +205,16 @@ def build_ol_whitespace_js(t):
 virtual('build-all', 'build/ol-all.js')
 
 
-@target('build/ol-all.js', PLOVR_JAR, SRC, EXTERNAL_SRC, INTERNAL_SRC,
-        SHADER_SRC, LIBTESS_JS_SRC, 'buildcfg/base.json',
-        'buildcfg/ol-all.json')
+@target('build/ol-all.js', PLOVR_JAR, SRC, EXPORTS, SHADER_SRC, LIBTESS_JS_SRC,
+        'buildcfg/base.json', 'buildcfg/ol-all.json')
 def build_ol_all_js(t):
     t.output('%(JAVA)s', '-server', '-XX:+TieredCompilation', '-jar',
             PLOVR_JAR, 'build', 'buildcfg/ol-all.json')
 
 
-@target('build/src/external/externs/types.js', 'bin/generate-exports.py',
-        'src/objectliterals.jsdoc')
-def build_src_external_externs_types_js(t):
-    t.output('%(PYTHON)s', 'bin/generate-exports.py',
-             '--externs', 'src/objectliterals.jsdoc')
-
-
-@target('build/src/external/src/exports.js', 'bin/generate-exports.py',
-        'src/objectliterals.jsdoc', EXPORTS)
-def build_src_external_src_exports_js(t):
-    t.output('%(PYTHON)s', 'bin/generate-exports.py',
-             '--exports', 'src/objectliterals.jsdoc', EXPORTS)
+@target(EXPORTS, SRC)
+def build_exports_js(t):
+    t.run('node', 'tasks/generate-exports.js', EXPORTS)
 
 
 for glsl_src in GLSL_SRC:
@@ -249,34 +229,17 @@ for glsl_src in GLSL_SRC:
     shader_src_helper(glsl_src)
 
 
-def _build_require_list(dependencies, output_file_name):
+@target('build/test/requireall.js', SPEC)
+def build_test_requireall_js(t):
     requires = set()
-    for dependency in dependencies:
-        for line in open(dependency):
+    for dependency in t.dependencies:
+        for line in open(dependency, 'rU'):
             match = re.match(r'goog\.provide\(\'(.*)\'\);', line)
             if match:
                 requires.add(match.group(1))
-    with open(output_file_name, 'w') as f:
+    with open(t.name, 'wb') as f:
         for require in sorted(requires):
             f.write('goog.require(\'%s\');\n' % (require,))
-
-
-@target('build/src/internal/src/requireall.js', SRC, SHADER_SRC,
-        LIBTESS_JS_SRC)
-def build_src_internal_src_requireall_js(t):
-    _build_require_list(t.dependencies, t.name)
-
-
-@target('build/test/requireall.js', SPEC)
-def build_test_requireall_js(t):
-    _build_require_list(t.dependencies, t.name)
-
-
-@target('build/src/internal/src/types.js', 'bin/generate-exports.py',
-        'src/objectliterals.jsdoc')
-def build_src_internal_types_js(t):
-    t.output('%(PYTHON)s', 'bin/generate-exports.py',
-             '--typedef', 'src/objectliterals.jsdoc')
 
 
 virtual('build-examples', 'examples', 'build/examples/all.combined.js',
@@ -297,7 +260,7 @@ def examples_examples_list_js(t):
 
 
 @target('build/examples/all.combined.js', 'build/examples/all.js', PLOVR_JAR,
-        SRC, INTERNAL_SRC, SHADER_SRC, LIBTESS_JS_SRC,
+        SRC, SHADER_SRC, LIBTESS_JS_SRC,
         'buildcfg/base.json', 'build/examples/all.json')
 def build_examples_all_combined_js(t):
     t.output('%(JAVA)s', '-server', '-XX:+TieredCompilation', '-jar',
@@ -307,33 +270,39 @@ def build_examples_all_combined_js(t):
 
 @target('build/examples/all.js', EXAMPLES_SRC)
 def build_examples_all_js(t):
-    t.output('bin/combine-examples.py', t.dependencies)
+    t.output('%(PYTHON)s', 'bin/combine-examples.py', t.dependencies)
 
 
 @rule(r'\Abuild/examples/(?P<id>.*).json\Z')
 def examples_star_json(name, match):
     def action(t):
+        # It would make more sense to use olx.js as an input file here. We use
+        # it as an externs file instead to prevent "Cannot read property '*' of
+        # undefined" error when running examples in "raw" or "whitespace" mode.
+        # Note that we use the proper way in buildcfg/examples-all.json, which
+        # is only used to check the examples code using the compiler.
         content = json.dumps({
             'id': match.group('id'),
             'inherits': '../../buildcfg/base.json',
             'inputs': [
-                '../examples/%(id)s.js' % match.groupdict(),
-                '../build/src/internal/src/types.js',
+                '../examples/%(id)s.js' % match.groupdict()
             ],
             'externs': [
-                '//json.js',
                 '//jquery-1.7.js',
                 '../externs/bingmaps.js',
                 '../externs/bootstrap.js',
+                '../externs/closure-compiler.js',
+                '../externs/example.js',
                 '../externs/geojson.js',
-                '../externs/topojson.js',
                 '../externs/oli.js',
+                '../externs/olx.js',
                 '../externs/proj4js.js',
                 '../externs/tilejson.js',
-                '../externs/closure-compiler.js',
+                '../externs/topojson.js',
+                '../externs/vbarray.js',
             ],
         })
-        with open(t.name, 'w') as f:
+        with open(t.name, 'wb') as f:
             f.write(content)
     dependencies = [__file__, 'buildcfg/base.json']
     return Target(name, action=action, dependencies=dependencies)
@@ -346,7 +315,7 @@ def examples_star_combined_js(name, match):
                 PLOVR_JAR, 'build', 'build/examples/%(id)s.json' %
                 match.groupdict())
         report_sizes(t)
-    dependencies = [PLOVR_JAR, SRC, INTERNAL_SRC, SHADER_SRC, LIBTESS_JS_SRC,
+    dependencies = [PLOVR_JAR, SRC, SHADER_SRC, LIBTESS_JS_SRC,
                     'buildcfg/base.json',
                     'examples/%(id)s.js' % match.groupdict(),
                     'build/examples/%(id)s.json' % match.groupdict()]
@@ -359,42 +328,21 @@ def serve(t):
           'buildcfg/ol-all.json', EXAMPLES_JSON, 'buildcfg/test.json')
 
 
-@target('serve-integration-test', PLOVR_JAR, INTERNAL_SRC)
+@target('serve-integration-test', PLOVR_JAR)
 def serve_precommit(t):
     t.run('%(JAVA)s', '-jar', PLOVR_JAR, 'serve',
           'buildcfg/ol-all.json', 'buildcfg/test.json')
 
 
-virtual('lint', 'build/lint-timestamp', 'build/lint-generated-timestamp',
-        'build/lint-libtess.js-timestamp', 'build/check-requires-timestamp',
-        'build/check-whitespace-timestamp')
+virtual('lint', 'build/lint-timestamp', 'build/lint-libtess.js-timestamp',
+        'build/check-requires-timestamp', 'build/check-whitespace-timestamp')
 
 
-@target('build/lint-timestamp', SRC, EXAMPLES_SRC, SPEC, precious=True)
+@target('build/lint-timestamp', SRC, EXPORTS, EXAMPLES_SRC, SPEC, precious=True)
 def build_lint_src_timestamp(t):
     t.run('%(GJSLINT)s',
           '--jslint_error=all',
-          '--custom_jsdoc_tags=todo',
-          '--strict',
-          t.newer(t.dependencies))
-    t.touch()
-
-
-@target('build/lint-generated-timestamp', INTERNAL_SRC, EXTERNAL_SRC,
-        precious=True)
-def build_lint_generated_timestamp(t):
-    limited_doc_files = [
-        path
-        for path in ifind('externs', 'build/src/external/externs')
-        if path.endswith('.js')]
-    t.run('%(GJSLINT)s',
-          '--jslint_error=all',
-          # ignore error for max line length (for these auto-generated sources)
-          '--disable=110',
-          '--custom_jsdoc_tags=todo',
-          # for a complete list of error codes to allow, see
-          # http://closure-linter.googlecode.com/svn/trunk/closure_linter/errors.py
-          '--limited_doc_files=%s' % (','.join(limited_doc_files),),
+          '--custom_jsdoc_tags=event,fires,todo,function',
           '--strict',
           t.newer(t.dependencies))
     t.touch()
@@ -407,6 +355,15 @@ def build_lint_libtess_js_timestamp(t):
           '--disable=110',
           '--strict',
           t.newer(t.dependencies))
+    t.touch()
+
+
+virtual('jshint', 'build/jshint-timestamp')
+
+@target('build/jshint-timestamp', SRC, EXPORTS, EXAMPLES_SRC, SPEC,
+        precious=True)
+def build_jshint_timestamp(t):
+    t.run(variables.JSHINT, '--verbose', t.newer(t.dependencies))
     t.touch()
 
 
@@ -433,8 +390,8 @@ def _strip_comments(lines):
                 yield lineno, line
 
 
-@target('build/check-requires-timestamp', SRC, INTERNAL_SRC, EXTERNAL_SRC,
-        EXAMPLES_SRC, SHADER_SRC, LIBTESS_JS_SRC, SPEC)
+@target('build/check-requires-timestamp', SRC, EXAMPLES_SRC,
+        SHADER_SRC, LIBTESS_JS_SRC, SPEC)
 def build_check_requires_timestamp(t):
     from zipfile import ZipFile
     unused_count = 0
@@ -448,16 +405,14 @@ def build_check_requires_timestamp(t):
             # the generated regular expression to exceed Python's limits
             if zi.filename.startswith('closure/goog/i18n/'):
                 continue
-            for line in zf.open(zi):
+            for line in zf.open(zi, 'rU'):
                 m = re.match(r'goog.provide\(\'(.*)\'\);', line)
                 if m:
                     all_provides.add(m.group(1))
     for filename in sorted(t.dependencies):
-        if filename == 'build/src/internal/src/requireall.js':
-            continue
         require_linenos = {}
         uses = set()
-        lines = open(filename).readlines()
+        lines = open(filename, 'rU').readlines()
         for lineno, line in _strip_comments(lines):
             m = re.match(r'goog.provide\(\'(.*)\'\);', line)
             if m:
@@ -534,13 +489,11 @@ def build_check_requires_timestamp(t):
                    for key, child in root.children.iteritems()]
     missing_count = 0
     for filename in sorted(t.dependencies):
-        if filename in INTERNAL_SRC or filename in EXTERNAL_SRC:
-            continue
         provides = set()
         requires = set()
         uses = set()
         uses_linenos = {}
-        for lineno, line in _strip_comments(open(filename)):
+        for lineno, line in _strip_comments(open(filename, 'rU')):
             m = re.match(r'goog.provide\(\'(.*)\'\);', line)
             if m:
                 provides.add(m.group(1))
@@ -578,18 +531,21 @@ def build_check_requires_timestamp(t):
     t.touch()
 
 
-@target('build/check-whitespace-timestamp', SRC, INTERNAL_SRC, EXTERNAL_SRC,
-        EXAMPLES_SRC, SPEC, EXPORTS, JSDOC_SRC, LIBTESS_JS_SRC,
-        precious=True)
+@target('build/check-whitespace-timestamp', SRC, EXPORTS, EXAMPLES_SRC,
+        SPEC, JSDOC_SRC, LIBTESS_JS_SRC, precious=True)
 def build_check_whitespace_timestamp(t):
     CR_RE = re.compile(r'\r')
+    LEADING_WHITESPACE_RE = re.compile(r'\s+')
     TRAILING_WHITESPACE_RE = re.compile(r'\s+\n\Z')
     NO_NEWLINE_RE = re.compile(r'[^\n]\Z')
     ALL_WHITESPACE_RE = re.compile(r'\s+\Z')
     errors = 0
     for filename in sorted(t.newer(t.dependencies)):
         whitespace = False
-        for lineno, line in enumerate(open(filename)):
+        for lineno, line in enumerate(open(filename, 'rU')):
+            if lineno == 0 and LEADING_WHITESPACE_RE.match(line):
+                t.info('%s:%d: leading whitespace', filename, lineno + 1)
+                errors += 1
             if CR_RE.search(line):
                 t.info('%s:%d: carriage return character in line', filename, lineno + 1)
                 errors += 1
@@ -623,16 +579,16 @@ virtual('apidoc', 'build/jsdoc-%(BRANCH)s-timestamp' % vars(variables))
 
 
 @target('build/jsdoc-%(BRANCH)s-timestamp' % vars(variables), 'host-resources',
-        'build/src/external/src/exports.js', 'build/src/external/src/types.js',
-        SRC, SHADER_SRC, ifind('apidoc/template'))
+        EXPORTS, SRC, SHADER_SRC,
+        ifind('apidoc/template'))
 def jsdoc_BRANCH_timestamp(t):
-    t.run('%(JSDOC)s', '-c', 'apidoc/conf.json', 'src', 'apidoc/index.md',
+    t.run('%(JSDOC)s', 'apidoc/index.md', '-c', 'apidoc/conf.json',
           '-d', 'build/hosted/%(BRANCH)s/apidoc')
     t.touch()
 
 
 def split_example_file(example, dst_dir):
-    lines = open(example).readlines()
+    lines = open(example, 'rU').readlines()
 
     target_lines = []
     target_require_lines = []
@@ -650,11 +606,11 @@ def split_example_file(example, dst_dir):
                 target_lines.append(line)
 
     target = open(
-        os.path.join(dst_dir, os.path.basename(example)), 'w')
+        os.path.join(dst_dir, os.path.basename(example)), 'wb')
     target_require = open(
         os.path.join(dst_dir, os.path.basename(example)
           .replace('.js', '-require.js')),
-        'w')
+        'wb')
 
     target.writelines(target_lines)
     target.close()
@@ -674,17 +630,21 @@ def host_resources(t):
 def host_examples(t):
     examples_dir = 'build/hosted/%(BRANCH)s/examples'
     build_dir = 'build/hosted/%(BRANCH)s/build'
+    css_dir = 'build/hosted/%(BRANCH)s/css'
     t.rm_rf(examples_dir)
     t.makedirs(examples_dir)
     t.rm_rf(build_dir)
     t.makedirs(build_dir)
+    t.rm_rf(css_dir)
+    t.makedirs(css_dir)
     t.cp(EXAMPLES, examples_dir)
     for example in [path.replace('.html', '.js') for path in EXAMPLES]:
         split_example_file(example, examples_dir % vars(variables))
     t.cp_r('examples/data', examples_dir + '/data')
     t.cp('bin/loader_hosted_examples.js', examples_dir + '/loader.js')
     t.cp('build/ol.js', 'build/ol-simple.js', 'build/ol-whitespace.js',
-         'build/ol.css', build_dir)
+         build_dir)
+    t.cp('build/ol.css', css_dir)
     t.cp('examples/index.html', 'examples/example-list.js',
          'examples/example-list.xml', 'examples/Jugl.js',
          'examples/jquery.min.js', examples_dir)
@@ -708,7 +668,7 @@ def host_examples(t):
 def check_examples(t):
     examples = ['build/hosted/%(BRANCH)s/' + e
                 for e in EXAMPLES
-                if not open(e.replace('.html', '.js')).readline().startswith('// NOCOMPILE')]
+                if not open(e.replace('.html', '.js'), 'rU').readline().startswith('// NOCOMPILE')]
     all_examples = \
         [e + '?mode=advanced' for e in examples]
     for example in all_examples:
@@ -732,7 +692,7 @@ def proj4js_zip(t):
     t.info('downloaded %r', t.name)
 
 
-virtual('test-deps', INTERNAL_SRC, PROJ4JS, 'build/test/requireall.js')
+virtual('test-deps', PROJ4JS, 'build/test/requireall.js')
 
 
 @target('test', 'test-deps', phony=True)
@@ -820,7 +780,7 @@ Other less frequently used targets are:
                      installed on your machine.
   fixme            - Will print a list of parts of the code that are marked
                      with either TODO or FIXME.
-  todo             - is an alias for the fixme-target
+  todo             - This is an alias for the fixme-target (see above).
   plovr            - Fetches the required plovr.jar. Usually called by other
                      targets that depend on plovr.
 

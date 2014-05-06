@@ -4,7 +4,7 @@ goog.provide('ol.render.webgl.Immediate');
 
 /**
  * @constructor
- * @implements {ol.render.IRender}
+ * @implements {ol.render.IVectorContext}
  * @param {ol.webgl.Context} context Context.
  * @param {number} pixelRatio Pixel ratio.
  * @struct
@@ -88,6 +88,14 @@ ol.render.webgl.Immediate.prototype.drawMultiPolygonGeometry =
  */
 ol.render.webgl.Immediate.prototype.drawPolygonGeometry =
     function(polygonGeometry, data) {
+};
+
+
+/**
+ * @inheritDoc
+ */
+ol.render.webgl.Immediate.prototype.drawText =
+    function(flatCoordinates, offset, end, stride, geometry, data) {
 };
 
 

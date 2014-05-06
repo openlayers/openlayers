@@ -61,46 +61,6 @@ describe('ol.Sphere', function() {
       midpoint: [18.434948822922006, -24.0948425521107]
     },
     {
-      c1: [0, 0],
-      c2: [90, 180],
-      cosineDistance: 10007.543398010286,
-      equirectangularDistance: 20015.086796020572,
-      finalBearing: 90,
-      haversineDistance: 10007.543398010288,
-      initialBearing: -90,
-      midpoint: [-45.00000000000005, 4.961398865471767e-15]
-    },
-    {
-      c1: [0, 0],
-      c2: [-90, 180],
-      cosineDistance: 10007.543398010286,
-      equirectangularDistance: 20015.086796020572,
-      finalBearing: 270,
-      haversineDistance: 10007.543398010288,
-      initialBearing: 90,
-      midpoint: [45.00000000000005, 4.961398865471767e-15]
-    },
-    {
-      c1: [0, 0],
-      c2: [90, -180],
-      cosineDistance: 10007.543398010286,
-      equirectangularDistance: 20015.086796020572,
-      finalBearing: 90,
-      haversineDistance: 10007.543398010288,
-      initialBearing: -90.00000000000001,
-      midpoint: [-45.00000000000005, -4.961398865471767e-15]
-    },
-    {
-      c1: [0, 0],
-      c2: [90, -180],
-      cosineDistance: 10007.543398010286,
-      equirectangularDistance: 20015.086796020572,
-      finalBearing: 90,
-      haversineDistance: 10007.543398010288,
-      initialBearing: -90.00000000000001,
-      midpoint: [-45.00000000000005, -4.961398865471767e-15]
-    },
-    {
       c1: [45, 45],
       c2: [45, 45],
       cosineDistance: 0,
@@ -141,46 +101,6 @@ describe('ol.Sphere', function() {
       midpoint: [45.00000000000005, 0]
     },
     {
-      c1: [45, 45],
-      c2: [90, 180],
-      cosineDistance: 13343.39119734705,
-      equirectangularDistance: 15132.953174634127,
-      finalBearing: 35.264389682754654,
-      haversineDistance: 13343.391197347048,
-      initialBearing: -54.735610317245346,
-      midpoint: [-45.00000000000005, 45.00000000000001]
-    },
-    {
-      c1: [45, 45],
-      c2: [-90, 180],
-      cosineDistance: 6671.695598673524,
-      equirectangularDistance: 16072.9523901477,
-      finalBearing: 324.73561031724535,
-      haversineDistance: 6671.695598673525,
-      initialBearing: 125.26438968275465,
-      midpoint: [71.56505117707799, 24.094842552110702]
-    },
-    {
-      c1: [45, 45],
-      c2: [90, -180],
-      cosineDistance: 13343.39119734705,
-      equirectangularDistance: 25092.03003421417,
-      finalBearing: 35.264389682754654,
-      haversineDistance: 13343.391197347048,
-      initialBearing: -54.735610317245346,
-      midpoint: [-45.00000000000005, 45]
-    },
-    {
-      c1: [45, 45],
-      c2: [90, -180],
-      cosineDistance: 13343.39119734705,
-      equirectangularDistance: 25092.03003421417,
-      finalBearing: 35.264389682754654,
-      haversineDistance: 13343.391197347048,
-      initialBearing: -54.735610317245346,
-      midpoint: [-45.00000000000005, 45]
-    },
-    {
       c1: [-45, 45],
       c2: [-45, 45],
       cosineDistance: 0,
@@ -211,46 +131,6 @@ describe('ol.Sphere', function() {
       midpoint: [0, 0]
     },
     {
-      c1: [-45, 45],
-      c2: [90, 180],
-      cosineDistance: 6671.695598673524,
-      equirectangularDistance: 16072.9523901477,
-      finalBearing: 35.264389682754654,
-      haversineDistance: 6671.695598673525,
-      initialBearing: -125.26438968275465,
-      midpoint: [-71.56505117707799, 24.094842552110702]
-    },
-    {
-      c1: [-45, 45],
-      c2: [-90, 180],
-      cosineDistance: 13343.39119734705,
-      equirectangularDistance: 15132.953174634127,
-      finalBearing: 324.73561031724535,
-      haversineDistance: 13343.391197347048,
-      initialBearing: 54.735610317245346,
-      midpoint: [45.00000000000005, 45.00000000000001]
-    },
-    {
-      c1: [-45, 45],
-      c2: [90, -180],
-      cosineDistance: 6671.695598673525,
-      equirectangularDistance: 25669.894779453065,
-      finalBearing: 35.264389682754654,
-      haversineDistance: 6671.695598673525,
-      initialBearing: -125.26438968275465,
-      midpoint: [-71.56505117707799, 24.0948425521107]
-    },
-    {
-      c1: [-45, 45],
-      c2: [90, -180],
-      cosineDistance: 6671.695598673525,
-      equirectangularDistance: 25669.894779453065,
-      finalBearing: 35.264389682754654,
-      haversineDistance: 6671.695598673525,
-      initialBearing: -125.26438968275465,
-      midpoint: [-71.56505117707799, 24.0948425521107]
-    },
-    {
       c1: [-45, -45],
       c2: [-45, -45],
       cosineDistance: 0,
@@ -271,46 +151,6 @@ describe('ol.Sphere', function() {
       midpoint: [0, -54.735610317245346]
     },
     {
-      c1: [-45, -45],
-      c2: [90, 180],
-      cosineDistance: 6671.695598673525,
-      equirectangularDistance: 25669.894779453065,
-      finalBearing: 144.73561031724535,
-      haversineDistance: 6671.695598673525,
-      initialBearing: -54.735610317245346,
-      midpoint: [-71.56505117707799, -24.0948425521107]
-    },
-    {
-      c1: [-45, -45],
-      c2: [-90, 180],
-      cosineDistance: 13343.39119734705,
-      equirectangularDistance: 25092.03003421417,
-      finalBearing: 215.26438968275465,
-      haversineDistance: 13343.391197347048,
-      initialBearing: 125.26438968275465,
-      midpoint: [45.00000000000005, -45]
-    },
-    {
-      c1: [-45, -45],
-      c2: [90, -180],
-      cosineDistance: 6671.695598673524,
-      equirectangularDistance: 16072.9523901477,
-      finalBearing: 144.73561031724535,
-      haversineDistance: 6671.695598673525,
-      initialBearing: -54.73561031724536,
-      midpoint: [-71.56505117707799, -24.094842552110702]
-    },
-    {
-      c1: [-45, -45],
-      c2: [90, -180],
-      cosineDistance: 6671.695598673524,
-      equirectangularDistance: 16072.9523901477,
-      finalBearing: 144.73561031724535,
-      haversineDistance: 6671.695598673525,
-      initialBearing: -54.73561031724536,
-      midpoint: [-71.56505117707799, -24.094842552110702]
-    },
-    {
       c1: [45, -45],
       c2: [45, -45],
       cosineDistance: 0,
@@ -319,146 +159,6 @@ describe('ol.Sphere', function() {
       haversineDistance: 0,
       initialBearing: 0,
       midpoint: [45.00000000000005, -45]
-    },
-    {
-      c1: [45, -45],
-      c2: [90, 180],
-      cosineDistance: 13343.39119734705,
-      equirectangularDistance: 25092.03003421417,
-      finalBearing: 144.73561031724535,
-      haversineDistance: 13343.391197347048,
-      initialBearing: -125.26438968275465,
-      midpoint: [-45.00000000000005, -45]
-    },
-    {
-      c1: [45, -45],
-      c2: [-90, 180],
-      cosineDistance: 6671.695598673525,
-      equirectangularDistance: 25669.894779453065,
-      finalBearing: 215.26438968275465,
-      haversineDistance: 6671.695598673525,
-      initialBearing: 54.735610317245346,
-      midpoint: [71.56505117707799, -24.0948425521107]
-    },
-    {
-      c1: [45, -45],
-      c2: [90, -180],
-      cosineDistance: 13343.39119734705,
-      equirectangularDistance: 15132.953174634127,
-      finalBearing: 144.73561031724535,
-      haversineDistance: 13343.391197347048,
-      initialBearing: -125.26438968275465,
-      midpoint: [-45.00000000000005, -45.00000000000001]
-    },
-    {
-      c1: [45, -45],
-      c2: [90, -180],
-      cosineDistance: 13343.39119734705,
-      equirectangularDistance: 15132.953174634127,
-      finalBearing: 144.73561031724535,
-      haversineDistance: 13343.391197347048,
-      initialBearing: -125.26438968275465,
-      midpoint: [-45.00000000000005, -45.00000000000001]
-    },
-    {
-      c1: [90, 180],
-      c2: [90, 180],
-      cosineDistance: 0,
-      equirectangularDistance: 0,
-      finalBearing: 180,
-      haversineDistance: 0,
-      initialBearing: 0,
-      midpoint: [-90, 7.0164775638926606e-15]
-    },
-    {
-      c1: [90, 180],
-      c2: [-90, 180],
-      cosineDistance: 20015.086796020572,
-      equirectangularDistance: 20015.086796020572,
-      finalBearing: 26.565051177077976,
-      haversineDistance: 20015.086796020572,
-      initialBearing: 153.43494882292202,
-      midpoint: [-180, 63.43494882292201]
-    },
-    {
-      c1: [90, 180],
-      c2: [90, -180],
-      cosineDistance: 0,
-      equirectangularDistance: 40030.173592041145,
-      finalBearing: 0,
-      haversineDistance: 1.5603934160404731e-12,
-      initialBearing: 0,
-      midpoint: [-90, 0]
-    },
-    {
-      c1: [90, 180],
-      c2: [90, -180],
-      cosineDistance: 0,
-      equirectangularDistance: 40030.173592041145,
-      finalBearing: 0,
-      haversineDistance: 1.5603934160404731e-12,
-      initialBearing: 0,
-      midpoint: [-90, 0]
-    },
-    {
-      c1: [-90, 180],
-      c2: [-90, 180],
-      cosineDistance: 0,
-      equirectangularDistance: 0,
-      finalBearing: 180,
-      haversineDistance: 0,
-      initialBearing: 0,
-      midpoint: [90, 7.0164775638926606e-15]
-    },
-    {
-      c1: [-90, 180],
-      c2: [90, -180],
-      cosineDistance: 20015.086796020572,
-      equirectangularDistance: 44755.09465146047,
-      finalBearing: 270,
-      haversineDistance: 20015.086796020572,
-      initialBearing: -90,
-      midpoint: [-180, 0]
-    },
-    {
-      c1: [-90, 180],
-      c2: [90, -180],
-      cosineDistance: 20015.086796020572,
-      equirectangularDistance: 44755.09465146047,
-      finalBearing: 270,
-      haversineDistance: 20015.086796020572,
-      initialBearing: -90,
-      midpoint: [-180, 0]
-    },
-    {
-      c1: [90, -180],
-      c2: [90, -180],
-      cosineDistance: 0,
-      equirectangularDistance: 0,
-      finalBearing: 180,
-      haversineDistance: 0,
-      initialBearing: 0,
-      midpoint: [-90, -7.0164775638926606e-15]
-    },
-    {
-      c1: [90, -180],
-      c2: [90, -180],
-      cosineDistance: 0,
-      equirectangularDistance: 0,
-      finalBearing: 180,
-      haversineDistance: 0,
-      initialBearing: 0,
-      midpoint: [-90, -7.0164775638926606e-15]
-    },
-    {
-      c1: [90, -180],
-      c2: [90, -180],
-      cosineDistance: 0,
-      equirectangularDistance: 0,
-      finalBearing: 180,
-      haversineDistance: 0,
-      initialBearing: 0,
-      midpoint: [-90, -7.0164775638926606e-15]
     }
   ];
 
@@ -469,7 +169,7 @@ describe('ol.Sphere', function() {
       for (i = 0; i < expected.length; ++i) {
         e = expected[i];
         expect(sphere.cosineDistance(e.c1, e.c2)).to.roughlyEqual(
-            e.cosineDistance, 1e-9);
+            e.cosineDistance, 1e-3);
       }
     });
 
@@ -522,6 +222,26 @@ describe('ol.Sphere', function() {
         e = expected[i];
         expect(sphere.initialBearing(e.c1, e.c2)).to.roughlyEqual(
             e.initialBearing, 1e-9);
+      }
+    });
+
+  });
+
+  describe('interpolate', function() {
+
+    it('results match at the start, midpoint, and end', function() {
+      var e, i;
+      for (i = 0; i < expected.length; ++i) {
+        e = expected[i];
+        var c1 = sphere.interpolate(e.c1, e.c2, 0);
+        expect(c1[0]).to.roughlyEqual(e.c1[0], 1e-9);
+        expect(c1[1]).to.roughlyEqual(e.c1[1], 1e-9);
+        var midpoint = sphere.interpolate(e.c1, e.c2, 0.5);
+        expect(midpoint[0]).to.roughlyEqual(e.midpoint[0], 1e-9);
+        expect(midpoint[1]).to.roughlyEqual(e.midpoint[1], 1e-5);
+        var c2 = sphere.interpolate(e.c1, e.c2, 1);
+        expect(c2[0]).to.roughlyEqual(e.c2[0], 1e-9);
+        expect(c2[1]).to.roughlyEqual(e.c2[1], 1e-5);
       }
     });
 

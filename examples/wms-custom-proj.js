@@ -1,10 +1,8 @@
 goog.require('ol.Attribution');
 goog.require('ol.Map');
-goog.require('ol.RendererHints');
 goog.require('ol.View2D');
 goog.require('ol.control');
 goog.require('ol.control.ScaleLine');
-goog.require('ol.control.ScaleLineUnits');
 goog.require('ol.layer.Tile');
 goog.require('ol.proj');
 goog.require('ol.source.TileWMS');
@@ -18,7 +16,7 @@ var projection = ol.proj.configureProj4jsProjection({
 var extent = [420000, 30000, 900000, 350000];
 var layers = [
   new ol.layer.Tile({
-    source: new ol.source.TileWMS(/** @type {olx.source.TileWMSOptions} */ ({
+    source: new ol.source.TileWMS({
       url: 'http://wms.geo.admin.ch/',
       crossOrigin: 'anonymous',
       attributions: [new ol.Attribution({
@@ -33,10 +31,10 @@ var layers = [
       },
       extent: extent,
       serverType: 'mapserver'
-    }))
+    })
   }),
   new ol.layer.Tile({
-    source: new ol.source.TileWMS(/** @type {olx.source.TileWMSOptions} */ ({
+    source: new ol.source.TileWMS({
       url: 'http://wms.geo.admin.ch/',
       crossOrigin: 'anonymous',
       attributions: [new ol.Attribution({
@@ -48,18 +46,18 @@ var layers = [
       params: {'LAYERS': 'ch.bafu.schutzgebiete-paerke_nationaler_bedeutung'},
       extent: extent,
       serverType: 'mapserver'
-    }))
+    })
   })
 ];
 
 var map = new ol.Map({
   controls: ol.control.defaults().extend([
     new ol.control.ScaleLine({
-      units: ol.control.ScaleLineUnits.METRIC
+      units: 'metric'
     })
   ]),
   layers: layers,
-  renderers: ol.RendererHints.createFromQueryData(),
+  renderer: exampleNS.getRendererFromQueryString(),
   target: 'map',
   view: new ol.View2D({
     projection: projection,

@@ -1,6 +1,5 @@
 goog.require('ol.Map');
 goog.require('ol.Overlay');
-goog.require('ol.RendererHints');
 goog.require('ol.View2D');
 goog.require('ol.coordinate');
 goog.require('ol.layer.Tile');
@@ -48,7 +47,7 @@ var map = new ol.Map({
       })
     })
   ],
-  renderers: ol.RendererHints.createFromQueryData(),
+  renderer: exampleNS.getRendererFromQueryString(),
   overlays: [overlay],
   target: 'map',
   view: new ol.View2D({
@@ -61,7 +60,7 @@ var map = new ol.Map({
 /**
  * Add a click handler to the map to render the popup.
  */
-map.on('singleclick', function(evt) {
+map.on('click', function(evt) {
   var coordinate = evt.coordinate;
   var hdms = ol.coordinate.toStringHDMS(ol.proj.transform(
       coordinate, 'EPSG:3857', 'EPSG:4326'));

@@ -1,6 +1,8 @@
 goog.provide('ol.renderer.canvas.Layer');
 
+goog.require('goog.array');
 goog.require('goog.vec.Mat4');
+goog.require('ol.dom');
 goog.require('ol.layer.Layer');
 goog.require('ol.render.Event');
 goog.require('ol.render.EventType');
@@ -31,7 +33,7 @@ goog.inherits(ol.renderer.canvas.Layer, ol.renderer.Layer);
 
 
 /**
- * @param {ol.FrameState} frameState Frame state.
+ * @param {oli.FrameState} frameState Frame state.
  * @param {ol.layer.LayerState} layerState Layer state.
  * @param {CanvasRenderingContext2D} context Context.
  */
@@ -75,7 +77,7 @@ ol.renderer.canvas.Layer.prototype.composeFrame =
 /**
  * @param {ol.render.EventType} type Event type.
  * @param {CanvasRenderingContext2D} context Context.
- * @param {ol.FrameState} frameState Frame state.
+ * @param {oli.FrameState} frameState Frame state.
  * @param {goog.vec.Mat4.Number=} opt_transform Transform.
  * @private
  */
@@ -86,7 +88,8 @@ ol.renderer.canvas.Layer.prototype.dispatchComposeEvent_ =
     var transform = goog.isDef(opt_transform) ?
         opt_transform : this.getTransform(frameState);
     var render = new ol.render.canvas.Immediate(
-        context, frameState.pixelRatio, frameState.extent, transform);
+        context, frameState.pixelRatio, frameState.extent, transform,
+        frameState.view2DState.rotation);
     var composeEvent = new ol.render.Event(type, layer, render, frameState,
         context, null);
     layer.dispatchEvent(composeEvent);
@@ -97,7 +100,7 @@ ol.renderer.canvas.Layer.prototype.dispatchComposeEvent_ =
 
 /**
  * @param {CanvasRenderingContext2D} context Context.
- * @param {ol.FrameState} frameState Frame state.
+ * @param {oli.FrameState} frameState Frame state.
  * @param {goog.vec.Mat4.Number=} opt_transform Transform.
  * @protected
  */
@@ -110,13 +113,26 @@ ol.renderer.canvas.Layer.prototype.dispatchPostComposeEvent =
 
 /**
  * @param {CanvasRenderingContext2D} context Context.
- * @param {ol.FrameState} frameState Frame state.
+ * @param {oli.FrameState} frameState Frame state.
  * @param {goog.vec.Mat4.Number=} opt_transform Transform.
  * @protected
  */
 ol.renderer.canvas.Layer.prototype.dispatchPreComposeEvent =
     function(context, frameState, opt_transform) {
   this.dispatchComposeEvent_(ol.render.EventType.PRECOMPOSE, context,
+      frameState, opt_transform);
+};
+
+
+/**
+ * @param {CanvasRenderingContext2D} context Context.
+ * @param {oli.FrameState} frameState Frame state.
+ * @param {goog.vec.Mat4.Number=} opt_transform Transform.
+ * @protected
+ */
+ol.renderer.canvas.Layer.prototype.dispatchRenderEvent =
+    function(context, frameState, opt_transform) {
+  this.dispatchComposeEvent_(ol.render.EventType.RENDER, context,
       frameState, opt_transform);
 };
 
@@ -134,7 +150,7 @@ ol.renderer.canvas.Layer.prototype.getImageTransform = goog.abstractMethod;
 
 
 /**
- * @param {ol.FrameState} frameState Frame state.
+ * @param {oli.FrameState} frameState Frame state.
  * @protected
  * @return {!goog.vec.Mat4.Number} Transform.
  */
@@ -149,3 +165,46 @@ ol.renderer.canvas.Layer.prototype.getTransform = function(frameState) {
       -view2DState.rotation,
       -view2DState.center[0], -view2DState.center[1]);
 };
+
+
+/**
+ * @param {ol.Size} size Size.
+ * @return {boolean} True when the canvas with the current size does not exceed
+ *     the maximum dimensions.
+ */
+ol.renderer.canvas.Layer.testCanvasSize = (function() {
+
+  /**
+   * @type {CanvasRenderingContext2D}
+   */
+  var context = null;
+
+  /**
+   * @type {ImageData}
+   */
+  var imageData = null;
+
+  return function(size) {
+    if (goog.isNull(context)) {
+      context = ol.dom.createCanvasContext2D(1, 1);
+      imageData = context.createImageData(1, 1);
+      var data = imageData.data;
+      data[0] = 42;
+      data[1] = 84;
+      data[2] = 126;
+      data[3] = 255;
+    }
+    var canvas = context.canvas;
+    var good = size[0] <= canvas.width && size[1] <= canvas.height;
+    if (!good) {
+      canvas.width = size[0];
+      canvas.height = size[1];
+      var x = size[0] - 1;
+      var y = size[1] - 1;
+      context.putImageData(imageData, x, y);
+      var result = context.getImageData(x, y, 1, 1);
+      good = goog.array.equals(imageData.data, result.data);
+    }
+    return good;
+  };
+})();

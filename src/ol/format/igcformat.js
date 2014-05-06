@@ -5,7 +5,7 @@ goog.require('goog.asserts');
 goog.require('goog.string');
 goog.require('goog.string.newlines');
 goog.require('ol.Feature');
-goog.require('ol.format.Text');
+goog.require('ol.format.TextFeature');
 goog.require('ol.geom.LineString');
 goog.require('ol.proj');
 
@@ -23,8 +23,9 @@ ol.format.IGCZ = {
 
 /**
  * @constructor
- * @extends {ol.format.Text}
+ * @extends {ol.format.TextFeature}
  * @param {olx.format.IGCOptions=} opt_options Options.
+ * @todo api
  */
 ol.format.IGC = function(opt_options) {
 
@@ -40,7 +41,7 @@ ol.format.IGC = function(opt_options) {
       options.altitudeMode : ol.format.IGCZ.NONE;
 
 };
-goog.inherits(ol.format.IGC, ol.format.Text);
+goog.inherits(ol.format.IGC, ol.format.TextFeature);
 
 
 /**
@@ -82,6 +83,17 @@ ol.format.IGC.HFDTE_RECORD_RE_ = /^HFDTE(\d{2})(\d{2})(\d{2})/;
 ol.format.IGC.prototype.getExtensions = function() {
   return ol.format.IGC.EXTENSIONS_;
 };
+
+
+/**
+ * Read the feature from the IGC source.
+ *
+ * @function
+ * @param {ArrayBuffer|Document|Node|Object|string} source Source.
+ * @return {ol.Feature} Feature.
+ * @todo api
+ */
+ol.format.IGC.prototype.readFeature;
 
 
 /**
@@ -145,6 +157,9 @@ ol.format.IGC.prototype.readFeatureFromText = function(text) {
       }
     }
   }
+  if (flatCoordinates.length === 0) {
+    return null;
+  }
   var lineString = new ol.geom.LineString(null);
   var layout = altitudeMode == ol.format.IGCZ.NONE ?
       ol.geom.GeometryLayout.XYM : ol.geom.GeometryLayout.XYZM;
@@ -153,6 +168,18 @@ ol.format.IGC.prototype.readFeatureFromText = function(text) {
   feature.setValues(properties);
   return feature;
 };
+
+
+/**
+ * Read the feature from the source. As IGC sources contain a single
+ * feature, this will return the feature in an array.
+ *
+ * @function
+ * @param {ArrayBuffer|Document|Node|Object|string} source Source.
+ * @return {Array.<ol.Feature>} Features.
+ * @todo api
+ */
+ol.format.IGC.prototype.readFeatures;
 
 
 /**
@@ -166,6 +193,17 @@ ol.format.IGC.prototype.readFeaturesFromText = function(text) {
     return [];
   }
 };
+
+
+/**
+ * Read the projection from the IGC source.
+ *
+ * @function
+ * @param {ArrayBuffer|Document|Node|Object|string} source Source.
+ * @return {ol.proj.Projection} Projection.
+ * @todo api
+ */
+ol.format.IGC.prototype.readProjection;
 
 
 /**

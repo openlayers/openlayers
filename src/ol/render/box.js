@@ -69,15 +69,15 @@ ol.render.Box.prototype.createGeometry_ = function() {
   var startPixel = this.startPixel_;
   var endPixel = this.endPixel_;
   var pixels = [
-    [
-      startPixel,
-      [startPixel[0], endPixel[1]],
-      endPixel,
-      [endPixel[0], startPixel[1]]
-    ]
+    startPixel,
+    [startPixel[0], endPixel[1]],
+    endPixel,
+    [endPixel[0], startPixel[1]]
   ];
-  var coordinates = goog.array.map(pixels[0],
+  var coordinates = goog.array.map(pixels,
       this.map_.getCoordinateFromPixel, this.map_);
+  // close the polygon
+  coordinates[4] = coordinates[0].slice();
   return new ol.geom.Polygon([coordinates]);
 };
 
@@ -100,8 +100,9 @@ ol.render.Box.prototype.handleMapPostCompose_ = function(event) {
   var style = this.style_;
   goog.asserts.assert(!goog.isNull(style));
   // use drawAsync(Infinity) to draw above everything
-  event.render.drawAsync(Infinity, function(render) {
+  event.vectorContext.drawAsync(Infinity, function(render) {
     render.setFillStrokeStyle(style.getFill(), style.getStroke());
+    render.setTextStyle(style.getText());
     render.drawPolygonGeometry(geometry, null);
   });
 };
@@ -122,7 +123,7 @@ ol.render.Box.prototype.requestMapRenderFrame_ = function() {
   if (!goog.isNull(this.map_) &&
       !goog.isNull(this.startPixel_) &&
       !goog.isNull(this.endPixel_)) {
-    this.map_.requestRenderFrame();
+    this.map_.render();
   }
 };
 
@@ -134,7 +135,7 @@ ol.render.Box.prototype.setMap = function(map) {
   if (!goog.isNull(this.postComposeListenerKey_)) {
     goog.events.unlistenByKey(this.postComposeListenerKey_);
     this.postComposeListenerKey_ = null;
-    this.map_.requestRenderFrame();
+    this.map_.render();
     this.map_ = null;
   }
   this.map_ = map;
