@@ -69,7 +69,10 @@
 
 var exampleNS = {};
 
-exampleNS.getRendererFromQueryString = function() {
+exampleNS.getRendererFromQueryString = function(opt_defaults) {
+  if (!opt_defaults) {
+    opt_defaults = ['webgl', 'canvas', 'dom'];
+  }
   var obj = {}, queryString = location.search.slice(1),
       re = /([^&=]+)=([^&]*)/g, m;
 
@@ -81,6 +84,6 @@ exampleNS.getRendererFromQueryString = function() {
   } else if ('renderer' in obj) {
     return [obj['renderer']];
   } else {
-    return ['webgl', 'canvas', 'dom'];
+    return opt_defaults;
   }
 };

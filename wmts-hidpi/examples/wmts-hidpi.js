@@ -1,26 +1,15 @@
 var template = '{TileMatrix}/{TileRow}/{TileCol}.jpeg';
-var normalUrls = [
-  'http://maps1.wien.gv.at/basemap/geolandbasemap/normal/google3857/' +
-      template,
-  'http://maps2.wien.gv.at/basemap/geolandbasemap/normal/google3857/' +
-      template,
-  'http://maps3.wien.gv.at/basemap/geolandbasemap/normal/google3857/' +
-      template,
-  'http://maps4.wien.gv.at/basemap/geolandbasemap/normal/google3857/' +
-      template,
-  'http://maps.wien.gv.at/basemap/geolandbasemap/normal/google3857/' + template
-];
-var retinaUrls = [
-  'http://maps1.wien.gv.at/basemap/bmapretina/normal/retina3857/' + template,
-  'http://maps2.wien.gv.at/basemap/bmapretina/normal/retina3857/' + template,
-  'http://maps3.wien.gv.at/basemap/bmapretina/normal/retina3857/' + template,
-  'http://maps4.wien.gv.at/basemap/bmapretina/normal/retina3857/' + template,
-  'http://maps.wien.gv.at/basemap/bmapretina/normal/retina3857/' + template
+var urls = [
+  'http://maps1.wien.gv.at/basemap/bmaphidpi/normal/google3857/' + template,
+  'http://maps2.wien.gv.at/basemap/bmaphidpi/normal/google3857/' + template,
+  'http://maps3.wien.gv.at/basemap/bmaphidpi/normal/google3857/' + template,
+  'http://maps4.wien.gv.at/basemap/bmaphidpi/normal/google3857/' + template,
+  'http://maps.wien.gv.at/basemap/bmaphidpi/normal/google3857/' + template
 ];
 
 var source = new ol.source.TileImage({
   extent: [977844.377599999, 5837774.6617, 1915609.8654, 6295560.8122],
-  pixelRatios: [1, 2],
+  pixelRatios: [2],
   requestEncoding: 'REST',
   tileGrid: new ol.tilegrid.WMTS({
     origin: [-20037508.3428, 20037508.3428],
@@ -53,20 +42,9 @@ var source = new ol.source.TileImage({
   }),
   tileUrlFunction: function(tileCoord, pixelRatio, projection) {
     if (tileCoord) {
-      var urls;
       var zxy = tileCoord.getZXY();
-      var supportedPixelRatio = source.getSupportedPixelRatio(pixelRatio);
-      if (supportedPixelRatio == 2) {
-        urls = retinaUrls;
-        zxy[0] += 1;
-      } else {
-        urls = normalUrls;
-      }
-      var index = tileCoord.hash() % urls.length;
-      if (index < 0) {
-        index += urls.length;
-      }
-      return urls[index]
+      var index = ((zxy[1] << zxy[0]) + zxy[2]) % urls.length;
+      return urls[index < 0 ? index + urls.length : index]
           .replace('{TileMatrix}', zxy[0])
           .replace('{TileRow}', -zxy[2] - 1)
           .replace('{TileCol}', zxy[1]);
@@ -80,7 +58,7 @@ var map = new ol.Map({
       source: source
     })
   ],
-  renderer: 'canvas',
+  renderer: exampleNS.getRendererFromQueryString(['canvas', 'dom']),
   target: 'map',
   view: new ol.View2D({
     center: [1823849, 6143760],

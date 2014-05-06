@@ -6,16 +6,12 @@ goog.provide('ol.interaction.DragBox');
 
 goog.require('goog.asserts');
 goog.require('goog.events.Event');
+goog.require('goog.functions');
+goog.require('ol');
 goog.require('ol.events.ConditionType');
 goog.require('ol.events.condition');
 goog.require('ol.interaction.Pointer');
 goog.require('ol.render.Box');
-
-
-/**
- * @define {number} Hysterisis pixels.
- */
-ol.DRAG_BOX_HYSTERESIS_PIXELS = 8;
 
 
 /**
@@ -34,13 +30,13 @@ ol.DragBoxEventType = {
   /**
    * Triggered upon drag box start.
    * @event ol.DragBoxEvent#boxstart
-   * @todo stability experimental
+   * @todo api
    */
   BOXSTART: 'boxstart',
   /**
    * Triggered upon drag box end.
    * @event ol.DragBoxEvent#boxstart
-   * @todo stability experimental
+   * @todo api
    */
   BOXEND: 'boxend'
 };
@@ -82,7 +78,7 @@ goog.inherits(ol.DragBoxEvent, goog.events.Event);
  * @extends {ol.interaction.Pointer}
  * @fires {@link ol.DragBoxEvent} ol.DragBoxEvent
  * @param {olx.interaction.DragBoxOptions=} opt_options Options.
- * @todo stability experimental
+ * @todo api
  */
 ol.interaction.DragBox = function(opt_options) {
 
@@ -134,6 +130,7 @@ ol.interaction.DragBox.prototype.handlePointerDrag = function(mapBrowserEvent) {
 /**
  * Returns geometry of last drawn box.
  * @return {ol.geom.Geometry} Geometry.
+ * @todo api
  */
 ol.interaction.DragBox.prototype.getGeometry = function() {
   return this.box_.getGeometry();
@@ -192,3 +189,9 @@ ol.interaction.DragBox.prototype.handlePointerDown =
     return false;
   }
 };
+
+
+/**
+ * @inheritDoc
+ */
+ol.interaction.DragBox.prototype.shouldStopEvent = goog.functions.identity;

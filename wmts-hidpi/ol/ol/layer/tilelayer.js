@@ -18,8 +18,8 @@ ol.layer.TileProperty = {
  * @extends {ol.layer.Layer}
  * @fires {@link ol.render.Event} ol.render.Event
  * @param {olx.layer.TileOptions} options Tile layer options.
- * @todo stability experimental
  * @todo observable preload {number} the level to preload tiles up to
+ * @todo api
  */
 ol.layer.Tile = function(options) {
   goog.base(this, options);
@@ -30,7 +30,6 @@ goog.inherits(ol.layer.Tile, ol.layer.Layer);
 
 /**
  * @return {number|undefined} Preload.
- * @todo stability experimental
  */
 ol.layer.Tile.prototype.getPreload = function() {
   return /** @type {number|undefined} */ (
@@ -44,7 +43,6 @@ goog.exportProperty(
 
 /**
  * @param {number} preload Preload.
- * @todo stability experimental
  */
 ol.layer.Tile.prototype.setPreload = function(preload) {
   this.set(ol.layer.TileProperty.PRELOAD, preload);
@@ -57,7 +55,6 @@ goog.exportProperty(
 
 /**
  * @return {boolean|undefined} Use interim tiles on error.
- * @todo stability experimental
  */
 ol.layer.Tile.prototype.getUseInterimTilesOnError = function() {
   return /** @type {boolean|undefined} */ (
@@ -71,7 +68,6 @@ goog.exportProperty(
 
 /**
  * @param {boolean|undefined} useInterimTilesOnError Use interim tiles on error.
- * @todo stability experimental
  */
 ol.layer.Tile.prototype.setUseInterimTilesOnError =
     function(useInterimTilesOnError) {

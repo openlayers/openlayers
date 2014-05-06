@@ -17,6 +17,7 @@ ol.style.ImageState = {
 
 /**
  * @typedef {{opacity: number,
+ *            origin: Array.<number>,
  *            rotateWithView: boolean,
  *            rotation: number,
  *            scale: number,
@@ -29,6 +30,7 @@ ol.style.ImageOptions;
 /**
  * @constructor
  * @param {ol.style.ImageOptions} options Options.
+ * @todo api
  */
 ol.style.Image = function(options) {
 
@@ -37,6 +39,12 @@ ol.style.Image = function(options) {
    * @type {number}
    */
   this.opacity_ = options.opacity;
+
+  /**
+   * @private
+   * @type {Array.<number>}
+   */
+  this.origin_ = options.origin;
 
   /**
    * @private
@@ -74,6 +82,14 @@ ol.style.Image.prototype.getOpacity = function() {
 
 
 /**
+ * @return {Array.<number>} Origin.
+ */
+ol.style.Image.prototype.getOrigin = function() {
+  return this.origin_;
+};
+
+
+/**
  * @return {boolean} Rotate with map.
  */
 ol.style.Image.prototype.getRotateWithView = function() {
@@ -83,6 +99,7 @@ ol.style.Image.prototype.getRotateWithView = function() {
 
 /**
  * @return {number} Rotation.
+ * @todo api
  */
 ol.style.Image.prototype.getRotation = function() {
   return this.rotation_;
@@ -91,6 +108,7 @@ ol.style.Image.prototype.getRotation = function() {
 
 /**
  * @return {number} Scale.
+ * @todo api
  */
 ol.style.Image.prototype.getScale = function() {
   return this.scale_;
@@ -106,12 +124,14 @@ ol.style.Image.prototype.getSnapToPixel = function() {
 
 
 /**
+ * @function
  * @return {Array.<number>} Anchor.
  */
 ol.style.Image.prototype.getAnchor = goog.abstractMethod;
 
 
 /**
+ * @function
  * @param {number} pixelRatio Pixel ratio.
  * @return {HTMLCanvasElement|HTMLVideoElement|Image} Image element.
  */
@@ -132,6 +152,7 @@ ol.style.Image.prototype.getHitDetectionImage = goog.abstractMethod;
 
 
 /**
+ * @function
  * @return {ol.Size} Size.
  */
 ol.style.Image.prototype.getSize = goog.abstractMethod;

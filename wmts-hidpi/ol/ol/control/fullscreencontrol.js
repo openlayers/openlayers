@@ -10,6 +10,7 @@ goog.require('googx.dom.fullscreen');
 goog.require('googx.dom.fullscreen.EventType');
 goog.require('ol.control.Control');
 goog.require('ol.css');
+goog.require('ol.pointer.PointerEventHandler');
 
 
 
@@ -23,7 +24,7 @@ goog.require('ol.css');
  * @constructor
  * @extends {ol.control.Control}
  * @param {olx.control.FullScreenOptions=} opt_options Options.
- * @todo stability experimental
+ * @todo api
  */
 ol.control.FullScreen = function(opt_options) {
 
@@ -47,10 +48,10 @@ ol.control.FullScreen = function(opt_options) {
         ' ol-has-tooltip'
   });
   goog.dom.appendChild(button, tip);
-  goog.events.listen(button, [
-    goog.events.EventType.CLICK,
-    goog.events.EventType.TOUCHEND
-  ], this.handleClick_, false, this);
+  var buttonHandler = new ol.pointer.PointerEventHandler(button);
+  this.registerDisposable(buttonHandler);
+  goog.events.listen(buttonHandler,
+      ol.pointer.EventType.POINTERUP, this.handleClick_, false, this);
 
   goog.events.listen(button, [
     goog.events.EventType.MOUSEOUT,
@@ -63,10 +64,10 @@ ol.control.FullScreen = function(opt_options) {
       googx.dom.fullscreen.EventType.CHANGE,
       this.handleFullScreenChange_, false, this);
 
-  var element = goog.dom.createDom(goog.dom.TagName.DIV, {
-    'class': this.cssClassName_ + ' ' + ol.css.CLASS_UNSELECTABLE + ' ' +
-        (!googx.dom.fullscreen.isSupported() ? ol.css.CLASS_UNSUPPORTED : '')
-  }, button);
+  var cssClasses = this.cssClassName_ + ' ' + ol.css.CLASS_UNSELECTABLE +
+      ' ' + ol.css.CLASS_CONTROL +
+      (!googx.dom.fullscreen.isSupported() ? ol.css.CLASS_UNSUPPORTED : '');
+  var element = goog.dom.createDom(goog.dom.TagName.DIV, cssClasses, button);
 
   goog.base(this, {
     element: element,
@@ -84,14 +85,14 @@ goog.inherits(ol.control.FullScreen, ol.control.Control);
 
 
 /**
- * @param {goog.events.BrowserEvent} browserEvent Browser event.
+ * @param {ol.pointer.PointerEvent} pointerEvent Pointer event.
  * @private
  */
-ol.control.FullScreen.prototype.handleClick_ = function(browserEvent) {
+ol.control.FullScreen.prototype.handleClick_ = function(pointerEvent) {
   if (!googx.dom.fullscreen.isSupported()) {
     return;
   }
-  browserEvent.preventDefault();
+  pointerEvent.browserEvent.preventDefault();
   var map = this.getMap();
   if (goog.isNull(map)) {
     return;

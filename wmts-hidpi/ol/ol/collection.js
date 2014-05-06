@@ -19,13 +19,13 @@ ol.CollectionEventType = {
   /**
    * Triggered when an item is added to the collection.
    * @event ol.CollectionEvent#add
-   * @todo stability experimental
+   * @todo api
    */
   ADD: 'add',
   /**
    * Triggered when an item is removed from the collection.
    * @event ol.CollectionEvent#remove
-   * @todo stability experimental
+   * @todo api
    */
   REMOVE: 'remove'
 };
@@ -47,7 +47,6 @@ ol.CollectionEvent = function(type, opt_element, opt_target) {
   /**
    * The element that is added to or removed from the collection.
    * @type {*}
-   * @todo stability experimental
    */
   this.element = opt_element;
 
@@ -70,8 +69,8 @@ ol.CollectionProperty = {
  * @extends {ol.Object}
  * @fires {@link ol.CollectionEvent} ol.CollectionEvent
  * @param {Array=} opt_array Array.
- * @todo stability experimental
  * @todo observable length {number} readonly the length of the array
+ * @todo api
  */
 ol.Collection = function(opt_array) {
 
@@ -91,7 +90,7 @@ goog.inherits(ol.Collection, ol.Object);
 
 /**
  * Remove all elements from the collection.
- * @todo stability experimental
+ * @todo api
  */
 ol.Collection.prototype.clear = function() {
   while (this.getLength() > 0) {
@@ -103,7 +102,7 @@ ol.Collection.prototype.clear = function() {
 /**
  * @param {Array} arr Array.
  * @return {ol.Collection} This collection.
- * @todo stability experimental
+ * @todo api
  */
 ol.Collection.prototype.extend = function(arr) {
   var i, ii;
@@ -121,7 +120,7 @@ ol.Collection.prototype.extend = function(arr) {
  *     index and the array). The return value is ignored.
  * @param {S=} opt_this The object to use as `this` in `f`.
  * @template T,S
- * @todo stability experimental
+ * @todo api
  */
 ol.Collection.prototype.forEach = function(f, opt_this) {
   goog.array.forEach(this.array_, f, opt_this);
@@ -134,7 +133,7 @@ ol.Collection.prototype.forEach = function(f, opt_this) {
  * collection's "length" property won't be in sync with the actual length
  * of the array.
  * @return {Array} Array.
- * @todo stability experimental
+ * @todo api
  */
 ol.Collection.prototype.getArray = function() {
   return this.array_;
@@ -145,7 +144,7 @@ ol.Collection.prototype.getArray = function() {
  * Get the element at the provided index.
  * @param {number} index Index.
  * @return {*} Element.
- * @todo stability experimental
+ * @todo api
  */
 ol.Collection.prototype.getAt = function(index) {
   return this.array_[index];
@@ -155,7 +154,7 @@ ol.Collection.prototype.getAt = function(index) {
 /**
  * Get the length of this collection.
  * @return {number} Length.
- * @todo stability experimental
+ * @todo api
  */
 ol.Collection.prototype.getLength = function() {
   return /** @type {number} */ (this.get(ol.CollectionProperty.LENGTH));
@@ -166,7 +165,7 @@ ol.Collection.prototype.getLength = function() {
  * Insert an element at the provided index.
  * @param {number} index Index.
  * @param {*} elem Element.
- * @todo stability experimental
+ * @todo api
  */
 ol.Collection.prototype.insertAt = function(index, elem) {
   goog.array.insertAt(this.array_, elem, index);
@@ -179,7 +178,7 @@ ol.Collection.prototype.insertAt = function(index, elem) {
 /**
  * Remove the last element of the collection.
  * @return {*} Element.
- * @todo stability experimental
+ * @todo api
  */
 ol.Collection.prototype.pop = function() {
   return this.removeAt(this.getLength() - 1);
@@ -190,7 +189,7 @@ ol.Collection.prototype.pop = function() {
  * Insert the provided element at the end of the collection.
  * @param {*} elem Element.
  * @return {number} Length.
- * @todo stability experimental
+ * @todo api
  */
 ol.Collection.prototype.push = function(elem) {
   var n = this.array_.length;
@@ -203,7 +202,7 @@ ol.Collection.prototype.push = function(elem) {
  * Removes the first occurence of elem from the collection.
  * @param {*} elem Element.
  * @return {*} The removed element or undefined if elem was not found.
- * @todo stability experimental
+ * @todo api
  */
 ol.Collection.prototype.remove = function(elem) {
   var arr = this.array_;
@@ -221,7 +220,7 @@ ol.Collection.prototype.remove = function(elem) {
  * Remove the element at the provided index.
  * @param {number} index Index.
  * @return {*} Value.
- * @todo stability experimental
+ * @todo api
  */
 ol.Collection.prototype.removeAt = function(index) {
   var prev = this.array_[index];
@@ -237,7 +236,7 @@ ol.Collection.prototype.removeAt = function(index) {
  * Set the element at the provided index.
  * @param {number} index Index.
  * @param {*} elem Element.
- * @todo stability experimental
+ * @todo api
  */
 ol.Collection.prototype.setAt = function(index, elem) {
   var n = this.getLength();

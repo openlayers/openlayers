@@ -1,11 +1,10 @@
-// FIXME feature weight property
 goog.provide('ol.layer.Heatmap');
 
 goog.require('goog.asserts');
-goog.require('goog.dom');
-goog.require('goog.dom.TagName');
 goog.require('goog.events');
+goog.require('goog.math');
 goog.require('ol.Object');
+goog.require('ol.dom');
 goog.require('ol.layer.Vector');
 goog.require('ol.render.EventType');
 goog.require('ol.style.Icon');
@@ -26,7 +25,7 @@ ol.layer.HeatmapLayerProperty = {
  * @extends {ol.layer.Vector}
  * @fires {@link ol.render.Event} ol.render.Event
  * @param {olx.layer.HeatmapOptions=} opt_options Options.
- * @todo stability experimental
+ * @todo api
  */
 ol.layer.Heatmap = function(opt_options) {
   var options = goog.isDef(opt_options) ? opt_options : {};
@@ -46,33 +45,50 @@ ol.layer.Heatmap = function(opt_options) {
   this.setGradient(goog.isDef(options.gradient) ?
       options.gradient : ol.layer.Heatmap.DEFAULT_GRADIENT);
 
-  var radius = goog.isDef(options.radius) ? options.radius : 8;
-  var blur = goog.isDef(options.blur) ? options.blur : 15;
-  var shadow = goog.isDef(options.shadow) ? options.shadow : 250;
+  var circle = ol.layer.Heatmap.createCircle_(
+      goog.isDef(options.radius) ? options.radius : 8,
+      goog.isDef(options.blur) ? options.blur : 15,
+      goog.isDef(options.shadow) ? options.shadow : 250);
 
-  var style = new ol.style.Style({
-    image: ol.layer.Heatmap.createIcon_(radius, blur, shadow)
+  /**
+   * @type {Array.<Array.<ol.style.Style>>}
+   */
+  var styleCache = new Array(256);
+
+  var weight = goog.isDef(options.weight) ? options.weight : 'weight';
+  var weightFunction;
+  if (goog.isString(weight)) {
+    weightFunction = function(feature) {
+      return feature.get(weight);
+    };
+  } else {
+    weightFunction = weight;
+  }
+  goog.asserts.assert(goog.isFunction(weightFunction));
+
+  this.setStyle(function(feature, resolution) {
+    var weight = weightFunction(feature);
+    var opacity = goog.isDef(weight) ? goog.math.clamp(weight, 0, 1) : 1;
+    // cast to 8 bits
+    var index = (255 * opacity) | 0;
+    var style = styleCache[index];
+    if (!goog.isDef(style)) {
+      style = [
+        new ol.style.Style({
+          image: new ol.style.Icon({
+            opacity: opacity,
+            src: circle
+          })
+        })
+      ];
+      styleCache[index] = style;
+    }
+    return style;
   });
 
-  // FIXME: styles are immutable
-  // /**
-  //  * @param {ol.Feature} feature
-  //  * @param {number} resolution
-  //  * @return {number} weight
-  //  */
-  // var weightFunction = function(feature, resolution) {
-  //   var weight = /** @type {number} */ (feature.get('weight'));
-  //   return goog.isDef(weight) ? weight : 1;
-  // };
-  //
-  // var styleArray = [style];
-  // this.setStyle(function(feature, resolution) {
-  //   var image = style.getImage();
-  //   image.setOpacity(weightFunction(feature, resolution));
-  //   return styleArray;
-  // });
-
-  this.setStyle(style);
+  // For performance reasons, don't sort the features before rendering.
+  // The render order is not relevant for a heatmap representation.
+  this.setRenderOrder(null);
 
   goog.events.listen(this, ol.render.EventType.RENDER,
       this.handleRender_, false, this);
@@ -94,15 +110,12 @@ ol.layer.Heatmap.DEFAULT_GRADIENT = ['#00f', '#0ff', '#0f0', '#ff0', '#f00'];
  * @private
  */
 ol.layer.Heatmap.createGradient_ = function(colors) {
-  var canvas = goog.dom.createElement(goog.dom.TagName.CANVAS);
-  var context = canvas.getContext('2d');
   var width = 1;
   var height = 256;
-  canvas.width = width;
-  canvas.height = height;
+  var context = ol.dom.createCanvasContext2D(width, height);
 
   var gradient = context.createLinearGradient(0, 0, width, height);
-  var step = 1 / colors.length;
+  var step = 1 / (colors.length - 1);
   for (var i = 0, ii = colors.length; i < ii; ++i) {
     gradient.addColorStop(i * step, colors[i]);
   }
@@ -118,15 +131,13 @@ ol.layer.Heatmap.createGradient_ = function(colors) {
  * @param {number} radius Radius size in pixel.
  * @param {number} blur Blur size in pixel.
  * @param {number} shadow Shadow offset size in pixel.
- * @return {ol.style.Icon} icon
+ * @return {string}
  * @private
  */
-ol.layer.Heatmap.createIcon_ = function(radius, blur, shadow) {
-  var canvas =  /** @type {HTMLCanvasElement} */
-      (goog.dom.createElement(goog.dom.TagName.CANVAS));
-  var context = canvas.getContext('2d');
+ol.layer.Heatmap.createCircle_ = function(radius, blur, shadow) {
   var halfSize = radius + blur + 1;
-  canvas.width = canvas.height = halfSize * 2;
+  var size = 2 * halfSize;
+  var context = ol.dom.createCanvasContext2D(size, size);
   context.shadowOffsetX = context.shadowOffsetY = shadow;
   context.shadowBlur = blur;
   context.shadowColor = '#000';
@@ -134,9 +145,7 @@ ol.layer.Heatmap.createIcon_ = function(radius, blur, shadow) {
   var center = halfSize - shadow;
   context.arc(center, center, radius, 0, Math.PI * 2, true);
   context.fill();
-  return new ol.style.Icon({
-    src: canvas.toDataURL()
-  });
+  return context.canvas.toDataURL();
 };
 
 

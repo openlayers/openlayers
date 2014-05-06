@@ -7,11 +7,10 @@ goog.provide('ol.style.IconImageCache');
 
 goog.require('goog.array');
 goog.require('goog.asserts');
-goog.require('goog.dom');
-goog.require('goog.dom.TagName');
 goog.require('goog.events');
 goog.require('goog.events.EventTarget');
 goog.require('goog.events.EventType');
+goog.require('ol.dom');
 goog.require('ol.style.Image');
 goog.require('ol.style.ImageState');
 
@@ -41,6 +40,7 @@ ol.style.IconAnchorUnits = {
  * @constructor
  * @param {olx.style.IconOptions=} opt_options Options.
  * @extends {ol.style.Image}
+ * @todo api
  */
 ol.style.Icon = function(opt_options) {
 
@@ -51,6 +51,12 @@ ol.style.Icon = function(opt_options) {
    * @type {Array.<number>}
    */
   this.anchor_ = goog.isDef(options.anchor) ? options.anchor : [0.5, 0.5];
+
+  /**
+   * @private
+   * @type {Array.<number>}
+   */
+  this.normalizedAnchor_ = null;
 
   /**
    * @private
@@ -97,6 +103,12 @@ ol.style.Icon = function(opt_options) {
   var opacity = goog.isDef(options.opacity) ? options.opacity : 1;
 
   /**
+   * @private
+   * @type {Array.<number>}
+   */
+  var origin = goog.isDef(options.origin) ? options.origin : [0, 0];
+
+  /**
    * @type {boolean}
    */
   var rotateWithView = goog.isDef(options.rotateWithView) ?
@@ -114,6 +126,7 @@ ol.style.Icon = function(opt_options) {
 
   goog.base(this, {
     opacity: opacity,
+    origin: origin,
     rotation: rotation,
     scale: scale,
     snapToPixel: undefined,
@@ -126,8 +139,12 @@ goog.inherits(ol.style.Icon, ol.style.Image);
 
 /**
  * @inheritDoc
+ * @todo api
  */
 ol.style.Icon.prototype.getAnchor = function() {
+  if (!goog.isNull(this.normalizedAnchor_)) {
+    return this.normalizedAnchor_;
+  }
   var anchor = this.anchor_;
   var size = this.getSize();
   if (this.anchorXUnits_ == ol.style.IconAnchorUnits.FRACTION ||
@@ -160,12 +177,14 @@ ol.style.Icon.prototype.getAnchor = function() {
       anchor[1] = -anchor[1] + size[1];
     }
   }
-  return anchor;
+  this.normalizedAnchor_ = anchor;
+  return this.normalizedAnchor_;
 };
 
 
 /**
  * @inheritDoc
+ * @todo api
  */
 ol.style.Icon.prototype.getImage = function(pixelRatio) {
   return this.iconImage_.getImage(pixelRatio);
@@ -190,6 +209,7 @@ ol.style.Icon.prototype.getHitDetectionImage = function(pixelRatio) {
 
 /**
  * @return {string|undefined} Image src.
+ * @todo api
  */
 ol.style.Icon.prototype.getSrc = function() {
   return this.iconImage_.getSrc();
@@ -198,6 +218,7 @@ ol.style.Icon.prototype.getSrc = function() {
 
 /**
  * @inheritDoc
+ * @todo api
  */
 ol.style.Icon.prototype.getSize = function() {
   return goog.isNull(this.size_) ? this.iconImage_.getSize() : this.size_;
@@ -312,12 +333,7 @@ ol.style.IconImage_.get = function(src, crossOrigin) {
  * @private
  */
 ol.style.IconImage_.prototype.determineTainting_ = function() {
-  var canvas = /** @type {HTMLCanvasElement} */
-      (goog.dom.createElement(goog.dom.TagName.CANVAS));
-  canvas.width = 1;
-  canvas.height = 1;
-  var context = /** @type {CanvasRenderingContext2D} */
-      (canvas.getContext('2d'));
+  var context = ol.dom.createCanvasContext2D(1, 1);
   context.drawImage(this.image_, 0, 0);
   try {
     context.getImageData(0, 0, 1, 1);
@@ -381,16 +397,11 @@ ol.style.IconImage_.prototype.getImageState = function() {
 ol.style.IconImage_.prototype.getHitDetectionImage = function(pixelRatio) {
   if (goog.isNull(this.hitDetectionImage_)) {
     if (this.tainting_) {
-      var canvas = /** @type {HTMLCanvasElement} */
-          (goog.dom.createElement(goog.dom.TagName.CANVAS));
       var width = this.size_[0];
       var height = this.size_[1];
-      canvas.width = width;
-      canvas.height = height;
-      var context = /** @type {CanvasRenderingContext2D} */
-          (canvas.getContext('2d'));
+      var context = ol.dom.createCanvasContext2D(width, height);
       context.fillRect(0, 0, width, height);
-      this.hitDetectionImage_ = canvas;
+      this.hitDetectionImage_ = context.canvas;
     } else {
       this.hitDetectionImage_ = this.image_;
     }

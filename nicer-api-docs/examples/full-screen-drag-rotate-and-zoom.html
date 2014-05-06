@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no, width=device-width">
+    <link rel="stylesheet" href="../css/ol.css" type="text/css">
+    <link rel="stylesheet" href="../resources/bootstrap/css/bootstrap.min.css" type="text/css">
+    <link rel="stylesheet" href="../resources/layout.css" type="text/css">
+    <link rel="stylesheet" href="../resources/bootstrap/css/bootstrap-responsive.min.css" type="text/css">
+    <style>
+      .map:-moz-full-screen {
+        height: 100%;
+      }
+      .map:-webkit-full-screen {
+        height: 100%;
+      }
+      .map:full-screen {
+        height: 100%;
+      }
+    </style>
+    <title>Full screen drag rotate and zoom example</title>
+  </head>
+  <body>
+
+    <div class="navbar navbar-inverse navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container">
+          <a class="brand" href="./"><img src="../resources/logo.png"> OpenLayers 3 Examples</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="container-fluid">
+
+      <div class="row-fluid">
+        <div class="span12">
+          <div id="map" class="map"></div>
+        </div>
+      </div>
+
+      <div class="row-fluid">
+
+        <div class="span12">
+          <h4 id="title">Full screen drag rotate and zoom example</h4>
+          <p id="shortdesc">Example of drag rotate and zoom control with full screen effect.</p>
+          <div id="docs">
+            <p>Hold down <code>Shift</code> + drag to rotate and zoom.  Click the button in the top right corner to go full screen.  Then do the <code>Shift</code> + drag thing again.</p>
+            <p>If there is no button on the map, your browser does not support the <a href="http://caniuse.com/#feat=fullscreen">Full Screen API</a>.</p>
+            <p>See the <a href="full-screen-drag-rotate-and-zoom.js" target="_blank">full-screen-drag-rotate-and-zoom.js source</a> to see how this is done.</p>
+          </div>
+          <div id="tags">full-screen, drag, rotate, zoom, bing, bing-maps</div>
+        </div>
+
+      </div>
+
+    </div>
+
+    <script src="jquery.min.js" type="text/javascript"></script>
+    <script src="../resources/example-behaviour.js" type="text/javascript"></script>
+    <script src="loader.js?id=full-screen-drag-rotate-and-zoom" type="text/javascript"></script>
+
+  </body>
+</html>

@@ -253,7 +253,7 @@
 	
 	
 	<dt class="tag-source">Source:</dt>
-	<dd class="tag-source"><ul class="dummy"><li>objectliterals.jsdoc, line 1</li></ul></dd>
+	<dd class="tag-source"><ul class="dummy"><li>olx.js, line 12</li></ul></dd>
 	
     
     
@@ -331,9 +331,8 @@
             
             
             
-            <td class="description last"><p>When set to false,
-    no tiles will be loaded while animating, which improves responsiveness
-    on devices with slow memory. Default is <code>true</code>.</p></td>
+            <td class="description last"><p>When set to false, no tiles will be loaded while animating, which improves
+responsiveness on devices with slow memory. Default is <code>true</code>.</p></td>
         </tr>
 	
 	
@@ -359,9 +358,8 @@
             
             
             
-            <td class="description last"><p>When set to false,
-    no tiles will be loaded while interacting, which improves responsiveness
-    on devices with slow memory. Default is <code>true</code>.</p></td>
+            <td class="description last"><p>When set to false, no tiles will be loaded while interacting, which improves
+responsiveness on devices with slow memory. Default is <code>true</code>.</p></td>
         </tr>
 	
 	
@@ -388,7 +386,7 @@
 	
 	
 	<dt class="tag-source">Source:</dt>
-	<dd class="tag-source"><ul class="dummy"><li>objectliterals.jsdoc, line 3</li></ul></dd>
+	<dd class="tag-source"><ul class="dummy"><li>olx.js, line 34</li></ul></dd>
 	
     
     
@@ -493,7 +491,7 @@
 	
 	
 	<dt class="tag-source">Source:</dt>
-	<dd class="tag-source"><ul class="dummy"><li>objectliterals.jsdoc, line 5</li></ul></dd>
+	<dd class="tag-source"><ul class="dummy"><li>olx.js, line 57</li></ul></dd>
 	
     
     
@@ -513,7 +511,7 @@
     <h4 class="name" id="FeatureOverlayOptions">FeatureOverlayOptions</h4>
     
     
-<div class="stability">Stability: not documented</div>
+<div class="stability stability-experimental">Stability: experimental</div>
 
 
 
@@ -659,7 +657,7 @@
 	
 	
 	<dt class="tag-source">Source:</dt>
-	<dd class="tag-source"><ul class="dummy"><li>objectliterals.jsdoc, line 108</li></ul></dd>
+	<dd class="tag-source"><ul class="dummy"><li>olx.js, line 2398</li></ul></dd>
 	
     
     
@@ -813,7 +811,7 @@
 	
 	
 	<dt class="tag-source">Source:</dt>
-	<dd class="tag-source"><ul class="dummy"><li>objectliterals.jsdoc, line 7</li></ul></dd>
+	<dd class="tag-source"><ul class="dummy"><li>olx.js, line 73</li></ul></dd>
 	
     
     
@@ -950,9 +948,8 @@
             
             
             
-            <td class="description last"><p>The ratio between physical
-    pixels and device-independent pixels (dips) on the device. If <code>undefined</code>
-    then it gets set by using <code>window.devicePixelRatio</code>.</p></td>
+            <td class="description last"><p>The ratio between physical pixels and device-independent pixels (dips) on the
+device. If <code>undefined</code> then it gets set by using <code>window.devicePixelRatio</code>.</p></td>
         </tr>
 	
 	
@@ -968,7 +965,7 @@
 <span class="param-type"><a href="ol.Collection.html">ol.Collection</a></span>
 |
 
-<span class="param-type">Array.&lt;<a href="ol.interaction.Interaction.html">ol.interaction.Interaction</a>></span>
+<span class="param-type">Array.&lt;ol.interaction.Interaction></span>
 |
 
 <span class="param-type">undefined</span>
@@ -1013,13 +1010,13 @@
             
             
             
-            <td class="description last"><p>The element to listen to keyboard events on.
-    This determines when the <code>KeyboardPan</code> and <code>KeyboardZoom</code> interactions trigger. For example, if
-    this option is set to <code>document</code> the keyboard interactions will always trigger. If this option
-    is not specified, the element the library listens to keyboard events on is the map target (i.e.
-    the user-provided div for the map). If this is not <code>document</code> the target element needs to be
-    focused for key events to be emitted, requiring that the target element has a <code>tabindex</code>
-    attribute.</p></td>
+            <td class="description last"><p>The element to listen to keyboard events on. This determines when the
+<code>KeyboardPan</code> and <code>KeyboardZoom</code> interactions trigger. For example, if this
+option is set to <code>document</code> the keyboard interactions will always trigger. If
+this option is not specified, the element the library listens to keyboard
+events on is the map target (i.e. the user-provided div for the map). If this
+is not <code>document</code> the target element needs to be focused for key events to be
+emitted, requiring that the target element has a <code>tabindex</code> attribute.</p></td>
         </tr>
 	
 	
@@ -1048,7 +1045,8 @@
             
             
             
-            <td class="description last"><p>Layers.</p></td>
+            <td class="description last"><p>Layers. Array or <a href="ol.Collection.html">ol.Collection</a> items are instances of
+<a href="ol.layer.Layer.html">ol.layer.Layer</a> or any of its <a href="ol.layer.html">ol.layer</a> subclasses.</p></td>
         </tr>
 	
 	
@@ -1177,7 +1175,7 @@
             <td class="type">
             
                 
-<span class="param-type"><a href="ol.html#IView">ol.IView</a></span>
+<span class="param-type">ol.IView</span>
 |
 
 <span class="param-type">undefined</span>
@@ -1190,8 +1188,7 @@
             
             
             
-            <td class="description last"><p>The map's view. Currently
-    <a href="ol.View2D.html">ol.View2D</a> is available as view.</p></td>
+            <td class="description last"><p>The map's view. Currently <a href="ol.View2D.html">ol.View2D</a> is available as view.</p></td>
         </tr>
 	
 	
@@ -1218,7 +1215,7 @@
 	
 	
 	<dt class="tag-source">Source:</dt>
-	<dd class="tag-source"><ul class="dummy"><li>objectliterals.jsdoc, line 9</li></ul></dd>
+	<dd class="tag-source"><ul class="dummy"><li>olx.js, line 112</li></ul></dd>
 	
     
     
@@ -1326,8 +1323,7 @@
             
             
             
-            <td class="description last"><p>The overlay position in map
-    projection.</p></td>
+            <td class="description last"><p>The overlay position in map projection.</p></td>
         </tr>
 	
 	
@@ -1382,10 +1378,9 @@
             
             
             
-            <td class="description last"><p>Whether event propagation to the map
-    viewport should be stopped. Default is <code>true</code>. If <code>true</code> the overlay is
-    placed in the same container as that of the controls
-    (<code>ol-overlaycontainer-stopevent</code>).</p></td>
+            <td class="description last"><p>Whether event propagation to the map viewport should be stopped. Default is
+<code>true</code>. If <code>true</code> the overlay is placed in the same container as that of the
+controls (<code>ol-overlaycontainer-stopevent</code>).</p></td>
         </tr>
 	
 	
@@ -1411,11 +1406,10 @@
             
             
             
-            <td class="description last"><p>Whether the overlay is inserted
-    first in the overlay container, or appended. Default is <code>true</code>. If the
-    overlay is placed in the same container as that of the controls (see
-    the <code>stopEvent</code> option) you will probably set <code>insertFirst</code> to <code>true</code>
-    so the overlay is displayed below the controls.</p></td>
+            <td class="description last"><p>Whether the overlay is inserted first in the overlay container, or appended.
+Default is <code>true</code>. If the overlay is placed in the same container as that of
+the controls (see the <code>stopEvent</code> option) you will probably set <code>insertFirst</code>
+to <code>true</code> so the overlay is displayed below the controls.</p></td>
         </tr>
 	
 	
@@ -1441,8 +1435,8 @@
             
             
             
-            <td class="description last"><p>Horizontal offset in pixels.
-    A positive will shift the overlay right. Default is <code>0</code>.</p></td>
+            <td class="description last"><p>Horizontal offset in pixels. A positive will shift the overlay right. Default
+is <code>0</code>.</p></td>
         </tr>
 	
 	
@@ -1468,8 +1462,8 @@
             
             
             
-            <td class="description last"><p>Vertical offset in pixels.
-    A positive will shift the overlay down. Default is <code>0</code>.</p></td>
+            <td class="description last"><p>Vertical offset in pixels. A positive will shift the overlay down. Default is
+<code>0</code>.</p></td>
         </tr>
 	
 	
@@ -1496,7 +1490,7 @@
 	
 	
 	<dt class="tag-source">Source:</dt>
-	<dd class="tag-source"><ul class="dummy"><li>objectliterals.jsdoc, line 11</li></ul></dd>
+	<dd class="tag-source"><ul class="dummy"><li>olx.js, line 211</li></ul></dd>
 	
     
     
@@ -1627,8 +1621,7 @@
             
             
             
-            <td class="description last"><p>Whether the projection is valid for the
-    whole globe. Default is <code>false</code>.</p></td>
+            <td class="description last"><p>Whether the projection is valid for the whole globe. Default is <code>false</code>.</p></td>
         </tr>
 	
 	
@@ -1655,7 +1648,7 @@
 	
 	
 	<dt class="tag-source">Source:</dt>
-	<dd class="tag-source"><ul class="dummy"><li>objectliterals.jsdoc, line 13</li></ul></dd>
+	<dd class="tag-source"><ul class="dummy"><li>olx.js, line 277</li></ul></dd>
 	
     
     
@@ -1812,8 +1805,7 @@
             
             
             
-            <td class="description last"><p>The axis orientation as
-    specified in Proj4. The default is <code>enu</code>.</p></td>
+            <td class="description last"><p>The axis orientation as specified in Proj4. The default is <code>enu</code>.</p></td>
         </tr>
 	
 	
@@ -1839,8 +1831,7 @@
             
             
             
-            <td class="description last"><p>Whether the projection is valid for the
-    whole globe. Default is <code>false</code>.</p></td>
+            <td class="description last"><p>Whether the projection is valid for the whole globe. Default is <code>false</code>.</p></td>
         </tr>
 	
 	
@@ -1867,7 +1858,7 @@
 	
 	
 	<dt class="tag-source">Source:</dt>
-	<dd class="tag-source"><ul class="dummy"><li>objectliterals.jsdoc, line 15</li></ul></dd>
+	<dd class="tag-source"><ul class="dummy"><li>olx.js, line 310</li></ul></dd>
 	
     
     
@@ -1949,10 +1940,9 @@
             
             
             
-            <td class="description last"><p>The initial center for the view.
-    The coordinate system for the center is specified with the <code>projection</code>
-    option. Default is <code>undefined</code>, and layer sources will not be fetched if
-    this is not set.</p></td>
+            <td class="description last"><p>The initial center for the view. The coordinate system for the center is
+specified with the <code>projection</code> option. Default is <code>undefined</code>, and layer
+sources will not be fetched if this is not set.</p></td>
         </tr>
 	
 	
@@ -1981,11 +1971,10 @@
             
             
             
-            <td class="description last"><p>Rotation constraint.
-    <code>false</code> means no constraint. <code>true</code> means no constraint, but snap to
-    zero near zero. A number constraints the rotation to that number of
-    values. For example, <code>4</code> will constrain the rotation to 0, 90, 180, and
-    270 degrees.  The default is <code>true</code>.</p></td>
+            <td class="description last"><p>Rotation constraint. <code>false</code> means no constraint. <code>true</code> means no constraint,
+but snap to zero near zero. A number constraints the rotation to that number
+of values. For example, <code>4</code> will constrain the rotation to 0, 90, 180, and
+270 degrees. The default is <code>true</code>.</p></td>
         </tr>
 	
 	
@@ -2011,8 +2000,7 @@
             
             
             
-            <td class="description last"><p>Enable rotation. Default is
-    <code>true</code>.</p></td>
+            <td class="description last"><p>Enable rotation. Default is <code>true</code>.</p></td>
         </tr>
 	
 	
@@ -2038,9 +2026,8 @@
             
             
             
-            <td class="description last"><p>The extent that constrains the center,
-    in other words, center cannot be set outside this extent.
-    Default is <code>undefined</code>.</p></td>
+            <td class="description last"><p>The extent that constrains the center, in other words, center cannot be set
+outside this extent. Default is <code>undefined</code>.</p></td>
         </tr>
 	
 	
@@ -2066,12 +2053,11 @@
             
             
             
-            <td class="description last"><p>The maximum resolution used to
-    determine the resolution constraint. It is used together with <code>maxZoom</code>
-    and <code>zoomFactor</code>. If unspecified it is calculated in such a way that the
-    projection's validity extent fits in a 256x256 px tile. If the projection
-    is Spherical Mercator (the default) then <code>maxResolution</code> defaults to
-    <code>40075016.68557849 / 256 = 156543.03392804097</code>.</p></td>
+            <td class="description last"><p>The maximum resolution used to determine the resolution constraint. It is
+used together with <code>maxZoom</code> and <code>zoomFactor</code>. If unspecified it is
+calculated in such a way that the projection's validity extent fits in a
+256x256 px tile. If the projection is Spherical Mercator (the default) then
+<code>maxResolution</code> defaults to <code>40075016.68557849 / 256 = 156543.03392804097</code>.</p></td>
         </tr>
 	
 	
@@ -2097,9 +2083,8 @@
             
             
             
-            <td class="description last"><p>The maximum zoom level used to determine
-    the resolution constraint. It is used together with <code>maxResolution</code> and
-    <code>zoomFactor</code>. Default is <code>28</code>.</p></td>
+            <td class="description last"><p>The maximum zoom level used to determine the resolution constraint. It is
+used together with <code>maxResolution</code> and <code>zoomFactor</code>. Default is <code>28</code>.</p></td>
         </tr>
 	
 	
@@ -2122,8 +2107,7 @@
             
             
             
-            <td class="description last"><p>The projection. Default is
-    <code>EPSG:3857</code> (Spherical Mercator).</p></td>
+            <td class="description last"><p>The projection. Default is <code>EPSG:3857</code> (Spherical Mercator).</p></td>
         </tr>
 	
 	
@@ -2149,11 +2133,10 @@
             
             
             
-            <td class="description last"><p>The initial resolution for the view.
-    The units are <code>projection</code> units per pixel (e.g. meters per pixel).
-    An alternative to setting this is to set <code>zoom</code>. Default is <code>undefined</code>,
-    and layer sources will not be fetched if neither this nor <code>zoom</code> are
-    defined.</p></td>
+            <td class="description last"><p>The initial resolution for the view. The units are <code>projection</code> units per
+pixel (e.g. meters per pixel). An alternative to setting this is to set
+<code>zoom</code>. Default is <code>undefined</code>, and layer sources will not be fetched if
+neither this nor <code>zoom</code> are defined.</p></td>
         </tr>
 	
 	
@@ -2179,9 +2162,8 @@
             
             
             
-            <td class="description last"><p>Resolutions to determine the
-    resolution constraint. If set the <code>maxResolution</code>, <code>maxZoom</code> and
-    <code>zoomFactor</code> options are ignored.</p></td>
+            <td class="description last"><p>Resolutions to determine the resolution constraint. If set the
+<code>maxResolution</code>, <code>maxZoom</code> and <code>zoomFactor</code> options are ignored.</p></td>
         </tr>
 	
 	
@@ -2207,8 +2189,8 @@
             
             
             
-            <td class="description last"><p>The initial rotation for the view
-    in radians (positive rotation clockwise). Default is <code>0</code>.</p></td>
+            <td class="description last"><p>The initial rotation for the view in radians (positive rotation clockwise).
+Default is <code>0</code>.</p></td>
         </tr>
 	
 	
@@ -2234,10 +2216,9 @@
             
             
             
-            <td class="description last"><p>Only used if <code>resolution</code> is not defined.
-    Zoom level used to calculate the initial resolution for the view.
-    The initial resolution is determined using the
-    <code>ol.View2D#constrainResolution</code> method.</p></td>
+            <td class="description last"><p>Only used if <code>resolution</code> is not defined. Zoom level used to calculate the
+initial resolution for the view. The initial resolution is determined using
+the <code>ol.View2D#constrainResolution</code> method.</p></td>
         </tr>
 	
 	
@@ -2263,9 +2244,8 @@
             
             
             
-            <td class="description last"><p>The zoom factor used to determine the
-    resolution constraint. Used together with <code>maxResolution</code> and <code>maxZoom</code>.
-    Default is <code>2</code>.</p></td>
+            <td class="description last"><p>The zoom factor used to determine the resolution constraint. Used together
+with <code>maxResolution</code> and <code>maxZoom</code>. Default is <code>2</code>.</p></td>
         </tr>
 	
 	
@@ -2292,7 +2272,7 @@
 	
 	
 	<dt class="tag-source">Source:</dt>
-	<dd class="tag-source"><ul class="dummy"><li>objectliterals.jsdoc, line 17</li></ul></dd>
+	<dd class="tag-source"><ul class="dummy"><li>olx.js, line 364</li></ul></dd>
 	
     
     
@@ -2320,7 +2300,7 @@
 </div>
 
 <nav>
-    <h2><a href="index.html">Index</a></h2><h3>Classes</h3><ul><li><a href="ol.Attribution.html">ol.Attribution</a></li><li><a href="ol.Collection.html">ol.Collection</a></li><li><a href="ol.CollectionEvent.html">ol.CollectionEvent</a></li><li><a href="ol.DeviceOrientation.html">ol.DeviceOrientation</a></li><li><a href="ol.DragBoxEvent.html">ol.DragBoxEvent</a></li><li><a href="ol.DrawEvent.html">ol.DrawEvent</a></li><li><a href="ol.Feature.html">ol.Feature</a></li><li><a href="ol.FeatureOverlay.html">ol.FeatureOverlay</a></li><li><a href="ol.Geolocation.html">ol.Geolocation</a></li><li><a href="ol.ImageTile.html">ol.ImageTile</a></li><li><a href="ol.Kinetic.html">ol.Kinetic</a></li><li><a href="ol.Map.html">ol.Map</a></li><li><a href="ol.MapBrowserEvent.html">ol.MapBrowserEvent</a></li><li><a href="ol.MapEvent.html">ol.MapEvent</a></li><li><a href="ol.Object.html">ol.Object</a></li><li><a href="ol.ObjectEvent.html">ol.ObjectEvent</a></li><li><a href="ol.Observable.html">ol.Observable</a></li><li><a href="ol.Overlay.html">ol.Overlay</a></li><li><a href="ol.TileCoord.html">ol.TileCoord</a></li><li><a href="ol.View2D.html">ol.View2D</a></li><li><a href="ol.control.Attribution.html">ol.control.Attribution</a></li><li><a href="ol.control.Control.html">ol.control.Control</a></li><li><a href="ol.control.FullScreen.html">ol.control.FullScreen</a></li><li><a href="ol.control.Logo.html">ol.control.Logo</a></li><li><a href="ol.control.MousePosition.html">ol.control.MousePosition</a></li><li><a href="ol.control.ScaleLine.html">ol.control.ScaleLine</a></li><li><a href="ol.control.Zoom.html">ol.control.Zoom</a></li><li><a href="ol.control.ZoomSlider.html">ol.control.ZoomSlider</a></li><li><a href="ol.control.ZoomToExtent.html">ol.control.ZoomToExtent</a></li><li><a href="ol.dom.Input.html">ol.dom.Input</a></li><li><a href="ol.format.Feature.html">ol.format.Feature</a></li><li><a href="ol.format.GPX.html">ol.format.GPX</a></li><li><a href="ol.format.GeoJSON.html">ol.format.GeoJSON</a></li><li><a href="ol.format.IGC.html">ol.format.IGC</a></li><li><a href="ol.format.KML.html">ol.format.KML</a></li><li><a href="ol.format.TopoJSON.html">ol.format.TopoJSON</a></li><li><a href="ol.format.WFS.html">ol.format.WFS</a></li><li><a href="ol.format.WMSCapabilities.html">ol.format.WMSCapabilities</a></li><li><a href="ol.geom.Circle.html">ol.geom.Circle</a></li><li><a href="ol.geom.Geometry.html">ol.geom.Geometry</a></li><li><a href="ol.geom.GeometryCollection.html">ol.geom.GeometryCollection</a></li><li><a href="ol.geom.LineString.html">ol.geom.LineString</a></li><li><a href="ol.geom.LinearRing.html">ol.geom.LinearRing</a></li><li><a href="ol.geom.MultiLineString.html">ol.geom.MultiLineString</a></li><li><a href="ol.geom.MultiPoint.html">ol.geom.MultiPoint</a></li><li><a href="ol.geom.MultiPolygon.html">ol.geom.MultiPolygon</a></li><li><a href="ol.geom.Point.html">ol.geom.Point</a></li><li><a href="ol.geom.Polygon.html">ol.geom.Polygon</a></li><li><a href="ol.geom.SimpleGeometry.html">ol.geom.SimpleGeometry</a></li><li><a href="ol.interaction.DoubleClickZoom.html">ol.interaction.DoubleClickZoom</a></li><li><a href="ol.interaction.DragAndDrop.html">ol.interaction.DragAndDrop</a></li><li><a href="ol.interaction.DragAndDropEvent.html">ol.interaction.DragAndDropEvent</a></li><li><a href="ol.interaction.DragBox.html">ol.interaction.DragBox</a></li><li><a href="ol.interaction.DragPan.html">ol.interaction.DragPan</a></li><li><a href="ol.interaction.DragRotate.html">ol.interaction.DragRotate</a></li><li><a href="ol.interaction.DragRotateAndZoom.html">ol.interaction.DragRotateAndZoom</a></li><li><a href="ol.interaction.DragZoom.html">ol.interaction.DragZoom</a></li><li><a href="ol.interaction.Draw.html">ol.interaction.Draw</a></li><li><a href="ol.interaction.Interaction.html">ol.interaction.Interaction</a></li><li><a href="ol.interaction.KeyboardPan.html">ol.interaction.KeyboardPan</a></li><li><a href="ol.interaction.KeyboardZoom.html">ol.interaction.KeyboardZoom</a></li><li><a href="ol.interaction.Modify.html">ol.interaction.Modify</a></li><li><a href="ol.interaction.MouseWheelZoom.html">ol.interaction.MouseWheelZoom</a></li><li><a href="ol.interaction.PinchRotate.html">ol.interaction.PinchRotate</a></li><li><a href="ol.interaction.PinchZoom.html">ol.interaction.PinchZoom</a></li><li><a href="ol.interaction.Select.html">ol.interaction.Select</a></li><li><a href="ol.layer.Base.html">ol.layer.Base</a></li><li><a href="ol.layer.Group.html">ol.layer.Group</a></li><li><a href="ol.layer.Heatmap.html">ol.layer.Heatmap</a></li><li><a href="ol.layer.Image.html">ol.layer.Image</a></li><li><a href="ol.layer.Layer.html">ol.layer.Layer</a></li><li><a href="ol.layer.Tile.html">ol.layer.Tile</a></li><li><a href="ol.layer.Vector.html">ol.layer.Vector</a></li><li><a href="ol.proj.Projection.html">ol.proj.Projection</a></li><li><a href="ol.render.Event.html">ol.render.Event</a></li><li><a href="ol.render.canvas.Immediate.html">ol.render.canvas.Immediate</a></li><li><a href="ol.source.BingMaps.html">ol.source.BingMaps</a></li><li><a href="ol.source.GPX.html">ol.source.GPX</a></li><li><a href="ol.source.GeoJSON.html">ol.source.GeoJSON</a></li><li><a href="ol.source.IGC.html">ol.source.IGC</a></li><li><a href="ol.source.ImageCanvas.html">ol.source.ImageCanvas</a></li><li><a href="ol.source.ImageStatic.html">ol.source.ImageStatic</a></li><li><a href="ol.source.ImageVector.html">ol.source.ImageVector</a></li><li><a href="ol.source.ImageWMS.html">ol.source.ImageWMS</a></li><li><a href="ol.source.KML.html">ol.source.KML</a></li><li><a href="ol.source.MapGuide.html">ol.source.MapGuide</a></li><li><a href="ol.source.MapQuest.html">ol.source.MapQuest</a></li><li><a href="ol.source.OSM.html">ol.source.OSM</a></li><li><a href="ol.source.OSMXML.html">ol.source.OSMXML</a></li><li><a href="ol.source.Source.html">ol.source.Source</a></li><li><a href="ol.source.Stamen.html">ol.source.Stamen</a></li><li><a href="ol.source.TileDebug.html">ol.source.TileDebug</a></li><li><a href="ol.source.TileImage.html">ol.source.TileImage</a></li><li><a href="ol.source.TileJSON.html">ol.source.TileJSON</a></li><li><a href="ol.source.TileWMS.html">ol.source.TileWMS</a></li><li><a href="ol.source.TopoJSON.html">ol.source.TopoJSON</a></li><li><a href="ol.source.Vector.html">ol.source.Vector</a></li><li><a href="ol.source.VectorEvent.html">ol.source.VectorEvent</a></li><li><a href="ol.source.VectorFile.html">ol.source.VectorFile</a></li><li><a href="ol.source.WMTS.html">ol.source.WMTS</a></li><li><a href="ol.source.XYZ.html">ol.source.XYZ</a></li><li><a href="ol.source.Zoomify.html">ol.source.Zoomify</a></li><li><a href="ol.style.Circle.html">ol.style.Circle</a></li><li><a href="ol.style.Fill.html">ol.style.Fill</a></li><li><a href="ol.style.Icon.html">ol.style.Icon</a></li><li><a href="ol.style.Image.html">ol.style.Image</a></li><li><a href="ol.style.Stroke.html">ol.style.Stroke</a></li><li><a href="ol.style.Style.html">ol.style.Style</a></li><li><a href="ol.style.Text.html">ol.style.Text</a></li><li><a href="ol.tilegrid.TileGrid.html">ol.tilegrid.TileGrid</a></li><li><a href="ol.tilegrid.WMTS.html">ol.tilegrid.WMTS</a></li><li><a href="ol.tilegrid.XYZ.html">ol.tilegrid.XYZ</a></li><li><a href="ol.tilegrid.Zoomify.html">ol.tilegrid.Zoomify</a></li><li><a href="ol.webgl.Context.html">ol.webgl.Context</a></li></ul><h3>Namespaces</h3><ul><li><a href="ol.html">ol</a></li><li><a href="ol.BrowserFeature.html">ol.BrowserFeature</a></li><li><a href="ol.animation.html">ol.animation</a></li><li><a href="ol.control.html">ol.control</a></li><li><a href="ol.events.condition.html">ol.events.condition</a></li><li><a href="ol.feature_.html">ol.feature</a></li><li><a href="ol.geom.html">ol.geom</a></li><li><a href="ol.interaction.html">ol.interaction</a></li><li><a href="ol.layer.html">ol.layer</a></li><li><a href="ol.proj.html">ol.proj</a></li><li><a href="ol.render.html">ol.render</a></li><li><a href="ol.render.canvas.html">ol.render.canvas</a></li><li><a href="ol.source.html">ol.source</a></li><li><a href="ol.tilegrid.html">ol.tilegrid</a></li><li><a href="olx.html">olx</a></li><li><a href="olx.animation.html">olx.animation</a></li><li><a href="olx.control.html">olx.control</a></li><li><a href="olx.format.html">olx.format</a></li><li><a href="olx.interaction.html">olx.interaction</a></li><li><a href="olx.layer.html">olx.layer</a></li><li><a href="olx.parser.html">olx.parser</a></li><li><a href="olx.render.html">olx.render</a></li><li><a href="olx.source.html">olx.source</a></li><li><a href="olx.style.html">olx.style</a></li><li><a href="olx.tilegrid.html">olx.tilegrid</a></li></ul><h3>Global</h3><ul><li><a href="global.html#grid">grid</a></li></ul>
+    <h2><a href="index.html">Index</a></h2><h3>Classes</h3><ul><li><a href="ol.Attribution.html">ol.Attribution</a></li><li><a href="ol.Collection.html">ol.Collection</a></li><li><a href="ol.CollectionEvent.html">ol.CollectionEvent</a></li><li><a href="ol.DeviceOrientation.html">ol.DeviceOrientation</a></li><li><a href="ol.DragBoxEvent.html">ol.DragBoxEvent</a></li><li><a href="ol.DrawEvent.html">ol.DrawEvent</a></li><li><a href="ol.Feature.html">ol.Feature</a></li><li><a href="ol.FeatureOverlay.html">ol.FeatureOverlay</a></li><li><a href="ol.Geolocation.html">ol.Geolocation</a></li><li><a href="ol.ImageTile.html">ol.ImageTile</a></li><li><a href="ol.Kinetic.html">ol.Kinetic</a></li><li><a href="ol.Map.html">ol.Map</a></li><li><a href="ol.MapBrowserEvent.html">ol.MapBrowserEvent</a></li><li><a href="ol.MapEvent.html">ol.MapEvent</a></li><li><a href="ol.Object.html">ol.Object</a></li><li><a href="ol.ObjectEvent.html">ol.ObjectEvent</a></li><li><a href="ol.Observable.html">ol.Observable</a></li><li><a href="ol.Overlay.html">ol.Overlay</a></li><li><a href="ol.Tile.html">ol.Tile</a></li><li><a href="ol.TileCoord.html">ol.TileCoord</a></li><li><a href="ol.View2D.html">ol.View2D</a></li><li><a href="ol.control.Attribution.html">ol.control.Attribution</a></li><li><a href="ol.control.Control.html">ol.control.Control</a></li><li><a href="ol.control.FullScreen.html">ol.control.FullScreen</a></li><li><a href="ol.control.Logo.html">ol.control.Logo</a></li><li><a href="ol.control.MousePosition.html">ol.control.MousePosition</a></li><li><a href="ol.control.Rotate.html">ol.control.Rotate</a></li><li><a href="ol.control.ScaleLine.html">ol.control.ScaleLine</a></li><li><a href="ol.control.Zoom.html">ol.control.Zoom</a></li><li><a href="ol.control.ZoomSlider.html">ol.control.ZoomSlider</a></li><li><a href="ol.control.ZoomToExtent.html">ol.control.ZoomToExtent</a></li><li><a href="ol.dom.Input.html">ol.dom.Input</a></li><li><a href="ol.format.GPX.html">ol.format.GPX</a></li><li><a href="ol.format.GeoJSON.html">ol.format.GeoJSON</a></li><li><a href="ol.format.IGC.html">ol.format.IGC</a></li><li><a href="ol.format.KML.html">ol.format.KML</a></li><li><a href="ol.format.OSMXML.html">ol.format.OSMXML</a></li><li><a href="ol.format.TopoJSON.html">ol.format.TopoJSON</a></li><li><a href="ol.format.WFS.html">ol.format.WFS</a></li><li><a href="ol.format.WMSCapabilities.html">ol.format.WMSCapabilities</a></li><li><a href="ol.geom.Circle.html">ol.geom.Circle</a></li><li><a href="ol.geom.Geometry.html">ol.geom.Geometry</a></li><li><a href="ol.geom.GeometryCollection.html">ol.geom.GeometryCollection</a></li><li><a href="ol.geom.LineString.html">ol.geom.LineString</a></li><li><a href="ol.geom.LinearRing.html">ol.geom.LinearRing</a></li><li><a href="ol.geom.MultiLineString.html">ol.geom.MultiLineString</a></li><li><a href="ol.geom.MultiPoint.html">ol.geom.MultiPoint</a></li><li><a href="ol.geom.MultiPolygon.html">ol.geom.MultiPolygon</a></li><li><a href="ol.geom.Point.html">ol.geom.Point</a></li><li><a href="ol.geom.Polygon.html">ol.geom.Polygon</a></li><li><a href="ol.geom.SimpleGeometry.html">ol.geom.SimpleGeometry</a></li><li><a href="ol.interaction.DoubleClickZoom.html">ol.interaction.DoubleClickZoom</a></li><li><a href="ol.interaction.DragAndDrop.html">ol.interaction.DragAndDrop</a></li><li><a href="ol.interaction.DragAndDropEvent.html">ol.interaction.DragAndDropEvent</a></li><li><a href="ol.interaction.DragBox.html">ol.interaction.DragBox</a></li><li><a href="ol.interaction.DragPan.html">ol.interaction.DragPan</a></li><li><a href="ol.interaction.DragRotate.html">ol.interaction.DragRotate</a></li><li><a href="ol.interaction.DragRotateAndZoom.html">ol.interaction.DragRotateAndZoom</a></li><li><a href="ol.interaction.DragZoom.html">ol.interaction.DragZoom</a></li><li><a href="ol.interaction.Draw.html">ol.interaction.Draw</a></li><li><a href="ol.interaction.KeyboardPan.html">ol.interaction.KeyboardPan</a></li><li><a href="ol.interaction.KeyboardZoom.html">ol.interaction.KeyboardZoom</a></li><li><a href="ol.interaction.Modify.html">ol.interaction.Modify</a></li><li><a href="ol.interaction.MouseWheelZoom.html">ol.interaction.MouseWheelZoom</a></li><li><a href="ol.interaction.PinchRotate.html">ol.interaction.PinchRotate</a></li><li><a href="ol.interaction.PinchZoom.html">ol.interaction.PinchZoom</a></li><li><a href="ol.interaction.Select.html">ol.interaction.Select</a></li><li><a href="ol.layer.Base.html">ol.layer.Base</a></li><li><a href="ol.layer.Group.html">ol.layer.Group</a></li><li><a href="ol.layer.Heatmap.html">ol.layer.Heatmap</a></li><li><a href="ol.layer.Image.html">ol.layer.Image</a></li><li><a href="ol.layer.Layer.html">ol.layer.Layer</a></li><li><a href="ol.layer.Tile.html">ol.layer.Tile</a></li><li><a href="ol.layer.Vector.html">ol.layer.Vector</a></li><li><a href="ol.proj.CH.html">ol.proj.CH</a></li><li><a href="ol.proj.EPSG2056.html">ol.proj.EPSG2056</a></li><li><a href="ol.proj.EPSG21781.html">ol.proj.EPSG21781</a></li><li><a href="ol.proj.EPSG3857.html">ol.proj.EPSG3857</a></li><li><a href="ol.proj.EPSG4326.html">ol.proj.EPSG4326</a></li><li><a href="ol.proj.Projection.html">ol.proj.Projection</a></li><li><a href="ol.render.Event.html">ol.render.Event</a></li><li><a href="ol.render.canvas.Immediate.html">ol.render.canvas.Immediate</a></li><li><a href="ol.source.BingMaps.html">ol.source.BingMaps</a></li><li><a href="ol.source.GPX.html">ol.source.GPX</a></li><li><a href="ol.source.GeoJSON.html">ol.source.GeoJSON</a></li><li><a href="ol.source.IGC.html">ol.source.IGC</a></li><li><a href="ol.source.ImageCanvas.html">ol.source.ImageCanvas</a></li><li><a href="ol.source.ImageStatic.html">ol.source.ImageStatic</a></li><li><a href="ol.source.ImageVector.html">ol.source.ImageVector</a></li><li><a href="ol.source.ImageWMS.html">ol.source.ImageWMS</a></li><li><a href="ol.source.KML.html">ol.source.KML</a></li><li><a href="ol.source.MapGuide.html">ol.source.MapGuide</a></li><li><a href="ol.source.MapQuest.html">ol.source.MapQuest</a></li><li><a href="ol.source.OSM.html">ol.source.OSM</a></li><li><a href="ol.source.OSMXML.html">ol.source.OSMXML</a></li><li><a href="ol.source.ServerVector.html">ol.source.ServerVector</a></li><li><a href="ol.source.Source.html">ol.source.Source</a></li><li><a href="ol.source.Stamen.html">ol.source.Stamen</a></li><li><a href="ol.source.StaticVector.html">ol.source.StaticVector</a></li><li><a href="ol.source.Tile.html">ol.source.Tile</a></li><li><a href="ol.source.TileDebug.html">ol.source.TileDebug</a></li><li><a href="ol.source.TileImage.html">ol.source.TileImage</a></li><li><a href="ol.source.TileJSON.html">ol.source.TileJSON</a></li><li><a href="ol.source.TileVector.html">ol.source.TileVector</a></li><li><a href="ol.source.TileWMS.html">ol.source.TileWMS</a></li><li><a href="ol.source.TopoJSON.html">ol.source.TopoJSON</a></li><li><a href="ol.source.Vector.html">ol.source.Vector</a></li><li><a href="ol.source.VectorEvent.html">ol.source.VectorEvent</a></li><li><a href="ol.source.WMTS.html">ol.source.WMTS</a></li><li><a href="ol.source.XYZ.html">ol.source.XYZ</a></li><li><a href="ol.source.Zoomify.html">ol.source.Zoomify</a></li><li><a href="ol.style.Circle.html">ol.style.Circle</a></li><li><a href="ol.style.Fill.html">ol.style.Fill</a></li><li><a href="ol.style.Icon.html">ol.style.Icon</a></li><li><a href="ol.style.Image.html">ol.style.Image</a></li><li><a href="ol.style.Stroke.html">ol.style.Stroke</a></li><li><a href="ol.style.Style.html">ol.style.Style</a></li><li><a href="ol.style.Text.html">ol.style.Text</a></li><li><a href="ol.tilegrid.TileGrid.html">ol.tilegrid.TileGrid</a></li><li><a href="ol.tilegrid.WMTS.html">ol.tilegrid.WMTS</a></li><li><a href="ol.tilegrid.XYZ.html">ol.tilegrid.XYZ</a></li><li><a href="ol.tilegrid.Zoomify.html">ol.tilegrid.Zoomify</a></li><li><a href="ol.webgl.Context.html">ol.webgl.Context</a></li><li><a href="oli.CollectionEvent.html">oli.CollectionEvent</a></li><li><a href="oli.DragBoxEvent.html">oli.DragBoxEvent</a></li><li><a href="oli.DrawEvent.html">oli.DrawEvent</a></li><li><a href="oli.FrameState.html">oli.FrameState</a></li><li><a href="oli.MapBrowserEvent.html">oli.MapBrowserEvent</a></li><li><a href="oli.interaction.DragAndDropEvent.html">oli.interaction.DragAndDropEvent</a></li><li><a href="oli.render.Event.html">oli.render.Event</a></li><li><a href="oli.source.VectorEvent.html">oli.source.VectorEvent</a></li></ul><h3>Namespaces</h3><ul><li><a href="ol.html">ol</a></li><li><a href="ol.BrowserFeature.html">ol.BrowserFeature</a></li><li><a href="ol.animation.html">ol.animation</a></li><li><a href="ol.control.html">ol.control</a></li><li><a href="ol.events.condition.html">ol.events.condition</a></li><li><a href="ol.feature_.html">ol.feature</a></li><li><a href="ol.geom.html">ol.geom</a></li><li><a href="ol.interaction.html">ol.interaction</a></li><li><a href="ol.layer.html">ol.layer</a></li><li><a href="ol.proj.html">ol.proj</a></li><li><a href="ol.render.html">ol.render</a></li><li><a href="ol.render.canvas.html">ol.render.canvas</a></li><li><a href="ol.source.html">ol.source</a></li><li><a href="ol.tilegrid.html">ol.tilegrid</a></li><li><a href="oli.html">oli</a></li><li><a href="olx.html">olx</a></li><li><a href="olx.animation.html">olx.animation</a></li><li><a href="olx.control.html">olx.control</a></li><li><a href="olx.format.html">olx.format</a></li><li><a href="olx.interaction.html">olx.interaction</a></li><li><a href="olx.layer.html">olx.layer</a></li><li><a href="olx.parser.html">olx.parser</a></li><li><a href="olx.render.html">olx.render</a></li><li><a href="olx.source.html">olx.source</a></li><li><a href="olx.style.html">olx.style</a></li><li><a href="olx.tilegrid.html">olx.tilegrid</a></li></ul><h3>Global</h3><ul></ul>
 </nav>
 
 <br clear="both">

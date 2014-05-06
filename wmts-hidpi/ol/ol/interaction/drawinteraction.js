@@ -10,6 +10,7 @@ goog.require('ol.FeatureOverlay');
 goog.require('ol.Map');
 goog.require('ol.MapBrowserEvent');
 goog.require('ol.MapBrowserEvent.EventType');
+goog.require('ol.feature');
 goog.require('ol.geom.GeometryType');
 goog.require('ol.geom.LineString');
 goog.require('ol.geom.MultiLineString');
@@ -19,10 +20,6 @@ goog.require('ol.geom.Point');
 goog.require('ol.geom.Polygon');
 goog.require('ol.interaction.Pointer');
 goog.require('ol.source.Vector');
-goog.require('ol.style.Circle');
-goog.require('ol.style.Fill');
-goog.require('ol.style.Stroke');
-goog.require('ol.style.Style');
 
 
 /**
@@ -32,13 +29,13 @@ ol.DrawEventType = {
   /**
    * Triggered upon feature draw start
    * @event ol.DrawEvent#drawstart
-   * @todo stability experimental
+   * @todo api
    */
   DRAWSTART: 'drawstart',
   /**
    * Triggered upon feature draw end
    * @event ol.DrawEvent#drawend
-   * @todo stability experimental
+   * @todo api
    */
   DRAWEND: 'drawend'
 };
@@ -59,7 +56,6 @@ ol.DrawEvent = function(type, feature) {
   /**
    * The feature being drawn.
    * @type {ol.Feature}
-   * @todo stability experimental
    */
   this.feature = feature;
 
@@ -74,7 +70,7 @@ goog.inherits(ol.DrawEvent, goog.events.Event);
  * @extends {ol.interaction.Pointer}
  * @fires {@link ol.DrawEvent} ol.DrawEvent
  * @param {olx.interaction.DrawOptions} options Options.
- * @todo stability experimental
+ * @todo api
  */
 ol.interaction.Draw = function(options) {
 
@@ -194,53 +190,7 @@ goog.inherits(ol.interaction.Draw, ol.interaction.Pointer);
  * @return {ol.feature.StyleFunction} Styles.
  */
 ol.interaction.Draw.getDefaultStyleFunction = function() {
-  /** @type {Object.<ol.geom.GeometryType, Array.<ol.style.Style>>} */
-  var styles = {};
-  styles[ol.geom.GeometryType.POLYGON] = [
-    new ol.style.Style({
-      fill: new ol.style.Fill({
-        color: [255, 255, 255, 0.5]
-      })
-    })
-  ];
-  styles[ol.geom.GeometryType.MULTI_POLYGON] =
-      styles[ol.geom.GeometryType.POLYGON];
-
-  styles[ol.geom.GeometryType.LINE_STRING] = [
-    new ol.style.Style({
-      stroke: new ol.style.Stroke({
-        color: [255, 255, 255, 1],
-        width: 5
-      })
-    }),
-    new ol.style.Style({
-      stroke: new ol.style.Stroke({
-        color: [0, 153, 255, 1],
-        width: 3
-      })
-    })
-  ];
-  styles[ol.geom.GeometryType.MULTI_LINE_STRING] =
-      styles[ol.geom.GeometryType.LINE_STRING];
-
-  styles[ol.geom.GeometryType.POINT] = [
-    new ol.style.Style({
-      image: new ol.style.Circle({
-        radius: 7,
-        fill: new ol.style.Fill({
-          color: [0, 153, 255, 1]
-        }),
-        stroke: new ol.style.Stroke({
-          color: [255, 255, 255, 0.75],
-          width: 1.5
-        })
-      }),
-      zIndex: 100000
-    })
-  ];
-  styles[ol.geom.GeometryType.MULTI_POINT] =
-      styles[ol.geom.GeometryType.POINT];
-
+  var styles = ol.feature.createDefaultEditingStyles();
   return function(feature, resolution) {
     return styles[feature.getGeometry().getType()];
   };

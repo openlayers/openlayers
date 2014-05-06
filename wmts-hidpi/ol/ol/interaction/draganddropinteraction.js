@@ -22,6 +22,7 @@ goog.require('ol.proj');
  * @fires {@link ol.interaction.DragAndDropEvent}
  *     ol.interaction.DragAndDropEvent
  * @param {olx.interaction.DragAndDropOptions=} opt_options Options.
+ * @todo api
  */
 ol.interaction.DragAndDrop = function(opt_options) {
 
@@ -76,21 +77,23 @@ ol.interaction.DragAndDrop.prototype.disposeInternal = function() {
  */
 ol.interaction.DragAndDrop.prototype.handleDrop_ = function(event) {
   var files = event.getBrowserEvent().dataTransfer.files;
-  var i, ii;
+  var i, ii, file;
   for (i = 0, ii = files.length; i < ii; ++i) {
+    file = files[i];
     // The empty string param is a workaround for
     // https://code.google.com/p/closure-library/issues/detail?id=524
-    var reader = goog.fs.FileReader.readAsText(files[i], '');
-    reader.addCallback(this.handleResult_, this);
+    var reader = goog.fs.FileReader.readAsText(file, '');
+    reader.addCallback(goog.partial(this.handleResult_, file), this);
   }
 };
 
 
 /**
+ * @param {File} file File.
  * @param {string} result Result.
  * @private
  */
-ol.interaction.DragAndDrop.prototype.handleResult_ = function(result) {
+ol.interaction.DragAndDrop.prototype.handleResult_ = function(file, result) {
   var map = this.getMap();
   goog.asserts.assert(!goog.isNull(map));
   var projection = this.reprojectTo_;
@@ -115,7 +118,7 @@ ol.interaction.DragAndDrop.prototype.handleResult_ = function(result) {
         var feature = readFeatures[j];
         var geometry = feature.getGeometry();
         if (!goog.isNull(geometry)) {
-          geometry.transform(transform);
+          geometry.applyTransform(transform);
         }
         features.push(feature);
       }
@@ -123,8 +126,8 @@ ol.interaction.DragAndDrop.prototype.handleResult_ = function(result) {
   }
   this.dispatchEvent(
       new ol.interaction.DragAndDropEvent(
-          ol.interaction.DragAndDropEventType.ADD_FEATURES, this, features,
-          projection));
+          ol.interaction.DragAndDropEventType.ADD_FEATURES, this, file,
+          features, projection));
 };
 
 
@@ -180,7 +183,7 @@ ol.interaction.DragAndDropEventType = {
   /**
    * Triggered when features are added
    * @event ol.interaction.DragAndDropEvent#addfeatures
-   * @todo stability experimental
+   * @todo api
    */
   ADD_FEATURES: 'addfeatures'
 };
@@ -192,24 +195,28 @@ ol.interaction.DragAndDropEventType = {
  * @extends {goog.events.Event}
  * @implements {oli.interaction.DragAndDropEvent}
  * @param {ol.interaction.DragAndDropEventType} type Type.
- * @param {Object=} opt_target Target.
+ * @param {Object} target Target.
+ * @param {File} file File.
  * @param {Array.<ol.Feature>=} opt_features Features.
  * @param {ol.proj.Projection=} opt_projection Projection.
  */
 ol.interaction.DragAndDropEvent =
-    function(type, opt_target, opt_features, opt_projection) {
+    function(type, target, file, opt_features, opt_projection) {
 
-  goog.base(this, type, opt_target);
+  goog.base(this, type, target);
 
   /**
    * @type {Array.<ol.Feature>|undefined}
-   * @todo stability experimental
    */
   this.features = opt_features;
 
   /**
+   * @type {File}
+   */
+  this.file = file;
+
+  /**
    * @type {ol.proj.Projection|undefined}
-   * @todo stability experimental
    */
   this.projection = opt_projection;
 

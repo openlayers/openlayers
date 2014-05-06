@@ -1,15 +1,16 @@
 goog.provide('ol.source.OSMXML');
 
 goog.require('ol.format.OSMXML');
-goog.require('ol.source.VectorFile');
+goog.require('ol.source.StaticVector');
 
 
 
 /**
  * @constructor
- * @extends {ol.source.VectorFile}
+ * @extends {ol.source.StaticVector}
  * @fires {@link ol.source.VectorEvent} ol.source.VectorEvent
  * @param {olx.source.OSMXMLOptions=} opt_options Options.
+ * @todo api
  */
 ol.source.OSMXML = function(opt_options) {
 
@@ -29,4 +30,4 @@ ol.source.OSMXML = function(opt_options) {
   });
 
 };
-goog.inherits(ol.source.OSMXML, ol.source.VectorFile);
+goog.inherits(ol.source.OSMXML, ol.source.StaticVector);

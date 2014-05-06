@@ -12,6 +12,7 @@ goog.require('ol.animation');
 goog.require('ol.control.Control');
 goog.require('ol.css');
 goog.require('ol.easing');
+goog.require('ol.pointer.PointerEventHandler');
 
 
 
@@ -22,7 +23,7 @@ goog.require('ol.easing');
  * @constructor
  * @extends {ol.control.Control}
  * @param {olx.control.ZoomOptions=} opt_options Zoom options.
- * @todo stability experimental
+ * @todo api
  */
 ol.control.Zoom = function(opt_options) {
 
@@ -47,14 +48,14 @@ ol.control.Zoom = function(opt_options) {
   }, zoomInTipLabel);
   var inElement = goog.dom.createDom(goog.dom.TagName.BUTTON, {
     'class': className + '-in ol-has-tooltip',
-    'name' : 'ZoomIn',
     'type' : 'button'
   }, tTipZoomIn, zoomInLabel);
 
-  goog.events.listen(inElement, [
-    goog.events.EventType.TOUCHEND,
-    goog.events.EventType.CLICK
-  ], goog.partial(ol.control.Zoom.prototype.zoomByDelta_, delta), false, this);
+  var inElementHandler = new ol.pointer.PointerEventHandler(inElement);
+  this.registerDisposable(inElementHandler);
+  goog.events.listen(inElementHandler,
+      ol.pointer.EventType.POINTERUP, goog.partial(
+          ol.control.Zoom.prototype.zoomByDelta_, delta), false, this);
 
   goog.events.listen(inElement, [
     goog.events.EventType.MOUSEOUT,
@@ -64,17 +65,18 @@ ol.control.Zoom = function(opt_options) {
   }, false);
 
   var tTipsZoomOut = goog.dom.createDom(goog.dom.TagName.SPAN, {
-    'role' : 'tooltip',
-    'type' : 'button'
+    'role' : 'tooltip'
   }, zoomOutTipLabel);
   var outElement = goog.dom.createDom(goog.dom.TagName.BUTTON, {
     'class': className + '-out  ol-has-tooltip',
-    'name' : 'ZoomOut'
+    'type' : 'button'
   }, tTipsZoomOut, zoomOutLabel);
-  goog.events.listen(outElement, [
-    goog.events.EventType.TOUCHEND,
-    goog.events.EventType.CLICK
-  ], goog.partial(ol.control.Zoom.prototype.zoomByDelta_, -delta), false, this);
+
+  var outElementHandler = new ol.pointer.PointerEventHandler(outElement);
+  this.registerDisposable(outElementHandler);
+  goog.events.listen(outElementHandler,
+      ol.pointer.EventType.POINTERUP, goog.partial(
+          ol.control.Zoom.prototype.zoomByDelta_, -delta), false, this);
 
   goog.events.listen(outElement, [
     goog.events.EventType.MOUSEOUT,
@@ -83,7 +85,8 @@ ol.control.Zoom = function(opt_options) {
     this.blur();
   }, false);
 
-  var cssClasses = className + ' ' + ol.css.CLASS_UNSELECTABLE;
+  var cssClasses = className + ' ' + ol.css.CLASS_UNSELECTABLE + ' ' +
+      ol.css.CLASS_CONTROL;
   var element = goog.dom.createDom(goog.dom.TagName.DIV, cssClasses, inElement,
       outElement);
 
@@ -104,11 +107,11 @@ goog.inherits(ol.control.Zoom, ol.control.Control);
 
 /**
  * @param {number} delta Zoom delta.
- * @param {goog.events.BrowserEvent} browserEvent The browser event to handle.
+ * @param {ol.pointer.PointerEvent} pointerEvent The pointer event to handle.
  * @private
  */
-ol.control.Zoom.prototype.zoomByDelta_ = function(delta, browserEvent) {
-  browserEvent.preventDefault();
+ol.control.Zoom.prototype.zoomByDelta_ = function(delta, pointerEvent) {
+  pointerEvent.browserEvent.preventDefault();
   // prevent the anchor from getting appended to the url
   var map = this.getMap();
   // FIXME works for View2D only
