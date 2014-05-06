@@ -1,45 +1,6 @@
 <?js
     var self = this;
-
     docs.forEach(function(doc, i) {
-
-      var observables, fires;
-      if (doc.kind == 'class') {
-        observables = doc.observables || [];
-        fires = doc.fires || [];
-        var parents = [].concat(doc.augments);
-        var parent = parents.pop();
-        while (parent) {
-          parent = self.find({longname: parent})[0];
-          if (parent) {
-            if (parent.observables) {
-              parent.observables.forEach(function(o) {
-                if (observables.indexOf(o) == -1) {
-                  observables.push(o);
-                }
-              });
-            }
-            if (parent.fires) {
-              parent.fires.forEach(function(f) {
-                if (fires.indexOf(f) == -1) {
-                  fires.push(f);
-                }
-              });
-            }
-            if (parent.augments) {
-              parents.push.apply(parents, parent.augments);
-            }
-          }
-          parent = parents.pop();
-        }
-        observables.sort();
-        observables.forEach(function(o) {
-          fires.push('ol.ObjectEvent#event:change:' + o.name.toLowerCase());
-        });
-        fires.sort(function(a, b) {
-          return a.split('event:')[1] < b.split('event:')[1] ? -1 : 1;
-        });
-      }
 ?>
 
 <?js if (doc.kind === 'mainpage' || (doc.kind === 'package')) { ?>
@@ -147,16 +108,16 @@
     <?js } ?>
     
     <?js
-        if (observables && observables.length && observables.forEach) {
+        if (doc.observables && doc.observables.length && doc.observables.forEach) {
     ?>
         <h3 class="subsection-title">Observable Properties</h3>
-        <dl><?js= self.partial('observables.tmpl', observables) ?></dl>
+        <dl><?js= self.partial('observables.tmpl', doc.observables) ?></dl>
 
     <?js } ?>
 
-    <?js if (fires && fires.length) { ?>
+    <?js if (doc.fires && doc.fires.length) { ?>
         <h3 class="subsection-title">Fires</h3>
-        <ul><?js fires.forEach(function(f) { ?>
+        <ul><?js doc.fires.forEach(function(f) { ?>
             <?js= self.partial('fires.tmpl', f) ?>
         <?js }); ?></ul>
     <?js } ?>
@@ -166,7 +127,7 @@
         if (events && events.length && events.forEach) {
     ?>
         <h3 class="subsection-title">Events</h3>
-        <?js if (observables && observables.length) { ?>
+        <?js if (doc.observables && doc.observables.length) { ?>
         <p>These events are available in addition to the <b>Observable Properties</b> events listed above.</p>
         <?js } ?>
         <dl><?js= self.partial('events.tmpl', events) ?></dl>

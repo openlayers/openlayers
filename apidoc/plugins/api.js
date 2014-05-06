@@ -27,9 +27,7 @@ exports.defineTags = function(dictionary) {
 /*
  * Based on @stability annotations, and assuming that items with no @stability
  * annotation should not be documented, this plugin removes undocumented symbols
- * from the documentation. Undocumented classes with documented members get a
- * 'hideConstructur' property, which is read by the template so it can hide the
- * constructor.
+ * from the documentation.
  */
 
 function hasApiMembers(doclet) {
@@ -37,15 +35,38 @@ function hasApiMembers(doclet) {
 }
 
 function includeAugments(doclet) {
+  if (doclet.longname == 'ol.View2D') {
+    debugger
+  }
   var augments = doclet.augments;
   if (augments) {
     var cls;
     for (var i = augments.length - 1; i >= 0; --i) {
       cls = classes[augments[i]];
       if (cls) {
-        cls.hideConstructor = true;
-        delete cls.undocumented;
         includeAugments(cls);
+        if (cls.fires) {
+          if (!doclet.fires) {
+            doclet.fires = [];
+          }
+          cls.fires.forEach(function(f) {
+            if (doclet.fires.indexOf(f) == -1) {
+              doclet.fires.push(f);
+            }
+          });
+        }
+        if (cls.observables) {
+          if (!doclet.observables) {
+            doclet.observables = [];
+          }
+          cls.observables.forEach(function(f) {
+            if (doclet.observables.indexOf(f) == -1) {
+              doclet.observables.push(f);
+            }
+          });
+        }
+        cls._hideConstructor = true;
+        delete cls.undocumented;
       }
     }
   }
@@ -82,6 +103,16 @@ exports.handlers = {
         if (doclet.kind == 'class') {
           includeAugments(doclet);
         }
+        if (doclet.fires) {
+          doclet.fires.sort(function(a, b) {
+            return a.split(/#?event:/)[1] < b.split(/#?event:/)[1] ? -1 : 1;
+          });
+        }
+        if (doclet.observables) {
+          doclet.observables.sort(function(a, b) {
+            return a.name < b.name ? -1 : 1;
+          });
+        }
         // Always document namespaces and items with stability annotation
         continue;
       }
@@ -89,9 +120,9 @@ exports.handlers = {
         // Mark undocumented classes with documented members as unexported.
         // This is used in ../template/tmpl/container.tmpl to hide the
         // constructor from the docs.
-        doclet.hideConstructor = true;
+        doclet._hideConstructor = true;
         includeAugments(doclet);
-      } else if (!doclet.hideConstructor) {
+      } else if (!doclet._hideConstructor) {
         // Remove all other undocumented symbols
         doclet.undocumented = true;
       }

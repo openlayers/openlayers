@@ -34,7 +34,7 @@ exports.handlers = {
           doclet.fires = fires;
         } else {
           eventClass = classes[doclet.longname.split('#')[0]];
-          if (!(fires in eventClass)) {
+          if (!eventClass.fires) {
             eventClass.fires = [];
           }
           eventClass.fires.push.apply(eventClass.fires, doclet.fires);

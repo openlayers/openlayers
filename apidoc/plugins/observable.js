@@ -12,7 +12,7 @@ exports.handlers = {
 
   parseComplete: function(e) {
     var doclets = e.doclets;
-    var cls, doclet, i, ii, observable;
+    var cls, doclet, event, i, ii, observable;
     for (i = 0, ii = doclets.length - 1; i < ii; ++i) {
       doclet = doclets[i];
       cls = classes[doclet.longname.split('#')[0]];
@@ -40,6 +40,13 @@ exports.handlers = {
         observable = observables[doclet.observable];
         if (cls.observables.indexOf(observable) == -1) {
           cls.observables.push(observable);
+        }
+        if (!cls.fires) {
+          cls.fires = [];
+        }
+        var event = 'ol.ObjectEvent#event:change:' + name;
+        if (cls.fires.indexOf(event) == -1) {
+          cls.fires.push(event);
         }
       }
     }

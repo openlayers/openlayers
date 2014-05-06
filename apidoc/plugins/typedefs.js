@@ -14,7 +14,7 @@ function addSubparams(params) {
       var name = types[k];
       if (name in olxTypes) {
         param.subparams = olxTypes[name];
-        addSubparams(param.subparams);
+        // TODO addSubparams(param.subparams);
         // TODO Do we need to support multiple object literal types per
         // param?
         break;
