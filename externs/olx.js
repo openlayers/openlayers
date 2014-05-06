@@ -683,6 +683,7 @@ olx.control.ControlOptions.prototype.target;
  *     logo: (boolean|undefined),
  *     logoOptions: (olx.control.LogoOptions|undefined),
  *     zoom: (boolean|undefined),
+ *     rotateOptions: (olx.control.RotateOptions|undefined)}}
  *     zoomOptions: (olx.control.ZoomOptions|undefined)}}
  * @todo api
  */
@@ -722,6 +723,13 @@ olx.control.DefaultsOptions.prototype.logoOptions;
  * @type {boolean|undefined}
  */
 olx.control.DefaultsOptions.prototype.zoom;
+
+
+/**
+ * Rotate options.
+ * @type {olx.control.RotateOptions|undefined}
+ */
+olx.control.DefaultsOptions.prototype.rotateOptions;
 
 
 /**
@@ -873,6 +881,61 @@ olx.control.ScaleLineOptions.prototype.target;
  * @type {ol.control.ScaleLineUnits|string|undefined}
  */
 olx.control.ScaleLineOptions.prototype.units;
+
+
+/**
+ * @typedef {{duration: (number|undefined),
+ *     className: (string|undefined),
+ *     label: (string|undefined),
+ *     tipLabel: (string|undefined),
+ *     target: (Element|undefined),
+ *     autoHide: (boolean|undefined),
+ *     duration: (number|undefined)}}
+ * @todo stability experimental
+ */
+olx.control.RotateOptions;
+
+
+/**
+ * CSS class name. Default is `ol-rotate`.
+ * @type {string|undefined}
+ */
+olx.control.RotateOptions.prototype.className;
+
+
+/**
+ * Text label to use for the rotate button. Default is `⇧`
+ * @type {string|undefined}
+ */
+olx.control.RotateOptions.prototype.label;
+
+
+/**
+ * Text label to use for the rotate tip. Default is `Reset rotation`
+ * @type {string|undefined}
+ */
+olx.control.RotateOptions.prototype.tipLabel;
+
+
+/**
+ * Animation duration in milliseconds. Default is `250`.
+ * @type {number|undefined}
+ */
+olx.control.RotateOptions.prototype.duration;
+
+
+/**
+ * Hide the control when rotation is 0. Default is `true`.
+ * @type {boolean|undefined}
+ */
+olx.control.RotateOptions.prototype.autoHide;
+
+
+/**
+ * Target.
+ * @type {Element|undefined}
+ */
+olx.control.RotateOptions.prototype.target;
 
 
 /**

@@ -3,6 +3,7 @@ goog.provide('ol.control');
 goog.require('ol.Collection');
 goog.require('ol.control.Attribution');
 goog.require('ol.control.Logo');
+goog.require('ol.control.Rotate');
 goog.require('ol.control.Zoom');
 
 
@@ -20,25 +21,25 @@ ol.control.defaults = function(opt_options) {
   var zoomControl = goog.isDef(options.zoom) ?
       options.zoom : true;
   if (zoomControl) {
-    var zoomControlOptions = goog.isDef(options.zoomOptions) ?
-        options.zoomOptions : undefined;
-    controls.push(new ol.control.Zoom(zoomControlOptions));
+    controls.push(new ol.control.Zoom(options.zoomOptions));
+  }
+
+  var rotateControl = goog.isDef(options.rotate) ?
+      options.rotate : true;
+  if (rotateControl) {
+    controls.push(new ol.control.Rotate(options.rotateOptions));
   }
 
   var attributionControl = goog.isDef(options.attribution) ?
       options.attribution : true;
   if (attributionControl) {
-    var attributionControlOptions = goog.isDef(options.attributionOptions) ?
-        options.attributionOptions : undefined;
-    controls.push(new ol.control.Attribution(attributionControlOptions));
+    controls.push(new ol.control.Attribution(options.attributionOptions));
   }
 
   var logoControl = goog.isDef(options.logo) ?
       options.logo : true;
   if (logoControl) {
-    var logoControlOptions = goog.isDef(options.logoOptions) ?
-        options.logoOptions : undefined;
-    controls.push(new ol.control.Logo(logoControlOptions));
+    controls.push(new ol.control.Logo(options.logoOptions));
   }
 
   return controls;
