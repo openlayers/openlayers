@@ -124,12 +124,17 @@ ol.style.Icon = function(opt_options) {
    */
   var scale = goog.isDef(options.scale) ? options.scale : 1;
 
+  /**
+   * @type {boolean}
+   */
+  var snapToPixel = goog.isDef(options.snapToPixel) ? options.snapToPixel : undefined;
+
   goog.base(this, {
     opacity: opacity,
     origin: origin,
     rotation: rotation,
     scale: scale,
-    snapToPixel: undefined,
+    snapToPixel: snapToPixel,
     rotateWithView: rotateWithView
   });
 
