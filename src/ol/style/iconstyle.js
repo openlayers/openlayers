@@ -127,7 +127,8 @@ ol.style.Icon = function(opt_options) {
   /**
    * @type {boolean}
    */
-  var snapToPixel = goog.isDef(options.snapToPixel) ? options.snapToPixel : undefined;
+  var snapToPixel = goog.isDef(options.snapToPixel) ?
+  	options.snapToPixel : undefined;
 
   goog.base(this, {
     opacity: opacity,
