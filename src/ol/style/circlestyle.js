@@ -194,6 +194,9 @@ ol.style.Circle.prototype.render_ = function() {
   canvas.height = size;
   canvas.width = size;
 
+  // canvas.width and height are rounded to the closest integer
+  size = canvas.width;
+
   var context = /** @type {CanvasRenderingContext2D} */
       (canvas.getContext('2d'));
   context.arc(size / 2, size / 2, this.radius_, 0, 2 * Math.PI, true);
