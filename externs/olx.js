@@ -4381,7 +4381,8 @@ olx.source.ZoomifyOptions.prototype.size;
 /**
  * @typedef {{fill: (ol.style.Fill|undefined),
  *     radius: number,
- *     stroke: (ol.style.Stroke|undefined)}}
+ *     stroke: (ol.style.Stroke|undefined),
+ *     snapToPixel: (boolean|undefined)}}
  * @todo api
  */
 olx.style.CircleOptions;
@@ -4441,7 +4442,8 @@ olx.style.FillOptions.prototype.color;
  *     rotateWithView: (boolean|undefined),
  *     rotation: (number|undefined),
  *     size: (ol.Size|undefined),
- *     src: string}}
+ *     src: string,
+ *     snapToPixel: (boolean|undefined)}}
  * @todo api
  */
 olx.style.IconOptions;
