@@ -13,10 +13,9 @@
 body {
   padding-top: 50px;
 }
-.nameContainer .name {
+.nameContainer .name, .prettyprint.source .pln {
   padding-top: 50px;
   margin-top: -50px;
-  display: inline-block; /* required for webkit browsers */
 }
 .navigation li {
   color: #888;
