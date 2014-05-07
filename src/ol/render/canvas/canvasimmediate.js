@@ -892,7 +892,6 @@ ol.render.canvas.Immediate.prototype.setImageStyle = function(imageStyle) {
     var imageRotation = imageStyle.getRotation();
     var imageScale = imageStyle.getScale();
     var imageSize = imageStyle.getSize();
-    var imageSnapToPixel = imageStyle.getSnapToPixel();
     goog.asserts.assert(!goog.isNull(imageAnchor));
     goog.asserts.assert(!goog.isNull(imageImage));
     goog.asserts.assert(!goog.isNull(imageOrigin));
@@ -908,8 +907,7 @@ ol.render.canvas.Immediate.prototype.setImageStyle = function(imageStyle) {
         imageRotateWithView : false;
     this.imageRotation_ = goog.isDef(imageRotation) ? imageRotation : 0;
     this.imageScale_ = goog.isDef(imageScale) ? imageScale : 1;
-    this.imageSnapToPixel_ = goog.isDef(imageSnapToPixel) ?
-        imageSnapToPixel : false;
+    this.imageSnapToPixel_ = imageStyle.getSnapToPixel();
     this.imageWidth_ = imageSize[0];
   }
 };

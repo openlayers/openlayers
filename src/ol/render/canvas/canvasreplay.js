@@ -1,4 +1,3 @@
-// FIXME decide default snapToPixel behaviour
 // FIXME add option to apply snapToPixel to all coordinates?
 // FIXME can eliminate empty set styles and strokes (when all geoms skipped)
 
@@ -291,7 +290,7 @@ ol.render.canvas.Replay.prototype.replay_ = function(
         var rotateWithView = /** @type {boolean} */ (instruction[10]);
         var rotation = /** @type {number} */ (instruction[11]);
         var scale = /** @type {number} */ (instruction[12]);
-        var snapToPixel = /** @type {boolean|undefined} */ (instruction[13]);
+        var snapToPixel = /** @type {boolean} */ (instruction[13]);
         var width = /** @type {number} */ (instruction[14]) * pixelRatio;
         if (rotateWithView) {
           rotation += viewRotation;

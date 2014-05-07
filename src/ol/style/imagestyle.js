@@ -21,7 +21,7 @@ ol.style.ImageState = {
  *            rotateWithView: boolean,
  *            rotation: number,
  *            scale: number,
- *            snapToPixel: (boolean|undefined)}}
+ *            snapToPixel: boolean}}
  */
 ol.style.ImageOptions;
 
@@ -66,7 +66,7 @@ ol.style.Image = function(options) {
 
   /**
    * @private
-   * @type {boolean|undefined}
+   * @type {boolean}
    */
   this.snapToPixel_ = options.snapToPixel;
 
@@ -116,7 +116,7 @@ ol.style.Image.prototype.getScale = function() {
 
 
 /**
- * @return {boolean|undefined} Snap to pixel?
+ * @return {boolean} Snap to pixel?
  */
 ol.style.Image.prototype.getSnapToPixel = function() {
   return this.snapToPixel_;

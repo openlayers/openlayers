@@ -1,5 +1,3 @@
-// FIXME decide default value for snapToPixel
-
 goog.provide('ol.style.Circle');
 
 goog.require('goog.dom');
@@ -68,13 +66,19 @@ ol.style.Circle = function(opt_options) {
    */
   this.size_ = [size, size];
 
+  /**
+   * @type {boolean}
+   */
+  var snapToPixel = goog.isDef(options.snapToPixel) ?
+      options.snapToPixel : true;
+
   goog.base(this, {
     opacity: 1,
     origin: [0, 0],
     rotateWithView: false,
     rotation: 0,
     scale: 1,
-    snapToPixel: undefined
+    snapToPixel: snapToPixel
   });
 
 };
