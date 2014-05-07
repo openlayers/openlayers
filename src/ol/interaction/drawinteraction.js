@@ -68,7 +68,7 @@ goog.inherits(ol.DrawEvent, goog.events.Event);
  * Interaction that allows drawing geometries
  * @constructor
  * @extends {ol.interaction.Pointer}
- * @fires {@link ol.DrawEvent} ol.DrawEvent
+ * @fires ol.DrawEvent
  * @param {olx.interaction.DrawOptions} options Options.
  * @todo api
  */

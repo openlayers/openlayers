@@ -108,7 +108,7 @@ ol.ObjectAccessor.prototype.transform = function(from, to) {
  * @constructor
  * @extends {ol.Observable}
  * @param {Object.<string, *>=} opt_values Values.
- * @fires {@link ol.ObjectEvent} ol.ObjectEvent
+ * @fires ol.ObjectEvent
  * @todo api
  */
 ol.Object = function(opt_values) {

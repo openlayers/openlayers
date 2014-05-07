@@ -1,14 +1,25 @@
-<?js var data = obj; ?>
-<dt class="<?js= data.access ?>">
-    <h4 class="name" id="<?js= id ?>"><?js= data.attribs + name + data.signature ?></h4>
-    
-    <?js= this.partial('stability.tmpl', data) ?>
+<?js
+var data = obj;
+var self = this;
+var typeSignature = '';
 
+if (data.type && data.type.names) {
+    data.type.names.forEach(function (name) {
+        typeSignature += '<span class="type-signature type ' + name.toLowerCase() + '">' + self.linkto(name, self.htmlsafe(name)) + '</span> ';
+    });
+}
+?>
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="<?js= id ?>"><?js= this.partial('stability.tmpl', data) ?>
+        <?js= data.attribs + (data.scope === 'static' ? longname : name)  + typeSignature ?></h4>
+    </div>
+    
     <?js if (data.summary) { ?>
     <p class="summary"><?js= summary ?></p>
     <?js } ?>
 </dt>
-<dd class="<?js= data.access ?>">
+<dd>
     <?js if (data.description) { ?>
     <div class="description">
         <?js= data.description ?>

@@ -6,8 +6,9 @@ goog.require('ol.IView3D');
 
 
 /**
- * Interface for views. Currently {@link ol.View2D} is implemented.
+ * Interface for views.
  * @interface
+ * @extends {goog.events.Listenable}
  */
 ol.IView = function() {
 };

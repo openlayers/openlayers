@@ -5,6 +5,8 @@
 
 <?js if (doc.kind === 'mainpage' || (doc.kind === 'package')) { ?>
     <?js= self.partial('mainpage.tmpl', doc) ?>
+<?js } else if (doc.kind === 'source') { ?>
+    <?js= self.partial('source.tmpl', doc) ?>
 <?js } else { ?>
 
 <section>
@@ -13,7 +15,7 @@
     <h2><?js if (doc.ancestors && doc.ancestors.length) { ?>
         <span class="ancestors"><?js= doc.ancestors.join('') ?></span>
     <?js } ?>
-    <?js= doc.longname ?>
+    <?js= doc.name ?>
     <?js if (doc.variation) { ?>
         <sup class="variation"><?js= doc.variation ?></sup>
     <?js } ?></h2>
@@ -27,7 +29,8 @@
     <?js if (doc.kind === 'module' && doc.module) { ?>
         <?js= self.partial('method.tmpl', doc.module) ?>
     <?js } ?>
-    <?js if (doc.kind === 'class' && !doc.hideConstructor && !doc.interface) { ?>
+    
+    <?js if (doc.kind === 'class') { ?>
         <?js= self.partial('method.tmpl', doc) ?>
     <?js } else { ?>
         <?js if (doc.description) { ?>
@@ -43,12 +46,25 @@
     <?js } ?>
     </div>
     
+    <?js if (doc.kind == 'class') {
+      var subclasses = self.find(function() {
+        return this.augments && this.augments.indexOf(doc.longname) > -1;
+      })
+      if (subclasses.length) {
+    ?>
+        <h3 class="subsection-title">Subclasses</h3>
+        <ul><?js subclasses.forEach(function(s) { ?>
+          <li><?js= self.linkto(s.longname, s.longname) ?>
+            <?js= (s.interface ? '(Interface)' : '') ?>
+          </li>
+        <?js }); ?></ul>
+    <?js } } ?>
+
     <?js if (doc.augments && doc.augments.length) { ?>
         <h3 class="subsection-title">Extends</h3>
         
         <ul><?js doc.augments.forEach(function(a) { ?>
-            <li><?js= self.linkto(a, a) ?>
-              <?js= (doc.implements&&doc.implements.indexOf(a)>-1?'(Interface)':'') ?></li>
+            <li><?js= self.linkto(a, a) ?></li>
         <?js }); ?></ul>
     <?js } ?>
     
@@ -75,7 +91,7 @@
         <h3 class="subsection-title">Classes</h3>
         
         <dl><?js classes.forEach(function(c) { ?>
-            <dt><?js= self.linkto(c.longname, c.longname) ?></dt>
+            <dt><?js= self.linkto(c.longname, c.name) ?></dt>
             <dd><?js if (c.summary) { ?><?js= c.summary ?><?js } ?></dd>
         <?js }); ?></dl>
     <?js } ?>
@@ -87,34 +103,21 @@
         <h3 class="subsection-title">Namespaces</h3>
         
         <dl><?js namespaces.forEach(function(n) { ?>
-            <dt><a href="namespaces.html#<?js= n.longname ?>"><?js= self.linkto(n.longname, n.longname) ?></a></dt>
+            <dt><a href="namespaces.html#<?js= n.longname ?>"><?js= self.linkto(n.longname, n.name) ?></a></dt>
             <dd><?js if (n.summary) { ?><?js= n.summary ?><?js } ?></dd>
         <?js }); ?></dl>
     <?js } ?>
     
     <?js
-        var observables = doc.observables;
-        if (observables && observables.length && observables.forEach) {
+        if (doc.observables && doc.observables.length) {
     ?>
         <h3 class="subsection-title">Observable Properties</h3>
-        <dl><?js= self.partial('observables.tmpl', observables) ?></dl>
+        <dl><?js= self.partial('observables.tmpl', doc.observables) ?></dl>
 
     <?js } ?>
 
     <?js
-        var events = doc.events;
-        if (events && events.length && events.forEach) {
-    ?>
-        <h3 class="subsection-title">Events</h3>
-        <?js if (observables && observables.length) { ?>
-        <p>These events are available in addition to the <b>Observable Properties</b> events listed above.</p>
-        <?js } ?>
-        <dl><?js= self.partial('events.tmpl', events) ?></dl>
-
-    <?js } ?>
-
-    <?js
-        var members = self.find({kind: 'member', memberof: title === 'Globals'? {isUndefined: true} : doc.longname});
+        var members = self.find({kind: 'member', memberof: title === 'Global' ? {isUndefined: true} : doc.longname});
         if (members && members.length && members.forEach) { 
     ?>
         <h3 class="subsection-title">Members</h3>
@@ -125,7 +128,7 @@
     <?js } ?>
     
     <?js
-        var methods = self.find({kind: 'function', memberof: title === 'Globals'? {isUndefined: true} : doc.longname});
+        var methods = self.find({kind: 'function', memberof: title === 'Global' ? {isUndefined: true} : doc.longname});
         if (methods && methods.length && methods.forEach) { 
     ?>
         <h3 class="subsection-title">Methods</h3>
@@ -136,18 +139,27 @@
     <?js } ?>
     
     <?js
-        var typedefs = self.find({kind: 'typedef', memberof: doc.longname}); 
+        var typedefs = self.find({kind: 'typedef', memberof: title === 'Global' ? {isUndefined: true} : doc.longname}); 
         if (typedefs && typedefs.length && typedefs.forEach) { 
     ?>
-        <h3 class="subsection-title">TypeDefs</h3>
+        <h3 class="subsection-title">Type Definitions</h3>
         
-        <dl><?js typedefs.forEach(function(e) { ?>
-            <?js= self.partial(e.params ? 'method.tmpl' : 'members.tmpl', e) ?>
-        <?js }); ?></dl>
+        <dl><?js typedefs.forEach(function(e) {
+                if (e.signature) {
+            ?>
+                <?js= self.partial('method.tmpl', e) ?>
+            <?js
+                }
+                else {
+            ?>
+                <?js= self.partial('members.tmpl', e) ?>
+            <?js
+                }
+            }); ?></dl>
     <?js } ?>
     
     <?js
-        var events = self.find({kind: 'event', memberof: doc.longname}); 
+        var events = self.find({kind: 'event', memberof: title === 'Global' ? {isUndefined: true} : doc.longname}); 
         if (events && events.length && events.forEach) { 
     ?>
         <h3 class="subsection-title">Events</h3>

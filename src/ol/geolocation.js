@@ -52,26 +52,6 @@ ol.GeolocationProperty = {
  * @constructor
  * @extends {ol.Object}
  * @param {olx.GeolocationOptions=} opt_options Options.
- * @todo observable accuracy {number} readonly the accuracy of the position
- *       measurement in meters
- * @todo observable accuracyGeometry {ol.geom.Geometry} readonly a
- *       geometry of the position accuracy.
- * @todo observable altitude {number} readonly the altitude of the position in
- *       meters above mean sea level
- * @todo observable altitudeAccuracy {number} readonly the accuracy of the
- *       altitude measurement in meters
- * @todo observable heading {number} readonly the heading of the device in
- *       radians from north
- * @todo observable position {ol.Coordinate} readonly the current position of
- *       the device reported in the current projection
- * @todo observable projection {ol.proj.Projection} readonly the projection to
- *       report the position in
- * @todo observable speed {number} readonly the instantaneous speed of the
- *       device in meters per second
- * @todo observable tracking {number} track the device's position.
- * @todo observable trackingOptions {GeolocationPositionOptions} PositionOptions
- *       as defined by the HTML5 Geolocation spec at
- *       http://www.w3.org/TR/geolocation-API/#position_options_interface
  * @todo api
  */
 ol.Geolocation = function(opt_options) {
@@ -207,7 +187,9 @@ ol.Geolocation.prototype.positionError_ = function(error) {
 
 /**
  * Get the accuracy of the position in meters.
- * @return {number|undefined} Position accuracy in meters.
+ * @return {number|undefined} The accuracy of the position measurement in
+ *     meters.
+ * @todo observable
  * @todo api
  */
 ol.Geolocation.prototype.getAccuracy = function() {
@@ -222,7 +204,8 @@ goog.exportProperty(
 
 /**
  * Get a geometry of the position accuracy.
- * @return {?ol.geom.Geometry} Accuracy geometry.
+ * @return {?ol.geom.Geometry} A geometry of the position accuracy.
+ * @todo observable
  * @todo api
  */
 ol.Geolocation.prototype.getAccuracyGeometry = function() {
@@ -237,7 +220,9 @@ goog.exportProperty(
 
 /**
  * Get the altitude associated with the position.
- * @return {number|undefined} The altitude in meters above the mean sea level.
+ * @return {number|undefined} The altitude of the position in meters above mean
+ *     sea level.
+ * @todo observable
  * @todo api
  */
 ol.Geolocation.prototype.getAltitude = function() {
@@ -252,7 +237,9 @@ goog.exportProperty(
 
 /**
  * Get the altitude accuracy of the position.
- * @return {number|undefined} Altitude accuracy in meters.
+ * @return {number|undefined} The accuracy of the altitude measurement in
+ *     meters.
+ * @todo observable
  * @todo api
  */
 ol.Geolocation.prototype.getAltitudeAccuracy = function() {
@@ -267,7 +254,8 @@ goog.exportProperty(
 
 /**
  * Get the heading as radians clockwise from North.
- * @return {number|undefined} Heading.
+ * @return {number|undefined} The heading of the device in radians from north.
+ * @todo observable
  * @todo api
  */
 ol.Geolocation.prototype.getHeading = function() {
@@ -282,7 +270,9 @@ goog.exportProperty(
 
 /**
  * Get the position of the device.
- * @return {ol.Coordinate|undefined} position.
+ * @return {ol.Coordinate|undefined} The current position of the device reported
+ *     in the current projection.
+ * @todo observable
  * @todo api
  */
 ol.Geolocation.prototype.getPosition = function() {
@@ -297,7 +287,9 @@ goog.exportProperty(
 
 /**
  * Get the projection associated with the position.
- * @return {ol.proj.Projection|undefined} projection.
+ * @return {ol.proj.Projection|undefined} The projection the position is
+ *     reported in.
+ * @todo observable
  * @todo api
  */
 ol.Geolocation.prototype.getProjection = function() {
@@ -312,7 +304,9 @@ goog.exportProperty(
 
 /**
  * Get the speed in meters per second.
- * @return {number|undefined} Speed.
+ * @return {number|undefined} The instantaneous speed of the device in meters
+ *     per second.
+ * @todo observable
  * @todo api
  */
 ol.Geolocation.prototype.getSpeed = function() {
@@ -327,7 +321,8 @@ goog.exportProperty(
 
 /**
  * Are we tracking the user's position?
- * @return {boolean} tracking.
+ * @return {boolean} Whether to track the device's position.
+ * @todo observable
  * @todo api
  */
 ol.Geolocation.prototype.getTracking = function() {
@@ -343,8 +338,10 @@ goog.exportProperty(
 /**
  * Get the tracking options.
  * @see http://www.w3.org/TR/geolocation-API/#position-options
- * @return {GeolocationPositionOptions|undefined} HTML 5 Gelocation
- * tracking options.
+ * @return {GeolocationPositionOptions|undefined} PositionOptions as defined by
+ *     the HTML5 Geolocation spec at
+ *     {@link http://www.w3.org/TR/geolocation-API/#position_options_interface}
+ * @todo observable
  * @todo api
  */
 ol.Geolocation.prototype.getTrackingOptions = function() {
@@ -359,7 +356,9 @@ goog.exportProperty(
 
 /**
  * Set the projection to use for transforming the coordinates.
- * @param {ol.proj.Projection} projection Projection.
+ * @param {ol.proj.Projection} projection The projection the position is
+ *     reported in.
+ * @todo observable
  * @todo api
  */
 ol.Geolocation.prototype.setProjection = function(projection) {
@@ -373,7 +372,8 @@ goog.exportProperty(
 
 /**
  * Enable/disable tracking.
- * @param {boolean} tracking Enable or disable tracking.
+ * @param {boolean} tracking Whether to track the device's position.
+ * @todo observable
  * @todo api
  */
 ol.Geolocation.prototype.setTracking = function(tracking) {
@@ -388,8 +388,10 @@ goog.exportProperty(
 /**
  * Set the tracking options.
  * @see http://www.w3.org/TR/geolocation-API/#position-options
- * @param {GeolocationPositionOptions} options HTML 5 Geolocation
- * tracking options.
+ * @param {GeolocationPositionOptions} options PositionOptions as defined by the
+ *     HTML5 Geolocation spec at
+ *     {@link http://www.w3.org/TR/geolocation-API/#position_options_interface}
+ * @todo observable
  * @todo api
  */
 ol.Geolocation.prototype.setTrackingOptions = function(options) {

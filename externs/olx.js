@@ -81,7 +81,8 @@ olx.GeolocationOptions.prototype.tracking;
 
 
 /**
- * Tracking options.
+ * Tracking options. See
+ * {@link http://www.w3.org/TR/geolocation-API/#position_options_interface}.
  * @type {GeolocationPositionOptions|undefined}
  */
 olx.GeolocationOptions.prototype.trackingOptions;
@@ -155,8 +156,7 @@ olx.MapOptions.prototype.keyboardEventTarget;
 
 
 /**
- * Layers. Array or {@link ol.Collection} items are instances of
- * {@link ol.layer.Layer} or any of its {@link ol.layer} subclasses.
+ * Layers.
  * @type {Array.<ol.layer.Base>|ol.Collection|undefined}
  */
 olx.MapOptions.prototype.layers;
@@ -191,7 +191,7 @@ olx.MapOptions.prototype.target;
 
 
 /**
- * The map's view. Currently {@link ol.View2D} is available as view.
+ * The map's view.
  * @type {ol.IView|undefined}
  */
 olx.MapOptions.prototype.view;
@@ -3540,9 +3540,9 @@ olx.source.ImageWMSOptions.prototype.logo;
 
 
 /**
- * WMS request parameters. At least a `LAYERS` param is required. `STYLES` is ``
- * by default. `VERSION` is `1.3.0` by default. `WIDTH`, `HEIGHT`, `BBOX` and
- * `CRS` (`SRS` for WMS version < 1.3.0) will be set dynamically.
+ * WMS request parameters. At least a `LAYERS` param is required. `STYLES` is
+ * `''` by default. `VERSION` is `1.3.0` by default. `WIDTH`, `HEIGHT`, `BBOX`
+ * and `CRS` (`SRS` for WMS version < 1.3.0) will be set dynamically.
  * @type {Object.<string,*>}
  */
 olx.source.ImageWMSOptions.prototype.params;
@@ -3821,9 +3821,9 @@ olx.source.TileWMSOptions.prototype.attributions;
 
 
 /**
- * WMS request parameters. At least a `LAYERS` param is required. `STYLES` is ``
- * by default. `VERSION` is `1.3.0` by default. `WIDTH`, `HEIGHT`, `BBOX` and
- * `CRS` (`SRS` for WMS version < 1.3.0) will be set dynamically.
+ * WMS request parameters. At least a `LAYERS` param is required. `STYLES` is
+ * `''` by default. `VERSION` is `1.3.0` by default. `WIDTH`, `HEIGHT`, `BBOX`
+ * and `CRS` (`SRS` for WMS version < 1.3.0) will be set dynamically.
  * @type {Object.<string,*>}
  */
 olx.source.TileWMSOptions.prototype.params;

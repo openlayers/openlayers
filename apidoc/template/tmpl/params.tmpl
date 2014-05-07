@@ -21,10 +21,12 @@
     params.hasDefault = false;
     params.hasName = false;
     
+    var colspan = 2;
     params.forEach(function(param) {
         if (!param) { return; }
         
         if (param.optional || param.nullable) {
+            ++colspan;
             params.hasAttributes = true;
         }
         
@@ -33,6 +35,7 @@
         }
         
         if (typeof param.defaultvalue !== 'undefined') {
+            ++colspan;
             params.hasDefault = true;
         }
     });
@@ -71,6 +74,7 @@
                 <td class="name"><code><?js= param.name.replace(/^opt_/, "") ?></code></td>
             <?js } ?>
             
+            <?js if (!param.subparams) {?>
             <td class="type">
             <?js if (param.type && param.type.names) {?>
                 <?js= self.partial('type.tmpl', param.type.names) ?>
@@ -96,9 +100,22 @@
                 <?js } ?>
                 </td>
             <?js } ?>
+            <?js } ?>
             
-            <td class="description last"><?js= param.description ?><?js if (param.subparams) { ?>
-                <h6>Properties</h6>
+            <td<?js= (param.subparams ? ' colspan=' + colspan : ' ') ?> class="description last">
+                <?js if (params.hasAttributes) {?>
+                    <?js if (param.optional) { ?>
+                        <span class="optional">optional</span>
+                    <?js } ?>
+                    <?js if (param.nullable) { ?>
+                        <span class="nullable">nullable</span>
+                    <?js } ?>
+              
+                    <?js if (param.variable) { ?>
+                        <span class="repeatable">repeatable</span>
+                    <?js } ?>
+                <?js } ?>
+                <?js= param.description ?><?js if (param.subparams) { ?>
                 <?js= self.partial('params.tmpl', param.subparams) ?>
             <?js } ?></td>
         </tr>

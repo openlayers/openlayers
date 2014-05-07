@@ -187,43 +187,56 @@ ol.geom.Geometry.prototype.transform = function(source, destination) {
 
 
 /**
+ * Array representation of a point. Example: `[16, 48]`.
  * @typedef {ol.Coordinate}
+ * @todo api
  */
 ol.geom.RawPoint;
 
 
 /**
+ * Array representation of a linsetring.
  * @typedef {Array.<ol.Coordinate>}
+ * @todo api
  */
 ol.geom.RawLineString;
 
 
 /**
+ * Array representation of a linear ring.
  * @typedef {Array.<ol.Coordinate>}
- *
+ * @todo api
  */
 ol.geom.RawLinearRing;
 
 
 /**
+ * Array representation of a polygon.
  * @typedef {Array.<ol.geom.RawLinearRing>}
+ * @todo api
  */
 ol.geom.RawPolygon;
 
 
 /**
+ * Array representation of a multipoint.
  * @typedef {Array.<ol.geom.RawPoint>}
+ * @todo api
  */
 ol.geom.RawMultiPoint;
 
 
 /**
+ * Array representation of a multilinestring.
  * @typedef {Array.<ol.geom.RawLineString>}
+ * @todo api
  */
 ol.geom.RawMultiLineString;
 
 
 /**
+ * Array representation of a multipolygon.
  * @typedef {Array.<ol.geom.RawPolygon>}
+ * @todo api
  */
 ol.geom.RawMultiPolygon;

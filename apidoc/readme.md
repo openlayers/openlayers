@@ -62,13 +62,16 @@ oli.MapBrowserEvent.prototype.coordinate;
 ```
 To document which events are fired by a class or method, the `@fires` annotation is used:
 ```js
- * @fires {@link ol.MapBrowserEvent} ol.MapBrowserEvent
- * @fires {@link ol.MapEvent} ol.MapEvent
- * @fires {@link ol.render.Event} ol.render.Event
+ * @fires ol.MapBrowserEvent
+ * @fires ol.MapEvent
+ * @fires ol.render.Event
  * ...
  */
 ol.Map = function(options) {
   // ...
 };
 ```
-Again, note the syntax of the `@fires` annotation. The link is necessary to provide a link to the documentation of the event, and the name of the event class is necessary for JSDoc3 to know which event we are talking about.
+
+### Observable Properties
+
+Observable properties are documented using the `@observable` annotation. This annotation is added to the getter of an observable property. If an observable property is also settable, the setter is annotated with `@observable` as well.

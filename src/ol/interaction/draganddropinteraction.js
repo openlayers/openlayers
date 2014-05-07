@@ -19,8 +19,7 @@ goog.require('ol.proj');
 /**
  * @constructor
  * @extends {ol.interaction.Interaction}
- * @fires {@link ol.interaction.DragAndDropEvent}
- *     ol.interaction.DragAndDropEvent
+ * @fires ol.interaction.DragAndDropEvent
  * @param {olx.interaction.DragAndDropOptions=} opt_options Options.
  * @todo api
  */

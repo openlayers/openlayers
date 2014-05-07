@@ -17,7 +17,7 @@ ol.CoordinateFormatType;
 
 
 /**
- * An array of numbers representing a coordinate.
+ * An array of numbers representing a coordinate. Example: `[16, 48]`.
  * @typedef {Array.<number>} ol.Coordinate
  * @todo api
  */

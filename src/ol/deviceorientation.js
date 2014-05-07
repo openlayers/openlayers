@@ -69,16 +69,6 @@ ol.DeviceOrientationProperty = {
  * @constructor
  * @extends {ol.Object}
  * @param {olx.DeviceOrientationOptions=} opt_options Options.
- * @todo observable alpha {number} readonly the euler angle in radians of the
- *       device from the standard X axis
- * @todo observable beta {number} readonly the euler angle in radians of the
- *       device from the planar Z axis
- * @todo observable gamma {number} readonly the euler angle in radians of the
- *       device from the planar X axis
- * @todo observable heading {number} readonly the euler angle in radians of the
- *       device from the planar Y axis
- * @todo observable tracking {boolean} the status of tracking changes to alpha,
- *       beta and gamma.  If true, changes are tracked and reported immediately.
  * @todo api
  */
 ol.DeviceOrientation = function(opt_options) {
@@ -145,8 +135,9 @@ ol.DeviceOrientation.prototype.orientationChange_ = function(browserEvent) {
 
 
 /**
- * @return {number|undefined} The alpha value of the DeviceOrientation,
- * in radians.
+ * @return {number|undefined} The euler angle in radians of the device from the
+ *     standard Z axis.
+ * @todo observable
  * @todo api
  */
 ol.DeviceOrientation.prototype.getAlpha = function() {
@@ -160,8 +151,9 @@ goog.exportProperty(
 
 
 /**
- * @return {number|undefined} The beta value of the DeviceOrientation,
- * in radians.
+ * @return {number|undefined} The euler angle in radians of the device from the
+ *     planar X axis.
+ * @todo observable
  * @todo api
  */
 ol.DeviceOrientation.prototype.getBeta = function() {
@@ -175,8 +167,9 @@ goog.exportProperty(
 
 
 /**
- * @return {number|undefined} The gamma value of the DeviceOrientation,
- * in radians.
+ * @return {number|undefined} The euler angle in radians of the device from the
+ *     planar Y axis.
+ * @todo observable
  * @todo api
  */
 ol.DeviceOrientation.prototype.getGamma = function() {
@@ -190,8 +183,9 @@ goog.exportProperty(
 
 
 /**
- * @return {number|undefined} The heading of the device relative to
- * north, in radians, normalizing for different browser behavior.
+ * @return {number|undefined} The heading of the device relative to north, in
+ *     radians, normalizing for different browser behavior.
+ * @todo observable
  * @todo api
  */
 ol.DeviceOrientation.prototype.getHeading = function() {
@@ -206,7 +200,9 @@ goog.exportProperty(
 
 /**
  * Are we tracking the device's orientation?
- * @return {boolean} The current tracking state, true if tracking is on.
+ * @return {boolean} The status of tracking changes to alpha, beta and gamma.
+ *     If true, changes are tracked and reported immediately.
+ * @todo observable
  * @todo api
  */
 ol.DeviceOrientation.prototype.getTracking = function() {
@@ -238,7 +234,9 @@ ol.DeviceOrientation.prototype.handleTrackingChanged_ = function() {
 
 /**
  * Enable or disable tracking of DeviceOrientation events.
- * @param {boolean} tracking True to enable and false to disable tracking.
+ * @param {boolean} tracking The status of tracking changes to alpha, beta and
+ *     gamma. If true, changes are tracked and reported immediately.
+ * @todo observable
  * @todo api
  */
 ol.DeviceOrientation.prototype.setTracking = function(tracking) {

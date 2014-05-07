@@ -23,10 +23,10 @@
         "apidoc/plugins/inheritdoc",
         "apidoc/plugins/interface",
         "apidoc/plugins/typedefs",
-        "apidoc/plugins/inheritdoc",
-        "apidoc/plugins/api",
         "apidoc/plugins/todo",
-        "apidoc/plugins/observable"
+        "apidoc/plugins/events",
+        "apidoc/plugins/observable",
+        "apidoc/plugins/api"
     ],
     "markdown": {
         "parser": "gfm"
@@ -35,11 +35,12 @@
       "levels": ["deprecated","experimental","unstable","stable","frozen","locked"]
     },
     "templates": {
-        "cleverLinks": false,
-        "monospaceLinks": false,
+        "cleverLinks": true,
+        "monospaceLinks": true,
         "default": {
             "outputSourceFiles": true
-        }
+        },
+        "applicationName": "OpenLayers 3"
     },
     "jsVersion": 180
 }

@@ -9,25 +9,7 @@ exports.defineTags = function(dictionary) {
       if (parts[0] === 'api') {
         doclet.stability = parts.slice(1).join(' ') || 'experimental';
       } else if (parts[0] === 'observable') {
-        if (!doclet.observables) {
-          doclet.observables = [];
-        }
-        var readonly = parts.length > 3 && parts[3] === 'readonly';
-        var description = (readonly ? parts.slice(4) : parts.slice(3)).join(' ');
-        doclet.observables.push({
-          name: parts[1],
-          type: {
-            names: tag.value.type.names
-          },
-          description: description,
-          readonly: readonly
-        });
-        if (!doclet.fires) {
-          doclet.fires = [];
-        }
-        if (doclet.fires.indexOf('{@link ol.ObjectEvent} ol.event:ObjectEvent') === -1) {
-          doclet.fires.push('{@link ol.ObjectEvent} ol.event:ObjectEvent');
-        }
+        doclet.observable = '';
       }
     }
   });

@@ -13,28 +13,28 @@ ol.IView2D = function() {
 
 
 /**
- * @return {ol.Coordinate|undefined} Map center.
+ * @return {ol.Coordinate|undefined} The center of the view.
  */
 ol.IView2D.prototype.getCenter = function() {
 };
 
 
 /**
- * @return {ol.proj.Projection|undefined} Map projection.
+ * @return {ol.proj.Projection|undefined} The projection of the view.
  */
 ol.IView2D.prototype.getProjection = function() {
 };
 
 
 /**
- * @return {number|undefined} Map resolution.
+ * @return {number|undefined} The resolution of the view.
  */
 ol.IView2D.prototype.getResolution = function() {
 };
 
 
 /**
- * @return {number|undefined} Map rotation.
+ * @return {number|undefined} The rotation of the view.
  */
 ol.IView2D.prototype.getRotation = function() {
 };

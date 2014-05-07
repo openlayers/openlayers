@@ -8,7 +8,7 @@ goog.require('ol.source.StaticVector');
 /**
  * @constructor
  * @extends {ol.source.StaticVector}
- * @fires {@link ol.source.VectorEvent} ol.source.VectorEvent
+ * @fires ol.source.VectorEvent
  * @param {olx.source.KMLOptions=} opt_options Options.
  * @todo api
  */
