@@ -104,8 +104,8 @@ li {
 .navigation li.item .title .static {
   display: block;
   border-radius: 3px;
-  background-color: #779c34;
-  color: #000;
+  background-color: #1F6B75;
+  color: #FFF;
   font-size: 0.75em;
   padding: 2px 4px;
   float: right;
@@ -113,7 +113,7 @@ li {
 .navigation li.item .subtitle {
   margin-top: 10px;
   font: bold 0.7em Helvetica;
-  color: #779c34;
+  color: #1F6B75;
   display: block;
 }
 .navigation li.item ul > li {
@@ -185,7 +185,7 @@ li {
 .main span.static, .main span.stability {
   display: inline-block;
   border-radius: 3px;
-  background-color: #779c34 !important;
+  background-color: #1F6B75 !important;
   color: #fff;
   font-size: 0.7em;
   padding: 2px 4px;
@@ -209,7 +209,7 @@ li {
 .main .subsection-title {
   font-size: 15px;
   margin-top: 30px;
-  color: #779c34;
+  color: #1F6B75;
 }
 .main .description {
   margin-top: 10px;
@@ -368,7 +368,7 @@ footer {
   color: #f2dede;
 }
 .main span.stability.experimental {
-  background-color: #c09853 !important;
+  background-color: red !important;
   color: #fcf8e3;
 }
 .main span.stability.unstable {
