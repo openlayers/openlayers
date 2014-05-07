@@ -4380,6 +4380,7 @@ olx.source.ZoomifyOptions.prototype.size;
 /**
  * @typedef {{fill: (ol.style.Fill|undefined),
  *     radius: number,
+ *     snapToPixel: (boolean|undefined),
  *     stroke: (ol.style.Stroke|undefined)}}
  * @todo api
  */
@@ -4398,6 +4399,19 @@ olx.style.CircleOptions.prototype.fill;
  * @type {number}
  */
 olx.style.CircleOptions.prototype.radius;
+
+
+/**
+ * If `true` integral numbers of pixels are used as the X and Y pixel
+ * coordinate when drawing the circle in the output canvas. If `false`
+ * fractional numbers may be used. Using `true` allows for "sharp"
+ * rendering (no blur), while using `false` allows for "accurate"
+ * rendering. Note that accuracy is important if the circle's
+ * position is animated. Without it, the circle may jitter noticeably.
+ * Default value is `true`.
+ * @type {boolean|undefined}
+ */
+olx.style.CircleOptions.prototype.snapToPixel;
 
 
 /**
@@ -4429,6 +4443,7 @@ olx.style.FillOptions.prototype.color;
  *     crossOrigin: (null|string|undefined),
  *     origin: (Array.<number>|undefined),
  *     scale: (number|undefined),
+ *     snapToPixel: (boolean|undefined),
  *     rotateWithView: (boolean|undefined),
  *     rotation: (number|undefined),
  *     size: (ol.Size|undefined),
@@ -4492,6 +4507,19 @@ olx.style.IconOptions.prototype.origin;
  * @type {number|undefined}
  */
 olx.style.IconOptions.prototype.scale;
+
+
+/**
+ * If `true` integral numbers of pixels are used as the X and Y pixel
+ * coordinate when drawing the icon in the output canvas. If `false`
+ * fractional numbers may be used. Using `true` allows for "sharp"
+ * rendering (no blur), while using `false` allows for "accurate"
+ * rendering. Note that accuracy is important if the icon's position
+ * is animated. Without it, the icon may jitter noticeably. Default
+ * value is `true`.
+ * @type {boolean|undefined}
+ */
+olx.style.IconOptions.prototype.snapToPixel;
 
 
 /**
