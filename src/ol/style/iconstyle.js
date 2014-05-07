@@ -1,5 +1,3 @@
-// FIXME decide default value for snapToPixel
-
 goog.provide('ol.style.Icon');
 goog.provide('ol.style.IconAnchorOrigin');
 goog.provide('ol.style.IconAnchorUnits');
@@ -128,7 +126,7 @@ ol.style.Icon = function(opt_options) {
    * @type {boolean}
    */
   var snapToPixel = goog.isDef(options.snapToPixel) ?
-      options.snapToPixel : undefined;
+      options.snapToPixel : true;
 
   goog.base(this, {
     opacity: opacity,
