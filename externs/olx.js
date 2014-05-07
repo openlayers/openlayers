@@ -4524,6 +4524,14 @@ olx.style.IconOptions.prototype.src;
 
 
 /**
+ * When set to false, the icon's pixel coordinates will be
+ * not rounded. Default is `true`.
+ * @type {boolean|undefined}
+ */
+olx.style.IconOptions.prototype.snapToPixel;
+
+
+/**
  * @typedef {{color: (ol.Color|string|undefined),
  *     lineCap: (string|undefined),
  *     lineJoin: (string|undefined),
