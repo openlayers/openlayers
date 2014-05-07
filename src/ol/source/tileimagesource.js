@@ -120,8 +120,17 @@ ol.source.TileImage.prototype.getTile =
 
 
 /**
+ * @return {ol.TileLoadFunctionType} TileLoadFunction
+ * @todo api
+ */
+ol.source.TileImage.prototype.getTileLoadFunction = function() {
+  return this.tileLoadFunction;
+};
+
+
+/**
  * @return {ol.TileUrlFunctionType} TileUrlFunction
- * @todo stability experimental
+ * @todo api
  */
 ol.source.TileImage.prototype.getTileUrlFunction = function() {
   return this.tileUrlFunction;
@@ -129,7 +138,19 @@ ol.source.TileImage.prototype.getTileUrlFunction = function() {
 
 
 /**
+ * @param {ol.TileLoadFunctionType} tileLoadFunction Tile load function.
+ * @todo api
+ */
+ol.source.TileImage.prototype.setTileLoadFunction = function(tileLoadFunction) {
+  this.tileCache.clear();
+  this.tileLoadFunction = tileLoadFunction;
+  this.dispatchChangeEvent();
+};
+
+
+/**
  * @param {ol.TileUrlFunctionType} tileUrlFunction Tile URL function.
+ * @todo api
  */
 ol.source.TileImage.prototype.setTileUrlFunction = function(tileUrlFunction) {
   // FIXME It should be possible to be more intelligent and avoid clearing the
