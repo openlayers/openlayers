@@ -4409,6 +4409,14 @@ olx.style.CircleOptions.prototype.stroke;
 
 
 /**
+ * When set to false, the icon's pixel coordinates will be
+ * not rounded. Default is `true`.
+ * @type {boolean|undefined}
+ */
+olx.style.CircleOptions.prototype.snapToPixel;
+
+
+/**
  * @typedef {{color: (ol.Color|string|undefined)}}
  * @todo api
  */
