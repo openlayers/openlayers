@@ -4381,7 +4381,8 @@ olx.source.ZoomifyOptions.prototype.size;
 /**
  * @typedef {{fill: (ol.style.Fill|undefined),
  *     radius: number,
- *     stroke: (ol.style.Stroke|undefined)}}
+ *     stroke: (ol.style.Stroke|undefined),
+ *     snapToPixel: (boolean|undefined)}}
  * @todo api
  */
 olx.style.CircleOptions;
@@ -4409,6 +4410,14 @@ olx.style.CircleOptions.prototype.stroke;
 
 
 /**
+ * When set to false, the icon's pixel coordinates will be
+ * not rounded. Default is `true`.
+ * @type {boolean|undefined}
+ */
+olx.style.CircleOptions.prototype.snapToPixel;
+
+
+/**
  * @typedef {{color: (ol.Color|string|undefined)}}
  * @todo api
  */
@@ -4433,7 +4442,8 @@ olx.style.FillOptions.prototype.color;
  *     rotateWithView: (boolean|undefined),
  *     rotation: (number|undefined),
  *     size: (ol.Size|undefined),
- *     src: string}}
+ *     src: string,
+ *     snapToPixel: (boolean|undefined)}}
  * @todo api
  */
 olx.style.IconOptions;
@@ -4521,6 +4531,14 @@ olx.style.IconOptions.prototype.size;
  * @type {string}
  */
 olx.style.IconOptions.prototype.src;
+
+
+/**
+ * When set to false, the icon's pixel coordinates will be
+ * not rounded. Default is `true`.
+ * @type {boolean|undefined}
+ */
+olx.style.IconOptions.prototype.snapToPixel;
 
 
 /**
