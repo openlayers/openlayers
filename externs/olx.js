@@ -4491,12 +4491,13 @@ olx.style.FillOptions.prototype.color;
 
 /**
  * @typedef {{anchor: (Array.<number>|undefined),
- *     anchorOrigin: (ol.style.IconAnchorOrigin|undefined),
+ *     anchorOrigin: (ol.style.IconOrigin|undefined),
  *     anchorXUnits: (ol.style.IconAnchorUnits|undefined),
  *     anchorYUnits: (ol.style.IconAnchorUnits|undefined),
  *     crossOrigin: (null|string|undefined),
  *     img: (Image|undefined),
- *     origin: (Array.<number>|undefined),
+ *     offset: (Array.<number>|undefined),
+ *     offsetOrigin: (ol.style.IconOrigin|undefined),
  *     scale: (number|undefined),
  *     snapToPixel: (boolean|undefined),
  *     rotateWithView: (boolean|undefined),
@@ -4518,7 +4519,7 @@ olx.style.IconOptions.prototype.anchor;
 /**
  * Origin of the anchor: `bottom-left`, `bottom-right`, `top-left` or
  * `top-right`. Default is `top-left`.
- * @type {ol.style.IconAnchorOrigin|undefined}
+ * @type {ol.style.IconOrigin|undefined}
  */
 olx.style.IconOptions.prototype.anchorOrigin;
 
@@ -4557,12 +4558,20 @@ olx.style.IconOptions.prototype.img;
 
 
 /**
- * The top left corner, which, together with the size, define the
- * sub-rectangle to use from the original icon image. Default value
+ * Offset, which, together with the size and the offset origin,
+ * define the sub-rectangle to use from the original icon image. Default value
  * is `[0, 0]`.
  * @type {Array.<number>|undefined}
  */
-olx.style.IconOptions.prototype.origin;
+olx.style.IconOptions.prototype.offset;
+
+
+/**
+ * Origin of the offset: `bottom-left`, `bottom-right`, `top-left` or
+ * `top-right`. Default is `top-left`.
+ * @type {ol.style.IconOrigin|undefined}
+ */
+olx.style.IconOptions.prototype.offsetOrigin;
 
 
 /**

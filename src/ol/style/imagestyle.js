@@ -15,7 +15,6 @@ ol.style.ImageState = {
 
 /**
  * @typedef {{opacity: number,
- *            origin: Array.<number>,
  *            rotateWithView: boolean,
  *            rotation: number,
  *            scale: number,
@@ -36,12 +35,6 @@ ol.style.Image = function(options) {
    * @type {number}
    */
   this.opacity_ = options.opacity;
-
-  /**
-   * @private
-   * @type {Array.<number>}
-   */
-  this.origin_ = options.origin;
 
   /**
    * @private
@@ -75,14 +68,6 @@ ol.style.Image = function(options) {
  */
 ol.style.Image.prototype.getOpacity = function() {
   return this.opacity_;
-};
-
-
-/**
- * @return {Array.<number>} Origin.
- */
-ol.style.Image.prototype.getOrigin = function() {
-  return this.origin_;
 };
 
 
@@ -146,6 +131,13 @@ ol.style.Image.prototype.getImageState = goog.abstractMethod;
  * @return {HTMLCanvasElement|HTMLVideoElement|Image} Image element.
  */
 ol.style.Image.prototype.getHitDetectionImage = goog.abstractMethod;
+
+
+/**
+ * @function
+ * @return {Array.<number>} Origin.
+ */
+ol.style.Image.prototype.getOrigin = goog.abstractMethod;
 
 
 /**
