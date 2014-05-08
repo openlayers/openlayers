@@ -103,7 +103,7 @@ ol.OL3_LOGO_URL = 'data:image/png;base64,' +
  * @enum {string}
  * @todo api
  */
-ol.RendererHint = {
+ol.RendererType = {
   CANVAS: 'canvas',
   DOM: 'dom',
   WEBGL: 'webgl'
@@ -111,12 +111,12 @@ ol.RendererHint = {
 
 
 /**
- * @type {Array.<ol.RendererHint>}
+ * @type {Array.<ol.RendererType>}
  */
 ol.DEFAULT_RENDERER_HINTS = [
-  ol.RendererHint.CANVAS,
-  ol.RendererHint.WEBGL,
-  ol.RendererHint.DOM
+  ol.RendererType.CANVAS,
+  ol.RendererType.WEBGL,
+  ol.RendererType.DOM
 ];
 
 
@@ -1431,36 +1431,36 @@ ol.Map.createOptionsInternal = function(options) {
   var rendererConstructor = ol.renderer.Map;
 
   /**
-   * @type {Array.<ol.RendererHint>}
+   * @type {Array.<ol.RendererType>}
    */
-  var rendererHints;
+  var rendererTypes;
   if (goog.isDef(options.renderer)) {
     if (goog.isArray(options.renderer)) {
-      rendererHints = options.renderer;
+      rendererTypes = options.renderer;
     } else if (goog.isString(options.renderer)) {
-      rendererHints = [options.renderer];
+      rendererTypes = [options.renderer];
     } else {
       goog.asserts.fail('Incorrect format for renderer option');
     }
   } else {
-    rendererHints = ol.DEFAULT_RENDERER_HINTS;
+    rendererTypes = ol.DEFAULT_RENDERER_HINTS;
   }
 
   var i, ii;
-  for (i = 0, ii = rendererHints.length; i < ii; ++i) {
-    /** @type {ol.RendererHint} */
-    var rendererHint = rendererHints[i];
-    if (ol.ENABLE_CANVAS && rendererHint == ol.RendererHint.CANVAS) {
+  for (i = 0, ii = rendererTypes.length; i < ii; ++i) {
+    /** @type {ol.RendererType} */
+    var rendererType = rendererTypes[i];
+    if (ol.ENABLE_CANVAS && rendererType == ol.RendererType.CANVAS) {
       if (ol.BrowserFeature.HAS_CANVAS) {
         rendererConstructor = ol.renderer.canvas.Map;
         break;
       }
-    } else if (ol.ENABLE_DOM && rendererHint == ol.RendererHint.DOM) {
+    } else if (ol.ENABLE_DOM && rendererType == ol.RendererType.DOM) {
       if (ol.BrowserFeature.HAS_DOM) {
         rendererConstructor = ol.renderer.dom.Map;
         break;
       }
-    } else if (ol.ENABLE_WEBGL && rendererHint == ol.RendererHint.WEBGL) {
+    } else if (ol.ENABLE_WEBGL && rendererType == ol.RendererType.WEBGL) {
       if (ol.BrowserFeature.HAS_WEBGL) {
         rendererConstructor = ol.renderer.webgl.Map;
         break;
