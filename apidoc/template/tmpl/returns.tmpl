@@ -13,17 +13,12 @@ returns.forEach(function (ret, i) {
         if (parentReturn !== null && name.indexOf(parentReturn.name + '.') === 0) {
             ret.name = isNamed ? name.substr(parentReturn.name.length + 1) : name.substr(parentReturn.name.length + 1, startSpacePos - (parentReturn.name.length + 1));
         
-            if (!isNamed) {
-                ret.description = ret.description.substr(startSpacePos + 1);
-            }
-            
             parentReturn.subReturns = parentReturn.subReturns || [];
             parentReturn.subReturns.push(ret);
             returns[i] = null;
         } else {
             if (!isNamed) {
                 ret.name = ret.description.substr(0, startSpacePos !== -1 ? startSpacePos : ret.description.length);
-                ret.description = startSpacePos !== -1 ? ret.description.substr(startSpacePos + 1) : '';
             }
             
             parentReturn = ret;
