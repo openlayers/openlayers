@@ -111,6 +111,7 @@ ol.source.FormatVector.prototype.loadFeaturesFromURL =
 /**
  * @param {ArrayBuffer|Document|Node|Object|string} source Source.
  * @return {Array.<ol.Feature>} Features.
+ * @todo api
  */
 ol.source.FormatVector.prototype.readFeatures = function(source) {
   var format = this.format;
