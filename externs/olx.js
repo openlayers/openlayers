@@ -1324,7 +1324,8 @@ olx.format.WFSWriteGetFeatureOptions.prototype.bbox;
  *     featureType: string,
  *     srsName: (string|undefined),
  *     handle: (string|undefined),
- *     nativeElements: Array.<Object>}}
+ *     nativeElements: Array.<Object>,
+ *     gmlOptions: (olx.format.GMLOptions|undefined)}}
  * @todo api
  */
 olx.format.WFSWriteTransactionOptions;
@@ -1371,6 +1372,13 @@ olx.format.WFSWriteTransactionOptions.prototype.handle;
  * @type {Array.<Object>}
  */
 olx.format.WFSWriteTransactionOptions.prototype.nativeElements;
+
+
+/**
+ * GML options for the WFS transaction writer.
+ * @type {olx.format.GMLOptions|undefined}
+ */
+olx.format.WFSWriteTransactionOptions.prototype.gmlOptions;
 
 
 /**
