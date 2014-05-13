@@ -48,6 +48,60 @@ describe('ol.Map', function() {
     });
   });
 
+  describe('moveend event', function() {
+
+    var target, view, map;
+
+    beforeEach(function() {
+      target = document.createElement('div');
+
+      var style = target.style;
+      style.position = 'absolute';
+      style.left = '-1000px';
+      style.top = '-1000px';
+      style.width = '360px';
+      style.height = '180px';
+      document.body.appendChild(target);
+
+      view = new ol.View2D({
+        projection: 'EPSG:4326'
+      });
+      map = new ol.Map({
+        target: target,
+        view: view,
+        layers: [
+          new ol.layer.Tile({
+            source: new ol.source.XYZ({
+              url: '#{x}/{y}/{z}'
+            })
+          })
+        ]
+      });
+    });
+
+    afterEach(function() {
+      goog.dispose(map);
+      document.body.removeChild(target);
+    });
+
+    it('is fired only once after view changes', function(done) {
+      var center = [10, 20];
+      var zoom = 3;
+      var calls = 0;
+      map.on('moveend', function() {
+        ++calls;
+        expect(calls).to.be(1);
+        expect(view.getCenter()).to.eql(center);
+        expect(view.getZoom()).to.be(zoom);
+        window.setTimeout(done, 1000);
+      });
+
+      view.setCenter(center);
+      view.setZoom(zoom);
+    });
+
+  });
+
   describe('#render()', function() {
 
     var target, map;
@@ -197,3 +251,5 @@ goog.require('ol.interaction');
 goog.require('ol.interaction.Interaction');
 goog.require('ol.interaction.DoubleClickZoom');
 goog.require('ol.interaction.MouseWheelZoom');
+goog.require('ol.layer.Tile');
+goog.require('ol.source.XYZ');
