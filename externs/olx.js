@@ -1608,7 +1608,8 @@ olx.interaction.DragZoomOptions.prototype.style;
  *     snapTolerance: (number|undefined),
  *     type: ol.geom.GeometryType,
  *     minPointsPerRing: (number|undefined),
- *     style: (ol.style.Style|Array.<ol.style.Style>|ol.feature.StyleFunction|undefined)}}
+ *     style: (ol.style.Style|Array.<ol.style.Style>|ol.feature.StyleFunction|undefined),
+ *     geometryName: (string|undefined)}}
  * @todo api
  */
 olx.interaction.DrawOptions;
@@ -1656,6 +1657,13 @@ olx.interaction.DrawOptions.prototype.minPointsPerRing;
  * @type {ol.style.Style|Array.<ol.style.Style>|ol.feature.StyleFunction|undefined}
  */
 olx.interaction.DrawOptions.prototype.style;
+
+
+/**
+ * Geometry name to use for features created by the draw interaction.
+ * @type {string|undefined}
+ */
+olx.interaction.DrawOptions.prototype.geometryName;
 
 
 /**

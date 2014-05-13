@@ -182,6 +182,13 @@ ol.interaction.Draw = function(options) {
         options.style : ol.interaction.Draw.getDefaultStyleFunction()
   });
 
+  /**
+   * Name of the geometry attribute for newly created features.
+   * @type {string|undefined}
+   * @private
+   */
+  this.geometryName_ = options.geometryName;
+
 };
 goog.inherits(ol.interaction.Draw, ol.interaction.Pointer);
 
@@ -350,7 +357,11 @@ ol.interaction.Draw.prototype.startDrawing_ = function(event) {
     }
   }
   goog.asserts.assert(goog.isDef(geometry));
-  this.sketchFeature_ = new ol.Feature(geometry);
+  this.sketchFeature_ = new ol.Feature();
+  if (goog.isDef(this.geometryName_)) {
+    this.sketchFeature_.setGeometryName(this.geometryName_);
+  }
+  this.sketchFeature_.setGeometry(geometry);
   this.updateSketchFeatures_();
   this.dispatchEvent(new ol.DrawEvent(ol.DrawEventType.DRAWSTART,
       this.sketchFeature_));
