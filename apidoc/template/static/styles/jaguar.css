@@ -55,7 +55,7 @@ li {
   float: left;
   width: 250px;
   height: 100%;
-  background-color: #1a1a1a;
+  background-color: #2a2a2a;
 }
 .navigation .applicationName {
   margin: 0;
@@ -109,7 +109,7 @@ li {
   border-radius: 3px;
   background-color: #1F6B75;
   color: #FFF;
-  font-size: 0.75em;
+  font-size: 0.7em;
   padding: 2px 4px;
   float: right;
 }
@@ -169,15 +169,15 @@ li {
   padding: 2px 4px;
 }
 .main h4.name span.type-signature.type a {
-  color: #e9e6ff;
+  color: #2f61b1;
 }
 .main h4.name span.type {
-  margin-left: 5px;
+  margin-left: 10px;
 }
 .main h4.name span.glyphicon {
   display: inline-block;
   vertical-align: middle;
-  color: #e1e1e1;
+  color: #c1c1c1;
   margin-left: 7px;
 }
 .main h4.name span.returnType {
@@ -195,19 +195,24 @@ li {
   margin-right: 8px;
 }
 .main span.number {
-  background-color: gray!important;
+  background-color: #ccc !important;
+  color: #2fa2b1 !important;
 }
 .main span.string {
-  background-color: gray!important;
+  background-color: #ccc !important;
+  color: #2fa2b1 !important;
 }
 .main span.object {
-  background-color: #2a6496 !important;
+  background-color: #ccc !important;
+  color: #2fa2b1 !important;
 }
 .main span.array {
-  background-color: #2a6496 !important;
+  background-color: #ccc !important;
+  color: #2fa2b1 !important;
 }
 .main span.boolean {
-  background-color: #ee7d7d !important;
+  background-color: #ccc !important;
+  color: #2fa2b1 !important;
 }
 .main .subsection-title {
   font-size: 15px;
@@ -258,7 +263,7 @@ li {
   display: inline-block;
   border-radius: 3px;
   background-color: #888!important;
-  font-size: 0.75em;
+  font-size: 0.7em;
   padding: 2px 4px;
   margin-right: 5px;
 }
@@ -323,7 +328,7 @@ li {
   float: left;
   border-radius: 3px;
   background-color: #ddd!important;
-  font-size: 0.75em;
+  font-size: 0.7em;
   padding: 2px 4px;
   margin-right: 5px;
   color: gray;
@@ -371,8 +376,8 @@ footer {
   color: #f2dede;
 }
 .main span.stability.experimental {
-  background-color: red !important;
-  color: #fcf8e3;
+  background-color: #F2CC79 !important;
+  color: #800F07;
 }
 .main span.stability.unstable {
   background-color: #3a87ad !important;
