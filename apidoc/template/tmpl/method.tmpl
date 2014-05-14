@@ -5,13 +5,13 @@ var self = this;
 <dt>
     <div class="nameContainer<?js if (data.inherited) { ?> inherited<?js } ?>">
         <?js if (data.stability || kind !== 'class') { ?>
-        <h4 class="name" id="<?js= id ?>"><?js= this.partial('stability.tmpl', data) ?>
+        <h4 class="name" id="<?js= id ?>">
+            <?js= data.attribs + (kind === 'class' ? 'new ' : '') + (data.scope === 'static' ? longname : name) + (kind !== 'event' ? data.signature : '') ?>
             <?js if (data.inherited || data.inherits) { ?>
                 <span class="inherited"><?js= this.linkto(data.inherits, 'inherited') ?></span>
             <?js } ?>
-            <?js= data.attribs + (kind === 'class' ? 'new ' : '') + (data.scope === 'static' ? longname : name) + (kind !== 'event' ? data.signature : '') ?>
+            <?js= this.partial('stability.tmpl', data) ?>
         </h4>
-    
         <?js if (data.meta) {?>
         <div class="tag-source">
             <?js= self.linkto(meta.filename) ?>, <?js= self.linkto(meta.filename, 'line ' + meta.lineno, null, 'line' + meta.lineno) ?>
@@ -19,7 +19,6 @@ var self = this;
         <?js } ?>
         <?js } ?>
     </div>
-
     <?js if (data.summary) { ?>
     <p class="summary"><?js= summary ?></p>
     <?js } ?>
@@ -60,7 +59,6 @@ var self = this;
             var parts = f.split(/#?event:/);
         ?>
         <li><?js var eventDoclet = self.find({longname: f})[0]; ?>
-            <?js= (eventDoclet ? self.partial('stability.tmpl', eventDoclet) : '') ?>
             <code><?js= self.linkto(f, parts[1]) ?></code>
             <?js if (parts[0]) {
               var eventClass = self.find({longname: parts[0]})[0];
@@ -68,8 +66,9 @@ var self = this;
                 (<?js= self.linkto(eventClass.longname) ?>)
               <?js } ?>
             <?js } ?>
-            <?js if (eventDoclet && eventDoclet.description) { ?>
-            - <?js= eventDoclet.description.replace(/<[^>]*>/g, '') ?>
+            <?js if (eventDoclet && eventDoclet.description) { ?> -
+            <?js= (eventDoclet ? self.partial('stability.tmpl', eventDoclet) : '') ?>
+            <?js= eventDoclet.description.replace(/<[^>]*>/g, '') ?>
             <?js } ?>
         </li>
     <?js }); ?></ul>

@@ -11,10 +11,11 @@ if (data.type && data.type.names) {
 ?>
 <dt>
     <div class="nameContainer">
-        <h4 class="name" id="<?js= id ?>"><?js= this.partial('stability.tmpl', data) ?>
-        <?js= data.attribs + (data.scope === 'static' ? longname : name)  + typeSignature ?></h4>
+        <h4 class="name" id="<?js= id ?>">
+            <?js= data.attribs + (data.scope === 'static' ? longname : name)  + typeSignature ?>
+            <?js= this.partial('stability.tmpl', data) ?>
+        </h4>
     </div>
-    
     <?js if (data.summary) { ?>
     <p class="summary"><?js= summary ?></p>
     <?js } ?>

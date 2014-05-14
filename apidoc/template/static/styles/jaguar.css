@@ -190,9 +190,9 @@ li {
   border-radius: 3px;
   background-color: #1F6B75 !important;
   color: #fff;
-  font-size: 0.7em;
+  vertical-align: top;
+  font-size: 0.8em;
   padding: 2px 4px;
-  margin-right: 8px;
 }
 .main span.number {
   background-color: #ccc !important;
@@ -263,7 +263,8 @@ li {
   display: inline-block;
   border-radius: 3px;
   background-color: #888!important;
-  font-size: 0.7em;
+  vertical-align: top;
+  font-size: 0.8em;
   padding: 2px 4px;
   margin-right: 5px;
 }
