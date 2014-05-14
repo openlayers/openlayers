@@ -27,8 +27,8 @@ function assertValidConfig(config, callback) {
       callback(new Error('Config missing "exports" array'));
       return;
     }
-    if (typeof config.compile !== 'object') {
-      callback(new Error('Config missing "compile" object'));
+    if (config.compile && typeof config.compile !== 'object') {
+      callback(new Error('Config "compile" must be an object'));
       return;
     }
     if (config.jvm && !Array.isArray(config.jvm)) {
@@ -129,6 +129,25 @@ function getDependencies(src, exports, callback) {
 
 
 /**
+ * Concatenate all sources.
+ * @param {Array.<string>} paths List of paths to source files.
+ * @param {function(Error, string)} callback Called with the concatenated
+ *     output or any error.
+ */
+function concatenate(paths, callback) {
+  async.map(paths, fs.readFile, function(err, results) {
+    if (err) {
+      var msg = 'Trouble concatenating sources.  ' + err.message;
+      callback(new Error(msg));
+    } else {
+      var preamble = 'var CLOSURE_NO_DEPS = true;\n';
+      callback(null, preamble + results.join('\n'));
+    }
+  });
+}
+
+
+/**
  * Run the compiler.
  * @param {Object} config Build configuration object.
  * @param {Array.<string>} paths List of paths to source files.
@@ -136,13 +155,19 @@ function getDependencies(src, exports, callback) {
  *     any error.
  */
 function build(config, paths, callback) {
-  log.info('ol', 'Compiling ' + paths.length + ' sources');
   var options = config.compile;
-  options.js = paths.concat(options.js || []);
-  if (config.jvm) {
-    closure.compile(options, config.jvm, callback);
+  if (!options) {
+    log.info('ol', 'No compile options found.  Concatenating ' +
+        paths.length + ' sources');
+    concatenate(paths, callback);
   } else {
-    closure.compile(options, callback);
+    log.info('ol', 'Compiling ' + paths.length + ' sources');
+    options.js = paths.concat(options.js || []);
+    if (config.jvm) {
+      closure.compile(options, config.jvm, callback);
+    } else {
+      closure.compile(options, callback);
+    }
   }
 }
 
