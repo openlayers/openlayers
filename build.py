@@ -23,7 +23,7 @@ if sys.platform == 'win32':
         'JSDOC': './node_modules/.bin/jsdoc',
         'JSHINT': './node_modules/.bin/jshint',
         'PYTHON': 'python.exe',
-        'PHANTOMJS': 'phantomjs.cmd'
+        'PHANTOMJS': './node_modules/.bin/phantomjs'
     }
 
     sys_dir = os.environ.get('SYSTEMDRIVE')
@@ -77,7 +77,7 @@ else:
     variables.JAR = 'jar'
     variables.JSDOC = './node_modules/.bin/jsdoc'
     variables.PYTHON = 'python'
-    variables.PHANTOMJS = 'phantomjs'
+    variables.PHANTOMJS = './node_modules/.bin/phantomjs'
 
 variables.BRANCH = output(
     '%(GIT)s', 'rev-parse', '--abbrev-ref', 'HEAD').strip()
