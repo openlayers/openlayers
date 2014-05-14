@@ -213,6 +213,13 @@ ol.Map = function(options) {
   this.frameState_ = null;
 
   /**
+   * The extent at the previous 'moveend' event.
+   * @private
+   * @type {ol.Extent}
+   */
+  this.previousExtent_ = null;
+
+  /**
    * @private
    * @type {goog.events.Key}
    */
@@ -1235,12 +1242,15 @@ ol.Map.prototype.renderFrame_ = function(time) {
         this.postRenderFunctions_, frameState.postRenderFunctions);
 
     var idle = this.preRenderFunctions_.length === 0 &&
-        !frameState.animate &&
         !frameState.viewHints[ol.ViewHint.ANIMATING] &&
-        !frameState.viewHints[ol.ViewHint.INTERACTING];
+        !frameState.viewHints[ol.ViewHint.INTERACTING] &&
+        (!this.previousExtent_ ||
+            !ol.extent.equals(frameState.extent, this.previousExtent_));
 
     if (idle) {
-      this.dispatchEvent(new ol.MapEvent(ol.MapEventType.MOVEEND, this));
+      this.dispatchEvent(
+          new ol.MapEvent(ol.MapEventType.MOVEEND, this, frameState));
+      this.previousExtent_ = ol.extent.clone(frameState.extent);
     }
   }
 
