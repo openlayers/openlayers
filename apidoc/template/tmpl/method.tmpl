@@ -4,7 +4,7 @@ var self = this;
 ?>
 <dt>
     <div class="nameContainer<?js if (data.inherited) { ?> inherited<?js } ?>">
-        <?js if (data.stability) { ?>
+        <?js if (data.stability || kind !== 'class') { ?>
         <h4 class="name" id="<?js= id ?>"><?js= this.partial('stability.tmpl', data) ?>
             <?js if (data.inherited || data.inherits) { ?>
                 <span class="inherited"><?js= this.linkto(data.inherits, 'inherited') ?></span>
@@ -46,8 +46,10 @@ var self = this;
         <ul><li><?js= this.linkto(data['this'], data['this']) ?></li></ul>
     <?js } ?>
     
+    <?js if (data.stability || kind !== 'class') { ?>
     <?js if (data.params && params.length) { ?>
         <?js= this.partial('params.tmpl', params) ?>
+    <?js } ?>
     <?js } ?>
     
     <?js= this.partial('details.tmpl', data) ?>
