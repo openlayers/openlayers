@@ -183,6 +183,9 @@ li {
   font-size: 0.8em;
   padding: 2px 4px;
 }
+span.type-signature.static {
+  margin-right: 3px;
+}
 .main .subsection-title {
   font-size: 15px;
   margin-top: 30px;
