@@ -5,7 +5,7 @@ var typeSignature = '';
 
 if (data.type && data.type.names) {
     data.type.names.forEach(function (name) {
-        typeSignature += '<span class="type-signature type ' + name.toLowerCase() + '">' + self.linkto(name, self.htmlsafe(name)) + '</span> ';
+        typeSignature += '<span class="type-signature type ' + name.toLowerCase() + '">{' + self.linkto(name, self.htmlsafe(name)) + '}</span> ';
     });
 }
 ?>

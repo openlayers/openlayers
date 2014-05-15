@@ -17,7 +17,7 @@ goog.require('ol.math');
  * @constructor
  * @extends {ol.geom.SimpleGeometry}
  * @param {ol.geom.RawMultiPoint} coordinates Coordinates.
- * @param {ol.geom.GeometryLayout|string=} opt_layout Layout.
+ * @param {ol.geom.GeometryLayout=} opt_layout Layout.
  * @todo api
  */
 ol.geom.MultiPoint = function(coordinates, opt_layout) {

@@ -24,9 +24,15 @@
     var colspan = 2;
     params.forEach(function(param) {
         if (!param) { return; }
+        if (param.type && param.type.names && param.type.names.indexOf('undefined') !== -1) {
+            param.optional = true;
+        }
+        if (param.name.indexOf('var_') == 0) {
+            params.hasAttributes = true;
+            param.variable = true;
+        }
         
         if (param.optional || param.nullable) {
-            ++colspan;
             params.hasAttributes = true;
         }
         
@@ -49,10 +55,6 @@
 		<?js } ?>
 		
 		<th>Type</th>
-		
-		<?js if (params.hasAttributes) {?>
-		<th>Argument</th>
-		<?js } ?>
 		
 		<?js if (params.hasDefault) {?>
 		<th>Default</th>
@@ -80,18 +82,6 @@
                 <?js= self.partial('type.tmpl', param.type.names) ?>
             <?js } ?>
             </td>
-            
-            <?js if (params.hasAttributes) {?>
-                <td class="attributes">
-                <?js if (param.optional) { ?>
-                    &lt;optional><br>
-                <?js } ?>
-                    
-                <?js if (param.nullable) { ?>
-                    &lt;nullable><br>
-                <?js } ?>
-                </td>
-            <?js } ?>
             
             <?js if (params.hasDefault) {?>
                 <td class="default">

@@ -683,7 +683,7 @@ olx.control.ControlOptions.prototype.target;
  *     logo: (boolean|undefined),
  *     logoOptions: (olx.control.LogoOptions|undefined),
  *     zoom: (boolean|undefined),
- *     rotateOptions: (olx.control.RotateOptions|undefined)}}
+ *     rotateOptions: (olx.control.RotateOptions|undefined),
  *     zoomOptions: (olx.control.ZoomOptions|undefined)}}
  * @todo api
  */
@@ -890,7 +890,7 @@ olx.control.ScaleLineOptions.prototype.units;
  *     tipLabel: (string|undefined),
  *     target: (Element|undefined),
  *     autoHide: (boolean|undefined)}}
- * @todo stability experimental
+ * @todo api
  */
 olx.control.RotateOptions;
 
@@ -3909,8 +3909,8 @@ olx.source.TileWMSOptions.prototype.projection;
 
 
 /**
- * The type of the remote WMS server: `mapserver`, `geoserver` or `qgis`. Only
- * needed if `hidpi` is `true`. Default is `undefined`.
+ * The type of the remote WMS server. Currently only used when `hidpi` is
+ * `true`. Default is `undefined`.
  * @type {ol.source.wms.ServerType|string|undefined}
  */
 olx.source.TileWMSOptions.prototype.serverType;

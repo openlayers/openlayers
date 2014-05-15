@@ -68,6 +68,7 @@ ol.DeviceOrientationProperty = {
  *
  * @constructor
  * @extends {ol.Object}
+ * @fires change Triggered when the device orientation changes.
  * @param {olx.DeviceOrientationOptions=} opt_options Options.
  * @todo api
  */

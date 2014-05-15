@@ -46,6 +46,7 @@ ol.geom.GeometryLayout = {
 /**
  * @constructor
  * @extends {ol.Observable}
+ * @fires change Triggered when the geometry changes.
  * @todo api
  */
 ol.geom.Geometry = function() {

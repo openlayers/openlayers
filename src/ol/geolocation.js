@@ -51,6 +51,7 @@ ol.GeolocationProperty = {
  *
  * @constructor
  * @extends {ol.Object}
+ * @fires change Triggered when the position changes.
  * @param {olx.GeolocationOptions=} opt_options Options.
  * @todo api
  */

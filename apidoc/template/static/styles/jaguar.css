@@ -160,17 +160,6 @@ li {
 .main dd, .main .props {
   font-size: 13px;
 }
-.main h4.name span.type-signature {
-  display: inline-block;
-  border-radius: 3px;
-  background-color: gray;
-  color: #fff;
-  font-size: 0.7em;
-  padding: 2px 4px;
-}
-.main h4.name span.type-signature.type a {
-  color: #2f61b1;
-}
 .main h4.name span.type {
   margin-left: 10px;
 }
@@ -180,7 +169,7 @@ li {
   color: #c1c1c1;
   margin-left: 7px;
 }
-.main h4.name span.returnType {
+.main h4.name span.returnType, .main h4.name span.type {
   margin-left: 3px;
   background-color: transparent!important;
   color: gray!important;
@@ -194,25 +183,8 @@ li {
   font-size: 0.8em;
   padding: 2px 4px;
 }
-.main span.number {
-  background-color: #ccc !important;
-  color: #2fa2b1 !important;
-}
-.main span.string {
-  background-color: #ccc !important;
-  color: #2fa2b1 !important;
-}
-.main span.object {
-  background-color: #ccc !important;
-  color: #2fa2b1 !important;
-}
-.main span.array {
-  background-color: #ccc !important;
-  color: #2fa2b1 !important;
-}
-.main span.boolean {
-  background-color: #ccc !important;
-  color: #2fa2b1 !important;
+span.type-signature.static {
+  margin-right: 3px;
 }
 .main .subsection-title {
   font-size: 15px;
@@ -325,7 +297,7 @@ li {
 .main table .description p {
   margin: 0;
 }
-.main table .optional {
+.main table .optional, .main table .repeatable {
   float: left;
   border-radius: 3px;
   background-color: #ddd!important;
@@ -387,4 +359,13 @@ footer {
 .main span.stability.locked {
   background-color: #468847 !important;
   color: #dff0d8;
+}
+.main .readme table p {
+  margin-top: 0;
+}
+.main .readme table p, .main .readme table td {
+  font-size: 14px;
+}
+.main .readme table ul li {
+  margin-bottom: 0;
 }

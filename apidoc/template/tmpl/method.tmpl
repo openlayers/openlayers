@@ -57,18 +57,27 @@ var self = this;
     <h5>Fires:</h5>
     <ul><?js fires.forEach(function(f) {
             var parts = f.split(/#?event:/);
+            var type = parts.pop();
+            var eventClassName = parts[0];
+            parts = type.split(' ');
+            type = parts.shift();
+            var description = parts.length ? parts.join(' ') : '';
+            var eventDoclet = self.find({longname: f})[0];
+            if (eventDoclet && !description && eventDoclet.description) {
+              description = eventDoclet.description.replace(/<[^>]*>/g, '');
+            }
         ?>
-        <li><?js var eventDoclet = self.find({longname: f})[0]; ?>
-            <code><?js= self.linkto(f, parts[1]) ?></code>
-            <?js if (parts[0]) {
-              var eventClass = self.find({longname: parts[0]})[0];
+        <li>
+            <code><?js= self.linkto(f, type) ?></code>
+            <?js if (eventClassName) {
+              var eventClass = self.find({longname: eventClassName})[0];
               if (eventClass) { ?>
                 (<?js= self.linkto(eventClass.longname) ?>)
               <?js } ?>
             <?js } ?>
-            <?js if (eventDoclet && eventDoclet.description) { ?> -
-            <?js= (eventDoclet ? self.partial('stability.tmpl', eventDoclet) : '') ?>
-            <?js= eventDoclet.description.replace(/<[^>]*>/g, '') ?>
+            <?js if (description) { ?> -
+            <?js= self.partial('stability.tmpl', eventDoclet || (data.stability ? data : {stability: 'experimental'})) ?>
+            <?js= description ?>
             <?js } ?>
         </li>
     <?js }); ?></ul>
