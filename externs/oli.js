@@ -49,100 +49,6 @@ oli.DrawEvent.prototype.feature;
 
 
 /** @interface */
-oli.FrameState;
-
-
-/** @type {boolean} */
-oli.FrameState.prototype.animate;
-
-
-/** @type {Object.<string, ol.Attribution>} */
-oli.FrameState.prototype.attributions;
-
-
-/** @type {goog.vec.Mat4.Number} */
-oli.FrameState.prototype.coordinateToPixelMatrix;
-
-
-/** @type {(null|ol.Extent)} */
-oli.FrameState.prototype.extent;
-
-
-/** @type {ol.Coordinate} */
-oli.FrameState.prototype.focus;
-
-
-/** @type {number} */
-oli.FrameState.prototype.index;
-
-
-/** @type {Object.<number, ol.layer.LayerState>} */
-oli.FrameState.prototype.layerStates;
-
-
-/** @type {Array.<ol.layer.LayerState>} */
-oli.FrameState.prototype.layerStatesArray;
-
-
-/** @type {Object.<string, string>} */
-oli.FrameState.prototype.logos;
-
-
-/**
- * @type {number}
- * @todo api
- */
-oli.FrameState.prototype.pixelRatio;
-
-
-/** @type {goog.vec.Mat4.Number} */
-oli.FrameState.prototype.pixelToCoordinateMatrix;
-
-
-/** @type {Array.<ol.PostRenderFunction>} */
-oli.FrameState.prototype.postRenderFunctions;
-
-
-/** @type {ol.Size} */
-oli.FrameState.prototype.size;
-
-
-/** @type {Object.<string, boolean>} */
-oli.FrameState.prototype.skippedFeatureUids_;
-
-
-/** @type {ol.TileQueue} */
-oli.FrameState.prototype.tileQueue;
-
-
-/**
- * @type {number}
- * @todo api
- */
-oli.FrameState.prototype.time;
-
-
-/** @type {Object.<string, Object.<string, ol.TileRange>>} */
-oli.FrameState.prototype.usedTiles;
-
-
-/**
- * @type {oli.View2DState}
- * @todo api
- */
-oli.FrameState.prototype.view2DState;
-
-
-/** @type {Array.<number>} */
-oli.FrameState.prototype.viewHints;
-
-
-/** @type {Object.<string, Object.<string, boolean>>} */
-oli.FrameState.prototype.wantedTiles;
-
-
-
-/** @interface */
 oli.ObjectEvent;
 
 
@@ -174,27 +80,6 @@ oli.MapBrowserEvent.prototype.originalEvent;
  * @todo api
  */
 oli.MapBrowserEvent.prototype.pixel;
-
-
-
-/** @interface */
-oli.View2DState;
-
-
-/** @type {ol.Coordinate} */
-oli.View2DState.prototype.center;
-
-
-/** @type {ol.proj.Projection} */
-oli.View2DState.prototype.projection;
-
-
-/** @type {number} */
-oli.View2DState.prototype.resolution;
-
-
-/** @type {number} */
-oli.View2DState.prototype.rotation;
 
 
 
@@ -251,7 +136,7 @@ oli.render.Event.prototype.context;
 
 
 /**
- * @type {oli.FrameState|undefined}
+ * @type {olx.FrameState|undefined}
  * @todo api
  */
 oli.render.Event.prototype.frameState;

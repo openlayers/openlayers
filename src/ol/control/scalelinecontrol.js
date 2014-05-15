@@ -76,7 +76,7 @@ ol.control.ScaleLine = function(opt_options) {
 
   /**
    * @private
-   * @type {?oli.View2DState}
+   * @type {?olx.View2DState}
    */
   this.view2DState_ = null;
 

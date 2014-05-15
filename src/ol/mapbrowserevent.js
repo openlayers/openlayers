@@ -26,7 +26,7 @@ goog.require('ol.pointer.PointerEventHandler');
  * @param {string} type Event type.
  * @param {ol.Map} map Map.
  * @param {goog.events.BrowserEvent} browserEvent Browser event.
- * @param {?oli.FrameState=} opt_frameState Frame state.
+ * @param {?olx.FrameState=} opt_frameState Frame state.
  */
 ol.MapBrowserEvent = function(type, map, browserEvent, opt_frameState) {
 
@@ -89,7 +89,7 @@ ol.MapBrowserEvent.prototype.stopPropagation = function() {
  * @param {string} type Event type.
  * @param {ol.Map} map Map.
  * @param {ol.pointer.PointerEvent} pointerEvent Pointer event.
- * @param {?oli.FrameState=} opt_frameState Frame state.
+ * @param {?olx.FrameState=} opt_frameState Frame state.
  */
 ol.MapBrowserPointerEvent = function(type, map, pointerEvent, opt_frameState) {
 

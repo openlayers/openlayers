@@ -65,6 +65,44 @@ olx.DeviceOrientationOptions.prototype.tracking;
 
 
 /**
+ * @typedef {{animate: boolean,
+ *     attributions: Object.<string, ol.Attribution>,
+ *     coordinateToPixelMatrix: goog.vec.Mat4.Number,
+ *     extent: (null|ol.Extent),
+ *     focus: ol.Coordinate,
+ *     index: number,
+ *     layerStates: Object.<number, ol.layer.LayerState>,
+ *     layerStatesArray: Array.<ol.layer.LayerState>,
+ *     logos: Object.<string, string>,
+ *     pixelRatio: number,
+ *     pixelToCoordinateMatrix: goog.vec.Mat4.Number,
+ *     postRenderFunctions: Array.<ol.PostRenderFunction>,
+ *     size: ol.Size,
+ *     skippedFeatureUids_: Object.<string, boolean>,
+ *     tileQueue: ol.TileQueue,
+ *     time: number,
+ *     usedTiles: Object.<string, Object.<string, ol.TileRange>>,
+ *     view2DState: olx.View2DState,
+ *     viewHints: Array.<number>,
+ *     wantedTiles: Object.<string, Object.<string, boolean>>}}
+ * @todo api
+ */
+olx.FrameState;
+
+
+/** @type {number} */
+olx.FrameState.prototype.pixelRatio;
+
+
+/** @type {number} */
+olx.FrameState.prototype.time;
+
+
+/** @type {olx.View2DState} */
+olx.FrameState.prototype.view2DState;
+
+
+/**
  * @typedef {{tracking: (boolean|undefined),
  *     trackingOptions: (GeolocationPositionOptions|undefined),
  *     projection: ol.proj.ProjectionLike}}
@@ -492,6 +530,28 @@ olx.View2DOptions.prototype.zoom;
  * @type {number|undefined}
  */
 olx.View2DOptions.prototype.zoomFactor;
+
+
+/**
+ * @typedef {{center: ol.Coordinate,
+ *     projection: ol.proj.Projection,
+ *     resolution: number,
+ *     rotation: number}}
+ * @todo api
+ */
+olx.View2DState;
+
+
+/** @type {ol.Coordinate} */
+olx.View2DState.prototype.center;
+
+
+/** @type {number} */
+olx.View2DState.prototype.resolution;
+
+
+/** @type {number} */
+olx.View2DState.prototype.rotation;
 
 
 /**

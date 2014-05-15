@@ -29,7 +29,7 @@ ol.MapEventType = {
  * @extends {goog.events.Event}
  * @param {string} type Event type.
  * @param {ol.Map} map Map.
- * @param {?oli.FrameState=} opt_frameState Frame state.
+ * @param {?olx.FrameState=} opt_frameState Frame state.
  */
 ol.MapEvent = function(type, map, opt_frameState) {
 
@@ -41,7 +41,7 @@ ol.MapEvent = function(type, map, opt_frameState) {
   this.map = map;
 
   /**
-   * @type {?oli.FrameState}
+   * @type {?olx.FrameState}
    */
   this.frameState = goog.isDef(opt_frameState) ? opt_frameState : null;
 

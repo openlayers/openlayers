@@ -87,7 +87,7 @@ ol.renderer.canvas.Map.prototype.createLayerRenderer = function(layer) {
 
 /**
  * @param {ol.render.EventType} type Event type.
- * @param {oli.FrameState} frameState Frame state.
+ * @param {olx.FrameState} frameState Frame state.
  * @private
  */
 ol.renderer.canvas.Map.prototype.dispatchComposeEvent_ =

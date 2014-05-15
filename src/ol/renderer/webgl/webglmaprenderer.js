@@ -257,7 +257,7 @@ ol.renderer.webgl.Map.prototype.createLayerRenderer = function(layer) {
 
 /**
  * @param {ol.render.EventType} type Event type.
- * @param {oli.FrameState} frameState Frame state.
+ * @param {olx.FrameState} frameState Frame state.
  * @private
  */
 ol.renderer.webgl.Map.prototype.dispatchComposeEvent_ =
@@ -297,7 +297,7 @@ ol.renderer.webgl.Map.prototype.disposeInternal = function() {
 
 /**
  * @param {ol.Map} map Map.
- * @param {oli.FrameState} frameState Frame state.
+ * @param {olx.FrameState} frameState Frame state.
  * @private
  */
 ol.renderer.webgl.Map.prototype.expireCache_ = function(map, frameState) {

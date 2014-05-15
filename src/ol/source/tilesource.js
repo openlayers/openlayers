@@ -27,7 +27,6 @@ ol.source.TileOptions;
  * @constructor
  * @extends {ol.source.Source}
  * @param {ol.source.TileOptions} options Tile source options.
- * @todo api
  */
 ol.source.Tile = function(options) {
 

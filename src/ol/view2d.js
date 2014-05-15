@@ -379,7 +379,7 @@ ol.View2D.prototype.getView2DState = function() {
   var projection = this.getProjection();
   var resolution = /** @type {number} */ (this.getResolution());
   var rotation = this.getRotation();
-  return /** @type {oli.View2DState} */ ({
+  return /** @type {olx.View2DState} */ ({
     center: center.slice(),
     projection: goog.isDef(projection) ? projection : null,
     resolution: resolution,
