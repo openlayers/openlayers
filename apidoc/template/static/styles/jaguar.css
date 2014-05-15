@@ -160,17 +160,6 @@ li {
 .main dd, .main .props {
   font-size: 13px;
 }
-.main h4.name span.type-signature {
-  display: inline-block;
-  border-radius: 3px;
-  background-color: gray;
-  color: #fff;
-  font-size: 0.7em;
-  padding: 2px 4px;
-}
-.main h4.name span.type-signature.type a {
-  color: #2f61b1;
-}
 .main h4.name span.type {
   margin-left: 10px;
 }
@@ -180,7 +169,7 @@ li {
   color: #c1c1c1;
   margin-left: 7px;
 }
-.main h4.name span.returnType {
+.main h4.name span.returnType, .main h4.name span.type {
   margin-left: 3px;
   background-color: transparent!important;
   color: gray!important;
@@ -193,26 +182,6 @@ li {
   vertical-align: top;
   font-size: 0.8em;
   padding: 2px 4px;
-}
-.main span.number {
-  background-color: #ccc !important;
-  color: #2fa2b1 !important;
-}
-.main span.string {
-  background-color: #ccc !important;
-  color: #2fa2b1 !important;
-}
-.main span.object {
-  background-color: #ccc !important;
-  color: #2fa2b1 !important;
-}
-.main span.array {
-  background-color: #ccc !important;
-  color: #2fa2b1 !important;
-}
-.main span.boolean {
-  background-color: #ccc !important;
-  color: #2fa2b1 !important;
 }
 .main .subsection-title {
   font-size: 15px;
