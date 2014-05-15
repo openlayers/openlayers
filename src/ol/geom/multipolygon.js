@@ -24,7 +24,7 @@ goog.require('ol.geom.flat.simplify');
  * @constructor
  * @extends {ol.geom.SimpleGeometry}
  * @param {ol.geom.RawMultiPolygon} coordinates Coordinates.
- * @param {ol.geom.GeometryLayout|string=} opt_layout Layout.
+ * @param {ol.geom.GeometryLayout=} opt_layout Layout.
  * @todo api
  */
 ol.geom.MultiPolygon = function(coordinates, opt_layout) {

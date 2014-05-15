@@ -13,7 +13,7 @@ goog.require('ol.geom.flat.deflate');
  * @extends {ol.geom.SimpleGeometry}
  * @param {ol.geom.RawPoint} center Center.
  * @param {number=} opt_radius Radius.
- * @param {ol.geom.GeometryLayout|string=} opt_layout Layout.
+ * @param {ol.geom.GeometryLayout=} opt_layout Layout.
  * @todo api
  */
 ol.geom.Circle = function(center, opt_radius, opt_layout) {
