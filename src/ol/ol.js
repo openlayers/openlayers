@@ -86,9 +86,9 @@ ol.ENABLE_IMAGE = true;
 /**
  * @define {boolean} Enable named colors.  Enabling named colors adds about 3KB
  *     uncompressed / 1.5KB compressed to the final build size.  Default is
- *     `true`.
+ *     `false`.
  */
-ol.ENABLE_NAMED_COLORS = true;
+ol.ENABLE_NAMED_COLORS = false;
 
 
 /**
