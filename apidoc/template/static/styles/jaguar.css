@@ -294,7 +294,7 @@ li {
 .main table .description p {
   margin: 0;
 }
-.main table .optional {
+.main table .optional, .main table .repeatable {
   float: left;
   border-radius: 3px;
   background-color: #ddd!important;
