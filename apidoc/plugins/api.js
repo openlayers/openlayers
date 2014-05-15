@@ -35,9 +35,6 @@ function hasApiMembers(doclet) {
 }
 
 function includeAugments(doclet) {
-  if (doclet.longname == 'ol.View2D') {
-    debugger
-  }
   var augments = doclet.augments;
   if (augments) {
     var cls;
