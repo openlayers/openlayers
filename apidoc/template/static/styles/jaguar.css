@@ -388,3 +388,12 @@ footer {
   background-color: #468847 !important;
   color: #dff0d8;
 }
+.main .readme table p {
+  margin-top: 0;
+}
+.main .readme table p, .main .readme table td {
+  font-size: 14px;
+}
+.main .readme table ul li {
+  margin-bottom: 0;
+}
