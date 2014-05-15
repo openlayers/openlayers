@@ -29,15 +29,11 @@ exports.handlers = {
             event = doclet.fires[j].replace('event:', '');
             if (events[event]) {
               fires.push.apply(fires, events[event]);            
+            } else {
+              fires.push(doclet.fires[j]);
             }
           }
           doclet.fires = fires;
-        } else {
-          eventClass = classes[doclet.longname.split('#')[0]];
-          if (!eventClass.fires) {
-            eventClass.fires = [];
-          }
-          eventClass.fires.push.apply(eventClass.fires, doclet.fires);
         }
       }
     }
