@@ -21,7 +21,16 @@ goog.require('ol.interaction.PinchZoom');
  * different order for interactions, you will need to create your own
  * {@link ol.interaction.Interaction} instances and insert them into a
  * {@link ol.Collection} in the order you want before creating your
- * {@link ol.Map} instance.
+ * {@link ol.Map} instance. The default set of interactions, in sequence, is:
+ * * {@link ol.interaction.DragRotate}
+ * * {@link ol.interaction.DoubleClickZoom}
+ * * {@link ol.interaction.DragPan}
+ * * {@link ol.interaction.PinchRotate}
+ * * {@link ol.interaction.PinchZoom}
+ * * {@link ol.interaction.KeyboardPan}
+ * * {@link ol.interaction.KeyboardZoom}
+ * * {@link ol.interaction.MouseWheelZoom}
+ * * {@link ol.interaction.DragZoom}
  * @param {olx.interaction.DefaultsOptions=} opt_options Defaults options.
  * @return {ol.Collection} A collection of interactions to be used with
  * the ol.Map constructor's interactions option.
