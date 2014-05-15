@@ -218,7 +218,8 @@ ol.pointer.TouchSource.prototype.touchToPointer_ =
  */
 ol.pointer.TouchSource.prototype.processTouches_ =
     function(inEvent, inFunction) {
-  var touches = inEvent.getBrowserEvent().changedTouches.slice();
+  var touches = Array.prototype.slice.call(
+      inEvent.getBrowserEvent().changedTouches);
   var count = touches.length;
   function preventDefault() {
     inEvent.preventDefault();
