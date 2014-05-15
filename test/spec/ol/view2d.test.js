@@ -282,6 +282,70 @@ describe('ol.View2D', function() {
     });
   });
 
+  describe('#getZoom() - constrained', function() {
+    it('returns correct zoom levels', function() {
+      var view = new ol.View2D({
+        minZoom: 10,
+        maxZoom: 20
+      });
+
+      view.setZoom(5);
+      expect(view.getZoom()).to.be(10);
+
+      view.setZoom(10);
+      expect(view.getZoom()).to.be(10);
+
+      view.setZoom(15);
+      expect(view.getZoom()).to.be(15);
+
+      view.setZoom(20);
+      expect(view.getZoom()).to.be(20);
+
+      view.setZoom(25);
+      expect(view.getZoom()).to.be(20);
+    });
+  });
+
+  describe('#getZoom() - custom ol.DEFAULT_MIN_ZOOM', function() {
+    var defaultMinZoom = ol.DEFAULT_MIN_ZOOM;
+
+    afterEach(function() {
+      ol.DEFAULT_MIN_ZOOM = defaultMinZoom;
+    });
+
+    it('respects custom ol.DEFAULT_MIN_ZOOM', function() {
+      ol.DEFAULT_MIN_ZOOM = 2;
+
+      var view = new ol.View2D();
+
+      view.setZoom(1);
+      expect(view.getZoom()).to.be(2);
+
+      view.setZoom(2);
+      expect(view.getZoom()).to.be(2);
+
+      view.setZoom(3);
+      expect(view.getZoom()).to.be(3);
+    });
+  });
+
+  describe('#getZoom() - overspecified', function() {
+
+    it('gives maxResolution precedence over minZoom', function() {
+
+      var view = new ol.View2D({
+        maxResolution: 100,
+        minZoom: 2 // this should get ignored
+      });
+
+      view.setResolution(100);
+      expect(view.getZoom()).to.be(0);
+
+      view.setZoom(0);
+      expect(view.getResolution()).to.be(100);
+    });
+  });
+
   describe('fitGeometry', function() {
     var view;
     beforeEach(function() {

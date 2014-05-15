@@ -116,6 +116,12 @@ ol.View2D = function(opt_options) {
    */
   this.minResolution_ = resolutionConstraintInfo.minResolution;
 
+  /**
+   * @private
+   * @type {number}
+   */
+  this.minZoom_ = resolutionConstraintInfo.minZoom;
+
   var centerConstraint = ol.View2D.createCenterConstraint_(options);
   var resolutionConstraint = resolutionConstraintInfo.constraint;
   var rotationConstraint = ol.View2D.createRotationConstraint_(options);
@@ -131,7 +137,7 @@ ol.View2D = function(opt_options) {
     values[ol.View2DProperty.RESOLUTION] = options.resolution;
   } else if (goog.isDef(options.zoom)) {
     values[ol.View2DProperty.RESOLUTION] = this.constrainResolution(
-        this.maxResolution_, options.zoom);
+        this.maxResolution_, options.zoom - this.minZoom_);
   }
   values[ol.View2DProperty.ROTATION] =
       goog.isDef(options.rotation) ? options.rotation : 0;
@@ -396,7 +402,7 @@ ol.View2D.prototype.getView3D = function() {
  * @todo api
  */
 ol.View2D.prototype.getZoom = function() {
-  var zoom;
+  var offset;
   var resolution = this.getResolution();
 
   if (goog.isDef(resolution)) {
@@ -404,14 +410,14 @@ ol.View2D.prototype.getZoom = function() {
     do {
       res = this.constrainResolution(this.maxResolution_, z);
       if (res == resolution) {
-        zoom = z;
+        offset = z;
         break;
       }
       ++z;
     } while (res > this.minResolution_);
   }
 
-  return zoom;
+  return goog.isDef(offset) ? this.minZoom_ + offset : offset;
 };
 
 
@@ -621,7 +627,8 @@ goog.exportProperty(
  * @todo api
  */
 ol.View2D.prototype.setZoom = function(zoom) {
-  var resolution = this.constrainResolution(this.maxResolution_, zoom, 0);
+  var resolution = this.constrainResolution(
+      this.maxResolution_, zoom - this.minZoom_, 0);
   this.setResolution(resolution);
 };
 
@@ -650,6 +657,21 @@ ol.View2D.createResolutionConstraint_ = function(options) {
   var resolutionConstraint;
   var maxResolution;
   var minResolution;
+
+  // TODO: move these to be ol constants
+  // see https://github.com/openlayers/ol3/issues/2076
+  var defaultMaxZoom = 28;
+  var defaultZoomFactor = 2;
+
+  var minZoom = goog.isDef(options.minZoom) ?
+      options.minZoom : ol.DEFAULT_MIN_ZOOM;
+
+  var maxZoom = goog.isDef(options.maxZoom) ?
+      options.maxZoom : defaultMaxZoom;
+
+  var zoomFactor = goog.isDef(options.zoomFactor) ?
+      options.zoomFactor : defaultZoomFactor;
+
   if (goog.isDef(options.resolutions)) {
     var resolutions = options.resolutions;
     maxResolution = resolutions[0];
@@ -657,12 +679,6 @@ ol.View2D.createResolutionConstraint_ = function(options) {
     resolutionConstraint = ol.ResolutionConstraint.createSnapToResolutions(
         resolutions);
   } else {
-    // TODO: move these to be ol constants
-    // see https://github.com/openlayers/ol3/issues/2076
-    var defaultMaxZoom = 28;
-    var defaultMinZoom = 0;
-    var defaultZoomFactor = 2;
-
     // calculate the default min and max resolution
     var projection = options.projection;
     var extent = ol.proj.createProjection(projection, 'EPSG:3857').getExtent();
@@ -673,19 +689,10 @@ ol.View2D.createResolutionConstraint_ = function(options) {
         Math.max(ol.extent.getWidth(extent), ol.extent.getHeight(extent));
 
     var defaultMaxResolution = size / ol.DEFAULT_TILE_SIZE / Math.pow(
-        defaultZoomFactor, defaultMinZoom);
+        defaultZoomFactor, ol.DEFAULT_MIN_ZOOM);
 
     var defaultMinResolution = defaultMaxResolution / Math.pow(
-        defaultZoomFactor, defaultMaxZoom - defaultMinZoom);
-
-    var minZoom = goog.isDef(options.minZoom) ?
-        options.minZoom : defaultMinZoom;
-
-    var maxZoom = goog.isDef(options.maxZoom) ?
-        options.maxZoom : defaultMaxZoom;
-
-    var zoomFactor = goog.isDef(options.zoomFactor) ?
-        options.zoomFactor : defaultZoomFactor;
+        defaultZoomFactor, defaultMaxZoom - ol.DEFAULT_MIN_ZOOM);
 
     // user provided maxResolution takes precedence
     maxResolution = options.maxResolution;
@@ -718,7 +725,7 @@ ol.View2D.createResolutionConstraint_ = function(options) {
         zoomFactor, maxResolution, maxZoom - minZoom);
   }
   return {constraint: resolutionConstraint, maxResolution: maxResolution,
-    minResolution: minResolution};
+    minResolution: minResolution, minZoom: minZoom};
 };
 
 
