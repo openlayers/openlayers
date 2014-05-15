@@ -144,7 +144,7 @@ ol.MapProperty = {
  *       }),
  *       layers: [
  *         new ol.layer.Tile({
- *           source: new ol.source.MapQuestOSM()
+ *           source: new ol.source.MapQuest({layer: 'osm'})
  *         })
  *       ],
  *       target: 'map'
