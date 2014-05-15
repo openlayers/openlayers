@@ -657,30 +657,65 @@ ol.View2D.createResolutionConstraint_ = function(options) {
     resolutionConstraint = ol.ResolutionConstraint.createSnapToResolutions(
         resolutions);
   } else {
+    // TODO: move these to be ol constants
+    // see https://github.com/openlayers/ol3/issues/2076
+    var defaultMaxZoom = 28;
+    var defaultMinZoom = 0;
+    var defaultZoomFactor = 2;
+
+    // calculate the default min and max resolution
+    var projection = options.projection;
+    var extent = ol.proj.createProjection(projection, 'EPSG:3857').getExtent();
+    var size = goog.isNull(extent) ?
+        // use an extent that can fit the whole world if need be
+        360 * ol.proj.METERS_PER_UNIT[ol.proj.Units.DEGREES] /
+            ol.proj.METERS_PER_UNIT[projection.getUnits()] :
+        Math.max(ol.extent.getWidth(extent), ol.extent.getHeight(extent));
+
+    var defaultMaxResolution = size / ol.DEFAULT_TILE_SIZE / Math.pow(
+        defaultZoomFactor, defaultMinZoom);
+
+    var defaultMinResolution = defaultMaxResolution / Math.pow(
+        defaultZoomFactor, defaultMaxZoom - defaultMinZoom);
+
+    var minZoom = goog.isDef(options.minZoom) ?
+        options.minZoom : defaultMinZoom;
+
+    var maxZoom = goog.isDef(options.maxZoom) ?
+        options.maxZoom : defaultMaxZoom;
+
+    var zoomFactor = goog.isDef(options.zoomFactor) ?
+        options.zoomFactor : defaultZoomFactor;
+
+    // user provided maxResolution takes precedence
     maxResolution = options.maxResolution;
-    if (!goog.isDef(maxResolution)) {
-      var projection = options.projection;
-      var projectionExtent = ol.proj.createProjection(projection, 'EPSG:3857')
-          .getExtent();
-      var size = goog.isNull(projectionExtent) ?
-          // use an extent that can fit the whole world if need be
-          360 * ol.proj.METERS_PER_UNIT[ol.proj.Units.DEGREES] /
-              ol.proj.METERS_PER_UNIT[projection.getUnits()] :
-          Math.max(projectionExtent[2] - projectionExtent[0],
-              projectionExtent[3] - projectionExtent[1]);
-      maxResolution = size / ol.DEFAULT_TILE_SIZE;
+    if (goog.isDef(maxResolution)) {
+      minZoom = 0;
+    } else {
+      maxResolution = defaultMaxResolution / Math.pow(zoomFactor, minZoom);
     }
-    var maxZoom = options.maxZoom;
-    if (!goog.isDef(maxZoom)) {
-      maxZoom = 28;
+
+    // user provided minResolution takes precedence
+    minResolution = options.minResolution;
+    if (!goog.isDef(minResolution)) {
+      if (goog.isDef(options.maxZoom)) {
+        if (goog.isDef(options.maxResolution)) {
+          minResolution = maxResolution / Math.pow(zoomFactor, maxZoom);
+        } else {
+          minResolution = defaultMaxResolution / Math.pow(zoomFactor, maxZoom);
+        }
+      } else {
+        minResolution = defaultMinResolution;
+      }
     }
-    var zoomFactor = options.zoomFactor;
-    if (!goog.isDef(zoomFactor)) {
-      zoomFactor = 2;
-    }
-    minResolution = maxResolution / Math.pow(zoomFactor, maxZoom);
+
+    // given discrete zoom levels, minResolution may be different than provided
+    maxZoom = minZoom + Math.floor(
+        Math.log(maxResolution / minResolution) / Math.log(zoomFactor));
+    minResolution = maxResolution / Math.pow(zoomFactor, maxZoom - minZoom);
+
     resolutionConstraint = ol.ResolutionConstraint.createSnapToPower(
-        zoomFactor, maxResolution, maxZoom);
+        zoomFactor, maxResolution, maxZoom - minZoom);
   }
   return {constraint: resolutionConstraint, maxResolution: maxResolution,
     minResolution: minResolution};
