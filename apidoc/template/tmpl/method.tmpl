@@ -75,8 +75,8 @@ var self = this;
                 (<?js= self.linkto(eventClass.longname) ?>)
               <?js } ?>
             <?js } ?>
-            <?js if (description) { ?> -
             <?js= self.partial('stability.tmpl', eventDoclet || (data.stability ? data : {stability: 'experimental'})) ?>
+            <?js if (description) { ?> -
             <?js= description ?>
             <?js } ?>
         </li>
