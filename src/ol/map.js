@@ -158,7 +158,8 @@ ol.MapProperty = {
  * @param {olx.MapOptions} options Map options.
  * @fires ol.MapBrowserEvent
  * @fires ol.MapEvent
- * @fires ol.render.Event
+ * @fires ol.render.Event#postcompose
+ * @fires ol.render.Event#precompose
  * @todo api
  */
 ol.Map = function(options) {

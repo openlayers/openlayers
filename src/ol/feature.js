@@ -18,6 +18,7 @@ goog.require('ol.style.Style');
 /**
  * @constructor
  * @extends {ol.Object}
+ * @fires change Triggered when the geometry or style of the feature changes.
  * @param {ol.geom.Geometry|Object.<string, *>=} opt_geometryOrValues
  *     Values or geometry.
  * @todo api

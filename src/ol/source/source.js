@@ -35,6 +35,7 @@ ol.source.SourceOptions;
 /**
  * @constructor
  * @extends {ol.Observable}
+ * @fires change Triggered when the state of the source changes.
  * @param {ol.source.SourceOptions} options Source options.
  */
 ol.source.Source = function(options) {

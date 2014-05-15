@@ -13,6 +13,7 @@ goog.require('ol.source.Source');
  * @constructor
  * @extends {ol.layer.Base}
  * @fires ol.render.Event
+ * @fires change Triggered when the state of the source changes.
  * @param {olx.layer.LayerOptions} options Layer options.
  * @todo api
  */

@@ -31,8 +31,7 @@ goog.inherits(ol.Observable, goog.events.EventTarget);
 
 
 /**
- * Dispatches a `change` event. Register a listener for this event to get
- * notified of changes.
+ * Dispatches a `change` event.
  * @fires change
  * @todo api
  */
