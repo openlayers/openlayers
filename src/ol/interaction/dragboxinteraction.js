@@ -35,7 +35,7 @@ ol.DragBoxEventType = {
   BOXSTART: 'boxstart',
   /**
    * Triggered upon drag box end.
-   * @event ol.DragBoxEvent#boxstart
+   * @event ol.DragBoxEvent#boxend
    * @todo api
    */
   BOXEND: 'boxend'
