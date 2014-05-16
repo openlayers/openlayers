@@ -12,40 +12,23 @@ goog.require('ol.proj');
 /**
  * @constructor
  * @extends {ol.format.TextFeature}
+ * @param {olx.format.PolylineOptions=} opt_options
+ *     Optional configuration object.
+ * @todo api
  */
-ol.format.Polyline = function() {
+ol.format.Polyline = function(opt_options) {
+
+  var options = goog.isDef(opt_options) ? opt_options : {};
+
   goog.base(this);
+
+  /**
+   * @private
+   * @type {number}
+   */
+  this.factor_ = goog.isDef(options.factor) ? options.factor : 1e5;
 };
 goog.inherits(ol.format.Polyline, ol.format.TextFeature);
-
-
-/**
- * Encode a list of coordinates in a flat array and return an encoded string
- *
- * Attention: This function will modify the passed array!
- *
- * @param {Array.<number>} flatPoints A flat array of coordinates.
- * @param {number=} opt_dimension The dimension of the coordinates in the array.
- * @return {string} The encoded string.
- */
-ol.format.Polyline.encodeFlatCoordinates = function(flatPoints, opt_dimension) {
-  var dimension = goog.isDef(opt_dimension) ? opt_dimension : 2;
-  return ol.format.Polyline.encodeDeltas(flatPoints, dimension);
-};
-
-
-/**
- * Decode a list of coordinates from an encoded string into a flat array
- *
- * @param {string} encoded An encoded string.
- * @param {number=} opt_dimension The dimension of the coordinates in the
- *     encoded string.
- * @return {Array.<number>} A flat array of coordinates.
- */
-ol.format.Polyline.decodeFlatCoordinates = function(encoded, opt_dimension) {
-  var dimension = goog.isDef(opt_dimension) ? opt_dimension : 2;
-  return ol.format.Polyline.decodeDeltas(encoded, dimension);
-};
 
 
 /**
@@ -54,24 +37,25 @@ ol.format.Polyline.decodeFlatCoordinates = function(encoded, opt_dimension) {
  * Attention: This function will modify the passed array!
  *
  * @param {Array.<number>} numbers A list of n-dimensional points.
- * @param {number} dimension The dimension of the points in the list.
+ * @param {number} stride The number of dimension of the points in the list.
  * @param {number=} opt_factor The factor by which the numbers will be
  *     multiplied. The remaining decimal places will get rounded away.
  *     Default is `1e5`.
  * @return {string} The encoded string.
+ * @todo api
  */
-ol.format.Polyline.encodeDeltas = function(numbers, dimension, opt_factor) {
+ol.format.Polyline.encodeDeltas = function(numbers, stride, opt_factor) {
   var factor = goog.isDef(opt_factor) ? opt_factor : 1e5;
   var d;
 
-  var lastNumbers = new Array(dimension);
-  for (d = 0; d < dimension; ++d) {
+  var lastNumbers = new Array(stride);
+  for (d = 0; d < stride; ++d) {
     lastNumbers[d] = 0;
   }
 
   var i, ii;
   for (i = 0, ii = numbers.length; i < ii;) {
-    for (d = 0; d < dimension; ++d, ++i) {
+    for (d = 0; d < stride; ++d, ++i) {
       var num = numbers[i];
       var delta = num - lastNumbers[d];
       lastNumbers[d] = num;
@@ -88,18 +72,20 @@ ol.format.Polyline.encodeDeltas = function(numbers, dimension, opt_factor) {
  * Decode a list of n-dimensional points from an encoded string
  *
  * @param {string} encoded An encoded string.
- * @param {number} dimension The dimension of the points in the encoded string.
+ * @param {number} stride The number of dimension of the points in the
+ *     encoded string.
  * @param {number=} opt_factor The factor by which the resulting numbers will
  *     be divided. Default is `1e5`.
  * @return {Array.<number>} A list of n-dimensional points.
+ * @todo api
  */
-ol.format.Polyline.decodeDeltas = function(encoded, dimension, opt_factor) {
+ol.format.Polyline.decodeDeltas = function(encoded, stride, opt_factor) {
   var factor = goog.isDef(opt_factor) ? opt_factor : 1e5;
   var d;
 
   /** @type {Array.<number>} */
-  var lastNumbers = new Array(dimension);
-  for (d = 0; d < dimension; ++d) {
+  var lastNumbers = new Array(stride);
+  for (d = 0; d < stride; ++d) {
     lastNumbers[d] = 0;
   }
 
@@ -107,7 +93,7 @@ ol.format.Polyline.decodeDeltas = function(encoded, dimension, opt_factor) {
 
   var i, ii;
   for (i = 0, ii = numbers.length; i < ii;) {
-    for (d = 0; d < dimension; ++d, ++i) {
+    for (d = 0; d < stride; ++d, ++i) {
       lastNumbers[d] += numbers[i];
 
       numbers[i] = lastNumbers[d];
@@ -128,10 +114,10 @@ ol.format.Polyline.decodeDeltas = function(encoded, dimension, opt_factor) {
  *     multiplied. The remaining decimal places will get rounded away.
  *     Default is `1e5`.
  * @return {string} The encoded string.
+ * @todo api
  */
 ol.format.Polyline.encodeFloats = function(numbers, opt_factor) {
   var factor = goog.isDef(opt_factor) ? opt_factor : 1e5;
-
   var i, ii;
   for (i = 0, ii = numbers.length; i < ii; ++i) {
     numbers[i] = Math.round(numbers[i] * factor);
@@ -148,6 +134,7 @@ ol.format.Polyline.encodeFloats = function(numbers, opt_factor) {
  * @param {number=} opt_factor The factor by which the result will be divided.
  *     Default is `1e5`.
  * @return {Array.<number>} A list of floating point numbers.
+ * @todo api
  */
 ol.format.Polyline.decodeFloats = function(encoded, opt_factor) {
   var factor = goog.isDef(opt_factor) ? opt_factor : 1e5;
@@ -257,12 +244,35 @@ ol.format.Polyline.encodeUnsignedInteger = function(num) {
 
 
 /**
+ * Read the feature from the Polyline source.
+ *
+ * @function
+ * @param {ArrayBuffer|Document|Node|Object|string} source Source.
+ * @return {ol.Feature} Feature.
+ * @todo api
+ */
+ol.format.Polyline.prototype.readFeature;
+
+
+/**
  * @inheritDoc
  */
 ol.format.Polyline.prototype.readFeatureFromText = function(text) {
   var geometry = this.readGeometryFromText(text);
   return new ol.Feature(geometry);
 };
+
+
+/**
+ * Read the feature from the source. As Polyline sources contain a single
+ * feature, this will return the feature in an array.
+ *
+ * @function
+ * @param {ArrayBuffer|Document|Node|Object|string} source Source.
+ * @return {Array.<ol.Feature>} Features.
+ * @todo api
+ */
+ol.format.Polyline.prototype.readFeatures;
 
 
 /**
@@ -275,14 +285,36 @@ ol.format.Polyline.prototype.readFeaturesFromText = function(text) {
 
 
 /**
+ * Read the geometry from the source.
+ *
+ * @function
+ * @param {ArrayBuffer|Document|Node|Object|string} source Source.
+ * @return {ol.geom.Geometry} Geometry.
+ * @todo api
+ */
+ol.format.Polyline.prototype.readGeometry;
+
+
+/**
  * @inheritDoc
  */
 ol.format.Polyline.prototype.readGeometryFromText = function(text) {
-  var flatCoordinates = ol.format.Polyline.decodeFlatCoordinates(text, 2);
+  var flatCoordinates = ol.format.Polyline.decodeDeltas(text, 2, this.factor_);
   var coordinates = ol.geom.flat.inflate.coordinates(
       flatCoordinates, 0, flatCoordinates.length, 2);
   return new ol.geom.LineString(coordinates);
 };
+
+
+/**
+ * Read the projection from a Polyline source.
+ *
+ * @function
+ * @param {ArrayBuffer|Document|Node|Object|string} source Source.
+ * @return {ol.proj.Projection} Projection.
+ * @todo api
+ */
+ol.format.Polyline.prototype.readProjection;
 
 
 /**
@@ -317,11 +349,22 @@ ol.format.Polyline.prototype.writeFeaturesText = function(features) {
 
 
 /**
+ * Write a single geometry in Polyline format.
+ *
+ * @function
+ * @param {ol.geom.Geometry} geometry Geometry.
+ * @return {string} Geometry.
+ * @todo api
+ */
+ol.format.Polyline.prototype.writeGeometry;
+
+
+/**
  * @inheritDoc
  */
 ol.format.Polyline.prototype.writeGeometryText = function(geometry) {
   goog.asserts.assertInstanceof(geometry, ol.geom.LineString);
   var flatCoordinates = geometry.getFlatCoordinates();
   var stride = geometry.getStride();
-  return ol.format.Polyline.encodeFlatCoordinates(flatCoordinates, stride);
+  return ol.format.Polyline.encodeDeltas(flatCoordinates, stride, this.factor_);
 };
