@@ -16,9 +16,17 @@ ol.BUFFER_REPLACE_UNUSED_ENTRIES_WITH_NANS = goog.DEBUG;
 
 
 /**
+ * TODO: rename this to something having to do with tile grids
+ * see https://github.com/openlayers/ol3/issues/2076
  * @define {number} Default maximum zoom for default tile grids.
  */
 ol.DEFAULT_MAX_ZOOM = 42;
+
+
+/**
+ * @define {number} Default min zoom level for the map view.  Default is `0`.
+ */
+ol.DEFAULT_MIN_ZOOM = 0;
 
 
 /**

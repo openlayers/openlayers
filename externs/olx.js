@@ -351,7 +351,9 @@ olx.ProjectionOptions.prototype.global;
  *     constrainRotation: (boolean|number|undefined),
  *     enableRotation: (boolean|undefined),
  *     extent: (ol.Extent|undefined),
+ *     minResolution: (number|undefined),
  *     maxResolution: (number|undefined),
+ *     minZoom: (number|undefined),
  *     maxZoom: (number|undefined),
  *     projection: ol.proj.ProjectionLike,
  *     resolution: (number|undefined),
@@ -400,21 +402,46 @@ olx.View2DOptions.prototype.extent;
 
 /**
  * The maximum resolution used to determine the resolution constraint. It is
- * used together with `maxZoom` and `zoomFactor`. If unspecified it is
- * calculated in such a way that the projection's validity extent fits in a
- * 256x256 px tile. If the projection is Spherical Mercator (the default) then
- * `maxResolution` defaults to `40075016.68557849 / 256 = 156543.03392804097`.
+ * used together with `minResolution` (or `maxZoom`) and `zoomFactor`. If
+ * unspecified it is calculated in such a way that the projection's validity
+ * extent fits in a 256x256 px tile. If the projection is Spherical Mercator
+ * (the default) then `maxResolution` defaults to `40075016.68557849 / 256 =
+ * 156543.03392804097`.
  * @type {number|undefined}
  */
 olx.View2DOptions.prototype.maxResolution;
 
 
 /**
+ * The minimum resolution used to determine the resolution constraint.  It is
+ * used together with `maxResolution` (or `minZoom`) and `zoomFactor`.  If
+ * unspecified it is calculated assuming 29 zoom levels (with a factor of 2).
+ * If the projection is Spherical Mercator (the default) then `minResolution`
+ * defaults to `40075016.68557849 / 256 / Math.pow(2, 28) =
+ * 0.0005831682455839253`.
+ * @type {number|undefined}
+ */
+olx.View2DOptions.prototype.minResolution;
+
+
+/**
  * The maximum zoom level used to determine the resolution constraint. It is
- * used together with `maxResolution` and `zoomFactor`. Default is `28`.
+ * used together with `minZoom` (or `maxResolution`) and `zoomFactor`. Default
+ * is `28`.  Note that if `minResolution` is also provided, it is given
+ * precedence over `maxZoom`.
  * @type {number|undefined}
  */
 olx.View2DOptions.prototype.maxZoom;
+
+
+/**
+ * The minimum zoom level used to determine the resolution constraint. It is
+ * used together with `maxZoom` (or `minResolution`) and `zoomFactor`. Default
+ * is `0`. Note that if `maxResolution` is also provided, it is given
+ * precedence over `minZoom`.
+ * @type {number|undefined}
+ */
+olx.View2DOptions.prototype.minZoom;
 
 
 /**
@@ -436,7 +463,8 @@ olx.View2DOptions.prototype.resolution;
 
 /**
  * Resolutions to determine the resolution constraint. If set the
- * `maxResolution`, `maxZoom` and `zoomFactor` options are ignored.
+ * `maxResolution`, `minResolution`, `minZoom`, `maxZoom`, and `zoomFactor`
+ * options are ignored.
  * @type {Array.<number>|undefined}
  */
 olx.View2DOptions.prototype.resolutions;
@@ -460,8 +488,7 @@ olx.View2DOptions.prototype.zoom;
 
 
 /**
- * The zoom factor used to determine the resolution constraint. Used together
- * with `maxResolution` and `maxZoom`. Default is `2`.
+ * The zoom factor used to determine the resolution constraint.  Default is `2`.
  * @type {number|undefined}
  */
 olx.View2DOptions.prototype.zoomFactor;

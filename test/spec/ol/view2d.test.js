@@ -58,6 +58,185 @@ describe('ol.View2D', function() {
         });
       });
 
+      describe('with zoom related options', function() {
+
+        var defaultMaxRes = 156543.03392804097;
+        function getConstraint(options) {
+          return ol.View2D.createResolutionConstraint_(options).constraint;
+        }
+
+        it('works with only maxZoom', function() {
+          var maxZoom = 10;
+          var constraint = getConstraint({
+            maxZoom: maxZoom
+          });
+
+          expect(constraint(defaultMaxRes, 0, 0)).to.roughlyEqual(
+              defaultMaxRes, 1e-9);
+
+          expect(constraint(0, 0, 0)).to.roughlyEqual(
+              defaultMaxRes / Math.pow(2, maxZoom), 1e-9);
+        });
+
+        it('works with only minZoom', function() {
+          var minZoom = 5;
+          var constraint = getConstraint({
+            minZoom: minZoom
+          });
+
+          expect(constraint(defaultMaxRes, 0, 0)).to.roughlyEqual(
+              defaultMaxRes / Math.pow(2, minZoom), 1e-9);
+
+          expect(constraint(0, 0, 0)).to.roughlyEqual(
+              defaultMaxRes / Math.pow(2, 28), 1e-9);
+        });
+
+        it('works with maxZoom and minZoom', function() {
+          var minZoom = 2;
+          var maxZoom = 11;
+          var constraint = getConstraint({
+            minZoom: minZoom,
+            maxZoom: maxZoom
+          });
+
+          expect(constraint(defaultMaxRes, 0, 0)).to.roughlyEqual(
+              defaultMaxRes / Math.pow(2, minZoom), 1e-9);
+
+          expect(constraint(0, 0, 0)).to.roughlyEqual(
+              defaultMaxRes / Math.pow(2, maxZoom), 1e-9);
+        });
+
+        it('works with maxZoom, minZoom, and zoomFactor', function() {
+          var minZoom = 4;
+          var maxZoom = 8;
+          var zoomFactor = 3;
+          var constraint = getConstraint({
+            minZoom: minZoom,
+            maxZoom: maxZoom,
+            zoomFactor: zoomFactor
+          });
+
+          expect(constraint(defaultMaxRes, 0, 0)).to.roughlyEqual(
+              defaultMaxRes / Math.pow(zoomFactor, minZoom), 1e-9);
+
+          expect(constraint(0, 0, 0)).to.roughlyEqual(
+              defaultMaxRes / Math.pow(zoomFactor, maxZoom), 1e-9);
+        });
+
+      });
+
+      describe('with resolution related options', function() {
+
+        var defaultMaxRes = 156543.03392804097;
+        function getConstraint(options) {
+          return ol.View2D.createResolutionConstraint_(options).constraint;
+        }
+
+        it('works with only maxResolution', function() {
+          var maxResolution = 10e6;
+          var constraint = getConstraint({
+            maxResolution: maxResolution
+          });
+
+          expect(constraint(maxResolution * 3, 0, 0)).to.roughlyEqual(
+              maxResolution, 1e-9);
+
+          var minResolution = constraint(0, 0, 0);
+          var defaultMinRes = defaultMaxRes / Math.pow(2, 28);
+
+          expect(minResolution).to.be.greaterThan(defaultMinRes);
+          expect(minResolution / defaultMinRes).to.be.lessThan(2);
+        });
+
+        it('works with only minResolution', function() {
+          var minResolution = 100;
+          var constraint = getConstraint({
+            minResolution: minResolution
+          });
+
+          expect(constraint(defaultMaxRes, 0, 0)).to.roughlyEqual(
+              defaultMaxRes, 1e-9);
+
+          var constrainedMinRes = constraint(0, 0, 0);
+          expect(constrainedMinRes).to.be.greaterThan(minResolution);
+          expect(constrainedMinRes / minResolution).to.be.lessThan(2);
+        });
+
+        it('works with minResolution and maxResolution', function() {
+          var constraint = getConstraint({
+            maxResolution: 500,
+            minResolution: 100
+          });
+
+          expect(constraint(600, 0, 0)).to.be(500);
+          expect(constraint(500, 0, 0)).to.be(500);
+          expect(constraint(400, 0, 0)).to.be(500);
+          expect(constraint(300, 0, 0)).to.be(250);
+          expect(constraint(200, 0, 0)).to.be(250);
+          expect(constraint(100, 0, 0)).to.be(125);
+          expect(constraint(0, 0, 0)).to.be(125);
+        });
+
+        it('accepts minResolution, maxResolution, and zoomFactor', function() {
+          var constraint = getConstraint({
+            maxResolution: 500,
+            minResolution: 1,
+            zoomFactor: 10
+          });
+
+          expect(constraint(1000, 0, 0)).to.be(500);
+          expect(constraint(500, 0, 0)).to.be(500);
+          expect(constraint(100, 0, 0)).to.be(50);
+          expect(constraint(50, 0, 0)).to.be(50);
+          expect(constraint(10, 0, 0)).to.be(5);
+          expect(constraint(1, 0, 0)).to.be(5);
+        });
+
+      });
+
+      describe('overspecified options (prefers resolution)', function() {
+
+        var defaultMaxRes = 156543.03392804097;
+        function getConstraint(options) {
+          return ol.View2D.createResolutionConstraint_(options).constraint;
+        }
+
+        it('respects maxResolution over minZoom', function() {
+          var maxResolution = 10e6;
+          var minZoom = 8;
+          var constraint = getConstraint({
+            maxResolution: maxResolution,
+            minZoom: minZoom
+          });
+
+          expect(constraint(maxResolution * 3, 0, 0)).to.roughlyEqual(
+              maxResolution, 1e-9);
+
+          var minResolution = constraint(0, 0, 0);
+          var defaultMinRes = defaultMaxRes / Math.pow(2, 28);
+
+          expect(minResolution).to.be.greaterThan(defaultMinRes);
+          expect(minResolution / defaultMinRes).to.be.lessThan(2);
+        });
+
+        it('respects minResolution over maxZoom', function() {
+          var minResolution = 100;
+          var maxZoom = 50;
+          var constraint = getConstraint({
+            minResolution: minResolution,
+            maxZoom: maxZoom
+          });
+
+          expect(constraint(defaultMaxRes, 0, 0)).to.roughlyEqual(
+              defaultMaxRes, 1e-9);
+
+          var constrainedMinRes = constraint(0, 0, 0);
+          expect(constrainedMinRes).to.be.greaterThan(minResolution);
+          expect(constrainedMinRes / minResolution).to.be.lessThan(2);
+        });
+
+      });
+
     });
 
     describe('create rotation constraint', function() {
@@ -100,6 +279,70 @@ describe('ol.View2D', function() {
 
       view.setResolution(15);
       expect(view.getZoom()).to.be(undefined);
+    });
+  });
+
+  describe('#getZoom() - constrained', function() {
+    it('returns correct zoom levels', function() {
+      var view = new ol.View2D({
+        minZoom: 10,
+        maxZoom: 20
+      });
+
+      view.setZoom(5);
+      expect(view.getZoom()).to.be(10);
+
+      view.setZoom(10);
+      expect(view.getZoom()).to.be(10);
+
+      view.setZoom(15);
+      expect(view.getZoom()).to.be(15);
+
+      view.setZoom(20);
+      expect(view.getZoom()).to.be(20);
+
+      view.setZoom(25);
+      expect(view.getZoom()).to.be(20);
+    });
+  });
+
+  describe('#getZoom() - custom ol.DEFAULT_MIN_ZOOM', function() {
+    var defaultMinZoom = ol.DEFAULT_MIN_ZOOM;
+
+    afterEach(function() {
+      ol.DEFAULT_MIN_ZOOM = defaultMinZoom;
+    });
+
+    it('respects custom ol.DEFAULT_MIN_ZOOM', function() {
+      ol.DEFAULT_MIN_ZOOM = 2;
+
+      var view = new ol.View2D();
+
+      view.setZoom(1);
+      expect(view.getZoom()).to.be(2);
+
+      view.setZoom(2);
+      expect(view.getZoom()).to.be(2);
+
+      view.setZoom(3);
+      expect(view.getZoom()).to.be(3);
+    });
+  });
+
+  describe('#getZoom() - overspecified', function() {
+
+    it('gives maxResolution precedence over minZoom', function() {
+
+      var view = new ol.View2D({
+        maxResolution: 100,
+        minZoom: 2 // this should get ignored
+      });
+
+      view.setResolution(100);
+      expect(view.getZoom()).to.be(0);
+
+      view.setZoom(0);
+      expect(view.getResolution()).to.be(100);
     });
   });
 
