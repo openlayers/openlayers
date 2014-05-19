@@ -139,6 +139,7 @@ ol.interaction.DragBox.prototype.getGeometry = function() {
 
 /**
  * To be overriden by child classes.
+ * @param {ol.MapBrowserEvent} mapBrowserEvent Map browser event.
  * @protected
  */
 ol.interaction.DragBox.prototype.onBoxEnd = goog.nullFunction;
