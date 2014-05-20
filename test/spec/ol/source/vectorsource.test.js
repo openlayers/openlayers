@@ -363,6 +363,21 @@ describe('ol.source.Vector', function() {
 
   });
 
+  describe('the undefined feature id index', function() {
+    var source;
+    beforeEach(function() {
+      source = new ol.source.Vector();
+    });
+
+    it('disallows adding the same feature twice', function() {
+      var feature = new ol.Feature();
+      source.addFeature(feature);
+      expect(function() {
+        source.addFeature(feature);
+      }).to.throwException();
+    });
+  });
+
 });
 
 

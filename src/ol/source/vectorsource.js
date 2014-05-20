@@ -128,15 +128,18 @@ ol.source.Vector.prototype.addFeatureInternal = function(feature) {
     var extent = geometry.getExtent();
     this.rBush_.insert(extent, feature);
   } else {
-    this.nullGeometryFeatures_[goog.getUid(feature).toString()] = feature;
+    this.nullGeometryFeatures_[featureKey] = feature;
   }
   var id = feature.getId();
   if (goog.isDef(id)) {
     var sid = id.toString();
-    goog.asserts.assert(!(goog.isDef(this.idIndex_[sid])));
+    goog.asserts.assert(!(sid in this.idIndex_),
+        'Feature with same id already added to the source: ' + id);
     this.idIndex_[sid] = feature;
   } else {
-    this.undefIdIndex_[goog.getUid(feature).toString()] = feature;
+    goog.asserts.assert(!(featureKey in this.undefIdIndex_),
+        'Feature already added to the source');
+    this.undefIdIndex_[featureKey] = feature;
   }
   this.dispatchEvent(
       new ol.source.VectorEvent(ol.source.VectorEventType.ADDFEATURE, feature));
