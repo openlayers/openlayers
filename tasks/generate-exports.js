@@ -19,7 +19,7 @@ var build = path.join(__dirname, '..', 'build');
  * @param {function(Error, Array.<string>)} callback Called with the list of
  *     patterns.
  */
-function getPatterns(configPath, callback) {
+function getConfig(configPath, callback) {
   if (configPath) {
     fs.readFile(configPath, function(err, data) {
       if (err) {
@@ -38,11 +38,17 @@ function getPatterns(configPath, callback) {
         callback(new Error('Expected an exports array, got: ' + patterns));
         return;
       }
-      callback(null, patterns);
+      var namespace = obj.namespace;
+      if (namespace && typeof namespace !== 'string') {
+        callback(new Error('Expected an namespace string, got: ' +
+            namespace));
+        return;
+      }
+      callback(null, patterns, namespace);
     });
   } else {
     process.nextTick(function() {
-      callback(null, ['*']);
+      callback(null, ['*'], undefined);
     });
   }
 }
@@ -117,12 +123,15 @@ function filterSymbols(patterns, symbols, callback) {
 /**
  * Generate goog code to export a named symbol.
  * @param {string} name Symbol name.
+ * @param {string|undefined} namespace Target object for exported
+ *     symbols.
  * @return {string} Export code.
  */
-function formatSymbolExport(name) {
+function formatSymbolExport(name, namespace) {
   return 'goog.exportSymbol(\n' +
       '    \'' + name + '\',\n' +
-      '    ' + name + ');\n';
+      '    ' + name +
+      (namespace ? ',\n    ' + namespace : '') +');\n';
 }
 
 
@@ -145,9 +154,10 @@ function formatPropertyExport(name) {
 /**
  * Generate export code given a list symbol names.
  * @param {Array.<Object>} symbols List of symbols.
+ * @param {string|undefined} namespace Target object for exported symbols.
  * @return {string} Export code.
  */
-function generateExports(symbols) {
+function generateExports(symbols, namespace) {
   var blocks = [];
   var requires = {};
   symbols.forEach(function(symbol) {
@@ -158,7 +168,7 @@ function generateExports(symbols) {
     if (name.indexOf('#') > 0) {
       blocks.push(formatPropertyExport(name));
     } else {
-      blocks.push(formatSymbolExport(name));
+      blocks.push(formatSymbolExport(name, namespace));
     }
   });
   blocks.unshift('\n');
@@ -173,17 +183,18 @@ function generateExports(symbols) {
  * Generate the exports code.
  *
  * @param {Array.<string>} patterns List of symbol names or patterns.
+ * @param {string|undefined} namespace Target object for exported symbols.
  * @param {function(Error, string)} callback Called with the exports code or any
  *     error generating it.
  */
-function main(patterns, callback) {
+function main(patterns, namespace, callback) {
   async.waterfall([
     getSymbols.bind(null, patterns),
     filterSymbols,
     function(symbols, done) {
       var code, err;
       try {
-        code = generateExports(symbols);
+        code = generateExports(symbols, namespace);
       } catch (e) {
         err = e;
       }
@@ -212,7 +223,7 @@ if (require.main === module) {
   }).parse();
 
   async.waterfall([
-    getPatterns.bind(null, options.config),
+    getConfig.bind(null, options.config),
     main,
     fse.outputFile.bind(fse, options.output)
   ], function(err) {
