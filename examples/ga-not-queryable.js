@@ -3,10 +3,6 @@ goog.require('ga.layer');
 goog.require('ol.View2D');
 goog.require('ol.layer.Vector');
 goog.require('ol.source.KML');
-goog.require('ol.style.Circle');
-goog.require('ol.style.Fill');
-goog.require('ol.style.Stroke');
-goog.require('ol.style.Style');
 
 
 // Create a GeoAdmin Map
