@@ -155,7 +155,7 @@ ol.geom.LineString.prototype.getFlatMidpoint = function() {
   if (this.flatMidpointRevision_ != this.getRevision()) {
     this.flatMidpoint_ = ol.geom.flat.interpolate.lineString(
         this.flatCoordinates, 0, this.flatCoordinates.length, this.stride,
-        0.5, this.flatMidpoint_);
+        0.5);
     this.flatMidpointRevision_ = this.getRevision();
   }
   return this.flatMidpoint_;
