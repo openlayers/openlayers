@@ -62,6 +62,16 @@ To generate a build named `ol.min.js` with the `build.json`, you would run this:
 
     node tasks/build.js build.json ol.min.js
 
+To export the `ol` symbol to somewhere else than the global namespace, a `namespace` option is available. This can e.g. be useful for creating an ol3 AMD module, by simply providing a build configuration that contains
+```js
+{
+  "namespace": "n",
+  "compile": {
+    "output_wrapper": "define('ol',function(){var n={};%output%return n.ol;});"
+  }
+}
+```
+
 
 ## `generate-exports.js`
 
