@@ -51,7 +51,7 @@ goog.require('ga.Lang');
  *
  * @constructor
  * @extends {ol.Map}
- * @param {olx.MapOptions} options Map options.
+ * @param {gax.MapOptions} options Map options.
  */
 ga.Map = function(options) {
 
