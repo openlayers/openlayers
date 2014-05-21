@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Transaction xmlns="http://www.opengis.net/wfs" service="WFS" version="1.1.0"
+    xsi:schemaLocation="http://www.opengis.net/wfs http://schemas.opengis.net/wfs/1.1.0/wfs.xsd"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <Update typeName="foo:FAULTS" xmlns:foo="http://foo">
+        <Property>
+            <Name>the_geom</Name>
+            <Value><MultiLineString xmlns="http://www.opengis.net/gml" srsName="EPSG:900913">
+                    <lineStringMember>
+                        <LineString srsName="EPSG:900913">
+                            <posList>-12279454.47665902 6741885.67968707 -12064207.805007964
+                                6732101.740066567 -11941908.559751684 6595126.585379533
+                                -12240318.718177011 6507071.128795006 -12416429.631346056
+                                6604910.52500003</posList>
+                        </LineString>
+                    </lineStringMember>
+                </MultiLineString></Value>
+        </Property>
+        <Filter xmlns="http://www.opengis.net/ogc">
+            <FeatureId fid="FAULTS.4455"/>
+        </Filter>
+    </Update>
+</Transaction>
