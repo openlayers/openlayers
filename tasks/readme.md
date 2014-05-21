@@ -25,6 +25,8 @@ Build configuration files are JSON files that are used to determine what should 
 
   * **src** - `Array.<string>` Optional array of [path patterns](https://github.com/isaacs/minimatch/blob/master/README.md) for source files.  This defaults to `["src/**/*.js"]` which will match all `.js` files in the `src` directory.  To include a different set of source files, provide an array of path patterns.  Note that these patterns are `/` delimited even on Windows.
 
+  * **namespace** - `string` Optional namespace for exporting the `ol` object.  By default, `ol` is assigned to the global object.
+
   * **jvm** - `Array.<string>` Optional array of [command line options](https://code.google.com/p/closure-compiler/wiki/FAQ#What_are_the_recommended_Java_VM_command-line_options?) for the compiler.  By default, the Compiler is run with `['-server', '-XX:+TieredCompilation']`.
 
 The build task generates a list of source files sorted in dependency order and passes these to the compiler.  This takes the place of the `--js` options that you would use when calling the compiler directly.  If you want to add additional source files, typically you would use the `src` array described above.  This works with sources that have `goog.require` and/or `goog.provide` calls (which are used to sort dependencies).  If you want to force the inclusion of files that don't use `goog.require` or `goog.provide`, you can use the `js` property of the `compile` object.  Paths in the `js` array will be passed to the compiler **after** all other source files.
@@ -62,12 +64,15 @@ To generate a build named `ol.min.js` with the `build.json`, you would run this:
 
     node tasks/build.js build.json ol.min.js
 
-To export the `ol` symbol to somewhere else than the global namespace, a `namespace` option is available. This can e.g. be useful for creating an ol3 AMD module, by simply providing a build configuration that contains
+To export the `ol` symbol to somewhere else than the global namespace, a `namespace` option is available. This can e.g. be useful for creating an ol3 AMD module, by simply providing a build configuration like the following:
+
 ```js
 {
-  "namespace": "n",
+  "exports": ["*"],
+  "namespace": "AMD",
   "compile": {
-    "output_wrapper": "define('ol',function(){var n={};%output%return n.ol;});"
+    "compilation_level": "ADVANCED_OPTIMIZATIONS",
+    "output_wrapper": "define('ol',function(){var AMD={};%output%return AMD.ol;});"
   }
 }
 ```
