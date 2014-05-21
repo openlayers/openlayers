@@ -33,6 +33,9 @@ ol.CoordinateArray;
 
 
 /**
+ * Add `delta` to `coordinate`. `coordinate` is modified in place and returned
+ * by the function.
+ *
  * @param {ol.Coordinate} coordinate Coordinate.
  * @param {ol.Coordinate} delta Delta.
  * @return {ol.Coordinate} Coordinate.
@@ -156,8 +159,11 @@ ol.coordinate.equals = function(coordinate1, coordinate2) {
 
 
 /**
+ * Rotate `coordinate` by `angle`. `coordinate` is modified in place and
+ * returned by the function.
+ *
  * @param {ol.Coordinate} coordinate Coordinate.
- * @param {number} angle Angle.
+ * @param {number} angle Angle in radian.
  * @return {ol.Coordinate} Coordinate.
  * @todo api
  */
@@ -173,18 +179,24 @@ ol.coordinate.rotate = function(coordinate, angle) {
 
 
 /**
+ * Scale `coordinate` by `scale`. `coordinate` is modified in place and returned
+ * by the function.
+ *
  * @param {ol.Coordinate} coordinate Coordinate.
- * @param {number} s Scale.
+ * @param {number} scale Scale factor.
  * @return {ol.Coordinate} Coordinate.
  */
-ol.coordinate.scale = function(coordinate, s) {
-  coordinate[0] *= s;
-  coordinate[1] *= s;
+ol.coordinate.scale = function(coordinate, scale) {
+  coordinate[0] *= scale;
+  coordinate[1] *= scale;
   return coordinate;
 };
 
 
 /**
+ * Subtract `delta` to `coordinate`. `coordinate` is modified in place and
+ * returned by the function.
+ *
  * @param {ol.Coordinate} coordinate Coordinate.
  * @param {ol.Coordinate} delta Delta.
  * @return {ol.Coordinate} Coordinate.
