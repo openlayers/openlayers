@@ -205,6 +205,14 @@ describe('ol.Feature', function() {
       point2.setCoordinates([0, 2]);
     });
 
+    it('can use a different geometry name', function() {
+      var feature = new ol.Feature();
+      feature.setGeometryName('foo');
+      var point = new ol.geom.Point([10, 20]);
+      feature.setGeometry(point);
+      expect(feature.getGeometry()).to.be(point);
+    });
+
   });
 
   describe('#getStyleFunction()', function() {
