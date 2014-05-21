@@ -8,7 +8,6 @@ goog.provide('ol.Object');
 goog.provide('ol.ObjectEvent');
 goog.provide('ol.ObjectEventType');
 
-goog.require('goog.array');
 goog.require('goog.events');
 goog.require('goog.events.Event');
 goog.require('goog.functions');

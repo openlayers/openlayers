@@ -1,8 +1,6 @@
 goog.provide('ol.style.Image');
 goog.provide('ol.style.ImageState');
 
-goog.require('goog.array');
-
 
 /**
  * @enum {number}

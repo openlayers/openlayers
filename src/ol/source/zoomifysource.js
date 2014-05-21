@@ -1,6 +1,5 @@
 goog.provide('ol.source.Zoomify');
 
-goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('ol');
 goog.require('ol.ImageTile');

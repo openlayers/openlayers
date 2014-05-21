@@ -3,7 +3,6 @@
 goog.provide('ol.interaction.DragAndDrop');
 goog.provide('ol.interaction.DragAndDropEvent');
 
-goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('goog.events');
 goog.require('goog.events.Event');

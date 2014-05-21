@@ -2,7 +2,6 @@
 
 goog.provide('ol.control.Attribution');
 
-goog.require('goog.array');
 goog.require('goog.dom');
 goog.require('goog.dom.TagName');
 goog.require('goog.object');
