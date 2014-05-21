@@ -41,6 +41,14 @@ ol.format.GeoJSON = function(opt_options) {
   this.defaultProjection_ = ol.proj.get(options.defaultProjection ?
       options.defaultProjection : 'EPSG:4326');
 
+
+  /**
+   * Name of the geometry attribute for features.
+   * @type {string|undefined}
+   * @private
+   */
+  this.geometryName_ = options.geometryName;
+
 };
 goog.inherits(ol.format.GeoJSON, ol.format.JSONFeature);
 
@@ -346,7 +354,11 @@ ol.format.GeoJSON.prototype.readFeatureFromObject = function(object) {
   var geoJSONFeature = /** @type {GeoJSONFeature} */ (object);
   goog.asserts.assert(geoJSONFeature.type == 'Feature');
   var geometry = ol.format.GeoJSON.readGeometry_(geoJSONFeature.geometry);
-  var feature = new ol.Feature(geometry);
+  var feature = new ol.Feature();
+  if (goog.isDef(this.geometryName_)) {
+    feature.setGeometryName(this.geometryName_);
+  }
+  feature.setGeometry(geometry);
   if (goog.isDef(geoJSONFeature.id)) {
     feature.setId(geoJSONFeature.id);
   }
