@@ -186,7 +186,7 @@ function build(config, paths, callback) {
 function main(config, callback) {
   async.waterfall([
     assertValidConfig.bind(null, config),
-    generateExports.bind(null, config.exports, config.namespace),
+    generateExports.bind(null, config),
     getDependencies.bind(null, config.src),
     build.bind(null, config)
   ], callback);

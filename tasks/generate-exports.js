@@ -11,13 +11,12 @@ var build = path.join(__dirname, '..', 'build');
 
 
 /**
- * Get a list of patterns from the config file.  If configPath is provided
+ * Get the configuration from the config file.  If configPath is provided
  * it is assumed to be a JSON file with an 'exports' member that is a list
  * of symbol names or patterns.
  *
  * @param {string} configPath Path to config file.
- * @param {function(Error, Array.<string>)} callback Called with the list of
- *     patterns.
+ * @param {function(Error, Object)} callback Called with config object.
  */
 function getConfig(configPath, callback) {
   if (configPath) {
@@ -44,11 +43,11 @@ function getConfig(configPath, callback) {
             namespace));
         return;
       }
-      callback(null, patterns, namespace);
+      callback(null, obj);
     });
   } else {
     process.nextTick(function() {
-      callback(null, ['*'], undefined);
+      callback(null, {exports: ['*']});
     });
   }
 }
@@ -131,7 +130,7 @@ function formatSymbolExport(name, namespace) {
   return 'goog.exportSymbol(\n' +
       '    \'' + name + '\',\n' +
       '    ' + name +
-      (namespace ? ',\n    ' + namespace : '') +');\n';
+      (namespace ? ',\n    ' + namespace : '') + ');\n';
 }
 
 
@@ -182,19 +181,18 @@ function generateExports(symbols, namespace) {
 /**
  * Generate the exports code.
  *
- * @param {Array.<string>} patterns List of symbol names or patterns.
- * @param {string|undefined} namespace Target object for exported symbols.
+ * @param {Object} config Config object with exports and (optional) namespace.
  * @param {function(Error, string)} callback Called with the exports code or any
  *     error generating it.
  */
-function main(patterns, namespace, callback) {
+function main(config, callback) {
   async.waterfall([
-    getSymbols.bind(null, patterns),
+    getSymbols.bind(null, config.exports),
     filterSymbols,
     function(symbols, done) {
       var code, err;
       try {
-        code = generateExports(symbols, namespace);
+        code = generateExports(symbols, config.namespace);
       } catch (e) {
         err = e;
       }
