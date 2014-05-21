@@ -11,15 +11,14 @@ var build = path.join(__dirname, '..', 'build');
 
 
 /**
- * Get a list of patterns from the config file.  If configPath is provided
+ * Get the configuration from the config file.  If configPath is provided
  * it is assumed to be a JSON file with an 'exports' member that is a list
  * of symbol names or patterns.
  *
  * @param {string} configPath Path to config file.
- * @param {function(Error, Array.<string>)} callback Called with the list of
- *     patterns.
+ * @param {function(Error, Object)} callback Called with config object.
  */
-function getPatterns(configPath, callback) {
+function getConfig(configPath, callback) {
   if (configPath) {
     fs.readFile(configPath, function(err, data) {
       if (err) {
@@ -38,11 +37,17 @@ function getPatterns(configPath, callback) {
         callback(new Error('Expected an exports array, got: ' + patterns));
         return;
       }
-      callback(null, patterns);
+      var namespace = obj.namespace;
+      if (namespace && typeof namespace !== 'string') {
+        callback(new Error('Expected an namespace string, got: ' +
+            namespace));
+        return;
+      }
+      callback(null, obj);
     });
   } else {
     process.nextTick(function() {
-      callback(null, ['*']);
+      callback(null, {exports: ['*']});
     });
   }
 }
@@ -117,12 +122,15 @@ function filterSymbols(patterns, symbols, callback) {
 /**
  * Generate goog code to export a named symbol.
  * @param {string} name Symbol name.
+ * @param {string|undefined} namespace Target object for exported
+ *     symbols.
  * @return {string} Export code.
  */
-function formatSymbolExport(name) {
+function formatSymbolExport(name, namespace) {
   return 'goog.exportSymbol(\n' +
       '    \'' + name + '\',\n' +
-      '    ' + name + ');\n';
+      '    ' + name +
+      (namespace ? ',\n    ' + namespace : '') + ');\n';
 }
 
 
@@ -145,9 +153,10 @@ function formatPropertyExport(name) {
 /**
  * Generate export code given a list symbol names.
  * @param {Array.<Object>} symbols List of symbols.
+ * @param {string|undefined} namespace Target object for exported symbols.
  * @return {string} Export code.
  */
-function generateExports(symbols) {
+function generateExports(symbols, namespace) {
   var blocks = [];
   var requires = {};
   symbols.forEach(function(symbol) {
@@ -158,7 +167,7 @@ function generateExports(symbols) {
     if (name.indexOf('#') > 0) {
       blocks.push(formatPropertyExport(name));
     } else {
-      blocks.push(formatSymbolExport(name));
+      blocks.push(formatSymbolExport(name, namespace));
     }
   });
   blocks.unshift('\n');
@@ -172,18 +181,18 @@ function generateExports(symbols) {
 /**
  * Generate the exports code.
  *
- * @param {Array.<string>} patterns List of symbol names or patterns.
+ * @param {Object} config Config object with exports and (optional) namespace.
  * @param {function(Error, string)} callback Called with the exports code or any
  *     error generating it.
  */
-function main(patterns, callback) {
+function main(config, callback) {
   async.waterfall([
-    getSymbols.bind(null, patterns),
+    getSymbols.bind(null, config.exports),
     filterSymbols,
     function(symbols, done) {
       var code, err;
       try {
-        code = generateExports(symbols);
+        code = generateExports(symbols, config.namespace);
       } catch (e) {
         err = e;
       }
@@ -212,7 +221,7 @@ if (require.main === module) {
   }).parse();
 
   async.waterfall([
-    getPatterns.bind(null, options.config),
+    getConfig.bind(null, options.config),
     main,
     fse.outputFile.bind(fse, options.output)
   ], function(err) {

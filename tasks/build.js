@@ -27,6 +27,10 @@ function assertValidConfig(config, callback) {
       callback(new Error('Config missing "exports" array'));
       return;
     }
+    if (config.namespace && typeof config.namespace !== 'string') {
+      callback(new Error('Config "namespace" must be a string'));
+      return;
+    }
     if (config.compile && typeof config.compile !== 'object') {
       callback(new Error('Config "compile" must be an object'));
       return;
@@ -182,7 +186,7 @@ function build(config, paths, callback) {
 function main(config, callback) {
   async.waterfall([
     assertValidConfig.bind(null, config),
-    generateExports.bind(null, config.exports),
+    generateExports.bind(null, config),
     getDependencies.bind(null, config.src),
     build.bind(null, config)
   ], callback);
