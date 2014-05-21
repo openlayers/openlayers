@@ -58,7 +58,7 @@ describe('ol.Feature', function() {
 
   });
 
-  describe('#getAttributes()', function() {
+  describe('#getProperties()', function() {
 
     it('returns an object with all attributes', function() {
       var point = new ol.geom.Point([15, 30]);
@@ -78,6 +78,12 @@ describe('ol.Feature', function() {
       expect(attributes.ten).to.be(10);
     });
 
+    it('is empty by default', function() {
+      var feature = new ol.Feature();
+      var properties = feature.getProperties();
+      expect(goog.object.isEmpty(properties)).to.be(true);
+    });
+
   });
 
 
@@ -85,8 +91,19 @@ describe('ol.Feature', function() {
 
     var point = new ol.geom.Point([15, 30]);
 
-    it('returns null for no geometry', function() {
+    it('returns undefined for unset geometry', function() {
       var feature = new ol.Feature();
+      expect(feature.getGeometry()).to.be(undefined);
+    });
+
+    it('returns null for null geometry (constructor)', function() {
+      var feature = new ol.Feature(null);
+      expect(feature.getGeometry()).to.be(null);
+    });
+
+    it('returns null for null geometry (setGeometry())', function() {
+      var feature = new ol.Feature();
+      feature.setGeometry(null);
       expect(feature.getGeometry()).to.be(null);
     });
 
