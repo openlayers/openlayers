@@ -1,6 +1,5 @@
 goog.provide('ol.geom.MultiLineString');
 
-goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('ol.array');
 goog.require('ol.extent');

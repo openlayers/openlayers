@@ -1,6 +1,5 @@
 goog.provide('ol.layer.Vector');
 
-goog.require('goog.array');
 goog.require('goog.object');
 goog.require('ol.feature');
 goog.require('ol.layer.Layer');

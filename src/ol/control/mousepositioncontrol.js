@@ -3,7 +3,6 @@
 
 goog.provide('ol.control.MousePosition');
 
-goog.require('goog.array');
 goog.require('goog.dom');
 goog.require('goog.dom.TagName');
 goog.require('goog.events');

@@ -10,7 +10,6 @@
 
 goog.provide('ol.Sphere');
 
-goog.require('goog.array');
 goog.require('goog.math');
 
 
