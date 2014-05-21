@@ -1104,7 +1104,8 @@ olx.control.ZoomToExtentOptions.prototype.extent;
 
 
 /**
- * @typedef {{defaultProjection: ol.proj.ProjectionLike}}
+ * @typedef {{defaultProjection: ol.proj.ProjectionLike,
+ *     geometryName: (string|undefined)}}
  * @todo api
  */
 olx.format.GeoJSONOptions;
@@ -1115,6 +1116,13 @@ olx.format.GeoJSONOptions;
  * @type {ol.proj.ProjectionLike}
  */
 olx.format.GeoJSONOptions.prototype.defaultProjection;
+
+
+/**
+ * Geometry name to use when creating features.
+ * @type {string|undefined}
+ */
+olx.format.GeoJSONOptions.prototype.geometryName;
 
 
 /**
