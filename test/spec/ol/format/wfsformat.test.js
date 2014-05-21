@@ -225,6 +225,37 @@ describe('ol.format.WFS', function() {
   describe('when writing out a Transaction request', function() {
     var text;
     before(function(done) {
+      afterLoadText('spec/ol/format/wfs/TransactionUpdate.xml', function(xml) {
+        text = xml;
+        done();
+      });
+    });
+
+    it('creates the correct update', function() {
+      var format = new ol.format.WFS();
+      var updateFeature = new ol.Feature();
+      updateFeature.setGeometryName('the_geom');
+      updateFeature.setGeometry(new ol.geom.MultiLineString([[
+        [-12279454.47665902, 6741885.67968707],
+        [-12064207.805007964, 6732101.740066567],
+        [-11941908.559751684, 6595126.585379533],
+        [-12240318.718177011, 6507071.128795006],
+        [-12416429.631346056, 6604910.52500003]
+      ]]));
+      updateFeature.setId('FAULTS.4455');
+      var serialized = format.writeTransaction(null, [updateFeature], null, {
+        featureNS: 'http://foo',
+        featureType: 'FAULTS',
+        featurePrefix: 'foo',
+        gmlOptions: {srsName: 'EPSG:900913'}
+      });
+      expect(serialized).to.xmleql(ol.xml.load(text));
+    });
+  });
+
+  describe('when writing out a Transaction request', function() {
+    var text;
+    before(function(done) {
       afterLoadText('spec/ol/format/wfs/TransactionMulti.xml', function(xml) {
         text = xml;
         done();

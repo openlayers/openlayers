@@ -48,6 +48,13 @@ goog.inherits(ol.format.WFS, ol.format.XMLFeature);
 
 
 /**
+ * @const
+ * @type {string}
+ */
+ol.format.WFS.featurePrefix = 'feature';
+
+
+/**
  * @typedef {{numberOfFeatures: number,
  *            bounds: ol.Extent}}
  */
@@ -355,7 +362,11 @@ ol.format.WFS.writeDelete_ = function(node, feature, objectStack) {
   goog.asserts.assert(goog.isObject(context));
   var featureType = goog.object.get(context, 'featureType');
   var featurePrefix = goog.object.get(context, 'featurePrefix');
+  featurePrefix = goog.isDef(featurePrefix) ? featurePrefix :
+      ol.format.WFS.featurePrefix;
+  var featureNS = goog.object.get(context, 'featureNS');
   node.setAttribute('typeName', featurePrefix + ':' + featureType);
+  node.setAttribute('xmlns:' + featurePrefix, featureNS);
   var fid = feature.getId();
   if (goog.isDef(fid)) {
     ol.format.WFS.writeOgcFidFilter_(node, fid, objectStack);
@@ -374,7 +385,11 @@ ol.format.WFS.writeUpdate_ = function(node, feature, objectStack) {
   goog.asserts.assert(goog.isObject(context));
   var featureType = goog.object.get(context, 'featureType');
   var featurePrefix = goog.object.get(context, 'featurePrefix');
+  featurePrefix = goog.isDef(featurePrefix) ? featurePrefix :
+      ol.format.WFS.featurePrefix;
+  var featureNS = goog.object.get(context, 'featureNS');
   node.setAttribute('typeName', featurePrefix + ':' + featureType);
+  node.setAttribute('xmlns:' + featurePrefix, featureNS);
   var fid = feature.getId();
   if (goog.isDef(fid)) {
     var keys = feature.getKeys();
@@ -385,10 +400,11 @@ ol.format.WFS.writeUpdate_ = function(node, feature, objectStack) {
         values.push({name: keys[i], value: value});
       }
     }
-    ol.xml.pushSerializeAndPop({node: node},
-        ol.format.WFS.TRANSACTION_SERIALIZERS_,
-        ol.xml.makeSimpleNodeFactory('Property'), values,
-        objectStack);
+    ol.xml.pushSerializeAndPop({node: node, srsName:
+          goog.object.get(context, 'srsName')},
+    ol.format.WFS.TRANSACTION_SERIALIZERS_,
+    ol.xml.makeSimpleNodeFactory('Property'), values,
+    objectStack);
     ol.format.WFS.writeOgcFidFilter_(node, fid, objectStack);
   }
 };
