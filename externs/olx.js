@@ -1840,7 +1840,7 @@ olx.interaction.PinchZoomOptions.prototype.duration;
 /**
  * @typedef {{addCondition: (ol.events.ConditionType|undefined),
  *     condition: (ol.events.ConditionType|undefined),
- *     layers: (Array.<ol.layer.Layer>|function(ol.layer.Layer): boolean|undefined),
+ *     filter: (function(ol.Feature, ol.layer.Layer): boolean|undefined),
  *     style: (ol.style.Style|Array.<ol.style.Style>|ol.feature.StyleFunction|undefined),
  *     removeCondition: (ol.events.ConditionType|undefined),
  *     toggleCondition: (ol.events.ConditionType|undefined)}}
@@ -1868,14 +1868,13 @@ olx.interaction.SelectOptions.prototype.condition;
 
 
 /**
- * A list of layers from which features should be
- * selected. Alternatively, a filter function can be provided. The
- * function will be called for each layer in the map and should return
- * `true` for layers that you want to be selectable. If the option is
- * absent, all visible layers will be considered selectable.
- * @type {Array.<ol.layer.Layer>|function(ol.layer.Layer): boolean|undefined}
+ * A filter function that receive a feature and it's layer; the function
+ * returns whether the feature will be added to the selection.
+ * If the option is absent, all features from all visible layers will be
+ * considered selectable.
+ * @type {function(ol.Feature, ol.layer.Layer): boolean|undefined}
  */
-olx.interaction.SelectOptions.prototype.layers;
+olx.interaction.SelectOptions.prototype.filter;
 
 
 /**

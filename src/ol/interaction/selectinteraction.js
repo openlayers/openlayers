@@ -54,30 +54,12 @@ ol.interaction.Select = function(opt_options) {
   this.toggleCondition_ = goog.isDef(options.toggleCondition) ?
       options.toggleCondition : ol.events.condition.shiftKeyOnly;
 
-  var layerFilter;
-  if (goog.isDef(options.layers)) {
-    if (goog.isFunction(options.layers)) {
-      layerFilter = options.layers;
-    } else {
-      var layers = options.layers;
-      layerFilter =
-          /**
-           * @param {ol.layer.Layer} layer Layer.
-           * @return {boolean} Include.
-           */
-          function(layer) {
-        return goog.array.contains(layers, layer);
-      };
-    }
-  } else {
-    layerFilter = goog.functions.TRUE;
-  }
-
   /**
    * @private
-   * @type {function(ol.layer.Layer): boolean}
+   * @type {function(ol.Feature, ol.layer.Layer): boolean}
    */
-  this.layerFilter_ = layerFilter;
+  this.filter_ = goog.isDef(options.filter) ?
+      options.filter : goog.functions.TRUE;
 
   /**
    * @private
@@ -131,8 +113,8 @@ ol.interaction.Select.prototype.handleMapBrowserEvent =
          * @param {ol.layer.Layer} layer Layer.
          */
         function(feature, layer) {
-          return feature;
-        }, undefined, this.layerFilter_);
+          return this.filter_(feature, layer) ? feature : undefined;
+        }, this);
     if (goog.isDef(feature) &&
         features.getLength() == 1 &&
         features.getAt(0) == feature) {
@@ -153,17 +135,19 @@ ol.interaction.Select.prototype.handleMapBrowserEvent =
          * @param {ol.layer.Layer} layer Layer.
          */
         function(feature, layer) {
-          var index = goog.array.indexOf(features.getArray(), feature);
-          if (index == -1) {
-            if (add || toggle) {
-              features.push(feature);
-            }
-          } else {
-            if (remove || toggle) {
-              features.removeAt(index);
+          if (this.filter_(feature, layer)) {
+            var index = goog.array.indexOf(features.getArray(), feature);
+            if (index == -1) {
+              if (add || toggle) {
+                features.push(feature);
+              }
+            } else {
+              if (remove || toggle) {
+                features.removeAt(index);
+              }
             }
           }
-        }, undefined, this.layerFilter_);
+        }, this);
   }
   return false;
 };
