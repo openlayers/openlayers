@@ -404,6 +404,7 @@ ol.source.VectorEvent = function(type, opt_feature) {
   /**
    * The feature being added or removed.
    * @type {ol.Feature|undefined}
+   * @todo api
    */
   this.feature = opt_feature;
 

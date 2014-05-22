@@ -59,6 +59,7 @@ ol.DragBoxEvent = function(type, coordinate) {
    * The coordinate of the drag event.
    * @const
    * @type {ol.Coordinate}
+   * @todo api
    */
   this.coordinate = coordinate;
 

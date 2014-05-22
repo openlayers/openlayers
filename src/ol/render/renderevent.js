@@ -47,11 +47,13 @@ ol.render.Event = function(
 
   /**
    * @type {ol.render.IVectorContext|undefined}
+   * @todo api
    */
   this.vectorContext = opt_vectorContext;
 
   /**
    * @type {olx.FrameState|undefined}
+   * @todo api
    */
   this.frameState = opt_frameState;
 
@@ -59,6 +61,7 @@ ol.render.Event = function(
    * Canvas context. Only available when a Canvas renderer is used,
    * null otherwise.
    * @type {CanvasRenderingContext2D|null|undefined}
+   * @todo api
    */
   this.context = opt_context;
 
@@ -66,6 +69,7 @@ ol.render.Event = function(
    * WebGL context. Only available when a WebGL renderer is used, null
    * otherwise.
    * @type {ol.webgl.Context|null|undefined}
+   * @todo api
    */
   this.glContext = opt_glContext;
 

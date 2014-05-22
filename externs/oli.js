@@ -17,7 +17,6 @@ oli.CollectionEvent;
 /**
  * The element that is added to or removed from the collection.
  * @type {*}
- * @todo api
  */
 oli.CollectionEvent.prototype.element;
 
@@ -29,7 +28,6 @@ oli.DragBoxEvent;
 
 /**
  * @type {ol.Coordinate}
- * @todo api
  */
 oli.DragBoxEvent.prototype.coordinate;
 
@@ -42,7 +40,6 @@ oli.DrawEvent;
 /**
  * The feature being drawn.
  * @type {ol.Feature}
- * @todo api
  */
 oli.DrawEvent.prototype.feature;
 
@@ -63,21 +60,18 @@ oli.MapBrowserEvent;
 
 /**
  * @type {ol.Coordinate}
- * @todo api
  */
 oli.MapBrowserEvent.prototype.coordinate;
 
 
 /**
  * @type {Event}
- * @todo api
  */
 oli.MapBrowserEvent.prototype.originalEvent;
 
 
 /**
  * @type {ol.Pixel}
- * @todo api
  */
 oli.MapBrowserEvent.prototype.pixel;
 
@@ -103,21 +97,18 @@ oli.interaction.DragAndDropEvent;
 
 /**
  * @type {Array.<ol.Feature>|undefined}
- * @todo api
  */
 oli.interaction.DragAndDropEvent.prototype.features;
 
 
 /**
  * @type {ol.proj.Projection|undefined}
- * @todo api
  */
 oli.interaction.DragAndDropEvent.prototype.projection;
 
 
 /**
  * @type {File}
- * @todo api
  */
 oli.interaction.DragAndDropEvent.prototype.file;
 
@@ -130,14 +121,12 @@ oli.render.Event;
  * Canvas context. Only available when a Canvas renderer is used, null
  * otherwise.
  * @type {CanvasRenderingContext2D|null|undefined}
- * @todo api
  */
 oli.render.Event.prototype.context;
 
 
 /**
  * @type {olx.FrameState|undefined}
- * @todo api
  */
 oli.render.Event.prototype.frameState;
 
@@ -145,7 +134,6 @@ oli.render.Event.prototype.frameState;
 /**
  * WebGL context. Only available when a WebGL renderer is used, null otherwise.
  * @type {ol.webgl.Context|null|undefined}
- * @todo api
  */
 oli.render.Event.prototype.glContext;
 
@@ -153,7 +141,6 @@ oli.render.Event.prototype.glContext;
 /**
  * For canvas, this is an instance of {@link ol.render.canvas.Immediate}.
  * @type {ol.render.IVectorContext|undefined}
- * @todo api
  */
 oli.render.Event.prototype.vectorContext;
 
@@ -166,6 +153,5 @@ oli.source.VectorEvent;
 /**
  * The feature being added or removed.
  * @type {ol.Feature}
- * @todo api
  */
 oli.source.VectorEvent.prototype.feature;

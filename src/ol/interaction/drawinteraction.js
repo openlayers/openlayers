@@ -56,6 +56,7 @@ ol.DrawEvent = function(type, feature) {
   /**
    * The feature being drawn.
    * @type {ol.Feature}
+   * @todo api
    */
   this.feature = feature;
 

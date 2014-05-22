@@ -41,16 +41,19 @@ ol.MapBrowserEvent = function(type, map, browserEvent, opt_frameState) {
   /**
    * @const
    * @type {Event}
+   * @todo api
    */
   this.originalEvent = browserEvent.getBrowserEvent();
 
   /**
    * @type {ol.Coordinate}
+   * @todo api
    */
   this.coordinate = map.getEventCoordinate(this.originalEvent);
 
   /**
    * @type {ol.Pixel}
+   * @todo api
    */
   this.pixel = map.getEventPixel(this.originalEvent);
 
