@@ -15,7 +15,6 @@ oli.CollectionEvent;
 
 
 /**
- * The element that is added to or removed from the collection.
  * @type {*}
  */
 oli.CollectionEvent.prototype.element;
@@ -38,7 +37,6 @@ oli.DrawEvent;
 
 
 /**
- * The feature being drawn.
  * @type {ol.Feature}
  */
 oli.DrawEvent.prototype.feature;
@@ -118,8 +116,6 @@ oli.render.Event;
 
 
 /**
- * Canvas context. Only available when a Canvas renderer is used, null
- * otherwise.
  * @type {CanvasRenderingContext2D|null|undefined}
  */
 oli.render.Event.prototype.context;
@@ -132,14 +128,12 @@ oli.render.Event.prototype.frameState;
 
 
 /**
- * WebGL context. Only available when a WebGL renderer is used, null otherwise.
  * @type {ol.webgl.Context|null|undefined}
  */
 oli.render.Event.prototype.glContext;
 
 
 /**
- * For canvas, this is an instance of {@link ol.render.canvas.Immediate}.
  * @type {ol.render.IVectorContext|undefined}
  */
 oli.render.Event.prototype.vectorContext;
@@ -151,7 +145,6 @@ oli.source.VectorEvent;
 
 
 /**
- * The feature being added or removed.
  * @type {ol.Feature}
  */
 oli.source.VectorEvent.prototype.feature;

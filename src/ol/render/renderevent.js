@@ -46,6 +46,7 @@ ol.render.Event = function(
   goog.base(this, type, opt_target);
 
   /**
+   * For canvas, this is an instance of {@link ol.render.canvas.Immediate}.
    * @type {ol.render.IVectorContext|undefined}
    * @todo api
    */
@@ -58,8 +59,8 @@ ol.render.Event = function(
   this.frameState = opt_frameState;
 
   /**
-   * Canvas context. Only available when a Canvas renderer is used,
-   * null otherwise.
+   * Canvas context. Only available when a Canvas renderer is used, null
+   * otherwise.
    * @type {CanvasRenderingContext2D|null|undefined}
    * @todo api
    */
