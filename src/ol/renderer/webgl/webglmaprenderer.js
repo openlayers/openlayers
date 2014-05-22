@@ -13,6 +13,7 @@ goog.require('goog.object');
 goog.require('goog.style');
 goog.require('goog.webgl');
 goog.require('ol');
+goog.require('ol.RendererType');
 goog.require('ol.Tile');
 goog.require('ol.css');
 goog.require('ol.dom');
@@ -350,7 +351,7 @@ ol.renderer.webgl.Map.prototype.getTileTextureQueue = function() {
  * @inheritDoc
  */
 ol.renderer.webgl.Map.prototype.getType = function() {
-  return 'webgl';
+  return ol.RendererType.WEBGL;
 };
 
 

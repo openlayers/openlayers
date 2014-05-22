@@ -42,6 +42,7 @@ goog.require('ol.ObjectEventType');
 goog.require('ol.Pixel');
 goog.require('ol.PostRenderFunction');
 goog.require('ol.PreRenderFunction');
+goog.require('ol.RendererType');
 goog.require('ol.Size');
 goog.require('ol.Tile');
 goog.require('ol.TileQueue');
@@ -96,18 +97,6 @@ ol.OL3_LOGO_URL = 'data:image/png;base64,' +
     'hgWVcPm+9cuLoyy4kCJDzCm6d8PSFoh0zvQNC5OjDJhQopPPJqph1doJBUD5tnkbZiUEqaCn' +
     'B3bTqLTFG1bPn71kw4b+GFdpLElKIzRxxgYgWNYc5SCENVHKeUaltHdXx0dZ8uBI1hJ2UUDg' +
     'q82CM2MwKeibqAvSO7MCABq0wXEPiqWEAAAAAElFTkSuQmCC';
-
-
-/**
- * Available renderers: `'canvas'`, `'dom'` or `'webgl'`.
- * @enum {string}
- * @todo api
- */
-ol.RendererType = {
-  CANVAS: 'canvas',
-  DOM: 'dom',
-  WEBGL: 'webgl'
-};
 
 
 /**

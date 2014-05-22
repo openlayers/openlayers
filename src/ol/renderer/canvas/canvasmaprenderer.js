@@ -7,6 +7,7 @@ goog.require('goog.dom');
 goog.require('goog.style');
 goog.require('goog.vec.Mat4');
 goog.require('ol');
+goog.require('ol.RendererType');
 goog.require('ol.css');
 goog.require('ol.dom');
 goog.require('ol.layer.Image');
@@ -130,7 +131,7 @@ ol.renderer.canvas.Map.prototype.getCanvasLayerRenderer = function(layer) {
  * @inheritDoc
  */
 ol.renderer.canvas.Map.prototype.getType = function() {
-  return 'canvas';
+  return ol.RendererType.CANVAS;
 };
 
 

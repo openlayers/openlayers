@@ -6,6 +6,7 @@ goog.require('goog.dom.TagName');
 goog.require('goog.functions');
 goog.require('goog.style');
 goog.require('ol');
+goog.require('ol.RendererType');
 goog.require('ol.css');
 goog.require('ol.layer.Image');
 goog.require('ol.layer.Tile');
@@ -79,7 +80,7 @@ ol.renderer.dom.Map.prototype.createLayerRenderer = function(layer) {
  * @inheritDoc
  */
 ol.renderer.dom.Map.prototype.getType = function() {
-  return 'dom';
+  return ol.RendererType.DOM;
 };
 
 
