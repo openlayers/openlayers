@@ -185,6 +185,7 @@ ol.Feature.prototype.setStyle = function(style) {
  */
 ol.Feature.prototype.setId = function(id) {
   this.id_ = id;
+  this.dispatchChangeEvent();
 };
 
 

@@ -232,6 +232,34 @@ describe('ol.Feature', function() {
 
   });
 
+  describe('#setId()', function() {
+
+    it('sets the feature identifier', function() {
+      var feature = new ol.Feature();
+      expect(feature.getId()).to.be(undefined);
+      feature.setId('foo');
+      expect(feature.getId()).to.be('foo');
+    });
+
+    it('accepts a string or number', function() {
+      var feature = new ol.Feature();
+      feature.setId('foo');
+      expect(feature.getId()).to.be('foo');
+      feature.setId(2);
+      expect(feature.getId()).to.be(2);
+    });
+
+    it('dispatches the "change" event', function(done) {
+      var feature = new ol.Feature();
+      feature.on('change', function() {
+        expect(feature.getId()).to.be('foo');
+        done();
+      });
+      feature.setId('foo');
+    });
+
+  });
+
   describe('#getStyleFunction()', function() {
 
     var styleFunction = function(resolution) {

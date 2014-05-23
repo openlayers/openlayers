@@ -70,6 +70,20 @@ ol.source.Vector = function(opt_options) {
   this.nullGeometryFeatures_ = {};
 
   /**
+   * A lookup of features by id (the return from feature.getId()).
+   * @private
+   * @type {Object.<string, ol.Feature>}
+   */
+  this.idIndex_ = {};
+
+  /**
+   * A lookup of features without id (keyed by goog.getUid(feature)).
+   * @private
+   * @type {Object.<string, ol.Feature>}
+   */
+  this.undefIdIndex_ = {};
+
+  /**
    * @private
    * @type {Object.<string, Array.<goog.events.Key>>}
    */
@@ -114,7 +128,18 @@ ol.source.Vector.prototype.addFeatureInternal = function(feature) {
     var extent = geometry.getExtent();
     this.rBush_.insert(extent, feature);
   } else {
-    this.nullGeometryFeatures_[goog.getUid(feature).toString()] = feature;
+    this.nullGeometryFeatures_[featureKey] = feature;
+  }
+  var id = feature.getId();
+  if (goog.isDef(id)) {
+    var sid = id.toString();
+    goog.asserts.assert(!(sid in this.idIndex_),
+        'Feature with same id already added to the source: ' + id);
+    this.idIndex_[sid] = feature;
+  } else {
+    goog.asserts.assert(!(featureKey in this.undefIdIndex_),
+        'Feature already added to the source');
+    this.undefIdIndex_[featureKey] = feature;
   }
   this.dispatchEvent(
       new ol.source.VectorEvent(ol.source.VectorEventType.ADDFEATURE, feature));
@@ -315,6 +340,20 @@ ol.source.Vector.prototype.getExtent = function() {
 
 
 /**
+ * Get a feature by its identifier (the value returned by feature.getId()).
+ * Note that the index treats string and numeric identifiers as the same.  So
+ * `source.getFeatureById(2)` will return a feature with id `'2'` or `2`.
+ *
+ * @param {string|number} id Feature identifier.
+ * @return {ol.Feature} The feature (or `null` if not found).
+ */
+ol.source.Vector.prototype.getFeatureById = function(id) {
+  var feature = this.idIndex_[id.toString()];
+  return goog.isDef(feature) ? feature : null;
+};
+
+
+/**
  * @param {goog.events.Event} event Event.
  * @private
  */
@@ -334,6 +373,35 @@ ol.source.Vector.prototype.handleFeatureChange_ = function(event) {
       this.rBush_.insert(extent, feature);
     } else {
       this.rBush_.update(extent, feature);
+    }
+  }
+  var id = feature.getId();
+  var removed;
+  if (goog.isDef(id)) {
+    var sid = id.toString();
+    if (featureKey in this.undefIdIndex_) {
+      delete this.undefIdIndex_[featureKey];
+      goog.asserts.assert(!goog.isDef(this.idIndex_[sid]),
+          'Duplicate feature id: ' + id);
+      this.idIndex_[sid] = feature;
+    } else {
+      if (this.idIndex_[sid] !== feature) {
+        removed = this.removeFromIdIndex_(feature);
+        goog.asserts.assert(removed,
+            'Expected feature to be removed from index');
+        goog.asserts.assert(!(sid in this.idIndex_),
+            'Duplicate feature id: ' + id);
+        this.idIndex_[sid] = feature;
+      }
+    }
+  } else {
+    if (!(featureKey in this.undefIdIndex_)) {
+      removed = this.removeFromIdIndex_(feature);
+      goog.asserts.assert(removed,
+          'Expected feature to be removed from index');
+      this.undefIdIndex_[featureKey] = feature;
+    } else {
+      goog.asserts.assert(this.undefIdIndex_[featureKey] === feature);
     }
   }
   this.dispatchChangeEvent();
@@ -384,8 +452,34 @@ ol.source.Vector.prototype.removeFeatureInternal = function(feature) {
   goog.array.forEach(this.featureChangeKeys_[featureKey],
       goog.events.unlistenByKey);
   delete this.featureChangeKeys_[featureKey];
+  var id = feature.getId();
+  if (goog.isDef(id)) {
+    delete this.idIndex_[id.toString()];
+  } else {
+    delete this.undefIdIndex_[featureKey];
+  }
   this.dispatchEvent(new ol.source.VectorEvent(
       ol.source.VectorEventType.REMOVEFEATURE, feature));
+};
+
+
+/**
+ * Remove a feature from the id index.  Called internally when the feature id
+ * may have changed.
+ * @param {ol.Feature} feature The feature.
+ * @return {boolean} Removed the feature from the index.
+ * @private
+ */
+ol.source.Vector.prototype.removeFromIdIndex_ = function(feature) {
+  var removed = false;
+  for (var id in this.idIndex_) {
+    if (this.idIndex_[id] === feature) {
+      delete this.idIndex_[id];
+      removed = true;
+      break;
+    }
+  }
+  return removed;
 };
 
 
