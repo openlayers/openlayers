@@ -110,11 +110,11 @@ ol.source.Vector.prototype.addFeatureInternal = function(feature) {
         this.handleFeatureChange_, false, this)
   ];
   var geometry = feature.getGeometry();
-  if (goog.isNull(geometry)) {
-    this.nullGeometryFeatures_[goog.getUid(feature).toString()] = feature;
-  } else {
+  if (goog.isDefAndNotNull(geometry)) {
     var extent = geometry.getExtent();
     this.rBush_.insert(extent, feature);
+  } else {
+    this.nullGeometryFeatures_[goog.getUid(feature).toString()] = feature;
   }
   this.dispatchEvent(
       new ol.source.VectorEvent(ol.source.VectorEventType.ADDFEATURE, feature));
@@ -183,7 +183,7 @@ ol.source.Vector.prototype.forEachFeatureAtCoordinate =
   var extent = [coordinate[0], coordinate[1], coordinate[0], coordinate[1]];
   return this.forEachFeatureInExtent(extent, function(feature) {
     var geometry = feature.getGeometry();
-    goog.asserts.assert(!goog.isNull(geometry));
+    goog.asserts.assert(goog.isDefAndNotNull(geometry));
     if (geometry.containsCoordinate(coordinate)) {
       return f.call(opt_this, feature);
     } else {
@@ -284,7 +284,7 @@ ol.source.Vector.prototype.getClosestFeatureToCoordinate =
        */
       function(feature) {
         var geometry = feature.getGeometry();
-        goog.asserts.assert(!goog.isNull(geometry));
+        goog.asserts.assert(goog.isDefAndNotNull(geometry));
         var previousMinSquaredDistance = minSquaredDistance;
         minSquaredDistance = geometry.closestPointXY(
             x, y, closestPoint, minSquaredDistance);
@@ -322,7 +322,7 @@ ol.source.Vector.prototype.handleFeatureChange_ = function(event) {
   var feature = /** @type {ol.Feature} */ (event.target);
   var featureKey = goog.getUid(feature).toString();
   var geometry = feature.getGeometry();
-  if (goog.isNull(geometry)) {
+  if (!goog.isDefAndNotNull(geometry)) {
     if (!(featureKey in this.nullGeometryFeatures_)) {
       this.rBush_.remove(feature);
       this.nullGeometryFeatures_[featureKey] = feature;

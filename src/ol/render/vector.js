@@ -105,7 +105,7 @@ ol.renderer.vector.renderFeature = function(
 ol.renderer.vector.renderFeature_ = function(
     replayGroup, feature, style, squaredTolerance, data) {
   var geometry = feature.getGeometry();
-  if (goog.isNull(geometry)) {
+  if (!goog.isDefAndNotNull(geometry)) {
     return;
   }
   var simplifiedGeometry = geometry.getSimplifiedGeometry(squaredTolerance);
