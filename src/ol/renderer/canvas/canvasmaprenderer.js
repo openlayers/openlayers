@@ -10,6 +10,7 @@ goog.require('ol');
 goog.require('ol.css');
 goog.require('ol.dom');
 goog.require('ol.layer.Image');
+goog.require('ol.layer.Layer');
 goog.require('ol.layer.Tile');
 goog.require('ol.layer.Vector');
 goog.require('ol.render.Event');
@@ -160,10 +161,8 @@ ol.renderer.canvas.Map.prototype.renderFrame = function(frameState) {
     layer = layerState.layer;
     layerRenderer = this.getLayerRenderer(layer);
     goog.asserts.assertInstanceof(layerRenderer, ol.renderer.canvas.Layer);
-    if (!layerState.visible ||
-        layerState.sourceState != ol.source.State.READY ||
-        viewResolution >= layerState.maxResolution ||
-        viewResolution < layerState.minResolution) {
+    if (!ol.layer.Layer.visibleAtResolution(layerState, viewResolution) ||
+        layerState.sourceState != ol.source.State.READY) {
       continue;
     }
     layerRenderer.prepareFrame(frameState, layerState);

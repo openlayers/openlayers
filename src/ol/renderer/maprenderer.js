@@ -99,11 +99,13 @@ ol.renderer.Map.prototype.forEachFeatureAtPixel =
         layerFilter, thisArg2) {
   var layerStates = this.map_.getLayerGroup().getLayerStatesArray();
   var numLayers = layerStates.length;
+  var viewResolution = frameState.view2DState.resolution;
   var i;
   for (i = numLayers - 1; i >= 0; --i) {
     var layerState = layerStates[i];
     var layer = layerState.layer;
-    if (layerState.visible && layerFilter.call(thisArg2, layer)) {
+    if (ol.layer.Layer.visibleAtResolution(layerState, viewResolution) &&
+        layerFilter.call(thisArg2, layer)) {
       var layerRenderer = this.getLayerRenderer(layer);
       var result = layerRenderer.forEachFeatureAtPixel(
           coordinate, frameState, callback, thisArg);
