@@ -35,9 +35,6 @@ function hasApiMembers(doclet) {
 }
 
 function includeAugments(doclet) {
-  if (doclet.longname == 'ol.View2D') {
-    debugger
-  }
   var augments = doclet.augments;
   if (augments) {
     var cls;
@@ -65,8 +62,10 @@ function includeAugments(doclet) {
             }
           });
         }
-        cls._hideConstructor = true;
-        delete cls.undocumented;
+        if (cls.longname.indexOf('oli.') !== 0) {
+          cls._hideConstructor = true;
+          delete cls.undocumented;
+        }
       }
     }
   }

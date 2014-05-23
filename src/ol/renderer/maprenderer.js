@@ -41,7 +41,7 @@ goog.inherits(ol.renderer.Map, goog.Disposable);
 
 
 /**
- * @param {oli.FrameState} frameState FrameState.
+ * @param {olx.FrameState} frameState FrameState.
  * @protected
  */
 ol.renderer.Map.prototype.calculateMatrices2D = function(frameState) {
@@ -82,7 +82,7 @@ ol.renderer.Map.prototype.disposeInternal = function() {
 
 /**
  * @param {ol.Coordinate} coordinate Coordinate.
- * @param {oli.FrameState} frameState FrameState.
+ * @param {olx.FrameState} frameState FrameState.
  * @param {function(this: S, ol.Feature, ol.layer.Layer): T} callback Feature
  *     callback.
  * @param {S} thisArg Value to use as `this` when executing `callback`.
@@ -176,14 +176,14 @@ ol.renderer.Map.prototype.removeLayerRendererByKey_ = function(layerKey) {
 
 /**
  * Render.
- * @param {?oli.FrameState} frameState Frame state.
+ * @param {?olx.FrameState} frameState Frame state.
  */
 ol.renderer.Map.prototype.renderFrame = goog.nullFunction;
 
 
 /**
  * @param {ol.Map} map Map.
- * @param {oli.FrameState} frameState Frame state.
+ * @param {olx.FrameState} frameState Frame state.
  * @private
  */
 ol.renderer.Map.prototype.removeUnusedLayerRenderers_ =
@@ -198,14 +198,14 @@ ol.renderer.Map.prototype.removeUnusedLayerRenderers_ =
 
 
 /**
- * @param {oli.FrameState} frameState Frame state.
+ * @param {olx.FrameState} frameState Frame state.
  * @protected
  */
 ol.renderer.Map.prototype.scheduleExpireIconCache = function(frameState) {
   frameState.postRenderFunctions.push(
       /**
        * @param {ol.Map} map Map.
-       * @param {oli.FrameState} frameState Frame state.
+       * @param {olx.FrameState} frameState Frame state.
        */
       function(map, frameState) {
         ol.style.IconImageCache.getInstance().expire();
@@ -214,7 +214,7 @@ ol.renderer.Map.prototype.scheduleExpireIconCache = function(frameState) {
 
 
 /**
- * @param {!oli.FrameState} frameState Frame state.
+ * @param {!olx.FrameState} frameState Frame state.
  * @protected
  */
 ol.renderer.Map.prototype.scheduleRemoveUnusedLayerRenderers =

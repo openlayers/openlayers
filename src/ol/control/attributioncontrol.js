@@ -66,7 +66,7 @@ goog.inherits(ol.control.Attribution, ol.control.Control);
 
 
 /**
- * @param {?oli.FrameState} frameState Frame state.
+ * @param {?olx.FrameState} frameState Frame state.
  * @return {Array.<Object.<string, ol.Attribution>>} Attributions.
  */
 ol.control.Attribution.prototype.getSourceAttributions =
@@ -118,7 +118,7 @@ ol.control.Attribution.prototype.handleMapPostrender = function(mapEvent) {
 
 /**
  * @private
- * @param {?oli.FrameState} frameState Frame state.
+ * @param {?olx.FrameState} frameState Frame state.
  */
 ol.control.Attribution.prototype.updateElement_ = function(frameState) {
 

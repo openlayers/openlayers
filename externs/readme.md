@@ -8,14 +8,14 @@ These two files are special externs that belong to ol3, and this document explai
 
 ### Prevent class properties from being renamed
 
-For events, we make properties available to the application. Other than methods, which can be made available by just marking them with the `@api` annotation, properties are exported using `oli.js`:
+For events, we make properties available to the application. Other than methods, which can be made available by just marking them with the `@api` annotation directly where they are defined, properties need to be added to `oli.js` in addition:
+
 ```js
 /** @interface */
 oli.MapBrowserEvent;
 
 /**
  * @type {ol.Coordinate}
- * @todo api
  */
 oli.MapBrowserEvent.prototype.coordinate;
 ```
@@ -32,6 +32,7 @@ ol.MapBrowserEvent = function(type, map, browserEvent, opt_frameState) {
 
   /**
    * @type {ol.Coordinate}
+   * @todo api
    */
   this.coordinate = map.getEventCoordinate(this.originalEvent);
 

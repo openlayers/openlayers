@@ -209,7 +209,7 @@ ol.Map = function(options) {
 
   /**
    * @private
-   * @type {?oli.FrameState}
+   * @type {?olx.FrameState}
    */
   this.frameState_ = null;
 
@@ -1178,7 +1178,7 @@ ol.Map.prototype.renderFrame_ = function(time) {
   var size = this.getSize();
   var view = this.getView();
   var view2D = goog.isDef(view) ? this.getView().getView2D() : undefined;
-  /** @type {?oli.FrameState} */
+  /** @type {?olx.FrameState} */
   var frameState = null;
   if (goog.isDef(size) && hasArea(size) &&
       goog.isDef(view2D) && view2D.isDef()) {
@@ -1189,7 +1189,7 @@ ol.Map.prototype.renderFrame_ = function(time) {
       layerStates[goog.getUid(layerStatesArray[i].layer)] = layerStatesArray[i];
     }
     view2DState = view2D.getView2DState();
-    frameState = /** @type {oli.FrameState} */ ({
+    frameState = /** @type {olx.FrameState} */ ({
       animate: false,
       attributions: {},
       coordinateToPixelMatrix: this.coordinateToPixelMatrix_,

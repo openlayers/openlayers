@@ -41,7 +41,7 @@ ol.IView2D.prototype.getRotation = function() {
 
 
 /**
- * @return {oli.View2DState} View2D state.
+ * @return {olx.View2DState} View2D state.
  */
 ol.IView2D.prototype.getView2DState = function() {
 };

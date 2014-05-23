@@ -205,16 +205,19 @@ ol.interaction.DragAndDropEvent =
 
   /**
    * @type {Array.<ol.Feature>|undefined}
+   * @todo api
    */
   this.features = opt_features;
 
   /**
    * @type {File}
+   * @todo api
    */
   this.file = file;
 
   /**
    * @type {ol.proj.Projection|undefined}
+   * @todo api
    */
   this.projection = opt_projection;
 

@@ -47,6 +47,7 @@ ol.CollectionEvent = function(type, opt_element, opt_target) {
   /**
    * The element that is added to or removed from the collection.
    * @type {*}
+   * @todo api
    */
   this.element = opt_element;
 
