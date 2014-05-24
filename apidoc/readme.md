@@ -62,6 +62,7 @@ oli.MapBrowserEvent.prototype.coordinate;
 ```
 To document which events are fired by a class or method, the `@fires` annotation is used:
 ```js
+/**
  * @fires ol.MapBrowserEvent
  * @fires ol.MapEvent
  * @fires ol.render.Event
