@@ -17,6 +17,7 @@ goog.require('ol.Tile');
 goog.require('ol.css');
 goog.require('ol.dom');
 goog.require('ol.layer.Image');
+goog.require('ol.layer.Layer');
 goog.require('ol.layer.Tile');
 goog.require('ol.render.Event');
 goog.require('ol.render.EventType');
@@ -442,10 +443,8 @@ ol.renderer.webgl.Map.prototype.renderFrame = function(frameState) {
   var i, ii, layerState;
   for (i = 0, ii = layerStatesArray.length; i < ii; ++i) {
     layerState = layerStatesArray[i];
-    if (layerState.visible &&
-        layerState.sourceState == ol.source.State.READY &&
-        viewResolution < layerState.maxResolution &&
-        viewResolution >= layerState.minResolution) {
+    if (ol.layer.Layer.visibleAtResolution(layerState, viewResolution) &&
+        layerState.sourceState == ol.source.State.READY) {
       layerStatesToDraw.push(layerState);
     }
   }
