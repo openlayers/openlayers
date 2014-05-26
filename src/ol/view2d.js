@@ -59,14 +59,13 @@ ol.View2DProperty = {
  * that is passed to a setter will effectively be the value set in the view,
  * and returned by the corresponding getter.
  *
- * But an `ol.View2D` object also has a *resolution constraint* and a
- * *rotation constraint*. There's currently no *center constraint*, but
- * this may change in the future.
+ * But an `ol.View2D` object also has a *resolution constraint*, a
+ * *rotation constraint* and a *center constraint*.
  *
  * As said above no constraints are applied when the setters are used to set
  * new states for the view. Applying constraints is done explicitly through
  * the use of the `constrain*` functions (`constrainResolution` and
- * `constrainRotation`).
+ * `constrainRotation` and `constrainCenter`).
  *
  * The main users of the constraints are the interactions and the
  * controls. For example, double-clicking on the map changes the view to
@@ -195,7 +194,7 @@ ol.View2D.prototype.constrainCenter = function(center) {
 
 
 /**
- * Get the constrained the resolution of this view.
+ * Get the constrained resolution of this view.
  * @param {number|undefined} resolution Resolution.
  * @param {number=} opt_delta Delta. Default is `0`.
  * @param {number=} opt_direction Direction. Default is `0`.
