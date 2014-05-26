@@ -17,3 +17,10 @@ var map = new ol.Map({
     zoom: 2
   })
 });
+
+jQuery('#map').after('<button type="button" ' +
+    'onclick="map.getView().setZoom(map.getView().getZoom() - 1);">' +
+    'Zoom out</button>');
+jQuery('#map').after('<button type="button" ' +
+    'onclick="map.getView().setZoom(map.getView().getZoom() + 1);">' +
+    'Zoom in</button>');
