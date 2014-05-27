@@ -430,6 +430,7 @@ ol.format.GPX.prototype.readFeaturesFromNode = function(node) {
 /**
  * Read the projection from a GPX source.
  *
+ * @function
  * @param {ArrayBuffer|Document|Node|Object|string} source Source.
  * @return {ol.proj.Projection} Projection.
  * @todo api
