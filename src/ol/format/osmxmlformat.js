@@ -64,7 +64,7 @@ ol.format.OSMXML.readNode_ = function(node, objectStack) {
   if (!goog.object.isEmpty(values.tags)) {
     var geometry = new ol.geom.Point(coordinates);
     var feature = new ol.Feature(geometry);
-    feature.setId(id);
+    feature.setId('node-' + id);
     feature.setValues(values.tags);
     state.features.push(feature);
   }
@@ -101,7 +101,7 @@ ol.format.OSMXML.readWay_ = function(node, objectStack) {
     geometry.setFlatCoordinates(ol.geom.GeometryLayout.XY, flatCoordinates);
   }
   var feature = new ol.Feature(geometry);
-  feature.setId(id);
+  feature.setId('way-' + id);
   feature.setValues(values.tags);
   state.features.push(feature);
 };
