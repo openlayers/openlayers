@@ -1,0 +1,5 @@
+/**
+ * Strategies for loading vector data.
+ * @see ol.source.ServerVector
+ * @namespace ol.loadingstrategy
+ */
