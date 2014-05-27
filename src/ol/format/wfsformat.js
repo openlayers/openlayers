@@ -80,6 +80,17 @@ ol.format.WFS.schemaLocation_ = 'http://www.opengis.net/wfs ' +
 
 
 /**
+ * Read all features from a WFS FeatureCollection.
+ *
+ * @function
+ * @param {ArrayBuffer|Document|Node|Object|string} source Source.
+ * @return {Array.<ol.Feature>} Features.
+ * @todo api
+ */
+ol.format.WFS.prototype.readFeatures;
+
+
+/**
  * @inheritDoc
  */
 ol.format.WFS.prototype.readFeaturesFromNode = function(node) {
@@ -679,6 +690,7 @@ ol.format.WFS.prototype.writeTransaction = function(inserts, updates, deletes,
  * @function
  * @param {ArrayBuffer|Document|Node|Object|string} source Source.
  * @return {?ol.proj.Projection} Projection.
+ * @todo api
  */
 ol.format.WFS.prototype.readProjection;
 
