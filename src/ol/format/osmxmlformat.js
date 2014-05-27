@@ -210,6 +210,17 @@ ol.format.OSMXML.prototype.readFeaturesFromNode = function(node) {
 
 
 /**
+ * Read the projection from an OSM source.
+ *
+ * @function
+ * @param {ArrayBuffer|Document|Node|Object|string} source Source.
+ * @return {ol.proj.Projection} Projection.
+ * @todo api
+ */
+ol.format.OSMXML.prototype.readProjection;
+
+
+/**
  * @inheritDoc
  */
 ol.format.OSMXML.prototype.readProjectionFromDocument = function(doc) {
