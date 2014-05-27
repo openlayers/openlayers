@@ -118,6 +118,8 @@ ol.FeatureOverlay.prototype.drawFeature_ = function(vectorContext, feature,
       goog.asserts.assert(imageState == ol.style.ImageState.LOADING);
       imageStyle.listenImageChange(this.handleImageChange_, this);
     }
+  } else {
+    vectorContext.drawFeature(feature, style);
   }
 };
 
