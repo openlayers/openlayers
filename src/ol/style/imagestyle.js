@@ -28,7 +28,6 @@ ol.style.ImageOptions;
 /**
  * @constructor
  * @param {ol.style.ImageOptions} options Options.
- * @todo api
  */
 ol.style.Image = function(options) {
 
