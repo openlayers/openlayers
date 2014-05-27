@@ -102,7 +102,7 @@ ol.OL3_LOGO_URL = 'data:image/png;base64,' +
 /**
  * @type {Array.<ol.RendererType>}
  */
-ol.DEFAULT_RENDERER_HINTS = [
+ol.DEFAULT_RENDERER_TYPES = [
   ol.RendererType.CANVAS,
   ol.RendererType.WEBGL,
   ol.RendererType.DOM
@@ -1432,7 +1432,7 @@ ol.Map.createOptionsInternal = function(options) {
       goog.asserts.fail('Incorrect format for renderer option');
     }
   } else {
-    rendererTypes = ol.DEFAULT_RENDERER_HINTS;
+    rendererTypes = ol.DEFAULT_RENDERER_TYPES;
   }
 
   var i, ii;
