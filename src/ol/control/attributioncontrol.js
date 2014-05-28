@@ -4,11 +4,15 @@ goog.provide('ol.control.Attribution');
 
 goog.require('goog.dom');
 goog.require('goog.dom.TagName');
+goog.require('goog.dom.classes');
+goog.require('goog.events');
+goog.require('goog.events.EventType');
 goog.require('goog.object');
 goog.require('goog.style');
 goog.require('ol.Attribution');
 goog.require('ol.control.Control');
 goog.require('ol.css');
+goog.require('ol.pointer.PointerEventHandler');
 
 
 
@@ -34,11 +38,59 @@ ol.control.Attribution = function(opt_options) {
    */
   this.ulElement_ = goog.dom.createElement(goog.dom.TagName.UL);
 
+  /**
+   * @private
+   * @type {boolean}
+   */
+  this.collapsed_ = goog.isDef(options.collapsed) ? options.collapsed : true;
+
+  var collapsible = goog.isDef(options.collapsible) ?
+      options.collapsible : true;
+
   var className = goog.isDef(options.className) ?
       options.className : 'ol-attribution';
+
+  var tipLabel = goog.isDef(options.tipLabel) ?
+      options.tipLabel : 'Attributions';
+  var tip = goog.dom.createDom(goog.dom.TagName.SPAN, {
+    'role' : 'tooltip'
+  }, tipLabel);
+
+  /**
+   * @private
+   * @type {string}
+   */
+  this.label_ = goog.isDef(options.label) ? options.label : 'i';
+  var label = goog.dom.createDom(goog.dom.TagName.SPAN, {}, this.label_);
+
+  /**
+   * @private
+   * @type {Element}
+   */
+  this.labelSpan_ = label;
+  var button = goog.dom.createDom(goog.dom.TagName.BUTTON, {
+    'class': 'ol-has-tooltip'
+  }, this.labelSpan_);
+  goog.dom.appendChild(button, tip);
+
+  var buttonHandler = new ol.pointer.PointerEventHandler(button);
+  this.registerDisposable(buttonHandler);
+  goog.events.listen(buttonHandler, ol.pointer.EventType.POINTERUP,
+      this.handleToggle_, false, this);
+
+  goog.events.listen(button, [
+    goog.events.EventType.MOUSEOUT,
+    goog.events.EventType.FOCUSOUT
+  ], function() {
+    this.blur();
+  }, false);
+
   var element = goog.dom.createDom(goog.dom.TagName.DIV, {
-    'class': className + ' ' + ol.css.CLASS_UNSELECTABLE
-  }, this.ulElement_);
+    'class': className + ' ' + ol.css.CLASS_UNSELECTABLE + ' ' +
+        ol.css.CLASS_CONTROL +
+        (this.collapsed_ && collapsible ? ' ol-collapsed' : '') +
+        (collapsible ? '' : ' ol-uncollapsible')
+  }, this.ulElement_, button);
 
   goog.base(this, {
     element: element,
@@ -186,4 +238,17 @@ ol.control.Attribution.prototype.updateElement_ = function(frameState) {
     this.renderedVisible_ = renderVisible;
   }
 
+};
+
+
+/**
+ * @param {ol.pointer.PointerEvent} pointerEvent Pointer event.
+ * @private
+ */
+ol.control.Attribution.prototype.handleToggle_ = function(pointerEvent) {
+  pointerEvent.browserEvent.preventDefault();
+  goog.dom.classes.toggle(this.element, 'ol-collapsed');
+  goog.dom.setTextContent(this.labelSpan_,
+      (this.collapsed_) ? '\u00D7' : this.label_);
+  this.collapsed_ = !this.collapsed_;
 };

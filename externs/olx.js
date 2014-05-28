@@ -661,6 +661,37 @@ olx.control.AttributionOptions.prototype.target;
 
 
 /**
+ * Specify if attributions can be collapsed. If you use an OSM source,
+ * should be set to `false` — see
+ * {@link http://www.openstreetmap.org/copyright OSM Copyright} —
+ * Default is `true`.
+ * @type {boolean|undefined}
+ */
+olx.control.AttributionOptions.prototype.collapsible;
+
+
+/**
+ * Specify if attributions should be collapsed at startup. Default is `true`.
+ * @type {boolean|undefined}
+ */
+olx.control.AttributionOptions.prototype.collapsed;
+
+
+/**
+ * Text label to use for the button tip. Default is `Attributions`
+ * @type {string|undefined}
+ */
+olx.control.AttributionOptions.prototype.tipLabel;
+
+
+/**
+ * Text label to use for the attributions button. Default is `i`
+ * @type {string|undefined}
+ */
+olx.control.AttributionOptions.prototype.label;
+
+
+/**
  * @typedef {{element: (Element|undefined),
  *     target: (Element|string|undefined)}}
  * @api
