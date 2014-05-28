@@ -1684,8 +1684,10 @@ ol.format.GML.prototype.writeGeometryNode = function(geometry) {
 /**
  * Encode an array of features in GML 3.1.1 Simple Features.
  *
+ * @function
  * @param {Array.<ol.Feature>} features Features.
  * @return {ArrayBuffer|Node|Object|string} Result.
+ * @todo api
  */
 ol.format.GML.prototype.writeFeatures;
 
