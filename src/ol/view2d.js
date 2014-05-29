@@ -287,9 +287,12 @@ goog.exportProperty(
 
 
 /**
+ * Get the resolution for a provided extent (in map units) and size (in pixels).
  * @param {ol.Extent} extent Extent.
  * @param {ol.Size} size Box pixel size.
- * @return {number} Resolution.
+ * @return {number} The resolution at which the provided extent will render at
+ *     the given size.
+ * @todo api
  */
 ol.View2D.prototype.getResolutionForExtent = function(extent, size) {
   var xResolution = ol.extent.getWidth(extent) / size[0];
