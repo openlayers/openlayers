@@ -15,7 +15,9 @@ Build configuration files are JSON files that are used to determine what should 
 
 **Required configuration properties**
 
-  * **exports** - `Array.<string>` An array of symbol names or patterns to be exported (names that are used in your application).  For example, including `"ol.Map"` will export the map constructor.  Method names are prefixed with `#`.  So `"ol.Map#getView"` will export the map's `getView` method.  You can use a `*` at the end to match multiple names.  The pattern `"ol.Map#*"` will export all map methods.
+  * **exports** - `Array.<string>` An array of symbol names or patterns to be exported (names that are used in your application).  For example, including `"ol.Map"` will export the map namespace including the constructor.  Method names are prefixed with `#`.  So `"ol.Map#getViewport"` will export the map's `getViewport` method.  You can use a `*` at the end to match multiple names.  The pattern `"ol.Map#*"` will export all exportable map methods.  
+   Note that only the 'exportable' names can be listed here, that is, those are part of the supported API (see apidoc/readme.md for more details). If you want to include a property or method that is not part of the API (and be aware that these may change or be removed), you will have to specifically export these yourself, for example, with `goog.exportProperty`.  
+   Note too that some names, like `getView` in `ol.Map`, are always exported (with `goog.exportProperty` in the source). You do not have to include these, though it does not harm if you do.
 
 **Optional configuration properties**
 
@@ -33,7 +35,7 @@ The build task generates a list of source files sorted in dependency order and p
 
 Paths in your config file should be relative to the current working directory (when you call `node tasks/build.js`).  Note that this means paths are not necessarily relative to the config file itself.
 
-Below is a complete `build.json` configuration file that would generate a build including every symbol in the library (much more than you'd ever need).
+Below is a complete `build.json` configuration file that would generate a 'full' build including every exportable symbol in the library (much more than you'd ever need).
 
 ```json
 {
@@ -55,7 +57,8 @@ Below is a complete `build.json` configuration file that would generate a build 
     ],
     "compilation_level": "ADVANCED_OPTIMIZATIONS",
     "output_wrapper": "(function(){%output%})();",
-    "use_types_for_optimization": true
+    "use_types_for_optimization": true,
+    "manage_closure_dependencies": true
   }
 }
 ```
@@ -64,7 +67,7 @@ To generate a build named `ol.min.js` with the `build.json`, you would run this:
 
     node tasks/build.js build.json ol.min.js
 
-To export the `ol` symbol to somewhere else than the global namespace, a `namespace` option is available. This can e.g. be useful for creating an ol3 AMD module, by simply providing a build configuration like the following:
+To export the `ol` symbol to somewhere other than the global namespace, a `namespace` option is available. This can e.g. be useful for creating an ol3 AMD module, by simply providing a build configuration like the following:
 
 ```js
 {
