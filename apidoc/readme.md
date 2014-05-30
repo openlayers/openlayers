@@ -22,7 +22,7 @@ contain Markdown.
 
 The second line tells the Closure compiler the type of the argument.
 
-The third line (`@todo api`) marks the method as exportable. The stability can be added as value, e.g. `@todo api stable`. Once the documentation story is fully settled, we will remove the `todo ` and just write `@api` or `@api stable`. Without such an api note, the method will not be exported and not documented in the generated API documentation.
+The third line (`@todo api`) marks the method as part of the api and thus exportable. The stability can be added as value, e.g. `@todo api stable`. Once the documentation story is fully settled, we will remove the `todo ` and just write `@api` or `@api stable`. Without such an api annotation, the method will not be documented in the generated API documentation. Symbols without an api annotation will also not be exportable (unless they are explicitly exported with a `goog.exportProperty` call).
 
 ### Events
 
