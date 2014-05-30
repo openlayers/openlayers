@@ -718,8 +718,6 @@ olx.control.ControlOptions.prototype.target;
 /**
  * @typedef {{attribution: (boolean|undefined),
  *     attributionOptions: (olx.control.AttributionOptions|undefined),
- *     logo: (boolean|undefined),
- *     logoOptions: (olx.control.LogoOptions|undefined),
  *     zoom: (boolean|undefined),
  *     rotateOptions: (olx.control.RotateOptions|undefined),
  *     zoomOptions: (olx.control.ZoomOptions|undefined)}}
@@ -740,20 +738,6 @@ olx.control.DefaultsOptions.prototype.attribution;
  * @type {olx.control.AttributionOptions|undefined}
  */
 olx.control.DefaultsOptions.prototype.attributionOptions;
-
-
-/**
- * Logo. Default is `true`.
- * @type {boolean|undefined}
- */
-olx.control.DefaultsOptions.prototype.logo;
-
-
-/**
- * Logo options.
- * @type {olx.control.LogoOptions|undefined}
- */
-olx.control.DefaultsOptions.prototype.logoOptions;
 
 
 /**
@@ -820,28 +804,6 @@ olx.control.FullScreenOptions.prototype.keys;
  * @type {Element|undefined}
  */
 olx.control.FullScreenOptions.prototype.target;
-
-
-/**
- * @typedef {{className: (string|undefined),
- *     target: (Element|undefined)}}
- * @api
- */
-olx.control.LogoOptions;
-
-
-/**
- * CSS class name. Default is `ol-logo`.
- * @type {string|undefined}
- */
-olx.control.LogoOptions.prototype.className;
-
-
-/**
- * Target.
- * @type {Element|undefined}
- */
-olx.control.LogoOptions.prototype.target;
 
 
 /**
