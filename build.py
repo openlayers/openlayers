@@ -342,7 +342,7 @@ virtual('lint', 'build/lint-timestamp', 'build/lint-libtess.js-timestamp',
 def build_lint_src_timestamp(t):
     t.run('%(GJSLINT)s',
           '--jslint_error=all',
-          '--custom_jsdoc_tags=event,fires,todo,function',
+          '--custom_jsdoc_tags=event,fires,todo,function,classdesc',
           '--strict',
           t.newer(t.dependencies))
     t.touch()
