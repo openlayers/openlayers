@@ -1068,7 +1068,7 @@ ol.Map.prototype.isRendered = function() {
 
 
 /**
- * Render.
+ * Requests an immediate render in a synchronous manner.
  * @todo api
  */
 ol.Map.prototype.renderSync = function() {
@@ -1077,7 +1077,8 @@ ol.Map.prototype.renderSync = function() {
 
 
 /**
- * Request that renderFrame_ be called some time in the future.
+ * Requests a render frame; rendering will effectively occur at the next browser
+ * animation frame.
  * @todo api
  */
 ol.Map.prototype.render = function() {
