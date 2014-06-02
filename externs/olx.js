@@ -3796,7 +3796,8 @@ olx.source.ServerVectorOptions.prototype.loader;
 
 
 /**
- * Loading strategy. Default is {@link ol.loadingstrategy.bbox}.
+ * Loading strategy. An {@link ol.loadingstrategy} or a custom function.
+ * Default is {@link ol.loadingstrategy.bbox}.
  * @type {function(ol.Extent, number): Array.<ol.Extent>|undefined}
  */
 olx.source.ServerVectorOptions.prototype.strategy;
