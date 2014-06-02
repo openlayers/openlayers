@@ -4,7 +4,7 @@ goog.require('goog.fx.easing');
 
 
 /**
- * from https://raw.github.com/DmitryBaranovskiy/raphael/master/raphael.js
+ * from https://github.com/DmitryBaranovskiy/raphael
  * @param {number} t Input between 0 and 1.
  * @return {number} Output between 0 and 1.
  * @todo api
@@ -48,7 +48,7 @@ ol.easing.easeOut = goog.fx.easing.easeOut;
 
 
 /**
- * from https://raw.github.com/DmitryBaranovskiy/raphael/master/raphael.js
+ * from https://github.com/DmitryBaranovskiy/raphael
  * @param {number} t Input between 0 and 1.
  * @return {number} Output between 0 and 1.
  * @todo api
