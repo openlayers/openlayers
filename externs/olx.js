@@ -4495,13 +4495,14 @@ olx.style.FillOptions.prototype.color;
  *     anchorXUnits: (ol.style.IconAnchorUnits|undefined),
  *     anchorYUnits: (ol.style.IconAnchorUnits|undefined),
  *     crossOrigin: (null|string|undefined),
+ *     img: (Image|undefined),
  *     origin: (Array.<number>|undefined),
  *     scale: (number|undefined),
  *     snapToPixel: (boolean|undefined),
  *     rotateWithView: (boolean|undefined),
  *     rotation: (number|undefined),
  *     size: (ol.Size|undefined),
- *     src: string}}
+ *     src: (string|undefined)}}
  * @todo api
  */
 olx.style.IconOptions;
@@ -4545,6 +4546,14 @@ olx.style.IconOptions.prototype.anchorYUnits;
  * @type {null|string|undefined}
  */
 olx.style.IconOptions.prototype.crossOrigin;
+
+
+/**
+ * Image object for the icon. If the `src` option is not provided then the
+ * provided image must already be loaded.
+ * @type {Image|undefined}
+ */
+olx.style.IconOptions.prototype.img;
 
 
 /**
