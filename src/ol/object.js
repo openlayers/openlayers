@@ -50,6 +50,7 @@ ol.ObjectEvent = function(type, key) {
   /**
    * The name of the property whose value is changing.
    * @type {string}
+   * @todo api
    */
   this.key = key;
 
