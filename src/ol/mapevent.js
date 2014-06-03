@@ -44,7 +44,9 @@ ol.MapEvent = function(type, map, opt_frameState) {
   this.map = map;
 
   /**
+   * The frame state at the time of the event.
    * @type {?olx.FrameState}
+   * @todo api
    */
   this.frameState = goog.isDef(opt_frameState) ? opt_frameState : null;
 
