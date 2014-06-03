@@ -40,6 +40,15 @@ ol.control.Attribution = function(opt_options) {
 
   /**
    * @private
+   * @type {Element}
+   */
+  this.logoLi_ = goog.dom.createElement(goog.dom.TagName.LI);
+
+  goog.dom.appendChild(this.ulElement_, this.logoLi_);
+  goog.style.setElementShown(this.logoLi_, false);
+
+  /**
+   * @private
    * @type {boolean}
    */
   this.collapsed_ = goog.isDef(options.collapsed) ? options.collapsed : true;
@@ -60,8 +69,18 @@ ol.control.Attribution = function(opt_options) {
    * @private
    * @type {string}
    */
+  this.collapseLabel_ = goog.isDef(options.collapseLabel) ?
+      options.collapseLabel : '\u00BB';
+
+  /**
+   * @private
+   * @type {string}
+   */
   this.label_ = goog.isDef(options.label) ? options.label : 'i';
-  var label = goog.dom.createDom(goog.dom.TagName.SPAN, {}, this.label_);
+  var label = goog.dom.createDom(goog.dom.TagName.SPAN, {},
+      (collapsible && !this.collapsed_) ?
+      this.collapseLabel_ : this.label_);
+
 
   /**
    * @private
@@ -114,6 +133,12 @@ ol.control.Attribution = function(opt_options) {
    * @type {Object.<string, boolean>}
    */
   this.attributionElementRenderedVisible_ = {};
+
+  /**
+   * @private
+   * @type {Object.<string, Element>}
+   */
+  this.logoElements_ = {};
 
 };
 goog.inherits(ol.control.Attribution, ol.control.Control);
@@ -232,11 +257,56 @@ ol.control.Attribution.prototype.updateElement_ = function(frameState) {
   }
 
   var renderVisible =
-      !goog.object.isEmpty(this.attributionElementRenderedVisible_);
+      !goog.object.isEmpty(this.attributionElementRenderedVisible_) ||
+      !goog.object.isEmpty(frameState.logos);
   if (this.renderedVisible_ != renderVisible) {
     goog.style.setElementShown(this.element, renderVisible);
     this.renderedVisible_ = renderVisible;
   }
+
+  this.insertLogos_(frameState);
+
+};
+
+
+/**
+ * @param {?olx.FrameState} frameState Frame state.
+ * @private
+ */
+ol.control.Attribution.prototype.insertLogos_ = function(frameState) {
+
+  var logo;
+  var logos = frameState.logos;
+  var logoElements = this.logoElements_;
+
+  for (logo in logoElements) {
+    if (!(logo in logos)) {
+      goog.dom.removeNode(logoElements[logo]);
+      delete logoElements[logo];
+    }
+  }
+
+  var image, logoElement, logoKey;
+  for (logoKey in logos) {
+    if (!(logoKey in logoElements)) {
+      image = new Image();
+      image.src = logoKey;
+      var logoValue = logos[logoKey];
+      if (logoValue === '') {
+        logoElement = image;
+      } else {
+        logoElement = goog.dom.createDom(goog.dom.TagName.A, {
+          'href': logoValue,
+          'target': '_blank'
+        });
+        logoElement.appendChild(image);
+      }
+      goog.dom.appendChild(this.logoLi_, logoElement);
+      logoElements[logoKey] = logoElement;
+    }
+  }
+
+  goog.style.setElementShown(this.logoLi_, !goog.object.isEmpty(logos));
 
 };
 
@@ -249,6 +319,6 @@ ol.control.Attribution.prototype.handleToggle_ = function(pointerEvent) {
   pointerEvent.browserEvent.preventDefault();
   goog.dom.classes.toggle(this.element, 'ol-collapsed');
   goog.dom.setTextContent(this.labelSpan_,
-      (this.collapsed_) ? '\u00D7' : this.label_);
+      (this.collapsed_) ? this.collapseLabel_ : this.label_);
   this.collapsed_ = !this.collapsed_;
 };

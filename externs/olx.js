@@ -685,11 +685,16 @@ olx.control.AttributionOptions.prototype.tipLabel;
 
 
 /**
- * Text label to use for the attributions button. Default is `i`
+ * Text label to use for the collapsed attributions button. Default is `i`
  * @type {string|undefined}
  */
 olx.control.AttributionOptions.prototype.label;
 
+/**
+ * Text label to use for the expanded attributions button. Default is `»`
+ * @type {string|undefined}
+ */
+olx.control.AttributionOptions.prototype.collapseLabel;
 
 /**
  * @typedef {{element: (Element|undefined),

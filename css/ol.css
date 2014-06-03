@@ -209,10 +209,8 @@ button.ol-full-screen-true:after {
 .ol-attribution li:not(:last-child):after {
   content: " ";
 }
-.ol-attribution-bing-tos {
-  /* float:right; */
-  /* padding-left: .4em; */
-  /* line-height: 1.5em; */
+.ol-attribution img {
+  max-height: 2em;
 }
 .ol-attribution ul, .ol-attribution button {
   display: inline-block;
@@ -228,8 +226,12 @@ button.ol-full-screen-true:after {
   bottom: 0;
   right: 0;
   border-radius: 4px 0 0;
-  height: 1em;
-  line-height: .9em;
+  height: 1.1em;
+  line-height: 1em;
+}
+.ol-attribution.ol-uncollapsible img {
+  margin-top: -.2em;
+  max-height: 1.6em;
 }
 .ol-attribution.ol-uncollapsible button {
   display: none;
