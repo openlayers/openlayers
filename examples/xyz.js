@@ -1,6 +1,7 @@
 goog.require('ol.Attribution');
 goog.require('ol.Map');
 goog.require('ol.View');
+goog.require('ol.control');
 goog.require('ol.layer.Tile');
 goog.require('ol.source.OSM');
 goog.require('ol.source.XYZ');
@@ -13,6 +14,11 @@ var attribution = new ol.Attribution({
 
 var map = new ol.Map({
   target: 'map',
+  controls: ol.control.defaults({
+    attributionOptions: /** @type {olx.control.AttributionOptions} */ ({
+      collapsible: false
+    })
+  }),
   layers: [
     new ol.layer.Tile({
       source: new ol.source.OSM({
