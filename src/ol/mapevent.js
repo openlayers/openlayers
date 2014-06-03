@@ -37,7 +37,9 @@ ol.MapEvent = function(type, map, opt_frameState) {
   goog.base(this, type);
 
   /**
+   * The map where the event occurred.
    * @type {ol.Map}
+   * @todo api
    */
   this.map = map;
 
