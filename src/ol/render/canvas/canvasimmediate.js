@@ -256,7 +256,8 @@ ol.render.canvas.Immediate.prototype.drawImages_ =
   goog.asserts.assert(offset === 0);
   goog.asserts.assert(end == flatCoordinates.length);
   var pixelCoordinates = ol.geom.flat.transform.transform2D(
-      flatCoordinates, 2, this.transform_, this.pixelCoordinates_);
+      flatCoordinates, offset, end, 2, this.transform_,
+      this.pixelCoordinates_);
   var context = this.context_;
   var localTransform = this.tmpLocalTransform_;
   var alpha = context.globalAlpha;
@@ -324,7 +325,8 @@ ol.render.canvas.Immediate.prototype.drawText_ =
   goog.asserts.assert(offset === 0);
   goog.asserts.assert(end == flatCoordinates.length);
   var pixelCoordinates = ol.geom.flat.transform.transform2D(
-      flatCoordinates, stride, this.transform_, this.pixelCoordinates_);
+      flatCoordinates, offset, end, stride, this.transform_,
+      this.pixelCoordinates_);
   var context = this.context_;
   for (; offset < end; offset += stride) {
     var x = pixelCoordinates[offset] + this.textOffsetX_;
@@ -354,41 +356,47 @@ ol.render.canvas.Immediate.prototype.drawText_ =
 
 
 /**
- * @param {Array.<number>} pixelCoordinates Pixel coordinates.
+ * @param {Array.<number>} flatCoordinates Flat coordinates.
  * @param {number} offset Offset.
  * @param {number} end End.
+ * @param {number} stride Stride.
  * @param {boolean} close Close.
  * @private
  * @return {number} end End.
  */
 ol.render.canvas.Immediate.prototype.moveToLineTo_ =
-    function(pixelCoordinates, offset, end, close) {
+    function(flatCoordinates, offset, end, stride, close) {
   var context = this.context_;
-  context.moveTo(pixelCoordinates[offset], pixelCoordinates[offset + 1]);
+  var pixelCoordinates = ol.geom.flat.transform.transform2D(
+      flatCoordinates, offset, end, stride, this.transform_,
+      this.pixelCoordinates_);
+  context.moveTo(pixelCoordinates[0], pixelCoordinates[1]);
   var i;
-  for (i = offset + 2; i < end; i += 2) {
+  for (i = 2; i < pixelCoordinates.length; i += 2) {
     context.lineTo(pixelCoordinates[i], pixelCoordinates[i + 1]);
   }
   if (close) {
-    context.lineTo(pixelCoordinates[offset], pixelCoordinates[offset + 1]);
+    context.lineTo(pixelCoordinates[0], pixelCoordinates[1]);
   }
   return end;
 };
 
 
 /**
- * @param {Array.<number>} pixelCoordinates Pixel coordinates.
+ * @param {Array.<number>} flatCoordinates Flat coordinates.
  * @param {number} offset Offset.
  * @param {Array.<number>} ends Ends.
+ * @param {number} stride Stride.
  * @private
  * @return {number} End.
  */
 ol.render.canvas.Immediate.prototype.drawRings_ =
-    function(pixelCoordinates, offset, ends) {
+    function(flatCoordinates, offset, ends, stride) {
   var context = this.context_;
   var i, ii;
   for (i = 0, ii = ends.length; i < ii; ++i) {
-    offset = this.moveToLineTo_(pixelCoordinates, offset, ends[i], true);
+    offset = this.moveToLineTo_(
+        flatCoordinates, offset, ends[i], stride, true);
     context.closePath(); // FIXME is this needed here?
   }
   return offset;
@@ -569,11 +577,11 @@ ol.render.canvas.Immediate.prototype.drawLineStringGeometry =
   }
   if (!goog.isNull(this.strokeState_)) {
     this.setContextStrokeState_(this.strokeState_);
-    var pixelCoordinates = ol.geom.transformSimpleGeometry2D(
-        lineStringGeometry, this.transform_, this.pixelCoordinates_);
     var context = this.context_;
+    var flatCoordinates = lineStringGeometry.getFlatCoordinates();
     context.beginPath();
-    this.moveToLineTo_(pixelCoordinates, 0, pixelCoordinates.length, false);
+    this.moveToLineTo_(flatCoordinates, 0, flatCoordinates.length,
+        lineStringGeometry.getStride(), false);
     context.stroke();
   }
   if (this.text_ !== '') {
@@ -598,18 +606,18 @@ ol.render.canvas.Immediate.prototype.drawMultiLineStringGeometry =
   if (!ol.extent.intersects(this.extent_, geometryExtent)) {
     return;
   }
-  var pixelCoordinates;
   if (!goog.isNull(this.strokeState_)) {
     this.setContextStrokeState_(this.strokeState_);
-    pixelCoordinates = ol.geom.transformSimpleGeometry2D(
-        multiLineStringGeometry, this.transform_, this.pixelCoordinates_);
     var context = this.context_;
-    context.beginPath();
-    var ends = multiLineStringGeometry.getEnds();
+    var flatCoordinates = multiLineStringGeometry.getFlatCoordinates();
     var offset = 0;
+    var ends = multiLineStringGeometry.getEnds();
+    var stride = multiLineStringGeometry.getStride();
+    context.beginPath();
     var i, ii;
     for (i = 0, ii = ends.length; i < ii; ++i) {
-      offset = this.moveToLineTo_(pixelCoordinates, offset, ends[i], false);
+      offset = this.moveToLineTo_(
+          flatCoordinates, offset, ends[i], stride, false);
     }
     context.stroke();
   }
@@ -633,7 +641,6 @@ ol.render.canvas.Immediate.prototype.drawPolygonGeometry =
   if (!ol.extent.intersects(this.extent_, polygonGeometry.getExtent())) {
     return;
   }
-  var pixelCoordinates;
   if (!goog.isNull(this.strokeState_) || !goog.isNull(this.fillState_)) {
     if (!goog.isNull(this.fillState_)) {
       this.setContextFillState_(this.fillState_);
@@ -641,11 +648,10 @@ ol.render.canvas.Immediate.prototype.drawPolygonGeometry =
     if (!goog.isNull(this.strokeState_)) {
       this.setContextStrokeState_(this.strokeState_);
     }
-    pixelCoordinates = ol.geom.transformSimpleGeometry2D(
-        polygonGeometry, this.transform_, this.pixelCoordinates_);
     var context = this.context_;
     context.beginPath();
-    this.drawRings_(pixelCoordinates, 0, polygonGeometry.getEnds());
+    this.drawRings_(polygonGeometry.getOrientedFlatCoordinates(),
+        0, polygonGeometry.getEnds(), polygonGeometry.getStride());
     if (!goog.isNull(this.fillState_)) {
       context.fill();
     }
@@ -672,7 +678,6 @@ ol.render.canvas.Immediate.prototype.drawMultiPolygonGeometry =
   if (!ol.extent.intersects(this.extent_, multiPolygonGeometry.getExtent())) {
     return;
   }
-  var pixelCoordinates;
   if (!goog.isNull(this.strokeState_) || !goog.isNull(this.fillState_)) {
     if (!goog.isNull(this.fillState_)) {
       this.setContextFillState_(this.fillState_);
@@ -680,16 +685,16 @@ ol.render.canvas.Immediate.prototype.drawMultiPolygonGeometry =
     if (!goog.isNull(this.strokeState_)) {
       this.setContextStrokeState_(this.strokeState_);
     }
-    pixelCoordinates = ol.geom.transformSimpleGeometry2D(
-        multiPolygonGeometry, this.transform_, this.pixelCoordinates_);
     var context = this.context_;
-    var endss = multiPolygonGeometry.getEndss();
+    var flatCoordinates = multiPolygonGeometry.getOrientedFlatCoordinates();
     var offset = 0;
+    var endss = multiPolygonGeometry.getEndss();
+    var stride = multiPolygonGeometry.getStride();
     var i, ii;
     for (i = 0, ii = endss.length; i < ii; ++i) {
       var ends = endss[i];
       context.beginPath();
-      offset = this.drawRings_(pixelCoordinates, offset, ends);
+      offset = this.drawRings_(flatCoordinates, offset, ends, stride);
       if (!goog.isNull(this.fillState_)) {
         context.fill();
       }

@@ -269,6 +269,7 @@ ol.geom.transformSimpleGeometry2D =
   } else {
     var stride = simpleGeometry.getStride();
     return ol.geom.flat.transform.transform2D(
-        flatCoordinates, stride, transform, opt_dest);
+        flatCoordinates, 0, flatCoordinates.length, stride,
+        transform, opt_dest);
   }
 };
