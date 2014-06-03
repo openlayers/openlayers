@@ -75,6 +75,23 @@ oli.MapBrowserEvent.prototype.pixel;
 
 
 
+/** @interface */
+oli.MapEvent;
+
+
+/**
+ * @type {ol.Map}
+ */
+oli.MapEvent.prototype.map;
+
+
+/**
+ * @type {olx.FrameState}
+ */
+oli.MapEvent.prototype.frameState;
+
+
+
 /**
  * @interface
  */
@@ -109,6 +126,7 @@ oli.interaction.DragAndDropEvent.prototype.projection;
  * @type {File}
  */
 oli.interaction.DragAndDropEvent.prototype.file;
+
 
 
 /** @interface */

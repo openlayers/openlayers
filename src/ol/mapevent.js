@@ -27,6 +27,7 @@ ol.MapEventType = {
 /**
  * @constructor
  * @extends {goog.events.Event}
+ * @implements {oli.MapEvent}
  * @param {string} type Event type.
  * @param {ol.Map} map Map.
  * @param {?olx.FrameState=} opt_frameState Frame state.
