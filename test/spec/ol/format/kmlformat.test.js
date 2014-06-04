@@ -589,8 +589,52 @@ describe('ol.format.KML', function() {
         expect(imageStyle).to.be.an(ol.style.Icon);
         expect(imageStyle.getSrc()).to.eql('http://foo.png');
         expect(imageStyle.getAnchor()).to.be(null);
+        expect(imageStyle.getOrigin()).to.be(null);
         expect(imageStyle.getRotation()).to.eql(0);
         expect(imageStyle.getSize()).to.be(null);
+        expect(style.getText()).to.be(null);
+        expect(style.getZIndex()).to.be(undefined);
+      });
+
+      it('can read a complex feature\'s IconStyle', function() {
+        var text =
+            '<kml xmlns="http://earth.google.com/kml/2.2"' +
+            '     xmlns:gx="http://www.google.com/kml/ext/2.2">' +
+            '  <Placemark>' +
+            '    <Style>' +
+            '      <IconStyle>' +
+            '        <Icon>' +
+            '          <href>http://foo.png</href>' +
+            '          <gx:x>24</gx:x>' +
+            '          <gx:y>36</gx:y>' +
+            '          <gx:w>48</gx:w>' +
+            '          <gx:h>48</gx:h>' +
+            '        </Icon>' +
+            '        <hotSpot x="0.5" y="12" xunits="fraction" ' +
+            '                 yunits="pixels"/>' +
+            '      </IconStyle>' +
+            '    </Style>' +
+            '  </Placemark>' +
+            '</kml>';
+        var fs = format.readFeatures(text);
+        expect(fs).to.have.length(1);
+        var f = fs[0];
+        expect(f).to.be.an(ol.Feature);
+        var styleFunction = f.getStyleFunction();
+        expect(styleFunction).not.to.be(undefined);
+        var styleArray = styleFunction.call(f, 0);
+        expect(styleArray).to.be.an(Array);
+        expect(styleArray).to.have.length(1);
+        var style = styleArray[0];
+        expect(style).to.be.an(ol.style.Style);
+        expect(style.getFill()).to.be(ol.format.KML.DEFAULT_FILL_STYLE_);
+        expect(style.getStroke()).to.be(ol.format.KML.DEFAULT_STROKE_STYLE_);
+        var imageStyle = style.getImage();
+        imageStyle.iconImage_.size_ = [144, 192];
+        expect(imageStyle.getSize()).to.eql([48, 48]);
+        expect(imageStyle.getAnchor()).to.eql([24, 36]);
+        expect(imageStyle.getOrigin()).to.eql([24, 108]);
+        expect(imageStyle.getRotation()).to.eql(0);
         expect(style.getText()).to.be(null);
         expect(style.getZIndex()).to.be(undefined);
       });
