@@ -56,6 +56,9 @@ ol.control.Zoom = function(opt_options) {
   goog.events.listen(inElementHandler,
       ol.pointer.EventType.POINTERUP, goog.partial(
           ol.control.Zoom.prototype.zoomByDelta_, delta), false, this);
+  goog.events.listen(inElement,
+      goog.events.EventType.CLICK, goog.partial(
+          ol.control.Zoom.prototype.zoomByDelta_, delta), false, this);
 
   goog.events.listen(inElement, [
     goog.events.EventType.MOUSEOUT,
@@ -76,6 +79,9 @@ ol.control.Zoom = function(opt_options) {
   this.registerDisposable(outElementHandler);
   goog.events.listen(outElementHandler,
       ol.pointer.EventType.POINTERUP, goog.partial(
+          ol.control.Zoom.prototype.zoomByDelta_, -delta), false, this);
+  goog.events.listen(outElement,
+      goog.events.EventType.CLICK, goog.partial(
           ol.control.Zoom.prototype.zoomByDelta_, -delta), false, this);
 
   goog.events.listen(outElement, [
@@ -111,7 +117,11 @@ goog.inherits(ol.control.Zoom, ol.control.Control);
  * @private
  */
 ol.control.Zoom.prototype.zoomByDelta_ = function(delta, pointerEvent) {
-  pointerEvent.browserEvent.preventDefault();
+  if (goog.isDef(pointerEvent.browserEvent)) {
+    pointerEvent.browserEvent.preventDefault();
+  } else if (pointerEvent.screenX !== 0 && pointerEvent.screenY !== 0) {
+    return;
+  }
   // prevent the anchor from getting appended to the url
   var map = this.getMap();
   // FIXME works for View2D only

@@ -52,6 +52,8 @@ ol.control.Rotate = function(opt_options) {
   this.registerDisposable(handler);
   goog.events.listen(handler, ol.pointer.EventType.POINTERUP,
       ol.control.Rotate.prototype.resetNorth_, false, this);
+  goog.events.listen(button, goog.events.EventType.CLICK,
+      ol.control.Rotate.prototype.resetNorth_, false, this);
 
   goog.events.listen(button, [
     goog.events.EventType.MOUSEOUT,
@@ -92,7 +94,11 @@ goog.inherits(ol.control.Rotate, ol.control.Control);
  * @private
  */
 ol.control.Rotate.prototype.resetNorth_ = function(pointerEvent) {
-  pointerEvent.browserEvent.preventDefault();
+  if (goog.isDef(pointerEvent.browserEvent)) {
+    pointerEvent.browserEvent.preventDefault();
+  } else if (pointerEvent.screenX !== 0 && pointerEvent.screenY !== 0) {
+    return;
+  }
   // prevent the anchor from getting appended to the url
   var map = this.getMap();
   // FIXME works for View2D only

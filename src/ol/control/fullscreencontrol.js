@@ -52,6 +52,8 @@ ol.control.FullScreen = function(opt_options) {
   this.registerDisposable(buttonHandler);
   goog.events.listen(buttonHandler,
       ol.pointer.EventType.POINTERUP, this.handleClick_, false, this);
+  goog.events.listen(button, goog.events.EventType.CLICK,
+      this.handleClick_, false, this);
 
   goog.events.listen(button, [
     goog.events.EventType.MOUSEOUT,
@@ -92,7 +94,11 @@ ol.control.FullScreen.prototype.handleClick_ = function(pointerEvent) {
   if (!googx.dom.fullscreen.isSupported()) {
     return;
   }
-  pointerEvent.browserEvent.preventDefault();
+  if (goog.isDef(pointerEvent.browserEvent)) {
+    pointerEvent.browserEvent.preventDefault();
+  } else if (pointerEvent.screenX !== 0 && pointerEvent.screenY !== 0) {
+    return;
+  }
   var map = this.getMap();
   if (goog.isNull(map)) {
     return;
