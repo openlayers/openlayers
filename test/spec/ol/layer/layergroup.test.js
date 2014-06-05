@@ -184,7 +184,7 @@ describe('ol.layer.Group', function() {
       });
       expect(layerGroup.getLayers()).to.be.a(ol.Collection);
       expect(layerGroup.getLayers().getLength()).to.be(1);
-      expect(layerGroup.getLayers().getAt(0)).to.be(layer);
+      expect(layerGroup.getLayers().item(0)).to.be(layer);
 
       goog.dispose(layer);
       goog.dispose(layerGroup);
