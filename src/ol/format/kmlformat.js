@@ -27,8 +27,8 @@ goog.require('ol.geom.Polygon');
 goog.require('ol.proj');
 goog.require('ol.style.Fill');
 goog.require('ol.style.Icon');
-goog.require('ol.style.IconAnchorOrigin');
 goog.require('ol.style.IconAnchorUnits');
+goog.require('ol.style.IconOrigin');
 goog.require('ol.style.Image');
 goog.require('ol.style.Stroke');
 goog.require('ol.style.Style');
@@ -413,10 +413,6 @@ ol.format.KML.readStyleMapValue_ = function(node, objectStack) {
 ol.format.KML.IconStyleParser_ = function(node, objectStack) {
   goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT);
   goog.asserts.assert(node.localName == 'IconStyle');
-  // FIXME gx:x
-  // FIXME gx:y
-  // FIXME gx:w
-  // FIXME gx:h
   // FIXME refreshMode
   // FIXME refreshInterval
   // FIXME viewRefreshTime
@@ -456,6 +452,24 @@ ol.format.KML.IconStyleParser_ = function(node, objectStack) {
     anchorYUnits = ol.style.IconAnchorUnits.FRACTION;
   }
 
+  var offset;
+  var x = /** @type {number|undefined} */
+      (goog.object.get(IconObject, 'x'));
+  var y = /** @type {number|undefined} */
+      (goog.object.get(IconObject, 'y'));
+  if (goog.isDef(x) && goog.isDef(y)) {
+    offset = [x, y];
+  }
+
+  var size;
+  var w = /** @type {number|undefined} */
+      (goog.object.get(IconObject, 'w'));
+  var h = /** @type {number|undefined} */
+      (goog.object.get(IconObject, 'h'));
+  if (goog.isDef(w) && goog.isDef(h)) {
+    size = [w, h];
+  }
+
   var rotation;
   var heading = /** @type {number|undefined} */
       (goog.object.get(object, 'heading'));
@@ -465,17 +479,18 @@ ol.format.KML.IconStyleParser_ = function(node, objectStack) {
 
   var scale = /** @type {number|undefined} */
       (goog.object.get(object, 'scale'));
-  var size;
   if (src == ol.format.KML.DEFAULT_IMAGE_STYLE_SRC_) {
     size = ol.format.KML.DEFAULT_IMAGE_STYLE_SIZE_;
   }
 
   var imageStyle = new ol.style.Icon({
     anchor: anchor,
-    anchorOrigin: ol.style.IconAnchorOrigin.BOTTOM_LEFT,
+    anchorOrigin: ol.style.IconOrigin.BOTTOM_LEFT,
     anchorXUnits: anchorXUnits,
     anchorYUnits: anchorYUnits,
     crossOrigin: 'anonymous', // FIXME should this be configurable?
+    offset: offset,
+    offsetOrigin: ol.style.IconOrigin.BOTTOM_LEFT,
     rotation: rotation,
     scale: scale,
     size: size,
@@ -1158,7 +1173,13 @@ ol.format.KML.GEOMETRY_FLAT_COORDINATES_PARSERS_ = ol.xml.makeParsersNS(
 ol.format.KML.ICON_PARSERS_ = ol.xml.makeParsersNS(
     ol.format.KML.NAMESPACE_URIS_, {
       'href': ol.xml.makeObjectPropertySetter(ol.format.KML.readURI_)
-    });
+    }, ol.xml.makeParsersNS(
+        ol.format.KML.GX_NAMESPACE_URIS_, {
+          'x': ol.xml.makeObjectPropertySetter(ol.format.XSD.readDecimal),
+          'y': ol.xml.makeObjectPropertySetter(ol.format.XSD.readDecimal),
+          'w': ol.xml.makeObjectPropertySetter(ol.format.XSD.readDecimal),
+          'h': ol.xml.makeObjectPropertySetter(ol.format.XSD.readDecimal)
+        }));
 
 
 /**

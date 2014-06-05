@@ -42,6 +42,12 @@ ol.style.Circle = function(opt_options) {
 
   /**
    * @private
+   * @type {Array.<number>}
+   */
+  this.origin_ = [0, 0];
+
+  /**
+   * @private
    * @type {number}
    */
   this.radius_ = options.radius;
@@ -74,7 +80,6 @@ ol.style.Circle = function(opt_options) {
 
   goog.base(this, {
     opacity: 1,
-    origin: [0, 0],
     rotateWithView: false,
     rotation: 0,
     scale: 1,
@@ -125,6 +130,15 @@ ol.style.Circle.prototype.getImage = function(pixelRatio) {
  */
 ol.style.Circle.prototype.getImageState = function() {
   return ol.style.ImageState.LOADED;
+};
+
+
+/**
+ * @inheritDoc
+ * @todo api
+ */
+ol.style.Circle.prototype.getOrigin = function() {
+  return this.origin_;
 };
 
 
