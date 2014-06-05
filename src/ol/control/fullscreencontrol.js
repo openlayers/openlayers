@@ -51,7 +51,7 @@ ol.control.FullScreen = function(opt_options) {
   var buttonHandler = new ol.pointer.PointerEventHandler(button);
   this.registerDisposable(buttonHandler);
   goog.events.listen(buttonHandler,
-      ol.pointer.EventType.POINTERUP, this.handleClick_, false, this);
+      ol.pointer.EventType.POINTERUP, this.handlePointerUp_, false, this);
   goog.events.listen(button, goog.events.EventType.CLICK,
       this.handleClick_, false, this);
 
@@ -87,16 +87,32 @@ goog.inherits(ol.control.FullScreen, ol.control.Control);
 
 
 /**
- * @param {ol.pointer.PointerEvent} pointerEvent Pointer event.
+ * @param {goog.events.BrowserEvent} event The event to handle
  * @private
  */
-ol.control.FullScreen.prototype.handleClick_ = function(pointerEvent) {
-  if (!googx.dom.fullscreen.isSupported()) {
+ol.control.FullScreen.prototype.handleClick_ = function(event) {
+  if (event.screenX !== 0 && event.screenY !== 0) {
     return;
   }
-  if (goog.isDef(pointerEvent.browserEvent)) {
-    pointerEvent.browserEvent.preventDefault();
-  } else if (pointerEvent.screenX !== 0 && pointerEvent.screenY !== 0) {
+  this.handleFullScreen_();
+};
+
+
+/**
+ * @param {ol.pointer.PointerEvent} pointerEvent The event to handle
+ * @private
+ */
+ol.control.FullScreen.prototype.handlePointerUp_ = function(pointerEvent) {
+  pointerEvent.browserEvent.preventDefault();
+  this.handleFullScreen_();
+};
+
+
+/**
+ * @private
+ */
+ol.control.FullScreen.prototype.handleFullScreen_ = function() {
+  if (!googx.dom.fullscreen.isSupported()) {
     return;
   }
   var map = this.getMap();

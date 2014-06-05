@@ -47,9 +47,9 @@ ol.control.ZoomToExtent = function(opt_options) {
   var buttonHandler = new ol.pointer.PointerEventHandler(button);
   this.registerDisposable(buttonHandler);
   goog.events.listen(buttonHandler, ol.pointer.EventType.POINTERUP,
-      this.handleZoomToExtent_, false, this);
+      this.handlePointerUp_, false, this);
   goog.events.listen(button, goog.events.EventType.CLICK,
-      this.handleZoomToExtent_, false, this);
+      this.handleClick_, false, this);
 
   goog.events.listen(button, [
     goog.events.EventType.MOUSEOUT,
@@ -71,16 +71,31 @@ goog.inherits(ol.control.ZoomToExtent, ol.control.Control);
 
 
 /**
- * @param {ol.pointer.PointerEvent} pointerEvent Pointer event.
+ * @param {goog.events.BrowserEvent} event The event to handle
  * @private
  */
-ol.control.ZoomToExtent.prototype.handleZoomToExtent_ = function(pointerEvent) {
-  if (goog.isDef(pointerEvent.browserEvent)) {
-    pointerEvent.browserEvent.preventDefault();
-  } else if (pointerEvent.screenX !== 0 && pointerEvent.screenY !== 0) {
+ol.control.ZoomToExtent.prototype.handleClick_ = function(event) {
+  if (event.screenX !== 0 && event.screenY !== 0) {
     return;
   }
-  // prevent #zoomExtent anchor from getting appended to the url
+  this.handleZoomToExtent_();
+};
+
+
+/**
+ * @param {ol.pointer.PointerEvent} pointerEvent The event to handle
+ * @private
+ */
+ol.control.ZoomToExtent.prototype.handlePointerUp_ = function(pointerEvent) {
+  pointerEvent.browserEvent.preventDefault();
+  this.handleZoomToExtent_();
+};
+
+
+/**
+ * @private
+ */
+ol.control.ZoomToExtent.prototype.handleZoomToExtent_ = function() {
   var map = this.getMap();
   var view = map.getView();
   goog.asserts.assert(goog.isDef(view));

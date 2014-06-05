@@ -55,10 +55,10 @@ ol.control.Zoom = function(opt_options) {
   this.registerDisposable(inElementHandler);
   goog.events.listen(inElementHandler,
       ol.pointer.EventType.POINTERUP, goog.partial(
-          ol.control.Zoom.prototype.zoomByDelta_, delta), false, this);
+          ol.control.Zoom.prototype.handlePointerUp_, delta), false, this);
   goog.events.listen(inElement,
       goog.events.EventType.CLICK, goog.partial(
-          ol.control.Zoom.prototype.zoomByDelta_, delta), false, this);
+          ol.control.Zoom.prototype.handleClick_, delta), false, this);
 
   goog.events.listen(inElement, [
     goog.events.EventType.MOUSEOUT,
@@ -79,10 +79,10 @@ ol.control.Zoom = function(opt_options) {
   this.registerDisposable(outElementHandler);
   goog.events.listen(outElementHandler,
       ol.pointer.EventType.POINTERUP, goog.partial(
-          ol.control.Zoom.prototype.zoomByDelta_, -delta), false, this);
+          ol.control.Zoom.prototype.handlePointerUp_, -delta), false, this);
   goog.events.listen(outElement,
       goog.events.EventType.CLICK, goog.partial(
-          ol.control.Zoom.prototype.zoomByDelta_, -delta), false, this);
+          ol.control.Zoom.prototype.handleClick_, -delta), false, this);
 
   goog.events.listen(outElement, [
     goog.events.EventType.MOUSEOUT,
@@ -113,16 +113,33 @@ goog.inherits(ol.control.Zoom, ol.control.Control);
 
 /**
  * @param {number} delta Zoom delta.
- * @param {ol.pointer.PointerEvent} pointerEvent The pointer event to handle.
+ * @param {goog.events.BrowserEvent} event The event to handle
  * @private
  */
-ol.control.Zoom.prototype.zoomByDelta_ = function(delta, pointerEvent) {
-  if (goog.isDef(pointerEvent.browserEvent)) {
-    pointerEvent.browserEvent.preventDefault();
-  } else if (pointerEvent.screenX !== 0 && pointerEvent.screenY !== 0) {
+ol.control.Zoom.prototype.handleClick_ = function(delta, event) {
+  if (event.screenX !== 0 && event.screenY !== 0) {
     return;
   }
-  // prevent the anchor from getting appended to the url
+  this.zoomByDelta_(delta);
+};
+
+
+/**
+ * @param {number} delta Zoom delta.
+ * @param {ol.pointer.PointerEvent} pointerEvent The event to handle
+ * @private
+ */
+ol.control.Zoom.prototype.handlePointerUp_ = function(delta, pointerEvent) {
+  pointerEvent.browserEvent.preventDefault();
+  this.zoomByDelta_(delta);
+};
+
+
+/**
+ * @param {number} delta Zoom delta.
+ * @private
+ */
+ol.control.Zoom.prototype.zoomByDelta_ = function(delta) {
   var map = this.getMap();
   // FIXME works for View2D only
   var view = map.getView();
