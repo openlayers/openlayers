@@ -416,8 +416,10 @@ ol.render.canvas.Replay.prototype.replay_ = function(
         goog.asserts.assert(goog.isString(instruction[4]));
         goog.asserts.assert(goog.isNumber(instruction[5]));
         goog.asserts.assert(!goog.isNull(instruction[6]));
+        var usePixelRatio = goog.isDef(instruction[7]) ? instruction[7] : true;
+        var lineWidth = /** @type {number} */ (instruction[2]);
         context.strokeStyle = /** @type {string} */ (instruction[1]);
-        context.lineWidth = /** @type {number} */ (instruction[2]) * pixelRatio;
+        context.lineWidth = usePixelRatio ? lineWidth * pixelRatio : lineWidth;
         context.lineCap = /** @type {string} */ (instruction[3]);
         context.lineJoin = /** @type {string} */ (instruction[4]);
         context.miterLimit = /** @type {number} */ (instruction[5]);
@@ -1647,7 +1649,7 @@ ol.render.canvas.TextReplay.prototype.setReplayStrokeState_ =
   var setStrokeStyleInstruction = [
     ol.render.canvas.Instruction.SET_STROKE_STYLE, strokeState.strokeStyle,
     strokeState.lineWidth, strokeState.lineCap, strokeState.lineJoin,
-    strokeState.miterLimit, strokeState.lineDash
+    strokeState.miterLimit, strokeState.lineDash, false
   ];
   this.instructions.push(setStrokeStyleInstruction);
   this.hitDetectionInstructions.push(setStrokeStyleInstruction);

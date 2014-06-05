@@ -946,8 +946,8 @@ ol.render.canvas.Immediate.prototype.setTextStyle = function(textStyle) {
             textStrokeStyleLineDash : ol.render.canvas.defaultLineDash,
         lineJoin: goog.isDef(textStrokeStyleLineJoin) ?
             textStrokeStyleLineJoin : ol.render.canvas.defaultLineJoin,
-        lineWidth: this.pixelRatio_ * (goog.isDef(textStrokeStyleWidth) ?
-            textStrokeStyleWidth : ol.render.canvas.defaultLineWidth),
+        lineWidth: goog.isDef(textStrokeStyleWidth) ?
+            textStrokeStyleWidth : ol.render.canvas.defaultLineWidth,
         miterLimit: goog.isDef(textStrokeStyleMiterLimit) ?
             textStrokeStyleMiterLimit : ol.render.canvas.defaultMiterLimit,
         strokeStyle: ol.color.asString(!goog.isNull(textStrokeStyleColor) ?
