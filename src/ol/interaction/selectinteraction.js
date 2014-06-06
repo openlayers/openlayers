@@ -135,7 +135,7 @@ ol.interaction.Select.prototype.handleMapBrowserEvent =
         }, undefined, this.layerFilter_);
     if (goog.isDef(feature) &&
         features.getLength() == 1 &&
-        features.getAt(0) == feature) {
+        features.item(0) == feature) {
       // No change
     } else {
       if (features.getLength() !== 0) {

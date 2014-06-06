@@ -144,9 +144,9 @@ ol.Collection.prototype.getArray = function() {
  * Get the element at the provided index.
  * @param {number} index Index.
  * @return {*} Element.
- * @todo api
+ * @todo api stable
  */
-ol.Collection.prototype.getAt = function(index) {
+ol.Collection.prototype.item = function(index) {
   return this.array_[index];
 };
 
