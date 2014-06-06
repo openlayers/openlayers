@@ -19,22 +19,22 @@ describe('ol.parser.WKT', function() {
     // there are two forms to test
     var wkt = 'MULTIPOINT((10 40),(40 30),(20 20),(30 10))';
     var geom = parser.read(wkt);
-    var components = geom.getComponents();
-    expect(components.length).to.eql(4);
-    expect(components[0].getCoordinates()).to.eql([10, 40]);
-    expect(components[1].getCoordinates()).to.eql([40, 30]);
-    expect(components[2].getCoordinates()).to.eql([20, 20]);
-    expect(components[3].getCoordinates()).to.eql([30, 10]);
+    var points = geom.getPoints();
+    expect(points.length).to.eql(4);
+    expect(points[0].getCoordinates()).to.eql([10, 40]);
+    expect(points[1].getCoordinates()).to.eql([40, 30]);
+    expect(points[2].getCoordinates()).to.eql([20, 20]);
+    expect(points[3].getCoordinates()).to.eql([30, 10]);
     expect(parser.write(geom)).to.eql(wkt);
     // this has whitespace
     wkt = 'MULTIPOINT (10 40, 40 30, 20 20, 30 10)';
     geom = parser.read(wkt);
-    components = geom.getComponents();
-    expect(components.length).to.eql(4);
-    expect(components[0].getCoordinates()).to.eql([10, 40]);
-    expect(components[1].getCoordinates()).to.eql([40, 30]);
-    expect(components[2].getCoordinates()).to.eql([20, 20]);
-    expect(components[3].getCoordinates()).to.eql([30, 10]);
+    points = geom.getPoints();
+    expect(points.length).to.eql(4);
+    expect(points[0].getCoordinates()).to.eql([10, 40]);
+    expect(points[1].getCoordinates()).to.eql([40, 30]);
+    expect(points[2].getCoordinates()).to.eql([20, 20]);
+    expect(points[3].getCoordinates()).to.eql([30, 10]);
   });
 
   it('LineString read / written correctly', function() {
@@ -55,10 +55,10 @@ describe('ol.parser.WKT', function() {
         '(40 40,30 30,40 20,30 10))';
     var geom = parser.read(wkt);
     expect(geom.getType()).to.eql(ol.geom.GeometryType.MULTI_LINE_STRING);
-    var components = geom.getComponents();
-    expect(components.length).to.eql(2);
-    expect(components[0].getType()).to.eql(ol.geom.GeometryType.LINE_STRING);
-    expect(components[0].getCoordinates()).to.eql(
+    var linestrings = geom.getLineStrings();
+    expect(linestrings.length).to.eql(2);
+    expect(linestrings[0].getType()).to.eql(ol.geom.GeometryType.LINE_STRING);
+    expect(linestrings[0].getCoordinates()).to.eql(
         [[10, 10], [20, 20], [10, 40]]);
     expect(parser.write(geom)).to.eql(wkt);
     // test whitespace when reading
@@ -66,11 +66,11 @@ describe('ol.parser.WKT', function() {
         '(40 40, 30 30, 40 20, 30 10) )';
     geom = parser.read(wkt);
     expect(geom.getType()).to.eql(ol.geom.GeometryType.MULTI_LINE_STRING);
-    components = geom.getComponents();
-    expect(components.length).to.eql(2);
-    expect(components[0].getType()).to.eql(
+    linestrings = geom.getLineStrings();
+    expect(linestrings.length).to.eql(2);
+    expect(linestrings[0].getType()).to.eql(
         ol.geom.GeometryType.LINE_STRING);
-    expect(components[0].getCoordinates()).to.eql(
+    expect(linestrings[0].getCoordinates()).to.eql(
         [[10, 10], [20, 20], [10, 40]]);
   });
 
@@ -78,7 +78,7 @@ describe('ol.parser.WKT', function() {
     var wkt = 'POLYGON((30 10,10 20,20 40,40 40,30 10))';
     var geom = parser.read(wkt);
     expect(geom.getType()).to.eql(ol.geom.GeometryType.POLYGON);
-    var rings = geom.getRings();
+    var rings = geom.getLinearRings();
     expect(rings.length).to.eql(1);
     expect(rings[0].getType()).to.eql(ol.geom.GeometryType.LINEAR_RING);
     expect(rings[0].getCoordinates()).to.eql(
@@ -89,7 +89,7 @@ describe('ol.parser.WKT', function() {
     wkt = 'POLYGON((35 10,10 20,15 40,45 45,35 10),(20 30,30 20,35 35,20 30))';
     geom = parser.read(wkt);
     expect(geom.getType()).to.eql(ol.geom.GeometryType.POLYGON);
-    var rings = geom.getRings();
+    rings = geom.getLinearRings();
     expect(rings.length).to.eql(2);
     expect(rings[0].getType()).to.eql(ol.geom.GeometryType.LINEAR_RING);
     expect(rings[1].getType()).to.eql(ol.geom.GeometryType.LINEAR_RING);
@@ -103,7 +103,7 @@ describe('ol.parser.WKT', function() {
     wkt = 'POLYGON ( (30 10, 10 20, 20 40, 40 40, 30 10) )';
     geom = parser.read(wkt);
     expect(geom.getType()).to.eql(ol.geom.GeometryType.POLYGON);
-    var rings = geom.getRings();
+    rings = geom.getLinearRings();
     expect(rings.length).to.eql(1);
     expect(rings[0].getType()).to.eql(ol.geom.GeometryType.LINEAR_RING);
     expect(rings[0].getCoordinates()).to.eql(
@@ -116,17 +116,17 @@ describe('ol.parser.WKT', function() {
         '((20 35,45 20,30 5,10 10,10 30,20 35),(30 20,20 25,20 15,30 20)))';
     var geom = parser.read(wkt);
     expect(geom.getType()).to.eql(ol.geom.GeometryType.MULTI_POLYGON);
-    var components = geom.getComponents();
-    expect(components.length).to.eql(2);
-    expect(components[0].getType()).to.eql(ol.geom.GeometryType.POLYGON);
-    expect(components[1].getType()).to.eql(ol.geom.GeometryType.POLYGON);
-    expect(components[0].getRings().length).to.eql(1);
-    expect(components[1].getRings().length).to.eql(2);
-    expect(components[0].getRings()[0].getCoordinates()).to.eql(
+    var polygons = geom.getPolygons();
+    expect(polygons.length).to.eql(2);
+    expect(polygons[0].getType()).to.eql(ol.geom.GeometryType.POLYGON);
+    expect(polygons[1].getType()).to.eql(ol.geom.GeometryType.POLYGON);
+    expect(polygons[0].getLinearRings().length).to.eql(1);
+    expect(polygons[1].getLinearRings().length).to.eql(2);
+    expect(polygons[0].getLinearRings()[0].getCoordinates()).to.eql(
         [[40, 40], [45, 30], [20, 45], [40, 40]]);
-    expect(components[1].getRings()[0].getCoordinates()).to.eql(
+    expect(polygons[1].getLinearRings()[0].getCoordinates()).to.eql(
         [[20, 35], [45, 20], [30, 5], [10, 10], [10, 30], [20, 35]]);
-    expect(components[1].getRings()[1].getCoordinates()).to.eql(
+    expect(polygons[1].getLinearRings()[1].getCoordinates()).to.eql(
         [[30, 20], [20, 25], [20, 15], [30, 20]]);
     expect(parser.write(geom)).to.eql(wkt);
 
@@ -136,42 +136,41 @@ describe('ol.parser.WKT', function() {
         '( 30 20,  20 25,20 15  ,30 20 ) ))';
     geom = parser.read(wkt);
     expect(geom.getType()).to.eql(ol.geom.GeometryType.MULTI_POLYGON);
-    var components = geom.getComponents();
-    expect(components.length).to.eql(2);
-    expect(components[0].getType()).to.eql(ol.geom.GeometryType.POLYGON);
-    expect(components[1].getType()).to.eql(ol.geom.GeometryType.POLYGON);
-    expect(components[0].getRings().length).to.eql(1);
-    expect(components[1].getRings().length).to.eql(2);
-    expect(components[0].getRings()[0].getCoordinates()).to.eql(
+    polygons = geom.getPolygons();
+    expect(polygons.length).to.eql(2);
+    expect(polygons[0].getType()).to.eql(ol.geom.GeometryType.POLYGON);
+    expect(polygons[1].getType()).to.eql(ol.geom.GeometryType.POLYGON);
+    expect(polygons[0].getLinearRings().length).to.eql(1);
+    expect(polygons[1].getLinearRings().length).to.eql(2);
+    expect(polygons[0].getLinearRings()[0].getCoordinates()).to.eql(
         [[40, 40], [45, 30], [20, 45], [40, 40]]);
-    expect(components[1].getRings()[0].getCoordinates()).to.eql(
+    expect(polygons[1].getLinearRings()[0].getCoordinates()).to.eql(
         [[20, 35], [45, 20], [30, 5], [10, 10], [10, 30], [20, 35]]);
-    expect(components[1].getRings()[1].getCoordinates()).to.eql(
+    expect(polygons[1].getLinearRings()[1].getCoordinates()).to.eql(
         [[30, 20], [20, 25], [20, 15], [30, 20]]);
   });
 
   it('GeometryCollection read / written correctly', function() {
     var wkt = 'GEOMETRYCOLLECTION(POINT(4 6),LINESTRING(4 6,7 10))';
     var geom = parser.read(wkt);
-    var components = geom.getComponents();
-    expect(components.length).to.eql(2);
+    var geoms = geom.getGeometries();
+    expect(geoms.length).to.eql(2);
     expect(geom.getType()).to.eql(ol.geom.GeometryType.GEOMETRY_COLLECTION);
-    expect(components[0].getType()).to.eql(ol.geom.GeometryType.POINT);
-    expect(components[1].getType()).to.eql(ol.geom.GeometryType.LINE_STRING);
-    expect(components[0].getCoordinates()).to.eql([4, 6]);
-    expect(components[1].getCoordinates()).to.eql([[4, 6], [7, 10]]);
+    expect(geoms[0].getType()).to.eql(ol.geom.GeometryType.POINT);
+    expect(geoms[1].getType()).to.eql(ol.geom.GeometryType.LINE_STRING);
+    expect(geoms[0].getCoordinates()).to.eql([4, 6]);
+    expect(geoms[1].getCoordinates()).to.eql([[4, 6], [7, 10]]);
     expect(parser.write(geom)).to.eql(wkt);
     // test whitespace when reading
     wkt = 'GEOMETRYCOLLECTION ( POINT (4 6), LINESTRING (4 6, 7 10) )';
     geom = parser.read(wkt);
-    components = geom.getComponents();
-    expect(components.length).to.eql(2);
+    geoms = geom.getGeometries();
+    expect(geoms.length).to.eql(2);
     expect(geom.getType()).to.eql(ol.geom.GeometryType.GEOMETRY_COLLECTION);
-    expect(components[0].getType()).to.eql(ol.geom.GeometryType.POINT);
-    expect(components[1].getType()).to.eql(
-        ol.geom.GeometryType.LINE_STRING);
-    expect(components[0].getCoordinates()).to.eql([4, 6]);
-    expect(components[1].getCoordinates()).to.eql([[4, 6], [7, 10]]);
+    expect(geoms[0].getType()).to.eql(ol.geom.GeometryType.POINT);
+    expect(geoms[1].getType()).to.eql(ol.geom.GeometryType.LINE_STRING);
+    expect(geoms[0].getCoordinates()).to.eql([4, 6]);
+    expect(geoms[1].getCoordinates()).to.eql([[4, 6], [7, 10]]);
   });
 
 });
