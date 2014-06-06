@@ -108,7 +108,7 @@ olx.GeolocationOptions.prototype.projection;
  *     layers: (Array.<ol.layer.Base>|ol.Collection|undefined),
  *     ol3Logo: (boolean|undefined),
  *     overlays: (ol.Collection|Array.<ol.Overlay>|undefined),
- *     renderer: (ol.RendererHint|Array.<ol.RendererHint|string>|string|undefined),
+ *     renderer: (ol.RendererType|Array.<ol.RendererType|string>|string|undefined),
  *     target: (Element|string|undefined),
  *     view: (ol.IView|undefined)}}
  * @todo api
@@ -181,7 +181,7 @@ olx.MapOptions.prototype.overlays;
 
 /**
  * Renderer.
- * @type {ol.RendererHint|Array.<ol.RendererHint|string>|string|undefined}
+ * @type {ol.RendererType|Array.<ol.RendererType|string>|string|undefined}
  */
 olx.MapOptions.prototype.renderer;
 

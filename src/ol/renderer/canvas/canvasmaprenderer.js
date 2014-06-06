@@ -7,6 +7,7 @@ goog.require('goog.dom');
 goog.require('goog.style');
 goog.require('goog.vec.Mat4');
 goog.require('ol');
+goog.require('ol.RendererType');
 goog.require('ol.css');
 goog.require('ol.dom');
 goog.require('ol.layer.Image');
@@ -123,6 +124,14 @@ ol.renderer.canvas.Map.prototype.getCanvasLayerRenderer = function(layer) {
   var layerRenderer = this.getLayerRenderer(layer);
   goog.asserts.assertInstanceof(layerRenderer, ol.renderer.canvas.Layer);
   return /** @type {ol.renderer.canvas.Layer} */ (layerRenderer);
+};
+
+
+/**
+ * @inheritDoc
+ */
+ol.renderer.canvas.Map.prototype.getType = function() {
+  return ol.RendererType.CANVAS;
 };
 
 
