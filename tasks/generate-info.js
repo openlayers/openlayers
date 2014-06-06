@@ -6,7 +6,7 @@ var async = require('async');
 var fse = require('fs-extra');
 var walk = require('walk').walk;
 
-var sourceDir = path.join(__dirname, '..', 'src', 'ol');
+var sourceDir = path.join(__dirname, '..', 'src');
 var infoPath = path.join(__dirname, '..', 'build', 'info.json');
 var jsdoc = path.join(__dirname, '..', 'node_modules', '.bin', 'jsdoc');
 var jsdocConfig = path.join(

@@ -29,7 +29,7 @@
   "inherits": "ol.json",
 
   "inputs": [
-    "../build/src/internal/src/requireallga.js"
+    "../build/exports.js"
   ],
 
   "mode": "WHITESPACE",

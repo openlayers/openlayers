@@ -1,6 +1,0 @@
-@exportSymbol ga.Lang
-@exportProperty ga.Lang.getCode
-@exportProperty ga.Lang.setCode
-@exportProperty ga.Lang.translate
-@exportProperty ga.Lang.msg.de
-@exportProperty ga.Lang.msg.fr

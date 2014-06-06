@@ -39,7 +39,7 @@ from types import MethodType
 targets.add = MethodType(add, targets, TargetCollection)
 
 # We redefine 'build'
-virtual('build', 'build/ga.css', 'build/src/internal/src/requireallga.js', 'build/ga.js',
+virtual('build', 'build/ga.css', 'build/ga.js',
         'build/ga-whitespace.js','build/layersconfig', 'build/serverconfig')
 
 # We redifine 'apidoc'
@@ -53,8 +53,7 @@ def jsdoc_npm(t):
     t.touch()
 
 @target('build/jsdoc-%(BRANCH)s-timestamp' % vars(variables), JSDOC,'host-resources',
-                'build/src/external/src/exports.js',
-                        SRC, SHADER_SRC, ifind('apidoc/template'))
+                EXPORTS, SRC, SHADER_SRC, ifind('apidoc/template'))
 def jsdoc_BRANCH_timestamp(t):
     t.run(JSDOC, '-c', 'apidoc/conf.json', 'src', 'apidoc/ga-index.md',
        '-d', 'build/hosted/%(BRANCH)s/apidoc')
@@ -72,19 +71,13 @@ AVAILABLE_LANGS = ['de','fr','en','it','rm']
 
 api_url = os.environ.get('API_URL', '//api3.geo.admin.ch')
 
-# Custom target for ga
-@target('build/src/internal/src/requireallga.js', SRC, SHADER_SRC,
-        LIBTESS_JS_SRC)
-def build_src_internal_src_requireall_js(t):
-    _build_require_list(t.dependencies, t.name)
-
 @target('build/ga.css', 'build/ga.js')
 def build_ga_css(t):
     t.cp('css/ch_cross.png','build')
     t.cp('css/editortoolbar.png','build')
     t.touch()
 
-@target('build/ga.js', PLOVR_JAR, SRC, EXTERNAL_SRC, SHADER_SRC,
+@target('build/ga.js', PLOVR_JAR, SRC, EXPORTS, SHADER_SRC,
         LIBTESS_JS_SRC, 'buildcfg/base.json', 'buildcfg/ga.json')
 def build_ga_js(t):
     t.output('%(JAVA)s', '-jar', PLOVR_JAR, 'build', 'buildcfg/ga.json')
@@ -93,7 +86,7 @@ def build_ga_js(t):
     t.cp('resources/proj4js-compressed.js','build')
     report_sizes(t)
 
-@target('build/ga-whitespace.js', PLOVR_JAR, SRC, INTERNAL_SRC, SHADER_SRC,
+@target('build/ga-whitespace.js', PLOVR_JAR, SRC, EXPORTS, SHADER_SRC,
         LIBTESS_JS_SRC, 'buildcfg/base.json', 'buildcfg/ga.json',
         'buildcfg/ga-whitespace.json')
 def build_ga_whitespace_js(t):

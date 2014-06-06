@@ -39,7 +39,7 @@ var gax;
  *     target: (Element|string|undefined),
  *     tooltip: (boolean|undefined),
  *     view: (ol.IView|undefined)}}
- * @todo stability experimental
+ * @todo api
  */
 gax.MapOptions;
 
