@@ -10,6 +10,7 @@ goog.require('ol.FeatureOverlay');
 goog.require('ol.Map');
 goog.require('ol.MapBrowserEvent');
 goog.require('ol.MapBrowserEvent.EventType');
+goog.require('ol.events.condition');
 goog.require('ol.feature');
 goog.require('ol.geom.GeometryType');
 goog.require('ol.geom.LineString');
@@ -190,6 +191,13 @@ ol.interaction.Draw = function(options) {
    */
   this.geometryName_ = options.geometryName;
 
+  /**
+   * @private
+   * @type {ol.events.ConditionType}
+   */
+  this.condition_ = goog.isDef(options.condition) ?
+      options.condition : ol.events.condition.noModifierKeys;
+
 };
 goog.inherits(ol.interaction.Draw, ol.interaction.Pointer);
 
@@ -242,8 +250,12 @@ ol.interaction.Draw.prototype.handleMapBrowserEvent = function(event) {
  * @return {boolean} Pass the event to other interactions.
  */
 ol.interaction.Draw.prototype.handlePointerDown = function(event) {
-  this.downPx_ = event.pixel;
-  return true;
+  if (this.condition_(event)) {
+    this.downPx_ = event.pixel;
+    return true;
+  } else {
+    return false;
+  }
 };
 
 
