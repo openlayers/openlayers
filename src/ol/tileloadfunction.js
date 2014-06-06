@@ -6,6 +6,6 @@ goog.provide('ol.TileLoadFunctionType');
  * `{string}` for the src as arguments.
  *
  * @typedef {function(ol.ImageTile, string)}
- * @todo stability experimental
+ * @todo api
  */
 ol.TileLoadFunctionType;

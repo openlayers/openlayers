@@ -2,7 +2,6 @@
 
 goog.provide('ol.control.Attribution');
 
-goog.require('goog.array');
 goog.require('goog.dom');
 goog.require('goog.dom.TagName');
 goog.require('goog.object');
@@ -21,7 +20,7 @@ goog.require('ol.css');
  * @constructor
  * @extends {ol.control.Control}
  * @param {olx.control.AttributionOptions=} opt_options Attribution options.
- * @todo stability experimental
+ * @todo api
  */
 ol.control.Attribution = function(opt_options) {
 
@@ -67,7 +66,7 @@ goog.inherits(ol.control.Attribution, ol.control.Control);
 
 
 /**
- * @param {?oli.FrameState} frameState Frame state.
+ * @param {?olx.FrameState} frameState Frame state.
  * @return {Array.<Object.<string, ol.Attribution>>} Attributions.
  */
 ol.control.Attribution.prototype.getSourceAttributions =
@@ -119,7 +118,7 @@ ol.control.Attribution.prototype.handleMapPostrender = function(mapEvent) {
 
 /**
  * @private
- * @param {?oli.FrameState} frameState Frame state.
+ * @param {?olx.FrameState} frameState Frame state.
  */
 ol.control.Attribution.prototype.updateElement_ = function(frameState) {
 

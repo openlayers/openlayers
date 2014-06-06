@@ -69,6 +69,28 @@ describe('ol.interaction.Draw', function() {
 
   });
 
+  describe('specifying a geometryName', function() {
+
+    beforeEach(function() {
+      var draw = new ol.interaction.Draw({
+        source: source,
+        geometryName: 'the_geom',
+        type: ol.geom.GeometryType.POINT
+      });
+      map.addInteraction(draw);
+    });
+
+    it('creates a feature with the correct geometryName', function() {
+      simulateEvent('pointermove', 10, 20);
+      simulateEvent('pointerdown', 10, 20);
+      simulateEvent('pointerup', 10, 20);
+      var features = source.getFeatures();
+      var geometry = features[0].getGeometry();
+      expect(features[0].getGeometryName()).to.equal('the_geom');
+      expect(geometry).to.be.a(ol.geom.Point);
+    });
+  });
+
   describe('drawing points', function() {
     var draw;
 

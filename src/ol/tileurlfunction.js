@@ -14,7 +14,7 @@ goog.require('ol.TileCoord');
  *
  * @typedef {function(ol.TileCoord, number,
  *           ol.proj.Projection): (string|undefined)}
- * @todo stability experimental
+ * @todo api
  */
 ol.TileUrlFunctionType;
 

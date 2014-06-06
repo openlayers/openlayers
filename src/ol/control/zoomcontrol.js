@@ -23,7 +23,7 @@ goog.require('ol.pointer.PointerEventHandler');
  * @constructor
  * @extends {ol.control.Control}
  * @param {olx.control.ZoomOptions=} opt_options Zoom options.
- * @todo stability experimental
+ * @todo api
  */
 ol.control.Zoom = function(opt_options) {
 
@@ -48,7 +48,6 @@ ol.control.Zoom = function(opt_options) {
   }, zoomInTipLabel);
   var inElement = goog.dom.createDom(goog.dom.TagName.BUTTON, {
     'class': className + '-in ol-has-tooltip',
-    'name' : 'ZoomIn',
     'type' : 'button'
   }, tTipZoomIn, zoomInLabel);
 
@@ -66,12 +65,11 @@ ol.control.Zoom = function(opt_options) {
   }, false);
 
   var tTipsZoomOut = goog.dom.createDom(goog.dom.TagName.SPAN, {
-    'role' : 'tooltip',
-    'type' : 'button'
+    'role' : 'tooltip'
   }, zoomOutTipLabel);
   var outElement = goog.dom.createDom(goog.dom.TagName.BUTTON, {
     'class': className + '-out  ol-has-tooltip',
-    'name' : 'ZoomOut'
+    'type' : 'button'
   }, tTipsZoomOut, zoomOutLabel);
 
   var outElementHandler = new ol.pointer.PointerEventHandler(outElement);
@@ -87,7 +85,8 @@ ol.control.Zoom = function(opt_options) {
     this.blur();
   }, false);
 
-  var cssClasses = className + ' ' + ol.css.CLASS_UNSELECTABLE;
+  var cssClasses = className + ' ' + ol.css.CLASS_UNSELECTABLE + ' ' +
+      ol.css.CLASS_CONTROL;
   var element = goog.dom.createDom(goog.dom.TagName.DIV, cssClasses, inElement,
       outElement);
 

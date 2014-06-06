@@ -1,17 +1,12 @@
 goog.provide('ol.interaction.DragRotate');
 
 goog.require('goog.asserts');
+goog.require('ol');
 goog.require('ol.ViewHint');
 goog.require('ol.events.ConditionType');
 goog.require('ol.events.condition');
 goog.require('ol.interaction.Interaction');
 goog.require('ol.interaction.Pointer');
-
-
-/**
- * @define {number} Animation duration.
- */
-ol.interaction.DRAGROTATE_ANIMATION_DURATION = 250;
 
 
 
@@ -25,6 +20,7 @@ ol.interaction.DRAGROTATE_ANIMATION_DURATION = 250;
  * @constructor
  * @extends {ol.interaction.Pointer}
  * @param {olx.interaction.DragRotateOptions=} opt_options Options.
+ * @todo api
  */
 ol.interaction.DragRotate = function(opt_options) {
 
@@ -92,7 +88,7 @@ ol.interaction.DragRotate.prototype.handlePointerUp =
   var view2D = view.getView2D();
   var view2DState = view2D.getView2DState();
   ol.interaction.Interaction.rotate(map, view2D, view2DState.rotation,
-      undefined, ol.interaction.DRAGROTATE_ANIMATION_DURATION);
+      undefined, ol.DRAGROTATE_ANIMATION_DURATION);
   return false;
 };
 

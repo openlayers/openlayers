@@ -28,3 +28,6 @@ page.open(examplePath, function(s) {
   }
   phantom.exit(exitCode);
 });
+page.onConsoleMessage = function(msg) {
+  console.log('console:', msg);
+};

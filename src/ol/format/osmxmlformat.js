@@ -18,6 +18,7 @@ goog.require('ol.xml');
 /**
  * @constructor
  * @extends {ol.format.XMLFeature}
+ * @todo api
  */
 ol.format.OSMXML = function() {
   goog.base(this);
@@ -180,6 +181,17 @@ ol.format.OSMXML.NODE_PARSERS_ = ol.xml.makeParsersNS(
 
 
 /**
+ * Read all features from an OSM source.
+ *
+ * @function
+ * @param {ArrayBuffer|Document|Node|Object|string} source Source.
+ * @return {Array.<ol.Feature>} Features.
+ * @todo api
+ */
+ol.format.OSMXML.prototype.readFeatures;
+
+
+/**
  * @inheritDoc
  */
 ol.format.OSMXML.prototype.readFeaturesFromNode = function(node) {
@@ -195,6 +207,17 @@ ol.format.OSMXML.prototype.readFeaturesFromNode = function(node) {
   }
   return [];
 };
+
+
+/**
+ * Read the projection from an OSM source.
+ *
+ * @function
+ * @param {ArrayBuffer|Document|Node|Object|string} source Source.
+ * @return {ol.proj.Projection} Projection.
+ * @todo api
+ */
+ol.format.OSMXML.prototype.readProjection;
 
 
 /**

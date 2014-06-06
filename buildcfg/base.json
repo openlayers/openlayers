@@ -68,7 +68,6 @@
   ],
 
   "paths": [
-    "../build/src/internal/src",
     "../src"
   ],
 

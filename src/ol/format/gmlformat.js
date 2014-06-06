@@ -1,6 +1,5 @@
 goog.provide('ol.format.GML');
 
-goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('goog.dom');
 goog.require('goog.dom.NodeType');
@@ -29,7 +28,7 @@ goog.require('ol.xml');
  * @param {olx.format.GMLOptions=} opt_options
  *     Optional configuration object.
  * @extends {ol.format.XMLFeature}
- * @todo stability experimental
+ * @todo api
  */
 ol.format.GML = function(opt_options) {
   var options = /** @type {olx.format.GMLOptions} */
@@ -119,10 +118,12 @@ ol.format.GML.readFeatures_ = function(node, objectStack) {
   if (localName == 'FeatureCollection') {
     features = ol.xml.pushParseAndPop(null,
         ol.format.GML.FEATURE_COLLECTION_PARSERS, node, objectStack);
-  } else if (localName == 'featureMembers') {
+  } else if (localName == 'featureMembers' || localName == 'featureMember') {
     var parsers = {};
     var parsersNS = {};
-    parsers[featureType] = ol.xml.makeArrayPusher(ol.format.GML.readFeature_);
+    parsers[featureType] = (localName == 'featureMembers') ?
+        ol.xml.makeArrayPusher(ol.format.GML.readFeature_) :
+        ol.xml.makeReplacer(ol.format.GML.readFeature_);
     parsersNS[goog.object.get(context, 'featureNS')] = parsers;
     features = ol.xml.pushParseAndPop([], parsersNS, node, objectStack);
   }
@@ -138,6 +139,7 @@ ol.format.GML.readFeatures_ = function(node, objectStack) {
  */
 ol.format.GML.FEATURE_COLLECTION_PARSERS = {
   'http://www.opengis.net/gml': {
+    'featureMember': ol.xml.makeArrayPusher(ol.format.GML.readFeatures_),
     'featureMembers': ol.xml.makeReplacer(ol.format.GML.readFeatures_)
   }
 };
@@ -1038,6 +1040,17 @@ ol.format.GML.prototype.readGeometryFromNode = function(node) {
 
 
 /**
+ * Read all features from a GML FeatureCollection.
+ *
+ * @function
+ * @param {ArrayBuffer|Document|Node|Object|string} source Source.
+ * @return {Array.<ol.Feature>} Features.
+ * @todo api
+ */
+ol.format.GML.prototype.readFeatures;
+
+
+/**
  * @inheritDoc
  */
 ol.format.GML.prototype.readFeaturesFromNode = function(node) {
@@ -1666,6 +1679,17 @@ ol.format.GML.prototype.writeGeometryNode = function(geometry) {
       ol.format.GML.GEOMETRY_NODE_FACTORY_, [geometry], []);
   return geom;
 };
+
+
+/**
+ * Encode an array of features in GML 3.1.1 Simple Features.
+ *
+ * @function
+ * @param {Array.<ol.Feature>} features Features.
+ * @return {ArrayBuffer|Node|Object|string} Result.
+ * @todo api
+ */
+ol.format.GML.prototype.writeFeatures;
 
 
 /**

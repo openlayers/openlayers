@@ -27,7 +27,7 @@
   "inherits": "base.json",
 
   "inputs": [
-    "../build/src/external/src/exports.js"
+    "../build/exports.js"
   ],
 
   "output-wrapper": "// OpenLayers 3. see http://ol3js.org/\n(function(){%output%})();",

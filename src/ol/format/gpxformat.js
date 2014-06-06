@@ -19,7 +19,7 @@ goog.require('ol.xml');
 /**
  * @constructor
  * @extends {ol.format.XMLFeature}
- * @todo stability experimental
+ * @todo api
  */
 ol.format.GPX = function() {
   goog.base(this);
@@ -369,6 +369,7 @@ ol.format.GPX.WPT_PARSERS_ = ol.xml.makeParsersNS(
  * @function
  * @param {ArrayBuffer|Document|Node|Object|string} source Source.
  * @return {ol.Feature} Feature.
+ * @todo api
  */
 ol.format.GPX.prototype.readFeature;
 
@@ -378,8 +379,7 @@ ol.format.GPX.prototype.readFeature;
  */
 ol.format.GPX.prototype.readFeatureFromNode = function(node) {
   goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT);
-  if (goog.array.indexOf(ol.format.GPX.NAMESPACE_URIS_, node.namespaceURI) ==
-      -1) {
+  if (!goog.array.contains(ol.format.GPX.NAMESPACE_URIS_, node.namespaceURI)) {
     return null;
   }
   var featureReader = ol.format.GPX.FEATURE_READER_[node.localName];
@@ -400,6 +400,7 @@ ol.format.GPX.prototype.readFeatureFromNode = function(node) {
  * @function
  * @param {ArrayBuffer|Document|Node|Object|string} source Source.
  * @return {Array.<ol.Feature>} Features.
+ * @todo api
  */
 ol.format.GPX.prototype.readFeatures;
 
@@ -409,8 +410,7 @@ ol.format.GPX.prototype.readFeatures;
  */
 ol.format.GPX.prototype.readFeaturesFromNode = function(node) {
   goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT);
-  if (goog.array.indexOf(ol.format.GPX.NAMESPACE_URIS_, node.namespaceURI) ==
-      -1) {
+  if (!goog.array.contains(ol.format.GPX.NAMESPACE_URIS_, node.namespaceURI)) {
     return [];
   }
   if (node.localName == 'gpx') {
@@ -430,8 +430,10 @@ ol.format.GPX.prototype.readFeaturesFromNode = function(node) {
 /**
  * Read the projection from a GPX source.
  *
+ * @function
  * @param {ArrayBuffer|Document|Node|Object|string} source Source.
  * @return {ol.proj.Projection} Projection.
+ * @todo api
  */
 ol.format.GPX.prototype.readProjection;
 
@@ -793,7 +795,6 @@ ol.format.GPX.GPX_SERIALIZERS_ = ol.xml.makeStructureNS(
 /**
  * @constructor
  * @extends {ol.format.GPX}
- * @todo stability experimental
  */
 ol.format.GPX.V1_1 = function() {
   goog.base(this);
@@ -807,6 +808,7 @@ goog.inherits(ol.format.GPX.V1_1, ol.format.GPX);
  * @function
  * @param {Array.<ol.Feature>} features Features.
  * @return {ArrayBuffer|Node|Object|string} Result.
+ * @todo api
  */
 ol.format.GPX.prototype.writeFeatures;
 

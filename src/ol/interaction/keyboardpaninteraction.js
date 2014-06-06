@@ -6,17 +6,12 @@ goog.require('goog.asserts');
 goog.require('goog.events.KeyCodes');
 goog.require('goog.events.KeyHandler.EventType');
 goog.require('goog.functions');
+goog.require('ol');
 goog.require('ol.View2D');
 goog.require('ol.coordinate');
 goog.require('ol.events.ConditionType');
 goog.require('ol.events.condition');
 goog.require('ol.interaction.Interaction');
-
-
-/**
- * @define {number} Pan duration.
- */
-ol.interaction.KEYBOARD_PAN_DURATION = 100;
 
 
 
@@ -33,7 +28,7 @@ ol.interaction.KEYBOARD_PAN_DURATION = 100;
  * @constructor
  * @extends {ol.interaction.Interaction}
  * @param {olx.interaction.KeyboardPanOptions=} opt_options Options.
- * @todo stability experimental
+ * @todo api
  */
 ol.interaction.KeyboardPan = function(opt_options) {
 
@@ -93,7 +88,7 @@ ol.interaction.KeyboardPan.prototype.handleMapBrowserEvent =
       var delta = [deltaX, deltaY];
       ol.coordinate.rotate(delta, view2DState.rotation);
       ol.interaction.Interaction.pan(
-          map, view, delta, ol.interaction.KEYBOARD_PAN_DURATION);
+          map, view, delta, ol.KEYBOARD_PAN_DURATION);
       mapBrowserEvent.preventDefault();
       stopEvent = true;
     }

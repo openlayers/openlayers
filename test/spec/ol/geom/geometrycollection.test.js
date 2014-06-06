@@ -139,10 +139,38 @@ describe('ol.geom.GeometryCollection', function() {
 
   });
 
+  describe('#transform()', function() {
+
+    var line, multi, point;
+    beforeEach(function() {
+      point = new ol.geom.Point([10, 20]);
+      line = new ol.geom.LineString([[10, 20], [30, 40]]);
+      multi = new ol.geom.GeometryCollection([point, line]);
+    });
+
+    it('transforms all geometries', function() {
+      multi.transform('EPSG:4326', 'EPSG:3857');
+
+      var geometries = multi.getGeometries();
+      expect(geometries[0]).to.be.a(ol.geom.Point);
+      expect(geometries[1]).to.be.a(ol.geom.LineString);
+
+      var coords = geometries[0].getCoordinates();
+      expect(coords[0]).to.roughlyEqual(1113194.90, 1e-2);
+      expect(coords[1]).to.roughlyEqual(2273030.92, 1e-2);
+
+      coords = geometries[1].getCoordinates();
+      expect(coords[0][0]).to.roughlyEqual(1113194.90, 1e-2);
+      expect(coords[0][1]).to.roughlyEqual(2273030.92, 1e-2);
+      expect(coords[1][0]).to.roughlyEqual(3339584.72, 1e-2);
+      expect(coords[1][1]).to.roughlyEqual(4865942.27, 1e-2);
+    });
+
+  });
+
 });
 
 
-goog.require('ol.Collection');
 goog.require('ol.geom.Geometry');
 goog.require('ol.geom.GeometryCollection');
 goog.require('ol.geom.LineString');

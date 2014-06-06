@@ -20,6 +20,7 @@ describe('ol.pointer.MouseSource', function() {
   });
 
   afterEach(function() {
+    clock.restore();
     handler.dispose();
   });
 

@@ -17,7 +17,7 @@ goog.require('ol.css');
  * @constructor
  * @extends {ol.control.Control}
  * @param {olx.control.LogoOptions=} opt_options Logo options.
- * @todo stability experimental
+ * @todo api
  */
 ol.control.Logo = function(opt_options) {
 
@@ -65,7 +65,7 @@ ol.control.Logo.prototype.handleMapPostrender = function(mapEvent) {
 
 
 /**
- * @param {?oli.FrameState} frameState Frame state.
+ * @param {?olx.FrameState} frameState Frame state.
  * @private
  */
 ol.control.Logo.prototype.updateElement_ = function(frameState) {

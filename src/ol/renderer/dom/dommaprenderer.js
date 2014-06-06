@@ -5,6 +5,7 @@ goog.require('goog.dom');
 goog.require('goog.dom.TagName');
 goog.require('goog.functions');
 goog.require('goog.style');
+goog.require('ol');
 goog.require('ol.css');
 goog.require('ol.layer.Image');
 goog.require('ol.layer.Tile');

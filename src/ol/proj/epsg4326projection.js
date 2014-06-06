@@ -11,6 +11,7 @@ goog.require('ol.proj.Units');
  * @extends {ol.proj.Projection}
  * @param {string} code Code.
  * @param {string=} opt_axisOrientation Axis orientation.
+ * @todo api
  */
 ol.proj.EPSG4326 = function(code, opt_axisOrientation) {
   goog.base(this, {

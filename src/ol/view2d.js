@@ -4,6 +4,7 @@ goog.provide('ol.View2D');
 goog.provide('ol.View2DProperty');
 
 goog.require('goog.asserts');
+goog.require('ol');
 goog.require('ol.CenterConstraint');
 goog.require('ol.Constraints');
 goog.require('ol.IView2D');
@@ -23,7 +24,6 @@ goog.require('ol.proj.Units');
 
 /**
  * @enum {string}
- * @todo stability experimental
  */
 ol.View2DProperty = {
   CENTER: 'center',
@@ -59,14 +59,13 @@ ol.View2DProperty = {
  * that is passed to a setter will effectively be the value set in the view,
  * and returned by the corresponding getter.
  *
- * But an `ol.View2D` object also has a *resolution constraint* and a
- * *rotation constraint*. There's currently no *center constraint*, but
- * this may change in the future.
+ * But an `ol.View2D` object also has a *resolution constraint*, a
+ * *rotation constraint* and a *center constraint*.
  *
  * As said above no constraints are applied when the setters are used to set
  * new states for the view. Applying constraints is done explicitly through
  * the use of the `constrain*` functions (`constrainResolution` and
- * `constrainRotation`).
+ * `constrainRotation` and `constrainCenter`).
  *
  * The main users of the constraints are the interactions and the
  * controls. For example, double-clicking on the map changes the view to
@@ -86,11 +85,7 @@ ol.View2DProperty = {
  * @implements {ol.IView3D}
  * @extends {ol.View}
  * @param {olx.View2DOptions=} opt_options View2D options.
- * @todo stability experimental
- * @todo observable center {ol.Coordinate} the center of the view
- * @todo observable projection {ol.proj.Projection} the projection of the view
- * @todo observable resolution {number} the resolution of the view
- * @todo observable rotation {number} the rotation of the view
+ * @todo api
  */
 ol.View2D = function(opt_options) {
   goog.base(this);
@@ -120,6 +115,12 @@ ol.View2D = function(opt_options) {
    */
   this.minResolution_ = resolutionConstraintInfo.minResolution;
 
+  /**
+   * @private
+   * @type {number}
+   */
+  this.minZoom_ = resolutionConstraintInfo.minZoom;
+
   var centerConstraint = ol.View2D.createCenterConstraint_(options);
   var resolutionConstraint = resolutionConstraintInfo.constraint;
   var rotationConstraint = ol.View2D.createRotationConstraint_(options);
@@ -135,7 +136,7 @@ ol.View2D = function(opt_options) {
     values[ol.View2DProperty.RESOLUTION] = options.resolution;
   } else if (goog.isDef(options.zoom)) {
     values[ol.View2DProperty.RESOLUTION] = this.constrainResolution(
-        this.maxResolution_, options.zoom);
+        this.maxResolution_, options.zoom - this.minZoom_);
   }
   values[ol.View2DProperty.ROTATION] =
       goog.isDef(options.rotation) ? options.rotation : 0;
@@ -182,8 +183,10 @@ ol.View2D.prototype.calculateCenterZoom = function(resolution, anchor) {
 
 
 /**
+ * Get the constrained center of this view.
  * @param {ol.Coordinate|undefined} center Center.
  * @return {ol.Coordinate|undefined} Constrained center.
+ * @todo api
  */
 ol.View2D.prototype.constrainCenter = function(center) {
   return this.constraints_.center(center);
@@ -191,12 +194,12 @@ ol.View2D.prototype.constrainCenter = function(center) {
 
 
 /**
- * Get the constrained the resolution of this view.
+ * Get the constrained resolution of this view.
  * @param {number|undefined} resolution Resolution.
  * @param {number=} opt_delta Delta. Default is `0`.
  * @param {number=} opt_direction Direction. Default is `0`.
  * @return {number|undefined} Constrained resolution.
- * @todo stability experimental
+ * @todo api
  */
 ol.View2D.prototype.constrainResolution = function(
     resolution, opt_delta, opt_direction) {
@@ -211,7 +214,7 @@ ol.View2D.prototype.constrainResolution = function(
  * @param {number|undefined} rotation Rotation.
  * @param {number=} opt_delta Delta. Default is `0`.
  * @return {number|undefined} Constrained rotation.
- * @todo stability experimental
+ * @todo api
  */
 ol.View2D.prototype.constrainRotation = function(rotation, opt_delta) {
   var delta = opt_delta || 0;
@@ -221,6 +224,8 @@ ol.View2D.prototype.constrainRotation = function(rotation, opt_delta) {
 
 /**
  * @inheritDoc
+ * @todo observable
+ * @todo api
  */
 ol.View2D.prototype.getCenter = function() {
   return /** @type {ol.Coordinate|undefined} */ (
@@ -237,7 +242,7 @@ goog.exportProperty(
  * resolution and the current center.
  * @param {ol.Size} size Box pixel size.
  * @return {ol.Extent} Extent.
- * @todo stability experimental
+ * @todo api
  */
 ol.View2D.prototype.calculateExtent = function(size) {
   goog.asserts.assert(this.isDef());
@@ -253,6 +258,8 @@ ol.View2D.prototype.calculateExtent = function(size) {
 
 /**
  * @inheritDoc
+ * @todo observable
+ * @todo api
  */
 ol.View2D.prototype.getProjection = function() {
   return /** @type {ol.proj.Projection|undefined} */ (
@@ -266,6 +273,8 @@ goog.exportProperty(
 
 /**
  * @inheritDoc
+ * @todo observable
+ * @todo api
  */
 ol.View2D.prototype.getResolution = function() {
   return /** @type {number|undefined} */ (
@@ -278,9 +287,12 @@ goog.exportProperty(
 
 
 /**
+ * Get the resolution for a provided extent (in map units) and size (in pixels).
  * @param {ol.Extent} extent Extent.
  * @param {ol.Size} size Box pixel size.
- * @return {number} Resolution.
+ * @return {number} The resolution at which the provided extent will render at
+ *     the given size.
+ * @todo api
  */
 ol.View2D.prototype.getResolutionForExtent = function(extent, size) {
   var xResolution = ol.extent.getWidth(extent) / size[0];
@@ -316,6 +328,8 @@ ol.View2D.prototype.getResolutionForValueFunction = function(opt_power) {
 
 /**
  * @inheritDoc
+ * @todo observable
+ * @todo api
  */
 ol.View2D.prototype.getRotation = function() {
   return /** @type {number|undefined} */ (this.get(ol.View2DProperty.ROTATION));
@@ -353,6 +367,7 @@ ol.View2D.prototype.getValueForResolutionFunction = function(opt_power) {
 
 /**
  * @inheritDoc
+ * @todo api
  */
 ol.View2D.prototype.getView2D = function() {
   return this;
@@ -368,7 +383,7 @@ ol.View2D.prototype.getView2DState = function() {
   var projection = this.getProjection();
   var resolution = /** @type {number} */ (this.getResolution());
   var rotation = this.getRotation();
-  return /** @type {oli.View2DState} */ ({
+  return /** @type {olx.View2DState} */ ({
     center: center.slice(),
     projection: goog.isDef(projection) ? projection : null,
     resolution: resolution,
@@ -388,10 +403,10 @@ ol.View2D.prototype.getView3D = function() {
  * Get the current zoom level. Return undefined if the current
  * resolution is undefined or not a "constrained resolution".
  * @return {number|undefined} Zoom.
- * @todo stability experimental
+ * @todo api
  */
 ol.View2D.prototype.getZoom = function() {
-  var zoom;
+  var offset;
   var resolution = this.getResolution();
 
   if (goog.isDef(resolution)) {
@@ -399,14 +414,14 @@ ol.View2D.prototype.getZoom = function() {
     do {
       res = this.constrainResolution(this.maxResolution_, z);
       if (res == resolution) {
-        zoom = z;
+        offset = z;
         break;
       }
       ++z;
     } while (res > this.minResolution_);
   }
 
-  return zoom;
+  return goog.isDef(offset) ? this.minZoom_ + offset : offset;
 };
 
 
@@ -414,7 +429,7 @@ ol.View2D.prototype.getZoom = function() {
  * Fit the given extent based on the given map size.
  * @param {ol.Extent} extent Extent.
  * @param {ol.Size} size Box pixel size.
- * @todo stability experimental
+ * @todo api
  */
 ol.View2D.prototype.fitExtent = function(extent, size) {
   if (!ol.extent.isEmpty(extent)) {
@@ -436,7 +451,7 @@ ol.View2D.prototype.fitExtent = function(extent, size) {
  * @param {ol.geom.SimpleGeometry} geometry Geometry.
  * @param {ol.Size} size Box pixel size.
  * @param {olx.View2D.fitGeometryOptions=} opt_options Options.
- * @todo stability experimental
+ * @todo api
  */
 ol.View2D.prototype.fitGeometry = function(geometry, size, opt_options) {
   var options = goog.isDef(opt_options) ? opt_options : {};
@@ -503,7 +518,7 @@ ol.View2D.prototype.fitGeometry = function(geometry, size, opt_options) {
  * @param {ol.Coordinate} coordinate Coordinate.
  * @param {ol.Size} size Box pixel size.
  * @param {ol.Pixel} position Position on the view to center on.
- * @todo stability experimental
+ * @todo api
  */
 ol.View2D.prototype.centerOn = function(coordinate, size, position) {
   // calculate rotated position
@@ -538,6 +553,7 @@ ol.View2D.prototype.isDef = function() {
  * Rotate the view around a given coordinate.
  * @param {number} rotation New rotation value for the view.
  * @param {ol.Coordinate=} opt_anchor The rotation center.
+ * @todo api
  */
 ol.View2D.prototype.rotate = function(rotation, opt_anchor) {
   if (goog.isDef(opt_anchor)) {
@@ -550,8 +566,9 @@ ol.View2D.prototype.rotate = function(rotation, opt_anchor) {
 
 /**
  * Set the center of the current view.
- * @param {ol.Coordinate|undefined} center Center.
- * @todo stability experimental
+ * @param {ol.Coordinate|undefined} center The center of the view.
+ * @todo observable
+ * @todo api
  */
 ol.View2D.prototype.setCenter = function(center) {
   this.set(ol.View2DProperty.CENTER, center);
@@ -565,8 +582,9 @@ goog.exportProperty(
 /**
  * Set the projection of this view.
  * Warning! This code is not yet implemented. Function should not be used.
- * @param {ol.proj.Projection|undefined} projection Projection.
- * @todo stability experimental
+ * @param {ol.proj.Projection|undefined} projection The projection of the view.
+ * @todo observable
+ * @todo api
  */
 ol.View2D.prototype.setProjection = function(projection) {
   this.set(ol.View2DProperty.PROJECTION, projection);
@@ -579,8 +597,9 @@ goog.exportProperty(
 
 /**
  * Set the resolution for this view.
- * @param {number|undefined} resolution Resolution.
- * @todo stability experimental
+ * @param {number|undefined} resolution The resolution of the view.
+ * @todo observable
+ * @todo api
  */
 ol.View2D.prototype.setResolution = function(resolution) {
   this.set(ol.View2DProperty.RESOLUTION, resolution);
@@ -593,8 +612,9 @@ goog.exportProperty(
 
 /**
  * Set the rotation for this view.
- * @param {number|undefined} rotation Rotation.
- * @todo stability experimental
+ * @param {number|undefined} rotation The rotation of the view.
+ * @todo observable
+ * @todo api
  */
 ol.View2D.prototype.setRotation = function(rotation) {
   this.set(ol.View2DProperty.ROTATION, rotation);
@@ -608,10 +628,11 @@ goog.exportProperty(
 /**
  * Zoom to a specific zoom level.
  * @param {number} zoom Zoom level.
- * @todo stability experimental
+ * @todo api
  */
 ol.View2D.prototype.setZoom = function(zoom) {
-  var resolution = this.constrainResolution(this.maxResolution_, zoom, 0);
+  var resolution = this.constrainResolution(
+      this.maxResolution_, zoom - this.minZoom_, 0);
   this.setResolution(resolution);
 };
 
@@ -640,6 +661,21 @@ ol.View2D.createResolutionConstraint_ = function(options) {
   var resolutionConstraint;
   var maxResolution;
   var minResolution;
+
+  // TODO: move these to be ol constants
+  // see https://github.com/openlayers/ol3/issues/2076
+  var defaultMaxZoom = 28;
+  var defaultZoomFactor = 2;
+
+  var minZoom = goog.isDef(options.minZoom) ?
+      options.minZoom : ol.DEFAULT_MIN_ZOOM;
+
+  var maxZoom = goog.isDef(options.maxZoom) ?
+      options.maxZoom : defaultMaxZoom;
+
+  var zoomFactor = goog.isDef(options.zoomFactor) ?
+      options.zoomFactor : defaultZoomFactor;
+
   if (goog.isDef(options.resolutions)) {
     var resolutions = options.resolutions;
     maxResolution = resolutions[0];
@@ -647,33 +683,53 @@ ol.View2D.createResolutionConstraint_ = function(options) {
     resolutionConstraint = ol.ResolutionConstraint.createSnapToResolutions(
         resolutions);
   } else {
+    // calculate the default min and max resolution
+    var projection = options.projection;
+    var extent = ol.proj.createProjection(projection, 'EPSG:3857').getExtent();
+    var size = goog.isNull(extent) ?
+        // use an extent that can fit the whole world if need be
+        360 * ol.proj.METERS_PER_UNIT[ol.proj.Units.DEGREES] /
+            ol.proj.METERS_PER_UNIT[projection.getUnits()] :
+        Math.max(ol.extent.getWidth(extent), ol.extent.getHeight(extent));
+
+    var defaultMaxResolution = size / ol.DEFAULT_TILE_SIZE / Math.pow(
+        defaultZoomFactor, ol.DEFAULT_MIN_ZOOM);
+
+    var defaultMinResolution = defaultMaxResolution / Math.pow(
+        defaultZoomFactor, defaultMaxZoom - ol.DEFAULT_MIN_ZOOM);
+
+    // user provided maxResolution takes precedence
     maxResolution = options.maxResolution;
-    if (!goog.isDef(maxResolution)) {
-      var projection = options.projection;
-      var projectionExtent = ol.proj.createProjection(projection, 'EPSG:3857')
-          .getExtent();
-      var size = goog.isNull(projectionExtent) ?
-          // use an extent that can fit the whole world if need be
-          360 * ol.proj.METERS_PER_UNIT[ol.proj.Units.DEGREES] /
-              ol.proj.METERS_PER_UNIT[projection.getUnits()] :
-          Math.max(projectionExtent[2] - projectionExtent[0],
-              projectionExtent[3] - projectionExtent[1]);
-      maxResolution = size / ol.DEFAULT_TILE_SIZE;
+    if (goog.isDef(maxResolution)) {
+      minZoom = 0;
+    } else {
+      maxResolution = defaultMaxResolution / Math.pow(zoomFactor, minZoom);
     }
-    var maxZoom = options.maxZoom;
-    if (!goog.isDef(maxZoom)) {
-      maxZoom = 28;
+
+    // user provided minResolution takes precedence
+    minResolution = options.minResolution;
+    if (!goog.isDef(minResolution)) {
+      if (goog.isDef(options.maxZoom)) {
+        if (goog.isDef(options.maxResolution)) {
+          minResolution = maxResolution / Math.pow(zoomFactor, maxZoom);
+        } else {
+          minResolution = defaultMaxResolution / Math.pow(zoomFactor, maxZoom);
+        }
+      } else {
+        minResolution = defaultMinResolution;
+      }
     }
-    var zoomFactor = options.zoomFactor;
-    if (!goog.isDef(zoomFactor)) {
-      zoomFactor = 2;
-    }
-    minResolution = maxResolution / Math.pow(zoomFactor, maxZoom);
+
+    // given discrete zoom levels, minResolution may be different than provided
+    maxZoom = minZoom + Math.floor(
+        Math.log(maxResolution / minResolution) / Math.log(zoomFactor));
+    minResolution = maxResolution / Math.pow(zoomFactor, maxZoom - minZoom);
+
     resolutionConstraint = ol.ResolutionConstraint.createSnapToPower(
-        zoomFactor, maxResolution, maxZoom);
+        zoomFactor, maxResolution, maxZoom - minZoom);
   }
   return {constraint: resolutionConstraint, maxResolution: maxResolution,
-    minResolution: minResolution};
+    minResolution: minResolution, minZoom: minZoom};
 };
 
 

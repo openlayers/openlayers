@@ -24,7 +24,7 @@ goog.require('ol.pointer.PointerEventHandler');
  * @constructor
  * @extends {ol.control.Control}
  * @param {olx.control.FullScreenOptions=} opt_options Options.
- * @todo stability experimental
+ * @todo api
  */
 ol.control.FullScreen = function(opt_options) {
 
@@ -64,10 +64,10 @@ ol.control.FullScreen = function(opt_options) {
       googx.dom.fullscreen.EventType.CHANGE,
       this.handleFullScreenChange_, false, this);
 
-  var element = goog.dom.createDom(goog.dom.TagName.DIV, {
-    'class': this.cssClassName_ + ' ' + ol.css.CLASS_UNSELECTABLE + ' ' +
-        (!googx.dom.fullscreen.isSupported() ? ol.css.CLASS_UNSUPPORTED : '')
-  }, button);
+  var cssClasses = this.cssClassName_ + ' ' + ol.css.CLASS_UNSELECTABLE +
+      ' ' + ol.css.CLASS_CONTROL +
+      (!googx.dom.fullscreen.isSupported() ? ol.css.CLASS_UNSUPPORTED : '');
+  var element = goog.dom.createDom(goog.dom.TagName.DIV, cssClasses, button);
 
   goog.base(this, {
     element: element,

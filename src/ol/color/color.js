@@ -5,20 +5,12 @@
 
 goog.provide('ol.color');
 
-goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('goog.color');
 goog.require('goog.color.names');
 goog.require('goog.math');
 goog.require('goog.vec.Mat4');
-
-
-/**
- * @define {boolean} Enable named colors.
- * Enabling named colors adds about 3KB uncompressed / 1.5KB compressed to the
- * final build size.
- */
-ol.color.ENABLE_NAMED_COLORS = true;
+goog.require('ol');
 
 
 /**
@@ -103,6 +95,7 @@ ol.color.blend = function(dst, src, opt_color) {
 /**
  * @param {ol.Color|string} color Color.
  * @return {ol.Color} Color.
+ * @todo api
  */
 ol.color.asArray = function(color) {
   if (goog.isArray(color)) {
@@ -117,6 +110,7 @@ ol.color.asArray = function(color) {
 /**
  * @param {ol.Color|string} color Color.
  * @return {string} String.
+ * @todo api
  */
 ol.color.asString = function(color) {
   if (goog.isString(color)) {
@@ -210,7 +204,7 @@ ol.color.fromString = (
 ol.color.fromStringInternal_ = function(s) {
 
   var isHex = false;
-  if (ol.color.ENABLE_NAMED_COLORS && goog.color.names.hasOwnProperty(s)) {
+  if (ol.ENABLE_NAMED_COLORS && goog.color.names.hasOwnProperty(s)) {
     // goog.color.names does not have a type declaration, so add a typecast
     s = /** @type {string} */ (goog.color.names[s]);
     isHex = true;

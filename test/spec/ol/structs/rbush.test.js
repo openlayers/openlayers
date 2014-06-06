@@ -335,5 +335,4 @@ describe('ol.structs.RBush', function() {
 
 });
 
-goog.require('goog.object');
 goog.require('ol.structs.RBush');

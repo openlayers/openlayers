@@ -9,7 +9,10 @@ goog.require('ol.proj');
 
 
 /**
+ * State of the source. `0` means 'loading', `1` means 'ready', and `2` means
+ * 'error'.
  * @enum {number}
+ * @todo api
  */
 ol.source.State = {
   LOADING: 0,
@@ -24,7 +27,6 @@ ol.source.State = {
  *            logo: (string|undefined),
  *            projection: ol.proj.ProjectionLike,
  *            state: (ol.source.State|string|undefined)}}
- * @todo stability experimental
  */
 ol.source.SourceOptions;
 
@@ -33,8 +35,8 @@ ol.source.SourceOptions;
 /**
  * @constructor
  * @extends {ol.Observable}
+ * @fires change Triggered when the state of the source changes.
  * @param {ol.source.SourceOptions} options Source options.
- * @todo stability experimental
  */
 ol.source.Source = function(options) {
 
@@ -131,6 +133,7 @@ ol.source.Source.prototype.getResolutions = goog.abstractMethod;
 
 /**
  * @return {ol.source.State} State.
+ * @todo api
  */
 ol.source.Source.prototype.getState = function() {
   return this.state_;

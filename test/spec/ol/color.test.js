@@ -13,7 +13,7 @@ describe('ol.color', function() {
       ol.color.fromStringInternal_.restore();
     });
 
-    if (ol.color.ENABLE_NAMED_COLORS) {
+    if (ol.ENABLE_NAMED_COLORS) {
       it('can parse named colors', function() {
         expect(ol.color.fromString('red')).to.eql([255, 0, 0, 1]);
       });
@@ -36,7 +36,7 @@ describe('ol.color', function() {
           [255, 255, 0, 0.1]);
     });
 
-    if (ol.color.ENABLE_NAMED_COLORS) {
+    if (ol.ENABLE_NAMED_COLORS) {
       it('caches parsed values', function() {
         var count = ol.color.fromStringInternal_.callCount;
         ol.color.fromString('aquamarine');

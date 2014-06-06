@@ -58,7 +58,7 @@ describe('ol.Feature', function() {
 
   });
 
-  describe('#getAttributes()', function() {
+  describe('#getProperties()', function() {
 
     it('returns an object with all attributes', function() {
       var point = new ol.geom.Point([15, 30]);
@@ -78,6 +78,12 @@ describe('ol.Feature', function() {
       expect(attributes.ten).to.be(10);
     });
 
+    it('is empty by default', function() {
+      var feature = new ol.Feature();
+      var properties = feature.getProperties();
+      expect(goog.object.isEmpty(properties)).to.be(true);
+    });
+
   });
 
 
@@ -85,8 +91,19 @@ describe('ol.Feature', function() {
 
     var point = new ol.geom.Point([15, 30]);
 
-    it('returns null for no geometry', function() {
+    it('returns undefined for unset geometry', function() {
       var feature = new ol.Feature();
+      expect(feature.getGeometry()).to.be(undefined);
+    });
+
+    it('returns null for null geometry (constructor)', function() {
+      var feature = new ol.Feature(null);
+      expect(feature.getGeometry()).to.be(null);
+    });
+
+    it('returns null for null geometry (setGeometry())', function() {
+      var feature = new ol.Feature();
+      feature.setGeometry(null);
       expect(feature.getGeometry()).to.be(null);
     });
 
@@ -203,6 +220,42 @@ describe('ol.Feature', function() {
         done();
       });
       point2.setCoordinates([0, 2]);
+    });
+
+    it('can use a different geometry name', function() {
+      var feature = new ol.Feature();
+      feature.setGeometryName('foo');
+      var point = new ol.geom.Point([10, 20]);
+      feature.setGeometry(point);
+      expect(feature.getGeometry()).to.be(point);
+    });
+
+  });
+
+  describe('#setId()', function() {
+
+    it('sets the feature identifier', function() {
+      var feature = new ol.Feature();
+      expect(feature.getId()).to.be(undefined);
+      feature.setId('foo');
+      expect(feature.getId()).to.be('foo');
+    });
+
+    it('accepts a string or number', function() {
+      var feature = new ol.Feature();
+      feature.setId('foo');
+      expect(feature.getId()).to.be('foo');
+      feature.setId(2);
+      expect(feature.getId()).to.be(2);
+    });
+
+    it('dispatches the "change" event', function(done) {
+      var feature = new ol.Feature();
+      feature.on('change', function() {
+        expect(feature.getId()).to.be('foo');
+        done();
+      });
+      feature.setId('foo');
     });
 
   });

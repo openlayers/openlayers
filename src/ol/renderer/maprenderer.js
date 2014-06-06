@@ -41,7 +41,7 @@ goog.inherits(ol.renderer.Map, goog.Disposable);
 
 
 /**
- * @param {oli.FrameState} frameState FrameState.
+ * @param {olx.FrameState} frameState FrameState.
  * @protected
  */
 ol.renderer.Map.prototype.calculateMatrices2D = function(frameState) {
@@ -82,7 +82,7 @@ ol.renderer.Map.prototype.disposeInternal = function() {
 
 /**
  * @param {ol.Coordinate} coordinate Coordinate.
- * @param {oli.FrameState} frameState FrameState.
+ * @param {olx.FrameState} frameState FrameState.
  * @param {function(this: S, ol.Feature, ol.layer.Layer): T} callback Feature
  *     callback.
  * @param {S} thisArg Value to use as `this` when executing `callback`.
@@ -99,11 +99,13 @@ ol.renderer.Map.prototype.forEachFeatureAtPixel =
         layerFilter, thisArg2) {
   var layerStates = this.map_.getLayerGroup().getLayerStatesArray();
   var numLayers = layerStates.length;
+  var viewResolution = frameState.view2DState.resolution;
   var i;
   for (i = numLayers - 1; i >= 0; --i) {
     var layerState = layerStates[i];
     var layer = layerState.layer;
-    if (layerState.visible && layerFilter.call(thisArg2, layer)) {
+    if (ol.layer.Layer.visibleAtResolution(layerState, viewResolution) &&
+        layerFilter.call(thisArg2, layer)) {
       var layerRenderer = this.getLayerRenderer(layer);
       var result = layerRenderer.forEachFeatureAtPixel(
           coordinate, frameState, callback, thisArg);
@@ -176,14 +178,14 @@ ol.renderer.Map.prototype.removeLayerRendererByKey_ = function(layerKey) {
 
 /**
  * Render.
- * @param {?oli.FrameState} frameState Frame state.
+ * @param {?olx.FrameState} frameState Frame state.
  */
 ol.renderer.Map.prototype.renderFrame = goog.nullFunction;
 
 
 /**
  * @param {ol.Map} map Map.
- * @param {oli.FrameState} frameState Frame state.
+ * @param {olx.FrameState} frameState Frame state.
  * @private
  */
 ol.renderer.Map.prototype.removeUnusedLayerRenderers_ =
@@ -198,14 +200,14 @@ ol.renderer.Map.prototype.removeUnusedLayerRenderers_ =
 
 
 /**
- * @param {oli.FrameState} frameState Frame state.
+ * @param {olx.FrameState} frameState Frame state.
  * @protected
  */
 ol.renderer.Map.prototype.scheduleExpireIconCache = function(frameState) {
   frameState.postRenderFunctions.push(
       /**
        * @param {ol.Map} map Map.
-       * @param {oli.FrameState} frameState Frame state.
+       * @param {olx.FrameState} frameState Frame state.
        */
       function(map, frameState) {
         ol.style.IconImageCache.getInstance().expire();
@@ -214,7 +216,7 @@ ol.renderer.Map.prototype.scheduleExpireIconCache = function(frameState) {
 
 
 /**
- * @param {!oli.FrameState} frameState Frame state.
+ * @param {!olx.FrameState} frameState Frame state.
  * @protected
  */
 ol.renderer.Map.prototype.scheduleRemoveUnusedLayerRenderers =

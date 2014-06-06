@@ -61,7 +61,8 @@ ol.geom.flat.interpolate.lineString =
     }
   }
   if (goog.isDefAndNotNull(opt_dest)) {
-    opt_dest.push(pointX, pointY);
+    opt_dest[0] = pointX;
+    opt_dest[1] = pointY;
     return opt_dest;
   } else {
     return [pointX, pointY];

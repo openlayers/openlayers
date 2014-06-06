@@ -1,9 +1,0 @@
-@exportSymbol ol.style.Text
-@exportProperty ol.style.Text.prototype.getFill
-@exportProperty ol.style.Text.prototype.getFont
-@exportProperty ol.style.Text.prototype.getRotation
-@exportProperty ol.style.Text.prototype.getScale
-@exportProperty ol.style.Text.prototype.getStroke
-@exportProperty ol.style.Text.prototype.getText
-@exportProperty ol.style.Text.prototype.getTextAlign
-@exportProperty ol.style.Text.prototype.getTextBaseline

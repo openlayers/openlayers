@@ -1,6 +1,5 @@
 goog.provide('ol.geom.MultiLineString');
 
-goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('ol.array');
 goog.require('ol.extent');
@@ -19,8 +18,8 @@ goog.require('ol.geom.flat.simplify');
  * @constructor
  * @extends {ol.geom.SimpleGeometry}
  * @param {ol.geom.RawMultiLineString} coordinates Coordinates.
- * @param {ol.geom.GeometryLayout|string=} opt_layout Layout.
- * @todo stability experimental
+ * @param {ol.geom.GeometryLayout=} opt_layout Layout.
+ * @todo api
  */
 ol.geom.MultiLineString = function(coordinates, opt_layout) {
 
@@ -53,6 +52,7 @@ goog.inherits(ol.geom.MultiLineString, ol.geom.SimpleGeometry);
 
 /**
  * @param {ol.geom.LineString} lineString LineString.
+ * @todo api
  */
 ol.geom.MultiLineString.prototype.appendLineString = function(lineString) {
   goog.asserts.assert(lineString.getLayout() == this.layout);
@@ -69,6 +69,7 @@ ol.geom.MultiLineString.prototype.appendLineString = function(lineString) {
 
 /**
  * @inheritDoc
+ * @todo api
  */
 ol.geom.MultiLineString.prototype.clone = function() {
   var multiLineString = new ol.geom.MultiLineString(null);
@@ -118,6 +119,7 @@ ol.geom.MultiLineString.prototype.closestPointXY =
  * @param {boolean=} opt_extrapolate Extrapolate.
  * @param {boolean=} opt_interpolate Interpolate.
  * @return {ol.Coordinate} Coordinate.
+ * @todo api
  */
 ol.geom.MultiLineString.prototype.getCoordinateAtM =
     function(m, opt_extrapolate, opt_interpolate) {
@@ -135,7 +137,7 @@ ol.geom.MultiLineString.prototype.getCoordinateAtM =
 
 /**
  * @return {ol.geom.RawMultiLineString} Coordinates.
- * @todo stability experimental
+ * @todo api
  */
 ol.geom.MultiLineString.prototype.getCoordinates = function() {
   return ol.geom.flat.inflate.coordinatess(
@@ -154,6 +156,7 @@ ol.geom.MultiLineString.prototype.getEnds = function() {
 /**
  * @param {number} index Index.
  * @return {ol.geom.LineString} LineString.
+ * @todo api
  */
 ol.geom.MultiLineString.prototype.getLineString = function(index) {
   goog.asserts.assert(0 <= index && index < this.ends_.length);
@@ -169,7 +172,7 @@ ol.geom.MultiLineString.prototype.getLineString = function(index) {
 
 /**
  * @return {Array.<ol.geom.LineString>} LineStrings.
- * @todo stability experimental
+ * @todo api
  */
 ol.geom.MultiLineString.prototype.getLineStrings = function() {
   var flatCoordinates = this.flatCoordinates;
@@ -230,6 +233,7 @@ ol.geom.MultiLineString.prototype.getSimplifiedGeometryInternal =
 
 /**
  * @inheritDoc
+ * @todo api
  */
 ol.geom.MultiLineString.prototype.getType = function() {
   return ol.geom.GeometryType.MULTI_LINE_STRING;
@@ -239,7 +243,7 @@ ol.geom.MultiLineString.prototype.getType = function() {
 /**
  * @param {ol.geom.RawMultiLineString} coordinates Coordinates.
  * @param {ol.geom.GeometryLayout=} opt_layout Layout.
- * @todo stability experimental
+ * @todo api
  */
 ol.geom.MultiLineString.prototype.setCoordinates =
     function(coordinates, opt_layout) {
@@ -280,7 +284,6 @@ ol.geom.MultiLineString.prototype.setFlatCoordinates =
 
 /**
  * @param {Array.<ol.geom.LineString>} lineStrings LineStrings.
- * @todo stability experimental
  */
 ol.geom.MultiLineString.prototype.setLineStrings = function(lineStrings) {
   var layout = ol.geom.GeometryLayout.XY;

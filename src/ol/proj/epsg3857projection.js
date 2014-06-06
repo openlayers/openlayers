@@ -13,6 +13,7 @@ goog.require('ol.proj.Units');
  * @constructor
  * @extends {ol.proj.Projection}
  * @param {string} code Code.
+ * @todo api
  */
 ol.proj.EPSG3857 = function(code) {
   goog.base(this, {
@@ -59,7 +60,8 @@ ol.proj.EPSG3857.CODES = [
   'EPSG:102100',
   'EPSG:102113',
   'EPSG:900913',
-  'urn:ogc:def:crs:EPSG:6.18:3:3857'
+  'urn:ogc:def:crs:EPSG:6.18:3:3857',
+  'http://www.opengis.net/gml/srs/epsg.xml#3857'
 ];
 
 

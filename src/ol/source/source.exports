@@ -1,2 +1,0 @@
-@exportProperty ol.source.Source.prototype.getExtent
-@exportProperty ol.source.Source.prototype.getState

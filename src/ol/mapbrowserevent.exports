@@ -1,2 +1,0 @@
-@exportProperty ol.MapBrowserEvent.prototype.preventDefault
-@exportProperty ol.MapBrowserEvent.prototype.stopPropagation

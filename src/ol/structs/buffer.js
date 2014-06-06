@@ -3,6 +3,7 @@ goog.provide('ol.structs.Buffer');
 goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('goog.webgl');
+goog.require('ol');
 goog.require('ol.structs.IntegerSet');
 
 
@@ -16,12 +17,6 @@ ol.structs.BufferUsage = {
 };
 
 
-/**
- * @define {boolean} Replace unused entries with NaNs.
- */
-ol.BUFFER_REPLACE_UNUSED_ENTRIES_WITH_NANS = goog.DEBUG;
-
-
 
 /**
  * @constructor
@@ -29,7 +24,6 @@ ol.BUFFER_REPLACE_UNUSED_ENTRIES_WITH_NANS = goog.DEBUG;
  * @param {number=} opt_used Used.
  * @param {number=} opt_usage Usage.
  * @struct
- * @todo stability experimental
  */
 ol.structs.Buffer = function(opt_arr, opt_used, opt_usage) {
 

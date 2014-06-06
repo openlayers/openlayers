@@ -244,6 +244,140 @@ describe('ol.source.Vector', function() {
 
   });
 
+  describe('#getFeatureById()', function() {
+    var source;
+    beforeEach(function() {
+      source = new ol.source.Vector();
+    });
+
+    it('returns a feature by id', function() {
+      var feature = new ol.Feature();
+      feature.setId('foo');
+      source.addFeature(feature);
+      expect(source.getFeatureById('foo')).to.be(feature);
+    });
+
+    it('returns a feature by id (set after add)', function() {
+      var feature = new ol.Feature();
+      source.addFeature(feature);
+      expect(source.getFeatureById('foo')).to.be(null);
+      feature.setId('foo');
+      expect(source.getFeatureById('foo')).to.be(feature);
+    });
+
+    it('returns null when no feature is found', function() {
+      var feature = new ol.Feature();
+      feature.setId('foo');
+      source.addFeature(feature);
+      expect(source.getFeatureById('bar')).to.be(null);
+    });
+
+    it('returns null after removing feature', function() {
+      var feature = new ol.Feature();
+      feature.setId('foo');
+      source.addFeature(feature);
+      expect(source.getFeatureById('foo')).to.be(feature);
+      source.removeFeature(feature);
+      expect(source.getFeatureById('foo')).to.be(null);
+    });
+
+    it('returns null after unsetting id', function() {
+      var feature = new ol.Feature();
+      feature.setId('foo');
+      source.addFeature(feature);
+      expect(source.getFeatureById('foo')).to.be(feature);
+      feature.setId(undefined);
+      expect(source.getFeatureById('foo')).to.be(null);
+    });
+
+    it('returns null after clear', function() {
+      var feature = new ol.Feature();
+      feature.setId('foo');
+      source.addFeature(feature);
+      expect(source.getFeatureById('foo')).to.be(feature);
+      source.clear();
+      expect(source.getFeatureById('foo')).to.be(null);
+    });
+
+    it('returns null when no features are indexed', function() {
+      expect(source.getFeatureById('foo')).to.be(null);
+      source.addFeature(new ol.Feature());
+      expect(source.getFeatureById('foo')).to.be(null);
+    });
+
+    it('returns correct feature after add/remove/add', function() {
+      expect(source.getFeatureById('foo')).to.be(null);
+      var first = new ol.Feature();
+      first.setId('foo');
+      source.addFeature(first);
+      expect(source.getFeatureById('foo')).to.be(first);
+      source.removeFeature(first);
+      expect(source.getFeatureById('foo')).to.be(null);
+      var second = new ol.Feature();
+      second.setId('foo');
+      source.addFeature(second);
+      expect(source.getFeatureById('foo')).to.be(second);
+    });
+
+    it('returns correct feature after add/change', function() {
+      expect(source.getFeatureById('foo')).to.be(null);
+      var feature = new ol.Feature();
+      feature.setId('foo');
+      source.addFeature(feature);
+      expect(source.getFeatureById('foo')).to.be(feature);
+      feature.setId('bar');
+      expect(source.getFeatureById('foo')).to.be(null);
+      expect(source.getFeatureById('bar')).to.be(feature);
+    });
+
+  });
+
+  describe('the feature id index', function() {
+    var source;
+    beforeEach(function() {
+      source = new ol.source.Vector();
+    });
+
+    it('enforces a uniqueness constraint (on add)', function() {
+      var feature = new ol.Feature();
+      feature.setId('foo');
+      source.addFeature(feature);
+      var dupe = new ol.Feature();
+      dupe.setId('foo');
+      expect(function() {
+        source.addFeature(dupe);
+      }).to.throwException();
+    });
+
+    it('enforces a uniqueness constraint (on change)', function() {
+      var foo = new ol.Feature();
+      foo.setId('foo');
+      source.addFeature(foo);
+      var bar = new ol.Feature();
+      bar.setId('bar');
+      source.addFeature(bar);
+      expect(function() {
+        bar.setId('foo');
+      }).to.throwException();
+    });
+
+  });
+
+  describe('the undefined feature id index', function() {
+    var source;
+    beforeEach(function() {
+      source = new ol.source.Vector();
+    });
+
+    it('disallows adding the same feature twice', function() {
+      var feature = new ol.Feature();
+      source.addFeature(feature);
+      expect(function() {
+        source.addFeature(feature);
+      }).to.throwException();
+    });
+  });
+
 });
 
 
