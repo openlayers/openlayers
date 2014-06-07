@@ -201,6 +201,8 @@ function buildNav(members) {
 
     if (members.namespaces.length) {
         _.each(members.namespaces, function (v) {
+          // exclude 'olx' from sidebar
+          if (v.longname.indexOf('olx') !== 0) {
             nav.push({
                 type: 'namespace',
                 longname: v.longname,
@@ -222,11 +224,14 @@ function buildNav(members) {
                     memberof: v.longname
                 })
             });
+          }
         });
     }
 
     if (members.classes.length) {
         _.each(members.classes, function (v) {
+          // ignore interfaces
+          if (v.interface !== true) {
             nav.push({
                 type: 'class',
                 longname: v.longname,
@@ -249,6 +254,7 @@ function buildNav(members) {
                     memberof: v.longname
                 })
             });
+          }
         });
     }
 
