@@ -6,6 +6,9 @@ goog.require('ol.source.StaticVector');
 
 
 /**
+ * @classdesc
+ * Static vector source in GPX format
+ *
  * @constructor
  * @extends {ol.source.StaticVector}
  * @fires ol.source.VectorEvent

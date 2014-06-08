@@ -23,6 +23,9 @@ ol.source.ZoomifyTierSizeCalculation = {
 
 
 /**
+ * @classdesc
+ * Layer source for tile data in Zoomify format.
+ *
  * @constructor
  * @extends {ol.source.TileImage}
  * @param {olx.source.ZoomifyOptions=} opt_options Options.

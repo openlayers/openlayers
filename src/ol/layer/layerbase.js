@@ -41,7 +41,9 @@ ol.layer.LayerState;
 
 
 /**
- * Base class for all layers.
+ * @classdesc
+ * Abstract base class for all layers.
+ *
  * @constructor
  * @extends {ol.Object}
  * @param {olx.layer.BaseOptions} options Layer options.

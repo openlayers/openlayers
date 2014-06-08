@@ -20,6 +20,9 @@ goog.require('ol.geom.flat.simplify');
 
 
 /**
+ * @classdesc
+ * Multi-polygon geometry.
+ *
  * @constructor
  * @extends {ol.geom.SimpleGeometry}
  * @param {ol.geom.RawMultiPolygon} coordinates Coordinates.

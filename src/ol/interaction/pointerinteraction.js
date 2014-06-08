@@ -12,7 +12,9 @@ goog.require('ol.interaction.Interaction');
 
 
 /**
- * Base class for pointer interactions.
+ * @classdesc
+ * Abstract base class for pointer interactions.
+ *
  * @constructor
  * @extends {ol.interaction.Interaction}
  */

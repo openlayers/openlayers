@@ -10,6 +10,11 @@ goog.require('ol.source.Source');
 
 
 /**
+ * @classdesc
+ * Abstract base class. A visual representation of raster or vector map data.
+ * Layers group together those properties that pertain to how the data is to be
+ * displayed, irrespective of the source of that data.
+ *
  * @constructor
  * @extends {ol.layer.Base}
  * @fires ol.render.Event

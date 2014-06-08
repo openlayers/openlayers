@@ -33,6 +33,9 @@ ol.source.SourceOptions;
 
 
 /**
+ * @classdesc
+ * Abstract base class for {@link ol.layer.Layer} sources.
+ *
  * @constructor
  * @extends {ol.Observable}
  * @fires change Triggered when the state of the source changes.

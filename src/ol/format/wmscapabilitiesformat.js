@@ -13,6 +13,9 @@ goog.require('ol.xml');
 
 
 /**
+ * @classdesc
+ * Format for reading WMS capabilities data
+ *
  * @constructor
  * @extends {ol.format.XML}
  * @todo api

@@ -16,6 +16,12 @@ goog.require('ol.style.Style');
 
 
 /**
+ * @classdesc
+ * A vector object for geographical features with a geometry and other
+ * attribute properties, similar to the features in vector file formats like
+ * GeoJSON.
+ * Features can be styled individually or use the style of their vector layer.
+ *
  * @constructor
  * @extends {ol.Object}
  * @fires change Triggered when the geometry or style of the feature changes.

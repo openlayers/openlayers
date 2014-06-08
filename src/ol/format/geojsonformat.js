@@ -21,7 +21,8 @@ goog.require('ol.proj');
 
 
 /**
- * Provide access to features stored in the GeoJSON format.
+ * @classdesc
+ * Feature format for reading and writing data in the GeoJSON format.
  *
  * @constructor
  * @extends {ol.format.JSONFeature}

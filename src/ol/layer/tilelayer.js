@@ -14,6 +14,10 @@ ol.layer.TileProperty = {
 
 
 /**
+ * @classdesc
+ * For layer sources that provide pre-rendered, tiled images in grids that are
+ * organized by zoom levels for specific resolutions.
+ *
  * @constructor
  * @extends {ol.layer.Layer}
  * @fires ol.render.Event

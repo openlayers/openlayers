@@ -17,6 +17,9 @@ goog.require('ol.xml');
 
 
 /**
+ * @classdesc
+ * Feature format for reading and writing data in the GPX format.
+ *
  * @constructor
  * @extends {ol.format.XMLFeature}
  * @todo api

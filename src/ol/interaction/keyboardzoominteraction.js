@@ -11,6 +11,7 @@ goog.require('ol.interaction.Interaction');
 
 
 /**
+ * @classdesc
  * Allows the user to zoom the map using keyboard + and -.
  * Note that, although this interaction is by default included in maps,
  * the keys can only be used when browser focus is on the element to which
@@ -20,6 +21,7 @@ goog.require('ol.interaction.Interaction');
  * focus will have to be on, and returned to, this element if the keys are to
  * function.
  * See also {@link ol.interaction.KeyboardPan}.
+ *
  * @constructor
  * @param {olx.interaction.KeyboardZoomOptions=} opt_options Options.
  * @extends {ol.interaction.Interaction}

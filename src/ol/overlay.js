@@ -46,7 +46,11 @@ ol.OverlayPositioning = {
 
 
 /**
- * An element to show on top of the map, such as for a popup.
+ * @classdesc
+ * Like {@link ol.control.Control}, Overlays are visible widgets.
+ * Unlike Controls, they are not in a fixed position on the screen, but are tied
+ * to a geographical coordinate, so panning the map will move an Overlay but not
+ * a Control.
  *
  * Example:
  *

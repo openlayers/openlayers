@@ -12,6 +12,9 @@ goog.require('ol.geom.flat.simplify');
 
 
 /**
+ * @classdesc
+ * Linear ring geometry.
+ *
  * @constructor
  * @extends {ol.geom.SimpleGeometry}
  * @param {ol.geom.RawLinearRing} coordinates Coordinates.

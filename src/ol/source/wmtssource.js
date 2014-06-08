@@ -26,6 +26,9 @@ ol.source.WMTSRequestEncoding = {
 
 
 /**
+ * @classdesc
+ * Layer source for tile data from WMTS servers.
+ *
  * @constructor
  * @extends {ol.source.TileImage}
  * @param {olx.source.WMTSOptions} options WMTS options.

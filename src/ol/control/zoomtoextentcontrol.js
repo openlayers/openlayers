@@ -14,9 +14,10 @@ goog.require('ol.pointer.PointerEventHandler');
 
 
 /**
- * Create a control that adds a button, which, when pressed, changes
- * the map view to a specific extent. To style this control use the
- * css selector `.ol-zoom-extent`.
+ * @classdesc
+ * A button control which, when pressed, changes the map view to a specific
+ * extent. To style this control use the css selector `.ol-zoom-extent`.
+ *
  * @constructor
  * @extends {ol.control.Control}
  * @param {olx.control.ZoomToExtentOptions=} opt_options Options.

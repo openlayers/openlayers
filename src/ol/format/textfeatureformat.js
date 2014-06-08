@@ -7,6 +7,9 @@ goog.require('ol.format.FormatType');
 
 
 /**
+ * @classdesc
+ * Abstract base class for text feature formats.
+ *
  * @constructor
  * @extends {ol.format.Feature}
  */

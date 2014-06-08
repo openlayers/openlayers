@@ -16,6 +16,9 @@ goog.require('ol.proj');
 
 
 /**
+ * @classdesc
+ * Handles input of vector data by drag and drop.
+ *
  * @constructor
  * @extends {ol.interaction.Interaction}
  * @fires ol.interaction.DragAndDropEvent

@@ -25,6 +25,9 @@ ol.layer.GroupProperty = {
 
 
 /**
+ * @classdesc
+ * A {@link ol.Collection} of layers that are handled together.
+ *
  * @constructor
  * @extends {ol.layer.Base}
  * @fires change Triggered when the state of the source of any of the layers of

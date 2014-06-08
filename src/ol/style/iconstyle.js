@@ -35,6 +35,9 @@ ol.style.IconAnchorUnits = {
 
 
 /**
+ * @classdesc
+ * Set icon style for vector features.
+ *
  * @constructor
  * @param {olx.style.IconOptions=} opt_options Options.
  * @extends {ol.style.Image}

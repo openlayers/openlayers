@@ -7,9 +7,12 @@ goog.require('goog.events.EventType');
 
 
 /**
+ * @classdesc
+ * Abstract base class.
  * An event target providing convenient methods for listener registration
  * and unregistration. A generic `change` event is always available through
  * {@link ol.Observable#dispatchChangeEvent}.
+ *
  * @constructor
  * @extends {goog.events.EventTarget}
  * @suppress {checkStructDictInheritance}

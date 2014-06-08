@@ -42,9 +42,10 @@ ol.control.ScaleLineUnits = {
 
 
 /**
- * Create a control to help users estimate distances on a map.
- * By default it will show in the bottom left portion of the map, but it can
- * be changed by using a css selector for `.ol-scale-line`.
+ * @classdesc
+ * A control displaying rough x-axis distances.
+ * By default it will show in the bottom left portion of the map, but this can
+ * be changed by using the css selector `.ol-scale-line`.
  *
  * @constructor
  * @extends {ol.control.Control}

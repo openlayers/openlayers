@@ -15,6 +15,7 @@ goog.require('ol.pointer.PointerEventHandler');
 
 
 /**
+ * @classdesc
  * Provides a button that when clicked fills up the full screen with the map.
  * When in full screen mode, a close button is shown to exit full screen mode.
  * The [Fullscreen API](http://www.w3.org/TR/fullscreen/) is used to

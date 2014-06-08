@@ -44,6 +44,9 @@ ol.geom.GeometryLayout = {
 
 
 /**
+ * @classdesc
+ * Abstract base class for vector geometries.
+ *
  * @constructor
  * @extends {ol.Observable}
  * @fires change Triggered when the geometry changes.

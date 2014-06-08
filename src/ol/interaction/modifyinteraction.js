@@ -37,6 +37,9 @@ ol.interaction.SegmentDataType;
 
 
 /**
+ * @classdesc
+ * Interaction for modifying vector data.
+ *
  * @constructor
  * @extends {ol.interaction.Pointer}
  * @param {olx.interaction.ModifyOptions} options Options.

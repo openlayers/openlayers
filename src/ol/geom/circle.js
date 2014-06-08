@@ -9,6 +9,9 @@ goog.require('ol.geom.flat.deflate');
 
 
 /**
+ * @classdesc
+ * Circle geometry.
+ *
  * @constructor
  * @extends {ol.geom.SimpleGeometry}
  * @param {ol.geom.RawPoint} center Center.

@@ -18,6 +18,7 @@ ol.dom.InputProperty = {
 
 
 /**
+ * @classdesc
  * Helper class for binding HTML input to an {@link ol.Object}.
  *
  * Example:

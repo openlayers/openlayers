@@ -21,6 +21,9 @@ goog.require('ol.source.wms.ServerType');
 
 
 /**
+ * @classdesc
+ * Layer source for tile data from WMS servers.
+ *
  * @constructor
  * @extends {ol.source.TileImage}
  * @param {olx.source.TileWMSOptions=} opt_options Tile WMS options.

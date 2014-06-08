@@ -21,6 +21,9 @@ ol.layer.HeatmapLayerProperty = {
 
 
 /**
+ * @classdesc
+ * Layer for rendering vector data as a heatmap.
+ *
  * @constructor
  * @extends {ol.layer.Vector}
  * @fires ol.render.Event

@@ -15,6 +15,9 @@ goog.require('ol.geom.flat.simplify');
 
 
 /**
+ * @classdesc
+ * Multi-linestring geometry.
+ *
  * @constructor
  * @extends {ol.geom.SimpleGeometry}
  * @param {ol.geom.RawMultiLineString} coordinates Coordinates.

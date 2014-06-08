@@ -22,6 +22,9 @@ ol.source.ImageOptions;
 
 
 /**
+ * @classdesc
+ * Abstract base class for sources providing a single image.
+ *
  * @constructor
  * @extends {ol.source.Source}
  * @param {ol.source.ImageOptions} options Single image source options.

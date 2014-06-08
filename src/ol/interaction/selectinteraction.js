@@ -15,6 +15,9 @@ goog.require('ol.interaction.Interaction');
 
 
 /**
+ * @classdesc
+ * Handles selection of vector data.
+ *
  * @constructor
  * @extends {ol.interaction.Interaction}
  * @param {olx.interaction.SelectOptions=} opt_options Options.
