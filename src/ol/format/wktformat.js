@@ -1,39 +1,51 @@
-goog.provide('ol.parser.WKT');
+goog.provide('ol.format.WKT');
 
 goog.require('goog.array');
 goog.require('goog.string');
 goog.require('ol.Feature');
+goog.require('ol.format.TextFeature');
 goog.require('ol.geom.Geometry');
 goog.require('ol.geom.GeometryCollection');
+goog.require('ol.geom.GeometryType');
 goog.require('ol.geom.LineString');
 goog.require('ol.geom.MultiLineString');
 goog.require('ol.geom.MultiPoint');
 goog.require('ol.geom.MultiPolygon');
 goog.require('ol.geom.Point');
 goog.require('ol.geom.Polygon');
-goog.require('ol.parser.Parser');
-goog.require('ol.parser.StringFeatureParser');
 
 
 
 /**
  * @constructor
- * @extends {ol.parser.Parser}
- * @implements {ol.parser.StringFeatureParser}
+ * @extends {ol.format.TextFeature}
+ * @param {olx.format.WKTOptions=} opt_options Options.
  * @todo stability experimental
  * @todo api
  */
-ol.parser.WKT = function() {
+ol.format.WKT = function(opt_options) {
+
+  var options = goog.isDef(opt_options) ? opt_options : {};
+
+  goog.base(this);
+
+  /**
+   * Split GEOMETRYCOLLECTION into multiple features.
+   * @type {boolean}
+   * @private
+   */
+  this.splitCollection_ = goog.isDef(options.splitCollection) ?
+      options.splitCollection : false;
+
 };
-goog.inherits(ol.parser.WKT, ol.parser.Parser);
-goog.addSingletonGetter(ol.parser.WKT);
+goog.inherits(ol.format.WKT, ol.format.TextFeature);
 
 
 /**
  * Constants for regExes.
  * @enum {RegExp}
  */
-ol.parser.WKT.regExes = {
+ol.format.WKT.regExes = {
   typeStr: /^\s*(\w+)\s*\(\s*(.*)\s*\)\s*$/,
   spaces: /\s+/,
   parenComma: /\)\s*,\s*\(/,
@@ -49,8 +61,8 @@ ol.parser.WKT.regExes = {
  * @return {ol.geom.Point} Parsed point.
  * @private
  */
-ol.parser.WKT.prototype.parsePoint_ = function(str) {
-  var coords = goog.string.trim(str).split(ol.parser.WKT.regExes.spaces);
+ol.format.WKT.prototype.parsePoint_ = function(str) {
+  var coords = goog.string.trim(str).split(ol.format.WKT.regExes.spaces);
   return new ol.geom.Point(goog.array.map(coords, parseFloat));
 };
 
@@ -60,7 +72,7 @@ ol.parser.WKT.prototype.parsePoint_ = function(str) {
  * @return {ol.geom.LineString} Parsed linestring.
  * @private
  */
-ol.parser.WKT.prototype.parseLineString_ = function(str) {
+ol.format.WKT.prototype.parseLineString_ = function(str) {
   var points = goog.string.trim(str).split(',');
   var coordinates = [];
   for (var i = 0, ii = points.length; i < ii; ++i) {
@@ -76,12 +88,12 @@ ol.parser.WKT.prototype.parseLineString_ = function(str) {
  * @return {ol.geom.MultiPoint} Parsed multipoint.
  * @private
  */
-ol.parser.WKT.prototype.parseMultiPoint_ = function(str) {
+ol.format.WKT.prototype.parseMultiPoint_ = function(str) {
   var point;
   var points = goog.string.trim(str).split(',');
   var geom = new ol.geom.MultiPoint(null);
   for (var i = 0, ii = points.length; i < ii; ++i) {
-    point = points[i].replace(ol.parser.WKT.regExes.trimParens, '$1');
+    point = points[i].replace(ol.format.WKT.regExes.trimParens, '$1');
     geom.appendPoint(this.parsePoint_.apply(this, [point]));
   }
   return geom;
@@ -93,12 +105,12 @@ ol.parser.WKT.prototype.parseMultiPoint_ = function(str) {
  * @return {ol.geom.MultiLineString} Parsed multilinestring.
  * @private
  */
-ol.parser.WKT.prototype.parseMultiLineString_ = function(str) {
+ol.format.WKT.prototype.parseMultiLineString_ = function(str) {
   var line;
-  var lines = goog.string.trim(str).split(ol.parser.WKT.regExes.parenComma);
+  var lines = goog.string.trim(str).split(ol.format.WKT.regExes.parenComma);
   var geom = new ol.geom.MultiLineString(null);
   for (var i = 0, ii = lines.length; i < ii; ++i) {
-    line = lines[i].replace(ol.parser.WKT.regExes.trimParens, '$1');
+    line = lines[i].replace(ol.format.WKT.regExes.trimParens, '$1');
     geom.appendLineString(this.parseLineString_.apply(this, [line]));
   }
   return geom;
@@ -110,12 +122,12 @@ ol.parser.WKT.prototype.parseMultiLineString_ = function(str) {
  * @return {ol.geom.Polygon} Parsed polygon.
  * @private
  */
-ol.parser.WKT.prototype.parsePolygon_ = function(str) {
+ol.format.WKT.prototype.parsePolygon_ = function(str) {
   var ring, linestring, linearring;
-  var rings = goog.string.trim(str).split(ol.parser.WKT.regExes.parenComma);
+  var rings = goog.string.trim(str).split(ol.format.WKT.regExes.parenComma);
   var coordinates = [];
   for (var i = 0, ii = rings.length; i < ii; ++i) {
-    ring = rings[i].replace(ol.parser.WKT.regExes.trimParens, '$1');
+    ring = rings[i].replace(ol.format.WKT.regExes.trimParens, '$1');
     linestring = this.parseLineString_.apply(this, [ring]).getCoordinates();
     coordinates.push(linestring);
   }
@@ -128,13 +140,13 @@ ol.parser.WKT.prototype.parsePolygon_ = function(str) {
  * @return {ol.geom.MultiPolygon} Parsed multipolygon.
  * @private
  */
-ol.parser.WKT.prototype.parseMultiPolygon_ = function(str) {
+ol.format.WKT.prototype.parseMultiPolygon_ = function(str) {
   var polygon;
   var polygons = goog.string.trim(str).split(
-      ol.parser.WKT.regExes.doubleParenComma);
+      ol.format.WKT.regExes.doubleParenComma);
   var geom = new ol.geom.MultiPolygon(null);
   for (var i = 0, ii = polygons.length; i < ii; ++i) {
-    polygon = polygons[i].replace(ol.parser.WKT.regExes.trimParens, '$1');
+    polygon = polygons[i].replace(ol.format.WKT.regExes.trimParens, '$1');
     geom.appendPolygon(this.parsePolygon_.apply(this, [polygon]));
   }
   return geom;
@@ -146,9 +158,9 @@ ol.parser.WKT.prototype.parseMultiPolygon_ = function(str) {
  * @return {ol.geom.GeometryCollection} Parsed geometrycollection.
  * @private
  */
-ol.parser.WKT.prototype.parseGeometryCollection_ = function(str) {
+ol.format.WKT.prototype.parseGeometryCollection_ = function(str) {
   // separate components of the collection with |
-  str = str.replace(ol.parser.WKT.regExes.geomCollection, '|$1');
+  str = str.replace(ol.format.WKT.regExes.geomCollection, '|$1');
   var wktArray = goog.string.trim(str).split('|');
   var geoms = [];
   for (var i = 0, ii = wktArray.length; i < ii; ++i) {
@@ -163,7 +175,7 @@ ol.parser.WKT.prototype.parseGeometryCollection_ = function(str) {
  * @return {string} Coordinates part of Point as WKT.
  * @private
  */
-ol.parser.WKT.prototype.encodePoint_ = function(geom) {
+ol.format.WKT.prototype.encodePoint_ = function(geom) {
   var coordinates = geom.getCoordinates();
   return coordinates[0] + ' ' + coordinates[1];
 };
@@ -174,7 +186,7 @@ ol.parser.WKT.prototype.encodePoint_ = function(geom) {
  * @return {string} Coordinates part of MultiPoint as WKT.
  * @private
  */
-ol.parser.WKT.prototype.encodeMultiPoint_ = function(geom) {
+ol.format.WKT.prototype.encodeMultiPoint_ = function(geom) {
   var array = [];
   var components = geom.getPoints();
   for (var i = 0, ii = components.length; i < ii; ++i) {
@@ -189,7 +201,7 @@ ol.parser.WKT.prototype.encodeMultiPoint_ = function(geom) {
  * @return {string} Coordinates part of GeometryCollection as WKT.
  * @private
  */
-ol.parser.WKT.prototype.encodeGeometryCollection_ = function(geom) {
+ol.format.WKT.prototype.encodeGeometryCollection_ = function(geom) {
   var array = [];
   var geoms = geom.getGeometries();
   for (var i = 0, ii = geoms.length; i < ii; ++i) {
@@ -204,7 +216,7 @@ ol.parser.WKT.prototype.encodeGeometryCollection_ = function(geom) {
  * @return {string} Coordinates part of LineString as WKT.
  * @private
  */
-ol.parser.WKT.prototype.encodeLineString_ = function(geom) {
+ol.format.WKT.prototype.encodeLineString_ = function(geom) {
   var coordinates = geom.getCoordinates();
   var array = [];
   for (var i = 0, ii = coordinates.length; i < ii; ++i) {
@@ -219,7 +231,7 @@ ol.parser.WKT.prototype.encodeLineString_ = function(geom) {
  * @return {string} Coordinates part of MultiLineString as WKT.
  * @private
  */
-ol.parser.WKT.prototype.encodeMultiLineString_ = function(geom) {
+ol.format.WKT.prototype.encodeMultiLineString_ = function(geom) {
   var array = [];
   var components = geom.getLineStrings();
   for (var i = 0, ii = components.length; i < ii; ++i) {
@@ -235,7 +247,7 @@ ol.parser.WKT.prototype.encodeMultiLineString_ = function(geom) {
  * @return {string} Coordinates part of Polygon as WKT.
  * @private
  */
-ol.parser.WKT.prototype.encodePolygon_ = function(geom) {
+ol.format.WKT.prototype.encodePolygon_ = function(geom) {
   var array = [];
   var rings = geom.getLinearRings();
   for (var i = 0, ii = rings.length; i < ii; ++i) {
@@ -251,7 +263,7 @@ ol.parser.WKT.prototype.encodePolygon_ = function(geom) {
  * @return {string} Coordinates part of MultiPolygon as WKT.
  * @private
  */
-ol.parser.WKT.prototype.encodeMultiPolygon_ = function(geom) {
+ol.format.WKT.prototype.encodeMultiPolygon_ = function(geom) {
   var array = [];
   var components = geom.getPolygons();
   for (var i = 0, ii = components.length; i < ii; ++i) {
@@ -268,9 +280,9 @@ ol.parser.WKT.prototype.encodeMultiPolygon_ = function(geom) {
  *     The geometry created.
  * @private
  */
-ol.parser.WKT.prototype.parse_ = function(wkt) {
-  wkt = wkt.replace(ol.parser.WKT.regExes.removeNewLine, ' ');
-  var matches = ol.parser.WKT.regExes.typeStr.exec(wkt);
+ol.format.WKT.prototype.parse_ = function(wkt) {
+  wkt = wkt.replace(ol.format.WKT.regExes.removeNewLine, ' ');
+  var matches = ol.format.WKT.regExes.typeStr.exec(wkt);
   var geometry;
   if (matches) {
     var type = matches[1].toLowerCase();
@@ -311,7 +323,7 @@ ol.parser.WKT.prototype.parse_ = function(wkt) {
  * @return {string} WKT string for the geometry.
  * @private
  */
-ol.parser.WKT.prototype.encode_ = function(geom) {
+ol.format.WKT.prototype.encode_ = function(geom) {
   var type = geom.getType();
   var result = type.toUpperCase() + '(';
   if (geom instanceof ol.geom.Point) {
@@ -336,63 +348,149 @@ ol.parser.WKT.prototype.encode_ = function(geom) {
 
 
 /**
- * Parse a WKT string.
- * @param {string} str WKT string.
- * @return {ol.geom.Geometry|undefined} Parsed geometry.
+ * Read a feature from a WKT source.
+ *
+ * @param {ArrayBuffer|Document|Node|Object|string} source Source.
+ * @return {ol.Feature} Feature.
  * @todo api
  */
-ol.parser.WKT.prototype.read = function(str) {
-  return this.parse_(str);
-};
+ol.format.WKT.prototype.readFeature;
 
 
 /**
- * Parse a WKT document provided as a string.
- * @param {string} str WKT document.
- * @return {ol.parser.ReadFeaturesResult} Features and metadata.
- * @todo api
+ * @inheritDoc
  */
-ol.parser.WKT.prototype.readFeaturesFromString = function(str) {
-  var geom = this.read(str);
-  var obj = /** @type {ol.parser.ReadFeaturesResult} */
-      ({});
+ol.format.WKT.prototype.readFeatureFromText = function(text) {
+  var geom = this.readGeometryFromText(text);
   if (goog.isDef(geom)) {
     var feature = new ol.Feature();
     feature.setGeometry(geom);
-    obj.features = [feature];
+    return feature;
   }
-  return obj;
+  return null;
 };
 
 
 /**
- * Write out a geometry as a WKT string.
- * @param {ol.geom.Geometry} geom The geometry to encode.
- * @return {string} WKT for the geometry.
+ * Read all features from a WKT source.
+ *
+ * @param {ArrayBuffer|Document|Node|Object|string} source Source.
+ * @return {Array.<ol.Feature>} Features.
  * @todo api
  */
-ol.parser.WKT.prototype.write = function(geom) {
-  return this.encode_(geom);
+ol.format.WKT.prototype.readFeatures;
+
+
+/**
+ * @inheritDoc
+ */
+ol.format.WKT.prototype.readFeaturesFromText = function(text) {
+  var geometries = [];
+  var geometry = this.readGeometryFromText(text);
+  if (this.splitCollection_ &&
+      geometry.getType() == ol.geom.GeometryType.GEOMETRY_COLLECTION) {
+    geometries = (/** @type {ol.geom.GeometryCollection} */ (geometry))
+        .getGeometriesArray();
+  } else {
+    geometries = [geometry];
+  }
+  var feature, features = [];
+  for (var i = 0, ii = geometries.length; i < ii; ++i) {
+    feature = new ol.Feature();
+    feature.setGeometry(geometries[i]);
+    features.push(feature);
+  }
+  return features;
 };
 
 
 /**
- * Parse a WKT string.
- * @param {string} str WKT string.
- * @return {ol.geom.Geometry|undefined} Parsed geometry.
+ * Read a single geometry from a WKT source.
+ *
+ * @param {ArrayBuffer|Document|Node|Object|string} source Source.
+ * @return {ol.geom.Geometry} Geometry.
  * @todo api
  */
-ol.parser.WKT.read = function(str) {
-  return ol.parser.WKT.getInstance().read(str);
+ol.format.WKT.prototype.readGeometry;
+
+
+/**
+ * @inheritDoc
+ */
+ol.format.WKT.prototype.readGeometryFromText = function(text) {
+  return this.parse_(text) || null;
 };
 
 
 /**
- * Write out a geometry as a WKT string.
- * @param {ol.geom.Geometry} geom The geometry to encode.
- * @return {string} WKT for the geometry.
+ * @inheritDoc
+ */
+ol.format.WKT.prototype.readProjectionFromText = function(text) {
+  return null;
+};
+
+
+/**
+ * Encode a feature as a WKT string.
+ *
+ * @param {ol.Feature} feature Feature.
+ * @return {ArrayBuffer|Node|Object|string} Result.
  * @todo api
  */
-ol.parser.WKT.write = function(geom) {
-  return ol.parser.WKT.getInstance().write(geom);
+ol.format.WKT.prototype.writeFeature;
+
+
+/**
+ * @inheritDoc
+ */
+ol.format.WKT.prototype.writeFeatureText = function(feature) {
+  var geometry = feature.getGeometry();
+  if (goog.isDef(geometry)) {
+    return this.writeGeometryText(geometry);
+  }
+  return '';
+};
+
+
+/**
+ * Encode an array of features as a WKT string.
+ *
+ * @param {Array.<ol.Feature>} features Features.
+ * @return {ArrayBuffer|Node|Object|string} Result.
+ * @todo api
+ */
+ol.format.WKT.prototype.writeFeatures;
+
+
+/**
+ * @inheritDoc
+ */
+ol.format.WKT.prototype.writeFeaturesText = function(features) {
+  if (features.length == 1) {
+    return this.writeFeatureText(features[0]);
+  }
+  var geometries = [];
+  for (var i = 0, ii = features.length; i < ii; ++i) {
+    geometries.push(features[i].getGeometry());
+  }
+  var collection = new ol.geom.GeometryCollection(geometries);
+  return this.writeGeometryText(collection);
+};
+
+
+/**
+ * Write a single geometry as a WKT string.
+ *
+ * @param {ol.geom.Geometry} geometry Geometry.
+ * @return {ArrayBuffer|Node|Object|string} Node.
+ * @todo api
+ */
+ol.format.WKT.prototype.writeGeometry;
+
+
+/**
+ * @inheritDoc
+ */
+ol.format.WKT.prototype.writeGeometryText = function(geometry) {
+  return this.encode_(geometry);
 };

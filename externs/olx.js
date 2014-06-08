@@ -1450,6 +1450,20 @@ olx.format.WFSWriteTransactionOptions.prototype.gmlOptions;
 
 
 /**
+ * @typedef {{splitCollection: (boolean|undefined)}}
+ * @todo api
+ */
+olx.format.WKTOptions;
+
+
+/**
+ * Whether to split GEOMETRYCOLLECTION's into multiple features.
+ * @type {boolean|undefined}
+ */
+olx.format.WKTOptions.prototype.splitCollection;
+
+
+/**
  * Interactions for the map. Default is `true` for all options.
  * @typedef {{altShiftDragRotate: (boolean|undefined),
  *     doubleClickZoom: (boolean|undefined),
