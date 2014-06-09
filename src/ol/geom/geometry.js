@@ -93,8 +93,10 @@ goog.inherits(ol.geom.Geometry, ol.Observable);
 
 
 /**
+ * Make a complete copy of the geometry.
  * @function
  * @return {ol.geom.Geometry} Clone.
+ * @api
  */
 ol.geom.Geometry.prototype.clone = goog.abstractMethod;
 
@@ -151,16 +153,22 @@ ol.geom.Geometry.prototype.getExtent = goog.abstractMethod;
 
 
 /**
+ * Create a simplified version of this geometry using the Douglas Peucker
+ * algorithm.
+ * @see http://en.wikipedia.org/wiki/Ramer%E2%80%93Douglas%E2%80%93Peucker_algorithm
  * @function
  * @param {number} squaredTolerance Squared tolerance.
  * @return {ol.geom.Geometry} Simplified geometry.
+ * @api
  */
 ol.geom.Geometry.prototype.getSimplifiedGeometry = goog.abstractMethod;
 
 
 /**
+ * Get the type of this geometry.
  * @function
  * @return {ol.geom.GeometryType} Geometry type.
+ * @api
  */
 ol.geom.Geometry.prototype.getType = goog.abstractMethod;
 
