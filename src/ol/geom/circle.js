@@ -133,15 +133,6 @@ ol.geom.Circle.prototype.getRadiusSquared_ = function() {
  * @inheritDoc
  * @todo api
  */
-ol.geom.Circle.prototype.getSimplifiedGeometry = function(squaredTolerance) {
-  return this;
-};
-
-
-/**
- * @inheritDoc
- * @todo api
- */
 ol.geom.Circle.prototype.getType = function() {
   return ol.geom.GeometryType.CIRCLE;
 };
