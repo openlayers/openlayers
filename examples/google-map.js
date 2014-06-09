@@ -21,7 +21,10 @@ var gmap = new google.maps.Map(document.getElementById('gmap'), {
   streetViewControl: false
 });
 
-var view = new ol.View2D();
+var view = new ol.View2D({
+  // make sure the view doesn't go beyond the 22 zoom levels of Google Maps
+  maxZoom: 21
+});
 view.on('change:center', function() {
   var center = ol.proj.transform(view.getCenter(), 'EPSG:3857', 'EPSG:4326');
   gmap.setCenter(new google.maps.LatLng(center[1], center[0]));
