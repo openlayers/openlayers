@@ -15,6 +15,14 @@ goog.require('ol.style.ImageState');
 
 
 /**
+ * @classdesc
+ * A mechanism for changing the style of a small number of features on a
+ * temporary basis, for example highlighting. This is necessary with the Canvas
+ * renderer, where, unlike in SVG, features cannot be individually referenced.
+ * See examples/vector-layers for an example: create a FeatureOverlay with a
+ * different style, copy the feature(s) you want rendered in this different
+ * style into it, and then remove them again when you're finished.
+ *
  * @constructor
  * @param {olx.FeatureOverlayOptions=} opt_options Options.
  * @todo api

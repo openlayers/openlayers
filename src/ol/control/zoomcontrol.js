@@ -17,9 +17,11 @@ goog.require('ol.pointer.PointerEventHandler');
 
 
 /**
- * Create a new control with 2 buttons, one for zoom in and one for zoom out.
- * This control is part of the default controls of a map. To style this control
+ * @classdesc
+ * A control with 2 buttons, one for zoom in and one for zoom out.
+ * This control is one of the default controls of a map. To style this control
  * use css selectors `.ol-zoom-in` and `.ol-zoom-out`.
+ *
  * @constructor
  * @extends {ol.control.Control}
  * @param {olx.control.ZoomOptions=} opt_options Zoom options.

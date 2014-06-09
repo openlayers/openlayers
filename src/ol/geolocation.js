@@ -35,6 +35,7 @@ ol.GeolocationProperty = {
 
 
 /**
+ * @classdesc
  * Helper class for providing HTML5 Geolocation capabilities.
  * The [Geolocation API](http://www.w3.org/TR/geolocation-API/)
  * is used to locate a user's position.

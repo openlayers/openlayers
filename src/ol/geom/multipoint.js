@@ -13,6 +13,9 @@ goog.require('ol.math');
 
 
 /**
+ * @classdesc
+ * Multi-point geometry.
+ *
  * @constructor
  * @extends {ol.geom.SimpleGeometry}
  * @param {ol.geom.RawMultiPoint} coordinates Coordinates.

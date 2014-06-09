@@ -24,6 +24,9 @@ ol.source.TileOptions;
 
 
 /**
+ * @classdesc
+ * Abstract base class for sources providing images divided into a tile grid.
+ *
  * @constructor
  * @extends {ol.source.Source}
  * @param {ol.source.TileOptions} options Tile source options.

@@ -12,6 +12,13 @@ goog.require('ol.easing');
 
 
 /**
+ * @classdesc
+ * User actions that change the state of the map. Some are similar to controls,
+ * but are not associated with a DOM element.
+ * For example, {@link ol.interaction.KeyboardZoom} is functionally the same as
+ * {@link ol.control.Zoom}, but triggered by a keyboard event not a button
+ * element event.
+ *
  * @constructor
  * @extends {ol.Observable}
  */

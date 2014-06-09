@@ -5,7 +5,9 @@ goog.require('goog.functions');
 
 
 /**
- * ol.format.Feature subclasses provide the ability to decode and encode
+ * @classdesc
+ * Abstract base class for feature formats.
+ * {ol.format.Feature} subclasses provide the ability to decode and encode
  * {@link ol.Feature} objects from a variety of commonly used geospatial
  * file formats.  See the documentation for each format for more details.
  *

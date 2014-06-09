@@ -104,7 +104,17 @@ ol.ObjectAccessor.prototype.transform = function(from, to) {
 
 
 /**
- * Base class implementing KVO (Key Value Observing).
+ * @classdesc
+ * Abstract base class from which all non-trivial classes inherit.
+ *
+ * It provides standardised get/set methods, and implements a form of
+ * Key Value Observing. Setting a value triggers a change event, and 2 objects
+ * can be bound together such that a change in one will automatically be
+ * reflected in the other.
+ *
+ * See {@link ol.dom.Input} for specific case of binding an object with an
+ * HTML element.
+ *
  * @constructor
  * @extends {ol.Observable}
  * @param {Object.<string, *>=} opt_values Values.

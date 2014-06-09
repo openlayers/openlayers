@@ -9,6 +9,9 @@ goog.require('ol.tilegrid.XYZ');
 
 
 /**
+ * @classdesc
+ * Layer source for tile data with URLs in a set XYZ format.
+ *
  * @constructor
  * @extends {ol.source.TileImage}
  * @param {olx.source.XYZOptions} options XYZ options.

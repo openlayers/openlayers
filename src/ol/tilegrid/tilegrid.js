@@ -15,6 +15,10 @@ goog.require('ol.proj.Units');
 
 
 /**
+ * @classdesc
+ * Base class for setting the grid pattern for sources accessing tiled-image
+ * servers.
+ *
  * @constructor
  * @param {olx.tilegrid.TileGridOptions} options Tile grid options.
  * @struct

@@ -5,6 +5,9 @@ goog.require('ol.color');
 
 
 /**
+ * @classdesc
+ * Set stroke style for vector features.
+ *
  * @constructor
  * @param {olx.style.StrokeOptions=} opt_options Options.
  * @todo api

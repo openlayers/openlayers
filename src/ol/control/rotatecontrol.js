@@ -17,8 +17,10 @@ goog.require('ol.pointer.PointerEventHandler');
 
 
 /**
- * Create a new control with a button, to reset rotation to 0.
+ * @classdesc
+ * A button control to reset rotation to 0.
  * To style this control use css selector `.ol-rotate`.
+ *
  * @constructor
  * @extends {ol.control.Control}
  * @param {olx.control.RotateOptions=} opt_options Rotate options.

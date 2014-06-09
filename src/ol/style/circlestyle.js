@@ -12,6 +12,9 @@ goog.require('ol.style.Stroke');
 
 
 /**
+ * @classdesc
+ * Set circle style for vector features.
+ *
  * @constructor
  * @param {olx.style.CircleOptions=} opt_options Options.
  * @extends {ol.style.Image}

@@ -14,6 +14,9 @@ goog.require('ol.source.Tile');
 
 
 /**
+ * @classdesc
+ * Base class for sources providing images divided into a tile grid.
+ *
  * @constructor
  * @extends {ol.source.Tile}
  * @param {olx.source.TileImageOptions} options Image tile options.

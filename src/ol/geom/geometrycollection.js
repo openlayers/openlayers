@@ -12,6 +12,9 @@ goog.require('ol.geom.GeometryType');
 
 
 /**
+ * @classdesc
+ * An array of {@link ol.geom.Geometry} objects.
+ *
  * @constructor
  * @extends {ol.geom.Geometry}
  * @param {Array.<ol.geom.Geometry>=} opt_geometries Geometries.

@@ -122,7 +122,7 @@ ol.MapProperty = {
 
 
 /**
- * @class
+ * @classdesc
  * The map is the core component of OpenLayers. In its minimal configuration it
  * needs a view, one or more layers, and a target container:
  *

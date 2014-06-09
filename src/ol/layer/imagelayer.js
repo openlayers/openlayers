@@ -5,6 +5,10 @@ goog.require('ol.layer.Layer');
 
 
 /**
+ * @classdesc
+ * Server-rendered images that are available for arbitrary extents and
+ * resolutions.
+ *
  * @constructor
  * @extends {ol.layer.Layer}
  * @fires ol.render.Event

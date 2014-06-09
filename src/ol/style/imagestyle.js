@@ -25,6 +25,9 @@ ol.style.ImageOptions;
 
 
 /**
+ * @classdesc
+ * Set image style for vector features.
+ *
  * @constructor
  * @param {ol.style.ImageOptions} options Options.
  */

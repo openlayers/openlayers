@@ -22,6 +22,9 @@ ol.format.IGCZ = {
 
 
 /**
+ * @classdesc
+ * Feature format for `*.igc` flight recording files.
+ *
  * @constructor
  * @extends {ol.format.TextFeature}
  * @param {olx.format.IGCOptions=} opt_options Options.

@@ -14,11 +14,11 @@ goog.require('ol.interaction.PinchZoom');
 
 
 /**
- * This method is a convenience method to create a set of interactions
- * to be used with an {@link ol.Map}.  Specific interactions can be excluded by
- * setting the appropriate option to false in the constructor options,
- * but the order of the interactions is fixed.  If you want to specify a
- * different order for interactions, you will need to create your own
+ * @classdesc
+ * Set of interactions included in maps by default. Specific interactions can be
+ * excluded by setting the appropriate option to false in the constructor
+ * options, but the order of the interactions is fixed.  If you want to specify
+ * a different order for interactions, you will need to create your own
  * {@link ol.interaction.Interaction} instances and insert them into a
  * {@link ol.Collection} in the order you want before creating your
  * {@link ol.Map} instance. The default set of interactions, in sequence, is:
@@ -31,6 +31,7 @@ goog.require('ol.interaction.PinchZoom');
  * * {@link ol.interaction.KeyboardZoom}
  * * {@link ol.interaction.MouseWheelZoom}
  * * {@link ol.interaction.DragZoom}
+ *
  * @param {olx.interaction.DefaultsOptions=} opt_options Defaults options.
  * @return {ol.Collection} A collection of interactions to be used with
  * the ol.Map constructor's interactions option.

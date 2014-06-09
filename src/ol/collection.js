@@ -65,7 +65,12 @@ ol.CollectionProperty = {
 
 
 /**
- * A mutable MVC Array.
+ * @classdesc
+ * Adds methods to standard Array; changes (add/remove) to the Collection
+ * trigger events. Because a Collection is itself an {@link ol.Object}, it
+ * can be bound to any other Object or Collection such that a change in one
+ * will automatically be reflected in the other.
+ *
  * @constructor
  * @extends {ol.Object}
  * @fires ol.CollectionEvent

@@ -16,6 +16,7 @@ goog.require('ol.vec.Mat4');
 
 
 /**
+ * @classdesc
  * An image source whose images are canvas elements into which vector features
  * read from a vector source (`ol.source.Vector`) are drawn. An
  * `ol.source.ImageVector` object is to be used as the `source` of an image
