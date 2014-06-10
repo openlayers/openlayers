@@ -42,16 +42,19 @@ describe('ol.interaction.Draw', function() {
    * @param {string} type Event type.
    * @param {number} x Horizontal offset from map center.
    * @param {number} y Vertical offset from map center.
+   * @param {boolean=} opt_shiftKey Shift key is pressed.
    */
-  function simulateEvent(type, x, y) {
+  function simulateEvent(type, x, y, opt_shiftKey) {
     var viewport = map.getViewport();
     // calculated in case body has top < 0 (test runner with small window)
     var position = goog.style.getClientPosition(viewport);
+    var shiftKey = goog.isDef(opt_shiftKey) ? opt_shiftKey : false;
     var event = new ol.MapBrowserPointerEvent(type, map,
         new ol.pointer.PointerEvent(type,
             new goog.events.BrowserEvent({
               clientX: position.x + x + width / 2,
-              clientY: position.y + y + height / 2
+              clientY: position.y + y + height / 2,
+              shiftKey: shiftKey
             })));
     map.handleMapBrowserEvent(event);
   }
@@ -122,6 +125,14 @@ describe('ol.interaction.Draw', function() {
       expect(features).to.have.length(0);
     });
 
+    it('does not draw a point when modifier key is pressed', function() {
+      simulateEvent('pointermove', 10, 20);
+      simulateEvent('pointerdown', 10, 20, true);
+      simulateEvent('pointerup', 10, 20);
+      var features = source.getFeatures();
+      expect(features).to.have.length(0);
+    });
+
     it('triggers draw events', function() {
       var ds = sinon.spy();
       var de = sinon.spy();
@@ -134,7 +145,6 @@ describe('ol.interaction.Draw', function() {
       expect(ds).to.be.called(2);
       expect(de).to.be.called(1);
     });
-
   });
 
   describe('drawing multipoints', function() {

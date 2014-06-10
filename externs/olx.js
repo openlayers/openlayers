@@ -1647,7 +1647,8 @@ olx.interaction.DragZoomOptions.prototype.style;
  *     type: ol.geom.GeometryType,
  *     minPointsPerRing: (number|undefined),
  *     style: (ol.style.Style|Array.<ol.style.Style>|ol.feature.StyleFunction|undefined),
- *     geometryName: (string|undefined)}}
+ *     geometryName: (string|undefined),
+ *     condition: (ol.events.ConditionType|undefined)}}
  * @todo api
  */
 olx.interaction.DrawOptions;
@@ -1702,6 +1703,15 @@ olx.interaction.DrawOptions.prototype.style;
  * @type {string|undefined}
  */
 olx.interaction.DrawOptions.prototype.geometryName;
+
+
+/**
+ * A conditional modifier (e.g. shift key) that determines if the interaction is
+ * active (i.e. a click adds a vertex) or not. By default, a click with no modifier
+ * keys adds a vertex.
+ * @type {ol.events.ConditionType|undefined}
+ */
+olx.interaction.DrawOptions.prototype.condition;
 
 
 /**
