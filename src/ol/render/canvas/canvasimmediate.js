@@ -19,6 +19,14 @@ goog.require('ol.vec.Mat4');
 
 
 /**
+ * @classdesc
+ * A concrete subclass of {@link ol.render.IVectorContext} that implements
+ * direct rendering of features and geometries to an HTML5 Canvas context.
+ * Instances of this class are created internally by the library and
+ * provided to application code as vectorContext member of the
+ * {@link ol.render.Event} object associated with postcompose, precompose and
+ * render events emitted by layers and maps.
+ *
  * @constructor
  * @implements {ol.render.IVectorContext}
  * @param {CanvasRenderingContext2D} context Context.

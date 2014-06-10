@@ -23,6 +23,9 @@ ol.TileState = {
 
 
 /**
+ * @classdesc
+ * Base class for tiles.
+ *
  * @constructor
  * @extends {goog.events.EventTarget}
  * @param {ol.TileCoord} tileCoord Tile coordinate.

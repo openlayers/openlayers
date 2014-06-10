@@ -19,6 +19,9 @@ ol.webgl.BufferCacheEntry;
 
 
 /**
+ * @classdesc
+ * A WebGL context for accessing low-level WebGL capabilities.
+ *
  * @constructor
  * @extends {goog.events.EventTarget}
  * @param {HTMLCanvasElement} canvas Canvas.
