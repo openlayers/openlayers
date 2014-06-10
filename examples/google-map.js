@@ -54,9 +54,9 @@ var map = new ol.Map({
   layers: [vector],
   interactions: ol.interaction.defaults({
     altShiftDragRotate: false,
-    pan: false,
+    dragPan: false,
     rotate: false
-  }).extend([new ol.interaction.DragPan({kinetic: false})]),
+  }).extend([new ol.interaction.DragPan({kinetic: null})]),
   target: olMapDiv,
   view: view
 });
