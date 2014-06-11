@@ -395,6 +395,8 @@ ol.structs.RBush.prototype.condense_ = function(path) {
 /**
  * Calls a callback function with each node in the tree. Inside the callback,
  * no tree modifications (insert, update, remove) can be made.
+ * If the callback returns a truthy value, this value is returned without
+ * checking the rest of the tree.
  * @param {function(this: S, T): *} callback Callback.
  * @param {S=} opt_this The object to use as `this` in `callback`.
  * @return {*} Callback return value.
