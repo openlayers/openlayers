@@ -177,7 +177,7 @@ ol.source.Vector.prototype.addFeaturesInternal = function(features) {
  * Clear the source
  */
 ol.source.Vector.prototype.clear = function() {
-  this.rBush_.forEach(this.removeFeatureInternal, this);
+  this.rBush_.some(this.removeFeatureInternal, this);
   this.rBush_.clear();
   goog.object.forEach(
       this.nullGeometryFeatures_, this.removeFeatureInternal, this);
@@ -195,7 +195,7 @@ ol.source.Vector.prototype.clear = function() {
  * @todo api
  */
 ol.source.Vector.prototype.forEachFeature = function(f, opt_this) {
-  return this.rBush_.forEach(f, opt_this);
+  return this.rBush_.some(f, opt_this);
 };
 
 

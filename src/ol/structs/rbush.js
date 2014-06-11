@@ -402,16 +402,16 @@ ol.structs.RBush.prototype.condense_ = function(path) {
  * @return {*} Callback return value.
  * @template S
  */
-ol.structs.RBush.prototype.forEach = function(callback, opt_this) {
+ol.structs.RBush.prototype.some = function(callback, opt_this) {
   if (goog.DEBUG) {
     ++this.readers_;
     try {
-      return this.forEach_(this.root_, callback, opt_this);
+      return this.some_(this.root_, callback, opt_this);
     } finally {
       --this.readers_;
     }
   } else {
-    return this.forEach_(this.root_, callback, opt_this);
+    return this.some_(this.root_, callback, opt_this);
   }
 };
 
@@ -424,7 +424,7 @@ ol.structs.RBush.prototype.forEach = function(callback, opt_this) {
  * @return {*} Callback return value.
  * @template S
  */
-ol.structs.RBush.prototype.forEach_ = function(node, callback, opt_this) {
+ol.structs.RBush.prototype.some_ = function(node, callback, opt_this) {
   goog.asserts.assert(!node.isLeaf());
   /** @type {Array.<ol.structs.RBushNode.<T>>} */
   var toVisit = [node];
@@ -492,7 +492,7 @@ ol.structs.RBush.prototype.forEachInExtent_ =
           return result;
         }
       } else if (ol.extent.containsExtent(extent, node.extent)) {
-        result = this.forEach_(node, callback, opt_this);
+        result = this.some_(node, callback, opt_this);
         if (result) {
           return result;
         }
@@ -533,7 +533,7 @@ ol.structs.RBush.prototype.forEachNode = function(callback, opt_this) {
  */
 ol.structs.RBush.prototype.getAll = function() {
   var values = [];
-  this.forEach(
+  this.some(
       /**
        * @param {T} value Value.
        */
