@@ -21,7 +21,9 @@
   "devDependencies": {
     "closure-util": "~0.12.0",
     "jshint": "~2.5.1",
-    "jsdoc": "~3.3.0-alpha5",
+    "jsdoc": "~3.3.0-alpha7",
+    "taffydb": "~2.7.0",
+    "underscore": "~1.6.0",
     "walk": "~2.3.3",
     "fs-extra": "~0.8.1",
     "nomnom": "~1.6.2",
