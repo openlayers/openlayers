@@ -56,6 +56,7 @@ ol.Tile.prototype.dispatchChangeEvent = function() {
 
 
 /**
+ * @function
  * @param {Object=} opt_context Object.
  * @return {HTMLCanvasElement|HTMLImageElement|HTMLVideoElement} Image.
  */
