@@ -1552,6 +1552,7 @@ ol.format.KML.prototype.readFeaturesFromNode = function(node) {
 /**
  * @param {Document|Node|string} source Souce.
  * @return {string|undefined} Name.
+ * @todo api
  */
 ol.format.KML.prototype.readName = function(source) {
   if (ol.xml.isDocument(source)) {
