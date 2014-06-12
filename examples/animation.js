@@ -1,11 +1,37 @@
 goog.require('ol.Map');
 goog.require('ol.View2D');
 goog.require('ol.animation');
-goog.require('ol.easing');
 goog.require('ol.layer.Tile');
 goog.require('ol.proj');
 goog.require('ol.source.OSM');
 
+
+// from https://github.com/DmitryBaranovskiy/raphael
+function bounce(t) {
+  var s = 7.5625, p = 2.75, l;
+  if (t < (1 / p)) {
+    l = s * t * t;
+  } else {
+    if (t < (2 / p)) {
+      t -= (1.5 / p);
+      l = s * t * t + 0.75;
+    } else {
+      if (t < (2.5 / p)) {
+        t -= (2.25 / p);
+        l = s * t * t + 0.9375;
+      } else {
+        t -= (2.625 / p);
+        l = s * t * t + 0.984375;
+      }
+    }
+  }
+  return l;
+}
+
+// from https://github.com/DmitryBaranovskiy/raphael
+function elastic(t) {
+  return Math.pow(2, -10 * t) * Math.sin((t - 0.075) * (2 * Math.PI) / 0.3) + 1;
+}
 
 var london = ol.proj.transform([-0.12755, 51.507222], 'EPSG:4326', 'EPSG:3857');
 var moscow = ol.proj.transform([37.6178, 55.7517], 'EPSG:4326', 'EPSG:3857');
@@ -75,7 +101,7 @@ var elasticToMoscow = document.getElementById('elastic-to-moscow');
 elasticToMoscow.addEventListener('click', function() {
   var pan = ol.animation.pan({
     duration: 2000,
-    easing: ol.easing.elastic,
+    easing: elastic,
     source: /** @type {ol.Coordinate} */ (view.getCenter())
   });
   map.beforeRender(pan);
@@ -86,7 +112,7 @@ var bounceToIstanbul = document.getElementById('bounce-to-istanbul');
 bounceToIstanbul.addEventListener('click', function() {
   var pan = ol.animation.pan({
     duration: 2000,
-    easing: ol.easing.bounce,
+    easing: bounce,
     source: /** @type {ol.Coordinate} */ (view.getCenter())
   });
   map.beforeRender(pan);
