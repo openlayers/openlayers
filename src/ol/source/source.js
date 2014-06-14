@@ -34,7 +34,9 @@ ol.source.SourceOptions;
 
 /**
  * @classdesc
- * Abstract base class for {@link ol.layer.Layer} sources.
+ * Abstract base class; normally only used for creating subclasses and not
+ * instantiated in apps.
+ * Base class for {@link ol.layer.Layer} sources.
  *
  * @constructor
  * @extends {ol.Observable}

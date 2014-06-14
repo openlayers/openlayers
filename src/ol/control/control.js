@@ -10,7 +10,8 @@ goog.require('ol.Object');
 
 /**
  * @classdesc
- * Abstract parent class for controls.
+ * Abstract base class; normally only used for creating subclasses and not
+ * instantiated in apps.
  * A control is a visible widget with a DOM element in a fixed position on the
  * screen. They can involve user input (buttons), or be informational only;
  * the position is determined using CSS. By default these are part of the map

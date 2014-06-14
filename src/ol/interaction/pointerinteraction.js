@@ -13,7 +13,8 @@ goog.require('ol.interaction.Interaction');
 
 /**
  * @classdesc
- * Abstract base class for pointer interactions.
+ * Abstract base class; normally only used for creating subclasses and not
+ * instantiated in apps.
  *
  * @constructor
  * @extends {ol.interaction.Interaction}

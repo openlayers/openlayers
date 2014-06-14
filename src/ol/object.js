@@ -105,7 +105,9 @@ ol.ObjectAccessor.prototype.transform = function(from, to) {
 
 /**
  * @classdesc
- * Abstract base class from which all non-trivial classes inherit.
+ * Abstract base class; normally only used for creating subclasses and not
+ * instantiated in apps.
+ * All non-trivial classes inherit from this.
  *
  * It provides standardised get/set methods, and implements a form of
  * Key Value Observing. Setting a value triggers a change event, and 2 objects
