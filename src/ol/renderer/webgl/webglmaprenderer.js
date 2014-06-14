@@ -269,7 +269,7 @@ ol.renderer.webgl.Map.prototype.dispatchComposeEvent_ =
     var context = this.getContext();
     var render = new ol.render.webgl.Immediate(context, frameState.pixelRatio);
     var composeEvent = new ol.render.Event(
-        type, map, render, frameState, null, context);
+        type, map, render, null, frameState, null, context);
     map.dispatchEvent(composeEvent);
   }
 };
