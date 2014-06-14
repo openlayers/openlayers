@@ -123,6 +123,7 @@ ol.renderer.canvas.Map.prototype.dispatchComposeEvent_ =
       replayGroup.replay(context, extent, pixelRatio, this.transform_,
           rotation, {});
     }
+    this.replayGroup = replayGroup;
   }
 };
 

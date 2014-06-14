@@ -44,6 +44,12 @@ ol.renderer.Map = function(container, map) {
   this.map_ = map;
 
   /**
+   * @protected
+   * @type {ol.render.IReplayGroup}
+   */
+  this.replayGroup = null;
+
+  /**
    * @private
    * @type {Object.<string, ol.renderer.Layer>}
    */
@@ -110,9 +116,36 @@ ol.renderer.Map.prototype.disposeInternal = function() {
 ol.renderer.Map.prototype.forEachFeatureAtPixel =
     function(coordinate, frameState, callback, thisArg,
         layerFilter, thisArg2) {
+  var result;
+  var extent = frameState.extent;
+  var view2DState = frameState.view2DState;
+  var viewResolution = view2DState.resolution;
+  var viewRotation = view2DState.rotation;
+  if (!goog.isNull(this.replayGroup)) {
+    /** @type {Object.<string, boolean>} */
+    var features = {};
+    result = this.replayGroup.forEachGeometryAtPixel(extent, viewResolution,
+        viewRotation, coordinate, {},
+        /**
+         * @param {ol.geom.Geometry} geometry Geometry.
+         * @param {Object} data Data.
+         * @return {?} Callback result.
+         */
+        function(geometry, data) {
+          var feature = /** @type {ol.Feature} */ (data);
+          goog.asserts.assert(goog.isDef(feature));
+          var key = goog.getUid(feature).toString();
+          if (!(key in features)) {
+            features[key] = true;
+            return callback.call(thisArg, feature, null);
+          }
+        });
+    if (result) {
+      return result;
+    }
+  }
   var layerStates = this.map_.getLayerGroup().getLayerStatesArray();
   var numLayers = layerStates.length;
-  var viewResolution = frameState.view2DState.resolution;
   var i;
   for (i = numLayers - 1; i >= 0; --i) {
     var layerState = layerStates[i];
@@ -120,7 +153,7 @@ ol.renderer.Map.prototype.forEachFeatureAtPixel =
     if (ol.layer.Layer.visibleAtResolution(layerState, viewResolution) &&
         layerFilter.call(thisArg2, layer)) {
       var layerRenderer = this.getLayerRenderer(layer);
-      var result = layerRenderer.forEachFeatureAtPixel(
+      result = layerRenderer.forEachFeatureAtPixel(
           coordinate, frameState, callback, thisArg);
       if (result) {
         return result;
