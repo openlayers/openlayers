@@ -1202,7 +1202,7 @@ ol.Map.prototype.renderFrame_ = function(time) {
       pixelToCoordinateMatrix: this.pixelToCoordinateMatrix_,
       postRenderFunctions: [],
       size: size,
-      skippedFeatureUids_: this.skippedFeatureUids_,
+      skippedFeatureUids_: goog.object.clone(this.skippedFeatureUids_),
       tileQueue: this.tileQueue_,
       time: time,
       usedTiles: {},
