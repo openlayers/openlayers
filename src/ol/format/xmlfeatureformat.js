@@ -11,7 +11,9 @@ goog.require('ol.xml');
 
 /**
  * @classdesc
- * Abstract base class for XML feature formats.
+ * Abstract base class; normally only used for creating subclasses and not
+ * instantiated in apps.
+ * Base class for XML feature formats.
  *
  * @constructor
  * @extends {ol.format.Feature}

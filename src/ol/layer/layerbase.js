@@ -42,7 +42,8 @@ ol.layer.LayerState;
 
 /**
  * @classdesc
- * Abstract base class for all layers.
+ * Abstract base class; normally only used for creating subclasses and not
+ * instantiated in apps.
  *
  * @constructor
  * @extends {ol.Object}

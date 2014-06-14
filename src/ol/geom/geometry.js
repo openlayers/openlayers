@@ -45,7 +45,9 @@ ol.geom.GeometryLayout = {
 
 /**
  * @classdesc
- * Abstract base class for vector geometries.
+ * Abstract base class; normally only used for creating subclasses and not
+ * instantiated in apps.
+ * Base class for vector geometries.
  *
  * @constructor
  * @extends {ol.Observable}
