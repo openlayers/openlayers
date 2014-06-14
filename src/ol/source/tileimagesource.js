@@ -103,22 +103,31 @@ ol.source.TileImage.prototype.expireCache = function(usedTiles) {
  */
 ol.source.TileImage.prototype.getTile =
     function(z, x, y, pixelRatio, projection) {
+  goog.asserts.assert(projection);
   var tileCoordKey = this.getKeyZXY(z, x, y);
+  var tile;
   if (this.tileCache.containsKey(tileCoordKey)) {
-    return /** @type {!ol.Tile} */ (this.tileCache.get(tileCoordKey));
+    tile = /** @type {!ol.Tile} */ (this.tileCache.get(tileCoordKey));
+    if (!goog.isDef(this.sourcePixelRatio) &&
+        tile.getState() === ol.TileState.LOADED) {
+      var reportedPixelSize = this.getTilePixelSize(z, pixelRatio, projection);
+      this.sourcePixelRatio = tile.getImage().width / reportedPixelSize;
+      if (this.sourcePixelRatio != 1) {
+        this.dispatchChangeEvent();
+      }
+    }
   } else {
-    goog.asserts.assert(projection);
     var tileCoord = new ol.TileCoord(z, x, y);
     var tileUrl = this.tileUrlFunction(tileCoord, pixelRatio, projection);
-    var tile = new this.tileClass(
+    tile = new this.tileClass(
         tileCoord,
         goog.isDef(tileUrl) ? ol.TileState.IDLE : ol.TileState.EMPTY,
         goog.isDef(tileUrl) ? tileUrl : '',
         this.crossOrigin,
         this.tileLoadFunction);
     this.tileCache.set(tileCoordKey, tile);
-    return tile;
   }
+  return tile;
 };
 
 
