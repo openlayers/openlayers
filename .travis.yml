@@ -1,6 +1,6 @@
 before_install:
   - "sudo pip install -r requirements.txt"
-  - "npm install"
+  - "npm install -g npm && npm install"
 
 before_script:
   - "./build.py plovr"
