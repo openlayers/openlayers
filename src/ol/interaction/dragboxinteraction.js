@@ -71,9 +71,12 @@ goog.inherits(ol.DragBoxEvent, goog.events.Event);
 
 /**
  * @classdesc
- * Allows the user to zoom the map by clicking and dragging on the map,
+ * Allows the user to draw a vector box by clicking and dragging on the map,
  * normally combined with an {@link ol.events.condition} that limits
- * it to when the shift key is held down.
+ * it to when the shift or other key is held down. This is used, for example,
+ * for zooming to a specific area of the map
+ * (see {@link ol.interaction.DragZoom} and
+ * {@link ol.interaction.DragRotateAndZoom}).
  *
  * This interaction is only supported for mouse devices.
  *
