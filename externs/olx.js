@@ -2818,6 +2818,7 @@ olx.source.TileImageOptions.prototype.tileUrlFunction;
  * @typedef {{attributions: (Array.<ol.Attribution>|undefined),
  *     defaultProjection: ol.proj.ProjectionLike,
  *     extent: (ol.Extent|undefined),
+ *     format: ol.format.Feature,
  *     logo: (string|undefined),
  *     object: (GeoJSONObject|undefined),
  *     projection: ol.proj.ProjectionLike,
@@ -2849,6 +2850,13 @@ olx.source.TileVectorOptions.prototype.defaultProjection;
  * @type {ol.Extent|undefined}
  */
 olx.source.TileVectorOptions.prototype.extent;
+
+
+/**
+ * Format.
+ * @type {ol.format.Feature}
+ */
+olx.source.TileVectorOptions.prototype.format;
 
 
 /**
