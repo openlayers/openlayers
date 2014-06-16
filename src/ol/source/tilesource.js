@@ -192,7 +192,7 @@ ol.source.Tile.prototype.getTilePixelSize =
     function(z, pixelRatio, projection) {
   var tileGrid = this.getTileGridForProjection(projection);
   var tileSize = tileGrid.getTileSize(z);
-  if (goog.isDef(this.sourcePixelRatio)) {
+  if (goog.isDef(this.sourcePixelRatio) && this.sourcePixelRatio != 1) {
     return (tileSize * this.sourcePixelRatio + 0.5) | 0;
   } else {
     return tileSize;
