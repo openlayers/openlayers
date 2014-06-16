@@ -26,6 +26,9 @@ goog.provide('ol.structs.RBush');
 
 goog.require('goog.array');
 goog.require('goog.asserts');
+goog.require('goog.iter');
+goog.require('goog.iter.Iterator');
+goog.require('goog.iter.StopIteration');
 goog.require('goog.object');
 goog.require('ol.extent');
 
@@ -235,6 +238,91 @@ ol.structs.RBush = function(opt_maxEntries) {
     this.readers_ = 0;
   }
 
+};
+
+
+/**
+ * @param {ol.Extent=} opt_extent Extent.
+ * @return {!goog.iter.Iterator} iterator
+ */
+ol.structs.RBush.prototype.getIterator = function(opt_extent) {
+  if (goog.isDef(opt_extent)) {
+    return this.getIteratorInExtent_(opt_extent);
+  } else {
+    return this.getIterator_(this.root_);
+  }
+};
+
+
+/**
+ * @private
+ * @param {ol.structs.RBushNode.<T>} node Node.
+ * @return {!goog.iter.Iterator} iterator
+ */
+ol.structs.RBush.prototype.getIterator_ = function(node) {
+  goog.asserts.assert(!node.isLeaf());
+  var toVisit = [node];
+  var children = [];
+
+  var iterator = new goog.iter.Iterator();
+  iterator.next = function() {
+    while (children.length > 0) {
+      return children.pop().value;
+    }
+
+    while (toVisit.length > 0) {
+      node = toVisit.pop();
+      if (node.height == 1) {
+        if (node.children.length > 0) {
+          children = node.children.slice();
+          return children.pop().value;
+        }
+      } else {
+        toVisit.push.apply(toVisit, node.children);
+      }
+    }
+
+    throw goog.iter.StopIteration;
+  };
+  return iterator;
+};
+
+
+/**
+ * @private
+ * @param {ol.Extent} extent Extent.
+ * @return {!goog.iter.Iterator} iterator
+ */
+ol.structs.RBush.prototype.getIteratorInExtent_ = function(extent) {
+  var toVisit = [this.root_];
+  var children = new goog.iter.Iterator();
+  var self = this;
+
+  var iterator = new goog.iter.Iterator();
+  iterator.next = function() {
+    var leaf;
+    while (goog.isDef(leaf = goog.iter.nextOrValue(children, undefined))) {
+      return leaf;
+    }
+    while (toVisit.length > 0) {
+      var node = toVisit.pop();
+      if (ol.extent.intersects(extent, node.extent)) {
+        if (node.isLeaf()) {
+          return node.value;
+        } else if (ol.extent.containsExtent(extent, node.extent)) {
+          children = self.getIterator_(node);
+          leaf = goog.iter.nextOrValue(children, undefined);
+          if (goog.isDef(leaf)) {
+            return leaf;
+          }
+        } else {
+          toVisit.push.apply(toVisit, node.children);
+        }
+      }
+    }
+    throw goog.iter.StopIteration;
+  };
+  return iterator;
 };
 
 

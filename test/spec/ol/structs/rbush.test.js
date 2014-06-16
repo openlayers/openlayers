@@ -26,6 +26,13 @@ describe('ol.structs.RBush', function() {
 
     });
 
+    describe('#getIterator', function() {
+
+      it('returns the expected number of objects', function() {
+        expect(goog.iter.toArray(rBush.getIterator())).to.be.empty();
+      });
+
+    });
   });
 
   describe('with a single object', function() {
@@ -103,6 +110,15 @@ describe('ol.structs.RBush', function() {
 
       it('returns an empty array when given a disjoint extent', function() {
         expect(rBush.getInExtent([5, 5, 6, 6]).length).to.be(0);
+      });
+
+    });
+
+    describe('#getIterator', function() {
+
+      it('returns the expected number of objects', function() {
+        var result = goog.iter.toArray(rBush.getIterator());
+        expect(result.length).to.be(objs.length);
       });
 
     });
@@ -215,6 +231,15 @@ describe('ol.structs.RBush', function() {
 
     });
 
+    describe('#getIterator', function() {
+
+      it('returns the expected number of objects', function() {
+        var result = goog.iter.toArray(rBush.getIterator());
+        expect(result.length).to.be(objs.length);
+      });
+
+    });
+
     describe('#isEmpty', function() {
 
       it('returns false', function() {
@@ -275,6 +300,15 @@ describe('ol.structs.RBush', function() {
 
       it('returns the expected number of objects', function() {
         expect(rBush.getAll().length).to.be(1000);
+      });
+
+    });
+
+    describe('#getIterator', function() {
+
+      it('returns the expected number of objects', function() {
+        var result = goog.iter.toArray(rBush.getIterator());
+        expect(result.length).to.be(1000);
       });
 
     });
@@ -356,4 +390,5 @@ describe('ol.structs.RBush', function() {
 
 });
 
+goog.require('goog.iter');
 goog.require('ol.structs.RBush');
