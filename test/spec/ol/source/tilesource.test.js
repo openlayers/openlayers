@@ -179,6 +179,25 @@ describe('ol.source.Tile', function() {
 
   });
 
+  describe('#getTilePixelSize()', function() {
+
+    it('returns the correct tile pixel size', function() {
+      var source = new ol.test.source.TileMock({});
+      var pixelSize = source.getTilePixelSize(0, 1,
+          new ol.proj.Projection('EPSG:4326'));
+      expect(pixelSize).to.be(256);
+    });
+
+    it('returns the pixel size adjusted by sourcePixelRatio', function() {
+      var source = new ol.test.source.TileMock({});
+      source.sourcePixelRatio = 2;
+      var pixelSize = source.getTilePixelSize(0, 1,
+          new ol.proj.Projection('EPSG:4326'));
+      expect(pixelSize).to.be(512);
+    });
+
+  });
+
 });
 
 
