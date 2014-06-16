@@ -281,18 +281,14 @@ ol.renderer.canvas.TileLayer.prototype.prepareFrame =
 
   var tmpExtent = ol.extent.createEmpty();
   var tmpTileRange = new ol.TileRange(0, 0, 0, 0);
-  var childTileRange, fullyLoaded, sourceRevision, tile, tileState, x, y;
+  var childTileRange, fullyLoaded, tile, tileState, x, y;
   for (x = tileRange.minX; x <= tileRange.maxX; ++x) {
     for (y = tileRange.minY; y <= tileRange.maxY; ++y) {
 
-      sourceRevision = tileSource.getRevision();
       tile = tileSource.getTile(z, x, y, pixelRatio, projection);
-      if (sourceRevision !== tileSource.getRevision()) {
-        // source pixel ratio is now known and has changed, abandon this frame
-        return;
-      }
       tileState = tile.getState();
-      if (tileState == ol.TileState.LOADED ||
+      if ((tileState == ol.TileState.LOADED &&
+          tile.getImage().width == tilePixelSize) ||
           tileState == ol.TileState.EMPTY ||
           (tileState == ol.TileState.ERROR && !useInterimTilesOnError)) {
         tilesToDrawByZ[z][tile.tileCoord.toString()] = tile;
