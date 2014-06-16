@@ -33,9 +33,7 @@ describe('ol.source.TileImage', function() {
 
 goog.require('goog.object');
 goog.require('ol.Tile');
-goog.require('ol.TileCoord');
 goog.require('ol.TileState');
 goog.require('ol.proj');
-goog.require('ol.source.Source');
+goog.require('ol.source.Tile');
 goog.require('ol.source.TileImage');
-goog.require('ol.tilegrid.TileGrid');

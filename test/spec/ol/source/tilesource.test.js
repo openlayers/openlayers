@@ -288,6 +288,7 @@ goog.require('ol.Tile');
 goog.require('ol.TileCoord');
 goog.require('ol.TileState');
 goog.require('ol.proj');
+goog.require('ol.proj.Projection');
 goog.require('ol.source.Source');
 goog.require('ol.source.Tile');
 goog.require('ol.tilegrid.TileGrid');
