@@ -167,6 +167,8 @@ ol.geom.Geometry.prototype.getType = goog.abstractMethod;
 
 /**
  * Apply a transform function to the geometry.  Modifies the geometry in place.
+ * If you do not want the geometry modified in place, first clone() it and
+ * then use this function on the clone.
  * @function
  * @param {ol.TransformFunction} transformFn Transform.
  * @todo api
@@ -177,6 +179,8 @@ ol.geom.Geometry.prototype.applyTransform = goog.abstractMethod;
 /**
  * Transform a geometry from one coordinate reference system to another.
  * Modifies the geometry in place.
+ * If you do not want the geometry modified in place, first clone() it and
+ * then use this function on the clone.
  *
  * @param {ol.proj.ProjectionLike} source The current projection.  Can be a
  *     string identifier or a {@link ol.proj.Projection} object.

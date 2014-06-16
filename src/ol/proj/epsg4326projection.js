@@ -10,6 +10,10 @@ goog.require('ol.proj.Units');
  * @classdesc
  * Projection object for WGS84 geographic coordinates (EPSG:4326).
  *
+ * Note that OpenLayers does not strictly comply with the EPSG definition.
+ * The EPSG registry defines 4326 as a CRS for Latitude,Longitude (y,x).
+ * OpenLayers treats EPSG:4326 as a pseudo-projection, with x,y coordinates.
+ *
  * @constructor
  * @extends {ol.proj.Projection}
  * @param {string} code Code.
