@@ -6,6 +6,12 @@ goog.require('ol.source.State');
 
 
 /**
+ * @classdesc
+ * Abstract base class; normally only used for creating subclasses and not
+ * instantiated in apps.
+ * Base class for vector sources in one of the supported formats, where the data
+ * is read from a file or other static source.
+ *
  * @constructor
  * @extends {ol.source.FormatVector}
  * @fires ol.source.VectorEvent

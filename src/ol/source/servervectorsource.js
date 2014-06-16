@@ -10,6 +10,10 @@ goog.require('ol.structs.RBush');
 
 
 /**
+ * @classdesc
+ * A vector source in one of the supported formats, using a custom function to
+ * read in the data from a remote server.
+ *
  * @constructor
  * @extends {ol.source.FormatVector}
  * @param {olx.source.ServerVectorOptions} options Options.
