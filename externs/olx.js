@@ -1129,6 +1129,21 @@ olx.format.GeoJSONOptions.prototype.geometryName;
 
 
 /**
+ * @typedef {{factor: (number|undefined)}}
+ * @todo stability experimental
+ */
+olx.format.PolylineOptions;
+
+
+/**
+ * The factor by which the coordinates values will be scaled.
+ * Default is `1e5`.
+ */
+olx.format.PolylineOptions.prototype.factor;
+
+
+
+/**
  * @typedef {{defaultProjection: ol.proj.ProjectionLike}}
  * @todo api
  */
