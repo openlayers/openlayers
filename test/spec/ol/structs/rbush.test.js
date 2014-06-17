@@ -116,9 +116,9 @@ describe('ol.structs.RBush', function() {
       it('throws an exception if called while iterating over an extent',
           function() {
             expect(function() {
-              rBush.forEachInExtent([-10, -10, 10, 10], function(value) {
-                rBush.insert([0, 0, 1, 1], {});
-              });
+              var iter = rBush.getIterator([-10, -10, 10, 10]);
+              rBush.insert([0, 0, 1, 1], {});
+              iter.next();
             }).to.throwException();
           });
     });
@@ -154,9 +154,9 @@ describe('ol.structs.RBush', function() {
       it('throws an exception if called while iterating over an extent',
           function() {
             expect(function() {
-              rBush.forEachInExtent([-10, -10, 10, 10], function(value) {
-                rBush.remove(value);
-              });
+              var iter = rBush.getIterator([-10, -10, 10, 10]);
+              rBush.remove(objs[0]);
+              iter.next();
             }).to.throwException();
           });
 
@@ -176,9 +176,9 @@ describe('ol.structs.RBush', function() {
       it('throws an exception if called while iterating over an extent',
           function() {
             expect(function() {
-              rBush.forEachInExtent([-10, -10, 10, 10], function(value) {
-                rBush.update([0, 0, 1, 1], objs[1]);
-              });
+              var iter = rBush.getIterator([-10, -10, 10, 10]);
+              rBush.update([0, 0, 1, 1], objs[1]);
+              iter.next();
             }).to.throwException();
           });
     });
