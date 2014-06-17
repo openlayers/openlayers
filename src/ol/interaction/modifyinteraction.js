@@ -753,7 +753,8 @@ ol.interaction.Modify.prototype.shouldStopEvent = goog.functions.identity;
  */
 ol.interaction.Modify.prototype.updateSegmentIndices_ = function(
     geometry, index, depth, delta) {
-  this.rBush_.forEachInExtent(geometry.getExtent(), function(segmentDataMatch) {
+  var nodes = this.rBush_.getIterator(geometry.getExtent());
+  goog.iter.forEach(nodes, function(segmentDataMatch) {
     if (segmentDataMatch.geometry === geometry &&
         (!goog.isDef(depth) ||
         goog.array.equals(segmentDataMatch.depth, depth)) &&

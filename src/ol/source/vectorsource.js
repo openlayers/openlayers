@@ -312,7 +312,7 @@ ol.source.Vector.prototype.getClosestFeatureToCoordinate =
   var closestPoint = [NaN, NaN];
   var minSquaredDistance = Infinity;
   var extent = [-Infinity, -Infinity, Infinity, Infinity];
-  this.rBush_.forEachInExtent(extent,
+  goog.iter.forEach(this.rBush_.getIterator(extent),
       /**
        * @param {ol.Feature} feature Feature.
        */
