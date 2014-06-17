@@ -11,6 +11,7 @@ goog.require('goog.asserts');
 goog.require('goog.events');
 goog.require('goog.events.Event');
 goog.require('goog.events.EventType');
+goog.require('goog.iter');
 goog.require('goog.object');
 goog.require('ol.ObjectEventType');
 goog.require('ol.proj');
@@ -251,12 +252,7 @@ ol.source.Vector.prototype.forEachFeatureInExtentAtResolution =
  * @api
  */
 ol.source.Vector.prototype.getFeatures = function() {
-  var features = this.rBush_.getAll();
-  if (!goog.object.isEmpty(this.nullGeometryFeatures_)) {
-    goog.array.extend(
-        features, goog.object.getValues(this.nullGeometryFeatures_));
-  }
-  return features;
+  return goog.iter.toArray(this.getFeaturesIterator());
 };
 
 
@@ -280,6 +276,20 @@ ol.source.Vector.prototype.getFeaturesAtCoordinate = function(coordinate) {
  */
 ol.source.Vector.prototype.getFeaturesInExtent = function(extent) {
   return this.rBush_.getInExtent(extent);
+};
+
+
+/**
+ * @param {ol.Extent=} opt_extent Extent.
+ * @return {goog.iter.Iterator} Features iterator.
+ * @api
+ */
+ol.source.Vector.prototype.getFeaturesIterator = function(opt_extent) {
+  var features = this.rBush_.getIterator(opt_extent);
+  var nullFeatures = goog.object.getValues(this.nullGeometryFeatures_);
+
+  // TODO: remove goog.iter.toIterator after upgrading closure-library
+  return goog.iter.chain(features, goog.iter.toIterator(nullFeatures));
 };
 
 
