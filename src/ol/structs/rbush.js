@@ -238,6 +238,12 @@ ol.structs.RBush = function(opt_maxEntries) {
     this.readers_ = 0;
   }
 
+  /**
+   * @private
+   * @type {number}
+   */
+  this.version_ = 0;
+
 };
 
 
@@ -263,9 +269,14 @@ ol.structs.RBush.prototype.getIterator_ = function(node) {
   goog.asserts.assert(!node.isLeaf());
   var toVisit = [node];
   var children = [];
+  var version = this.version_;
+  var self = this;
 
   var iterator = new goog.iter.Iterator();
   iterator.next = function() {
+    if (version != self.version_) {
+      throw Error('The tree has changed since the iterator was created');
+    }
     while (children.length > 0) {
       return children.pop().value;
     }
@@ -296,10 +307,14 @@ ol.structs.RBush.prototype.getIterator_ = function(node) {
 ol.structs.RBush.prototype.getIteratorInExtent_ = function(extent) {
   var toVisit = [this.root_];
   var children = new goog.iter.Iterator();
+  var version = this.version_;
   var self = this;
 
   var iterator = new goog.iter.Iterator();
   iterator.next = function() {
+    if (version != self.version_) {
+      throw Error('The tree has changed since the iterator was created');
+    }
     var leaf;
     while (goog.isDef(leaf = goog.iter.nextOrValue(children, undefined))) {
       return leaf;
@@ -456,6 +471,7 @@ ol.structs.RBush.prototype.clear = function() {
   node.children.length = 0;
   node.value = null;
   goog.object.clear(this.valueExtent_);
+  this.version_ = 0;
 };
 
 
@@ -677,6 +693,7 @@ ol.structs.RBush.prototype.insert = function(extent, value) {
   if (goog.DEBUG && this.readers_) {
     throw new Error('cannot insert value while reading');
   }
+  this.version_++;
   var key = this.getKey_(value);
   goog.asserts.assert(!this.valueExtent_.hasOwnProperty(key));
   this.insert_(extent, value, this.root_.height - 1);
@@ -728,6 +745,7 @@ ol.structs.RBush.prototype.remove = function(value) {
   if (goog.DEBUG && this.readers_) {
     throw new Error('cannot remove value while reading');
   }
+  this.version_++;
   var key = this.getKey_(value);
   goog.asserts.assert(this.valueExtent_.hasOwnProperty(key));
   var extent = this.valueExtent_[key];
@@ -805,6 +823,7 @@ ol.structs.RBush.prototype.update = function(extent, value) {
     if (goog.DEBUG && this.readers_) {
       throw new Error('cannot update extent while reading');
     }
+    this.version_++;
     var removed = this.remove_(currentExtent, value);
     goog.asserts.assert(removed);
     this.insert_(extent, value, this.root_.height - 1);
