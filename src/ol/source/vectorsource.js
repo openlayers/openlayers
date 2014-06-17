@@ -198,23 +198,20 @@ ol.source.Vector.prototype.forEachFeature = function(f, opt_this) {
 
 /**
  * @param {ol.Coordinate} coordinate Coordinate.
- * @param {function(this: T, ol.Feature): S} f Callback.
+ * @param {function(this: T, ol.Feature): ?} f Callback.
  * @param {T=} opt_this The object to use as `this` in `f`.
- * @return {S|undefined}
- * @template T,S
+ * @template T
  */
 ol.source.Vector.prototype.forEachFeatureAtCoordinate =
     function(coordinate, f, opt_this) {
   var extent = [coordinate[0], coordinate[1], coordinate[0], coordinate[1]];
-  return this.forEachFeatureInExtent(extent, function(feature) {
+  var features = this.rBush_.getIterator(extent);
+  var featuresAtCoordinate = goog.iter.filter(features, function(feature) {
     var geometry = feature.getGeometry();
     goog.asserts.assert(goog.isDefAndNotNull(geometry));
-    if (geometry.containsCoordinate(coordinate)) {
-      return f.call(opt_this, feature);
-    } else {
-      return undefined;
-    }
+    return geometry.containsCoordinate(coordinate);
   });
+  goog.iter.forEach(featuresAtCoordinate, f, opt_this);
 };
 
 
