@@ -71,27 +71,6 @@ describe('ol.structs.RBush', function() {
       rBush.insert([-3, -3, -2, -2], objs[10]);
     });
 
-    describe('#forEach', function() {
-
-      it('called for all the objects', function() {
-        var i = 0;
-        rBush.forEach(function() {
-          ++i;
-        });
-        expect(i).to.be(objs.length);
-      });
-
-      it('stops when the function returns true', function() {
-        var i = 0;
-        var result = rBush.forEach(function() {
-          return ++i >= 4;
-        });
-        expect(i).to.be(4);
-        expect(result).to.be(true);
-      });
-
-    });
-
     describe('#getInExtent', function() {
 
       it('returns the expected objects', function() {
@@ -128,9 +107,9 @@ describe('ol.structs.RBush', function() {
       it('throws an exception if called while iterating over all values',
           function() {
             expect(function() {
-              rBush.forEach(function(value) {
-                rBush.insert([0, 0, 1, 1], {});
-              });
+              var iter = rBush.getIterator();
+              rBush.insert([0, 0, 1, 1], {});
+              iter.next();
             }).to.throwException();
           });
 
@@ -166,9 +145,9 @@ describe('ol.structs.RBush', function() {
       it('throws an exception if called while iterating over all values',
           function() {
             expect(function() {
-              rBush.forEach(function(value) {
-                rBush.remove(value);
-              });
+              var iter = rBush.getIterator();
+              rBush.remove(objs[0]);
+              iter.next();
             }).to.throwException();
           });
 
@@ -188,9 +167,9 @@ describe('ol.structs.RBush', function() {
       it('throws an exception if called while iterating over all values',
           function() {
             expect(function() {
-              rBush.forEach(function(value) {
-                rBush.update([0, 0, 1, 1], objs[1]);
-              });
+              var iter = rBush.getIterator();
+              rBush.update([0, 0, 1, 1], objs[1]);
+              iter.next();
             }).to.throwException();
           });
 

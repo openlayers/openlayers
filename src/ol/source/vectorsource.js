@@ -175,7 +175,7 @@ ol.source.Vector.prototype.addFeaturesInternal = function(features) {
  * @api
  */
 ol.source.Vector.prototype.clear = function() {
-  this.rBush_.forEach(this.removeFeatureInternal, this);
+  this.forEachFeature(this.removeFeatureInternal, this);
   this.rBush_.clear();
   goog.object.forEach(
       this.nullGeometryFeatures_, this.removeFeatureInternal, this);
@@ -186,14 +186,13 @@ ol.source.Vector.prototype.clear = function() {
 
 
 /**
- * @param {function(this: T, ol.Feature): S} f Callback.
+ * @param {function(this: T, ol.Feature): ?} f Callback.
  * @param {T=} opt_this The object to use as `this` in `f`.
- * @return {S|undefined}
- * @template T,S
+ * @template T
  * @api
  */
 ol.source.Vector.prototype.forEachFeature = function(f, opt_this) {
-  return this.rBush_.forEach(f, opt_this);
+  goog.iter.forEach(this.rBush_.getIterator(), f, opt_this);
 };
 
 

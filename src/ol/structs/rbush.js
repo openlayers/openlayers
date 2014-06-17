@@ -497,30 +497,6 @@ ol.structs.RBush.prototype.condense_ = function(path) {
 
 
 /**
- * Calls a callback function with each node in the tree. Inside the callback,
- * no tree modifications (insert, update, remove) can be made.
- * If the callback returns a truthy value, this value is returned without
- * checking the rest of the tree.
- * @param {function(this: S, T): *} callback Callback.
- * @param {S=} opt_this The object to use as `this` in `callback`.
- * @return {*} Callback return value.
- * @template S
- */
-ol.structs.RBush.prototype.forEach = function(callback, opt_this) {
-  if (goog.DEBUG) {
-    ++this.readers_;
-    try {
-      return this.forEach_(this.root_, callback, opt_this);
-    } finally {
-      --this.readers_;
-    }
-  } else {
-    return this.forEach_(this.root_, callback, opt_this);
-  }
-};
-
-
-/**
  * @param {ol.structs.RBushNode.<T>} node Node.
  * @param {function(this: S, T): *} callback Callback.
  * @param {S=} opt_this The object to use as `this` in `callback`.
@@ -636,15 +612,7 @@ ol.structs.RBush.prototype.forEachNode = function(callback, opt_this) {
  * @return {Array.<T>} All.
  */
 ol.structs.RBush.prototype.getAll = function() {
-  var values = [];
-  this.forEach(
-      /**
-       * @param {T} value Value.
-       */
-      function(value) {
-        values.push(value);
-      });
-  return values;
+  return goog.iter.toArray(this.getIterator());
 };
 
 
