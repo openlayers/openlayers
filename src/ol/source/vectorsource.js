@@ -217,29 +217,27 @@ ol.source.Vector.prototype.forEachFeatureAtCoordinate =
 
 /**
  * @param {ol.Extent} extent Extent.
- * @param {function(this: T, ol.Feature): S} f Callback.
+ * @param {function(this: T, ol.Feature): ?} f Callback.
  * @param {T=} opt_this The object to use as `this` in `f`.
- * @return {S|undefined}
- * @template T,S
+ * @template T
  * @api
  */
 ol.source.Vector.prototype.forEachFeatureInExtent =
     function(extent, f, opt_this) {
-  return this.rBush_.forEachInExtent(extent, f, opt_this);
+  goog.iter.forEach(this.rBush_.getIterator(extent), f, opt_this);
 };
 
 
 /**
  * @param {ol.Extent} extent Extent.
  * @param {number} resolution Resolution.
- * @param {function(this: T, ol.Feature): S} f Callback.
+ * @param {function(this: T, ol.Feature): ?} f Callback.
  * @param {T=} opt_this The object to use as `this` in `f`.
- * @return {S|undefined}
- * @template T,S
+ * @template T
  */
 ol.source.Vector.prototype.forEachFeatureInExtentAtResolution =
     function(extent, resolution, f, opt_this) {
-  return this.forEachFeatureInExtent(extent, f, opt_this);
+  this.forEachFeatureInExtent(extent, f, opt_this);
 };
 
 
