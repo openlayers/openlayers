@@ -579,7 +579,6 @@ ol.proj.getTransform = function(source, destination) {
  * @param {ol.proj.Projection} sourceProjection Source projection.
  * @param {ol.proj.Projection} destinationProjection Destination projection.
  * @return {ol.TransformFunction} Transform.
- * @todo api
  */
 ol.proj.getTransformFromProjections =
     function(sourceProjection, destinationProjection) {
@@ -714,7 +713,6 @@ ol.proj.transform = function(point, source, destination) {
  * @param {ol.proj.Projection} sourceProjection Source projection.
  * @param {ol.proj.Projection} destinationProjection Destination projection.
  * @return {ol.Coordinate} Point.
- * @todo api
  */
 ol.proj.transformWithProjections =
     function(point, sourceProjection, destinationProjection) {
