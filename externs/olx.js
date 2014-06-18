@@ -2751,6 +2751,7 @@ olx.source.GPXOptions.prototype.urls;
  *                                 ol.TileLoadFunctionType)|undefined),
  *            tileGrid: (ol.tilegrid.TileGrid|undefined),
  *            tileLoadFunction: (ol.TileLoadFunctionType|undefined),
+ *            tilePixelRatio: (number|undefined),
  *            tileUrlFunction: (ol.TileUrlFunctionType|undefined)}}
  * @todo api
  */
@@ -2820,6 +2821,13 @@ olx.source.TileImageOptions.prototype.tileGrid;
  * @type {ol.TileLoadFunctionType|undefined}
  */
 olx.source.TileImageOptions.prototype.tileLoadFunction;
+
+
+/**
+ * Tile pixel ratio.
+ * @type {number|undefined}
+ */
+olx.source.TileImageOptions.prototype.tilePixelRatio;
 
 
 /**
