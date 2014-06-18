@@ -19,6 +19,7 @@ goog.require('ol.Object');
 ol.OverlayProperty = {
   ELEMENT: 'element',
   MAP: 'map',
+  OFFSET: 'offset',
   POSITION: 'position',
   POSITIONING: 'positioning'
 };
@@ -84,18 +85,6 @@ ol.Overlay = function(options) {
 
   /**
    * @private
-   * @type {number}
-   */
-  this.offsetX_ = goog.isDef(options.offsetX) ? options.offsetX : 0;
-
-  /**
-   * @private
-   * @type {number}
-   */
-  this.offsetY_ = goog.isDef(options.offsetY) ? options.offsetY : 0;
-
-  /**
-   * @private
    * @type {Element}
    */
   this.element_ = goog.dom.createElement(goog.dom.TagName.DIV);
@@ -132,6 +121,10 @@ ol.Overlay = function(options) {
       this.handleMapChanged, false, this);
 
   goog.events.listen(
+      this, ol.Object.getChangeEventType(ol.OverlayProperty.OFFSET),
+      this.handleOffsetChanged, false, this);
+
+  goog.events.listen(
       this, ol.Object.getChangeEventType(ol.OverlayProperty.POSITION),
       this.handlePositionChanged, false, this);
 
@@ -143,6 +136,9 @@ ol.Overlay = function(options) {
   if (goog.isDef(options.element)) {
     this.setElement(options.element);
   }
+  if (goog.isDef(options.offset)) {
+    this.setOffset(options.offset);
+  }
   if (goog.isDef(options.position)) {
     this.setPosition(options.position);
   }
@@ -153,6 +149,14 @@ ol.Overlay = function(options) {
 
 };
 goog.inherits(ol.Overlay, ol.Object);
+
+
+/**
+ * Default offsets.
+ * @type {Array.<number>}
+ * @private
+ */
+ol.Overlay.offset_ = [0, 0];
 
 
 /**
@@ -185,6 +189,22 @@ goog.exportProperty(
     ol.Overlay.prototype,
     'getMap',
     ol.Overlay.prototype.getMap);
+
+
+/**
+ * Get the offset of this overlay.
+ * @return {Array.<number>|undefined} The offset.
+ * @todo observable
+ * @todo api
+ */
+ol.Overlay.prototype.getOffset = function() {
+  return /** @type {Array.<number>|undefined} */ (
+      this.get(ol.OverlayProperty.OFFSET));
+};
+goog.exportProperty(
+    ol.Overlay.prototype,
+    'getOffset',
+    ol.Overlay.prototype.getOffset);
 
 
 /**
@@ -270,6 +290,14 @@ ol.Overlay.prototype.handleMapPostrender = function() {
 /**
  * @protected
  */
+ol.Overlay.prototype.handleOffsetChanged = function() {
+  this.updatePixelPosition_();
+};
+
+
+/**
+ * @protected
+ */
 ol.Overlay.prototype.handlePositionChanged = function() {
   this.updatePixelPosition_();
 };
@@ -311,6 +339,21 @@ goog.exportProperty(
     ol.Overlay.prototype,
     'setMap',
     ol.Overlay.prototype.setMap);
+
+
+/**
+ * Set the offset for this overlay.
+ * @param {Array.<number>|undefined} offset Offset.
+ * @todo observable
+ * @todo api
+ */
+ol.Overlay.prototype.setOffset = function(offset) {
+  this.set(ol.OverlayProperty.OFFSET, offset);
+};
+goog.exportProperty(
+    ol.Overlay.prototype,
+    'setOffset',
+    ol.Overlay.prototype.setOffset);
 
 
 /**
@@ -365,6 +408,10 @@ ol.Overlay.prototype.updatePixelPosition_ = function() {
   var mapSize = map.getSize();
   goog.asserts.assert(goog.isDef(mapSize));
   var style = this.element_.style;
+  var offset = this.getOffset();
+  if (!goog.isDef(offset)) {
+    offset = ol.Overlay.offset_;
+  }
   var positioning = this.getPositioning();
   if (positioning == ol.OverlayPositioning.BOTTOM_RIGHT ||
       positioning == ol.OverlayPositioning.CENTER_RIGHT ||
@@ -380,7 +427,7 @@ ol.Overlay.prototype.updatePixelPosition_ = function() {
     if (this.rendered_.right_ !== '') {
       this.rendered_.right_ = style.right = '';
     }
-    var offsetX = -this.offsetX_;
+    var offsetX = -offset[0];
     if (positioning == ol.OverlayPositioning.BOTTOM_CENTER ||
         positioning == ol.OverlayPositioning.CENTER_CENTER ||
         positioning == ol.OverlayPositioning.TOP_CENTER) {
@@ -405,7 +452,7 @@ ol.Overlay.prototype.updatePixelPosition_ = function() {
     if (this.rendered_.bottom_ !== '') {
       this.rendered_.bottom_ = style.bottom = '';
     }
-    var offsetY = -this.offsetY_;
+    var offsetY = -offset[1];
     if (positioning == ol.OverlayPositioning.CENTER_LEFT ||
         positioning == ol.OverlayPositioning.CENTER_CENTER ||
         positioning == ol.OverlayPositioning.CENTER_RIGHT) {
