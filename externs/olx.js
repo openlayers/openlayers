@@ -4184,6 +4184,7 @@ olx.source.StaticVectorOptions.prototype.urls;
  *     requestEncoding: (ol.source.WMTSRequestEncoding|undefined),
  *     layer: string,
  *     style: string,
+ *     tilePixelRatio: (number|undefined),
  *     version: (string|undefined),
  *     format: (string|undefined),
  *     matrixSet: string,
@@ -4258,6 +4259,13 @@ olx.source.WMTSOptions.prototype.layer;
  * @type {string}
  */
 olx.source.WMTSOptions.prototype.style;
+
+
+/**
+ * Tile pixel ratio.
+ * @type {number|undefined}
+ */
+olx.source.WMTSOptions.prototype.tilePixelRatio;
 
 
 /**
