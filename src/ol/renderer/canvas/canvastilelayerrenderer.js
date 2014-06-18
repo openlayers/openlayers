@@ -287,7 +287,8 @@ ol.renderer.canvas.TileLayer.prototype.prepareFrame =
 
       tile = tileSource.getTile(z, x, y, pixelRatio, projection);
       tileState = tile.getState();
-      if (tileState == ol.TileState.LOADED ||
+      if ((tileState == ol.TileState.LOADED &&
+          tile.getImage().width == tilePixelSize) ||
           tileState == ol.TileState.EMPTY ||
           (tileState == ol.TileState.ERROR && !useInterimTilesOnError)) {
         tilesToDrawByZ[z][tile.tileCoord.toString()] = tile;

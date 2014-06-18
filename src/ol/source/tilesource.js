@@ -54,6 +54,12 @@ ol.source.Tile = function(options) {
    */
   this.tileGrid = goog.isDef(options.tileGrid) ? options.tileGrid : null;
 
+  /**
+   * @protected
+   * @type {number}
+   */
+  this.sourcePixelRatio;
+
 };
 goog.inherits(ol.source.Tile, ol.source.Source);
 
@@ -185,7 +191,12 @@ ol.source.Tile.prototype.getTileGridForProjection = function(projection) {
 ol.source.Tile.prototype.getTilePixelSize =
     function(z, pixelRatio, projection) {
   var tileGrid = this.getTileGridForProjection(projection);
-  return tileGrid.getTileSize(z);
+  var tileSize = tileGrid.getTileSize(z);
+  if (goog.isDef(this.sourcePixelRatio) && this.sourcePixelRatio != 1) {
+    return (tileSize * this.sourcePixelRatio + 0.5) | 0;
+  } else {
+    return tileSize;
+  }
 };
 
 
