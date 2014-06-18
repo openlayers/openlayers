@@ -26,6 +26,7 @@ var source = new ol.source.WMTS({
   extent: [977844.377599999, 5837774.6617, 1915609.8654, 6295560.8122],
   projection: 'EPSG:3857',
   layer: hiDPI ? 'bmaphidpi' : 'geolandbasemap',
+  tilePixelRatio: hiDPI ? 2 : 1,
   style: 'normal',
   matrixSet: 'google3857',
   urls: urls,
