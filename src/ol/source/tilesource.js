@@ -16,6 +16,7 @@ goog.require('ol.tilegrid.TileGrid');
  *            extent: (ol.Extent|undefined),
  *            logo: (string|undefined),
  *            opaque: (boolean|undefined),
+ *            tilePixelRatio: (number|undefined),
  *            projection: ol.proj.ProjectionLike,
  *            tileGrid: (ol.tilegrid.TileGrid|undefined)}}
  */
@@ -47,6 +48,13 @@ ol.source.Tile = function(options) {
    * @type {boolean}
    */
   this.opaque_ = goog.isDef(options.opaque) ? options.opaque : false;
+
+  /**
+   * @private
+   * @type {number}
+   */
+  this.tilePixelRatio_ = goog.isDef(options.tilePixelRatio) ?
+      options.tilePixelRatio : 1;
 
   /**
    * @protected
@@ -185,7 +193,7 @@ ol.source.Tile.prototype.getTileGridForProjection = function(projection) {
 ol.source.Tile.prototype.getTilePixelSize =
     function(z, pixelRatio, projection) {
   var tileGrid = this.getTileGridForProjection(projection);
-  return tileGrid.getTileSize(z);
+  return tileGrid.getTileSize(z) * this.tilePixelRatio_;
 };
 
 

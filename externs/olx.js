@@ -2751,6 +2751,7 @@ olx.source.GPXOptions.prototype.urls;
  *                                 ol.TileLoadFunctionType)|undefined),
  *            tileGrid: (ol.tilegrid.TileGrid|undefined),
  *            tileLoadFunction: (ol.TileLoadFunctionType|undefined),
+ *            tilePixelRatio: (number|undefined),
  *            tileUrlFunction: (ol.TileUrlFunctionType|undefined)}}
  * @todo api
  */
@@ -2820,6 +2821,16 @@ olx.source.TileImageOptions.prototype.tileGrid;
  * @type {ol.TileLoadFunctionType|undefined}
  */
 olx.source.TileImageOptions.prototype.tileLoadFunction;
+
+
+/**
+ * The pixel ratio used by the tile service. For example, if the tile
+ * service advertizes 256px by 256px tiles but actually sends 512px
+ * by 512px images (for retina/hidpi devices) then `tilePixelRatio`
+ * should be set to `2`. Default is `1`.
+ * @type {number|undefined}
+ */
+olx.source.TileImageOptions.prototype.tilePixelRatio;
 
 
 /**
@@ -4176,6 +4187,7 @@ olx.source.StaticVectorOptions.prototype.urls;
  *     requestEncoding: (ol.source.WMTSRequestEncoding|undefined),
  *     layer: string,
  *     style: string,
+ *     tilePixelRatio: (number|undefined),
  *     version: (string|undefined),
  *     format: (string|undefined),
  *     matrixSet: string,
@@ -4250,6 +4262,16 @@ olx.source.WMTSOptions.prototype.layer;
  * @type {string}
  */
 olx.source.WMTSOptions.prototype.style;
+
+
+/**
+ * The pixel ratio used by the tile service. For example, if the tile
+ * service advertizes 256px by 256px tiles but actually sends 512px
+ * by 512px images (for retina/hidpi devices) then `tilePixelRatio`
+ * should be set to `2`. Default is `1`.
+ * @type {number|undefined}
+ */
+olx.source.WMTSOptions.prototype.tilePixelRatio;
 
 
 /**

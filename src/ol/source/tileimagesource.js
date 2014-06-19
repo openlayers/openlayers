@@ -30,7 +30,8 @@ ol.source.TileImage = function(options) {
     logo: options.logo,
     opaque: options.opaque,
     projection: options.projection,
-    tileGrid: options.tileGrid
+    tileGrid: options.tileGrid,
+    tilePixelRatio: options.tilePixelRatio
   });
 
   /**
