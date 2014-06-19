@@ -3,11 +3,21 @@ goog.provide('ol.test.renderer.canvas.Replay');
 describe('ol.render.canvas.Replay', function() {
 
   describe('constructor', function() {
+    var ReplayClass;
+
+    beforeEach(function() {
+      ReplayClass = function() {
+        goog.base(this);
+      };
+      goog.inherits(ReplayClass, ol.render.canvas.Replay);
+      ReplayClass.prototype.initInternal = goog.nullFunction;
+    });
 
     it('creates a new replay batch', function() {
       var tolerance = 10;
       var extent = [-180, -90, 180, 90];
-      var replay = new ol.render.canvas.Replay(tolerance, extent, 1);
+      var replay = new ReplayClass();
+      replay.init(tolerance, extent, 1);
       expect(replay).to.be.a(ol.render.canvas.Replay);
     });
 
@@ -17,7 +27,13 @@ describe('ol.render.canvas.Replay', function() {
 
     var replay;
     beforeEach(function() {
-      replay = new ol.render.canvas.Replay(1, [-180, -90, 180, 90], 1);
+      var ReplayClass = function() {
+        goog.base(this);
+      };
+      goog.inherits(ReplayClass, ol.render.canvas.Replay);
+      ReplayClass.prototype.initInternal = goog.nullFunction;
+      replay = new ReplayClass();
+      replay.init(1, [-180, -90, 180, 90], 1);
     });
 
     it('appends coordinates that are within the max extent', function() {
@@ -86,8 +102,8 @@ describe('ol.render.canvas.LineStringReplay', function() {
       var tolerance = 1;
       var extent = [-180, -90, 180, 90];
       var resolution = 10;
-      var replay = new ol.render.canvas.LineStringReplay(tolerance, extent,
-          resolution);
+      var replay = new ol.render.canvas.LineStringReplay();
+      replay.init(tolerance, extent, resolution);
       var stroke = new ol.style.Stroke({
         width: 2
       });
@@ -108,8 +124,8 @@ describe('ol.render.canvas.PolygonReplay', function() {
       var tolerance = 1;
       var extent = [-180, -90, 180, 90];
       var resolution = 10;
-      var replay = new ol.render.canvas.PolygonReplay(tolerance, extent,
-          resolution);
+      var replay = new ol.render.canvas.PolygonReplay();
+      replay.init(tolerance, extent, resolution);
       var stroke = new ol.style.Stroke({
         width: 5
       });
