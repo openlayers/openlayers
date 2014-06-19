@@ -1938,6 +1938,13 @@ ol.render.canvas.ReplayGroup = function() {
 
   /**
    * @private
+   * @type {Object.<ol.render.ReplayType,
+   *        Array.<ol.render.canvas.Replay>>}
+   */
+  this.replaysPool_ = {};
+
+  /**
+   * @private
    * @type {CanvasRenderingContext2D}
    */
   this.hitDetectionContext_ = ol.dom.createCanvasContext2D(1, 1);
@@ -1964,14 +1971,27 @@ ol.render.canvas.ReplayGroup.prototype.init =
   goog.vec.Mat4.setFromValues(this.hitDetectionTransform_,
       0, 0, 0, 0, 0, 0, 0, 0,
       0, 0, 0, 0, 0, 0, 0, 0);
-  // re-initiliaze the replay objects
-  var zIndex, replayType;
-  for (zIndex in this.replaysByZIndex_) {
-    for (replayType in this.replaysByZIndex_[zIndex]) {
-      this.replaysByZIndex_[zIndex][replayType].init(
-          tolerance, maxExtent, resolution);
+
+  // move the replays to the free pool
+  var replaysByZIndex = this.replaysByZIndex_;
+  var replaysPool = this.replaysPool_;
+  var zIndexKey, replayType, replay, replays, pool;
+  for (zIndexKey in replaysByZIndex) {
+    replays = replaysByZIndex[zIndexKey];
+    for (replayType in replays) {
+      replay = replays[replayType];
+      goog.asserts.assert(goog.isDef(replay));
+      delete replays[replayType];
+      pool = replaysPool[replayType];
+      if (!goog.isDef(pool)) {
+        pool = [];
+        replaysPool[replayType] = pool;
+      }
+      pool.push(replay);
     }
+    delete replaysByZIndex[zIndexKey];
   }
+  goog.asserts.assert(goog.object.isEmpty(this.replaysByZIndex_));
 };
 
 
@@ -2156,9 +2176,14 @@ ol.render.canvas.ReplayGroup.prototype.getReplay =
   }
   var replay = replays[replayType];
   if (!goog.isDef(replay)) {
-    var Constructor = ol.render.canvas.BATCH_CONSTRUCTORS_[replayType];
-    goog.asserts.assert(goog.isDef(Constructor));
-    replay = new Constructor();
+    var pool = this.replaysPool_[replayType];
+    if (goog.isDef(pool) && pool.length > 0) {
+      replay = pool.pop();
+    } else {
+      var Constructor = ol.render.canvas.BATCH_CONSTRUCTORS_[replayType];
+      goog.asserts.assert(goog.isDef(Constructor));
+      replay = new Constructor();
+    }
     replay.init(this.tolerance_, this.maxExtent_, this.resolution_);
     replays[replayType] = replay;
   }
