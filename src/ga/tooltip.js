@@ -196,7 +196,8 @@ ga.Tooltip.prototype.handleIdentifyResponse_ = function(response) {
 
   // Show popup
   for (var i = 0, ii = response['results'].length; i < ii; i++) {
-    var lang = window.GeoAdmin && window.GeoAdmin.lang ? window.GeoAdmin.lang : "de";
+    var lang = window['GeoAdmin'] && window['GeoAdmin']['lang'] ?
+                window['GeoAdmin']['lang'] : "de";
     var jsonp = new goog.net.Jsonp(
       new goog.Uri( window['GeoAdmin']['serviceUrl'] + '/rest/services/api/MapServer/' +
         response['results'][i]['layerBodId'] + '/' +
