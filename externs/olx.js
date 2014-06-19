@@ -203,12 +203,11 @@ olx.MapOptions.prototype.view;
 /**
  * Object literal with config options for the overlay.
  * @typedef {{element: (Element|undefined),
+ *     offset: (Array.<number>|undefined),
  *     position: (ol.Coordinate|undefined),
  *     positioning: (ol.OverlayPositioning|string|undefined),
  *     stopEvent: (boolean|undefined),
- *     insertFirst: (boolean|undefined),
- *     offsetX: (number|undefined),
- *     offsetY: (number|undefined)}}
+ *     insertFirst: (boolean|undefined)}}
  * @todo api
  */
 olx.OverlayOptions;
@@ -222,6 +221,16 @@ olx.OverlayOptions.prototype.element;
 
 
 /**
+ * Offsets in pixels used when positioning the overlay. The fist element in the
+ * array is the horizontal offset. A positive value shifts the overlay right.
+ * The second element in the array is the vertical offset. A positive value
+ * shifts the overlay down. Default is `[0, 0]`.
+ * @type {Array.<number>|undefined}
+ */
+olx.OverlayOptions.prototype.offset;
+
+
+/**
  * The overlay position in map projection.
  * @type {ol.Coordinate|undefined}
  */
@@ -229,7 +238,10 @@ olx.OverlayOptions.prototype.position;
 
 
 /**
- * Positioning.
+ * Defines how the overlay is actually positioned with respect to its `position`
+ * property. Possible values are `'bottom-left'`, `'bottom-center'`,
+ * `'bottom-right'`, `'center-left'`, `'center-center'`, `'center-right'`,
+ * `'top-left'`, `'top-center'`, and `'top-right'`. Default is `'top-left'`.
  * @type {ol.OverlayPositioning|string|undefined}
  */
 olx.OverlayOptions.prototype.positioning;
@@ -252,22 +264,6 @@ olx.OverlayOptions.prototype.stopEvent;
  * @type {boolean|undefined}
  */
 olx.OverlayOptions.prototype.insertFirst;
-
-
-/**
- * Horizontal offset in pixels. A positive will shift the overlay right. Default
- * is `0`.
- * @type {number|undefined}
- */
-olx.OverlayOptions.prototype.offsetX;
-
-
-/**
- * Vertical offset in pixels. A positive will shift the overlay down. Default is
- * `0`.
- * @type {number|undefined}
- */
-olx.OverlayOptions.prototype.offsetY;
 
 
 /**
