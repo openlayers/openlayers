@@ -136,9 +136,9 @@ ol.Overlay = function(options) {
   if (goog.isDef(options.element)) {
     this.setElement(options.element);
   }
-  if (goog.isDef(options.offset)) {
-    this.setOffset(options.offset);
-  }
+
+  this.setOffset(goog.isDef(options.offset) ? options.offset : [0, 0]);
+
   if (goog.isDef(options.position)) {
     this.setPosition(options.position);
   }
@@ -149,14 +149,6 @@ ol.Overlay = function(options) {
 
 };
 goog.inherits(ol.Overlay, ol.Object);
-
-
-/**
- * Default offsets.
- * @type {Array.<number>}
- * @private
- */
-ol.Overlay.offset_ = [0, 0];
 
 
 /**
@@ -193,12 +185,12 @@ goog.exportProperty(
 
 /**
  * Get the offset of this overlay.
- * @return {Array.<number>|undefined} The offset.
+ * @return {Array.<number>} The offset.
  * @todo observable
  * @todo api
  */
 ol.Overlay.prototype.getOffset = function() {
-  return /** @type {Array.<number>|undefined} */ (
+  return /** @type {Array.<number>} */ (
       this.get(ol.OverlayProperty.OFFSET));
 };
 goog.exportProperty(
@@ -343,7 +335,7 @@ goog.exportProperty(
 
 /**
  * Set the offset for this overlay.
- * @param {Array.<number>|undefined} offset Offset.
+ * @param {Array.<number>} offset Offset.
  * @todo observable
  * @todo api
  */
@@ -409,9 +401,7 @@ ol.Overlay.prototype.updatePixelPosition_ = function() {
   goog.asserts.assert(goog.isDef(mapSize));
   var style = this.element_.style;
   var offset = this.getOffset();
-  if (!goog.isDef(offset)) {
-    offset = ol.Overlay.offset_;
-  }
+  goog.asserts.assert(goog.isArray(offset));
   var positioning = this.getPositioning();
   if (positioning == ol.OverlayPositioning.BOTTOM_RIGHT ||
       positioning == ol.OverlayPositioning.CENTER_RIGHT ||
