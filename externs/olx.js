@@ -238,7 +238,10 @@ olx.OverlayOptions.prototype.position;
 
 
 /**
- * Positioning.
+ * Defines how the overlay is actually positioned with respect to its `position`
+ * property. Possible values are `'bottom-left'`, `'bottom-center'`,
+ * `'bottom-right'`, `'center-left'`, `'center-center'`, `'center-right'`,
+ * `'top-left'`, `'top-center'`, and `'top-right'`. Default is `'top-left'`.
  * @type {ol.OverlayPositioning|string|undefined}
  */
 olx.OverlayOptions.prototype.positioning;
