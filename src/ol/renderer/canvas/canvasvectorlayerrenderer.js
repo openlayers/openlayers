@@ -207,8 +207,8 @@ ol.renderer.canvas.VectorLayer.prototype.prepareFrame =
     styleFunction = ol.feature.defaultStyleFunction;
   }
   var tolerance = resolution / (2 * pixelRatio);
-  var replayGroup =
-      new ol.render.canvas.ReplayGroup(tolerance, extent, resolution);
+  var replayGroup = new ol.render.canvas.ReplayGroup();
+  replayGroup.init(tolerance, extent, resolution);
   vectorSource.loadFeatures(extent, resolution, projection);
   var renderFeature =
       /**

@@ -1907,30 +1907,27 @@ ol.render.canvas.TextReplay.prototype.setTextStyle = function(textStyle) {
 /**
  * @constructor
  * @implements {ol.render.IReplayGroup}
- * @param {number} tolerance Tolerance.
- * @param {ol.Extent} maxExtent Max extent.
- * @param {number} resolution Resolution.
  * @struct
  */
-ol.render.canvas.ReplayGroup = function(tolerance, maxExtent, resolution) {
+ol.render.canvas.ReplayGroup = function() {
 
   /**
    * @private
    * @type {number}
    */
-  this.tolerance_ = tolerance;
+  this.tolerance_ = 0;
 
   /**
    * @private
    * @type {ol.Extent}
    */
-  this.maxExtent_ = maxExtent;
+  this.maxExtent_ = null;
 
   /**
    * @private
    * @type {number}
    */
-  this.resolution_ = resolution;
+  this.resolution_ = 0;
 
   /**
    * @private
@@ -1951,6 +1948,30 @@ ol.render.canvas.ReplayGroup = function(tolerance, maxExtent, resolution) {
    */
   this.hitDetectionTransform_ = goog.vec.Mat4.createNumber();
 
+};
+
+
+/**
+ * @param {number} tolerance Tolerance.
+ * @param {ol.Extent} maxExtent Max extent.
+ * @param {number} resolution Resolution.
+ */
+ol.render.canvas.ReplayGroup.prototype.init =
+    function(tolerance, maxExtent, resolution) {
+  this.tolerance_ = tolerance;
+  this.maxExtent_ = maxExtent;
+  this.resolution_ = resolution;
+  goog.vec.Mat4.setFromValues(this.hitDetectionTransform_,
+      0, 0, 0, 0, 0, 0, 0, 0,
+      0, 0, 0, 0, 0, 0, 0, 0);
+  // re-initiliaze the replay objects
+  var zIndex, replayType;
+  for (zIndex in this.replaysByZIndex_) {
+    for (replayType in this.replaysByZIndex_[zIndex]) {
+      this.replaysByZIndex_[zIndex][replayType].init(
+          tolerance, maxExtent, resolution);
+    }
+  }
 };
 
 
