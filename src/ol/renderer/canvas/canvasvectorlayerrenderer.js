@@ -60,7 +60,7 @@ ol.renderer.canvas.VectorLayer = function(mapRenderer, vectorLayer) {
    * @private
    * @type {ol.render.canvas.ReplayGroup}
    */
-  this.replayGroup_ = null;
+  this.replayGroup_ = new ol.render.canvas.ReplayGroup();
 
   /**
    * @private
@@ -83,7 +83,7 @@ ol.renderer.canvas.VectorLayer.prototype.composeFrame =
   this.dispatchPreComposeEvent(context, frameState, transform);
 
   var replayGroup = this.replayGroup_;
-  if (!goog.isNull(replayGroup) && !replayGroup.isEmpty()) {
+  if (!replayGroup.isEmpty()) {
     var layer = this.getLayer();
     var replayContext;
     if (layer.hasListener(ol.render.EventType.RENDER)) {
@@ -115,7 +115,7 @@ ol.renderer.canvas.VectorLayer.prototype.composeFrame =
  */
 ol.renderer.canvas.VectorLayer.prototype.forEachFeatureAtPixel =
     function(coordinate, frameState, callback, thisArg) {
-  if (goog.isNull(this.replayGroup_)) {
+  if (this.replayGroup_.isEmpty()) {
     return undefined;
   } else {
     var extent = frameState.extent;
@@ -196,10 +196,7 @@ ol.renderer.canvas.VectorLayer.prototype.prepareFrame =
   extent[2] = frameStateExtent[2] + xBuffer;
   extent[3] = frameStateExtent[3] + yBuffer;
 
-  // FIXME dispose of old replayGroup in post render
-  goog.dispose(this.replayGroup_);
-  this.replayGroup_ = null;
-
+  var replayGroup = this.replayGroup_;
   this.dirty_ = false;
 
   var styleFunction = vectorLayer.getStyleFunction();
@@ -207,7 +204,6 @@ ol.renderer.canvas.VectorLayer.prototype.prepareFrame =
     styleFunction = ol.feature.defaultStyleFunction;
   }
   var tolerance = resolution / (2 * pixelRatio);
-  var replayGroup = new ol.render.canvas.ReplayGroup();
   replayGroup.init(tolerance, extent, resolution);
   vectorSource.loadFeatures(extent, resolution, projection);
   var renderFeature =
@@ -242,7 +238,6 @@ ol.renderer.canvas.VectorLayer.prototype.prepareFrame =
   this.renderedResolution_ = resolution;
   this.renderedRevision_ = vectorLayerRevision;
   this.renderedRenderOrder_ = vectorLayerRenderOrder;
-  this.replayGroup_ = replayGroup;
 
 };
 
