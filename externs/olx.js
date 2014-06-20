@@ -1570,8 +1570,9 @@ olx.interaction.DragBoxOptions;
 
 
 /**
- * A conditional modifier (i.e. Shift key) that determines if the interaction is
- * active or not, default is always.
+ * A function that takes an {@link ol.MapBrowserEvent} and returns a boolean
+ * to indicate whether that event should be handled.
+ * Default is {@link ol.events.condition.always}.
  * @type {ol.events.ConditionType|undefined}
  */
 olx.interaction.DragBoxOptions.prototype.condition;
@@ -1606,8 +1607,9 @@ olx.interaction.DragRotateAndZoomOptions;
 
 
 /**
- * A conditional modifier (i.e. Shift key) that determines if the interaction is
- * active or not, default is shify key.
+ * A function that takes an {@link ol.MapBrowserEvent} and returns a boolean
+ * to indicate whether that event should be handled.
+ * Default is {@link ol.events.condition.shiftKeyOnly}.
  * @type {ol.events.ConditionType|undefined}
  */
 olx.interaction.DragRotateAndZoomOptions.prototype.condition;
@@ -1621,8 +1623,9 @@ olx.interaction.DragRotateOptions;
 
 
 /**
- * A conditional modifier (i.e. Shift key) that determines if the interaction is
- * active or not, default is both shift and alt keys.
+ * A function that takes an {@link ol.MapBrowserEvent} and returns a boolean
+ * to indicate whether that event should be handled.
+ * Default is {@link ol.events.condition.altShiftKeysOnly}.
  * @type {ol.events.ConditionType|undefined}
  */
 olx.interaction.DragRotateOptions.prototype.condition;
@@ -1637,8 +1640,9 @@ olx.interaction.DragZoomOptions;
 
 
 /**
- * A conditional modifier (i.e. Shift key) that determines if the interaction is
- * active or not, default is shift key.
+ * A function that takes an {@link ol.MapBrowserEvent} and returns a boolean
+ * to indicate whether that event should be handled.
+ * Default is {@link ol.events.condition.shiftKeyOnly}.
  * @type {ol.events.ConditionType|undefined}
  */
 olx.interaction.DragZoomOptions.prototype.condition;
@@ -1717,9 +1721,9 @@ olx.interaction.DrawOptions.prototype.geometryName;
 
 
 /**
- * A conditional modifier (e.g. shift key) that determines if the interaction is
- * active (i.e. a click adds a vertex) or not. By default, a click with no modifier
- * keys adds a vertex.
+ * A function that takes an {@link ol.MapBrowserEvent} and returns a boolean
+ * to indicate whether that event should be handled.
+ * By default {@link ol.events.condition.noModifierKeys} adds a vertex.
  * @type {ol.events.ConditionType|undefined}
  */
 olx.interaction.DrawOptions.prototype.condition;
@@ -1734,8 +1738,10 @@ olx.interaction.KeyboardPanOptions;
 
 
 /**
- * A conditional modifier (i.e. Shift key) that determines if the interaction is
- * active or not, default is no modifiers.
+ * A function that takes an {@link ol.MapBrowserEvent} and returns a boolean
+ * to indicate whether that event should be handled.
+ * Default is {@link ol.events.condition.noModifierKeys} and
+ * {@link ol.events.condition.targetNotEditable}.
  * @type {ol.events.ConditionType|undefined}
  */
 olx.interaction.KeyboardPanOptions.prototype.condition;
@@ -1765,8 +1771,9 @@ olx.interaction.KeyboardZoomOptions.prototype.duration;
 
 
 /**
- * A conditional modifier (i.e. Shift key) that determines if the interaction is
- * active or not, default is no modifiers.
+ * A function that takes an {@link ol.MapBrowserEvent} and returns a boolean
+ * to indicate whether that event should be handled.
+ * Default is {@link ol.events.condition.targetNotEditable}.
  * @type {ol.events.ConditionType|undefined}
  */
 olx.interaction.KeyboardZoomOptions.prototype.condition;
@@ -1790,8 +1797,10 @@ olx.interaction.ModifyOptions;
 
 
 /**
- * Condition that determines which event results in a vertex deletion. Default
- * is a `singleclick` event with no modifier keys.
+ * A function that takes an {@link ol.MapBrowserEvent} and returns a boolean
+ * to indicate whether that event should be handled.
+ * By default, {@link ol.events.condition.singleClick} with
+ * {@link ol.events.condition.noModifierKeys} results in a vertex deletion.
  * @type {ol.events.ConditionType|undefined}
  */
 olx.interaction.ModifyOptions.prototype.deleteCondition;
@@ -1874,18 +1883,19 @@ olx.interaction.SelectOptions;
 
 
 /**
- * A conditional modifier (e.g. alt key) that determines if the feature is added
- * to the current selection. By default, this is never. Note that the default
- * toggle condition allows features to be added.
+ * A function that takes an {@link ol.MapBrowserEvent} and returns a boolean
+ * to indicate whether that event should be handled.
+ * By default, this is {@link ol.events.condition.never}, though note that the
+ * default toggle condition allows features to be added.
  * @type {ol.events.ConditionType|undefined}
  */
 olx.interaction.SelectOptions.prototype.addCondition;
 
 
 /**
- * A conditional modifier (e.g. shift key) that determines if the interaction is
- * active (i.e. selection occurs) or not. By default, a click with no modifier
- * keys toggles the selection.
+ * A function that takes an {@link ol.MapBrowserEvent} and returns a boolean
+ * to indicate whether that event should be handled.
+ * By default, {@link ol.events.condition.singleClick} toggles the selection.
  * @type {ol.events.ConditionType|undefined}
  */
 olx.interaction.SelectOptions.prototype.condition;
@@ -1910,16 +1920,18 @@ olx.interaction.SelectOptions.prototype.style;
 
 
 /**
- * A conditional modifier (e.g. alt key) that determines if the feature is
- * removed from the current selection. By default, this is never.
+ * A function that takes an {@link ol.MapBrowserEvent} and returns a boolean
+ * to indicate whether that event should be handled.
+ * By default, this is {@link ol.events.condition.never}.
  * @type {ol.events.ConditionType|undefined}
  */
 olx.interaction.SelectOptions.prototype.removeCondition;
 
 
 /**
- * A conditional modifier (e.g. shift key) that determines if the selection is
- * toggled in the current selection. By default, a shift-click toggles the
+ * A function that takes an {@link ol.MapBrowserEvent} and returns a boolean
+ * to indicate whether that event should be handled.
+ * By default, {@link ol.events.condition.shiftKeyOnly} toggles the
  * feature in the current selection.
  * @type {ol.events.ConditionType|undefined}
  */
