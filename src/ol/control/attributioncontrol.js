@@ -95,7 +95,9 @@ ol.control.Attribution = function(opt_options) {
   var buttonHandler = new ol.pointer.PointerEventHandler(button);
   this.registerDisposable(buttonHandler);
   goog.events.listen(buttonHandler, ol.pointer.EventType.POINTERUP,
-      this.handleToggle_, false, this);
+      this.handlePointerUp_, false, this);
+  goog.events.listen(button, goog.events.EventType.CLICK,
+      this.handleClick_, false, this);
 
   goog.events.listen(button, [
     goog.events.EventType.MOUSEOUT,
@@ -312,11 +314,31 @@ ol.control.Attribution.prototype.insertLogos_ = function(frameState) {
 
 
 /**
- * @param {ol.pointer.PointerEvent} pointerEvent Pointer event.
+ * @param {goog.events.BrowserEvent} event The event to handle
  * @private
  */
-ol.control.Attribution.prototype.handleToggle_ = function(pointerEvent) {
+ol.control.Attribution.prototype.handleClick_ = function(event) {
+  if (event.screenX !== 0 && event.screenY !== 0) {
+    return;
+  }
+  this.handleToggle_();
+};
+
+
+/**
+ * @param {ol.pointer.PointerEvent} pointerEvent The event to handle
+ * @private
+ */
+ol.control.Attribution.prototype.handlePointerUp_ = function(pointerEvent) {
   pointerEvent.browserEvent.preventDefault();
+  this.handleToggle_();
+};
+
+
+/**
+ * @private
+ */
+ol.control.Attribution.prototype.handleToggle_ = function() {
   goog.dom.classes.toggle(this.element, 'ol-collapsed');
   goog.dom.setTextContent(this.labelSpan_,
       (this.collapsed_) ? this.collapseLabel_ : this.label_);
