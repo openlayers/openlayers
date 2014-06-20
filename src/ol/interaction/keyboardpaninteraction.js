@@ -27,7 +27,7 @@ goog.require('ol.interaction.Interaction');
  * @constructor
  * @extends {ol.interaction.Interaction}
  * @param {olx.interaction.KeyboardPanOptions=} opt_options Options.
- * @todo api
+ * @todo api stable
  */
 ol.interaction.KeyboardPan = function(opt_options) {
 

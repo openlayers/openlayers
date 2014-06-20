@@ -23,7 +23,7 @@ goog.require('ol.interaction.Interaction');
  * @constructor
  * @param {olx.interaction.KeyboardZoomOptions=} opt_options Options.
  * @extends {ol.interaction.Interaction}
- * @todo api
+ * @todo api stable
  */
 ol.interaction.KeyboardZoom = function(opt_options) {
 

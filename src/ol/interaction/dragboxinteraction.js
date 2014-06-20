@@ -28,13 +28,13 @@ ol.DragBoxEventType = {
   /**
    * Triggered upon drag box start.
    * @event ol.DragBoxEvent#boxstart
-   * @todo api
+   * @todo api stable
    */
   BOXSTART: 'boxstart',
   /**
    * Triggered upon drag box end.
    * @event ol.DragBoxEvent#boxend
-   * @todo api
+   * @todo api stable
    */
   BOXEND: 'boxend'
 };
@@ -58,7 +58,7 @@ ol.DragBoxEvent = function(type, coordinate) {
    * The coordinate of the drag event.
    * @const
    * @type {ol.Coordinate}
-   * @todo api
+   * @todo api stable
    */
   this.coordinate = coordinate;
 
@@ -79,7 +79,7 @@ goog.inherits(ol.DragBoxEvent, goog.events.Event);
  * @extends {ol.interaction.Pointer}
  * @fires ol.DragBoxEvent
  * @param {olx.interaction.DragBoxOptions=} opt_options Options.
- * @todo api
+ * @todo api stable
  */
 ol.interaction.DragBox = function(opt_options) {
 
@@ -131,7 +131,7 @@ ol.interaction.DragBox.prototype.handlePointerDrag = function(mapBrowserEvent) {
 /**
  * Returns geometry of last drawn box.
  * @return {ol.geom.Geometry} Geometry.
- * @todo api
+ * @todo api stable
  */
 ol.interaction.DragBox.prototype.getGeometry = function() {
   return this.box_.getGeometry();
