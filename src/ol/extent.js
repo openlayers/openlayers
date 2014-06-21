@@ -68,7 +68,7 @@ ol.extent.boundingExtentXYs_ = function(xs, ys, opt_extent) {
 /**
  * Return extent increased by the provided value.
  * @param {ol.Extent} extent Extent.
- * @param {number} value The amount by wich the extent should be buffered.
+ * @param {number} value The amount by which the extent should be buffered.
  * @param {ol.Extent=} opt_extent Extent.
  * @return {ol.Extent} Extent.
  * @todo api
