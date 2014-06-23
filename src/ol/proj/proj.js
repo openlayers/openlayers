@@ -381,7 +381,9 @@ ol.proj.addProj4jsProjection_ = function(proj4jsProjection) {
 
 
 /**
- * @param {ol.proj.Projection} projection Projection.
+ * Add a Projection object to the list of supported projections.
+ *
+ * @param {ol.proj.Projection} projection Projection object.
  * @todo api
  */
 ol.proj.addProjection = function(projection) {
@@ -476,10 +478,12 @@ ol.proj.removeTransform = function(source, destination) {
 
 
 /**
+ * Fetches a Projection object for the code specified.
+ *
  * @param {ol.proj.ProjectionLike} projectionLike Either a code string which is
  *     a combination of authority and identifier such as "EPSG:4326", or an
  *     existing projection object, or undefined.
- * @return {ol.proj.Projection} Projection.
+ * @return {ol.proj.Projection} Projection object, or null if not in list.
  * @todo api
  */
 ol.proj.get = function(projectionLike) {
@@ -555,13 +559,13 @@ ol.proj.equivalent = function(projection1, projection2) {
 
 
 /**
- * Given the projection-like objects this method searches for a transformation
+ * Given the projection-like objects, searches for a transformation
  * function to convert a coordinates array from the source projection to the
  * destination projection.
  *
  * @param {ol.proj.ProjectionLike} source Source.
  * @param {ol.proj.ProjectionLike} destination Destination.
- * @return {ol.TransformFunction} Transform.
+ * @return {ol.TransformFunction} Transform function.
  * @todo api
  */
 ol.proj.getTransform = function(source, destination) {
@@ -573,12 +577,13 @@ ol.proj.getTransform = function(source, destination) {
 
 
 /**
- * Searches a function that can be used to convert coordinates from the source
- * projection to the destination projection.
+ * Searches in the list of transform functions for the function for converting
+ * coordinates from the source projection to the destination projection.
  *
- * @param {ol.proj.Projection} sourceProjection Source projection.
- * @param {ol.proj.Projection} destinationProjection Destination projection.
- * @return {ol.TransformFunction} Transform.
+ * @param {ol.proj.Projection} sourceProjection Source Projection object.
+ * @param {ol.proj.Projection} destinationProjection Destination Projection
+ *     object.
+ * @return {ol.TransformFunction} Transform function.
  */
 ol.proj.getTransformFromProjections =
     function(sourceProjection, destinationProjection) {
@@ -694,15 +699,20 @@ ol.proj.cloneTransform = function(input, opt_output, opt_dimension) {
 
 
 /**
- * @param {ol.Coordinate} point Point.
- * @param {ol.proj.ProjectionLike} source Source.
- * @param {ol.proj.ProjectionLike} destination Destination.
- * @return {ol.Coordinate} Point.
+ * Transforms a coordinate from source projection to destination projection.
+ * See {@link ol.extent.applyTransform} for extent transformation.
+ * See the applyTransform method of {@link ol.geom.SimpleGeometry} and its
+ * subclasses for geometry transforms.
+ *
+ * @param {ol.Coordinate} coordinate Coordinate.
+ * @param {ol.proj.ProjectionLike} source Source projection-like.
+ * @param {ol.proj.ProjectionLike} destination Destination projection-like.
+ * @return {ol.Coordinate} Coordinate.
  * @todo api
  */
-ol.proj.transform = function(point, source, destination) {
+ol.proj.transform = function(coordinate, source, destination) {
   var transformFn = ol.proj.getTransform(source, destination);
-  return transformFn(point);
+  return transformFn(coordinate);
 };
 
 
