@@ -53,8 +53,16 @@ ol.control.Attribution = function(opt_options) {
    */
   this.collapsed_ = goog.isDef(options.collapsed) ? options.collapsed : true;
 
-  var collapsible = goog.isDef(options.collapsible) ?
+  /**
+   * @private
+   * @type {boolean}
+   */
+  this.collapsible_ = goog.isDef(options.collapsible) ?
       options.collapsible : true;
+
+  if (!this.collapsible_) {
+    this.collapsed_ = false;
+  }
 
   var className = goog.isDef(options.className) ?
       options.className : 'ol-attribution';
@@ -78,7 +86,7 @@ ol.control.Attribution = function(opt_options) {
    */
   this.label_ = goog.isDef(options.label) ? options.label : 'i';
   var label = goog.dom.createDom(goog.dom.TagName.SPAN, {},
-      (collapsible && !this.collapsed_) ?
+      (this.collapsible_ && !this.collapsed_) ?
       this.collapseLabel_ : this.label_);
 
 
@@ -109,8 +117,8 @@ ol.control.Attribution = function(opt_options) {
   var element = goog.dom.createDom(goog.dom.TagName.DIV, {
     'class': className + ' ' + ol.css.CLASS_UNSELECTABLE + ' ' +
         ol.css.CLASS_CONTROL +
-        (this.collapsed_ && collapsible ? ' ol-collapsed' : '') +
-        (collapsible ? '' : ' ol-uncollapsible')
+        (this.collapsed_ && this.collapsible_ ? ' ol-collapsed' : '') +
+        (this.collapsible_ ? '' : ' ol-uncollapsible')
   }, this.ulElement_, button);
 
   goog.base(this, {
@@ -343,4 +351,50 @@ ol.control.Attribution.prototype.handleToggle_ = function() {
   goog.dom.setTextContent(this.labelSpan_,
       (this.collapsed_) ? this.collapseLabel_ : this.label_);
   this.collapsed_ = !this.collapsed_;
+};
+
+
+/**
+ * @return {boolean} True is the widget is collapsible.
+ * @todo api
+ */
+ol.control.Attribution.prototype.getCollapsible = function() {
+  return this.collapsible_;
+};
+
+
+/**
+ * @param {boolean} collapsible True is the widget is collapsible.
+ * @todo api
+ */
+ol.control.Attribution.prototype.setCollapsible = function(collapsible) {
+  if (this.collapsible_ === collapsible) {
+    return;
+  }
+  this.collapsible_ = collapsible;
+  goog.dom.classes.toggle(this.element, 'ol-uncollapsible');
+  if (!collapsible && this.collapsed_) {
+    this.handleToggle_();
+  }
+};
+
+
+/**
+ * @param {boolean} collapsed True is the widget is collapsed.
+ * @todo api
+ */
+ol.control.Attribution.prototype.setCollapsed = function(collapsed) {
+  if (!this.collapsible_ || this.collapsed_ === collapsed) {
+    return;
+  }
+  this.handleToggle_();
+};
+
+
+/**
+ * @return {boolean} True is the widget is collapsed.
+ * @todo api
+ */
+ol.control.Attribution.prototype.getCollapsed = function() {
+  return this.collapsed_;
 };
