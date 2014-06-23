@@ -237,20 +237,6 @@ button.ol-full-screen-true:after {
   display: none;
 }
 
-.ol-logo {
-  bottom: 0;
-  left: 0;
-  padding: 2px;
-  position: absolute;
-}
-.ol-logo ul {
-  margin: 0;
-  padding: 0;
-}
-.ol-logo ul li {
-  display: inline;
-  list-style: none;
-}
 .ol-zoomslider {
   position: absolute;
   top: 4.5em;
