@@ -117,7 +117,8 @@ olx.MapOptions;
 
 
 /**
- * Controls initially added to the map.
+ * Controls initially added to the map. Default is
+ * {@link ol.control.defaults ol.control.defaults()}.
  * @type {ol.Collection|Array.<ol.control.Control>|undefined}
  */
 olx.MapOptions.prototype.controls;
@@ -139,7 +140,8 @@ olx.MapOptions.prototype.pixelRatio;
 
 
 /**
- * Interactions that are initially added to the map.
+ * Interactions that are initially added to the map. Default is
+ * {@link ol.interaction.defaults ol.interaction.defaults()}.
  * @type {ol.Collection|Array.<ol.interaction.Interaction>|undefined}
  */
 olx.MapOptions.prototype.interactions;
