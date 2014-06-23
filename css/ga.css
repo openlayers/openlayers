@@ -158,10 +158,10 @@
 }
 
 .crosshair {
-  width: 16px;
-  height: 16px;
-  margin-left: -8px;
-  margin-top: -8px;
+  width: 30px;
+  height: 40px;
+  margin-left: -17px;
+  margin-top: -40px;
   background-image: url('marker.png');
 }
 
