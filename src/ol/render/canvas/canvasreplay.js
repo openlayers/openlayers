@@ -258,6 +258,8 @@ ol.render.canvas.Replay.prototype.replay_ = function(
         ++i;
         break;
       case ol.render.canvas.Instruction.CIRCLE:
+        goog.asserts.assert(goog.isNumber(instruction[1]));
+        d = /** @type {number} */ (instruction[1]);
         var x1 = pixelCoordinates[d];
         var y1 = pixelCoordinates[d + 1];
         var x2 = pixelCoordinates[d + 2];
@@ -266,7 +268,6 @@ ol.render.canvas.Replay.prototype.replay_ = function(
         var dy = y2 - y1;
         var r = Math.sqrt(dx * dx + dy * dy);
         context.arc(x1, y1, r, 0, 2 * Math.PI, true);
-        d += 4;
         ++i;
         break;
       case ol.render.canvas.Instruction.CLOSE_PATH:
@@ -1263,10 +1264,11 @@ ol.render.canvas.PolygonReplay.prototype.drawCircleGeometry =
   }
   var flatCoordinates = circleGeometry.getFlatCoordinates();
   var stride = circleGeometry.getStride();
+  var myBegin = this.coordinates.length;
   this.appendFlatCoordinates(
       flatCoordinates, 0, flatCoordinates.length, stride, false);
   var beginPathInstruction = [ol.render.canvas.Instruction.BEGIN_PATH];
-  var circleInstruction = [ol.render.canvas.Instruction.CIRCLE];
+  var circleInstruction = [ol.render.canvas.Instruction.CIRCLE, myBegin];
   this.instructions.push(beginPathInstruction, circleInstruction);
   this.hitDetectionInstructions.push(beginPathInstruction, circleInstruction);
   var fillInstruction = [ol.render.canvas.Instruction.FILL];
