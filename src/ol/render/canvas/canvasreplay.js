@@ -1269,7 +1269,6 @@ ol.render.canvas.PolygonReplay.prototype.drawCircleGeometry =
   var circleInstruction = [ol.render.canvas.Instruction.CIRCLE];
   this.instructions.push(beginPathInstruction, circleInstruction);
   this.hitDetectionInstructions.push(beginPathInstruction, circleInstruction);
-  this.endGeometry(circleGeometry, data);
   var fillInstruction = [ol.render.canvas.Instruction.FILL];
   this.hitDetectionInstructions.push(fillInstruction);
   if (goog.isDef(state.fillStyle)) {
@@ -1281,6 +1280,7 @@ ol.render.canvas.PolygonReplay.prototype.drawCircleGeometry =
     this.instructions.push(strokeInstruction);
     this.hitDetectionInstructions.push(strokeInstruction);
   }
+  this.endGeometry(circleGeometry, data);
 };
 
 
