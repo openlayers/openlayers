@@ -40,7 +40,11 @@ describe('ol.format.KML', function() {
         var features = [new ol.Feature()];
         var node = format.writeFeatures(features);
         var text =
-            '<kml xmlns="http://earth.google.com/kml/2.2">' +
+            '<kml xmlns="http://www.opengis.net/kml/2.2"' +
+            ' xmlns:gx="http://www.google.com/kml/ext/2.2"' +
+            ' xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"' +
+            ' xsi:schemaLocation="http://www.opengis.net/kml/2.2' +
+            ' https://developers.google.com/kml/schema/kml22gx.xsd">' +
             '  <Placemark/>' +
             '</kml>';
         expect(node).to.xmleql(ol.xml.load(text));
@@ -52,7 +56,11 @@ describe('ol.format.KML', function() {
         var features = [feature];
         var node = format.writeFeatures(features);
         var text =
-            '<kml xmlns="http://earth.google.com/kml/2.2">' +
+            '<kml xmlns="http://www.opengis.net/kml/2.2"' +
+            ' xmlns:gx="http://www.google.com/kml/ext/2.2"' +
+            ' xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"' +
+            ' xsi:schemaLocation="http://www.opengis.net/kml/2.2' +
+            ' https://developers.google.com/kml/schema/kml22gx.xsd">' +
             '  <Placemark id="foo"/>' +
             '</kml>';
         expect(node).to.xmleql(ol.xml.load(text));
@@ -79,7 +87,11 @@ describe('ol.format.KML', function() {
         var features = [new ol.Feature(null)];
         var node = format.writeFeatures(features);
         var text =
-            '<kml xmlns="http://earth.google.com/kml/2.2">' +
+            '<kml xmlns="http://www.opengis.net/kml/2.2"' +
+            ' xmlns:gx="http://www.google.com/kml/ext/2.2"' +
+            ' xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"' +
+            ' xsi:schemaLocation="http://www.opengis.net/kml/2.2' +
+            ' https://developers.google.com/kml/schema/kml22gx.xsd">' +
             '  <Placemark/>' +
             '</kml>';
         expect(node).to.xmleql(ol.xml.load(text));
@@ -87,7 +99,11 @@ describe('ol.format.KML', function() {
 
       it('can read Point geometries', function() {
         var text =
-            '<kml xmlns="http://earth.google.com/kml/2.2">' +
+            '<kml xmlns="http://www.opengis.net/kml/2.2"' +
+            ' xmlns:gx="http://www.google.com/kml/ext/2.2"' +
+            ' xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"' +
+            ' xsi:schemaLocation="http://www.opengis.net/kml/2.2' +
+            ' https://developers.google.com/kml/schema/kml22gx.xsd">' +
             '  <Placemark>' +
             '    <Point>' +
             '      <coordinates>1,2,3</coordinates>' +
@@ -109,7 +125,11 @@ describe('ol.format.KML', function() {
         var features = [new ol.Feature(point)];
         var node = format.writeFeatures(features);
         var text =
-            '<kml xmlns="http://earth.google.com/kml/2.2">' +
+            '<kml xmlns="http://www.opengis.net/kml/2.2"' +
+            ' xmlns:gx="http://www.google.com/kml/ext/2.2"' +
+            ' xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"' +
+            ' xsi:schemaLocation="http://www.opengis.net/kml/2.2' +
+            ' https://developers.google.com/kml/schema/kml22gx.xsd">' +
             '  <Placemark>' +
             '    <Point>' +
             '      <coordinates>1,2</coordinates>' +
@@ -125,7 +145,11 @@ describe('ol.format.KML', function() {
         var features = [new ol.Feature(point)];
         var node = format.writeFeatures(features);
         var text =
-            '<kml xmlns="http://earth.google.com/kml/2.2">' +
+            '<kml xmlns="http://www.opengis.net/kml/2.2"' +
+            ' xmlns:gx="http://www.google.com/kml/ext/2.2"' +
+            ' xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"' +
+            ' xsi:schemaLocation="http://www.opengis.net/kml/2.2' +
+            ' https://developers.google.com/kml/schema/kml22gx.xsd">' +
             '  <Placemark>' +
             '    <Point>' +
             '      <coordinates>1,2,3</coordinates>' +
@@ -141,7 +165,11 @@ describe('ol.format.KML', function() {
         var features = [new ol.Feature(point)];
         var node = format.writeFeatures(features);
         var text =
-            '<kml xmlns="http://earth.google.com/kml/2.2">' +
+            '<kml xmlns="http://www.opengis.net/kml/2.2"' +
+            ' xmlns:gx="http://www.google.com/kml/ext/2.2"' +
+            ' xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"' +
+            ' xsi:schemaLocation="http://www.opengis.net/kml/2.2' +
+            ' https://developers.google.com/kml/schema/kml22gx.xsd">' +
             '  <Placemark>' +
             '    <Point>' +
             '      <coordinates>1,2</coordinates>' +
@@ -157,7 +185,11 @@ describe('ol.format.KML', function() {
         var features = [new ol.Feature(point)];
         var node = format.writeFeatures(features);
         var text =
-            '<kml xmlns="http://earth.google.com/kml/2.2">' +
+            '<kml xmlns="http://www.opengis.net/kml/2.2"' +
+            ' xmlns:gx="http://www.google.com/kml/ext/2.2"' +
+            ' xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"' +
+            ' xsi:schemaLocation="http://www.opengis.net/kml/2.2' +
+            ' https://developers.google.com/kml/schema/kml22gx.xsd">' +
             '  <Placemark>' +
             '    <Point>' +
             '      <coordinates>1,2,3</coordinates>' +
@@ -191,7 +223,11 @@ describe('ol.format.KML', function() {
         var features = [new ol.Feature(lineString)];
         var node = format.writeFeatures(features);
         var text =
-            '<kml xmlns="http://earth.google.com/kml/2.2">' +
+            '<kml xmlns="http://www.opengis.net/kml/2.2"' +
+            ' xmlns:gx="http://www.google.com/kml/ext/2.2"' +
+            ' xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"' +
+            ' xsi:schemaLocation="http://www.opengis.net/kml/2.2' +
+            ' https://developers.google.com/kml/schema/kml22gx.xsd">' +
             '  <Placemark>' +
             '    <LineString>' +
             '      <coordinates>1,2 3,4</coordinates>' +
@@ -208,7 +244,11 @@ describe('ol.format.KML', function() {
         var features = [new ol.Feature(lineString)];
         var node = format.writeFeatures(features);
         var text =
-            '<kml xmlns="http://earth.google.com/kml/2.2">' +
+            '<kml xmlns="http://www.opengis.net/kml/2.2"' +
+            ' xmlns:gx="http://www.google.com/kml/ext/2.2"' +
+            ' xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"' +
+            ' xsi:schemaLocation="http://www.opengis.net/kml/2.2' +
+            ' https://developers.google.com/kml/schema/kml22gx.xsd">' +
             '  <Placemark>' +
             '    <LineString>' +
             '      <coordinates>1,2,3 4,5,6</coordinates>' +
@@ -225,7 +265,11 @@ describe('ol.format.KML', function() {
         var features = [new ol.Feature(lineString)];
         var node = format.writeFeatures(features);
         var text =
-            '<kml xmlns="http://earth.google.com/kml/2.2">' +
+            '<kml xmlns="http://www.opengis.net/kml/2.2"' +
+            ' xmlns:gx="http://www.google.com/kml/ext/2.2"' +
+            ' xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"' +
+            ' xsi:schemaLocation="http://www.opengis.net/kml/2.2' +
+            ' https://developers.google.com/kml/schema/kml22gx.xsd">' +
             '  <Placemark>' +
             '    <LineString>' +
             '      <coordinates>1,2 3,4</coordinates>' +
@@ -242,7 +286,11 @@ describe('ol.format.KML', function() {
         var features = [new ol.Feature(lineString)];
         var node = format.writeFeatures(features);
         var text =
-            '<kml xmlns="http://earth.google.com/kml/2.2">' +
+            '<kml xmlns="http://www.opengis.net/kml/2.2"' +
+            ' xmlns:gx="http://www.google.com/kml/ext/2.2"' +
+            ' xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"' +
+            ' xsi:schemaLocation="http://www.opengis.net/kml/2.2' +
+            ' https://developers.google.com/kml/schema/kml22gx.xsd">' +
             '  <Placemark>' +
             '    <LineString>' +
             '      <coordinates>1,2,3 4,5,6</coordinates>' +
@@ -277,7 +325,11 @@ describe('ol.format.KML', function() {
         var features = [new ol.Feature(linearRing)];
         var node = format.writeFeatures(features);
         var text =
-            '<kml xmlns="http://earth.google.com/kml/2.2">' +
+            '<kml xmlns="http://www.opengis.net/kml/2.2"' +
+            ' xmlns:gx="http://www.google.com/kml/ext/2.2"' +
+            ' xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"' +
+            ' xsi:schemaLocation="http://www.opengis.net/kml/2.2' +
+            ' https://developers.google.com/kml/schema/kml22gx.xsd">' +
             '  <Placemark>' +
             '    <LinearRing>' +
             '      <coordinates>1,2 3,4 1,2</coordinates>' +
@@ -294,7 +346,11 @@ describe('ol.format.KML', function() {
         var features = [new ol.Feature(linearRing)];
         var node = format.writeFeatures(features);
         var text =
-            '<kml xmlns="http://earth.google.com/kml/2.2">' +
+            '<kml xmlns="http://www.opengis.net/kml/2.2"' +
+            ' xmlns:gx="http://www.google.com/kml/ext/2.2"' +
+            ' xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"' +
+            ' xsi:schemaLocation="http://www.opengis.net/kml/2.2' +
+            ' https://developers.google.com/kml/schema/kml22gx.xsd">' +
             '  <Placemark>' +
             '    <LinearRing>' +
             '      <coordinates>1,2,3 4,5,6 1,2,3</coordinates>' +
@@ -311,7 +367,11 @@ describe('ol.format.KML', function() {
         var features = [new ol.Feature(linearRing)];
         var node = format.writeFeatures(features);
         var text =
-            '<kml xmlns="http://earth.google.com/kml/2.2">' +
+            '<kml xmlns="http://www.opengis.net/kml/2.2"' +
+            ' xmlns:gx="http://www.google.com/kml/ext/2.2"' +
+            ' xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"' +
+            ' xsi:schemaLocation="http://www.opengis.net/kml/2.2' +
+            ' https://developers.google.com/kml/schema/kml22gx.xsd">' +
             '  <Placemark>' +
             '    <LinearRing>' +
             '      <coordinates>1,2 3,4 1,2</coordinates>' +
@@ -328,7 +388,11 @@ describe('ol.format.KML', function() {
         var features = [new ol.Feature(linearRing)];
         var node = format.writeFeatures(features);
         var text =
-            '<kml xmlns="http://earth.google.com/kml/2.2">' +
+            '<kml xmlns="http://www.opengis.net/kml/2.2"' +
+            ' xmlns:gx="http://www.google.com/kml/ext/2.2"' +
+            ' xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"' +
+            ' xsi:schemaLocation="http://www.opengis.net/kml/2.2' +
+            ' https://developers.google.com/kml/schema/kml22gx.xsd">' +
             '  <Placemark>' +
             '    <LinearRing>' +
             '      <coordinates>1,2,3 4,5,6 1,2,3</coordinates>' +
@@ -368,7 +432,11 @@ describe('ol.format.KML', function() {
         var features = [new ol.Feature(polygon)];
         var node = format.writeFeatures(features);
         var text =
-            '<kml xmlns="http://earth.google.com/kml/2.2">' +
+            '<kml xmlns="http://www.opengis.net/kml/2.2"' +
+            ' xmlns:gx="http://www.google.com/kml/ext/2.2"' +
+            ' xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"' +
+            ' xsi:schemaLocation="http://www.opengis.net/kml/2.2' +
+            ' https://developers.google.com/kml/schema/kml22gx.xsd">' +
             '  <Placemark>' +
             '    <Polygon>' +
             '      <outerBoundaryIs>' +
@@ -389,7 +457,11 @@ describe('ol.format.KML', function() {
         var features = [new ol.Feature(polygon)];
         var node = format.writeFeatures(features);
         var text =
-            '<kml xmlns="http://earth.google.com/kml/2.2">' +
+            '<kml xmlns="http://www.opengis.net/kml/2.2"' +
+            ' xmlns:gx="http://www.google.com/kml/ext/2.2"' +
+            ' xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"' +
+            ' xsi:schemaLocation="http://www.opengis.net/kml/2.2' +
+            ' https://developers.google.com/kml/schema/kml22gx.xsd">' +
             '  <Placemark>' +
             '    <Polygon>' +
             '      <outerBoundaryIs>' +
@@ -412,7 +484,11 @@ describe('ol.format.KML', function() {
         var features = [new ol.Feature(polygon)];
         var node = format.writeFeatures(features);
         var text =
-            '<kml xmlns="http://earth.google.com/kml/2.2">' +
+            '<kml xmlns="http://www.opengis.net/kml/2.2"' +
+            ' xmlns:gx="http://www.google.com/kml/ext/2.2"' +
+            ' xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"' +
+            ' xsi:schemaLocation="http://www.opengis.net/kml/2.2' +
+            ' https://developers.google.com/kml/schema/kml22gx.xsd">' +
             '  <Placemark>' +
             '    <Polygon>' +
             '      <outerBoundaryIs>' +
@@ -436,7 +512,11 @@ describe('ol.format.KML', function() {
         var features = [new ol.Feature(polygon)];
         var node = format.writeFeatures(features);
         var text =
-            '<kml xmlns="http://earth.google.com/kml/2.2">' +
+            '<kml xmlns="http://www.opengis.net/kml/2.2"' +
+            ' xmlns:gx="http://www.google.com/kml/ext/2.2"' +
+            ' xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"' +
+            ' xsi:schemaLocation="http://www.opengis.net/kml/2.2' +
+            ' https://developers.google.com/kml/schema/kml22gx.xsd">' +
             '  <Placemark>' +
             '    <Polygon>' +
             '      <outerBoundaryIs>' +
@@ -494,7 +574,11 @@ describe('ol.format.KML', function() {
         var features = [new ol.Feature(polygon)];
         var node = format.writeFeatures(features);
         var text =
-            '<kml xmlns="http://earth.google.com/kml/2.2">' +
+            '<kml xmlns="http://www.opengis.net/kml/2.2"' +
+            ' xmlns:gx="http://www.google.com/kml/ext/2.2"' +
+            ' xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"' +
+            ' xsi:schemaLocation="http://www.opengis.net/kml/2.2' +
+            ' https://developers.google.com/kml/schema/kml22gx.xsd">' +
             '  <Placemark>' +
             '    <Polygon>' +
             '      <innerBoundaryIs>' +
@@ -548,7 +632,11 @@ describe('ol.format.KML', function() {
         var features = [new ol.Feature(multiPoint)];
         var node = format.writeFeatures(features);
         var text =
-            '<kml xmlns="http://earth.google.com/kml/2.2">' +
+            '<kml xmlns="http://www.opengis.net/kml/2.2"' +
+            ' xmlns:gx="http://www.google.com/kml/ext/2.2"' +
+            ' xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"' +
+            ' xsi:schemaLocation="http://www.opengis.net/kml/2.2' +
+            ' https://developers.google.com/kml/schema/kml22gx.xsd">' +
             '  <Placemark>' +
             '    <MultiGeometry>' +
             '      <Point>' +
@@ -594,7 +682,11 @@ describe('ol.format.KML', function() {
         var features = [new ol.Feature(multiLineString)];
         var node = format.writeFeatures(features);
         var text =
-            '<kml xmlns="http://earth.google.com/kml/2.2">' +
+            '<kml xmlns="http://www.opengis.net/kml/2.2"' +
+            ' xmlns:gx="http://www.google.com/kml/ext/2.2"' +
+            ' xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"' +
+            ' xsi:schemaLocation="http://www.opengis.net/kml/2.2' +
+            ' https://developers.google.com/kml/schema/kml22gx.xsd">' +
             '  <Placemark>' +
             '    <MultiGeometry>' +
             '      <LineString>' +
@@ -650,7 +742,11 @@ describe('ol.format.KML', function() {
         var features = [new ol.Feature(multiPolygon)];
         var node = format.writeFeatures(features);
         var text =
-            '<kml xmlns="http://earth.google.com/kml/2.2">' +
+            '<kml xmlns="http://www.opengis.net/kml/2.2"' +
+            ' xmlns:gx="http://www.google.com/kml/ext/2.2"' +
+            ' xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"' +
+            ' xsi:schemaLocation="http://www.opengis.net/kml/2.2' +
+            ' https://developers.google.com/kml/schema/kml22gx.xsd">' +
             '  <Placemark>' +
             '    <MultiGeometry>' +
             '      <Polygon>' +
@@ -925,7 +1021,11 @@ describe('ol.format.KML', function() {
         var features = [feature];
         var node = format.writeFeatures(features);
         var text =
-            '<kml xmlns="http://earth.google.com/kml/2.2">' +
+            '<kml xmlns="http://www.opengis.net/kml/2.2"' +
+            ' xmlns:gx="http://www.google.com/kml/ext/2.2"' +
+            ' xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"' +
+            ' xsi:schemaLocation="http://www.opengis.net/kml/2.2' +
+            ' https://developers.google.com/kml/schema/kml22gx.xsd">' +
             '  <Placemark>' +
             '    <address>My address</address>' +
             '    <description>My description</description>' +
@@ -943,7 +1043,11 @@ describe('ol.format.KML', function() {
         var features = [feature];
         var node = format.writeFeatures(features);
         var text =
-            '<kml xmlns="http://earth.google.com/kml/2.2">' +
+            '<kml xmlns="http://www.opengis.net/kml/2.2"' +
+            ' xmlns:gx="http://www.google.com/kml/ext/2.2"' +
+            ' xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"' +
+            ' xsi:schemaLocation="http://www.opengis.net/kml/2.2' +
+            ' https://developers.google.com/kml/schema/kml22gx.xsd">' +
             '  <Placemark>' +
             '    <open>1</open>' +
             '    <visibility>0</visibility>' +
@@ -1339,8 +1443,11 @@ describe('ol.format.KML', function() {
         feature.setStyle([style]);
         var node = format.writeFeatures([feature]);
         var text =
-            '<kml xmlns="http://earth.google.com/kml/2.2"' +
-            '     xmlns:gx="http://www.google.com/kml/ext/2.2">' +
+            '<kml xmlns="http://www.opengis.net/kml/2.2"' +
+            ' xmlns:gx="http://www.google.com/kml/ext/2.2"' +
+            ' xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"' +
+            ' xsi:schemaLocation="http://www.opengis.net/kml/2.2' +
+            ' https://developers.google.com/kml/schema/kml22gx.xsd">' +
             '  <Placemark>' +
             '    <Style>' +
             '      <IconStyle>' +
@@ -1376,8 +1483,11 @@ describe('ol.format.KML', function() {
         feature.setStyle([style]);
         var node = format.writeFeatures([feature]);
         var text =
-            '<kml xmlns="http://earth.google.com/kml/2.2"' +
-            '     xmlns:gx="http://www.google.com/kml/ext/2.2">' +
+            '<kml xmlns="http://www.opengis.net/kml/2.2"' +
+            ' xmlns:gx="http://www.google.com/kml/ext/2.2"' +
+            ' xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"' +
+            ' xsi:schemaLocation="http://www.opengis.net/kml/2.2' +
+            ' https://developers.google.com/kml/schema/kml22gx.xsd">' +
             '  <Placemark>' +
             '    <Style>' +
             '      <LabelStyle>' +
@@ -1402,8 +1512,11 @@ describe('ol.format.KML', function() {
         feature.setStyle([style]);
         var node = format.writeFeatures([feature]);
         var text =
-            '<kml xmlns="http://earth.google.com/kml/2.2"' +
-            '     xmlns:gx="http://www.google.com/kml/ext/2.2">' +
+            '<kml xmlns="http://www.opengis.net/kml/2.2"' +
+            ' xmlns:gx="http://www.google.com/kml/ext/2.2"' +
+            ' xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"' +
+            ' xsi:schemaLocation="http://www.opengis.net/kml/2.2' +
+            ' https://developers.google.com/kml/schema/kml22gx.xsd">' +
             '  <Placemark>' +
             '    <Style>' +
             '      <LineStyle>' +
@@ -1426,8 +1539,11 @@ describe('ol.format.KML', function() {
         feature.setStyle([style]);
         var node = format.writeFeatures([feature]);
         var text =
-            '<kml xmlns="http://earth.google.com/kml/2.2"' +
-            '     xmlns:gx="http://www.google.com/kml/ext/2.2">' +
+            '<kml xmlns="http://www.opengis.net/kml/2.2"' +
+            ' xmlns:gx="http://www.google.com/kml/ext/2.2"' +
+            ' xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"' +
+            ' xsi:schemaLocation="http://www.opengis.net/kml/2.2' +
+            ' https://developers.google.com/kml/schema/kml22gx.xsd">' +
             '  <Placemark>' +
             '    <Style>' +
             '      <PolyStyle>' +
@@ -1918,8 +2034,11 @@ describe('ol.format.KML', function() {
         feature2.setId('2');
         var node = format.writeFeatures([feature1, feature2]);
         var text =
-            '<kml xmlns="http://earth.google.com/kml/2.2" ' +
-            '     xmlns:gx="http://www.google.com/kml/ext/2.2">' +
+            '<kml xmlns="http://www.opengis.net/kml/2.2"' +
+            ' xmlns:gx="http://www.google.com/kml/ext/2.2"' +
+            ' xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"' +
+            ' xsi:schemaLocation="http://www.opengis.net/kml/2.2' +
+            ' https://developers.google.com/kml/schema/kml22gx.xsd">' +
             '  <Document>' +
             '    <Placemark id="1">' +
             '    </Placemark>' +
