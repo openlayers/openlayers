@@ -117,7 +117,8 @@ olx.MapOptions;
 
 
 /**
- * Controls initially added to the map.
+ * Controls initially added to the map. If not specified,
+ * {@link ol.control.defaults ol.control.defaults()} is used.
  * @type {ol.Collection|Array.<ol.control.Control>|undefined}
  */
 olx.MapOptions.prototype.controls;
@@ -139,7 +140,8 @@ olx.MapOptions.prototype.pixelRatio;
 
 
 /**
- * Interactions that are initially added to the map.
+ * Interactions that are initially added to the map. If not specified,
+ * {@link ol.interaction.defaults ol.interaction.defaults()} is used.
  * @type {ol.Collection|Array.<ol.interaction.Interaction>|undefined}
  */
 olx.MapOptions.prototype.interactions;
@@ -159,7 +161,7 @@ olx.MapOptions.prototype.keyboardEventTarget;
 
 
 /**
- * Layers.
+ * Layers. If this is not defined, a map with no layers will be rendered.
  * @type {Array.<ol.layer.Base>|ol.Collection|undefined}
  */
 olx.MapOptions.prototype.layers;
@@ -173,28 +175,35 @@ olx.MapOptions.prototype.ol3Logo;
 
 
 /**
- * Overlays initially added to the map.
+ * Overlays initially added to the map. By default, no overlays are added.
  * @type {ol.Collection|Array.<ol.Overlay>|undefined}
  */
 olx.MapOptions.prototype.overlays;
 
 
 /**
- * Renderer.
+ * Renderer. By default, Canvas, DOM and WebGL renderers are tested for support
+ * in that order, and the first supported used. Specify a
+ * {@link ol.RendererType} here to use a specific renderer.
+ * Note that at present only the Canvas renderer supports vector data.
  * @type {ol.RendererType|Array.<ol.RendererType|string>|string|undefined}
  */
 olx.MapOptions.prototype.renderer;
 
 
 /**
- * The container for the map.
+ * The container for the map, either the element itself or the `id` of the
+ * element. If not specified at construction time, {@link ol.Map#setTarget}
+ * must be called for the map to be rendered.
  * @type {Element|string|undefined}
  */
 olx.MapOptions.prototype.target;
 
 
 /**
- * The map's view.
+ * The map's view. Currently {@link ol.View2D} is the only available view.
+ * No layer sources will be fetched unless this is specified at construction
+ * time or through {@link ol.Map#setView}.
  * @type {ol.IView|undefined}
  */
 olx.MapOptions.prototype.view;
@@ -745,10 +754,10 @@ olx.control.DefaultsOptions.prototype.logoOptions;
 
 
 /**
- * Zoom. Default is `true`.
+ * Rotate. Default is `true`.
  * @type {boolean|undefined}
  */
-olx.control.DefaultsOptions.prototype.zoom;
+olx.control.DefaultsOptions.prototype.rotate;
 
 
 /**
@@ -756,6 +765,13 @@ olx.control.DefaultsOptions.prototype.zoom;
  * @type {olx.control.RotateOptions|undefined}
  */
 olx.control.DefaultsOptions.prototype.rotateOptions;
+
+
+/**
+ * Zoom. Default is `true`.
+ * @type {boolean|undefined}
+ */
+olx.control.DefaultsOptions.prototype.zoom;
 
 
 /**
