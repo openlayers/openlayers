@@ -1066,6 +1066,15 @@ ol.Map.prototype.isRendered = function() {
 
 
 /**
+ * @param {ol.Feature} feature Feature.
+ * @return {boolean} Whether the feature is skipped for rendering.
+ */
+ol.Map.prototype.isSkippedFeature = function(feature) {
+  return goog.getUid(feature).toString() in this.skippedFeatureUids_;
+};
+
+
+/**
  * Requests an immediate render in a synchronous manner.
  * @todo api stable
  */
