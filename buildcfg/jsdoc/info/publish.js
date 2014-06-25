@@ -46,6 +46,7 @@ exports.publish = function(data, opts) {
     } else {
       symbols.push({
         name: doc.longname,
+        kind: doc.kind,
         description: doc.description,
         extends: doc.augments,
         path: path.join(doc.meta.path, doc.meta.filename)
