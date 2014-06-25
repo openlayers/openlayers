@@ -167,7 +167,7 @@ ga.source.wmts = function(layer, options) {
         '" target="new">' +
         options['attribution'] + '</a>')
     ],
-    url: ('http://wmts{0-4}.geo.admin.ch/1.0.0/{Layer}/default/'+
+    url: ('http://wmts{5-9}.geo.admin.ch/1.0.0/{Layer}/default/'+
         timestamp + '/21781/' +
         '{TileMatrix}/{TileRow}/{TileCol}.').replace('http:',location.protocol) + extension,
     tileGrid: tileGrid,
