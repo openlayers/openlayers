@@ -47,6 +47,7 @@ ol.Observable.prototype.dispatchChangeEvent = function() {
 
 /**
  * @return {number} Revision.
+ * @todo api
  */
 ol.Observable.prototype.getRevision = function() {
   return this.revision_;
