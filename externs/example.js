@@ -5,7 +5,9 @@ var exampleNS;
 
 
 
-/** @interface */
+/**
+ * @return {string} Renderer type.
+ */
 exampleNS.getRendererFromQueryString = function() {};
 
 
