@@ -560,7 +560,7 @@ ol.Map.prototype.forEachFeatureAtPixel =
   var thisArg2 = goog.isDef(opt_this2) ? opt_this2 : null;
   return this.renderer_.forEachFeatureAtPixel(
       coordinate, this.frameState_, callback, thisArg,
-      layerFilter, thisArg2);
+      layerFilter, thisArg2, this.skippedFeatureUids_);
 };
 
 

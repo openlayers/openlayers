@@ -49,6 +49,8 @@ goog.inherits(ol.renderer.Layer, goog.Disposable);
  * @param {function(this: S, ol.Feature, ol.layer.Layer): T} callback Feature
  *     callback.
  * @param {S} thisArg Value to use as `this` when executing `callback`.
+ * @param {Object.<string, boolean>} skippedFeatureUids Ids of features to
+ *     exclude from consideration.
  * @return {T|undefined} Callback result.
  * @template S,T
  */

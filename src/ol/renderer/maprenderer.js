@@ -104,12 +104,14 @@ ol.renderer.Map.prototype.disposeInternal = function() {
  *     returns `true` will be tested for features.  By default, all visible
  *     layers will be tested.
  * @param {U} thisArg2 Value to use as `this` when executing `layerFilter`.
+ * @param {Object.<string, boolean>} skippedFeatureUids Ids of features to
+ *     exclude from consideration.
  * @return {T|undefined} Callback result.
  * @template S,T,U
  */
 ol.renderer.Map.prototype.forEachFeatureAtPixel =
     function(coordinate, frameState, callback, thisArg,
-        layerFilter, thisArg2) {
+        layerFilter, thisArg2, skippedFeatureUids) {
   var layerStates = this.map_.getLayerGroup().getLayerStatesArray();
   var numLayers = layerStates.length;
   var viewResolution = frameState.view2DState.resolution;
@@ -121,7 +123,7 @@ ol.renderer.Map.prototype.forEachFeatureAtPixel =
         layerFilter.call(thisArg2, layer)) {
       var layerRenderer = this.getLayerRenderer(layer);
       var result = layerRenderer.forEachFeatureAtPixel(
-          coordinate, frameState, callback, thisArg);
+          coordinate, frameState, callback, thisArg, skippedFeatureUids);
       if (result) {
         return result;
       }

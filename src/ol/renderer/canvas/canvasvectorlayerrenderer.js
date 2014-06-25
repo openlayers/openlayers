@@ -114,7 +114,7 @@ ol.renderer.canvas.VectorLayer.prototype.composeFrame =
  * @inheritDoc
  */
 ol.renderer.canvas.VectorLayer.prototype.forEachFeatureAtPixel =
-    function(coordinate, frameState, callback, thisArg) {
+    function(coordinate, frameState, callback, thisArg, skippedFeatureUids) {
   if (goog.isNull(this.replayGroup_)) {
     return undefined;
   } else {
@@ -123,7 +123,7 @@ ol.renderer.canvas.VectorLayer.prototype.forEachFeatureAtPixel =
     var rotation = frameState.view2DState.rotation;
     var layer = this.getLayer();
     return this.replayGroup_.forEachGeometryAtPixel(extent, resolution,
-        rotation, coordinate, frameState.skippedFeatureUids_,
+        rotation, coordinate, skippedFeatureUids,
         /**
          * @param {ol.geom.Geometry} geometry Geometry.
          * @param {Object} data Data.
