@@ -371,6 +371,43 @@ describe('ol.Feature', function() {
 
   });
 
+  describe('#clone', function() {
+
+    it('correctly clones features', function() {
+      var feature = new ol.Feature();
+      feature.setValues({'fookey': 'fooval'});
+      feature.setId(1);
+      feature.setGeometryName('geom');
+      var geometry = new ol.geom.Point([1, 2]);
+      feature.setGeometry(geometry);
+      var style = new ol.style.Style({});
+      feature.setStyle(style);
+      feature.set('barkey', 'barval');
+
+      var clone = feature.clone();
+      expect(clone.get('fookey')).to.be('fooval');
+      expect(clone.getId()).to.be(undefined);
+      expect(clone.getGeometryName()).to.be('geom');
+      var geometryClone = clone.getGeometry();
+      expect(geometryClone).not.to.be(geometry);
+      var coordinates = geometryClone.getFlatCoordinates();
+      expect(coordinates[0]).to.be(1);
+      expect(coordinates[1]).to.be(2);
+      expect(clone.getStyle()).to.be(style);
+      expect(clone.get('barkey')).to.be('barval');
+    });
+
+    it('correctly clones features with no geometry and no style', function() {
+      var feature = new ol.Feature();
+      feature.set('fookey', 'fooval');
+
+      var clone = feature.clone();
+      expect(clone.get('fookey')).to.be('fooval');
+      expect(clone.getGeometry()).to.be(undefined);
+      expect(clone.getStyle()).to.be(null);
+    });
+  });
+
 
 });
 
