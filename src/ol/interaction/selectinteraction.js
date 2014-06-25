@@ -150,14 +150,16 @@ ol.interaction.Select.prototype.handleMapBrowserEvent =
     }
   } else {
     // Modify the currently selected feature(s).
-    map.forEachFeatureAtPixel(mapBrowserEvent.pixel,
+    goog.asserts.assert(!goog.isNull(mapBrowserEvent.frameState));
+    map.getRenderer().forEachFeatureAtPixel(mapBrowserEvent.coordinate,
+        mapBrowserEvent.frameState,
         /**
          * @param {ol.Feature} feature Feature.
          * @param {ol.layer.Layer} layer Layer.
          */
         function(feature, layer) {
           var index = goog.array.indexOf(features.getArray(), feature);
-          if (index == -1) {
+          if (index == -1 && !map.isSkippedFeature(feature)) {
             if (add || toggle) {
               features.push(feature);
             }
@@ -166,7 +168,7 @@ ol.interaction.Select.prototype.handleMapBrowserEvent =
               features.removeAt(index);
             }
           }
-        }, undefined, this.layerFilter_);
+        }, this, this.layerFilter_, this, {});
   }
   return false;
 };
