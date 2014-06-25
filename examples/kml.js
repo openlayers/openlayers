@@ -76,7 +76,7 @@ if ('download' in exportKMLElement) {
       var node = new ol.format.KML().writeFeatures(features);
       var string = new XMLSerializer().serializeToString(
           /** @type {Node} */ (node));
-      var base64 = window.btoa(string);
+      var base64 = exampleNS.strToBase64(string);
       exportKMLElement.href =
           'data:application/vnd.google-earth.kml+xml;base64,' + base64;
     }
