@@ -9,8 +9,8 @@
 [ol.View2D](ol.View2D.html) with center, projection, resolution and rotation</td>
 <td><p>Layers are lightweight containers that get their data from [sources](ol.source.html).</p>
 [ol.layer.Tile](ol.layer.Tile.html)<br>
-[ol.layer.Image](ol.layer.Image)<br>
-[ol.layer.Vector](ol.layer.Vector)</td>
+[ol.layer.Image](ol.layer.Image.html)<br>
+[ol.layer.Vector](ol.layer.Vector.html)</td>
 </tr><tr>
 <th>Controls</th><th>Interactions</th><th>Sources and formats</th>
 </tr><tr>
@@ -25,8 +25,8 @@ Interactions for [vector features](ol.Feature.html)
 <li>[ol.interaction.Modify](ol.interaction.Modify.html)</li></ul>
 [All interactions](ol.interaction.html)</td>
 <td>[Tile sources](ol.source.Tile.html) for [ol.layer.Tile](ol.layer.Tile.html)
-<br>[Image sources](ol.source.Image.html) for [ol.layer.Image](ol.layer.Image)
-<br>[Vector sources](ol.source.Vector.html) for [ol.layer.Vector](ol.layer.Vector)
+<br>[Image sources](ol.source.Image.html) for [ol.layer.Image](ol.layer.Image.html)
+<br>[Vector sources](ol.source.Vector.html) for [ol.layer.Vector](ol.layer.Vector.html)
 <br>[Formats](ol.format.Feature.html) for reading/writing vector data
 <br>[ol.format.WMSCapabilities](ol.format.WMSCapabilities.html)</td></tr>
 <tr><th>Projections</th><th>2-way bindings</th><th>Other components</th></tr>
