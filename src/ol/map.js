@@ -560,7 +560,7 @@ ol.Map.prototype.forEachFeatureAtPixel =
   var thisArg2 = goog.isDef(opt_this2) ? opt_this2 : null;
   return this.renderer_.forEachFeatureAtPixel(
       coordinate, this.frameState_, callback, thisArg,
-      layerFilter, thisArg2);
+      layerFilter, thisArg2, this.skippedFeatureUids_);
 };
 
 
@@ -1062,6 +1062,15 @@ ol.Map.prototype.isDef = function() {
  */
 ol.Map.prototype.isRendered = function() {
   return !goog.isNull(this.frameState_);
+};
+
+
+/**
+ * @param {ol.Feature} feature Feature.
+ * @return {boolean} Whether the feature is skipped for rendering.
+ */
+ol.Map.prototype.isSkippedFeature = function(feature) {
+  return goog.getUid(feature).toString() in this.skippedFeatureUids_;
 };
 
 
