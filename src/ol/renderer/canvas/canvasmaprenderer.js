@@ -119,11 +119,11 @@ ol.renderer.canvas.Map.prototype.dispatchComposeEvent_ =
         replayGroup, frameState, context, null);
     map.dispatchEvent(composeEvent);
     replayGroup.finish();
-    vectorContext.flush();
     if (!replayGroup.isEmpty()) {
       replayGroup.replay(context, extent, pixelRatio, this.transform_,
           rotation, {});
     }
+    vectorContext.flush();
     this.replayGroup = replayGroup;
   }
 };
