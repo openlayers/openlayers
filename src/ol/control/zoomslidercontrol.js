@@ -158,11 +158,11 @@ ol.control.ZoomSlider.prototype.handleMapPostrender = function(mapEvent) {
     return;
   }
   goog.asserts.assert(
-      goog.isDefAndNotNull(mapEvent.frameState.view2DState));
+      goog.isDefAndNotNull(mapEvent.frameState.viewState));
   if (!this.sliderInitialized_) {
     this.initSlider_();
   }
-  var res = mapEvent.frameState.view2DState.resolution;
+  var res = mapEvent.frameState.viewState.resolution;
   if (res !== this.currentResolution_) {
     this.currentResolution_ = res;
     this.positionThumbForResolution_(res);

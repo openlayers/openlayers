@@ -75,11 +75,11 @@ ol.interaction.DragPan.prototype.handlePointerDrag = function(mapBrowserEvent) {
     var deltaY = centroid[1] - this.lastCentroid[1];
     var map = mapBrowserEvent.map;
     var view2D = map.getView();
-    var view2DState = view2D.getState();
+    var viewState = view2D.getState();
     var center = [deltaX, deltaY];
-    ol.coordinate.scale(center, view2DState.resolution);
-    ol.coordinate.rotate(center, view2DState.rotation);
-    ol.coordinate.add(center, view2DState.center);
+    ol.coordinate.scale(center, viewState.resolution);
+    ol.coordinate.rotate(center, viewState.rotation);
+    ol.coordinate.add(center, viewState.center);
     center = view2D.constrainCenter(center);
     map.render();
     view2D.setCenter(center);
@@ -136,7 +136,7 @@ ol.interaction.DragPan.prototype.handlePointerDown =
     map.render();
     if (!goog.isNull(this.kineticPreRenderFn_) &&
         map.removePreRenderFunction(this.kineticPreRenderFn_)) {
-      view2D.setCenter(mapBrowserEvent.frameState.view2DState.center);
+      view2D.setCenter(mapBrowserEvent.frameState.viewState.center);
       this.kineticPreRenderFn_ = null;
     }
     if (this.kinetic_) {

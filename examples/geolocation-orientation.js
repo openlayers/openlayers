@@ -134,7 +134,7 @@ map.beforeRender(function(map, frameState) {
     previousM = m;
     // interpolate position along positions LineString
     var c = positions.getCoordinateAtM(m, true);
-    var view = frameState.view2DState;
+    var view = frameState.viewState;
     if (c) {
       view.center = getCenterWithHeading(c, -c[2], view.resolution);
       view.rotation = -c[2];

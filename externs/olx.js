@@ -5089,7 +5089,7 @@ olx.View2D.fitGeometryOptions.prototype.minResolution;
  *     tileQueue: ol.TileQueue,
  *     time: number,
  *     usedTiles: Object.<string, Object.<string, ol.TileRange>>,
- *     view2DState: olx.View2DState,
+ *     viewState: olx.ViewState,
  *     viewHints: Array.<number>,
  *     wantedTiles: Object.<string, Object.<string, boolean>>}}
  * @todo api
@@ -5105,8 +5105,8 @@ olx.FrameState.prototype.pixelRatio;
 olx.FrameState.prototype.time;
 
 
-/** @type {olx.View2DState} */
-olx.FrameState.prototype.view2DState;
+/** @type {olx.ViewState} */
+olx.FrameState.prototype.viewState;
 
 
 /**
@@ -5116,16 +5116,16 @@ olx.FrameState.prototype.view2DState;
  *     rotation: number}}
  * @todo api
  */
-olx.View2DState;
+olx.ViewState;
 
 
 /** @type {ol.Coordinate} */
-olx.View2DState.prototype.center;
+olx.ViewState.prototype.center;
 
 
 /** @type {number} */
-olx.View2DState.prototype.resolution;
+olx.ViewState.prototype.resolution;
 
 
 /** @type {number} */
-olx.View2DState.prototype.rotation;
+olx.ViewState.prototype.rotation;

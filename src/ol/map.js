@@ -1164,7 +1164,7 @@ ol.Map.prototype.removeOverlay = function(overlay) {
  */
 ol.Map.prototype.renderFrame_ = function(time) {
 
-  var i, ii, view2DState;
+  var i, ii, viewState;
 
   /**
    * Check whether a size has non-zero width and height.  Note that this
@@ -1192,13 +1192,13 @@ ol.Map.prototype.renderFrame_ = function(time) {
     for (i = 0, ii = layerStatesArray.length; i < ii; ++i) {
       layerStates[goog.getUid(layerStatesArray[i].layer)] = layerStatesArray[i];
     }
-    view2DState = view.getState();
+    viewState = view.getState();
     frameState = /** @type {olx.FrameState} */ ({
       animate: false,
       attributions: {},
       coordinateToPixelMatrix: this.coordinateToPixelMatrix_,
       extent: null,
-      focus: goog.isNull(this.focus_) ? view2DState.center : this.focus_,
+      focus: goog.isNull(this.focus_) ? viewState.center : this.focus_,
       index: this.frameIndex_++,
       layerStates: layerStates,
       layerStatesArray: layerStatesArray,
@@ -1211,7 +1211,7 @@ ol.Map.prototype.renderFrame_ = function(time) {
       tileQueue: this.tileQueue_,
       time: time,
       usedTiles: {},
-      view2DState: view2DState,
+      viewState: viewState,
       viewHints: viewHints,
       wantedTiles: {}
     });
@@ -1231,8 +1231,8 @@ ol.Map.prototype.renderFrame_ = function(time) {
   preRenderFunctions.length = n;
 
   if (!goog.isNull(frameState)) {
-    frameState.extent = ol.extent.getForView2DAndSize(view2DState.center,
-        view2DState.resolution, view2DState.rotation, frameState.size);
+    frameState.extent = ol.extent.getForView2DAndSize(viewState.center,
+        viewState.resolution, viewState.rotation, frameState.size);
   }
 
   this.frameState_ = frameState;

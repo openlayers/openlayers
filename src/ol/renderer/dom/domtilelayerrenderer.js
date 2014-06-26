@@ -90,8 +90,8 @@ ol.renderer.dom.TileLayer.prototype.prepareFrame =
   }
 
   var pixelRatio = frameState.pixelRatio;
-  var view2DState = frameState.view2DState;
-  var projection = view2DState.projection;
+  var viewState = frameState.viewState;
+  var projection = viewState.projection;
 
   var tileLayer = this.getLayer();
   goog.asserts.assertInstanceof(tileLayer, ol.layer.Tile);
@@ -99,14 +99,14 @@ ol.renderer.dom.TileLayer.prototype.prepareFrame =
   goog.asserts.assertInstanceof(tileSource, ol.source.Tile);
   var tileGrid = tileSource.getTileGridForProjection(projection);
   var tileGutter = tileSource.getGutter();
-  var z = tileGrid.getZForResolution(view2DState.resolution);
+  var z = tileGrid.getZForResolution(viewState.resolution);
   var tileResolution = tileGrid.getResolution(z);
-  var center = view2DState.center;
+  var center = viewState.center;
   var extent;
-  if (tileResolution == view2DState.resolution) {
+  if (tileResolution == viewState.resolution) {
     center = this.snapCenterToPixel(center, tileResolution, frameState.size);
     extent = ol.extent.getForView2DAndSize(
-        center, tileResolution, view2DState.rotation, frameState.size);
+        center, tileResolution, viewState.rotation, frameState.size);
   } else {
     extent = frameState.extent;
   }
@@ -217,9 +217,9 @@ ol.renderer.dom.TileLayer.prototype.prepareFrame =
     origin = tileLayerZ.getOrigin();
     ol.vec.Mat4.makeTransform2D(transform,
         frameState.size[0] / 2, frameState.size[1] / 2,
-        resolution / view2DState.resolution,
-        resolution / view2DState.resolution,
-        view2DState.rotation,
+        resolution / viewState.resolution,
+        resolution / viewState.resolution,
+        viewState.rotation,
         (origin[0] - center[0]) / resolution,
         (center[1] - origin[1]) / resolution);
     tileLayerZ.setTransform(transform);

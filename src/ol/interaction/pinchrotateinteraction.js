@@ -102,10 +102,10 @@ ol.interaction.PinchRotate.prototype.handlePointerDrag =
   // rotate
   if (this.rotating_) {
     var view = map.getView();
-    var view2DState = view.getState();
+    var viewState = view.getState();
     map.render();
     ol.interaction.Interaction.rotateWithoutConstraints(map, view,
-        view2DState.rotation + rotationDelta, this.anchor_);
+        viewState.rotation + rotationDelta, this.anchor_);
   }
 };
 
@@ -120,9 +120,9 @@ ol.interaction.PinchRotate.prototype.handlePointerUp =
     var view = map.getView();
     view.setHint(ol.ViewHint.INTERACTING, -1);
     if (this.rotating_) {
-      var view2DState = view.getState();
+      var viewState = view.getState();
       ol.interaction.Interaction.rotate(
-          map, view, view2DState.rotation, this.anchor_,
+          map, view, viewState.rotation, this.anchor_,
           ol.ROTATE_ANIMATION_DURATION);
     }
     return false;

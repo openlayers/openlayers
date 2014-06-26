@@ -145,7 +145,7 @@ ol.control.Rotate.prototype.handleMapPostrender = function(mapEvent) {
   if (goog.isNull(frameState)) {
     return;
   }
-  var rotation = frameState.view2DState.rotation;
+  var rotation = frameState.viewState.rotation;
   var transform = 'rotate(' + rotation * 360 / (Math.PI * 2) + 'deg)';
   if (this.autoHide_) {
     this.element.style.opacity = (rotation === 0) ? 0 : 1;

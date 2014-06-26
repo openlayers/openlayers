@@ -101,16 +101,16 @@ ol.renderer.canvas.Map.prototype.dispatchComposeEvent_ =
   if (map.hasListener(type)) {
     var extent = frameState.extent;
     var pixelRatio = frameState.pixelRatio;
-    var view2DState = frameState.view2DState;
-    var resolution = view2DState.resolution;
-    var rotation = view2DState.rotation;
+    var viewState = frameState.viewState;
+    var resolution = viewState.resolution;
+    var rotation = viewState.rotation;
     ol.vec.Mat4.makeTransform2D(this.transform_,
         this.canvas_.width / 2,
         this.canvas_.height / 2,
-        pixelRatio / view2DState.resolution,
-        -pixelRatio / view2DState.resolution,
-        -view2DState.rotation,
-        -view2DState.center[0], -view2DState.center[1]);
+        pixelRatio / viewState.resolution,
+        -pixelRatio / viewState.resolution,
+        -viewState.rotation,
+        -viewState.center[0], -viewState.center[1]);
     var vectorContext = new ol.render.canvas.Immediate(context, pixelRatio,
         extent, this.transform_, rotation);
     var replayGroup = new ol.render.canvas.ReplayGroup(
@@ -177,7 +177,7 @@ ol.renderer.canvas.Map.prototype.renderFrame = function(frameState) {
   this.dispatchComposeEvent_(ol.render.EventType.PRECOMPOSE, frameState);
 
   var layerStatesArray = frameState.layerStatesArray;
-  var viewResolution = frameState.view2DState.resolution;
+  var viewResolution = frameState.viewState.resolution;
   var i, ii, layer, layerRenderer, layerState;
   for (i = 0, ii = layerStatesArray.length; i < ii; ++i) {
     layerState = layerStatesArray[i];

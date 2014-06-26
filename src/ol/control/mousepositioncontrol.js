@@ -109,8 +109,8 @@ ol.control.MousePosition.prototype.handleMapPostrender = function(mapEvent) {
   if (goog.isNull(frameState)) {
     this.mapProjection_ = null;
   } else {
-    if (this.mapProjection_ != frameState.view2DState.projection) {
-      this.mapProjection_ = frameState.view2DState.projection;
+    if (this.mapProjection_ != frameState.viewState.projection) {
+      this.mapProjection_ = frameState.viewState.projection;
       this.transform_ = null;
     }
   }

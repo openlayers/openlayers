@@ -29,9 +29,9 @@ ol.animation.bounce = function(options) {
           return true;
         } else if (frameState.time < start + duration) {
           var delta = easing((frameState.time - start) / duration);
-          var deltaResolution = resolution - frameState.view2DState.resolution;
+          var deltaResolution = resolution - frameState.viewState.resolution;
           frameState.animate = true;
-          frameState.view2DState.resolution += delta * deltaResolution;
+          frameState.viewState.resolution += delta * deltaResolution;
           frameState.viewHints[ol.ViewHint.ANIMATING] += 1;
           return true;
         } else {
@@ -66,11 +66,11 @@ ol.animation.pan = function(options) {
           return true;
         } else if (frameState.time < start + duration) {
           var delta = 1 - easing((frameState.time - start) / duration);
-          var deltaX = sourceX - frameState.view2DState.center[0];
-          var deltaY = sourceY - frameState.view2DState.center[1];
+          var deltaX = sourceX - frameState.viewState.center[0];
+          var deltaY = sourceY - frameState.viewState.center[1];
           frameState.animate = true;
-          frameState.view2DState.center[0] += delta * deltaX;
-          frameState.view2DState.center[1] += delta * deltaY;
+          frameState.viewState.center[0] += delta * deltaX;
+          frameState.viewState.center[1] += delta * deltaY;
           frameState.viewHints[ol.ViewHint.ANIMATING] += 1;
           return true;
         } else {
@@ -107,11 +107,11 @@ ol.animation.rotate = function(options) {
         } else if (frameState.time < start + duration) {
           var delta = 1 - easing((frameState.time - start) / duration);
           var deltaRotation =
-              (sourceRotation - frameState.view2DState.rotation) * delta;
+              (sourceRotation - frameState.viewState.rotation) * delta;
           frameState.animate = true;
-          frameState.view2DState.rotation += deltaRotation;
+          frameState.viewState.rotation += deltaRotation;
           if (!goog.isNull(anchor)) {
-            var center = frameState.view2DState.center;
+            var center = frameState.viewState.center;
             ol.coordinate.sub(center, anchor);
             ol.coordinate.rotate(center, deltaRotation);
             ol.coordinate.add(center, anchor);
@@ -149,9 +149,9 @@ ol.animation.zoom = function(options) {
         } else if (frameState.time < start + duration) {
           var delta = 1 - easing((frameState.time - start) / duration);
           var deltaResolution =
-              sourceResolution - frameState.view2DState.resolution;
+              sourceResolution - frameState.viewState.resolution;
           frameState.animate = true;
-          frameState.view2DState.resolution += delta * deltaResolution;
+          frameState.viewState.resolution += delta * deltaResolution;
           frameState.viewHints[ol.ViewHint.ANIMATING] += 1;
           return true;
         } else {
