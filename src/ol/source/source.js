@@ -4,7 +4,7 @@ goog.provide('ol.source.State');
 goog.require('goog.events.EventType');
 goog.require('ol.Attribution');
 goog.require('ol.Extent');
-goog.require('ol.Observable');
+goog.require('ol.Object');
 goog.require('ol.proj');
 
 
@@ -18,6 +18,14 @@ ol.source.State = {
   LOADING: 0,
   READY: 1,
   ERROR: 2
+};
+
+
+/**
+ * @enum {string}
+ */
+ol.source.SourceProperty = {
+  STATE: 'state'
 };
 
 
@@ -39,7 +47,7 @@ ol.source.SourceOptions;
  * Base class for {@link ol.layer.Layer} sources.
  *
  * @constructor
- * @extends {ol.Observable}
+ * @extends {ol.Object}
  * @fires change Triggered when the state of the source changes.
  * @param {ol.source.SourceOptions} options Source options.
  */
@@ -74,15 +82,10 @@ ol.source.Source = function(options) {
    */
   this.logo_ = options.logo;
 
-  /**
-   * @private
-   * @type {ol.source.State}
-   */
-  this.state_ = goog.isDef(options.state) ?
-      /** @type {ol.source.State} */ (options.state) : ol.source.State.READY;
-
+  this.setState(goog.isDef(options.state) ?
+      /** @type {ol.source.State} */ (options.state) : ol.source.State.READY);
 };
-goog.inherits(ol.source.Source, ol.Observable);
+goog.inherits(ol.source.Source, ol.Object);
 
 
 /**
@@ -139,11 +142,17 @@ ol.source.Source.prototype.getResolutions = goog.abstractMethod;
 
 /**
  * @return {ol.source.State} State.
+ * @todo observable
  * @todo api
  */
 ol.source.Source.prototype.getState = function() {
-  return this.state_;
+  return /** @type {ol.source.State} */ (
+      this.get(ol.source.SourceProperty.STATE));
 };
+goog.exportProperty(
+    ol.source.Source.prototype,
+    'getState',
+    ol.source.Source.prototype.getState);
 
 
 /**
@@ -175,9 +184,12 @@ ol.source.Source.prototype.setLogo = function(logo) {
  * @protected
  */
 ol.source.Source.prototype.setState = function(state) {
-  this.state_ = state;
-  this.dispatchChangeEvent();
+  this.set(ol.source.SourceProperty.STATE, state);
 };
+goog.exportProperty(
+    ol.source.Source.prototype,
+    'setState',
+    ol.source.Source.prototype.setState);
 
 
 /**
