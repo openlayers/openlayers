@@ -165,13 +165,11 @@ ol.format.KML.NAMESPACE_URIS_ = [
 
 /**
  * @const
- * @type {Array.<string>}
+ * @type {string}
  * @private
  */
-ol.format.KML.XSD_URIS_ = [
-  'http://www.opengis.net/kml/2.2',
-  'https://developers.google.com/kml/schema/kml22gx.xsd'
-];
+ol.format.KML.SCHEMA_LOCATION_ = 'http://www.opengis.net/kml/2.2 ' +
+    'https://developers.google.com/kml/schema/kml22gx.xsd';
 
 
 /**
@@ -2534,7 +2532,7 @@ ol.format.KML.prototype.writeFeaturesNode = function(features) {
       ol.format.KML.GX_NAMESPACE_URIS_[0]);
   ol.xml.setAttributeNS(kml, xmlnsUri, 'xmlns:xsi', xmlSchemaInstanceUri);
   ol.xml.setAttributeNS(kml, xmlSchemaInstanceUri, 'xsi:schemaLocation',
-      ol.format.KML.XSD_URIS_.join(' '));
+      ol.format.KML.SCHEMA_LOCATION_);
 
   var /** @type {ol.xml.NodeStackItem} */ context = {node: kml};
   var properties = {};
