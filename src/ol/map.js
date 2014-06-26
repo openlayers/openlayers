@@ -45,7 +45,6 @@ goog.require('ol.RendererType');
 goog.require('ol.Size');
 goog.require('ol.Tile');
 goog.require('ol.TileQueue');
-goog.require('ol.View');
 goog.require('ol.View2D');
 goog.require('ol.ViewHint');
 goog.require('ol.control');

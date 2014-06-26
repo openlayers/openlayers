@@ -1,15 +1,17 @@
 goog.provide('ol.View2D');
 goog.provide('ol.View2DProperty');
+goog.provide('ol.ViewHint');
 
+goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('ol');
 goog.require('ol.CenterConstraint');
 goog.require('ol.Constraints');
+goog.require('ol.Object');
 goog.require('ol.ResolutionConstraint');
 goog.require('ol.RotationConstraint');
 goog.require('ol.RotationConstraintType');
 goog.require('ol.Size');
-goog.require('ol.View');
 goog.require('ol.coordinate');
 goog.require('ol.extent');
 goog.require('ol.proj');
@@ -26,6 +28,15 @@ ol.View2DProperty = {
   PROJECTION: 'projection',
   RESOLUTION: 'resolution',
   ROTATION: 'rotation'
+};
+
+
+/**
+ * @enum {number}
+ */
+ol.ViewHint = {
+  ANIMATING: 0,
+  INTERACTING: 1
 };
 
 
@@ -77,13 +88,19 @@ ol.View2DProperty = {
  * rotation value to zero when approaching the horizontal.
  *
  * @constructor
- * @extends {ol.View}
+ * @extends {ol.Object}
  * @param {olx.View2DOptions=} opt_options View2D options.
  * @todo api
  */
 ol.View2D = function(opt_options) {
   goog.base(this);
   var options = goog.isDef(opt_options) ? opt_options : {};
+
+  /**
+   * @private
+   * @type {Array.<number>}
+   */
+  this.hints_ = [0, 0];
 
   /**
    * @type {Object.<string, *>}
@@ -136,7 +153,7 @@ ol.View2D = function(opt_options) {
       goog.isDef(options.rotation) ? options.rotation : 0;
   this.setValues(values);
 };
-goog.inherits(ol.View2D, ol.View);
+goog.inherits(ol.View2D, ol.Object);
 
 
 /**
@@ -229,6 +246,14 @@ goog.exportProperty(
     ol.View2D.prototype,
     'getCenter',
     ol.View2D.prototype.getCenter);
+
+
+/**
+ * @return {Array.<number>} Hint.
+ */
+ol.View2D.prototype.getHints = function() {
+  return goog.array.clone(this.hints_);
+};
 
 
 /**
@@ -360,7 +385,7 @@ ol.View2D.prototype.getValueForResolutionFunction = function(opt_power) {
 
 
 /**
- * @inheritDoc
+ * @return {ol.View2D} View2D.
  * @todo api
  */
 ol.View2D.prototype.getView2D = function() {
@@ -564,6 +589,19 @@ goog.exportProperty(
     ol.View2D.prototype,
     'setCenter',
     ol.View2D.prototype.setCenter);
+
+
+/**
+ * @param {ol.ViewHint} hint Hint.
+ * @param {number} delta Delta.
+ * @return {number} New value.
+ */
+ol.View2D.prototype.setHint = function(hint, delta) {
+  goog.asserts.assert(0 <= hint && hint < this.hints_.length);
+  this.hints_[hint] += delta;
+  goog.asserts.assert(this.hints_[hint] >= 0);
+  return this.hints_[hint];
+};
 
 
 /**
