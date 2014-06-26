@@ -63,7 +63,7 @@ ol.interaction.DragRotate.prototype.handlePointerDrag =
   if (goog.isDef(this.lastAngle_)) {
     var delta = theta - this.lastAngle_;
     var view = map.getView();
-    var view2DState = view.getView2DState();
+    var view2DState = view.getState();
     map.render();
     ol.interaction.Interaction.rotateWithoutConstraints(
         map, view, view2DState.rotation - delta);
@@ -84,7 +84,7 @@ ol.interaction.DragRotate.prototype.handlePointerUp =
   var map = mapBrowserEvent.map;
   var view = map.getView();
   view.setHint(ol.ViewHint.INTERACTING, -1);
-  var view2DState = view.getView2DState();
+  var view2DState = view.getState();
   ol.interaction.Interaction.rotate(map, view, view2DState.rotation,
       undefined, ol.DRAGROTATE_ANIMATION_DURATION);
   return false;

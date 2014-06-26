@@ -1192,7 +1192,7 @@ ol.Map.prototype.renderFrame_ = function(time) {
     for (i = 0, ii = layerStatesArray.length; i < ii; ++i) {
       layerStates[goog.getUid(layerStatesArray[i].layer)] = layerStatesArray[i];
     }
-    view2DState = view.getView2DState();
+    view2DState = view.getState();
     frameState = /** @type {olx.FrameState} */ ({
       animate: false,
       attributions: {},

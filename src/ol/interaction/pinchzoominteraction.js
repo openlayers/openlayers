@@ -79,7 +79,7 @@ ol.interaction.PinchZoom.prototype.handlePointerDrag =
 
   var map = mapBrowserEvent.map;
   var view = map.getView();
-  var view2DState = view.getView2DState();
+  var view2DState = view.getState();
 
   // scale anchor point.
   var viewportPosition = goog.style.getClientPosition(map.getViewport());
@@ -106,7 +106,7 @@ ol.interaction.PinchZoom.prototype.handlePointerUp =
     var map = mapBrowserEvent.map;
     var view = map.getView();
     view.setHint(ol.ViewHint.INTERACTING, -1);
-    var view2DState = view.getView2DState();
+    var view2DState = view.getState();
     // Zoom to final resolution, with an animation, and provide a
     // direction not to zoom out/in if user was pinching in/out.
     // Direction is > 0 if pinching out, and < 0 if pinching in.

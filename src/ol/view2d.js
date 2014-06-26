@@ -387,7 +387,7 @@ ol.View2D.prototype.getValueForResolutionFunction = function(opt_power) {
 /**
  * @return {olx.View2DState} View2D state.
  */
-ol.View2D.prototype.getView2DState = function() {
+ol.View2D.prototype.getState = function() {
   goog.asserts.assert(this.isDef());
   var center = /** @type {ol.Coordinate} */ (this.getCenter());
   var projection = this.getProjection();

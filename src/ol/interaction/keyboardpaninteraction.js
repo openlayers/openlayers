@@ -71,7 +71,7 @@ ol.interaction.KeyboardPan.prototype.handleMapBrowserEvent =
       var map = mapBrowserEvent.map;
       var view = map.getView();
       goog.asserts.assert(goog.isDef(view));
-      var view2DState = view.getView2DState();
+      var view2DState = view.getState();
       var mapUnitsDelta = view2DState.resolution * this.pixelDelta_;
       var deltaX = 0, deltaY = 0;
       if (keyCode == goog.events.KeyCodes.DOWN) {

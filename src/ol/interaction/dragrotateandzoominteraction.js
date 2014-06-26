@@ -81,7 +81,7 @@ ol.interaction.DragRotateAndZoom.prototype.handlePointerDrag =
   var theta = Math.atan2(delta.y, delta.x);
   var magnitude = delta.magnitude();
   var view = map.getView();
-  var view2DState = view.getView2DState();
+  var view2DState = view.getState();
   map.render();
   if (goog.isDef(this.lastAngle_)) {
     var angleDelta = theta - this.lastAngle_;
@@ -112,7 +112,7 @@ ol.interaction.DragRotateAndZoom.prototype.handlePointerUp =
   var map = mapBrowserEvent.map;
   var view = map.getView();
   view.setHint(ol.ViewHint.INTERACTING, -1);
-  var view2DState = view.getView2DState();
+  var view2DState = view.getState();
   var direction = this.lastScaleDelta_ - 1;
   ol.interaction.Interaction.rotate(map, view, view2DState.rotation);
   ol.interaction.Interaction.zoom(map, view, view2DState.resolution,

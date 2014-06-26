@@ -75,7 +75,7 @@ ol.interaction.DragPan.prototype.handlePointerDrag = function(mapBrowserEvent) {
     var deltaY = centroid[1] - this.lastCentroid[1];
     var map = mapBrowserEvent.map;
     var view2D = map.getView();
-    var view2DState = view2D.getView2DState();
+    var view2DState = view2D.getState();
     var center = [deltaX, deltaY];
     ol.coordinate.scale(center, view2DState.resolution);
     ol.coordinate.rotate(center, view2DState.rotation);
