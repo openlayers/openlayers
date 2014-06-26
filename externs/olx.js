@@ -535,7 +535,8 @@ olx.animation.BounceOptions.prototype.duration;
 
 
 /**
- * The easing function to use. Default is `ol.easing.upAndDown`
+ * The easing function to use. Can be an {@link ol.easing} or a custom function.
+ * Default is {@link ol.easing.upAndDown}.
  * @type {function(number):number|undefined}
  */
 olx.animation.BounceOptions.prototype.easing;
@@ -573,7 +574,8 @@ olx.animation.PanOptions.prototype.duration;
 
 
 /**
- * The easing function to use. Default is `ol.easing.inAndOut`
+ * The easing function to use. Can be an {@link ol.easing} or a custom function.
+ * Default is {@link ol.easing.inAndOut}.
  * @type {function(number):number|undefined}
  */
 olx.animation.PanOptions.prototype.easing;
@@ -621,7 +623,8 @@ olx.animation.RotateOptions.prototype.duration;
 
 
 /**
- * The easing function to use. Default is `ol.easing.inAndOut`
+ * The easing function to use. Can be an {@link ol.easing} or a custom function.
+ * Default is {@link ol.easing.inAndOut}.
  * @type {function(number):number|undefined}
  */
 olx.animation.RotateOptions.prototype.easing;
@@ -660,7 +663,8 @@ olx.animation.ZoomOptions.prototype.duration;
 
 
 /**
- * Easing function.
+ * The easing function to use. Can be an {@link ol.easing} or a custom function.
+ * Default is {@link ol.easing.inAndOut}.
  * @type {function(number):number|undefined}
  */
 olx.animation.ZoomOptions.prototype.easing;
