@@ -1,5 +1,4 @@
 goog.provide('ol.View');
-goog.provide('ol.View2DProperty');
 goog.provide('ol.ViewHint');
 
 goog.require('goog.array');
@@ -23,7 +22,7 @@ goog.require('ol.proj.Units');
 /**
  * @enum {string}
  */
-ol.View2DProperty = {
+ol.ViewProperty = {
   CENTER: 'center',
   PROJECTION: 'projection',
   RESOLUTION: 'resolution',
@@ -106,9 +105,9 @@ ol.View = function(opt_options) {
    * @type {Object.<string, *>}
    */
   var values = {};
-  values[ol.View2DProperty.CENTER] = goog.isDef(options.center) ?
+  values[ol.ViewProperty.CENTER] = goog.isDef(options.center) ?
       options.center : null;
-  values[ol.View2DProperty.PROJECTION] = ol.proj.createProjection(
+  values[ol.ViewProperty.PROJECTION] = ol.proj.createProjection(
       options.projection, 'EPSG:3857');
 
   var resolutionConstraintInfo = ol.View.createResolutionConstraint_(
@@ -144,12 +143,12 @@ ol.View = function(opt_options) {
       centerConstraint, resolutionConstraint, rotationConstraint);
 
   if (goog.isDef(options.resolution)) {
-    values[ol.View2DProperty.RESOLUTION] = options.resolution;
+    values[ol.ViewProperty.RESOLUTION] = options.resolution;
   } else if (goog.isDef(options.zoom)) {
-    values[ol.View2DProperty.RESOLUTION] = this.constrainResolution(
+    values[ol.ViewProperty.RESOLUTION] = this.constrainResolution(
         this.maxResolution_, options.zoom - this.minZoom_);
   }
-  values[ol.View2DProperty.ROTATION] =
+  values[ol.ViewProperty.ROTATION] =
       goog.isDef(options.rotation) ? options.rotation : 0;
   this.setValues(values);
 };
@@ -240,7 +239,7 @@ ol.View.prototype.constrainRotation = function(rotation, opt_delta) {
  */
 ol.View.prototype.getCenter = function() {
   return /** @type {ol.Coordinate|undefined} */ (
-      this.get(ol.View2DProperty.CENTER));
+      this.get(ol.ViewProperty.CENTER));
 };
 goog.exportProperty(
     ol.View.prototype,
@@ -282,7 +281,7 @@ ol.View.prototype.calculateExtent = function(size) {
  */
 ol.View.prototype.getProjection = function() {
   return /** @type {ol.proj.Projection|undefined} */ (
-      this.get(ol.View2DProperty.PROJECTION));
+      this.get(ol.ViewProperty.PROJECTION));
 };
 goog.exportProperty(
     ol.View.prototype,
@@ -297,7 +296,7 @@ goog.exportProperty(
  */
 ol.View.prototype.getResolution = function() {
   return /** @type {number|undefined} */ (
-      this.get(ol.View2DProperty.RESOLUTION));
+      this.get(ol.ViewProperty.RESOLUTION));
 };
 goog.exportProperty(
     ol.View.prototype,
@@ -351,7 +350,7 @@ ol.View.prototype.getResolutionForValueFunction = function(opt_power) {
  * @todo api
  */
 ol.View.prototype.getRotation = function() {
-  return /** @type {number|undefined} */ (this.get(ol.View2DProperty.ROTATION));
+  return /** @type {number|undefined} */ (this.get(ol.ViewProperty.ROTATION));
 };
 goog.exportProperty(
     ol.View.prototype,
@@ -574,7 +573,7 @@ ol.View.prototype.rotate = function(rotation, opt_anchor) {
  * @todo api
  */
 ol.View.prototype.setCenter = function(center) {
-  this.set(ol.View2DProperty.CENTER, center);
+  this.set(ol.ViewProperty.CENTER, center);
 };
 goog.exportProperty(
     ol.View.prototype,
@@ -603,7 +602,7 @@ ol.View.prototype.setHint = function(hint, delta) {
  * @todo api
  */
 ol.View.prototype.setProjection = function(projection) {
-  this.set(ol.View2DProperty.PROJECTION, projection);
+  this.set(ol.ViewProperty.PROJECTION, projection);
 };
 goog.exportProperty(
     ol.View.prototype,
@@ -618,7 +617,7 @@ goog.exportProperty(
  * @todo api
  */
 ol.View.prototype.setResolution = function(resolution) {
-  this.set(ol.View2DProperty.RESOLUTION, resolution);
+  this.set(ol.ViewProperty.RESOLUTION, resolution);
 };
 goog.exportProperty(
     ol.View.prototype,
@@ -633,7 +632,7 @@ goog.exportProperty(
  * @todo api
  */
 ol.View.prototype.setRotation = function(rotation) {
-  this.set(ol.View2DProperty.ROTATION, rotation);
+  this.set(ol.ViewProperty.ROTATION, rotation);
 };
 goog.exportProperty(
     ol.View.prototype,
