@@ -55,7 +55,6 @@ ol.render.Event = function(
 
   /**
    * @type {ol.render.IReplayGroup|undefined}
-   * @todo api
    */
   this.replayGroup = opt_replayGroup;
 
