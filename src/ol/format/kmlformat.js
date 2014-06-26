@@ -2527,12 +2527,13 @@ ol.format.KML.prototype.writeFeatures;
  * @inheritDoc
  */
 ol.format.KML.prototype.writeFeaturesNode = function(features) {
-  var kml = ol.xml.createElementNS('http://www.opengis.net/kml/2.2', 'kml');
+  var kml = ol.xml.createElementNS(ol.format.KML.NAMESPACE_URIS_[4], 'kml');
   var xmlnsUri = 'http://www.w3.org/2000/xmlns/';
   var xmlSchemaInstanceUri = 'http://www.w3.org/2001/XMLSchema-instance';
-  kml.setAttributeNS(xmlnsUri, 'xmlns:gx', ol.format.KML.GX_NAMESPACE_URIS_[0]);
-  kml.setAttributeNS(xmlnsUri, 'xmlns:xsi', xmlSchemaInstanceUri);
-  kml.setAttributeNS(xmlSchemaInstanceUri, 'xsi:schemaLocation',
+  ol.xml.setAttributeNS(kml, xmlnsUri, 'xmlns:gx',
+      ol.format.KML.GX_NAMESPACE_URIS_[0]);
+  ol.xml.setAttributeNS(kml, xmlnsUri, 'xmlns:xsi', xmlSchemaInstanceUri);
+  ol.xml.setAttributeNS(kml, xmlSchemaInstanceUri, 'xsi:schemaLocation',
       ol.format.KML.XSD_URIS_.join(' '));
 
   var /** @type {ol.xml.NodeStackItem} */ context = {node: kml};
