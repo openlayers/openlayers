@@ -1,5 +1,4 @@
 // FIXME should listen on appropriate pane, once it is defined
-// FIXME works for View2D only
 
 goog.provide('ol.control.MousePosition');
 

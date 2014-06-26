@@ -1182,18 +1182,17 @@ ol.Map.prototype.renderFrame_ = function(time) {
 
   var size = this.getSize();
   var view = this.getView();
-  var view2D = goog.isDef(view) ? this.getView().getView2D() : undefined;
   /** @type {?olx.FrameState} */
   var frameState = null;
   if (goog.isDef(size) && hasArea(size) &&
-      goog.isDef(view2D) && view2D.isDef()) {
+      goog.isDef(view) && view.isDef()) {
     var viewHints = view.getHints();
     var layerStatesArray = this.getLayerGroup().getLayerStatesArray();
     var layerStates = {};
     for (i = 0, ii = layerStatesArray.length; i < ii; ++i) {
       layerStates[goog.getUid(layerStatesArray[i].layer)] = layerStatesArray[i];
     }
-    view2DState = view2D.getView2DState();
+    view2DState = view.getView2DState();
     frameState = /** @type {olx.FrameState} */ ({
       animate: false,
       attributions: {},
@@ -1232,7 +1231,6 @@ ol.Map.prototype.renderFrame_ = function(time) {
   preRenderFunctions.length = n;
 
   if (!goog.isNull(frameState)) {
-    // FIXME works for View2D only
     frameState.extent = ol.extent.getForView2DAndSize(view2DState.center,
         view2DState.resolution, view2DState.rotation, frameState.size);
   }

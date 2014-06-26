@@ -62,8 +62,7 @@ ol.interaction.DragRotate.prototype.handlePointerDrag =
       Math.atan2(size[1] / 2 - offset[1], offset[0] - size[0] / 2);
   if (goog.isDef(this.lastAngle_)) {
     var delta = theta - this.lastAngle_;
-    // FIXME works for View2D only
-    var view = map.getView().getView2D();
+    var view = map.getView();
     var view2DState = view.getView2DState();
     map.render();
     ol.interaction.Interaction.rotateWithoutConstraints(
@@ -83,12 +82,10 @@ ol.interaction.DragRotate.prototype.handlePointerUp =
   }
 
   var map = mapBrowserEvent.map;
-  // FIXME works for View2D only
   var view = map.getView();
   view.setHint(ol.ViewHint.INTERACTING, -1);
-  var view2D = view.getView2D();
-  var view2DState = view2D.getView2DState();
-  ol.interaction.Interaction.rotate(map, view2D, view2DState.rotation,
+  var view2DState = view.getView2DState();
+  ol.interaction.Interaction.rotate(map, view, view2DState.rotation,
       undefined, ol.DRAGROTATE_ANIMATION_DURATION);
   return false;
 };

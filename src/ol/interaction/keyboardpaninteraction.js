@@ -1,5 +1,3 @@
-// FIXME works for View2D only
-
 goog.provide('ol.interaction.KeyboardPan');
 
 goog.require('goog.asserts');
@@ -7,7 +5,6 @@ goog.require('goog.events.KeyCodes');
 goog.require('goog.events.KeyHandler.EventType');
 goog.require('goog.functions');
 goog.require('ol');
-goog.require('ol.View2D');
 goog.require('ol.coordinate');
 goog.require('ol.events.ConditionType');
 goog.require('ol.events.condition');
@@ -72,9 +69,8 @@ ol.interaction.KeyboardPan.prototype.handleMapBrowserEvent =
         keyCode == goog.events.KeyCodes.RIGHT ||
         keyCode == goog.events.KeyCodes.UP)) {
       var map = mapBrowserEvent.map;
-      // FIXME works for View2D only
       var view = map.getView();
-      goog.asserts.assertInstanceof(view, ol.View2D);
+      goog.asserts.assert(goog.isDef(view));
       var view2DState = view.getView2DState();
       var mapUnitsDelta = view2DState.resolution * this.pixelDelta_;
       var deltaX = 0, deltaY = 0;

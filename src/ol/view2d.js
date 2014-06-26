@@ -385,15 +385,6 @@ ol.View2D.prototype.getValueForResolutionFunction = function(opt_power) {
 
 
 /**
- * @return {ol.View2D} View2D.
- * @todo api
- */
-ol.View2D.prototype.getView2D = function() {
-  return this;
-};
-
-
-/**
  * @return {olx.View2DState} View2D state.
  */
 ol.View2D.prototype.getView2DState = function() {

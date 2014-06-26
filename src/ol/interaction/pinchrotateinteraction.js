@@ -1,5 +1,3 @@
-// FIXME works for View2D only
-
 goog.provide('ol.interaction.PinchRotate');
 
 goog.require('goog.asserts');
@@ -103,8 +101,7 @@ ol.interaction.PinchRotate.prototype.handlePointerDrag =
 
   // rotate
   if (this.rotating_) {
-    // FIXME works for View2D only
-    var view = map.getView().getView2D();
+    var view = map.getView();
     var view2DState = view.getView2DState();
     map.render();
     ol.interaction.Interaction.rotateWithoutConstraints(map, view,
@@ -123,11 +120,9 @@ ol.interaction.PinchRotate.prototype.handlePointerUp =
     var view = map.getView();
     view.setHint(ol.ViewHint.INTERACTING, -1);
     if (this.rotating_) {
-      // FIXME works for View2D only
-      var view2D = view.getView2D();
-      var view2DState = view2D.getView2DState();
+      var view2DState = view.getView2DState();
       ol.interaction.Interaction.rotate(
-          map, view2D, view2DState.rotation, this.anchor_,
+          map, view, view2DState.rotation, this.anchor_,
           ol.ROTATE_ANIMATION_DURATION);
     }
     return false;

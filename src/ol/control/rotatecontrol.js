@@ -1,5 +1,3 @@
-// FIXME works for View2D only
-
 goog.provide('ol.control.Rotate');
 
 goog.require('goog.asserts');
@@ -7,7 +5,6 @@ goog.require('goog.dom');
 goog.require('goog.dom.TagName');
 goog.require('goog.events');
 goog.require('goog.events.EventType');
-goog.require('ol.View2D');
 goog.require('ol.animation');
 goog.require('ol.control.Control');
 goog.require('ol.css');
@@ -118,12 +115,9 @@ ol.control.Rotate.prototype.handlePointerUp_ = function(pointerEvent) {
  */
 ol.control.Rotate.prototype.resetNorth_ = function() {
   var map = this.getMap();
-  // FIXME works for View2D only
   var view = map.getView();
   goog.asserts.assert(goog.isDef(view));
-  var view2D = view.getView2D();
-  goog.asserts.assertInstanceof(view2D, ol.View2D);
-  var currentRotation = view2D.getRotation();
+  var currentRotation = view.getRotation();
   while (currentRotation < -Math.PI) {
     currentRotation += 2 * Math.PI;
   }
@@ -138,7 +132,7 @@ ol.control.Rotate.prototype.resetNorth_ = function() {
         easing: ol.easing.easeOut
       }));
     }
-    view2D.setRotation(0);
+    view.setRotation(0);
   }
 };
 

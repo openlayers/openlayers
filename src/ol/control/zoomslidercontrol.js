@@ -1,4 +1,3 @@
-// FIXME works for View2D only
 // FIXME should possibly show tooltip when dragging?
 
 goog.provide('ol.control.ZoomSlider');
@@ -177,7 +176,7 @@ ol.control.ZoomSlider.prototype.handleMapPostrender = function(mapEvent) {
  */
 ol.control.ZoomSlider.prototype.handleContainerClick_ = function(browserEvent) {
   var map = this.getMap();
-  var view = map.getView().getView2D();
+  var view = map.getView();
   var resolution;
   var amountDragged = this.amountDragged_(browserEvent.offsetX,
       browserEvent.offsetY);
@@ -246,7 +245,7 @@ ol.control.ZoomSlider.prototype.amountDragged_ = function(x, y) {
 ol.control.ZoomSlider.prototype.resolutionForAmount_ = function(amount) {
   // FIXME do we really need this affine transform?
   amount = (goog.math.clamp(amount, 0, 1) - 1) * -1;
-  var fn = this.getMap().getView().getView2D().getResolutionForValueFunction();
+  var fn = this.getMap().getView().getResolutionForValueFunction();
   return fn(amount);
 };
 
@@ -260,7 +259,7 @@ ol.control.ZoomSlider.prototype.resolutionForAmount_ = function(amount) {
  * @private
  */
 ol.control.ZoomSlider.prototype.amountForResolution_ = function(res) {
-  var fn = this.getMap().getView().getView2D().getValueForResolutionFunction();
+  var fn = this.getMap().getView().getValueForResolutionFunction();
   var value = fn(res);
   // FIXME do we really need this affine transform?
   return (value - 1) * -1;
@@ -277,7 +276,7 @@ ol.control.ZoomSlider.prototype.amountForResolution_ = function(res) {
  */
 ol.control.ZoomSlider.prototype.handleSliderChange_ = function(e) {
   var map = this.getMap();
-  var view = map.getView().getView2D();
+  var view = map.getView();
   var resolution;
   if (e.type === goog.fx.Dragger.EventType.DRAG) {
     var amountDragged = this.amountDragged_(e.left, e.top);

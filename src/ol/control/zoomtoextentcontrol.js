@@ -1,5 +1,3 @@
-// FIXME works for View2D only
-
 goog.provide('ol.control.ZoomToExtent');
 
 goog.require('goog.asserts');
@@ -99,11 +97,9 @@ ol.control.ZoomToExtent.prototype.handlePointerUp_ = function(pointerEvent) {
 ol.control.ZoomToExtent.prototype.handleZoomToExtent_ = function() {
   var map = this.getMap();
   var view = map.getView();
-  goog.asserts.assert(goog.isDef(view));
-  var view2D = view.getView2D();
   var extent = goog.isNull(this.extent_) ?
-      view2D.getProjection().getExtent() : this.extent_;
+      view.getProjection().getExtent() : this.extent_;
   var size = map.getSize();
   goog.asserts.assert(goog.isDef(size));
-  view2D.fitExtent(extent, size);
+  view.fitExtent(extent, size);
 };

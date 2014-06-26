@@ -1,11 +1,9 @@
-// FIXME works for View2D only
 goog.provide('ol.interaction.DragPan');
 
 goog.require('goog.asserts');
 goog.require('ol.Kinetic');
 goog.require('ol.Pixel');
 goog.require('ol.PreRenderFunction');
-goog.require('ol.View2D');
 goog.require('ol.ViewHint');
 goog.require('ol.coordinate');
 goog.require('ol.events.condition');
@@ -76,8 +74,7 @@ ol.interaction.DragPan.prototype.handlePointerDrag = function(mapBrowserEvent) {
     var deltaX = this.lastCentroid[0] - centroid[0];
     var deltaY = centroid[1] - this.lastCentroid[1];
     var map = mapBrowserEvent.map;
-    var view2D = map.getView().getView2D();
-    goog.asserts.assertInstanceof(view2D, ol.View2D);
+    var view2D = map.getView();
     var view2DState = view2D.getView2DState();
     var center = [deltaX, deltaY];
     ol.coordinate.scale(center, view2DState.resolution);
@@ -97,8 +94,7 @@ ol.interaction.DragPan.prototype.handlePointerDrag = function(mapBrowserEvent) {
 ol.interaction.DragPan.prototype.handlePointerUp =
     function(mapBrowserEvent) {
   var map = mapBrowserEvent.map;
-  var view2D = map.getView().getView2D();
-  goog.asserts.assertInstanceof(view2D, ol.View2D);
+  var view2D = map.getView();
   if (this.targetPointers.length === 0) {
     if (!this.noKinetic_ && this.kinetic_ && this.kinetic_.end()) {
       var distance = this.kinetic_.getDistance();
@@ -132,8 +128,7 @@ ol.interaction.DragPan.prototype.handlePointerDown =
     function(mapBrowserEvent) {
   if (this.targetPointers.length > 0 && this.condition_(mapBrowserEvent)) {
     var map = mapBrowserEvent.map;
-    var view2D = map.getView().getView2D();
-    goog.asserts.assertInstanceof(view2D, ol.View2D);
+    var view2D = map.getView();
     this.lastCentroid = null;
     if (!this.handlingDownUpSequence) {
       view2D.setHint(ol.ViewHint.INTERACTING, 1);

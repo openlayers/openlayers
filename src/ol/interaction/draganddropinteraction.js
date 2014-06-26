@@ -101,7 +101,7 @@ ol.interaction.DragAndDrop.prototype.handleResult_ = function(file, result) {
   if (goog.isNull(projection)) {
     var view = map.getView();
     goog.asserts.assert(goog.isDef(view));
-    projection = view.getView2D().getProjection();
+    projection = view.getProjection();
     goog.asserts.assert(goog.isDef(projection));
   }
   var formatConstructors = this.formatConstructors_;
