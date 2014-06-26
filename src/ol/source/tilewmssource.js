@@ -167,6 +167,11 @@ ol.source.TileWMS.prototype.getGetFeatureInfoUrl =
     tileSize = (tileSize * pixelRatio + 0.5) | 0;
   }
 
+  if(goog.isDef(this.getProjection()) && this.getProjection() !== projection) {
+    var transformFn = ol.proj.getTransform(projection, this.getProjection());
+    tileExtent = ol.extent.applyTransform(tileExtent, transformFn);
+  }
+
   var baseParams = {
     'SERVICE': 'WMS',
     'VERSION': ol.DEFAULT_WMS_VERSION,
@@ -186,7 +191,7 @@ ol.source.TileWMS.prototype.getGetFeatureInfoUrl =
   goog.object.set(baseParams, this.v13_ ? 'J' : 'Y', y);
 
   return this.getRequestUrl_(tileCoord, tileSize, tileExtent,
-      pixelRatio, projection, baseParams);
+      pixelRatio, this.getProjection() || projection, baseParams);
 };
 
 
@@ -365,6 +370,11 @@ ol.source.TileWMS.prototype.tileUrlFunction_ =
         tileResolution * gutter, tileExtent);
   }
 
+  if(goog.isDef(this.getProjection()) && this.getProjection() !== projection) {
+    var transformFn = ol.proj.getTransform(projection, this.getProjection());
+    tileExtent = ol.extent.applyTransform(tileExtent, transformFn);
+  }
+
   var extent = this.getExtent();
   if (!goog.isNull(extent) && (!ol.extent.intersects(tileExtent, extent) ||
       ol.extent.touches(tileExtent, extent))) {
@@ -387,7 +397,7 @@ ol.source.TileWMS.prototype.tileUrlFunction_ =
   this.pixelRatio_ = pixelRatio;
 
   return this.getRequestUrl_(tileCoord, tileSize, tileExtent,
-      pixelRatio, projection, baseParams);
+      pixelRatio, this.getProjection() || projection, baseParams);
 };
 
 
