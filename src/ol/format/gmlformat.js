@@ -24,6 +24,9 @@ goog.require('ol.xml');
 
 
 /**
+ * @classdesc
+ * Feature format for reading and writing data in the GML format.
+ *
  * @constructor
  * @param {olx.format.GMLOptions=} opt_options
  *     Optional configuration object.

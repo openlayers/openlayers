@@ -1,3 +1,18 @@
 /**
+ * The ol.proj namespace stores:
+ * * a list of {@link ol.proj.Projection}
+ * objects, one for each projection supported by the application
+ * * a list of transform functions needed to convert coordinates in one projection
+ * into another.
+ *
+ * The static functions are the methods used to maintain these.
+ * Each transform function can handle not only simple coordinate pairs, but also
+ * large arrays of coordinates such as vector geometries.
+ *
+ * When loaded, the library adds projection objects for EPSG:4326 (WGS84
+ * geographic coordinates) and EPSG:3857 (Web or Spherical Mercator, as used
+ * for example by Bing Maps or OpenStreetMap), together with the relevant
+ * transform functions.
+ *
  * @namespace ol.proj
  */

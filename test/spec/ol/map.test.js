@@ -15,7 +15,7 @@ describe('ol.Map', function() {
       expect(length).to.be.greaterThan(0);
 
       for (var i = 0; i < length; ++i) {
-        expect(interactions.getAt(i).getMap()).to.be(map);
+        expect(interactions.item(i).getMap()).to.be(map);
       }
     });
   });
@@ -209,7 +209,7 @@ describe('ol.Map', function() {
         options.mouseWheelZoom = true;
         var interactions = ol.interaction.defaults(options);
         expect(interactions.getLength()).to.eql(1);
-        expect(interactions.getAt(0)).to.be.a(ol.interaction.MouseWheelZoom);
+        expect(interactions.item(0)).to.be.a(ol.interaction.MouseWheelZoom);
       });
     });
 
@@ -223,8 +223,8 @@ describe('ol.Map', function() {
         it('create double click interaction with default delta', function() {
           var interactions = ol.interaction.defaults(options);
           expect(interactions.getLength()).to.eql(1);
-          expect(interactions.getAt(0)).to.be.a(ol.interaction.DoubleClickZoom);
-          expect(interactions.getAt(0).delta_).to.eql(1);
+          expect(interactions.item(0)).to.be.a(ol.interaction.DoubleClickZoom);
+          expect(interactions.item(0).delta_).to.eql(1);
         });
       });
 
@@ -233,8 +233,8 @@ describe('ol.Map', function() {
           options.zoomDelta = 7;
           var interactions = ol.interaction.defaults(options);
           expect(interactions.getLength()).to.eql(1);
-          expect(interactions.getAt(0)).to.be.a(ol.interaction.DoubleClickZoom);
-          expect(interactions.getAt(0).delta_).to.eql(7);
+          expect(interactions.item(0)).to.be.a(ol.interaction.DoubleClickZoom);
+          expect(interactions.item(0).delta_).to.eql(7);
         });
       });
     });

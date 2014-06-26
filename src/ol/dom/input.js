@@ -18,6 +18,7 @@ ol.dom.InputProperty = {
 
 
 /**
+ * @classdesc
  * Helper class for binding HTML input to an {@link ol.Object}.
  *
  * Example:
@@ -55,7 +56,7 @@ goog.inherits(ol.dom.Input, ol.Object);
 
 
 /**
- * If the input is a checkbox, return whether or not the checbox is checked.
+ * If the input is a checkbox, return whether or not the checkbox is checked.
  * @return {boolean|undefined} The checked state of the Input.
  * @todo observable
  * @todo api

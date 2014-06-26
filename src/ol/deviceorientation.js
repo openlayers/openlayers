@@ -21,6 +21,7 @@ ol.DeviceOrientationProperty = {
 
 
 /**
+ * @classdesc
  * The ol.DeviceOrientation class provides access to DeviceOrientation
  * information and events, see the [HTML 5 DeviceOrientation Specification](
  * http://www.w3.org/TR/orientation-event/) for more details.

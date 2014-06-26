@@ -30,7 +30,7 @@ Interactions for [vector features](ol.Feature.html)
 <br>[Formats](ol.format.Feature.html) for reading/writing vector data
 <br>[ol.format.WMSCapabilities](ol.format.WMSCapabilities.html)</td></tr>
 <tr><th>Projections</th><th>2-way bindings</th><th>Other components</th></tr>
-<tr><td><p>All coordinates and extents need to be provided in map projection (default: [EPSG:3857](ol.proj.EPSG3857.html)). To transform, use [ol.proj.transform()](ol.proj.html#transform).</p>
+<tr><td><p>All coordinates and extents need to be provided in view projection (default: [EPSG:3857](ol.proj.EPSG3857.html)). To transform, use [ol.proj.transform()](ol.proj.html#transform) and [ol.extent.applyTransform()](ol.extent.html#applyTransform).</p>
 [ol.proj](ol.proj.html)</td>
 <td><p>[Objects](ol.Object.html) can be kept in sync using the [bindTo()](ol.Object.html#bindTo) method.</p>
 <p>A [DOM Input](ol.dom.Input.html) class is available to bind Object properties to HTML Input elements.</p></td>

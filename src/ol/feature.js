@@ -16,6 +16,12 @@ goog.require('ol.style.Style');
 
 
 /**
+ * @classdesc
+ * A vector object for geographical features with a geometry and other
+ * attribute properties, similar to the features in vector file formats like
+ * GeoJSON.
+ * Features can be styled individually or use the style of their vector layer.
+ *
  * @constructor
  * @extends {ol.Object}
  * @fires change Triggered when the geometry or style of the feature changes.
@@ -76,6 +82,27 @@ ol.Feature = function(opt_geometryOrValues) {
   }
 };
 goog.inherits(ol.Feature, ol.Object);
+
+
+/**
+ * Clone this feature. If the original feature has a geometry it
+ * is also cloned. The feature id is not set in the clone.
+ * @return {ol.Feature} The clone.
+ * @todo api
+ */
+ol.Feature.prototype.clone = function() {
+  var clone = new ol.Feature(this.getProperties());
+  clone.setGeometryName(this.getGeometryName());
+  var geometry = this.getGeometry();
+  if (goog.isDefAndNotNull(geometry)) {
+    clone.setGeometry(geometry.clone());
+  }
+  var style = this.getStyle();
+  if (!goog.isNull(style)) {
+    clone.setStyle(style);
+  }
+  return clone;
+};
 
 
 /**

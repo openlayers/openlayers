@@ -258,6 +258,8 @@ ol.render.canvas.Replay.prototype.replay_ = function(
         ++i;
         break;
       case ol.render.canvas.Instruction.CIRCLE:
+        goog.asserts.assert(goog.isNumber(instruction[1]));
+        d = /** @type {number} */ (instruction[1]);
         var x1 = pixelCoordinates[d];
         var y1 = pixelCoordinates[d + 1];
         var x2 = pixelCoordinates[d + 2];
@@ -266,7 +268,6 @@ ol.render.canvas.Replay.prototype.replay_ = function(
         var dy = y2 - y1;
         var r = Math.sqrt(dx * dx + dy * dy);
         context.arc(x1, y1, r, 0, 2 * Math.PI, true);
-        d += 4;
         ++i;
         break;
       case ol.render.canvas.Instruction.CLOSE_PATH:
@@ -416,8 +417,10 @@ ol.render.canvas.Replay.prototype.replay_ = function(
         goog.asserts.assert(goog.isString(instruction[4]));
         goog.asserts.assert(goog.isNumber(instruction[5]));
         goog.asserts.assert(!goog.isNull(instruction[6]));
+        var usePixelRatio = goog.isDef(instruction[7]) ? instruction[7] : true;
+        var lineWidth = /** @type {number} */ (instruction[2]);
         context.strokeStyle = /** @type {string} */ (instruction[1]);
-        context.lineWidth = /** @type {number} */ (instruction[2]) * pixelRatio;
+        context.lineWidth = usePixelRatio ? lineWidth * pixelRatio : lineWidth;
         context.lineCap = /** @type {string} */ (instruction[3]);
         context.lineJoin = /** @type {string} */ (instruction[4]);
         context.miterLimit = /** @type {number} */ (instruction[5]);
@@ -1261,13 +1264,13 @@ ol.render.canvas.PolygonReplay.prototype.drawCircleGeometry =
   }
   var flatCoordinates = circleGeometry.getFlatCoordinates();
   var stride = circleGeometry.getStride();
+  var myBegin = this.coordinates.length;
   this.appendFlatCoordinates(
       flatCoordinates, 0, flatCoordinates.length, stride, false);
   var beginPathInstruction = [ol.render.canvas.Instruction.BEGIN_PATH];
-  var circleInstruction = [ol.render.canvas.Instruction.CIRCLE];
+  var circleInstruction = [ol.render.canvas.Instruction.CIRCLE, myBegin];
   this.instructions.push(beginPathInstruction, circleInstruction);
   this.hitDetectionInstructions.push(beginPathInstruction, circleInstruction);
-  this.endGeometry(circleGeometry, data);
   var fillInstruction = [ol.render.canvas.Instruction.FILL];
   this.hitDetectionInstructions.push(fillInstruction);
   if (goog.isDef(state.fillStyle)) {
@@ -1279,6 +1282,7 @@ ol.render.canvas.PolygonReplay.prototype.drawCircleGeometry =
     this.instructions.push(strokeInstruction);
     this.hitDetectionInstructions.push(strokeInstruction);
   }
+  this.endGeometry(circleGeometry, data);
 };
 
 
@@ -1647,7 +1651,7 @@ ol.render.canvas.TextReplay.prototype.setReplayStrokeState_ =
   var setStrokeStyleInstruction = [
     ol.render.canvas.Instruction.SET_STROKE_STYLE, strokeState.strokeStyle,
     strokeState.lineWidth, strokeState.lineCap, strokeState.lineJoin,
-    strokeState.miterLimit, strokeState.lineDash
+    strokeState.miterLimit, strokeState.lineDash, false
   ];
   this.instructions.push(setStrokeStyleInstruction);
   this.hitDetectionInstructions.push(setStrokeStyleInstruction);

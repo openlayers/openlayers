@@ -108,7 +108,7 @@ olx.GeolocationOptions.prototype.projection;
  *     layers: (Array.<ol.layer.Base>|ol.Collection|undefined),
  *     ol3Logo: (boolean|undefined),
  *     overlays: (ol.Collection|Array.<ol.Overlay>|undefined),
- *     renderer: (ol.RendererHint|Array.<ol.RendererHint|string>|string|undefined),
+ *     renderer: (ol.RendererType|Array.<ol.RendererType|string>|string|undefined),
  *     target: (Element|string|undefined),
  *     view: (ol.IView|undefined)}}
  * @todo api
@@ -117,7 +117,8 @@ olx.MapOptions;
 
 
 /**
- * Controls initially added to the map.
+ * Controls initially added to the map. If not specified,
+ * {@link ol.control.defaults ol.control.defaults()} is used.
  * @type {ol.Collection|Array.<ol.control.Control>|undefined}
  */
 olx.MapOptions.prototype.controls;
@@ -139,7 +140,8 @@ olx.MapOptions.prototype.pixelRatio;
 
 
 /**
- * Interactions that are initially added to the map.
+ * Interactions that are initially added to the map. If not specified,
+ * {@link ol.interaction.defaults ol.interaction.defaults()} is used.
  * @type {ol.Collection|Array.<ol.interaction.Interaction>|undefined}
  */
 olx.MapOptions.prototype.interactions;
@@ -159,7 +161,7 @@ olx.MapOptions.prototype.keyboardEventTarget;
 
 
 /**
- * Layers.
+ * Layers. If this is not defined, a map with no layers will be rendered.
  * @type {Array.<ol.layer.Base>|ol.Collection|undefined}
  */
 olx.MapOptions.prototype.layers;
@@ -173,28 +175,35 @@ olx.MapOptions.prototype.ol3Logo;
 
 
 /**
- * Overlays initially added to the map.
+ * Overlays initially added to the map. By default, no overlays are added.
  * @type {ol.Collection|Array.<ol.Overlay>|undefined}
  */
 olx.MapOptions.prototype.overlays;
 
 
 /**
- * Renderer.
- * @type {ol.RendererHint|Array.<ol.RendererHint|string>|string|undefined}
+ * Renderer. By default, Canvas, DOM and WebGL renderers are tested for support
+ * in that order, and the first supported used. Specify a
+ * {@link ol.RendererType} here to use a specific renderer.
+ * Note that at present only the Canvas renderer supports vector data.
+ * @type {ol.RendererType|Array.<ol.RendererType|string>|string|undefined}
  */
 olx.MapOptions.prototype.renderer;
 
 
 /**
- * The container for the map.
+ * The container for the map, either the element itself or the `id` of the
+ * element. If not specified at construction time, {@link ol.Map#setTarget}
+ * must be called for the map to be rendered.
  * @type {Element|string|undefined}
  */
 olx.MapOptions.prototype.target;
 
 
 /**
- * The map's view.
+ * The map's view. Currently {@link ol.View2D} is the only available view.
+ * No layer sources will be fetched unless this is specified at construction
+ * time or through {@link ol.Map#setView}.
  * @type {ol.IView|undefined}
  */
 olx.MapOptions.prototype.view;
@@ -203,12 +212,11 @@ olx.MapOptions.prototype.view;
 /**
  * Object literal with config options for the overlay.
  * @typedef {{element: (Element|undefined),
+ *     offset: (Array.<number>|undefined),
  *     position: (ol.Coordinate|undefined),
  *     positioning: (ol.OverlayPositioning|string|undefined),
  *     stopEvent: (boolean|undefined),
- *     insertFirst: (boolean|undefined),
- *     offsetX: (number|undefined),
- *     offsetY: (number|undefined)}}
+ *     insertFirst: (boolean|undefined)}}
  * @todo api
  */
 olx.OverlayOptions;
@@ -222,6 +230,16 @@ olx.OverlayOptions.prototype.element;
 
 
 /**
+ * Offsets in pixels used when positioning the overlay. The fist element in the
+ * array is the horizontal offset. A positive value shifts the overlay right.
+ * The second element in the array is the vertical offset. A positive value
+ * shifts the overlay down. Default is `[0, 0]`.
+ * @type {Array.<number>|undefined}
+ */
+olx.OverlayOptions.prototype.offset;
+
+
+/**
  * The overlay position in map projection.
  * @type {ol.Coordinate|undefined}
  */
@@ -229,7 +247,10 @@ olx.OverlayOptions.prototype.position;
 
 
 /**
- * Positioning.
+ * Defines how the overlay is actually positioned with respect to its `position`
+ * property. Possible values are `'bottom-left'`, `'bottom-center'`,
+ * `'bottom-right'`, `'center-left'`, `'center-center'`, `'center-right'`,
+ * `'top-left'`, `'top-center'`, and `'top-right'`. Default is `'top-left'`.
  * @type {ol.OverlayPositioning|string|undefined}
  */
 olx.OverlayOptions.prototype.positioning;
@@ -252,22 +273,6 @@ olx.OverlayOptions.prototype.stopEvent;
  * @type {boolean|undefined}
  */
 olx.OverlayOptions.prototype.insertFirst;
-
-
-/**
- * Horizontal offset in pixels. A positive will shift the overlay right. Default
- * is `0`.
- * @type {number|undefined}
- */
-olx.OverlayOptions.prototype.offsetX;
-
-
-/**
- * Vertical offset in pixels. A positive will shift the overlay down. Default is
- * `0`.
- * @type {number|undefined}
- */
-olx.OverlayOptions.prototype.offsetY;
 
 
 /**
@@ -749,10 +754,10 @@ olx.control.DefaultsOptions.prototype.logoOptions;
 
 
 /**
- * Zoom. Default is `true`.
+ * Rotate. Default is `true`.
  * @type {boolean|undefined}
  */
-olx.control.DefaultsOptions.prototype.zoom;
+olx.control.DefaultsOptions.prototype.rotate;
 
 
 /**
@@ -760,6 +765,13 @@ olx.control.DefaultsOptions.prototype.zoom;
  * @type {olx.control.RotateOptions|undefined}
  */
 olx.control.DefaultsOptions.prototype.rotateOptions;
+
+
+/**
+ * Zoom. Default is `true`.
+ * @type {boolean|undefined}
+ */
+olx.control.DefaultsOptions.prototype.zoom;
 
 
 /**
@@ -1126,6 +1138,21 @@ olx.format.GeoJSONOptions.prototype.defaultProjection;
  * @type {string|undefined}
  */
 olx.format.GeoJSONOptions.prototype.geometryName;
+
+
+/**
+ * @typedef {{factor: (number|undefined)}}
+ * @todo stability experimental
+ */
+olx.format.PolylineOptions;
+
+
+/**
+ * The factor by which the coordinates values will be scaled.
+ * Default is `1e5`.
+ */
+olx.format.PolylineOptions.prototype.factor;
+
 
 
 /**
@@ -1559,8 +1586,9 @@ olx.interaction.DragBoxOptions;
 
 
 /**
- * A conditional modifier (i.e. Shift key) that determines if the interaction is
- * active or not, default is always.
+ * A function that takes an {@link ol.MapBrowserEvent} and returns a boolean
+ * to indicate whether that event should be handled.
+ * Default is {@link ol.events.condition.always}.
  * @type {ol.events.ConditionType|undefined}
  */
 olx.interaction.DragBoxOptions.prototype.condition;
@@ -1595,8 +1623,9 @@ olx.interaction.DragRotateAndZoomOptions;
 
 
 /**
- * A conditional modifier (i.e. Shift key) that determines if the interaction is
- * active or not, default is shify key.
+ * A function that takes an {@link ol.MapBrowserEvent} and returns a boolean
+ * to indicate whether that event should be handled.
+ * Default is {@link ol.events.condition.shiftKeyOnly}.
  * @type {ol.events.ConditionType|undefined}
  */
 olx.interaction.DragRotateAndZoomOptions.prototype.condition;
@@ -1610,8 +1639,9 @@ olx.interaction.DragRotateOptions;
 
 
 /**
- * A conditional modifier (i.e. Shift key) that determines if the interaction is
- * active or not, default is both shift and alt keys.
+ * A function that takes an {@link ol.MapBrowserEvent} and returns a boolean
+ * to indicate whether that event should be handled.
+ * Default is {@link ol.events.condition.altShiftKeysOnly}.
  * @type {ol.events.ConditionType|undefined}
  */
 olx.interaction.DragRotateOptions.prototype.condition;
@@ -1626,8 +1656,9 @@ olx.interaction.DragZoomOptions;
 
 
 /**
- * A conditional modifier (i.e. Shift key) that determines if the interaction is
- * active or not, default is shift key.
+ * A function that takes an {@link ol.MapBrowserEvent} and returns a boolean
+ * to indicate whether that event should be handled.
+ * Default is {@link ol.events.condition.shiftKeyOnly}.
  * @type {ol.events.ConditionType|undefined}
  */
 olx.interaction.DragZoomOptions.prototype.condition;
@@ -1647,7 +1678,8 @@ olx.interaction.DragZoomOptions.prototype.style;
  *     type: ol.geom.GeometryType,
  *     minPointsPerRing: (number|undefined),
  *     style: (ol.style.Style|Array.<ol.style.Style>|ol.feature.StyleFunction|undefined),
- *     geometryName: (string|undefined)}}
+ *     geometryName: (string|undefined),
+ *     condition: (ol.events.ConditionType|undefined)}}
  * @todo api
  */
 olx.interaction.DrawOptions;
@@ -1705,6 +1737,15 @@ olx.interaction.DrawOptions.prototype.geometryName;
 
 
 /**
+ * A function that takes an {@link ol.MapBrowserEvent} and returns a boolean
+ * to indicate whether that event should be handled.
+ * By default {@link ol.events.condition.noModifierKeys} adds a vertex.
+ * @type {ol.events.ConditionType|undefined}
+ */
+olx.interaction.DrawOptions.prototype.condition;
+
+
+/**
  * @typedef {{condition: (ol.events.ConditionType|undefined),
  *     pixelDelta: (number|undefined)}}
  * @todo api
@@ -1713,8 +1754,10 @@ olx.interaction.KeyboardPanOptions;
 
 
 /**
- * A conditional modifier (i.e. Shift key) that determines if the interaction is
- * active or not, default is no modifiers.
+ * A function that takes an {@link ol.MapBrowserEvent} and returns a boolean
+ * to indicate whether that event should be handled.
+ * Default is {@link ol.events.condition.noModifierKeys} and
+ * {@link ol.events.condition.targetNotEditable}.
  * @type {ol.events.ConditionType|undefined}
  */
 olx.interaction.KeyboardPanOptions.prototype.condition;
@@ -1744,8 +1787,9 @@ olx.interaction.KeyboardZoomOptions.prototype.duration;
 
 
 /**
- * A conditional modifier (i.e. Shift key) that determines if the interaction is
- * active or not, default is no modifiers.
+ * A function that takes an {@link ol.MapBrowserEvent} and returns a boolean
+ * to indicate whether that event should be handled.
+ * Default is {@link ol.events.condition.targetNotEditable}.
  * @type {ol.events.ConditionType|undefined}
  */
 olx.interaction.KeyboardZoomOptions.prototype.condition;
@@ -1769,8 +1813,10 @@ olx.interaction.ModifyOptions;
 
 
 /**
- * Condition that determines which event results in a vertex deletion. Default
- * is a `singleclick` event with no modifier keys.
+ * A function that takes an {@link ol.MapBrowserEvent} and returns a boolean
+ * to indicate whether that event should be handled.
+ * By default, {@link ol.events.condition.singleClick} with
+ * {@link ol.events.condition.noModifierKeys} results in a vertex deletion.
  * @type {ol.events.ConditionType|undefined}
  */
 olx.interaction.ModifyOptions.prototype.deleteCondition;
@@ -1853,18 +1899,19 @@ olx.interaction.SelectOptions;
 
 
 /**
- * A conditional modifier (e.g. alt key) that determines if the feature is added
- * to the current selection. By default, this is never. Note that the default
- * toggle condition allows features to be added.
+ * A function that takes an {@link ol.MapBrowserEvent} and returns a boolean
+ * to indicate whether that event should be handled.
+ * By default, this is {@link ol.events.condition.never}, though note that the
+ * default toggle condition allows features to be added.
  * @type {ol.events.ConditionType|undefined}
  */
 olx.interaction.SelectOptions.prototype.addCondition;
 
 
 /**
- * A conditional modifier (e.g. shift key) that determines if the interaction is
- * active (i.e. selection occurs) or not. By default, a click with no modifier
- * keys toggles the selection.
+ * A function that takes an {@link ol.MapBrowserEvent} and returns a boolean
+ * to indicate whether that event should be handled.
+ * By default, {@link ol.events.condition.singleClick} toggles the selection.
  * @type {ol.events.ConditionType|undefined}
  */
 olx.interaction.SelectOptions.prototype.condition;
@@ -1889,16 +1936,18 @@ olx.interaction.SelectOptions.prototype.style;
 
 
 /**
- * A conditional modifier (e.g. alt key) that determines if the feature is
- * removed from the current selection. By default, this is never.
+ * A function that takes an {@link ol.MapBrowserEvent} and returns a boolean
+ * to indicate whether that event should be handled.
+ * By default, this is {@link ol.events.condition.never}.
  * @type {ol.events.ConditionType|undefined}
  */
 olx.interaction.SelectOptions.prototype.removeCondition;
 
 
 /**
- * A conditional modifier (e.g. shift key) that determines if the selection is
- * toggled in the current selection. By default, a shift-click toggles the
+ * A function that takes an {@link ol.MapBrowserEvent} and returns a boolean
+ * to indicate whether that event should be handled.
+ * By default, {@link ol.events.condition.shiftKeyOnly} toggles the
  * feature in the current selection.
  * @type {ol.events.ConditionType|undefined}
  */
@@ -2726,6 +2775,7 @@ olx.source.GPXOptions.prototype.urls;
  *                                 ol.TileLoadFunctionType)|undefined),
  *            tileGrid: (ol.tilegrid.TileGrid|undefined),
  *            tileLoadFunction: (ol.TileLoadFunctionType|undefined),
+ *            tilePixelRatio: (number|undefined),
  *            tileUrlFunction: (ol.TileUrlFunctionType|undefined)}}
  * @todo api
  */
@@ -2798,6 +2848,16 @@ olx.source.TileImageOptions.prototype.tileLoadFunction;
 
 
 /**
+ * The pixel ratio used by the tile service. For example, if the tile
+ * service advertizes 256px by 256px tiles but actually sends 512px
+ * by 512px images (for retina/hidpi devices) then `tilePixelRatio`
+ * should be set to `2`. Default is `1`.
+ * @type {number|undefined}
+ */
+olx.source.TileImageOptions.prototype.tilePixelRatio;
+
+
+/**
  * Optional function to get tile URL given a tile coordinate and the projection.
  * @type {ol.TileUrlFunctionType|undefined}
  */
@@ -2808,6 +2868,7 @@ olx.source.TileImageOptions.prototype.tileUrlFunction;
  * @typedef {{attributions: (Array.<ol.Attribution>|undefined),
  *     defaultProjection: ol.proj.ProjectionLike,
  *     extent: (ol.Extent|undefined),
+ *     format: ol.format.Feature,
  *     logo: (string|undefined),
  *     object: (GeoJSONObject|undefined),
  *     projection: ol.proj.ProjectionLike,
@@ -2839,6 +2900,13 @@ olx.source.TileVectorOptions.prototype.defaultProjection;
  * @type {ol.Extent|undefined}
  */
 olx.source.TileVectorOptions.prototype.extent;
+
+
+/**
+ * Format.
+ * @type {ol.format.Feature}
+ */
+olx.source.TileVectorOptions.prototype.format;
 
 
 /**
@@ -3796,7 +3864,8 @@ olx.source.ServerVectorOptions.prototype.loader;
 
 
 /**
- * Loading strategy. Default is {@link ol.loadingstrategy.bbox}.
+ * Loading strategy. An {@link ol.loadingstrategy} or a custom function.
+ * Default is {@link ol.loadingstrategy.bbox}.
  * @type {function(ol.Extent, number): Array.<ol.Extent>|undefined}
  */
 olx.source.ServerVectorOptions.prototype.strategy;
@@ -4142,6 +4211,7 @@ olx.source.StaticVectorOptions.prototype.urls;
  *     requestEncoding: (ol.source.WMTSRequestEncoding|undefined),
  *     layer: string,
  *     style: string,
+ *     tilePixelRatio: (number|undefined),
  *     version: (string|undefined),
  *     format: (string|undefined),
  *     matrixSet: string,
@@ -4216,6 +4286,16 @@ olx.source.WMTSOptions.prototype.layer;
  * @type {string}
  */
 olx.source.WMTSOptions.prototype.style;
+
+
+/**
+ * The pixel ratio used by the tile service. For example, if the tile
+ * service advertizes 256px by 256px tiles but actually sends 512px
+ * by 512px images (for retina/hidpi devices) then `tilePixelRatio`
+ * should be set to `2`. Default is `1`.
+ * @type {number|undefined}
+ */
+olx.source.WMTSOptions.prototype.tilePixelRatio;
 
 
 /**

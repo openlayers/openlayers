@@ -14,7 +14,9 @@ goog.require('ol.interaction.Pointer');
 
 
 /**
+ * @classdesc
  * Allows the user to pan the map by dragging the map.
+ *
  * @constructor
  * @extends {ol.interaction.Pointer}
  * @param {olx.interaction.DragPanOptions=} opt_options Options.

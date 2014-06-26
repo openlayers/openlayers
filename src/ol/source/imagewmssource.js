@@ -17,6 +17,9 @@ goog.require('ol.source.wms.ServerType');
 
 
 /**
+ * @classdesc
+ * Source for WMS servers providing single, untiled images.
+ *
  * @constructor
  * @extends {ol.source.Image}
  * @param {olx.source.ImageWMSOptions=} opt_options Options.

@@ -20,6 +20,11 @@ goog.require('ol.xml');
 
 
 /**
+ * @classdesc
+ * Abstract base class; normally only used for creating subclasses and not
+ * instantiated in apps.
+ * Base class for vector sources in one of the supported formats.
+ *
  * @constructor
  * @extends {ol.source.Vector}
  * @param {olx.source.FormatVectorOptions} options Options.

@@ -35,7 +35,7 @@ ol.View2DProperty = {
 
 
 /**
- * @class
+ * @classdesc
  * An ol.View2D object represents a simple 2D view of the map.
  *
  * This is the object to act upon to change the center, resolution,

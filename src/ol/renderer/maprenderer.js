@@ -1,3 +1,4 @@
+goog.provide('ol.RendererType');
 goog.provide('ol.renderer.Map');
 
 goog.require('goog.Disposable');
@@ -9,6 +10,18 @@ goog.require('ol.layer.Layer');
 goog.require('ol.renderer.Layer');
 goog.require('ol.style.IconImageCache');
 goog.require('ol.vec.Mat4');
+
+
+/**
+ * Available renderers: `'canvas'`, `'dom'` or `'webgl'`.
+ * @enum {string}
+ * @todo api
+ */
+ol.RendererType = {
+  CANVAS: 'canvas',
+  DOM: 'dom',
+  WEBGL: 'webgl'
+};
 
 
 
@@ -161,6 +174,12 @@ ol.renderer.Map.prototype.getLayerRenderers = function() {
 ol.renderer.Map.prototype.getMap = function() {
   return this.map_;
 };
+
+
+/**
+ * @return {string} Type
+ */
+ol.renderer.Map.prototype.getType = goog.abstractMethod;
 
 
 /**

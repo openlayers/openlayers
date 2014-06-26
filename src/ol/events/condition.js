@@ -67,6 +67,7 @@ ol.events.condition.never = goog.functions.FALSE;
 /**
  * @param {ol.MapBrowserEvent} mapBrowserEvent Map browser event.
  * @return {boolean} True if the event is a `singleclick` event.
+ * @todo api
  */
 ol.events.condition.singleClick = function(mapBrowserEvent) {
   return mapBrowserEvent.type == ol.MapBrowserEvent.EventType.SINGLECLICK;
@@ -134,6 +135,7 @@ ol.events.condition.targetNotEditable = function(mapBrowserEvent) {
 /**
  * @param {ol.MapBrowserEvent} mapBrowserEvent Map browser event.
  * @return {boolean} True if the event originates from a mouse device.
+ * @todo api
  */
 ol.events.condition.mouseOnly = function(mapBrowserEvent) {
   goog.asserts.assertInstanceof(mapBrowserEvent, ol.MapBrowserPointerEvent);

@@ -39,6 +39,9 @@ ol.source.VectorEventType = {
 
 
 /**
+ * @classdesc
+ * Base class for vector sources.
+ *
  * @constructor
  * @extends {ol.source.Source}
  * @fires ol.source.VectorEvent

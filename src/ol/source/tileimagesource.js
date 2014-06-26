@@ -14,6 +14,9 @@ goog.require('ol.source.Tile');
 
 
 /**
+ * @classdesc
+ * Base class for sources providing images divided into a tile grid.
+ *
  * @constructor
  * @extends {ol.source.Tile}
  * @param {olx.source.TileImageOptions} options Image tile options.
@@ -27,7 +30,8 @@ ol.source.TileImage = function(options) {
     logo: options.logo,
     opaque: options.opaque,
     projection: options.projection,
-    tileGrid: options.tileGrid
+    tileGrid: options.tileGrid,
+    tilePixelRatio: options.tilePixelRatio
   });
 
   /**

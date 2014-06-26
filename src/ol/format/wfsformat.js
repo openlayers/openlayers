@@ -13,6 +13,9 @@ goog.require('ol.xml');
 
 
 /**
+ * @classdesc
+ * Feature format for reading and writing data in the WFS format.
+ *
  * @constructor
  * @param {olx.format.WFSOptions=} opt_options
  *     Optional configuration object.

@@ -16,6 +16,7 @@ goog.require('ol.interaction.Interaction');
 
 
 /**
+ * @classdesc
  * Allows the user to pan the map using keyboard arrows.
  * Note that, although this interaction is by default included in maps,
  * the keys can only be used when browser focus is on the element to which
@@ -25,6 +26,7 @@ goog.require('ol.interaction.Interaction');
  * focus will have to be on, and returned to, this element if the keys are to
  * function.
  * See also {@link ol.interaction.KeyboardZoom}.
+ *
  * @constructor
  * @extends {ol.interaction.Interaction}
  * @param {olx.interaction.KeyboardPanOptions=} opt_options Options.

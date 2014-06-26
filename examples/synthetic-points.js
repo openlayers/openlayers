@@ -1,6 +1,5 @@
 goog.require('ol.Feature');
 goog.require('ol.Map');
-goog.require('ol.Overlay');
 goog.require('ol.View2D');
 goog.require('ol.geom.LineString');
 goog.require('ol.geom.Point');
@@ -51,18 +50,13 @@ var vector = new ol.layer.Vector({
   }
 });
 
-var popup = new ol.Overlay({
-  element: document.getElementById('popup')
-});
-
 var map = new ol.Map({
   layers: [vector],
   target: document.getElementById('map'),
   view: new ol.View2D({
     center: [0, 0],
     zoom: 2
-  }),
-  overlays: [popup]
+  })
 });
 
 var point = null;

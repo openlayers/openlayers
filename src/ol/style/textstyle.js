@@ -3,6 +3,9 @@ goog.provide('ol.style.Text');
 
 
 /**
+ * @classdesc
+ * Set text style for vector features.
+ *
  * @constructor
  * @param {olx.style.TextOptions=} opt_options Options.
  * @todo api

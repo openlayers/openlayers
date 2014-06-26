@@ -10,6 +10,9 @@ goog.require('ol.math');
 
 
 /**
+ * @classdesc
+ * Point geometry.
+ *
  * @constructor
  * @extends {ol.geom.SimpleGeometry}
  * @param {ol.geom.RawPoint} coordinates Coordinates.

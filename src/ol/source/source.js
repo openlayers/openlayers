@@ -33,6 +33,11 @@ ol.source.SourceOptions;
 
 
 /**
+ * @classdesc
+ * Abstract base class; normally only used for creating subclasses and not
+ * instantiated in apps.
+ * Base class for {@link ol.layer.Layer} sources.
+ *
  * @constructor
  * @extends {ol.Observable}
  * @fires change Triggered when the state of the source changes.
@@ -85,6 +90,7 @@ goog.inherits(ol.source.Source, ol.Observable);
  * @param {number} resolution Resolution.
  * @param {number} rotation Rotation.
  * @param {ol.Coordinate} coordinate Coordinate.
+ * @param {Object.<string, boolean>} skippedFeatureUids Skipped feature uids.
  * @param {function(ol.Feature): T} callback Feature callback.
  * @return {T|undefined} Callback result.
  * @template T

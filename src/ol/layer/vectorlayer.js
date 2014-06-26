@@ -15,6 +15,8 @@ ol.layer.VectorProperty = {
 
 
 /**
+ * @classdesc
+ * Vector data that is rendered client-side.
  *
  * @constructor
  * @extends {ol.layer.Layer}

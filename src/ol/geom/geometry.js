@@ -44,6 +44,11 @@ ol.geom.GeometryLayout = {
 
 
 /**
+ * @classdesc
+ * Abstract base class; normally only used for creating subclasses and not
+ * instantiated in apps.
+ * Base class for vector geometries.
+ *
  * @constructor
  * @extends {ol.Observable}
  * @fires change Triggered when the geometry changes.
@@ -162,6 +167,8 @@ ol.geom.Geometry.prototype.getType = goog.abstractMethod;
 
 /**
  * Apply a transform function to the geometry.  Modifies the geometry in place.
+ * If you do not want the geometry modified in place, first clone() it and
+ * then use this function on the clone.
  * @function
  * @param {ol.TransformFunction} transformFn Transform.
  * @todo api
@@ -172,6 +179,8 @@ ol.geom.Geometry.prototype.applyTransform = goog.abstractMethod;
 /**
  * Transform a geometry from one coordinate reference system to another.
  * Modifies the geometry in place.
+ * If you do not want the geometry modified in place, first clone() it and
+ * then use this function on the clone.
  *
  * @param {ol.proj.ProjectionLike} source The current projection.  Can be a
  *     string identifier or a {@link ol.proj.Projection} object.
@@ -196,7 +205,7 @@ ol.geom.RawPoint;
 
 
 /**
- * Array representation of a linsetring.
+ * Array representation of a linestring.
  * @typedef {Array.<ol.Coordinate>}
  * @todo api
  */

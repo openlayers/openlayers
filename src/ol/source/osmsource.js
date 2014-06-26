@@ -7,6 +7,9 @@ goog.require('ol.source.XYZ');
 
 
 /**
+ * @classdesc
+ * Layer source for the OpenStreetMap tile server.
+ *
  * @constructor
  * @extends {ol.source.XYZ}
  * @param {olx.source.OSMOptions=} opt_options Open Street Map options.

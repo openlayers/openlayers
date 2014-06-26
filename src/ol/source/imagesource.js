@@ -22,6 +22,11 @@ ol.source.ImageOptions;
 
 
 /**
+ * @classdesc
+ * Abstract base class; normally only used for creating subclasses and not
+ * instantiated in apps.
+ * Base class for sources providing a single image.
+ *
  * @constructor
  * @extends {ol.source.Source}
  * @param {ol.source.ImageOptions} options Single image source options.

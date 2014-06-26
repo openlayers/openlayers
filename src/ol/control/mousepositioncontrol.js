@@ -28,10 +28,11 @@ ol.control.MousePositionProperty = {
 
 
 /**
- * Create a new control to show the position of the mouse in the map's
- * projection (or any other supplied projection). By default the control is
- * shown in the top right corner of the map but this can be changed by using
- * a css selector `.ol-mouse-position`.
+ * @classdesc
+ * A control to show the 2D coordinates of the mouse cursor. By default, these
+ * are in the view projection, but can be in any supported projection.
+ * By default the control is shown in the top right corner of the map, but this
+ * can be changed by using the css selector `.ol-mouse-position`.
  *
  * @constructor
  * @extends {ol.control.Control}

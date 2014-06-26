@@ -17,8 +17,10 @@ goog.require('ol.pointer.PointerEventHandler');
 
 
 /**
- * Create a new control with a button, to reset rotation to 0.
+ * @classdesc
+ * A button control to reset rotation to 0.
  * To style this control use css selector `.ol-rotate`.
+ *
  * @constructor
  * @extends {ol.control.Control}
  * @param {olx.control.RotateOptions=} opt_options Rotate options.
@@ -51,7 +53,9 @@ ol.control.Rotate = function(opt_options) {
   var handler = new ol.pointer.PointerEventHandler(button);
   this.registerDisposable(handler);
   goog.events.listen(handler, ol.pointer.EventType.POINTERUP,
-      ol.control.Rotate.prototype.resetNorth_, false, this);
+      ol.control.Rotate.prototype.handlePointerUp_, false, this);
+  goog.events.listen(button, goog.events.EventType.CLICK,
+      ol.control.Rotate.prototype.handleClick_, false, this);
 
   goog.events.listen(button, [
     goog.events.EventType.MOUSEOUT,
@@ -88,12 +92,31 @@ goog.inherits(ol.control.Rotate, ol.control.Control);
 
 
 /**
- * @param {ol.pointer.PointerEvent} pointerEvent The pointer event to handle.
+ * @param {goog.events.BrowserEvent} event The event to handle
  * @private
  */
-ol.control.Rotate.prototype.resetNorth_ = function(pointerEvent) {
+ol.control.Rotate.prototype.handleClick_ = function(event) {
+  if (event.screenX !== 0 && event.screenY !== 0) {
+    return;
+  }
+  this.resetNorth_();
+};
+
+
+/**
+ * @param {ol.pointer.PointerEvent} pointerEvent The event to handle
+ * @private
+ */
+ol.control.Rotate.prototype.handlePointerUp_ = function(pointerEvent) {
   pointerEvent.browserEvent.preventDefault();
-  // prevent the anchor from getting appended to the url
+  this.resetNorth_();
+};
+
+
+/**
+ * @private
+ */
+ol.control.Rotate.prototype.resetNorth_ = function() {
   var map = this.getMap();
   // FIXME works for View2D only
   var view = map.getView();

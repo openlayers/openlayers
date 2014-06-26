@@ -10,10 +10,12 @@ goog.require('ol.css');
 
 
 /**
+ * @classdesc
  * Shows a logo for all the layer sources in the map that have a logo
  * associated with them, such as Bing. This control is part of a default map.
  * By default it will show in the bottom-left portion of the map, but it can
  * be styled by using a css selector for `.ol-logo`.
+ *
  * @constructor
  * @extends {ol.control.Control}
  * @param {olx.control.LogoOptions=} opt_options Logo options.

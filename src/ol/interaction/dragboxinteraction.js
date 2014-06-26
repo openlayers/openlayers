@@ -44,6 +44,7 @@ ol.DragBoxEventType = {
 
 
 /**
+ * @classdesc
  * Object representing a dragbox event.
  *
  * @param {string} type The event type.
@@ -69,6 +70,7 @@ goog.inherits(ol.DragBoxEvent, goog.events.Event);
 
 
 /**
+ * @classdesc
  * Allows the user to zoom the map by clicking and dragging on the map,
  * normally combined with an {@link ol.events.condition} that limits
  * it to when the shift key is held down.
