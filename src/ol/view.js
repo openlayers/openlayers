@@ -82,14 +82,14 @@ ol.ViewHint = {
  * So the *resolution constraint* snaps to specific resolutions. It is
  * determined by the following options: `resolutions`, `maxResolution`,
  * `maxZoom`, and `zoomFactor`. If `resolutions` is set, the other three
- * options are ignored. See {@link ol.View2DOptions} for more information.
+ * options are ignored. See {@link ol.ViewOptions} for more information.
  *
  * The *rotation constaint* is currently not configurable. It snaps the
  * rotation value to zero when approaching the horizontal.
  *
  * @constructor
  * @extends {ol.Object}
- * @param {olx.View2DOptions=} opt_options View options.
+ * @param {olx.ViewOptions=} opt_options View options.
  * @todo api
  */
 ol.View = function(opt_options) {
@@ -654,7 +654,7 @@ ol.View.prototype.setZoom = function(zoom) {
 
 
 /**
- * @param {olx.View2DOptions} options View options.
+ * @param {olx.ViewOptions} options View options.
  * @private
  * @return {ol.CenterConstraintType}
  */
@@ -669,7 +669,7 @@ ol.View.createCenterConstraint_ = function(options) {
 
 /**
  * @private
- * @param {olx.View2DOptions} options View options.
+ * @param {olx.ViewOptions} options View options.
  * @return {{constraint: ol.ResolutionConstraintType, maxResolution: number,
  *     minResolution: number}}
  */
@@ -751,7 +751,7 @@ ol.View.createResolutionConstraint_ = function(options) {
 
 /**
  * @private
- * @param {olx.View2DOptions} options View options.
+ * @param {olx.ViewOptions} options View options.
  * @return {ol.RotationConstraintType} Rotation constraint.
  */
 ol.View.createRotationConstraint_ = function(options) {

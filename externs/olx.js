@@ -370,7 +370,7 @@ olx.ProjectionOptions.prototype.global;
  *     zoomFactor: (number|undefined)}}
  * @todo api
  */
-olx.View2DOptions;
+olx.ViewOptions;
 
 
 /**
@@ -379,7 +379,7 @@ olx.View2DOptions;
  * sources will not be fetched if this is not set.
  * @type {ol.Coordinate|undefined}
  */
-olx.View2DOptions.prototype.center;
+olx.ViewOptions.prototype.center;
 
 
 /**
@@ -389,14 +389,14 @@ olx.View2DOptions.prototype.center;
  * 270 degrees. The default is `true`.
  * @type {boolean|number|undefined}
  */
-olx.View2DOptions.prototype.constrainRotation;
+olx.ViewOptions.prototype.constrainRotation;
 
 
 /**
  * Enable rotation. Default is `true`.
  * @type {boolean|undefined}
  */
-olx.View2DOptions.prototype.enableRotation;
+olx.ViewOptions.prototype.enableRotation;
 
 
 /**
@@ -404,7 +404,7 @@ olx.View2DOptions.prototype.enableRotation;
  * outside this extent. Default is `undefined`.
  * @type {ol.Extent|undefined}
  */
-olx.View2DOptions.prototype.extent;
+olx.ViewOptions.prototype.extent;
 
 
 /**
@@ -416,7 +416,7 @@ olx.View2DOptions.prototype.extent;
  * 156543.03392804097`.
  * @type {number|undefined}
  */
-olx.View2DOptions.prototype.maxResolution;
+olx.ViewOptions.prototype.maxResolution;
 
 
 /**
@@ -428,7 +428,7 @@ olx.View2DOptions.prototype.maxResolution;
  * 0.0005831682455839253`.
  * @type {number|undefined}
  */
-olx.View2DOptions.prototype.minResolution;
+olx.ViewOptions.prototype.minResolution;
 
 
 /**
@@ -438,7 +438,7 @@ olx.View2DOptions.prototype.minResolution;
  * precedence over `maxZoom`.
  * @type {number|undefined}
  */
-olx.View2DOptions.prototype.maxZoom;
+olx.ViewOptions.prototype.maxZoom;
 
 
 /**
@@ -448,14 +448,14 @@ olx.View2DOptions.prototype.maxZoom;
  * precedence over `minZoom`.
  * @type {number|undefined}
  */
-olx.View2DOptions.prototype.minZoom;
+olx.ViewOptions.prototype.minZoom;
 
 
 /**
  * The projection. Default is `EPSG:3857` (Spherical Mercator).
  * @type {ol.proj.ProjectionLike}
  */
-olx.View2DOptions.prototype.projection;
+olx.ViewOptions.prototype.projection;
 
 
 /**
@@ -465,7 +465,7 @@ olx.View2DOptions.prototype.projection;
  * neither this nor `zoom` are defined.
  * @type {number|undefined}
  */
-olx.View2DOptions.prototype.resolution;
+olx.ViewOptions.prototype.resolution;
 
 
 /**
@@ -474,7 +474,7 @@ olx.View2DOptions.prototype.resolution;
  * options are ignored.
  * @type {Array.<number>|undefined}
  */
-olx.View2DOptions.prototype.resolutions;
+olx.ViewOptions.prototype.resolutions;
 
 
 /**
@@ -482,7 +482,7 @@ olx.View2DOptions.prototype.resolutions;
  * Default is `0`.
  * @type {number|undefined}
  */
-olx.View2DOptions.prototype.rotation;
+olx.ViewOptions.prototype.rotation;
 
 
 /**
@@ -491,14 +491,14 @@ olx.View2DOptions.prototype.rotation;
  * the `ol.View#constrainResolution` method.
  * @type {number|undefined}
  */
-olx.View2DOptions.prototype.zoom;
+olx.ViewOptions.prototype.zoom;
 
 
 /**
  * The zoom factor used to determine the resolution constraint.  Default is `2`.
  * @type {number|undefined}
  */
-olx.View2DOptions.prototype.zoomFactor;
+olx.ViewOptions.prototype.zoomFactor;
 
 
 /**
