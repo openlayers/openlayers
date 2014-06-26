@@ -1,5 +1,3 @@
-// FIXME getView3D has not return type
-
 goog.provide('ol.View2D');
 goog.provide('ol.View2DProperty');
 
@@ -8,7 +6,6 @@ goog.require('ol');
 goog.require('ol.CenterConstraint');
 goog.require('ol.Constraints');
 goog.require('ol.IView2D');
-goog.require('ol.IView3D');
 goog.require('ol.ResolutionConstraint');
 goog.require('ol.RotationConstraint');
 goog.require('ol.RotationConstraintType');
@@ -82,7 +79,6 @@ ol.View2DProperty = {
  *
  * @constructor
  * @implements {ol.IView2D}
- * @implements {ol.IView3D}
  * @extends {ol.View}
  * @param {olx.View2DOptions=} opt_options View2D options.
  * @todo api
@@ -389,13 +385,6 @@ ol.View2D.prototype.getView2DState = function() {
     resolution: resolution,
     rotation: goog.isDef(rotation) ? rotation : 0
   });
-};
-
-
-/**
- * FIXME return type
- */
-ol.View2D.prototype.getView3D = function() {
 };
 
 

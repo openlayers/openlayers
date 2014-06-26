@@ -67,16 +67,6 @@ ol.View.prototype.getView2D = function() {
 /**
  * @inheritDoc
  */
-ol.View.prototype.getView3D = function() {
-  // FIXME for some reason, we can't use goog.abstractMethod here
-  goog.asserts.fail();
-  return null;
-};
-
-
-/**
- * @inheritDoc
- */
 ol.View.prototype.isDef = function() {
   // FIXME for some reason, we can't use goog.abstractMethod here
   goog.asserts.fail();
