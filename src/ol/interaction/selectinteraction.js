@@ -150,6 +150,8 @@ ol.interaction.Select.prototype.handleMapBrowserEvent =
     }
   } else {
     // Modify the currently selected feature(s).
+    var /** @type {Array.<number>} */ deselected = [];
+    var /** @type {Array.<ol.Feature>} */ selected = [];
     map.forEachFeatureAtPixel(mapBrowserEvent.pixel,
         /**
          * @param {ol.Feature} feature Feature.
@@ -159,14 +161,19 @@ ol.interaction.Select.prototype.handleMapBrowserEvent =
           var index = goog.array.indexOf(features.getArray(), feature);
           if (index == -1) {
             if (add || toggle) {
-              features.push(feature);
+              selected.push(feature);
             }
           } else {
             if (remove || toggle) {
-              features.removeAt(index);
+              deselected.push(index);
             }
           }
         }, undefined, this.layerFilter_);
+    var i;
+    for (i = deselected.length - 1; i >= 0; --i) {
+      features.removeAt(deselected[i]);
+    }
+    features.extend(selected);
   }
   return false;
 };
