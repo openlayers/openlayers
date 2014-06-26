@@ -1027,10 +1027,10 @@ describe('ol.format.KML', function() {
             ' xsi:schemaLocation="http://www.opengis.net/kml/2.2' +
             ' https://developers.google.com/kml/schema/kml22gx.xsd">' +
             '  <Placemark>' +
-            '    <address>My address</address>' +
-            '    <description>My description</description>' +
             '    <name>My name</name>' +
+            '    <address>My address</address>' +
             '    <phoneNumber>My phone number</phoneNumber>' +
+            '    <description>My description</description>' +
             '  </Placemark>' +
             '</kml>';
         expect(node).to.xmleql(ol.xml.load(text));
@@ -1451,6 +1451,8 @@ describe('ol.format.KML', function() {
             '  <Placemark>' +
             '    <Style>' +
             '      <IconStyle>' +
+            '        <scale>0.25</scale>' +
+            '        <heading>45</heading>' +
             '        <Icon>' +
             '          <href>http://foo.png</href>' +
             '          <gx:x>96</gx:x>' +
@@ -1458,10 +1460,8 @@ describe('ol.format.KML', function() {
             '          <gx:w>48</gx:w>' +
             '          <gx:h>48</gx:h>' +
             '        </Icon>' +
-            '        <heading>45</heading>' +
             '        <hotSpot x="12" y="12" xunits="pixels" ' +
             '                 yunits="pixels"/>' +
-            '        <scale>0.25</scale>' +
             '      </IconStyle>' +
             '    </Style>' +
             '  </Placemark>' +
@@ -1489,13 +1489,13 @@ describe('ol.format.KML', function() {
             ' xsi:schemaLocation="http://www.opengis.net/kml/2.2' +
             ' https://developers.google.com/kml/schema/kml22gx.xsd">' +
             '  <Placemark>' +
+            '    <name>foo</name>' +
             '    <Style>' +
             '      <LabelStyle>' +
             '        <color>ffdf220c</color>' +
             '        <scale>0.25</scale>' +
             '      </LabelStyle>' +
             '    </Style>' +
-            '    <name>foo</name>' +
             '  </Placemark>' +
             '</kml>';
         expect(node).to.xmleql(ol.xml.load(text));

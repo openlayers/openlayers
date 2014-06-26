@@ -1943,11 +1943,6 @@ ol.format.KML.writePlacemark_ = function(node, feature, objectStack) {
     node.setAttribute('id', feature.getId());
   }
 
-  // serialize geometry
-  ol.xml.pushSerializeAndPop(context, ol.format.KML.PLACEMARK_SERIALIZERS_,
-      ol.format.KML.GEOMETRY_NODE_FACTORY_,
-      [feature.getGeometry()], objectStack);
-
   // serialize properties (properties unknown to KML are not serialized)
   var properties = feature.getProperties();
   var styleFunction = feature.getStyleFunction();
@@ -1968,6 +1963,11 @@ ol.format.KML.writePlacemark_ = function(node, feature, objectStack) {
   var values = ol.xml.makeSequence(properties, orderedKeys);
   ol.xml.pushSerializeAndPop(context, ol.format.KML.PLACEMARK_SERIALIZERS_,
       ol.xml.OBJECT_PROPERTY_NODE_FACTORY, values, objectStack, orderedKeys);
+
+  // serialize geometry
+  ol.xml.pushSerializeAndPop(context, ol.format.KML.PLACEMARK_SERIALIZERS_,
+      ol.format.KML.GEOMETRY_NODE_FACTORY_,
+      [feature.getGeometry()], objectStack);
 };
 
 
@@ -2187,7 +2187,7 @@ ol.format.KML.ICON_SERIALIZERS_ = ol.xml.makeStructureNS(
  */
 ol.format.KML.ICON_STYLE_SEQUENCE_ = ol.xml.makeStructureNS(
     ol.format.KML.NAMESPACE_URIS_, [
-      'Icon', 'heading', 'hotSpot', 'scale'
+      'scale', 'heading', 'Icon', 'hotSpot'
     ]);
 
 
@@ -2285,8 +2285,8 @@ ol.format.KML.MULTI_GEOMETRY_SERIALIZERS_ = ol.xml.makeStructureNS(
  */
 ol.format.KML.PLACEMARK_SEQUENCE_ = ol.xml.makeStructureNS(
     ol.format.KML.NAMESPACE_URIS_, [
-      'Style', 'address', 'description', 'name', 'open',
-      'phoneNumber', 'styleUrl', 'visibility'
+      'name', 'open', 'visibility', 'address', 'phoneNumber', 'description',
+      'styleUrl', 'Style'
     ]);
 
 
