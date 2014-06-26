@@ -3,7 +3,6 @@ goog.provide('ol.ViewHint');
 
 goog.require('goog.array');
 goog.require('goog.asserts');
-goog.require('ol.IView');
 goog.require('ol.Object');
 
 
@@ -29,7 +28,6 @@ ol.ViewHint = {
  * Only {@link ol.View2D} is currently implemented.
  *
  * @constructor
- * @implements {ol.IView}
  * @extends {ol.Object}
  */
 ol.View = function() {
@@ -55,7 +53,7 @@ ol.View.prototype.getHints = function() {
 
 
 /**
- * @inheritDoc
+ * @return {ol.View2D} View2D.
  */
 ol.View.prototype.getView2D = function() {
   // FIXME for some reason, we can't use goog.abstractMethod here
@@ -65,7 +63,7 @@ ol.View.prototype.getView2D = function() {
 
 
 /**
- * @inheritDoc
+ * @return {boolean} Is defined.
  */
 ol.View.prototype.isDef = function() {
   // FIXME for some reason, we can't use goog.abstractMethod here

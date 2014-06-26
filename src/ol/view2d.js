@@ -5,7 +5,6 @@ goog.require('goog.asserts');
 goog.require('ol');
 goog.require('ol.CenterConstraint');
 goog.require('ol.Constraints');
-goog.require('ol.IView2D');
 goog.require('ol.ResolutionConstraint');
 goog.require('ol.RotationConstraint');
 goog.require('ol.RotationConstraintType');
@@ -78,7 +77,6 @@ ol.View2DProperty = {
  * rotation value to zero when approaching the horizontal.
  *
  * @constructor
- * @implements {ol.IView2D}
  * @extends {ol.View}
  * @param {olx.View2DOptions=} opt_options View2D options.
  * @todo api
@@ -219,7 +217,7 @@ ol.View2D.prototype.constrainRotation = function(rotation, opt_delta) {
 
 
 /**
- * @inheritDoc
+ * @return {ol.Coordinate|undefined} The center of the view.
  * @todo observable
  * @todo api
  */
@@ -253,7 +251,7 @@ ol.View2D.prototype.calculateExtent = function(size) {
 
 
 /**
- * @inheritDoc
+ * @return {ol.proj.Projection|undefined} The projection of the view.
  * @todo observable
  * @todo api
  */
@@ -268,7 +266,7 @@ goog.exportProperty(
 
 
 /**
- * @inheritDoc
+ * @return {number|undefined} The resolution of the view.
  * @todo observable
  * @todo api
  */
@@ -323,7 +321,7 @@ ol.View2D.prototype.getResolutionForValueFunction = function(opt_power) {
 
 
 /**
- * @inheritDoc
+ * @return {number|undefined} The rotation of the view.
  * @todo observable
  * @todo api
  */
@@ -371,7 +369,7 @@ ol.View2D.prototype.getView2D = function() {
 
 
 /**
- * @inheritDoc
+ * @return {olx.View2DState} View2D state.
  */
 ol.View2D.prototype.getView2DState = function() {
   goog.asserts.assert(this.isDef());

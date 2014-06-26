@@ -110,7 +110,7 @@ olx.GeolocationOptions.prototype.projection;
  *     overlays: (ol.Collection|Array.<ol.Overlay>|undefined),
  *     renderer: (ol.RendererType|Array.<ol.RendererType|string>|string|undefined),
  *     target: (Element|string|undefined),
- *     view: (ol.IView|undefined)}}
+ *     view: (ol.View2D|undefined)}}
  * @todo api
  */
 olx.MapOptions;
@@ -201,10 +201,9 @@ olx.MapOptions.prototype.target;
 
 
 /**
- * The map's view. Currently {@link ol.View2D} is the only available view.
- * No layer sources will be fetched unless this is specified at construction
- * time or through {@link ol.Map#setView}.
- * @type {ol.IView|undefined}
+ * The map's view.  No layer sources will be fetched unless this is specified at
+ * construction time or through {@link ol.Map#setView}.
+ * @type {ol.View2D|undefined}
  */
 olx.MapOptions.prototype.view;
 

@@ -30,7 +30,6 @@ goog.require('goog.vec.Mat4');
 goog.require('ol.BrowserFeature');
 goog.require('ol.Collection');
 goog.require('ol.CollectionEventType');
-goog.require('ol.IView');
 goog.require('ol.MapBrowserEvent');
 goog.require('ol.MapBrowserEvent.EventType');
 goog.require('ol.MapBrowserEventHandler');
@@ -748,14 +747,14 @@ goog.exportProperty(
 
 
 /**
- * Get the view associated with this map. This can be a 2D or 3D view. A 2D
- * view manages properties such as center and resolution.
- * @return {ol.IView|undefined} The view that controls this map.
+ * Get the view associated with this map. A view manages properties such as
+ * center and resolution.
+ * @return {ol.View2D|undefined} The view that controls this map.
  * @todo observable
  * @todo api stable
  */
 ol.Map.prototype.getView = function() {
-  return /** @type {ol.IView} */ (this.get(ol.MapProperty.VIEW));
+  return /** @type {ol.View2D} */ (this.get(ol.MapProperty.VIEW));
 };
 goog.exportProperty(
     ol.Map.prototype,
@@ -1319,7 +1318,7 @@ goog.exportProperty(
 
 /**
  * Set the view for this map.
- * @param {ol.IView} view The view that controls this map.
+ * @param {ol.View2D} view The view that controls this map.
  * @todo observable
  * @todo api stable
  */

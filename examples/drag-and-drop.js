@@ -120,7 +120,8 @@ dragAndDropInteraction.on('addfeatures', function(event) {
     style: styleFunction
   }));
   var view2D = map.getView().getView2D();
-  view2D.fitExtent(vectorSource.getExtent(), map.getSize());
+  view2D.fitExtent(
+      vectorSource.getExtent(), /** @type {ol.Size} */ (map.getSize()));
 });
 
 var displayFeatureInfo = function(pixel) {

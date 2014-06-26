@@ -5,7 +5,6 @@ goog.provide('ol.interaction.Interaction');
 goog.require('goog.asserts');
 goog.require('ol.MapBrowserEvent');
 goog.require('ol.Observable');
-goog.require('ol.View2D');
 goog.require('ol.animation');
 goog.require('ol.easing');
 
@@ -69,13 +68,12 @@ ol.interaction.Interaction.prototype.setMap = function(map) {
 
 /**
  * @param {ol.Map} map Map.
- * @param {ol.IView2D} view View.
+ * @param {ol.View2D} view View.
  * @param {ol.Coordinate} delta Delta.
  * @param {number=} opt_duration Duration.
  */
 ol.interaction.Interaction.pan = function(
     map, view, delta, opt_duration) {
-  goog.asserts.assertInstanceof(view, ol.View2D);
   var currentCenter = view.getCenter();
   if (goog.isDef(currentCenter)) {
     if (goog.isDef(opt_duration) && opt_duration > 0) {
@@ -94,14 +92,13 @@ ol.interaction.Interaction.pan = function(
 
 /**
  * @param {ol.Map} map Map.
- * @param {ol.IView2D} view View.
+ * @param {ol.View2D} view View.
  * @param {number|undefined} rotation Rotation.
  * @param {ol.Coordinate=} opt_anchor Anchor coordinate.
  * @param {number=} opt_duration Duration.
  */
 ol.interaction.Interaction.rotate =
     function(map, view, rotation, opt_anchor, opt_duration) {
-  goog.asserts.assertInstanceof(view, ol.View2D);
   rotation = view.constrainRotation(rotation, 0);
   ol.interaction.Interaction.rotateWithoutConstraints(
       map, view, rotation, opt_anchor, opt_duration);
@@ -110,14 +107,13 @@ ol.interaction.Interaction.rotate =
 
 /**
  * @param {ol.Map} map Map.
- * @param {ol.IView2D} view View.
+ * @param {ol.View2D} view View.
  * @param {number|undefined} rotation Rotation.
  * @param {ol.Coordinate=} opt_anchor Anchor coordinate.
  * @param {number=} opt_duration Duration.
  */
 ol.interaction.Interaction.rotateWithoutConstraints =
     function(map, view, rotation, opt_anchor, opt_duration) {
-  goog.asserts.assertInstanceof(view, ol.View2D);
   if (goog.isDefAndNotNull(rotation)) {
     var currentRotation = view.getRotation();
     var currentCenter = view.getCenter();
@@ -136,7 +132,6 @@ ol.interaction.Interaction.rotateWithoutConstraints =
         }));
       }
     }
-    goog.asserts.assertInstanceof(view, ol.View2D);
     view.rotate(rotation, opt_anchor);
   }
 };
@@ -144,7 +139,7 @@ ol.interaction.Interaction.rotateWithoutConstraints =
 
 /**
  * @param {ol.Map} map Map.
- * @param {ol.IView2D} view View.
+ * @param {ol.View2D} view View.
  * @param {number|undefined} resolution Resolution to go to.
  * @param {ol.Coordinate=} opt_anchor Anchor coordinate.
  * @param {number=} opt_duration Duration.
@@ -159,7 +154,6 @@ ol.interaction.Interaction.rotateWithoutConstraints =
  */
 ol.interaction.Interaction.zoom =
     function(map, view, resolution, opt_anchor, opt_duration, opt_direction) {
-  goog.asserts.assertInstanceof(view, ol.View2D);
   resolution = view.constrainResolution(resolution, 0, opt_direction);
   ol.interaction.Interaction.zoomWithoutConstraints(
       map, view, resolution, opt_anchor, opt_duration);
@@ -168,14 +162,13 @@ ol.interaction.Interaction.zoom =
 
 /**
  * @param {ol.Map} map Map.
- * @param {ol.IView2D} view View.
+ * @param {ol.View2D} view View.
  * @param {number} delta Delta from previous zoom level.
  * @param {ol.Coordinate=} opt_anchor Anchor coordinate.
  * @param {number=} opt_duration Duration.
  */
 ol.interaction.Interaction.zoomByDelta =
     function(map, view, delta, opt_anchor, opt_duration) {
-  goog.asserts.assertInstanceof(view, ol.View2D);
   var currentResolution = view.getResolution();
   var resolution = view.constrainResolution(currentResolution, delta, 0);
   ol.interaction.Interaction.zoomWithoutConstraints(
@@ -185,14 +178,13 @@ ol.interaction.Interaction.zoomByDelta =
 
 /**
  * @param {ol.Map} map Map.
- * @param {ol.IView2D} view View.
+ * @param {ol.View2D} view View.
  * @param {number|undefined} resolution Resolution to go to.
  * @param {ol.Coordinate=} opt_anchor Anchor coordinate.
  * @param {number=} opt_duration Duration.
  */
 ol.interaction.Interaction.zoomWithoutConstraints =
     function(map, view, resolution, opt_anchor, opt_duration) {
-  goog.asserts.assertInstanceof(view, ol.View2D);
   if (goog.isDefAndNotNull(resolution)) {
     var currentResolution = view.getResolution();
     var currentCenter = view.getCenter();
@@ -211,7 +203,6 @@ ol.interaction.Interaction.zoomWithoutConstraints =
         }));
       }
     }
-    goog.asserts.assertInstanceof(view, ol.View2D);
     if (goog.isDefAndNotNull(opt_anchor)) {
       var center = view.calculateCenterZoom(resolution, opt_anchor);
       view.setCenter(center);
