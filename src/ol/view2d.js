@@ -367,7 +367,6 @@ ol.View2D.prototype.getValueForResolutionFunction = function(opt_power) {
 
 /**
  * @inheritDoc
- * @todo api
  */
 ol.View2D.prototype.getView2D = function() {
   return this;
