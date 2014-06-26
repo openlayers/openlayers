@@ -118,6 +118,7 @@ ol.renderer.canvas.Map.prototype.dispatchComposeEvent_ =
     var composeEvent = new ol.render.Event(type, map, vectorContext,
         replayGroup, frameState, context, null);
     map.dispatchEvent(composeEvent);
+    replayGroup.finish();
     vectorContext.flush();
     if (!replayGroup.isEmpty()) {
       replayGroup.replay(context, extent, pixelRatio, this.transform_,
