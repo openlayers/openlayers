@@ -105,7 +105,7 @@ ol.renderer.dom.TileLayer.prototype.prepareFrame =
   var extent;
   if (tileResolution == viewState.resolution) {
     center = this.snapCenterToPixel(center, tileResolution, frameState.size);
-    extent = ol.extent.getForView2DAndSize(
+    extent = ol.extent.getForViewAndSize(
         center, tileResolution, viewState.rotation, frameState.size);
   } else {
     extent = frameState.extent;

@@ -1231,7 +1231,7 @@ ol.Map.prototype.renderFrame_ = function(time) {
   preRenderFunctions.length = n;
 
   if (!goog.isNull(frameState)) {
-    frameState.extent = ol.extent.getForView2DAndSize(viewState.center,
+    frameState.extent = ol.extent.getForViewAndSize(viewState.center,
         viewState.resolution, viewState.rotation, frameState.size);
   }
 
