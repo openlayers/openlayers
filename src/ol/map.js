@@ -45,7 +45,7 @@ goog.require('ol.RendererType');
 goog.require('ol.Size');
 goog.require('ol.Tile');
 goog.require('ol.TileQueue');
-goog.require('ol.View2D');
+goog.require('ol.View');
 goog.require('ol.ViewHint');
 goog.require('ol.control');
 goog.require('ol.extent');
@@ -125,7 +125,7 @@ ol.MapProperty = {
  * needs a view, one or more layers, and a target container:
  *
  *     var map = new ol.Map({
- *       view: new ol.View2D({
+ *       view: new ol.View({
  *         center: [0, 0],
  *         zoom: 1
  *       }),
@@ -748,12 +748,12 @@ goog.exportProperty(
 /**
  * Get the view associated with this map. A view manages properties such as
  * center and resolution.
- * @return {ol.View2D|undefined} The view that controls this map.
+ * @return {ol.View|undefined} The view that controls this map.
  * @todo observable
  * @todo api stable
  */
 ol.Map.prototype.getView = function() {
-  return /** @type {ol.View2D} */ (this.get(ol.MapProperty.VIEW));
+  return /** @type {ol.View} */ (this.get(ol.MapProperty.VIEW));
 };
 goog.exportProperty(
     ol.Map.prototype,
@@ -1315,7 +1315,7 @@ goog.exportProperty(
 
 /**
  * Set the view for this map.
- * @param {ol.View2D} view The view that controls this map.
+ * @param {ol.View} view The view that controls this map.
  * @todo observable
  * @todo api stable
  */
@@ -1417,7 +1417,7 @@ ol.Map.createOptionsInternal = function(options) {
   values[ol.MapProperty.TARGET] = options.target;
 
   values[ol.MapProperty.VIEW] = goog.isDef(options.view) ?
-      options.view : new ol.View2D();
+      options.view : new ol.View();
 
   /**
    * @type {function(new: ol.renderer.Map, Element, ol.Map)}

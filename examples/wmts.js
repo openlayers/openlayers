@@ -1,6 +1,6 @@
 goog.require('ol.Attribution');
 goog.require('ol.Map');
-goog.require('ol.View2D');
+goog.require('ol.View');
 goog.require('ol.extent');
 goog.require('ol.layer.Tile');
 goog.require('ol.proj');
@@ -53,7 +53,7 @@ var map = new ol.Map({
     })
   ],
   target: 'map',
-  view: new ol.View2D({
+  view: new ol.View({
     center: [-11158582, 4813697],
     zoom: 4
   })

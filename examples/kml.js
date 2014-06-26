@@ -1,5 +1,5 @@
 goog.require('ol.Map');
-goog.require('ol.View2D');
+goog.require('ol.View');
 goog.require('ol.format.KML');
 goog.require('ol.layer.Tile');
 goog.require('ol.layer.Vector');
@@ -26,7 +26,7 @@ var vector = new ol.layer.Vector({
 var map = new ol.Map({
   layers: [raster, vector],
   target: document.getElementById('map'),
-  view: new ol.View2D({
+  view: new ol.View({
     center: [876970.8463461736, 5859807.853963373],
     projection: projection,
     zoom: 10

@@ -2,14 +2,14 @@ goog.require('ol.Feature');
 goog.require('ol.FeatureOverlay');
 goog.require('ol.Geolocation');
 goog.require('ol.Map');
-goog.require('ol.View2D');
+goog.require('ol.View');
 goog.require('ol.dom.Input');
 goog.require('ol.geom.Point');
 goog.require('ol.layer.Tile');
 goog.require('ol.source.OSM');
 
 
-var view = new ol.View2D({
+var view = new ol.View({
   center: [0, 0],
   zoom: 2
 });

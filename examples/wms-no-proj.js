@@ -1,6 +1,6 @@
 goog.require('ol.Attribution');
 goog.require('ol.Map');
-goog.require('ol.View2D');
+goog.require('ol.View');
 goog.require('ol.layer.Image');
 goog.require('ol.layer.Tile');
 goog.require('ol.proj.Projection');
@@ -53,7 +53,7 @@ var map = new ol.Map({
   layers: layers,
   renderer: exampleNS.getRendererFromQueryString(),
   target: 'map',
-  view: new ol.View2D({
+  view: new ol.View({
     center: [660000, 190000],
     projection: projection,
     zoom: 9

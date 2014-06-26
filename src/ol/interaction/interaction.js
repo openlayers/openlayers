@@ -68,7 +68,7 @@ ol.interaction.Interaction.prototype.setMap = function(map) {
 
 /**
  * @param {ol.Map} map Map.
- * @param {ol.View2D} view View.
+ * @param {ol.View} view View.
  * @param {ol.Coordinate} delta Delta.
  * @param {number=} opt_duration Duration.
  */
@@ -92,7 +92,7 @@ ol.interaction.Interaction.pan = function(
 
 /**
  * @param {ol.Map} map Map.
- * @param {ol.View2D} view View.
+ * @param {ol.View} view View.
  * @param {number|undefined} rotation Rotation.
  * @param {ol.Coordinate=} opt_anchor Anchor coordinate.
  * @param {number=} opt_duration Duration.
@@ -107,7 +107,7 @@ ol.interaction.Interaction.rotate =
 
 /**
  * @param {ol.Map} map Map.
- * @param {ol.View2D} view View.
+ * @param {ol.View} view View.
  * @param {number|undefined} rotation Rotation.
  * @param {ol.Coordinate=} opt_anchor Anchor coordinate.
  * @param {number=} opt_duration Duration.
@@ -139,7 +139,7 @@ ol.interaction.Interaction.rotateWithoutConstraints =
 
 /**
  * @param {ol.Map} map Map.
- * @param {ol.View2D} view View.
+ * @param {ol.View} view View.
  * @param {number|undefined} resolution Resolution to go to.
  * @param {ol.Coordinate=} opt_anchor Anchor coordinate.
  * @param {number=} opt_duration Duration.
@@ -162,7 +162,7 @@ ol.interaction.Interaction.zoom =
 
 /**
  * @param {ol.Map} map Map.
- * @param {ol.View2D} view View.
+ * @param {ol.View} view View.
  * @param {number} delta Delta from previous zoom level.
  * @param {ol.Coordinate=} opt_anchor Anchor coordinate.
  * @param {number=} opt_duration Duration.
@@ -178,7 +178,7 @@ ol.interaction.Interaction.zoomByDelta =
 
 /**
  * @param {ol.Map} map Map.
- * @param {ol.View2D} view View.
+ * @param {ol.View} view View.
  * @param {number|undefined} resolution Resolution to go to.
  * @param {ol.Coordinate=} opt_anchor Anchor coordinate.
  * @param {number=} opt_duration Duration.

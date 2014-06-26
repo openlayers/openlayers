@@ -6,7 +6,7 @@
 [Creation](ol.Map.html#Map)<br>
 [Events](ol.MapBrowserEvent.html)</td>
 <td><p>The view manages the visual parameters of the map view, like resolution or rotation.</p>
-[ol.View2D](ol.View2D.html) with center, projection, resolution and rotation</td>
+[ol.View](ol.View.html) with center, projection, resolution and rotation</td>
 <td><p>Layers are lightweight containers that get their data from [sources](ol.source.html).</p>
 [ol.layer.Tile](ol.layer.Tile.html)<br>
 [ol.layer.Image](ol.layer.Image.html)<br>

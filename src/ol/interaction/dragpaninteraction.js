@@ -74,15 +74,15 @@ ol.interaction.DragPan.prototype.handlePointerDrag = function(mapBrowserEvent) {
     var deltaX = this.lastCentroid[0] - centroid[0];
     var deltaY = centroid[1] - this.lastCentroid[1];
     var map = mapBrowserEvent.map;
-    var view2D = map.getView();
-    var viewState = view2D.getState();
+    var view = map.getView();
+    var viewState = view.getState();
     var center = [deltaX, deltaY];
     ol.coordinate.scale(center, viewState.resolution);
     ol.coordinate.rotate(center, viewState.rotation);
     ol.coordinate.add(center, viewState.center);
-    center = view2D.constrainCenter(center);
+    center = view.constrainCenter(center);
     map.render();
-    view2D.setCenter(center);
+    view.setCenter(center);
   }
   this.lastCentroid = centroid;
 };
@@ -94,12 +94,12 @@ ol.interaction.DragPan.prototype.handlePointerDrag = function(mapBrowserEvent) {
 ol.interaction.DragPan.prototype.handlePointerUp =
     function(mapBrowserEvent) {
   var map = mapBrowserEvent.map;
-  var view2D = map.getView();
+  var view = map.getView();
   if (this.targetPointers.length === 0) {
     if (!this.noKinetic_ && this.kinetic_ && this.kinetic_.end()) {
       var distance = this.kinetic_.getDistance();
       var angle = this.kinetic_.getAngle();
-      var center = view2D.getCenter();
+      var center = view.getCenter();
       goog.asserts.assert(goog.isDef(center));
       this.kineticPreRenderFn_ = this.kinetic_.pan(center);
       map.beforeRender(this.kineticPreRenderFn_);
@@ -108,10 +108,10 @@ ol.interaction.DragPan.prototype.handlePointerUp =
         centerpx[0] - distance * Math.cos(angle),
         centerpx[1] - distance * Math.sin(angle)
       ]);
-      dest = view2D.constrainCenter(dest);
-      view2D.setCenter(dest);
+      dest = view.constrainCenter(dest);
+      view.setCenter(dest);
     }
-    view2D.setHint(ol.ViewHint.INTERACTING, -1);
+    view.setHint(ol.ViewHint.INTERACTING, -1);
     map.render();
     return false;
   } else {
@@ -128,15 +128,15 @@ ol.interaction.DragPan.prototype.handlePointerDown =
     function(mapBrowserEvent) {
   if (this.targetPointers.length > 0 && this.condition_(mapBrowserEvent)) {
     var map = mapBrowserEvent.map;
-    var view2D = map.getView();
+    var view = map.getView();
     this.lastCentroid = null;
     if (!this.handlingDownUpSequence) {
-      view2D.setHint(ol.ViewHint.INTERACTING, 1);
+      view.setHint(ol.ViewHint.INTERACTING, 1);
     }
     map.render();
     if (!goog.isNull(this.kineticPreRenderFn_) &&
         map.removePreRenderFunction(this.kineticPreRenderFn_)) {
-      view2D.setCenter(mapBrowserEvent.frameState.viewState.center);
+      view.setCenter(mapBrowserEvent.frameState.viewState.center);
       this.kineticPreRenderFn_ = null;
     }
     if (this.kinetic_) {

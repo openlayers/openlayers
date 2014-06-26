@@ -110,7 +110,7 @@ olx.GeolocationOptions.prototype.projection;
  *     overlays: (ol.Collection|Array.<ol.Overlay>|undefined),
  *     renderer: (ol.RendererType|Array.<ol.RendererType|string>|string|undefined),
  *     target: (Element|string|undefined),
- *     view: (ol.View2D|undefined)}}
+ *     view: (ol.View|undefined)}}
  * @todo api
  */
 olx.MapOptions;
@@ -203,7 +203,7 @@ olx.MapOptions.prototype.target;
 /**
  * The map's view.  No layer sources will be fetched unless this is specified at
  * construction time or through {@link ol.Map#setView}.
- * @type {ol.View2D|undefined}
+ * @type {ol.View|undefined}
  */
 olx.MapOptions.prototype.view;
 
@@ -488,7 +488,7 @@ olx.View2DOptions.prototype.rotation;
 /**
  * Only used if `resolution` is not defined. Zoom level used to calculate the
  * initial resolution for the view. The initial resolution is determined using
- * the `ol.View2D#constrainResolution` method.
+ * the `ol.View#constrainResolution` method.
  * @type {number|undefined}
  */
 olx.View2DOptions.prototype.zoom;
@@ -5036,7 +5036,7 @@ olx.tilegrid.ZoomifyOptions.prototype.resolutions;
  *     minResolution: (number|undefined)}}
  * @todo api
  */
-olx.View2D.fitGeometryOptions;
+olx.View.fitGeometryOptions;
 
 
 /**
@@ -5044,28 +5044,28 @@ olx.View2D.fitGeometryOptions;
  * top, right, bottom and left padding. Default is `[0, 0, 0, 0]`.
  * @type {!Array.<number>}
  */
-olx.View2D.fitGeometryOptions.prototype.padding;
+olx.View.fitGeometryOptions.prototype.padding;
 
 
 /**
  * Constrain the resolution. Default is `true`.
  * @type {boolean|undefined}
  */
-olx.View2D.fitGeometryOptions.prototype.constrainResolution;
+olx.View.fitGeometryOptions.prototype.constrainResolution;
 
 
 /**
  * Get the nearest extent. Default is `false`.
  * @type {boolean|undefined}
  */
-olx.View2D.fitGeometryOptions.prototype.nearest;
+olx.View.fitGeometryOptions.prototype.nearest;
 
 
 /**
  * Minimum resolution that we zoom to. Default is `0`.
  * @type {number|undefined}
  */
-olx.View2D.fitGeometryOptions.prototype.minResolution;
+olx.View.fitGeometryOptions.prototype.minResolution;
 
 
 /* typedefs for object literals exposed by the library */

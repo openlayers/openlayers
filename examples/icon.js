@@ -1,7 +1,7 @@
 goog.require('ol.Feature');
 goog.require('ol.Map');
 goog.require('ol.Overlay');
-goog.require('ol.View2D');
+goog.require('ol.View');
 goog.require('ol.geom.Point');
 goog.require('ol.layer.Tile');
 goog.require('ol.layer.Vector');
@@ -47,7 +47,7 @@ var rasterLayer = new ol.layer.Tile({
 var map = new ol.Map({
   layers: [rasterLayer, vectorLayer],
   target: document.getElementById('map'),
-  view: new ol.View2D({
+  view: new ol.View({
     center: [0, 0],
     zoom: 3
   })

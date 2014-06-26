@@ -1,5 +1,5 @@
 goog.require('ol.Map');
-goog.require('ol.View2D');
+goog.require('ol.View');
 goog.require('ol.format.OSMXML');
 goog.require('ol.layer.Tile');
 goog.require('ol.layer.Vector');
@@ -131,7 +131,7 @@ var raster = new ol.layer.Tile({
 var map = new ol.Map({
   layers: [raster, vector],
   target: document.getElementById('map'),
-  view: new ol.View2D({
+  view: new ol.View({
     center: [739218, 5906096],
     maxZoom: 19,
     zoom: 17

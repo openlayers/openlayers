@@ -1,5 +1,5 @@
 goog.require('ol.Map');
-goog.require('ol.View2D');
+goog.require('ol.View');
 goog.require('ol.control.ZoomSlider');
 goog.require('ol.layer.Tile');
 goog.require('ol.source.MapQuest');
@@ -21,7 +21,7 @@ var createMap = function(divId) {
   map = new ol.Map({
     layers: [layer],
     target: divId,
-    view: new ol.View2D({
+    view: new ol.View({
       center: [0, 0],
       zoom: 2
     })

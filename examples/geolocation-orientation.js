@@ -1,14 +1,14 @@
 goog.require('ol.Geolocation');
 goog.require('ol.Map');
 goog.require('ol.Overlay');
-goog.require('ol.View2D');
+goog.require('ol.View');
 goog.require('ol.geom.LineString');
 goog.require('ol.layer.Tile');
 goog.require('ol.proj');
 goog.require('ol.source.OSM');
 
 // creating the view
-var view = new ol.View2D({
+var view = new ol.View({
   center: ol.proj.transform([5.8713, 45.6452], 'EPSG:4326', 'EPSG:3857'),
   zoom: 19
 });

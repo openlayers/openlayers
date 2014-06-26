@@ -1,4 +1,4 @@
-goog.provide('ol.View2D');
+goog.provide('ol.View');
 goog.provide('ol.View2DProperty');
 goog.provide('ol.ViewHint');
 
@@ -43,18 +43,18 @@ ol.ViewHint = {
 
 /**
  * @classdesc
- * An ol.View2D object represents a simple 2D view of the map.
+ * An ol.View object represents a simple 2D view of the map.
  *
  * This is the object to act upon to change the center, resolution,
  * and rotation of the map.
  *
  * ### The view states
  *
- * An `ol.View2D` is determined by three states: `center`, `resolution`,
+ * An `ol.View` is determined by three states: `center`, `resolution`,
  * and `rotation`. To each state corresponds a getter and a setter. E.g.
  * `getCenter` and `setCenter` for the `center` state.
  *
- * An `ol.View2D` has a `projection`. The projection determines the
+ * An `ol.View` has a `projection`. The projection determines the
  * coordinate system of the center, and its units determine the units of the
  * resolution (projection units per pixel). The default projection is
  * Spherical Mercator (EPSG:3857).
@@ -66,7 +66,7 @@ ol.ViewHint = {
  * that is passed to a setter will effectively be the value set in the view,
  * and returned by the corresponding getter.
  *
- * But an `ol.View2D` object also has a *resolution constraint*, a
+ * But an `ol.View` object also has a *resolution constraint*, a
  * *rotation constraint* and a *center constraint*.
  *
  * As said above no constraints are applied when the setters are used to set
@@ -89,10 +89,10 @@ ol.ViewHint = {
  *
  * @constructor
  * @extends {ol.Object}
- * @param {olx.View2DOptions=} opt_options View2D options.
+ * @param {olx.View2DOptions=} opt_options View options.
  * @todo api
  */
-ol.View2D = function(opt_options) {
+ol.View = function(opt_options) {
   goog.base(this);
   var options = goog.isDef(opt_options) ? opt_options : {};
 
@@ -111,7 +111,7 @@ ol.View2D = function(opt_options) {
   values[ol.View2DProperty.PROJECTION] = ol.proj.createProjection(
       options.projection, 'EPSG:3857');
 
-  var resolutionConstraintInfo = ol.View2D.createResolutionConstraint_(
+  var resolutionConstraintInfo = ol.View.createResolutionConstraint_(
       options);
 
   /**
@@ -132,9 +132,9 @@ ol.View2D = function(opt_options) {
    */
   this.minZoom_ = resolutionConstraintInfo.minZoom;
 
-  var centerConstraint = ol.View2D.createCenterConstraint_(options);
+  var centerConstraint = ol.View.createCenterConstraint_(options);
   var resolutionConstraint = resolutionConstraintInfo.constraint;
-  var rotationConstraint = ol.View2D.createRotationConstraint_(options);
+  var rotationConstraint = ol.View.createRotationConstraint_(options);
 
   /**
    * @private
@@ -153,7 +153,7 @@ ol.View2D = function(opt_options) {
       goog.isDef(options.rotation) ? options.rotation : 0;
   this.setValues(values);
 };
-goog.inherits(ol.View2D, ol.Object);
+goog.inherits(ol.View, ol.Object);
 
 
 /**
@@ -161,7 +161,7 @@ goog.inherits(ol.View2D, ol.Object);
  * @param {ol.Coordinate} anchor Rotation anchor.
  * @return {ol.Coordinate|undefined} Center for rotation and anchor.
  */
-ol.View2D.prototype.calculateCenterRotate = function(rotation, anchor) {
+ol.View.prototype.calculateCenterRotate = function(rotation, anchor) {
   var center;
   var currentCenter = this.getCenter();
   if (goog.isDef(currentCenter)) {
@@ -178,7 +178,7 @@ ol.View2D.prototype.calculateCenterRotate = function(rotation, anchor) {
  * @param {ol.Coordinate} anchor Zoom anchor.
  * @return {ol.Coordinate|undefined} Center for resolution and anchor.
  */
-ol.View2D.prototype.calculateCenterZoom = function(resolution, anchor) {
+ol.View.prototype.calculateCenterZoom = function(resolution, anchor) {
   var center;
   var currentCenter = this.getCenter();
   var currentResolution = this.getResolution();
@@ -199,7 +199,7 @@ ol.View2D.prototype.calculateCenterZoom = function(resolution, anchor) {
  * @return {ol.Coordinate|undefined} Constrained center.
  * @todo api
  */
-ol.View2D.prototype.constrainCenter = function(center) {
+ol.View.prototype.constrainCenter = function(center) {
   return this.constraints_.center(center);
 };
 
@@ -212,7 +212,7 @@ ol.View2D.prototype.constrainCenter = function(center) {
  * @return {number|undefined} Constrained resolution.
  * @todo api
  */
-ol.View2D.prototype.constrainResolution = function(
+ol.View.prototype.constrainResolution = function(
     resolution, opt_delta, opt_direction) {
   var delta = opt_delta || 0;
   var direction = opt_direction || 0;
@@ -227,7 +227,7 @@ ol.View2D.prototype.constrainResolution = function(
  * @return {number|undefined} Constrained rotation.
  * @todo api
  */
-ol.View2D.prototype.constrainRotation = function(rotation, opt_delta) {
+ol.View.prototype.constrainRotation = function(rotation, opt_delta) {
   var delta = opt_delta || 0;
   return this.constraints_.rotation(rotation, delta);
 };
@@ -238,20 +238,20 @@ ol.View2D.prototype.constrainRotation = function(rotation, opt_delta) {
  * @todo observable
  * @todo api
  */
-ol.View2D.prototype.getCenter = function() {
+ol.View.prototype.getCenter = function() {
   return /** @type {ol.Coordinate|undefined} */ (
       this.get(ol.View2DProperty.CENTER));
 };
 goog.exportProperty(
-    ol.View2D.prototype,
+    ol.View.prototype,
     'getCenter',
-    ol.View2D.prototype.getCenter);
+    ol.View.prototype.getCenter);
 
 
 /**
  * @return {Array.<number>} Hint.
  */
-ol.View2D.prototype.getHints = function() {
+ol.View.prototype.getHints = function() {
   return goog.array.clone(this.hints_);
 };
 
@@ -263,7 +263,7 @@ ol.View2D.prototype.getHints = function() {
  * @return {ol.Extent} Extent.
  * @todo api
  */
-ol.View2D.prototype.calculateExtent = function(size) {
+ol.View.prototype.calculateExtent = function(size) {
   goog.asserts.assert(this.isDef());
   var center = this.getCenter();
   var resolution = this.getResolution();
@@ -280,14 +280,14 @@ ol.View2D.prototype.calculateExtent = function(size) {
  * @todo observable
  * @todo api
  */
-ol.View2D.prototype.getProjection = function() {
+ol.View.prototype.getProjection = function() {
   return /** @type {ol.proj.Projection|undefined} */ (
       this.get(ol.View2DProperty.PROJECTION));
 };
 goog.exportProperty(
-    ol.View2D.prototype,
+    ol.View.prototype,
     'getProjection',
-    ol.View2D.prototype.getProjection);
+    ol.View.prototype.getProjection);
 
 
 /**
@@ -295,14 +295,14 @@ goog.exportProperty(
  * @todo observable
  * @todo api
  */
-ol.View2D.prototype.getResolution = function() {
+ol.View.prototype.getResolution = function() {
   return /** @type {number|undefined} */ (
       this.get(ol.View2DProperty.RESOLUTION));
 };
 goog.exportProperty(
-    ol.View2D.prototype,
+    ol.View.prototype,
     'getResolution',
-    ol.View2D.prototype.getResolution);
+    ol.View.prototype.getResolution);
 
 
 /**
@@ -313,7 +313,7 @@ goog.exportProperty(
  *     the given size.
  * @todo api
  */
-ol.View2D.prototype.getResolutionForExtent = function(extent, size) {
+ol.View.prototype.getResolutionForExtent = function(extent, size) {
   var xResolution = ol.extent.getWidth(extent) / size[0];
   var yResolution = ol.extent.getHeight(extent) / size[1];
   return Math.max(xResolution, yResolution);
@@ -326,7 +326,7 @@ ol.View2D.prototype.getResolutionForExtent = function(extent, size) {
  * @param {number=} opt_power Power.
  * @return {function(number): number} Resolution for value function.
  */
-ol.View2D.prototype.getResolutionForValueFunction = function(opt_power) {
+ol.View.prototype.getResolutionForValueFunction = function(opt_power) {
   var power = opt_power || 2;
   var maxResolution = this.maxResolution_;
   var minResolution = this.minResolution_;
@@ -350,13 +350,13 @@ ol.View2D.prototype.getResolutionForValueFunction = function(opt_power) {
  * @todo observable
  * @todo api
  */
-ol.View2D.prototype.getRotation = function() {
+ol.View.prototype.getRotation = function() {
   return /** @type {number|undefined} */ (this.get(ol.View2DProperty.ROTATION));
 };
 goog.exportProperty(
-    ol.View2D.prototype,
+    ol.View.prototype,
     'getRotation',
-    ol.View2D.prototype.getRotation);
+    ol.View.prototype.getRotation);
 
 
 /**
@@ -365,7 +365,7 @@ goog.exportProperty(
  * @param {number=} opt_power Power.
  * @return {function(number): number} Value for resolution function.
  */
-ol.View2D.prototype.getValueForResolutionFunction = function(opt_power) {
+ol.View.prototype.getValueForResolutionFunction = function(opt_power) {
   var power = opt_power || 2;
   var maxResolution = this.maxResolution_;
   var minResolution = this.minResolution_;
@@ -385,9 +385,9 @@ ol.View2D.prototype.getValueForResolutionFunction = function(opt_power) {
 
 
 /**
- * @return {olx.ViewState} View2D state.
+ * @return {olx.ViewState} View state.
  */
-ol.View2D.prototype.getState = function() {
+ol.View.prototype.getState = function() {
   goog.asserts.assert(this.isDef());
   var center = /** @type {ol.Coordinate} */ (this.getCenter());
   var projection = this.getProjection();
@@ -408,7 +408,7 @@ ol.View2D.prototype.getState = function() {
  * @return {number|undefined} Zoom.
  * @todo api
  */
-ol.View2D.prototype.getZoom = function() {
+ol.View.prototype.getZoom = function() {
   var offset;
   var resolution = this.getResolution();
 
@@ -434,7 +434,7 @@ ol.View2D.prototype.getZoom = function() {
  * @param {ol.Size} size Box pixel size.
  * @todo api
  */
-ol.View2D.prototype.fitExtent = function(extent, size) {
+ol.View.prototype.fitExtent = function(extent, size) {
   if (!ol.extent.isEmpty(extent)) {
     this.setCenter(ol.extent.getCenter(extent));
     var resolution = this.getResolutionForExtent(extent, size);
@@ -453,10 +453,10 @@ ol.View2D.prototype.fitExtent = function(extent, size) {
  * Take care on the map angle.
  * @param {ol.geom.SimpleGeometry} geometry Geometry.
  * @param {ol.Size} size Box pixel size.
- * @param {olx.View2D.fitGeometryOptions=} opt_options Options.
+ * @param {olx.View.fitGeometryOptions=} opt_options Options.
  * @todo api
  */
-ol.View2D.prototype.fitGeometry = function(geometry, size, opt_options) {
+ol.View.prototype.fitGeometry = function(geometry, size, opt_options) {
   var options = goog.isDef(opt_options) ? opt_options : {};
 
   var padding = goog.isDef(options.padding) ? options.padding : [0, 0, 0, 0];
@@ -523,7 +523,7 @@ ol.View2D.prototype.fitGeometry = function(geometry, size, opt_options) {
  * @param {ol.Pixel} position Position on the view to center on.
  * @todo api
  */
-ol.View2D.prototype.centerOn = function(coordinate, size, position) {
+ol.View.prototype.centerOn = function(coordinate, size, position) {
   // calculate rotated position
   var rotation = this.getRotation();
   var cosAngle = Math.cos(-rotation);
@@ -546,7 +546,7 @@ ol.View2D.prototype.centerOn = function(coordinate, size, position) {
 /**
  * @return {boolean} Is defined.
  */
-ol.View2D.prototype.isDef = function() {
+ol.View.prototype.isDef = function() {
   return goog.isDefAndNotNull(this.getCenter()) &&
       goog.isDef(this.getResolution());
 };
@@ -558,7 +558,7 @@ ol.View2D.prototype.isDef = function() {
  * @param {ol.Coordinate=} opt_anchor The rotation center.
  * @todo api
  */
-ol.View2D.prototype.rotate = function(rotation, opt_anchor) {
+ol.View.prototype.rotate = function(rotation, opt_anchor) {
   if (goog.isDef(opt_anchor)) {
     var center = this.calculateCenterRotate(rotation, opt_anchor);
     this.setCenter(center);
@@ -573,13 +573,13 @@ ol.View2D.prototype.rotate = function(rotation, opt_anchor) {
  * @todo observable
  * @todo api
  */
-ol.View2D.prototype.setCenter = function(center) {
+ol.View.prototype.setCenter = function(center) {
   this.set(ol.View2DProperty.CENTER, center);
 };
 goog.exportProperty(
-    ol.View2D.prototype,
+    ol.View.prototype,
     'setCenter',
-    ol.View2D.prototype.setCenter);
+    ol.View.prototype.setCenter);
 
 
 /**
@@ -587,7 +587,7 @@ goog.exportProperty(
  * @param {number} delta Delta.
  * @return {number} New value.
  */
-ol.View2D.prototype.setHint = function(hint, delta) {
+ol.View.prototype.setHint = function(hint, delta) {
   goog.asserts.assert(0 <= hint && hint < this.hints_.length);
   this.hints_[hint] += delta;
   goog.asserts.assert(this.hints_[hint] >= 0);
@@ -602,13 +602,13 @@ ol.View2D.prototype.setHint = function(hint, delta) {
  * @todo observable
  * @todo api
  */
-ol.View2D.prototype.setProjection = function(projection) {
+ol.View.prototype.setProjection = function(projection) {
   this.set(ol.View2DProperty.PROJECTION, projection);
 };
 goog.exportProperty(
-    ol.View2D.prototype,
+    ol.View.prototype,
     'setProjection',
-    ol.View2D.prototype.setProjection);
+    ol.View.prototype.setProjection);
 
 
 /**
@@ -617,13 +617,13 @@ goog.exportProperty(
  * @todo observable
  * @todo api
  */
-ol.View2D.prototype.setResolution = function(resolution) {
+ol.View.prototype.setResolution = function(resolution) {
   this.set(ol.View2DProperty.RESOLUTION, resolution);
 };
 goog.exportProperty(
-    ol.View2D.prototype,
+    ol.View.prototype,
     'setResolution',
-    ol.View2D.prototype.setResolution);
+    ol.View.prototype.setResolution);
 
 
 /**
@@ -632,13 +632,13 @@ goog.exportProperty(
  * @todo observable
  * @todo api
  */
-ol.View2D.prototype.setRotation = function(rotation) {
+ol.View.prototype.setRotation = function(rotation) {
   this.set(ol.View2DProperty.ROTATION, rotation);
 };
 goog.exportProperty(
-    ol.View2D.prototype,
+    ol.View.prototype,
     'setRotation',
-    ol.View2D.prototype.setRotation);
+    ol.View.prototype.setRotation);
 
 
 /**
@@ -646,7 +646,7 @@ goog.exportProperty(
  * @param {number} zoom Zoom level.
  * @todo api
  */
-ol.View2D.prototype.setZoom = function(zoom) {
+ol.View.prototype.setZoom = function(zoom) {
   var resolution = this.constrainResolution(
       this.maxResolution_, zoom - this.minZoom_, 0);
   this.setResolution(resolution);
@@ -654,11 +654,11 @@ ol.View2D.prototype.setZoom = function(zoom) {
 
 
 /**
- * @param {olx.View2DOptions} options View2D options.
+ * @param {olx.View2DOptions} options View options.
  * @private
  * @return {ol.CenterConstraintType}
  */
-ol.View2D.createCenterConstraint_ = function(options) {
+ol.View.createCenterConstraint_ = function(options) {
   if (goog.isDef(options.extent)) {
     return ol.CenterConstraint.createExtent(options.extent);
   } else {
@@ -669,11 +669,11 @@ ol.View2D.createCenterConstraint_ = function(options) {
 
 /**
  * @private
- * @param {olx.View2DOptions} options View2D options.
+ * @param {olx.View2DOptions} options View options.
  * @return {{constraint: ol.ResolutionConstraintType, maxResolution: number,
  *     minResolution: number}}
  */
-ol.View2D.createResolutionConstraint_ = function(options) {
+ol.View.createResolutionConstraint_ = function(options) {
   var resolutionConstraint;
   var maxResolution;
   var minResolution;
@@ -751,10 +751,10 @@ ol.View2D.createResolutionConstraint_ = function(options) {
 
 /**
  * @private
- * @param {olx.View2DOptions} options View2D options.
+ * @param {olx.View2DOptions} options View options.
  * @return {ol.RotationConstraintType} Rotation constraint.
  */
-ol.View2D.createRotationConstraint_ = function(options) {
+ol.View.createRotationConstraint_ = function(options) {
   var enableRotation = goog.isDef(options.enableRotation) ?
       options.enableRotation : true;
   if (enableRotation) {

@@ -1,6 +1,6 @@
-goog.provide('ol.test.View2D');
+goog.provide('ol.test.View');
 
-describe('ol.View2D', function() {
+describe('ol.View', function() {
   describe('create constraints', function() {
 
     describe('create resolution constraint', function() {
@@ -8,7 +8,7 @@ describe('ol.View2D', function() {
       describe('with no options', function() {
         it('gives a correct resolution constraint function', function() {
           var options = {};
-          var fn = ol.View2D.createResolutionConstraint_(options).constraint;
+          var fn = ol.View.createResolutionConstraint_(options).constraint;
           expect(fn(156543.03392804097, 0, 0))
               .to.roughlyEqual(156543.03392804097, 1e-9);
           expect(fn(78271.51696402048, 0, 0))
@@ -24,7 +24,7 @@ describe('ol.View2D', function() {
                 maxZoom: 3,
                 zoomFactor: 3
               };
-              var info = ol.View2D.createResolutionConstraint_(options);
+              var info = ol.View.createResolutionConstraint_(options);
               var maxResolution = info.maxResolution;
               expect(maxResolution).to.eql(81);
               var minResolution = info.minResolution;
@@ -44,7 +44,7 @@ describe('ol.View2D', function() {
           var options = {
             resolutions: [97, 76, 65, 54, 0.45]
           };
-          var info = ol.View2D.createResolutionConstraint_(options);
+          var info = ol.View.createResolutionConstraint_(options);
           var maxResolution = info.maxResolution;
           expect(maxResolution).to.eql(97);
           var minResolution = info.minResolution;
@@ -62,7 +62,7 @@ describe('ol.View2D', function() {
 
         var defaultMaxRes = 156543.03392804097;
         function getConstraint(options) {
-          return ol.View2D.createResolutionConstraint_(options).constraint;
+          return ol.View.createResolutionConstraint_(options).constraint;
         }
 
         it('works with only maxZoom', function() {
@@ -129,7 +129,7 @@ describe('ol.View2D', function() {
 
         var defaultMaxRes = 156543.03392804097;
         function getConstraint(options) {
-          return ol.View2D.createResolutionConstraint_(options).constraint;
+          return ol.View.createResolutionConstraint_(options).constraint;
         }
 
         it('works with only maxResolution', function() {
@@ -198,7 +198,7 @@ describe('ol.View2D', function() {
 
         var defaultMaxRes = 156543.03392804097;
         function getConstraint(options) {
-          return ol.View2D.createResolutionConstraint_(options).constraint;
+          return ol.View.createResolutionConstraint_(options).constraint;
         }
 
         it('respects maxResolution over minZoom', function() {
@@ -242,7 +242,7 @@ describe('ol.View2D', function() {
     describe('create rotation constraint', function() {
       it('gives a correct rotation constraint function', function() {
         var options = {};
-        var fn = ol.View2D.createRotationConstraint_(options);
+        var fn = ol.View.createRotationConstraint_(options);
         expect(fn(0.01, 0)).to.eql(0);
         expect(fn(0.15, 0)).to.eql(0.15);
       });
@@ -253,7 +253,7 @@ describe('ol.View2D', function() {
   describe('#getZoom', function() {
     var view;
     beforeEach(function() {
-      view = new ol.View2D({
+      view = new ol.View({
         resolutions: [512, 256, 128, 64, 32, 16]
       });
     });
@@ -284,7 +284,7 @@ describe('ol.View2D', function() {
 
   describe('#getZoom() - constrained', function() {
     it('returns correct zoom levels', function() {
-      var view = new ol.View2D({
+      var view = new ol.View({
         minZoom: 10,
         maxZoom: 20
       });
@@ -316,7 +316,7 @@ describe('ol.View2D', function() {
     it('respects custom ol.DEFAULT_MIN_ZOOM', function() {
       ol.DEFAULT_MIN_ZOOM = 2;
 
-      var view = new ol.View2D();
+      var view = new ol.View();
 
       view.setZoom(1);
       expect(view.getZoom()).to.be(2);
@@ -333,7 +333,7 @@ describe('ol.View2D', function() {
 
     it('gives maxResolution precedence over minZoom', function() {
 
-      var view = new ol.View2D({
+      var view = new ol.View({
         maxResolution: 100,
         minZoom: 2 // this should get ignored
       });
@@ -349,7 +349,7 @@ describe('ol.View2D', function() {
   describe('fitGeometry', function() {
     var view;
     beforeEach(function() {
-      view = new ol.View2D({
+      view = new ol.View({
         resolutions: [200, 100, 50, 20, 10, 5, 2, 1]
       });
     });
@@ -419,7 +419,7 @@ describe('ol.View2D', function() {
   describe('centerOn', function() {
     var view;
     beforeEach(function() {
-      view = new ol.View2D({
+      view = new ol.View({
         resolutions: [200, 100, 50, 20, 10, 5, 2, 1]
       });
     });
@@ -445,6 +445,6 @@ describe('ol.View2D', function() {
   });
 });
 
-goog.require('ol.View2D');
+goog.require('ol.View');
 goog.require('ol.geom.LineString');
 goog.require('ol.geom.Point');
