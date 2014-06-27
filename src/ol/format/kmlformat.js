@@ -2100,17 +2100,6 @@ ol.format.KML.KML_SERIALIZERS_ = ol.xml.makeStructureNS(
 
 /**
  * @const
- * @type {Object.<string, Array.<string>>}
- * @private
- */
-ol.format.KML.DOCUMENT_SEQUENCE_ = ol.xml.makeStructureNS(
-    ol.format.KML.NAMESPACE_URIS_, [
-      'Placemark'
-    ]);
-
-
-/**
- * @const
  * @type {Object.<string, Object.<string, ol.xml.Serializer>>}
  * @private
  */
