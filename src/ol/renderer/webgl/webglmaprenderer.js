@@ -14,7 +14,6 @@ goog.require('goog.style');
 goog.require('goog.webgl');
 goog.require('ol');
 goog.require('ol.RendererType');
-goog.require('ol.Tile');
 goog.require('ol.css');
 goog.require('ol.dom');
 goog.require('ol.layer.Image');

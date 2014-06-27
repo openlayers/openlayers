@@ -43,7 +43,6 @@ goog.require('ol.PostRenderFunction');
 goog.require('ol.PreRenderFunction');
 goog.require('ol.RendererType');
 goog.require('ol.Size');
-goog.require('ol.Tile');
 goog.require('ol.TileQueue');
 goog.require('ol.View');
 goog.require('ol.ViewHint');

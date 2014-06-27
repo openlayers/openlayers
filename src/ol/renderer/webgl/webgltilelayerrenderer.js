@@ -9,7 +9,6 @@ goog.require('goog.object');
 goog.require('goog.vec.Mat4');
 goog.require('goog.vec.Vec4');
 goog.require('goog.webgl');
-goog.require('ol.Tile');
 goog.require('ol.TileRange');
 goog.require('ol.TileState');
 goog.require('ol.extent');

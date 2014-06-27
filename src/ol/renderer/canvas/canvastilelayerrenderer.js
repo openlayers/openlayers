@@ -8,7 +8,6 @@ goog.require('goog.asserts');
 goog.require('goog.object');
 goog.require('goog.vec.Mat4');
 goog.require('ol.Size');
-goog.require('ol.Tile');
 goog.require('ol.TileCoord');
 goog.require('ol.TileRange');
 goog.require('ol.TileState');

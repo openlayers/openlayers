@@ -2,7 +2,6 @@ goog.provide('ol.source.TileImage');
 
 goog.require('goog.asserts');
 goog.require('ol.ImageTile');
-goog.require('ol.Tile');
 goog.require('ol.TileCache');
 goog.require('ol.TileCoord');
 goog.require('ol.TileLoadFunctionType');
