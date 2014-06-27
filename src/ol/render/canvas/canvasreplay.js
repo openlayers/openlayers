@@ -46,25 +46,22 @@ ol.render.canvas.Instruction = {
 /**
  * @constructor
  * @implements {ol.render.IVectorContext}
- * @param {number} tolerance Tolerance.
- * @param {ol.Extent} maxExtent Maximum extent.
- * @param {number} resolution Resolution.
  * @protected
  * @struct
  */
-ol.render.canvas.Replay = function(tolerance, maxExtent, resolution) {
+ol.render.canvas.Replay = function() {
 
   /**
    * @protected
    * @type {number}
    */
-  this.tolerance = tolerance;
+  this.tolerance = 0;
 
   /**
    * @protected
    * @type {ol.Extent}
    */
-  this.maxExtent = maxExtent;
+  this.maxExtent = null;
 
   /**
    * @protected
@@ -76,7 +73,7 @@ ol.render.canvas.Replay = function(tolerance, maxExtent, resolution) {
    * @protected
    * @type {number}
    */
-  this.resolution = resolution;
+  this.resolution = 0;
 
   /**
    * @private
@@ -132,6 +129,34 @@ ol.render.canvas.Replay = function(tolerance, maxExtent, resolution) {
    */
   this.tmpLocalTransform_ = goog.vec.Mat4.createNumber();
 
+};
+
+
+/**
+ * @param {number} tolerance Tolerance.
+ * @param {ol.Extent} maxExtent Maximum extent.
+ * @param {number} resolution Resolution.
+ */
+ol.render.canvas.Replay.prototype.init =
+    function(tolerance, maxExtent, resolution) {
+  this.tolerance = tolerance;
+  this.maxExtent = maxExtent;
+  this.resolution = resolution;
+  this.maxLineWidth = 0;
+  this.beginGeometryInstruction1_ = null;
+  this.beginGeometryInstruction2_ = null;
+  this.instructions.length = 0;
+  this.coordinates.length = 0;
+  goog.vec.Mat4.setFromValues(this.renderedTransform_,
+      0, 0, 0, 0, 0, 0, 0, 0,
+      0, 0, 0, 0, 0, 0, 0, 0);
+  this.hitDetectionInstructions.length = 0;
+  this.pixelCoordinates_.length = 0;
+  ol.extent.empty(this.extent_);
+  goog.vec.Mat4.setFromValues(this.tmpLocalTransform_,
+      0, 0, 0, 0, 0, 0, 0, 0,
+      0, 0, 0, 0, 0, 0, 0, 0);
+  this.initInternal();
 };
 
 
@@ -590,6 +615,12 @@ ol.render.canvas.Replay.prototype.drawText = goog.abstractMethod;
 
 
 /**
+ * FIXME empty description for jsdoc
+ */
+ol.render.canvas.Replay.prototype.initInternal = goog.abstractMethod;
+
+
+/**
  * @param {ol.geom.Geometry} geometry Geometry.
  * @param {Object} data Opaque data object.
  */
@@ -656,15 +687,12 @@ ol.render.canvas.Replay.prototype.setTextStyle = goog.abstractMethod;
 /**
  * @constructor
  * @extends {ol.render.canvas.Replay}
- * @param {number} tolerance Tolerance.
- * @param {ol.Extent} maxExtent Maximum extent.
- * @param {number} resolution Resolution.
  * @protected
  * @struct
  */
-ol.render.canvas.ImageReplay = function(tolerance, maxExtent, resolution) {
+ol.render.canvas.ImageReplay = function() {
 
-  goog.base(this, tolerance, maxExtent, resolution);
+  goog.base(this);
 
   /**
    * @private
@@ -746,6 +774,26 @@ ol.render.canvas.ImageReplay = function(tolerance, maxExtent, resolution) {
 
 };
 goog.inherits(ol.render.canvas.ImageReplay, ol.render.canvas.Replay);
+
+
+/**
+ * @inheritDoc
+ */
+ol.render.canvas.ImageReplay.prototype.initInternal = function() {
+  this.hitDetectionImage_ = null;
+  this.image_ = null;
+  this.anchorX_ = undefined;
+  this.anchorY_ = undefined;
+  this.height_ = undefined;
+  this.opacity_ = undefined;
+  this.originX_ = undefined;
+  this.originY_ = undefined;
+  this.rotateWithView_ = undefined;
+  this.rotation_ = undefined;
+  this.scale_ = undefined;
+  this.snapToPixel_ = undefined;
+  this.width_ = undefined;
+};
 
 
 /**
@@ -908,15 +956,12 @@ ol.render.canvas.ImageReplay.prototype.setImageStyle = function(imageStyle) {
 /**
  * @constructor
  * @extends {ol.render.canvas.Replay}
- * @param {number} tolerance Tolerance.
- * @param {ol.Extent} maxExtent Maximum extent.
- * @param {number} resolution Resolution.
  * @protected
  * @struct
  */
-ol.render.canvas.LineStringReplay = function(tolerance, maxExtent, resolution) {
+ol.render.canvas.LineStringReplay = function() {
 
-  goog.base(this, tolerance, maxExtent, resolution);
+  goog.base(this);
 
   /**
    * @private
@@ -952,6 +997,28 @@ ol.render.canvas.LineStringReplay = function(tolerance, maxExtent, resolution) {
 
 };
 goog.inherits(ol.render.canvas.LineStringReplay, ol.render.canvas.Replay);
+
+
+/**
+ * @inheritDoc
+ */
+ol.render.canvas.LineStringReplay.prototype.initInternal = function() {
+  this.state_ = {
+    currentStrokeStyle: undefined,
+    currentLineCap: undefined,
+    currentLineDash: null,
+    currentLineJoin: undefined,
+    currentLineWidth: undefined,
+    currentMiterLimit: undefined,
+    lastStroke: 0,
+    strokeStyle: undefined,
+    lineCap: undefined,
+    lineDash: null,
+    lineJoin: undefined,
+    lineWidth: undefined,
+    miterLimit: undefined
+  };
+};
 
 
 /**
@@ -1141,15 +1208,12 @@ ol.render.canvas.LineStringReplay.prototype.setFillStrokeStyle =
 /**
  * @constructor
  * @extends {ol.render.canvas.Replay}
- * @param {number} tolerance Tolerance.
- * @param {ol.Extent} maxExtent Maximum extent.
- * @param {number} resolution Resolution.
  * @protected
  * @struct
  */
-ol.render.canvas.PolygonReplay = function(tolerance, maxExtent, resolution) {
+ol.render.canvas.PolygonReplay = function() {
 
-  goog.base(this, tolerance, maxExtent, resolution);
+  goog.base(this);
 
   /**
    * @private
@@ -1187,6 +1251,29 @@ ol.render.canvas.PolygonReplay = function(tolerance, maxExtent, resolution) {
 
 };
 goog.inherits(ol.render.canvas.PolygonReplay, ol.render.canvas.Replay);
+
+
+/**
+ * @inheritDoc
+ */
+ol.render.canvas.PolygonReplay.prototype.initInternal = function() {
+  this.state_ = {
+    currentFillStyle: undefined,
+    currentStrokeStyle: undefined,
+    currentLineCap: undefined,
+    currentLineDash: null,
+    currentLineJoin: undefined,
+    currentLineWidth: undefined,
+    currentMiterLimit: undefined,
+    fillStyle: undefined,
+    strokeStyle: undefined,
+    lineCap: undefined,
+    lineDash: null,
+    lineJoin: undefined,
+    lineWidth: undefined,
+    miterLimit: undefined
+  };
+};
 
 
 /**
@@ -1491,15 +1578,12 @@ ol.render.canvas.PolygonReplay.prototype.setFillStrokeStyles_ = function() {
 /**
  * @constructor
  * @extends {ol.render.canvas.Replay}
- * @param {number} tolerance Tolerance.
- * @param {ol.Extent} maxExtent Maximum extent.
- * @param {number} resolution Resolution.
  * @protected
  * @struct
  */
-ol.render.canvas.TextReplay = function(tolerance, maxExtent, resolution) {
+ol.render.canvas.TextReplay = function() {
 
-  goog.base(this, tolerance, maxExtent, resolution);
+  goog.base(this);
 
   /**
    * @private
@@ -1569,6 +1653,24 @@ ol.render.canvas.TextReplay = function(tolerance, maxExtent, resolution) {
 
 };
 goog.inherits(ol.render.canvas.TextReplay, ol.render.canvas.Replay);
+
+
+/**
+ * @inheritDoc
+ */
+ol.render.canvas.TextReplay.prototype.initInternal = function() {
+  this.replayFillState_ = null;
+  this.replayStrokeState_ = null;
+  this.replayTextState_ = null;
+  this.text_ = '';
+  this.textOffsetX_ = 0;
+  this.textOffsetY_ = 0;
+  this.textRotation_ = 0;
+  this.textScale_ = 0;
+  this.textFillState_ = null;
+  this.textStrokeState_ = null;
+  this.textState_ = null;
+};
 
 
 /**
@@ -1809,30 +1911,27 @@ ol.render.canvas.TextReplay.prototype.setTextStyle = function(textStyle) {
 /**
  * @constructor
  * @implements {ol.render.IReplayGroup}
- * @param {number} tolerance Tolerance.
- * @param {ol.Extent} maxExtent Max extent.
- * @param {number} resolution Resolution.
  * @struct
  */
-ol.render.canvas.ReplayGroup = function(tolerance, maxExtent, resolution) {
+ol.render.canvas.ReplayGroup = function() {
 
   /**
    * @private
    * @type {number}
    */
-  this.tolerance_ = tolerance;
+  this.tolerance_ = 0;
 
   /**
    * @private
    * @type {ol.Extent}
    */
-  this.maxExtent_ = maxExtent;
+  this.maxExtent_ = null;
 
   /**
    * @private
    * @type {number}
    */
-  this.resolution_ = resolution;
+  this.resolution_ = 0;
 
   /**
    * @private
@@ -1840,6 +1939,13 @@ ol.render.canvas.ReplayGroup = function(tolerance, maxExtent, resolution) {
    *        Object.<ol.render.ReplayType, ol.render.canvas.Replay>>}
    */
   this.replaysByZIndex_ = {};
+
+  /**
+   * @private
+   * @type {Object.<ol.render.ReplayType,
+   *        Array.<ol.render.canvas.Replay>>}
+   */
+  this.replaysPool_ = {};
 
   /**
    * @private
@@ -1853,6 +1959,43 @@ ol.render.canvas.ReplayGroup = function(tolerance, maxExtent, resolution) {
    */
   this.hitDetectionTransform_ = goog.vec.Mat4.createNumber();
 
+};
+
+
+/**
+ * @param {number} tolerance Tolerance.
+ * @param {ol.Extent} maxExtent Max extent.
+ * @param {number} resolution Resolution.
+ */
+ol.render.canvas.ReplayGroup.prototype.init =
+    function(tolerance, maxExtent, resolution) {
+  this.tolerance_ = tolerance;
+  this.maxExtent_ = maxExtent;
+  this.resolution_ = resolution;
+  goog.vec.Mat4.setFromValues(this.hitDetectionTransform_,
+      0, 0, 0, 0, 0, 0, 0, 0,
+      0, 0, 0, 0, 0, 0, 0, 0);
+
+  // move the replays to the free pool
+  var replaysByZIndex = this.replaysByZIndex_;
+  var replaysPool = this.replaysPool_;
+  var zIndexKey, replayType, replay, replays, pool;
+  for (zIndexKey in replaysByZIndex) {
+    replays = replaysByZIndex[zIndexKey];
+    for (replayType in replays) {
+      replay = replays[replayType];
+      goog.asserts.assert(goog.isDef(replay));
+      delete replays[replayType];
+      pool = replaysPool[replayType];
+      if (!goog.isDef(pool)) {
+        pool = [];
+        replaysPool[replayType] = pool;
+      }
+      pool.push(replay);
+    }
+    delete replaysByZIndex[zIndexKey];
+  }
+  goog.asserts.assert(goog.object.isEmpty(this.replaysByZIndex_));
 };
 
 
@@ -2037,10 +2180,15 @@ ol.render.canvas.ReplayGroup.prototype.getReplay =
   }
   var replay = replays[replayType];
   if (!goog.isDef(replay)) {
-    var Constructor = ol.render.canvas.BATCH_CONSTRUCTORS_[replayType];
-    goog.asserts.assert(goog.isDef(Constructor));
-    replay = new Constructor(this.tolerance_, this.maxExtent_,
-        this.resolution_);
+    var pool = this.replaysPool_[replayType];
+    if (goog.isDef(pool) && pool.length > 0) {
+      replay = pool.pop();
+    } else {
+      var Constructor = ol.render.canvas.BATCH_CONSTRUCTORS_[replayType];
+      goog.asserts.assert(goog.isDef(Constructor));
+      replay = new Constructor();
+    }
+    replay.init(this.tolerance_, this.maxExtent_, this.resolution_);
     replays[replayType] = replay;
   }
   return replay;
@@ -2059,8 +2207,7 @@ ol.render.canvas.ReplayGroup.prototype.isEmpty = function() {
  * @const
  * @private
  * @type {Object.<ol.render.ReplayType,
- *                function(new: ol.render.canvas.Replay, number, ol.Extent,
- *                number)>}
+ *                function(new: ol.render.canvas.Replay)>}
  */
 ol.render.canvas.BATCH_CONSTRUCTORS_ = {
   'Image': ol.render.canvas.ImageReplay,
