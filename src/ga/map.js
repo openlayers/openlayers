@@ -31,6 +31,7 @@ goog.require('ga.Lang');
 
 
 /**
+ * @classdesc
  * The map is the core component of the GeoAdmin API. In its minimal configuration it
  * needs a view, one or more geoadmin layers, and a target container:
  *
@@ -48,11 +49,10 @@ goog.require('ga.Lang');
  * renders it to a DOM element with the id 'map'.
  * The coordinate system EPSG:21781 is automatically set.
  *
- * @class
  * @constructor
  * @extends {ol.Map}
  * @param {gax.MapOptions} options Map options.
- * @todo api
+ * @todo api stable
  */
 ga.Map = function(options) {
 
