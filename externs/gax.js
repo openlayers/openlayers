@@ -76,7 +76,7 @@ gax.MapOptions.prototype.layers;
 
 
 /**
- * Show ol3 logo. Default is `true`.
+ * Show ol3 logo. It is set to false.
  * @type {boolean|undefined}
  */
 gax.MapOptions.prototype.ol3Logo;
@@ -90,8 +90,8 @@ gax.MapOptions.prototype.overlays;
 
 
 /**
- * Renderer.
- * @type (ol.RendererType|Array.<ol.RendererType|string>|string|undefined)
+ * Renderer. Default to 'canvas'.
+ * @type (ol.RendererType|Array.<ol.RendererType|string>|string|undefined) 
  */
 gax.MapOptions.prototype.renderer;
 
@@ -109,7 +109,7 @@ gax.MapOptions.prototype.target;
 gax.MapOptions.prototype.tooltip;
 
 /**
- * The map's view. Currently {@link ol.View2D} is available as view.
+ * The map's view. Currently {@link ol.View2D} is available as view. Center, resolution and rotation can be passed to the map through a custom view. Resolutions are set: [650, 500, 250, 100, 50, 20, 10, 5, 2.5, 2, 1, 0.5, 0.25, 0.1]. Extent is set: [420000, 30000, 900000, 350000]. Coordinate system is set: EPSG 21781.
  * @type {ol.IView|undefined}
  */
 gax.MapOptions.prototype.view;
