@@ -62,11 +62,12 @@ def jsdoc_npm(t):
     t.run('npm', 'install', 'jsdoc@<=3.2.2')
     t.touch()
 
-@target('build/jsdoc-%(BRANCH)s-timestamp' % vars(variables), JSDOC,'host-resources',
-                EXPORTS, SRC, SHADER_SRC, ifind('apidoc/template'))
+@target('build/jsdoc-%(BRANCH)s-timestamp' % vars(variables), 'host-resources',
+        EXPORTS, SRC, SHADER_SRC,
+        ifind('apidoc/template'))
 def jsdoc_BRANCH_timestamp(t):
-    t.run(JSDOC, '-c', 'apidoc/conf.json', 'src', 'apidoc/ga-index.md',
-       '-d', 'build/hosted/%(BRANCH)s/apidoc')
+    t.run('%(JSDOC)s', 'apidoc/ga-index.md', '-c', 'apidoc/ga-conf.json',
+          '-d', 'build/hosted/%(BRANCH)s/apidoc')
     t.touch()
 
 

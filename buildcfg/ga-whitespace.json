@@ -23,7 +23,8 @@
     "../externs/tilejson.js",
     "../externs/topojson.js",
     "../externs/vbarray.js",
-    "../externs/ga.js"
+    "../externs/ga.js",
+    "../externs/gax.js"
   ],
 
   "inherits": "ol.json",
