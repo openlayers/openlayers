@@ -238,7 +238,7 @@ ol.geom.flat.simplify.radialDistance = function(flatCoordinates, offset, end,
 
 /**
  * @param {number} value Value.
- * @param {number} tolerance Squared tolerance.
+ * @param {number} tolerance Tolerance.
  * @return {number} Rounded value.
  */
 ol.geom.flat.simplify.snap = function(value, tolerance) {
@@ -259,7 +259,7 @@ ol.geom.flat.simplify.snap = function(value, tolerance) {
  * @param {number} offset Offset.
  * @param {number} end End.
  * @param {number} stride Stride.
- * @param {number} tolerance Squared tolerance.
+ * @param {number} tolerance Tolerance.
  * @param {Array.<number>} simplifiedFlatCoordinates Simplified flat
  *     coordinates.
  * @param {number} simplifiedOffset Simplified offset.

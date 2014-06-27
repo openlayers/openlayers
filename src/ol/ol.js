@@ -174,6 +174,12 @@ ol.ROTATE_ANIMATION_DURATION = 250;
 
 
 /**
+ * @define {number} Tolerance for geometry simplification in device pixels.
+ */
+ol.SIMPLIFY_TOLERANCE = 0.5;
+
+
+/**
  * @define {number} Texture cache high water mark.
  */
 ol.WEBGL_TEXTURE_CACHE_HIGH_WATER_MARK = 1024;

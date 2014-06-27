@@ -23,6 +23,7 @@ goog.require('ol.renderer.canvas.ImageLayer');
 goog.require('ol.renderer.canvas.Layer');
 goog.require('ol.renderer.canvas.TileLayer');
 goog.require('ol.renderer.canvas.VectorLayer');
+goog.require('ol.renderer.vector');
 goog.require('ol.source.State');
 goog.require('ol.vec.Mat4');
 
@@ -112,8 +113,8 @@ ol.renderer.canvas.Map.prototype.dispatchComposeEvent_ =
         -view2DState.center[0], -view2DState.center[1]);
     var vectorContext = new ol.render.canvas.Immediate(context, pixelRatio,
         extent, this.transform_, rotation);
-    var tolerance = resolution / (2 * pixelRatio);
-    var replayGroup = new ol.render.canvas.ReplayGroup(tolerance, extent,
+    var replayGroup = new ol.render.canvas.ReplayGroup(
+        ol.renderer.vector.getTolerance(resolution, pixelRatio), extent,
         resolution);
     var composeEvent = new ol.render.Event(type, map, vectorContext,
         replayGroup, frameState, context, null);
