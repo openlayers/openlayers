@@ -170,8 +170,8 @@ ol.renderer.canvas.TileLayer.prototype.prepareFrame =
   //
 
   var pixelRatio = frameState.pixelRatio;
-  var view2DState = frameState.view2DState;
-  var projection = view2DState.projection;
+  var viewState = frameState.viewState;
+  var projection = viewState.projection;
 
   var tileLayer = this.getLayer();
   goog.asserts.assertInstanceof(tileLayer, ol.layer.Tile);
@@ -179,18 +179,18 @@ ol.renderer.canvas.TileLayer.prototype.prepareFrame =
   goog.asserts.assertInstanceof(tileSource, ol.source.Tile);
   var tileGrid = tileSource.getTileGridForProjection(projection);
   var tileGutter = tileSource.getGutter();
-  var z = tileGrid.getZForResolution(view2DState.resolution);
+  var z = tileGrid.getZForResolution(viewState.resolution);
   var tilePixelSize =
       tileSource.getTilePixelSize(z, frameState.pixelRatio, projection);
   var tilePixelRatio = tilePixelSize / tileGrid.getTileSize(z);
   var tileResolution = tileGrid.getResolution(z);
   var tilePixelResolution = tileResolution / tilePixelRatio;
-  var center = view2DState.center;
+  var center = viewState.center;
   var extent;
-  if (tileResolution == view2DState.resolution) {
+  if (tileResolution == viewState.resolution) {
     center = this.snapCenterToPixel(center, tileResolution, frameState.size);
-    extent = ol.extent.getForView2DAndSize(
-        center, tileResolution, view2DState.rotation, frameState.size);
+    extent = ol.extent.getForViewAndSize(
+        center, tileResolution, viewState.rotation, frameState.size);
   } else {
     extent = frameState.extent;
   }
@@ -400,9 +400,9 @@ ol.renderer.canvas.TileLayer.prototype.prepareFrame =
   ol.vec.Mat4.makeTransform2D(this.imageTransform_,
       pixelRatio * frameState.size[0] / 2,
       pixelRatio * frameState.size[1] / 2,
-      pixelRatio * tilePixelResolution / view2DState.resolution,
-      pixelRatio * tilePixelResolution / view2DState.resolution,
-      view2DState.rotation,
+      pixelRatio * tilePixelResolution / viewState.resolution,
+      pixelRatio * tilePixelResolution / viewState.resolution,
+      viewState.rotation,
       (origin[0] - center[0]) / tilePixelResolution,
       (center[1] - origin[1]) / tilePixelResolution);
 

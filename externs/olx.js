@@ -110,7 +110,7 @@ olx.GeolocationOptions.prototype.projection;
  *     overlays: (ol.Collection|Array.<ol.Overlay>|undefined),
  *     renderer: (ol.RendererType|Array.<ol.RendererType|string>|string|undefined),
  *     target: (Element|string|undefined),
- *     view: (ol.IView|undefined)}}
+ *     view: (ol.View|undefined)}}
  * @todo api
  */
 olx.MapOptions;
@@ -201,10 +201,9 @@ olx.MapOptions.prototype.target;
 
 
 /**
- * The map's view. Currently {@link ol.View2D} is the only available view.
- * No layer sources will be fetched unless this is specified at construction
- * time or through {@link ol.Map#setView}.
- * @type {ol.IView|undefined}
+ * The map's view.  No layer sources will be fetched unless this is specified at
+ * construction time or through {@link ol.Map#setView}.
+ * @type {ol.View|undefined}
  */
 olx.MapOptions.prototype.view;
 
@@ -371,7 +370,7 @@ olx.ProjectionOptions.prototype.global;
  *     zoomFactor: (number|undefined)}}
  * @todo api
  */
-olx.View2DOptions;
+olx.ViewOptions;
 
 
 /**
@@ -380,7 +379,7 @@ olx.View2DOptions;
  * sources will not be fetched if this is not set.
  * @type {ol.Coordinate|undefined}
  */
-olx.View2DOptions.prototype.center;
+olx.ViewOptions.prototype.center;
 
 
 /**
@@ -390,14 +389,14 @@ olx.View2DOptions.prototype.center;
  * 270 degrees. The default is `true`.
  * @type {boolean|number|undefined}
  */
-olx.View2DOptions.prototype.constrainRotation;
+olx.ViewOptions.prototype.constrainRotation;
 
 
 /**
  * Enable rotation. Default is `true`.
  * @type {boolean|undefined}
  */
-olx.View2DOptions.prototype.enableRotation;
+olx.ViewOptions.prototype.enableRotation;
 
 
 /**
@@ -405,7 +404,7 @@ olx.View2DOptions.prototype.enableRotation;
  * outside this extent. Default is `undefined`.
  * @type {ol.Extent|undefined}
  */
-olx.View2DOptions.prototype.extent;
+olx.ViewOptions.prototype.extent;
 
 
 /**
@@ -417,7 +416,7 @@ olx.View2DOptions.prototype.extent;
  * 156543.03392804097`.
  * @type {number|undefined}
  */
-olx.View2DOptions.prototype.maxResolution;
+olx.ViewOptions.prototype.maxResolution;
 
 
 /**
@@ -429,7 +428,7 @@ olx.View2DOptions.prototype.maxResolution;
  * 0.0005831682455839253`.
  * @type {number|undefined}
  */
-olx.View2DOptions.prototype.minResolution;
+olx.ViewOptions.prototype.minResolution;
 
 
 /**
@@ -439,7 +438,7 @@ olx.View2DOptions.prototype.minResolution;
  * precedence over `maxZoom`.
  * @type {number|undefined}
  */
-olx.View2DOptions.prototype.maxZoom;
+olx.ViewOptions.prototype.maxZoom;
 
 
 /**
@@ -449,14 +448,14 @@ olx.View2DOptions.prototype.maxZoom;
  * precedence over `minZoom`.
  * @type {number|undefined}
  */
-olx.View2DOptions.prototype.minZoom;
+olx.ViewOptions.prototype.minZoom;
 
 
 /**
  * The projection. Default is `EPSG:3857` (Spherical Mercator).
  * @type {ol.proj.ProjectionLike}
  */
-olx.View2DOptions.prototype.projection;
+olx.ViewOptions.prototype.projection;
 
 
 /**
@@ -466,7 +465,7 @@ olx.View2DOptions.prototype.projection;
  * neither this nor `zoom` are defined.
  * @type {number|undefined}
  */
-olx.View2DOptions.prototype.resolution;
+olx.ViewOptions.prototype.resolution;
 
 
 /**
@@ -475,7 +474,7 @@ olx.View2DOptions.prototype.resolution;
  * options are ignored.
  * @type {Array.<number>|undefined}
  */
-olx.View2DOptions.prototype.resolutions;
+olx.ViewOptions.prototype.resolutions;
 
 
 /**
@@ -483,23 +482,23 @@ olx.View2DOptions.prototype.resolutions;
  * Default is `0`.
  * @type {number|undefined}
  */
-olx.View2DOptions.prototype.rotation;
+olx.ViewOptions.prototype.rotation;
 
 
 /**
  * Only used if `resolution` is not defined. Zoom level used to calculate the
  * initial resolution for the view. The initial resolution is determined using
- * the `ol.View2D#constrainResolution` method.
+ * the `ol.View#constrainResolution` method.
  * @type {number|undefined}
  */
-olx.View2DOptions.prototype.zoom;
+olx.ViewOptions.prototype.zoom;
 
 
 /**
  * The zoom factor used to determine the resolution constraint.  Default is `2`.
  * @type {number|undefined}
  */
-olx.View2DOptions.prototype.zoomFactor;
+olx.ViewOptions.prototype.zoomFactor;
 
 
 /**
@@ -5037,7 +5036,7 @@ olx.tilegrid.ZoomifyOptions.prototype.resolutions;
  *     minResolution: (number|undefined)}}
  * @todo api
  */
-olx.View2D.fitGeometryOptions;
+olx.View.fitGeometryOptions;
 
 
 /**
@@ -5045,28 +5044,28 @@ olx.View2D.fitGeometryOptions;
  * top, right, bottom and left padding. Default is `[0, 0, 0, 0]`.
  * @type {!Array.<number>}
  */
-olx.View2D.fitGeometryOptions.prototype.padding;
+olx.View.fitGeometryOptions.prototype.padding;
 
 
 /**
  * Constrain the resolution. Default is `true`.
  * @type {boolean|undefined}
  */
-olx.View2D.fitGeometryOptions.prototype.constrainResolution;
+olx.View.fitGeometryOptions.prototype.constrainResolution;
 
 
 /**
  * Get the nearest extent. Default is `false`.
  * @type {boolean|undefined}
  */
-olx.View2D.fitGeometryOptions.prototype.nearest;
+olx.View.fitGeometryOptions.prototype.nearest;
 
 
 /**
  * Minimum resolution that we zoom to. Default is `0`.
  * @type {number|undefined}
  */
-olx.View2D.fitGeometryOptions.prototype.minResolution;
+olx.View.fitGeometryOptions.prototype.minResolution;
 
 
 /* typedefs for object literals exposed by the library */
@@ -5090,7 +5089,7 @@ olx.View2D.fitGeometryOptions.prototype.minResolution;
  *     tileQueue: ol.TileQueue,
  *     time: number,
  *     usedTiles: Object.<string, Object.<string, ol.TileRange>>,
- *     view2DState: olx.View2DState,
+ *     viewState: olx.ViewState,
  *     viewHints: Array.<number>,
  *     wantedTiles: Object.<string, Object.<string, boolean>>}}
  * @todo api
@@ -5106,8 +5105,8 @@ olx.FrameState.prototype.pixelRatio;
 olx.FrameState.prototype.time;
 
 
-/** @type {olx.View2DState} */
-olx.FrameState.prototype.view2DState;
+/** @type {olx.ViewState} */
+olx.FrameState.prototype.viewState;
 
 
 /**
@@ -5117,16 +5116,16 @@ olx.FrameState.prototype.view2DState;
  *     rotation: number}}
  * @todo api
  */
-olx.View2DState;
+olx.ViewState;
 
 
 /** @type {ol.Coordinate} */
-olx.View2DState.prototype.center;
+olx.ViewState.prototype.center;
 
 
 /** @type {number} */
-olx.View2DState.prototype.resolution;
+olx.ViewState.prototype.resolution;
 
 
 /** @type {number} */
-olx.View2DState.prototype.rotation;
+olx.ViewState.prototype.rotation;

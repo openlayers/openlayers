@@ -1,5 +1,5 @@
 goog.require('ol.Map');
-goog.require('ol.View2D');
+goog.require('ol.View');
 goog.require('ol.interaction');
 goog.require('ol.interaction.Modify');
 goog.require('ol.interaction.Select');
@@ -243,7 +243,7 @@ var map = new ol.Map({
   interactions: ol.interaction.defaults().extend([select, modify]),
   layers: [layer],
   target: 'map',
-  view: new ol.View2D({
+  view: new ol.View({
     center: [0, 1000000],
     zoom: 2
   })

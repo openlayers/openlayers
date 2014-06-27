@@ -1,6 +1,6 @@
 goog.require('ol.BrowserFeature');
 goog.require('ol.Map');
-goog.require('ol.View2D');
+goog.require('ol.View');
 goog.require('ol.dom.Input');
 goog.require('ol.layer.Tile');
 goog.require('ol.source.OSM');
@@ -20,7 +20,7 @@ var layer = new ol.layer.Tile({
 });
 layer.once('precompose', checkWebGL);
 
-var view = new ol.View2D({
+var view = new ol.View({
   center: [0, 0],
   zoom: 2
 });

@@ -1,5 +1,3 @@
-// FIXME works for View2D only
-
 goog.provide('ol.interaction.DragRotateAndZoom');
 
 goog.require('goog.asserts');
@@ -82,18 +80,17 @@ ol.interaction.DragRotateAndZoom.prototype.handlePointerDrag =
       size[1] / 2 - offset[1]);
   var theta = Math.atan2(delta.y, delta.x);
   var magnitude = delta.magnitude();
-  // FIXME works for View2D only
-  var view = map.getView().getView2D();
-  var view2DState = view.getView2DState();
+  var view = map.getView();
+  var viewState = view.getState();
   map.render();
   if (goog.isDef(this.lastAngle_)) {
     var angleDelta = theta - this.lastAngle_;
     ol.interaction.Interaction.rotateWithoutConstraints(
-        map, view, view2DState.rotation - angleDelta);
+        map, view, viewState.rotation - angleDelta);
   }
   this.lastAngle_ = theta;
   if (goog.isDef(this.lastMagnitude_)) {
-    var resolution = this.lastMagnitude_ * (view2DState.resolution / magnitude);
+    var resolution = this.lastMagnitude_ * (viewState.resolution / magnitude);
     ol.interaction.Interaction.zoomWithoutConstraints(map, view, resolution);
   }
   if (goog.isDef(this.lastMagnitude_)) {
@@ -113,14 +110,12 @@ ol.interaction.DragRotateAndZoom.prototype.handlePointerUp =
   }
 
   var map = mapBrowserEvent.map;
-  // FIXME works for View2D only
   var view = map.getView();
   view.setHint(ol.ViewHint.INTERACTING, -1);
-  var view2D = view.getView2D();
-  var view2DState = view2D.getView2DState();
+  var viewState = view.getState();
   var direction = this.lastScaleDelta_ - 1;
-  ol.interaction.Interaction.rotate(map, view2D, view2DState.rotation);
-  ol.interaction.Interaction.zoom(map, view2D, view2DState.resolution,
+  ol.interaction.Interaction.rotate(map, view, viewState.rotation);
+  ol.interaction.Interaction.zoom(map, view, viewState.resolution,
       undefined, ol.DRAGROTATEANDZOOM_ANIMATION_DURATION,
       direction);
   this.lastScaleDelta_ = 0;

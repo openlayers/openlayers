@@ -176,7 +176,7 @@ ol.FeatureOverlay.prototype.handleMapPostCompose_ = function(event) {
   goog.asserts.assert(goog.isDef(replayGroup));
   var frameState = event.frameState;
   var pixelRatio = frameState.pixelRatio;
-  var resolution = frameState.view2DState.resolution;
+  var resolution = frameState.viewState.resolution;
   var i, ii, styles;
   this.features_.forEach(function(feature) {
     styles = styleFunction(feature, resolution);

@@ -97,7 +97,7 @@ ol.renderer.canvas.VectorLayer.prototype.composeFrame =
     replayContext.globalAlpha = layerState.opacity;
     replayGroup.replay(
         replayContext, frameState.extent, frameState.pixelRatio, transform,
-        frameState.view2DState.rotation, frameState.skippedFeatureUids_);
+        frameState.viewState.rotation, frameState.skippedFeatureUids_);
 
     if (replayContext != context) {
       this.dispatchRenderEvent(replayContext, frameState, transform);
@@ -119,8 +119,8 @@ ol.renderer.canvas.VectorLayer.prototype.forEachFeatureAtPixel =
     return undefined;
   } else {
     var extent = frameState.extent;
-    var resolution = frameState.view2DState.resolution;
-    var rotation = frameState.view2DState.rotation;
+    var resolution = frameState.viewState.resolution;
+    var rotation = frameState.viewState.rotation;
     var layer = this.getLayer();
     return this.replayGroup_.forEachGeometryAtPixel(extent, resolution,
         rotation, coordinate, frameState.skippedFeatureUids_,
@@ -170,9 +170,9 @@ ol.renderer.canvas.VectorLayer.prototype.prepareFrame =
   }
 
   var frameStateExtent = frameState.extent;
-  var view2DState = frameState.view2DState;
-  var projection = view2DState.projection;
-  var resolution = view2DState.resolution;
+  var viewState = frameState.viewState;
+  var projection = viewState.projection;
+  var resolution = viewState.resolution;
   var pixelRatio = frameState.pixelRatio;
   var vectorLayerRevision = vectorLayer.getRevision();
   var vectorLayerRenderOrder = vectorLayer.getRenderOrder();

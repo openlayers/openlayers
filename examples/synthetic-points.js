@@ -1,6 +1,6 @@
 goog.require('ol.Feature');
 goog.require('ol.Map');
-goog.require('ol.View2D');
+goog.require('ol.View');
 goog.require('ol.geom.LineString');
 goog.require('ol.geom.Point');
 goog.require('ol.layer.Vector');
@@ -53,7 +53,7 @@ var vector = new ol.layer.Vector({
 var map = new ol.Map({
   layers: [vector],
   target: document.getElementById('map'),
-  view: new ol.View2D({
+  view: new ol.View({
     center: [0, 0],
     zoom: 2
   })

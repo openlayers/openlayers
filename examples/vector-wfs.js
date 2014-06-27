@@ -1,5 +1,5 @@
 goog.require('ol.Map');
-goog.require('ol.View2D');
+goog.require('ol.View');
 goog.require('ol.format.GeoJSON');
 goog.require('ol.layer.Tile');
 goog.require('ol.layer.Vector');
@@ -52,7 +52,7 @@ var raster = new ol.layer.Tile({
 var map = new ol.Map({
   layers: [raster, vector],
   target: document.getElementById('map'),
-  view: new ol.View2D({
+  view: new ol.View({
     center: [-8908887.277395891, 5381918.072437216],
     maxZoom: 19,
     zoom: 12

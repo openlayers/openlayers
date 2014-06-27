@@ -1,5 +1,3 @@
-// FIXME works for View2D only
-
 goog.provide('ol.interaction.PinchZoom');
 
 goog.require('goog.asserts');
@@ -80,9 +78,8 @@ ol.interaction.PinchZoom.prototype.handlePointerDrag =
   }
 
   var map = mapBrowserEvent.map;
-  // FIXME works for View2D only
-  var view = map.getView().getView2D();
-  var view2DState = view.getView2DState();
+  var view = map.getView();
+  var viewState = view.getState();
 
   // scale anchor point.
   var viewportPosition = goog.style.getClientPosition(map.getViewport());
@@ -95,7 +92,7 @@ ol.interaction.PinchZoom.prototype.handlePointerDrag =
   // scale, bypass the resolution constraint
   map.render();
   ol.interaction.Interaction.zoomWithoutConstraints(
-      map, view, view2DState.resolution * scaleDelta, this.anchor_);
+      map, view, viewState.resolution * scaleDelta, this.anchor_);
 
 };
 
@@ -109,14 +106,12 @@ ol.interaction.PinchZoom.prototype.handlePointerUp =
     var map = mapBrowserEvent.map;
     var view = map.getView();
     view.setHint(ol.ViewHint.INTERACTING, -1);
-    // FIXME works for View2D only
-    var view2D = view.getView2D();
-    var view2DState = view2D.getView2DState();
+    var viewState = view.getState();
     // Zoom to final resolution, with an animation, and provide a
     // direction not to zoom out/in if user was pinching in/out.
     // Direction is > 0 if pinching out, and < 0 if pinching in.
     var direction = this.lastScaleDelta_ - 1;
-    ol.interaction.Interaction.zoom(map, view2D, view2DState.resolution,
+    ol.interaction.Interaction.zoom(map, view, viewState.resolution,
         this.anchor_, this.duration_, direction);
     return false;
   } else {

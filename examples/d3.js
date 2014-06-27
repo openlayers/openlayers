@@ -2,7 +2,7 @@
 // this example uses d3 for which we don't have an externs file.
 goog.require('ol');
 goog.require('ol.Map');
-goog.require('ol.View2D');
+goog.require('ol.View');
 goog.require('ol.extent');
 goog.require('ol.layer.Image');
 goog.require('ol.layer.Tile');
@@ -20,7 +20,7 @@ var map = new ol.Map({
     })
   ],
   target: 'map',
-  view: new ol.View2D({
+  view: new ol.View({
     center: ol.proj.transform([-97, 38], 'EPSG:4326', 'EPSG:3857'),
     zoom: 4
   })

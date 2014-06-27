@@ -64,14 +64,14 @@ goog.inherits(ol.renderer.Map, goog.Disposable);
  * @protected
  */
 ol.renderer.Map.prototype.calculateMatrices2D = function(frameState) {
-  var view2DState = frameState.view2DState;
+  var viewState = frameState.viewState;
   var coordinateToPixelMatrix = frameState.coordinateToPixelMatrix;
   goog.asserts.assert(!goog.isNull(coordinateToPixelMatrix));
   ol.vec.Mat4.makeTransform2D(coordinateToPixelMatrix,
       frameState.size[0] / 2, frameState.size[1] / 2,
-      1 / view2DState.resolution, -1 / view2DState.resolution,
-      -view2DState.rotation,
-      -view2DState.center[0], -view2DState.center[1]);
+      1 / viewState.resolution, -1 / viewState.resolution,
+      -viewState.rotation,
+      -viewState.center[0], -viewState.center[1]);
   var inverted = goog.vec.Mat4.invert(
       coordinateToPixelMatrix, frameState.pixelToCoordinateMatrix);
   goog.asserts.assert(inverted);
@@ -118,9 +118,9 @@ ol.renderer.Map.prototype.forEachFeatureAtPixel =
         layerFilter, thisArg2) {
   var result;
   var extent = frameState.extent;
-  var view2DState = frameState.view2DState;
-  var viewResolution = view2DState.resolution;
-  var viewRotation = view2DState.rotation;
+  var viewState = frameState.viewState;
+  var viewResolution = viewState.resolution;
+  var viewRotation = viewState.rotation;
   if (!goog.isNull(this.replayGroup)) {
     /** @type {Object.<string, boolean>} */
     var features = {};

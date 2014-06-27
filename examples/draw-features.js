@@ -1,5 +1,5 @@
 goog.require('ol.Map');
-goog.require('ol.View2D');
+goog.require('ol.View');
 goog.require('ol.interaction');
 goog.require('ol.interaction.Draw');
 goog.require('ol.layer.Tile');
@@ -39,7 +39,7 @@ var vector = new ol.layer.Vector({
 var map = new ol.Map({
   layers: [raster, vector],
   target: 'map',
-  view: new ol.View2D({
+  view: new ol.View({
     center: [-11000000, 4600000],
     zoom: 4
   })

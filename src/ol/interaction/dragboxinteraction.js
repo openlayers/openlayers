@@ -1,6 +1,4 @@
 // FIXME draw drag box
-// FIXME works for View2D only
-
 goog.provide('ol.DragBoxEvent');
 goog.provide('ol.interaction.DragBox');
 

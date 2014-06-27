@@ -1,6 +1,6 @@
 goog.require('ol.FeatureOverlay');
 goog.require('ol.Map');
-goog.require('ol.View2D');
+goog.require('ol.View');
 goog.require('ol.layer.Image');
 goog.require('ol.layer.Tile');
 goog.require('ol.source.GeoJSON');
@@ -35,7 +35,7 @@ var map = new ol.Map({
     })
   ],
   target: 'map',
-  view: new ol.View2D({
+  view: new ol.View({
     center: [0, 0],
     zoom: 1
   })

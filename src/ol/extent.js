@@ -474,7 +474,7 @@ ol.extent.getEnlargedArea = function(extent1, extent2) {
  * @param {ol.Extent=} opt_extent Destination extent.
  * @return {ol.Extent} Extent.
  */
-ol.extent.getForView2DAndSize =
+ol.extent.getForViewAndSize =
     function(center, resolution, rotation, size, opt_extent) {
   var dx = resolution * size[0] / 2;
   var dy = resolution * size[1] / 2;

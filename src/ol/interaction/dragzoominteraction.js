@@ -52,12 +52,14 @@ goog.inherits(ol.interaction.DragZoom, ol.interaction.DragBox);
  * @inheritDoc
  */
 ol.interaction.DragZoom.prototype.onBoxEnd = function() {
-  // FIXME works for View2D only
   var map = this.getMap();
-  var view = map.getView().getView2D();
+  var view = map.getView();
+  goog.asserts.assert(goog.isDef(view));
   var extent = this.getGeometry().getExtent();
   var center = ol.extent.getCenter(extent);
+  var size = map.getSize();
+  goog.asserts.assert(goog.isDef(size));
   ol.interaction.Interaction.zoom(map, view,
-      view.getResolutionForExtent(extent, map.getSize()),
+      view.getResolutionForExtent(extent, size),
       center, ol.DRAGZOOM_ANIMATION_DURATION);
 };

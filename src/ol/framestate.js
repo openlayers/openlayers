@@ -1,4 +1,3 @@
-// FIXME add view3DState
 // FIXME factor out common code between usedTiles and wantedTiles
 
 goog.provide('ol.PostRenderFunction');

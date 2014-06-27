@@ -63,7 +63,7 @@ describe('ol.Map', function() {
       style.height = '180px';
       document.body.appendChild(target);
 
-      view = new ol.View2D({
+      view = new ol.View({
         projection: 'EPSG:4326'
       });
       map = new ol.Map({
@@ -117,7 +117,7 @@ describe('ol.Map', function() {
       document.body.appendChild(target);
       map = new ol.Map({
         target: target,
-        view: new ol.View2D({
+        view: new ol.View({
           projection: 'EPSG:4326',
           center: [0, 0],
           resolution: 1
@@ -246,7 +246,7 @@ goog.require('goog.dispose');
 goog.require('goog.dom');
 goog.require('ol.Map');
 goog.require('ol.MapEvent');
-goog.require('ol.View2D');
+goog.require('ol.View');
 goog.require('ol.interaction');
 goog.require('ol.interaction.Interaction');
 goog.require('ol.interaction.DoubleClickZoom');
