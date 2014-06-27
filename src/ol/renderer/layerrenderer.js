@@ -1,7 +1,6 @@
 goog.provide('ol.renderer.Layer');
 
 goog.require('goog.Disposable');
-goog.require('ol.Image');
 goog.require('ol.ImageState');
 goog.require('ol.Tile');
 goog.require('ol.TileRange');
