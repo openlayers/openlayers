@@ -1658,16 +1658,6 @@ ol.format.KML.prototype.readProjectionFromNode = function(node) {
 
 
 /**
- * @param {Node} node Node to append a TextNode with the boolean to.
- * @param {boolean} bool Boolean.
- * @private
- */
-ol.format.KML.writeBooleanTextNode_ = function(node, bool) {
-  ol.format.XSD.writeStringTextNode(node, (bool) ? '1' : '0');
-};
-
-
-/**
  * @param {Node} node Node to append a TextNode with the color to.
  * @param {ol.Color|string} color Color.
  * @private
@@ -2309,12 +2299,12 @@ ol.format.KML.PLACEMARK_SERIALIZERS_ = ol.xml.makeStructureNS(
       'description': ol.xml.makeChildAppender(
           ol.format.XSD.writeStringTextNode),
       'name': ol.xml.makeChildAppender(ol.format.XSD.writeStringTextNode),
-      'open': ol.xml.makeChildAppender(ol.format.KML.writeBooleanTextNode_),
+      'open': ol.xml.makeChildAppender(ol.format.XSD.writeBooleanTextNode),
       'phoneNumber': ol.xml.makeChildAppender(
           ol.format.XSD.writeStringTextNode),
       'styleUrl': ol.xml.makeChildAppender(ol.format.XSD.writeStringTextNode),
       'visibility': ol.xml.makeChildAppender(
-          ol.format.KML.writeBooleanTextNode_)
+          ol.format.XSD.writeBooleanTextNode)
     });
 
 
