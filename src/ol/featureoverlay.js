@@ -65,7 +65,7 @@ ol.FeatureOverlay = function(opt_options) {
    * @private
    * @type {ol.style.Style|Array.<ol.style.Style>|ol.feature.StyleFunction}
    */
-  this.style_ = null;
+  this.style_ = goog.isDef(options.style) ? options.style : null;
 
   /**
    * @private
