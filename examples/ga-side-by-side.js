@@ -4,7 +4,7 @@ goog.require('ol.BrowserFeature');
 goog.require('ol.View2D');
 
 
-var domMap = new ga.Map({
+var canvasMap = new ga.Map({
   target: 'canvasMap',
   layers: [
     ga.layer.create('ch.swisstopo.pixelkarte-farbe')
