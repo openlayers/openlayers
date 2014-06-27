@@ -168,7 +168,8 @@ ol.source.TileWMS.prototype.getGetFeatureInfoUrl =
     tileSize = (tileSize * pixelRatio + 0.5) | 0;
   }
 
-  if (!goog.isNull(this.getProjection()) && this.getProjection() !== projection) {
+  if (!goog.isNull(this.getProjection())
+      && this.getProjection() !== projection) {
     var transformFn = ol.proj.getTransform(projection, this.getProjection());
     tileExtent = ol.extent.applyTransform(tileExtent, transformFn);
   }
@@ -371,7 +372,8 @@ ol.source.TileWMS.prototype.tileUrlFunction_ =
         tileResolution * gutter, tileExtent);
   }
 
-  if (!goog.isNull(this.getProjection()) && this.getProjection() !== projection) {
+  if (!goog.isNull(this.getProjection())
+      && this.getProjection() !== projection) {
     var transformFn = ol.proj.getTransform(projection, this.getProjection());
     tileExtent = ol.extent.applyTransform(tileExtent, transformFn);
   }
