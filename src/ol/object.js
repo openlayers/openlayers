@@ -240,10 +240,11 @@ ol.Object.getSetterName = function(key) {
 
 /**
  * The bindTo method allows you to set up a two-way binding between a
- * `source` and `target` object. The method returns an
- * ol.ObjectAccessor with a transform method that lets you transform
- * values on the way from the source to the target and on the way back.
- *
+ * `source` and `target` object. The method returns an object with a
+ * `transform` method that you can use to provide `from` and `to`
+ * functions to transform values on the way from the source to the
+ * target and on the way back.
+*
  * For example, if you had two map views (sourceView and targetView)
  * and you wanted the target view to have double the resolution of the
  * source view, you could transform the resolution on the way to and
