@@ -206,9 +206,10 @@ ol.renderer.canvas.VectorLayer.prototype.prepareFrame =
   if (!goog.isDef(styleFunction)) {
     styleFunction = ol.feature.defaultStyleFunction;
   }
-  var tolerance = resolution / (2 * pixelRatio);
   var replayGroup =
-      new ol.render.canvas.ReplayGroup(tolerance, extent, resolution);
+      new ol.render.canvas.ReplayGroup(
+          ol.renderer.vector.getTolerance(resolution, pixelRatio), extent,
+          resolution);
   vectorSource.loadFeatures(extent, resolution, projection);
   var renderFeature =
       /**
@@ -261,14 +262,12 @@ ol.renderer.canvas.VectorLayer.prototype.renderFeature =
   if (!goog.isDefAndNotNull(styles)) {
     return false;
   }
-  // simplify to a tolerance of half a device pixel
-  var squaredTolerance =
-      resolution * resolution / (4 * pixelRatio * pixelRatio);
   var i, ii, loading = false;
   for (i = 0, ii = styles.length; i < ii; ++i) {
     loading = ol.renderer.vector.renderFeature(
-        replayGroup, feature, styles[i], squaredTolerance, feature,
-        this.handleImageChange_, this) || loading;
+        replayGroup, feature, styles[i],
+        ol.renderer.vector.getSquaredTolerance(resolution, pixelRatio),
+        feature, this.handleImageChange_, this) || loading;
   }
   return loading;
 };

@@ -10,7 +10,7 @@ goog.require('ol.CollectionEventType');
 goog.require('ol.Feature');
 goog.require('ol.feature');
 goog.require('ol.render.EventType');
-goog.require('ol.style.ImageState');
+goog.require('ol.renderer.vector');
 
 
 
@@ -71,8 +71,11 @@ ol.FeatureOverlay = function(opt_options) {
    * @private
    * @type {ol.feature.StyleFunction|undefined}
    */
-  this.styleFunction_ = goog.isDef(options.style) ?
-      ol.feature.createStyleFunction(options.style) : undefined;
+  this.styleFunction_ = undefined;
+
+  if (goog.isDef(options.style)) {
+    this.setStyle(options.style);
+  }
 
   if (goog.isDef(options.features)) {
     if (goog.isArray(options.features)) {
@@ -98,37 +101,6 @@ ol.FeatureOverlay = function(opt_options) {
  */
 ol.FeatureOverlay.prototype.addFeature = function(feature) {
   this.features_.push(feature);
-};
-
-
-/**
- * @param {ol.render.IVectorContext|undefined} vectorContext Vector context.
- * @param {ol.Feature} feature Feature.
- * @param {ol.style.Style} style Style.
- * @private
- */
-ol.FeatureOverlay.prototype.drawFeature_ = function(vectorContext, feature,
-    style) {
-  var imageStyle = style.getImage();
-  if (!goog.isNull(imageStyle)) {
-    var imageState = imageStyle.getImageState();
-    if (imageState == ol.style.ImageState.LOADED ||
-        imageState == ol.style.ImageState.ERROR) {
-      imageStyle.unlistenImageChange(this.handleImageChange_, this);
-      if (imageState == ol.style.ImageState.LOADED) {
-        vectorContext.drawFeature(feature, style);
-      }
-    } else {
-      if (imageState == ol.style.ImageState.IDLE) {
-        imageStyle.load();
-      }
-      imageState = imageStyle.getImageState();
-      goog.asserts.assert(imageState == ol.style.ImageState.LOADING);
-      imageStyle.listenImageChange(this.handleImageChange_, this);
-    }
-  } else {
-    vectorContext.drawFeature(feature, style);
-  }
 };
 
 
@@ -199,8 +171,12 @@ ol.FeatureOverlay.prototype.handleMapPostCompose_ = function(event) {
   if (!goog.isDef(styleFunction)) {
     styleFunction = ol.feature.defaultStyleFunction;
   }
-  var resolution = event.frameState.view2DState.resolution;
-  var vectorContext = event.vectorContext;
+  var replayGroup = /** @type {ol.render.IReplayGroup} */
+      (event.replayGroup);
+  goog.asserts.assert(goog.isDef(replayGroup));
+  var frameState = event.frameState;
+  var pixelRatio = frameState.pixelRatio;
+  var resolution = frameState.view2DState.resolution;
   var i, ii, styles;
   this.features_.forEach(function(feature) {
     styles = styleFunction(feature, resolution);
@@ -209,7 +185,9 @@ ol.FeatureOverlay.prototype.handleMapPostCompose_ = function(event) {
     }
     ii = styles.length;
     for (i = 0; i < ii; ++i) {
-      this.drawFeature_(vectorContext, feature, styles[i]);
+      ol.renderer.vector.renderFeature(replayGroup, feature, styles[i],
+          ol.renderer.vector.getSquaredTolerance(resolution, pixelRatio),
+          feature, this.handleImageChange_, this);
     }
   }, this);
 };

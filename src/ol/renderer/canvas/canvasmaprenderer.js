@@ -17,11 +17,13 @@ goog.require('ol.layer.Vector');
 goog.require('ol.render.Event');
 goog.require('ol.render.EventType');
 goog.require('ol.render.canvas.Immediate');
+goog.require('ol.render.canvas.ReplayGroup');
 goog.require('ol.renderer.Map');
 goog.require('ol.renderer.canvas.ImageLayer');
 goog.require('ol.renderer.canvas.Layer');
 goog.require('ol.renderer.canvas.TileLayer');
 goog.require('ol.renderer.canvas.VectorLayer');
+goog.require('ol.renderer.vector');
 goog.require('ol.source.State');
 goog.require('ol.vec.Mat4');
 
@@ -97,8 +99,11 @@ ol.renderer.canvas.Map.prototype.dispatchComposeEvent_ =
   var map = this.getMap();
   var context = this.context_;
   if (map.hasListener(type)) {
-    var view2DState = frameState.view2DState;
+    var extent = frameState.extent;
     var pixelRatio = frameState.pixelRatio;
+    var view2DState = frameState.view2DState;
+    var resolution = view2DState.resolution;
+    var rotation = view2DState.rotation;
     ol.vec.Mat4.makeTransform2D(this.transform_,
         this.canvas_.width / 2,
         this.canvas_.height / 2,
@@ -106,12 +111,21 @@ ol.renderer.canvas.Map.prototype.dispatchComposeEvent_ =
         -pixelRatio / view2DState.resolution,
         -view2DState.rotation,
         -view2DState.center[0], -view2DState.center[1]);
-    var render = new ol.render.canvas.Immediate(context, pixelRatio,
-        frameState.extent, this.transform_, view2DState.rotation);
-    var composeEvent = new ol.render.Event(type, map, render, frameState,
-        context, null);
+    var vectorContext = new ol.render.canvas.Immediate(context, pixelRatio,
+        extent, this.transform_, rotation);
+    var replayGroup = new ol.render.canvas.ReplayGroup(
+        ol.renderer.vector.getTolerance(resolution, pixelRatio), extent,
+        resolution);
+    var composeEvent = new ol.render.Event(type, map, vectorContext,
+        replayGroup, frameState, context, null);
     map.dispatchEvent(composeEvent);
-    render.flush();
+    replayGroup.finish();
+    if (!replayGroup.isEmpty()) {
+      replayGroup.replay(context, extent, pixelRatio, this.transform_,
+          rotation, {});
+    }
+    vectorContext.flush();
+    this.replayGroup = replayGroup;
   }
 };
 

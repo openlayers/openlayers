@@ -535,16 +535,24 @@ ol.Map.prototype.disposeInternal = function() {
 
 
 /**
+ * Detect features that intersect a pixel on the viewport, and execute a
+ * callback with each intersecting feature. Layers included in the detection can
+ * be configured through `opt_layerFilter`. Feature overlays will always be
+ * included in the detection.
  * @param {ol.Pixel} pixel Pixel.
  * @param {function(this: S, ol.Feature, ol.layer.Layer): T} callback Feature
- *     callback.
+ *     callback. If the detected feature is not on a layer, but on a
+ *     {@link ol.FeatureOverlay}, then the 2nd argument to this function will
+ *     be `null`. To stop detection, callback functions can return a truthy
+ *     value.
  * @param {S=} opt_this Value to use as `this` when executing `callback`.
  * @param {function(this: U, ol.layer.Layer): boolean=} opt_layerFilter Layer
  *     filter function, only layers which are visible and for which this
- *     function returns `true` will be tested for features.  By default, all
- *     visible layers will be tested.
+ *     function returns `true` will be tested for features. By default, all
+ *     visible layers will be tested. Feature overlays will always be tested.
  * @param {U=} opt_this2 Value to use as `this` when executing `layerFilter`.
- * @return {T|undefined} Callback result.
+ * @return {T|undefined} Callback result, i.e. the return value of last
+ * callback execution, or the first truthy callback return value.
  * @template S,T,U
  * @todo api stable
  */
