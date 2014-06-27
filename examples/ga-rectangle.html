@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no, width=device-width">
+    <link rel="stylesheet" href="../css/ga.css" type="text/css">
+    <link rel="stylesheet" href="../resources/bootstrap/css/bootstrap.min.css" type="text/css">
+    <link rel="stylesheet" href="../resources/layout.css" type="text/css">
+    <link rel="stylesheet" href="../resources/bootstrap/css/bootstrap-responsive.min.css" type="text/css">
+    <title>GeoAdmin rectangle example</title>
+    <style type="text/css">
+      .coordinates > div {
+        width: 450px;
+        text-align: center;
+      } 
+
+      .layers label {
+        display: inline-block;
+        cursor: pointer;
+        margin-left: 5px;
+      }
+
+      .drawing canvas {
+        cursor: crosshair;
+      }
+
+      .eastwest label, .eastwest input {
+        display: inline-block;
+      }
+      
+      input[type=text] {
+        width: 150px;
+      }
+    </style>
+  </head>
+  <body>
+
+    <div class="navbar navbar-inverse navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container">
+          <a class="brand" href="./"><img src="../resources/logo.png"> OpenLayers 3 Examples</a>          
+        </div>
+      </div>
+    </div>
+
+    <div class="container-fluid">
+
+      <div class="row-fluid">
+        <div class="span12">
+          <div id="map" class="map"></div>
+          <div> 
+            <a href="#" class="viewer-new-rectangle">New rectangle</a>
+            <a href="#" class="viewer-delete-rectangle">Delete rectangle</a>
+          </div> 
+          <h3>Box coordinates: </h3>
+          <div class="coordinates">
+            <div>
+              <label>North: <input type="text" id="north"/></label>
+            </div>
+            <div class="eastwest">
+              <label>West: <input type="text" id="west"/></label>
+              <label>East: <input type="text" id="east"/></label> 
+            </div>
+            <div>
+              <label>South: <input type="text" id="south"> </label>
+            </div>
+          </div>
+          <h3>Scale:</h3>
+          <div class="layers">
+            <label><input type="radio" name="maplayer" value="1"/> 1:25000</label> 
+            <label><input type="radio" name="maplayer" value="2"/> 1:50000</label>
+            <label><input type="radio" name="maplayer" value="3"/> 1:100000</label>
+            <label><input type="radio" name="maplayer" value="4"/> 1:200000</label>
+            <label><input type="radio" name="maplayer" value="5"/> 1:500000</label>
+            <label><input type="radio" name="maplayer" value="0" checked/> Multiscale</label>
+          </div>
+          <br/> 
+        </div>
+      </div>
+
+      <div class="row-fluid">
+        <div class="span12">
+          <h4 id="title">GeoAdmin rectangle example</h4>
+          <p id="shortdesc">This example shows to draw and delete a rectangle over the map.</p>
+          <div id="docs">
+            <p>See the <a href="ga-rectangle.js" target="_blank">ga-rectangle.js source</a> to see how this is done.</p>
+          </div>
+          <div id="tags">geoadmin, rectangle</div>
+        </div>
+      </div>
+
+    </div>
+    <script src="../build/serverconfig.js" type="text/javascript"></script> 
+    <script src="../build/layersconfig.de.js" type="text/javascript"></script>
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/proj4js/1.1.0/proj4js-compressed.js" type="text/javascript"></script>
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/proj4js/1.1.0/defs/EPSG21781.js" type="text/javascript"></script>
+    <script src="jquery.min.js" type="text/javascript"></script>
+    <script src="loader.js?id=ga-rectangle" type="text/javascript"></script>
+    <script src="../resources/example-behaviour.js" type="text/javascript"></script>
+
+  </body>
+</html>
