@@ -15,6 +15,7 @@ goog.require('ol.pointer.PointerEventHandler');
 
 
 /**
+ * @classdesc
  * Provides a button that when clicked fills up the full screen with the map.
  * When in full screen mode, a close button is shown to exit full screen mode.
  * The [Fullscreen API](http://www.w3.org/TR/fullscreen/) is used to
@@ -24,7 +25,7 @@ goog.require('ol.pointer.PointerEventHandler');
  * @constructor
  * @extends {ol.control.Control}
  * @param {olx.control.FullScreenOptions=} opt_options Options.
- * @todo stability experimental
+ * @todo api
  */
 ol.control.FullScreen = function(opt_options) {
 
@@ -51,7 +52,9 @@ ol.control.FullScreen = function(opt_options) {
   var buttonHandler = new ol.pointer.PointerEventHandler(button);
   this.registerDisposable(buttonHandler);
   goog.events.listen(buttonHandler,
-      ol.pointer.EventType.POINTERUP, this.handleClick_, false, this);
+      ol.pointer.EventType.POINTERUP, this.handlePointerUp_, false, this);
+  goog.events.listen(button, goog.events.EventType.CLICK,
+      this.handleClick_, false, this);
 
   goog.events.listen(button, [
     goog.events.EventType.MOUSEOUT,
@@ -64,10 +67,10 @@ ol.control.FullScreen = function(opt_options) {
       googx.dom.fullscreen.EventType.CHANGE,
       this.handleFullScreenChange_, false, this);
 
-  var element = goog.dom.createDom(goog.dom.TagName.DIV, {
-    'class': this.cssClassName_ + ' ' + ol.css.CLASS_UNSELECTABLE + ' ' +
-        (!googx.dom.fullscreen.isSupported() ? ol.css.CLASS_UNSUPPORTED : '')
-  }, button);
+  var cssClasses = this.cssClassName_ + ' ' + ol.css.CLASS_UNSELECTABLE +
+      ' ' + ol.css.CLASS_CONTROL +
+      (!googx.dom.fullscreen.isSupported() ? ol.css.CLASS_UNSUPPORTED : '');
+  var element = goog.dom.createDom(goog.dom.TagName.DIV, cssClasses, button);
 
   goog.base(this, {
     element: element,
@@ -85,14 +88,34 @@ goog.inherits(ol.control.FullScreen, ol.control.Control);
 
 
 /**
- * @param {ol.pointer.PointerEvent} pointerEvent Pointer event.
+ * @param {goog.events.BrowserEvent} event The event to handle
  * @private
  */
-ol.control.FullScreen.prototype.handleClick_ = function(pointerEvent) {
+ol.control.FullScreen.prototype.handleClick_ = function(event) {
+  if (event.screenX !== 0 && event.screenY !== 0) {
+    return;
+  }
+  this.handleFullScreen_();
+};
+
+
+/**
+ * @param {ol.pointer.PointerEvent} pointerEvent The event to handle
+ * @private
+ */
+ol.control.FullScreen.prototype.handlePointerUp_ = function(pointerEvent) {
+  pointerEvent.browserEvent.preventDefault();
+  this.handleFullScreen_();
+};
+
+
+/**
+ * @private
+ */
+ol.control.FullScreen.prototype.handleFullScreen_ = function() {
   if (!googx.dom.fullscreen.isSupported()) {
     return;
   }
-  pointerEvent.browserEvent.preventDefault();
   var map = this.getMap();
   if (goog.isNull(map)) {
     return;

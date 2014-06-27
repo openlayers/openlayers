@@ -10,6 +10,7 @@ goog.require('ol.FeatureOverlay');
 goog.require('ol.Map');
 goog.require('ol.MapBrowserEvent');
 goog.require('ol.MapBrowserEvent.EventType');
+goog.require('ol.events.condition');
 goog.require('ol.feature');
 goog.require('ol.geom.GeometryType');
 goog.require('ol.geom.LineString');
@@ -29,13 +30,13 @@ ol.DrawEventType = {
   /**
    * Triggered upon feature draw start
    * @event ol.DrawEvent#drawstart
-   * @todo stability experimental
+   * @todo api
    */
   DRAWSTART: 'drawstart',
   /**
    * Triggered upon feature draw end
    * @event ol.DrawEvent#drawend
-   * @todo stability experimental
+   * @todo api
    */
   DRAWEND: 'drawend'
 };
@@ -56,7 +57,7 @@ ol.DrawEvent = function(type, feature) {
   /**
    * The feature being drawn.
    * @type {ol.Feature}
-   * @todo stability experimental
+   * @todo api
    */
   this.feature = feature;
 
@@ -66,12 +67,14 @@ goog.inherits(ol.DrawEvent, goog.events.Event);
 
 
 /**
- * Interaction that allows drawing geometries
+ * @classdesc
+ * Interaction that allows drawing geometries.
+ *
  * @constructor
  * @extends {ol.interaction.Pointer}
- * @fires {@link ol.DrawEvent} ol.DrawEvent
+ * @fires ol.DrawEvent
  * @param {olx.interaction.DrawOptions} options Options.
- * @todo stability experimental
+ * @todo api
  */
 ol.interaction.Draw = function(options) {
 
@@ -183,6 +186,20 @@ ol.interaction.Draw = function(options) {
         options.style : ol.interaction.Draw.getDefaultStyleFunction()
   });
 
+  /**
+   * Name of the geometry attribute for newly created features.
+   * @type {string|undefined}
+   * @private
+   */
+  this.geometryName_ = options.geometryName;
+
+  /**
+   * @private
+   * @type {ol.events.ConditionType}
+   */
+  this.condition_ = goog.isDef(options.condition) ?
+      options.condition : ol.events.condition.noModifierKeys;
+
 };
 goog.inherits(ol.interaction.Draw, ol.interaction.Pointer);
 
@@ -235,8 +252,12 @@ ol.interaction.Draw.prototype.handleMapBrowserEvent = function(event) {
  * @return {boolean} Pass the event to other interactions.
  */
 ol.interaction.Draw.prototype.handlePointerDown = function(event) {
-  this.downPx_ = event.pixel;
-  return true;
+  if (this.condition_(event)) {
+    this.downPx_ = event.pixel;
+    return true;
+  } else {
+    return false;
+  }
 };
 
 
@@ -351,7 +372,11 @@ ol.interaction.Draw.prototype.startDrawing_ = function(event) {
     }
   }
   goog.asserts.assert(goog.isDef(geometry));
-  this.sketchFeature_ = new ol.Feature(geometry);
+  this.sketchFeature_ = new ol.Feature();
+  if (goog.isDef(this.geometryName_)) {
+    this.sketchFeature_.setGeometryName(this.geometryName_);
+  }
+  this.sketchFeature_.setGeometry(geometry);
   this.updateSketchFeatures_();
   this.dispatchEvent(new ol.DrawEvent(ol.DrawEventType.DRAWSTART,
       this.sketchFeature_));

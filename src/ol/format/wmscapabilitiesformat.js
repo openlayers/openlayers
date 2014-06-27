@@ -13,8 +13,12 @@ goog.require('ol.xml');
 
 
 /**
+ * @classdesc
+ * Format for reading WMS capabilities data
+ *
  * @constructor
  * @extends {ol.format.XML}
+ * @todo api
  */
 ol.format.WMSCapabilities = function() {
 
@@ -26,6 +30,17 @@ ol.format.WMSCapabilities = function() {
   this.version = undefined;
 };
 goog.inherits(ol.format.WMSCapabilities, ol.format.XML);
+
+
+/**
+ * Read a WMS capabilities document.
+ *
+ * @function
+ * @param {Document|Node|string} source The XML source.
+ * @return {Object} An object representing the WMS capabilities.
+ * @todo api
+ */
+ol.format.WMSCapabilities.prototype.read;
 
 
 /**

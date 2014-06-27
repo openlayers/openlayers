@@ -1,6 +1,5 @@
 goog.provide('ol.geom.MultiPolygon');
 
-goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('ol.array');
 goog.require('ol.extent');
@@ -21,11 +20,14 @@ goog.require('ol.geom.flat.simplify');
 
 
 /**
+ * @classdesc
+ * Multi-polygon geometry.
+ *
  * @constructor
  * @extends {ol.geom.SimpleGeometry}
  * @param {ol.geom.RawMultiPolygon} coordinates Coordinates.
- * @param {ol.geom.GeometryLayout|string=} opt_layout Layout.
- * @todo stability experimental
+ * @param {ol.geom.GeometryLayout=} opt_layout Layout.
+ * @todo api
  */
 ol.geom.MultiPolygon = function(coordinates, opt_layout) {
 
@@ -82,6 +84,7 @@ goog.inherits(ol.geom.MultiPolygon, ol.geom.SimpleGeometry);
 
 /**
  * @param {ol.geom.Polygon} polygon Polygon.
+ * @todo api
  */
 ol.geom.MultiPolygon.prototype.appendPolygon = function(polygon) {
   goog.asserts.assert(polygon.getLayout() == this.layout);
@@ -107,6 +110,7 @@ ol.geom.MultiPolygon.prototype.appendPolygon = function(polygon) {
 
 /**
  * @inheritDoc
+ * @todo api
  */
 ol.geom.MultiPolygon.prototype.clone = function() {
   var multiPolygon = new ol.geom.MultiPolygon(null);
@@ -147,7 +151,7 @@ ol.geom.MultiPolygon.prototype.containsXY = function(x, y) {
 
 /**
  * @return {number} Area.
- * @todo stability experimental
+ * @todo api
  */
 ol.geom.MultiPolygon.prototype.getArea = function() {
   return ol.geom.flat.area.linearRingss(
@@ -157,7 +161,7 @@ ol.geom.MultiPolygon.prototype.getArea = function() {
 
 /**
  * @return {ol.geom.RawMultiPolygon} Coordinates.
- * @todo stability experimental
+ * @todo api
  */
 ol.geom.MultiPolygon.prototype.getCoordinates = function() {
   return ol.geom.flat.inflate.coordinatesss(
@@ -191,6 +195,7 @@ ol.geom.MultiPolygon.prototype.getFlatInteriorPoints = function() {
 
 /**
  * @return {ol.geom.MultiPoint} Interior points.
+ * @todo api
  */
 ol.geom.MultiPolygon.prototype.getInteriorPoints = function() {
   var interiorPoints = new ol.geom.MultiPoint(null);
@@ -242,6 +247,7 @@ ol.geom.MultiPolygon.prototype.getSimplifiedGeometryInternal =
 /**
  * @param {number} index Index.
  * @return {ol.geom.Polygon} Polygon.
+ * @todo api
  */
 ol.geom.MultiPolygon.prototype.getPolygon = function(index) {
   goog.asserts.assert(0 <= index && index < this.endss_.length);
@@ -272,7 +278,7 @@ ol.geom.MultiPolygon.prototype.getPolygon = function(index) {
 
 /**
  * @return {Array.<ol.geom.Polygon>} Polygons.
- * @todo stability experimental
+ * @todo api
  */
 ol.geom.MultiPolygon.prototype.getPolygons = function() {
   var layout = this.layout;
@@ -301,6 +307,7 @@ ol.geom.MultiPolygon.prototype.getPolygons = function() {
 
 /**
  * @inheritDoc
+ * @todo api
  */
 ol.geom.MultiPolygon.prototype.getType = function() {
   return ol.geom.GeometryType.MULTI_POLYGON;
@@ -310,7 +317,7 @@ ol.geom.MultiPolygon.prototype.getType = function() {
 /**
  * @param {ol.geom.RawMultiPolygon} coordinates Coordinates.
  * @param {ol.geom.GeometryLayout=} opt_layout Layout.
- * @todo stability experimental
+ * @todo api
  */
 ol.geom.MultiPolygon.prototype.setCoordinates =
     function(coordinates, opt_layout) {
@@ -354,7 +361,6 @@ ol.geom.MultiPolygon.prototype.setFlatCoordinates =
 
 /**
  * @param {Array.<ol.geom.Polygon>} polygons Polygons.
- * @todo stability experimental
  */
 ol.geom.MultiPolygon.prototype.setPolygons = function(polygons) {
   var layout = ol.geom.GeometryLayout.XY;

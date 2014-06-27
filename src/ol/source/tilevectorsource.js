@@ -11,9 +11,14 @@ goog.require('ol.tilegrid.TileGrid');
 
 
 /**
+ * @classdesc
+ * A vector source in one of the supported formats, where the data is divided
+ * into tiles in a fixed grid pattern.
+ *
  * @constructor
  * @extends {ol.source.FormatVector}
  * @param {olx.source.TileVectorOptions} options Options.
+ * @todo api
  */
 ol.source.TileVector = function(options) {
 
@@ -229,7 +234,6 @@ ol.source.TileVector.prototype.setTileUrlFunction = function(tileUrlFunction) {
 
 /**
  * @param {string} url URL.
- * @todo stability experimental
  */
 ol.source.TileVector.prototype.setUrl = function(url) {
   this.setTileUrlFunction(ol.TileUrlFunction.createFromTemplates(

@@ -11,7 +11,7 @@ describe('ol.collection', function() {
     it('creates an empty collection', function() {
       expect(collection.getLength()).to.eql(0);
       expect(collection.getArray()).to.be.empty();
-      expect(collection.getAt(0)).to.be(undefined);
+      expect(collection.item(0)).to.be(undefined);
     });
   });
 
@@ -19,9 +19,9 @@ describe('ol.collection', function() {
     it('creates the expected collection', function() {
       var array = [0, 1, 2];
       var collection = new ol.Collection(array);
-      expect(collection.getAt(0)).to.eql(0);
-      expect(collection.getAt(1)).to.eql(1);
-      expect(collection.getAt(2)).to.eql(2);
+      expect(collection.item(0)).to.eql(0);
+      expect(collection.item(1)).to.eql(1);
+      expect(collection.item(2)).to.eql(2);
     });
   });
 
@@ -30,7 +30,7 @@ describe('ol.collection', function() {
       collection.push(1);
       expect(collection.getLength()).to.eql(1);
       expect(collection.getArray()).to.eql([1]);
-      expect(collection.getAt(0)).to.eql(1);
+      expect(collection.item(0)).to.eql(1);
     });
   });
 
@@ -40,7 +40,7 @@ describe('ol.collection', function() {
       collection.pop();
       expect(collection.getLength()).to.eql(0);
       expect(collection.getArray()).to.be.empty();
-      expect(collection.getAt(0)).to.be(undefined);
+      expect(collection.item(0)).to.be(undefined);
     });
   });
 
@@ -48,9 +48,9 @@ describe('ol.collection', function() {
     it('inserts elements at the correct location', function() {
       collection = new ol.Collection([0, 2]);
       collection.insertAt(1, 1);
-      expect(collection.getAt(0)).to.eql(0);
-      expect(collection.getAt(1)).to.eql(1);
-      expect(collection.getAt(2)).to.eql(2);
+      expect(collection.item(0)).to.eql(0);
+      expect(collection.item(1)).to.eql(1);
+      expect(collection.item(2)).to.eql(2);
     });
   });
 
@@ -58,8 +58,8 @@ describe('ol.collection', function() {
     it('sets at the correct location', function() {
       collection.setAt(1, 1);
       expect(collection.getLength()).to.eql(2);
-      expect(collection.getAt(0)).to.be(undefined);
-      expect(collection.getAt(1)).to.eql(1);
+      expect(collection.item(0)).to.be(undefined);
+      expect(collection.item(1)).to.eql(1);
     });
   });
 
@@ -67,8 +67,8 @@ describe('ol.collection', function() {
     it('removes elements at the correction', function() {
       var collection = new ol.Collection([0, 1, 2]);
       collection.removeAt(1);
-      expect(collection.getAt(0)).to.eql(0);
-      expect(collection.getAt(1)).to.eql(2);
+      expect(collection.item(0)).to.eql(0);
+      expect(collection.item(1)).to.eql(2);
     });
   });
 
@@ -185,9 +185,9 @@ describe('ol.collection', function() {
           });
       collection.setAt(2, 0);
       expect(collection.getLength()).to.eql(3);
-      expect(collection.getAt(0)).to.be(undefined);
-      expect(collection.getAt(1)).to.be(undefined);
-      expect(collection.getAt(2)).to.eql(0);
+      expect(collection.item(0)).to.be(undefined);
+      expect(collection.item(1)).to.be(undefined);
+      expect(collection.item(2)).to.eql(0);
       expect(added.length).to.eql(3);
       expect(added[0]).to.eql(undefined);
       expect(added[1]).to.eql(undefined);
@@ -267,8 +267,8 @@ describe('ol.collection', function() {
       collection.extend([1, 2]);
       expect(collection.getLength()).to.eql(2);
       expect(collection.getArray()).to.eql([1, 2]);
-      expect(collection.getAt(0)).to.eql(1);
-      expect(collection.getAt(1)).to.eql(2);
+      expect(collection.item(0)).to.eql(1);
+      expect(collection.item(1)).to.eql(2);
     });
     it('fires events', function() {
       var collection = new ol.Collection();

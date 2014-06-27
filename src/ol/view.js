@@ -18,6 +18,16 @@ ol.ViewHint = {
 
 
 /**
+ * @classdesc
+ * Abstract base class; normally only used for creating subclasses and not
+ * instantiated in apps.
+ * Maps can be viewed from different perspectives: 2D or 3D, or at different
+ * angles. To enable this, properties determining projection, position, angle or
+ * rotation cannot be part of the map itself, but of the particular view of that
+ * map. This is similar to the concept of Camera in Google Earth or KML.
+ *
+ * Only {@link ol.View2D} is currently implemented.
+ *
  * @constructor
  * @implements {ol.IView}
  * @extends {ol.Object}

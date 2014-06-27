@@ -11,7 +11,7 @@ goog.require('ol.easing');
 /**
  * @param {olx.animation.BounceOptions} options Bounce options.
  * @return {ol.PreRenderFunction} Pre-render function.
- * @todo stability experimental
+ * @todo api
  */
 ol.animation.bounce = function(options) {
   var resolution = options.resolution;
@@ -22,7 +22,7 @@ ol.animation.bounce = function(options) {
   return (
       /**
        * @param {ol.Map} map Map.
-       * @param {?oli.FrameState} frameState Frame state.
+       * @param {?olx.FrameState} frameState Frame state.
        */
       function(map, frameState) {
         if (frameState.time < start) {
@@ -46,7 +46,7 @@ ol.animation.bounce = function(options) {
 /**
  * @param {olx.animation.PanOptions} options Pan options.
  * @return {ol.PreRenderFunction} Pre-render function.
- * @todo stability experimental
+ * @todo api
  */
 ol.animation.pan = function(options) {
   var source = options.source;
@@ -59,7 +59,7 @@ ol.animation.pan = function(options) {
   return (
       /**
        * @param {ol.Map} map Map.
-       * @param {?oli.FrameState} frameState Frame state.
+       * @param {?olx.FrameState} frameState Frame state.
        */
       function(map, frameState) {
         if (frameState.time < start) {
@@ -85,7 +85,7 @@ ol.animation.pan = function(options) {
 /**
  * @param {olx.animation.RotateOptions} options Rotate options.
  * @return {ol.PreRenderFunction} Pre-render function.
- * @todo stability experimental
+ * @todo api
  */
 ol.animation.rotate = function(options) {
   var sourceRotation = goog.isDef(options.rotation) ? options.rotation : 0;
@@ -99,7 +99,7 @@ ol.animation.rotate = function(options) {
   return (
       /**
        * @param {ol.Map} map Map.
-       * @param {?oli.FrameState} frameState Frame state.
+       * @param {?olx.FrameState} frameState Frame state.
        */
       function(map, frameState) {
         if (frameState.time < start) {
@@ -130,7 +130,7 @@ ol.animation.rotate = function(options) {
 /**
  * @param {olx.animation.ZoomOptions} options Zoom options.
  * @return {ol.PreRenderFunction} Pre-render function.
- * @todo stability experimental
+ * @todo api
  */
 ol.animation.zoom = function(options) {
   var sourceResolution = options.resolution;
@@ -141,7 +141,7 @@ ol.animation.zoom = function(options) {
   return (
       /**
        * @param {ol.Map} map Map.
-       * @param {?oli.FrameState} frameState Frame state.
+       * @param {?olx.FrameState} frameState Frame state.
        */
       function(map, frameState) {
         if (frameState.time < start) {

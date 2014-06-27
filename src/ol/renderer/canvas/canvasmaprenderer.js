@@ -6,9 +6,12 @@ goog.require('goog.asserts');
 goog.require('goog.dom');
 goog.require('goog.style');
 goog.require('goog.vec.Mat4');
+goog.require('ol');
+goog.require('ol.RendererType');
 goog.require('ol.css');
 goog.require('ol.dom');
 goog.require('ol.layer.Image');
+goog.require('ol.layer.Layer');
 goog.require('ol.layer.Tile');
 goog.require('ol.layer.Vector');
 goog.require('ol.render.Event');
@@ -86,7 +89,7 @@ ol.renderer.canvas.Map.prototype.createLayerRenderer = function(layer) {
 
 /**
  * @param {ol.render.EventType} type Event type.
- * @param {oli.FrameState} frameState Frame state.
+ * @param {olx.FrameState} frameState Frame state.
  * @private
  */
 ol.renderer.canvas.Map.prototype.dispatchComposeEvent_ =
@@ -127,6 +130,14 @@ ol.renderer.canvas.Map.prototype.getCanvasLayerRenderer = function(layer) {
 /**
  * @inheritDoc
  */
+ol.renderer.canvas.Map.prototype.getType = function() {
+  return ol.RendererType.CANVAS;
+};
+
+
+/**
+ * @inheritDoc
+ */
 ol.renderer.canvas.Map.prototype.renderFrame = function(frameState) {
 
   if (goog.isNull(frameState)) {
@@ -159,10 +170,8 @@ ol.renderer.canvas.Map.prototype.renderFrame = function(frameState) {
     layer = layerState.layer;
     layerRenderer = this.getLayerRenderer(layer);
     goog.asserts.assertInstanceof(layerRenderer, ol.renderer.canvas.Layer);
-    if (!layerState.visible ||
-        layerState.sourceState != ol.source.State.READY ||
-        viewResolution >= layerState.maxResolution ||
-        viewResolution < layerState.minResolution) {
+    if (!ol.layer.Layer.visibleAtResolution(layerState, viewResolution) ||
+        layerState.sourceState != ol.source.State.READY) {
       continue;
     }
     layerRenderer.prepareFrame(frameState, layerState);

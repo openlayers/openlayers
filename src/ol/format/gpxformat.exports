@@ -1,5 +1,0 @@
-@exportSymbol ol.format.GPX
-@exportProperty ol.format.GPX.prototype.readFeature
-@exportProperty ol.format.GPX.prototype.readFeatures
-@exportProperty ol.format.GPX.prototype.readProjection
-@exportProperty ol.format.GPX.prototype.writeFeatures

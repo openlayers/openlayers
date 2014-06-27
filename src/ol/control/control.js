@@ -9,14 +9,19 @@ goog.require('ol.Object');
 
 
 /**
- * Something to be painted over the map to provide a means for interaction
- * (buttons) or to show annotations (status bars).
+ * @classdesc
+ * Abstract base class; normally only used for creating subclasses and not
+ * instantiated in apps.
+ * A control is a visible widget with a DOM element in a fixed position on the
+ * screen. They can involve user input (buttons), or be informational only;
+ * the position is determined using CSS. By default these are part of the map
+ * container, but can use any outside DOM element.
  *
  * @constructor
  * @extends {ol.Object}
  * @implements {oli.control.Control}
  * @param {olx.control.ControlOptions} options Control options.
- * @todo stability stable
+ * @todo api stable
  */
 ol.control.Control = function(options) {
 
@@ -63,7 +68,7 @@ ol.control.Control.prototype.disposeInternal = function() {
 /**
  * Get the map associated with this control.
  * @return {ol.Map} Map.
- * @todo stability experimental
+ * @todo api
  */
 ol.control.Control.prototype.getMap = function() {
   return this.map_;
@@ -84,7 +89,7 @@ ol.control.Control.prototype.handleMapPostrender = goog.nullFunction;
  * Subclasses may set up event handlers to get notified about changes to
  * the map here.
  * @param {ol.Map} map Map.
- * @todo stability stable
+ * @todo api stable
  */
 ol.control.Control.prototype.setMap = function(map) {
   if (!goog.isNull(this.map_)) {

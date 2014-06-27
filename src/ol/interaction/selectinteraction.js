@@ -15,10 +15,13 @@ goog.require('ol.interaction.Interaction');
 
 
 /**
+ * @classdesc
+ * Handles selection of vector data.
+ *
  * @constructor
  * @extends {ol.interaction.Interaction}
  * @param {olx.interaction.SelectOptions=} opt_options Options.
- * @todo stability experimental
+ * @todo api
  */
 ol.interaction.Select = function(opt_options) {
 
@@ -55,28 +58,20 @@ ol.interaction.Select = function(opt_options) {
       options.toggleCondition : ol.events.condition.shiftKeyOnly;
 
   var layerFilter;
-  if (goog.isDef(options.layerFilter)) {
-    layerFilter = options.layerFilter;
-  } else if (goog.isDef(options.layer)) {
-    var layer = options.layer;
-    layerFilter =
-        /**
-         * @param {ol.layer.Layer} l Layer.
-         * @return {boolean} Include.
-         */
-        function(l) {
-      return l === layer;
-    };
-  } else if (goog.isDef(options.layers)) {
-    var layers = options.layers;
-    layerFilter =
-        /**
-         * @param {ol.layer.Layer} layer Layer.
-         * @return {boolean} Include.
-         */
-        function(layer) {
-      return goog.array.indexOf(layers, layer) != -1;
-    };
+  if (goog.isDef(options.layers)) {
+    if (goog.isFunction(options.layers)) {
+      layerFilter = options.layers;
+    } else {
+      var layers = options.layers;
+      layerFilter =
+          /**
+           * @param {ol.layer.Layer} layer Layer.
+           * @return {boolean} Include.
+           */
+          function(layer) {
+        return goog.array.contains(layers, layer);
+      };
+    }
   } else {
     layerFilter = goog.functions.TRUE;
   }
@@ -108,7 +103,7 @@ goog.inherits(ol.interaction.Select, ol.interaction.Interaction);
 
 /**
  * @return {ol.Collection} Features collection.
- * @todo stability experimental
+ * @todo api
  */
 ol.interaction.Select.prototype.getFeatures = function() {
   return this.featureOverlay_.getFeatures();
@@ -143,7 +138,7 @@ ol.interaction.Select.prototype.handleMapBrowserEvent =
         }, undefined, this.layerFilter_);
     if (goog.isDef(feature) &&
         features.getLength() == 1 &&
-        features.getAt(0) == feature) {
+        features.item(0) == feature) {
       // No change
     } else {
       if (features.getLength() !== 0) {
@@ -178,22 +173,21 @@ ol.interaction.Select.prototype.handleMapBrowserEvent =
 
 
 /**
- * @inheritDoc
+ * Remove the interaction from its current map, if any,  and attach it to a new
+ * map, if any. Pass `null` to just remove the interaction from the current map.
+ * @param {ol.Map} map Map.
+ * @todo api
  */
 ol.interaction.Select.prototype.setMap = function(map) {
   var currentMap = this.getMap();
   var selectedFeatures = this.featureOverlay_.getFeatures();
   if (!goog.isNull(currentMap)) {
-    selectedFeatures.forEach(function(feature) {
-      currentMap.getSkippedFeatures().remove(feature);
-    });
+    selectedFeatures.forEach(currentMap.unskipFeature, currentMap);
   }
   goog.base(this, 'setMap', map);
   this.featureOverlay_.setMap(map);
   if (!goog.isNull(map)) {
-    selectedFeatures.forEach(function(feature) {
-      map.getSkippedFeatures().push(feature);
-    });
+    selectedFeatures.forEach(map.skipFeature, map);
   }
 };
 
@@ -223,7 +217,7 @@ ol.interaction.Select.prototype.addFeature_ = function(evt) {
   var map = this.getMap();
   goog.asserts.assertInstanceof(feature, ol.Feature);
   if (!goog.isNull(map)) {
-    map.getSkippedFeatures().push(feature);
+    map.skipFeature(feature);
   }
 };
 
@@ -237,6 +231,6 @@ ol.interaction.Select.prototype.removeFeature_ = function(evt) {
   var map = this.getMap();
   goog.asserts.assertInstanceof(feature, ol.Feature);
   if (!goog.isNull(map)) {
-    map.getSkippedFeatures().remove(feature);
+    map.unskipFeature(feature);
   }
 };

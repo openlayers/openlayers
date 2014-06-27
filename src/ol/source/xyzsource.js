@@ -9,10 +9,13 @@ goog.require('ol.tilegrid.XYZ');
 
 
 /**
+ * @classdesc
+ * Layer source for tile data with URLs in a set XYZ format.
+ *
  * @constructor
  * @extends {ol.source.TileImage}
  * @param {olx.source.XYZOptions} options XYZ options.
- * @todo stability experimental
+ * @todo api
  */
 ol.source.XYZ = function(options) {
 
@@ -69,7 +72,7 @@ ol.source.XYZ.prototype.setTileUrlFunction = function(tileUrlFunction) {
 
 /**
  * @param {string} url URL.
- * @todo stability experimental
+ * @todo api
  */
 ol.source.XYZ.prototype.setUrl = function(url) {
   this.setTileUrlFunction(ol.TileUrlFunction.createFromTemplates(

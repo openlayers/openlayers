@@ -7,6 +7,7 @@ goog.require('ol.proj.EPSG4326');
 
 /**
  * FIXME empty description for jsdoc
+ * @todo api
  */
 ol.proj.common.add = function() {
   // Add transformations that don't alter coordinates to convert within set of

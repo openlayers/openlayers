@@ -9,6 +9,7 @@ goog.require('goog.dom.TagName');
 goog.require('goog.style');
 goog.require('goog.userAgent');
 goog.require('goog.vec.Mat4');
+goog.require('ol');
 
 
 /**

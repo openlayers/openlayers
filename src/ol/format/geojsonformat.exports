@@ -1,8 +1,0 @@
-@exportSymbol ol.format.GeoJSON
-@exportProperty ol.format.GeoJSON.prototype.readFeature
-@exportProperty ol.format.GeoJSON.prototype.readFeatures
-@exportProperty ol.format.GeoJSON.prototype.readGeometry
-@exportProperty ol.format.GeoJSON.prototype.readProjection
-@exportProperty ol.format.GeoJSON.prototype.writeFeature
-@exportProperty ol.format.GeoJSON.prototype.writeFeatures
-@exportProperty ol.format.GeoJSON.prototype.writeGeometry

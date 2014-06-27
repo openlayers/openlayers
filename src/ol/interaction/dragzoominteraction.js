@@ -1,6 +1,7 @@
 goog.provide('ol.interaction.DragZoom');
 
 goog.require('goog.asserts');
+goog.require('ol');
 goog.require('ol.events.condition');
 goog.require('ol.extent');
 goog.require('ol.interaction.DragBox');
@@ -9,21 +10,17 @@ goog.require('ol.style.Stroke');
 goog.require('ol.style.Style');
 
 
-/**
- * @define {number} Animation duration.
- */
-ol.interaction.DRAGZOOM_ANIMATION_DURATION = 200;
-
-
 
 /**
+ * @classdesc
  * Allows the user to zoom the map by clicking and dragging on the map,
  * normally combined with an {@link ol.events.condition} that limits
  * it to when the shift key is held down.
+ *
  * @constructor
  * @extends {ol.interaction.DragBox}
  * @param {olx.interaction.DragZoomOptions=} opt_options Options.
- * @todo stability experimental
+ * @todo api
  */
 ol.interaction.DragZoom = function(opt_options) {
   var options = goog.isDef(opt_options) ? opt_options : {};
@@ -62,5 +59,5 @@ ol.interaction.DragZoom.prototype.onBoxEnd = function() {
   var center = ol.extent.getCenter(extent);
   ol.interaction.Interaction.zoom(map, view,
       view.getResolutionForExtent(extent, map.getSize()),
-      center, ol.interaction.DRAGZOOM_ANIMATION_DURATION);
+      center, ol.DRAGZOOM_ANIMATION_DURATION);
 };

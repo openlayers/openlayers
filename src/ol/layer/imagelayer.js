@@ -5,11 +5,15 @@ goog.require('ol.layer.Layer');
 
 
 /**
+ * @classdesc
+ * Server-rendered images that are available for arbitrary extents and
+ * resolutions.
+ *
  * @constructor
  * @extends {ol.layer.Layer}
- * @fires {@link ol.render.Event} ol.render.Event
+ * @fires ol.render.Event
  * @param {olx.layer.LayerOptions} options Layer options.
- * @todo stability experimental
+ * @todo api
  */
 ol.layer.Image = function(options) {
   goog.base(this, options);

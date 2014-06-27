@@ -8,10 +8,14 @@ goog.require('ol.source.Image');
 
 
 /**
+ * @classdesc
+ * An image source for 'static', that is, non-georeferenced, images.
+ * See examples/static-image for example.
+ *
  * @constructor
  * @extends {ol.source.Image}
  * @param {olx.source.ImageStaticOptions} options Options.
- * @todo stability experimental
+ * @todo api
  */
 ol.source.ImageStatic = function(options) {
 

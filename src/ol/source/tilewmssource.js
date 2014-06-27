@@ -10,6 +10,7 @@ goog.require('goog.math');
 goog.require('goog.object');
 goog.require('goog.string');
 goog.require('goog.uri.utils');
+goog.require('ol');
 goog.require('ol.TileCoord');
 goog.require('ol.TileUrlFunction');
 goog.require('ol.extent');
@@ -20,10 +21,13 @@ goog.require('ol.source.wms.ServerType');
 
 
 /**
+ * @classdesc
+ * Layer source for tile data from WMS servers.
+ *
  * @constructor
  * @extends {ol.source.TileImage}
  * @param {olx.source.TileWMSOptions=} opt_options Tile WMS options.
- * @todo stability experimental
+ * @todo api
  */
 ol.source.TileWMS = function(opt_options) {
 
@@ -124,6 +128,7 @@ goog.inherits(ol.source.TileWMS, ol.source.TileImage);
  *     in the `LAYERS` parameter will be used. `VERSION` should not be
  *     specified here.
  * @return {string|undefined} GetFeatureInfo URL.
+ * @todo api
  */
 ol.source.TileWMS.prototype.getGetFeatureInfoUrl =
     function(coordinate, resolution, projection, params) {
@@ -164,7 +169,7 @@ ol.source.TileWMS.prototype.getGetFeatureInfoUrl =
 
   var baseParams = {
     'SERVICE': 'WMS',
-    'VERSION': ol.source.wms.DEFAULT_VERSION,
+    'VERSION': ol.DEFAULT_WMS_VERSION,
     'REQUEST': 'GetFeatureInfo',
     'FORMAT': 'image/png',
     'TRANSPARENT': true,
@@ -205,7 +210,7 @@ ol.source.TileWMS.prototype.getKeyZXY = function(z, x, y) {
  * Get the user-provided params, i.e. those passed to the constructor through
  * the "params" option, and possibly updated using the updateParams method.
  * @return {Object} Params.
- * @todo stability experimental
+ * @todo api
  */
 ol.source.TileWMS.prototype.getParams = function() {
   return this.params_;
@@ -305,7 +310,7 @@ ol.source.TileWMS.prototype.getTilePixelSize =
 /**
  * Return the URLs used for this WMS source.
  * @return {Array.<string>|undefined} URLs.
- * @todo stability experimental
+ * @todo api
  */
 ol.source.TileWMS.prototype.getUrls = function() {
   return this.urls_;
@@ -372,7 +377,7 @@ ol.source.TileWMS.prototype.tileUrlFunction_ =
 
   var baseParams = {
     'SERVICE': 'WMS',
-    'VERSION': ol.source.wms.DEFAULT_VERSION,
+    'VERSION': ol.DEFAULT_WMS_VERSION,
     'REQUEST': 'GetMap',
     'FORMAT': 'image/png',
     'TRANSPARENT': true
@@ -389,7 +394,7 @@ ol.source.TileWMS.prototype.tileUrlFunction_ =
 /**
  * Update the user-provided params.
  * @param {Object} params Params.
- * @todo stability experimental
+ * @todo api
  */
 ol.source.TileWMS.prototype.updateParams = function(params) {
   goog.object.extend(this.params_, params);
@@ -404,6 +409,6 @@ ol.source.TileWMS.prototype.updateParams = function(params) {
  */
 ol.source.TileWMS.prototype.updateV13_ = function() {
   var version =
-      goog.object.get(this.params_, 'VERSION', ol.source.wms.DEFAULT_VERSION);
+      goog.object.get(this.params_, 'VERSION', ol.DEFAULT_WMS_VERSION);
   this.v13_ = goog.string.compareVersions(version, '1.3') >= 0;
 };

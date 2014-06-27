@@ -27,8 +27,8 @@ goog.require('ol.geom.Polygon');
 goog.require('ol.proj');
 goog.require('ol.style.Fill');
 goog.require('ol.style.Icon');
-goog.require('ol.style.IconAnchorOrigin');
 goog.require('ol.style.IconAnchorUnits');
+goog.require('ol.style.IconOrigin');
 goog.require('ol.style.Image');
 goog.require('ol.style.Stroke');
 goog.require('ol.style.Style');
@@ -51,10 +51,13 @@ ol.format.KMLGxTrackObject_;
 
 
 /**
+ * @classdesc
+ * Feature format for reading and writing data in the KML format.
+ *
  * @constructor
  * @extends {ol.format.XMLFeature}
  * @param {olx.format.KMLOptions=} opt_options Options.
- * @todo stability experimental
+ * @todo api
  */
 ol.format.KML = function(opt_options) {
 
@@ -413,10 +416,6 @@ ol.format.KML.readStyleMapValue_ = function(node, objectStack) {
 ol.format.KML.IconStyleParser_ = function(node, objectStack) {
   goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT);
   goog.asserts.assert(node.localName == 'IconStyle');
-  // FIXME gx:x
-  // FIXME gx:y
-  // FIXME gx:w
-  // FIXME gx:h
   // FIXME refreshMode
   // FIXME refreshInterval
   // FIXME viewRefreshTime
@@ -456,6 +455,24 @@ ol.format.KML.IconStyleParser_ = function(node, objectStack) {
     anchorYUnits = ol.style.IconAnchorUnits.FRACTION;
   }
 
+  var offset;
+  var x = /** @type {number|undefined} */
+      (goog.object.get(IconObject, 'x'));
+  var y = /** @type {number|undefined} */
+      (goog.object.get(IconObject, 'y'));
+  if (goog.isDef(x) && goog.isDef(y)) {
+    offset = [x, y];
+  }
+
+  var size;
+  var w = /** @type {number|undefined} */
+      (goog.object.get(IconObject, 'w'));
+  var h = /** @type {number|undefined} */
+      (goog.object.get(IconObject, 'h'));
+  if (goog.isDef(w) && goog.isDef(h)) {
+    size = [w, h];
+  }
+
   var rotation;
   var heading = /** @type {number|undefined} */
       (goog.object.get(object, 'heading'));
@@ -465,17 +482,18 @@ ol.format.KML.IconStyleParser_ = function(node, objectStack) {
 
   var scale = /** @type {number|undefined} */
       (goog.object.get(object, 'scale'));
-  var size;
   if (src == ol.format.KML.DEFAULT_IMAGE_STYLE_SRC_) {
     size = ol.format.KML.DEFAULT_IMAGE_STYLE_SIZE_;
   }
 
   var imageStyle = new ol.style.Icon({
     anchor: anchor,
-    anchorOrigin: ol.style.IconAnchorOrigin.BOTTOM_LEFT,
+    anchorOrigin: ol.style.IconOrigin.BOTTOM_LEFT,
     anchorXUnits: anchorXUnits,
     anchorYUnits: anchorYUnits,
     crossOrigin: 'anonymous', // FIXME should this be configurable?
+    offset: offset,
+    offsetOrigin: ol.style.IconOrigin.BOTTOM_LEFT,
     rotation: rotation,
     scale: scale,
     size: size,
@@ -568,8 +586,8 @@ ol.format.KML.readFlatLinearRing_ = function(node, objectStack) {
  */
 ol.format.KML.gxCoordParser_ = function(node, objectStack) {
   goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT);
-  goog.asserts.assert(goog.array.indexOf(
-      ol.format.KML.GX_NAMESPACE_URIS_, node.namespaceURI) != -1);
+  goog.asserts.assert(goog.array.contains(
+      ol.format.KML.GX_NAMESPACE_URIS_, node.namespaceURI));
   goog.asserts.assert(node.localName == 'coord');
   var gxTrackObject = /** @type {ol.format.KMLGxTrackObject_} */
       (objectStack[objectStack.length - 1]);
@@ -598,8 +616,8 @@ ol.format.KML.gxCoordParser_ = function(node, objectStack) {
  */
 ol.format.KML.readGxMultiTrack_ = function(node, objectStack) {
   goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT);
-  goog.asserts.assert(goog.array.indexOf(
-      ol.format.KML.GX_NAMESPACE_URIS_, node.namespaceURI) != -1);
+  goog.asserts.assert(goog.array.contains(
+      ol.format.KML.GX_NAMESPACE_URIS_, node.namespaceURI));
   goog.asserts.assert(node.localName == 'MultiTrack');
   var lineStrings = ol.xml.pushParseAndPop(
       /** @type {Array.<ol.geom.LineString>} */ ([]),
@@ -621,8 +639,8 @@ ol.format.KML.readGxMultiTrack_ = function(node, objectStack) {
  */
 ol.format.KML.readGxTrack_ = function(node, objectStack) {
   goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT);
-  goog.asserts.assert(goog.array.indexOf(
-      ol.format.KML.GX_NAMESPACE_URIS_, node.namespaceURI) != -1);
+  goog.asserts.assert(goog.array.contains(
+      ol.format.KML.GX_NAMESPACE_URIS_, node.namespaceURI));
   goog.asserts.assert(node.localName == 'Track');
   var gxTrackObject = ol.xml.pushParseAndPop(
       /** @type {ol.format.KMLGxTrackObject_} */ ({
@@ -1158,7 +1176,13 @@ ol.format.KML.GEOMETRY_FLAT_COORDINATES_PARSERS_ = ol.xml.makeParsersNS(
 ol.format.KML.ICON_PARSERS_ = ol.xml.makeParsersNS(
     ol.format.KML.NAMESPACE_URIS_, {
       'href': ol.xml.makeObjectPropertySetter(ol.format.KML.readURI_)
-    });
+    }, ol.xml.makeParsersNS(
+        ol.format.KML.GX_NAMESPACE_URIS_, {
+          'x': ol.xml.makeObjectPropertySetter(ol.format.XSD.readDecimal),
+          'y': ol.xml.makeObjectPropertySetter(ol.format.XSD.readDecimal),
+          'w': ol.xml.makeObjectPropertySetter(ol.format.XSD.readDecimal),
+          'h': ol.xml.makeObjectPropertySetter(ol.format.XSD.readDecimal)
+        }));
 
 
 /**
@@ -1450,6 +1474,7 @@ ol.format.KML.prototype.readSharedStyleMap_ = function(node, objectStack) {
  * @function
  * @param {ArrayBuffer|Document|Node|Object|string} source Source.
  * @return {ol.Feature} Feature.
+ * @todo api
  */
 ol.format.KML.prototype.readFeature;
 
@@ -1459,8 +1484,7 @@ ol.format.KML.prototype.readFeature;
  */
 ol.format.KML.prototype.readFeatureFromNode = function(node) {
   goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT);
-  if (goog.array.indexOf(ol.format.KML.NAMESPACE_URIS_, node.namespaceURI) ==
-      -1) {
+  if (!goog.array.contains(ol.format.KML.NAMESPACE_URIS_, node.namespaceURI)) {
     return null;
   }
   goog.asserts.assert(node.localName == 'Placemark');
@@ -1479,6 +1503,7 @@ ol.format.KML.prototype.readFeatureFromNode = function(node) {
  * @function
  * @param {ArrayBuffer|Document|Node|Object|string} source Source.
  * @return {Array.<ol.Feature>} Features.
+ * @todo api
  */
 ol.format.KML.prototype.readFeatures;
 
@@ -1488,8 +1513,7 @@ ol.format.KML.prototype.readFeatures;
  */
 ol.format.KML.prototype.readFeaturesFromNode = function(node) {
   goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT);
-  if (goog.array.indexOf(ol.format.KML.NAMESPACE_URIS_, node.namespaceURI) ==
-      -1) {
+  if (!goog.array.contains(ol.format.KML.NAMESPACE_URIS_, node.namespaceURI)) {
     return [];
   }
   var features;
@@ -1528,7 +1552,7 @@ ol.format.KML.prototype.readFeaturesFromNode = function(node) {
 /**
  * @param {Document|Node|string} source Souce.
  * @return {string|undefined} Name.
- * @todo stability experimental
+ * @todo api
  */
 ol.format.KML.prototype.readName = function(source) {
   if (ol.xml.isDocument(source)) {
@@ -1570,16 +1594,14 @@ ol.format.KML.prototype.readNameFromDocument = function(doc) {
 ol.format.KML.prototype.readNameFromNode = function(node) {
   var n;
   for (n = node.firstElementChild; !goog.isNull(n); n = n.nextElementSibling) {
-    if (goog.array.indexOf(ol.format.KML.NAMESPACE_URIS_,
-                           n.namespaceURI) != -1 &&
+    if (goog.array.contains(ol.format.KML.NAMESPACE_URIS_, n.namespaceURI) &&
         n.localName == 'name') {
       return ol.format.XSD.readString(n);
     }
   }
   for (n = node.firstElementChild; !goog.isNull(n); n = n.nextElementSibling) {
     var localName = ol.xml.getLocalName(n);
-    if (goog.array.indexOf(ol.format.KML.NAMESPACE_URIS_,
-                           n.namespaceURI) != -1 &&
+    if (goog.array.contains(ol.format.KML.NAMESPACE_URIS_, n.namespaceURI) &&
         (localName == 'Document' ||
          localName == 'Folder' ||
          localName == 'Placemark' ||
@@ -1600,6 +1622,7 @@ ol.format.KML.prototype.readNameFromNode = function(node) {
  * @function
  * @param {ArrayBuffer|Document|Node|Object|string} source Source.
  * @return {ol.proj.Projection} Projection.
+ * @todo api
  */
 ol.format.KML.prototype.readProjection;
 

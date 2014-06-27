@@ -63,7 +63,7 @@ var myDom = {
 var getText = function(feature, resolution, dom) {
   var type = dom.text.value;
   var maxResolution = dom.maxreso.value;
-  var text = feature.getProperties().name;
+  var text = feature.get('name');
 
   if (resolution > maxResolution) {
     text = '';

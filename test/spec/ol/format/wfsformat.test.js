@@ -195,6 +195,67 @@ describe('ol.format.WFS', function() {
   describe('when writing out a Transaction request', function() {
     var text;
     before(function(done) {
+      afterLoadText('spec/ol/format/wfs/TransactionSrs.xml', function(xml) {
+        text = xml;
+        done();
+      });
+    });
+    it('creates the correct srsName', function() {
+      var format = new ol.format.WFS();
+      var insertFeature = new ol.Feature({
+        the_geom: new ol.geom.MultiLineString([[
+          [-5178372.1885436, 1992365.7775042],
+          [-4434792.7774889, 1601008.1927386],
+          [-4043435.1927233, 2148908.8114105]
+        ]]),
+        TYPE: 'xyz'
+      });
+      insertFeature.setGeometryName('the_geom');
+      var inserts = [insertFeature];
+      var serialized = format.writeTransaction(inserts, null, null, {
+        featureNS: 'http://foo',
+        featureType: 'FAULTS',
+        featurePrefix: 'feature',
+        gmlOptions: {multiCurve: true, srsName: 'EPSG:900913'}
+      });
+      expect(serialized).to.xmleql(ol.xml.load(text));
+    });
+  });
+
+  describe('when writing out a Transaction request', function() {
+    var text;
+    before(function(done) {
+      afterLoadText('spec/ol/format/wfs/TransactionUpdate.xml', function(xml) {
+        text = xml;
+        done();
+      });
+    });
+
+    it('creates the correct update', function() {
+      var format = new ol.format.WFS();
+      var updateFeature = new ol.Feature();
+      updateFeature.setGeometryName('the_geom');
+      updateFeature.setGeometry(new ol.geom.MultiLineString([[
+        [-12279454.47665902, 6741885.67968707],
+        [-12064207.805007964, 6732101.740066567],
+        [-11941908.559751684, 6595126.585379533],
+        [-12240318.718177011, 6507071.128795006],
+        [-12416429.631346056, 6604910.52500003]
+      ]]));
+      updateFeature.setId('FAULTS.4455');
+      var serialized = format.writeTransaction(null, [updateFeature], null, {
+        featureNS: 'http://foo',
+        featureType: 'FAULTS',
+        featurePrefix: 'foo',
+        gmlOptions: {srsName: 'EPSG:900913'}
+      });
+      expect(serialized).to.xmleql(ol.xml.load(text));
+    });
+  });
+
+  describe('when writing out a Transaction request', function() {
+    var text;
+    before(function(done) {
       afterLoadText('spec/ol/format/wfs/TransactionMulti.xml', function(xml) {
         text = xml;
         done();
@@ -280,11 +341,45 @@ describe('ol.format.WFS', function() {
     });
   });
 
+  describe('when parsing GML from MapServer', function() {
+
+    var features, feature;
+    before(function(done) {
+      afterLoadText('spec/ol/format/wfs/mapserver.xml', function(xml) {
+        try {
+          var config = {
+            'featureNS': 'http://mapserver.gis.umn.edu/mapserver',
+            'featureType': 'Historische_Messtischblaetter_WFS'
+          };
+          features = new ol.format.WFS(config).readFeatures(xml);
+        } catch (e) {
+          done(e);
+        }
+        done();
+      });
+    });
+
+    it('creates 7 features', function() {
+      expect(features).to.have.length(7);
+    });
+
+    it('creates a polygon for Arnstadt', function() {
+      feature = features[0];
+      var fid = 'Historische_Messtischblaetter_WFS.71055885';
+      expect(feature.getId()).to.equal(fid);
+      expect(feature.get('titel')).to.equal('Arnstadt');
+      expect(feature.getGeometry()).to.be.an(ol.geom.Polygon);
+    });
+
+  });
+
 });
 
 
 goog.require('ol.xml');
 goog.require('ol.Feature');
+goog.require('ol.geom.MultiLineString');
 goog.require('ol.geom.MultiPoint');
 goog.require('ol.geom.MultiPolygon');
+goog.require('ol.geom.Polygon');
 goog.require('ol.format.WFS');

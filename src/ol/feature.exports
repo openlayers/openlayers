@@ -1,8 +1,0 @@
-@exportSymbol ol.Feature
-@exportProperty ol.Feature.prototype.getGeometryName
-@exportProperty ol.Feature.prototype.getId
-@exportProperty ol.Feature.prototype.getStyle
-@exportProperty ol.Feature.prototype.getStyleFunction
-@exportProperty ol.Feature.prototype.setGeometryName
-@exportProperty ol.Feature.prototype.setId
-@exportProperty ol.Feature.prototype.setStyle

@@ -3,13 +3,11 @@ goog.provide('ol.source.wms.ServerType');
 
 
 /**
- * @define {string} WMS default version.
- */
-ol.source.wms.DEFAULT_VERSION = '1.3.0';
-
-
-/**
+ * Available server types: `'carmentaserver'`, `'geoserver'`, `'mapserver'`,
+ *     `'qgis'`. These are servers that have vendor parameters beyond the WMS
+ *     specification that OpenLayers can make use of.
  * @enum {string}
+ * @todo api
  */
 ol.source.wms.ServerType = {
   CARMENTA_SERVER: 'carmentaserver',

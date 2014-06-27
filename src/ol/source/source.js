@@ -9,7 +9,10 @@ goog.require('ol.proj');
 
 
 /**
+ * State of the source. `0` means 'loading', `1` means 'ready', and `2` means
+ * 'error'.
  * @enum {number}
+ * @todo api
  */
 ol.source.State = {
   LOADING: 0,
@@ -24,17 +27,21 @@ ol.source.State = {
  *            logo: (string|undefined),
  *            projection: ol.proj.ProjectionLike,
  *            state: (ol.source.State|string|undefined)}}
- * @todo stability experimental
  */
 ol.source.SourceOptions;
 
 
 
 /**
+ * @classdesc
+ * Abstract base class; normally only used for creating subclasses and not
+ * instantiated in apps.
+ * Base class for {@link ol.layer.Layer} sources.
+ *
  * @constructor
  * @extends {ol.Observable}
+ * @fires change Triggered when the state of the source changes.
  * @param {ol.source.SourceOptions} options Source options.
- * @todo stability experimental
  */
 ol.source.Source = function(options) {
 
@@ -83,6 +90,7 @@ goog.inherits(ol.source.Source, ol.Observable);
  * @param {number} resolution Resolution.
  * @param {number} rotation Rotation.
  * @param {ol.Coordinate} coordinate Coordinate.
+ * @param {Object.<string, boolean>} skippedFeatureUids Skipped feature uids.
  * @param {function(ol.Feature): T} callback Feature callback.
  * @return {T|undefined} Callback result.
  * @template T
@@ -131,6 +139,7 @@ ol.source.Source.prototype.getResolutions = goog.abstractMethod;
 
 /**
  * @return {ol.source.State} State.
+ * @todo api
  */
 ol.source.Source.prototype.getState = function() {
   return this.state_;

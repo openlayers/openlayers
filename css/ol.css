@@ -86,23 +86,24 @@
   -webkit-tap-highlight-color: rgba(0,0,0,0);
 }
 
-.ol-zoom,
-.ol-zoom-extent,
-.ol-full-screen {
+.ol-control {
   position: absolute;
   background-color: #eee;
   background-color: rgba(255,255,255,0.4);
   border-radius: 4px;
   padding: 2px;
 }
-.ol-zoom:hover,
-.ol-zoom-extent:hover,
-.ol-full-screen:hover {
+.ol-control:hover {
   background-color: rgba(255,255,255,0.6);
 }
 .ol-zoom {
   top: .5em;
   left: .5em;
+}
+.ol-rotate {
+  top: .5em;
+  right: .5em;
+  transition: opacity .25s;
 }
 .ol-zoom-extent {
   top: 4.643em;
@@ -113,16 +114,12 @@
   top: .5em;
 }
 @media print {
-  .ol-zoom,
-  .ol-zoom-extent,
-  .ol-full-screen {
+  .ol-control {
     display: none;
   }
 }
 
-.ol-zoom button,
-.ol-zoom-extent button,
-.ol-full-screen button {
+.ol-control button {
   display: block;
   margin: 1px;
   padding: 0;
@@ -137,30 +134,29 @@
   background-color: #7b98bc;
   background-color: rgba(0,60,136,0.5);
   border: none;
+  border-radius: 2px;
 }
-.ol-zoom button::-moz-focus-inner,
-.ol-zoom-extent button::-moz-focus-inner,
-.ol-full-screen button::-moz-focus-inner {
+.ol-control button::-moz-focus-inner {
   border: none;
   padding: 0;
 }
 .ol-zoom-extent button {
   line-height: 1.4em;
 }
-.ol-touch .ol-zoom button,
-.ol-touch .ol-full-screen button,
-.ol-touch .ol-zoom-extent button {
+.ol-compass {
+  display: block;
+  font-family: Arial;
+  font-weight: normal;
+  font-size: 1.2em;
+}
+.ol-touch .ol-control button {
   font-size: 1.5em;
 }
 .ol-touch .ol-zoom-extent {
   top: 5.5em;
 }
-.ol-zoom button:hover,
-.ol-zoom button:focus,
-.ol-zoom-extent button:hover,
-.ol-zoom-extent button:focus,
-.ol-full-screen button:hover,
-.ol-full-screen button:focus {
+.ol-control button:hover,
+.ol-control button:focus {
   text-decoration: none;
   background-color: #4c6079;
   background-color: rgba(0,60,136,0.7);
@@ -168,10 +164,10 @@
 .ol-zoom-extent button:after {
     content: "E";
 }
-.ol-zoom-in {
+.ol-zoom .ol-zoom-in {
   border-radius: 2px 2px 0 0;
 }
-.ol-zoom-out {
+.ol-zoom .ol-zoom-out {
   border-radius: 0 0 2px 2px;
 }
 button.ol-full-screen-false:after {
@@ -228,6 +224,8 @@ button.ol-full-screen-true:after {
 .ol-zoom .ol-has-tooltip:focus [role=tooltip] {
   top: 1.1em;
 }
+.ol-rotate .ol-has-tooltip:hover [role=tooltip],
+.ol-rotate .ol-has-tooltip:focus [role=tooltip],
 .ol-full-screen .ol-has-tooltip:hover [role=tooltip],
 .ol-full-screen .ol-has-tooltip:focus [role=tooltip] {
   right: 2.2em;
@@ -239,13 +237,11 @@ button.ol-full-screen-true:after {
   position: absolute;
   top: 4.5em;
   left: .5em;
-
   background: #eee;
   background: rgba(255, 255, 255, 0.4);
   border-radius: 4px;
   outline: none;
   overflow: hidden;
-  
   width: 1.5675em;
   height: 200px;
   padding: 3px;
@@ -260,7 +256,6 @@ button.ol-full-screen-true:after {
   outline: none;
   overflow: hidden;
   cursor: pointer;
-
   font-size: 1.14em;
   height: 1em;
   width: 1.375em;
@@ -275,11 +270,9 @@ button.ol-full-screen-true:after {
   width: 1.8em;
 }
 
-.ol-zoom-extent button,
+.ol-control button,
 .ol-attribution,
-.ol-full-screen button,
 .ol-scale-line-inner,
-.ol-zoom button,
 .ol-has-tooltip [role=tooltip] {
   font-family: 'Lucida Grande',Verdana,Geneva,Lucida,Arial,Helvetica,sans-serif;
 }

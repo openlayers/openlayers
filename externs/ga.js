@@ -35,11 +35,11 @@ var gax;
  *     layers: (Array.<ol.layer.Base>|ol.Collection|undefined),
  *     ol3Logo: (boolean|undefined),
  *     overlays: (ol.Collection|Array.<ol.Overlay>|undefined),
- *     renderer: (ol.RendererHint|Array.<ol.RendererHint|string>|string|undefined),
+ *     renderer: (ol.RendererType|Array.<ol.RendererType|string>|string|undefined),
  *     target: (Element|string|undefined),
  *     tooltip: (boolean|undefined),
  *     view: (ol.IView|undefined)}}
- * @todo stability experimental
+ * @todo api
  */
 gax.MapOptions;
 
@@ -109,7 +109,7 @@ gax.MapOptions.prototype.overlays;
 
 /**
  * Renderer.
- * @type {ol.RendererHint|Array.<ol.RendererHint|string>|string|undefined}
+ * @type (ol.RendererType|Array.<ol.RendererType|string>|string|undefined)
  */
 gax.MapOptions.prototype.renderer;
 
@@ -122,12 +122,6 @@ gax.MapOptions.prototype.target;
 
 /**
  * Active the tooltip feature for the map.
- * @type {boolean|undefined}
- */
-gax.MapOptions.prototype.tooltip;
-
-/**
- * The container for the map.
  * @type {boolean|undefined}
  */
 gax.MapOptions.prototype.tooltip;

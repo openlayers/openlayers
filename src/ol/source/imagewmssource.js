@@ -6,6 +6,7 @@ goog.require('goog.asserts');
 goog.require('goog.object');
 goog.require('goog.string');
 goog.require('goog.uri.utils');
+goog.require('ol');
 goog.require('ol.Image');
 goog.require('ol.extent');
 goog.require('ol.proj');
@@ -16,10 +17,13 @@ goog.require('ol.source.wms.ServerType');
 
 
 /**
+ * @classdesc
+ * Source for WMS servers providing single, untiled images.
+ *
  * @constructor
  * @extends {ol.source.Image}
  * @param {olx.source.ImageWMSOptions=} opt_options Options.
- * @todo stability experimental
+ * @todo api
  */
 ol.source.ImageWMS = function(opt_options) {
 
@@ -124,6 +128,7 @@ goog.inherits(ol.source.ImageWMS, ol.source.Image);
  *     in the `LAYERS` parameter will be used. `VERSION` should not be
  *     specified here.
  * @return {string|undefined} GetFeatureInfo URL.
+ * @todo api
  */
 ol.source.ImageWMS.prototype.getGetFeatureInfoUrl =
     function(coordinate, resolution, projection, params) {
@@ -149,7 +154,7 @@ ol.source.ImageWMS.prototype.getGetFeatureInfoUrl =
 
   var baseParams = {
     'SERVICE': 'WMS',
-    'VERSION': ol.source.wms.DEFAULT_VERSION,
+    'VERSION': ol.DEFAULT_WMS_VERSION,
     'REQUEST': 'GetFeatureInfo',
     'FORMAT': 'image/png',
     'TRANSPARENT': true,
@@ -173,6 +178,7 @@ ol.source.ImageWMS.prototype.getGetFeatureInfoUrl =
  * Get the user-provided params, i.e. those passed to the constructor through
  * the "params" option, and possibly updated using the updateParams method.
  * @return {Object} Params.
+ * @todo api
  */
 ol.source.ImageWMS.prototype.getParams = function() {
   return this.params_;
@@ -206,7 +212,7 @@ ol.source.ImageWMS.prototype.getImage =
 
   var params = {
     'SERVICE': 'WMS',
-    'VERSION': ol.source.wms.DEFAULT_VERSION,
+    'VERSION': ol.DEFAULT_WMS_VERSION,
     'REQUEST': 'GetMap',
     'FORMAT': 'image/png',
     'TRANSPARENT': true
@@ -315,7 +321,7 @@ ol.source.ImageWMS.prototype.getRequestUrl_ =
 /**
  * Return the URL used for this WMS source.
  * @return {string|undefined} URL.
- * @todo stability experimental
+ * @todo api
  */
 ol.source.ImageWMS.prototype.getUrl = function() {
   return this.url_;
@@ -324,6 +330,7 @@ ol.source.ImageWMS.prototype.getUrl = function() {
 
 /**
  * @param {string|undefined} url URL.
+ * @todo api
  */
 ol.source.ImageWMS.prototype.setUrl = function(url) {
   if (url != this.url_) {
@@ -337,6 +344,7 @@ ol.source.ImageWMS.prototype.setUrl = function(url) {
 /**
  * Update the user-provided params.
  * @param {Object} params Params.
+ * @todo api
  */
 ol.source.ImageWMS.prototype.updateParams = function(params) {
   goog.object.extend(this.params_, params);
@@ -351,6 +359,6 @@ ol.source.ImageWMS.prototype.updateParams = function(params) {
  */
 ol.source.ImageWMS.prototype.updateV13_ = function() {
   var version =
-      goog.object.get(this.params_, 'VERSION', ol.source.wms.DEFAULT_VERSION);
+      goog.object.get(this.params_, 'VERSION', ol.DEFAULT_WMS_VERSION);
   this.v13_ = goog.string.compareVersions(version, '1.3') >= 0;
 };

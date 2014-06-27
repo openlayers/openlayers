@@ -1,8 +1,6 @@
 goog.provide('ol.style.Image');
 goog.provide('ol.style.ImageState');
 
-goog.require('goog.array');
-
 
 /**
  * @enum {number}
@@ -20,13 +18,16 @@ ol.style.ImageState = {
  *            rotateWithView: boolean,
  *            rotation: number,
  *            scale: number,
- *            snapToPixel: (boolean|undefined)}}
+ *            snapToPixel: boolean}}
  */
 ol.style.ImageOptions;
 
 
 
 /**
+ * @classdesc
+ * Set image style for vector features.
+ *
  * @constructor
  * @param {ol.style.ImageOptions} options Options.
  */
@@ -58,7 +59,7 @@ ol.style.Image = function(options) {
 
   /**
    * @private
-   * @type {boolean|undefined}
+   * @type {boolean}
    */
   this.snapToPixel_ = options.snapToPixel;
 
@@ -83,6 +84,7 @@ ol.style.Image.prototype.getRotateWithView = function() {
 
 /**
  * @return {number} Rotation.
+ * @todo api
  */
 ol.style.Image.prototype.getRotation = function() {
   return this.rotation_;
@@ -91,6 +93,7 @@ ol.style.Image.prototype.getRotation = function() {
 
 /**
  * @return {number} Scale.
+ * @todo api
  */
 ol.style.Image.prototype.getScale = function() {
   return this.scale_;
@@ -98,7 +101,7 @@ ol.style.Image.prototype.getScale = function() {
 
 
 /**
- * @return {boolean|undefined} Snap to pixel?
+ * @return {boolean} Snap to pixel?
  */
 ol.style.Image.prototype.getSnapToPixel = function() {
   return this.snapToPixel_;
@@ -106,12 +109,14 @@ ol.style.Image.prototype.getSnapToPixel = function() {
 
 
 /**
+ * @function
  * @return {Array.<number>} Anchor.
  */
 ol.style.Image.prototype.getAnchor = goog.abstractMethod;
 
 
 /**
+ * @function
  * @param {number} pixelRatio Pixel ratio.
  * @return {HTMLCanvasElement|HTMLVideoElement|Image} Image element.
  */
@@ -132,6 +137,14 @@ ol.style.Image.prototype.getHitDetectionImage = goog.abstractMethod;
 
 
 /**
+ * @function
+ * @return {Array.<number>} Origin.
+ */
+ol.style.Image.prototype.getOrigin = goog.abstractMethod;
+
+
+/**
+ * @function
  * @return {ol.Size} Size.
  */
 ol.style.Image.prototype.getSize = goog.abstractMethod;

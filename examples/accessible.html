@@ -10,8 +10,21 @@
     <link rel="stylesheet" href="../resources/bootstrap/css/bootstrap-responsive.min.css" type="text/css">
     <title>Accessibility example</title>
     <style>
-      a.accesskey {
-        color: #FFFFFF;
+      a.skiplink {
+        position: absolute;
+        clip: rect(1px, 1px, 1px, 1px);
+        padding: 0;
+        border: 0;
+        height: 1px;
+        width: 1px;
+        overflow: hidden;
+      }
+      a.skiplink:focus {
+        clip: auto;
+        height: auto;
+        width: auto;
+        background-color: #fff;
+        padding: 0.3em;
       }
     </style>
   </head>
@@ -20,7 +33,7 @@
     <div class="navbar navbar-inverse navbar-fixed-top">
       <div class="navbar-inner">
         <div class="container">
-          <a class="brand" href="./"><img src="../resources/logo.png"> OpenLayers 3 Examples</a>
+          <a class="brand" href="./"><img src="../resources/logo.png" alt=""> OpenLayers 3 Examples</a>
         </div>
       </div>
     </div>
@@ -29,10 +42,8 @@
 
       <div class="row-fluid">
         <div class="span12">
-          <a class="accesskey" onclick="document.getElementById('map').focus(); return false;" accesskey="1" href="">Go to map</a>
+          <a class="skiplink" href="#map">Go to map</a>
           <div id="map" class="map" tabindex="0"></div>
-          <a class="zoom" accesskey="i" href="javascript: void map.getView().setZoom(map.getView().getZoom() + 1);">Zoom in</a>
-          <a class="zoom" accesskey="o" href="javascript: void map.getView().setZoom(map.getView().getZoom() - 1);">Zoom out</a>
         </div>
       </div>
 
@@ -42,9 +53,9 @@
           <h4 id="title">Accessibility example</h4>
           <p id="shortdesc">Example of an accessible map.</p>
           <div id="docs">
-            <p>This page's <code>map</code> element has its <code>tabindex</code> attribute set to <code>"0"</code>. That makes is focusable. To focus the map element you can either navigate to it using the "tab" key, or use the <a href="http://en.wikipedia.org/wiki/Access_key">Access Key</a> "1" (alt+1 or ctrl+alt+1) which provides a direct access. When the <code>map</code> element is focused the + and - keys can be used to zoom in and out, and the arrow keys can be used to pan.</p>
-            <p>When clicked the "Zoom in" and "Zoom out" links below the map zoom the map in and out, respectively. You can navigate to the links using the "tab" key, and press the "enter" key to trigger the zooming action. The Access Keys "i" and "o" can also be used, as a direct access to the actions of "Zoom in" and "Zoom out" links.</p>
-            <p>See the source of the page to see how this done.</p>
+            <p>This page's <code>map</code> element has its <code>tabindex</code> attribute set to <code>"0"</code>, that makes it focusable. To focus the map element you can either navigate to it using the "tab" key or use the skip link. When the <code>map</code> element is focused the + and - keys can be used to zoom in and out and the arrow keys can be used to pan.</p>
+            <p>When clicked the "Zoom in" and "Zoom out" buttons below the map zoom the map in and out, respectively. You can navigate to the buttons using the "tab" key, and press the "enter" key to trigger the zooming action.</p>
+            <p>See the <a href="accessible.js" target="_blank">accessible.js source</a> to see how this is done.</p>
           </div>
           <div id="tags">accessibility, tabindex</div>
         </div>

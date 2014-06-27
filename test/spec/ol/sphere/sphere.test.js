@@ -238,10 +238,10 @@ describe('ol.Sphere', function() {
         expect(c1[1]).to.roughlyEqual(e.c1[1], 1e-9);
         var midpoint = sphere.interpolate(e.c1, e.c2, 0.5);
         expect(midpoint[0]).to.roughlyEqual(e.midpoint[0], 1e-9);
-        expect(midpoint[1]).to.roughlyEqual(e.midpoint[1], 1e-9);
+        expect(midpoint[1]).to.roughlyEqual(e.midpoint[1], 1e-5);
         var c2 = sphere.interpolate(e.c1, e.c2, 1);
         expect(c2[0]).to.roughlyEqual(e.c2[0], 1e-9);
-        expect(c2[1]).to.roughlyEqual(e.c2[1], 1e-9);
+        expect(c2[1]).to.roughlyEqual(e.c2[1], 1e-5);
       }
     });
 

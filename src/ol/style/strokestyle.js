@@ -5,8 +5,12 @@ goog.require('ol.color');
 
 
 /**
+ * @classdesc
+ * Set stroke style for vector features.
+ *
  * @constructor
  * @param {olx.style.StrokeOptions=} opt_options Options.
+ * @todo api
  */
 ol.style.Stroke = function(opt_options) {
 
@@ -52,6 +56,7 @@ ol.style.Stroke = function(opt_options) {
 
 /**
  * @return {ol.Color|string} Color.
+ * @todo api
  */
 ol.style.Stroke.prototype.getColor = function() {
   return this.color_;
@@ -60,6 +65,7 @@ ol.style.Stroke.prototype.getColor = function() {
 
 /**
  * @return {string|undefined} Line cap.
+ * @todo api
  */
 ol.style.Stroke.prototype.getLineCap = function() {
   return this.lineCap_;
@@ -68,6 +74,7 @@ ol.style.Stroke.prototype.getLineCap = function() {
 
 /**
  * @return {Array.<number>} Line dash.
+ * @todo api
  */
 ol.style.Stroke.prototype.getLineDash = function() {
   return this.lineDash_;
@@ -76,6 +83,7 @@ ol.style.Stroke.prototype.getLineDash = function() {
 
 /**
  * @return {string|undefined} Line join.
+ * @todo api
  */
 ol.style.Stroke.prototype.getLineJoin = function() {
   return this.lineJoin_;
@@ -84,6 +92,7 @@ ol.style.Stroke.prototype.getLineJoin = function() {
 
 /**
  * @return {number|undefined} Miter limit.
+ * @todo api
  */
 ol.style.Stroke.prototype.getMiterLimit = function() {
   return this.miterLimit_;
@@ -92,6 +101,7 @@ ol.style.Stroke.prototype.getMiterLimit = function() {
 
 /**
  * @return {number|undefined} Width.
+ * @todo api
  */
 ol.style.Stroke.prototype.getWidth = function() {
   return this.width_;

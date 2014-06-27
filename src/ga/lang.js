@@ -20,6 +20,7 @@ ga.Lang.code_ = 'de';
 /**
  * Get language code
  * @return {string} language code
+ * @todo api
  */
 ga.Lang.getCode = function() {
   if (!ga.Lang.code_) {
@@ -32,6 +33,7 @@ ga.Lang.getCode = function() {
 /**
  * Set language code
  * @param {string} code, e.g. 'de'
+ * @todo api
  */
 ga.Lang.setCode = function(code) {
   ga.Lang.code_ = code;
@@ -43,6 +45,7 @@ ga.Lang.setCode = function(code) {
  *  @param {string} msgid to translate.
  *  @param {Object=} context (optional),
  *  @return {string} translated message
+ *  @todo api
  */
 ga.Lang.translate = function(msgid, context) {
 

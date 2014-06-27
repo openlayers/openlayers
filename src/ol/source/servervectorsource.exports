@@ -1,2 +1,0 @@
-@exportSymbol ol.source.ServerVector
-@exportProperty ol.source.ServerVector.prototype.readFeatures

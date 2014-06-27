@@ -1,6 +1,7 @@
 goog.provide('ol.tilegrid.XYZ');
 
 goog.require('goog.math');
+goog.require('ol');
 goog.require('ol.TileCoord');
 goog.require('ol.TileRange');
 goog.require('ol.proj');
@@ -10,11 +11,14 @@ goog.require('ol.tilegrid.TileGrid');
 
 
 /**
+ * @classdesc
+ * Set the grid pattern for sources accessing XYZ tiled-image servers.
+ *
  * @constructor
  * @extends {ol.tilegrid.TileGrid}
  * @param {olx.tilegrid.XYZOptions} options XYZ options.
  * @struct
- * @todo stability experimental
+ * @todo api
  */
 ol.tilegrid.XYZ = function(options) {
 

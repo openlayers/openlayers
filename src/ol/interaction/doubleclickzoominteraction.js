@@ -10,12 +10,13 @@ goog.require('ol.interaction.Interaction');
 
 
 /**
+ * @classdesc
  * Allows the user to zoom by double-clicking on the map.
  *
  * @constructor
  * @extends {ol.interaction.Interaction}
  * @param {olx.interaction.DoubleClickZoomOptions=} opt_options Options.
- * @todo stability experimental
+ * @todo api
  */
 ol.interaction.DoubleClickZoom = function(opt_options) {
 

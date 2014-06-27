@@ -2,8 +2,6 @@
 var data = obj;
 var self = this;
 
-if (data.stability) { ?>
-<div class="stability stability-<?js= stability ?>">Stability: <?js= data.stability ?></div>
-<?js } else { ?>
-<div class="stability">Stability: not documented</div>
+if (data.stability != 'stable') { ?>
+<span class="stability <?js= data.stability ?>"><?js= data.stability ?></span>
 <?js } ?>

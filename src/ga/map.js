@@ -31,7 +31,6 @@ goog.require('ga.Lang');
 
 
 /**
- * @class
  * The map is the core component of the GeoAdmin API. In its minimal configuration it
  * needs a view, one or more geoadmin layers, and a target container:
  *
@@ -49,9 +48,11 @@ goog.require('ga.Lang');
  * renders it to a DOM element with the id 'map'.
  * The coordinate system EPSG:21781 is automatically set.
  *
+ * @class
  * @constructor
  * @extends {ol.Map}
  * @param {gax.MapOptions} options Map options.
+ * @todo api
  */
 ga.Map = function(options) {
 
@@ -117,6 +118,7 @@ goog.inherits(ga.Map, ol.Map);
 /**
  * Geocode using api.geo.admin.ch
  * @param {String} text text to geocode.
+ * @todo api
  */
 ga.Map.prototype.geocode = function(text) {
   var jsonp = new goog.net.Jsonp(
@@ -150,6 +152,7 @@ ga.Map.prototype.handleGeocodeError_ = function(response) {
  * Recenter feature using api.geo.admin.ch
  * @param {String} layerId GeoAdmin id of the layer.
  * @param {String} featureId id of the feature.
+ * @todo api
  */
 ga.Map.prototype.recenterFeature = function(layerId, featureId) {
   var jsonp = new goog.net.Jsonp(
@@ -182,6 +185,7 @@ ga.Map.prototype.recenterToFeature_ = function(feature) {
  * Highlight feature using api.geo.admin.ch
  * @param {String} layerId GeoAdmin id of the layer.
  * @param {String} featureId id of the feature.
+ * @todo api
  */
 ga.Map.prototype.highlightFeature = function(layerId, featureId) {
   var jsonp = new goog.net.Jsonp(

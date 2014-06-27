@@ -425,12 +425,13 @@ describe('ol.extent', function() {
 
   });
 
-  describe('transform', function() {
+  describe('#applyTransform()', function() {
 
     it('does transform', function() {
       var transformFn = ol.proj.getTransform('EPSG:4326', 'EPSG:3857');
       var sourceExtent = [-15, -30, 45, 60];
-      var destinationExtent = ol.extent.transform(sourceExtent, transformFn);
+      var destinationExtent = ol.extent.applyTransform(
+          sourceExtent, transformFn);
       expect(destinationExtent).not.to.be(undefined);
       expect(destinationExtent).not.to.be(null);
       // FIXME check values with third-party tool
@@ -456,7 +457,8 @@ describe('ol.extent', function() {
         return output;
       };
       var sourceExtent = [-15, -30, 45, 60];
-      var destinationExtent = ol.extent.transform(sourceExtent, transformFn);
+      var destinationExtent = ol.extent.applyTransform(
+          sourceExtent, transformFn);
       expect(destinationExtent).not.to.be(undefined);
       expect(destinationExtent).not.to.be(null);
       expect(destinationExtent[0]).to.be(-45);

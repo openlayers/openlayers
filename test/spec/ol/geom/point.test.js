@@ -106,6 +106,67 @@ describe('ol.geom.Point', function() {
 
   });
 
+  describe('#applyTransform()', function() {
+
+    var point, transform;
+    beforeEach(function() {
+      point = new ol.geom.Point([1, 2]);
+      transform = sinon.spy();
+    });
+
+    it('calls a transform function', function() {
+      point.applyTransform(transform);
+      expect(transform.calledOnce).to.be(true);
+      var args = transform.firstCall.args;
+      expect(args).to.have.length(3);
+
+      expect(args[0]).to.be(point.getFlatCoordinates()); // input coords
+      expect(args[1]).to.be(point.getFlatCoordinates()); // output coords
+      expect(args[2]).to.be(2); // dimension
+    });
+
+    it('allows for modification of coordinates', function() {
+      var mod = function(input, output, dimension) {
+        var copy = input.slice();
+        output[1] = copy[0];
+        output[0] = copy[1];
+      };
+      point.applyTransform(mod);
+      expect(point.getCoordinates()).to.eql([2, 1]);
+    });
+
+    it('returns undefined', function() {
+      var got = point.applyTransform(transform);
+      expect(got).to.be(undefined);
+    });
+
+  });
+
+  describe('#transform()', function() {
+
+    it('transforms a geometry given CRS identifiers', function() {
+      var point = new ol.geom.Point([-111, 45]).transform(
+          'EPSG:4326', 'EPSG:3857');
+
+      expect(point).to.be.a(ol.geom.Point);
+
+      var coords = point.getCoordinates();
+
+      expect(coords[0]).to.roughlyEqual(-12356463.47, 1e-2);
+      expect(coords[1]).to.roughlyEqual(5621521.48, 1e-2);
+    });
+
+    it('modifies the original', function() {
+      var point = new ol.geom.Point([-111, 45]);
+      point.transform('EPSG:4326', 'EPSG:3857');
+      var coords = point.getCoordinates();
+
+      expect(coords[0]).to.roughlyEqual(-12356463.47, 1e-2);
+      expect(coords[1]).to.roughlyEqual(5621521.48, 1e-2);
+    });
+
+  });
+
 });
 
 

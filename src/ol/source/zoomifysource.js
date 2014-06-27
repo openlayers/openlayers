@@ -1,7 +1,7 @@
 goog.provide('ol.source.Zoomify');
 
-goog.require('goog.array');
 goog.require('goog.asserts');
+goog.require('ol');
 goog.require('ol.ImageTile');
 goog.require('ol.TileCoord');
 goog.require('ol.TileState');
@@ -23,10 +23,13 @@ ol.source.ZoomifyTierSizeCalculation = {
 
 
 /**
+ * @classdesc
+ * Layer source for tile data in Zoomify format.
+ *
  * @constructor
  * @extends {ol.source.TileImage}
  * @param {olx.source.ZoomifyOptions=} opt_options Options.
- * @todo stability experimental
+ * @todo api
  */
 ol.source.Zoomify = function(opt_options) {
 

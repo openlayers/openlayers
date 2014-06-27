@@ -22,10 +22,13 @@ ol.format.IGCZ = {
 
 
 /**
+ * @classdesc
+ * Feature format for `*.igc` flight recording files.
+ *
  * @constructor
  * @extends {ol.format.TextFeature}
  * @param {olx.format.IGCOptions=} opt_options Options.
- * @todo stability experimental
+ * @todo api
  */
 ol.format.IGC = function(opt_options) {
 
@@ -91,6 +94,7 @@ ol.format.IGC.prototype.getExtensions = function() {
  * @function
  * @param {ArrayBuffer|Document|Node|Object|string} source Source.
  * @return {ol.Feature} Feature.
+ * @todo api
  */
 ol.format.IGC.prototype.readFeature;
 
@@ -156,6 +160,9 @@ ol.format.IGC.prototype.readFeatureFromText = function(text) {
       }
     }
   }
+  if (flatCoordinates.length === 0) {
+    return null;
+  }
   var lineString = new ol.geom.LineString(null);
   var layout = altitudeMode == ol.format.IGCZ.NONE ?
       ol.geom.GeometryLayout.XYM : ol.geom.GeometryLayout.XYZM;
@@ -173,6 +180,7 @@ ol.format.IGC.prototype.readFeatureFromText = function(text) {
  * @function
  * @param {ArrayBuffer|Document|Node|Object|string} source Source.
  * @return {Array.<ol.Feature>} Features.
+ * @todo api
  */
 ol.format.IGC.prototype.readFeatures;
 
@@ -196,6 +204,7 @@ ol.format.IGC.prototype.readFeaturesFromText = function(text) {
  * @function
  * @param {ArrayBuffer|Document|Node|Object|string} source Source.
  * @return {ol.proj.Projection} Projection.
+ * @todo api
  */
 ol.format.IGC.prototype.readProjection;
 

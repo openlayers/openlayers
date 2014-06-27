@@ -1,3 +1,0 @@
-@exportSymbol ol.style.Image
-@exportProperty ol.style.Image.prototype.getRotation
-@exportProperty ol.style.Image.prototype.getScale
