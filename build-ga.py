@@ -42,6 +42,16 @@ targets.add = MethodType(add, targets, TargetCollection)
 virtual('build', 'build/ga.css', 'build/ga.js',
         'build/ga-whitespace.js','build/layersconfig', 'build/serverconfig')
 
+# We redefine 'check' to add definitons from externs/ga.js
+virtual('check', 'lint', 'jshint', 'build/ga-all.js', 'test')
+
+@target('build/ga-all.js', PLOVR_JAR, SRC, EXPORTS, SHADER_SRC, LIBTESS_JS_SRC,
+        'buildcfg/base.json', 'buildcfg/ga-all.json')
+def build_ol_all_js(t):
+    t.output('%(JAVA)s', '-server', '-XX:+TieredCompilation', '-jar',
+            PLOVR_JAR, 'build', 'buildcfg/ga-all.json')
+
+
 # We redifine 'apidoc'
 JSDOC = 'node_modules/.bin/jsdoc'
 
