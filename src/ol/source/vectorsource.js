@@ -135,10 +135,7 @@ ol.source.Vector.prototype.addFeatureInternal = function(feature) {
   }
   var id = feature.getId();
   if (goog.isDef(id)) {
-    var sid = id.toString();
-    goog.asserts.assert(!(sid in this.idIndex_),
-        'Feature with same id already added to the source: ' + id);
-    this.idIndex_[sid] = feature;
+    this.idIndex_[id.toString()] = feature;
   } else {
     goog.asserts.assert(!(featureKey in this.undefIdIndex_),
         'Feature already added to the source');
@@ -385,16 +382,12 @@ ol.source.Vector.prototype.handleFeatureChange_ = function(event) {
     var sid = id.toString();
     if (featureKey in this.undefIdIndex_) {
       delete this.undefIdIndex_[featureKey];
-      goog.asserts.assert(!goog.isDef(this.idIndex_[sid]),
-          'Duplicate feature id: ' + id);
       this.idIndex_[sid] = feature;
     } else {
       if (this.idIndex_[sid] !== feature) {
         removed = this.removeFromIdIndex_(feature);
         goog.asserts.assert(removed,
             'Expected feature to be removed from index');
-        goog.asserts.assert(!(sid in this.idIndex_),
-            'Duplicate feature id: ' + id);
         this.idIndex_[sid] = feature;
       }
     }
