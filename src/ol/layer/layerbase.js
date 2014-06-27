@@ -53,28 +53,32 @@ ol.layer.Base = function(options) {
 
   goog.base(this);
 
-  var values = goog.object.clone(options);
+  var properties = goog.object.clone(options);
 
   /** @type {number} */
-  values.brightness = goog.isDef(values.brightness) ? values.brightness : 0;
+  properties.brightness = goog.isDef(properties.brightness) ?
+      properties.brightness : 0;
   /** @type {number} */
-  values.contrast = goog.isDef(values.contrast) ? values.contrast : 1;
+  properties.contrast = goog.isDef(properties.contrast) ?
+      properties.contrast : 1;
   /** @type {number} */
-  values.hue = goog.isDef(values.hue) ? values.hue : 0;
+  properties.hue = goog.isDef(properties.hue) ? properties.hue : 0;
   /** @type {number} */
-  values.opacity = goog.isDef(values.opacity) ? values.opacity : 1;
+  properties.opacity = goog.isDef(properties.opacity) ? properties.opacity : 1;
   /** @type {number} */
-  values.saturation = goog.isDef(values.saturation) ? values.saturation : 1;
+  properties.saturation = goog.isDef(properties.saturation) ?
+      properties.saturation : 1;
   /** @type {boolean} */
-  values.visible = goog.isDef(values.visible) ? values.visible : true;
+  properties.visible = goog.isDef(properties.visible) ?
+      properties.visible : true;
   /** @type {number} */
-  values.maxResolution = goog.isDef(values.maxResolution) ?
-      values.maxResolution : Infinity;
+  properties.maxResolution = goog.isDef(properties.maxResolution) ?
+      properties.maxResolution : Infinity;
   /** @type {number} */
-  values.minResolution = goog.isDef(values.minResolution) ?
-      values.minResolution : 0;
+  properties.minResolution = goog.isDef(properties.minResolution) ?
+      properties.minResolution : 0;
 
-  this.setValues(values);
+  this.setProperties(properties);
 };
 goog.inherits(ol.layer.Base, ol.Object);
 

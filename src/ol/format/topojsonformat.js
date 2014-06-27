@@ -261,7 +261,7 @@ ol.format.TopoJSON.readFeatureFromGeometry_ = function(object, arcs,
     feature.setId(object.id);
   }
   if (goog.isDef(object.properties)) {
-    feature.setValues(object.properties);
+    feature.setProperties(object.properties);
   }
   return feature;
 };
