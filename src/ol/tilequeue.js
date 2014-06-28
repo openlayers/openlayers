@@ -4,7 +4,6 @@ goog.provide('ol.TileQueue');
 goog.require('goog.events');
 goog.require('goog.events.EventType');
 goog.require('ol.Coordinate');
-goog.require('ol.Tile');
 goog.require('ol.structs.PriorityQueue');
 
 
