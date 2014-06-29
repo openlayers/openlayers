@@ -25,11 +25,11 @@ goog.require('ol.style.Style');
  * @constructor
  * @extends {ol.Object}
  * @fires change Triggered when the geometry or style of the feature changes.
- * @param {ol.geom.Geometry|Object.<string, *>=} opt_geometryOrValues
- *     Values or geometry.
+ * @param {ol.geom.Geometry|Object.<string, *>=} opt_geometryOrProperties
+ *     Geometry or properties.
  * @todo api
  */
-ol.Feature = function(opt_geometryOrValues) {
+ol.Feature = function(opt_geometryOrProperties) {
 
   goog.base(this);
 
@@ -69,15 +69,16 @@ ol.Feature = function(opt_geometryOrValues) {
       this, ol.Object.getChangeEventType(this.geometryName_),
       this.handleGeometryChanged_, false, this);
 
-  if (goog.isDef(opt_geometryOrValues)) {
-    if (opt_geometryOrValues instanceof ol.geom.Geometry ||
-        goog.isNull(opt_geometryOrValues)) {
-      var geometry = /** @type {ol.geom.Geometry} */ (opt_geometryOrValues);
+  if (goog.isDef(opt_geometryOrProperties)) {
+    if (opt_geometryOrProperties instanceof ol.geom.Geometry ||
+        goog.isNull(opt_geometryOrProperties)) {
+      var geometry = /** @type {ol.geom.Geometry} */ (opt_geometryOrProperties);
       this.setGeometry(geometry);
     } else {
-      goog.asserts.assert(goog.isObject(opt_geometryOrValues));
-      var values = /** @type {Object.<string, *>} */ (opt_geometryOrValues);
-      this.setValues(values);
+      goog.asserts.assert(goog.isObject(opt_geometryOrProperties));
+      var properties = /** @type {Object.<string, *>} */
+          (opt_geometryOrProperties);
+      this.setProperties(properties);
     }
   }
 };

@@ -104,10 +104,10 @@ ol.View = function(opt_options) {
   /**
    * @type {Object.<string, *>}
    */
-  var values = {};
-  values[ol.ViewProperty.CENTER] = goog.isDef(options.center) ?
+  var properties = {};
+  properties[ol.ViewProperty.CENTER] = goog.isDef(options.center) ?
       options.center : null;
-  values[ol.ViewProperty.PROJECTION] = ol.proj.createProjection(
+  properties[ol.ViewProperty.PROJECTION] = ol.proj.createProjection(
       options.projection, 'EPSG:3857');
 
   var resolutionConstraintInfo = ol.View.createResolutionConstraint_(
@@ -143,14 +143,14 @@ ol.View = function(opt_options) {
       centerConstraint, resolutionConstraint, rotationConstraint);
 
   if (goog.isDef(options.resolution)) {
-    values[ol.ViewProperty.RESOLUTION] = options.resolution;
+    properties[ol.ViewProperty.RESOLUTION] = options.resolution;
   } else if (goog.isDef(options.zoom)) {
-    values[ol.ViewProperty.RESOLUTION] = this.constrainResolution(
+    properties[ol.ViewProperty.RESOLUTION] = this.constrainResolution(
         this.maxResolution_, options.zoom - this.minZoom_);
   }
-  values[ol.ViewProperty.ROTATION] =
+  properties[ol.ViewProperty.ROTATION] =
       goog.isDef(options.rotation) ? options.rotation : 0;
-  this.setValues(values);
+  this.setProperties(properties);
 };
 goog.inherits(ol.View, ol.Object);
 

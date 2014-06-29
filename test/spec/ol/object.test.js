@@ -82,10 +82,10 @@ describe('ol.Object', function() {
 
   });
 
-  describe('setValues', function() {
+  describe('setProperties', function() {
 
     it('sets multiple values at once', function() {
-      o.setValues({
+      o.setProperties({
         k1: 1,
         k2: 2
       });

@@ -168,7 +168,7 @@ ol.format.IGC.prototype.readFeatureFromText = function(text) {
       ol.geom.GeometryLayout.XYM : ol.geom.GeometryLayout.XYZM;
   lineString.setFlatCoordinates(layout, flatCoordinates);
   var feature = new ol.Feature(lineString);
-  feature.setValues(properties);
+  feature.setProperties(properties);
   return feature;
 };
 

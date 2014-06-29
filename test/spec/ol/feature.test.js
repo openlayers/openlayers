@@ -9,7 +9,7 @@ describe('ol.Feature', function() {
       expect(feature).to.be.a(ol.Feature);
     });
 
-    it('takes attribute values', function() {
+    it('takes properties', function() {
       var feature = new ol.Feature({
         foo: 'bar'
       });
@@ -375,7 +375,7 @@ describe('ol.Feature', function() {
 
     it('correctly clones features', function() {
       var feature = new ol.Feature();
-      feature.setValues({'fookey': 'fooval'});
+      feature.setProperties({'fookey': 'fooval'});
       feature.setId(1);
       feature.setGeometryName('geom');
       var geometry = new ol.geom.Point([1, 2]);

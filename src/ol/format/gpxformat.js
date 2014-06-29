@@ -165,7 +165,7 @@ ol.format.GPX.readRte_ = function(node, objectStack) {
   var geometry = new ol.geom.LineString(null);
   geometry.setFlatCoordinates(ol.geom.GeometryLayout.XYZM, flatCoordinates);
   var feature = new ol.Feature(geometry);
-  feature.setValues(values);
+  feature.setProperties(values);
   return feature;
 };
 
@@ -195,7 +195,7 @@ ol.format.GPX.readTrk_ = function(node, objectStack) {
   geometry.setFlatCoordinates(
       ol.geom.GeometryLayout.XYZM, flatCoordinates, ends);
   var feature = new ol.Feature(geometry);
-  feature.setValues(values);
+  feature.setProperties(values);
   return feature;
 };
 
@@ -218,7 +218,7 @@ ol.format.GPX.readWpt_ = function(node, objectStack) {
   var geometry = new ol.geom.Point(
       coordinates, ol.geom.GeometryLayout.XYZM);
   var feature = new ol.Feature(geometry);
-  feature.setValues(values);
+  feature.setProperties(values);
   return feature;
 };
 

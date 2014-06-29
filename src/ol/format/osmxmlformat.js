@@ -68,7 +68,7 @@ ol.format.OSMXML.readNode_ = function(node, objectStack) {
     var geometry = new ol.geom.Point(coordinates);
     var feature = new ol.Feature(geometry);
     feature.setId(id);
-    feature.setValues(values.tags);
+    feature.setProperties(values.tags);
     state.features.push(feature);
   }
 };
@@ -105,7 +105,7 @@ ol.format.OSMXML.readWay_ = function(node, objectStack) {
   }
   var feature = new ol.Feature(geometry);
   feature.setId(id);
-  feature.setValues(values.tags);
+  feature.setProperties(values.tags);
   state.features.push(feature);
 };
 

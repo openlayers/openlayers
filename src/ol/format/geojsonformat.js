@@ -364,7 +364,7 @@ ol.format.GeoJSON.prototype.readFeatureFromObject = function(object) {
     feature.setId(geoJSONFeature.id);
   }
   if (goog.isDef(geoJSONFeature.properties)) {
-    feature.setValues(geoJSONFeature.properties);
+    feature.setProperties(geoJSONFeature.properties);
   }
   return feature;
 };

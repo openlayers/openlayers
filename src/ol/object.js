@@ -158,7 +158,7 @@ ol.Object = function(opt_values) {
   this.listeners_ = {};
 
   if (goog.isDef(opt_values)) {
-    this.setValues(opt_values);
+    this.setProperties(opt_values);
   }
 };
 goog.inherits(ol.Object, ol.Observable);
@@ -453,7 +453,7 @@ ol.Object.prototype.set = function(key, value) {
  * @param {Object.<string, *>} values Values.
  * @todo api
  */
-ol.Object.prototype.setValues = function(values) {
+ol.Object.prototype.setProperties = function(values) {
   var key;
   for (key in values) {
     this.set(key, values[key]);
