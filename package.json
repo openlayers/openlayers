@@ -19,15 +19,16 @@
     "htmlparser2": "~3.7.1"
   },
   "devDependencies": {
-    "closure-util": "~0.14.0",
-    "jshint": "~2.5.1",
-    "jsdoc": "~3.3.0-alpha7",
-    "taffydb": "~2.7.0",
-    "underscore": "~1.6.0",
-    "walk": "~2.3.3",
+    "closure-util": "0.17.0",
     "fs-extra": "~0.8.1",
+    "graceful-fs": "~3.0.2",
+    "jsdoc": "~3.3.0-alpha7",
+    "jshint": "~2.5.1",
     "nomnom": "~1.6.2",
+    "phantomjs": "~1.9.7-5",
+    "taffydb": "~2.7.0",
     "temp": "~0.7.0",
-    "phantomjs": "~1.9.7-5"
+    "underscore": "~1.6.0",
+    "walk": "~2.3.3"
   }
 }
