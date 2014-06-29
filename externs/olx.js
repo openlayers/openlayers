@@ -1918,8 +1918,8 @@ olx.interaction.SelectOptions;
 /**
  * A function that takes an {@link ol.MapBrowserEvent} and returns a boolean
  * to indicate whether that event should be handled.
- * By default, this is {@link ol.events.condition.never}, though note that the
- * default toggle condition allows features to be added.
+ * By default, this is {@link ol.events.condition.never}. Use this if you want
+ * to use different events for add and remove instead of `toggle`.
  * @type {ol.events.ConditionType|undefined}
  */
 olx.interaction.SelectOptions.prototype.addCondition;
@@ -1928,7 +1928,12 @@ olx.interaction.SelectOptions.prototype.addCondition;
 /**
  * A function that takes an {@link ol.MapBrowserEvent} and returns a boolean
  * to indicate whether that event should be handled.
- * By default, {@link ol.events.condition.singleClick} toggles the selection.
+ * This is the event for the selected features as a whole. By default, this is
+ * {@link ol.events.condition.singleClick}. Clicking on a feature selects that
+ * feature and removes any that were in the selection. Clicking outside any
+ * feature removes all from the selection.
+ * See `toggle`, `add`, `remove` options for adding/removing extra features to/
+ * from the selection.
  * @type {ol.events.ConditionType|undefined}
  */
 olx.interaction.SelectOptions.prototype.condition;
@@ -1946,7 +1951,7 @@ olx.interaction.SelectOptions.prototype.layers;
 
 
 /**
- * FeatureOverlay style.
+ * Style for the selected features (those in the FeatureOverlay).
  * @type {ol.style.Style|Array.<ol.style.Style>|ol.feature.StyleFunction|undefined}
  */
 olx.interaction.SelectOptions.prototype.style;
@@ -1955,7 +1960,8 @@ olx.interaction.SelectOptions.prototype.style;
 /**
  * A function that takes an {@link ol.MapBrowserEvent} and returns a boolean
  * to indicate whether that event should be handled.
- * By default, this is {@link ol.events.condition.never}.
+ * By default, this is {@link ol.events.condition.never}. Use this if you want
+ * to use different events for add and remove instead of `toggle`.
  * @type {ol.events.ConditionType|undefined}
  */
 olx.interaction.SelectOptions.prototype.removeCondition;
@@ -1964,8 +1970,12 @@ olx.interaction.SelectOptions.prototype.removeCondition;
 /**
  * A function that takes an {@link ol.MapBrowserEvent} and returns a boolean
  * to indicate whether that event should be handled.
- * By default, {@link ol.events.condition.shiftKeyOnly} toggles the
- * feature in the current selection.
+ * This is in addition to the `condition` event. By default,
+ * {@link ol.events.condition.shiftKeyOnly}, i.e. pressing `shift` as well as
+ * the `condition` event, adds that feature to the current selection if it is
+ * not currently selected, and removes it if it is.
+ * See `add` and `remove` if you want to use different events instead of a
+ * toggle.
  * @type {ol.events.ConditionType|undefined}
  */
 olx.interaction.SelectOptions.prototype.toggleCondition;
