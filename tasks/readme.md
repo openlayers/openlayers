@@ -27,6 +27,8 @@ Build configuration files are JSON files that are used to determine what should 
 
   * **src** - `Array.<string>` Optional array of [path patterns](https://github.com/isaacs/minimatch/blob/master/README.md) for source files.  This defaults to `["src/**/*.js"]` which will match all `.js` files in the `src` directory.  To include a different set of source files, provide an array of path patterns.  Note that these patterns are `/` delimited even on Windows.
 
+  * **cwd** - `string` Optional path to be used as the current working directory.  All paths in the `compile` object are assumed to be relative to `cwd`.  Default is the root of the ol3 repository.
+
   * **namespace** - `string` Optional namespace for exporting the `ol` object.  By default, `ol` is assigned to the global object.
 
   * **jvm** - `Array.<string>` Optional array of [command line options](https://github.com/google/closure-compiler/wiki/FAQ#what-are-the-recommended-java-vm-command-line-options) for the compiler.  By default, the Compiler is run with `['-server', '-XX:+TieredCompilation']`.
