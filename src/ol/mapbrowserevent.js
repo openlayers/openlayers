@@ -494,7 +494,8 @@ ol.MapBrowserEvent.EventType = {
 
   // original pointer event types
   /**
-   * Triggered when a pointer is moved.
+   * Triggered when a pointer is moved. Note that on touch devices this is
+   * triggered when the map is panned, so is not the same as mousemove.
    * @event ol.MapBrowserEvent#pointermove
    * @todo api
    */
