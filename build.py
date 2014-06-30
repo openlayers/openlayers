@@ -193,11 +193,9 @@ def build_ol_whitespace_js(t):
 virtual('build-all', 'build/ol-all.js')
 
 
-@target('build/ol-all.js', PLOVR_JAR, SRC, EXPORTS, SHADER_SRC,
-        'buildcfg/base.json', 'buildcfg/ol-all.json')
+@target('build/ol-all.js', SRC, SHADER_SRC, 'buildcfg/ol-all.json')
 def build_ol_all_js(t):
-    t.output('%(JAVA)s', '-server', '-XX:+TieredCompilation', '-jar',
-            PLOVR_JAR, 'build', 'buildcfg/ol-all.json')
+    t.run('node', 'tasks/build.js', 'buildcfg/ol-all.json', 'build/ol-all.js')
 
 
 @target(EXPORTS, SRC)

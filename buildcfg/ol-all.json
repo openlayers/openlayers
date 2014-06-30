@@ -1,23 +1,62 @@
 {
-
-  "id": "ol-all",
-
-  "externs": [
-    "../externs/bingmaps.js",
-    "../externs/closure-compiler.js",
-    "../externs/geojson.js",
-    "../externs/oli.js",
-    "../externs/olx.js",
-    "../externs/proj4js.js",
-    "../externs/tilejson.js",
-    "../externs/topojson.js",
-    "../externs/vbarray.js"
-  ],
-
-  "inherits": "base.json",
-
-  "inputs": [
-    "../build/exports.js"
-  ]
-
+  "exports": ["*"],
+  "src": ["src/**/*.js"],
+  "compile": {
+    "externs": [
+      "externs/bingmaps.js",
+      "externs/closure-compiler.js",
+      "externs/geojson.js",
+      "externs/oli.js",
+      "externs/olx.js",
+      "externs/proj4js.js",
+      "externs/tilejson.js",
+      "externs/topojson.js",
+      "externs/vbarray.js"
+    ],
+    "define": [
+      "goog.dom.ASSUME_STANDARDS_MODE=true",
+      "goog.DEBUG=false"
+    ],
+    "jscomp_error": [
+      "accessControls",
+      "ambiguousFunctionDecl",
+      "checkDebuggerStatement",
+      "checkEventfulObjectDisposal",
+      "checkProvides",
+      "checkRegExp",
+      "checkStructDictInheritance",
+      "checkTypes",
+      "checkVars",
+      "const",
+      "constantProperty",
+      "deprecated",
+      "duplicate",
+      "duplicateMessage",
+      "es3",
+      "externsValidation",
+      "fileoverviewTags",
+      "globalThis",
+      "internetExplorerChecks",
+      "invalidCasts",
+      "misplacedTypeAnnotation",
+      "missingProperties",
+      "nonStandardJsDocs",
+      "strictModuleDepCheck",
+      "suspiciousCode",
+      "typeInvalidation",
+      "tweakValidation",
+      "undefinedNames",
+      "undefinedVars",
+      "unknownDefines",
+      "uselessCode",
+      "violatedModuleDep",
+      "visibility"
+    ],
+    "jscomp_off": [
+      "es5Strict"
+    ],
+    "compilation_level": "ADVANCED_OPTIMIZATIONS",
+    "output_wrapper": "// OpenLayers 3. See http://ol3.js.org/\n(function(){%output%})();",
+    "use_types_for_optimization": true
+  }
 }
