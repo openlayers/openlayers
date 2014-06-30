@@ -306,10 +306,9 @@ def examples_star_combined_js(name, match):
     return Target(name, action=action, dependencies=dependencies)
 
 
-@target('serve', PLOVR_JAR, 'test-deps', 'examples')
+@target('serve', 'test-deps', 'examples')
 def serve(t):
-    t.run('%(JAVA)s', '-jar', PLOVR_JAR, 'serve', 'buildcfg/ol.json',
-          'buildcfg/ol-all.json', EXAMPLES_JSON, 'buildcfg/test.json')
+    t.run('node', 'tasks/serve.js')
 
 
 @target('serve-integration-test', PLOVR_JAR)
