@@ -172,11 +172,9 @@ def build_ol_css(t):
     t.touch()
 
 
-@target('build/ol.js', PLOVR_JAR, SRC, EXPORTS, SHADER_SRC,
-        'buildcfg/base.json', 'buildcfg/ol.json')
-def build_ol_js(t):
-    t.output('%(JAVA)s', '-server', '-XX:+TieredCompilation', '-jar',
-            PLOVR_JAR, 'build', 'buildcfg/ol.json')
+@target('build/ol.js', SRC, SHADER_SRC, 'buildcfg/ol.json')
+def build_ol_new_js(t):
+    t.run('node', 'tasks/build.js', 'buildcfg/ol.json', 'build/ol.js')
     report_sizes(t)
 
 
