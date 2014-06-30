@@ -301,6 +301,8 @@ ol.interaction.Draw.prototype.handlePointerMove_ = function(event) {
     this.startDrawing_(event);
   } else if (!goog.isNull(this.finishCoordinate_)) {
     this.modifyDrawing_(event);
+  } else {
+    this.createOrUpdateSketchPoint_(event);
   }
   return true;
 };
@@ -349,6 +351,23 @@ ol.interaction.Draw.prototype.atFinish_ = function(event) {
 
 
 /**
+ * @param {ol.MapBrowserEvent} event Event.
+ * @private
+ */
+ol.interaction.Draw.prototype.createOrUpdateSketchPoint_ = function(event) {
+  var coordinates = event.coordinate.slice();
+  if (goog.isNull(this.sketchPoint_)) {
+    this.sketchPoint_ = new ol.Feature(new ol.geom.Point(coordinates));
+    this.updateSketchFeatures_();
+  } else {
+    var sketchPointGeom = this.sketchPoint_.getGeometry();
+    goog.asserts.assertInstanceof(sketchPointGeom, ol.geom.Point);
+    sketchPointGeom.setCoordinates(coordinates);
+  }
+};
+
+
+/**
  * Start the drawing.
  * @param {ol.MapBrowserEvent} event Event.
  * @private
@@ -360,8 +379,6 @@ ol.interaction.Draw.prototype.startDrawing_ = function(event) {
   if (this.mode_ === ol.interaction.DrawMode.POINT) {
     geometry = new ol.geom.Point(start.slice());
   } else {
-    this.sketchPoint_ = new ol.Feature(new ol.geom.Point(start.slice()));
-
     if (this.mode_ === ol.interaction.DrawMode.LINE_STRING) {
       geometry = new ol.geom.LineString([start.slice(), start.slice()]);
     } else if (this.mode_ === ol.interaction.DrawMode.POLYGON) {
@@ -439,7 +456,7 @@ ol.interaction.Draw.prototype.modifyDrawing_ = function(event) {
 ol.interaction.Draw.prototype.addToDrawing_ = function(event) {
   var coordinate = event.coordinate;
   var geometry = this.sketchFeature_.getGeometry();
-  var coordinates, last;
+  var coordinates;
   if (this.mode_ === ol.interaction.DrawMode.LINE_STRING) {
     this.finishCoordinate_ = coordinate.slice();
     goog.asserts.assertInstanceof(geometry, ol.geom.LineString);
@@ -527,7 +544,10 @@ ol.interaction.Draw.prototype.abortDrawing_ = function() {
  * @private
  */
 ol.interaction.Draw.prototype.updateSketchFeatures_ = function() {
-  var sketchFeatures = [this.sketchFeature_];
+  var sketchFeatures = [];
+  if (!goog.isNull(this.sketchFeature_)) {
+    sketchFeatures.push(this.sketchFeature_);
+  }
   if (!goog.isNull(this.sketchLine_)) {
     sketchFeatures.push(this.sketchLine_);
   }
