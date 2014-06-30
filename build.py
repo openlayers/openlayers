@@ -184,12 +184,9 @@ def build_ol_simple_js(t):
     report_sizes(t)
 
 
-@target('build/ol-whitespace.js', PLOVR_JAR, SRC, EXPORTS,
-        SHADER_SRC, 'buildcfg/base.json', 'buildcfg/ol.json',
-        'buildcfg/ol-whitespace.json')
+@target('build/ol-whitespace.js', SRC, SHADER_SRC, 'buildcfg/ol-whitespace.json')
 def build_ol_whitespace_js(t):
-    t.output('%(JAVA)s', '-server', '-XX:+TieredCompilation', '-jar',
-            PLOVR_JAR, 'build', 'buildcfg/ol-whitespace.json')
+    t.run('node', 'tasks/build.js', 'buildcfg/ol-whitespace.json', 'build/ol-whitespace.js')
     report_sizes(t)
 
 
