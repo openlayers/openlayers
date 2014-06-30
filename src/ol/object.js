@@ -61,10 +61,17 @@ goog.inherits(ol.ObjectEvent, goog.events.Event);
 
 /**
  * @constructor
- * @param {ol.Object} target
- * @param {string} key
+ * @param {ol.Object} source Source object.
+ * @param {ol.Object} target Target object.
+ * @param {string} sourceKey Source key.
+ * @param {string} targetKey Target key.
  */
-ol.ObjectAccessor = function(target, key) {
+ol.ObjectAccessor = function(source, target, sourceKey, targetKey) {
+
+  /**
+   * @type {ol.Object}
+   */
+  this.source = source;
 
   /**
    * @type {ol.Object}
@@ -74,7 +81,12 @@ ol.ObjectAccessor = function(target, key) {
   /**
    * @type {string}
    */
-  this.key = key;
+  this.sourceKey = sourceKey;
+
+  /**
+   * @type {string}
+   */
+  this.targetKey = targetKey;
 
   /**
    * @type {function(?): ?}
@@ -97,8 +109,7 @@ ol.ObjectAccessor = function(target, key) {
 ol.ObjectAccessor.prototype.transform = function(from, to) {
   this.from = from;
   this.to = to;
-
-  this.target.notify(this.key);
+  this.source.notify(this.sourceKey);
 };
 
 
@@ -229,10 +240,11 @@ ol.Object.getSetterName = function(key) {
 
 /**
  * The bindTo method allows you to set up a two-way binding between a
- * `source` and `target` object. The method returns an
- * ol.ObjectAccessor with a transform method that lets you transform
- * values on the way from the source to the target and on the way back.
- *
+ * `source` and `target` object. The method returns an object with a
+ * `transform` method that you can use to provide `from` and `to`
+ * functions to transform values on the way from the source to the
+ * target and on the way back.
+*
  * For example, if you had two map views (sourceView and targetView)
  * and you wanted the target view to have double the resolution of the
  * source view, you could transform the resolution on the way to and
@@ -267,7 +279,7 @@ ol.Object.prototype.bindTo = function(key, target, opt_targetKey) {
        * @this {ol.Object}
        */
       function() {
-        this.notifyInternal_(key);
+        this.notify(key);
       }, undefined, this);
 
   // listen for beforechange events and relay if key matches
@@ -276,9 +288,9 @@ ol.Object.prototype.bindTo = function(key, target, opt_targetKey) {
       this.createBeforeChangeListener_(key, targetKey),
       undefined, this);
 
-  var accessor = new ol.ObjectAccessor(target, targetKey);
+  var accessor = new ol.ObjectAccessor(this, target, key, targetKey);
   this.accessors_[key] = accessor;
-  this.notifyInternal_(key);
+  this.notify(key);
   return accessor;
 };
 
@@ -319,7 +331,7 @@ ol.Object.prototype.get = function(key) {
   if (accessors.hasOwnProperty(key)) {
     var accessor = accessors[key];
     var target = accessor.target;
-    var targetKey = accessor.key;
+    var targetKey = accessor.targetKey;
     var getterName = ol.Object.getGetterName(targetKey);
     var getter = /** @type {function(): *|undefined} */
         (goog.object.get(target, getterName));
@@ -387,30 +399,9 @@ ol.Object.prototype.getProperties = function() {
 
 
 /**
- * Notify all observers of a change on this property. This notifies both
- * objects that are bound to the object's property as well as the object
- * that it is bound to.
  * @param {string} key Key name.
- * @todo api
  */
 ol.Object.prototype.notify = function(key) {
-  var accessors = this.accessors_;
-  if (accessors.hasOwnProperty(key)) {
-    var accessor = accessors[key];
-    var target = accessor.target;
-    var targetKey = accessor.key;
-    target.notify(targetKey);
-  } else {
-    this.notifyInternal_(key);
-  }
-};
-
-
-/**
- * @param {string} key Key name.
- * @private
- */
-ol.Object.prototype.notifyInternal_ = function(key) {
   var eventType = ol.Object.getChangeEventType(key);
   this.dispatchEvent(eventType);
   this.dispatchEvent(
@@ -431,7 +422,7 @@ ol.Object.prototype.set = function(key, value) {
   if (accessors.hasOwnProperty(key)) {
     var accessor = accessors[key];
     var target = accessor.target;
-    var targetKey = accessor.key;
+    var targetKey = accessor.targetKey;
     value = accessor.from(value);
     var setterName = ol.Object.getSetterName(targetKey);
     var setter = /** @type {function(*)|undefined} */
@@ -443,7 +434,7 @@ ol.Object.prototype.set = function(key, value) {
     }
   } else {
     this.values_[key] = value;
-    this.notifyInternal_(key);
+    this.notify(key);
   }
 };
 
