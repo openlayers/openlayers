@@ -178,11 +178,9 @@ def build_ol_new_js(t):
     report_sizes(t)
 
 
-@target('build/ol-simple.js', PLOVR_JAR, SRC, EXPORTS, SHADER_SRC,
-        'buildcfg/base.json', 'buildcfg/ol.json', 'buildcfg/ol-simple.json')
+@target('build/ol-simple.js', SRC, SHADER_SRC, 'buildcfg/ol-simple.json')
 def build_ol_simple_js(t):
-    t.output('%(JAVA)s', '-server', '-XX:+TieredCompilation', '-jar',
-            PLOVR_JAR, 'build', 'buildcfg/ol-simple.json')
+    t.run('node', 'tasks/build.js', 'buildcfg/ol-simple.json', 'build/ol-simple.js')
     report_sizes(t)
 
 
