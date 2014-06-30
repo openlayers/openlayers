@@ -45,18 +45,6 @@ DeviceOrientationEvent.prototype.webkitCompassAccuracy;
 DeviceOrientationEvent.prototype.webkitCompassHeading;
 
 
-// IE 11 fullscreen API
-// http://msdn.microsoft.com/en-us/library/ie/dn265028(v=vs.85).aspx
-
-
-/** @return {void} */
-Element.prototype.msRequestFullscreen = function() {};
-
-
-/** @return {void} */
-Element.prototype.msExitFullscreen = function() {};
-
-
 /** @type {boolean} */
 Document.prototype.msFullscreenEnabled;
 
