@@ -56,6 +56,16 @@ ol.events.condition.always = goog.functions.TRUE;
 
 
 /**
+ * @param {ol.MapBrowserEvent} mapBrowserEvent Map browser event.
+ * @return {boolean} True if the browser event is a `mousemove` event.
+ * @todo api
+ */
+ol.events.condition.mouseMove = function(mapBrowserEvent) {
+  return mapBrowserEvent.originalEvent.type == 'mousemove';
+};
+
+
+/**
  * Always false.
  * @param {ol.MapBrowserEvent} mapBrowserEvent Map browser event.
  * @return {boolean} False.
