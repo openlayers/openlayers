@@ -245,11 +245,11 @@ def examples_examples_list_js(t):
     t.run('%(PYTHON)s', 'bin/exampleparser.py', 'examples', 'examples')
 
 
-@target('build/examples/all.combined.js', 'build/examples/all.js', PLOVR_JAR,
-        SRC, SHADER_SRC, 'buildcfg/base.json', 'build/examples/all.json')
+@target('build/examples/all.combined.js', 'build/examples/all.js',
+        SRC, SHADER_SRC, 'buildcfg/examples-all.json')
 def build_examples_all_combined_js(t):
-    t.output('%(JAVA)s', '-server', '-XX:+TieredCompilation', '-jar',
-            PLOVR_JAR, 'build', 'buildcfg/examples-all.json')
+    t.run('node', 'tasks/build.js', 'buildcfg/examples-all.json',
+          'build/examples/all.combined.js')
     report_sizes(t)
 
 
