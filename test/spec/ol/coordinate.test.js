@@ -2,6 +2,34 @@ goog.provide('ol.test.coordinate');
 
 describe('ol.coordinate', function() {
 
+  describe('#add', function() {
+    var coordinate,
+        delta;
+
+    beforeEach(function() {
+      coordinate = [50.73, 7.1];
+      delta = [-2, 3];
+    });
+
+    it('returns a coordinate', function() {
+      var returnedCoordinate = ol.coordinate.add(coordinate, delta);
+      expect(returnedCoordinate).to.be.an('array');
+      expect(returnedCoordinate).to.have.length(2);
+    });
+
+    it('adds the delta', function() {
+      var returnedCoordinate = ol.coordinate.add(coordinate, delta);
+      expect(returnedCoordinate[0]).to.eql(48.73);
+      expect(returnedCoordinate[1]).to.eql(10.1);
+    });
+
+    it('modifies in place', function() {
+      ol.coordinate.add(coordinate, delta);
+      expect(coordinate[0]).to.eql(48.73);
+      expect(coordinate[1]).to.eql(10.1);
+    });
+  });
+
   describe('#format', function() {
     var coordinate;
     beforeEach(function() {
