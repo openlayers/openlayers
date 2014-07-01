@@ -129,10 +129,6 @@ SRC = [path
        if path.endswith('.js')
        if path not in SHADER_SRC]
 
-LIBTESS_JS_SRC = [path
-                   for path in ifind('src/libtess.js')
-                   if path.endswith('.js')]
-
 PLOVR_JAR = 'build/plovr-81ed862.jar'
 PLOVR_JAR_MD5 = '1c752daaf11ad6220b298e7d2ee2b87d'
 
@@ -176,7 +172,7 @@ def build_ol_css(t):
     t.touch()
 
 
-@target('build/ol.js', PLOVR_JAR, SRC, EXPORTS, SHADER_SRC, LIBTESS_JS_SRC,
+@target('build/ol.js', PLOVR_JAR, SRC, EXPORTS, SHADER_SRC,
         'buildcfg/base.json', 'buildcfg/ol.json')
 def build_ol_js(t):
     t.output('%(JAVA)s', '-server', '-XX:+TieredCompilation', '-jar',
@@ -185,8 +181,7 @@ def build_ol_js(t):
 
 
 @target('build/ol-simple.js', PLOVR_JAR, SRC, EXPORTS, SHADER_SRC,
-        LIBTESS_JS_SRC, 'buildcfg/base.json', 'buildcfg/ol.json',
-        'buildcfg/ol-simple.json')
+        'buildcfg/base.json', 'buildcfg/ol.json', 'buildcfg/ol-simple.json')
 def build_ol_simple_js(t):
     t.output('%(JAVA)s', '-server', '-XX:+TieredCompilation', '-jar',
             PLOVR_JAR, 'build', 'buildcfg/ol-simple.json')
@@ -194,7 +189,7 @@ def build_ol_simple_js(t):
 
 
 @target('build/ol-whitespace.js', PLOVR_JAR, SRC, EXPORTS,
-        SHADER_SRC, LIBTESS_JS_SRC, 'buildcfg/base.json', 'buildcfg/ol.json',
+        SHADER_SRC, 'buildcfg/base.json', 'buildcfg/ol.json',
         'buildcfg/ol-whitespace.json')
 def build_ol_whitespace_js(t):
     t.output('%(JAVA)s', '-server', '-XX:+TieredCompilation', '-jar',
@@ -205,7 +200,7 @@ def build_ol_whitespace_js(t):
 virtual('build-all', 'build/ol-all.js')
 
 
-@target('build/ol-all.js', PLOVR_JAR, SRC, EXPORTS, SHADER_SRC, LIBTESS_JS_SRC,
+@target('build/ol-all.js', PLOVR_JAR, SRC, EXPORTS, SHADER_SRC,
         'buildcfg/base.json', 'buildcfg/ol-all.json')
 def build_ol_all_js(t):
     t.output('%(JAVA)s', '-server', '-XX:+TieredCompilation', '-jar',
@@ -260,8 +255,7 @@ def examples_examples_list_js(t):
 
 
 @target('build/examples/all.combined.js', 'build/examples/all.js', PLOVR_JAR,
-        SRC, SHADER_SRC, LIBTESS_JS_SRC,
-        'buildcfg/base.json', 'build/examples/all.json')
+        SRC, SHADER_SRC, 'buildcfg/base.json', 'build/examples/all.json')
 def build_examples_all_combined_js(t):
     t.output('%(JAVA)s', '-server', '-XX:+TieredCompilation', '-jar',
             PLOVR_JAR, 'build', 'buildcfg/examples-all.json')
@@ -315,8 +309,7 @@ def examples_star_combined_js(name, match):
                 PLOVR_JAR, 'build', 'build/examples/%(id)s.json' %
                 match.groupdict())
         report_sizes(t)
-    dependencies = [PLOVR_JAR, SRC, SHADER_SRC, LIBTESS_JS_SRC,
-                    'buildcfg/base.json',
+    dependencies = [PLOVR_JAR, SRC, SHADER_SRC, 'buildcfg/base.json',
                     'examples/%(id)s.js' % match.groupdict(),
                     'build/examples/%(id)s.json' % match.groupdict()]
     return Target(name, action=action, dependencies=dependencies)
@@ -334,8 +327,8 @@ def serve_precommit(t):
           'buildcfg/ol-all.json', 'buildcfg/test.json')
 
 
-virtual('lint', 'build/lint-timestamp', 'build/lint-libtess.js-timestamp',
-        'build/check-requires-timestamp', 'build/check-whitespace-timestamp')
+virtual('lint', 'build/lint-timestamp', 'build/check-requires-timestamp',
+    'build/check-whitespace-timestamp')
 
 
 @target('build/lint-timestamp', SRC, EXPORTS, EXAMPLES_SRC, SPEC, precious=True)
@@ -343,16 +336,6 @@ def build_lint_src_timestamp(t):
     t.run('%(GJSLINT)s',
           '--jslint_error=all',
           '--custom_jsdoc_tags=event,fires,todo,function,classdesc',
-          '--strict',
-          t.newer(t.dependencies))
-    t.touch()
-
-
-@target('build/lint-libtess.js-timestamp', LIBTESS_JS_SRC, precious=True)
-def build_lint_libtess_js_timestamp(t):
-    t.run('%(GJSLINT)s',
-          '--jslint_error=all',
-          '--disable=110',
           '--strict',
           t.newer(t.dependencies))
     t.touch()
@@ -390,8 +373,7 @@ def _strip_comments(lines):
                 yield lineno, line
 
 
-@target('build/check-requires-timestamp', SRC, EXAMPLES_SRC,
-        SHADER_SRC, LIBTESS_JS_SRC, SPEC)
+@target('build/check-requires-timestamp', SRC, EXAMPLES_SRC, SHADER_SRC, SPEC)
 def build_check_requires_timestamp(t):
     from zipfile import ZipFile
     unused_count = 0
@@ -532,7 +514,7 @@ def build_check_requires_timestamp(t):
 
 
 @target('build/check-whitespace-timestamp', SRC, EXPORTS, EXAMPLES_SRC,
-        SPEC, JSDOC_SRC, LIBTESS_JS_SRC, precious=True)
+        SPEC, JSDOC_SRC, precious=True)
 def build_check_whitespace_timestamp(t):
     CR_RE = re.compile(r'\r')
     LEADING_WHITESPACE_RE = re.compile(r'\s+')
