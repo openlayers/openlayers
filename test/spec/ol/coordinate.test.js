@@ -30,6 +30,19 @@ describe('ol.coordinate', function() {
     });
   });
 
+  describe('#equals', function() {
+    var cologne = [50.93333, 6.95],
+        bonn1 = [50.73, 7.1],
+        bonn2 = [50.73000, 7.10000];
+
+    it('compares correctly', function() {
+      var bonnEqualsBonn = ol.coordinate.equals(bonn1, bonn2),
+          bonnEqualsCologne = ol.coordinate.equals(bonn1, cologne);
+      expect(bonnEqualsBonn).to.be(true);
+      expect(bonnEqualsCologne).to.be(false);
+    });
+  });
+
   describe('#format', function() {
     var coordinate;
     beforeEach(function() {
