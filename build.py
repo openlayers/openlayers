@@ -267,40 +267,83 @@ def examples_star_json(name, match):
         # Note that we use the proper way in buildcfg/examples-all.json, which
         # is only used to check the examples code using the compiler.
         content = json.dumps({
-            'id': match.group('id'),
-            'inherits': '../../buildcfg/base.json',
-            'inputs': [
-                '../examples/%(id)s.js' % match.groupdict()
+          "exports": [],
+          "src": ["src/**/*.js", "examples/%(id)s.js" % match.groupdict()],
+          "compile": {
+            "externs": [
+              "externs/bingmaps.js",
+              "externs/bootstrap.js",
+              "externs/closure-compiler.js",
+              "externs/example.js",
+              "externs/geojson.js",
+              "externs/jquery-1.7.js",
+              "externs/oli.js",
+              "externs/olx.js",
+              "externs/proj4js.js",
+              "externs/tilejson.js",
+              "externs/topojson.js",
+              "externs/vbarray.js"
             ],
-            'externs': [
-                '//jquery-1.7.js',
-                '../externs/bingmaps.js',
-                '../externs/bootstrap.js',
-                '../externs/closure-compiler.js',
-                '../externs/example.js',
-                '../externs/geojson.js',
-                '../externs/oli.js',
-                '../externs/olx.js',
-                '../externs/proj4js.js',
-                '../externs/tilejson.js',
-                '../externs/topojson.js',
-                '../externs/vbarray.js',
+            "define": [
+              "goog.dom.ASSUME_STANDARDS_MODE=true",
+              "goog.DEBUG=false"
             ],
+            "jscomp_error": [
+              "accessControls",
+              "ambiguousFunctionDecl",
+              "checkDebuggerStatement",
+              "checkEventfulObjectDisposal",
+              "checkProvides",
+              "checkRegExp",
+              "checkStructDictInheritance",
+              "checkTypes",
+              "checkVars",
+              "const",
+              "constantProperty",
+              "deprecated",
+              "duplicate",
+              "duplicateMessage",
+              "es3",
+              "externsValidation",
+              "fileoverviewTags",
+              "globalThis",
+              "internetExplorerChecks",
+              "invalidCasts",
+              "misplacedTypeAnnotation",
+              "missingProperties",
+              "nonStandardJsDocs",
+              "strictModuleDepCheck",
+              "suspiciousCode",
+              "typeInvalidation",
+              "tweakValidation",
+              "undefinedNames",
+              "undefinedVars",
+              "unknownDefines",
+              "uselessCode",
+              "violatedModuleDep",
+              "visibility"
+            ],
+            "jscomp_off": [
+              "es5Strict"
+            ],
+            "compilation_level": "ADVANCED_OPTIMIZATIONS",
+            "output_wrapper": "// OpenLayers 3. See http://ol3.js.org/\n(function(){%output%})();",
+            "use_types_for_optimization": True,
+            "manage_closure_dependencies": True
+          }
         })
         with open(t.name, 'wb') as f:
             f.write(content)
-    dependencies = [__file__, 'buildcfg/base.json']
-    return Target(name, action=action, dependencies=dependencies)
+    return Target(name, action=action, dependencies=[__file__])
 
 
 @rule(r'\Abuild/examples/(?P<id>.*).combined.js\Z')
 def examples_star_combined_js(name, match):
     def action(t):
-        t.output('%(JAVA)s', '-server', '-XX:+TieredCompilation', '-jar',
-                PLOVR_JAR, 'build', 'build/examples/%(id)s.json' %
-                match.groupdict())
+        config = 'build/examples/%(id)s.json' % match.groupdict()
+        t.run('node', 'tasks/build.js', config, name)
         report_sizes(t)
-    dependencies = [PLOVR_JAR, SRC, SHADER_SRC, 'buildcfg/base.json',
+    dependencies = [SRC, SHADER_SRC,
                     'examples/%(id)s.js' % match.groupdict(),
                     'build/examples/%(id)s.json' % match.groupdict()]
     return Target(name, action=action, dependencies=dependencies)
