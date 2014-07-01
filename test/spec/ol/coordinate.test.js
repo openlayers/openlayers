@@ -47,6 +47,35 @@ describe('ol.coordinate', function() {
     });
   });
 
+  describe('#createStringXY', function() {
+    var coordinate,
+        created,
+        formatted;
+    beforeEach(function() {
+      coordinate = [6.6123, 46.7919];
+      created = null;
+      formatted = null;
+    });
+
+    it('returns a CoordinateFormatType', function() {
+      created = ol.coordinate.createStringXY();
+      expect(created).to.be.a('function');
+
+      formatted = created(coordinate);
+      expect(formatted).to.be.a('string');
+      expect(formatted).to.eql('7, 47');
+    });
+
+    it('respects opt_fractionDigits', function() {
+      created = ol.coordinate.createStringXY(3);
+      expect(created).to.be.a('function');
+
+      formatted = created(coordinate);
+      expect(formatted).to.be.a('string');
+      expect(formatted).to.eql('6.612, 46.792');
+    });
+  });
+
   describe('#closestOnSegment', function() {
     it('can handle points where the foot of the perpendicular is closest',
         function() {
