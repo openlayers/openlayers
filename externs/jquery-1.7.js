@@ -1017,16 +1017,16 @@ $.get = function(url, data, success, dataType) {};
 
 /**
  * @param {string} url
- * @param {(Object.<string,*>|function(string,string,jQuery.jqXHR))=} data
- * @param {function(string,string,jQuery.jqXHR)=} success
+ * @param {(Object.<string,*>|function(Object,string,jQuery.jqXHR))=} data
+ * @param {function(Object,string,jQuery.jqXHR)=} success
  * @return {jQuery.jqXHR}
  */
 jQuery.getJSON = function(url, data, success) {};
 
 /**
  * @param {string} url
- * @param {(Object.<string,*>|function(string,string,jQuery.jqXHR))=} data
- * @param {function(string,string,jQuery.jqXHR)=} success
+ * @param {(Object.<string,*>|function(Object,string,jQuery.jqXHR))=} data
+ * @param {function(Object,string,jQuery.jqXHR)=} success
  * @return {jQuery.jqXHR}
  */
 $.getJSON = function(url, data, success) {};
