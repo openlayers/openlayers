@@ -4,6 +4,13 @@ goog.provide('ol');
 
 
 /**
+ * Constants defined with the define tag cannot be changed in application
+ * code, but can be set at compile time.
+ * Some reduce the size of the build in advanced compile mode.
+ */
+
+
+/**
  * @define {boolean} Assume touch.  Default is `false`.
  */
 ol.ASSUME_TOUCH = false;
@@ -72,21 +79,26 @@ ol.DRAG_BOX_HYSTERESIS_PIXELS = 8;
 
 
 /**
- * @define {boolean} Enable the Canvas renderer.  Default is `true`.
+ * @define {boolean} Enable the Canvas renderer.  Default is `true`. Setting
+ *     this to false at compile time in advanced mode removes all code
+ *     supporting the Canvas renderer from the build.
  */
 ol.ENABLE_CANVAS = true;
 
 
 /**
  * @define {boolean} Enable the DOM renderer (used as a fallback where Canvas is
- *     not available).  Default is `true`.
+ *     not available).  Default is `true`. Setting this to false at compile time
+ *     in advanced mode removes all code supporting the DOM renderer from the
+ *     build.
  */
 ol.ENABLE_DOM = true;
 
 
 /**
  * @define {boolean} Enable rendering of ol.layer.Image based layers.  Default
- *     is `true`.
+ *     is `true`. Setting this to false at compile time in advanced mode removes
+ *     all code supporting Image layers from the build.
  */
 ol.ENABLE_IMAGE = true;
 
@@ -108,20 +120,24 @@ ol.ENABLE_PROJ4JS = true;
 
 /**
  * @define {boolean} Enable rendering of ol.layer.Tile based layers.  Default is
- *     `true`.
+ *     `true`. Setting this to false at compile time in advanced mode removes
+ *     all code supporting Tile layers from the build.
  */
 ol.ENABLE_TILE = true;
 
 
 /**
  * @define {boolean} Enable rendering of ol.layer.Vector based layers.  Default
- *     is `true`.
+ *     is `true`. Setting this to false at compile time in advanced mode removes
+ *     all code supporting Vector layers from the build.
  */
 ol.ENABLE_VECTOR = true;
 
 
 /**
- * @define {boolean} Enable the WebGL renderer.  Default is `true`.
+ * @define {boolean} Enable the WebGL renderer.  Default is `true`. Setting
+ *     this to false at compile time in advanced mode removes all code
+ *     supporting the WebGL renderer from the build.
  */
 ol.ENABLE_WEBGL = true;
 
