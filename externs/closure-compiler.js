@@ -8,51 +8,6 @@
  * @externs
  */
 
-// @see https://code.google.com/p/closure-compiler/issues/detail?id=1060
-
-
-/** @type {Date} */
-HTMLInputElement.prototype.valueAsDate;
-
-
-/** @type {number} */
-HTMLInputElement.prototype.valueAsNumber;
-
-
-// @see https://code.google.com/p/closure-compiler/issues/detail?id=1084
-
-
-/** @type {?number} */
-DeviceRotationRate.prototype.alpha;
-
-
-/** @type {?number} */
-DeviceRotationRate.prototype.beta;
-
-
-/** @type {?number} */
-DeviceRotationRate.prototype.gamma;
-
-
-// @see https://code.google.com/p/closure-compiler/issues/detail?id=1088
-
-
-/** @type {?number} */
-DeviceOrientationEvent.prototype.webkitCompassAccuracy;
-
-
-/** @type {?number} */
-DeviceOrientationEvent.prototype.webkitCompassHeading;
-
-
-/** @type {boolean} */
-Document.prototype.msFullscreenEnabled;
-
-
-/** @type {Element} */
-Document.prototype.msFullscreenElement;
-
-
 /** @type {number} */
 Touch.prototype.force;
 
