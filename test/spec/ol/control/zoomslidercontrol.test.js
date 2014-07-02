@@ -36,7 +36,7 @@ describe('ol.control.ZoomSlider', function() {
       zoomSliderContainer = zoomSliderContainers[0];
       expect(zoomSliderContainer instanceof HTMLDivElement).to.be(true);
 
-      hasUnselectableCls = goog.dom.classes.has(zoomSliderContainer,
+      hasUnselectableCls = goog.dom.classlist.contains(zoomSliderContainer,
           'ol-unselectable');
       expect(hasUnselectableCls).to.be(true);
 
@@ -47,7 +47,7 @@ describe('ol.control.ZoomSlider', function() {
       zoomSliderThumb = zoomSliderThumbs[0];
       expect(zoomSliderThumb instanceof HTMLDivElement).to.be(true);
 
-      hasUnselectableCls = goog.dom.classes.has(zoomSliderThumb,
+      hasUnselectableCls = goog.dom.classlist.contains(zoomSliderThumb,
           'ol-unselectable');
       expect(hasUnselectableCls).to.be(true);
     });
@@ -93,7 +93,7 @@ describe('ol.control.ZoomSlider', function() {
 
 goog.require('goog.dispose');
 goog.require('goog.dom');
-goog.require('goog.dom.classes');
+goog.require('goog.dom.classlist');
 goog.require('goog.fx.Dragger');
 goog.require('goog.math.Rect');
 goog.require('ol.Map');

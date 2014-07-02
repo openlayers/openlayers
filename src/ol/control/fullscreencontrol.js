@@ -3,7 +3,7 @@ goog.provide('ol.control.FullScreen');
 goog.require('goog.asserts');
 goog.require('goog.dom');
 goog.require('goog.dom.TagName');
-goog.require('goog.dom.classes');
+goog.require('goog.dom.classlist');
 goog.require('goog.events');
 goog.require('goog.events.EventType');
 goog.require('googx.dom.fullscreen');
@@ -145,9 +145,9 @@ ol.control.FullScreen.prototype.handleFullScreenChange_ = function() {
   var anchor = goog.dom.getFirstElementChild(this.element);
   var map = this.getMap();
   if (googx.dom.fullscreen.isFullScreen()) {
-    goog.dom.classes.swap(anchor, closed, opened);
+    goog.dom.classlist.swap(anchor, closed, opened);
   } else {
-    goog.dom.classes.swap(anchor, opened, closed);
+    goog.dom.classlist.swap(anchor, opened, closed);
   }
   if (!goog.isNull(map)) {
     map.updateSize();
