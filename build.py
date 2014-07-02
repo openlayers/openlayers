@@ -326,7 +326,7 @@ def examples_star_json(name, match):
             "jscomp_off": [
               "es5Strict"
             ],
-            "compilation_level": "ADVANCED_OPTIMIZATIONS",
+            "compilation_level": "ADVANCED",
             "output_wrapper": "// OpenLayers 3. See http://ol3.js.org/\n(function(){%output%})();",
             "use_types_for_optimization": True,
             "manage_closure_dependencies": True

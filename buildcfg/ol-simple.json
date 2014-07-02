@@ -55,7 +55,7 @@
     "jscomp_off": [
       "es5Strict"
     ],
-    "compilation_level": "SIMPLE_OPTIMIZATIONS",
+    "compilation_level": "SIMPLE",
     "output_wrapper": "%output%",
     "use_types_for_optimization": false,
     "manage_closure_dependencies": true
