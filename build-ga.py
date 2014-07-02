@@ -86,6 +86,7 @@ api_url = os.environ.get('API_URL', '//api3.geo.admin.ch')
 def build_ga_css(t):
     t.cp('css/ch_cross.png','build')
     t.cp('css/editortoolbar.png','build')
+    t.cp('css/marker.png','build')
     t.touch()
 
 @target('build/ga.js', PLOVR_JAR, SRC, EXPORTS, SHADER_SRC,
