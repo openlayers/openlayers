@@ -171,7 +171,8 @@ ol.source.Vector.prototype.addFeaturesInternal = function(features) {
 
 
 /**
- * Clear the source
+ * Remove all features.
+ * @todo api
  */
 ol.source.Vector.prototype.clear = function() {
   this.rBush_.forEach(this.removeFeatureInternal, this);
