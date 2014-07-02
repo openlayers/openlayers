@@ -82,6 +82,7 @@ To export the `ol` symbol to somewhere other than the global namespace, a `names
 }
 ```
 
+The `defines` section of `build.json` above lists common settings for the Closure library in production code. The OL3 library also defines constants that can be set in this section at compile time. These are all defined in the `ol.js` source file; see the comments in this file to see what effect setting these would have. Some of them can reduce the size of the build in advanced mode.
 
 ## `generate-exports.js`
 
