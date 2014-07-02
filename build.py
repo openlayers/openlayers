@@ -408,19 +408,19 @@ def _strip_comments(lines):
 
 @target('build/check-requires-timestamp', SRC, EXAMPLES_SRC, SHADER_SRC, SPEC)
 def build_check_requires_timestamp(t):
-    from zipfile import ZipFile
     unused_count = 0
     all_provides = set()
-    zf = ZipFile(PLOVR_JAR)
-    for zi in zf.infolist():
-        if zi.filename.endswith('.js'):
-            if not zi.filename.startswith('closure/goog/'):
+    closure_lib_path = output('node', '-e',
+        'process.stdout.write(require("closure-util").getLibraryPath())')
+    for filename in ifind(closure_lib_path):
+        if filename.endswith('.js'):
+            if not re.match(r'.*/closure/goog/', filename):
                 continue
             # Skip goog.i18n because it contains so many modules that it causes
             # the generated regular expression to exceed Python's limits
-            if zi.filename.startswith('closure/goog/i18n/'):
+            if re.match(r'.*/closure/goog/i18n/', filename):
                 continue
-            for line in zf.open(zi, 'rU'):
+            for line in open(filename, 'rU'):
                 m = re.match(r'goog.provide\(\'(.*)\'\);', line)
                 if m:
                     all_provides.add(m.group(1))
