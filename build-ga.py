@@ -39,7 +39,7 @@ from types import MethodType
 targets.add = MethodType(add, targets, TargetCollection)
 
 # We redefine 'build'
-virtual('build', 'build/ga.css', 'build/ga.js',
+virtual('build', 'build/ga.js',
         'build/ga-whitespace.js','build/layersconfig', 'build/serverconfig')
 
 # We redefine 'check' to add definitons from externs/ga.js
@@ -82,13 +82,6 @@ AVAILABLE_LANGS = ['de','fr','en','it','rm']
 
 api_url = os.environ.get('API_URL', '//api3.geo.admin.ch')
 
-@target('build/ga.css', 'build/ga.js')
-def build_ga_css(t):
-    t.cp('css/ch_cross.png','build')
-    t.cp('css/editortoolbar.png','build')
-    t.cp('css/marker.png','build')
-    t.touch()
-
 @target('build/ga.js', PLOVR_JAR, SRC, EXPORTS, SHADER_SRC,
         LIBTESS_JS_SRC, 'buildcfg/base.json', 'buildcfg/ga.json')
 def build_ga_js(t):
@@ -96,6 +89,9 @@ def build_ga_js(t):
     t.cp('resources/EPSG21781.js','build')
     t.cp('resources/EPSG2056.js','build')
     t.cp('resources/proj4js-compressed.js','build')
+    t.cp('css/ch_cross.png','build')
+    t.cp('css/editortoolbar.png','build')
+    t.cp('css/marker.png','build')
     report_sizes(t)
 
 @target('build/ga-whitespace.js', PLOVR_JAR, SRC, EXPORTS, SHADER_SRC,
