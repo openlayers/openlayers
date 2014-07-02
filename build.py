@@ -646,6 +646,8 @@ def host_examples(t):
     examples_dir = 'build/hosted/%(BRANCH)s/examples'
     build_dir = 'build/hosted/%(BRANCH)s/build'
     css_dir = 'build/hosted/%(BRANCH)s/css'
+    closure_lib_path = output('node', '-e',
+        'process.stdout.write(require("closure-util").getLibraryPath())')
     t.rm_rf(examples_dir)
     t.makedirs(examples_dir)
     t.rm_rf(build_dir)
@@ -664,10 +666,7 @@ def host_examples(t):
          'examples/example-list.xml', 'examples/Jugl.js',
          'examples/jquery.min.js', examples_dir)
     t.rm_rf('build/hosted/%(BRANCH)s/closure-library')
-    t.makedirs('build/hosted/%(BRANCH)s/closure-library')
-    with t.chdir('build/hosted/%(BRANCH)s/closure-library'):
-        t.run('%(JAR)s', 'xf', '../../../../' + PLOVR_JAR, 'closure')
-        t.run('%(JAR)s', 'xf', '../../../../' + PLOVR_JAR, 'third_party')
+    t.cp_r(closure_lib_path, 'build/hosted/%(BRANCH)s/closure-library')
     t.rm_rf('build/hosted/%(BRANCH)s/ol')
     t.makedirs('build/hosted/%(BRANCH)s/ol')
     t.cp_r('src/ol', 'build/hosted/%(BRANCH)s/ol/ol')
