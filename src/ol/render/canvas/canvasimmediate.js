@@ -475,7 +475,7 @@ ol.render.canvas.Immediate.prototype.drawFeature = function(feature, style) {
     render.setImageStyle(style.getImage());
     render.setTextStyle(style.getText());
     var renderGeometry =
-        ol.render.canvas.Immediate.GEOMETRY_RENDERES_[geometry.getType()];
+        ol.render.canvas.Immediate.GEOMETRY_RENDERERS_[geometry.getType()];
     goog.asserts.assert(goog.isDef(renderGeometry));
     renderGeometry.call(render, geometry, null);
   });
@@ -497,7 +497,7 @@ ol.render.canvas.Immediate.prototype.drawGeometryCollectionGeometry =
   for (i = 0, ii = geometries.length; i < ii; ++i) {
     var geometry = geometries[i];
     var geometryRenderer =
-        ol.render.canvas.Immediate.GEOMETRY_RENDERES_[geometry.getType()];
+        ol.render.canvas.Immediate.GEOMETRY_RENDERERS_[geometry.getType()];
     goog.asserts.assert(goog.isDef(geometryRenderer));
     geometryRenderer.call(this, geometry, data);
   }
@@ -989,7 +989,7 @@ ol.render.canvas.Immediate.prototype.setTextStyle = function(textStyle) {
  *                function(this: ol.render.canvas.Immediate, ol.geom.Geometry,
  *                         Object)>}
  */
-ol.render.canvas.Immediate.GEOMETRY_RENDERES_ = {
+ol.render.canvas.Immediate.GEOMETRY_RENDERERS_ = {
   'Point': ol.render.canvas.Immediate.prototype.drawPointGeometry,
   'LineString': ol.render.canvas.Immediate.prototype.drawLineStringGeometry,
   'Polygon': ol.render.canvas.Immediate.prototype.drawPolygonGeometry,
