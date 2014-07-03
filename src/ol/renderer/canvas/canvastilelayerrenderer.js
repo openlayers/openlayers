@@ -16,7 +16,7 @@ goog.require('ol.extent');
 goog.require('ol.layer.Tile');
 goog.require('ol.renderer.Map');
 goog.require('ol.renderer.canvas.Layer');
-goog.require('ol.source.Tile');
+goog.require('ol.source.TileImage');
 goog.require('ol.vec.Mat4');
 
 
@@ -175,7 +175,7 @@ ol.renderer.canvas.TileLayer.prototype.prepareFrame =
   var tileLayer = this.getLayer();
   goog.asserts.assertInstanceof(tileLayer, ol.layer.Tile);
   var tileSource = tileLayer.getSource();
-  goog.asserts.assertInstanceof(tileSource, ol.source.Tile);
+  goog.asserts.assertInstanceof(tileSource, ol.source.TileImage);
   var tileGrid = tileSource.getTileGridForProjection(projection);
   var tileGutter = tileSource.getGutter();
   var z = tileGrid.getZForResolution(viewState.resolution);
