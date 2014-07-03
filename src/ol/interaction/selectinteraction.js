@@ -16,7 +16,10 @@ goog.require('ol.interaction.Interaction');
 
 /**
  * @classdesc
- * Handles selection of vector data.
+ * Handles selection of vector data. A {@link ol.FeatureOverlay} is maintained
+ * internally to store the selected feature(s). Which features are selected is
+ * determined by the `condition` option, and optionally the `toggle` or
+ * `add`/`remove` options.
  *
  * @constructor
  * @extends {ol.interaction.Interaction}
@@ -102,6 +105,7 @@ goog.inherits(ol.interaction.Select, ol.interaction.Interaction);
 
 
 /**
+ * Get the selected features.
  * @return {ol.Collection} Features collection.
  * @todo api
  */
