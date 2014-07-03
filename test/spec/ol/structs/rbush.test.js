@@ -64,11 +64,11 @@ describe('ol.structs.RBush', function() {
       rBush.insert([-3, -3, -2, -2], objs[10]);
     });
 
-    describe('#forEach', function() {
+    describe('#some', function() {
 
       it('called for all the objects', function() {
         var i = 0;
-        rBush.forEach(function() {
+        rBush.some(function() {
           ++i;
         });
         expect(i).to.be(objs.length);
@@ -76,7 +76,7 @@ describe('ol.structs.RBush', function() {
 
       it('stops when the function returns true', function() {
         var i = 0;
-        var result = rBush.forEach(function() {
+        var result = rBush.some(function() {
           return ++i >= 4;
         });
         expect(i).to.be(4);
@@ -112,7 +112,7 @@ describe('ol.structs.RBush', function() {
       it('throws an exception if called while iterating over all values',
           function() {
             expect(function() {
-              rBush.forEach(function(value) {
+              rBush.some(function(value) {
                 rBush.insert([0, 0, 1, 1], {});
               });
             }).to.throwException();
@@ -150,7 +150,7 @@ describe('ol.structs.RBush', function() {
       it('throws an exception if called while iterating over all values',
           function() {
             expect(function() {
-              rBush.forEach(function(value) {
+              rBush.some(function(value) {
                 rBush.remove(value);
               });
             }).to.throwException();
@@ -172,7 +172,7 @@ describe('ol.structs.RBush', function() {
       it('throws an exception if called while iterating over all values',
           function() {
             expect(function() {
-              rBush.forEach(function(value) {
+              rBush.some(function(value) {
                 rBush.update([0, 0, 1, 1], objs[1]);
               });
             }).to.throwException();
