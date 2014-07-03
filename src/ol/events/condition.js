@@ -56,6 +56,26 @@ ol.events.condition.always = goog.functions.TRUE;
 
 
 /**
+ * @param {ol.MapBrowserEvent} mapBrowserEvent Map browser event.
+ * @return {boolean} True if the event is a map `click` event.
+ * @todo api
+ */
+ol.events.condition.click = function(mapBrowserEvent) {
+  return mapBrowserEvent.type == ol.MapBrowserEvent.EventType.CLICK;
+};
+
+
+/**
+ * @param {ol.MapBrowserEvent} mapBrowserEvent Map browser event.
+ * @return {boolean} True if the browser event is a `mousemove` event.
+ * @todo api
+ */
+ol.events.condition.mouseMove = function(mapBrowserEvent) {
+  return mapBrowserEvent.originalEvent.type == 'mousemove';
+};
+
+
+/**
  * Always false.
  * @param {ol.MapBrowserEvent} mapBrowserEvent Map browser event.
  * @return {boolean} False.
@@ -66,7 +86,7 @@ ol.events.condition.never = goog.functions.FALSE;
 
 /**
  * @param {ol.MapBrowserEvent} mapBrowserEvent Map browser event.
- * @return {boolean} True if the event is a `singleclick` event.
+ * @return {boolean} True if the event is a map `singleclick` event.
  * @todo api
  */
 ol.events.condition.singleClick = function(mapBrowserEvent) {
