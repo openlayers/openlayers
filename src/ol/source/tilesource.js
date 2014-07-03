@@ -14,7 +14,6 @@ goog.require('ol.tilegrid.TileGrid');
  * @typedef {{attributions: (Array.<ol.Attribution>|undefined),
  *            extent: (ol.Extent|undefined),
  *            logo: (string|undefined),
- *            opaque: (boolean|undefined),
  *            tilePixelRatio: (number|undefined),
  *            projection: ol.proj.ProjectionLike,
  *            tileGrid: (ol.tilegrid.TileGrid|undefined)}}
@@ -41,12 +40,6 @@ ol.source.Tile = function(options) {
     logo: options.logo,
     projection: options.projection
   });
-
-  /**
-   * @private
-   * @type {boolean}
-   */
-  this.opaque_ = goog.isDef(options.opaque) ? options.opaque : false;
 
   /**
    * @private
@@ -132,14 +125,6 @@ ol.source.Tile.prototype.getGutter = function() {
  * @protected
  */
 ol.source.Tile.prototype.getKeyZXY = ol.TileCoord.getKeyZXY;
-
-
-/**
- * @return {boolean} Opaque.
- */
-ol.source.Tile.prototype.getOpaque = function() {
-  return this.opaque_;
-};
 
 
 /**

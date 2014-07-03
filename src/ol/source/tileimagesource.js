@@ -27,11 +27,16 @@ ol.source.TileImage = function(options) {
     attributions: options.attributions,
     extent: options.extent,
     logo: options.logo,
-    opaque: options.opaque,
     projection: options.projection,
     tileGrid: options.tileGrid,
     tilePixelRatio: options.tilePixelRatio
   });
+
+  /**
+   * @private
+   * @type {boolean}
+   */
+  this.opaque_ = goog.isDef(options.opaque) ? options.opaque : false;
 
   /**
    * @protected
@@ -95,6 +100,14 @@ ol.source.TileImage.prototype.canExpireCache = function() {
  */
 ol.source.TileImage.prototype.expireCache = function(usedTiles) {
   this.tileCache.expireCache(usedTiles);
+};
+
+
+/**
+ * @return {boolean} Opaque.
+ */
+ol.source.TileImage.prototype.getOpaque = function() {
+  return this.opaque_;
 };
 
 
