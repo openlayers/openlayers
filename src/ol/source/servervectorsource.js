@@ -2,11 +2,12 @@
 
 goog.provide('ol.source.ServerVector');
 
-goog.require('goog.object')
+goog.require('goog.object');
 goog.require('ol.extent');
 goog.require('ol.loadingstrategy');
 goog.require('ol.source.FormatVector');
 goog.require('ol.structs.RBush');
+
 
 
 /**
