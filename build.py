@@ -153,7 +153,7 @@ def report_sizes(t):
 virtual('default', 'build')
 
 
-virtual('integration-test', 'lint', 'jshint', 'build', 'build-all',
+virtual('ci', 'lint', 'jshint', 'build', 'build-all',
         'test', 'build/examples/all.combined.js', 'check-examples', 'apidoc')
 
 
@@ -783,10 +783,11 @@ The most common targets are:
 
 Other less frequently used targets are:
   apidoc           - Builds the API-Documentation using JSDoc3.
-  integration-test - Builds all examples in various modes and usually takes a
+  ci               - Builds all examples in various modes and usually takes a
                      long time to finish. This target calls the following
                      targets: lint, build, build-all, test, build-examples,
-                     check-examples and apidoc.
+                     check-examples and apidoc. This is the target run on
+                     Travis CI.
   reallyclean      - Remove untracked files from the repository.
   checkdeps        - Checks whether all required development software is
                      installed on your machine.
