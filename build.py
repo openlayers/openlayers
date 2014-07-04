@@ -354,12 +354,6 @@ def serve(t):
     t.run('node', 'tasks/serve.js')
 
 
-@target('serve-integration-test', PLOVR_JAR)
-def serve_precommit(t):
-    t.run('%(JAVA)s', '-jar', PLOVR_JAR, 'serve',
-          'buildcfg/ol-all.json', 'buildcfg/test.json')
-
-
 virtual('lint', 'build/lint-timestamp', 'build/check-requires-timestamp',
     'build/check-whitespace-timestamp')
 
