@@ -129,9 +129,6 @@ SRC = [path
        if path.endswith('.js')
        if path not in SHADER_SRC]
 
-PLOVR_JAR = 'build/plovr-81ed862.jar'
-PLOVR_JAR_MD5 = '1c752daaf11ad6220b298e7d2ee2b87d'
-
 PROJ4JS = 'build/proj4js/lib/proj4js-combined.js'
 PROJ4JS_ZIP = 'build/proj4js-1.1.0.zip'
 PROJ4JS_ZIP_MD5 = '17caad64cf6ebc6e6fe62f292b134897'
@@ -153,7 +150,7 @@ def report_sizes(t):
 virtual('default', 'build')
 
 
-virtual('integration-test', 'lint', 'jshint', 'build', 'build-all',
+virtual('ci', 'lint', 'jshint', 'build', 'build-all',
         'test', 'build/examples/all.combined.js', 'check-examples', 'apidoc')
 
 
@@ -172,39 +169,30 @@ def build_ol_css(t):
     t.touch()
 
 
-@target('build/ol.js', PLOVR_JAR, SRC, EXPORTS, SHADER_SRC,
-        'buildcfg/base.json', 'buildcfg/ol.json')
-def build_ol_js(t):
-    t.output('%(JAVA)s', '-server', '-XX:+TieredCompilation', '-jar',
-            PLOVR_JAR, 'build', 'buildcfg/ol.json')
+@target('build/ol.js', SRC, SHADER_SRC, 'buildcfg/ol.json')
+def build_ol_new_js(t):
+    t.run('node', 'tasks/build.js', 'buildcfg/ol.json', 'build/ol.js')
     report_sizes(t)
 
 
-@target('build/ol-simple.js', PLOVR_JAR, SRC, EXPORTS, SHADER_SRC,
-        'buildcfg/base.json', 'buildcfg/ol.json', 'buildcfg/ol-simple.json')
+@target('build/ol-simple.js', SRC, SHADER_SRC, 'buildcfg/ol-simple.json')
 def build_ol_simple_js(t):
-    t.output('%(JAVA)s', '-server', '-XX:+TieredCompilation', '-jar',
-            PLOVR_JAR, 'build', 'buildcfg/ol-simple.json')
+    t.run('node', 'tasks/build.js', 'buildcfg/ol-simple.json', 'build/ol-simple.js')
     report_sizes(t)
 
 
-@target('build/ol-whitespace.js', PLOVR_JAR, SRC, EXPORTS,
-        SHADER_SRC, 'buildcfg/base.json', 'buildcfg/ol.json',
-        'buildcfg/ol-whitespace.json')
+@target('build/ol-whitespace.js', SRC, SHADER_SRC, 'buildcfg/ol-whitespace.json')
 def build_ol_whitespace_js(t):
-    t.output('%(JAVA)s', '-server', '-XX:+TieredCompilation', '-jar',
-            PLOVR_JAR, 'build', 'buildcfg/ol-whitespace.json')
+    t.run('node', 'tasks/build.js', 'buildcfg/ol-whitespace.json', 'build/ol-whitespace.js')
     report_sizes(t)
 
 
 virtual('build-all', 'build/ol-all.js')
 
 
-@target('build/ol-all.js', PLOVR_JAR, SRC, EXPORTS, SHADER_SRC,
-        'buildcfg/base.json', 'buildcfg/ol-all.json')
+@target('build/ol-all.js', SRC, SHADER_SRC, 'buildcfg/ol-all.json')
 def build_ol_all_js(t):
-    t.output('%(JAVA)s', '-server', '-XX:+TieredCompilation', '-jar',
-            PLOVR_JAR, 'build', 'buildcfg/ol-all.json')
+    t.run('node', 'tasks/build.js', 'buildcfg/ol-all.json', 'build/ol-all.js')
 
 
 @target(EXPORTS, SRC)
@@ -254,11 +242,11 @@ def examples_examples_list_js(t):
     t.run('%(PYTHON)s', 'bin/exampleparser.py', 'examples', 'examples')
 
 
-@target('build/examples/all.combined.js', 'build/examples/all.js', PLOVR_JAR,
-        SRC, SHADER_SRC, 'buildcfg/base.json', 'build/examples/all.json')
+@target('build/examples/all.combined.js', 'build/examples/all.js',
+        SRC, SHADER_SRC, 'buildcfg/examples-all.json')
 def build_examples_all_combined_js(t):
-    t.output('%(JAVA)s', '-server', '-XX:+TieredCompilation', '-jar',
-            PLOVR_JAR, 'build', 'buildcfg/examples-all.json')
+    t.run('node', 'tasks/build.js', 'buildcfg/examples-all.json',
+          'build/examples/all.combined.js')
     report_sizes(t)
 
 
@@ -276,55 +264,91 @@ def examples_star_json(name, match):
         # Note that we use the proper way in buildcfg/examples-all.json, which
         # is only used to check the examples code using the compiler.
         content = json.dumps({
-            'id': match.group('id'),
-            'inherits': '../../buildcfg/base.json',
-            'inputs': [
-                '../examples/%(id)s.js' % match.groupdict()
+          "exports": [],
+          "src": ["src/**/*.js", "examples/%(id)s.js" % match.groupdict()],
+          "compile": {
+            "externs": [
+              "externs/bingmaps.js",
+              "externs/bootstrap.js",
+              "externs/closure-compiler.js",
+              "externs/example.js",
+              "externs/geojson.js",
+              "externs/jquery-1.7.js",
+              "externs/oli.js",
+              "externs/olx.js",
+              "externs/proj4js.js",
+              "externs/tilejson.js",
+              "externs/topojson.js",
+              "externs/vbarray.js"
             ],
-            'externs': [
-                '//jquery-1.7.js',
-                '../externs/bingmaps.js',
-                '../externs/bootstrap.js',
-                '../externs/closure-compiler.js',
-                '../externs/example.js',
-                '../externs/geojson.js',
-                '../externs/oli.js',
-                '../externs/olx.js',
-                '../externs/proj4js.js',
-                '../externs/tilejson.js',
-                '../externs/topojson.js',
-                '../externs/vbarray.js',
+            "define": [
+              "goog.dom.ASSUME_STANDARDS_MODE=true",
+              "goog.DEBUG=false"
             ],
+            "jscomp_error": [
+              "accessControls",
+              "ambiguousFunctionDecl",
+              "checkDebuggerStatement",
+              "checkEventfulObjectDisposal",
+              "checkProvides",
+              "checkRegExp",
+              "checkStructDictInheritance",
+              "checkTypes",
+              "checkVars",
+              "const",
+              "constantProperty",
+              "deprecated",
+              "duplicate",
+              "duplicateMessage",
+              "es3",
+              "externsValidation",
+              "fileoverviewTags",
+              "globalThis",
+              "internetExplorerChecks",
+              "invalidCasts",
+              "misplacedTypeAnnotation",
+              "missingProperties",
+              "nonStandardJsDocs",
+              "strictModuleDepCheck",
+              "suspiciousCode",
+              "typeInvalidation",
+              "tweakValidation",
+              "undefinedNames",
+              "undefinedVars",
+              "unknownDefines",
+              "uselessCode",
+              "violatedModuleDep",
+              "visibility"
+            ],
+            "jscomp_off": [
+              "es5Strict"
+            ],
+            "compilation_level": "ADVANCED",
+            "output_wrapper": "// OpenLayers 3. See http://ol3.js.org/\n(function(){%output%})();",
+            "use_types_for_optimization": True,
+            "manage_closure_dependencies": True
+          }
         })
         with open(t.name, 'wb') as f:
             f.write(content)
-    dependencies = [__file__, 'buildcfg/base.json']
-    return Target(name, action=action, dependencies=dependencies)
+    return Target(name, action=action, dependencies=[__file__])
 
 
 @rule(r'\Abuild/examples/(?P<id>.*).combined.js\Z')
 def examples_star_combined_js(name, match):
     def action(t):
-        t.output('%(JAVA)s', '-server', '-XX:+TieredCompilation', '-jar',
-                PLOVR_JAR, 'build', 'build/examples/%(id)s.json' %
-                match.groupdict())
+        config = 'build/examples/%(id)s.json' % match.groupdict()
+        t.run('node', 'tasks/build.js', config, name)
         report_sizes(t)
-    dependencies = [PLOVR_JAR, SRC, SHADER_SRC, 'buildcfg/base.json',
+    dependencies = [SRC, SHADER_SRC,
                     'examples/%(id)s.js' % match.groupdict(),
                     'build/examples/%(id)s.json' % match.groupdict()]
     return Target(name, action=action, dependencies=dependencies)
 
 
-@target('serve', PLOVR_JAR, 'test-deps', 'examples')
+@target('serve', PROJ4JS, 'examples')
 def serve(t):
-    t.run('%(JAVA)s', '-jar', PLOVR_JAR, 'serve', 'buildcfg/ol.json',
-          'buildcfg/ol-all.json', EXAMPLES_JSON, 'buildcfg/test.json')
-
-
-@target('serve-integration-test', PLOVR_JAR)
-def serve_precommit(t):
-    t.run('%(JAVA)s', '-jar', PLOVR_JAR, 'serve',
-          'buildcfg/ol-all.json', 'buildcfg/test.json')
+    t.run('node', 'tasks/serve.js')
 
 
 virtual('lint', 'build/lint-timestamp', 'build/check-requires-timestamp',
@@ -375,19 +399,19 @@ def _strip_comments(lines):
 
 @target('build/check-requires-timestamp', SRC, EXAMPLES_SRC, SHADER_SRC, SPEC)
 def build_check_requires_timestamp(t):
-    from zipfile import ZipFile
     unused_count = 0
     all_provides = set()
-    zf = ZipFile(PLOVR_JAR)
-    for zi in zf.infolist():
-        if zi.filename.endswith('.js'):
-            if not zi.filename.startswith('closure/goog/'):
+    closure_lib_path = output('node', '-e',
+        'process.stdout.write(require("closure-util").getLibraryPath())')
+    for filename in ifind(closure_lib_path):
+        if filename.endswith('.js'):
+            if not re.match(r'.*/closure/goog/', filename):
                 continue
             # Skip goog.i18n because it contains so many modules that it causes
             # the generated regular expression to exceed Python's limits
-            if zi.filename.startswith('closure/goog/i18n/'):
+            if re.match(r'.*/closure/goog/i18n/', filename):
                 continue
-            for line in zf.open(zi, 'rU'):
+            for line in open(filename, 'rU'):
                 m = re.match(r'goog.provide\(\'(.*)\'\);', line)
                 if m:
                     all_provides.add(m.group(1))
@@ -546,17 +570,6 @@ def build_check_whitespace_timestamp(t):
     t.touch()
 
 
-virtual('plovr', PLOVR_JAR)
-
-
-@target(PLOVR_JAR, clean=False)
-def plovr_jar(t):
-    t.info('downloading %r', t.name)
-    t.download('https://plovr.googlecode.com/files/' +
-               os.path.basename(PLOVR_JAR), md5=PLOVR_JAR_MD5)
-    t.info('downloaded %r', t.name)
-
-
 virtual('apidoc', 'build/jsdoc-%(BRANCH)s-timestamp' % vars(variables))
 
 
@@ -613,6 +626,8 @@ def host_examples(t):
     examples_dir = 'build/hosted/%(BRANCH)s/examples'
     build_dir = 'build/hosted/%(BRANCH)s/build'
     css_dir = 'build/hosted/%(BRANCH)s/css'
+    closure_lib_path = output('node', '-e',
+        'process.stdout.write(require("closure-util").getLibraryPath())')
     t.rm_rf(examples_dir)
     t.makedirs(examples_dir)
     t.rm_rf(build_dir)
@@ -631,10 +646,7 @@ def host_examples(t):
          'examples/example-list.xml', 'examples/Jugl.js',
          'examples/jquery.min.js', examples_dir)
     t.rm_rf('build/hosted/%(BRANCH)s/closure-library')
-    t.makedirs('build/hosted/%(BRANCH)s/closure-library')
-    with t.chdir('build/hosted/%(BRANCH)s/closure-library'):
-        t.run('%(JAR)s', 'xf', '../../../../' + PLOVR_JAR, 'closure')
-        t.run('%(JAR)s', 'xf', '../../../../' + PLOVR_JAR, 'third_party')
+    t.cp_r(closure_lib_path, 'build/hosted/%(BRANCH)s/closure-library')
     t.rm_rf('build/hosted/%(BRANCH)s/ol')
     t.makedirs('build/hosted/%(BRANCH)s/ol')
     t.cp_r('src/ol', 'build/hosted/%(BRANCH)s/ol/ol')
@@ -674,12 +686,10 @@ def proj4js_zip(t):
     t.info('downloaded %r', t.name)
 
 
-virtual('test-deps', PROJ4JS, 'build/test/requireall.js')
-
-
-@target('test', 'test-deps', phony=True)
+@target('test', PROJ4JS, phony=True)
 def test(t):
-    t.run('%(PHANTOMJS)s', 'test/mocha-phantomjs.js', 'test/ol.html')
+    t.run('%(PHANTOMJS)s', 'test/mocha-phantomjs.js',
+          'http://localhost:3000/test/index.html')
 
 
 @target('fixme', phony=True)
@@ -740,7 +750,7 @@ There is one option:
   -c               - Cleans up the repository from previous builds.
 
 The most common targets are:
-  serve            - Serves files through plovr, usually on port 9810.
+  serve            - Serves files, on port 3000.
   lint             - Runs gjslint on all sourcefiles to enforce specific syntax.
   build            - Builds singlefile versions of OpenLayers JavaScript and
                      CSS. This is also the default build target which runs when
@@ -753,18 +763,17 @@ The most common targets are:
 
 Other less frequently used targets are:
   apidoc           - Builds the API-Documentation using JSDoc3.
-  integration-test - Builds all examples in various modes and usually takes a
+  ci               - Builds all examples in various modes and usually takes a
                      long time to finish. This target calls the following
                      targets: lint, build, build-all, test, build-examples,
-                     check-examples and apidoc.
+                     check-examples and apidoc. This is the target run on
+                     Travis CI.
   reallyclean      - Remove untracked files from the repository.
   checkdeps        - Checks whether all required development software is
                      installed on your machine.
   fixme            - Will print a list of parts of the code that are marked
                      with either TODO or FIXME.
   todo             - This is an alias for the fixme-target (see above).
-  plovr            - Fetches the required plovr.jar. Usually called by other
-                     targets that depend on plovr.
 
 If no target is given, the build-target will be executed.
 

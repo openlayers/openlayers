@@ -1,42 +1,63 @@
 {
-
-  "id": "ol-whitespace",
-
-  // If ambiguate-properties and disambiguate-properties are set to true
-  // we get function names like "ol_control_Control_prototype$setMap" in
-  // the compiled code when using the SIMPLE compilation. It looks like
-  // "ambiguate-properties" and  "disambiguate-properties" are only
-  // appropriate for ADVANCED compilation. To be sure we also don't
-  // set them for WHITESPACE.
-
-  "ambiguate-properties": false,
-
-  "disambiguate-properties": false,
-
-  "externs": [
-    "../externs/bingmaps.js",
-    "../externs/closure-compiler.js",
-    "../externs/geojson.js",
-    "../externs/oli.js",
-    "../externs/olx.js",
-    "../externs/proj4js.js",
-    "../externs/tilejson.js",
-    "../externs/topojson.js",
-    "../externs/vbarray.js"
-  ],
-
-  "inherits": "ol.json",
-
-  "inputs": [
-    "../build/exports.js"
-  ],
-
-  "mode": "WHITESPACE",
-
-  "output-wrapper": [
-    "var CLOSURE_NO_DEPS = true;\n",
-    "%output%"
-  ],
-
-  "pretty-print": true
+  "exports": ["*"],
+  "src": ["src/**/*.js"],
+  "compile": {
+    "externs": [
+      "externs/bingmaps.js",
+      "externs/closure-compiler.js",
+      "externs/geojson.js",
+      "externs/oli.js",
+      "externs/olx.js",
+      "externs/proj4js.js",
+      "externs/tilejson.js",
+      "externs/topojson.js",
+      "externs/vbarray.js"
+    ],
+    "define": [
+      "goog.dom.ASSUME_STANDARDS_MODE=true",
+      "goog.DEBUG=false"
+    ],
+    "jscomp_error": [
+      "accessControls",
+      "ambiguousFunctionDecl",
+      "checkEventfulObjectDisposal",
+      "checkRegExp",
+      "checkStructDictInheritance",
+      "checkTypes",
+      "checkVars",
+      "const",
+      "constantProperty",
+      "deprecated",
+      "duplicateMessage",
+      "es3",
+      "externsValidation",
+      "fileoverviewTags",
+      "globalThis",
+      "internetExplorerChecks",
+      "invalidCasts",
+      "misplacedTypeAnnotation",
+      "missingGetCssName",
+      "missingProperties",
+      "missingProvide",
+      "missingRequire",
+      "missingReturn",
+      "newCheckTypes",
+      "nonStandardJsDocs",
+      "suspiciousCode",
+      "strictModuleDepCheck",
+      "typeInvalidation",
+      "undefinedNames",
+      "undefinedVars",
+      "unknownDefines",
+      "uselessCode",
+      "visibility"
+    ],
+    "jscomp_off": [
+      "es5Strict"
+    ],
+    "compilation_level": "WHITESPACE_ONLY",
+    "output_wrapper": "var CLOSURE_DEPS = false;\n%output%",
+    "use_types_for_optimization": false,
+    "manage_closure_dependencies": true
+  }
 }
