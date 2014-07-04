@@ -35,7 +35,7 @@ goog.require('ol.interaction.PinchZoom');
  * @param {olx.interaction.DefaultsOptions=} opt_options Defaults options.
  * @return {ol.Collection} A collection of interactions to be used with
  * the ol.Map constructor's interactions option.
- * @todo api
+ * @todo api stable
  */
 ol.interaction.defaults = function(opt_options) {
 

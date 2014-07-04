@@ -43,7 +43,7 @@ ol.interaction.SegmentDataType;
  * @constructor
  * @extends {ol.interaction.Pointer}
  * @param {olx.interaction.ModifyOptions} options Options.
- * @todo api
+ * @todo api stable
  */
 ol.interaction.Modify = function(options) {
 
