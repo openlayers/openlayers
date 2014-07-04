@@ -129,9 +129,6 @@ SRC = [path
        if path.endswith('.js')
        if path not in SHADER_SRC]
 
-PLOVR_JAR = 'build/plovr-81ed862.jar'
-PLOVR_JAR_MD5 = '1c752daaf11ad6220b298e7d2ee2b87d'
-
 PROJ4JS = 'build/proj4js/lib/proj4js-combined.js'
 PROJ4JS_ZIP = 'build/proj4js-1.1.0.zip'
 PROJ4JS_ZIP_MD5 = '17caad64cf6ebc6e6fe62f292b134897'
@@ -573,17 +570,6 @@ def build_check_whitespace_timestamp(t):
     t.touch()
 
 
-virtual('plovr', PLOVR_JAR)
-
-
-@target(PLOVR_JAR, clean=False)
-def plovr_jar(t):
-    t.info('downloading %r', t.name)
-    t.download('https://plovr.googlecode.com/files/' +
-               os.path.basename(PLOVR_JAR), md5=PLOVR_JAR_MD5)
-    t.info('downloaded %r', t.name)
-
-
 virtual('apidoc', 'build/jsdoc-%(BRANCH)s-timestamp' % vars(variables))
 
 
@@ -788,8 +774,6 @@ Other less frequently used targets are:
   fixme            - Will print a list of parts of the code that are marked
                      with either TODO or FIXME.
   todo             - This is an alias for the fixme-target (see above).
-  plovr            - Fetches the required plovr.jar. Usually called by other
-                     targets that depend on plovr.
 
 If no target is given, the build-target will be executed.
 
