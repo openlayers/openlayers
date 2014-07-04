@@ -83,6 +83,7 @@ ol.source.ServerVector.prototype.addFeaturesInternal = function(features) {
  */
 ol.source.ServerVector.prototype.clear = function () {
     goog.object.clear(this.loadedFeatures_);
+    this.loadedExtents_.clear();
     goog.base(this, 'clear');
 };
 
