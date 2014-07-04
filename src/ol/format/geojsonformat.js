@@ -416,13 +416,20 @@ ol.format.GeoJSON.prototype.readGeometryFromObject = function(object) {
 
 
 /**
- * Read the projection from the GeoJSON source file.
+ * Read the projection from a GeoJSON source.
  *
- * @param {ArrayBuffer|Document|Node|Object|string} object Source.
+ * @function
+ * @param {ArrayBuffer|Document|Node|Object|string} source Source.
  * @return {ol.proj.Projection} Projection.
  * @todo api
  */
-ol.format.GeoJSON.prototype.readProjection = function(object) {
+ol.format.GeoJSON.prototype.readProjection;
+
+
+/**
+ * @inheritDoc
+ */
+ol.format.GeoJSON.prototype.readProjectionFromObject = function(object) {
   var geoJSONObject = /** @type {GeoJSONObject} */ (object);
   var crs = geoJSONObject.crs;
   if (goog.isDefAndNotNull(crs)) {
