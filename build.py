@@ -349,7 +349,7 @@ def examples_star_combined_js(name, match):
     return Target(name, action=action, dependencies=dependencies)
 
 
-@target('serve', 'test-deps', 'examples')
+@target('serve', PROJ4JS, 'examples')
 def serve(t):
     t.run('node', 'tasks/serve.js')
 
@@ -706,12 +706,10 @@ def proj4js_zip(t):
     t.info('downloaded %r', t.name)
 
 
-virtual('test-deps', PROJ4JS, 'build/test/requireall.js')
-
-
-@target('test', 'test-deps', phony=True)
+@target('test', PROJ4JS, phony=True)
 def test(t):
-    t.run('%(PHANTOMJS)s', 'test/mocha-phantomjs.js', 'test/ol.html')
+    t.run('%(PHANTOMJS)s', 'test/mocha-phantomjs.js',
+          'http://localhost:3000/test/index.html')
 
 
 @target('fixme', phony=True)
@@ -772,7 +770,7 @@ There is one option:
   -c               - Cleans up the repository from previous builds.
 
 The most common targets are:
-  serve            - Serves files through plovr, usually on port 9810.
+  serve            - Serves files, on port 3000.
   lint             - Runs gjslint on all sourcefiles to enforce specific syntax.
   build            - Builds singlefile versions of OpenLayers JavaScript and
                      CSS. This is also the default build target which runs when
