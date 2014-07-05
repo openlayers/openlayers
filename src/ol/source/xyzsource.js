@@ -36,6 +36,7 @@ ol.source.XYZ = function(options) {
     projection: projection,
     tileGrid: tileGrid,
     tileLoadFunction: options.tileLoadFunction,
+    tilePixelRatio: options.tilePixelRatio,
     tileUrlFunction: ol.TileUrlFunction.nullTileUrlFunction
   });
 
