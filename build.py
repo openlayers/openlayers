@@ -320,6 +320,9 @@ def examples_star_json(name, match):
               "violatedModuleDep",
               "visibility"
             ],
+            "extra_annotation_name": [
+              "api", "observable"
+            ],
             "jscomp_off": [
               "es5Strict"
             ],
