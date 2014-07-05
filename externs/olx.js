@@ -1145,7 +1145,7 @@ olx.format.GeoJSONOptions.prototype.geometryName;
 
 /**
  * @typedef {{factor: (number|undefined)}}
- * @todo stability experimental
+ * @api
  */
 olx.format.PolylineOptions;
 
