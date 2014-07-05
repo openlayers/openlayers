@@ -4357,6 +4357,7 @@ olx.source.WMTSOptions.prototype.urls;
  *     maxZoom: (number|undefined),
  *     minZoom: (number|undefined),
  *     tileLoadFunction: (ol.TileLoadFunctionType|undefined),
+ *     tilePixelRatio: (number|undefined),
  *     tileUrlFunction: (ol.TileUrlFunctionType|undefined),
  *     url: (string|undefined),
  *     urls: (Array.<string>|undefined),
@@ -4420,6 +4421,16 @@ olx.source.XYZOptions.prototype.minZoom;
  * @type {ol.TileLoadFunctionType|undefined}
  */
 olx.source.XYZOptions.prototype.tileLoadFunction;
+
+
+/**
+ * The pixel ratio used by the tile service. For example, if the tile
+ * service advertizes 256px by 256px tiles but actually sends 512px
+ * by 512px images (for retina/hidpi devices) then `tilePixelRatio`
+ * should be set to `2`. Default is `1`.
+ * @type {number|undefined}
+ */
+olx.source.XYZOptions.prototype.tilePixelRatio;
 
 
 /**
