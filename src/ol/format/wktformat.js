@@ -20,7 +20,6 @@ goog.require('ol.geom.Polygon');
  * @constructor
  * @extends {ol.format.TextFeature}
  * @param {olx.format.WKTOptions=} opt_options Options.
- * @todo stability experimental
  * @api
  */
 ol.format.WKT = function(opt_options) {
