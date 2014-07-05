@@ -16,7 +16,7 @@ goog.require('ol.source.State');
  * @extends {ol.source.FormatVector}
  * @fires ol.source.VectorEvent
  * @param {olx.source.StaticVectorOptions} options Options.
- * @todo api
+ * @api
  */
 ol.source.StaticVector = function(options) {
 

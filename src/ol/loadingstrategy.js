@@ -8,7 +8,7 @@ goog.require('ol.TileCoord');
  * @param {ol.Extent} extent Extent.
  * @param {number} resolution Resolution.
  * @return {Array.<ol.Extent>} Extents.
- * @todo api
+ * @api
  */
 ol.loadingstrategy.all = function(extent, resolution) {
   return [[-Infinity, -Infinity, Infinity, Infinity]];
@@ -21,7 +21,7 @@ ol.loadingstrategy.all = function(extent, resolution) {
  * @param {ol.Extent} extent Extent.
  * @param {number} resolution Resolution.
  * @return {Array.<ol.Extent>} Extents.
- * @todo api
+ * @api
  */
 ol.loadingstrategy.bbox = function(extent, resolution) {
   return [extent];
@@ -32,7 +32,7 @@ ol.loadingstrategy.bbox = function(extent, resolution) {
  * Creates a strategy function for loading features based on a tile grid.
  * @param {ol.tilegrid.TileGrid} tileGrid Tile grid.
  * @return {function(ol.Extent, number): Array.<ol.Extent>} Loading strategy.
- * @todo api
+ * @api
  */
 ol.loadingstrategy.createTile = function(tileGrid) {
   return (

@@ -25,7 +25,7 @@ ol.HAVE_PROJ4JS = ol.ENABLE_PROJ4JS && typeof Proj4js == 'object';
  * A projection as {@link ol.proj.Projection}, SRS identifier string or
  * undefined.
  * @typedef {ol.proj.Projection|string|undefined} ol.proj.ProjectionLike
- * @todo api
+ * @api
  */
 ol.proj.ProjectionLike;
 
@@ -33,7 +33,7 @@ ol.proj.ProjectionLike;
 /**
  * Projection units: `'degrees'`, `'ft'`, `'m'` or `'pixels'`.
  * @enum {string}
- * @todo api
+ * @api
  */
 ol.proj.Units = {
   DEGREES: 'degrees',
@@ -47,7 +47,7 @@ ol.proj.Units = {
  * Meters per unit lookup table.
  * @const
  * @type {Object.<ol.proj.Units, number>}
- * @todo api
+ * @api
  */
 ol.proj.METERS_PER_UNIT[ol.proj.Units.DEGREES] =
     2 * Math.PI * ol.sphere.NORMAL.radius / 360;
@@ -71,7 +71,7 @@ ol.proj.METERS_PER_UNIT[ol.proj.Units.METERS] = 1;
  * @constructor
  * @param {olx.ProjectionOptions} options Projection options.
  * @struct
- * @todo api
+ * @api
  */
 ol.proj.Projection = function(options) {
 
@@ -118,7 +118,7 @@ ol.proj.Projection = function(options) {
 /**
  * Get the code for this projection, e.g. 'EPSG:4326'.
  * @return {string} Code.
- * @todo api
+ * @api
  */
 ol.proj.Projection.prototype.getCode = function() {
   return this.code_;
@@ -128,7 +128,7 @@ ol.proj.Projection.prototype.getCode = function() {
 /**
  * Get the validity extent for this projection.
  * @return {ol.Extent} Extent.
- * @todo api
+ * @api
  */
 ol.proj.Projection.prototype.getExtent = function() {
   return this.extent_;
@@ -151,7 +151,7 @@ ol.proj.Projection.prototype.getPointResolution = goog.abstractMethod;
 /**
  * Get the units of this projection.
  * @return {ol.proj.Units} Units.
- * @todo api
+ * @api
  */
 ol.proj.Projection.prototype.getUnits = function() {
   return this.units_;
@@ -384,7 +384,7 @@ ol.proj.addProj4jsProjection_ = function(proj4jsProjection) {
  * Add a Projection object to the list of supported projections.
  *
  * @param {ol.proj.Projection} projection Projection object.
- * @todo api
+ * @api
  */
 ol.proj.addProjection = function(projection) {
   var projections = ol.proj.projections_;
@@ -484,7 +484,7 @@ ol.proj.removeTransform = function(source, destination) {
  *     a combination of authority and identifier such as "EPSG:4326", or an
  *     existing projection object, or undefined.
  * @return {ol.proj.Projection} Projection object, or null if not in list.
- * @todo api
+ * @api
  */
 ol.proj.get = function(projectionLike) {
   var projection;
@@ -566,7 +566,7 @@ ol.proj.equivalent = function(projection1, projection2) {
  * @param {ol.proj.ProjectionLike} source Source.
  * @param {ol.proj.ProjectionLike} destination Destination.
  * @return {ol.TransformFunction} Transform function.
- * @todo api
+ * @api
  */
 ol.proj.getTransform = function(source, destination) {
   var sourceProjection = ol.proj.get(source);
@@ -708,7 +708,7 @@ ol.proj.cloneTransform = function(input, opt_output, opt_dimension) {
  * @param {ol.proj.ProjectionLike} source Source projection-like.
  * @param {ol.proj.ProjectionLike} destination Destination projection-like.
  * @return {ol.Coordinate} Coordinate.
- * @todo api
+ * @api
  */
 ol.proj.transform = function(coordinate, source, destination) {
   var transformFn = ol.proj.getTransform(source, destination);
@@ -735,7 +735,7 @@ ol.proj.transformWithProjections =
 /**
  * @param {olx.Proj4jsProjectionOptions} options Proj4js projection options.
  * @return {ol.proj.Projection} Proj4js projection.
- * @todo api
+ * @api
  */
 ol.proj.configureProj4jsProjection = function(options) {
   goog.asserts.assert(!goog.object.containsKey(

@@ -25,7 +25,7 @@ goog.require('ol.interaction.Pointer');
  * @constructor
  * @extends {ol.interaction.Pointer}
  * @param {olx.interaction.DragRotateAndZoomOptions=} opt_options Options.
- * @todo api stable
+ * @api stable
  */
 ol.interaction.DragRotateAndZoom = function(opt_options) {
 

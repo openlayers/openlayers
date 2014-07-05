@@ -13,7 +13,7 @@ goog.require('ol.MapBrowserPointerEvent');
  * `{boolean}`. If the condition is met, true should be returned.
  *
  * @typedef {function(ol.MapBrowserEvent): boolean}
- * @todo api
+ * @api
  */
 ol.events.ConditionType;
 
@@ -21,7 +21,7 @@ ol.events.ConditionType;
 /**
  * @param {ol.MapBrowserEvent} mapBrowserEvent Map browser event.
  * @return {boolean} True if only the alt key is pressed.
- * @todo api
+ * @api
  */
 ol.events.condition.altKeyOnly = function(mapBrowserEvent) {
   var browserEvent = mapBrowserEvent.browserEvent;
@@ -35,7 +35,7 @@ ol.events.condition.altKeyOnly = function(mapBrowserEvent) {
 /**
  * @param {ol.MapBrowserEvent} mapBrowserEvent Map browser event.
  * @return {boolean} True if only the alt and shift keys are pressed.
- * @todo api
+ * @api
  */
 ol.events.condition.altShiftKeysOnly = function(mapBrowserEvent) {
   var browserEvent = mapBrowserEvent.browserEvent;
@@ -50,7 +50,7 @@ ol.events.condition.altShiftKeysOnly = function(mapBrowserEvent) {
  * Always true.
  * @param {ol.MapBrowserEvent} mapBrowserEvent Map browser event.
  * @return {boolean} True.
- * @todo api
+ * @api
  */
 ol.events.condition.always = goog.functions.TRUE;
 
@@ -58,7 +58,7 @@ ol.events.condition.always = goog.functions.TRUE;
 /**
  * @param {ol.MapBrowserEvent} mapBrowserEvent Map browser event.
  * @return {boolean} True if the event is a map `click` event.
- * @todo api
+ * @api
  */
 ol.events.condition.click = function(mapBrowserEvent) {
   return mapBrowserEvent.type == ol.MapBrowserEvent.EventType.CLICK;
@@ -68,7 +68,7 @@ ol.events.condition.click = function(mapBrowserEvent) {
 /**
  * @param {ol.MapBrowserEvent} mapBrowserEvent Map browser event.
  * @return {boolean} True if the browser event is a `mousemove` event.
- * @todo api
+ * @api
  */
 ol.events.condition.mouseMove = function(mapBrowserEvent) {
   return mapBrowserEvent.originalEvent.type == 'mousemove';
@@ -79,7 +79,7 @@ ol.events.condition.mouseMove = function(mapBrowserEvent) {
  * Always false.
  * @param {ol.MapBrowserEvent} mapBrowserEvent Map browser event.
  * @return {boolean} False.
- * @todo api
+ * @api
  */
 ol.events.condition.never = goog.functions.FALSE;
 
@@ -87,7 +87,7 @@ ol.events.condition.never = goog.functions.FALSE;
 /**
  * @param {ol.MapBrowserEvent} mapBrowserEvent Map browser event.
  * @return {boolean} True if the event is a map `singleclick` event.
- * @todo api
+ * @api
  */
 ol.events.condition.singleClick = function(mapBrowserEvent) {
   return mapBrowserEvent.type == ol.MapBrowserEvent.EventType.SINGLECLICK;
@@ -97,7 +97,7 @@ ol.events.condition.singleClick = function(mapBrowserEvent) {
 /**
  * @param {ol.MapBrowserEvent} mapBrowserEvent Map browser event.
  * @return {boolean} True only if there no modifier keys are pressed.
- * @todo api
+ * @api
  */
 ol.events.condition.noModifierKeys = function(mapBrowserEvent) {
   var browserEvent = mapBrowserEvent.browserEvent;
@@ -111,7 +111,7 @@ ol.events.condition.noModifierKeys = function(mapBrowserEvent) {
 /**
  * @param {ol.MapBrowserEvent} mapBrowserEvent Map browser event.
  * @return {boolean} True if only the platform modifier key is pressed.
- * @todo api
+ * @api
  */
 ol.events.condition.platformModifierKeyOnly = function(mapBrowserEvent) {
   var browserEvent = mapBrowserEvent.browserEvent;
@@ -125,7 +125,7 @@ ol.events.condition.platformModifierKeyOnly = function(mapBrowserEvent) {
 /**
  * @param {ol.MapBrowserEvent} mapBrowserEvent Map browser event.
  * @return {boolean} True if only the shift key is pressed.
- * @todo api
+ * @api
  */
 ol.events.condition.shiftKeyOnly = function(mapBrowserEvent) {
   var browserEvent = mapBrowserEvent.browserEvent;
@@ -139,7 +139,7 @@ ol.events.condition.shiftKeyOnly = function(mapBrowserEvent) {
 /**
  * @param {ol.MapBrowserEvent} mapBrowserEvent Map browser event.
  * @return {boolean} True only if the target element is not editable.
- * @todo api
+ * @api
  */
 ol.events.condition.targetNotEditable = function(mapBrowserEvent) {
   var target = mapBrowserEvent.browserEvent.target;
@@ -155,7 +155,7 @@ ol.events.condition.targetNotEditable = function(mapBrowserEvent) {
 /**
  * @param {ol.MapBrowserEvent} mapBrowserEvent Map browser event.
  * @return {boolean} True if the event originates from a mouse device.
- * @todo api
+ * @api
  */
 ol.events.condition.mouseOnly = function(mapBrowserEvent) {
   goog.asserts.assertInstanceof(mapBrowserEvent, ol.MapBrowserPointerEvent);

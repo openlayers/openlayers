@@ -27,7 +27,7 @@ goog.require('ol.style.Style');
  * @fires change Triggered when the geometry or style of the feature changes.
  * @param {ol.geom.Geometry|Object.<string, *>=} opt_geometryOrProperties
  *     Geometry or properties.
- * @todo api
+ * @api
  */
 ol.Feature = function(opt_geometryOrProperties) {
 
@@ -89,7 +89,7 @@ goog.inherits(ol.Feature, ol.Object);
  * Clone this feature. If the original feature has a geometry it
  * is also cloned. The feature id is not set in the clone.
  * @return {ol.Feature} The clone.
- * @todo api
+ * @api
  */
 ol.Feature.prototype.clone = function() {
   var clone = new ol.Feature(this.getProperties());
@@ -108,7 +108,7 @@ ol.Feature.prototype.clone = function() {
 
 /**
  * @return {ol.geom.Geometry|undefined} Geometry.
- * @todo api
+ * @api
  */
 ol.Feature.prototype.getGeometry = function() {
   return /** @type {ol.geom.Geometry|undefined} */ (
@@ -122,7 +122,7 @@ goog.exportProperty(
 
 /**
  * @return {number|string|undefined} Id.
- * @todo api
+ * @api
  */
 ol.Feature.prototype.getId = function() {
   return this.id_;
@@ -131,7 +131,7 @@ ol.Feature.prototype.getId = function() {
 
 /**
  * @return {string} Geometry property name.
- * @todo api
+ * @api
  */
 ol.Feature.prototype.getGeometryName = function() {
   return this.geometryName_;
@@ -141,7 +141,7 @@ ol.Feature.prototype.getGeometryName = function() {
 /**
  * @return {ol.style.Style|Array.<ol.style.Style>|
  *     ol.feature.FeatureStyleFunction} User provided style.
- * @todo api
+ * @api
  */
 ol.Feature.prototype.getStyle = function() {
   return this.style_;
@@ -150,7 +150,7 @@ ol.Feature.prototype.getStyle = function() {
 
 /**
  * @return {ol.feature.FeatureStyleFunction|undefined} Style function.
- * @todo api
+ * @api
  */
 ol.Feature.prototype.getStyleFunction = function() {
   return this.styleFunction_;
@@ -184,7 +184,7 @@ ol.Feature.prototype.handleGeometryChanged_ = function() {
 
 /**
  * @param {ol.geom.Geometry|undefined} geometry Geometry.
- * @todo api
+ * @api
  */
 ol.Feature.prototype.setGeometry = function(geometry) {
   this.set(this.geometryName_, geometry);
@@ -198,7 +198,7 @@ goog.exportProperty(
 /**
  * @param {ol.style.Style|Array.<ol.style.Style>|
  *     ol.feature.FeatureStyleFunction} style Feature style.
- * @todo api
+ * @api
  */
 ol.Feature.prototype.setStyle = function(style) {
   this.style_ = style;
@@ -209,7 +209,7 @@ ol.Feature.prototype.setStyle = function(style) {
 
 /**
  * @param {number|string|undefined} id Id.
- * @todo api
+ * @api
  */
 ol.Feature.prototype.setId = function(id) {
   this.id_ = id;
@@ -219,7 +219,7 @@ ol.Feature.prototype.setId = function(id) {
 
 /**
  * @param {string} name Geometry property name.
- * @todo api
+ * @api
  */
 ol.Feature.prototype.setGeometryName = function(name) {
   goog.events.unlisten(
@@ -240,7 +240,7 @@ ol.Feature.prototype.setGeometryName = function(name) {
  * {@link ol.Feature} to be styled.
  *
  * @typedef {function(this: ol.Feature, number): Array.<ol.style.Style>}
- * @todo api
+ * @api
  */
 ol.feature.FeatureStyleFunction;
 
@@ -289,7 +289,7 @@ ol.feature.defaultFeatureStyleFunction = function(resolution) {
  * {@link ol.style.Style}. This way e.g. a vector layer can be styled.
  *
  * @typedef {function(ol.Feature, number): Array.<ol.style.Style>}
- * @todo api
+ * @api
  */
 ol.feature.StyleFunction;
 

@@ -146,7 +146,7 @@ ol.MapProperty = {
  * @fires ol.MapEvent
  * @fires ol.render.Event#postcompose
  * @fires ol.render.Event#precompose
- * @todo api stable
+ * @api stable
  */
 ol.Map = function(options) {
 
@@ -454,7 +454,7 @@ goog.inherits(ol.Map, ol.Object);
 /**
  * Add the given control to the map.
  * @param {ol.control.Control} control Control.
- * @todo api stable
+ * @api stable
  */
 ol.Map.prototype.addControl = function(control) {
   var controls = this.getControls();
@@ -466,7 +466,7 @@ ol.Map.prototype.addControl = function(control) {
 /**
  * Add the given interaction to the map.
  * @param {ol.interaction.Interaction} interaction Interaction to add.
- * @todo api stable
+ * @api stable
  */
 ol.Map.prototype.addInteraction = function(interaction) {
   var interactions = this.getInteractions();
@@ -478,7 +478,7 @@ ol.Map.prototype.addInteraction = function(interaction) {
 /**
  * Adds the given layer to the top of this map.
  * @param {ol.layer.Base} layer Layer.
- * @todo api stable
+ * @api stable
  */
 ol.Map.prototype.addLayer = function(layer) {
   var layers = this.getLayerGroup().getLayers();
@@ -490,7 +490,7 @@ ol.Map.prototype.addLayer = function(layer) {
 /**
  * Add the given overlay to the map.
  * @param {ol.Overlay} overlay Overlay.
- * @todo api stable
+ * @api stable
  */
 ol.Map.prototype.addOverlay = function(overlay) {
   var overlays = this.getOverlays();
@@ -504,7 +504,7 @@ ol.Map.prototype.addOverlay = function(overlay) {
  * animations before updating the map's view.  The {@link ol.animation}
  * namespace provides several static methods for creating prerender functions.
  * @param {...ol.PreRenderFunction} var_args Any number of pre-render functions.
- * @todo api stable
+ * @api stable
  */
 ol.Map.prototype.beforeRender = function(var_args) {
   this.render();
@@ -551,7 +551,7 @@ ol.Map.prototype.disposeInternal = function() {
  * @return {T|undefined} Callback result, i.e. the return value of last
  * callback execution, or the first truthy callback return value.
  * @template S,T,U
- * @todo api stable
+ * @api stable
  */
 ol.Map.prototype.forEachFeatureAtPixel =
     function(pixel, callback, opt_this, opt_layerFilter, opt_this2) {
@@ -573,7 +573,7 @@ ol.Map.prototype.forEachFeatureAtPixel =
  * Returns the geographical coordinate for a browser event.
  * @param {Event} event Event.
  * @return {ol.Coordinate} Coordinate.
- * @todo api stable
+ * @api stable
  */
 ol.Map.prototype.getEventCoordinate = function(event) {
   return this.getCoordinateFromPixel(this.getEventPixel(event));
@@ -584,7 +584,7 @@ ol.Map.prototype.getEventCoordinate = function(event) {
  * Returns the map pixel position for a browser event.
  * @param {Event} event Event.
  * @return {ol.Pixel} Pixel.
- * @todo api stable
+ * @api stable
  */
 ol.Map.prototype.getEventPixel = function(event) {
   // goog.style.getRelativePosition is based on event.targetTouches,
@@ -612,8 +612,8 @@ ol.Map.prototype.getEventPixel = function(event) {
  * if that was an element, it returns an element; if a string, it returns that.
  * @return {Element|string|undefined} The Element or id of the Element that the
  *     map is rendered in.
- * @todo observable
- * @todo api stable
+ * @observable
+ * @api stable
  */
 ol.Map.prototype.getTarget = function() {
   return /** @type {Element|string|undefined} */ (
@@ -628,7 +628,7 @@ goog.exportProperty(
 /**
  * @param {ol.Pixel} pixel Pixel.
  * @return {ol.Coordinate} Coordinate.
- * @todo api stable
+ * @api stable
  */
 ol.Map.prototype.getCoordinateFromPixel = function(pixel) {
   var frameState = this.frameState_;
@@ -643,7 +643,7 @@ ol.Map.prototype.getCoordinateFromPixel = function(pixel) {
 
 /**
  * @return {ol.Collection} Controls.
- * @todo api stable
+ * @api stable
  */
 ol.Map.prototype.getControls = function() {
   return this.controls_;
@@ -652,7 +652,7 @@ ol.Map.prototype.getControls = function() {
 
 /**
  * @return {ol.Collection} Overlays.
- * @todo api stable
+ * @api stable
  */
 ol.Map.prototype.getOverlays = function() {
   return this.overlays_;
@@ -666,7 +666,7 @@ ol.Map.prototype.getOverlays = function() {
  *
  * Interactions are used for e.g. pan, zoom and rotate.
  * @return {ol.Collection} {@link ol.interaction.Interaction Interactions}.
- * @todo api stable
+ * @api stable
  */
 ol.Map.prototype.getInteractions = function() {
   return this.interactions_;
@@ -676,8 +676,8 @@ ol.Map.prototype.getInteractions = function() {
 /**
  * Get the layergroup associated with this map.
  * @return {ol.layer.Group} A layer group containing the layers in this map.
- * @todo observable
- * @todo api stable
+ * @observable
+ * @api stable
  */
 ol.Map.prototype.getLayerGroup = function() {
   return /** @type {ol.layer.Group} */ (
@@ -692,7 +692,7 @@ goog.exportProperty(
 /**
  * Get the collection of layers associated with this map.
  * @return {ol.Collection|undefined} Layers.
- * @todo api stable
+ * @api stable
  */
 ol.Map.prototype.getLayers = function() {
   var layerGroup = this.getLayerGroup();
@@ -707,7 +707,7 @@ ol.Map.prototype.getLayers = function() {
 /**
  * @param {ol.Coordinate} coordinate Coordinate.
  * @return {ol.Pixel} Pixel.
- * @todo api stable
+ * @api stable
  */
 ol.Map.prototype.getPixelFromCoordinate = function(coordinate) {
   var frameState = this.frameState_;
@@ -732,8 +732,8 @@ ol.Map.prototype.getRenderer = function() {
 /**
  * Get the size of this map.
  * @return {ol.Size|undefined} The size in pixels of the map in the DOM.
- * @todo observable
- * @todo api stable
+ * @observable
+ * @api stable
  */
 ol.Map.prototype.getSize = function() {
   return /** @type {ol.Size|undefined} */ (this.get(ol.MapProperty.SIZE));
@@ -748,8 +748,8 @@ goog.exportProperty(
  * Get the view associated with this map. A view manages properties such as
  * center and resolution.
  * @return {ol.View|undefined} The view that controls this map.
- * @todo observable
- * @todo api stable
+ * @observable
+ * @api stable
  */
 ol.Map.prototype.getView = function() {
   return /** @type {ol.View} */ (this.get(ol.MapProperty.VIEW));
@@ -762,7 +762,7 @@ goog.exportProperty(
 
 /**
  * @return {Element} Viewport.
- * @todo api stable
+ * @api stable
  */
 ol.Map.prototype.getViewport = function() {
   return this.viewport_;
@@ -1072,7 +1072,7 @@ ol.Map.prototype.isRendered = function() {
 
 /**
  * Requests an immediate render in a synchronous manner.
- * @todo api stable
+ * @api stable
  */
 ol.Map.prototype.renderSync = function() {
   this.animationDelay_.fire();
@@ -1082,7 +1082,7 @@ ol.Map.prototype.renderSync = function() {
 /**
  * Requests a render frame; rendering will effectively occur at the next browser
  * animation frame.
- * @todo api stable
+ * @api stable
  */
 ol.Map.prototype.render = function() {
   if (!this.animationDelay_.isActive()) {
@@ -1096,7 +1096,7 @@ ol.Map.prototype.render = function() {
  * @param {ol.control.Control} control Control.
  * @return {ol.control.Control|undefined} The removed control of undefined
  *     if the control was not found.
- * @todo api stable
+ * @api stable
  */
 ol.Map.prototype.removeControl = function(control) {
   var controls = this.getControls();
@@ -1113,7 +1113,7 @@ ol.Map.prototype.removeControl = function(control) {
  * @param {ol.interaction.Interaction} interaction Interaction to remove.
  * @return {ol.interaction.Interaction|undefined} The removed interaction (or
  *     undefined if the interaction was not found).
- * @todo api stable
+ * @api stable
  */
 ol.Map.prototype.removeInteraction = function(interaction) {
   var removed;
@@ -1131,7 +1131,7 @@ ol.Map.prototype.removeInteraction = function(interaction) {
  * @param {ol.layer.Base} layer Layer.
  * @return {ol.layer.Base|undefined} The removed layer or undefined if the
  *     layer was not found.
- * @todo api stable
+ * @api stable
  */
 ol.Map.prototype.removeLayer = function(layer) {
   var layers = this.getLayerGroup().getLayers();
@@ -1145,7 +1145,7 @@ ol.Map.prototype.removeLayer = function(layer) {
  * @param {ol.Overlay} overlay Overlay.
  * @return {ol.Overlay|undefined} The removed overlay of undefined
  *     if the overlay was not found.
- * @todo api stable
+ * @api stable
  */
 ol.Map.prototype.removeOverlay = function(overlay) {
   var overlays = this.getOverlays();
@@ -1269,8 +1269,8 @@ ol.Map.prototype.renderFrame_ = function(time) {
  * Sets the layergroup of this map.
  * @param {ol.layer.Group} layerGroup A layer group containing the layers in
  *     this map.
- * @todo observable
- * @todo api stable
+ * @observable
+ * @api stable
  */
 ol.Map.prototype.setLayerGroup = function(layerGroup) {
   this.set(ol.MapProperty.LAYERGROUP, layerGroup);
@@ -1284,8 +1284,8 @@ goog.exportProperty(
 /**
  * Set the size of this map.
  * @param {ol.Size|undefined} size The size in pixels of the map in the DOM.
- * @todo observable
- * @todo api
+ * @observable
+ * @api
  */
 ol.Map.prototype.setSize = function(size) {
   this.set(ol.MapProperty.SIZE, size);
@@ -1300,8 +1300,8 @@ goog.exportProperty(
  * Set the target element to render this map into.
  * @param {Element|string|undefined} target The Element or id of the Element
  *     that the map is rendered in.
- * @todo observable
- * @todo api stable
+ * @observable
+ * @api stable
  */
 ol.Map.prototype.setTarget = function(target) {
   this.set(ol.MapProperty.TARGET, target);
@@ -1315,8 +1315,8 @@ goog.exportProperty(
 /**
  * Set the view for this map.
  * @param {ol.View} view The view that controls this map.
- * @todo observable
- * @todo api stable
+ * @observable
+ * @api stable
  */
 ol.Map.prototype.setView = function(view) {
   this.set(ol.MapProperty.VIEW, view);
@@ -1340,7 +1340,7 @@ ol.Map.prototype.skipFeature = function(feature) {
 /**
  * Force a recalculation of the map viewport size.  This should be called when
  * third-party code changes the size of the map viewport.
- * @todo api stable
+ * @api stable
  */
 ol.Map.prototype.updateSize = function() {
   var target = this.getTarget();

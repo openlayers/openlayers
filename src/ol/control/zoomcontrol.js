@@ -22,7 +22,7 @@ goog.require('ol.pointer.PointerEventHandler');
  * @constructor
  * @extends {ol.control.Control}
  * @param {olx.control.ZoomOptions=} opt_options Zoom options.
- * @todo api
+ * @api
  */
 ol.control.Zoom = function(opt_options) {
 

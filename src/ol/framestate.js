@@ -16,6 +16,6 @@ ol.PostRenderFunction;
  * second argument. Return `true` to keep this function for the next frame,
  * `false` to remove it.
  * @typedef {function(ol.Map, ?olx.FrameState): boolean}
- * @todo api
+ * @api
  */
 ol.PreRenderFunction;
