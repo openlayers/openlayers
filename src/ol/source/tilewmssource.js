@@ -331,6 +331,29 @@ ol.source.TileWMS.prototype.resetCoordKeyPrefix_ = function() {
 
 
 /**
+ * @param {string|undefined} url URL.
+ * @api
+ */
+ol.source.TileWMS.prototype.setUrl = function(url) {
+  if (goog.isDef(url)) {
+    this.setUrls(ol.TileUrlFunction.expandUrl(url));
+  }
+};
+
+
+/**
+ * @param {Array.<string>|undefined} urls URLs.
+ * @api
+ */
+ol.source.TileWMS.prototype.setUrls = function(urls) {
+  if (urls != this.urls_) {
+    this.urls_ = urls;
+    this.dispatchChangeEvent();
+  }
+};
+
+
+/**
  * @param {ol.TileCoord} tileCoord Tile coordinate.
  * @param {number} pixelRatio Pixel ratio.
  * @param {ol.proj.Projection} projection Projection.
