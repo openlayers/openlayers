@@ -159,7 +159,7 @@ ol.Collection.prototype.item = function(index) {
 /**
  * Get the length of this collection.
  * @return {number} The length of the array.
- * @todo observable
+ * @observable
  * @api stable
  */
 ol.Collection.prototype.getLength = function() {

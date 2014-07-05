@@ -85,7 +85,7 @@ goog.inherits(ol.layer.Base, ol.Object);
 
 /**
  * @return {number|undefined} The brightness of the layer.
- * @todo observable
+ * @observable
  * @api
  */
 ol.layer.Base.prototype.getBrightness = function() {
@@ -100,7 +100,7 @@ goog.exportProperty(
 
 /**
  * @return {number|undefined} The contrast of the layer.
- * @todo observable
+ * @observable
  * @api
  */
 ol.layer.Base.prototype.getContrast = function() {
@@ -115,7 +115,7 @@ goog.exportProperty(
 
 /**
  * @return {number|undefined} The hue of the layer.
- * @todo observable
+ * @observable
  * @api
  */
 ol.layer.Base.prototype.getHue = function() {
@@ -173,7 +173,7 @@ ol.layer.Base.prototype.getLayerStatesArray = goog.abstractMethod;
 
 /**
  * @return {number|undefined} The maximum resolution of the layer.
- * @todo observable
+ * @observable
  * @api
  */
 ol.layer.Base.prototype.getMaxResolution = function() {
@@ -188,7 +188,7 @@ goog.exportProperty(
 
 /**
  * @return {number|undefined} The minimum resolution of the layer.
- * @todo observable
+ * @observable
  * @api
  */
 ol.layer.Base.prototype.getMinResolution = function() {
@@ -203,7 +203,7 @@ goog.exportProperty(
 
 /**
  * @return {number|undefined} The opacity of the layer.
- * @todo observable
+ * @observable
  * @api
  */
 ol.layer.Base.prototype.getOpacity = function() {
@@ -218,7 +218,7 @@ goog.exportProperty(
 
 /**
  * @return {number|undefined} The saturation of the layer.
- * @todo observable
+ * @observable
  * @api
  */
 ol.layer.Base.prototype.getSaturation = function() {
@@ -239,7 +239,7 @@ ol.layer.Base.prototype.getSourceState = goog.abstractMethod;
 
 /**
  * @return {boolean|undefined} The visiblity of the layer.
- * @todo observable
+ * @observable
  * @api
  */
 ol.layer.Base.prototype.getVisible = function() {
@@ -271,7 +271,7 @@ goog.exportProperty(
  * [3] https://www.w3.org/Bugs/Public/show_bug.cgi?id=15647
  *
  * @param {number|undefined} brightness The brightness of the layer.
- * @todo observable
+ * @observable
  * @api
  */
 ol.layer.Base.prototype.setBrightness = function(brightness) {
@@ -289,7 +289,7 @@ goog.exportProperty(
  * linear multipliers on the effect (and values over 1 are permitted).
  *
  * @param {number|undefined} contrast The contrast of the layer.
- * @todo observable
+ * @observable
  * @api
  */
 ol.layer.Base.prototype.setContrast = function(contrast) {
@@ -305,7 +305,7 @@ goog.exportProperty(
  * Apply a hue-rotation to the layer.  A value of 0 will leave the hue
  * unchanged.  Other values are radians around the color circle.
  * @param {number|undefined} hue The hue of the layer.
- * @todo observable
+ * @observable
  * @api
  */
 ol.layer.Base.prototype.setHue = function(hue) {
@@ -319,7 +319,7 @@ goog.exportProperty(
 
 /**
  * @param {number|undefined} maxResolution The maximum resolution of the layer.
- * @todo observable
+ * @observable
  * @api
  */
 ol.layer.Base.prototype.setMaxResolution = function(maxResolution) {
@@ -333,7 +333,7 @@ goog.exportProperty(
 
 /**
  * @param {number|undefined} minResolution The minimum resolution of the layer.
- * @todo observable
+ * @observable
  * @api
  */
 ol.layer.Base.prototype.setMinResolution = function(minResolution) {
@@ -347,7 +347,7 @@ goog.exportProperty(
 
 /**
  * @param {number|undefined} opacity The opacity of the layer.
- * @todo observable
+ * @observable
  * @api
  */
 ol.layer.Base.prototype.setOpacity = function(opacity) {
@@ -366,7 +366,7 @@ goog.exportProperty(
  * permitted).
  *
  * @param {number|undefined} saturation The saturation of the layer.
- * @todo observable
+ * @observable
  * @api
  */
 ol.layer.Base.prototype.setSaturation = function(saturation) {
@@ -380,7 +380,7 @@ goog.exportProperty(
 
 /**
  * @param {boolean|undefined} visible The visiblity of the layer.
- * @todo observable
+ * @observable
  * @api
  */
 ol.layer.Base.prototype.setVisible = function(visible) {

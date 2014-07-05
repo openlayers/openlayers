@@ -612,7 +612,7 @@ ol.Map.prototype.getEventPixel = function(event) {
  * if that was an element, it returns an element; if a string, it returns that.
  * @return {Element|string|undefined} The Element or id of the Element that the
  *     map is rendered in.
- * @todo observable
+ * @observable
  * @api stable
  */
 ol.Map.prototype.getTarget = function() {
@@ -676,7 +676,7 @@ ol.Map.prototype.getInteractions = function() {
 /**
  * Get the layergroup associated with this map.
  * @return {ol.layer.Group} A layer group containing the layers in this map.
- * @todo observable
+ * @observable
  * @api stable
  */
 ol.Map.prototype.getLayerGroup = function() {
@@ -732,7 +732,7 @@ ol.Map.prototype.getRenderer = function() {
 /**
  * Get the size of this map.
  * @return {ol.Size|undefined} The size in pixels of the map in the DOM.
- * @todo observable
+ * @observable
  * @api stable
  */
 ol.Map.prototype.getSize = function() {
@@ -748,7 +748,7 @@ goog.exportProperty(
  * Get the view associated with this map. A view manages properties such as
  * center and resolution.
  * @return {ol.View|undefined} The view that controls this map.
- * @todo observable
+ * @observable
  * @api stable
  */
 ol.Map.prototype.getView = function() {
@@ -1269,7 +1269,7 @@ ol.Map.prototype.renderFrame_ = function(time) {
  * Sets the layergroup of this map.
  * @param {ol.layer.Group} layerGroup A layer group containing the layers in
  *     this map.
- * @todo observable
+ * @observable
  * @api stable
  */
 ol.Map.prototype.setLayerGroup = function(layerGroup) {
@@ -1284,7 +1284,7 @@ goog.exportProperty(
 /**
  * Set the size of this map.
  * @param {ol.Size|undefined} size The size in pixels of the map in the DOM.
- * @todo observable
+ * @observable
  * @api
  */
 ol.Map.prototype.setSize = function(size) {
@@ -1300,7 +1300,7 @@ goog.exportProperty(
  * Set the target element to render this map into.
  * @param {Element|string|undefined} target The Element or id of the Element
  *     that the map is rendered in.
- * @todo observable
+ * @observable
  * @api stable
  */
 ol.Map.prototype.setTarget = function(target) {
@@ -1315,7 +1315,7 @@ goog.exportProperty(
 /**
  * Set the view for this map.
  * @param {ol.View} view The view that controls this map.
- * @todo observable
+ * @observable
  * @api stable
  */
 ol.Map.prototype.setView = function(view) {

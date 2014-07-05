@@ -53,7 +53,7 @@
       "visibility"
     ],
     "extra_annotation_name": [
-      "api"
+      "api", "observable"
     ],
     "jscomp_off": [
       "es5Strict"

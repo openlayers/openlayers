@@ -137,7 +137,7 @@ ol.control.ScaleLine.LEADING_DIGITS = [1, 2, 5];
 /**
  * @return {ol.control.ScaleLineUnits|undefined} The units to use in the scale
  *     line.
- * @todo observable
+ * @observable
  * @api
  */
 ol.control.ScaleLine.prototype.getUnits = function() {
@@ -174,7 +174,7 @@ ol.control.ScaleLine.prototype.handleUnitsChanged_ = function() {
 
 /**
  * @param {ol.control.ScaleLineUnits} units The units to use in the scale line.
- * @todo observable
+ * @observable
  * @api
  */
 ol.control.ScaleLine.prototype.setUnits = function(units) {

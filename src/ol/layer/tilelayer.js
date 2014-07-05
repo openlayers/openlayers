@@ -33,7 +33,7 @@ goog.inherits(ol.layer.Tile, ol.layer.Layer);
 
 /**
  * @return {number|undefined} The level to preload tiles up to.
- * @todo observable
+ * @observable
  */
 ol.layer.Tile.prototype.getPreload = function() {
   return /** @type {number|undefined} */ (
@@ -47,7 +47,7 @@ goog.exportProperty(
 
 /**
  * @param {number} preload The level to preload tiles up to.
- * @todo observable
+ * @observable
  */
 ol.layer.Tile.prototype.setPreload = function(preload) {
   this.set(ol.layer.TileProperty.PRELOAD, preload);

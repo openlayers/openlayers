@@ -191,7 +191,7 @@ ol.Geolocation.prototype.positionError_ = function(error) {
  * Get the accuracy of the position in meters.
  * @return {number|undefined} The accuracy of the position measurement in
  *     meters.
- * @todo observable
+ * @observable
  * @api
  */
 ol.Geolocation.prototype.getAccuracy = function() {
@@ -207,7 +207,7 @@ goog.exportProperty(
 /**
  * Get a geometry of the position accuracy.
  * @return {?ol.geom.Geometry} A geometry of the position accuracy.
- * @todo observable
+ * @observable
  * @api
  */
 ol.Geolocation.prototype.getAccuracyGeometry = function() {
@@ -224,7 +224,7 @@ goog.exportProperty(
  * Get the altitude associated with the position.
  * @return {number|undefined} The altitude of the position in meters above mean
  *     sea level.
- * @todo observable
+ * @observable
  * @api
  */
 ol.Geolocation.prototype.getAltitude = function() {
@@ -241,7 +241,7 @@ goog.exportProperty(
  * Get the altitude accuracy of the position.
  * @return {number|undefined} The accuracy of the altitude measurement in
  *     meters.
- * @todo observable
+ * @observable
  * @api
  */
 ol.Geolocation.prototype.getAltitudeAccuracy = function() {
@@ -257,7 +257,7 @@ goog.exportProperty(
 /**
  * Get the heading as radians clockwise from North.
  * @return {number|undefined} The heading of the device in radians from north.
- * @todo observable
+ * @observable
  * @api
  */
 ol.Geolocation.prototype.getHeading = function() {
@@ -274,7 +274,7 @@ goog.exportProperty(
  * Get the position of the device.
  * @return {ol.Coordinate|undefined} The current position of the device reported
  *     in the current projection.
- * @todo observable
+ * @observable
  * @api
  */
 ol.Geolocation.prototype.getPosition = function() {
@@ -291,7 +291,7 @@ goog.exportProperty(
  * Get the projection associated with the position.
  * @return {ol.proj.Projection|undefined} The projection the position is
  *     reported in.
- * @todo observable
+ * @observable
  * @api
  */
 ol.Geolocation.prototype.getProjection = function() {
@@ -308,7 +308,7 @@ goog.exportProperty(
  * Get the speed in meters per second.
  * @return {number|undefined} The instantaneous speed of the device in meters
  *     per second.
- * @todo observable
+ * @observable
  * @api
  */
 ol.Geolocation.prototype.getSpeed = function() {
@@ -324,7 +324,7 @@ goog.exportProperty(
 /**
  * Are we tracking the user's position?
  * @return {boolean} Whether to track the device's position.
- * @todo observable
+ * @observable
  * @api
  */
 ol.Geolocation.prototype.getTracking = function() {
@@ -343,7 +343,7 @@ goog.exportProperty(
  * @return {GeolocationPositionOptions|undefined} PositionOptions as defined by
  *     the HTML5 Geolocation spec at
  *     {@link http://www.w3.org/TR/geolocation-API/#position_options_interface}
- * @todo observable
+ * @observable
  * @api
  */
 ol.Geolocation.prototype.getTrackingOptions = function() {
@@ -360,7 +360,7 @@ goog.exportProperty(
  * Set the projection to use for transforming the coordinates.
  * @param {ol.proj.Projection} projection The projection the position is
  *     reported in.
- * @todo observable
+ * @observable
  * @api
  */
 ol.Geolocation.prototype.setProjection = function(projection) {
@@ -375,7 +375,7 @@ goog.exportProperty(
 /**
  * Enable/disable tracking.
  * @param {boolean} tracking Whether to track the device's position.
- * @todo observable
+ * @observable
  * @api
  */
 ol.Geolocation.prototype.setTracking = function(tracking) {
@@ -393,7 +393,7 @@ goog.exportProperty(
  * @param {GeolocationPositionOptions} options PositionOptions as defined by the
  *     HTML5 Geolocation spec at
  *     {@link http://www.w3.org/TR/geolocation-API/#position_options_interface}
- * @todo observable
+ * @observable
  * @api
  */
 ol.Geolocation.prototype.setTrackingOptions = function(options) {

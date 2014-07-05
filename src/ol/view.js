@@ -234,7 +234,7 @@ ol.View.prototype.constrainRotation = function(rotation, opt_delta) {
 
 /**
  * @return {ol.Coordinate|undefined} The center of the view.
- * @todo observable
+ * @observable
  * @api
  */
 ol.View.prototype.getCenter = function() {
@@ -276,7 +276,7 @@ ol.View.prototype.calculateExtent = function(size) {
 
 /**
  * @return {ol.proj.Projection|undefined} The projection of the view.
- * @todo observable
+ * @observable
  * @api
  */
 ol.View.prototype.getProjection = function() {
@@ -291,7 +291,7 @@ goog.exportProperty(
 
 /**
  * @return {number|undefined} The resolution of the view.
- * @todo observable
+ * @observable
  * @api
  */
 ol.View.prototype.getResolution = function() {
@@ -346,7 +346,7 @@ ol.View.prototype.getResolutionForValueFunction = function(opt_power) {
 
 /**
  * @return {number|undefined} The rotation of the view.
- * @todo observable
+ * @observable
  * @api
  */
 ol.View.prototype.getRotation = function() {
@@ -569,7 +569,7 @@ ol.View.prototype.rotate = function(rotation, opt_anchor) {
 /**
  * Set the center of the current view.
  * @param {ol.Coordinate|undefined} center The center of the view.
- * @todo observable
+ * @observable
  * @api
  */
 ol.View.prototype.setCenter = function(center) {
@@ -598,7 +598,7 @@ ol.View.prototype.setHint = function(hint, delta) {
  * Set the projection of this view.
  * Warning! This code is not yet implemented. Function should not be used.
  * @param {ol.proj.Projection|undefined} projection The projection of the view.
- * @todo observable
+ * @observable
  * @api
  */
 ol.View.prototype.setProjection = function(projection) {
@@ -613,7 +613,7 @@ goog.exportProperty(
 /**
  * Set the resolution for this view.
  * @param {number|undefined} resolution The resolution of the view.
- * @todo observable
+ * @observable
  * @api
  */
 ol.View.prototype.setResolution = function(resolution) {
@@ -628,7 +628,7 @@ goog.exportProperty(
 /**
  * Set the rotation for this view.
  * @param {number|undefined} rotation The rotation of the view.
- * @todo observable
+ * @observable
  * @api
  */
 ol.View.prototype.setRotation = function(rotation) {
