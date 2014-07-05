@@ -688,8 +688,7 @@ def proj4js_zip(t):
 
 @target('test', PROJ4JS, phony=True)
 def test(t):
-    t.run('%(PHANTOMJS)s', 'test/mocha-phantomjs.js',
-          'http://localhost:3000/test/index.html')
+    t.run('node', 'tasks/test.js')
 
 
 @target('fixme', phony=True)
