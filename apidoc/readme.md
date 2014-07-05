@@ -11,7 +11,7 @@ In the simplest case, a JSDoc block can look like this:
 /**
  * Add the given control to the map.
  * @param {ol.control.Control} control Control.
- * @todo api
+ * @api
  */
 ol.Map.prototype.addControl = function(control) {
   // ...
@@ -22,7 +22,7 @@ contain Markdown.
 
 The second line tells the Closure compiler the type of the argument.
 
-The third line (`@todo api`) marks the method as part of the api and thus exportable. The stability can be added as value, e.g. `@todo api stable`. Once the documentation story is fully settled, we will remove the `todo ` and just write `@api` or `@api stable`. Without such an api annotation, the method will not be documented in the generated API documentation. Symbols without an api annotation will also not be exportable (unless they are explicitly exported with a `goog.exportProperty` call).
+The third line (`@api`) marks the method as part of the api and thus exportable. The stability can be added as value, e.g. `@api stable`. Without such an api annotation, the method will not be documented in the generated API documentation. Symbols without an api annotation will also not be exportable (unless they are explicitly exported with a `goog.exportProperty` call).
 
 ### Events
 
@@ -37,7 +37,7 @@ ol.MapBrowserEvent.EventType = {
    * A true single click with no dragging and no double click. Note that this
    * event is delayed by 250 ms to ensure that it is not a double click.
    * @event ol.MapBrowserEvent#singleclick
-   * @todo api
+   * @api
    */
   SINGLECLICK: 'singleclick',
   // ...
@@ -52,7 +52,7 @@ oli.MapBrowserEvent;
 
 /**
  * @type {ol.Coordinate}
- * @todo api
+ * @api
  */
 oli.MapBrowserEvent.prototype.coordinate;
 

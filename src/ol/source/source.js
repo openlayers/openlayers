@@ -11,7 +11,7 @@ goog.require('ol.proj');
 /**
  * State of the source, one of 'loading', 'ready' or 'error'.
  * @enum {string}
- * @todo api
+ * @api
  */
 ol.source.State = {
   LOADING: 'loading',
@@ -138,7 +138,7 @@ ol.source.Source.prototype.getResolutions = goog.abstractMethod;
 
 /**
  * @return {ol.source.State} State.
- * @todo api
+ * @api
  */
 ol.source.Source.prototype.getState = function() {
   return this.state_;

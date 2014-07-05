@@ -7,7 +7,7 @@ goog.require('goog.fx.easing');
  * @function
  * @param {number} t Input between 0 and 1.
  * @return {number} Output between 0 and 1.
- * @todo api
+ * @api
  */
 ol.easing.easeIn = goog.fx.easing.easeIn;
 
@@ -16,7 +16,7 @@ ol.easing.easeIn = goog.fx.easing.easeIn;
  * @function
  * @param {number} t Input between 0 and 1.
  * @return {number} Output between 0 and 1.
- * @todo api
+ * @api
  */
 ol.easing.easeOut = goog.fx.easing.easeOut;
 
@@ -25,7 +25,7 @@ ol.easing.easeOut = goog.fx.easing.easeOut;
  * @function
  * @param {number} t Input between 0 and 1.
  * @return {number} Output between 0 and 1.
- * @todo api
+ * @api
  */
 ol.easing.inAndOut = goog.fx.easing.inAndOut;
 
@@ -33,7 +33,7 @@ ol.easing.inAndOut = goog.fx.easing.inAndOut;
 /**
  * @param {number} t Input between 0 and 1.
  * @return {number} Output between 0 and 1.
- * @todo api
+ * @api
  */
 ol.easing.linear = function(t) {
   return t;
@@ -43,7 +43,7 @@ ol.easing.linear = function(t) {
 /**
  * @param {number} t Input between 0 and 1.
  * @return {number} Output between 0 and 1.
- * @todo api
+ * @api
  */
 ol.easing.upAndDown = function(t) {
   if (t < 0.5) {

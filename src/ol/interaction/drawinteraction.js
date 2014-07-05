@@ -30,13 +30,13 @@ ol.DrawEventType = {
   /**
    * Triggered upon feature draw start
    * @event ol.DrawEvent#drawstart
-   * @todo api stable
+   * @api stable
    */
   DRAWSTART: 'drawstart',
   /**
    * Triggered upon feature draw end
    * @event ol.DrawEvent#drawend
-   * @todo api stable
+   * @api stable
    */
   DRAWEND: 'drawend'
 };
@@ -57,7 +57,7 @@ ol.DrawEvent = function(type, feature) {
   /**
    * The feature being drawn.
    * @type {ol.Feature}
-   * @todo api stable
+   * @api stable
    */
   this.feature = feature;
 
@@ -74,7 +74,7 @@ goog.inherits(ol.DrawEvent, goog.events.Event);
  * @extends {ol.interaction.Pointer}
  * @fires ol.DrawEvent
  * @param {olx.interaction.DrawOptions} options Options.
- * @todo api stable
+ * @api stable
  */
 ol.interaction.Draw = function(options) {
 

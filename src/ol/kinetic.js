@@ -13,7 +13,7 @@ goog.require('ol.animation');
  * @param {number} delay Delay to consider to calculate the kinetic
  *     initial values (milliseconds).
  * @struct
- * @todo api
+ * @api
  */
 ol.Kinetic = function(decay, minVelocity, delay) {
 

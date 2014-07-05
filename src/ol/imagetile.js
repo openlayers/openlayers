@@ -67,7 +67,7 @@ goog.inherits(ol.ImageTile, ol.Tile);
 
 /**
  * @inheritDoc
- * @todo api
+ * @api
  */
 ol.ImageTile.prototype.getImage = function(opt_context) {
   if (goog.isDef(opt_context)) {

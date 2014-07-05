@@ -17,7 +17,7 @@ goog.require('ol.structs.RBush');
  * @constructor
  * @extends {ol.source.FormatVector}
  * @param {olx.source.ServerVectorOptions} options Options.
- * @todo api
+ * @api
  */
 ol.source.ServerVector = function(options) {
 
@@ -108,6 +108,6 @@ ol.source.ServerVector.prototype.loadFeatures =
  * @function
  * @param {ArrayBuffer|Document|Node|Object|string} source Source.
  * @return {Array.<ol.Feature>} Features.
- * @todo api
+ * @api
  */
 ol.source.ServerVector.prototype.readFeatures;

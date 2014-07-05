@@ -71,7 +71,7 @@ ol.DeviceOrientationProperty = {
  * @extends {ol.Object}
  * @fires change Triggered when the device orientation changes.
  * @param {olx.DeviceOrientationOptions=} opt_options Options.
- * @todo api
+ * @api
  */
 ol.DeviceOrientation = function(opt_options) {
 
@@ -140,7 +140,7 @@ ol.DeviceOrientation.prototype.orientationChange_ = function(browserEvent) {
  * @return {number|undefined} The euler angle in radians of the device from the
  *     standard Z axis.
  * @todo observable
- * @todo api
+ * @api
  */
 ol.DeviceOrientation.prototype.getAlpha = function() {
   return /** @type {number|undefined} */ (
@@ -156,7 +156,7 @@ goog.exportProperty(
  * @return {number|undefined} The euler angle in radians of the device from the
  *     planar X axis.
  * @todo observable
- * @todo api
+ * @api
  */
 ol.DeviceOrientation.prototype.getBeta = function() {
   return /** @type {number|undefined} */ (
@@ -172,7 +172,7 @@ goog.exportProperty(
  * @return {number|undefined} The euler angle in radians of the device from the
  *     planar Y axis.
  * @todo observable
- * @todo api
+ * @api
  */
 ol.DeviceOrientation.prototype.getGamma = function() {
   return /** @type {number|undefined} */ (
@@ -188,7 +188,7 @@ goog.exportProperty(
  * @return {number|undefined} The heading of the device relative to north, in
  *     radians, normalizing for different browser behavior.
  * @todo observable
- * @todo api
+ * @api
  */
 ol.DeviceOrientation.prototype.getHeading = function() {
   return /** @type {number|undefined} */ (
@@ -205,7 +205,7 @@ goog.exportProperty(
  * @return {boolean} The status of tracking changes to alpha, beta and gamma.
  *     If true, changes are tracked and reported immediately.
  * @todo observable
- * @todo api
+ * @api
  */
 ol.DeviceOrientation.prototype.getTracking = function() {
   return /** @type {boolean} */ (
@@ -239,7 +239,7 @@ ol.DeviceOrientation.prototype.handleTrackingChanged_ = function() {
  * @param {boolean} tracking The status of tracking changes to alpha, beta and
  *     gamma. If true, changes are tracked and reported immediately.
  * @todo observable
- * @todo api
+ * @api
  */
 ol.DeviceOrientation.prototype.setTracking = function(tracking) {
   this.set(ol.DeviceOrientationProperty.TRACKING, tracking);

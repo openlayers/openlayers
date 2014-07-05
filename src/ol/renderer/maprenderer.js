@@ -15,7 +15,7 @@ goog.require('ol.vec.Mat4');
 /**
  * Available renderers: `'canvas'`, `'dom'` or `'webgl'`.
  * @enum {string}
- * @todo api
+ * @api
  */
 ol.RendererType = {
   CANVAS: 'canvas',

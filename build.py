@@ -359,7 +359,7 @@ virtual('lint', 'build/lint-timestamp', 'build/check-requires-timestamp',
 def build_lint_src_timestamp(t):
     t.run('%(GJSLINT)s',
           '--jslint_error=all',
-          '--custom_jsdoc_tags=event,fires,todo,function,classdesc',
+          '--custom_jsdoc_tags=event,fires,todo,function,classdesc,api',
           '--strict',
           t.newer(t.dependencies))
     t.touch()

@@ -19,7 +19,7 @@ goog.require('ol.source.Tile');
  * @constructor
  * @extends {ol.source.Tile}
  * @param {olx.source.TileImageOptions} options Image tile options.
- * @todo api
+ * @api
  */
 ol.source.TileImage = function(options) {
 
@@ -124,7 +124,7 @@ ol.source.TileImage.prototype.getTile =
 
 /**
  * @return {ol.TileLoadFunctionType} TileLoadFunction
- * @todo api
+ * @api
  */
 ol.source.TileImage.prototype.getTileLoadFunction = function() {
   return this.tileLoadFunction;
@@ -133,7 +133,7 @@ ol.source.TileImage.prototype.getTileLoadFunction = function() {
 
 /**
  * @return {ol.TileUrlFunctionType} TileUrlFunction
- * @todo api
+ * @api
  */
 ol.source.TileImage.prototype.getTileUrlFunction = function() {
   return this.tileUrlFunction;
@@ -142,7 +142,7 @@ ol.source.TileImage.prototype.getTileUrlFunction = function() {
 
 /**
  * @param {ol.TileLoadFunctionType} tileLoadFunction Tile load function.
- * @todo api
+ * @api
  */
 ol.source.TileImage.prototype.setTileLoadFunction = function(tileLoadFunction) {
   this.tileCache.clear();
@@ -153,7 +153,7 @@ ol.source.TileImage.prototype.setTileLoadFunction = function(tileLoadFunction) {
 
 /**
  * @param {ol.TileUrlFunctionType} tileUrlFunction Tile URL function.
- * @todo api
+ * @api
  */
 ol.source.TileImage.prototype.setTileUrlFunction = function(tileUrlFunction) {
   // FIXME It should be possible to be more intelligent and avoid clearing the

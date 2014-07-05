@@ -33,7 +33,7 @@ ol.layer.GroupProperty = {
  * @fires change Triggered when the state of the source of any of the layers of
  *     this group changes
  * @param {olx.layer.GroupOptions=} opt_options Layer options.
- * @todo api
+ * @api
  */
 ol.layer.Group = function(opt_options) {
 

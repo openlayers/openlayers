@@ -41,7 +41,7 @@ ol.style.IconOrigin = {
  * @constructor
  * @param {olx.style.IconOptions=} opt_options Options.
  * @extends {ol.style.Image}
- * @todo api
+ * @api
  */
 ol.style.Icon = function(opt_options) {
 
@@ -180,7 +180,7 @@ goog.inherits(ol.style.Icon, ol.style.Image);
 
 /**
  * @inheritDoc
- * @todo api
+ * @api
  */
 ol.style.Icon.prototype.getAnchor = function() {
   if (!goog.isNull(this.normalizedAnchor_)) {
@@ -225,7 +225,7 @@ ol.style.Icon.prototype.getAnchor = function() {
 
 /**
  * @inheritDoc
- * @todo api
+ * @api
  */
 ol.style.Icon.prototype.getImage = function(pixelRatio) {
   return this.iconImage_.getImage(pixelRatio);
@@ -259,7 +259,7 @@ ol.style.Icon.prototype.getHitDetectionImage = function(pixelRatio) {
 
 /**
  * @inheritDoc
- * @todo api
+ * @api
  */
 ol.style.Icon.prototype.getOrigin = function() {
   if (!goog.isNull(this.origin_)) {
@@ -290,7 +290,7 @@ ol.style.Icon.prototype.getOrigin = function() {
 
 /**
  * @return {string|undefined} Image src.
- * @todo api
+ * @api
  */
 ol.style.Icon.prototype.getSrc = function() {
   return this.iconImage_.getSrc();
@@ -299,7 +299,7 @@ ol.style.Icon.prototype.getSrc = function() {
 
 /**
  * @inheritDoc
- * @todo api
+ * @api
  */
 ol.style.Icon.prototype.getSize = function() {
   return goog.isNull(this.size_) ? this.iconImage_.getSize() : this.size_;

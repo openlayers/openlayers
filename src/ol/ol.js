@@ -215,7 +215,7 @@ ol.ZOOMSLIDER_ANIMATION_DURATION = 200;
  * linter complains with:
  *
  * "Missing newline between constructor and goog.inherits"
- * @todo api
+ * @api
  */
 ol.inherits =
     goog.inherits;

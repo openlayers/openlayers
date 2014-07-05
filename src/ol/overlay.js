@@ -30,7 +30,7 @@ ol.OverlayProperty = {
  * `'center-left'`, `'center-center'`, `'center-right'`, `'top-left'`,
  * `'top-center'`, `'top-right'`
  * @enum {string}
- * @todo api
+ * @api
  */
 ol.OverlayPositioning = {
   BOTTOM_LEFT: 'bottom-left',
@@ -64,7 +64,7 @@ ol.OverlayPositioning = {
  * @constructor
  * @extends {ol.Object}
  * @param {olx.OverlayOptions} options Overlay options.
- * @todo api stable
+ * @api stable
  */
 ol.Overlay = function(options) {
 
@@ -155,7 +155,7 @@ goog.inherits(ol.Overlay, ol.Object);
  * Get the DOM element of this overlay.
  * @return {Element|undefined} The Element containing the overlay.
  * @todo observable
- * @todo api
+ * @api
  */
 ol.Overlay.prototype.getElement = function() {
   return /** @type {Element|undefined} */ (
@@ -171,7 +171,7 @@ goog.exportProperty(
  * Get the map associated with this overlay.
  * @return {ol.Map|undefined} The map that the overlay is part of.
  * @todo observable
- * @todo api
+ * @api
  */
 ol.Overlay.prototype.getMap = function() {
   return /** @type {ol.Map|undefined} */ (
@@ -187,7 +187,7 @@ goog.exportProperty(
  * Get the offset of this overlay.
  * @return {Array.<number>} The offset.
  * @todo observable
- * @todo api
+ * @api
  */
 ol.Overlay.prototype.getOffset = function() {
   return /** @type {Array.<number>} */ (
@@ -204,7 +204,7 @@ goog.exportProperty(
  * @return {ol.Coordinate|undefined} The spatial point that the overlay is
  *     anchored at.
  * @todo observable
- * @todo api
+ * @api
  */
 ol.Overlay.prototype.getPosition = function() {
   return /** @type {ol.Coordinate|undefined} */ (
@@ -221,7 +221,7 @@ goog.exportProperty(
  * @return {ol.OverlayPositioning} How the overlay is positioned
  *     relative to its point on the map.
  * @todo observable
- * @todo api
+ * @api
  */
 ol.Overlay.prototype.getPositioning = function() {
   return /** @type {ol.OverlayPositioning} */ (
@@ -307,7 +307,7 @@ ol.Overlay.prototype.handlePositioningChanged = function() {
  * Set the DOM element to be associated with this overlay.
  * @param {Element|undefined} element The Element containing the overlay.
  * @todo observable
- * @todo api
+ * @api
  */
 ol.Overlay.prototype.setElement = function(element) {
   this.set(ol.OverlayProperty.ELEMENT, element);
@@ -322,7 +322,7 @@ goog.exportProperty(
  * Set the map to be associated with this overlay.
  * @param {ol.Map|undefined} map The map that the overlay is part of.
  * @todo observable
- * @todo api
+ * @api
  */
 ol.Overlay.prototype.setMap = function(map) {
   this.set(ol.OverlayProperty.MAP, map);
@@ -337,7 +337,7 @@ goog.exportProperty(
  * Set the offset for this overlay.
  * @param {Array.<number>} offset Offset.
  * @todo observable
- * @todo api
+ * @api
  */
 ol.Overlay.prototype.setOffset = function(offset) {
   this.set(ol.OverlayProperty.OFFSET, offset);
@@ -353,7 +353,7 @@ goog.exportProperty(
  * @param {ol.Coordinate|undefined} position The spatial point that the overlay
  *     is anchored at.
  * @todo observable
- * @todo api stable
+ * @api stable
  */
 ol.Overlay.prototype.setPosition = function(position) {
   this.set(ol.OverlayProperty.POSITION, position);
@@ -369,7 +369,7 @@ goog.exportProperty(
  * @param {ol.OverlayPositioning} positioning how the overlay is
  *     positioned relative to its point on the map.
  * @todo observable
- * @todo api
+ * @api
  */
 ol.Overlay.prototype.setPositioning = function(positioning) {
   this.set(ol.OverlayProperty.POSITIONING, positioning);

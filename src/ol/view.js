@@ -89,7 +89,7 @@ ol.ViewHint = {
  * @constructor
  * @extends {ol.Object}
  * @param {olx.ViewOptions=} opt_options View options.
- * @todo api
+ * @api
  */
 ol.View = function(opt_options) {
   goog.base(this);
@@ -196,7 +196,7 @@ ol.View.prototype.calculateCenterZoom = function(resolution, anchor) {
  * Get the constrained center of this view.
  * @param {ol.Coordinate|undefined} center Center.
  * @return {ol.Coordinate|undefined} Constrained center.
- * @todo api
+ * @api
  */
 ol.View.prototype.constrainCenter = function(center) {
   return this.constraints_.center(center);
@@ -209,7 +209,7 @@ ol.View.prototype.constrainCenter = function(center) {
  * @param {number=} opt_delta Delta. Default is `0`.
  * @param {number=} opt_direction Direction. Default is `0`.
  * @return {number|undefined} Constrained resolution.
- * @todo api
+ * @api
  */
 ol.View.prototype.constrainResolution = function(
     resolution, opt_delta, opt_direction) {
@@ -224,7 +224,7 @@ ol.View.prototype.constrainResolution = function(
  * @param {number|undefined} rotation Rotation.
  * @param {number=} opt_delta Delta. Default is `0`.
  * @return {number|undefined} Constrained rotation.
- * @todo api
+ * @api
  */
 ol.View.prototype.constrainRotation = function(rotation, opt_delta) {
   var delta = opt_delta || 0;
@@ -235,7 +235,7 @@ ol.View.prototype.constrainRotation = function(rotation, opt_delta) {
 /**
  * @return {ol.Coordinate|undefined} The center of the view.
  * @todo observable
- * @todo api
+ * @api
  */
 ol.View.prototype.getCenter = function() {
   return /** @type {ol.Coordinate|undefined} */ (
@@ -260,7 +260,7 @@ ol.View.prototype.getHints = function() {
  * resolution and the current center.
  * @param {ol.Size} size Box pixel size.
  * @return {ol.Extent} Extent.
- * @todo api
+ * @api
  */
 ol.View.prototype.calculateExtent = function(size) {
   goog.asserts.assert(this.isDef());
@@ -277,7 +277,7 @@ ol.View.prototype.calculateExtent = function(size) {
 /**
  * @return {ol.proj.Projection|undefined} The projection of the view.
  * @todo observable
- * @todo api
+ * @api
  */
 ol.View.prototype.getProjection = function() {
   return /** @type {ol.proj.Projection|undefined} */ (
@@ -292,7 +292,7 @@ goog.exportProperty(
 /**
  * @return {number|undefined} The resolution of the view.
  * @todo observable
- * @todo api
+ * @api
  */
 ol.View.prototype.getResolution = function() {
   return /** @type {number|undefined} */ (
@@ -310,7 +310,7 @@ goog.exportProperty(
  * @param {ol.Size} size Box pixel size.
  * @return {number} The resolution at which the provided extent will render at
  *     the given size.
- * @todo api
+ * @api
  */
 ol.View.prototype.getResolutionForExtent = function(extent, size) {
   var xResolution = ol.extent.getWidth(extent) / size[0];
@@ -347,7 +347,7 @@ ol.View.prototype.getResolutionForValueFunction = function(opt_power) {
 /**
  * @return {number|undefined} The rotation of the view.
  * @todo observable
- * @todo api
+ * @api
  */
 ol.View.prototype.getRotation = function() {
   return /** @type {number|undefined} */ (this.get(ol.ViewProperty.ROTATION));
@@ -405,7 +405,7 @@ ol.View.prototype.getState = function() {
  * Get the current zoom level. Return undefined if the current
  * resolution is undefined or not a "constrained resolution".
  * @return {number|undefined} Zoom.
- * @todo api
+ * @api
  */
 ol.View.prototype.getZoom = function() {
   var offset;
@@ -431,7 +431,7 @@ ol.View.prototype.getZoom = function() {
  * Fit the given extent based on the given map size.
  * @param {ol.Extent} extent Extent.
  * @param {ol.Size} size Box pixel size.
- * @todo api
+ * @api
  */
 ol.View.prototype.fitExtent = function(extent, size) {
   if (!ol.extent.isEmpty(extent)) {
@@ -453,7 +453,7 @@ ol.View.prototype.fitExtent = function(extent, size) {
  * @param {ol.geom.SimpleGeometry} geometry Geometry.
  * @param {ol.Size} size Box pixel size.
  * @param {olx.View.fitGeometryOptions=} opt_options Options.
- * @todo api
+ * @api
  */
 ol.View.prototype.fitGeometry = function(geometry, size, opt_options) {
   var options = goog.isDef(opt_options) ? opt_options : {};
@@ -520,7 +520,7 @@ ol.View.prototype.fitGeometry = function(geometry, size, opt_options) {
  * @param {ol.Coordinate} coordinate Coordinate.
  * @param {ol.Size} size Box pixel size.
  * @param {ol.Pixel} position Position on the view to center on.
- * @todo api
+ * @api
  */
 ol.View.prototype.centerOn = function(coordinate, size, position) {
   // calculate rotated position
@@ -555,7 +555,7 @@ ol.View.prototype.isDef = function() {
  * Rotate the view around a given coordinate.
  * @param {number} rotation New rotation value for the view.
  * @param {ol.Coordinate=} opt_anchor The rotation center.
- * @todo api
+ * @api
  */
 ol.View.prototype.rotate = function(rotation, opt_anchor) {
   if (goog.isDef(opt_anchor)) {
@@ -570,7 +570,7 @@ ol.View.prototype.rotate = function(rotation, opt_anchor) {
  * Set the center of the current view.
  * @param {ol.Coordinate|undefined} center The center of the view.
  * @todo observable
- * @todo api
+ * @api
  */
 ol.View.prototype.setCenter = function(center) {
   this.set(ol.ViewProperty.CENTER, center);
@@ -599,7 +599,7 @@ ol.View.prototype.setHint = function(hint, delta) {
  * Warning! This code is not yet implemented. Function should not be used.
  * @param {ol.proj.Projection|undefined} projection The projection of the view.
  * @todo observable
- * @todo api
+ * @api
  */
 ol.View.prototype.setProjection = function(projection) {
   this.set(ol.ViewProperty.PROJECTION, projection);
@@ -614,7 +614,7 @@ goog.exportProperty(
  * Set the resolution for this view.
  * @param {number|undefined} resolution The resolution of the view.
  * @todo observable
- * @todo api
+ * @api
  */
 ol.View.prototype.setResolution = function(resolution) {
   this.set(ol.ViewProperty.RESOLUTION, resolution);
@@ -629,7 +629,7 @@ goog.exportProperty(
  * Set the rotation for this view.
  * @param {number|undefined} rotation The rotation of the view.
  * @todo observable
- * @todo api
+ * @api
  */
 ol.View.prototype.setRotation = function(rotation) {
   this.set(ol.ViewProperty.ROTATION, rotation);
@@ -643,7 +643,7 @@ goog.exportProperty(
 /**
  * Zoom to a specific zoom level.
  * @param {number} zoom Zoom level.
- * @todo api
+ * @api
  */
 ol.View.prototype.setZoom = function(zoom) {
   var resolution = this.constrainResolution(

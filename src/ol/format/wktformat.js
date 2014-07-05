@@ -21,7 +21,7 @@ goog.require('ol.geom.Polygon');
  * @extends {ol.format.TextFeature}
  * @param {olx.format.WKTOptions=} opt_options Options.
  * @todo stability experimental
- * @todo api
+ * @api
  */
 ol.format.WKT = function(opt_options) {
 
@@ -352,7 +352,7 @@ ol.format.WKT.prototype.encode_ = function(geom) {
  *
  * @param {ArrayBuffer|Document|Node|Object|string} source Source.
  * @return {ol.Feature} Feature.
- * @todo api
+ * @api
  */
 ol.format.WKT.prototype.readFeature;
 
@@ -376,7 +376,7 @@ ol.format.WKT.prototype.readFeatureFromText = function(text) {
  *
  * @param {ArrayBuffer|Document|Node|Object|string} source Source.
  * @return {Array.<ol.Feature>} Features.
- * @todo api
+ * @api
  */
 ol.format.WKT.prototype.readFeatures;
 
@@ -409,7 +409,7 @@ ol.format.WKT.prototype.readFeaturesFromText = function(text) {
  *
  * @param {ArrayBuffer|Document|Node|Object|string} source Source.
  * @return {ol.geom.Geometry} Geometry.
- * @todo api
+ * @api
  */
 ol.format.WKT.prototype.readGeometry;
 
@@ -435,7 +435,7 @@ ol.format.WKT.prototype.readProjectionFromText = function(text) {
  *
  * @param {ol.Feature} feature Feature.
  * @return {ArrayBuffer|Node|Object|string} Result.
- * @todo api
+ * @api
  */
 ol.format.WKT.prototype.writeFeature;
 
@@ -457,7 +457,7 @@ ol.format.WKT.prototype.writeFeatureText = function(feature) {
  *
  * @param {Array.<ol.Feature>} features Features.
  * @return {ArrayBuffer|Node|Object|string} Result.
- * @todo api
+ * @api
  */
 ol.format.WKT.prototype.writeFeatures;
 
@@ -483,7 +483,7 @@ ol.format.WKT.prototype.writeFeaturesText = function(features) {
  *
  * @param {ol.geom.Geometry} geometry Geometry.
  * @return {ArrayBuffer|Node|Object|string} Node.
- * @todo api
+ * @api
  */
 ol.format.WKT.prototype.writeGeometry;
 

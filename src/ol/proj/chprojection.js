@@ -17,7 +17,7 @@ goog.require('ol.proj.Units');
  * @constructor
  * @extends {ol.proj.Projection}
  * @param {{code: string, extent: ol.Extent}} options Options.
- * @todo api
+ * @api
  */
 ol.proj.CH = function(options) {
   goog.base(this, {
@@ -396,7 +396,7 @@ ol.proj.CH.prototype.getPointResolution = function(resolution, point) {
  * The EPSG:2056 projection, also known as LV95 (CH1903+).
  * @constructor
  * @extends {ol.proj.CH}
- * @todo api
+ * @api
  */
 ol.proj.EPSG2056 = function() {
   goog.base(this, {
@@ -435,7 +435,7 @@ ol.proj.EPSG2056.add = function() {
  * The EPSG:21781 projection, also known as LV03 (CH1903).
  * @constructor
  * @extends {ol.proj.CH}
- * @todo api
+ * @api
  */
 ol.proj.EPSG21781 = function() {
   goog.base(this, {

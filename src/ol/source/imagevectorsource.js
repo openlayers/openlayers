@@ -30,7 +30,7 @@ goog.require('ol.vec.Mat4');
  * @constructor
  * @extends {ol.source.ImageCanvas}
  * @param {olx.source.ImageVectorOptions} options Options.
- * @todo api
+ * @api
  */
 ol.source.ImageVector = function(options) {
 
@@ -166,7 +166,7 @@ ol.source.ImageVector.prototype.forEachFeatureAtPixel = function(
 
 /**
  * @return {ol.source.Vector} Source.
- * @todo api
+ * @api
  */
 ol.source.ImageVector.prototype.getSource = function() {
   return this.source_;
