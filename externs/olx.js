@@ -1969,6 +1969,7 @@ olx.interaction.SelectOptions.prototype.toggleCondition;
  *     opacity: (number|undefined),
  *     saturation: (number|undefined),
  *     visible: (boolean|undefined),
+ *     extent: (ol.Extent|undefined),
  *     minResolution: (number|undefined),
  *     maxResolution: (number|undefined)}}
  * @api
@@ -2019,6 +2020,14 @@ olx.layer.BaseOptions.prototype.visible;
 
 
 /**
+ * The bounding extent for layer rendering.  The layer will not be rendered
+ * outside of this extent.
+ * @type {ol.Extent|undefined}
+ */
+olx.layer.BaseOptions.prototype.extent;
+
+
+/**
  * The minimum resolution (inclusive) at which this layer will be visible.
  * @type {number|undefined}
  */
@@ -2040,6 +2049,7 @@ olx.layer.BaseOptions.prototype.maxResolution;
  *     saturation: (number|undefined),
  *     source: ol.source.Source,
  *     visible: (boolean|undefined),
+ *     extent: (ol.Extent|undefined),
  *     minResolution: (number|undefined),
  *     maxResolution: (number|undefined)}}
  * @api
@@ -2097,6 +2107,14 @@ olx.layer.LayerOptions.prototype.visible;
 
 
 /**
+ * The bounding extent for layer rendering.  The layer will not be rendered
+ * outside of this extent.
+ * @type {ol.Extent|undefined}
+ */
+olx.layer.LayerOptions.prototype.extent;
+
+
+/**
  * The minimum resolution (inclusive) at which this layer will be visible.
  * @type {number|undefined}
  */
@@ -2117,6 +2135,7 @@ olx.layer.LayerOptions.prototype.maxResolution;
  *     opacity: (number|undefined),
  *     saturation: (number|undefined),
  *     visible: (boolean|undefined),
+ *     extent: (ol.Extent|undefined),
  *     minResolution: (number|undefined),
  *     maxResolution: (number|undefined),
  *     layers: (Array.<ol.layer.Base>|ol.Collection|undefined)}}
@@ -2168,6 +2187,14 @@ olx.layer.GroupOptions.prototype.visible;
 
 
 /**
+ * The bounding extent for layer rendering.  The layer will not be rendered
+ * outside of this extent.
+ * @type {ol.Extent|undefined}
+ */
+olx.layer.GroupOptions.prototype.extent;
+
+
+/**
  * The minimum resolution (inclusive) at which this layer will be visible.
  * @type {number|undefined}
  */
@@ -2197,6 +2224,7 @@ olx.layer.GroupOptions.prototype.layers;
  *     blur: (number|undefined),
  *     shadow: (number|undefined),
  *     weight: (string|function(ol.Feature):number|undefined),
+ *     extent: (ol.Extent|undefined),
  *     minResolution: (number|undefined),
  *     maxResolution: (number|undefined),
  *     opacity: (number|undefined),
@@ -2268,6 +2296,14 @@ olx.layer.HeatmapOptions.prototype.weight;
 
 
 /**
+ * The bounding extent for layer rendering.  The layer will not be rendered
+ * outside of this extent.
+ * @type {ol.Extent|undefined}
+ */
+olx.layer.HeatmapOptions.prototype.extent;
+
+
+/**
  * The minimum resolution (inclusive) at which this layer will be visible.
  * @type {number|undefined}
  */
@@ -2318,6 +2354,7 @@ olx.layer.HeatmapOptions.prototype.visible;
  *     saturation: (number|undefined),
  *     source: ol.source.Source,
  *     visible: (boolean|undefined),
+ *     extent: (ol.Extent|undefined),
  *     minResolution: (number|undefined),
  *     maxResolution: (number|undefined),
  *     useInterimTilesOnError: (boolean|undefined)}}
@@ -2380,6 +2417,14 @@ olx.layer.TileOptions.prototype.source;
  * @type {boolean|undefined}
  */
 olx.layer.TileOptions.prototype.visible;
+
+
+/**
+ * The bounding extent for layer rendering.  The layer will not be rendered
+ * outside of this extent.
+ * @type {ol.Extent|undefined}
+ */
+olx.layer.TileOptions.prototype.extent;
 
 
 /**
@@ -2448,6 +2493,14 @@ olx.layer.VectorOptions.prototype.renderOrder;
  * @type {number|undefined}
  */
 olx.layer.VectorOptions.prototype.hue;
+
+
+/**
+ * The bounding extent for layer rendering.  The layer will not be rendered
+ * outside of this extent.
+ * @type {ol.Extent|undefined}
+ */
+olx.layer.VectorOptions.prototype.extent;
 
 
 /**

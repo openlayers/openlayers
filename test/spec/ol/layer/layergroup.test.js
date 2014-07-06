@@ -52,6 +52,7 @@ describe('ol.layer.Group', function() {
         saturation: 1,
         visible: true,
         sourceState: ol.source.State.READY,
+        extent: undefined,
         maxResolution: Infinity,
         minResolution: 0
       });
@@ -179,6 +180,7 @@ describe('ol.layer.Group', function() {
         saturation: 5,
         visible: false,
         sourceState: ol.source.State.READY,
+        extent: undefined,
         maxResolution: 500,
         minResolution: 0.25
       });
@@ -190,6 +192,56 @@ describe('ol.layer.Group', function() {
       goog.dispose(layerGroup);
     });
 
+    it('accepts an extent option', function() {
+      var layer = new ol.layer.Layer({
+        source: new ol.source.Source({
+          projection: 'EPSG:4326'
+        })
+      });
+
+      var groupExtent = [-10, -5, 10, 5];
+      var layerGroup = new ol.layer.Group({
+        layers: [layer],
+        brightness: 0.5,
+        contrast: 10,
+        hue: 180,
+        opacity: 0.5,
+        saturation: 5,
+        visible: false,
+        extent: groupExtent,
+        maxResolution: 500,
+        minResolution: 0.25
+      });
+
+      expect(layerGroup.getBrightness()).to.be(0.5);
+      expect(layerGroup.getContrast()).to.be(10);
+      expect(layerGroup.getHue()).to.be(180);
+      expect(layerGroup.getOpacity()).to.be(0.5);
+      expect(layerGroup.getSaturation()).to.be(5);
+      expect(layerGroup.getVisible()).to.be(false);
+      expect(layerGroup.getExtent()).to.eql(groupExtent);
+      expect(layerGroup.getMaxResolution()).to.be(500);
+      expect(layerGroup.getMinResolution()).to.be(0.25);
+      expect(layerGroup.getLayerState()).to.eql({
+        layer: layerGroup,
+        brightness: 0.5,
+        contrast: 10,
+        hue: 180,
+        opacity: 0.5,
+        saturation: 5,
+        visible: false,
+        sourceState: ol.source.State.READY,
+        extent: groupExtent,
+        maxResolution: 500,
+        minResolution: 0.25
+      });
+      expect(layerGroup.getLayers()).to.be.a(ol.Collection);
+      expect(layerGroup.getLayers().getLength()).to.be(1);
+      expect(layerGroup.getLayers().item(0)).to.be(layer);
+
+      goog.dispose(layer);
+      goog.dispose(layerGroup);
+    });
   });
 
   describe('#getLayerState', function() {
@@ -211,6 +263,8 @@ describe('ol.layer.Group', function() {
       layerGroup.setOpacity(0.3);
       layerGroup.setSaturation(0.3);
       layerGroup.setVisible(false);
+      var groupExtent = [-100, 50, 100, 50];
+      layerGroup.setExtent(groupExtent);
       layerGroup.setMaxResolution(500);
       layerGroup.setMinResolution(0.25);
       expect(layerGroup.getLayerState()).to.eql({
@@ -222,6 +276,7 @@ describe('ol.layer.Group', function() {
         saturation: 0.3,
         visible: false,
         sourceState: ol.source.State.READY,
+        extent: groupExtent,
         maxResolution: 500,
         minResolution: 0.25
       });
@@ -243,6 +298,7 @@ describe('ol.layer.Group', function() {
         saturation: 0,
         visible: false,
         sourceState: ol.source.State.READY,
+        extent: undefined,
         maxResolution: Infinity,
         minResolution: 0
       });
@@ -262,6 +318,7 @@ describe('ol.layer.Group', function() {
         saturation: 42,
         visible: true,
         sourceState: ol.source.State.READY,
+        extent: undefined,
         maxResolution: Infinity,
         minResolution: 0
       });
@@ -384,6 +441,7 @@ describe('ol.layer.Group', function() {
         saturation: 25,
         visible: false,
         sourceState: ol.source.State.READY,
+        extent: undefined,
         maxResolution: 150,
         minResolution: 0.25
       });

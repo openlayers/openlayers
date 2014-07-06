@@ -11,6 +11,7 @@ goog.require('ol.CollectionEvent');
 goog.require('ol.CollectionEventType');
 goog.require('ol.Object');
 goog.require('ol.ObjectEventType');
+goog.require('ol.extent');
 goog.require('ol.layer.Base');
 goog.require('ol.source.State');
 
@@ -211,6 +212,10 @@ ol.layer.Group.prototype.getLayerStatesArray = function(opt_states) {
         layerState.maxResolution, ownLayerState.maxResolution);
     layerState.minResolution = Math.max(
         layerState.minResolution, ownLayerState.minResolution);
+    if (goog.isDef(ownLayerState.extent) && goog.isDef(layerState.extent)) {
+      layerState.extent = ol.extent.getIntersection(
+          layerState.extent, ownLayerState.extent);
+    }
   }
 
   return states;
