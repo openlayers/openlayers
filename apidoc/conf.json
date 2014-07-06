@@ -9,9 +9,6 @@
     "source": {
         "includePattern": ".+\\.js(doc)?$",
         "excludePattern": "(^|\\/|\\\\)_",
-        "exclude": [
-            "src/googx/dom/fullscreen.js"
-        ],
         "include": [
             "src",
             "externs/oli.js",
