@@ -2,7 +2,6 @@ goog.provide('ol.source.XYZ');
 
 goog.require('ol.Attribution');
 goog.require('ol.TileUrlFunction');
-goog.require('ol.TileUrlFunctionType');
 goog.require('ol.source.TileImage');
 goog.require('ol.tilegrid.XYZ');
 
@@ -61,7 +60,8 @@ goog.inherits(ol.source.XYZ, ol.source.TileImage);
 
 
 /**
- * @param {ol.TileUrlFunctionType} tileUrlFunction Tile URL function.
+ * @inheritDoc
+ * @api
  */
 ol.source.XYZ.prototype.setTileUrlFunction = function(tileUrlFunction) {
   goog.base(this, 'setTileUrlFunction',
