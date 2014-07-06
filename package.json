@@ -27,6 +27,7 @@
     "jshint": "~2.5.1",
     "nomnom": "~1.6.2",
     "phantomjs": "~1.9.7-5",
+    "sinon": "~1.10.2",
     "taffydb": "~2.7.0",
     "temp": "~0.7.0",
     "underscore": "~1.6.0",
