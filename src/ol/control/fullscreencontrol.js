@@ -4,10 +4,10 @@ goog.require('goog.asserts');
 goog.require('goog.dom');
 goog.require('goog.dom.TagName');
 goog.require('goog.dom.classlist');
+goog.require('goog.dom.fullscreen');
+goog.require('goog.dom.fullscreen.EventType');
 goog.require('goog.events');
 goog.require('goog.events.EventType');
-goog.require('googx.dom.fullscreen');
-goog.require('googx.dom.fullscreen.EventType');
 goog.require('ol.control.Control');
 goog.require('ol.css');
 goog.require('ol.pointer.PointerEventHandler');
@@ -45,7 +45,7 @@ ol.control.FullScreen = function(opt_options) {
   }, tipLabel);
 
   var button = goog.dom.createDom(goog.dom.TagName.BUTTON, {
-    'class': this.cssClassName_ + '-' + googx.dom.fullscreen.isFullScreen() +
+    'class': this.cssClassName_ + '-' + goog.dom.fullscreen.isFullScreen() +
         ' ol-has-tooltip'
   });
   goog.dom.appendChild(button, tip);
@@ -64,12 +64,12 @@ ol.control.FullScreen = function(opt_options) {
   }, false);
 
   goog.events.listen(goog.global.document,
-      googx.dom.fullscreen.EventType.CHANGE,
+      goog.dom.fullscreen.EventType.CHANGE,
       this.handleFullScreenChange_, false, this);
 
   var cssClasses = this.cssClassName_ + ' ' + ol.css.CLASS_UNSELECTABLE +
       ' ' + ol.css.CLASS_CONTROL +
-      (!googx.dom.fullscreen.isSupported() ? ol.css.CLASS_UNSUPPORTED : '');
+      (!goog.dom.fullscreen.isSupported() ? ol.css.CLASS_UNSUPPORTED : '');
   var element = goog.dom.createDom(goog.dom.TagName.DIV, cssClasses, button);
 
   goog.base(this, {
@@ -113,24 +113,24 @@ ol.control.FullScreen.prototype.handlePointerUp_ = function(pointerEvent) {
  * @private
  */
 ol.control.FullScreen.prototype.handleFullScreen_ = function() {
-  if (!googx.dom.fullscreen.isSupported()) {
+  if (!goog.dom.fullscreen.isSupported()) {
     return;
   }
   var map = this.getMap();
   if (goog.isNull(map)) {
     return;
   }
-  if (googx.dom.fullscreen.isFullScreen()) {
-    googx.dom.fullscreen.exitFullScreen();
+  if (goog.dom.fullscreen.isFullScreen()) {
+    goog.dom.fullscreen.exitFullScreen();
   } else {
     var target = map.getTarget();
     goog.asserts.assert(goog.isDefAndNotNull(target));
     var element = goog.dom.getElement(target);
     goog.asserts.assert(goog.isDefAndNotNull(element));
     if (this.keys_) {
-      googx.dom.fullscreen.requestFullScreenWithKeys(element);
+      goog.dom.fullscreen.requestFullScreenWithKeys(element);
     } else {
-      googx.dom.fullscreen.requestFullScreen(element);
+      goog.dom.fullscreen.requestFullScreen(element);
     }
   }
 };
@@ -144,7 +144,7 @@ ol.control.FullScreen.prototype.handleFullScreenChange_ = function() {
   var closed = this.cssClassName_ + '-false';
   var anchor = goog.dom.getFirstElementChild(this.element);
   var map = this.getMap();
-  if (googx.dom.fullscreen.isFullScreen()) {
+  if (goog.dom.fullscreen.isFullScreen()) {
     goog.dom.classlist.swap(anchor, closed, opened);
   } else {
     goog.dom.classlist.swap(anchor, opened, closed);
