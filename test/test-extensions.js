@@ -60,8 +60,7 @@
    * @param {Number} n Number.
    * @param {Number} tol Tolerance.
    */
-  expect.Assertion.prototype.roughlyEqual =
-  expect.Assertion.prototype.kindaEqual = function(n, tol) {
+  expect.Assertion.prototype.roughlyEqual = function(n, tol) {
     this.assert(
         Math.abs(this.obj - n) <= tol,
         function() {
@@ -79,8 +78,7 @@
   /**
    * Assert that a sinon spy was called.
    */
-  expect.Assertion.prototype.called =
-  expect.Assertion.prototype.totallyWantsToSpeakToYou = function() {
+  expect.Assertion.prototype.called = function() {
     this.assert(
         this.obj.called,
         function() {

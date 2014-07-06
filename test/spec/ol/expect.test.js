@@ -30,28 +30,16 @@ describe('expect.js', function() {
       }).to.throwException();
     });
 
-  });
-
-  describe('kindaEqual', function() {
-
     it('thinks that 1 ain\'t so different from 2', function() {
-      expect(1).to.kindaEqual(2, 1);
+      expect(1).to.roughlyEqual(2, 1);
     });
 
     it('knows that, like, 1 and 2 would, like, totally dig each other',
         function() {
           expect(function() {
-            expect(1).to.kindaEqual(2, 1);
+            expect(1).to.roughlyEqual(2, 1);
           }).not.to.throwException();
         });
-
-  });
-
-  describe('roughlyEqual and kindaEqual', function() {
-
-    it('it\'s like they\'re soul mates', function() {
-      expect(expect(0).to.roughlyEqual).to.be(expect(1).to.kindaEqual);
-    });
 
   });
 
@@ -72,34 +60,17 @@ describe('expect.js', function() {
       expect(telephone).not.to.be.called();
     });
 
-  });
-
-  describe('totallyWantsToSpeakToYou', function() {
-
-    var callMeMaybe;
-    beforeEach(function() {
-      callMeMaybe = sinon.spy();
-    });
-
     it('reminds you that you forgot', function() {
       expect(function() {
-        expect(callMeMaybe).to.be.called();
+        expect(telephone).to.be.called();
       }).to.throwException();
     });
 
     it('gets moody all too quickly', function() {
-      callMeMaybe();
+      telephone();
       expect(function() {
-        expect(callMeMaybe).not.to.be.called();
+        expect(telephone).not.to.be.called();
       }).to.throwException();
-    });
-
-  });
-
-  describe('called and totallyWantsToSpeakToYou', function() {
-
-    it('are best friends forever \u2665', function() {
-      expect(expect(0).to.called).to.be(expect(1).to.totallyWantsToSpeakToYou);
     });
 
   });
