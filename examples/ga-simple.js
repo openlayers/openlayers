@@ -26,6 +26,8 @@ var map = new ga.Map({
 //var lyr = ga.layer.create('ch.kantone.cadastralwebmap-farbe');
 //var lyr = ga.layer.create('ch.swisstopo-vd.geometa-gemeinde');
 //var lyr = ga.layer.create('ch.swisstopo.fixpunkte-hfp1');
+//var lyr = ga.layer.create('ch.swisstopo.lubis-luftbilder_farbe', {timestamp: '19901231'});
+//var lyr = ga.layer.create('ch.swisstopo.lubis-luftbilder_farbe');
 var lyr = ga.layer.create('ch.swisstopo.fixpunkte-agnes');
 var lyr1 = ga.layer.create('ch.swisstopo.pixelkarte-farbe');
 

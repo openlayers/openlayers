@@ -3,6 +3,7 @@ goog.provide('ga.source.wms');
 goog.provide('ga.source.wmts');
 
 goog.require('goog.array');
+goog.require('goog.object');
 goog.require('ol.Attribution');
 goog.require('ol.layer.Group');
 goog.require('ol.layer.Tile');
@@ -17,14 +18,20 @@ goog.require('ol.tilegrid.WMTS');
  * may find on [Which layers are available](http://api3.geo.admin.ch/api/faq/index.html#which-layers-are-available)
  * @example
  *  var lyr = ga.layer.create('ch.swisstopo.pixelkarte-farbe')
+ *  var lyr1 = ga.layer.create('ch.swisstopo.lubis-luftbilder_farbe', {timestamp: '19901231'})
  * @method
  * @param {string} layer Geoadmin layer id.
+ * @param {Object=} options Optional layer options (used in order to overide options defined in the layer configuration).
  * @return {ol.layer.Group|ol.layer.Image|ol.layer.Tile|undefined}
  * @todo api
  */
-ga.layer.create = function(layer) {
+ga.layer.create = function(layer, options) {
   if (layer in ga.layer.layerConfig) {
     var layerConfig = ga.layer.layerConfig[layer];
+
+    if (options) {
+      goog.object.extend(layerConfig, options);
+    }
 
     layerConfig.type = layerConfig.type || 'wmts';
 
@@ -156,7 +163,7 @@ ga.source.wmts = function(layer, options) {
     matrixIds: goog.array.range(resolutions.length)
   });
   var extension = options.format || 'png';
-  var timestamp = options['timestamps'][0];
+  var timestamp = options['timestamp'] ? options['timestamp'] : options['timestamps'][0];
   return new ol.source.WMTS( /** @type {olx.source.WMTSOptions} */({
     crossOrigin: 'anonymous',
     attributions: [
@@ -186,6 +193,7 @@ ga.source.wmts = function(layer, options) {
 ga.source.wms = function(layer, options) {
   return new ol.source.TileWMS({
     crossOrigin: 'anonymous',
+    gutter: options['gutter'] | 0,
     attributions: [
       ga.layer.getAttribution('<a href="' +
         options['attributionUrl'] +
