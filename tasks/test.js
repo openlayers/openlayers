@@ -55,7 +55,8 @@ serve.createServer(function(err, server) {
     var address = server.address();
     var url = 'http://' + address.address + ':' + address.port;
     var args = [
-      path.join(__dirname, '..', 'test', 'mocha-phantomjs.js'),
+      path.join(__dirname,
+          '../node_modules/mocha-phantomjs/lib/mocha-phantomjs.coffee'),
       url + '/test/index.html'
     ];
 

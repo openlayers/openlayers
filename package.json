@@ -25,6 +25,8 @@
     "graceful-fs": "~3.0.2",
     "jsdoc": "~3.3.0-alpha7",
     "jshint": "~2.5.1",
+    "mocha": "~1.20.1",
+    "mocha-phantomjs": "~3.5.0",
     "nomnom": "~1.6.2",
     "phantomjs": "~1.9.7-5",
     "sinon": "~1.10.2",
