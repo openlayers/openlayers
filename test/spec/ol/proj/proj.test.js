@@ -101,6 +101,23 @@ describe('ol.proj', function() {
     });
   });
 
+  describe('transformExtent()', function() {
+
+    it('transforms an extent given projection identifiers', function() {
+      var sourceExtent = [-15, -30, 45, 60];
+      var destinationExtent = ol.proj.transformExtent(
+          sourceExtent, 'EPSG:4326', 'EPSG:3857');
+      expect(destinationExtent).not.to.be(undefined);
+      expect(destinationExtent).not.to.be(null);
+      expect(destinationExtent[0])
+          .to.roughlyEqual(-1669792.3618991037, 1e-9);
+      expect(destinationExtent[2]).to.roughlyEqual(5009377.085697311, 1e-9);
+      expect(destinationExtent[1]).to.roughlyEqual(-3503549.843504376, 1e-8);
+      expect(destinationExtent[3]).to.roughlyEqual(8399737.889818361, 1e-8);
+    });
+
+  });
+
   describe('Proj4js integration', function() {
 
     it('allows Proj4js projections to be used transparently', function() {
