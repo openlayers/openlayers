@@ -10,6 +10,7 @@ goog.require('goog.object');
 goog.require('ol');
 goog.require('ol.Extent');
 goog.require('ol.TransformFunction');
+goog.require('ol.extent');
 goog.require('ol.sphere.NORMAL');
 
 
@@ -700,9 +701,11 @@ ol.proj.cloneTransform = function(input, opt_output, opt_dimension) {
 
 /**
  * Transforms a coordinate from source projection to destination projection.
- * See {@link ol.extent.applyTransform} for extent transformation.
- * See the applyTransform method of {@link ol.geom.SimpleGeometry} and its
- * subclasses for geometry transforms.
+ * This returns a new coordinate (and does not modify the original).
+ *
+ * See {@link ol.proj.transformExtent} for extent transformation.
+ * See the transform method of {@link ol.geom.Geometry} and its subclasses for
+ * geometry transforms.
  *
  * @param {ol.Coordinate} coordinate Coordinate.
  * @param {ol.proj.ProjectionLike} source Source projection-like.
@@ -713,6 +716,22 @@ ol.proj.cloneTransform = function(input, opt_output, opt_dimension) {
 ol.proj.transform = function(coordinate, source, destination) {
   var transformFn = ol.proj.getTransform(source, destination);
   return transformFn(coordinate);
+};
+
+
+/**
+ * Transforms an extent from source projection to destination projection.  This
+ * returns a new extent (and does not modify the original).
+ *
+ * @param {ol.Extent} extent The extent to transform.
+ * @param {ol.proj.ProjectionLike} source Source projection-like.
+ * @param {ol.proj.ProjectionLike} destination Destination projection-like.
+ * @return {ol.Extent} The transformed extent.
+ * @api
+ */
+ol.proj.transformExtent = function(extent, source, destination) {
+  var transformFn = ol.proj.getTransform(source, destination);
+  return ol.extent.applyTransform(extent, transformFn);
 };
 
 
