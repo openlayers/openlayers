@@ -16,17 +16,18 @@ Install the test dependencies (from the root of the repository):
 
 Run the tests once with PhantomJS:
 
-    npm test
+    ./build.py test
 
-(This can also be run as `./build.py test`.)
+(Note that for `npm` users, this can also be run as `npm test`.)
 
 Run the tests in a browser:
 
-    npm start
+    ./build.py serve
 
-Now visit http://localhost:3000/test/ in your browser.  (This can also be run
-as `./build.py serve`.)  The tests will re-run any time one of the source or
-spec files changes.
+(Again for `npm` users, this is `npm start`.)
+
+Now visit http://localhost:3000/test/ in your browser.  The tests will re-run
+any time one of the source or spec files changes.
 
 Tip for TDD'ers: to make PhantomJS run the test suite continuously each time
 a spec file is changed you can use nosier (http://pypi.python.org/pypi/nosier)
