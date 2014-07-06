@@ -100,7 +100,6 @@ EXAMPLES_SRC = [path
                 if not path.startswith('examples/bootstrap')
                 if path != 'examples/Jugl.js'
                 if path != 'examples/jquery.min.js'
-                if path != 'examples/loader.js'
                 if path != 'examples/example-list.js']
 
 EXAMPLES_JSON = ['build/' + example.replace('.html', '.json')
@@ -653,7 +652,7 @@ def host_examples(t):
     t.rm_rf('build/hosted/%(BRANCH)s/ol')
     t.makedirs('build/hosted/%(BRANCH)s/ol')
     t.cp_r('src/ol', 'build/hosted/%(BRANCH)s/ol/ol')
-    t.run('%(PYTHON)s', 'bin/closure/depswriter.py',
+    t.run('%(PYTHON)s', closure_lib_path + '/closure/bin/build/depswriter.py',
           '--root_with_prefix', 'src ../../../ol',
           '--root', 'build/hosted/%(BRANCH)s/closure-library/closure/goog',
           '--root_with_prefix', 'build/hosted/%(BRANCH)s/closure-library/'
