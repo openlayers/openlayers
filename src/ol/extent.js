@@ -418,7 +418,11 @@ ol.extent.extendXY = function(extent, x, y) {
  * @return {number} Area.
  */
 ol.extent.getArea = function(extent) {
-  return ol.extent.getWidth(extent) * ol.extent.getHeight(extent);
+  var area = 0;
+  if (!ol.extent.isEmpty(extent)) {
+    area = ol.extent.getWidth(extent) * ol.extent.getHeight(extent);
+  }
+  return area;
 };
 
 
@@ -511,11 +515,44 @@ ol.extent.getHeight = function(extent) {
  * @return {number} Intersection area.
  */
 ol.extent.getIntersectionArea = function(extent1, extent2) {
-  var minX = Math.max(extent1[0], extent2[0]);
-  var minY = Math.max(extent1[1], extent2[1]);
-  var maxX = Math.min(extent1[2], extent2[2]);
-  var maxY = Math.min(extent1[3], extent2[3]);
-  return Math.max(0, maxX - minX) * Math.max(0, maxY - minY);
+  var intersection = ol.extent.getIntersection(extent1, extent2);
+  return ol.extent.getArea(intersection);
+};
+
+
+/**
+ * Get the intersection of two extents.
+ * @param {ol.Extent} extent1 Extent 1.
+ * @param {ol.Extent} extent2 Extent 2.
+ * @param {ol.Extent=} opt_extent Optional extent to populate with intersection.
+ * @return {ol.Extent} Intersecting extent.
+ */
+ol.extent.getIntersection = function(extent1, extent2, opt_extent) {
+  var intersection = goog.isDef(opt_extent) ?
+      opt_extent : ol.extent.createEmpty();
+  if (ol.extent.intersects(extent1, extent2)) {
+    if (extent1[0] > extent2[0]) {
+      intersection[0] = extent1[0];
+    } else {
+      intersection[0] = extent2[0];
+    }
+    if (extent1[1] > extent2[1]) {
+      intersection[1] = extent1[1];
+    } else {
+      intersection[1] = extent2[1];
+    }
+    if (extent1[2] < extent2[2]) {
+      intersection[2] = extent1[2];
+    } else {
+      intersection[2] = extent2[2];
+    }
+    if (extent1[3] < extent2[3]) {
+      intersection[3] = extent1[3];
+    } else {
+      intersection[3] = extent2[3];
+    }
+  }
+  return intersection;
 };
 
 
