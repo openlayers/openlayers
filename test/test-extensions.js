@@ -105,40 +105,45 @@
         } else if (child.nodeType == 3) {
           // text node, add if non empty
           if (child.nodeValue &&
-              child.nodeValue.replace(/^\s*(.*?)\s*$/, '$1') != '') {
+              child.nodeValue.replace(/^\s*(.*?)\s*$/, '$1') !== '') {
             nodes.push(child);
           }
         }
       }
       return nodes;
     }
-  };
+  }
 
   function assertElementNodesEqual(node1, node2, options, errors) {
     var testPrefix = (options && options.prefix === true);
     try {
       expect(node1.nodeType).to.equal(node2.nodeType);
     } catch(e) {
-      errors.push('nodeType test failed for: ' + node1.nodeName + ' | ' + node2.nodeName + ' | ' + e.message);
+      errors.push('nodeType test failed for: ' + node1.nodeName + ' | ' +
+          node2.nodeName + ' | ' + e.message);
     }
     if (testPrefix) {
       try {
         expect(node1.nodeName).to.equal(node2.nodeName);
       } catch(e) {
-        errors.push('nodeName test failed for: ' + node1.nodeName + ' | ' + node2.nodeName + ' | ' + e.message);
+        errors.push('nodeName test failed for: ' + node1.nodeName + ' | ' +
+            node2.nodeName + ' | ' + e.message);
       }
     } else {
       try {
-        expect(node1.nodeName.split(':').pop()).to.equal(node2.nodeName.split(':').pop());
+        expect(node1.nodeName.split(':').pop()).to.equal(
+            node2.nodeName.split(':').pop());
       } catch(e) {
-        errors.push('nodeName test failed for: ' + node1.nodeName + ' | ' + node2.nodeName + ' | ' + e.message);
+        errors.push('nodeName test failed for: ' + node1.nodeName + ' | ' +
+            node2.nodeName + ' | ' + e.message);
       }
     }
     // for text nodes compare value
     if (node1.nodeType === 3) {
       try {
         // TODO should we make this optional?
-        expect(node1.nodeValue.replace(/\s/g, '')).to.equal(node2.nodeValue.replace(/\s/g, ''));
+        expect(node1.nodeValue.replace(/\s/g, '')).to.equal(
+            node2.nodeValue.replace(/\s/g, ''));
       } catch(e) {
         errors.push('nodeValue test failed | ' + e.message);
       }
@@ -151,7 +156,8 @@
           try {
             expect(node1.prefix).to.equal(node2.prefix);
           } catch(e) {
-            errors.push('Prefix test failed for: ' + node1.nodeName + ' | ' + e.message);
+            errors.push('Prefix test failed for: ' + node1.nodeName + ' | ' +
+                e.message);
           }
         }
       }
@@ -159,7 +165,8 @@
         try {
           expect(node1.namespaceURI).to.equal(node2.namespaceURI);
         } catch(e) {
-          errors.push('namespaceURI test failed for: ' + node1.nodeName + ' | ' + e.message);
+          errors.push('namespaceURI test failed for: ' + node1.nodeName +
+              ' | ' + e.message);
         }
       }
       // compare attributes - disregard xmlns given namespace handling above
@@ -196,26 +203,32 @@
       try {
         expect(node1AttrLen).to.equal(node2AttrLen);
       } catch(e) {
-        errors.push('Number of attributes test failed for: ' + node1.nodeName + ' | ' + e.message);
+        errors.push('Number of attributes test failed for: ' + node1.nodeName +
+            ' | ' + e.message);
       }
       var gv, ev;
       for (var name in node1Attr) {
         if (node2Attr[name] === undefined) {
-          errors.push('Attribute name ' + node1Attr[name].name + ' expected for element ' + node1.nodeName);
+          errors.push('Attribute name ' + node1Attr[name].name +
+              ' expected for element ' + node1.nodeName);
         }
         // test attribute namespace
         try {
-          // we do not care about the difference between an empty string and null for namespaceURI
-          // some tests will fail in IE9 otherwise
-          // see also http://msdn.microsoft.com/en-us/library/ff460650(v=vs.85).aspx
-          expect(node1Attr[name].namespaceURI || null).to.be(node2Attr[name].namespaceURI || null);
+          // we do not care about the difference between an empty string and
+          // null for namespaceURI some tests will fail in IE9 otherwise
+          // see also 
+          // http://msdn.microsoft.com/en-us/library/ff460650(v=vs.85).aspx
+          expect(node1Attr[name].namespaceURI || null).to.be(
+              node2Attr[name].namespaceURI || null);
         } catch(e) {
-          errors.push('namespaceURI attribute test failed for: ' + node1.nodeName + ' | ' + e.message);
+          errors.push('namespaceURI attribute test failed for: ' +
+              node1.nodeName + ' | ' + e.message);
         }
         try {
           expect(node1Attr[name].value).to.equal(node2Attr[name].value);
         } catch(e) {
-          errors.push('Attribute value test failed for: ' + node1.nodeName + ' | ' + e.message);
+          errors.push('Attribute value test failed for: ' + node1.nodeName +
+              ' | ' + e.message);
         }
       }
       // compare children
@@ -224,16 +237,18 @@
       try {
         expect(node1ChildNodes.length).to.equal(node2ChildNodes.length);
       } catch(e) {
-        errors.push('Number of childNodes test failed for: ' + node1.nodeName + ' | ' + e.message);
+        errors.push('Number of childNodes test failed for: ' + node1.nodeName +
+            ' | ' + e.message);
       }
       // only compare if they are equal
       if (node1ChildNodes.length === node2ChildNodes.length) {
         for (var j=0, jj=node1ChildNodes.length; j<jj; ++j) {
-          assertElementNodesEqual(node1ChildNodes[j], node2ChildNodes[j], options, errors);
+          assertElementNodesEqual(
+              node1ChildNodes[j], node2ChildNodes[j], options, errors);
         }
       }
     }
-  };
+  }
 
 
   /**
@@ -259,7 +274,7 @@
         function() {
           return 'expected ' + expect.stringify(this.obj) +
               ' to sort of not equal ' + expect.stringify(obj) + '\n' +
-              errors.join('\n')
+              errors.join('\n');
         });
     return this;
   };
