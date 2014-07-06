@@ -3,6 +3,21 @@ goog.provide('ol.test.expect.js');
 
 describe('expect.js', function() {
 
+  describe('arreqlNaN', function() {
+
+    it('considers NaN in array to be equal', function() {
+      expect([1, NaN, 2]).to.arreqlNaN([1, NaN, 2]);
+      expect([1, NaN, 2]).not.to.arreqlNaN([1, 1.5, 2]);
+    });
+
+    it('allows a mix of number and string', function() {
+      expect([1, NaN, 'foo']).to.arreqlNaN([1, NaN, 'foo']);
+      expect([1, NaN, 'foo']).not.to.arreqlNaN([1, NaN, 'bar']);
+      expect([1, NaN]).not.to.arreqlNaN([1, 'foo']);
+    });
+
+  });
+
   describe('roughlyEqual', function() {
 
     it('can tell the difference between 1 and 3', function() {

@@ -4,9 +4,6 @@
 
 - spec - includes the OpenLayers test/spec files.
 
-- expect-0.2.0 - Minimalistic BDD-style assertion framework.
-  https://github.com/LearnBoost/expect.js/
-
 - test-extensions.js - includes OpenLayers-specific extensions to the
   testing frameworks.
 
