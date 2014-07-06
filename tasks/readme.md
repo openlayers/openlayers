@@ -104,3 +104,8 @@ Called after install to generate an example index.  After new examples are added
 Run a debug server that provides all library sources unminified.  Provides a static server for examples and tests.  See the `--help` option for more detail.
 
     node tasks/serve.js --help
+
+
+## `test.js`
+
+Run the tests once in a headless browser.  Note that you can also run the tests by running the `serve.js` task and then visiting the root of the test directory in your browser.

@@ -4,7 +4,8 @@
   "description": "Mapping library",
   "scripts": {
     "postinstall": "node tasks/parse-examples.js",
-    "start": "node tasks/serve.js"
+    "start": "node tasks/serve.js",
+    "test": "node tasks/test.js"
   },
   "repository": {
     "type": "git",
