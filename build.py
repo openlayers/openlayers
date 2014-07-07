@@ -128,9 +128,7 @@ SRC = [path
        if path.endswith('.js')
        if path not in SHADER_SRC]
 
-PROJ4JS = 'build/proj4js/lib/proj4js-combined.js'
-PROJ4JS_ZIP = 'build/proj4js-1.1.0.zip'
-PROJ4JS_ZIP_MD5 = '17caad64cf6ebc6e6fe62f292b134897'
+PROJ4JS = 'build/proj4js/dist/proj4.js'
 
 
 def report_sizes(t):
@@ -671,21 +669,11 @@ def check_examples(t):
         t.run('%(PHANTOMJS)s', 'bin/check-example.js', example)
 
 
-@target(PROJ4JS, PROJ4JS_ZIP)
+@target(PROJ4JS)
 def proj4js(t):
-    from zipfile import ZipFile
-    zf = ZipFile(PROJ4JS_ZIP)
-    contents = zf.open('proj4js/lib/proj4js-combined.js').read()
+    contents = open('node_modules/proj4/dist/proj4.js').read()
     with open(t.name, 'wb') as f:
         f.write(contents)
-
-
-@target(PROJ4JS_ZIP, clean=False)
-def proj4js_zip(t):
-    t.info('downloading %r', t.name)
-    t.download('http://download.osgeo.org/proj4js/' +
-               os.path.basename(t.name), md5=PROJ4JS_ZIP_MD5)
-    t.info('downloaded %r', t.name)
 
 
 @target('test', PROJ4JS, phony=True)
