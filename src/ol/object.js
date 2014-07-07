@@ -105,6 +105,7 @@ ol.ObjectAccessor = function(source, target, sourceKey, targetKey) {
  *     before it is set to the target.
  * @param {function(?): ?} to A function that transforms the target value
  *     before it is set to the source.
+ * @api
  */
 ol.ObjectAccessor.prototype.transform = function(from, to) {
   this.from = from;
