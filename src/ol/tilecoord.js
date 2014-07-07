@@ -17,6 +17,9 @@ ol.QuadKeyCharCode = {
 
 
 /**
+ * @classdesc
+ * Represents the location of a tile in a tile grid.
+ *
  * @constructor
  * @param {number} z Zoom level.
  * @param {number} x X.

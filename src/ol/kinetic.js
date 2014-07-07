@@ -7,6 +7,9 @@ goog.require('ol.animation');
 
 
 /**
+ * @classdesc
+ * Implementation of inertial deceleration for map movement.
+ *
  * @constructor
  * @param {number} decay Rate of decay (must be negative).
  * @param {number} minVelocity Minimum velocity (pixels/millisecond).
