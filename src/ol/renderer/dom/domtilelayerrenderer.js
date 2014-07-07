@@ -109,6 +109,11 @@ ol.renderer.dom.TileLayer.prototype.prepareFrame =
   } else {
     extent = frameState.extent;
   }
+
+  if (goog.isDef(layerState.extent)) {
+    extent = ol.extent.getIntersection(extent, layerState.extent);
+  }
+
   var tileRange = tileGrid.getTileRangeForExtentAndResolution(
       extent, tileResolution);
 
