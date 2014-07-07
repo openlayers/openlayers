@@ -19,7 +19,7 @@ goog.require('ol.sphere.NORMAL');
  * @const
  * @type {boolean}
  */
-ol.HAVE_PROJ4JS = ol.ENABLE_PROJ4JS && typeof Proj4js == 'object';
+ol.HAVE_PROJ4JS = ol.ENABLE_PROJ4JS && typeof proj4 == 'function';
 
 
 /**
