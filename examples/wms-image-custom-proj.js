@@ -1,15 +1,16 @@
 goog.require('ol.Attribution');
 goog.require('ol.Map');
 goog.require('ol.View');
+goog.require('ol.control');
+goog.require('ol.control.ScaleLine');
 goog.require('ol.layer.Image');
 goog.require('ol.proj');
 goog.require('ol.source.ImageWMS');
 
 
-var projection = ol.proj.configureProj4jsProjection({
-  code: 'EPSG:21781',
-  extent: [485869.5728, 76443.1884, 837076.5648, 299941.7864]
-});
+var projection = ol.proj.get('EPSG:21781');
+// The extent is used to determine zoom level 0
+projection.setExtent([485869.5728, 76443.1884, 837076.5648, 299941.7864]);
 
 var extent = [420000, 30000, 900000, 350000];
 var layers = [
@@ -49,6 +50,11 @@ var layers = [
 ];
 
 var map = new ol.Map({
+  controls: ol.control.defaults().extend([
+    new ol.control.ScaleLine({
+      units: 'metric'
+    })
+  ]),
   layers: layers,
   renderer: exampleNS.getRendererFromQueryString(),
   target: 'map',
