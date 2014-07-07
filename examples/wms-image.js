@@ -11,11 +11,11 @@ var layers = [
     source: new ol.source.MapQuest({layer: 'sat'})
   }),
   new ol.layer.Image({
+    extent: [-13884991, 2870341, -7455066, 6338219],
     source: new ol.source.ImageWMS({
       url: 'http://demo.opengeo.org/geoserver/wms',
       params: {'LAYERS': 'topp:states'},
-      serverType: 'geoserver',
-      extent: [-13884991, 2870341, -7455066, 6338219]
+      serverType: 'geoserver'
     })
   })
 ];

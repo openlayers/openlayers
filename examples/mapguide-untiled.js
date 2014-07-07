@@ -15,6 +15,7 @@ var bounds = [
 var map = new ol.Map({
   layers: [
     new ol.layer.Image({
+      extent: bounds,
       source: new ol.source.MapGuide({
         projection: 'EPSG:4326',
         url: agentUrl,
@@ -24,8 +25,7 @@ var map = new ol.Map({
           MAPDEFINITION: mdf,
           FORMAT: 'PNG'
         },
-        ratio: 2,
-        extent: bounds
+        ratio: 2
       })
     })
   ],
