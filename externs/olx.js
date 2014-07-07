@@ -275,34 +275,28 @@ olx.OverlayOptions.prototype.insertFirst;
 
 
 /**
- * Object literal with config options for the Proj4js projection.
- * @typedef {{code: string,
- *     extent: (ol.Extent|undefined),
- *     global: (boolean|undefined)}}
+ * Object literal with forward and inverse coordinate transforms.
+ * @typedef {{forward: function(ol.Coordinate): ol.Coordinate,
+ *     inverse: function(ol.Coordinate): ol.Coordinate}}
  * @api
  */
-olx.Proj4jsProjectionOptions;
+olx.CoordinateTransforms;
 
 
 /**
- * The SRS identifier code, e.g. `EPSG:31256`.
- * @type {string}
+ * The forward transform function that takes a {@link ol.Coordinate} as argument
+ * and returns the transformed {@link ol.Coordinate}.
+ * @type {function(ol.Coordinate): ol.Coordinate}
  */
-olx.Proj4jsProjectionOptions.prototype.code;
+olx.CoordinateTransforms.prototype.forward;
 
 
 /**
- * The validity extent for the SRS.
- * @type {ol.Extent|undefined}
+ * The inverse transform function that takes a {@link ol.Coordinate} as argument
+ * and returns the transformed {@link ol.Coordinate}.
+ * @type {function(ol.Coordinate): ol.Coordinate}
  */
-olx.Proj4jsProjectionOptions.prototype.extent;
-
-
-/**
- * Whether the projection is valid for the whole globe. Default is `false`.
- * @type {boolean|undefined}
- */
-olx.Proj4jsProjectionOptions.prototype.global;
+olx.CoordinateTransforms.prototype.inverse;
 
 
 /**
