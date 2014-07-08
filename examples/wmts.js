@@ -25,6 +25,7 @@ var attribution = new ol.Attribution({
       'services/Demographics/USA_Population_Density/MapServer/">ArcGIS</a>'
 });
 
+var wmtsExtent = [-19840230.4, 2144435.3, -7452840.5, 11536810.7];
 
 var map = new ol.Map({
   layers: [
@@ -47,7 +48,7 @@ var map = new ol.Map({
           resolutions: resolutions,
           matrixIds: matrixIds
         }),
-        extent: projectionExtent,
+        extent: wmtsExtent,
         style: 'default'
       })
     })
