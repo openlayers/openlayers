@@ -15,14 +15,6 @@ goog.require('ol.sphere.NORMAL');
 
 
 /**
- * Have Proj4js.
- * @const
- * @type {boolean}
- */
-ol.HAVE_PROJ4JS = ol.ENABLE_PROJ4JS && typeof proj4 == 'function';
-
-
-/**
  * A projection as {@link ol.proj.Projection}, SRS identifier string or
  * undefined.
  * @typedef {ol.proj.Projection|string|undefined} ol.proj.ProjectionLike
@@ -485,7 +477,8 @@ ol.proj.get = function(projectionLike) {
     var code = projectionLike;
     var projections = ol.proj.projections_;
     projection = projections[code];
-    if (ol.HAVE_PROJ4JS && !goog.isDef(projection)) {
+    if (ol.ENABLE_PROJ4JS && !goog.isDef(projection) &&
+        goog.isFunction(proj4)) {
       var def = proj4.defs[code];
       if (goog.isDef(def)) {
         var units = def.units;
