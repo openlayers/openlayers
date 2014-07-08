@@ -35,6 +35,8 @@ ol.format.Feature.prototype.getType = goog.abstractMethod;
  * Read a single feature from a source.
  *
  * @param {ArrayBuffer|Document|Node|Object|string} source Source.
+ * @param {ol.proj.ProjectionLike=} opt_targetProjection Target projection.
+ * @param {ol.proj.ProjectionLike=} opt_sourceProjection Source projection.
  * @return {ol.Feature} Feature.
  */
 ol.format.Feature.prototype.readFeature = goog.abstractMethod;
@@ -44,6 +46,8 @@ ol.format.Feature.prototype.readFeature = goog.abstractMethod;
  * Read all features from a source.
  *
  * @param {ArrayBuffer|Document|Node|Object|string} source Source.
+ * @param {ol.proj.ProjectionLike=} opt_targetProjection Target projection.
+ * @param {ol.proj.ProjectionLike=} opt_sourceProjection Source projection.
  * @return {Array.<ol.Feature>} Features.
  */
 ol.format.Feature.prototype.readFeatures = goog.abstractMethod;
@@ -53,6 +57,8 @@ ol.format.Feature.prototype.readFeatures = goog.abstractMethod;
  * Read a single geometry from a source.
  *
  * @param {ArrayBuffer|Document|Node|Object|string} source Source.
+ * @param {ol.proj.ProjectionLike=} opt_targetProjection Target projection.
+ * @param {ol.proj.ProjectionLike=} opt_sourceProjection Source projection.
  * @return {ol.geom.Geometry} Geometry.
  */
 ol.format.Feature.prototype.readGeometry = goog.abstractMethod;
