@@ -485,34 +485,31 @@ ol.proj.get = function(projectionLike) {
     var projections = ol.proj.projections_;
     projection = projections[code];
     if (ol.HAVE_PROJ4JS && !goog.isDef(projection)) {
-      var proj4jsProj;
       var def = proj4.defs[code];
       if (goog.isDef(def)) {
-        proj4jsProj = new proj4.Proj(code);
-        var units = proj4jsProj.units;
+        var units = def.units;
         if (!goog.isDef(units)) {
-          if (goog.isDef(proj4jsProj.to_meter)) {
-            units = proj4jsProj.to_meter.toString();
-            ol.proj.METERS_PER_UNIT[units] = proj4jsProj.to_meter;
+          if (goog.isDef(def.to_meter)) {
+            units = def.to_meter.toString();
+            ol.proj.METERS_PER_UNIT[units] = def.to_meter;
           }
         }
         projection = new ol.proj.Projection({
           code: code,
           units: units,
-          axisOrientation: proj4jsProj.axis
+          axisOrientation: def.axis
         });
         ol.proj.addProjection(projection);
-        var currentCode, currentDef, currentProj, currentProj4jsProj;
+        var currentCode, currentDef, currentProj;
         for (currentCode in projections) {
           currentDef = proj4.defs[currentCode];
           if (goog.isDef(currentDef)) {
-            currentProj4jsProj = new proj4.Proj(currentCode);
             currentProj = ol.proj.get(currentCode);
             if (currentDef === def) {
               ol.proj.addEquivalentProjections([currentProj, projection]);
             } else {
               ol.proj.addCoordinateTransforms(currentProj, projection,
-                  proj4(currentProj4jsProj, proj4jsProj));
+                  proj4(currentCode, code));
             }
           }
         }

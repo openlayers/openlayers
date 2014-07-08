@@ -8,15 +8,15 @@ goog.require('ol.proj');
 goog.require('ol.source.TileWMS');
 
 
-var proj4Proj = new proj4.Proj('EPSG:21781');
+var proj4Def = proj4.defs['EPSG:21781'];
 var projection = ol.proj.addProjection({
   code: 'EPSG:21781',
   extent: [485869.5728, 76443.1884, 837076.5648, 299941.7864],
-  units: proj4Proj.units
+  units: proj4Def.units
 });
 // The transform is needed for the ScaleLine control. Otherwise this example
 // would also work without proj4js.
-ol.proj.addCoordinateTransforms('EPSG:4326', projection, proj4(proj4Proj));
+ol.proj.addCoordinateTransforms('EPSG:4326', projection, proj4('EPSG:21781'));
 
 var extent = [420000, 30000, 900000, 350000];
 var layers = [
