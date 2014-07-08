@@ -25,16 +25,14 @@
     "fs-extra": "~0.8.1",
     "graceful-fs": "~3.0.2",
     "jquery": "~2.1.1",
-    "jsdoc": "~3.3.0-alpha7",
+    "jsdoc": "~3.3.0-alpha9",
     "jshint": "~2.5.1",
     "mocha": "~1.20.1",
     "mocha-phantomjs": "~3.5.0",
     "nomnom": "~1.6.2",
     "phantomjs": "~1.9.7-5",
     "sinon": "~1.10.2",
-    "taffydb": "~2.7.0",
     "temp": "~0.7.0",
-    "underscore": "~1.6.0",
     "walk": "~2.3.3"
   }
 }
