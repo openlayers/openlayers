@@ -11,8 +11,9 @@ var proj4 = function() {};
 
 
 /**
- * @typedef {Object.<string, Object.<{axis: string,
- *     units: string,
+ * @param {string} name
+ * @param {(string|Object)=} opt_def
+ * @return {undefined|Object.<string, Object.<{axis: string, units: string,
  *     to_meter: number}>>}
  */
-proj4.defs;
+proj4.defs = function(name, opt_def) {};

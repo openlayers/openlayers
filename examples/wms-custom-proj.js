@@ -15,7 +15,7 @@ var projection = ol.proj.addProjection({
   // projection's validity extent can be found at http://epsg.io/.
   extent: [485869.5728, 76443.1884, 837076.5648, 299941.7864],
   // Use data from proj4js to configure the projection's units.
-  units: proj4.defs['EPSG:21781'].units
+  units: proj4.defs('EPSG:21781').units
 });
 // Proj4js provides transform functions between its configured projections.
 // The transform is needed for the ScaleLine control. Otherwise this example

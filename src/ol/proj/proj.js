@@ -479,7 +479,7 @@ ol.proj.get = function(projectionLike) {
     projection = projections[code];
     if (ol.ENABLE_PROJ4JS && !goog.isDef(projection) &&
         goog.isFunction(proj4)) {
-      var def = proj4.defs[code];
+      var def = proj4.defs(code);
       if (goog.isDef(def)) {
         var units = def.units;
         if (!goog.isDef(units)) {
@@ -496,7 +496,7 @@ ol.proj.get = function(projectionLike) {
         ol.proj.addProjection(projection);
         var currentCode, currentDef, currentProj;
         for (currentCode in projections) {
-          currentDef = proj4.defs[currentCode];
+          currentDef = proj4.defs(currentCode);
           if (goog.isDef(currentDef)) {
             currentProj = ol.proj.get(currentCode);
             if (currentDef === def) {

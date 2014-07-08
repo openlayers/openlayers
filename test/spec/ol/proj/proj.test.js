@@ -141,7 +141,7 @@ describe('ol.proj', function() {
     it('caches the new Proj4js projections given their srsCode', function() {
       var code = 'urn:ogc:def:crs:EPSG:21781';
       var srsCode = 'EPSG:21781';
-      proj4.defs[code] = proj4.defs[srsCode];
+      proj4.defs(code, proj4.defs(srsCode));
       var proj = ol.proj.get(code);
       var proj2 = ol.proj.get(srsCode);
       expect(ol.proj.equivalent(proj2, proj)).to.be(true);

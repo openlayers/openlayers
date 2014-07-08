@@ -6,7 +6,7 @@ describe('ol.format.WFS', function() {
 
     var features, feature;
     before(function(done) {
-      proj4.defs['urn:x-ogc:def:crs:EPSG:4326'] = proj4.defs['EPSG:4326'];
+      proj4.defs('urn:x-ogc:def:crs:EPSG:4326', proj4.defs('EPSG:4326'));
       afterLoadText('spec/ol/format/wfs/topp-states-wfs.xml', function(xml) {
         try {
           var config = {
