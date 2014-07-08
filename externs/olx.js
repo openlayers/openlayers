@@ -284,7 +284,8 @@ olx.CoordinateTransforms;
 
 
 /**
- * The forward transform function that takes a {@link ol.Coordinate} as argument
+ * The forward transform function (that is, from the source projection to the
+ * target projection) that takes a {@link ol.Coordinate} as argument
  * and returns the transformed {@link ol.Coordinate}.
  * @type {function(ol.Coordinate): ol.Coordinate}
  */
@@ -292,7 +293,8 @@ olx.CoordinateTransforms.prototype.forward;
 
 
 /**
- * The inverse transform function that takes a {@link ol.Coordinate} as argument
+ * The inverse transform function (that is, from the target projection to the
+ * source projection) that takes a {@link ol.Coordinate} as argument
  * and returns the transformed {@link ol.Coordinate}.
  * @type {function(ol.Coordinate): ol.Coordinate}
  */

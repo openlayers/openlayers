@@ -8,8 +8,13 @@ goog.require('ol.proj');
 goog.require('ol.source.ImageWMS');
 
 
+// Transparent Proj4js support: ol.proj.get() creates and returns a projection
+// known to Proj4js if it is unknown to OpenLayers, and registers functions to
+// transform between all registered projections.
+// EPSG:21781 is known to Proj4js because its definition was loaded in the html.
 var projection = ol.proj.get('EPSG:21781');
-// The extent is used to determine zoom level 0
+// The extent is used to determine zoom level 0. Recommended values for a
+// projection's validity extent can be found at http://epsg.io/.
 projection.setExtent([485869.5728, 76443.1884, 837076.5648, 299941.7864]);
 
 var extent = [420000, 30000, 900000, 350000];
@@ -51,9 +56,7 @@ var layers = [
 
 var map = new ol.Map({
   controls: ol.control.defaults().extend([
-    new ol.control.ScaleLine({
-      units: 'metric'
-    })
+    new ol.control.ScaleLine()
   ]),
   layers: layers,
   renderer: exampleNS.getRendererFromQueryString(),

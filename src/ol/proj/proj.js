@@ -62,7 +62,8 @@ ol.proj.METERS_PER_UNIT[ol.proj.Units.METERS] = 1;
  * Class for coordinate transforms between coordinate systems. By default,
  * OpenLayers ships with the ability to transform coordinates between
  * geographic (EPSG:4326) and web or spherical mercator (EPSG:3857)
- * coordinate reference systems.
+ * coordinate reference systems. Any transform functions can be added with
+ * {@link ol.proj.addCoordinateTransforms}.
  *
  * Additional transforms may be added by using the {@link http://proj4js.org/}
  * library. If the proj4js library is loaded, transforms will work between any

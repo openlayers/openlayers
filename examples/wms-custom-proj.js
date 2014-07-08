@@ -8,14 +8,18 @@ goog.require('ol.proj');
 goog.require('ol.source.TileWMS');
 
 
-var proj4Def = proj4.defs['EPSG:21781'];
+// EPSG:21781 is known to Proj4js because its definition was loaded in the html.
 var projection = ol.proj.addProjection({
   code: 'EPSG:21781',
+  // The extent is used to determine zoom level 0. Recommended values for a
+  // projection's validity extent can be found at http://epsg.io/.
   extent: [485869.5728, 76443.1884, 837076.5648, 299941.7864],
-  units: proj4Def.units
+  // Use data from proj4js to configure the projection's units.
+  units: proj4.defs['EPSG:21781'].units
 });
+// Proj4js provides transform functions between its configured projections.
 // The transform is needed for the ScaleLine control. Otherwise this example
-// would also work without proj4js.
+// would also work without transform functions.
 ol.proj.addCoordinateTransforms('EPSG:4326', projection, proj4('EPSG:21781'));
 
 var extent = [420000, 30000, 900000, 350000];
