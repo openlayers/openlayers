@@ -40,7 +40,6 @@ ol.source.TileWMS = function(opt_options) {
   goog.base(this, {
     attributions: options.attributions,
     crossOrigin: options.crossOrigin,
-    extent: options.extent,
     logo: options.logo,
     opaque: !transparent,
     projection: options.projection,
@@ -392,12 +391,6 @@ ol.source.TileWMS.prototype.tileUrlFunction_ =
     tileSize += 2 * gutter;
     tileExtent = ol.extent.buffer(tileExtent,
         tileResolution * gutter, tileExtent);
-  }
-
-  var extent = this.getExtent();
-  if (!goog.isNull(extent) && (!ol.extent.intersects(tileExtent, extent) ||
-      ol.extent.touches(tileExtent, extent))) {
-    return undefined;
   }
 
   if (pixelRatio != 1) {

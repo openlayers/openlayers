@@ -23,7 +23,6 @@ ol.source.ServerVector = function(options) {
 
   goog.base(this, {
     attributions: options.attributions,
-    extent: options.extent,
     format: options.format,
     logo: options.logo,
     projection: options.projection

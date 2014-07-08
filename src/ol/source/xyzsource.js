@@ -30,7 +30,6 @@ ol.source.XYZ = function(options) {
   goog.base(this, {
     attributions: options.attributions,
     crossOrigin: options.crossOrigin,
-    extent: options.extent,
     logo: options.logo,
     projection: projection,
     tileGrid: tileGrid,
@@ -44,7 +43,6 @@ ol.source.XYZ = function(options) {
    * @type {ol.TileCoordTransformType}
    */
   this.tileCoordTransform_ = tileGrid.createTileCoordTransform({
-    extent: options.extent,
     wrapX: options.wrapX
   });
 

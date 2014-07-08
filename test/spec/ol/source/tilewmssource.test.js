@@ -126,22 +126,6 @@ describe('ol.source.TileWMS', function() {
       expect(queryData.get('BBOX')).to.be('-45,-45,0,0');
     });
 
-    it('does not return a tile if it touches layers extent', function() {
-      options.extent = [-80, -40, -45, -10];
-      var source = new ol.source.TileWMS(options);
-      var tileCoord = new ol.TileCoord(3, 3, 1);
-      var url = source.tileUrlFunction(tileCoord, 1, ol.proj.get('EPSG:4326'));
-      expect(url).to.be(undefined);
-    });
-
-    it('does not return a tile outside of layers extent', function() {
-      options.extent = [-80, -40, -45, -10];
-      var source = new ol.source.TileWMS(options);
-      var tileCoord = new ol.TileCoord(3, 4, 2);
-      var url = source.tileUrlFunction(tileCoord, 1, ol.proj.get('EPSG:4326'));
-      expect(url).to.be(undefined);
-    });
-
   });
 
   describe('#getGetFeatureInfo', function() {

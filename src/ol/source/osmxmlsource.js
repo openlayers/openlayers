@@ -22,7 +22,6 @@ ol.source.OSMXML = function(opt_options) {
   goog.base(this, {
     attributions: options.attributions,
     doc: options.doc,
-    extent: options.extent,
     format: new ol.format.OSMXML(),
     logo: options.logo,
     node: options.node,

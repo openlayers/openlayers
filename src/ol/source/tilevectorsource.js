@@ -24,7 +24,6 @@ ol.source.TileVector = function(options) {
 
   goog.base(this, {
     attributions: options.attributions,
-    extent: options.extent,
     format: options.format,
     logo: options.logo,
     projection: options.projection
@@ -48,9 +47,7 @@ ol.source.TileVector = function(options) {
    * @private
    * @type {ol.TileCoordTransformType}
    */
-  this.tileCoordTransform_ = tileGrid.createTileCoordTransform({
-    extent: options.extent
-  });
+  this.tileCoordTransform_ = tileGrid.createTileCoordTransform();
 
   /**
    * @private
