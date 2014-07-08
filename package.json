@@ -31,6 +31,7 @@
     "mocha-phantomjs": "~3.5.0",
     "nomnom": "~1.6.2",
     "phantomjs": "~1.9.7-5",
+    "proj4": "~2.1.4",
     "sinon": "~1.10.2",
     "temp": "~0.7.0",
     "walk": "~2.3.3"
