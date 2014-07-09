@@ -27,7 +27,7 @@ goog.require('ol.geom.flat.simplify');
  * @extends {ol.geom.SimpleGeometry}
  * @param {ol.geom.RawPolygon} coordinates Coordinates.
  * @param {ol.geom.GeometryLayout=} opt_layout Layout.
- * @todo api
+ * @api
  */
 ol.geom.Polygon = function(coordinates, opt_layout) {
 
@@ -84,7 +84,7 @@ goog.inherits(ol.geom.Polygon, ol.geom.SimpleGeometry);
 
 /**
  * @param {ol.geom.LinearRing} linearRing Linear ring.
- * @todo api
+ * @api
  */
 ol.geom.Polygon.prototype.appendLinearRing = function(linearRing) {
   goog.asserts.assert(linearRing.getLayout() == this.layout);
@@ -100,7 +100,7 @@ ol.geom.Polygon.prototype.appendLinearRing = function(linearRing) {
 
 /**
  * @inheritDoc
- * @todo api
+ * @api
  */
 ol.geom.Polygon.prototype.clone = function() {
   var polygon = new ol.geom.Polygon(null);
@@ -141,7 +141,7 @@ ol.geom.Polygon.prototype.containsXY = function(x, y) {
 
 /**
  * @return {number} Area.
- * @todo api
+ * @api
  */
 ol.geom.Polygon.prototype.getArea = function() {
   return ol.geom.flat.area.linearRings(
@@ -151,7 +151,7 @@ ol.geom.Polygon.prototype.getArea = function() {
 
 /**
  * @return {ol.geom.RawPolygon} Coordinates.
- * @todo api
+ * @api
  */
 ol.geom.Polygon.prototype.getCoordinates = function() {
   return ol.geom.flat.inflate.coordinatess(
@@ -184,7 +184,7 @@ ol.geom.Polygon.prototype.getFlatInteriorPoint = function() {
 
 /**
  * @return {ol.geom.Point} Interior point.
- * @todo api
+ * @api
  */
 ol.geom.Polygon.prototype.getInteriorPoint = function() {
   return new ol.geom.Point(this.getFlatInteriorPoint());
@@ -194,7 +194,7 @@ ol.geom.Polygon.prototype.getInteriorPoint = function() {
 /**
  * @param {number} index Index.
  * @return {ol.geom.LinearRing} Linear ring.
- * @todo api
+ * @api
  */
 ol.geom.Polygon.prototype.getLinearRing = function(index) {
   goog.asserts.assert(0 <= index && index < this.ends_.length);
@@ -210,7 +210,7 @@ ol.geom.Polygon.prototype.getLinearRing = function(index) {
 
 /**
  * @return {Array.<ol.geom.LinearRing>} Linear rings.
- * @todo api
+ * @api
  */
 ol.geom.Polygon.prototype.getLinearRings = function() {
   var layout = this.layout;
@@ -271,7 +271,7 @@ ol.geom.Polygon.prototype.getSimplifiedGeometryInternal =
 
 /**
  * @inheritDoc
- * @todo api
+ * @api
  */
 ol.geom.Polygon.prototype.getType = function() {
   return ol.geom.GeometryType.POLYGON;
@@ -281,7 +281,7 @@ ol.geom.Polygon.prototype.getType = function() {
 /**
  * @param {ol.geom.RawPolygon} coordinates Coordinates.
  * @param {ol.geom.GeometryLayout=} opt_layout Layout.
- * @todo api
+ * @api
  */
 ol.geom.Polygon.prototype.setCoordinates = function(coordinates, opt_layout) {
   if (goog.isNull(coordinates)) {
@@ -326,7 +326,7 @@ ol.geom.Polygon.prototype.setFlatCoordinates =
  * @param {number} radius Radius.
  * @param {number=} opt_n Optional number of points.  Default is `32`.
  * @return {ol.geom.Polygon} Circle geometry.
- * @todo api
+ * @api
  */
 ol.geom.Polygon.circular = function(sphere, center, radius, opt_n) {
   var n = goog.isDef(opt_n) ? opt_n : 32;

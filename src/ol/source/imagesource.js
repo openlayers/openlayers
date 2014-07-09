@@ -4,7 +4,6 @@ goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('ol.Attribution');
 goog.require('ol.Extent');
-goog.require('ol.Image');
 goog.require('ol.array');
 goog.require('ol.source.Source');
 

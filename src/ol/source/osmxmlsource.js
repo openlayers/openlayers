@@ -13,7 +13,7 @@ goog.require('ol.source.StaticVector');
  * @extends {ol.source.StaticVector}
  * @fires ol.source.VectorEvent
  * @param {olx.source.OSMXMLOptions=} opt_options Options.
- * @todo api
+ * @api
  */
 ol.source.OSMXML = function(opt_options) {
 

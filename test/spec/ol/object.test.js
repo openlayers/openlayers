@@ -82,10 +82,10 @@ describe('ol.Object', function() {
 
   });
 
-  describe('setValues', function() {
+  describe('setProperties', function() {
 
     it('sets multiple values at once', function() {
-      o.setValues({
+      o.setProperties({
         k1: 1,
         k2: 2
       });
@@ -622,6 +622,33 @@ describe('ol.Object', function() {
   });
 
   describe('transforms', function() {
+
+    describe('original states and events', function() {
+      it('bindTo and transform emit propertychange events', function() {
+        var source = new ol.Object();
+        var target = new ol.Object();
+        source.set('x', 1);
+        target.set('x', 2);
+        var sourceSpy = sinon.spy();
+        var targetSpy = sinon.spy();
+        source.on('propertychange', sourceSpy);
+        target.on('propertychange', targetSpy);
+        var accessor = source.bindTo('x', target);
+        expect(sourceSpy.callCount).to.be(1);
+        expect(targetSpy.callCount).to.be(0);
+        expect(source.get('x')).to.be(2);
+        expect(target.get('x')).to.be(2);
+        accessor.transform(function(v) {
+          return v * 2;
+        }, function(v) {
+          return v / 2;
+        });
+        expect(sourceSpy.callCount).to.be(2);
+        expect(targetSpy.callCount).to.be(0);
+        expect(source.get('x')).to.be(1);
+        expect(target.get('x')).to.be(2);
+      });
+    });
 
     describe('with multiple binds to a single property', function() {
 

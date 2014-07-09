@@ -11,13 +11,13 @@ ol.MapEventType = {
   /**
    * Triggered after a map frame is rendered.
    * @event ol.MapEvent#postrender
-   * @todo api
+   * @api
    */
   POSTRENDER: 'postrender',
   /**
    * Triggered after the map is moved.
    * @event ol.MapEvent#moveend
-   * @todo api
+   * @api
    */
   MOVEEND: 'moveend'
 };
@@ -39,14 +39,14 @@ ol.MapEvent = function(type, map, opt_frameState) {
   /**
    * The map where the event occurred.
    * @type {ol.Map}
-   * @todo api
+   * @api
    */
   this.map = map;
 
   /**
    * The frame state at the time of the event.
    * @type {?olx.FrameState}
-   * @todo api
+   * @api
    */
   this.frameState = goog.isDef(opt_frameState) ? opt_frameState : null;
 

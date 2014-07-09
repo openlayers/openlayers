@@ -10,7 +10,7 @@ goog.require('ol.CollectionEventType');
 goog.require('ol.Feature');
 goog.require('ol.feature');
 goog.require('ol.render.EventType');
-goog.require('ol.style.ImageState');
+goog.require('ol.renderer.vector');
 
 
 
@@ -25,7 +25,7 @@ goog.require('ol.style.ImageState');
  *
  * @constructor
  * @param {olx.FeatureOverlayOptions=} opt_options Options.
- * @todo api
+ * @api
  */
 ol.FeatureOverlay = function(opt_options) {
 
@@ -71,8 +71,11 @@ ol.FeatureOverlay = function(opt_options) {
    * @private
    * @type {ol.feature.StyleFunction|undefined}
    */
-  this.styleFunction_ = goog.isDef(options.style) ?
-      ol.feature.createStyleFunction(options.style) : undefined;
+  this.styleFunction_ = undefined;
+
+  if (goog.isDef(options.style)) {
+    this.setStyle(options.style);
+  }
 
   if (goog.isDef(options.features)) {
     if (goog.isArray(options.features)) {
@@ -94,7 +97,7 @@ ol.FeatureOverlay = function(opt_options) {
 
 /**
  * @param {ol.Feature} feature Feature.
- * @todo api
+ * @api
  */
 ol.FeatureOverlay.prototype.addFeature = function(feature) {
   this.features_.push(feature);
@@ -102,39 +105,8 @@ ol.FeatureOverlay.prototype.addFeature = function(feature) {
 
 
 /**
- * @param {ol.render.IVectorContext|undefined} vectorContext Vector context.
- * @param {ol.Feature} feature Feature.
- * @param {ol.style.Style} style Style.
- * @private
- */
-ol.FeatureOverlay.prototype.drawFeature_ = function(vectorContext, feature,
-    style) {
-  var imageStyle = style.getImage();
-  if (!goog.isNull(imageStyle)) {
-    var imageState = imageStyle.getImageState();
-    if (imageState == ol.style.ImageState.LOADED ||
-        imageState == ol.style.ImageState.ERROR) {
-      imageStyle.unlistenImageChange(this.handleImageChange_, this);
-      if (imageState == ol.style.ImageState.LOADED) {
-        vectorContext.drawFeature(feature, style);
-      }
-    } else {
-      if (imageState == ol.style.ImageState.IDLE) {
-        imageStyle.load();
-      }
-      imageState = imageStyle.getImageState();
-      goog.asserts.assert(imageState == ol.style.ImageState.LOADING);
-      imageStyle.listenImageChange(this.handleImageChange_, this);
-    }
-  } else {
-    vectorContext.drawFeature(feature, style);
-  }
-};
-
-
-/**
  * @return {ol.Collection} Features collection.
- * @todo api
+ * @api
  */
 ol.FeatureOverlay.prototype.getFeatures = function() {
   return this.features_;
@@ -199,8 +171,12 @@ ol.FeatureOverlay.prototype.handleMapPostCompose_ = function(event) {
   if (!goog.isDef(styleFunction)) {
     styleFunction = ol.feature.defaultStyleFunction;
   }
-  var resolution = event.frameState.view2DState.resolution;
-  var vectorContext = event.vectorContext;
+  var replayGroup = /** @type {ol.render.IReplayGroup} */
+      (event.replayGroup);
+  goog.asserts.assert(goog.isDef(replayGroup));
+  var frameState = event.frameState;
+  var pixelRatio = frameState.pixelRatio;
+  var resolution = frameState.viewState.resolution;
   var i, ii, styles;
   this.features_.forEach(function(feature) {
     styles = styleFunction(feature, resolution);
@@ -209,7 +185,9 @@ ol.FeatureOverlay.prototype.handleMapPostCompose_ = function(event) {
     }
     ii = styles.length;
     for (i = 0; i < ii; ++i) {
-      this.drawFeature_(vectorContext, feature, styles[i]);
+      ol.renderer.vector.renderFeature(replayGroup, feature, styles[i],
+          ol.renderer.vector.getSquaredTolerance(resolution, pixelRatio),
+          feature, this.handleImageChange_, this);
     }
   }, this);
 };
@@ -217,7 +195,7 @@ ol.FeatureOverlay.prototype.handleMapPostCompose_ = function(event) {
 
 /**
  * @param {ol.Feature} feature Feature.
- * @todo api
+ * @api
  */
 ol.FeatureOverlay.prototype.removeFeature = function(feature) {
   this.features_.remove(feature);
@@ -236,7 +214,7 @@ ol.FeatureOverlay.prototype.render_ = function() {
 
 /**
  * @param {ol.Collection} features Features collection.
- * @todo api
+ * @api
  */
 ol.FeatureOverlay.prototype.setFeatures = function(features) {
   if (!goog.isNull(this.featuresListenerKeys_)) {
@@ -270,7 +248,7 @@ ol.FeatureOverlay.prototype.setFeatures = function(features) {
 
 /**
  * @param {ol.Map} map Map.
- * @todo api
+ * @api
  */
 ol.FeatureOverlay.prototype.setMap = function(map) {
   if (!goog.isNull(this.postComposeListenerKey_)) {
@@ -294,7 +272,7 @@ ol.FeatureOverlay.prototype.setMap = function(map) {
  * an array of styles.
  * @param {ol.style.Style|Array.<ol.style.Style>|ol.feature.StyleFunction} style
  *     Overlay style.
- * @todo api
+ * @api
  */
 ol.FeatureOverlay.prototype.setStyle = function(style) {
   this.style_ = style;
@@ -308,7 +286,7 @@ ol.FeatureOverlay.prototype.setStyle = function(style) {
  * option at construction or to the `setStyle` method.
  * @return {ol.style.Style|Array.<ol.style.Style>|ol.feature.StyleFunction}
  *     Overlay style.
- * @todo api
+ * @api
  */
 ol.FeatureOverlay.prototype.getStyle = function() {
   return this.style_;
@@ -318,7 +296,7 @@ ol.FeatureOverlay.prototype.getStyle = function() {
 /**
  * Get the style function.
  * @return {ol.feature.StyleFunction|undefined} Style function.
- * @todo api
+ * @api
  */
 ol.FeatureOverlay.prototype.getStyleFunction = function() {
   return this.styleFunction_;

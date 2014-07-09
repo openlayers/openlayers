@@ -7,7 +7,7 @@ goog.provide('ol.source.wms.ServerType');
  *     `'qgis'`. These are servers that have vendor parameters beyond the WMS
  *     specification that OpenLayers can make use of.
  * @enum {string}
- * @todo api
+ * @api
  */
 ol.source.wms.ServerType = {
   CARMENTA_SERVER: 'carmentaserver',

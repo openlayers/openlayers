@@ -21,7 +21,7 @@ goog.require('ol.xml');
  *
  * @constructor
  * @extends {ol.format.XMLFeature}
- * @todo api
+ * @api
  */
 ol.format.OSMXML = function() {
   goog.base(this);
@@ -68,7 +68,7 @@ ol.format.OSMXML.readNode_ = function(node, objectStack) {
     var geometry = new ol.geom.Point(coordinates);
     var feature = new ol.Feature(geometry);
     feature.setId(id);
-    feature.setValues(values.tags);
+    feature.setProperties(values.tags);
     state.features.push(feature);
   }
 };
@@ -105,7 +105,7 @@ ol.format.OSMXML.readWay_ = function(node, objectStack) {
   }
   var feature = new ol.Feature(geometry);
   feature.setId(id);
-  feature.setValues(values.tags);
+  feature.setProperties(values.tags);
   state.features.push(feature);
 };
 
@@ -189,7 +189,7 @@ ol.format.OSMXML.NODE_PARSERS_ = ol.xml.makeParsersNS(
  * @function
  * @param {ArrayBuffer|Document|Node|Object|string} source Source.
  * @return {Array.<ol.Feature>} Features.
- * @todo api
+ * @api
  */
 ol.format.OSMXML.prototype.readFeatures;
 
@@ -218,7 +218,7 @@ ol.format.OSMXML.prototype.readFeaturesFromNode = function(node) {
  * @function
  * @param {ArrayBuffer|Document|Node|Object|string} source Source.
  * @return {ol.proj.Projection} Projection.
- * @todo api
+ * @api
  */
 ol.format.OSMXML.prototype.readProjection;
 

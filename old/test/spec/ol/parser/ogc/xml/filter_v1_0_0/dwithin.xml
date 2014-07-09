@@ -1,9 +1,0 @@
-<Filter xmlns="http://www.opengis.net/ogc" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.opengis.net/ogc http://schemas.opengis.net/filter/1.0.0/filter.xsd">
-  <DWithin>
-    <PropertyName>Geometry</PropertyName>
-    <gml:Point xmlns:gml="http://www.opengis.net/gml">
-      <gml:coordinates decimal="." cs="," ts=" ">2488789,289552</gml:coordinates>
-    </gml:Point>
-    <Distance units="m">1000</Distance>
-  </DWithin>
-</Filter>

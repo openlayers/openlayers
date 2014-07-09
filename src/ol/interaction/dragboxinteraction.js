@@ -1,6 +1,4 @@
 // FIXME draw drag box
-// FIXME works for View2D only
-
 goog.provide('ol.DragBoxEvent');
 goog.provide('ol.interaction.DragBox');
 
@@ -30,13 +28,13 @@ ol.DragBoxEventType = {
   /**
    * Triggered upon drag box start.
    * @event ol.DragBoxEvent#boxstart
-   * @todo api
+   * @api stable
    */
   BOXSTART: 'boxstart',
   /**
    * Triggered upon drag box end.
    * @event ol.DragBoxEvent#boxend
-   * @todo api
+   * @api stable
    */
   BOXEND: 'boxend'
 };
@@ -60,7 +58,7 @@ ol.DragBoxEvent = function(type, coordinate) {
    * The coordinate of the drag event.
    * @const
    * @type {ol.Coordinate}
-   * @todo api
+   * @api stable
    */
   this.coordinate = coordinate;
 
@@ -71,9 +69,12 @@ goog.inherits(ol.DragBoxEvent, goog.events.Event);
 
 /**
  * @classdesc
- * Allows the user to zoom the map by clicking and dragging on the map,
+ * Allows the user to draw a vector box by clicking and dragging on the map,
  * normally combined with an {@link ol.events.condition} that limits
- * it to when the shift key is held down.
+ * it to when the shift or other key is held down. This is used, for example,
+ * for zooming to a specific area of the map
+ * (see {@link ol.interaction.DragZoom} and
+ * {@link ol.interaction.DragRotateAndZoom}).
  *
  * This interaction is only supported for mouse devices.
  *
@@ -81,7 +82,7 @@ goog.inherits(ol.DragBoxEvent, goog.events.Event);
  * @extends {ol.interaction.Pointer}
  * @fires ol.DragBoxEvent
  * @param {olx.interaction.DragBoxOptions=} opt_options Options.
- * @todo api
+ * @api stable
  */
 ol.interaction.DragBox = function(opt_options) {
 
@@ -133,7 +134,7 @@ ol.interaction.DragBox.prototype.handlePointerDrag = function(mapBrowserEvent) {
 /**
  * Returns geometry of last drawn box.
  * @return {ol.geom.Geometry} Geometry.
- * @todo api
+ * @api stable
  */
 ol.interaction.DragBox.prototype.getGeometry = function() {
   return this.box_.getGeometry();

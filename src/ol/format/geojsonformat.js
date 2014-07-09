@@ -27,7 +27,7 @@ goog.require('ol.proj');
  * @constructor
  * @extends {ol.format.JSONFeature}
  * @param {olx.format.GeoJSONOptions=} opt_options Options.
- * @todo api
+ * @api
  */
 ol.format.GeoJSON = function(opt_options) {
 
@@ -331,7 +331,7 @@ ol.format.GeoJSON.prototype.getExtensions = function() {
  * @function
  * @param {ArrayBuffer|Document|Node|Object|string} source Source.
  * @return {ol.Feature} Feature.
- * @todo api
+ * @api
  */
 ol.format.GeoJSON.prototype.readFeature;
 
@@ -343,7 +343,7 @@ ol.format.GeoJSON.prototype.readFeature;
  * @function
  * @param {ArrayBuffer|Document|Node|Object|string} source Source.
  * @return {Array.<ol.Feature>} Features.
- * @todo api
+ * @api
  */
 ol.format.GeoJSON.prototype.readFeatures;
 
@@ -364,7 +364,7 @@ ol.format.GeoJSON.prototype.readFeatureFromObject = function(object) {
     feature.setId(geoJSONFeature.id);
   }
   if (goog.isDef(geoJSONFeature.properties)) {
-    feature.setValues(geoJSONFeature.properties);
+    feature.setProperties(geoJSONFeature.properties);
   }
   return feature;
 };
@@ -401,7 +401,7 @@ ol.format.GeoJSON.prototype.readFeaturesFromObject = function(object) {
  * @function
  * @param {ArrayBuffer|Document|Node|Object|string} source Source.
  * @return {ol.geom.Geometry} Geometry.
- * @todo api
+ * @api
  */
 ol.format.GeoJSON.prototype.readGeometry;
 
@@ -416,13 +416,20 @@ ol.format.GeoJSON.prototype.readGeometryFromObject = function(object) {
 
 
 /**
- * Read the projection from the GeoJSON source file.
+ * Read the projection from a GeoJSON source.
  *
- * @param {ArrayBuffer|Document|Node|Object|string} object Source.
+ * @function
+ * @param {ArrayBuffer|Document|Node|Object|string} source Source.
  * @return {ol.proj.Projection} Projection.
- * @todo api
+ * @api
  */
-ol.format.GeoJSON.prototype.readProjection = function(object) {
+ol.format.GeoJSON.prototype.readProjection;
+
+
+/**
+ * @inheritDoc
+ */
+ol.format.GeoJSON.prototype.readProjectionFromObject = function(object) {
   var geoJSONObject = /** @type {GeoJSONObject} */ (object);
   var crs = geoJSONObject.crs;
   if (goog.isDefAndNotNull(crs)) {
@@ -449,8 +456,8 @@ ol.format.GeoJSON.prototype.readProjection = function(object) {
  *
  * @function
  * @param {ol.Feature} feature Feature.
- * @return {ArrayBuffer|Node|Object|string} Result.
- * @todo api
+ * @return {ArrayBuffer|Node|Object|string} GeoJSON.
+ * @api
  */
 ol.format.GeoJSON.prototype.writeFeature;
 
@@ -485,8 +492,8 @@ ol.format.GeoJSON.prototype.writeFeatureObject = function(feature) {
  *
  * @function
  * @param {Array.<ol.Feature>} features Features.
- * @return {ArrayBuffer|Node|Object|string} Result.
- * @todo api
+ * @return {ArrayBuffer|Node|Object|string} GeoJSON.
+ * @api
  */
 ol.format.GeoJSON.prototype.writeFeatures;
 
@@ -505,6 +512,17 @@ ol.format.GeoJSON.prototype.writeFeaturesObject = function(features) {
     'features': objects
   });
 };
+
+
+/**
+ * Encode a geometry as GeoJSON.
+ *
+ * @function
+ * @param {ol.geom.Geometry} geometry Geometry.
+ * @return {ArrayBuffer|Node|Object|string} GeoJSON.
+ * @api
+ */
+ol.format.GeoJSON.prototype.writeGeometry;
 
 
 /**

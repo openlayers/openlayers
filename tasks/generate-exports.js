@@ -7,8 +7,6 @@ var nomnom = require('nomnom');
 
 var generateInfo = require('./generate-info');
 
-var build = path.join(__dirname, '..', 'build');
-
 
 /**
  * Get the configuration from the config file.  If configPath is provided

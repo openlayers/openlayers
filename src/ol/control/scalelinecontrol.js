@@ -29,7 +29,7 @@ ol.control.ScaleLineProperty = {
  * Units for the scale line. Supported values are `'degrees'`, `'imperial'`,
  * `'nautical'`, `'metric'`, `'us'`.
  * @enum {string}
- * @todo api
+ * @api
  */
 ol.control.ScaleLineUnits = {
   DEGREES: 'degrees',
@@ -50,7 +50,7 @@ ol.control.ScaleLineUnits = {
  * @constructor
  * @extends {ol.control.Control}
  * @param {olx.control.ScaleLineOptions=} opt_options Scale line options.
- * @todo api
+ * @api
  */
 ol.control.ScaleLine = function(opt_options) {
 
@@ -77,9 +77,9 @@ ol.control.ScaleLine = function(opt_options) {
 
   /**
    * @private
-   * @type {?olx.View2DState}
+   * @type {?olx.ViewState}
    */
-  this.view2DState_ = null;
+  this.viewState_ = null;
 
   /**
    * @private
@@ -137,8 +137,8 @@ ol.control.ScaleLine.LEADING_DIGITS = [1, 2, 5];
 /**
  * @return {ol.control.ScaleLineUnits|undefined} The units to use in the scale
  *     line.
- * @todo observable
- * @todo api
+ * @observable
+ * @api
  */
 ol.control.ScaleLine.prototype.getUnits = function() {
   return /** @type {ol.control.ScaleLineUnits|undefined} */ (
@@ -156,9 +156,9 @@ goog.exportProperty(
 ol.control.ScaleLine.prototype.handleMapPostrender = function(mapEvent) {
   var frameState = mapEvent.frameState;
   if (goog.isNull(frameState)) {
-    this.view2DState_ = null;
+    this.viewState_ = null;
   } else {
-    this.view2DState_ = frameState.view2DState;
+    this.viewState_ = frameState.viewState;
   }
   this.updateElement_();
 };
@@ -174,8 +174,8 @@ ol.control.ScaleLine.prototype.handleUnitsChanged_ = function() {
 
 /**
  * @param {ol.control.ScaleLineUnits} units The units to use in the scale line.
- * @todo observable
- * @todo api
+ * @observable
+ * @api
  */
 ol.control.ScaleLine.prototype.setUnits = function(units) {
   this.set(ol.control.ScaleLineProperty.UNITS, units);
@@ -190,9 +190,9 @@ goog.exportProperty(
  * @private
  */
 ol.control.ScaleLine.prototype.updateElement_ = function() {
-  var view2DState = this.view2DState_;
+  var viewState = this.viewState_;
 
-  if (goog.isNull(view2DState)) {
+  if (goog.isNull(viewState)) {
     if (this.renderedVisible_) {
       goog.style.setElementShown(this.element_, false);
       this.renderedVisible_ = false;
@@ -200,10 +200,10 @@ ol.control.ScaleLine.prototype.updateElement_ = function() {
     return;
   }
 
-  var center = view2DState.center;
-  var projection = view2DState.projection;
+  var center = viewState.center;
+  var projection = viewState.projection;
   var pointResolution =
-      projection.getPointResolution(view2DState.resolution, center);
+      projection.getPointResolution(viewState.resolution, center);
   var projectionUnits = projection.getUnits();
 
   var cosLatitude;

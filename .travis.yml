@@ -3,9 +3,6 @@ before_install:
   - "npm install -g npm && npm install"
 
 before_script:
-  - "./build.py plovr"
-  - "./build.py serve-integration-test &"
   - "rm src/ol/renderer/webgl/*shader.js"
-  - "sleep 3"
 
-script: "./build.py integration-test"
+script: "./build.py ci"

@@ -22,7 +22,7 @@ goog.require('ol.source.Source');
  * @fires ol.render.Event
  * @fires change Triggered when the state of the source changes.
  * @param {olx.layer.LayerOptions} options Layer options.
- * @todo api
+ * @api
  */
 ol.layer.Layer = function(options) {
 
@@ -80,7 +80,7 @@ ol.layer.Layer.prototype.getLayerStatesArray = function(opt_states) {
 
 /**
  * @return {ol.source.Source} Source.
- * @todo api
+ * @api
  */
 ol.layer.Layer.prototype.getSource = function() {
   return this.source_;

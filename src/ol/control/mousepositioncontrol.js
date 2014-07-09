@@ -1,5 +1,4 @@
 // FIXME should listen on appropriate pane, once it is defined
-// FIXME works for View2D only
 
 goog.provide('ol.control.MousePosition');
 
@@ -38,7 +37,7 @@ ol.control.MousePositionProperty = {
  * @extends {ol.control.Control}
  * @param {olx.control.MousePositionOptions=} opt_options Mouse position
  *     options.
- * @todo api
+ * @api
  */
 ol.control.MousePosition = function(opt_options) {
 
@@ -110,8 +109,8 @@ ol.control.MousePosition.prototype.handleMapPostrender = function(mapEvent) {
   if (goog.isNull(frameState)) {
     this.mapProjection_ = null;
   } else {
-    if (this.mapProjection_ != frameState.view2DState.projection) {
-      this.mapProjection_ = frameState.view2DState.projection;
+    if (this.mapProjection_ != frameState.viewState.projection) {
+      this.mapProjection_ = frameState.viewState.projection;
       this.transform_ = null;
     }
   }
@@ -130,8 +129,8 @@ ol.control.MousePosition.prototype.handleProjectionChanged_ = function() {
 /**
  * @return {ol.CoordinateFormatType|undefined} The format to render the current
  *     position in.
- * @todo observable
- * @todo api
+ * @observable
+ * @api
  */
 ol.control.MousePosition.prototype.getCoordinateFormat = function() {
   return /** @type {ol.CoordinateFormatType|undefined} */ (
@@ -146,8 +145,8 @@ goog.exportProperty(
 /**
  * @return {ol.proj.Projection|undefined} The projection to report mouse
  *     position in.
- * @todo observable
- * @todo api
+ * @observable
+ * @api
  */
 ol.control.MousePosition.prototype.getProjection = function() {
   return /** @type {ol.proj.Projection|undefined} */ (
@@ -184,7 +183,7 @@ ol.control.MousePosition.prototype.handleMouseOut = function(browserEvent) {
 
 /**
  * @inheritDoc
- * @todo api
+ * @api
  */
 ol.control.MousePosition.prototype.setMap = function(map) {
   goog.base(this, 'setMap', map);
@@ -203,8 +202,8 @@ ol.control.MousePosition.prototype.setMap = function(map) {
 /**
  * @param {ol.CoordinateFormatType} format The format to render the current
  *     position in.
- * @todo observable
- * @todo api
+ * @observable
+ * @api
  */
 ol.control.MousePosition.prototype.setCoordinateFormat = function(format) {
   this.set(ol.control.MousePositionProperty.COORDINATE_FORMAT, format);
@@ -218,8 +217,8 @@ goog.exportProperty(
 /**
  * @param {ol.proj.Projection} projection The projection to report mouse
  *     position in.
- * @todo observable
- * @todo api
+ * @observable
+ * @api
  */
 ol.control.MousePosition.prototype.setProjection = function(projection) {
   this.set(ol.control.MousePositionProperty.PROJECTION, projection);

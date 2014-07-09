@@ -27,6 +27,8 @@ Build configuration files are JSON files that are used to determine what should 
 
   * **src** - `Array.<string>` Optional array of [path patterns](https://github.com/isaacs/minimatch/blob/master/README.md) for source files.  This defaults to `["src/**/*.js"]` which will match all `.js` files in the `src` directory.  To include a different set of source files, provide an array of path patterns.  Note that these patterns are `/` delimited even on Windows.
 
+  * **cwd** - `string` Optional path to be used as the current working directory.  All paths in the `compile` object are assumed to be relative to `cwd`.  Default is the root of the ol3 repository.
+
   * **namespace** - `string` Optional namespace for exporting the `ol` object.  By default, `ol` is assigned to the global object.
 
   * **jvm** - `Array.<string>` Optional array of [command line options](https://github.com/google/closure-compiler/wiki/FAQ#what-are-the-recommended-java-vm-command-line-options) for the compiler.  By default, the Compiler is run with `['-server', '-XX:+TieredCompilation']`.
@@ -80,6 +82,7 @@ To export the `ol` symbol to somewhere other than the global namespace, a `names
 }
 ```
 
+The `defines` section of `build.json` above lists common settings for the Closure library in production code. The OL3 library also defines constants that can be set in this section at compile time. These are all defined in the `ol.js` source file; see the comments in this file to see what effect setting these would have. Some of them can reduce the size of the build in advanced mode.
 
 ## `generate-exports.js`
 
@@ -101,3 +104,8 @@ Called after install to generate an example index.  After new examples are added
 Run a debug server that provides all library sources unminified.  Provides a static server for examples and tests.  See the `--help` option for more detail.
 
     node tasks/serve.js --help
+
+
+## `test.js`
+
+Run the tests once in a headless browser.  Note that you can also run the tests by running the `serve.js` task and then visiting the root of the test directory in your browser.

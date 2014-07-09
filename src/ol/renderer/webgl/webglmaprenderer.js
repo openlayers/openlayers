@@ -14,7 +14,6 @@ goog.require('goog.style');
 goog.require('goog.webgl');
 goog.require('ol');
 goog.require('ol.RendererType');
-goog.require('ol.Tile');
 goog.require('ol.css');
 goog.require('ol.dom');
 goog.require('ol.layer.Image');
@@ -269,7 +268,7 @@ ol.renderer.webgl.Map.prototype.dispatchComposeEvent_ =
     var context = this.getContext();
     var render = new ol.render.webgl.Immediate(context, frameState.pixelRatio);
     var composeEvent = new ol.render.Event(
-        type, map, render, frameState, null, context);
+        type, map, render, null, frameState, null, context);
     map.dispatchEvent(composeEvent);
   }
 };
@@ -448,7 +447,7 @@ ol.renderer.webgl.Map.prototype.renderFrame = function(frameState) {
   /** @type {Array.<ol.layer.LayerState>} */
   var layerStatesToDraw = [];
   var layerStatesArray = frameState.layerStatesArray;
-  var viewResolution = frameState.view2DState.resolution;
+  var viewResolution = frameState.viewState.resolution;
   var i, ii, layerState;
   for (i = 0, ii = layerStatesArray.length; i < ii; ++i) {
     layerState = layerStatesArray[i];

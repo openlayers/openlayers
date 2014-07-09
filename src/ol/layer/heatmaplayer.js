@@ -23,12 +23,15 @@ ol.layer.HeatmapLayerProperty = {
 /**
  * @classdesc
  * Layer for rendering vector data as a heatmap.
+ * Note that any property set in the options is set as a {@link ol.Object}
+ * property on the layer object; for example, setting `title: 'My Title'` in the
+ * options means that `title` is observable, and has get/set accessors.
  *
  * @constructor
  * @extends {ol.layer.Vector}
  * @fires ol.render.Event
  * @param {olx.layer.HeatmapOptions=} opt_options Options.
- * @todo api
+ * @api
  */
 ol.layer.Heatmap = function(opt_options) {
   var options = goog.isDef(opt_options) ? opt_options : {};

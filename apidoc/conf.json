@@ -9,9 +9,6 @@
     "source": {
         "includePattern": ".+\\.js(doc)?$",
         "excludePattern": "(^|\\/|\\\\)_",
-        "exclude": [
-            "src/googx/dom/fullscreen.js"
-        ],
         "include": [
             "src",
             "externs/oli.js",
@@ -23,7 +20,6 @@
         "apidoc/plugins/inheritdoc",
         "apidoc/plugins/interface",
         "apidoc/plugins/typedefs",
-        "apidoc/plugins/todo",
         "apidoc/plugins/events",
         "apidoc/plugins/observable",
         "apidoc/plugins/api"

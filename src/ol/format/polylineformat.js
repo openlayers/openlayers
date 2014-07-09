@@ -14,7 +14,7 @@ goog.require('ol.proj');
  * @extends {ol.format.TextFeature}
  * @param {olx.format.PolylineOptions=} opt_options
  *     Optional configuration object.
- * @todo api
+ * @api
  */
 ol.format.Polyline = function(opt_options) {
 
@@ -42,7 +42,7 @@ goog.inherits(ol.format.Polyline, ol.format.TextFeature);
  *     multiplied. The remaining decimal places will get rounded away.
  *     Default is `1e5`.
  * @return {string} The encoded string.
- * @todo api
+ * @api
  */
 ol.format.Polyline.encodeDeltas = function(numbers, stride, opt_factor) {
   var factor = goog.isDef(opt_factor) ? opt_factor : 1e5;
@@ -77,7 +77,7 @@ ol.format.Polyline.encodeDeltas = function(numbers, stride, opt_factor) {
  * @param {number=} opt_factor The factor by which the resulting numbers will
  *     be divided. Default is `1e5`.
  * @return {Array.<number>} A list of n-dimensional points.
- * @todo api
+ * @api
  */
 ol.format.Polyline.decodeDeltas = function(encoded, stride, opt_factor) {
   var factor = goog.isDef(opt_factor) ? opt_factor : 1e5;
@@ -114,7 +114,7 @@ ol.format.Polyline.decodeDeltas = function(encoded, stride, opt_factor) {
  *     multiplied. The remaining decimal places will get rounded away.
  *     Default is `1e5`.
  * @return {string} The encoded string.
- * @todo api
+ * @api
  */
 ol.format.Polyline.encodeFloats = function(numbers, opt_factor) {
   var factor = goog.isDef(opt_factor) ? opt_factor : 1e5;
@@ -134,7 +134,7 @@ ol.format.Polyline.encodeFloats = function(numbers, opt_factor) {
  * @param {number=} opt_factor The factor by which the result will be divided.
  *     Default is `1e5`.
  * @return {Array.<number>} A list of floating point numbers.
- * @todo api
+ * @api
  */
 ol.format.Polyline.decodeFloats = function(encoded, opt_factor) {
   var factor = goog.isDef(opt_factor) ? opt_factor : 1e5;
@@ -249,7 +249,7 @@ ol.format.Polyline.encodeUnsignedInteger = function(num) {
  * @function
  * @param {ArrayBuffer|Document|Node|Object|string} source Source.
  * @return {ol.Feature} Feature.
- * @todo api
+ * @api
  */
 ol.format.Polyline.prototype.readFeature;
 
@@ -270,7 +270,7 @@ ol.format.Polyline.prototype.readFeatureFromText = function(text) {
  * @function
  * @param {ArrayBuffer|Document|Node|Object|string} source Source.
  * @return {Array.<ol.Feature>} Features.
- * @todo api
+ * @api
  */
 ol.format.Polyline.prototype.readFeatures;
 
@@ -290,7 +290,7 @@ ol.format.Polyline.prototype.readFeaturesFromText = function(text) {
  * @function
  * @param {ArrayBuffer|Document|Node|Object|string} source Source.
  * @return {ol.geom.Geometry} Geometry.
- * @todo api
+ * @api
  */
 ol.format.Polyline.prototype.readGeometry;
 
@@ -312,7 +312,7 @@ ol.format.Polyline.prototype.readGeometryFromText = function(text) {
  * @function
  * @param {ArrayBuffer|Document|Node|Object|string} source Source.
  * @return {ol.proj.Projection} Projection.
- * @todo api
+ * @api
  */
 ol.format.Polyline.prototype.readProjection;
 
@@ -354,7 +354,7 @@ ol.format.Polyline.prototype.writeFeaturesText = function(features) {
  * @function
  * @param {ol.geom.Geometry} geometry Geometry.
  * @return {string} Geometry.
- * @todo api
+ * @api
  */
 ol.format.Polyline.prototype.writeGeometry;
 

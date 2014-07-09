@@ -22,13 +22,13 @@ ol.ObjectEventType = {
   /**
    * Triggered before a property is changed.
    * @event ol.ObjectEvent#beforepropertychange
-   * @todo api
+   * @api
    */
   BEFOREPROPERTYCHANGE: 'beforepropertychange',
   /**
    * Triggered when a property is changed.
    * @event ol.ObjectEvent#propertychange
-   * @todo api
+   * @api
    */
   PROPERTYCHANGE: 'propertychange'
 };
@@ -50,7 +50,7 @@ ol.ObjectEvent = function(type, key) {
   /**
    * The name of the property whose value is changing.
    * @type {string}
-   * @todo api
+   * @api
    */
   this.key = key;
 
@@ -61,10 +61,17 @@ goog.inherits(ol.ObjectEvent, goog.events.Event);
 
 /**
  * @constructor
- * @param {ol.Object} target
- * @param {string} key
+ * @param {ol.Object} source Source object.
+ * @param {ol.Object} target Target object.
+ * @param {string} sourceKey Source key.
+ * @param {string} targetKey Target key.
  */
-ol.ObjectAccessor = function(target, key) {
+ol.ObjectAccessor = function(source, target, sourceKey, targetKey) {
+
+  /**
+   * @type {ol.Object}
+   */
+  this.source = source;
 
   /**
    * @type {ol.Object}
@@ -74,7 +81,12 @@ ol.ObjectAccessor = function(target, key) {
   /**
    * @type {string}
    */
-  this.key = key;
+  this.sourceKey = sourceKey;
+
+  /**
+   * @type {string}
+   */
+  this.targetKey = targetKey;
 
   /**
    * @type {function(?): ?}
@@ -93,12 +105,12 @@ ol.ObjectAccessor = function(target, key) {
  *     before it is set to the target.
  * @param {function(?): ?} to A function that transforms the target value
  *     before it is set to the source.
+ * @api
  */
 ol.ObjectAccessor.prototype.transform = function(from, to) {
   this.from = from;
   this.to = to;
-
-  this.target.notify(this.key);
+  this.source.notify(this.sourceKey);
 };
 
 
@@ -121,7 +133,7 @@ ol.ObjectAccessor.prototype.transform = function(from, to) {
  * @extends {ol.Observable}
  * @param {Object.<string, *>=} opt_values Values.
  * @fires ol.ObjectEvent
- * @todo api
+ * @api
  */
 ol.Object = function(opt_values) {
   goog.base(this);
@@ -158,7 +170,7 @@ ol.Object = function(opt_values) {
   this.listeners_ = {};
 
   if (goog.isDef(opt_values)) {
-    this.setValues(opt_values);
+    this.setProperties(opt_values);
   }
 };
 goog.inherits(ol.Object, ol.Observable);
@@ -229,10 +241,11 @@ ol.Object.getSetterName = function(key) {
 
 /**
  * The bindTo method allows you to set up a two-way binding between a
- * `source` and `target` object. The method returns an
- * ol.ObjectAccessor with a transform method that lets you transform
- * values on the way from the source to the target and on the way back.
- *
+ * `source` and `target` object. The method returns an object with a
+ * `transform` method that you can use to provide `from` and `to`
+ * functions to transform values on the way from the source to the
+ * target and on the way back.
+*
  * For example, if you had two map views (sourceView and targetView)
  * and you wanted the target view to have double the resolution of the
  * source view, you could transform the resolution on the way to and
@@ -254,7 +267,7 @@ ol.Object.getSetterName = function(key) {
  * @param {ol.Object} target Target.
  * @param {string=} opt_targetKey Target key.
  * @return {ol.ObjectAccessor}
- * @todo api
+ * @api
  */
 ol.Object.prototype.bindTo = function(key, target, opt_targetKey) {
   var targetKey = opt_targetKey || key;
@@ -267,7 +280,7 @@ ol.Object.prototype.bindTo = function(key, target, opt_targetKey) {
        * @this {ol.Object}
        */
       function() {
-        this.notifyInternal_(key);
+        this.notify(key);
       }, undefined, this);
 
   // listen for beforechange events and relay if key matches
@@ -276,9 +289,9 @@ ol.Object.prototype.bindTo = function(key, target, opt_targetKey) {
       this.createBeforeChangeListener_(key, targetKey),
       undefined, this);
 
-  var accessor = new ol.ObjectAccessor(target, targetKey);
+  var accessor = new ol.ObjectAccessor(this, target, key, targetKey);
   this.accessors_[key] = accessor;
-  this.notifyInternal_(key);
+  this.notify(key);
   return accessor;
 };
 
@@ -311,7 +324,7 @@ ol.Object.prototype.createBeforeChangeListener_ = function(key, targetKey) {
  * Gets a value.
  * @param {string} key Key name.
  * @return {*} Value.
- * @todo api
+ * @api
  */
 ol.Object.prototype.get = function(key) {
   var value;
@@ -319,7 +332,7 @@ ol.Object.prototype.get = function(key) {
   if (accessors.hasOwnProperty(key)) {
     var accessor = accessors[key];
     var target = accessor.target;
-    var targetKey = accessor.key;
+    var targetKey = accessor.targetKey;
     var getterName = ol.Object.getGetterName(targetKey);
     var getter = /** @type {function(): *|undefined} */
         (goog.object.get(target, getterName));
@@ -339,7 +352,7 @@ ol.Object.prototype.get = function(key) {
 /**
  * Get a list of object property names.
  * @return {Array.<string>} List of property names.
- * @todo api
+ * @api
  */
 ol.Object.prototype.getKeys = function() {
   var accessors = this.accessors_;
@@ -371,7 +384,7 @@ ol.Object.prototype.getKeys = function() {
 /**
  * Get an object of all property names and values.
  * @return {Object.<string, *>} Object.
- * @todo api
+ * @api
  */
 ol.Object.prototype.getProperties = function() {
   var properties = {};
@@ -387,30 +400,9 @@ ol.Object.prototype.getProperties = function() {
 
 
 /**
- * Notify all observers of a change on this property. This notifies both
- * objects that are bound to the object's property as well as the object
- * that it is bound to.
  * @param {string} key Key name.
- * @todo api
  */
 ol.Object.prototype.notify = function(key) {
-  var accessors = this.accessors_;
-  if (accessors.hasOwnProperty(key)) {
-    var accessor = accessors[key];
-    var target = accessor.target;
-    var targetKey = accessor.key;
-    target.notify(targetKey);
-  } else {
-    this.notifyInternal_(key);
-  }
-};
-
-
-/**
- * @param {string} key Key name.
- * @private
- */
-ol.Object.prototype.notifyInternal_ = function(key) {
   var eventType = ol.Object.getChangeEventType(key);
   this.dispatchEvent(eventType);
   this.dispatchEvent(
@@ -422,7 +414,7 @@ ol.Object.prototype.notifyInternal_ = function(key) {
  * Sets a value.
  * @param {string} key Key name.
  * @param {*} value Value.
- * @todo api
+ * @api
  */
 ol.Object.prototype.set = function(key, value) {
   this.dispatchEvent(
@@ -431,7 +423,7 @@ ol.Object.prototype.set = function(key, value) {
   if (accessors.hasOwnProperty(key)) {
     var accessor = accessors[key];
     var target = accessor.target;
-    var targetKey = accessor.key;
+    var targetKey = accessor.targetKey;
     value = accessor.from(value);
     var setterName = ol.Object.getSetterName(targetKey);
     var setter = /** @type {function(*)|undefined} */
@@ -443,7 +435,7 @@ ol.Object.prototype.set = function(key, value) {
     }
   } else {
     this.values_[key] = value;
-    this.notifyInternal_(key);
+    this.notify(key);
   }
 };
 
@@ -451,9 +443,9 @@ ol.Object.prototype.set = function(key, value) {
 /**
  * Sets a collection of key-value pairs.
  * @param {Object.<string, *>} values Values.
- * @todo api
+ * @api
  */
-ol.Object.prototype.setValues = function(values) {
+ol.Object.prototype.setProperties = function(values) {
   var key;
   for (key in values) {
     this.set(key, values[key]);
@@ -465,7 +457,7 @@ ol.Object.prototype.setValues = function(values) {
  * Removes a binding. Unbinding will set the unbound property to the current
  *     value. The object will not be notified, as the value has not changed.
  * @param {string} key Key name.
- * @todo api
+ * @api
  */
 ol.Object.prototype.unbind = function(key) {
   var listeners = this.listeners_;
@@ -489,7 +481,7 @@ ol.Object.prototype.unbind = function(key) {
 
 /**
  * Removes all bindings.
- * @todo api
+ * @api
  */
 ol.Object.prototype.unbindAll = function() {
   for (var key in this.listeners_) {

@@ -1,6 +1,6 @@
 goog.require('ol.BrowserFeature');
 goog.require('ol.Map');
-goog.require('ol.View2D');
+goog.require('ol.View');
 goog.require('ol.layer.Tile');
 goog.require('ol.source.MapQuest');
 
@@ -13,7 +13,7 @@ var domMap = new ol.Map({
   ],
   renderer: 'dom',
   target: 'domMap',
-  view: new ol.View2D({
+  view: new ol.View({
     center: [0, 0],
     zoom: 1
   })

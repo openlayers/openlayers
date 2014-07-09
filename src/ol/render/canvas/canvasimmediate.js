@@ -19,6 +19,14 @@ goog.require('ol.vec.Mat4');
 
 
 /**
+ * @classdesc
+ * A concrete subclass of {@link ol.render.IVectorContext} that implements
+ * direct rendering of features and geometries to an HTML5 Canvas context.
+ * Instances of this class are created internally by the library and
+ * provided to application code as vectorContext member of the
+ * {@link ol.render.Event} object associated with postcompose, precompose and
+ * render events emitted by layers and maps.
+ *
  * @constructor
  * @implements {ol.render.IVectorContext}
  * @param {CanvasRenderingContext2D} context Context.
@@ -394,7 +402,7 @@ ol.render.canvas.Immediate.prototype.drawRings_ =
  *
  * @param {number} zIndex Z index.
  * @param {function(ol.render.canvas.Immediate)} callback Callback.
- * @todo api
+ * @api
  */
 ol.render.canvas.Immediate.prototype.drawAsync = function(zIndex, callback) {
   var zIndexKey = zIndex.toString();
@@ -413,7 +421,7 @@ ol.render.canvas.Immediate.prototype.drawAsync = function(zIndex, callback) {
  *
  * @param {ol.geom.Circle} circleGeometry Circle geometry.
  * @param {Object} data Opaque data object,
- * @todo api
+ * @api
  */
 ol.render.canvas.Immediate.prototype.drawCircleGeometry =
     function(circleGeometry, data) {
@@ -458,7 +466,7 @@ ol.render.canvas.Immediate.prototype.drawCircleGeometry =
  *
  * @param {ol.Feature} feature Feature.
  * @param {ol.style.Style} style Style.
- * @todo api
+ * @api
  */
 ol.render.canvas.Immediate.prototype.drawFeature = function(feature, style) {
   var geometry = feature.getGeometry();
@@ -475,7 +483,7 @@ ol.render.canvas.Immediate.prototype.drawFeature = function(feature, style) {
     render.setImageStyle(style.getImage());
     render.setTextStyle(style.getText());
     var renderGeometry =
-        ol.render.canvas.Immediate.GEOMETRY_RENDERES_[geometry.getType()];
+        ol.render.canvas.Immediate.GEOMETRY_RENDERERS_[geometry.getType()];
     goog.asserts.assert(goog.isDef(renderGeometry));
     renderGeometry.call(render, geometry, null);
   });
@@ -497,7 +505,7 @@ ol.render.canvas.Immediate.prototype.drawGeometryCollectionGeometry =
   for (i = 0, ii = geometries.length; i < ii; ++i) {
     var geometry = geometries[i];
     var geometryRenderer =
-        ol.render.canvas.Immediate.GEOMETRY_RENDERES_[geometry.getType()];
+        ol.render.canvas.Immediate.GEOMETRY_RENDERERS_[geometry.getType()];
     goog.asserts.assert(goog.isDef(geometryRenderer));
     geometryRenderer.call(this, geometry, data);
   }
@@ -510,7 +518,7 @@ ol.render.canvas.Immediate.prototype.drawGeometryCollectionGeometry =
  *
  * @param {ol.geom.Point} pointGeometry Point geometry.
  * @param {Object} data Opaque data object.
- * @todo api
+ * @api
  */
 ol.render.canvas.Immediate.prototype.drawPointGeometry =
     function(pointGeometry, data) {
@@ -531,7 +539,7 @@ ol.render.canvas.Immediate.prototype.drawPointGeometry =
  *
  * @param {ol.geom.MultiPoint} multiPointGeometry MultiPoint geometry.
  * @param {Object} data Opaque data object.
- * @todo api
+ * @api
  */
 ol.render.canvas.Immediate.prototype.drawMultiPointGeometry =
     function(multiPointGeometry, data) {
@@ -552,7 +560,7 @@ ol.render.canvas.Immediate.prototype.drawMultiPointGeometry =
  *
  * @param {ol.geom.LineString} lineStringGeometry Line string geometry.
  * @param {Object} data Opaque data object.
- * @todo api
+ * @api
  */
 ol.render.canvas.Immediate.prototype.drawLineStringGeometry =
     function(lineStringGeometry, data) {
@@ -582,7 +590,7 @@ ol.render.canvas.Immediate.prototype.drawLineStringGeometry =
  * @param {ol.geom.MultiLineString} multiLineStringGeometry
  *     MultiLineString geometry.
  * @param {Object} data Opaque data object.
- * @todo api
+ * @api
  */
 ol.render.canvas.Immediate.prototype.drawMultiLineStringGeometry =
     function(multiLineStringGeometry, data) {
@@ -618,7 +626,7 @@ ol.render.canvas.Immediate.prototype.drawMultiLineStringGeometry =
  *
  * @param {ol.geom.Polygon} polygonGeometry Polygon geometry.
  * @param {Object} data Opaque data object.
- * @todo api
+ * @api
  */
 ol.render.canvas.Immediate.prototype.drawPolygonGeometry =
     function(polygonGeometry, data) {
@@ -657,7 +665,7 @@ ol.render.canvas.Immediate.prototype.drawPolygonGeometry =
  * uses the current style.
  * @param {ol.geom.MultiPolygon} multiPolygonGeometry MultiPolygon geometry.
  * @param {Object} data Opaque data object.
- * @todo api
+ * @api
  */
 ol.render.canvas.Immediate.prototype.drawMultiPolygonGeometry =
     function(multiPolygonGeometry, data) {
@@ -832,7 +840,7 @@ ol.render.canvas.Immediate.prototype.setContextTextState_ =
  *
  * @param {ol.style.Fill} fillStyle Fill style.
  * @param {ol.style.Stroke} strokeStyle Stroke style.
- * @todo api
+ * @api
  */
 ol.render.canvas.Immediate.prototype.setFillStrokeStyle =
     function(fillStyle, strokeStyle) {
@@ -877,7 +885,7 @@ ol.render.canvas.Immediate.prototype.setFillStrokeStyle =
  * the image style.
  *
  * @param {ol.style.Image} imageStyle Image style.
- * @todo api
+ * @api
  */
 ol.render.canvas.Immediate.prototype.setImageStyle = function(imageStyle) {
   if (goog.isNull(imageStyle)) {
@@ -913,7 +921,7 @@ ol.render.canvas.Immediate.prototype.setImageStyle = function(imageStyle) {
  * remove the text style.
  *
  * @param {ol.style.Text} textStyle Text style.
- * @todo api
+ * @api
  */
 ol.render.canvas.Immediate.prototype.setTextStyle = function(textStyle) {
   if (goog.isNull(textStyle)) {
@@ -989,7 +997,7 @@ ol.render.canvas.Immediate.prototype.setTextStyle = function(textStyle) {
  *                function(this: ol.render.canvas.Immediate, ol.geom.Geometry,
  *                         Object)>}
  */
-ol.render.canvas.Immediate.GEOMETRY_RENDERES_ = {
+ol.render.canvas.Immediate.GEOMETRY_RENDERERS_ = {
   'Point': ol.render.canvas.Immediate.prototype.drawPointGeometry,
   'LineString': ol.render.canvas.Immediate.prototype.drawLineStringGeometry,
   'Polygon': ol.render.canvas.Immediate.prototype.drawPolygonGeometry,

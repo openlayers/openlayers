@@ -30,7 +30,7 @@ ol.dom.InputProperty = {
  * @constructor
  * @extends {ol.Object}
  * @param {Element} target Target element.
- * @todo api
+ * @api
  */
 ol.dom.Input = function(target) {
   goog.base(this);
@@ -58,8 +58,8 @@ goog.inherits(ol.dom.Input, ol.Object);
 /**
  * If the input is a checkbox, return whether or not the checkbox is checked.
  * @return {boolean|undefined} The checked state of the Input.
- * @todo observable
- * @todo api
+ * @observable
+ * @api
  */
 ol.dom.Input.prototype.getChecked = function() {
   return /** @type {boolean} */ (this.get(ol.dom.InputProperty.CHECKED));
@@ -73,8 +73,8 @@ goog.exportProperty(
 /**
  * Get the value of the input.
  * @return {string|undefined} The value of the Input.
- * @todo observable
- * @todo api
+ * @observable
+ * @api
  */
 ol.dom.Input.prototype.getValue = function() {
   return /** @type {string} */ (this.get(ol.dom.InputProperty.VALUE));
@@ -88,8 +88,8 @@ goog.exportProperty(
 /**
  * Sets the value of the input.
  * @param {string} value The value of the Input.
- * @todo observable
- * @todo api
+ * @observable
+ * @api
  */
 ol.dom.Input.prototype.setValue = function(value) {
   this.set(ol.dom.InputProperty.VALUE, value);
@@ -103,8 +103,8 @@ goog.exportProperty(
 /**
  * Set whether or not a checkbox is checked.
  * @param {boolean} checked The checked state of the Input.
- * @todo observable
- * @todo api
+ * @observable
+ * @api
  */
 ol.dom.Input.prototype.setChecked = function(checked) {
   this.set(ol.dom.InputProperty.CHECKED, checked);

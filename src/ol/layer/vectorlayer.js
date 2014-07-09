@@ -17,12 +17,15 @@ ol.layer.VectorProperty = {
 /**
  * @classdesc
  * Vector data that is rendered client-side.
+ * Note that any property set in the options is set as a {@link ol.Object}
+ * property on the layer object; for example, setting `title: 'My Title'` in the
+ * options means that `title` is observable, and has get/set accessors.
  *
  * @constructor
  * @extends {ol.layer.Layer}
  * @fires ol.render.Event
  * @param {olx.layer.VectorOptions=} opt_options Options.
- * @todo api
+ * @api
  */
 ol.layer.Vector = function(opt_options) {
 
@@ -71,7 +74,7 @@ ol.layer.Vector.prototype.getRenderOrder = function() {
  * option at construction or to the `setStyle` method.
  * @return {ol.style.Style|Array.<ol.style.Style>|ol.feature.StyleFunction}
  *     Layer style.
- * @todo api
+ * @api
  */
 ol.layer.Vector.prototype.getStyle = function() {
   return this.style_;
@@ -81,7 +84,7 @@ ol.layer.Vector.prototype.getStyle = function() {
 /**
  * Get the style function.
  * @return {ol.feature.StyleFunction|undefined} Layer style function.
- * @todo api
+ * @api
  */
 ol.layer.Vector.prototype.getStyleFunction = function() {
   return this.styleFunction_;
@@ -103,7 +106,7 @@ ol.layer.Vector.prototype.setRenderOrder = function(renderOrder) {
  * an array of styles.
  * @param {ol.style.Style|Array.<ol.style.Style>|ol.feature.StyleFunction} style
  *     Layer style.
- * @todo api
+ * @api
  */
 ol.layer.Vector.prototype.setStyle = function(style) {
   this.style_ = style;

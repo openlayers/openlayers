@@ -1,5 +1,5 @@
 goog.require('ol.Map');
-goog.require('ol.View2D');
+goog.require('ol.View');
 goog.require('ol.dom.Input');
 goog.require('ol.layer.Group');
 goog.require('ol.layer.Tile');
@@ -32,7 +32,7 @@ var map = new ol.Map({
   ],
   renderer: exampleNS.getRendererFromQueryString(),
   target: 'map',
-  view: new ol.View2D({
+  view: new ol.View({
     center: ol.proj.transform([37.40570, 8.81566], 'EPSG:4326', 'EPSG:3857'),
     zoom: 4
   })

@@ -1,7 +1,7 @@
 // NOCOMPILE
 // This example uses the GMapx v3 API, which we do not have an exports file for.
 goog.require('ol.Map');
-goog.require('ol.View2D');
+goog.require('ol.View');
 goog.require('ol.interaction');
 goog.require('ol.interaction.DragPan');
 goog.require('ol.layer.Vector');
@@ -21,7 +21,7 @@ var gmap = new google.maps.Map(document.getElementById('gmap'), {
   streetViewControl: false
 });
 
-var view = new ol.View2D({
+var view = new ol.View({
   // make sure the view doesn't go beyond the 22 zoom levels of Google Maps
   maxZoom: 21
 });

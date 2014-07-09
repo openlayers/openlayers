@@ -1,5 +1,5 @@
 goog.require('ol.Map');
-goog.require('ol.View2D');
+goog.require('ol.View');
 goog.require('ol.layer.Tile');
 goog.require('ol.source.BingMaps');
 
@@ -14,7 +14,7 @@ var map = new ol.Map({
       })
     })
   ],
-  view: new ol.View2D({
+  view: new ol.View({
     center: [-13553864, 5918250],
     zoom: 11,
     minZoom: 9,

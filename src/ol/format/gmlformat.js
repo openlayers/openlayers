@@ -31,7 +31,7 @@ goog.require('ol.xml');
  * @param {olx.format.GMLOptions=} opt_options
  *     Optional configuration object.
  * @extends {ol.format.XMLFeature}
- * @todo api
+ * @api
  */
 ol.format.GML = function(opt_options) {
   var options = /** @type {olx.format.GMLOptions} */
@@ -1048,7 +1048,7 @@ ol.format.GML.prototype.readGeometryFromNode = function(node) {
  * @function
  * @param {ArrayBuffer|Document|Node|Object|string} source Source.
  * @return {Array.<ol.Feature>} Features.
- * @todo api
+ * @api
  */
 ol.format.GML.prototype.readFeatures;
 
@@ -1690,7 +1690,7 @@ ol.format.GML.prototype.writeGeometryNode = function(geometry) {
  * @function
  * @param {Array.<ol.Feature>} features Features.
  * @return {ArrayBuffer|Node|Object|string} Result.
- * @todo api
+ * @api
  */
 ol.format.GML.prototype.writeFeatures;
 

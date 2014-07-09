@@ -28,7 +28,7 @@ goog.require('ol.tilegrid.XYZ');
  * @constructor
  * @extends {ol.source.TileImage}
  * @param {olx.source.TileJSONOptions} options TileJSON options.
- * @todo api
+ * @api
  */
 ol.source.TileJSON = function(options) {
 

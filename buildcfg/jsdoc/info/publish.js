@@ -47,7 +47,7 @@ exports.publish = function(data, opts) {
       symbols.push({
         name: doc.longname,
         kind: doc.kind,
-        description: doc.description,
+        description: doc.classdesc || doc.description,
         extends: doc.augments,
         path: path.join(doc.meta.path, doc.meta.filename)
       });

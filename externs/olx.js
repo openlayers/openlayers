@@ -10,7 +10,7 @@ var olx;
 /**
  * @typedef {{html: string,
  *     tileRanges: (Object.<string, Array.<ol.TileRange>>|undefined)}}
- * @todo api
+ * @api
  */
 olx.AttributionOptions;
 
@@ -32,7 +32,7 @@ olx.AttributionOptions.prototype.tileRanges;
 /**
  * @typedef {{loadTilesWhileAnimating: (boolean|undefined),
  *     loadTilesWhileInteracting: (boolean|undefined)}}
- * @todo api
+ * @api
  */
 olx.DeviceOptions;
 
@@ -55,7 +55,7 @@ olx.DeviceOptions.prototype.loadTilesWhileInteracting;
 
 /**
  * @typedef {{tracking: (boolean|undefined)}}
- * @todo api
+ * @api
  */
 olx.DeviceOrientationOptions;
 
@@ -71,7 +71,7 @@ olx.DeviceOrientationOptions.prototype.tracking;
  * @typedef {{tracking: (boolean|undefined),
  *     trackingOptions: (GeolocationPositionOptions|undefined),
  *     projection: ol.proj.ProjectionLike}}
- * @todo api
+ * @api
  */
 olx.GeolocationOptions;
 
@@ -110,8 +110,8 @@ olx.GeolocationOptions.prototype.projection;
  *     overlays: (ol.Collection|Array.<ol.Overlay>|undefined),
  *     renderer: (ol.RendererType|Array.<ol.RendererType|string>|string|undefined),
  *     target: (Element|string|undefined),
- *     view: (ol.IView|undefined)}}
- * @todo api
+ *     view: (ol.View|undefined)}}
+ * @api
  */
 olx.MapOptions;
 
@@ -201,10 +201,9 @@ olx.MapOptions.prototype.target;
 
 
 /**
- * The map's view. Currently {@link ol.View2D} is the only available view.
- * No layer sources will be fetched unless this is specified at construction
- * time or through {@link ol.Map#setView}.
- * @type {ol.IView|undefined}
+ * The map's view.  No layer sources will be fetched unless this is specified at
+ * construction time or through {@link ol.Map#setView}.
+ * @type {ol.View|undefined}
  */
 olx.MapOptions.prototype.view;
 
@@ -217,7 +216,7 @@ olx.MapOptions.prototype.view;
  *     positioning: (ol.OverlayPositioning|string|undefined),
  *     stopEvent: (boolean|undefined),
  *     insertFirst: (boolean|undefined)}}
- * @todo api
+ * @api
  */
 olx.OverlayOptions;
 
@@ -280,7 +279,7 @@ olx.OverlayOptions.prototype.insertFirst;
  * @typedef {{code: string,
  *     extent: (ol.Extent|undefined),
  *     global: (boolean|undefined)}}
- * @todo api
+ * @api
  */
 olx.Proj4jsProjectionOptions;
 
@@ -313,7 +312,7 @@ olx.Proj4jsProjectionOptions.prototype.global;
  *     extent: (ol.Extent|undefined),
  *     axisOrientation: (string|undefined),
  *     global: (boolean|undefined)}}
- * @todo api
+ * @api
  */
 olx.ProjectionOptions;
 
@@ -369,9 +368,9 @@ olx.ProjectionOptions.prototype.global;
  *     rotation: (number|undefined),
  *     zoom: (number|undefined),
  *     zoomFactor: (number|undefined)}}
- * @todo api
+ * @api
  */
-olx.View2DOptions;
+olx.ViewOptions;
 
 
 /**
@@ -380,7 +379,7 @@ olx.View2DOptions;
  * sources will not be fetched if this is not set.
  * @type {ol.Coordinate|undefined}
  */
-olx.View2DOptions.prototype.center;
+olx.ViewOptions.prototype.center;
 
 
 /**
@@ -390,14 +389,14 @@ olx.View2DOptions.prototype.center;
  * 270 degrees. The default is `true`.
  * @type {boolean|number|undefined}
  */
-olx.View2DOptions.prototype.constrainRotation;
+olx.ViewOptions.prototype.constrainRotation;
 
 
 /**
  * Enable rotation. Default is `true`.
  * @type {boolean|undefined}
  */
-olx.View2DOptions.prototype.enableRotation;
+olx.ViewOptions.prototype.enableRotation;
 
 
 /**
@@ -405,7 +404,7 @@ olx.View2DOptions.prototype.enableRotation;
  * outside this extent. Default is `undefined`.
  * @type {ol.Extent|undefined}
  */
-olx.View2DOptions.prototype.extent;
+olx.ViewOptions.prototype.extent;
 
 
 /**
@@ -417,7 +416,7 @@ olx.View2DOptions.prototype.extent;
  * 156543.03392804097`.
  * @type {number|undefined}
  */
-olx.View2DOptions.prototype.maxResolution;
+olx.ViewOptions.prototype.maxResolution;
 
 
 /**
@@ -429,7 +428,7 @@ olx.View2DOptions.prototype.maxResolution;
  * 0.0005831682455839253`.
  * @type {number|undefined}
  */
-olx.View2DOptions.prototype.minResolution;
+olx.ViewOptions.prototype.minResolution;
 
 
 /**
@@ -439,7 +438,7 @@ olx.View2DOptions.prototype.minResolution;
  * precedence over `maxZoom`.
  * @type {number|undefined}
  */
-olx.View2DOptions.prototype.maxZoom;
+olx.ViewOptions.prototype.maxZoom;
 
 
 /**
@@ -449,14 +448,14 @@ olx.View2DOptions.prototype.maxZoom;
  * precedence over `minZoom`.
  * @type {number|undefined}
  */
-olx.View2DOptions.prototype.minZoom;
+olx.ViewOptions.prototype.minZoom;
 
 
 /**
  * The projection. Default is `EPSG:3857` (Spherical Mercator).
  * @type {ol.proj.ProjectionLike}
  */
-olx.View2DOptions.prototype.projection;
+olx.ViewOptions.prototype.projection;
 
 
 /**
@@ -466,7 +465,7 @@ olx.View2DOptions.prototype.projection;
  * neither this nor `zoom` are defined.
  * @type {number|undefined}
  */
-olx.View2DOptions.prototype.resolution;
+olx.ViewOptions.prototype.resolution;
 
 
 /**
@@ -475,7 +474,7 @@ olx.View2DOptions.prototype.resolution;
  * options are ignored.
  * @type {Array.<number>|undefined}
  */
-olx.View2DOptions.prototype.resolutions;
+olx.ViewOptions.prototype.resolutions;
 
 
 /**
@@ -483,23 +482,23 @@ olx.View2DOptions.prototype.resolutions;
  * Default is `0`.
  * @type {number|undefined}
  */
-olx.View2DOptions.prototype.rotation;
+olx.ViewOptions.prototype.rotation;
 
 
 /**
  * Only used if `resolution` is not defined. Zoom level used to calculate the
  * initial resolution for the view. The initial resolution is determined using
- * the `ol.View2D#constrainResolution` method.
+ * the `ol.View#constrainResolution` method.
  * @type {number|undefined}
  */
-olx.View2DOptions.prototype.zoom;
+olx.ViewOptions.prototype.zoom;
 
 
 /**
  * The zoom factor used to determine the resolution constraint.  Default is `2`.
  * @type {number|undefined}
  */
-olx.View2DOptions.prototype.zoomFactor;
+olx.ViewOptions.prototype.zoomFactor;
 
 
 /**
@@ -507,7 +506,7 @@ olx.View2DOptions.prototype.zoomFactor;
  *     start: (number|undefined),
  *     duration: (number|undefined),
  *     easing: (function(number):number|undefined)}}
- * @todo api
+ * @api
  */
 olx.animation.BounceOptions;
 
@@ -535,7 +534,8 @@ olx.animation.BounceOptions.prototype.duration;
 
 
 /**
- * The easing function to use. Default is `ol.easing.upAndDown`
+ * The easing function to use. Can be an {@link ol.easing} or a custom function.
+ * Default is {@link ol.easing.upAndDown}.
  * @type {function(number):number|undefined}
  */
 olx.animation.BounceOptions.prototype.easing;
@@ -546,7 +546,7 @@ olx.animation.BounceOptions.prototype.easing;
  *     start: (number|undefined),
  *     duration: (number|undefined),
  *     easing: (function(number):number|undefined)}}
- * @todo api
+ * @api
  */
 olx.animation.PanOptions;
 
@@ -573,7 +573,8 @@ olx.animation.PanOptions.prototype.duration;
 
 
 /**
- * The easing function to use. Default is `ol.easing.inAndOut`
+ * The easing function to use. Can be an {@link ol.easing} or a custom function.
+ * Default is {@link ol.easing.inAndOut}.
  * @type {function(number):number|undefined}
  */
 olx.animation.PanOptions.prototype.easing;
@@ -585,7 +586,7 @@ olx.animation.PanOptions.prototype.easing;
  *     start: (number|undefined),
  *     duration: (number|undefined),
  *     easing: (function(number):number|undefined)}}
- * @todo api
+ * @api
  */
 olx.animation.RotateOptions;
 
@@ -621,7 +622,8 @@ olx.animation.RotateOptions.prototype.duration;
 
 
 /**
- * The easing function to use. Default is `ol.easing.inAndOut`
+ * The easing function to use. Can be an {@link ol.easing} or a custom function.
+ * Default is {@link ol.easing.inAndOut}.
  * @type {function(number):number|undefined}
  */
 olx.animation.RotateOptions.prototype.easing;
@@ -632,7 +634,7 @@ olx.animation.RotateOptions.prototype.easing;
  *     start: (number|undefined),
  *     duration: (number|undefined),
  *     easing: (function(number):number|undefined)}}
- * @todo api
+ * @api
  */
 olx.animation.ZoomOptions;
 
@@ -660,7 +662,8 @@ olx.animation.ZoomOptions.prototype.duration;
 
 
 /**
- * Easing function.
+ * The easing function to use. Can be an {@link ol.easing} or a custom function.
+ * Default is {@link ol.easing.inAndOut}.
  * @type {function(number):number|undefined}
  */
 olx.animation.ZoomOptions.prototype.easing;
@@ -669,7 +672,7 @@ olx.animation.ZoomOptions.prototype.easing;
 /**
  * @typedef {{className: (string|undefined),
  *     target: (Element|undefined)}}
- * @todo api
+ * @api
  */
 olx.control.AttributionOptions;
 
@@ -691,7 +694,7 @@ olx.control.AttributionOptions.prototype.target;
 /**
  * @typedef {{element: (Element|undefined),
  *     target: (Element|string|undefined)}}
- * @todo api
+ * @api
  */
 olx.control.ControlOptions;
 
@@ -720,7 +723,7 @@ olx.control.ControlOptions.prototype.target;
  *     zoom: (boolean|undefined),
  *     rotateOptions: (olx.control.RotateOptions|undefined),
  *     zoomOptions: (olx.control.ZoomOptions|undefined)}}
- * @todo api
+ * @api
  */
 olx.control.DefaultsOptions;
 
@@ -786,7 +789,7 @@ olx.control.DefaultsOptions.prototype.zoomOptions;
  *     tipLabel: (string|undefined),
  *     keys: (boolean|undefined),
  *     target: (Element|undefined)}}
- * @todo api
+ * @api
  */
 olx.control.FullScreenOptions;
 
@@ -822,7 +825,7 @@ olx.control.FullScreenOptions.prototype.target;
 /**
  * @typedef {{className: (string|undefined),
  *     target: (Element|undefined)}}
- * @todo api
+ * @api
  */
 olx.control.LogoOptions;
 
@@ -847,7 +850,7 @@ olx.control.LogoOptions.prototype.target;
  *     projection: ol.proj.ProjectionLike,
  *     target: (Element|undefined),
  *     undefinedHTML: (string|undefined)}}
- * @todo api
+ * @api
  */
 olx.control.MousePositionOptions;
 
@@ -892,7 +895,7 @@ olx.control.MousePositionOptions.prototype.undefinedHTML;
  *     minWidth: (number|undefined),
  *     target: (Element|undefined),
  *     units: (ol.control.ScaleLineUnits|string|undefined)}}
- * @todo api
+ * @api
  */
 olx.control.ScaleLineOptions;
 
@@ -932,7 +935,7 @@ olx.control.ScaleLineOptions.prototype.units;
  *     tipLabel: (string|undefined),
  *     target: (Element|undefined),
  *     autoHide: (boolean|undefined)}}
- * @todo api
+ * @api
  */
 olx.control.RotateOptions;
 
@@ -988,7 +991,7 @@ olx.control.RotateOptions.prototype.target;
  *     zoomOutTipLabel: (string|undefined),
  *     delta: (number|undefined),
  *     target: (Element|undefined)}}
- * @todo api
+ * @api
  */
 olx.control.ZoomOptions;
 
@@ -1053,7 +1056,7 @@ olx.control.ZoomOptions.prototype.target;
  * @typedef {{className: (string|undefined),
  *     maxResolution: (number|undefined),
  *     minResolution: (number|undefined)}}
- * @todo api
+ * @api
  */
 olx.control.ZoomSliderOptions;
 
@@ -1084,7 +1087,7 @@ olx.control.ZoomSliderOptions.prototype.minResolution;
  *     target: (Element|undefined),
  *     tipLabel: (string|undefined),
  *     extent: (ol.Extent|undefined)}}
- * @todo api
+ * @api
  */
 olx.control.ZoomToExtentOptions;
 
@@ -1121,7 +1124,7 @@ olx.control.ZoomToExtentOptions.prototype.extent;
 /**
  * @typedef {{defaultProjection: ol.proj.ProjectionLike,
  *     geometryName: (string|undefined)}}
- * @todo api
+ * @api
  */
 olx.format.GeoJSONOptions;
 
@@ -1142,7 +1145,7 @@ olx.format.GeoJSONOptions.prototype.geometryName;
 
 /**
  * @typedef {{factor: (number|undefined)}}
- * @todo stability experimental
+ * @api
  */
 olx.format.PolylineOptions;
 
@@ -1157,7 +1160,7 @@ olx.format.PolylineOptions.prototype.factor;
 
 /**
  * @typedef {{defaultProjection: ol.proj.ProjectionLike}}
- * @todo api
+ * @api
  */
 olx.format.TopoJSONOptions;
 
@@ -1171,7 +1174,7 @@ olx.format.TopoJSONOptions.prototype.defaultProjection;
 
 /**
  * @typedef {{altitudeMode: (ol.format.IGCZ|undefined)}}
- * @todo api
+ * @api
  */
 olx.format.IGCOptions;
 
@@ -1186,7 +1189,7 @@ olx.format.IGCOptions.prototype.altitudeMode;
 
 /**
  * @typedef {{defaultStyle: (Array.<ol.style.Style>|undefined)}}
- * @todo api
+ * @api
  */
 olx.format.KMLOptions;
 
@@ -1207,7 +1210,7 @@ olx.format.KMLOptions.prototype.defaultStyle;
  *     multiCurve: (boolean|undefined),
  *     multiSurface: (boolean|undefined),
  *     schemaLocation: (string|undefined)}}
- * @todo api
+ * @api
  */
 olx.format.GMLOptions;
 
@@ -1277,7 +1280,7 @@ olx.format.GMLOptions.prototype.schemaLocation;
  * @typedef {{featureNS: string,
  *     featureType: string,
  *     schemaLocation: (string|undefined)}}
- * @todo api
+ * @api
  */
 olx.format.WFSOptions;
 
@@ -1314,7 +1317,7 @@ olx.format.WFSOptions.prototype.schemaLocation;
  *     maxFeatures: (number|undefined),
  *     geometryName: (string|undefined),
  *     bbox: (ol.Extent|undefined)}}
- * @todo api
+ * @api
  */
 olx.format.WFSWriteGetFeatureOptions;
 
@@ -1391,7 +1394,7 @@ olx.format.WFSWriteGetFeatureOptions.prototype.bbox;
  *     handle: (string|undefined),
  *     nativeElements: Array.<Object>,
  *     gmlOptions: (olx.format.GMLOptions|undefined)}}
- * @todo api
+ * @api
  */
 olx.format.WFSWriteTransactionOptions;
 
@@ -1447,6 +1450,20 @@ olx.format.WFSWriteTransactionOptions.prototype.gmlOptions;
 
 
 /**
+ * @typedef {{splitCollection: (boolean|undefined)}}
+ * @api
+ */
+olx.format.WKTOptions;
+
+
+/**
+ * Whether to split GEOMETRYCOLLECTION's into multiple features.
+ * @type {boolean|undefined}
+ */
+olx.format.WKTOptions.prototype.splitCollection;
+
+
+/**
  * Interactions for the map. Default is `true` for all options.
  * @typedef {{altShiftDragRotate: (boolean|undefined),
  *     doubleClickZoom: (boolean|undefined),
@@ -1458,7 +1475,7 @@ olx.format.WFSWriteTransactionOptions.prototype.gmlOptions;
  *     pinchZoom: (boolean|undefined),
  *     zoomDelta: (number|undefined),
  *     zoomDuration: (number|undefined)}}
- * @todo api
+ * @api
  */
 olx.interaction.DefaultsOptions;
 
@@ -1536,7 +1553,7 @@ olx.interaction.DefaultsOptions.prototype.zoomDuration;
 /**
  * @typedef {{duration: (number|undefined),
  *     delta: (number|undefined)}}
- * @todo api
+ * @api
  */
 olx.interaction.DoubleClickZoomOptions;
 
@@ -1558,7 +1575,7 @@ olx.interaction.DoubleClickZoomOptions.prototype.delta;
 /**
  * @typedef {{formatConstructors: (Array.<function(new: ol.format.Feature)>|undefined),
  *     reprojectTo: ol.proj.ProjectionLike}}
- * @todo api
+ * @api
  */
 olx.interaction.DragAndDropOptions;
 
@@ -1580,7 +1597,7 @@ olx.interaction.DragAndDropOptions.prototype.reprojectTo;
 /**
  * @typedef {{condition: (ol.events.ConditionType|undefined),
  *     style: ol.style.Style}}
- * @todo api
+ * @api
  */
 olx.interaction.DragBoxOptions;
 
@@ -1603,7 +1620,7 @@ olx.interaction.DragBoxOptions.prototype.style;
 
 /**
  * @typedef {{kinetic: (ol.Kinetic|undefined)}}
- * @todo api
+ * @api
  */
 olx.interaction.DragPanOptions;
 
@@ -1617,7 +1634,7 @@ olx.interaction.DragPanOptions.prototype.kinetic;
 
 /**
  * @typedef {{condition: (ol.events.ConditionType|undefined)}}
- * @todo api
+ * @api
  */
 olx.interaction.DragRotateAndZoomOptions;
 
@@ -1633,7 +1650,7 @@ olx.interaction.DragRotateAndZoomOptions.prototype.condition;
 
 /**
  * @typedef {{condition: (ol.events.ConditionType|undefined)}}
- * @todo api
+ * @api
  */
 olx.interaction.DragRotateOptions;
 
@@ -1650,7 +1667,7 @@ olx.interaction.DragRotateOptions.prototype.condition;
 /**
  * @typedef {{condition: (ol.events.ConditionType|undefined),
  *     style: ol.style.Style}}
- * @todo api
+ * @api
  */
 olx.interaction.DragZoomOptions;
 
@@ -1680,7 +1697,7 @@ olx.interaction.DragZoomOptions.prototype.style;
  *     style: (ol.style.Style|Array.<ol.style.Style>|ol.feature.StyleFunction|undefined),
  *     geometryName: (string|undefined),
  *     condition: (ol.events.ConditionType|undefined)}}
- * @todo api
+ * @api
  */
 olx.interaction.DrawOptions;
 
@@ -1748,7 +1765,7 @@ olx.interaction.DrawOptions.prototype.condition;
 /**
  * @typedef {{condition: (ol.events.ConditionType|undefined),
  *     pixelDelta: (number|undefined)}}
- * @todo api
+ * @api
  */
 olx.interaction.KeyboardPanOptions;
 
@@ -1774,7 +1791,7 @@ olx.interaction.KeyboardPanOptions.prototype.pixelDelta;
  * @typedef {{duration: (number|undefined),
  *     condition: (ol.events.ConditionType|undefined),
  *     delta: (number|undefined)}}
- * @todo api
+ * @api
  */
 olx.interaction.KeyboardZoomOptions;
 
@@ -1807,7 +1824,7 @@ olx.interaction.KeyboardZoomOptions.prototype.delta;
  *     pixelTolerance: (number|undefined),
  *     style: (ol.style.Style|Array.<ol.style.Style>|ol.feature.StyleFunction|undefined),
  *     features: ol.Collection}}
- * @todo api
+ * @api
  */
 olx.interaction.ModifyOptions;
 
@@ -1846,7 +1863,7 @@ olx.interaction.ModifyOptions.prototype.features;
 
 /**
  * @typedef {{duration: (number|undefined)}}
- * @todo api
+ * @api
  */
 olx.interaction.MouseWheelZoomOptions;
 
@@ -1860,7 +1877,7 @@ olx.interaction.MouseWheelZoomOptions.prototype.duration;
 
 /**
  * @typedef {{threshold: (number|undefined)}}
- * @todo api
+ * @api
  */
 olx.interaction.PinchRotateOptions;
 
@@ -1874,7 +1891,7 @@ olx.interaction.PinchRotateOptions.prototype.threshold;
 
 /**
  * @typedef {{duration: (number|undefined)}}
- * @todo api
+ * @api
  */
 olx.interaction.PinchZoomOptions;
 
@@ -1893,7 +1910,7 @@ olx.interaction.PinchZoomOptions.prototype.duration;
  *     style: (ol.style.Style|Array.<ol.style.Style>|ol.feature.StyleFunction|undefined),
  *     removeCondition: (ol.events.ConditionType|undefined),
  *     toggleCondition: (ol.events.ConditionType|undefined)}}
- * @todo api
+ * @api
  */
 olx.interaction.SelectOptions;
 
@@ -1901,8 +1918,8 @@ olx.interaction.SelectOptions;
 /**
  * A function that takes an {@link ol.MapBrowserEvent} and returns a boolean
  * to indicate whether that event should be handled.
- * By default, this is {@link ol.events.condition.never}, though note that the
- * default toggle condition allows features to be added.
+ * By default, this is {@link ol.events.condition.never}. Use this if you want
+ * to use different events for add and remove instead of `toggle`.
  * @type {ol.events.ConditionType|undefined}
  */
 olx.interaction.SelectOptions.prototype.addCondition;
@@ -1911,7 +1928,12 @@ olx.interaction.SelectOptions.prototype.addCondition;
 /**
  * A function that takes an {@link ol.MapBrowserEvent} and returns a boolean
  * to indicate whether that event should be handled.
- * By default, {@link ol.events.condition.singleClick} toggles the selection.
+ * This is the event for the selected features as a whole. By default, this is
+ * {@link ol.events.condition.singleClick}. Clicking on a feature selects that
+ * feature and removes any that were in the selection. Clicking outside any
+ * feature removes all from the selection.
+ * See `toggle`, `add`, `remove` options for adding/removing extra features to/
+ * from the selection.
  * @type {ol.events.ConditionType|undefined}
  */
 olx.interaction.SelectOptions.prototype.condition;
@@ -1929,7 +1951,7 @@ olx.interaction.SelectOptions.prototype.layers;
 
 
 /**
- * FeatureOverlay style.
+ * Style for the selected features (those in the FeatureOverlay).
  * @type {ol.style.Style|Array.<ol.style.Style>|ol.feature.StyleFunction|undefined}
  */
 olx.interaction.SelectOptions.prototype.style;
@@ -1938,7 +1960,8 @@ olx.interaction.SelectOptions.prototype.style;
 /**
  * A function that takes an {@link ol.MapBrowserEvent} and returns a boolean
  * to indicate whether that event should be handled.
- * By default, this is {@link ol.events.condition.never}.
+ * By default, this is {@link ol.events.condition.never}. Use this if you want
+ * to use different events for add and remove instead of `toggle`.
  * @type {ol.events.ConditionType|undefined}
  */
 olx.interaction.SelectOptions.prototype.removeCondition;
@@ -1947,8 +1970,12 @@ olx.interaction.SelectOptions.prototype.removeCondition;
 /**
  * A function that takes an {@link ol.MapBrowserEvent} and returns a boolean
  * to indicate whether that event should be handled.
- * By default, {@link ol.events.condition.shiftKeyOnly} toggles the
- * feature in the current selection.
+ * This is in addition to the `condition` event. By default,
+ * {@link ol.events.condition.shiftKeyOnly}, i.e. pressing `shift` as well as
+ * the `condition` event, adds that feature to the current selection if it is
+ * not currently selected, and removes it if it is.
+ * See `add` and `remove` if you want to use different events instead of a
+ * toggle.
  * @type {ol.events.ConditionType|undefined}
  */
 olx.interaction.SelectOptions.prototype.toggleCondition;
@@ -1963,7 +1990,7 @@ olx.interaction.SelectOptions.prototype.toggleCondition;
  *     visible: (boolean|undefined),
  *     minResolution: (number|undefined),
  *     maxResolution: (number|undefined)}}
- * @todo api
+ * @api
  */
 olx.layer.BaseOptions;
 
@@ -2034,7 +2061,7 @@ olx.layer.BaseOptions.prototype.maxResolution;
  *     visible: (boolean|undefined),
  *     minResolution: (number|undefined),
  *     maxResolution: (number|undefined)}}
- * @todo api
+ * @api
  */
 olx.layer.LayerOptions;
 
@@ -2112,7 +2139,7 @@ olx.layer.LayerOptions.prototype.maxResolution;
  *     minResolution: (number|undefined),
  *     maxResolution: (number|undefined),
  *     layers: (Array.<ol.layer.Base>|ol.Collection|undefined)}}
- * @todo api
+ * @api
  */
 olx.layer.GroupOptions;
 
@@ -2195,7 +2222,7 @@ olx.layer.GroupOptions.prototype.layers;
  *     saturation: (number|undefined),
  *     source: ol.source.Vector,
  *     visible: (boolean|undefined)}}
- * @todo api
+ * @api
  */
 olx.layer.HeatmapOptions;
 
@@ -2313,7 +2340,7 @@ olx.layer.HeatmapOptions.prototype.visible;
  *     minResolution: (number|undefined),
  *     maxResolution: (number|undefined),
  *     useInterimTilesOnError: (boolean|undefined)}}
- * @todo api
+ * @api
  */
 olx.layer.TileOptions;
 
@@ -2407,7 +2434,7 @@ olx.layer.TileOptions.prototype.useInterimTilesOnError;
  *     source: ol.source.Vector,
  *     style: (ol.style.Style|Array.<ol.style.Style>|ol.feature.StyleFunction|undefined),
  *     visible: (boolean|undefined)}}
- * @todo api
+ * @api
  */
 olx.layer.VectorOptions;
 
@@ -2495,7 +2522,7 @@ olx.layer.VectorOptions.prototype.visible;
  * @typedef {{features: (Array.<ol.Feature>|ol.Collection|undefined),
  *     map: (ol.Map|undefined),
  *     style: (ol.style.Style|Array.<ol.style.Style>|ol.feature.StyleFunction|undefined)}}
- * @todo api
+ * @api
  */
 olx.FeatureOverlayOptions;
 
@@ -2526,7 +2553,7 @@ olx.FeatureOverlayOptions.prototype.style;
  *     key: string,
  *     imagerySet: string,
  *     tileLoadFunction: (ol.TileLoadFunctionType|undefined)}}
- * @todo api
+ * @api
  */
 olx.source.BingMapsOptions;
 
@@ -2565,7 +2592,7 @@ olx.source.BingMapsOptions.prototype.tileLoadFunction;
  *     format: ol.format.Feature,
  *     logo: (string|undefined),
  *     projection: ol.proj.ProjectionLike}}
- * @todo api
+ * @api
  */
 olx.source.FormatVectorOptions;
 
@@ -2615,7 +2642,7 @@ olx.source.FormatVectorOptions.prototype.projection;
  *     text: (string|undefined),
  *     url: (string|undefined),
  *     urls: (Array.<string>|undefined)}}
- * @todo api
+ * @api
  */
 olx.source.GeoJSONOptions;
 
@@ -2694,7 +2721,7 @@ olx.source.GeoJSONOptions.prototype.urls;
  *     text: (string|undefined),
  *     url: (string|undefined),
  *     urls: (Array.<string>|undefined)}}
- * @todo api
+ * @api
  */
 olx.source.GPXOptions;
 
@@ -2777,7 +2804,7 @@ olx.source.GPXOptions.prototype.urls;
  *            tileLoadFunction: (ol.TileLoadFunctionType|undefined),
  *            tilePixelRatio: (number|undefined),
  *            tileUrlFunction: (ol.TileUrlFunctionType|undefined)}}
- * @todo api
+ * @api
  */
 olx.source.TileImageOptions;
 
@@ -2876,7 +2903,7 @@ olx.source.TileImageOptions.prototype.tileUrlFunction;
  *     tileUrlFunction: (ol.TileUrlFunctionType|undefined),
  *     url: (string|undefined),
  *     urls: (Array.<string>|undefined)}}
- * @todo api
+ * @api
  */
 olx.source.TileVectorOptions;
 
@@ -2969,7 +2996,7 @@ olx.source.TileVectorOptions.prototype.urls;
  *     projection: ol.proj.ProjectionLike,
  *     text: (string|undefined),
  *     url: (string|undefined)}}
- * @todo api
+ * @api
  */
 olx.source.TopoJSONOptions;
 
@@ -3037,7 +3064,7 @@ olx.source.TopoJSONOptions.prototype.url;
  *     text: (string|undefined),
  *     url: (string|undefined),
  *     urls: (Array.<string>|undefined)}}
- * @todo api
+ * @api
  */
 olx.source.IGCOptions;
 
@@ -3090,7 +3117,7 @@ olx.source.IGCOptions.prototype.urls;
  *     ratio: (number|undefined),
  *     resolutions: (Array.<number>|undefined),
  *     params: (Object|undefined)}}
- * @todo api
+ * @api
  */
 olx.source.MapGuideOptions;
 
@@ -3178,7 +3205,7 @@ olx.source.MapGuideOptions.prototype.params;
  *     text: (string|undefined),
  *     url: (string|undefined),
  *     urls: (Array.<string>|undefined)}}
- * @todo api
+ * @api
  */
 olx.source.KMLOptions;
 
@@ -3257,7 +3284,7 @@ olx.source.KMLOptions.prototype.urls;
 /**
  * @typedef {{layer: string,
  *     tileLoadFunction: (ol.TileLoadFunctionType|undefined)}}
- * @todo api
+ * @api
  */
 olx.source.MapQuestOptions;
 
@@ -3280,7 +3307,7 @@ olx.source.MapQuestOptions.prototype.tileLoadFunction;
  * @typedef {{extent: (ol.Extent|undefined),
  *     projection: ol.proj.ProjectionLike,
  *     tileGrid: (ol.tilegrid.TileGrid|undefined)}}
- * @todo api
+ * @api
  */
 olx.source.TileDebugOptions;
 
@@ -3312,7 +3339,7 @@ olx.source.TileDebugOptions.prototype.tileGrid;
  *     maxZoom: (number|undefined),
  *     tileLoadFunction: (ol.TileLoadFunctionType|undefined),
  *     url: (string|undefined)}}
- * @todo api
+ * @api
  */
 olx.source.OSMOptions;
 
@@ -3365,7 +3392,7 @@ olx.source.OSMOptions.prototype.url;
  *     text: (string|undefined),
  *     url: (string|undefined),
  *     urls: (Array.<string>|undefined)}}
- * @todo api
+ * @api
  */
 olx.source.OSMXMLOptions;
 
@@ -3456,7 +3483,7 @@ olx.source.OSMXMLOptions.prototype.urls;
  *     ratio: (number|undefined),
  *     resolutions: (Array.<number>|undefined),
  *     state: (ol.source.State|string|undefined)}}
- * @todo api
+ * @api
  */
 olx.source.ImageCanvasOptions;
 
@@ -3535,7 +3562,7 @@ olx.source.ImageCanvasOptions.prototype.state;
  *     resolutions: (Array.<number>|undefined),
  *     source: ol.source.Vector,
  *     style: (ol.style.Style|Array.<ol.style.Style>|ol.feature.StyleFunction|undefined)}}
- * @todo api
+ * @api
  */
 olx.source.ImageVectorOptions;
 
@@ -3611,7 +3638,7 @@ olx.source.ImageVectorOptions.prototype.style;
  *     ratio: (number|undefined),
  *     resolutions: (Array.<number>|undefined),
  *     url: (string|undefined)}}
- * @todo api
+ * @api
  */
 olx.source.ImageWMSOptions;
 
@@ -3705,7 +3732,7 @@ olx.source.ImageWMSOptions.prototype.url;
  *     opaque: (boolean|undefined),
  *     tileLoadFunction: (ol.TileLoadFunctionType|undefined),
  *     url: (string|undefined)}}
- * @todo api
+ * @api
  */
 olx.source.StamenOptions;
 
@@ -3761,7 +3788,7 @@ olx.source.StamenOptions.prototype.url;
  *     logo: (string|undefined),
  *     projection: ol.proj.ProjectionLike,
  *     url: string}}
- * @todo api
+ * @api
  */
 olx.source.ImageStaticOptions;
 
@@ -3830,7 +3857,7 @@ olx.source.ImageStaticOptions.prototype.url;
  *     strategy: (function(ol.Extent, number): Array.<ol.Extent>|undefined),
  *     logo: (string|undefined),
  *     projection: ol.proj.ProjectionLike}}
- * @todo api
+ * @api
  */
 olx.source.ServerVectorOptions;
 
@@ -3889,7 +3916,7 @@ olx.source.ServerVectorOptions.prototype.projection;
  * @typedef {{crossOrigin: (null|string|undefined),
  *     tileLoadFunction: (ol.TileLoadFunctionType|undefined),
  *     url: string}}
- * @todo api
+ * @api
  */
 olx.source.TileJSONOptions;
 
@@ -3930,7 +3957,7 @@ olx.source.TileJSONOptions.prototype.url;
  *     tileLoadFunction: (ol.TileLoadFunctionType|undefined),
  *     url: (string|undefined),
  *     urls: (Array.<string>|undefined)}}
- * @todo api
+ * @api
  */
 olx.source.TileWMSOptions;
 
@@ -4052,7 +4079,7 @@ olx.source.TileWMSOptions.prototype.urls;
  *     logo: (string|undefined),
  *     projection: ol.proj.ProjectionLike,
  *     state: (ol.source.State|string|undefined)}}
- * @todo api
+ * @api
  */
 olx.source.VectorOptions;
 
@@ -4112,7 +4139,7 @@ olx.source.VectorOptions.prototype.state;
  *     text: (string|undefined),
  *     url: (string|undefined),
  *     urls: (Array.<string>|undefined)}}
- * @todo api
+ * @api
  */
 olx.source.StaticVectorOptions;
 
@@ -4220,7 +4247,7 @@ olx.source.StaticVectorOptions.prototype.urls;
  *     maxZoom: (number|undefined),
  *     tileLoadFunction: (ol.TileLoadFunctionType|undefined),
  *     urls: (Array.<string>|undefined)}}
- * @todo api
+ * @api
  */
 olx.source.WMTSOptions;
 
@@ -4367,7 +4394,7 @@ olx.source.WMTSOptions.prototype.urls;
  *     url: (string|undefined),
  *     urls: (Array.<string>|undefined),
  *     wrapX: (boolean|undefined)}}
- * @todo api
+ * @api
  */
 olx.source.XYZOptions;
 
@@ -4464,7 +4491,7 @@ olx.source.XYZOptions.prototype.wrapX;
  *     url: !string,
  *     tierSizeCalculation: (string|undefined),
  *     size: ol.Size}}
- * @todo api
+ * @api
  */
 olx.source.ZoomifyOptions;
 
@@ -4516,7 +4543,7 @@ olx.source.ZoomifyOptions.prototype.size;
  *     radius: number,
  *     snapToPixel: (boolean|undefined),
  *     stroke: (ol.style.Stroke|undefined)}}
- * @todo api
+ * @api
  */
 olx.style.CircleOptions;
 
@@ -4557,7 +4584,7 @@ olx.style.CircleOptions.prototype.stroke;
 
 /**
  * @typedef {{color: (ol.Color|string|undefined)}}
- * @todo api
+ * @api
  */
 olx.style.FillOptions;
 
@@ -4584,7 +4611,7 @@ olx.style.FillOptions.prototype.color;
  *     rotation: (number|undefined),
  *     size: (ol.Size|undefined),
  *     src: (string|undefined)}}
- * @todo api
+ * @api
  */
 olx.style.IconOptions;
 
@@ -4709,7 +4736,7 @@ olx.style.IconOptions.prototype.src;
  *     lineDash: (Array.<number>|undefined),
  *     miterLimit: (number|undefined),
  *     width: (number|undefined)}}
- * @todo api
+ * @api
  */
 olx.style.StrokeOptions;
 
@@ -4767,7 +4794,7 @@ olx.style.StrokeOptions.prototype.width;
  *     textBaseline: (string|undefined),
  *     fill: (ol.style.Fill|undefined),
  *     stroke: (ol.style.Stroke|undefined)}}
- * @todo api
+ * @api
  */
 olx.style.TextOptions;
 
@@ -4850,7 +4877,7 @@ olx.style.TextOptions.prototype.stroke;
  *     stroke: (ol.style.Stroke|undefined),
  *     text: (ol.style.Text|undefined),
  *     zIndex: (number|undefined)}}
- * @todo api
+ * @api
  */
 olx.style.StyleOptions;
 
@@ -4897,7 +4924,7 @@ olx.style.StyleOptions.prototype.zIndex;
  *     resolutions: !Array.<number>,
  *     tileSize: (number|undefined),
  *     tileSizes: (Array.<number>|undefined)}}
- * @todo api
+ * @api
  */
 olx.tilegrid.TileGridOptions;
 
@@ -4951,7 +4978,7 @@ olx.tilegrid.TileGridOptions.prototype.tileSizes;
  *     matrixIds: !Array.<string>,
  *     tileSize: (number|undefined),
  *     tileSizes: (Array.<number>|undefined)}}
- * @todo api
+ * @api
  */
 olx.tilegrid.WMTSOptions;
 
@@ -5000,7 +5027,7 @@ olx.tilegrid.WMTSOptions.prototype.tileSizes;
 
 /**
  * @typedef {{maxZoom: number}}
- * @todo api
+ * @api
  */
 olx.tilegrid.XYZOptions;
 
@@ -5014,7 +5041,7 @@ olx.tilegrid.XYZOptions.prototype.maxZoom;
 
 /**
  * @typedef {{resolutions: !Array.<number>}}
- * @todo api
+ * @api
  */
 olx.tilegrid.ZoomifyOptions;
 
@@ -5031,9 +5058,9 @@ olx.tilegrid.ZoomifyOptions.prototype.resolutions;
  *     constrainResolution: (boolean|undefined),
  *     nearest: (boolean|undefined),
  *     minResolution: (number|undefined)}}
- * @todo api
+ * @api
  */
-olx.View2D.fitGeometryOptions;
+olx.View.fitGeometryOptions;
 
 
 /**
@@ -5041,28 +5068,28 @@ olx.View2D.fitGeometryOptions;
  * top, right, bottom and left padding. Default is `[0, 0, 0, 0]`.
  * @type {!Array.<number>}
  */
-olx.View2D.fitGeometryOptions.prototype.padding;
+olx.View.fitGeometryOptions.prototype.padding;
 
 
 /**
  * Constrain the resolution. Default is `true`.
  * @type {boolean|undefined}
  */
-olx.View2D.fitGeometryOptions.prototype.constrainResolution;
+olx.View.fitGeometryOptions.prototype.constrainResolution;
 
 
 /**
  * Get the nearest extent. Default is `false`.
  * @type {boolean|undefined}
  */
-olx.View2D.fitGeometryOptions.prototype.nearest;
+olx.View.fitGeometryOptions.prototype.nearest;
 
 
 /**
  * Minimum resolution that we zoom to. Default is `0`.
  * @type {number|undefined}
  */
-olx.View2D.fitGeometryOptions.prototype.minResolution;
+olx.View.fitGeometryOptions.prototype.minResolution;
 
 
 /* typedefs for object literals exposed by the library */
@@ -5086,10 +5113,10 @@ olx.View2D.fitGeometryOptions.prototype.minResolution;
  *     tileQueue: ol.TileQueue,
  *     time: number,
  *     usedTiles: Object.<string, Object.<string, ol.TileRange>>,
- *     view2DState: olx.View2DState,
+ *     viewState: olx.ViewState,
  *     viewHints: Array.<number>,
  *     wantedTiles: Object.<string, Object.<string, boolean>>}}
- * @todo api
+ * @api
  */
 olx.FrameState;
 
@@ -5102,8 +5129,8 @@ olx.FrameState.prototype.pixelRatio;
 olx.FrameState.prototype.time;
 
 
-/** @type {olx.View2DState} */
-olx.FrameState.prototype.view2DState;
+/** @type {olx.ViewState} */
+olx.FrameState.prototype.viewState;
 
 
 /**
@@ -5111,18 +5138,18 @@ olx.FrameState.prototype.view2DState;
  *     projection: ol.proj.Projection,
  *     resolution: number,
  *     rotation: number}}
- * @todo api
+ * @api
  */
-olx.View2DState;
+olx.ViewState;
 
 
 /** @type {ol.Coordinate} */
-olx.View2DState.prototype.center;
+olx.ViewState.prototype.center;
 
 
 /** @type {number} */
-olx.View2DState.prototype.resolution;
+olx.ViewState.prototype.resolution;
 
 
 /** @type {number} */
-olx.View2DState.prototype.rotation;
+olx.ViewState.prototype.rotation;
