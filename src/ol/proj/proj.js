@@ -258,21 +258,18 @@ ol.proj.transforms_ = {};
  * Registers transformation functions that don't alter coordinates. Those allow
  * to transform between projections with equal meaning.
  *
- * @param {Array.<ol.proj.Projection|olx.ProjectionOptions>} projections
- *     Projections.
- * @return {Array.<ol.proj.Projection>} The added equivalent projections.
+ * @param {Array.<ol.proj.Projection>} projections Projections.
  * @api
  */
 ol.proj.addEquivalentProjections = function(projections) {
-  var addedProjections = ol.proj.addProjections(projections);
-  goog.array.forEach(addedProjections, function(source) {
-    goog.array.forEach(addedProjections, function(destination) {
+  ol.proj.addProjections(projections);
+  goog.array.forEach(projections, function(source) {
+    goog.array.forEach(projections, function(destination) {
       if (source !== destination) {
         ol.proj.addTransform(source, destination, ol.proj.cloneTransform);
       }
     });
   });
-  return addedProjections;
 };
 
 
@@ -303,34 +300,23 @@ ol.proj.addEquivalentTransforms =
 /**
  * Add a Projection object to the list of supported projections.
  *
- * @param {ol.proj.Projection|olx.ProjectionOptions} projection Projection
- *     instance or configuration.
- * @return {ol.proj.Projection} The added projection.
+ * @param {ol.proj.Projection} projection Projection instance.
  * @api
  */
 ol.proj.addProjection = function(projection) {
-  var projections = ol.proj.projections_;
-  var proj = projection instanceof ol.proj.Projection ?
-      projection :
-      new ol.proj.Projection(/** @type {olx.ProjectionOptions} */ (projection));
-  var code = proj.getCode();
-  projections[code] = proj;
-  ol.proj.addTransform(proj, proj, ol.proj.cloneTransform);
-  return proj;
+  ol.proj.projections_[projection.getCode()] = projection;
+  ol.proj.addTransform(projection, projection, ol.proj.cloneTransform);
 };
 
 
 /**
- * @param {Array.<ol.proj.Projection|olx.ProjectionOptions>} projections
- *     Projections.
- * @return {Array.<ol.proj.Projection>} The added projections.
+ * @param {Array.<ol.proj.Projection>} projections Projections.
  */
 ol.proj.addProjections = function(projections) {
   var addedProjections = [];
   goog.array.forEach(projections, function(projection) {
     addedProjections.push(ol.proj.addProjection(projection));
   });
-  return addedProjections;
 };
 
 
