@@ -21,6 +21,8 @@ goog.require('ol.style.Style');
  * attribute properties, similar to the features in vector file formats like
  * GeoJSON.
  * Features can be styled individually or use the style of their vector layer.
+ * Note that attribute properties are set as {@link ol.Object} properties on the
+ * feature object, so they are observable, and have get/set accessors.
  *
  * @constructor
  * @extends {ol.Object}
