@@ -414,7 +414,13 @@ ol.proj.addCoordinateTransforms =
  * @return {ol.TransformFunction} Transform function.
  */
 ol.proj.createTransformFromCoordinateTransform = function(transform) {
-  return /** @type {ol.TransformFunction} */ (
+  return (
+      /**
+       * @param {Array.<number>} input Input.
+       * @param {Array.<number>=} opt_output Output.
+       * @param {number=} opt_dimension Dimension.
+       * @return {Array.<number>} Output.
+       */
       function(input, opt_output, opt_dimension) {
         var length = input.length;
         var dimension = goog.isDef(opt_dimension) ? opt_dimension : 2;
@@ -429,8 +435,7 @@ ol.proj.createTransformFromCoordinateTransform = function(transform) {
           }
         }
         return output;
-      }
-  );
+      });
 };
 
 
