@@ -136,15 +136,22 @@ describe('ol.proj', function() {
           'EPSG:4326', 'EPSG:21781');
       expect(point[0]).to.roughlyEqual(600072.300, 1);
       expect(point[1]).to.roughlyEqual(200146.976, 1);
+      delete proj4.defs['EPSG:21781'];
     });
 
     it('caches the new Proj4js projections given their srsCode', function() {
+      proj4.defs('EPSG:21781',
+          '+proj=somerc +lat_0=46.95240555555556 +lon_0=7.439583333333333 ' +
+          '+k_0=1 +x_0=600000 +y_0=200000 +ellps=bessel ' +
+          '+towgs84=674.374,15.056,405.346,0,0,0,0 +units=m +no_defs');
       var code = 'urn:ogc:def:crs:EPSG:21781';
       var srsCode = 'EPSG:21781';
       proj4.defs(code, proj4.defs(srsCode));
       var proj = ol.proj.get(code);
       var proj2 = ol.proj.get(srsCode);
       expect(ol.proj.equivalent(proj2, proj)).to.be(true);
+      delete proj4.defs[code];
+      delete proj4.defs[srsCode];
     });
 
     it('numerically estimates point scale at the equator', function() {
@@ -316,6 +323,10 @@ describe('ol.proj', function() {
           '+proj=lcc +lat_1=29.3 +lat_2=30.7 +lat_0=28.66666666666667 ' +
           '+lon_0=-91.33333333333333 +x_0=609601.2192024384 +y_0=0 ' +
           '+ellps=clrk66 +datum=NAD27 +to_meter=0.3048006096012192 +no_defs');
+    });
+
+    afterEach(function() {
+      delete proj4.defs['EPSG:26782'];
     });
 
     it('returns value in meters', function() {
