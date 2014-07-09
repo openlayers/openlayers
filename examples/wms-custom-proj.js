@@ -20,7 +20,9 @@ var projection = ol.proj.addProjection({
 // Proj4js provides transform functions between its configured projections.
 // The transform is needed for the ScaleLine control. Otherwise this example
 // would also work without transform functions.
-ol.proj.addCoordinateTransforms('EPSG:4326', projection, proj4('EPSG:21781'));
+var transform = proj4('EPSG:21781');
+ol.proj.addCoordinateTransforms('EPSG:4326', projection, transform.forward,
+    transform.inverse);
 
 var extent = [420000, 30000, 900000, 350000];
 var layers = [

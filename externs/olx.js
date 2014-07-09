@@ -275,33 +275,6 @@ olx.OverlayOptions.prototype.insertFirst;
 
 
 /**
- * Object literal with forward and inverse coordinate transforms.
- * @typedef {{forward: function(ol.Coordinate): ol.Coordinate,
- *     inverse: function(ol.Coordinate): ol.Coordinate}}
- * @api
- */
-olx.CoordinateTransforms;
-
-
-/**
- * The forward transform function (that is, from the source projection to the
- * target projection) that takes a {@link ol.Coordinate} as argument
- * and returns the transformed {@link ol.Coordinate}.
- * @type {function(ol.Coordinate): ol.Coordinate}
- */
-olx.CoordinateTransforms.prototype.forward;
-
-
-/**
- * The inverse transform function (that is, from the target projection to the
- * source projection) that takes a {@link ol.Coordinate} as argument
- * and returns the transformed {@link ol.Coordinate}.
- * @type {function(ol.Coordinate): ol.Coordinate}
- */
-olx.CoordinateTransforms.prototype.inverse;
-
-
-/**
  * Object literal with config options for the projection.
  * @typedef {{code: string,
  *     units: (ol.proj.Units|string),

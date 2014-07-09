@@ -385,25 +385,24 @@ ol.proj.addTransform = function(source, destination, transformFn) {
  *
  * @param {ol.proj.ProjectionLike} source Source projection.
  * @param {ol.proj.ProjectionLike} destination Destination projection.
- * @param {olx.CoordinateTransforms} transforms Forward and inverse transform
- *     functions.
+ * @param {function(ol.Coordinate): ol.Coordinate} forward The forward transform
+ *     function (that is, from the source projection to the destination
+ *     projection) that takes a {@link ol.Coordinate} as argument and returns
+ *     the transformed {@link ol.Coordinate}.
+ * @param {function(ol.Coordinate): ol.Coordinate} inverse The inverse transform
+ *     function (that is, from the destination projection to the source
+ *     projection) that takes a {@link ol.Coordinate} as argument and returns
+ *     the transformed {@link ol.Coordinate}.
  * @api
  */
-ol.proj.addCoordinateTransforms = function(source, destination, transforms) {
+ol.proj.addCoordinateTransforms =
+    function(source, destination, forward, inverse) {
   var sourceProj = ol.proj.get(source);
   var destProj = ol.proj.get(destination);
-  var forward, inverse;
-  if (sourceProj === destProj) {
-    forward = ol.proj.cloneTransform;
-    inverse = ol.proj.cloneTransform;
-  } else {
-    forward =
-        ol.proj.createTransformFromCoordinateTransform(transforms.forward);
-    inverse =
-        ol.proj.createTransformFromCoordinateTransform(transforms.inverse);
-  }
-  ol.proj.addTransform(sourceProj, destProj, forward);
-  ol.proj.addTransform(destProj, sourceProj, inverse);
+  ol.proj.addTransform(sourceProj, destProj,
+      ol.proj.createTransformFromCoordinateTransform(forward));
+  ol.proj.addTransform(destProj, sourceProj,
+      ol.proj.createTransformFromCoordinateTransform(inverse));
 };
 
 
@@ -494,7 +493,7 @@ ol.proj.get = function(projectionLike) {
           axisOrientation: def.axis
         });
         ol.proj.addProjection(projection);
-        var currentCode, currentDef, currentProj;
+        var currentCode, currentDef, currentProj, proj4Transform;
         for (currentCode in projections) {
           currentDef = proj4.defs(currentCode);
           if (goog.isDef(currentDef)) {
@@ -502,8 +501,9 @@ ol.proj.get = function(projectionLike) {
             if (currentDef === def) {
               ol.proj.addEquivalentProjections([currentProj, projection]);
             } else {
+              proj4Transform = proj4(currentCode, code);
               ol.proj.addCoordinateTransforms(currentProj, projection,
-                  proj4(currentCode, code));
+                  proj4Transform.forward, proj4Transform.inverse);
             }
           }
         }

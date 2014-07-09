@@ -5,9 +5,12 @@
 
 
 /**
- * @type {Function}
+ * @param {...*} var_args
+ * @return {undefined|Array.<number>|Object.<{
+ *     forward: function(Array.<number>): Array.<number>,
+ *     inverse: function(Array.<number>): Array.<number>}>}
  */
-var proj4 = function() {};
+var proj4 = function(var_args) {};
 
 
 /**
