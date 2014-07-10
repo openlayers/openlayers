@@ -92,16 +92,6 @@ ol.source.ServerVector.prototype.clear = function() {
 /**
  * @inheritDoc
  */
-ol.source.ServerVector.prototype.clear = function() {
-  goog.object.clear(this.loadedFeatures_);
-  this.loadedExtents_.clear();
-  goog.base(this, 'clear');
-};
-
-
-/**
- * @inheritDoc
- */
 ol.source.ServerVector.prototype.loadFeatures =
     function(extent, resolution, projection) {
   var loadedExtents = this.loadedExtents_;
