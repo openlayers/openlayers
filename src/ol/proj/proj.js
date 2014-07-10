@@ -468,7 +468,7 @@ ol.proj.get = function(projectionLike) {
     var projections = ol.proj.projections_;
     projection = projections[code];
     if (ol.ENABLE_PROJ4JS && !goog.isDef(projection) &&
-        goog.isFunction(goog.global.proj4)) {
+        typeof proj4 == 'function') {
       var def = proj4.defs(code);
       if (goog.isDef(def)) {
         var units = def.units;
