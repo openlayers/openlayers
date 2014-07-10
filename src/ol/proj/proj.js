@@ -15,14 +15,6 @@ goog.require('ol.sphere.NORMAL');
 
 
 /**
- * Have Proj4js.
- * @const
- * @type {boolean}
- */
-ol.HAVE_PROJ4JS = ol.ENABLE_PROJ4JS && typeof Proj4js == 'object';
-
-
-/**
  * A projection as {@link ol.proj.Projection}, SRS identifier string or
  * undefined.
  * @typedef {ol.proj.Projection|string|undefined} ol.proj.ProjectionLike
@@ -62,12 +54,13 @@ ol.proj.METERS_PER_UNIT[ol.proj.Units.METERS] = 1;
  * Class for coordinate transforms between coordinate systems. By default,
  * OpenLayers ships with the ability to transform coordinates between
  * geographic (EPSG:4326) and web or spherical mercator (EPSG:3857)
- * coordinate reference systems.
+ * coordinate reference systems. Any transform functions can be added with
+ * {@link ol.proj.addCoordinateTransforms}.
  *
- * Additional transforms may be added by using the
- * {@link http://proj4js.org/|proj4js} library. If the proj4js library is
- * included, the <transform> method will work between any two coordinate
- * reference systems with proj4js definitions.
+ * Additional transforms may be added by using the {@link http://proj4js.org/}
+ * library. If the proj4js library is loaded, transforms will work between any
+ * coordinate reference systems with proj4js definitions. These definitions can
+ * be obtained from {@link http://epsg.io/}.
  *
  * @constructor
  * @param {olx.ProjectionOptions} options Projection options.
@@ -137,19 +130,6 @@ ol.proj.Projection.prototype.getExtent = function() {
 
 
 /**
- * Get the resolution of the point in degrees. For projections with degrees as
- * the unit this will simply return the provided resolution. For other
- * projections the point resolution is estimated by transforming the center
- * pixel to EPSG:4326, measuring its width and height on the normal sphere,
- * and taking the average of the width and height.
- * @param {number} resolution Resolution.
- * @param {ol.Coordinate} point Point.
- * @return {number} Point resolution.
- */
-ol.proj.Projection.prototype.getPointResolution = goog.abstractMethod;
-
-
-/**
  * Get the units of this projection.
  * @return {ol.proj.Units} Units.
  * @api
@@ -209,80 +189,42 @@ ol.proj.Projection.prototype.setDefaultTileGrid = function(tileGrid) {
 };
 
 
-
 /**
- * @constructor
- * @extends {ol.proj.Projection}
- * @param {Proj4js.Proj} proj4jsProj Proj4js projection.
- * @param {olx.Proj4jsProjectionOptions} options Proj4js projection options.
- * @private
- * @struct
+ * Set the validity extent for this projection.
+ * @param {ol.Extent} extent Extent.
+ * @api
  */
-ol.Proj4jsProjection_ = function(proj4jsProj, options) {
-
-  var units = /** @type {ol.proj.Units} */ (proj4jsProj.units);
-
-  var config = /** @type {olx.ProjectionOptions} */ ({
-    units: units,
-    axisOrientation: proj4jsProj.axis
-  });
-  goog.object.extend(config, options);
-
-  goog.base(this, config);
-
-  /**
-   * @private
-   * @type {Proj4js.Proj}
-   */
-  this.proj4jsProj_ = proj4jsProj;
-
-  /**
-   * @private
-   * @type {?ol.TransformFunction}
-   */
-  this.toEPSG4326_ = null;
-
-};
-goog.inherits(ol.Proj4jsProjection_, ol.proj.Projection);
-
-
-/**
- * @inheritDoc
- */
-ol.Proj4jsProjection_.prototype.getMetersPerUnit = function() {
-  var metersPerUnit = this.proj4jsProj_.to_meter;
-  if (!goog.isDef(metersPerUnit)) {
-    metersPerUnit = ol.proj.METERS_PER_UNIT[this.units_];
-  }
-  return metersPerUnit;
+ol.proj.Projection.prototype.setExtent = function(extent) {
+  this.extent_ = extent;
 };
 
 
 /**
- * @inheritDoc
+ * Get the resolution of the point in degrees. For projections with degrees as
+ * the unit this will simply return the provided resolution. For other
+ * projections the point resolution is estimated by transforming the center
+ * pixel to EPSG:4326, measuring its width and height on the normal sphere,
+ * and taking the average of the width and height.
+ * @param {number} resolution Resolution.
+ * @param {ol.Coordinate} point Point.
+ * @return {number} Point resolution.
  */
-ol.Proj4jsProjection_.prototype.getPointResolution =
-    function(resolution, point) {
+ol.proj.Projection.prototype.getPointResolution = function(resolution, point) {
   if (this.getUnits() == ol.proj.Units.DEGREES) {
     return resolution;
   } else {
     // Estimate point resolution by transforming the center pixel to EPSG:4326,
     // measuring its width and height on the normal sphere, and taking the
     // average of the width and height.
-    if (goog.isNull(this.toEPSG4326_)) {
-      this.toEPSG4326_ = ol.proj.getTransformFromProjections(
-          this, ol.proj.getProj4jsProjectionFromCode_({
-            code: 'EPSG:4326',
-            extent: null
-          }));
-    }
+    var toEPSG4326 = ol.proj.getTransformFromProjections(
+        this, ol.proj.get('EPSG:4326'));
     var vertices = [
       point[0] - resolution / 2, point[1],
       point[0] + resolution / 2, point[1],
       point[0], point[1] - resolution / 2,
       point[0], point[1] + resolution / 2
     ];
-    vertices = this.toEPSG4326_(vertices, vertices, 2);
+    vertices = toEPSG4326(vertices, vertices, 2);
     var width = ol.sphere.NORMAL.haversineDistance(
         vertices.slice(0, 2), vertices.slice(2, 4));
     var height = ol.sphere.NORMAL.haversineDistance(
@@ -296,21 +238,6 @@ ol.Proj4jsProjection_.prototype.getPointResolution =
     return pointResolution;
   }
 };
-
-
-/**
- * @return {Proj4js.Proj} Proj4js projection.
- */
-ol.Proj4jsProjection_.prototype.getProj4jsProj = function() {
-  return this.proj4jsProj_;
-};
-
-
-/**
- * @private
- * @type {Object.<string, ol.Proj4jsProjection_>}
- */
-ol.proj.proj4jsProjections_ = {};
 
 
 /**
@@ -332,6 +259,7 @@ ol.proj.transforms_ = {};
  * to transform between projections with equal meaning.
  *
  * @param {Array.<ol.proj.Projection>} projections Projections.
+ * @api
  */
 ol.proj.addEquivalentProjections = function(projections) {
   ol.proj.addProjections(projections);
@@ -370,27 +298,13 @@ ol.proj.addEquivalentTransforms =
 
 
 /**
- * @param {ol.Proj4jsProjection_} proj4jsProjection Proj4js projection.
- * @private
- */
-ol.proj.addProj4jsProjection_ = function(proj4jsProjection) {
-  var proj4jsProjections = ol.proj.proj4jsProjections_;
-  var code = proj4jsProjection.getCode();
-  goog.asserts.assert(!goog.object.containsKey(proj4jsProjections, code));
-  proj4jsProjections[code] = proj4jsProjection;
-};
-
-
-/**
  * Add a Projection object to the list of supported projections.
  *
- * @param {ol.proj.Projection} projection Projection object.
+ * @param {ol.proj.Projection} projection Projection instance.
  * @api
  */
 ol.proj.addProjection = function(projection) {
-  var projections = ol.proj.projections_;
-  var code = projection.getCode();
-  projections[code] = projection;
+  ol.proj.projections_[projection.getCode()] = projection;
   ol.proj.addTransform(projection, projection, ol.proj.cloneTransform);
 };
 
@@ -399,8 +313,9 @@ ol.proj.addProjection = function(projection) {
  * @param {Array.<ol.proj.Projection>} projections Projections.
  */
 ol.proj.addProjections = function(projections) {
+  var addedProjections = [];
   goog.array.forEach(projections, function(projection) {
-    ol.proj.addProjection(projection);
+    addedProjections.push(ol.proj.addProjection(projection));
   });
 };
 
@@ -409,9 +324,6 @@ ol.proj.addProjections = function(projections) {
  * FIXME empty description for jsdoc
  */
 ol.proj.clearAllProjections = function() {
-  if (ol.ENABLE_PROJ4JS) {
-    ol.proj.proj4jsProjections_ = {};
-  }
   ol.proj.projections_ = {};
   ol.proj.transforms_ = {};
 };
@@ -450,6 +362,66 @@ ol.proj.addTransform = function(source, destination, transformFn) {
     transforms[sourceCode] = {};
   }
   transforms[sourceCode][destinationCode] = transformFn;
+};
+
+
+/**
+ * Registers coordinate transform functions to convert coordinates between the
+ * source projection and the destination projection.
+ *
+ * @param {ol.proj.ProjectionLike} source Source projection.
+ * @param {ol.proj.ProjectionLike} destination Destination projection.
+ * @param {function(ol.Coordinate): ol.Coordinate} forward The forward transform
+ *     function (that is, from the source projection to the destination
+ *     projection) that takes a {@link ol.Coordinate} as argument and returns
+ *     the transformed {@link ol.Coordinate}.
+ * @param {function(ol.Coordinate): ol.Coordinate} inverse The inverse transform
+ *     function (that is, from the destination projection to the source
+ *     projection) that takes a {@link ol.Coordinate} as argument and returns
+ *     the transformed {@link ol.Coordinate}.
+ * @api
+ */
+ol.proj.addCoordinateTransforms =
+    function(source, destination, forward, inverse) {
+  var sourceProj = ol.proj.get(source);
+  var destProj = ol.proj.get(destination);
+  ol.proj.addTransform(sourceProj, destProj,
+      ol.proj.createTransformFromCoordinateTransform(forward));
+  ol.proj.addTransform(destProj, sourceProj,
+      ol.proj.createTransformFromCoordinateTransform(inverse));
+};
+
+
+/**
+ * Creates a {@link ol.TransformFunction} from a simple 2D coordinate transform
+ * function.
+ * @param {function(ol.Coordinate): ol.Coordinate} transform Coordinate
+ *     transform.
+ * @return {ol.TransformFunction} Transform function.
+ */
+ol.proj.createTransformFromCoordinateTransform = function(transform) {
+  return (
+      /**
+       * @param {Array.<number>} input Input.
+       * @param {Array.<number>=} opt_output Output.
+       * @param {number=} opt_dimension Dimension.
+       * @return {Array.<number>} Output.
+       */
+      function(input, opt_output, opt_dimension) {
+        var length = input.length;
+        var dimension = goog.isDef(opt_dimension) ? opt_dimension : 2;
+        var output = goog.isDef(opt_output) ? opt_output : new Array(length);
+        var point, i, j;
+        for (i = 0; i < length; i += dimension) {
+          point = transform([input[i], input[i + 1]]);
+          output[i] = point[0];
+          output[i + 1] = point[1];
+          for (j = dimension - 1; j >= 2; --j) {
+            output[i + j] = input[i + j];
+          }
+        }
+        return output;
+      });
 };
 
 
@@ -493,47 +465,48 @@ ol.proj.get = function(projectionLike) {
     projection = projectionLike;
   } else if (goog.isString(projectionLike)) {
     var code = projectionLike;
-    projection = ol.proj.projections_[code];
-    if (ol.HAVE_PROJ4JS && !goog.isDef(projection)) {
-      projection = ol.proj.getProj4jsProjectionFromCode_({
-        code: code,
-        extent: null
-      });
-    }
-    if (!goog.isDef(projection)) {
-      goog.asserts.assert(goog.isDef(projection));
-      projection = null;
+    var projections = ol.proj.projections_;
+    projection = projections[code];
+    if (ol.ENABLE_PROJ4JS && !goog.isDef(projection) &&
+        goog.isFunction(proj4)) {
+      var def = proj4.defs(code);
+      if (goog.isDef(def)) {
+        var units = def.units;
+        if (!goog.isDef(units)) {
+          if (goog.isDef(def.to_meter)) {
+            units = def.to_meter.toString();
+            ol.proj.METERS_PER_UNIT[units] = def.to_meter;
+          }
+        }
+        projection = new ol.proj.Projection({
+          code: code,
+          units: units,
+          axisOrientation: def.axis
+        });
+        ol.proj.addProjection(projection);
+        var currentCode, currentDef, currentProj, proj4Transform;
+        for (currentCode in projections) {
+          currentDef = proj4.defs(currentCode);
+          if (goog.isDef(currentDef)) {
+            currentProj = ol.proj.get(currentCode);
+            if (currentDef === def) {
+              ol.proj.addEquivalentProjections([currentProj, projection]);
+            } else {
+              proj4Transform = proj4(currentCode, code);
+              ol.proj.addCoordinateTransforms(currentProj, projection,
+                  proj4Transform.forward, proj4Transform.inverse);
+            }
+          }
+        }
+      } else {
+        goog.asserts.assert(goog.isDef(projection));
+        projection = null;
+      }
     }
   } else {
     projection = null;
   }
   return projection;
-};
-
-
-/**
- * @param {olx.Proj4jsProjectionOptions} options Proj4js projection options.
- * @private
- * @return {ol.Proj4jsProjection_} Proj4js projection.
- */
-ol.proj.getProj4jsProjectionFromCode_ = function(options) {
-  var code = options.code;
-  var proj4jsProjections = ol.proj.proj4jsProjections_;
-  var proj4jsProjection = proj4jsProjections[code];
-  if (!goog.isDef(proj4jsProjection)) {
-    var proj4jsProj = new Proj4js.Proj(code);
-    var srsCode = proj4jsProj.srsCode;
-    proj4jsProjection = proj4jsProjections[srsCode];
-    if (!goog.isDef(proj4jsProjection)) {
-      var config = /** @type {olx.Proj4jsProjectionOptions} */
-          (goog.object.clone(options));
-      config.code = srsCode;
-      proj4jsProjection = new ol.Proj4jsProjection_(proj4jsProj, config);
-      proj4jsProjections[srsCode] = proj4jsProjection;
-    }
-    proj4jsProjections[code] = proj4jsProjection;
-  }
-  return proj4jsProjection;
 };
 
 
@@ -595,61 +568,6 @@ ol.proj.getTransformFromProjections =
   if (goog.object.containsKey(transforms, sourceCode) &&
       goog.object.containsKey(transforms[sourceCode], destinationCode)) {
     transform = transforms[sourceCode][destinationCode];
-  }
-  if (ol.HAVE_PROJ4JS && !goog.isDef(transform)) {
-    var proj4jsSource;
-    if (sourceProjection instanceof ol.Proj4jsProjection_) {
-      proj4jsSource = sourceProjection;
-    } else {
-      proj4jsSource =
-          ol.proj.getProj4jsProjectionFromCode_({
-            code: sourceCode,
-            extent: null
-          });
-    }
-    var sourceProj4jsProj = proj4jsSource.getProj4jsProj();
-    var proj4jsDestination;
-    if (destinationProjection instanceof ol.Proj4jsProjection_) {
-      proj4jsDestination = destinationProjection;
-    } else {
-      proj4jsDestination =
-          ol.proj.getProj4jsProjectionFromCode_({
-            code: destinationCode,
-            extent: null
-          });
-    }
-    var destinationProj4jsProj = proj4jsDestination.getProj4jsProj();
-    transform =
-        /**
-         * @param {Array.<number>} input Input coordinate values.
-         * @param {Array.<number>=} opt_output Output array of coordinates.
-         * @param {number=} opt_dimension Dimension.
-         * @return {Array.<number>} Output coordinate values.
-         */
-        function(input, opt_output, opt_dimension) {
-      var length = input.length,
-          dimension = opt_dimension > 1 ? opt_dimension : 2,
-          output = opt_output;
-      if (!goog.isDef(output)) {
-        if (dimension > 2) {
-          // preserve values beyond second dimension
-          output = input.slice();
-        } else {
-          output = new Array(length);
-        }
-      }
-      goog.asserts.assert(output.length % dimension === 0);
-      var proj4jsPoint;
-      for (var i = 0; i < length; i += dimension) {
-        proj4jsPoint = new Proj4js.Point(input[i], input[i + 1]);
-        proj4jsPoint = Proj4js.transform(
-            sourceProj4jsProj, destinationProj4jsProj, proj4jsPoint);
-        output[i] = proj4jsPoint.x;
-        output[i + 1] = proj4jsPoint.y;
-      }
-      return output;
-    };
-    ol.proj.addTransform(sourceProjection, destinationProjection, transform);
   }
   if (!goog.isDef(transform)) {
     goog.asserts.assert(goog.isDef(transform));
@@ -748,16 +666,4 @@ ol.proj.transformWithProjections =
   var transformFn = ol.proj.getTransformFromProjections(
       sourceProjection, destinationProjection);
   return transformFn(point);
-};
-
-
-/**
- * @param {olx.Proj4jsProjectionOptions} options Proj4js projection options.
- * @return {ol.proj.Projection} Proj4js projection.
- * @api
- */
-ol.proj.configureProj4jsProjection = function(options) {
-  goog.asserts.assert(!goog.object.containsKey(
-      ol.proj.proj4jsProjections_, options.code));
-  return ol.proj.getProj4jsProjectionFromCode_(options);
 };

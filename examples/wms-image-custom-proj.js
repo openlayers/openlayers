@@ -1,15 +1,21 @@
 goog.require('ol.Attribution');
 goog.require('ol.Map');
 goog.require('ol.View');
+goog.require('ol.control');
+goog.require('ol.control.ScaleLine');
 goog.require('ol.layer.Image');
 goog.require('ol.proj');
 goog.require('ol.source.ImageWMS');
 
 
-var projection = ol.proj.configureProj4jsProjection({
-  code: 'EPSG:21781',
-  extent: [485869.5728, 76443.1884, 837076.5648, 299941.7864]
-});
+// Transparent Proj4js support: ol.proj.get() creates and returns a projection
+// known to Proj4js if it is unknown to OpenLayers, and registers functions to
+// transform between all registered projections.
+// EPSG:21781 is known to Proj4js because its definition was loaded in the html.
+var projection = ol.proj.get('EPSG:21781');
+// The extent is used to determine zoom level 0. Recommended values for a
+// projection's validity extent can be found at http://epsg.io/.
+projection.setExtent([485869.5728, 76443.1884, 837076.5648, 299941.7864]);
 
 var extent = [420000, 30000, 900000, 350000];
 var layers = [
@@ -49,12 +55,15 @@ var layers = [
 ];
 
 var map = new ol.Map({
+  controls: ol.control.defaults().extend([
+    new ol.control.ScaleLine()
+  ]),
   layers: layers,
   renderer: exampleNS.getRendererFromQueryString(),
   target: 'map',
   view: new ol.View({
     projection: projection,
-    center: [660000, 190000],
+    center: ol.proj.transform([8.23, 46.86], 'EPSG:4326', 'EPSG:21781'),
     extent: extent,
     zoom: 2
   })

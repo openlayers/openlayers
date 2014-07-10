@@ -275,37 +275,6 @@ olx.OverlayOptions.prototype.insertFirst;
 
 
 /**
- * Object literal with config options for the Proj4js projection.
- * @typedef {{code: string,
- *     extent: (ol.Extent|undefined),
- *     global: (boolean|undefined)}}
- * @api
- */
-olx.Proj4jsProjectionOptions;
-
-
-/**
- * The SRS identifier code, e.g. `EPSG:31256`.
- * @type {string}
- */
-olx.Proj4jsProjectionOptions.prototype.code;
-
-
-/**
- * The validity extent for the SRS.
- * @type {ol.Extent|undefined}
- */
-olx.Proj4jsProjectionOptions.prototype.extent;
-
-
-/**
- * Whether the projection is valid for the whole globe. Default is `false`.
- * @type {boolean|undefined}
- */
-olx.Proj4jsProjectionOptions.prototype.global;
-
-
-/**
  * Object literal with config options for the projection.
  * @typedef {{code: string,
  *     units: (ol.proj.Units|string),

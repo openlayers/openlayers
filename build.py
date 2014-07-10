@@ -128,10 +128,6 @@ SRC = [path
        if path.endswith('.js')
        if path not in SHADER_SRC]
 
-PROJ4JS = 'build/proj4js/lib/proj4js-combined.js'
-PROJ4JS_ZIP = 'build/proj4js-1.1.0.zip'
-PROJ4JS_ZIP_MD5 = '17caad64cf6ebc6e6fe62f292b134897'
-
 
 def report_sizes(t):
     stringio = StringIO()
@@ -348,7 +344,7 @@ def examples_star_combined_js(name, match):
     return Target(name, action=action, dependencies=dependencies)
 
 
-@target('serve', PROJ4JS, 'examples')
+@target('serve', 'examples')
 def serve(t):
     t.run('node', 'tasks/serve.js')
 
@@ -671,24 +667,7 @@ def check_examples(t):
         t.run('%(PHANTOMJS)s', 'bin/check-example.js', example)
 
 
-@target(PROJ4JS, PROJ4JS_ZIP)
-def proj4js(t):
-    from zipfile import ZipFile
-    zf = ZipFile(PROJ4JS_ZIP)
-    contents = zf.open('proj4js/lib/proj4js-combined.js').read()
-    with open(t.name, 'wb') as f:
-        f.write(contents)
-
-
-@target(PROJ4JS_ZIP, clean=False)
-def proj4js_zip(t):
-    t.info('downloading %r', t.name)
-    t.download('http://download.osgeo.org/proj4js/' +
-               os.path.basename(t.name), md5=PROJ4JS_ZIP_MD5)
-    t.info('downloaded %r', t.name)
-
-
-@target('test', PROJ4JS, phony=True)
+@target('test', phony=True)
 def test(t):
     t.run('node', 'tasks/test.js')
 
