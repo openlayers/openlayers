@@ -78,13 +78,16 @@ ol.source.ServerVector.prototype.addFeaturesInternal = function(features) {
   goog.base(this, 'addFeaturesInternal', notLoadedFeatures);
 };
 
+
 /**
  * @inheritDoc
  */
-ol.source.ServerVector.prototype.clear = function () {
-    goog.object.clear(this.loadedFeatures_);
-    goog.base(this, 'clear');
+ol.source.ServerVector.prototype.clear = function() {
+  goog.object.clear(this.loadedFeatures_);
+  this.loadedExtents_.clear();
+  goog.base(this, 'clear');
 };
+
 
 /**
  * @inheritDoc
