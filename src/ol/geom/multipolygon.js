@@ -330,9 +330,13 @@ ol.geom.MultiPolygon.prototype.setCoordinates =
     }
     var endss = ol.geom.flat.deflate.coordinatesss(
         this.flatCoordinates, 0, coordinates, this.stride, this.endss_);
-    var lastEnds = endss[endss.length - 1];
-    this.flatCoordinates.length = lastEnds.length === 0 ?
-        0 : lastEnds[lastEnds.length - 1];
+    if (endss.length === 0) {
+      this.flatCoordinates.length = 0;
+    } else {
+      var lastEnds = endss[endss.length - 1];
+      this.flatCoordinates.length = lastEnds.length === 0 ?
+          0 : lastEnds[lastEnds.length - 1];
+    }
     this.dispatchChangeEvent();
   }
 };
