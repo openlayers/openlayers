@@ -323,10 +323,39 @@ ol.source.TileWMS.prototype.getUrls = function() {
 ol.source.TileWMS.prototype.resetCoordKeyPrefix_ = function() {
   var i = 0;
   var res = [];
-  for (var key in this.params_) {
+
+  var j, jj;
+  for (j = 0, jj = this.urls_.length; j < jj; ++j) {
+    res[i++] = this.urls_[j];
+  }
+
+  var key;
+  for (key in this.params_) {
     res[i++] = key + '-' + this.params_[key];
   }
-  this.coordKeyPrefix_ = res.join('/');
+
+  this.coordKeyPrefix_ = res.join('#');
+};
+
+
+/**
+ * @param {string|undefined} url URL.
+ * @api
+ */
+ol.source.TileWMS.prototype.setUrl = function(url) {
+  var urls = goog.isDef(url) ? ol.TileUrlFunction.expandUrl(url) : null;
+  this.setUrls(urls);
+};
+
+
+/**
+ * @param {Array.<string>|undefined} urls URLs.
+ * @api
+ */
+ol.source.TileWMS.prototype.setUrls = function(urls) {
+  this.urls_ = goog.isDefAndNotNull(urls) ? urls : [];
+  this.resetCoordKeyPrefix_();
+  this.dispatchChangeEvent();
 };
 
 
