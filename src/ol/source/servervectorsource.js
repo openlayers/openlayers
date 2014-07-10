@@ -69,7 +69,9 @@ ol.source.ServerVector.prototype.addFeaturesInternal = function(features) {
   for (i = 0, ii = features.length; i < ii; ++i) {
     var feature = features[i];
     var featureId = feature.getId();
-    if (!(featureId in this.loadedFeatures_)) {
+    if (!goog.isDef(featureId)) {
+      notLoadedFeatures.push(feature);
+    } else if (!(featureId in this.loadedFeatures_)) {
       notLoadedFeatures.push(feature);
       this.loadedFeatures_[featureId] = true;
     }
