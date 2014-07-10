@@ -56,9 +56,9 @@ ol.source.TileWMS = function(opt_options) {
 
   /**
    * @private
-   * @type {Array.<string>|undefined}
+   * @type {!Array.<string>}
    */
-  this.urls_ = urls;
+  this.urls_ = goog.isDefAndNotNull(urls) ? urls : [];
 
   /**
    * @private
@@ -232,7 +232,7 @@ ol.source.TileWMS.prototype.getRequestUrl_ =
         pixelRatio, projection, params) {
 
   var urls = this.urls_;
-  if (!goog.isDef(urls) || goog.array.isEmpty(urls)) {
+  if (goog.array.isEmpty(urls)) {
     return undefined;
   }
 
@@ -283,7 +283,7 @@ ol.source.TileWMS.prototype.getRequestUrl_ =
   if (urls.length == 1) {
     url = urls[0];
   } else {
-    var index = goog.math.modulo(tileCoord.hash(), this.urls_.length);
+    var index = goog.math.modulo(tileCoord.hash(), urls.length);
     url = urls[index];
   }
   return goog.uri.utils.appendParamsFromMap(url, params);
@@ -309,7 +309,7 @@ ol.source.TileWMS.prototype.getTilePixelSize =
 
 /**
  * Return the URLs used for this WMS source.
- * @return {Array.<string>|undefined} URLs.
+ * @return {!Array.<string>} URLs.
  * @api
  */
 ol.source.TileWMS.prototype.getUrls = function() {
