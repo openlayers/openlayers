@@ -90,8 +90,8 @@ var styles = {
 var vectorSource = new ol.source.ServerVector({
   format: new ol.format.OSMXML(),
   loader: function(extent, resolution, projection) {
-    var transform = ol.proj.getTransform(projection, 'EPSG:4326');
-    var epsg4326Extent = transform(extent, []);
+    var epsg4326Extent =
+        ol.proj.transformExtent(extent, projection, 'EPSG:4326');
     var url = 'http://overpass-api.de/api/xapi?map?bbox=' +
         epsg4326Extent.join(',');
     $.ajax(url).then(function(response) {
