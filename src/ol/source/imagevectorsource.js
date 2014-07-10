@@ -6,11 +6,11 @@ goog.require('goog.events.EventType');
 goog.require('goog.vec.Mat4');
 goog.require('ol.dom');
 goog.require('ol.extent');
-goog.require('ol.feature');
 goog.require('ol.render.canvas.ReplayGroup');
 goog.require('ol.renderer.vector');
 goog.require('ol.source.ImageCanvas');
 goog.require('ol.source.Vector');
+goog.require('ol.style.defaults');
 goog.require('ol.vec.Mat4');
 
 
@@ -42,11 +42,11 @@ ol.source.ImageVector = function(options) {
 
   /**
    * @private
-   * @type {!ol.feature.StyleFunction}
+   * @type {!ol.style.StyleFunction}
    */
-  this.styleFunction_ = goog.isDef(options.style) ?
-      ol.feature.createStyleFunction(options.style) :
-      ol.feature.defaultStyleFunction;
+  this.styleFunction_ = goog.isDefAndNotNull(options.style) ?
+      ol.style.createStyleFunction(options.style) :
+      ol.style.defaults.styleFunction;
 
   /**
    * @private

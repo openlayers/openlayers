@@ -8,9 +8,9 @@ goog.require('goog.object');
 goog.require('ol.Collection');
 goog.require('ol.CollectionEventType');
 goog.require('ol.Feature');
-goog.require('ol.feature');
 goog.require('ol.render.EventType');
 goog.require('ol.renderer.vector');
+goog.require('ol.style.defaults');
 
 
 
@@ -63,19 +63,18 @@ ol.FeatureOverlay = function(opt_options) {
 
   /**
    * @private
-   * @type {ol.style.Style|Array.<ol.style.Style>|ol.feature.StyleFunction}
+   * @type {ol.style.Style|Array.<ol.style.Style>|ol.style.StyleFunction}
    */
   this.style_ = null;
 
   /**
    * @private
-   * @type {ol.feature.StyleFunction|undefined}
+   * @type {ol.style.StyleFunction|undefined}
    */
   this.styleFunction_ = undefined;
 
-  if (goog.isDef(options.style)) {
-    this.setStyle(options.style);
-  }
+  this.setStyle(goog.isDef(options.style) ?
+      options.style : ol.style.defaults.styleFunction);
 
   if (goog.isDef(options.features)) {
     if (goog.isArray(options.features)) {
@@ -169,7 +168,7 @@ ol.FeatureOverlay.prototype.handleMapPostCompose_ = function(event) {
   }
   var styleFunction = this.styleFunction_;
   if (!goog.isDef(styleFunction)) {
-    styleFunction = ol.feature.defaultStyleFunction;
+    styleFunction = ol.style.defaults.styleFunction;
   }
   var replayGroup = /** @type {ol.render.IReplayGroup} */
       (event.replayGroup);
@@ -270,13 +269,13 @@ ol.FeatureOverlay.prototype.setMap = function(map) {
  * Set the style for features.  This can be a single style object, an array
  * of styles, or a function that takes a feature and resolution and returns
  * an array of styles.
- * @param {ol.style.Style|Array.<ol.style.Style>|ol.feature.StyleFunction} style
+ * @param {ol.style.Style|Array.<ol.style.Style>|ol.style.StyleFunction} style
  *     Overlay style.
  * @api
  */
 ol.FeatureOverlay.prototype.setStyle = function(style) {
   this.style_ = style;
-  this.styleFunction_ = ol.feature.createStyleFunction(style);
+  this.styleFunction_ = ol.style.createStyleFunction(style);
   this.render_();
 };
 
@@ -284,7 +283,7 @@ ol.FeatureOverlay.prototype.setStyle = function(style) {
 /**
  * Get the style for features.  This returns whatever was passed to the `style`
  * option at construction or to the `setStyle` method.
- * @return {ol.style.Style|Array.<ol.style.Style>|ol.feature.StyleFunction}
+ * @return {ol.style.Style|Array.<ol.style.Style>|ol.style.StyleFunction}
  *     Overlay style.
  * @api
  */
@@ -295,7 +294,7 @@ ol.FeatureOverlay.prototype.getStyle = function() {
 
 /**
  * Get the style function.
- * @return {ol.feature.StyleFunction|undefined} Style function.
+ * @return {ol.style.StyleFunction|undefined} Style function.
  * @api
  */
 ol.FeatureOverlay.prototype.getStyleFunction = function() {
