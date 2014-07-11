@@ -4,11 +4,15 @@ goog.provide('ol.control.Attribution');
 
 goog.require('goog.dom');
 goog.require('goog.dom.TagName');
+goog.require('goog.dom.classes');
+goog.require('goog.events');
+goog.require('goog.events.EventType');
 goog.require('goog.object');
 goog.require('goog.style');
 goog.require('ol.Attribution');
 goog.require('ol.control.Control');
 goog.require('ol.css');
+goog.require('ol.pointer.PointerEventHandler');
 
 
 
@@ -34,11 +38,88 @@ ol.control.Attribution = function(opt_options) {
    */
   this.ulElement_ = goog.dom.createElement(goog.dom.TagName.UL);
 
+  /**
+   * @private
+   * @type {Element}
+   */
+  this.logoLi_ = goog.dom.createElement(goog.dom.TagName.LI);
+
+  goog.dom.appendChild(this.ulElement_, this.logoLi_);
+  goog.style.setElementShown(this.logoLi_, false);
+
+  /**
+   * @private
+   * @type {boolean}
+   */
+  this.collapsed_ = goog.isDef(options.collapsed) ? options.collapsed : true;
+
+  /**
+   * @private
+   * @type {boolean}
+   */
+  this.collapsible_ = goog.isDef(options.collapsible) ?
+      options.collapsible : true;
+
+  if (!this.collapsible_) {
+    this.collapsed_ = false;
+  }
+
   var className = goog.isDef(options.className) ?
       options.className : 'ol-attribution';
+
+  var tipLabel = goog.isDef(options.tipLabel) ?
+      options.tipLabel : 'Attributions';
+  var tip = goog.dom.createDom(goog.dom.TagName.SPAN, {
+    'role' : 'tooltip'
+  }, tipLabel);
+
+  /**
+   * @private
+   * @type {string}
+   */
+  this.collapseLabel_ = goog.isDef(options.collapseLabel) ?
+      options.collapseLabel : '\u00BB';
+
+  /**
+   * @private
+   * @type {string}
+   */
+  this.label_ = goog.isDef(options.label) ? options.label : 'i';
+  var label = goog.dom.createDom(goog.dom.TagName.SPAN, {},
+      (this.collapsible_ && !this.collapsed_) ?
+      this.collapseLabel_ : this.label_);
+
+
+  /**
+   * @private
+   * @type {Element}
+   */
+  this.labelSpan_ = label;
+  var button = goog.dom.createDom(goog.dom.TagName.BUTTON, {
+    'class': 'ol-has-tooltip'
+  }, this.labelSpan_);
+  goog.dom.appendChild(button, tip);
+
+  var buttonHandler = new ol.pointer.PointerEventHandler(button);
+  this.registerDisposable(buttonHandler);
+  goog.events.listen(buttonHandler, ol.pointer.EventType.POINTERUP,
+      this.handlePointerUp_, false, this);
+  goog.events.listen(button, goog.events.EventType.CLICK,
+      this.handleClick_, false, this);
+
+  goog.events.listen(button, [
+    goog.events.EventType.MOUSEOUT,
+    goog.events.EventType.FOCUSOUT
+  ], function() {
+    this.blur();
+  }, false);
+
   var element = goog.dom.createDom(goog.dom.TagName.DIV, {
-    'class': className + ' ' + ol.css.CLASS_UNSELECTABLE
-  }, this.ulElement_);
+    'class': className + ' ' + ol.css.CLASS_UNSELECTABLE + ' ' +
+        ol.css.CLASS_CONTROL +
+        (this.collapsed_ && this.collapsible_ ? ' ol-collapsed' : '') +
+        (this.collapsible_ ? '' : ' ol-uncollapsible')
+  }, this.ulElement_, button);
 
   goog.base(this, {
     element: element,
@@ -62,6 +143,12 @@ ol.control.Attribution = function(opt_options) {
    * @type {Object.<string, boolean>}
    */
   this.attributionElementRenderedVisible_ = {};
+
+  /**
+   * @private
+   * @type {Object.<string, Element>}
+   */
+  this.logoElements_ = {};
 
 };
 goog.inherits(ol.control.Attribution, ol.control.Control);
@@ -180,10 +267,134 @@ ol.control.Attribution.prototype.updateElement_ = function(frameState) {
   }
 
   var renderVisible =
-      !goog.object.isEmpty(this.attributionElementRenderedVisible_);
+      !goog.object.isEmpty(this.attributionElementRenderedVisible_) ||
+      !goog.object.isEmpty(frameState.logos);
   if (this.renderedVisible_ != renderVisible) {
     goog.style.setElementShown(this.element, renderVisible);
     this.renderedVisible_ = renderVisible;
   }
 
+  this.insertLogos_(frameState);
+
+};
+
+
+/**
+ * @param {?olx.FrameState} frameState Frame state.
+ * @private
+ */
+ol.control.Attribution.prototype.insertLogos_ = function(frameState) {
+
+  var logo;
+  var logos = frameState.logos;
+  var logoElements = this.logoElements_;
+
+  for (logo in logoElements) {
+    if (!(logo in logos)) {
+      goog.dom.removeNode(logoElements[logo]);
+      delete logoElements[logo];
+    }
+  }
+
+  var image, logoElement, logoKey;
+  for (logoKey in logos) {
+    if (!(logoKey in logoElements)) {
+      image = new Image();
+      image.src = logoKey;
+      var logoValue = logos[logoKey];
+      if (logoValue === '') {
+        logoElement = image;
+      } else {
+        logoElement = goog.dom.createDom(goog.dom.TagName.A, {
+          'href': logoValue,
+          'target': '_blank'
+        });
+        logoElement.appendChild(image);
+      }
+      goog.dom.appendChild(this.logoLi_, logoElement);
+      logoElements[logoKey] = logoElement;
+    }
+  }
+
+  goog.style.setElementShown(this.logoLi_, !goog.object.isEmpty(logos));
+
+};
+
+
+/**
+ * @param {goog.events.BrowserEvent} event The event to handle
+ * @private
+ */
+ol.control.Attribution.prototype.handleClick_ = function(event) {
+  if (event.screenX !== 0 && event.screenY !== 0) {
+    return;
+  }
+  this.handleToggle_();
+};
+
+
+/**
+ * @param {ol.pointer.PointerEvent} pointerEvent The event to handle
+ * @private
+ */
+ol.control.Attribution.prototype.handlePointerUp_ = function(pointerEvent) {
+  pointerEvent.browserEvent.preventDefault();
+  this.handleToggle_();
+};
+
+
+/**
+ * @private
+ */
+ol.control.Attribution.prototype.handleToggle_ = function() {
+  goog.dom.classes.toggle(this.element, 'ol-collapsed');
+  goog.dom.setTextContent(this.labelSpan_,
+      (this.collapsed_) ? this.collapseLabel_ : this.label_);
+  this.collapsed_ = !this.collapsed_;
+};
+
+
+/**
+ * @return {boolean} True is the widget is collapsible.
+ * @api
+ */
+ol.control.Attribution.prototype.getCollapsible = function() {
+  return this.collapsible_;
+};
+
+
+/**
+ * @param {boolean} collapsible True is the widget is collapsible.
+ * @api
+ */
+ol.control.Attribution.prototype.setCollapsible = function(collapsible) {
+  if (this.collapsible_ === collapsible) {
+    return;
+  }
+  this.collapsible_ = collapsible;
+  goog.dom.classes.toggle(this.element, 'ol-uncollapsible');
+  if (!collapsible && this.collapsed_) {
+    this.handleToggle_();
+  }
+};
+
+
+/**
+ * @param {boolean} collapsed True is the widget is collapsed.
+ * @api
+ */
+ol.control.Attribution.prototype.setCollapsed = function(collapsed) {
+  if (!this.collapsible_ || this.collapsed_ === collapsed) {
+    return;
+  }
+  this.handleToggle_();
+};
+
+
+/**
+ * @return {boolean} True is the widget is collapsed.
+ * @api
+ */
+ol.control.Attribution.prototype.getCollapsed = function() {
+  return this.collapsed_;
 };

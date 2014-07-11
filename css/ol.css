@@ -1,53 +1,3 @@
-.ol-attribution {
-  position: absolute;
-  text-align: right;
-  bottom: 0;
-  right: 0;
-  padding: 6px;
-  color: #000000;
-  color: rgba(238,238,238,1);
-  background: rgba(0,60,136,0.3);
-}
-.ol-attribution a {
-  text-decoration: none;
-  color: #7b98bc;
-  color: rgba(255,255,255,1);
-}
-
-.ol-attribution ul {
-  margin: 0;
-  padding: 0;
-  font-size: 10px;
-  line-height: 12px;
-}
-.ol-attribution li {
-  display: inline;
-  list-style: none;
-  line-height: inherit;
-}
-.ol-attribution li:not(:last-child):after {
-  content: "\2003";
-}
-.ol-attribution-bing-tos {
-  float:right;
-  padding-top: 2px;
-  white-space: nowrap;
-}
-
-.ol-logo {
-  bottom: 0;
-  left: 0;
-  padding: 2px;
-  position: absolute;
-}
-.ol-logo ul {
-  margin: 0;
-  padding: 0;
-}
-.ol-logo ul li {
-  display: inline;
-  list-style: none;
-}
 
 .ol-mouse-position {
   top: 8px;
@@ -226,11 +176,65 @@ button.ol-full-screen-true:after {
 }
 .ol-rotate .ol-has-tooltip:hover [role=tooltip],
 .ol-rotate .ol-has-tooltip:focus [role=tooltip],
+.ol-attribution .ol-has-tooltip:hover [role=tooltip],
+.ol-attribution .ol-has-tooltip:focus [role=tooltip],
 .ol-full-screen .ol-has-tooltip:hover [role=tooltip],
 .ol-full-screen .ol-has-tooltip:focus [role=tooltip] {
   right: 2.2em;
   left: auto;
   border-radius: 4px 0 0 4px;
+  border-left-width: 3px;
+  border-right-width: 0;
+}
+
+.ol-attribution {
+  text-align: right;
+  bottom: .5em;
+  right: .5em;
+}
+
+.ol-attribution ul {
+  margin: 0;
+  padding: 0 .5em;
+  font-size: .7rem;
+  line-height: 1.375em;
+  color: #000;
+  text-shadow: 0 0 2px #fff;
+}
+.ol-attribution li {
+  display: inline;
+  list-style: none;
+  line-height: inherit;
+}
+.ol-attribution li:not(:last-child):after {
+  content: " ";
+}
+.ol-attribution img {
+  max-height: 2em;
+}
+.ol-attribution ul, .ol-attribution button {
+  display: inline-block;
+}
+.ol-attribution:not(.ol-collapsed) button:hover [role=tooltip],
+.ol-attribution.ol-collapsed ul {
+  display: none;
+}
+.ol-attribution:not(.ol-collapsed) {
+  background: rgba(255,255,255,0.8);
+}
+.ol-attribution.ol-uncollapsible {
+  bottom: 0;
+  right: 0;
+  border-radius: 4px 0 0;
+  height: 1.1em;
+  line-height: 1em;
+}
+.ol-attribution.ol-uncollapsible img {
+  margin-top: -.2em;
+  max-height: 1.6em;
+}
+.ol-attribution.ol-uncollapsible button {
+  display: none;
 }
 
 .ol-zoomslider {

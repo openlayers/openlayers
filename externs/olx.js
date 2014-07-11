@@ -661,6 +661,42 @@ olx.control.AttributionOptions.prototype.target;
 
 
 /**
+ * Specify if attributions can be collapsed. If you use an OSM source,
+ * should be set to `false` — see
+ * {@link http://www.openstreetmap.org/copyright OSM Copyright} —
+ * Default is `true`.
+ * @type {boolean|undefined}
+ */
+olx.control.AttributionOptions.prototype.collapsible;
+
+
+/**
+ * Specify if attributions should be collapsed at startup. Default is `true`.
+ * @type {boolean|undefined}
+ */
+olx.control.AttributionOptions.prototype.collapsed;
+
+
+/**
+ * Text label to use for the button tip. Default is `Attributions`
+ * @type {string|undefined}
+ */
+olx.control.AttributionOptions.prototype.tipLabel;
+
+
+/**
+ * Text label to use for the collapsed attributions button. Default is `i`
+ * @type {string|undefined}
+ */
+olx.control.AttributionOptions.prototype.label;
+
+/**
+ * Text label to use for the expanded attributions button. Default is `»`
+ * @type {string|undefined}
+ */
+olx.control.AttributionOptions.prototype.collapseLabel;
+
+/**
  * @typedef {{element: (Element|undefined),
  *     target: (Element|string|undefined)}}
  * @api
@@ -687,8 +723,6 @@ olx.control.ControlOptions.prototype.target;
 /**
  * @typedef {{attribution: (boolean|undefined),
  *     attributionOptions: (olx.control.AttributionOptions|undefined),
- *     logo: (boolean|undefined),
- *     logoOptions: (olx.control.LogoOptions|undefined),
  *     zoom: (boolean|undefined),
  *     rotateOptions: (olx.control.RotateOptions|undefined),
  *     zoomOptions: (olx.control.ZoomOptions|undefined)}}
@@ -709,20 +743,6 @@ olx.control.DefaultsOptions.prototype.attribution;
  * @type {olx.control.AttributionOptions|undefined}
  */
 olx.control.DefaultsOptions.prototype.attributionOptions;
-
-
-/**
- * Logo. Default is `true`.
- * @type {boolean|undefined}
- */
-olx.control.DefaultsOptions.prototype.logo;
-
-
-/**
- * Logo options.
- * @type {olx.control.LogoOptions|undefined}
- */
-olx.control.DefaultsOptions.prototype.logoOptions;
 
 
 /**
@@ -789,28 +809,6 @@ olx.control.FullScreenOptions.prototype.keys;
  * @type {Element|undefined}
  */
 olx.control.FullScreenOptions.prototype.target;
-
-
-/**
- * @typedef {{className: (string|undefined),
- *     target: (Element|undefined)}}
- * @api
- */
-olx.control.LogoOptions;
-
-
-/**
- * CSS class name. Default is `ol-logo`.
- * @type {string|undefined}
- */
-olx.control.LogoOptions.prototype.className;
-
-
-/**
- * Target.
- * @type {Element|undefined}
- */
-olx.control.LogoOptions.prototype.target;
 
 
 /**

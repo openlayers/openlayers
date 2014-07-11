@@ -1,6 +1,7 @@
 goog.require('ol.Feature');
 goog.require('ol.Map');
 goog.require('ol.View');
+goog.require('ol.control');
 goog.require('ol.geom.Circle');
 goog.require('ol.layer.Tile');
 goog.require('ol.layer.Vector');
@@ -188,6 +189,11 @@ var map = new ol.Map({
     vectorLayer
   ],
   target: 'map',
+  controls: ol.control.defaults({
+    attributionOptions: /** @type {olx.control.AttributionOptions} */ ({
+      collapsible: false
+    })
+  }),
   view: new ol.View({
     center: [0, 0],
     zoom: 2

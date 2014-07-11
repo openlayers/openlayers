@@ -10,7 +10,11 @@ goog.require('ol.source.OSM');
 var scaleLineControl = new ol.control.ScaleLine();
 
 var map = new ol.Map({
-  controls: ol.control.defaults().extend([
+  controls: ol.control.defaults({
+    attributionOptions: /** @type {olx.control.AttributionOptions} */ ({
+      collapsible: false
+    })
+  }).extend([
     scaleLineControl
   ]),
   layers: [

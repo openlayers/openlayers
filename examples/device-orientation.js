@@ -1,6 +1,7 @@
 goog.require('ol.DeviceOrientation');
 goog.require('ol.Map');
 goog.require('ol.View');
+goog.require('ol.control');
 goog.require('ol.dom.Input');
 goog.require('ol.layer.Tile');
 goog.require('ol.proj');
@@ -21,6 +22,11 @@ var map = new ol.Map({
   ],
   renderer: exampleNS.getRendererFromQueryString(),
   target: 'map',
+  controls: ol.control.defaults({
+    attributionOptions: /** @type {olx.control.AttributionOptions} */ ({
+      collapsible: false
+    })
+  }),
   view: view
 });
 
