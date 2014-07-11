@@ -80,12 +80,14 @@ ol.style.Circle = function(opt_options) {
    */
   var snapToPixel = goog.isDef(options.snapToPixel) ?
       options.snapToPixel : true;
+  var scale = goog.isDef(options.scale) ?
+      options.scale : 1;
 
   goog.base(this, {
     opacity: 1,
     rotateWithView: false,
     rotation: 0,
-    scale: 1,
+    scale: scale,
     snapToPixel: snapToPixel
   });
 
