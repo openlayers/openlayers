@@ -356,7 +356,7 @@ ol.control.Attribution.prototype.handleToggle_ = function() {
 
 /**
  * @return {boolean} True is the widget is collapsible.
- * @todo api
+ * @api
  */
 ol.control.Attribution.prototype.getCollapsible = function() {
   return this.collapsible_;
@@ -365,7 +365,7 @@ ol.control.Attribution.prototype.getCollapsible = function() {
 
 /**
  * @param {boolean} collapsible True is the widget is collapsible.
- * @todo api
+ * @api
  */
 ol.control.Attribution.prototype.setCollapsible = function(collapsible) {
   if (this.collapsible_ === collapsible) {
@@ -381,7 +381,7 @@ ol.control.Attribution.prototype.setCollapsible = function(collapsible) {
 
 /**
  * @param {boolean} collapsed True is the widget is collapsed.
- * @todo api
+ * @api
  */
 ol.control.Attribution.prototype.setCollapsed = function(collapsed) {
   if (!this.collapsible_ || this.collapsed_ === collapsed) {
@@ -393,7 +393,7 @@ ol.control.Attribution.prototype.setCollapsed = function(collapsed) {
 
 /**
  * @return {boolean} True is the widget is collapsed.
- * @todo api
+ * @api
  */
 ol.control.Attribution.prototype.getCollapsed = function() {
   return this.collapsed_;
