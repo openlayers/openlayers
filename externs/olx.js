@@ -293,7 +293,8 @@ olx.OverlayOptions.prototype.insertFirst;
  *     units: (ol.proj.Units|string),
  *     extent: (ol.Extent|undefined),
  *     axisOrientation: (string|undefined),
- *     global: (boolean|undefined)}}
+ *     global: (boolean|undefined),
+ *     worldExtent: (ol.Extent|undefined)}}
  * @api
  */
 olx.ProjectionOptions;
@@ -332,6 +333,13 @@ olx.ProjectionOptions.prototype.axisOrientation;
  * @type {boolean|undefined}
  */
 olx.ProjectionOptions.prototype.global;
+
+
+/**
+ * The world extent for the SRS.
+ * @type {ol.Extent|undefined}
+ */
+olx.ProjectionOptions.prototype.worldExtent;
 
 
 /**

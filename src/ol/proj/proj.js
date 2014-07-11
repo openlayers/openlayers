@@ -88,6 +88,13 @@ ol.proj.Projection = function(options) {
 
   /**
    * @private
+   * @type {ol.Extent}
+   */
+  this.worldExtent_ = goog.isDef(options.worldExtent) ?
+      options.worldExtent : null;
+
+  /**
+   * @private
    * @type {string}
    */
   this.axisOrientation_ = goog.isDef(options.axisOrientation) ?
@@ -149,6 +156,16 @@ ol.proj.Projection.prototype.getMetersPerUnit = function() {
 
 
 /**
+ * Get the world extent for this projection.
+ * @return {ol.Extent} Extent.
+ * @api
+ */
+ol.proj.Projection.prototype.getWorldExtent = function() {
+  return this.worldExtent_;
+};
+
+
+/**
  * Get the axis orientation of this projection.
  * Example values are:
  * enu - the default easting, northing, elevation.
@@ -195,6 +212,17 @@ ol.proj.Projection.prototype.setDefaultTileGrid = function(tileGrid) {
  */
 ol.proj.Projection.prototype.setExtent = function(extent) {
   this.extent_ = extent;
+};
+
+
+/**
+ * Set the world extent for this projection.
+ * @param {ol.Extent} worldExtent World extent
+ *     [minlon, minlat, maxlon, maxlat].
+ * @api
+ */
+ol.proj.Projection.prototype.setWorldExtent = function(worldExtent) {
+  this.worldExtent_ = worldExtent;
 };
 
 
