@@ -462,8 +462,15 @@ ol.View.prototype.fitGeometry = function(geometry, size, opt_options) {
   var constrainResolution = goog.isDef(options.constrainResolution) ?
       options.constrainResolution : true;
   var nearest = goog.isDef(options.nearest) ? options.nearest : false;
-  var minResolution = goog.isDef(options.minResolution) ?
-      options.minResolution : 0;
+  var minResolution;
+  if (goog.isDef(options.minResolution)) {
+    minResolution = options.minResolution;
+  } else if (goog.isDef(options.maxZoom)) {
+    minResolution = this.constrainResolution(
+        this.maxResolution_, options.maxZoom - this.minZoom_, 0);
+  } else {
+    minResolution = 0;
+  }
   var coords = geometry.getFlatCoordinates();
 
   // calculate rotated extent

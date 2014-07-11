@@ -5070,6 +5070,14 @@ olx.View.fitGeometryOptions.prototype.nearest;
 olx.View.fitGeometryOptions.prototype.minResolution;
 
 
+/**
+ * Maximum zoom level that we zoom to. If `minResolution` is given,
+ * this property is ignored.
+ * @type {number|undefined}
+ */
+olx.View.fitGeometryOptions.prototype.maxZoom;
+
+
 /* typedefs for object literals exposed by the library */
 
 
