@@ -355,7 +355,7 @@ virtual('lint', 'build/lint-timestamp', 'build/check-requires-timestamp',
     'build/check-whitespace-timestamp')
 
 
-@target('build/lint-timestamp', SRC, EXPORTS, EXAMPLES_SRC, SPEC, precious=True)
+@target('build/lint-timestamp', SRC, EXAMPLES_SRC, SPEC, precious=True)
 def build_lint_src_timestamp(t):
     t.run('%(GJSLINT)s',
           '--jslint_error=all',
@@ -367,7 +367,7 @@ def build_lint_src_timestamp(t):
 
 virtual('jshint', 'build/jshint-timestamp')
 
-@target('build/jshint-timestamp', SRC, EXPORTS, EXAMPLES_SRC, SPEC,
+@target('build/jshint-timestamp', SRC, EXAMPLES_SRC, SPEC,
         precious=True)
 def build_jshint_timestamp(t):
     t.run(variables.JSHINT, '--verbose', t.newer(t.dependencies))
@@ -537,7 +537,7 @@ def build_check_requires_timestamp(t):
     t.touch()
 
 
-@target('build/check-whitespace-timestamp', SRC, EXPORTS, EXAMPLES_SRC,
+@target('build/check-whitespace-timestamp', SRC, EXAMPLES_SRC,
         SPEC, JSDOC_SRC, precious=True)
 def build_check_whitespace_timestamp(t):
     CR_RE = re.compile(r'\r')
