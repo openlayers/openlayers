@@ -20,7 +20,6 @@ if sys.platform == 'win32':
         'GIT': 'git.exe',
         'GJSLINT': 'gjslint.exe',
         'JAVA': 'java.exe',
-        'JAR': 'jar.exe',
         'JSDOC': './node_modules/.bin/jsdoc',
         'JSHINT': './node_modules/.bin/jshint',
         'PYTHON': 'python.exe',
@@ -42,8 +41,6 @@ if sys.platform == 'win32':
     if java_home:
         if not which(win['JAVA']):
             win['JAVA'] = os.path.join(java_home, 'bin', 'java.exe')
-        if not which(win['JAR']):
-            win['JAR'] = os.path.join(java_home, 'bin', 'jar.exe')
     elif not which(win['JAVA']):
         win['JAVA'] = os.path.join(program_files,
                                    'Java', 'jre7', 'bin', 'java.exe')
@@ -76,7 +73,6 @@ else:
     variables.GJSLINT = 'gjslint'
     variables.JSHINT = './node_modules/.bin/jshint'
     variables.JAVA = 'java'
-    variables.JAR = 'jar'
     variables.JSDOC = './node_modules/.bin/jsdoc'
     variables.PYTHON = 'python'
     variables.PHANTOMJS = './node_modules/.bin/phantomjs'
@@ -85,8 +81,8 @@ variables.BRANCH = output(
     '%(GIT)s', 'rev-parse', '--abbrev-ref', 'HEAD').strip()
 
 EXECUTABLES = [variables.CLEANCSS, variables.GIT, variables.GJSLINT,
-               variables.JAVA, variables.JAR, variables.JSDOC,
-               variables.JSHINT, variables.PYTHON, variables.PHANTOMJS]
+               variables.JAVA, variables.JSDOC, variables.JSHINT,
+               variables.PYTHON, variables.PHANTOMJS]
 
 EXAMPLES = [path
             for path in ifind('examples')
