@@ -16,6 +16,7 @@ from pake import ifind, main, output, rule, target, variables, virtual, which
 if sys.platform == 'win32':
 
     win = {
+        'CLEANCSS': './node_modules/.bin/cleancss',
         'GIT': 'git.exe',
         'GJSLINT': 'gjslint.exe',
         'JAVA': 'java.exe',
@@ -70,6 +71,7 @@ if sys.platform == 'win32':
         setattr(variables, program, path)
 
 else:
+    variables.CLEANCSS = './node_modules/.bin/cleancss'
     variables.GIT = 'git'
     variables.GJSLINT = 'gjslint'
     variables.JSHINT = './node_modules/.bin/jshint'
@@ -82,9 +84,9 @@ else:
 variables.BRANCH = output(
     '%(GIT)s', 'rev-parse', '--abbrev-ref', 'HEAD').strip()
 
-EXECUTABLES = [variables.GIT, variables.GJSLINT, variables.JAVA, variables.JAR,
-               variables.JSDOC, variables.JSHINT, variables.PYTHON,
-               variables.PHANTOMJS]
+EXECUTABLES = [variables.CLEANCSS, variables.GIT, variables.GJSLINT,
+               variables.JAVA, variables.JAR, variables.JSDOC,
+               variables.JSHINT, variables.PYTHON, variables.PHANTOMJS]
 
 EXPORTS = 'build/exports.js'
 
@@ -159,9 +161,9 @@ virtual('check', 'lint', 'jshint', 'build/ol-all.js', 'test')
 virtual('todo', 'fixme')
 
 
-@target('build/ol.css', 'build/ol.js')
+@target('build/ol.css')
 def build_ol_css(t):
-    t.touch()
+    t.output('%(CLEANCSS)s', 'css/ol.css')
 
 
 @target('build/ol.js', SRC, SHADER_SRC, 'buildcfg/ol.json')
