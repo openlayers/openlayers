@@ -88,8 +88,6 @@ EXECUTABLES = [variables.CLEANCSS, variables.GIT, variables.GJSLINT,
                variables.JAVA, variables.JAR, variables.JSDOC,
                variables.JSHINT, variables.PYTHON, variables.PHANTOMJS]
 
-EXPORTS = 'build/exports.js'
-
 EXAMPLES = [path
             for path in ifind('examples')
             if path.endswith('.html')
@@ -190,11 +188,6 @@ virtual('build-all', 'build/ol-all.js')
 @target('build/ol-all.js', SRC, SHADER_SRC, 'buildcfg/ol-all.json')
 def build_ol_all_js(t):
     t.run('node', 'tasks/build.js', 'buildcfg/ol-all.json', 'build/ol-all.js')
-
-
-@target(EXPORTS, SRC)
-def build_exports_js(t):
-    t.run('node', 'tasks/generate-exports.js', EXPORTS)
 
 
 for glsl_src in GLSL_SRC:
@@ -574,8 +567,7 @@ virtual('apidoc', 'build/jsdoc-%(BRANCH)s-timestamp' % vars(variables))
 
 
 @target('build/jsdoc-%(BRANCH)s-timestamp' % vars(variables), 'host-resources',
-        EXPORTS, SRC, SHADER_SRC,
-        ifind('apidoc/template'))
+        SRC, SHADER_SRC, ifind('apidoc/template'))
 def jsdoc_BRANCH_timestamp(t):
     t.run('%(JSDOC)s', 'apidoc/index.md', '-c', 'apidoc/conf.json',
           '-d', 'build/hosted/%(BRANCH)s/apidoc')
