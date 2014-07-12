@@ -119,19 +119,47 @@ ol.ObjectAccessor.prototype.transform = function(from, to) {
  * @classdesc
  * Abstract base class; normally only used for creating subclasses and not
  * instantiated in apps.
- * All non-trivial classes inherit from this.
+ * Most non-trivial classes inherit from this.
  *
- * It provides standardised get/set methods, and implements a form of
- * Key Value Observing. Setting a value triggers a change event, and 2 objects
- * can be bound together such that a change in one will automatically be
- * reflected in the other.
+ * This extends {@link ol.Observable} with observable properties, where each
+ * property is observable as well as the object as a whole.
  *
- * See {@link ol.dom.Input} for specific case of binding an object with an
- * HTML element.
+ * Classes that inherit from this have pre-defined properties, to which you can
+ * add your own. The pre-defined properties are listed in this documentation as
+ * 'Observable Properties', and have their own accessors; for example,
+ * {@link ol.Map} has a `target` property, accessed with `getTarget()`  and
+ * changed with `setTarget()`. Not all properties are however settable. There
+ * are also general-purpose accessors `get()` and `set()`. For example,
+ * `get('target') is equivalent to `getTarget()`.
+ *
+ * The `set` accessors trigger a change event, and you can monitor this by
+ * registering a listener. For example, {@link ol.View} has a `center`
+ * property, so `view.on('change:center', function(evt) {...});` would call the
+ * function whenever the value of the center property changes. Within the
+ * function, `evt.target` would be the view, so `evt.target.getCenter()` would
+ * return the new center.
+ *
+ * You can add your own observable properties with `set('myProp', 'new value')`,
+ * and retrieve that with `get('myProp')`. A change listener can then be
+ * registered with `on('change:myProp', ...)`. And a change can be triggered
+ * with `dispatchEvent('change:myProp')`. You can get a list of all properties
+ * with `getProperties()`.
+ *
+ * Note that the observable properties are separate from standard JS properties.
+ * You can, for example, give your map object a title with
+ * `map.title='New title'` and with `map.set('title', 'Another title')`. The
+ * first will be a `hasOwnProperty`; the second will appear in
+ * `getProperties()`. Only the second is observable.
+ *
+ * The observable properties also implement a form of Key Value Observing.
+ * Two objects can be bound together such that a change in one will
+ * automatically be reflected in the other. See `bindTo` method for more
+ * details, and see {@link ol.dom.Input} for the specific case of binding an
+ * object with an HTML element.
  *
  * @constructor
  * @extends {ol.Observable}
- * @param {Object.<string, *>=} opt_values Values.
+ * @param {Object.<string, *>=} opt_values An object with key-value pairs.
  * @fires ol.ObjectEvent
  * @api
  */
