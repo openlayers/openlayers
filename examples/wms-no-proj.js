@@ -42,8 +42,10 @@ var layers = [
 ];
 
 // A minimal projection object is configured with only the SRS code and the map
-// units. No client side coordinate transforms are possible with such a
-// projection object.
+// units. No client-side coordinate transforms are possible with such a
+// projection object. Requesting tiles only needs the code together with a
+// tile grid of Cartesian coordinates; it does not matter how those
+// coordinates relate to latitude or longitude.
 var projection = new ol.proj.Projection({
   code: 'EPSG:21781',
   units: 'm'
