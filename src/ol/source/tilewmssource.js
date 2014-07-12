@@ -14,6 +14,7 @@ goog.require('ol');
 goog.require('ol.TileCoord');
 goog.require('ol.TileUrlFunction');
 goog.require('ol.extent');
+goog.require('ol.proj');
 goog.require('ol.source.TileImage');
 goog.require('ol.source.wms');
 goog.require('ol.source.wms.ServerType');
@@ -121,7 +122,7 @@ goog.inherits(ol.source.TileWMS, ol.source.TileImage);
  * constructed.
  * @param {ol.Coordinate} coordinate Coordinate.
  * @param {number} resolution Resolution.
- * @param {ol.proj.Projection} projection Projection.
+ * @param {ol.proj.ProjectionLike} projection Projection.
  * @param {!Object} params GetFeatureInfo params. `INFO_FORMAT` at least should
  *     be provided. If `QUERY_LAYERS` is not provided then the layers specified
  *     in the `LAYERS` parameter will be used. `VERSION` should not be
@@ -139,9 +140,11 @@ ol.source.TileWMS.prototype.getGetFeatureInfoUrl =
     return undefined;
   }
 
+  var projectionObj = ol.proj.get(projection);
+
   var tileGrid = this.getTileGrid();
   if (goog.isNull(tileGrid)) {
-    tileGrid = this.getTileGridForProjection(projection);
+    tileGrid = this.getTileGridForProjection(projectionObj);
   }
 
   var tileCoord = tileGrid.getTileCoordForCoordAndResolution(
@@ -185,7 +188,7 @@ ol.source.TileWMS.prototype.getGetFeatureInfoUrl =
   goog.object.set(baseParams, this.v13_ ? 'J' : 'Y', y);
 
   return this.getRequestUrl_(tileCoord, tileSize, tileExtent,
-      pixelRatio, projection, baseParams);
+      pixelRatio, projectionObj, baseParams);
 };
 
 
