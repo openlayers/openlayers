@@ -31,7 +31,7 @@ if ('download' in exportPNGElement) {
       var canvas = event.context.canvas;
       exportPNGElement.href = canvas.toDataURL('image/png');
     });
-    map.render();
+    map.renderSync();
   }, false);
 } else {
   var info = document.getElementById('no-download');
