@@ -1,6 +1,7 @@
 goog.provide('ol.format.WKT');
 
 goog.require('goog.array');
+goog.require('goog.asserts');
 goog.require('goog.string');
 goog.require('ol.Feature');
 goog.require('ol.format.TextFeature');
@@ -174,7 +175,7 @@ ol.format.WKT.prototype.parseGeometryCollection_ = function(str) {
  * @return {string} Coordinates part of Point as WKT.
  * @private
  */
-ol.format.WKT.prototype.encodePoint_ = function(geom) {
+ol.format.WKT.encodePointGeometry_ = function(geom) {
   var coordinates = geom.getCoordinates();
   return coordinates[0] + ' ' + coordinates[1];
 };
@@ -185,11 +186,11 @@ ol.format.WKT.prototype.encodePoint_ = function(geom) {
  * @return {string} Coordinates part of MultiPoint as WKT.
  * @private
  */
-ol.format.WKT.prototype.encodeMultiPoint_ = function(geom) {
+ol.format.WKT.encodeMultiPointGeometry_ = function(geom) {
   var array = [];
   var components = geom.getPoints();
   for (var i = 0, ii = components.length; i < ii; ++i) {
-    array.push('(' + this.encodePoint_.apply(this, [components[i]]) + ')');
+    array.push('(' + ol.format.WKT.encodePointGeometry_(components[i]) + ')');
   }
   return array.join(',');
 };
@@ -200,22 +201,22 @@ ol.format.WKT.prototype.encodeMultiPoint_ = function(geom) {
  * @return {string} Coordinates part of GeometryCollection as WKT.
  * @private
  */
-ol.format.WKT.prototype.encodeGeometryCollection_ = function(geom) {
+ol.format.WKT.encodeGeometryCollectionGeometry_ = function(geom) {
   var array = [];
   var geoms = geom.getGeometries();
   for (var i = 0, ii = geoms.length; i < ii; ++i) {
-    array.push(this.encode_.apply(this, [geoms[i]]));
+    array.push(ol.format.WKT.encode_(geoms[i]));
   }
   return array.join(',');
 };
 
 
 /**
- * @param {ol.geom.LineString} geom LineString geometry.
+ * @param {ol.geom.LineString|ol.geom.LinearRing} geom LineString geometry.
  * @return {string} Coordinates part of LineString as WKT.
  * @private
  */
-ol.format.WKT.prototype.encodeLineString_ = function(geom) {
+ol.format.WKT.encodeLineStringGeometry_ = function(geom) {
   var coordinates = geom.getCoordinates();
   var array = [];
   for (var i = 0, ii = coordinates.length; i < ii; ++i) {
@@ -230,12 +231,12 @@ ol.format.WKT.prototype.encodeLineString_ = function(geom) {
  * @return {string} Coordinates part of MultiLineString as WKT.
  * @private
  */
-ol.format.WKT.prototype.encodeMultiLineString_ = function(geom) {
+ol.format.WKT.encodeMultiLineStringGeometry_ = function(geom) {
   var array = [];
   var components = geom.getLineStrings();
   for (var i = 0, ii = components.length; i < ii; ++i) {
-    array.push('(' + this.encodeLineString_.apply(this,
-        [components[i]]) + ')');
+    array.push('(' + ol.format.WKT.encodeLineStringGeometry_(
+        components[i]) + ')');
   }
   return array.join(',');
 };
@@ -246,12 +247,12 @@ ol.format.WKT.prototype.encodeMultiLineString_ = function(geom) {
  * @return {string} Coordinates part of Polygon as WKT.
  * @private
  */
-ol.format.WKT.prototype.encodePolygon_ = function(geom) {
+ol.format.WKT.encodePolygonGeometry_ = function(geom) {
   var array = [];
   var rings = geom.getLinearRings();
   for (var i = 0, ii = rings.length; i < ii; ++i) {
-    array.push('(' + this.encodeLineString_.apply(this,
-        [rings[i]]) + ')');
+    array.push('(' + ol.format.WKT.encodeLineStringGeometry_(
+        rings[i]) + ')');
   }
   return array.join(',');
 };
@@ -262,11 +263,12 @@ ol.format.WKT.prototype.encodePolygon_ = function(geom) {
  * @return {string} Coordinates part of MultiPolygon as WKT.
  * @private
  */
-ol.format.WKT.prototype.encodeMultiPolygon_ = function(geom) {
+ol.format.WKT.encodeMultiPolygonGeometry_ = function(geom) {
   var array = [];
   var components = geom.getPolygons();
   for (var i = 0, ii = components.length; i < ii; ++i) {
-    array.push('(' + this.encodePolygon_.apply(this, [components[i]]) + ')');
+    array.push('(' + ol.format.WKT.encodePolygonGeometry_(
+        components[i]) + ')');
   }
   return array.join(',');
 };
@@ -322,27 +324,27 @@ ol.format.WKT.prototype.parse_ = function(wkt) {
  * @return {string} WKT string for the geometry.
  * @private
  */
-ol.format.WKT.prototype.encode_ = function(geom) {
+ol.format.WKT.encode_ = function(geom) {
   var type = geom.getType();
-  var result = type.toUpperCase() + '(';
-  if (geom instanceof ol.geom.Point) {
-    result += this.encodePoint_(geom);
-  } else if (geom instanceof ol.geom.MultiPoint) {
-    result += this.encodeMultiPoint_(geom);
-  } else if (geom instanceof ol.geom.LineString) {
-    result += this.encodeLineString_(geom);
-  } else if (geom instanceof ol.geom.MultiLineString) {
-    result += this.encodeMultiLineString_(geom);
-  } else if (geom instanceof ol.geom.Polygon) {
-    result += this.encodePolygon_(geom);
-  } else if (geom instanceof ol.geom.MultiPolygon) {
-    result += this.encodeMultiPolygon_(geom);
-  } else if (geom instanceof ol.geom.GeometryCollection) {
-    result += this.encodeGeometryCollection_(geom);
-  } else {
-    throw new Error('Bad geometry type: ' + type);
-  }
-  return result + ')';
+  var geometryEncoder = ol.format.WKT.GeometryEncoder_[type];
+  goog.asserts.assert(goog.isDef(geometryEncoder));
+  return type.toUpperCase() + '(' + geometryEncoder(geom) + ')';
+};
+
+
+/**
+ * @const
+ * @type {Object.<string, function(ol.geom.Geometry): string>}
+ * @private
+ */
+ol.format.WKT.GeometryEncoder_ = {
+  'Point': ol.format.WKT.encodePointGeometry_,
+  'LineString': ol.format.WKT.encodeLineStringGeometry_,
+  'Polygon': ol.format.WKT.encodePolygonGeometry_,
+  'MultiPoint': ol.format.WKT.encodeMultiPointGeometry_,
+  'MultiLineString': ol.format.WKT.encodeMultiLineStringGeometry_,
+  'MultiPolygon': ol.format.WKT.encodeMultiPolygonGeometry_,
+  'GeometryCollection': ol.format.WKT.encodeGeometryCollectionGeometry_
 };
 
 
@@ -491,5 +493,5 @@ ol.format.WKT.prototype.writeGeometry;
  * @inheritDoc
  */
 ol.format.WKT.prototype.writeGeometryText = function(geometry) {
-  return this.encode_(geometry);
+  return ol.format.WKT.encode_(geometry);
 };
