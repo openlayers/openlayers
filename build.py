@@ -19,8 +19,6 @@ if sys.platform == 'win32':
         'CLEANCSS': './node_modules/.bin/cleancss',
         'GIT': 'git.exe',
         'GJSLINT': 'gjslint.exe',
-        'JAVA': 'java.exe',
-        'JAR': 'jar.exe',
         'JSDOC': './node_modules/.bin/jsdoc',
         'JSHINT': './node_modules/.bin/jshint',
         'PYTHON': 'python.exe',
@@ -29,24 +27,6 @@ if sys.platform == 'win32':
 
     sys_dir = os.environ.get('SYSTEMDRIVE')
     program_files = os.environ.get('PROGRAMFILES')
-    java_home = os.environ.get('JAVA_HOME')
-
-    if not java_home:
-        # Following lines choose sensible defaults to guess JAVA_HOME in
-        # 32/64bit Program Files folder opting for the most current version.
-        search_term = os.path.join(sys_dir, os.sep, 'Program Files*', 'Java', 'jdk*')
-        found_jdks = sorted(glob.glob(search_term), key=lambda x: x[-8:])
-        if found_jdks:
-            java_home = found_jdks[-1]
-
-    if java_home:
-        if not which(win['JAVA']):
-            win['JAVA'] = os.path.join(java_home, 'bin', 'java.exe')
-        if not which(win['JAR']):
-            win['JAR'] = os.path.join(java_home, 'bin', 'jar.exe')
-    elif not which(win['JAVA']):
-        win['JAVA'] = os.path.join(program_files,
-                                   'Java', 'jre7', 'bin', 'java.exe')
 
     if not which(win['GIT']):
         win['GIT'] = os.path.join(program_files, 'Git', 'cmd', 'git.exe')
@@ -75,8 +55,6 @@ else:
     variables.GIT = 'git'
     variables.GJSLINT = 'gjslint'
     variables.JSHINT = './node_modules/.bin/jshint'
-    variables.JAVA = 'java'
-    variables.JAR = 'jar'
     variables.JSDOC = './node_modules/.bin/jsdoc'
     variables.PYTHON = 'python'
     variables.PHANTOMJS = './node_modules/.bin/phantomjs'
@@ -85,10 +63,8 @@ variables.BRANCH = output(
     '%(GIT)s', 'rev-parse', '--abbrev-ref', 'HEAD').strip()
 
 EXECUTABLES = [variables.CLEANCSS, variables.GIT, variables.GJSLINT,
-               variables.JAVA, variables.JAR, variables.JSDOC,
-               variables.JSHINT, variables.PYTHON, variables.PHANTOMJS]
-
-EXPORTS = 'build/exports.js'
+               variables.JSDOC, variables.JSHINT, variables.PYTHON,
+               variables.PHANTOMJS]
 
 EXAMPLES = [path
             for path in ifind('examples')
@@ -190,11 +166,6 @@ virtual('build-all', 'build/ol-all.js')
 @target('build/ol-all.js', SRC, SHADER_SRC, 'buildcfg/ol-all.json')
 def build_ol_all_js(t):
     t.run('node', 'tasks/build.js', 'buildcfg/ol-all.json', 'build/ol-all.js')
-
-
-@target(EXPORTS, SRC)
-def build_exports_js(t):
-    t.run('node', 'tasks/generate-exports.js', EXPORTS)
 
 
 for glsl_src in GLSL_SRC:
@@ -355,7 +326,7 @@ virtual('lint', 'build/lint-timestamp', 'build/check-requires-timestamp',
     'build/check-whitespace-timestamp')
 
 
-@target('build/lint-timestamp', SRC, EXPORTS, EXAMPLES_SRC, SPEC, precious=True)
+@target('build/lint-timestamp', SRC, EXAMPLES_SRC, SPEC, precious=True)
 def build_lint_src_timestamp(t):
     t.run('%(GJSLINT)s',
           '--jslint_error=all',
@@ -367,7 +338,7 @@ def build_lint_src_timestamp(t):
 
 virtual('jshint', 'build/jshint-timestamp')
 
-@target('build/jshint-timestamp', SRC, EXPORTS, EXAMPLES_SRC, SPEC,
+@target('build/jshint-timestamp', SRC, EXAMPLES_SRC, SPEC,
         precious=True)
 def build_jshint_timestamp(t):
     t.run(variables.JSHINT, '--verbose', t.newer(t.dependencies))
@@ -537,7 +508,7 @@ def build_check_requires_timestamp(t):
     t.touch()
 
 
-@target('build/check-whitespace-timestamp', SRC, EXPORTS, EXAMPLES_SRC,
+@target('build/check-whitespace-timestamp', SRC, EXAMPLES_SRC,
         SPEC, JSDOC_SRC, precious=True)
 def build_check_whitespace_timestamp(t):
     CR_RE = re.compile(r'\r')
@@ -574,8 +545,7 @@ virtual('apidoc', 'build/jsdoc-%(BRANCH)s-timestamp' % vars(variables))
 
 
 @target('build/jsdoc-%(BRANCH)s-timestamp' % vars(variables), 'host-resources',
-        EXPORTS, SRC, SHADER_SRC,
-        ifind('apidoc/template'))
+        SRC, SHADER_SRC, ifind('apidoc/template'))
 def jsdoc_BRANCH_timestamp(t):
     t.run('%(JSDOC)s', 'apidoc/index.md', '-c', 'apidoc/conf.json',
           '-d', 'build/hosted/%(BRANCH)s/apidoc')
