@@ -258,7 +258,8 @@ olx.OverlayOptions.prototype.positioning;
 /**
  * Whether event propagation to the map viewport should be stopped. Default is
  * `true`. If `true` the overlay is placed in the same container as that of the
- * controls (`ol-overlaycontainer-stopevent`).
+ * controls (CSS class name `ol-overlaycontainer-stopevent`); if `false` it is
+ * placed in the container with CSS class name `ol-overlaycontainer`.
  * @type {boolean|undefined}
  */
 olx.OverlayOptions.prototype.stopEvent;
