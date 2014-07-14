@@ -420,8 +420,8 @@ ol.source.WMTS.prototype.getGetFeatureInfoUrl =
   };
 
   var tileExtent = tileGrid.getTileCoordExtent(tileCoord);
-  var transformedTileCoord = getTransformedTileCoord(tileCoord, 
-    tileGrid, projection);
+  var transformedTileCoord = getTransformedTileCoord(tileCoord,
+      tileGrid, projection);
 
   if (tileGrid.getResolutions().length <= tileCoord.z) {
     return undefined;
