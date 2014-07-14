@@ -111,6 +111,7 @@ ol.Feature.prototype.clone = function() {
 /**
  * @return {ol.geom.Geometry|undefined} Geometry.
  * @api
+ * @observable
  */
 ol.Feature.prototype.getGeometry = function() {
   return /** @type {ol.geom.Geometry|undefined} */ (
@@ -187,6 +188,7 @@ ol.Feature.prototype.handleGeometryChanged_ = function() {
 /**
  * @param {ol.geom.Geometry|undefined} geometry Geometry.
  * @api
+ * @observable
  */
 ol.Feature.prototype.setGeometry = function(geometry) {
   this.set(this.geometryName_, geometry);
