@@ -30,13 +30,13 @@ var wmtsSource = new ol.source.WMTS({
   matrixSet: 'EPSG:900913',
   format: 'image/png',
   projection: projection,
+  style: '_null',
   tileGrid: new ol.tilegrid.WMTS({
     origin: ol.extent.getTopLeft(projectionExtent),
     resolutions: resolutions,
     matrixIds: matrixIds
   }),
   url: 'http://maps.opengeo.org/geowebcache/service/wmts'
-  //style: '_null'
 });
 
 
