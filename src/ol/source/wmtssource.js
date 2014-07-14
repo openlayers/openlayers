@@ -151,10 +151,10 @@ ol.source.WMTS = function(options) {
     tileUrlFunction = ol.TileUrlFunction.createFromTileUrlFunctions(
         goog.array.map(urls, createFromWMTSTemplate));
   }
-   /**
-   * @private
-   * @type {Array}
-   */
+  /**
+  * @private
+  * @type {Array}
+  */
   this.urls_ = urls;
 
   var tmpExtent = ol.extent.createEmpty();
@@ -368,7 +368,7 @@ ol.source.WMTS.optionsFromCapabilities = function(wmtsCap, layer) {
  * @param {number} resolution Resolution.
  * @param {ol.proj.Projection} projection Projection.
  * @param {!Object} params GetFeatureInfo params. `INFOFORMAT` at least should
- *     be provided. 
+ *     be provided.
  * @return {string|undefined} GetFeatureInfo URL.
  * @api
  */
@@ -391,33 +391,33 @@ ol.source.WMTS.prototype.getGetFeatureInfoUrl =
       coordinate, resolution);
 
   // TODO: this code is duplicated from createFromWMTSTemplate function
-  var getTransformedTileCoord = function(tileCoord, tileGrid, projection){
-      var tmpTileCoord = new ol.TileCoord(0, 0, 0);
-      var tmpExtent = ol.extent.createEmpty();
-      var x = tileCoord.x;
-      var y = -tileCoord.y - 1;
-      var tileExtent = tileGrid.getTileCoordExtent(tileCoord);
-      var projectionExtent = projection.getExtent();
-      var extent = projectionExtent;
+  var getTransformedTileCoord = function(tileCoord, tileGrid, projection) {
+    var tmpTileCoord = new ol.TileCoord(0, 0, 0);
+    var tmpExtent = ol.extent.createEmpty();
+    var x = tileCoord.x;
+    var y = -tileCoord.y - 1;
+    var tileExtent = tileGrid.getTileCoordExtent(tileCoord);
+    var projectionExtent = projection.getExtent();
+    var extent = projectionExtent;
 
-      if (!goog.isNull(extent) && projection.isGlobal() &&
-          extent[0] === projectionExtent[0] &&
-          extent[2] === projectionExtent[2]) {
-        var numCols = Math.ceil(
-            ol.extent.getWidth(extent) /
-            ol.extent.getWidth(tileExtent));
-        x = goog.math.modulo(x, numCols);
-        tmpTileCoord.z = tileCoord.z;
-        tmpTileCoord.x = x;
-        tmpTileCoord.y = tileCoord.y;
-        tileExtent = tileGrid.getTileCoordExtent(tmpTileCoord, tmpExtent);
-      }
-      if (!ol.extent.intersects(tileExtent, extent) ||
-          ol.extent.touches(tileExtent, extent)) {
-        return null;
-      }
-      return new ol.TileCoord(tileCoord.z, x, y);
-    };
+    if (!goog.isNull(extent) && projection.isGlobal() &&
+        extent[0] === projectionExtent[0] &&
+        extent[2] === projectionExtent[2]) {
+      var numCols = Math.ceil(
+          ol.extent.getWidth(extent) /
+          ol.extent.getWidth(tileExtent));
+      x = goog.math.modulo(x, numCols);
+      tmpTileCoord.z = tileCoord.z;
+      tmpTileCoord.x = x;
+      tmpTileCoord.y = tileCoord.y;
+      tileExtent = tileGrid.getTileCoordExtent(tmpTileCoord, tmpExtent);
+    }
+    if (!ol.extent.intersects(tileExtent, extent) ||
+        ol.extent.touches(tileExtent, extent)) {
+      return null;
+    }
+    return new ol.TileCoord(tileCoord.z, x, y);
+  };
 
   var tileExtent = tileGrid.getTileCoordExtent(tileCoord)
   var transformedTileCoord = getTransformedTileCoord(tileCoord, tileGrid, projection);
