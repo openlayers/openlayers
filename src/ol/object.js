@@ -130,7 +130,7 @@ ol.ObjectAccessor.prototype.transform = function(from, to) {
  * {@link ol.Map} has a `target` property, accessed with `getTarget()`  and
  * changed with `setTarget()`. Not all properties are however settable. There
  * are also general-purpose accessors `get()` and `set()`. For example,
- * `get('target') is equivalent to `getTarget()`.
+ * `get('target')` is equivalent to `getTarget()`.
  *
  * The `set` accessors trigger a change event, and you can monitor this by
  * registering a listener. For example, {@link ol.View} has a `center`
