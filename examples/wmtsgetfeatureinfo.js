@@ -17,14 +17,14 @@ var matrixIds = new Array(14);
 for (var z = 0; z < 14; ++z) {
   // generate resolutions and matrixIds arrays for this WMTS
   resolutions[z] = size / Math.pow(2, z);
-  matrixIds[z] = 'EPSG:900913:'+z;
+  matrixIds[z] = 'EPSG:900913:' + z;
 }
 
 var attribution = new ol.Attribution({
   html: 'Tiles &copy; <a href="http://maps.opengeo.org/geowebcache/service/wmts">opengeo</a>'
 });
 
-var wmtsSource =  new ol.source.WMTS({
+var wmtsSource = new ol.source.WMTS({
   attributions: [attribution],
   url: 'http://maps.opengeo.org/geowebcache/service/wmts',
   layer: 'graphite',
@@ -36,9 +36,9 @@ var wmtsSource =  new ol.source.WMTS({
     resolutions: resolutions,
     matrixIds: matrixIds
   }),
-  extent: projectionExtent,
+  extent: projectionExtent
   //style: '_null'
-})
+});
 
 
 var wmtsLayer = new ol.layer.Tile({
@@ -61,7 +61,6 @@ var map = new ol.Map({
 });
 
 map.on('singleclick', function(evt) {
-  console.log("clicked")
   document.getElementById('info').innerHTML = '';
   var viewResolution = /** @type {number} */ (view.getResolution());
   var url = wmtsSource.getGetFeatureInfoUrl(

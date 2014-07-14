@@ -419,9 +419,9 @@ ol.source.WMTS.prototype.getGetFeatureInfoUrl =
     return new ol.TileCoord(tileCoord.z, x, y);
   };
 
-  var tileExtent = tileGrid.getTileCoordExtent(tileCoord)
+  var tileExtent = tileGrid.getTileCoordExtent(tileCoord);
   var transformedTileCoord = getTransformedTileCoord(tileCoord, tileGrid, projection);
-  
+
   if (tileGrid.getResolutions().length <= tileCoord.z) {
     return undefined;
   }
@@ -429,7 +429,7 @@ ol.source.WMTS.prototype.getGetFeatureInfoUrl =
   var tileResolution = tileGrid.getResolution(tileCoord.z);
   //var tileExtent = tileGrid.getTileCoordExtent(
   //    tileCoord, this.tmpExtent_);
-  
+
   var tileSize = tileGrid.getTileSize(tileCoord.z);
   var tileMatrix = tileGrid.getMatrixId(tileCoord.z);
 
@@ -441,9 +441,9 @@ ol.source.WMTS.prototype.getGetFeatureInfoUrl =
     'TileCol': transformedTileCoord.x,
     'TileRow': transformedTileCoord.y,
     'TileMatrix': tileMatrix,
-    'TileMatrixSet': this.matrixSet_,
+    'TileMatrixSet': this.matrixSet_
   };
-  
+
   goog.object.extend(baseParams, params);
 
   var x = Math.floor((coordinate[0] - tileExtent[0]) /
@@ -459,6 +459,6 @@ ol.source.WMTS.prototype.getGetFeatureInfoUrl =
   // TODO: this is working only for WMTSRequestEncoding == 'KVP'
   // the function for creating the url shoul be abstracted
   var featureInfoUrl = goog.uri.utils.appendParamsFromMap(url, baseParams);
-  
+
   return featureInfoUrl;
 };
