@@ -48,7 +48,6 @@ exports.publish = function(data, opts) {
         name: doc.longname,
         kind: doc.kind,
         description: doc.classdesc || doc.description,
-        extends: doc.augments,
         path: path.join(doc.meta.path, doc.meta.filename)
       });
     }
