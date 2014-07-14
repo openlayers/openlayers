@@ -4,7 +4,7 @@ goog.provide('ol.control.Attribution');
 
 goog.require('goog.dom');
 goog.require('goog.dom.TagName');
-goog.require('goog.dom.classes');
+goog.require('goog.dom.classlist');
 goog.require('goog.events');
 goog.require('goog.events.EventType');
 goog.require('goog.object');
@@ -347,7 +347,7 @@ ol.control.Attribution.prototype.handlePointerUp_ = function(pointerEvent) {
  * @private
  */
 ol.control.Attribution.prototype.handleToggle_ = function() {
-  goog.dom.classes.toggle(this.element, 'ol-collapsed');
+  goog.dom.classlist.toggle(this.element, 'ol-collapsed');
   goog.dom.setTextContent(this.labelSpan_,
       (this.collapsed_) ? this.collapseLabel_ : this.label_);
   this.collapsed_ = !this.collapsed_;
@@ -372,7 +372,7 @@ ol.control.Attribution.prototype.setCollapsible = function(collapsible) {
     return;
   }
   this.collapsible_ = collapsible;
-  goog.dom.classes.toggle(this.element, 'ol-uncollapsible');
+  goog.dom.classlist.toggle(this.element, 'ol-uncollapsible');
   if (!collapsible && this.collapsed_) {
     this.handleToggle_();
   }
