@@ -64,7 +64,14 @@ ol.source.WMTS = function(options) {
 
   /**
    * @private
-   * @type {Array}
+   * @type {?number}
+   */
+  this.pixelRatio_ = options.tilePixelRatio || 1;
+
+
+  /**
+   * @private
+   * @type {string}
    */
   this.matrixSet_ = options.matrixSet;
 
@@ -77,6 +84,12 @@ ol.source.WMTS = function(options) {
   // FIXME: should we create a default tileGrid?
   // we could issue a getCapabilities xhr to retrieve missing configuration
   var tileGrid = options.tileGrid;
+
+  /**
+   * @private
+   * @type {?Object}
+   */
+  this.tileGrid_ = tileGrid;
 
   var context = {
     'Layer': options.layer,
@@ -151,10 +164,7 @@ ol.source.WMTS = function(options) {
     tileUrlFunction = ol.TileUrlFunction.createFromTileUrlFunctions(
         goog.array.map(urls, createFromWMTSTemplate));
   }
-  /**
-  * @private
-  * @type {Array}
-  */
+
   this.urls_ = urls;
 
   var tmpExtent = ol.extent.createEmpty();
@@ -377,12 +387,12 @@ ol.source.WMTS.prototype.getGetFeatureInfoUrl =
 
   goog.asserts.assert(!('VERSION' in params));
 
-  var pixelRatio = this.tilePixelRatio_;
-  if (isNaN(this.tilePixelRatio_)) {
+  var pixelRatio = this.pixelRatio_;
+  if (isNaN(pixelRatio)) {
     return undefined;
   }
 
-  var tileGrid = this.getTileGrid();
+  var tileGrid = this.tileGrid_;
   if (goog.isNull(tileGrid)) {
     tileGrid = this.getTileGridForProjection(projection);
   }
@@ -431,7 +441,7 @@ ol.source.WMTS.prototype.getGetFeatureInfoUrl =
   //var tileExtent = tileGrid.getTileCoordExtent(
   //    tileCoord, this.tmpExtent_);
   //var tileSize = tileGrid.getTileSize(tileCoord.z);
-  var tileMatrix = tileGrid.getMatrixId(tileCoord.z);
+  var tileMatrix = tileGrid.getMatrixIds()[tileCoord.z];
 
   var baseParams = {
     'SERVICE': 'WMTS',

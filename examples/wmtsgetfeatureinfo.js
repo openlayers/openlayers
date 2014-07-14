@@ -25,7 +25,7 @@ var attribution = new ol.Attribution({
 
 var wmtsSource = new ol.source.WMTS({
   attributions: [attribution],
-  url: 'http://maps.opengeo.org/geowebcache/service/wmts',
+  extent: projectionExtent,
   layer: 'graphite',
   matrixSet: 'EPSG:900913',
   format: 'image/png',
@@ -35,7 +35,7 @@ var wmtsSource = new ol.source.WMTS({
     resolutions: resolutions,
     matrixIds: matrixIds
   }),
-  extent: projectionExtent
+  url: 'http://maps.opengeo.org/geowebcache/service/wmts'
   //style: '_null'
 });
 
