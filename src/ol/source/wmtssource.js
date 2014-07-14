@@ -420,7 +420,8 @@ ol.source.WMTS.prototype.getGetFeatureInfoUrl =
   };
 
   var tileExtent = tileGrid.getTileCoordExtent(tileCoord);
-  var transformedTileCoord = getTransformedTileCoord(tileCoord, tileGrid, projection);
+  var transformedTileCoord = getTransformedTileCoord(tileCoord, 
+    tileGrid, projection);
 
   if (tileGrid.getResolutions().length <= tileCoord.z) {
     return undefined;
@@ -429,8 +430,7 @@ ol.source.WMTS.prototype.getGetFeatureInfoUrl =
   var tileResolution = tileGrid.getResolution(tileCoord.z);
   //var tileExtent = tileGrid.getTileCoordExtent(
   //    tileCoord, this.tmpExtent_);
-
-  var tileSize = tileGrid.getTileSize(tileCoord.z);
+  //var tileSize = tileGrid.getTileSize(tileCoord.z);
   var tileMatrix = tileGrid.getMatrixId(tileCoord.z);
 
   var baseParams = {

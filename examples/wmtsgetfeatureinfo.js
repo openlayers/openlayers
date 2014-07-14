@@ -21,7 +21,8 @@ for (var z = 0; z < 14; ++z) {
 }
 
 var attribution = new ol.Attribution({
-  html: 'Tiles &copy; <a href="http://maps.opengeo.org/geowebcache/service/wmts">opengeo</a>'
+  html: 'Tiles &copy; <a href="http://maps.opengeo.org/geowebcache/'+
+    'service/wmts">opengeo</a>'
 });
 
 var wmtsSource = new ol.source.WMTS({
