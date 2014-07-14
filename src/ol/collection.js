@@ -66,10 +66,15 @@ ol.CollectionProperty = {
 
 /**
  * @classdesc
- * Adds methods to standard Array; changes (add/remove) to the Collection
- * trigger events. Because a Collection is itself an {@link ol.Object}, it
- * can be bound to any other Object or Collection such that a change in one
- * will automatically be reflected in the other.
+ * An expanded version of standard JS Array, adding convenience methods for
+ * manipulation. Add and remove changes to the Collection trigger a Collection
+ * event. Note that this does not cover changes to the objects _within_ the
+ * Collection; they trigger events on the appropriate object, not on the
+ * Collection as a whole.
+ *
+ * Because a Collection is itself an {@link ol.Object}, it can be bound to any
+ * other Object or Collection such that a change in one will automatically be
+ * reflected in the other.
  *
  * @constructor
  * @extends {ol.Object}
