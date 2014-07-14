@@ -81,7 +81,8 @@ function spawnJSDoc(paths, callback) {
 
   var output = '';
   var errors = '';
-  var child = spawn(jsdoc, ['-c', jsdocConfig].concat(paths));
+  var cwd = path.join(__dirname, '..');
+  var child = spawn(jsdoc, ['-c', jsdocConfig].concat(paths), {cwd: cwd});
 
   child.stdout.on('data', function(data) {
     output += String(data);
