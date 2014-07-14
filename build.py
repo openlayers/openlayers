@@ -58,7 +58,9 @@ else:
     variables.JSDOC = './node_modules/.bin/jsdoc'
     variables.PYTHON = 'python'
     variables.PHANTOMJS = './node_modules/.bin/phantomjs'
-    variables.NODE = 'node'
+    #Temporary solution to variable nodejs executable naming
+    variables.NODE = 'node' if os.path.exists('/usr/bin/node') else 'nodejs'
+    
 
 variables.BRANCH = output(
     '%(GIT)s', 'rev-parse', '--abbrev-ref', 'HEAD').strip()
