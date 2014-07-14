@@ -1,6 +1,5 @@
 {
   "exports": ["*"],
-  "src": ["src/**/*.js"],
   "compile": {
     "externs": [
       "externs/bingmaps.js",
