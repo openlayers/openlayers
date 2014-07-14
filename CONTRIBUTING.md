@@ -4,7 +4,7 @@ Thanks for your interest in contributing to OpenLayers 3.
 
 ## Contributing Code
 
-Thanks for your interest in contributing to OpenLayers 3 development. Our preferred means of receiving contributions is through [pull requests](https://help.github.com/articles/using-pull-requests). Make sure
+Our preferred means of receiving contributions is through [pull requests](https://help.github.com/articles/using-pull-requests). Make sure
 that your pull request follows our pull request guidelines below before submitting it.
 
 This page describes what you need to know to contribute code to ol3 as a developer.
