@@ -58,14 +58,14 @@ else:
     variables.JSDOC = './node_modules/.bin/jsdoc'
     variables.PYTHON = 'python'
     variables.PHANTOMJS = './node_modules/.bin/phantomjs'
-    variables.NODE = 'nodejs'
+    variables.NODE = 'node'
 
 variables.BRANCH = output(
     '%(GIT)s', 'rev-parse', '--abbrev-ref', 'HEAD').strip()
 
 EXECUTABLES = [variables.CLEANCSS, variables.GIT, variables.GJSLINT,
                variables.JSDOC, variables.JSHINT, variables.PYTHON,
-               variables.PHANTOMJS,variables.NODE]
+               variables.PHANTOMJS, variables.NODE]
 
 EXAMPLES = [path
             for path in ifind('examples')
