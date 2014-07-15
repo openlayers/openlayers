@@ -585,13 +585,15 @@ ol.format.WKT.Parser.prototype.parseGeometryCollectionText_ = function() {
     if (this.match(ol.format.WKT.TokenType.RIGHT_PAREN)) {
       return geometries;
     }
+  } else if (this.isEmptyGeometry_()) {
+    return [];
   }
   this.raiseError_();
 };
 
 
 /**
- * @return {!Array.<number>} All values in a point.
+ * @return {Array.<number>} All values in a point.
  * @private
  */
 ol.format.WKT.Parser.prototype.parsePointText_ = function() {
@@ -601,7 +603,7 @@ ol.format.WKT.Parser.prototype.parsePointText_ = function() {
       return coordinates;
     }
   } else if (this.isEmptyGeometry_()) {
-    return [];
+    return null;
   }
   this.raiseError_();
 };
@@ -810,7 +812,7 @@ ol.format.WKT.Parser.GeometryConstructor_ = {
 
 
 /**
- * @enum {(function(): !Array)}
+ * @enum {(function(): Array)}
  * @private
  */
 ol.format.WKT.Parser.GeometryParser_ = {
