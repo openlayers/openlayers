@@ -59,7 +59,7 @@ else:
     variables.PYTHON = 'python'
     variables.PHANTOMJS = './node_modules/.bin/phantomjs'
     #Temporary solution to variable nodejs executable naming
-    variables.NODE = 'node' if os.path.exists('/usr/bin/node') else 'nodejs'
+    variables.NODE = 'nodejs' if which('nodejs') else 'node'
     
 
 variables.BRANCH = output(
