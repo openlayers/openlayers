@@ -106,7 +106,7 @@ goog.inherits(ol.source.MapGuide, ol.source.Image);
 /**
  * Get the user-provided params, i.e. those passed to the constructor through
  * the "params" option, and possibly updated using the updateParams method.
- * @return {Object} Params.
+ * @return {Object|undefined} Params.
  * @api
  */
 ol.source.MapGuide.prototype.getParams = function() {
@@ -210,6 +210,6 @@ ol.source.MapGuide.prototype.getUrl =
     'SETVIEWCENTERX': center[0],
     'SETVIEWCENTERY': center[1]
   };
-  goog.object.extend(baseParams, this.params_, params);
+  goog.object.extend(baseParams, params);
   return goog.uri.utils.appendParamsFromMap(baseUrl, baseParams);
 };
