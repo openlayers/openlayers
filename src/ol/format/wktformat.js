@@ -29,7 +29,7 @@ ol.format.WKT = function(opt_options) {
   goog.base(this);
 
   /**
-   * Split GEOMETRYCOLLECTION into multiple features.
+   * Split GeometryCollection into multiple features.
    * @type {boolean}
    * @private
    */
@@ -41,12 +41,22 @@ goog.inherits(ol.format.WKT, ol.format.TextFeature);
 
 
 /**
+ * @const
+ * @type {string}
+ */
+ol.format.WKT.EMPTY = 'EMPTY';
+
+
+/**
  * @param {ol.geom.Point} geom Point geometry.
  * @return {string} Coordinates part of Point as WKT.
  * @private
  */
 ol.format.WKT.encodePointGeometry_ = function(geom) {
   var coordinates = geom.getCoordinates();
+  if (goog.array.isEmpty(coordinates)) {
+    return '';
+  }
   return coordinates[0] + ' ' + coordinates[1];
 };
 
@@ -154,7 +164,12 @@ ol.format.WKT.encode_ = function(geom) {
   var type = geom.getType();
   var geometryEncoder = ol.format.WKT.GeometryEncoder_[type];
   goog.asserts.assert(goog.isDef(geometryEncoder));
-  return type.toUpperCase() + '(' + geometryEncoder(geom) + ')';
+  var enc = geometryEncoder(geom);
+  type = type.toUpperCase();
+  if (enc.length === 0) {
+    return type + ' ' + ol.format.WKT.EMPTY;
+  }
+  return type + '(' + enc + ')';
 };
 
 
@@ -479,7 +494,7 @@ ol.format.WKT.Lexer.prototype.readText_ = function() {
   do {
     c = this.nextChar_();
   } while (this.isAlpha_(c));
-  return this.wkt.substring(index, this.index_--).toLowerCase();
+  return this.wkt.substring(index, this.index_--).toUpperCase();
 };
 
 
@@ -555,7 +570,7 @@ ol.format.WKT.Parser.prototype.parseGeometry_ = function() {
   var token = this.token_;
   if (this.match(ol.format.WKT.TokenType.TEXT)) {
     var geomType = token.value;
-    if (geomType == 'geometrycollection') {
+    if (geomType == ol.geom.GeometryType.GEOMETRY_COLLECTION.toUpperCase()) {
       var geometries = this.parseGeometryCollectionText_();
       return new ol.geom.GeometryCollection(geometries);
     } else {
@@ -779,7 +794,7 @@ ol.format.WKT.Parser.prototype.parsePolygonTextList_ = function() {
  */
 ol.format.WKT.Parser.prototype.isEmptyGeometry_ = function() {
   var isEmpty = this.token_.type == ol.format.WKT.TokenType.TEXT &&
-      this.token_.value == 'empty';
+      this.token_.value == ol.format.WKT.EMPTY;
   if (isEmpty) {
     this.consume_();
   }
@@ -802,12 +817,12 @@ ol.format.WKT.Parser.prototype.raiseError_ = function() {
  * @private
  */
 ol.format.WKT.Parser.GeometryConstructor_ = {
-  'point': ol.geom.Point,
-  'linestring': ol.geom.LineString,
-  'polygon': ol.geom.Polygon,
-  'multipoint': ol.geom.MultiPoint,
-  'multilinestring': ol.geom.MultiLineString,
-  'multipolygon': ol.geom.MultiPolygon
+  'POINT': ol.geom.Point,
+  'LINESTRING': ol.geom.LineString,
+  'POLYGON': ol.geom.Polygon,
+  'MULTIPOINT': ol.geom.MultiPoint,
+  'MULTILINESTRING': ol.geom.MultiLineString,
+  'MULTIPOLYGON': ol.geom.MultiPolygon
 };
 
 
@@ -816,10 +831,10 @@ ol.format.WKT.Parser.GeometryConstructor_ = {
  * @private
  */
 ol.format.WKT.Parser.GeometryParser_ = {
-  'point': ol.format.WKT.Parser.prototype.parsePointText_,
-  'linestring': ol.format.WKT.Parser.prototype.parseLineStringText_,
-  'polygon': ol.format.WKT.Parser.prototype.parsePolygonText_,
-  'multipoint': ol.format.WKT.Parser.prototype.parseMultiPointText_,
-  'multilinestring': ol.format.WKT.Parser.prototype.parseMultiLineStringText_,
-  'multipolygon': ol.format.WKT.Parser.prototype.parseMultiPolygonText_
+  'POINT': ol.format.WKT.Parser.prototype.parsePointText_,
+  'LINESTRING': ol.format.WKT.Parser.prototype.parseLineStringText_,
+  'POLYGON': ol.format.WKT.Parser.prototype.parsePolygonText_,
+  'MULTIPOINT': ol.format.WKT.Parser.prototype.parseMultiPointText_,
+  'MULTILINESTRING': ol.format.WKT.Parser.prototype.parseMultiLineStringText_,
+  'MULTIPOLYGON': ol.format.WKT.Parser.prototype.parseMultiPolygonText_
 };
