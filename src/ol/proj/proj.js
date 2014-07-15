@@ -42,6 +42,7 @@ ol.proj.Units = {
  * @type {Object.<ol.proj.Units, number>}
  * @api
  */
+ol.proj.METERS_PER_UNIT = {};
 ol.proj.METERS_PER_UNIT[ol.proj.Units.DEGREES] =
     2 * Math.PI * ol.sphere.NORMAL.radius / 360;
 ol.proj.METERS_PER_UNIT[ol.proj.Units.FEET] = 0.3048;
