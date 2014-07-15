@@ -65,7 +65,7 @@ ol.geom.Point.prototype.closestPointXY =
  * @api
  */
 ol.geom.Point.prototype.getCoordinates = function() {
-  return this.flatCoordinates.slice();
+  return goog.isNull(this.flatCoordinates) ? [] : this.flatCoordinates.slice();
 };
 
 

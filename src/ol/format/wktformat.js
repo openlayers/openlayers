@@ -1,7 +1,7 @@
 goog.provide('ol.format.WKT');
 
 goog.require('goog.array');
-goog.require('goog.string');
+goog.require('goog.asserts');
 goog.require('ol.Feature');
 goog.require('ol.format.TextFeature');
 goog.require('ol.geom.Geometry');
@@ -29,7 +29,7 @@ ol.format.WKT = function(opt_options) {
   goog.base(this);
 
   /**
-   * Split GEOMETRYCOLLECTION into multiple features.
+   * Split GeometryCollection into multiple features.
    * @type {boolean}
    * @private
    */
@@ -41,132 +41,10 @@ goog.inherits(ol.format.WKT, ol.format.TextFeature);
 
 
 /**
- * Constants for regExes.
- * @enum {RegExp}
+ * @const
+ * @type {string}
  */
-ol.format.WKT.regExes = {
-  typeStr: /^\s*(\w+)\s*\(\s*(.*)\s*\)\s*$/,
-  spaces: /\s+/,
-  parenComma: /\)\s*,\s*\(/,
-  doubleParenComma: /\)\s*\)\s*,\s*\(\s*\(/,
-  trimParens: /^\s*\(?(.*?)\)?\s*$/,
-  geomCollection: /,\s*([A-Za-z])/g,
-  removeNewLine: /[\n\r]/g
-};
-
-
-/**
- * @param {string} str WKT point.
- * @return {ol.geom.Point} Parsed point.
- * @private
- */
-ol.format.WKT.prototype.parsePoint_ = function(str) {
-  var coords = goog.string.trim(str).split(ol.format.WKT.regExes.spaces);
-  return new ol.geom.Point(goog.array.map(coords, parseFloat));
-};
-
-
-/**
- * @param {string} str WKT linestring.
- * @return {ol.geom.LineString} Parsed linestring.
- * @private
- */
-ol.format.WKT.prototype.parseLineString_ = function(str) {
-  var points = goog.string.trim(str).split(',');
-  var coordinates = [];
-  for (var i = 0, ii = points.length; i < ii; ++i) {
-    coordinates.push(this.parsePoint_.apply(this,
-        [points[i]]).getCoordinates());
-  }
-  return new ol.geom.LineString(coordinates);
-};
-
-
-/**
- * @param {string} str WKT multipoint.
- * @return {ol.geom.MultiPoint} Parsed multipoint.
- * @private
- */
-ol.format.WKT.prototype.parseMultiPoint_ = function(str) {
-  var point;
-  var points = goog.string.trim(str).split(',');
-  var geom = new ol.geom.MultiPoint(null);
-  for (var i = 0, ii = points.length; i < ii; ++i) {
-    point = points[i].replace(ol.format.WKT.regExes.trimParens, '$1');
-    geom.appendPoint(this.parsePoint_.apply(this, [point]));
-  }
-  return geom;
-};
-
-
-/**
- * @param {string} str WKT multilinestring.
- * @return {ol.geom.MultiLineString} Parsed multilinestring.
- * @private
- */
-ol.format.WKT.prototype.parseMultiLineString_ = function(str) {
-  var line;
-  var lines = goog.string.trim(str).split(ol.format.WKT.regExes.parenComma);
-  var geom = new ol.geom.MultiLineString(null);
-  for (var i = 0, ii = lines.length; i < ii; ++i) {
-    line = lines[i].replace(ol.format.WKT.regExes.trimParens, '$1');
-    geom.appendLineString(this.parseLineString_.apply(this, [line]));
-  }
-  return geom;
-};
-
-
-/**
- * @param {string} str WKT polygon.
- * @return {ol.geom.Polygon} Parsed polygon.
- * @private
- */
-ol.format.WKT.prototype.parsePolygon_ = function(str) {
-  var ring, linestring, linearring;
-  var rings = goog.string.trim(str).split(ol.format.WKT.regExes.parenComma);
-  var coordinates = [];
-  for (var i = 0, ii = rings.length; i < ii; ++i) {
-    ring = rings[i].replace(ol.format.WKT.regExes.trimParens, '$1');
-    linestring = this.parseLineString_.apply(this, [ring]).getCoordinates();
-    coordinates.push(linestring);
-  }
-  return new ol.geom.Polygon(coordinates);
-};
-
-
-/**
- * @param {string} str WKT multipolygon.
- * @return {ol.geom.MultiPolygon} Parsed multipolygon.
- * @private
- */
-ol.format.WKT.prototype.parseMultiPolygon_ = function(str) {
-  var polygon;
-  var polygons = goog.string.trim(str).split(
-      ol.format.WKT.regExes.doubleParenComma);
-  var geom = new ol.geom.MultiPolygon(null);
-  for (var i = 0, ii = polygons.length; i < ii; ++i) {
-    polygon = polygons[i].replace(ol.format.WKT.regExes.trimParens, '$1');
-    geom.appendPolygon(this.parsePolygon_.apply(this, [polygon]));
-  }
-  return geom;
-};
-
-
-/**
- * @param {string} str WKT geometrycollection.
- * @return {ol.geom.GeometryCollection} Parsed geometrycollection.
- * @private
- */
-ol.format.WKT.prototype.parseGeometryCollection_ = function(str) {
-  // separate components of the collection with |
-  str = str.replace(ol.format.WKT.regExes.geomCollection, '|$1');
-  var wktArray = goog.string.trim(str).split('|');
-  var geoms = [];
-  for (var i = 0, ii = wktArray.length; i < ii; ++i) {
-    geoms.push(this.parse_.apply(this, [wktArray[i]]));
-  }
-  return new ol.geom.GeometryCollection(geoms);
-};
+ol.format.WKT.EMPTY = 'EMPTY';
 
 
 /**
@@ -174,8 +52,11 @@ ol.format.WKT.prototype.parseGeometryCollection_ = function(str) {
  * @return {string} Coordinates part of Point as WKT.
  * @private
  */
-ol.format.WKT.prototype.encodePoint_ = function(geom) {
+ol.format.WKT.encodePointGeometry_ = function(geom) {
   var coordinates = geom.getCoordinates();
+  if (goog.array.isEmpty(coordinates)) {
+    return '';
+  }
   return coordinates[0] + ' ' + coordinates[1];
 };
 
@@ -185,11 +66,11 @@ ol.format.WKT.prototype.encodePoint_ = function(geom) {
  * @return {string} Coordinates part of MultiPoint as WKT.
  * @private
  */
-ol.format.WKT.prototype.encodeMultiPoint_ = function(geom) {
+ol.format.WKT.encodeMultiPointGeometry_ = function(geom) {
   var array = [];
   var components = geom.getPoints();
   for (var i = 0, ii = components.length; i < ii; ++i) {
-    array.push('(' + this.encodePoint_.apply(this, [components[i]]) + ')');
+    array.push('(' + ol.format.WKT.encodePointGeometry_(components[i]) + ')');
   }
   return array.join(',');
 };
@@ -200,22 +81,22 @@ ol.format.WKT.prototype.encodeMultiPoint_ = function(geom) {
  * @return {string} Coordinates part of GeometryCollection as WKT.
  * @private
  */
-ol.format.WKT.prototype.encodeGeometryCollection_ = function(geom) {
+ol.format.WKT.encodeGeometryCollectionGeometry_ = function(geom) {
   var array = [];
   var geoms = geom.getGeometries();
   for (var i = 0, ii = geoms.length; i < ii; ++i) {
-    array.push(this.encode_.apply(this, [geoms[i]]));
+    array.push(ol.format.WKT.encode_(geoms[i]));
   }
   return array.join(',');
 };
 
 
 /**
- * @param {ol.geom.LineString} geom LineString geometry.
+ * @param {ol.geom.LineString|ol.geom.LinearRing} geom LineString geometry.
  * @return {string} Coordinates part of LineString as WKT.
  * @private
  */
-ol.format.WKT.prototype.encodeLineString_ = function(geom) {
+ol.format.WKT.encodeLineStringGeometry_ = function(geom) {
   var coordinates = geom.getCoordinates();
   var array = [];
   for (var i = 0, ii = coordinates.length; i < ii; ++i) {
@@ -230,12 +111,12 @@ ol.format.WKT.prototype.encodeLineString_ = function(geom) {
  * @return {string} Coordinates part of MultiLineString as WKT.
  * @private
  */
-ol.format.WKT.prototype.encodeMultiLineString_ = function(geom) {
+ol.format.WKT.encodeMultiLineStringGeometry_ = function(geom) {
   var array = [];
   var components = geom.getLineStrings();
   for (var i = 0, ii = components.length; i < ii; ++i) {
-    array.push('(' + this.encodeLineString_.apply(this,
-        [components[i]]) + ')');
+    array.push('(' + ol.format.WKT.encodeLineStringGeometry_(
+        components[i]) + ')');
   }
   return array.join(',');
 };
@@ -246,12 +127,12 @@ ol.format.WKT.prototype.encodeMultiLineString_ = function(geom) {
  * @return {string} Coordinates part of Polygon as WKT.
  * @private
  */
-ol.format.WKT.prototype.encodePolygon_ = function(geom) {
+ol.format.WKT.encodePolygonGeometry_ = function(geom) {
   var array = [];
   var rings = geom.getLinearRings();
   for (var i = 0, ii = rings.length; i < ii; ++i) {
-    array.push('(' + this.encodeLineString_.apply(this,
-        [rings[i]]) + ')');
+    array.push('(' + ol.format.WKT.encodeLineStringGeometry_(
+        rings[i]) + ')');
   }
   return array.join(',');
 };
@@ -262,13 +143,49 @@ ol.format.WKT.prototype.encodePolygon_ = function(geom) {
  * @return {string} Coordinates part of MultiPolygon as WKT.
  * @private
  */
-ol.format.WKT.prototype.encodeMultiPolygon_ = function(geom) {
+ol.format.WKT.encodeMultiPolygonGeometry_ = function(geom) {
   var array = [];
   var components = geom.getPolygons();
   for (var i = 0, ii = components.length; i < ii; ++i) {
-    array.push('(' + this.encodePolygon_.apply(this, [components[i]]) + ')');
+    array.push('(' + ol.format.WKT.encodePolygonGeometry_(
+        components[i]) + ')');
   }
   return array.join(',');
+};
+
+
+/**
+ * Encode a geometry as WKT.
+ * @param {ol.geom.Geometry} geom The geometry to encode.
+ * @return {string} WKT string for the geometry.
+ * @private
+ */
+ol.format.WKT.encode_ = function(geom) {
+  var type = geom.getType();
+  var geometryEncoder = ol.format.WKT.GeometryEncoder_[type];
+  goog.asserts.assert(goog.isDef(geometryEncoder));
+  var enc = geometryEncoder(geom);
+  type = type.toUpperCase();
+  if (enc.length === 0) {
+    return type + ' ' + ol.format.WKT.EMPTY;
+  }
+  return type + '(' + enc + ')';
+};
+
+
+/**
+ * @const
+ * @type {Object.<string, function(ol.geom.Geometry): string>}
+ * @private
+ */
+ol.format.WKT.GeometryEncoder_ = {
+  'Point': ol.format.WKT.encodePointGeometry_,
+  'LineString': ol.format.WKT.encodeLineStringGeometry_,
+  'Polygon': ol.format.WKT.encodePolygonGeometry_,
+  'MultiPoint': ol.format.WKT.encodeMultiPointGeometry_,
+  'MultiLineString': ol.format.WKT.encodeMultiLineStringGeometry_,
+  'MultiPolygon': ol.format.WKT.encodeMultiPolygonGeometry_,
+  'GeometryCollection': ol.format.WKT.encodeGeometryCollectionGeometry_
 };
 
 
@@ -280,69 +197,9 @@ ol.format.WKT.prototype.encodeMultiPolygon_ = function(geom) {
  * @private
  */
 ol.format.WKT.prototype.parse_ = function(wkt) {
-  wkt = wkt.replace(ol.format.WKT.regExes.removeNewLine, ' ');
-  var matches = ol.format.WKT.regExes.typeStr.exec(wkt);
-  var geometry;
-  if (matches) {
-    var type = matches[1].toLowerCase();
-    var str = matches[2];
-    switch (type) {
-      case 'point':
-        geometry = this.parsePoint_(str);
-        break;
-      case 'multipoint':
-        geometry = this.parseMultiPoint_(str);
-        break;
-      case 'linestring':
-        geometry = this.parseLineString_(str);
-        break;
-      case 'multilinestring':
-        geometry = this.parseMultiLineString_(str);
-        break;
-      case 'polygon':
-        geometry = this.parsePolygon_(str);
-        break;
-      case 'multipolygon':
-        geometry = this.parseMultiPolygon_(str);
-        break;
-      case 'geometrycollection':
-        geometry = this.parseGeometryCollection_(str);
-        break;
-      default:
-        throw new Error('Bad geometry type: ' + type);
-    }
-  }
-  return geometry;
-};
-
-
-/**
- * Encode a geometry as WKT.
- * @param {ol.geom.Geometry} geom The geometry to encode.
- * @return {string} WKT string for the geometry.
- * @private
- */
-ol.format.WKT.prototype.encode_ = function(geom) {
-  var type = geom.getType();
-  var result = type.toUpperCase() + '(';
-  if (geom instanceof ol.geom.Point) {
-    result += this.encodePoint_(geom);
-  } else if (geom instanceof ol.geom.MultiPoint) {
-    result += this.encodeMultiPoint_(geom);
-  } else if (geom instanceof ol.geom.LineString) {
-    result += this.encodeLineString_(geom);
-  } else if (geom instanceof ol.geom.MultiLineString) {
-    result += this.encodeMultiLineString_(geom);
-  } else if (geom instanceof ol.geom.Polygon) {
-    result += this.encodePolygon_(geom);
-  } else if (geom instanceof ol.geom.MultiPolygon) {
-    result += this.encodeMultiPolygon_(geom);
-  } else if (geom instanceof ol.geom.GeometryCollection) {
-    result += this.encodeGeometryCollection_(geom);
-  } else {
-    throw new Error('Bad geometry type: ' + type);
-  }
-  return result + ')';
+  var lexer = new ol.format.WKT.Lexer(wkt);
+  var parser = new ol.format.WKT.Parser(lexer);
+  return parser.parse();
 };
 
 
@@ -491,5 +348,493 @@ ol.format.WKT.prototype.writeGeometry;
  * @inheritDoc
  */
 ol.format.WKT.prototype.writeGeometryText = function(geometry) {
-  return this.encode_(geometry);
+  return ol.format.WKT.encode_(geometry);
+};
+
+
+/**
+ * @typedef {{type: number, value: (number|string|undefined), position: number}}
+ */
+ol.format.WKT.Token;
+
+
+/**
+ * @const
+ * @enum {number}
+ */
+ol.format.WKT.TokenType = {
+  TEXT: 1,
+  LEFT_PAREN: 2,
+  RIGHT_PAREN: 3,
+  NUMBER: 4,
+  COMMA: 5,
+  EOF: 6
+};
+
+
+
+/**
+ * Class to tokenize a WKT string.
+ * @param {string} wkt WKT string.
+ * @constructor
+ * @protected
+ */
+ol.format.WKT.Lexer = function(wkt) {
+
+  /**
+   * @type {string}
+   */
+  this.wkt = wkt;
+
+  /**
+   * @type {number}
+   * @private
+   */
+  this.index_ = -1;
+};
+
+
+/**
+ * @param {string} c Character.
+ * @return {boolean} Whether the character is alphabetic.
+ * @private
+ */
+ol.format.WKT.Lexer.prototype.isAlpha_ = function(c) {
+  return c >= 'a' && c <= 'z' || c >= 'A' && c <= 'Z';
+};
+
+
+/**
+ * @param {string} c Character.
+ * @param {boolean=} opt_decimal Whether the string number
+ *     contains a dot, i.e. is a decimal number.
+ * @return {boolean} Whether the character is numeric.
+ * @private
+ */
+ol.format.WKT.Lexer.prototype.isNumeric_ = function(c, opt_decimal) {
+  var decimal = goog.isDef(opt_decimal) ? opt_decimal : false;
+  return c >= '0' && c <= '9' || c == '.' && !decimal;
+};
+
+
+/**
+ * @param {string} c Character.
+ * @return {boolean} Whether the character is whitespace.
+ * @private
+ */
+ol.format.WKT.Lexer.prototype.isWhiteSpace_ = function(c) {
+  return c == ' ' || c == '\t' || c == '\r' || c == '\n';
+};
+
+
+/**
+ * @return {string} Next string character.
+ * @private
+ */
+ol.format.WKT.Lexer.prototype.nextChar_ = function() {
+  return this.wkt.charAt(++this.index_);
+};
+
+
+/**
+ * Fetch and return the next token.
+ * @return {!ol.format.WKT.Token} Next string token.
+ */
+ol.format.WKT.Lexer.prototype.nextToken = function() {
+  var c = this.nextChar_();
+  var token = {position: this.index_, value: c};
+
+  if (c == '(') {
+    token.type = ol.format.WKT.TokenType.LEFT_PAREN;
+  } else if (c == ',') {
+    token.type = ol.format.WKT.TokenType.COMMA;
+  } else if (c == ')') {
+    token.type = ol.format.WKT.TokenType.RIGHT_PAREN;
+  } else if (this.isNumeric_(c) || c == '-') {
+    token.type = ol.format.WKT.TokenType.NUMBER;
+    token.value = this.readNumber_();
+  } else if (this.isAlpha_(c)) {
+    token.type = ol.format.WKT.TokenType.TEXT;
+    token.value = this.readText_();
+  } else if (this.isWhiteSpace_(c)) {
+    return this.nextToken();
+  } else if (c === '') {
+    token.type = ol.format.WKT.TokenType.EOF;
+  } else {
+    throw new Error('Unexpected character: ' + c);
+  }
+
+  return token;
+};
+
+
+/**
+ * @return {number} Numeric token value.
+ * @private
+ */
+ol.format.WKT.Lexer.prototype.readNumber_ = function() {
+  var c, index = this.index_;
+  var decimal = false;
+  do {
+    if (c == '.') {
+      decimal = true;
+    }
+    c = this.nextChar_();
+  } while (this.isNumeric_(c, decimal));
+  return parseFloat(this.wkt.substring(index, this.index_--));
+};
+
+
+/**
+ * @return {string} String token value.
+ * @private
+ */
+ol.format.WKT.Lexer.prototype.readText_ = function() {
+  var c, index = this.index_;
+  do {
+    c = this.nextChar_();
+  } while (this.isAlpha_(c));
+  return this.wkt.substring(index, this.index_--).toUpperCase();
+};
+
+
+
+/**
+ * Class to parse the tokens from the WKT string.
+ * @param {ol.format.WKT.Lexer} lexer
+ * @constructor
+ * @protected
+ */
+ol.format.WKT.Parser = function(lexer) {
+
+  /**
+   * @type {ol.format.WKT.Lexer}
+   * @private
+   */
+  this.lexer_ = lexer;
+
+  /**
+   * @type {ol.format.WKT.Token}
+   * @private
+   */
+  this.token_;
+
+  /**
+   * @type {number}
+   * @private
+   */
+  this.dimension_ = 2;
+};
+
+
+/**
+ * Fetch the next token form the lexer and replace the active token.
+ * @private
+ */
+ol.format.WKT.Parser.prototype.consume_ = function() {
+  this.token_ = this.lexer_.nextToken();
+};
+
+
+/**
+ * If the given type matches the current token, consume it.
+ * @param {ol.format.WKT.TokenType.<number>} type Token type.
+ * @return {boolean} Whether the token matches the given type.
+ */
+ol.format.WKT.Parser.prototype.match = function(type) {
+  var isMatch = this.token_.type == type;
+  if (isMatch) {
+    this.consume_();
+  }
+  return isMatch;
+};
+
+
+/**
+ * Try to parse the tokens provided by the lexer.
+ * @return {ol.geom.Geometry|ol.geom.GeometryCollection} The geometry.
+ */
+ol.format.WKT.Parser.prototype.parse = function() {
+  this.consume_();
+  var geometry = this.parseGeometry_();
+  goog.asserts.assert(this.token_.type == ol.format.WKT.TokenType.EOF);
+  return geometry;
+};
+
+
+/**
+ * @return {!ol.geom.Geometry|!ol.geom.GeometryCollection} The geometry.
+ * @private
+ */
+ol.format.WKT.Parser.prototype.parseGeometry_ = function() {
+  var token = this.token_;
+  if (this.match(ol.format.WKT.TokenType.TEXT)) {
+    var geomType = token.value;
+    if (geomType == ol.geom.GeometryType.GEOMETRY_COLLECTION.toUpperCase()) {
+      var geometries = this.parseGeometryCollectionText_();
+      return new ol.geom.GeometryCollection(geometries);
+    } else {
+      var parser = ol.format.WKT.Parser.GeometryParser_[geomType];
+      var ctor = ol.format.WKT.Parser.GeometryConstructor_[geomType];
+      if (!goog.isDef(parser) || !goog.isDef(ctor)) {
+        throw new Error('Invalid geometry type: ' + geomType);
+      }
+      var coordinates = parser.call(this);
+      return new ctor(coordinates);
+    }
+  }
+  this.raiseError_();
+};
+
+
+/**
+ * @return {!Array.<ol.geom.Geometry>} A collection of geometries.
+ * @private
+ */
+ol.format.WKT.Parser.prototype.parseGeometryCollectionText_ = function() {
+  if (this.match(ol.format.WKT.TokenType.LEFT_PAREN)) {
+    var geometries = [];
+    do {
+      geometries.push(this.parseGeometry_());
+    } while (this.match(ol.format.WKT.TokenType.COMMA));
+    if (this.match(ol.format.WKT.TokenType.RIGHT_PAREN)) {
+      return geometries;
+    }
+  } else if (this.isEmptyGeometry_()) {
+    return [];
+  }
+  this.raiseError_();
+};
+
+
+/**
+ * @return {Array.<number>} All values in a point.
+ * @private
+ */
+ol.format.WKT.Parser.prototype.parsePointText_ = function() {
+  if (this.match(ol.format.WKT.TokenType.LEFT_PAREN)) {
+    var coordinates = this.parsePoint_();
+    if (this.match(ol.format.WKT.TokenType.RIGHT_PAREN)) {
+      return coordinates;
+    }
+  } else if (this.isEmptyGeometry_()) {
+    return null;
+  }
+  this.raiseError_();
+};
+
+
+/**
+ * @return {!Array.<!Array.<number>>} All points in a linestring.
+ * @private
+ */
+ol.format.WKT.Parser.prototype.parseLineStringText_ = function() {
+  if (this.match(ol.format.WKT.TokenType.LEFT_PAREN)) {
+    var coordinates = this.parsePointList_();
+    if (this.match(ol.format.WKT.TokenType.RIGHT_PAREN)) {
+      return coordinates;
+    }
+  } else if (this.isEmptyGeometry_()) {
+    return [];
+  }
+  this.raiseError_();
+};
+
+
+/**
+ * @return {!Array.<!Array.<number>>} All points in a polygon.
+ * @private
+ */
+ol.format.WKT.Parser.prototype.parsePolygonText_ = function() {
+  if (this.match(ol.format.WKT.TokenType.LEFT_PAREN)) {
+    var coordinates = this.parseLineStringTextList_();
+    if (this.match(ol.format.WKT.TokenType.RIGHT_PAREN)) {
+      return coordinates;
+    }
+  } else if (this.isEmptyGeometry_()) {
+    return [];
+  }
+  this.raiseError_();
+};
+
+
+/**
+ * @return {!Array.<!Array.<number>>} All points in a multipoint.
+ * @private
+ */
+ol.format.WKT.Parser.prototype.parseMultiPointText_ = function() {
+  if (this.match(ol.format.WKT.TokenType.LEFT_PAREN)) {
+    var coordinates;
+    if (this.token_.type == ol.format.WKT.TokenType.LEFT_PAREN) {
+      coordinates = this.parsePointTextList_();
+    } else {
+      coordinates = this.parsePointList_();
+    }
+    if (this.match(ol.format.WKT.TokenType.RIGHT_PAREN)) {
+      return coordinates;
+    }
+  } else if (this.isEmptyGeometry_()) {
+    return [];
+  }
+  this.raiseError_();
+};
+
+
+/**
+ * @return {!Array.<!Array.<number>>} All linestring points
+ *                                        in a multilinestring.
+ * @private
+ */
+ol.format.WKT.Parser.prototype.parseMultiLineStringText_ = function() {
+  if (this.match(ol.format.WKT.TokenType.LEFT_PAREN)) {
+    var coordinates = this.parseLineStringTextList_();
+    if (this.match(ol.format.WKT.TokenType.RIGHT_PAREN)) {
+      return coordinates;
+    }
+  } else if (this.isEmptyGeometry_()) {
+    return [];
+  }
+  this.raiseError_();
+};
+
+
+/**
+ * @return {!Array.<!Array.<number>>} All polygon points in a multipolygon.
+ * @private
+ */
+ol.format.WKT.Parser.prototype.parseMultiPolygonText_ = function() {
+  if (this.match(ol.format.WKT.TokenType.LEFT_PAREN)) {
+    var coordinates = this.parsePolygonTextList_();
+    if (this.match(ol.format.WKT.TokenType.RIGHT_PAREN)) {
+      return coordinates;
+    }
+  } else if (this.isEmptyGeometry_()) {
+    return [];
+  }
+  this.raiseError_();
+};
+
+
+/**
+ * @return {!Array.<number>} A point.
+ * @private
+ */
+ol.format.WKT.Parser.prototype.parsePoint_ = function() {
+  var coordinates = [];
+  for (var i = 0; i < this.dimension_; ++i) {
+    var token = this.token_;
+    if (this.match(ol.format.WKT.TokenType.NUMBER)) {
+      coordinates.push(token.value);
+    } else {
+      break;
+    }
+  }
+  if (coordinates.length == this.dimension_) {
+    return coordinates;
+  }
+  this.raiseError_();
+};
+
+
+/**
+ * @return {!Array.<!Array.<number>>} An array of points.
+ * @private
+ */
+ol.format.WKT.Parser.prototype.parsePointList_ = function() {
+  var coordinates = [this.parsePoint_()];
+  if (this.match(ol.format.WKT.TokenType.COMMA)) {
+    goog.array.extend(coordinates, this.parsePointList_());
+  }
+  return coordinates;
+};
+
+
+/**
+ * @return {!Array.<!Array.<number>>} An array of points.
+ * @private
+ */
+ol.format.WKT.Parser.prototype.parsePointTextList_ = function() {
+  var coordinates = [this.parsePointText_()];
+  if (this.match(ol.format.WKT.TokenType.COMMA)) {
+    goog.array.extend(coordinates, this.parsePointTextList_());
+  }
+  return coordinates;
+};
+
+
+/**
+ * @return {!Array.<!Array.<number>>} An array of points.
+ * @private
+ */
+ol.format.WKT.Parser.prototype.parseLineStringTextList_ = function() {
+  var coordinates = [this.parseLineStringText_()];
+  if (this.match(ol.format.WKT.TokenType.COMMA)) {
+    goog.array.extend(coordinates, this.parseLineStringTextList_());
+  }
+  return coordinates;
+};
+
+
+/**
+ * @return {!Array.<!Array.<number>>} An array of points.
+ * @private
+ */
+ol.format.WKT.Parser.prototype.parsePolygonTextList_ = function() {
+  var coordinates = [this.parsePolygonText_()];
+  if (this.match(ol.format.WKT.TokenType.COMMA)) {
+    goog.array.extend(coordinates, this.parsePolygonTextList_());
+  }
+  return coordinates;
+};
+
+
+/**
+ * @return {boolean} Whether the token implies an empty geometry.
+ * @private
+ */
+ol.format.WKT.Parser.prototype.isEmptyGeometry_ = function() {
+  var isEmpty = this.token_.type == ol.format.WKT.TokenType.TEXT &&
+      this.token_.value == ol.format.WKT.EMPTY;
+  if (isEmpty) {
+    this.consume_();
+  }
+  return isEmpty;
+};
+
+
+/**
+ * @private
+ */
+ol.format.WKT.Parser.prototype.raiseError_ = function() {
+  throw new Error('Unexpected `' + this.token_.value +
+      '` at position ' + this.token_.position +
+      ' in `' + this.lexer_.wkt + '`');
+};
+
+
+/**
+ * @enum {function (new:ol.geom.Geometry, Array, ol.geom.GeometryLayout.<string>=)}
+ * @private
+ */
+ol.format.WKT.Parser.GeometryConstructor_ = {
+  'POINT': ol.geom.Point,
+  'LINESTRING': ol.geom.LineString,
+  'POLYGON': ol.geom.Polygon,
+  'MULTIPOINT': ol.geom.MultiPoint,
+  'MULTILINESTRING': ol.geom.MultiLineString,
+  'MULTIPOLYGON': ol.geom.MultiPolygon
+};
+
+
+/**
+ * @enum {(function(): Array)}
+ * @private
+ */
+ol.format.WKT.Parser.GeometryParser_ = {
+  'POINT': ol.format.WKT.Parser.prototype.parsePointText_,
+  'LINESTRING': ol.format.WKT.Parser.prototype.parseLineStringText_,
+  'POLYGON': ol.format.WKT.Parser.prototype.parsePolygonText_,
+  'MULTIPOINT': ol.format.WKT.Parser.prototype.parseMultiPointText_,
+  'MULTILINESTRING': ol.format.WKT.Parser.prototype.parseMultiLineStringText_,
+  'MULTIPOLYGON': ol.format.WKT.Parser.prototype.parseMultiPolygonText_
 };
