@@ -79,14 +79,6 @@ function addSignatureTypes(f) {
     f.signature = (f.signature || '') + '<span class="type-signature">'+(types.length? ' :'+types.join('|') : '')+' </span>';
 }
 
-function addAttribs(f) {
-    var attribs = helper.getAttribs(f);
-
-    if (attribs.length) {
-        f.attribs = '<span class="type-signature ' + (attribs[0] === 'static' ? 'static' : '') + '">' + htmlsafe(attribs.length ? attribs.join(',') : '') + ' </span>';
-    }    
-}
-
 function shortenPaths(files, commonPrefix) {
     // always use forward slashes
     var regexp = new RegExp('\\\\', 'g');
@@ -404,7 +396,6 @@ exports.publish = function(taffyData, opts, tutorials) {
         if ( needsSignature(doclet) ) {
             addSignatureParams(doclet);
             addSignatureReturns(doclet);
-            addAttribs(doclet);
         }
     });
     
@@ -414,12 +405,10 @@ exports.publish = function(taffyData, opts, tutorials) {
 
         if (doclet.kind === 'member') {
             addSignatureTypes(doclet);
-            addAttribs(doclet);
         }
         
         if (doclet.kind === 'constant') {
             addSignatureTypes(doclet);
-            addAttribs(doclet);
             doclet.kind = 'member';
         }
     });
