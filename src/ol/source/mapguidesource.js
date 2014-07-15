@@ -210,6 +210,6 @@ ol.source.MapGuide.prototype.getUrl =
     'SETVIEWCENTERX': center[0],
     'SETVIEWCENTERY': center[1]
   };
-  goog.object.extend(baseParams, params);
+  goog.object.extend(baseParams, this.params_, params);
   return goog.uri.utils.appendParamsFromMap(baseUrl, baseParams);
 };
