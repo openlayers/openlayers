@@ -175,7 +175,7 @@ ol.source.MapGuide.getScale = function(extent, size, metersPerUnit, dpi) {
 
 /**
  * Update the user-provided params.
- * @param {Object} params Params.
+ * @param {Object|undefined} params Params.
  * @api
  */
 ol.source.MapGuide.prototype.updateParams = function(params) {
