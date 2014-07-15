@@ -150,6 +150,19 @@ ol.source.MapGuide.getScale = function(extent, size, metersPerUnit, dpi) {
 
 
 /**
+ * Update the user-provided params.
+ * @param {Object} params Params.
+ * @todo api
+ */
+ol.source.MapGuide.prototype.updateParams = function(params) {
+  goog.object.extend(this.params_, params);
+  this.updateV13_();
+  this.image_ = null;
+  this.dispatchChangeEvent();
+};
+
+
+/**
  * @param {string} baseUrl The mapagent url.
  * @param {Object.<string, string|number>} params Request parameters.
  * @param {ol.Extent} extent Extent.
