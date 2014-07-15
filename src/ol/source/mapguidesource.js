@@ -57,7 +57,7 @@ ol.source.MapGuide = function(options) {
 
   /**
    * @private
-   * @type {Object}
+   * @type {Object|undefined}
    */
   this.params_ = options.params;
 
