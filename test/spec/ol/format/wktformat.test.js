@@ -150,6 +150,44 @@ describe('ol.format.WKT', function() {
         [[30, 20], [20, 25], [20, 15], [30, 20]]);
   });
 
+  it('Empty geometries read / written correctly', function() {
+    var wkts = ['POINT', 'LINESTRING', 'POLYGON',
+                'MULTIPOINT', 'MULTILINESTRING', 'MULTIPOLYGON'];
+    for (var i = 0, ii = wkts.length; i < ii; ++i) {
+      var wkt = wkts[i] + ' EMPTY';
+      var geom = format.readGeometry(wkt);
+      expect(geom.getCoordinates()).to.eql([]);
+      expect(format.writeGeometry(geom)).to.eql(wkt);
+    }
+  });
+
+  it('Invalid geometries detected correctly', function() {
+    expect(function() {
+      format.readGeometry('POINT(1,2)');
+    }).to.throwException();
+    expect(function() {
+      format.readGeometry('LINESTRING(1 2,3 4');
+    }).to.throwException();
+    expect(function() {
+      format.readGeometry('POLYGON(1 2,3 4))');
+    }).to.throwException();
+    expect(function() {
+      format.readGeometry('POLGON((1 2,3 4))');
+    }).to.throwException();
+    expect(function() {
+      format.readGeometry('LINESTRING(1.2,3 4');
+    }).to.throwException();
+    expect(function() {
+      format.readGeometry('MULTIPOINT((1 2),3 4))');
+    }).to.throwException();
+    expect(function() {
+      format.readGeometry('MULTIPOLYGON((1 2,3 4))');
+    }).to.throwException();
+    expect(function() {
+      format.readGeometry('GEOMETRYCOLLECTION(1 2,3 4)');
+    }).to.throwException();
+  });
+
   it('GeometryCollection read / written correctly', function() {
     var wkt = 'GEOMETRYCOLLECTION(POINT(4 6),LINESTRING(4 6,7 10))';
     var geom = format.readGeometry(wkt);
@@ -171,6 +209,13 @@ describe('ol.format.WKT', function() {
     expect(geoms[1].getType()).to.eql(ol.geom.GeometryType.LINE_STRING);
     expect(geoms[0].getCoordinates()).to.eql([4, 6]);
     expect(geoms[1].getCoordinates()).to.eql([[4, 6], [7, 10]]);
+  });
+
+  it('Empty GeometryCollection read / written correctly', function() {
+    var wkt = 'GEOMETRYCOLLECTION EMPTY';
+    var geom = format.readGeometry(wkt);
+    expect(geom.getGeometries()).to.eql([]);
+    expect(format.writeGeometry(geom)).to.eql(wkt);
   });
 
   it('GeometryCollection split / merged correctly', function() {
