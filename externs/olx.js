@@ -1098,14 +1098,15 @@ olx.format.GeoJSONOptions;
 
 
 /**
- * Default projection.
+ * Default projection. The projection to be used if none is defined in the
+ * source. Default is EPSG:4326.
  * @type {ol.proj.ProjectionLike}
  */
 olx.format.GeoJSONOptions.prototype.defaultProjection;
 
 
 /**
- * Geometry name to use when creating features.
+ * Geometry name to use when creating features. Default is 'geometry'.
  * @type {string|undefined}
  */
 olx.format.GeoJSONOptions.prototype.geometryName;
@@ -1134,7 +1135,8 @@ olx.format.TopoJSONOptions;
 
 
 /**
- * Default projection.
+ * Default projection. The projection to be used if none is defined in the
+ * source. Default is EPSG:4326.
  * @type {ol.proj.ProjectionLike}
  */
 olx.format.TopoJSONOptions.prototype.defaultProjection;
@@ -2623,7 +2625,8 @@ olx.source.GeoJSONOptions.prototype.attributions;
 
 
 /**
- * Default projection.
+ * Default projection. The projection to be used by {@link ol.format.GeoJSON}
+ * if none is defined in the source. Default is EPSG:4326.
  * @type {ol.proj.ProjectionLike}
  */
 olx.source.GeoJSONOptions.prototype.defaultProjection;
@@ -2861,11 +2864,9 @@ olx.source.TileImageOptions.prototype.tileUrlFunction;
 
 /**
  * @typedef {{attributions: (Array.<ol.Attribution>|undefined),
- *     defaultProjection: ol.proj.ProjectionLike,
  *     extent: (ol.Extent|undefined),
  *     format: ol.format.Feature,
  *     logo: (string|undefined),
- *     object: (GeoJSONObject|undefined),
  *     projection: ol.proj.ProjectionLike,
  *     tileGrid: ol.tilegrid.TileGrid,
  *     tileUrlFunction: (ol.TileUrlFunctionType|undefined),
@@ -2881,13 +2882,6 @@ olx.source.TileVectorOptions;
  * @type {Array.<ol.Attribution>|undefined}
  */
 olx.source.TileVectorOptions.prototype.attributions;
-
-
-/**
- * Default projection.
- * @type {ol.proj.ProjectionLike}
- */
-olx.source.TileVectorOptions.prototype.defaultProjection;
 
 
 /**
@@ -2909,13 +2903,6 @@ olx.source.TileVectorOptions.prototype.format;
  * @type {string|undefined}
  */
 olx.source.TileVectorOptions.prototype.logo;
-
-
-/**
- * Object.
- * @type {GeoJSONObject|undefined}
- */
-olx.source.TileVectorOptions.prototype.object;
 
 
 /**
@@ -2977,7 +2964,8 @@ olx.source.TopoJSONOptions.prototype.attributions;
 
 
 /**
- * Default projection.
+ * Default projection. The projection to be used by {@link ol.format.TopoJSON}
+ * if none is defined in the source. Default is EPSG:4326.
  * @type {ol.proj.ProjectionLike}
  */
 olx.source.TopoJSONOptions.prototype.defaultProjection;
