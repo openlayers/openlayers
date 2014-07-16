@@ -25,7 +25,7 @@ Build configuration files are JSON files that are used to determine what should 
 
     If the **compile** object is not provided, the build task will generate a "debug" build of the library without any variable naming or other minification.  This is suitable for development or debugging purposes, but should not be used in production.
 
-  * **src** - `Array.<string>` Optional array of [path patterns](https://github.com/isaacs/minimatch/blob/master/README.md) for source files.  This defaults to `["src/**/*.js"]` which will match all `.js` files in the `src` directory.  To include a different set of source files, provide an array of path patterns.  Note that these patterns are `/` delimited even on Windows.
+  * **src** - `Array.<string>` Optional array of [path patterns](https://github.com/isaacs/minimatch/blob/master/README.md) for source files.  By default, all of the library source files will be included.  If you want to provide additional source files to be configured together with the library, you need to provide path patterns to your source files *and* the library source files.  Note that these patterns are `/` delimited even on Windows.  There is a bit of special handling with the `src` config.
 
   * **cwd** - `string` Optional path to be used as the current working directory.  All paths in the `compile` object are assumed to be relative to `cwd`.  Default is the root of the ol3 repository.
 
