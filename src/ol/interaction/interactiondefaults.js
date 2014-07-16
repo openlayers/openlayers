@@ -14,7 +14,6 @@ goog.require('ol.interaction.PinchZoom');
 
 
 /**
- * @classdesc
  * Set of interactions included in maps by default. Specific interactions can be
  * excluded by setting the appropriate option to false in the constructor
  * options, but the order of the interactions is fixed.  If you want to specify
