@@ -190,11 +190,19 @@ function attachModuleSymbols(doclets, modules) {
  */
 function buildNav(members) {
     var nav = [];
-
-    if (members.namespaces.length) {
-        _.each(members.namespaces, function (v) {
-          // exclude 'olx' from sidebar
-          if (v.longname.indexOf('olx') !== 0) {
+    // merge namespaces and classes, then sort
+    var merged = members.namespaces.concat(members.classes);
+    merged.sort(function (a, b) {
+      if (a.longname > b.longname)
+        return 1;
+      if (a.longname < b.longname)
+        return -1;
+      return 0;
+    });
+    _.each(merged, function (v) {
+      // exclude 'olx' and interfaces from sidebar
+      if (v.longname.indexOf('olx') !== 0 && v.interface !== true) {
+          if (v.kind == 'namespace') {
             nav.push({
                 type: 'namespace',
                 longname: v.longname,
@@ -217,13 +225,7 @@ function buildNav(members) {
                 })
             });
           }
-        });
-    }
-
-    if (members.classes.length) {
-        _.each(members.classes, function (v) {
-          // ignore interfaces
-          if (v.interface !== true) {
+          if (v.kind == 'class') {
             nav.push({
                 type: 'class',
                 longname: v.longname,
@@ -247,9 +249,8 @@ function buildNav(members) {
                 })
             });
           }
-        });
-    }
-
+      }
+    });
     return nav;
 }
 
