@@ -9,7 +9,7 @@ goog.require('ol.Coordinate');
  * @constructor
  * @param {number} a Major radius.
  * @param {number} flattening Flattening.
- * @todo api
+ * @api
  */
 ol.Ellipsoid = function(a, flattening) {
 
@@ -53,7 +53,7 @@ ol.Ellipsoid = function(a, flattening) {
  * @param {number=} opt_maxIterations Maximum iterations.
  * @return {{distance: number, initialBearing: number, finalBearing: number}}
  *     Vincenty.
- * @todo api
+ * @api
  */
 ol.Ellipsoid.prototype.vincenty =
     function(c1, c2, opt_minDeltaLambda, opt_maxIterations) {
@@ -147,7 +147,7 @@ ol.Ellipsoid.prototype.vincenty =
  * @param {number=} opt_minDeltaLambda Minimum delta lambda for convergence.
  * @param {number=} opt_maxIterations Maximum iterations.
  * @return {number} Vincenty distance.
- * @todo api
+ * @api
  */
 ol.Ellipsoid.prototype.vincentyDistance =
     function(c1, c2, opt_minDeltaLambda, opt_maxIterations) {
@@ -164,7 +164,7 @@ ol.Ellipsoid.prototype.vincentyDistance =
  * @param {number=} opt_minDeltaLambda Minimum delta lambda for convergence.
  * @param {number=} opt_maxIterations Maximum iterations.
  * @return {number} Initial bearing.
- * @todo api
+ * @api
  */
 ol.Ellipsoid.prototype.vincentyFinalBearing =
     function(c1, c2, opt_minDeltaLambda, opt_maxIterations) {
@@ -181,7 +181,7 @@ ol.Ellipsoid.prototype.vincentyFinalBearing =
  * @param {number=} opt_minDeltaLambda Minimum delta lambda for convergence.
  * @param {number=} opt_maxIterations Maximum iterations.
  * @return {number} Initial bearing.
- * @todo api
+ * @api
  */
 ol.Ellipsoid.prototype.vincentyInitialBearing =
     function(c1, c2, opt_minDeltaLambda, opt_maxIterations) {
@@ -199,7 +199,7 @@ ol.Ellipsoid.prototype.vincentyInitialBearing =
  * @param {number=} opt_minDeltaSigma Minimum delta sigma for convergence.
  * @param {number=} opt_maxIterations Maximum iterations.
  * @return {ol.Coordinate}
- * @todo api
+ * @api
  */
 ol.Ellipsoid.prototype.vincentyDirect =
     function(c, distance, bearing, opt_minDeltaSigma, opt_maxIterations) {
