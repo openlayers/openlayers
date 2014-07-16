@@ -12,6 +12,10 @@ goog.require('ol.source.ImageWMS');
 // known to Proj4js if it is unknown to OpenLayers, and registers functions to
 // transform between all registered projections.
 // EPSG:21781 is known to Proj4js because its definition was loaded in the html.
+// Note that we are getting the projection object here to set the extent. If
+// you do not need this, you do not have to use ol.proj.get(); simply use the
+// string code in the view projection below and the transforms will be
+// registered transparently.
 var projection = ol.proj.get('EPSG:21781');
 // The extent is used to determine zoom level 0. Recommended values for a
 // projection's validity extent can be found at http://epsg.io/.
