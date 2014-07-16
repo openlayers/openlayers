@@ -77,7 +77,7 @@ ol.DebugTile_.prototype.getImage = function(opt_context) {
  * @constructor
  * @extends {ol.source.Tile}
  * @param {olx.source.TileDebugOptions} options Debug tile options.
- * @todo api
+ * @api
  */
 ol.source.TileDebug = function(options) {
 

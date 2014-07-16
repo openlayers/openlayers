@@ -8,11 +8,14 @@ goog.require('ol.tilegrid.TileGrid');
 
 
 /**
+ * @classdesc
+ * Set the grid pattern for sources accessing WMTS tiled-image servers.
+ *
  * @constructor
  * @extends {ol.tilegrid.TileGrid}
  * @param {olx.tilegrid.WMTSOptions} options WMTS options.
  * @struct
- * @todo api
+ * @api
  */
 ol.tilegrid.WMTS = function(options) {
 
@@ -50,7 +53,7 @@ ol.tilegrid.WMTS.prototype.getMatrixId = function(z) {
 
 /**
  * @return {Array.<string>} MatrixIds.
- * @todo api
+ * @api
  */
 ol.tilegrid.WMTS.prototype.getMatrixIds = function() {
   return this.matrixIds_;

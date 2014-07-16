@@ -1,5 +1,3 @@
-// FIXME works for View2D only
-
 goog.provide('ol.interaction.KeyboardPan');
 
 goog.require('goog.asserts');
@@ -7,7 +5,6 @@ goog.require('goog.events.KeyCodes');
 goog.require('goog.events.KeyHandler.EventType');
 goog.require('goog.functions');
 goog.require('ol');
-goog.require('ol.View2D');
 goog.require('ol.coordinate');
 goog.require('ol.events.ConditionType');
 goog.require('ol.events.condition');
@@ -16,6 +13,7 @@ goog.require('ol.interaction.Interaction');
 
 
 /**
+ * @classdesc
  * Allows the user to pan the map using keyboard arrows.
  * Note that, although this interaction is by default included in maps,
  * the keys can only be used when browser focus is on the element to which
@@ -25,10 +23,11 @@ goog.require('ol.interaction.Interaction');
  * focus will have to be on, and returned to, this element if the keys are to
  * function.
  * See also {@link ol.interaction.KeyboardZoom}.
+ *
  * @constructor
  * @extends {ol.interaction.Interaction}
  * @param {olx.interaction.KeyboardPanOptions=} opt_options Options.
- * @todo api
+ * @api stable
  */
 ol.interaction.KeyboardPan = function(opt_options) {
 
@@ -70,11 +69,10 @@ ol.interaction.KeyboardPan.prototype.handleMapBrowserEvent =
         keyCode == goog.events.KeyCodes.RIGHT ||
         keyCode == goog.events.KeyCodes.UP)) {
       var map = mapBrowserEvent.map;
-      // FIXME works for View2D only
       var view = map.getView();
-      goog.asserts.assertInstanceof(view, ol.View2D);
-      var view2DState = view.getView2DState();
-      var mapUnitsDelta = view2DState.resolution * this.pixelDelta_;
+      goog.asserts.assert(goog.isDef(view));
+      var viewState = view.getState();
+      var mapUnitsDelta = viewState.resolution * this.pixelDelta_;
       var deltaX = 0, deltaY = 0;
       if (keyCode == goog.events.KeyCodes.DOWN) {
         deltaY = -mapUnitsDelta;
@@ -86,7 +84,7 @@ ol.interaction.KeyboardPan.prototype.handleMapBrowserEvent =
         deltaY = mapUnitsDelta;
       }
       var delta = [deltaX, deltaY];
-      ol.coordinate.rotate(delta, view2DState.rotation);
+      ol.coordinate.rotate(delta, viewState.rotation);
       ol.interaction.Interaction.pan(
           map, view, delta, ol.KEYBOARD_PAN_DURATION);
       mapBrowserEvent.preventDefault();

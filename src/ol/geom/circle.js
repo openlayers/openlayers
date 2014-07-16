@@ -9,12 +9,15 @@ goog.require('ol.geom.flat.deflate');
 
 
 /**
+ * @classdesc
+ * Circle geometry.
+ *
  * @constructor
  * @extends {ol.geom.SimpleGeometry}
  * @param {ol.geom.RawPoint} center Center.
  * @param {number=} opt_radius Radius.
- * @param {ol.geom.GeometryLayout|string=} opt_layout Layout.
- * @todo api
+ * @param {ol.geom.GeometryLayout=} opt_layout Layout.
+ * @api
  */
 ol.geom.Circle = function(center, opt_radius, opt_layout) {
   goog.base(this);
@@ -27,7 +30,7 @@ goog.inherits(ol.geom.Circle, ol.geom.SimpleGeometry);
 
 /**
  * @inheritDoc
- * @todo api
+ * @api
  */
 ol.geom.Circle.prototype.clone = function() {
   var circle = new ol.geom.Circle(null);
@@ -80,7 +83,7 @@ ol.geom.Circle.prototype.containsXY = function(x, y) {
 
 /**
  * @return {ol.geom.RawPoint} Center.
- * @todo api
+ * @api
  */
 ol.geom.Circle.prototype.getCenter = function() {
   return this.flatCoordinates.slice(0, this.stride);
@@ -89,7 +92,7 @@ ol.geom.Circle.prototype.getCenter = function() {
 
 /**
  * @inheritDoc
- * @todo api
+ * @api
  */
 ol.geom.Circle.prototype.getExtent = function(opt_extent) {
   if (this.extentRevision != this.getRevision()) {
@@ -108,7 +111,7 @@ ol.geom.Circle.prototype.getExtent = function(opt_extent) {
 
 /**
  * @return {number} Radius.
- * @todo api
+ * @api
  */
 ol.geom.Circle.prototype.getRadius = function() {
   return Math.sqrt(this.getRadiusSquared_());
@@ -128,16 +131,7 @@ ol.geom.Circle.prototype.getRadiusSquared_ = function() {
 
 /**
  * @inheritDoc
- * @todo api
- */
-ol.geom.Circle.prototype.getSimplifiedGeometry = function(squaredTolerance) {
-  return this;
-};
-
-
-/**
- * @inheritDoc
- * @todo api
+ * @api
  */
 ol.geom.Circle.prototype.getType = function() {
   return ol.geom.GeometryType.CIRCLE;
@@ -146,7 +140,7 @@ ol.geom.Circle.prototype.getType = function() {
 
 /**
  * @param {ol.geom.RawPoint} center Center.
- * @todo api
+ * @api
  */
 ol.geom.Circle.prototype.setCenter = function(center) {
   var stride = this.stride;
@@ -166,7 +160,7 @@ ol.geom.Circle.prototype.setCenter = function(center) {
  * @param {ol.geom.RawPoint} center Center.
  * @param {number} radius Radius.
  * @param {ol.geom.GeometryLayout=} opt_layout Layout.
- * @todo api
+ * @api
  */
 ol.geom.Circle.prototype.setCenterAndRadius =
     function(center, radius, opt_layout) {
@@ -205,7 +199,7 @@ ol.geom.Circle.prototype.setFlatCoordinates =
 
 /**
  * @param {number} radius Radius.
- * @todo api
+ * @api
  */
 ol.geom.Circle.prototype.setRadius = function(radius) {
   goog.asserts.assert(!goog.isNull(this.flatCoordinates));

@@ -34,27 +34,6 @@ describe('ol.format.Polyline', function() {
   beforeEach(resetTestingData);
 
 
-
-  describe('encodeFlatCoordinates', function() {
-    it('returns expected value', function() {
-      var encodeFlatCoordinates = ol.format.Polyline.encodeFlatCoordinates;
-
-      // from the "Encoded Polyline Algorithm Format" page at Google
-      expect(encodeFlatCoordinates(flatPoints)).to.eql(encodedFlatPoints);
-    });
-  });
-
-  describe('decodeFlatCoordinates', function() {
-    it('returns expected value', function() {
-      var decodeFlatCoordinates = ol.format.Polyline.decodeFlatCoordinates;
-
-      // from the "Encoded Polyline Algorithm Format" page at Google
-      expect(decodeFlatCoordinates(encodedFlatPoints)).to.eql(flatPoints);
-    });
-  });
-
-
-
   describe('encodeDeltas', function() {
     it('returns expected value', function() {
       var encodeDeltas = ol.format.Polyline.encodeDeltas;

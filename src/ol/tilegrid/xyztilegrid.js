@@ -11,11 +11,14 @@ goog.require('ol.tilegrid.TileGrid');
 
 
 /**
+ * @classdesc
+ * Set the grid pattern for sources accessing XYZ tiled-image servers.
+ *
  * @constructor
  * @extends {ol.tilegrid.TileGrid}
  * @param {olx.tilegrid.XYZOptions} options XYZ options.
  * @struct
- * @todo api
+ * @api
  */
 ol.tilegrid.XYZ = function(options) {
 

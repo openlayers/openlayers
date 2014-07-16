@@ -1,8 +1,6 @@
 goog.provide('ol.style.Image');
 goog.provide('ol.style.ImageState');
 
-goog.require('goog.array');
-
 
 /**
  * @enum {number}
@@ -17,20 +15,21 @@ ol.style.ImageState = {
 
 /**
  * @typedef {{opacity: number,
- *            origin: Array.<number>,
  *            rotateWithView: boolean,
  *            rotation: number,
  *            scale: number,
- *            snapToPixel: (boolean|undefined)}}
+ *            snapToPixel: boolean}}
  */
 ol.style.ImageOptions;
 
 
 
 /**
+ * @classdesc
+ * Set image style for vector features.
+ *
  * @constructor
  * @param {ol.style.ImageOptions} options Options.
- * @todo api
  */
 ol.style.Image = function(options) {
 
@@ -39,12 +38,6 @@ ol.style.Image = function(options) {
    * @type {number}
    */
   this.opacity_ = options.opacity;
-
-  /**
-   * @private
-   * @type {Array.<number>}
-   */
-  this.origin_ = options.origin;
 
   /**
    * @private
@@ -66,7 +59,7 @@ ol.style.Image = function(options) {
 
   /**
    * @private
-   * @type {boolean|undefined}
+   * @type {boolean}
    */
   this.snapToPixel_ = options.snapToPixel;
 
@@ -82,14 +75,6 @@ ol.style.Image.prototype.getOpacity = function() {
 
 
 /**
- * @return {Array.<number>} Origin.
- */
-ol.style.Image.prototype.getOrigin = function() {
-  return this.origin_;
-};
-
-
-/**
  * @return {boolean} Rotate with map.
  */
 ol.style.Image.prototype.getRotateWithView = function() {
@@ -99,7 +84,7 @@ ol.style.Image.prototype.getRotateWithView = function() {
 
 /**
  * @return {number} Rotation.
- * @todo api
+ * @api
  */
 ol.style.Image.prototype.getRotation = function() {
   return this.rotation_;
@@ -108,7 +93,7 @@ ol.style.Image.prototype.getRotation = function() {
 
 /**
  * @return {number} Scale.
- * @todo api
+ * @api
  */
 ol.style.Image.prototype.getScale = function() {
   return this.scale_;
@@ -116,7 +101,7 @@ ol.style.Image.prototype.getScale = function() {
 
 
 /**
- * @return {boolean|undefined} Snap to pixel?
+ * @return {boolean} Snap to pixel?
  */
 ol.style.Image.prototype.getSnapToPixel = function() {
   return this.snapToPixel_;
@@ -149,6 +134,13 @@ ol.style.Image.prototype.getImageState = goog.abstractMethod;
  * @return {HTMLCanvasElement|HTMLVideoElement|Image} Image element.
  */
 ol.style.Image.prototype.getHitDetectionImage = goog.abstractMethod;
+
+
+/**
+ * @function
+ * @return {Array.<number>} Origin.
+ */
+ol.style.Image.prototype.getOrigin = goog.abstractMethod;
 
 
 /**

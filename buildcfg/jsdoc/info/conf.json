@@ -10,7 +10,7 @@
         "includePattern": "\\.js$"
     },
     "plugins": [
-        "buildcfg/jsdoc/info/define-plugin",
-        "buildcfg/jsdoc/info/todo-plugin"
+        "buildcfg/jsdoc/info/api-plugin",
+        "buildcfg/jsdoc/info/define-plugin"
     ]
 }

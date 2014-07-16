@@ -9,7 +9,6 @@ goog.require('goog.object');
 goog.require('goog.vec.Mat4');
 goog.require('goog.vec.Vec4');
 goog.require('goog.webgl');
-goog.require('ol.Tile');
 goog.require('ol.TileRange');
 goog.require('ol.TileState');
 goog.require('ol.extent');
@@ -114,15 +113,15 @@ ol.renderer.webgl.TileLayer.prototype.prepareFrame =
   var context = mapRenderer.getContext();
   var gl = mapRenderer.getGL();
 
-  var view2DState = frameState.view2DState;
-  var projection = view2DState.projection;
+  var viewState = frameState.viewState;
+  var projection = viewState.projection;
 
   var tileLayer = this.getLayer();
   goog.asserts.assertInstanceof(tileLayer, ol.layer.Tile);
   var tileSource = tileLayer.getSource();
   goog.asserts.assertInstanceof(tileSource, ol.source.Tile);
   var tileGrid = tileSource.getTileGridForProjection(projection);
-  var z = tileGrid.getZForResolution(view2DState.resolution);
+  var z = tileGrid.getZForResolution(viewState.resolution);
   var tileResolution = tileGrid.getResolution(z);
 
   var tilePixelSize =
@@ -131,12 +130,12 @@ ol.renderer.webgl.TileLayer.prototype.prepareFrame =
   var tilePixelResolution = tileResolution / pixelRatio;
   var tileGutter = tileSource.getGutter();
 
-  var center = view2DState.center;
+  var center = viewState.center;
   var extent;
-  if (tileResolution == view2DState.resolution) {
+  if (tileResolution == viewState.resolution) {
     center = this.snapCenterToPixel(center, tileResolution, frameState.size);
-    extent = ol.extent.getForView2DAndSize(
-        center, tileResolution, view2DState.rotation, frameState.size);
+    extent = ol.extent.getForViewAndSize(
+        center, tileResolution, viewState.rotation, frameState.size);
   } else {
     extent = frameState.extent;
   }
@@ -310,13 +309,13 @@ ol.renderer.webgl.TileLayer.prototype.prepareFrame =
       (center[1] - framebufferExtent[1]) /
           (framebufferExtent[3] - framebufferExtent[1]),
       0);
-  if (view2DState.rotation !== 0) {
-    goog.vec.Mat4.rotateZ(texCoordMatrix, view2DState.rotation);
+  if (viewState.rotation !== 0) {
+    goog.vec.Mat4.rotateZ(texCoordMatrix, viewState.rotation);
   }
   goog.vec.Mat4.scale(texCoordMatrix,
-      frameState.size[0] * view2DState.resolution /
+      frameState.size[0] * viewState.resolution /
           (framebufferExtent[2] - framebufferExtent[0]),
-      frameState.size[1] * view2DState.resolution /
+      frameState.size[1] * viewState.resolution /
           (framebufferExtent[3] - framebufferExtent[1]),
       1);
   goog.vec.Mat4.translate(texCoordMatrix,

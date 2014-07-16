@@ -1,5 +1,3 @@
-// FIXME works for View2D only
-
 goog.provide('ol.interaction.PinchRotate');
 
 goog.require('goog.asserts');
@@ -13,12 +11,14 @@ goog.require('ol.interaction.Pointer');
 
 
 /**
+ * @classdesc
  * Allows the user to rotate the map by twisting with two fingers
  * on a touch screen.
+ *
  * @constructor
  * @extends {ol.interaction.Pointer}
  * @param {olx.interaction.PinchRotateOptions=} opt_options Options.
- * @todo api
+ * @api stable
  */
 ol.interaction.PinchRotate = function(opt_options) {
 
@@ -101,12 +101,11 @@ ol.interaction.PinchRotate.prototype.handlePointerDrag =
 
   // rotate
   if (this.rotating_) {
-    // FIXME works for View2D only
-    var view = map.getView().getView2D();
-    var view2DState = view.getView2DState();
+    var view = map.getView();
+    var viewState = view.getState();
     map.render();
     ol.interaction.Interaction.rotateWithoutConstraints(map, view,
-        view2DState.rotation + rotationDelta, this.anchor_);
+        viewState.rotation + rotationDelta, this.anchor_);
   }
 };
 
@@ -121,11 +120,9 @@ ol.interaction.PinchRotate.prototype.handlePointerUp =
     var view = map.getView();
     view.setHint(ol.ViewHint.INTERACTING, -1);
     if (this.rotating_) {
-      // FIXME works for View2D only
-      var view2D = view.getView2D();
-      var view2DState = view2D.getView2DState();
+      var viewState = view.getState();
       ol.interaction.Interaction.rotate(
-          map, view2D, view2DState.rotation, this.anchor_,
+          map, view, viewState.rotation, this.anchor_,
           ol.ROTATE_ANIMATION_DURATION);
     }
     return false;

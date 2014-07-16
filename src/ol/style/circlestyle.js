@@ -1,5 +1,3 @@
-// FIXME decide default value for snapToPixel
-
 goog.provide('ol.style.Circle');
 
 goog.require('goog.dom');
@@ -14,10 +12,13 @@ goog.require('ol.style.Stroke');
 
 
 /**
+ * @classdesc
+ * Set circle style for vector features.
+ *
  * @constructor
  * @param {olx.style.CircleOptions=} opt_options Options.
  * @extends {ol.style.Image}
- * @todo api
+ * @api
  */
 ol.style.Circle = function(opt_options) {
 
@@ -41,6 +42,12 @@ ol.style.Circle = function(opt_options) {
    * @type {ol.style.Fill}
    */
   this.fill_ = goog.isDef(options.fill) ? options.fill : null;
+
+  /**
+   * @private
+   * @type {Array.<number>}
+   */
+  this.origin_ = [0, 0];
 
   /**
    * @private
@@ -68,13 +75,18 @@ ol.style.Circle = function(opt_options) {
    */
   this.size_ = [size, size];
 
+  /**
+   * @type {boolean}
+   */
+  var snapToPixel = goog.isDef(options.snapToPixel) ?
+      options.snapToPixel : true;
+
   goog.base(this, {
     opacity: 1,
-    origin: [0, 0],
     rotateWithView: false,
     rotation: 0,
     scale: 1,
-    snapToPixel: undefined
+    snapToPixel: snapToPixel
   });
 
 };
@@ -83,7 +95,7 @@ goog.inherits(ol.style.Circle, ol.style.Image);
 
 /**
  * @inheritDoc
- * @todo api
+ * @api
  */
 ol.style.Circle.prototype.getAnchor = function() {
   return this.anchor_;
@@ -92,7 +104,7 @@ ol.style.Circle.prototype.getAnchor = function() {
 
 /**
  * @return {ol.style.Fill} Fill style.
- * @todo api
+ * @api
  */
 ol.style.Circle.prototype.getFill = function() {
   return this.fill_;
@@ -109,7 +121,7 @@ ol.style.Circle.prototype.getHitDetectionImage = function(pixelRatio) {
 
 /**
  * @inheritDoc
- * @todo api
+ * @api
  */
 ol.style.Circle.prototype.getImage = function(pixelRatio) {
   return this.canvas_;
@@ -125,8 +137,17 @@ ol.style.Circle.prototype.getImageState = function() {
 
 
 /**
+ * @inheritDoc
+ * @api
+ */
+ol.style.Circle.prototype.getOrigin = function() {
+  return this.origin_;
+};
+
+
+/**
  * @return {number} Radius.
- * @todo api
+ * @api
  */
 ol.style.Circle.prototype.getRadius = function() {
   return this.radius_;
@@ -135,7 +156,7 @@ ol.style.Circle.prototype.getRadius = function() {
 
 /**
  * @inheritDoc
- * @todo api
+ * @api
  */
 ol.style.Circle.prototype.getSize = function() {
   return this.size_;
@@ -144,7 +165,7 @@ ol.style.Circle.prototype.getSize = function() {
 
 /**
  * @return {ol.style.Stroke} Stroke style.
- * @todo api
+ * @api
  */
 ol.style.Circle.prototype.getStroke = function() {
   return this.stroke_;
@@ -193,6 +214,9 @@ ol.style.Circle.prototype.render_ = function() {
 
   canvas.height = size;
   canvas.width = size;
+
+  // canvas.width and height are rounded to the closest integer
+  size = canvas.width;
 
   var context = /** @type {CanvasRenderingContext2D} */
       (canvas.getContext('2d'));

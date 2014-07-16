@@ -6,6 +6,7 @@ describe('ol.format.WFS', function() {
 
     var features, feature;
     before(function(done) {
+      proj4.defs('urn:x-ogc:def:crs:EPSG:4326', proj4.defs('EPSG:4326'));
       afterLoadText('spec/ol/format/wfs/topp-states-wfs.xml', function(xml) {
         try {
           var config = {
@@ -54,6 +55,10 @@ describe('ol.format.WFS', function() {
   describe('when parsing FeatureCollection', function() {
     var response;
     before(function(done) {
+      proj4.defs('EPSG:28992', '+proj=sterea +lat_0=52.15616055555555 ' +
+          '+lon_0=5.38763888888889 +k=0.9999079 +x_0=155000 +y_0=463000 ' +
+          '+ellps=bessel +towgs84=565.417,50.3319,465.552,-0.398957,0.343988,' +
+          '-1.8774,4.0725 +units=m +no_defs');
       afterLoadText('spec/ol/format/wfs/boundedBy.xml',
           function(xml) {
             try {
@@ -195,6 +200,67 @@ describe('ol.format.WFS', function() {
   describe('when writing out a Transaction request', function() {
     var text;
     before(function(done) {
+      afterLoadText('spec/ol/format/wfs/TransactionSrs.xml', function(xml) {
+        text = xml;
+        done();
+      });
+    });
+    it('creates the correct srsName', function() {
+      var format = new ol.format.WFS();
+      var insertFeature = new ol.Feature({
+        the_geom: new ol.geom.MultiLineString([[
+          [-5178372.1885436, 1992365.7775042],
+          [-4434792.7774889, 1601008.1927386],
+          [-4043435.1927233, 2148908.8114105]
+        ]]),
+        TYPE: 'xyz'
+      });
+      insertFeature.setGeometryName('the_geom');
+      var inserts = [insertFeature];
+      var serialized = format.writeTransaction(inserts, null, null, {
+        featureNS: 'http://foo',
+        featureType: 'FAULTS',
+        featurePrefix: 'feature',
+        gmlOptions: {multiCurve: true, srsName: 'EPSG:900913'}
+      });
+      expect(serialized).to.xmleql(ol.xml.load(text));
+    });
+  });
+
+  describe('when writing out a Transaction request', function() {
+    var text;
+    before(function(done) {
+      afterLoadText('spec/ol/format/wfs/TransactionUpdate.xml', function(xml) {
+        text = xml;
+        done();
+      });
+    });
+
+    it('creates the correct update', function() {
+      var format = new ol.format.WFS();
+      var updateFeature = new ol.Feature();
+      updateFeature.setGeometryName('the_geom');
+      updateFeature.setGeometry(new ol.geom.MultiLineString([[
+        [-12279454.47665902, 6741885.67968707],
+        [-12064207.805007964, 6732101.740066567],
+        [-11941908.559751684, 6595126.585379533],
+        [-12240318.718177011, 6507071.128795006],
+        [-12416429.631346056, 6604910.52500003]
+      ]]));
+      updateFeature.setId('FAULTS.4455');
+      var serialized = format.writeTransaction(null, [updateFeature], null, {
+        featureNS: 'http://foo',
+        featureType: 'FAULTS',
+        featurePrefix: 'foo',
+        gmlOptions: {srsName: 'EPSG:900913'}
+      });
+      expect(serialized).to.xmleql(ol.xml.load(text));
+    });
+  });
+
+  describe('when writing out a Transaction request', function() {
+    var text;
+    before(function(done) {
       afterLoadText('spec/ol/format/wfs/TransactionMulti.xml', function(xml) {
         text = xml;
         done();
@@ -317,6 +383,7 @@ describe('ol.format.WFS', function() {
 
 goog.require('ol.xml');
 goog.require('ol.Feature');
+goog.require('ol.geom.MultiLineString');
 goog.require('ol.geom.MultiPoint');
 goog.require('ol.geom.MultiPolygon');
 goog.require('ol.geom.Polygon');

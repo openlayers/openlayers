@@ -174,6 +174,13 @@ describe('ol.format.GeoJSON', function() {
       expect(features[2].getGeometry()).to.be.an(ol.geom.Polygon);
     });
 
+    it('can create a feature with a specific geometryName', function() {
+      var feature = new ol.format.GeoJSON({geometryName: 'the_geom'}).
+          readFeature(pointGeoJSON);
+      expect(feature.getGeometryName()).to.be('the_geom');
+      expect(feature.getGeometry()).to.be.an(ol.geom.Point);
+    });
+
   });
 
   describe('#readFeatures', function() {

@@ -21,8 +21,16 @@
     params.hasDefault = false;
     params.hasName = false;
     
+    var colspan = 2;
     params.forEach(function(param) {
         if (!param) { return; }
+        if (param.type && param.type.names && param.type.names.indexOf('undefined') !== -1) {
+            param.optional = true;
+        }
+        if (param.name.indexOf('var_') == 0) {
+            params.hasAttributes = true;
+            param.variable = true;
+        }
         
         if (param.optional || param.nullable) {
             params.hasAttributes = true;
@@ -33,6 +41,7 @@
         }
         
         if (typeof param.defaultvalue !== 'undefined') {
+            ++colspan;
             params.hasDefault = true;
         }
     });
@@ -46,10 +55,6 @@
 		<?js } ?>
 		
 		<th>Type</th>
-		
-		<?js if (params.hasAttributes) {?>
-		<th>Argument</th>
-		<?js } ?>
 		
 		<?js if (params.hasDefault) {?>
 		<th>Default</th>
@@ -71,23 +76,12 @@
                 <td class="name"><code><?js= param.name.replace(/^opt_/, "") ?></code></td>
             <?js } ?>
             
+            <?js if (!param.subparams) {?>
             <td class="type">
             <?js if (param.type && param.type.names) {?>
                 <?js= self.partial('type.tmpl', param.type.names) ?>
             <?js } ?>
             </td>
-            
-            <?js if (params.hasAttributes) {?>
-                <td class="attributes">
-                <?js if (param.optional) { ?>
-                    &lt;optional><br>
-                <?js } ?>
-                    
-                <?js if (param.nullable) { ?>
-                    &lt;nullable><br>
-                <?js } ?>
-                </td>
-            <?js } ?>
             
             <?js if (params.hasDefault) {?>
                 <td class="default">
@@ -96,9 +90,22 @@
                 <?js } ?>
                 </td>
             <?js } ?>
+            <?js } ?>
             
-            <td class="description last"><?js= param.description ?><?js if (param.subparams) { ?>
-                <h6>Properties</h6>
+            <td<?js= (param.subparams ? ' colspan=' + colspan : ' ') ?> class="description last">
+                <?js if (params.hasAttributes) {?>
+                    <?js if (param.optional) { ?>
+                        <span class="optional">optional</span>
+                    <?js } ?>
+                    <?js if (param.nullable) { ?>
+                        <span class="nullable">nullable</span>
+                    <?js } ?>
+              
+                    <?js if (param.variable) { ?>
+                        <span class="repeatable">repeatable</span>
+                    <?js } ?>
+                <?js } ?>
+                <?js= param.description ?><?js if (param.subparams) { ?>
                 <?js= self.partial('params.tmpl', param.subparams) ?>
             <?js } ?></td>
         </tr>

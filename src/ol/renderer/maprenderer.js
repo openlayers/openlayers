@@ -1,3 +1,4 @@
+goog.provide('ol.RendererType');
 goog.provide('ol.renderer.Map');
 
 goog.require('goog.Disposable');
@@ -9,6 +10,18 @@ goog.require('ol.layer.Layer');
 goog.require('ol.renderer.Layer');
 goog.require('ol.style.IconImageCache');
 goog.require('ol.vec.Mat4');
+
+
+/**
+ * Available renderers: `'canvas'`, `'dom'` or `'webgl'`.
+ * @enum {string}
+ * @api
+ */
+ol.RendererType = {
+  CANVAS: 'canvas',
+  DOM: 'dom',
+  WEBGL: 'webgl'
+};
 
 
 
@@ -31,6 +44,12 @@ ol.renderer.Map = function(container, map) {
   this.map_ = map;
 
   /**
+   * @protected
+   * @type {ol.render.IReplayGroup}
+   */
+  this.replayGroup = null;
+
+  /**
    * @private
    * @type {Object.<string, ol.renderer.Layer>}
    */
@@ -41,18 +60,18 @@ goog.inherits(ol.renderer.Map, goog.Disposable);
 
 
 /**
- * @param {oli.FrameState} frameState FrameState.
+ * @param {olx.FrameState} frameState FrameState.
  * @protected
  */
 ol.renderer.Map.prototype.calculateMatrices2D = function(frameState) {
-  var view2DState = frameState.view2DState;
+  var viewState = frameState.viewState;
   var coordinateToPixelMatrix = frameState.coordinateToPixelMatrix;
   goog.asserts.assert(!goog.isNull(coordinateToPixelMatrix));
   ol.vec.Mat4.makeTransform2D(coordinateToPixelMatrix,
       frameState.size[0] / 2, frameState.size[1] / 2,
-      1 / view2DState.resolution, -1 / view2DState.resolution,
-      -view2DState.rotation,
-      -view2DState.center[0], -view2DState.center[1]);
+      1 / viewState.resolution, -1 / viewState.resolution,
+      -viewState.rotation,
+      -viewState.center[0], -viewState.center[1]);
   var inverted = goog.vec.Mat4.invert(
       coordinateToPixelMatrix, frameState.pixelToCoordinateMatrix);
   goog.asserts.assert(inverted);
@@ -82,7 +101,7 @@ ol.renderer.Map.prototype.disposeInternal = function() {
 
 /**
  * @param {ol.Coordinate} coordinate Coordinate.
- * @param {oli.FrameState} frameState FrameState.
+ * @param {olx.FrameState} frameState FrameState.
  * @param {function(this: S, ol.Feature, ol.layer.Layer): T} callback Feature
  *     callback.
  * @param {S} thisArg Value to use as `this` when executing `callback`.
@@ -97,15 +116,44 @@ ol.renderer.Map.prototype.disposeInternal = function() {
 ol.renderer.Map.prototype.forEachFeatureAtPixel =
     function(coordinate, frameState, callback, thisArg,
         layerFilter, thisArg2) {
+  var result;
+  var extent = frameState.extent;
+  var viewState = frameState.viewState;
+  var viewResolution = viewState.resolution;
+  var viewRotation = viewState.rotation;
+  if (!goog.isNull(this.replayGroup)) {
+    /** @type {Object.<string, boolean>} */
+    var features = {};
+    result = this.replayGroup.forEachGeometryAtPixel(extent, viewResolution,
+        viewRotation, coordinate, {},
+        /**
+         * @param {ol.geom.Geometry} geometry Geometry.
+         * @param {Object} data Data.
+         * @return {?} Callback result.
+         */
+        function(geometry, data) {
+          var feature = /** @type {ol.Feature} */ (data);
+          goog.asserts.assert(goog.isDef(feature));
+          var key = goog.getUid(feature).toString();
+          if (!(key in features)) {
+            features[key] = true;
+            return callback.call(thisArg, feature, null);
+          }
+        });
+    if (result) {
+      return result;
+    }
+  }
   var layerStates = this.map_.getLayerGroup().getLayerStatesArray();
   var numLayers = layerStates.length;
   var i;
   for (i = numLayers - 1; i >= 0; --i) {
     var layerState = layerStates[i];
     var layer = layerState.layer;
-    if (layerState.visible && layerFilter.call(thisArg2, layer)) {
+    if (ol.layer.Layer.visibleAtResolution(layerState, viewResolution) &&
+        layerFilter.call(thisArg2, layer)) {
       var layerRenderer = this.getLayerRenderer(layer);
-      var result = layerRenderer.forEachFeatureAtPixel(
+      result = layerRenderer.forEachFeatureAtPixel(
           coordinate, frameState, callback, thisArg);
       if (result) {
         return result;
@@ -162,6 +210,12 @@ ol.renderer.Map.prototype.getMap = function() {
 
 
 /**
+ * @return {string} Type
+ */
+ol.renderer.Map.prototype.getType = goog.abstractMethod;
+
+
+/**
  * @param {string} layerKey Layer key.
  * @return {ol.renderer.Layer} Layer renderer.
  * @private
@@ -176,14 +230,14 @@ ol.renderer.Map.prototype.removeLayerRendererByKey_ = function(layerKey) {
 
 /**
  * Render.
- * @param {?oli.FrameState} frameState Frame state.
+ * @param {?olx.FrameState} frameState Frame state.
  */
 ol.renderer.Map.prototype.renderFrame = goog.nullFunction;
 
 
 /**
  * @param {ol.Map} map Map.
- * @param {oli.FrameState} frameState Frame state.
+ * @param {olx.FrameState} frameState Frame state.
  * @private
  */
 ol.renderer.Map.prototype.removeUnusedLayerRenderers_ =
@@ -198,14 +252,14 @@ ol.renderer.Map.prototype.removeUnusedLayerRenderers_ =
 
 
 /**
- * @param {oli.FrameState} frameState Frame state.
+ * @param {olx.FrameState} frameState Frame state.
  * @protected
  */
 ol.renderer.Map.prototype.scheduleExpireIconCache = function(frameState) {
   frameState.postRenderFunctions.push(
       /**
        * @param {ol.Map} map Map.
-       * @param {oli.FrameState} frameState Frame state.
+       * @param {olx.FrameState} frameState Frame state.
        */
       function(map, frameState) {
         ol.style.IconImageCache.getInstance().expire();
@@ -214,7 +268,7 @@ ol.renderer.Map.prototype.scheduleExpireIconCache = function(frameState) {
 
 
 /**
- * @param {!oli.FrameState} frameState Frame state.
+ * @param {!olx.FrameState} frameState Frame state.
  * @protected
  */
 ol.renderer.Map.prototype.scheduleRemoveUnusedLayerRenderers =

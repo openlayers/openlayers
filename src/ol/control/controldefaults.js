@@ -2,15 +2,22 @@ goog.provide('ol.control');
 
 goog.require('ol.Collection');
 goog.require('ol.control.Attribution');
-goog.require('ol.control.Logo');
 goog.require('ol.control.Rotate');
 goog.require('ol.control.Zoom');
 
 
 /**
+ * @classdesc
+ * Set of controls included in maps by default. Unless configured otherwise,
+ * this returns a collection containing an instance of each of the following
+ * controls:
+ * * {@link ol.control.Zoom}
+ * * {@link ol.control.Rotate}
+ * * {@link ol.control.Attribution}
+ *
  * @param {olx.control.DefaultsOptions=} opt_options Defaults options.
  * @return {ol.Collection} Controls.
- * @todo api
+ * @api
  */
 ol.control.defaults = function(opt_options) {
 
@@ -34,12 +41,6 @@ ol.control.defaults = function(opt_options) {
       options.attribution : true;
   if (attributionControl) {
     controls.push(new ol.control.Attribution(options.attributionOptions));
-  }
-
-  var logoControl = goog.isDef(options.logo) ?
-      options.logo : true;
-  if (logoControl) {
-    controls.push(new ol.control.Logo(options.logoOptions));
   }
 
   return controls;

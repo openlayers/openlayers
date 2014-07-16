@@ -10,13 +10,22 @@ goog.require('ol.CollectionEventType');
 goog.require('ol.Feature');
 goog.require('ol.feature');
 goog.require('ol.render.EventType');
+goog.require('ol.renderer.vector');
 
 
 
 /**
+ * @classdesc
+ * A mechanism for changing the style of a small number of features on a
+ * temporary basis, for example highlighting. This is necessary with the Canvas
+ * renderer, where, unlike in SVG, features cannot be individually referenced.
+ * See examples/vector-layers for an example: create a FeatureOverlay with a
+ * different style, copy the feature(s) you want rendered in this different
+ * style into it, and then remove them again when you're finished.
+ *
  * @constructor
  * @param {olx.FeatureOverlayOptions=} opt_options Options.
- * @todo api
+ * @api
  */
 ol.FeatureOverlay = function(opt_options) {
 
@@ -62,8 +71,11 @@ ol.FeatureOverlay = function(opt_options) {
    * @private
    * @type {ol.feature.StyleFunction|undefined}
    */
-  this.styleFunction_ = goog.isDef(options.style) ?
-      ol.feature.createStyleFunction(options.style) : undefined;
+  this.styleFunction_ = undefined;
+
+  if (goog.isDef(options.style)) {
+    this.setStyle(options.style);
+  }
 
   if (goog.isDef(options.features)) {
     if (goog.isArray(options.features)) {
@@ -85,7 +97,7 @@ ol.FeatureOverlay = function(opt_options) {
 
 /**
  * @param {ol.Feature} feature Feature.
- * @todo api
+ * @api
  */
 ol.FeatureOverlay.prototype.addFeature = function(feature) {
   this.features_.push(feature);
@@ -94,7 +106,7 @@ ol.FeatureOverlay.prototype.addFeature = function(feature) {
 
 /**
  * @return {ol.Collection} Features collection.
- * @todo api
+ * @api
  */
 ol.FeatureOverlay.prototype.getFeatures = function() {
   return this.features_;
@@ -138,6 +150,16 @@ ol.FeatureOverlay.prototype.handleFeaturesRemove_ = function(collectionEvent) {
 
 
 /**
+ * Handle changes in image style state.
+ * @param {goog.events.Event} event Image style change event.
+ * @private
+ */
+ol.FeatureOverlay.prototype.handleImageChange_ = function(event) {
+  this.render_();
+};
+
+
+/**
  * @param {ol.render.Event} event Event.
  * @private
  */
@@ -149,8 +171,12 @@ ol.FeatureOverlay.prototype.handleMapPostCompose_ = function(event) {
   if (!goog.isDef(styleFunction)) {
     styleFunction = ol.feature.defaultStyleFunction;
   }
-  var resolution = event.frameState.view2DState.resolution;
-  var vectorContext = event.vectorContext;
+  var replayGroup = /** @type {ol.render.IReplayGroup} */
+      (event.replayGroup);
+  goog.asserts.assert(goog.isDef(replayGroup));
+  var frameState = event.frameState;
+  var pixelRatio = frameState.pixelRatio;
+  var resolution = frameState.viewState.resolution;
   var i, ii, styles;
   this.features_.forEach(function(feature) {
     styles = styleFunction(feature, resolution);
@@ -159,15 +185,17 @@ ol.FeatureOverlay.prototype.handleMapPostCompose_ = function(event) {
     }
     ii = styles.length;
     for (i = 0; i < ii; ++i) {
-      vectorContext.drawFeature(feature, styles[i]);
+      ol.renderer.vector.renderFeature(replayGroup, feature, styles[i],
+          ol.renderer.vector.getSquaredTolerance(resolution, pixelRatio),
+          feature, this.handleImageChange_, this);
     }
-  });
+  }, this);
 };
 
 
 /**
  * @param {ol.Feature} feature Feature.
- * @todo api
+ * @api
  */
 ol.FeatureOverlay.prototype.removeFeature = function(feature) {
   this.features_.remove(feature);
@@ -186,7 +214,7 @@ ol.FeatureOverlay.prototype.render_ = function() {
 
 /**
  * @param {ol.Collection} features Features collection.
- * @todo api
+ * @api
  */
 ol.FeatureOverlay.prototype.setFeatures = function(features) {
   if (!goog.isNull(this.featuresListenerKeys_)) {
@@ -220,7 +248,7 @@ ol.FeatureOverlay.prototype.setFeatures = function(features) {
 
 /**
  * @param {ol.Map} map Map.
- * @todo api
+ * @api
  */
 ol.FeatureOverlay.prototype.setMap = function(map) {
   if (!goog.isNull(this.postComposeListenerKey_)) {
@@ -244,7 +272,7 @@ ol.FeatureOverlay.prototype.setMap = function(map) {
  * an array of styles.
  * @param {ol.style.Style|Array.<ol.style.Style>|ol.feature.StyleFunction} style
  *     Overlay style.
- * @todo api
+ * @api
  */
 ol.FeatureOverlay.prototype.setStyle = function(style) {
   this.style_ = style;
@@ -258,7 +286,7 @@ ol.FeatureOverlay.prototype.setStyle = function(style) {
  * option at construction or to the `setStyle` method.
  * @return {ol.style.Style|Array.<ol.style.Style>|ol.feature.StyleFunction}
  *     Overlay style.
- * @todo api
+ * @api
  */
 ol.FeatureOverlay.prototype.getStyle = function() {
   return this.style_;
@@ -268,7 +296,7 @@ ol.FeatureOverlay.prototype.getStyle = function() {
 /**
  * Get the style function.
  * @return {ol.feature.StyleFunction|undefined} Style function.
- * @todo api
+ * @api
  */
 ol.FeatureOverlay.prototype.getStyleFunction = function() {
   return this.styleFunction_;

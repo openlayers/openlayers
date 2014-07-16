@@ -20,6 +20,11 @@ goog.require('ol.xml');
 
 
 /**
+ * @classdesc
+ * Abstract base class; normally only used for creating subclasses and not
+ * instantiated in apps.
+ * Base class for vector sources in one of the supported formats.
+ *
  * @constructor
  * @extends {ol.source.Vector}
  * @param {olx.source.FormatVectorOptions} options Options.
@@ -111,6 +116,7 @@ ol.source.FormatVector.prototype.loadFeaturesFromURL =
 /**
  * @param {ArrayBuffer|Document|Node|Object|string} source Source.
  * @return {Array.<ol.Feature>} Features.
+ * @api
  */
 ol.source.FormatVector.prototype.readFeatures = function(source) {
   var format = this.format;
@@ -124,7 +130,7 @@ ol.source.FormatVector.prototype.readFeatures = function(source) {
       for (i = 0, ii = features.length; i < ii; ++i) {
         var feature = features[i];
         var geometry = feature.getGeometry();
-        if (!goog.isNull(geometry)) {
+        if (goog.isDefAndNotNull(geometry)) {
           geometry.applyTransform(transform);
         }
       }

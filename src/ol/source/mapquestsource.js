@@ -9,10 +9,13 @@ goog.require('ol.source.XYZ');
 
 
 /**
+ * @classdesc
+ * Layer source for the MapQuest tile server.
+ *
  * @constructor
  * @extends {ol.source.XYZ}
  * @param {olx.source.MapQuestOptions=} opt_options MapQuest options.
- * @todo api
+ * @api
  */
 ol.source.MapQuest = function(opt_options) {
 

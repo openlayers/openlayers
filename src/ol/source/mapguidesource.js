@@ -10,10 +10,13 @@ goog.require('ol.source.Image');
 
 
 /**
+ * @classdesc
+ * Source for images from Mapguide servers
+ *
  * @constructor
  * @extends {ol.source.Image}
  * @param {olx.source.MapGuideOptions} options Options.
- * @todo api
+ * @api
  */
 ol.source.MapGuide = function(options) {
 

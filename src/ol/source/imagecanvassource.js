@@ -8,10 +8,13 @@ goog.require('ol.source.Image');
 
 
 /**
+ * @classdesc
+ * Base class for image sources where a canvas element is the image.
+ *
  * @constructor
  * @extends {ol.source.Image}
  * @param {olx.source.ImageCanvasOptions} options
- * @todo api
+ * @api
  */
 ol.source.ImageCanvas = function(options) {
 

@@ -14,12 +14,18 @@ ol.layer.TileProperty = {
 
 
 /**
+ * @classdesc
+ * For layer sources that provide pre-rendered, tiled images in grids that are
+ * organized by zoom levels for specific resolutions.
+ * Note that any property set in the options is set as a {@link ol.Object}
+ * property on the layer object; for example, setting `title: 'My Title'` in the
+ * options means that `title` is observable, and has get/set accessors.
+ *
  * @constructor
  * @extends {ol.layer.Layer}
- * @fires {@link ol.render.Event} ol.render.Event
+ * @fires ol.render.Event
  * @param {olx.layer.TileOptions} options Tile layer options.
- * @todo observable preload {number} the level to preload tiles up to
- * @todo api
+ * @api
  */
 ol.layer.Tile = function(options) {
   goog.base(this, options);
@@ -29,7 +35,8 @@ goog.inherits(ol.layer.Tile, ol.layer.Layer);
 
 
 /**
- * @return {number|undefined} Preload.
+ * @return {number|undefined} The level to preload tiles up to.
+ * @observable
  */
 ol.layer.Tile.prototype.getPreload = function() {
   return /** @type {number|undefined} */ (
@@ -42,7 +49,8 @@ goog.exportProperty(
 
 
 /**
- * @param {number} preload Preload.
+ * @param {number} preload The level to preload tiles up to.
+ * @observable
  */
 ol.layer.Tile.prototype.setPreload = function(preload) {
   this.set(ol.layer.TileProperty.PRELOAD, preload);

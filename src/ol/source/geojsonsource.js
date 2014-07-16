@@ -6,11 +6,14 @@ goog.require('ol.source.StaticVector');
 
 
 /**
+ * @classdesc
+ * Static vector source in GeoJSON format
+ *
  * @constructor
  * @extends {ol.source.StaticVector}
- * @fires {@link ol.source.VectorEvent} ol.source.VectorEvent
+ * @fires ol.source.VectorEvent
  * @param {olx.source.GeoJSONOptions=} opt_options Options.
- * @todo api
+ * @api
  */
 ol.source.GeoJSON = function(opt_options) {
 

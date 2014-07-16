@@ -33,7 +33,7 @@ goog.inherits(ol.renderer.canvas.Layer, ol.renderer.Layer);
 
 
 /**
- * @param {oli.FrameState} frameState Frame state.
+ * @param {olx.FrameState} frameState Frame state.
  * @param {ol.layer.LayerState} layerState Layer state.
  * @param {CanvasRenderingContext2D} context Context.
  */
@@ -49,7 +49,7 @@ ol.renderer.canvas.Layer.prototype.composeFrame =
 
     // for performance reasons, context.setTransform is only used
     // when the view is rotated. see http://jsperf.com/canvas-transform
-    if (frameState.view2DState.rotation === 0) {
+    if (frameState.viewState.rotation === 0) {
       var dx = goog.vec.Mat4.getElement(imageTransform, 0, 3);
       var dy = goog.vec.Mat4.getElement(imageTransform, 1, 3);
       var dw = image.width * goog.vec.Mat4.getElement(imageTransform, 0, 0);
@@ -77,7 +77,7 @@ ol.renderer.canvas.Layer.prototype.composeFrame =
 /**
  * @param {ol.render.EventType} type Event type.
  * @param {CanvasRenderingContext2D} context Context.
- * @param {oli.FrameState} frameState Frame state.
+ * @param {olx.FrameState} frameState Frame state.
  * @param {goog.vec.Mat4.Number=} opt_transform Transform.
  * @private
  */
@@ -89,9 +89,9 @@ ol.renderer.canvas.Layer.prototype.dispatchComposeEvent_ =
         opt_transform : this.getTransform(frameState);
     var render = new ol.render.canvas.Immediate(
         context, frameState.pixelRatio, frameState.extent, transform,
-        frameState.view2DState.rotation);
-    var composeEvent = new ol.render.Event(type, layer, render, frameState,
-        context, null);
+        frameState.viewState.rotation);
+    var composeEvent = new ol.render.Event(type, layer, render, null,
+        frameState, context, null);
     layer.dispatchEvent(composeEvent);
     render.flush();
   }
@@ -100,7 +100,7 @@ ol.renderer.canvas.Layer.prototype.dispatchComposeEvent_ =
 
 /**
  * @param {CanvasRenderingContext2D} context Context.
- * @param {oli.FrameState} frameState Frame state.
+ * @param {olx.FrameState} frameState Frame state.
  * @param {goog.vec.Mat4.Number=} opt_transform Transform.
  * @protected
  */
@@ -113,7 +113,7 @@ ol.renderer.canvas.Layer.prototype.dispatchPostComposeEvent =
 
 /**
  * @param {CanvasRenderingContext2D} context Context.
- * @param {oli.FrameState} frameState Frame state.
+ * @param {olx.FrameState} frameState Frame state.
  * @param {goog.vec.Mat4.Number=} opt_transform Transform.
  * @protected
  */
@@ -126,7 +126,7 @@ ol.renderer.canvas.Layer.prototype.dispatchPreComposeEvent =
 
 /**
  * @param {CanvasRenderingContext2D} context Context.
- * @param {oli.FrameState} frameState Frame state.
+ * @param {olx.FrameState} frameState Frame state.
  * @param {goog.vec.Mat4.Number=} opt_transform Transform.
  * @protected
  */
@@ -150,20 +150,20 @@ ol.renderer.canvas.Layer.prototype.getImageTransform = goog.abstractMethod;
 
 
 /**
- * @param {oli.FrameState} frameState Frame state.
+ * @param {olx.FrameState} frameState Frame state.
  * @protected
  * @return {!goog.vec.Mat4.Number} Transform.
  */
 ol.renderer.canvas.Layer.prototype.getTransform = function(frameState) {
-  var view2DState = frameState.view2DState;
+  var viewState = frameState.viewState;
   var pixelRatio = frameState.pixelRatio;
   return ol.vec.Mat4.makeTransform2D(this.transform_,
       pixelRatio * frameState.size[0] / 2,
       pixelRatio * frameState.size[1] / 2,
-      pixelRatio / view2DState.resolution,
-      -pixelRatio / view2DState.resolution,
-      -view2DState.rotation,
-      -view2DState.center[0], -view2DState.center[1]);
+      pixelRatio / viewState.resolution,
+      -pixelRatio / viewState.resolution,
+      -viewState.rotation,
+      -viewState.center[0], -viewState.center[1]);
 };
 
 

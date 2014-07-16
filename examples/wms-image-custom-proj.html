@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="../resources/bootstrap/css/bootstrap.min.css" type="text/css">
     <link rel="stylesheet" href="../resources/layout.css" type="text/css">
     <link rel="stylesheet" href="../resources/bootstrap/css/bootstrap-responsive.min.css" type="text/css">
-    <title>Single image WMS with custom projection example</title>
+    <title>Single image WMS with Proj4js projection example</title>
   </head>
   <body>
 
@@ -31,13 +31,13 @@
       <div class="row-fluid">
 
         <div class="span12">
-          <h4 id="title">Single image WMS with custom projection example</h4>
+          <h4 id="title">Single image WMS with Proj4js projection example</h4>
           <p id="shortdesc">Example of two single image WMS layers.</p>
           <div id="docs">
             <p>Pixelmap 1:1'000'000 with National Parks overlay using the projection EPSG:21781.</p>
             <p>See the <a href="wms-image-custom-proj.js" target="_blank">wms-image-custom-proj.js source</a> to see how this is done.</p>
           </div>
-          <div id="tags">wms, single image, projection</div>
+          <div id="tags">wms, single image, proj4js, projection</div>
         </div>
 
       </div>
@@ -45,8 +45,8 @@
     </div>
 
     <script src="jquery.min.js" type="text/javascript"></script>
-    <script src="http://cdnjs.cloudflare.com/ajax/libs/proj4js/1.1.0/proj4js-compressed.js" type="text/javascript"></script>
-    <script src="http://cdnjs.cloudflare.com/ajax/libs/proj4js/1.1.0/defs/EPSG21781.js" type="text/javascript"></script>
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/proj4js/2.2.1/proj4.js" type="text/javascript"></script>
+    <script src="http://epsg.io/21781.js" type="text/javascript"></script>
     <script src="../resources/example-behaviour.js" type="text/javascript"></script>
     <script src="loader.js?id=wms-image-custom-proj" type="text/javascript"></script>
 

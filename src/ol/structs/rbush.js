@@ -395,6 +395,8 @@ ol.structs.RBush.prototype.condense_ = function(path) {
 /**
  * Calls a callback function with each node in the tree. Inside the callback,
  * no tree modifications (insert, update, remove) can be made.
+ * If the callback returns a truthy value, this value is returned without
+ * checking the rest of the tree.
  * @param {function(this: S, T): *} callback Callback.
  * @param {S=} opt_this The object to use as `this` in `callback`.
  * @return {*} Callback return value.
@@ -708,13 +710,13 @@ ol.structs.RBush.prototype.splitRoot_ = function(node1, node2) {
  * @param {T} value Value.
  */
 ol.structs.RBush.prototype.update = function(extent, value) {
-  if (goog.DEBUG && this.readers_) {
-    throw new Error('cannot update value while reading');
-  }
   var key = this.getKey_(value);
   var currentExtent = this.valueExtent_[key];
   goog.asserts.assert(goog.isDef(currentExtent));
   if (!ol.extent.equals(currentExtent, extent)) {
+    if (goog.DEBUG && this.readers_) {
+      throw new Error('cannot update extent while reading');
+    }
     var removed = this.remove_(currentExtent, value);
     goog.asserts.assert(removed);
     this.insert_(extent, value, this.root_.height - 1);

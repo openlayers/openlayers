@@ -1,5 +1,3 @@
-// FIXME works for View2D only
-
 goog.provide('ol.animation');
 
 goog.require('ol.PreRenderFunction');
@@ -11,7 +9,7 @@ goog.require('ol.easing');
 /**
  * @param {olx.animation.BounceOptions} options Bounce options.
  * @return {ol.PreRenderFunction} Pre-render function.
- * @todo api
+ * @api
  */
 ol.animation.bounce = function(options) {
   var resolution = options.resolution;
@@ -22,7 +20,7 @@ ol.animation.bounce = function(options) {
   return (
       /**
        * @param {ol.Map} map Map.
-       * @param {?oli.FrameState} frameState Frame state.
+       * @param {?olx.FrameState} frameState Frame state.
        */
       function(map, frameState) {
         if (frameState.time < start) {
@@ -31,9 +29,9 @@ ol.animation.bounce = function(options) {
           return true;
         } else if (frameState.time < start + duration) {
           var delta = easing((frameState.time - start) / duration);
-          var deltaResolution = resolution - frameState.view2DState.resolution;
+          var deltaResolution = resolution - frameState.viewState.resolution;
           frameState.animate = true;
-          frameState.view2DState.resolution += delta * deltaResolution;
+          frameState.viewState.resolution += delta * deltaResolution;
           frameState.viewHints[ol.ViewHint.ANIMATING] += 1;
           return true;
         } else {
@@ -46,7 +44,7 @@ ol.animation.bounce = function(options) {
 /**
  * @param {olx.animation.PanOptions} options Pan options.
  * @return {ol.PreRenderFunction} Pre-render function.
- * @todo api
+ * @api
  */
 ol.animation.pan = function(options) {
   var source = options.source;
@@ -59,7 +57,7 @@ ol.animation.pan = function(options) {
   return (
       /**
        * @param {ol.Map} map Map.
-       * @param {?oli.FrameState} frameState Frame state.
+       * @param {?olx.FrameState} frameState Frame state.
        */
       function(map, frameState) {
         if (frameState.time < start) {
@@ -68,11 +66,11 @@ ol.animation.pan = function(options) {
           return true;
         } else if (frameState.time < start + duration) {
           var delta = 1 - easing((frameState.time - start) / duration);
-          var deltaX = sourceX - frameState.view2DState.center[0];
-          var deltaY = sourceY - frameState.view2DState.center[1];
+          var deltaX = sourceX - frameState.viewState.center[0];
+          var deltaY = sourceY - frameState.viewState.center[1];
           frameState.animate = true;
-          frameState.view2DState.center[0] += delta * deltaX;
-          frameState.view2DState.center[1] += delta * deltaY;
+          frameState.viewState.center[0] += delta * deltaX;
+          frameState.viewState.center[1] += delta * deltaY;
           frameState.viewHints[ol.ViewHint.ANIMATING] += 1;
           return true;
         } else {
@@ -85,7 +83,7 @@ ol.animation.pan = function(options) {
 /**
  * @param {olx.animation.RotateOptions} options Rotate options.
  * @return {ol.PreRenderFunction} Pre-render function.
- * @todo api
+ * @api
  */
 ol.animation.rotate = function(options) {
   var sourceRotation = goog.isDef(options.rotation) ? options.rotation : 0;
@@ -99,7 +97,7 @@ ol.animation.rotate = function(options) {
   return (
       /**
        * @param {ol.Map} map Map.
-       * @param {?oli.FrameState} frameState Frame state.
+       * @param {?olx.FrameState} frameState Frame state.
        */
       function(map, frameState) {
         if (frameState.time < start) {
@@ -109,11 +107,11 @@ ol.animation.rotate = function(options) {
         } else if (frameState.time < start + duration) {
           var delta = 1 - easing((frameState.time - start) / duration);
           var deltaRotation =
-              (sourceRotation - frameState.view2DState.rotation) * delta;
+              (sourceRotation - frameState.viewState.rotation) * delta;
           frameState.animate = true;
-          frameState.view2DState.rotation += deltaRotation;
+          frameState.viewState.rotation += deltaRotation;
           if (!goog.isNull(anchor)) {
-            var center = frameState.view2DState.center;
+            var center = frameState.viewState.center;
             ol.coordinate.sub(center, anchor);
             ol.coordinate.rotate(center, deltaRotation);
             ol.coordinate.add(center, anchor);
@@ -130,7 +128,7 @@ ol.animation.rotate = function(options) {
 /**
  * @param {olx.animation.ZoomOptions} options Zoom options.
  * @return {ol.PreRenderFunction} Pre-render function.
- * @todo api
+ * @api
  */
 ol.animation.zoom = function(options) {
   var sourceResolution = options.resolution;
@@ -141,7 +139,7 @@ ol.animation.zoom = function(options) {
   return (
       /**
        * @param {ol.Map} map Map.
-       * @param {?oli.FrameState} frameState Frame state.
+       * @param {?olx.FrameState} frameState Frame state.
        */
       function(map, frameState) {
         if (frameState.time < start) {
@@ -151,9 +149,9 @@ ol.animation.zoom = function(options) {
         } else if (frameState.time < start + duration) {
           var delta = 1 - easing((frameState.time - start) / duration);
           var deltaResolution =
-              sourceResolution - frameState.view2DState.resolution;
+              sourceResolution - frameState.viewState.resolution;
           frameState.animate = true;
-          frameState.view2DState.resolution += delta * deltaResolution;
+          frameState.viewState.resolution += delta * deltaResolution;
           frameState.viewHints[ol.ViewHint.ANIMATING] += 1;
           return true;
         } else {

@@ -64,6 +64,27 @@ describe('ol.structs.RBush', function() {
       rBush.insert([-3, -3, -2, -2], objs[10]);
     });
 
+    describe('#forEach', function() {
+
+      it('called for all the objects', function() {
+        var i = 0;
+        rBush.forEach(function() {
+          ++i;
+        });
+        expect(i).to.be(objs.length);
+      });
+
+      it('stops when the function returns true', function() {
+        var i = 0;
+        var result = rBush.forEach(function() {
+          return ++i >= 4;
+        });
+        expect(i).to.be(4);
+        expect(result).to.be(true);
+      });
+
+    });
+
     describe('#getInExtent', function() {
 
       it('returns the expected objects', function() {

@@ -21,10 +21,13 @@ goog.require('ol.source.wms.ServerType');
 
 
 /**
+ * @classdesc
+ * Layer source for tile data from WMS servers.
+ *
  * @constructor
  * @extends {ol.source.TileImage}
  * @param {olx.source.TileWMSOptions=} opt_options Tile WMS options.
- * @todo api
+ * @api
  */
 ol.source.TileWMS = function(opt_options) {
 
@@ -53,9 +56,9 @@ ol.source.TileWMS = function(opt_options) {
 
   /**
    * @private
-   * @type {Array.<string>|undefined}
+   * @type {!Array.<string>}
    */
-  this.urls_ = urls;
+  this.urls_ = goog.isDefAndNotNull(urls) ? urls : [];
 
   /**
    * @private
@@ -125,7 +128,7 @@ goog.inherits(ol.source.TileWMS, ol.source.TileImage);
  *     in the `LAYERS` parameter will be used. `VERSION` should not be
  *     specified here.
  * @return {string|undefined} GetFeatureInfo URL.
- * @todo api
+ * @api
  */
 ol.source.TileWMS.prototype.getGetFeatureInfoUrl =
     function(coordinate, resolution, projection, params) {
@@ -207,7 +210,7 @@ ol.source.TileWMS.prototype.getKeyZXY = function(z, x, y) {
  * Get the user-provided params, i.e. those passed to the constructor through
  * the "params" option, and possibly updated using the updateParams method.
  * @return {Object} Params.
- * @todo api
+ * @api
  */
 ol.source.TileWMS.prototype.getParams = function() {
   return this.params_;
@@ -229,7 +232,7 @@ ol.source.TileWMS.prototype.getRequestUrl_ =
         pixelRatio, projection, params) {
 
   var urls = this.urls_;
-  if (!goog.isDef(urls) || goog.array.isEmpty(urls)) {
+  if (goog.array.isEmpty(urls)) {
     return undefined;
   }
 
@@ -280,7 +283,7 @@ ol.source.TileWMS.prototype.getRequestUrl_ =
   if (urls.length == 1) {
     url = urls[0];
   } else {
-    var index = goog.math.modulo(tileCoord.hash(), this.urls_.length);
+    var index = goog.math.modulo(tileCoord.hash(), urls.length);
     url = urls[index];
   }
   return goog.uri.utils.appendParamsFromMap(url, params);
@@ -306,8 +309,8 @@ ol.source.TileWMS.prototype.getTilePixelSize =
 
 /**
  * Return the URLs used for this WMS source.
- * @return {Array.<string>|undefined} URLs.
- * @todo api
+ * @return {!Array.<string>} URLs.
+ * @api
  */
 ol.source.TileWMS.prototype.getUrls = function() {
   return this.urls_;
@@ -320,10 +323,39 @@ ol.source.TileWMS.prototype.getUrls = function() {
 ol.source.TileWMS.prototype.resetCoordKeyPrefix_ = function() {
   var i = 0;
   var res = [];
-  for (var key in this.params_) {
+
+  var j, jj;
+  for (j = 0, jj = this.urls_.length; j < jj; ++j) {
+    res[i++] = this.urls_[j];
+  }
+
+  var key;
+  for (key in this.params_) {
     res[i++] = key + '-' + this.params_[key];
   }
-  this.coordKeyPrefix_ = res.join('/');
+
+  this.coordKeyPrefix_ = res.join('#');
+};
+
+
+/**
+ * @param {string|undefined} url URL.
+ * @api
+ */
+ol.source.TileWMS.prototype.setUrl = function(url) {
+  var urls = goog.isDef(url) ? ol.TileUrlFunction.expandUrl(url) : null;
+  this.setUrls(urls);
+};
+
+
+/**
+ * @param {Array.<string>|undefined} urls URLs.
+ * @api
+ */
+ol.source.TileWMS.prototype.setUrls = function(urls) {
+  this.urls_ = goog.isDefAndNotNull(urls) ? urls : [];
+  this.resetCoordKeyPrefix_();
+  this.dispatchChangeEvent();
 };
 
 
@@ -391,7 +423,7 @@ ol.source.TileWMS.prototype.tileUrlFunction_ =
 /**
  * Update the user-provided params.
  * @param {Object} params Params.
- * @todo api
+ * @api
  */
 ol.source.TileWMS.prototype.updateParams = function(params) {
   goog.object.extend(this.params_, params);

@@ -1,5 +1,5 @@
 goog.require('ol.Map');
-goog.require('ol.View2D');
+goog.require('ol.View');
 goog.require('ol.format.GeoJSON');
 goog.require('ol.layer.Tile');
 goog.require('ol.layer.Vector');
@@ -9,10 +9,6 @@ goog.require('ol.source.ServerVector');
 goog.require('ol.style.Stroke');
 goog.require('ol.style.Style');
 goog.require('ol.tilegrid.XYZ');
-
-var loadFeatures = function(response) {
-  vectorSource.addFeatures(vectorSource.readFeatures(response));
-};
 
 var vectorSource = new ol.source.ServerVector({
   format: new ol.format.GeoJSON(),
@@ -31,6 +27,10 @@ var vectorSource = new ol.source.ServerVector({
   })),
   projection: 'EPSG:3857'
 });
+
+var loadFeatures = function(response) {
+  vectorSource.addFeatures(vectorSource.readFeatures(response));
+};
 
 var vector = new ol.layer.Vector({
   source: vectorSource,
@@ -52,7 +52,7 @@ var raster = new ol.layer.Tile({
 var map = new ol.Map({
   layers: [raster, vector],
   target: document.getElementById('map'),
-  view: new ol.View2D({
+  view: new ol.View({
     center: [-8908887.277395891, 5381918.072437216],
     maxZoom: 19,
     zoom: 12

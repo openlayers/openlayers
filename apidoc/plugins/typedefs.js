@@ -14,9 +14,7 @@ function addSubparams(params) {
       var name = types[k];
       if (name in olxTypes) {
         param.subparams = olxTypes[name];
-        // TODO Change template before recursing here, because the table gets
-        // too wide.
-        //addSubparams(param.subparams);
+        // TODO addSubparams(param.subparams);
         // TODO Do we need to support multiple object literal types per
         // param?
         break;

@@ -23,6 +23,9 @@ ol.TileState = {
 
 
 /**
+ * @classdesc
+ * Base class for tiles.
+ *
  * @constructor
  * @extends {goog.events.EventTarget}
  * @param {ol.TileCoord} tileCoord Tile coordinate.
@@ -56,6 +59,7 @@ ol.Tile.prototype.dispatchChangeEvent = function() {
 
 
 /**
+ * @function
  * @param {Object=} opt_context Object.
  * @return {HTMLCanvasElement|HTMLImageElement|HTMLVideoElement} Image.
  */
@@ -72,7 +76,7 @@ ol.Tile.prototype.getKey = function() {
 
 /**
  * @return {ol.TileCoord}
- * @todo api
+ * @api
  */
 ol.Tile.prototype.getTileCoord = function() {
   return this.tileCoord;

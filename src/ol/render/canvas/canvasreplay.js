@@ -1,4 +1,3 @@
-// FIXME decide default snapToPixel behaviour
 // FIXME add option to apply snapToPixel to all coordinates?
 // FIXME can eliminate empty set styles and strokes (when all geoms skipped)
 
@@ -230,7 +229,8 @@ ol.render.canvas.Replay.prototype.replay_ = function(
     pixelCoordinates = this.pixelCoordinates_;
   } else {
     pixelCoordinates = ol.geom.flat.transform.transform2D(
-        this.coordinates, 2, transform, this.pixelCoordinates_);
+        this.coordinates, 0, this.coordinates.length, 2,
+        transform, this.pixelCoordinates_);
     goog.vec.Mat4.setFromArray(this.renderedTransform_, transform);
     goog.asserts.assert(pixelCoordinates === this.pixelCoordinates_);
   }
@@ -259,6 +259,8 @@ ol.render.canvas.Replay.prototype.replay_ = function(
         ++i;
         break;
       case ol.render.canvas.Instruction.CIRCLE:
+        goog.asserts.assert(goog.isNumber(instruction[1]));
+        d = /** @type {number} */ (instruction[1]);
         var x1 = pixelCoordinates[d];
         var y1 = pixelCoordinates[d + 1];
         var x2 = pixelCoordinates[d + 2];
@@ -267,7 +269,6 @@ ol.render.canvas.Replay.prototype.replay_ = function(
         var dy = y2 - y1;
         var r = Math.sqrt(dx * dx + dy * dy);
         context.arc(x1, y1, r, 0, 2 * Math.PI, true);
-        d += 4;
         ++i;
         break;
       case ol.render.canvas.Instruction.CLOSE_PATH:
@@ -284,15 +285,15 @@ ol.render.canvas.Replay.prototype.replay_ = function(
         // Remaining arguments in DRAW_IMAGE are in alphabetical order
         var anchorX = /** @type {number} */ (instruction[4]) * pixelRatio;
         var anchorY = /** @type {number} */ (instruction[5]) * pixelRatio;
-        var height = /** @type {number} */ (instruction[6]) * pixelRatio;
+        var height = /** @type {number} */ (instruction[6]);
         var opacity = /** @type {number} */ (instruction[7]);
         var originX = /** @type {number} */ (instruction[8]);
         var originY = /** @type {number} */ (instruction[9]);
         var rotateWithView = /** @type {boolean} */ (instruction[10]);
         var rotation = /** @type {number} */ (instruction[11]);
         var scale = /** @type {number} */ (instruction[12]);
-        var snapToPixel = /** @type {boolean|undefined} */ (instruction[13]);
-        var width = /** @type {number} */ (instruction[14]) * pixelRatio;
+        var snapToPixel = /** @type {boolean} */ (instruction[13]);
+        var width = /** @type {number} */ (instruction[14]);
         if (rotateWithView) {
           rotation += viewRotation;
         }
@@ -323,7 +324,7 @@ ol.render.canvas.Replay.prototype.replay_ = function(
           }
 
           context.drawImage(image, originX, originY, width, height,
-              x, y, width, height);
+              x, y, width * pixelRatio, height * pixelRatio);
 
           if (opacity != 1) {
             context.globalAlpha = alpha;
@@ -417,8 +418,10 @@ ol.render.canvas.Replay.prototype.replay_ = function(
         goog.asserts.assert(goog.isString(instruction[4]));
         goog.asserts.assert(goog.isNumber(instruction[5]));
         goog.asserts.assert(!goog.isNull(instruction[6]));
+        var usePixelRatio = goog.isDef(instruction[7]) ? instruction[7] : true;
+        var lineWidth = /** @type {number} */ (instruction[2]);
         context.strokeStyle = /** @type {string} */ (instruction[1]);
-        context.lineWidth = /** @type {number} */ (instruction[2]) * pixelRatio;
+        context.lineWidth = usePixelRatio ? lineWidth * pixelRatio : lineWidth;
         context.lineCap = /** @type {string} */ (instruction[3]);
         context.lineJoin = /** @type {string} */ (instruction[4]);
         context.miterLimit = /** @type {number} */ (instruction[5]);
@@ -1262,13 +1265,13 @@ ol.render.canvas.PolygonReplay.prototype.drawCircleGeometry =
   }
   var flatCoordinates = circleGeometry.getFlatCoordinates();
   var stride = circleGeometry.getStride();
+  var myBegin = this.coordinates.length;
   this.appendFlatCoordinates(
       flatCoordinates, 0, flatCoordinates.length, stride, false);
   var beginPathInstruction = [ol.render.canvas.Instruction.BEGIN_PATH];
-  var circleInstruction = [ol.render.canvas.Instruction.CIRCLE];
+  var circleInstruction = [ol.render.canvas.Instruction.CIRCLE, myBegin];
   this.instructions.push(beginPathInstruction, circleInstruction);
   this.hitDetectionInstructions.push(beginPathInstruction, circleInstruction);
-  this.endGeometry(circleGeometry, data);
   var fillInstruction = [ol.render.canvas.Instruction.FILL];
   this.hitDetectionInstructions.push(fillInstruction);
   if (goog.isDef(state.fillStyle)) {
@@ -1280,6 +1283,7 @@ ol.render.canvas.PolygonReplay.prototype.drawCircleGeometry =
     this.instructions.push(strokeInstruction);
     this.hitDetectionInstructions.push(strokeInstruction);
   }
+  this.endGeometry(circleGeometry, data);
 };
 
 
@@ -1648,7 +1652,7 @@ ol.render.canvas.TextReplay.prototype.setReplayStrokeState_ =
   var setStrokeStyleInstruction = [
     ol.render.canvas.Instruction.SET_STROKE_STYLE, strokeState.strokeStyle,
     strokeState.lineWidth, strokeState.lineCap, strokeState.lineJoin,
-    strokeState.miterLimit, strokeState.lineDash
+    strokeState.miterLimit, strokeState.lineDash, false
   ];
   this.instructions.push(setStrokeStyleInstruction);
   this.hitDetectionInstructions.push(setStrokeStyleInstruction);
@@ -1929,7 +1933,8 @@ ol.render.canvas.ReplayGroup.prototype.replay_ = function(
   var maxX = maxExtent[2];
   var maxY = maxExtent[3];
   var flatClipCoords = ol.geom.flat.transform.transform2D(
-      [minX, minY, minX, maxY, maxX, maxY, maxX, minY], 2, transform);
+      [minX, minY, minX, maxY, maxX, maxY, maxX, minY],
+      0, 8, 2, transform);
   context.save();
   context.beginPath();
   context.moveTo(flatClipCoords[0], flatClipCoords[1]);

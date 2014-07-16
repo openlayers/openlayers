@@ -4,7 +4,6 @@ goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('ol.Attribution');
 goog.require('ol.Extent');
-goog.require('ol.Image');
 goog.require('ol.array');
 goog.require('ol.source.Source');
 
@@ -22,6 +21,11 @@ ol.source.ImageOptions;
 
 
 /**
+ * @classdesc
+ * Abstract base class; normally only used for creating subclasses and not
+ * instantiated in apps.
+ * Base class for sources providing a single image.
+ *
  * @constructor
  * @extends {ol.source.Source}
  * @param {ol.source.ImageOptions} options Single image source options.

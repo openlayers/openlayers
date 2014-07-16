@@ -1,5 +1,3 @@
-// FIXME works for View2D only
-
 goog.provide('ol.control.Rotate');
 
 goog.require('goog.asserts');
@@ -7,7 +5,6 @@ goog.require('goog.dom');
 goog.require('goog.dom.TagName');
 goog.require('goog.events');
 goog.require('goog.events.EventType');
-goog.require('ol.View2D');
 goog.require('ol.animation');
 goog.require('ol.control.Control');
 goog.require('ol.css');
@@ -17,12 +14,14 @@ goog.require('ol.pointer.PointerEventHandler');
 
 
 /**
- * Create a new control with a button, to reset rotation to 0.
+ * @classdesc
+ * A button control to reset rotation to 0.
  * To style this control use css selector `.ol-rotate`.
+ *
  * @constructor
  * @extends {ol.control.Control}
  * @param {olx.control.RotateOptions=} opt_options Rotate options.
- * @todo api
+ * @api
  */
 ol.control.Rotate = function(opt_options) {
 
@@ -51,7 +50,9 @@ ol.control.Rotate = function(opt_options) {
   var handler = new ol.pointer.PointerEventHandler(button);
   this.registerDisposable(handler);
   goog.events.listen(handler, ol.pointer.EventType.POINTERUP,
-      ol.control.Rotate.prototype.resetNorth_, false, this);
+      ol.control.Rotate.prototype.handlePointerUp_, false, this);
+  goog.events.listen(button, goog.events.EventType.CLICK,
+      ol.control.Rotate.prototype.handleClick_, false, this);
 
   goog.events.listen(button, [
     goog.events.EventType.MOUSEOUT,
@@ -88,19 +89,35 @@ goog.inherits(ol.control.Rotate, ol.control.Control);
 
 
 /**
- * @param {ol.pointer.PointerEvent} pointerEvent The pointer event to handle.
+ * @param {goog.events.BrowserEvent} event The event to handle
  * @private
  */
-ol.control.Rotate.prototype.resetNorth_ = function(pointerEvent) {
+ol.control.Rotate.prototype.handleClick_ = function(event) {
+  if (event.screenX !== 0 && event.screenY !== 0) {
+    return;
+  }
+  this.resetNorth_();
+};
+
+
+/**
+ * @param {ol.pointer.PointerEvent} pointerEvent The event to handle
+ * @private
+ */
+ol.control.Rotate.prototype.handlePointerUp_ = function(pointerEvent) {
   pointerEvent.browserEvent.preventDefault();
-  // prevent the anchor from getting appended to the url
+  this.resetNorth_();
+};
+
+
+/**
+ * @private
+ */
+ol.control.Rotate.prototype.resetNorth_ = function() {
   var map = this.getMap();
-  // FIXME works for View2D only
   var view = map.getView();
   goog.asserts.assert(goog.isDef(view));
-  var view2D = view.getView2D();
-  goog.asserts.assertInstanceof(view2D, ol.View2D);
-  var currentRotation = view2D.getRotation();
+  var currentRotation = view.getRotation();
   while (currentRotation < -Math.PI) {
     currentRotation += 2 * Math.PI;
   }
@@ -115,7 +132,7 @@ ol.control.Rotate.prototype.resetNorth_ = function(pointerEvent) {
         easing: ol.easing.easeOut
       }));
     }
-    view2D.setRotation(0);
+    view.setRotation(0);
   }
 };
 
@@ -128,7 +145,7 @@ ol.control.Rotate.prototype.handleMapPostrender = function(mapEvent) {
   if (goog.isNull(frameState)) {
     return;
   }
-  var rotation = frameState.view2DState.rotation;
+  var rotation = frameState.viewState.rotation;
   var transform = 'rotate(' + rotation * 360 / (Math.PI * 2) + 'deg)';
   if (this.autoHide_) {
     this.element.style.opacity = (rotation === 0) ? 0 : 1;

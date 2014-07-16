@@ -7,10 +7,13 @@ goog.require('ol.source.XYZ');
 
 
 /**
+ * @classdesc
+ * Layer source for the OpenStreetMap tile server.
+ *
  * @constructor
  * @extends {ol.source.XYZ}
  * @param {olx.source.OSMOptions=} opt_options Open Street Map options.
- * @todo api
+ * @api
  */
 ol.source.OSM = function(opt_options) {
 
@@ -46,7 +49,7 @@ goog.inherits(ol.source.OSM, ol.source.XYZ);
 /**
  * @const
  * @type {ol.Attribution}
- * @todo api
+ * @api
  */
 ol.source.OSM.DATA_ATTRIBUTION = new ol.Attribution({
   html: 'Data &copy; ' +
@@ -59,7 +62,7 @@ ol.source.OSM.DATA_ATTRIBUTION = new ol.Attribution({
 /**
  * @const
  * @type {ol.Attribution}
- * @todo api
+ * @api
  */
 ol.source.OSM.TILE_ATTRIBUTION = new ol.Attribution({
   html: 'Tiles &copy; ' +

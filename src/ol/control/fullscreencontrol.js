@@ -3,11 +3,11 @@ goog.provide('ol.control.FullScreen');
 goog.require('goog.asserts');
 goog.require('goog.dom');
 goog.require('goog.dom.TagName');
-goog.require('goog.dom.classes');
+goog.require('goog.dom.classlist');
+goog.require('goog.dom.fullscreen');
+goog.require('goog.dom.fullscreen.EventType');
 goog.require('goog.events');
 goog.require('goog.events.EventType');
-goog.require('googx.dom.fullscreen');
-goog.require('googx.dom.fullscreen.EventType');
 goog.require('ol.control.Control');
 goog.require('ol.css');
 goog.require('ol.pointer.PointerEventHandler');
@@ -15,6 +15,7 @@ goog.require('ol.pointer.PointerEventHandler');
 
 
 /**
+ * @classdesc
  * Provides a button that when clicked fills up the full screen with the map.
  * When in full screen mode, a close button is shown to exit full screen mode.
  * The [Fullscreen API](http://www.w3.org/TR/fullscreen/) is used to
@@ -24,7 +25,7 @@ goog.require('ol.pointer.PointerEventHandler');
  * @constructor
  * @extends {ol.control.Control}
  * @param {olx.control.FullScreenOptions=} opt_options Options.
- * @todo api
+ * @api
  */
 ol.control.FullScreen = function(opt_options) {
 
@@ -44,14 +45,16 @@ ol.control.FullScreen = function(opt_options) {
   }, tipLabel);
 
   var button = goog.dom.createDom(goog.dom.TagName.BUTTON, {
-    'class': this.cssClassName_ + '-' + googx.dom.fullscreen.isFullScreen() +
+    'class': this.cssClassName_ + '-' + goog.dom.fullscreen.isFullScreen() +
         ' ol-has-tooltip'
   });
   goog.dom.appendChild(button, tip);
   var buttonHandler = new ol.pointer.PointerEventHandler(button);
   this.registerDisposable(buttonHandler);
   goog.events.listen(buttonHandler,
-      ol.pointer.EventType.POINTERUP, this.handleClick_, false, this);
+      ol.pointer.EventType.POINTERUP, this.handlePointerUp_, false, this);
+  goog.events.listen(button, goog.events.EventType.CLICK,
+      this.handleClick_, false, this);
 
   goog.events.listen(button, [
     goog.events.EventType.MOUSEOUT,
@@ -61,12 +64,12 @@ ol.control.FullScreen = function(opt_options) {
   }, false);
 
   goog.events.listen(goog.global.document,
-      googx.dom.fullscreen.EventType.CHANGE,
+      goog.dom.fullscreen.EventType.CHANGE,
       this.handleFullScreenChange_, false, this);
 
   var cssClasses = this.cssClassName_ + ' ' + ol.css.CLASS_UNSELECTABLE +
       ' ' + ol.css.CLASS_CONTROL +
-      (!googx.dom.fullscreen.isSupported() ? ol.css.CLASS_UNSUPPORTED : '');
+      (!goog.dom.fullscreen.isSupported() ? ol.css.CLASS_UNSUPPORTED : '');
   var element = goog.dom.createDom(goog.dom.TagName.DIV, cssClasses, button);
 
   goog.base(this, {
@@ -85,29 +88,49 @@ goog.inherits(ol.control.FullScreen, ol.control.Control);
 
 
 /**
- * @param {ol.pointer.PointerEvent} pointerEvent Pointer event.
+ * @param {goog.events.BrowserEvent} event The event to handle
  * @private
  */
-ol.control.FullScreen.prototype.handleClick_ = function(pointerEvent) {
-  if (!googx.dom.fullscreen.isSupported()) {
+ol.control.FullScreen.prototype.handleClick_ = function(event) {
+  if (event.screenX !== 0 && event.screenY !== 0) {
     return;
   }
+  this.handleFullScreen_();
+};
+
+
+/**
+ * @param {ol.pointer.PointerEvent} pointerEvent The event to handle
+ * @private
+ */
+ol.control.FullScreen.prototype.handlePointerUp_ = function(pointerEvent) {
   pointerEvent.browserEvent.preventDefault();
+  this.handleFullScreen_();
+};
+
+
+/**
+ * @private
+ */
+ol.control.FullScreen.prototype.handleFullScreen_ = function() {
+  if (!goog.dom.fullscreen.isSupported()) {
+    return;
+  }
   var map = this.getMap();
   if (goog.isNull(map)) {
     return;
   }
-  if (googx.dom.fullscreen.isFullScreen()) {
-    googx.dom.fullscreen.exitFullScreen();
+  if (goog.dom.fullscreen.isFullScreen()) {
+    goog.dom.fullscreen.exitFullScreen();
   } else {
     var target = map.getTarget();
     goog.asserts.assert(goog.isDefAndNotNull(target));
     var element = goog.dom.getElement(target);
     goog.asserts.assert(goog.isDefAndNotNull(element));
     if (this.keys_) {
-      googx.dom.fullscreen.requestFullScreenWithKeys(element);
+      goog.dom.fullscreen.requestFullScreenWithKeys(element);
     } else {
-      googx.dom.fullscreen.requestFullScreen(element);
+      goog.dom.fullscreen.requestFullScreen(element);
     }
   }
 };
@@ -121,10 +144,10 @@ ol.control.FullScreen.prototype.handleFullScreenChange_ = function() {
   var closed = this.cssClassName_ + '-false';
   var anchor = goog.dom.getFirstElementChild(this.element);
   var map = this.getMap();
-  if (googx.dom.fullscreen.isFullScreen()) {
-    goog.dom.classes.swap(anchor, closed, opened);
+  if (goog.dom.fullscreen.isFullScreen()) {
+    goog.dom.classlist.swap(anchor, closed, opened);
   } else {
-    goog.dom.classes.swap(anchor, opened, closed);
+    goog.dom.classlist.swap(anchor, opened, closed);
   }
   if (!goog.isNull(map)) {
     map.updateSize();

@@ -79,10 +79,13 @@ ol.source.StamenProviderConfig = {
 
 
 /**
+ * @classdesc
+ * Layer source for the Stamen tile server.
+ *
  * @constructor
  * @extends {ol.source.XYZ}
  * @param {olx.source.StamenOptions} options Stamen options.
- * @todo api
+ * @api
  */
 ol.source.Stamen = function(options) {
 

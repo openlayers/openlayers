@@ -11,10 +11,14 @@ goog.require('ol.tilegrid.TileGrid');
 
 
 /**
+ * @classdesc
+ * A vector source in one of the supported formats, where the data is divided
+ * into tiles in a fixed grid pattern.
+ *
  * @constructor
  * @extends {ol.source.FormatVector}
  * @param {olx.source.TileVectorOptions} options Options.
- * @todo api
+ * @api
  */
 ol.source.TileVector = function(options) {
 

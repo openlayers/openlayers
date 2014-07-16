@@ -10,19 +10,19 @@ goog.require('ol.source.Source');
 
 
 /**
+ * @classdesc
+ * Abstract base class; normally only used for creating subclasses and not
+ * instantiated in apps.
+ * A visual representation of raster or vector map data.
+ * Layers group together those properties that pertain to how the data is to be
+ * displayed, irrespective of the source of that data.
+ *
  * @constructor
  * @extends {ol.layer.Base}
- * @fires {@link ol.render.Event} ol.render.Event
+ * @fires ol.render.Event
+ * @fires change Triggered when the state of the source changes.
  * @param {olx.layer.LayerOptions} options Layer options.
- * @todo observable brightness {number} the brightness of the layer
- * @todo observable contrast {number} the contrast of the layer
- * @todo observable hue {number} the hue of the layer
- * @todo observable opacity {number} the opacity of the layer
- * @todo observable saturation {number} the saturation of the layer
- * @todo observable visible {boolean} the visiblity of the layer
- * @todo observable maxResolution {number} the maximum resolution of the layer
- * @todo observable minResolution {number} the minimum resolution of the layer
- * @todo api
+ * @api
  */
 ol.layer.Layer = function(options) {
 
@@ -42,6 +42,20 @@ ol.layer.Layer = function(options) {
 
 };
 goog.inherits(ol.layer.Layer, ol.layer.Base);
+
+
+/**
+ * Return `true` if the layer is visible, and if the passed resolution is
+ * between the layer's minResolution and maxResolution. The comparison is
+ * inclusive for `minResolution` and exclusive for `maxResolution`.
+ * @param {ol.layer.LayerState} layerState Layer state.
+ * @param {number} resolution Resolution.
+ * @return {boolean} The layer is visible at the given resolution.
+ */
+ol.layer.Layer.visibleAtResolution = function(layerState, resolution) {
+  return layerState.visible && resolution >= layerState.minResolution &&
+      resolution < layerState.maxResolution;
+};
 
 
 /**
@@ -66,7 +80,7 @@ ol.layer.Layer.prototype.getLayerStatesArray = function(opt_states) {
 
 /**
  * @return {ol.source.Source} Source.
- * @todo api
+ * @api
  */
 ol.layer.Layer.prototype.getSource = function() {
   return this.source_;

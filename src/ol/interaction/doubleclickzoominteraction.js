@@ -1,5 +1,3 @@
-// FIXME works for View2D only
-
 goog.provide('ol.interaction.DoubleClickZoom');
 
 goog.require('goog.asserts');
@@ -10,12 +8,13 @@ goog.require('ol.interaction.Interaction');
 
 
 /**
+ * @classdesc
  * Allows the user to zoom by double-clicking on the map.
  *
  * @constructor
  * @extends {ol.interaction.Interaction}
  * @param {olx.interaction.DoubleClickZoomOptions=} opt_options Options.
- * @todo api
+ * @api stable
  */
 ol.interaction.DoubleClickZoom = function(opt_options) {
 
@@ -50,8 +49,8 @@ ol.interaction.DoubleClickZoom.prototype.handleMapBrowserEvent =
     var map = mapBrowserEvent.map;
     var anchor = mapBrowserEvent.coordinate;
     var delta = browserEvent.shiftKey ? -this.delta_ : this.delta_;
-    // FIXME works for View2D only
-    var view = map.getView().getView2D();
+    var view = map.getView();
+    goog.asserts.assert(goog.isDef(view));
     ol.interaction.Interaction.zoomByDelta(
         map, view, delta, anchor, this.duration_);
     mapBrowserEvent.preventDefault();

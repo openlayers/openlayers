@@ -88,7 +88,7 @@ goog.inherits(ol.renderer.webgl.Layer, ol.renderer.Layer);
 
 
 /**
- * @param {oli.FrameState} frameState Frame state.
+ * @param {olx.FrameState} frameState Frame state.
  * @param {number} framebufferDimension Framebuffer dimension.
  * @protected
  */
@@ -142,7 +142,7 @@ ol.renderer.webgl.Layer.prototype.bindFramebuffer =
 
 
 /**
- * @param {oli.FrameState} frameState Frame state.
+ * @param {olx.FrameState} frameState Frame state.
  * @param {ol.layer.LayerState} layerState Layer state.
  * @param {ol.webgl.Context} context Context.
  */
@@ -230,7 +230,7 @@ ol.renderer.webgl.Layer.prototype.composeFrame =
 /**
  * @param {ol.render.EventType} type Event type.
  * @param {ol.webgl.Context} context WebGL context.
- * @param {oli.FrameState} frameState Frame state.
+ * @param {olx.FrameState} frameState Frame state.
  * @private
  */
 ol.renderer.webgl.Layer.prototype.dispatchComposeEvent_ =
@@ -239,7 +239,7 @@ ol.renderer.webgl.Layer.prototype.dispatchComposeEvent_ =
   if (layer.hasListener(type)) {
     var render = new ol.render.webgl.Immediate(context, frameState.pixelRatio);
     var composeEvent = new ol.render.Event(
-        type, layer, render, frameState, null, context);
+        type, layer, render, null, frameState, null, context);
     layer.dispatchEvent(composeEvent);
   }
 };

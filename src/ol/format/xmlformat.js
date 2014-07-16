@@ -6,6 +6,9 @@ goog.require('ol.xml');
 
 
 /**
+ * @classdesc
+ * Generic format for reading non-feature XML data
+ *
  * @constructor
  */
 ol.format.XML = function() {

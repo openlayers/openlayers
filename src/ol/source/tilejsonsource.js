@@ -22,10 +22,13 @@ goog.require('ol.tilegrid.XYZ');
 
 
 /**
+ * @classdesc
+ * Layer source for tile data in TileJSON format.
+ *
  * @constructor
  * @extends {ol.source.TileImage}
  * @param {olx.source.TileJSONOptions} options TileJSON options.
- * @todo api
+ * @api
  */
 ol.source.TileJSON = function(options) {
 

@@ -8,14 +8,14 @@ These two files are special externs that belong to ol3, and this document explai
 
 ### Prevent class properties from being renamed
 
-For events, we make properties available to the application. Other than methods, which can be made available by just marking them with the `@api` annotation, properties are exported using `oli.js`:
+For events, we make properties available to the application. Methods can be made available by just marking them with the `@api` annotation directly where they are defined; properties should also be added to `oli.js`:
+
 ```js
 /** @interface */
 oli.MapBrowserEvent;
 
 /**
  * @type {ol.Coordinate}
- * @todo api
  */
 oli.MapBrowserEvent.prototype.coordinate;
 ```
@@ -32,6 +32,7 @@ ol.MapBrowserEvent = function(type, map, browserEvent, opt_frameState) {
 
   /**
    * @type {ol.Coordinate}
+   * @api
    */
   this.coordinate = map.getEventCoordinate(this.originalEvent);
 
@@ -42,7 +43,7 @@ ol.MapBrowserEvent = function(type, map, browserEvent, opt_frameState) {
 
 ### Override methods in custom classes
 
-For custom subclasses in applications, which can be created using `ol.extends`, the API may want to make certain methods available to override. In addition to marking such methods as `@api`, they need also be added to an interface in `oli.js`:
+For custom subclasses in applications, which can be created using `ol.inherits`, the API may want to make certain methods available to override. In addition to marking such methods as `@api`, they should also be added to an interface in `oli.js`:
 ```js
 /**
  * @interface
@@ -72,12 +73,13 @@ ol.control.Control = function(options) {
 /**
  * Application subclasses may override this.
  * @param {ol.Map} map Map.
- * @todo api
+ * @api
  */
 ol.control.Control.prototype.setMap = function(map) {
   // ...
 };
 ```
+See Custom controls example for an example of how this can be used.
 
 ### Export object literals
 
@@ -86,7 +88,7 @@ Object literals cannot be exported like classes. To make sure that their propert
 /**
  * @typedef {{element: (Element|undefined),
  *     target: (Element|string|undefined)}}
- * @todo api
+ * @api
  */
 olx.control.ControlOptions;
 

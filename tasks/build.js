@@ -1,12 +1,12 @@
 /**
  * This task builds OpenLayers with the Closure Compiler.
  */
-var fs = require('fs');
 var path = require('path');
 
 var async = require('async');
 var closure = require('closure-util');
 var fse = require('fs-extra');
+var fs = require('graceful-fs');
 var nomnom = require('nomnom');
 var temp = require('temp').track();
 
@@ -27,8 +27,12 @@ function assertValidConfig(config, callback) {
       callback(new Error('Config missing "exports" array'));
       return;
     }
-    if (typeof config.compile !== 'object') {
-      callback(new Error('Config missing "compile" object'));
+    if (config.namespace && typeof config.namespace !== 'string') {
+      callback(new Error('Config "namespace" must be a string'));
+      return;
+    }
+    if (config.compile && typeof config.compile !== 'object') {
+      callback(new Error('Config "compile" must be an object'));
       return;
     }
     if (config.jvm && !Array.isArray(config.jvm)) {
@@ -102,21 +106,31 @@ function writeExports(exports, callback) {
 
 /**
  * Get the list of sources sorted in dependency order.
- * @param {Array.<string>} src List of paths or patterns to source files.  By
- *     default, all .js files in the src directory are included.
+ * @param {Object} config Build configuration object.
  * @param {string} exports Exports code (with goog.exportSymbol calls).
  * @param {function(Error, Array.<string>)} callback Called with a list of paths
  *     or any error.
  */
-function getDependencies(src, exports, callback) {
+function getDependencies(config, exports, callback) {
   writeExports(exports, function(err, exportsPath) {
     if (err) {
       callback(err);
       return;
     }
     log.info('ol', 'Parsing dependencies');
-    src = src || ['src/**/*.js'];
-    closure.getDependencies({lib: src}, function(err, paths) {
+    var options;
+    if (config.src) {
+      options = {
+        lib: config.src,
+        cwd: config.cwd
+      };
+    } else {
+      options = {
+        lib: ['src/**/*.js'],
+        cwd: root
+      };
+    }
+    closure.getDependencies(options, function(err, paths) {
       if (err) {
         callback(err);
         return;
@@ -129,6 +143,25 @@ function getDependencies(src, exports, callback) {
 
 
 /**
+ * Concatenate all sources.
+ * @param {Array.<string>} paths List of paths to source files.
+ * @param {function(Error, string)} callback Called with the concatenated
+ *     output or any error.
+ */
+function concatenate(paths, callback) {
+  async.map(paths, fs.readFile, function(err, results) {
+    if (err) {
+      var msg = 'Trouble concatenating sources.  ' + err.message;
+      callback(new Error(msg));
+    } else {
+      var preamble = 'var CLOSURE_NO_DEPS = true;\n';
+      callback(null, preamble + results.join('\n'));
+    }
+  });
+}
+
+
+/**
  * Run the compiler.
  * @param {Object} config Build configuration object.
  * @param {Array.<string>} paths List of paths to source files.
@@ -136,12 +169,18 @@ function getDependencies(src, exports, callback) {
  *     any error.
  */
 function build(config, paths, callback) {
-  log.info('ol', 'Compiling ' + paths.length + ' sources');
-  var options = config.compile;
-  options.js = paths.concat(options.js || []);
-  if (config.jvm) {
-    closure.compile(options, config.jvm, callback);
+  var options = {
+    compile: config.compile,
+    cwd: config.cwd || root,
+    jvm: config.jvm
+  };
+  if (!options.compile) {
+    log.info('ol', 'No compile options found.  Concatenating ' +
+        paths.length + ' sources');
+    concatenate(paths, callback);
   } else {
+    log.info('ol', 'Compiling ' + paths.length + ' sources');
+    options.compile.js = paths.concat(options.compile.js || []);
     closure.compile(options, callback);
   }
 }
@@ -157,8 +196,8 @@ function build(config, paths, callback) {
 function main(config, callback) {
   async.waterfall([
     assertValidConfig.bind(null, config),
-    generateExports.bind(null, config.exports),
-    getDependencies.bind(null, config.src),
+    generateExports.bind(null, config),
+    getDependencies.bind(null, config),
     build.bind(null, config)
   ], callback);
 }

@@ -1,6 +1,5 @@
 goog.provide('ol.format.GML');
 
-goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('goog.dom');
 goog.require('goog.dom.NodeType');
@@ -25,10 +24,14 @@ goog.require('ol.xml');
 
 
 /**
+ * @classdesc
+ * Feature format for reading and writing data in the GML format.
+ *
  * @constructor
  * @param {olx.format.GMLOptions=} opt_options
  *     Optional configuration object.
  * @extends {ol.format.XMLFeature}
+ * @api
  */
 ol.format.GML = function(opt_options) {
   var options = /** @type {olx.format.GMLOptions} */
@@ -1040,6 +1043,17 @@ ol.format.GML.prototype.readGeometryFromNode = function(node) {
 
 
 /**
+ * Read all features from a GML FeatureCollection.
+ *
+ * @function
+ * @param {ArrayBuffer|Document|Node|Object|string} source Source.
+ * @return {Array.<ol.Feature>} Features.
+ * @api
+ */
+ol.format.GML.prototype.readFeatures;
+
+
+/**
  * @inheritDoc
  */
 ol.format.GML.prototype.readFeaturesFromNode = function(node) {
@@ -1668,6 +1682,17 @@ ol.format.GML.prototype.writeGeometryNode = function(geometry) {
       ol.format.GML.GEOMETRY_NODE_FACTORY_, [geometry], []);
   return geom;
 };
+
+
+/**
+ * Encode an array of features in GML 3.1.1 Simple Features.
+ *
+ * @function
+ * @param {Array.<ol.Feature>} features Features.
+ * @return {ArrayBuffer|Node|Object|string} Result.
+ * @api
+ */
+ol.format.GML.prototype.writeFeatures;
 
 
 /**

@@ -42,6 +42,14 @@ describe('ol.geom.flat.interpolate', function() {
           expect(point).to.eql([3, 4]);
         });
 
+    it('returns the expected value when using opt_dest',
+        function() {
+          var flatCoordinates = [0, 1, 2, 3, 6, 7];
+          var point = ol.geom.flat.interpolate.lineString(
+              flatCoordinates, 0, 6, 2, 0.5, [0, 0]);
+          expect(point).to.eql([3, 4]);
+        });
+
   });
 
 });

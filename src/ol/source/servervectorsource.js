@@ -10,10 +10,14 @@ goog.require('ol.structs.RBush');
 
 
 /**
+ * @classdesc
+ * A vector source in one of the supported formats, using a custom function to
+ * read in the data from a remote server.
+ *
  * @constructor
  * @extends {ol.source.FormatVector}
  * @param {olx.source.ServerVectorOptions} options Options.
- * @todo api
+ * @api
  */
 ol.source.ServerVector = function(options) {
 
@@ -65,7 +69,9 @@ ol.source.ServerVector.prototype.addFeaturesInternal = function(features) {
   for (i = 0, ii = features.length; i < ii; ++i) {
     var feature = features[i];
     var featureId = feature.getId();
-    if (!(featureId in this.loadedFeatures_)) {
+    if (!goog.isDef(featureId)) {
+      notLoadedFeatures.push(feature);
+    } else if (!(featureId in this.loadedFeatures_)) {
       notLoadedFeatures.push(feature);
       this.loadedFeatures_[featureId] = true;
     }
@@ -104,6 +110,6 @@ ol.source.ServerVector.prototype.loadFeatures =
  * @function
  * @param {ArrayBuffer|Document|Node|Object|string} source Source.
  * @return {Array.<ol.Feature>} Features.
- * @todo api
+ * @api
  */
 ol.source.ServerVector.prototype.readFeatures;

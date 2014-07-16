@@ -46,8 +46,8 @@ exports.publish = function(data, opts) {
     } else {
       symbols.push({
         name: doc.longname,
-        description: doc.description,
-        extends: doc.augments,
+        kind: doc.kind,
+        description: doc.classdesc || doc.description,
         path: path.join(doc.meta.path, doc.meta.filename)
       });
     }

@@ -1,7 +1,7 @@
 // NOCOMPILE
 // This example uses the GMapx v3 API, which we do not have an exports file for.
 goog.require('ol.Map');
-goog.require('ol.View2D');
+goog.require('ol.View');
 goog.require('ol.interaction');
 goog.require('ol.interaction.DragPan');
 goog.require('ol.layer.Vector');
@@ -21,7 +21,10 @@ var gmap = new google.maps.Map(document.getElementById('gmap'), {
   streetViewControl: false
 });
 
-var view = new ol.View2D();
+var view = new ol.View({
+  // make sure the view doesn't go beyond the 22 zoom levels of Google Maps
+  maxZoom: 21
+});
 view.on('change:center', function() {
   var center = ol.proj.transform(view.getCenter(), 'EPSG:3857', 'EPSG:4326');
   gmap.setCenter(new google.maps.LatLng(center[1], center[0]));
@@ -51,9 +54,9 @@ var map = new ol.Map({
   layers: [vector],
   interactions: ol.interaction.defaults({
     altShiftDragRotate: false,
-    pan: false,
+    dragPan: false,
     rotate: false
-  }).extend([new ol.interaction.DragPan({kinetic: false})]),
+  }).extend([new ol.interaction.DragPan({kinetic: null})]),
   target: olMapDiv,
   view: view
 });

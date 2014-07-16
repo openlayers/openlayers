@@ -1,6 +1,6 @@
 goog.require('ol.Feature');
 goog.require('ol.Map');
-goog.require('ol.View2D');
+goog.require('ol.View');
 goog.require('ol.layer.Tile');
 goog.require('ol.layer.Vector');
 goog.require('ol.source.GeoJSON');
@@ -63,7 +63,7 @@ var myDom = {
 var getText = function(feature, resolution, dom) {
   var type = dom.text.value;
   var maxResolution = dom.maxreso.value;
-  var text = feature.getProperties().name;
+  var text = feature.get('name');
 
   if (resolution > maxResolution) {
     text = '';
@@ -188,7 +188,7 @@ var map = new ol.Map({
     vectorPoints
   ],
   target: 'map',
-  view: new ol.View2D({
+  view: new ol.View({
     center: [-8161939, 6095025],
     zoom: 8
   })

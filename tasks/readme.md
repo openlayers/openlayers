@@ -15,21 +15,29 @@ Build configuration files are JSON files that are used to determine what should 
 
 **Required configuration properties**
 
- * **exports** - `Array.<string>` An array of symbol names or patterns to be exported (names that are used in your application).  For example, including `"ol.Map"` will export the map constructor.  Method names are prefixed with `#`.  So `"ol.Map#getView"` will export the map's `getView` method.  You can use a `*` at the end to match multiple names.  The pattern `"ol.Map#*"` will export all map methods.
-
- * **compile** - `Object` An object whose properties are [Closure Compiler options](https://github.com/openlayers/closure-util/blob/master/compiler-options.txt).  Property names match the option names without the `--` prefix (e.g. `"compilation_level": "ADVANCED_OPTIMIZATIONS"` would set the `--compilation_level` option).  Where an option can be specified multiple times, use an array for the value (e.g. `"externs": ["one.js", "two.js"]`).  Where an option is used as a flag, use a boolean value (e.g. `"use_types_for_optimization": true`).
+  * **exports** - `Array.<string>` An array of symbol names or patterns to be exported (names that are used in your application).  For example, including `"ol.Map"` will export the map namespace including the constructor.  Method names are prefixed with `#`.  So `"ol.Map#getViewport"` will export the map's `getViewport` method.  You can use a `*` at the end to match multiple names.  The pattern `"ol.Map#*"` will export all exportable map methods.  
+   Note that only the 'exportable' names can be listed here, that is, those that are part of the supported API (see apidoc/readme.md for more details). If you want to include a property or method that is not part of the API (and be aware that these may change or be removed), you will have to specifically export these yourself, for example, with `goog.exportProperty`.  
+   Note too that some names, like `getView` in `ol.Map`, are always exported (with `goog.exportProperty` in the source). You do not have to include these, though it does not harm if you do.
 
 **Optional configuration properties**
 
- * **src** - `Array.<string>` Optional array of [path patterns](https://github.com/isaacs/minimatch/blob/master/README.md) for source files.  This defaults to `["src/**/*.js"]` which will match all `.js` files in the `src` directory.  To include a different set of source files, provide an array of path patterns.  Note that these patterns are `/` delimited even on Windows.
+  * **compile** - `Object` An object whose properties are [Closure Compiler options](https://github.com/openlayers/closure-util/blob/master/compiler-options.txt).  Property names match the option names without the `--` prefix (e.g. `"compilation_level": "ADVANCED_OPTIMIZATIONS"` would set the `--compilation_level` option).  Where an option can be specified multiple times, use an array for the value (e.g. `"externs": ["one.js", "two.js"]`).  Where an option is used as a flag, use a boolean value (e.g. `"use_types_for_optimization": true`).
 
- * **jvm** - `Array.<string>` Optional array of [command line options](https://code.google.com/p/closure-compiler/wiki/FAQ#What_are_the_recommended_Java_VM_command-line_options?) for the compiler.  By default, the Compiler is run with `['-server', '-XX:+TieredCompilation']`.
+    If the **compile** object is not provided, the build task will generate a "debug" build of the library without any variable naming or other minification.  This is suitable for development or debugging purposes, but should not be used in production.
+
+  * **src** - `Array.<string>` Optional array of [path patterns](https://github.com/isaacs/minimatch/blob/master/README.md) for source files.  This defaults to `["src/**/*.js"]` which will match all `.js` files in the `src` directory.  To include a different set of source files, provide an array of path patterns.  Note that these patterns are `/` delimited even on Windows.
+
+  * **cwd** - `string` Optional path to be used as the current working directory.  All paths in the `compile` object are assumed to be relative to `cwd`.  Default is the root of the ol3 repository.
+
+  * **namespace** - `string` Optional namespace for exporting the `ol` object.  By default, `ol` is assigned to the global object.
+
+  * **jvm** - `Array.<string>` Optional array of [command line options](https://github.com/google/closure-compiler/wiki/FAQ#what-are-the-recommended-java-vm-command-line-options) for the compiler.  By default, the Compiler is run with `['-server', '-XX:+TieredCompilation']`.
 
 The build task generates a list of source files sorted in dependency order and passes these to the compiler.  This takes the place of the `--js` options that you would use when calling the compiler directly.  If you want to add additional source files, typically you would use the `src` array described above.  This works with sources that have `goog.require` and/or `goog.provide` calls (which are used to sort dependencies).  If you want to force the inclusion of files that don't use `goog.require` or `goog.provide`, you can use the `js` property of the `compile` object.  Paths in the `js` array will be passed to the compiler **after** all other source files.
 
 Paths in your config file should be relative to the current working directory (when you call `node tasks/build.js`).  Note that this means paths are not necessarily relative to the config file itself.
 
-Below is a complete `build.json` configuration file that would generate a build including every symbol in the library (much more than you'd ever need).
+Below is a complete `build.json` configuration file that would generate a 'full' build including every exportable symbol in the library (much more than you'd ever need).
 
 ```json
 {
@@ -51,7 +59,8 @@ Below is a complete `build.json` configuration file that would generate a build 
     ],
     "compilation_level": "ADVANCED_OPTIMIZATIONS",
     "output_wrapper": "(function(){%output%})();",
-    "use_types_for_optimization": true
+    "use_types_for_optimization": true,
+    "manage_closure_dependencies": true
   }
 }
 ```
@@ -60,6 +69,20 @@ To generate a build named `ol.min.js` with the `build.json`, you would run this:
 
     node tasks/build.js build.json ol.min.js
 
+To export the `ol` symbol to somewhere other than the global namespace, a `namespace` option is available. This can e.g. be useful for creating an ol3 AMD module, by simply providing a build configuration like the following:
+
+```json
+{
+  "exports": ["*"],
+  "namespace": "AMD",
+  "compile": {
+    "compilation_level": "ADVANCED_OPTIMIZATIONS",
+    "output_wrapper": "define('ol',function(){var AMD={};%output%return AMD.ol;});"
+  }
+}
+```
+
+The `defines` section of `build.json` above lists common settings for the Closure library in production code. The OL3 library also defines constants that can be set in this section at compile time. These are all defined in the `ol.js` source file; see the comments in this file to see what effect setting these would have. Some of them can reduce the size of the build in advanced mode.
 
 ## `generate-exports.js`
 
@@ -81,3 +104,8 @@ Called after install to generate an example index.  After new examples are added
 Run a debug server that provides all library sources unminified.  Provides a static server for examples and tests.  See the `--help` option for more detail.
 
     node tasks/serve.js --help
+
+
+## `test.js`
+
+Run the tests once in a headless browser.  Note that you can also run the tests by running the `serve.js` task and then visiting the root of the test directory in your browser.

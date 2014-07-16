@@ -5,7 +5,6 @@
 
 goog.provide('ol.color');
 
-goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('goog.color');
 goog.require('goog.color.names');
@@ -96,7 +95,7 @@ ol.color.blend = function(dst, src, opt_color) {
 /**
  * @param {ol.Color|string} color Color.
  * @return {ol.Color} Color.
- * @todo api
+ * @api
  */
 ol.color.asArray = function(color) {
   if (goog.isArray(color)) {
@@ -111,7 +110,7 @@ ol.color.asArray = function(color) {
 /**
  * @param {ol.Color|string} color Color.
  * @return {string} String.
- * @todo api
+ * @api
  */
 ol.color.asString = function(color) {
   if (goog.isString(color)) {
@@ -316,9 +315,9 @@ ol.color.toString = function(color) {
 
 
 /**
- * @param {ol.Color} color Color.
+ * @param {!ol.Color} color Color.
  * @param {goog.vec.Mat4.Number} transform Transform.
- * @param {ol.Color=} opt_color Color.
+ * @param {!ol.Color=} opt_color Color.
  * @return {ol.Color} Transformed color.
  */
 ol.color.transform = function(color, transform, opt_color) {

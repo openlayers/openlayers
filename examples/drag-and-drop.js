@@ -1,5 +1,5 @@
 goog.require('ol.Map');
-goog.require('ol.View2D');
+goog.require('ol.View');
 goog.require('ol.format.GPX');
 goog.require('ol.format.GeoJSON');
 goog.require('ol.format.IGC');
@@ -104,7 +104,7 @@ var map = new ol.Map({
     })
   ],
   target: 'map',
-  view: new ol.View2D({
+  view: new ol.View({
     center: [0, 0],
     zoom: 2
   })
@@ -119,8 +119,9 @@ dragAndDropInteraction.on('addfeatures', function(event) {
     source: vectorSource,
     style: styleFunction
   }));
-  var view2D = map.getView().getView2D();
-  view2D.fitExtent(vectorSource.getExtent(), map.getSize());
+  var view = map.getView();
+  view.fitExtent(
+      vectorSource.getExtent(), /** @type {ol.Size} */ (map.getSize()));
 });
 
 var displayFeatureInfo = function(pixel) {

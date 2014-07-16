@@ -238,7 +238,7 @@ ol.geom.flat.simplify.radialDistance = function(flatCoordinates, offset, end,
 
 /**
  * @param {number} value Value.
- * @param {number} tolerance Squared tolerance.
+ * @param {number} tolerance Tolerance.
  * @return {number} Rounded value.
  */
 ol.geom.flat.simplify.snap = function(value, tolerance) {
@@ -259,7 +259,7 @@ ol.geom.flat.simplify.snap = function(value, tolerance) {
  * @param {number} offset Offset.
  * @param {number} end End.
  * @param {number} stride Stride.
- * @param {number} tolerance Squared tolerance.
+ * @param {number} tolerance Tolerance.
  * @param {Array.<number>} simplifiedFlatCoordinates Simplified flat
  *     coordinates.
  * @param {number} simplifiedOffset Simplified offset.
@@ -344,7 +344,7 @@ ol.geom.flat.simplify.quantize = function(flatCoordinates, offset, end, stride,
  * @param {number} offset Offset.
  * @param {Array.<number>} ends Ends.
  * @param {number} stride Stride.
- * @param {number} tolerance Squared tolerance.
+ * @param {number} tolerance Tolerance.
  * @param {Array.<number>} simplifiedFlatCoordinates Simplified flat
  *     coordinates.
  * @param {number} simplifiedOffset Simplified offset.
@@ -374,7 +374,7 @@ ol.geom.flat.simplify.quantizes = function(
  * @param {number} offset Offset.
  * @param {Array.<Array.<number>>} endss Endss.
  * @param {number} stride Stride.
- * @param {number} tolerance Squared tolerance.
+ * @param {number} tolerance Tolerance.
  * @param {Array.<number>} simplifiedFlatCoordinates Simplified flat
  *     coordinates.
  * @param {number} simplifiedOffset Simplified offset.
