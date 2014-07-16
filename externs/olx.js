@@ -3990,7 +3990,11 @@ olx.source.TileWMSOptions.prototype.logo;
 
 
 /**
- * Tile grid.
+ * Tile grid. Base this on the resolutions, tilesize and extent supported by the
+ * server.
+ * If this is not defined, a default grid will be used: if there is a projection
+ * extent, the grid will be based on that; if not, a grid based on a global
+ * extent with origin at 0,0 will be used.
  * @type {ol.tilegrid.TileGrid|undefined}
  */
 olx.source.TileWMSOptions.prototype.tileGrid;
@@ -4909,21 +4913,22 @@ olx.tilegrid.TileGridOptions;
 
 
 /**
- * Minimum zoom.
+ * Minimum zoom. Default is 0.
  * @type {number|undefined}
  */
 olx.tilegrid.TileGridOptions.prototype.minZoom;
 
 
 /**
- * Origin.
+ * Origin. Default is null.
  * @type {ol.Coordinate|undefined}
  */
 olx.tilegrid.TileGridOptions.prototype.origin;
 
 
 /**
- * Origins.
+ * Origins. If given, the array should match the `resolutions` array, i.e.
+ * each resolution can have a different origin.
  * @type {Array.<ol.Coordinate>|undefined}
  */
 olx.tilegrid.TileGridOptions.prototype.origins;
@@ -4937,14 +4942,15 @@ olx.tilegrid.TileGridOptions.prototype.resolutions;
 
 
 /**
- * Tile size.
+ * Tile size. Default is 256. (Only square tiles are supported.)
  * @type {number|undefined}
  */
 olx.tilegrid.TileGridOptions.prototype.tileSize;
 
 
 /**
- * Tile sizes.
+ * Tile sizes. If given, the array should match the `resolutions` array, i.e.
+ * each resolution can have a different tile size.
  * @type {Array.<number>|undefined}
  */
 olx.tilegrid.TileGridOptions.prototype.tileSizes;
