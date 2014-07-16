@@ -7,7 +7,6 @@ goog.require('ol.control.Zoom');
 
 
 /**
- * @classdesc
  * Set of controls included in maps by default. Unless configured otherwise,
  * this returns a collection containing an instance of each of the following
  * controls:
