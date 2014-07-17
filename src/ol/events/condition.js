@@ -50,6 +50,7 @@ ol.events.condition.altShiftKeysOnly = function(mapBrowserEvent) {
  * Always true.
  * @param {ol.MapBrowserEvent} mapBrowserEvent Map browser event.
  * @return {boolean} True.
+ * @function
  * @api
  */
 ol.events.condition.always = goog.functions.TRUE;
@@ -79,6 +80,7 @@ ol.events.condition.mouseMove = function(mapBrowserEvent) {
  * Always false.
  * @param {ol.MapBrowserEvent} mapBrowserEvent Map browser event.
  * @return {boolean} False.
+ * @function
  * @api
  */
 ol.events.condition.never = goog.functions.FALSE;
