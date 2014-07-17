@@ -1,4 +1,3 @@
-var util = require('util');
 exports.defineTags = function(dictionary) {
 
   var classTag = dictionary.lookUp('class');
