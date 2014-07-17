@@ -191,8 +191,7 @@ ol.Ellipsoid.prototype.vincentyInitialBearing =
 
 
 /**
- * Take a look at http://en.wikipedia.org/wiki/Vincenty%27s_formulae
- *
+ * @see http://en.wikipedia.org/wiki/Vincenty%27s_formulae
  * @param {ol.Coordinate} c
  * @param {number} distance
  * @param {number} bearing
