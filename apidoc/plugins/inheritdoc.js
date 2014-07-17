@@ -87,7 +87,7 @@ exports.handlers = {
               for (l = candidates.length - 1; l >= 0; --l) {
                 candidate = candidates[l];
                 if (candidate && !candidate.inheritdoc) {
-                  stability = candidate.stability || incompleteDoclet.stability
+                  stability = candidate.stability || incompleteDoclet.stability;
                   if (stability) {
                     incompleteDoclet.stability = stability;
                     for (key in candidate) {

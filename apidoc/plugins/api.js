@@ -72,7 +72,6 @@ function includeAugments(doclet) {
 }
 
 var api = [];
-var augments = {};
 var classes = {};
 
 exports.handlers = {
