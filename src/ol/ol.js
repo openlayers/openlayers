@@ -208,14 +208,34 @@ ol.ZOOMSLIDER_ANIMATION_DURATION = 200;
 
 
 /**
- * ol.inherits is an alias to the goog.inherits function. It is exported
- * for use in non-compiled application code.
+ * Inherit the prototype methods from one constructor into another.
  *
- * FIXME: We use a new line to fake the linter. Without the new line the
- * linter complains with:
+ * Usage:
  *
- * "Missing newline between constructor and goog.inherits"
+ *     function ParentClass(a, b) { }
+ *     ParentClass.prototype.foo = function(a) { }
+ *
+ *     function ChildClass(a, b, c) {
+ *       goog.base(this, a, b);
+ *     }
+ *     ol.inherits(ChildClass, ParentClass);
+ *
+ *     var child = new ChildClass('a', 'b', 'see');
+ *     child.foo(); // This works.
+ *
+ * In addition, a superclass' implementation of a method can be invoked as
+ * follows:
+ *
+ *     ChildClass.prototype.foo = function(a) {
+ *       ChildClass.superClass_.foo.call(this, a);
+ *       // Other code here.
+ *     };
+ *
+ * @param {Function} childCtor Child constructor.
+ * @param {Function} parentCtor Parent constructor.
+ * @function
  * @api
  */
 ol.inherits =
     goog.inherits;
+// note that the newline above is necessary to satisfy the linter
