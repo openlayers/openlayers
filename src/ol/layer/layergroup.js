@@ -30,8 +30,7 @@ ol.layer.GroupProperty = {
  *
  * @constructor
  * @extends {ol.layer.Base}
- * @fires change Triggered when the state of the source of any of the layers of
- *     this group changes
+ * @fires change Triggered when the group/Collection changes.
  * @param {olx.layer.GroupOptions=} opt_options Layer options.
  * @api
  */
