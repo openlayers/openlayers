@@ -123,14 +123,14 @@ def report_sizes(t):
 virtual('default', 'build')
 
 
-virtual('ci', 'lint', 'jshint', 'build', 'build-all',
-        'test', 'build/examples/all.combined.js', 'check-examples', 'apidoc')
+virtual('ci', 'lint', 'jshint', 'build', 'test',
+    'build/examples/all.combined.js', 'check-examples', 'apidoc')
 
 
 virtual('build', 'build/ol.css', 'build/ol.js', 'build/ol-debug.js')
 
 
-virtual('check', 'lint', 'jshint', 'build/ol-all.js', 'test')
+virtual('check', 'lint', 'jshint', 'test')
 
 
 virtual('todo', 'fixme')
@@ -151,14 +151,6 @@ def build_ol_new_js(t):
 def build_ol_debug_js(t):
     t.run('node', 'tasks/build.js', 'buildcfg/ol-debug.json', 'build/ol-debug.js')
     report_sizes(t)
-
-
-virtual('build-all', 'build/ol-all.js')
-
-
-@target('build/ol-all.js', SRC, SHADER_SRC, 'buildcfg/ol-all.json')
-def build_ol_all_js(t):
-    t.run('node', 'tasks/build.js', 'buildcfg/ol-all.json', 'build/ol-all.js')
 
 
 for glsl_src in GLSL_SRC:
