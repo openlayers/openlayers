@@ -5,7 +5,7 @@
  * This loader is used for the hosted examples. It is used in place of the
  * development loader (examples/loader.js).
  *
- * The ol.js, ol-whitespace.js, and ol-deps.js scripts are built by OL3's
+ * The ol.js, ol-debug.js, and ol-deps.js scripts are built by OL3's
  * build.py script. They are located in the ../build/ directory, relative to
  * this script.
  *
