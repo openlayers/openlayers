@@ -72,8 +72,7 @@ ol.format.JSONFeature.prototype.readFeatures = function(source) {
 
 /**
  * @param {Object} object Object.
- * @param {ol.proj.ProjectionLike=} opt_targetProjection Target projection.
- * @param {ol.proj.ProjectionLike=} opt_sourceProjection Source projection.
+ * @param {olx.format.ReadOptions=} opt_options Read options.
  * @protected
  * @return {ol.Feature} Feature.
  */
@@ -82,8 +81,7 @@ ol.format.JSONFeature.prototype.readFeatureFromObject = goog.abstractMethod;
 
 /**
  * @param {Object} object Object.
- * @param {ol.proj.ProjectionLike=} opt_targetProjection Target projection.
- * @param {ol.proj.ProjectionLike=} opt_sourceProjection Source projection.
+ * @param {olx.format.ReadOptions=} opt_options Read options.
  * @protected
  * @return {Array.<ol.Feature>} Features.
  */
@@ -100,8 +98,7 @@ ol.format.JSONFeature.prototype.readGeometry = function(source) {
 
 /**
  * @param {Object} object Object.
- * @param {ol.proj.ProjectionLike=} opt_targetProjection Target projection.
- * @param {ol.proj.ProjectionLike=} opt_sourceProjection Source projection.
+ * @param {olx.format.ReadOptions=} opt_options Read options.
  * @protected
  * @return {ol.geom.Geometry} Geometry.
  */

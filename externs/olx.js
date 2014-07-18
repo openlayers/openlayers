@@ -1145,6 +1145,29 @@ olx.control.ZoomToExtentOptions.prototype.extent;
 
 
 /**
+ * @typedef {{dataProjection: (ol.proj.ProjectionLike|undefined),
+ *     featureProjection: (ol.proj.ProjectionLike|undefined)}}
+ */
+olx.format.ReadOptions;
+
+
+/**
+ * Projection of the data we are reading. Default is the projection derived from
+ *     the data.
+ * @type {ol.proj.ProjectionLike|undefined}
+ */
+olx.format.ReadOptions.prototype.dataProjection;
+
+
+/**
+ * Projection of the feature geometries created by the format reader. Default
+ * is the `dataProjection`.
+ * @type {ol.proj.ProjectionLike|undefined}
+ */
+olx.format.ReadOptions.prototype.featureProjection;
+
+
+/**
  * @typedef {{defaultProjection: ol.proj.ProjectionLike,
  *     geometryName: (string|undefined)}}
  * @api
