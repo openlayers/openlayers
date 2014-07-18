@@ -57,16 +57,16 @@ ol.format.JSONFeature.prototype.getType = function() {
 /**
  * @inheritDoc
  */
-ol.format.JSONFeature.prototype.readFeature = function(source) {
-  return this.readFeatureFromObject(this.getObject_(source));
+ol.format.JSONFeature.prototype.readFeature = function(source, opt_options) {
+  return this.readFeatureFromObject(this.getObject_(source), opt_options);
 };
 
 
 /**
  * @inheritDoc
  */
-ol.format.JSONFeature.prototype.readFeatures = function(source) {
-  return this.readFeaturesFromObject(this.getObject_(source));
+ol.format.JSONFeature.prototype.readFeatures = function(source, opt_options) {
+  return this.readFeaturesFromObject(this.getObject_(source), opt_options);
 };
 
 
@@ -91,8 +91,8 @@ ol.format.JSONFeature.prototype.readFeaturesFromObject = goog.abstractMethod;
 /**
  * @inheritDoc
  */
-ol.format.JSONFeature.prototype.readGeometry = function(source) {
-  return this.readGeometryFromObject(this.getObject_(source));
+ol.format.JSONFeature.prototype.readGeometry = function(source, opt_options) {
+  return this.readGeometryFromObject(this.getObject_(source), opt_options);
 };
 
 
