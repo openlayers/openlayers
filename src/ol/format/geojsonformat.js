@@ -178,13 +178,25 @@ ol.format.GeoJSON.readPolygonGeometry_ = function(object) {
 
 /**
  * @param {ol.geom.Geometry} geometry Geometry.
+ * @param {olx.format.WriteOptions=} opt_options Write options.
  * @private
  * @return {GeoJSONGeometry|GeoJSONGeometryCollection} GeoJSON geometry.
  */
-ol.format.GeoJSON.writeGeometry_ = function(geometry) {
+ol.format.GeoJSON.writeGeometry_ = function(geometry, opt_options) {
   var geometryWriter = ol.format.GeoJSON.GEOMETRY_WRITERS_[geometry.getType()];
   goog.asserts.assert(goog.isDef(geometryWriter));
-  return geometryWriter(geometry);
+  var featureProjection = goog.isDef(opt_options) ?
+      ol.proj.get(opt_options.featureProjection) : null;
+  var dataProjection = goog.isDef(opt_options) &&
+      goog.isDef(opt_options.dataProjection) ?
+          ol.proj.get(opt_options.dataProjection) : featureProjection;
+  if (!goog.isNull(featureProjection) && !goog.isNull(dataProjection) &&
+      !ol.proj.equivalent(featureProjection, dataProjection)) {
+    return geometryWriter(
+        geometry.clone().transform(featureProjection, dataProjection));
+  } else {
+    return geometryWriter(geometry);
+  }
 };
 
 
@@ -203,13 +215,17 @@ ol.format.GeoJSON.writeEmptyGeometryCollectionGeometry_ = function(geometry) {
 
 /**
  * @param {ol.geom.Geometry} geometry Geometry.
+ * @param {olx.format.WriteOptions=} opt_options Write options.
  * @private
  * @return {GeoJSONGeometryCollection} GeoJSON geometry collection.
  */
-ol.format.GeoJSON.writeGeometryCollectionGeometry_ = function(geometry) {
+ol.format.GeoJSON.writeGeometryCollectionGeometry_ = function(
+    geometry, opt_options) {
   goog.asserts.assertInstanceof(geometry, ol.geom.GeometryCollection);
   var geometries = goog.array.map(
-      geometry.getGeometriesArray(), ol.format.GeoJSON.writeGeometry_);
+      geometry.getGeometriesArray(), function(geometry) {
+        return ol.format.GeoJSON.writeGeometry_(geometry, opt_options);
+      });
   return /** @type {GeoJSONGeometryCollection} */ ({
     'type': 'GeometryCollection',
     'geometries': geometries
@@ -484,6 +500,7 @@ ol.format.GeoJSON.prototype.readProjectionFromObject = function(object) {
  *
  * @function
  * @param {ol.Feature} feature Feature.
+ * @param {olx.format.WriteOptions} options Write options.
  * @return {GeoJSONFeature} GeoJSON.
  * @api
  */
@@ -493,7 +510,8 @@ ol.format.GeoJSON.prototype.writeFeature;
 /**
  * @inheritDoc
  */
-ol.format.GeoJSON.prototype.writeFeatureObject = function(feature) {
+ol.format.GeoJSON.prototype.writeFeatureObject = function(
+    feature, opt_options) {
   var object = {
     'type': 'Feature'
   };
@@ -504,7 +522,8 @@ ol.format.GeoJSON.prototype.writeFeatureObject = function(feature) {
   var geometry = feature.getGeometry();
   if (goog.isDefAndNotNull(geometry)) {
     goog.object.set(
-        object, 'geometry', ol.format.GeoJSON.writeGeometry_(geometry));
+        object, 'geometry',
+        ol.format.GeoJSON.writeGeometry_(geometry, opt_options));
   }
   var properties = feature.getProperties();
   goog.object.remove(properties, 'geometry');
@@ -520,6 +539,7 @@ ol.format.GeoJSON.prototype.writeFeatureObject = function(feature) {
  *
  * @function
  * @param {Array.<ol.Feature>} features Features.
+ * @param {olx.format.WriteOptions} options Write options.
  * @return {GeoJSONObject} GeoJSON.
  * @api
  */
@@ -529,11 +549,12 @@ ol.format.GeoJSON.prototype.writeFeatures;
 /**
  * @inheritDoc
  */
-ol.format.GeoJSON.prototype.writeFeaturesObject = function(features) {
+ol.format.GeoJSON.prototype.writeFeaturesObject =
+    function(features, opt_options) {
   var objects = [];
   var i, ii;
   for (i = 0, ii = features.length; i < ii; ++i) {
-    objects.push(this.writeFeatureObject(features[i]));
+    objects.push(this.writeFeatureObject(features[i], opt_options));
   }
   return /** @type {GeoJSONFeatureCollection} */ ({
     'type': 'FeatureCollection',
@@ -547,6 +568,7 @@ ol.format.GeoJSON.prototype.writeFeaturesObject = function(features) {
  *
  * @function
  * @param {ol.geom.Geometry} geometry Geometry.
+ * @param {olx.format.WriteOptions} options Write options.
  * @return {GeoJSONGeometry|GeoJSONGeometryCollection} GeoJSON.
  * @api
  */
