@@ -1168,6 +1168,27 @@ olx.format.ReadOptions.prototype.featureProjection;
 
 
 /**
+ * @typedef {{dataProjection: (ol.proj.ProjectionLike|undefined),
+ *     featureProjection: ol.proj.ProjectionLike}}
+ */
+olx.format.WriteOptions;
+
+
+/**
+ * Projection of the data we are writing. Default is the `featureProjection`.
+ * @type {ol.proj.ProjectionLike|undefined}
+ */
+olx.format.WriteOptions.prototype.dataProjection;
+
+
+/**
+ * Projection of the feature geometries serialized by the format writer.
+ * @type {ol.proj.ProjectionLike}
+ */
+olx.format.WriteOptions.prototype.featureProjection;
+
+
+/**
  * @typedef {{defaultProjection: ol.proj.ProjectionLike,
  *     geometryName: (string|undefined)}}
  * @api
@@ -1201,7 +1222,6 @@ olx.format.PolylineOptions;
  * Default is `1e5`.
  */
 olx.format.PolylineOptions.prototype.factor;
-
 
 
 /**

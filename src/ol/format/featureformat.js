@@ -74,6 +74,7 @@ ol.format.Feature.prototype.readProjection = goog.abstractMethod;
  * Encode a feature in this format.
  *
  * @param {ol.Feature} feature Feature.
+ * @param {olx.format.WriteOptions=} opt_options Write options.
  * @return {ArrayBuffer|Node|Object|string} Result.
  */
 ol.format.Feature.prototype.writeFeature = goog.abstractMethod;
@@ -83,6 +84,7 @@ ol.format.Feature.prototype.writeFeature = goog.abstractMethod;
  * Encode an array of features in this format.
  *
  * @param {Array.<ol.Feature>} features Features.
+ * @param {olx.format.WriteOptions=} opt_options Write options.
  * @return {ArrayBuffer|Node|Object|string} Result.
  */
 ol.format.Feature.prototype.writeFeatures = goog.abstractMethod;
@@ -92,6 +94,7 @@ ol.format.Feature.prototype.writeFeatures = goog.abstractMethod;
  * Write a single geometry in this format.
  *
  * @param {ol.geom.Geometry} geometry Geometry.
+ * @param {olx.format.WriteOptions=} opt_options Write options.
  * @return {ArrayBuffer|Node|Object|string} Node.
  */
 ol.format.Feature.prototype.writeGeometry = goog.abstractMethod;
