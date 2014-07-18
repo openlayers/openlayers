@@ -54,20 +54,11 @@
     }
   }
 
-  var oljs = 'ol.js', mode;
-  if ('mode' in pageParams) {
-    mode = pageParams.mode.toLowerCase();
-    if (mode == 'debug') {
-      mode = 'raw';
-    }
-    if (mode != 'advanced' && mode != 'raw') {
-      oljs = 'ol-' + mode + '.js';
-    }
-  }
+  var raw = pageParams.mode && pageParams.mode.toLowerCase() === 'raw';
 
   var scriptId = encodeURIComponent(scriptParams.id);
-  if (mode != 'raw') {
-    document.write('<scr' + 'ipt type="text/javascript" src="../build/' + oljs + '"></scr' + 'ipt>');
+  if (!raw) {
+    document.write('<scr' + 'ipt type="text/javascript" src="../build/ol.js"></scr' + 'ipt>');
   } else {
     window.CLOSURE_NO_DEPS = true; // we've got our own deps file
     document.write('<scr' + 'ipt type="text/javascript" src="../closure-library/closure/goog/base.js"></scr' + 'ipt>');

@@ -122,10 +122,7 @@ executing the `host-examples` build target:
 
 After running `host-examples` you can now open the examples index page in the browser, for example: <http://localhost/~elemoine/ol3/build/hosted/master/examples/>. (This assumes that the `hosted` directory is a web directory, served by Apache for example.)
 
-Append `?mode=debug` or `?mode=raw` to make the example work in full debug mode. In
-full debug mode the OpenLayers and Closure Library scripts are loaded individually by
-the Closure Library's `base.js` script (which the example page loads and
-executes before any other script).
+Append `?mode=raw` to make the example work in full debug mode. In raw mode the OpenLayers and Closure Library scripts are loaded individually by the Closure Library's `base.js` script (which the example page loads and executes before any other script).
 
 ## Running tests
 
