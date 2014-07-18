@@ -127,8 +127,7 @@ virtual('ci', 'lint', 'jshint', 'build', 'build-all',
         'test', 'build/examples/all.combined.js', 'check-examples', 'apidoc')
 
 
-virtual('build', 'build/ol.css', 'build/ol.js',
-        'build/ol-simple.js', 'build/ol-whitespace.js')
+virtual('build', 'build/ol.css', 'build/ol.js', 'build/ol-whitespace.js')
 
 
 virtual('check', 'lint', 'jshint', 'build/ol-all.js', 'test')
@@ -145,12 +144,6 @@ def build_ol_css(t):
 @target('build/ol.js', SRC, SHADER_SRC, 'buildcfg/ol.json')
 def build_ol_new_js(t):
     t.run('node', 'tasks/build.js', 'buildcfg/ol.json', 'build/ol.js')
-    report_sizes(t)
-
-
-@target('build/ol-simple.js', SRC, SHADER_SRC, 'buildcfg/ol-simple.json')
-def build_ol_simple_js(t):
-    t.run('node', 'tasks/build.js', 'buildcfg/ol-simple.json', 'build/ol-simple.js')
     report_sizes(t)
 
 
@@ -609,8 +602,7 @@ def host_examples(t):
         split_example_file(example, examples_dir % vars(variables))
     t.cp_r('examples/data', examples_dir + '/data')
     t.cp('bin/loader_hosted_examples.js', examples_dir + '/loader.js')
-    t.cp('build/ol.js', 'build/ol-simple.js', 'build/ol-whitespace.js',
-         build_dir)
+    t.cp('build/ol.js', 'build/ol-whitespace.js', build_dir)
     t.cp('build/ol.css', css_dir)
     t.cp('examples/index.html', 'examples/example-list.js',
          'examples/example-list.xml', 'examples/Jugl.js',
