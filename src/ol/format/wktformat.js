@@ -206,6 +206,7 @@ ol.format.WKT.prototype.parse_ = function(wkt) {
 /**
  * Read a feature from a WKT source.
  *
+ * @function
  * @param {ArrayBuffer|Document|Node|Object|string} source Source.
  * @return {ol.Feature} Feature.
  * @api
@@ -230,6 +231,7 @@ ol.format.WKT.prototype.readFeatureFromText = function(text) {
 /**
  * Read all features from a WKT source.
  *
+ * @function
  * @param {ArrayBuffer|Document|Node|Object|string} source Source.
  * @return {Array.<ol.Feature>} Features.
  * @api
@@ -263,6 +265,7 @@ ol.format.WKT.prototype.readFeaturesFromText = function(text) {
 /**
  * Read a single geometry from a WKT source.
  *
+ * @function
  * @param {ArrayBuffer|Document|Node|Object|string} source Source.
  * @return {ol.geom.Geometry} Geometry.
  * @api
@@ -289,6 +292,7 @@ ol.format.WKT.prototype.readProjectionFromText = function(text) {
 /**
  * Encode a feature as a WKT string.
  *
+ * @function
  * @param {ol.Feature} feature Feature.
  * @return {ArrayBuffer|Node|Object|string} Result.
  * @api
@@ -311,6 +315,7 @@ ol.format.WKT.prototype.writeFeatureText = function(feature) {
 /**
  * Encode an array of features as a WKT string.
  *
+ * @function
  * @param {Array.<ol.Feature>} features Features.
  * @return {ArrayBuffer|Node|Object|string} Result.
  * @api
@@ -337,6 +342,7 @@ ol.format.WKT.prototype.writeFeaturesText = function(features) {
 /**
  * Write a single geometry as a WKT string.
  *
+ * @function
  * @param {ol.geom.Geometry} geometry Geometry.
  * @return {ArrayBuffer|Node|Object|string} Node.
  * @api
