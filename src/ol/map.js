@@ -1103,8 +1103,8 @@ ol.Map.prototype.render = function() {
 /**
  * Remove the given control from the map.
  * @param {ol.control.Control} control Control.
- * @return {ol.control.Control|undefined} The removed control of undefined
- *     if the control was not found.
+ * @return {ol.control.Control|undefined} The removed control (or undefined
+ *     if the control was not found).
  * @api stable
  */
 ol.Map.prototype.removeControl = function(control) {
@@ -1138,8 +1138,8 @@ ol.Map.prototype.removeInteraction = function(interaction) {
 /**
  * Removes the given layer from the map.
  * @param {ol.layer.Base} layer Layer.
- * @return {ol.layer.Base|undefined} The removed layer or undefined if the
- *     layer was not found.
+ * @return {ol.layer.Base|undefined} The removed layer (or undefined if the
+ *     layer was not found).
  * @api stable
  */
 ol.Map.prototype.removeLayer = function(layer) {
@@ -1152,8 +1152,8 @@ ol.Map.prototype.removeLayer = function(layer) {
 /**
  * Remove the given overlay from the map.
  * @param {ol.Overlay} overlay Overlay.
- * @return {ol.Overlay|undefined} The removed overlay of undefined
- *     if the overlay was not found.
+ * @return {ol.Overlay|undefined} The removed overlay (or undefined
+ *     if the overlay was not found).
  * @api stable
  */
 ol.Map.prototype.removeOverlay = function(overlay) {
