@@ -168,8 +168,8 @@ olx.MapOptions.prototype.layers;
 
 
 /**
- * Show ol3 logo. Default is `true`.
- * @type {boolean|undefined}
+ * The map logo. Default is `true`, showing ol3’s logo.
+ * @type {boolean|string|Object|undefined}
  */
 olx.MapOptions.prototype.logo;
 
