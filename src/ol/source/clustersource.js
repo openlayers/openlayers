@@ -110,9 +110,8 @@ ol.source.Cluster.prototype.onSourceChange_ = function() {
 ol.source.Cluster.prototype.cluster = function(extent, resolution) {
   this.clearClusters_();
   var mapDistance = this.distance * resolution;
-  for (var i = 0; i < this.data.length; i++) {
-    var feature = this.data[i];
   var features = this.source.getFeaturesInExtent(extent);
+  for (var i = 0, ii = features.length; i < ii; i++) {
     var feature = features[i];
     var geom = feature.getGeometry();
     goog.asserts.assert(geom instanceof ol.geom.Point);
@@ -120,13 +119,13 @@ ol.source.Cluster.prototype.cluster = function(extent, resolution) {
     if (!ol.extent.containsCoordinate(extent, coord)) {
       continue;
     }
-    for (var j = i + 1; j < this.data.length; j++) {
-      var feature2 = this.data[j];
+    for (var j = i + 1; j < ii; j++) {
+      var feature2 = features[j];
       if (this.shouldCluster(feature, feature2, mapDistance)) {
         this.clusterFeatures(feature, feature2);
         break;
       }
-      if (j == this.data.length - 1 &&
+      if (j == ii - 1 &&
           this.getClusterByFeature(feature) == -1) {
         var cluster = [feature];
         this.clusters.push(cluster);
@@ -153,7 +152,7 @@ ol.source.Cluster.prototype.clearClusters_ = function() {
  * @param {ol.Feature} feature The feature to be clustered
  * @param {ol.Feature} feature2
  * @param {number} distance The minimum distance at which features should not
- *     be clutered
+ *     be clustered
  * @return {boolean}
  */
 ol.source.Cluster.prototype.shouldCluster = function(feature, feature2,
@@ -163,7 +162,7 @@ ol.source.Cluster.prototype.shouldCluster = function(feature, feature2,
   var featureDist;
   if (clusterIndex !== -1) {
     var cluster = this.clusters[clusterIndex];
-    for (var k = 0; k < cluster.length; k++) {
+    for (var k = 0, kk = cluster.length; k < kk; k++) {
       feature2 = cluster[k];
       featureDist = this.getDistanceBetweenFeatures(feature, feature2);
       if (featureDist < distance) {
@@ -187,7 +186,7 @@ ol.source.Cluster.prototype.shouldCluster = function(feature, feature2,
  */
 ol.source.Cluster.prototype.getClusterByFeature = function(feature) {
   var cluster = -1;
-  for (var i = 0; i < this.clusters.length; i++) {
+  for (var i = 0, ii = this.clusters.length; i < ii; i++) {
     if (goog.array.contains(this.clusters[i], feature)) {
       cluster = i;
       break;
@@ -273,7 +272,7 @@ ol.source.Cluster.prototype.addFeatureToCluster = function(feature,
  */
 ol.source.Cluster.prototype.createFeaturesFromClusters = function() {
   this.clearFeatures_();
-  for (var i = 0; i < this.clusters.length; i++) {
+  for (var i = 0, ii = this.clusters.length; i < ii; i++) {
     var cluster = this.clusters[i];
     if (cluster.length < this.smallestCluster) {
       var features = this.features.concat(cluster);
