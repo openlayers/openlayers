@@ -1415,6 +1415,15 @@ ol.Map.createOptionsInternal = function(options) {
   if (!goog.isDef(options.logo) ||
       (goog.isBoolean(options.logo) && options.logo)) {
     logos[ol.OL3_LOGO_URL] = ol.OL3_URL;
+  } else {
+    var logo = options.logo;
+    if (goog.isString(logo)) {
+      logos[logo] = '';
+    } else if (goog.isObject(logo)) {
+      goog.asserts.assertString(logo.href);
+      goog.asserts.assertString(logo.src);
+      logos[logo.src] = logo.href;
+    }
   }
 
   var layerGroup = (options.layers instanceof ol.layer.Group) ?
