@@ -272,6 +272,12 @@ ol.control.Attribution.prototype.updateElement_ = function(frameState) {
     goog.style.setElementShown(this.element, renderVisible);
     this.renderedVisible_ = renderVisible;
   }
+  if (renderVisible &&
+      goog.object.isEmpty(this.attributionElementRenderedVisible_)) {
+    goog.dom.classlist.add(this.element, 'ol-logo-only');
+  } else {
+    goog.dom.classlist.remove(this.element, 'ol-logo-only');
+  }
 
   this.insertLogos_(frameState);
 
