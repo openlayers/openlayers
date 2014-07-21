@@ -96,7 +96,8 @@ ol.control.Attribution = function(opt_options) {
    */
   this.labelSpan_ = label;
   var button = goog.dom.createDom(goog.dom.TagName.BUTTON, {
-    'class': 'ol-has-tooltip'
+    'class': 'ol-has-tooltip',
+    'type': 'button'
   }, this.labelSpan_);
   goog.dom.appendChild(button, tip);
 
