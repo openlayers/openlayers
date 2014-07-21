@@ -32,6 +32,13 @@ ol.source.Cluster = function(options) {
 
 
   /**
+   * @type {?ol.Extent}
+   * @private
+   */
+  this.clusteredExtent_ = null;
+
+
+  /**
    * @type {number}
    */
   this.distance = options.distance || 20;
@@ -69,12 +76,14 @@ goog.inherits(ol.source.Cluster, ol.source.Vector);
  * @param {number} resolution
  */
 ol.source.Cluster.prototype.loadFeatures = function(extent, resolution) {
-  if (extent !== this.getExtent() || resolution !== this.getResolution()) {
+  if (!this.clusteredExtent_ ||
+      !ol.extent.equals(extent, this.clusteredExtent_) ||
+      resolution !== this.getResolution()) {
     this.clear();
+    this.clusteredExtent_ = extent;
+    this.setResolution(resolution);
     this.cluster(extent, resolution);
     this.addFeatures(this.features);
-    this.setExtent(extent);
-    this.setResolution(resolution);
   }
 };
 
