@@ -2559,7 +2559,7 @@ olx.source.BingMapsOptions.prototype.tileLoadFunction;
  * @typedef {{attributions: (Array.<ol.Attribution>|undefined),
  *     extent: (ol.Extent|undefined),
  *     format: ol.format.Feature,
- *     logo: (string|undefined),
+ *     logo: (string|Object|undefined),
  *     projection: ol.proj.ProjectionLike}}
  * @api
  */
@@ -2589,7 +2589,7 @@ olx.source.FormatVectorOptions.prototype.format;
 
 /**
  * Logo.
- * @type {string|undefined}
+ * @type{string|Object|undefined}
  */
 olx.source.FormatVectorOptions.prototype.logo;
 
@@ -2605,7 +2605,7 @@ olx.source.FormatVectorOptions.prototype.projection;
  * @typedef {{attributions: (Array.<ol.Attribution>|undefined),
  *     defaultProjection: ol.proj.ProjectionLike,
  *     extent: (ol.Extent|undefined),
- *     logo: (string|undefined),
+ *     logo: (string|Object|undefined),
  *     object: (GeoJSONObject|undefined),
  *     projection: ol.proj.ProjectionLike,
  *     text: (string|undefined),
@@ -2639,7 +2639,7 @@ olx.source.GeoJSONOptions.prototype.extent;
 
 /**
  * Logo.
- * @type {string|undefined}
+ * @type{string|Object|undefined}
  */
 olx.source.GeoJSONOptions.prototype.logo;
 
@@ -2684,7 +2684,7 @@ olx.source.GeoJSONOptions.prototype.urls;
  * @typedef {{attributions: (Array.<ol.Attribution>|undefined),
  *     doc: (Document|undefined),
  *     extent: (ol.Extent|undefined),
- *     logo: (string|undefined),
+ *     logo: (string|Object|undefined),
  *     node: (Node|undefined),
  *     projection: ol.proj.ProjectionLike,
  *     text: (string|undefined),
@@ -2718,7 +2718,7 @@ olx.source.GPXOptions.prototype.extent;
 
 /**
  * Logo.
- * @type {string|undefined}
+ * @type{string|Object|undefined}
  */
 olx.source.GPXOptions.prototype.logo;
 
@@ -2763,7 +2763,7 @@ olx.source.GPXOptions.prototype.urls;
  * @typedef {{attributions: (Array.<ol.Attribution>|undefined),
  *            crossOrigin: (null|string|undefined),
  *            extent: (ol.Extent|undefined),
- *            logo: (string|undefined),
+ *     logo: (string|Object|undefined),
  *            opaque: (boolean|undefined),
  *            projection: ol.proj.ProjectionLike,
  *            tileClass: (function(new: ol.ImageTile, ol.TileCoord,
@@ -2801,7 +2801,7 @@ olx.source.TileImageOptions.prototype.extent;
 
 /**
  * Logo.
- * @type {string|undefined}
+ * @type{string|Object|undefined}
  */
 olx.source.TileImageOptions.prototype.logo;
 
@@ -2865,7 +2865,7 @@ olx.source.TileImageOptions.prototype.tileUrlFunction;
  *     defaultProjection: ol.proj.ProjectionLike,
  *     extent: (ol.Extent|undefined),
  *     format: ol.format.Feature,
- *     logo: (string|undefined),
+ *     logo: (string|Object|undefined),
  *     object: (GeoJSONObject|undefined),
  *     projection: ol.proj.ProjectionLike,
  *     tileGrid: ol.tilegrid.TileGrid,
@@ -2907,7 +2907,7 @@ olx.source.TileVectorOptions.prototype.format;
 
 /**
  * Logo.
- * @type {string|undefined}
+ * @type{string|Object|undefined}
  */
 olx.source.TileVectorOptions.prototype.logo;
 
@@ -2960,7 +2960,7 @@ olx.source.TileVectorOptions.prototype.urls;
  * @typedef {{attributions: (Array.<ol.Attribution>|undefined),
  *     defaultProjection: ol.proj.ProjectionLike,
  *     extent: (ol.Extent|undefined),
- *     logo: (string|undefined),
+ *     logo: (string|Object|undefined),
  *     object: (GeoJSONObject|undefined),
  *     projection: ol.proj.ProjectionLike,
  *     text: (string|undefined),
@@ -2993,7 +2993,7 @@ olx.source.TopoJSONOptions.prototype.extent;
 
 /**
  * Logo.
- * @type {string|undefined}
+ * @type{string|Object|undefined}
  */
 olx.source.TopoJSONOptions.prototype.logo;
 
@@ -3168,7 +3168,7 @@ olx.source.MapGuideOptions.prototype.params;
  *     defaultStyle: (Array.<ol.style.Style>|undefined),
  *     doc: (Document|undefined),
  *     extent: (ol.Extent|undefined),
- *     logo: (string|undefined),
+ *     logo: (string|Object|undefined),
  *     node: (Node|undefined),
  *     projection: ol.proj.ProjectionLike,
  *     text: (string|undefined),
@@ -3209,7 +3209,7 @@ olx.source.KMLOptions.prototype.extent;
 
 /**
  * Logo.
- * @type {string|undefined}
+ * @type{string|Object|undefined}
  */
 olx.source.KMLOptions.prototype.logo;
 
@@ -3354,7 +3354,7 @@ olx.source.OSMOptions.prototype.url;
  *     defaultStyle: (Array.<ol.style.Style>|undefined),
  *     doc: (Document|undefined),
  *     extent: (ol.Extent|undefined),
- *     logo: (string|undefined),
+ *     logo: (string|Object|undefined),
  *     node: (Node|undefined),
  *     projection: ol.proj.ProjectionLike,
  *     reprojectTo: ol.proj.ProjectionLike,
@@ -3396,7 +3396,7 @@ olx.source.OSMXMLOptions.prototype.extent;
 
 /**
  * Logo.
- * @type {string|undefined}
+ * @type{string|Object|undefined}
  */
 olx.source.OSMXMLOptions.prototype.logo;
 
@@ -3447,7 +3447,7 @@ olx.source.OSMXMLOptions.prototype.urls;
  * @typedef {{attributions: (Array.<ol.Attribution>|undefined),
  *     canvasFunction: ol.CanvasFunctionType,
  *     extent: (ol.Extent|undefined),
- *     logo: (string|undefined),
+ *     logo: (string|Object|undefined),
  *     projection: ol.proj.ProjectionLike,
  *     ratio: (number|undefined),
  *     resolutions: (Array.<number>|undefined),
@@ -3487,7 +3487,7 @@ olx.source.ImageCanvasOptions.prototype.extent;
 
 /**
  * Logo.
- * @type {string|undefined}
+ * @type{string|Object|undefined}
  */
 olx.source.ImageCanvasOptions.prototype.logo;
 
@@ -3525,7 +3525,7 @@ olx.source.ImageCanvasOptions.prototype.state;
 /**
  * @typedef {{attributions: (Array.<ol.Attribution>|undefined),
  *     extent: (ol.Extent|undefined),
- *     logo: (string|undefined),
+ *     logo: (string|Object|undefined),
  *     projection: ol.proj.ProjectionLike,
  *     ratio: (number|undefined),
  *     resolutions: (Array.<number>|undefined),
@@ -3552,7 +3552,7 @@ olx.source.ImageVectorOptions.prototype.extent;
 
 /**
  * Logo.
- * @type {string|undefined}
+ * @type{string|Object|undefined}
  */
 olx.source.ImageVectorOptions.prototype.logo;
 
@@ -3601,7 +3601,7 @@ olx.source.ImageVectorOptions.prototype.style;
  *     extent: (ol.Extent|undefined),
  *     hidpi: (boolean|undefined),
  *     serverType: (ol.source.wms.ServerType|string|undefined),
- *     logo: (string|undefined),
+ *     logo: (string|Object|undefined),
  *     params: Object.<string,*>,
  *     projection: ol.proj.ProjectionLike,
  *     ratio: (number|undefined),
@@ -3651,7 +3651,7 @@ olx.source.ImageWMSOptions.prototype.serverType;
 
 /**
  * Logo.
- * @type {string|undefined}
+ * @type{string|Object|undefined}
  */
 olx.source.ImageWMSOptions.prototype.logo;
 
@@ -3754,7 +3754,7 @@ olx.source.StamenOptions.prototype.url;
  *     extent: (ol.Extent|undefined),
  *     imageExtent: (ol.Extent|undefined),
  *     imageSize: (ol.Size|undefined),
- *     logo: (string|undefined),
+ *     logo: (string|Object|undefined),
  *     projection: ol.proj.ProjectionLike,
  *     url: string}}
  * @api
@@ -3799,7 +3799,7 @@ olx.source.ImageStaticOptions.prototype.imageSize;
 
 /**
  * Logo.
- * @type {string|undefined}
+ * @type{string|Object|undefined}
  */
 olx.source.ImageStaticOptions.prototype.logo;
 
@@ -3824,7 +3824,7 @@ olx.source.ImageStaticOptions.prototype.url;
  *     format: ol.format.Feature,
  *     loader: function(this: ol.source.ServerVector, ol.Extent, number, ol.proj.Projection),
  *     strategy: (function(ol.Extent, number): Array.<ol.Extent>|undefined),
- *     logo: (string|undefined),
+ *     logo: (string|Object|undefined),
  *     projection: ol.proj.ProjectionLike}}
  * @api
  */
@@ -3869,7 +3869,7 @@ olx.source.ServerVectorOptions.prototype.strategy;
 
 /**
  * Logo.
- * @type {string|undefined}
+ * @type{string|Object|undefined}
  */
 olx.source.ServerVectorOptions.prototype.logo;
 
@@ -3918,7 +3918,7 @@ olx.source.TileJSONOptions.prototype.url;
  *     extent: (ol.Extent|undefined),
  *     gutter: (number|undefined),
  *     hidpi: (boolean|undefined),
- *     logo: (string|undefined),
+ *     logo: (string|Object|undefined),
  *     tileGrid: (ol.tilegrid.TileGrid|undefined),
  *     maxZoom: (number|undefined),
  *     projection: ol.proj.ProjectionLike,
@@ -3985,7 +3985,7 @@ olx.source.TileWMSOptions.prototype.hidpi;
 
 /**
  * Logo.
- * @type {string|undefined}
+ * @type{string|Object|undefined}
  */
 olx.source.TileWMSOptions.prototype.logo;
 
@@ -4049,7 +4049,7 @@ olx.source.TileWMSOptions.prototype.urls;
  * @typedef {{attributions: (Array.<ol.Attribution>|undefined),
  *     extent: (ol.Extent|undefined),
  *     features: (Array.<ol.Feature>|undefined),
- *     logo: (string|undefined),
+ *     logo: (string|Object|undefined),
  *     projection: ol.proj.ProjectionLike,
  *     state: (ol.source.State|string|undefined)}}
  * @api
@@ -4080,7 +4080,7 @@ olx.source.VectorOptions.prototype.features;
 
 /**
  * Logo.
- * @type {string|undefined}
+ * @type{string|Object|undefined}
  */
 olx.source.VectorOptions.prototype.logo;
 
@@ -4105,7 +4105,7 @@ olx.source.VectorOptions.prototype.state;
  *     doc: (Document|undefined),
  *     extent: (ol.Extent|undefined),
  *     format: ol.format.Feature,
- *     logo: (string|undefined),
+ *     logo: (string|Object|undefined),
  *     node: (Node|undefined),
  *     object: (Object|undefined),
  *     projection: ol.proj.ProjectionLike,
@@ -4154,7 +4154,7 @@ olx.source.StaticVectorOptions.prototype.format;
 
 /**
  * Logo.
- * @type {string|undefined}
+ * @type{string|Object|undefined}
  */
 olx.source.StaticVectorOptions.prototype.logo;
 
@@ -4205,7 +4205,7 @@ olx.source.StaticVectorOptions.prototype.urls;
  * @typedef {{attributions: (Array.<ol.Attribution>|undefined),
  *     crossOrigin: (string|null|undefined),
  *     extent: (ol.Extent|undefined),
- *     logo: (string|undefined),
+ *     logo: (string|Object|undefined),
  *     tileGrid: ol.tilegrid.WMTS,
  *     projection: ol.proj.ProjectionLike,
  *     requestEncoding: (ol.source.WMTSRequestEncoding|undefined),
@@ -4248,7 +4248,7 @@ olx.source.WMTSOptions.prototype.extent;
 
 /**
  * Logo.
- * @type {string|undefined}
+ * @type{string|Object|undefined}
  */
 olx.source.WMTSOptions.prototype.logo;
 
@@ -4358,7 +4358,7 @@ olx.source.WMTSOptions.prototype.urls;
  * @typedef {{attributions: (Array.<ol.Attribution>|undefined),
  *     crossOrigin: (null|string|undefined),
  *     extent: (ol.Extent|undefined),
- *     logo: (string|undefined),
+ *     logo: (string|Object|undefined),
  *     projection: ol.proj.ProjectionLike,
  *     maxZoom: (number|undefined),
  *     minZoom: (number|undefined),
@@ -4396,7 +4396,7 @@ olx.source.XYZOptions.prototype.extent;
 
 /**
  * Logo.
- * @type {string|undefined}
+ * @type{string|Object|undefined}
  */
 olx.source.XYZOptions.prototype.logo;
 
@@ -4471,7 +4471,7 @@ olx.source.XYZOptions.prototype.wrapX;
 /**
  * @typedef {{attributions: (Array.<ol.Attribution>|undefined),
  *     crossOrigin: (null|string|undefined),
- *     logo: (string|undefined),
+ *     logo: (string|Object|undefined),
  *     url: !string,
  *     tierSizeCalculation: (string|undefined),
  *     size: ol.Size}}
@@ -4496,7 +4496,7 @@ olx.source.ZoomifyOptions.prototype.crossOrigin;
 
 /**
  * Logo.
- * @type {string|undefined}
+ * @type{string|Object|undefined}
  */
 olx.source.ZoomifyOptions.prototype.logo;
 
