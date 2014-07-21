@@ -106,7 +106,7 @@ olx.GeolocationOptions.prototype.projection;
  *     interactions: (ol.Collection|Array.<ol.interaction.Interaction>|undefined),
  *     keyboardEventTarget: (Element|Document|string|undefined),
  *     layers: (Array.<ol.layer.Base>|ol.Collection|undefined),
- *     ol3Logo: (boolean|undefined),
+ *     logo: (boolean|string|Object|undefined),
  *     overlays: (ol.Collection|Array.<ol.Overlay>|undefined),
  *     renderer: (ol.RendererType|Array.<ol.RendererType|string>|string|undefined),
  *     target: (Element|string|undefined),
@@ -171,7 +171,7 @@ olx.MapOptions.prototype.layers;
  * Show ol3 logo. Default is `true`.
  * @type {boolean|undefined}
  */
-olx.MapOptions.prototype.ol3Logo;
+olx.MapOptions.prototype.logo;
 
 
 /**
