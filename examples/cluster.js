@@ -1,6 +1,6 @@
 goog.require('ol.Feature');
 goog.require('ol.Map');
-goog.require('ol.View2D');
+goog.require('ol.View');
 goog.require('ol.geom.Point');
 goog.require('ol.layer.Tile');
 goog.require('ol.layer.Vector');
@@ -22,15 +22,16 @@ var map = new ol.Map({
   layers: [raster],
   renderer: 'canvas',
   target: 'map',
-  view: new ol.View2D({
+  view: new ol.View({
     center: [0, 0],
     zoom: 4
   })
 });
 
-var resolution = map.getView().getView2D().getResolution();
+var resolution = map.getView().getResolution();
 var size = map.getSize();
-var extent = map.getView().getView2D().calculateExtent(size);
+var extent = map.getView().calculateExtent(
+    /** @type {Array.<number>} */ (size));
 
 var data = [];
 for (var i = 0; i < 30; i++) {

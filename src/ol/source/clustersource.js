@@ -14,6 +14,7 @@ goog.require('ol.source.Vector');
  * @constructor
  * @param {olx.source.ClusterOptions} options
  * @extends {ol.source.Vector}
+ * @api
  */
 ol.source.Cluster = function(options) {
   goog.base(this, {
@@ -227,6 +228,8 @@ ol.source.Cluster.prototype.joinClusters = function(index1, index2) {
 
 
 /**
+ * Inserts a feature to a cluster, specified by its index.
+ *
  * @param {ol.Feature} feature
  * @param {number} clusterIndex
  */
@@ -238,7 +241,7 @@ ol.source.Cluster.prototype.addFeatureToCluster = function(feature,
 
 
 /**
- *
+ * Creates an instance of ol.ClusterFeature from each cluster
  */
 ol.source.Cluster.prototype.createFeaturesFromClusters = function() {
   this.clearFeatures_();
