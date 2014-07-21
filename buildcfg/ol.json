@@ -29,6 +29,7 @@
       "deprecated",
       "duplicateMessage",
       "es3",
+      "es5Strict",
       "externsValidation",
       "fileoverviewTags",
       "globalThis",
@@ -53,9 +54,6 @@
     ],
     "extra_annotation_name": [
       "api", "observable"
-    ],
-    "jscomp_off": [
-      "es5Strict"
     ],
     "compilation_level": "ADVANCED",
     "output_wrapper": "(function(){%output%})();",
