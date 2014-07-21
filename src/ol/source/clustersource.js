@@ -55,9 +55,11 @@ ol.source.Cluster = function(options) {
 
 
   /**
-   * @type {Array.<ol.Feature>}
+   * @type {ol.source.Vector}
    */
-  this.data = options.data;
+  this.source = options.source;
+
+  this.source.on('change', ol.source.Cluster.prototype.onSourceChange_, this);
 };
 goog.inherits(ol.source.Cluster, ol.source.Vector);
 
@@ -78,6 +80,21 @@ ol.source.Cluster.prototype.loadFeatures = function(extent, resolution) {
 
 
 /**
+ * handle the source changing
+ * @private
+ */
+ol.source.Cluster.prototype.onSourceChange_ = function() {
+  if (!goog.isNull(this.resolution_) && !goog.isNull(this.clusteredExtent_)) {
+    this.clear();
+    this.cluster(this.clusteredExtent_,
+        /** @type {number} */(this.resolution_));
+    this.addFeatures(this.features);
+    this.dispatchChangeEvent();
+  }
+};
+
+
+/**
  * @param {ol.Extent} extent
  * @param {number} resolution
  */
@@ -86,6 +103,8 @@ ol.source.Cluster.prototype.cluster = function(extent, resolution) {
   var mapDistance = this.distance * resolution;
   for (var i = 0; i < this.data.length; i++) {
     var feature = this.data[i];
+  var features = this.source.getFeaturesInExtent(extent);
+    var feature = features[i];
     var geom = feature.getGeometry();
     goog.asserts.assert(geom instanceof ol.geom.Point);
     var coord = geom.getCoordinates();

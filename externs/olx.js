@@ -2565,7 +2565,7 @@ olx.source.BingMapsOptions.prototype.tileLoadFunction;
  *     format: (ol.format.Feature|undefined),
  *     logo: (string|undefined),
  *     projection: ol.proj.ProjectionLike,
- *	   data: (Array.<ol.Feature>)}}
+ *	   source: (ol.source.Vector)}}
  */
 olx.source.ClusterOptions;
 
