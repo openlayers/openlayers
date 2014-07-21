@@ -123,15 +123,14 @@ def report_sizes(t):
 virtual('default', 'build')
 
 
-virtual('ci', 'lint', 'jshint', 'build', 'build-all',
-        'test', 'build/examples/all.combined.js', 'check-examples', 'apidoc')
+virtual('ci', 'lint', 'jshint', 'build', 'test',
+    'build/examples/all.combined.js', 'check-examples', 'apidoc')
 
 
-virtual('build', 'build/ol.css', 'build/ol.js',
-        'build/ol-simple.js', 'build/ol-whitespace.js')
+virtual('build', 'build/ol.css', 'build/ol.js', 'build/ol-debug.js')
 
 
-virtual('check', 'lint', 'jshint', 'build/ol-all.js', 'test')
+virtual('check', 'lint', 'jshint', 'test')
 
 
 virtual('todo', 'fixme')
@@ -148,24 +147,10 @@ def build_ol_new_js(t):
     report_sizes(t)
 
 
-@target('build/ol-simple.js', SRC, SHADER_SRC, 'buildcfg/ol-simple.json')
-def build_ol_simple_js(t):
-    t.run('node', 'tasks/build.js', 'buildcfg/ol-simple.json', 'build/ol-simple.js')
+@target('build/ol-debug.js', SRC, SHADER_SRC, 'buildcfg/ol-debug.json')
+def build_ol_debug_js(t):
+    t.run('node', 'tasks/build.js', 'buildcfg/ol-debug.json', 'build/ol-debug.js')
     report_sizes(t)
-
-
-@target('build/ol-whitespace.js', SRC, SHADER_SRC, 'buildcfg/ol-whitespace.json')
-def build_ol_whitespace_js(t):
-    t.run('node', 'tasks/build.js', 'buildcfg/ol-whitespace.json', 'build/ol-whitespace.js')
-    report_sizes(t)
-
-
-virtual('build-all', 'build/ol-all.js')
-
-
-@target('build/ol-all.js', SRC, SHADER_SRC, 'buildcfg/ol-all.json')
-def build_ol_all_js(t):
-    t.run('node', 'tasks/build.js', 'buildcfg/ol-all.json', 'build/ol-all.js')
 
 
 for glsl_src in GLSL_SRC:
@@ -609,8 +594,7 @@ def host_examples(t):
         split_example_file(example, examples_dir % vars(variables))
     t.cp_r('examples/data', examples_dir + '/data')
     t.cp('bin/loader_hosted_examples.js', examples_dir + '/loader.js')
-    t.cp('build/ol.js', 'build/ol-simple.js', 'build/ol-whitespace.js',
-         build_dir)
+    t.cp('build/ol.js', 'build/ol-debug.js', build_dir)
     t.cp('build/ol.css', css_dir)
     t.cp('examples/index.html', 'examples/example-list.js',
          'examples/example-list.xml', 'examples/Jugl.js',
