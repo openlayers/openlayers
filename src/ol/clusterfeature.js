@@ -11,6 +11,7 @@ goog.require('ol.geom.Point');
  * @constructor
  * @param {olx.ClusterFeatureOptions} options
  * @extends {ol.Feature}
+ * @api
  */
 ol.ClusterFeature = function(options) {
   goog.base(this);
@@ -67,4 +68,14 @@ ol.ClusterFeature.prototype.calculateCoordinates = function() {
   var centerY = ySum / this.features.length;
   var center = [centerX, centerY];
   return center;
+};
+
+
+/**
+ * Return the features that are part of this cluster
+ * @return {Array.<ol.Feature>}
+ * @api
+ */
+ol.ClusterFeature.prototype.getFeatures = function() {
+  return this.features;
 };
