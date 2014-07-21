@@ -58,13 +58,16 @@ else:
     variables.JSDOC = './node_modules/.bin/jsdoc'
     variables.PYTHON = 'python'
     variables.PHANTOMJS = './node_modules/.bin/phantomjs'
+    #Temporary solution to variable nodejs executable naming
+    variables.NODE = 'nodejs' if which('nodejs') else 'node'
+    
 
 variables.BRANCH = output(
     '%(GIT)s', 'rev-parse', '--abbrev-ref', 'HEAD').strip()
 
 EXECUTABLES = [variables.CLEANCSS, variables.GIT, variables.GJSLINT,
                variables.JSDOC, variables.JSHINT, variables.PYTHON,
-               variables.PHANTOMJS]
+               variables.PHANTOMJS, variables.NODE]
 
 EXAMPLES = [path
             for path in ifind('examples')
@@ -144,19 +147,19 @@ def build_ol_css(t):
 
 @target('build/ol.js', SRC, SHADER_SRC, 'buildcfg/ol.json')
 def build_ol_new_js(t):
-    t.run('node', 'tasks/build.js', 'buildcfg/ol.json', 'build/ol.js')
+    t.run('%(NODE)s', 'tasks/build.js', 'buildcfg/ol.json', 'build/ol.js')
     report_sizes(t)
 
 
 @target('build/ol-simple.js', SRC, SHADER_SRC, 'buildcfg/ol-simple.json')
 def build_ol_simple_js(t):
-    t.run('node', 'tasks/build.js', 'buildcfg/ol-simple.json', 'build/ol-simple.js')
+    t.run('%(NODE)s', 'tasks/build.js', 'buildcfg/ol-simple.json', 'build/ol-simple.js')
     report_sizes(t)
 
 
 @target('build/ol-whitespace.js', SRC, SHADER_SRC, 'buildcfg/ol-whitespace.json')
 def build_ol_whitespace_js(t):
-    t.run('node', 'tasks/build.js', 'buildcfg/ol-whitespace.json', 'build/ol-whitespace.js')
+    t.run('%(NODE)s', 'tasks/build.js', 'buildcfg/ol-whitespace.json', 'build/ol-whitespace.js')
     report_sizes(t)
 
 
@@ -165,7 +168,7 @@ virtual('build-all', 'build/ol-all.js')
 
 @target('build/ol-all.js', SRC, SHADER_SRC, 'buildcfg/ol-all.json')
 def build_ol_all_js(t):
-    t.run('node', 'tasks/build.js', 'buildcfg/ol-all.json', 'build/ol-all.js')
+    t.run('%(NODE)s', 'tasks/build.js', 'buildcfg/ol-all.json', 'build/ol-all.js')
 
 
 for glsl_src in GLSL_SRC:
@@ -213,7 +216,7 @@ def examples_examples_list_js(t):
 @target('build/examples/all.combined.js', 'build/examples/all.js',
         SRC, SHADER_SRC, 'buildcfg/examples-all.json')
 def build_examples_all_combined_js(t):
-    t.run('node', 'tasks/build.js', 'buildcfg/examples-all.json',
+    t.run('%(NODE)s', 'tasks/build.js', 'buildcfg/examples-all.json',
           'build/examples/all.combined.js')
     report_sizes(t)
 
@@ -309,7 +312,7 @@ def examples_star_json(name, match):
 def examples_star_combined_js(name, match):
     def action(t):
         config = 'build/examples/%(id)s.json' % match.groupdict()
-        t.run('node', 'tasks/build.js', config, name)
+        t.run('%(NODE)s', 'tasks/build.js', config, name)
         report_sizes(t)
     dependencies = [SRC, SHADER_SRC,
                     'examples/%(id)s.js' % match.groupdict(),
@@ -319,7 +322,7 @@ def examples_star_combined_js(name, match):
 
 @target('serve', 'examples')
 def serve(t):
-    t.run('node', 'tasks/serve.js')
+    t.run('%(NODE)s', 'tasks/serve.js')
 
 
 virtual('lint', 'build/lint-timestamp', 'build/check-requires-timestamp',
@@ -372,7 +375,7 @@ def _strip_comments(lines):
 def build_check_requires_timestamp(t):
     unused_count = 0
     all_provides = set()
-    closure_lib_path = output('node', '-e',
+    closure_lib_path = output('%(NODE)s', '-e',
         'process.stdout.write(require("closure-util").getLibraryPath())')
     for filename in ifind(closure_lib_path):
         if filename.endswith('.js'):
@@ -596,7 +599,7 @@ def host_examples(t):
     examples_dir = 'build/hosted/%(BRANCH)s/examples'
     build_dir = 'build/hosted/%(BRANCH)s/build'
     css_dir = 'build/hosted/%(BRANCH)s/css'
-    closure_lib_path = output('node', '-e',
+    closure_lib_path = output('%(NODE)s', '-e',
         'process.stdout.write(require("closure-util").getLibraryPath())')
     t.rm_rf(examples_dir)
     t.makedirs(examples_dir)
@@ -641,7 +644,7 @@ def check_examples(t):
 
 @target('test', phony=True)
 def test(t):
-    t.run('node', 'tasks/test.js')
+    t.run('%(NODE)s', 'tasks/test.js')
 
 
 @target('fixme', phony=True)
