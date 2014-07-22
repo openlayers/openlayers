@@ -689,8 +689,7 @@ ol.Map.prototype.getInteractions = function() {
  * @api stable
  */
 ol.Map.prototype.getLayerGroup = function() {
-  return /** @type {ol.layer.Group} */ (
-      this.get(ol.MapProperty.LAYERGROUP));
+  return /** @type {ol.layer.Group} */ (this.get(ol.MapProperty.LAYERGROUP));
 };
 goog.exportProperty(
     ol.Map.prototype,
@@ -1357,8 +1356,7 @@ ol.Map.prototype.updateSize = function() {
   /**
    * @type {Element}
    */
-  var targetElement = goog.isDef(target) ?
-      goog.dom.getElement(target) : null;
+  var targetElement = goog.isDef(target) ? goog.dom.getElement(target) : null;
 
   if (goog.isNull(targetElement)) {
     this.setSize(undefined);

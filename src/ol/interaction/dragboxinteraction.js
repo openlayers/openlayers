@@ -152,8 +152,7 @@ ol.interaction.DragBox.prototype.onBoxEnd = goog.nullFunction;
 /**
  * @inheritDoc
  */
-ol.interaction.DragBox.prototype.handlePointerUp =
-    function(mapBrowserEvent) {
+ol.interaction.DragBox.prototype.handlePointerUp = function(mapBrowserEvent) {
   if (!ol.events.condition.mouseOnly(mapBrowserEvent)) {
     return true;
   }
@@ -176,8 +175,7 @@ ol.interaction.DragBox.prototype.handlePointerUp =
 /**
  * @inheritDoc
  */
-ol.interaction.DragBox.prototype.handlePointerDown =
-    function(mapBrowserEvent) {
+ol.interaction.DragBox.prototype.handlePointerDown = function(mapBrowserEvent) {
   if (!ol.events.condition.mouseOnly(mapBrowserEvent)) {
     return false;
   }
