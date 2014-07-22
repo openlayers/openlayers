@@ -1,5 +1,4 @@
 goog.provide('ol.format.GPX');
-goog.provide('ol.format.GPX.V1_1');
 
 goog.require('goog.array');
 goog.require('goog.asserts');
@@ -794,17 +793,6 @@ ol.format.GPX.GPX_SERIALIZERS_ = ol.xml.makeStructureNS(
     });
 
 
-
-/**
- * @constructor
- * @extends {ol.format.GPX}
- */
-ol.format.GPX.V1_1 = function() {
-  goog.base(this);
-};
-goog.inherits(ol.format.GPX.V1_1, ol.format.GPX);
-
-
 /**
  * Encode an array of features in the GPX format.
  *
@@ -819,7 +807,7 @@ ol.format.GPX.prototype.writeFeatures;
 /**
  * @inheritDoc
  */
-ol.format.GPX.V1_1.prototype.writeFeaturesNode = function(features) {
+ol.format.GPX.prototype.writeFeaturesNode = function(features) {
   //FIXME Serialize metadata
   var gpx = ol.xml.createElementNS('http://www.topografix.com/GPX/1/1', 'gpx');
   ol.xml.pushSerializeAndPop(/** @type {ol.xml.NodeStackItem} */
