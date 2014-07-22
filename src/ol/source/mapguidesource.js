@@ -180,7 +180,7 @@ ol.source.MapGuide.getScale = function(extent, size, metersPerUnit, dpi) {
  * @api
  */
 ol.source.MapGuide.prototype.updateParams = function(params) {
-  goog.object.extend(this.params_, params);
+  this.params_ = params;
   this.dispatchChangeEvent();
 };
 
@@ -212,5 +212,9 @@ ol.source.MapGuide.prototype.getUrl =
     'SETVIEWCENTERY': center[1]
   };
   goog.object.extend(baseParams, params);
+  if (this.params_ !== null)
+  {
+    goog.object.extend(baseParams, this.params_);
+  }
   return goog.uri.utils.appendParamsFromMap(baseUrl, baseParams);
 };
