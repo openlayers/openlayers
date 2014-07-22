@@ -158,8 +158,7 @@ goog.inherits(ol.control.Attribution, ol.control.Control);
  * @param {?olx.FrameState} frameState Frame state.
  * @return {Array.<Object.<string, ol.Attribution>>} Attributions.
  */
-ol.control.Attribution.prototype.getSourceAttributions =
-    function(frameState) {
+ol.control.Attribution.prototype.getSourceAttributions = function(frameState) {
   var i, ii, j, jj, tileRanges, source, sourceAttribution,
       sourceAttributionKey, sourceAttributions, sourceKey;
   var layerStatesArray = frameState.layerStatesArray;

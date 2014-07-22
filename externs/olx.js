@@ -1686,7 +1686,7 @@ olx.interaction.DrawOptions.prototype.source;
 
 
 /**
- * Pixel distance for snapping to the drawing finish (default is 12).
+ * Pixel distance for snapping to the drawing finish. Default is `12`.
  * @type {number|undefined}
  */
 olx.interaction.DrawOptions.prototype.snapTolerance;
@@ -1701,8 +1701,8 @@ olx.interaction.DrawOptions.prototype.type;
 
 
 /**
- * The number of points that must be drawn before a polygon ring can be finished
- * (default is 3).
+ * The number of points that must be drawn before a polygon ring can be finished.
+ * Default is `3`.
  * @type {number|undefined}
  */
 olx.interaction.DrawOptions.prototype.minPointsPerRing;
@@ -1810,7 +1810,7 @@ olx.interaction.ModifyOptions.prototype.deleteCondition;
 
 /**
  * Pixel tolerance for considering the pointer close enough to a segment or
- * vertex for editing. Default is 10 pixels.
+ * vertex for editing. Default is `10` pixels.
  * @type {number|undefined}
  */
 olx.interaction.ModifyOptions.prototype.pixelTolerance;
@@ -4299,14 +4299,14 @@ olx.source.WMTSOptions.prototype.tilePixelRatio;
 
 
 /**
- * WMTS version. Default to `1.0.0`.
+ * WMTS version. Default is `1.0.0`.
  * @type {string|undefined}
  */
 olx.source.WMTSOptions.prototype.version;
 
 
 /**
- * Format.
+ * Image format. Default is `image/jpeg`.
  * @type {string|undefined}
  */
 olx.source.WMTSOptions.prototype.format;

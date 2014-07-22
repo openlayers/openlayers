@@ -74,8 +74,7 @@ ol.interaction.Interaction.prototype.setMap = function(map) {
  * @param {ol.Coordinate} delta Delta.
  * @param {number=} opt_duration Duration.
  */
-ol.interaction.Interaction.pan = function(
-    map, view, delta, opt_duration) {
+ol.interaction.Interaction.pan = function(map, view, delta, opt_duration) {
   var currentCenter = view.getCenter();
   if (goog.isDef(currentCenter)) {
     if (goog.isDef(opt_duration) && opt_duration > 0) {

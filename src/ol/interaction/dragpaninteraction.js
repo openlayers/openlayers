@@ -91,8 +91,7 @@ ol.interaction.DragPan.prototype.handlePointerDrag = function(mapBrowserEvent) {
 /**
  * @inheritDoc
  */
-ol.interaction.DragPan.prototype.handlePointerUp =
-    function(mapBrowserEvent) {
+ol.interaction.DragPan.prototype.handlePointerUp = function(mapBrowserEvent) {
   var map = mapBrowserEvent.map;
   var view = map.getView();
   if (this.targetPointers.length === 0) {
@@ -124,8 +123,7 @@ ol.interaction.DragPan.prototype.handlePointerUp =
 /**
  * @inheritDoc
  */
-ol.interaction.DragPan.prototype.handlePointerDown =
-    function(mapBrowserEvent) {
+ol.interaction.DragPan.prototype.handlePointerDown = function(mapBrowserEvent) {
   if (this.targetPointers.length > 0 && this.condition_(mapBrowserEvent)) {
     var map = mapBrowserEvent.map;
     var view = map.getView();
