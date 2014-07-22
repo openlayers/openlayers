@@ -856,8 +856,8 @@ ol.Map.prototype.handleMapBrowserEvent = function(mapBrowserEvent) {
   this.focus_ = mapBrowserEvent.coordinate;
   mapBrowserEvent.frameState = this.frameState_;
   var interactions = this.getInteractions();
-  var interactionsArray = /** @type {Array.<ol.interaction.Interaction>} */
-      (interactions.getArray());
+  goog.asserts.assert(goog.isDef(interactions));
+  var interactionsArray = interactions.getArray();
   var i;
   if (this.dispatchEvent(mapBrowserEvent) !== false) {
     for (i = interactionsArray.length - 1; i >= 0; i--) {
@@ -1146,7 +1146,7 @@ ol.Map.prototype.removeInteraction = function(interaction) {
 ol.Map.prototype.removeLayer = function(layer) {
   var layers = this.getLayerGroup().getLayers();
   goog.asserts.assert(goog.isDef(layers));
-  return /** @type {ol.layer.Base|undefined} */ (layers.remove(layer));
+  return layers.remove(layer);
 };
 
 
