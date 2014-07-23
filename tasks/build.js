@@ -151,12 +151,21 @@ function getDependencies(config, exports, callback) {
         cwd: root
       };
     }
+    /** Handling of exports file.
+     * If there are no exports, the file returned has 1 newline, so check for
+     * absence of goog functions.
+     * If there are exports, pass this to getDependencies as the main script,
+     * so it can get the dependencies for the exports.
+     */
+    if (exports.indexOf('goog') !== -1) {
+      options.main = exportsPath;
+    }
+
     closure.getDependencies(options, function(err, paths) {
       if (err) {
         callback(err);
         return;
       }
-      paths.push(exportsPath);
       callback(null, paths);
     });
   });
