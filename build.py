@@ -136,7 +136,7 @@ virtual('check', 'lint', 'jshint', 'test')
 virtual('todo', 'fixme')
 
 
-@target('build/ol.css')
+@target('build/ol.css', 'css/ol.css')
 def build_ol_css(t):
     t.output('%(CLEANCSS)s', 'css/ol.css')
 
