@@ -36,9 +36,15 @@ ol.CoordinateArray;
  * Add `delta` to `coordinate`. `coordinate` is modified in place and returned
  * by the function.
  *
+ * Example:
+ *
+ *     var coord = [7.85, 47.983333];
+ *     ol.coordinate.add(coord, [-2, 4]);
+ *     // coord is now [5.85, 51.983333]
+ *
  * @param {ol.Coordinate} coordinate Coordinate.
  * @param {ol.Coordinate} delta Delta.
- * @return {ol.Coordinate} Coordinate.
+ * @return {ol.Coordinate} The input coordinate adjusted by the given delta.
  * @api
  */
 ol.coordinate.add = function(coordinate, delta) {
@@ -88,6 +94,23 @@ ol.coordinate.closestOnSegment = function(coordinate, segment) {
 
 
 /**
+ * Returns a {@link ol.CoordinateFormatType} function that can be used to format
+ * a {ol.Coordinate} to a string.
+ *
+ * Example without specifying the fractional digits:
+ *
+ *     var coord = [7.85, 47.983333];
+ *     var stringifyFunc = ol.coordinate.createStringXY();
+ *     var out = stringifyFunc(coord);
+ *     // out is now '8, 48'
+ *
+ * Example with explicitly specifying 2 fractional digits:
+ *
+ *     var coord = [7.85, 47.983333];
+ *     var stringifyFunc = ol.coordinate.createStringXY(2);
+ *     var out = stringifyFunc(coord);
+ *     // out is now '7.85, 47.98'
+ *
  * @param {number=} opt_fractionDigits The number of digits to include
  *    after the decimal point. Default is `0`.
  * @return {ol.CoordinateFormatType} Coordinate format.
@@ -122,6 +145,24 @@ ol.coordinate.degreesToStringHDMS_ = function(degrees, hemispheres) {
 
 
 /**
+ * Transforms the given {@link ol.Coordinate} to a string using the given string
+ * template. The strings `{x}` and `{y}` in the template will be replaced with
+ * the first and second coordinate values respectively.
+ *
+ * Example without specifying the fractional digits:
+ *
+ *     var coord = [7.85, 47.983333];
+ *     var template = 'Coordinate is ({x}|{y}).';
+ *     var out = ol.coordinate.format(coord, template);
+ *     // out is now 'Coordinate is (8|48).'
+ *
+ * Example explicitly specifying the fractional digits:
+ *
+ *     var coord = [7.85, 47.983333];
+ *     var template = 'Coordinate is ({x}|{y}).';
+ *     var out = ol.coordinate.format(coord, template, 2);
+ *     // out is now 'Coordinate is (7.85|47.98).'
+ *
  * @param {ol.Coordinate|undefined} coordinate Coordinate.
  * @param {string} template A template string with `{x}` and `{y}` placeholders
  *     that will be replaced by first and second coordinate values.
@@ -162,6 +203,13 @@ ol.coordinate.equals = function(coordinate1, coordinate2) {
  * Rotate `coordinate` by `angle`. `coordinate` is modified in place and
  * returned by the function.
  *
+ * Example:
+ *
+ *     var coord = [7.85, 47.983333];
+ *     var rotateRadians = Math.PI / 2; // 90 degrees
+ *     ol.coordinate.rotate(coord, rotateRadians);
+ *     // coord is now [-47.983333, 7.85]
+ *
  * @param {ol.Coordinate} coordinate Coordinate.
  * @param {number} angle Angle in radian.
  * @return {ol.Coordinate} Coordinate.
@@ -181,6 +229,13 @@ ol.coordinate.rotate = function(coordinate, angle) {
 /**
  * Scale `coordinate` by `scale`. `coordinate` is modified in place and returned
  * by the function.
+ *
+ * Example:
+ *
+ *     var coord = [7.85, 47.983333];
+ *     var scale = 1.2;
+ *     ol.coordinate.scale(coord, scale);
+ *     // coord is now [9.42, 57.5799996]
  *
  * @param {ol.Coordinate} coordinate Coordinate.
  * @param {number} scale Scale factor.
@@ -234,6 +289,12 @@ ol.coordinate.squaredDistanceToSegment = function(coordinate, segment) {
 
 
 /**
+ * Example:
+ *
+ *     var coord = [7.85, 47.983333];
+ *     var out = ol.coordinate.toStringHDMS(coord);
+ *     // out is now '47° 59′ 0″ N 7° 51′ 0″ E'
+ *
  * @param {ol.Coordinate|undefined} coordinate Coordinate.
  * @return {string} Hemisphere, degrees, minutes and seconds.
  * @api
@@ -249,6 +310,18 @@ ol.coordinate.toStringHDMS = function(coordinate) {
 
 
 /**
+ * Example without specifying fractional digits:
+ *
+ *     var coord = [7.85, 47.983333];
+ *     var out = ol.coordinate.toStringXY(coord);
+ *     // out is now '8, 48'
+ *
+ * Example explicitly specifying 1 fractional digit:
+ *
+ *     var coord = [7.85, 47.983333];
+ *     var out = ol.coordinate.toStringXY(coord, 1);
+ *     // out is now '7.8, 48.0'
+ *
  * @param {ol.Coordinate|undefined} coordinate Coordinate.
  * @param {number=} opt_fractionDigits The number of digits to include
  *    after the decimal point. Default is `0`.
@@ -262,6 +335,15 @@ ol.coordinate.toStringXY = function(coordinate, opt_fractionDigits) {
 
 /**
  * Create an ol.Coordinate from an Array and take into account axis order.
+ *
+ * Examples:
+ *
+ *     var northCoord = ol.coordinate.fromProjectedArray([1, 2], 'n');
+ *     // northCoord is now [2, 1]
+ *
+ *     var eastCoord = ol.coordinate.fromProjectedArray([1, 2], 'e');
+ *     // eastCoord is now [1, 2]
+ *
  * @param {Array} array The array with coordinates.
  * @param {string} axis the axis info.
  * @return {ol.Coordinate} The coordinate created.
