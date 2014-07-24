@@ -79,7 +79,7 @@ describe('ol.layer.Vector', function() {
       expect(layer.getStyleFunction()).to.be(ol.style.defaults.styleFunction);
       layer.setStyle(style);
       expect(layer.getStyleFunction()).not.to.be(
-          ol.feature.defaultStyleFunction);
+          ol.style.defaults.styleFunction);
     });
 
   });
