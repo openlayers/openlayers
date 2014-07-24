@@ -168,7 +168,11 @@ olx.MapOptions.prototype.layers;
 
 
 /**
- * The map logo. Default is `true`, showing ol3’s logo.
+ * The map logo. A logo to be displayed on the map at all times. If a string is
+ * provided, it will be set as the image source of the logo. If an object is
+ * provided, the `src` property should be the URL for an image and the `href`
+ * property should be a URL for creating a link. To disable the map logo, set
+ * the option to `false`. By default, the OpenLayers 3 logo is shown.
  * @type {boolean|string|Object|undefined}
  */
 olx.MapOptions.prototype.logo;
