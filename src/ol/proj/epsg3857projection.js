@@ -23,7 +23,8 @@ ol.proj.EPSG3857_ = function(code) {
     code: code,
     units: ol.proj.Units.METERS,
     extent: ol.proj.EPSG3857.EXTENT,
-    global: true
+    global: true,
+    worldExtent: ol.proj.EPSG3857.WORLD_EXTENT
   });
 };
 goog.inherits(ol.proj.EPSG3857_, ol.proj.Projection);
@@ -59,6 +60,13 @@ ol.proj.EPSG3857.EXTENT = [
   -ol.proj.EPSG3857.HALF_SIZE, -ol.proj.EPSG3857.HALF_SIZE,
   ol.proj.EPSG3857.HALF_SIZE, ol.proj.EPSG3857.HALF_SIZE
 ];
+
+
+/**
+ * @const
+ * @type {ol.Extent}
+ */
+ol.proj.EPSG3857.WORLD_EXTENT = [-180, -85, 180, 85];
 
 
 /**

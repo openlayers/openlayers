@@ -107,6 +107,41 @@ olx.LogoOptions;
 
 
 /**
+ * @typedef {{map: (ol.Map|undefined),
+ *     maxLines: (number|undefined),
+ *     targetSize: (number|undefined)}}
+ */
+olx.GraticuleOptions;
+
+
+/**
+ * Reference to an `ol.Map` object.
+ * @type {ol.Map|undefined}
+ */
+olx.GraticuleOptions.prototype.map;
+
+
+/**
+ * The maximum number of meridians and parallels from the center of the
+ * map. The default value is 100, which means that at most 200 meridians
+ * and 200 parallels will be displayed. The default value is appropriate
+ * for conformal projections like Spherical Mercator. If you increase
+ * the value more lines will be drawn and the drawing performance will
+ * decrease.
+ * @type {number|undefined}
+ */
+olx.GraticuleOptions.prototype.maxLines;
+
+
+/**
+ * The target size of the graticule cells, in pixels. Default
+ * value is 100 pixels.
+ * @type {number|undefined}
+ */
+olx.GraticuleOptions.prototype.targetSize;
+
+
+/**
  * Object literal with config options for the map.
  * @typedef {{controls: (ol.Collection|Array.<ol.control.Control>|undefined),
  *     deviceOptions: (olx.DeviceOptions|undefined),
@@ -293,7 +328,8 @@ olx.OverlayOptions.prototype.insertFirst;
  *     units: (ol.proj.Units|string),
  *     extent: (ol.Extent|undefined),
  *     axisOrientation: (string|undefined),
- *     global: (boolean|undefined)}}
+ *     global: (boolean|undefined),
+ *     worldExtent: (ol.Extent|undefined)}}
  * @api
  */
 olx.ProjectionOptions;
@@ -332,6 +368,13 @@ olx.ProjectionOptions.prototype.axisOrientation;
  * @type {boolean|undefined}
  */
 olx.ProjectionOptions.prototype.global;
+
+
+/**
+ * The world extent for the SRS.
+ * @type {ol.Extent|undefined}
+ */
+olx.ProjectionOptions.prototype.worldExtent;
 
 
 /**
