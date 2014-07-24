@@ -35,10 +35,10 @@ OL3 uses a similar object hierarchy to the Closure library. There is a top-level
 * simple objects containing static properties and methods, such as `ol.animation`; these also have a lower-case initial
 * types, which have an upper-case initial. These are mainly 'classes', which here means a constructor function with prototypal inheritance, such as `ol.Map` or `ol.layer.Vector` (the Vector class within the layer namespace). There are however other, simpler, types, such as `ol.Extent`, which is an array.
 
-In the API docs, the index on the left lists the namespaces and simple objects first, followed by the classes.
-
 Class namespaces, such as `ol.layer` have a base class type with the same name, such as `ol.layer.Layer`. These are mainly abstract classes, from which the other subclasses inherit.
 
 Source files are similarly organised, with a directory for each class namespace. Names are however all lower-case, and the subclasses repeat the superclass type in their name, for example, `ol/layer/vectorlayer.js`.
 
 The naming structure means that there are sometimes 2 objects with the same name but different initial, such as `ol.feature`, a simple object with static functions to be used with features, and `ol.Feature`, a class used to instantiate new features. These two objects are however stored in the same file, in this case, `ol/feature.js`
+
+OL3 follows the convention that the names of private properties and methods, that is, those that are not part of the API, end in an underscore. In general, instance properties are private and accessed using accessors.
