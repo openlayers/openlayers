@@ -23,7 +23,7 @@ ol.source.State = {
 /**
  * @typedef {{attributions: (Array.<ol.Attribution>|undefined),
  *            extent: (ol.Extent|undefined),
- *            logo: (string|Object|undefined),
+ *            logo: (string|olx.LogoOptions|undefined),
  *            projection: ol.proj.ProjectionLike,
  *            state: (ol.source.State|string|undefined)}}
  */
@@ -69,7 +69,7 @@ ol.source.Source = function(options) {
 
   /**
    * @private
-   * @type {string|Object|undefined}
+   * @type {string|olx.LogoOptions|undefined}
    */
   this.logo_ = options.logo;
 
@@ -115,7 +115,7 @@ ol.source.Source.prototype.getExtent = function() {
 
 
 /**
- * @return {string|Object|undefined} Logo.
+ * @return {string|olx.LogoOptions|undefined} Logo.
  */
 ol.source.Source.prototype.getLogo = function() {
   return this.logo_;
@@ -162,7 +162,7 @@ ol.source.Source.prototype.setExtent = function(extent) {
 
 
 /**
- * @param {string|Object|undefined} logo Logo.
+ * @param {string|olx.LogoOptions|undefined} logo Logo.
  */
 ol.source.Source.prototype.setLogo = function(logo) {
   this.logo_ = logo;
