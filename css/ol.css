@@ -219,6 +219,9 @@ button.ol-full-screen-true:after {
 .ol-attribution.ol-collapsed ul {
   display: none;
 }
+.ol-attribution.ol-logo-only ul {
+  display: block;
+}
 .ol-attribution:not(.ol-collapsed) {
   background: rgba(255,255,255,0.8);
 }
@@ -229,10 +232,17 @@ button.ol-full-screen-true:after {
   height: 1.1em;
   line-height: 1em;
 }
+.ol-attribution.ol-logo-only {
+  background: transparent;
+  bottom: .4em;
+  height: 1.1em;
+  line-height: 1em;
+}
 .ol-attribution.ol-uncollapsible img {
   margin-top: -.2em;
   max-height: 1.6em;
 }
+.ol-attribution.ol-logo-only button,
 .ol-attribution.ol-uncollapsible button {
   display: none;
 }
