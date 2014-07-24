@@ -46,16 +46,16 @@ ol.MapBrowserEvent = function(type, map, browserEvent, opt_frameState) {
   this.originalEvent = browserEvent.getBrowserEvent();
 
   /**
-   * @type {ol.Coordinate}
-   * @api
-   */
-  this.coordinate = map.getEventCoordinate(this.originalEvent);
-
-  /**
    * @type {ol.Pixel}
    * @api
    */
   this.pixel = map.getEventPixel(this.originalEvent);
+
+  /**
+   * @type {ol.Coordinate}
+   * @api
+   */
+  this.coordinate = map.getCoordinateFromPixel(this.pixel);
 
 };
 goog.inherits(ol.MapBrowserEvent, ol.MapEvent);
