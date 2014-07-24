@@ -20,7 +20,6 @@ ol.source.ImageCanvas = function(options) {
 
   goog.base(this, {
     attributions: options.attributions,
-    extent: options.extent,
     logo: options.logo,
     projection: options.projection,
     resolutions: options.resolutions,

@@ -44,6 +44,7 @@ ol.proj.addCoordinateTransforms('EPSG:4326', projection,
 var extent = [420000, 30000, 900000, 350000];
 var layers = [
   new ol.layer.Tile({
+    extent: extent,
     source: new ol.source.TileWMS({
       url: 'http://wms.geo.admin.ch/',
       crossOrigin: 'anonymous',
@@ -57,11 +58,11 @@ var layers = [
         'LAYERS': 'ch.swisstopo.pixelkarte-farbe-pk1000.noscale',
         'FORMAT': 'image/jpeg'
       },
-      extent: extent,
       serverType: 'mapserver'
     })
   }),
   new ol.layer.Tile({
+    extent: extent,
     source: new ol.source.TileWMS({
       url: 'http://wms.geo.admin.ch/',
       crossOrigin: 'anonymous',
@@ -72,7 +73,6 @@ var layers = [
             'National parks / geo.admin.ch</a>'
       })],
       params: {'LAYERS': 'ch.bafu.schutzgebiete-paerke_nationaler_bedeutung'},
-      extent: extent,
       serverType: 'mapserver'
     })
   })

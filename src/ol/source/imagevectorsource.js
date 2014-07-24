@@ -75,7 +75,6 @@ ol.source.ImageVector = function(options) {
   goog.base(this, {
     attributions: options.attributions,
     canvasFunction: goog.bind(this.canvasFunctionInternal_, this),
-    extent: options.extent,
     logo: options.logo,
     projection: options.projection,
     ratio: options.ratio,

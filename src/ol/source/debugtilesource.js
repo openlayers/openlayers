@@ -89,7 +89,6 @@ ol.DebugTile_.prototype.getImage = function(opt_context) {
 ol.source.TileDebug = function(options) {
 
   goog.base(this, {
-    extent: options.extent,
     opaque: false,
     projection: options.projection,
     tileGrid: options.tileGrid

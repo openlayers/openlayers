@@ -22,7 +22,6 @@ ol.source.State = {
 
 /**
  * @typedef {{attributions: (Array.<ol.Attribution>|undefined),
- *            extent: (ol.Extent|undefined),
  *            logo: (string|olx.LogoOptions|undefined),
  *            projection: ol.proj.ProjectionLike,
  *            state: (ol.source.State|string|undefined)}}
@@ -51,14 +50,6 @@ ol.source.Source = function(options) {
    * @type {ol.proj.Projection}
    */
   this.projection_ = ol.proj.get(options.projection);
-
-  /**
-   * @private
-   * @type {ol.Extent}
-   */
-  this.extent_ = goog.isDef(options.extent) ?
-      options.extent : goog.isDef(options.projection) ?
-          this.projection_.getExtent() : null;
 
   /**
    * @private
@@ -107,14 +98,6 @@ ol.source.Source.prototype.getAttributions = function() {
 
 
 /**
- * @return {ol.Extent} Extent.
- */
-ol.source.Source.prototype.getExtent = function() {
-  return this.extent_;
-};
-
-
-/**
  * @return {string|olx.LogoOptions|undefined} Logo.
  */
 ol.source.Source.prototype.getLogo = function() {
@@ -150,14 +133,6 @@ ol.source.Source.prototype.getState = function() {
  */
 ol.source.Source.prototype.setAttributions = function(attributions) {
   this.attributions_ = attributions;
-};
-
-
-/**
- * @param {ol.Extent} extent Extent.
- */
-ol.source.Source.prototype.setExtent = function(extent) {
-  this.extent_ = extent;
 };
 
 
