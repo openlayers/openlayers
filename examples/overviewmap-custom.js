@@ -1,10 +1,10 @@
 goog.require('ol.Map');
-goog.require('ol.View2D');
+goog.require('ol.View');
 goog.require('ol.layer.Tile');
 goog.require('ol.source.OSM');
 
 // main map
-var mainView = new ol.View2D({
+var mainView = new ol.View({
   zoom: 2
 });
 var map = new ol.Map({
@@ -19,7 +19,7 @@ var map = new ol.Map({
 });
 
 // overview map
-var overviewView = new ol.View2D();
+var overviewView = new ol.View();
 var overviewMap = new ol.Map({
   controls: [],
   target: 'overviewmap',
