@@ -41,6 +41,12 @@ ga.Tooltip = function() {
   goog.base(this);
 
   /**
+   * To enable and disable the gaTooltip programmatically.
+   * @type {boolean}
+   */
+  this.enabled = true;
+
+  /**
    * @type {ol.Map}
    */
   this.map_ = null;
@@ -138,7 +144,7 @@ ga.Tooltip.prototype.handleClick_ = function(mapBrowserEvent) {
       layerList.push(layer.id);
     }
   }
-  if (layerList.length > 0) {
+  if (layerList.length > 0 && this.enabled) {
   
     var payload = {
       'geometryType': 'esriGeometryPoint',
@@ -294,4 +300,15 @@ ga.Tooltip.prototype.setMap = function(map) {
     map.addOverlay(this.overlay_);
   }
   this.map_ = map;
+};
+
+/**
+ * Enable and disable the Tooltip and Highlighting
+ */
+ga.Tooltip.prototype.enable = function() {
+  this.enabled = true;
+};
+ga.Tooltip.prototype.disable = function() {
+  this.enabled = false;
+  this.hidePopup();
 };
