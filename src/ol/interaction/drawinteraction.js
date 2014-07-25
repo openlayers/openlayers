@@ -177,7 +177,7 @@ ol.interaction.Draw = function(options) {
   this.squaredClickTolerance_ = 4;
 
   /**
-   * Draw overlay where are sketch features are drawn.
+   * Draw overlay where our sketch features are drawn.
    * @type {ol.FeatureOverlay}
    * @private
    */
