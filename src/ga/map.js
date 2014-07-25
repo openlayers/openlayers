@@ -104,13 +104,15 @@ ga.Map = function(options) {
   this.geocoderCrossElement_ = null;
   this.geocoderOverlay_ = null;
   this.createGeocoderDialog_();
-  
+
+  // gaTooltip
+  this.gaTooltip_ = null;
   options.tooltip = goog.isDefAndNotNull(options.tooltip) ? options.tooltip : true;
-  
+
   if (options.tooltip) {
-    var tooltip = new ga.Tooltip();
-    tooltip.setMap(this);
-    this.registerDisposable(tooltip);
+    this.gaTooltip_ = new ga.Tooltip();
+    this.gaTooltip_.setMap(this);
+    this.registerDisposable(this.gaTooltip_);
   }
 };
 goog.inherits(ga.Map, ol.Map);
@@ -312,5 +314,25 @@ ga.Map.prototype.addCross_ = function(center) {
 ga.Map.prototype.removeCross_ = function() {
   if (this.geocoderOverlay_) {
     this.removeOverlay(this.geocoderOverlay_);
+  }
+};
+
+/**
+ * Disable the ga.Tooltip
+ * @todo api
+ */
+ga.Map.prototype.enableTooltip = function() {
+  if (!goog.isNull(this.gaTooltip_)) {
+    this.gaTooltip_.enable();
+  }
+};
+
+/**
+ * Disable the ga.Tooltip
+ * @todo api
+ */
+ga.Map.prototype.disableTooltip = function() {
+  if (!goog.isNull(this.gaTooltip_)) {
+    this.gaTooltip_.disable();
   }
 };
