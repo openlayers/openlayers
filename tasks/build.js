@@ -218,10 +218,13 @@ function addFileHeader(compiledSource, callback) {
     }
     var fileHeader = 
           '// OpenLayers 3. See http://ol3.js.org/\n' +
-          '// Version: ' + version;
+          '// Version: ' + version +
+          '// Compiled with Closure library ' +
+          path.basename(closure.getLibraryPath()) + '\n' +
+          '// and compiler ' + path.basename(closure.getCompilerPath()) + '\n';
     callback(null, fileHeader + compiledSource);
   });
-};
+}
 
 
 /**
