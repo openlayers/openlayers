@@ -58,7 +58,7 @@
       "es5Strict"
     ],
     "compilation_level": "ADVANCED",
-    "output_wrapper": "// OpenLayers 3. See http://ol3.js.org/\n(function(){%output%})();",
+    "output_wrapper": "(function(){%output%})();",
     "use_types_for_optimization": true,
     "manage_closure_dependencies": true
   }

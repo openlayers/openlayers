@@ -9,6 +9,7 @@ var fse = require('fs-extra');
 var fs = require('graceful-fs');
 var nomnom = require('nomnom');
 var temp = require('temp').track();
+var exec = require('child_process').exec;
 
 var generateExports = require('./generate-exports');
 
@@ -204,6 +205,39 @@ function main(config, callback) {
 
 
 /**
+ * Adds a file header with the most recent Git tag.
+ * @param {String} compiledSource The compiled library.
+ * @param {function(Error, sourcesWithHeader)} callback Called with the output
+ *     ready to be written into a file, or any error.
+ */
+function addFileHeader(compiledSource, callback) {
+  exec('git describe --tags', function (error, stdout, stderr) {
+    var version = '\n';
+    if (stdout !== '') {
+      version = stdout;
+    }
+    var fileHeader = 
+          '// OpenLayers 3. See http://ol3.js.org/\n' +
+          '// Version: ' + version;
+    callback(null, fileHeader + compiledSource);
+  });
+};
+
+
+/**
+ * Write the compiled library to a file.
+ * @param {String} compiledSource The compiled library.
+ * @param {function(Error)} callback Called with an error if any.
+ */
+function writeOutputfile(compiledSource, callback) {
+  async.waterfall([
+    addFileHeader.bind(null, compiledSource),
+    fse.outputFile.bind(fse, options.output)
+  ], callback);
+}
+
+
+/**
  * If running this module directly, read the config file and call the main
  * function.
  */
@@ -238,7 +272,7 @@ if (require.main === module) {
   async.waterfall([
     readConfig.bind(null, options.config),
     main,
-    fse.outputFile.bind(fse, options.output)
+    writeOutputfile
   ], function(err) {
     if (err) {
       log.error(err.message);
