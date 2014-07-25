@@ -77,10 +77,10 @@ var buildingStyle = [
   new ol.style.Style({
     fill: new ol.style.Fill({
       color: '#666',
-      opacity: .4
+      opacity: 0.4
     }),
     stroke: new ol.style.Stroke({
-      color: '#FFF',
+      color: '#444',
       width: 1
     })
   })
@@ -97,8 +97,9 @@ var buildingLayer = new ol.layer.Vector({
     url: 'http://{a-c}.tile.openstreetmap.us/' +
         'vectiles-buildings/{z}/{x}/{y}.topojson'
   }),
+  visible: false,
   style: function(f, resolution) {
-    return (resolution < 5) ? buildingStyle : [];
+    return (resolution < 10) ? buildingStyle : [];
   }
 });
 
@@ -115,6 +116,7 @@ var landuseLayer = new ol.layer.Vector({
     url: 'http://{a-c}.tile.openstreetmap.us/' +
         'vectiles-land-usages/{z}/{x}/{y}.topojson'
   }),
+  visible: false,
   style: function(feature, resolution) {
     var kind = feature.get('kind');
     var styleKey = kind;
@@ -140,7 +142,7 @@ var landuseLayer = new ol.layer.Vector({
         }),
         fill: new ol.style.Fill({
           color: color,
-          opacity: .5
+          opacity: 0.5
         })
       })];
       landuseStyleCache[styleKey] = styleArray;
@@ -158,4 +160,14 @@ var map = new ol.Map({
     maxZoom: 19,
     zoom: 15
   })
+});
+
+$('input[type=checkbox]').on('change', function() {
+  var layer = {
+    landuse: landuseLayer,
+    buildings: buildingLayer,
+    water: waterLayer,
+    roads: roadLayer
+  }[$(this).attr('id')];
+  layer.setVisible(!layer.getVisible());
 });
