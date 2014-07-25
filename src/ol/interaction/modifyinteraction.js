@@ -769,7 +769,7 @@ ol.interaction.Modify.prototype.updateSegmentIndices_ = function(
 
 
 /**
- * @return {ol.feature.StyleFunction} Styles.
+ * @return {ol.style.StyleFunction} Styles.
  */
 ol.interaction.Modify.getDefaultStyleFunction = function() {
   var style = ol.feature.createDefaultEditingStyles();

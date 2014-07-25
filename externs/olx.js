@@ -1718,7 +1718,7 @@ olx.interaction.DragZoomOptions.prototype.style;
  *     snapTolerance: (number|undefined),
  *     type: ol.geom.GeometryType,
  *     minPointsPerRing: (number|undefined),
- *     style: (ol.style.Style|Array.<ol.style.Style>|ol.feature.StyleFunction|undefined),
+ *     style: (ol.style.Style|Array.<ol.style.Style>|ol.style.StyleFunction|undefined),
  *     geometryName: (string|undefined),
  *     condition: (ol.events.ConditionType|undefined)}}
  * @api
@@ -1765,7 +1765,7 @@ olx.interaction.DrawOptions.prototype.minPointsPerRing;
 
 /**
  * Style for sketch features.
- * @type {ol.style.Style|Array.<ol.style.Style>|ol.feature.StyleFunction|undefined}
+ * @type {ol.style.Style|Array.<ol.style.Style>|ol.style.StyleFunction|undefined}
  */
 olx.interaction.DrawOptions.prototype.style;
 
@@ -1846,7 +1846,7 @@ olx.interaction.KeyboardZoomOptions.prototype.delta;
 /**
  * @typedef {{deleteCondition: (ol.events.ConditionType|undefined),
  *     pixelTolerance: (number|undefined),
- *     style: (ol.style.Style|Array.<ol.style.Style>|ol.feature.StyleFunction|undefined),
+ *     style: (ol.style.Style|Array.<ol.style.Style>|ol.style.StyleFunction|undefined),
  *     features: ol.Collection}}
  * @api
  */
@@ -1873,7 +1873,7 @@ olx.interaction.ModifyOptions.prototype.pixelTolerance;
 
 /**
  * FeatureOverlay style.
- * @type {ol.style.Style|Array.<ol.style.Style>|ol.feature.StyleFunction|undefined}
+ * @type {ol.style.Style|Array.<ol.style.Style>|ol.style.StyleFunction|undefined}
  */
 olx.interaction.ModifyOptions.prototype.style;
 
@@ -1931,7 +1931,7 @@ olx.interaction.PinchZoomOptions.prototype.duration;
  * @typedef {{addCondition: (ol.events.ConditionType|undefined),
  *     condition: (ol.events.ConditionType|undefined),
  *     layers: (Array.<ol.layer.Layer>|function(ol.layer.Layer): boolean|undefined),
- *     style: (ol.style.Style|Array.<ol.style.Style>|ol.feature.StyleFunction|undefined),
+ *     style: (ol.style.Style|Array.<ol.style.Style>|ol.style.StyleFunction|undefined),
  *     removeCondition: (ol.events.ConditionType|undefined),
  *     toggleCondition: (ol.events.ConditionType|undefined)}}
  * @api
@@ -1976,7 +1976,7 @@ olx.interaction.SelectOptions.prototype.layers;
 
 /**
  * Style for the selected features (those in the FeatureOverlay).
- * @type {ol.style.Style|Array.<ol.style.Style>|ol.feature.StyleFunction|undefined}
+ * @type {ol.style.Style|Array.<ol.style.Style>|ol.style.StyleFunction|undefined}
  */
 olx.interaction.SelectOptions.prototype.style;
 
@@ -2501,7 +2501,7 @@ olx.layer.TileOptions.prototype.useInterimTilesOnError;
  *     opacity: (number|undefined),
  *     saturation: (number|undefined),
  *     source: ol.source.Vector,
- *     style: (ol.style.Style|Array.<ol.style.Style>|ol.feature.StyleFunction|undefined),
+ *     style: (ol.style.Style|Array.<ol.style.Style>|ol.style.StyleFunction|undefined),
  *     visible: (boolean|undefined)}}
  * @api
  */
@@ -2583,7 +2583,7 @@ olx.layer.VectorOptions.prototype.source;
 
 /**
  * Layer style.
- * @type {ol.style.Style|Array.<ol.style.Style>|ol.feature.StyleFunction|undefined}
+ * @type {ol.style.Style|Array.<ol.style.Style>|ol.style.StyleFunction|undefined}
  */
 olx.layer.VectorOptions.prototype.style;
 
@@ -2598,7 +2598,7 @@ olx.layer.VectorOptions.prototype.visible;
 /**
  * @typedef {{features: (Array.<ol.Feature>|ol.Collection|undefined),
  *     map: (ol.Map|undefined),
- *     style: (ol.style.Style|Array.<ol.style.Style>|ol.feature.StyleFunction|undefined)}}
+ *     style: (ol.style.Style|Array.<ol.style.Style>|ol.style.StyleFunction|undefined)}}
  * @api
  */
 olx.FeatureOverlayOptions;
@@ -2620,7 +2620,7 @@ olx.FeatureOverlayOptions.prototype.map;
 
 /**
  * Feature style.
- * @type {ol.style.Style|Array.<ol.style.Style>|ol.feature.StyleFunction|undefined}
+ * @type {ol.style.Style|Array.<ol.style.Style>|ol.style.StyleFunction|undefined}
  */
 olx.FeatureOverlayOptions.prototype.style;
 
@@ -3549,7 +3549,7 @@ olx.source.ImageCanvasOptions.prototype.state;
  *     ratio: (number|undefined),
  *     resolutions: (Array.<number>|undefined),
  *     source: ol.source.Vector,
- *     style: (ol.style.Style|Array.<ol.style.Style>|ol.feature.StyleFunction|undefined)}}
+ *     style: (ol.style.Style|Array.<ol.style.Style>|ol.style.StyleFunction|undefined)}}
  * @api
  */
 olx.source.ImageVectorOptions;
@@ -3602,7 +3602,7 @@ olx.source.ImageVectorOptions.prototype.source;
 
 /**
  * Style to use when rendering features to the canvas.
- * @type {ol.style.Style|Array.<ol.style.Style>|ol.feature.StyleFunction|undefined}
+ * @type {ol.style.Style|Array.<ol.style.Style>|ol.style.StyleFunction|undefined}
  */
 olx.source.ImageVectorOptions.prototype.style;
 
