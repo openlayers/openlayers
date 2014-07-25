@@ -4,6 +4,7 @@ goog.require('ol.View');
 goog.require('ol.layer.Tile');
 goog.require('ol.proj');
 goog.require('ol.source.OSM');
+goog.require('ol.style.Stroke');
 
 
 var map = new ol.Map({
@@ -21,5 +22,12 @@ var map = new ol.Map({
 });
 
 // Create the graticule component
-var graticule = new ol.Graticule();
+var graticule = new ol.Graticule({
+  // the style to use for the lines, optional.
+  strokeStyle: new ol.style.Stroke({
+    color: 'rgba(255,120,0,0.9)',
+    width: 2,
+    lineDash: [0.5, 4]
+  })
+});
 graticule.setMap(map);
