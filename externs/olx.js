@@ -1300,6 +1300,25 @@ olx.format.GMLOptions.prototype.schemaLocation;
 
 
 /**
+ * @typedef {{readExtensions: (function(ol.Feature, Node)|undefined)}}
+ * @api
+ */
+olx.format.GPXOptions;
+
+
+/**
+ * Callback function to process `extensions` nodes.
+ * To prevent memory leaks, this callback function must
+ * not store any references to the node. Note that the `extensions`
+ * node is not allowed in GPX 1.0. Moreover, only `extensions`
+ * nodes from `wpt`, `rte` and `trk` can be processed, as those are
+ * directly mapped to a feature.
+ * @type {function(ol.Feature, Node)}
+ */
+olx.format.GPXOptions.prototype.readExtensions;
+
+
+/**
  * @typedef {{featureNS: string,
  *     featureType: string,
  *     schemaLocation: (string|undefined)}}

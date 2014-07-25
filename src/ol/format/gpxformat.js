@@ -21,10 +21,20 @@ goog.require('ol.xml');
  *
  * @constructor
  * @extends {ol.format.XMLFeature}
+ * @param {olx.format.GPXOptions=} opt_options Options.
  * @api
  */
-ol.format.GPX = function() {
+ol.format.GPX = function(opt_options) {
+
+  var options = goog.isDef(opt_options) ? opt_options : {};
+
   goog.base(this);
+
+  /**
+   * @type {function(ol.Feature, Node)|undefined}
+   * @private
+   */
+  this.readExtensions_ = options.readExtensions;
 };
 goog.inherits(ol.format.GPX, ol.format.XMLFeature);
 
@@ -85,6 +95,19 @@ ol.format.GPX.parseLink_ = function(node, objectStack) {
     goog.object.set(values, 'link', href);
   }
   ol.xml.parse(ol.format.GPX.LINK_PARSERS_, node, objectStack);
+};
+
+
+/**
+ * @param {Node} node Node.
+ * @param {Array.<*>} objectStack Object stack.
+ * @private
+ */
+ol.format.GPX.parseExtensions_ = function(node, objectStack) {
+  goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT);
+  goog.asserts.assert(node.localName == 'extensions');
+  var values = /** @type {Object} */ (objectStack[objectStack.length - 1]);
+  goog.object.set(values, 'extensionsNode_', node);
 };
 
 
@@ -275,6 +298,7 @@ ol.format.GPX.RTE_PARSERS_ = ol.xml.makeParsersNS(
       'link': ol.format.GPX.parseLink_,
       'number':
           ol.xml.makeObjectPropertySetter(ol.format.XSD.readNonNegativeInteger),
+      'extensions': ol.format.GPX.parseExtensions_,
       'type': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
       'rtept': ol.format.GPX.parseRtePt_
     });
@@ -307,6 +331,7 @@ ol.format.GPX.TRK_PARSERS_ = ol.xml.makeParsersNS(
       'number':
           ol.xml.makeObjectPropertySetter(ol.format.XSD.readNonNegativeInteger),
       'type': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
+      'extensions': ol.format.GPX.parseExtensions_,
       'trkseg': ol.format.GPX.parseTrkSeg_
     });
 
@@ -361,8 +386,28 @@ ol.format.GPX.WPT_PARSERS_ = ol.xml.makeParsersNS(
       'ageofdgpsdata':
           ol.xml.makeObjectPropertySetter(ol.format.XSD.readDecimal),
       'dgpsid':
-          ol.xml.makeObjectPropertySetter(ol.format.XSD.readNonNegativeInteger)
+          ol.xml.makeObjectPropertySetter(ol.format.XSD.readNonNegativeInteger),
+      'extensions': ol.format.GPX.parseExtensions_
     });
+
+
+/**
+ * @param {Array.<ol.Feature>} features
+ * @private
+ */
+ol.format.GPX.prototype.handleReadExtensions_ = function(features) {
+  if (goog.isNull(features)) {
+    features = [];
+  }
+  for (var i = 0, ii = features.length; i < ii; ++i) {
+    var feature = features[i];
+    if (goog.isDef(this.readExtensions_)) {
+      var extensionsNode = feature.get('extensionsNode_') || null;
+      this.readExtensions_(feature, extensionsNode);
+    }
+    feature.set('extensionsNode_', undefined);
+  }
+};
 
 
 /**
@@ -392,6 +437,7 @@ ol.format.GPX.prototype.readFeatureFromNode = function(node) {
   if (!goog.isDef(feature)) {
     return null;
   }
+  this.handleReadExtensions_([feature]);
   return feature;
 };
 
@@ -420,6 +466,7 @@ ol.format.GPX.prototype.readFeaturesFromNode = function(node) {
         /** @type {Array.<ol.Feature>} */ ([]), ol.format.GPX.GPX_PARSERS_,
         node, []);
     if (goog.isDef(features)) {
+      this.handleReadExtensions_(features);
       return features;
     } else {
       return [];
