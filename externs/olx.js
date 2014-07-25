@@ -693,6 +693,11 @@ olx.animation.ZoomOptions.prototype.duration;
  */
 olx.animation.ZoomOptions.prototype.easing;
 
+/**
+ * @typedef {{features: (Array.<ol.Feature>)
+ * }}
+ */
+olx.ClusterFeatureOptions;
 
 /**
  * @typedef {{className: (string|undefined),
@@ -2661,6 +2666,16 @@ olx.source.BingMapsOptions.prototype.imagerySet;
  * @type {ol.TileLoadFunctionType|undefined}
  */
 olx.source.BingMapsOptions.prototype.tileLoadFunction;
+
+/**
+ * @typedef {{attributions: (Array.<ol.Attribution>|undefined),
+ *     extent: (ol.Extent|undefined),
+ *     format: (ol.format.Feature|undefined),
+ *     logo: (string|undefined),
+ *     projection: ol.proj.ProjectionLike,
+ *	   source: (ol.source.Vector)}}
+ */
+olx.source.ClusterOptions;
 
 
 /**
