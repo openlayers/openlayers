@@ -114,6 +114,7 @@ ol.Graticule = function(opt_options) {
 /**
  * @type {ol.style.Stroke}
  * @private
+ * @const
  */
 ol.Graticule.defaultStrokeStyle_ = new ol.style.Stroke({
   color: 'rgba(0,0,0,0.2)'
