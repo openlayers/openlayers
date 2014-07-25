@@ -920,7 +920,7 @@ olx.control.MousePositionOptions.prototype.undefinedHTML;
  *     maximized: (boolean|undefined),
  *     maxRatio: (number|undefined),
  *     minRatio: (number|undefined),
- *     rotateBox (boolean|undefined)}}
+ *     rotateBox: (boolean|undefined)}}
  */
 olx.control.OverviewMapOptions;
 
