@@ -188,6 +188,23 @@ function build(config, paths, callback) {
 
 
 /**
+ * Adds a file header with the most recent Git tag.
+ * @param {string} compiledSource The compiled library.
+ * @param {function(Error, string)} callback Called with the output
+ *     ready to be written into a file, or any error.
+ */
+function addHeader(compiledSource, callback) {
+  exec('git describe --tags', function(error, stdout, stderr) {
+    var header = '// OpenLayers 3. See http://ol3.js.org/\n';
+    if (stdout !== '') {
+      header += '// Version: ' + stdout + '\n';
+    }
+    callback(null, header + compiledSource);
+  });
+}
+
+
+/**
  * Generate a build of the library.
  * @param {Object} config Build configuration object.  Must have an "exports"
  *     array and a "compile" object with options for the compiler.
@@ -199,40 +216,8 @@ function main(config, callback) {
     assertValidConfig.bind(null, config),
     generateExports.bind(null, config),
     getDependencies.bind(null, config),
-    build.bind(null, config)
-  ], callback);
-}
-
-
-/**
- * Adds a file header with the most recent Git tag.
- * @param {String} compiledSource The compiled library.
- * @param {function(Error, sourcesWithHeader)} callback Called with the output
- *     ready to be written into a file, or any error.
- */
-function addFileHeader(compiledSource, callback) {
-  exec('git describe --tags', function (error, stdout, stderr) {
-    var version = '\n';
-    if (stdout !== '') {
-      version = stdout;
-    }
-    var fileHeader = 
-          '// OpenLayers 3. See http://ol3.js.org/\n' +
-          '// Version: ' + version;
-    callback(null, fileHeader + compiledSource);
-  });
-};
-
-
-/**
- * Write the compiled library to a file.
- * @param {String} compiledSource The compiled library.
- * @param {function(Error)} callback Called with an error if any.
- */
-function writeOutputfile(compiledSource, callback) {
-  async.waterfall([
-    addFileHeader.bind(null, compiledSource),
-    fse.outputFile.bind(fse, options.output)
+    build.bind(null, config),
+    addHeader
   ], callback);
 }
 
@@ -272,7 +257,7 @@ if (require.main === module) {
   async.waterfall([
     readConfig.bind(null, options.config),
     main,
-    writeOutputfile
+    fse.outputFile.bind(fse, options.output)
   ], function(err) {
     if (err) {
       log.error(err.message);
