@@ -914,6 +914,69 @@ olx.control.MousePositionOptions.prototype.undefinedHTML;
 
 
 /**
+ * @typedef {{map: (ol.Map|undefined),
+ *     target: (Element|undefined),
+ *     layers: (Array.<ol.layer.Layer>|ol.Collection|undefined),
+ *     maximized: (boolean|undefined),
+ *     maxRatio: (number|undefined),
+ *     minRatio: (number|undefined),
+ *     rotateBox (boolean|undefined)}}
+ */
+olx.control.OverviewMapOptions;
+
+
+/**
+ * The map that this overview map is for.
+ * @type {ol.Map|undefined}
+ */
+olx.control.OverviewMapOptions.prototype.map;
+
+
+/**
+ * The target element for this overview map.
+ * @type {Element|undefined}
+ */
+olx.control.OverviewMapOptions.prototype.target;
+
+
+/**
+ * Layers for the overview map. If not set, then all main map layers are used
+ * instead.
+ * @type {Array.<ol.layer.Layer>|ol.Collection|undefined} 
+ */
+olx.control.OverviewMapOptions.prototype.layers;
+
+
+/**
+ * Start as maximized (visible). Defaults to false.
+ * @type {boolean|undefined}
+ */
+olx.control.OverviewMapOptions.prototype.maximized;
+
+
+/**
+ * Maximum extent ratio.
+ * @type {number|undefined}
+ */
+olx.control.OverviewMapOptions.prototype.maxRatio;
+
+
+/**
+ * Minimum extent ratio.
+ * @type {number|undefined}
+ */
+olx.control.OverviewMapOptions.prototype.minRatio;
+
+
+/**
+ * Whether to rotate the box when the main map rotation changes or the overview
+ * map instead. Defaults to false.
+ * @type {boolean|undefined}
+ */
+olx.control.OverviewMapOptions.prototype.rotateBox;
+
+
+/**
  * @typedef {{className: (string|undefined),
  *     minWidth: (number|undefined),
  *     target: (Element|undefined),
