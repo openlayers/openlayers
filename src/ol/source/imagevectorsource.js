@@ -10,7 +10,7 @@ goog.require('ol.render.canvas.ReplayGroup');
 goog.require('ol.renderer.vector');
 goog.require('ol.source.ImageCanvas');
 goog.require('ol.source.Vector');
-goog.require('ol.style.defaults');
+goog.require('ol.style.Style');
 goog.require('ol.vec.Mat4');
 
 
@@ -46,7 +46,7 @@ ol.source.ImageVector = function(options) {
    */
   this.styleFunction_ = goog.isDefAndNotNull(options.style) ?
       ol.style.createStyleFunction(options.style) :
-      ol.style.defaults.styleFunction;
+      ol.style.defaultStyleFunction;
 
   /**
    * @private

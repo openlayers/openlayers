@@ -76,10 +76,10 @@ describe('ol.layer.Vector', function() {
       var layer = new ol.layer.Vector({
         source: source
       });
-      expect(layer.getStyleFunction()).to.be(ol.style.defaults.styleFunction);
+      expect(layer.getStyleFunction()).to.be(ol.style.defaultStyleFunction);
       layer.setStyle(style);
       expect(layer.getStyleFunction()).not.to.be(
-          ol.style.defaults.styleFunction);
+          ol.style.defaultStyleFunction);
     });
 
   });
@@ -94,7 +94,7 @@ describe('ol.layer.Vector', function() {
         source: source
       });
 
-      expect(layer.getStyle()).to.be(ol.style.defaults.styleFunction);
+      expect(layer.getStyle()).to.be(ol.style.defaultStyleFunction);
 
       layer.setStyle(style);
       expect(layer.getStyle()).to.be(style);
@@ -118,4 +118,3 @@ goog.require('ol.layer.Layer');
 goog.require('ol.layer.Vector');
 goog.require('ol.source.Vector');
 goog.require('ol.style.Style');
-goog.require('ol.style.defaults');

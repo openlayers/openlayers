@@ -10,7 +10,7 @@ goog.require('ol.CollectionEventType');
 goog.require('ol.Feature');
 goog.require('ol.render.EventType');
 goog.require('ol.renderer.vector');
-goog.require('ol.style.defaults');
+goog.require('ol.style.Style');
 
 
 
@@ -74,7 +74,7 @@ ol.FeatureOverlay = function(opt_options) {
   this.styleFunction_ = undefined;
 
   this.setStyle(goog.isDef(options.style) ?
-      options.style : ol.style.defaults.styleFunction);
+      options.style : ol.style.defaultStyleFunction);
 
   if (goog.isDef(options.features)) {
     if (goog.isArray(options.features)) {
@@ -168,7 +168,7 @@ ol.FeatureOverlay.prototype.handleMapPostCompose_ = function(event) {
   }
   var styleFunction = this.styleFunction_;
   if (!goog.isDef(styleFunction)) {
-    styleFunction = ol.style.defaults.styleFunction;
+    styleFunction = ol.style.defaultStyleFunction;
   }
   var replayGroup = /** @type {ol.render.IReplayGroup} */
       (event.replayGroup);

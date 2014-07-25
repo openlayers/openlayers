@@ -3,7 +3,6 @@ goog.provide('ol.layer.Vector');
 goog.require('goog.object');
 goog.require('ol.layer.Layer');
 goog.require('ol.style.Style');
-goog.require('ol.style.defaults');
 
 
 /**
@@ -53,7 +52,7 @@ ol.layer.Vector = function(opt_options) {
   this.styleFunction_ = undefined;
 
   this.setStyle(goog.isDefAndNotNull(options.style) ?
-      options.style : ol.style.defaults.styleFunction);
+      options.style : ol.style.defaultStyleFunction);
 
 };
 goog.inherits(ol.layer.Vector, ol.layer.Layer);
