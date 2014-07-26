@@ -294,7 +294,7 @@ ol.format.WKT.prototype.readProjectionFromText = function(text) {
  *
  * @function
  * @param {ol.Feature} feature Feature.
- * @return {ArrayBuffer|Node|Object|string} Result.
+ * @return {string} WKT string.
  * @api
  */
 ol.format.WKT.prototype.writeFeature;
@@ -317,7 +317,7 @@ ol.format.WKT.prototype.writeFeatureText = function(feature) {
  *
  * @function
  * @param {Array.<ol.Feature>} features Features.
- * @return {ArrayBuffer|Node|Object|string} Result.
+ * @return {string} WKT string.
  * @api
  */
 ol.format.WKT.prototype.writeFeatures;
@@ -344,7 +344,7 @@ ol.format.WKT.prototype.writeFeaturesText = function(features) {
  *
  * @function
  * @param {ol.geom.Geometry} geometry Geometry.
- * @return {ArrayBuffer|Node|Object|string} Node.
+ * @return {string} WKT string.
  * @api
  */
 ol.format.WKT.prototype.writeGeometry;
