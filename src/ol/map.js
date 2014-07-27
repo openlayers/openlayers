@@ -120,8 +120,8 @@ ol.MapProperty = {
 
 /**
  * @classdesc
- * The map is the core component of OpenLayers. In its minimal configuration it
- * needs a view, one or more layers, and a target container:
+ * The map is the core component of OpenLayers. For a map to render, a view,
+ * one or more layers, and a target container are needed:
  *
  *     var map = new ol.Map({
  *       view: new ol.View({
