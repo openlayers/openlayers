@@ -483,6 +483,10 @@ ol.source.Vector.prototype.removeFromIdIndex_ = function(feature) {
 
 
 /**
+ * @classdesc
+ * Events emitted by {@link ol.source.Vector} instances are instances of this
+ * type.
+ *
  * @constructor
  * @extends {goog.events.Event}
  * @implements {oli.source.VectorEvent}

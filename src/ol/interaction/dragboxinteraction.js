@@ -43,7 +43,8 @@ ol.DragBoxEventType = {
 
 /**
  * @classdesc
- * Object representing a dragbox event.
+ * Events emitted by {@link ol.interaction.DragBox} instances are instances of
+ * this type.
  *
  * @param {string} type The event type.
  * @param {ol.Coordinate} coordinate The event coordinate.

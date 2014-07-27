@@ -36,7 +36,8 @@ ol.ObjectEventType = {
 
 
 /**
- * Object representing a property change event.
+ * @classdesc
+ * Events emitted by {@link ol.Object} instances are instances of this type.
  *
  * @param {string} type The event type.
  * @param {string} key The property name.
