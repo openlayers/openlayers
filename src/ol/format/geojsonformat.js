@@ -72,12 +72,10 @@ ol.format.GeoJSON.readGeometry_ = function(object, opt_options) {
   if (goog.isNull(object)) {
     return null;
   }
-  var featureProjection = goog.isDef(opt_options) &&
-      goog.isDef(opt_options.featureProjection) ?
-          ol.proj.get(opt_options.featureProjection) : null;
-  var dataProjection = goog.isDef(opt_options) &&
-      goog.isDef(opt_options.dataProjection) ?
-          ol.proj.get(opt_options.dataProjection) : null;
+  var featureProjection = goog.isDef(opt_options) ?
+      ol.proj.get(opt_options.featureProjection) : null;
+  var dataProjection = goog.isDef(opt_options) ?
+      ol.proj.get(opt_options.dataProjection) : null;
   var geometryReader = ol.format.GeoJSON.GEOMETRY_READERS_[object.type];
   goog.asserts.assert(goog.isDef(geometryReader));
   var geometry = geometryReader(object);
@@ -187,9 +185,8 @@ ol.format.GeoJSON.writeGeometry_ = function(geometry, opt_options) {
   goog.asserts.assert(goog.isDef(geometryWriter));
   var featureProjection = goog.isDef(opt_options) ?
       ol.proj.get(opt_options.featureProjection) : null;
-  var dataProjection = goog.isDef(opt_options) &&
-      goog.isDef(opt_options.dataProjection) ?
-          ol.proj.get(opt_options.dataProjection) : featureProjection;
+  var dataProjection = goog.isDef(opt_options) ?
+      ol.proj.get(opt_options.dataProjection) : featureProjection;
   if (!goog.isNull(featureProjection) && !goog.isNull(dataProjection) &&
       !ol.proj.equivalent(featureProjection, dataProjection)) {
     return geometryWriter(
