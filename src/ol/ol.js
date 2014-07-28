@@ -4,6 +4,23 @@ goog.provide('ol');
 
 
 /**
+ * The version number of the library.
+ *
+ * @type {string}
+ * @const
+ * @api
+ */
+ol.version = (function() {
+  var major = 3,
+      minor = 0,
+      patch = 0,
+      label = 'gamma.4.dev';
+  return 'v' + major + '.' + minor + '.' + patch + (label ? '-' + label : '');
+})();
+
+
+
+/**
  * Constants defined with the define tag cannot be changed in application
  * code, but can be set at compile time.
  * Some reduce the size of the build in advanced compile mode.
