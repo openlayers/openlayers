@@ -1152,16 +1152,16 @@ olx.format.ReadOptions;
 
 
 /**
- * Projection of the data we are reading. Default is the projection derived from
- *     the data.
+ * Projection of the data we are reading. If not provided, the projection will
+ * be derived from the data (where possible).
  * @type {ol.proj.ProjectionLike|undefined}
  */
 olx.format.ReadOptions.prototype.dataProjection;
 
 
 /**
- * Projection of the feature geometries created by the format reader. Default
- * is the `dataProjection`.
+ * Projection of the feature geometries created by the format reader. if not
+ * provided, features will be returned in the `dataProjection`.
  * @type {ol.proj.ProjectionLike|undefined}
  */
 olx.format.ReadOptions.prototype.featureProjection;
@@ -1175,7 +1175,8 @@ olx.format.WriteOptions;
 
 
 /**
- * Projection of the data we are writing. Default is the `featureProjection`.
+ * Projection of the data we are writing. If not provided, features will be
+ * written in the `featureProjection`.
  * @type {ol.proj.ProjectionLike|undefined}
  */
 olx.format.WriteOptions.prototype.dataProjection;
