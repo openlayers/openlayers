@@ -693,6 +693,19 @@ olx.animation.ZoomOptions.prototype.duration;
  */
 olx.animation.ZoomOptions.prototype.easing;
 
+/**
+ * @typedef {{features: (Array.<ol.Feature>)}}
+ * @api
+ */
+olx.ClusterFeatureOptions;
+
+
+/**
+ * Features.
+ * @type {Array.<ol.Feature>}
+ */
+olx.ClusterFeatureOptions.prototype.features;
+
 
 /**
  * @typedef {{className: (string|undefined),
@@ -2680,6 +2693,51 @@ olx.source.BingMapsOptions.prototype.imagerySet;
  * @type {ol.TileLoadFunctionType|undefined}
  */
 olx.source.BingMapsOptions.prototype.tileLoadFunction;
+
+/**
+ * @typedef {{attributions: (Array.<ol.Attribution>|undefined),
+ *     format: (ol.format.Feature|undefined),
+ *     logo: (string|undefined),
+ *     projection: ol.proj.ProjectionLike,
+ *     source: ol.source.Vector}}
+ * @api
+ */
+olx.source.ClusterOptions;
+
+
+/**
+ * Attributions.
+ * @type {Array.<ol.Attribution>|undefined}
+ */
+olx.source.ClusterOptions.prototype.attributions;
+
+
+/**
+ * Format.
+ * @type {ol.format.Feature|undefined}
+ */
+olx.source.ClusterOptions.prototype.format;
+
+
+/**
+ * Logo.
+ * @type {string|undefined}
+ */
+olx.source.ClusterOptions.prototype.logo;
+
+
+/**
+ * Projection.
+ * @type {ol.proj.ProjectionLike}
+ */
+olx.source.ClusterOptions.prototype.projection;
+
+
+/**
+ * Source.
+ * @type {ol.source.Vector}
+ */
+olx.source.ClusterOptions.prototype.source;
 
 
 /**
