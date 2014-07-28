@@ -2,7 +2,7 @@ goog.provide('ol.test.Map');
 
 describe('ol.Map', function() {
 
-  describe('contstructor', function() {
+  describe('constructor', function() {
     it('creates a new map', function() {
       var map = new ol.Map({});
       expect(map).to.be.a(ol.Map);
