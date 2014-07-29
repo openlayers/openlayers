@@ -110,7 +110,7 @@ ol.color.asArray = function(color) {
 
 /**
  * @param {ol.Color|string} color Color.
- * @return {string} String.
+ * @return {string} Rgba string.
  * @api
  */
 ol.color.asString = function(color) {
