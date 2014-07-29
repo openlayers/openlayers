@@ -58,7 +58,7 @@ ol.source.MapGuide = function(options) {
    * @private
    * @type {Object}
    */
-  this.params_ = options.params;
+  this.params_ = goog.isDef(params) ? params : null;
 
   /**
    * @private
