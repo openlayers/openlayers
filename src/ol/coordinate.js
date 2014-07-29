@@ -1,5 +1,4 @@
 goog.provide('ol.Coordinate');
-goog.provide('ol.CoordinateArray');
 goog.provide('ol.CoordinateFormatType');
 goog.provide('ol.coordinate');
 
@@ -22,14 +21,6 @@ ol.CoordinateFormatType;
  * @api
  */
 ol.Coordinate;
-
-
-/**
- * An array of coordinate arrays.
- * @typedef {Array.<ol.Coordinate>}
- * @api
- */
-ol.CoordinateArray;
 
 
 /**
