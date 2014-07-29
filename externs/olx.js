@@ -2681,6 +2681,67 @@ olx.source.BingMapsOptions.prototype.imagerySet;
  */
 olx.source.BingMapsOptions.prototype.tileLoadFunction;
 
+/**
+ * @typedef {{attributions: (Array.<ol.Attribution>|undefined),
+ *     distance: (number|undefined),
+ *     extent: (ol.Extent|undefined),
+ *     format: (ol.format.Feature|undefined),
+ *     logo: (string|undefined),
+ *     projection: ol.proj.ProjectionLike,
+ *     source: ol.source.Vector}}
+ * @api
+ */
+olx.source.ClusterOptions;
+
+
+/**
+ * Attributions.
+ * @type {Array.<ol.Attribution>|undefined}
+ */
+olx.source.ClusterOptions.prototype.attributions;
+
+
+/**
+ * Minimum distance in pixels between clusters. Default is `20`.
+ * @type {number|undefined}
+ */
+olx.source.ClusterOptions.prototype.distance;
+
+
+/**
+ * Extent.
+ * @type {ol.Extent|undefined}
+ */
+olx.source.ClusterOptions.prototype.extent;
+
+
+/**
+ * Format.
+ * @type {ol.format.Feature|undefined}
+ */
+olx.source.ClusterOptions.prototype.format;
+
+
+/**
+ * Logo.
+ * @type {string|undefined}
+ */
+olx.source.ClusterOptions.prototype.logo;
+
+
+/**
+ * Projection.
+ * @type {ol.proj.ProjectionLike}
+ */
+olx.source.ClusterOptions.prototype.projection;
+
+
+/**
+ * Source.
+ * @type {ol.source.Vector}
+ */
+olx.source.ClusterOptions.prototype.source;
+
 
 /**
  * @typedef {{attributions: (Array.<ol.Attribution>|undefined),
