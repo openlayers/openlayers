@@ -605,8 +605,6 @@ ol.View.prototype.setHint = function(hint, delta) {
  * Set the projection of this view.
  * Warning! This code is not yet implemented. Function should not be used.
  * @param {ol.proj.Projection|undefined} projection The projection of the view.
- * @observable
- * @api
  */
 ol.View.prototype.setProjection = function(projection) {
   this.set(ol.ViewProperty.PROJECTION, projection);
