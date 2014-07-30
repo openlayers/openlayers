@@ -164,7 +164,7 @@ ol.format.GML.readGeometry = function(node, objectStack) {
   var geometry = ol.xml.pushParseAndPop(/** @type {ol.geom.Geometry} */(null),
       ol.format.GML.GEOMETRY_PARSERS_, node, objectStack);
   if (goog.isDefAndNotNull(geometry)) {
-    return ol.format.Feature.transformGeometry(geometry, false, context);
+    return ol.format.Feature.transformWithOptions(geometry, false, context);
   } else {
     return undefined;
   }
@@ -1040,12 +1040,8 @@ ol.format.GML.RING_PARSERS_ = {
  * @inheritDoc
  */
 ol.format.GML.prototype.readGeometryFromNode = function(node, opt_options) {
-  var obj = {};
-  if (goog.isDef(opt_options)) {
-    goog.object.extend(obj, opt_options);
-    //FIXME Get dataProjection from data
-  }
-  var geometry = ol.format.GML.readGeometry(node, [obj]);
+  var geometry = ol.format.GML.readGeometry(node,
+      [this.getReadOptions(node, goog.isDef(opt_options) ? opt_options : {})]);
   return (goog.isDef(geometry) ? geometry : null);
 };
 
@@ -1071,10 +1067,18 @@ ol.format.GML.prototype.readFeaturesFromNode = function(node, opt_options) {
     'featureNS': this.featureNS_
   };
   if (goog.isDef(opt_options)) {
-    goog.object.extend(options, opt_options);
-    //FIXME Get dataProjection from data
+    goog.object.extend(options, this.getReadOptions(node, opt_options));
   }
   return ol.format.GML.readFeatures_(node, [options]);
+};
+
+
+/**
+ * @inheritDoc
+ */
+ol.format.GML.prototype.readProjectionFromNode = function(node) {
+  //TODO read this from data
+  return ol.proj.get(this.srsName_);
 };
 
 
@@ -1455,11 +1459,21 @@ ol.format.GML.writeGeometry = function(node, geometry, objectStack) {
   goog.asserts.assert(goog.isObject(context));
   var item = goog.object.clone(context);
   item.node = node;
+  var value;
+  if (goog.isArray(geometry)) {
+    if (goog.isDef(context.dataProjection)) {
+      value = ol.proj.transformExtent(
+          geometry, context.featureProjection, context.dataProjection);
+    } else {
+      value = geometry;
+    }
+  } else {
+    goog.asserts.assertInstanceof(geometry, ol.geom.Geometry);
+    value = ol.format.Feature.transformWithOptions(geometry, true, context);
+  }
   ol.xml.pushSerializeAndPop(/** @type {ol.xml.NodeStackItem} */
       (item), ol.format.GML.GEOMETRY_SERIALIZERS_,
-      ol.format.GML.GEOMETRY_NODE_FACTORY_,
-      [ol.format.Feature.transformGeometry(geometry, true, context)],
-      objectStack);
+      ol.format.GML.GEOMETRY_NODE_FACTORY_, [value], objectStack);
 };
 
 

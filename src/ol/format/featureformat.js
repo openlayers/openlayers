@@ -27,6 +27,27 @@ ol.format.Feature.prototype.getExtensions = goog.abstractMethod;
 
 
 /**
+ * Adds the data projection to the read options.
+ * @param {Document|Node|Object|string} source Source.
+ * @param {olx.format.ReadOptions=} opt_options Options.
+ * @return {olx.format.ReadOptions|undefined} Options.
+ * @protected
+ */
+ol.format.Feature.prototype.getReadOptions = function(
+    source, opt_options) {
+  var options;
+  if (goog.isDef(opt_options)) {
+    options = {
+      dataProjection: goog.isDef(opt_options.dataProjection) ?
+          opt_options.dataProjection : this.readProjection(source),
+      featureProjection: opt_options.featureProjection
+    };
+  }
+  return options;
+};
+
+
+/**
  * @return {ol.format.FormatType} Format.
  */
 ol.format.Feature.prototype.getType = goog.abstractMethod;
@@ -103,13 +124,14 @@ ol.format.Feature.prototype.writeGeometry = goog.abstractMethod;
 
 /**
  * @param {ol.geom.Geometry} geometry Geometry.
- * @param {boolean} write Set to true for writing, false for reading.
+ * @param {boolean} write Set to true for writing, false for reading. For
+ *     writing, the geometry will be cloned before transforming.
  * @param {(olx.format.WriteOptions|olx.format.ReadOptions)=} opt_options
  *     Options.
  * @return {ol.geom.Geometry} Transformed geometry.
  * @protected
  */
-ol.format.Feature.transformGeometry = function(
+ol.format.Feature.transformWithOptions = function(
     geometry, write, opt_options) {
   var featureProjection = goog.isDef(opt_options) ?
       ol.proj.get(opt_options.featureProjection) : null;

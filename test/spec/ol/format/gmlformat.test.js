@@ -35,7 +35,6 @@ describe('ol.format.GML', function() {
 
       it('can read, transform and write a point geometry', function() {
         var config = {
-          dataProjection: 'CRS:84',
           featureProjection: 'EPSG:3857'
         };
         var text =
@@ -48,6 +47,7 @@ describe('ol.format.GML', function() {
         var coordinates = g.getCoordinates();
         expect(coordinates.splice(0, 2)).to.eql(
             ol.proj.transform([1, 2], 'CRS:84', 'EPSG:3857'));
+        config.dataProjection = 'CRS:84';
         var serialized = format.writeGeometry(g, config);
         var pos = serialized.firstElementChild.firstElementChild.textContent;
         var coordinate = pos.split(' ');

@@ -75,7 +75,7 @@ ol.format.GeoJSON.readGeometry_ = function(object, opt_options) {
   }
   var geometryReader = ol.format.GeoJSON.GEOMETRY_READERS_[object.type];
   goog.asserts.assert(goog.isDef(geometryReader));
-  return ol.format.Feature.transformGeometry(
+  return ol.format.Feature.transformWithOptions(
       geometryReader(object), false, opt_options);
 };
 
@@ -177,7 +177,7 @@ ol.format.GeoJSON.writeGeometry_ = function(geometry, opt_options) {
   var geometryWriter = ol.format.GeoJSON.GEOMETRY_WRITERS_[geometry.getType()];
   goog.asserts.assert(goog.isDef(geometryWriter));
   return geometryWriter(
-      ol.format.Feature.transformGeometry(geometry, true, opt_options));
+      ol.format.Feature.transformWithOptions(geometry, true, opt_options));
 };
 
 
