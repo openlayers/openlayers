@@ -174,6 +174,27 @@ describe('ol.format.GeoJSON', function() {
       expect(features[2].getGeometry()).to.be.an(ol.geom.Polygon);
     });
 
+    it('can read and transform a feature collection', function() {
+      var features = format.readFeatures(featureCollectionGeoJSON, {
+        featureProjection: 'EPSG:3857'
+      });
+      expect(features[0].getGeometry()).to.be.an(ol.geom.Point);
+      expect(features[0].getGeometry().getCoordinates()).to.eql(
+          ol.proj.transform([102.0, 0.5], 'EPSG:4326', 'EPSG:3857'));
+      expect(features[1].getGeometry().getCoordinates()).to.eql([
+        ol.proj.transform([102.0, 0.0], 'EPSG:4326', 'EPSG:3857'),
+        ol.proj.transform([103.0, 1.0], 'EPSG:4326', 'EPSG:3857'),
+        ol.proj.transform([104.0, 0.0], 'EPSG:4326', 'EPSG:3857'),
+        ol.proj.transform([105.0, 1.0], 'EPSG:4326', 'EPSG:3857')
+      ]);
+      expect(features[2].getGeometry().getCoordinates()).to.eql([[
+        ol.proj.transform([100.0, 0.0], 'EPSG:4326', 'EPSG:3857'),
+        ol.proj.transform([100.0, 1.0], 'EPSG:4326', 'EPSG:3857'),
+        ol.proj.transform([101.0, 1.0], 'EPSG:4326', 'EPSG:3857'),
+        ol.proj.transform([101.0, 0.0], 'EPSG:4326', 'EPSG:3857')
+      ]]);
+    });
+
     it('can create a feature with a specific geometryName', function() {
       var feature = new ol.format.GeoJSON({geometryName: 'the_geom'}).
           readFeature(pointGeoJSON);
