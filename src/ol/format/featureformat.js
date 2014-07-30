@@ -1,6 +1,7 @@
 goog.provide('ol.format.Feature');
 
 goog.require('goog.functions');
+goog.require('ol.proj');
 
 
 
@@ -98,3 +99,28 @@ ol.format.Feature.prototype.writeFeatures = goog.abstractMethod;
  * @return {ArrayBuffer|Node|Object|string} Node.
  */
 ol.format.Feature.prototype.writeGeometry = goog.abstractMethod;
+
+
+/**
+ * @param {ol.geom.Geometry} geometry Geometry.
+ * @param {boolean} write Set to true for writing, false for reading.
+ * @param {(olx.format.WriteOptions|olx.format.ReadOptions)=} opt_options
+ *     Options.
+ * @return {ol.geom.Geometry} Transformed geometry.
+ * @protected
+ */
+ol.format.Feature.transformGeometry = function(
+    geometry, write, opt_options) {
+  var featureProjection = goog.isDef(opt_options) ?
+      ol.proj.get(opt_options.featureProjection) : null;
+  var dataProjection = goog.isDef(opt_options) ?
+      ol.proj.get(opt_options.dataProjection) : null;
+  if (!goog.isNull(featureProjection) && !goog.isNull(dataProjection) &&
+      !ol.proj.equivalent(featureProjection, dataProjection)) {
+    return (write ? geometry.clone() : geometry).transform(
+        write ? featureProjection : dataProjection,
+        write ? dataProjection : featureProjection);
+  } else {
+    return geometry;
+  }
+};

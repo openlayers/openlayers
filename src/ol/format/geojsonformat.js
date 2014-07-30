@@ -7,6 +7,7 @@ goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('goog.object');
 goog.require('ol.Feature');
+goog.require('ol.format.Feature');
 goog.require('ol.format.JSONFeature');
 goog.require('ol.geom.GeometryCollection');
 goog.require('ol.geom.GeometryType');
@@ -72,18 +73,10 @@ ol.format.GeoJSON.readGeometry_ = function(object, opt_options) {
   if (goog.isNull(object)) {
     return null;
   }
-  var featureProjection = goog.isDef(opt_options) ?
-      ol.proj.get(opt_options.featureProjection) : null;
-  var dataProjection = goog.isDef(opt_options) ?
-      ol.proj.get(opt_options.dataProjection) : null;
   var geometryReader = ol.format.GeoJSON.GEOMETRY_READERS_[object.type];
   goog.asserts.assert(goog.isDef(geometryReader));
-  var geometry = geometryReader(object);
-  if (!goog.isNull(featureProjection) && !goog.isNull(dataProjection) &&
-      !ol.proj.equivalent(featureProjection, dataProjection)) {
-    geometry.transform(dataProjection, featureProjection);
-  }
-  return geometry;
+  return ol.format.Feature.transformGeometry(
+      geometryReader(object), false, opt_options);
 };
 
 
@@ -183,17 +176,8 @@ ol.format.GeoJSON.readPolygonGeometry_ = function(object) {
 ol.format.GeoJSON.writeGeometry_ = function(geometry, opt_options) {
   var geometryWriter = ol.format.GeoJSON.GEOMETRY_WRITERS_[geometry.getType()];
   goog.asserts.assert(goog.isDef(geometryWriter));
-  var featureProjection = goog.isDef(opt_options) ?
-      ol.proj.get(opt_options.featureProjection) : null;
-  var dataProjection = goog.isDef(opt_options) ?
-      ol.proj.get(opt_options.dataProjection) : featureProjection;
-  if (!goog.isNull(featureProjection) && !goog.isNull(dataProjection) &&
-      !ol.proj.equivalent(featureProjection, dataProjection)) {
-    return geometryWriter(
-        geometry.clone().transform(featureProjection, dataProjection));
-  } else {
-    return geometryWriter(geometry);
-  }
+  return geometryWriter(
+      ol.format.Feature.transformGeometry(geometry, true, opt_options));
 };
 
 
