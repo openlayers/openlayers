@@ -1,11 +1,11 @@
 goog.provide('ol.test.format.GML');
 
-var readGeometry = function(format, text) {
+var readGeometry = function(format, text, opt_options) {
   var doc = ol.xml.load(text);
   // we need an intermediate node for testing purposes
   var node = goog.dom.createElement(goog.dom.TagName.PRE);
   node.appendChild(doc.documentElement);
-  return format.readGeometryFromNode(node);
+  return format.readGeometryFromNode(node, opt_options);
 };
 
 describe('ol.format.GML', function() {
@@ -31,6 +31,28 @@ describe('ol.format.GML', function() {
         expect(g.getCoordinates()).to.eql([1, 2, 0]);
         var serialized = format.writeGeometry(g);
         expect(serialized.firstElementChild).to.xmleql(ol.xml.load(text));
+      });
+
+      it('can read, transform and write a point geometry', function() {
+        var config = {
+          dataProjection: 'CRS:84',
+          featureProjection: 'EPSG:3857'
+        };
+        var text =
+            '<gml:Point xmlns:gml="http://www.opengis.net/gml" ' +
+            '    srsName="CRS:84">' +
+            '  <gml:pos>1 2</gml:pos>' +
+            '</gml:Point>';
+        var g = readGeometry(format, text, config);
+        expect(g).to.be.an(ol.geom.Point);
+        var coordinates = g.getCoordinates();
+        expect(coordinates.splice(0, 2)).to.eql(
+            ol.proj.transform([1, 2], 'CRS:84', 'EPSG:3857'));
+        var serialized = format.writeGeometry(g, config);
+        var pos = serialized.firstElementChild.firstElementChild.textContent;
+        var coordinate = pos.split(' ');
+        expect(coordinate[0]).to.roughlyEqual(1, 1e-9);
+        expect(coordinate[1]).to.roughlyEqual(2, 1e-9);
       });
 
       it('can read and write a point geometry in EPSG:4326', function() {
@@ -61,6 +83,32 @@ describe('ol.format.GML', function() {
         expect(g.getCoordinates()).to.eql([[1, 2, 0], [3, 4, 0]]);
         var serialized = format.writeGeometry(g);
         expect(serialized.firstElementChild).to.xmleql(ol.xml.load(text));
+      });
+
+      it('can read, transform and write a linestring geometry', function() {
+        var config = {
+          dataProjection: 'CRS:84',
+          featureProjection: 'EPSG:3857'
+        };
+        var text =
+            '<gml:LineString xmlns:gml="http://www.opengis.net/gml" ' +
+            '    srsName="CRS:84">' +
+            '  <gml:posList>1 2 3 4</gml:posList>' +
+            '</gml:LineString>';
+        var g = readGeometry(format, text, config);
+        expect(g).to.be.an(ol.geom.LineString);
+        var coordinates = g.getCoordinates();
+        expect(coordinates[0].slice(0, 2)).to.eql(
+            ol.proj.transform([1, 2], 'CRS:84', 'EPSG:3857'));
+        expect(coordinates[1].slice(0, 2)).to.eql(
+            ol.proj.transform([3, 4], 'CRS:84', 'EPSG:3857'));
+        var serialized = format.writeGeometry(g, config);
+        var poss = serialized.firstElementChild.firstElementChild.textContent;
+        var coordinate = poss.split(' ');
+        expect(coordinate[0]).to.roughlyEqual(1, 1e-9);
+        expect(coordinate[1]).to.roughlyEqual(2, 1e-9);
+        expect(coordinate[2]).to.roughlyEqual(3, 1e-9);
+        expect(coordinate[3]).to.roughlyEqual(4, 1e-9);
       });
 
       it('can read and write a linestring geometry in EPSG:4326', function() {
@@ -779,7 +827,7 @@ describe('ol.format.GML', function() {
 
   describe('when parsing more than one geometry', function() {
 
-    var features, feature;
+    var features;
     before(function(done) {
       afterLoadText('spec/ol/format/gml/more-geoms.xml', function(xml) {
         try {
@@ -805,7 +853,7 @@ describe('ol.format.GML', function() {
 
   describe('when parsing an attribute name equal to featureType', function() {
 
-    var features, feature;
+    var features;
     before(function(done) {
       afterLoadText('spec/ol/format/gml/repeated-name.xml', function(xml) {
         try {
@@ -842,3 +890,4 @@ goog.require('ol.geom.MultiPolygon');
 goog.require('ol.xml');
 goog.require('ol.geom.Point');
 goog.require('ol.geom.Polygon');
+goog.require('ol.proj');

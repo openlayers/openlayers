@@ -1,3 +1,5 @@
+//FIXME Implement readProjectionFrom*
+
 goog.provide('ol.format.GML');
 
 goog.require('goog.asserts');
@@ -8,6 +10,7 @@ goog.require('goog.string');
 goog.require('ol.Feature');
 goog.require('ol.array');
 goog.require('ol.extent');
+goog.require('ol.format.Feature');
 goog.require('ol.format.XMLFeature');
 goog.require('ol.format.XSD');
 goog.require('ol.geom.Geometry');
@@ -161,7 +164,7 @@ ol.format.GML.readGeometry = function(node, objectStack) {
   var geometry = ol.xml.pushParseAndPop(/** @type {ol.geom.Geometry} */(null),
       ol.format.GML.GEOMETRY_PARSERS_, node, objectStack);
   if (goog.isDefAndNotNull(geometry)) {
-    return geometry;
+    return ol.format.Feature.transformGeometry(geometry, false, context);
   } else {
     return undefined;
   }
@@ -1036,9 +1039,14 @@ ol.format.GML.RING_PARSERS_ = {
 /**
  * @inheritDoc
  */
-ol.format.GML.prototype.readGeometryFromNode = function(node) {
-  var geometry = ol.format.GML.readGeometry(node, [{}]);
-  return (goog.isDef(geometry)) ? geometry : null;
+ol.format.GML.prototype.readGeometryFromNode = function(node, opt_options) {
+  var obj = {};
+  if (goog.isDef(opt_options)) {
+    goog.object.extend(obj, opt_options);
+    //FIXME Get dataProjection from data
+  }
+  var geometry = ol.format.GML.readGeometry(node, [obj]);
+  return (goog.isDef(geometry) ? geometry : null);
 };
 
 
@@ -1047,6 +1055,7 @@ ol.format.GML.prototype.readGeometryFromNode = function(node) {
  *
  * @function
  * @param {ArrayBuffer|Document|Node|Object|string} source Source.
+ * @param {olx.format.ReadOptions=} opt_options Options.
  * @return {Array.<ol.Feature>} Features.
  * @api
  */
@@ -1056,12 +1065,16 @@ ol.format.GML.prototype.readFeatures;
 /**
  * @inheritDoc
  */
-ol.format.GML.prototype.readFeaturesFromNode = function(node) {
-  var objectStack = [{
+ol.format.GML.prototype.readFeaturesFromNode = function(node, opt_options) {
+  var options = {
     'featureType': this.featureType_,
     'featureNS': this.featureNS_
-  }];
-  return ol.format.GML.readFeatures_(node, objectStack);
+  };
+  if (goog.isDef(opt_options)) {
+    goog.object.extend(options, opt_options);
+    //FIXME Get dataProjection from data
+  }
+  return ol.format.GML.readFeatures_(node, [options]);
 };
 
 
@@ -1444,7 +1457,9 @@ ol.format.GML.writeGeometry = function(node, geometry, objectStack) {
   item.node = node;
   ol.xml.pushSerializeAndPop(/** @type {ol.xml.NodeStackItem} */
       (item), ol.format.GML.GEOMETRY_SERIALIZERS_,
-      ol.format.GML.GEOMETRY_NODE_FACTORY_, [geometry], objectStack);
+      ol.format.GML.GEOMETRY_NODE_FACTORY_,
+      [ol.format.Feature.transformGeometry(geometry, true, context)],
+      objectStack);
 };
 
 
@@ -1672,14 +1687,15 @@ ol.format.GML.GEOMETRY_NODE_FACTORY_ = function(value, objectStack,
 /**
  * @inheritDoc
  */
-ol.format.GML.prototype.writeGeometryNode = function(geometry) {
+ol.format.GML.prototype.writeGeometryNode = function(geometry, opt_options) {
   var geom = ol.xml.createElementNS('http://www.opengis.net/gml', 'geom');
   var context = {node: geom, srsName: this.srsName_,
     curve: this.curve_, surface: this.surface_,
     multiSurface: this.multiSurface_, multiCurve: this.multiCurve_};
-  ol.xml.pushSerializeAndPop(/** @type {ol.xml.NodeStackItem} */
-      (context), ol.format.GML.GEOMETRY_SERIALIZERS_,
-      ol.format.GML.GEOMETRY_NODE_FACTORY_, [geometry], []);
+  if (goog.isDef(opt_options)) {
+    goog.object.extend(context, opt_options);
+  }
+  ol.format.GML.writeGeometry(geom, geometry, [context]);
   return geom;
 };
 
@@ -1689,6 +1705,7 @@ ol.format.GML.prototype.writeGeometryNode = function(geometry) {
  *
  * @function
  * @param {Array.<ol.Feature>} features Features.
+ * @param {olx.format.WriteOptions=} opt_options Options.
  * @return {Node} Result.
  * @api
  */
@@ -1698,7 +1715,7 @@ ol.format.GML.prototype.writeFeatures;
 /**
  * @inheritDoc
  */
-ol.format.GML.prototype.writeFeaturesNode = function(features) {
+ol.format.GML.prototype.writeFeaturesNode = function(features, opt_options) {
   var node = ol.xml.createElementNS('http://www.opengis.net/gml',
       'featureMembers');
   ol.xml.setAttributeNS(node, 'http://www.w3.org/2001/XMLSchema-instance',
@@ -1712,6 +1729,9 @@ ol.format.GML.prototype.writeFeaturesNode = function(features) {
     featureNS: this.featureNS_,
     featureType: this.featureType_
   };
+  if (goog.isDef(opt_options)) {
+    goog.object.extend(context, opt_options);
+  }
   ol.format.GML.writeFeatureMembers_(node, features, [context]);
   return node;
 };
