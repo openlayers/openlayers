@@ -47,6 +47,26 @@ ol.format.JSONFeature.prototype.getObject_ = function(source) {
 
 
 /**
+ * Adds the data projection to the read options.
+ * @param {Object} obj Data object.
+ * @param {olx.format.ReadOptions=} opt_options Options.
+ * @return {olx.format.ReadOptions|undefined} Options.
+ * @private
+ */
+ol.format.JSONFeature.prototype.getReadOptions_ = function(obj, opt_options) {
+  var options;
+  if (goog.isDef(opt_options)) {
+    options = {
+      dataProjection: goog.isDef(opt_options.dataProjection) ?
+          opt_options.dataProjection : this.readProjectionFromObject(obj),
+      featureProjection: opt_options.featureProjection
+    };
+  }
+  return options;
+};
+
+
+/**
  * @inheritDoc
  */
 ol.format.JSONFeature.prototype.getType = function() {
@@ -58,7 +78,9 @@ ol.format.JSONFeature.prototype.getType = function() {
  * @inheritDoc
  */
 ol.format.JSONFeature.prototype.readFeature = function(source, opt_options) {
-  return this.readFeatureFromObject(this.getObject_(source), opt_options);
+  var obj = this.getObject_(source);
+  return this.readFeatureFromObject(
+      obj, this.getReadOptions_(obj, opt_options));
 };
 
 
@@ -66,7 +88,9 @@ ol.format.JSONFeature.prototype.readFeature = function(source, opt_options) {
  * @inheritDoc
  */
 ol.format.JSONFeature.prototype.readFeatures = function(source, opt_options) {
-  return this.readFeaturesFromObject(this.getObject_(source), opt_options);
+  var obj = this.getObject_(source);
+  return this.readFeaturesFromObject(
+      obj, this.getReadOptions_(obj, opt_options));
 };
 
 
@@ -92,7 +116,9 @@ ol.format.JSONFeature.prototype.readFeaturesFromObject = goog.abstractMethod;
  * @inheritDoc
  */
 ol.format.JSONFeature.prototype.readGeometry = function(source, opt_options) {
-  return this.readGeometryFromObject(this.getObject_(source), opt_options);
+  var obj = this.getObject_(source);
+  return this.readGeometryFromObject(
+      obj, this.getReadOptions_(obj, opt_options));
 };
 
 
