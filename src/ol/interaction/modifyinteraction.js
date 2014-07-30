@@ -133,7 +133,7 @@ ol.interaction.Modify = function(options) {
   };
 
   /**
-   * @type {ol.Collection}
+   * @type {ol.Collection.<ol.Feature>}
    * @private
    */
   this.features_ = options.features;

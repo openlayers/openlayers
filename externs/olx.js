@@ -143,14 +143,14 @@ olx.GraticuleOptions.prototype.targetSize;
 
 /**
  * Object literal with config options for the map.
- * @typedef {{controls: (ol.Collection|Array.<ol.control.Control>|undefined),
+ * @typedef {{controls: (ol.Collection.<ol.control.Control>|Array.<ol.control.Control>|undefined),
  *     deviceOptions: (olx.DeviceOptions|undefined),
  *     pixelRatio: (number|undefined),
- *     interactions: (ol.Collection|Array.<ol.interaction.Interaction>|undefined),
+ *     interactions: (ol.Collection.<ol.interaction.Interaction>|Array.<ol.interaction.Interaction>|undefined),
  *     keyboardEventTarget: (Element|Document|string|undefined),
- *     layers: (Array.<ol.layer.Base>|ol.Collection|undefined),
+ *     layers: (Array.<ol.layer.Base>|ol.Collection.<ol.layer.Base>|undefined),
  *     logo: (boolean|string|olx.LogoOptions|undefined),
- *     overlays: (ol.Collection|Array.<ol.Overlay>|undefined),
+ *     overlays: (ol.Collection.<ol.Overlay>|Array.<ol.Overlay>|undefined),
  *     renderer: (ol.RendererType|Array.<ol.RendererType|string>|string|undefined),
  *     target: (Element|string|undefined),
  *     view: (ol.View|undefined)}}
@@ -162,7 +162,7 @@ olx.MapOptions;
 /**
  * Controls initially added to the map. If not specified,
  * {@link ol.control.defaults ol.control.defaults()} is used.
- * @type {ol.Collection|Array.<ol.control.Control>|undefined}
+ * @type {ol.Collection.<ol.control.Control>|Array.<ol.control.Control>|undefined}
  */
 olx.MapOptions.prototype.controls;
 
@@ -185,7 +185,7 @@ olx.MapOptions.prototype.pixelRatio;
 /**
  * Interactions that are initially added to the map. If not specified,
  * {@link ol.interaction.defaults ol.interaction.defaults()} is used.
- * @type {ol.Collection|Array.<ol.interaction.Interaction>|undefined}
+ * @type {ol.Collection.<ol.interaction.Interaction>|Array.<ol.interaction.Interaction>|undefined}
  */
 olx.MapOptions.prototype.interactions;
 
@@ -205,7 +205,7 @@ olx.MapOptions.prototype.keyboardEventTarget;
 
 /**
  * Layers. If this is not defined, a map with no layers will be rendered.
- * @type {Array.<ol.layer.Base>|ol.Collection|undefined}
+ * @type {Array.<ol.layer.Base>|ol.Collection.<ol.layer.Base>|undefined}
  */
 olx.MapOptions.prototype.layers;
 
@@ -223,7 +223,7 @@ olx.MapOptions.prototype.logo;
 
 /**
  * Overlays initially added to the map. By default, no overlays are added.
- * @type {ol.Collection|Array.<ol.Overlay>|undefined}
+ * @type {ol.Collection.<ol.Overlay>|Array.<ol.Overlay>|undefined}
  */
 olx.MapOptions.prototype.overlays;
 
@@ -1732,7 +1732,7 @@ olx.interaction.DragZoomOptions.prototype.style;
 
 
 /**
- * @typedef {{features: (ol.Collection|undefined),
+ * @typedef {{features: (ol.Collection.<ol.Feature>|undefined),
  *     source: (ol.source.Vector|undefined),
  *     snapTolerance: (number|undefined),
  *     type: ol.geom.GeometryType,
@@ -1747,7 +1747,7 @@ olx.interaction.DrawOptions;
 
 /**
  * Destination collection for the drawn features.
- * @type {ol.Collection|undefined}
+ * @type {ol.Collection.<ol.Feature>|undefined}
  */
 olx.interaction.DrawOptions.prototype.features;
 
@@ -1866,7 +1866,7 @@ olx.interaction.KeyboardZoomOptions.prototype.delta;
  * @typedef {{deleteCondition: (ol.events.ConditionType|undefined),
  *     pixelTolerance: (number|undefined),
  *     style: (ol.style.Style|Array.<ol.style.Style>|ol.style.StyleFunction|undefined),
- *     features: ol.Collection}}
+ *     features: ol.Collection.<ol.Feature>}}
  * @api
  */
 olx.interaction.ModifyOptions;
@@ -1899,7 +1899,7 @@ olx.interaction.ModifyOptions.prototype.style;
 
 /**
  * The features the interaction works on.
- * @type {ol.Collection}
+ * @type {ol.Collection.<ol.Feature>}
  */
 olx.interaction.ModifyOptions.prototype.features;
 
@@ -2200,7 +2200,7 @@ olx.layer.LayerOptions.prototype.maxResolution;
  *     extent: (ol.Extent|undefined),
  *     minResolution: (number|undefined),
  *     maxResolution: (number|undefined),
- *     layers: (Array.<ol.layer.Base>|ol.Collection|undefined)}}
+ *     layers: (Array.<ol.layer.Base>|ol.Collection.<ol.layer.Base>|undefined)}}
  * @api
  */
 olx.layer.GroupOptions;
@@ -2272,7 +2272,7 @@ olx.layer.GroupOptions.prototype.maxResolution;
 
 /**
  * Child layers.
- * @type {Array.<ol.layer.Base>|ol.Collection|undefined}
+ * @type {Array.<ol.layer.Base>|ol.Collection.<ol.layer.Base>|undefined}
  */
 olx.layer.GroupOptions.prototype.layers;
 
@@ -2615,7 +2615,7 @@ olx.layer.VectorOptions.prototype.visible;
 
 
 /**
- * @typedef {{features: (Array.<ol.Feature>|ol.Collection|undefined),
+ * @typedef {{features: (Array.<ol.Feature>|ol.Collection.<ol.Feature>|undefined),
  *     map: (ol.Map|undefined),
  *     style: (ol.style.Style|Array.<ol.style.Style>|ol.style.StyleFunction|undefined)}}
  * @api
@@ -2625,7 +2625,7 @@ olx.FeatureOverlayOptions;
 
 /**
  * Features.
- * @type {Array.<ol.Feature>|ol.Collection|undefined}
+ * @type {Array.<ol.Feature>|ol.Collection.<ol.Feature>|undefined}
  */
 olx.FeatureOverlayOptions.prototype.features;
 

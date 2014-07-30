@@ -15,7 +15,7 @@ goog.require('ol.control.Zoom');
  * * {@link ol.control.Attribution}
  *
  * @param {olx.control.DefaultsOptions=} opt_options Defaults options.
- * @return {ol.Collection} Controls.
+ * @return {ol.Collection.<ol.control.Control>} Controls.
  * @api
  */
 ol.control.defaults = function(opt_options) {

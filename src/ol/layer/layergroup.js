@@ -145,12 +145,12 @@ ol.layer.Group.prototype.handleLayersRemove_ = function(collectionEvent) {
 
 
 /**
- * @return {ol.Collection|undefined} Collection of {@link ol.layer.Layer layers}
- *     that are part of this group.
+ * @return {ol.Collection.<ol.layer.Base>|undefined} Collection of
+ * {@link ol.layer.Layer layers} that are part of this group.
  * @observable
  */
 ol.layer.Group.prototype.getLayers = function() {
-  return /** @type {ol.Collection|undefined} */ (this.get(
+  return /** @type {ol.Collection.<ol.layer.Base>|undefined} */ (this.get(
       ol.layer.GroupProperty.LAYERS));
 };
 goog.exportProperty(
@@ -160,7 +160,7 @@ goog.exportProperty(
 
 
 /**
- * @param {ol.Collection|undefined} layers Collection of
+ * @param {ol.Collection.<ol.layer.Base>|undefined} layers Collection of
  * {@link ol.layer.Layer layers} that are part of this group.
  * @observable
  */
