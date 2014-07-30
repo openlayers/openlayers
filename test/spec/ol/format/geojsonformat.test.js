@@ -473,6 +473,23 @@ describe('ol.format.GeoJSON', function() {
       }
     });
 
+    it('transforms and encodes feature collection', function() {
+      var str = JSON.stringify(data),
+          array = format.readFeatures(str);
+      var geojson = format.writeFeatures(array, {
+        dataProjection: 'EPSG:4326',
+        featureProjection: 'EPSG:3857'
+      });
+      var result = format.readFeatures(geojson);
+      var got, exp;
+      for (var i = 0, ii = array.length; i < ii; ++i) {
+        got = array[i];
+        exp = result[i];
+        expect(got.getGeometry().transform('EPSG:3857', 'EPSG:4326')
+            .getCoordinates()).to.eql(exp.getGeometry().getCoordinates());
+      }
+    });
+
   });
 
   describe('#writeGeometry', function() {
