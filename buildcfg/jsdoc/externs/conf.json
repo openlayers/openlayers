@@ -1,0 +1,16 @@
+{
+    "opts": {
+        "recurse": true,
+        "template": "buildcfg/jsdoc/externs"
+    },
+    "tags": {
+        "allowUnknownTags": true
+    },
+    "source": {
+        "includePattern": "\\.js$"
+    },
+    "plugins": [
+        "buildcfg/jsdoc/api-plugin",
+        "buildcfg/jsdoc/define-plugin"
+    ]
+}
