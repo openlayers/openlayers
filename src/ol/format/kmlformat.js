@@ -2494,7 +2494,7 @@ ol.format.KML.OUTER_BOUNDARY_NODE_FACTORY_ =
  *
  * @function
  * @param {Array.<ol.Feature>} features Features.
- * @return {ArrayBuffer|Node|Object|string} Result.
+ * @return {Node} Result.
  * @api
  */
 ol.format.KML.prototype.writeFeatures;
