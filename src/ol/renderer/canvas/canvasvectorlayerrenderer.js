@@ -96,7 +96,7 @@ ol.renderer.canvas.VectorLayer.prototype.composeFrame =
     replayContext.globalAlpha = layerState.opacity;
     replayGroup.replay(
         replayContext, frameState.extent, frameState.pixelRatio, transform,
-        frameState.viewState.rotation, frameState.skippedFeatureUids_);
+        frameState.viewState.rotation, frameState.skippedFeatureUids);
 
     if (replayContext != context) {
       this.dispatchRenderEvent(replayContext, frameState, transform);
@@ -122,7 +122,7 @@ ol.renderer.canvas.VectorLayer.prototype.forEachFeatureAtPixel =
     var rotation = frameState.viewState.rotation;
     var layer = this.getLayer();
     return this.replayGroup_.forEachGeometryAtPixel(extent, resolution,
-        rotation, coordinate, frameState.skippedFeatureUids_,
+        rotation, coordinate, frameState.skippedFeatureUids,
         /**
          * @param {ol.geom.Geometry} geometry Geometry.
          * @param {Object} data Data.

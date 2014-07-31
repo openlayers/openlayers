@@ -5131,7 +5131,7 @@ olx.View.fitGeometryOptions.prototype.maxZoom;
  *     pixelToCoordinateMatrix: goog.vec.Mat4.Number,
  *     postRenderFunctions: Array.<ol.PostRenderFunction>,
  *     size: ol.Size,
- *     skippedFeatureUids_: Object.<string, boolean>,
+ *     skippedFeatureUids: Object.<string, boolean>,
  *     tileQueue: ol.TileQueue,
  *     time: number,
  *     usedTiles: Object.<string, Object.<string, ol.TileRange>>,
