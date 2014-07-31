@@ -18,8 +18,7 @@ var view = new ol.View({
   zoom: 1
 });
 
-var viewProjection = /** @type {ol.proj.Projection} */
-    (view.getProjection());
+var viewProjection = view.getProjection();
 
 var map = new ol.Map({
   layers: [wmsLayer],
