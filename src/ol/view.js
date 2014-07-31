@@ -24,7 +24,6 @@ goog.require('ol.proj.Units');
  */
 ol.ViewProperty = {
   CENTER: 'center',
-  PROJECTION: 'projection',
   RESOLUTION: 'resolution',
   ROTATION: 'rotation'
 };
@@ -107,8 +106,12 @@ ol.View = function(opt_options) {
   var properties = {};
   properties[ol.ViewProperty.CENTER] = goog.isDef(options.center) ?
       options.center : null;
-  properties[ol.ViewProperty.PROJECTION] = ol.proj.createProjection(
-      options.projection, 'EPSG:3857');
+
+  /**
+   * @private
+   * @type {ol.proj.Projection}
+   */
+  this.projection_ = ol.proj.createProjection(options.projection, 'EPSG:3857');
 
   var resolutionConstraintInfo = ol.View.createResolutionConstraint_(
       options);
@@ -275,18 +278,12 @@ ol.View.prototype.calculateExtent = function(size) {
 
 
 /**
- * @return {ol.proj.Projection|undefined} The projection of the view.
- * @observable
+ * @return {ol.proj.Projection} The projection of the view.
  * @api
  */
 ol.View.prototype.getProjection = function() {
-  return /** @type {ol.proj.Projection|undefined} */ (
-      this.get(ol.ViewProperty.PROJECTION));
+  return this.projection_;
 };
-goog.exportProperty(
-    ol.View.prototype,
-    'getProjection',
-    ol.View.prototype.getProjection);
 
 
 /**
@@ -599,22 +596,6 @@ ol.View.prototype.setHint = function(hint, delta) {
   goog.asserts.assert(this.hints_[hint] >= 0);
   return this.hints_[hint];
 };
-
-
-/**
- * Set the projection of this view.
- * Warning! This code is not yet implemented. Function should not be used.
- * @param {ol.proj.Projection|undefined} projection The projection of the view.
- * @observable
- * @api
- */
-ol.View.prototype.setProjection = function(projection) {
-  this.set(ol.ViewProperty.PROJECTION, projection);
-};
-goog.exportProperty(
-    ol.View.prototype,
-    'setProjection',
-    ol.View.prototype.setProjection);
 
 
 /**
