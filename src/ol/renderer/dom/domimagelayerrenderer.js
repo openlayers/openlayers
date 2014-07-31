@@ -58,7 +58,7 @@ ol.renderer.dom.ImageLayer.prototype.forEachFeatureAtPixel =
   var extent = frameState.extent;
   var resolution = frameState.viewState.resolution;
   var rotation = frameState.viewState.rotation;
-  var skippedFeatureUids = frameState.skippedFeatureUids_;
+  var skippedFeatureUids = frameState.skippedFeatureUids;
   return source.forEachFeatureAtPixel(
       extent, resolution, rotation, coordinate, skippedFeatureUids,
       /**
