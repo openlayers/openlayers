@@ -150,6 +150,27 @@ describe('ol.format.TopoJSON', function() {
       });
     });
 
+    it('can use a custom feature function', function(done) {
+      var CustomClass = function(opt_stuff) {
+        goog.base(this, opt_stuff);
+      };
+      goog.inherits(CustomClass, ol.Feature);
+      CustomClass.prototype.answer = function() {
+        return 42;
+      };
+      var custom = function(stuff) {
+        return new CustomClass(stuff);
+      };
+
+      afterLoadText('spec/ol/format/topojson/simple.json', function(text) {
+        format.setCreateFeatureFunction(custom);
+        var feature = format.readFeatures(text)[0];
+        expect(feature).to.be.a(CustomClass);
+        expect(feature.answer()).to.be(42);
+        done();
+      });
+    });
+
   });
 
 });

@@ -295,6 +295,24 @@ describe('ol.format.Polyline', function() {
       expect(geometry.getCoordinates()).to.eql(points3857);
     });
 
+    it('can use a custom feature function', function() {
+      var CustomClass = function(opt_stuff) {
+        goog.base(this, opt_stuff);
+      };
+      goog.inherits(CustomClass, ol.Feature);
+      CustomClass.prototype.answer = function() {
+        return 42;
+      };
+      var custom = function(stuff) {
+        return new CustomClass(stuff);
+      };
+
+      format.setCreateFeatureFunction(custom);
+      var feature = format.readFeatures(encodedFlatPoints)[0];
+      expect(feature).to.be.a(CustomClass);
+      expect(feature.answer()).to.be(42);
+    });
+
   });
 
   describe('#readGeometry', function() {

@@ -202,7 +202,8 @@ ol.format.GML.readFeature_ = function(node, objectStack) {
       values[geometryName] = ol.format.GML.readGeometry(n, objectStack);
     }
   }
-  var feature = new ol.Feature(values);
+
+  var feature = ol.format.XMLFeature.createFeature(objectStack, values);
   if (goog.isDef(geometryName)) {
     feature.setGeometryName(geometryName);
   }
@@ -1067,7 +1068,8 @@ ol.format.GML.prototype.readFeatures;
 ol.format.GML.prototype.readFeaturesFromNode = function(node, opt_options) {
   var options = {
     'featureType': this.featureType_,
-    'featureNS': this.featureNS_
+    'featureNS': this.featureNS_,
+    'createFeature': goog.bind(this.createFeature, this)
   };
   if (goog.isDef(opt_options)) {
     goog.object.extend(options, this.getReadOptions(node, opt_options));

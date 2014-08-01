@@ -50,6 +50,45 @@ describe('ol.format.WFS', function() {
 
   });
 
+  describe('when using a custom feature function', function() {
+    var CustomClass = function(opt_stuff) {
+      goog.base(this, opt_stuff);
+    };
+    goog.inherits(CustomClass, ol.Feature);
+    CustomClass.prototype.answer = function() {
+      return 42;
+    };
+    var custom = function(stuff) {
+      return new CustomClass(stuff);
+    };
+
+    var features, feature;
+    before(function(done) {
+      proj4.defs('urn:x-ogc:def:crs:EPSG:4326', proj4.defs('EPSG:4326'));
+      afterLoadText('spec/ol/format/wfs/topp-states-wfs.xml', function(xml) {
+        try {
+          var config = {
+            'featureNS': 'http://www.openplans.org/topp',
+            'featureType': 'states'
+          };
+          var format = new ol.format.WFS(config);
+          format.setCreateFeatureFunction(custom);
+          features = format.readFeatures(xml);
+        } catch (e) {
+          done(e);
+        }
+        done();
+      });
+    });
+
+    it('creates the correct feature class', function() {
+      var f = features[0];
+      expect(f).to.be.a(CustomClass);
+      expect(f.answer()).to.be(42);
+    });
+
+  });
+
   describe('when parsing FeatureCollection', function() {
     var response;
     before(function(done) {

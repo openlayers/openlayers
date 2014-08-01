@@ -66,6 +66,29 @@ describe('ol.format.KML', function() {
         expect(node).to.xmleql(ol.xml.load(text));
       });
 
+      it('can use a custom feature function', function() {
+        var CustomClass = function(opt_stuff) {
+          goog.base(this, opt_stuff);
+        };
+        goog.inherits(CustomClass, ol.Feature);
+        CustomClass.prototype.answer = function() {
+          return 42;
+        };
+        var custom = function(stuff) {
+          return new CustomClass(stuff);
+        };
+
+        var text =
+            '<kml xmlns="http://earth.google.com/kml/2.2">' +
+            '  <Placemark id="foo"/>' +
+            '</kml>';
+
+        format.setCreateFeatureFunction(custom);
+        var feature = format.readFeatures(text)[0];
+        expect(feature).to.be.a(CustomClass);
+        expect(feature.answer()).to.be(42);
+      });
+
     });
 
     describe('geometry', function() {

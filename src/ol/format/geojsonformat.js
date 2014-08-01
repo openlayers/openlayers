@@ -377,7 +377,7 @@ ol.format.GeoJSON.prototype.readFeatureFromObject = function(
   goog.asserts.assert(geoJSONFeature.type == 'Feature');
   var geometry = ol.format.GeoJSON.readGeometry_(geoJSONFeature.geometry,
       opt_options);
-  var feature = new ol.Feature();
+  var feature = this.createFeature();
   if (goog.isDef(this.geometryName_)) {
     feature.setGeometryName(this.geometryName_);
   }

@@ -211,6 +211,26 @@ describe('ol.format.GeoJSON', function() {
       expect(feature.getGeometry()).to.be.an(ol.geom.Point);
     });
 
+    it('can use a custom feature function', function() {
+      var CustomClass = function(opt_stuff) {
+        goog.base(this, opt_stuff);
+      };
+      goog.inherits(CustomClass, ol.Feature);
+      CustomClass.prototype.answer = function() {
+        return 42;
+      };
+      var custom = function(stuff) {
+        return new CustomClass(stuff);
+      };
+
+      var format = new ol.format.GeoJSON({geometryName: 'the_geom'});
+      format.setCreateFeatureFunction(custom);
+
+      var feature = format.readFeature(pointGeoJSON);
+      expect(feature).to.be.a(CustomClass);
+      expect(feature.getGeometryName()).to.be('the_geom');
+      expect(feature.answer()).to.be(42);
+    });
   });
 
   describe('#readFeatures', function() {

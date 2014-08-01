@@ -305,8 +305,29 @@ describe('ol.format.WKT', function() {
     expect(newWkt).to.eql(wkt);
   });
 
+  it('can use a custom feature function', function() {
+    var CustomClass = function(opt_stuff) {
+      goog.base(this, opt_stuff);
+    };
+    goog.inherits(CustomClass, ol.Feature);
+    CustomClass.prototype.answer = function() {
+      return 42;
+    };
+    var custom = function(stuff) {
+      return new CustomClass(stuff);
+    };
+
+    format = new ol.format.WKT({splitCollection: true});
+    format.setCreateFeatureFunction(custom);
+    var wkt = 'GEOMETRYCOLLECTION(POINT(4 6),LINESTRING(4 6,7 10))';
+    var f = format.readFeatures(wkt)[0];
+    expect(f).to.be.a(CustomClass);
+    expect(f.answer()).to.be(42);
+  });
+
 });
 
 goog.require('ol.geom.GeometryType');
 goog.require('ol.format.WKT');
 goog.require('ol.proj');
+goog.require('ol.Feature');

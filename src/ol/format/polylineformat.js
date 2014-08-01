@@ -266,7 +266,7 @@ ol.format.Polyline.prototype.readFeature;
  */
 ol.format.Polyline.prototype.readFeatureFromText = function(text, opt_options) {
   var geometry = this.readGeometryFromText(text, opt_options);
-  return new ol.Feature(geometry);
+  return this.createFeature(geometry);
 };
 
 
