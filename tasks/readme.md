@@ -91,7 +91,10 @@ Called internally to generate a `build/exports.js` file optionally with a limite
 
 ## `generate-externs.js`
 
-Can be called to generate a Closure externs file for the full OpenLayers 3 API. The externs file will be placed as `ol-externs.js` in the `build/` directory.
+Can be called to generate a Closure externs file for the full OpenLayers 3 API.
+See the `--help` option for more detail.
+
+    node tasks/generate-externs.js --help
 
 This is useful for projects that use the Closure Compiler to build, but want to use OpenLayers 3 as external library rather than building together with OpenLayers 3.
 

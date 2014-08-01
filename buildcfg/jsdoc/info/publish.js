@@ -44,12 +44,58 @@ exports.publish = function(data, opts) {
         default: doc.define.default
       });
     } else {
-      symbols.push({
+      var types;
+      var symbol = {
         name: doc.longname,
         kind: doc.kind,
         description: doc.classdesc || doc.description,
         path: path.join(doc.meta.path, doc.meta.filename)
-      });
+      };
+      if (doc.type) {
+        var types = [];
+        doc.type.names.forEach(function(name) {
+          types.push(name);
+        });
+        symbol.types = types;
+      }
+      if (doc.params) {
+        var params = [];
+        doc.params.forEach(function(param) {
+          var paramInfo = {
+            name: param.name
+          };
+          params.push(paramInfo);
+          var types = [];
+          param.type.names.forEach(function(name) {
+            types.push(name);
+          });
+          paramInfo.types = types;
+          if (typeof param.variable == 'boolean') {
+            paramInfo.variable = param.variable;
+          }
+          if (typeof param.optional == 'boolean') {
+            paramInfo.optional = param.optional;
+          }
+        });
+        symbol.params = params;
+      }
+      if (doc.returns) {
+        var returns = [];
+        doc.returns[0].type.names.forEach(function(name) {
+          returns.push(name);
+        });
+        symbol.returns = returns;
+      }
+      if (doc.tags) {
+        doc.tags.every(function(tag) {
+          if (tag.title == 'template') {
+            symbol.template = tag.value;
+            return false;
+          }
+          return true;
+        });
+      }
+      symbols.push(symbol);
     }
   });
 

@@ -1,157 +1,160 @@
 var fs = require('fs');
 var path = require('path');
-var spawn = require('child_process').spawn;
 
 var async = require('async');
 var fse = require('fs-extra');
-var walk = require('walk').walk;
+var nomnom = require('nomnom');
 
-var sourceDir = path.join(__dirname, '..', 'src');
+var generateInfo = require('./generate-info');
+
 var olxPath = path.join(__dirname, '..', 'externs', 'olx.js');
-var externsPath = path.join(__dirname, '..', 'build', 'ol-externs.js');
-var jsdoc = path.join(__dirname, '..', 'node_modules', '.bin', 'jsdoc');
-var jsdocConfig = path.join(
-    __dirname, '..', 'buildcfg', 'jsdoc', 'externs', 'conf.json');
 
 
 /**
- * Get the mtime of the externs file.
- * @param {function(Error, Date)} callback Callback called with any
- *     error and the mtime of the externs file (zero date if it doesn't exist).
+ * Read the symbols from info file.
+ * @param {funciton(Error, Array.<string>, Array.<Object>)} callback Called
+ *     with the patterns and symbols (or any error).
  */
-function getExternsTime(callback) {
-  fs.stat(externsPath, function(err, stats) {
+function getSymbols(callback) {
+  generateInfo(function(err) {
     if (err) {
-      if (err.code === 'ENOENT') {
-        callback(null, new Date(0));
+      callback(new Error('Trouble generating info: ' + err.message));
+      return;
+    }
+    var symbols = require('../build/info.json').symbols;
+    callback(null, symbols);
+  });
+}
+
+
+/**
+ * Generate externs code given a list symbols.
+ * @param {Array.<Object>} symbols List of symbols.
+ * @param {string|undefined} namespace Target object for exported symbols.
+ * @return {string} Export code.
+ */
+function generateExterns(symbols) {
+  var lines = [];
+  var namespaces = {};
+  var constructors = {};
+
+  symbols.forEach(function(symbol) {
+    var parts = symbol.name.split('#')[0].split('.');
+    parts.pop();
+    var namespace = [];
+    parts.forEach(function(part) {
+      namespace.push(part);
+      var partialNamespace = namespace.join('.');
+      if (!(partialNamespace in namespaces)) {
+        namespaces[partialNamespace] = true;
+        lines.push('/**');
+        lines.push(' * @type {Object}');
+        lines.push(' */');
+        lines.push(
+            (namespace.length == 1 ? 'var ' : '') + partialNamespace + ';');
+        lines.push('\n');
+      }
+    });
+
+    var name = symbol.name;
+    if (name.indexOf('#') > 0) {
+      name = symbol.name.replace('#', '.prototype.');
+      var constructor = symbol.name.split('#')[0];
+      if (!(constructor in constructors)) {
+        constructors[constructor] = true;
+        lines.push('/**');
+        lines.push(' * @constructor');
+        lines.push(' */');
+        lines.push(constructor + ' = function() {};');
+        lines.push('\n');
+      }
+    }
+
+    lines.push('/**');
+    if ('default' in symbol) {
+      lines.push(' * @define');
+      lines.push(' * @type {boolean}');
+      lines.push(' */');
+      lines.push(symbol.name + ';');
+    } else {
+      if (symbol.kind == 'class') {
+        lines.push(' * @constructor');
+      }
+      if (symbol.types) {
+        lines.push(' * @type {' + symbol.types.join('|') + '}');
+      }
+      var args = [];
+      if (symbol.params) {
+        symbol.params.forEach(function(param) {
+          args.push(param.name);
+          lines.push(' * @param {' +
+              (param.variable ? '...' : '') +
+              param.types.join('|') +
+              (param.optional ? '=' : '') +
+              '} ' + param.name);
+        });
+      }
+      if (symbol.returns) {
+        lines.push(' * @return {' + symbol.returns.join('|') + '}');
+      }
+      if (symbol.template) {
+        lines.push(' * @template ' + symbol.template);
+      }
+      lines.push(' */');
+      if (symbol.kind == 'function' || symbol.kind == 'class') {
+        lines.push(name + ' = function(' + args.join(', ') + ') {};');
       } else {
-        callback(err);
-      }
-    } else {
-      callback(null, stats.mtime);
-    }
-  });
-}
-
-
-/**
- * Generate a list of all .js paths in the source directory if any are newer
- * than the provided date.
- * @param {Date} date Modification time of externs file.
- * @param {function(Error, Array.<string>)} callback Called with any
- *     error and the array of source paths (empty if none newer).
- */
-function getNewer(date, callback) {
-  var paths = [];
-  var newer = false;
-
-  var walker = walk(sourceDir);
-  walker.on('file', function(root, stats, next) {
-    var sourcePath = path.join(root, stats.name);
-    if (/\.js$/.test(sourcePath)) {
-      paths.push(sourcePath);
-      if (stats.mtime > date) {
-        newer = true;
+        lines.push(name + ';');
       }
     }
-    next();
+    lines.push('\n');
   });
-  walker.on('errors', function() {
-    callback(new Error('Trouble walking ' + sourceDir));
-  });
-  walker.on('end', function() {
-    callback(null, newer ? paths : []);
-  });
+  
+  return lines.join('\n');
 }
 
 
 /**
- * Spawn JSDoc.
- * @param {Array.<string>} paths Paths to source files.
- * @param {function(Error, string)} callback Callback called with any error and
- *     the JSDoc output (new metadata).  If provided with an empty list of paths
- *     the callback will be called with null.
- */
-function spawnJSDoc(paths, callback) {
-  if (paths.length === 0) {
-    process.nextTick(function() {
-      callback(null, null);
-    });
-    return;
-  }
-
-  var output = '';
-  var errors = '';
-  var cwd = path.join(__dirname, '..');
-  var child = spawn(jsdoc, ['-c', jsdocConfig].concat(paths), {cwd: cwd});
-
-  child.stdout.on('data', function(data) {
-    output += String(data);
-  });
-
-  child.stderr.on('data', function(data) {
-    errors += String(data);
-  });
-
-  child.on('exit', function(code) {
-    if (code) {
-      callback(new Error(errors || 'JSDoc failed with no output'));
-    } else {
-      callback(null, output);
-    }
-  });
-}
-
-
-/**
- * Write externs file consisting of externs/olx.js and the JSDoc generated
- *     externs.
- * @param {Object} externs JSDoc generated externs.
- * @param {function(Error)} callback Callback.
- */
-function writeExterns(externs, callback) {
-  if (externs) {
-    var olx;
-    try {
-      olx = fs.readFileSync(olxPath, {encoding: 'utf-8'})
-          .replace(/ \* @api ?(.*)?(\r\n|\n|\r)/gm, '');
-    } catch(e) {
-      process.nextTick(function() {
-        callback(null);
-      });
-    }
-    fse.outputFile(externsPath, olx + '\n\n' + externs, callback);
-  } else {
-    process.nextTick(function() {
-      callback(null);
-    });
-  }
-}
-
-
-/**
- * Determine if source files have been changed, run JSDoc and write updated
- * externs if there are any changes.
+ * Generate the exports code.
  *
- * @param {function(Error)} callback Called when the externs file has been
- *     written (or an error occurs).
+ * @param {function(Error, string)} callback Called with the exports code or any
+ *     error generating it.
  */
 function main(callback) {
   async.waterfall([
-    getExternsTime,
-    getNewer,
-    spawnJSDoc,
-    writeExterns
+    getSymbols,
+    function(symbols, done) {
+      var code, err;
+      try {
+        var olx = fs.readFileSync(olxPath, {encoding: 'utf-8'})
+            .replace(/ \* @api ?(.*)?(\r\n|\n|\r)/gm, '');
+        code = olx + '\n\n' + generateExterns(symbols);
+      } catch (e) {
+        err = e;
+      }
+      done(err, code);
+    }
   ], callback);
 }
 
 
 /**
- * If running this module directly, read the config file and call the main
- * function.
+ * If running this module directly, read the config file, call the main
+ * function, and write the output file.
  */
 if (require.main === module) {
-  main(function(err) {
+  var options = nomnom.options({
+    output: {
+      position: 0,
+      required: true,
+      help: 'Output path for the generated externs file.'
+    }
+  }).parse();
+
+  async.waterfall([
+    main,
+    fse.outputFile.bind(fse, options.output)
+  ], function(err) {
     if (err) {
       console.error(err.message);
       process.exit(1);
