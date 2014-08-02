@@ -95,7 +95,7 @@ ol.interaction.Draw = function(options) {
 
   /**
    * Target collection for drawn features.
-   * @type {ol.Collection}
+   * @type {ol.Collection.<ol.Feature>}
    * @private
    */
   this.features_ = goog.isDef(options.features) ? options.features : null;

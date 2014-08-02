@@ -33,7 +33,7 @@ ol.FeatureOverlay = function(opt_options) {
 
   /**
    * @private
-   * @type {ol.Collection}
+   * @type {ol.Collection.<ol.Feature>}
    */
   this.features_ = null;
 
@@ -104,7 +104,7 @@ ol.FeatureOverlay.prototype.addFeature = function(feature) {
 
 
 /**
- * @return {ol.Collection} Features collection.
+ * @return {ol.Collection.<ol.Feature>} Features collection.
  * @api
  */
 ol.FeatureOverlay.prototype.getFeatures = function() {
@@ -212,7 +212,7 @@ ol.FeatureOverlay.prototype.render_ = function() {
 
 
 /**
- * @param {ol.Collection} features Features collection.
+ * @param {ol.Collection.<ol.Feature>} features Features collection.
  * @api
  */
 ol.FeatureOverlay.prototype.setFeatures = function(features) {

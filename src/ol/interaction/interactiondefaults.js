@@ -35,8 +35,8 @@ goog.require('ol.interaction.PinchZoom');
  * should be excluded if you want a build with no vector support.
  *
  * @param {olx.interaction.DefaultsOptions=} opt_options Defaults options.
- * @return {ol.Collection} A collection of interactions to be used with
- * the ol.Map constructor's interactions option.
+ * @return {ol.Collection.<ol.interaction.Interaction>} A collection of
+ * interactions to be used with the ol.Map constructor's interactions option.
  * @api stable
  */
 ol.interaction.defaults = function(opt_options) {
