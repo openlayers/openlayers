@@ -49,11 +49,27 @@ exportElement.addEventListener('click', function(e) {
   var height = Math.round(dim[1] * resolution / 25.4);
 
   map.once('postcompose', function(event) {
-    var canvas = event.context.canvas;
-    var data = canvas.toDataURL('image/jpeg');
-    var pdf = new jsPDF('landscape', undefined, format);
-    pdf.addImage(data, 'JPEG', 0, 0, dim[0], dim[1]);
-    pdf.save('map.pdf');
+    var tileQueue = map.getTileQueue();
+    // To prevent potential unexpected division-by-zero
+    // behaviour, tileTotalCount must be larger than 0.
+    var tileTotalCount = tileQueue.getCount() || 1;
+    var interval;
+    interval = setInterval(function() {
+      var tileCount = tileQueue.getCount();
+      var ratio = 1 - tileCount / tileTotalCount;
+      exportElement.innerText = (100 * ratio).toFixed(1) + '%';
+      if (ratio == 1 && !tileQueue.getTilesLoading()) {
+        clearInterval(interval);
+        exportElement.innerText = 'Done';
+        var canvas = event.context.canvas;
+        var data = canvas.toDataURL('image/jpeg');
+        var pdf = new jsPDF('landscape', undefined, format);
+        pdf.addImage(data, 'JPEG', 0, 0, dim[0], dim[1]);
+        pdf.save('map.pdf');
+        // TODO restore size
+        // TODO restore button
+      }
+    }, 100);
   });
 
   var extent = map.getView().calculateExtent(
