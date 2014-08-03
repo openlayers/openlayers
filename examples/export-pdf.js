@@ -44,6 +44,8 @@ exportElement.addEventListener('click', function(e) {
 
   var format = document.getElementById('format').value;
   var resolution = document.getElementById('resolution').value;
+  var buttonLabelElement = document.getElementById('button-label');
+  var label = buttonLabelElement.innerText;
   var dim = dims[format];
   var width = Math.round(dim[0] * resolution / 25.4);
   var height = Math.round(dim[1] * resolution / 25.4);
@@ -59,10 +61,10 @@ exportElement.addEventListener('click', function(e) {
     interval = setInterval(function() {
       var tileCount = tileQueue.getCount();
       var ratio = 1 - tileCount / tileTotalCount;
-      exportElement.innerText = (100 * ratio).toFixed(1) + '%';
+      buttonLabelElement.innerText = ' ' + (100 * ratio).toFixed(1) + '%';
       if (ratio == 1 && !tileQueue.getTilesLoading()) {
         clearInterval(interval);
-        exportElement.innerText = 'Done';
+        buttonLabelElement.innerText = label;
         var canvas = event.context.canvas;
         var data = canvas.toDataURL('image/jpeg');
         var pdf = new jsPDF('landscape', undefined, format);
@@ -71,7 +73,8 @@ exportElement.addEventListener('click', function(e) {
         map.setSize(size);
         map.getView().fitExtent(extent, size);
         map.renderSync();
-        // TODO restore button
+        exportElement.className =
+            exportElement.className.replace(' disabled', '');
       }
     }, 100);
   });
