@@ -10,8 +10,8 @@
     <link rel="stylesheet" href="../resources/bootstrap/css/bootstrap-responsive.min.css" type="text/css">
     <style>
       .map {
-        width: 1188px;
-        height: 842px;
+        height: 400px;
+        width: 566px;
       }
     </style>
     <title>Export map example</title>
@@ -31,7 +31,6 @@
       <div class="row-fluid">
         <div class="span12">
           <div id="map" class="map"></div>
-          <a id="export-pdf" class="btn"><i class="icon-download"></i> Export PDF</a>
         </div>
       </div>
 
@@ -42,6 +41,26 @@
           <p id="shortdesc">Example of exporting a map as a PDF using the <a href="https://github.com/MrRio/jsPDF" target="_blank">jsPDF</a> library.</p>
           <div id="docs">
             <p>See the <a href="export-pdf.js" target="_blank">export-pdf.js source</a> to see how this is done.</p>
+          </div>
+          <div>
+            <form class="form">
+              <label>Page size </label>
+              <select id="format">
+                <option value="a0">A0 (slow)</option>
+                <option value="a1">A1</option>
+                <option value="a2">A2</option>
+                <option value="a3">A3</option>
+                <option value="a4" selected>A4</option>
+                <option value="a5">A5 (fast)</option>
+              </select>
+              <label>Resolution </label>
+              <select id="resolution">
+                <option value="72">72 dpi (fast)</option>
+                <option value="150">150 dpi</option>
+                <option value="300">300 dpi (slow)</option>
+              </select>
+            </form>
+            <a id="export-pdf" class="btn"><i class="icon-download"></i> Export PDF</a>
           </div>
           <div id="tags">export, pdf, openstreetmap</div>
         </div>
