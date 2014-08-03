@@ -47,6 +47,8 @@ exportElement.addEventListener('click', function(e) {
   var dim = dims[format];
   var width = Math.round(dim[0] * resolution / 25.4);
   var height = Math.round(dim[1] * resolution / 25.4);
+  var size = /** @type {ol.Size} */ (map.getSize());
+  var extent = map.getView().calculateExtent(size);
 
   map.once('postcompose', function(event) {
     var tileQueue = map.getTileQueue();
@@ -66,14 +68,14 @@ exportElement.addEventListener('click', function(e) {
         var pdf = new jsPDF('landscape', undefined, format);
         pdf.addImage(data, 'JPEG', 0, 0, dim[0], dim[1]);
         pdf.save('map.pdf');
-        // TODO restore size
+        map.setSize(size);
+        map.getView().fitExtent(extent, size);
+        map.renderSync();
         // TODO restore button
       }
     }, 100);
   });
 
-  var extent = map.getView().calculateExtent(
-      /** @type {ol.Size} */ (map.getSize()));
   map.setSize([width, height]);
   map.getView().fitExtent(extent, /** @type {ol.Size} */ (map.getSize()));
   map.renderSync();
