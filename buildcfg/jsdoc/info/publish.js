@@ -24,10 +24,14 @@ exports.publish = function(data, opts) {
 
   var cwd = process.cwd();
 
-  // get all doclets with the "api" property or define (excluding enums,
-  // typedefs and events)
+  // get all doclets with the "api" property or define (excluding events) or
+  // with olx namespace
   var docs = data(
-      [{define: {isObject: true}}, {api: {isString: true}}],
+      [
+        {define: {isObject: true}},
+        {api: {isString: true}},
+        {longname: {left: 'olx.'}}
+      ],
       {kind: {'!is': 'event'}}).get();
 
   // get symbols data, filter out those that are members of private classes
@@ -44,7 +48,20 @@ exports.publish = function(data, opts) {
     }
     return include;
   }).forEach(function(doc) {
-    if (doc.define) {
+    if (doc.longname.indexOf('olx.') === 0) {
+      if (doc.kind == 'typedef') {
+        typedefs.push({
+          name: doc.longname,
+          types: ['{}']
+        });
+      } else {
+        var type = typedefs[typedefs.length - 1].types[0];
+        typedefs[typedefs.length - 1].types[0] = type
+            .replace(/\}$/, ', ' + doc.longname.split('#')[1] +
+                ': (' + getTypes(doc.type.names).join('|') + ')}')
+            .replace('{, ', '{');
+      }
+    } else if (doc.define) {
       defines.push({
         name: doc.longname,
         description: doc.description,
