@@ -45,7 +45,8 @@ function generateExterns(symbols) {
     parts.forEach(function(part) {
       namespace.push(part);
       var partialNamespace = namespace.join('.');
-      if (!(partialNamespace in namespaces)) {
+      if (!(partialNamespace in namespaces ||
+          partialNamespace in constructors)) {
         namespaces[partialNamespace] = true;
         lines.push('/**');
         lines.push(' * @type {Object}');
