@@ -40,16 +40,8 @@ function generateExterns(typedefs, symbols) {
   var namespaces = {};
   var constructors = {};
 
-  typedefs.forEach(function(typedef) {
-    lines.push('/**');
-    lines.push(' * @typedef {' + typedef.types.join('|') + '}');
-    lines.push(' */');
-    lines.push(typedef.name + ';');
-    lines.push('\n');
-  });
-
-  symbols.forEach(function(symbol) {
-    var parts = symbol.name.split('#')[0].split('.');
+  function addNamespaces(name) {
+    var parts = name.split('.');
     parts.pop();
     var namespace = [];
     parts.forEach(function(part) {
@@ -66,6 +58,19 @@ function generateExterns(typedefs, symbols) {
         lines.push('\n');
       }
     });
+  }
+
+  typedefs.forEach(function(typedef) {
+    addNamespaces(typedef.name);
+    lines.push('/**');
+    lines.push(' * @typedef {' + typedef.types.join('|') + '}');
+    lines.push(' */');
+    lines.push(typedef.name + ';');
+    lines.push('\n');
+  });
+
+  symbols.forEach(function(symbol) {
+    addNamespaces(symbol.name.split('#')[0]);
 
     var name = symbol.name;
     if (name.indexOf('#') > 0) {
@@ -131,9 +136,7 @@ function main(callback) {
     function(typedefs, symbols, done) {
       var code, err;
       try {
-        var olx = fs.readFileSync(olxPath, {encoding: 'utf-8'})
-            .replace(/ \* @api ?(.*)?(\r\n|\n|\r)/gm, '');
-        code = olx + '\n\n' + generateExterns(typedefs, symbols);
+        code = generateExterns(typedefs, symbols);
       } catch (e) {
         err = e;
       }
