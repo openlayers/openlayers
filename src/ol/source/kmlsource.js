@@ -23,6 +23,7 @@ ol.source.KML = function(opt_options) {
     attributions: options.attributions,
     doc: options.doc,
     format: new ol.format.KML({
+      extractStyles: options.extractStyles,
       defaultStyle: options.defaultStyle
     }),
     logo: options.logo,
