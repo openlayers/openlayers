@@ -13,6 +13,15 @@ var path = require('path');
  * @param {Object} opts Options.
  */
 exports.publish = function(data, opts) {
+
+  function getTypes(data) {
+    var types = [];
+    data.forEach(function(name) {
+      types.push(name.replace(/^function$/, 'Function'));
+    });
+    return types;
+  }
+
   var cwd = process.cwd();
 
   // get all doclets with the "api" property or define (excluding enums,
@@ -52,11 +61,7 @@ exports.publish = function(data, opts) {
         path: path.join(doc.meta.path, doc.meta.filename)
       };
       if (doc.type) {
-        types = [];
-        doc.type.names.forEach(function(name) {
-          types.push(name.replace(/^function$/, 'Function'));
-        });
-        symbol.types = types;
+        symbol.types = getTypes(doc.type.names);
       }
       if (doc.params) {
         var params = [];
@@ -65,11 +70,7 @@ exports.publish = function(data, opts) {
             name: param.name
           };
           params.push(paramInfo);
-          var types = [];
-          param.type.names.forEach(function(name) {
-            types.push(name.replace(/^function$/, 'Function'));
-          });
-          paramInfo.types = types;
+          paramInfo.types = getTypes(param.type.names);
           if (typeof param.variable == 'boolean') {
             paramInfo.variable = param.variable;
           }
@@ -80,11 +81,7 @@ exports.publish = function(data, opts) {
         symbol.params = params;
       }
       if (doc.returns) {
-        var returns = [];
-        doc.returns[0].type.names.forEach(function(name) {
-          returns.push(name.replace(/^function$/, 'Function'));
-        });
-        symbol.returns = returns;
+        symbol.returns = getTypes(doc.returns[0].type.names);
       }
       if (doc.tags) {
         doc.tags.every(function(tag) {
