@@ -7,6 +7,7 @@ var fse = require('fs-extra');
 var walk = require('walk').walk;
 
 var sourceDir = path.join(__dirname, '..', 'src');
+var olxPath = path.join(__dirname, '..', 'externs', 'olx.js');
 var infoPath = path.join(__dirname, '..', 'build', 'info.json');
 var jsdoc = path.join(__dirname, '..', 'node_modules', '.bin', 'jsdoc');
 var jsdocConfig = path.join(
@@ -41,8 +42,8 @@ function getInfoTime(callback) {
  *     error and the array of source paths (empty if none newer).
  */
 function getNewer(date, callback) {
-  var paths = [];
   var newer = false;
+  var paths = [olxPath];
 
   var walker = walk(sourceDir);
   walker.on('file', function(root, stats, next) {
