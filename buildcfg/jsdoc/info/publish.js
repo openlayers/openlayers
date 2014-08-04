@@ -28,13 +28,12 @@ exports.publish = function(data, opts) {
   // typedefs and events)
   var docs = data(
       [{define: {isObject: true}}, {api: {isString: true}}],
-      {isEnum: {'!is': true}},
-      {kind: {'!is': 'typedef'}},
       {kind: {'!is': 'event'}}).get();
 
   // get symbols data, filter out those that are members of private classes
   var symbols = [];
   var defines = [];
+  var typedefs = [];
   docs.filter(function(doc) {
     var include = true;
     var constructor = doc.memberof;
@@ -51,6 +50,11 @@ exports.publish = function(data, opts) {
         description: doc.description,
         path: path.join(doc.meta.path, doc.meta.filename),
         default: doc.define.default
+      });
+    } else if (doc.kind == 'typedef' || doc.isEnum === true) {
+      typedefs.push({
+        name: doc.longname,
+        types: getTypes(doc.type.names)
       });
     } else {
       var types;
@@ -97,6 +101,10 @@ exports.publish = function(data, opts) {
   });
 
   process.stdout.write(
-      JSON.stringify({symbols: symbols, defines: defines}, null, 2));
+      JSON.stringify({
+        symbols: symbols,
+        defines: defines,
+        typedefs: typedefs
+      }, null, 2));
 
 };
