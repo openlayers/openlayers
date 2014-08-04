@@ -52,9 +52,9 @@ exports.publish = function(data, opts) {
         path: path.join(doc.meta.path, doc.meta.filename)
       };
       if (doc.type) {
-        var types = [];
+        types = [];
         doc.type.names.forEach(function(name) {
-          types.push(name);
+          types.push(name.replace(/^function$/, 'Function'));
         });
         symbol.types = types;
       }
@@ -67,7 +67,7 @@ exports.publish = function(data, opts) {
           params.push(paramInfo);
           var types = [];
           param.type.names.forEach(function(name) {
-            types.push(name);
+            types.push(name.replace(/^function$/, 'Function'));
           });
           paramInfo.types = types;
           if (typeof param.variable == 'boolean') {
@@ -82,7 +82,7 @@ exports.publish = function(data, opts) {
       if (doc.returns) {
         var returns = [];
         doc.returns[0].type.names.forEach(function(name) {
-          returns.push(name);
+          returns.push(name.replace(/^function$/, 'Function'));
         });
         symbol.returns = returns;
       }
