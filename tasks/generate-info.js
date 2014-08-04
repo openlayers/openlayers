@@ -35,14 +35,32 @@ function getInfoTime(callback) {
 
 
 /**
+ * Test whether externs/olx.js is newer than the provided date.
+ * @param {Date} date Modification time of info file.
+ * @param {function(Error, Date, boolen)} callback Called with any
+ *     error, the mtime of the info file (zero date if it doesn't exist), and
+ *     whether externs/olx.js is newer than that date.
+ */
+function getOlxNewer(date, callback) {
+  fs.stat(olxPath, function(err, stats) {
+    if (err) {
+      callback(new Error('Trouble reading ' + olxPath));
+    } else {
+      callback(null, date, stats.mtime > date);
+    }
+  });
+}
+
+
+/**
  * Generate a list of all .js paths in the source directory if any are newer
  * than the provided date.
  * @param {Date} date Modification time of info file.
+ * @param {boolean} newer Whether externs/olx.js is newer than date.
  * @param {function(Error, Array.<string>)} callback Called with any
  *     error and the array of source paths (empty if none newer).
  */
-function getNewer(date, callback) {
-  var newer = false;
+function getNewer(date, newer, callback) {
   var paths = [olxPath];
 
   var walker = walk(sourceDir);
@@ -220,6 +238,7 @@ function writeInfo(info, callback) {
 function main(callback) {
   async.waterfall([
     getInfoTime,
+    getOlxNewer,
     getNewer,
     spawnJSDoc,
     addSymbolProvides,
