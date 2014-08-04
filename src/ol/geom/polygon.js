@@ -140,7 +140,7 @@ ol.geom.Polygon.prototype.containsXY = function(x, y) {
 
 
 /**
- * @return {number} Area.
+ * @return {number} Area (on projected plane).
  * @api
  */
 ol.geom.Polygon.prototype.getArea = function() {

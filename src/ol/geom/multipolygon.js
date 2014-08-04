@@ -150,7 +150,7 @@ ol.geom.MultiPolygon.prototype.containsXY = function(x, y) {
 
 
 /**
- * @return {number} Area.
+ * @return {number} Area (on projected plane).
  * @api
  */
 ol.geom.MultiPolygon.prototype.getArea = function() {
