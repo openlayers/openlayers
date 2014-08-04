@@ -78,6 +78,7 @@ function generateExterns(symbols) {
       lines.push(symbol.name + ';');
     } else {
       if (symbol.kind == 'class') {
+        constructors[name] = true;
         lines.push(' * @constructor');
       }
       if (symbol.types) {
