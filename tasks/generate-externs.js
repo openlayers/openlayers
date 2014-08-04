@@ -15,28 +15,38 @@ var olxPath = path.join(__dirname, '..', 'externs', 'olx.js');
  * @param {funciton(Error, Array.<string>, Array.<Object>)} callback Called
  *     with the patterns and symbols (or any error).
  */
-function getSymbols(callback) {
+function getTypedefsAndSymbols(callback) {
   generateInfo(function(err) {
     if (err) {
       callback(new Error('Trouble generating info: ' + err.message));
       return;
     }
+    var typedefs = require('../build/info.json').typedefs;
     var symbols = require('../build/info.json').symbols;
-    callback(null, symbols);
+    callback(null, typedefs, symbols);
   });
 }
 
 
 /**
  * Generate externs code given a list symbols.
+ * @param {Array.<Object>} typedefs List of typedefs.
  * @param {Array.<Object>} symbols List of symbols.
  * @param {string|undefined} namespace Target object for exported symbols.
  * @return {string} Export code.
  */
-function generateExterns(symbols) {
+function generateExterns(typedefs, symbols) {
   var lines = [];
   var namespaces = {};
   var constructors = {};
+
+  typedefs.forEach(function(typedef) {
+    lines.push('/**');
+    lines.push(' * @typedef {' + typedef.types.join('|') + '}');
+    lines.push(' */');
+    lines.push(typedef.name + ';');
+    lines.push('\n');
+  });
 
   symbols.forEach(function(symbol) {
     var parts = symbol.name.split('#')[0].split('.');
@@ -72,42 +82,35 @@ function generateExterns(symbols) {
     }
 
     lines.push('/**');
-    if ('default' in symbol) {
-      lines.push(' * @define');
-      lines.push(' * @type {boolean}');
-      lines.push(' */');
-      lines.push(symbol.name + ';');
+    if (symbol.kind == 'class') {
+      constructors[name] = true;
+      lines.push(' * @constructor');
+    }
+    if (symbol.types) {
+      lines.push(' * @type {' + symbol.types.join('|') + '}');
+    }
+    var args = [];
+    if (symbol.params) {
+      symbol.params.forEach(function(param) {
+        args.push(param.name);
+        lines.push(' * @param {' +
+            (param.variable ? '...' : '') +
+            param.types.join('|') +
+            (param.optional ? '=' : '') +
+            '} ' + param.name);
+      });
+    }
+    if (symbol.returns) {
+      lines.push(' * @return {' + symbol.returns.join('|') + '}');
+    }
+    if (symbol.template) {
+      lines.push(' * @template ' + symbol.template);
+    }
+    lines.push(' */');
+    if (symbol.kind == 'function' || symbol.kind == 'class') {
+      lines.push(name + ' = function(' + args.join(', ') + ') {};');
     } else {
-      if (symbol.kind == 'class') {
-        constructors[name] = true;
-        lines.push(' * @constructor');
-      }
-      if (symbol.types) {
-        lines.push(' * @type {' + symbol.types.join('|') + '}');
-      }
-      var args = [];
-      if (symbol.params) {
-        symbol.params.forEach(function(param) {
-          args.push(param.name);
-          lines.push(' * @param {' +
-              (param.variable ? '...' : '') +
-              param.types.join('|') +
-              (param.optional ? '=' : '') +
-              '} ' + param.name);
-        });
-      }
-      if (symbol.returns) {
-        lines.push(' * @return {' + symbol.returns.join('|') + '}');
-      }
-      if (symbol.template) {
-        lines.push(' * @template ' + symbol.template);
-      }
-      lines.push(' */');
-      if (symbol.kind == 'function' || symbol.kind == 'class') {
-        lines.push(name + ' = function(' + args.join(', ') + ') {};');
-      } else {
-        lines.push(name + ';');
-      }
+      lines.push(name + ';');
     }
     lines.push('\n');
   });
@@ -124,13 +127,13 @@ function generateExterns(symbols) {
  */
 function main(callback) {
   async.waterfall([
-    getSymbols,
-    function(symbols, done) {
+    getTypedefsAndSymbols,
+    function(typedefs, symbols, done) {
       var code, err;
       try {
         var olx = fs.readFileSync(olxPath, {encoding: 'utf-8'})
             .replace(/ \* @api ?(.*)?(\r\n|\n|\r)/gm, '');
-        code = olx + '\n\n' + generateExterns(symbols);
+        code = olx + '\n\n' + generateExterns(typedefs, symbols);
       } catch (e) {
         err = e;
       }
