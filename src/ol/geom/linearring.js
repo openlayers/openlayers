@@ -76,7 +76,7 @@ ol.geom.LinearRing.prototype.closestPointXY =
 
 
 /**
- * @return {number} Area.
+ * @return {number} Area (on projected plane).
  * @api
  */
 ol.geom.LinearRing.prototype.getArea = function() {
