@@ -4,6 +4,7 @@ goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('goog.events');
 goog.require('goog.functions');
+goog.require('goog.iter');
 goog.require('ol.Collection');
 goog.require('ol.CollectionEventType');
 goog.require('ol.Feature');
@@ -190,16 +191,11 @@ ol.interaction.Modify.prototype.handleFeatureAdd_ = function(evt) {
  */
 ol.interaction.Modify.prototype.handleFeatureRemove_ = function(evt) {
   var feature = evt.element;
-  var rBush = this.rBush_;
-  var i, nodesToRemove = [];
-  rBush.forEachInExtent(feature.getGeometry().getExtent(), function(node) {
-    if (feature === node.feature) {
-      nodesToRemove.push(node);
-    }
+  var nodes = this.rBush_.getIterator(feature.getGeometry().getExtent());
+  var nodesToRemove = goog.iter.filter(nodes, function(node) {
+    return feature === node.feature;
   });
-  for (i = nodesToRemove.length - 1; i >= 0; --i) {
-    rBush.remove(nodesToRemove[i]);
-  }
+  goog.iter.forEach(nodesToRemove, this.rBush_.remove);
   // There remains only vertexFeature…
   if (!goog.isNull(this.vertexFeature_) &&
       this.features_.getLength() === 0) {
@@ -757,7 +753,8 @@ ol.interaction.Modify.prototype.shouldStopEvent = goog.functions.identity;
  */
 ol.interaction.Modify.prototype.updateSegmentIndices_ = function(
     geometry, index, depth, delta) {
-  this.rBush_.forEachInExtent(geometry.getExtent(), function(segmentDataMatch) {
+  var nodes = this.rBush_.getIterator(geometry.getExtent());
+  goog.iter.forEach(nodes, function(segmentDataMatch) {
     if (segmentDataMatch.geometry === geometry &&
         (!goog.isDef(depth) ||
         goog.array.equals(segmentDataMatch.depth, depth)) &&

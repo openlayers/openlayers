@@ -26,6 +26,9 @@ goog.provide('ol.structs.RBush');
 
 goog.require('goog.array');
 goog.require('goog.asserts');
+goog.require('goog.iter');
+goog.require('goog.iter.Iterator');
+goog.require('goog.iter.StopIteration');
 goog.require('goog.object');
 goog.require('ol.extent');
 
@@ -227,14 +230,106 @@ ol.structs.RBush = function(opt_maxEntries) {
    */
   this.valueExtent_ = {};
 
-  if (goog.DEBUG) {
-    /**
-     * @private
-     * @type {number}
-     */
-    this.readers_ = 0;
-  }
+  /**
+   * @private
+   * @type {number}
+   */
+  this.version_ = 0;
 
+};
+
+
+/**
+ * @param {ol.Extent=} opt_extent Extent.
+ * @return {!goog.iter.Iterator} iterator
+ */
+ol.structs.RBush.prototype.getIterator = function(opt_extent) {
+  if (goog.isDef(opt_extent)) {
+    return this.getIteratorInExtent_(opt_extent);
+  } else {
+    return this.getIterator_(this.root_);
+  }
+};
+
+
+/**
+ * @private
+ * @param {ol.structs.RBushNode.<T>} node Node.
+ * @return {!goog.iter.Iterator} iterator
+ */
+ol.structs.RBush.prototype.getIterator_ = function(node) {
+  goog.asserts.assert(!node.isLeaf());
+  var toVisit = [node];
+  var children = [];
+  var version = this.version_;
+  var self = this;
+
+  var iterator = new goog.iter.Iterator();
+  iterator.next = function() {
+    if (version != self.version_) {
+      throw Error('The tree has changed since the iterator was created');
+    }
+    while (children.length > 0) {
+      return children.pop().value;
+    }
+
+    while (toVisit.length > 0) {
+      node = toVisit.pop();
+      if (node.height == 1) {
+        if (node.children.length > 0) {
+          children = node.children.slice();
+          return children.pop().value;
+        }
+      } else {
+        toVisit.push.apply(toVisit, node.children);
+      }
+    }
+
+    throw goog.iter.StopIteration;
+  };
+  return iterator;
+};
+
+
+/**
+ * @private
+ * @param {ol.Extent} extent Extent.
+ * @return {!goog.iter.Iterator} iterator
+ */
+ol.structs.RBush.prototype.getIteratorInExtent_ = function(extent) {
+  var toVisit = [this.root_];
+  var children = new goog.iter.Iterator();
+  var version = this.version_;
+  var self = this;
+
+  var iterator = new goog.iter.Iterator();
+  iterator.next = function() {
+    if (version != self.version_) {
+      throw Error('The tree has changed since the iterator was created');
+    }
+    var leaf;
+    while (goog.isDef(leaf = goog.iter.nextOrValue(children, undefined))) {
+      return leaf;
+    }
+    while (toVisit.length > 0) {
+      var node = toVisit.pop();
+      if (ol.extent.intersects(extent, node.extent)) {
+        if (node.isLeaf()) {
+          return node.value;
+        } else if (ol.extent.containsExtent(extent, node.extent)) {
+          children = self.getIterator_(node);
+          leaf = goog.iter.nextOrValue(children, undefined);
+          if (goog.isDef(leaf)) {
+            return leaf;
+          }
+        } else {
+          toVisit.push.apply(toVisit, node.children);
+        }
+      }
+    }
+    throw goog.iter.StopIteration;
+  };
+  return iterator;
 };
 
 
@@ -368,6 +463,7 @@ ol.structs.RBush.prototype.clear = function() {
   node.children.length = 0;
   node.value = null;
   goog.object.clear(this.valueExtent_);
+  this.version_ = 0;
 };
 
 
@@ -389,119 +485,6 @@ ol.structs.RBush.prototype.condense_ = function(path) {
       node.updateExtent();
     }
   }
-};
-
-
-/**
- * Calls a callback function with each node in the tree. Inside the callback,
- * no tree modifications (insert, update, remove) can be made.
- * If the callback returns a truthy value, this value is returned without
- * checking the rest of the tree.
- * @param {function(this: S, T): *} callback Callback.
- * @param {S=} opt_this The object to use as `this` in `callback`.
- * @return {*} Callback return value.
- * @template S
- */
-ol.structs.RBush.prototype.forEach = function(callback, opt_this) {
-  if (goog.DEBUG) {
-    ++this.readers_;
-    try {
-      return this.forEach_(this.root_, callback, opt_this);
-    } finally {
-      --this.readers_;
-    }
-  } else {
-    return this.forEach_(this.root_, callback, opt_this);
-  }
-};
-
-
-/**
- * @param {ol.structs.RBushNode.<T>} node Node.
- * @param {function(this: S, T): *} callback Callback.
- * @param {S=} opt_this The object to use as `this` in `callback`.
- * @private
- * @return {*} Callback return value.
- * @template S
- */
-ol.structs.RBush.prototype.forEach_ = function(node, callback, opt_this) {
-  goog.asserts.assert(!node.isLeaf());
-  /** @type {Array.<ol.structs.RBushNode.<T>>} */
-  var toVisit = [node];
-  var children, i, ii, result;
-  while (toVisit.length > 0) {
-    node = toVisit.pop();
-    children = node.children;
-    if (node.height == 1) {
-      for (i = 0, ii = children.length; i < ii; ++i) {
-        result = callback.call(opt_this, children[i].value);
-        if (result) {
-          return result;
-        }
-      }
-    } else {
-      toVisit.push.apply(toVisit, children);
-    }
-  }
-};
-
-
-/**
- * Calls a callback function with each node in the provided extent. Inside the
- * callback, no tree modifications (insert, update, remove) can be made.
- * @param {ol.Extent} extent Extent.
- * @param {function(this: S, T): *} callback Callback.
- * @param {S=} opt_this The object to use as `this` in `callback`.
- * @return {*} Callback return value.
- * @template S
- */
-ol.structs.RBush.prototype.forEachInExtent =
-    function(extent, callback, opt_this) {
-  if (goog.DEBUG) {
-    ++this.readers_;
-    try {
-      return this.forEachInExtent_(extent, callback, opt_this);
-    } finally {
-      --this.readers_;
-    }
-  } else {
-    return this.forEachInExtent_(extent, callback, opt_this);
-  }
-};
-
-
-/**
- * @param {ol.Extent} extent Extent.
- * @param {function(this: S, T): *} callback Callback.
- * @param {S=} opt_this The object to use as `this` in `callback`.
- * @private
- * @return {*} Callback return value.
- * @template S
- */
-ol.structs.RBush.prototype.forEachInExtent_ =
-    function(extent, callback, opt_this) {
-  /** @type {Array.<ol.structs.RBushNode.<T>>} */
-  var toVisit = [this.root_];
-  var result;
-  while (toVisit.length > 0) {
-    var node = toVisit.pop();
-    if (ol.extent.intersects(extent, node.extent)) {
-      if (node.isLeaf()) {
-        result = callback.call(opt_this, node.value);
-        if (result) {
-          return result;
-        }
-      } else if (ol.extent.containsExtent(extent, node.extent)) {
-        result = this.forEach_(node, callback, opt_this);
-        if (result) {
-          return result;
-        }
-      } else {
-        toVisit.push.apply(toVisit, node.children);
-      }
-    }
-  }
-  return undefined;
 };
 
 
@@ -532,15 +515,7 @@ ol.structs.RBush.prototype.forEachNode = function(callback, opt_this) {
  * @return {Array.<T>} All.
  */
 ol.structs.RBush.prototype.getAll = function() {
-  var values = [];
-  this.forEach(
-      /**
-       * @param {T} value Value.
-       */
-      function(value) {
-        values.push(value);
-      });
-  return values;
+  return goog.iter.toArray(this.getIterator());
 };
 
 
@@ -549,15 +524,7 @@ ol.structs.RBush.prototype.getAll = function() {
  * @return {Array.<T>} All in extent.
  */
 ol.structs.RBush.prototype.getInExtent = function(extent) {
-  var values = [];
-  this.forEachInExtent(extent,
-      /**
-       * @param {T} value Value.
-       */
-      function(value) {
-        values.push(value);
-      });
-  return values;
+  return goog.iter.toArray(this.getIterator(extent));
 };
 
 
@@ -586,9 +553,7 @@ ol.structs.RBush.prototype.getKey_ = function(value) {
  * @param {T} value Value.
  */
 ol.structs.RBush.prototype.insert = function(extent, value) {
-  if (goog.DEBUG && this.readers_) {
-    throw new Error('cannot insert value while reading');
-  }
+  this.version_++;
   var key = this.getKey_(value);
   goog.asserts.assert(!this.valueExtent_.hasOwnProperty(key));
   this.insert_(extent, value, this.root_.height - 1);
@@ -637,9 +602,7 @@ ol.structs.RBush.prototype.isEmpty = function() {
  * @return {boolean} Removed.
  */
 ol.structs.RBush.prototype.remove = function(value) {
-  if (goog.DEBUG && this.readers_) {
-    throw new Error('cannot remove value while reading');
-  }
+  this.version_++;
   var key = this.getKey_(value);
   goog.asserts.assert(this.valueExtent_.hasOwnProperty(key));
   var extent = this.valueExtent_[key];
@@ -714,9 +677,7 @@ ol.structs.RBush.prototype.update = function(extent, value) {
   var currentExtent = this.valueExtent_[key];
   goog.asserts.assert(goog.isDef(currentExtent));
   if (!ol.extent.equals(currentExtent, extent)) {
-    if (goog.DEBUG && this.readers_) {
-      throw new Error('cannot update extent while reading');
-    }
+    this.version_++;
     var removed = this.remove_(currentExtent, value);
     goog.asserts.assert(removed);
     this.insert_(extent, value, this.root_.height - 1);

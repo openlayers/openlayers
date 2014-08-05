@@ -109,16 +109,6 @@ describe('ol.source.Vector', function() {
         expect(f.callCount).to.be(10);
       });
 
-      it('allows breaking out', function() {
-        var count = 0;
-        var result = vectorSource.forEachFeatureInExtent(infiniteExtent,
-            function(f) {
-              return ++count == 5;
-            });
-        expect(result).to.be(true);
-        expect(count).to.be(5);
-      });
-
     });
 
     describe('#getFeaturesInExtent', function() {

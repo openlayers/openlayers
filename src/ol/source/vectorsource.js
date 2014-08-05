@@ -11,6 +11,7 @@ goog.require('goog.asserts');
 goog.require('goog.events');
 goog.require('goog.events.Event');
 goog.require('goog.events.EventType');
+goog.require('goog.iter');
 goog.require('goog.object');
 goog.require('ol.ObjectEventType');
 goog.require('ol.proj');
@@ -174,7 +175,7 @@ ol.source.Vector.prototype.addFeaturesInternal = function(features) {
  * @api
  */
 ol.source.Vector.prototype.clear = function() {
-  this.rBush_.forEach(this.removeFeatureInternal, this);
+  this.forEachFeature(this.removeFeatureInternal, this);
   this.rBush_.clear();
   goog.object.forEach(
       this.nullGeometryFeatures_, this.removeFeatureInternal, this);
@@ -185,64 +186,58 @@ ol.source.Vector.prototype.clear = function() {
 
 
 /**
- * @param {function(this: T, ol.Feature): S} f Callback.
+ * @param {function(this: T, ol.Feature): ?} f Callback.
  * @param {T=} opt_this The object to use as `this` in `f`.
- * @return {S|undefined}
- * @template T,S
+ * @template T
  * @api
  */
 ol.source.Vector.prototype.forEachFeature = function(f, opt_this) {
-  return this.rBush_.forEach(f, opt_this);
+  goog.iter.forEach(this.rBush_.getIterator(), f, opt_this);
 };
 
 
 /**
  * @param {ol.Coordinate} coordinate Coordinate.
- * @param {function(this: T, ol.Feature): S} f Callback.
+ * @param {function(this: T, ol.Feature): ?} f Callback.
  * @param {T=} opt_this The object to use as `this` in `f`.
- * @return {S|undefined}
- * @template T,S
+ * @template T
  */
 ol.source.Vector.prototype.forEachFeatureAtCoordinate =
     function(coordinate, f, opt_this) {
   var extent = [coordinate[0], coordinate[1], coordinate[0], coordinate[1]];
-  return this.forEachFeatureInExtent(extent, function(feature) {
+  var features = this.rBush_.getIterator(extent);
+  var featuresAtCoordinate = goog.iter.filter(features, function(feature) {
     var geometry = feature.getGeometry();
     goog.asserts.assert(goog.isDefAndNotNull(geometry));
-    if (geometry.containsCoordinate(coordinate)) {
-      return f.call(opt_this, feature);
-    } else {
-      return undefined;
-    }
+    return geometry.containsCoordinate(coordinate);
   });
+  goog.iter.forEach(featuresAtCoordinate, f, opt_this);
 };
 
 
 /**
  * @param {ol.Extent} extent Extent.
- * @param {function(this: T, ol.Feature): S} f Callback.
+ * @param {function(this: T, ol.Feature): ?} f Callback.
  * @param {T=} opt_this The object to use as `this` in `f`.
- * @return {S|undefined}
- * @template T,S
+ * @template T
  * @api
  */
 ol.source.Vector.prototype.forEachFeatureInExtent =
     function(extent, f, opt_this) {
-  return this.rBush_.forEachInExtent(extent, f, opt_this);
+  goog.iter.forEach(this.rBush_.getIterator(extent), f, opt_this);
 };
 
 
 /**
  * @param {ol.Extent} extent Extent.
  * @param {number} resolution Resolution.
- * @param {function(this: T, ol.Feature): S} f Callback.
+ * @param {function(this: T, ol.Feature): ?} f Callback.
  * @param {T=} opt_this The object to use as `this` in `f`.
- * @return {S|undefined}
- * @template T,S
+ * @template T
  */
 ol.source.Vector.prototype.forEachFeatureInExtentAtResolution =
     function(extent, resolution, f, opt_this) {
-  return this.forEachFeatureInExtent(extent, f, opt_this);
+  this.forEachFeatureInExtent(extent, f, opt_this);
 };
 
 
@@ -251,12 +246,7 @@ ol.source.Vector.prototype.forEachFeatureInExtentAtResolution =
  * @api
  */
 ol.source.Vector.prototype.getFeatures = function() {
-  var features = this.rBush_.getAll();
-  if (!goog.object.isEmpty(this.nullGeometryFeatures_)) {
-    goog.array.extend(
-        features, goog.object.getValues(this.nullGeometryFeatures_));
-  }
-  return features;
+  return goog.iter.toArray(this.getFeaturesIterator());
 };
 
 
@@ -284,6 +274,20 @@ ol.source.Vector.prototype.getFeaturesInExtent = function(extent) {
 
 
 /**
+ * @param {ol.Extent=} opt_extent Extent.
+ * @return {goog.iter.Iterator} Features iterator.
+ * @api
+ */
+ol.source.Vector.prototype.getFeaturesIterator = function(opt_extent) {
+  var features = this.rBush_.getIterator(opt_extent);
+  var nullFeatures = goog.object.getValues(this.nullGeometryFeatures_);
+
+  // TODO: remove goog.iter.toIterator after upgrading closure-library
+  return goog.iter.chain(features, goog.iter.toIterator(nullFeatures));
+};
+
+
+/**
  * @param {ol.Coordinate} coordinate Coordinate.
  * @return {ol.Feature} Closest feature.
  * @api
@@ -303,7 +307,7 @@ ol.source.Vector.prototype.getClosestFeatureToCoordinate =
   var closestPoint = [NaN, NaN];
   var minSquaredDistance = Infinity;
   var extent = [-Infinity, -Infinity, Infinity, Infinity];
-  this.rBush_.forEachInExtent(extent,
+  goog.iter.forEach(this.rBush_.getIterator(extent),
       /**
        * @param {ol.Feature} feature Feature.
        */

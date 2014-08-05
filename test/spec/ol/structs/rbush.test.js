@@ -26,6 +26,13 @@ describe('ol.structs.RBush', function() {
 
     });
 
+    describe('#getIterator', function() {
+
+      it('returns the expected number of objects', function() {
+        expect(goog.iter.toArray(rBush.getIterator())).to.be.empty();
+      });
+
+    });
   });
 
   describe('with a single object', function() {
@@ -64,27 +71,6 @@ describe('ol.structs.RBush', function() {
       rBush.insert([-3, -3, -2, -2], objs[10]);
     });
 
-    describe('#forEach', function() {
-
-      it('called for all the objects', function() {
-        var i = 0;
-        rBush.forEach(function() {
-          ++i;
-        });
-        expect(i).to.be(objs.length);
-      });
-
-      it('stops when the function returns true', function() {
-        var i = 0;
-        var result = rBush.forEach(function() {
-          return ++i >= 4;
-        });
-        expect(i).to.be(4);
-        expect(result).to.be(true);
-      });
-
-    });
-
     describe('#getInExtent', function() {
 
       it('returns the expected objects', function() {
@@ -107,23 +93,32 @@ describe('ol.structs.RBush', function() {
 
     });
 
+    describe('#getIterator', function() {
+
+      it('returns the expected number of objects', function() {
+        var result = goog.iter.toArray(rBush.getIterator());
+        expect(result.length).to.be(objs.length);
+      });
+
+    });
+
     describe('#insert', function() {
 
       it('throws an exception if called while iterating over all values',
           function() {
             expect(function() {
-              rBush.forEach(function(value) {
-                rBush.insert([0, 0, 1, 1], {});
-              });
+              var iter = rBush.getIterator();
+              rBush.insert([0, 0, 1, 1], {});
+              iter.next();
             }).to.throwException();
           });
 
       it('throws an exception if called while iterating over an extent',
           function() {
             expect(function() {
-              rBush.forEachInExtent([-10, -10, 10, 10], function(value) {
-                rBush.insert([0, 0, 1, 1], {});
-              });
+              var iter = rBush.getIterator([-10, -10, 10, 10]);
+              rBush.insert([0, 0, 1, 1], {});
+              iter.next();
             }).to.throwException();
           });
     });
@@ -150,18 +145,18 @@ describe('ol.structs.RBush', function() {
       it('throws an exception if called while iterating over all values',
           function() {
             expect(function() {
-              rBush.forEach(function(value) {
-                rBush.remove(value);
-              });
+              var iter = rBush.getIterator();
+              rBush.remove(objs[0]);
+              iter.next();
             }).to.throwException();
           });
 
       it('throws an exception if called while iterating over an extent',
           function() {
             expect(function() {
-              rBush.forEachInExtent([-10, -10, 10, 10], function(value) {
-                rBush.remove(value);
-              });
+              var iter = rBush.getIterator([-10, -10, 10, 10]);
+              rBush.remove(objs[0]);
+              iter.next();
             }).to.throwException();
           });
 
@@ -172,18 +167,18 @@ describe('ol.structs.RBush', function() {
       it('throws an exception if called while iterating over all values',
           function() {
             expect(function() {
-              rBush.forEach(function(value) {
-                rBush.update([0, 0, 1, 1], objs[1]);
-              });
+              var iter = rBush.getIterator();
+              rBush.update([0, 0, 1, 1], objs[1]);
+              iter.next();
             }).to.throwException();
           });
 
       it('throws an exception if called while iterating over an extent',
           function() {
             expect(function() {
-              rBush.forEachInExtent([-10, -10, 10, 10], function(value) {
-                rBush.update([0, 0, 1, 1], objs[1]);
-              });
+              var iter = rBush.getIterator([-10, -10, 10, 10]);
+              rBush.update([0, 0, 1, 1], objs[1]);
+              iter.next();
             }).to.throwException();
           });
     });
@@ -211,6 +206,15 @@ describe('ol.structs.RBush', function() {
         for (i = 0, ii = objs.length; i < ii; ++i) {
           expect(rBush.getInExtent(extents[i])).to.eql([objs[i]]);
         }
+      });
+
+    });
+
+    describe('#getIterator', function() {
+
+      it('returns the expected number of objects', function() {
+        var result = goog.iter.toArray(rBush.getIterator());
+        expect(result.length).to.be(objs.length);
       });
 
     });
@@ -275,6 +279,15 @@ describe('ol.structs.RBush', function() {
 
       it('returns the expected number of objects', function() {
         expect(rBush.getAll().length).to.be(1000);
+      });
+
+    });
+
+    describe('#getIterator', function() {
+
+      it('returns the expected number of objects', function() {
+        var result = goog.iter.toArray(rBush.getIterator());
+        expect(result.length).to.be(1000);
       });
 
     });
@@ -356,4 +369,5 @@ describe('ol.structs.RBush', function() {
 
 });
 
+goog.require('goog.iter');
 goog.require('ol.structs.RBush');

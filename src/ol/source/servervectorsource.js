@@ -2,6 +2,7 @@
 
 goog.provide('ol.source.ServerVector');
 
+goog.require('goog.iter');
 goog.require('ol.extent');
 goog.require('ol.loadingstrategy');
 goog.require('ol.source.FormatVector');
@@ -89,7 +90,7 @@ ol.source.ServerVector.prototype.loadFeatures =
   var i, ii;
   for (i = 0, ii = extentsToLoad.length; i < ii; ++i) {
     var extentToLoad = extentsToLoad[i];
-    var alreadyLoaded = loadedExtents.forEachInExtent(extentToLoad,
+    var alreadyLoaded = goog.iter.some(loadedExtents.getIterator(extentToLoad),
         /**
          * @param {{extent: ol.Extent}} object Object.
          * @return {boolean} Contains.
