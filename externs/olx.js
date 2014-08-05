@@ -2601,7 +2601,8 @@ olx.layer.VectorOptions.prototype.source;
 
 
 /**
- * Layer style.
+ * Layer style. See {@link ol.style} for default style which will be used if
+ * this is not defined.
  * @type {ol.style.Style|Array.<ol.style.Style>|ol.style.StyleFunction|undefined}
  */
 olx.layer.VectorOptions.prototype.style;
@@ -4602,7 +4603,8 @@ olx.style.FillOptions;
 
 
 /**
- * Color.
+ * Color. Default null; if null, the Canvas/renderer default black will be
+ * used.
  * @type {ol.Color|string|undefined}
  */
 olx.style.FillOptions.prototype.color;
@@ -4754,7 +4756,8 @@ olx.style.StrokeOptions;
 
 
 /**
- * Color.
+ * Color. Default null; if null, the Canvas/renderer default black will be
+ * used.
  * @type {ol.Color|string|undefined}
  */
 olx.style.StrokeOptions.prototype.color;

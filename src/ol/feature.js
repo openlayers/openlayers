@@ -21,7 +21,9 @@ goog.require('ol.style.Style');
  * attribute properties, similar to the features in vector file formats like
  * GeoJSON.
  *
- * Features can be styled individually or use the style of their vector layer.
+ * Features can be styled individually with `setStyle`; otherwise they use the
+ * style of their vector layer or feature overlay.
+ *
  * Note that attribute properties are set as {@link ol.Object} properties on
  * the feature object, so they are observable, and have get/set accessors.
  *
@@ -176,9 +178,9 @@ ol.Feature.prototype.getGeometryName = function() {
 
 /**
  * @return {ol.style.Style|Array.<ol.style.Style>|
- *     ol.feature.FeatureStyleFunction} Return the style provided in the
- *     constructor options or the last call to setStyle in the same format
- *     that it was provided in.
+ *     ol.feature.FeatureStyleFunction} Return the style as set by setStyle in
+ *     the same format that it was provided in. If setStyle has not been run,
+ *     return `undefined`.
  * @api
  */
 ol.Feature.prototype.getStyle = function() {
