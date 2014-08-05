@@ -13,9 +13,8 @@ goog.require('ol.geom.flat.simplify');
 
 /**
  * @classdesc
- * Abstract base class; only used for creating subclasses; do not instantiate
- * in apps, as cannot be rendered.
- * Linear ring geometry.
+ * Linear ring geometry. Only used as part of polygon; cannot be rendered
+ * on its own.
  *
  * @constructor
  * @extends {ol.geom.SimpleGeometry}
