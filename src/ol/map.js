@@ -604,7 +604,7 @@ ol.Map.prototype.getEventPixel = function(event) {
   // So we ourselves compute the position of touch events.
   // See https://github.com/google/closure-library/pull/323
   if (goog.isDef(event.changedTouches)) {
-    var touch = event.changedTouches.item(0);
+    var touch = event.changedTouches[0];
     var viewportPosition = goog.style.getClientPosition(this.viewport_);
     return [
       touch.clientX - viewportPosition.x,
