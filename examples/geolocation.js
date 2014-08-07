@@ -30,8 +30,9 @@ var map = new ol.Map({
   view: view
 });
 
-var geolocation = new ol.Geolocation();
-geolocation.bindTo('projection', view);
+var geolocation = new ol.Geolocation({
+  projection: view.getProjection()
+});
 
 var track = new ol.dom.Input(document.getElementById('track'));
 track.bindTo('checked', geolocation, 'tracking');

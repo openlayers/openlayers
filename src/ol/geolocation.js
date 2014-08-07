@@ -42,9 +42,10 @@ ol.GeolocationProperty = {
  *
  * Example:
  *
- *     var geolocation = new ol.Geolocation();
- *     // take the projection to use from the map's view
- *     geolocation.bindTo('projection', map.getView());
+ *     var geolocation = new ol.Geolocation({
+ *       // take the projection to use from the map's view
+ *       projection: view.getprojection()
+ *     });
  *     // listen to changes in position
  *     geolocation.on('change', function(evt) {
  *       window.console.log(geolocation.getPosition());

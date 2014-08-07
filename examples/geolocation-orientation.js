@@ -47,13 +47,13 @@ var positions = new ol.geom.LineString([],
 
 // Geolocation Control
 var geolocation = new ol.Geolocation(/** @type {olx.GeolocationOptions} */ ({
+  projection: view.getProjection(),
   trackingOptions: {
     maximumAge: 10000,
     enableHighAccuracy: true,
     timeout: 600000
   }
 }));
-geolocation.bindTo('projection', view);
 
 var deltaMean = 500; // the geolocation sampling period mean in ms
 
