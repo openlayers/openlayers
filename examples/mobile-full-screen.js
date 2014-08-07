@@ -25,9 +25,9 @@ var map = new ol.Map({
 });
 
 var geolocation = new ol.Geolocation({
+  projection: view.getProjection(),
   tracking: true
 });
-geolocation.bindTo('projection', view);
 geolocation.once('change:position', function() {
   view.setCenter(geolocation.getPosition());
   view.setResolution(2.388657133911758);
