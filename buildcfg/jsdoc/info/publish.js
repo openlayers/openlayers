@@ -22,15 +22,15 @@ exports.publish = function(data, opts) {
     return types;
   }
 
-  var cwd = process.cwd();
-
   // get all doclets with the "api" property or define (excluding events) or
   // with olx namespace
   var docs = data(
       [
         {define: {isObject: true}},
         {api: {isString: true}},
-        {longname: {left: 'olx.'}}
+        function() {
+          return this.meta && (/[\\\/]externs$/).test(this.meta.path);
+        }
       ],
       {kind: {'!is': 'event'}}).get();
 
@@ -38,6 +38,7 @@ exports.publish = function(data, opts) {
   var symbols = [];
   var defines = [];
   var typedefs = [];
+  var externs = [];
   docs.filter(function(doc) {
     var include = true;
     var constructor = doc.memberof;
@@ -113,7 +114,8 @@ exports.publish = function(data, opts) {
           return true;
         });
       }
-      symbols.push(symbol);
+      var target = (/[\\\/]externs$/).test(doc.meta.path) ? externs : symbols;
+      target.push(symbol);
     }
   });
 
@@ -121,7 +123,8 @@ exports.publish = function(data, opts) {
       JSON.stringify({
         symbols: symbols,
         defines: defines,
-        typedefs: typedefs
+        typedefs: typedefs,
+        externs: externs
       }, null, 2));
 
 };

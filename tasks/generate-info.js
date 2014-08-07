@@ -7,7 +7,11 @@ var fse = require('fs-extra');
 var walk = require('walk').walk;
 
 var sourceDir = path.join(__dirname, '..', 'src');
-var olxPath = path.join(__dirname, '..', 'externs', 'olx.js');
+var externsDir = path.join(__dirname, '..', 'externs');
+var externsPaths = [
+  path.join(externsDir, 'olx.js'),
+  path.join(externsDir, 'geojson.js')
+];
 var infoPath = path.join(__dirname, '..', 'build', 'info.json');
 var jsdoc = path.join(__dirname, '..', 'node_modules', '.bin', 'jsdoc');
 var jsdocConfig = path.join(
@@ -41,13 +45,23 @@ function getInfoTime(callback) {
  *     error, the mtime of the info file (zero date if it doesn't exist), and
  *     whether externs/olx.js is newer than that date.
  */
-function getOlxNewer(date, callback) {
-  fs.stat(olxPath, function(err, stats) {
-    if (err) {
-      callback(new Error('Trouble reading ' + olxPath));
-    } else {
-      callback(null, date, stats.mtime > date);
-    }
+function getNewerExterns(date, callback) {
+  var newer = false;
+  var walker = walk(externsDir);
+  walker.on('file', function(root, stats, next) {
+    var sourcePath = path.join(root, stats.name);
+    externsPaths.forEach(function(path) {
+      if (sourcePath == path && stats.mtime > date) {
+        newer = true;
+      }
+    });
+    next();
+  });
+  walker.on('errors', function() {
+    callback(new Error('Trouble walking ' + sourceDir));
+  });
+  walker.on('end', function() {
+    callback(null, date, newer);
   });
 }
 
@@ -61,7 +75,7 @@ function getOlxNewer(date, callback) {
  *     error and the array of source paths (empty if none newer).
  */
 function getNewer(date, newer, callback) {
-  var paths = [olxPath];
+  var paths = [].concat(externsPaths);
 
   var walker = walk(sourceDir);
   walker.on('file', function(root, stats, next) {
@@ -238,7 +252,7 @@ function writeInfo(info, callback) {
 function main(callback) {
   async.waterfall([
     getInfoTime,
-    getOlxNewer,
+    getNewerExterns,
     getNewer,
     spawnJSDoc,
     addSymbolProvides,

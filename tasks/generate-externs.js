@@ -7,15 +7,12 @@ var nomnom = require('nomnom');
 
 var generateInfo = require('./generate-info');
 
-var olxPath = path.join(__dirname, '..', 'externs', 'olx.js');
-
-
 /**
  * Read the symbols from info file.
  * @param {funciton(Error, Array.<string>, Array.<Object>)} callback Called
  *     with the patterns and symbols (or any error).
  */
-function getTypedefsAndSymbols(callback) {
+function getInfo(callback) {
   generateInfo(function(err) {
     if (err) {
       callback(new Error('Trouble generating info: ' + err.message));
@@ -23,7 +20,8 @@ function getTypedefsAndSymbols(callback) {
     }
     var typedefs = require('../build/info.json').typedefs;
     var symbols = require('../build/info.json').symbols;
-    callback(null, typedefs, symbols);
+    var externs = require('../build/info.json').externs;
+    callback(null, typedefs, symbols, externs);
   });
 }
 
@@ -32,10 +30,11 @@ function getTypedefsAndSymbols(callback) {
  * Generate externs code given a list symbols.
  * @param {Array.<Object>} typedefs List of typedefs.
  * @param {Array.<Object>} symbols List of symbols.
+ * @param {Array.<Object>} externs List of externs.
  * @param {string|undefined} namespace Target object for exported symbols.
  * @return {string} Export code.
  */
-function generateExterns(typedefs, symbols) {
+function generateExterns(typedefs, symbols, externs) {
   var lines = [];
   var namespaces = {};
   var constructors = {};
@@ -60,16 +59,7 @@ function generateExterns(typedefs, symbols) {
     });
   }
 
-  typedefs.forEach(function(typedef) {
-    addNamespaces(typedef.name);
-    lines.push('/**');
-    lines.push(' * @typedef {' + typedef.types.join('|') + '}');
-    lines.push(' */');
-    lines.push(typedef.name + ';');
-    lines.push('\n');
-  });
-
-  symbols.forEach(function(symbol) {
+  function processSymbol(symbol) {
     addNamespaces(symbol.name.split('#')[0]);
 
     var name = symbol.name;
@@ -118,7 +108,19 @@ function generateExterns(typedefs, symbols) {
       lines.push(name + ';');
     }
     lines.push('\n');
+  }
+
+  typedefs.forEach(function(typedef) {
+    addNamespaces(typedef.name);
+    lines.push('/**');
+    lines.push(' * @typedef {' + typedef.types.join('|') + '}');
+    lines.push(' */');
+    lines.push(typedef.name + ';');
+    lines.push('\n');
   });
+
+  externs.forEach(processSymbol);
+  symbols.forEach(processSymbol);
   
   return lines.join('\n');
 }
@@ -132,11 +134,11 @@ function generateExterns(typedefs, symbols) {
  */
 function main(callback) {
   async.waterfall([
-    getTypedefsAndSymbols,
-    function(typedefs, symbols, done) {
+    getInfo,
+    function(typedefs, symbols, externs, done) {
       var code, err;
       try {
-        code = generateExterns(typedefs, symbols);
+        code = generateExterns(typedefs, symbols, externs);
       } catch (e) {
         err = e;
       }
