@@ -398,7 +398,7 @@ ol.format.GeoJSON.prototype.readFeaturesFromObject = function(
     object, opt_options) {
   var geoJSONObject = /** @type {GeoJSONObject} */ (object);
   if (geoJSONObject.type == 'Feature') {
-    return [this.readFeatureFromObject(object)];
+    return [this.readFeatureFromObject(object, opt_options)];
   } else if (geoJSONObject.type == 'FeatureCollection') {
     var geoJSONFeatureCollection = /** @type {GeoJSONFeatureCollection} */
         (object);

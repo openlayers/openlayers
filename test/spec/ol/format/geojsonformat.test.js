@@ -174,6 +174,15 @@ describe('ol.format.GeoJSON', function() {
       expect(features[2].getGeometry()).to.be.an(ol.geom.Polygon);
     });
 
+    it('can read and transform a point', function() {
+      var feature = format.readFeatures(pointGeoJSON, {
+        featureProjection: 'EPSG:3857'
+      });
+      expect(feature[0].getGeometry()).to.be.an(ol.geom.Point);
+      expect(feature[0].getGeometry().getCoordinates()).to.eql(
+          ol.proj.transform([102.0, 0.5], 'EPSG:4326', 'EPSG:3857'));
+    });
+
     it('can read and transform a feature collection', function() {
       var features = format.readFeatures(featureCollectionGeoJSON, {
         featureProjection: 'EPSG:3857'
