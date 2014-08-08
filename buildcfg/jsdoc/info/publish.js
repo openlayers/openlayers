@@ -32,6 +32,7 @@ exports.publish = function(data, opts) {
           return this.meta && (/[\\\/]externs$/).test(this.meta.path);
         }
       ],
+      {kind: {'!is': 'file'}},
       {kind: {'!is': 'event'}}).get();
 
   // get symbols data, filter out those that are members of private classes
