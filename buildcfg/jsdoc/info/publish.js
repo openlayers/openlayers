@@ -50,7 +50,8 @@ exports.publish = function(data, opts) {
     }
     return include;
   }).forEach(function(doc) {
-    if (doc.longname.indexOf('olx.') === 0) {
+    var isExterns = (/[\\\/]externs$/).test(doc.meta.path);
+    if (isExterns && doc.longname.indexOf('olx.') === 0) {
       if (doc.kind == 'typedef') {
         typedefs.push({
           name: doc.longname,
@@ -115,7 +116,7 @@ exports.publish = function(data, opts) {
           return true;
         });
       }
-      var target = (/[\\\/]externs$/).test(doc.meta.path) ? externs : symbols;
+      var target = isExterns ? externs : symbols;
       target.push(symbol);
     }
   });
