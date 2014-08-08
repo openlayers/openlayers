@@ -30,12 +30,14 @@
 }
 .ol-zoom button,
 .ol-zoom-extent button,
-.ol-full-screen button {
+.ol-full-screen button,
+.ol-rotate button {
     background-color: rgb(51, 51, 51);
 }
 .ol-zoom button:not([ie8andbelow]),
 .ol-zoom-extent button:not([ie8andbelow]),
-.ol-full-screen button:not([ie8andbelow]) {
+.ol-full-screen button:not([ie8andbelow]),
+.ol-rotate button:not([ie8andbelow]) {
     background-color: rgba(51, 51, 51, 0.5);
 }
 .ol-zoom button:hover,
@@ -43,7 +45,9 @@
 .ol-zoom-extent button:hover,
 .ol-zoom-extent button:focus,
 .ol-full-screen button:hover,
-.ol-full-screen button:focus {
+.ol-full-screen button:focus,
+.ol-rotate button:focus,
+.ol-rotate button:hover {
     background-color: rgba(51, 51, 51, 0.7);
 }
 .ol-zoom button:hover:not([ie8andbelow]),
@@ -51,7 +55,9 @@
 .ol-zoom-extent button:hover:not([ie8andbelow]),
 .ol-zoom-extent button:focus:not([ie8andbelow]),
 .ol-full-screen button:hover:not([ie8andbelow]),
-.ol-full-screen button:focus:not([ie8andbelow]) {
+.ol-full-screen button:focus:not([ie8andbelow]),
+.ol-rotate button:hover:not([ie8andbelow]),
+.ol-rotate button:focus:not([ie8andbelow]) {
     background-color: rgba(51, 51, 51, 0.8);
 }
 
