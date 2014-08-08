@@ -109,6 +109,7 @@ olx.LogoOptions;
 /**
  * @typedef {{map: (ol.Map|undefined),
  *     maxLines: (number|undefined),
+ *     strokeStyle: (ol.style.Stroke|undefined),
  *     targetSize: (number|undefined)}}
  */
 olx.GraticuleOptions;
@@ -131,6 +132,15 @@ olx.GraticuleOptions.prototype.map;
  * @type {number|undefined}
  */
 olx.GraticuleOptions.prototype.maxLines;
+
+
+/**
+ * The stroke style to use for drawing the graticule. If not provided, the
+ * lines will be drawn with `rgba(0,0,0,0.2)`, a not fully opaque black.
+ *
+ * @type {ol.style.Stroke|undefined}
+ */
+olx.GraticuleOptions.prototype.strokeStyle;
 
 
 /**
