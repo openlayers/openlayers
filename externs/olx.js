@@ -142,6 +142,15 @@ olx.GraticuleOptions.prototype.targetSize;
 
 
 /**
+ * The stroke style to use when drawing the graticule. If not provided, the
+ * lines will be drawn with `rgba(0,0,0,0.2)`, a not fully opaque black.
+ *
+ * @type {ol.style.Stroke|undefined}
+ */
+olx.GraticuleOptions.prototype.strokeStyle;
+
+
+/**
  * Object literal with config options for the map.
  * @typedef {{controls: (ol.Collection.<ol.control.Control>|Array.<ol.control.Control>|undefined),
  *     deviceOptions: (olx.DeviceOptions|undefined),
