@@ -189,6 +189,7 @@ ol.format.OSMXML.NODE_PARSERS_ = ol.xml.makeParsersNS(
  *
  * @function
  * @param {ArrayBuffer|Document|Node|Object|string} source Source.
+ * @param {olx.format.ReadOptions=} opt_options Read options.
  * @return {Array.<ol.Feature>} Features.
  * @api
  */
@@ -198,7 +199,7 @@ ol.format.OSMXML.prototype.readFeatures;
 /**
  * @inheritDoc
  */
-ol.format.OSMXML.prototype.readFeaturesFromNode = function(node) {
+ol.format.OSMXML.prototype.readFeaturesFromNode = function(node, opt_options) {
   goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT);
   if (node.localName == 'osm') {
     var state = ol.xml.pushParseAndPop({
@@ -206,6 +207,8 @@ ol.format.OSMXML.prototype.readFeaturesFromNode = function(node) {
       features: []
     }, ol.format.OSMXML.PARSERS_, node, []);
     if (goog.isDef(state.features)) {
+      ol.format.XMLFeature.transformFeaturesWithOptions(
+          state.features, false, this.getReadOptions(node, opt_options));
       return state.features;
     }
   }
