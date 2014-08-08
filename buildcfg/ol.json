@@ -14,6 +14,7 @@
     ],
     "define": [
       "goog.dom.ASSUME_STANDARDS_MODE=true",
+      "goog.json.USE_NATIVE_JSON=true",
       "goog.DEBUG=false"
     ],
     "jscomp_error": [
@@ -29,6 +30,7 @@
       "deprecated",
       "duplicateMessage",
       "es3",
+      "es5Strict",
       "externsValidation",
       "fileoverviewTags",
       "globalThis",
@@ -53,9 +55,6 @@
     ],
     "extra_annotation_name": [
       "api", "observable"
-    ],
-    "jscomp_off": [
-      "es5Strict"
     ],
     "compilation_level": "ADVANCED",
     "output_wrapper": "(function(){%output%})();",
