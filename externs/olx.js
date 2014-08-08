@@ -1221,10 +1221,18 @@ olx.format.IGCOptions.prototype.altitudeMode;
 
 
 /**
- * @typedef {{defaultStyle: (Array.<ol.style.Style>|undefined)}}
+ * @typedef {{extractStyles: (boolean|undefined),
+ *     defaultStyle: (Array.<ol.style.Style>|undefined)}}
  * @api
  */
 olx.format.KMLOptions;
+
+
+/**
+ * Extract styles from the KML. Default is `true`.
+ * @type {boolean|undefined}
+ */
+olx.format.KMLOptions.prototype.extractStyles;
 
 
 /**
@@ -3310,6 +3318,7 @@ olx.source.MapGuideOptions.prototype.params;
  * @typedef {{attributions: (Array.<ol.Attribution>|undefined),
  *     defaultStyle: (Array.<ol.style.Style>|undefined),
  *     doc: (Document|undefined),
+ *     extractStyles: (boolean|undefined),
  *     logo: (string|olx.LogoOptions|undefined),
  *     node: (Node|undefined),
  *     projection: ol.proj.ProjectionLike,
@@ -3340,6 +3349,13 @@ olx.source.KMLOptions.prototype.defaultStyle;
  * @type {Document|undefined}
  */
 olx.source.KMLOptions.prototype.doc;
+
+
+/**
+ * Extract styles from the KML document. Default is `true`.
+ * @type {boolean|undefined}
+ */
+olx.source.KMLOptions.prototype.extractStyles;
 
 
 /**

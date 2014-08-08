@@ -2,6 +2,7 @@
 // FIXME why does node.getAttribute return an unknown type?
 // FIXME text
 // FIXME serialize arbitrary feature properties
+// FIXME don't parse style if extractStyles is false
 
 goog.provide('ol.format.KML');
 
@@ -97,6 +98,13 @@ ol.format.KML = function(opt_options) {
       return defaultStyle;
     }
   };
+
+  /**
+   * @private
+   * @type {boolean}
+   */
+  this.extractStyles_ = goog.isDef(options.extractStyles) ?
+      options.extractStyles : true;
 
   /**
    * @private
@@ -1427,7 +1435,9 @@ ol.format.KML.prototype.readPlacemark_ = function(node, objectStack) {
     feature.setId(id);
   }
   feature.setProperties(object);
-  feature.setStyle(this.featureStyleFunction_);
+  if (this.extractStyles_) {
+    feature.setStyle(this.featureStyleFunction_);
+  }
   return feature;
 };
 
