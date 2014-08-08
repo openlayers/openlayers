@@ -10,10 +10,11 @@ var readGeometry = function(format, text, opt_options) {
 
 describe('ol.format.GML', function() {
 
-  var format, formatWGS84;
+  var format, formatWGS84, formatNoSrs;
   beforeEach(function() {
     format = new ol.format.GML({srsName: 'CRS:84'});
     formatWGS84 = new ol.format.GML({srsName: 'urn:x-ogc:def:crs:EPSG:4326'});
+    formatNoSrs = new ol.format.GML();
   });
 
   describe('#readGeometry', function() {
@@ -53,6 +54,22 @@ describe('ol.format.GML', function() {
         var coordinate = pos.split(' ');
         expect(coordinate[0]).to.roughlyEqual(1, 1e-9);
         expect(coordinate[1]).to.roughlyEqual(2, 1e-9);
+      });
+
+      it('can detect SRS, read and transform a point geometry', function() {
+        var config = {
+          featureProjection: 'EPSG:3857'
+        };
+        var text =
+            '<gml:Point xmlns:gml="http://www.opengis.net/gml" ' +
+            '    srsName="CRS:84">' +
+            '  <gml:pos>1 2</gml:pos>' +
+            '</gml:Point>';
+        var g = readGeometry(formatNoSrs, text, config);
+        expect(g).to.be.an(ol.geom.Point);
+        var coordinates = g.getCoordinates();
+        expect(coordinates.splice(0, 2)).to.eql(
+            ol.proj.transform([1, 2], 'CRS:84', 'EPSG:3857'));
       });
 
       it('can read and write a point geometry in EPSG:4326', function() {

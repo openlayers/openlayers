@@ -1,5 +1,3 @@
-//FIXME Implement readProjectionFrom*
-
 goog.provide('ol.format.GML');
 
 goog.require('goog.asserts');
@@ -1077,8 +1075,8 @@ ol.format.GML.prototype.readFeaturesFromNode = function(node, opt_options) {
  * @inheritDoc
  */
 ol.format.GML.prototype.readProjectionFromNode = function(node) {
-  //TODO read this from data
-  return ol.proj.get(this.srsName_);
+  return goog.isDef(this.srsName_) ? this.srsName_ :
+      node.firstElementChild.getAttribute('srsName');
 };
 
 
