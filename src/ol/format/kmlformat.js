@@ -1487,6 +1487,7 @@ ol.format.KML.prototype.readSharedStyleMap_ = function(node, objectStack) {
  *
  * @function
  * @param {ArrayBuffer|Document|Node|Object|string} source Source.
+ * @param {olx.format.ReadOptions=} opt_options Read options.
  * @return {ol.Feature} Feature.
  * @api
  */
@@ -1496,7 +1497,7 @@ ol.format.KML.prototype.readFeature;
 /**
  * @inheritDoc
  */
-ol.format.KML.prototype.readFeatureFromNode = function(node) {
+ol.format.KML.prototype.readFeatureFromNode = function(node, opt_options) {
   goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT);
   if (!goog.array.contains(ol.format.KML.NAMESPACE_URIS_, node.namespaceURI)) {
     return null;
@@ -1504,6 +1505,8 @@ ol.format.KML.prototype.readFeatureFromNode = function(node) {
   goog.asserts.assert(node.localName == 'Placemark');
   var feature = this.readPlacemark_(node, []);
   if (goog.isDef(feature)) {
+    ol.format.XMLFeature.transformFeaturesWithOptions(
+        [feature], false, this.getReadOptions(node, opt_options));
     return feature;
   } else {
     return null;
@@ -1516,6 +1519,7 @@ ol.format.KML.prototype.readFeatureFromNode = function(node) {
  *
  * @function
  * @param {ArrayBuffer|Document|Node|Object|string} source Source.
+ * @param {olx.format.ReadOptions=} opt_options Read options.
  * @return {Array.<ol.Feature>} Features.
  * @api
  */
@@ -1525,7 +1529,7 @@ ol.format.KML.prototype.readFeatures;
 /**
  * @inheritDoc
  */
-ol.format.KML.prototype.readFeaturesFromNode = function(node) {
+ol.format.KML.prototype.readFeaturesFromNode = function(node, opt_options) {
   goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT);
   if (!goog.array.contains(ol.format.KML.NAMESPACE_URIS_, node.namespaceURI)) {
     return [];
@@ -1535,6 +1539,8 @@ ol.format.KML.prototype.readFeaturesFromNode = function(node) {
   if (localName == 'Document' || localName == 'Folder') {
     features = this.readDocumentOrFolder_(node, []);
     if (goog.isDef(features)) {
+      ol.format.XMLFeature.transformFeaturesWithOptions(
+          features, false, this.getReadOptions(node, opt_options));
       return features;
     } else {
       return [];
@@ -1542,6 +1548,8 @@ ol.format.KML.prototype.readFeaturesFromNode = function(node) {
   } else if (localName == 'Placemark') {
     var feature = this.readPlacemark_(node, []);
     if (goog.isDef(feature)) {
+      ol.format.XMLFeature.transformFeaturesWithOptions(
+          [feature], false, this.getReadOptions(node, opt_options));
       return [feature];
     } else {
       return [];
@@ -1551,7 +1559,7 @@ ol.format.KML.prototype.readFeaturesFromNode = function(node) {
     var n;
     for (n = node.firstElementChild; !goog.isNull(n);
          n = n.nextElementSibling) {
-      var fs = this.readFeaturesFromNode(n);
+      var fs = this.readFeaturesFromNode(n, opt_options);
       if (goog.isDef(fs)) {
         goog.array.extend(features, fs);
       }
@@ -2494,6 +2502,7 @@ ol.format.KML.OUTER_BOUNDARY_NODE_FACTORY_ =
  *
  * @function
  * @param {Array.<ol.Feature>} features Features.
+ * @param {olx.format.WriteOptions=} opt_options Options.
  * @return {Node} Result.
  * @api
  */
@@ -2503,7 +2512,7 @@ ol.format.KML.prototype.writeFeatures;
 /**
  * @inheritDoc
  */
-ol.format.KML.prototype.writeFeaturesNode = function(features) {
+ol.format.KML.prototype.writeFeaturesNode = function(features, opt_options) {
   var kml = ol.xml.createElementNS(ol.format.KML.NAMESPACE_URIS_[4], 'kml');
   var xmlnsUri = 'http://www.w3.org/2000/xmlns/';
   var xmlSchemaInstanceUri = 'http://www.w3.org/2001/XMLSchema-instance';
@@ -2512,6 +2521,12 @@ ol.format.KML.prototype.writeFeaturesNode = function(features) {
   ol.xml.setAttributeNS(kml, xmlnsUri, 'xmlns:xsi', xmlSchemaInstanceUri);
   ol.xml.setAttributeNS(kml, xmlSchemaInstanceUri, 'xsi:schemaLocation',
       ol.format.KML.SCHEMA_LOCATION_);
+
+  // for convenience set a default dataProjection
+  opt_options = ol.format.XMLFeature.setDefaultDataProjection(
+      opt_options, this.readProjectionFromDocument(null));
+  features = ol.format.XMLFeature.transformFeaturesWithOptions(
+      features, true, opt_options);
 
   var /** @type {ol.xml.NodeStackItem} */ context = {node: kml};
   var properties = {};

@@ -1,7 +1,5 @@
 goog.provide('ol.test.format.GPX');
 
-goog.require('ol.proj');
-
 describe('ol.format.GPX', function() {
 
   var format;
@@ -559,4 +557,5 @@ goog.require('ol.format.GPX');
 goog.require('ol.geom.LineString');
 goog.require('ol.geom.MultiLineString');
 goog.require('ol.geom.Point');
+goog.require('ol.proj');
 goog.require('ol.xml');

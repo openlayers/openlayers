@@ -864,17 +864,13 @@ ol.format.GPX.prototype.writeFeatures;
 ol.format.GPX.prototype.writeFeaturesNode = function(features, opt_options) {
   //FIXME Serialize metadata
   var gpx = ol.xml.createElementNS('http://www.topografix.com/GPX/1/1', 'gpx');
-  if (goog.isDef(opt_options)) {
-    if (!goog.isDef(opt_options.dataProjection)) {
-      // for convenience set a default dataProjection
-      opt_options = {
-        featureProjection: opt_options.featureProjection,
-        dataProjection: this.readProjectionFromDocument(null)
-      };
-    }
-  }
+
+  // for convenience set a default dataProjection
+  opt_options = ol.format.XMLFeature.setDefaultDataProjection(
+      opt_options, this.readProjectionFromDocument(null));
   features = ol.format.XMLFeature.transformFeaturesWithOptions(
       features, true, opt_options);
+
   ol.xml.pushSerializeAndPop(/** @type {ol.xml.NodeStackItem} */
       ({node: gpx}), ol.format.GPX.GPX_SERIALIZERS_,
       ol.format.GPX.GPX_NODE_FACTORY_, features, []);
