@@ -3,6 +3,7 @@ goog.provide('ol.format.TopoJSON');
 goog.require('goog.asserts');
 goog.require('goog.object');
 goog.require('ol.Feature');
+goog.require('ol.format.Feature');
 goog.require('ol.format.JSONFeature');
 goog.require('ol.geom.LineString');
 goog.require('ol.geom.MultiLineString');
@@ -218,17 +219,18 @@ ol.format.TopoJSON.prototype.getExtensions = function() {
  * @param {Array.<Array.<ol.Coordinate>>} arcs Array of arcs.
  * @param {Array.<number>} scale Scale for each dimension.
  * @param {Array.<number>} translate Translation for each dimension.
+ * @param {olx.format.ReadOptions=} opt_options Read options.
  * @return {Array.<ol.Feature>} Array of features.
  * @private
  */
 ol.format.TopoJSON.readFeaturesFromGeometryCollection_ = function(
-    collection, arcs, scale, translate) {
+    collection, arcs, scale, translate, opt_options) {
   var geometries = collection.geometries;
   var features = [];
   var i, ii;
   for (i = 0, ii = geometries.length; i < ii; ++i) {
     features[i] = ol.format.TopoJSON.readFeatureFromGeometry_(
-        geometries[i], arcs, scale, translate);
+        geometries[i], arcs, scale, translate, opt_options);
   }
   return features;
 };
@@ -241,11 +243,12 @@ ol.format.TopoJSON.readFeaturesFromGeometryCollection_ = function(
  * @param {Array.<Array.<ol.Coordinate>>} arcs Array of arcs.
  * @param {Array.<number>} scale Scale for each dimension.
  * @param {Array.<number>} translate Translation for each dimension.
+ * @param {olx.format.ReadOptions=} opt_options Read options.
  * @return {ol.Feature} Feature.
  * @private
  */
 ol.format.TopoJSON.readFeatureFromGeometry_ = function(object, arcs,
-    scale, translate) {
+    scale, translate, opt_options) {
   var geometry;
   var type = object.type;
   var geometryReader = ol.format.TopoJSON.GEOMETRY_READERS_[type];
@@ -256,7 +259,8 @@ ol.format.TopoJSON.readFeatureFromGeometry_ = function(object, arcs,
     geometry = geometryReader(object, arcs);
   }
   var feature = new ol.Feature();
-  feature.setGeometry(geometry);
+  feature.setGeometry(ol.format.Feature.transformWithOptions(
+      geometry, false, opt_options));
   if (goog.isDef(object.id)) {
     feature.setId(object.id);
   }
@@ -281,7 +285,8 @@ ol.format.TopoJSON.prototype.readFeatures;
 /**
  * @inheritDoc
  */
-ol.format.TopoJSON.prototype.readFeaturesFromObject = function(object) {
+ol.format.TopoJSON.prototype.readFeaturesFromObject = function(
+    object, opt_options) {
   if (object.type == 'Topology') {
     var topoJSONTopology = /** @type {TopoJSONTopology} */ (object);
     var transform, scale = null, translate = null;
@@ -306,12 +311,12 @@ ol.format.TopoJSON.prototype.readFeaturesFromObject = function(object) {
             (topoJSONFeatures[i]);
         features.push.apply(features,
             ol.format.TopoJSON.readFeaturesFromGeometryCollection_(
-                feature, arcs, scale, translate));
+                feature, arcs, scale, translate, opt_options));
       } else {
         feature = /** @type {TopoJSONGeometry} */
             (topoJSONFeatures[i]);
         features.push(ol.format.TopoJSON.readFeatureFromGeometry_(
-            feature, arcs, scale, translate));
+            feature, arcs, scale, translate, opt_options));
       }
     }
     return features;
