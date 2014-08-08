@@ -124,15 +124,15 @@ ol.format.Feature.prototype.writeGeometry = goog.abstractMethod;
 
 /**
  * @param {ol.geom.Geometry} geometry Geometry.
- * @param {boolean} write Set to true for writing, false for reading. For
- *     writing, the geometry will be cloned before transforming.
+ * @param {boolean} write Set to true for writing, false for reading.
+ * @param {boolean} clone The geometry will be cloned before transforming.
  * @param {(olx.format.WriteOptions|olx.format.ReadOptions)=} opt_options
  *     Options.
  * @return {ol.geom.Geometry} Transformed geometry.
  * @protected
  */
 ol.format.Feature.transformWithOptions = function(
-    geometry, write, opt_options) {
+    geometry, write, clone, opt_options) {
   var featureProjection = goog.isDef(opt_options) ?
       ol.proj.get(opt_options.featureProjection) : null;
   var dataProjection = goog.isDef(opt_options) ?

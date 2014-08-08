@@ -415,6 +415,7 @@ ol.format.GPX.prototype.handleReadExtensions_ = function(features) {
  *
  * @function
  * @param {ArrayBuffer|Document|Node|Object|string} source Source.
+ * @param {olx.format.ReadOptions=} opt_options Read options.
  * @return {ol.Feature} Feature.
  * @api
  */
@@ -424,7 +425,7 @@ ol.format.GPX.prototype.readFeature;
 /**
  * @inheritDoc
  */
-ol.format.GPX.prototype.readFeatureFromNode = function(node) {
+ol.format.GPX.prototype.readFeatureFromNode = function(node, opt_options) {
   goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT);
   if (!goog.array.contains(ol.format.GPX.NAMESPACE_URIS_, node.namespaceURI)) {
     return null;
@@ -438,6 +439,8 @@ ol.format.GPX.prototype.readFeatureFromNode = function(node) {
     return null;
   }
   this.handleReadExtensions_([feature]);
+  ol.format.XMLFeature.transformFeaturesWithOptions(
+      [feature], false, this.getReadOptions(node, opt_options));
   return feature;
 };
 
@@ -447,6 +450,7 @@ ol.format.GPX.prototype.readFeatureFromNode = function(node) {
  *
  * @function
  * @param {ArrayBuffer|Document|Node|Object|string} source Source.
+ * @param {olx.format.ReadOptions=} opt_options Read options.
  * @return {Array.<ol.Feature>} Features.
  * @api
  */
@@ -456,7 +460,7 @@ ol.format.GPX.prototype.readFeatures;
 /**
  * @inheritDoc
  */
-ol.format.GPX.prototype.readFeaturesFromNode = function(node) {
+ol.format.GPX.prototype.readFeaturesFromNode = function(node, opt_options) {
   goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT);
   if (!goog.array.contains(ol.format.GPX.NAMESPACE_URIS_, node.namespaceURI)) {
     return [];
@@ -467,6 +471,8 @@ ol.format.GPX.prototype.readFeaturesFromNode = function(node) {
         node, []);
     if (goog.isDef(features)) {
       this.handleReadExtensions_(features);
+      ol.format.XMLFeature.transformFeaturesWithOptions(
+          features, false, this.getReadOptions(node, opt_options));
       return features;
     } else {
       return [];
@@ -845,6 +851,7 @@ ol.format.GPX.GPX_SERIALIZERS_ = ol.xml.makeStructureNS(
  *
  * @function
  * @param {Array.<ol.Feature>} features Features.
+ * @param {olx.format.WriteOptions=} opt_options Write options.
  * @return {Node} Result.
  * @api
  */
@@ -854,9 +861,20 @@ ol.format.GPX.prototype.writeFeatures;
 /**
  * @inheritDoc
  */
-ol.format.GPX.prototype.writeFeaturesNode = function(features) {
+ol.format.GPX.prototype.writeFeaturesNode = function(features, opt_options) {
   //FIXME Serialize metadata
   var gpx = ol.xml.createElementNS('http://www.topografix.com/GPX/1/1', 'gpx');
+  if (goog.isDef(opt_options)) {
+    if (!goog.isDef(opt_options.dataProjection)) {
+      // for convenience set a default dataProjection
+      opt_options = {
+        featureProjection: opt_options.featureProjection,
+        dataProjection: this.readProjectionFromDocument(null)
+      };
+    }
+  }
+  features = ol.format.XMLFeature.transformFeaturesWithOptions(
+      features, true, opt_options);
   ol.xml.pushSerializeAndPop(/** @type {ol.xml.NodeStackItem} */
       ({node: gpx}), ol.format.GPX.GPX_SERIALIZERS_,
       ol.format.GPX.GPX_NODE_FACTORY_, features, []);

@@ -162,7 +162,8 @@ ol.format.GML.readGeometry = function(node, objectStack) {
   var geometry = ol.xml.pushParseAndPop(/** @type {ol.geom.Geometry} */(null),
       ol.format.GML.GEOMETRY_PARSERS_, node, objectStack);
   if (goog.isDefAndNotNull(geometry)) {
-    return ol.format.Feature.transformWithOptions(geometry, false, context);
+    return ol.format.Feature.transformWithOptions(
+        geometry, false, false, context);
   } else {
     return undefined;
   }
@@ -1467,7 +1468,8 @@ ol.format.GML.writeGeometry = function(node, geometry, objectStack) {
     }
   } else {
     goog.asserts.assertInstanceof(geometry, ol.geom.Geometry);
-    value = ol.format.Feature.transformWithOptions(geometry, true, context);
+    value =
+        ol.format.Feature.transformWithOptions(geometry, true, true, context);
   }
   ol.xml.pushSerializeAndPop(/** @type {ol.xml.NodeStackItem} */
       (item), ol.format.GML.GEOMETRY_SERIALIZERS_,

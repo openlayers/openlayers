@@ -260,7 +260,7 @@ ol.format.TopoJSON.readFeatureFromGeometry_ = function(object, arcs,
   }
   var feature = new ol.Feature();
   feature.setGeometry(ol.format.Feature.transformWithOptions(
-      geometry, false, opt_options));
+      geometry, false, false, opt_options));
   if (goog.isDef(object.id)) {
     feature.setId(object.id);
   }
