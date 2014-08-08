@@ -48,15 +48,21 @@ function generateExterns(typedefs, symbols, externs) {
       var partialNamespace = namespace.join('.');
       if (!(partialNamespace in namespaces ||
           partialNamespace in constructors)) {
-        namespaces[partialNamespace] = true;
         lines.push('/**');
         lines.push(' * @type {Object}');
         lines.push(' */');
-        lines.push(
-            (namespace.length == 1 ? 'var ' : '') + partialNamespace + ';');
+        lines.push(nameToJS(partialNamespace) + ';');
         lines.push('\n');
       }
     });
+  }
+
+  function nameToJS(name) {
+    if (name.indexOf('.') == -1) {
+      namespaces[name] = true;
+      name = 'var ' + name;
+    }
+    return name;
   }
 
   function processSymbol(symbol) {
@@ -71,7 +77,7 @@ function generateExterns(typedefs, symbols, externs) {
         lines.push('/**');
         lines.push(' * @constructor');
         lines.push(' */');
-        lines.push(constructor + ' = function() {};');
+        lines.push(nameToJS(constructor) + ' = function() {};');
         lines.push('\n');
       }
     }
@@ -103,23 +109,24 @@ function generateExterns(typedefs, symbols, externs) {
     }
     lines.push(' */');
     if (symbol.kind == 'function' || symbol.kind == 'class') {
-      lines.push(name + ' = function(' + args.join(', ') + ') {};');
+      lines.push(nameToJS(name) + ' = function(' + args.join(', ') + ') {};');
     } else {
-      lines.push(name + ';');
+      lines.push(nameToJS(name) + ';');
     }
     lines.push('\n');
   }
+
+  externs.forEach(processSymbol);
 
   typedefs.forEach(function(typedef) {
     addNamespaces(typedef.name);
     lines.push('/**');
     lines.push(' * @typedef {' + typedef.types.join('|') + '}');
     lines.push(' */');
-    lines.push(typedef.name + ';');
+    lines.push(nameToJS(typedef.name) + ';');
     lines.push('\n');
   });
 
-  externs.forEach(processSymbol);
   symbols.forEach(processSymbol);
   
   return lines.join('\n');
