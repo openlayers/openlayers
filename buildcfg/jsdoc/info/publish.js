@@ -58,8 +58,9 @@ exports.publish = function(data, opts) {
           types: ['{}']
         });
       } else {
-        var type = typedefs[typedefs.length - 1].types[0];
-        typedefs[typedefs.length - 1].types[0] = type
+        var typedef = typedefs[typedefs.length - 1];
+        var type = typedef.types[0];
+        typedef.types[0] = type
             .replace(/\}$/, ', ' + doc.longname.split('#')[1] +
                 ': (' + getTypes(doc.type.names).join('|') + ')}')
             .replace('{, ', '{');
