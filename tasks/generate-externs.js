@@ -36,7 +36,7 @@ function getInfo(callback) {
  */
 function generateExterns(typedefs, symbols, externs) {
   var lines = [];
-  var namespaces = {};
+  var processedSymbols = {};
   var constructors = {};
 
   function addNamespaces(name) {
@@ -46,7 +46,7 @@ function generateExterns(typedefs, symbols, externs) {
     parts.forEach(function(part) {
       namespace.push(part);
       var partialNamespace = namespace.join('.');
-      if (!(partialNamespace in namespaces ||
+      if (!(partialNamespace in processedSymbols ||
           partialNamespace in constructors)) {
         lines.push('/**');
         lines.push(' * @type {Object}');
@@ -58,8 +58,8 @@ function generateExterns(typedefs, symbols, externs) {
   }
 
   function nameToJS(name) {
+    processedSymbols[name] = true;
     if (name.indexOf('.') == -1) {
-      namespaces[name] = true;
       name = 'var ' + name;
     }
     return name;
