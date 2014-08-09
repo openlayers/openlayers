@@ -65,6 +65,14 @@ function generateExterns(typedefs, symbols, externs) {
     return name;
   }
 
+  function noGoogTypes(typesWithGoog) {
+    typesWithoutGoog = [];
+    typesWithGoog.forEach(function(type) {
+      typesWithoutGoog.push(type.replace(/^goog\..*$/, '*'));
+    });
+    return typesWithoutGoog;
+  }
+
   function processSymbol(symbol) {
     addNamespaces(symbol.name.split('#')[0]);
 
@@ -88,7 +96,7 @@ function generateExterns(typedefs, symbols, externs) {
       lines.push(' * @constructor');
     }
     if (symbol.types) {
-      lines.push(' * @type {' + symbol.types.join('|') + '}');
+      lines.push(' * @type {' + noGoogTypes(symbol.types).join('|') + '}');
     }
     var args = [];
     if (symbol.params) {
@@ -96,13 +104,13 @@ function generateExterns(typedefs, symbols, externs) {
         args.push(param.name);
         lines.push(' * @param {' +
             (param.variable ? '...' : '') +
-            param.types.join('|') +
+            noGoogTypes(param.types).join('|') +
             (param.optional ? '=' : '') +
             '} ' + param.name);
       });
     }
     if (symbol.returns) {
-      lines.push(' * @return {' + symbol.returns.join('|') + '}');
+      lines.push(' * @return {' + noGoogTypes(symbol.returns).join('|') + '}');
     }
     if (symbol.template) {
       lines.push(' * @template ' + symbol.template);
@@ -121,7 +129,7 @@ function generateExterns(typedefs, symbols, externs) {
   typedefs.forEach(function(typedef) {
     addNamespaces(typedef.name);
     lines.push('/**');
-    lines.push(' * @typedef {' + typedef.types.join('|') + '}');
+    lines.push(' * @typedef {' + noGoogTypes(typedef.types).join('|') + '}');
     lines.push(' */');
     lines.push(nameToJS(typedef.name) + ';');
     lines.push('\n');
