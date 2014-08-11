@@ -554,7 +554,7 @@ ol.Map.prototype.disposeInternal = function() {
  *     be `null`. To stop detection, callback functions can return a truthy
  *     value.
  * @param {S=} opt_this Value to use as `this` when executing `callback`.
- * @param {function(this: U, ol.layer.Layer): boolean=} opt_layerFilter Layer
+ * @param {(function(this: U, ol.layer.Layer): boolean)=} opt_layerFilter Layer
  *     filter function, only layers which are visible and for which this
  *     function returns `true` will be tested for features. By default, all
  *     visible layers will be tested. Feature overlays will always be tested.

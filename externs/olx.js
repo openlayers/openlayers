@@ -107,6 +107,20 @@ olx.LogoOptions;
 
 
 /**
+ * Link url for the logo. Will be followed when the logo is clicked.
+ * @type {string}
+ */
+olx.LogoOptions.prototype.href;
+
+
+/**
+ * Image src for the logo
+ * @type {string}
+ */
+olx.LogoOptions.prototype.src;
+
+
+/**
  * @typedef {{map: (ol.Map|undefined),
  *     maxLines: (number|undefined),
  *     strokeStyle: (ol.style.Stroke|undefined),
@@ -1186,6 +1200,7 @@ olx.format.PolylineOptions;
 /**
  * The factor by which the coordinates values will be scaled.
  * Default is `1e5`.
+ * @type {number}
  */
 olx.format.PolylineOptions.prototype.factor;
 
@@ -2788,7 +2803,7 @@ olx.source.FormatVectorOptions.prototype.format;
 
 /**
  * Logo.
- * @type{string|olx.LogoOptions|undefined}
+ * @type {string|olx.LogoOptions|undefined}
  */
 olx.source.FormatVectorOptions.prototype.logo;
 
@@ -2830,7 +2845,7 @@ olx.source.GeoJSONOptions.prototype.defaultProjection;
 
 /**
  * Logo.
- * @type{string|olx.LogoOptions|undefined}
+ * @type {string|olx.LogoOptions|undefined}
  */
 olx.source.GeoJSONOptions.prototype.logo;
 
@@ -2901,7 +2916,7 @@ olx.source.GPXOptions.prototype.doc;
 
 /**
  * Logo.
- * @type{string|olx.LogoOptions|undefined}
+ * @type {string|olx.LogoOptions|undefined}
  */
 olx.source.GPXOptions.prototype.logo;
 
@@ -2976,7 +2991,7 @@ olx.source.TileImageOptions.prototype.crossOrigin;
 
 /**
  * Logo.
- * @type{string|olx.LogoOptions|undefined}
+ * @type {string|olx.LogoOptions|undefined}
  */
 olx.source.TileImageOptions.prototype.logo;
 
@@ -3074,7 +3089,7 @@ olx.source.TileVectorOptions.prototype.format;
 
 /**
  * Logo.
- * @type{string|olx.LogoOptions|undefined}
+ * @type {string|olx.LogoOptions|undefined}
  */
 olx.source.TileVectorOptions.prototype.logo;
 
@@ -3152,7 +3167,7 @@ olx.source.TopoJSONOptions.prototype.defaultProjection;
 
 /**
  * Logo.
- * @type{string|olx.LogoOptions|undefined}
+ * @type {string|olx.LogoOptions|undefined}
  */
 olx.source.TopoJSONOptions.prototype.logo;
 
@@ -3360,7 +3375,7 @@ olx.source.KMLOptions.prototype.extractStyles;
 
 /**
  * Logo.
- * @type{string|olx.LogoOptions|undefined}
+ * @type {string|olx.LogoOptions|undefined}
  */
 olx.source.KMLOptions.prototype.logo;
 
@@ -3531,7 +3546,7 @@ olx.source.OSMXMLOptions.prototype.doc;
 
 /**
  * Logo.
- * @type{string|olx.LogoOptions|undefined}
+ * @type {string|olx.LogoOptions|undefined}
  */
 olx.source.OSMXMLOptions.prototype.logo;
 
@@ -3614,7 +3629,7 @@ olx.source.ImageCanvasOptions.prototype.canvasFunction;
 
 /**
  * Logo.
- * @type{string|olx.LogoOptions|undefined}
+ * @type {string|olx.LogoOptions|undefined}
  */
 olx.source.ImageCanvasOptions.prototype.logo;
 
@@ -3671,7 +3686,7 @@ olx.source.ImageVectorOptions.prototype.attributions;
 
 /**
  * Logo.
- * @type{string|olx.LogoOptions|undefined}
+ * @type {string|olx.LogoOptions|undefined}
  */
 olx.source.ImageVectorOptions.prototype.logo;
 
@@ -3762,7 +3777,7 @@ olx.source.ImageWMSOptions.prototype.serverType;
 
 /**
  * Logo.
- * @type{string|olx.LogoOptions|undefined}
+ * @type {string|olx.LogoOptions|undefined}
  */
 olx.source.ImageWMSOptions.prototype.logo;
 
@@ -3902,7 +3917,7 @@ olx.source.ImageStaticOptions.prototype.imageSize;
 
 /**
  * Logo.
- * @type{string|olx.LogoOptions|undefined}
+ * @type {string|olx.LogoOptions|undefined}
  */
 olx.source.ImageStaticOptions.prototype.logo;
 
@@ -3964,7 +3979,7 @@ olx.source.ServerVectorOptions.prototype.strategy;
 
 /**
  * Logo.
- * @type{string|olx.LogoOptions|undefined}
+ * @type {string|olx.LogoOptions|undefined}
  */
 olx.source.ServerVectorOptions.prototype.logo;
 
@@ -4072,7 +4087,7 @@ olx.source.TileWMSOptions.prototype.hidpi;
 
 /**
  * Logo.
- * @type{string|olx.LogoOptions|undefined}
+ * @type {string|olx.LogoOptions|undefined}
  */
 olx.source.TileWMSOptions.prototype.logo;
 
@@ -4159,7 +4174,7 @@ olx.source.VectorOptions.prototype.features;
 
 /**
  * Logo.
- * @type{string|olx.LogoOptions|undefined}
+ * @type {string|olx.LogoOptions|undefined}
  */
 olx.source.VectorOptions.prototype.logo;
 
@@ -4225,7 +4240,7 @@ olx.source.StaticVectorOptions.prototype.format;
 
 /**
  * Logo.
- * @type{string|olx.LogoOptions|undefined}
+ * @type {string|olx.LogoOptions|undefined}
  */
 olx.source.StaticVectorOptions.prototype.logo;
 
@@ -4311,7 +4326,7 @@ olx.source.WMTSOptions.prototype.crossOrigin;
 
 /**
  * Logo.
- * @type{string|olx.LogoOptions|undefined}
+ * @type {string|olx.LogoOptions|undefined}
  */
 olx.source.WMTSOptions.prototype.logo;
 
@@ -4451,7 +4466,7 @@ olx.source.XYZOptions.prototype.crossOrigin;
 
 /**
  * Logo.
- * @type{string|olx.LogoOptions|undefined}
+ * @type {string|olx.LogoOptions|undefined}
  */
 olx.source.XYZOptions.prototype.logo;
 
@@ -4551,7 +4566,7 @@ olx.source.ZoomifyOptions.prototype.crossOrigin;
 
 /**
  * Logo.
- * @type{string|olx.LogoOptions|undefined}
+ * @type {string|olx.LogoOptions|undefined}
  */
 olx.source.ZoomifyOptions.prototype.logo;
 
