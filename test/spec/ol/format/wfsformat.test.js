@@ -4,15 +4,17 @@ describe('ol.format.WFS', function() {
 
   describe('when parsing TOPP states GML from WFS', function() {
 
-    var features, feature;
+    var features, feature, xml;
+    var config = {
+      'featureNS': 'http://www.openplans.org/topp',
+      'featureType': 'states'
+    };
+
     before(function(done) {
       proj4.defs('urn:x-ogc:def:crs:EPSG:4326', proj4.defs('EPSG:4326'));
-      afterLoadText('spec/ol/format/wfs/topp-states-wfs.xml', function(xml) {
+      afterLoadText('spec/ol/format/wfs/topp-states-wfs.xml', function(data) {
         try {
-          var config = {
-            'featureNS': 'http://www.openplans.org/topp',
-            'featureType': 'states'
-          };
+          xml = data;
           features = new ol.format.WFS(config).readFeatures(xml);
         } catch (e) {
           done(e);
@@ -30,6 +32,20 @@ describe('ol.format.WFS', function() {
       expect(feature.getId()).to.equal('states.1');
       expect(feature.get('STATE_NAME')).to.equal('Illinois');
       expect(feature.getGeometry()).to.be.an(ol.geom.MultiPolygon);
+    });
+
+    it('transforms and creates a polygon for Illinois', function() {
+      features = new ol.format.WFS(config).readFeatures(xml, {
+        featureProjection: 'EPSG:3857'
+      });
+      feature = features[0];
+      expect(feature.getId()).to.equal('states.1');
+      expect(feature.get('STATE_NAME')).to.equal('Illinois');
+      var geom = feature.getGeometry();
+      expect(geom).to.be.an(ol.geom.MultiPolygon);
+      var p = ol.proj.transform([-88.071, 37.511], 'EPSG:4326', 'EPSG:3857');
+      p.push(0);
+      expect(geom.getFirstCoordinate()).to.eql(p);
     });
 
   });
@@ -388,3 +404,4 @@ goog.require('ol.geom.MultiPoint');
 goog.require('ol.geom.MultiPolygon');
 goog.require('ol.geom.Polygon');
 goog.require('ol.format.WFS');
+goog.require('ol.proj');
