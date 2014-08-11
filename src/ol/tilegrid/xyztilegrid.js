@@ -23,19 +23,25 @@ goog.require('ol.tilegrid.TileGrid');
 ol.tilegrid.XYZ = function(options) {
 
   var resolutions = new Array(options.maxZoom + 1);
-  var z;
-  var size = 2 * ol.proj.EPSG3857.HALF_SIZE / ol.DEFAULT_TILE_SIZE;
+  var z, halfSize;
+  if(options.projection) {
+    halfSize = ol.extent.getWidth(options.projection.getExtent()) / 2;
+  } else {
+    halfSize = ol.proj.EPSG3857.HALF_SIZE;
+  }
+
+  var size = 2 * halfSize / ol.DEFAULT_TILE_SIZE;
   for (z = 0; z <= options.maxZoom; ++z) {
     resolutions[z] = size / Math.pow(2, z);
   }
 
   goog.base(this, {
     minZoom: options.minZoom,
-    origin: [-ol.proj.EPSG3857.HALF_SIZE, ol.proj.EPSG3857.HALF_SIZE],
+    origin: [-halfSize, halfSize],
     resolutions: resolutions,
     tileSize: ol.DEFAULT_TILE_SIZE
   });
-
+  
 };
 goog.inherits(ol.tilegrid.XYZ, ol.tilegrid.TileGrid);
 
