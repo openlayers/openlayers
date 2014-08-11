@@ -23,13 +23,6 @@ olx.AttributionOptions.prototype.html;
 
 
 /**
- * Tile ranges (FOR INTERNAL USE ONLY).
- * @type {Object.<string, Array.<ol.TileRange>>|undefined}
- */
-olx.AttributionOptions.prototype.tileRanges;
-
-
-/**
  * @typedef {{loadTilesWhileAnimating: (boolean|undefined),
  *     loadTilesWhileInteracting: (boolean|undefined)}}
  * @api

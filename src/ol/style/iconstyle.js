@@ -14,7 +14,9 @@ goog.require('ol.style.ImageState');
 
 
 /**
+ * Icon anchor units. One of 'fraction', 'pixels'.
  * @enum {string}
+ * @api
  */
 ol.style.IconAnchorUnits = {
   FRACTION: 'fraction',
@@ -23,7 +25,9 @@ ol.style.IconAnchorUnits = {
 
 
 /**
+ * Icon origin. One of 'bottom-left', 'bottom-right', 'top-left', 'top-right'.
  * @enum {string}
+ * @api
  */
 ol.style.IconOrigin = {
   BOTTOM_LEFT: 'bottom-left',
