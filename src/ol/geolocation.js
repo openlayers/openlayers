@@ -3,7 +3,6 @@
 goog.provide('ol.Geolocation');
 goog.provide('ol.GeolocationProperty');
 
-goog.require('goog.asserts');
 goog.require('goog.events');
 goog.require('goog.events.EventType');
 goog.require('goog.math');
