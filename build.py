@@ -130,7 +130,7 @@ virtual('ci', 'lint', 'jshint', 'build', 'test',
 virtual('build', 'build/ol.css', 'build/ol.js', 'build/ol-debug.js')
 
 
-virtual('check', 'lint', 'jshint', 'test')
+virtual('check', 'lint', 'build/ol.js', 'jshint', 'test')
 
 
 virtual('todo', 'fixme')
