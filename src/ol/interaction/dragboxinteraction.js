@@ -2,7 +2,6 @@
 goog.provide('ol.DragBoxEvent');
 goog.provide('ol.interaction.DragBox');
 
-goog.require('goog.asserts');
 goog.require('goog.events.Event');
 goog.require('goog.functions');
 goog.require('ol');
