@@ -5,6 +5,7 @@ goog.require('goog.asserts');
 goog.require('goog.dom.NodeType');
 goog.require('goog.object');
 goog.require('ol.Feature');
+goog.require('ol.format.Feature');
 goog.require('ol.format.XMLFeature');
 goog.require('ol.format.XSD');
 goog.require('ol.geom.LineString');
@@ -866,7 +867,7 @@ ol.format.GPX.prototype.writeFeaturesNode = function(features, opt_options) {
   var gpx = ol.xml.createElementNS('http://www.topografix.com/GPX/1/1', 'gpx');
 
   // for convenience set a default dataProjection
-  opt_options = ol.format.XMLFeature.setDefaultDataProjection(
+  opt_options = ol.format.Feature.setDefaultDataProjection(
       opt_options, this.readProjectionFromDocument(null));
   features = ol.format.XMLFeature.transformFeaturesWithOptions(
       features, true, opt_options);

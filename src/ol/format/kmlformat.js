@@ -16,6 +16,7 @@ goog.require('ol.Feature');
 goog.require('ol.array');
 goog.require('ol.color');
 goog.require('ol.feature');
+goog.require('ol.format.Feature');
 goog.require('ol.format.XMLFeature');
 goog.require('ol.format.XSD');
 goog.require('ol.geom.Geometry');
@@ -2523,7 +2524,7 @@ ol.format.KML.prototype.writeFeaturesNode = function(features, opt_options) {
       ol.format.KML.SCHEMA_LOCATION_);
 
   // for convenience set a default dataProjection
-  opt_options = ol.format.XMLFeature.setDefaultDataProjection(
+  opt_options = ol.format.Feature.setDefaultDataProjection(
       opt_options, this.readProjectionFromDocument(null));
   features = ol.format.XMLFeature.transformFeaturesWithOptions(
       features, true, opt_options);

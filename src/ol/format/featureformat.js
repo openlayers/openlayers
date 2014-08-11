@@ -146,3 +146,24 @@ ol.format.Feature.transformWithOptions = function(
     return geometry;
   }
 };
+
+
+/**
+ * @param {(olx.format.WriteOptions|olx.format.ReadOptions)=} opt_options
+ *     Options.
+ * @param {ol.proj.ProjectionLike} defaultDataProjection Default projection.
+ * @protected
+ * @return {(olx.format.WriteOptions|olx.format.ReadOptions)=} Updated options.
+ */
+ol.format.Feature.setDefaultDataProjection = function(
+    opt_options, defaultDataProjection) {
+  if (goog.isDef(opt_options)) {
+    if (!goog.isDef(opt_options.dataProjection)) {
+      opt_options = {
+        featureProjection: opt_options.featureProjection,
+        dataProjection: defaultDataProjection
+      };
+    }
+  }
+  return opt_options;
+};
