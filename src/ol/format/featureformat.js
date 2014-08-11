@@ -149,21 +149,22 @@ ol.format.Feature.transformWithOptions = function(
 
 
 /**
- * @param {(olx.format.WriteOptions|olx.format.ReadOptions)=} opt_options
+ * @param {olx.format.WriteOptions|olx.format.ReadOptions|undefined} options
  *     Options.
  * @param {ol.proj.ProjectionLike} defaultDataProjection Default projection.
  * @protected
- * @return {(olx.format.WriteOptions|olx.format.ReadOptions)=} Updated options.
+ * @return {olx.format.WriteOptions|olx.format.ReadOptions|undefined}
+ *     Updated options.
  */
 ol.format.Feature.setDefaultDataProjection = function(
-    opt_options, defaultDataProjection) {
-  if (goog.isDef(opt_options)) {
-    if (!goog.isDef(opt_options.dataProjection)) {
-      opt_options = {
-        featureProjection: opt_options.featureProjection,
+    options, defaultDataProjection) {
+  if (goog.isDef(options)) {
+    if (!goog.isDef(options.dataProjection)) {
+      options = {
+        featureProjection: options.featureProjection,
         dataProjection: defaultDataProjection
       };
     }
   }
-  return opt_options;
+  return options;
 };

@@ -1160,7 +1160,7 @@ olx.format.ReadOptions.prototype.dataProjection;
 
 
 /**
- * Projection of the feature geometries created by the format reader. if not
+ * Projection of the feature geometries created by the format reader. If not
  * provided, features will be returned in the `dataProjection`.
  * @type {ol.proj.ProjectionLike|undefined}
  */

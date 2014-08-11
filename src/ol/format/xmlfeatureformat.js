@@ -271,8 +271,11 @@ ol.format.XMLFeature.transformFeaturesWithOptions = function(
     }
 
     goog.array.forEach(features, function(feature) {
-      feature.setGeometry(ol.format.Feature.transformWithOptions(
-          feature.getGeometry(), write, false, opt_options));
+      var geom = feature.getGeometry();
+      if (goog.isDef(geom)) {
+        feature.setGeometry(ol.format.Feature.transformWithOptions(
+            geom, write, false, opt_options));
+      }
     });
   }
   return features;
