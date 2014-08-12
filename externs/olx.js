@@ -433,7 +433,7 @@ olx.ViewOptions.prototype.center;
 
 /**
  * Rotation constraint. `false` means no constraint. `true` means no constraint,
- * but snap to zero near zero. A number constraints the rotation to that number
+ * but snap to zero near zero. A number constrains the rotation to that number
  * of values. For example, `4` will constrain the rotation to 0, 90, 180, and
  * 270 degrees. The default is `true`.
  * @type {boolean|number|undefined}
