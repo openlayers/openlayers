@@ -34,6 +34,7 @@ ol.Tile = function(tileCoord, state) {
   goog.base(this);
 
   /**
+   * @const
    * @type {ol.TileCoord}
    */
   this.tileCoord = tileCoord;
@@ -73,11 +74,14 @@ ol.Tile.prototype.getKey = function() {
 
 
 /**
- * @return {ol.TileCoord}
+ * @return {olx.TileCoord}
  * @api
  */
 ol.Tile.prototype.getTileCoord = function() {
-  return this.tileCoord;
+  return  /** @type {olx.TileCoord} */ ({
+    x: this.tileCoord.x,
+    y: this.tileCoord.y,
+    z: this.tileCoord.z});
 };
 
 
