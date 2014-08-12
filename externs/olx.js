@@ -4974,6 +4974,37 @@ olx.style.StyleOptions.prototype.zIndex;
 
 
 /**
+ * @typedef {{x: number,
+ *     y: number,
+ *     z: number}}
+ * @api
+ */
+olx.TileCoord;
+
+
+/**
+ * X component of the tile coordinate.
+ * @type {number}
+ */
+olx.TileCoord.prototype.x;
+
+
+/**
+ * Y component of the tile coordinate.
+ * @type {number}
+ */
+olx.TileCoord.prototype.y;
+
+
+/**
+ * Zoom level component of the tile coordinate.
+ * @type {number}
+ */
+olx.TileCoord.prototype.z;
+
+
+
+/**
  * @typedef {{minZoom: (number|undefined),
  *     origin: (ol.Coordinate|undefined),
  *     origins: (Array.<ol.Coordinate>|undefined),
