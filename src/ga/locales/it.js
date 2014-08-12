@@ -10,5 +10,5 @@ ga.Lang.msg.it = {
   'Geocoding results': 'Risultati geocoding',
   'Zoom in': 'Zoom in',
   'Zoom out': 'Zoom out',
-  'Reset rotation': 'Reset rotation'
+  'Reset rotation': 'Annullare la rotazione'
 };
