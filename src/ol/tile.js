@@ -34,6 +34,7 @@ ol.Tile = function(tileCoord, state) {
   goog.base(this);
 
   /**
+   * @const
    * @type {ol.TileCoord}
    */
   this.tileCoord = tileCoord;
