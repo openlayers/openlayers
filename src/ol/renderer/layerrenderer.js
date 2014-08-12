@@ -275,7 +275,7 @@ ol.renderer.Layer.prototype.manageTilePyramid = function(
     preload = 0;
   }
   for (z = currentZ; z >= minZoom; --z) {
-    tileRange = tileGrid.getTileRangeForExtentAndZ(extent, z);
+    tileRange = tileGrid.getTileRangeForExtentAndZ(extent, z, tileRange);
     tileResolution = tileGrid.getResolution(z);
     for (x = tileRange.minX; x <= tileRange.maxX; ++x) {
       for (y = tileRange.minY; y <= tileRange.maxY; ++y) {
