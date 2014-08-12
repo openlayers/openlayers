@@ -7,5 +7,8 @@ goog.provide('ga.Lang.msg.it');
  * @todo api
  */
 ga.Lang.msg.it = {
-  'Geocoding results': 'Risultati geocoding'
+  'Geocoding results': 'Risultati geocoding',
+  'Zoom in': 'Zoom in',
+  'Zoom out': 'Zoom out',
+  'Reset rotation': 'Annullare la rotazione'
 };
