@@ -22,11 +22,10 @@ var map = new ol.Map({
       source: new ol.source.OSM()
     }),
     new ol.layer.Tile({
+      extent: ol.proj.transformExtent(mapExtent, 'EPSG:4326', 'EPSG:3857'),
       source: new ol.source.XYZ({
         url: 'http://tileserver.maptiler.com/grandcanyon@2x/{z}/{x}/{y}.png',
         tilePixelRatio: 2, // THIS IS IMPORTANT
-        maxExtent: ol.proj.transformExtent(
-            mapExtent, 'EPSG:4326', 'EPSG:3857'),
         minZoom: mapMinZoom,
         maxZoom: mapMaxZoom
       })
