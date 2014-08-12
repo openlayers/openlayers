@@ -49,7 +49,7 @@ ol.ViewHint = {
  * ### The view states
  *
  * An `ol.View` is determined by three states: `center`, `resolution`,
- * and `rotation`. To each state corresponds a getter and a setter. E.g.
+ * and `rotation`. Each state has a corresponding getter and setter, e.g.
  * `getCenter` and `setCenter` for the `center` state.
  *
  * An `ol.View` has a `projection`. The projection determines the
@@ -67,7 +67,7 @@ ol.ViewHint = {
  * But an `ol.View` object also has a *resolution constraint*, a
  * *rotation constraint* and a *center constraint*.
  *
- * As said above no constraints are applied when the setters are used to set
+ * As said above, no constraints are applied when the setters are used to set
  * new states for the view. Applying constraints is done explicitly through
  * the use of the `constrain*` functions (`constrainResolution` and
  * `constrainRotation` and `constrainCenter`).
@@ -82,7 +82,7 @@ ol.ViewHint = {
  * `maxZoom`, and `zoomFactor`. If `resolutions` is set, the other three
  * options are ignored. See {@link ol.ViewOptions} for more information.
  *
- * The *rotation constaint* is currently not configurable. It snaps the
+ * The *rotation constraint* is currently not configurable. It snaps the
  * rotation value to zero when approaching the horizontal.
  *
  * @constructor
