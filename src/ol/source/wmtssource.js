@@ -6,12 +6,12 @@ goog.require('goog.asserts');
 goog.require('goog.math');
 goog.require('goog.object');
 goog.require('goog.uri.utils');
-goog.require('ol.TileCoord');
 goog.require('ol.TileUrlFunction');
 goog.require('ol.TileUrlFunctionType');
 goog.require('ol.extent');
 goog.require('ol.proj');
 goog.require('ol.source.TileImage');
+goog.require('ol.tilecoord');
 goog.require('ol.tilegrid.WMTS');
 
 
@@ -170,7 +170,7 @@ ol.source.WMTS = function(options) {
             ol.extent.touches(tileExtent, extent)) {
           return null;
         }
-        return [tileCoord[0], x, y];
+        return ol.tilecoord.createOrUpdate(tileCoord[0], x, y, opt_tileCoord);
       },
       tileUrlFunction);
 
