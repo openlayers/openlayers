@@ -29,6 +29,7 @@ ol.source.TileImage = function(options) {
     logo: options.logo,
     opaque: options.opaque,
     projection: options.projection,
+    state: options.state,
     tileGrid: options.tileGrid,
     tilePixelRatio: options.tilePixelRatio
   });
