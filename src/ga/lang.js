@@ -141,7 +141,7 @@ ga.Lang.de = {
  * @todo api
  */
 ga.Lang.en = {
-  'Geocoding results': 'Rezultatele geocodare',
+  'Geocoding results': 'Geocoding results',
   'Zoom in': 'Zoom in',
   'Zoom out': 'Zoom out',
   'Reset rotation': 'Reset rotation'
@@ -180,5 +180,5 @@ ga.Lang.rm = {
   'Geocoding results': 'Rezultatele geocodare',
   'Zoom in': 'Zoom in',
   'Zoom out': 'Zoom out',
-  'Reset rotation': 'Rotation zurücksetzen'
+  'Reset rotation': 'Rotaziun reinizialisar'
 };
