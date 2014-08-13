@@ -106,7 +106,7 @@ goog.inherits(ol.interaction.Select, ol.interaction.Interaction);
 
 /**
  * Get the selected features.
- * @return {ol.Collection} Features collection.
+ * @return {ol.Collection.<ol.Feature>} Features collection.
  * @api stable
  */
 ol.interaction.Select.prototype.getFeatures = function() {
@@ -204,7 +204,7 @@ ol.interaction.Select.prototype.setMap = function(map) {
 
 
 /**
- * @return {ol.feature.StyleFunction} Styles.
+ * @return {ol.style.StyleFunction} Styles.
  */
 ol.interaction.Select.getDefaultStyleFunction = function() {
   var styles = ol.feature.createDefaultEditingStyles();

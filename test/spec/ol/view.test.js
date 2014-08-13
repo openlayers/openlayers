@@ -401,6 +401,19 @@ describe('ol.View', function() {
       expect(view.getCenter()[0]).to.be(5900);
       expect(view.getCenter()[1]).to.be(46100);
 
+      view.fitGeometry(
+          new ol.geom.Point([6000, 46000]),
+          [200, 200],
+          {
+            padding: [100, 0, 0, 100],
+            maxZoom: 6
+          }
+      );
+      expect(view.getResolution()).to.be(2);
+      expect(view.getZoom()).to.be(6);
+      expect(view.getCenter()[0]).to.be(5900);
+      expect(view.getCenter()[1]).to.be(46100);
+
       view.setRotation(Math.PI / 4);
       view.fitGeometry(
           new ol.geom.LineString([[6000, 46000], [6000, 47100], [7000, 46000]]),

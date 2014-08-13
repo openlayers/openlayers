@@ -1,5 +1,3 @@
-// FIXME should inQueue be private?
-
 goog.provide('ol.Tile');
 goog.provide('ol.TileState');
 

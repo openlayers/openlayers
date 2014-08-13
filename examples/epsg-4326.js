@@ -9,11 +9,9 @@ goog.require('ol.source.TileWMS');
 var layers = [
   new ol.layer.Tile({
     source: new ol.source.TileWMS({
-      url: 'http://vmap0.tiles.osgeo.org/wms/vmap0',
+      url: 'http://demo.opengeo.org/geoserver/wms',
       params: {
-        'VERSION': '1.1.1',
-        'LAYERS': 'basic',
-        'FORMAT': 'image/jpeg'
+        'LAYERS': 'ne:NE1_HR_LC_SR_W_DR'
       }
     })
   })

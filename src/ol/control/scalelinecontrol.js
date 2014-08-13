@@ -43,9 +43,12 @@ ol.control.ScaleLineUnits = {
 
 /**
  * @classdesc
- * A control displaying rough x-axis distances.
- * By default it will show in the bottom left portion of the map, but this can
- * be changed by using the css selector `.ol-scale-line`.
+ * A control displaying rough x-axis distances, calculated for the center of the
+ * viewport.
+ * No scale line will be shown when the x-axis distance cannot be calculated in
+ * the view projection (e.g. at or beyond the poles in EPSG:4326).
+ * By default the scale line will show in the bottom left portion of the map,
+ * but this can be changed by using the css selector `.ol-scale-line`.
  *
  * @constructor
  * @extends {ol.control.Control}
@@ -304,7 +307,11 @@ ol.control.ScaleLine.prototype.updateElement_ = function() {
     count = ol.control.ScaleLine.LEADING_DIGITS[i % 3] *
         Math.pow(10, Math.floor(i / 3));
     width = Math.round(count / pointResolution);
-    if (width >= this.minWidth_) {
+    if (isNaN(width)) {
+      goog.style.setElementShown(this.element_, false);
+      this.renderedVisible_ = false;
+      return;
+    } else if (width >= this.minWidth_) {
       break;
     }
     ++i;

@@ -95,7 +95,7 @@ ol.interaction.Draw = function(options) {
 
   /**
    * Target collection for drawn features.
-   * @type {ol.Collection}
+   * @type {ol.Collection.<ol.Feature>}
    * @private
    */
   this.features_ = goog.isDef(options.features) ? options.features : null;
@@ -205,7 +205,7 @@ goog.inherits(ol.interaction.Draw, ol.interaction.Pointer);
 
 
 /**
- * @return {ol.feature.StyleFunction} Styles.
+ * @return {ol.style.StyleFunction} Styles.
  */
 ol.interaction.Draw.getDefaultStyleFunction = function() {
   var styles = ol.feature.createDefaultEditingStyles();

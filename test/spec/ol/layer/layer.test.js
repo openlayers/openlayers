@@ -56,6 +56,7 @@ describe('ol.layer.Layer', function() {
         saturation: 1,
         visible: true,
         sourceState: ol.source.State.READY,
+        extent: undefined,
         maxResolution: Infinity,
         minResolution: 0
       });
@@ -99,6 +100,7 @@ describe('ol.layer.Layer', function() {
         saturation: 5,
         visible: false,
         sourceState: ol.source.State.READY,
+        extent: undefined,
         maxResolution: 500,
         minResolution: 0.25
       });
@@ -191,6 +193,7 @@ describe('ol.layer.Layer', function() {
         saturation: 0.3,
         visible: false,
         sourceState: ol.source.State.READY,
+        extent: undefined,
         maxResolution: 500,
         minResolution: 0.25
       });
@@ -212,6 +215,7 @@ describe('ol.layer.Layer', function() {
         saturation: 0,
         visible: false,
         sourceState: ol.source.State.READY,
+        extent: undefined,
         maxResolution: Infinity,
         minResolution: 0
       });
@@ -231,6 +235,7 @@ describe('ol.layer.Layer', function() {
         saturation: 42,
         visible: true,
         sourceState: ol.source.State.READY,
+        extent: undefined,
         maxResolution: Infinity,
         minResolution: 0
       });

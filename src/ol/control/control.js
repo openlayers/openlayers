@@ -12,8 +12,9 @@ goog.require('ol.Object');
  * @classdesc
  * A control is a visible widget with a DOM element in a fixed position on the
  * screen. They can involve user input (buttons), or be informational only;
- * the position is determined using CSS. By default these are part of the map
- * container, but can use any outside DOM element.
+ * the position is determined using CSS. By default these are placed in the
+ * container with CSS class name `ol-overlaycontainer-stopevent`, but can use
+ * any outside DOM element.
  *
  * This is the base class for controls. You can use it for simple custom
  * controls by creating the element with listeners, creating an instance:

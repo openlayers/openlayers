@@ -10,6 +10,7 @@ goog.require('ol.ImageBase');
 goog.require('ol.ImageState');
 goog.require('ol.ViewHint');
 goog.require('ol.dom');
+goog.require('ol.extent');
 goog.require('ol.layer.Image');
 goog.require('ol.renderer.dom.Layer');
 goog.require('ol.source.Image');
@@ -57,7 +58,7 @@ ol.renderer.dom.ImageLayer.prototype.forEachFeatureAtPixel =
   var extent = frameState.extent;
   var resolution = frameState.viewState.resolution;
   var rotation = frameState.viewState.rotation;
-  var skippedFeatureUids = frameState.skippedFeatureUids_;
+  var skippedFeatureUids = frameState.skippedFeatureUids;
   return source.forEachFeatureAtPixel(
       extent, resolution, rotation, coordinate, skippedFeatureUids,
       /**
@@ -89,8 +90,15 @@ ol.renderer.dom.ImageLayer.prototype.prepareFrame =
 
   var hints = frameState.viewHints;
 
-  if (!hints[ol.ViewHint.ANIMATING] && !hints[ol.ViewHint.INTERACTING]) {
-    var image_ = imageSource.getImage(frameState.extent, viewResolution,
+  var renderedExtent = frameState.extent;
+  if (goog.isDef(layerState.extent)) {
+    renderedExtent = ol.extent.getIntersection(
+        renderedExtent, layerState.extent);
+  }
+
+  if (!hints[ol.ViewHint.ANIMATING] && !hints[ol.ViewHint.INTERACTING] &&
+      !ol.extent.isEmpty(renderedExtent)) {
+    var image_ = imageSource.getImage(renderedExtent, viewResolution,
         frameState.pixelRatio, viewState.projection);
     if (!goog.isNull(image_)) {
       var imageState = image_.getState();

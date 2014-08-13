@@ -21,7 +21,6 @@ goog.require('ol.source.Image');
 ol.source.MapGuide = function(options) {
 
   goog.base(this, {
-    extent: options.extent,
     projection: options.projection,
     resolutions: options.resolutions
   });
@@ -57,6 +56,12 @@ ol.source.MapGuide = function(options) {
 
   /**
    * @private
+   * @type {Object}
+   */
+  this.params_ = null;
+
+  /**
+   * @private
    * @type {boolean}
    */
   this.hidpi_ = goog.isDef(options.hidpi) ? options.hidpi : true;
@@ -87,8 +92,25 @@ ol.source.MapGuide = function(options) {
    */
   this.image_ = null;
 
+  /**
+   * @private
+   * @type {number}
+   */
+  this.renderedRevision_ = 0;
+
 };
 goog.inherits(ol.source.MapGuide, ol.source.Image);
+
+
+/**
+ * Get the user-provided params, i.e. those passed to the constructor through
+ * the "params" option, and possibly updated using the updateParams method.
+ * @return {Object} Params.
+ * @api
+ */
+ol.source.MapGuide.prototype.getParams = function() {
+  return this.params_;
+};
 
 
 /**
@@ -101,6 +123,7 @@ ol.source.MapGuide.prototype.getImage =
 
   var image = this.image_;
   if (!goog.isNull(image) &&
+      this.renderedRevision_ == this.getRevision() &&
       image.getResolution() == resolution &&
       image.getPixelRatio() == pixelRatio &&
       ol.extent.containsExtent(image.getExtent(), extent)) {
@@ -123,6 +146,7 @@ ol.source.MapGuide.prototype.getImage =
     image = null;
   }
   this.image_ = image;
+  this.renderedRevision_ = this.getRevision();
 
   return image;
 };
@@ -146,6 +170,17 @@ ol.source.MapGuide.getScale = function(extent, size, metersPerUnit, dpi) {
   } else {
     return mcsH * metersPerUnit / (devH * mpp); // height limited
   }
+};
+
+
+/**
+ * Update the user-provided params.
+ * @param {Object} params Params.
+ * @api
+ */
+ol.source.MapGuide.prototype.updateParams = function(params) {
+  goog.object.extend(this.params_, params);
+  this.dispatchChangeEvent();
 };
 
 

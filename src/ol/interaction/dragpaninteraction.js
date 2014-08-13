@@ -67,10 +67,10 @@ ol.interaction.DragPan.prototype.handlePointerDrag = function(mapBrowserEvent) {
   goog.asserts.assert(this.targetPointers.length >= 1);
   var centroid =
       ol.interaction.Pointer.centroid(this.targetPointers);
+  if (this.kinetic_) {
+    this.kinetic_.update(centroid[0], centroid[1]);
+  }
   if (!goog.isNull(this.lastCentroid)) {
-    if (this.kinetic_) {
-      this.kinetic_.update(centroid[0], centroid[1]);
-    }
     var deltaX = this.lastCentroid[0] - centroid[0];
     var deltaY = centroid[1] - this.lastCentroid[1];
     var map = mapBrowserEvent.map;
@@ -91,8 +91,7 @@ ol.interaction.DragPan.prototype.handlePointerDrag = function(mapBrowserEvent) {
 /**
  * @inheritDoc
  */
-ol.interaction.DragPan.prototype.handlePointerUp =
-    function(mapBrowserEvent) {
+ol.interaction.DragPan.prototype.handlePointerUp = function(mapBrowserEvent) {
   var map = mapBrowserEvent.map;
   var view = map.getView();
   if (this.targetPointers.length === 0) {
@@ -124,8 +123,7 @@ ol.interaction.DragPan.prototype.handlePointerUp =
 /**
  * @inheritDoc
  */
-ol.interaction.DragPan.prototype.handlePointerDown =
-    function(mapBrowserEvent) {
+ol.interaction.DragPan.prototype.handlePointerDown = function(mapBrowserEvent) {
   if (this.targetPointers.length > 0 && this.condition_(mapBrowserEvent)) {
     var map = mapBrowserEvent.map;
     var view = map.getView();

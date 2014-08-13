@@ -31,6 +31,10 @@ ol.TileCoordTransformType;
  * @return {ol.TileUrlFunctionType} Tile URL function.
  */
 ol.TileUrlFunction.createFromTemplate = function(template) {
+  var zRegEx = /\{z\}/g;
+  var xRegEx = /\{x\}/g;
+  var yRegEx = /\{y\}/g;
+  var dashYRegEx = /\{-y\}/g;
   return (
       /**
        * @param {ol.TileCoord} tileCoord Tile Coordinate.
@@ -42,10 +46,10 @@ ol.TileUrlFunction.createFromTemplate = function(template) {
         if (goog.isNull(tileCoord)) {
           return undefined;
         } else {
-          return template.replace('{z}', tileCoord.z.toString())
-                         .replace('{x}', tileCoord.x.toString())
-                         .replace('{y}', tileCoord.y.toString())
-                         .replace('{-y}', function() {
+          return template.replace(zRegEx, tileCoord.z.toString())
+                         .replace(xRegEx, tileCoord.x.toString())
+                         .replace(yRegEx, tileCoord.y.toString())
+                         .replace(dashYRegEx, function() {
                            var y = (1 << tileCoord.z) - tileCoord.y - 1;
                            return y.toString();
                          });

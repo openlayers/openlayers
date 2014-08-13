@@ -229,7 +229,8 @@ ol.render.canvas.Replay.prototype.replay_ = function(
     pixelCoordinates = this.pixelCoordinates_;
   } else {
     pixelCoordinates = ol.geom.flat.transform.transform2D(
-        this.coordinates, 2, transform, this.pixelCoordinates_);
+        this.coordinates, 0, this.coordinates.length, 2,
+        transform, this.pixelCoordinates_);
     goog.vec.Mat4.setFromArray(this.renderedTransform_, transform);
     goog.asserts.assert(pixelCoordinates === this.pixelCoordinates_);
   }
@@ -1932,7 +1933,8 @@ ol.render.canvas.ReplayGroup.prototype.replay_ = function(
   var maxX = maxExtent[2];
   var maxY = maxExtent[3];
   var flatClipCoords = ol.geom.flat.transform.transform2D(
-      [minX, minY, minX, maxY, maxX, maxY, maxX, minY], 2, transform);
+      [minX, minY, minX, maxY, maxX, maxY, maxX, minY],
+      0, 8, 2, transform);
   context.save();
   context.beginPath();
   context.moveTo(flatClipCoords[0], flatClipCoords[1]);

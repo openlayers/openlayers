@@ -1689,7 +1689,7 @@ ol.format.GML.prototype.writeGeometryNode = function(geometry) {
  *
  * @function
  * @param {Array.<ol.Feature>} features Features.
- * @return {ArrayBuffer|Node|Object|string} Result.
+ * @return {Node} Result.
  * @api
  */
 ol.format.GML.prototype.writeFeatures;

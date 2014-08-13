@@ -41,7 +41,6 @@ ol.source.TileWMS = function(opt_options) {
   goog.base(this, {
     attributions: options.attributions,
     crossOrigin: options.crossOrigin,
-    extent: options.extent,
     logo: options.logo,
     opaque: !transparent,
     projection: options.projection,
@@ -57,9 +56,9 @@ ol.source.TileWMS = function(opt_options) {
 
   /**
    * @private
-   * @type {Array.<string>|undefined}
+   * @type {!Array.<string>}
    */
-  this.urls_ = urls;
+  this.urls_ = goog.isDefAndNotNull(urls) ? urls : [];
 
   /**
    * @private
@@ -239,7 +238,7 @@ ol.source.TileWMS.prototype.getRequestUrl_ =
         pixelRatio, projection, params) {
 
   var urls = this.urls_;
-  if (!goog.isDef(urls) || goog.array.isEmpty(urls)) {
+  if (goog.array.isEmpty(urls)) {
     return undefined;
   }
 
@@ -290,7 +289,7 @@ ol.source.TileWMS.prototype.getRequestUrl_ =
   if (urls.length == 1) {
     url = urls[0];
   } else {
-    var index = goog.math.modulo(tileCoord.hash(), this.urls_.length);
+    var index = goog.math.modulo(tileCoord.hash(), urls.length);
     url = urls[index];
   }
   return goog.uri.utils.appendParamsFromMap(url, params);
@@ -316,7 +315,7 @@ ol.source.TileWMS.prototype.getTilePixelSize =
 
 /**
  * Return the URLs used for this WMS source.
- * @return {Array.<string>|undefined} URLs.
+ * @return {!Array.<string>} URLs.
  * @api
  */
 ol.source.TileWMS.prototype.getUrls = function() {
@@ -330,10 +329,39 @@ ol.source.TileWMS.prototype.getUrls = function() {
 ol.source.TileWMS.prototype.resetCoordKeyPrefix_ = function() {
   var i = 0;
   var res = [];
-  for (var key in this.params_) {
+
+  var j, jj;
+  for (j = 0, jj = this.urls_.length; j < jj; ++j) {
+    res[i++] = this.urls_[j];
+  }
+
+  var key;
+  for (key in this.params_) {
     res[i++] = key + '-' + this.params_[key];
   }
-  this.coordKeyPrefix_ = res.join('/');
+
+  this.coordKeyPrefix_ = res.join('#');
+};
+
+
+/**
+ * @param {string|undefined} url URL.
+ * @api
+ */
+ol.source.TileWMS.prototype.setUrl = function(url) {
+  var urls = goog.isDef(url) ? ol.TileUrlFunction.expandUrl(url) : null;
+  this.setUrls(urls);
+};
+
+
+/**
+ * @param {Array.<string>|undefined} urls URLs.
+ * @api
+ */
+ol.source.TileWMS.prototype.setUrls = function(urls) {
+  this.urls_ = goog.isDefAndNotNull(urls) ? urls : [];
+  this.resetCoordKeyPrefix_();
+  this.dispatchChangeEvent();
 };
 
 
@@ -377,13 +405,6 @@ ol.source.TileWMS.prototype.tileUrlFunction_ =
     var transformFn = ol.proj.getTransform(projection, this.getProjection());
     tileExtent = ol.extent.applyTransform(tileExtent, transformFn);
   }
-
-  var extent = this.getExtent();
-  if (!goog.isNull(extent) && (!ol.extent.intersects(tileExtent, extent) ||
-      ol.extent.touches(tileExtent, extent))) {
-    return undefined;
-  }
-
   if (pixelRatio != 1) {
     tileSize = (tileSize * pixelRatio + 0.5) | 0;
   }

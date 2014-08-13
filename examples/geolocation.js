@@ -3,6 +3,7 @@ goog.require('ol.FeatureOverlay');
 goog.require('ol.Geolocation');
 goog.require('ol.Map');
 goog.require('ol.View');
+goog.require('ol.control');
 goog.require('ol.dom.Input');
 goog.require('ol.geom.Point');
 goog.require('ol.layer.Tile');
@@ -21,11 +22,17 @@ var map = new ol.Map({
     })
   ],
   target: 'map',
+  controls: ol.control.defaults({
+    attributionOptions: /** @type {olx.control.AttributionOptions} */ ({
+      collapsible: false
+    })
+  }),
   view: view
 });
 
-var geolocation = new ol.Geolocation();
-geolocation.bindTo('projection', view);
+var geolocation = new ol.Geolocation({
+  projection: view.getProjection()
+});
 
 var track = new ol.dom.Input(document.getElementById('track'));
 track.bindTo('checked', geolocation, 'tracking');

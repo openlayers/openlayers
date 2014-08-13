@@ -141,7 +141,7 @@ ol.geom.LineString.prototype.getCoordinates = function() {
 
 
 /**
- * @return {number} Length.
+ * @return {number} Length (on projected plane).
  * @api
  */
 ol.geom.LineString.prototype.getLength = function() {

@@ -1,5 +1,6 @@
 goog.require('ol.Map');
 goog.require('ol.View');
+goog.require('ol.control');
 goog.require('ol.geom.Point');
 goog.require('ol.geom.SimpleGeometry');
 goog.require('ol.layer.Tile');
@@ -50,6 +51,11 @@ var map = new ol.Map({
     vectorLayer
   ],
   target: 'map',
+  controls: ol.control.defaults({
+    attributionOptions: /** @type {olx.control.AttributionOptions} */ ({
+      collapsible: false
+    })
+  }),
   view: view
 });
 

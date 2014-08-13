@@ -17,7 +17,8 @@ goog.require('ol.xml');
 
 /**
  * @classdesc
- * Feature format for reading and writing data in the OSMXML format.
+ * Feature format for reading data in the
+ * [OSMXML format](http://wiki.openstreetmap.org/wiki/OSM_XML).
  *
  * @constructor
  * @extends {ol.format.XMLFeature}

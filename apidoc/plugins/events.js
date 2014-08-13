@@ -19,7 +19,7 @@ exports.handlers = {
 
   parseComplete: function(e) {
     var doclets = e.doclets;
-    var eventClass, doclet, i, ii, j, jj, event, fires;
+    var doclet, i, ii, j, jj, event, fires;
     for (i = 0, ii = doclets.length - 1; i < ii; ++i) {
       doclet = doclets[i];
       if (doclet.fires) {

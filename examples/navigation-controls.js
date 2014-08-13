@@ -7,7 +7,11 @@ goog.require('ol.source.OSM');
 
 
 var map = new ol.Map({
-  controls: ol.control.defaults().extend([
+  controls: ol.control.defaults({
+    attributionOptions: /** @type {olx.control.AttributionOptions} */ ({
+      collapsible: false
+    })
+  }).extend([
     new ol.control.ZoomToExtent({
       extent: [
         813079.7791264898, 5929220.284081122,

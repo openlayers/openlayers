@@ -54,7 +54,6 @@ ol.source.Vector = function(opt_options) {
 
   goog.base(this, {
     attributions: options.attributions,
-    extent: options.extent,
     logo: options.logo,
     projection: options.projection,
     state: options.state
@@ -332,6 +331,7 @@ ol.source.Vector.prototype.getClosestFeatureToCoordinate =
 
 
 /**
+ * Get the extent of the features currently in the source.
  * @return {ol.Extent} Extent.
  * @api
  */

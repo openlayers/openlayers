@@ -11,8 +11,8 @@ goog.require('ol.geom.flat.transform');
 
 /**
  * @classdesc
- * Abstract base class; normally only used for creating subclasses and not
- * instantiated in apps.
+ * Abstract base class; only used for creating subclasses; do not instantiate
+ * in apps, as cannot be rendered.
  *
  * @constructor
  * @extends {ol.geom.Geometry}
@@ -269,6 +269,7 @@ ol.geom.transformSimpleGeometry2D =
   } else {
     var stride = simpleGeometry.getStride();
     return ol.geom.flat.transform.transform2D(
-        flatCoordinates, stride, transform, opt_dest);
+        flatCoordinates, 0, flatCoordinates.length, stride,
+        transform, opt_dest);
   }
 };

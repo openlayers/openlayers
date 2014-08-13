@@ -5,9 +5,9 @@
  * This loader is used for the hosted examples. It is used in place of the
  * development loader (examples/loader.js).
  *
- * ol.js, ol-simple.js, ol-whitespace.js, and ol-deps.js are built
- * by OL3's build.py script. They are located in the ../build/ directory,
- * relatively to this script.
+ * The ol.js, ol-debug.js, and ol-deps.js scripts are built by OL3's
+ * build.py script. They are located in the ../build/ directory, relative to
+ * this script.
  *
  * The script must be named loader.js.
  *
@@ -54,20 +54,11 @@
     }
   }
 
-  var oljs = 'ol.js', mode;
-  if ('mode' in pageParams) {
-    mode = pageParams.mode.toLowerCase();
-    if (mode == 'debug') {
-      mode = 'raw';
-    }
-    if (mode != 'advanced' && mode != 'raw') {
-      oljs = 'ol-' + mode + '.js';
-    }
-  }
+  var raw = pageParams.mode && pageParams.mode.toLowerCase() === 'raw';
 
   var scriptId = encodeURIComponent(scriptParams.id);
-  if (mode != 'raw') {
-    document.write('<scr' + 'ipt type="text/javascript" src="../build/' + oljs + '"></scr' + 'ipt>');
+  if (!raw) {
+    document.write('<scr' + 'ipt type="text/javascript" src="../build/ol.js"></scr' + 'ipt>');
   } else {
     window.CLOSURE_NO_DEPS = true; // we've got our own deps file
     document.write('<scr' + 'ipt type="text/javascript" src="../closure-library/closure/goog/base.js"></scr' + 'ipt>');

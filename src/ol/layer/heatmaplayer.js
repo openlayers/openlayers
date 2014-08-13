@@ -157,6 +157,8 @@ ol.layer.Heatmap.createCircle_ = function(radius, blur, shadow) {
 
 /**
  * @return {Array.<string>} Colors.
+ * @api
+ * @observable
  */
 ol.layer.Heatmap.prototype.getGradient = function() {
   return /** @type {Array.<string>} */ (
@@ -201,6 +203,8 @@ ol.layer.Heatmap.prototype.handleRender_ = function(event) {
 
 /**
  * @param {Array.<string>} colors Gradient.
+ * @api
+ * @observable
  */
 ol.layer.Heatmap.prototype.setGradient = function(colors) {
   this.set(ol.layer.HeatmapLayerProperty.GRADIENT, colors);

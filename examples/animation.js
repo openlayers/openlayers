@@ -1,6 +1,7 @@
 goog.require('ol.Map');
 goog.require('ol.View');
 goog.require('ol.animation');
+goog.require('ol.control');
 goog.require('ol.layer.Tile');
 goog.require('ol.proj');
 goog.require('ol.source.OSM');
@@ -55,6 +56,11 @@ var map = new ol.Map({
   ],
   renderer: exampleNS.getRendererFromQueryString(),
   target: 'map',
+  controls: ol.control.defaults({
+    attributionOptions: /** @type {olx.control.AttributionOptions} */ ({
+      collapsible: false
+    })
+  }),
   view: view
 });
 

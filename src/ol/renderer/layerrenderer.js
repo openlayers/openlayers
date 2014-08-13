@@ -1,6 +1,7 @@
 goog.provide('ol.renderer.Layer');
 
 goog.require('goog.Disposable');
+goog.require('goog.asserts');
 goog.require('ol.ImageState');
 goog.require('ol.TileRange');
 goog.require('ol.TileState');
@@ -160,7 +161,13 @@ ol.renderer.Layer.prototype.updateAttributions =
 ol.renderer.Layer.prototype.updateLogos = function(frameState, source) {
   var logo = source.getLogo();
   if (goog.isDef(logo)) {
-    frameState.logos[logo] = '';
+    if (goog.isString(logo)) {
+      frameState.logos[logo] = '';
+    } else if (goog.isObject(logo)) {
+      goog.asserts.assertString(logo.href);
+      goog.asserts.assertString(logo.src);
+      frameState.logos[logo.src] = logo.href;
+    }
   }
 };
 
@@ -268,7 +275,7 @@ ol.renderer.Layer.prototype.manageTilePyramid = function(
     preload = 0;
   }
   for (z = currentZ; z >= minZoom; --z) {
-    tileRange = tileGrid.getTileRangeForExtentAndZ(extent, z);
+    tileRange = tileGrid.getTileRangeForExtentAndZ(extent, z, tileRange);
     tileResolution = tileGrid.getResolution(z);
     for (x = tileRange.minX; x <= tileRange.maxX; ++x) {
       for (y = tileRange.minY; y <= tileRange.maxY; ++y) {

@@ -1017,17 +1017,21 @@ $.get = function(url, data, success, dataType) {};
 
 /**
  * @param {string} url
- * @param {(Object.<string,*>|function(Object,string,jQuery.jqXHR))=} data
- * @param {function(Object,string,jQuery.jqXHR)=} success
+ * @param {(Object.<string,*>|
+ *     function(Object.<string,*>,string,jQuery.jqXHR))=} data
+ * @param {function(Object.<string,*>,string,jQuery.jqXHR)=} success
  * @return {jQuery.jqXHR}
+ * @see http://api.jquery.com/jquery.getjson/#jQuery-getJSON-url-data-success
  */
 jQuery.getJSON = function(url, data, success) {};
 
 /**
  * @param {string} url
- * @param {(Object.<string,*>|function(Object,string,jQuery.jqXHR))=} data
- * @param {function(Object,string,jQuery.jqXHR)=} success
+ * @param {(Object.<string,*>|
+ *     function(Object.<string,*>,string,jQuery.jqXHR))=} data
+ * @param {function(Object.<string,*>,string,jQuery.jqXHR)=} success
  * @return {jQuery.jqXHR}
+ * @see http://api.jquery.com/jquery.getjson/#jQuery-getJSON-url-data-success
  */
 $.getJSON = function(url, data, success) {};
 

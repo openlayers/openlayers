@@ -16,7 +16,7 @@ var VBArray = function(safeArray) {};
 /**
  * @return {number}
  */
-VBArray.prototype.dimensions = function() {return 0;};
+VBArray.prototype.dimensions = function() {};
 
 
 /**
@@ -36,7 +36,7 @@ VBArray.prototype.lbound = function(opt_dimension) {};
 /**
  * @return {Array.<number>}
  */
-VBArray.prototype.toArray = function() {return null;};
+VBArray.prototype.toArray = function() {};
 
 
 /**
