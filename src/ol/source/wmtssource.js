@@ -153,7 +153,7 @@ ol.source.WMTS = function(options) {
         }
         var x = tileCoord[1];
         var y = -tileCoord[2] - 1;
-        var tileExtent = tileGrid.getTileCoordExtent(tileCoord);
+        var tileExtent = tileGrid.getTileCoordExtent(tileCoord, tmpExtent);
         var extent = projection.getExtent();
 
         if (!goog.isNull(extent) && projection.isGlobal()) {
