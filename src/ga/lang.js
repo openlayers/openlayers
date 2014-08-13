@@ -1,20 +1,18 @@
-
 goog.provide('ga.Lang');
-goog.provide('ga.Lang.msg');
-goog.require('ga.Lang.msg.en');
-goog.require('ga.Lang.msg.de');
-goog.require('ga.Lang.msg.fr');
-goog.require('ga.Lang.msg.it');
-goog.require('ga.Lang.msg.rm');
-
 
 // Mostly from https://github.com/openlayers/openlayers/blob/master/lib/OpenLayers/Lang.js
 
+/**
+ * @type {Object}
+ * @todo api
+ */
+ga.Lang = {};
 
 /**
  * @type {string}
  */
-ga.Lang.code_ = 'de';
+ga.Lang.code_ = window['GeoAdmin'] && window['GeoAdmin']['lang'] ?
+  window['GeoAdmin']['lang'] : "de";
 
 
 /**
@@ -37,6 +35,9 @@ ga.Lang.getCode = function() {
  */
 ga.Lang.setCode = function(code) {
   ga.Lang.code_ = code;
+  if (window['GeoAdmin'] && window['GeoAdmin']['lang']) {
+    window['GeoAdmin']['lang'] = code;
+  }
 };
 
 
@@ -49,7 +50,7 @@ ga.Lang.setCode = function(code) {
  */
 ga.Lang.translate = function(msgid, context) {
 
-  var dictionary = ga.Lang.msg[ga.Lang.getCode()];
+  var dictionary = ga.Lang[ga.Lang.getCode()];
   var message = dictionary && dictionary[msgid];
   if (!message) {
     // Message not found, fall back to message key
@@ -122,4 +123,62 @@ ga.Lang.format = function(template, context, args) {
   return template.replace(/\$\{([\w.]+?)\}/g, replacer);
 };
 
+/**
+ * Message catalog in swiss german
+ * @type {Object.<string,string>}
+ * @todo api
+ */
+ga.Lang.de = {
+  'Geocoding results': 'Geokodierung Ergebnisse',
+  'Zoom in': 'Zoom in',
+  'Zoom out': 'Zoom out',
+  'Reset rotation': 'Rotation zurücksetzen'
+};
 
+/**
+ * Message catalog in english
+ * @type {Object.<string,string>}
+ * @todo api
+ */
+ga.Lang.en = {
+  'Geocoding results': 'Rezultatele geocodare',
+  'Zoom in': 'Zoom in',
+  'Zoom out': 'Zoom out',
+  'Reset rotation': 'Reset rotation'
+};
+
+/**
+ * Message catalog in swiss french
+ * @type {Object.<string,string>}
+ * @todo api
+ */
+ga.Lang.fr = {
+  'Geocoding results': 'Résultat du géocodage',
+  'Zoom in': 'Zoom in',
+  'Zoom out': 'Zoom out',
+  'Reset rotation': 'Annuler la rotation'
+};
+
+/**
+ * Message catalog in swiss italian
+ * @type {Object.<string,string>}
+ * @todo api
+ */
+ga.Lang.it = {
+  'Geocoding results': 'Risultati geocoding',
+  'Zoom in': 'Zoom in',
+  'Zoom out': 'Zoom out',
+  'Reset rotation': 'Annullare la rotazione'
+};
+
+/**
+ * Message catalog in rumantsch
+ * @type {Object.<string,string>}
+ * @todo api
+ */
+ga.Lang.rm = {
+  'Geocoding results': 'Rezultatele geocodare',
+  'Zoom in': 'Zoom in',
+  'Zoom out': 'Zoom out',
+  'Reset rotation': 'Rotation zurücksetzen'
+};
