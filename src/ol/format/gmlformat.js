@@ -1076,8 +1076,8 @@ ol.format.GML.prototype.readFeaturesFromNode = function(node, opt_options) {
  * @inheritDoc
  */
 ol.format.GML.prototype.readProjectionFromNode = function(node) {
-  return goog.isDef(this.srsName_) ? this.srsName_ :
-      node.firstElementChild.getAttribute('srsName');
+  return ol.proj.get(goog.isDef(this.srsName_) ? this.srsName_ :
+      node.firstElementChild.getAttribute('srsName'));
 };
 
 
