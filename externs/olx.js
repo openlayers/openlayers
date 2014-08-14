@@ -3012,6 +3012,13 @@ olx.source.TileImageOptions.prototype.projection;
 
 
 /**
+ * Source state.
+ * @type {ol.source.State|string|undefined}
+ */
+olx.source.TileImageOptions.prototype.state;
+
+
+/**
  * tile class
  * @type {function(new: ol.ImageTile, ol.TileCoord,
  *                 ol.TileState, string, ?string,
