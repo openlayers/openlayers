@@ -192,6 +192,18 @@ ol.geom.Polygon.prototype.getInteriorPoint = function() {
 
 
 /**
+ * Return the number of rings of the polygon,  this includes the exterior
+ * ring and any interior rings.
+ *
+ * @return {number} Number of rings.
+ * @api
+ */
+ol.geom.Polygon.prototype.getLinearRingCount = function() {
+  return this.ends_.length;
+};
+
+
+/**
  * @param {number} index Index.
  * @return {ol.geom.LinearRing} Linear ring.
  * @api stable
