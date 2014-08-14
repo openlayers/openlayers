@@ -29,8 +29,6 @@ ol.source.TileVector = function(options) {
     projection: options.projection
   });
 
-  var tileGrid = options.tileGrid;
-
   /**
    * @private
    * @type {ol.tilegrid.TileGrid}
@@ -47,7 +45,7 @@ ol.source.TileVector = function(options) {
    * @private
    * @type {ol.TileCoordTransformType}
    */
-  this.tileCoordTransform_ = tileGrid.createTileCoordTransform();
+  this.tileCoordTransform_ = this.tileGrid_.createTileCoordTransform();
 
   /**
    * @private
