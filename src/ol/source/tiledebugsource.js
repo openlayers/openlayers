@@ -23,12 +23,6 @@ ol.DebugTile_ = function(tileCoord, tileGrid) {
 
   /**
    * @private
-   * @type {ol.TileCoord}
-   */
-  this.tileCoord_ = tileCoord;
-
-  /**
-   * @private
    * @type {number}
    */
   this.tileSize_ = tileGrid.getTileSize(tileCoord.z);
@@ -62,8 +56,7 @@ ol.DebugTile_.prototype.getImage = function(opt_context) {
     context.textAlign = 'center';
     context.textBaseline = 'middle';
     context.font = '24px sans-serif';
-    context.fillText(
-        this.tileCoord_.toString(), tileSize / 2, tileSize / 2);
+    context.fillText(this.tileCoord.toString(), tileSize / 2, tileSize / 2);
 
     this.canvasByContext_[key] = context.canvas;
     return context.canvas;
