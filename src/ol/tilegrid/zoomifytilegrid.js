@@ -34,7 +34,6 @@ ol.tilegrid.Zoomify.prototype.createTileCoordTransform = function(opt_options) {
   var options = goog.isDef(opt_options) ? opt_options : {};
   var minZ = this.minZoom;
   var maxZ = this.maxZoom;
-  var tmpTileCoord = new ol.TileCoord(0, 0, 0);
   /** @type {Array.<ol.TileRange>} */
   var tileRangeByZ = null;
   if (goog.isDef(options.extent)) {
@@ -70,10 +69,7 @@ ol.tilegrid.Zoomify.prototype.createTileCoordTransform = function(opt_options) {
           return null;
         }
         if (!goog.isNull(tileRangeByZ)) {
-          tmpTileCoord.z = z;
-          tmpTileCoord.x = x;
-          tmpTileCoord.y = -y - 1;
-          if (!tileRangeByZ[z].contains(tmpTileCoord)) {
+          if (!tileRangeByZ[z].containsXY(x, -y - 1)) {
             return null;
           }
         }

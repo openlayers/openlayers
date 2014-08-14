@@ -89,8 +89,7 @@ ol.TileRange.createOrUpdate = function(minX, maxX, minY, maxY, tileRange) {
  * @return {boolean} Contains tile coordinate.
  */
 ol.TileRange.prototype.contains = function(tileCoord) {
-  return this.minX <= tileCoord.x && tileCoord.x <= this.maxX &&
-      this.minY <= tileCoord.y && tileCoord.y <= this.maxY;
+  return this.containsXY(tileCoord.x, tileCoord.y);
 };
 
 
@@ -101,6 +100,16 @@ ol.TileRange.prototype.contains = function(tileCoord) {
 ol.TileRange.prototype.containsTileRange = function(tileRange) {
   return this.minX <= tileRange.minX && tileRange.maxX <= this.maxX &&
       this.minY <= tileRange.minY && tileRange.maxY <= this.maxY;
+};
+
+
+/**
+ * @param {number} x Tile coordinate x.
+ * @param {number} y Tile coordinate y.
+ * @return {boolean} Contains coordinate.
+ */
+ol.TileRange.prototype.containsXY = function(x, y) {
+  return this.minX <= x && x <= this.maxX && this.minY <= y && y <= this.maxY;
 };
 
 

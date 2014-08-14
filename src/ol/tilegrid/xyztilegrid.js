@@ -48,7 +48,6 @@ ol.tilegrid.XYZ.prototype.createTileCoordTransform = function(opt_options) {
   var minZ = this.minZoom;
   var maxZ = this.maxZoom;
   var wrapX = goog.isDef(options.wrapX) ? options.wrapX : true;
-  var tmpTileCoord = new ol.TileCoord(0, 0, 0);
   /** @type {Array.<ol.TileRange>} */
   var tileRangeByZ = null;
   if (goog.isDef(options.extent)) {
@@ -86,10 +85,7 @@ ol.tilegrid.XYZ.prototype.createTileCoordTransform = function(opt_options) {
           return null;
         }
         if (!goog.isNull(tileRangeByZ)) {
-          tmpTileCoord.z = z;
-          tmpTileCoord.x = x;
-          tmpTileCoord.y = y;
-          if (!tileRangeByZ[z].contains(tmpTileCoord)) {
+          if (!tileRangeByZ[z].containsXY(x, y)) {
             return null;
           }
         }
