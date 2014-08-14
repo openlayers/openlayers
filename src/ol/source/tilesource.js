@@ -17,7 +17,7 @@ goog.require('ol.tilegrid.TileGrid');
  *            opaque: (boolean|undefined),
  *            tilePixelRatio: (number|undefined),
  *            projection: ol.proj.ProjectionLike,
- *            state: (ol.source.State|string|undefined),
+ *            state: (ol.source.State|undefined),
  *            tileGrid: (ol.tilegrid.TileGrid|undefined)}}
  */
 ol.source.TileOptions;

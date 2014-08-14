@@ -29,7 +29,8 @@ ol.source.TileImage = function(options) {
     logo: options.logo,
     opaque: options.opaque,
     projection: options.projection,
-    state: options.state,
+    state: goog.isDef(options.state) ?
+        /** @type {ol.source.State} */ (options.state) : undefined,
     tileGrid: options.tileGrid,
     tilePixelRatio: options.tilePixelRatio
   });

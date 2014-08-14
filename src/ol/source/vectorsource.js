@@ -56,7 +56,8 @@ ol.source.Vector = function(opt_options) {
     attributions: options.attributions,
     logo: options.logo,
     projection: options.projection,
-    state: options.state
+    state: goog.isDef(options.state) ?
+        /** @type {ol.source.State} */ (options.state) : undefined
   });
 
   /**
