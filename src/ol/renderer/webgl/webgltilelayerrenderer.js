@@ -18,6 +18,7 @@ goog.require('ol.renderer.webgl.Layer');
 goog.require('ol.renderer.webgl.tilelayer.shader');
 goog.require('ol.source.Tile');
 goog.require('ol.structs.Buffer');
+goog.require('ol.tilecoord');
 
 
 
@@ -222,7 +223,7 @@ ol.renderer.webgl.TileLayer.prototype.prepareFrame =
         tileState = tile.getState();
         if (tileState == ol.TileState.LOADED) {
           if (mapRenderer.isTileTextureLoaded(tile)) {
-            tilesToDrawByZ[z][tile.tileCoord.toString()] = tile;
+            tilesToDrawByZ[z][ol.tilecoord.toString(tile.tileCoord)] = tile;
             continue;
           }
         } else if (tileState == ol.TileState.EMPTY ||
@@ -300,7 +301,7 @@ ol.renderer.webgl.TileLayer.prototype.prepareFrame =
           tileTextureQueue.enqueue([
             tile,
             tileGrid.getTileCoordCenter(tile.tileCoord),
-            tileGrid.getResolution(tile.tileCoord.z),
+            tileGrid.getResolution(tile.tileCoord[0]),
             tilePixelSize, tileGutter * pixelRatio
           ]);
         }

@@ -109,9 +109,9 @@ ol.source.WMTS = function(options) {
             return undefined;
           } else {
             var localContext = {
-              'TileMatrix': tileGrid.getMatrixId(tileCoord.z),
-              'TileCol': tileCoord.x,
-              'TileRow': tileCoord.y
+              'TileMatrix': tileGrid.getMatrixId(tileCoord[0]),
+              'TileCol': tileCoord[1],
+              'TileRow': tileCoord[2]
             };
             goog.object.extend(localContext, dimensions);
             var url = template;
@@ -138,7 +138,7 @@ ol.source.WMTS = function(options) {
   }
 
   var tmpExtent = ol.extent.createEmpty();
-  var tmpTileCoord = new ol.TileCoord(0, 0, 0);
+  var tmpTileCoord = [0, 0, 0];
   tileUrlFunction = ol.TileUrlFunction.withTileCoordTransform(
       /**
        * @param {ol.TileCoord} tileCoord Tile coordinate.
@@ -148,11 +148,11 @@ ol.source.WMTS = function(options) {
        */
       function(tileCoord, projection, opt_tileCoord) {
         goog.asserts.assert(!goog.isNull(tileGrid));
-        if (tileGrid.getResolutions().length <= tileCoord.z) {
+        if (tileGrid.getResolutions().length <= tileCoord[0]) {
           return null;
         }
-        var x = tileCoord.x;
-        var y = -tileCoord.y - 1;
+        var x = tileCoord[1];
+        var y = -tileCoord[2] - 1;
         var tileExtent = tileGrid.getTileCoordExtent(tileCoord);
         var extent = projection.getExtent();
 
@@ -161,16 +161,16 @@ ol.source.WMTS = function(options) {
               ol.extent.getWidth(extent) /
               ol.extent.getWidth(tileExtent));
           x = goog.math.modulo(x, numCols);
-          tmpTileCoord.z = tileCoord.z;
-          tmpTileCoord.x = x;
-          tmpTileCoord.y = tileCoord.y;
+          tmpTileCoord[0] = tileCoord[0];
+          tmpTileCoord[1] = x;
+          tmpTileCoord[2] = tileCoord[2];
           tileExtent = tileGrid.getTileCoordExtent(tmpTileCoord, tmpExtent);
         }
         if (!ol.extent.intersects(tileExtent, extent) ||
             ol.extent.touches(tileExtent, extent)) {
           return null;
         }
-        return new ol.TileCoord(tileCoord.z, x, y);
+        return [tileCoord[0], x, y];
       },
       tileUrlFunction);
 

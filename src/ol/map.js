@@ -58,6 +58,7 @@ goog.require('ol.renderer.canvas.Map');
 goog.require('ol.renderer.dom.Map');
 goog.require('ol.renderer.webgl.Map');
 goog.require('ol.structs.PriorityQueue');
+goog.require('ol.tilecoord');
 goog.require('ol.vec.Mat4');
 
 
@@ -816,7 +817,7 @@ ol.Map.prototype.getTilePriority =
   if (goog.isNull(frameState) || !(tileSourceKey in frameState.wantedTiles)) {
     return ol.structs.PriorityQueue.DROP;
   }
-  var coordKey = tile.tileCoord.toString();
+  var coordKey = ol.tilecoord.toString(tile.tileCoord);
   if (!frameState.wantedTiles[tileSourceKey][coordKey]) {
     return ol.structs.PriorityQueue.DROP;
   }

@@ -12,6 +12,7 @@ goog.require('ol.extent');
 goog.require('ol.proj');
 goog.require('ol.source.State');
 goog.require('ol.source.TileImage');
+goog.require('ol.tilecoord');
 goog.require('ol.tilegrid.XYZ');
 
 
@@ -120,7 +121,7 @@ ol.source.BingMaps.prototype.handleImageryMetadataResponse =
                         return undefined;
                       } else {
                         return imageUrl.replace(
-                            '{quadkey}', tileCoord.quadKey());
+                            '{quadkey}', ol.tilecoord.quadKey(tileCoord));
                       }
                     });
               })));

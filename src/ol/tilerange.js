@@ -48,16 +48,22 @@ ol.TileRange = function(minX, maxX, minY, maxY) {
  */
 ol.TileRange.boundingTileRange = function(var_args) {
   var tileCoord0 = /** @type {ol.TileCoord} */ (arguments[0]);
-  var tileRange = new ol.TileRange(tileCoord0.x, tileCoord0.x,
-                                   tileCoord0.y, tileCoord0.y);
-  var i, ii, tileCoord;
+  var tileCoord0Z = tileCoord0[0];
+  var tileCoord0X = tileCoord0[1];
+  var tileCoord0Y = tileCoord0[2];
+  var tileRange = new ol.TileRange(tileCoord0X, tileCoord0X,
+                                   tileCoord0Y, tileCoord0Y);
+  var i, ii, tileCoord, tileCoordX, tileCoordY, tileCoordZ;
   for (i = 1, ii = arguments.length; i < ii; ++i) {
     tileCoord = /** @type {ol.TileCoord} */ (arguments[i]);
-    goog.asserts.assert(tileCoord.z == tileCoord0.z);
-    tileRange.minX = Math.min(tileRange.minX, tileCoord.x);
-    tileRange.maxX = Math.max(tileRange.maxX, tileCoord.x);
-    tileRange.minY = Math.min(tileRange.minY, tileCoord.y);
-    tileRange.maxY = Math.max(tileRange.maxY, tileCoord.y);
+    tileCoordZ = tileCoord[0];
+    tileCoordX = tileCoord[1];
+    tileCoordY = tileCoord[2];
+    goog.asserts.assert(tileCoordZ == tileCoord0Z);
+    tileRange.minX = Math.min(tileRange.minX, tileCoordX);
+    tileRange.maxX = Math.max(tileRange.maxX, tileCoordX);
+    tileRange.minY = Math.min(tileRange.minY, tileCoordY);
+    tileRange.maxY = Math.max(tileRange.maxY, tileCoordY);
   }
   return tileRange;
 };
@@ -89,7 +95,7 @@ ol.TileRange.createOrUpdate = function(minX, maxX, minY, maxY, tileRange) {
  * @return {boolean} Contains tile coordinate.
  */
 ol.TileRange.prototype.contains = function(tileCoord) {
-  return this.containsXY(tileCoord.x, tileCoord.y);
+  return this.containsXY(tileCoord[1], tileCoord[2]);
 };
 
 

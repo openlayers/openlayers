@@ -4,9 +4,9 @@ goog.provide('ol.source.TileOptions');
 goog.require('goog.functions');
 goog.require('ol.Attribution');
 goog.require('ol.Extent');
-goog.require('ol.TileCoord');
 goog.require('ol.TileRange');
 goog.require('ol.source.Source');
+goog.require('ol.tilecoord');
 goog.require('ol.tilegrid.TileGrid');
 
 
@@ -133,7 +133,7 @@ ol.source.Tile.prototype.getGutter = function() {
  * @return {string} Key.
  * @protected
  */
-ol.source.Tile.prototype.getKeyZXY = ol.TileCoord.getKeyZXY;
+ol.source.Tile.prototype.getKeyZXY = ol.tilecoord.getKeyZXY;
 
 
 /**

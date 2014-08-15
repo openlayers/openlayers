@@ -3,6 +3,7 @@ goog.provide('ol.tilegrid.Zoomify');
 goog.require('goog.math');
 goog.require('ol.TileCoord');
 goog.require('ol.proj');
+goog.require('ol.tilecoord');
 goog.require('ol.tilegrid.TileGrid');
 
 
@@ -55,16 +56,16 @@ ol.tilegrid.Zoomify.prototype.createTileCoordTransform = function(opt_options) {
        * @return {ol.TileCoord} Tile coordinate.
        */
       function(tileCoord, projection, opt_tileCoord) {
-        var z = tileCoord.z;
+        var z = tileCoord[0];
         if (z < minZ || maxZ < z) {
           return null;
         }
         var n = Math.pow(2, z);
-        var x = tileCoord.x;
+        var x = tileCoord[1];
         if (x < 0 || n <= x) {
           return null;
         }
-        var y = tileCoord.y;
+        var y = tileCoord[2];
         if (y < -n || -1 < y) {
           return null;
         }
@@ -73,6 +74,6 @@ ol.tilegrid.Zoomify.prototype.createTileCoordTransform = function(opt_options) {
             return null;
           }
         }
-        return ol.TileCoord.createOrUpdate(z, x, -y - 1, opt_tileCoord);
+        return ol.tilecoord.createOrUpdate(z, x, -y - 1, opt_tileCoord);
       });
 };
