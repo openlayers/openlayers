@@ -1,7 +1,7 @@
 // FIXME add tests for browser features (Modernizr?)
 
 goog.provide('ol.dom');
-goog.provide('ol.dom.BrowserFeature');
+goog.provide('ol.dom.browserfeature');
 
 goog.require('goog.asserts');
 goog.require('goog.dom');
@@ -33,7 +33,7 @@ ol.dom.createCanvasContext2D = function(opt_width, opt_height) {
 /**
  * @enum {boolean}
  */
-ol.dom.BrowserFeature = {
+ol.dom.browserfeature = {
   USE_MS_MATRIX_TRANSFORM: ol.LEGACY_IE_SUPPORT && ol.IS_LEGACY_IE,
   USE_MS_ALPHA_FILTER: ol.LEGACY_IE_SUPPORT && ol.IS_LEGACY_IE
 };
@@ -148,7 +148,7 @@ ol.dom.setTransform = function(element, value) {
  * @param {number} value Opacity, [0..1]
  */
 ol.dom.setOpacity = function(element, value) {
-  if (ol.dom.BrowserFeature.USE_MS_ALPHA_FILTER) {
+  if (ol.dom.browserfeature.USE_MS_ALPHA_FILTER) {
     /** @type {string} */
     var filter = element.currentStyle.filter;
 
@@ -256,7 +256,7 @@ ol.dom.transformElement2D =
       value2D = transform2D.join(',');
     }
     ol.dom.setTransform(element, 'matrix(' + value2D + ')');
-  } else if (ol.dom.BrowserFeature.USE_MS_MATRIX_TRANSFORM) {
+  } else if (ol.dom.browserfeature.USE_MS_MATRIX_TRANSFORM) {
     var m11 = goog.vec.Mat4.getElement(transform, 0, 0),
         m12 = goog.vec.Mat4.getElement(transform, 0, 1),
         m21 = goog.vec.Mat4.getElement(transform, 1, 0),
