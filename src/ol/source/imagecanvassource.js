@@ -20,11 +20,11 @@ ol.source.ImageCanvas = function(options) {
 
   goog.base(this, {
     attributions: options.attributions,
-    extent: options.extent,
     logo: options.logo,
     projection: options.projection,
     resolutions: options.resolutions,
-    state: options.state
+    state: goog.isDef(options.state) ?
+        /** @type {ol.source.State} */ (options.state) : undefined
   });
 
   /**

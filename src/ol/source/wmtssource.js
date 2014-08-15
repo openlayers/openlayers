@@ -154,13 +154,9 @@ ol.source.WMTS = function(options) {
         var x = tileCoord.x;
         var y = -tileCoord.y - 1;
         var tileExtent = tileGrid.getTileCoordExtent(tileCoord);
-        var projectionExtent = projection.getExtent();
-        var extent = goog.isDef(options.extent) ?
-            options.extent : projectionExtent;
+        var extent = projection.getExtent();
 
-        if (!goog.isNull(extent) && projection.isGlobal() &&
-            extent[0] === projectionExtent[0] &&
-            extent[2] === projectionExtent[2]) {
+        if (!goog.isNull(extent) && projection.isGlobal()) {
           var numCols = Math.ceil(
               ol.extent.getWidth(extent) /
               ol.extent.getWidth(tileExtent));
@@ -181,7 +177,6 @@ ol.source.WMTS = function(options) {
   goog.base(this, {
     attributions: options.attributions,
     crossOrigin: options.crossOrigin,
-    extent: options.extent,
     logo: options.logo,
     projection: options.projection,
     tileGrid: tileGrid,

@@ -19,6 +19,7 @@ ol.layer.LayerProperty = {
   OPACITY: 'opacity',
   SATURATION: 'saturation',
   VISIBLE: 'visible',
+  EXTENT: 'extent',
   MAX_RESOLUTION: 'maxResolution',
   MIN_RESOLUTION: 'minResolution'
 };
@@ -33,6 +34,7 @@ ol.layer.LayerProperty = {
  *            saturation: number,
  *            sourceState: ol.source.State,
  *            visible: boolean,
+ *            extent: (ol.Extent|undefined),
  *            maxResolution: number,
  *            minResolution: number}}
  */
@@ -141,6 +143,7 @@ ol.layer.Base.prototype.getLayerState = function() {
   var saturation = this.getSaturation();
   var sourceState = this.getSourceState();
   var visible = this.getVisible();
+  var extent = this.getExtent();
   var maxResolution = this.getMaxResolution();
   var minResolution = this.getMinResolution();
   return {
@@ -152,6 +155,7 @@ ol.layer.Base.prototype.getLayerState = function() {
     saturation: goog.isDef(saturation) ? Math.max(saturation, 0) : 1,
     sourceState: sourceState,
     visible: goog.isDef(visible) ? !!visible : true,
+    extent: extent,
     maxResolution: goog.isDef(maxResolution) ? maxResolution : Infinity,
     minResolution: goog.isDef(minResolution) ? Math.max(minResolution, 0) : 0
   };
@@ -172,6 +176,21 @@ ol.layer.Base.prototype.getLayersArray = goog.abstractMethod;
  * @return {Array.<ol.layer.LayerState>} List of layer states.
  */
 ol.layer.Base.prototype.getLayerStatesArray = goog.abstractMethod;
+
+
+/**
+ * @return {ol.Extent|undefined} The layer extent.
+ * @observable
+ * @api
+ */
+ol.layer.Base.prototype.getExtent = function() {
+  return /** @type {ol.Extent|undefined} */ (
+      this.get(ol.layer.LayerProperty.EXTENT));
+};
+goog.exportProperty(
+    ol.layer.Base.prototype,
+    'getExtent',
+    ol.layer.Base.prototype.getExtent);
 
 
 /**
@@ -318,6 +337,22 @@ goog.exportProperty(
     ol.layer.Base.prototype,
     'setHue',
     ol.layer.Base.prototype.setHue);
+
+
+/**
+ * Set the extent at which the layer is visible.  If `undefined`, the layer
+ * will be visible at all extents.
+ * @param {ol.Extent|undefined} extent The extent of the layer.
+ * @observable
+ * @api
+ */
+ol.layer.Base.prototype.setExtent = function(extent) {
+  this.set(ol.layer.LayerProperty.EXTENT, extent);
+};
+goog.exportProperty(
+    ol.layer.Base.prototype,
+    'setExtent',
+    ol.layer.Base.prototype.setExtent);
 
 
 /**

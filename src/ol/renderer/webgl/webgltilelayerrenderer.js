@@ -207,11 +207,18 @@ ol.renderer.webgl.TileLayer.prototype.prepareFrame =
     var allTilesLoaded = true;
     var tmpExtent = ol.extent.createEmpty();
     var tmpTileRange = new ol.TileRange(0, 0, 0, 0);
-    var childTileRange, fullyLoaded, tile, tileState, x, y;
+    var childTileRange, fullyLoaded, tile, tileState, x, y, tileExtent;
     for (x = tileRange.minX; x <= tileRange.maxX; ++x) {
       for (y = tileRange.minY; y <= tileRange.maxY; ++y) {
 
         tile = tileSource.getTile(z, x, y, pixelRatio, projection);
+        if (goog.isDef(layerState.extent)) {
+          // ignore tiles outside layer extent
+          tileExtent = tileGrid.getTileCoordExtent(tile.tileCoord, tmpExtent);
+          if (!ol.extent.intersects(tileExtent, layerState.extent)) {
+            continue;
+          }
+        }
         tileState = tile.getState();
         if (tileState == ol.TileState.LOADED) {
           if (mapRenderer.isTileTextureLoaded(tile)) {
@@ -243,7 +250,7 @@ ol.renderer.webgl.TileLayer.prototype.prepareFrame =
     var zs = goog.array.map(goog.object.getKeys(tilesToDrawByZ), Number);
     goog.array.sort(zs);
     var u_tileOffset = goog.vec.Vec4.createFloat32();
-    var i, ii, sx, sy, tileExtent, tileKey, tilesToDraw, tx, ty;
+    var i, ii, sx, sy, tileKey, tilesToDraw, tx, ty;
     for (i = 0, ii = zs.length; i < ii; ++i) {
       tilesToDraw = tilesToDrawByZ[zs[i]];
       for (tileKey in tilesToDraw) {

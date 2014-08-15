@@ -1,6 +1,5 @@
 goog.provide('ol.control.Zoom');
 
-goog.require('goog.asserts');
 goog.require('goog.dom');
 goog.require('goog.dom.TagName');
 goog.require('goog.events');

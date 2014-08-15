@@ -22,10 +22,9 @@ ol.source.State = {
 
 /**
  * @typedef {{attributions: (Array.<ol.Attribution>|undefined),
- *            extent: (ol.Extent|undefined),
- *            logo: (string|undefined),
+ *            logo: (string|olx.LogoOptions|undefined),
  *            projection: ol.proj.ProjectionLike,
- *            state: (ol.source.State|string|undefined)}}
+ *            state: (ol.source.State|undefined)}}
  */
 ol.source.SourceOptions;
 
@@ -54,14 +53,6 @@ ol.source.Source = function(options) {
 
   /**
    * @private
-   * @type {ol.Extent}
-   */
-  this.extent_ = goog.isDef(options.extent) ?
-      options.extent : goog.isDef(options.projection) ?
-          this.projection_.getExtent() : null;
-
-  /**
-   * @private
    * @type {Array.<ol.Attribution>}
    */
   this.attributions_ = goog.isDef(options.attributions) ?
@@ -69,7 +60,7 @@ ol.source.Source = function(options) {
 
   /**
    * @private
-   * @type {string|undefined}
+   * @type {string|olx.LogoOptions|undefined}
    */
   this.logo_ = options.logo;
 
@@ -78,7 +69,7 @@ ol.source.Source = function(options) {
    * @type {ol.source.State}
    */
   this.state_ = goog.isDef(options.state) ?
-      /** @type {ol.source.State} */ (options.state) : ol.source.State.READY;
+      options.state : ol.source.State.READY;
 
 };
 goog.inherits(ol.source.Source, ol.Observable);
@@ -107,15 +98,7 @@ ol.source.Source.prototype.getAttributions = function() {
 
 
 /**
- * @return {ol.Extent} Extent.
- */
-ol.source.Source.prototype.getExtent = function() {
-  return this.extent_;
-};
-
-
-/**
- * @return {string|undefined} Logo.
+ * @return {string|olx.LogoOptions|undefined} Logo.
  */
 ol.source.Source.prototype.getLogo = function() {
   return this.logo_;
@@ -154,15 +137,7 @@ ol.source.Source.prototype.setAttributions = function(attributions) {
 
 
 /**
- * @param {ol.Extent} extent Extent.
- */
-ol.source.Source.prototype.setExtent = function(extent) {
-  this.extent_ = extent;
-};
-
-
-/**
- * @param {string|undefined} logo Logo.
+ * @param {string|olx.LogoOptions|undefined} logo Logo.
  */
 ol.source.Source.prototype.setLogo = function(logo) {
   this.logo_ = logo;

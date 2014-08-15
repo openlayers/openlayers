@@ -31,7 +31,6 @@ ol.source.ImageStatic = function(options) {
 
   goog.base(this, {
     attributions: attributions,
-    extent: options.extent,
     logo: options.logo,
     projection: projection,
     resolutions: [imageResolution]

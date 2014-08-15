@@ -79,7 +79,8 @@ ol.CollectionProperty = {
  * @constructor
  * @extends {ol.Object}
  * @fires ol.CollectionEvent
- * @param {Array=} opt_array Array.
+ * @param {Array.<T>=} opt_array Array.
+ * @template T
  * @api stable
  */
 ol.Collection = function(opt_array) {
@@ -88,7 +89,7 @@ ol.Collection = function(opt_array) {
 
   /**
    * @private
-   * @type {Array.<*>}
+   * @type {Array.<T>}
    */
   this.array_ = opt_array || [];
 
@@ -110,8 +111,8 @@ ol.Collection.prototype.clear = function() {
 
 
 /**
- * @param {Array} arr Array.
- * @return {ol.Collection} This collection.
+ * @param {Array.<T>} arr Array.
+ * @return {ol.Collection.<T>} This collection.
  * @api stable
  */
 ol.Collection.prototype.extend = function(arr) {
@@ -129,7 +130,7 @@ ol.Collection.prototype.extend = function(arr) {
  *     for every element. This function takes 3 arguments (the element, the
  *     index and the array). The return value is ignored.
  * @param {S=} opt_this The object to use as `this` in `f`.
- * @template T,S
+ * @template S
  * @api stable
  */
 ol.Collection.prototype.forEach = function(f, opt_this) {
@@ -142,7 +143,7 @@ ol.Collection.prototype.forEach = function(f, opt_this) {
  * is mutated, no events will be dispatched by the collection, and the
  * collection's "length" property won't be in sync with the actual length
  * of the array.
- * @return {Array} Array.
+ * @return {Array.<T>} Array.
  * @api stable
  */
 ol.Collection.prototype.getArray = function() {
@@ -153,7 +154,7 @@ ol.Collection.prototype.getArray = function() {
 /**
  * Get the element at the provided index.
  * @param {number} index Index.
- * @return {*} Element.
+ * @return {T} Element.
  * @api stable
  */
 ol.Collection.prototype.item = function(index) {
@@ -175,7 +176,7 @@ ol.Collection.prototype.getLength = function() {
 /**
  * Insert an element at the provided index.
  * @param {number} index Index.
- * @param {*} elem Element.
+ * @param {T} elem Element.
  * @api stable
  */
 ol.Collection.prototype.insertAt = function(index, elem) {
@@ -188,7 +189,7 @@ ol.Collection.prototype.insertAt = function(index, elem) {
 
 /**
  * Remove the last element of the collection.
- * @return {*} Element.
+ * @return {T} Element.
  * @api stable
  */
 ol.Collection.prototype.pop = function() {
@@ -198,7 +199,7 @@ ol.Collection.prototype.pop = function() {
 
 /**
  * Insert the provided element at the end of the collection.
- * @param {*} elem Element.
+ * @param {T} elem Element.
  * @return {number} Length.
  * @api stable
  */
@@ -211,8 +212,8 @@ ol.Collection.prototype.push = function(elem) {
 
 /**
  * Removes the first occurence of elem from the collection.
- * @param {*} elem Element.
- * @return {*} The removed element or undefined if elem was not found.
+ * @param {T} elem Element.
+ * @return {T|undefined} The removed element or undefined if elem was not found.
  * @api stable
  */
 ol.Collection.prototype.remove = function(elem) {
@@ -230,7 +231,7 @@ ol.Collection.prototype.remove = function(elem) {
 /**
  * Remove the element at the provided index.
  * @param {number} index Index.
- * @return {*} Value.
+ * @return {T} Value.
  * @api stable
  */
 ol.Collection.prototype.removeAt = function(index) {
@@ -246,7 +247,7 @@ ol.Collection.prototype.removeAt = function(index) {
 /**
  * Set the element at the provided index.
  * @param {number} index Index.
- * @param {*} elem Element.
+ * @param {T} elem Element.
  * @api stable
  */
 ol.Collection.prototype.setAt = function(index, elem) {

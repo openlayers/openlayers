@@ -3,7 +3,8 @@
   "version": "3.0.0-beta",
   "description": "Mapping library",
   "scripts": {
-    "postinstall": "node tasks/parse-examples.js",
+    "install": "node tasks/parse-examples.js",
+    "postinstall": "node ./node_modules/closure-util/install.js",
     "start": "node tasks/serve.js",
     "test": "node tasks/test.js"
   },

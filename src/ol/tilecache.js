@@ -48,7 +48,7 @@ ol.TileCache.prototype.expireCache = function(usedTiles) {
     if (zKey in usedTiles && usedTiles[zKey].contains(tile.tileCoord)) {
       break;
     } else {
-      this.pop();
+      this.pop().dispose();
     }
   }
 };
@@ -64,7 +64,7 @@ ol.TileCache.prototype.pruneTileRange = function(tileRange) {
   while (i--) {
     key = this.peekLastKey();
     if (tileRange.contains(ol.TileCoord.createFromString(key))) {
-      this.pop();
+      this.pop().dispose();
     } else {
       this.get(key);
     }

@@ -31,7 +31,6 @@ ol.source.ImageWMS = function(opt_options) {
 
   goog.base(this, {
     attributions: options.attributions,
-    extent: options.extent,
     logo: options.logo,
     projection: options.projection,
     resolutions: options.resolutions

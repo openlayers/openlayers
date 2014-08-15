@@ -394,6 +394,73 @@ describe('ol.format.GPX', function() {
 
     });
 
+    describe('extensions support', function() {
+
+      beforeEach(function() {
+        format = new ol.format.GPX({
+          readExtensions: function(feature, extensionsNode) {
+            var nodes = extensionsNode.getElementsByTagName('id');
+            var id = nodes.item(0).textContent;
+            feature.setId(id);
+          }
+        });
+      });
+
+      it('can process extensions from wpt', function() {
+        var text =
+            '<gpx xmlns="http://www.topografix.com/GPX/1/1">' +
+            '  <wpt>' +
+            '    <extensions>' +
+            '      <id>feature-id</id>' +
+            '    </extensions>' +
+            '  </wpt>' +
+            '</gpx>';
+        var fs = format.readFeatures(text);
+        expect(fs).to.have.length(1);
+        var feature = fs[0];
+        expect(feature.getId()).to.be('feature-id');
+      });
+
+      it('can process extensions from rte', function() {
+        var text =
+            '<gpx xmlns="http://www.topografix.com/GPX/1/1">' +
+            '  <rte>' +
+            '    <extensions>' +
+            '      <foo>bar</foo>' +
+            '      <id>feature-id</id>' +
+            '    </extensions>' +
+            '  </rte>' +
+            '</gpx>';
+        var fs = format.readFeatures(text);
+        expect(fs).to.have.length(1);
+        var feature = fs[0];
+        expect(feature.getId()).to.be('feature-id');
+      });
+
+      it('can process extensions from trk, not trkpt', function() {
+        var text =
+            '<gpx xmlns="http://www.topografix.com/GPX/1/1">' +
+            '  <trk>' +
+            '    <extensions>' +
+            '      <id>feature-id</id>' +
+            '    </extensions>' +
+            '    <trkseg>' +
+            '      <trkpt>' +
+            '        <extensions>' +
+            '          <id>another-feature-id</id>' +
+            '        </extensions>' +
+            '      </trkpt>' +
+            '    </trkseg>' +
+            '  </trk>' +
+            '</gpx>';
+        var fs = format.readFeatures(text);
+        expect(fs).to.have.length(1);
+        var feature = fs[0];
+        expect(feature.getId()).to.be('feature-id');
+      });
+
+    });
+
   });
 
 });

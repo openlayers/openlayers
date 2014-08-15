@@ -11,8 +11,8 @@ goog.require('ol.geom.flat.transform');
 
 /**
  * @classdesc
- * Abstract base class; normally only used for creating subclasses and not
- * instantiated in apps.
+ * Abstract base class; only used for creating subclasses; do not instantiate
+ * in apps, as cannot be rendered.
  *
  * @constructor
  * @extends {ol.geom.Geometry}

@@ -90,14 +90,6 @@ ol.BrowserFeature.HAS_GEOLOCATION = 'geolocation' in goog.global.navigator;
 
 
 /**
- * @const
- * @type {boolean}
- */
-ol.BrowserFeature.HAS_JSON_PARSE =
-    'JSON' in goog.global && 'parse' in goog.global.JSON;
-
-
-/**
  * True if browser supports touch events.
  * @const
  * @type {boolean}

@@ -89,6 +89,16 @@ The `defines` section of `build.json` above lists common settings for the Closur
 Called internally to generate a `build/exports.js` file optionally with a limited set of exports.
 
 
+## `generate-externs.js`
+
+Can be called to generate a Closure externs file for the full OpenLayers 3 API.
+See the `--help` option for more detail.
+
+    node tasks/generate-externs.js --help
+
+This is useful for projects that use the Closure Compiler to build, but want to use OpenLayers 3 as external library rather than building together with OpenLayers 3.
+
+
 ## `generate-info.js`
 
 Called internally to parse the library for annotations and write out a `build/info.json` file.

@@ -193,6 +193,11 @@ ol.renderer.canvas.TileLayer.prototype.prepareFrame =
   } else {
     extent = frameState.extent;
   }
+
+  if (goog.isDef(layerState.extent)) {
+    extent = ol.extent.getIntersection(extent, layerState.extent);
+  }
+
   var tileRange = tileGrid.getTileRangeForExtentAndResolution(
       extent, tileResolution);
 
@@ -233,6 +238,11 @@ ol.renderer.canvas.TileLayer.prototype.prepareFrame =
       if (z != this.renderedCanvasZ_ ||
           !this.renderedCanvasTileRange_.containsTileRange(tileRange)) {
         this.renderedCanvasTileRange_ = null;
+        // Due to limited layer extent, we may be rendering tiles on a small
+        // portion of the canvas.
+        if (z < this.renderedCanvasZ_) {
+          this.context_.clearRect(0, 0, canvasWidth, canvasHeight);
+        }
       }
     }
   }

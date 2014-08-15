@@ -130,7 +130,7 @@ virtual('ci', 'lint', 'jshint', 'build', 'test',
 virtual('build', 'build/ol.css', 'build/ol.js', 'build/ol-debug.js')
 
 
-virtual('check', 'lint', 'jshint', 'test')
+virtual('check', 'lint', 'build/ol.js', 'jshint', 'test')
 
 
 virtual('todo', 'fixme')
@@ -236,6 +236,7 @@ def examples_star_json(name, match):
             ],
             "define": [
               "goog.dom.ASSUME_STANDARDS_MODE=true",
+              "goog.json.USE_NATIVE_JSON=true",
               "goog.DEBUG=false"
             ],
             "jscomp_error": [
@@ -254,6 +255,7 @@ def examples_star_json(name, match):
               "duplicate",
               "duplicateMessage",
               "es3",
+              "es5Strict",
               "externsValidation",
               "fileoverviewTags",
               "globalThis",
@@ -275,9 +277,6 @@ def examples_star_json(name, match):
             ],
             "extra_annotation_name": [
               "api", "observable"
-            ],
-            "jscomp_off": [
-              "es5Strict"
             ],
             "compilation_level": "ADVANCED",
             "output_wrapper": "// OpenLayers 3. See http://ol3.js.org/\n(function(){%output%})();",

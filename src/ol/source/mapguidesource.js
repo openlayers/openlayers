@@ -21,7 +21,6 @@ goog.require('ol.source.Image');
 ol.source.MapGuide = function(options) {
 
   goog.base(this, {
-    extent: options.extent,
     projection: options.projection,
     resolutions: options.resolutions
   });

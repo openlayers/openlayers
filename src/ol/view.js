@@ -24,7 +24,6 @@ goog.require('ol.proj.Units');
  */
 ol.ViewProperty = {
   CENTER: 'center',
-  PROJECTION: 'projection',
   RESOLUTION: 'resolution',
   ROTATION: 'rotation'
 };
@@ -50,7 +49,7 @@ ol.ViewHint = {
  * ### The view states
  *
  * An `ol.View` is determined by three states: `center`, `resolution`,
- * and `rotation`. To each state corresponds a getter and a setter. E.g.
+ * and `rotation`. Each state has a corresponding getter and setter, e.g.
  * `getCenter` and `setCenter` for the `center` state.
  *
  * An `ol.View` has a `projection`. The projection determines the
@@ -68,7 +67,7 @@ ol.ViewHint = {
  * But an `ol.View` object also has a *resolution constraint*, a
  * *rotation constraint* and a *center constraint*.
  *
- * As said above no constraints are applied when the setters are used to set
+ * As said above, no constraints are applied when the setters are used to set
  * new states for the view. Applying constraints is done explicitly through
  * the use of the `constrain*` functions (`constrainResolution` and
  * `constrainRotation` and `constrainCenter`).
@@ -83,7 +82,7 @@ ol.ViewHint = {
  * `maxZoom`, and `zoomFactor`. If `resolutions` is set, the other three
  * options are ignored. See {@link ol.ViewOptions} for more information.
  *
- * The *rotation constaint* is currently not configurable. It snaps the
+ * The *rotation constraint* is currently not configurable. It snaps the
  * rotation value to zero when approaching the horizontal.
  *
  * @constructor
@@ -107,8 +106,12 @@ ol.View = function(opt_options) {
   var properties = {};
   properties[ol.ViewProperty.CENTER] = goog.isDef(options.center) ?
       options.center : null;
-  properties[ol.ViewProperty.PROJECTION] = ol.proj.createProjection(
-      options.projection, 'EPSG:3857');
+
+  /**
+   * @private
+   * @type {ol.proj.Projection}
+   */
+  this.projection_ = ol.proj.createProjection(options.projection, 'EPSG:3857');
 
   var resolutionConstraintInfo = ol.View.createResolutionConstraint_(
       options);
@@ -275,18 +278,12 @@ ol.View.prototype.calculateExtent = function(size) {
 
 
 /**
- * @return {ol.proj.Projection|undefined} The projection of the view.
- * @observable
+ * @return {ol.proj.Projection} The projection of the view.
  * @api
  */
 ol.View.prototype.getProjection = function() {
-  return /** @type {ol.proj.Projection|undefined} */ (
-      this.get(ol.ViewProperty.PROJECTION));
+  return this.projection_;
 };
-goog.exportProperty(
-    ol.View.prototype,
-    'getProjection',
-    ol.View.prototype.getProjection);
 
 
 /**
@@ -599,22 +596,6 @@ ol.View.prototype.setHint = function(hint, delta) {
   goog.asserts.assert(this.hints_[hint] >= 0);
   return this.hints_[hint];
 };
-
-
-/**
- * Set the projection of this view.
- * Warning! This code is not yet implemented. Function should not be used.
- * @param {ol.proj.Projection|undefined} projection The projection of the view.
- * @observable
- * @api
- */
-ol.View.prototype.setProjection = function(projection) {
-  this.set(ol.ViewProperty.PROJECTION, projection);
-};
-goog.exportProperty(
-    ol.View.prototype,
-    'setProjection',
-    ol.View.prototype.setProjection);
 
 
 /**

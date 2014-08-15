@@ -7,6 +7,11 @@ var fse = require('fs-extra');
 var walk = require('walk').walk;
 
 var sourceDir = path.join(__dirname, '..', 'src');
+var externsDir = path.join(__dirname, '..', 'externs');
+var externsPaths = [
+  path.join(externsDir, 'olx.js'),
+  path.join(externsDir, 'geojson.js')
+];
 var infoPath = path.join(__dirname, '..', 'build', 'info.json');
 var jsdoc = path.join(__dirname, '..', 'node_modules', '.bin', 'jsdoc');
 var jsdocConfig = path.join(
@@ -34,15 +39,43 @@ function getInfoTime(callback) {
 
 
 /**
+ * Test whether externs/olx.js is newer than the provided date.
+ * @param {Date} date Modification time of info file.
+ * @param {function(Error, Date, boolen)} callback Called with any
+ *     error, the mtime of the info file (zero date if it doesn't exist), and
+ *     whether externs/olx.js is newer than that date.
+ */
+function getNewerExterns(date, callback) {
+  var newer = false;
+  var walker = walk(externsDir);
+  walker.on('file', function(root, stats, next) {
+    var sourcePath = path.join(root, stats.name);
+    externsPaths.forEach(function(path) {
+      if (sourcePath == path && stats.mtime > date) {
+        newer = true;
+      }
+    });
+    next();
+  });
+  walker.on('errors', function() {
+    callback(new Error('Trouble walking ' + sourceDir));
+  });
+  walker.on('end', function() {
+    callback(null, date, newer);
+  });
+}
+
+
+/**
  * Generate a list of all .js paths in the source directory if any are newer
  * than the provided date.
  * @param {Date} date Modification time of info file.
+ * @param {boolean} newer Whether externs/olx.js is newer than date.
  * @param {function(Error, Array.<string>)} callback Called with any
  *     error and the array of source paths (empty if none newer).
  */
-function getNewer(date, callback) {
-  var paths = [];
-  var newer = false;
+function getNewer(date, newer, callback) {
+  var paths = [].concat(externsPaths);
 
   var walker = walk(sourceDir);
   walker.on('file', function(root, stats, next) {
@@ -219,6 +252,7 @@ function writeInfo(info, callback) {
 function main(callback) {
   async.waterfall([
     getInfoTime,
+    getNewerExterns,
     getNewer,
     spawnJSDoc,
     addSymbolProvides,
