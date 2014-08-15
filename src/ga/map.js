@@ -137,6 +137,7 @@ ga.Map.prototype.geocode = function(text) {
     this.serviceUrl + '/rest/services/api/SearchServer');
   var payload = { 'searchText': text,
                   'type': 'locations',
+                  'lang': ga.Lang.getCode(),
                   'returnGeometry': true
   };
   jsonp.send(payload, 
