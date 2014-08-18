@@ -18,6 +18,7 @@ goog.require('ol.proj');
 goog.require('ol.source.TileImage');
 goog.require('ol.source.wms');
 goog.require('ol.source.wms.ServerType');
+goog.require('ol.tilecoord');
 
 
 
@@ -150,14 +151,14 @@ ol.source.TileWMS.prototype.getGetFeatureInfoUrl =
   var tileCoord = tileGrid.getTileCoordForCoordAndResolution(
       coordinate, resolution);
 
-  if (tileGrid.getResolutions().length <= tileCoord.z) {
+  if (tileGrid.getResolutions().length <= tileCoord[0]) {
     return undefined;
   }
 
-  var tileResolution = tileGrid.getResolution(tileCoord.z);
+  var tileResolution = tileGrid.getResolution(tileCoord[0]);
   var tileExtent = tileGrid.getTileCoordExtent(
       tileCoord, this.tmpExtent_);
-  var tileSize = tileGrid.getTileSize(tileCoord.z);
+  var tileSize = tileGrid.getTileSize(tileCoord[0]);
 
   var gutter = this.gutter_;
   if (gutter !== 0) {
@@ -285,7 +286,7 @@ ol.source.TileWMS.prototype.getRequestUrl_ =
   if (urls.length == 1) {
     url = urls[0];
   } else {
-    var index = goog.math.modulo(tileCoord.hash(), urls.length);
+    var index = goog.math.modulo(ol.tilecoord.hash(tileCoord), urls.length);
     url = urls[index];
   }
   return goog.uri.utils.appendParamsFromMap(url, params);
@@ -376,7 +377,7 @@ ol.source.TileWMS.prototype.tileUrlFunction_ =
     tileGrid = this.getTileGridForProjection(projection);
   }
 
-  if (tileGrid.getResolutions().length <= tileCoord.z) {
+  if (tileGrid.getResolutions().length <= tileCoord[0]) {
     return undefined;
   }
 
@@ -384,10 +385,10 @@ ol.source.TileWMS.prototype.tileUrlFunction_ =
     pixelRatio = 1;
   }
 
-  var tileResolution = tileGrid.getResolution(tileCoord.z);
+  var tileResolution = tileGrid.getResolution(tileCoord[0]);
   var tileExtent = tileGrid.getTileCoordExtent(
       tileCoord, this.tmpExtent_);
-  var tileSize = tileGrid.getTileSize(tileCoord.z);
+  var tileSize = tileGrid.getTileSize(tileCoord[0]);
 
   var gutter = this.gutter_;
   if (gutter !== 0) {

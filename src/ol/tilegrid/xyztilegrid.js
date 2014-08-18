@@ -6,6 +6,7 @@ goog.require('ol.TileCoord');
 goog.require('ol.TileRange');
 goog.require('ol.proj');
 goog.require('ol.proj.EPSG3857');
+goog.require('ol.tilecoord');
 goog.require('ol.tilegrid.TileGrid');
 
 
@@ -69,18 +70,18 @@ ol.tilegrid.XYZ.prototype.createTileCoordTransform = function(opt_options) {
        * @return {ol.TileCoord} Tile coordinate.
        */
       function(tileCoord, projection, opt_tileCoord) {
-        var z = tileCoord.z;
+        var z = tileCoord[0];
         if (z < minZ || maxZ < z) {
           return null;
         }
         var n = Math.pow(2, z);
-        var x = tileCoord.x;
+        var x = tileCoord[1];
         if (wrapX) {
           x = goog.math.modulo(x, n);
         } else if (x < 0 || n <= x) {
           return null;
         }
-        var y = tileCoord.y;
+        var y = tileCoord[2];
         if (y < -n || -1 < y) {
           return null;
         }
@@ -89,7 +90,7 @@ ol.tilegrid.XYZ.prototype.createTileCoordTransform = function(opt_options) {
             return null;
           }
         }
-        return ol.TileCoord.createOrUpdate(z, x, -y - 1, opt_tileCoord);
+        return ol.tilecoord.createOrUpdate(z, x, -y - 1, opt_tileCoord);
       });
 };
 
@@ -99,10 +100,10 @@ ol.tilegrid.XYZ.prototype.createTileCoordTransform = function(opt_options) {
  */
 ol.tilegrid.XYZ.prototype.getTileCoordChildTileRange =
     function(tileCoord, opt_tileRange) {
-  if (tileCoord.z < this.maxZoom) {
+  if (tileCoord[0] < this.maxZoom) {
     return ol.TileRange.createOrUpdate(
-        2 * tileCoord.x, 2 * (tileCoord.x + 1),
-        2 * tileCoord.y, 2 * (tileCoord.y + 1),
+        2 * tileCoord[1], 2 * (tileCoord[1] + 1),
+        2 * tileCoord[2], 2 * (tileCoord[2] + 1),
         opt_tileRange);
   } else {
     return null;
@@ -116,9 +117,9 @@ ol.tilegrid.XYZ.prototype.getTileCoordChildTileRange =
 ol.tilegrid.XYZ.prototype.forEachTileCoordParentTileRange =
     function(tileCoord, callback, opt_this, opt_tileRange) {
   var tileRange = ol.TileRange.createOrUpdate(
-      0, tileCoord.x, 0, tileCoord.y, opt_tileRange);
+      0, tileCoord[1], 0, tileCoord[2], opt_tileRange);
   var z;
-  for (z = tileCoord.z - 1; z >= this.minZoom; --z) {
+  for (z = tileCoord[0] - 1; z >= this.minZoom; --z) {
     tileRange.minX = tileRange.maxX >>= 1;
     tileRange.minY = tileRange.maxY >>= 1;
     if (callback.call(opt_this, z, tileRange)) {

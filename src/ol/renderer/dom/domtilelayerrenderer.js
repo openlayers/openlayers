@@ -22,6 +22,7 @@ goog.require('ol.extent');
 goog.require('ol.layer.Tile');
 goog.require('ol.renderer.dom.Layer');
 goog.require('ol.source.Tile');
+goog.require('ol.tilecoord');
 goog.require('ol.tilegrid.TileGrid');
 goog.require('ol.vec.Mat4');
 
@@ -141,7 +142,7 @@ ol.renderer.dom.TileLayer.prototype.prepareFrame =
       tile = tileSource.getTile(z, x, y, pixelRatio, projection);
       tileState = tile.getState();
       if (tileState == ol.TileState.LOADED) {
-        tilesToDrawByZ[z][tile.tileCoord.toString()] = tile;
+        tilesToDrawByZ[z][ol.tilecoord.toString(tile.tileCoord)] = tile;
         continue;
       } else if (tileState == ol.TileState.EMPTY ||
                  (tileState == ol.TileState.ERROR &&
@@ -320,7 +321,7 @@ ol.renderer.dom.TileLayerZ_ = function(tileGrid, tileCoordOrigin) {
    * @private
    * @type {number}
    */
-  this.resolution_ = tileGrid.getResolution(tileCoordOrigin.z);
+  this.resolution_ = tileGrid.getResolution(tileCoordOrigin[0]);
 
   /**
    * @private
@@ -349,12 +350,15 @@ ol.renderer.dom.TileLayerZ_ = function(tileGrid, tileCoordOrigin) {
  */
 ol.renderer.dom.TileLayerZ_.prototype.addTile = function(tile, tileGutter) {
   var tileCoord = tile.tileCoord;
-  goog.asserts.assert(tileCoord.z == this.tileCoordOrigin_.z);
-  var tileCoordKey = tileCoord.toString();
+  var tileCoordZ = tileCoord[0];
+  var tileCoordX = tileCoord[1];
+  var tileCoordY = tileCoord[2];
+  goog.asserts.assert(tileCoordZ == this.tileCoordOrigin_[0]);
+  var tileCoordKey = ol.tilecoord.toString(tileCoord);
   if (tileCoordKey in this.tiles_) {
     return;
   }
-  var tileSize = this.tileGrid_.getTileSize(tileCoord.z);
+  var tileSize = this.tileGrid_.getTileSize(tileCoordZ);
   var image = tile.getImage(this);
   var imageStyle = image.style;
   // Bootstrap sets the style max-width: 100% for all images, which
@@ -383,9 +387,9 @@ ol.renderer.dom.TileLayerZ_.prototype.addTile = function(tile, tileGutter) {
   }
   tileElementStyle.position = 'absolute';
   tileElementStyle.left =
-      ((tileCoord.x - this.tileCoordOrigin_.x) * tileSize) + 'px';
+      ((tileCoordX - this.tileCoordOrigin_[1]) * tileSize) + 'px';
   tileElementStyle.top =
-      ((this.tileCoordOrigin_.y - tileCoord.y) * tileSize) + 'px';
+      ((this.tileCoordOrigin_[2] - tileCoordY) * tileSize) + 'px';
   if (goog.isNull(this.documentFragment_)) {
     this.documentFragment_ = document.createDocumentFragment();
   }
@@ -432,7 +436,7 @@ ol.renderer.dom.TileLayerZ_.prototype.getResolution = function() {
 ol.renderer.dom.TileLayerZ_.prototype.removeTilesOutsideExtent =
     function(extent, opt_tileRange) {
   var tileRange = this.tileGrid_.getTileRangeForExtentAndZ(
-      extent, this.tileCoordOrigin_.z, opt_tileRange);
+      extent, this.tileCoordOrigin_[0], opt_tileRange);
   /** @type {Array.<ol.Tile>} */
   var tilesToRemove = [];
   var tile, tileCoordKey;
@@ -445,7 +449,7 @@ ol.renderer.dom.TileLayerZ_.prototype.removeTilesOutsideExtent =
   var i, ii;
   for (i = 0, ii = tilesToRemove.length; i < ii; ++i) {
     tile = tilesToRemove[i];
-    tileCoordKey = tile.tileCoord.toString();
+    tileCoordKey = ol.tilecoord.toString(tile.tileCoord);
     goog.dom.removeNode(tile.getImage(this));
     delete this.tiles_[tileCoordKey];
   }
