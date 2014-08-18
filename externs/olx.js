@@ -3827,7 +3827,7 @@ olx.source.KMLOptions.prototype.urls;
 /**
  * @typedef {{layer: string,
  *     tileLoadFunction: (ol.TileLoadFunctionType|undefined)}}
- * @api
+ * @api stable
  */
 olx.source.MapQuestOptions;
 
