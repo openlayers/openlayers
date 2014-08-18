@@ -4465,7 +4465,7 @@ olx.source.ServerVectorOptions.prototype.projection;
  * @typedef {{crossOrigin: (null|string|undefined),
  *     tileLoadFunction: (ol.TileLoadFunctionType|undefined),
  *     url: string}}
- * @api
+ * @api stable
  */
 olx.source.TileJSONOptions;
 
