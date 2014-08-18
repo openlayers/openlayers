@@ -4639,7 +4639,7 @@ olx.source.TileWMSOptions.prototype.urls;
  *     logo: (string|olx.LogoOptions|undefined),
  *     projection: ol.proj.ProjectionLike,
  *     state: (ol.source.State|string|undefined)}}
- * @api
+ * @api stable
  */
 olx.source.VectorOptions;
 
