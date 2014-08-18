@@ -133,6 +133,7 @@ ol.tilegrid.TileGrid.prototype.forEachTileCoordParentTileRange =
 
 /**
  * @return {number} Max zoom.
+ * @api
  */
 ol.tilegrid.TileGrid.prototype.getMaxZoom = function() {
   return this.maxZoom;
