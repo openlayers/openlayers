@@ -16,7 +16,7 @@ goog.require('ol.layer.Layer');
  * @extends {ol.layer.Layer}
  * @fires ol.render.Event
  * @param {olx.layer.LayerOptions} options Layer options.
- * @api
+ * @api stable
  */
 ol.layer.Image = function(options) {
   goog.base(this, options);
