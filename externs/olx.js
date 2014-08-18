@@ -4339,7 +4339,7 @@ olx.source.StamenOptions.prototype.url;
  *     logo: (string|olx.LogoOptions|undefined),
  *     projection: ol.proj.ProjectionLike,
  *     url: string}}
- * @api
+ * @api stable
  */
 olx.source.ImageStaticOptions;
 
