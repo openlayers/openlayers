@@ -4508,7 +4508,7 @@ olx.source.TileJSONOptions.prototype.url;
  *     tileLoadFunction: (ol.TileLoadFunctionType|undefined),
  *     url: (string|undefined),
  *     urls: (Array.<string>|undefined)}}
- * @api
+ * @api stable
  */
 olx.source.TileWMSOptions;
 
