@@ -5076,7 +5076,7 @@ olx.source.XYZOptions.prototype.wrapX;
  *     url: !string,
  *     tierSizeCalculation: (string|undefined),
  *     size: ol.Size}}
- * @api
+ * @api stable
  */
 olx.source.ZoomifyOptions;
 
