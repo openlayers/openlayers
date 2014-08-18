@@ -2348,7 +2348,7 @@ olx.layer.BaseOptions.prototype.hue;
 /**
  * Opacity (0, 1). Default is `1`.
  * @type {number|undefined}
- * @api
+ * @api stable
  */
 olx.layer.BaseOptions.prototype.opacity;
 
@@ -2364,7 +2364,7 @@ olx.layer.BaseOptions.prototype.saturation;
 /**
  * Visibility. Default is `true`.
  * @type {boolean|undefined}
- * @api
+ * @api stable
  */
 olx.layer.BaseOptions.prototype.visible;
 
@@ -2373,7 +2373,7 @@ olx.layer.BaseOptions.prototype.visible;
  * The bounding extent for layer rendering.  The layer will not be rendered
  * outside of this extent.
  * @type {ol.Extent|undefined}
- * @api
+ * @api stable
  */
 olx.layer.BaseOptions.prototype.extent;
 
@@ -2381,7 +2381,7 @@ olx.layer.BaseOptions.prototype.extent;
 /**
  * The minimum resolution (inclusive) at which this layer will be visible.
  * @type {number|undefined}
- * @api
+ * @api stable
  */
 olx.layer.BaseOptions.prototype.minResolution;
 
@@ -2389,6 +2389,7 @@ olx.layer.BaseOptions.prototype.minResolution;
 /**
  * The maximum resolution (exclusive) below which this layer will be visible.
  * @type {number|undefined}
+ * @api stable
  */
 olx.layer.BaseOptions.prototype.maxResolution;
 

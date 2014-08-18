@@ -181,7 +181,7 @@ ol.layer.Base.prototype.getLayerStatesArray = goog.abstractMethod;
 /**
  * @return {ol.Extent|undefined} The layer extent.
  * @observable
- * @api
+ * @api stable
  */
 ol.layer.Base.prototype.getExtent = function() {
   return /** @type {ol.Extent|undefined} */ (
@@ -196,7 +196,7 @@ goog.exportProperty(
 /**
  * @return {number|undefined} The maximum resolution of the layer.
  * @observable
- * @api
+ * @api stable
  */
 ol.layer.Base.prototype.getMaxResolution = function() {
   return /** @type {number|undefined} */ (
@@ -211,7 +211,7 @@ goog.exportProperty(
 /**
  * @return {number|undefined} The minimum resolution of the layer.
  * @observable
- * @api
+ * @api stable
  */
 ol.layer.Base.prototype.getMinResolution = function() {
   return /** @type {number|undefined} */ (
@@ -226,7 +226,7 @@ goog.exportProperty(
 /**
  * @return {number|undefined} The opacity of the layer.
  * @observable
- * @api
+ * @api stable
  */
 ol.layer.Base.prototype.getOpacity = function() {
   return /** @type {number|undefined} */ (
@@ -262,7 +262,7 @@ ol.layer.Base.prototype.getSourceState = goog.abstractMethod;
 /**
  * @return {boolean|undefined} The visiblity of the layer.
  * @observable
- * @api
+ * @api stable
  */
 ol.layer.Base.prototype.getVisible = function() {
   return /** @type {boolean|undefined} */ (
@@ -344,7 +344,7 @@ goog.exportProperty(
  * will be visible at all extents.
  * @param {ol.Extent|undefined} extent The extent of the layer.
  * @observable
- * @api
+ * @api stable
  */
 ol.layer.Base.prototype.setExtent = function(extent) {
   this.set(ol.layer.LayerProperty.EXTENT, extent);
@@ -358,7 +358,7 @@ goog.exportProperty(
 /**
  * @param {number|undefined} maxResolution The maximum resolution of the layer.
  * @observable
- * @api
+ * @api stable
  */
 ol.layer.Base.prototype.setMaxResolution = function(maxResolution) {
   this.set(ol.layer.LayerProperty.MAX_RESOLUTION, maxResolution);
@@ -372,7 +372,7 @@ goog.exportProperty(
 /**
  * @param {number|undefined} minResolution The minimum resolution of the layer.
  * @observable
- * @api
+ * @api stable
  */
 ol.layer.Base.prototype.setMinResolution = function(minResolution) {
   this.set(ol.layer.LayerProperty.MIN_RESOLUTION, minResolution);
@@ -386,7 +386,7 @@ goog.exportProperty(
 /**
  * @param {number|undefined} opacity The opacity of the layer.
  * @observable
- * @api
+ * @api stable
  */
 ol.layer.Base.prototype.setOpacity = function(opacity) {
   this.set(ol.layer.LayerProperty.OPACITY, opacity);
@@ -419,7 +419,7 @@ goog.exportProperty(
 /**
  * @param {boolean|undefined} visible The visiblity of the layer.
  * @observable
- * @api
+ * @api stable
  */
 ol.layer.Base.prototype.setVisible = function(visible) {
   this.set(ol.layer.LayerProperty.VISIBLE, visible);
