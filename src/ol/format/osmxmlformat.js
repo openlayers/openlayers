@@ -26,6 +26,11 @@ goog.require('ol.xml');
  */
 ol.format.OSMXML = function() {
   goog.base(this);
+
+  /**
+   * @inheritDoc
+   */
+  this.defaultDataProjection = ol.proj.get('EPSG:4326');
 };
 goog.inherits(ol.format.OSMXML, ol.format.XMLFeature);
 
@@ -231,7 +236,7 @@ ol.format.OSMXML.prototype.readProjection;
  * @inheritDoc
  */
 ol.format.OSMXML.prototype.readProjectionFromDocument = function(doc) {
-  return ol.proj.get('EPSG:4326');
+  return this.defaultDataProjection;
 };
 
 
@@ -239,5 +244,5 @@ ol.format.OSMXML.prototype.readProjectionFromDocument = function(doc) {
  * @inheritDoc
  */
 ol.format.OSMXML.prototype.readProjectionFromNode = function(node) {
-  return ol.proj.get('EPSG:4326');
+  return this.defaultDataProjection;
 };

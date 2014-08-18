@@ -5,7 +5,6 @@ goog.require('goog.asserts');
 goog.require('goog.dom.NodeType');
 goog.require('goog.object');
 goog.require('ol.Feature');
-goog.require('ol.format.Feature');
 goog.require('ol.format.XMLFeature');
 goog.require('ol.format.XSD');
 goog.require('ol.geom.LineString');
@@ -30,6 +29,11 @@ ol.format.GPX = function(opt_options) {
   var options = goog.isDef(opt_options) ? opt_options : {};
 
   goog.base(this);
+
+  /**
+   * @inheritDoc
+   */
+  this.defaultDataProjection = ol.proj.get('EPSG:4326');
 
   /**
    * @type {function(ol.Feature, Node)|undefined}
@@ -498,7 +502,7 @@ ol.format.GPX.prototype.readProjection;
  * @inheritDoc
  */
 ol.format.GPX.prototype.readProjectionFromDocument = function(doc) {
-  return ol.proj.get('EPSG:4326');
+  return this.defaultDataProjection;
 };
 
 
@@ -506,7 +510,7 @@ ol.format.GPX.prototype.readProjectionFromDocument = function(doc) {
  * @inheritDoc
  */
 ol.format.GPX.prototype.readProjectionFromNode = function(node) {
-  return ol.proj.get('EPSG:4326');
+  return this.defaultDataProjection;
 };
 
 
@@ -866,9 +870,6 @@ ol.format.GPX.prototype.writeFeaturesNode = function(features, opt_options) {
   //FIXME Serialize metadata
   var gpx = ol.xml.createElementNS('http://www.topografix.com/GPX/1/1', 'gpx');
 
-  // for convenience set a default dataProjection
-  opt_options = ol.format.Feature.setDefaultDataProjection(
-      opt_options, this.readProjectionFromDocument(null));
   features = ol.format.XMLFeature.transformFeaturesWithOptions(
       features, true, opt_options);
 

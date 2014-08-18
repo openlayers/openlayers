@@ -17,6 +17,12 @@ goog.require('ol.proj');
  * @constructor
  */
 ol.format.Feature = function() {
+
+  /**
+   * @protected
+   * @type {ol.proj.Projection}
+   */
+  this.defaultDataProjection = null;
 };
 
 
@@ -43,7 +49,28 @@ ol.format.Feature.prototype.getReadOptions = function(
       featureProjection: opt_options.featureProjection
     };
   }
-  return options;
+  return this.adaptOptionsWithDefaultDataProjection(options);
+};
+
+
+/**
+ * @param {olx.format.WriteOptions|olx.format.ReadOptions|undefined} options
+ *     Options.
+ * @protected
+ * @return {olx.format.WriteOptions|olx.format.ReadOptions|undefined}
+ *     Updated options.
+ */
+ol.format.Feature.prototype.adaptOptionsWithDefaultDataProjection = function(
+    options) {
+  var updatedOptions;
+  if (goog.isDef(options)) {
+    updatedOptions = {
+      featureProjection: options.featureProjection,
+      dataProjection: goog.isDefAndNotNull(options.dataProjection) ?
+          options.dataProjection : this.defaultDataProjection
+    };
+  }
+  return updatedOptions;
 };
 
 
@@ -145,26 +172,4 @@ ol.format.Feature.transformWithOptions = function(
   } else {
     return geometry;
   }
-};
-
-
-/**
- * @param {olx.format.WriteOptions|olx.format.ReadOptions|undefined} options
- *     Options.
- * @param {ol.proj.ProjectionLike} defaultDataProjection Default projection.
- * @protected
- * @return {olx.format.WriteOptions|olx.format.ReadOptions|undefined}
- *     Updated options.
- */
-ol.format.Feature.setDefaultDataProjection = function(
-    options, defaultDataProjection) {
-  if (goog.isDef(options)) {
-    if (!goog.isDef(options.dataProjection)) {
-      options = {
-        featureProjection: options.featureProjection,
-        dataProjection: defaultDataProjection
-      };
-    }
-  }
-  return options;
 };

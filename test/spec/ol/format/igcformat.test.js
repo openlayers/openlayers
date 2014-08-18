@@ -47,7 +47,6 @@ describe('ol.format.IGC', function() {
 
     it('does transform and read a feature', function() {
       var feature = format.readFeature(igc, {
-        dataProjection: 'EPSG:4326',
         featureProjection: 'EPSG:3857'
       });
       expect(feature).to.be.an(ol.Feature);
@@ -91,7 +90,6 @@ describe('ol.format.IGC', function() {
 
     it('does transform and read features', function() {
       var features = format.readFeatures(igc, {
-        dataProjection: 'EPSG:4326',
         featureProjection: 'EPSG:3857'
       });
       expect(features.length).to.eql(1);

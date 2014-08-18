@@ -37,11 +37,11 @@ ol.format.GeoJSON = function(opt_options) {
   goog.base(this);
 
   /**
-   * @private
-   * @type {ol.proj.Projection}
+   * @inheritDoc
    */
-  this.defaultProjection_ = ol.proj.get(options.defaultProjection ?
-      options.defaultProjection : 'EPSG:4326');
+  this.defaultDataProjection = ol.proj.get(
+      goog.isDefAndNotNull(options.defaultDataProjection) ?
+          options.defaultDataProjection : 'EPSG:4326');
 
 
   /**
@@ -472,7 +472,7 @@ ol.format.GeoJSON.prototype.readProjectionFromObject = function(object) {
       return null;
     }
   } else {
-    return this.defaultProjection_;
+    return this.defaultDataProjection;
   }
 };
 

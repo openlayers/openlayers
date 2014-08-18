@@ -24,6 +24,11 @@ ol.format.Polyline = function(opt_options) {
   goog.base(this);
 
   /**
+   * @inheritDoc
+   */
+  this.defaultDataProjection = ol.proj.get('EPSG:4326');
+
+  /**
    * @private
    * @type {number}
    */
@@ -309,12 +314,9 @@ ol.format.Polyline.prototype.readGeometryFromText =
   var coordinates = ol.geom.flat.inflate.coordinates(
       flatCoordinates, 0, flatCoordinates.length, 2);
 
-  // for convenience set a default dataProjection
-  opt_options = ol.format.Feature.setDefaultDataProjection(
-      opt_options, this.readProjectionFromText(''));
-
   return ol.format.Feature.transformWithOptions(
-      new ol.geom.LineString(coordinates), false, false, opt_options);
+      new ol.geom.LineString(coordinates), false, false,
+      this.adaptOptionsWithDefaultDataProjection(opt_options));
 };
 
 
@@ -333,7 +335,7 @@ ol.format.Polyline.prototype.readProjection;
  * @inheritDoc
  */
 ol.format.Polyline.prototype.readProjectionFromText = function(text) {
-  return ol.proj.get('EPSG:4326');
+  return this.defaultDataProjection;
 };
 
 
@@ -379,12 +381,10 @@ ol.format.Polyline.prototype.writeGeometry;
 ol.format.Polyline.prototype.writeGeometryText =
     function(geometry, opt_options) {
   goog.asserts.assertInstanceof(geometry, ol.geom.LineString);
-  // for convenience set a default dataProjection
-  opt_options = ol.format.Feature.setDefaultDataProjection(
-      opt_options, this.readProjectionFromText(''));
   geometry = /** @type {ol.geom.LineString} */
       (ol.format.Feature.transformWithOptions(
-          geometry, true, true, opt_options));
+          geometry, true, true,
+          this.adaptOptionsWithDefaultDataProjection(opt_options)));
   var flatCoordinates = geometry.getFlatCoordinates();
   var stride = geometry.getStride();
   return ol.format.Polyline.encodeDeltas(flatCoordinates, stride, this.factor_);

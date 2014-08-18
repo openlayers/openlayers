@@ -128,7 +128,9 @@ ol.format.JSONFeature.prototype.readProjectionFromObject = goog.abstractMethod;
  * @inheritDoc
  */
 ol.format.JSONFeature.prototype.writeFeature = function(feature, opt_options) {
-  return this.writeFeatureObject(feature, opt_options);
+  return this.writeFeatureObject(
+      feature,
+      this.adaptOptionsWithDefaultDataProjection(opt_options));
 };
 
 
@@ -146,7 +148,9 @@ ol.format.JSONFeature.prototype.writeFeatureObject = goog.abstractMethod;
  */
 ol.format.JSONFeature.prototype.writeFeatures = function(
     features, opt_options) {
-  return this.writeFeaturesObject(features, opt_options);
+  return this.writeFeaturesObject(
+      features,
+      this.adaptOptionsWithDefaultDataProjection(opt_options));
 };
 
 
@@ -164,7 +168,9 @@ ol.format.JSONFeature.prototype.writeFeaturesObject = goog.abstractMethod;
  */
 ol.format.JSONFeature.prototype.writeGeometry = function(
     geometry, opt_options) {
-  return this.writeGeometryObject(geometry, opt_options);
+  return this.writeGeometryObject(
+      geometry,
+      this.adaptOptionsWithDefaultDataProjection(opt_options));
 };
 
 

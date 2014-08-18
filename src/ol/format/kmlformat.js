@@ -16,7 +16,6 @@ goog.require('ol.Feature');
 goog.require('ol.array');
 goog.require('ol.color');
 goog.require('ol.feature');
-goog.require('ol.format.Feature');
 goog.require('ol.format.XMLFeature');
 goog.require('ol.format.XSD');
 goog.require('ol.geom.Geometry');
@@ -70,6 +69,11 @@ ol.format.KML = function(opt_options) {
   var options = goog.isDef(opt_options) ? opt_options : {};
 
   goog.base(this);
+
+  /**
+   * @inheritDoc
+   */
+  this.defaultDataProjection = ol.proj.get('EPSG:4326');
 
   var defaultStyle = goog.isDef(options.defaultStyle) ?
       options.defaultStyle : ol.format.KML.DEFAULT_STYLE_ARRAY_;
@@ -1654,7 +1658,7 @@ ol.format.KML.prototype.readProjection;
  * @inheritDoc
  */
 ol.format.KML.prototype.readProjectionFromDocument = function(doc) {
-  return ol.proj.get('EPSG:4326');
+  return this.defaultDataProjection;
 };
 
 
@@ -1662,7 +1666,7 @@ ol.format.KML.prototype.readProjectionFromDocument = function(doc) {
  * @inheritDoc
  */
 ol.format.KML.prototype.readProjectionFromNode = function(node) {
-  return ol.proj.get('EPSG:4326');
+  return this.defaultDataProjection;
 };
 
 
@@ -2523,9 +2527,6 @@ ol.format.KML.prototype.writeFeaturesNode = function(features, opt_options) {
   ol.xml.setAttributeNS(kml, xmlSchemaInstanceUri, 'xsi:schemaLocation',
       ol.format.KML.SCHEMA_LOCATION_);
 
-  // for convenience set a default dataProjection
-  opt_options = ol.format.Feature.setDefaultDataProjection(
-      opt_options, this.readProjectionFromDocument(null));
   features = ol.format.XMLFeature.transformFeaturesWithOptions(
       features, true, opt_options);
 

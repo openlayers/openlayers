@@ -31,11 +31,11 @@ ol.format.TopoJSON = function(opt_options) {
   goog.base(this);
 
   /**
-   * @private
-   * @type {ol.proj.Projection}
+   * @inheritDoc
    */
-  this.defaultProjection_ =
-      ol.proj.get(options.defaultProjection || 'EPSG:4326');
+  this.defaultDataProjection = ol.proj.get(
+      goog.isDefAndNotNull(options.defaultDataProjection) ?
+          options.defaultDataProjection : 'EPSG:4326');
 
 };
 goog.inherits(ol.format.TopoJSON, ol.format.JSONFeature);
@@ -391,7 +391,7 @@ ol.format.TopoJSON.transformVertex_ = function(vertex, scale, translate) {
  * @api
  */
 ol.format.TopoJSON.prototype.readProjection = function(object) {
-  return this.defaultProjection_;
+  return this.defaultDataProjection;
 };
 
 

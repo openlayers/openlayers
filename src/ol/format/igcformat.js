@@ -38,6 +38,11 @@ ol.format.IGC = function(opt_options) {
   goog.base(this);
 
   /**
+   * @inheritDoc
+   */
+  this.defaultDataProjection = ol.proj.get('EPSG:4326');
+
+  /**
    * @private
    * @type {ol.format.IGCZ}
    */
@@ -217,5 +222,5 @@ ol.format.IGC.prototype.readProjection;
  * @inheritDoc
  */
 ol.format.IGC.prototype.readProjectionFromText = function(text) {
-  return ol.proj.get('EPSG:4326');
+  return this.defaultDataProjection;
 };

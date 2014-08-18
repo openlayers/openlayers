@@ -486,7 +486,6 @@ describe('ol.format.GeoJSON', function() {
       var str = JSON.stringify(data),
           array = format.readFeatures(str);
       var geojson = format.writeFeatures(array, {
-        dataProjection: 'EPSG:4326',
         featureProjection: 'EPSG:3857'
       });
       var result = format.readFeatures(geojson);
@@ -552,6 +551,20 @@ describe('ol.format.GeoJSON', function() {
         'type': 'GeometryCollection',
         'geometries': []
       });
+    });
+
+    it('transforms and encodes a point', function() {
+      var point = new ol.geom.Point([2, 3]);
+      var geojson = format.writeGeometry(point, {
+        featureProjection: 'EPSG:3857'
+      });
+      var newPoint = format.readGeometry(geojson, {
+        featureProjection: 'EPSG:3857'
+      });
+      expect(point.getCoordinates()[0]).to.eql(newPoint.getCoordinates()[0]);
+      expect(
+          Math.abs(point.getCoordinates()[1] - newPoint.getCoordinates()[1]))
+          .to.be.lessThan(0.0000001);
     });
 
   });
