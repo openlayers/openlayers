@@ -39,11 +39,16 @@ ol.source.MapGuide = function(options) {
   this.displayDpi_ = goog.isDef(options.displayDpi) ?
       options.displayDpi : 96;
 
+  /**
+   * @private
+   * @type {Object}
+   */
+  this.params_ = goog.isDef(options.params) ? options.params : {};
+
   var imageUrlFunction;
   if (goog.isDef(options.url)) {
-    var params = goog.isDef(options.params) ? options.params : {};
     imageUrlFunction = ol.ImageUrlFunction.createFromParamsFunction(
-        options.url, params, goog.bind(this.getUrl, this));
+        options.url, this.params_, goog.bind(this.getUrl, this));
   } else {
     imageUrlFunction = ol.ImageUrlFunction.nullImageUrlFunction;
   }
@@ -53,12 +58,6 @@ ol.source.MapGuide = function(options) {
    * @type {ol.ImageUrlFunctionType}
    */
   this.imageUrlFunction_ = imageUrlFunction;
-
-  /**
-   * @private
-   * @type {Object}
-   */
-  this.params_ = null;
 
   /**
    * @private
