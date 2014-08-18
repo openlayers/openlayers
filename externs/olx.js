@@ -2903,7 +2903,7 @@ olx.layer.VectorOptions.prototype.hue;
  * The bounding extent for layer rendering.  The layer will not be rendered
  * outside of this extent.
  * @type {ol.Extent|undefined}
- * @api
+ * @api stable
  */
 olx.layer.VectorOptions.prototype.extent;
 
@@ -2911,7 +2911,7 @@ olx.layer.VectorOptions.prototype.extent;
 /**
  * The minimum resolution (inclusive) at which this layer will be visible.
  * @type {number|undefined}
- * @api
+ * @api stable
  */
 olx.layer.VectorOptions.prototype.minResolution;
 
@@ -2919,7 +2919,7 @@ olx.layer.VectorOptions.prototype.minResolution;
 /**
  * The maximum resolution (exclusive) below which this layer will be visible.
  * @type {number|undefined}
- * @api
+ * @api stable
  */
 olx.layer.VectorOptions.prototype.maxResolution;
 
@@ -2927,7 +2927,7 @@ olx.layer.VectorOptions.prototype.maxResolution;
 /**
  * Opacity. 0-1. Default is `1`.
  * @type {number|undefined}
- * @api
+ * @api stable
  */
 olx.layer.VectorOptions.prototype.opacity;
 
@@ -2943,7 +2943,7 @@ olx.layer.VectorOptions.prototype.saturation;
 /**
  * Source.
  * @type {ol.source.Vector}
- * @api
+ * @api stable
  */
 olx.layer.VectorOptions.prototype.source;
 
@@ -2952,7 +2952,7 @@ olx.layer.VectorOptions.prototype.source;
  * Layer style. See {@link ol.style} for default style which will be used if
  * this is not defined.
  * @type {ol.style.Style|Array.<ol.style.Style>|ol.style.StyleFunction|undefined}
- * @api
+ * @api stable
  */
 olx.layer.VectorOptions.prototype.style;
 
@@ -2960,7 +2960,7 @@ olx.layer.VectorOptions.prototype.style;
 /**
  * Visibility. Default is `true` (visible).
  * @type {boolean|undefined}
- * @api
+ * @api stable
  */
 olx.layer.VectorOptions.prototype.visible;
 
