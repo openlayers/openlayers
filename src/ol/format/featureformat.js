@@ -166,7 +166,7 @@ ol.format.Feature.transformWithOptions = function(
       ol.proj.get(opt_options.dataProjection) : null;
   if (!goog.isNull(featureProjection) && !goog.isNull(dataProjection) &&
       !ol.proj.equivalent(featureProjection, dataProjection)) {
-    return (write ? geometry.clone() : geometry).transform(
+    return (clone ? geometry.clone() : geometry).transform(
         write ? featureProjection : dataProjection,
         write ? dataProjection : featureProjection);
   } else {
