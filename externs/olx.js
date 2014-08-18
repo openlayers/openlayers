@@ -2534,6 +2534,7 @@ olx.layer.GroupOptions.prototype.hue;
 /**
  * Opacity (0, 1). Default is `1`.
  * @type {number|undefined}
+ * @api stable
  */
 olx.layer.GroupOptions.prototype.opacity;
 
@@ -2541,6 +2542,7 @@ olx.layer.GroupOptions.prototype.opacity;
 /**
  * Saturation. Default is `1`.
  * @type {number|undefined}
+ * @api
  */
 olx.layer.GroupOptions.prototype.saturation;
 
@@ -2548,7 +2550,7 @@ olx.layer.GroupOptions.prototype.saturation;
 /**
  * Visibility. Default is `true`.
  * @type {boolean|undefined}
- * @api
+ * @api stable
  */
 olx.layer.GroupOptions.prototype.visible;
 
@@ -2557,7 +2559,7 @@ olx.layer.GroupOptions.prototype.visible;
  * The bounding extent for layer rendering.  The layer will not be rendered
  * outside of this extent.
  * @type {ol.Extent|undefined}
- * @api
+ * @api stable
  */
 olx.layer.GroupOptions.prototype.extent;
 
@@ -2565,7 +2567,7 @@ olx.layer.GroupOptions.prototype.extent;
 /**
  * The minimum resolution (inclusive) at which this layer will be visible.
  * @type {number|undefined}
- * @api
+ * @api stable
  */
 olx.layer.GroupOptions.prototype.minResolution;
 
@@ -2573,7 +2575,7 @@ olx.layer.GroupOptions.prototype.minResolution;
 /**
  * The maximum resolution (exclusive) below which this layer will be visible.
  * @type {number|undefined}
- * @api
+ * @api stable
  */
 olx.layer.GroupOptions.prototype.maxResolution;
 
@@ -2581,7 +2583,7 @@ olx.layer.GroupOptions.prototype.maxResolution;
 /**
  * Child layers.
  * @type {Array.<ol.layer.Base>|ol.Collection.<ol.layer.Base>|undefined}
- * @api
+ * @api stable
  */
 olx.layer.GroupOptions.prototype.layers;
 
