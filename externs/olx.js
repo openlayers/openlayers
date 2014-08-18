@@ -4807,7 +4807,7 @@ olx.source.StaticVectorOptions.prototype.urls;
  *     maxZoom: (number|undefined),
  *     tileLoadFunction: (ol.TileLoadFunctionType|undefined),
  *     urls: (Array.<string>|undefined)}}
- * @api
+ * @api stable
  */
 olx.source.WMTSOptions;
 
