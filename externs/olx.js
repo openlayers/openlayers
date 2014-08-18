@@ -3878,7 +3878,7 @@ olx.source.TileDebugOptions.prototype.tileGrid;
  *     maxZoom: (number|undefined),
  *     tileLoadFunction: (ol.TileLoadFunctionType|undefined),
  *     url: (string|undefined)}}
- * @api
+ * @api stable
  */
 olx.source.OSMOptions;
 
