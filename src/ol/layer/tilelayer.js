@@ -25,7 +25,7 @@ ol.layer.TileProperty = {
  * @extends {ol.layer.Layer}
  * @fires ol.render.Event
  * @param {olx.layer.TileOptions} options Tile layer options.
- * @api
+ * @api stable
  */
 ol.layer.Tile = function(options) {
   goog.base(this, options);
