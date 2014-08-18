@@ -426,7 +426,7 @@ ol.Overlay.prototype.updatePixelPosition_ = function() {
         positioning == ol.OverlayPositioning.TOP_CENTER) {
       offsetX += goog.style.getSize(this.element_).width / 2;
     }
-    var bottom = Math.round(pixel[0] - offsetX) + 'px';
+    var left = Math.round(pixel[0] - offsetX) + 'px';
     if (this.rendered_.left_ != left) {
       this.rendered_.left_ = style.left = left;
     }
