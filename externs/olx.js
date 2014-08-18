@@ -4278,7 +4278,7 @@ olx.source.ImageWMSOptions.prototype.url;
  *     opaque: (boolean|undefined),
  *     tileLoadFunction: (ol.TileLoadFunctionType|undefined),
  *     url: (string|undefined)}}
- * @api
+ * @api stable
  */
 olx.source.StamenOptions;
 
