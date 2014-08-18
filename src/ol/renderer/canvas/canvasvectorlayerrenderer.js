@@ -121,6 +121,8 @@ ol.renderer.canvas.VectorLayer.prototype.forEachFeatureAtPixel =
     var resolution = frameState.viewState.resolution;
     var rotation = frameState.viewState.rotation;
     var layer = this.getLayer();
+    /** @type {Object.<string, boolean>} */
+    var features = {};
     return this.replayGroup_.forEachGeometryAtPixel(extent, resolution,
         rotation, coordinate, frameState.skippedFeatureUids,
         /**
@@ -131,7 +133,11 @@ ol.renderer.canvas.VectorLayer.prototype.forEachFeatureAtPixel =
         function(geometry, data) {
           var feature = /** @type {ol.Feature} */ (data);
           goog.asserts.assert(goog.isDef(feature));
-          return callback.call(thisArg, feature, layer);
+          var key = goog.getUid(feature).toString();
+          if (!(key in features)) {
+            features[key] = true;
+            return callback.call(thisArg, feature, layer);
+          }
         });
   }
 };

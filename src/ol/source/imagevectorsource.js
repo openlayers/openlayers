@@ -148,6 +148,8 @@ ol.source.ImageVector.prototype.forEachFeatureAtPixel = function(
   if (goog.isNull(this.replayGroup_)) {
     return undefined;
   } else {
+    /** @type {Object.<string, boolean>} */
+    var features = {};
     return this.replayGroup_.forEachGeometryAtPixel(
         extent, resolution, 0, coordinate, skippedFeatureUids,
         /**
@@ -157,7 +159,12 @@ ol.source.ImageVector.prototype.forEachFeatureAtPixel = function(
          */
         function(geometry, data) {
           var feature = /** @type {ol.Feature} */ (data);
-          return callback(feature);
+          goog.asserts.assert(goog.isDef(feature));
+          var key = goog.getUid(feature).toString();
+          if (!(key in features)) {
+            features[key] = true;
+            return callback(feature);
+          }
         });
   }
 };
