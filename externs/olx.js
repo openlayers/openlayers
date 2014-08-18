@@ -4964,7 +4964,7 @@ olx.source.WMTSOptions.prototype.urls;
  *     url: (string|undefined),
  *     urls: (Array.<string>|undefined),
  *     wrapX: (boolean|undefined)}}
- * @api
+ * @api stable
  */
 olx.source.XYZOptions;
 
