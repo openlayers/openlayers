@@ -33,6 +33,10 @@ ol.CollectionEventType = {
 
 
 /**
+ * @classdesc
+ * Events emitted by {@link ol.Collection} instances are instances of this
+ * type.
+ *
  * @constructor
  * @extends {goog.events.Event}
  * @implements {oli.CollectionEvent}

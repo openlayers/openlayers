@@ -44,6 +44,10 @@ ol.DrawEventType = {
 
 
 /**
+ * @classdesc
+ * Events emitted by {@link ol.interaction.Draw} instances are instances of
+ * this type.
+ *
  * @constructor
  * @extends {goog.events.Event}
  * @implements {oli.DrawEvent}

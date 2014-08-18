@@ -84,7 +84,8 @@ ol.Observable.prototype.once = function(type, listener, opt_this) {
  * Unlisten for a certain type of event.
  * @param {string|Array.<string>} type The event type or array of event types.
  * @param {function(?): ?} listener The listener function.
- * @param {Object=} opt_this The object to use as `this` in `listener`.
+ * @param {Object=} opt_this The object which was used as `this` by the
+ * `listener`.
  * @api
  */
 ol.Observable.prototype.un = function(type, listener, opt_this) {

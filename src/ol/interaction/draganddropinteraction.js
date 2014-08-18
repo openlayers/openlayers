@@ -192,6 +192,10 @@ ol.interaction.DragAndDropEventType = {
 
 
 /**
+ * @classdesc
+ * Events emitted by {@link ol.interaction.DragAndDrop} instances are instances
+ * of this type.
+ *
  * @constructor
  * @extends {goog.events.Event}
  * @implements {oli.interaction.DragAndDropEvent}

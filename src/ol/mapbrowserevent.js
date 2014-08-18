@@ -20,6 +20,10 @@ goog.require('ol.pointer.PointerEventHandler');
 
 
 /**
+ * @classdesc
+ * Events emitted as map browser events are instances of this type.
+ * See {@link ol.Map} for which events trigger a map browser event.
+ *
  * @constructor
  * @extends {ol.MapEvent}
  * @implements {oli.MapBrowserEvent}
