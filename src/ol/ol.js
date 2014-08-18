@@ -104,9 +104,11 @@ ol.ENABLE_IMAGE = true;
 
 
 /**
- * @define {boolean} Enable named colors.  Enabling named colors adds about 3KB
- *     uncompressed / 1.5KB compressed to the final build size.  Default is
- *     `false`.
+ * @define {boolean} Enable Closure named colors (`goog.color.names`).
+ *     Enabling these colors adds about 3KB uncompressed / 1.5KB compressed to
+ *     the final build size.  Default is `false`. This setting has no effect
+ *     with Canvas renderer, which uses its own names, whether this is true or
+ *     false.
  */
 ol.ENABLE_NAMED_COLORS = false;
 

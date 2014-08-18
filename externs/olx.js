@@ -4652,8 +4652,8 @@ olx.style.FillOptions;
 
 
 /**
- * Color. Default null; if null, the Canvas/renderer default black will be
- * used.
+ * Color. See {@link ol.color} for possible formats. Default null; if null,
+ * the Canvas/renderer default black will be used.
  * @type {ol.Color|string|undefined}
  */
 olx.style.FillOptions.prototype.color;
@@ -4805,8 +4805,8 @@ olx.style.StrokeOptions;
 
 
 /**
- * Color. Default null; if null, the Canvas/renderer default black will be
- * used.
+ * Color. See {@link ol.color} for possible formats. Default null; if null,
+ * the Canvas/renderer default black will be used.
  * @type {ol.Color|string|undefined}
  */
 olx.style.StrokeOptions.prototype.color;
