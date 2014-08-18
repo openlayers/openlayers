@@ -664,10 +664,6 @@ ol.proj.cloneTransform = function(input, opt_output, opt_dimension) {
  * @api
  */
 ol.proj.transform = function(coordinate, source, destination) {
-  goog.asserts.assert(goog.isArray(coordinate));
-  goog.array.forEach(coordinate, function(value) { 
-    goog.goog.assert(goog.isNumber(value));
-  });
   var transformFn = ol.proj.getTransform(source, destination);
   return transformFn(coordinate);
 };
@@ -684,10 +680,6 @@ ol.proj.transform = function(coordinate, source, destination) {
  * @api
  */
 ol.proj.transformExtent = function(extent, source, destination) {
-  goog.asserts.assert(goog.isArray(extent));
-  goog.array.forEach(extent, function(value) { 
-    goog.goog.assert(goog.isNumber(value));
-  });
   var transformFn = ol.proj.getTransform(source, destination);
   return ol.extent.applyTransform(extent, transformFn);
 };
@@ -703,10 +695,6 @@ ol.proj.transformExtent = function(extent, source, destination) {
  */
 ol.proj.transformWithProjections =
     function(point, sourceProjection, destinationProjection) {
-  goog.asserts.assert(goog.isArray(point));
-  goog.array.forEach(point, function(value) { 
-    goog.goog.assert(goog.isNumber(value));
-  });
   var transformFn = ol.proj.getTransformFromProjections(
       sourceProjection, destinationProjection);
   return transformFn(point);
