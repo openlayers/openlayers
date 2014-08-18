@@ -3000,7 +3000,7 @@ olx.FeatureOverlayOptions.prototype.style;
  *     key: string,
  *     imagerySet: string,
  *     tileLoadFunction: (ol.TileLoadFunctionType|undefined)}}
- * @api
+ * @api stable
  */
 olx.source.BingMapsOptions;
 

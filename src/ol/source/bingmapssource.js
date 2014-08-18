@@ -24,7 +24,7 @@ goog.require('ol.tilegrid.XYZ');
  * @constructor
  * @extends {ol.source.TileImage}
  * @param {olx.source.BingMapsOptions} options Bing Maps options.
- * @api
+ * @api stable
  */
 ol.source.BingMaps = function(options) {
 
