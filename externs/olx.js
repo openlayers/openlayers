@@ -4181,7 +4181,7 @@ olx.source.ImageVectorOptions.prototype.style;
  *     ratio: (number|undefined),
  *     resolutions: (Array.<number>|undefined),
  *     url: (string|undefined)}}
- * @api
+ * @api stable
  */
 olx.source.ImageWMSOptions;
 
