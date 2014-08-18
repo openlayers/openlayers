@@ -14,7 +14,7 @@ describe('ol.tilegrid.XYZ', function() {
 
     it('iterates as expected', function() {
 
-      var tileCoord = new ol.TileCoord(5, 11, 21);
+      var tileCoord = [5, 11, 21];
       var zs = [], tileRanges = [];
       xyzTileGrid.forEachTileCoordParentTileRange(
           tileCoord,

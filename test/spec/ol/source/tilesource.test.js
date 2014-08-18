@@ -224,9 +224,9 @@ goog.inherits(ol.test.source.TileMock, ol.source.Tile);
  * @inheritDoc
  */
 ol.test.source.TileMock.prototype.getTile = function(z, x, y) {
-  var key = ol.TileCoord.getKeyZXY(z, x, y);
+  var key = ol.tilecoord.getKeyZXY(z, x, y);
   var tileState = this.loaded_[key] ? ol.TileState.LOADED : ol.TileState.IDLE;
-  return new ol.Tile(new ol.TileCoord(z, x, y), tileState);
+  return new ol.Tile([z, x, y], tileState);
 };
 
 
@@ -270,9 +270,9 @@ describe('ol.test.source.TileMock', function() {
 
 goog.require('goog.object');
 goog.require('ol.Tile');
-goog.require('ol.TileCoord');
 goog.require('ol.TileState');
 goog.require('ol.proj');
 goog.require('ol.source.Source');
 goog.require('ol.source.Tile');
+goog.require('ol.tilecoord');
 goog.require('ol.tilegrid.TileGrid');

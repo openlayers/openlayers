@@ -9,6 +9,12 @@
     <link rel="stylesheet" href="../resources/layout.css" type="text/css">
     <link rel="stylesheet" href="../resources/bootstrap/css/bootstrap-responsive.min.css" type="text/css">
     <title>Tile vector example</title>
+    <style>
+      #map {
+        max-width: 600px;
+        margin: 0 auto;
+      }
+    </style>
   </head>
   <body>
 
@@ -36,6 +42,16 @@
           <div id="docs">
             <p>See the <a href="tile-vector.js" target="_blank">tile-vector.js source</a> to see how this is done.</p>
           </div>
+          <div class="alert">
+            <strong>Warning</strong> Map is becoming unresponsive with too many layers.
+          </div>
+          <fieldset>
+            <legend>Layers</legend>
+            <label class="checkbox"><input type="checkbox" id="landuse"/> Landuse</label>
+            <label class="checkbox"><input type="checkbox" id="buildings"/> Buildings</label>
+            <label class="checkbox"><input type="checkbox" id="water" checked/> Water</label>
+            <label class="checkbox"><input type="checkbox" id="roads" checked/> Roads</label>
+          </fieldset>
           <div id="tags">tile-vector, openstreetmap</div>
         </div>
 

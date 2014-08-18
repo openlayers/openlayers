@@ -91,6 +91,7 @@ ol.source.Source.prototype.forEachFeatureAtPixel =
 
 /**
  * @return {Array.<ol.Attribution>} Attributions.
+ * @api
  */
 ol.source.Source.prototype.getAttributions = function() {
   return this.attributions_;
@@ -99,6 +100,7 @@ ol.source.Source.prototype.getAttributions = function() {
 
 /**
  * @return {string|olx.LogoOptions|undefined} Logo.
+ * @api
  */
 ol.source.Source.prototype.getLogo = function() {
   return this.logo_;
@@ -107,6 +109,7 @@ ol.source.Source.prototype.getLogo = function() {
 
 /**
  * @return {ol.proj.Projection} Projection.
+ * @api
  */
 ol.source.Source.prototype.getProjection = function() {
   return this.projection_;

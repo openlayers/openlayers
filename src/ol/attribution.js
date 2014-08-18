@@ -45,6 +45,7 @@ ol.Attribution = function(options) {
 
 /**
  * @return {string} HTML.
+ * @api
  */
 ol.Attribution.prototype.getHTML = function() {
   return this.html_;

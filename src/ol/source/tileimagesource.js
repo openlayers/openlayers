@@ -110,7 +110,7 @@ ol.source.TileImage.prototype.getTile =
     return /** @type {!ol.Tile} */ (this.tileCache.get(tileCoordKey));
   } else {
     goog.asserts.assert(projection);
-    var tileCoord = new ol.TileCoord(z, x, y);
+    var tileCoord = [z, x, y];
     var tileUrl = this.tileUrlFunction(tileCoord, pixelRatio, projection);
     var tile = new this.tileClass(
         tileCoord,

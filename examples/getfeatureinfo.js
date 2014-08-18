@@ -18,8 +18,6 @@ var view = new ol.View({
   zoom: 1
 });
 
-var viewProjection = view.getProjection();
-
 var map = new ol.Map({
   layers: [wmsLayer],
   target: 'map',
@@ -30,7 +28,7 @@ map.on('singleclick', function(evt) {
   document.getElementById('info').innerHTML = '';
   var viewResolution = /** @type {number} */ (view.getResolution());
   var url = wmsSource.getGetFeatureInfoUrl(
-      evt.coordinate, viewResolution, viewProjection,
+      evt.coordinate, viewResolution, 'EPSG:3857',
       {'INFO_FORMAT': 'text/html'});
   if (url) {
     document.getElementById('info').innerHTML =

@@ -8,9 +8,9 @@ goog.require('ol.CollectionEventType');
 goog.require('ol.Feature');
 goog.require('ol.FeatureOverlay');
 goog.require('ol.events.condition');
-goog.require('ol.feature');
 goog.require('ol.geom.GeometryType');
 goog.require('ol.interaction.Interaction');
+goog.require('ol.style.Style');
 
 
 
@@ -207,7 +207,7 @@ ol.interaction.Select.prototype.setMap = function(map) {
  * @return {ol.style.StyleFunction} Styles.
  */
 ol.interaction.Select.getDefaultStyleFunction = function() {
-  var styles = ol.feature.createDefaultEditingStyles();
+  var styles = ol.style.createDefaultEditingStyles();
   goog.array.extend(styles[ol.geom.GeometryType.POLYGON],
       styles[ol.geom.GeometryType.LINE_STRING]);
   goog.array.extend(styles[ol.geom.GeometryType.GEOMETRY_COLLECTION],
