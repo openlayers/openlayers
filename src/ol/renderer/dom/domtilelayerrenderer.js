@@ -17,7 +17,7 @@ goog.require('ol.TileRange');
 goog.require('ol.TileState');
 goog.require('ol.ViewHint');
 goog.require('ol.dom');
-goog.require('ol.dom.BrowserFeature');
+goog.require('ol.dom.browserfeature');
 goog.require('ol.extent');
 goog.require('ol.layer.Tile');
 goog.require('ol.renderer.dom.Layer');
@@ -40,7 +40,7 @@ ol.renderer.dom.TileLayer = function(mapRenderer, tileLayer) {
   target.style.position = 'absolute';
 
   // Needed for IE7-8 to render a transformed element correctly
-  if (ol.dom.BrowserFeature.USE_MS_MATRIX_TRANSFORM) {
+  if (ol.dom.browserfeature.USE_MS_MATRIX_TRANSFORM) {
     target.style.width = '100%';
     target.style.height = '100%';
   }

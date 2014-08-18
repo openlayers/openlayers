@@ -1,4 +1,4 @@
-goog.provide('ol.BrowserFeature');
+goog.provide('ol.browserfeature');
 
 goog.require('goog.dom');
 goog.require('goog.dom.TagName');
@@ -14,7 +14,7 @@ goog.require('ol.webgl');
  * @type {number}
  * @api
  */
-ol.BrowserFeature.DEVICE_PIXEL_RATIO = goog.global.devicePixelRatio || 1;
+ol.browserfeature.DEVICE_PIXEL_RATIO = goog.global.devicePixelRatio || 1;
 
 
 /**
@@ -22,14 +22,14 @@ ol.BrowserFeature.DEVICE_PIXEL_RATIO = goog.global.devicePixelRatio || 1;
  * @const
  * @type {boolean}
  */
-ol.BrowserFeature.HAS_ARRAY_BUFFER = 'ArrayBuffer' in goog.global;
+ol.browserfeature.HAS_ARRAY_BUFFER = 'ArrayBuffer' in goog.global;
 
 
 /**
  * True if the browser's Canvas implementation implements {get,set}LineDash.
  * @type {boolean}
  */
-ol.BrowserFeature.HAS_CANVAS_LINE_DASH = false;
+ol.browserfeature.HAS_CANVAS_LINE_DASH = false;
 
 
 /**
@@ -38,7 +38,7 @@ ol.BrowserFeature.HAS_CANVAS_LINE_DASH = false;
  * @type {boolean}
  * @api
  */
-ol.BrowserFeature.HAS_CANVAS = ol.ENABLE_CANVAS && (
+ol.browserfeature.HAS_CANVAS = ol.ENABLE_CANVAS && (
     /**
      * @return {boolean} Canvas supported.
      */
@@ -52,7 +52,7 @@ ol.BrowserFeature.HAS_CANVAS = ol.ENABLE_CANVAS && (
           return false;
         } else {
           if (goog.isDef(context.setLineDash)) {
-            ol.BrowserFeature.HAS_CANVAS_LINE_DASH = true;
+            ol.browserfeature.HAS_CANVAS_LINE_DASH = true;
           }
           return true;
         }
@@ -68,7 +68,7 @@ ol.BrowserFeature.HAS_CANVAS = ol.ENABLE_CANVAS && (
  * @type {boolean}
  * @api
  */
-ol.BrowserFeature.HAS_DEVICE_ORIENTATION =
+ol.browserfeature.HAS_DEVICE_ORIENTATION =
     'DeviceOrientationEvent' in goog.global;
 
 
@@ -77,7 +77,7 @@ ol.BrowserFeature.HAS_DEVICE_ORIENTATION =
  * @const
  * @type {boolean}
  */
-ol.BrowserFeature.HAS_DOM = ol.ENABLE_DOM;
+ol.browserfeature.HAS_DOM = ol.ENABLE_DOM;
 
 
 /**
@@ -86,7 +86,7 @@ ol.BrowserFeature.HAS_DOM = ol.ENABLE_DOM;
  * @type {boolean}
  * @api
  */
-ol.BrowserFeature.HAS_GEOLOCATION = 'geolocation' in goog.global.navigator;
+ol.browserfeature.HAS_GEOLOCATION = 'geolocation' in goog.global.navigator;
 
 
 /**
@@ -95,7 +95,7 @@ ol.BrowserFeature.HAS_GEOLOCATION = 'geolocation' in goog.global.navigator;
  * @type {boolean}
  * @api
  */
-ol.BrowserFeature.HAS_TOUCH = ol.ASSUME_TOUCH || 'ontouchstart' in goog.global;
+ol.browserfeature.HAS_TOUCH = ol.ASSUME_TOUCH || 'ontouchstart' in goog.global;
 
 
 /**
@@ -103,7 +103,7 @@ ol.BrowserFeature.HAS_TOUCH = ol.ASSUME_TOUCH || 'ontouchstart' in goog.global;
  * @const
  * @type {boolean}
  */
-ol.BrowserFeature.HAS_POINTER = 'PointerEvent' in goog.global;
+ol.browserfeature.HAS_POINTER = 'PointerEvent' in goog.global;
 
 
 /**
@@ -111,7 +111,7 @@ ol.BrowserFeature.HAS_POINTER = 'PointerEvent' in goog.global;
  * @const
  * @type {boolean}
  */
-ol.BrowserFeature.HAS_MSPOINTER =
+ol.browserfeature.HAS_MSPOINTER =
     !!(goog.global.navigator.msPointerEnabled);
 
 
@@ -121,7 +121,7 @@ ol.BrowserFeature.HAS_MSPOINTER =
  * @type {boolean}
  * @api
  */
-ol.BrowserFeature.HAS_WEBGL = ol.ENABLE_WEBGL && (
+ol.browserfeature.HAS_WEBGL = ol.ENABLE_WEBGL && (
     /**
      * @return {boolean} WebGL supported.
      */

@@ -6,9 +6,9 @@ goog.provide('ol.GeolocationProperty');
 goog.require('goog.events');
 goog.require('goog.events.EventType');
 goog.require('goog.math');
-goog.require('ol.BrowserFeature');
 goog.require('ol.Coordinate');
 goog.require('ol.Object');
+goog.require('ol.browserfeature');
 goog.require('ol.geom.Geometry');
 goog.require('ol.geom.Polygon');
 goog.require('ol.proj');
@@ -130,7 +130,7 @@ ol.Geolocation.prototype.handleProjectionChanged_ = function() {
  * @private
  */
 ol.Geolocation.prototype.handleTrackingChanged_ = function() {
-  if (ol.BrowserFeature.HAS_GEOLOCATION) {
+  if (ol.browserfeature.HAS_GEOLOCATION) {
     var tracking = this.getTracking();
     if (tracking && !goog.isDef(this.watchId_)) {
       this.watchId_ = goog.global.navigator.geolocation.watchPosition(

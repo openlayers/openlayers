@@ -27,7 +27,6 @@ goog.require('goog.log.Level');
 goog.require('goog.object');
 goog.require('goog.style');
 goog.require('goog.vec.Mat4');
-goog.require('ol.BrowserFeature');
 goog.require('ol.Collection');
 goog.require('ol.CollectionEventType');
 goog.require('ol.MapBrowserEvent');
@@ -46,6 +45,7 @@ goog.require('ol.Size');
 goog.require('ol.TileQueue');
 goog.require('ol.View');
 goog.require('ol.ViewHint');
+goog.require('ol.browserfeature');
 goog.require('ol.control');
 goog.require('ol.extent');
 goog.require('ol.interaction');
@@ -169,7 +169,7 @@ ol.Map = function(options) {
    * @type {number}
    */
   this.pixelRatio_ = goog.isDef(options.pixelRatio) ?
-      options.pixelRatio : ol.BrowserFeature.DEVICE_PIXEL_RATIO;
+      options.pixelRatio : ol.browserfeature.DEVICE_PIXEL_RATIO;
 
   /**
    * @private
@@ -239,7 +239,7 @@ ol.Map = function(options) {
   this.viewport_.style.height = '100%';
   // prevent page zoom on IE >= 10 browsers
   this.viewport_.style.msTouchAction = 'none';
-  if (ol.BrowserFeature.HAS_TOUCH) {
+  if (ol.browserfeature.HAS_TOUCH) {
     this.viewport_.className = 'ol-touch';
   }
 
@@ -1464,17 +1464,17 @@ ol.Map.createOptionsInternal = function(options) {
     /** @type {ol.RendererType} */
     var rendererType = rendererTypes[i];
     if (ol.ENABLE_CANVAS && rendererType == ol.RendererType.CANVAS) {
-      if (ol.BrowserFeature.HAS_CANVAS) {
+      if (ol.browserfeature.HAS_CANVAS) {
         rendererConstructor = ol.renderer.canvas.Map;
         break;
       }
     } else if (ol.ENABLE_DOM && rendererType == ol.RendererType.DOM) {
-      if (ol.BrowserFeature.HAS_DOM) {
+      if (ol.browserfeature.HAS_DOM) {
         rendererConstructor = ol.renderer.dom.Map;
         break;
       }
     } else if (ol.ENABLE_WEBGL && rendererType == ol.RendererType.WEBGL) {
-      if (ol.BrowserFeature.HAS_WEBGL) {
+      if (ol.browserfeature.HAS_WEBGL) {
         rendererConstructor = ol.renderer.webgl.Map;
         break;
       }
