@@ -1,4 +1,4 @@
-goog.provide('ol.source.MapGuide');
+goog.provide('ol.source.ImageMapGuide');
 
 goog.require('goog.object');
 goog.require('goog.uri.utils');
@@ -15,10 +15,10 @@ goog.require('ol.source.Image');
  *
  * @constructor
  * @extends {ol.source.Image}
- * @param {olx.source.MapGuideOptions} options Options.
+ * @param {olx.source.ImageMapGuideOptions} options Options.
  * @api
  */
-ol.source.MapGuide = function(options) {
+ol.source.ImageMapGuide = function(options) {
 
   goog.base(this, {
     projection: options.projection,
@@ -98,7 +98,7 @@ ol.source.MapGuide = function(options) {
   this.renderedRevision_ = 0;
 
 };
-goog.inherits(ol.source.MapGuide, ol.source.Image);
+goog.inherits(ol.source.ImageMapGuide, ol.source.Image);
 
 
 /**
@@ -107,7 +107,7 @@ goog.inherits(ol.source.MapGuide, ol.source.Image);
  * @return {Object} Params.
  * @api
  */
-ol.source.MapGuide.prototype.getParams = function() {
+ol.source.ImageMapGuide.prototype.getParams = function() {
   return this.params_;
 };
 
@@ -115,7 +115,7 @@ ol.source.MapGuide.prototype.getParams = function() {
 /**
  * @inheritDoc
  */
-ol.source.MapGuide.prototype.getImage =
+ol.source.ImageMapGuide.prototype.getImage =
     function(extent, resolution, pixelRatio, projection) {
   resolution = this.findNearestResolution(resolution);
   pixelRatio = this.hidpi_ ? pixelRatio : 1;
@@ -158,7 +158,7 @@ ol.source.MapGuide.prototype.getImage =
  * @param {number} dpi The display resolution.
  * @return {number} The computed map scale.
  */
-ol.source.MapGuide.getScale = function(extent, size, metersPerUnit, dpi) {
+ol.source.ImageMapGuide.getScale = function(extent, size, metersPerUnit, dpi) {
   var mcsW = ol.extent.getWidth(extent);
   var mcsH = ol.extent.getHeight(extent);
   var devW = size[0];
@@ -177,7 +177,7 @@ ol.source.MapGuide.getScale = function(extent, size, metersPerUnit, dpi) {
  * @param {Object} params Params.
  * @api
  */
-ol.source.MapGuide.prototype.updateParams = function(params) {
+ol.source.ImageMapGuide.prototype.updateParams = function(params) {
   goog.object.extend(this.params_, params);
   this.dispatchChangeEvent();
 };
@@ -191,16 +191,16 @@ ol.source.MapGuide.prototype.updateParams = function(params) {
  * @param {ol.proj.Projection} projection Projection.
  * @return {string} The mapagent map image request URL.
  */
-ol.source.MapGuide.prototype.getUrl =
+ol.source.ImageMapGuide.prototype.getUrl =
     function(baseUrl, params, extent, size, projection) {
-  var scale = ol.source.MapGuide.getScale(extent, size,
+  var scale = ol.source.ImageMapGuide.getScale(extent, size,
       this.metersPerUnit_, this.displayDpi_);
   var center = ol.extent.getCenter(extent);
   var baseParams = {
     'OPERATION': this.useOverlay_ ? 'GETDYNAMICMAPOVERLAYIMAGE' : 'GETMAPIMAGE',
     'VERSION': '2.0.0',
     'LOCALE': 'en',
-    'CLIENTAGENT': 'ol.source.MapGuide source',
+    'CLIENTAGENT': 'ol.source.ImageMapGuide source',
     'CLIP': '1',
     'SETDISPLAYDPI': this.displayDpi_,
     'SETDISPLAYWIDTH': Math.round(size[0]),
