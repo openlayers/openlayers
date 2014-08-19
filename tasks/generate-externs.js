@@ -59,14 +59,14 @@ function generateExterns(typedefs, symbols, externs) {
 
   function nameToJS(name) {
     processedSymbols[name] = true;
-    if (name.indexOf('.') == -1) {
+    if (name.indexOf('.') === -1) {
       name = 'var ' + name;
     }
     return name;
   }
 
   function noGoogTypes(typesWithGoog) {
-    typesWithoutGoog = [];
+    var typesWithoutGoog = [];
     typesWithGoog.forEach(function(type) {
       typesWithoutGoog.push(type.replace(/^goog\..*$/, '*'));
     });
@@ -91,7 +91,7 @@ function generateExterns(typedefs, symbols, externs) {
     }
 
     lines.push('/**');
-    if (symbol.kind == 'class') {
+    if (symbol.kind === 'class') {
       constructors[name] = true;
       lines.push(' * @constructor');
     }
@@ -116,7 +116,7 @@ function generateExterns(typedefs, symbols, externs) {
       lines.push(' * @template ' + symbol.template);
     }
     lines.push(' */');
-    if (symbol.kind == 'function' || symbol.kind == 'class') {
+    if (symbol.kind === 'function' || symbol.kind === 'class') {
       lines.push(nameToJS(name) + ' = function(' + args.join(', ') + ') {};');
     } else {
       lines.push(nameToJS(name) + ';');
@@ -181,7 +181,7 @@ if (require.main === module) {
     fse.outputFile.bind(fse, options.output)
   ], function(err) {
     if (err) {
-      console.error(err.message);
+      process.stderr.write(err.message + '\n');
       process.exit(1);
     } else {
       process.exit(0);

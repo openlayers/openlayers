@@ -51,7 +51,7 @@ function getNewerExterns(date, callback) {
   walker.on('file', function(root, stats, next) {
     var sourcePath = path.join(root, stats.name);
     externsPaths.forEach(function(path) {
-      if (sourcePath == path && stats.mtime > date) {
+      if (sourcePath === path && stats.mtime > date) {
         newer = true;
       }
     });
