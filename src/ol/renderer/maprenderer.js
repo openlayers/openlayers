@@ -100,6 +100,16 @@ ol.renderer.Map.prototype.disposeInternal = function() {
 
 
 /**
+ * @param {ol.Map} map Map.
+ * @param {olx.FrameState} frameState Frame state.
+ * @private
+ */
+ol.renderer.Map.expireIconCache_ = function(map, frameState) {
+  ol.style.IconImageCache.getInstance().expire();
+};
+
+
+/**
  * @param {ol.Coordinate} coordinate Coordinate.
  * @param {olx.FrameState} frameState FrameState.
  * @param {function(this: S, ol.Feature, ol.layer.Layer): T} callback Feature
@@ -256,14 +266,7 @@ ol.renderer.Map.prototype.removeUnusedLayerRenderers_ =
  * @protected
  */
 ol.renderer.Map.prototype.scheduleExpireIconCache = function(frameState) {
-  frameState.postRenderFunctions.push(
-      /**
-       * @param {ol.Map} map Map.
-       * @param {olx.FrameState} frameState Frame state.
-       */
-      function(map, frameState) {
-        ol.style.IconImageCache.getInstance().expire();
-      });
+  frameState.postRenderFunctions.push(ol.renderer.Map.expireIconCache_);
 };
 
 
