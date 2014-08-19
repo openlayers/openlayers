@@ -1134,7 +1134,7 @@ olx.control.ZoomSliderOptions.prototype.minResolution;
  *     target: (Element|undefined),
  *     tipLabel: (string|undefined),
  *     extent: (ol.Extent|undefined)}}
- * @api
+ * @api stable
  */
 olx.control.ZoomToExtentOptions;
 
