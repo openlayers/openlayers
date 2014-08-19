@@ -17,13 +17,12 @@ goog.require('ol.tilegrid.XYZ');
  * @api
  */
 ol.source.XYZ = function(options) {
-
   var projection = goog.isDef(options.projection) ?
       options.projection : 'EPSG:3857';
 
   var tileGrid = new ol.tilegrid.XYZ({
-    maxZoom: options.maxZoom,
-    projection: options.projection
+    extent: ol.tilegrid.extentFromProjection(projection),
+    maxZoom: options.maxZoom
   });
 
   goog.base(this, {

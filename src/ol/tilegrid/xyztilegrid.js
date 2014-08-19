@@ -7,6 +7,7 @@ goog.require('ol.TileRange');
 goog.require('ol.extent');
 goog.require('ol.extent.Corner');
 goog.require('ol.proj');
+goog.require('ol.proj.EPSG3857');
 goog.require('ol.tilecoord');
 goog.require('ol.tilegrid.TileGrid');
 
@@ -23,19 +24,16 @@ goog.require('ol.tilegrid.TileGrid');
  * @api
  */
 ol.tilegrid.XYZ = function(options) {
-  var projection = goog.isDef(options.projection) ?
-      options.projection : 'EPSG:3857';
-  var extent = ol.tilegrid.extentFromProjection(projection);
-
+  // TODO: accept a tileSize option
   var tileSize = ol.DEFAULT_TILE_SIZE;
+  var extent = goog.isDef(options.extent) ?
+      options.extent : ol.proj.EPSG3857.EXTENT;
   var resolutions = ol.tilegrid.resolutionsFromExtent(
       extent, options.maxZoom, tileSize);
 
-  var origin = ol.extent.getCorner(extent, ol.extent.Corner.TOP_LEFT);
-
   goog.base(this, {
     minZoom: options.minZoom,
-    origin: origin,
+    origin: ol.extent.getCorner(extent, ol.extent.Corner.TOP_LEFT),
     resolutions: resolutions,
     tileSize: tileSize
   });
