@@ -10,7 +10,7 @@ var olx;
 /**
  * @typedef {{html: string,
  *     tileRanges: (Object.<string, Array.<ol.TileRange>>|undefined)}}
- * @api
+ * @api stable
  */
 olx.AttributionOptions;
 
