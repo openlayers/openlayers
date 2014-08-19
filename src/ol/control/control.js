@@ -82,7 +82,7 @@ ol.control.Control.prototype.disposeInternal = function() {
 /**
  * Get the map associated with this control.
  * @return {ol.Map} Map.
- * @api
+ * @api stable
  */
 ol.control.Control.prototype.getMap = function() {
   return this.map_;

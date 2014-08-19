@@ -779,7 +779,7 @@ olx.control.AttributionOptions.prototype.collapseLabel;
 /**
  * @typedef {{element: (Element|undefined),
  *     target: (Element|string|undefined)}}
- * @api
+ * @api stable
  */
 olx.control.ControlOptions;
 
