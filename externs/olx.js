@@ -5094,7 +5094,8 @@ olx.tilegrid.WMTSOptions.prototype.tileSizes;
 /**
  * @typedef {{extent: (ol.Extent|undefined),
  *     maxZoom: (number|undefined),
- *     minZoom: (number|undefined)}}
+ *     minZoom: (number|undefined),
+ *     tileSize: (number|undefined)}}
  * @api
  */
 olx.tilegrid.XYZOptions;
@@ -5103,8 +5104,8 @@ olx.tilegrid.XYZOptions;
 /**
  * Extent for the tile grid.  The origin for an XYZ tile grid is the top-left
  * corner of the extent.  The zero level of the grid is defined by the
- * resolution at which one 256 x 256 tile fits in the provided extent.  If not
- * provided, the extent of the EPSG:3857 projection is used.
+ * resolution at which one tile fits in the provided extent.  If not provided,
+ * the extent of the EPSG:3857 projection is used.
  * @type {ol.Extent|undefined}
  */
 olx.tilegrid.XYZOptions.prototype.extent;
@@ -5122,6 +5123,13 @@ olx.tilegrid.XYZOptions.prototype.maxZoom;
  * @type {number|undefined}
  */
 olx.tilegrid.XYZOptions.prototype.minZoom;
+
+
+/**
+ * Tile size in pixels. Default is 256. (Only square tiles are supported.)
+ * @type {number|undefined}
+ */
+olx.tilegrid.XYZOptions.prototype.tileSize;
 
 
 /**
