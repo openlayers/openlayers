@@ -1,13 +1,13 @@
 /**
- * Loader to add ol.css, ol.js and the example-specific js file to the
- * documents.
- *
  * This loader is used for the hosted examples. It is used in place of the
  * development loader (examples/loader.js).
  *
- * The ol.js, ol-debug.js, and ol-deps.js scripts are built by OL3's
- * build.py script. They are located in the ../build/ directory, relative to
- * this script.
+ * The loader loads ol.js and the example's script in "production" mode; it
+ * loads Closure Library's base.js, ol-deps.js, the example's "goog.require"
+ * script, and the example's script in "development" mode.
+ *
+ * The ol.js and ol-deps.js scripts are built by OL3's build.py script.
+ * They are located in the ../build/ directory, relative to this script.
  *
  * The script must be named loader.js.
  *
