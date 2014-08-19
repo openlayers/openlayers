@@ -897,7 +897,7 @@ olx.control.FullScreenOptions.prototype.target;
  *     projection: ol.proj.ProjectionLike,
  *     target: (Element|undefined),
  *     undefinedHTML: (string|undefined)}}
- * @api
+ * @api stable
  */
 olx.control.MousePositionOptions;
 
