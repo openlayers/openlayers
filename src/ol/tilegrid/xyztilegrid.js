@@ -4,8 +4,9 @@ goog.require('goog.math');
 goog.require('ol');
 goog.require('ol.TileCoord');
 goog.require('ol.TileRange');
+goog.require('ol.extent');
+goog.require('ol.extent.Corner');
 goog.require('ol.proj');
-goog.require('ol.proj.EPSG3857');
 goog.require('ol.tilecoord');
 goog.require('ol.tilegrid.TileGrid');
 
@@ -22,19 +23,21 @@ goog.require('ol.tilegrid.TileGrid');
  * @api
  */
 ol.tilegrid.XYZ = function(options) {
+  var projection = goog.isDef(options.projection) ?
+      options.projection : 'EPSG:3857';
+  var extent = ol.tilegrid.extentFromProjection(projection);
 
-  var resolutions = new Array(options.maxZoom + 1);
-  var z;
-  var size = 2 * ol.proj.EPSG3857.HALF_SIZE / ol.DEFAULT_TILE_SIZE;
-  for (z = 0; z <= options.maxZoom; ++z) {
-    resolutions[z] = size / Math.pow(2, z);
-  }
+  var tileSize = ol.DEFAULT_TILE_SIZE;
+  var resolutions = ol.tilegrid.resolutionsFromExtent(
+      extent, options.maxZoom, tileSize);
+
+  var origin = ol.extent.getCorner(extent, ol.extent.Corner.TOP_LEFT);
 
   goog.base(this, {
     minZoom: options.minZoom,
-    origin: [-ol.proj.EPSG3857.HALF_SIZE, ol.proj.EPSG3857.HALF_SIZE],
+    origin: origin,
     resolutions: resolutions,
-    tileSize: ol.DEFAULT_TILE_SIZE
+    tileSize: tileSize
   });
 
 };

@@ -5092,7 +5092,9 @@ olx.tilegrid.WMTSOptions.prototype.tileSizes;
 
 
 /**
- * @typedef {{maxZoom: number}}
+ * @typedef {{maxZoom: (number|undefined),
+ *     minZoom: (number|undefined),
+ *     projection: (ol.proj.ProjectionLike|undefined)}}
  * @api
  */
 olx.tilegrid.XYZOptions;
@@ -5100,9 +5102,23 @@ olx.tilegrid.XYZOptions;
 
 /**
  * Maximum zoom.
- * @type {number}
+ * @type {number|undefined}
  */
 olx.tilegrid.XYZOptions.prototype.maxZoom;
+
+
+/**
+ * Minimum zoom. Default is 0.
+ * @type {number|undefined}
+ */
+olx.tilegrid.XYZOptions.prototype.minZoom;
+
+
+/**
+ * Projection.  Default is `'EPSG:3857'`.
+ * @type {ol.proj.ProjectionLike|undefined}
+ */
+olx.tilegrid.XYZOptions.prototype.projection;
 
 
 /**

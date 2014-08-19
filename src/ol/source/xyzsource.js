@@ -21,10 +21,9 @@ ol.source.XYZ = function(options) {
   var projection = goog.isDef(options.projection) ?
       options.projection : 'EPSG:3857';
 
-  var maxZoom = goog.isDef(options.maxZoom) ? options.maxZoom : 18;
-
   var tileGrid = new ol.tilegrid.XYZ({
-    maxZoom: maxZoom
+    maxZoom: options.maxZoom,
+    projection: options.projection
   });
 
   goog.base(this, {
