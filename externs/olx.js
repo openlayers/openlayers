@@ -287,7 +287,7 @@ olx.MapOptions.prototype.view;
  *     positioning: (ol.OverlayPositioning|string|undefined),
  *     stopEvent: (boolean|undefined),
  *     insertFirst: (boolean|undefined)}}
- * @api
+ * @api stable
  */
 olx.OverlayOptions;
 
