@@ -5112,7 +5112,9 @@ olx.tilegrid.XYZOptions.prototype.extent;
 
 
 /**
- * Maximum zoom.
+ * Maximum zoom.  The default is `ol.DEFAULT_MAX_ZOOM`.  This determines the
+ * number of levels in the grid set.  For example, a `maxZoom` of 21 means there
+ * are 22 levels in the grid set.
  * @type {number|undefined}
  */
 olx.tilegrid.XYZOptions.prototype.maxZoom;
