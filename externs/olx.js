@@ -1038,7 +1038,7 @@ olx.control.RotateOptions.prototype.target;
  *     zoomOutTipLabel: (string|undefined),
  *     delta: (number|undefined),
  *     target: (Element|undefined)}}
- * @api
+ * @api stable
  */
 olx.control.ZoomOptions;
 
