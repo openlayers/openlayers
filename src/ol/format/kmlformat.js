@@ -16,6 +16,7 @@ goog.require('ol.Feature');
 goog.require('ol.array');
 goog.require('ol.color');
 goog.require('ol.feature');
+goog.require('ol.format.Feature');
 goog.require('ol.format.XMLFeature');
 goog.require('ol.format.XSD');
 goog.require('ol.geom.Geometry');
@@ -1431,6 +1432,10 @@ ol.format.KML.prototype.readPlacemark_ = function(node, objectStack) {
   if (!goog.isNull(id)) {
     feature.setId(id);
   }
+  var options = /** @type {olx.format.ReadOptions} */ (objectStack[0]);
+  if (goog.isDefAndNotNull(object.geometry)) {
+    ol.format.Feature.transformWithOptions(object.geometry, false, options);
+  }
   feature.setProperties(object);
   feature.setStyle(this.featureStyleFunction_);
   return feature;
@@ -1508,10 +1513,9 @@ ol.format.KML.prototype.readFeatureFromNode = function(node, opt_options) {
     return null;
   }
   goog.asserts.assert(node.localName == 'Placemark');
-  var feature = this.readPlacemark_(node, []);
+  var feature = this.readPlacemark_(
+      node, [this.getReadOptions(node, opt_options)]);
   if (goog.isDef(feature)) {
-    ol.format.XMLFeature.transformFeaturesWithOptions(
-        [feature], false, this.getReadOptions(node, opt_options));
     return feature;
   } else {
     return null;
@@ -1542,19 +1546,17 @@ ol.format.KML.prototype.readFeaturesFromNode = function(node, opt_options) {
   var features;
   var localName = ol.xml.getLocalName(node);
   if (localName == 'Document' || localName == 'Folder') {
-    features = this.readDocumentOrFolder_(node, []);
+    features = this.readDocumentOrFolder_(
+        node, [this.getReadOptions(node, opt_options)]);
     if (goog.isDef(features)) {
-      ol.format.XMLFeature.transformFeaturesWithOptions(
-          features, false, this.getReadOptions(node, opt_options));
       return features;
     } else {
       return [];
     }
   } else if (localName == 'Placemark') {
-    var feature = this.readPlacemark_(node, []);
+    var feature = this.readPlacemark_(
+        node, [this.getReadOptions(node, opt_options)]);
     if (goog.isDef(feature)) {
-      ol.format.XMLFeature.transformFeaturesWithOptions(
-          [feature], false, this.getReadOptions(node, opt_options));
       return [feature];
     } else {
       return [];
@@ -1966,9 +1968,14 @@ ol.format.KML.writePlacemark_ = function(node, feature, objectStack) {
       ol.xml.OBJECT_PROPERTY_NODE_FACTORY, values, objectStack, orderedKeys);
 
   // serialize geometry
+  var options = /** @type {olx.format.WriteOptions} */ (objectStack[0]);
+  var geometry = feature.getGeometry();
+  if (goog.isDefAndNotNull(geometry)) {
+    geometry =
+        ol.format.Feature.transformWithOptions(geometry, true, options);
+  }
   ol.xml.pushSerializeAndPop(context, ol.format.KML.PLACEMARK_SERIALIZERS_,
-      ol.format.KML.GEOMETRY_NODE_FACTORY_,
-      [feature.getGeometry()], objectStack);
+      ol.format.KML.GEOMETRY_NODE_FACTORY_, [geometry], objectStack);
 };
 
 
@@ -2527,9 +2534,6 @@ ol.format.KML.prototype.writeFeaturesNode = function(features, opt_options) {
   ol.xml.setAttributeNS(kml, xmlSchemaInstanceUri, 'xsi:schemaLocation',
       ol.format.KML.SCHEMA_LOCATION_);
 
-  features = ol.format.XMLFeature.transformFeaturesWithOptions(
-      features, true, opt_options);
-
   var /** @type {ol.xml.NodeStackItem} */ context = {node: kml};
   var properties = {};
   if (features.length > 1) {
@@ -2540,6 +2544,6 @@ ol.format.KML.prototype.writeFeaturesNode = function(features, opt_options) {
   var orderedKeys = ol.format.KML.KML_SEQUENCE_[kml.namespaceURI];
   var values = ol.xml.makeSequence(properties, orderedKeys);
   ol.xml.pushSerializeAndPop(context, ol.format.KML.KML_SERIALIZERS_,
-      ol.xml.OBJECT_PROPERTY_NODE_FACTORY, values, [], orderedKeys);
+      ol.xml.OBJECT_PROPERTY_NODE_FACTORY, values, [opt_options], orderedKeys);
   return kml;
 };

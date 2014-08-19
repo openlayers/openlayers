@@ -314,9 +314,10 @@ ol.format.Polyline.prototype.readGeometryFromText =
   var coordinates = ol.geom.flat.inflate.coordinates(
       flatCoordinates, 0, flatCoordinates.length, 2);
 
-  return ol.format.Feature.transformWithOptions(
-      new ol.geom.LineString(coordinates), false, false,
-      this.adaptOptionsWithDefaultDataProjection(opt_options));
+  return /** @type {ol.geom.Geometry} */ (
+      ol.format.Feature.transformWithOptions(
+          new ol.geom.LineString(coordinates), false,
+          this.adaptOptionsWithDefaultDataProjection(opt_options)));
 };
 
 
@@ -383,7 +384,7 @@ ol.format.Polyline.prototype.writeGeometryText =
   goog.asserts.assertInstanceof(geometry, ol.geom.LineString);
   geometry = /** @type {ol.geom.LineString} */
       (ol.format.Feature.transformWithOptions(
-          geometry, true, true,
+          geometry, true,
           this.adaptOptionsWithDefaultDataProjection(opt_options)));
   var flatCoordinates = geometry.getFlatCoordinates();
   var stride = geometry.getStride();

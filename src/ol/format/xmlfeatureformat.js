@@ -250,39 +250,3 @@ ol.format.XMLFeature.prototype.writeGeometry = function(geometry, opt_options) {
  * @return {Node} Node.
  */
 ol.format.XMLFeature.prototype.writeGeometryNode = goog.abstractMethod;
-
-
-/**
- * @param {Array.<ol.Feature>} features Features.
- * @param {boolean} write Set to true for writing, false for reading. For
- *     writing, the features will be cloned before transforming.
- * @param {(olx.format.WriteOptions|olx.format.ReadOptions)=} opt_options
- *     Options.
- * @protected
- * @return {Array.<ol.Feature>} Features.
- */
-ol.format.XMLFeature.transformFeaturesWithOptions = function(
-    features, write, opt_options) {
-  var featureProjection = goog.isDef(opt_options) ?
-      ol.proj.get(opt_options.featureProjection) : null;
-  var dataProjection = goog.isDef(opt_options) ?
-      ol.proj.get(opt_options.dataProjection) : null;
-
-  if (!goog.isNull(featureProjection) && !goog.isNull(dataProjection) &&
-      !ol.proj.equivalent(featureProjection, dataProjection)) {
-    if (write) {
-      features = goog.array.map(features, function(feature) {
-        return feature.clone();
-      });
-    }
-
-    goog.array.forEach(features, function(feature) {
-      var geom = feature.getGeometry();
-      if (goog.isDef(geom)) {
-        feature.setGeometry(ol.format.Feature.transformWithOptions(
-            geom, write, false, opt_options));
-      }
-    });
-  }
-  return features;
-};

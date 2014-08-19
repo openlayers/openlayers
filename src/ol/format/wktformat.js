@@ -283,8 +283,8 @@ ol.format.WKT.prototype.readGeometry;
 ol.format.WKT.prototype.readGeometryFromText = function(text, opt_options) {
   var geometry = this.parse_(text);
   if (goog.isDef(geometry)) {
-    return ol.format.Feature.transformWithOptions(
-        geometry, false, false, opt_options);
+    return /** @type {ol.geom.Geometry} */ (
+        ol.format.Feature.transformWithOptions(geometry, false, opt_options));
   } else {
     return null;
   }
@@ -366,8 +366,8 @@ ol.format.WKT.prototype.writeGeometry;
  * @inheritDoc
  */
 ol.format.WKT.prototype.writeGeometryText = function(geometry, opt_options) {
-  return ol.format.WKT.encode_(ol.format.Feature.transformWithOptions(
-      geometry, true, true, opt_options));
+  return ol.format.WKT.encode_(/** @type {ol.geom.Geometry} */ (
+      ol.format.Feature.transformWithOptions(geometry, true, opt_options)));
 };
 
 

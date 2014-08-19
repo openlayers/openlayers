@@ -1,3 +1,6 @@
+// FIXME Envelopes should not be treated as geometries! readEnvelope_ is part
+// of GEOMETRY_PARSERS_ and methods using GEOMETRY_PARSERS_ do not expect
+// envelopes/extents, only geometries!
 goog.provide('ol.format.GML');
 
 goog.require('goog.asserts');
@@ -162,8 +165,8 @@ ol.format.GML.readGeometry = function(node, objectStack) {
   var geometry = ol.xml.pushParseAndPop(/** @type {ol.geom.Geometry} */(null),
       ol.format.GML.GEOMETRY_PARSERS_, node, objectStack);
   if (goog.isDefAndNotNull(geometry)) {
-    return ol.format.Feature.transformWithOptions(
-        geometry, false, false, context);
+    return /** @type {ol.geom.Geometry} */ (
+        ol.format.Feature.transformWithOptions(geometry, false, context));
   } else {
     return undefined;
   }
@@ -1469,7 +1472,7 @@ ol.format.GML.writeGeometry = function(node, geometry, objectStack) {
   } else {
     goog.asserts.assertInstanceof(geometry, ol.geom.Geometry);
     value =
-        ol.format.Feature.transformWithOptions(geometry, true, true, context);
+        ol.format.Feature.transformWithOptions(geometry, true, context);
   }
   ol.xml.pushSerializeAndPop(/** @type {ol.xml.NodeStackItem} */
       (item), ol.format.GML.GEOMETRY_SERIALIZERS_,

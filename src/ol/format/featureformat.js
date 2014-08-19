@@ -1,6 +1,7 @@
 goog.provide('ol.format.Feature');
 
-goog.require('goog.functions');
+goog.require('goog.array');
+goog.require('ol.geom.Geometry');
 goog.require('ol.proj');
 
 
@@ -150,25 +151,33 @@ ol.format.Feature.prototype.writeGeometry = goog.abstractMethod;
 
 
 /**
- * @param {ol.geom.Geometry} geometry Geometry.
+ * @param {ol.geom.Geometry|ol.Extent} geometry Geometry.
  * @param {boolean} write Set to true for writing, false for reading.
- * @param {boolean} clone The geometry will be cloned before transforming.
  * @param {(olx.format.WriteOptions|olx.format.ReadOptions)=} opt_options
  *     Options.
- * @return {ol.geom.Geometry} Transformed geometry.
+ * @return {ol.geom.Geometry|ol.Extent} Transformed geometry.
  * @protected
  */
 ol.format.Feature.transformWithOptions = function(
-    geometry, write, clone, opt_options) {
+    geometry, write, opt_options) {
   var featureProjection = goog.isDef(opt_options) ?
       ol.proj.get(opt_options.featureProjection) : null;
   var dataProjection = goog.isDef(opt_options) ?
       ol.proj.get(opt_options.dataProjection) : null;
   if (!goog.isNull(featureProjection) && !goog.isNull(dataProjection) &&
       !ol.proj.equivalent(featureProjection, dataProjection)) {
-    return (clone ? geometry.clone() : geometry).transform(
-        write ? featureProjection : dataProjection,
-        write ? dataProjection : featureProjection);
+    if (geometry instanceof ol.geom.Geometry) {
+      return (write ? geometry.clone() : geometry).transform(
+          write ? featureProjection : dataProjection,
+          write ? dataProjection : featureProjection);
+    } else {
+      // FIXME this is necessary because ol.format.GML treats extents
+      // as geometries
+      return ol.proj.transformExtent(
+          write ? goog.array.clone(geometry) : geometry,
+          write ? featureProjection : dataProjection,
+          write ? dataProjection : featureProjection);
+    }
   } else {
     return geometry;
   }

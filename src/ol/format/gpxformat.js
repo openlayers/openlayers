@@ -5,6 +5,7 @@ goog.require('goog.asserts');
 goog.require('goog.dom.NodeType');
 goog.require('goog.object');
 goog.require('ol.Feature');
+goog.require('ol.format.Feature');
 goog.require('ol.format.XMLFeature');
 goog.require('ol.format.XSD');
 goog.require('ol.geom.LineString');
@@ -180,6 +181,7 @@ ol.format.GPX.parseTrkSeg_ = function(node, objectStack) {
 ol.format.GPX.readRte_ = function(node, objectStack) {
   goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT);
   goog.asserts.assert(node.localName == 'rte');
+  var options = /** @type {olx.format.ReadOptions} */ (objectStack[0]);
   var values = ol.xml.pushParseAndPop({
     'flatCoordinates': []
   }, ol.format.GPX.RTE_PARSERS_, node, objectStack);
@@ -191,6 +193,7 @@ ol.format.GPX.readRte_ = function(node, objectStack) {
   goog.object.remove(values, 'flatCoordinates');
   var geometry = new ol.geom.LineString(null);
   geometry.setFlatCoordinates(ol.geom.GeometryLayout.XYZM, flatCoordinates);
+  ol.format.Feature.transformWithOptions(geometry, false, options);
   var feature = new ol.Feature(geometry);
   feature.setProperties(values);
   return feature;
@@ -206,6 +209,7 @@ ol.format.GPX.readRte_ = function(node, objectStack) {
 ol.format.GPX.readTrk_ = function(node, objectStack) {
   goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT);
   goog.asserts.assert(node.localName == 'trk');
+  var options = /** @type {olx.format.ReadOptions} */ (objectStack[0]);
   var values = ol.xml.pushParseAndPop({
     'flatCoordinates': [],
     'ends': []
@@ -221,6 +225,7 @@ ol.format.GPX.readTrk_ = function(node, objectStack) {
   var geometry = new ol.geom.MultiLineString(null);
   geometry.setFlatCoordinates(
       ol.geom.GeometryLayout.XYZM, flatCoordinates, ends);
+  ol.format.Feature.transformWithOptions(geometry, false, options);
   var feature = new ol.Feature(geometry);
   feature.setProperties(values);
   return feature;
@@ -236,6 +241,7 @@ ol.format.GPX.readTrk_ = function(node, objectStack) {
 ol.format.GPX.readWpt_ = function(node, objectStack) {
   goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT);
   goog.asserts.assert(node.localName == 'wpt');
+  var options = /** @type {olx.format.ReadOptions} */ (objectStack[0]);
   var values = ol.xml.pushParseAndPop(
       {}, ol.format.GPX.WPT_PARSERS_, node, objectStack);
   if (!goog.isDef(values)) {
@@ -244,6 +250,7 @@ ol.format.GPX.readWpt_ = function(node, objectStack) {
   var coordinates = ol.format.GPX.appendCoordinate_([], node, values);
   var geometry = new ol.geom.Point(
       coordinates, ol.geom.GeometryLayout.XYZM);
+  ol.format.Feature.transformWithOptions(geometry, false, options);
   var feature = new ol.Feature(geometry);
   feature.setProperties(values);
   return feature;
@@ -439,13 +446,11 @@ ol.format.GPX.prototype.readFeatureFromNode = function(node, opt_options) {
   if (!goog.isDef(featureReader)) {
     return null;
   }
-  var feature = featureReader(node, []);
+  var feature = featureReader(node, [this.getReadOptions(node, opt_options)]);
   if (!goog.isDef(feature)) {
     return null;
   }
   this.handleReadExtensions_([feature]);
-  ol.format.XMLFeature.transformFeaturesWithOptions(
-      [feature], false, this.getReadOptions(node, opt_options));
   return feature;
 };
 
@@ -473,11 +478,9 @@ ol.format.GPX.prototype.readFeaturesFromNode = function(node, opt_options) {
   if (node.localName == 'gpx') {
     var features = ol.xml.pushParseAndPop(
         /** @type {Array.<ol.Feature>} */ ([]), ol.format.GPX.GPX_PARSERS_,
-        node, []);
+        node, [this.getReadOptions(node, opt_options)]);
     if (goog.isDef(features)) {
       this.handleReadExtensions_(features);
-      ol.format.XMLFeature.transformFeaturesWithOptions(
-          features, false, this.getReadOptions(node, opt_options));
       return features;
     } else {
       return [];
@@ -585,11 +588,14 @@ ol.format.GPX.writeWptType_ = function(node, coordinate, objectStack) {
  * @private
  */
 ol.format.GPX.writeRte_ = function(node, feature, objectStack) {
+  var options = /** @type {olx.format.WriteOptions} */ (objectStack[0]);
   var properties = feature.getProperties();
   var context = {node: node, 'properties': properties};
   var geometry = feature.getGeometry();
   if (goog.isDef(geometry)) {
     goog.asserts.assertInstanceof(geometry, ol.geom.LineString);
+    geometry = /** @type {ol.geom.LineString} */
+        (ol.format.Feature.transformWithOptions(geometry, true, options));
     goog.object.set(context, 'geometryLayout', geometry.getLayout());
     goog.object.set(properties, 'rtept', geometry.getCoordinates());
   }
@@ -609,11 +615,14 @@ ol.format.GPX.writeRte_ = function(node, feature, objectStack) {
  * @private
  */
 ol.format.GPX.writeTrk_ = function(node, feature, objectStack) {
+  var options = /** @type {olx.format.WriteOptions} */ (objectStack[0]);
   var properties = feature.getProperties();
   var context = {node: node, 'properties': properties};
   var geometry = feature.getGeometry();
   if (goog.isDef(geometry)) {
     goog.asserts.assertInstanceof(geometry, ol.geom.MultiLineString);
+    geometry = /** @type {ol.geom.MultiLineString} */
+        (ol.format.Feature.transformWithOptions(geometry, true, options));
     goog.object.set(properties, 'trkseg', geometry.getLineStrings());
   }
   var parentNode = objectStack[objectStack.length - 1].node;
@@ -647,12 +656,15 @@ ol.format.GPX.writeTrkSeg_ = function(node, lineString, objectStack) {
  * @private
  */
 ol.format.GPX.writeWpt_ = function(node, feature, objectStack) {
+  var options = /** @type {olx.format.WriteOptions} */ (objectStack[0]);
   var context = objectStack[objectStack.length - 1];
   goog.asserts.assert(goog.isObject(context));
   goog.object.set(context, 'properties', feature.getProperties());
   var geometry = feature.getGeometry();
   if (goog.isDef(geometry)) {
     goog.asserts.assertInstanceof(geometry, ol.geom.Point);
+    geometry = /** @type {ol.geom.Point} */
+        (ol.format.Feature.transformWithOptions(geometry, true, options));
     goog.object.set(context, 'geometryLayout', geometry.getLayout());
     ol.format.GPX.writeWptType_(node, geometry.getCoordinates(), objectStack);
   }
@@ -870,11 +882,8 @@ ol.format.GPX.prototype.writeFeaturesNode = function(features, opt_options) {
   //FIXME Serialize metadata
   var gpx = ol.xml.createElementNS('http://www.topografix.com/GPX/1/1', 'gpx');
 
-  features = ol.format.XMLFeature.transformFeaturesWithOptions(
-      features, true, opt_options);
-
   ol.xml.pushSerializeAndPop(/** @type {ol.xml.NodeStackItem} */
       ({node: gpx}), ol.format.GPX.GPX_SERIALIZERS_,
-      ol.format.GPX.GPX_NODE_FACTORY_, features, []);
+      ol.format.GPX.GPX_NODE_FACTORY_, features, [opt_options]);
   return gpx;
 };

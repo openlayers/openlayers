@@ -105,17 +105,18 @@ ol.format.WFS.prototype.readFeatures;
  * @inheritDoc
  */
 ol.format.WFS.prototype.readFeaturesFromNode = function(node, opt_options) {
-  var objectStack = [{
+  var context = {
     'featureType': this.featureType_,
     'featureNS': this.featureNS_
-  }];
+  };
+  goog.object.extend(context, this.getReadOptions(node,
+      goog.isDef(opt_options) ? opt_options : {}));
+  var objectStack = [context];
   var features = ol.xml.pushParseAndPop([],
       ol.format.GML.FEATURE_COLLECTION_PARSERS, node, objectStack);
   if (!goog.isDef(features)) {
     features = [];
   }
-  ol.format.XMLFeature.transformFeaturesWithOptions(
-      features, false, this.getReadOptions(node, opt_options));
   return features;
 };
 

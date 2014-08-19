@@ -6,6 +6,7 @@ goog.require('goog.asserts');
 goog.require('goog.dom.NodeType');
 goog.require('goog.object');
 goog.require('ol.Feature');
+goog.require('ol.format.Feature');
 goog.require('ol.format.XMLFeature');
 goog.require('ol.geom.LineString');
 goog.require('ol.geom.Point');
@@ -59,6 +60,7 @@ ol.format.OSMXML.prototype.getExtensions = function() {
 ol.format.OSMXML.readNode_ = function(node, objectStack) {
   goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT);
   goog.asserts.assert(node.localName == 'node');
+  var options = /** @type {olx.format.ReadOptions} */ (objectStack[0]);
   var state = /** @type {Object} */ (objectStack[objectStack.length - 1]);
   var id = node.getAttribute('id');
   var coordinates = /** @type {Array.<number>} */ ([
@@ -72,6 +74,7 @@ ol.format.OSMXML.readNode_ = function(node, objectStack) {
   }, ol.format.OSMXML.NODE_PARSERS_, node, objectStack);
   if (!goog.object.isEmpty(values.tags)) {
     var geometry = new ol.geom.Point(coordinates);
+    ol.format.Feature.transformWithOptions(geometry, false, options);
     var feature = new ol.Feature(geometry);
     feature.setId(id);
     feature.setProperties(values.tags);
@@ -88,6 +91,7 @@ ol.format.OSMXML.readNode_ = function(node, objectStack) {
 ol.format.OSMXML.readWay_ = function(node, objectStack) {
   goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT);
   goog.asserts.assert(node.localName == 'way');
+  var options = /** @type {olx.format.ReadOptions} */ (objectStack[0]);
   var id = node.getAttribute('id');
   var values = ol.xml.pushParseAndPop({
     ndrefs: [],
@@ -109,6 +113,7 @@ ol.format.OSMXML.readWay_ = function(node, objectStack) {
     geometry = new ol.geom.LineString(null);
     geometry.setFlatCoordinates(ol.geom.GeometryLayout.XY, flatCoordinates);
   }
+  ol.format.Feature.transformWithOptions(geometry, false, options);
   var feature = new ol.Feature(geometry);
   feature.setId(id);
   feature.setProperties(values.tags);
@@ -206,14 +211,13 @@ ol.format.OSMXML.prototype.readFeatures;
  */
 ol.format.OSMXML.prototype.readFeaturesFromNode = function(node, opt_options) {
   goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT);
+  var options = this.getReadOptions(node, opt_options);
   if (node.localName == 'osm') {
     var state = ol.xml.pushParseAndPop({
       nodes: {},
       features: []
-    }, ol.format.OSMXML.PARSERS_, node, []);
+    }, ol.format.OSMXML.PARSERS_, node, [options]);
     if (goog.isDef(state.features)) {
-      ol.format.XMLFeature.transformFeaturesWithOptions(
-          state.features, false, this.getReadOptions(node, opt_options));
       return state.features;
     }
   }
