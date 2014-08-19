@@ -942,7 +942,7 @@ olx.control.MousePositionOptions.prototype.undefinedHTML;
  *     minWidth: (number|undefined),
  *     target: (Element|undefined),
  *     units: (ol.control.ScaleLineUnits|string|undefined)}}
- * @api
+ * @api stable
  */
 olx.control.ScaleLineOptions;
 
