@@ -982,7 +982,7 @@ olx.control.ScaleLineOptions.prototype.units;
  *     tipLabel: (string|undefined),
  *     target: (Element|undefined),
  *     autoHide: (boolean|undefined)}}
- * @api
+ * @api stable
  */
 olx.control.RotateOptions;
 
