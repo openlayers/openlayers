@@ -8,6 +8,8 @@ goog.require('ol.TileCoord');
 goog.require('ol.TileRange');
 goog.require('ol.array');
 goog.require('ol.extent');
+goog.require('ol.extent.Corner');
+goog.require('ol.proj');
 goog.require('ol.proj.METERS_PER_UNIT');
 goog.require('ol.proj.Projection');
 goog.require('ol.proj.Units');
@@ -404,31 +406,93 @@ ol.tilegrid.getForProjection = function(projection) {
 
 
 /**
- * @param {ol.proj.Projection} projection Projection.
- * @param {number=} opt_maxZoom Maximum zoom level.
- * @param {number=} opt_tileSize Tile size.
+ * @param {ol.Extent} extent Extent.
+ * @param {number=} opt_maxZoom Maximum zoom level (default is
+ *     ol.DEFAULT_MAX_ZOOM).
+ * @param {number=} opt_tileSize Tile size (default uses ol.DEFAULT_TILE_SIZE).
+ * @param {ol.extent.Corner=} opt_corner Extent corner (default is
+ *     ol.extent.Corner.BOTTOM_LEFT).
  * @return {ol.tilegrid.TileGrid} TileGrid instance.
  */
-ol.tilegrid.createForProjection =
-    function(projection, opt_maxZoom, opt_tileSize) {
-  var projectionExtent = projection.getExtent();
-  var size = goog.isNull(projectionExtent) ?
-      360 * ol.proj.METERS_PER_UNIT[ol.proj.Units.DEGREES] /
-          projection.getMetersPerUnit() :
-      Math.max(projectionExtent[2] - projectionExtent[0],
-          projectionExtent[3] - projectionExtent[1]);
-  var maxZoom = goog.isDef(opt_maxZoom) ?
-      opt_maxZoom : ol.DEFAULT_MAX_ZOOM;
-  var tileSize = goog.isDef(opt_tileSize) ? opt_tileSize : ol.DEFAULT_TILE_SIZE;
-  var resolutions = new Array(maxZoom + 1);
-  var maxResolution = size / tileSize;
-  for (var z = 0, zz = resolutions.length; z < zz; ++z) {
-    resolutions[z] = maxResolution / Math.pow(2, z);
-  }
+ol.tilegrid.createForExtent =
+    function(extent, opt_maxZoom, opt_tileSize, opt_corner) {
+  var tileSize = goog.isDef(opt_tileSize) ?
+      opt_tileSize : ol.DEFAULT_TILE_SIZE;
+
+  var corner = goog.isDef(opt_corner) ?
+      opt_corner : ol.extent.Corner.BOTTOM_LEFT;
+
+  var resolutions = ol.tilegrid.resolutionsFromExtent(
+      extent, opt_maxZoom, tileSize);
+
   return new ol.tilegrid.TileGrid({
-    origin: goog.isNull(projectionExtent) ? [0, 0] :
-        ol.extent.getBottomLeft(projectionExtent),
+    origin: ol.extent.getCorner(extent, corner),
     resolutions: resolutions,
     tileSize: tileSize
   });
+};
+
+
+/**
+ * Create a resolutions array from an extent.  A zoom factor of 2 is assumed.
+ * @param {ol.Extent} extent Extent.
+ * @param {number=} opt_maxZoom Maximum zoom level (default is
+ *     ol.DEFAULT_MAX_ZOOM).
+ * @param {number=} opt_tileSize Tile size (default uses ol.DEFAULT_TILE_SIZE).
+ * @return {!Array.<number>} Resolutions array.
+ */
+ol.tilegrid.resolutionsFromExtent =
+    function(extent, opt_maxZoom, opt_tileSize) {
+  var maxZoom = goog.isDef(opt_maxZoom) ?
+      opt_maxZoom : ol.DEFAULT_MAX_ZOOM;
+
+  var height = ol.extent.getHeight(extent);
+  var width = ol.extent.getWidth(extent);
+
+  var tileSize = goog.isDef(opt_tileSize) ?
+      opt_tileSize : ol.DEFAULT_TILE_SIZE;
+  var maxResolution = Math.max(
+      width / tileSize, height / tileSize);
+
+  var length = maxZoom + 1;
+  var resolutions = new Array(length);
+  for (var z = 0; z < length; ++z) {
+    resolutions[z] = maxResolution / Math.pow(2, z);
+  }
+  return resolutions;
+};
+
+
+/**
+ * @param {ol.proj.ProjectionLike} projection Projection.
+ * @param {number=} opt_maxZoom Maximum zoom level (default is
+ *     ol.DEFAULT_MAX_ZOOM).
+ * @param {number=} opt_tileSize Tile size (default uses ol.DEFAULT_TILE_SIZE).
+ * @param {ol.extent.Corner=} opt_corner Extent corner (default is
+ *     ol.extent.Corner.BOTTOM_LEFT).
+ * @return {ol.tilegrid.TileGrid} TileGrid instance.
+ */
+ol.tilegrid.createForProjection =
+    function(projection, opt_maxZoom, opt_tileSize, opt_corner) {
+  var extent = ol.tilegrid.extentFromProjection(projection);
+  return ol.tilegrid.createForExtent(
+      extent, opt_maxZoom, opt_tileSize, opt_corner);
+};
+
+
+/**
+ * Generate a tile grid extent from a projection.  If the projection has an
+ * extent, it is used.  If not, a global extent is assumed.
+ * @param {ol.proj.ProjectionLike} projection Projection.
+ * @return {ol.Extent} Extent.
+ */
+ol.tilegrid.extentFromProjection = function(projection) {
+  projection = ol.proj.get(projection);
+  var extent = projection.getExtent();
+  if (goog.isNull(extent)) {
+    var half = 180 * ol.proj.METERS_PER_UNIT[ol.proj.Units.DEGREES] /
+        projection.getMetersPerUnit();
+    extent = ol.extent.createOrUpdate(-half, -half, half, half);
+  }
+  return extent;
 };

@@ -4,6 +4,8 @@ goog.require('goog.math');
 goog.require('ol');
 goog.require('ol.TileCoord');
 goog.require('ol.TileRange');
+goog.require('ol.extent');
+goog.require('ol.extent.Corner');
 goog.require('ol.proj');
 goog.require('ol.proj.EPSG3857');
 goog.require('ol.tilecoord');
@@ -22,19 +24,16 @@ goog.require('ol.tilegrid.TileGrid');
  * @api
  */
 ol.tilegrid.XYZ = function(options) {
-
-  var resolutions = new Array(options.maxZoom + 1);
-  var z;
-  var size = 2 * ol.proj.EPSG3857.HALF_SIZE / ol.DEFAULT_TILE_SIZE;
-  for (z = 0; z <= options.maxZoom; ++z) {
-    resolutions[z] = size / Math.pow(2, z);
-  }
+  var extent = goog.isDef(options.extent) ?
+      options.extent : ol.proj.EPSG3857.EXTENT;
+  var resolutions = ol.tilegrid.resolutionsFromExtent(
+      extent, options.maxZoom, options.tileSize);
 
   goog.base(this, {
     minZoom: options.minZoom,
-    origin: [-ol.proj.EPSG3857.HALF_SIZE, ol.proj.EPSG3857.HALF_SIZE],
+    origin: ol.extent.getCorner(extent, ol.extent.Corner.TOP_LEFT),
     resolutions: resolutions,
-    tileSize: ol.DEFAULT_TILE_SIZE
+    tileSize: options.tileSize
   });
 
 };
