@@ -42,13 +42,13 @@ function listen(min, max, server, callback) {
  */
 serve.createServer(function(err, server) {
   if (err) {
-    console.error(err.message);
+    process.stderr.write(err.message + '\n');
     process.exit(1);
   }
 
   listen(3001, 3005, server, function(err) {
     if (err) {
-      console.error('Server failed to start: ' + err.message);
+      process.stderr.write('Server failed to start: ' + err.message + '\n');
       process.exit(1);
     }
 

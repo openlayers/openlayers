@@ -101,6 +101,10 @@ SPEC = [path
         for path in ifind('test/spec')
         if path.endswith('.js')]
 
+TASKS = [path
+         for path in ifind('tasks')
+         if path.endswith('.js')]
+
 SRC = [path
        for path in ifind('src/ol')
        if path.endswith('.js')
@@ -123,14 +127,14 @@ def report_sizes(t):
 virtual('default', 'build')
 
 
-virtual('ci', 'lint', 'jshint', 'build', 'test',
+virtual('ci', 'lint', 'build', 'test',
     'build/examples/all.combined.js', 'check-examples', 'apidoc')
 
 
 virtual('build', 'build/ol.css', 'build/ol.js', 'build/ol-debug.js')
 
 
-virtual('check', 'lint', 'build/ol.js', 'jshint', 'test')
+virtual('check', 'lint', 'build/ol.js', 'test')
 
 
 virtual('todo', 'fixme')
@@ -307,7 +311,7 @@ def serve(t):
 
 
 virtual('lint', 'build/lint-timestamp', 'build/check-requires-timestamp',
-    'build/check-whitespace-timestamp')
+    'build/check-whitespace-timestamp', 'jshint')
 
 
 @target('build/lint-timestamp', SRC, EXAMPLES_SRC, SPEC, precious=True)
@@ -322,7 +326,7 @@ def build_lint_src_timestamp(t):
 
 virtual('jshint', 'build/jshint-timestamp')
 
-@target('build/jshint-timestamp', SRC, EXAMPLES_SRC, SPEC,
+@target('build/jshint-timestamp', SRC, EXAMPLES_SRC, SPEC, TASKS,
         precious=True)
 def build_jshint_timestamp(t):
     t.run(variables.JSHINT, '--verbose', t.newer(t.dependencies))

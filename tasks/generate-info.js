@@ -51,7 +51,7 @@ function getNewerExterns(date, callback) {
   walker.on('file', function(root, stats, next) {
     var sourcePath = path.join(root, stats.name);
     externsPaths.forEach(function(path) {
-      if (sourcePath == path && stats.mtime > date) {
+      if (sourcePath === path && stats.mtime > date) {
         newer = true;
       }
     });
@@ -98,6 +98,33 @@ function getNewer(date, newer, callback) {
 
 
 /**
+ * Parse the JSDoc output.
+ * @param {string} output JSDoc output
+ * @return {Object} Symbol and define info.
+ */
+function parseOutput(output) {
+  if (!output) {
+    throw new Error('Expected JSON output');
+  }
+
+  var info;
+  try {
+    info = JSON.parse(String(output));
+  } catch (err) {
+    throw new Error('Failed to parse output as JSON: ' + output);
+  }
+  if (!Array.isArray(info.symbols)) {
+    throw new Error('Expected symbols array: ' + output);
+  }
+  if (!Array.isArray(info.defines)) {
+    throw new Error('Expected defines array: ' + output);
+  }
+
+  return info;
+}
+
+
+/**
  * Spawn JSDoc.
  * @param {Array.<string>} paths Paths to source files.
  * @param {function(Error, string)} callback Callback called with any error and
@@ -139,33 +166,6 @@ function spawnJSDoc(paths, callback) {
       callback(null, info);
     }
   });
-}
-
-
-/**
- * Parse the JSDoc output.
- * @param {string} output JSDoc output
- * @return {Object} Symbol and define info.
- */
-function parseOutput(output) {
-  if (!output) {
-    throw new Error('Expected JSON output');
-  }
-
-  var info;
-  try {
-    info = JSON.parse(String(output));
-  } catch (err) {
-    throw new Error('Failed to parse output as JSON: ' + output);
-  }
-  if (!Array.isArray(info.symbols)) {
-    throw new Error('Expected symbols array: ' + output);
-  }
-  if (!Array.isArray(info.defines)) {
-    throw new Error('Expected defines array: ' + output);
-  }
-
-  return info;
 }
 
 
@@ -268,7 +268,7 @@ function main(callback) {
 if (require.main === module) {
   main(function(err) {
     if (err) {
-      console.error(err.message);
+      process.stderr.write(err.message + '\n');
       process.exit(1);
     } else {
       process.exit(0);
