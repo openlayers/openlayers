@@ -1103,7 +1103,7 @@ olx.control.ZoomOptions.prototype.target;
  * @typedef {{className: (string|undefined),
  *     maxResolution: (number|undefined),
  *     minResolution: (number|undefined)}}
- * @api
+ * @api stable
  */
 olx.control.ZoomSliderOptions;
 

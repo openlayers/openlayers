@@ -32,7 +32,7 @@ goog.require('ol.easing');
  * @constructor
  * @extends {ol.control.Control}
  * @param {olx.control.ZoomSliderOptions=} opt_options Zoom slider options.
- * @api
+ * @api stable
  */
 ol.control.ZoomSlider = function(opt_options) {
 
