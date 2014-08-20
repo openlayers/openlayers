@@ -88,6 +88,12 @@ ol.control.Rotate = function(opt_options) {
    */
   this.autoHide_ = goog.isDef(options.autoHide) ? options.autoHide : true;
 
+  /**
+   * @private
+   * @type {number|undefined}
+   */
+  this.rotation_ = undefined;
+
   element.style.opacity = (this.autoHide_) ? 0 : 1;
 
 };
@@ -152,11 +158,14 @@ ol.control.Rotate.prototype.handleMapPostrender = function(mapEvent) {
     return;
   }
   var rotation = frameState.viewState.rotation;
-  var transform = 'rotate(' + goog.math.toDegrees(rotation) + 'deg)';
-  if (this.autoHide_) {
-    this.element.style.opacity = (rotation === 0) ? 0 : 1;
+  if (rotation != this.rotation_) {
+    var transform = 'rotate(' + goog.math.toDegrees(rotation) + 'deg)';
+    if (this.autoHide_) {
+      this.element.style.opacity = (rotation === 0) ? 0 : 1;
+    }
+    this.label_.style.msTransform = transform;
+    this.label_.style.webkitTransform = transform;
+    this.label_.style.transform = transform;
   }
-  this.label_.style.msTransform = transform;
-  this.label_.style.webkitTransform = transform;
-  this.label_.style.transform = transform;
+  this.rotation_ = rotation;
 };
