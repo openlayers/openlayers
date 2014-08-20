@@ -5,6 +5,7 @@ goog.require('goog.dom');
 goog.require('goog.dom.TagName');
 goog.require('goog.events');
 goog.require('goog.events.EventType');
+goog.require('goog.math');
 goog.require('ol.animation');
 goog.require('ol.control.Control');
 goog.require('ol.css');
@@ -146,7 +147,7 @@ ol.control.Rotate.prototype.handleMapPostrender = function(mapEvent) {
     return;
   }
   var rotation = frameState.viewState.rotation;
-  var transform = 'rotate(' + rotation * 360 / (Math.PI * 2) + 'deg)';
+  var transform = 'rotate(' + goog.math.toDegrees(rotation) + 'deg)';
   if (this.autoHide_) {
     this.element.style.opacity = (rotation === 0) ? 0 : 1;
   }
