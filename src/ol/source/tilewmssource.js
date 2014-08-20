@@ -75,12 +75,6 @@ ol.source.TileWMS = function(opt_options) {
 
   /**
    * @private
-   * @type {number}
-   */
-  this.pixelRatio_ = NaN;
-
-  /**
-   * @private
    * @type {boolean}
    */
   this.v13_ = true;
@@ -136,11 +130,6 @@ ol.source.TileWMS.prototype.getGetFeatureInfoUrl =
 
   goog.asserts.assert(!('VERSION' in params));
 
-  var pixelRatio = this.pixelRatio_;
-  if (isNaN(this.pixelRatio_)) {
-    return undefined;
-  }
-
   var projectionObj = ol.proj.get(projection);
 
   var tileGrid = this.getTileGrid();
@@ -165,9 +154,6 @@ ol.source.TileWMS.prototype.getGetFeatureInfoUrl =
     tileExtent = ol.extent.buffer(tileExtent,
         tileResolution * gutter, tileExtent);
   }
-  if (pixelRatio != 1) {
-    tileSize = (tileSize * pixelRatio + 0.5) | 0;
-  }
 
   var baseParams = {
     'SERVICE': 'WMS',
@@ -179,16 +165,14 @@ ol.source.TileWMS.prototype.getGetFeatureInfoUrl =
   };
   goog.object.extend(baseParams, this.params_, params);
 
-  var x = Math.floor((coordinate[0] - tileExtent[0]) /
-      (tileResolution / pixelRatio));
-  var y = Math.floor((tileExtent[3] - coordinate[1]) /
-      (tileResolution / pixelRatio));
+  var x = Math.floor((coordinate[0] - tileExtent[0]) / tileResolution);
+  var y = Math.floor((tileExtent[3] - coordinate[1]) / tileResolution);
 
   goog.object.set(baseParams, this.v13_ ? 'I' : 'X', x);
   goog.object.set(baseParams, this.v13_ ? 'J' : 'Y', y);
 
   return this.getRequestUrl_(tileCoord, tileSize, tileExtent,
-      pixelRatio, projectionObj, baseParams);
+      1, projectionObj, baseParams);
 };
 
 
@@ -408,8 +392,6 @@ ol.source.TileWMS.prototype.tileUrlFunction_ =
     'TRANSPARENT': true
   };
   goog.object.extend(baseParams, this.params_);
-
-  this.pixelRatio_ = pixelRatio;
 
   return this.getRequestUrl_(tileCoord, tileSize, tileExtent,
       pixelRatio, projection, baseParams);
