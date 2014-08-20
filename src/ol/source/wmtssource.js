@@ -16,7 +16,9 @@ goog.require('ol.tilegrid.WMTS');
 
 
 /**
+ * Request encoding. One of 'KVP', 'REST'.
  * @enum {string}
+ * @api
  */
 ol.source.WMTSRequestEncoding = {
   KVP: 'KVP',  // see spec §8

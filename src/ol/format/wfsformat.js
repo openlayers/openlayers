@@ -65,17 +65,21 @@ ol.format.WFS.xmlns = 'http://www.w3.org/2000/xmlns/';
 
 
 /**
+ * Number of features; bounds/extent.
  * @typedef {{numberOfFeatures: number,
  *            bounds: ol.Extent}}
+ * @api
  */
 ol.format.WFS.FeatureCollectionMetadata;
 
 
 /**
+ * Total deleted; total inserted; total updated; array of insert ids.
  * @typedef {{totalDeleted: number,
  *            totalInserted: number,
-              totalUpdated: number,
-              insertIds: Array.<string>}}
+ *            totalUpdated: number,
+ *            insertIds: Array.<string>}}
+ * @api
  */
 ol.format.WFS.TransactionResponse;
 
