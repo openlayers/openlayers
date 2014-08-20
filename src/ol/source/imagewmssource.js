@@ -89,18 +89,6 @@ ol.source.ImageWMS = function(opt_options) {
 
   /**
    * @private
-   * @type {ol.proj.Projection}
-   */
-  this.renderedProjection_ = null;
-
-  /**
-   * @private
-   * @type {number}
-   */
-  this.renderedResolution_ = NaN;
-
-  /**
-   * @private
    * @type {number}
    */
   this.renderedRevision_ = 0;
@@ -113,6 +101,14 @@ ol.source.ImageWMS = function(opt_options) {
 
 };
 goog.inherits(ol.source.ImageWMS, ol.source.Image);
+
+
+/**
+ * @const
+ * @type {ol.Size}
+ * @private
+ */
+ol.source.ImageWMS.GETFEATUREINFO_IMAGE_SIZE_ = [101, 101];
 
 
 /**
@@ -134,22 +130,13 @@ ol.source.ImageWMS.prototype.getGetFeatureInfoUrl =
 
   goog.asserts.assert(!('VERSION' in params));
 
-  if (!goog.isDef(this.url_) || goog.isNull(this.image_)) {
+  if (!goog.isDef(this.url_)) {
     return undefined;
   }
 
-  goog.asserts.assert(this.imageSize_[0] !== 0 &&
-      this.imageSize_[1] !== 0);
-  goog.asserts.assert(!isNaN(this.renderedResolution_));
-  goog.asserts.assert(!goog.isNull(this.renderedProjection_));
-
-  if (resolution != this.renderedResolution_ ||
-      !ol.proj.equivalent(projection, this.renderedProjection_)) {
-    return undefined;
-  }
-
-  var extent = this.image_.getExtent();
-  var pixelRatio = this.image_.getPixelRatio();
+  var extent = ol.extent.getForViewAndSize(
+      coordinate, resolution, 0,
+      ol.source.ImageWMS.GETFEATUREINFO_IMAGE_SIZE_);
 
   var baseParams = {
     'SERVICE': 'WMS',
@@ -161,15 +148,14 @@ ol.source.ImageWMS.prototype.getGetFeatureInfoUrl =
   };
   goog.object.extend(baseParams, this.params_, params);
 
-  var imageResolution = resolution / pixelRatio;
-
-  var x = Math.floor((coordinate[0] - extent[0]) / imageResolution);
-  var y = Math.floor((extent[3] - coordinate[1]) / imageResolution);
+  var x = Math.floor((coordinate[0] - extent[0]) / resolution);
+  var y = Math.floor((extent[3] - coordinate[1]) / resolution);
   goog.object.set(baseParams, this.v13_ ? 'I' : 'X', x);
   goog.object.set(baseParams, this.v13_ ? 'J' : 'Y', y);
 
-  return this.getRequestUrl_(extent, this.imageSize_, pixelRatio, projection,
-      baseParams);
+  return this.getRequestUrl_(
+      extent, ol.source.ImageWMS.GETFEATUREINFO_IMAGE_SIZE_,
+      1, projection, baseParams);
 };
 
 
@@ -251,8 +237,6 @@ ol.source.ImageWMS.prototype.getImage =
   this.image_ = new ol.Image(extent, resolution, pixelRatio,
       this.getAttributions(), url, this.crossOrigin_);
 
-  this.renderedProjection_ = projection;
-  this.renderedResolution_ = resolution;
   this.renderedRevision_ = this.getRevision();
 
   return this.image_;
