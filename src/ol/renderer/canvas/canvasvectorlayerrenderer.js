@@ -93,6 +93,10 @@ ol.renderer.canvas.VectorLayer.prototype.composeFrame =
     } else {
       replayContext = context;
     }
+    // for performance reasons, context.save / context.restore is not used
+    // to save and restore the transformation matrix and the opacity.
+    // see http://jsperf.com/context-save-restore-versus-variable
+    var alpha = replayContext.globalAlpha;
     replayContext.globalAlpha = layerState.opacity;
     replayGroup.replay(
         replayContext, frameState.extent, frameState.pixelRatio, transform,
@@ -102,6 +106,7 @@ ol.renderer.canvas.VectorLayer.prototype.composeFrame =
       this.dispatchRenderEvent(replayContext, frameState, transform);
       context.drawImage(replayContext.canvas, 0, 0);
     }
+    replayContext.globalAlpha = alpha;
   }
 
   this.dispatchPostComposeEvent(context, frameState, transform);
