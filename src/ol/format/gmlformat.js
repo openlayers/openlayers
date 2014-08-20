@@ -26,6 +26,7 @@ goog.require('ol.xml');
 /**
  * @classdesc
  * Feature format for reading and writing data in the GML format.
+ * Currently only supports GML 3.1.1 Simple Features profile.
  *
  * @constructor
  * @param {olx.format.GMLOptions=} opt_options
