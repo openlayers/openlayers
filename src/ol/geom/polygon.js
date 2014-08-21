@@ -25,7 +25,7 @@ goog.require('ol.geom.flat.simplify');
  *
  * @constructor
  * @extends {ol.geom.SimpleGeometry}
- * @param {ol.geom.RawPolygon} coordinates Coordinates.
+ * @param {Array.<Array.<ol.Coordinate>>} coordinates Coordinates.
  * @param {ol.geom.GeometryLayout=} opt_layout Layout.
  * @api stable
  */
@@ -150,7 +150,7 @@ ol.geom.Polygon.prototype.getArea = function() {
 
 
 /**
- * @return {ol.geom.RawPolygon} Coordinates.
+ * @return {Array.<Array.<ol.Coordinate>>} Coordinates.
  * @api stable
  */
 ol.geom.Polygon.prototype.getCoordinates = function() {
@@ -279,7 +279,7 @@ ol.geom.Polygon.prototype.getType = function() {
 
 
 /**
- * @param {ol.geom.RawPolygon} coordinates Coordinates.
+ * @param {Array.<Array.<ol.Coordinate>>} coordinates Coordinates.
  * @param {ol.geom.GeometryLayout=} opt_layout Layout.
  * @api stable
  */

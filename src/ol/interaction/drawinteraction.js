@@ -166,10 +166,10 @@ ol.interaction.Draw = function(options) {
 
   /**
    * Sketch polygon. Used when drawing polygon.
-   * @type {ol.geom.RawPolygon}
+   * @type {Array.<Array.<ol.Coordinate>>}
    * @private
    */
-  this.sketchRawPolygon_ = null;
+  this.sketchPolygonCoords_ = null;
 
   /**
    * Squared tolerance for handling up events.  If the squared distance
@@ -331,8 +331,8 @@ ol.interaction.Draw.prototype.atFinish_ = function(event) {
       goog.asserts.assertInstanceof(geometry, ol.geom.Polygon);
       potentiallyDone = geometry.getCoordinates()[0].length >
           this.minPointsPerRing_;
-      potentiallyFinishCoordinates = [this.sketchRawPolygon_[0][0],
-        this.sketchRawPolygon_[0][this.sketchRawPolygon_[0].length - 2]];
+      potentiallyFinishCoordinates = [this.sketchPolygonCoords_[0][0],
+        this.sketchPolygonCoords_[0][this.sketchPolygonCoords_[0].length - 2]];
     }
     if (potentiallyDone) {
       var map = event.map;
@@ -388,8 +388,8 @@ ol.interaction.Draw.prototype.startDrawing_ = function(event) {
     } else if (this.mode_ === ol.interaction.DrawMode.POLYGON) {
       this.sketchLine_ = new ol.Feature(new ol.geom.LineString([start.slice(),
             start.slice()]));
-      this.sketchRawPolygon_ = [[start.slice(), start.slice()]];
-      geometry = new ol.geom.Polygon(this.sketchRawPolygon_);
+      this.sketchPolygonCoords_ = [[start.slice(), start.slice()]];
+      geometry = new ol.geom.Polygon(this.sketchPolygonCoords_);
     }
   }
   goog.asserts.assert(goog.isDef(geometry));
@@ -425,7 +425,7 @@ ol.interaction.Draw.prototype.modifyDrawing_ = function(event) {
       coordinates = geometry.getCoordinates();
     } else if (this.mode_ === ol.interaction.DrawMode.POLYGON) {
       goog.asserts.assertInstanceof(geometry, ol.geom.Polygon);
-      coordinates = this.sketchRawPolygon_[0];
+      coordinates = this.sketchPolygonCoords_[0];
     }
     if (this.atFinish_(event)) {
       // snap to finish
@@ -445,7 +445,7 @@ ol.interaction.Draw.prototype.modifyDrawing_ = function(event) {
       goog.asserts.assertInstanceof(sketchLineGeom, ol.geom.LineString);
       sketchLineGeom.setCoordinates(coordinates);
       goog.asserts.assertInstanceof(geometry, ol.geom.Polygon);
-      geometry.setCoordinates(this.sketchRawPolygon_);
+      geometry.setCoordinates(this.sketchPolygonCoords_);
     }
   }
   this.updateSketchFeatures_();
@@ -468,9 +468,9 @@ ol.interaction.Draw.prototype.addToDrawing_ = function(event) {
     coordinates.push(coordinate.slice());
     geometry.setCoordinates(coordinates);
   } else if (this.mode_ === ol.interaction.DrawMode.POLYGON) {
-    this.sketchRawPolygon_[0].push(coordinate.slice());
+    this.sketchPolygonCoords_[0].push(coordinate.slice());
     goog.asserts.assertInstanceof(geometry, ol.geom.Polygon);
-    geometry.setCoordinates(this.sketchRawPolygon_);
+    geometry.setCoordinates(this.sketchPolygonCoords_);
   }
   this.updateSketchFeatures_();
 };
@@ -500,9 +500,9 @@ ol.interaction.Draw.prototype.finishDrawing_ = function(event) {
     // When we finish drawing a polygon on the last point,
     // the last coordinate is duplicated as for LineString
     // we force the replacement by the first point
-    this.sketchRawPolygon_[0].pop();
-    this.sketchRawPolygon_[0].push(this.sketchRawPolygon_[0][0]);
-    geometry.setCoordinates(this.sketchRawPolygon_);
+    this.sketchPolygonCoords_[0].pop();
+    this.sketchPolygonCoords_[0].push(this.sketchPolygonCoords_[0][0]);
+    geometry.setCoordinates(this.sketchPolygonCoords_);
     coordinates = geometry.getCoordinates();
   }
 
