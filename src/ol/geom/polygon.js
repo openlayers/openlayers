@@ -204,6 +204,11 @@ ol.geom.Polygon.prototype.getLinearRingCount = function() {
 
 
 /**
+ * Return the Nth linear ring of the polygon geometry. Return `null` if the
+ * given index is out of range.
+ * The exterior linear ring is available at index `0` and the interior rings
+ * at index `1` and beyond.
+ *
  * @param {number} index Index.
  * @return {ol.geom.LinearRing} Linear ring.
  * @api stable
