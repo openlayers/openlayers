@@ -18,7 +18,7 @@ goog.require('ol.geom.flat.simplify');
  *
  * @constructor
  * @extends {ol.geom.SimpleGeometry}
- * @param {ol.geom.RawLinearRing} coordinates Coordinates.
+ * @param {Array.<ol.Coordinate>} coordinates Coordinates.
  * @param {ol.geom.GeometryLayout=} opt_layout Layout.
  * @api stable
  */
@@ -87,7 +87,7 @@ ol.geom.LinearRing.prototype.getArea = function() {
 
 
 /**
- * @return {ol.geom.RawLinearRing} Coordinates.
+ * @return {Array.<ol.Coordinate>} Coordinates.
  * @api stable
  */
 ol.geom.LinearRing.prototype.getCoordinates = function() {
@@ -122,7 +122,7 @@ ol.geom.LinearRing.prototype.getType = function() {
 
 
 /**
- * @param {ol.geom.RawLinearRing} coordinates Coordinates.
+ * @param {Array.<ol.Coordinate>} coordinates Coordinates.
  * @param {ol.geom.GeometryLayout=} opt_layout Layout.
  * @api stable
  */

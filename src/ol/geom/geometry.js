@@ -204,16 +204,8 @@ ol.geom.Geometry.prototype.transform = function(source, destination) {
 
 
 /**
- * Array representation of a linear ring.
- * @typedef {Array.<ol.Coordinate>}
- * @api stable
- */
-ol.geom.RawLinearRing;
-
-
-/**
  * Array representation of a polygon.
- * @typedef {Array.<ol.geom.RawLinearRing>}
+ * @typedef {Array.<Array.<ol.Coordinate>>}
  * @api stable
  */
 ol.geom.RawPolygon;
