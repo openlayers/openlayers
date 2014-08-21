@@ -325,8 +325,8 @@ ol.format.GeoJSON.prototype.getExtensions = function() {
 
 
 /**
- * Read a feature from a GeoJSON Feature source.  This method will throw
- * an error if used with a FeatureCollection source.
+ * Read a feature from a GeoJSON Feature source.  Only works for Feature,
+ * use `readFeatures` to read FeatureCollection source.
  *
  * @function
  * @param {ArrayBuffer|Document|Node|Object|string} source Source.
