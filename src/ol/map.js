@@ -137,8 +137,9 @@ ol.MapProperty = {
  *       target: 'map'
  *     });
  *
- * The above snippet creates a map with a MapQuest OSM layer on a 2D view and
- * renders it to a DOM element with the id `map`.
+ * The above snippet creates a map using a {@link ol.layer.Tile} to display
+ * {@link ol.source.MapQuest} OSM data and render it to a DOM element with the
+ * id `map`.
  *
  * The constructor places a viewport container (with CSS class name
  * `ol-viewport`) in the target element (see `getViewport()`), and then two
