@@ -20,7 +20,7 @@ goog.require('ol.geom.flat.simplify');
  *
  * @constructor
  * @extends {ol.geom.SimpleGeometry}
- * @param {ol.geom.RawMultiLineString} coordinates Coordinates.
+ * @param {Array.<Array.<ol.Coordinate>>} coordinates Coordinates.
  * @param {ol.geom.GeometryLayout=} opt_layout Layout.
  * @api stable
  */
@@ -139,7 +139,7 @@ ol.geom.MultiLineString.prototype.getCoordinateAtM =
 
 
 /**
- * @return {ol.geom.RawMultiLineString} Coordinates.
+ * @return {Array.<Array.<ol.Coordinate>>} Coordinates.
  * @api stable
  */
 ol.geom.MultiLineString.prototype.getCoordinates = function() {
@@ -244,7 +244,7 @@ ol.geom.MultiLineString.prototype.getType = function() {
 
 
 /**
- * @param {ol.geom.RawMultiLineString} coordinates Coordinates.
+ * @param {Array.<Array.<ol.Coordinate>>} coordinates Coordinates.
  * @param {ol.geom.GeometryLayout=} opt_layout Layout.
  * @api stable
  */
