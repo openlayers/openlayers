@@ -101,7 +101,8 @@ ol.format.OWSContext.readLayer_ = function(node, objectStack) {
     'name': node.getAttribute('name'),
     'queryable': ol.format.XSD.readBooleanString(
         node.getAttribute('queryable')),
-    'hidden': ol.format.XSD.readBooleanString(node.getAttribute('hidden'))
+    'hidden': ol.format.XSD.readBooleanString(node.getAttribute('hidden')),
+    'opacity': ol.format.XSD.readDecimalString(node.getAttribute('opacity'))
   }, ol.format.OWSContext.OWS_LAYER_PARSERS_, node, objectStack);
 
   return ol.xml.pushParseAndPop(layerObject,
