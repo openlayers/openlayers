@@ -602,7 +602,7 @@ ol.format.WKT.Parser.prototype.parseGeometry_ = function() {
       return new ctor(coordinates);
     }
   }
-  this.raiseError_();
+  throw new Error(this.getErrorMessage_());
 };
 
 
@@ -622,7 +622,7 @@ ol.format.WKT.Parser.prototype.parseGeometryCollectionText_ = function() {
   } else if (this.isEmptyGeometry_()) {
     return [];
   }
-  this.raiseError_();
+  throw new Error(this.getErrorMessage_());
 };
 
 
@@ -639,7 +639,7 @@ ol.format.WKT.Parser.prototype.parsePointText_ = function() {
   } else if (this.isEmptyGeometry_()) {
     return null;
   }
-  this.raiseError_();
+  throw new Error(this.getErrorMessage_());
 };
 
 
@@ -656,7 +656,7 @@ ol.format.WKT.Parser.prototype.parseLineStringText_ = function() {
   } else if (this.isEmptyGeometry_()) {
     return [];
   }
-  this.raiseError_();
+  throw new Error(this.getErrorMessage_());
 };
 
 
@@ -673,7 +673,7 @@ ol.format.WKT.Parser.prototype.parsePolygonText_ = function() {
   } else if (this.isEmptyGeometry_()) {
     return [];
   }
-  this.raiseError_();
+  throw new Error(this.getErrorMessage_());
 };
 
 
@@ -695,7 +695,7 @@ ol.format.WKT.Parser.prototype.parseMultiPointText_ = function() {
   } else if (this.isEmptyGeometry_()) {
     return [];
   }
-  this.raiseError_();
+  throw new Error(this.getErrorMessage_());
 };
 
 
@@ -713,7 +713,7 @@ ol.format.WKT.Parser.prototype.parseMultiLineStringText_ = function() {
   } else if (this.isEmptyGeometry_()) {
     return [];
   }
-  this.raiseError_();
+  throw new Error(this.getErrorMessage_());
 };
 
 
@@ -730,7 +730,7 @@ ol.format.WKT.Parser.prototype.parseMultiPolygonText_ = function() {
   } else if (this.isEmptyGeometry_()) {
     return [];
   }
-  this.raiseError_();
+  throw new Error(this.getErrorMessage_());
 };
 
 
@@ -751,7 +751,7 @@ ol.format.WKT.Parser.prototype.parsePoint_ = function() {
   if (coordinates.length == this.dimension_) {
     return coordinates;
   }
-  this.raiseError_();
+  throw new Error(this.getErrorMessage_());
 };
 
 
@@ -822,12 +822,12 @@ ol.format.WKT.Parser.prototype.isEmptyGeometry_ = function() {
 
 
 /**
+ * @return {string}
  * @private
  */
-ol.format.WKT.Parser.prototype.raiseError_ = function() {
-  throw new Error('Unexpected `' + this.token_.value +
-      '` at position ' + this.token_.position +
-      ' in `' + this.lexer_.wkt + '`');
+ol.format.WKT.Parser.prototype.getErrorMessage_ = function() {
+  return 'Unexpected `' + this.token_.value + '` at position ' +
+      this.token_.position + ' in `' + this.lexer_.wkt + '`';
 };
 
 
