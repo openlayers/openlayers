@@ -6,7 +6,8 @@ goog.require('ol.source.TileWMS');
 
 var wmsSource = new ol.source.TileWMS({
   url: 'http://demo.opengeo.org/geoserver/wms',
-  params: {'LAYERS': 'ne:ne'}
+  params: {'LAYERS': 'ne:ne'},
+  serverType: 'geoserver'
 });
 
 var wmsLayer = new ol.layer.Tile({
