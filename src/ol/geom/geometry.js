@@ -204,14 +204,6 @@ ol.geom.Geometry.prototype.transform = function(source, destination) {
 
 
 /**
- * Array representation of a linestring.
- * @typedef {Array.<ol.Coordinate>}
- * @api stable
- */
-ol.geom.RawLineString;
-
-
-/**
  * Array representation of a linear ring.
  * @typedef {Array.<ol.Coordinate>}
  * @api stable
@@ -237,7 +229,7 @@ ol.geom.RawMultiPoint;
 
 /**
  * Array representation of a multilinestring.
- * @typedef {Array.<ol.geom.RawLineString>}
+ * @typedef {Array.<Array.<ol.Coordinate>>}
  * @api stable
  */
 ol.geom.RawMultiLineString;

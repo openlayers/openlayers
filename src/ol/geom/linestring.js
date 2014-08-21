@@ -20,7 +20,7 @@ goog.require('ol.geom.flat.simplify');
  *
  * @constructor
  * @extends {ol.geom.SimpleGeometry}
- * @param {ol.geom.RawLineString} coordinates Coordinates.
+ * @param {Array.<ol.Coordinate>} coordinates Coordinates.
  * @param {ol.geom.GeometryLayout=} opt_layout Layout.
  * @api stable
  */
@@ -131,7 +131,7 @@ ol.geom.LineString.prototype.getCoordinateAtM = function(m, opt_extrapolate) {
 
 
 /**
- * @return {ol.geom.RawLineString} Coordinates.
+ * @return {Array.<ol.Coordinate>} Coordinates.
  * @api stable
  */
 ol.geom.LineString.prototype.getCoordinates = function() {
@@ -190,7 +190,7 @@ ol.geom.LineString.prototype.getType = function() {
 
 
 /**
- * @param {ol.geom.RawLineString} coordinates Coordinates.
+ * @param {Array.<ol.Coordinate>} coordinates Coordinates.
  * @param {ol.geom.GeometryLayout=} opt_layout Layout.
  * @api stable
  */
