@@ -201,11 +201,3 @@ ol.geom.Geometry.prototype.transform = function(source, destination) {
   this.applyTransform(ol.proj.getTransform(source, destination));
   return this;
 };
-
-
-/**
- * Array representation of a multipolygon.
- * @typedef {Array.<Array.<Array.<ol.Coordinate>>>}
- * @api stable
- */
-ol.geom.RawMultiPolygon;
