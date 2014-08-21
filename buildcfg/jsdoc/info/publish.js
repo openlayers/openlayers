@@ -83,6 +83,7 @@ exports.publish = function(data, opts) {
         name: doc.longname,
         kind: doc.kind,
         description: doc.classdesc || doc.description,
+        stability: doc.api,
         path: path.join(doc.meta.path, doc.meta.filename)
       };
       if (doc.type) {
