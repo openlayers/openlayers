@@ -57,7 +57,7 @@ ol.geom.SimpleGeometry.getLayoutForStride_ = function(stride) {
   } else if (stride == 4) {
     return ol.geom.GeometryLayout.XYZM;
   } else {
-    throw new Error('unsupported stride: ' + stride);
+    goog.asserts.fail('unsupported stride: ' + stride);
   }
 };
 
@@ -77,7 +77,7 @@ ol.geom.SimpleGeometry.getStrideForLayout_ = function(layout) {
   } else if (layout == ol.geom.GeometryLayout.XYZM) {
     return 4;
   } else {
-    throw new Error('unsupported layout: ' + layout);
+    goog.asserts.fail('unsupported layout: ' + layout);
   }
 };
 
