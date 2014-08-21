@@ -100,6 +100,7 @@ ol.format.WFS.schemaLocation_ = 'http://www.opengis.net/wfs ' +
  *
  * @function
  * @param {ArrayBuffer|Document|Node|Object|string} source Source.
+ * @param {olx.format.ReadOptions=} opt_options Read options.
  * @return {Array.<ol.Feature>} Features.
  * @api
  */
@@ -109,11 +110,14 @@ ol.format.WFS.prototype.readFeatures;
 /**
  * @inheritDoc
  */
-ol.format.WFS.prototype.readFeaturesFromNode = function(node) {
-  var objectStack = [{
+ol.format.WFS.prototype.readFeaturesFromNode = function(node, opt_options) {
+  var context = {
     'featureType': this.featureType_,
     'featureNS': this.featureNS_
-  }];
+  };
+  goog.object.extend(context, this.getReadOptions(node,
+      goog.isDef(opt_options) ? opt_options : {}));
+  var objectStack = [context];
   var features = ol.xml.pushParseAndPop([],
       ol.format.GML.FEATURE_COLLECTION_PARSERS, node, objectStack);
   if (!goog.isDef(features)) {

@@ -11,9 +11,7 @@ goog.require('ol.tilegrid.XYZ');
 
 var waterLayer = new ol.layer.Vector({
   source: new ol.source.TileVector({
-    format: new ol.format.TopoJSON({
-      defaultProjection: 'EPSG:4326'
-    }),
+    format: new ol.format.TopoJSON(),
     projection: 'EPSG:3857',
     tileGrid: new ol.tilegrid.XYZ({
       maxZoom: 19
@@ -31,9 +29,7 @@ var waterLayer = new ol.layer.Vector({
 var roadStyleCache = {};
 var roadLayer = new ol.layer.Vector({
   source: new ol.source.TileVector({
-    format: new ol.format.TopoJSON({
-      defaultProjection: 'EPSG:4326'
-    }),
+    format: new ol.format.TopoJSON(),
     projection: 'EPSG:3857',
     tileGrid: new ol.tilegrid.XYZ({
       maxZoom: 19

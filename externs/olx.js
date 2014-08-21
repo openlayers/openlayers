@@ -1162,7 +1162,58 @@ olx.control.ZoomToExtentOptions.prototype.extent;
 
 
 /**
- * @typedef {{defaultProjection: ol.proj.ProjectionLike,
+ * @typedef {{dataProjection: (ol.proj.ProjectionLike|undefined),
+ *     featureProjection: (ol.proj.ProjectionLike|undefined)}}
+ */
+olx.format.ReadOptions;
+
+
+/**
+ * Projection of the data we are reading. If not provided, the projection will
+ * be derived from the data (where possible) or the `defaultDataProjection` of
+ * the format is assigned (where set). If the projection can not be derived from
+ * the data and if no `defaultDataProjection` is set for a format, the features
+ * will not be reprojected.
+ * @type {ol.proj.ProjectionLike|undefined}
+ */
+olx.format.ReadOptions.prototype.dataProjection;
+
+
+/**
+ * Projection of the feature geometries created by the format reader. If not
+ * provided, features will be returned in the `dataProjection`.
+ * @type {ol.proj.ProjectionLike|undefined}
+ */
+olx.format.ReadOptions.prototype.featureProjection;
+
+
+/**
+ * @typedef {{dataProjection: (ol.proj.ProjectionLike|undefined),
+ *     featureProjection: ol.proj.ProjectionLike}}
+ */
+olx.format.WriteOptions;
+
+
+/**
+ * Projection of the data we are writing. If not provided, the
+ * `defaultDataProjection` of the format is assigned (where set). If no
+ * `defaultDataProjection` is set for a format, the features will be returned
+ * in the `featureProjection`.
+ * @type {ol.proj.ProjectionLike|undefined}
+ */
+olx.format.WriteOptions.prototype.dataProjection;
+
+
+/**
+ * Projection of the feature geometries that will be serialized by the format
+ * writer.
+ * @type {ol.proj.ProjectionLike}
+ */
+olx.format.WriteOptions.prototype.featureProjection;
+
+
+/**
+ * @typedef {{defaultDataProjection: ol.proj.ProjectionLike,
  *     geometryName: (string|undefined)}}
  * @api
  */
@@ -1170,10 +1221,10 @@ olx.format.GeoJSONOptions;
 
 
 /**
- * Default projection.
+ * Default data projection.
  * @type {ol.proj.ProjectionLike}
  */
-olx.format.GeoJSONOptions.prototype.defaultProjection;
+olx.format.GeoJSONOptions.prototype.defaultDataProjection;
 
 
 /**
@@ -1198,19 +1249,18 @@ olx.format.PolylineOptions;
 olx.format.PolylineOptions.prototype.factor;
 
 
-
 /**
- * @typedef {{defaultProjection: ol.proj.ProjectionLike}}
+ * @typedef {{defaultDataProjection: ol.proj.ProjectionLike}}
  * @api
  */
 olx.format.TopoJSONOptions;
 
 
 /**
- * Default projection.
+ * Default data projection.
  * @type {ol.proj.ProjectionLike}
  */
-olx.format.TopoJSONOptions.prototype.defaultProjection;
+olx.format.TopoJSONOptions.prototype.defaultDataProjection;
 
 
 /**

@@ -23,7 +23,7 @@ ol.source.GeoJSON = function(opt_options) {
     attributions: options.attributions,
     extent: options.extent,
     format: new ol.format.GeoJSON({
-      defaultProjection: options.defaultProjection
+      defaultDataProjection: options.defaultProjection
     }),
     logo: options.logo,
     object: options.object,

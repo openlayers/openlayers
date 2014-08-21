@@ -89,6 +89,41 @@ describe('ol.format.TopoJSON', function() {
       });
     });
 
+    it('parses simple.json and transforms', function(done) {
+      afterLoadText('spec/ol/format/topojson/simple.json', function(text) {
+        var features = format.readFeatures(text, {
+          featureProjection: 'EPSG:3857'
+        });
+        expect(features.length).to.be(3);
+
+        var point = features[0].getGeometry();
+        expect(point.getType()).to.be('Point');
+        expect(features[0].getGeometry().getCoordinates()).to.eql(
+            ol.proj.transform([102.0, 0.5], 'EPSG:4326', 'EPSG:3857'));
+
+        var line = features[1].getGeometry();
+        expect(line.getType()).to.be('LineString');
+        expect(line.getCoordinates()).to.eql([
+          ol.proj.transform([102.0, 0.0], 'EPSG:4326', 'EPSG:3857'),
+          ol.proj.transform([103.0, 1.0], 'EPSG:4326', 'EPSG:3857'),
+          ol.proj.transform([104.0, 0.0], 'EPSG:4326', 'EPSG:3857'),
+          ol.proj.transform([105.0, 1.0], 'EPSG:4326', 'EPSG:3857')
+        ]);
+
+        var polygon = features[2].getGeometry();
+        expect(polygon.getType()).to.be('Polygon');
+        expect(polygon.getCoordinates()).to.eql([[
+          ol.proj.transform([100.0, 0.0], 'EPSG:4326', 'EPSG:3857'),
+          ol.proj.transform([100.0, 1.0], 'EPSG:4326', 'EPSG:3857'),
+          ol.proj.transform([101.0, 1.0], 'EPSG:4326', 'EPSG:3857'),
+          ol.proj.transform([101.0, 0.0], 'EPSG:4326', 'EPSG:3857'),
+          ol.proj.transform([100.0, 0.0], 'EPSG:4326', 'EPSG:3857')
+        ]]);
+
+        done();
+      });
+    });
+
     it('parses world-110m.json', function(done) {
       afterLoadText('spec/ol/format/topojson/world-110m.json', function(text) {
 
@@ -123,4 +158,5 @@ goog.require('ol.Feature');
 goog.require('ol.geom.MultiPolygon');
 goog.require('ol.geom.Polygon');
 goog.require('ol.format.Feature');
+goog.require('ol.proj');
 goog.require('ol.format.TopoJSON');
