@@ -18,7 +18,7 @@ goog.require('ol.math');
  *
  * @constructor
  * @extends {ol.geom.SimpleGeometry}
- * @param {ol.geom.RawMultiPoint} coordinates Coordinates.
+ * @param {Array.<ol.Coordinate>} coordinates Coordinates.
  * @param {ol.geom.GeometryLayout=} opt_layout Layout.
  * @api stable
  */
@@ -84,7 +84,7 @@ ol.geom.MultiPoint.prototype.closestPointXY =
 
 
 /**
- * @return {ol.geom.RawMultiPoint} Coordinates.
+ * @return {Array.<ol.Coordinate>} Coordinates.
  * @api stable
  */
 ol.geom.MultiPoint.prototype.getCoordinates = function() {
@@ -142,7 +142,7 @@ ol.geom.MultiPoint.prototype.getType = function() {
 
 
 /**
- * @param {ol.geom.RawMultiPoint} coordinates Coordinates.
+ * @param {Array.<ol.Coordinate>} coordinates Coordinates.
  * @param {ol.geom.GeometryLayout=} opt_layout Layout.
  * @api stable
  */

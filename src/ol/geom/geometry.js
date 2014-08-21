@@ -204,14 +204,6 @@ ol.geom.Geometry.prototype.transform = function(source, destination) {
 
 
 /**
- * Array representation of a multipoint.
- * @typedef {Array.<ol.Coordinate>}
- * @api stable
- */
-ol.geom.RawMultiPoint;
-
-
-/**
  * Array representation of a multilinestring.
  * @typedef {Array.<Array.<ol.Coordinate>>}
  * @api stable
