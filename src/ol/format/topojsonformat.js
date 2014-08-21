@@ -94,8 +94,7 @@ ol.format.TopoJSON.concatenateArcs_ = function(indices, arcs) {
  * @return {ol.geom.Point} Geometry.
  * @private
  */
-ol.format.TopoJSON.readPointGeometry_ =
-    function(object, scale, translate) {
+ol.format.TopoJSON.readPointGeometry_ = function(object, scale, translate) {
   var coordinates = object.coordinates;
   if (!goog.isNull(scale) && !goog.isNull(translate)) {
     ol.format.TopoJSON.transformVertex_(coordinates, scale, translate);

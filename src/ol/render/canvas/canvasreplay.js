@@ -594,8 +594,7 @@ ol.render.canvas.Replay.prototype.drawText = goog.abstractMethod;
  * @param {ol.geom.Geometry} geometry Geometry.
  * @param {Object} data Opaque data object.
  */
-ol.render.canvas.Replay.prototype.endGeometry =
-    function(geometry, data) {
+ol.render.canvas.Replay.prototype.endGeometry = function(geometry, data) {
   goog.asserts.assert(!goog.isNull(this.beginGeometryInstruction1_));
   this.beginGeometryInstruction1_[3] = this.instructions.length;
   this.beginGeometryInstruction1_ = null;

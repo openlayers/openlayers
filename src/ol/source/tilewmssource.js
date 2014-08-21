@@ -156,8 +156,7 @@ ol.source.TileWMS.prototype.getGetFeatureInfoUrl =
   }
 
   var tileResolution = tileGrid.getResolution(tileCoord[0]);
-  var tileExtent = tileGrid.getTileCoordExtent(
-      tileCoord, this.tmpExtent_);
+  var tileExtent = tileGrid.getTileCoordExtent(tileCoord, this.tmpExtent_);
   var tileSize = tileGrid.getTileSize(tileCoord[0]);
 
   var gutter = this.gutter_;
