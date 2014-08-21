@@ -26,7 +26,7 @@ goog.require('ol.pointer.PointerEventHandler');
  * @constructor
  * @extends {ol.control.Control}
  * @param {olx.control.AttributionOptions=} opt_options Attribution options.
- * @api
+ * @api stable
  */
 ol.control.Attribution = function(opt_options) {
 
@@ -362,7 +362,7 @@ ol.control.Attribution.prototype.handleToggle_ = function() {
 
 /**
  * @return {boolean} True if the widget is collapsible.
- * @api
+ * @api stable
  */
 ol.control.Attribution.prototype.getCollapsible = function() {
   return this.collapsible_;
@@ -371,7 +371,7 @@ ol.control.Attribution.prototype.getCollapsible = function() {
 
 /**
  * @param {boolean} collapsible True if the widget is collapsible.
- * @api
+ * @api stable
  */
 ol.control.Attribution.prototype.setCollapsible = function(collapsible) {
   if (this.collapsible_ === collapsible) {
@@ -387,7 +387,7 @@ ol.control.Attribution.prototype.setCollapsible = function(collapsible) {
 
 /**
  * @param {boolean} collapsed True if the widget is collapsed.
- * @api
+ * @api stable
  */
 ol.control.Attribution.prototype.setCollapsed = function(collapsed) {
   if (!this.collapsible_ || this.collapsed_ === collapsed) {
@@ -399,7 +399,7 @@ ol.control.Attribution.prototype.setCollapsed = function(collapsed) {
 
 /**
  * @return {boolean} True if the widget is collapsed.
- * @api
+ * @api stable
  */
 ol.control.Attribution.prototype.getCollapsed = function() {
   return this.collapsed_;

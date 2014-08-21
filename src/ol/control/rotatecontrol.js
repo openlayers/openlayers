@@ -22,7 +22,7 @@ goog.require('ol.pointer.PointerEventHandler');
  * @constructor
  * @extends {ol.control.Control}
  * @param {olx.control.RotateOptions=} opt_options Rotate options.
- * @api
+ * @api stable
  */
 ol.control.Rotate = function(opt_options) {
 

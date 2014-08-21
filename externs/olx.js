@@ -10,7 +10,7 @@ var olx;
 /**
  * @typedef {{html: string,
  *     tileRanges: (Object.<string, Array.<ol.TileRange>>|undefined)}}
- * @api
+ * @api stable
  */
 olx.AttributionOptions;
 
@@ -772,7 +772,7 @@ olx.control.AttributionOptions.prototype.collapseLabel;
 /**
  * @typedef {{element: (Element|undefined),
  *     target: (Element|string|undefined)}}
- * @api
+ * @api stable
  */
 olx.control.ControlOptions;
 
@@ -890,7 +890,7 @@ olx.control.FullScreenOptions.prototype.target;
  *     projection: ol.proj.ProjectionLike,
  *     target: (Element|undefined),
  *     undefinedHTML: (string|undefined)}}
- * @api
+ * @api stable
  */
 olx.control.MousePositionOptions;
 
@@ -935,7 +935,7 @@ olx.control.MousePositionOptions.prototype.undefinedHTML;
  *     minWidth: (number|undefined),
  *     target: (Element|undefined),
  *     units: (ol.control.ScaleLineUnits|string|undefined)}}
- * @api
+ * @api stable
  */
 olx.control.ScaleLineOptions;
 
@@ -975,7 +975,7 @@ olx.control.ScaleLineOptions.prototype.units;
  *     tipLabel: (string|undefined),
  *     target: (Element|undefined),
  *     autoHide: (boolean|undefined)}}
- * @api
+ * @api stable
  */
 olx.control.RotateOptions;
 
@@ -1031,7 +1031,7 @@ olx.control.RotateOptions.prototype.target;
  *     zoomOutTipLabel: (string|undefined),
  *     delta: (number|undefined),
  *     target: (Element|undefined)}}
- * @api
+ * @api stable
  */
 olx.control.ZoomOptions;
 
@@ -1096,7 +1096,7 @@ olx.control.ZoomOptions.prototype.target;
  * @typedef {{className: (string|undefined),
  *     maxResolution: (number|undefined),
  *     minResolution: (number|undefined)}}
- * @api
+ * @api stable
  */
 olx.control.ZoomSliderOptions;
 
@@ -1127,7 +1127,7 @@ olx.control.ZoomSliderOptions.prototype.minResolution;
  *     target: (Element|undefined),
  *     tipLabel: (string|undefined),
  *     extent: (ol.Extent|undefined)}}
- * @api
+ * @api stable
  */
 olx.control.ZoomToExtentOptions;
 
