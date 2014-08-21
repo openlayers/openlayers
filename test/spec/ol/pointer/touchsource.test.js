@@ -11,9 +11,9 @@ describe('ol.pointer.TouchSource', function() {
     target = goog.dom.createElement(goog.dom.TagName.DIV);
 
     // make sure that a mouse and touch event source is used
-    ol.browserfeature.HAS_POINTER = false;
-    ol.browserfeature.HAS_MSPOINTER = false;
-    ol.browserfeature.HAS_TOUCH = true;
+    ol.has.POINTER = false;
+    ol.has.MSPOINTER = false;
+    ol.has.TOUCH = true;
 
     handler = new ol.pointer.PointerEventHandler(target);
     eventSpy = sinon.spy();
@@ -133,7 +133,7 @@ goog.require('goog.dom');
 goog.require('goog.dom.TagName');
 goog.require('goog.events');
 goog.require('goog.events.BrowserEvent');
-goog.require('ol.browserfeature');
+goog.require('ol.has');
 goog.require('ol.pointer.PointerEvent');
 goog.require('ol.pointer.PointerEventHandler');
 goog.require('ol.pointer.TouchSource');

@@ -45,9 +45,9 @@ goog.require('ol.Size');
 goog.require('ol.TileQueue');
 goog.require('ol.View');
 goog.require('ol.ViewHint');
-goog.require('ol.browserfeature');
 goog.require('ol.control');
 goog.require('ol.extent');
+goog.require('ol.has');
 goog.require('ol.interaction');
 goog.require('ol.layer.Base');
 goog.require('ol.layer.Group');
@@ -170,7 +170,7 @@ ol.Map = function(options) {
    * @type {number}
    */
   this.pixelRatio_ = goog.isDef(options.pixelRatio) ?
-      options.pixelRatio : ol.browserfeature.DEVICE_PIXEL_RATIO;
+      options.pixelRatio : ol.has.DEVICE_PIXEL_RATIO;
 
   /**
    * @private
@@ -240,7 +240,7 @@ ol.Map = function(options) {
   this.viewport_.style.height = '100%';
   // prevent page zoom on IE >= 10 browsers
   this.viewport_.style.msTouchAction = 'none';
-  if (ol.browserfeature.HAS_TOUCH) {
+  if (ol.has.TOUCH) {
     this.viewport_.className = 'ol-touch';
   }
 
@@ -1465,17 +1465,17 @@ ol.Map.createOptionsInternal = function(options) {
     /** @type {ol.RendererType} */
     var rendererType = rendererTypes[i];
     if (ol.ENABLE_CANVAS && rendererType == ol.RendererType.CANVAS) {
-      if (ol.browserfeature.HAS_CANVAS) {
+      if (ol.has.CANVAS) {
         rendererConstructor = ol.renderer.canvas.Map;
         break;
       }
     } else if (ol.ENABLE_DOM && rendererType == ol.RendererType.DOM) {
-      if (ol.browserfeature.HAS_DOM) {
+      if (ol.has.DOM) {
         rendererConstructor = ol.renderer.dom.Map;
         break;
       }
     } else if (ol.ENABLE_WEBGL && rendererType == ol.RendererType.WEBGL) {
-      if (ol.browserfeature.HAS_WEBGL) {
+      if (ol.has.WEBGL) {
         rendererConstructor = ol.renderer.webgl.Map;
         break;
       }
