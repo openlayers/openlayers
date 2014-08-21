@@ -64,8 +64,11 @@ ol.format.OWSContext.prototype.readFromDocument = function(doc) {
 ol.format.OWSContext.prototype.readFromNode = function(node) {
   goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT);
   goog.asserts.assert(node.localName == 'OWSContext');
-  this.version = goog.string.trim(node.getAttribute('version'));
-  goog.asserts.assertString(this.version);
+
+  var version = node.getAttribute('version');
+  if (goog.isDef(version) && !goog.isNull(version)) {
+    this.version = goog.string.trim(version);
+  }
   var owsContextObject = ol.xml.pushParseAndPop({
     'version': this.version
   }, ol.format.OWSContext.PARSERS_, node, []);
@@ -134,7 +137,10 @@ ol.format.OWSContext.readServer_ = function(node, objectStack) {
   goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT);
   goog.asserts.assert(node.localName == 'Server');
   var service = node.getAttribute('service');
-  var version = goog.string.trim(node.getAttribute('version'));
+  var version = node.getAttribute('version');
+  if (goog.isDef(version) && !goog.isNull(version)) {
+    version = goog.string.trim(version);
+  }
   var obj = ol.xml.pushParseAndPop({
     'service': service,
     'version': version
