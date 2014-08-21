@@ -80,7 +80,8 @@ ol.ViewHint = {
  * So the *resolution constraint* snaps to specific resolutions. It is
  * determined by the following options: `resolutions`, `maxResolution`,
  * `maxZoom`, and `zoomFactor`. If `resolutions` is set, the other three
- * options are ignored. See {@link ol.ViewOptions} for more information.
+ * options are ignored. See documentation for each option for more
+ * information.
  *
  * The *rotation constraint* is currently not configurable. It snaps the
  * rotation value to zero when approaching the horizontal.
