@@ -49,8 +49,7 @@ ol.format.TextFeature.prototype.getType = function() {
  */
 ol.format.TextFeature.prototype.readFeature = function(source, opt_options) {
   return this.readFeatureFromText(
-      this.getText_(source),
-      this.adaptOptionsWithDefaultDataProjection(opt_options));
+      this.getText_(source), this.adaptOptions(opt_options));
 };
 
 
@@ -68,8 +67,7 @@ ol.format.TextFeature.prototype.readFeatureFromText = goog.abstractMethod;
  */
 ol.format.TextFeature.prototype.readFeatures = function(source, opt_options) {
   return this.readFeaturesFromText(
-      this.getText_(source),
-      this.adaptOptionsWithDefaultDataProjection(opt_options));
+      this.getText_(source), this.adaptOptions(opt_options));
 };
 
 
@@ -87,8 +85,7 @@ ol.format.TextFeature.prototype.readFeaturesFromText = goog.abstractMethod;
  */
 ol.format.TextFeature.prototype.readGeometry = function(source, opt_options) {
   return this.readGeometryFromText(
-      this.getText_(source),
-      this.adaptOptionsWithDefaultDataProjection(opt_options));
+      this.getText_(source), this.adaptOptions(opt_options));
 };
 
 
@@ -121,9 +118,7 @@ ol.format.TextFeature.prototype.readProjectionFromText = goog.abstractMethod;
  * @inheritDoc
  */
 ol.format.TextFeature.prototype.writeFeature = function(feature, opt_options) {
-  return this.writeFeatureText(
-      feature,
-      this.adaptOptionsWithDefaultDataProjection(opt_options));
+  return this.writeFeatureText(feature, this.adaptOptions(opt_options));
 };
 
 
@@ -141,9 +136,7 @@ ol.format.TextFeature.prototype.writeFeatureText = goog.abstractMethod;
  */
 ol.format.TextFeature.prototype.writeFeatures = function(
     features, opt_options) {
-  return this.writeFeaturesText(
-      features,
-      this.adaptOptionsWithDefaultDataProjection(opt_options));
+  return this.writeFeaturesText(features, this.adaptOptions(opt_options));
 };
 
 
@@ -161,9 +154,7 @@ ol.format.TextFeature.prototype.writeFeaturesText = goog.abstractMethod;
  */
 ol.format.TextFeature.prototype.writeGeometry = function(
     geometry, opt_options) {
-  return this.writeGeometryText(
-      geometry,
-      this.adaptOptionsWithDefaultDataProjection(opt_options));
+  return this.writeGeometryText(geometry, this.adaptOptions(opt_options));
 };
 
 

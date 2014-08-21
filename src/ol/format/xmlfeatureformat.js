@@ -199,9 +199,7 @@ ol.format.XMLFeature.prototype.readProjectionFromNode = goog.abstractMethod;
  * @inheritDoc
  */
 ol.format.XMLFeature.prototype.writeFeature = function(feature, opt_options) {
-  return this.writeFeatureNode(
-      feature,
-      this.adaptOptionsWithDefaultDataProjection(opt_options));
+  return this.writeFeatureNode(feature, this.adaptOptions(opt_options));
 };
 
 
@@ -218,9 +216,7 @@ ol.format.XMLFeature.prototype.writeFeatureNode = goog.abstractMethod;
  * @inheritDoc
  */
 ol.format.XMLFeature.prototype.writeFeatures = function(features, opt_options) {
-  return this.writeFeaturesNode(
-      features,
-      this.adaptOptionsWithDefaultDataProjection(opt_options));
+  return this.writeFeaturesNode(features, this.adaptOptions(opt_options));
 };
 
 
@@ -237,9 +233,7 @@ ol.format.XMLFeature.prototype.writeFeaturesNode = goog.abstractMethod;
  * @inheritDoc
  */
 ol.format.XMLFeature.prototype.writeGeometry = function(geometry, opt_options) {
-  return this.writeGeometryNode(
-      geometry,
-      this.adaptOptionsWithDefaultDataProjection(opt_options));
+  return this.writeGeometryNode(geometry, this.adaptOptions(opt_options));
 };
 
 

@@ -317,7 +317,7 @@ ol.format.Polyline.prototype.readGeometryFromText =
   return /** @type {ol.geom.Geometry} */ (
       ol.format.Feature.transformWithOptions(
           new ol.geom.LineString(coordinates), false,
-          this.adaptOptionsWithDefaultDataProjection(opt_options)));
+          this.adaptOptions(opt_options)));
 };
 
 
@@ -384,8 +384,7 @@ ol.format.Polyline.prototype.writeGeometryText =
   goog.asserts.assertInstanceof(geometry, ol.geom.LineString);
   geometry = /** @type {ol.geom.LineString} */
       (ol.format.Feature.transformWithOptions(
-          geometry, true,
-          this.adaptOptionsWithDefaultDataProjection(opt_options)));
+          geometry, true, this.adaptOptions(opt_options)));
   var flatCoordinates = geometry.getFlatCoordinates();
   var stride = geometry.getStride();
   return ol.format.Polyline.encodeDeltas(flatCoordinates, stride, this.factor_);

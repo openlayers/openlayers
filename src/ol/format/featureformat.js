@@ -50,18 +50,20 @@ ol.format.Feature.prototype.getReadOptions = function(
       featureProjection: opt_options.featureProjection
     };
   }
-  return this.adaptOptionsWithDefaultDataProjection(options);
+  return this.adaptOptions(options);
 };
 
 
 /**
+ * Sets the `defaultDataProjection` on the options, if no `dataProjection`
+ * is set.
  * @param {olx.format.WriteOptions|olx.format.ReadOptions|undefined} options
  *     Options.
  * @protected
  * @return {olx.format.WriteOptions|olx.format.ReadOptions|undefined}
  *     Updated options.
  */
-ol.format.Feature.prototype.adaptOptionsWithDefaultDataProjection = function(
+ol.format.Feature.prototype.adaptOptions = function(
     options) {
   var updatedOptions;
   if (goog.isDef(options)) {
