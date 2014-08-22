@@ -20,6 +20,10 @@ describe('ol.test.OWSContext', function() {
       );
     });
 
+    it('can read id', function() {
+      expect(context.id).to.eql('ows-context-ex-1-v3');
+    });
+
     it('can read version', function() {
       expect(context.version).to.eql('0.3.1');
     });

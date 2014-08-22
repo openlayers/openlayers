@@ -65,11 +65,13 @@ ol.format.OWSContext.prototype.readFromNode = function(node) {
   goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT);
   goog.asserts.assert(node.localName == 'OWSContext');
 
+  var id = node.getAttribute('id');
   var version = node.getAttribute('version');
   if (goog.isDef(version) && !goog.isNull(version)) {
     this.version = goog.string.trim(version);
   }
   var owsContextObject = ol.xml.pushParseAndPop({
+    'id': id,
     'version': this.version
   }, ol.format.OWSContext.PARSERS_, node, []);
   return goog.isDef(owsContextObject) ? owsContextObject : null;
