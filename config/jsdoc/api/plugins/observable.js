@@ -34,6 +34,9 @@ exports.handlers = {
         } else if (doclet.name.indexOf('set') === 0) {
           observable.readonly = false;
         }
+        if (doclet.stability) {
+          observable.stability = doclet.stability;
+        }
         if (!cls.observables) {
           cls.observables = [];
         }
