@@ -5076,7 +5076,7 @@ olx.source.XYZOptions.prototype.wrapX;
  *     url: !string,
  *     tierSizeCalculation: (string|undefined),
  *     size: ol.Size}}
- * @api stable
+ * @api
  */
 olx.source.ZoomifyOptions;
 
@@ -5084,7 +5084,7 @@ olx.source.ZoomifyOptions;
 /**
  * Attributions.
  * @type {Array.<ol.Attribution>|undefined}
- * @api
+ * @api stable
  */
 olx.source.ZoomifyOptions.prototype.attributions;
 
@@ -5092,7 +5092,7 @@ olx.source.ZoomifyOptions.prototype.attributions;
 /**
  * Cross origin setting for image requests.
  * @type {null|string|undefined}
- * @api
+ * @api stable
  */
 olx.source.ZoomifyOptions.prototype.crossOrigin;
 
@@ -5100,7 +5100,7 @@ olx.source.ZoomifyOptions.prototype.crossOrigin;
 /**
  * Logo.
  * @type {string|olx.LogoOptions|undefined}
- * @api
+ * @api stable
  */
 olx.source.ZoomifyOptions.prototype.logo;
 
@@ -5108,7 +5108,7 @@ olx.source.ZoomifyOptions.prototype.logo;
 /**
  * Prefix of URL template.
  * @type {!string}
- * @api
+ * @api stable
  */
 olx.source.ZoomifyOptions.prototype.url;
 
@@ -5116,7 +5116,7 @@ olx.source.ZoomifyOptions.prototype.url;
 /**
  * Tier size calculation method: `default` or `truncated`.
  * @type {string|undefined}
- * @api
+ * @api stable
  */
 olx.source.ZoomifyOptions.prototype.tierSizeCalculation;
 
@@ -5124,7 +5124,7 @@ olx.source.ZoomifyOptions.prototype.tierSizeCalculation;
 /**
  * Size of the image.
  * @type {ol.Size}
- * @api
+ * @api stable
  */
 olx.source.ZoomifyOptions.prototype.size;
 
