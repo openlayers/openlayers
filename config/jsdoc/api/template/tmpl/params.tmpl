@@ -71,7 +71,7 @@
 	        if (!param) { return; }
 	?>
 	
-        <tr>
+        <tr class="<?js= (param.stability && param.stability !== 'stable') ? 'unstable' : '' ?>">
             <?js if (params.hasName) {?>
                 <td class="name"><code><?js= param.name.replace(/^opt_/, "") ?></code></td>
             <?js } ?>

@@ -54,36 +54,9 @@ var self = this;
 
                 item.methods.forEach(function (v) {
             ?>
-                <li data-name="<?js= v.longname ?>"><?js= self.linkto(v.longname, v.name) ?></li>
-            <?js
-                });
-            }
-            ?>
-            </ul>
-            <ul class="fires itemMembers">
-            <?js
-            if (item.fires && item.fires.length) {
-            ?>
-            <span class="subtitle">Fires</span>
-            <?js
-                item.fires.forEach(function (v) {
-                    v = self.find({longname: v})[0] || {longname: v, name: v.split(/#?event:/)[1]};
-            ?>
-                <li data-name="<?js= v.longname ?>"><?js= self.linkto(v.longname, v.name) ?></li>
-            <?js
-                });
-            }
-            ?>
-            </ul>
-            <ul class="events itemMembers">
-            <?js
-            if (item.events.length) {
-            ?>
-            <span class="subtitle">Events</span>
-            <?js
-                item.events.forEach(function (v) {
-            ?>
-                <li data-name="<?js= v.longname ?>"><?js= self.linkto(v.longname, v.name) ?></li>
+                <li data-name="<?js= v.longname ?>" class="<?js= v.stability !== 'stable' ? 'unstable' : ''?>">
+                    <?js= self.linkto(v.longname, v.name) ?>
+                </li>
             <?js
                 });
             }
