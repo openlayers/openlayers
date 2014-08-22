@@ -372,3 +372,12 @@ footer {
 .main .readme table ul li {
   margin-bottom: 0;
 }
+.unstable {
+  display: none;
+}
+#stability {
+  color: white;
+  position: absolute;
+  top: 1em;
+  right: 8em;
+}
