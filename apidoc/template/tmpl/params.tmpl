@@ -93,17 +93,8 @@
             <?js } ?>
             
             <td<?js= (param.subparams ? ' colspan=' + colspan : ' ') ?> class="description last">
-                <?js if (params.hasAttributes) {?>
-                    <?js if (param.optional) { ?>
-                        <span class="optional">optional</span>
-                    <?js } ?>
-                    <?js if (param.nullable) { ?>
-                        <span class="nullable">nullable</span>
-                    <?js } ?>
-              
-                    <?js if (param.variable) { ?>
-                        <span class="repeatable">repeatable</span>
-                    <?js } ?>
+                <?js if (param.stability) { ?>
+                    <?js= self.partial('stability.tmpl', param) ?>
                 <?js } ?>
                 <?js= param.description ?><?js if (param.subparams) { ?>
                 <?js= self.partial('params.tmpl', param.subparams) ?>
