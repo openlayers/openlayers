@@ -3827,7 +3827,7 @@ olx.source.KMLOptions.prototype.urls;
 /**
  * @typedef {{layer: string,
  *     tileLoadFunction: (ol.TileLoadFunctionType|undefined)}}
- * @api stable
+ * @api
  */
 olx.source.MapQuestOptions;
 
@@ -3835,7 +3835,7 @@ olx.source.MapQuestOptions;
 /**
  * Layer. Possible values are `osm`, `sat`, and `hyb`.
  * @type {string}
- * @api
+ * @api stable
  */
 olx.source.MapQuestOptions.prototype.layer;
 
