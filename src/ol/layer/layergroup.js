@@ -33,7 +33,7 @@ ol.layer.GroupProperty = {
  * @extends {ol.layer.Base}
  * @fires change Triggered when the group/Collection changes.
  * @param {olx.layer.GroupOptions=} opt_options Layer options.
- * @api
+ * @api stable
  */
 ol.layer.Group = function(opt_options) {
 
@@ -148,7 +148,7 @@ ol.layer.Group.prototype.handleLayersRemove_ = function(collectionEvent) {
  * @return {ol.Collection.<ol.layer.Base>|undefined} Collection of
  * {@link ol.layer.Layer layers} that are part of this group.
  * @observable
- * @api
+ * @api stable
  */
 ol.layer.Group.prototype.getLayers = function() {
   return /** @type {ol.Collection.<ol.layer.Base>|undefined} */ (this.get(
@@ -164,7 +164,7 @@ goog.exportProperty(
  * @param {ol.Collection.<ol.layer.Base>|undefined} layers Collection of
  * {@link ol.layer.Layer layers} that are part of this group.
  * @observable
- * @api
+ * @api stable
  */
 ol.layer.Group.prototype.setLayers = function(layers) {
   this.set(ol.layer.GroupProperty.LAYERS, layers);
