@@ -183,6 +183,10 @@ li {
   font-size: 0.8em;
   padding: 2px 4px;
 }
+td.description span.stability {
+  float: left;
+  margin-right: 0.5em;
+}
 span.type-signature.static {
   margin-right: 3px;
 }
