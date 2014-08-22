@@ -196,6 +196,8 @@ function build(config, paths, callback) {
 function addHeader(compiledSource, callback) {
   exec('git describe --tags', function(error, stdout, stderr) {
     var header = '// OpenLayers 3. See http://ol3.js.org/\n';
+    header += '// License: https://raw.githubusercontent.com/openlayers/' +
+        'ol3/master/LICENSE.md\n';
     if (stdout !== '') {
       header += '// Version: ' + stdout + '\n';
     }
