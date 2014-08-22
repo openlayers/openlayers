@@ -1,11 +1,11 @@
 goog.require('ol.Map');
 goog.require('ol.View');
-goog.require('ol.browserfeature');
 goog.require('ol.control');
+goog.require('ol.has');
 goog.require('ol.layer.Tile');
 goog.require('ol.source.OSM');
 
-if (!ol.browserfeature.HAS_WEBGL) {
+if (!ol.has.WEBGL) {
   var info = document.getElementById('no-webgl');
   /**
    * display error message

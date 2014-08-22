@@ -4,7 +4,7 @@ goog.provide('ol.DeviceOrientationProperty');
 goog.require('goog.events');
 goog.require('goog.math');
 goog.require('ol.Object');
-goog.require('ol.browserfeature');
+goog.require('ol.has');
 
 
 /**
@@ -221,7 +221,7 @@ goog.exportProperty(
  * @private
  */
 ol.DeviceOrientation.prototype.handleTrackingChanged_ = function() {
-  if (ol.browserfeature.HAS_DEVICE_ORIENTATION) {
+  if (ol.has.DEVICE_ORIENTATION) {
     var tracking = this.getTracking();
     if (tracking && goog.isNull(this.listenerKey_)) {
       this.listenerKey_ = goog.events.listen(goog.global, 'deviceorientation',

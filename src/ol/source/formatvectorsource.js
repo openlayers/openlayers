@@ -10,8 +10,8 @@ goog.require('goog.net.EventType');
 goog.require('goog.net.XhrIo');
 goog.require('goog.net.XhrIo.ResponseType');
 goog.require('goog.userAgent');
-goog.require('ol.browserfeature');
 goog.require('ol.format.FormatType');
+goog.require('ol.has');
 goog.require('ol.proj');
 goog.require('ol.source.State');
 goog.require('ol.source.Vector');
@@ -60,7 +60,7 @@ ol.source.FormatVector.prototype.loadFeaturesFromURL =
   var responseType;
   // FIXME maybe use ResponseType.DOCUMENT?
   if (type == ol.format.FormatType.BINARY &&
-      ol.browserfeature.HAS_ARRAY_BUFFER) {
+      ol.has.ARRAY_BUFFER) {
     responseType = goog.net.XhrIo.ResponseType.ARRAY_BUFFER;
   } else {
     responseType = goog.net.XhrIo.ResponseType.TEXT;
@@ -80,7 +80,7 @@ ol.source.FormatVector.prototype.loadFeaturesFromURL =
           /** @type {ArrayBuffer|Document|Node|Object|string|undefined} */
           var source;
           if (type == ol.format.FormatType.BINARY &&
-              ol.browserfeature.HAS_ARRAY_BUFFER) {
+              ol.has.ARRAY_BUFFER) {
             source = xhrIo.getResponse();
             goog.asserts.assertInstanceof(source, ArrayBuffer);
           } else if (type == ol.format.FormatType.JSON) {
