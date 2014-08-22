@@ -3656,7 +3656,7 @@ olx.source.ImageMapGuideOptions;
 /**
  * The mapagent url.
  * @type {string|undefined}
- * @api
+ * @api stable
  */
 olx.source.ImageMapGuideOptions.prototype.url;
 
@@ -3664,7 +3664,7 @@ olx.source.ImageMapGuideOptions.prototype.url;
 /**
  * The display resolution. Default is `96`.
  * @type {number|undefined}
- * @api
+ * @api stable
  */
 olx.source.ImageMapGuideOptions.prototype.displayDpi;
 
@@ -3672,7 +3672,7 @@ olx.source.ImageMapGuideOptions.prototype.displayDpi;
 /**
  * The meters-per-unit value. Default is `1`.
  * @type {number|undefined}
- * @api
+ * @api stable
  */
 olx.source.ImageMapGuideOptions.prototype.metersPerUnit;
 
@@ -3689,7 +3689,7 @@ olx.source.ImageMapGuideOptions.prototype.hidpi;
 /**
  * If `true`, will use `GETDYNAMICMAPOVERLAYIMAGE`.
  * @type {boolean|undefined}
- * @api
+ * @api stable
  */
 olx.source.ImageMapGuideOptions.prototype.useOverlay;
 
@@ -3706,7 +3706,7 @@ olx.source.ImageMapGuideOptions.prototype.projection;
  * Ratio. `1` means image requests are the size of the map viewport, `2` means
  * twice the size of the map viewport, and so on. Default is `1`.
  * @type {number|undefined}
- * @api
+ * @api stable
  */
 olx.source.ImageMapGuideOptions.prototype.ratio;
 
@@ -3714,7 +3714,7 @@ olx.source.ImageMapGuideOptions.prototype.ratio;
 /**
  * Resolutions. If specified, requests will be made for these resolutions only.
  * @type {Array.<number>|undefined}
- * @api
+ * @api stable
  */
 olx.source.ImageMapGuideOptions.prototype.resolutions;
 
@@ -3722,7 +3722,7 @@ olx.source.ImageMapGuideOptions.prototype.resolutions;
 /**
  * Additional parameters.
  * @type {Object|undefined}
- * @api
+ * @api stable
  */
 olx.source.ImageMapGuideOptions.prototype.params;
 
