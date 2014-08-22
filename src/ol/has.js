@@ -12,7 +12,7 @@ goog.require('ol.webgl');
  * (dips) on the device (`window.devicePixelRatio`).
  * @const
  * @type {number}
- * @api
+ * @api stable
  */
 ol.has.DEVICE_PIXEL_RATIO = goog.global.devicePixelRatio || 1;
 
@@ -36,7 +36,7 @@ ol.has.CANVAS_LINE_DASH = false;
  * True if browser supports Canvas.
  * @const
  * @type {boolean}
- * @api
+ * @api stable
  */
 ol.has.CANVAS = ol.ENABLE_CANVAS && (
     /**
@@ -66,7 +66,7 @@ ol.has.CANVAS = ol.ENABLE_CANVAS && (
  * Indicates if DeviceOrientation is supported in the user's browser.
  * @const
  * @type {boolean}
- * @api
+ * @api stable
  */
 ol.has.DEVICE_ORIENTATION =
     'DeviceOrientationEvent' in goog.global;
@@ -84,7 +84,7 @@ ol.has.DOM = ol.ENABLE_DOM;
  * Is HTML5 geolocation supported in the current browser?
  * @const
  * @type {boolean}
- * @api
+ * @api stable
  */
 ol.has.GEOLOCATION = 'geolocation' in goog.global.navigator;
 
@@ -93,7 +93,7 @@ ol.has.GEOLOCATION = 'geolocation' in goog.global.navigator;
  * True if browser supports touch events.
  * @const
  * @type {boolean}
- * @api
+ * @api stable
  */
 ol.has.TOUCH = ol.ASSUME_TOUCH || 'ontouchstart' in goog.global;
 
@@ -119,7 +119,7 @@ ol.has.MSPOINTER =
  * True if browser supports WebGL.
  * @const
  * @type {boolean}
- * @api
+ * @api stable
  */
 ol.has.WEBGL = ol.ENABLE_WEBGL && (
     /**
