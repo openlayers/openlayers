@@ -14,7 +14,7 @@ goog.require('ol.tilegrid.XYZ');
  * @constructor
  * @extends {ol.source.TileImage}
  * @param {olx.source.XYZOptions} options XYZ options.
- * @api
+ * @api stable
  */
 ol.source.XYZ = function(options) {
   var projection = goog.isDef(options.projection) ?
@@ -69,7 +69,7 @@ ol.source.XYZ.prototype.setTileUrlFunction = function(tileUrlFunction) {
 
 /**
  * @param {string} url URL.
- * @api
+ * @api stable
  */
 ol.source.XYZ.prototype.setUrl = function(url) {
   this.setTileUrlFunction(ol.TileUrlFunction.createFromTemplates(

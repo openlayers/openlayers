@@ -29,7 +29,7 @@ goog.require('ol.tilecoord');
  * @constructor
  * @extends {ol.source.TileImage}
  * @param {olx.source.TileWMSOptions=} opt_options Tile WMS options.
- * @api
+ * @api stable
  */
 ol.source.TileWMS = function(opt_options) {
 
@@ -123,7 +123,7 @@ goog.inherits(ol.source.TileWMS, ol.source.TileImage);
  *     in the `LAYERS` parameter will be used. `VERSION` should not be
  *     specified here.
  * @return {string|undefined} GetFeatureInfo URL.
- * @api
+ * @api stable
  */
 ol.source.TileWMS.prototype.getGetFeatureInfoUrl =
     function(coordinate, resolution, projection, params) {
@@ -196,7 +196,7 @@ ol.source.TileWMS.prototype.getKeyZXY = function(z, x, y) {
  * Get the user-provided params, i.e. those passed to the constructor through
  * the "params" option, and possibly updated using the updateParams method.
  * @return {Object} Params.
- * @api
+ * @api stable
  */
 ol.source.TileWMS.prototype.getParams = function() {
   return this.params_;
@@ -296,7 +296,7 @@ ol.source.TileWMS.prototype.getTilePixelSize =
 /**
  * Return the URLs used for this WMS source.
  * @return {!Array.<string>} URLs.
- * @api
+ * @api stable
  */
 ol.source.TileWMS.prototype.getUrls = function() {
   return this.urls_;
@@ -326,7 +326,7 @@ ol.source.TileWMS.prototype.resetCoordKeyPrefix_ = function() {
 
 /**
  * @param {string|undefined} url URL.
- * @api
+ * @api stable
  */
 ol.source.TileWMS.prototype.setUrl = function(url) {
   var urls = goog.isDef(url) ? ol.TileUrlFunction.expandUrl(url) : null;
@@ -336,7 +336,7 @@ ol.source.TileWMS.prototype.setUrl = function(url) {
 
 /**
  * @param {Array.<string>|undefined} urls URLs.
- * @api
+ * @api stable
  */
 ol.source.TileWMS.prototype.setUrls = function(urls) {
   this.urls_ = goog.isDefAndNotNull(urls) ? urls : [];
@@ -401,7 +401,7 @@ ol.source.TileWMS.prototype.tileUrlFunction_ =
 /**
  * Update the user-provided params.
  * @param {Object} params Params.
- * @api
+ * @api stable
  */
 ol.source.TileWMS.prototype.updateParams = function(params) {
   goog.object.extend(this.params_, params);

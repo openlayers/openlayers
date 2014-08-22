@@ -3009,7 +3009,7 @@ olx.source.BingMapsOptions;
 /**
  * Culture code. Default is `en-us`.
  * @type {string|undefined}
- * @api
+ * @api stable
  */
 olx.source.BingMapsOptions.prototype.culture;
 
@@ -3017,7 +3017,7 @@ olx.source.BingMapsOptions.prototype.culture;
 /**
  * Bing Maps API key. Get yours at http://bingmapsportal.com/.
  * @type {string}
- * @api
+ * @api stable
  */
 olx.source.BingMapsOptions.prototype.key;
 
@@ -3025,7 +3025,7 @@ olx.source.BingMapsOptions.prototype.key;
 /**
  * Type of imagery.
  * @type {string}
- * @api
+ * @api stable
  */
 olx.source.BingMapsOptions.prototype.imagerySet;
 
@@ -3657,7 +3657,7 @@ olx.source.ImageMapGuideOptions;
 /**
  * The mapagent url.
  * @type {string|undefined}
- * @api
+ * @api stable
  */
 olx.source.ImageMapGuideOptions.prototype.url;
 
@@ -3665,7 +3665,7 @@ olx.source.ImageMapGuideOptions.prototype.url;
 /**
  * The display resolution. Default is `96`.
  * @type {number|undefined}
- * @api
+ * @api stable
  */
 olx.source.ImageMapGuideOptions.prototype.displayDpi;
 
@@ -3673,7 +3673,7 @@ olx.source.ImageMapGuideOptions.prototype.displayDpi;
 /**
  * The meters-per-unit value. Default is `1`.
  * @type {number|undefined}
- * @api
+ * @api stable
  */
 olx.source.ImageMapGuideOptions.prototype.metersPerUnit;
 
@@ -3690,7 +3690,7 @@ olx.source.ImageMapGuideOptions.prototype.hidpi;
 /**
  * If `true`, will use `GETDYNAMICMAPOVERLAYIMAGE`.
  * @type {boolean|undefined}
- * @api
+ * @api stable
  */
 olx.source.ImageMapGuideOptions.prototype.useOverlay;
 
@@ -3707,7 +3707,7 @@ olx.source.ImageMapGuideOptions.prototype.projection;
  * Ratio. `1` means image requests are the size of the map viewport, `2` means
  * twice the size of the map viewport, and so on. Default is `1`.
  * @type {number|undefined}
- * @api
+ * @api stable
  */
 olx.source.ImageMapGuideOptions.prototype.ratio;
 
@@ -3715,7 +3715,7 @@ olx.source.ImageMapGuideOptions.prototype.ratio;
 /**
  * Resolutions. If specified, requests will be made for these resolutions only.
  * @type {Array.<number>|undefined}
- * @api
+ * @api stable
  */
 olx.source.ImageMapGuideOptions.prototype.resolutions;
 
@@ -3723,7 +3723,7 @@ olx.source.ImageMapGuideOptions.prototype.resolutions;
 /**
  * Additional parameters.
  * @type {Object|undefined}
- * @api
+ * @api stable
  */
 olx.source.ImageMapGuideOptions.prototype.params;
 
@@ -3836,7 +3836,7 @@ olx.source.MapQuestOptions;
 /**
  * Layer. Possible values are `osm`, `sat`, and `hyb`.
  * @type {string}
- * @api
+ * @api stable
  */
 olx.source.MapQuestOptions.prototype.layer;
 
@@ -3887,7 +3887,7 @@ olx.source.OSMOptions;
 /**
  * Attributions.
  * @type {Array.<ol.Attribution>|undefined}
- * @api
+ * @api stable
  */
 olx.source.OSMOptions.prototype.attributions;
 
@@ -3895,7 +3895,7 @@ olx.source.OSMOptions.prototype.attributions;
 /**
  * crossOrigin setting for image requests. Default is `anonymous`.
  * @type {null|string|undefined}
- * @api
+ * @api stable
  */
 olx.source.OSMOptions.prototype.crossOrigin;
 
@@ -3920,7 +3920,7 @@ olx.source.OSMOptions.prototype.tileLoadFunction;
  * URL template. Must include `{x}`, `{y}` or `{-y}`, and `{z}` placeholders.
  * Default is `//{a-c}.tile.openstreetmap.org/{z}/{x}/{y}.png`.
  * @type {string|undefined}
- * @api
+ * @api stable
  */
 olx.source.OSMOptions.prototype.url;
 
@@ -4190,7 +4190,7 @@ olx.source.ImageWMSOptions;
 /**
  * Attributions.
  * @type {Array.<ol.Attribution>|undefined}
- * @api
+ * @api stable
  */
 olx.source.ImageWMSOptions.prototype.attributions;
 
@@ -4198,7 +4198,7 @@ olx.source.ImageWMSOptions.prototype.attributions;
 /**
  * crossOrigin setting for image requests.
  * @type {null|string|undefined}
- * @api
+ * @api stable
  */
 olx.source.ImageWMSOptions.prototype.crossOrigin;
 
@@ -4224,7 +4224,7 @@ olx.source.ImageWMSOptions.prototype.serverType;
 /**
  * Logo.
  * @type {string|olx.LogoOptions|undefined}
- * @api
+ * @api stable
  */
 olx.source.ImageWMSOptions.prototype.logo;
 
@@ -4234,7 +4234,7 @@ olx.source.ImageWMSOptions.prototype.logo;
  * `''` by default. `VERSION` is `1.3.0` by default. `WIDTH`, `HEIGHT`, `BBOX`
  * and `CRS` (`SRS` for WMS version < 1.3.0) will be set dynamically.
  * @type {Object.<string,*>}
- * @api
+ * @api stable
  */
 olx.source.ImageWMSOptions.prototype.params;
 
@@ -4251,7 +4251,7 @@ olx.source.ImageWMSOptions.prototype.projection;
  * Ratio. `1` means image requests are the size of the map viewport, `2` means
  * twice the size of the map viewport, and so on. Default is `1.5`.
  * @type {number|undefined}
- * @api
+ * @api stable
  */
 olx.source.ImageWMSOptions.prototype.ratio;
 
@@ -4259,7 +4259,7 @@ olx.source.ImageWMSOptions.prototype.ratio;
 /**
  * Resolutions. If specified, requests will be made for these resolutions only.
  * @type {Array.<number>|undefined}
- * @api
+ * @api stable
  */
 olx.source.ImageWMSOptions.prototype.resolutions;
 
@@ -4267,7 +4267,7 @@ olx.source.ImageWMSOptions.prototype.resolutions;
 /**
  * WMS service URL.
  * @type {string|undefined}
- * @api
+ * @api stable
  */
 olx.source.ImageWMSOptions.prototype.url;
 
@@ -4287,7 +4287,7 @@ olx.source.StamenOptions;
 /**
  * Layer.
  * @type {string}
- * @api
+ * @api stable
  */
 olx.source.StamenOptions.prototype.layer;
 
@@ -4327,7 +4327,7 @@ olx.source.StamenOptions.prototype.tileLoadFunction;
 /**
  * URL template. Must include `{x}`, `{y}` or `{-y}`, and `{z}` placeholders.
  * @type {string|undefined}
- * @api
+ * @api stable
  */
 olx.source.StamenOptions.prototype.url;
 
@@ -4348,7 +4348,7 @@ olx.source.ImageStaticOptions;
 /**
  * Attributions.
  * @type {Array.<ol.Attribution>|undefined}
- * @api
+ * @api stable
  */
 olx.source.ImageStaticOptions.prototype.attributions;
 
@@ -4356,7 +4356,7 @@ olx.source.ImageStaticOptions.prototype.attributions;
 /**
  * crossOrigin setting for image requests.
  * @type {null|string|undefined}
- * @api
+ * @api stable
  */
 olx.source.ImageStaticOptions.prototype.crossOrigin;
 
@@ -4364,7 +4364,7 @@ olx.source.ImageStaticOptions.prototype.crossOrigin;
 /**
  * Extent of the image.
  * @type {ol.Extent|undefined}
- * @api
+ * @api stable
  */
 olx.source.ImageStaticOptions.prototype.imageExtent;
 
@@ -4372,7 +4372,7 @@ olx.source.ImageStaticOptions.prototype.imageExtent;
 /**
  * Size of the image.
  * @type {ol.Size|undefined}
- * @api
+ * @api stable
  */
 olx.source.ImageStaticOptions.prototype.imageSize;
 
@@ -4380,7 +4380,7 @@ olx.source.ImageStaticOptions.prototype.imageSize;
 /**
  * Logo.
  * @type {string|olx.LogoOptions|undefined}
- * @api
+ * @api stable
  */
 olx.source.ImageStaticOptions.prototype.logo;
 
@@ -4396,7 +4396,7 @@ olx.source.ImageStaticOptions.prototype.projection;
 /**
  * Url.
  * @type {string}
- * @api
+ * @api stable
  */
 olx.source.ImageStaticOptions.prototype.url;
 
@@ -4474,7 +4474,7 @@ olx.source.TileJSONOptions;
 /**
  * crossOrigin setting for image requests.
  * @type {null|string|undefined}
- * @api
+ * @api stable
  */
 olx.source.TileJSONOptions.prototype.crossOrigin;
 
@@ -4490,7 +4490,7 @@ olx.source.TileJSONOptions.prototype.tileLoadFunction;
 /**
  * URL to the TileJSON file.
  * @type {string}
- * @api
+ * @api stable
  */
 olx.source.TileJSONOptions.prototype.url;
 
@@ -4517,7 +4517,7 @@ olx.source.TileWMSOptions;
 /**
  * Attributions.
  * @type {Array.<ol.Attribution>|undefined}
- * @api
+ * @api stable
  */
 olx.source.TileWMSOptions.prototype.attributions;
 
@@ -4527,7 +4527,7 @@ olx.source.TileWMSOptions.prototype.attributions;
  * `''` by default. `VERSION` is `1.3.0` by default. `WIDTH`, `HEIGHT`, `BBOX`
  * and `CRS` (`SRS` for WMS version < 1.3.0) will be set dynamically.
  * @type {Object.<string,*>}
- * @api
+ * @api stable
  */
 olx.source.TileWMSOptions.prototype.params;
 
@@ -4535,7 +4535,7 @@ olx.source.TileWMSOptions.prototype.params;
 /**
  * crossOrigin setting for image requests.
  * @type {null|string|undefined}
- * @api
+ * @api stable
  */
 olx.source.TileWMSOptions.prototype.crossOrigin;
 
@@ -4550,7 +4550,7 @@ olx.source.TileWMSOptions.prototype.crossOrigin;
  * example, MapServer has a `tile_map_edge_buffer` configuration parameter for
  * this. See http://mapserver.org/output/tile_mode.html.
  * @type {number|undefined}
- * @api
+ * @api stable
  */
 olx.source.TileWMSOptions.prototype.gutter;
 
@@ -4567,7 +4567,7 @@ olx.source.TileWMSOptions.prototype.hidpi;
 /**
  * Logo.
  * @type {string|olx.LogoOptions|undefined}
- * @api
+ * @api stable
  */
 olx.source.TileWMSOptions.prototype.logo;
 
@@ -4579,7 +4579,7 @@ olx.source.TileWMSOptions.prototype.logo;
  * extent, the grid will be based on that; if not, a grid based on a global
  * extent with origin at 0,0 will be used.
  * @type {ol.tilegrid.TileGrid|undefined}
- * @api
+ * @api stable
  */
 olx.source.TileWMSOptions.prototype.tileGrid;
 
@@ -4620,7 +4620,7 @@ olx.source.TileWMSOptions.prototype.tileLoadFunction;
 /**
  * WMS service URL.
  * @type {string|undefined}
- * @api
+ * @api stable
  */
 olx.source.TileWMSOptions.prototype.url;
 
@@ -4629,7 +4629,7 @@ olx.source.TileWMSOptions.prototype.url;
  * WMS service urls. Use this instead of `url` when the WMS supports multiple
  * urls for GetMap requests.
  * @type {Array.<string>|undefined}
- * @api
+ * @api stable
  */
 olx.source.TileWMSOptions.prototype.urls;
 
@@ -4648,7 +4648,7 @@ olx.source.VectorOptions;
 /**
  * Attributions.
  * @type {Array.<ol.Attribution>|undefined}
- * @api
+ * @api stable
  */
 olx.source.VectorOptions.prototype.attributions;
 
@@ -4656,7 +4656,7 @@ olx.source.VectorOptions.prototype.attributions;
 /**
  * Features.
  * @type {Array.<ol.Feature>|undefined}
- * @api
+ * @api stable
  */
 olx.source.VectorOptions.prototype.features;
 
@@ -4664,7 +4664,7 @@ olx.source.VectorOptions.prototype.features;
 /**
  * Logo.
  * @type {string|olx.LogoOptions|undefined}
- * @api
+ * @api stable
  */
 olx.source.VectorOptions.prototype.logo;
 
@@ -4816,7 +4816,7 @@ olx.source.WMTSOptions;
 /**
  * Attributions.
  * @type {Array.<ol.Attribution>|undefined}
- * @api
+ * @api stable
  */
 olx.source.WMTSOptions.prototype.attributions;
 
@@ -4824,7 +4824,7 @@ olx.source.WMTSOptions.prototype.attributions;
 /**
  * crossOrigin setting for image requests.
  * @type {string|null|undefined}
- * @api
+ * @api stable
  */
 olx.source.WMTSOptions.prototype.crossOrigin;
 
@@ -4832,7 +4832,7 @@ olx.source.WMTSOptions.prototype.crossOrigin;
 /**
  * Logo.
  * @type {string|olx.LogoOptions|undefined}
- * @api
+ * @api stable
  */
 olx.source.WMTSOptions.prototype.logo;
 
@@ -4840,7 +4840,7 @@ olx.source.WMTSOptions.prototype.logo;
 /**
  * Tile grid.
  * @type {ol.tilegrid.WMTS}
- * @api
+ * @api stable
  */
 olx.source.WMTSOptions.prototype.tileGrid;
 
@@ -4856,7 +4856,7 @@ olx.source.WMTSOptions.prototype.projection;
 /**
  * Request encoding.
  * @type {ol.source.WMTSRequestEncoding|undefined}
- * @api
+ * @api stable
  */
 olx.source.WMTSOptions.prototype.requestEncoding;
 
@@ -4864,7 +4864,7 @@ olx.source.WMTSOptions.prototype.requestEncoding;
 /**
  * Layer.
  * @type {string}
- * @api
+ * @api stable
  */
 olx.source.WMTSOptions.prototype.layer;
 
@@ -4872,7 +4872,7 @@ olx.source.WMTSOptions.prototype.layer;
 /**
  * Style.
  * @type {string}
- * @api
+ * @api stable
  */
 olx.source.WMTSOptions.prototype.style;
 
@@ -4891,7 +4891,7 @@ olx.source.WMTSOptions.prototype.tilePixelRatio;
 /**
  * WMTS version. Default is `1.0.0`.
  * @type {string|undefined}
- * @api
+ * @api stable
  */
 olx.source.WMTSOptions.prototype.version;
 
@@ -4899,7 +4899,7 @@ olx.source.WMTSOptions.prototype.version;
 /**
  * Image format. Default is `image/jpeg`.
  * @type {string|undefined}
- * @api
+ * @api stable
  */
 olx.source.WMTSOptions.prototype.format;
 
@@ -4907,7 +4907,7 @@ olx.source.WMTSOptions.prototype.format;
 /**
  * Matrix set.
  * @type {string}
- * @api
+ * @api stable
  */
 olx.source.WMTSOptions.prototype.matrixSet;
 
@@ -4915,7 +4915,7 @@ olx.source.WMTSOptions.prototype.matrixSet;
 /**
  * Dimensions.
  * @type {Object|undefined}
- * @api
+ * @api stable
  */
 olx.source.WMTSOptions.prototype.dimensions;
 
@@ -4923,7 +4923,7 @@ olx.source.WMTSOptions.prototype.dimensions;
 /**
  * URL.
  * @type {string|undefined}
- * @api
+ * @api stable
  */
 olx.source.WMTSOptions.prototype.url;
 
@@ -4947,7 +4947,7 @@ olx.source.WMTSOptions.prototype.tileLoadFunction;
 /**
  * Urls.
  * @type {Array.<string>|undefined}
- * @api
+ * @api stable
  */
 olx.source.WMTSOptions.prototype.urls;
 
@@ -4973,7 +4973,7 @@ olx.source.XYZOptions;
 /**
  * Attributions.
  * @type {Array.<ol.Attribution>|undefined}
- * @api
+ * @api stable
  */
 olx.source.XYZOptions.prototype.attributions;
 
@@ -4981,7 +4981,7 @@ olx.source.XYZOptions.prototype.attributions;
 /**
  * Cross origin setting for image requests.
  * @type {null|string|undefined}
- * @api
+ * @api stable
  */
 olx.source.XYZOptions.prototype.crossOrigin;
 
@@ -4989,7 +4989,7 @@ olx.source.XYZOptions.prototype.crossOrigin;
 /**
  * Logo.
  * @type {string|olx.LogoOptions|undefined}
- * @api
+ * @api stable
  */
 olx.source.XYZOptions.prototype.logo;
 
@@ -5049,7 +5049,7 @@ olx.source.XYZOptions.prototype.tileUrlFunction;
 /**
  * URL template. Must include `{x}`, `{y}` or `{-y}`, and `{z}` placeholders.
  * @type {string|undefined}
- * @api
+ * @api stable
  */
 olx.source.XYZOptions.prototype.url;
 
@@ -5057,7 +5057,7 @@ olx.source.XYZOptions.prototype.url;
 /**
  * An array of URL templates.
  * @type {Array.<string>|undefined}
- * @api
+ * @api stable
  */
 olx.source.XYZOptions.prototype.urls;
 
@@ -5085,7 +5085,7 @@ olx.source.ZoomifyOptions;
 /**
  * Attributions.
  * @type {Array.<ol.Attribution>|undefined}
- * @api
+ * @api stable
  */
 olx.source.ZoomifyOptions.prototype.attributions;
 
@@ -5093,7 +5093,7 @@ olx.source.ZoomifyOptions.prototype.attributions;
 /**
  * Cross origin setting for image requests.
  * @type {null|string|undefined}
- * @api
+ * @api stable
  */
 olx.source.ZoomifyOptions.prototype.crossOrigin;
 
@@ -5101,7 +5101,7 @@ olx.source.ZoomifyOptions.prototype.crossOrigin;
 /**
  * Logo.
  * @type {string|olx.LogoOptions|undefined}
- * @api
+ * @api stable
  */
 olx.source.ZoomifyOptions.prototype.logo;
 
@@ -5109,7 +5109,7 @@ olx.source.ZoomifyOptions.prototype.logo;
 /**
  * Prefix of URL template.
  * @type {!string}
- * @api
+ * @api stable
  */
 olx.source.ZoomifyOptions.prototype.url;
 
@@ -5117,7 +5117,7 @@ olx.source.ZoomifyOptions.prototype.url;
 /**
  * Tier size calculation method: `default` or `truncated`.
  * @type {string|undefined}
- * @api
+ * @api stable
  */
 olx.source.ZoomifyOptions.prototype.tierSizeCalculation;
 
@@ -5125,7 +5125,7 @@ olx.source.ZoomifyOptions.prototype.tierSizeCalculation;
 /**
  * Size of the image.
  * @type {ol.Size}
- * @api
+ * @api stable
  */
 olx.source.ZoomifyOptions.prototype.size;
 
