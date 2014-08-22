@@ -54,7 +54,7 @@ function getConfig(configPath, callback) {
 /**
  * Read the symbols from info file.
  * @param {Array.<string>} patterns List of patterns to pass along.
- * @param {funciton(Error, Array.<string>, Array.<Object>)} callback Called
+ * @param {function(Error, Array.<string>, Array.<Object>)} callback Called
  *     with the patterns and symbols (or any error).
  */
 function getSymbols(patterns, callback) {
