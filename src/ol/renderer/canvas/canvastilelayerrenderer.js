@@ -197,6 +197,10 @@ ol.renderer.canvas.TileLayer.prototype.prepareFrame =
   if (goog.isDef(layerState.extent)) {
     extent = ol.extent.getIntersection(extent, layerState.extent);
   }
+  if (ol.extent.isEmpty(extent)) {
+    // Return false to prevent the rendering of the layer.
+    return false;
+  }
 
   var tileRange = tileGrid.getTileRangeForExtentAndResolution(
       extent, tileResolution);
