@@ -884,7 +884,7 @@ olx.control.DefaultsOptions;
 /**
  * Attribution. Default is `true`.
  * @type {boolean|undefined}
- * @api
+ * @api stable
  */
 olx.control.DefaultsOptions.prototype.attribution;
 
@@ -900,7 +900,7 @@ olx.control.DefaultsOptions.prototype.attributionOptions;
 /**
  * Rotate. Default is `true`.
  * @type {boolean|undefined}
- * @api
+ * @api stable
  */
 olx.control.DefaultsOptions.prototype.rotate;
 
@@ -916,7 +916,7 @@ olx.control.DefaultsOptions.prototype.rotateOptions;
 /**
  * Zoom. Default is `true`.
  * @type {boolean|undefined}
- * @api
+ * @api stable
  */
 olx.control.DefaultsOptions.prototype.zoom;
 
