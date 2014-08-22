@@ -6,6 +6,8 @@ var async = require('async');
 var fse = require('fs-extra');
 var walk = require('walk').walk;
 
+var isWindows = process.platform.indexOf('win') === 0;
+
 var sourceDir = path.join(__dirname, '..', 'src');
 var externsDir = path.join(__dirname, '..', 'externs');
 var externsPaths = [
@@ -14,6 +16,10 @@ var externsPaths = [
 ];
 var infoPath = path.join(__dirname, '..', 'build', 'info.json');
 var jsdoc = path.join(__dirname, '..', 'node_modules', '.bin', 'jsdoc');
+// on Windows, use jsdoc.cmd
+if (isWindows) {
+  jsdoc += '.cmd';
+}
 var jsdocConfig = path.join(
     __dirname, '..', 'config', 'jsdoc', 'info', 'conf.json');
 
@@ -72,7 +78,8 @@ function getNewerExterns(date, callback) {
  * @param {Date} date Modification time of info file.
  * @param {boolean} newer Whether externs/olx.js is newer than date.
  * @param {function(Error, Array.<string>)} callback Called with any
- *     error and the array of source paths (empty if none newer).
+ *     error and the array of source paths (empty if none newer; sourceDir
+ *     if Windows platform).
  */
 function getNewer(date, newer, callback) {
   var paths = [].concat(externsPaths);
@@ -92,6 +99,15 @@ function getNewer(date, newer, callback) {
     callback(new Error('Trouble walking ' + sourceDir));
   });
   walker.on('end', function() {
+    /**
+     * Windows has restrictions on length of command line, so passing all the
+     * changed paths to JSDoc will fail if this limit is exceeded.
+     * To get round this, if this is Windows and there are newer files, just
+     * pass the sourceDir to JSDoc so it can do the walking.
+     */
+    if (isWindows) {
+      paths = [sourceDir].concat(externsPaths);
+    }
     callback(null, newer ? paths : []);
   });
 }
