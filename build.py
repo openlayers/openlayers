@@ -145,15 +145,15 @@ def build_ol_css(t):
     t.output('%(CLEANCSS)s', 'css/ol.css')
 
 
-@target('build/ol.js', SRC, SHADER_SRC, 'buildcfg/ol.json')
+@target('build/ol.js', SRC, SHADER_SRC, 'config/ol.json')
 def build_ol_new_js(t):
-    t.run('node', 'tasks/build.js', 'buildcfg/ol.json', 'build/ol.js')
+    t.run('node', 'tasks/build.js', 'config/ol.json', 'build/ol.js')
     report_sizes(t)
 
 
-@target('build/ol-debug.js', SRC, SHADER_SRC, 'buildcfg/ol-debug.json')
+@target('build/ol-debug.js', SRC, SHADER_SRC, 'config/ol-debug.json')
 def build_ol_debug_js(t):
-    t.run('node', 'tasks/build.js', 'buildcfg/ol-debug.json', 'build/ol-debug.js')
+    t.run('node', 'tasks/build.js', 'config/ol-debug.json', 'build/ol-debug.js')
     report_sizes(t)
 
 
@@ -200,9 +200,9 @@ def examples_examples_list_js(t):
 
 
 @target('build/examples/all.combined.js', 'build/examples/all.js',
-        SRC, SHADER_SRC, 'buildcfg/examples-all.json')
+        SRC, SHADER_SRC, 'config/examples-all.json')
 def build_examples_all_combined_js(t):
-    t.run('node', 'tasks/build.js', 'buildcfg/examples-all.json',
+    t.run('node', 'tasks/build.js', 'config/examples-all.json',
           'build/examples/all.combined.js')
     report_sizes(t)
 
@@ -218,7 +218,7 @@ def examples_star_json(name, match):
         # It would make more sense to use olx.js as an input file here. We use
         # it as an externs file instead to prevent "Cannot read property '*' of
         # undefined" error when running examples in "raw" or "whitespace" mode.
-        # Note that we use the proper way in buildcfg/examples-all.json, which
+        # Note that we use the proper way in config/examples-all.json, which
         # is only used to check the examples code using the compiler.
         content = json.dumps({
           "exports": [],
@@ -533,9 +533,10 @@ virtual('apidoc', 'build/jsdoc-%(BRANCH)s-timestamp' % vars(variables))
 
 
 @target('build/jsdoc-%(BRANCH)s-timestamp' % vars(variables), 'host-resources',
-        SRC, SHADER_SRC, ifind('apidoc/template'))
+        SRC, SHADER_SRC, ifind('config/jsdoc/api/template'))
 def jsdoc_BRANCH_timestamp(t):
-    t.run('%(JSDOC)s', 'apidoc/index.md', '-c', 'apidoc/conf.json',
+    t.run('%(JSDOC)s', 'config/jsdoc/api/index.md',
+          '-c', 'config/jsdoc/api/conf.json',
           '-d', 'build/hosted/%(BRANCH)s/apidoc')
     t.touch()
 

@@ -15,7 +15,7 @@ var externsPaths = [
 var infoPath = path.join(__dirname, '..', 'build', 'info.json');
 var jsdoc = path.join(__dirname, '..', 'node_modules', '.bin', 'jsdoc');
 var jsdocConfig = path.join(
-    __dirname, '..', 'buildcfg', 'jsdoc', 'info', 'conf.json');
+    __dirname, '..', 'config', 'jsdoc', 'info', 'conf.json');
 
 
 /**
