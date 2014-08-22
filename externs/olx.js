@@ -3878,7 +3878,7 @@ olx.source.TileDebugOptions.prototype.tileGrid;
  *     maxZoom: (number|undefined),
  *     tileLoadFunction: (ol.TileLoadFunctionType|undefined),
  *     url: (string|undefined)}}
- * @api stable
+ * @api
  */
 olx.source.OSMOptions;
 
@@ -3886,7 +3886,7 @@ olx.source.OSMOptions;
 /**
  * Attributions.
  * @type {Array.<ol.Attribution>|undefined}
- * @api
+ * @api stable
  */
 olx.source.OSMOptions.prototype.attributions;
 
@@ -3894,7 +3894,7 @@ olx.source.OSMOptions.prototype.attributions;
 /**
  * crossOrigin setting for image requests. Default is `anonymous`.
  * @type {null|string|undefined}
- * @api
+ * @api stable
  */
 olx.source.OSMOptions.prototype.crossOrigin;
 
@@ -3919,7 +3919,7 @@ olx.source.OSMOptions.prototype.tileLoadFunction;
  * URL template. Must include `{x}`, `{y}` or `{-y}`, and `{z}` placeholders.
  * Default is `//{a-c}.tile.openstreetmap.org/{z}/{x}/{y}.png`.
  * @type {string|undefined}
- * @api
+ * @api stable
  */
 olx.source.OSMOptions.prototype.url;
 
