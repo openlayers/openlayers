@@ -4508,7 +4508,7 @@ olx.source.TileJSONOptions.prototype.url;
  *     tileLoadFunction: (ol.TileLoadFunctionType|undefined),
  *     url: (string|undefined),
  *     urls: (Array.<string>|undefined)}}
- * @api stable
+ * @api
  */
 olx.source.TileWMSOptions;
 
@@ -4516,7 +4516,7 @@ olx.source.TileWMSOptions;
 /**
  * Attributions.
  * @type {Array.<ol.Attribution>|undefined}
- * @api
+ * @api stable
  */
 olx.source.TileWMSOptions.prototype.attributions;
 
@@ -4526,7 +4526,7 @@ olx.source.TileWMSOptions.prototype.attributions;
  * `''` by default. `VERSION` is `1.3.0` by default. `WIDTH`, `HEIGHT`, `BBOX`
  * and `CRS` (`SRS` for WMS version < 1.3.0) will be set dynamically.
  * @type {Object.<string,*>}
- * @api
+ * @api stable
  */
 olx.source.TileWMSOptions.prototype.params;
 
@@ -4534,7 +4534,7 @@ olx.source.TileWMSOptions.prototype.params;
 /**
  * crossOrigin setting for image requests.
  * @type {null|string|undefined}
- * @api
+ * @api stable
  */
 olx.source.TileWMSOptions.prototype.crossOrigin;
 
@@ -4549,7 +4549,7 @@ olx.source.TileWMSOptions.prototype.crossOrigin;
  * example, MapServer has a `tile_map_edge_buffer` configuration parameter for
  * this. See http://mapserver.org/output/tile_mode.html.
  * @type {number|undefined}
- * @api
+ * @api stable
  */
 olx.source.TileWMSOptions.prototype.gutter;
 
@@ -4566,7 +4566,7 @@ olx.source.TileWMSOptions.prototype.hidpi;
 /**
  * Logo.
  * @type {string|olx.LogoOptions|undefined}
- * @api
+ * @api stable
  */
 olx.source.TileWMSOptions.prototype.logo;
 
@@ -4578,7 +4578,7 @@ olx.source.TileWMSOptions.prototype.logo;
  * extent, the grid will be based on that; if not, a grid based on a global
  * extent with origin at 0,0 will be used.
  * @type {ol.tilegrid.TileGrid|undefined}
- * @api
+ * @api stable
  */
 olx.source.TileWMSOptions.prototype.tileGrid;
 
@@ -4619,7 +4619,7 @@ olx.source.TileWMSOptions.prototype.tileLoadFunction;
 /**
  * WMS service URL.
  * @type {string|undefined}
- * @api
+ * @api stable
  */
 olx.source.TileWMSOptions.prototype.url;
 
@@ -4628,7 +4628,7 @@ olx.source.TileWMSOptions.prototype.url;
  * WMS service urls. Use this instead of `url` when the WMS supports multiple
  * urls for GetMap requests.
  * @type {Array.<string>|undefined}
- * @api
+ * @api stable
  */
 olx.source.TileWMSOptions.prototype.urls;
 
