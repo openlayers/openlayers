@@ -4181,7 +4181,7 @@ olx.source.ImageVectorOptions.prototype.style;
  *     ratio: (number|undefined),
  *     resolutions: (Array.<number>|undefined),
  *     url: (string|undefined)}}
- * @api stable
+ * @api
  */
 olx.source.ImageWMSOptions;
 
@@ -4189,7 +4189,7 @@ olx.source.ImageWMSOptions;
 /**
  * Attributions.
  * @type {Array.<ol.Attribution>|undefined}
- * @api
+ * @api stable
  */
 olx.source.ImageWMSOptions.prototype.attributions;
 
@@ -4197,7 +4197,7 @@ olx.source.ImageWMSOptions.prototype.attributions;
 /**
  * crossOrigin setting for image requests.
  * @type {null|string|undefined}
- * @api
+ * @api stable
  */
 olx.source.ImageWMSOptions.prototype.crossOrigin;
 
@@ -4223,7 +4223,7 @@ olx.source.ImageWMSOptions.prototype.serverType;
 /**
  * Logo.
  * @type {string|olx.LogoOptions|undefined}
- * @api
+ * @api stable
  */
 olx.source.ImageWMSOptions.prototype.logo;
 
@@ -4233,7 +4233,7 @@ olx.source.ImageWMSOptions.prototype.logo;
  * `''` by default. `VERSION` is `1.3.0` by default. `WIDTH`, `HEIGHT`, `BBOX`
  * and `CRS` (`SRS` for WMS version < 1.3.0) will be set dynamically.
  * @type {Object.<string,*>}
- * @api
+ * @api stable
  */
 olx.source.ImageWMSOptions.prototype.params;
 
@@ -4250,7 +4250,7 @@ olx.source.ImageWMSOptions.prototype.projection;
  * Ratio. `1` means image requests are the size of the map viewport, `2` means
  * twice the size of the map viewport, and so on. Default is `1.5`.
  * @type {number|undefined}
- * @api
+ * @api stable
  */
 olx.source.ImageWMSOptions.prototype.ratio;
 
@@ -4258,7 +4258,7 @@ olx.source.ImageWMSOptions.prototype.ratio;
 /**
  * Resolutions. If specified, requests will be made for these resolutions only.
  * @type {Array.<number>|undefined}
- * @api
+ * @api stable
  */
 olx.source.ImageWMSOptions.prototype.resolutions;
 
@@ -4266,7 +4266,7 @@ olx.source.ImageWMSOptions.prototype.resolutions;
 /**
  * WMS service URL.
  * @type {string|undefined}
- * @api
+ * @api stable
  */
 olx.source.ImageWMSOptions.prototype.url;
 
