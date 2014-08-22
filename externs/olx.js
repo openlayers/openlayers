@@ -873,8 +873,9 @@ olx.control.ControlOptions.prototype.target;
 /**
  * @typedef {{attribution: (boolean|undefined),
  *     attributionOptions: (olx.control.AttributionOptions|undefined),
- *     zoom: (boolean|undefined),
+ *     rotate: (boolean|undefined),
  *     rotateOptions: (olx.control.RotateOptions|undefined),
+ *     zoom: (boolean|undefined),
  *     zoomOptions: (olx.control.ZoomOptions|undefined)}}
  * @api
  */
