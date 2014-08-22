@@ -2784,7 +2784,8 @@ olx.layer.TileOptions.prototype.opacity;
 
 
 /**
- * Preload.
+ * Preload. Load low-resolution tiles up to `preload` levels. By default
+ * `preload` is `0`, which means no preloading.
  * @type {number|undefined}
  * @api stable
  */
