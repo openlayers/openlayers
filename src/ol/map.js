@@ -517,7 +517,7 @@ ol.Map.prototype.addOverlay = function(overlay) {
  * animations before updating the map's view.  The {@link ol.animation}
  * namespace provides several static methods for creating prerender functions.
  * @param {...ol.PreRenderFunction} var_args Any number of pre-render functions.
- * @api stable
+ * @api
  */
 ol.Map.prototype.beforeRender = function(var_args) {
   this.render();
