@@ -4964,7 +4964,7 @@ olx.source.WMTSOptions.prototype.urls;
  *     url: (string|undefined),
  *     urls: (Array.<string>|undefined),
  *     wrapX: (boolean|undefined)}}
- * @api stable
+ * @api
  */
 olx.source.XYZOptions;
 
@@ -4972,7 +4972,7 @@ olx.source.XYZOptions;
 /**
  * Attributions.
  * @type {Array.<ol.Attribution>|undefined}
- * @api
+ * @api stable
  */
 olx.source.XYZOptions.prototype.attributions;
 
@@ -4980,7 +4980,7 @@ olx.source.XYZOptions.prototype.attributions;
 /**
  * Cross origin setting for image requests.
  * @type {null|string|undefined}
- * @api
+ * @api stable
  */
 olx.source.XYZOptions.prototype.crossOrigin;
 
@@ -4988,7 +4988,7 @@ olx.source.XYZOptions.prototype.crossOrigin;
 /**
  * Logo.
  * @type {string|olx.LogoOptions|undefined}
- * @api
+ * @api stable
  */
 olx.source.XYZOptions.prototype.logo;
 
@@ -5048,7 +5048,7 @@ olx.source.XYZOptions.prototype.tileUrlFunction;
 /**
  * URL template. Must include `{x}`, `{y}` or `{-y}`, and `{z}` placeholders.
  * @type {string|undefined}
- * @api
+ * @api stable
  */
 olx.source.XYZOptions.prototype.url;
 
@@ -5056,7 +5056,7 @@ olx.source.XYZOptions.prototype.url;
 /**
  * An array of URL templates.
  * @type {Array.<string>|undefined}
- * @api
+ * @api stable
  */
 olx.source.XYZOptions.prototype.urls;
 
