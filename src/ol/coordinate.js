@@ -338,7 +338,6 @@ ol.coordinate.toStringXY = function(coordinate, opt_fractionDigits) {
  * @param {Array} array The array with coordinates.
  * @param {string} axis the axis info.
  * @return {ol.Coordinate} The coordinate created.
- * @api stable
  */
 ol.coordinate.fromProjectedArray = function(array, axis) {
   var firstAxis = axis.charAt(0);
