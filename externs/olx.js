@@ -873,8 +873,9 @@ olx.control.ControlOptions.prototype.target;
 /**
  * @typedef {{attribution: (boolean|undefined),
  *     attributionOptions: (olx.control.AttributionOptions|undefined),
- *     zoom: (boolean|undefined),
+ *     rotate: (boolean|undefined),
  *     rotateOptions: (olx.control.RotateOptions|undefined),
+ *     zoom: (boolean|undefined),
  *     zoomOptions: (olx.control.ZoomOptions|undefined)}}
  * @api
  */
@@ -884,7 +885,7 @@ olx.control.DefaultsOptions;
 /**
  * Attribution. Default is `true`.
  * @type {boolean|undefined}
- * @api
+ * @api stable
  */
 olx.control.DefaultsOptions.prototype.attribution;
 
@@ -900,7 +901,7 @@ olx.control.DefaultsOptions.prototype.attributionOptions;
 /**
  * Rotate. Default is `true`.
  * @type {boolean|undefined}
- * @api
+ * @api stable
  */
 olx.control.DefaultsOptions.prototype.rotate;
 
@@ -916,7 +917,7 @@ olx.control.DefaultsOptions.prototype.rotateOptions;
 /**
  * Zoom. Default is `true`.
  * @type {boolean|undefined}
- * @api
+ * @api stable
  */
 olx.control.DefaultsOptions.prototype.zoom;
 
