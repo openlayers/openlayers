@@ -176,7 +176,7 @@ ol.renderer.canvas.VectorLayer.prototype.prepareFrame =
 
   if (!this.dirty_ && (frameState.viewHints[ol.ViewHint.ANIMATING] ||
       frameState.viewHints[ol.ViewHint.INTERACTING])) {
-    return;
+    return true;
   }
 
   var frameStateExtent = frameState.extent;
@@ -195,7 +195,7 @@ ol.renderer.canvas.VectorLayer.prototype.prepareFrame =
       this.renderedRevision_ == vectorLayerRevision &&
       this.renderedRenderOrder_ == vectorLayerRenderOrder &&
       ol.extent.containsExtent(this.renderedExtent_, frameStateExtent)) {
-    return;
+    return true;
   }
 
   var extent = this.renderedExtent_;
@@ -258,6 +258,7 @@ ol.renderer.canvas.VectorLayer.prototype.prepareFrame =
   this.renderedRenderOrder_ = vectorLayerRenderOrder;
   this.replayGroup_ = replayGroup;
 
+  return true;
 };
 
 

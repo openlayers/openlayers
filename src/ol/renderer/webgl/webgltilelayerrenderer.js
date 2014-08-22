@@ -331,4 +331,5 @@ ol.renderer.webgl.TileLayer.prototype.prepareFrame =
       -0.5,
       0);
 
+  return true;
 };

@@ -415,4 +415,5 @@ ol.renderer.canvas.TileLayer.prototype.prepareFrame =
       (origin[0] - center[0]) / tilePixelResolution,
       (center[1] - origin[1]) / tilePixelResolution);
 
+  return true;
 };

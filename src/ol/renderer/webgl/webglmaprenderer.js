@@ -2,6 +2,7 @@
 
 goog.provide('ol.renderer.webgl.Map');
 
+goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('goog.dom');
 goog.require('goog.dom.TagName');
@@ -448,21 +449,17 @@ ol.renderer.webgl.Map.prototype.renderFrame = function(frameState) {
   var layerStatesToDraw = [];
   var layerStatesArray = frameState.layerStatesArray;
   var viewResolution = frameState.viewState.resolution;
-  var i, ii, layerState;
+  var i, ii, layerRenderer, layerState;
   for (i = 0, ii = layerStatesArray.length; i < ii; ++i) {
     layerState = layerStatesArray[i];
     if (ol.layer.Layer.visibleAtResolution(layerState, viewResolution) &&
         layerState.sourceState == ol.source.State.READY) {
-      layerStatesToDraw.push(layerState);
+      layerRenderer = this.getLayerRenderer(layerState.layer);
+      goog.asserts.assertInstanceof(layerRenderer, ol.renderer.webgl.Layer);
+      if (layerRenderer.prepareFrame(frameState, layerState)) {
+        layerStatesToDraw.push(layerState);
+      }
     }
-  }
-
-  var layerRenderer;
-  for (i = 0, ii = layerStatesToDraw.length; i < ii; ++i) {
-    layerState = layerStatesToDraw[i];
-    layerRenderer = this.getLayerRenderer(layerState.layer);
-    goog.asserts.assertInstanceof(layerRenderer, ol.renderer.webgl.Layer);
-    layerRenderer.prepareFrame(frameState, layerState);
   }
 
   var width = frameState.size[0] * frameState.pixelRatio;

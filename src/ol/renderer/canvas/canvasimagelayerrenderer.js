@@ -143,4 +143,5 @@ ol.renderer.canvas.ImageLayer.prototype.prepareFrame =
     this.updateLogos(frameState, imageSource);
   }
 
+  return true;
 };

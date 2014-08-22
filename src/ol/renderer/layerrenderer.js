@@ -98,6 +98,7 @@ ol.renderer.Layer.prototype.handleImageChange = function(event) {
 /**
  * @param {olx.FrameState} frameState Frame state.
  * @param {ol.layer.LayerState} layerState Layer state.
+ * @return {boolean} whether composeFrame should be called.
  */
 ol.renderer.Layer.prototype.prepareFrame = goog.abstractMethod;
 
