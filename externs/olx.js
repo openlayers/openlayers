@@ -4339,7 +4339,7 @@ olx.source.StamenOptions.prototype.url;
  *     logo: (string|olx.LogoOptions|undefined),
  *     projection: ol.proj.ProjectionLike,
  *     url: string}}
- * @api stable
+ * @api
  */
 olx.source.ImageStaticOptions;
 
@@ -4347,7 +4347,7 @@ olx.source.ImageStaticOptions;
 /**
  * Attributions.
  * @type {Array.<ol.Attribution>|undefined}
- * @api
+ * @api stable
  */
 olx.source.ImageStaticOptions.prototype.attributions;
 
@@ -4355,7 +4355,7 @@ olx.source.ImageStaticOptions.prototype.attributions;
 /**
  * crossOrigin setting for image requests.
  * @type {null|string|undefined}
- * @api
+ * @api stable
  */
 olx.source.ImageStaticOptions.prototype.crossOrigin;
 
@@ -4363,7 +4363,7 @@ olx.source.ImageStaticOptions.prototype.crossOrigin;
 /**
  * Extent of the image.
  * @type {ol.Extent|undefined}
- * @api
+ * @api stable
  */
 olx.source.ImageStaticOptions.prototype.imageExtent;
 
@@ -4371,7 +4371,7 @@ olx.source.ImageStaticOptions.prototype.imageExtent;
 /**
  * Size of the image.
  * @type {ol.Size|undefined}
- * @api
+ * @api stable
  */
 olx.source.ImageStaticOptions.prototype.imageSize;
 
@@ -4379,7 +4379,7 @@ olx.source.ImageStaticOptions.prototype.imageSize;
 /**
  * Logo.
  * @type {string|olx.LogoOptions|undefined}
- * @api
+ * @api stable
  */
 olx.source.ImageStaticOptions.prototype.logo;
 
@@ -4395,7 +4395,7 @@ olx.source.ImageStaticOptions.prototype.projection;
 /**
  * Url.
  * @type {string}
- * @api
+ * @api stable
  */
 olx.source.ImageStaticOptions.prototype.url;
 
