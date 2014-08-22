@@ -4639,7 +4639,7 @@ olx.source.TileWMSOptions.prototype.urls;
  *     logo: (string|olx.LogoOptions|undefined),
  *     projection: ol.proj.ProjectionLike,
  *     state: (ol.source.State|string|undefined)}}
- * @api stable
+ * @api
  */
 olx.source.VectorOptions;
 
@@ -4647,7 +4647,7 @@ olx.source.VectorOptions;
 /**
  * Attributions.
  * @type {Array.<ol.Attribution>|undefined}
- * @api
+ * @api stable
  */
 olx.source.VectorOptions.prototype.attributions;
 
@@ -4655,7 +4655,7 @@ olx.source.VectorOptions.prototype.attributions;
 /**
  * Features.
  * @type {Array.<ol.Feature>|undefined}
- * @api
+ * @api stable
  */
 olx.source.VectorOptions.prototype.features;
 
@@ -4663,7 +4663,7 @@ olx.source.VectorOptions.prototype.features;
 /**
  * Logo.
  * @type {string|olx.LogoOptions|undefined}
- * @api
+ * @api stable
  */
 olx.source.VectorOptions.prototype.logo;
 
