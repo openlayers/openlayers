@@ -3000,7 +3000,7 @@ olx.FeatureOverlayOptions.prototype.style;
  *     key: string,
  *     imagerySet: string,
  *     tileLoadFunction: (ol.TileLoadFunctionType|undefined)}}
- * @api stable
+ * @api
  */
 olx.source.BingMapsOptions;
 
@@ -3008,7 +3008,7 @@ olx.source.BingMapsOptions;
 /**
  * Culture code. Default is `en-us`.
  * @type {string|undefined}
- * @api
+ * @api stable
  */
 olx.source.BingMapsOptions.prototype.culture;
 
@@ -3016,7 +3016,7 @@ olx.source.BingMapsOptions.prototype.culture;
 /**
  * Bing Maps API key. Get yours at http://bingmapsportal.com/.
  * @type {string}
- * @api
+ * @api stable
  */
 olx.source.BingMapsOptions.prototype.key;
 
@@ -3024,7 +3024,7 @@ olx.source.BingMapsOptions.prototype.key;
 /**
  * Type of imagery.
  * @type {string}
- * @api
+ * @api stable
  */
 olx.source.BingMapsOptions.prototype.imagerySet;
 
