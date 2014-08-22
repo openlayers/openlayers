@@ -4278,7 +4278,7 @@ olx.source.ImageWMSOptions.prototype.url;
  *     opaque: (boolean|undefined),
  *     tileLoadFunction: (ol.TileLoadFunctionType|undefined),
  *     url: (string|undefined)}}
- * @api stable
+ * @api
  */
 olx.source.StamenOptions;
 
@@ -4286,7 +4286,7 @@ olx.source.StamenOptions;
 /**
  * Layer.
  * @type {string}
- * @api
+ * @api stable
  */
 olx.source.StamenOptions.prototype.layer;
 
@@ -4326,7 +4326,7 @@ olx.source.StamenOptions.prototype.tileLoadFunction;
 /**
  * URL template. Must include `{x}`, `{y}` or `{-y}`, and `{z}` placeholders.
  * @type {string|undefined}
- * @api
+ * @api stable
  */
 olx.source.StamenOptions.prototype.url;
 
