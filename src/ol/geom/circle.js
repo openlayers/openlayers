@@ -14,7 +14,7 @@ goog.require('ol.geom.flat.deflate');
  *
  * @constructor
  * @extends {ol.geom.SimpleGeometry}
- * @param {ol.geom.RawPoint} center Center.
+ * @param {ol.Coordinate} center Center.
  * @param {number=} opt_radius Radius.
  * @param {ol.geom.GeometryLayout=} opt_layout Layout.
  * @api
@@ -82,7 +82,7 @@ ol.geom.Circle.prototype.containsXY = function(x, y) {
 
 
 /**
- * @return {ol.geom.RawPoint} Center.
+ * @return {ol.Coordinate} Center.
  * @api
  */
 ol.geom.Circle.prototype.getCenter = function() {
@@ -139,7 +139,7 @@ ol.geom.Circle.prototype.getType = function() {
 
 
 /**
- * @param {ol.geom.RawPoint} center Center.
+ * @param {ol.Coordinate} center Center.
  * @api
  */
 ol.geom.Circle.prototype.setCenter = function(center) {
@@ -157,7 +157,7 @@ ol.geom.Circle.prototype.setCenter = function(center) {
 
 
 /**
- * @param {ol.geom.RawPoint} center Center.
+ * @param {ol.Coordinate} center Center.
  * @param {number} radius Radius.
  * @param {ol.geom.GeometryLayout=} opt_layout Layout.
  * @api
