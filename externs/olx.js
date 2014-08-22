@@ -4465,7 +4465,7 @@ olx.source.ServerVectorOptions.prototype.projection;
  * @typedef {{crossOrigin: (null|string|undefined),
  *     tileLoadFunction: (ol.TileLoadFunctionType|undefined),
  *     url: string}}
- * @api stable
+ * @api
  */
 olx.source.TileJSONOptions;
 
@@ -4473,7 +4473,7 @@ olx.source.TileJSONOptions;
 /**
  * crossOrigin setting for image requests.
  * @type {null|string|undefined}
- * @api
+ * @api stable
  */
 olx.source.TileJSONOptions.prototype.crossOrigin;
 
@@ -4489,7 +4489,7 @@ olx.source.TileJSONOptions.prototype.tileLoadFunction;
 /**
  * URL to the TileJSON file.
  * @type {string}
- * @api
+ * @api stable
  */
 olx.source.TileJSONOptions.prototype.url;
 
