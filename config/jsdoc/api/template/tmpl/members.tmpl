@@ -9,7 +9,7 @@ if (data.type && data.type.names) {
     });
 }
 ?>
-<dt>
+<dt class="<?js= (data.stability && data.stability !== 'stable') ? 'unstable' : '' ?>">
     <div class="nameContainer">
         <h4 class="name" id="<?js= id ?>">
             <?js= data.attribs + (data.scope === 'static' ? longname : name)  + typeSignature ?>
@@ -20,7 +20,7 @@ if (data.type && data.type.names) {
     <p class="summary"><?js= summary ?></p>
     <?js } ?>
 </dt>
-<dd>
+<dd class="<?js= (data.stability && data.stability !== 'stable') ? 'unstable' : '' ?>">
     <?js if (data.description) { ?>
     <div class="description">
         <?js= data.description ?>
