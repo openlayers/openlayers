@@ -5632,7 +5632,7 @@ olx.tilegrid.WMTSOptions;
 /**
  * Origin.
  * @type {ol.Coordinate|undefined}
- * @api
+ * @api stable
  */
 olx.tilegrid.WMTSOptions.prototype.origin;
 
@@ -5640,7 +5640,7 @@ olx.tilegrid.WMTSOptions.prototype.origin;
 /**
  * Origins.
  * @type {Array.<ol.Coordinate>|undefined}
- * @api
+ * @api stable
  */
 olx.tilegrid.WMTSOptions.prototype.origins;
 
@@ -5648,7 +5648,7 @@ olx.tilegrid.WMTSOptions.prototype.origins;
 /**
  * Resolutions.
  * @type {!Array.<number>}
- * @api
+ * @api stable
  */
 olx.tilegrid.WMTSOptions.prototype.resolutions;
 
@@ -5656,7 +5656,7 @@ olx.tilegrid.WMTSOptions.prototype.resolutions;
 /**
  * matrix IDs.
  * @type {!Array.<string>}
- * @api
+ * @api stable
  */
 olx.tilegrid.WMTSOptions.prototype.matrixIds;
 
@@ -5664,7 +5664,7 @@ olx.tilegrid.WMTSOptions.prototype.matrixIds;
 /**
  * Tile size.
  * @type {number|undefined}
- * @api
+ * @api stable
  */
 olx.tilegrid.WMTSOptions.prototype.tileSize;
 
@@ -5672,7 +5672,7 @@ olx.tilegrid.WMTSOptions.prototype.tileSize;
 /**
  * Tile sizes.
  * @type {Array.<number>|undefined}
- * @api
+ * @api stable
  */
 olx.tilegrid.WMTSOptions.prototype.tileSizes;
 
