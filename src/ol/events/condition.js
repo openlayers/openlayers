@@ -13,7 +13,7 @@ goog.require('ol.MapBrowserPointerEvent');
  * `{boolean}`. If the condition is met, true should be returned.
  *
  * @typedef {function(ol.MapBrowserEvent): boolean}
- * @api
+ * @api stable
  */
 ol.events.ConditionType;
 
