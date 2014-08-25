@@ -43,7 +43,7 @@ ol.MapEvent = function(type, map, opt_frameState) {
   /**
    * The map where the event occurred.
    * @type {ol.Map}
-   * @api
+   * @api stable
    */
   this.map = map;
 
