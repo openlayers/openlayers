@@ -89,7 +89,7 @@ ol.ViewHint = {
  * @constructor
  * @extends {ol.Object}
  * @param {olx.ViewOptions=} opt_options View options.
- * @api
+ * @api stable
  */
 ol.View = function(opt_options) {
   goog.base(this);
@@ -239,7 +239,7 @@ ol.View.prototype.constrainRotation = function(rotation, opt_delta) {
 /**
  * @return {ol.Coordinate|undefined} The center of the view.
  * @observable
- * @api
+ * @api stable
  */
 ol.View.prototype.getCenter = function() {
   return /** @type {ol.Coordinate|undefined} */ (
@@ -280,7 +280,7 @@ ol.View.prototype.calculateExtent = function(size) {
 
 /**
  * @return {ol.proj.Projection} The projection of the view.
- * @api
+ * @api stable
  */
 ol.View.prototype.getProjection = function() {
   return this.projection_;
@@ -290,7 +290,7 @@ ol.View.prototype.getProjection = function() {
 /**
  * @return {number|undefined} The resolution of the view.
  * @observable
- * @api
+ * @api stable
  */
 ol.View.prototype.getResolution = function() {
   return /** @type {number|undefined} */ (
@@ -345,7 +345,7 @@ ol.View.prototype.getResolutionForValueFunction = function(opt_power) {
 /**
  * @return {number|undefined} The rotation of the view.
  * @observable
- * @api
+ * @api stable
  */
 ol.View.prototype.getRotation = function() {
   return /** @type {number|undefined} */ (this.get(ol.ViewProperty.ROTATION));
@@ -403,7 +403,7 @@ ol.View.prototype.getState = function() {
  * Get the current zoom level. Return undefined if the current
  * resolution is undefined or not a "constrained resolution".
  * @return {number|undefined} Zoom.
- * @api
+ * @api stable
  */
 ol.View.prototype.getZoom = function() {
   var offset;
@@ -560,7 +560,7 @@ ol.View.prototype.isDef = function() {
  * Rotate the view around a given coordinate.
  * @param {number} rotation New rotation value for the view.
  * @param {ol.Coordinate=} opt_anchor The rotation center.
- * @api
+ * @api stable
  */
 ol.View.prototype.rotate = function(rotation, opt_anchor) {
   if (goog.isDef(opt_anchor)) {
@@ -575,7 +575,7 @@ ol.View.prototype.rotate = function(rotation, opt_anchor) {
  * Set the center of the current view.
  * @param {ol.Coordinate|undefined} center The center of the view.
  * @observable
- * @api
+ * @api stable
  */
 ol.View.prototype.setCenter = function(center) {
   this.set(ol.ViewProperty.CENTER, center);
@@ -603,7 +603,7 @@ ol.View.prototype.setHint = function(hint, delta) {
  * Set the resolution for this view.
  * @param {number|undefined} resolution The resolution of the view.
  * @observable
- * @api
+ * @api stable
  */
 ol.View.prototype.setResolution = function(resolution) {
   this.set(ol.ViewProperty.RESOLUTION, resolution);
@@ -618,7 +618,7 @@ goog.exportProperty(
  * Set the rotation for this view.
  * @param {number|undefined} rotation The rotation of the view.
  * @observable
- * @api
+ * @api stable
  */
 ol.View.prototype.setRotation = function(rotation) {
   this.set(ol.ViewProperty.ROTATION, rotation);
@@ -632,7 +632,7 @@ goog.exportProperty(
 /**
  * Zoom to a specific zoom level.
  * @param {number} zoom Zoom level.
- * @api
+ * @api stable
  */
 ol.View.prototype.setZoom = function(zoom) {
   var resolution = this.constrainResolution(
