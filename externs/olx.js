@@ -5578,7 +5578,7 @@ olx.tilegrid.TileGridOptions.prototype.minZoom;
 /**
  * Origin. Default is null.
  * @type {ol.Coordinate|undefined}
- * @api
+ * @api stable
  */
 olx.tilegrid.TileGridOptions.prototype.origin;
 
@@ -5587,7 +5587,7 @@ olx.tilegrid.TileGridOptions.prototype.origin;
  * Origins. If given, the array should match the `resolutions` array, i.e.
  * each resolution can have a different origin.
  * @type {Array.<ol.Coordinate>|undefined}
- * @api
+ * @api stable
  */
 olx.tilegrid.TileGridOptions.prototype.origins;
 
@@ -5595,7 +5595,7 @@ olx.tilegrid.TileGridOptions.prototype.origins;
 /**
  * Resolutions.
  * @type {!Array.<number>}
- * @api
+ * @api stable
  */
 olx.tilegrid.TileGridOptions.prototype.resolutions;
 
@@ -5603,7 +5603,7 @@ olx.tilegrid.TileGridOptions.prototype.resolutions;
 /**
  * Tile size. Default is 256. (Only square tiles are supported.)
  * @type {number|undefined}
- * @api
+ * @api stable
  */
 olx.tilegrid.TileGridOptions.prototype.tileSize;
 
@@ -5612,7 +5612,7 @@ olx.tilegrid.TileGridOptions.prototype.tileSize;
  * Tile sizes. If given, the array should match the `resolutions` array, i.e.
  * each resolution can have a different tile size.
  * @type {Array.<number>|undefined}
- * @api
+ * @api stable
  */
 olx.tilegrid.TileGridOptions.prototype.tileSizes;
 
