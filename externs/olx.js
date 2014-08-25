@@ -194,7 +194,7 @@ olx.MapOptions;
  * Controls initially added to the map. If not specified,
  * {@link ol.control.defaults ol.control.defaults()} is used.
  * @type {ol.Collection.<ol.control.Control>|Array.<ol.control.Control>|undefined}
- * @api
+ * @api stable
  */
 olx.MapOptions.prototype.controls;
 
@@ -220,7 +220,7 @@ olx.MapOptions.prototype.pixelRatio;
  * Interactions that are initially added to the map. If not specified,
  * {@link ol.interaction.defaults ol.interaction.defaults()} is used.
  * @type {ol.Collection.<ol.interaction.Interaction>|Array.<ol.interaction.Interaction>|undefined}
- * @api
+ * @api stable
  */
 olx.MapOptions.prototype.interactions;
 
@@ -242,7 +242,7 @@ olx.MapOptions.prototype.keyboardEventTarget;
 /**
  * Layers. If this is not defined, a map with no layers will be rendered.
  * @type {Array.<ol.layer.Base>|ol.Collection.<ol.layer.Base>|undefined}
- * @api
+ * @api stable
  */
 olx.MapOptions.prototype.layers;
 
@@ -254,7 +254,7 @@ olx.MapOptions.prototype.layers;
  * property should be a URL for creating a link. To disable the map logo, set
  * the option to `false`. By default, the OpenLayers 3 logo is shown.
  * @type {boolean|string|olx.LogoOptions|undefined}
- * @api
+ * @api stable
  */
 olx.MapOptions.prototype.logo;
 
@@ -262,7 +262,7 @@ olx.MapOptions.prototype.logo;
 /**
  * Overlays initially added to the map. By default, no overlays are added.
  * @type {ol.Collection.<ol.Overlay>|Array.<ol.Overlay>|undefined}
- * @api
+ * @api stable
  */
 olx.MapOptions.prototype.overlays;
 
@@ -273,7 +273,7 @@ olx.MapOptions.prototype.overlays;
  * {@link ol.RendererType} here to use a specific renderer.
  * Note that at present only the Canvas renderer supports vector data.
  * @type {ol.RendererType|Array.<ol.RendererType|string>|string|undefined}
- * @api
+ * @api stable
  */
 olx.MapOptions.prototype.renderer;
 
@@ -283,7 +283,7 @@ olx.MapOptions.prototype.renderer;
  * element. If not specified at construction time, {@link ol.Map#setTarget}
  * must be called for the map to be rendered.
  * @type {Element|string|undefined}
- * @api
+ * @api stable
  */
 olx.MapOptions.prototype.target;
 
@@ -292,7 +292,7 @@ olx.MapOptions.prototype.target;
  * The map's view.  No layer sources will be fetched unless this is specified at
  * construction time or through {@link ol.Map#setView}.
  * @type {ol.View|undefined}
- * @api
+ * @api stable
  */
 olx.MapOptions.prototype.view;
 
