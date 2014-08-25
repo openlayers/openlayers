@@ -39,7 +39,9 @@ var self = this;
             <?js
                 item.typedefs.forEach(function (v) {
             ?>
-                <li data-name="<?js= v.longname ?>"><?js= self.linkto(v.longname, v.name) ?></li>
+                <li data-name="<?js= v.longname ?>" class="<?js= v.stability !== 'stable' ? 'unstable' : ''?>">
+                    <?js= self.linkto(v.longname, v.name) ?>
+                </li>
             <?js
                 });
             }
