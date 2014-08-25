@@ -405,13 +405,15 @@ ol.Overlay.prototype.updatePixelPosition_ = function() {
   var positioning = this.getPositioning();
   goog.asserts.assert(goog.isDef(positioning));
 
+  var offsetX = offset[0];
+  var offsetY = offset[1];
   if (positioning == ol.OverlayPositioning.BOTTOM_RIGHT ||
       positioning == ol.OverlayPositioning.CENTER_RIGHT ||
       positioning == ol.OverlayPositioning.TOP_RIGHT) {
     if (this.rendered_.left_ !== '') {
       this.rendered_.left_ = style.left = '';
     }
-    var right = Math.round(mapSize[0] - pixel[0]) + 'px';
+    var right = Math.round(mapSize[0] - pixel[0] - offsetX) + 'px';
     if (this.rendered_.right_ != right) {
       this.rendered_.right_ = style.right = right;
     }
@@ -419,13 +421,12 @@ ol.Overlay.prototype.updatePixelPosition_ = function() {
     if (this.rendered_.right_ !== '') {
       this.rendered_.right_ = style.right = '';
     }
-    var offsetX = -offset[0];
     if (positioning == ol.OverlayPositioning.BOTTOM_CENTER ||
         positioning == ol.OverlayPositioning.CENTER_CENTER ||
         positioning == ol.OverlayPositioning.TOP_CENTER) {
-      offsetX += goog.style.getSize(this.element_).width / 2;
+      offsetX -= goog.style.getSize(this.element_).width / 2;
     }
-    var left = Math.round(pixel[0] - offsetX) + 'px';
+    var left = Math.round(pixel[0] + offsetX) + 'px';
     if (this.rendered_.left_ != left) {
       this.rendered_.left_ = style.left = left;
     }
@@ -436,7 +437,7 @@ ol.Overlay.prototype.updatePixelPosition_ = function() {
     if (this.rendered_.top_ !== '') {
       this.rendered_.top_ = style.top = '';
     }
-    var bottom = Math.round(mapSize[1] - pixel[1]) + 'px';
+    var bottom = Math.round(mapSize[1] - pixel[1] - offsetY) + 'px';
     if (this.rendered_.bottom_ != bottom) {
       this.rendered_.bottom_ = style.bottom = bottom;
     }
@@ -444,13 +445,12 @@ ol.Overlay.prototype.updatePixelPosition_ = function() {
     if (this.rendered_.bottom_ !== '') {
       this.rendered_.bottom_ = style.bottom = '';
     }
-    var offsetY = -offset[1];
     if (positioning == ol.OverlayPositioning.CENTER_LEFT ||
         positioning == ol.OverlayPositioning.CENTER_CENTER ||
         positioning == ol.OverlayPositioning.CENTER_RIGHT) {
-      offsetY += goog.style.getSize(this.element_).height / 2;
+      offsetY -= goog.style.getSize(this.element_).height / 2;
     }
-    var top = Math.round(pixel[1] - offsetY) + 'px';
+    var top = Math.round(pixel[1] + offsetY) + 'px';
     if (this.rendered_.top_ != top) {
       this.rendered_.top_ = style.top = top;
     }
