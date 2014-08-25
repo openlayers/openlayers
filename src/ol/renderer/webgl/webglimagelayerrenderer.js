@@ -175,6 +175,8 @@ ol.renderer.webgl.ImageLayer.prototype.prepareFrame =
     this.updateAttributions(frameState.attributions, image.getAttributions());
     this.updateLogos(frameState, imageSource);
   }
+
+  return true;
 };
 
 

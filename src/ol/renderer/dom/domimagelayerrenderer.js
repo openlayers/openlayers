@@ -138,6 +138,7 @@ ol.renderer.dom.ImageLayer.prototype.prepareFrame =
     this.updateLogos(frameState, imageSource);
   }
 
+  return true;
 };
 
 

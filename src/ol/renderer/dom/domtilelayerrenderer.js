@@ -86,7 +86,7 @@ ol.renderer.dom.TileLayer.prototype.prepareFrame =
       goog.style.setElementShown(this.target, false);
       this.renderedVisible_ = false;
     }
-    return;
+    return true;
   }
 
   var pixelRatio = frameState.pixelRatio;
@@ -263,6 +263,7 @@ ol.renderer.dom.TileLayer.prototype.prepareFrame =
   this.scheduleExpireCache(frameState, tileSource);
   this.updateLogos(frameState, tileSource);
 
+  return true;
 };
 
 
