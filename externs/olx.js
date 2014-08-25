@@ -76,7 +76,7 @@ olx.GeolocationOptions;
 /**
  * Start Tracking. Default is `false`.
  * @type {boolean|undefined}
- * @api
+ * @api stable
  */
 olx.GeolocationOptions.prototype.tracking;
 
@@ -85,15 +85,15 @@ olx.GeolocationOptions.prototype.tracking;
  * Tracking options. See
  * {@link http://www.w3.org/TR/geolocation-API/#position_options_interface}.
  * @type {GeolocationPositionOptions|undefined}
- * @api
+ * @api stable
  */
 olx.GeolocationOptions.prototype.trackingOptions;
 
 
 /**
- * Projection.
+ * The projection the position is reported in.
  * @type {ol.proj.ProjectionLike}
- * @api
+ * @api stable
  */
 olx.GeolocationOptions.prototype.projection;
 
