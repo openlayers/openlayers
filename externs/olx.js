@@ -91,7 +91,7 @@ olx.GeolocationOptions.prototype.trackingOptions;
 
 
 /**
- * Projection.
+ * The projection the position is reported in.
  * @type {ol.proj.ProjectionLike}
  * @api stable
  */
