@@ -2,6 +2,7 @@ goog.provide('ol.format.OWSContext');
 
 goog.require('goog.asserts');
 goog.require('goog.dom.NodeType');
+goog.require('goog.object');
 goog.require('goog.string');
 goog.require('ol.format.OWS');
 goog.require('ol.format.XLink');
@@ -102,13 +103,29 @@ ol.format.OWSContext.readLayer_ = function(node, objectStack) {
   goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT);
   goog.asserts.assert(node.localName == 'Layer');
 
-  var layerObject = ol.xml.pushParseAndPop({
-    'name': node.getAttribute('name'),
-    'queryable': ol.format.XSD.readBooleanString(
-        node.getAttribute('queryable')),
-    'hidden': ol.format.XSD.readBooleanString(node.getAttribute('hidden')),
-    'opacity': ol.format.XSD.readDecimalString(node.getAttribute('opacity'))
-  }, ol.format.OWSContext.OWS_LAYER_PARSERS_, node, objectStack);
+  var context = {
+    'name': node.getAttribute('name')
+  };
+
+  var queryable = node.getAttribute('queryable');
+  if (goog.isDef(queryable) && !goog.isNull(queryable)) {
+    goog.object.set(context, 'queryable',
+        ol.format.XSD.readBooleanString(queryable));
+  }
+
+  var hidden = node.getAttribute('hidden');
+  if (goog.isDef(hidden) && !goog.isNull(hidden)) {
+    goog.object.set(context, 'hidden',
+        ol.format.XSD.readBooleanString(hidden));
+  }
+
+  var opacity = node.getAttribute('opacity');
+  if (goog.isDef(opacity) && !goog.isNull(opacity)) {
+    goog.object.set(context, 'opacity',
+        ol.format.XSD.readDecimalString(opacity));
+  }
+  var layerObject = ol.xml.pushParseAndPop(context,
+      ol.format.OWSContext.OWS_LAYER_PARSERS_, node, objectStack);
 
   return ol.xml.pushParseAndPop(layerObject,
       ol.format.OWSContext.OWSCONTEXT_LAYER_PARSERS_, node, objectStack);
