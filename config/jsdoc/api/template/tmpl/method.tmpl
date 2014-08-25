@@ -2,7 +2,7 @@
 var data = obj;
 var self = this;
 ?>
-<dt>
+<dt class="<?js= (data.stability && data.stability !== 'stable') ? 'unstable' : '' ?>">
     <div class="nameContainer<?js if (data.inherited) { ?> inherited<?js } ?>">
         <?js if (data.stability || kind !== 'class') { ?>
         <h4 class="name" id="<?js= id ?>">
@@ -23,7 +23,7 @@ var self = this;
     <p class="summary"><?js= summary ?></p>
     <?js } ?>
 </dt>
-<dd>
+<dd class="<?js= (data.stability && data.stability !== 'stable') ? 'unstable' : '' ?>">
     
     <?js if (data.description) { ?>
     <div class="description">
@@ -67,7 +67,7 @@ var self = this;
               description = eventDoclet.description.replace(/<[^>]*>/g, '');
             }
         ?>
-        <li>
+        <li class="<?js= (eventDoclet || data).stability !== 'stable' ? 'unstable' : '' ?>">
             <code><?js= self.linkto(f, type) ?></code>
             <?js if (eventClassName) {
               var eventClass = self.find({longname: eventClassName})[0];

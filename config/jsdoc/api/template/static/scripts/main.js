@@ -52,4 +52,13 @@ $(function () {
 
     $(window).on('resize', _onResize);
     _onResize();
+
+    // show/hide unstable items
+    var unstable = $('.unstable');
+    var stabilityToggle = $('#stability-toggle');
+    stabilityToggle.change(function() {
+        unstable.toggle(!this.checked);
+        return false;
+    });
+    unstable.toggle(!stabilityToggle[0].checked);
 });
