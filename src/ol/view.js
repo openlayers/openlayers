@@ -260,8 +260,10 @@ ol.View.prototype.getHints = function() {
 
 
 /**
- * Calculate the extent for the given size in pixels, based on the current
- * resolution and the current center.
+ * Calculate the extent for the current view state and the passed `size`.
+ * `size` is the size in pixels of the box into which the calculated extent
+ * should fit. In most cases you want to get the extent of the entire map,
+ * that is `map.getSize()`.
  * @param {ol.Size} size Box pixel size.
  * @return {ol.Extent} Extent.
  * @api
@@ -426,7 +428,9 @@ ol.View.prototype.getZoom = function() {
 
 
 /**
- * Fit the given extent based on the given map size.
+ * Fit the map view to the passed `extent` and `size`. `size` is the size in
+ * pixels of the box to fit the extent into. In most cases you will want to
+ * use the map size, that is `map.getSize()`.
  * @param {ol.Extent} extent Extent.
  * @param {ol.Size} size Box pixel size.
  * @api
