@@ -457,7 +457,7 @@ olx.ViewOptions;
  * specified with the `projection` option. Default is `undefined`, and layer
  * sources will not be fetched if this is not set.
  * @type {ol.Coordinate|undefined}
- * @api
+ * @api stable
  */
 olx.ViewOptions.prototype.center;
 
@@ -498,7 +498,7 @@ olx.ViewOptions.prototype.extent;
  * (the default) then `maxResolution` defaults to `40075016.68557849 / 256 =
  * 156543.03392804097`.
  * @type {number|undefined}
- * @api
+ * @api stable
  */
 olx.ViewOptions.prototype.maxResolution;
 
@@ -511,7 +511,7 @@ olx.ViewOptions.prototype.maxResolution;
  * defaults to `40075016.68557849 / 256 / Math.pow(2, 28) =
  * 0.0005831682455839253`.
  * @type {number|undefined}
- * @api
+ * @api stable
  */
 olx.ViewOptions.prototype.minResolution;
 
@@ -522,7 +522,7 @@ olx.ViewOptions.prototype.minResolution;
  * is `28`.  Note that if `minResolution` is also provided, it is given
  * precedence over `maxZoom`.
  * @type {number|undefined}
- * @api
+ * @api stable
  */
 olx.ViewOptions.prototype.maxZoom;
 
@@ -533,7 +533,7 @@ olx.ViewOptions.prototype.maxZoom;
  * is `0`. Note that if `maxResolution` is also provided, it is given
  * precedence over `minZoom`.
  * @type {number|undefined}
- * @api
+ * @api stable
  */
 olx.ViewOptions.prototype.minZoom;
 
@@ -541,7 +541,7 @@ olx.ViewOptions.prototype.minZoom;
 /**
  * The projection. Default is `EPSG:3857` (Spherical Mercator).
  * @type {ol.proj.ProjectionLike}
- * @api
+ * @api stable
  */
 olx.ViewOptions.prototype.projection;
 
@@ -552,7 +552,7 @@ olx.ViewOptions.prototype.projection;
  * `zoom`. Default is `undefined`, and layer sources will not be fetched if
  * neither this nor `zoom` are defined.
  * @type {number|undefined}
- * @api
+ * @api stable
  */
 olx.ViewOptions.prototype.resolution;
 
@@ -562,7 +562,7 @@ olx.ViewOptions.prototype.resolution;
  * `maxResolution`, `minResolution`, `minZoom`, `maxZoom`, and `zoomFactor`
  * options are ignored.
  * @type {Array.<number>|undefined}
- * @api
+ * @api stable
  */
 olx.ViewOptions.prototype.resolutions;
 
@@ -571,7 +571,7 @@ olx.ViewOptions.prototype.resolutions;
  * The initial rotation for the view in radians (positive rotation clockwise).
  * Default is `0`.
  * @type {number|undefined}
- * @api
+ * @api stable
  */
 olx.ViewOptions.prototype.rotation;
 
@@ -581,7 +581,7 @@ olx.ViewOptions.prototype.rotation;
  * initial resolution for the view. The initial resolution is determined using
  * the `ol.View#constrainResolution` method.
  * @type {number|undefined}
- * @api
+ * @api stable
  */
 olx.ViewOptions.prototype.zoom;
 
@@ -589,7 +589,7 @@ olx.ViewOptions.prototype.zoom;
 /**
  * The zoom factor used to determine the resolution constraint.  Default is `2`.
  * @type {number|undefined}
- * @api
+ * @api stable
  */
 olx.ViewOptions.prototype.zoomFactor;
 
