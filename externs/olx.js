@@ -1448,7 +1448,7 @@ olx.format.GMLOptions;
 /**
  * Feature namespace.
  * @type {string}
- * @api
+ * @api stable
  */
 olx.format.GMLOptions.prototype.featureNS;
 
@@ -1456,7 +1456,7 @@ olx.format.GMLOptions.prototype.featureNS;
 /**
  * Feature type to parse.
  * @type {string}
- * @api
+ * @api stable
  */
 olx.format.GMLOptions.prototype.featureType;
 
@@ -1473,7 +1473,7 @@ olx.format.GMLOptions.prototype.srsName;
  * Write gml:Surface instead of gml:Polygon elements. This also affects the
  * elements in multi-part geometries. Default is `false`.
  * @type {boolean|undefined}
- * @api
+ * @api stable
  */
 olx.format.GMLOptions.prototype.surface;
 
@@ -1482,7 +1482,7 @@ olx.format.GMLOptions.prototype.surface;
  * Write gml:Curve instead of gml:LineString elements. This also affects the
  * elements in multi-part geometries. Default is `false`.
  * @type {boolean|undefined}
- * @api
+ * @api stable
  */
 olx.format.GMLOptions.prototype.curve;
 
@@ -1491,7 +1491,7 @@ olx.format.GMLOptions.prototype.curve;
  * Write gml:MultiCurve instead of gml:MultiLineString. Since the latter is
  * deprecated in GML 3, the default is `true`.
  * @type {boolean|undefined}
- * @api
+ * @api stable
  */
 olx.format.GMLOptions.prototype.multiCurve;
 
@@ -1500,7 +1500,7 @@ olx.format.GMLOptions.prototype.multiCurve;
  * Write gml:multiSurface instead of gml:MultiPolygon. Since the latter is
  * deprecated in GML 3, the default is `true`.
  * @type {boolean|undefined}
- * @api
+ * @api stable
  */
 olx.format.GMLOptions.prototype.multiSurface;
 
@@ -1509,7 +1509,7 @@ olx.format.GMLOptions.prototype.multiSurface;
  * Optional schemaLocation to use when writing out the GML, this will override
  * the default provided.
  * @type {string|undefined}
- * @api
+ * @api stable
  */
 olx.format.GMLOptions.prototype.schemaLocation;
 
