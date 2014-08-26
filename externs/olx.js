@@ -1347,7 +1347,7 @@ olx.format.GeoJSONOptions;
 /**
  * Default data projection.
  * @type {ol.proj.ProjectionLike}
- * @api
+ * @api stable
  */
 olx.format.GeoJSONOptions.prototype.defaultDataProjection;
 
@@ -1355,7 +1355,7 @@ olx.format.GeoJSONOptions.prototype.defaultDataProjection;
 /**
  * Geometry name to use when creating features.
  * @type {string|undefined}
- * @api
+ * @api stable
  */
 olx.format.GeoJSONOptions.prototype.geometryName;
 
