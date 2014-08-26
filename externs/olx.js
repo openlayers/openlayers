@@ -1294,7 +1294,7 @@ olx.format.ReadOptions;
  * the data and if no `defaultDataProjection` is set for a format, the features
  * will not be reprojected.
  * @type {ol.proj.ProjectionLike|undefined}
- * @api
+ * @api stable
  */
 olx.format.ReadOptions.prototype.dataProjection;
 
@@ -1303,7 +1303,7 @@ olx.format.ReadOptions.prototype.dataProjection;
  * Projection of the feature geometries created by the format reader. If not
  * provided, features will be returned in the `dataProjection`.
  * @type {ol.proj.ProjectionLike|undefined}
- * @api
+ * @api stable
  */
 olx.format.ReadOptions.prototype.featureProjection;
 
