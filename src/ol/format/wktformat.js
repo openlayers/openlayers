@@ -761,8 +761,8 @@ ol.format.WKT.Parser.prototype.parsePoint_ = function() {
  */
 ol.format.WKT.Parser.prototype.parsePointList_ = function() {
   var coordinates = [this.parsePoint_()];
-  if (this.match(ol.format.WKT.TokenType.COMMA)) {
-    goog.array.extend(coordinates, this.parsePointList_());
+  while (this.match(ol.format.WKT.TokenType.COMMA)) {
+    coordinates.push(this.parsePoint_());
   }
   return coordinates;
 };
@@ -774,8 +774,8 @@ ol.format.WKT.Parser.prototype.parsePointList_ = function() {
  */
 ol.format.WKT.Parser.prototype.parsePointTextList_ = function() {
   var coordinates = [this.parsePointText_()];
-  if (this.match(ol.format.WKT.TokenType.COMMA)) {
-    goog.array.extend(coordinates, this.parsePointTextList_());
+  while (this.match(ol.format.WKT.TokenType.COMMA)) {
+    coordinates.push(this.parsePointText_());
   }
   return coordinates;
 };
@@ -787,8 +787,8 @@ ol.format.WKT.Parser.prototype.parsePointTextList_ = function() {
  */
 ol.format.WKT.Parser.prototype.parseLineStringTextList_ = function() {
   var coordinates = [this.parseLineStringText_()];
-  if (this.match(ol.format.WKT.TokenType.COMMA)) {
-    goog.array.extend(coordinates, this.parseLineStringTextList_());
+  while (this.match(ol.format.WKT.TokenType.COMMA)) {
+    coordinates.push(this.parseLineStringText_());
   }
   return coordinates;
 };
@@ -800,8 +800,8 @@ ol.format.WKT.Parser.prototype.parseLineStringTextList_ = function() {
  */
 ol.format.WKT.Parser.prototype.parsePolygonTextList_ = function() {
   var coordinates = [this.parsePolygonText_()];
-  if (this.match(ol.format.WKT.TokenType.COMMA)) {
-    goog.array.extend(coordinates, this.parsePolygonTextList_());
+  while (this.match(ol.format.WKT.TokenType.COMMA)) {
+    coordinates.push(this.parsePolygonText_());
   }
   return coordinates;
 };
