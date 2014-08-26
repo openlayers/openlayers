@@ -1322,7 +1322,7 @@ olx.format.WriteOptions;
  * `defaultDataProjection` is set for a format, the features will be returned
  * in the `featureProjection`.
  * @type {ol.proj.ProjectionLike|undefined}
- * @api
+ * @api stable
  */
 olx.format.WriteOptions.prototype.dataProjection;
 
@@ -1331,7 +1331,7 @@ olx.format.WriteOptions.prototype.dataProjection;
  * Projection of the feature geometries that will be serialized by the format
  * writer.
  * @type {ol.proj.ProjectionLike}
- * @api
+ * @api stable
  */
 olx.format.WriteOptions.prototype.featureProjection;
 
