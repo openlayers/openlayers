@@ -88,23 +88,12 @@ ol.Overlay = function(options) {
    * @type {Element}
    */
   this.element_ = goog.dom.createElement(goog.dom.TagName.DIV);
-  this.element_.style.position = 'absolute';
 
   /**
    * @private
-   * @type {{bottom_: string,
-   *         left_: string,
-   *         right_: string,
-   *         top_: string,
-   *         visible: boolean}}
+   * @type {boolean}
    */
-  this.rendered_ = {
-    bottom_: '',
-    left_: '',
-    right_: '',
-    top_: '',
-    visible: true
-  };
+  this.visible_ = true;
 
   /**
    * @private
@@ -388,9 +377,9 @@ ol.Overlay.prototype.updatePixelPosition_ = function() {
   var map = this.getMap();
   var position = this.getPosition();
   if (!goog.isDef(map) || !map.isRendered() || !goog.isDef(position)) {
-    if (this.rendered_.visible) {
+    if (this.visible_) {
       goog.style.setElementShown(this.element_, false);
-      this.rendered_.visible = false;
+      this.visible_ = false;
     }
     return;
   }
@@ -399,66 +388,45 @@ ol.Overlay.prototype.updatePixelPosition_ = function() {
   goog.asserts.assert(!goog.isNull(pixel));
   var mapSize = map.getSize();
   goog.asserts.assert(goog.isDef(mapSize));
-  var style = this.element_.style;
   var offset = this.getOffset();
   goog.asserts.assert(goog.isArray(offset));
   var positioning = this.getPositioning();
   goog.asserts.assert(goog.isDef(positioning));
 
+  var cssText = 'position: absolute;';
+
   if (positioning == ol.OverlayPositioning.BOTTOM_RIGHT ||
       positioning == ol.OverlayPositioning.CENTER_RIGHT ||
       positioning == ol.OverlayPositioning.TOP_RIGHT) {
-    if (this.rendered_.left_ !== '') {
-      this.rendered_.left_ = style.left = '';
-    }
-    var right = Math.round(mapSize[0] - pixel[0]) + 'px';
-    if (this.rendered_.right_ != right) {
-      this.rendered_.right_ = style.right = right;
-    }
+    cssText += 'right: ' + Math.round(mapSize[0] - pixel[0]) + 'px;';
   } else {
-    if (this.rendered_.right_ !== '') {
-      this.rendered_.right_ = style.right = '';
-    }
     var offsetX = -offset[0];
     if (positioning == ol.OverlayPositioning.BOTTOM_CENTER ||
         positioning == ol.OverlayPositioning.CENTER_CENTER ||
         positioning == ol.OverlayPositioning.TOP_CENTER) {
       offsetX += goog.style.getSize(this.element_).width / 2;
     }
-    var left = Math.round(pixel[0] - offsetX) + 'px';
-    if (this.rendered_.left_ != left) {
-      this.rendered_.left_ = style.left = left;
-    }
+    cssText += 'left: ' + Math.round(pixel[0] - offsetX) + 'px;';
   }
   if (positioning == ol.OverlayPositioning.BOTTOM_LEFT ||
       positioning == ol.OverlayPositioning.BOTTOM_CENTER ||
       positioning == ol.OverlayPositioning.BOTTOM_RIGHT) {
-    if (this.rendered_.top_ !== '') {
-      this.rendered_.top_ = style.top = '';
-    }
-    var bottom = Math.round(mapSize[1] - pixel[1]) + 'px';
-    if (this.rendered_.bottom_ != bottom) {
-      this.rendered_.bottom_ = style.bottom = bottom;
-    }
+    cssText += 'bottom: ' + Math.round(mapSize[1] - pixel[1]) + 'px;';
   } else {
-    if (this.rendered_.bottom_ !== '') {
-      this.rendered_.bottom_ = style.bottom = '';
-    }
     var offsetY = -offset[1];
     if (positioning == ol.OverlayPositioning.CENTER_LEFT ||
         positioning == ol.OverlayPositioning.CENTER_CENTER ||
         positioning == ol.OverlayPositioning.CENTER_RIGHT) {
       offsetY += goog.style.getSize(this.element_).height / 2;
     }
-    var top = Math.round(pixel[1] - offsetY) + 'px';
-    if (this.rendered_.top_ != top) {
-      this.rendered_.top_ = style.top = top;
-    }
+    cssText += 'top: ' + Math.round(pixel[1] - offsetY) + 'px;';
   }
 
-  if (!this.rendered_.visible) {
+  this.element_.style.cssText = cssText;
+
+  if (!this.visible_) {
     goog.style.setElementShown(this.element_, true);
-    this.rendered_.visible = true;
+    this.visible_ = true;
   }
 
 };
