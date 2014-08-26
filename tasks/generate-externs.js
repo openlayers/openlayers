@@ -126,6 +126,8 @@ function generateExterns(typedefs, symbols, externs) {
 
   externs.forEach(processSymbol);
 
+  symbols.forEach(processSymbol);
+
   typedefs.forEach(function(typedef) {
     addNamespaces(typedef.name);
     lines.push('/**');
@@ -135,8 +137,6 @@ function generateExterns(typedefs, symbols, externs) {
     lines.push('\n');
   });
 
-  symbols.forEach(processSymbol);
-  
   return lines.join('\n');
 }
 
