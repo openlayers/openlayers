@@ -171,11 +171,15 @@ ol.style.defaultStyleFunction = function(feature, resolution) {
 
   // now that we've run it the first time,
   // replace the function with a constant version
-  ol.style.defaultStyleFunction =
-      /** @type {function(this:ol.Feature):Array.<ol.style.Style>} */(
-      function(resolution) {
-        return styles;
-      });
+
+  /**
+   * @param {ol.Feature} feature Feature.
+   * @param {number} resolution Resolution.
+   * @return {Array.<ol.style.Style>} Style.
+   */
+  ol.style.defaultStyleFunction = function(feature, resolution) {
+    return styles;
+  };
 
   return styles;
 };
