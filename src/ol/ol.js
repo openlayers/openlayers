@@ -218,7 +218,8 @@ ol.ZOOMSLIDER_ANIMATION_DURATION = 200;
  *     ParentClass.prototype.foo = function(a) { }
  *
  *     function ChildClass(a, b, c) {
- *       goog.base(this, a, b);
+ *       // Call parent constructor
+ *       ParentClass.call(this, a, b);
  *     }
  *     ol.inherits(ChildClass, ParentClass);
  *
@@ -229,7 +230,7 @@ ol.ZOOMSLIDER_ANIMATION_DURATION = 200;
  * follows:
  *
  *     ChildClass.prototype.foo = function(a) {
- *       ChildClass.superClass_.foo.call(this, a);
+ *       ChildClass.base(this, 'foo', a);
  *       // Other code here.
  *     };
  *
