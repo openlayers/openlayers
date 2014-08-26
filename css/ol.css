@@ -191,6 +191,7 @@ button.ol-full-screen-true:after {
   text-align: right;
   bottom: .5em;
   right: .5em;
+  max-width: calc(100% - 1.3em);
 }
 
 .ol-attribution ul {
@@ -200,6 +201,7 @@ button.ol-full-screen-true:after {
   line-height: 1.375em;
   color: #000;
   text-shadow: 0 0 2px #fff;
+  max-width: calc(100% - 3.6em);
 }
 .ol-attribution li {
   display: inline;
