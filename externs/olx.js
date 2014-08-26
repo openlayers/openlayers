@@ -1529,7 +1529,7 @@ olx.format.GPXOptions;
  * nodes from `wpt`, `rte` and `trk` can be processed, as those are
  * directly mapped to a feature.
  * @type {function(ol.Feature, Node)}
- * @api
+ * @api stable
  */
 olx.format.GPXOptions.prototype.readExtensions;
 
