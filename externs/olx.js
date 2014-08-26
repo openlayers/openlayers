@@ -1546,7 +1546,7 @@ olx.format.WFSOptions;
 /**
  * The namespace URI used for features.
  * @type {string}
- * @api
+ * @api stable
  */
 olx.format.WFSOptions.prototype.featureNS;
 
@@ -1554,7 +1554,7 @@ olx.format.WFSOptions.prototype.featureNS;
 /**
  * The feature type to parse. Only used for read operations.
  * @type {string}
- * @api
+ * @api stable
  */
 olx.format.WFSOptions.prototype.featureType;
 
@@ -1563,7 +1563,7 @@ olx.format.WFSOptions.prototype.featureType;
  * Optional schemaLocation to use for serialization, this will override the
  * default.
  * @type {string|undefined}
- * @api
+ * @api stable
  */
 olx.format.WFSOptions.prototype.schemaLocation;
 
@@ -1586,7 +1586,7 @@ olx.format.WFSWriteGetFeatureOptions;
 /**
  * The namespace URI used for features.
  * @type {string}
- * @api
+ * @api stable
  */
 olx.format.WFSWriteGetFeatureOptions.prototype.featureNS;
 
@@ -1594,7 +1594,7 @@ olx.format.WFSWriteGetFeatureOptions.prototype.featureNS;
 /**
  * The prefix for the feature namespace.
  * @type {string}
- * @api
+ * @api stable
  */
 olx.format.WFSWriteGetFeatureOptions.prototype.featurePrefix;
 
@@ -1602,7 +1602,7 @@ olx.format.WFSWriteGetFeatureOptions.prototype.featurePrefix;
 /**
  * The feature type names.
  * @type {Array.<string>}
- * @api
+ * @api stable
  */
 olx.format.WFSWriteGetFeatureOptions.prototype.featureTypes;
 
@@ -1619,7 +1619,7 @@ olx.format.WFSWriteGetFeatureOptions.prototype.srsName;
 /**
  * Handle.
  * @type {string|undefined}
- * @api
+ * @api stable
  */
 olx.format.WFSWriteGetFeatureOptions.prototype.handle;
 
@@ -1627,7 +1627,7 @@ olx.format.WFSWriteGetFeatureOptions.prototype.handle;
 /**
  * Output format.
  * @type {string|undefined}
- * @api
+ * @api stable
  */
 olx.format.WFSWriteGetFeatureOptions.prototype.outputFormat;
 
@@ -1635,7 +1635,7 @@ olx.format.WFSWriteGetFeatureOptions.prototype.outputFormat;
 /**
  * Maximum number of features to fetch.
  * @type {number|undefined}
- * @api
+ * @api stable
  */
 olx.format.WFSWriteGetFeatureOptions.prototype.maxFeatures;
 
@@ -1664,7 +1664,7 @@ olx.format.WFSWriteGetFeatureOptions.prototype.bbox;
  *     handle: (string|undefined),
  *     nativeElements: Array.<Object>,
  *     gmlOptions: (olx.format.GMLOptions|undefined)}}
- * @api
+ * @api stable
  */
 olx.format.WFSWriteTransactionOptions;
 
@@ -1672,7 +1672,7 @@ olx.format.WFSWriteTransactionOptions;
 /**
  * The namespace URI used for features.
  * @type {string}
- * @api
+ * @api stable
  */
 olx.format.WFSWriteTransactionOptions.prototype.featureNS;
 
@@ -1680,7 +1680,7 @@ olx.format.WFSWriteTransactionOptions.prototype.featureNS;
 /**
  * The prefix for the feature namespace.
  * @type {string}
- * @api
+ * @api stable
  */
 olx.format.WFSWriteTransactionOptions.prototype.featurePrefix;
 
@@ -1688,7 +1688,7 @@ olx.format.WFSWriteTransactionOptions.prototype.featurePrefix;
 /**
  * The feature type name.
  * @type {string}
- * @api
+ * @api stable
  */
 olx.format.WFSWriteTransactionOptions.prototype.featureType;
 
@@ -1705,7 +1705,7 @@ olx.format.WFSWriteTransactionOptions.prototype.srsName;
 /**
  * Handle.
  * @type {string|undefined}
- * @api
+ * @api stable
  */
 olx.format.WFSWriteTransactionOptions.prototype.handle;
 
@@ -1721,7 +1721,7 @@ olx.format.WFSWriteTransactionOptions.prototype.nativeElements;
 /**
  * GML options for the WFS transaction writer.
  * @type {olx.format.GMLOptions|undefined}
- * @api
+ * @api stable
  */
 olx.format.WFSWriteTransactionOptions.prototype.gmlOptions;
 

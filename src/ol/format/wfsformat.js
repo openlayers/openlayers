@@ -22,7 +22,7 @@ goog.require('ol.xml');
  * @param {olx.format.WFSOptions=} opt_options
  *     Optional configuration object.
  * @extends {ol.format.XMLFeature}
- * @api
+ * @api stable
  */
 ol.format.WFS = function(opt_options) {
   var options = /** @type {olx.format.WFSOptions} */
@@ -70,7 +70,7 @@ ol.format.WFS.xmlns = 'http://www.w3.org/2000/xmlns/';
  * Number of features; bounds/extent.
  * @typedef {{numberOfFeatures: number,
  *            bounds: ol.Extent}}
- * @api
+ * @api stable
  */
 ol.format.WFS.FeatureCollectionMetadata;
 
@@ -81,7 +81,7 @@ ol.format.WFS.FeatureCollectionMetadata;
  *            totalInserted: number,
  *            totalUpdated: number,
  *            insertIds: Array.<string>}}
- * @api
+ * @api stable
  */
 ol.format.WFS.TransactionResponse;
 
@@ -102,7 +102,7 @@ ol.format.WFS.schemaLocation_ = 'http://www.opengis.net/wfs ' +
  * @param {ArrayBuffer|Document|Node|Object|string} source Source.
  * @param {olx.format.ReadOptions=} opt_options Read options.
  * @return {Array.<ol.Feature>} Features.
- * @api
+ * @api stable
  */
 ol.format.WFS.prototype.readFeatures;
 
@@ -130,7 +130,7 @@ ol.format.WFS.prototype.readFeaturesFromNode = function(node, opt_options) {
 /**
  * @param {ArrayBuffer|Document|Node|Object|string} source Source.
  * @return {ol.format.WFS.TransactionResponse|undefined} Transaction response.
- * @api
+ * @api stable
  */
 ol.format.WFS.prototype.readTransactionResponse = function(source) {
   if (ol.xml.isDocument(source)) {
@@ -152,7 +152,7 @@ ol.format.WFS.prototype.readTransactionResponse = function(source) {
  * @param {ArrayBuffer|Document|Node|Object|string} source Source.
  * @return {ol.format.WFS.FeatureCollectionMetadata|undefined}
  *     FeatureCollection metadata.
- * @api
+ * @api stable
  */
 ol.format.WFS.prototype.readFeatureCollectionMetadata = function(source) {
   if (ol.xml.isDocument(source)) {
@@ -601,7 +601,7 @@ ol.format.WFS.writeGetFeature_ = function(node, featureTypes, objectStack) {
 /**
  * @param {olx.format.WFSWriteGetFeatureOptions} options Options.
  * @return {Node} Result.
- * @api
+ * @api stable
  */
 ol.format.WFS.prototype.writeGetFeature = function(options) {
   var node = ol.xml.createElementNS('http://www.opengis.net/wfs',
@@ -653,7 +653,7 @@ ol.format.WFS.prototype.writeGetFeature = function(options) {
  * @param {Array.<ol.Feature>} deletes The features to delete.
  * @param {olx.format.WFSWriteTransactionOptions} options Write options.
  * @return {Node} Result.
- * @api
+ * @api stable
  */
 ol.format.WFS.prototype.writeTransaction = function(inserts, updates, deletes,
     options) {
@@ -713,7 +713,7 @@ ol.format.WFS.prototype.writeTransaction = function(inserts, updates, deletes,
  * @function
  * @param {ArrayBuffer|Document|Node|Object|string} source Source.
  * @return {?ol.proj.Projection} Projection.
- * @api
+ * @api stable
  */
 ol.format.WFS.prototype.readProjection;
 
