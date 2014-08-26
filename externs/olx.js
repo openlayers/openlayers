@@ -1737,7 +1737,7 @@ olx.format.WKTOptions;
  * Whether to split GeometryCollections into
  * multiple features on reading. Default is `false`.
  * @type {boolean|undefined}
- * @api
+ * @api stable
  */
 olx.format.WKTOptions.prototype.splitCollection;
 

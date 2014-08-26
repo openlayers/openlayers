@@ -21,7 +21,7 @@ goog.require('ol.geom.Polygon');
  * @constructor
  * @extends {ol.format.TextFeature}
  * @param {olx.format.WKTOptions=} opt_options Options.
- * @api
+ * @api stable
  */
 ol.format.WKT = function(opt_options) {
 
@@ -211,7 +211,7 @@ ol.format.WKT.prototype.parse_ = function(wkt) {
  * @param {ArrayBuffer|Document|Node|Object|string} source Source.
  * @param {olx.format.ReadOptions=} opt_options Read options.
  * @return {ol.Feature} Feature.
- * @api
+ * @api stable
  */
 ol.format.WKT.prototype.readFeature;
 
@@ -237,7 +237,7 @@ ol.format.WKT.prototype.readFeatureFromText = function(text, opt_options) {
  * @param {ArrayBuffer|Document|Node|Object|string} source Source.
  * @param {olx.format.ReadOptions=} opt_options Read options.
  * @return {Array.<ol.Feature>} Features.
- * @api
+ * @api stable
  */
 ol.format.WKT.prototype.readFeatures;
 
@@ -272,7 +272,7 @@ ol.format.WKT.prototype.readFeaturesFromText = function(text, opt_options) {
  * @param {ArrayBuffer|Document|Node|Object|string} source Source.
  * @param {olx.format.ReadOptions=} opt_options Read options.
  * @return {ol.geom.Geometry} Geometry.
- * @api
+ * @api stable
  */
 ol.format.WKT.prototype.readGeometry;
 
@@ -306,7 +306,7 @@ ol.format.WKT.prototype.readProjectionFromText = function(text) {
  * @param {ol.Feature} feature Feature.
  * @param {olx.format.WriteOptions=} opt_options Write options.
  * @return {string} WKT string.
- * @api
+ * @api stable
  */
 ol.format.WKT.prototype.writeFeature;
 
@@ -330,7 +330,7 @@ ol.format.WKT.prototype.writeFeatureText = function(feature, opt_options) {
  * @param {Array.<ol.Feature>} features Features.
  * @param {olx.format.WriteOptions=} opt_options Write options.
  * @return {string} WKT string.
- * @api
+ * @api stable
  */
 ol.format.WKT.prototype.writeFeatures;
 
@@ -357,7 +357,7 @@ ol.format.WKT.prototype.writeFeaturesText = function(features, opt_options) {
  * @function
  * @param {ol.geom.Geometry} geometry Geometry.
  * @return {string} WKT string.
- * @api
+ * @api stable
  */
 ol.format.WKT.prototype.writeGeometry;
 
