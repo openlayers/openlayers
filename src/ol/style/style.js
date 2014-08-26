@@ -169,13 +169,20 @@ ol.style.defaultStyleFunction = function(feature, resolution) {
     })
   ];
 
-  // now that we've run it the first time,
-  // replace the function with a constant version
-  ol.style.defaultStyleFunction =
-      /** @type {function(this:ol.Feature):Array.<ol.style.Style>} */(
-      function(resolution) {
-        return styles;
-      });
+  // Now that we've run it the first time, replace the function with
+  // a constant version. We don't use an immediately-invoked function
+  // and a closure not to get an error at script evaluation time in
+  // browsers that do not support Canvas. ol.style.Circle indeed
+  // does canvas.getContext('2d') at construction time.
+
+  /**
+   * @param {ol.Feature} feature Feature.
+   * @param {number} resolution Resolution.
+   * @return {Array.<ol.style.Style>} Style.
+   */
+  ol.style.defaultStyleFunction = function(feature, resolution) {
+    return styles;
+  };
 
   return styles;
 };
