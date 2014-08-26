@@ -1418,7 +1418,7 @@ olx.format.KMLOptions;
 /**
  * Extract styles from the KML. Default is `true`.
  * @type {boolean|undefined}
- * @api
+ * @api stable
  */
 olx.format.KMLOptions.prototype.extractStyles;
 
@@ -1426,7 +1426,7 @@ olx.format.KMLOptions.prototype.extractStyles;
 /**
  * Default style. The default default style is the same as Google Earth.
  * @type {Array.<ol.style.Style>|undefined}
- * @api
+ * @api stable
  */
 olx.format.KMLOptions.prototype.defaultStyle;
 
