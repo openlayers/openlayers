@@ -1386,7 +1386,7 @@ olx.format.TopoJSONOptions;
 /**
  * Default data projection.
  * @type {ol.proj.ProjectionLike}
- * @api
+ * @api stable
  */
 olx.format.TopoJSONOptions.prototype.defaultDataProjection;
 
