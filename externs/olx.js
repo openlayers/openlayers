@@ -3905,7 +3905,7 @@ olx.source.OSMOptions.prototype.crossOrigin;
 
 
 /**
- * Max zoom.
+ * Max zoom. Default is `19`.
  * @type {number|undefined}
  * @api
  */

@@ -37,7 +37,7 @@ ol.source.OSM = function(opt_options) {
     attributions: attributions,
     crossOrigin: crossOrigin,
     opaque: true,
-    maxZoom: options.maxZoom,
+    maxZoom: goog.isDef(options.maxZoom) ? options.maxZoom : 19,
     tileLoadFunction: options.tileLoadFunction,
     url: url
   });
