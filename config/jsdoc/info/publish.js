@@ -88,6 +88,9 @@ exports.publish = function(data, opts) {
         stability: doc.api,
         path: path.join(doc.meta.path, doc.meta.filename)
       };
+      if (doc.augments) {
+        symbol.extends = doc.augments[0];
+      }
       if (doc.type) {
         symbol.types = getTypes(doc.type.names);
       }

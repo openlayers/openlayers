@@ -93,6 +93,9 @@ function generateExterns(typedefs, symbols, externs, interfaces) {
     if (symbol.kind === 'class') {
       constructors[name] = true;
       lines.push(' * @constructor');
+      if (symbol.extends) {
+        lines.push(' * @extends {' + symbol.extends + '}');
+      }
     }
     if (symbol.types) {
       lines.push(' * @type {' + noGoogTypes(symbol.types).join('|') + '}');
