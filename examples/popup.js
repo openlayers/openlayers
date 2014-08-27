@@ -31,6 +31,8 @@ closer.onclick = function() {
  */
 var overlay = new ol.Overlay(/** @type {olx.OverlayOptions} */ ({
   element: container,
+  positioning: 'bottom-left',
+  offset: [-50, -10],
   autoPan: true,
   autoPanAnimation: {
     duration: 250
