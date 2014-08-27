@@ -7,6 +7,8 @@ var nomnom = require('nomnom');
 
 var generateInfo = require('./generate-info');
 
+var googRegEx = /^goog\..*$/;
+
 /**
  * Read the symbols from info file.
  * @param {funciton(Error, Array.<string>, Array.<Object>)} callback Called
@@ -67,7 +69,7 @@ function generateExterns(typedefs, symbols, externs, interfaces) {
   function noGoogTypes(typesWithGoog) {
     var typesWithoutGoog = [];
     typesWithGoog.forEach(function(type) {
-      typesWithoutGoog.push(type.replace(/^goog\..*$/, '*'));
+      typesWithoutGoog.push(type.replace(googRegEx, '*'));
     });
     return typesWithoutGoog;
   }
@@ -93,7 +95,7 @@ function generateExterns(typedefs, symbols, externs, interfaces) {
     if (symbol.kind === 'class') {
       constructors[name] = true;
       lines.push(' * @constructor');
-      if (symbol.extends) {
+      if (symbol.extends && !googRegEx.test(symbol.extends)) {
         lines.push(' * @extends {' + symbol.extends + '}');
       }
     }
