@@ -50,22 +50,21 @@ describe('ol.layer.Vector', function() {
 
   describe('#setStyle()', function() {
 
-    var source = new ol.source.Vector();
-    var style = new ol.style.Style();
+    var layer, style;
+
+    beforeEach(function() {
+      layer = new ol.layer.Vector({
+        source: new ol.source.Vector()
+      });
+      style = new ol.style.Style();
+    });
 
     it('allows the style to be set after construction', function() {
-      var layer = new ol.layer.Vector({
-        source: source
-      });
-
       layer.setStyle(style);
       expect(layer.getStyle()).to.be(style);
     });
 
     it('dispatches the change event', function(done) {
-      var layer = new ol.layer.Vector({
-        source: source
-      });
       layer.on('change', function() {
         done();
       });
@@ -73,13 +72,23 @@ describe('ol.layer.Vector', function() {
     });
 
     it('updates the internal style function', function() {
-      var layer = new ol.layer.Vector({
-        source: source
-      });
       expect(layer.getStyleFunction()).to.be(ol.style.defaultStyleFunction);
       layer.setStyle(style);
       expect(layer.getStyleFunction()).not.to.be(
           ol.style.defaultStyleFunction);
+    });
+
+    it('allows setting an null style', function() {
+      layer.setStyle(null);
+      expect(layer.getStyle()).to.be(null);
+      expect(layer.getStyleFunction()).to.be(undefined);
+    });
+
+    it('sets the default style when passing undefined', function() {
+      layer.setStyle(style);
+      layer.setStyle(undefined);
+      expect(layer.getStyle()).to.be(ol.style.defaultStyleFunction);
+      expect(layer.getStyleFunction()).to.be(ol.style.defaultStyleFunction);
     });
 
   });
