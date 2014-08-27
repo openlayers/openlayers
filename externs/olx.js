@@ -3931,7 +3931,6 @@ olx.source.OSMOptions.prototype.url;
 
 /**
  * @typedef {{attributions: (Array.<ol.Attribution>|undefined),
- *     defaultStyle: (Array.<ol.style.Style>|undefined),
  *     doc: (Document|undefined),
  *     logo: (string|olx.LogoOptions|undefined),
  *     node: (Node|undefined),
@@ -3951,14 +3950,6 @@ olx.source.OSMXMLOptions;
  * @api
  */
 olx.source.OSMXMLOptions.prototype.attributions;
-
-
-/**
- * Default style.
- * @type {Array.<ol.style.Style>|undefined}
- * @api
- */
-olx.source.OSMXMLOptions.prototype.defaultStyle;
 
 
 /**
