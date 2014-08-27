@@ -103,11 +103,19 @@ exports.publish = function(data, opts) {
           if (typeof param.optional == 'boolean') {
             paramInfo.optional = param.optional;
           }
+          if (typeof param.nullable == 'boolean') {
+            paramInfo.nullable = param.nullable;
+          }
         });
         symbol.params = params;
       }
       if (doc.returns) {
-        symbol.returns = getTypes(doc.returns[0].type.names);
+        symbol.returns = {
+          types: getTypes(doc.returns[0].type.names)
+        };
+        if (typeof doc.returns[0].nullable == 'boolean') {
+          symbol.returns.nullable = doc.returns[0].nullable;
+        }
       }
       if (doc.tags) {
         doc.tags.every(function(tag) {

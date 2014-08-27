@@ -105,12 +105,14 @@ function generateExterns(typedefs, symbols, externs) {
         lines.push(' * @param {' +
             (param.variable ? '...' : '') +
             noGoogTypes(param.types).join('|') +
-            (param.optional ? '=' : '') +
+            (param.optional ? '=' : '') + (param.nullable ? '!' : '') +
             '} ' + param.name);
       });
     }
     if (symbol.returns) {
-      lines.push(' * @return {' + noGoogTypes(symbol.returns).join('|') + '}');
+      lines.push(' * @return {' +
+          (symbol.returns.nullable ? '!' : '') +
+          noGoogTypes(symbol.returns.types).join('|') + '}');
     }
     if (symbol.template) {
       lines.push(' * @template ' + symbol.template);
