@@ -28,7 +28,8 @@ goog.inherits(ol.geom.Point, ol.geom.SimpleGeometry);
 
 
 /**
- * @inheritDoc
+ * Make a complete copy of the geometry.
+ * @return {!ol.geom.Point} Clone.
  * @api stable
  */
 ol.geom.Point.prototype.clone = function() {

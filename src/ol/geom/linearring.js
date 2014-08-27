@@ -46,7 +46,8 @@ goog.inherits(ol.geom.LinearRing, ol.geom.SimpleGeometry);
 
 
 /**
- * @inheritDoc
+ * Make a complete copy of the geometry.
+ * @return {!ol.geom.LinearRing} Clone.
  * @api stable
  */
 ol.geom.LinearRing.prototype.clone = function() {

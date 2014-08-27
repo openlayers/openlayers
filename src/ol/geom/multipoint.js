@@ -46,7 +46,8 @@ ol.geom.MultiPoint.prototype.appendPoint = function(point) {
 
 
 /**
- * @inheritDoc
+ * Make a complete copy of the geometry.
+ * @return {!ol.geom.MultiPoint} Clone.
  * @api stable
  */
 ol.geom.MultiPoint.prototype.clone = function() {

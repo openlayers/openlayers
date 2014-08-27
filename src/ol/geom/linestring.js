@@ -75,7 +75,8 @@ ol.geom.LineString.prototype.appendCoordinate = function(coordinate) {
 
 
 /**
- * @inheritDoc
+ * Make a complete copy of the geometry.
+ * @return {!ol.geom.LineString} Clone.
  * @api stable
  */
 ol.geom.LineString.prototype.clone = function() {

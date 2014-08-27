@@ -99,7 +99,8 @@ ol.geom.Polygon.prototype.appendLinearRing = function(linearRing) {
 
 
 /**
- * @inheritDoc
+ * Make a complete copy of the geometry.
+ * @return {!ol.geom.Polygon} Clone.
  * @api stable
  */
 ol.geom.Polygon.prototype.clone = function() {
