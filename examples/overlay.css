@@ -16,3 +16,8 @@
 .popover-content {
   min-width: 180px;
 }
+#popup {
+  display: block;
+  top: auto;
+  transition: bottom .2s, left .2s;
+}
