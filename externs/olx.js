@@ -4820,7 +4820,7 @@ olx.source.WMTSOptions;
 /**
  * Attributions.
  * @type {Array.<ol.Attribution>|undefined}
- * @api stable
+ * @api
  */
 olx.source.WMTSOptions.prototype.attributions;
 
@@ -4828,7 +4828,7 @@ olx.source.WMTSOptions.prototype.attributions;
 /**
  * crossOrigin setting for image requests.
  * @type {string|null|undefined}
- * @api stable
+ * @api
  */
 olx.source.WMTSOptions.prototype.crossOrigin;
 
@@ -4836,7 +4836,7 @@ olx.source.WMTSOptions.prototype.crossOrigin;
 /**
  * Logo.
  * @type {string|olx.LogoOptions|undefined}
- * @api stable
+ * @api
  */
 olx.source.WMTSOptions.prototype.logo;
 
@@ -4844,7 +4844,7 @@ olx.source.WMTSOptions.prototype.logo;
 /**
  * Tile grid.
  * @type {ol.tilegrid.WMTS}
- * @api stable
+ * @api
  */
 olx.source.WMTSOptions.prototype.tileGrid;
 
@@ -4860,7 +4860,7 @@ olx.source.WMTSOptions.prototype.projection;
 /**
  * Request encoding.
  * @type {ol.source.WMTSRequestEncoding|undefined}
- * @api stable
+ * @api
  */
 olx.source.WMTSOptions.prototype.requestEncoding;
 
@@ -4868,7 +4868,7 @@ olx.source.WMTSOptions.prototype.requestEncoding;
 /**
  * Layer.
  * @type {string}
- * @api stable
+ * @api
  */
 olx.source.WMTSOptions.prototype.layer;
 
@@ -4876,7 +4876,7 @@ olx.source.WMTSOptions.prototype.layer;
 /**
  * Style.
  * @type {string}
- * @api stable
+ * @api
  */
 olx.source.WMTSOptions.prototype.style;
 
@@ -4895,7 +4895,7 @@ olx.source.WMTSOptions.prototype.tilePixelRatio;
 /**
  * WMTS version. Default is `1.0.0`.
  * @type {string|undefined}
- * @api stable
+ * @api
  */
 olx.source.WMTSOptions.prototype.version;
 
@@ -4903,7 +4903,7 @@ olx.source.WMTSOptions.prototype.version;
 /**
  * Image format. Default is `image/jpeg`.
  * @type {string|undefined}
- * @api stable
+ * @api
  */
 olx.source.WMTSOptions.prototype.format;
 
@@ -4911,7 +4911,7 @@ olx.source.WMTSOptions.prototype.format;
 /**
  * Matrix set.
  * @type {string}
- * @api stable
+ * @api
  */
 olx.source.WMTSOptions.prototype.matrixSet;
 
@@ -4919,7 +4919,7 @@ olx.source.WMTSOptions.prototype.matrixSet;
 /**
  * Dimensions.
  * @type {Object|undefined}
- * @api stable
+ * @api
  */
 olx.source.WMTSOptions.prototype.dimensions;
 
@@ -4927,7 +4927,7 @@ olx.source.WMTSOptions.prototype.dimensions;
 /**
  * URL.
  * @type {string|undefined}
- * @api stable
+ * @api
  */
 olx.source.WMTSOptions.prototype.url;
 
@@ -4951,7 +4951,7 @@ olx.source.WMTSOptions.prototype.tileLoadFunction;
 /**
  * Urls.
  * @type {Array.<string>|undefined}
- * @api stable
+ * @api
  */
 olx.source.WMTSOptions.prototype.urls;
 
@@ -5632,7 +5632,7 @@ olx.tilegrid.WMTSOptions;
 /**
  * Origin.
  * @type {ol.Coordinate|undefined}
- * @api stable
+ * @api
  */
 olx.tilegrid.WMTSOptions.prototype.origin;
 
@@ -5640,7 +5640,7 @@ olx.tilegrid.WMTSOptions.prototype.origin;
 /**
  * Origins.
  * @type {Array.<ol.Coordinate>|undefined}
- * @api stable
+ * @api
  */
 olx.tilegrid.WMTSOptions.prototype.origins;
 
@@ -5648,7 +5648,7 @@ olx.tilegrid.WMTSOptions.prototype.origins;
 /**
  * Resolutions.
  * @type {!Array.<number>}
- * @api stable
+ * @api
  */
 olx.tilegrid.WMTSOptions.prototype.resolutions;
 
@@ -5656,7 +5656,7 @@ olx.tilegrid.WMTSOptions.prototype.resolutions;
 /**
  * matrix IDs.
  * @type {!Array.<string>}
- * @api stable
+ * @api
  */
 olx.tilegrid.WMTSOptions.prototype.matrixIds;
 
@@ -5664,7 +5664,7 @@ olx.tilegrid.WMTSOptions.prototype.matrixIds;
 /**
  * Tile size.
  * @type {number|undefined}
- * @api stable
+ * @api
  */
 olx.tilegrid.WMTSOptions.prototype.tileSize;
 
@@ -5672,7 +5672,7 @@ olx.tilegrid.WMTSOptions.prototype.tileSize;
 /**
  * Tile sizes.
  * @type {Array.<number>|undefined}
- * @api stable
+ * @api
  */
 olx.tilegrid.WMTSOptions.prototype.tileSizes;
 
