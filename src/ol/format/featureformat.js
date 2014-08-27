@@ -16,6 +16,7 @@ goog.require('ol.proj');
  * file formats.  See the documentation for each format for more details.
  *
  * @constructor
+ * @api stable
  */
 ol.format.Feature = function() {
 
