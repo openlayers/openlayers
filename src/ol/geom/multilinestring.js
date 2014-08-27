@@ -71,7 +71,8 @@ ol.geom.MultiLineString.prototype.appendLineString = function(lineString) {
 
 
 /**
- * @inheritDoc
+ * Make a complete copy of the geometry.
+ * @return {!ol.geom.MultiLineString} Clone.
  * @api stable
  */
 ol.geom.MultiLineString.prototype.clone = function() {

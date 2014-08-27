@@ -109,7 +109,8 @@ ol.geom.MultiPolygon.prototype.appendPolygon = function(polygon) {
 
 
 /**
- * @inheritDoc
+ * Make a complete copy of the geometry.
+ * @return {!ol.geom.MultiPolygon} Clone.
  * @api stable
  */
 ol.geom.MultiPolygon.prototype.clone = function() {

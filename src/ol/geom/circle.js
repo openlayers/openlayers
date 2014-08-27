@@ -29,7 +29,8 @@ goog.inherits(ol.geom.Circle, ol.geom.SimpleGeometry);
 
 
 /**
- * @inheritDoc
+ * Make a complete copy of the geometry.
+ * @return {!ol.geom.Circle} Clone.
  * @api
  */
 ol.geom.Circle.prototype.clone = function() {

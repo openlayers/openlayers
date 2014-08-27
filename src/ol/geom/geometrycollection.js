@@ -83,7 +83,8 @@ ol.geom.GeometryCollection.prototype.listenGeometriesChange_ = function() {
 
 
 /**
- * @inheritDoc
+ * Make a complete copy of the geometry.
+ * @return {!ol.geom.GeometryCollection} Clone.
  * @api stable
  */
 ol.geom.GeometryCollection.prototype.clone = function() {
