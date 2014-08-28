@@ -386,7 +386,7 @@ olx.ProjectionOptions;
 /**
  * The SRS identifier code, e.g. `EPSG:4326`.
  * @type {string}
- * @api
+ * @api stable
  */
 olx.ProjectionOptions.prototype.code;
 
@@ -394,7 +394,7 @@ olx.ProjectionOptions.prototype.code;
 /**
  * Units.
  * @type {ol.proj.Units|string}
- * @api
+ * @api stable
  */
 olx.ProjectionOptions.prototype.units;
 
@@ -402,7 +402,7 @@ olx.ProjectionOptions.prototype.units;
 /**
  * The validity extent for the SRS.
  * @type {ol.Extent|undefined}
- * @api
+ * @api stable
  */
 olx.ProjectionOptions.prototype.extent;
 
@@ -410,7 +410,7 @@ olx.ProjectionOptions.prototype.extent;
 /**
  * The axis orientation as specified in Proj4. The default is `enu`.
  * @type {string|undefined}
- * @api
+ * @api stable
  */
 olx.ProjectionOptions.prototype.axisOrientation;
 
@@ -418,7 +418,7 @@ olx.ProjectionOptions.prototype.axisOrientation;
 /**
  * Whether the projection is valid for the whole globe. Default is `false`.
  * @type {boolean|undefined}
- * @api
+ * @api stable
  */
 olx.ProjectionOptions.prototype.global;
 

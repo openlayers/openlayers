@@ -18,7 +18,7 @@ goog.require('ol.sphere.NORMAL');
  * A projection as {@link ol.proj.Projection}, SRS identifier string or
  * undefined.
  * @typedef {ol.proj.Projection|string|undefined} ol.proj.ProjectionLike
- * @api
+ * @api stable
  */
 ol.proj.ProjectionLike;
 
@@ -26,7 +26,7 @@ ol.proj.ProjectionLike;
 /**
  * Projection units: `'degrees'`, `'ft'`, `'m'` or `'pixels'`.
  * @enum {string}
- * @api
+ * @api stable
  */
 ol.proj.Units = {
   DEGREES: 'degrees',
@@ -40,7 +40,7 @@ ol.proj.Units = {
  * Meters per unit lookup table.
  * @const
  * @type {Object.<ol.proj.Units, number>}
- * @api
+ * @api stable
  */
 ol.proj.METERS_PER_UNIT = {};
 ol.proj.METERS_PER_UNIT[ol.proj.Units.DEGREES] =
@@ -77,7 +77,7 @@ ol.proj.METERS_PER_UNIT[ol.proj.Units.METERS] = 1;
  * @constructor
  * @param {olx.ProjectionOptions} options Projection options.
  * @struct
- * @api
+ * @api stable
  */
 ol.proj.Projection = function(options) {
 
@@ -131,7 +131,7 @@ ol.proj.Projection = function(options) {
 /**
  * Get the code for this projection, e.g. 'EPSG:4326'.
  * @return {string} Code.
- * @api
+ * @api stable
  */
 ol.proj.Projection.prototype.getCode = function() {
   return this.code_;
@@ -141,7 +141,7 @@ ol.proj.Projection.prototype.getCode = function() {
 /**
  * Get the validity extent for this projection.
  * @return {ol.Extent} Extent.
- * @api
+ * @api stable
  */
 ol.proj.Projection.prototype.getExtent = function() {
   return this.extent_;
@@ -151,7 +151,7 @@ ol.proj.Projection.prototype.getExtent = function() {
 /**
  * Get the units of this projection.
  * @return {ol.proj.Units} Units.
- * @api
+ * @api stable
  */
 ol.proj.Projection.prototype.getUnits = function() {
   return this.units_;
@@ -162,7 +162,7 @@ ol.proj.Projection.prototype.getUnits = function() {
  * Get the amount of meters per unit of this projection.  If the projection is
  * not configured with a units identifier, the return is `undefined`.
  * @return {number|undefined} Meters.
- * @api
+ * @api stable
  */
 ol.proj.Projection.prototype.getMetersPerUnit = function() {
   return ol.proj.METERS_PER_UNIT[this.units_];
@@ -197,7 +197,7 @@ ol.proj.Projection.prototype.getAxisOrientation = function() {
 /**
  * Is this projection a global projection which spans the whole world?
  * @return {boolean} Wether the projection is global.
- * @api
+ * @api stable
  */
 ol.proj.Projection.prototype.isGlobal = function() {
   return this.global_;
@@ -223,7 +223,7 @@ ol.proj.Projection.prototype.setDefaultTileGrid = function(tileGrid) {
 /**
  * Set the validity extent for this projection.
  * @param {ol.Extent} extent Extent.
- * @api
+ * @api stable
  */
 ol.proj.Projection.prototype.setExtent = function(extent) {
   this.extent_ = extent;
@@ -343,7 +343,7 @@ ol.proj.addEquivalentTransforms =
  * Add a Projection object to the list of supported projections.
  *
  * @param {ol.proj.Projection} projection Projection instance.
- * @api
+ * @api stable
  */
 ol.proj.addProjection = function(projection) {
   ol.proj.projections_[projection.getCode()] = projection;
@@ -424,7 +424,7 @@ ol.proj.addTransform = function(source, destination, transformFn) {
  *     function (that is, from the destination projection to the source
  *     projection) that takes a {@link ol.Coordinate} as argument and returns
  *     the transformed {@link ol.Coordinate}.
- * @api
+ * @api stable
  */
 ol.proj.addCoordinateTransforms =
     function(source, destination, forward, inverse) {
@@ -502,7 +502,7 @@ ol.proj.removeTransform = function(source, destination) {
  *     a combination of authority and identifier such as "EPSG:4326", or an
  *     existing projection object, or undefined.
  * @return {ol.proj.Projection} Projection object, or null if not in list.
- * @api
+ * @api stable
  */
 ol.proj.get = function(projectionLike) {
   var projection;
@@ -585,7 +585,7 @@ ol.proj.equivalent = function(projection1, projection2) {
  * @param {ol.proj.ProjectionLike} source Source.
  * @param {ol.proj.ProjectionLike} destination Destination.
  * @return {ol.TransformFunction} Transform function.
- * @api
+ * @api stable
  */
 ol.proj.getTransform = function(source, destination) {
   var sourceProjection = ol.proj.get(source);
@@ -674,7 +674,7 @@ ol.proj.cloneTransform = function(input, opt_output, opt_dimension) {
  * @param {ol.proj.ProjectionLike} source Source projection-like.
  * @param {ol.proj.ProjectionLike} destination Destination projection-like.
  * @return {ol.Coordinate} Coordinate.
- * @api
+ * @api stable
  */
 ol.proj.transform = function(coordinate, source, destination) {
   var transformFn = ol.proj.getTransform(source, destination);
@@ -690,7 +690,7 @@ ol.proj.transform = function(coordinate, source, destination) {
  * @param {ol.proj.ProjectionLike} source Source projection-like.
  * @param {ol.proj.ProjectionLike} destination Destination projection-like.
  * @return {ol.Extent} The transformed extent.
- * @api
+ * @api stable
  */
 ol.proj.transformExtent = function(extent, source, destination) {
   var transformFn = ol.proj.getTransform(source, destination);
