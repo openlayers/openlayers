@@ -51,8 +51,7 @@ ol.layer.Vector = function(opt_options) {
    */
   this.styleFunction_ = undefined;
 
-  this.setStyle(goog.isDefAndNotNull(options.style) ?
-      options.style : ol.style.defaultStyleFunction);
+  this.setStyle(options.style);
 
 };
 goog.inherits(ol.layer.Vector, ol.layer.Layer);
@@ -102,13 +101,17 @@ ol.layer.Vector.prototype.setRenderOrder = function(renderOrder) {
 /**
  * Set the style for features.  This can be a single style object, an array
  * of styles, or a function that takes a feature and resolution and returns
- * an array of styles.
- * @param {ol.style.Style|Array.<ol.style.Style>|ol.style.StyleFunction} style
- *     Layer style.
+ * an array of styles. If it is `undefined` the default style is used. If
+ * it is `null` the layer has no style (a `null` style), so only features
+ * that have their own styles will be rendered in the layer. See
+ * {@link ol.style} for information on the default style.
+ * @param {ol.style.Style|Array.<ol.style.Style>|ol.style.StyleFunction|undefined}
+ *     style Layer style.
  * @api stable
  */
 ol.layer.Vector.prototype.setStyle = function(style) {
-  this.style_ = style;
-  this.styleFunction_ = ol.style.createStyleFunction(style);
+  this.style_ = goog.isDef(style) ? style : ol.style.defaultStyleFunction;
+  this.styleFunction_ = goog.isNull(style) ?
+      undefined : ol.style.createStyleFunction(this.style_);
   this.dispatchChangeEvent();
 };
