@@ -64,7 +64,7 @@ ol.format.KMLGxTrackObject_;
  * @constructor
  * @extends {ol.format.XMLFeature}
  * @param {olx.format.KMLOptions=} opt_options Options.
- * @api
+ * @api stable
  */
 ol.format.KML = function(opt_options) {
 
@@ -1509,7 +1509,7 @@ ol.format.KML.prototype.readSharedStyleMap_ = function(node, objectStack) {
  * @param {ArrayBuffer|Document|Node|Object|string} source Source.
  * @param {olx.format.ReadOptions=} opt_options Read options.
  * @return {ol.Feature} Feature.
- * @api
+ * @api stable
  */
 ol.format.KML.prototype.readFeature;
 
@@ -1540,7 +1540,7 @@ ol.format.KML.prototype.readFeatureFromNode = function(node, opt_options) {
  * @param {ArrayBuffer|Document|Node|Object|string} source Source.
  * @param {olx.format.ReadOptions=} opt_options Read options.
  * @return {Array.<ol.Feature>} Features.
- * @api
+ * @api stable
  */
 ol.format.KML.prototype.readFeatures;
 
@@ -1591,7 +1591,7 @@ ol.format.KML.prototype.readFeaturesFromNode = function(node, opt_options) {
 /**
  * @param {Document|Node|string} source Souce.
  * @return {string|undefined} Name.
- * @api
+ * @api stable
  */
 ol.format.KML.prototype.readName = function(source) {
   if (ol.xml.isDocument(source)) {
@@ -1661,7 +1661,7 @@ ol.format.KML.prototype.readNameFromNode = function(node) {
  * @function
  * @param {ArrayBuffer|Document|Node|Object|string} source Source.
  * @return {ol.proj.Projection} Projection.
- * @api
+ * @api stable
  */
 ol.format.KML.prototype.readProjection;
 
@@ -2526,7 +2526,7 @@ ol.format.KML.OUTER_BOUNDARY_NODE_FACTORY_ =
  * @param {Array.<ol.Feature>} features Features.
  * @param {olx.format.WriteOptions=} opt_options Options.
  * @return {Node} Result.
- * @api
+ * @api stable
  */
 ol.format.KML.prototype.writeFeatures;
 

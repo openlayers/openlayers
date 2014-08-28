@@ -1294,7 +1294,7 @@ olx.format.ReadOptions;
  * the data and if no `defaultDataProjection` is set for a format, the features
  * will not be reprojected.
  * @type {ol.proj.ProjectionLike|undefined}
- * @api
+ * @api stable
  */
 olx.format.ReadOptions.prototype.dataProjection;
 
@@ -1303,7 +1303,7 @@ olx.format.ReadOptions.prototype.dataProjection;
  * Projection of the feature geometries created by the format reader. If not
  * provided, features will be returned in the `dataProjection`.
  * @type {ol.proj.ProjectionLike|undefined}
- * @api
+ * @api stable
  */
 olx.format.ReadOptions.prototype.featureProjection;
 
@@ -1322,7 +1322,7 @@ olx.format.WriteOptions;
  * `defaultDataProjection` is set for a format, the features will be returned
  * in the `featureProjection`.
  * @type {ol.proj.ProjectionLike|undefined}
- * @api
+ * @api stable
  */
 olx.format.WriteOptions.prototype.dataProjection;
 
@@ -1331,7 +1331,7 @@ olx.format.WriteOptions.prototype.dataProjection;
  * Projection of the feature geometries that will be serialized by the format
  * writer.
  * @type {ol.proj.ProjectionLike}
- * @api
+ * @api stable
  */
 olx.format.WriteOptions.prototype.featureProjection;
 
@@ -1347,7 +1347,7 @@ olx.format.GeoJSONOptions;
 /**
  * Default data projection.
  * @type {ol.proj.ProjectionLike}
- * @api
+ * @api stable
  */
 olx.format.GeoJSONOptions.prototype.defaultDataProjection;
 
@@ -1355,7 +1355,7 @@ olx.format.GeoJSONOptions.prototype.defaultDataProjection;
 /**
  * Geometry name to use when creating features.
  * @type {string|undefined}
- * @api
+ * @api stable
  */
 olx.format.GeoJSONOptions.prototype.geometryName;
 
@@ -1371,7 +1371,7 @@ olx.format.PolylineOptions;
  * The factor by which the coordinates values will be scaled.
  * Default is `1e5`.
  * @type {number}
- * @api
+ * @api stable
  */
 olx.format.PolylineOptions.prototype.factor;
 
@@ -1386,7 +1386,7 @@ olx.format.TopoJSONOptions;
 /**
  * Default data projection.
  * @type {ol.proj.ProjectionLike}
- * @api
+ * @api stable
  */
 olx.format.TopoJSONOptions.prototype.defaultDataProjection;
 
@@ -1418,7 +1418,7 @@ olx.format.KMLOptions;
 /**
  * Extract styles from the KML. Default is `true`.
  * @type {boolean|undefined}
- * @api
+ * @api stable
  */
 olx.format.KMLOptions.prototype.extractStyles;
 
@@ -1426,7 +1426,7 @@ olx.format.KMLOptions.prototype.extractStyles;
 /**
  * Default style. The default default style is the same as Google Earth.
  * @type {Array.<ol.style.Style>|undefined}
- * @api
+ * @api stable
  */
 olx.format.KMLOptions.prototype.defaultStyle;
 
@@ -1448,7 +1448,7 @@ olx.format.GMLOptions;
 /**
  * Feature namespace.
  * @type {string}
- * @api
+ * @api stable
  */
 olx.format.GMLOptions.prototype.featureNS;
 
@@ -1456,7 +1456,7 @@ olx.format.GMLOptions.prototype.featureNS;
 /**
  * Feature type to parse.
  * @type {string}
- * @api
+ * @api stable
  */
 olx.format.GMLOptions.prototype.featureType;
 
@@ -1473,7 +1473,7 @@ olx.format.GMLOptions.prototype.srsName;
  * Write gml:Surface instead of gml:Polygon elements. This also affects the
  * elements in multi-part geometries. Default is `false`.
  * @type {boolean|undefined}
- * @api
+ * @api stable
  */
 olx.format.GMLOptions.prototype.surface;
 
@@ -1482,7 +1482,7 @@ olx.format.GMLOptions.prototype.surface;
  * Write gml:Curve instead of gml:LineString elements. This also affects the
  * elements in multi-part geometries. Default is `false`.
  * @type {boolean|undefined}
- * @api
+ * @api stable
  */
 olx.format.GMLOptions.prototype.curve;
 
@@ -1491,7 +1491,7 @@ olx.format.GMLOptions.prototype.curve;
  * Write gml:MultiCurve instead of gml:MultiLineString. Since the latter is
  * deprecated in GML 3, the default is `true`.
  * @type {boolean|undefined}
- * @api
+ * @api stable
  */
 olx.format.GMLOptions.prototype.multiCurve;
 
@@ -1500,7 +1500,7 @@ olx.format.GMLOptions.prototype.multiCurve;
  * Write gml:multiSurface instead of gml:MultiPolygon. Since the latter is
  * deprecated in GML 3, the default is `true`.
  * @type {boolean|undefined}
- * @api
+ * @api stable
  */
 olx.format.GMLOptions.prototype.multiSurface;
 
@@ -1509,7 +1509,7 @@ olx.format.GMLOptions.prototype.multiSurface;
  * Optional schemaLocation to use when writing out the GML, this will override
  * the default provided.
  * @type {string|undefined}
- * @api
+ * @api stable
  */
 olx.format.GMLOptions.prototype.schemaLocation;
 
@@ -1529,7 +1529,7 @@ olx.format.GPXOptions;
  * nodes from `wpt`, `rte` and `trk` can be processed, as those are
  * directly mapped to a feature.
  * @type {function(ol.Feature, Node)}
- * @api
+ * @api stable
  */
 olx.format.GPXOptions.prototype.readExtensions;
 
@@ -1546,7 +1546,7 @@ olx.format.WFSOptions;
 /**
  * The namespace URI used for features.
  * @type {string}
- * @api
+ * @api stable
  */
 olx.format.WFSOptions.prototype.featureNS;
 
@@ -1554,7 +1554,7 @@ olx.format.WFSOptions.prototype.featureNS;
 /**
  * The feature type to parse. Only used for read operations.
  * @type {string}
- * @api
+ * @api stable
  */
 olx.format.WFSOptions.prototype.featureType;
 
@@ -1563,7 +1563,7 @@ olx.format.WFSOptions.prototype.featureType;
  * Optional schemaLocation to use for serialization, this will override the
  * default.
  * @type {string|undefined}
- * @api
+ * @api stable
  */
 olx.format.WFSOptions.prototype.schemaLocation;
 
@@ -1586,7 +1586,7 @@ olx.format.WFSWriteGetFeatureOptions;
 /**
  * The namespace URI used for features.
  * @type {string}
- * @api
+ * @api stable
  */
 olx.format.WFSWriteGetFeatureOptions.prototype.featureNS;
 
@@ -1594,7 +1594,7 @@ olx.format.WFSWriteGetFeatureOptions.prototype.featureNS;
 /**
  * The prefix for the feature namespace.
  * @type {string}
- * @api
+ * @api stable
  */
 olx.format.WFSWriteGetFeatureOptions.prototype.featurePrefix;
 
@@ -1602,7 +1602,7 @@ olx.format.WFSWriteGetFeatureOptions.prototype.featurePrefix;
 /**
  * The feature type names.
  * @type {Array.<string>}
- * @api
+ * @api stable
  */
 olx.format.WFSWriteGetFeatureOptions.prototype.featureTypes;
 
@@ -1619,7 +1619,7 @@ olx.format.WFSWriteGetFeatureOptions.prototype.srsName;
 /**
  * Handle.
  * @type {string|undefined}
- * @api
+ * @api stable
  */
 olx.format.WFSWriteGetFeatureOptions.prototype.handle;
 
@@ -1627,7 +1627,7 @@ olx.format.WFSWriteGetFeatureOptions.prototype.handle;
 /**
  * Output format.
  * @type {string|undefined}
- * @api
+ * @api stable
  */
 olx.format.WFSWriteGetFeatureOptions.prototype.outputFormat;
 
@@ -1635,7 +1635,7 @@ olx.format.WFSWriteGetFeatureOptions.prototype.outputFormat;
 /**
  * Maximum number of features to fetch.
  * @type {number|undefined}
- * @api
+ * @api stable
  */
 olx.format.WFSWriteGetFeatureOptions.prototype.maxFeatures;
 
@@ -1664,7 +1664,7 @@ olx.format.WFSWriteGetFeatureOptions.prototype.bbox;
  *     handle: (string|undefined),
  *     nativeElements: Array.<Object>,
  *     gmlOptions: (olx.format.GMLOptions|undefined)}}
- * @api
+ * @api stable
  */
 olx.format.WFSWriteTransactionOptions;
 
@@ -1672,7 +1672,7 @@ olx.format.WFSWriteTransactionOptions;
 /**
  * The namespace URI used for features.
  * @type {string}
- * @api
+ * @api stable
  */
 olx.format.WFSWriteTransactionOptions.prototype.featureNS;
 
@@ -1680,7 +1680,7 @@ olx.format.WFSWriteTransactionOptions.prototype.featureNS;
 /**
  * The prefix for the feature namespace.
  * @type {string}
- * @api
+ * @api stable
  */
 olx.format.WFSWriteTransactionOptions.prototype.featurePrefix;
 
@@ -1688,7 +1688,7 @@ olx.format.WFSWriteTransactionOptions.prototype.featurePrefix;
 /**
  * The feature type name.
  * @type {string}
- * @api
+ * @api stable
  */
 olx.format.WFSWriteTransactionOptions.prototype.featureType;
 
@@ -1705,7 +1705,7 @@ olx.format.WFSWriteTransactionOptions.prototype.srsName;
 /**
  * Handle.
  * @type {string|undefined}
- * @api
+ * @api stable
  */
 olx.format.WFSWriteTransactionOptions.prototype.handle;
 
@@ -1721,7 +1721,7 @@ olx.format.WFSWriteTransactionOptions.prototype.nativeElements;
 /**
  * GML options for the WFS transaction writer.
  * @type {olx.format.GMLOptions|undefined}
- * @api
+ * @api stable
  */
 olx.format.WFSWriteTransactionOptions.prototype.gmlOptions;
 
@@ -1737,7 +1737,7 @@ olx.format.WKTOptions;
  * Whether to split GeometryCollections into
  * multiple features on reading. Default is `false`.
  * @type {boolean|undefined}
- * @api
+ * @api stable
  */
 olx.format.WKTOptions.prototype.splitCollection;
 

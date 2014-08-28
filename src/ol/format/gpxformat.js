@@ -23,7 +23,7 @@ goog.require('ol.xml');
  * @constructor
  * @extends {ol.format.XMLFeature}
  * @param {olx.format.GPXOptions=} opt_options Options.
- * @api
+ * @api stable
  */
 ol.format.GPX = function(opt_options) {
 
@@ -429,7 +429,7 @@ ol.format.GPX.prototype.handleReadExtensions_ = function(features) {
  * @param {ArrayBuffer|Document|Node|Object|string} source Source.
  * @param {olx.format.ReadOptions=} opt_options Read options.
  * @return {ol.Feature} Feature.
- * @api
+ * @api stable
  */
 ol.format.GPX.prototype.readFeature;
 
@@ -462,7 +462,7 @@ ol.format.GPX.prototype.readFeatureFromNode = function(node, opt_options) {
  * @param {ArrayBuffer|Document|Node|Object|string} source Source.
  * @param {olx.format.ReadOptions=} opt_options Read options.
  * @return {Array.<ol.Feature>} Features.
- * @api
+ * @api stable
  */
 ol.format.GPX.prototype.readFeatures;
 
@@ -496,7 +496,7 @@ ol.format.GPX.prototype.readFeaturesFromNode = function(node, opt_options) {
  * @function
  * @param {ArrayBuffer|Document|Node|Object|string} source Source.
  * @return {ol.proj.Projection} Projection.
- * @api
+ * @api stable
  */
 ol.format.GPX.prototype.readProjection;
 
@@ -870,7 +870,7 @@ ol.format.GPX.GPX_SERIALIZERS_ = ol.xml.makeStructureNS(
  * @param {Array.<ol.Feature>} features Features.
  * @param {olx.format.WriteOptions=} opt_options Write options.
  * @return {Node} Result.
- * @api
+ * @api stable
  */
 ol.format.GPX.prototype.writeFeatures;
 

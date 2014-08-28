@@ -15,7 +15,7 @@ goog.require('ol.proj');
  * @extends {ol.format.TextFeature}
  * @param {olx.format.PolylineOptions=} opt_options
  *     Optional configuration object.
- * @api
+ * @api stable
  */
 ol.format.Polyline = function(opt_options) {
 
@@ -256,7 +256,7 @@ ol.format.Polyline.encodeUnsignedInteger = function(num) {
  * @param {ArrayBuffer|Document|Node|Object|string} source Source.
  * @param {olx.format.ReadOptions=} opt_options Read options.
  * @return {ol.Feature} Feature.
- * @api
+ * @api stable
  */
 ol.format.Polyline.prototype.readFeature;
 
@@ -278,7 +278,7 @@ ol.format.Polyline.prototype.readFeatureFromText = function(text, opt_options) {
  * @param {ArrayBuffer|Document|Node|Object|string} source Source.
  * @param {olx.format.ReadOptions=} opt_options Read options.
  * @return {Array.<ol.Feature>} Features.
- * @api
+ * @api stable
  */
 ol.format.Polyline.prototype.readFeatures;
 
@@ -300,7 +300,7 @@ ol.format.Polyline.prototype.readFeaturesFromText =
  * @param {ArrayBuffer|Document|Node|Object|string} source Source.
  * @param {olx.format.ReadOptions=} opt_options Read options.
  * @return {ol.geom.Geometry} Geometry.
- * @api
+ * @api stable
  */
 ol.format.Polyline.prototype.readGeometry;
 
@@ -327,7 +327,7 @@ ol.format.Polyline.prototype.readGeometryFromText =
  * @function
  * @param {ArrayBuffer|Document|Node|Object|string} source Source.
  * @return {ol.proj.Projection} Projection.
- * @api
+ * @api stable
  */
 ol.format.Polyline.prototype.readProjection;
 
@@ -371,7 +371,7 @@ ol.format.Polyline.prototype.writeFeaturesText =
  * @param {ol.geom.Geometry} geometry Geometry.
  * @param {olx.format.WriteOptions=} opt_options Write options.
  * @return {string} Geometry.
- * @api
+ * @api stable
  */
 ol.format.Polyline.prototype.writeGeometry;
 
