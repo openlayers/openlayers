@@ -18,7 +18,7 @@
   },
   "dependencies": {
     "async": "~0.2.10",
-    "closure-util": "0.19.0",
+    "closure-util": "0.20.0",
     "fs-extra": "~0.8.1",
     "graceful-fs": "~3.0.2",
     "htmlparser2": "~3.7.1",
