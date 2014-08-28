@@ -66,6 +66,17 @@ goog.inherits(ol.ImageTile, ol.Tile);
 
 /**
  * @inheritDoc
+ */
+ol.ImageTile.prototype.disposeInternal = function() {
+  if (this.state == ol.TileState.LOADING) {
+    this.unlistenImage_();
+  }
+  goog.base(this, 'disposeInternal');
+};
+
+
+/**
+ * @inheritDoc
  * @api
  */
 ol.ImageTile.prototype.getImage = function(opt_context) {
