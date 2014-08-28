@@ -192,8 +192,9 @@ ol.Collection.prototype.insertAt = function(index, elem) {
 
 
 /**
- * Remove the last element of the collection.
- * @return {T} Element.
+ * Remove the last element of the collection and return it.
+ * Return `undefined` if the collection is empty.
+ * @return {T|undefined} Element.
  * @api stable
  */
 ol.Collection.prototype.pop = function() {
@@ -233,9 +234,10 @@ ol.Collection.prototype.remove = function(elem) {
 
 
 /**
- * Remove the element at the provided index.
+ * Remove the element at the provided index and return it.
+ * Return `undefined` if the collection does not contain this index.
  * @param {number} index Index.
- * @return {T} Value.
+ * @return {T|undefined} Value.
  * @api stable
  */
 ol.Collection.prototype.removeAt = function(index) {
