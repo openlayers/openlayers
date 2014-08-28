@@ -21,7 +21,7 @@ function getInfo(callback) {
       return;
     }
     var info = require('../build/info.json');
-    callback(null, info.typedefs, info.symbols, info.externs, info.interfaces);
+    callback(null, info.typedefs, info.symbols, info.externs, info.base);
   });
 }
 
@@ -31,11 +31,11 @@ function getInfo(callback) {
  * @param {Array.<Object>} typedefs List of typedefs.
  * @param {Array.<Object>} symbols List of symbols.
  * @param {Array.<Object>} externs List of externs.
- * @param {Array.<Object>} externs List of interfaces.
+ * @param {Array.<Object>} base List of base.
  * @param {string|undefined} namespace Target object for exported symbols.
  * @return {string} Export code.
  */
-function generateExterns(typedefs, symbols, externs, interfaces) {
+function generateExterns(typedefs, symbols, externs, base) {
   var lines = [];
   var processedSymbols = {};
   var constructors = {};
@@ -132,7 +132,7 @@ function generateExterns(typedefs, symbols, externs, interfaces) {
 
   externs.forEach(processSymbol);
 
-  interfaces.forEach(processSymbol);
+  base.forEach(processSymbol);
 
   symbols.forEach(processSymbol);
 
@@ -158,10 +158,10 @@ function generateExterns(typedefs, symbols, externs, interfaces) {
 function main(callback) {
   async.waterfall([
     getInfo,
-    function(typedefs, symbols, externs, interfaces, done) {
+    function(typedefs, symbols, externs, base, done) {
       var code, err;
       try {
-        code = generateExterns(typedefs, symbols, externs, interfaces);
+        code = generateExterns(typedefs, symbols, externs, base);
       } catch (e) {
         err = e;
       }
