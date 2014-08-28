@@ -14,6 +14,9 @@ var path = require('path');
  */
 exports.publish = function(data, opts) {
 
+  var exportables = {};
+  var classes = {};
+
   function getTypes(data) {
     var types = [];
     data.forEach(function(name) {
@@ -30,6 +33,9 @@ exports.publish = function(data, opts) {
         {api: {isString: true}},
         {'interface': {is: true}},
         function() {
+          if (this.kind == 'class') {
+            classes[this.longname] = this;
+          }
           return this.meta && (/[\\\/]externs$/).test(this.meta.path);
         }
       ],
@@ -133,6 +139,16 @@ exports.publish = function(data, opts) {
       }
       var target = isExterns ? externs : (doc.interface ? interfaces : symbols);
       target.push(symbol);
+
+      if (symbol.stability && symbol.kind == 'class') {
+        exportables[symbol.name] = true;
+      }
+      if (symbol.extends) {
+        while (!(symbol.extends in exportables) &&
+            symbol.extends in classes && classes[symbol.extends].augments) {
+          symbol.extends = classes[symbol.extends].augments[0];
+        }
+      }
     }
   });
 
