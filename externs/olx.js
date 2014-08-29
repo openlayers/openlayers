@@ -2838,7 +2838,7 @@ olx.layer.ImageOptions.prototype.maxResolution;
  *     opacity: (number|undefined),
  *     preload: (number|undefined),
  *     saturation: (number|undefined),
- *     source: ol.source.Source,
+ *     source: ol.source.Tile,
  *     visible: (boolean|undefined),
  *     extent: (ol.Extent|undefined),
  *     minResolution: (number|undefined),
@@ -2900,7 +2900,7 @@ olx.layer.TileOptions.prototype.saturation;
 
 /**
  * Source for this layer.
- * @type {ol.source.Source}
+ * @type {ol.source.Tile}
  * @api stable
  */
 olx.layer.TileOptions.prototype.source;

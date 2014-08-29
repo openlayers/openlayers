@@ -28,8 +28,7 @@ ol.layer.TileProperty = {
  * @api stable
  */
 ol.layer.Tile = function(options) {
-  goog.base(this, options);
-
+  goog.base(this,  /** @type {olx.layer.LayerOptions} */ (options));
 };
 goog.inherits(ol.layer.Tile, ol.layer.Layer);
 
@@ -47,6 +46,14 @@ goog.exportProperty(
     ol.layer.Tile.prototype,
     'getPreload',
     ol.layer.Tile.prototype.getPreload);
+
+
+/**
+ * @function
+ * @return {ol.source.Tile} Source.
+ * @api stable
+ */
+ol.layer.Tile.prototype.getSource;
 
 
 /**
