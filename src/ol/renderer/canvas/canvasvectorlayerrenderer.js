@@ -11,7 +11,6 @@ goog.require('ol.render.EventType');
 goog.require('ol.render.canvas.ReplayGroup');
 goog.require('ol.renderer.canvas.Layer');
 goog.require('ol.renderer.vector');
-goog.require('ol.source.Vector');
 
 
 
@@ -168,7 +167,6 @@ ol.renderer.canvas.VectorLayer.prototype.prepareFrame =
   var vectorLayer = /** @type {ol.layer.Vector} */ (this.getLayer());
   goog.asserts.assertInstanceof(vectorLayer, ol.layer.Vector);
   var vectorSource = vectorLayer.getSource();
-  goog.asserts.assertInstanceof(vectorSource, ol.source.Vector);
 
   this.updateAttributions(
       frameState.attributions, vectorSource.getAttributions());
