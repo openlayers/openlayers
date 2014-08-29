@@ -2739,6 +2739,103 @@ olx.layer.HeatmapOptions.prototype.visible;
  *     contrast: (number|undefined),
  *     hue: (number|undefined),
  *     opacity: (number|undefined),
+ *     saturation: (number|undefined),
+ *     source: ol.source.Image,
+ *     visible: (boolean|undefined),
+ *     extent: (ol.Extent|undefined),
+ *     minResolution: (number|undefined),
+ *     maxResolution: (number|undefined)}}
+ * @api
+ */
+olx.layer.ImageOptions;
+
+
+/**
+ * Brightness. Default is `0`.
+ * @type {number|undefined}
+ * @api
+ */
+olx.layer.ImageOptions.prototype.brightness;
+
+
+/**
+ * Contrast. Default is `1`.
+ * @type {number|undefined}
+ * @api
+ */
+olx.layer.ImageOptions.prototype.contrast;
+
+
+/**
+ * Hue. Default is `0`.
+ * @type {number|undefined}
+ * @api
+ */
+olx.layer.ImageOptions.prototype.hue;
+
+
+/**
+ * Opacity (0, 1). Default is `1`.
+ * @type {number|undefined}
+ * @api stable
+ */
+olx.layer.ImageOptions.prototype.opacity;
+
+
+/**
+ * Saturation. Default is `1`.
+ * @type {number|undefined}
+ * @api
+ */
+olx.layer.ImageOptions.prototype.saturation;
+
+
+/**
+ * Source for this layer.
+ * @type {ol.source.Image}
+ * @api stable
+ */
+olx.layer.ImageOptions.prototype.source;
+
+
+/**
+ * Visibility. Default is `true` (visible).
+ * @type {boolean|undefined}
+ * @api stable
+ */
+olx.layer.ImageOptions.prototype.visible;
+
+
+/**
+ * The bounding extent for layer rendering.  The layer will not be rendered
+ * outside of this extent.
+ * @type {ol.Extent|undefined}
+ * @api stable
+ */
+olx.layer.ImageOptions.prototype.extent;
+
+
+/**
+ * The minimum resolution (inclusive) at which this layer will be visible.
+ * @type {number|undefined}
+ * @api stable
+ */
+olx.layer.ImageOptions.prototype.minResolution;
+
+
+/**
+ * The maximum resolution (exclusive) below which this layer will be visible.
+ * @type {number|undefined}
+ * @api stable
+ */
+olx.layer.ImageOptions.prototype.maxResolution;
+
+
+/**
+ * @typedef {{brightness: (number|undefined),
+ *     contrast: (number|undefined),
+ *     hue: (number|undefined),
+ *     opacity: (number|undefined),
  *     preload: (number|undefined),
  *     saturation: (number|undefined),
  *     source: ol.source.Source,
