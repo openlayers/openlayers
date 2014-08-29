@@ -22,15 +22,29 @@ exports.publish = function(data, opts) {
     return types;
   }
 
+  function replaceUnknownTypes(item) {
+    item.types.forEach(function(type, index) {
+      if (!(type in names)) {
+        item.types[index] = '*';
+      }
+    });
+  }
+
   // get all doclets with the "api" property or define (excluding events) or
   // with olx namespace
+  var classes = {};
   var docs = data(
       [
         {define: {isObject: true}},
-        {api: {isString: true}},
-        {'interface': {is: true}},
         function() {
-          return this.meta && (/[\\\/]externs$/).test(this.meta.path);
+          if (this.kind == 'class') {
+            if (!('extends' in this) || typeof this.api == 'string') {
+              classes[this.longname] = this;
+              return true;
+            }
+          }
+          return (typeof this.api == 'string' ||
+              this.meta && (/[\\\/]externs$/).test(this.meta.path));
         }
       ],
       {kind: {'!is': 'file'}},
@@ -41,7 +55,9 @@ exports.publish = function(data, opts) {
   var defines = [];
   var typedefs = [];
   var externs = [];
-  var interfaces = [];
+  var base = [];
+  var augments = {};
+  var names = {};
   docs.filter(function(doc) {
     var include = true;
     var constructor = doc.memberof;
@@ -88,6 +104,12 @@ exports.publish = function(data, opts) {
         stability: doc.api,
         path: path.join(doc.meta.path, doc.meta.filename)
       };
+      if (doc.augments) {
+        symbol.extends = doc.augments[0];
+      }
+      if (doc.virtual) {
+        symbol.virtual = true;
+      }
       if (doc.type) {
         symbol.types = getTypes(doc.type.names);
       }
@@ -128,9 +150,34 @@ exports.publish = function(data, opts) {
           return true;
         });
       }
-      var target = isExterns ? externs : (doc.interface ? interfaces : symbols);
+
+      var target = isExterns ? externs : (doc.api ? symbols : base);
       target.push(symbol);
+      names[symbol.name] = true;
+
+      if (doc.api && symbol.extends) {
+        while (symbol.extends in classes && !classes[symbol.extends].api &&
+            classes[symbol.extends].augments) {
+          symbol.extends = classes[symbol.extends].augments[0];
+        }
+        if (symbol.extends) {
+          augments[symbol.extends] = true;
+        }
+      }
     }
+  });
+
+  base = base.filter(function(symbol) {
+    var pass = symbol.name in augments || symbol.virtual;
+    if (pass) {
+      if (symbol.params) {
+        symbol.params.forEach(replaceUnknownTypes);
+      }
+      if (symbol.returns) {
+        symbol.returns.forEach(replaceUnknownTypes);
+      }
+    }
+    return pass;
   });
 
   process.stdout.write(
@@ -139,7 +186,7 @@ exports.publish = function(data, opts) {
         defines: defines,
         typedefs: typedefs,
         externs: externs,
-        interfaces: interfaces
+        base: base
       }, null, 2));
 
 };

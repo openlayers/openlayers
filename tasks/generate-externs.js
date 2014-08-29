@@ -7,6 +7,8 @@ var nomnom = require('nomnom');
 
 var generateInfo = require('./generate-info');
 
+var googRegEx = /^goog\..*$/;
+
 /**
  * Read the symbols from info file.
  * @param {funciton(Error, Array.<string>, Array.<Object>)} callback Called
@@ -19,7 +21,7 @@ function getInfo(callback) {
       return;
     }
     var info = require('../build/info.json');
-    callback(null, info.typedefs, info.symbols, info.externs, info.interfaces);
+    callback(null, info.typedefs, info.symbols, info.externs, info.base);
   });
 }
 
@@ -29,11 +31,11 @@ function getInfo(callback) {
  * @param {Array.<Object>} typedefs List of typedefs.
  * @param {Array.<Object>} symbols List of symbols.
  * @param {Array.<Object>} externs List of externs.
- * @param {Array.<Object>} externs List of interfaces.
+ * @param {Array.<Object>} base List of base.
  * @param {string|undefined} namespace Target object for exported symbols.
  * @return {string} Export code.
  */
-function generateExterns(typedefs, symbols, externs, interfaces) {
+function generateExterns(typedefs, symbols, externs, base) {
   var lines = [];
   var processedSymbols = {};
   var constructors = {};
@@ -67,7 +69,7 @@ function generateExterns(typedefs, symbols, externs, interfaces) {
   function noGoogTypes(typesWithGoog) {
     var typesWithoutGoog = [];
     typesWithGoog.forEach(function(type) {
-      typesWithoutGoog.push(type.replace(/^goog\..*$/, '*'));
+      typesWithoutGoog.push(type.replace(googRegEx, '*'));
     });
     return typesWithoutGoog;
   }
@@ -93,6 +95,9 @@ function generateExterns(typedefs, symbols, externs, interfaces) {
     if (symbol.kind === 'class') {
       constructors[name] = true;
       lines.push(' * @constructor');
+      if (symbol.extends && !googRegEx.test(symbol.extends)) {
+        lines.push(' * @extends {' + symbol.extends + '}');
+      }
     }
     if (symbol.types) {
       lines.push(' * @type {' + noGoogTypes(symbol.types).join('|') + '}');
@@ -127,7 +132,7 @@ function generateExterns(typedefs, symbols, externs, interfaces) {
 
   externs.forEach(processSymbol);
 
-  interfaces.forEach(processSymbol);
+  base.forEach(processSymbol);
 
   symbols.forEach(processSymbol);
 
@@ -153,10 +158,10 @@ function generateExterns(typedefs, symbols, externs, interfaces) {
 function main(callback) {
   async.waterfall([
     getInfo,
-    function(typedefs, symbols, externs, interfaces, done) {
+    function(typedefs, symbols, externs, base, done) {
       var code, err;
       try {
-        code = generateExterns(typedefs, symbols, externs, interfaces);
+        code = generateExterns(typedefs, symbols, externs, base);
       } catch (e) {
         err = e;
       }

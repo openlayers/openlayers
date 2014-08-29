@@ -1,5 +1,5 @@
 /**
- * Handle the interface annotation.
+ * Handle the interface and abstract annotations.
  * @param {Object} dictionary The tag dictionary.
  */
 exports.defineTags = function(dictionary) {
@@ -9,7 +9,7 @@ exports.defineTags = function(dictionary) {
     mustHaveValue: false,
     onTagged: function(doclet, tag) {
       classTag.onTagged.apply(this, arguments);
-      doclet.interface = true;
+      doclet.virtual = true;
     }
   });
 
