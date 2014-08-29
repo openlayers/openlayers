@@ -17,6 +17,7 @@ goog.require('goog.math');
 /**
  * @constructor
  * @param {number} radius Radius.
+ * @api
  */
 ol.Sphere = function(radius) {
 
