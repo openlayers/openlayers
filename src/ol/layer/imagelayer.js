@@ -22,3 +22,11 @@ ol.layer.Image = function(options) {
   goog.base(this,  /** @type {olx.layer.LayerOptions} */ (options));
 };
 goog.inherits(ol.layer.Image, ol.layer.Layer);
+
+
+/**
+ * @function
+ * @return {ol.source.Image} Source.
+ * @api stable
+ */
+ol.layer.Image.prototype.getSource;
