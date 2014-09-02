@@ -183,6 +183,7 @@ ol.Geolocation.prototype.positionChange_ = function(position) {
  */
 ol.Geolocation.prototype.positionError_ = function(error) {
   error.type = goog.events.EventType.ERROR;
+  this.setTracking(false);
   this.dispatchEvent(error);
 };
 
