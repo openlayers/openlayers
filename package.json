@@ -4,7 +4,7 @@
   "description": "Mapping library",
   "scripts": {
     "install": "node tasks/parse-examples.js",
-    "postinstall": "node node_modules/closure-util/install.js",
+    "postinstall": "node ./node_modules/closure-util/install.js",
     "start": "node tasks/serve.js",
     "test": "node tasks/test.js"
   },
