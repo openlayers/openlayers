@@ -173,6 +173,21 @@ ol.style.Circle.prototype.getStroke = function() {
 
 
 /**
+ * @protected
+ * @param {boolean} mutable Mutable.
+ */
+ol.style.Circle.prototype.setMutable = function(mutable) {
+  if (!goog.isNull(this.stroke_)) {
+    this.stroke_.setMutable(mutable);
+  }
+  if (!goog.isNull(this.fill_)) {
+    this.fill_.setMutable(mutable);
+  }
+  goog.base(this, 'setMutable', mutable);
+};
+
+
+/**
  * @inheritDoc
  */
 ol.style.Circle.prototype.listenImageChange = goog.nullFunction;

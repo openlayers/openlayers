@@ -52,6 +52,11 @@ ol.style.Style = function(opt_options) {
    */
   this.zIndex_ = options.zIndex;
 
+  /**
+   * @private
+   * @type {boolean}
+   */
+  this.mutable_ = true;
 };
 
 
@@ -101,6 +106,36 @@ ol.style.Style.prototype.getZIndex = function() {
 
 
 /**
+ * @param {number|undefined} zIndex ZIndex.
+ * @api
+ */
+ol.style.Style.prototype.setZIndex = function(zIndex) {
+  goog.asserts.assert(this.mutable_);
+  this.zIndex_ = zIndex;
+};
+
+
+/**
+ * @param {boolean} mutable Mutable.
+ */
+ol.style.Style.prototype.setMutable = function(mutable) {
+  if (!goog.isNull(this.fill_)) {
+    this.fill_.setMutable(mutable);
+  }
+  if (!goog.isNull(this.image_)) {
+    this.image_.setMutable(mutable);
+  }
+  if (!goog.isNull(this.stroke_)) {
+    this.stroke_.setMutable(mutable);
+  }
+  if (!goog.isNull(this.text_)) {
+    this.text_.setMutable(mutable);
+  }
+  this.mutable_ = mutable;
+};
+
+
+/**
  * A function that takes an {@link ol.Feature} and a `{number}` representing
  * the view's resolution. The function should return an array of
  * {@link ol.style.Style}. This way e.g. a vector layer can be styled.
@@ -137,6 +172,9 @@ ol.style.createStyleFunction = function(obj) {
     } else {
       goog.asserts.assertInstanceof(obj, ol.style.Style);
       styles = [obj];
+    }
+    for (var i = styles.length - 1; i >= 0; --i) {
+      styles[i].setMutable(false);
     }
     styleFunction = goog.functions.constant(styles);
   }
