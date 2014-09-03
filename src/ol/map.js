@@ -831,6 +831,7 @@ ol.Map.prototype.getTilePriority =
 
 /**
  * @return {ol.TileQueue} Tile queue.
+ * @api
  */
 ol.Map.prototype.getTileQueue = function() {
   return this.tileQueue_;
