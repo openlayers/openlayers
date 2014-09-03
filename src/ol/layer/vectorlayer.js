@@ -68,6 +68,14 @@ ol.layer.Vector.prototype.getRenderOrder = function() {
 
 
 /**
+ * @function
+ * @return {ol.source.Vector} Source.
+ * @api stable
+ */
+ol.layer.Vector.prototype.getSource;
+
+
+/**
  * Get the style for features.  This returns whatever was passed to the `style`
  * option at construction or to the `setStyle` method.
  * @return {ol.style.Style|Array.<ol.style.Style>|ol.style.StyleFunction}

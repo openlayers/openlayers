@@ -96,7 +96,7 @@ map.on('click', function(evt) {
 
 var exportGPXElement = document.getElementById('export-gpx');
 if ('download' in exportGPXElement) {
-  var vectorSource = /** @type {ol.source.Vector} */ (vector.getSource());
+  var vectorSource = vector.getSource();
   exportGPXElement.addEventListener('click', function(e) {
     if (!exportGPXElement.href) {
       var features = [];

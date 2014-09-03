@@ -63,7 +63,7 @@ map.on('click', function(evt) {
 
 var exportKMLElement = document.getElementById('export-kml');
 if ('download' in exportKMLElement) {
-  var vectorSource = /** @type {ol.source.Vector} */ (vector.getSource());
+  var vectorSource = vector.getSource();
   exportKMLElement.addEventListener('click', function(e) {
     if (!exportKMLElement.href) {
       var features = [];
