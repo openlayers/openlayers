@@ -326,32 +326,6 @@ describe('ol.layer.Group', function() {
 
   });
 
-
-  describe('#setLayers', function() {
-
-    it('sets layers property', function() {
-      var layer = new ol.layer.Layer({
-        source: new ol.source.Source({
-          projection: 'EPSG:4326'
-        })
-      });
-      var layers = new ol.Collection([layer]);
-      var layerGroup = new ol.layer.Group();
-
-      layerGroup.setLayers(layers);
-      expect(layerGroup.getLayers()).to.be(layers);
-
-      layerGroup.setLayers(null);
-      expect(layerGroup.getLayers()).to.be(null);
-
-      goog.dispose(layerGroup);
-      goog.dispose(layer);
-      goog.dispose(layers);
-    });
-
-  });
-
-
   describe('#getLayerStatesArray', function() {
 
     it('returns an empty array if no layer', function() {

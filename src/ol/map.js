@@ -495,7 +495,6 @@ ol.Map.prototype.addInteraction = function(interaction) {
  */
 ol.Map.prototype.addLayer = function(layer) {
   var layers = this.getLayerGroup().getLayers();
-  goog.asserts.assert(goog.isDef(layers));
   layers.push(layer);
 };
 
@@ -703,16 +702,11 @@ goog.exportProperty(
 
 /**
  * Get the collection of layers associated with this map.
- * @return {ol.Collection.<ol.layer.Base>|undefined} Layers.
+ * @return {!ol.Collection.<ol.layer.Base>} Layers.
  * @api stable
  */
 ol.Map.prototype.getLayers = function() {
-  var layerGroup = this.getLayerGroup();
-  if (goog.isDef(layerGroup)) {
-    return layerGroup.getLayers();
-  } else {
-    return undefined;
-  }
+  return this.getLayerGroup().getLayers();
 };
 
 
@@ -1147,7 +1141,6 @@ ol.Map.prototype.removeInteraction = function(interaction) {
  */
 ol.Map.prototype.removeLayer = function(layer) {
   var layers = this.getLayerGroup().getLayers();
-  goog.asserts.assert(goog.isDef(layers));
   return layers.remove(layer);
 };
 
@@ -1272,22 +1265,6 @@ ol.Map.prototype.renderFrame_ = function(time) {
   goog.async.nextTick(this.handlePostRender, this);
 
 };
-
-
-/**
- * Sets the layergroup of this map.
- * @param {ol.layer.Group} layerGroup A layer group containing the layers in
- *     this map.
- * @observable
- * @api stable
- */
-ol.Map.prototype.setLayerGroup = function(layerGroup) {
-  this.set(ol.MapProperty.LAYERGROUP, layerGroup);
-};
-goog.exportProperty(
-    ol.Map.prototype,
-    'setLayerGroup',
-    ol.Map.prototype.setLayerGroup);
 
 
 /**

@@ -67,7 +67,7 @@ ol.layer.Group = function(opt_options) {
     layers = new ol.Collection();
   }
 
-  this.setLayers(layers);
+  this.set(ol.layer.GroupProperty.LAYERS, layers);
 
 };
 goog.inherits(ol.layer.Group, ol.layer.Base);
@@ -145,34 +145,19 @@ ol.layer.Group.prototype.handleLayersRemove_ = function(collectionEvent) {
 
 
 /**
- * @return {ol.Collection.<ol.layer.Base>|undefined} Collection of
+ * @return {!ol.Collection.<ol.layer.Base>} Collection of
  * {@link ol.layer.Layer layers} that are part of this group.
  * @observable
  * @api stable
  */
 ol.layer.Group.prototype.getLayers = function() {
-  return /** @type {ol.Collection.<ol.layer.Base>|undefined} */ (this.get(
+  return /** @type {!ol.Collection.<ol.layer.Base>} */ (this.get(
       ol.layer.GroupProperty.LAYERS));
 };
 goog.exportProperty(
     ol.layer.Group.prototype,
     'getLayers',
     ol.layer.Group.prototype.getLayers);
-
-
-/**
- * @param {ol.Collection.<ol.layer.Base>|undefined} layers Collection of
- * {@link ol.layer.Layer layers} that are part of this group.
- * @observable
- * @api stable
- */
-ol.layer.Group.prototype.setLayers = function(layers) {
-  this.set(ol.layer.GroupProperty.LAYERS, layers);
-};
-goog.exportProperty(
-    ol.layer.Group.prototype,
-    'setLayers',
-    ol.layer.Group.prototype.setLayers);
 
 
 /**
