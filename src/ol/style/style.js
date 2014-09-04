@@ -12,7 +12,9 @@ goog.require('ol.style.Stroke');
 
 /**
  * @classdesc
- * Base class for vector feature rendering styles.
+ * Container for vector feature rendering styles. Node that styles are only
+ * mutable as long as they are not assigned to layers, feature overlays or
+ * features using the respective `setStyle()` methods.
  *
  * @constructor
  * @param {olx.style.StyleOptions=} opt_options Style options.
