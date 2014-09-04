@@ -1,8 +1,6 @@
 goog.provide('ol.style.Image');
 goog.provide('ol.style.ImageState');
 
-goog.require('goog.asserts');
-
 
 /**
  * @enum {number}
@@ -64,12 +62,6 @@ ol.style.Image = function(options) {
    * @type {boolean}
    */
   this.snapToPixel_ = options.snapToPixel;
-
-  /**
-   * @private
-   * @type {boolean}
-   */
-  this.mutable_ = true;
 
 };
 
@@ -159,57 +151,59 @@ ol.style.Image.prototype.getSize = goog.abstractMethod;
 
 
 /**
+ * Set the zIndex. Use `setStyle()` on the feature, layer or feature overlay
+ * for changes to take effect.
+ *
  * @param {number} opacity Opacity.
  */
 ol.style.Image.prototype.setOpacity = function(opacity) {
-  goog.asserts.assert(this.mutable_);
   this.opacity_ = opacity;
 };
 
 
 /**
+ * Set whether to rotate the style with the view. Use `setStyle()` on the
+ * feature, layer or feature overlay for changes to take effect.
+ *
  * @param {boolean} rotateWithView Rotate with map.
  */
 ol.style.Image.prototype.setRotateWithView = function(rotateWithView) {
-  goog.asserts.assert(this.mutable_);
   this.rotateWithView_ = rotateWithView;
 };
 
 
 /**
+ * Set the rotation. Use `setStyle()` on the feature, layer or feature overlay
+ * for changes to take effect.
+ *
  * @param {number} rotation Rotation.
  * @api
  */
 ol.style.Image.prototype.setRotation = function(rotation) {
-  goog.asserts.assert(this.mutable_);
   this.rotation_ = rotation;
 };
 
 
 /**
+ * Set the scale. Use `setStyle()` on the feature, layer or feature overlay
+ * for changes to take effect.
+ *
  * @param {number} scale Scale.
  * @api
  */
 ol.style.Image.prototype.setScale = function(scale) {
-  goog.asserts.assert(this.mutable_);
   this.scale_ = scale;
 };
 
 
 /**
+ * Set whether to snap the image to the closest pixel. Use `setStyle()` on the
+ * feature, layer or feature overlay for changes to take effect.
+ *
  * @param {boolean} snapToPixel Snap to pixel?
  */
 ol.style.Image.prototype.setSnapToPixel = function(snapToPixel) {
-  goog.asserts.assert(this.mutable_);
   this.snapToPixel_ = snapToPixel;
-};
-
-
-/**
- * @param {boolean} mutable Mutable.
- */
-ol.style.Image.prototype.setMutable = function(mutable) {
-  this.mutable_ = mutable;
 };
 
 

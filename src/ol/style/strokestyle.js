@@ -1,7 +1,5 @@
 goog.provide('ol.style.Stroke');
 
-goog.require('goog.asserts');
-
 
 
 /**
@@ -54,13 +52,6 @@ ol.style.Stroke = function(opt_options) {
    * @type {number|undefined}
    */
   this.width_ = options.width;
-
-  /**
-   * @private
-   * @type {boolean}
-   */
-  this.mutable_ = true;
-
 };
 
 
@@ -119,68 +110,72 @@ ol.style.Stroke.prototype.getWidth = function() {
 
 
 /**
+ * Set the color. Use `setStyle()` on the feature, layer or feature overlay
+ * for changes to take effect.
+ *
  * @param {ol.Color|string} color Color.
  * @api
  */
 ol.style.Stroke.prototype.setColor = function(color) {
-  goog.asserts.assert(this.mutable_);
   this.color_ = color;
 };
 
 
 /**
+ * Set the line cap. Use `setStyle()` on the feature, layer or feature overlay
+ * for changes to take effect.
+ *
  * @param {string|undefined} lineCap Line cap.
  * @api
  */
 ol.style.Stroke.prototype.setLineCap = function(lineCap) {
-  goog.asserts.assert(this.mutable_);
   this.lineCap_ = lineCap;
 };
 
 
 /**
+ * Set the line dash. Use `setStyle()` on the feature, layer or feature overlay
+ * for changes to take effect.
+ *
  * @param {Array.<number>} lineDash Line dash.
  * @api
  */
 ol.style.Stroke.prototype.setLineDash = function(lineDash) {
-  goog.asserts.assert(this.mutable_);
   this.lineDash_ = lineDash;
 };
 
 
 /**
+ * Set the line join. Use `setStyle()` on the feature, layer or feature overlay
+ * for changes to take effect.
+ *
  * @param {string|undefined} lineJoin Line join.
  * @api
  */
 ol.style.Stroke.prototype.setLineJoin = function(lineJoin) {
-  goog.asserts.assert(this.mutable_);
   this.lineJoin_ = lineJoin;
 };
 
 
 /**
+ * Set the miter limit. Use `setStyle()` on the feature, layer or feature
+ * overlay for changes to take effect.
+ *
  * @param {number|undefined} miterLimit Miter limit.
  * @api
  */
 ol.style.Stroke.prototype.setMiterLimit = function(miterLimit) {
-  goog.asserts.assert(this.mutable_);
   this.miterLimit_ = miterLimit;
 };
 
 
 /**
+ * Set the width. Use `setStyle()` on the feature, layer or feature overlay
+ * for changes to take effect.
+ *
  * @param {number|undefined} width Width.
  * @api
  */
 ol.style.Stroke.prototype.setWidth = function(width) {
-  goog.asserts.assert(this.mutable_);
   this.width_ = width;
-};
-
-
-/**
- * @param {boolean} mutable Mutable.
- */
-ol.style.Stroke.prototype.setMutable = function(mutable) {
-  this.mutable_ = mutable;
 };

@@ -1,7 +1,5 @@
 goog.provide('ol.style.Text');
 
-goog.require('goog.asserts');
-
 
 
 /**
@@ -75,13 +73,6 @@ ol.style.Text = function(opt_options) {
    * @type {number}
    */
   this.offsetY_ = goog.isDef(options.offsetY) ? options.offsetY : 0;
-
-  /**
-   * @private
-   * @type {boolean}
-   */
-  this.mutable_ = true;
-
 };
 
 
@@ -174,112 +165,118 @@ ol.style.Text.prototype.getTextBaseline = function() {
 
 
 /**
+ * Set the font. Use `setStyle()` on the feature, layer or feature overlay
+ * for changes to take effect.
+ *
  * @param {string|undefined} font Font.
  * @api
  */
 ol.style.Text.prototype.setFont = function(font) {
-  goog.asserts.assert(this.mutable_);
   this.font_ = font;
 };
 
 
 /**
+ * Set the x offset. Use `setStyle()` on the feature, layer or feature overlay
+ * for changes to take effect.
+ *
  * @param {number} offsetX Horizontal text offset.
  */
 ol.style.Text.prototype.setOffsetX = function(offsetX) {
-  goog.asserts.assert(this.mutable_);
   this.offsetX_ = offsetX;
 };
 
 
 /**
+ * Set the y offset. Use `setStyle()` on the feature, layer or feature overlay
+ * for changes to take effect.
+ *
  * @param {number} offsetY Vertical text offset.
  */
 ol.style.Text.prototype.setOffsetY = function(offsetY) {
-  goog.asserts.assert(this.mutable_);
   this.offsetY_ = offsetY;
 };
 
 
 /**
+ * Set the fill. Use `setStyle()` on the feature, layer or feature overlay
+ * for changes to take effect.
+ *
  * @param {ol.style.Fill} fill Fill style.
  * @api
  */
 ol.style.Text.prototype.setFill = function(fill) {
-  goog.asserts.assert(this.mutable_);
   this.fill_ = fill;
 };
 
 
 /**
+ * Set the rotation. Use `setStyle()` on the feature, layer or feature overlay
+ * for changes to take effect.
+ *
  * @param {number|undefined} rotation Rotation.
  * @api
  */
 ol.style.Text.prototype.setRotation = function(rotation) {
-  goog.asserts.assert(this.mutable_);
   this.rotation_ = rotation;
 };
 
 
 /**
+ * Set the scale. Use `setStyle()` on the feature, layer or feature overlay
+ * for changes to take effect.
+ *
  * @param {number|undefined} scale Scale.
  * @api
  */
 ol.style.Text.prototype.setScale = function(scale) {
-  goog.asserts.assert(this.mutable_);
   this.scale_ = scale;
 };
 
 
 /**
+ * Set the stroke. Use `setStyle()` on the feature, layer or feature overlay
+ * for changes to take effect.
+ *
  * @param {ol.style.Stroke} stroke Stroke style.
  * @api
  */
 ol.style.Text.prototype.setStroke = function(stroke) {
-  goog.asserts.assert(this.mutable_);
   this.stroke_ = stroke;
 };
 
 
 /**
+ * Set the text. Use `setStyle()` on the feature, layer or feature overlay
+ * for changes to take effect.
+ *
  * @param {string|undefined} text Text.
  * @api
  */
 ol.style.Text.prototype.setText = function(text) {
-  goog.asserts.assert(this.mutable_);
   this.text_ = text;
 };
 
 
 /**
+ * Set the text alignment. Use `setStyle()` on the feature, layer or feature
+ * overlay for changes to take effect.
+ *
  * @param {string|undefined} textAlign Text align.
  * @api
  */
 ol.style.Text.prototype.setTextAlign = function(textAlign) {
-  goog.asserts.assert(this.mutable_);
   this.textAlign_ = textAlign;
 };
 
 
 /**
+ * Set the text baseline. Use `setStyle()` on the feature, layer or feature
+ * overlay for changes to take effect.
+ *
  * @param {string|undefined} textBaseline Text baseline.
  * @api
  */
 ol.style.Text.prototype.setTextBaseline = function(textBaseline) {
-  goog.asserts.assert(this.mutable_);
   this.textBaseline_ = textBaseline;
-};
-
-
-/**
- * @param {boolean} mutable Mutable.
- */
-ol.style.Text.prototype.setMutable = function(mutable) {
-  if (!goog.isNull(this.stroke_)) {
-    this.stroke_.setMutable(mutable);
-  }
-  if (!goog.isNull(this.fill_)) {
-    this.fill_.setMutable(mutable);
-  }
-  this.mutable_ = mutable;
 };

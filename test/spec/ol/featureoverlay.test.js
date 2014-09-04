@@ -16,12 +16,11 @@ describe('ol.FeatureOverlay', function() {
       expect(featureOverlay.getFeatures().getLength()).to.be(1);
     });
 
-    it('takes a style and makes it immutable', function() {
+    it('takes a style', function() {
       var style = [new ol.style.Style()];
       var featureOverlay = new ol.FeatureOverlay({
         style: [new ol.style.Style()]
       });
-      style[0].setMutable(false);
       expect(featureOverlay.getStyle()).to.eql(style);
       expect(featureOverlay.getStyleFunction()()).to.eql(style);
     });

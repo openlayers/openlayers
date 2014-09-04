@@ -1,7 +1,5 @@
 goog.provide('ol.style.Fill');
 
-goog.require('goog.asserts');
-
 
 
 /**
@@ -21,13 +19,6 @@ ol.style.Fill = function(opt_options) {
    * @type {ol.Color|string}
    */
   this.color_ = goog.isDef(options.color) ? options.color : null;
-
-  /**
-   * @private
-   * @type {boolean}
-   */
-  this.mutable_ = true;
-
 };
 
 
@@ -41,18 +32,12 @@ ol.style.Fill.prototype.getColor = function() {
 
 
 /**
+ * Set the color. Use `setStyle()` on the feature, layer or feature overlay
+ * for changes to take effect.
+ *
  * @param {ol.Color|string} color Color.
  * @api
  */
 ol.style.Fill.prototype.setColor = function(color) {
-  goog.asserts.assert(this.mutable_);
   this.color_ = color;
-};
-
-
-/**
- * @param {boolean} mutable Mutable.
- */
-ol.style.Fill.prototype.setMutable = function(mutable) {
-  this.mutable_ = mutable;
 };

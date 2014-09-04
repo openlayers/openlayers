@@ -12,9 +12,7 @@ goog.require('ol.style.Stroke');
 
 /**
  * @classdesc
- * Container for vector feature rendering styles. Node that styles are only
- * mutable as long as they are not assigned to layers, feature overlays or
- * features using the respective `setStyle()` methods.
+ * Container for vector feature rendering styles.
  *
  * @constructor
  * @param {olx.style.StyleOptions=} opt_options Style options.
@@ -54,11 +52,6 @@ ol.style.Style = function(opt_options) {
    */
   this.zIndex_ = options.zIndex;
 
-  /**
-   * @private
-   * @type {boolean}
-   */
-  this.mutable_ = true;
 };
 
 
@@ -108,32 +101,14 @@ ol.style.Style.prototype.getZIndex = function() {
 
 
 /**
+ * Set the zIndex. Use `setStyle()` on the feature, layer or feature overlay
+ * for changes to take effect.
+ *
  * @param {number|undefined} zIndex ZIndex.
  * @api
  */
 ol.style.Style.prototype.setZIndex = function(zIndex) {
-  goog.asserts.assert(this.mutable_);
   this.zIndex_ = zIndex;
-};
-
-
-/**
- * @param {boolean} mutable Mutable.
- */
-ol.style.Style.prototype.setMutable = function(mutable) {
-  if (!goog.isNull(this.fill_)) {
-    this.fill_.setMutable(mutable);
-  }
-  if (!goog.isNull(this.image_)) {
-    this.image_.setMutable(mutable);
-  }
-  if (!goog.isNull(this.stroke_)) {
-    this.stroke_.setMutable(mutable);
-  }
-  if (!goog.isNull(this.text_)) {
-    this.text_.setMutable(mutable);
-  }
-  this.mutable_ = mutable;
 };
 
 
@@ -174,9 +149,6 @@ ol.style.createStyleFunction = function(obj) {
     } else {
       goog.asserts.assertInstanceof(obj, ol.style.Style);
       styles = [obj];
-    }
-    for (var i = styles.length - 1; i >= 0; --i) {
-      styles[i].setMutable(false);
     }
     styleFunction = goog.functions.constant(styles);
   }
