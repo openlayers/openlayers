@@ -165,8 +165,8 @@ ol.style.Text.prototype.getTextBaseline = function() {
 
 
 /**
- * Set the font. Use `setStyle()` on the feature, layer or feature overlay
- * for changes to take effect.
+ * Set the font. Call `setStyle()` or `dispatchChangeEvent()` on feature, layer
+ * or feature overlay for changes to take effect.
  *
  * @param {string|undefined} font Font.
  * @api
@@ -177,8 +177,8 @@ ol.style.Text.prototype.setFont = function(font) {
 
 
 /**
- * Set the x offset. Use `setStyle()` on the feature, layer or feature overlay
- * for changes to take effect.
+ * Set the x offset. Call `setStyle()` or `dispatchChangeEvent()` on feature,
+ * layer or feature overlay for changes to take effect.
  *
  * @param {number} offsetX Horizontal text offset.
  */
@@ -188,8 +188,8 @@ ol.style.Text.prototype.setOffsetX = function(offsetX) {
 
 
 /**
- * Set the y offset. Use `setStyle()` on the feature, layer or feature overlay
- * for changes to take effect.
+ * Set the y offset. Call `setStyle()` or `dispatchChangeEvent()` on feature,
+ * layer or feature overlay for changes to take effect.
  *
  * @param {number} offsetY Vertical text offset.
  */
@@ -199,8 +199,8 @@ ol.style.Text.prototype.setOffsetY = function(offsetY) {
 
 
 /**
- * Set the fill. Use `setStyle()` on the feature, layer or feature overlay
- * for changes to take effect.
+ * Set the fill. Call `setStyle()` or `dispatchChangeEvent()` on feature, layer
+ * or feature overlay for changes to take effect.
  *
  * @param {ol.style.Fill} fill Fill style.
  * @api
@@ -211,8 +211,8 @@ ol.style.Text.prototype.setFill = function(fill) {
 
 
 /**
- * Set the rotation. Use `setStyle()` on the feature, layer or feature overlay
- * for changes to take effect.
+ * Set the rotation. Call `setStyle()` or `dispatchChangeEvent()` on feature,
+ * layer or feature overlay for changes to take effect.
  *
  * @param {number|undefined} rotation Rotation.
  * @api
@@ -223,8 +223,8 @@ ol.style.Text.prototype.setRotation = function(rotation) {
 
 
 /**
- * Set the scale. Use `setStyle()` on the feature, layer or feature overlay
- * for changes to take effect.
+ * Set the scale. Call `setStyle()` or `dispatchChangeEvent()` on feature, layer
+ * or feature overlay for changes to take effect.
  *
  * @param {number|undefined} scale Scale.
  * @api
@@ -235,8 +235,8 @@ ol.style.Text.prototype.setScale = function(scale) {
 
 
 /**
- * Set the stroke. Use `setStyle()` on the feature, layer or feature overlay
- * for changes to take effect.
+ * Set the stroke. Call `setStyle()` or `dispatchChangeEvent()` on feature,
+ * layer or feature overlay for changes to take effect.
  *
  * @param {ol.style.Stroke} stroke Stroke style.
  * @api
@@ -247,8 +247,8 @@ ol.style.Text.prototype.setStroke = function(stroke) {
 
 
 /**
- * Set the text. Use `setStyle()` on the feature, layer or feature overlay
- * for changes to take effect.
+ * Set the text. Call `setStyle()` or `dispatchChangeEvent()` on feature, layer
+ * or feature overlay for changes to take effect.
  *
  * @param {string|undefined} text Text.
  * @api
@@ -259,8 +259,8 @@ ol.style.Text.prototype.setText = function(text) {
 
 
 /**
- * Set the text alignment. Use `setStyle()` on the feature, layer or feature
- * overlay for changes to take effect.
+ * Set the text alignment. Call `setStyle()` or `dispatchChangeEvent()` on
+ * feature, layer or feature overlay for changes to take effect.
  *
  * @param {string|undefined} textAlign Text align.
  * @api
@@ -271,8 +271,8 @@ ol.style.Text.prototype.setTextAlign = function(textAlign) {
 
 
 /**
- * Set the text baseline. Use `setStyle()` on the feature, layer or feature
- * overlay for changes to take effect.
+ * Set the text baseline. Call `setStyle()` or `dispatchChangeEvent()` on
+ * feature, layer or feature overlay for changes to take effect.
  *
  * @param {string|undefined} textBaseline Text baseline.
  * @api

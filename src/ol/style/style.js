@@ -101,8 +101,8 @@ ol.style.Style.prototype.getZIndex = function() {
 
 
 /**
- * Set the zIndex. Use `setStyle()` on the feature, layer or feature overlay
- * for changes to take effect.
+ * Set the zIndex. Call `setStyle()` or `dispatchChangeEvent()` on feature,
+ * layer or feature overlay for changes to take effect.
  *
  * @param {number|undefined} zIndex ZIndex.
  * @api

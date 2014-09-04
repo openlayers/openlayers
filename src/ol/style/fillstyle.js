@@ -32,8 +32,8 @@ ol.style.Fill.prototype.getColor = function() {
 
 
 /**
- * Set the color. Use `setStyle()` on the feature, layer or feature overlay
- * for changes to take effect.
+ * Set the color. Call `setStyle()` or `dispatchChangeEvent()` on feature, layer
+ * or feature overlay for changes to take effect.
  *
  * @param {ol.Color|string} color Color.
  * @api

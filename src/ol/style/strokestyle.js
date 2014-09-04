@@ -110,8 +110,8 @@ ol.style.Stroke.prototype.getWidth = function() {
 
 
 /**
- * Set the color. Use `setStyle()` on the feature, layer or feature overlay
- * for changes to take effect.
+ * Set the color. Call `setStyle()` or `dispatchChangeEvent()` on feature, layer
+ * or feature overlay for changes to take effect.
  *
  * @param {ol.Color|string} color Color.
  * @api
@@ -122,8 +122,8 @@ ol.style.Stroke.prototype.setColor = function(color) {
 
 
 /**
- * Set the line cap. Use `setStyle()` on the feature, layer or feature overlay
- * for changes to take effect.
+ * Set the line cap. Call `setStyle()` or `dispatchChangeEvent()` on feature,
+ * layer or feature overlay for changes to take effect.
  *
  * @param {string|undefined} lineCap Line cap.
  * @api
@@ -134,8 +134,8 @@ ol.style.Stroke.prototype.setLineCap = function(lineCap) {
 
 
 /**
- * Set the line dash. Use `setStyle()` on the feature, layer or feature overlay
- * for changes to take effect.
+ * Set the line dash. Call `setStyle()` or `dispatchChangeEvent()` on feature,
+ * layer or feature overlay for changes to take effect.
  *
  * @param {Array.<number>} lineDash Line dash.
  * @api
@@ -146,8 +146,8 @@ ol.style.Stroke.prototype.setLineDash = function(lineDash) {
 
 
 /**
- * Set the line join. Use `setStyle()` on the feature, layer or feature overlay
- * for changes to take effect.
+ * Set the line join. Call `setStyle()` or `dispatchChangeEvent()` on feature,
+ * layer or feature overlay for changes to take effect.
  *
  * @param {string|undefined} lineJoin Line join.
  * @api
@@ -158,8 +158,8 @@ ol.style.Stroke.prototype.setLineJoin = function(lineJoin) {
 
 
 /**
- * Set the miter limit. Use `setStyle()` on the feature, layer or feature
- * overlay for changes to take effect.
+ * Set the miter limit. Call `setStyle()` or `dispatchChangeEvent()` on feature,
+ * layer or feature overlay for changes to take effect.
  *
  * @param {number|undefined} miterLimit Miter limit.
  * @api
@@ -170,8 +170,8 @@ ol.style.Stroke.prototype.setMiterLimit = function(miterLimit) {
 
 
 /**
- * Set the width. Use `setStyle()` on the feature, layer or feature overlay
- * for changes to take effect.
+ * Set the width. Call `setStyle()` or `dispatchChangeEvent()` on feature, layer
+ * or feature overlay for changes to take effect.
  *
  * @param {number|undefined} width Width.
  * @api
