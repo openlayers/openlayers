@@ -3,6 +3,17 @@ goog.provide('ol.test.source.XYZ');
 
 describe('ol.source.XYZ', function() {
 
+  describe('constructor', function() {
+
+    it('can be constructed with a custom tile size', function() {
+      var tileSource = new ol.source.XYZ({
+        tileSize: 512
+      });
+      expect(tileSource.getTileGrid().getTileSize(0)).to.be(512);
+    });
+
+  });
+
   describe('tileUrlFunction', function() {
 
     var xyzTileSource, tileGrid;

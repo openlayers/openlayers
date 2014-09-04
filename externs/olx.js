@@ -5053,6 +5053,7 @@ olx.source.WMTSOptions.prototype.urls;
  *     minZoom: (number|undefined),
  *     tileLoadFunction: (ol.TileLoadFunctionType|undefined),
  *     tilePixelRatio: (number|undefined),
+ *     tileSize: (number|undefined),
  *     tileUrlFunction: (ol.TileUrlFunctionType|undefined),
  *     url: (string|undefined),
  *     urls: (Array.<string>|undefined),
@@ -5127,6 +5128,14 @@ olx.source.XYZOptions.prototype.tileLoadFunction;
  * @api
  */
 olx.source.XYZOptions.prototype.tilePixelRatio;
+
+
+/**
+ * The tile size used by the tile service. Default is `256` pixels.
+ * @type {number|undefined}
+ * @api
+ */
+olx.source.XYZOptions.prototype.tileSize;
 
 
 /**
