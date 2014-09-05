@@ -101,8 +101,10 @@ ol.style.Style.prototype.getZIndex = function() {
 
 
 /**
- * Set the zIndex. Call `setStyle()` or `dispatchChangeEvent()` on feature,
- * layer or feature overlay for changes to take effect.
+ * Set the zIndex. When this style is used as a layer, feature or ImageVector
+ * source style, call `changed()` on the layer, feature or ImageVector source
+ * for the change to take effect. When used as a FeatureOverlay style, call
+ * `render()` on the map.
  *
  * @param {number|undefined} zIndex ZIndex.
  * @api

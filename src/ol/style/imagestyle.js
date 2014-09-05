@@ -151,8 +151,10 @@ ol.style.Image.prototype.getSize = goog.abstractMethod;
 
 
 /**
- * Set the zIndex. Call `setStyle()` or `dispatchChangeEvent()` on feature,
- * layer or feature overlay for changes to take effect.
+ * Set the opacity. When this style is used as a layer, feature or ImageVector
+ * source style, call `changed()` on the layer, feature or ImageVector source
+ * for the change to take effect. When used as a FeatureOverlay style, call
+ * `render()` on the map.
  *
  * @param {number} opacity Opacity.
  */
@@ -162,9 +164,10 @@ ol.style.Image.prototype.setOpacity = function(opacity) {
 
 
 /**
- * Set whether to rotate the style with the view. Call `setStyle()` or
- * `dispatchChangeEvent()` on  feature, layer or feature overlay for changes to
- * take effect.
+ * Set whether to rotate the style with the view. When this style is used as a
+ * layer, feature or ImageVector source style, call `changed()` on the layer,
+ * feature or ImageVector source for the change to take effect. When used as a
+ * FeatureOverlay style, call `render()` on the map.
  *
  * @param {boolean} rotateWithView Rotate with map.
  */
@@ -174,8 +177,10 @@ ol.style.Image.prototype.setRotateWithView = function(rotateWithView) {
 
 
 /**
- * Set the rotation. Call `setStyle()` or `dispatchChangeEvent()` on feature,
- * layer or feature overlay for changes to take effect.
+ * Set the rotation. When this style is used as a layer, feature or ImageVector
+ * source style, call `changed()` on the layer, feature or ImageVector source
+ * for the change to take effect. When used as a FeatureOverlay style, call
+ * `render()` on the map.
  *
  * @param {number} rotation Rotation.
  * @api
@@ -186,8 +191,10 @@ ol.style.Image.prototype.setRotation = function(rotation) {
 
 
 /**
- * Set the scale. Call `setStyle()` or `dispatchChangeEvent()` on feature, layer
- * or feature overlay for changes to take effect.
+ * Set the scale. When this style is used as a layer, feature or ImageVector
+ * source style, call `changed()` on the layer, feature or ImageVector source
+ * for the change to take effect. When used as a FeatureOverlay style, call
+ * `render()` on the map.
  *
  * @param {number} scale Scale.
  * @api
@@ -198,9 +205,10 @@ ol.style.Image.prototype.setScale = function(scale) {
 
 
 /**
- * Set whether to snap the image to the closest pixel. Call `setStyle()` or
- * `dispatchChangeEvent()` on feature, layer or feature overlay for changes to
- * take effect.
+ * Set whether to snap the image to the closest pixel. When this style is used
+ * as a layer, feature or ImageVector source style, call `changed()` on the
+ * layer, feature or ImageVector source for the change to take effect. When used
+ * as a FeatureOverlay style, call `render()` on the map.
  *
  * @param {boolean} snapToPixel Snap to pixel?
  */

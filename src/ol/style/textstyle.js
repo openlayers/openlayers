@@ -165,8 +165,10 @@ ol.style.Text.prototype.getTextBaseline = function() {
 
 
 /**
- * Set the font. Call `setStyle()` or `dispatchChangeEvent()` on feature, layer
- * or feature overlay for changes to take effect.
+ * Set the font. When this style is used as a layer, feature or ImageVector
+ * source style, call `changed()` on the layer, feature or ImageVector source
+ * for the change to take effect. When used as a FeatureOverlay style, call
+ * `render()` on the map.
  *
  * @param {string|undefined} font Font.
  * @api
@@ -177,8 +179,10 @@ ol.style.Text.prototype.setFont = function(font) {
 
 
 /**
- * Set the x offset. Call `setStyle()` or `dispatchChangeEvent()` on feature,
- * layer or feature overlay for changes to take effect.
+ * Set the x offset. When this style is used as a layer, feature or ImageVector
+ * source style, call `changed()` on the layer, feature or ImageVector source
+ * for the change to take effect. When used as a FeatureOverlay style, call
+ * `render()` on the map.
  *
  * @param {number} offsetX Horizontal text offset.
  */
@@ -188,8 +192,10 @@ ol.style.Text.prototype.setOffsetX = function(offsetX) {
 
 
 /**
- * Set the y offset. Call `setStyle()` or `dispatchChangeEvent()` on feature,
- * layer or feature overlay for changes to take effect.
+ * Set the y offset. When this style is used as a layer, feature or ImageVector
+ * source style, call `changed()` on the layer, feature or ImageVector source
+ * for the change to take effect. When used as a FeatureOverlay style, call
+ * `render()` on the map.
  *
  * @param {number} offsetY Vertical text offset.
  */
@@ -199,8 +205,10 @@ ol.style.Text.prototype.setOffsetY = function(offsetY) {
 
 
 /**
- * Set the fill. Call `setStyle()` or `dispatchChangeEvent()` on feature, layer
- * or feature overlay for changes to take effect.
+ * Set the fill. When this style is used as a layer, feature or ImageVector
+ * source style, call `changed()` on the layer, feature or ImageVector source
+ * for the change to take effect. When used as a FeatureOverlay style, call
+ * `render()` on the map.
  *
  * @param {ol.style.Fill} fill Fill style.
  * @api
@@ -211,8 +219,10 @@ ol.style.Text.prototype.setFill = function(fill) {
 
 
 /**
- * Set the rotation. Call `setStyle()` or `dispatchChangeEvent()` on feature,
- * layer or feature overlay for changes to take effect.
+ * Set the rotation. When this style is used as a layer, feature or ImageVector
+ * source style, call `changed()` on the layer, feature or ImageVector source
+ * for the change to take effect. When used as a FeatureOverlay style, call
+ * `render()` on the map.
  *
  * @param {number|undefined} rotation Rotation.
  * @api
@@ -223,8 +233,10 @@ ol.style.Text.prototype.setRotation = function(rotation) {
 
 
 /**
- * Set the scale. Call `setStyle()` or `dispatchChangeEvent()` on feature, layer
- * or feature overlay for changes to take effect.
+ * Set the scale. When this style is used as a layer, feature or ImageVector
+ * source style, call `changed()` on the layer, feature or ImageVector source
+ * for the change to take effect. When used as a FeatureOverlay style, call
+ * `render()` on the map.
  *
  * @param {number|undefined} scale Scale.
  * @api
@@ -235,8 +247,10 @@ ol.style.Text.prototype.setScale = function(scale) {
 
 
 /**
- * Set the stroke. Call `setStyle()` or `dispatchChangeEvent()` on feature,
- * layer or feature overlay for changes to take effect.
+ * Set the stroke. When this style is used as a layer, feature or ImageVector
+ * source style, call `changed()` on the layer, feature or ImageVector source
+ * for the change to take effect. When used as a FeatureOverlay style, call
+ * `render()` on the map.
  *
  * @param {ol.style.Stroke} stroke Stroke style.
  * @api
@@ -247,8 +261,10 @@ ol.style.Text.prototype.setStroke = function(stroke) {
 
 
 /**
- * Set the text. Call `setStyle()` or `dispatchChangeEvent()` on feature, layer
- * or feature overlay for changes to take effect.
+ * Set the text. When this style is used as a layer, feature or ImageVector
+ * source style, call `changed()` on the layer, feature or ImageVector source
+ * for the change to take effect. When used as a FeatureOverlay style, call
+ * `render()` on the map.
  *
  * @param {string|undefined} text Text.
  * @api
@@ -259,8 +275,10 @@ ol.style.Text.prototype.setText = function(text) {
 
 
 /**
- * Set the text alignment. Call `setStyle()` or `dispatchChangeEvent()` on
- * feature, layer or feature overlay for changes to take effect.
+ * Set the text alignment. When this style is used as a layer, feature or
+ * ImageVector source style, call `changed()` on the layer, feature or
+ * ImageVector source for the change to take effect. When used as a
+ * FeatureOverlay style, call `render()` on the map.
  *
  * @param {string|undefined} textAlign Text align.
  * @api
@@ -271,8 +289,10 @@ ol.style.Text.prototype.setTextAlign = function(textAlign) {
 
 
 /**
- * Set the text baseline. Call `setStyle()` or `dispatchChangeEvent()` on
- * feature, layer or feature overlay for changes to take effect.
+ * Set the text baseline. When this style is used as a layer, feature or
+ * ImageVector source style, call `changed()` on the layer, feature or
+ * ImageVector source for the change to take effect. When used as a
+ * FeatureOverlay style, call `render()` on the map.
  *
  * @param {string|undefined} textBaseline Text baseline.
  * @api
