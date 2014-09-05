@@ -40,6 +40,7 @@ ol.control.ZoomToExtent = function(opt_options) {
   }, tipLabel);
   var button = goog.dom.createDom(goog.dom.TagName.BUTTON, {
     'class': 'ol-has-tooltip'
+    'type' : 'button'
   });
   goog.dom.appendChild(button, tip);
 
@@ -74,6 +75,7 @@ goog.inherits(ol.control.ZoomToExtent, ol.control.Control);
  * @private
  */
 ol.control.ZoomToExtent.prototype.handleClick_ = function(event) {
+  event.browserEvent.preventDefault();
   if (event.screenX !== 0 && event.screenY !== 0) {
     return;
   }
@@ -86,7 +88,6 @@ ol.control.ZoomToExtent.prototype.handleClick_ = function(event) {
  * @private
  */
 ol.control.ZoomToExtent.prototype.handlePointerUp_ = function(pointerEvent) {
-  pointerEvent.browserEvent.preventDefault();
   this.handleZoomToExtent_();
 };
 
