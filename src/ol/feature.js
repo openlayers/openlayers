@@ -7,10 +7,6 @@ goog.require('goog.events.EventType');
 goog.require('goog.functions');
 goog.require('ol.Object');
 goog.require('ol.geom.Geometry');
-goog.require('ol.geom.GeometryType');
-goog.require('ol.style.Circle');
-goog.require('ol.style.Fill');
-goog.require('ol.style.Stroke');
 goog.require('ol.style.Style');
 
 
@@ -21,7 +17,9 @@ goog.require('ol.style.Style');
  * attribute properties, similar to the features in vector file formats like
  * GeoJSON.
  *
- * Features can be styled individually or use the style of their vector layer.
+ * Features can be styled individually with `setStyle`; otherwise they use the
+ * style of their vector layer or feature overlay.
+ *
  * Note that attribute properties are set as {@link ol.Object} properties on
  * the feature object, so they are observable, and have get/set accessors.
  *
@@ -57,7 +55,7 @@ goog.require('ol.style.Style');
  *     You may pass a Geometry object directly, or an object literal
  *     containing properties.  If you pass an object literal, you may
  *     include a Geometry associated with a `geometry` key.
- * @api
+ * @api stable
  */
 ol.Feature = function(opt_geometryOrProperties) {
 
@@ -119,7 +117,7 @@ goog.inherits(ol.Feature, ol.Object);
  * Clone this feature. If the original feature has a geometry it
  * is also cloned. The feature id is not set in the clone.
  * @return {ol.Feature} The clone.
- * @api
+ * @api stable
  */
 ol.Feature.prototype.clone = function() {
   var clone = new ol.Feature(this.getProperties());
@@ -141,7 +139,7 @@ ol.Feature.prototype.clone = function() {
  *     with this feature using the current geometry name property.  By
  *     default, this is `geometry` but it may be changed by calling
  *     `setGeometryName`.
- * @api
+ * @api stable
  * @observable
  */
 ol.Feature.prototype.getGeometry = function() {
@@ -156,7 +154,7 @@ goog.exportProperty(
 
 /**
  * @return {number|string|undefined} Id.
- * @api
+ * @api stable
  */
 ol.Feature.prototype.getId = function() {
   return this.id_;
@@ -167,7 +165,7 @@ ol.Feature.prototype.getId = function() {
  * @return {string} Get the property name associated with the geometry for
  *     this feature.  By default, this is `geometry` but it may be changed by
  *     calling `setGeometryName`.
- * @api
+ * @api stable
  */
 ol.Feature.prototype.getGeometryName = function() {
   return this.geometryName_;
@@ -176,10 +174,10 @@ ol.Feature.prototype.getGeometryName = function() {
 
 /**
  * @return {ol.style.Style|Array.<ol.style.Style>|
- *     ol.feature.FeatureStyleFunction} Return the style provided in the
- *     constructor options or the last call to setStyle in the same format
- *     that it was provided in.
- * @api
+ *     ol.feature.FeatureStyleFunction} Return the style as set by setStyle in
+ *     the same format that it was provided in. If setStyle has not been run,
+ *     return `undefined`.
+ * @api stable
  */
 ol.Feature.prototype.getStyle = function() {
   return this.style_;
@@ -189,7 +187,7 @@ ol.Feature.prototype.getStyle = function() {
 /**
  * @return {ol.feature.FeatureStyleFunction|undefined} Return a function
  * representing the current style of this feature.
- * @api
+ * @api stable
  */
 ol.Feature.prototype.getStyleFunction = function() {
   return this.styleFunction_;
@@ -226,7 +224,7 @@ ol.Feature.prototype.handleGeometryChanged_ = function() {
  * feature. This will update the property associated with the current
  * geometry property name.  By default, this is `geometry` but it can be
  * changed by calling `setGeometryName`.
- * @api
+ * @api stable
  * @observable
  */
 ol.Feature.prototype.setGeometry = function(geometry) {
@@ -241,7 +239,7 @@ goog.exportProperty(
 /**
  * @param {ol.style.Style|Array.<ol.style.Style>|
  *     ol.feature.FeatureStyleFunction} style Set the style for this feature.
- * @api
+ * @api stable
  */
 ol.Feature.prototype.setStyle = function(style) {
   this.style_ = style;
@@ -254,7 +252,7 @@ ol.Feature.prototype.setStyle = function(style) {
  * @param {number|string|undefined} id Set a unique id for this feature.
  * The id may be used to retrieve a feature from a vector source with the
  * {@link ol.source.Vector#getFeatureById} method.
- * @api
+ * @api stable
  */
 ol.Feature.prototype.setId = function(id) {
   this.id_ = id;
@@ -265,7 +263,7 @@ ol.Feature.prototype.setId = function(id) {
 /**
  * @param {string} name Set the property name from which this feature's
  *     geometry will be fetched when calling `getGeometry`.
- * @api
+ * @api stable
  */
 ol.Feature.prototype.setGeometryName = function(name) {
   goog.events.unlisten(
@@ -286,7 +284,7 @@ ol.Feature.prototype.setGeometryName = function(name) {
  * {@link ol.Feature} to be styled.
  *
  * @typedef {function(this: ol.Feature, number): Array.<ol.style.Style>}
- * @api
+ * @api stable
  */
 ol.feature.FeatureStyleFunction;
 
@@ -322,68 +320,4 @@ ol.feature.createFeatureStyleFunction = function(obj) {
     styleFunction = goog.functions.constant(styles);
   }
   return styleFunction;
-};
-
-
-/**
- * Default styles for editing features.
- * @return {Object.<ol.geom.GeometryType, Array.<ol.style.Style>>} Styles
- */
-ol.feature.createDefaultEditingStyles = function() {
-  /** @type {Object.<ol.geom.GeometryType, Array.<ol.style.Style>>} */
-  var styles = {};
-  var white = [255, 255, 255, 1];
-  var blue = [0, 153, 255, 1];
-  var width = 3;
-  styles[ol.geom.GeometryType.POLYGON] = [
-    new ol.style.Style({
-      fill: new ol.style.Fill({
-        color: [255, 255, 255, 0.5]
-      })
-    })
-  ];
-  styles[ol.geom.GeometryType.MULTI_POLYGON] =
-      styles[ol.geom.GeometryType.POLYGON];
-
-  styles[ol.geom.GeometryType.LINE_STRING] = [
-    new ol.style.Style({
-      stroke: new ol.style.Stroke({
-        color: white,
-        width: width + 2
-      })
-    }),
-    new ol.style.Style({
-      stroke: new ol.style.Stroke({
-        color: blue,
-        width: width
-      })
-    })
-  ];
-  styles[ol.geom.GeometryType.MULTI_LINE_STRING] =
-      styles[ol.geom.GeometryType.LINE_STRING];
-
-  styles[ol.geom.GeometryType.POINT] = [
-    new ol.style.Style({
-      image: new ol.style.Circle({
-        radius: width * 2,
-        fill: new ol.style.Fill({
-          color: blue
-        }),
-        stroke: new ol.style.Stroke({
-          color: white,
-          width: width / 2
-        })
-      }),
-      zIndex: Infinity
-    })
-  ];
-  styles[ol.geom.GeometryType.MULTI_POINT] =
-      styles[ol.geom.GeometryType.POINT];
-
-  styles[ol.geom.GeometryType.GEOMETRY_COLLECTION] =
-      styles[ol.geom.GeometryType.POLYGON].concat(
-          styles[ol.geom.GeometryType.POINT]
-      );
-
-  return styles;
 };

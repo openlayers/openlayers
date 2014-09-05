@@ -23,7 +23,7 @@ ol.source.TopoJSON = function(opt_options) {
     attributions: options.attributions,
     extent: options.extent,
     format: new ol.format.TopoJSON({
-      defaultProjection: options.defaultProjection
+      defaultDataProjection: options.defaultProjection
     }),
     logo: options.logo,
     object: options.object,

@@ -1,6 +1,6 @@
-goog.require('ol.BrowserFeature');
 goog.require('ol.Map');
 goog.require('ol.View');
+goog.require('ol.has');
 goog.require('ol.layer.Tile');
 goog.require('ol.source.WMTS');
 goog.require('ol.tilegrid.WMTS');
@@ -20,7 +20,7 @@ var urls = [
 // HiDPI support:
 // * Use 'bmaphidpi' layer (pixel ratio 2) for device pixel ratio > 1
 // * Use 'geolandbasemap' layer (pixel ratio 1) for device pixel ratio == 1
-var hiDPI = ol.BrowserFeature.DEVICE_PIXEL_RATIO > 1;
+var hiDPI = ol.has.DEVICE_PIXEL_RATIO > 1;
 
 var source = new ol.source.WMTS({
   projection: 'EPSG:3857',

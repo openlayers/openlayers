@@ -1,6 +1,6 @@
-goog.require('ol.BrowserFeature');
 goog.require('ol.Map');
 goog.require('ol.View');
+goog.require('ol.has');
 goog.require('ol.layer.Tile');
 goog.require('ol.proj');
 goog.require('ol.source.BingMaps');
@@ -15,7 +15,7 @@ function setResetSaturationButtonHTML() {
       layer.getSaturation().toFixed(2) + ')';
 }
 
-if (!ol.BrowserFeature.HAS_WEBGL) {
+if (!ol.has.WEBGL) {
   var info = document.getElementById('no-webgl');
   /**
    * display error message

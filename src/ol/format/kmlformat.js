@@ -2,6 +2,7 @@
 // FIXME why does node.getAttribute return an unknown type?
 // FIXME text
 // FIXME serialize arbitrary feature properties
+// FIXME don't parse style if extractStyles is false
 
 goog.provide('ol.format.KML');
 
@@ -16,6 +17,7 @@ goog.require('ol.Feature');
 goog.require('ol.array');
 goog.require('ol.color');
 goog.require('ol.feature');
+goog.require('ol.format.Feature');
 goog.require('ol.format.XMLFeature');
 goog.require('ol.format.XSD');
 goog.require('ol.geom.Geometry');
@@ -62,13 +64,18 @@ ol.format.KMLGxTrackObject_;
  * @constructor
  * @extends {ol.format.XMLFeature}
  * @param {olx.format.KMLOptions=} opt_options Options.
- * @api
+ * @api stable
  */
 ol.format.KML = function(opt_options) {
 
   var options = goog.isDef(opt_options) ? opt_options : {};
 
   goog.base(this);
+
+  /**
+   * @inheritDoc
+   */
+  this.defaultDataProjection = ol.proj.get('EPSG:4326');
 
   var defaultStyle = goog.isDef(options.defaultStyle) ?
       options.defaultStyle : ol.format.KML.DEFAULT_STYLE_ARRAY_;
@@ -97,6 +104,13 @@ ol.format.KML = function(opt_options) {
       return defaultStyle;
     }
   };
+
+  /**
+   * @private
+   * @type {boolean}
+   */
+  this.extractStyles_ = goog.isDef(options.extractStyles) ?
+      options.extractStyles : true;
 
   /**
    * @private
@@ -1426,8 +1440,14 @@ ol.format.KML.prototype.readPlacemark_ = function(node, objectStack) {
   if (!goog.isNull(id)) {
     feature.setId(id);
   }
+  var options = /** @type {olx.format.ReadOptions} */ (objectStack[0]);
+  if (goog.isDefAndNotNull(object.geometry)) {
+    ol.format.Feature.transformWithOptions(object.geometry, false, options);
+  }
   feature.setProperties(object);
-  feature.setStyle(this.featureStyleFunction_);
+  if (this.extractStyles_) {
+    feature.setStyle(this.featureStyleFunction_);
+  }
   return feature;
 };
 
@@ -1487,8 +1507,9 @@ ol.format.KML.prototype.readSharedStyleMap_ = function(node, objectStack) {
  *
  * @function
  * @param {ArrayBuffer|Document|Node|Object|string} source Source.
+ * @param {olx.format.ReadOptions=} opt_options Read options.
  * @return {ol.Feature} Feature.
- * @api
+ * @api stable
  */
 ol.format.KML.prototype.readFeature;
 
@@ -1496,13 +1517,14 @@ ol.format.KML.prototype.readFeature;
 /**
  * @inheritDoc
  */
-ol.format.KML.prototype.readFeatureFromNode = function(node) {
+ol.format.KML.prototype.readFeatureFromNode = function(node, opt_options) {
   goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT);
   if (!goog.array.contains(ol.format.KML.NAMESPACE_URIS_, node.namespaceURI)) {
     return null;
   }
   goog.asserts.assert(node.localName == 'Placemark');
-  var feature = this.readPlacemark_(node, []);
+  var feature = this.readPlacemark_(
+      node, [this.getReadOptions(node, opt_options)]);
   if (goog.isDef(feature)) {
     return feature;
   } else {
@@ -1516,8 +1538,9 @@ ol.format.KML.prototype.readFeatureFromNode = function(node) {
  *
  * @function
  * @param {ArrayBuffer|Document|Node|Object|string} source Source.
+ * @param {olx.format.ReadOptions=} opt_options Read options.
  * @return {Array.<ol.Feature>} Features.
- * @api
+ * @api stable
  */
 ol.format.KML.prototype.readFeatures;
 
@@ -1525,7 +1548,7 @@ ol.format.KML.prototype.readFeatures;
 /**
  * @inheritDoc
  */
-ol.format.KML.prototype.readFeaturesFromNode = function(node) {
+ol.format.KML.prototype.readFeaturesFromNode = function(node, opt_options) {
   goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT);
   if (!goog.array.contains(ol.format.KML.NAMESPACE_URIS_, node.namespaceURI)) {
     return [];
@@ -1533,14 +1556,16 @@ ol.format.KML.prototype.readFeaturesFromNode = function(node) {
   var features;
   var localName = ol.xml.getLocalName(node);
   if (localName == 'Document' || localName == 'Folder') {
-    features = this.readDocumentOrFolder_(node, []);
+    features = this.readDocumentOrFolder_(
+        node, [this.getReadOptions(node, opt_options)]);
     if (goog.isDef(features)) {
       return features;
     } else {
       return [];
     }
   } else if (localName == 'Placemark') {
-    var feature = this.readPlacemark_(node, []);
+    var feature = this.readPlacemark_(
+        node, [this.getReadOptions(node, opt_options)]);
     if (goog.isDef(feature)) {
       return [feature];
     } else {
@@ -1551,7 +1576,7 @@ ol.format.KML.prototype.readFeaturesFromNode = function(node) {
     var n;
     for (n = node.firstElementChild; !goog.isNull(n);
          n = n.nextElementSibling) {
-      var fs = this.readFeaturesFromNode(n);
+      var fs = this.readFeaturesFromNode(n, opt_options);
       if (goog.isDef(fs)) {
         goog.array.extend(features, fs);
       }
@@ -1566,7 +1591,7 @@ ol.format.KML.prototype.readFeaturesFromNode = function(node) {
 /**
  * @param {Document|Node|string} source Souce.
  * @return {string|undefined} Name.
- * @api
+ * @api stable
  */
 ol.format.KML.prototype.readName = function(source) {
   if (ol.xml.isDocument(source)) {
@@ -1636,7 +1661,7 @@ ol.format.KML.prototype.readNameFromNode = function(node) {
  * @function
  * @param {ArrayBuffer|Document|Node|Object|string} source Source.
  * @return {ol.proj.Projection} Projection.
- * @api
+ * @api stable
  */
 ol.format.KML.prototype.readProjection;
 
@@ -1645,7 +1670,7 @@ ol.format.KML.prototype.readProjection;
  * @inheritDoc
  */
 ol.format.KML.prototype.readProjectionFromDocument = function(doc) {
-  return ol.proj.get('EPSG:4326');
+  return this.defaultDataProjection;
 };
 
 
@@ -1653,7 +1678,7 @@ ol.format.KML.prototype.readProjectionFromDocument = function(doc) {
  * @inheritDoc
  */
 ol.format.KML.prototype.readProjectionFromNode = function(node) {
-  return ol.proj.get('EPSG:4326');
+  return this.defaultDataProjection;
 };
 
 
@@ -1953,9 +1978,14 @@ ol.format.KML.writePlacemark_ = function(node, feature, objectStack) {
       ol.xml.OBJECT_PROPERTY_NODE_FACTORY, values, objectStack, orderedKeys);
 
   // serialize geometry
+  var options = /** @type {olx.format.WriteOptions} */ (objectStack[0]);
+  var geometry = feature.getGeometry();
+  if (goog.isDefAndNotNull(geometry)) {
+    geometry =
+        ol.format.Feature.transformWithOptions(geometry, true, options);
+  }
   ol.xml.pushSerializeAndPop(context, ol.format.KML.PLACEMARK_SERIALIZERS_,
-      ol.format.KML.GEOMETRY_NODE_FACTORY_,
-      [feature.getGeometry()], objectStack);
+      ol.format.KML.GEOMETRY_NODE_FACTORY_, [geometry], objectStack);
 };
 
 
@@ -2494,8 +2524,9 @@ ol.format.KML.OUTER_BOUNDARY_NODE_FACTORY_ =
  *
  * @function
  * @param {Array.<ol.Feature>} features Features.
- * @return {ArrayBuffer|Node|Object|string} Result.
- * @api
+ * @param {olx.format.WriteOptions=} opt_options Options.
+ * @return {Node} Result.
+ * @api stable
  */
 ol.format.KML.prototype.writeFeatures;
 
@@ -2503,7 +2534,7 @@ ol.format.KML.prototype.writeFeatures;
 /**
  * @inheritDoc
  */
-ol.format.KML.prototype.writeFeaturesNode = function(features) {
+ol.format.KML.prototype.writeFeaturesNode = function(features, opt_options) {
   var kml = ol.xml.createElementNS(ol.format.KML.NAMESPACE_URIS_[4], 'kml');
   var xmlnsUri = 'http://www.w3.org/2000/xmlns/';
   var xmlSchemaInstanceUri = 'http://www.w3.org/2001/XMLSchema-instance';
@@ -2523,6 +2554,6 @@ ol.format.KML.prototype.writeFeaturesNode = function(features) {
   var orderedKeys = ol.format.KML.KML_SEQUENCE_[kml.namespaceURI];
   var values = ol.xml.makeSequence(properties, orderedKeys);
   ol.xml.pushSerializeAndPop(context, ol.format.KML.KML_SERIALIZERS_,
-      ol.xml.OBJECT_PROPERTY_NODE_FACTORY, values, [], orderedKeys);
+      ol.xml.OBJECT_PROPERTY_NODE_FACTORY, values, [opt_options], orderedKeys);
   return kml;
 };

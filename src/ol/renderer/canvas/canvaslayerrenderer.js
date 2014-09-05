@@ -45,6 +45,10 @@ ol.renderer.canvas.Layer.prototype.composeFrame =
   var image = this.getImage();
   if (!goog.isNull(image)) {
     var imageTransform = this.getImageTransform();
+    // for performance reasons, context.save / context.restore is not used
+    // to save and restore the transformation matrix and the opacity.
+    // see http://jsperf.com/context-save-restore-versus-variable
+    var alpha = context.globalAlpha;
     context.globalAlpha = layerState.opacity;
 
     // for performance reasons, context.setTransform is only used
@@ -67,6 +71,7 @@ ol.renderer.canvas.Layer.prototype.composeFrame =
       context.drawImage(image, 0, 0);
       context.setTransform(1, 0, 0, 1, 0, 0);
     }
+    context.globalAlpha = alpha;
   }
 
   this.dispatchPostComposeEvent(context, frameState);

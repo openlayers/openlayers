@@ -13,7 +13,6 @@ goog.require('ol.ViewHint');
 goog.require('ol.coordinate');
 goog.require('ol.events.condition');
 goog.require('ol.extent');
-goog.require('ol.feature');
 goog.require('ol.geom.GeometryType');
 goog.require('ol.geom.LineString');
 goog.require('ol.geom.MultiLineString');
@@ -23,6 +22,7 @@ goog.require('ol.geom.Point');
 goog.require('ol.geom.Polygon');
 goog.require('ol.interaction.Pointer');
 goog.require('ol.structs.RBush');
+goog.require('ol.style.Style');
 
 
 /**
@@ -133,7 +133,7 @@ ol.interaction.Modify = function(options) {
   };
 
   /**
-   * @type {ol.Collection}
+   * @type {ol.Collection.<ol.Feature>}
    * @private
    */
   this.features_ = options.features;
@@ -772,7 +772,7 @@ ol.interaction.Modify.prototype.updateSegmentIndices_ = function(
  * @return {ol.style.StyleFunction} Styles.
  */
 ol.interaction.Modify.getDefaultStyleFunction = function() {
-  var style = ol.feature.createDefaultEditingStyles();
+  var style = ol.style.createDefaultEditingStyles();
   return function(feature, resolution) {
     return style[ol.geom.GeometryType.POINT];
   };

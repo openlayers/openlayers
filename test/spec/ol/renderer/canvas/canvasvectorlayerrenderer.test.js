@@ -58,6 +58,44 @@ describe('ol.renderer.canvas.VectorLayer', function() {
 
   });
 
+  describe('#forEachFeatureAtPixel', function() {
+    var renderer;
+
+    beforeEach(function() {
+      var map = new ol.Map({});
+      var layer = new ol.layer.Vector({
+        source: new ol.source.Vector()
+      });
+      renderer = new ol.renderer.canvas.VectorLayer(
+          map.getRenderer(), layer);
+      var replayGroup = {};
+      renderer.replayGroup_ = replayGroup;
+      replayGroup.forEachGeometryAtPixel = function(extent, resolution,
+          rotation, coordinate, skippedFeaturesUids, callback) {
+        var geometry = new ol.geom.Point([0, 0]);
+        var feature = new ol.Feature();
+        callback(geometry, feature);
+        callback(geometry, feature);
+      };
+    });
+
+    it('calls callback once per feature', function() {
+      var spy = sinon.spy();
+      var coordinate = [0, 0];
+      var frameState = {
+        extent: [1, 1, 10, 10],
+        skippedFeatureUids: {},
+        viewState: {
+          resolution: 1,
+          rotation: 0
+        }
+      };
+      renderer.forEachFeatureAtPixel(
+          coordinate, frameState, spy, undefined);
+      expect(spy.callCount).to.be(1);
+    });
+  });
+
 });
 
 

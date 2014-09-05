@@ -17,7 +17,8 @@ Build configuration files are JSON files that are used to determine what should 
 
   * **exports** - `Array.<string>` An array of symbol names or patterns to be exported (names that are used in your application).  For example, including `"ol.Map"` will export the map namespace including the constructor.  Method names are prefixed with `#`.  So `"ol.Map#getViewport"` will export the map's `getViewport` method.  You can use a `*` at the end to match multiple names.  The pattern `"ol.Map#*"` will export all exportable map methods.  
    Note that only the 'exportable' names can be listed here, that is, those that are part of the supported API (see apidoc/readme.md for more details). If you want to include a property or method that is not part of the API (and be aware that these may change or be removed), you will have to specifically export these yourself, for example, with `goog.exportProperty`.  
-   Note too that some names, like `getView` in `ol.Map`, are always exported (with `goog.exportProperty` in the source). You do not have to include these, though it does not harm if you do.
+   Note too that the supplied observable properties together with their accessors, like `getView` in `ol.Map`, are always exported (with `goog.exportProperty` in the source). You do not have to include these, though it does not harm if you do.
+   Finally, although the term 'exports' is not relevant for simple and whitespace builds, you should still list the names you use as you would with advanced. A build will be created with those classes/namespaces that contain these exported methods.
 
 **Optional configuration properties**
 
@@ -25,7 +26,7 @@ Build configuration files are JSON files that are used to determine what should 
 
     If the **compile** object is not provided, the build task will generate a "debug" build of the library without any variable naming or other minification.  This is suitable for development or debugging purposes, but should not be used in production.
 
-  * **src** - `Array.<string>` Optional array of [path patterns](https://github.com/isaacs/minimatch/blob/master/README.md) for source files.  By default, all of the library source files will be included.  If you want to provide additional source files to be configured together with the library, you need to provide path patterns to your source files *and* the library source files.  Note that these patterns are `/` delimited even on Windows.  There is a bit of special handling with the `src` config.
+  * **src** - `Array.<string>` Optional array of [path patterns](https://github.com/isaacs/minimatch/blob/master/README.md) for source files, that is, those that provide the symbols/names included in `exports`.  By default, all of the library source files will be included (`'src/**/*.js'`).  If you want to provide additional source files to be configured together with the library, you need to provide path patterns to your source files *and* the library source files.  Note that these patterns are `/` delimited even on Windows.  There is a bit of special handling with the `src` config.
 
   * **cwd** - `string` Optional path to be used as the current working directory.  All paths in the `compile` object are assumed to be relative to `cwd`.  Default is the root of the ol3 repository.
 
@@ -33,7 +34,7 @@ Build configuration files are JSON files that are used to determine what should 
 
   * **jvm** - `Array.<string>` Optional array of [command line options](https://github.com/google/closure-compiler/wiki/FAQ#what-are-the-recommended-java-vm-command-line-options) for the compiler.  By default, the Compiler is run with `['-server', '-XX:+TieredCompilation']`.
 
-The build task generates a list of source files sorted in dependency order and passes these to the compiler.  This takes the place of the `--js` options that you would use when calling the compiler directly.  If you want to add additional source files, typically you would use the `src` array described above.  This works with sources that have `goog.require` and/or `goog.provide` calls (which are used to sort dependencies).  If you want to force the inclusion of files that don't use `goog.require` or `goog.provide`, you can use the `js` property of the `compile` object.  Paths in the `js` array will be passed to the compiler **after** all other source files.
+The build task generates a list of source files sorted in dependency order and passes these to the compiler.  This takes the place of the `--js` options that you would use when calling the compiler directly.  If you want to add additional source files, typically you would use the `src` array described above.  This works with sources that have `goog.require` and/or `goog.provide` calls (which are used to sort dependencies).  If you want to force the inclusion of files that don't use `goog.require` or `goog.provide`, you can use the `js` property of the `compile` object.  Paths in the `js` array will be passed to the compiler **after** all other source files. Note that there is currently no facility for adding files to the build file after compilation; you will have to do this yourself if you want this.
 
 Paths in your config file should be relative to the current working directory (when you call `node tasks/build.js`).  Note that this means paths are not necessarily relative to the config file itself.
 
@@ -87,6 +88,16 @@ The `defines` section of `build.json` above lists common settings for the Closur
 ## `generate-exports.js`
 
 Called internally to generate a `build/exports.js` file optionally with a limited set of exports.
+
+
+## `generate-externs.js`
+
+Can be called to generate a Closure externs file for the full OpenLayers 3 API.
+See the `--help` option for more detail.
+
+    node tasks/generate-externs.js --help
+
+This is useful for projects that use the Closure Compiler to build, but want to use OpenLayers 3 as external library rather than building together with OpenLayers 3.
 
 
 ## `generate-info.js`

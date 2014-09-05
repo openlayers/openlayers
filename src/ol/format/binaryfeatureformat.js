@@ -1,10 +1,10 @@
 goog.provide('ol.format.BinaryFeature');
 
 goog.require('goog.asserts');
-goog.require('ol.BrowserFeature');
 goog.require('ol.binary.Buffer');
 goog.require('ol.format.Feature');
 goog.require('ol.format.FormatType');
+goog.require('ol.has');
 goog.require('ol.proj');
 
 
@@ -25,7 +25,7 @@ goog.inherits(ol.format.BinaryFeature, ol.format.Feature);
  * @return {ol.binary.Buffer} Buffer.
  */
 ol.format.BinaryFeature.getBuffer_ = function(source) {
-  if (ol.BrowserFeature.HAS_ARRAY_BUFFER && source instanceof ArrayBuffer) {
+  if (ol.has.ARRAY_BUFFER && source instanceof ArrayBuffer) {
     return new ol.binary.Buffer(source);
   } else if (goog.isString(source)) {
     return new ol.binary.Buffer(source);

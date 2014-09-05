@@ -8,6 +8,7 @@ goog.require('ol.source.Stamen');
 
 var vector = new ol.layer.Heatmap({
   source: new ol.source.KML({
+    extractStyles: false,
     projection: 'EPSG:3857',
     url: 'data/kml/2012_Earthquakes_Mag5.kml'
   }),

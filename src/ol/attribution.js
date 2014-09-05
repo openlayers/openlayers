@@ -23,7 +23,7 @@ goog.require('ol.TileRange');
  * @constructor
  * @param {olx.AttributionOptions} options Attribution options.
  * @struct
- * @api
+ * @api stable
  */
 ol.Attribution = function(options) {
 
@@ -45,6 +45,7 @@ ol.Attribution = function(options) {
 
 /**
  * @return {string} HTML.
+ * @api stable
  */
 ol.Attribution.prototype.getHTML = function() {
   return this.html_;

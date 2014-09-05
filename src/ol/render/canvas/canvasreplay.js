@@ -8,7 +8,6 @@ goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('goog.object');
 goog.require('goog.vec.Mat4');
-goog.require('ol.BrowserFeature');
 goog.require('ol.array');
 goog.require('ol.color');
 goog.require('ol.dom');
@@ -16,6 +15,7 @@ goog.require('ol.extent');
 goog.require('ol.extent.Relationship');
 goog.require('ol.geom.flat.simplify');
 goog.require('ol.geom.flat.transform');
+goog.require('ol.has');
 goog.require('ol.render.IReplayGroup');
 goog.require('ol.render.IVectorContext');
 goog.require('ol.render.canvas');
@@ -425,7 +425,7 @@ ol.render.canvas.Replay.prototype.replay_ = function(
         context.lineCap = /** @type {string} */ (instruction[3]);
         context.lineJoin = /** @type {string} */ (instruction[4]);
         context.miterLimit = /** @type {number} */ (instruction[5]);
-        if (ol.BrowserFeature.HAS_CANVAS_LINE_DASH) {
+        if (ol.has.CANVAS_LINE_DASH) {
           context.setLineDash(/** @type {Array.<number>} */ (instruction[6]));
         }
         ++i;
@@ -594,8 +594,7 @@ ol.render.canvas.Replay.prototype.drawText = goog.abstractMethod;
  * @param {ol.geom.Geometry} geometry Geometry.
  * @param {Object} data Opaque data object.
  */
-ol.render.canvas.Replay.prototype.endGeometry =
-    function(geometry, data) {
+ol.render.canvas.Replay.prototype.endGeometry = function(geometry, data) {
   goog.asserts.assert(!goog.isNull(this.beginGeometryInstruction1_));
   this.beginGeometryInstruction1_[3] = this.instructions.length;
   this.beginGeometryInstruction1_ = null;

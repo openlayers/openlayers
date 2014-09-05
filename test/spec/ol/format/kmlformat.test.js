@@ -119,6 +119,76 @@ describe('ol.format.KML', function() {
         expect(g.getCoordinates()).to.eql([1, 2, 3]);
       });
 
+      it('can transform and read Point geometries', function() {
+        var text =
+            '<kml xmlns="http://www.opengis.net/kml/2.2"' +
+            ' xmlns:gx="http://www.google.com/kml/ext/2.2"' +
+            ' xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"' +
+            ' xsi:schemaLocation="http://www.opengis.net/kml/2.2' +
+            ' https://developers.google.com/kml/schema/kml22gx.xsd">' +
+            '  <Placemark>' +
+            '    <Point>' +
+            '      <coordinates>1,2,3</coordinates>' +
+            '    </Point>' +
+            '  </Placemark>' +
+            '</kml>';
+        var fs = format.readFeatures(text, {
+          featureProjection: 'EPSG:3857'
+        });
+        expect(fs).to.have.length(1);
+        var f = fs[0];
+        expect(f).to.be.an(ol.Feature);
+        var g = f.getGeometry();
+        expect(g).to.be.an(ol.geom.Point);
+        var expectedPoint = ol.proj.transform([1, 2], 'EPSG:4326', 'EPSG:3857');
+        expectedPoint.push(3);
+        expect(g.getCoordinates()).to.eql(expectedPoint);
+      });
+
+      it('can read a single Point geometry', function() {
+        var text =
+            '<kml xmlns="http://www.opengis.net/kml/2.2"' +
+            ' xmlns:gx="http://www.google.com/kml/ext/2.2"' +
+            ' xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"' +
+            ' xsi:schemaLocation="http://www.opengis.net/kml/2.2' +
+            ' https://developers.google.com/kml/schema/kml22gx.xsd">' +
+            '  <Placemark>' +
+            '    <Point>' +
+            '      <coordinates>1,2,3</coordinates>' +
+            '    </Point>' +
+            '  </Placemark>' +
+            '</kml>';
+        var f = format.readFeature(text);
+        expect(f).to.be.an(ol.Feature);
+        var g = f.getGeometry();
+        expect(g).to.be.an(ol.geom.Point);
+        expect(g.getCoordinates()).to.eql([1, 2, 3]);
+      });
+
+      it('can transform and read a single Point geometry', function() {
+        var text =
+            '<kml xmlns="http://www.opengis.net/kml/2.2"' +
+            ' xmlns:gx="http://www.google.com/kml/ext/2.2"' +
+            ' xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"' +
+            ' xsi:schemaLocation="http://www.opengis.net/kml/2.2' +
+            ' https://developers.google.com/kml/schema/kml22gx.xsd">' +
+            '  <Placemark>' +
+            '    <Point>' +
+            '      <coordinates>1,2,3</coordinates>' +
+            '    </Point>' +
+            '  </Placemark>' +
+            '</kml>';
+        var f = format.readFeature(text, {
+          featureProjection: 'EPSG:3857'
+        });
+        expect(f).to.be.an(ol.Feature);
+        var g = f.getGeometry();
+        expect(g).to.be.an(ol.geom.Point);
+        var expectedPoint = ol.proj.transform([1, 2], 'EPSG:4326', 'EPSG:3857');
+        expectedPoint.push(3);
+        expect(g.getCoordinates()).to.eql(expectedPoint);
+      });
+
       it('can write XY Point geometries', function() {
         var layout = ol.geom.GeometryLayout.XY;
         var point = new ol.geom.Point([1, 2], layout);
@@ -144,6 +214,29 @@ describe('ol.format.KML', function() {
         var point = new ol.geom.Point([1, 2, 3], layout);
         var features = [new ol.Feature(point)];
         var node = format.writeFeatures(features);
+        var text =
+            '<kml xmlns="http://www.opengis.net/kml/2.2"' +
+            ' xmlns:gx="http://www.google.com/kml/ext/2.2"' +
+            ' xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"' +
+            ' xsi:schemaLocation="http://www.opengis.net/kml/2.2' +
+            ' https://developers.google.com/kml/schema/kml22gx.xsd">' +
+            '  <Placemark>' +
+            '    <Point>' +
+            '      <coordinates>1,2,3</coordinates>' +
+            '    </Point>' +
+            '  </Placemark>' +
+            '</kml>';
+        expect(node).to.xmleql(ol.xml.load(text));
+      });
+
+      it('can transform and write XYZ Point geometries', function() {
+        var layout = ol.geom.GeometryLayout.XYZ;
+        var point = new ol.geom.Point([1, 2, 3], layout).transform(
+            'EPSG:4326', 'EPSG:3857');
+        var features = [new ol.Feature(point)];
+        var node = format.writeFeatures(features, {
+          featureProjection: 'EPSG:3857'
+        });
         var text =
             '<kml xmlns="http://www.opengis.net/kml/2.2"' +
             ' xmlns:gx="http://www.google.com/kml/ext/2.2"' +
@@ -1890,6 +1983,28 @@ describe('ol.format.KML', function() {
         expect(fs[0]).to.be.an(ol.Feature);
       });
 
+      it('can transform and read a single feature from a Document', function() {
+        var text =
+            '<Document xmlns="http://earth.google.com/kml/2.2">' +
+            '  <Placemark>' +
+            '    <Point>' +
+            '      <coordinates>1,2,3</coordinates>' +
+            '    </Point>' +
+            '  </Placemark>' +
+            '</Document>';
+        var fs = format.readFeatures(text, {
+          featureProjection: 'EPSG:3857'
+        });
+        expect(fs).to.have.length(1);
+        var f = fs[0];
+        expect(f).to.be.an(ol.Feature);
+        var g = f.getGeometry();
+        expect(g).to.be.an(ol.geom.Point);
+        var expectedPoint = ol.proj.transform([1, 2], 'EPSG:4326', 'EPSG:3857');
+        expectedPoint.push(3);
+        expect(g.getCoordinates()).to.eql(expectedPoint);
+      });
+
       it('can read a multiple features from a Document', function() {
         var text =
             '<Document xmlns="http://earth.google.com/kml/2.2">' +
@@ -2317,6 +2432,7 @@ goog.require('ol.geom.Polygon');
 goog.require('ol.style.Fill');
 goog.require('ol.style.Icon');
 goog.require('ol.style.IconOrigin');
+goog.require('ol.proj');
 goog.require('ol.style.Stroke');
 goog.require('ol.style.Style');
 goog.require('ol.style.Text');

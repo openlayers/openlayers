@@ -29,7 +29,7 @@ ol.source.ZoomifyTierSizeCalculation = {
  * @constructor
  * @extends {ol.source.TileImage}
  * @param {olx.source.ZoomifyOptions=} opt_options Options.
- * @api
+ * @api stable
  */
 ol.source.Zoomify = function(opt_options) {
 
@@ -105,12 +105,16 @@ ol.source.Zoomify = function(opt_options) {
         if (goog.isNull(tileCoord)) {
           return undefined;
         } else {
-          var tileIndex = tileCoord.x +
-              tileCoord.y * tierSizeInTiles[tileCoord.z][0] +
-              tileCountUpToTier[tileCoord.z];
+          var tileCoordZ = tileCoord[0];
+          var tileCoordX = tileCoord[1];
+          var tileCoordY = tileCoord[2];
+          var tileIndex =
+              tileCoordX +
+              tileCoordY * tierSizeInTiles[tileCoordZ][0] +
+              tileCountUpToTier[tileCoordZ];
           var tileGroup = (tileIndex / ol.DEFAULT_TILE_SIZE) | 0;
           return url + 'TileGroup' + tileGroup + '/' +
-              tileCoord.z + '-' + tileCoord.x + '-' + tileCoord.y + '.jpg';
+              tileCoordZ + '-' + tileCoordX + '-' + tileCoordY + '.jpg';
         }
       });
 

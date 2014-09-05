@@ -21,8 +21,7 @@ goog.require('ol.TileState');
  * @param {?string} crossOrigin Cross origin.
  * @param {ol.TileLoadFunctionType} tileLoadFunction Tile load function.
  */
-ol.ImageTile =
-    function(tileCoord, state, src, crossOrigin, tileLoadFunction) {
+ol.ImageTile = function(tileCoord, state, src, crossOrigin, tileLoadFunction) {
 
   goog.base(this, tileCoord, state);
 

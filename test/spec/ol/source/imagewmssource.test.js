@@ -140,7 +140,6 @@ describe('ol.source.ImageWMS', function() {
 
     it('returns the expected GetFeatureInfo URL', function() {
       var source = new ol.source.ImageWMS(options);
-      source.getImage(extent, resolution, pixelRatio, projection);
       var url = source.getGetFeatureInfoUrl(
           [20, 30], resolution, projection,
           {INFO_FORMAT: 'text/plain'});
@@ -149,12 +148,12 @@ describe('ol.source.ImageWMS', function() {
       expect(uri.getDomain()).to.be('example.com');
       expect(uri.getPath()).to.be('/wms');
       var queryData = uri.getQueryData();
-      expect(queryData.get('BBOX')).to.be('20,10,40,30');
+      expect(queryData.get('BBOX')).to.be('24.95,14.95,35.05,25.05');
       expect(queryData.get('CRS')).to.be('EPSG:4326');
       expect(queryData.get('FORMAT')).to.be('image/png');
-      expect(queryData.get('HEIGHT')).to.be('200');
-      expect(queryData.get('I')).to.be('100');
-      expect(queryData.get('J')).to.be('100');
+      expect(queryData.get('HEIGHT')).to.be('101');
+      expect(queryData.get('I')).to.be('50');
+      expect(queryData.get('J')).to.be('50');
       expect(queryData.get('LAYERS')).to.be('layer');
       expect(queryData.get('QUERY_LAYERS')).to.be('layer');
       expect(queryData.get('REQUEST')).to.be('GetFeatureInfo');
@@ -163,13 +162,12 @@ describe('ol.source.ImageWMS', function() {
       expect(queryData.get('STYLES')).to.be('');
       expect(queryData.get('TRANSPARENT')).to.be('true');
       expect(queryData.get('VERSION')).to.be('1.3.0');
-      expect(queryData.get('WIDTH')).to.be('200');
+      expect(queryData.get('WIDTH')).to.be('101');
       expect(uri.getFragment()).to.be.empty();
     });
 
     it('sets the QUERY_LAYERS param as expected', function() {
       var source = new ol.source.ImageWMS(options);
-      source.getImage(extent, resolution, pixelRatio, projection);
       var url = source.getGetFeatureInfoUrl(
           [20, 30], resolution, projection,
           {INFO_FORMAT: 'text/plain', QUERY_LAYERS: 'foo,bar'});
@@ -178,12 +176,12 @@ describe('ol.source.ImageWMS', function() {
       expect(uri.getDomain()).to.be('example.com');
       expect(uri.getPath()).to.be('/wms');
       var queryData = uri.getQueryData();
-      expect(queryData.get('BBOX')).to.be('20,10,40,30');
+      expect(queryData.get('BBOX')).to.be('24.95,14.95,35.05,25.05');
       expect(queryData.get('CRS')).to.be('EPSG:4326');
       expect(queryData.get('FORMAT')).to.be('image/png');
-      expect(queryData.get('HEIGHT')).to.be('200');
-      expect(queryData.get('I')).to.be('100');
-      expect(queryData.get('J')).to.be('100');
+      expect(queryData.get('HEIGHT')).to.be('101');
+      expect(queryData.get('I')).to.be('50');
+      expect(queryData.get('J')).to.be('50');
       expect(queryData.get('LAYERS')).to.be('layer');
       expect(queryData.get('QUERY_LAYERS')).to.be('foo,bar');
       expect(queryData.get('REQUEST')).to.be('GetFeatureInfo');
@@ -192,7 +190,7 @@ describe('ol.source.ImageWMS', function() {
       expect(queryData.get('STYLES')).to.be('');
       expect(queryData.get('TRANSPARENT')).to.be('true');
       expect(queryData.get('VERSION')).to.be('1.3.0');
-      expect(queryData.get('WIDTH')).to.be('200');
+      expect(queryData.get('WIDTH')).to.be('101');
       expect(uri.getFragment()).to.be.empty();
     });
   });

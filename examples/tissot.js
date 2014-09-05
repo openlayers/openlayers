@@ -1,12 +1,12 @@
 goog.require('ol.Feature');
 goog.require('ol.Map');
+goog.require('ol.Sphere');
 goog.require('ol.View');
 goog.require('ol.geom.Polygon');
 goog.require('ol.layer.Tile');
 goog.require('ol.layer.Vector');
 goog.require('ol.source.TileWMS');
 goog.require('ol.source.Vector');
-goog.require('ol.sphere.WGS84');
 
 var vectorSource = new ol.source.Vector();
 
@@ -14,11 +14,9 @@ var map = new ol.Map({
   layers: [
     new ol.layer.Tile({
       source: new ol.source.TileWMS({
-        url: 'http://vmap0.tiles.osgeo.org/wms/vmap0',
+        url: 'http://demo.opengeo.org/geoserver/wms',
         params: {
-          'VERSION': '1.1.1',
-          'LAYERS': 'basic',
-          'FORMAT': 'image/jpeg'
+          'LAYERS': 'ne:NE1_HR_LC_SR_W_DR'
         }
       })
     }),
@@ -35,11 +33,12 @@ var map = new ol.Map({
   })
 });
 
+var wgs84Sphere = new ol.Sphere(6378137);
 
 var radius = 800000;
 for (var x = -180; x < 180; x += 30) {
   for (var y = -90; y < 90; y += 30) {
-    var circle = ol.geom.Polygon.circular(ol.sphere.WGS84, [x, y], radius, 64);
+    var circle = ol.geom.Polygon.circular(wgs84Sphere, [x, y], radius, 64);
     vectorSource.addFeature(new ol.Feature(circle));
   }
 }

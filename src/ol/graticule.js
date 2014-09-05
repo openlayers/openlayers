@@ -83,13 +83,11 @@ ol.Graticule = function(opt_options) {
   this.parallels_ = [];
 
   /**
-   * TODO can be configurable
    * @type {ol.style.Stroke}
    * @private
    */
-  this.strokeStyle_ = new ol.style.Stroke({
-    color: 'rgba(0,0,0,0.2)'
-  });
+  this.strokeStyle_ = goog.isDef(options.strokeStyle) ?
+      options.strokeStyle : ol.Graticule.DEFAULT_STROKE_STYLE_;
 
   /**
    * @type {ol.TransformFunction|undefined}
@@ -111,6 +109,16 @@ ol.Graticule = function(opt_options) {
 
   this.setMap(goog.isDef(options.map) ? options.map : null);
 };
+
+
+/**
+ * @type {ol.style.Stroke}
+ * @private
+ * @const
+ */
+ol.Graticule.DEFAULT_STROKE_STYLE_ = new ol.style.Stroke({
+  color: 'rgba(0,0,0,0.2)'
+});
 
 
 /**

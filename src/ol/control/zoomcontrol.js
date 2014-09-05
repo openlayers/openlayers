@@ -1,6 +1,5 @@
 goog.provide('ol.control.Zoom');
 
-goog.require('goog.asserts');
 goog.require('goog.dom');
 goog.require('goog.dom.TagName');
 goog.require('goog.events');
@@ -22,7 +21,7 @@ goog.require('ol.pointer.PointerEventHandler');
  * @constructor
  * @extends {ol.control.Control}
  * @param {olx.control.ZoomOptions=} opt_options Zoom options.
- * @api
+ * @api stable
  */
 ol.control.Zoom = function(opt_options) {
 

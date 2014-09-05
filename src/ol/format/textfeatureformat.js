@@ -47,13 +47,15 @@ ol.format.TextFeature.prototype.getType = function() {
 /**
  * @inheritDoc
  */
-ol.format.TextFeature.prototype.readFeature = function(source) {
-  return this.readFeatureFromText(this.getText_(source));
+ol.format.TextFeature.prototype.readFeature = function(source, opt_options) {
+  return this.readFeatureFromText(
+      this.getText_(source), this.adaptOptions(opt_options));
 };
 
 
 /**
  * @param {string} text Text.
+ * @param {olx.format.ReadOptions=} opt_options Read options.
  * @protected
  * @return {ol.Feature} Feature.
  */
@@ -63,13 +65,15 @@ ol.format.TextFeature.prototype.readFeatureFromText = goog.abstractMethod;
 /**
  * @inheritDoc
  */
-ol.format.TextFeature.prototype.readFeatures = function(source) {
-  return this.readFeaturesFromText(this.getText_(source));
+ol.format.TextFeature.prototype.readFeatures = function(source, opt_options) {
+  return this.readFeaturesFromText(
+      this.getText_(source), this.adaptOptions(opt_options));
 };
 
 
 /**
  * @param {string} text Text.
+ * @param {olx.format.ReadOptions=} opt_options Read options.
  * @protected
  * @return {Array.<ol.Feature>} Features.
  */
@@ -79,13 +83,15 @@ ol.format.TextFeature.prototype.readFeaturesFromText = goog.abstractMethod;
 /**
  * @inheritDoc
  */
-ol.format.TextFeature.prototype.readGeometry = function(source) {
-  return this.readGeometryFromText(this.getText_(source));
+ol.format.TextFeature.prototype.readGeometry = function(source, opt_options) {
+  return this.readGeometryFromText(
+      this.getText_(source), this.adaptOptions(opt_options));
 };
 
 
 /**
  * @param {string} text Text.
+ * @param {olx.format.ReadOptions=} opt_options Read options.
  * @protected
  * @return {ol.geom.Geometry} Geometry.
  */
@@ -111,13 +117,14 @@ ol.format.TextFeature.prototype.readProjectionFromText = goog.abstractMethod;
 /**
  * @inheritDoc
  */
-ol.format.TextFeature.prototype.writeFeature = function(feature) {
-  return this.writeFeatureText(feature);
+ol.format.TextFeature.prototype.writeFeature = function(feature, opt_options) {
+  return this.writeFeatureText(feature, this.adaptOptions(opt_options));
 };
 
 
 /**
  * @param {ol.Feature} feature Features.
+ * @param {olx.format.WriteOptions=} opt_options Write options.
  * @protected
  * @return {string} Text.
  */
@@ -127,13 +134,15 @@ ol.format.TextFeature.prototype.writeFeatureText = goog.abstractMethod;
 /**
  * @inheritDoc
  */
-ol.format.TextFeature.prototype.writeFeatures = function(features) {
-  return this.writeFeaturesText(features);
+ol.format.TextFeature.prototype.writeFeatures = function(
+    features, opt_options) {
+  return this.writeFeaturesText(features, this.adaptOptions(opt_options));
 };
 
 
 /**
  * @param {Array.<ol.Feature>} features Features.
+ * @param {olx.format.WriteOptions=} opt_options Write options.
  * @protected
  * @return {string} Text.
  */
@@ -143,13 +152,15 @@ ol.format.TextFeature.prototype.writeFeaturesText = goog.abstractMethod;
 /**
  * @inheritDoc
  */
-ol.format.TextFeature.prototype.writeGeometry = function(geometry) {
-  return this.writeGeometryText(geometry);
+ol.format.TextFeature.prototype.writeGeometry = function(
+    geometry, opt_options) {
+  return this.writeGeometryText(geometry, this.adaptOptions(opt_options));
 };
 
 
 /**
  * @param {ol.geom.Geometry} geometry Geometry.
+ * @param {olx.format.WriteOptions=} opt_options Write options.
  * @protected
  * @return {string} Text.
  */

@@ -174,6 +174,36 @@ describe('ol.format.GeoJSON', function() {
       expect(features[2].getGeometry()).to.be.an(ol.geom.Polygon);
     });
 
+    it('can read and transform a point', function() {
+      var feature = format.readFeatures(pointGeoJSON, {
+        featureProjection: 'EPSG:3857'
+      });
+      expect(feature[0].getGeometry()).to.be.an(ol.geom.Point);
+      expect(feature[0].getGeometry().getCoordinates()).to.eql(
+          ol.proj.transform([102.0, 0.5], 'EPSG:4326', 'EPSG:3857'));
+    });
+
+    it('can read and transform a feature collection', function() {
+      var features = format.readFeatures(featureCollectionGeoJSON, {
+        featureProjection: 'EPSG:3857'
+      });
+      expect(features[0].getGeometry()).to.be.an(ol.geom.Point);
+      expect(features[0].getGeometry().getCoordinates()).to.eql(
+          ol.proj.transform([102.0, 0.5], 'EPSG:4326', 'EPSG:3857'));
+      expect(features[1].getGeometry().getCoordinates()).to.eql([
+        ol.proj.transform([102.0, 0.0], 'EPSG:4326', 'EPSG:3857'),
+        ol.proj.transform([103.0, 1.0], 'EPSG:4326', 'EPSG:3857'),
+        ol.proj.transform([104.0, 0.0], 'EPSG:4326', 'EPSG:3857'),
+        ol.proj.transform([105.0, 1.0], 'EPSG:4326', 'EPSG:3857')
+      ]);
+      expect(features[2].getGeometry().getCoordinates()).to.eql([[
+        ol.proj.transform([100.0, 0.0], 'EPSG:4326', 'EPSG:3857'),
+        ol.proj.transform([100.0, 1.0], 'EPSG:4326', 'EPSG:3857'),
+        ol.proj.transform([101.0, 1.0], 'EPSG:4326', 'EPSG:3857'),
+        ol.proj.transform([101.0, 0.0], 'EPSG:4326', 'EPSG:3857')
+      ]]);
+    });
+
     it('can create a feature with a specific geometryName', function() {
       var feature = new ol.format.GeoJSON({geometryName: 'the_geom'}).
           readFeature(pointGeoJSON);
@@ -452,6 +482,22 @@ describe('ol.format.GeoJSON', function() {
       }
     });
 
+    it('transforms and encodes feature collection', function() {
+      var str = JSON.stringify(data),
+          array = format.readFeatures(str);
+      var geojson = format.writeFeatures(array, {
+        featureProjection: 'EPSG:3857'
+      });
+      var result = format.readFeatures(geojson);
+      var got, exp;
+      for (var i = 0, ii = array.length; i < ii; ++i) {
+        got = array[i];
+        exp = result[i];
+        expect(got.getGeometry().transform('EPSG:3857', 'EPSG:4326')
+            .getCoordinates()).to.eql(exp.getGeometry().getCoordinates());
+      }
+    });
+
   });
 
   describe('#writeGeometry', function() {
@@ -505,6 +551,20 @@ describe('ol.format.GeoJSON', function() {
         'type': 'GeometryCollection',
         'geometries': []
       });
+    });
+
+    it('transforms and encodes a point', function() {
+      var point = new ol.geom.Point([2, 3]);
+      var geojson = format.writeGeometry(point, {
+        featureProjection: 'EPSG:3857'
+      });
+      var newPoint = format.readGeometry(geojson, {
+        featureProjection: 'EPSG:3857'
+      });
+      expect(point.getCoordinates()[0]).to.eql(newPoint.getCoordinates()[0]);
+      expect(
+          Math.abs(point.getCoordinates()[1] - newPoint.getCoordinates()[1]))
+          .to.be.lessThan(0.0000001);
     });
 
   });

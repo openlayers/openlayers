@@ -16,8 +16,8 @@ goog.require('ol.layer.Tile');
 goog.require('ol.math');
 goog.require('ol.renderer.webgl.Layer');
 goog.require('ol.renderer.webgl.tilelayer.shader');
-goog.require('ol.source.Tile');
 goog.require('ol.structs.Buffer');
+goog.require('ol.tilecoord');
 
 
 
@@ -119,7 +119,6 @@ ol.renderer.webgl.TileLayer.prototype.prepareFrame =
   var tileLayer = this.getLayer();
   goog.asserts.assertInstanceof(tileLayer, ol.layer.Tile);
   var tileSource = tileLayer.getSource();
-  goog.asserts.assertInstanceof(tileSource, ol.source.Tile);
   var tileGrid = tileSource.getTileGridForProjection(projection);
   var z = tileGrid.getZForResolution(viewState.resolution);
   var tileResolution = tileGrid.getResolution(z);
@@ -222,7 +221,7 @@ ol.renderer.webgl.TileLayer.prototype.prepareFrame =
         tileState = tile.getState();
         if (tileState == ol.TileState.LOADED) {
           if (mapRenderer.isTileTextureLoaded(tile)) {
-            tilesToDrawByZ[z][tile.tileCoord.toString()] = tile;
+            tilesToDrawByZ[z][ol.tilecoord.toString(tile.tileCoord)] = tile;
             continue;
           }
         } else if (tileState == ol.TileState.EMPTY ||
@@ -300,7 +299,7 @@ ol.renderer.webgl.TileLayer.prototype.prepareFrame =
           tileTextureQueue.enqueue([
             tile,
             tileGrid.getTileCoordCenter(tile.tileCoord),
-            tileGrid.getResolution(tile.tileCoord.z),
+            tileGrid.getResolution(tile.tileCoord[0]),
             tilePixelSize, tileGutter * pixelRatio
           ]);
         }
@@ -330,4 +329,5 @@ ol.renderer.webgl.TileLayer.prototype.prepareFrame =
       -0.5,
       0);
 
+  return true;
 };

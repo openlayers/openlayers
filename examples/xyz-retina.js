@@ -8,7 +8,8 @@ goog.require('ol.source.XYZ');
 
 
 var attribution = new ol.Attribution({
-  html: 'Tiles rendered with <a href="http://www.maptiler.com/"> &copy; USGS'
+  html: 'Tiles &copy; USGS, rendered with ' +
+      '<a href="http://www.maptiler.com/">MapTiler</a>'
 });
 
 var mapMinZoom = 1;
@@ -22,11 +23,11 @@ var map = new ol.Map({
       source: new ol.source.OSM()
     }),
     new ol.layer.Tile({
+      extent: ol.proj.transformExtent(mapExtent, 'EPSG:4326', 'EPSG:3857'),
       source: new ol.source.XYZ({
+        attributions: [attribution],
         url: 'http://tileserver.maptiler.com/grandcanyon@2x/{z}/{x}/{y}.png',
         tilePixelRatio: 2, // THIS IS IMPORTANT
-        maxExtent: ol.proj.transformExtent(
-            mapExtent, 'EPSG:4326', 'EPSG:3857'),
         minZoom: mapMinZoom,
         maxZoom: mapMaxZoom
       })

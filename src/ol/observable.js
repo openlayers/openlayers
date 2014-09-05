@@ -18,7 +18,7 @@ goog.require('goog.events.EventType');
  * @extends {goog.events.EventTarget}
  * @suppress {checkStructDictInheritance}
  * @struct
- * @api
+ * @api stable
  */
 ol.Observable = function() {
 
@@ -60,7 +60,7 @@ ol.Observable.prototype.getRevision = function() {
  * @param {function(?): ?} listener The listener function.
  * @param {Object=} opt_this The object to use as `this` in `listener`.
  * @return {goog.events.Key} Unique key for the listener.
- * @api
+ * @api stable
  */
 ol.Observable.prototype.on = function(type, listener, opt_this) {
   return goog.events.listen(this, type, listener, false, opt_this);
@@ -73,7 +73,7 @@ ol.Observable.prototype.on = function(type, listener, opt_this) {
  * @param {function(?): ?} listener The listener function.
  * @param {Object=} opt_this The object to use as `this` in `listener`.
  * @return {goog.events.Key} Unique key for the listener.
- * @api
+ * @api stable
  */
 ol.Observable.prototype.once = function(type, listener, opt_this) {
   return goog.events.listenOnce(this, type, listener, false, opt_this);
@@ -84,8 +84,9 @@ ol.Observable.prototype.once = function(type, listener, opt_this) {
  * Unlisten for a certain type of event.
  * @param {string|Array.<string>} type The event type or array of event types.
  * @param {function(?): ?} listener The listener function.
- * @param {Object=} opt_this The object to use as `this` in `listener`.
- * @api
+ * @param {Object=} opt_this The object which was used as `this` by the
+ * `listener`.
+ * @api stable
  */
 ol.Observable.prototype.un = function(type, listener, opt_this) {
   goog.events.unlisten(this, type, listener, false, opt_this);
@@ -95,7 +96,7 @@ ol.Observable.prototype.un = function(type, listener, opt_this) {
 /**
  * Removes an event listener using the key returned by `on()` or `once()`.
  * @param {goog.events.Key} key Key.
- * @api
+ * @api stable
  */
 ol.Observable.prototype.unByKey = function(key) {
   goog.events.unlistenByKey(key);

@@ -33,7 +33,7 @@ ol.FeatureOverlay = function(opt_options) {
 
   /**
    * @private
-   * @type {ol.Collection}
+   * @type {ol.Collection.<ol.Feature>}
    */
   this.features_ = null;
 
@@ -104,7 +104,7 @@ ol.FeatureOverlay.prototype.addFeature = function(feature) {
 
 
 /**
- * @return {ol.Collection} Features collection.
+ * @return {ol.Collection.<ol.Feature>} Features collection.
  * @api
  */
 ol.FeatureOverlay.prototype.getFeatures = function() {
@@ -176,9 +176,13 @@ ol.FeatureOverlay.prototype.handleMapPostCompose_ = function(event) {
   var frameState = event.frameState;
   var pixelRatio = frameState.pixelRatio;
   var resolution = frameState.viewState.resolution;
-  var i, ii, styles;
+  var i, ii, styles, featureStyleFunction;
   this.features_.forEach(function(feature) {
-    styles = styleFunction(feature, resolution);
+    featureStyleFunction = feature.getStyleFunction();
+    styles = goog.isDef(featureStyleFunction) ?
+        featureStyleFunction.call(feature, resolution) :
+        styleFunction(feature, resolution);
+
     if (!goog.isDefAndNotNull(styles)) {
       return;
     }
@@ -212,7 +216,7 @@ ol.FeatureOverlay.prototype.render_ = function() {
 
 
 /**
- * @param {ol.Collection} features Features collection.
+ * @param {ol.Collection.<ol.Feature>} features Features collection.
  * @api
  */
 ol.FeatureOverlay.prototype.setFeatures = function(features) {

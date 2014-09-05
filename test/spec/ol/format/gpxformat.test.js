@@ -1,6 +1,5 @@
 goog.provide('ol.test.format.GPX');
 
-
 describe('ol.format.GPX', function() {
 
   var format;
@@ -77,6 +76,34 @@ describe('ol.format.GPX', function() {
         expect(g.getCoordinates()).to.eql([[2, 1, 0, 0], [4, 3, 0, 0]]);
         expect(g.getLayout()).to.be(ol.geom.GeometryLayout.XYZM);
         var serialized = format.writeFeatures(fs);
+        expect(serialized).to.xmleql(ol.xml.load(text));
+      });
+
+      it('can transform, read and write a rte', function() {
+        var text =
+            '<gpx xmlns="http://www.topografix.com/GPX/1/1">' +
+            '  <rte>' +
+            '    <rtept lat="1" lon="2"/>' +
+            '    <rtept lat="5" lon="6"/>' +
+            '  </rte>' +
+            '</gpx>';
+        var fs = format.readFeatures(text, {
+          featureProjection: 'EPSG:3857'
+        });
+        expect(fs).to.have.length(1);
+        var f = fs[0];
+        expect(f).to.be.an(ol.Feature);
+        var g = f.getGeometry();
+        expect(g).to.be.an(ol.geom.LineString);
+        var p1 = ol.proj.transform([2, 1], 'EPSG:4326', 'EPSG:3857');
+        p1.push(0, 0);
+        var p2 = ol.proj.transform([6, 5], 'EPSG:4326', 'EPSG:3857');
+        p2.push(0, 0);
+        expect(g.getCoordinates()).to.eql([p1, p2]);
+        expect(g.getLayout()).to.be(ol.geom.GeometryLayout.XYZM);
+        var serialized = format.writeFeatures(fs, {
+          featureProjection: 'EPSG:3857'
+        });
         expect(serialized).to.xmleql(ol.xml.load(text));
       });
 
@@ -181,6 +208,42 @@ describe('ol.format.GPX', function() {
         expect(serialized).to.xmleql(ol.xml.load(text));
       });
 
+      it('can tranform, read and write a trk with a trkseg', function() {
+        var text =
+            '<gpx xmlns="http://www.topografix.com/GPX/1/1">' +
+            '  <trk>' +
+            '    <trkseg>' +
+            '      <trkpt lat="1" lon="2">' +
+            '        <ele>3</ele>' +
+            '        <time>2010-01-10T09:29:12Z</time>' +
+            '      </trkpt>' +
+            '      <trkpt lat="5" lon="6">' +
+            '        <ele>7</ele>' +
+            '        <time>2010-01-10T09:30:12Z</time>' +
+            '      </trkpt>' +
+            '    </trkseg>' +
+            '  </trk>' +
+            '</gpx>';
+        var fs = format.readFeatures(text, {
+          featureProjection: 'EPSG:3857'
+        });
+        expect(fs).to.have.length(1);
+        var f = fs[0];
+        expect(f).to.be.an(ol.Feature);
+        var g = f.getGeometry();
+        expect(g).to.be.an(ol.geom.MultiLineString);
+        var p1 = ol.proj.transform([2, 1], 'EPSG:4326', 'EPSG:3857');
+        p1.push(3, 1263115752);
+        var p2 = ol.proj.transform([6, 5], 'EPSG:4326', 'EPSG:3857');
+        p2.push(7, 1263115812);
+        expect(g.getCoordinates()).to.eql([[p1, p2]]);
+        expect(g.getLayout()).to.be(ol.geom.GeometryLayout.XYZM);
+        var serialized = format.writeFeatures(fs, {
+          featureProjection: 'EPSG:3857'
+        });
+        expect(serialized).to.xmleql(ol.xml.load(text));
+      });
+
       it('can read and write a trk with multiple trksegs', function() {
         var text =
             '<gpx xmlns="http://www.topografix.com/GPX/1/1">' +
@@ -240,6 +303,29 @@ describe('ol.format.GPX', function() {
         expect(g.getCoordinates()).to.eql([2, 1, 0, 0]);
         expect(g.getLayout()).to.be(ol.geom.GeometryLayout.XYZM);
         var serialized = format.writeFeatures(fs);
+        expect(serialized).to.xmleql(ol.xml.load(text));
+      });
+
+      it('can transform, read and write a wpt', function() {
+        var text =
+            '<gpx xmlns="http://www.topografix.com/GPX/1/1">' +
+            '  <wpt lat="1" lon="2"/>' +
+            '</gpx>';
+        var fs = format.readFeatures(text, {
+          featureProjection: 'EPSG:3857'
+        });
+        expect(fs).to.have.length(1);
+        var f = fs[0];
+        expect(f).to.be.an(ol.Feature);
+        var g = f.getGeometry();
+        expect(g).to.be.an(ol.geom.Point);
+        var expectedPoint = ol.proj.transform([2, 1], 'EPSG:4326', 'EPSG:3857');
+        expectedPoint.push(0, 0);
+        expect(g.getCoordinates()).to.eql(expectedPoint);
+        expect(g.getLayout()).to.be(ol.geom.GeometryLayout.XYZM);
+        var serialized = format.writeFeatures(fs, {
+          featureProjection: 'EPSG:3857'
+        });
         expect(serialized).to.xmleql(ol.xml.load(text));
       });
 
@@ -471,4 +557,5 @@ goog.require('ol.format.GPX');
 goog.require('ol.geom.LineString');
 goog.require('ol.geom.MultiLineString');
 goog.require('ol.geom.Point');
+goog.require('ol.proj');
 goog.require('ol.xml');

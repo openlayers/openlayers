@@ -5,7 +5,7 @@ goog.provide('ol.binary.IReader');
 
 goog.require('goog.asserts');
 goog.require('goog.userAgent');
-goog.require('ol.BrowserFeature');
+goog.require('ol.has');
 
 
 
@@ -29,7 +29,7 @@ ol.binary.Buffer = function(data) {
  */
 ol.binary.Buffer.prototype.getReader = function() {
   var data = this.data_;
-  if (ol.BrowserFeature.HAS_ARRAY_BUFFER) {
+  if (ol.has.ARRAY_BUFFER) {
     var arrayBuffer;
     if (data instanceof ArrayBuffer) {
       arrayBuffer = data;

@@ -4,8 +4,11 @@ goog.require('goog.math');
 goog.require('ol');
 goog.require('ol.TileCoord');
 goog.require('ol.TileRange');
+goog.require('ol.extent');
+goog.require('ol.extent.Corner');
 goog.require('ol.proj');
 goog.require('ol.proj.EPSG3857');
+goog.require('ol.tilecoord');
 goog.require('ol.tilegrid.TileGrid');
 
 
@@ -21,19 +24,16 @@ goog.require('ol.tilegrid.TileGrid');
  * @api
  */
 ol.tilegrid.XYZ = function(options) {
-
-  var resolutions = new Array(options.maxZoom + 1);
-  var z;
-  var size = 2 * ol.proj.EPSG3857.HALF_SIZE / ol.DEFAULT_TILE_SIZE;
-  for (z = 0; z <= options.maxZoom; ++z) {
-    resolutions[z] = size / Math.pow(2, z);
-  }
+  var extent = goog.isDef(options.extent) ?
+      options.extent : ol.proj.EPSG3857.EXTENT;
+  var resolutions = ol.tilegrid.resolutionsFromExtent(
+      extent, options.maxZoom, options.tileSize);
 
   goog.base(this, {
     minZoom: options.minZoom,
-    origin: [-ol.proj.EPSG3857.HALF_SIZE, ol.proj.EPSG3857.HALF_SIZE],
+    origin: ol.extent.getCorner(extent, ol.extent.Corner.TOP_LEFT),
     resolutions: resolutions,
-    tileSize: ol.DEFAULT_TILE_SIZE
+    tileSize: options.tileSize
   });
 
 };
@@ -48,7 +48,6 @@ ol.tilegrid.XYZ.prototype.createTileCoordTransform = function(opt_options) {
   var minZ = this.minZoom;
   var maxZ = this.maxZoom;
   var wrapX = goog.isDef(options.wrapX) ? options.wrapX : true;
-  var tmpTileCoord = new ol.TileCoord(0, 0, 0);
   /** @type {Array.<ol.TileRange>} */
   var tileRangeByZ = null;
   if (goog.isDef(options.extent)) {
@@ -70,30 +69,27 @@ ol.tilegrid.XYZ.prototype.createTileCoordTransform = function(opt_options) {
        * @return {ol.TileCoord} Tile coordinate.
        */
       function(tileCoord, projection, opt_tileCoord) {
-        var z = tileCoord.z;
+        var z = tileCoord[0];
         if (z < minZ || maxZ < z) {
           return null;
         }
         var n = Math.pow(2, z);
-        var x = tileCoord.x;
+        var x = tileCoord[1];
         if (wrapX) {
           x = goog.math.modulo(x, n);
         } else if (x < 0 || n <= x) {
           return null;
         }
-        var y = tileCoord.y;
+        var y = tileCoord[2];
         if (y < -n || -1 < y) {
           return null;
         }
         if (!goog.isNull(tileRangeByZ)) {
-          tmpTileCoord.z = z;
-          tmpTileCoord.x = x;
-          tmpTileCoord.y = y;
-          if (!tileRangeByZ[z].contains(tmpTileCoord)) {
+          if (!tileRangeByZ[z].containsXY(x, y)) {
             return null;
           }
         }
-        return ol.TileCoord.createOrUpdate(z, x, -y - 1, opt_tileCoord);
+        return ol.tilecoord.createOrUpdate(z, x, -y - 1, opt_tileCoord);
       });
 };
 
@@ -103,10 +99,10 @@ ol.tilegrid.XYZ.prototype.createTileCoordTransform = function(opt_options) {
  */
 ol.tilegrid.XYZ.prototype.getTileCoordChildTileRange =
     function(tileCoord, opt_tileRange) {
-  if (tileCoord.z < this.maxZoom) {
+  if (tileCoord[0] < this.maxZoom) {
     return ol.TileRange.createOrUpdate(
-        2 * tileCoord.x, 2 * (tileCoord.x + 1),
-        2 * tileCoord.y, 2 * (tileCoord.y + 1),
+        2 * tileCoord[1], 2 * (tileCoord[1] + 1),
+        2 * tileCoord[2], 2 * (tileCoord[2] + 1),
         opt_tileRange);
   } else {
     return null;
@@ -120,9 +116,9 @@ ol.tilegrid.XYZ.prototype.getTileCoordChildTileRange =
 ol.tilegrid.XYZ.prototype.forEachTileCoordParentTileRange =
     function(tileCoord, callback, opt_this, opt_tileRange) {
   var tileRange = ol.TileRange.createOrUpdate(
-      0, tileCoord.x, 0, tileCoord.y, opt_tileRange);
+      0, tileCoord[1], 0, tileCoord[2], opt_tileRange);
   var z;
-  for (z = tileCoord.z - 1; z >= this.minZoom; --z) {
+  for (z = tileCoord[0] - 1; z >= this.minZoom; --z) {
     tileRange.minX = tileRange.maxX >>= 1;
     tileRange.minY = tileRange.maxY >>= 1;
     if (callback.call(opt_this, z, tileRange)) {

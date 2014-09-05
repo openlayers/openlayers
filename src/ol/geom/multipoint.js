@@ -18,9 +18,9 @@ goog.require('ol.math');
  *
  * @constructor
  * @extends {ol.geom.SimpleGeometry}
- * @param {ol.geom.RawMultiPoint} coordinates Coordinates.
+ * @param {Array.<ol.Coordinate>} coordinates Coordinates.
  * @param {ol.geom.GeometryLayout=} opt_layout Layout.
- * @api
+ * @api stable
  */
 ol.geom.MultiPoint = function(coordinates, opt_layout) {
   goog.base(this);
@@ -32,7 +32,7 @@ goog.inherits(ol.geom.MultiPoint, ol.geom.SimpleGeometry);
 
 /**
  * @param {ol.geom.Point} point Point.
- * @api
+ * @api stable
  */
 ol.geom.MultiPoint.prototype.appendPoint = function(point) {
   goog.asserts.assert(point.getLayout() == this.layout);
@@ -46,8 +46,9 @@ ol.geom.MultiPoint.prototype.appendPoint = function(point) {
 
 
 /**
- * @inheritDoc
- * @api
+ * Make a complete copy of the geometry.
+ * @return {!ol.geom.MultiPoint} Clone.
+ * @api stable
  */
 ol.geom.MultiPoint.prototype.clone = function() {
   var multiPoint = new ol.geom.MultiPoint(null);
@@ -84,8 +85,8 @@ ol.geom.MultiPoint.prototype.closestPointXY =
 
 
 /**
- * @return {ol.geom.RawMultiPoint} Coordinates.
- * @api
+ * @return {Array.<ol.Coordinate>} Coordinates.
+ * @api stable
  */
 ol.geom.MultiPoint.prototype.getCoordinates = function() {
   return ol.geom.flat.inflate.coordinates(
@@ -96,7 +97,7 @@ ol.geom.MultiPoint.prototype.getCoordinates = function() {
 /**
  * @param {number} index Index.
  * @return {ol.geom.Point} Point.
- * @api
+ * @api stable
  */
 ol.geom.MultiPoint.prototype.getPoint = function(index) {
   var n = goog.isNull(this.flatCoordinates) ?
@@ -114,7 +115,7 @@ ol.geom.MultiPoint.prototype.getPoint = function(index) {
 
 /**
  * @return {Array.<ol.geom.Point>} Points.
- * @api
+ * @api stable
  */
 ol.geom.MultiPoint.prototype.getPoints = function() {
   var flatCoordinates = this.flatCoordinates;
@@ -134,7 +135,7 @@ ol.geom.MultiPoint.prototype.getPoints = function() {
 
 /**
  * @inheritDoc
- * @api
+ * @api stable
  */
 ol.geom.MultiPoint.prototype.getType = function() {
   return ol.geom.GeometryType.MULTI_POINT;
@@ -142,9 +143,9 @@ ol.geom.MultiPoint.prototype.getType = function() {
 
 
 /**
- * @param {ol.geom.RawMultiPoint} coordinates Coordinates.
+ * @param {Array.<ol.Coordinate>} coordinates Coordinates.
  * @param {ol.geom.GeometryLayout=} opt_layout Layout.
- * @api
+ * @api stable
  */
 ol.geom.MultiPoint.prototype.setCoordinates =
     function(coordinates, opt_layout) {

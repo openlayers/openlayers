@@ -188,8 +188,9 @@ ol.renderer.canvas.Map.prototype.renderFrame = function(frameState) {
         layerState.sourceState != ol.source.State.READY) {
       continue;
     }
-    layerRenderer.prepareFrame(frameState, layerState);
-    layerRenderer.composeFrame(frameState, layerState, context);
+    if (layerRenderer.prepareFrame(frameState, layerState)) {
+      layerRenderer.composeFrame(frameState, layerState, context);
+    }
   }
 
   this.dispatchComposeEvent_(ol.render.EventType.POSTCOMPOSE, frameState);

@@ -24,7 +24,7 @@ ol.source.State = {
  * @typedef {{attributions: (Array.<ol.Attribution>|undefined),
  *            logo: (string|olx.LogoOptions|undefined),
  *            projection: ol.proj.ProjectionLike,
- *            state: (ol.source.State|string|undefined)}}
+ *            state: (ol.source.State|undefined)}}
  */
 ol.source.SourceOptions;
 
@@ -69,7 +69,7 @@ ol.source.Source = function(options) {
    * @type {ol.source.State}
    */
   this.state_ = goog.isDef(options.state) ?
-      /** @type {ol.source.State} */ (options.state) : ol.source.State.READY;
+      options.state : ol.source.State.READY;
 
 };
 goog.inherits(ol.source.Source, ol.Observable);
@@ -91,6 +91,7 @@ ol.source.Source.prototype.forEachFeatureAtPixel =
 
 /**
  * @return {Array.<ol.Attribution>} Attributions.
+ * @api stable
  */
 ol.source.Source.prototype.getAttributions = function() {
   return this.attributions_;
@@ -99,6 +100,7 @@ ol.source.Source.prototype.getAttributions = function() {
 
 /**
  * @return {string|olx.LogoOptions|undefined} Logo.
+ * @api stable
  */
 ol.source.Source.prototype.getLogo = function() {
   return this.logo_;
@@ -107,6 +109,7 @@ ol.source.Source.prototype.getLogo = function() {
 
 /**
  * @return {ol.proj.Projection} Projection.
+ * @api
  */
 ol.source.Source.prototype.getProjection = function() {
   return this.projection_;

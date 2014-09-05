@@ -11,7 +11,6 @@ goog.require('ol.extent');
 goog.require('ol.layer.Image');
 goog.require('ol.renderer.Map');
 goog.require('ol.renderer.canvas.Layer');
-goog.require('ol.source.Image');
 goog.require('ol.vec.Mat4');
 
 
@@ -49,11 +48,10 @@ ol.renderer.canvas.ImageLayer.prototype.forEachFeatureAtPixel =
     function(coordinate, frameState, callback, thisArg) {
   var layer = this.getLayer();
   var source = layer.getSource();
-  goog.asserts.assertInstanceof(source, ol.source.Image);
   var extent = frameState.extent;
   var resolution = frameState.viewState.resolution;
   var rotation = frameState.viewState.rotation;
-  var skippedFeatureUids = frameState.skippedFeatureUids_;
+  var skippedFeatureUids = frameState.skippedFeatureUids;
   return source.forEachFeatureAtPixel(
       extent, resolution, rotation, coordinate, skippedFeatureUids,
       /**
@@ -99,7 +97,6 @@ ol.renderer.canvas.ImageLayer.prototype.prepareFrame =
   var imageLayer = this.getLayer();
   goog.asserts.assertInstanceof(imageLayer, ol.layer.Image);
   var imageSource = imageLayer.getSource();
-  goog.asserts.assertInstanceof(imageSource, ol.source.Image);
 
   var hints = frameState.viewHints;
 
@@ -143,4 +140,5 @@ ol.renderer.canvas.ImageLayer.prototype.prepareFrame =
     this.updateLogos(frameState, imageSource);
   }
 
+  return true;
 };

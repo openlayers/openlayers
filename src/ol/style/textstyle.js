@@ -87,6 +87,7 @@ ol.style.Text.prototype.getFont = function() {
 
 /**
  * @return {number} Horizontal text offset.
+ * @api
  */
 ol.style.Text.prototype.getOffsetX = function() {
   return this.offsetX_;
@@ -95,6 +96,7 @@ ol.style.Text.prototype.getOffsetX = function() {
 
 /**
  * @return {number} Vertical text offset.
+ * @api
  */
 ol.style.Text.prototype.getOffsetY = function() {
   return this.offsetY_;

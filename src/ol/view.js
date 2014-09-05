@@ -24,7 +24,6 @@ goog.require('ol.proj.Units');
  */
 ol.ViewProperty = {
   CENTER: 'center',
-  PROJECTION: 'projection',
   RESOLUTION: 'resolution',
   ROTATION: 'rotation'
 };
@@ -50,7 +49,7 @@ ol.ViewHint = {
  * ### The view states
  *
  * An `ol.View` is determined by three states: `center`, `resolution`,
- * and `rotation`. To each state corresponds a getter and a setter. E.g.
+ * and `rotation`. Each state has a corresponding getter and setter, e.g.
  * `getCenter` and `setCenter` for the `center` state.
  *
  * An `ol.View` has a `projection`. The projection determines the
@@ -68,7 +67,7 @@ ol.ViewHint = {
  * But an `ol.View` object also has a *resolution constraint*, a
  * *rotation constraint* and a *center constraint*.
  *
- * As said above no constraints are applied when the setters are used to set
+ * As said above, no constraints are applied when the setters are used to set
  * new states for the view. Applying constraints is done explicitly through
  * the use of the `constrain*` functions (`constrainResolution` and
  * `constrainRotation` and `constrainCenter`).
@@ -81,15 +80,16 @@ ol.ViewHint = {
  * So the *resolution constraint* snaps to specific resolutions. It is
  * determined by the following options: `resolutions`, `maxResolution`,
  * `maxZoom`, and `zoomFactor`. If `resolutions` is set, the other three
- * options are ignored. See {@link ol.ViewOptions} for more information.
+ * options are ignored. See documentation for each option for more
+ * information.
  *
- * The *rotation constaint* is currently not configurable. It snaps the
+ * The *rotation constraint* is currently not configurable. It snaps the
  * rotation value to zero when approaching the horizontal.
  *
  * @constructor
  * @extends {ol.Object}
  * @param {olx.ViewOptions=} opt_options View options.
- * @api
+ * @api stable
  */
 ol.View = function(opt_options) {
   goog.base(this);
@@ -107,8 +107,12 @@ ol.View = function(opt_options) {
   var properties = {};
   properties[ol.ViewProperty.CENTER] = goog.isDef(options.center) ?
       options.center : null;
-  properties[ol.ViewProperty.PROJECTION] = ol.proj.createProjection(
-      options.projection, 'EPSG:3857');
+
+  /**
+   * @private
+   * @type {ol.proj.Projection}
+   */
+  this.projection_ = ol.proj.createProjection(options.projection, 'EPSG:3857');
 
   var resolutionConstraintInfo = ol.View.createResolutionConstraint_(
       options);
@@ -235,7 +239,7 @@ ol.View.prototype.constrainRotation = function(rotation, opt_delta) {
 /**
  * @return {ol.Coordinate|undefined} The center of the view.
  * @observable
- * @api
+ * @api stable
  */
 ol.View.prototype.getCenter = function() {
   return /** @type {ol.Coordinate|undefined} */ (
@@ -256,8 +260,10 @@ ol.View.prototype.getHints = function() {
 
 
 /**
- * Calculate the extent for the given size in pixels, based on the current
- * resolution and the current center.
+ * Calculate the extent for the current view state and the passed `size`.
+ * `size` is the size in pixels of the box into which the calculated extent
+ * should fit. In most cases you want to get the extent of the entire map,
+ * that is `map.getSize()`.
  * @param {ol.Size} size Box pixel size.
  * @return {ol.Extent} Extent.
  * @api
@@ -275,24 +281,18 @@ ol.View.prototype.calculateExtent = function(size) {
 
 
 /**
- * @return {ol.proj.Projection|undefined} The projection of the view.
- * @observable
- * @api
+ * @return {ol.proj.Projection} The projection of the view.
+ * @api stable
  */
 ol.View.prototype.getProjection = function() {
-  return /** @type {ol.proj.Projection|undefined} */ (
-      this.get(ol.ViewProperty.PROJECTION));
+  return this.projection_;
 };
-goog.exportProperty(
-    ol.View.prototype,
-    'getProjection',
-    ol.View.prototype.getProjection);
 
 
 /**
  * @return {number|undefined} The resolution of the view.
  * @observable
- * @api
+ * @api stable
  */
 ol.View.prototype.getResolution = function() {
   return /** @type {number|undefined} */ (
@@ -347,7 +347,7 @@ ol.View.prototype.getResolutionForValueFunction = function(opt_power) {
 /**
  * @return {number|undefined} The rotation of the view.
  * @observable
- * @api
+ * @api stable
  */
 ol.View.prototype.getRotation = function() {
   return /** @type {number|undefined} */ (this.get(ol.ViewProperty.ROTATION));
@@ -405,7 +405,7 @@ ol.View.prototype.getState = function() {
  * Get the current zoom level. Return undefined if the current
  * resolution is undefined or not a "constrained resolution".
  * @return {number|undefined} Zoom.
- * @api
+ * @api stable
  */
 ol.View.prototype.getZoom = function() {
   var offset;
@@ -428,7 +428,9 @@ ol.View.prototype.getZoom = function() {
 
 
 /**
- * Fit the given extent based on the given map size.
+ * Fit the map view to the passed `extent` and `size`. `size` is the size in
+ * pixels of the box to fit the extent into. In most cases you will want to
+ * use the map size, that is `map.getSize()`.
  * @param {ol.Extent} extent Extent.
  * @param {ol.Size} size Box pixel size.
  * @api
@@ -562,7 +564,7 @@ ol.View.prototype.isDef = function() {
  * Rotate the view around a given coordinate.
  * @param {number} rotation New rotation value for the view.
  * @param {ol.Coordinate=} opt_anchor The rotation center.
- * @api
+ * @api stable
  */
 ol.View.prototype.rotate = function(rotation, opt_anchor) {
   if (goog.isDef(opt_anchor)) {
@@ -577,7 +579,7 @@ ol.View.prototype.rotate = function(rotation, opt_anchor) {
  * Set the center of the current view.
  * @param {ol.Coordinate|undefined} center The center of the view.
  * @observable
- * @api
+ * @api stable
  */
 ol.View.prototype.setCenter = function(center) {
   this.set(ol.ViewProperty.CENTER, center);
@@ -602,26 +604,10 @@ ol.View.prototype.setHint = function(hint, delta) {
 
 
 /**
- * Set the projection of this view.
- * Warning! This code is not yet implemented. Function should not be used.
- * @param {ol.proj.Projection|undefined} projection The projection of the view.
- * @observable
- * @api
- */
-ol.View.prototype.setProjection = function(projection) {
-  this.set(ol.ViewProperty.PROJECTION, projection);
-};
-goog.exportProperty(
-    ol.View.prototype,
-    'setProjection',
-    ol.View.prototype.setProjection);
-
-
-/**
  * Set the resolution for this view.
  * @param {number|undefined} resolution The resolution of the view.
  * @observable
- * @api
+ * @api stable
  */
 ol.View.prototype.setResolution = function(resolution) {
   this.set(ol.ViewProperty.RESOLUTION, resolution);
@@ -636,7 +622,7 @@ goog.exportProperty(
  * Set the rotation for this view.
  * @param {number|undefined} rotation The rotation of the view.
  * @observable
- * @api
+ * @api stable
  */
 ol.View.prototype.setRotation = function(rotation) {
   this.set(ol.ViewProperty.ROTATION, rotation);
@@ -650,7 +636,7 @@ goog.exportProperty(
 /**
  * Zoom to a specific zoom level.
  * @param {number} zoom Zoom level.
- * @api
+ * @api stable
  */
 ol.View.prototype.setZoom = function(zoom) {
   var resolution = this.constrainResolution(

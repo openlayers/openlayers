@@ -4,6 +4,7 @@ goog.provide('ol.TileUrlFunctionType');
 goog.require('goog.array');
 goog.require('goog.math');
 goog.require('ol.TileCoord');
+goog.require('ol.tilecoord');
 
 
 /**
@@ -31,6 +32,10 @@ ol.TileCoordTransformType;
  * @return {ol.TileUrlFunctionType} Tile URL function.
  */
 ol.TileUrlFunction.createFromTemplate = function(template) {
+  var zRegEx = /\{z\}/g;
+  var xRegEx = /\{x\}/g;
+  var yRegEx = /\{y\}/g;
+  var dashYRegEx = /\{-y\}/g;
   return (
       /**
        * @param {ol.TileCoord} tileCoord Tile Coordinate.
@@ -42,11 +47,11 @@ ol.TileUrlFunction.createFromTemplate = function(template) {
         if (goog.isNull(tileCoord)) {
           return undefined;
         } else {
-          return template.replace('{z}', tileCoord.z.toString())
-                         .replace('{x}', tileCoord.x.toString())
-                         .replace('{y}', tileCoord.y.toString())
-                         .replace('{-y}', function() {
-                           var y = (1 << tileCoord.z) - tileCoord.y - 1;
+          return template.replace(zRegEx, tileCoord[0].toString())
+                         .replace(xRegEx, tileCoord[1].toString())
+                         .replace(yRegEx, tileCoord[2].toString())
+                         .replace(dashYRegEx, function() {
+                           var y = (1 << tileCoord[0]) - tileCoord[2] - 1;
                            return y.toString();
                          });
         }
@@ -83,8 +88,8 @@ ol.TileUrlFunction.createFromTileUrlFunctions = function(tileUrlFunctions) {
         if (goog.isNull(tileCoord)) {
           return undefined;
         } else {
-          var index =
-              goog.math.modulo(tileCoord.hash(), tileUrlFunctions.length);
+          var h = ol.tilecoord.hash(tileCoord);
+          var index = goog.math.modulo(h, tileUrlFunctions.length);
           return tileUrlFunctions[index](tileCoord, pixelRatio, projection);
         }
       });
@@ -110,7 +115,7 @@ ol.TileUrlFunction.nullTileUrlFunction =
  */
 ol.TileUrlFunction.withTileCoordTransform =
     function(transformFn, tileUrlFunction) {
-  var tmpTileCoord = new ol.TileCoord(0, 0, 0);
+  var tmpTileCoord = [0, 0, 0];
   return (
       /**
        * @param {ol.TileCoord} tileCoord Tile Coordinate.

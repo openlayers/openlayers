@@ -25,8 +25,7 @@ var WebGLDebugLostContextSimulatingCanvas = function() {};
  * @nosideeffects
  * @return {number}
  */
-WebGLDebugLostContextSimulatingCanvas.prototype.getNumCalls =
-    function() {return NaN;};
+WebGLDebugLostContextSimulatingCanvas.prototype.getNumCalls = function() {};
 
 
 /**
@@ -64,7 +63,7 @@ var WebGLDebugUtils = {};
  * @param {number} value
  * @return {string}
  */
-WebGLDebugUtils.glEnumToString = function(value) {return '';};
+WebGLDebugUtils.glEnumToString = function(value) {};
 
 
 /**
@@ -73,9 +72,7 @@ WebGLDebugUtils.glEnumToString = function(value) {return '';};
  * @param {Array} args Args.
  * @return {string} String.
  */
-WebGLDebugUtils.glFunctionArgsToString = function(functionName, args) {
-  return '';
-};
+WebGLDebugUtils.glFunctionArgsToString = function(functionName, args) {};
 
 
 /**
@@ -88,9 +85,7 @@ WebGLDebugUtils.init = function(ctx) {};
  * @param {HTMLCanvasElement} canvas
  * @return {WebGLDebugLostContextSimulatingCanvas}
  */
-WebGLDebugUtils.makeLostContextSimulatingCanvas = function(canvas) {
-  return null;
-};
+WebGLDebugUtils.makeLostContextSimulatingCanvas = function(canvas) {};
 
 
 /**
@@ -100,4 +95,4 @@ WebGLDebugUtils.makeLostContextSimulatingCanvas = function(canvas) {
  * @return {WebGLDebugRenderingContext}
  */
 WebGLDebugUtils.makeDebugContext =
-    function(context, opt_onErrorFunc, opt_onFunc) {return null;};
+    function(context, opt_onErrorFunc, opt_onFunc) {};

@@ -25,9 +25,9 @@ goog.require('ol.geom.flat.simplify');
  *
  * @constructor
  * @extends {ol.geom.SimpleGeometry}
- * @param {ol.geom.RawPolygon} coordinates Coordinates.
+ * @param {Array.<Array.<ol.Coordinate>>} coordinates Coordinates.
  * @param {ol.geom.GeometryLayout=} opt_layout Layout.
- * @api
+ * @api stable
  */
 ol.geom.Polygon = function(coordinates, opt_layout) {
 
@@ -84,7 +84,7 @@ goog.inherits(ol.geom.Polygon, ol.geom.SimpleGeometry);
 
 /**
  * @param {ol.geom.LinearRing} linearRing Linear ring.
- * @api
+ * @api stable
  */
 ol.geom.Polygon.prototype.appendLinearRing = function(linearRing) {
   goog.asserts.assert(linearRing.getLayout() == this.layout);
@@ -99,8 +99,9 @@ ol.geom.Polygon.prototype.appendLinearRing = function(linearRing) {
 
 
 /**
- * @inheritDoc
- * @api
+ * Make a complete copy of the geometry.
+ * @return {!ol.geom.Polygon} Clone.
+ * @api stable
  */
 ol.geom.Polygon.prototype.clone = function() {
   var polygon = new ol.geom.Polygon(null);
@@ -140,8 +141,8 @@ ol.geom.Polygon.prototype.containsXY = function(x, y) {
 
 
 /**
- * @return {number} Area.
- * @api
+ * @return {number} Area (on projected plane).
+ * @api stable
  */
 ol.geom.Polygon.prototype.getArea = function() {
   return ol.geom.flat.area.linearRings(
@@ -150,8 +151,8 @@ ol.geom.Polygon.prototype.getArea = function() {
 
 
 /**
- * @return {ol.geom.RawPolygon} Coordinates.
- * @api
+ * @return {Array.<Array.<ol.Coordinate>>} Coordinates.
+ * @api stable
  */
 ol.geom.Polygon.prototype.getCoordinates = function() {
   return ol.geom.flat.inflate.coordinatess(
@@ -184,7 +185,7 @@ ol.geom.Polygon.prototype.getFlatInteriorPoint = function() {
 
 /**
  * @return {ol.geom.Point} Interior point.
- * @api
+ * @api stable
  */
 ol.geom.Polygon.prototype.getInteriorPoint = function() {
   return new ol.geom.Point(this.getFlatInteriorPoint());
@@ -192,9 +193,26 @@ ol.geom.Polygon.prototype.getInteriorPoint = function() {
 
 
 /**
+ * Return the number of rings of the polygon,  this includes the exterior
+ * ring and any interior rings.
+ *
+ * @return {number} Number of rings.
+ * @api
+ */
+ol.geom.Polygon.prototype.getLinearRingCount = function() {
+  return this.ends_.length;
+};
+
+
+/**
+ * Return the Nth linear ring of the polygon geometry. Return `null` if the
+ * given index is out of range.
+ * The exterior linear ring is available at index `0` and the interior rings
+ * at index `1` and beyond.
+ *
  * @param {number} index Index.
  * @return {ol.geom.LinearRing} Linear ring.
- * @api
+ * @api stable
  */
 ol.geom.Polygon.prototype.getLinearRing = function(index) {
   goog.asserts.assert(0 <= index && index < this.ends_.length);
@@ -210,7 +228,7 @@ ol.geom.Polygon.prototype.getLinearRing = function(index) {
 
 /**
  * @return {Array.<ol.geom.LinearRing>} Linear rings.
- * @api
+ * @api stable
  */
 ol.geom.Polygon.prototype.getLinearRings = function() {
   var layout = this.layout;
@@ -271,7 +289,7 @@ ol.geom.Polygon.prototype.getSimplifiedGeometryInternal =
 
 /**
  * @inheritDoc
- * @api
+ * @api stable
  */
 ol.geom.Polygon.prototype.getType = function() {
   return ol.geom.GeometryType.POLYGON;
@@ -279,9 +297,9 @@ ol.geom.Polygon.prototype.getType = function() {
 
 
 /**
- * @param {ol.geom.RawPolygon} coordinates Coordinates.
+ * @param {Array.<Array.<ol.Coordinate>>} coordinates Coordinates.
  * @param {ol.geom.GeometryLayout=} opt_layout Layout.
- * @api
+ * @api stable
  */
 ol.geom.Polygon.prototype.setCoordinates = function(coordinates, opt_layout) {
   if (goog.isNull(coordinates)) {
@@ -326,7 +344,7 @@ ol.geom.Polygon.prototype.setFlatCoordinates =
  * @param {number} radius Radius.
  * @param {number=} opt_n Optional number of points.  Default is `32`.
  * @return {ol.geom.Polygon} Circle geometry.
- * @api
+ * @api stable
  */
 ol.geom.Polygon.circular = function(sphere, center, radius, opt_n) {
   var n = goog.isDef(opt_n) ? opt_n : 32;
