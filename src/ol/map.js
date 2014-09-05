@@ -495,7 +495,6 @@ ol.Map.prototype.addInteraction = function(interaction) {
  */
 ol.Map.prototype.addLayer = function(layer) {
   var layers = this.getLayerGroup().getLayers();
-  goog.asserts.assert(goog.isDef(layers));
   layers.push(layer);
 };
 
@@ -703,7 +702,7 @@ goog.exportProperty(
 
 /**
  * Get the collection of layers associated with this map.
- * @return {ol.Collection.<ol.layer.Base>|undefined} Layers.
+ * @return {!ol.Collection.<ol.layer.Base>|undefined} Layers.
  * @api stable
  */
 ol.Map.prototype.getLayers = function() {
@@ -1147,7 +1146,6 @@ ol.Map.prototype.removeInteraction = function(interaction) {
  */
 ol.Map.prototype.removeLayer = function(layer) {
   var layers = this.getLayerGroup().getLayers();
-  goog.asserts.assert(goog.isDef(layers));
   return layers.remove(layer);
 };
 
