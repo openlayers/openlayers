@@ -75,7 +75,7 @@ goog.inherits(ol.control.ZoomToExtent, ol.control.Control);
  * @private
  */
 ol.control.ZoomToExtent.prototype.handleClick_ = function(event) {
-  event.browserEvent.preventDefault();
+  event.preventDefault();
   if (event.screenX !== 0 && event.screenY !== 0) {
     return;
   }
