@@ -115,6 +115,7 @@ goog.inherits(ol.control.Zoom, ol.control.Control);
  * @private
  */
 ol.control.Zoom.prototype.handleClick_ = function(delta, event) {
+  event.preventDefault();
   if (event.screenX !== 0 && event.screenY !== 0) {
     return;
   }
@@ -128,7 +129,6 @@ ol.control.Zoom.prototype.handleClick_ = function(delta, event) {
  * @private
  */
 ol.control.Zoom.prototype.handlePointerUp_ = function(delta, pointerEvent) {
-  pointerEvent.browserEvent.preventDefault();
   this.zoomByDelta_(delta);
 };
 
