@@ -78,7 +78,7 @@ goog.inherits(ol.layer.Group, ol.layer.Base);
  */
 ol.layer.Group.prototype.handleLayerChange_ = function() {
   if (this.getVisible()) {
-    this.dispatchChangeEvent();
+    this.changed();
   }
 };
 
@@ -114,7 +114,7 @@ ol.layer.Group.prototype.handleLayersChanged_ = function(event) {
     }
   }
 
-  this.dispatchChangeEvent();
+  this.changed();
 };
 
 
@@ -127,7 +127,7 @@ ol.layer.Group.prototype.handleLayersAdd_ = function(collectionEvent) {
   this.listenerKeys_[goog.getUid(layer).toString()] = goog.events.listen(
       layer, [ol.ObjectEventType.PROPERTYCHANGE, goog.events.EventType.CHANGE],
       this.handleLayerChange_, false, this);
-  this.dispatchChangeEvent();
+  this.changed();
 };
 
 
@@ -140,7 +140,7 @@ ol.layer.Group.prototype.handleLayersRemove_ = function(collectionEvent) {
   var key = goog.getUid(layer).toString();
   goog.events.unlistenByKey(this.listenerKeys_[key]);
   delete this.listenerKeys_[key];
-  this.dispatchChangeEvent();
+  this.changed();
 };
 
 

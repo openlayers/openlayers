@@ -319,7 +319,7 @@ ol.source.ImageWMS.prototype.setUrl = function(url) {
   if (url != this.url_) {
     this.url_ = url;
     this.image_ = null;
-    this.dispatchChangeEvent();
+    this.changed();
   }
 };
 
@@ -333,7 +333,7 @@ ol.source.ImageWMS.prototype.updateParams = function(params) {
   goog.object.extend(this.params_, params);
   this.updateV13_();
   this.image_ = null;
-  this.dispatchChangeEvent();
+  this.changed();
 };
 
 

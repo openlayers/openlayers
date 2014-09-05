@@ -61,7 +61,7 @@ ol.geom.GeometryCollection.prototype.unlistenGeometriesChange_ = function() {
   for (i = 0, ii = this.geometries_.length; i < ii; ++i) {
     goog.events.unlisten(
         this.geometries_[i], goog.events.EventType.CHANGE,
-        this.dispatchChangeEvent, false, this);
+        this.changed, false, this);
   }
 };
 
@@ -77,7 +77,7 @@ ol.geom.GeometryCollection.prototype.listenGeometriesChange_ = function() {
   for (i = 0, ii = this.geometries_.length; i < ii; ++i) {
     goog.events.listen(
         this.geometries_[i], goog.events.EventType.CHANGE,
-        this.dispatchChangeEvent, false, this);
+        this.changed, false, this);
   }
 };
 
@@ -243,7 +243,7 @@ ol.geom.GeometryCollection.prototype.setGeometriesArray = function(geometries) {
   this.unlistenGeometriesChange_();
   this.geometries_ = geometries;
   this.listenGeometriesChange_();
-  this.dispatchChangeEvent();
+  this.changed();
 };
 
 
@@ -256,7 +256,7 @@ ol.geom.GeometryCollection.prototype.applyTransform = function(transformFn) {
   for (i = 0, ii = geometries.length; i < ii; ++i) {
     geometries[i].applyTransform(transformFn);
   }
-  this.dispatchChangeEvent();
+  this.changed();
 };
 
 

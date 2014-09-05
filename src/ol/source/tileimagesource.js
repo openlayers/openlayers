@@ -149,7 +149,7 @@ ol.source.TileImage.prototype.getTileUrlFunction = function() {
 ol.source.TileImage.prototype.setTileLoadFunction = function(tileLoadFunction) {
   this.tileCache.clear();
   this.tileLoadFunction = tileLoadFunction;
-  this.dispatchChangeEvent();
+  this.changed();
 };
 
 
@@ -163,7 +163,7 @@ ol.source.TileImage.prototype.setTileUrlFunction = function(tileUrlFunction) {
   // FIXME cache key somehow.
   this.tileCache.clear();
   this.tileUrlFunction = tileUrlFunction;
-  this.dispatchChangeEvent();
+  this.changed();
 };
 
 

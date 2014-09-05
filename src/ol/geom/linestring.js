@@ -70,7 +70,7 @@ ol.geom.LineString.prototype.appendCoordinate = function(coordinate) {
   } else {
     ol.array.safeExtend(this.flatCoordinates, coordinate);
   }
-  this.dispatchChangeEvent();
+  this.changed();
 };
 
 
@@ -206,7 +206,7 @@ ol.geom.LineString.prototype.setCoordinates =
     }
     this.flatCoordinates.length = ol.geom.flat.deflate.coordinates(
         this.flatCoordinates, 0, coordinates, this.stride);
-    this.dispatchChangeEvent();
+    this.changed();
   }
 };
 
@@ -218,5 +218,5 @@ ol.geom.LineString.prototype.setCoordinates =
 ol.geom.LineString.prototype.setFlatCoordinates =
     function(layout, flatCoordinates) {
   this.setFlatCoordinatesInternal(layout, flatCoordinates);
-  this.dispatchChangeEvent();
+  this.changed();
 };

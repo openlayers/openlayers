@@ -223,7 +223,7 @@ ol.source.TileVector.prototype.removeFeature = goog.abstractMethod;
  */
 ol.source.TileVector.prototype.setTileUrlFunction = function(tileUrlFunction) {
   this.tileUrlFunction_ = tileUrlFunction;
-  this.dispatchChangeEvent();
+  this.changed();
 };
 
 

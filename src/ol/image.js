@@ -93,7 +93,7 @@ ol.Image.prototype.getImageElement = function(opt_context) {
 ol.Image.prototype.handleImageError_ = function() {
   this.state = ol.ImageState.ERROR;
   this.unlistenImage_();
-  this.dispatchChangeEvent();
+  this.changed();
 };
 
 
@@ -105,7 +105,7 @@ ol.Image.prototype.handleImageError_ = function() {
 ol.Image.prototype.handleImageLoad_ = function() {
   this.state = ol.ImageState.LOADED;
   this.unlistenImage_();
-  this.dispatchChangeEvent();
+  this.changed();
 };
 
 

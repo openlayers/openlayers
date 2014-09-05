@@ -69,7 +69,7 @@ goog.inherits(ol.ImageBase, goog.events.EventTarget);
 /**
  * @protected
  */
-ol.ImageBase.prototype.dispatchChangeEvent = function() {
+ol.ImageBase.prototype.changed = function() {
   this.dispatchEvent(goog.events.EventType.CHANGE);
 };
 

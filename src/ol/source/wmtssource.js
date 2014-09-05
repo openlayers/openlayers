@@ -232,7 +232,7 @@ ol.source.WMTS.prototype.resetCoordKeyPrefix_ = function() {
 ol.source.WMTS.prototype.updateDimensions = function(dimensions) {
   goog.object.extend(this.dimensions_, dimensions);
   this.resetCoordKeyPrefix_();
-  this.dispatchChangeEvent();
+  this.changed();
 };
 
 

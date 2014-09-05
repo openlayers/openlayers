@@ -104,7 +104,7 @@ ol.geom.MultiPolygon.prototype.appendPolygon = function(polygon) {
     }
   }
   this.endss_.push(ends);
-  this.dispatchChangeEvent();
+  this.changed();
 };
 
 
@@ -338,7 +338,7 @@ ol.geom.MultiPolygon.prototype.setCoordinates =
       this.flatCoordinates.length = lastEnds.length === 0 ?
           0 : lastEnds[lastEnds.length - 1];
     }
-    this.dispatchChangeEvent();
+    this.changed();
   }
 };
 
@@ -360,7 +360,7 @@ ol.geom.MultiPolygon.prototype.setFlatCoordinates =
   }
   this.setFlatCoordinatesInternal(layout, flatCoordinates);
   this.endss_ = endss;
-  this.dispatchChangeEvent();
+  this.changed();
 };
 
 

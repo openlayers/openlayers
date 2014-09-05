@@ -81,7 +81,7 @@ ol.source.Cluster.prototype.onSourceChange_ = function() {
   this.clear();
   this.cluster_();
   this.addFeatures(this.features_);
-  this.dispatchChangeEvent();
+  this.changed();
 };
 
 
