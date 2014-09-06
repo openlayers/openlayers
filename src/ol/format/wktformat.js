@@ -760,10 +760,10 @@ ol.format.WKT.Parser.prototype.parsePoint_ = function() {
  * @private
  */
 ol.format.WKT.Parser.prototype.parsePointList_ = function() {
-  var coordinates = [this.parsePoint_()];
-  while (this.match(ol.format.WKT.TokenType.COMMA)) {
+  var coordinates = [];
+  do {
     coordinates.push(this.parsePoint_());
-  }
+  } while (this.match(ol.format.WKT.TokenType.COMMA));
   return coordinates;
 };
 
@@ -773,10 +773,10 @@ ol.format.WKT.Parser.prototype.parsePointList_ = function() {
  * @private
  */
 ol.format.WKT.Parser.prototype.parsePointTextList_ = function() {
-  var coordinates = [this.parsePointText_()];
-  while (this.match(ol.format.WKT.TokenType.COMMA)) {
+  var coordinates = [];
+  do {
     coordinates.push(this.parsePointText_());
-  }
+  } while (this.match(ol.format.WKT.TokenType.COMMA));
   return coordinates;
 };
 
@@ -786,10 +786,10 @@ ol.format.WKT.Parser.prototype.parsePointTextList_ = function() {
  * @private
  */
 ol.format.WKT.Parser.prototype.parseLineStringTextList_ = function() {
-  var coordinates = [this.parseLineStringText_()];
-  while (this.match(ol.format.WKT.TokenType.COMMA)) {
+  var coordinates = [];
+  do {
     coordinates.push(this.parseLineStringText_());
-  }
+  } while (this.match(ol.format.WKT.TokenType.COMMA));
   return coordinates;
 };
 
@@ -799,10 +799,10 @@ ol.format.WKT.Parser.prototype.parseLineStringTextList_ = function() {
  * @private
  */
 ol.format.WKT.Parser.prototype.parsePolygonTextList_ = function() {
-  var coordinates = [this.parsePolygonText_()];
-  while (this.match(ol.format.WKT.TokenType.COMMA)) {
+  var coordinates = [];
+  do {
     coordinates.push(this.parsePolygonText_());
-  }
+  } while (this.match(ol.format.WKT.TokenType.COMMA));
   return coordinates;
 };
 
