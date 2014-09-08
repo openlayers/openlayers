@@ -154,8 +154,8 @@ ga.Lang.en = {
  */
 ga.Lang.fr = {
   'Geocoding results': 'Résultat du géocodage',
-  'Zoom in': 'Zoom in',
-  'Zoom out': 'Zoom out',
+  'Zoom in': 'Zoom avant',
+  'Zoom out': 'Zoom arri\u00e8re',
   'Reset rotation': 'Annuler la rotation'
 };
 
