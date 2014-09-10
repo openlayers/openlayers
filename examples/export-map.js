@@ -2,13 +2,20 @@ goog.require('ol.Map');
 goog.require('ol.View');
 goog.require('ol.control');
 goog.require('ol.layer.Tile');
+goog.require('ol.layer.Vector');
+goog.require('ol.source.GeoJSON');
 goog.require('ol.source.OSM');
-
 
 var map = new ol.Map({
   layers: [
     new ol.layer.Tile({
       source: new ol.source.OSM()
+    }),
+    new ol.layer.Vector({
+      source: new ol.source.GeoJSON({
+        projection: 'EPSG:3857',
+        url: 'data/geojson/countries.geojson'
+      })
     })
   ],
   target: 'map',
