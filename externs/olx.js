@@ -5443,6 +5443,86 @@ olx.style.IconOptions.prototype.src;
 
 
 /**
+ * @typedef {{fill: (ol.style.Fill|undefined),
+ *     points: number,
+ *     radius: number,
+ *     radius2: number,
+ *     angle0: number,
+ *     snapToPixel: (boolean|undefined),
+ *     stroke: (ol.style.Stroke|undefined)}}
+ * @api
+ */
+olx.style.ShapeOptions;
+
+
+/**
+ * Fill style.
+ * @type {ol.style.Fill|undefined}
+ * @api
+ */
+olx.style.ShapeOptions.prototype.fill;
+
+
+/**
+ * Number of points for stars and regular polygons. In case of a polygon, the
+ * number of points is the number of sides.
+ * @type {number}
+ * @api
+ */
+olx.style.ShapeOptions.prototype.points;
+
+
+/**
+ * Shape radius.
+ * @type {number}
+ * @api
+ */
+olx.style.ShapeOptions.prototype.radius;
+
+
+/**
+ * Shape secondary radius for drawing stars. If radius 2 is equal to radius,
+ * the shape will be a regular polygon instead of a star.
+ * Default value is equal to radius.
+ * @type {number}
+ * @api
+ */
+olx.style.ShapeOptions.prototype.radius2;
+
+
+/**
+ * Shape's rotation in radians. A value of 0 will have one of the shape's point
+ * facing up.
+ * Default value is 0.
+ * @type {number}
+ * @api
+ */
+olx.style.ShapeOptions.prototype.angle0;
+
+
+/**
+ * If `true` integral numbers of pixels are used as the X and Y pixel
+ * coordinate when drawing the shape in the output canvas. If `false`
+ * fractional numbers may be used. Using `true` allows for "sharp"
+ * rendering (no blur), while using `false` allows for "accurate"
+ * rendering. Note that accuracy is important if the shape's
+ * position is animated. Without it, the shape may jitter noticeably.
+ * Default value is `true`.
+ * @type {boolean|undefined}
+ * @api
+ */
+olx.style.ShapeOptions.prototype.snapToPixel;
+
+
+/**
+ * Stroke style.
+ * @type {ol.style.Stroke|undefined}
+ * @api
+ */
+olx.style.ShapeOptions.prototype.stroke;
+
+
+/**
  * @typedef {{color: (ol.Color|string|undefined),
  *     lineCap: (string|undefined),
  *     lineJoin: (string|undefined),
