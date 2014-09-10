@@ -1,13 +1,9 @@
-// FIXME works for View2D only
-
 goog.provide('ol.control.Zoom');
 
-goog.require('goog.asserts');
 goog.require('goog.dom');
 goog.require('goog.dom.TagName');
 goog.require('goog.events');
 goog.require('goog.events.EventType');
-goog.require('ol.View2D');
 goog.require('ol.animation');
 goog.require('ol.control.Control');
 goog.require('ol.css');
@@ -25,7 +21,7 @@ goog.require('ol.pointer.PointerEventHandler');
  * @constructor
  * @extends {ol.control.Control}
  * @param {olx.control.ZoomOptions=} opt_options Zoom options.
- * @todo api
+ * @api stable
  */
 ol.control.Zoom = function(opt_options) {
 
@@ -143,12 +139,8 @@ ol.control.Zoom.prototype.handlePointerUp_ = function(delta, pointerEvent) {
  */
 ol.control.Zoom.prototype.zoomByDelta_ = function(delta) {
   var map = this.getMap();
-  // FIXME works for View2D only
   var view = map.getView();
-  goog.asserts.assert(goog.isDef(view));
-  var view2D = view.getView2D();
-  goog.asserts.assertInstanceof(view2D, ol.View2D);
-  var currentResolution = view2D.getResolution();
+  var currentResolution = view.getResolution();
   if (goog.isDef(currentResolution)) {
     if (this.duration_ > 0) {
       map.beforeRender(ol.animation.zoom({
@@ -157,7 +149,7 @@ ol.control.Zoom.prototype.zoomByDelta_ = function(delta) {
         easing: ol.easing.easeOut
       }));
     }
-    var newResolution = view2D.constrainResolution(currentResolution, delta);
-    view2D.setResolution(newResolution);
+    var newResolution = view.constrainResolution(currentResolution, delta);
+    view.setResolution(newResolution);
   }
 };

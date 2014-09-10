@@ -8,7 +8,7 @@ goog.require('ol.TileCoord');
  * @param {ol.Extent} extent Extent.
  * @param {number} resolution Resolution.
  * @return {Array.<ol.Extent>} Extents.
- * @todo api
+ * @api
  */
 ol.loadingstrategy.all = function(extent, resolution) {
   return [[-Infinity, -Infinity, Infinity, Infinity]];
@@ -21,7 +21,7 @@ ol.loadingstrategy.all = function(extent, resolution) {
  * @param {ol.Extent} extent Extent.
  * @param {number} resolution Resolution.
  * @return {Array.<ol.Extent>} Extents.
- * @todo api
+ * @api
  */
 ol.loadingstrategy.bbox = function(extent, resolution) {
   return [extent];
@@ -32,7 +32,7 @@ ol.loadingstrategy.bbox = function(extent, resolution) {
  * Creates a strategy function for loading features based on a tile grid.
  * @param {ol.tilegrid.TileGrid} tileGrid Tile grid.
  * @return {function(ol.Extent, number): Array.<ol.Extent>} Loading strategy.
- * @todo api
+ * @api
  */
 ol.loadingstrategy.createTile = function(tileGrid) {
   return (
@@ -46,11 +46,12 @@ ol.loadingstrategy.createTile = function(tileGrid) {
         var tileRange = tileGrid.getTileRangeForExtentAndZ(extent, z);
         /** @type {Array.<ol.Extent>} */
         var extents = [];
-        var tileCoord = new ol.TileCoord(z, 0, 0);
-        for (tileCoord.x = tileRange.minX; tileCoord.x <= tileRange.maxX;
-             ++tileCoord.x) {
-          for (tileCoord.y = tileRange.minY; tileCoord.y <= tileRange.maxY;
-               ++tileCoord.y) {
+        /** @type {ol.TileCoord} */
+        var tileCoord = [z, 0, 0];
+        for (tileCoord[1] = tileRange.minX; tileCoord[1] <= tileRange.maxX;
+             ++tileCoord[1]) {
+          for (tileCoord[2] = tileRange.minY; tileCoord[2] <= tileRange.maxY;
+               ++tileCoord[2]) {
             extents.push(tileGrid.getTileCoordExtent(tileCoord));
           }
         }

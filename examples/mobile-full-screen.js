@@ -1,11 +1,11 @@
 goog.require('ol.Geolocation');
 goog.require('ol.Map');
-goog.require('ol.View2D');
+goog.require('ol.View');
 goog.require('ol.layer.Tile');
 goog.require('ol.source.BingMaps');
 
 
-var view = new ol.View2D({
+var view = new ol.View({
   center: [0, 0],
   zoom: 2
 });
@@ -25,9 +25,9 @@ var map = new ol.Map({
 });
 
 var geolocation = new ol.Geolocation({
+  projection: view.getProjection(),
   tracking: true
 });
-geolocation.bindTo('projection', view);
 geolocation.once('change:position', function() {
   view.setCenter(geolocation.getPosition());
   view.setResolution(2.388657133911758);

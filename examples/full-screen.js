@@ -1,12 +1,12 @@
 goog.require('ol.Map');
-goog.require('ol.View2D');
+goog.require('ol.View');
 goog.require('ol.control');
 goog.require('ol.control.FullScreen');
 goog.require('ol.layer.Tile');
 goog.require('ol.source.BingMaps');
 
 
-var view = new ol.View2D({
+var view = new ol.View({
   center: [-9101767, 2822912],
   zoom: 14
 });

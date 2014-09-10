@@ -30,12 +30,16 @@ describe('ol.TileUrlFunction', function() {
   describe('createFromTemplate', function() {
     it('creates expected URL', function() {
       var tileUrl = ol.TileUrlFunction.createFromTemplate('{z}/{x}/{y}');
-      expect(tileUrl(new ol.TileCoord(3, 2, 1))).to.eql('3/2/1');
+      expect(tileUrl([3, 2, 1])).to.eql('3/2/1');
       expect(tileUrl(null)).to.be(undefined);
     });
     it('accepts {-y} placeholder', function() {
       var tileUrl = ol.TileUrlFunction.createFromTemplate('{z}/{x}/{-y}');
-      expect(tileUrl(new ol.TileCoord(3, 2, 2))).to.eql('3/2/5');
+      expect(tileUrl([3, 2, 2])).to.eql('3/2/5');
+    });
+    it('replaces multiple placeholder occurrences', function() {
+      var tileUrl = ol.TileUrlFunction.createFromTemplate('{z}/{z}{x}{y}');
+      expect(tileUrl([3, 2, 1])).to.eql('3/321');
     });
   });
 
@@ -47,13 +51,19 @@ describe('ol.TileUrlFunction', function() {
         'http://tile-3/{z}/{x}/{y}'
       ];
       var tileUrlFunction = ol.TileUrlFunction.createFromTemplates(templates);
-      var tileCoord = new ol.TileCoord(3, 2, 1);
-      tileCoord.hash = function() { return 3; };
+      var tileCoord = [3, 2, 1];
+
+      sinon.stub(ol.tilecoord, 'hash', function() { return 3; });
       expect(tileUrlFunction(tileCoord)).to.eql('http://tile-1/3/2/1');
-      tileCoord.hash = function() { return 2; };
+      ol.tilecoord.hash.restore();
+
+      sinon.stub(ol.tilecoord, 'hash', function() { return 2; });
       expect(tileUrlFunction(tileCoord)).to.eql('http://tile-3/3/2/1');
-      tileCoord.hash = function() { return 1; };
+      ol.tilecoord.hash.restore();
+
+      sinon.stub(ol.tilecoord, 'hash', function() { return 1; });
       expect(tileUrlFunction(tileCoord)).to.eql('http://tile-2/3/2/1');
+      ol.tilecoord.hash.restore();
     });
   });
 
@@ -61,10 +71,10 @@ describe('ol.TileUrlFunction', function() {
     it('creates expected URL', function() {
       var tileUrl = ol.TileUrlFunction.withTileCoordTransform(
           function(tileCoord) {
-            return new ol.TileCoord(tileCoord.z, tileCoord.x, -tileCoord.y);
+            return [tileCoord[0], tileCoord[1], -tileCoord[2]];
           },
           ol.TileUrlFunction.createFromTemplate('{z}/{x}/{y}'));
-      expect(tileUrl(new ol.TileCoord(3, 2, -1))).to.eql('3/2/1');
+      expect(tileUrl([3, 2, -1])).to.eql('3/2/1');
       expect(tileUrl(null)).to.be(undefined);
     });
   });
@@ -75,8 +85,8 @@ describe('ol.TileUrlFunction', function() {
         ol.TileUrlFunction.createFromTemplate('a'),
         ol.TileUrlFunction.createFromTemplate('b')
       ]);
-      var tileUrl1 = tileUrl(new ol.TileCoord(1, 0, 0));
-      var tileUrl2 = tileUrl(new ol.TileCoord(1, 0, 1));
+      var tileUrl1 = tileUrl([1, 0, 0]);
+      var tileUrl2 = tileUrl([1, 0, 1]);
       expect(tileUrl1).not.to.be(tileUrl2);
       expect(tileUrl(null)).to.be(undefined);
     });

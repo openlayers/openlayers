@@ -1,14 +1,15 @@
 /**
  * This task builds OpenLayers with the Closure Compiler.
  */
-var fs = require('fs');
 var path = require('path');
 
 var async = require('async');
 var closure = require('closure-util');
 var fse = require('fs-extra');
+var fs = require('graceful-fs');
 var nomnom = require('nomnom');
 var temp = require('temp').track();
+var exec = require('child_process').exec;
 
 var generateExports = require('./generate-exports');
 
@@ -106,21 +107,31 @@ function writeExports(exports, callback) {
 
 /**
  * Get the list of sources sorted in dependency order.
- * @param {Array.<string>} src List of paths or patterns to source files.  By
- *     default, all .js files in the src directory are included.
+ * @param {Object} config Build configuration object.
  * @param {string} exports Exports code (with goog.exportSymbol calls).
  * @param {function(Error, Array.<string>)} callback Called with a list of paths
  *     or any error.
  */
-function getDependencies(src, exports, callback) {
+function getDependencies(config, exports, callback) {
   writeExports(exports, function(err, exportsPath) {
     if (err) {
       callback(err);
       return;
     }
     log.info('ol', 'Parsing dependencies');
-    src = src || ['src/**/*.js'];
-    closure.getDependencies({lib: src}, function(err, paths) {
+    var options;
+    if (config.src) {
+      options = {
+        lib: config.src,
+        cwd: config.cwd
+      };
+    } else {
+      options = {
+        lib: ['src/**/*.js'],
+        cwd: root
+      };
+    }
+    closure.getDependencies(options, function(err, paths) {
       if (err) {
         callback(err);
         return;
@@ -159,20 +170,39 @@ function concatenate(paths, callback) {
  *     any error.
  */
 function build(config, paths, callback) {
-  var options = config.compile;
-  if (!options) {
+  var options = {
+    compile: config.compile,
+    cwd: config.cwd || root,
+    jvm: config.jvm
+  };
+  if (!options.compile) {
     log.info('ol', 'No compile options found.  Concatenating ' +
         paths.length + ' sources');
     concatenate(paths, callback);
   } else {
     log.info('ol', 'Compiling ' + paths.length + ' sources');
-    options.js = paths.concat(options.js || []);
-    if (config.jvm) {
-      closure.compile(options, config.jvm, callback);
-    } else {
-      closure.compile(options, callback);
-    }
+    options.compile.js = paths.concat(options.compile.js || []);
+    closure.compile(options, callback);
   }
+}
+
+
+/**
+ * Adds a file header with the most recent Git tag.
+ * @param {string} compiledSource The compiled library.
+ * @param {function(Error, string)} callback Called with the output
+ *     ready to be written into a file, or any error.
+ */
+function addHeader(compiledSource, callback) {
+  exec('git describe --tags', function(error, stdout, stderr) {
+    var header = '// OpenLayers 3. See http://openlayers.org/\n';
+    header += '// License: https://raw.githubusercontent.com/openlayers/' +
+        'ol3/master/LICENSE.md\n';
+    if (stdout !== '') {
+      header += '// Version: ' + stdout + '\n';
+    }
+    callback(null, header + compiledSource);
+  });
 }
 
 
@@ -187,8 +217,9 @@ function main(config, callback) {
   async.waterfall([
     assertValidConfig.bind(null, config),
     generateExports.bind(null, config),
-    getDependencies.bind(null, config.src),
-    build.bind(null, config)
+    getDependencies.bind(null, config),
+    build.bind(null, config),
+    addHeader
   ], callback);
 }
 

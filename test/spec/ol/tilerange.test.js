@@ -19,39 +19,38 @@ describe('ol.TileRange', function() {
   describe('contains', function() {
     it('returns the expected value', function() {
       var tileRange = new ol.TileRange(1, 3, 1, 3);
-      expect(tileRange.contains(new ol.TileCoord(0, 0, 0))).to.not.be();
-      expect(tileRange.contains(new ol.TileCoord(0, 0, 1))).to.not.be();
-      expect(tileRange.contains(new ol.TileCoord(0, 0, 2))).to.not.be();
-      expect(tileRange.contains(new ol.TileCoord(0, 0, 3))).to.not.be();
-      expect(tileRange.contains(new ol.TileCoord(0, 0, 4))).to.not.be();
-      expect(tileRange.contains(new ol.TileCoord(0, 1, 0))).to.not.be();
-      expect(tileRange.contains(new ol.TileCoord(0, 1, 1))).to.be.ok();
-      expect(tileRange.contains(new ol.TileCoord(0, 1, 2))).to.be.ok();
-      expect(tileRange.contains(new ol.TileCoord(0, 1, 3))).to.be.ok();
-      expect(tileRange.contains(new ol.TileCoord(0, 1, 4))).to.not.be();
-      expect(tileRange.contains(new ol.TileCoord(0, 2, 0))).to.not.be();
-      expect(tileRange.contains(new ol.TileCoord(0, 2, 1))).to.be.ok();
-      expect(tileRange.contains(new ol.TileCoord(0, 2, 2))).to.be.ok();
-      expect(tileRange.contains(new ol.TileCoord(0, 2, 3))).to.be.ok();
-      expect(tileRange.contains(new ol.TileCoord(0, 2, 4))).to.not.be();
-      expect(tileRange.contains(new ol.TileCoord(0, 3, 0))).to.not.be();
-      expect(tileRange.contains(new ol.TileCoord(0, 3, 1))).to.be.ok();
-      expect(tileRange.contains(new ol.TileCoord(0, 3, 2))).to.be.ok();
-      expect(tileRange.contains(new ol.TileCoord(0, 3, 3))).to.be.ok();
-      expect(tileRange.contains(new ol.TileCoord(0, 3, 4))).to.not.be();
-      expect(tileRange.contains(new ol.TileCoord(0, 4, 0))).to.not.be();
-      expect(tileRange.contains(new ol.TileCoord(0, 4, 1))).to.not.be();
-      expect(tileRange.contains(new ol.TileCoord(0, 4, 2))).to.not.be();
-      expect(tileRange.contains(new ol.TileCoord(0, 4, 3))).to.not.be();
-      expect(tileRange.contains(new ol.TileCoord(0, 4, 4))).to.not.be();
+      expect(tileRange.contains([0, 0, 0])).to.not.be();
+      expect(tileRange.contains([0, 0, 1])).to.not.be();
+      expect(tileRange.contains([0, 0, 2])).to.not.be();
+      expect(tileRange.contains([0, 0, 3])).to.not.be();
+      expect(tileRange.contains([0, 0, 4])).to.not.be();
+      expect(tileRange.contains([0, 1, 0])).to.not.be();
+      expect(tileRange.contains([0, 1, 1])).to.be.ok();
+      expect(tileRange.contains([0, 1, 2])).to.be.ok();
+      expect(tileRange.contains([0, 1, 3])).to.be.ok();
+      expect(tileRange.contains([0, 1, 4])).to.not.be();
+      expect(tileRange.contains([0, 2, 0])).to.not.be();
+      expect(tileRange.contains([0, 2, 1])).to.be.ok();
+      expect(tileRange.contains([0, 2, 2])).to.be.ok();
+      expect(tileRange.contains([0, 2, 3])).to.be.ok();
+      expect(tileRange.contains([0, 2, 4])).to.not.be();
+      expect(tileRange.contains([0, 3, 0])).to.not.be();
+      expect(tileRange.contains([0, 3, 1])).to.be.ok();
+      expect(tileRange.contains([0, 3, 2])).to.be.ok();
+      expect(tileRange.contains([0, 3, 3])).to.be.ok();
+      expect(tileRange.contains([0, 3, 4])).to.not.be();
+      expect(tileRange.contains([0, 4, 0])).to.not.be();
+      expect(tileRange.contains([0, 4, 1])).to.not.be();
+      expect(tileRange.contains([0, 4, 2])).to.not.be();
+      expect(tileRange.contains([0, 4, 3])).to.not.be();
+      expect(tileRange.contains([0, 4, 4])).to.not.be();
     });
   });
 
   describe('boundingTileRange', function() {
     it('returns the expected TileRange', function() {
       var tileRange = new ol.TileRange.boundingTileRange(
-          new ol.TileCoord(3, 1, 3),
-          new ol.TileCoord(3, 2, 0));
+          [3, 1, 3], [3, 2, 0]);
       expect(tileRange.minX).to.eql(1);
       expect(tileRange.maxX).to.eql(2);
       expect(tileRange.minY).to.eql(0);
@@ -61,8 +60,7 @@ describe('ol.TileRange', function() {
     describe('with mixed z', function() {
       expect(function() {
         var tileRange = new ol.TileRange.boundingTileRange(
-            new ol.TileCoord(3, 1, 3),
-            new ol.TileCoord(4, 2, 0));
+            [3, 1, 3], [4, 2, 0]);
         tileRange = tileRange; // suppress gjslint warning about unused variable
       }).to.throwException();
     });

@@ -20,7 +20,7 @@ describe('ol.interaction.Draw', function() {
     map = new ol.Map({
       target: target,
       layers: [layer],
-      view: new ol.View2D({
+      view: new ol.View({
         projection: 'EPSG:4326',
         center: [0, 0],
         resolution: 1
@@ -478,7 +478,7 @@ goog.require('goog.events.BrowserEvent');
 goog.require('goog.style');
 goog.require('ol.Map');
 goog.require('ol.MapBrowserPointerEvent');
-goog.require('ol.View2D');
+goog.require('ol.View');
 goog.require('ol.geom.GeometryType');
 goog.require('ol.geom.LineString');
 goog.require('ol.geom.MultiLineString');

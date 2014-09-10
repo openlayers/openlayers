@@ -13,7 +13,7 @@ goog.require('ol.source.XYZ');
  * @constructor
  * @extends {ol.source.XYZ}
  * @param {olx.source.OSMOptions=} opt_options Open Street Map options.
- * @todo api
+ * @api stable
  */
 ol.source.OSM = function(opt_options) {
 
@@ -37,7 +37,7 @@ ol.source.OSM = function(opt_options) {
     attributions: attributions,
     crossOrigin: crossOrigin,
     opaque: true,
-    maxZoom: options.maxZoom,
+    maxZoom: goog.isDef(options.maxZoom) ? options.maxZoom : 19,
     tileLoadFunction: options.tileLoadFunction,
     url: url
   });
@@ -49,7 +49,7 @@ goog.inherits(ol.source.OSM, ol.source.XYZ);
 /**
  * @const
  * @type {ol.Attribution}
- * @todo api
+ * @api
  */
 ol.source.OSM.DATA_ATTRIBUTION = new ol.Attribution({
   html: 'Data &copy; ' +
@@ -62,7 +62,7 @@ ol.source.OSM.DATA_ATTRIBUTION = new ol.Attribution({
 /**
  * @const
  * @type {ol.Attribution}
- * @todo api
+ * @api
  */
 ol.source.OSM.TILE_ATTRIBUTION = new ol.Attribution({
   html: 'Tiles &copy; ' +

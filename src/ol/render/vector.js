@@ -25,6 +25,27 @@ ol.renderer.vector.defaultOrder = function(feature1, feature2) {
 
 
 /**
+ * @param {number} resolution Resolution.
+ * @param {number} pixelRatio Pixel ratio.
+ * @return {number} Squared pixel tolerance.
+ */
+ol.renderer.vector.getSquaredTolerance = function(resolution, pixelRatio) {
+  var tolerance = ol.renderer.vector.getTolerance(resolution, pixelRatio);
+  return tolerance * tolerance;
+};
+
+
+/**
+ * @param {number} resolution Resolution.
+ * @param {number} pixelRatio Pixel ratio.
+ * @return {number} Pixel tolerance.
+ */
+ol.renderer.vector.getTolerance = function(resolution, pixelRatio) {
+  return ol.SIMPLIFY_TOLERANCE * resolution / pixelRatio;
+};
+
+
+/**
  * @param {ol.render.IReplayGroup} replayGroup Replay group.
  * @param {ol.geom.Geometry} geometry Geometry.
  * @param {ol.style.Style} style Style.

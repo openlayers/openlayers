@@ -84,7 +84,7 @@ ol.style.Image.prototype.getRotateWithView = function() {
 
 /**
  * @return {number} Rotation.
- * @todo api
+ * @api
  */
 ol.style.Image.prototype.getRotation = function() {
   return this.rotation_;
@@ -93,7 +93,7 @@ ol.style.Image.prototype.getRotation = function() {
 
 /**
  * @return {number} Scale.
- * @todo api
+ * @api
  */
 ol.style.Image.prototype.getScale = function() {
   return this.scale_;

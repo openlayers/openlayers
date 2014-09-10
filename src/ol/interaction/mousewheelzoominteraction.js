@@ -1,5 +1,3 @@
-// FIXME works for View2D only
-
 goog.provide('ol.interaction.MouseWheelZoom');
 
 goog.require('goog.asserts');
@@ -19,7 +17,7 @@ goog.require('ol.interaction.Interaction');
  * @constructor
  * @extends {ol.interaction.Interaction}
  * @param {olx.interaction.MouseWheelZoomOptions=} opt_options Options.
- * @todo api
+ * @api stable
  */
 ol.interaction.MouseWheelZoom = function(opt_options) {
 
@@ -102,8 +100,8 @@ ol.interaction.MouseWheelZoom.prototype.doZoom_ = function(map) {
   var maxDelta = ol.MOUSEWHEELZOOM_MAXDELTA;
   var delta = goog.math.clamp(this.delta_, -maxDelta, maxDelta);
 
-  // FIXME works for View2D only
-  var view = map.getView().getView2D();
+  var view = map.getView();
+  goog.asserts.assert(goog.isDef(view));
 
   map.render();
   ol.interaction.Interaction.zoomByDelta(map, view, -delta, this.lastAnchor_,

@@ -11,13 +11,17 @@ describe('ol.format.Polyline', function() {
 
   function resetTestingData() {
     format = new ol.format.Polyline();
-    points = [[38.50000, -120.20000],
-              [40.70000, -120.95000],
-              [43.25200, -126.45300]];
-    flatPoints = [38.50000, -120.20000,
-                  40.70000, -120.95000,
-                  43.25200, -126.45300];
-    encodedFlatPoints = '_p~iF~ps|U_ulLnnqC_mqNvxq`@';
+    points = [[-120.20000, 38.50000],
+              [-120.95000, 40.70000],
+              [-126.45300, 43.25200]];
+    flatPoints = [-120.20000, 38.50000,
+                  -120.95000, 40.70000,
+                  -126.45300, 43.25200];
+    encodedFlatPoints = '~ps|U_p~iFnnqC_ulLvxq`@_mqN';
+    points3857 = [
+      ol.proj.transform([-120.20000, 38.50000], 'EPSG:4326', 'EPSG:3857'),
+      ol.proj.transform([-120.95000, 40.70000], 'EPSG:4326', 'EPSG:3857'),
+      ol.proj.transform([-126.45300, 43.25200], 'EPSG:4326', 'EPSG:3857')];
 
     floats = [0.00, 0.15, -0.01, -0.16, 0.16, 0.01];
     smallFloats = [0.00000, 0.00015, -0.00001, -0.00016, 0.00016, 0.00001];
@@ -253,6 +257,16 @@ describe('ol.format.Polyline', function() {
       expect(geometry.getFlatCoordinates()).to.eql(flatPoints);
     });
 
+    it('transforms and returns the expected feature', function() {
+      var feature = format.readFeature(encodedFlatPoints, {
+        featureProjection: 'EPSG:3857'
+      });
+      expect(feature).to.be.an(ol.Feature);
+      var geometry = feature.getGeometry();
+      expect(geometry).to.be.an(ol.geom.LineString);
+      expect(geometry.getCoordinates()).to.eql(points3857);
+    });
+
   });
 
   describe('#readFeatures', function() {
@@ -268,6 +282,19 @@ describe('ol.format.Polyline', function() {
       expect(geometry.getFlatCoordinates()).to.eql(flatPoints);
     });
 
+    it('transforms and returns the expected features', function() {
+      var features = format.readFeatures(encodedFlatPoints, {
+        featureProjection: 'EPSG:3857'
+      });
+      expect(features).to.be.an(Array);
+      expect(features).to.have.length(1);
+      var feature = features[0];
+      expect(feature).to.be.an(ol.Feature);
+      var geometry = feature.getGeometry();
+      expect(geometry).to.be.an(ol.geom.LineString);
+      expect(geometry.getCoordinates()).to.eql(points3857);
+    });
+
   });
 
   describe('#readGeometry', function() {
@@ -276,6 +303,14 @@ describe('ol.format.Polyline', function() {
       var geometry = format.readGeometry(encodedFlatPoints);
       expect(geometry).to.be.an(ol.geom.LineString);
       expect(geometry.getFlatCoordinates()).to.eql(flatPoints);
+    });
+
+    it('transforms and returns the expected geometry', function() {
+      var geometry = format.readGeometry(encodedFlatPoints, {
+        featureProjection: 'EPSG:3857'
+      });
+      expect(geometry).to.be.an(ol.geom.LineString);
+      expect(geometry.getCoordinates()).to.eql(points3857);
     });
 
   });
@@ -296,6 +331,13 @@ describe('ol.format.Polyline', function() {
       expect(format.writeFeature(feature)).to.be(encodedFlatPoints);
     });
 
+    it('transforms and returns the expected text', function() {
+      var feature = new ol.Feature(new ol.geom.LineString(points3857));
+      expect(format.writeFeature(feature, {
+        featureProjection: 'EPSG:3857'
+      })).to.be(encodedFlatPoints);
+    });
+
   });
 
   describe('#writeFeature', function() {
@@ -305,6 +347,13 @@ describe('ol.format.Polyline', function() {
       expect(format.writeFeatures(features)).to.be(encodedFlatPoints);
     });
 
+    it('transforms and returns the expected text', function() {
+      var features = [new ol.Feature(new ol.geom.LineString(points3857))];
+      expect(format.writeFeatures(features, {
+        featureProjection: 'EPSG:3857'
+      })).to.be(encodedFlatPoints);
+    });
+
   });
 
   describe('#writeGeometry', function() {
@@ -312,6 +361,13 @@ describe('ol.format.Polyline', function() {
     it('returns the expected text', function() {
       var geometry = new ol.geom.LineString(points);
       expect(format.writeGeometry(geometry)).to.be(encodedFlatPoints);
+    });
+
+    it('transforms and returns the expected text', function() {
+      var geometry = new ol.geom.LineString(points3857);
+      expect(format.writeGeometry(geometry, {
+        featureProjection: 'EPSG:3857'
+      })).to.be(encodedFlatPoints);
     });
 
   });

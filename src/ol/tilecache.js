@@ -2,10 +2,9 @@ goog.provide('ol.TileCache');
 
 goog.require('goog.asserts');
 goog.require('ol');
-goog.require('ol.Tile');
-goog.require('ol.TileCoord');
 goog.require('ol.TileRange');
 goog.require('ol.structs.LRUCache');
+goog.require('ol.tilecoord');
 
 
 
@@ -45,11 +44,11 @@ ol.TileCache.prototype.expireCache = function(usedTiles) {
   var tile, zKey;
   while (this.canExpireCache()) {
     tile = /** @type {ol.Tile} */ (this.peekLast());
-    zKey = tile.tileCoord.z.toString();
+    zKey = tile.tileCoord[0].toString();
     if (zKey in usedTiles && usedTiles[zKey].contains(tile.tileCoord)) {
       break;
     } else {
-      this.pop();
+      this.pop().dispose();
     }
   }
 };
@@ -64,8 +63,8 @@ ol.TileCache.prototype.pruneTileRange = function(tileRange) {
       key;
   while (i--) {
     key = this.peekLastKey();
-    if (tileRange.contains(ol.TileCoord.createFromString(key))) {
-      this.pop();
+    if (tileRange.contains(ol.tilecoord.createFromString(key))) {
+      this.pop().dispose();
     } else {
       this.get(key);
     }

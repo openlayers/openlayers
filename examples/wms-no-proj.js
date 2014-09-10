@@ -1,6 +1,6 @@
 goog.require('ol.Attribution');
 goog.require('ol.Map');
-goog.require('ol.View2D');
+goog.require('ol.View');
 goog.require('ol.layer.Image');
 goog.require('ol.layer.Tile');
 goog.require('ol.proj.Projection');
@@ -42,8 +42,10 @@ var layers = [
 ];
 
 // A minimal projection object is configured with only the SRS code and the map
-// units. No client side coordinate transforms are possible with such a
-// projection object.
+// units. No client-side coordinate transforms are possible with such a
+// projection object. Requesting tiles only needs the code together with a
+// tile grid of Cartesian coordinates; it does not matter how those
+// coordinates relate to latitude or longitude.
 var projection = new ol.proj.Projection({
   code: 'EPSG:21781',
   units: 'm'
@@ -53,7 +55,7 @@ var map = new ol.Map({
   layers: layers,
   renderer: exampleNS.getRendererFromQueryString(),
   target: 'map',
-  view: new ol.View2D({
+  view: new ol.View({
     center: [660000, 190000],
     projection: projection,
     zoom: 9

@@ -52,19 +52,19 @@ GeoJSONCRS.prototype.properties;
 var GeoJSONCRSCode = function() {};
 
 
+
+/**
+ * @constructor
+ */
+var GeoJSONCRSName = function() {};
+
+
 /**
  * @type {string}
  * TODO: remove this when http://jira.codehaus.org/browse/GEOS-5996 is fixed
  * and widely deployed.
  */
 GeoJSONCRSName.prototype.code;
-
-
-
-/**
- * @constructor
- */
-var GeoJSONCRSName = function() {};
 
 
 /**

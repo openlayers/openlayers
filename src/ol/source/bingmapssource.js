@@ -12,6 +12,7 @@ goog.require('ol.extent');
 goog.require('ol.proj');
 goog.require('ol.source.State');
 goog.require('ol.source.TileImage');
+goog.require('ol.tilecoord');
 goog.require('ol.tilegrid.XYZ');
 
 
@@ -23,7 +24,7 @@ goog.require('ol.tilegrid.XYZ');
  * @constructor
  * @extends {ol.source.TileImage}
  * @param {olx.source.BingMapsOptions} options Bing Maps options.
- * @todo api
+ * @api stable
  */
 ol.source.BingMaps = function(options) {
 
@@ -59,7 +60,7 @@ goog.inherits(ol.source.BingMaps, ol.source.TileImage);
 /**
  * @const
  * @type {ol.Attribution}
- * @todo api
+ * @api
  */
 ol.source.BingMaps.TOS_ATTRIBUTION = new ol.Attribution({
   html: '<a class="ol-attribution-bing-tos" target="_blank" ' +
@@ -88,7 +89,9 @@ ol.source.BingMaps.prototype.handleImageryMetadataResponse =
   var resource = response.resourceSets[0].resources[0];
 
   goog.asserts.assert(resource.imageWidth == resource.imageHeight);
+  var sourceProjection = this.getProjection();
   var tileGrid = new ol.tilegrid.XYZ({
+    extent: ol.tilegrid.extentFromProjection(sourceProjection),
     minZoom: resource.zoomMin,
     maxZoom: resource.zoomMax,
     tileSize: resource.imageWidth
@@ -96,7 +99,6 @@ ol.source.BingMaps.prototype.handleImageryMetadataResponse =
   this.tileGrid = tileGrid;
 
   var culture = this.culture_;
-  var sourceProjection = this.getProjection();
   this.tileUrlFunction = ol.TileUrlFunction.withTileCoordTransform(
       tileGrid.createTileCoordTransform(),
       ol.TileUrlFunction.createFromTileUrlFunctions(
@@ -120,7 +122,7 @@ ol.source.BingMaps.prototype.handleImageryMetadataResponse =
                         return undefined;
                       } else {
                         return imageUrl.replace(
-                            '{quadkey}', tileCoord.quadKey());
+                            '{quadkey}', ol.tilecoord.quadKey(tileCoord));
                       }
                     });
               })));

@@ -1,6 +1,6 @@
 goog.require('ol.FeatureOverlay');
 goog.require('ol.Map');
-goog.require('ol.View2D');
+goog.require('ol.View');
 goog.require('ol.events.condition');
 goog.require('ol.interaction');
 goog.require('ol.interaction.Draw');
@@ -19,7 +19,7 @@ var raster = new ol.layer.Tile({
 var map = new ol.Map({
   layers: [raster],
   target: 'map',
-  view: new ol.View2D({
+  view: new ol.View({
     center: [-11000000, 4600000],
     zoom: 4
   })

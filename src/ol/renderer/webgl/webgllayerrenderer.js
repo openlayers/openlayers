@@ -239,7 +239,7 @@ ol.renderer.webgl.Layer.prototype.dispatchComposeEvent_ =
   if (layer.hasListener(type)) {
     var render = new ol.render.webgl.Immediate(context, frameState.pixelRatio);
     var composeEvent = new ol.render.Event(
-        type, layer, render, frameState, null, context);
+        type, layer, render, null, frameState, null, context);
     layer.dispatchEvent(composeEvent);
   }
 };

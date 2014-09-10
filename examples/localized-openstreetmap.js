@@ -1,6 +1,7 @@
 goog.require('ol.Attribution');
 goog.require('ol.Map');
-goog.require('ol.View2D');
+goog.require('ol.View');
+goog.require('ol.control');
 goog.require('ol.layer.Tile');
 goog.require('ol.source.OSM');
 
@@ -42,7 +43,12 @@ var map = new ol.Map({
     openSeaMapLayer
   ],
   target: 'map',
-  view: new ol.View2D({
+  controls: ol.control.defaults({
+    attributionOptions: /** @type {olx.control.AttributionOptions} */ ({
+      collapsible: false
+    })
+  }),
+  view: new ol.View({
     maxZoom: 18,
     center: [-244780.24508882355, 5986452.183179816],
     zoom: 15

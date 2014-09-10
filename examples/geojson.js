@@ -1,6 +1,7 @@
 goog.require('ol.Feature');
 goog.require('ol.Map');
-goog.require('ol.View2D');
+goog.require('ol.View');
+goog.require('ol.control');
 goog.require('ol.geom.Circle');
 goog.require('ol.layer.Tile');
 goog.require('ol.layer.Vector');
@@ -144,7 +145,7 @@ var vectorSource = new ol.source.GeoJSON(
               'type': 'MultiPolygon',
               'coordinates': [
                 [[[-5e6, 6e6], [-5e6, 8e6], [-3e6, 8e6], [-3e6, 6e6]]],
-                [[[-2e6, 6e6], [-2e6, 8e6], [0e6, 8e6], [0e6, 6e6]]],
+                [[[-2e6, 6e6], [-2e6, 8e6], [0, 8e6], [0, 6e6]]],
                 [[[1e6, 6e6], [1e6, 8e6], [3e6, 8e6], [3e6, 6e6]]]
               ]
             }
@@ -156,7 +157,7 @@ var vectorSource = new ol.source.GeoJSON(
               'geometries': [
                 {
                   'type': 'LineString',
-                  'coordinates': [[-5e6, -5e6], [0e6, -5e6]]
+                  'coordinates': [[-5e6, -5e6], [0, -5e6]]
                 },
                 {
                   'type': 'Point',
@@ -188,7 +189,12 @@ var map = new ol.Map({
     vectorLayer
   ],
   target: 'map',
-  view: new ol.View2D({
+  controls: ol.control.defaults({
+    attributionOptions: /** @type {olx.control.AttributionOptions} */ ({
+      collapsible: false
+    })
+  }),
+  view: new ol.View({
     center: [0, 0],
     zoom: 2
   })

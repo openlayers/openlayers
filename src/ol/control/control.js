@@ -10,18 +10,32 @@ goog.require('ol.Object');
 
 /**
  * @classdesc
- * Abstract base class; normally only used for creating subclasses and not
- * instantiated in apps.
  * A control is a visible widget with a DOM element in a fixed position on the
  * screen. They can involve user input (buttons), or be informational only;
- * the position is determined using CSS. By default these are part of the map
- * container, but can use any outside DOM element.
+ * the position is determined using CSS. By default these are placed in the
+ * container with CSS class name `ol-overlaycontainer-stopevent`, but can use
+ * any outside DOM element.
+ *
+ * This is the base class for controls. You can use it for simple custom
+ * controls by creating the element with listeners, creating an instance:
+ * ```js
+ * var myControl = new ol.control.Control({element: myElement});
+ * ```
+ * and then adding this to the map.
+ *
+ * The main advantage of having this as a control rather than a simple separate
+ * DOM element is that preventing propagation is handled for you. Controls
+ * will also be `ol.Object`s in a `ol.Collection`, so you can use their
+ * methods.
+ *
+ * You can also extend this base for your own control class. See
+ * examples/custom-controls for an example of how to do this.
  *
  * @constructor
  * @extends {ol.Object}
  * @implements {oli.control.Control}
  * @param {olx.control.ControlOptions} options Control options.
- * @todo api stable
+ * @api stable
  */
 ol.control.Control = function(options) {
 
@@ -68,7 +82,7 @@ ol.control.Control.prototype.disposeInternal = function() {
 /**
  * Get the map associated with this control.
  * @return {ol.Map} Map.
- * @todo api
+ * @api stable
  */
 ol.control.Control.prototype.getMap = function() {
   return this.map_;
@@ -89,7 +103,7 @@ ol.control.Control.prototype.handleMapPostrender = goog.nullFunction;
  * Subclasses may set up event handlers to get notified about changes to
  * the map here.
  * @param {ol.Map} map Map.
- * @todo api stable
+ * @api stable
  */
 ol.control.Control.prototype.setMap = function(map) {
   if (!goog.isNull(this.map_)) {

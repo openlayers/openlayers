@@ -4,14 +4,17 @@ describe('ol.format.WFS', function() {
 
   describe('when parsing TOPP states GML from WFS', function() {
 
-    var features, feature;
+    var features, feature, xml;
+    var config = {
+      'featureNS': 'http://www.openplans.org/topp',
+      'featureType': 'states'
+    };
+
     before(function(done) {
-      afterLoadText('spec/ol/format/wfs/topp-states-wfs.xml', function(xml) {
+      proj4.defs('urn:x-ogc:def:crs:EPSG:4326', proj4.defs('EPSG:4326'));
+      afterLoadText('spec/ol/format/wfs/topp-states-wfs.xml', function(data) {
         try {
-          var config = {
-            'featureNS': 'http://www.openplans.org/topp',
-            'featureType': 'states'
-          };
+          xml = data;
           features = new ol.format.WFS(config).readFeatures(xml);
         } catch (e) {
           done(e);
@@ -29,6 +32,20 @@ describe('ol.format.WFS', function() {
       expect(feature.getId()).to.equal('states.1');
       expect(feature.get('STATE_NAME')).to.equal('Illinois');
       expect(feature.getGeometry()).to.be.an(ol.geom.MultiPolygon);
+    });
+
+    it('transforms and creates a polygon for Illinois', function() {
+      features = new ol.format.WFS(config).readFeatures(xml, {
+        featureProjection: 'EPSG:3857'
+      });
+      feature = features[0];
+      expect(feature.getId()).to.equal('states.1');
+      expect(feature.get('STATE_NAME')).to.equal('Illinois');
+      var geom = feature.getGeometry();
+      expect(geom).to.be.an(ol.geom.MultiPolygon);
+      var p = ol.proj.transform([-88.071, 37.511], 'EPSG:4326', 'EPSG:3857');
+      p.push(0);
+      expect(geom.getFirstCoordinate()).to.eql(p);
     });
 
   });
@@ -54,6 +71,10 @@ describe('ol.format.WFS', function() {
   describe('when parsing FeatureCollection', function() {
     var response;
     before(function(done) {
+      proj4.defs('EPSG:28992', '+proj=sterea +lat_0=52.15616055555555 ' +
+          '+lon_0=5.38763888888889 +k=0.9999079 +x_0=155000 +y_0=463000 ' +
+          '+ellps=bessel +towgs84=565.417,50.3319,465.552,-0.398957,0.343988,' +
+          '-1.8774,4.0725 +units=m +no_defs');
       afterLoadText('spec/ol/format/wfs/boundedBy.xml',
           function(xml) {
             try {
@@ -383,3 +404,4 @@ goog.require('ol.geom.MultiPoint');
 goog.require('ol.geom.MultiPolygon');
 goog.require('ol.geom.Polygon');
 goog.require('ol.format.WFS');
+goog.require('ol.proj');

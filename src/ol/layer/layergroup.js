@@ -11,6 +11,7 @@ goog.require('ol.CollectionEvent');
 goog.require('ol.CollectionEventType');
 goog.require('ol.Object');
 goog.require('ol.ObjectEventType');
+goog.require('ol.extent');
 goog.require('ol.layer.Base');
 goog.require('ol.source.State');
 
@@ -30,10 +31,9 @@ ol.layer.GroupProperty = {
  *
  * @constructor
  * @extends {ol.layer.Base}
- * @fires change Triggered when the state of the source of any of the layers of
- *     this group changes
+ * @fires change Triggered when the group/Collection changes.
  * @param {olx.layer.GroupOptions=} opt_options Layer options.
- * @todo api
+ * @api stable
  */
 ol.layer.Group = function(opt_options) {
 
@@ -56,7 +56,7 @@ ol.layer.Group = function(opt_options) {
       ol.Object.getChangeEventType(ol.layer.GroupProperty.LAYERS),
       this.handleLayersChanged_, false, this);
 
-  if (goog.isDef(layers)) {
+  if (goog.isDefAndNotNull(layers)) {
     if (goog.isArray(layers)) {
       layers = new ol.Collection(goog.array.clone(layers));
     } else {
@@ -145,12 +145,13 @@ ol.layer.Group.prototype.handleLayersRemove_ = function(collectionEvent) {
 
 
 /**
- * @return {ol.Collection|undefined} Collection of {@link ol.layer.Layer layers}
- *     that are part of this group.
- * @todo observable
+ * @return {!ol.Collection.<ol.layer.Base>} Collection of
+ * {@link ol.layer.Layer layers} that are part of this group.
+ * @observable
+ * @api stable
  */
 ol.layer.Group.prototype.getLayers = function() {
-  return /** @type {ol.Collection|undefined} */ (this.get(
+  return /** @type {!ol.Collection.<ol.layer.Base>} */ (this.get(
       ol.layer.GroupProperty.LAYERS));
 };
 goog.exportProperty(
@@ -160,9 +161,10 @@ goog.exportProperty(
 
 
 /**
- * @param {ol.Collection|undefined} layers Collection of
+ * @param {!ol.Collection.<ol.layer.Base>} layers Collection of
  * {@link ol.layer.Layer layers} that are part of this group.
- * @todo observable
+ * @observable
+ * @api stable
  */
 ol.layer.Group.prototype.setLayers = function(layers) {
   this.set(ol.layer.GroupProperty.LAYERS, layers);
@@ -212,6 +214,10 @@ ol.layer.Group.prototype.getLayerStatesArray = function(opt_states) {
         layerState.maxResolution, ownLayerState.maxResolution);
     layerState.minResolution = Math.max(
         layerState.minResolution, ownLayerState.minResolution);
+    if (goog.isDef(ownLayerState.extent) && goog.isDef(layerState.extent)) {
+      layerState.extent = ol.extent.getIntersection(
+          layerState.extent, ownLayerState.extent);
+    }
   }
 
   return states;

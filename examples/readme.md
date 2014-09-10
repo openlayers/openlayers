@@ -3,7 +3,7 @@
 Although the main purpose of these examples is to demonstrate how to use the API, they also serve other purposes in the development cycle, and so are not exactly as they would be in normal application code:
 
 * every time the library changes, they are compiled together with the library as a basic check that they remain in sync with the library
-* they use a special loader script to enable defining at run time which build mode (debug/whitespace/simple/advanced) to use
+* they use a special loader script to enable defining at run time which build mode (raw/debug/advanced) to use
 
 To enable this, examples have the following, not needed in application code:
 
@@ -13,4 +13,4 @@ To enable this, examples have the following, not needed in application code:
 * html files load `example-behaviour.js` and some js files define the Map renderer option as `exampleNS.getRendererFromQueryString()`; application code would not need these
 * in addition, examples use Twitter Bootstrap and jQuery; this is of course not a requirement - you may use whichever presentation/helper libraries you wish
 
-See [Quick Start tutorial](http://ol3js.org/en/master/doc/quickstart.html) for a simple example of how application code would use the library.
+See [Quick Start tutorial](http://openlayers.org/en/master/doc/quickstart.html) for a simple example of how application code would use the library.

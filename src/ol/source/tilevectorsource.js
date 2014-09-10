@@ -18,19 +18,16 @@ goog.require('ol.tilegrid.TileGrid');
  * @constructor
  * @extends {ol.source.FormatVector}
  * @param {olx.source.TileVectorOptions} options Options.
- * @todo api
+ * @api
  */
 ol.source.TileVector = function(options) {
 
   goog.base(this, {
     attributions: options.attributions,
-    extent: options.extent,
     format: options.format,
     logo: options.logo,
     projection: options.projection
   });
-
-  var tileGrid = options.tileGrid;
 
   /**
    * @private
@@ -48,9 +45,7 @@ ol.source.TileVector = function(options) {
    * @private
    * @type {ol.TileCoordTransformType}
    */
-  this.tileCoordTransform_ = tileGrid.createTileCoordTransform({
-    extent: options.extent
-  });
+  this.tileCoordTransform_ = this.tileGrid_.createTileCoordTransform();
 
   /**
    * @private
@@ -187,15 +182,15 @@ ol.source.TileVector.prototype.loadFeatures =
   var tiles = this.tiles_;
   var z = tileGrid.getZForResolution(resolution);
   var tileRange = tileGrid.getTileRangeForExtentAndZ(extent, z);
-  var tileCoord = new ol.TileCoord(z, 0, 0);
+  var tileCoord = [z, 0, 0];
   var x, y;
   for (x = tileRange.minX; x <= tileRange.maxX; ++x) {
     for (y = tileRange.minY; y <= tileRange.maxY; ++y) {
       var tileKey = this.getTileKeyZXY_(z, x, y);
       if (!(tileKey in tiles)) {
-        tileCoord.z = z;
-        tileCoord.x = x;
-        tileCoord.y = y;
+        tileCoord[0] = z;
+        tileCoord[1] = x;
+        tileCoord[2] = y;
         tileCoordTransform(tileCoord, projection, tileCoord);
         var url = tileUrlFunction(tileCoord, 1, projection);
         if (goog.isDef(url)) {

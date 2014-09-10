@@ -1,70 +1,34 @@
 goog.provide('ol.test.FeatureOverlay');
 
-describe('ol.Feature', function() {
-  var featureOverlay;
+describe('ol.FeatureOverlay', function() {
 
-  beforeEach(function() {
-    featureOverlay = new ol.FeatureOverlay();
-  });
+  describe('constructor', function() {
 
-  afterEach(function() {
-    ol.style.IconImageCache.getInstance().clear();
-  });
-
-  describe('#drawFeature_ style with no image', function() {
-    it('calls vectorContext.drawFeature', function() {
-      var vectorContext = new ol.render.canvas.Immediate(
-          null,                                 // context
-          1,                                    // pixelRatio
-          [],                                   // extent
-          goog.vec.Mat4.createNumberIdentity(), // transform
-          0                                     // viewRotation
-          );
-      var feature = new ol.Feature();
-      var style = new ol.style.Style({
-        fill: new ol.style.Fill({
-          color: '#ffffff'
-        })
-      });
-
-      var spy = sinon.spy(vectorContext, 'drawFeature');
-      featureOverlay.drawFeature_(vectorContext, feature, style);
-      expect(spy.calledOnce).to.be.ok();
+    it('creates an new feature overlay', function() {
+      var featureOverlay = new ol.FeatureOverlay();
+      expect(featureOverlay).to.be.a(ol.FeatureOverlay);
     });
-  });
 
-  describe('#drawFeature_ style with unloaded image', function() {
-    it('calls image.load', function() {
-      var vectorContext = new ol.render.canvas.Immediate(
-          null,                                 // context
-          1,                                    // pixelRatio
-          [],                                   // extent
-          goog.vec.Mat4.createNumberIdentity(), // transform
-          0                                     // viewRotation
-          );
-      var feature = new ol.Feature();
-      var style = new ol.style.Style({
-        image: new ol.style.Icon({
-          src: 'http://example.com/icon.png'
-        })
+    it('takes features', function() {
+      var featureOverlay = new ol.FeatureOverlay({
+        features: [new ol.Feature(new ol.geom.Point([0, 0]))]
       });
-
-      var stub = sinon.stub(style.getImage(), 'load', function() {
-        style.getImage().iconImage_.imageState_ =
-            ol.style.ImageState.LOADING;
-      });
-      featureOverlay.drawFeature_(vectorContext, feature, style);
-      expect(stub.calledOnce).to.be.ok();
+      expect(featureOverlay.getFeatures().getLength()).to.be(1);
     });
+
+    it('takes a style', function() {
+      var style = [new ol.style.Style()];
+      var featureOverlay = new ol.FeatureOverlay({
+        style: [new ol.style.Style()]
+      });
+      expect(featureOverlay.getStyle()).to.eql(style);
+      expect(featureOverlay.getStyleFunction()()).to.eql(style);
+    });
+
   });
 });
 
-goog.require('goog.vec.Mat4');
 goog.require('ol.Feature');
 goog.require('ol.FeatureOverlay');
-goog.require('ol.style.ImageState');
-goog.require('ol.render.canvas.Immediate');
-goog.require('ol.style.Fill');
-goog.require('ol.style.Icon');
-goog.require('ol.style.IconImageCache');
+goog.require('ol.geom.Point');
 goog.require('ol.style.Style');

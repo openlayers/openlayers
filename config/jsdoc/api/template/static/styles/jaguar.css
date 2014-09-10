@@ -1,0 +1,383 @@
+@import url(http://fonts.googleapis.com/css?family=Quattrocento+Sans:400,400italic,700);
+.navbar-inverse .navbar-inner {
+  background: #1F6B75;
+  height: 50px;
+}
+.navbar-inverse .brand {
+  color: white;
+  font-size: 20px;
+}
+.navbar-inverse .container {
+  padding: 5px 0 5px 0;
+}
+body {
+  padding-top: 50px;
+}
+.nameContainer .name, .prettyprint.source .pln {
+  padding-top: 50px;
+  margin-top: -50px;
+}
+a {
+  position: relative;
+  z-index: 1;
+}
+.navigation li {
+  color: #888;
+}
+
+html,
+body {
+  font-family: "Quattrocento Sans", "Lucida Grande", "Lucida Sans Unicode", "Lucida Sans", Geneva, Verdana, sans-serif;
+  font-size: 1.0em;
+  background-color: #fff;
+}
+ul,
+ol {
+  margin: 0;
+  padding: 0;
+}
+li {
+  list-style-type: none;
+}
+#wrap {
+  position: relative;
+}
+::-webkit-scrollbar {
+  width: 8px;
+  background-color: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background-color: gray;
+  border-radius: 4px;
+}
+.navigation {
+  position: fixed;
+  float: left;
+  width: 250px;
+  height: 100%;
+  background-color: #2a2a2a;
+}
+.navigation .applicationName {
+  margin: 0;
+  margin-top: 15px;
+  padding: 10px 15px;
+  font: bold 1.25em Helvetica;
+  color: #fff;
+}
+.navigation .applicationName a {
+  color: #fff;
+}
+.navigation .search {
+  padding: 10px 15px;
+}
+.navigation .search input {
+  background-color: #333;
+  color: #fff;
+  border-color: #555;
+}
+.navigation .list {
+  padding: 10px 15px 0 15px;
+  position: relative;
+  overflow: auto;
+  width: 100%;
+}
+.navigation li.item {
+  margin-bottom: 8px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #333;
+}
+.navigation li.item a {
+  color: #bbb;
+}
+.navigation li.item a:hover {
+  color: #fff;
+}
+.navigation li.item .title {
+  cursor: pointer;
+  position: relative;
+  display: block;
+  font-size: 0.85em;
+}
+.navigation li.item .title a {
+  color: #e1e1e1;
+}
+.navigation li.item .title a:hover {
+  color: #fff;
+}
+.navigation li.item .title .static {
+  display: block;
+  border-radius: 3px;
+  background-color: #1F6B75;
+  color: #FFF;
+  font-size: 0.7em;
+  padding: 2px 4px;
+  float: right;
+}
+.navigation li.item .subtitle {
+  margin-top: 10px;
+  font: bold 0.7em Helvetica;
+  color: #1F6B75;
+  display: block;
+}
+.navigation li.item ul > li {
+  font-size: 0.75em;
+  padding-left: 8px;
+  margin-top: 2px;
+}
+.navigation li.item .itemMembers {
+  display: none;
+}
+.main {
+  padding: 20px 20px;
+  margin-left: 250px;
+}
+.main .page-title {
+  display: none;
+}
+.main h1 {
+  font-weight: bold;
+  font-size: 1.6em;
+  margin: 0;
+}
+.main h2 {
+  font-weight: bold;
+  font-size: 1.5em;
+  margin: 0;
+}
+.main h3 {
+  font-weight: bold;
+  font-size: 13px;
+  margin: 5px 0;
+}
+.main h4 {
+  font-weight: bold;
+  font-size: 1em;
+}
+.main h5 {
+  font-weight: bold;
+  font-size: 13px;
+}
+.main dd, .main .props {
+  font-size: 13px;
+}
+.main h4.name span.type {
+  margin-left: 10px;
+}
+.main h4.name span.glyphicon {
+  display: inline-block;
+  vertical-align: middle;
+  color: #c1c1c1;
+  margin-left: 7px;
+}
+.main h4.name span.returnType, .main h4.name span.type {
+  margin-left: 3px;
+  background-color: transparent!important;
+  color: gray!important;
+}
+.main span.static, .main span.stability {
+  display: inline-block;
+  border-radius: 3px;
+  background-color: #1F6B75 !important;
+  color: #fff;
+  vertical-align: top;
+  font-size: 0.8em;
+  padding: 2px 4px;
+}
+td.description span.stability {
+  float: left;
+  margin-right: 0.5em;
+}
+span.type-signature.static {
+  margin-right: 3px;
+}
+.main .subsection-title {
+  font-size: 15px;
+  margin-top: 30px;
+  color: #1F6B75;
+}
+.main .description {
+  margin-top: 10px;
+  font-size: 14px;
+}
+.main .description p {
+  font-size: 14px;
+}
+.main .tag-source {
+  font-size: 13px;
+}
+.main dt.tag-source {
+  margin-top: 5px;
+}
+.main dt.tag-todo {
+  font-size: 11px;
+  display: inline-block;
+  background-color: #2a6496;
+  color: #fff;
+  padding: 2px 4px;
+  border-radius: 5px;
+}
+.main .type-signature {
+  font-size: 13px;
+}
+.main .tag-deprecated {
+  display: inline-block;
+  font-size: 11px;
+}
+.main .important {
+  background-color: #ee7d7d;
+  color: #fff;
+  padding: 2px 4px;
+  border-radius: 5px;
+}
+.main .nameContainer {
+  position: relative;
+  margin-top: 20px;
+  padding-top: 5px;
+  border-top: 1px solid #e1e1e1;
+}
+.main .nameContainer .inherited {
+  display: inline-block;
+  border-radius: 3px;
+  background-color: #888!important;
+  vertical-align: top;
+  font-size: 0.8em;
+  padding: 2px 4px;
+  margin-right: 5px;
+}
+.main .nameContainer .inherited a {
+  color: #fff;
+}
+.main .nameContainer .tag-source {
+  position: absolute;
+  top: 17px;
+  right: 0;
+  font-size: 11px;
+}
+.main .nameContainer .tag-source a {
+  color: gray;
+}
+.main .nameContainer.inherited {
+  color: gray;
+}
+.main .nameContainer h4 {
+  margin-right: 150px;
+  line-height: 1.3;
+}
+.main .nameContainer h4 .signature {
+  font-size: 14px;
+  font-weight: normal;
+  font-family: Menlo, Monaco, Consolas, "Courier New", monospace;
+}
+.main pre {
+  font-size: 12px;
+}
+.main table {
+  width: 100%;
+  margin-bottom: 15px;
+}
+.main table th {
+  padding: 3px 3px;
+}
+.main table td {
+  vertical-align: top;
+  padding: 5px 3px;
+}
+.main table .name {
+  width: 110px;
+}
+.main table .type {
+  color: #aaa;
+  font-size: 12px;
+}
+.main table .attributes {
+  width: 80px;
+  color: #aaa;
+  font-size: 12px;
+}
+.main table .description {
+  font-size: 13px;
+}
+.main table .description p {
+  margin: 0;
+}
+.main table .optional, .main table .repeatable {
+  float: left;
+  border-radius: 3px;
+  background-color: #ddd!important;
+  font-size: 0.7em;
+  padding: 2px 4px;
+  margin-right: 5px;
+  color: gray;
+}
+.main .readme p {
+  margin-top: 15px;
+  line-height: 1.2;
+  font-size: 0.9em;
+}
+.main .readme h1 {
+  font-size: 1.7em;
+}
+.main .readme h2 {
+  margin-top: 30px;
+  margin-bottom: 10px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #e1e1e1;
+}
+.main .readme li {
+  font-size: 0.95em;
+  margin-bottom: 10px;
+}
+.main article ol,
+.main article ul {
+  margin-left: 25px;
+}
+.main article ol > li {
+  list-style-type: decimal;
+  margin-bottom: 5px;
+}
+.main article ul > li {
+  margin-bottom: 5px;
+  list-style-type: disc;
+}
+footer {
+  margin: 15px 0;
+  padding-top: 15px;
+  border-top: 1px solid #e1e1e1;
+  font-family: "freight-text-pro", Georgia, Cambria, "Times New Roman", Times, serif;
+  font-size: 0.8em;
+  color: gray;
+}
+.main span.stability.deprecated {
+  background-color: #b94a48 !important;
+  color: #f2dede;
+}
+.main span.stability.experimental {
+  background-color: #F2CC79 !important;
+  color: #800F07;
+}
+.main span.stability.unstable {
+  background-color: #3a87ad !important;
+  color: #d9edf7;
+}
+.main span.stability.locked {
+  background-color: #468847 !important;
+  color: #dff0d8;
+}
+.main .readme table p {
+  margin-top: 0;
+}
+.main .readme table p, .main .readme table td {
+  font-size: 14px;
+}
+.main .readme table ul li {
+  margin-bottom: 0;
+}
+.unstable {
+  display: none;
+}
+#stability {
+  color: white;
+  position: absolute;
+  top: 1em;
+  right: 8em;
+}

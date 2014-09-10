@@ -10,9 +10,8 @@ goog.require('goog.net.EventType');
 goog.require('goog.net.XhrIo');
 goog.require('goog.net.XhrIo.ResponseType');
 goog.require('goog.userAgent');
-goog.require('ol.BrowserFeature');
 goog.require('ol.format.FormatType');
-goog.require('ol.proj');
+goog.require('ol.has');
 goog.require('ol.source.State');
 goog.require('ol.source.Vector');
 goog.require('ol.xml');
@@ -33,7 +32,6 @@ ol.source.FormatVector = function(options) {
 
   goog.base(this, {
     attributions: options.attributions,
-    extent: options.extent,
     logo: options.logo,
     projection: options.projection
   });
@@ -61,7 +59,7 @@ ol.source.FormatVector.prototype.loadFeaturesFromURL =
   var responseType;
   // FIXME maybe use ResponseType.DOCUMENT?
   if (type == ol.format.FormatType.BINARY &&
-      ol.BrowserFeature.HAS_ARRAY_BUFFER) {
+      ol.has.ARRAY_BUFFER) {
     responseType = goog.net.XhrIo.ResponseType.ARRAY_BUFFER;
   } else {
     responseType = goog.net.XhrIo.ResponseType.TEXT;
@@ -81,7 +79,7 @@ ol.source.FormatVector.prototype.loadFeaturesFromURL =
           /** @type {ArrayBuffer|Document|Node|Object|string|undefined} */
           var source;
           if (type == ol.format.FormatType.BINARY &&
-              ol.BrowserFeature.HAS_ARRAY_BUFFER) {
+              ol.has.ARRAY_BUFFER) {
             source = xhrIo.getResponse();
             goog.asserts.assertInstanceof(source, ArrayBuffer);
           } else if (type == ol.format.FormatType.JSON) {
@@ -116,25 +114,10 @@ ol.source.FormatVector.prototype.loadFeaturesFromURL =
 /**
  * @param {ArrayBuffer|Document|Node|Object|string} source Source.
  * @return {Array.<ol.Feature>} Features.
- * @todo api
+ * @api
  */
 ol.source.FormatVector.prototype.readFeatures = function(source) {
   var format = this.format;
-  var features = format.readFeatures(source);
-  var featureProjection = format.readProjection(source);
   var projection = this.getProjection();
-  if (!goog.isNull(projection) && !goog.isNull(featureProjection)) {
-    if (!ol.proj.equivalent(featureProjection, projection)) {
-      var transform = ol.proj.getTransform(featureProjection, projection);
-      var i, ii;
-      for (i = 0, ii = features.length; i < ii; ++i) {
-        var feature = features[i];
-        var geometry = feature.getGeometry();
-        if (goog.isDefAndNotNull(geometry)) {
-          geometry.applyTransform(transform);
-        }
-      }
-    }
-  }
-  return features;
+  return format.readFeatures(source, {featureProjection: projection});
 };

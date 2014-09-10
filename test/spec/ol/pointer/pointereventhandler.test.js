@@ -9,8 +9,8 @@ describe('ol.pointer.PointerEventHandler', function() {
     target = goog.dom.createElement(goog.dom.TagName.DIV);
 
     // make sure that a mouse event source is used
-    ol.BrowserFeature.HAS_POINTER = false;
-    ol.BrowserFeature.HAS_MSPOINTER = false;
+    ol.has.POINTER = false;
+    ol.has.MSPOINTER = false;
 
     handler = new ol.pointer.PointerEventHandler(target);
     eventSpy = sinon.spy();
@@ -164,7 +164,7 @@ goog.require('goog.dom');
 goog.require('goog.dom.TagName');
 goog.require('goog.events');
 goog.require('goog.events.BrowserEvent');
-goog.require('ol.BrowserFeature');
+goog.require('ol.has');
 goog.require('ol.pointer.MouseSource');
 goog.require('ol.pointer.PointerEvent');
 goog.require('ol.pointer.PointerEventHandler');

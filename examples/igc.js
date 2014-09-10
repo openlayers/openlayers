@@ -2,7 +2,8 @@ goog.require('ol.Attribution');
 goog.require('ol.Feature');
 goog.require('ol.FeatureOverlay');
 goog.require('ol.Map');
-goog.require('ol.View2D');
+goog.require('ol.View');
+goog.require('ol.control');
 goog.require('ol.geom.LineString');
 goog.require('ol.geom.Point');
 goog.require('ol.layer.Tile');
@@ -83,7 +84,12 @@ var map = new ol.Map({
     })
   ],
   target: 'map',
-  view: new ol.View2D({
+  controls: ol.control.defaults({
+    attributionOptions: /** @type {olx.control.AttributionOptions} */ ({
+      collapsible: false
+    })
+  }),
+  view: new ol.View({
     center: [703365.7089403362, 5714629.865071137],
     zoom: 9
   })
