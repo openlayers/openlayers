@@ -1,16 +1,51 @@
 #!/usr/bin/env python
 
 from cStringIO import StringIO
+import glob
 import gzip
 import json
+import multiprocessing
 import os
-import glob
 import re
 import shutil
 import sys
 
 from pake import Target
 from pake import ifind, main, output, rule, target, variables, virtual, which
+from Queue import Queue
+from threading import Thread
+
+
+class ThreadPool:
+    """A basic pool of worker threads"""
+    class Worker(Thread):
+        def __init__(self, tasks):
+            Thread.__init__(self)
+            self.tasks = tasks
+            self.daemon = True # threads will be killed on exit
+            self.start()
+
+        def run(self):
+            while True:
+                # block until a task is ready to be done
+                function, args, kargs = self.tasks.get()
+                try:
+                    function(*args, **kargs)
+                except:
+                    print(sys.exc_info()[0])
+                self.tasks.task_done()
+
+    def __init__(self, num_threads = multiprocessing.cpu_count() + 1):
+        self.tasks = Queue(num_threads)
+        # create num_threads Workers, by default the number of CPUs + 1
+        for _ in range(num_threads): self.Worker(self.tasks)
+
+    def add_task(self, function, *args, **kargs):
+        self.tasks.put((function, args, kargs))
+
+    def wait_completion(self):
+        # wait for the queue to be empty
+        self.tasks.join()
 
 
 if sys.platform == 'win32':
@@ -621,10 +656,12 @@ def check_examples(t):
     examples = ['build/hosted/%(BRANCH)s/' + e
                 for e in EXAMPLES
                 if not open(e.replace('.html', '.js'), 'rU').readline().startswith('// NOCOMPILE')]
-    all_examples = \
-        [e + '?mode=advanced' for e in examples]
+    all_examples = [e + '?mode=advanced' for e in examples]
+    # Run the examples checks in a pool of threads
+    pool = ThreadPool()
     for example in all_examples:
-        t.run('%(PHANTOMJS)s', 'bin/check-example.js', example)
+        pool.add_task(t.run, '%(PHANTOMJS)s', 'bin/check-example.js', example)
+    pool.wait_completion()
 
 
 @target('test', phony=True)
