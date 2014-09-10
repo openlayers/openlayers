@@ -1,3 +1,5 @@
+language: python
+
 before_install:
   - "sudo pip install -r requirements.txt"
   - "npm install -g npm && npm install"
