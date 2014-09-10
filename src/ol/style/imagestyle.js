@@ -4,6 +4,7 @@ goog.provide('ol.style.ImageState');
 
 /**
  * @enum {number}
+ * @api
  */
 ol.style.ImageState = {
   IDLE: 0,
@@ -124,7 +125,9 @@ ol.style.Image.prototype.getImage = goog.abstractMethod;
 
 
 /**
+ * @function
  * @return {ol.style.ImageState} Image state.
+ * @api
  */
 ol.style.Image.prototype.getImageState = goog.abstractMethod;
 
@@ -151,10 +154,12 @@ ol.style.Image.prototype.getSize = goog.abstractMethod;
 
 
 /**
+ * @function
  * @param {function(this: T, goog.events.Event)} listener Listener function.
  * @param {T} thisArg Value to use as `this` when executing `listener`.
  * @return {goog.events.Key|undefined} Listener key.
  * @template T
+ * @api
  */
 ol.style.Image.prototype.listenImageChange = goog.abstractMethod;
 
@@ -166,8 +171,10 @@ ol.style.Image.prototype.load = goog.abstractMethod;
 
 
 /**
+ * @function
  * @param {function(this: T, goog.events.Event)} listener Listener function.
  * @param {T} thisArg Value to use as `this` when executing `listener`.
  * @template T
+ * @api
  */
 ol.style.Image.prototype.unlistenImageChange = goog.abstractMethod;

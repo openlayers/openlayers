@@ -247,6 +247,7 @@ ol.style.Icon.prototype.getImageSize = function() {
 
 /**
  * @inheritDoc
+ * @api
  */
 ol.style.Icon.prototype.getImageState = function() {
   return this.iconImage_.getImageState();
@@ -312,6 +313,7 @@ ol.style.Icon.prototype.getSize = function() {
 
 /**
  * @inheritDoc
+ * @api
  */
 ol.style.Icon.prototype.listenImageChange = function(listener, thisArg) {
   return goog.events.listen(this.iconImage_, goog.events.EventType.CHANGE,
@@ -329,6 +331,7 @@ ol.style.Icon.prototype.load = function() {
 
 /**
  * @inheritDoc
+ * @api
  */
 ol.style.Icon.prototype.unlistenImageChange = function(listener, thisArg) {
   goog.events.unlisten(this.iconImage_, goog.events.EventType.CHANGE,
