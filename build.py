@@ -239,6 +239,7 @@ def examples_star_json(name, match):
               "externs/vbarray.js"
             ],
             "define": [
+              "goog.array.ASSUME_NATIVE_FUNCTIONS=true",
               "goog.dom.ASSUME_STANDARDS_MODE=true",
               "goog.json.USE_NATIVE_JSON=true",
               "goog.DEBUG=false"
