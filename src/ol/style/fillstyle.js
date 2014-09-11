@@ -1,7 +1,5 @@
 goog.provide('ol.style.Fill');
 
-goog.require('ol.color');
-
 
 
 /**
@@ -30,4 +28,15 @@ ol.style.Fill = function(opt_options) {
  */
 ol.style.Fill.prototype.getColor = function() {
   return this.color_;
+};
+
+
+/**
+ * Set the color.
+ *
+ * @param {ol.Color|string} color Color.
+ * @api
+ */
+ol.style.Fill.prototype.setColor = function(color) {
+  this.color_ = color;
 };

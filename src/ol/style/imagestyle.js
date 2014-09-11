@@ -151,6 +151,58 @@ ol.style.Image.prototype.getSize = goog.abstractMethod;
 
 
 /**
+ * Set the opacity.
+ *
+ * @param {number} opacity Opacity.
+ */
+ol.style.Image.prototype.setOpacity = function(opacity) {
+  this.opacity_ = opacity;
+};
+
+
+/**
+ * Set whether to rotate the style with the view.
+ *
+ * @param {boolean} rotateWithView Rotate with map.
+ */
+ol.style.Image.prototype.setRotateWithView = function(rotateWithView) {
+  this.rotateWithView_ = rotateWithView;
+};
+
+
+/**
+ * Set the rotation.
+ *
+ * @param {number} rotation Rotation.
+ * @api
+ */
+ol.style.Image.prototype.setRotation = function(rotation) {
+  this.rotation_ = rotation;
+};
+
+
+/**
+ * Set the scale.
+ *
+ * @param {number} scale Scale.
+ * @api
+ */
+ol.style.Image.prototype.setScale = function(scale) {
+  this.scale_ = scale;
+};
+
+
+/**
+ * Set whether to snap the image to the closest pixel.
+ *
+ * @param {boolean} snapToPixel Snap to pixel?
+ */
+ol.style.Image.prototype.setSnapToPixel = function(snapToPixel) {
+  this.snapToPixel_ = snapToPixel;
+};
+
+
+/**
  * @param {function(this: T, goog.events.Event)} listener Listener function.
  * @param {T} thisArg Value to use as `this` when executing `listener`.
  * @return {goog.events.Key|undefined} Listener key.
