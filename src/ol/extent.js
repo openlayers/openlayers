@@ -427,6 +427,38 @@ ol.extent.extendXY = function(extent, x, y) {
 
 
 /**
+ * This function calls `callback` for each corner of the extent. If the
+ * callback returns a truthy value the function returns that value
+ * immediately. Otherwise the function returns `false`.
+ * @param {ol.Extent} extent Extent.
+ * @param {function(this:T, ol.Coordinate): S} callback Callback.
+ * @param {T=} opt_this Value to use as `this` when executing `callback`.
+ * @return {S|boolean} Value.
+ * @template S, T
+ */
+ol.extent.forEachCorner = function(extent, callback, opt_this) {
+  var val;
+  val = callback.call(opt_this, ol.extent.getBottomLeft(extent));
+  if (val) {
+    return val;
+  }
+  val = callback.call(opt_this, ol.extent.getBottomRight(extent));
+  if (val) {
+    return val;
+  }
+  val = callback.call(opt_this, ol.extent.getTopRight(extent));
+  if (val) {
+    return val;
+  }
+  val = callback.call(opt_this, ol.extent.getBottomRight(extent));
+  if (val) {
+    return val;
+  }
+  return false;
+};
+
+
+/**
  * @param {ol.Extent} extent Extent.
  * @return {number} Area.
  */
