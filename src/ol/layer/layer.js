@@ -99,5 +99,5 @@ ol.layer.Layer.prototype.getSourceState = function() {
  * @private
  */
 ol.layer.Layer.prototype.handleSourceChange_ = function() {
-  this.dispatchChangeEvent();
+  this.changed();
 };

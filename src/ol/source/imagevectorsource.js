@@ -204,7 +204,7 @@ ol.source.ImageVector.prototype.getTransform_ =
  */
 ol.source.ImageVector.prototype.handleImageChange_ =
     function(event) {
-  this.dispatchChangeEvent();
+  this.changed();
 };
 
 

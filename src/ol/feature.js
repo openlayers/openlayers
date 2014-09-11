@@ -198,7 +198,7 @@ ol.Feature.prototype.getStyleFunction = function() {
  * @private
  */
 ol.Feature.prototype.handleGeometryChange_ = function() {
-  this.dispatchChangeEvent();
+  this.changed();
 };
 
 
@@ -214,7 +214,7 @@ ol.Feature.prototype.handleGeometryChanged_ = function() {
   if (goog.isDefAndNotNull(geometry)) {
     this.geometryChangeKey_ = goog.events.listen(geometry,
         goog.events.EventType.CHANGE, this.handleGeometryChange_, false, this);
-    this.dispatchChangeEvent();
+    this.changed();
   }
 };
 
@@ -244,7 +244,7 @@ goog.exportProperty(
 ol.Feature.prototype.setStyle = function(style) {
   this.style_ = style;
   this.styleFunction_ = ol.feature.createFeatureStyleFunction(style);
-  this.dispatchChangeEvent();
+  this.changed();
 };
 
 
@@ -256,7 +256,7 @@ ol.Feature.prototype.setStyle = function(style) {
  */
 ol.Feature.prototype.setId = function(id) {
   this.id_ = id;
-  this.dispatchChangeEvent();
+  this.changed();
 };
 
 

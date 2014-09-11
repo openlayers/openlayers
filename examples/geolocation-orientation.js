@@ -220,7 +220,7 @@ function simulatePositionChange(position) {
       'EPSG:3857');
   geolocation.set('position', projectedPosition);
   geolocation.set('speed', coords.speed);
-  geolocation.dispatchChangeEvent();
+  geolocation.changed();
 }
 
 function disableButtons() {

@@ -12,7 +12,7 @@ goog.require('goog.events.EventType');
  * instantiated in apps.
  * An event target providing convenient methods for listener registration
  * and unregistration. A generic `change` event is always available through
- * {@link ol.Observable#dispatchChangeEvent}.
+ * {@link ol.Observable#changed}.
  *
  * @constructor
  * @extends {goog.events.EventTarget}
@@ -35,11 +35,11 @@ goog.inherits(ol.Observable, goog.events.EventTarget);
 
 
 /**
- * Dispatches a `change` event.
+ * Increases the revision counter and disptches a 'change' event.
  * @fires change
  * @api
  */
-ol.Observable.prototype.dispatchChangeEvent = function() {
+ol.Observable.prototype.changed = function() {
   ++this.revision_;
   this.dispatchEvent(goog.events.EventType.CHANGE);
 };

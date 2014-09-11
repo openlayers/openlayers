@@ -179,7 +179,7 @@ ol.source.ImageMapGuide.getScale = function(extent, size, metersPerUnit, dpi) {
  */
 ol.source.ImageMapGuide.prototype.updateParams = function(params) {
   goog.object.extend(this.params_, params);
-  this.dispatchChangeEvent();
+  this.changed();
 };
 
 

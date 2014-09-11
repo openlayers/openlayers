@@ -51,7 +51,7 @@ goog.inherits(ol.Tile, goog.events.EventTarget);
 /**
  * @protected
  */
-ol.Tile.prototype.dispatchChangeEvent = function() {
+ol.Tile.prototype.changed = function() {
   this.dispatchEvent(goog.events.EventType.CHANGE);
 };
 

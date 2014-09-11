@@ -41,7 +41,7 @@ ol.geom.MultiPoint.prototype.appendPoint = function(point) {
   } else {
     ol.array.safeExtend(this.flatCoordinates, point.getFlatCoordinates());
   }
-  this.dispatchChangeEvent();
+  this.changed();
 };
 
 
@@ -158,7 +158,7 @@ ol.geom.MultiPoint.prototype.setCoordinates =
     }
     this.flatCoordinates.length = ol.geom.flat.deflate.coordinates(
         this.flatCoordinates, 0, coordinates, this.stride);
-    this.dispatchChangeEvent();
+    this.changed();
   }
 };
 
@@ -170,5 +170,5 @@ ol.geom.MultiPoint.prototype.setCoordinates =
 ol.geom.MultiPoint.prototype.setFlatCoordinates =
     function(layout, flatCoordinates) {
   this.setFlatCoordinatesInternal(layout, flatCoordinates);
-  this.dispatchChangeEvent();
+  this.changed();
 };

@@ -153,7 +153,7 @@ ol.source.Source.prototype.setLogo = function(logo) {
  */
 ol.source.Source.prototype.setState = function(state) {
   this.state_ = state;
-  this.dispatchChangeEvent();
+  this.changed();
 };
 
 

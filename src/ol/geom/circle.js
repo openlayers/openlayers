@@ -182,7 +182,7 @@ ol.geom.Circle.prototype.setCenterAndRadius =
       flatCoordinates[offset++] = flatCoordinates[i];
     }
     flatCoordinates.length = offset;
-    this.dispatchChangeEvent();
+    this.changed();
   }
 };
 
@@ -194,7 +194,7 @@ ol.geom.Circle.prototype.setCenterAndRadius =
 ol.geom.Circle.prototype.setFlatCoordinates =
     function(layout, flatCoordinates) {
   this.setFlatCoordinatesInternal(layout, flatCoordinates);
-  this.dispatchChangeEvent();
+  this.changed();
 };
 
 
@@ -205,7 +205,7 @@ ol.geom.Circle.prototype.setFlatCoordinates =
 ol.geom.Circle.prototype.setRadius = function(radius) {
   goog.asserts.assert(!goog.isNull(this.flatCoordinates));
   this.flatCoordinates[this.stride] = this.flatCoordinates[0] + radius;
-  this.dispatchChangeEvent();
+  this.changed();
 };
 
 

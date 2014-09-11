@@ -94,7 +94,7 @@ ol.geom.Polygon.prototype.appendLinearRing = function(linearRing) {
     ol.array.safeExtend(this.flatCoordinates, linearRing.getFlatCoordinates());
   }
   this.ends_.push(this.flatCoordinates.length);
-  this.dispatchChangeEvent();
+  this.changed();
 };
 
 
@@ -312,7 +312,7 @@ ol.geom.Polygon.prototype.setCoordinates = function(coordinates, opt_layout) {
     var ends = ol.geom.flat.deflate.coordinatess(
         this.flatCoordinates, 0, coordinates, this.stride, this.ends_);
     this.flatCoordinates.length = ends.length === 0 ? 0 : ends[ends.length - 1];
-    this.dispatchChangeEvent();
+    this.changed();
   }
 };
 
@@ -333,7 +333,7 @@ ol.geom.Polygon.prototype.setFlatCoordinates =
   }
   this.setFlatCoordinatesInternal(layout, flatCoordinates);
   this.ends_ = ends;
-  this.dispatchChangeEvent();
+  this.changed();
 };
 
 

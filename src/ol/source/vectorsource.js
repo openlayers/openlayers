@@ -106,7 +106,7 @@ goog.inherits(ol.source.Vector, ol.source.Source);
  */
 ol.source.Vector.prototype.addFeature = function(feature) {
   this.addFeatureInternal(feature);
-  this.dispatchChangeEvent();
+  this.changed();
 };
 
 
@@ -152,7 +152,7 @@ ol.source.Vector.prototype.addFeatureInternal = function(feature) {
  */
 ol.source.Vector.prototype.addFeatures = function(features) {
   this.addFeaturesInternal(features);
-  this.dispatchChangeEvent();
+  this.changed();
 };
 
 
@@ -181,7 +181,7 @@ ol.source.Vector.prototype.clear = function() {
       this.nullGeometryFeatures_, this.removeFeatureInternal, this);
   goog.object.clear(this.nullGeometryFeatures_);
   goog.asserts.assert(goog.object.isEmpty(this.featureChangeKeys_));
-  this.dispatchChangeEvent();
+  this.changed();
 };
 
 
@@ -403,7 +403,7 @@ ol.source.Vector.prototype.handleFeatureChange_ = function(event) {
       goog.asserts.assert(this.undefIdIndex_[featureKey] === feature);
     }
   }
-  this.dispatchChangeEvent();
+  this.changed();
 };
 
 
@@ -436,7 +436,7 @@ ol.source.Vector.prototype.removeFeature = function(feature) {
     this.rBush_.remove(feature);
   }
   this.removeFeatureInternal(feature);
-  this.dispatchChangeEvent();
+  this.changed();
 };
 
 
