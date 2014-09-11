@@ -129,7 +129,7 @@ ga.layer.create = function(layer, options) {
 /**
  * @type {Object.<string, Object>}
  */
-ga.layer.layerConfig = GeoAdmin.getConfig() || {};
+ga.layer.layerConfig = (window.GeoAdmin) ? GeoAdmin.getConfig() : {};
 
 /**
  * @type {Object.<string, Object>}
