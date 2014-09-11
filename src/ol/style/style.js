@@ -12,7 +12,9 @@ goog.require('ol.style.Stroke');
 
 /**
  * @classdesc
- * Container for vector feature rendering styles.
+ * Container for vector feature rendering styles. Any changes made to the style
+ * or its children through `set*()` methods will not take effect until the
+ * feature, layer or FeatureOverlay that uses the style is re-rendered.
  *
  * @constructor
  * @param {olx.style.StyleOptions=} opt_options Style options.
@@ -101,10 +103,7 @@ ol.style.Style.prototype.getZIndex = function() {
 
 
 /**
- * Set the zIndex. When this style is used as a layer, feature or ImageVector
- * source style, call `changed()` on the layer, feature or ImageVector source
- * for the change to take effect. When used as a FeatureOverlay style, call
- * `render()` on the map.
+ * Set the zIndex.
  *
  * @param {number|undefined} zIndex ZIndex.
  * @api

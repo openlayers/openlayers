@@ -32,10 +32,7 @@ ol.style.Fill.prototype.getColor = function() {
 
 
 /**
- * Set the color. When this style is used as a layer, feature or ImageVector
- * source style, call `changed()` on the layer, feature or ImageVector source
- * for the change to take effect. When used as a FeatureOverlay style, call
- * `render()` on the map.
+ * Set the color.
  *
  * @param {ol.Color|string} color Color.
  * @api

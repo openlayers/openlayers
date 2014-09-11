@@ -110,10 +110,7 @@ ol.style.Stroke.prototype.getWidth = function() {
 
 
 /**
- * Set the color. When this style is used as a layer, feature or ImageVector
- * source style, call `changed()` on the layer, feature or ImageVector source
- * for the change to take effect. When used as a FeatureOverlay style, call
- * `render()` on the map.
+ * Set the color.
  *
  * @param {ol.Color|string} color Color.
  * @api
@@ -124,10 +121,7 @@ ol.style.Stroke.prototype.setColor = function(color) {
 
 
 /**
- * Set the line cap. When this style is used as a layer, feature or ImageVector
- * source style, call `changed()` on the layer, feature or ImageVector source
- * for the change to take effect. When used as a FeatureOverlay style, call
- * `render()` on the map.
+ * Set the line cap.
  *
  * @param {string|undefined} lineCap Line cap.
  * @api
@@ -138,10 +132,7 @@ ol.style.Stroke.prototype.setLineCap = function(lineCap) {
 
 
 /**
- * Set the line dash. When this style is used as a layer, feature or ImageVector
- * source style, call `changed()` on the layer, feature or ImageVector source
- * for the change to take effect. When used as a FeatureOverlay style, call
- * `render()` on the map.
+ * Set the line dash.
  *
  * @param {Array.<number>} lineDash Line dash.
  * @api
@@ -152,10 +143,7 @@ ol.style.Stroke.prototype.setLineDash = function(lineDash) {
 
 
 /**
- * Set the line join. When this style is used as a layer, feature or ImageVector
- * source style, call `changed()` on the layer, feature or ImageVector source
- * for the change to take effect. When used as a FeatureOverlay style, call
- * `render()` on the map.
+ * Set the line join.
  *
  * @param {string|undefined} lineJoin Line join.
  * @api
@@ -166,10 +154,7 @@ ol.style.Stroke.prototype.setLineJoin = function(lineJoin) {
 
 
 /**
- * Set the miter limit. When this style is used as a layer, feature or
- * ImageVector source style, call `changed()` on the layer, feature or
- * ImageVector source for the change to take effect. When used as a
- * FeatureOverlay style, call `render()` on the map.
+ * Set the miter limit.
  *
  * @param {number|undefined} miterLimit Miter limit.
  * @api
@@ -180,10 +165,7 @@ ol.style.Stroke.prototype.setMiterLimit = function(miterLimit) {
 
 
 /**
- * Set the width. When this style is used as a layer, feature or ImageVector
- * source style, call `changed()` on the layer, feature or ImageVector source
- * for the change to take effect. When used as a FeatureOverlay style, call
- * `render()` on the map.
+ * Set the width.
  *
  * @param {number|undefined} width Width.
  * @api
