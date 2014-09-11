@@ -119,14 +119,20 @@ ol.format.GML.schemaLocation_ = 'http://www.opengis.net/gml ' +
 ol.format.GML.readFeatures_ = function(node, objectStack) {
   goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT);
   var localName = ol.xml.getLocalName(node);
-  var context = objectStack[0];
-  goog.asserts.assert(goog.isObject(context));
-  var featureType = goog.object.get(context, 'featureType');
   var features;
   if (localName == 'FeatureCollection') {
     features = ol.xml.pushParseAndPop(null,
         ol.format.GML.FEATURE_COLLECTION_PARSERS, node, objectStack);
   } else if (localName == 'featureMembers' || localName == 'featureMember') {
+    var context = objectStack[0];
+    goog.asserts.assert(goog.isObject(context));
+    var featureType = goog.object.get(context, 'featureType');
+    if (!goog.isDef(featureType) && !goog.isNull(node.firstElementChild)) {
+      var member = node.firstElementChild;
+      featureType = member.nodeName.split(':').pop();
+      goog.object.set(context, 'featureType', featureType);
+      goog.object.set(context, 'featureNS', member.namespaceURI);
+    }
     var parsers = {};
     var parsersNS = {};
     parsers[featureType] = (localName == 'featureMembers') ?
