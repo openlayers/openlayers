@@ -768,6 +768,58 @@ describe('ol.format.GML', function() {
     });
   });
 
+  describe('when parsing TOPP states WFS with autoconfigure', function() {
+    var features, text, gmlFormat;
+    before(function(done) {
+      afterLoadText('spec/ol/format/gml/topp-states-wfs.xml', function(xml) {
+        try {
+          text = xml;
+          gmlFormat = new ol.format.GML();
+          features = gmlFormat.readFeatures(xml);
+        } catch (e) {
+          done(e);
+        }
+        done();
+      });
+    });
+
+    it('creates 3 features', function() {
+      expect(features).to.have.length(3);
+    });
+
+    it('creates the right id for the feature', function() {
+      expect(features[0].getId()).to.equal('states.1');
+    });
+
+    it('can reuse the parser for a different featureNS', function() {
+      var text =
+          '<gml:featureMembers xmlns:gml="http://www.opengis.net/gml">' +
+          '  <foo:gnis_pop gml:id="gnis_pop.148604" xmlns:foo="' +
+          'http://foo">' +
+          '    <gml:name>Aflu</gml:name>' +
+          '    <foo:the_geom>' +
+          '      <gml:Point srsName="urn:x-ogc:def:crs:EPSG:4326">' +
+          '        <gml:pos>34.12 2.09</gml:pos>' +
+          '      </gml:Point>' +
+          '    </foo:the_geom>' +
+          '    <foo:population>84683</foo:population>' +
+          '  </foo:gnis_pop>' +
+          '</gml:featureMembers>';
+      features = gmlFormat.readFeatures(text);
+      expect(features).to.have.length(1);
+      expect(features[0].get('population')).to.equal('84683');
+    });
+
+    it('can read an empty collection', function() {
+      var text =
+          '<gml:featureMembers xmlns:gml="http://www.opengis.net/gml">' +
+          '</gml:featureMembers>';
+      features = gmlFormat.readFeatures(text);
+      expect(features).to.have.length(0);
+    });
+
+  });
+
   describe('when parsing TOPP states GML', function() {
 
     var features, text, gmlFormat;
