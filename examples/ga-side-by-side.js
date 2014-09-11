@@ -1,7 +1,7 @@
 goog.require('ga.Map');
 goog.require('ga.layer');
-goog.require('ol.has');
 goog.require('ol.View');
+goog.require('ol.has');
 
 
 var canvasMap = new ga.Map({
