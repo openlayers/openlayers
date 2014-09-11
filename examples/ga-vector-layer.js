@@ -1,6 +1,6 @@
 goog.require('ga.Map');
 goog.require('ga.layer');
-goog.require('ol.View2D');
+goog.require('ol.View');
 goog.require('ol.layer.Vector');
 goog.require('ol.source.GeoJSON');
 goog.require('ol.style.Circle');
@@ -15,7 +15,7 @@ var vector = new ol.layer.Vector({
     url: 'data/cities.geojson'
   }),
   style: function(feature, resolution) {
-    var text = resolution < 50 ? feature.get('NAME') : '';
+    var text = resolution < 251 ? feature.get('NAME') : '';
     var style = new ol.style.Style({
       image: new ol.style.Circle({
         fill: new ol.style.Fill({
@@ -29,7 +29,8 @@ var vector = new ol.layer.Vector({
         color: [255, 255, 255, 0.6]
       }),
       stroke: new ol.style.Stroke({
-        color: '#319FD3'
+        color: '#319FD3',
+        width: 1
       }),
       text: new ol.style.Text({
         text: text,
@@ -57,7 +58,7 @@ var map = new ga.Map({
   // Define the div where the map is placed
   target: 'map',
   // Create a 2D view
-  view: new ol.View2D({
+  view: new ol.View({
     // Define the default resolution
     // 10 means that one pixel is 10m width and height
     // List of resolution of the WMTS layers:

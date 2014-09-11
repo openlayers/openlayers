@@ -4,7 +4,7 @@ goog.provide('ga.Lang');
 
 /**
  * @type {Object}
- * @todo api
+ * @api stable
  */
 ga.Lang = {};
 
@@ -18,7 +18,7 @@ ga.Lang.code_ = window['GeoAdmin'] && window['GeoAdmin']['lang'] ?
 /**
  * Get language code
  * @return {string} language code
- * @todo api
+ * @api stable
  */
 ga.Lang.getCode = function() {
   if (!ga.Lang.code_) {
@@ -31,7 +31,7 @@ ga.Lang.getCode = function() {
 /**
  * Set language code
  * @param {string} code, e.g. 'de'
- * @todo api
+ * @api stable
  */
 ga.Lang.setCode = function(code) {
   ga.Lang.code_ = code;
@@ -46,7 +46,7 @@ ga.Lang.setCode = function(code) {
  *  @param {string} msgid to translate.
  *  @param {Object=} context (optional),
  *  @return {string} translated message
- *  @todo api
+ *  @api stable
  */
 ga.Lang.translate = function(msgid, context) {
 
@@ -126,7 +126,7 @@ ga.Lang.format = function(template, context, args) {
 /**
  * Message catalog in swiss german
  * @type {Object.<string,string>}
- * @todo api
+ * @api stable
  */
 ga.Lang.de = {
   'Geocoding results': 'Geokodierung Ergebnisse',
@@ -138,7 +138,7 @@ ga.Lang.de = {
 /**
  * Message catalog in english
  * @type {Object.<string,string>}
- * @todo api
+ * @api stable
  */
 ga.Lang.en = {
   'Geocoding results': 'Geocoding results',
@@ -150,7 +150,7 @@ ga.Lang.en = {
 /**
  * Message catalog in swiss french
  * @type {Object.<string,string>}
- * @todo api
+ * @api stable
  */
 ga.Lang.fr = {
   'Geocoding results': 'Résultat du géocodage',
@@ -162,7 +162,7 @@ ga.Lang.fr = {
 /**
  * Message catalog in swiss italian
  * @type {Object.<string,string>}
- * @todo api
+ * @api stable
  */
 ga.Lang.it = {
   'Geocoding results': 'Risultati geocoding',
@@ -174,7 +174,7 @@ ga.Lang.it = {
 /**
  * Message catalog in rumantsch
  * @type {Object.<string,string>}
- * @todo api
+ * @api stable
  */
 ga.Lang.rm = {
   'Geocoding results': 'Rezultatele geocodare',

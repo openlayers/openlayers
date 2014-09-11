@@ -8,13 +8,14 @@ goog.require('goog.ui.Dialog');
 goog.require('goog.ui.Menu');
 goog.require('goog.ui.MenuItem');
 goog.require('goog.dom');
+goog.require('goog.dom.classlist');
 
 goog.require('ol.Map');
-goog.require('ol.View2D');
+goog.require('ol.View');
 goog.require('ol.control');
 goog.require('ol.control.ScaleLine');
 goog.require('ol.interaction');
-goog.require('ol.proj.EPSG21781');
+goog.require('ol.proj');
 goog.require('ol.source.State');
 goog.require('ol.extent');
 goog.require('ol.Overlay');
@@ -37,7 +38,7 @@ goog.require('ga.Lang');
  * needs a view, one or more geoadmin layers, and a target container:
  *
  *     var map = new ga.Map({
- *       view: new ol.View2D({
+ *       view: new ol.View({
  *         center: [600000, 200000]
  *       }),
  *       layers: [
@@ -53,7 +54,7 @@ goog.require('ga.Lang');
  * @constructor
  * @extends {ol.Map}
  * @param {gax.MapOptions} options Map options.
- * @todo api stable
+ * @api stable
  */
 ga.Map = function(options) {
 
@@ -64,14 +65,16 @@ ga.Map = function(options) {
   }
   options.renderer = renderer;
 
+  var swissExtent = [420000, 30000, 900000, 350000];
+  var swissProjection = ol.proj.get('EPSG:21781');
+  swissProjection.setExtent(swissExtent);
 
-
-  var view = new ol.View2D({
+  var view = new ol.View({
     resolutions: [
       650, 500, 250, 100, 50, 20, 10, 5, 2.5, 2, 1, 0.5, 0.25, 0.1
     ],
-    extent: [420000, 30000, 900000, 350000],
-    projection: new ol.proj.EPSG21781(),
+    extent: swissExtent,
+    projection: swissProjection,
     center: [660000, 190000],
     zoom: 0
   });
@@ -89,7 +92,7 @@ ga.Map = function(options) {
     delete options.view;
   }
   options.view = view;
-  options.ol3Logo = false;
+  options.logo = false;
   options.interactions = goog.isDef(options.interactions) ? options.interactions : ol.interaction.defaults();
   options.controls = ol.control.defaults({
     zoomOptions: /** @type {olx.control.ZoomOptions} */ ({
@@ -130,7 +133,7 @@ goog.inherits(ga.Map, ol.Map);
 /**
  * Geocode using api.geo.admin.ch
  * @param {String} text text to geocode.
- * @todo api
+ * @api stable
  */
 ga.Map.prototype.geocode = function(text) {
   var jsonp = new goog.net.Jsonp(
@@ -165,7 +168,7 @@ ga.Map.prototype.handleGeocodeError_ = function(response) {
  * Recenter feature using api.geo.admin.ch
  * @param {String} layerId GeoAdmin id of the layer.
  * @param {String} featureId id of the feature.
- * @todo api
+ * @api stable
  */
 ga.Map.prototype.recenterFeature = function(layerId, featureId) {
   var jsonp = new goog.net.Jsonp(
@@ -188,9 +191,9 @@ ga.Map.prototype.handleRecenterError_ = function(response) {
 
 ga.Map.prototype.recenterToFeature_ = function(feature) {
   var extent = feature['bbox'];
-  this.getView().getView2D().fitExtent(extent, this.getSize());
-  if (this.getView().getView2D().getZoom() > 7) {
-    this.getView().getView2D().setZoom(7);
+  this.getView().fitExtent(extent, /** @type {ol.Size} */ (this.getSize()));
+  if (this.getView().getZoom() > 7) {
+    this.getView().setZoom(7);
   }
 };
 
@@ -198,7 +201,7 @@ ga.Map.prototype.recenterToFeature_ = function(feature) {
  * Highlight feature using api.geo.admin.ch
  * @param {String} layerId GeoAdmin id of the layer.
  * @param {String} featureId id of the feature.
- * @todo api
+ * @api stable
  */
 ga.Map.prototype.highlightFeature = function(layerId, featureId) {
   var jsonp = new goog.net.Jsonp(
@@ -289,11 +292,11 @@ ga.Map.prototype.recenterToResult_ = function(resultItem) {
     var zoom = parseInt(originZoom[origin],10);
     var center = [(extent[0] + extent[2]) / 2,
       (extent[1] + extent[3]) / 2];
-    this.getView().getView2D().setZoom(zoom);
-    this.getView().getView2D().setCenter(center);
+    this.getView().setZoom(zoom);
+    this.getView().setCenter(center);
     this.addCross_(center);
   } else {
-    this.getView().getView2D().fitExtent(extent,this.getSize());
+    this.getView().fitExtent(extent, /** @type {ol.Size} */ (this.getSize()));
   }
 };
 
@@ -312,8 +315,7 @@ ga.Map.prototype.parseExtent_ = function(stringBox2D) {
 
 ga.Map.prototype.addCross_ = function(center) {
   this.geocoderCrossElement_ = goog.dom.createDom(goog.dom.TagName.DIV);
-  goog.dom.classes.add(this.geocoderCrossElement_, 'crosshair');
-  goog.dom.classes.add(this.geocoderCrossElement_, 'cross');
+  goog.dom.classlist.addAll(this.geocoderCrossElement_, ['crosshair', 'cross']);
   this.removeCross_();
   this.geocoderOverlay_ = new ol.Overlay({
     element: this.geocoderCrossElement_,
@@ -330,7 +332,7 @@ ga.Map.prototype.removeCross_ = function() {
 
 /**
  * Disable the ga.Tooltip
- * @todo api
+ * @api stable
  */
 ga.Map.prototype.enableTooltip = function() {
   if (!goog.isNull(this.gaTooltip_)) {
@@ -340,10 +342,26 @@ ga.Map.prototype.enableTooltip = function() {
 
 /**
  * Disable the ga.Tooltip
- * @todo api
+ * @api stable
  */
 ga.Map.prototype.disableTooltip = function() {
   if (!goog.isNull(this.gaTooltip_)) {
     this.gaTooltip_.disable();
   }
 };
+
+/**
+ * @classdesc
+ * An `ol.View2D` which acts as an `ol.View` alias for backward
+ *  compatibility reasons. Old API users might still use View2D
+ *  and with this definition, those applications are not brokwn.
+ *
+ * @constructor
+ * @extends {ol.View}
+ * @param {olx.ViewOptions=} opt_options View options.
+ * @api stable
+ */
+ol.View2D = function(opt_options) {
+  goog.base(this, opt_options);
+};
+goog.inherits(ol.View2D, ol.View);

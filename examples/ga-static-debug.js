@@ -1,13 +1,9 @@
-goog.require('ga.Map');
-goog.require('ga.layer');
-goog.require('ol.View2D');
-
 // Create a GeoAdmin Map
 var map = new ga.Map({
   // Define the div where the map is placed
   target: 'map',
   // Create a 2D view
-  view: new ol.View2D({
+  view: new ol.View({
     // Define the default resolution
     // 10 means that one pixel is 10m width and height
     // List of resolution of the WMTS layers:
@@ -21,14 +17,12 @@ var map = new ga.Map({
 
 //var lyr = ga.layer.create('ch.blw.alpprodukte');
 //var lyr = ga.layer.create('ch.bfs.gebaeude_wohnungs_register_wmts');
-//var lyr1 = ga.layer.create('ch.swisstopo.swissimage');
+var lyr1 = ga.layer.create('ch.swisstopo.swissimage');
 //var lyr = ga.layer.create('ch.bfs.gebaeude_wohnungs_register_wms');
 //var lyr = ga.layer.create('ch.kantone.cadastralwebmap-farbe');
 //var lyr = ga.layer.create('ch.swisstopo-vd.geometa-gemeinde');
 //var lyr = ga.layer.create('ch.swisstopo.fixpunkte-hfp1');
-//var lyr = ga.layer.create('ch.swisstopo.lubis-luftbilder_farbe');
 var lyr = ga.layer.create('ch.swisstopo.fixpunkte-agnes');
-var lyr1 = ga.layer.create('ch.swisstopo.pixelkarte-farbe');
 
 map.addLayer(lyr1);
 map.addLayer(lyr);

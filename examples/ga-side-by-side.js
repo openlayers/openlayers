@@ -1,7 +1,7 @@
 goog.require('ga.Map');
 goog.require('ga.layer');
-goog.require('ol.BrowserFeature');
-goog.require('ol.View2D');
+goog.require('ol.has');
+goog.require('ol.View');
 
 
 var canvasMap = new ga.Map({
@@ -10,7 +10,7 @@ var canvasMap = new ga.Map({
     ga.layer.create('ch.swisstopo.pixelkarte-farbe')
   ],
   renderer: 'canvas',
-  view: new ol.View2D({
+  view: new ol.View({
     // Define the default resolution
     // 10 means that one pixel is 10m width and height
     // List of resolution of the WMTS layers:
@@ -21,13 +21,13 @@ var canvasMap = new ga.Map({
   })
 });
 
-if (ol.BrowserFeature.HAS_WEBGL) {
+if (ol.has.WEBGL) {
   var webglMap = new ga.Map({
     renderer: 'webgl',
     target: 'webglMap'
   });
-  webglMap.bindTo('layergroup', domMap);
-  webglMap.bindTo('view', domMap);
+  webglMap.bindTo('layergroup', canvasMap);
+  webglMap.bindTo('view', canvasMap);
 } else {
   var info = document.getElementById('no-webgl');
   /**

@@ -132,7 +132,7 @@ ga.Tooltip.prototype.handleClick_ = function(mapBrowserEvent) {
   var coordinate = mapBrowserEvent.coordinate;
   this.overlay_.setPosition(coordinate);
   var size = this.map_.getSize();
-  var extent = this.map_.getView().getView2D().calculateExtent(size);
+  var extent = this.map_.getView().calculateExtent(/** @type {ol.Size} */ (size));
   var jsonp = new goog.net.Jsonp(
     new goog.Uri( window['GeoAdmin']['serviceUrl'] + '/rest/services/api/MapServer/identify'),
       'callback');
@@ -140,8 +140,8 @@ ga.Tooltip.prototype.handleClick_ = function(mapBrowserEvent) {
   var layer;
   for (var i = 0, ii = this.map_.getLayers().getArray().length; i < ii; i++) {
     layer = this.map_.getLayers().getArray()[i];
-    if (layer['queryable'] && layer.getVisible()) {
-      layerList.push(layer.id);
+    if (layer.internal_queryable && layer.getVisible() && layer.internal_id) {
+      layerList.push(layer.internal_id);
     }
   }
   if (layerList.length > 0 && this.enabled_) {

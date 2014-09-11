@@ -23,7 +23,7 @@ goog.require('ol.tilegrid.WMTS');
  * @param {string} layer Geoadmin layer id.
  * @param {Object=} options Optional layer options (used in order to overide options defined in the layer configuration).
  * @return {ol.layer.Group|ol.layer.Image|ol.layer.Tile|undefined}
- * @todo api
+ * @api stable
  */
 ga.layer.create = function(layer, options) {
   if (layer in ga.layer.layerConfig) {
@@ -77,7 +77,7 @@ ga.layer.create = function(layer, options) {
     }
   }
   Object.defineProperties(Object(olLayer), {
-    'id': {
+   'id': {
       get: function() {
         return layer;
       }
@@ -105,6 +105,21 @@ ga.layer.create = function(layer, options) {
     'searchable': {
       get: function() {
         return layerConfig['searchable'];
+      }
+    },
+    //[''] annotation is not allowed within
+    //compiled code on struct definitions. Therfore,
+    //we create those internal properties, which
+    //can be used inside compiled code (see
+    //tooltip for an example)
+    internal_id: {
+      get: function() {
+        return layer;
+      }
+    },
+    internal_queryable: {
+      get: function() {
+        return layerConfig['queryable'];
       }
     }
   });
