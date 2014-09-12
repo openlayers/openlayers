@@ -203,10 +203,12 @@ ol.style.Image.prototype.setSnapToPixel = function(snapToPixel) {
 
 
 /**
+ * @function
  * @param {function(this: T, goog.events.Event)} listener Listener function.
  * @param {T} thisArg Value to use as `this` when executing `listener`.
  * @return {goog.events.Key|undefined} Listener key.
  * @template T
+ * @api
  */
 ol.style.Image.prototype.listenImageChange = goog.abstractMethod;
 
@@ -218,8 +220,10 @@ ol.style.Image.prototype.load = goog.abstractMethod;
 
 
 /**
+ * @function
  * @param {function(this: T, goog.events.Event)} listener Listener function.
  * @param {T} thisArg Value to use as `this` when executing `listener`.
  * @template T
+ * @api
  */
 ol.style.Image.prototype.unlistenImageChange = goog.abstractMethod;
