@@ -87,7 +87,7 @@ ol.interaction.DragPan.handleDragEvent_ = function(mapBrowserEvent) {
     ol.coordinate.scale(center, viewState.resolution);
     ol.coordinate.rotate(center, viewState.rotation);
     ol.coordinate.add(center, viewState.center);
-    center = view.constrainCenter(center);
+    center = view.constrainCenter(center, view.getResolution());
     map.render();
     view.setCenter(center);
   }
@@ -117,7 +117,7 @@ ol.interaction.DragPan.handleUpEvent_ = function(mapBrowserEvent) {
         centerpx[0] - distance * Math.cos(angle),
         centerpx[1] - distance * Math.sin(angle)
       ]);
-      dest = view.constrainCenter(dest);
+      dest = view.constrainCenter(dest, view.getResolution());
       view.setCenter(dest);
     }
     view.setHint(ol.ViewHint.INTERACTING, -1);

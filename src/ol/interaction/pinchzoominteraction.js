@@ -87,20 +87,20 @@ ol.interaction.PinchZoom.handleDragEvent_ = function(mapBrowserEvent) {
 
   var map = mapBrowserEvent.map;
   var view = map.getView();
-  var resolution = view.getResolution();
+  var resolution = view.getResolution() * scaleDelta;
 
-  // scale anchor point.
+  // scale anchor point
   var viewportPosition = goog.style.getClientPosition(map.getViewport());
-  var centroid =
-      ol.interaction.Pointer.centroid(this.targetPointers);
+  var centroid = ol.interaction.Pointer.centroid(this.targetPointers);
   centroid[0] -= viewportPosition.x;
   centroid[1] -= viewportPosition.y;
   this.anchor_ = map.getCoordinateFromPixel(centroid);
 
-  // scale, bypass the resolution constraint
+  // scale, bypassing the constraints
+  var center = view.calculateCenterZoom(resolution, this.anchor_);
   map.render();
-  ol.interaction.Interaction.zoomWithoutConstraints(
-      map, view, resolution * scaleDelta, this.anchor_);
+  ol.interaction.Interaction.zoomAndPanWithoutConstraints(
+      map, view, resolution, center);
 
 };
 

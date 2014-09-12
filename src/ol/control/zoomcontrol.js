@@ -101,16 +101,25 @@ ol.control.Zoom.prototype.zoomByDelta_ = function(delta) {
     // upon it
     return;
   }
+  var currentCenter = view.getCenter();
   var currentResolution = view.getResolution();
-  if (currentResolution) {
+  if (currentCenter && currentResolution) {
     if (this.duration_ > 0) {
-      map.beforeRender(ol.animation.zoom({
-        resolution: currentResolution,
-        duration: this.duration_,
-        easing: ol.easing.easeOut
-      }));
+      map.beforeRender(
+          ol.animation.zoom({
+            resolution: currentResolution,
+            duration: this.duration_,
+            easing: ol.easing.easeOut
+          }),
+          ol.animation.pan({
+            source: currentCenter,
+            duration: this.duration_,
+            easing: ol.easing.easeOut
+          }));
     }
     var newResolution = view.constrainResolution(currentResolution, delta);
+    var newCenter = view.constrainCenter(currentCenter, newResolution);
     view.setResolution(newResolution);
+    view.setCenter(newCenter);
   }
 };

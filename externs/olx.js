@@ -487,6 +487,7 @@ olx.ProjectionOptions.prototype.getPointResolution;
 /**
  * Object literal with config options for the view.
  * @typedef {{center: (ol.Coordinate|undefined),
+ *     constrainCenter: (ol.CenterConstraintType|undefined),
  *     constrainRotation: (boolean|number|undefined),
  *     enableRotation: (boolean|undefined),
  *     extent: (ol.Extent|undefined),
@@ -516,6 +517,20 @@ olx.ViewOptions.prototype.center;
 
 
 /**
+ * Function to constrain the center. The function receives a non-constrained
+ * center (`ol.Coordinate`) and the target resolution (`number`) and returns
+ * a constrained center (`ol.Coordinate`). This option takes precedence over
+ * the `extent` option. You will use the `extent` option to constrain the view
+ * center within a given extent, and `constrainCenter` for more specific
+ * use-cases. Default is `undefined`.
+ *
+ * @type {ol.CenterConstraintType|undefined}
+ * @api
+ */
+olx.ViewOptions.prototype.constrainCenter;
+
+
+/**
  * Rotation constraint. `false` means no constraint. `true` means no constraint,
  * but snap to zero near zero. A number constrains the rotation to that number
  * of values. For example, `4` will constrain the rotation to 0, 90, 180, and
@@ -538,7 +553,8 @@ olx.ViewOptions.prototype.enableRotation;
 
 /**
  * The extent that constrains the center, in other words, center cannot be set
- * outside this extent. Default is `undefined`.
+ * outside this extent. This option is ignored if the `constrainCenter` option
+ * is also provided. Default is `undefined`.
  * @type {ol.Extent|undefined}
  * @api
  */

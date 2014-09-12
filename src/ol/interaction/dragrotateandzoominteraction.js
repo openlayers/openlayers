@@ -97,8 +97,10 @@ ol.interaction.DragRotateAndZoom.handleDragEvent_ = function(mapBrowserEvent) {
   }
   this.lastAngle_ = theta;
   if (this.lastMagnitude_ !== undefined) {
+    var center = view.getCenter();
     var resolution = this.lastMagnitude_ * (view.getResolution() / magnitude);
-    ol.interaction.Interaction.zoomWithoutConstraints(map, view, resolution);
+    ol.interaction.Interaction.zoomAndPanWithoutConstraints(
+        map, view, resolution, center);
   }
   if (this.lastMagnitude_ !== undefined) {
     this.lastScaleDelta_ = this.lastMagnitude_ / magnitude;

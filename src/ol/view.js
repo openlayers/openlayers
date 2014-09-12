@@ -90,8 +90,10 @@ ol.ViewHint = {
  * By default the rotation value is snapped to zero when approaching the
  * horizontal.
  *
- * The *center constraint* is determined by the `extent` option. By
- * default the center is not constrained at all.
+ * The *center constraint* is determined by the `extent` and `constrainCenter`
+ * options. The center is constrained if one of these two options is provided,
+ * `constrainCenter` taking precedence over `extent`. By default the center is
+ * not constrained at all.
  *
  * @constructor
  * @extends {ol.Object}
@@ -207,11 +209,12 @@ ol.View.prototype.calculateCenterZoom = function(resolution, anchor) {
 /**
  * Get the constrained center of this view.
  * @param {ol.Coordinate|undefined} center Center.
+ * @param {number|undefined} resolution resolution.
  * @return {ol.Coordinate|undefined} Constrained center.
  * @api
  */
-ol.View.prototype.constrainCenter = function(center) {
-  return this.constraints_.center(center);
+ol.View.prototype.constrainCenter = function(center, resolution) {
+  return this.constraints_.center(center, resolution);
 };
 
 
@@ -636,7 +639,9 @@ ol.View.prototype.setZoom = function(zoom) {
  * @return {ol.CenterConstraintType}
  */
 ol.View.createCenterConstraint_ = function(options) {
-  if (options.extent !== undefined) {
+  if (options.constrainCenter !== undefined) {
+    return options.constrainCenter;
+  } if (options.extent !== undefined) {
     return ol.CenterConstraint.createExtent(options.extent);
   } else {
     return ol.CenterConstraint.none;
