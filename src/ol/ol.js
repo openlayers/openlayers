@@ -146,6 +146,8 @@ ol.ENABLE_WEBGL = true;
 
 /**
  * @define {boolean} Support legacy IE (7-8).  Default is `false`.
+ *     If set to `true`, `goog.array.ASSUME_NATIVE_FUNCTIONS` must be set
+ *     to `false` because legacy IE do not support ECMAScript 5 array functions.
  */
 ol.LEGACY_IE_SUPPORT = false;
 
