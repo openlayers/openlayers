@@ -6,7 +6,6 @@ goog.provide('ol.dom.BrowserFeature');
 goog.require('goog.asserts');
 goog.require('goog.dom');
 goog.require('goog.dom.TagName');
-goog.require('goog.style');
 goog.require('goog.userAgent');
 goog.require('goog.vec.Mat4');
 goog.require('ol');
@@ -180,7 +179,7 @@ ol.dom.setOpacity = function(element, value) {
       element.style.zIndex = 0;
     }
   } else {
-    goog.style.setOpacity(element, value);
+    element.style.opacity = value;
   }
 };
 
