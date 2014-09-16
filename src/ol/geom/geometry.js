@@ -173,7 +173,8 @@ ol.geom.Geometry.prototype.getType = goog.abstractMethod;
 
 
 /**
- * Apply a transform function to the geometry.  Modifies the geometry in place.
+ * Apply a transform function to each coordinate of the geometry.
+ * The geometry is modified in place.
  * If you do not want the geometry modified in place, first clone() it and
  * then use this function on the clone.
  * @function
@@ -184,8 +185,9 @@ ol.geom.Geometry.prototype.applyTransform = goog.abstractMethod;
 
 
 /**
- * Transform a geometry from one coordinate reference system to another.
- * Modifies the geometry in place.
+ * Transform each coordinate of the geometry from one coordinate reference
+ * system to another. The geometry is modified in place.
+ * For example, a line will be transformed to a line and a circle to a circle.
  * If you do not want the geometry modified in place, first clone() it and
  * then use this function on the clone.
  *
