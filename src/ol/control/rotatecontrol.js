@@ -3,6 +3,7 @@ goog.provide('ol.control.Rotate');
 goog.require('goog.asserts');
 goog.require('goog.dom');
 goog.require('goog.dom.TagName');
+goog.require('goog.dom.classlist');
 goog.require('goog.events');
 goog.require('goog.events.EventType');
 goog.require('goog.math');
@@ -17,7 +18,8 @@ goog.require('ol.pointer.PointerEventHandler');
 /**
  * @classdesc
  * A button control to reset rotation to 0.
- * To style this control use css selector `.ol-rotate`.
+ * To style this control use css selector `.ol-rotate`. A `.ol-hidden` css
+ * selector is added to the button when the rotation is 0.
  *
  * @constructor
  * @extends {ol.control.Control}
@@ -92,7 +94,9 @@ ol.control.Rotate = function(opt_options) {
    */
   this.rotation_ = undefined;
 
-  element.style.opacity = (this.autoHide_) ? 0 : 1;
+  if (this.autoHide_) {
+    goog.dom.classlist.add(this.element, ol.css.CLASS_HIDDEN);
+  }
 
 };
 goog.inherits(ol.control.Rotate, ol.control.Control);
@@ -159,7 +163,8 @@ ol.control.Rotate.prototype.handleMapPostrender = function(mapEvent) {
   if (rotation != this.rotation_) {
     var transform = 'rotate(' + goog.math.toDegrees(rotation) + 'deg)';
     if (this.autoHide_) {
-      this.element.style.opacity = (rotation === 0) ? 0 : 1;
+      goog.dom.classlist.enable(
+          this.element, ol.css.CLASS_HIDDEN, rotation === 0);
     }
     this.label_.style.msTransform = transform;
     this.label_.style.webkitTransform = transform;
