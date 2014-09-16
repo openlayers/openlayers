@@ -55,6 +55,9 @@
   right: .5em;
   transition: opacity .25s;
 }
+.ol-rotate.ol-hidden {
+  opacity: 0;
+}
 .ol-zoom-extent {
   top: 4.643em;
   left: .5em;
