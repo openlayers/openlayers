@@ -130,7 +130,11 @@ ol.control.Rotate.prototype.handlePointerUp_ = function(pointerEvent) {
 ol.control.Rotate.prototype.resetNorth_ = function() {
   var map = this.getMap();
   var view = map.getView();
-  goog.asserts.assert(!goog.isNull(view));
+  if (goog.isNull(view)) {
+    // the map does not have a view, so we can't act
+    // upon it
+    return;
+  }
   var currentRotation = view.getRotation();
   while (currentRotation < -Math.PI) {
     currentRotation += 2 * Math.PI;
