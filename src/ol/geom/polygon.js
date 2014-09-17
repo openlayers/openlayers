@@ -357,7 +357,8 @@ ol.geom.Polygon.prototype.setFlatCoordinates =
  * @return {ol.geom.Polygon} Circle geometry.
  * @api stable
  */
-ol.geom.Polygon.circular = function(sphere, center, radius, opt_n) {
+ol.geom.Polygon.createCircularOnSphere =
+    function(sphere, center, radius, opt_n) {
   var n = goog.isDef(opt_n) ? opt_n : 32;
   /** @type {Array.<number>} */
   var flatCoordinates = [];
