@@ -159,8 +159,7 @@ ol.extent.closestSquaredDistanceXY = function(extent, x, y) {
  * @api stable
  */
 ol.extent.containsCoordinate = function(extent, coordinate) {
-  return extent[0] <= coordinate[0] && coordinate[0] <= extent[2] &&
-      extent[1] <= coordinate[1] && coordinate[1] <= extent[3];
+  return ol.extent.containsXY(extent, coordinate[0], coordinate[1]);
 };
 
 
@@ -175,6 +174,20 @@ ol.extent.containsCoordinate = function(extent, coordinate) {
 ol.extent.containsExtent = function(extent1, extent2) {
   return extent1[0] <= extent2[0] && extent2[2] <= extent1[2] &&
       extent1[1] <= extent2[1] && extent2[3] <= extent1[3];
+};
+
+
+/**
+ * Checks if the passed coordinate is contained or on the edge of the extent.
+ *
+ * @param {ol.Extent} extent Extent.
+ * @param {number} x X coordinate.
+ * @param {number} y Y coordinate.
+ * @return {boolean} Contains.
+ * @api stable
+ */
+ol.extent.containsXY = function(extent, x, y) {
+  return extent[0] <= x && x <= extent[2] && extent[1] <= y && y <= extent[3];
 };
 
 
