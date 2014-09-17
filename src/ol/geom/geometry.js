@@ -185,6 +185,16 @@ ol.geom.Geometry.prototype.applyTransform = goog.abstractMethod;
 
 
 /**
+ * Test if the geometry and the passed extent intersect.
+ * @param {ol.Extent} extent Extent.
+ * @return {boolean} `true` if the geometry and the extent intersect.
+ * @function
+ * @api
+ */
+ol.geom.Geometry.prototype.intersectsExtent = goog.abstractMethod;
+
+
+/**
  * Transform each coordinate of the geometry from one coordinate reference
  * system to another. The geometry is modified in place.
  * For example, a line will be transformed to a line and a circle to a circle.
