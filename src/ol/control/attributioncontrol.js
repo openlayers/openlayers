@@ -312,8 +312,7 @@ ol.control.Attribution.prototype.insertLogos_ = function(frameState) {
         logoElement = image;
       } else {
         logoElement = goog.dom.createDom(goog.dom.TagName.A, {
-          'href': logoValue,
-          'target': '_blank'
+          'href': logoValue
         });
         logoElement.appendChild(image);
       }
