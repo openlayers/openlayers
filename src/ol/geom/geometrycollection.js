@@ -219,6 +219,22 @@ ol.geom.GeometryCollection.prototype.getType = function() {
 
 
 /**
+ * @inheritDoc
+ * @api
+ */
+ol.geom.GeometryCollection.prototype.intersectsExtent = function(extent) {
+  var geometries = this.geometries_;
+  var i, ii;
+  for (i = 0, ii = geometries.length; i < ii; ++i) {
+    if (geometries[i].intersectsExtent(extent)) {
+      return true;
+    }
+  }
+  return false;
+};
+
+
+/**
  * @return {boolean} Is empty.
  */
 ol.geom.GeometryCollection.prototype.isEmpty = function() {
