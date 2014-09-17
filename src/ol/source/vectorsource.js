@@ -248,6 +248,39 @@ ol.source.Vector.prototype.forEachFeatureInExtentAtResolution =
 
 
 /**
+ * This function executes the `callback` function once for each feature
+ * intersecting the `extent` until `callback` returns a truthy value. When
+ * `callback` returns a truthy value the function immediately returns that
+ * value. Otherwise the function returns `undefined`.
+ * @param {ol.Extent} extent Extent.
+ * @param {function(this: T, ol.Feature): S} f Callback.
+ * @param {T=} opt_this The object to use as `this` in `f`.
+ * @return {S|undefined}
+ * @template T,S
+ * @api
+ */
+ol.source.Vector.prototype.forEachFeatureIntersectingExtent =
+    function(extent, f, opt_this) {
+  return this.forEachFeatureInExtent(extent,
+      /**
+       * @param {ol.Feature} feature Feature.
+       * @return {S|undefined}
+       * @template S
+       */
+      function(feature) {
+        var geometry = feature.getGeometry();
+        goog.asserts.assert(goog.isDefAndNotNull(geometry));
+        if (geometry.intersectsExtent(extent)) {
+          var result = f.call(opt_this, feature);
+          if (result) {
+            return result;
+          }
+        }
+      });
+};
+
+
+/**
  * @return {Array.<ol.Feature>} Features.
  * @api stable
  */

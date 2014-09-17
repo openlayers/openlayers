@@ -349,7 +349,7 @@ describe('ol.extent', function() {
     });
   });
 
-  describe('segmentIntersects()', function() {
+  describe('intersectsSegment()', function() {
 
     var extent = [-180, -90, 180, 90];
     var north = [0, 100];
@@ -368,107 +368,107 @@ describe('ol.extent', function() {
     var inside = [10, 10];
 
     it('returns true if contained', function() {
-      var intersects = ol.extent.segmentIntersects(extent, center, inside);
+      var intersects = ol.extent.intersectsSegment(extent, center, inside);
       expect(intersects).to.be(true);
     });
 
     it('returns true if crosses top', function() {
-      var intersects = ol.extent.segmentIntersects(extent, center, north);
+      var intersects = ol.extent.intersectsSegment(extent, center, north);
       expect(intersects).to.be(true);
     });
 
     it('returns true if crosses right', function() {
-      var intersects = ol.extent.segmentIntersects(extent, center, east);
+      var intersects = ol.extent.intersectsSegment(extent, center, east);
       expect(intersects).to.be(true);
     });
 
     it('returns true if crosses bottom', function() {
-      var intersects = ol.extent.segmentIntersects(extent, center, south);
+      var intersects = ol.extent.intersectsSegment(extent, center, south);
       expect(intersects).to.be(true);
     });
 
     it('returns true if crosses left', function() {
-      var intersects = ol.extent.segmentIntersects(extent, center, west);
+      var intersects = ol.extent.intersectsSegment(extent, center, west);
       expect(intersects).to.be(true);
     });
 
     it('returns false if above', function() {
-      var intersects = ol.extent.segmentIntersects(extent, northwest, north);
+      var intersects = ol.extent.intersectsSegment(extent, northwest, north);
       expect(intersects).to.be(false);
     });
 
     it('returns false if right', function() {
-      var intersects = ol.extent.segmentIntersects(extent, northeast, east);
+      var intersects = ol.extent.intersectsSegment(extent, northeast, east);
       expect(intersects).to.be(false);
     });
 
     it('returns false if below', function() {
-      var intersects = ol.extent.segmentIntersects(extent, south, southwest);
+      var intersects = ol.extent.intersectsSegment(extent, south, southwest);
       expect(intersects).to.be(false);
     });
 
     it('returns false if left', function() {
-      var intersects = ol.extent.segmentIntersects(extent, west, southwest);
+      var intersects = ol.extent.intersectsSegment(extent, west, southwest);
       expect(intersects).to.be(false);
     });
 
     it('returns true if crosses top to bottom', function() {
-      var intersects = ol.extent.segmentIntersects(extent, north, south);
+      var intersects = ol.extent.intersectsSegment(extent, north, south);
       expect(intersects).to.be(true);
     });
 
     it('returns true if crosses bottom to top', function() {
-      var intersects = ol.extent.segmentIntersects(extent, south, north);
+      var intersects = ol.extent.intersectsSegment(extent, south, north);
       expect(intersects).to.be(true);
     });
 
     it('returns true if crosses left to right', function() {
-      var intersects = ol.extent.segmentIntersects(extent, west, east);
+      var intersects = ol.extent.intersectsSegment(extent, west, east);
       expect(intersects).to.be(true);
     });
 
     it('returns true if crosses right to left', function() {
-      var intersects = ol.extent.segmentIntersects(extent, east, west);
+      var intersects = ol.extent.intersectsSegment(extent, east, west);
       expect(intersects).to.be(true);
     });
 
     it('returns true if crosses northwest to east', function() {
-      var intersects = ol.extent.segmentIntersects(extent, northwest, east);
+      var intersects = ol.extent.intersectsSegment(extent, northwest, east);
       expect(intersects).to.be(true);
     });
 
     it('returns true if crosses south to west', function() {
-      var intersects = ol.extent.segmentIntersects(extent, south, west);
+      var intersects = ol.extent.intersectsSegment(extent, south, west);
       expect(intersects).to.be(true);
     });
 
     it('returns true if touches top', function() {
-      var intersects = ol.extent.segmentIntersects(extent, northwest, top);
+      var intersects = ol.extent.intersectsSegment(extent, northwest, top);
       expect(intersects).to.be(true);
     });
 
     it('returns true if touches right', function() {
-      var intersects = ol.extent.segmentIntersects(extent, southeast, right);
+      var intersects = ol.extent.intersectsSegment(extent, southeast, right);
       expect(intersects).to.be(true);
     });
 
     it('returns true if touches bottom', function() {
-      var intersects = ol.extent.segmentIntersects(extent, bottom, south);
+      var intersects = ol.extent.intersectsSegment(extent, bottom, south);
       expect(intersects).to.be(true);
     });
 
     it('returns true if touches left', function() {
-      var intersects = ol.extent.segmentIntersects(extent, left, west);
+      var intersects = ol.extent.intersectsSegment(extent, left, west);
       expect(intersects).to.be(true);
     });
 
     it('works for zero length inside', function() {
-      var intersects = ol.extent.segmentIntersects(extent, center, center);
+      var intersects = ol.extent.intersectsSegment(extent, center, center);
       expect(intersects).to.be(true);
     });
 
     it('works for zero length outside', function() {
-      var intersects = ol.extent.segmentIntersects(extent, north, north);
+      var intersects = ol.extent.intersectsSegment(extent, north, north);
       expect(intersects).to.be(false);
     });
 
