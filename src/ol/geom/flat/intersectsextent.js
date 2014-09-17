@@ -40,7 +40,7 @@ ol.geom.flat.intersectsextent.lineString =
        *     `false` otherwise.
        */
       function(point1, point2) {
-        return ol.extent.segmentIntersects(extent, point1, point2);
+        return ol.extent.intersectsSegment(extent, point1, point2);
       });
 };
 
