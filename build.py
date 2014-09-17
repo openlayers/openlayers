@@ -310,10 +310,12 @@ def examples_star_json(name, match):
               "tweakValidation",
               "undefinedNames",
               "undefinedVars",
-              "unknownDefines",
               "uselessCode",
               "violatedModuleDep",
               "visibility"
+            ],
+            "jscomp_off": [
+              "unknownDefines"
             ],
             "extra_annotation_name": [
               "api", "observable"
