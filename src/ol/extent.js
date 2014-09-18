@@ -608,6 +608,7 @@ ol.extent.getIntersectionArea = function(extent1, extent2) {
  * @param {ol.Extent} extent2 Extent 2.
  * @param {ol.Extent=} opt_extent Optional extent to populate with intersection.
  * @return {ol.Extent} Intersecting extent.
+ * @api stable
  */
 ol.extent.getIntersection = function(extent1, extent2, opt_extent) {
   var intersection = goog.isDef(opt_extent) ?
