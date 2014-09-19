@@ -42,6 +42,12 @@ ol.source.BingMaps = function(options) {
    */
   this.culture_ = goog.isDef(options.culture) ? options.culture : 'en-us';
 
+  /**
+   * @private
+   * @type {number}
+   */
+  this.maxZoom_ = goog.isDef(options.maxZoom) ? options.maxZoom : -1;
+
   var protocol = ol.IS_HTTPS ? 'https:' : 'http:';
   var uri = new goog.Uri(
       protocol + '//dev.virtualearth.net/REST/v1/Imagery/Metadata/' +
@@ -87,13 +93,14 @@ ol.source.BingMaps.prototype.handleImageryMetadataResponse =
   var brandLogoUri = response.brandLogoUri;
   //var copyright = response.copyright;  // FIXME do we need to display this?
   var resource = response.resourceSets[0].resources[0];
-
   goog.asserts.assert(resource.imageWidth == resource.imageHeight);
+  var maxZoom = this.maxZoom_ == -1 ? resource.zoomMax : this.maxZoom_;
+
   var sourceProjection = this.getProjection();
   var tileGrid = new ol.tilegrid.XYZ({
     extent: ol.tilegrid.extentFromProjection(sourceProjection),
     minZoom: resource.zoomMin,
-    maxZoom: resource.zoomMax,
+    maxZoom: maxZoom,
     tileSize: resource.imageWidth
   });
   this.tileGrid = tileGrid;
@@ -141,7 +148,7 @@ ol.source.BingMaps.prototype.handleImageryMetadataResponse =
               imageryProvider.coverageAreas,
               function(coverageArea) {
                 var minZ = coverageArea.zoomMin;
-                var maxZ = coverageArea.zoomMax;
+                var maxZ = Math.min(coverageArea.zoomMax, maxZoom);
                 var bbox = coverageArea.bbox;
                 var epsg4326Extent = [bbox[1], bbox[0], bbox[3], bbox[2]];
                 var extent = ol.extent.applyTransform(
