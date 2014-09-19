@@ -63,7 +63,8 @@ var radius = 800000;
 var x, y;
 for (x = -180; x < 180; x += 30) {
   for (y = -90; y < 90; y += 30) {
-    var circle4326 = ol.geom.Polygon.circular(wgs84Sphere, [x, y], radius, 64);
+    var circle4326 = ol.geom.Polygon.createCircularOnSphere(
+        wgs84Sphere, [x, y], radius, 64);
     var circle3857 = circle4326.clone().transform('EPSG:4326', 'EPSG:3857');
     vectorLayer4326.getSource().addFeature(new ol.Feature(circle4326));
     vectorLayer3857.getSource().addFeature(new ol.Feature(circle3857));
