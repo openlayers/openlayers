@@ -539,6 +539,48 @@ ol.format.GML.exteriorParser_ = function(node, objectStack) {
  * @param {Node} node Node.
  * @param {Array.<*>} objectStack Object stack.
  * @private
+ */
+ol.format.GML.innerBoundaryIsParser_ = function(node, objectStack) {
+  goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT);
+  goog.asserts.assert(node.localName == 'innerBoundaryIs');
+  var flatLinearRing = ol.xml.pushParseAndPop(
+      /** @type {Array.<number>|undefined} */ (undefined),
+      ol.format.GML.RING_PARSERS_, node, objectStack);
+  if (goog.isDef(flatLinearRing)) {
+    var flatLinearRings = /** @type {Array.<Array.<number>>} */
+        (objectStack[objectStack.length - 1]);
+    goog.asserts.assert(goog.isArray(flatLinearRings));
+    goog.asserts.assert(flatLinearRings.length > 0);
+    flatLinearRings.push(flatLinearRing);
+  }
+};
+
+
+/**
+ * @param {Node} node Node.
+ * @param {Array.<*>} objectStack Object stack.
+ * @private
+ */
+ol.format.GML.outerBoundaryIsParser_ = function(node, objectStack) {
+  goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT);
+  goog.asserts.assert(node.localName == 'outerBoundaryIs');
+  var flatLinearRing = ol.xml.pushParseAndPop(
+      /** @type {Array.<number>|undefined} */ (undefined),
+      ol.format.GML.RING_PARSERS_, node, objectStack);
+  if (goog.isDef(flatLinearRing)) {
+    var flatLinearRings = /** @type {Array.<Array.<number>>} */
+        (objectStack[objectStack.length - 1]);
+    goog.asserts.assert(goog.isArray(flatLinearRings));
+    goog.asserts.assert(flatLinearRings.length > 0);
+    flatLinearRings[0] = flatLinearRing;
+  }
+};
+
+
+/**
+ * @param {Node} node Node.
+ * @param {Array.<*>} objectStack Object stack.
+ * @private
  * @return {Array.<number>|undefined} LinearRing flat coordinates.
  */
 ol.format.GML.readFlatLinearRing_ = function(node, objectStack) {
@@ -808,6 +850,51 @@ ol.format.GML.GEOMETRY_PARSERS_ = {
 
 
 /**
+ * @param {Node} node Node.
+ * @param {Array.<*>} objectStack Object stack.
+ * @private
+ * @return {Array.<number>|undefined} Flat coordinates.
+ */
+ol.format.GML.readFlatCoordinates_ = function(node, objectStack) {
+  var s = ol.xml.getAllTextContent(node, false).replace(/^\s*|\s*$/g, '');
+  var context = objectStack[0];
+  goog.asserts.assert(goog.isObject(context));
+  var containerSrs = goog.object.get(context, 'srsName');
+  var containerDimension = node.parentNode.getAttribute('srsDimension');
+  var axisOrientation = 'enu';
+  if (!goog.isNull(containerSrs)) {
+    var proj = ol.proj.get(containerSrs);
+    axisOrientation = proj.getAxisOrientation();
+  }
+  var coords = s.split(/[\s,]+/);
+  // The "dimension" attribute is from the GML 3.0.1 spec.
+  var dim = 2;
+  if (!goog.isNull(node.getAttribute('srsDimension'))) {
+    dim = ol.format.XSD.readNonNegativeIntegerString(
+        node.getAttribute('srsDimension'));
+  } else if (!goog.isNull(node.getAttribute('dimension'))) {
+    dim = ol.format.XSD.readNonNegativeIntegerString(
+        node.getAttribute('dimension'));
+  } else if (!goog.isNull(containerDimension)) {
+    dim = ol.format.XSD.readNonNegativeIntegerString(containerDimension);
+  }
+  var x, y, z;
+  var flatCoordinates = [];
+  for (var i = 0, ii = coords.length; i < ii; i += dim) {
+    x = parseFloat(coords[i]);
+    y = parseFloat(coords[i + 1]);
+    z = (dim === 3) ? parseFloat(coords[i + 2]) : 0;
+    if (axisOrientation.substr(0, 2) === 'en') {
+      flatCoordinates.push(x, y, z);
+    } else {
+      flatCoordinates.push(y, x, z);
+    }
+  }
+  return flatCoordinates;
+};
+
+
+/**
  * @const
  * @type {Object.<string, Object.<string, ol.xml.Parser>>}
  * @private
@@ -815,7 +902,8 @@ ol.format.GML.GEOMETRY_PARSERS_ = {
 ol.format.GML.GEOMETRY_FLAT_COORDINATES_PARSERS_ = {
   'http://www.opengis.net/gml' : {
     'pos': ol.xml.makeReplacer(ol.format.GML.readFlatPos_),
-    'posList': ol.xml.makeReplacer(ol.format.GML.readFlatPosList_)
+    'posList': ol.xml.makeReplacer(ol.format.GML.readFlatPosList_),
+    'coordinates': ol.xml.makeReplacer(ol.format.GML.readFlatCoordinates_)
   }
 };
 
@@ -828,7 +916,9 @@ ol.format.GML.GEOMETRY_FLAT_COORDINATES_PARSERS_ = {
 ol.format.GML.FLAT_LINEAR_RINGS_PARSERS_ = {
   'http://www.opengis.net/gml' : {
     'interior': ol.format.GML.interiorParser_,
-    'exterior': ol.format.GML.exteriorParser_
+    'exterior': ol.format.GML.exteriorParser_,
+    'innerBoundaryIs': ol.format.GML.innerBoundaryIsParser_,
+    'outerBoundaryIs': ol.format.GML.outerBoundaryIsParser_
   }
 };
 
