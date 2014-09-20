@@ -4,28 +4,33 @@ goog.require('ol.has');
 goog.require('ol.layer.Tile');
 goog.require('ol.source.MapQuest');
 
+var domView = new ol.View({
+  center: [0, 0],
+  zoom: 1
+});
+
+var layer = new ol.layer.Tile({
+  source: new ol.source.MapQuest({layer: 'sat'})
+});
 
 var domMap = new ol.Map({
-  layers: [
-    new ol.layer.Tile({
-      source: new ol.source.MapQuest({layer: 'sat'})
-    })
-  ],
-  renderer: 'dom',
   target: 'domMap',
-  view: new ol.View({
-    center: [0, 0],
-    zoom: 1
-  })
+  renderer: 'dom',
+  layers: [layer],
+  view: domView
 });
 
 if (ol.has.WEBGL) {
+  var webGlView = new ol.View();
+  webGlView.bindTo('center', domView);
+  webGlView.bindTo('resolution', domView);
+  webGlView.bindTo('rotation', domView);
   var webglMap = new ol.Map({
+    target: 'webglMap',
     renderer: 'webgl',
-    target: 'webglMap'
+    layers: [layer],
+    view: webGlView
   });
-  webglMap.bindTo('layergroup', domMap);
-  webglMap.bindTo('view', domMap);
 } else {
   var info = document.getElementById('no-webgl');
   /**
@@ -34,8 +39,12 @@ if (ol.has.WEBGL) {
   info.style.display = '';
 }
 
+var canvasView = new ol.View();
+canvasView.bindTo('center', domView);
+canvasView.bindTo('resolution', domView);
+canvasView.bindTo('rotation', domView);
 var canvasMap = new ol.Map({
-  target: 'canvasMap'
+  target: 'canvasMap',
+  layers: [layer],
+  view: canvasView
 });
-canvasMap.bindTo('layergroup', domMap);
-canvasMap.bindTo('view', domMap);
