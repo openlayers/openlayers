@@ -614,8 +614,8 @@ describe('ol.Object', function() {
 
     it('dispatches the expected event', function() {
       o.set('K', 1);
-      expect(listener1).to.be.called();
-      expect(listener2).to.not.be.called();
+      expect(listener1).to.not.be.called();
+      expect(listener2).to.be.called();
 
       expect(o.getKeys()).to.eql(['K']);
     });

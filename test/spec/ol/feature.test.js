@@ -320,6 +320,14 @@ describe('ol.Feature', function() {
       expect(feature.getStyleFunction()).to.be(styleFunction);
     });
 
+    it('accepts null', function() {
+      var feature = new ol.Feature();
+      feature.setStyle(style);
+      feature.setStyle(null);
+      expect(feature.getStyle()).to.be(null);
+      expect(feature.getStyleFunction()).to.be(undefined);
+    });
+
     it('dispatches a change event', function(done) {
       var feature = new ol.Feature();
       feature.on('change', function() {
