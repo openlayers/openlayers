@@ -37,7 +37,7 @@ function wrapLon(value) {
 
 function onMoveEnd(evt) {
   var map = evt.map;
-  var extent = map.getView().calculateExtent(map.getSize());
+  var extent = map.getView().getExtent();
   var bottomLeft = ol.proj.transform(ol.extent.getBottomLeft(extent),
       'EPSG:3857', 'EPSG:4326');
   var topRight = ol.proj.transform(ol.extent.getTopRight(extent),

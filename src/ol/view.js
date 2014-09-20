@@ -97,6 +97,12 @@ ol.View = function(opt_options) {
 
   /**
    * @private
+   * @type {ol.Map}
+   */
+  this.map_ = null;
+
+  /**
+   * @private
    * @type {Array.<number>}
    */
   this.hints_ = [0, 0];
@@ -277,6 +283,19 @@ ol.View.prototype.calculateExtent = function(size) {
   var minY = center[1] - resolution * size[1] / 2;
   var maxY = center[1] + resolution * size[1] / 2;
   return [minX, minY, maxX, maxY];
+};
+
+
+/**
+ * Get the current view extent.
+ * @return {ol.Extent} Extent.
+ * @api stable
+ */
+ol.View.prototype.getExtent = function() {
+  goog.asserts.assert(goog.isDefAndNotNull(this.map_));
+  var size = this.map_.getSize();
+  goog.asserts.assert(goog.isDef(size));
+  return this.calculateExtent(size);
 };
 
 
@@ -591,6 +610,19 @@ goog.exportProperty(
 
 
 /**
+ * Set the map extent.
+ * @param {ol.Extent} extent Extent.
+ * @api stable
+ */
+ol.View.prototype.setExtent = function(extent) {
+  goog.asserts.assert(goog.isDefAndNotNull(this.map_));
+  var size = this.map_.getSize();
+  goog.asserts.assert(goog.isDef(size));
+  this.fitExtent(extent, size);
+};
+
+
+/**
  * @param {ol.ViewHint} hint Hint.
  * @param {number} delta Delta.
  * @return {number} New value.
@@ -600,6 +632,15 @@ ol.View.prototype.setHint = function(hint, delta) {
   this.hints_[hint] += delta;
   goog.asserts.assert(this.hints_[hint] >= 0);
   return this.hints_[hint];
+};
+
+
+/**
+ * Set the map for the view.
+ * @param {ol.Map} map Map.
+ */
+ol.View.prototype.setMap = function(map) {
+  this.map_ = map;
 };
 
 

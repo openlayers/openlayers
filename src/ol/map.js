@@ -1306,10 +1306,14 @@ ol.Map.prototype.setView = function(view) {
     goog.events.unlistenByKey(this.viewPropertyListenerKey_);
     this.viewPropertyListenerKey_ = null;
   }
+  if (!goog.isNull(this.view_)) {
+    this.view_.setMap(null);
+  }
   if (!goog.isNull(view)) {
     this.viewPropertyListenerKey_ = goog.events.listen(
         view, ol.ObjectEventType.PROPERTYCHANGE,
         this.handleViewPropertyChanged_, false, this);
+    view.setMap(this);
   }
   this.view_ = view;
   this.render();
