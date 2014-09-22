@@ -374,3 +374,23 @@ ol.geom.Polygon.circular = function(sphere, center, radius, opt_n) {
       ol.geom.GeometryLayout.XY, flatCoordinates, [flatCoordinates.length]);
   return polygon;
 };
+
+
+/**
+ * Create a polygon from an extent. The layout used is `XY`.
+ * @param {ol.Extent} extent The extent.
+ * @return {ol.geom.Polygon} The polygon.
+ * @api
+ */
+ol.geom.Polygon.fromExtent = function(extent) {
+  var minX = extent[0];
+  var minY = extent[1];
+  var maxX = extent[2];
+  var maxY = extent[3];
+  var flatCoordinates =
+      [minX, minY, minX, maxY, maxX, maxY, maxX, minY, minX, minY];
+  var polygon = new ol.geom.Polygon(null);
+  polygon.setFlatCoordinates(
+      ol.geom.GeometryLayout.XY, flatCoordinates, [flatCoordinates.length]);
+  return polygon;
+};
