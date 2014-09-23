@@ -63,7 +63,7 @@ goog.inherits(ol.source.BingMaps, ol.source.TileImage);
  * @api
  */
 ol.source.BingMaps.TOS_ATTRIBUTION = new ol.Attribution({
-  html: '<a class="ol-attribution-bing-tos" target="_blank" ' +
+  html: '<a class="ol-attribution-bing-tos" ' +
       'href="http://www.microsoft.com/maps/product/terms.html">' +
       'Terms of Use</a>'
 });

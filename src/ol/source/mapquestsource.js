@@ -47,8 +47,7 @@ goog.inherits(ol.source.MapQuest, ol.source.XYZ);
  * @type {ol.Attribution}
  */
 ol.source.MapQuest.TILE_ATTRIBUTION = new ol.Attribution({
-  html: 'Tiles Courtesy of ' +
-      '<a href="http://www.mapquest.com/" target="_blank">MapQuest</a>'
+  html: 'Tiles Courtesy of <a href="http://www.mapquest.com/">MapQuest</a>'
 });
 
 
