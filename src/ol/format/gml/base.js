@@ -122,7 +122,8 @@ ol.format.GML.prototype.readFeatures_ = function(node, objectStack) {
   var features;
   if (localName == 'FeatureCollection') {
     features = ol.xml.pushParseAndPop(null,
-        ol.format.GML.FEATURE_COLLECTION_PARSERS, node, objectStack);
+        ol.format.GML.FEATURE_COLLECTION_PARSERS, node,
+        objectStack, this);
   } else if (localName == 'featureMembers' || localName == 'featureMember') {
     var context = objectStack[0];
     goog.asserts.assert(goog.isObject(context));
@@ -136,8 +137,8 @@ ol.format.GML.prototype.readFeatures_ = function(node, objectStack) {
     var parsers = {};
     var parsersNS = {};
     parsers[featureType] = (localName == 'featureMembers') ?
-        ol.xml.makeArrayPusher(ol.format.GML.readFeature_) :
-        ol.xml.makeReplacer(ol.format.GML.readFeature_);
+        ol.xml.makeArrayPusher(this.readFeature_, this) :
+        ol.xml.makeReplacer(this.readFeature_, this);
     parsersNS[goog.object.get(context, 'featureNS')] = parsers;
     features = ol.xml.pushParseAndPop([], parsersNS, node, objectStack);
   }
@@ -171,7 +172,7 @@ ol.format.GML.prototype.readGeometryElement = function(node, objectStack) {
   goog.object.set(context, 'srsName',
       node.firstElementChild.getAttribute('srsName'));
   var geometry = ol.xml.pushParseAndPop(/** @type {ol.geom.Geometry} */(null),
-      ol.format.GML.GEOMETRY_PARSERS_, node, objectStack);
+      ol.format.GML.GEOMETRY_PARSERS_, node, objectStack, this);
   if (goog.isDefAndNotNull(geometry)) {
     return /** @type {ol.geom.Geometry} */ (
         ol.format.Feature.transformWithOptions(geometry, false, context));
@@ -251,7 +252,7 @@ ol.format.GML.prototype.readMultiPoint_ = function(node, objectStack) {
   goog.asserts.assert(node.localName == 'MultiPoint');
   var coordinates = ol.xml.pushParseAndPop(
       /** @type {Array.<Array.<number>>} */ ([]),
-      ol.format.GML.MULTIPOINT_PARSERS_, node, objectStack);
+      ol.format.GML.MULTIPOINT_PARSERS_, node, objectStack, this);
   if (goog.isDef(coordinates)) {
     return new ol.geom.MultiPoint(coordinates);
   } else {
@@ -271,7 +272,7 @@ ol.format.GML.prototype.readMultiLineString_ = function(node, objectStack) {
   goog.asserts.assert(node.localName == 'MultiLineString');
   var lineStrings = ol.xml.pushParseAndPop(
       /** @type {Array.<ol.geom.LineString>} */ ([]),
-      ol.format.GML.MULTILINESTRING_PARSERS_, node, objectStack);
+      ol.format.GML.MULTILINESTRING_PARSERS_, node, objectStack, this);
   if (goog.isDef(lineStrings)) {
     var multiLineString = new ol.geom.MultiLineString(null);
     multiLineString.setLineStrings(lineStrings);
@@ -293,7 +294,7 @@ ol.format.GML.prototype.readMultiCurve_ = function(node, objectStack) {
   goog.asserts.assert(node.localName == 'MultiCurve');
   var lineStrings = ol.xml.pushParseAndPop(
       /** @type {Array.<ol.geom.LineString>} */ ([]),
-      ol.format.GML.MULTICURVE_PARSERS_, node, objectStack);
+      ol.format.GML.MULTICURVE_PARSERS_, node, objectStack, this);
   if (goog.isDef(lineStrings)) {
     var multiLineString = new ol.geom.MultiLineString(null);
     multiLineString.setLineStrings(lineStrings);
@@ -315,7 +316,7 @@ ol.format.GML.prototype.readMultiSurface_ = function(node, objectStack) {
   goog.asserts.assert(node.localName == 'MultiSurface');
   var polygons = ol.xml.pushParseAndPop(
       /** @type {Array.<ol.geom.Polygon>} */ ([]),
-      ol.format.GML.MULTISURFACE_PARSERS_, node, objectStack);
+      ol.format.GML.MULTISURFACE_PARSERS_, node, objectStack, this);
   if (goog.isDef(polygons)) {
     var multiPolygon = new ol.geom.MultiPolygon(null);
     multiPolygon.setPolygons(polygons);
@@ -337,7 +338,7 @@ ol.format.GML.prototype.readMultiPolygon_ = function(node, objectStack) {
   goog.asserts.assert(node.localName == 'MultiPolygon');
   var polygons = ol.xml.pushParseAndPop(
       /** @type {Array.<ol.geom.Polygon>} */ ([]),
-      ol.format.GML.MULTIPOLYGON_PARSERS_, node, objectStack);
+      ol.format.GML.MULTIPOLYGON_PARSERS_, node, objectStack, this);
   if (goog.isDef(polygons)) {
     var multiPolygon = new ol.geom.MultiPolygon(null);
     multiPolygon.setPolygons(polygons);
@@ -357,7 +358,7 @@ ol.format.GML.prototype.pointMemberParser_ = function(node, objectStack) {
   goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT);
   goog.asserts.assert(node.localName == 'pointMember' ||
       node.localName == 'pointMembers');
-  ol.xml.parse(ol.format.GML.POINTMEMBER_PARSERS_, node, objectStack);
+  ol.xml.parse(ol.format.GML.POINTMEMBER_PARSERS_, node, objectStack, this);
 };
 
 
@@ -370,7 +371,8 @@ ol.format.GML.prototype.lineStringMemberParser_ = function(node, objectStack) {
   goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT);
   goog.asserts.assert(node.localName == 'lineStringMember' ||
       node.localName == 'lineStringMembers');
-  ol.xml.parse(ol.format.GML.LINESTRINGMEMBER_PARSERS_, node, objectStack);
+  ol.xml.parse(ol.format.GML.LINESTRINGMEMBER_PARSERS_,
+      node, objectStack, this);
 };
 
 
@@ -383,7 +385,7 @@ ol.format.GML.prototype.curveMemberParser_ = function(node, objectStack) {
   goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT);
   goog.asserts.assert(node.localName == 'curveMember' ||
       node.localName == 'curveMembers');
-  ol.xml.parse(ol.format.GML.CURVEMEMBER_PARSERS_, node, objectStack);
+  ol.xml.parse(ol.format.GML.CURVEMEMBER_PARSERS_, node, objectStack, this);
 };
 
 
@@ -396,7 +398,7 @@ ol.format.GML.prototype.surfaceMemberParser_ = function(node, objectStack) {
   goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT);
   goog.asserts.assert(node.localName == 'surfaceMember' ||
       node.localName == 'surfaceMembers');
-  ol.xml.parse(ol.format.GML.SURFACEMEMBER_PARSERS_, node, objectStack);
+  ol.xml.parse(ol.format.GML.SURFACEMEMBER_PARSERS_, node, objectStack, this);
 };
 
 
@@ -409,7 +411,7 @@ ol.format.GML.prototype.polygonMemberParser_ = function(node, objectStack) {
   goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT);
   goog.asserts.assert(node.localName == 'polygonMember' ||
       node.localName == 'polygonMembers');
-  ol.xml.parse(ol.format.GML.POLYGONMEMBER_PARSERS_, node, objectStack);
+  ol.xml.parse(ol.format.GML.POLYGONMEMBER_PARSERS_, node, objectStack, this);
 };
 
 
@@ -445,7 +447,7 @@ ol.format.GML.prototype.readPatch_ = function(node, objectStack) {
   goog.asserts.assert(node.localName == 'patches');
   return ol.xml.pushParseAndPop(
       /** @type {Array.<Array.<number>>} */ ([null]),
-      ol.format.GML.PATCHES_PARSERS_, node, objectStack);
+      ol.format.GML.PATCHES_PARSERS_, node, objectStack, this);
 };
 
 
@@ -460,7 +462,7 @@ ol.format.GML.prototype.readSegment_ = function(node, objectStack) {
   goog.asserts.assert(node.localName == 'segments');
   return ol.xml.pushParseAndPop(
       /** @type {Array.<number>} */ ([null]),
-      ol.format.GML.SEGMENTS_PARSERS_, node, objectStack);
+      ol.format.GML.SEGMENTS_PARSERS_, node, objectStack, this);
 };
 
 
@@ -475,7 +477,7 @@ ol.format.GML.prototype.readPolygonPatch_ = function(node, objectStack) {
   goog.asserts.assert(node.localName == 'PolygonPatch');
   return ol.xml.pushParseAndPop(
       /** @type {Array.<Array.<number>>} */ ([null]),
-      ol.format.GML.FLAT_LINEAR_RINGS_PARSERS_, node, objectStack);
+      ol.format.GML.FLAT_LINEAR_RINGS_PARSERS_, node, objectStack, this);
 };
 
 
@@ -490,7 +492,8 @@ ol.format.GML.prototype.readLineStringSegment_ = function(node, objectStack) {
   goog.asserts.assert(node.localName == 'LineStringSegment');
   return ol.xml.pushParseAndPop(
       /** @type {Array.<number>} */ ([null]),
-      ol.format.GML.GEOMETRY_FLAT_COORDINATES_PARSERS_, node, objectStack);
+      ol.format.GML.GEOMETRY_FLAT_COORDINATES_PARSERS_,
+      node, objectStack, this);
 };
 
 
@@ -504,7 +507,7 @@ ol.format.GML.prototype.interiorParser_ = function(node, objectStack) {
   goog.asserts.assert(node.localName == 'interior');
   var flatLinearRing = ol.xml.pushParseAndPop(
       /** @type {Array.<number>|undefined} */ (undefined),
-      ol.format.GML.RING_PARSERS_, node, objectStack);
+      ol.format.GML.RING_PARSERS, node, objectStack, this);
   if (goog.isDef(flatLinearRing)) {
     var flatLinearRings = /** @type {Array.<Array.<number>>} */
         (objectStack[objectStack.length - 1]);
@@ -525,7 +528,7 @@ ol.format.GML.prototype.exteriorParser_ = function(node, objectStack) {
   goog.asserts.assert(node.localName == 'exterior');
   var flatLinearRing = ol.xml.pushParseAndPop(
       /** @type {Array.<number>|undefined} */ (undefined),
-      ol.format.GML.RING_PARSERS_, node, objectStack);
+      ol.format.GML.RING_PARSERS, node, objectStack, this);
   if (goog.isDef(flatLinearRing)) {
     var flatLinearRings = /** @type {Array.<Array.<number>>} */
         (objectStack[objectStack.length - 1]);
@@ -618,7 +621,7 @@ ol.format.GML.prototype.readSurface_ = function(node, objectStack) {
   goog.asserts.assert(node.localName == 'Surface');
   var flatLinearRings = ol.xml.pushParseAndPop(
       /** @type {Array.<Array.<number>>} */ ([null]),
-      ol.format.GML.SURFACE_PARSERS_, node, objectStack);
+      ol.format.GML.SURFACE_PARSERS_, node, objectStack, this);
   if (goog.isDef(flatLinearRings) &&
       !goog.isNull(flatLinearRings[0])) {
     var polygon = new ol.geom.Polygon(null);
@@ -649,7 +652,7 @@ ol.format.GML.prototype.readCurve_ = function(node, objectStack) {
   goog.asserts.assert(node.localName == 'Curve');
   var flatCoordinates = ol.xml.pushParseAndPop(
       /** @type {Array.<number>} */ ([null]),
-      ol.format.GML.CURVE_PARSERS_, node, objectStack);
+      ol.format.GML.CURVE_PARSERS_, node, objectStack, this);
   if (goog.isDef(flatCoordinates)) {
     var lineString = new ol.geom.LineString(null);
     lineString.setFlatCoordinates(ol.geom.GeometryLayout.XYZ, flatCoordinates);
@@ -671,7 +674,7 @@ ol.format.GML.prototype.readEnvelope_ = function(node, objectStack) {
   goog.asserts.assert(node.localName == 'Envelope');
   var flatCoordinates = ol.xml.pushParseAndPop(
       /** @type {Array.<number>} */ ([null]),
-      ol.format.GML.ENVELOPE_PARSERS_, node, objectStack);
+      ol.format.GML.ENVELOPE_PARSERS_, node, objectStack, this);
   return ol.extent.createOrUpdate(flatCoordinates[1][0],
       flatCoordinates[1][1], flatCoordinates[2][0],
       flatCoordinates[2][1]);
@@ -1220,7 +1223,7 @@ ol.format.GML.prototype.writeEnvelope = function(node, extent, objectStack) {
       ({node: node}), ol.format.GML.ENVELOPE_SERIALIZERS_,
       ol.xml.OBJECT_PROPERTY_NODE_FACTORY,
       values,
-      objectStack, keys);
+      objectStack, keys, this);
 };
 
 
@@ -1283,8 +1286,9 @@ ol.format.GML.prototype.writeSurfaceOrPolygon_ =
     var rings = geometry.getLinearRings();
     ol.xml.pushSerializeAndPop(
         {node: node, srsName: srsName},
-        ol.format.GML.RING_SERIALIZERS_, ol.format.GML.RING_NODE_FACTORY_,
-        rings, objectStack);
+        ol.format.GML.RING_SERIALIZERS_,
+        this.RING_NODE_FACTORY_,
+        rings, objectStack, undefined, this);
   } else if (node.nodeName === 'Surface') {
     var patches = ol.xml.createElementNS(node.namespaceURI, 'patches');
     node.appendChild(patches);
@@ -1339,8 +1343,8 @@ ol.format.GML.prototype.writeMultiSurfaceOrPolygon_ = function(node, geometry,
   var polygons = geometry.getPolygons();
   ol.xml.pushSerializeAndPop({node: node, srsName: srsName, surface: surface},
       ol.format.GML.SURFACEORPOLYGONMEMBER_SERIALIZERS_,
-      ol.format.GML.MULTIGEOMETRY_MEMBER_NODE_FACTORY_, polygons,
-      objectStack);
+      this.MULTIGEOMETRY_MEMBER_NODE_FACTORY_, polygons,
+      objectStack, undefined, this);
 };
 
 
@@ -1362,7 +1366,7 @@ ol.format.GML.prototype.writeMultiPoint_ = function(node, geometry,
   ol.xml.pushSerializeAndPop({node: node, srsName: srsName},
       ol.format.GML.POINTMEMBER_SERIALIZERS_,
       ol.xml.makeSimpleNodeFactory('pointMember'), points,
-      objectStack);
+      objectStack, undefined, this);
 };
 
 
@@ -1384,8 +1388,8 @@ ol.format.GML.prototype.writeMultiCurveOrLineString_ = function(node, geometry,
   var lines = geometry.getLineStrings();
   ol.xml.pushSerializeAndPop({node: node, srsName: srsName, curve: curve},
       ol.format.GML.LINESTRINGORCURVEMEMBER_SERIALIZERS_,
-      ol.format.GML.MULTIGEOMETRY_MEMBER_NODE_FACTORY_, lines,
-      objectStack);
+      this.MULTIGEOMETRY_MEMBER_NODE_FACTORY_, lines,
+      objectStack, undefined, this);
 };
 
 
@@ -1506,7 +1510,8 @@ ol.format.GML.prototype.writeGeometryElement =
   }
   ol.xml.pushSerializeAndPop(/** @type {ol.xml.NodeStackItem} */
       (item), ol.format.GML.GEOMETRY_SERIALIZERS_,
-      ol.format.GML.GEOMETRY_NODE_FACTORY_, [value], objectStack);
+      this.GEOMETRY_NODE_FACTORY_, [value],
+      objectStack, undefined, this);
 };
 
 
