@@ -153,8 +153,9 @@ ol.format.GML.prototype.readFeatures_ = function(node, objectStack) {
  */
 ol.format.GML.FEATURE_COLLECTION_PARSERS = {
   'http://www.opengis.net/gml': {
-    'featureMember': ol.xml.makeArrayPusher(ol.format.GML.readFeatures_),
-    'featureMembers': ol.xml.makeReplacer(ol.format.GML.readFeatures_)
+    'featureMember': ol.xml.makeArrayPusher(
+        ol.format.GML.prototype.readFeatures_),
+    'featureMembers': ol.xml.makeReplacer(ol.format.GML.prototype.readFeatures_)
   }
 };
 
@@ -791,19 +792,23 @@ ol.format.GML.prototype.readFlatPosList_ = function(node, objectStack) {
  */
 ol.format.GML.GEOMETRY_PARSERS_ = {
   'http://www.opengis.net/gml' : {
-    'Point': ol.xml.makeReplacer(ol.format.GML.readPoint_),
-    'MultiPoint': ol.xml.makeReplacer(ol.format.GML.readMultiPoint_),
-    'LineString': ol.xml.makeReplacer(ol.format.GML.readLineString_),
+    'Point': ol.xml.makeReplacer(ol.format.GML.prototype.readPoint_),
+    'MultiPoint': ol.xml.makeReplacer(ol.format.GML.prototype.readMultiPoint_),
+    'LineString': ol.xml.makeReplacer(ol.format.GML.prototype.readLineString_),
     'MultiLineString': ol.xml.makeReplacer(
-        ol.format.GML.readMultiLineString_),
-    'LinearRing' : ol.xml.makeReplacer(ol.format.GML.readLinearRing_),
-    'Polygon': ol.xml.makeReplacer(ol.format.GML.readPolygon_),
-    'MultiPolygon': ol.xml.makeReplacer(ol.format.GML.readMultiPolygon_),
-    'Surface': ol.xml.makeReplacer(ol.format.GML.readSurface_),
-    'MultiSurface': ol.xml.makeReplacer(ol.format.GML.readMultiSurface_),
-    'Curve': ol.xml.makeReplacer(ol.format.GML.readCurve_),
-    'MultiCurve': ol.xml.makeReplacer(ol.format.GML.readMultiCurve_),
-    'Envelope': ol.xml.makeReplacer(ol.format.GML.readEnvelope_)
+        ol.format.GML.prototype.readMultiLineString_),
+    'LinearRing' : ol.xml.makeReplacer(
+        ol.format.GML.prototype.readLinearRing_),
+    'Polygon': ol.xml.makeReplacer(ol.format.GML.prototype.readPolygon_),
+    'MultiPolygon': ol.xml.makeReplacer(
+        ol.format.GML.prototype.readMultiPolygon_),
+    'Surface': ol.xml.makeReplacer(ol.format.GML.prototype.readSurface_),
+    'MultiSurface': ol.xml.makeReplacer(
+        ol.format.GML.prototype.readMultiSurface_),
+    'Curve': ol.xml.makeReplacer(ol.format.GML.prototype.readCurve_),
+    'MultiCurve': ol.xml.makeReplacer(
+        ol.format.GML.prototype.readMultiCurve_),
+    'Envelope': ol.xml.makeReplacer(ol.format.GML.prototype.readEnvelope_)
   }
 };
 
@@ -815,8 +820,8 @@ ol.format.GML.GEOMETRY_PARSERS_ = {
  */
 ol.format.GML.GEOMETRY_FLAT_COORDINATES_PARSERS_ = {
   'http://www.opengis.net/gml' : {
-    'pos': ol.xml.makeReplacer(ol.format.GML.readFlatPos_),
-    'posList': ol.xml.makeReplacer(ol.format.GML.readFlatPosList_)
+    'pos': ol.xml.makeReplacer(ol.format.GML.prototype.readFlatPos_),
+    'posList': ol.xml.makeReplacer(ol.format.GML.prototype.readFlatPosList_)
   }
 };
 
@@ -828,8 +833,8 @@ ol.format.GML.GEOMETRY_FLAT_COORDINATES_PARSERS_ = {
  */
 ol.format.GML.FLAT_LINEAR_RINGS_PARSERS_ = {
   'http://www.opengis.net/gml' : {
-    'interior': ol.format.GML.interiorParser_,
-    'exterior': ol.format.GML.exteriorParser_
+    'interior': ol.format.GML.prototype.interiorParser_,
+    'exterior': ol.format.GML.prototype.exteriorParser_
   }
 };
 
@@ -841,8 +846,10 @@ ol.format.GML.FLAT_LINEAR_RINGS_PARSERS_ = {
  */
 ol.format.GML.MULTIPOINT_PARSERS_ = {
   'http://www.opengis.net/gml' : {
-    'pointMember': ol.xml.makeArrayPusher(ol.format.GML.pointMemberParser_),
-    'pointMembers': ol.xml.makeArrayPusher(ol.format.GML.pointMemberParser_)
+    'pointMember': ol.xml.makeArrayPusher(
+        ol.format.GML.prototype.pointMemberParser_),
+    'pointMembers': ol.xml.makeArrayPusher(
+        ol.format.GML.prototype.pointMemberParser_)
   }
 };
 
@@ -855,9 +862,9 @@ ol.format.GML.MULTIPOINT_PARSERS_ = {
 ol.format.GML.MULTILINESTRING_PARSERS_ = {
   'http://www.opengis.net/gml' : {
     'lineStringMember': ol.xml.makeArrayPusher(
-        ol.format.GML.lineStringMemberParser_),
+        ol.format.GML.prototype.lineStringMemberParser_),
     'lineStringMembers': ol.xml.makeArrayPusher(
-        ol.format.GML.lineStringMemberParser_)
+        ol.format.GML.prototype.lineStringMemberParser_)
   }
 };
 
@@ -870,9 +877,9 @@ ol.format.GML.MULTILINESTRING_PARSERS_ = {
 ol.format.GML.MULTICURVE_PARSERS_ = {
   'http://www.opengis.net/gml' : {
     'curveMember': ol.xml.makeArrayPusher(
-        ol.format.GML.curveMemberParser_),
+        ol.format.GML.prototype.curveMemberParser_),
     'curveMembers': ol.xml.makeArrayPusher(
-        ol.format.GML.curveMemberParser_)
+        ol.format.GML.prototype.curveMemberParser_)
   }
 };
 
@@ -885,9 +892,9 @@ ol.format.GML.MULTICURVE_PARSERS_ = {
 ol.format.GML.MULTISURFACE_PARSERS_ = {
   'http://www.opengis.net/gml' : {
     'surfaceMember': ol.xml.makeArrayPusher(
-        ol.format.GML.surfaceMemberParser_),
+        ol.format.GML.prototype.surfaceMemberParser_),
     'surfaceMembers': ol.xml.makeArrayPusher(
-        ol.format.GML.surfaceMemberParser_)
+        ol.format.GML.prototype.surfaceMemberParser_)
   }
 };
 
@@ -900,9 +907,9 @@ ol.format.GML.MULTISURFACE_PARSERS_ = {
 ol.format.GML.MULTIPOLYGON_PARSERS_ = {
   'http://www.opengis.net/gml' : {
     'polygonMember': ol.xml.makeArrayPusher(
-        ol.format.GML.polygonMemberParser_),
+        ol.format.GML.prototype.polygonMemberParser_),
     'polygonMembers': ol.xml.makeArrayPusher(
-        ol.format.GML.polygonMemberParser_)
+        ol.format.GML.prototype.polygonMemberParser_)
   }
 };
 
@@ -915,7 +922,7 @@ ol.format.GML.MULTIPOLYGON_PARSERS_ = {
 ol.format.GML.POINTMEMBER_PARSERS_ = {
   'http://www.opengis.net/gml' : {
     'Point': ol.xml.makeArrayPusher(
-        ol.format.GML.readFlatCoordinatesFromNode_)
+        ol.format.GML.prototype.readFlatCoordinatesFromNode_)
   }
 };
 
@@ -928,7 +935,7 @@ ol.format.GML.POINTMEMBER_PARSERS_ = {
 ol.format.GML.LINESTRINGMEMBER_PARSERS_ = {
   'http://www.opengis.net/gml' : {
     'LineString': ol.xml.makeArrayPusher(
-        ol.format.GML.readLineString_)
+        ol.format.GML.prototype.readLineString_)
   }
 };
 
@@ -940,8 +947,9 @@ ol.format.GML.LINESTRINGMEMBER_PARSERS_ = {
  */
 ol.format.GML.CURVEMEMBER_PARSERS_ = {
   'http://www.opengis.net/gml' : {
-    'LineString': ol.xml.makeArrayPusher(ol.format.GML.readLineString_),
-    'Curve': ol.xml.makeArrayPusher(ol.format.GML.readCurve_)
+    'LineString': ol.xml.makeArrayPusher(
+        ol.format.GML.prototype.readLineString_),
+    'Curve': ol.xml.makeArrayPusher(ol.format.GML.prototype.readCurve_)
   }
 };
 
@@ -953,8 +961,8 @@ ol.format.GML.CURVEMEMBER_PARSERS_ = {
  */
 ol.format.GML.SURFACEMEMBER_PARSERS_ = {
   'http://www.opengis.net/gml' : {
-    'Polygon': ol.xml.makeArrayPusher(ol.format.GML.readPolygon_),
-    'Surface': ol.xml.makeArrayPusher(ol.format.GML.readSurface_)
+    'Polygon': ol.xml.makeArrayPusher(ol.format.GML.prototype.readPolygon_),
+    'Surface': ol.xml.makeArrayPusher(ol.format.GML.prototype.readSurface_)
   }
 };
 
@@ -967,7 +975,7 @@ ol.format.GML.SURFACEMEMBER_PARSERS_ = {
 ol.format.GML.POLYGONMEMBER_PARSERS_ = {
   'http://www.opengis.net/gml' : {
     'Polygon': ol.xml.makeArrayPusher(
-        ol.format.GML.readPolygon_)
+        ol.format.GML.prototype.readPolygon_)
   }
 };
 
@@ -979,7 +987,7 @@ ol.format.GML.POLYGONMEMBER_PARSERS_ = {
  */
 ol.format.GML.SURFACE_PARSERS_ = {
   'http://www.opengis.net/gml' : {
-    'patches': ol.xml.makeReplacer(ol.format.GML.readPatch_)
+    'patches': ol.xml.makeReplacer(ol.format.GML.prototype.readPatch_)
   }
 };
 
@@ -991,7 +999,7 @@ ol.format.GML.SURFACE_PARSERS_ = {
  */
 ol.format.GML.CURVE_PARSERS_ = {
   'http://www.opengis.net/gml' : {
-    'segments': ol.xml.makeReplacer(ol.format.GML.readSegment_)
+    'segments': ol.xml.makeReplacer(ol.format.GML.prototype.readSegment_)
   }
 };
 
@@ -1003,8 +1011,10 @@ ol.format.GML.CURVE_PARSERS_ = {
  */
 ol.format.GML.ENVELOPE_PARSERS_ = {
   'http://www.opengis.net/gml' : {
-    'lowerCorner': ol.xml.makeArrayPusher(ol.format.GML.readFlatPosList_),
-    'upperCorner': ol.xml.makeArrayPusher(ol.format.GML.readFlatPosList_)
+    'lowerCorner': ol.xml.makeArrayPusher(
+        ol.format.GML.prototype.readFlatPosList_),
+    'upperCorner': ol.xml.makeArrayPusher(
+        ol.format.GML.prototype.readFlatPosList_)
   }
 };
 
@@ -1016,7 +1026,8 @@ ol.format.GML.ENVELOPE_PARSERS_ = {
  */
 ol.format.GML.PATCHES_PARSERS_ = {
   'http://www.opengis.net/gml' : {
-    'PolygonPatch': ol.xml.makeReplacer(ol.format.GML.readPolygonPatch_)
+    'PolygonPatch': ol.xml.makeReplacer(
+        ol.format.GML.prototype.readPolygonPatch_)
   }
 };
 
@@ -1029,7 +1040,7 @@ ol.format.GML.PATCHES_PARSERS_ = {
 ol.format.GML.SEGMENTS_PARSERS_ = {
   'http://www.opengis.net/gml' : {
     'LineStringSegment': ol.xml.makeReplacer(
-        ol.format.GML.readLineStringSegment_)
+        ol.format.GML.prototype.readLineStringSegment_)
   }
 };
 
@@ -1041,7 +1052,8 @@ ol.format.GML.SEGMENTS_PARSERS_ = {
  */
 ol.format.GML.RING_PARSERS_ = {
   'http://www.opengis.net/gml' : {
-    'LinearRing': ol.xml.makeReplacer(ol.format.GML.readFlatLinearRing_)
+    'LinearRing': ol.xml.makeReplacer(
+        ol.format.GML.prototype.readFlatLinearRing_)
   }
 };
 
@@ -1580,9 +1592,9 @@ ol.format.GML.prototype.writeFeatureMembers_ =
 ol.format.GML.SURFACEORPOLYGONMEMBER_SERIALIZERS_ = {
   'http://www.opengis.net/gml': {
     'surfaceMember': ol.xml.makeChildAppender(
-        ol.format.GML.writeSurfaceOrPolygonMember_),
+        ol.format.GML.prototype.writeSurfaceOrPolygonMember_),
     'polygonMember': ol.xml.makeChildAppender(
-        ol.format.GML.writeSurfaceOrPolygonMember_)
+        ol.format.GML.prototype.writeSurfaceOrPolygonMember_)
   }
 };
 
@@ -1593,7 +1605,8 @@ ol.format.GML.SURFACEORPOLYGONMEMBER_SERIALIZERS_ = {
  */
 ol.format.GML.POINTMEMBER_SERIALIZERS_ = {
   'http://www.opengis.net/gml': {
-    'pointMember': ol.xml.makeChildAppender(ol.format.GML.writePointMember_)
+    'pointMember': ol.xml.makeChildAppender(
+        ol.format.GML.prototype.writePointMember_)
   }
 };
 
@@ -1605,9 +1618,9 @@ ol.format.GML.POINTMEMBER_SERIALIZERS_ = {
 ol.format.GML.LINESTRINGORCURVEMEMBER_SERIALIZERS_ = {
   'http://www.opengis.net/gml': {
     'lineStringMember': ol.xml.makeChildAppender(
-        ol.format.GML.writeLineStringOrCurveMember_),
+        ol.format.GML.prototype.writeLineStringOrCurveMember_),
     'curveMember': ol.xml.makeChildAppender(
-        ol.format.GML.writeLineStringOrCurveMember_)
+        ol.format.GML.prototype.writeLineStringOrCurveMember_)
   }
 };
 
@@ -1618,8 +1631,8 @@ ol.format.GML.LINESTRINGORCURVEMEMBER_SERIALIZERS_ = {
  */
 ol.format.GML.RING_SERIALIZERS_ = {
   'http://www.opengis.net/gml': {
-    'exterior': ol.xml.makeChildAppender(ol.format.GML.writeRing_),
-    'interior': ol.xml.makeChildAppender(ol.format.GML.writeRing_)
+    'exterior': ol.xml.makeChildAppender(ol.format.GML.prototype.writeRing_),
+    'interior': ol.xml.makeChildAppender(ol.format.GML.prototype.writeRing_)
   }
 };
 
@@ -1630,24 +1643,29 @@ ol.format.GML.RING_SERIALIZERS_ = {
  */
 ol.format.GML.GEOMETRY_SERIALIZERS_ = {
   'http://www.opengis.net/gml': {
-    'Curve': ol.xml.makeChildAppender(ol.format.GML.writeCurveOrLineString_),
+    'Curve': ol.xml.makeChildAppender(
+        ol.format.GML.prototype.writeCurveOrLineString_),
     'MultiCurve': ol.xml.makeChildAppender(
-        ol.format.GML.writeMultiCurveOrLineString_),
-    'Point': ol.xml.makeChildAppender(ol.format.GML.writePoint_),
-    'MultiPoint': ol.xml.makeChildAppender(ol.format.GML.writeMultiPoint_),
+        ol.format.GML.prototype.writeMultiCurveOrLineString_),
+    'Point': ol.xml.makeChildAppender(ol.format.GML.prototype.writePoint_),
+    'MultiPoint': ol.xml.makeChildAppender(
+        ol.format.GML.prototype.writeMultiPoint_),
     'LineString': ol.xml.makeChildAppender(
-        ol.format.GML.writeCurveOrLineString_),
+        ol.format.GML.prototype.writeCurveOrLineString_),
     'MultiLineString': ol.xml.makeChildAppender(
-        ol.format.GML.writeMultiCurveOrLineString_),
-    'LinearRing': ol.xml.makeChildAppender(ol.format.GML.writeLinearRing_),
-    'Polygon': ol.xml.makeChildAppender(ol.format.GML.writeSurfaceOrPolygon_),
+        ol.format.GML.prototype.writeMultiCurveOrLineString_),
+    'LinearRing': ol.xml.makeChildAppender(
+        ol.format.GML.prototype.writeLinearRing_),
+    'Polygon': ol.xml.makeChildAppender(
+        ol.format.GML.prototype.writeSurfaceOrPolygon_),
     'MultiPolygon': ol.xml.makeChildAppender(
-        ol.format.GML.writeMultiSurfaceOrPolygon_),
-    'Surface': ol.xml.makeChildAppender(ol.format.GML.writeSurfaceOrPolygon_),
+        ol.format.GML.prototype.writeMultiSurfaceOrPolygon_),
+    'Surface': ol.xml.makeChildAppender(
+        ol.format.GML.prototype.writeSurfaceOrPolygon_),
     'MultiSurface': ol.xml.makeChildAppender(
-        ol.format.GML.writeMultiSurfaceOrPolygon_),
+        ol.format.GML.prototype.writeMultiSurfaceOrPolygon_),
     'Envelope': ol.xml.makeChildAppender(
-        ol.format.GML.writeEnvelope)
+        ol.format.GML.prototype.writeEnvelope)
   }
 };
 
