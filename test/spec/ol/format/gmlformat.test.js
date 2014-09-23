@@ -34,6 +34,25 @@ describe('ol.format.GML', function() {
         expect(serialized.firstElementChild).to.xmleql(ol.xml.load(text));
       });
 
+      it('can read a point geometry with scientific notation', function() {
+        var text =
+            '<gml:Point xmlns:gml="http://www.opengis.net/gml" ' +
+            '    srsName="CRS:84">' +
+            '  <gml:pos>1E7 2</gml:pos>' +
+            '</gml:Point>';
+        var g = readGeometry(format, text);
+        expect(g).to.be.an(ol.geom.Point);
+        expect(g.getCoordinates()).to.eql([10000000, 2, 0]);
+        text =
+            '<gml:Point xmlns:gml="http://www.opengis.net/gml" ' +
+            '    srsName="CRS:84">' +
+            '  <gml:pos>1e7 2</gml:pos>' +
+            '</gml:Point>';
+        g = readGeometry(format, text);
+        expect(g).to.be.an(ol.geom.Point);
+        expect(g.getCoordinates()).to.eql([10000000, 2, 0]);
+      });
+
       it('can read, transform and write a point geometry', function() {
         var config = {
           featureProjection: 'EPSG:3857'
