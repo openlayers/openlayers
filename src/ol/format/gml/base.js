@@ -549,7 +549,8 @@ ol.format.GML.prototype.readFlatLinearRing_ = function(node, objectStack) {
   goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT);
   goog.asserts.assert(node.localName == 'LinearRing');
   var ring = ol.xml.pushParseAndPop(/** @type {Array.<number>} */(null),
-      ol.format.GML.GEOMETRY_FLAT_COORDINATES_PARSERS_, node, objectStack);
+      this.constructor.GEOMETRY_FLAT_COORDINATES_PARSERS_, node,
+      objectStack, this);
   if (goog.isDefAndNotNull(ring)) {
     return ring;
   } else {
@@ -590,7 +591,7 @@ ol.format.GML.prototype.readPolygon_ = function(node, objectStack) {
   goog.asserts.assert(node.localName == 'Polygon');
   var flatLinearRings = ol.xml.pushParseAndPop(
       /** @type {Array.<Array.<number>>} */ ([null]),
-      ol.format.GML.FLAT_LINEAR_RINGS_PARSERS_, node, objectStack);
+      this.constructor.FLAT_LINEAR_RINGS_PARSERS_, node, objectStack, this);
   if (goog.isDef(flatLinearRings) &&
       !goog.isNull(flatLinearRings[0])) {
     var polygon = new ol.geom.Polygon(null);
@@ -692,7 +693,8 @@ ol.format.GML.prototype.readFlatCoordinatesFromNode_ = function(node,
   goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT);
   return /** @type {Array.<number>} */ (ol.xml.pushParseAndPop(
       null,
-      ol.format.GML.GEOMETRY_FLAT_COORDINATES_PARSERS_, node, objectStack));
+      this.constructor.GEOMETRY_FLAT_COORDINATES_PARSERS_, node,
+      objectStack, this));
 };
 
 
