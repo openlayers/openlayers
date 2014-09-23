@@ -169,7 +169,7 @@ ol.Geolocation.prototype.positionChange_ = function(position) {
   this.set(ol.GeolocationProperty.POSITION, projectedPosition);
   this.set(ol.GeolocationProperty.SPEED,
       goog.isNull(coords.speed) ? undefined : coords.speed);
-  var geometry = ol.geom.Polygon.createCircularOnSphere(
+  var geometry = ol.geom.Polygon.circular(
       ol.sphere.WGS84, this.position_, coords.accuracy);
   geometry.applyTransform(this.transform_);
   this.set(ol.GeolocationProperty.ACCURACY_GEOMETRY, geometry);
