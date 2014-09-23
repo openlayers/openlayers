@@ -699,7 +699,7 @@ ol.format.GML.readFlatCoordinatesFromNode_ = function(node, objectStack) {
  */
 ol.format.GML.readFlatPos_ = function(node, objectStack) {
   var s = ol.xml.getAllTextContent(node, false);
-  var re = /^\s*([+\-]?\d*\.?\d+(?:e[+\-]?\d+)?)\s*/;
+  var re = /^\s*([+\-]?\d*\.?\d+(?:[eE][+\-]?\d+)?)\s*/;
   /** @type {Array.<number>} */
   var flatCoordinates = [];
   var m;
