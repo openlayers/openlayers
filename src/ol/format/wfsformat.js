@@ -44,6 +44,13 @@ ol.format.WFS = function(opt_options) {
    * @private
    * @type {string}
    */
+  this.gmlFormat_ = goog.isDef(options.gmlFormat) ?
+      options.gmlFormat : new ol.format.GML();
+
+  /**
+   * @private
+   * @type {string}
+   */
   this.schemaLocation_ = goog.isDef(options.schemaLocation) ?
       options.schemaLocation : ol.format.WFS.schemaLocation_;
 
@@ -119,7 +126,8 @@ ol.format.WFS.prototype.readFeaturesFromNode = function(node, opt_options) {
       goog.isDef(opt_options) ? opt_options : {}));
   var objectStack = [context];
   var features = ol.xml.pushParseAndPop([],
-      ol.format.GML.FEATURE_COLLECTION_PARSERS, node, objectStack);
+      ol.format.GML.FEATURE_COLLECTION_PARSERS, node,
+      objectStack, this.gmlFormat_);
   if (!goog.isDef(features)) {
     features = [];
   }

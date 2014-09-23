@@ -30,7 +30,7 @@ goog.inherits(ol.format.GML.v2, ol.format.GML);
 
 
 /**
- * @protected
+ * @private
  * @type {string}
  */
 ol.format.GML.v2.schemaLocation_ = 'http://www.opengis.net/gml ' +
