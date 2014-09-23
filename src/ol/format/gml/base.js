@@ -89,11 +89,11 @@ ol.format.GML = function(opt_options) {
       options.multiSurface : true;
 
   /**
-   * @private
+   * @protected
    * @type {string}
    */
-  this.schemaLocation_ = goog.isDef(options.schemaLocation) ?
-      options.schemaLocation : ol.format.GML.schemaLocation_;
+  this.schemaLocation = goog.isDef(options.schemaLocation) ?
+      options.schemaLocation : this.constructor.schemaLocation_;
 
   goog.base(this);
 };
@@ -1051,9 +1051,9 @@ ol.format.GML.SEGMENTS_PARSERS_ = {
 /**
  * @const
  * @type {Object.<string, Object.<string, ol.xml.Parser>>}
- * @private
+ * @protected
  */
-ol.format.GML.RING_PARSERS_ = {
+ol.format.GML.RING_PARSERS = {
   'http://www.opengis.net/gml' : {
     'LinearRing': ol.xml.makeReplacer(
         ol.format.GML.prototype.readFlatLinearRing_)
@@ -1779,7 +1779,7 @@ ol.format.GML.prototype.writeFeaturesNode = function(features, opt_options) {
   var node = ol.xml.createElementNS('http://www.opengis.net/gml',
       'featureMembers');
   ol.xml.setAttributeNS(node, 'http://www.w3.org/2001/XMLSchema-instance',
-      'xsi:schemaLocation', this.schemaLocation_);
+      'xsi:schemaLocation', this.schemaLocation);
   var context = {
     srsName: this.srsName_,
     curve: this.curve_,
