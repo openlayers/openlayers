@@ -105,6 +105,8 @@ ol.source.ImageVector.prototype.canvasFunctionInternal_ =
       ol.renderer.vector.getTolerance(resolution, pixelRatio), extent,
       resolution);
 
+  this.source_.loadFeatures(extent, resolution, projection);
+
   var loading = false;
   this.source_.forEachFeatureInExtentAtResolution(extent, resolution,
       /**
