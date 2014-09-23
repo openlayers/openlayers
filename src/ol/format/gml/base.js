@@ -205,7 +205,7 @@ ol.format.GML.prototype.readFeature_ = function(node, objectStack) {
       values[ol.xml.getLocalName(n)] = value;
     } else {
       geometryName = ol.xml.getLocalName(n);
-      values[geometryName] = ol.format.GML.readGeometry(n, objectStack);
+      values[geometryName] = this.readGeometryElement(n, objectStack);
     }
   }
   var feature = new ol.Feature(values);
@@ -229,7 +229,7 @@ ol.format.GML.prototype.readPoint_ = function(node, objectStack) {
   goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT);
   goog.asserts.assert(node.localName == 'Point');
   var flatCoordinates =
-      ol.format.GML.readFlatCoordinatesFromNode_(node, objectStack);
+      this.readFlatCoordinatesFromNode_(node, objectStack);
   if (goog.isDefAndNotNull(flatCoordinates)) {
     var point = new ol.geom.Point(null);
     goog.asserts.assert(flatCoordinates.length == 3);
@@ -422,7 +422,7 @@ ol.format.GML.prototype.readLineString_ = function(node, objectStack) {
   goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT);
   goog.asserts.assert(node.localName == 'LineString');
   var flatCoordinates =
-      ol.format.GML.readFlatCoordinatesFromNode_(node, objectStack);
+      this.readFlatCoordinatesFromNode_(node, objectStack);
   if (goog.isDefAndNotNull(flatCoordinates)) {
     var lineString = new ol.geom.LineString(null);
     lineString.setFlatCoordinates(ol.geom.GeometryLayout.XYZ, flatCoordinates);
@@ -564,7 +564,7 @@ ol.format.GML.prototype.readLinearRing_ = function(node, objectStack) {
   goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT);
   goog.asserts.assert(node.localName == 'LinearRing');
   var flatCoordinates =
-      ol.format.GML.readFlatCoordinatesFromNode_(node, objectStack);
+      this.readFlatCoordinatesFromNode_(node, objectStack);
   if (goog.isDef(flatCoordinates)) {
     var ring = new ol.geom.LinearRing(null);
     ring.setFlatCoordinates(ol.geom.GeometryLayout.XYZ, flatCoordinates);
@@ -1050,7 +1050,7 @@ ol.format.GML.RING_PARSERS_ = {
  * @inheritDoc
  */
 ol.format.GML.prototype.readGeometryFromNode = function(node, opt_options) {
-  var geometry = ol.format.GML.readGeometry(node,
+  var geometry = this.readGeometryElement(node,
       [this.getReadOptions(node, goog.isDef(opt_options) ? opt_options : {})]);
   return (goog.isDef(geometry) ? geometry : null);
 };
@@ -1079,7 +1079,7 @@ ol.format.GML.prototype.readFeaturesFromNode = function(node, opt_options) {
   if (goog.isDef(opt_options)) {
     goog.object.extend(options, this.getReadOptions(node, opt_options));
   }
-  return ol.format.GML.readFeatures_(node, [options]);
+  return this.readFeatures_(node, [options]);
 };
 
 
@@ -1152,7 +1152,7 @@ ol.format.GML.prototype.writePosList_ = function(node, value, objectStack) {
   var point;
   for (var i = 0; i < len; ++i) {
     point = points[i];
-    parts[i] = ol.format.GML.getCoords_(point, srsName);
+    parts[i] = this.getCoords_(point, srsName);
   }
   ol.format.XSD.writeStringTextNode(node, parts.join(' '));
 };
@@ -1173,7 +1173,7 @@ ol.format.GML.prototype.writePoint_ = function(node, geometry, objectStack) {
   }
   var pos = ol.xml.createElementNS(node.namespaceURI, 'pos');
   node.appendChild(pos);
-  ol.format.GML.writePos_(pos, geometry, objectStack);
+  this.writePos_(pos, geometry, objectStack);
 };
 
 
@@ -1228,7 +1228,7 @@ ol.format.GML.prototype.writeLinearRing_ =
   }
   var posList = ol.xml.createElementNS(node.namespaceURI, 'posList');
   node.appendChild(posList);
-  ol.format.GML.writePosList_(posList, geometry, objectStack);
+  this.writePosList_(posList, geometry, objectStack);
 };
 
 
@@ -1276,7 +1276,8 @@ ol.format.GML.prototype.writeSurfaceOrPolygon_ =
   } else if (node.nodeName === 'Surface') {
     var patches = ol.xml.createElementNS(node.namespaceURI, 'patches');
     node.appendChild(patches);
-    ol.format.GML.writeSurfacePatches_(patches, geometry, objectStack);
+    this.writeSurfacePatches_(
+        patches, geometry, objectStack);
   }
 };
 
@@ -1298,11 +1299,12 @@ ol.format.GML.prototype.writeCurveOrLineString_ =
   if (node.nodeName === 'LineString' || node.nodeName === 'LineStringSegment') {
     var posList = ol.xml.createElementNS(node.namespaceURI, 'posList');
     node.appendChild(posList);
-    ol.format.GML.writePosList_(posList, geometry, objectStack);
+    this.writePosList_(posList, geometry, objectStack);
   } else if (node.nodeName === 'Curve') {
     var segments = ol.xml.createElementNS(node.namespaceURI, 'segments');
     node.appendChild(segments);
-    ol.format.GML.writeCurveSegments_(segments, geometry, objectStack);
+    this.writeCurveSegments_(segments,
+        geometry, objectStack);
   }
 };
 
@@ -1384,7 +1386,7 @@ ol.format.GML.prototype.writeMultiCurveOrLineString_ = function(node, geometry,
 ol.format.GML.prototype.writeRing_ = function(node, ring, objectStack) {
   var linearRing = ol.xml.createElementNS(node.namespaceURI, 'LinearRing');
   node.appendChild(linearRing);
-  ol.format.GML.writeLinearRing_(linearRing, ring, objectStack);
+  this.writeLinearRing_(linearRing, ring, objectStack);
 };
 
 
@@ -1398,10 +1400,11 @@ ol.format.GML.prototype.writeSurfaceOrPolygonMember_ = function(node, polygon,
     objectStack) {
   var context = objectStack[objectStack.length - 1];
   goog.asserts.assert(goog.isObject(context));
-  var child = ol.format.GML.GEOMETRY_NODE_FACTORY_(polygon, objectStack);
+  var child = this.GEOMETRY_NODE_FACTORY_(
+      polygon, objectStack);
   if (goog.isDef(child)) {
     node.appendChild(child);
-    ol.format.GML.writeSurfaceOrPolygon_(child, polygon, objectStack);
+    this.writeSurfaceOrPolygon_(child, polygon, objectStack);
   }
 };
 
@@ -1415,7 +1418,7 @@ ol.format.GML.prototype.writeSurfaceOrPolygonMember_ = function(node, polygon,
 ol.format.GML.prototype.writePointMember_ = function(node, point, objectStack) {
   var child = ol.xml.createElementNS(node.namespaceURI, 'Point');
   node.appendChild(child);
-  ol.format.GML.writePoint_(child, point, objectStack);
+  this.writePoint_(child, point, objectStack);
 };
 
 
@@ -1429,10 +1432,10 @@ ol.format.GML.prototype.writeLineStringOrCurveMember_ = function(node, line,
     objectStack) {
   var context = objectStack[objectStack.length - 1];
   goog.asserts.assert(goog.isObject(context));
-  var child = ol.format.GML.GEOMETRY_NODE_FACTORY_(line, objectStack);
+  var child = this.GEOMETRY_NODE_FACTORY_(line, objectStack);
   if (goog.isDef(child)) {
     node.appendChild(child);
-    ol.format.GML.writeCurveOrLineString_(child, line, objectStack);
+    this.writeCurveOrLineString_(child, line, objectStack);
   }
 };
 
@@ -1447,7 +1450,7 @@ ol.format.GML.prototype.writeSurfacePatches_ =
     function(node, polygon, objectStack) {
   var child = ol.xml.createElementNS(node.namespaceURI, 'PolygonPatch');
   node.appendChild(child);
-  ol.format.GML.writeSurfaceOrPolygon_(child, polygon, objectStack);
+  this.writeSurfaceOrPolygon_(child, polygon, objectStack);
 };
 
 
@@ -1461,7 +1464,7 @@ ol.format.GML.prototype.writeCurveSegments_ =
     function(node, line, objectStack) {
   var child = ol.xml.createElementNS(node.namespaceURI, 'LineStringSegment');
   node.appendChild(child);
-  ol.format.GML.writeCurveOrLineString_(child, line, objectStack);
+  this.writeCurveOrLineString_(child, line, objectStack);
 };
 
 
@@ -1524,7 +1527,7 @@ ol.format.GML.prototype.writeFeatureElement =
       if (key == geometryName) {
         if (!(key in context.serializers[featureNS])) {
           context.serializers[featureNS][key] = ol.xml.makeChildAppender(
-              ol.format.GML.writeGeometry);
+              this.writeGeometryElement, this);
         }
       } else {
         if (!(key in context.serializers[featureNS])) {
@@ -1559,7 +1562,7 @@ ol.format.GML.prototype.writeFeatureMembers_ =
   var serializers = {};
   serializers[featureNS] = {};
   serializers[featureNS][featureType] = ol.xml.makeChildAppender(
-      ol.format.GML.writeFeature);
+      this.writeFeatureElement, this);
   var item = goog.object.clone(context);
   item.node = node;
   ol.xml.pushSerializeAndPop(/** @type {ol.xml.NodeStackItem} */
@@ -1729,7 +1732,7 @@ ol.format.GML.prototype.writeGeometryNode = function(geometry, opt_options) {
   if (goog.isDef(opt_options)) {
     goog.object.extend(context, opt_options);
   }
-  ol.format.GML.writeGeometry(geom, geometry, [context]);
+  this.writeGeometryElement(geom, geometry, [context]);
   return geom;
 };
 
@@ -1766,6 +1769,6 @@ ol.format.GML.prototype.writeFeaturesNode = function(features, opt_options) {
   if (goog.isDef(opt_options)) {
     goog.object.extend(context, opt_options);
   }
-  ol.format.GML.writeFeatureMembers_(node, features, [context]);
+  this.writeFeatureMembers_(node, features, [context]);
   return node;
 };
