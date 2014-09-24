@@ -412,10 +412,12 @@ ol.format.GML.prototype.readFlatCoordinatesFromNode_ = function(node,
  * @type {Object.<string, Object.<string, ol.xml.Parser>>}
  * @private
  */
-ol.format.GML.POLYGONMEMBER_PARSERS_ = {
+ol.format.GML.MULTIPOINT_PARSERS_ = {
   'http://www.opengis.net/gml' : {
-    'Polygon': ol.xml.makeArrayPusher(
-        ol.format.GML.prototype.readPolygon)
+    'pointMember': ol.xml.makeArrayPusher(
+        ol.format.GML.prototype.pointMemberParser_),
+    'pointMembers': ol.xml.makeArrayPusher(
+        ol.format.GML.prototype.pointMemberParser_)
   }
 };
 
@@ -440,25 +442,12 @@ ol.format.GML.MULTILINESTRING_PARSERS_ = {
  * @type {Object.<string, Object.<string, ol.xml.Parser>>}
  * @private
  */
-ol.format.GML.GEOMETRY_PARSERS_ = {
+ol.format.GML.MULTIPOLYGON_PARSERS_ = {
   'http://www.opengis.net/gml' : {
-    'Point': ol.xml.makeReplacer(ol.format.GML.prototype.readPoint_),
-    'MultiPoint': ol.xml.makeReplacer(ol.format.GML.prototype.readMultiPoint_),
-    'LineString': ol.xml.makeReplacer(ol.format.GML.prototype.readLineString_),
-    'MultiLineString': ol.xml.makeReplacer(
-        ol.format.GML.prototype.readMultiLineString_),
-    'LinearRing' : ol.xml.makeReplacer(
-        ol.format.GML.prototype.readLinearRing_),
-    'Polygon': ol.xml.makeReplacer(ol.format.GML.prototype.readPolygon_),
-    'MultiPolygon': ol.xml.makeReplacer(
-        ol.format.GML.prototype.readMultiPolygon_),
-    'Surface': ol.xml.makeReplacer(ol.format.GML.prototype.readSurface_),
-    'MultiSurface': ol.xml.makeReplacer(
-        ol.format.GML.prototype.readMultiSurface_),
-    'Curve': ol.xml.makeReplacer(ol.format.GML.prototype.readCurve_),
-    'MultiCurve': ol.xml.makeReplacer(
-        ol.format.GML.prototype.readMultiCurve_),
-    'Envelope': ol.xml.makeReplacer(ol.format.GML.prototype.readEnvelope_)
+    'polygonMember': ol.xml.makeArrayPusher(
+        ol.format.GML.prototype.polygonMemberParser_),
+    'polygonMembers': ol.xml.makeArrayPusher(
+        ol.format.GML.prototype.polygonMemberParser_)
   }
 };
 
@@ -494,12 +483,10 @@ ol.format.GML.LINESTRINGMEMBER_PARSERS_ = {
  * @type {Object.<string, Object.<string, ol.xml.Parser>>}
  * @private
  */
-ol.format.GML.MULTIPOINT_PARSERS_ = {
+ol.format.GML.POLYGONMEMBER_PARSERS_ = {
   'http://www.opengis.net/gml' : {
-    'pointMember': ol.xml.makeArrayPusher(
-        ol.format.GML.prototype.pointMemberParser_),
-    'pointMembers': ol.xml.makeArrayPusher(
-        ol.format.GML.prototype.pointMemberParser_)
+    'Polygon': ol.xml.makeArrayPusher(
+        ol.format.GML.prototype.readPolygon)
   }
 };
 

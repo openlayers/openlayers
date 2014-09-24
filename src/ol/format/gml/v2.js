@@ -151,3 +151,24 @@ ol.format.GML.v2.FLAT_LINEAR_RINGS_PARSERS_ = {
     'outerBoundaryIs': ol.format.GML.v2.prototype.outerBoundaryIsParser_
   }
 };
+
+
+/**
+ * @const
+ * @type {Object.<string, Object.<string, ol.xml.Parser>>}
+ * @private
+ */
+ol.format.GML.v2.GEOMETRY_PARSERS_ = {
+  'http://www.opengis.net/gml' : {
+    'Point': ol.xml.makeReplacer(ol.format.GML.prototype.readPoint),
+    'MultiPoint': ol.xml.makeReplacer(ol.format.GML.prototype.readMultiPoint),
+    'LineString': ol.xml.makeReplacer(ol.format.GML.prototype.readLineString),
+    'MultiLineString': ol.xml.makeReplacer(
+        ol.format.GML.prototype.readMultiLineString),
+    'LinearRing' : ol.xml.makeReplacer(
+        ol.format.GML.prototype.readLinearRing),
+    'Polygon': ol.xml.makeReplacer(ol.format.GML.prototype.readPolygon),
+    'MultiPolygon': ol.xml.makeReplacer(
+        ol.format.GML.prototype.readMultiPolygon)
+  }
+};
