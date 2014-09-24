@@ -50,7 +50,8 @@ goog.require('ol.style.Style');
  *
  * @constructor
  * @extends {ol.Object}
- * @fires change Triggered when the geometry or style of the feature changes.
+ * @fires change Triggered when the id, the geometry or the style of the
+ *     feature changes.
  * @param {ol.geom.Geometry|Object.<string, *>=} opt_geometryOrProperties
  *     You may pass a Geometry object directly, or an object literal
  *     containing properties.  If you pass an object literal, you may
