@@ -42,10 +42,10 @@ ol.format.WFS = function(opt_options) {
 
   /**
    * @private
-   * @type {string}
+   * @type {ol.format.GML}
    */
   this.gmlFormat_ = goog.isDef(options.gmlFormat) ?
-      options.gmlFormat : new ol.format.GML();
+      options.gmlFormat : new ol.format.GML.v3();
 
   /**
    * @private
@@ -223,7 +223,7 @@ ol.format.WFS.prototype.readFeatureCollectionMetadataFromNode = function(node) {
   goog.object.set(result, 'numberOfFeatures', value);
   return ol.xml.pushParseAndPop(
       /** @type {ol.format.WFS.FeatureCollectionMetadata} */ (result),
-      ol.format.WFS.FEATURE_COLLECTION_PARSERS_, node, []);
+      ol.format.WFS.FEATURE_COLLECTION_PARSERS_, node, [], this.gmlFormat_);
 };
 
 
@@ -371,7 +371,7 @@ ol.format.WFS.writeFeature_ = function(node, feature, objectStack) {
   var featureNS = goog.object.get(context, 'featureNS');
   var child = ol.xml.createElementNS(featureNS, featureType);
   node.appendChild(child);
-  ol.format.GML.prototype.writeFeatureElement(child, feature, objectStack);
+  ol.format.GML.v3.prototype.writeFeatureElement(child, feature, objectStack);
 };
 
 
@@ -465,7 +465,7 @@ ol.format.WFS.writeProperty_ = function(node, pair, objectStack) {
     var value = ol.xml.createElementNS('http://www.opengis.net/wfs', 'Value');
     node.appendChild(value);
     if (pair.value instanceof ol.geom.Geometry) {
-      ol.format.GML.prototype.writeGeometryElement(value,
+      ol.format.GML.v3.prototype.writeGeometryElement(value,
           pair.value, objectStack);
     } else {
       ol.format.XSD.writeStringTextNode(value, pair.value);
@@ -573,7 +573,7 @@ ol.format.WFS.writeOgcBBOX_ = function(node, bbox, objectStack) {
   var bboxNode = ol.xml.createElementNS('http://www.opengis.net/ogc', 'BBOX');
   node.appendChild(bboxNode);
   ol.format.WFS.writeOgcPropertyName_(bboxNode, geometryName, objectStack);
-  ol.format.GML.prototype.writeGeometryElement(bboxNode, bbox, objectStack);
+  ol.format.GML.v3.prototype.writeGeometryElement(bboxNode, bbox, objectStack);
 };
 
 
@@ -755,7 +755,7 @@ ol.format.WFS.prototype.readProjectionFromNode = function(node) {
           (n.childNodes.length === 1 &&
           n.firstChild.nodeType === 3))) {
         var objectStack = [{}];
-        ol.format.GML.prototype.readGeometryElement(n, objectStack);
+        this.gmlFormat_.readGeometryElement(n, objectStack);
         return ol.proj.get(objectStack.pop().srsName);
       }
     }
