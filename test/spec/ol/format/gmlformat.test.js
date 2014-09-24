@@ -1,4 +1,4 @@
-goog.provide('ol.test.format.GML');
+goog.provide('ol.test.format.GML.v3');
 
 var readGeometry = function(format, text, opt_options) {
   var doc = ol.xml.load(text);
@@ -8,13 +8,15 @@ var readGeometry = function(format, text, opt_options) {
   return format.readGeometryFromNode(node, opt_options);
 };
 
-describe('ol.format.GML', function() {
+describe('ol.format.GML.v3', function() {
 
   var format, formatWGS84, formatNoSrs;
   beforeEach(function() {
-    format = new ol.format.GML({srsName: 'CRS:84'});
-    formatWGS84 = new ol.format.GML({srsName: 'urn:x-ogc:def:crs:EPSG:4326'});
-    formatNoSrs = new ol.format.GML();
+    format = new ol.format.GML.v3({srsName: 'CRS:84'});
+    formatWGS84 = new ol.format.GML.v3({
+      srsName: 'urn:x-ogc:def:crs:EPSG:4326'
+    });
+    formatNoSrs = new ol.format.GML.v3();
   });
 
   describe('#readGeometry', function() {
@@ -216,7 +218,8 @@ describe('ol.format.GML', function() {
             var g = readGeometry(format, text);
             expect(g.getCoordinates()[0][0][0][0]).to.equal(-77.0081);
             expect(g.getCoordinates()[0][0][0][1]).to.equal(38.9661);
-            format = new ol.format.GML({srsName: 'urn:x-ogc:def:crs:EPSG:4326',
+            format = new ol.format.GML.v3({
+              srsName: 'urn:x-ogc:def:crs:EPSG:4326',
               surface: false});
             var serialized = format.writeGeometry(g);
             expect(serialized.firstElementChild).to.xmleql(ol.xml.load(text));
@@ -321,7 +324,7 @@ describe('ol.format.GML', function() {
         expect(g.getCoordinates()).to.eql([[[1, 2, 0], [3, 2, 0], [3, 4, 0],
                 [1, 2, 0]], [[2, 3, 0], [2, 5, 0], [4, 5, 0], [2, 3, 0]],
               [[3, 4, 0], [3, 6, 0], [5, 6, 0], [3, 4, 0]]]);
-        format = new ol.format.GML({srsName: 'CRS:84', surface: true});
+        format = new ol.format.GML.v3({srsName: 'CRS:84', surface: true});
         var serialized = format.writeGeometry(g);
         expect(serialized.firstElementChild).to.xmleql(ol.xml.load(text));
       });
@@ -343,7 +346,7 @@ describe('ol.format.GML', function() {
         var g = readGeometry(format, text);
         expect(g).to.be.an(ol.geom.LineString);
         expect(g.getCoordinates()).to.eql([[1, 2, 0], [3, 4, 0]]);
-        format = new ol.format.GML({srsName: 'CRS:84', curve: true});
+        format = new ol.format.GML.v3({srsName: 'CRS:84', curve: true});
         var serialized = format.writeGeometry(g);
         expect(serialized.firstElementChild).to.xmleql(ol.xml.load(text));
       });
@@ -438,7 +441,7 @@ describe('ol.format.GML', function() {
         expect(g).to.be.an(ol.geom.MultiLineString);
         expect(g.getCoordinates()).to.eql(
             [[[1, 2, 0], [2, 3, 0]], [[3, 4, 0], [4, 5, 0]]]);
-        format = new ol.format.GML({srsName: 'CRS:84', multiCurve: false});
+        format = new ol.format.GML.v3({srsName: 'CRS:84', multiCurve: false});
         var serialized = format.writeGeometry(g);
         expect(serialized.firstElementChild).to.xmleql(ol.xml.load(text));
       });
@@ -506,7 +509,7 @@ describe('ol.format.GML', function() {
             [1, 2, 0]], [[2, 3, 0], [2, 5, 0], [4, 5, 0], [2, 3, 0]],
             [[3, 4, 0], [3, 6, 0], [5, 6, 0], [3, 4, 0]]],
           [[[1, 2, 0], [3, 2, 0], [3, 4, 0], [1, 2, 0]]]]);
-        format = new ol.format.GML({srsName: 'CRS:84', multiSurface: false});
+        format = new ol.format.GML.v3({srsName: 'CRS:84', multiSurface: false});
         var serialized = format.writeGeometry(g);
         expect(serialized.firstElementChild).to.xmleql(ol.xml.load(text));
       });
@@ -606,7 +609,7 @@ describe('ol.format.GML', function() {
         expect(g).to.be.an(ol.geom.MultiLineString);
         expect(g.getCoordinates()).to.eql(
             [[[1, 2, 0], [2, 3, 0]], [[3, 4, 0], [4, 5, 0]]]);
-        format = new ol.format.GML({srsName: 'CRS:84', curve: true});
+        format = new ol.format.GML.v3({srsName: 'CRS:84', curve: true});
         var serialized = format.writeGeometry(g);
         expect(serialized.firstElementChild).to.xmleql(ol.xml.load(text));
       });
@@ -749,7 +752,7 @@ describe('ol.format.GML', function() {
             [1, 2, 0]], [[2, 3, 0], [2, 5, 0], [4, 5, 0], [2, 3, 0]],
             [[3, 4, 0], [3, 6, 0], [5, 6, 0], [3, 4, 0]]],
           [[[1, 2, 0], [3, 2, 0], [3, 4, 0], [1, 2, 0]]]]);
-        format = new ol.format.GML({srsName: 'CRS:84', surface: true});
+        format = new ol.format.GML.v3({srsName: 'CRS:84', surface: true});
         var serialized = format.writeGeometry(g);
         expect(serialized.firstElementChild).to.xmleql(ol.xml.load(text));
       });
@@ -781,7 +784,7 @@ describe('ol.format.GML', function() {
         'featureNS': 'http://www.openplans.org/topp',
         'featureType': 'gnis_pop'
       };
-      var features = new ol.format.GML(config).readFeatures(text);
+      var features = new ol.format.GML.v3(config).readFeatures(text);
       var feature = features[0];
       expect(feature.get('empty')).to.be(undefined);
     });
@@ -793,7 +796,7 @@ describe('ol.format.GML', function() {
       afterLoadText('spec/ol/format/gml/topp-states-wfs.xml', function(xml) {
         try {
           text = xml;
-          gmlFormat = new ol.format.GML();
+          gmlFormat = new ol.format.GML.v3();
           features = gmlFormat.readFeatures(xml);
         } catch (e) {
           done(e);
@@ -858,7 +861,7 @@ describe('ol.format.GML', function() {
             'schemaLocation': schemaLoc
           };
           text = xml;
-          gmlFormat = new ol.format.GML(config);
+          gmlFormat = new ol.format.GML.v3(config);
           features = gmlFormat.readFeatures(xml);
         } catch (e) {
           done(e);
@@ -892,7 +895,7 @@ describe('ol.format.GML', function() {
             'featureNS': 'http://www.openplans.org/topp',
             'featureType': 'states'
           };
-          features = new ol.format.GML(config).readFeatures(xml);
+          features = new ol.format.GML.v3(config).readFeatures(xml);
         } catch (e) {
           done(e);
         }
@@ -923,7 +926,7 @@ describe('ol.format.GML', function() {
             'featureNS': 'http://opengeo.org/#medford',
             'featureType': 'zoning'
           };
-          features = new ol.format.GML(config).readFeatures(xml);
+          features = new ol.format.GML.v3(config).readFeatures(xml);
         } catch (e) {
           done(e);
         }
@@ -949,7 +952,7 @@ describe('ol.format.GML', function() {
             'featureNS': 'http://opengeo.org/#medford',
             'featureType': 'zoning'
           };
-          features = new ol.format.GML(config).readFeatures(xml);
+          features = new ol.format.GML.v3(config).readFeatures(xml);
         } catch (e) {
           done(e);
         }
