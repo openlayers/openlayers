@@ -3,7 +3,8 @@ goog.provide('ol.format.WFS');
 goog.require('goog.asserts');
 goog.require('goog.dom.NodeType');
 goog.require('goog.object');
-goog.require('ol.format.GML');
+goog.require('ol.format.GML3');
+goog.require('ol.format.GMLBase');
 goog.require('ol.format.XMLFeature');
 goog.require('ol.format.XSD');
 goog.require('ol.geom.Geometry');
@@ -16,7 +17,7 @@ goog.require('ol.xml');
  * @classdesc
  * Feature format for reading and writing data in the WFS format.
  * Currently only supports WFS version 1.1.0.
- * Also see {@link ol.format.GML} which is used by this format.
+ * Also see {@link ol.format.GMLBase} which is used by this format.
  *
  * @constructor
  * @param {olx.format.WFSOptions=} opt_options
@@ -42,10 +43,10 @@ ol.format.WFS = function(opt_options) {
 
   /**
    * @private
-   * @type {ol.format.GML}
+   * @type {ol.format.GMLBase}
    */
   this.gmlFormat_ = goog.isDef(options.gmlFormat) ?
-      options.gmlFormat : new ol.format.GML.v3();
+      options.gmlFormat : new ol.format.GML3();
 
   /**
    * @private
@@ -126,7 +127,7 @@ ol.format.WFS.prototype.readFeaturesFromNode = function(node, opt_options) {
       goog.isDef(opt_options) ? opt_options : {}));
   var objectStack = [context];
   var features = ol.xml.pushParseAndPop([],
-      ol.format.GML.FEATURE_COLLECTION_PARSERS, node,
+      ol.format.GMLBase.FEATURE_COLLECTION_PARSERS, node,
       objectStack, this.gmlFormat_);
   if (!goog.isDef(features)) {
     features = [];
@@ -204,7 +205,7 @@ ol.format.WFS.prototype.readFeatureCollectionMetadataFromDocument =
 ol.format.WFS.FEATURE_COLLECTION_PARSERS_ = {
   'http://www.opengis.net/gml': {
     'boundedBy': ol.xml.makeObjectPropertySetter(
-        ol.format.GML.prototype.readGeometryElement, 'bounds')
+        ol.format.GMLBase.prototype.readGeometryElement, 'bounds')
   }
 };
 
@@ -371,7 +372,7 @@ ol.format.WFS.writeFeature_ = function(node, feature, objectStack) {
   var featureNS = goog.object.get(context, 'featureNS');
   var child = ol.xml.createElementNS(featureNS, featureType);
   node.appendChild(child);
-  ol.format.GML.v3.prototype.writeFeatureElement(child, feature, objectStack);
+  ol.format.GML3.prototype.writeFeatureElement(child, feature, objectStack);
 };
 
 
@@ -465,7 +466,7 @@ ol.format.WFS.writeProperty_ = function(node, pair, objectStack) {
     var value = ol.xml.createElementNS('http://www.opengis.net/wfs', 'Value');
     node.appendChild(value);
     if (pair.value instanceof ol.geom.Geometry) {
-      ol.format.GML.v3.prototype.writeGeometryElement(value,
+      ol.format.GML3.prototype.writeGeometryElement(value,
           pair.value, objectStack);
     } else {
       ol.format.XSD.writeStringTextNode(value, pair.value);
@@ -573,7 +574,7 @@ ol.format.WFS.writeOgcBBOX_ = function(node, bbox, objectStack) {
   var bboxNode = ol.xml.createElementNS('http://www.opengis.net/ogc', 'BBOX');
   node.appendChild(bboxNode);
   ol.format.WFS.writeOgcPropertyName_(bboxNode, geometryName, objectStack);
-  ol.format.GML.v3.prototype.writeGeometryElement(bboxNode, bbox, objectStack);
+  ol.format.GML3.prototype.writeGeometryElement(bboxNode, bbox, objectStack);
 };
 
 

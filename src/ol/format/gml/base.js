@@ -1,7 +1,7 @@
 // FIXME Envelopes should not be treated as geometries! readEnvelope_ is part
 // of GEOMETRY_PARSERS_ and methods using GEOMETRY_PARSERS_ do not expect
 // envelopes/extents, only geometries!
-goog.provide('ol.format.GML');
+goog.provide('ol.format.GMLBase');
 
 goog.require('goog.asserts');
 goog.require('goog.dom');
@@ -34,9 +34,9 @@ goog.require('ol.xml');
  * @param {olx.format.GMLOptions=} opt_options
  *     Optional configuration object.
  * @extends {ol.format.XMLFeature}
- * @api stable
+ * @api
  */
-ol.format.GML = function(opt_options) {
+ol.format.GMLBase = function(opt_options) {
   var options = /** @type {olx.format.GMLOptions} */
       (goog.isDef(opt_options) ? opt_options : {});
 
@@ -67,7 +67,7 @@ ol.format.GML = function(opt_options) {
 
   goog.base(this);
 };
-goog.inherits(ol.format.GML, ol.format.XMLFeature);
+goog.inherits(ol.format.GMLBase, ol.format.XMLFeature);
 
 
 /**
@@ -76,13 +76,13 @@ goog.inherits(ol.format.GML, ol.format.XMLFeature);
  * @return {Array.<ol.Feature>} Features.
  * @private
  */
-ol.format.GML.prototype.readFeatures_ = function(node, objectStack) {
+ol.format.GMLBase.prototype.readFeatures_ = function(node, objectStack) {
   goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT);
   var localName = ol.xml.getLocalName(node);
   var features;
   if (localName == 'FeatureCollection') {
     features = ol.xml.pushParseAndPop(null,
-        ol.format.GML.FEATURE_COLLECTION_PARSERS, node,
+        ol.format.GMLBase.FEATURE_COLLECTION_PARSERS, node,
         objectStack, this);
   } else if (localName == 'featureMembers' || localName == 'featureMember') {
     var context = objectStack[0];
@@ -112,11 +112,12 @@ ol.format.GML.prototype.readFeatures_ = function(node, objectStack) {
 /**
  * @type {Object.<string, Object.<string, Object>>}
  */
-ol.format.GML.FEATURE_COLLECTION_PARSERS = {
+ol.format.GMLBase.FEATURE_COLLECTION_PARSERS = {
   'http://www.opengis.net/gml': {
     'featureMember': ol.xml.makeArrayPusher(
-        ol.format.GML.prototype.readFeatures_),
-    'featureMembers': ol.xml.makeReplacer(ol.format.GML.prototype.readFeatures_)
+        ol.format.GMLBase.prototype.readFeatures_),
+    'featureMembers': ol.xml.makeReplacer(
+        ol.format.GMLBase.prototype.readFeatures_)
   }
 };
 
@@ -126,7 +127,7 @@ ol.format.GML.FEATURE_COLLECTION_PARSERS = {
  * @param {Array.<*>} objectStack Object stack.
  * @return {ol.geom.Geometry|undefined} Geometry.
  */
-ol.format.GML.prototype.readGeometryElement = function(node, objectStack) {
+ol.format.GMLBase.prototype.readGeometryElement = function(node, objectStack) {
   var context = objectStack[0];
   goog.asserts.assert(goog.isObject(context));
   goog.object.set(context, 'srsName',
@@ -148,7 +149,7 @@ ol.format.GML.prototype.readGeometryElement = function(node, objectStack) {
  * @return {ol.Feature} Feature.
  * @private
  */
-ol.format.GML.prototype.readFeature_ = function(node, objectStack) {
+ol.format.GMLBase.prototype.readFeature_ = function(node, objectStack) {
   var n;
   var fid = node.getAttribute('fid') ||
       ol.xml.getAttributeNS(node, 'http://www.opengis.net/gml', 'id');
@@ -186,7 +187,7 @@ ol.format.GML.prototype.readFeature_ = function(node, objectStack) {
  * @param {Array.<*>} objectStack Object stack.
  * @return {ol.geom.Point|undefined} Point.
  */
-ol.format.GML.prototype.readPoint = function(node, objectStack) {
+ol.format.GMLBase.prototype.readPoint = function(node, objectStack) {
   goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT);
   goog.asserts.assert(node.localName == 'Point');
   var flatCoordinates =
@@ -205,12 +206,12 @@ ol.format.GML.prototype.readPoint = function(node, objectStack) {
  * @param {Array.<*>} objectStack Object stack.
  * @return {ol.geom.MultiPoint|undefined} MultiPoint.
  */
-ol.format.GML.prototype.readMultiPoint = function(node, objectStack) {
+ol.format.GMLBase.prototype.readMultiPoint = function(node, objectStack) {
   goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT);
   goog.asserts.assert(node.localName == 'MultiPoint');
   var coordinates = ol.xml.pushParseAndPop(
       /** @type {Array.<Array.<number>>} */ ([]),
-      ol.format.GML.MULTIPOINT_PARSERS_, node, objectStack, this);
+      ol.format.GMLBase.MULTIPOINT_PARSERS_, node, objectStack, this);
   if (goog.isDef(coordinates)) {
     return new ol.geom.MultiPoint(coordinates);
   } else {
@@ -224,12 +225,12 @@ ol.format.GML.prototype.readMultiPoint = function(node, objectStack) {
  * @param {Array.<*>} objectStack Object stack.
  * @return {ol.geom.MultiLineString|undefined} MultiLineString.
  */
-ol.format.GML.prototype.readMultiLineString = function(node, objectStack) {
+ol.format.GMLBase.prototype.readMultiLineString = function(node, objectStack) {
   goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT);
   goog.asserts.assert(node.localName == 'MultiLineString');
   var lineStrings = ol.xml.pushParseAndPop(
       /** @type {Array.<ol.geom.LineString>} */ ([]),
-      ol.format.GML.MULTILINESTRING_PARSERS_, node, objectStack, this);
+      ol.format.GMLBase.MULTILINESTRING_PARSERS_, node, objectStack, this);
   if (goog.isDef(lineStrings)) {
     var multiLineString = new ol.geom.MultiLineString(null);
     multiLineString.setLineStrings(lineStrings);
@@ -245,12 +246,12 @@ ol.format.GML.prototype.readMultiLineString = function(node, objectStack) {
  * @param {Array.<*>} objectStack Object stack.
  * @return {ol.geom.MultiPolygon|undefined} MultiPolygon.
  */
-ol.format.GML.prototype.readMultiPolygon = function(node, objectStack) {
+ol.format.GMLBase.prototype.readMultiPolygon = function(node, objectStack) {
   goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT);
   goog.asserts.assert(node.localName == 'MultiPolygon');
   var polygons = ol.xml.pushParseAndPop(
       /** @type {Array.<ol.geom.Polygon>} */ ([]),
-      ol.format.GML.MULTIPOLYGON_PARSERS_, node, objectStack, this);
+      ol.format.GMLBase.MULTIPOLYGON_PARSERS_, node, objectStack, this);
   if (goog.isDef(polygons)) {
     var multiPolygon = new ol.geom.MultiPolygon(null);
     multiPolygon.setPolygons(polygons);
@@ -266,24 +267,11 @@ ol.format.GML.prototype.readMultiPolygon = function(node, objectStack) {
  * @param {Array.<*>} objectStack Object stack.
  * @private
  */
-ol.format.GML.prototype.pointMemberParser_ = function(node, objectStack) {
+ol.format.GMLBase.prototype.pointMemberParser_ = function(node, objectStack) {
   goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT);
   goog.asserts.assert(node.localName == 'pointMember' ||
       node.localName == 'pointMembers');
-  ol.xml.parse(ol.format.GML.POINTMEMBER_PARSERS_, node, objectStack, this);
-};
-
-
-/**
- * @param {Node} node Node.
- * @param {Array.<*>} objectStack Object stack.
- * @private
- */
-ol.format.GML.prototype.lineStringMemberParser_ = function(node, objectStack) {
-  goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT);
-  goog.asserts.assert(node.localName == 'lineStringMember' ||
-      node.localName == 'lineStringMembers');
-  ol.xml.parse(ol.format.GML.LINESTRINGMEMBER_PARSERS_,
+  ol.xml.parse(ol.format.GMLBase.POINTMEMBER_PARSERS_,
       node, objectStack, this);
 };
 
@@ -293,11 +281,28 @@ ol.format.GML.prototype.lineStringMemberParser_ = function(node, objectStack) {
  * @param {Array.<*>} objectStack Object stack.
  * @private
  */
-ol.format.GML.prototype.polygonMemberParser_ = function(node, objectStack) {
+ol.format.GMLBase.prototype.lineStringMemberParser_ =
+    function(node, objectStack) {
+  goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT);
+  goog.asserts.assert(node.localName == 'lineStringMember' ||
+      node.localName == 'lineStringMembers');
+  ol.xml.parse(ol.format.GMLBase.LINESTRINGMEMBER_PARSERS_,
+      node, objectStack, this);
+};
+
+
+/**
+ * @param {Node} node Node.
+ * @param {Array.<*>} objectStack Object stack.
+ * @private
+ */
+ol.format.GMLBase.prototype.polygonMemberParser_ =
+    function(node, objectStack) {
   goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT);
   goog.asserts.assert(node.localName == 'polygonMember' ||
       node.localName == 'polygonMembers');
-  ol.xml.parse(ol.format.GML.POLYGONMEMBER_PARSERS_, node, objectStack, this);
+  ol.xml.parse(ol.format.GMLBase.POLYGONMEMBER_PARSERS_, node,
+      objectStack, this);
 };
 
 
@@ -306,7 +311,7 @@ ol.format.GML.prototype.polygonMemberParser_ = function(node, objectStack) {
  * @param {Array.<*>} objectStack Object stack.
  * @return {ol.geom.LineString|undefined} LineString.
  */
-ol.format.GML.prototype.readLineString = function(node, objectStack) {
+ol.format.GMLBase.prototype.readLineString = function(node, objectStack) {
   goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT);
   goog.asserts.assert(node.localName == 'LineString');
   var flatCoordinates =
@@ -327,7 +332,7 @@ ol.format.GML.prototype.readLineString = function(node, objectStack) {
  * @private
  * @return {Array.<number>|undefined} LinearRing flat coordinates.
  */
-ol.format.GML.prototype.readFlatLinearRing_ = function(node, objectStack) {
+ol.format.GMLBase.prototype.readFlatLinearRing_ = function(node, objectStack) {
   goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT);
   goog.asserts.assert(node.localName == 'LinearRing');
   var ring = ol.xml.pushParseAndPop(/** @type {Array.<number>} */(null),
@@ -346,7 +351,7 @@ ol.format.GML.prototype.readFlatLinearRing_ = function(node, objectStack) {
  * @param {Array.<*>} objectStack Object stack.
  * @return {ol.geom.LinearRing|undefined} LinearRing.
  */
-ol.format.GML.prototype.readLinearRing = function(node, objectStack) {
+ol.format.GMLBase.prototype.readLinearRing = function(node, objectStack) {
   goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT);
   goog.asserts.assert(node.localName == 'LinearRing');
   var flatCoordinates =
@@ -366,7 +371,7 @@ ol.format.GML.prototype.readLinearRing = function(node, objectStack) {
  * @param {Array.<*>} objectStack Object stack.
  * @return {ol.geom.Polygon|undefined} Polygon.
  */
-ol.format.GML.prototype.readPolygon = function(node, objectStack) {
+ol.format.GMLBase.prototype.readPolygon = function(node, objectStack) {
   goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT);
   goog.asserts.assert(node.localName == 'Polygon');
   var flatLinearRings = ol.xml.pushParseAndPop(
@@ -397,8 +402,8 @@ ol.format.GML.prototype.readPolygon = function(node, objectStack) {
  * @private
  * @return {Array.<number>} Flat coordinates.
  */
-ol.format.GML.prototype.readFlatCoordinatesFromNode_ = function(node,
-                                                                objectStack) {
+ol.format.GMLBase.prototype.readFlatCoordinatesFromNode_ =
+    function(node, objectStack) {
   goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT);
   return /** @type {Array.<number>} */ (ol.xml.pushParseAndPop(
       null,
@@ -412,12 +417,12 @@ ol.format.GML.prototype.readFlatCoordinatesFromNode_ = function(node,
  * @type {Object.<string, Object.<string, ol.xml.Parser>>}
  * @private
  */
-ol.format.GML.MULTIPOINT_PARSERS_ = {
+ol.format.GMLBase.MULTIPOINT_PARSERS_ = {
   'http://www.opengis.net/gml' : {
     'pointMember': ol.xml.makeArrayPusher(
-        ol.format.GML.prototype.pointMemberParser_),
+        ol.format.GMLBase.prototype.pointMemberParser_),
     'pointMembers': ol.xml.makeArrayPusher(
-        ol.format.GML.prototype.pointMemberParser_)
+        ol.format.GMLBase.prototype.pointMemberParser_)
   }
 };
 
@@ -427,12 +432,12 @@ ol.format.GML.MULTIPOINT_PARSERS_ = {
  * @type {Object.<string, Object.<string, ol.xml.Parser>>}
  * @private
  */
-ol.format.GML.MULTILINESTRING_PARSERS_ = {
+ol.format.GMLBase.MULTILINESTRING_PARSERS_ = {
   'http://www.opengis.net/gml' : {
     'lineStringMember': ol.xml.makeArrayPusher(
-        ol.format.GML.prototype.lineStringMemberParser_),
+        ol.format.GMLBase.prototype.lineStringMemberParser_),
     'lineStringMembers': ol.xml.makeArrayPusher(
-        ol.format.GML.prototype.lineStringMemberParser_)
+        ol.format.GMLBase.prototype.lineStringMemberParser_)
   }
 };
 
@@ -442,12 +447,12 @@ ol.format.GML.MULTILINESTRING_PARSERS_ = {
  * @type {Object.<string, Object.<string, ol.xml.Parser>>}
  * @private
  */
-ol.format.GML.MULTIPOLYGON_PARSERS_ = {
+ol.format.GMLBase.MULTIPOLYGON_PARSERS_ = {
   'http://www.opengis.net/gml' : {
     'polygonMember': ol.xml.makeArrayPusher(
-        ol.format.GML.prototype.polygonMemberParser_),
+        ol.format.GMLBase.prototype.polygonMemberParser_),
     'polygonMembers': ol.xml.makeArrayPusher(
-        ol.format.GML.prototype.polygonMemberParser_)
+        ol.format.GMLBase.prototype.polygonMemberParser_)
   }
 };
 
@@ -457,10 +462,10 @@ ol.format.GML.MULTIPOLYGON_PARSERS_ = {
  * @type {Object.<string, Object.<string, ol.xml.Parser>>}
  * @private
  */
-ol.format.GML.POINTMEMBER_PARSERS_ = {
+ol.format.GMLBase.POINTMEMBER_PARSERS_ = {
   'http://www.opengis.net/gml' : {
     'Point': ol.xml.makeArrayPusher(
-        ol.format.GML.prototype.readFlatCoordinatesFromNode_)
+        ol.format.GMLBase.prototype.readFlatCoordinatesFromNode_)
   }
 };
 
@@ -470,10 +475,10 @@ ol.format.GML.POINTMEMBER_PARSERS_ = {
  * @type {Object.<string, Object.<string, ol.xml.Parser>>}
  * @private
  */
-ol.format.GML.LINESTRINGMEMBER_PARSERS_ = {
+ol.format.GMLBase.LINESTRINGMEMBER_PARSERS_ = {
   'http://www.opengis.net/gml' : {
     'LineString': ol.xml.makeArrayPusher(
-        ol.format.GML.prototype.readLineString)
+        ol.format.GMLBase.prototype.readLineString)
   }
 };
 
@@ -483,10 +488,10 @@ ol.format.GML.LINESTRINGMEMBER_PARSERS_ = {
  * @type {Object.<string, Object.<string, ol.xml.Parser>>}
  * @private
  */
-ol.format.GML.POLYGONMEMBER_PARSERS_ = {
+ol.format.GMLBase.POLYGONMEMBER_PARSERS_ = {
   'http://www.opengis.net/gml' : {
     'Polygon': ol.xml.makeArrayPusher(
-        ol.format.GML.prototype.readPolygon)
+        ol.format.GMLBase.prototype.readPolygon)
   }
 };
 
@@ -496,10 +501,10 @@ ol.format.GML.POLYGONMEMBER_PARSERS_ = {
  * @type {Object.<string, Object.<string, ol.xml.Parser>>}
  * @protected
  */
-ol.format.GML.RING_PARSERS = {
+ol.format.GMLBase.RING_PARSERS = {
   'http://www.opengis.net/gml' : {
     'LinearRing': ol.xml.makeReplacer(
-        ol.format.GML.prototype.readFlatLinearRing_)
+        ol.format.GMLBase.prototype.readFlatLinearRing_)
   }
 };
 
@@ -507,7 +512,8 @@ ol.format.GML.RING_PARSERS = {
 /**
  * @inheritDoc
  */
-ol.format.GML.prototype.readGeometryFromNode = function(node, opt_options) {
+ol.format.GMLBase.prototype.readGeometryFromNode =
+    function(node, opt_options) {
   var geometry = this.readGeometryElement(node,
       [this.getReadOptions(node, goog.isDef(opt_options) ? opt_options : {})]);
   return (goog.isDef(geometry) ? geometry : null);
@@ -523,13 +529,14 @@ ol.format.GML.prototype.readGeometryFromNode = function(node, opt_options) {
  * @return {Array.<ol.Feature>} Features.
  * @api stable
  */
-ol.format.GML.prototype.readFeatures;
+ol.format.GMLBase.prototype.readFeatures;
 
 
 /**
  * @inheritDoc
  */
-ol.format.GML.prototype.readFeaturesFromNode = function(node, opt_options) {
+ol.format.GMLBase.prototype.readFeaturesFromNode =
+    function(node, opt_options) {
   var options = {
     'featureType': this.featureType,
     'featureNS': this.featureNS
@@ -544,7 +551,7 @@ ol.format.GML.prototype.readFeaturesFromNode = function(node, opt_options) {
 /**
  * @inheritDoc
  */
-ol.format.GML.prototype.readProjectionFromNode = function(node) {
+ol.format.GMLBase.prototype.readProjectionFromNode = function(node) {
   return ol.proj.get(goog.isDef(this.srsName_) ? this.srsName_ :
       node.firstElementChild.getAttribute('srsName'));
 };

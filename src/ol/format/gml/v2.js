@@ -1,10 +1,11 @@
-goog.provide('ol.format.GML.v2');
+goog.provide('ol.format.GML2');
 
 goog.require('goog.asserts');
 goog.require('goog.dom');
 goog.require('goog.dom.NodeType');
 goog.require('goog.object');
 goog.require('ol.format.GML');
+goog.require('ol.format.GMLBase');
 goog.require('ol.format.XSD');
 goog.require('ol.proj');
 goog.require('ol.xml');
@@ -19,14 +20,14 @@ goog.require('ol.xml');
  * @constructor
  * @param {olx.format.GMLOptions=} opt_options
  *     Optional configuration object.
- * @extends {ol.format.GML}
- * @api stable
+ * @extends {ol.format.GMLBase}
+ * @api
  */
-ol.format.GML.v2 = function(opt_options) {
+ol.format.GML2 = function(opt_options) {
 
   goog.base(this, opt_options);
 };
-goog.inherits(ol.format.GML.v2, ol.format.GML);
+goog.inherits(ol.format.GML2, ol.format.GMLBase);
 
 
 /**
@@ -34,7 +35,7 @@ goog.inherits(ol.format.GML.v2, ol.format.GML);
  * @private
  * @type {string}
  */
-ol.format.GML.v2.schemaLocation_ = 'http://www.opengis.net/gml ' +
+ol.format.GML2.schemaLocation_ = 'http://www.opengis.net/gml ' +
     'http://schemas.opengis.net/gml/2.1.2/feature.xsd';
 
 
@@ -44,7 +45,7 @@ ol.format.GML.v2.schemaLocation_ = 'http://www.opengis.net/gml ' +
  * @private
  * @return {Array.<number>|undefined} Flat coordinates.
  */
-ol.format.GML.v2.prototype.readFlatCoordinates_ = function(node, objectStack) {
+ol.format.GML2.prototype.readFlatCoordinates_ = function(node, objectStack) {
   var s = ol.xml.getAllTextContent(node, false).replace(/^\s*|\s*$/g, '');
   var context = objectStack[0];
   goog.asserts.assert(goog.isObject(context));
@@ -88,13 +89,13 @@ ol.format.GML.v2.prototype.readFlatCoordinates_ = function(node, objectStack) {
  * @param {Array.<*>} objectStack Object stack.
  * @private
  */
-ol.format.GML.v2.prototype.innerBoundaryIsParser_ =
+ol.format.GML2.prototype.innerBoundaryIsParser_ =
     function(node, objectStack) {
   goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT);
   goog.asserts.assert(node.localName == 'innerBoundaryIs');
   var flatLinearRing = ol.xml.pushParseAndPop(
       /** @type {Array.<number>|undefined} */ (undefined),
-      ol.format.GML.RING_PARSERS, node, objectStack, this);
+      ol.format.GMLBase.RING_PARSERS, node, objectStack, this);
   if (goog.isDef(flatLinearRing)) {
     var flatLinearRings = /** @type {Array.<Array.<number>>} */
         (objectStack[objectStack.length - 1]);
@@ -110,13 +111,13 @@ ol.format.GML.v2.prototype.innerBoundaryIsParser_ =
  * @param {Array.<*>} objectStack Object stack.
  * @private
  */
-ol.format.GML.v2.prototype.outerBoundaryIsParser_ =
+ol.format.GML2.prototype.outerBoundaryIsParser_ =
     function(node, objectStack) {
   goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT);
   goog.asserts.assert(node.localName == 'outerBoundaryIs');
   var flatLinearRing = ol.xml.pushParseAndPop(
       /** @type {Array.<number>|undefined} */ (undefined),
-      ol.format.GML.RING_PARSERS, node, objectStack, this);
+      ol.format.GMLBase.RING_PARSERS, node, objectStack, this);
   if (goog.isDef(flatLinearRing)) {
     var flatLinearRings = /** @type {Array.<Array.<number>>} */
         (objectStack[objectStack.length - 1]);
@@ -132,10 +133,10 @@ ol.format.GML.v2.prototype.outerBoundaryIsParser_ =
  * @type {Object.<string, Object.<string, ol.xml.Parser>>}
  * @private
  */
-ol.format.GML.v2.GEOMETRY_FLAT_COORDINATES_PARSERS_ = {
+ol.format.GML2.GEOMETRY_FLAT_COORDINATES_PARSERS_ = {
   'http://www.opengis.net/gml' : {
     'coordinates': ol.xml.makeReplacer(
-        ol.format.GML.v2.prototype.readFlatCoordinates_)
+        ol.format.GML2.prototype.readFlatCoordinates_)
   }
 };
 
@@ -145,10 +146,10 @@ ol.format.GML.v2.GEOMETRY_FLAT_COORDINATES_PARSERS_ = {
  * @type {Object.<string, Object.<string, ol.xml.Parser>>}
  * @private
  */
-ol.format.GML.v2.FLAT_LINEAR_RINGS_PARSERS_ = {
+ol.format.GML2.FLAT_LINEAR_RINGS_PARSERS_ = {
   'http://www.opengis.net/gml' : {
-    'innerBoundaryIs': ol.format.GML.v2.prototype.innerBoundaryIsParser_,
-    'outerBoundaryIs': ol.format.GML.v2.prototype.outerBoundaryIsParser_
+    'innerBoundaryIs': ol.format.GML2.prototype.innerBoundaryIsParser_,
+    'outerBoundaryIs': ol.format.GML2.prototype.outerBoundaryIsParser_
   }
 };
 
@@ -158,17 +159,19 @@ ol.format.GML.v2.FLAT_LINEAR_RINGS_PARSERS_ = {
  * @type {Object.<string, Object.<string, ol.xml.Parser>>}
  * @private
  */
-ol.format.GML.v2.GEOMETRY_PARSERS_ = {
+ol.format.GML2.GEOMETRY_PARSERS_ = {
   'http://www.opengis.net/gml' : {
-    'Point': ol.xml.makeReplacer(ol.format.GML.prototype.readPoint),
-    'MultiPoint': ol.xml.makeReplacer(ol.format.GML.prototype.readMultiPoint),
-    'LineString': ol.xml.makeReplacer(ol.format.GML.prototype.readLineString),
+    'Point': ol.xml.makeReplacer(ol.format.GMLBase.prototype.readPoint),
+    'MultiPoint': ol.xml.makeReplacer(
+        ol.format.GMLBase.prototype.readMultiPoint),
+    'LineString': ol.xml.makeReplacer(
+        ol.format.GMLBase.prototype.readLineString),
     'MultiLineString': ol.xml.makeReplacer(
-        ol.format.GML.prototype.readMultiLineString),
+        ol.format.GMLBase.prototype.readMultiLineString),
     'LinearRing' : ol.xml.makeReplacer(
-        ol.format.GML.prototype.readLinearRing),
-    'Polygon': ol.xml.makeReplacer(ol.format.GML.prototype.readPolygon),
+        ol.format.GMLBase.prototype.readLinearRing),
+    'Polygon': ol.xml.makeReplacer(ol.format.GMLBase.prototype.readPolygon),
     'MultiPolygon': ol.xml.makeReplacer(
-        ol.format.GML.prototype.readMultiPolygon)
+        ol.format.GMLBase.prototype.readMultiPolygon)
   }
 };

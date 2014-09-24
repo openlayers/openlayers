@@ -56,7 +56,7 @@ describe('ol.format.WFS', function() {
     var config = {
       'featureNS': 'http://mapserver.gis.umn.edu/mapserver',
       'featureType': 'polygon',
-      'gmlFormat': new ol.format.GML.v2()
+      'gmlFormat': new ol.format.GML2()
     };
 
     before(function(done) {
@@ -440,7 +440,6 @@ goog.require('ol.geom.MultiLineString');
 goog.require('ol.geom.MultiPoint');
 goog.require('ol.geom.MultiPolygon');
 goog.require('ol.geom.Polygon');
-goog.require('ol.format.GML');
-goog.require('ol.format.GML.v2');
+goog.require('ol.format.GML2');
 goog.require('ol.format.WFS');
 goog.require('ol.proj');
