@@ -24,12 +24,13 @@ goog.require('ol.xml');
  */
 ol.format.GML.v2 = function(opt_options) {
 
-  goog.base(this);
+  goog.base(this, opt_options);
 };
 goog.inherits(ol.format.GML.v2, ol.format.GML);
 
 
 /**
+ * @const
  * @private
  * @type {string}
  */
