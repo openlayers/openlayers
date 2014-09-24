@@ -72,6 +72,22 @@ ol.format.GML.v3 = function(opt_options) {
 goog.inherits(ol.format.GML.v3, ol.format.GML);
 
 
+
+/**
+ * @classdesc
+ * Feature format for reading and writing data in the GML format
+ * version 3.1.1.
+ * Currently only supports GML 3.1.1 Simple Features profile.
+ *
+ * @constructor
+ * @param {olx.format.GMLOptions=} opt_options
+ *     Optional configuration object.
+ * @extends {ol.format.GMLBase}
+ * @api stable
+ */
+ol.format.GML = ol.format.GML3;
+
+
 /**
  * @const
  * @type {string}
