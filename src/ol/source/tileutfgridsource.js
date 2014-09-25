@@ -16,8 +16,8 @@ goog.require('ol.tilegrid.XYZ');
 /**
  * @classdesc
  * TODO: desc
- * TODO: caching
  * TODO: getTilePixelSize ?
+ * TODO: lazy loading
  *
  * @constructor
  * @extends {ol.source.Tile}
@@ -55,6 +55,27 @@ ol.source.TileUTFGrid.prototype.canExpireCache = function() {
  */
 ol.source.TileUTFGrid.prototype.expireCache = function(usedTiles) {
   this.tileCache.expireCache(usedTiles);
+};
+
+
+/**
+ * @param {ol.Coordinate} coordinate Coordinate.
+ * @param {number} resolution Resolution.
+ * @param {function(Object)} callback Info callback.
+ */
+ol.source.TileUTFGrid.prototype.getFeatureInfo = function(
+    coordinate, resolution, callback) {
+  if (!goog.isNull(this.tileGrid)) {
+    var tileCoord = this.tileGrid.getTileCoordForCoordAndResolution(
+                        coordinate, resolution);
+    var tileCoordKey = this.getKeyZXY.apply(this, tileCoord);
+    if (this.tileCache.containsKey(tileCoordKey)) {
+      var tile = /** @type {!ol.Tile} */ (this.tileCache.get(tileCoordKey));
+      callback(tile.getData());
+    } else {
+      //TODO: async?
+    }
+  }
 };
 
 
@@ -126,7 +147,6 @@ ol.source.TileUTFGrid.prototype.getTile =
   if (this.tileCache.containsKey(tileCoordKey)) {
     return /** @type {!ol.Tile} */ (this.tileCache.get(tileCoordKey));
   } else {
-    goog.asserts.assert(projection);
     var tileCoord = [z, x, y];
     var tileUrl = this.tileUrlFunction(tileCoord, pixelRatio, projection);
     var tile = new ol.source.TileUTFGridTile_(
@@ -182,6 +202,14 @@ goog.inherits(ol.source.TileUTFGridTile_, ol.Tile);
  * @inheritDoc
  */
 ol.source.TileUTFGridTile_.prototype.getImage = goog.nullFunction;
+
+
+/**
+ * @return {Object}
+ */
+ol.source.TileUTFGridTile_.prototype.getData = function() { //TODO: coordinate
+  return this.data_;
+};
 
 
 /**
