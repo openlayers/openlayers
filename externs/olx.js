@@ -3542,6 +3542,13 @@ olx.source.GPXOptions.prototype.urls;
 
 
 /**
+ * @typedef {{url: string}}
+ * @api
+ */
+olx.source.TileUTFGridOptions;
+
+
+/**
  * @typedef {{attributions: (Array.<ol.Attribution>|undefined),
  *            crossOrigin: (null|string|undefined),
  *            logo: (string|olx.LogoOptions|undefined),
