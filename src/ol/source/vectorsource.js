@@ -28,6 +28,14 @@ ol.source.VectorEventType = {
    * @api stable
    */
   ADDFEATURE: 'addfeature',
+
+  /**
+   * Triggered when a feature is updated.
+   * @event ol.source.VectorEvent#updatefeature
+   * @api
+   */
+  UPDATEFEATURE: 'updatefeature',
+
   /**
    * Triggered when a feature is removed from the source.
    * @event ol.source.VectorEvent#removefeature
@@ -437,6 +445,8 @@ ol.source.Vector.prototype.handleFeatureChange_ = function(event) {
     }
   }
   this.changed();
+  this.dispatchEvent(new ol.source.VectorEvent(
+      ol.source.VectorEventType.UPDATEFEATURE, feature));
 };
 
 
