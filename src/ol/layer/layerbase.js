@@ -53,6 +53,7 @@ ol.layer.LayerState;
  * @constructor
  * @extends {ol.Object}
  * @param {olx.layer.BaseOptions} options Layer options.
+ * @api stable
  */
 ol.layer.Base = function(options) {
 
