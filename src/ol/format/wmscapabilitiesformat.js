@@ -327,6 +327,7 @@ ol.format.WMSCapabilities.readLayer_ = function(node, objectStack) {
     if (goog.isDef(parentValue)) {
       var childValue = goog.object.setIfUndefined(layerObject, key, []);
       childValue = childValue.concat(parentValue);
+      goog.object.set(layerObject, key, childValue);
     }
   });
 
