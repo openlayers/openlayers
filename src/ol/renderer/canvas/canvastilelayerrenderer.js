@@ -5,13 +5,16 @@ goog.provide('ol.renderer.canvas.TileLayer');
 
 goog.require('goog.array');
 goog.require('goog.asserts');
+goog.require('goog.events');
 goog.require('goog.object');
 goog.require('goog.vec.Mat4');
+goog.require('ol.Object');
 goog.require('ol.Size');
 goog.require('ol.TileRange');
 goog.require('ol.TileState');
 goog.require('ol.dom');
 goog.require('ol.extent');
+goog.require('ol.layer.LayerProperty');
 goog.require('ol.layer.Tile');
 goog.require('ol.renderer.Map');
 goog.require('ol.renderer.canvas.Layer');
@@ -78,6 +81,9 @@ ol.renderer.canvas.TileLayer = function(mapRenderer, tileLayer) {
    */
   this.renderedTiles_ = null;
 
+  goog.events.listen(
+      tileLayer, ol.Object.getChangeEventType(ol.layer.LayerProperty.EXTENT),
+      this.handleLayerExtentChanged_, false, this);
 };
 goog.inherits(ol.renderer.canvas.TileLayer, ol.renderer.canvas.Layer);
 
@@ -95,6 +101,19 @@ ol.renderer.canvas.TileLayer.prototype.getImage = function() {
  */
 ol.renderer.canvas.TileLayer.prototype.getImageTransform = function() {
   return this.imageTransform_;
+};
+
+
+/**
+ * Handle layer extent changes.  We clear the canvas any time the layer extent
+ * changes.
+ * @private
+ */
+ol.renderer.canvas.TileLayer.prototype.handleLayerExtentChanged_ = function() {
+  if (!goog.isNull(this.context_)) {
+    this.context_.clearRect(0, 0, this.canvasSize_[0], this.canvasSize_[1]);
+    this.renderedCanvasZ_ = NaN;
+  }
 };
 
 
