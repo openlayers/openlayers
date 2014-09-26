@@ -3542,7 +3542,8 @@ olx.source.GPXOptions.prototype.urls;
 
 
 /**
- * @typedef {{url: string}}
+ * @typedef {{url: string,
+ *            preemptive: (boolean|undefined)}}
  * @api
  */
 olx.source.TileUTFGridOptions;
