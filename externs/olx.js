@@ -3101,6 +3101,7 @@ olx.FeatureOverlayOptions.prototype.style;
  * @typedef {{culture: (string|undefined),
  *     key: string,
  *     imagerySet: string,
+ *     maxZoom: (number|undefined),
  *     tileLoadFunction: (ol.TileLoadFunctionType|undefined)}}
  * @api
  */
@@ -3129,6 +3130,15 @@ olx.source.BingMapsOptions.prototype.key;
  * @api stable
  */
 olx.source.BingMapsOptions.prototype.imagerySet;
+
+
+/**
+ * Max zoom. Default is what's advertized by the BingMaps service (`21`
+ * currently).
+ * @type {number|undefined}
+ * @api
+ */
+olx.source.BingMapsOptions.prototype.maxZoom;
 
 
 /**
