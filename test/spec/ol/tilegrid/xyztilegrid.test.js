@@ -10,6 +10,74 @@ describe('ol.tilegrid.XYZ', function() {
     });
   });
 
+  describe('#getTileCoordChildTileRange()', function() {
+
+    it('returns the tile range for one zoom level deeper', function() {
+      var range;
+
+      range = xyzTileGrid.getTileCoordChildTileRange([0, 0, 0]);
+      expect(range.minX).to.be(0);
+      expect(range.maxX).to.be(1);
+      expect(range.minY).to.be(0);
+      expect(range.maxY).to.be(1);
+
+      range = xyzTileGrid.getTileCoordChildTileRange([0, 1, 0]);
+      expect(range.minX).to.be(2);
+      expect(range.maxX).to.be(3);
+      expect(range.minY).to.be(0);
+      expect(range.maxY).to.be(1);
+
+      range = xyzTileGrid.getTileCoordChildTileRange([0, 0, 1]);
+      expect(range.minX).to.be(0);
+      expect(range.maxX).to.be(1);
+      expect(range.minY).to.be(2);
+      expect(range.maxY).to.be(3);
+
+      range = xyzTileGrid.getTileCoordChildTileRange([0, -1, 0]);
+      expect(range.minX).to.be(-2);
+      expect(range.maxX).to.be(-1);
+      expect(range.minY).to.be(0);
+      expect(range.maxY).to.be(1);
+
+      range = xyzTileGrid.getTileCoordChildTileRange([0, 0, -1]);
+      expect(range.minX).to.be(0);
+      expect(range.maxX).to.be(1);
+      expect(range.minY).to.be(-2);
+      expect(range.maxY).to.be(-1);
+    });
+
+    it('returns null for z > maxZoom', function() {
+      var max = xyzTileGrid.maxZoom;
+      var range = xyzTileGrid.getTileCoordChildTileRange([max + 1, 0, 0]);
+      expect(range).to.be(null);
+    });
+
+    it('is like ol.tilegrid.TileGrid#getTileCoordChildTileRange()', function() {
+      var superMethod = ol.tilegrid.TileGrid.prototype
+          .getTileCoordChildTileRange.bind(xyzTileGrid);
+
+      var coord, selfRange, superRange;
+
+      coord = [0, 0, 0];
+      selfRange = xyzTileGrid.getTileCoordChildTileRange(coord);
+      superRange = superMethod(coord);
+      expect(selfRange.minX).to.be(superRange.minX);
+      expect(selfRange.maxX).to.be(superRange.maxX);
+      expect(selfRange.minY).to.be(superRange.minY);
+      expect(selfRange.maxY).to.be(superRange.maxY);
+
+      coord = [1, 2, 3];
+      selfRange = xyzTileGrid.getTileCoordChildTileRange(coord);
+      superRange = superMethod(coord);
+      expect(selfRange.minX).to.be(superRange.minX);
+      expect(selfRange.maxX).to.be(superRange.maxX);
+      expect(selfRange.minY).to.be(superRange.minY);
+      expect(selfRange.maxY).to.be(superRange.maxY);
+
+    });
+
+  });
+
   describe('forEachTileCoordParentTileRange', function() {
 
     it('iterates as expected', function() {
@@ -96,4 +164,5 @@ describe('ol.tilegrid.XYZ', function() {
 
 goog.require('ol.TileCoord');
 goog.require('ol.TileRange');
+goog.require('ol.tilegrid.TileGrid');
 goog.require('ol.tilegrid.XYZ');
