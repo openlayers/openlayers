@@ -230,12 +230,21 @@ describe('ol.format.KML', function() {
       });
 
       it('can transform and write XYZ Point geometries', function() {
+        ol.proj.addProjection(new ol.proj.Projection({code: 'double'}));
+        ol.proj.addCoordinateTransforms('EPSG:4326', 'double',
+            function(coordinate) {
+              return [2 * coordinate[0], 2 * coordinate[1]];
+            },
+            function(coordinate) {
+              return [coordinate[0] / 2, coordinate[1] / 2];
+            });
+
         var layout = ol.geom.GeometryLayout.XYZ;
         var point = new ol.geom.Point([1, 2, 3], layout).transform(
-            'EPSG:4326', 'EPSG:3857');
+            'EPSG:4326', 'double');
         var features = [new ol.Feature(point)];
         var node = format.writeFeatures(features, {
-          featureProjection: 'EPSG:3857'
+          featureProjection: 'double'
         });
         var text =
             '<kml xmlns="http://www.opengis.net/kml/2.2"' +
@@ -250,6 +259,11 @@ describe('ol.format.KML', function() {
             '  </Placemark>' +
             '</kml>';
         expect(node).to.xmleql(ol.xml.load(text));
+
+        ol.proj.removeTransform(
+            ol.proj.get('EPSG:4326'), ol.proj.get('double'));
+        ol.proj.removeTransform(
+            ol.proj.get('double'), ol.proj.get('EPSG:4326'));
       });
 
       it('can write XYM Point geometries', function() {
@@ -2433,6 +2447,7 @@ goog.require('ol.style.Fill');
 goog.require('ol.style.Icon');
 goog.require('ol.style.IconOrigin');
 goog.require('ol.proj');
+goog.require('ol.proj.Projection');
 goog.require('ol.style.Stroke');
 goog.require('ol.style.Style');
 goog.require('ol.style.Text');
