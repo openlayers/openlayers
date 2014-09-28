@@ -876,6 +876,7 @@ describe('ol.format.GML', function() {
     });
 
     it('writes back features as GML', function() {
+      this.timeout(4000);
       var serialized = gmlFormat.writeFeatures(features);
       expect(serialized).to.xmleql(ol.xml.load(text));
     });
