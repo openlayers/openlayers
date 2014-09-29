@@ -157,9 +157,8 @@ ol.source.TileWMS.prototype.getGetFeatureInfoUrl =
 
   if (!goog.isNull(this.getProjection()) &&
       this.getProjection() !== projection) {
-    var transformFn = ol.proj.getTransform(projection, this.getProjection());
-    tileExtent = ol.extent.applyTransform(tileExtent, transformFn);
-    projection = this.getProjection();
+    tileExtent = ol.proj.transformExtent(tileExtent, projection, this.getProjection());
+    projectionObj = ol.proj.get(this.getProjection());
   }
 
   var baseParams = {
@@ -179,7 +178,7 @@ ol.source.TileWMS.prototype.getGetFeatureInfoUrl =
   goog.object.set(baseParams, this.v13_ ? 'J' : 'Y', y);
 
   return this.getRequestUrl_(tileCoord, tileSize, tileExtent,
-      1, projection, baseParams);
+      1, projectionObj, baseParams);
 };
 
 
@@ -389,9 +388,8 @@ ol.source.TileWMS.prototype.tileUrlFunction_ =
 
   if (!goog.isNull(this.getProjection()) &&
       this.getProjection() !== projection) {
-    var transformFn = ol.proj.getTransform(projection, this.getProjection());
-    tileExtent = ol.extent.applyTransform(tileExtent, transformFn);
-    projection = this.getProjection();
+    tileExtent = ol.proj.transformExtent(tileExtent, projection, this.getProjection());
+    projectionObj = ol.proj.get(this.getProjection());
   }
   if (pixelRatio != 1) {
     tileSize = (tileSize * pixelRatio + 0.5) | 0;
@@ -407,7 +405,7 @@ ol.source.TileWMS.prototype.tileUrlFunction_ =
   goog.object.extend(baseParams, this.params_);
 
   return this.getRequestUrl_(tileCoord, tileSize, tileExtent,
-      pixelRatio, projection, baseParams);
+      pixelRatio, projectionObj, baseParams);
 };
 
 
