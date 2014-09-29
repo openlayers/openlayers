@@ -26,8 +26,8 @@ function getConfig(configPath, callback) {
       var obj;
       try {
         obj = JSON.parse(String(data));
-      } catch (err) {
-        callback(new Error('Trouble parsing file as JSON: ' + options.config));
+      } catch (err2) {
+        callback(new Error('Trouble parsing file as JSON: ' + configPath));
         return;
       }
       var patterns = obj.exports;
@@ -54,7 +54,7 @@ function getConfig(configPath, callback) {
 /**
  * Read the symbols from info file.
  * @param {Array.<string>} patterns List of patterns to pass along.
- * @param {funciton(Error, Array.<string>, Array.<Object>)} callback Called
+ * @param {function(Error, Array.<string>, Array.<Object>)} callback Called
  *     with the patterns and symbols (or any error).
  */
 function getSymbols(patterns, callback) {
@@ -224,7 +224,7 @@ if (require.main === module) {
     fse.outputFile.bind(fse, options.output)
   ], function(err) {
     if (err) {
-      console.error(err.message);
+      process.stderr.write(err.message + '\n');
       process.exit(1);
     } else {
       process.exit(0);

@@ -87,6 +87,7 @@ ol.style.Text.prototype.getFont = function() {
 
 /**
  * @return {number} Horizontal text offset.
+ * @api
  */
 ol.style.Text.prototype.getOffsetX = function() {
   return this.offsetX_;
@@ -95,6 +96,7 @@ ol.style.Text.prototype.getOffsetX = function() {
 
 /**
  * @return {number} Vertical text offset.
+ * @api
  */
 ol.style.Text.prototype.getOffsetY = function() {
   return this.offsetY_;
@@ -161,4 +163,112 @@ ol.style.Text.prototype.getTextAlign = function() {
  */
 ol.style.Text.prototype.getTextBaseline = function() {
   return this.textBaseline_;
+};
+
+
+/**
+ * Set the font.
+ *
+ * @param {string|undefined} font Font.
+ * @api
+ */
+ol.style.Text.prototype.setFont = function(font) {
+  this.font_ = font;
+};
+
+
+/**
+ * Set the x offset.
+ *
+ * @param {number} offsetX Horizontal text offset.
+ */
+ol.style.Text.prototype.setOffsetX = function(offsetX) {
+  this.offsetX_ = offsetX;
+};
+
+
+/**
+ * Set the y offset.
+ *
+ * @param {number} offsetY Vertical text offset.
+ */
+ol.style.Text.prototype.setOffsetY = function(offsetY) {
+  this.offsetY_ = offsetY;
+};
+
+
+/**
+ * Set the fill.
+ *
+ * @param {ol.style.Fill} fill Fill style.
+ * @api
+ */
+ol.style.Text.prototype.setFill = function(fill) {
+  this.fill_ = fill;
+};
+
+
+/**
+ * Set the rotation.
+ *
+ * @param {number|undefined} rotation Rotation.
+ * @api
+ */
+ol.style.Text.prototype.setRotation = function(rotation) {
+  this.rotation_ = rotation;
+};
+
+
+/**
+ * Set the scale.
+ *
+ * @param {number|undefined} scale Scale.
+ * @api
+ */
+ol.style.Text.prototype.setScale = function(scale) {
+  this.scale_ = scale;
+};
+
+
+/**
+ * Set the stroke.
+ *
+ * @param {ol.style.Stroke} stroke Stroke style.
+ * @api
+ */
+ol.style.Text.prototype.setStroke = function(stroke) {
+  this.stroke_ = stroke;
+};
+
+
+/**
+ * Set the text.
+ *
+ * @param {string|undefined} text Text.
+ * @api
+ */
+ol.style.Text.prototype.setText = function(text) {
+  this.text_ = text;
+};
+
+
+/**
+ * Set the text alignment.
+ *
+ * @param {string|undefined} textAlign Text align.
+ * @api
+ */
+ol.style.Text.prototype.setTextAlign = function(textAlign) {
+  this.textAlign_ = textAlign;
+};
+
+
+/**
+ * Set the text baseline.
+ *
+ * @param {string|undefined} textBaseline Text baseline.
+ * @api
+ */
+ol.style.Text.prototype.setTextBaseline = function(textBaseline) {
+  this.textBaseline_ = textBaseline;
 };

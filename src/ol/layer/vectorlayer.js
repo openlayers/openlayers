@@ -25,7 +25,7 @@ ol.layer.VectorProperty = {
  * @extends {ol.layer.Layer}
  * @fires ol.render.Event
  * @param {olx.layer.VectorOptions=} opt_options Options.
- * @api
+ * @api stable
  */
 ol.layer.Vector = function(opt_options) {
 
@@ -51,8 +51,7 @@ ol.layer.Vector = function(opt_options) {
    */
   this.styleFunction_ = undefined;
 
-  this.setStyle(goog.isDefAndNotNull(options.style) ?
-      options.style : ol.style.defaultStyleFunction);
+  this.setStyle(options.style);
 
 };
 goog.inherits(ol.layer.Vector, ol.layer.Layer);
@@ -69,11 +68,19 @@ ol.layer.Vector.prototype.getRenderOrder = function() {
 
 
 /**
+ * @function
+ * @return {ol.source.Vector} Source.
+ * @api stable
+ */
+ol.layer.Vector.prototype.getSource;
+
+
+/**
  * Get the style for features.  This returns whatever was passed to the `style`
  * option at construction or to the `setStyle` method.
  * @return {ol.style.Style|Array.<ol.style.Style>|ol.style.StyleFunction}
  *     Layer style.
- * @api
+ * @api stable
  */
 ol.layer.Vector.prototype.getStyle = function() {
   return this.style_;
@@ -83,7 +90,7 @@ ol.layer.Vector.prototype.getStyle = function() {
 /**
  * Get the style function.
  * @return {ol.style.StyleFunction|undefined} Layer style function.
- * @api
+ * @api stable
  */
 ol.layer.Vector.prototype.getStyleFunction = function() {
   return this.styleFunction_;
@@ -102,13 +109,17 @@ ol.layer.Vector.prototype.setRenderOrder = function(renderOrder) {
 /**
  * Set the style for features.  This can be a single style object, an array
  * of styles, or a function that takes a feature and resolution and returns
- * an array of styles.
- * @param {ol.style.Style|Array.<ol.style.Style>|ol.style.StyleFunction} style
- *     Layer style.
- * @api
+ * an array of styles. If it is `undefined` the default style is used. If
+ * it is `null` the layer has no style (a `null` style), so only features
+ * that have their own styles will be rendered in the layer. See
+ * {@link ol.style} for information on the default style.
+ * @param {ol.style.Style|Array.<ol.style.Style>|ol.style.StyleFunction|undefined}
+ *     style Layer style.
+ * @api stable
  */
 ol.layer.Vector.prototype.setStyle = function(style) {
-  this.style_ = style;
-  this.styleFunction_ = ol.style.createStyleFunction(style);
-  this.dispatchChangeEvent();
+  this.style_ = goog.isDef(style) ? style : ol.style.defaultStyleFunction;
+  this.styleFunction_ = goog.isNull(style) ?
+      undefined : ol.style.createStyleFunction(this.style_);
+  this.changed();
 };

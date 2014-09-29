@@ -25,7 +25,7 @@ goog.require('ol.pointer.PointerEventHandler');
  * @constructor
  * @extends {ol.control.Control}
  * @param {olx.control.FullScreenOptions=} opt_options Options.
- * @api
+ * @api stable
  */
 ol.control.FullScreen = function(opt_options) {
 

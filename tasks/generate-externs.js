@@ -7,6 +7,8 @@ var nomnom = require('nomnom');
 
 var generateInfo = require('./generate-info');
 
+var googRegEx = /^goog\..*$/;
+
 /**
  * Read the symbols from info file.
  * @param {funciton(Error, Array.<string>, Array.<Object>)} callback Called
@@ -18,10 +20,8 @@ function getInfo(callback) {
       callback(new Error('Trouble generating info: ' + err.message));
       return;
     }
-    var typedefs = require('../build/info.json').typedefs;
-    var symbols = require('../build/info.json').symbols;
-    var externs = require('../build/info.json').externs;
-    callback(null, typedefs, symbols, externs);
+    var info = require('../build/info.json');
+    callback(null, info.typedefs, info.symbols, info.externs, info.base);
   });
 }
 
@@ -31,10 +31,11 @@ function getInfo(callback) {
  * @param {Array.<Object>} typedefs List of typedefs.
  * @param {Array.<Object>} symbols List of symbols.
  * @param {Array.<Object>} externs List of externs.
+ * @param {Array.<Object>} base List of base.
  * @param {string|undefined} namespace Target object for exported symbols.
  * @return {string} Export code.
  */
-function generateExterns(typedefs, symbols, externs) {
+function generateExterns(typedefs, symbols, externs, base) {
   var lines = [];
   var processedSymbols = {};
   var constructors = {};
@@ -59,16 +60,16 @@ function generateExterns(typedefs, symbols, externs) {
 
   function nameToJS(name) {
     processedSymbols[name] = true;
-    if (name.indexOf('.') == -1) {
+    if (name.indexOf('.') === -1) {
       name = 'var ' + name;
     }
     return name;
   }
 
   function noGoogTypes(typesWithGoog) {
-    typesWithoutGoog = [];
+    var typesWithoutGoog = [];
     typesWithGoog.forEach(function(type) {
-      typesWithoutGoog.push(type.replace(/^goog\..*$/, '*'));
+      typesWithoutGoog.push(type.replace(googRegEx, '*'));
     });
     return typesWithoutGoog;
   }
@@ -91,9 +92,12 @@ function generateExterns(typedefs, symbols, externs) {
     }
 
     lines.push('/**');
-    if (symbol.kind == 'class') {
+    if (symbol.kind === 'class') {
       constructors[name] = true;
       lines.push(' * @constructor');
+      if (symbol.extends && !googRegEx.test(symbol.extends)) {
+        lines.push(' * @extends {' + symbol.extends + '}');
+      }
     }
     if (symbol.types) {
       lines.push(' * @type {' + noGoogTypes(symbol.types).join('|') + '}');
@@ -105,18 +109,20 @@ function generateExterns(typedefs, symbols, externs) {
         lines.push(' * @param {' +
             (param.variable ? '...' : '') +
             noGoogTypes(param.types).join('|') +
-            (param.optional ? '=' : '') +
+            (param.optional ? '=' : '') + (param.nullable ? '!' : '') +
             '} ' + param.name);
       });
     }
     if (symbol.returns) {
-      lines.push(' * @return {' + noGoogTypes(symbol.returns).join('|') + '}');
+      lines.push(' * @return {' +
+          (symbol.returns.nullable ? '!' : '') +
+          noGoogTypes(symbol.returns.types).join('|') + '}');
     }
     if (symbol.template) {
       lines.push(' * @template ' + symbol.template);
     }
     lines.push(' */');
-    if (symbol.kind == 'function' || symbol.kind == 'class') {
+    if (symbol.kind === 'function' || symbol.kind === 'class') {
       lines.push(nameToJS(name) + ' = function(' + args.join(', ') + ') {};');
     } else {
       lines.push(nameToJS(name) + ';');
@@ -125,6 +131,10 @@ function generateExterns(typedefs, symbols, externs) {
   }
 
   externs.forEach(processSymbol);
+
+  base.forEach(processSymbol);
+
+  symbols.forEach(processSymbol);
 
   typedefs.forEach(function(typedef) {
     addNamespaces(typedef.name);
@@ -135,8 +145,6 @@ function generateExterns(typedefs, symbols, externs) {
     lines.push('\n');
   });
 
-  symbols.forEach(processSymbol);
-  
   return lines.join('\n');
 }
 
@@ -150,10 +158,10 @@ function generateExterns(typedefs, symbols, externs) {
 function main(callback) {
   async.waterfall([
     getInfo,
-    function(typedefs, symbols, externs, done) {
+    function(typedefs, symbols, externs, base, done) {
       var code, err;
       try {
-        code = generateExterns(typedefs, symbols, externs);
+        code = generateExterns(typedefs, symbols, externs, base);
       } catch (e) {
         err = e;
       }
@@ -181,7 +189,7 @@ if (require.main === module) {
     fse.outputFile.bind(fse, options.output)
   ], function(err) {
     if (err) {
-      console.error(err.message);
+      process.stderr.write(err.message + '\n');
       process.exit(1);
     } else {
       process.exit(0);

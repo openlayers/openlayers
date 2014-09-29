@@ -144,7 +144,7 @@ async.waterfall([
   writeExampleList
 ], function(err) {
   if (err) {
-    console.error(err);
+    process.stderr.write(err + '\n');
     process.exit(1);
   }
 });

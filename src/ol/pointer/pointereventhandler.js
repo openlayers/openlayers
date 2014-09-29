@@ -36,7 +36,7 @@ goog.require('goog.events.BrowserEvent');
 goog.require('goog.events.Event');
 goog.require('goog.events.EventTarget');
 
-goog.require('ol.BrowserFeature');
+goog.require('ol.has');
 goog.require('ol.pointer.MouseSource');
 goog.require('ol.pointer.MsSource');
 goog.require('ol.pointer.NativeSource');
@@ -88,15 +88,15 @@ goog.inherits(ol.pointer.PointerEventHandler, goog.events.EventTarget);
  * that generate pointer events.
  */
 ol.pointer.PointerEventHandler.prototype.registerSources = function() {
-  if (ol.BrowserFeature.HAS_POINTER) {
+  if (ol.has.POINTER) {
     this.registerSource('native', new ol.pointer.NativeSource(this));
-  } else if (ol.BrowserFeature.HAS_MSPOINTER) {
+  } else if (ol.has.MSPOINTER) {
     this.registerSource('ms', new ol.pointer.MsSource(this));
   } else {
     var mouseSource = new ol.pointer.MouseSource(this);
     this.registerSource('mouse', mouseSource);
 
-    if (ol.BrowserFeature.HAS_TOUCH) {
+    if (ol.has.TOUCH) {
       this.registerSource('touch',
           new ol.pointer.TouchSource(this, mouseSource));
     }

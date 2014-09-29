@@ -12,7 +12,7 @@ goog.require('ol.proj');
  * `'Polygon'`, `'MultiPoint'`, `'MultiLineString'`, `'MultiPolygon'`,
  * `'GeometryCollection'`, `'Circle'`.
  * @enum {string}
- * @api
+ * @api stable
  */
 ol.geom.GeometryType = {
   POINT: 'Point',
@@ -32,7 +32,7 @@ ol.geom.GeometryType = {
  * or measure ('M') coordinate is available. Supported values are `'XY'`,
  * `'XYZ'`, `'XYM'`, `'XYZM'`.
  * @enum {string}
- * @api
+ * @api stable
  */
 ol.geom.GeometryLayout = {
   XY: 'XY',
@@ -52,7 +52,7 @@ ol.geom.GeometryLayout = {
  * @constructor
  * @extends {ol.Observable}
  * @fires change Triggered when the geometry changes.
- * @api
+ * @api stable
  */
 ol.geom.Geometry = function() {
 
@@ -95,8 +95,8 @@ goog.inherits(ol.geom.Geometry, ol.Observable);
 /**
  * Make a complete copy of the geometry.
  * @function
- * @return {ol.geom.Geometry} Clone.
- * @api
+ * @return {!ol.geom.Geometry} Clone.
+ * @api stable
  */
 ol.geom.Geometry.prototype.clone = goog.abstractMethod;
 
@@ -115,7 +115,7 @@ ol.geom.Geometry.prototype.closestPointXY = goog.abstractMethod;
  * @param {ol.Coordinate} point Point.
  * @param {ol.Coordinate=} opt_closestPoint Closest point.
  * @return {ol.Coordinate} Closest point.
- * @api
+ * @api stable
  */
 ol.geom.Geometry.prototype.getClosestPoint = function(point, opt_closestPoint) {
   var closestPoint = goog.isDef(opt_closestPoint) ?
@@ -147,7 +147,7 @@ ol.geom.Geometry.prototype.containsXY = goog.functions.FALSE;
  * @function
  * @param {ol.Extent=} opt_extent Extent.
  * @return {ol.Extent} extent Extent.
- * @api
+ * @api stable
  */
 ol.geom.Geometry.prototype.getExtent = goog.abstractMethod;
 
@@ -159,7 +159,6 @@ ol.geom.Geometry.prototype.getExtent = goog.abstractMethod;
  * @function
  * @param {number} squaredTolerance Squared tolerance.
  * @return {ol.geom.Geometry} Simplified geometry.
- * @api
  */
 ol.geom.Geometry.prototype.getSimplifiedGeometry = goog.abstractMethod;
 
@@ -168,25 +167,37 @@ ol.geom.Geometry.prototype.getSimplifiedGeometry = goog.abstractMethod;
  * Get the type of this geometry.
  * @function
  * @return {ol.geom.GeometryType} Geometry type.
- * @api
+ * @api stable
  */
 ol.geom.Geometry.prototype.getType = goog.abstractMethod;
 
 
 /**
- * Apply a transform function to the geometry.  Modifies the geometry in place.
+ * Apply a transform function to each coordinate of the geometry.
+ * The geometry is modified in place.
  * If you do not want the geometry modified in place, first clone() it and
  * then use this function on the clone.
  * @function
  * @param {ol.TransformFunction} transformFn Transform.
- * @api
+ * @api stable
  */
 ol.geom.Geometry.prototype.applyTransform = goog.abstractMethod;
 
 
 /**
- * Transform a geometry from one coordinate reference system to another.
- * Modifies the geometry in place.
+ * Test if the geometry and the passed extent intersect.
+ * @param {ol.Extent} extent Extent.
+ * @return {boolean} `true` if the geometry and the extent intersect.
+ * @function
+ * @api
+ */
+ol.geom.Geometry.prototype.intersectsExtent = goog.abstractMethod;
+
+
+/**
+ * Transform each coordinate of the geometry from one coordinate reference
+ * system to another. The geometry is modified in place.
+ * For example, a line will be transformed to a line and a circle to a circle.
  * If you do not want the geometry modified in place, first clone() it and
  * then use this function on the clone.
  *
@@ -196,65 +207,9 @@ ol.geom.Geometry.prototype.applyTransform = goog.abstractMethod;
  *     string identifier or a {@link ol.proj.Projection} object.
  * @return {ol.geom.Geometry} This geometry.  Note that original geometry is
  *     modified in place.
- * @api
+ * @api stable
  */
 ol.geom.Geometry.prototype.transform = function(source, destination) {
   this.applyTransform(ol.proj.getTransform(source, destination));
   return this;
 };
-
-
-/**
- * Array representation of a point. Example: `[16, 48]`.
- * @typedef {ol.Coordinate}
- * @api
- */
-ol.geom.RawPoint;
-
-
-/**
- * Array representation of a linestring.
- * @typedef {Array.<ol.Coordinate>}
- * @api
- */
-ol.geom.RawLineString;
-
-
-/**
- * Array representation of a linear ring.
- * @typedef {Array.<ol.Coordinate>}
- * @api
- */
-ol.geom.RawLinearRing;
-
-
-/**
- * Array representation of a polygon.
- * @typedef {Array.<ol.geom.RawLinearRing>}
- * @api
- */
-ol.geom.RawPolygon;
-
-
-/**
- * Array representation of a multipoint.
- * @typedef {Array.<ol.geom.RawPoint>}
- * @api
- */
-ol.geom.RawMultiPoint;
-
-
-/**
- * Array representation of a multilinestring.
- * @typedef {Array.<ol.geom.RawLineString>}
- * @api
- */
-ol.geom.RawMultiLineString;
-
-
-/**
- * Array representation of a multipolygon.
- * @typedef {Array.<ol.geom.RawPolygon>}
- * @api
- */
-ol.geom.RawMultiPolygon;

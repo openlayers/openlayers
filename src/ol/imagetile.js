@@ -21,8 +21,7 @@ goog.require('ol.TileState');
  * @param {?string} crossOrigin Cross origin.
  * @param {ol.TileLoadFunctionType} tileLoadFunction Tile load function.
  */
-ol.ImageTile =
-    function(tileCoord, state, src, crossOrigin, tileLoadFunction) {
+ol.ImageTile = function(tileCoord, state, src, crossOrigin, tileLoadFunction) {
 
   goog.base(this, tileCoord, state);
 
@@ -104,7 +103,7 @@ ol.ImageTile.prototype.getKey = function() {
 ol.ImageTile.prototype.handleImageError_ = function() {
   this.state = ol.TileState.ERROR;
   this.unlistenImage_();
-  this.dispatchChangeEvent();
+  this.changed();
 };
 
 
@@ -114,9 +113,11 @@ ol.ImageTile.prototype.handleImageError_ = function() {
  * @private
  */
 ol.ImageTile.prototype.handleImageLoad_ = function() {
-  if (!goog.isDef(this.image_.naturalWidth)) {
-    this.image_.naturalWidth = this.image_.width;
-    this.image_.naturalHeight = this.image_.height;
+  if (ol.LEGACY_IE_SUPPORT && ol.IS_LEGACY_IE) {
+    if (!goog.isDef(this.image_.naturalWidth)) {
+      this.image_.naturalWidth = this.image_.width;
+      this.image_.naturalHeight = this.image_.height;
+    }
   }
 
   if (this.image_.naturalWidth && this.image_.naturalHeight) {
@@ -125,7 +126,7 @@ ol.ImageTile.prototype.handleImageLoad_ = function() {
     this.state = ol.TileState.EMPTY;
   }
   this.unlistenImage_();
-  this.dispatchChangeEvent();
+  this.changed();
 };
 
 

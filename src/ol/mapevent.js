@@ -25,6 +25,10 @@ ol.MapEventType = {
 
 
 /**
+ * @classdesc
+ * Events emitted as map events are instances of this type.
+ * See {@link ol.Map} for which events trigger a map event.
+ *
  * @constructor
  * @extends {goog.events.Event}
  * @implements {oli.MapEvent}
@@ -39,7 +43,7 @@ ol.MapEvent = function(type, map, opt_frameState) {
   /**
    * The map where the event occurred.
    * @type {ol.Map}
-   * @api
+   * @api stable
    */
   this.map = map;
 

@@ -176,9 +176,13 @@ ol.FeatureOverlay.prototype.handleMapPostCompose_ = function(event) {
   var frameState = event.frameState;
   var pixelRatio = frameState.pixelRatio;
   var resolution = frameState.viewState.resolution;
-  var i, ii, styles;
+  var i, ii, styles, featureStyleFunction;
   this.features_.forEach(function(feature) {
-    styles = styleFunction(feature, resolution);
+    featureStyleFunction = feature.getStyleFunction();
+    styles = goog.isDef(featureStyleFunction) ?
+        featureStyleFunction.call(feature, resolution) :
+        styleFunction(feature, resolution);
+
     if (!goog.isDefAndNotNull(styles)) {
       return;
     }

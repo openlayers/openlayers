@@ -15,7 +15,7 @@ goog.require('ol.vec.Mat4');
 /**
  * Available renderers: `'canvas'`, `'dom'` or `'webgl'`.
  * @enum {string}
- * @api
+ * @api stable
  */
 ol.RendererType = {
   CANVAS: 'canvas',
@@ -92,10 +92,18 @@ ol.renderer.Map.prototype.createLayerRenderer = function(layer) {
  * @inheritDoc
  */
 ol.renderer.Map.prototype.disposeInternal = function() {
-  goog.object.forEach(this.layerRenderers_, function(layerRenderer) {
-    goog.dispose(layerRenderer);
-  });
+  goog.object.forEach(this.layerRenderers_, goog.dispose);
   goog.base(this, 'disposeInternal');
+};
+
+
+/**
+ * @param {ol.Map} map Map.
+ * @param {olx.FrameState} frameState Frame state.
+ * @private
+ */
+ol.renderer.Map.expireIconCache_ = function(map, frameState) {
+  ol.style.IconImageCache.getInstance().expire();
 };
 
 
@@ -256,14 +264,7 @@ ol.renderer.Map.prototype.removeUnusedLayerRenderers_ =
  * @protected
  */
 ol.renderer.Map.prototype.scheduleExpireIconCache = function(frameState) {
-  frameState.postRenderFunctions.push(
-      /**
-       * @param {ol.Map} map Map.
-       * @param {olx.FrameState} frameState Frame state.
-       */
-      function(map, frameState) {
-        ol.style.IconImageCache.getInstance().expire();
-      });
+  frameState.postRenderFunctions.push(ol.renderer.Map.expireIconCache_);
 };
 
 

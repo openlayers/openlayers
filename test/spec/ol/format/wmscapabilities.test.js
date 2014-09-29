@@ -97,7 +97,7 @@ describe('ol.format.WMSCapabilities', function() {
       expect(layer.Layer.length).to.eql(4);
       expect(layer.Layer[0].Name).to.eql('ROADS_RIVERS');
       expect(layer.Layer[0].Title).to.eql('Roads and Rivers');
-      expect(layer.Layer[0].CRS).to.eql(['EPSG:26986']);
+      expect(layer.Layer[0].CRS).to.eql(['EPSG:26986', 'CRS:84']);
       expect(layer.Layer[0].Identifier).to.eql(['123456']);
       expect(layer.Layer[0].BoundingBox).to.eql([{
         crs: 'CRS:84',

@@ -1,19 +1,20 @@
 goog.provide('ol.test.format.GML');
 
-var readGeometry = function(format, text) {
+var readGeometry = function(format, text, opt_options) {
   var doc = ol.xml.load(text);
   // we need an intermediate node for testing purposes
   var node = goog.dom.createElement(goog.dom.TagName.PRE);
   node.appendChild(doc.documentElement);
-  return format.readGeometryFromNode(node);
+  return format.readGeometryFromNode(node, opt_options);
 };
 
 describe('ol.format.GML', function() {
 
-  var format, formatWGS84;
+  var format, formatWGS84, formatNoSrs;
   beforeEach(function() {
     format = new ol.format.GML({srsName: 'CRS:84'});
     formatWGS84 = new ol.format.GML({srsName: 'urn:x-ogc:def:crs:EPSG:4326'});
+    formatNoSrs = new ol.format.GML();
   });
 
   describe('#readGeometry', function() {
@@ -31,6 +32,63 @@ describe('ol.format.GML', function() {
         expect(g.getCoordinates()).to.eql([1, 2, 0]);
         var serialized = format.writeGeometry(g);
         expect(serialized.firstElementChild).to.xmleql(ol.xml.load(text));
+      });
+
+      it('can read a point geometry with scientific notation', function() {
+        var text =
+            '<gml:Point xmlns:gml="http://www.opengis.net/gml" ' +
+            '    srsName="CRS:84">' +
+            '  <gml:pos>1E7 2</gml:pos>' +
+            '</gml:Point>';
+        var g = readGeometry(format, text);
+        expect(g).to.be.an(ol.geom.Point);
+        expect(g.getCoordinates()).to.eql([10000000, 2, 0]);
+        text =
+            '<gml:Point xmlns:gml="http://www.opengis.net/gml" ' +
+            '    srsName="CRS:84">' +
+            '  <gml:pos>1e7 2</gml:pos>' +
+            '</gml:Point>';
+        g = readGeometry(format, text);
+        expect(g).to.be.an(ol.geom.Point);
+        expect(g.getCoordinates()).to.eql([10000000, 2, 0]);
+      });
+
+      it('can read, transform and write a point geometry', function() {
+        var config = {
+          featureProjection: 'EPSG:3857'
+        };
+        var text =
+            '<gml:Point xmlns:gml="http://www.opengis.net/gml" ' +
+            '    srsName="CRS:84">' +
+            '  <gml:pos>1 2</gml:pos>' +
+            '</gml:Point>';
+        var g = readGeometry(format, text, config);
+        expect(g).to.be.an(ol.geom.Point);
+        var coordinates = g.getCoordinates();
+        expect(coordinates.splice(0, 2)).to.eql(
+            ol.proj.transform([1, 2], 'CRS:84', 'EPSG:3857'));
+        config.dataProjection = 'CRS:84';
+        var serialized = format.writeGeometry(g, config);
+        var pos = serialized.firstElementChild.firstElementChild.textContent;
+        var coordinate = pos.split(' ');
+        expect(coordinate[0]).to.roughlyEqual(1, 1e-9);
+        expect(coordinate[1]).to.roughlyEqual(2, 1e-9);
+      });
+
+      it('can detect SRS, read and transform a point geometry', function() {
+        var config = {
+          featureProjection: 'EPSG:3857'
+        };
+        var text =
+            '<gml:Point xmlns:gml="http://www.opengis.net/gml" ' +
+            '    srsName="CRS:84">' +
+            '  <gml:pos>1 2</gml:pos>' +
+            '</gml:Point>';
+        var g = readGeometry(formatNoSrs, text, config);
+        expect(g).to.be.an(ol.geom.Point);
+        var coordinates = g.getCoordinates();
+        expect(coordinates.splice(0, 2)).to.eql(
+            ol.proj.transform([1, 2], 'CRS:84', 'EPSG:3857'));
       });
 
       it('can read and write a point geometry in EPSG:4326', function() {
@@ -61,6 +119,32 @@ describe('ol.format.GML', function() {
         expect(g.getCoordinates()).to.eql([[1, 2, 0], [3, 4, 0]]);
         var serialized = format.writeGeometry(g);
         expect(serialized.firstElementChild).to.xmleql(ol.xml.load(text));
+      });
+
+      it('can read, transform and write a linestring geometry', function() {
+        var config = {
+          dataProjection: 'CRS:84',
+          featureProjection: 'EPSG:3857'
+        };
+        var text =
+            '<gml:LineString xmlns:gml="http://www.opengis.net/gml" ' +
+            '    srsName="CRS:84">' +
+            '  <gml:posList>1 2 3 4</gml:posList>' +
+            '</gml:LineString>';
+        var g = readGeometry(format, text, config);
+        expect(g).to.be.an(ol.geom.LineString);
+        var coordinates = g.getCoordinates();
+        expect(coordinates[0].slice(0, 2)).to.eql(
+            ol.proj.transform([1, 2], 'CRS:84', 'EPSG:3857'));
+        expect(coordinates[1].slice(0, 2)).to.eql(
+            ol.proj.transform([3, 4], 'CRS:84', 'EPSG:3857'));
+        var serialized = format.writeGeometry(g, config);
+        var poss = serialized.firstElementChild.firstElementChild.textContent;
+        var coordinate = poss.split(' ');
+        expect(coordinate[0]).to.roughlyEqual(1, 1e-9);
+        expect(coordinate[1]).to.roughlyEqual(2, 1e-9);
+        expect(coordinate[2]).to.roughlyEqual(3, 1e-9);
+        expect(coordinate[3]).to.roughlyEqual(4, 1e-9);
       });
 
       it('can read and write a linestring geometry in EPSG:4326', function() {
@@ -703,6 +787,58 @@ describe('ol.format.GML', function() {
     });
   });
 
+  describe('when parsing TOPP states WFS with autoconfigure', function() {
+    var features, text, gmlFormat;
+    before(function(done) {
+      afterLoadText('spec/ol/format/gml/topp-states-wfs.xml', function(xml) {
+        try {
+          text = xml;
+          gmlFormat = new ol.format.GML();
+          features = gmlFormat.readFeatures(xml);
+        } catch (e) {
+          done(e);
+        }
+        done();
+      });
+    });
+
+    it('creates 3 features', function() {
+      expect(features).to.have.length(3);
+    });
+
+    it('creates the right id for the feature', function() {
+      expect(features[0].getId()).to.equal('states.1');
+    });
+
+    it('can reuse the parser for a different featureNS', function() {
+      var text =
+          '<gml:featureMembers xmlns:gml="http://www.opengis.net/gml">' +
+          '  <foo:gnis_pop gml:id="gnis_pop.148604" xmlns:foo="' +
+          'http://foo">' +
+          '    <gml:name>Aflu</gml:name>' +
+          '    <foo:the_geom>' +
+          '      <gml:Point srsName="urn:x-ogc:def:crs:EPSG:4326">' +
+          '        <gml:pos>34.12 2.09</gml:pos>' +
+          '      </gml:Point>' +
+          '    </foo:the_geom>' +
+          '    <foo:population>84683</foo:population>' +
+          '  </foo:gnis_pop>' +
+          '</gml:featureMembers>';
+      features = gmlFormat.readFeatures(text);
+      expect(features).to.have.length(1);
+      expect(features[0].get('population')).to.equal('84683');
+    });
+
+    it('can read an empty collection', function() {
+      var text =
+          '<gml:featureMembers xmlns:gml="http://www.opengis.net/gml">' +
+          '</gml:featureMembers>';
+      features = gmlFormat.readFeatures(text);
+      expect(features).to.have.length(0);
+    });
+
+  });
+
   describe('when parsing TOPP states GML', function() {
 
     var features, text, gmlFormat;
@@ -779,7 +915,7 @@ describe('ol.format.GML', function() {
 
   describe('when parsing more than one geometry', function() {
 
-    var features, feature;
+    var features;
     before(function(done) {
       afterLoadText('spec/ol/format/gml/more-geoms.xml', function(xml) {
         try {
@@ -805,7 +941,7 @@ describe('ol.format.GML', function() {
 
   describe('when parsing an attribute name equal to featureType', function() {
 
-    var features, feature;
+    var features;
     before(function(done) {
       afterLoadText('spec/ol/format/gml/repeated-name.xml', function(xml) {
         try {
@@ -842,3 +978,4 @@ goog.require('ol.geom.MultiPolygon');
 goog.require('ol.xml');
 goog.require('ol.geom.Point');
 goog.require('ol.geom.Polygon');
+goog.require('ol.proj');

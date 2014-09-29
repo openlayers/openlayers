@@ -1,6 +1,8 @@
 goog.provide('ol.format.Feature');
 
-goog.require('goog.functions');
+goog.require('goog.array');
+goog.require('ol.geom.Geometry');
+goog.require('ol.proj');
 
 
 
@@ -14,8 +16,15 @@ goog.require('goog.functions');
  * file formats.  See the documentation for each format for more details.
  *
  * @constructor
+ * @api stable
  */
 ol.format.Feature = function() {
+
+  /**
+   * @protected
+   * @type {ol.proj.Projection}
+   */
+  this.defaultDataProjection = null;
 };
 
 
@@ -23,6 +32,50 @@ ol.format.Feature = function() {
  * @return {Array.<string>} Extensions.
  */
 ol.format.Feature.prototype.getExtensions = goog.abstractMethod;
+
+
+/**
+ * Adds the data projection to the read options.
+ * @param {Document|Node|Object|string} source Source.
+ * @param {olx.format.ReadOptions=} opt_options Options.
+ * @return {olx.format.ReadOptions|undefined} Options.
+ * @protected
+ */
+ol.format.Feature.prototype.getReadOptions = function(
+    source, opt_options) {
+  var options;
+  if (goog.isDef(opt_options)) {
+    options = {
+      dataProjection: goog.isDef(opt_options.dataProjection) ?
+          opt_options.dataProjection : this.readProjection(source),
+      featureProjection: opt_options.featureProjection
+    };
+  }
+  return this.adaptOptions(options);
+};
+
+
+/**
+ * Sets the `defaultDataProjection` on the options, if no `dataProjection`
+ * is set.
+ * @param {olx.format.WriteOptions|olx.format.ReadOptions|undefined} options
+ *     Options.
+ * @protected
+ * @return {olx.format.WriteOptions|olx.format.ReadOptions|undefined}
+ *     Updated options.
+ */
+ol.format.Feature.prototype.adaptOptions = function(
+    options) {
+  var updatedOptions;
+  if (goog.isDef(options)) {
+    updatedOptions = {
+      featureProjection: options.featureProjection,
+      dataProjection: goog.isDefAndNotNull(options.dataProjection) ?
+          options.dataProjection : this.defaultDataProjection
+    };
+  }
+  return updatedOptions;
+};
 
 
 /**
@@ -35,6 +88,7 @@ ol.format.Feature.prototype.getType = goog.abstractMethod;
  * Read a single feature from a source.
  *
  * @param {ArrayBuffer|Document|Node|Object|string} source Source.
+ * @param {olx.format.ReadOptions=} opt_options Read options.
  * @return {ol.Feature} Feature.
  */
 ol.format.Feature.prototype.readFeature = goog.abstractMethod;
@@ -44,6 +98,7 @@ ol.format.Feature.prototype.readFeature = goog.abstractMethod;
  * Read all features from a source.
  *
  * @param {ArrayBuffer|Document|Node|Object|string} source Source.
+ * @param {olx.format.ReadOptions=} opt_options Read options.
  * @return {Array.<ol.Feature>} Features.
  */
 ol.format.Feature.prototype.readFeatures = goog.abstractMethod;
@@ -53,6 +108,7 @@ ol.format.Feature.prototype.readFeatures = goog.abstractMethod;
  * Read a single geometry from a source.
  *
  * @param {ArrayBuffer|Document|Node|Object|string} source Source.
+ * @param {olx.format.ReadOptions=} opt_options Read options.
  * @return {ol.geom.Geometry} Geometry.
  */
 ol.format.Feature.prototype.readGeometry = goog.abstractMethod;
@@ -71,6 +127,7 @@ ol.format.Feature.prototype.readProjection = goog.abstractMethod;
  * Encode a feature in this format.
  *
  * @param {ol.Feature} feature Feature.
+ * @param {olx.format.WriteOptions=} opt_options Write options.
  * @return {ArrayBuffer|Node|Object|string} Result.
  */
 ol.format.Feature.prototype.writeFeature = goog.abstractMethod;
@@ -80,6 +137,7 @@ ol.format.Feature.prototype.writeFeature = goog.abstractMethod;
  * Encode an array of features in this format.
  *
  * @param {Array.<ol.Feature>} features Features.
+ * @param {olx.format.WriteOptions=} opt_options Write options.
  * @return {ArrayBuffer|Node|Object|string} Result.
  */
 ol.format.Feature.prototype.writeFeatures = goog.abstractMethod;
@@ -89,6 +147,41 @@ ol.format.Feature.prototype.writeFeatures = goog.abstractMethod;
  * Write a single geometry in this format.
  *
  * @param {ol.geom.Geometry} geometry Geometry.
+ * @param {olx.format.WriteOptions=} opt_options Write options.
  * @return {ArrayBuffer|Node|Object|string} Node.
  */
 ol.format.Feature.prototype.writeGeometry = goog.abstractMethod;
+
+
+/**
+ * @param {ol.geom.Geometry|ol.Extent} geometry Geometry.
+ * @param {boolean} write Set to true for writing, false for reading.
+ * @param {(olx.format.WriteOptions|olx.format.ReadOptions)=} opt_options
+ *     Options.
+ * @return {ol.geom.Geometry|ol.Extent} Transformed geometry.
+ * @protected
+ */
+ol.format.Feature.transformWithOptions = function(
+    geometry, write, opt_options) {
+  var featureProjection = goog.isDef(opt_options) ?
+      ol.proj.get(opt_options.featureProjection) : null;
+  var dataProjection = goog.isDef(opt_options) ?
+      ol.proj.get(opt_options.dataProjection) : null;
+  if (!goog.isNull(featureProjection) && !goog.isNull(dataProjection) &&
+      !ol.proj.equivalent(featureProjection, dataProjection)) {
+    if (geometry instanceof ol.geom.Geometry) {
+      return (write ? geometry.clone() : geometry).transform(
+          write ? featureProjection : dataProjection,
+          write ? dataProjection : featureProjection);
+    } else {
+      // FIXME this is necessary because ol.format.GML treats extents
+      // as geometries
+      return ol.proj.transformExtent(
+          write ? goog.array.clone(geometry) : geometry,
+          write ? featureProjection : dataProjection,
+          write ? dataProjection : featureProjection);
+    }
+  } else {
+    return geometry;
+  }
+};

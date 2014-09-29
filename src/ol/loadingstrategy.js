@@ -46,11 +46,12 @@ ol.loadingstrategy.createTile = function(tileGrid) {
         var tileRange = tileGrid.getTileRangeForExtentAndZ(extent, z);
         /** @type {Array.<ol.Extent>} */
         var extents = [];
-        var tileCoord = new ol.TileCoord(z, 0, 0);
-        for (tileCoord.x = tileRange.minX; tileCoord.x <= tileRange.maxX;
-             ++tileCoord.x) {
-          for (tileCoord.y = tileRange.minY; tileCoord.y <= tileRange.maxY;
-               ++tileCoord.y) {
+        /** @type {ol.TileCoord} */
+        var tileCoord = [z, 0, 0];
+        for (tileCoord[1] = tileRange.minX; tileCoord[1] <= tileRange.maxX;
+             ++tileCoord[1]) {
+          for (tileCoord[2] = tileRange.minY; tileCoord[2] <= tileRange.maxY;
+               ++tileCoord[2]) {
             extents.push(tileGrid.getTileCoordExtent(tileCoord));
           }
         }

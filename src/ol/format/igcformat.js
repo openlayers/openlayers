@@ -5,13 +5,16 @@ goog.require('goog.asserts');
 goog.require('goog.string');
 goog.require('goog.string.newlines');
 goog.require('ol.Feature');
+goog.require('ol.format.Feature');
 goog.require('ol.format.TextFeature');
 goog.require('ol.geom.LineString');
 goog.require('ol.proj');
 
 
 /**
+ * IGC altitude/z. One of 'barometric', 'gps', 'none'.
  * @enum {string}
+ * @api
  */
 ol.format.IGCZ = {
   BAROMETRIC: 'barometric',
@@ -35,6 +38,11 @@ ol.format.IGC = function(opt_options) {
   var options = goog.isDef(opt_options) ? opt_options : {};
 
   goog.base(this);
+
+  /**
+   * @inheritDoc
+   */
+  this.defaultDataProjection = ol.proj.get('EPSG:4326');
 
   /**
    * @private
@@ -93,6 +101,7 @@ ol.format.IGC.prototype.getExtensions = function() {
  *
  * @function
  * @param {ArrayBuffer|Document|Node|Object|string} source Source.
+ * @param {olx.format.ReadOptions=} opt_options Read options.
  * @return {ol.Feature} Feature.
  * @api
  */
@@ -102,7 +111,7 @@ ol.format.IGC.prototype.readFeature;
 /**
  * @inheritDoc
  */
-ol.format.IGC.prototype.readFeatureFromText = function(text) {
+ol.format.IGC.prototype.readFeatureFromText = function(text, opt_options) {
   var altitudeMode = this.altitudeMode_;
   var lines = goog.string.newlines.splitLines(text);
   /** @type {Object.<string, string>} */
@@ -167,7 +176,8 @@ ol.format.IGC.prototype.readFeatureFromText = function(text) {
   var layout = altitudeMode == ol.format.IGCZ.NONE ?
       ol.geom.GeometryLayout.XYM : ol.geom.GeometryLayout.XYZM;
   lineString.setFlatCoordinates(layout, flatCoordinates);
-  var feature = new ol.Feature(lineString);
+  var feature = new ol.Feature(ol.format.Feature.transformWithOptions(
+      lineString, false, opt_options));
   feature.setProperties(properties);
   return feature;
 };
@@ -179,6 +189,7 @@ ol.format.IGC.prototype.readFeatureFromText = function(text) {
  *
  * @function
  * @param {ArrayBuffer|Document|Node|Object|string} source Source.
+ * @param {olx.format.ReadOptions=} opt_options Read options.
  * @return {Array.<ol.Feature>} Features.
  * @api
  */
@@ -188,8 +199,8 @@ ol.format.IGC.prototype.readFeatures;
 /**
  * @inheritDoc
  */
-ol.format.IGC.prototype.readFeaturesFromText = function(text) {
-  var feature = this.readFeatureFromText(text);
+ol.format.IGC.prototype.readFeaturesFromText = function(text, opt_options) {
+  var feature = this.readFeatureFromText(text, opt_options);
   if (!goog.isNull(feature)) {
     return [feature];
   } else {
@@ -213,5 +224,5 @@ ol.format.IGC.prototype.readProjection;
  * @inheritDoc
  */
 ol.format.IGC.prototype.readProjectionFromText = function(text) {
-  return ol.proj.get('EPSG:4326');
+  return this.defaultDataProjection;
 };

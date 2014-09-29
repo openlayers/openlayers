@@ -1,7 +1,5 @@
 goog.provide('ol.style.Stroke');
 
-goog.require('ol.color');
-
 
 
 /**
@@ -108,4 +106,70 @@ ol.style.Stroke.prototype.getMiterLimit = function() {
  */
 ol.style.Stroke.prototype.getWidth = function() {
   return this.width_;
+};
+
+
+/**
+ * Set the color.
+ *
+ * @param {ol.Color|string} color Color.
+ * @api
+ */
+ol.style.Stroke.prototype.setColor = function(color) {
+  this.color_ = color;
+};
+
+
+/**
+ * Set the line cap.
+ *
+ * @param {string|undefined} lineCap Line cap.
+ * @api
+ */
+ol.style.Stroke.prototype.setLineCap = function(lineCap) {
+  this.lineCap_ = lineCap;
+};
+
+
+/**
+ * Set the line dash.
+ *
+ * @param {Array.<number>} lineDash Line dash.
+ * @api
+ */
+ol.style.Stroke.prototype.setLineDash = function(lineDash) {
+  this.lineDash_ = lineDash;
+};
+
+
+/**
+ * Set the line join.
+ *
+ * @param {string|undefined} lineJoin Line join.
+ * @api
+ */
+ol.style.Stroke.prototype.setLineJoin = function(lineJoin) {
+  this.lineJoin_ = lineJoin;
+};
+
+
+/**
+ * Set the miter limit.
+ *
+ * @param {number|undefined} miterLimit Miter limit.
+ * @api
+ */
+ol.style.Stroke.prototype.setMiterLimit = function(miterLimit) {
+  this.miterLimit_ = miterLimit;
+};
+
+
+/**
+ * Set the width.
+ *
+ * @param {number|undefined} width Width.
+ * @api
+ */
+ol.style.Stroke.prototype.setWidth = function(width) {
+  this.width_ = width;
 };

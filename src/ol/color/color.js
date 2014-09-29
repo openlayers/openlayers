@@ -110,7 +110,7 @@ ol.color.asArray = function(color) {
 
 /**
  * @param {ol.Color|string} color Color.
- * @return {string} String.
+ * @return {string} Rgba string.
  * @api
  */
 ol.color.asString = function(color) {
@@ -242,7 +242,7 @@ ol.color.fromStringInternal_ = function(s) {
     color = [r, g, b, 1];
     return ol.color.normalize(color, color);
   } else {
-    throw new Error(s + ' is not a valid color');
+    goog.asserts.fail(s + ' is not a valid color');
   }
 
 };

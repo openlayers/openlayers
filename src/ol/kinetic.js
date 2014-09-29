@@ -115,7 +115,7 @@ ol.Kinetic.prototype.end = function() {
 ol.Kinetic.prototype.pan = function(source) {
   var decay = this.decay_;
   var initialVelocity = this.initialVelocity_;
-  var minVelocity = this.minVelocity_;
+  var velocity = this.minVelocity_ - initialVelocity;
   var duration = this.getDuration_();
   var easingFunction = (
       /**
@@ -124,7 +124,7 @@ ol.Kinetic.prototype.pan = function(source) {
        */
       function(t) {
         return initialVelocity * (Math.exp((decay * t) * duration) - 1) /
-            (minVelocity - initialVelocity);
+            velocity;
       });
   return ol.animation.pan({
     source: source,

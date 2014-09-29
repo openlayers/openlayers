@@ -3,6 +3,7 @@ goog.provide('ol.format.WKT');
 goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('ol.Feature');
+goog.require('ol.format.Feature');
 goog.require('ol.format.TextFeature');
 goog.require('ol.geom.Geometry');
 goog.require('ol.geom.GeometryCollection');
@@ -20,7 +21,7 @@ goog.require('ol.geom.Polygon');
  * @constructor
  * @extends {ol.format.TextFeature}
  * @param {olx.format.WKTOptions=} opt_options Options.
- * @api
+ * @api stable
  */
 ol.format.WKT = function(opt_options) {
 
@@ -208,8 +209,9 @@ ol.format.WKT.prototype.parse_ = function(wkt) {
  *
  * @function
  * @param {ArrayBuffer|Document|Node|Object|string} source Source.
+ * @param {olx.format.ReadOptions=} opt_options Read options.
  * @return {ol.Feature} Feature.
- * @api
+ * @api stable
  */
 ol.format.WKT.prototype.readFeature;
 
@@ -217,8 +219,8 @@ ol.format.WKT.prototype.readFeature;
 /**
  * @inheritDoc
  */
-ol.format.WKT.prototype.readFeatureFromText = function(text) {
-  var geom = this.readGeometryFromText(text);
+ol.format.WKT.prototype.readFeatureFromText = function(text, opt_options) {
+  var geom = this.readGeometryFromText(text, opt_options);
   if (goog.isDef(geom)) {
     var feature = new ol.Feature();
     feature.setGeometry(geom);
@@ -233,8 +235,9 @@ ol.format.WKT.prototype.readFeatureFromText = function(text) {
  *
  * @function
  * @param {ArrayBuffer|Document|Node|Object|string} source Source.
+ * @param {olx.format.ReadOptions=} opt_options Read options.
  * @return {Array.<ol.Feature>} Features.
- * @api
+ * @api stable
  */
 ol.format.WKT.prototype.readFeatures;
 
@@ -242,9 +245,9 @@ ol.format.WKT.prototype.readFeatures;
 /**
  * @inheritDoc
  */
-ol.format.WKT.prototype.readFeaturesFromText = function(text) {
+ol.format.WKT.prototype.readFeaturesFromText = function(text, opt_options) {
   var geometries = [];
-  var geometry = this.readGeometryFromText(text);
+  var geometry = this.readGeometryFromText(text, opt_options);
   if (this.splitCollection_ &&
       geometry.getType() == ol.geom.GeometryType.GEOMETRY_COLLECTION) {
     geometries = (/** @type {ol.geom.GeometryCollection} */ (geometry))
@@ -267,8 +270,9 @@ ol.format.WKT.prototype.readFeaturesFromText = function(text) {
  *
  * @function
  * @param {ArrayBuffer|Document|Node|Object|string} source Source.
+ * @param {olx.format.ReadOptions=} opt_options Read options.
  * @return {ol.geom.Geometry} Geometry.
- * @api
+ * @api stable
  */
 ol.format.WKT.prototype.readGeometry;
 
@@ -276,8 +280,14 @@ ol.format.WKT.prototype.readGeometry;
 /**
  * @inheritDoc
  */
-ol.format.WKT.prototype.readGeometryFromText = function(text) {
-  return this.parse_(text) || null;
+ol.format.WKT.prototype.readGeometryFromText = function(text, opt_options) {
+  var geometry = this.parse_(text);
+  if (goog.isDef(geometry)) {
+    return /** @type {ol.geom.Geometry} */ (
+        ol.format.Feature.transformWithOptions(geometry, false, opt_options));
+  } else {
+    return null;
+  }
 };
 
 
@@ -294,8 +304,9 @@ ol.format.WKT.prototype.readProjectionFromText = function(text) {
  *
  * @function
  * @param {ol.Feature} feature Feature.
+ * @param {olx.format.WriteOptions=} opt_options Write options.
  * @return {string} WKT string.
- * @api
+ * @api stable
  */
 ol.format.WKT.prototype.writeFeature;
 
@@ -303,10 +314,10 @@ ol.format.WKT.prototype.writeFeature;
 /**
  * @inheritDoc
  */
-ol.format.WKT.prototype.writeFeatureText = function(feature) {
+ol.format.WKT.prototype.writeFeatureText = function(feature, opt_options) {
   var geometry = feature.getGeometry();
   if (goog.isDef(geometry)) {
-    return this.writeGeometryText(geometry);
+    return this.writeGeometryText(geometry, opt_options);
   }
   return '';
 };
@@ -317,8 +328,9 @@ ol.format.WKT.prototype.writeFeatureText = function(feature) {
  *
  * @function
  * @param {Array.<ol.Feature>} features Features.
+ * @param {olx.format.WriteOptions=} opt_options Write options.
  * @return {string} WKT string.
- * @api
+ * @api stable
  */
 ol.format.WKT.prototype.writeFeatures;
 
@@ -326,16 +338,16 @@ ol.format.WKT.prototype.writeFeatures;
 /**
  * @inheritDoc
  */
-ol.format.WKT.prototype.writeFeaturesText = function(features) {
+ol.format.WKT.prototype.writeFeaturesText = function(features, opt_options) {
   if (features.length == 1) {
-    return this.writeFeatureText(features[0]);
+    return this.writeFeatureText(features[0], opt_options);
   }
   var geometries = [];
   for (var i = 0, ii = features.length; i < ii; ++i) {
     geometries.push(features[i].getGeometry());
   }
   var collection = new ol.geom.GeometryCollection(geometries);
-  return this.writeGeometryText(collection);
+  return this.writeGeometryText(collection, opt_options);
 };
 
 
@@ -345,7 +357,7 @@ ol.format.WKT.prototype.writeFeaturesText = function(features) {
  * @function
  * @param {ol.geom.Geometry} geometry Geometry.
  * @return {string} WKT string.
- * @api
+ * @api stable
  */
 ol.format.WKT.prototype.writeGeometry;
 
@@ -353,8 +365,9 @@ ol.format.WKT.prototype.writeGeometry;
 /**
  * @inheritDoc
  */
-ol.format.WKT.prototype.writeGeometryText = function(geometry) {
-  return ol.format.WKT.encode_(geometry);
+ol.format.WKT.prototype.writeGeometryText = function(geometry, opt_options) {
+  return ol.format.WKT.encode_(/** @type {ol.geom.Geometry} */ (
+      ol.format.Feature.transformWithOptions(geometry, true, opt_options)));
 };
 
 
@@ -748,8 +761,8 @@ ol.format.WKT.Parser.prototype.parsePoint_ = function() {
  */
 ol.format.WKT.Parser.prototype.parsePointList_ = function() {
   var coordinates = [this.parsePoint_()];
-  if (this.match(ol.format.WKT.TokenType.COMMA)) {
-    goog.array.extend(coordinates, this.parsePointList_());
+  while (this.match(ol.format.WKT.TokenType.COMMA)) {
+    coordinates.push(this.parsePoint_());
   }
   return coordinates;
 };
@@ -761,8 +774,8 @@ ol.format.WKT.Parser.prototype.parsePointList_ = function() {
  */
 ol.format.WKT.Parser.prototype.parsePointTextList_ = function() {
   var coordinates = [this.parsePointText_()];
-  if (this.match(ol.format.WKT.TokenType.COMMA)) {
-    goog.array.extend(coordinates, this.parsePointTextList_());
+  while (this.match(ol.format.WKT.TokenType.COMMA)) {
+    coordinates.push(this.parsePointText_());
   }
   return coordinates;
 };
@@ -774,8 +787,8 @@ ol.format.WKT.Parser.prototype.parsePointTextList_ = function() {
  */
 ol.format.WKT.Parser.prototype.parseLineStringTextList_ = function() {
   var coordinates = [this.parseLineStringText_()];
-  if (this.match(ol.format.WKT.TokenType.COMMA)) {
-    goog.array.extend(coordinates, this.parseLineStringTextList_());
+  while (this.match(ol.format.WKT.TokenType.COMMA)) {
+    coordinates.push(this.parseLineStringText_());
   }
   return coordinates;
 };
@@ -787,8 +800,8 @@ ol.format.WKT.Parser.prototype.parseLineStringTextList_ = function() {
  */
 ol.format.WKT.Parser.prototype.parsePolygonTextList_ = function() {
   var coordinates = [this.parsePolygonText_()];
-  if (this.match(ol.format.WKT.TokenType.COMMA)) {
-    goog.array.extend(coordinates, this.parsePolygonTextList_());
+  while (this.match(ol.format.WKT.TokenType.COMMA)) {
+    coordinates.push(this.parsePolygonText_());
   }
   return coordinates;
 };

@@ -162,7 +162,7 @@ ol.structs.LRUCache.prototype.getKeys = function() {
 
 
 /**
- * @return {Array} Values.
+ * @return {Array.<T>} Values.
  */
 ol.structs.LRUCache.prototype.getValues = function() {
   var values = new Array(this.count_);

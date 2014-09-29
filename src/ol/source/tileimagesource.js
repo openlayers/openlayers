@@ -29,6 +29,8 @@ ol.source.TileImage = function(options) {
     logo: options.logo,
     opaque: options.opaque,
     projection: options.projection,
+    state: goog.isDef(options.state) ?
+        /** @type {ol.source.State} */ (options.state) : undefined,
     tileGrid: options.tileGrid,
     tilePixelRatio: options.tilePixelRatio
   });
@@ -108,7 +110,7 @@ ol.source.TileImage.prototype.getTile =
     return /** @type {!ol.Tile} */ (this.tileCache.get(tileCoordKey));
   } else {
     goog.asserts.assert(projection);
-    var tileCoord = new ol.TileCoord(z, x, y);
+    var tileCoord = [z, x, y];
     var tileUrl = this.tileUrlFunction(tileCoord, pixelRatio, projection);
     var tile = new this.tileClass(
         tileCoord,
@@ -147,7 +149,7 @@ ol.source.TileImage.prototype.getTileUrlFunction = function() {
 ol.source.TileImage.prototype.setTileLoadFunction = function(tileLoadFunction) {
   this.tileCache.clear();
   this.tileLoadFunction = tileLoadFunction;
-  this.dispatchChangeEvent();
+  this.changed();
 };
 
 
@@ -161,7 +163,7 @@ ol.source.TileImage.prototype.setTileUrlFunction = function(tileUrlFunction) {
   // FIXME cache key somehow.
   this.tileCache.clear();
   this.tileUrlFunction = tileUrlFunction;
-  this.dispatchChangeEvent();
+  this.changed();
 };
 
 

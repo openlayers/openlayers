@@ -22,7 +22,7 @@ goog.require('ol.source.Source');
  * @fires ol.render.Event
  * @fires change Triggered when the state of the source changes.
  * @param {olx.layer.LayerOptions} options Layer options.
- * @api
+ * @api stable
  */
 ol.layer.Layer = function(options) {
 
@@ -62,7 +62,7 @@ ol.layer.Layer.visibleAtResolution = function(layerState, resolution) {
  * @inheritDoc
  */
 ol.layer.Layer.prototype.getLayersArray = function(opt_array) {
-  var array = (goog.isDef(opt_array)) ? opt_array : [];
+  var array = goog.isDef(opt_array) ? opt_array : [];
   array.push(this);
   return array;
 };
@@ -72,7 +72,7 @@ ol.layer.Layer.prototype.getLayersArray = function(opt_array) {
  * @inheritDoc
  */
 ol.layer.Layer.prototype.getLayerStatesArray = function(opt_states) {
-  var states = (goog.isDef(opt_states)) ? opt_states : [];
+  var states = goog.isDef(opt_states) ? opt_states : [];
   states.push(this.getLayerState());
   return states;
 };
@@ -80,7 +80,7 @@ ol.layer.Layer.prototype.getLayerStatesArray = function(opt_states) {
 
 /**
  * @return {ol.source.Source} Source.
- * @api
+ * @api stable
  */
 ol.layer.Layer.prototype.getSource = function() {
   return this.source_;
@@ -99,5 +99,5 @@ ol.layer.Layer.prototype.getSourceState = function() {
  * @private
  */
 ol.layer.Layer.prototype.handleSourceChange_ = function() {
-  this.dispatchChangeEvent();
+  this.changed();
 };

@@ -1,16 +1,51 @@
 #!/usr/bin/env python
 
 from cStringIO import StringIO
+import glob
 import gzip
 import json
+import multiprocessing
 import os
-import glob
 import re
 import shutil
 import sys
 
 from pake import Target
 from pake import ifind, main, output, rule, target, variables, virtual, which
+from Queue import Queue
+from threading import Thread
+
+
+class ThreadPool:
+    """A basic pool of worker threads"""
+    class Worker(Thread):
+        def __init__(self, tasks):
+            Thread.__init__(self)
+            self.tasks = tasks
+            self.daemon = True # threads will be killed on exit
+            self.start()
+
+        def run(self):
+            while True:
+                # block until a task is ready to be done
+                function, args, kargs = self.tasks.get()
+                try:
+                    function(*args, **kargs)
+                except:
+                    print(sys.exc_info()[0])
+                self.tasks.task_done()
+
+    def __init__(self, num_threads = multiprocessing.cpu_count() + 1):
+        self.tasks = Queue(num_threads)
+        # create num_threads Workers, by default the number of CPUs + 1
+        for _ in range(num_threads): self.Worker(self.tasks)
+
+    def add_task(self, function, *args, **kargs):
+        self.tasks.put((function, args, kargs))
+
+    def wait_completion(self):
+        # wait for the queue to be empty
+        self.tasks.join()
 
 
 if sys.platform == 'win32':
@@ -101,6 +136,10 @@ SPEC = [path
         for path in ifind('test/spec')
         if path.endswith('.js')]
 
+TASKS = [path
+         for path in ifind('tasks')
+         if path.endswith('.js')]
+
 SRC = [path
        for path in ifind('src/ol')
        if path.endswith('.js')
@@ -123,14 +162,14 @@ def report_sizes(t):
 virtual('default', 'build')
 
 
-virtual('ci', 'lint', 'jshint', 'build', 'test',
+virtual('ci', 'lint', 'build', 'test',
     'build/examples/all.combined.js', 'check-examples', 'apidoc')
 
 
 virtual('build', 'build/ol.css', 'build/ol.js', 'build/ol-debug.js')
 
 
-virtual('check', 'lint', 'build/ol.js', 'jshint', 'test')
+virtual('check', 'lint', 'build/ol.js', 'test')
 
 
 virtual('todo', 'fixme')
@@ -141,15 +180,15 @@ def build_ol_css(t):
     t.output('%(CLEANCSS)s', 'css/ol.css')
 
 
-@target('build/ol.js', SRC, SHADER_SRC, 'buildcfg/ol.json')
+@target('build/ol.js', SRC, SHADER_SRC, 'config/ol.json')
 def build_ol_new_js(t):
-    t.run('node', 'tasks/build.js', 'buildcfg/ol.json', 'build/ol.js')
+    t.run('node', 'tasks/build.js', 'config/ol.json', 'build/ol.js')
     report_sizes(t)
 
 
-@target('build/ol-debug.js', SRC, SHADER_SRC, 'buildcfg/ol-debug.json')
+@target('build/ol-debug.js', SRC, SHADER_SRC, 'config/ol-debug.json')
 def build_ol_debug_js(t):
-    t.run('node', 'tasks/build.js', 'buildcfg/ol-debug.json', 'build/ol-debug.js')
+    t.run('node', 'tasks/build.js', 'config/ol-debug.json', 'build/ol-debug.js')
     report_sizes(t)
 
 
@@ -196,9 +235,9 @@ def examples_examples_list_js(t):
 
 
 @target('build/examples/all.combined.js', 'build/examples/all.js',
-        SRC, SHADER_SRC, 'buildcfg/examples-all.json')
+        SRC, SHADER_SRC, 'config/examples-all.json')
 def build_examples_all_combined_js(t):
-    t.run('node', 'tasks/build.js', 'buildcfg/examples-all.json',
+    t.run('node', 'tasks/build.js', 'config/examples-all.json',
           'build/examples/all.combined.js')
     report_sizes(t)
 
@@ -214,7 +253,7 @@ def examples_star_json(name, match):
         # It would make more sense to use olx.js as an input file here. We use
         # it as an externs file instead to prevent "Cannot read property '*' of
         # undefined" error when running examples in "raw" or "whitespace" mode.
-        # Note that we use the proper way in buildcfg/examples-all.json, which
+        # Note that we use the proper way in config/examples-all.json, which
         # is only used to check the examples code using the compiler.
         content = json.dumps({
           "exports": [],
@@ -235,6 +274,7 @@ def examples_star_json(name, match):
               "externs/vbarray.js"
             ],
             "define": [
+              "goog.array.ASSUME_NATIVE_FUNCTIONS=true",
               "goog.dom.ASSUME_STANDARDS_MODE=true",
               "goog.json.USE_NATIVE_JSON=true",
               "goog.DEBUG=false"
@@ -270,10 +310,12 @@ def examples_star_json(name, match):
               "tweakValidation",
               "undefinedNames",
               "undefinedVars",
-              "unknownDefines",
               "uselessCode",
               "violatedModuleDep",
               "visibility"
+            ],
+            "jscomp_off": [
+              "unknownDefines"
             ],
             "extra_annotation_name": [
               "api", "observable"
@@ -307,7 +349,7 @@ def serve(t):
 
 
 virtual('lint', 'build/lint-timestamp', 'build/check-requires-timestamp',
-    'build/check-whitespace-timestamp')
+    'build/check-whitespace-timestamp', 'jshint')
 
 
 @target('build/lint-timestamp', SRC, EXAMPLES_SRC, SPEC, precious=True)
@@ -322,7 +364,7 @@ def build_lint_src_timestamp(t):
 
 virtual('jshint', 'build/jshint-timestamp')
 
-@target('build/jshint-timestamp', SRC, EXAMPLES_SRC, SPEC,
+@target('build/jshint-timestamp', SRC, EXAMPLES_SRC, SPEC, TASKS,
         precious=True)
 def build_jshint_timestamp(t):
     t.run(variables.JSHINT, '--verbose', t.newer(t.dependencies))
@@ -529,9 +571,10 @@ virtual('apidoc', 'build/jsdoc-%(BRANCH)s-timestamp' % vars(variables))
 
 
 @target('build/jsdoc-%(BRANCH)s-timestamp' % vars(variables), 'host-resources',
-        SRC, SHADER_SRC, ifind('apidoc/template'))
+        SRC, SHADER_SRC, ifind('config/jsdoc/api/template'))
 def jsdoc_BRANCH_timestamp(t):
-    t.run('%(JSDOC)s', 'apidoc/index.md', '-c', 'apidoc/conf.json',
+    t.run('%(JSDOC)s', 'config/jsdoc/api/index.md',
+          '-c', 'config/jsdoc/api/conf.json',
           '-d', 'build/hosted/%(BRANCH)s/apidoc')
     t.touch()
 
@@ -616,10 +659,12 @@ def check_examples(t):
     examples = ['build/hosted/%(BRANCH)s/' + e
                 for e in EXAMPLES
                 if not open(e.replace('.html', '.js'), 'rU').readline().startswith('// NOCOMPILE')]
-    all_examples = \
-        [e + '?mode=advanced' for e in examples]
+    all_examples = [e + '?mode=advanced' for e in examples]
+    # Run the examples checks in a pool of threads
+    pool = ThreadPool()
     for example in all_examples:
-        t.run('%(PHANTOMJS)s', 'bin/check-example.js', example)
+        pool.add_task(t.run, '%(PHANTOMJS)s', 'bin/check-example.js', example)
+    pool.wait_completion()
 
 
 @target('test', phony=True)

@@ -73,7 +73,7 @@ ol.DRAGZOOM_ANIMATION_DURATION = 200;
 
 
 /**
- * @define {number} Hysterisis pixels.
+ * @define {number} Hysteresis pixels.
  */
 ol.DRAG_BOX_HYSTERESIS_PIXELS = 8;
 
@@ -104,9 +104,11 @@ ol.ENABLE_IMAGE = true;
 
 
 /**
- * @define {boolean} Enable named colors.  Enabling named colors adds about 3KB
- *     uncompressed / 1.5KB compressed to the final build size.  Default is
- *     `false`.
+ * @define {boolean} Enable Closure named colors (`goog.color.names`).
+ *     Enabling these colors adds about 3KB uncompressed / 1.5KB compressed to
+ *     the final build size.  Default is `false`. This setting has no effect
+ *     with Canvas renderer, which uses its own names, whether this is true or
+ *     false.
  */
 ol.ENABLE_NAMED_COLORS = false;
 
@@ -144,6 +146,8 @@ ol.ENABLE_WEBGL = true;
 
 /**
  * @define {boolean} Support legacy IE (7-8).  Default is `false`.
+ *     If set to `true`, `goog.array.ASSUME_NATIVE_FUNCTIONS` must be set
+ *     to `false` because legacy IE do not support ECMAScript 5 array functions.
  */
 ol.LEGACY_IE_SUPPORT = false;
 
@@ -216,7 +220,8 @@ ol.ZOOMSLIDER_ANIMATION_DURATION = 200;
  *     ParentClass.prototype.foo = function(a) { }
  *
  *     function ChildClass(a, b, c) {
- *       goog.base(this, a, b);
+ *       // Call parent constructor
+ *       ParentClass.call(this, a, b);
  *     }
  *     ol.inherits(ChildClass, ParentClass);
  *
@@ -227,7 +232,7 @@ ol.ZOOMSLIDER_ANIMATION_DURATION = 200;
  * follows:
  *
  *     ChildClass.prototype.foo = function(a) {
- *       ChildClass.superClass_.foo.call(this, a);
+ *       ChildClass.base(this, 'foo', a);
  *       // Other code here.
  *     };
  *

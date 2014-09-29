@@ -28,7 +28,7 @@ goog.require('ol.tilegrid.XYZ');
  * @constructor
  * @extends {ol.source.TileImage}
  * @param {olx.source.TileJSONOptions} options TileJSON options.
- * @api
+ * @api stable
  */
 ol.source.TileJSON = function(options) {
 
@@ -54,10 +54,11 @@ ol.source.TileJSON.prototype.handleTileJSONResponse = function(tileJSON) {
 
   var epsg4326Projection = ol.proj.get('EPSG:4326');
 
+  var sourceProjection = this.getProjection();
   var extent;
   if (goog.isDef(tileJSON.bounds)) {
     var transform = ol.proj.getTransformFromProjections(
-        epsg4326Projection, this.getProjection());
+        epsg4326Projection, sourceProjection);
     extent = ol.extent.applyTransform(tileJSON.bounds, transform);
   }
 
@@ -67,6 +68,7 @@ ol.source.TileJSON.prototype.handleTileJSONResponse = function(tileJSON) {
   var minZoom = tileJSON.minzoom || 0;
   var maxZoom = tileJSON.maxzoom || 22;
   var tileGrid = new ol.tilegrid.XYZ({
+    extent: ol.tilegrid.extentFromProjection(sourceProjection),
     maxZoom: maxZoom,
     minZoom: minZoom
   });

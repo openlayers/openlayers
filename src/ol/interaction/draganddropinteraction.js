@@ -100,7 +100,7 @@ ol.interaction.DragAndDrop.prototype.handleResult_ = function(file, result) {
   var projection = this.reprojectTo_;
   if (goog.isNull(projection)) {
     var view = map.getView();
-    goog.asserts.assert(goog.isDef(view));
+    goog.asserts.assert(!goog.isNull(view));
     projection = view.getProjection();
     goog.asserts.assert(goog.isDef(projection));
   }
@@ -192,6 +192,10 @@ ol.interaction.DragAndDropEventType = {
 
 
 /**
+ * @classdesc
+ * Events emitted by {@link ol.interaction.DragAndDrop} instances are instances
+ * of this type.
+ *
  * @constructor
  * @extends {goog.events.Event}
  * @implements {oli.interaction.DragAndDropEvent}

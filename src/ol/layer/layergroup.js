@@ -33,7 +33,7 @@ ol.layer.GroupProperty = {
  * @extends {ol.layer.Base}
  * @fires change Triggered when the group/Collection changes.
  * @param {olx.layer.GroupOptions=} opt_options Layer options.
- * @api
+ * @api stable
  */
 ol.layer.Group = function(opt_options) {
 
@@ -56,7 +56,7 @@ ol.layer.Group = function(opt_options) {
       ol.Object.getChangeEventType(ol.layer.GroupProperty.LAYERS),
       this.handleLayersChanged_, false, this);
 
-  if (goog.isDef(layers)) {
+  if (goog.isDefAndNotNull(layers)) {
     if (goog.isArray(layers)) {
       layers = new ol.Collection(goog.array.clone(layers));
     } else {
@@ -78,7 +78,7 @@ goog.inherits(ol.layer.Group, ol.layer.Base);
  */
 ol.layer.Group.prototype.handleLayerChange_ = function() {
   if (this.getVisible()) {
-    this.dispatchChangeEvent();
+    this.changed();
   }
 };
 
@@ -114,7 +114,7 @@ ol.layer.Group.prototype.handleLayersChanged_ = function(event) {
     }
   }
 
-  this.dispatchChangeEvent();
+  this.changed();
 };
 
 
@@ -127,7 +127,7 @@ ol.layer.Group.prototype.handleLayersAdd_ = function(collectionEvent) {
   this.listenerKeys_[goog.getUid(layer).toString()] = goog.events.listen(
       layer, [ol.ObjectEventType.PROPERTYCHANGE, goog.events.EventType.CHANGE],
       this.handleLayerChange_, false, this);
-  this.dispatchChangeEvent();
+  this.changed();
 };
 
 
@@ -140,17 +140,18 @@ ol.layer.Group.prototype.handleLayersRemove_ = function(collectionEvent) {
   var key = goog.getUid(layer).toString();
   goog.events.unlistenByKey(this.listenerKeys_[key]);
   delete this.listenerKeys_[key];
-  this.dispatchChangeEvent();
+  this.changed();
 };
 
 
 /**
- * @return {ol.Collection.<ol.layer.Base>|undefined} Collection of
+ * @return {!ol.Collection.<ol.layer.Base>} Collection of
  * {@link ol.layer.Layer layers} that are part of this group.
  * @observable
+ * @api stable
  */
 ol.layer.Group.prototype.getLayers = function() {
-  return /** @type {ol.Collection.<ol.layer.Base>|undefined} */ (this.get(
+  return /** @type {!ol.Collection.<ol.layer.Base>} */ (this.get(
       ol.layer.GroupProperty.LAYERS));
 };
 goog.exportProperty(
@@ -160,9 +161,10 @@ goog.exportProperty(
 
 
 /**
- * @param {ol.Collection.<ol.layer.Base>|undefined} layers Collection of
+ * @param {!ol.Collection.<ol.layer.Base>} layers Collection of
  * {@link ol.layer.Layer layers} that are part of this group.
  * @observable
+ * @api stable
  */
 ol.layer.Group.prototype.setLayers = function(layers) {
   this.set(ol.layer.GroupProperty.LAYERS, layers);
@@ -177,7 +179,7 @@ goog.exportProperty(
  * @inheritDoc
  */
 ol.layer.Group.prototype.getLayersArray = function(opt_array) {
-  var array = (goog.isDef(opt_array)) ? opt_array : [];
+  var array = goog.isDef(opt_array) ? opt_array : [];
   this.getLayers().forEach(function(layer) {
     layer.getLayersArray(array);
   });
@@ -189,7 +191,7 @@ ol.layer.Group.prototype.getLayersArray = function(opt_array) {
  * @inheritDoc
  */
 ol.layer.Group.prototype.getLayerStatesArray = function(opt_states) {
-  var states = (goog.isDef(opt_states)) ? opt_states : [];
+  var states = goog.isDef(opt_states) ? opt_states : [];
 
   var pos = states.length;
 

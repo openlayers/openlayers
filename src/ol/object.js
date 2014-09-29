@@ -36,7 +36,8 @@ ol.ObjectEventType = {
 
 
 /**
- * Object representing a property change event.
+ * @classdesc
+ * Events emitted by {@link ol.Object} instances are instances of this type.
  *
  * @param {string} type The event type.
  * @param {string} key The property name.
@@ -241,7 +242,7 @@ ol.Object.capitalize = function(str) {
 ol.Object.getChangeEventType = function(key) {
   return ol.Object.changeEventTypeCache_.hasOwnProperty(key) ?
       ol.Object.changeEventTypeCache_[key] :
-      (ol.Object.changeEventTypeCache_[key] = 'change:' + key.toLowerCase());
+      (ol.Object.changeEventTypeCache_[key] = 'change:' + key);
 };
 
 

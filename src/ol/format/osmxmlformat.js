@@ -6,6 +6,7 @@ goog.require('goog.asserts');
 goog.require('goog.dom.NodeType');
 goog.require('goog.object');
 goog.require('ol.Feature');
+goog.require('ol.format.Feature');
 goog.require('ol.format.XMLFeature');
 goog.require('ol.geom.LineString');
 goog.require('ol.geom.Point');
@@ -22,10 +23,15 @@ goog.require('ol.xml');
  *
  * @constructor
  * @extends {ol.format.XMLFeature}
- * @api
+ * @api stable
  */
 ol.format.OSMXML = function() {
   goog.base(this);
+
+  /**
+   * @inheritDoc
+   */
+  this.defaultDataProjection = ol.proj.get('EPSG:4326');
 };
 goog.inherits(ol.format.OSMXML, ol.format.XMLFeature);
 
@@ -54,6 +60,7 @@ ol.format.OSMXML.prototype.getExtensions = function() {
 ol.format.OSMXML.readNode_ = function(node, objectStack) {
   goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT);
   goog.asserts.assert(node.localName == 'node');
+  var options = /** @type {olx.format.ReadOptions} */ (objectStack[0]);
   var state = /** @type {Object} */ (objectStack[objectStack.length - 1]);
   var id = node.getAttribute('id');
   var coordinates = /** @type {Array.<number>} */ ([
@@ -67,6 +74,7 @@ ol.format.OSMXML.readNode_ = function(node, objectStack) {
   }, ol.format.OSMXML.NODE_PARSERS_, node, objectStack);
   if (!goog.object.isEmpty(values.tags)) {
     var geometry = new ol.geom.Point(coordinates);
+    ol.format.Feature.transformWithOptions(geometry, false, options);
     var feature = new ol.Feature(geometry);
     feature.setId(id);
     feature.setProperties(values.tags);
@@ -83,6 +91,7 @@ ol.format.OSMXML.readNode_ = function(node, objectStack) {
 ol.format.OSMXML.readWay_ = function(node, objectStack) {
   goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT);
   goog.asserts.assert(node.localName == 'way');
+  var options = /** @type {olx.format.ReadOptions} */ (objectStack[0]);
   var id = node.getAttribute('id');
   var values = ol.xml.pushParseAndPop({
     ndrefs: [],
@@ -104,6 +113,7 @@ ol.format.OSMXML.readWay_ = function(node, objectStack) {
     geometry = new ol.geom.LineString(null);
     geometry.setFlatCoordinates(ol.geom.GeometryLayout.XY, flatCoordinates);
   }
+  ol.format.Feature.transformWithOptions(geometry, false, options);
   var feature = new ol.Feature(geometry);
   feature.setId(id);
   feature.setProperties(values.tags);
@@ -189,8 +199,9 @@ ol.format.OSMXML.NODE_PARSERS_ = ol.xml.makeParsersNS(
  *
  * @function
  * @param {ArrayBuffer|Document|Node|Object|string} source Source.
+ * @param {olx.format.ReadOptions=} opt_options Read options.
  * @return {Array.<ol.Feature>} Features.
- * @api
+ * @api stable
  */
 ol.format.OSMXML.prototype.readFeatures;
 
@@ -198,13 +209,14 @@ ol.format.OSMXML.prototype.readFeatures;
 /**
  * @inheritDoc
  */
-ol.format.OSMXML.prototype.readFeaturesFromNode = function(node) {
+ol.format.OSMXML.prototype.readFeaturesFromNode = function(node, opt_options) {
   goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT);
+  var options = this.getReadOptions(node, opt_options);
   if (node.localName == 'osm') {
     var state = ol.xml.pushParseAndPop({
       nodes: {},
       features: []
-    }, ol.format.OSMXML.PARSERS_, node, []);
+    }, ol.format.OSMXML.PARSERS_, node, [options]);
     if (goog.isDef(state.features)) {
       return state.features;
     }
@@ -219,7 +231,7 @@ ol.format.OSMXML.prototype.readFeaturesFromNode = function(node) {
  * @function
  * @param {ArrayBuffer|Document|Node|Object|string} source Source.
  * @return {ol.proj.Projection} Projection.
- * @api
+ * @api stable
  */
 ol.format.OSMXML.prototype.readProjection;
 
@@ -228,7 +240,7 @@ ol.format.OSMXML.prototype.readProjection;
  * @inheritDoc
  */
 ol.format.OSMXML.prototype.readProjectionFromDocument = function(doc) {
-  return ol.proj.get('EPSG:4326');
+  return this.defaultDataProjection;
 };
 
 
@@ -236,5 +248,5 @@ ol.format.OSMXML.prototype.readProjectionFromDocument = function(doc) {
  * @inheritDoc
  */
 ol.format.OSMXML.prototype.readProjectionFromNode = function(node) {
-  return ol.proj.get('EPSG:4326');
+  return this.defaultDataProjection;
 };

@@ -8,10 +8,10 @@ goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('goog.object');
 goog.require('goog.vec.Mat4');
-goog.require('ol.BrowserFeature');
 goog.require('ol.color');
 goog.require('ol.extent');
 goog.require('ol.geom.flat.transform');
+goog.require('ol.has');
 goog.require('ol.render.IVectorContext');
 goog.require('ol.render.canvas');
 goog.require('ol.vec.Mat4');
@@ -764,7 +764,7 @@ ol.render.canvas.Immediate.prototype.setContextStrokeState_ =
   var contextStrokeState = this.contextStrokeState_;
   if (goog.isNull(contextStrokeState)) {
     context.lineCap = strokeState.lineCap;
-    if (ol.BrowserFeature.HAS_CANVAS_LINE_DASH) {
+    if (ol.has.CANVAS_LINE_DASH) {
       context.setLineDash(strokeState.lineDash);
     }
     context.lineJoin = strokeState.lineJoin;
@@ -783,7 +783,7 @@ ol.render.canvas.Immediate.prototype.setContextStrokeState_ =
     if (contextStrokeState.lineCap != strokeState.lineCap) {
       contextStrokeState.lineCap = context.lineCap = strokeState.lineCap;
     }
-    if (ol.BrowserFeature.HAS_CANVAS_LINE_DASH) {
+    if (ol.has.CANVAS_LINE_DASH) {
       if (!goog.array.equals(
           contextStrokeState.lineDash, strokeState.lineDash)) {
         context.setLineDash(contextStrokeState.lineDash = strokeState.lineDash);

@@ -34,8 +34,23 @@ ol.interaction.Interaction = function() {
    */
   this.map_ = null;
 
+  /**
+   * @private
+   * @type {boolean}
+   */
+  this.active_ = true;
+
 };
 goog.inherits(ol.interaction.Interaction, ol.Observable);
+
+
+/**
+ * @return {boolean} `true` if the interaction is active, `false` otherwise.
+ * @api
+ */
+ol.interaction.Interaction.prototype.getActive = function() {
+  return this.active_;
+};
 
 
 /**
@@ -55,6 +70,16 @@ ol.interaction.Interaction.prototype.getMap = function() {
  */
 ol.interaction.Interaction.prototype.handleMapBrowserEvent =
     goog.abstractMethod;
+
+
+/**
+ * Activate or deactivate the interaction.
+ * @param {boolean} active Active.
+ * @api
+ */
+ol.interaction.Interaction.prototype.setActive = function(active) {
+  this.active_ = active;
+};
 
 
 /**

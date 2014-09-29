@@ -16,7 +16,7 @@ goog.require('ol.geom.flat.transform');
  *
  * @constructor
  * @extends {ol.geom.Geometry}
- * @api
+ * @api stable
  */
 ol.geom.SimpleGeometry = function() {
 
@@ -57,7 +57,7 @@ ol.geom.SimpleGeometry.getLayoutForStride_ = function(stride) {
   } else if (stride == 4) {
     return ol.geom.GeometryLayout.XYZM;
   } else {
-    throw new Error('unsupported stride: ' + stride);
+    goog.asserts.fail('unsupported stride: ' + stride);
   }
 };
 
@@ -77,7 +77,7 @@ ol.geom.SimpleGeometry.getStrideForLayout_ = function(layout) {
   } else if (layout == ol.geom.GeometryLayout.XYZM) {
     return 4;
   } else {
-    throw new Error('unsupported layout: ' + layout);
+    goog.asserts.fail('unsupported layout: ' + layout);
   }
 };
 
@@ -90,7 +90,7 @@ ol.geom.SimpleGeometry.prototype.containsXY = goog.functions.FALSE;
 
 /**
  * @inheritDoc
- * @api
+ * @api stable
  */
 ol.geom.SimpleGeometry.prototype.getExtent = function(opt_extent) {
   if (this.extentRevision != this.getRevision()) {
@@ -106,7 +106,7 @@ ol.geom.SimpleGeometry.prototype.getExtent = function(opt_extent) {
 
 /**
  * @return {ol.Coordinate} First coordinate.
- * @api
+ * @api stable
  */
 ol.geom.SimpleGeometry.prototype.getFirstCoordinate = function() {
   return this.flatCoordinates.slice(0, this.stride);
@@ -123,7 +123,7 @@ ol.geom.SimpleGeometry.prototype.getFlatCoordinates = function() {
 
 /**
  * @return {ol.Coordinate} Last point.
- * @api
+ * @api stable
  */
 ol.geom.SimpleGeometry.prototype.getLastCoordinate = function() {
   return this.flatCoordinates.slice(this.flatCoordinates.length - this.stride);
@@ -132,7 +132,7 @@ ol.geom.SimpleGeometry.prototype.getLastCoordinate = function() {
 
 /**
  * @return {ol.geom.GeometryLayout} Layout.
- * @api
+ * @api stable
  */
 ol.geom.SimpleGeometry.prototype.getLayout = function() {
   return this.layout;
@@ -141,7 +141,6 @@ ol.geom.SimpleGeometry.prototype.getLayout = function() {
 
 /**
  * @inheritDoc
- * @api
  */
 ol.geom.SimpleGeometry.prototype.getSimplifiedGeometry =
     function(squaredTolerance) {
@@ -250,7 +249,7 @@ ol.geom.SimpleGeometry.prototype.setLayout =
 ol.geom.SimpleGeometry.prototype.applyTransform = function(transformFn) {
   if (!goog.isNull(this.flatCoordinates)) {
     transformFn(this.flatCoordinates, this.flatCoordinates, this.stride);
-    this.dispatchChangeEvent();
+    this.changed();
   }
 };
 

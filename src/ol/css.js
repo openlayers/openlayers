@@ -2,6 +2,15 @@ goog.provide('ol.css');
 
 
 /**
+ * The CSS class for hidden feature.
+ *
+ * @const
+ * @type {string}
+ */
+ol.css.CLASS_HIDDEN = 'ol-hidden';
+
+
+/**
  * The CSS class that we'll give the DOM elements to have them unselectable.
  *
  * @const
