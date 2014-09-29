@@ -112,7 +112,7 @@ ol.interaction.Modify = function(options) {
    * @private
    */
   this.overlay_ = new ol.FeatureOverlay({
-    style: (goog.isDef(options.style)) ? options.style :
+    style: goog.isDef(options.style) ? options.style :
         ol.interaction.Modify.getDefaultStyleFunction()
   });
 
