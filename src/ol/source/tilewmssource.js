@@ -389,7 +389,7 @@ ol.source.TileWMS.prototype.tileUrlFunction_ =
   if (!goog.isNull(this.getProjection()) &&
       this.getProjection() !== projection) {
     tileExtent = ol.proj.transformExtent(tileExtent, projection, this.getProjection());
-    projectionObj = ol.proj.get(this.getProjection());
+    projection = ol.proj.get(this.getProjection());
   }
   if (pixelRatio != 1) {
     tileSize = (tileSize * pixelRatio + 0.5) | 0;
