@@ -506,29 +506,6 @@ ol.structs.RBush.prototype.forEachInExtent_ =
 
 
 /**
- * @param {function(this: S, ol.structs.RBushNode.<T>): *} callback Callback.
- * @param {S=} opt_this The object to use as `this` in `callback`.
- * @return {*} Callback return value.
- * @template S
- */
-ol.structs.RBush.prototype.forEachNode = function(callback, opt_this) {
-  /** @type {Array.<ol.structs.RBushNode.<T>>} */
-  var toVisit = [this.root_];
-  while (toVisit.length > 0) {
-    var node = toVisit.pop();
-    var result = callback.call(opt_this, node);
-    if (result) {
-      return result;
-    }
-    if (!node.isLeaf()) {
-      toVisit.push.apply(toVisit, node.children);
-    }
-  }
-  return undefined;
-};
-
-
-/**
  * @return {Array.<T>} All.
  */
 ol.structs.RBush.prototype.getAll = function() {
