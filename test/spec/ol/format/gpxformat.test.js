@@ -8,6 +8,17 @@ describe('ol.format.GPX', function() {
   });
 
   describe('readFeatures', function() {
+    // for testing custom feature classes
+    var CustomClass = function(opt_stuff) {
+      goog.base(this, opt_stuff);
+    };
+    goog.inherits(CustomClass, ol.Feature);
+    CustomClass.prototype.answer = function() {
+      return 42;
+    };
+    var custom = function(stuff) {
+      return new CustomClass(stuff);
+    };
 
     describe('rte', function() {
 
@@ -105,6 +116,19 @@ describe('ol.format.GPX', function() {
           featureProjection: 'EPSG:3857'
         });
         expect(serialized).to.xmleql(ol.xml.load(text));
+      });
+
+      it('can read an rte with a custom feature function', function() {
+        var text =
+            '<gpx xmlns="http://www.topografix.com/GPX/1/1">' +
+            '  <rte/>' +
+            '</gpx>';
+        format.setCreateFeatureFunction(custom);
+        var fs = format.readFeatures(text);
+        expect(fs).to.have.length(1);
+        var f = fs[0];
+        expect(f).to.be.a(CustomClass);
+        expect(f.answer()).to.be(42);
       });
 
     });
@@ -285,6 +309,19 @@ describe('ol.format.GPX', function() {
         expect(serialized).to.xmleql(ol.xml.load(text));
       });
 
+      it('can read a trk with a custom feature function', function() {
+        var text =
+            '<gpx xmlns="http://www.topografix.com/GPX/1/1">' +
+            '  <trk/>' +
+            '</gpx>';
+        format.setCreateFeatureFunction(custom);
+        var fs = format.readFeatures(text);
+        expect(fs).to.have.length(1);
+        var f = fs[0];
+        expect(f).to.be.a(CustomClass);
+        expect(f.answer()).to.be(42);
+      });
+
     });
 
     describe('wpt', function() {
@@ -435,6 +472,19 @@ describe('ol.format.GPX', function() {
         expect(f.get('dgpsid')).to.be(10);
         var serialized = format.writeFeatures(fs);
         expect(serialized).to.xmleql(ol.xml.load(text));
+      });
+
+      it('can read a wpt with a custom feature function', function() {
+        var text =
+            '<gpx xmlns="http://www.topografix.com/GPX/1/1">' +
+            '  <wpt lat="1" lon="2"/>' +
+            '</gpx>';
+        format.setCreateFeatureFunction(custom);
+        var fs = format.readFeatures(text);
+        expect(fs).to.have.length(1);
+        var f = fs[0];
+        expect(f).to.be.a(CustomClass);
+        expect(f.answer()).to.be(42);
       });
 
     });

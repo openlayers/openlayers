@@ -194,7 +194,7 @@ ol.format.GPX.readRte_ = function(node, objectStack) {
   var geometry = new ol.geom.LineString(null);
   geometry.setFlatCoordinates(ol.geom.GeometryLayout.XYZM, flatCoordinates);
   ol.format.Feature.transformWithOptions(geometry, false, options);
-  var feature = new ol.Feature(geometry);
+  var feature = ol.format.XMLFeature.createFeature(objectStack, geometry);
   feature.setProperties(values);
   return feature;
 };
@@ -226,7 +226,7 @@ ol.format.GPX.readTrk_ = function(node, objectStack) {
   geometry.setFlatCoordinates(
       ol.geom.GeometryLayout.XYZM, flatCoordinates, ends);
   ol.format.Feature.transformWithOptions(geometry, false, options);
-  var feature = new ol.Feature(geometry);
+  var feature = ol.format.XMLFeature.createFeature(objectStack, geometry);
   feature.setProperties(values);
   return feature;
 };
@@ -251,7 +251,7 @@ ol.format.GPX.readWpt_ = function(node, objectStack) {
   var geometry = new ol.geom.Point(
       coordinates, ol.geom.GeometryLayout.XYZM);
   ol.format.Feature.transformWithOptions(geometry, false, options);
-  var feature = new ol.Feature(geometry);
+  var feature = ol.format.XMLFeature.createFeature(objectStack, geometry);
   feature.setProperties(values);
   return feature;
 };
@@ -475,10 +475,16 @@ ol.format.GPX.prototype.readFeaturesFromNode = function(node, opt_options) {
   if (!goog.array.contains(ol.format.GPX.NAMESPACE_URIS_, node.namespaceURI)) {
     return [];
   }
+
+  var options = {
+    'createFeature': goog.bind(this.createFeature, this)
+  };
+  goog.object.extend(options, this.getReadOptions(node, opt_options) || {});
+
   if (node.localName == 'gpx') {
     var features = ol.xml.pushParseAndPop(
         /** @type {Array.<ol.Feature>} */ ([]), ol.format.GPX.GPX_PARSERS_,
-        node, [this.getReadOptions(node, opt_options)]);
+        node, [options]);
     if (goog.isDef(features)) {
       this.handleReadExtensions_(features);
       return features;

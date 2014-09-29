@@ -1435,7 +1435,7 @@ ol.format.KML.prototype.readPlacemark_ = function(node, objectStack) {
   if (!goog.isDef(object)) {
     return undefined;
   }
-  var feature = new ol.Feature();
+  var feature = this.createFeature();
   var id = node.getAttribute('id');
   if (!goog.isNull(id)) {
     feature.setId(id);

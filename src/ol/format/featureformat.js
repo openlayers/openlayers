@@ -1,6 +1,7 @@
 goog.provide('ol.format.Feature');
 
 goog.require('goog.array');
+goog.require('ol.Feature');
 goog.require('ol.geom.Geometry');
 goog.require('ol.proj');
 
@@ -19,12 +20,28 @@ goog.require('ol.proj');
  * @api stable
  */
 ol.format.Feature = function() {
-
   /**
    * @protected
    * @type {ol.proj.Projection}
    */
   this.defaultDataProjection = null;
+
+  /**
+   * @type {!function((ol.geom.Geometry|Object.<string, *>)=):!ol.Feature}
+   * @protected
+   */
+  this.createFeature = ol.format.Feature.defaultFeatureFunc_;
+};
+
+
+/**
+ * @param {(ol.geom.Geometry|Object.<string, *>)=} opt_arg The optional
+ *  constructor arguments
+ * @return {!ol.Feature} The feature
+ * @private
+ */
+ol.format.Feature.defaultFeatureFunc_ = function(opt_arg) {
+  return new ol.Feature(opt_arg);
 };
 
 
@@ -79,6 +96,15 @@ ol.format.Feature.prototype.adaptOptions = function(
 
 
 /**
+ * @return {!function((ol.geom.Geometry|Object.<string, *>)=):!ol.Feature}
+ *  The function that creates features
+ */
+ol.format.Feature.prototype.getCreateFeatureFunction = function() {
+  return this.createFeature;
+};
+
+
+/**
  * @return {ol.format.FormatType} Format.
  */
 ol.format.Feature.prototype.getType = goog.abstractMethod;
@@ -121,6 +147,16 @@ ol.format.Feature.prototype.readGeometry = goog.abstractMethod;
  * @return {ol.proj.Projection} Projection.
  */
 ol.format.Feature.prototype.readProjection = goog.abstractMethod;
+
+
+/**
+ * Sets the class for creating new features.
+ * @param {!function((ol.geom.Geometry|Object.<string, *>)=):!ol.Feature}
+ *   func The create feature function
+ */
+ol.format.Feature.prototype.setCreateFeatureFunction = function(func) {
+  this.createFeature = func;
+};
 
 
 /**

@@ -218,18 +218,20 @@ ol.format.TopoJSON.prototype.getExtensions = function() {
  * @param {Array.<Array.<ol.Coordinate>>} arcs Array of arcs.
  * @param {Array.<number>} scale Scale for each dimension.
  * @param {Array.<number>} translate Translation for each dimension.
+ * @param {!function((ol.geom.Geometry|Object.<string, *>)=):!ol.Feature}
+ *  createFeature
  * @param {olx.format.ReadOptions=} opt_options Read options.
  * @return {Array.<ol.Feature>} Array of features.
  * @private
  */
 ol.format.TopoJSON.readFeaturesFromGeometryCollection_ = function(
-    collection, arcs, scale, translate, opt_options) {
+    collection, arcs, scale, translate, createFeature, opt_options) {
   var geometries = collection.geometries;
   var features = [];
   var i, ii;
   for (i = 0, ii = geometries.length; i < ii; ++i) {
     features[i] = ol.format.TopoJSON.readFeatureFromGeometry_(
-        geometries[i], arcs, scale, translate, opt_options);
+        geometries[i], arcs, scale, translate, createFeature, opt_options);
   }
   return features;
 };
@@ -242,12 +244,14 @@ ol.format.TopoJSON.readFeaturesFromGeometryCollection_ = function(
  * @param {Array.<Array.<ol.Coordinate>>} arcs Array of arcs.
  * @param {Array.<number>} scale Scale for each dimension.
  * @param {Array.<number>} translate Translation for each dimension.
+ * @param {!function((ol.geom.Geometry|Object.<string, *>)=):!ol.Feature}
+ *  createFeature
  * @param {olx.format.ReadOptions=} opt_options Read options.
  * @return {ol.Feature} Feature.
  * @private
  */
 ol.format.TopoJSON.readFeatureFromGeometry_ = function(object, arcs,
-    scale, translate, opt_options) {
+    scale, translate, createFeature, opt_options) {
   var geometry;
   var type = object.type;
   var geometryReader = ol.format.TopoJSON.GEOMETRY_READERS_[type];
@@ -257,7 +261,7 @@ ol.format.TopoJSON.readFeatureFromGeometry_ = function(object, arcs,
   } else {
     geometry = geometryReader(object, arcs);
   }
-  var feature = new ol.Feature();
+  var feature = createFeature();
   feature.setGeometry(/** @type {ol.geom.Geometry} */ (
       ol.format.Feature.transformWithOptions(geometry, false, opt_options)));
   if (goog.isDef(object.id)) {
@@ -304,18 +308,19 @@ ol.format.TopoJSON.prototype.readFeaturesFromObject = function(
     var topoJSONFeatures = goog.object.getValues(topoJSONTopology.objects);
     var i, ii;
     var feature;
+    var createFeature = goog.bind(this.createFeature, this);
     for (i = 0, ii = topoJSONFeatures.length; i < ii; ++i) {
       if (topoJSONFeatures[i].type === 'GeometryCollection') {
         feature = /** @type {TopoJSONGeometryCollection} */
             (topoJSONFeatures[i]);
         features.push.apply(features,
             ol.format.TopoJSON.readFeaturesFromGeometryCollection_(
-                feature, arcs, scale, translate, opt_options));
+                feature, arcs, scale, translate, createFeature, opt_options));
       } else {
         feature = /** @type {TopoJSONGeometry} */
             (topoJSONFeatures[i]);
         features.push(ol.format.TopoJSON.readFeatureFromGeometry_(
-            feature, arcs, scale, translate, opt_options));
+            feature, arcs, scale, translate, createFeature, opt_options));
       }
     }
     return features;

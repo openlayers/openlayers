@@ -176,7 +176,7 @@ ol.format.IGC.prototype.readFeatureFromText = function(text, opt_options) {
   var layout = altitudeMode == ol.format.IGCZ.NONE ?
       ol.geom.GeometryLayout.XYM : ol.geom.GeometryLayout.XYZM;
   lineString.setFlatCoordinates(layout, flatCoordinates);
-  var feature = new ol.Feature(ol.format.Feature.transformWithOptions(
+  var feature = this.createFeature(ol.format.Feature.transformWithOptions(
       lineString, false, opt_options));
   feature.setProperties(properties);
   return feature;

@@ -75,7 +75,7 @@ ol.format.OSMXML.readNode_ = function(node, objectStack) {
   if (!goog.object.isEmpty(values.tags)) {
     var geometry = new ol.geom.Point(coordinates);
     ol.format.Feature.transformWithOptions(geometry, false, options);
-    var feature = new ol.Feature(geometry);
+    var feature = ol.format.XMLFeature.createFeature(objectStack, geometry);
     feature.setId(id);
     feature.setProperties(values.tags);
     state.features.push(feature);
@@ -114,7 +114,7 @@ ol.format.OSMXML.readWay_ = function(node, objectStack) {
     geometry.setFlatCoordinates(ol.geom.GeometryLayout.XY, flatCoordinates);
   }
   ol.format.Feature.transformWithOptions(geometry, false, options);
-  var feature = new ol.Feature(geometry);
+  var feature = ol.format.XMLFeature.createFeature(objectStack, geometry);
   feature.setId(id);
   feature.setProperties(values.tags);
   state.features.push(feature);
@@ -211,7 +211,11 @@ ol.format.OSMXML.prototype.readFeatures;
  */
 ol.format.OSMXML.prototype.readFeaturesFromNode = function(node, opt_options) {
   goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT);
-  var options = this.getReadOptions(node, opt_options);
+  var options = {
+    'createFeature': goog.bind(this.createFeature, this)
+  };
+  goog.object.extend(options, this.getReadOptions(node, opt_options) || {});
+
   if (node.localName == 'osm') {
     var state = ol.xml.pushParseAndPop({
       nodes: {},

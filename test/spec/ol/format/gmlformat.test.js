@@ -939,6 +939,44 @@ describe('ol.format.GML', function() {
 
   });
 
+  describe('when using a custom feature function', function() {
+    var CustomClass = function(opt_stuff) {
+      goog.base(this, opt_stuff);
+    };
+    goog.inherits(CustomClass, ol.Feature);
+    CustomClass.prototype.answer = function() {
+      return 42;
+    };
+    var custom = function(stuff) {
+      return new CustomClass(stuff);
+    };
+
+    var features, feature;
+    before(function(done) {
+      afterLoadText('spec/ol/format/gml/more-geoms.xml', function(xml) {
+        try {
+          var config = {
+            'featureNS': 'http://opengeo.org/#medford',
+            'featureType': 'zoning'
+          };
+          var format = new ol.format.GML(config);
+          format.setCreateFeatureFunction(custom);
+          features = format.readFeatures(xml);
+        } catch (e) {
+          done(e);
+        }
+        done();
+      });
+    });
+
+    it('creates the proper class', function() {
+      var feature = features[0];
+
+      expect(feature).to.be.a(CustomClass);
+      expect(feature.answer()).to.be(42);
+    });
+  });
+
   describe('when parsing an attribute name equal to featureType', function() {
 
     var features;
@@ -979,3 +1017,4 @@ goog.require('ol.xml');
 goog.require('ol.geom.Point');
 goog.require('ol.geom.Polygon');
 goog.require('ol.proj');
+goog.require('ol.Feature');

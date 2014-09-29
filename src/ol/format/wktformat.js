@@ -222,7 +222,7 @@ ol.format.WKT.prototype.readFeature;
 ol.format.WKT.prototype.readFeatureFromText = function(text, opt_options) {
   var geom = this.readGeometryFromText(text, opt_options);
   if (goog.isDef(geom)) {
-    var feature = new ol.Feature();
+    var feature = this.createFeature();
     feature.setGeometry(geom);
     return feature;
   }
@@ -257,7 +257,7 @@ ol.format.WKT.prototype.readFeaturesFromText = function(text, opt_options) {
   }
   var feature, features = [];
   for (var i = 0, ii = geometries.length; i < ii; ++i) {
-    feature = new ol.Feature();
+    feature = this.createFeature();
     feature.setGeometry(geometries[i]);
     features.push(feature);
   }

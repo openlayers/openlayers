@@ -3,6 +3,8 @@ goog.provide('ol.format.XMLFeature');
 goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('goog.dom.NodeType');
+goog.require('goog.object');
+goog.require('ol.Feature');
 goog.require('ol.format.Feature');
 goog.require('ol.format.FormatType');
 goog.require('ol.proj');
@@ -23,6 +25,25 @@ ol.format.XMLFeature = function() {
   goog.base(this);
 };
 goog.inherits(ol.format.XMLFeature, ol.format.Feature);
+
+
+/**
+ * @param {Array.<*>} objectStack Object stack
+ * @param {ol.geom.Geometry|Object.<string, *>=} opt_arg
+ * The argument to pass to the constructor of the feature class
+ * @return {!ol.Feature} The new feature
+ */
+ol.format.XMLFeature.createFeature = function(objectStack, opt_arg) {
+  if (objectStack && objectStack.length > 0) {
+    var context = objectStack[0];
+    goog.asserts.assert(goog.isObject(context));
+    var createFeature = goog.object.get(context, 'createFeature');
+    goog.asserts.assert(goog.isFunction(createFeature));
+    return createFeature(opt_arg);
+  }
+
+  return new ol.Feature(opt_arg);
+};
 
 
 /**
