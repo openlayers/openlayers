@@ -405,7 +405,7 @@ ol.source.TileWMS.prototype.tileUrlFunction_ =
   goog.object.extend(baseParams, this.params_);
 
   return this.getRequestUrl_(tileCoord, tileSize, tileExtent,
-      pixelRatio, projectionObj, baseParams);
+      pixelRatio, projection, baseParams);
 };
 
 
