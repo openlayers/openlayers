@@ -26,10 +26,12 @@ ol.style.ImageOptions;
 
 /**
  * @classdesc
- * Set image style for vector features.
+ * Abstract base class; used for creating subclasses and not instantiated in
+ * apps. Base class for {@link ol.style.Icon} and {@link ol.style.Circle}.
  *
  * @constructor
  * @param {ol.style.ImageOptions} options Options.
+ * @api
  */
 ol.style.Image = function(options) {
 
@@ -119,6 +121,7 @@ ol.style.Image.prototype.getAnchor = goog.abstractMethod;
  * @function
  * @param {number} pixelRatio Pixel ratio.
  * @return {HTMLCanvasElement|HTMLVideoElement|Image} Image element.
+ * @api
  */
 ol.style.Image.prototype.getImage = goog.abstractMethod;
 
