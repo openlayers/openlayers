@@ -532,8 +532,60 @@ describe('ol.interaction.Draw', function() {
         expect(listenerSpy.callCount).to.be(1);
       });
     });
+
   });
 
+  describe('#setMap()', function() {
+    var interaction;
+
+    beforeEach(function() {
+      interaction = new ol.interaction.Draw({
+        type: ol.geom.GeometryType.LINE_STRING
+      });
+      expect(interaction.getActive()).to.be(true);
+    });
+
+    describe('#setMap(null)', function() {
+      beforeEach(function() {
+        map.addInteraction(interaction);
+        // first point
+        simulateEvent('pointermove', 10, 20);
+        simulateEvent('pointerdown', 10, 20);
+        simulateEvent('pointerup', 10, 20);
+        expect(interaction.sketchFeature_).not.to.be(null);
+      });
+      afterEach(function() {
+        map.removeInteraction(interaction);
+      });
+      describe('#setMap(null) when interaction is active', function() {
+        it('unsets the map from the feature overlay', function() {
+          interaction.setMap(null);
+          expect(interaction.overlay_.map_).to.be(null);
+        });
+        it('aborts the drawing', function() {
+          interaction.setMap(null);
+          expect(interaction.sketchFeature_).to.be(null);
+        });
+      });
+    });
+
+    describe('#setMap(map)', function() {
+      describe('#setMap(map) when interaction is active', function() {
+        it('sets the map into the feature overlay', function() {
+          interaction.setMap(map);
+          expect(interaction.overlay_.map_).to.be(map);
+        });
+      });
+      describe('#setMap(map) when interaction is not active', function() {
+        it('does not set the map into the feature overlay', function() {
+          interaction.setActive(false);
+          interaction.setMap(map);
+          expect(interaction.overlay_.map_).to.be(null);
+        });
+      });
+
+    });
+  });
 });
 
 goog.require('goog.dispose');
