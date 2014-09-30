@@ -400,14 +400,9 @@ ol.interaction.Modify.prototype.handlePointerDown = function(evt) {
     var vertex = geometry.getCoordinates();
     var vertexExtent = ol.extent.boundingExtent([vertex]);
     var segmentDataMatches = this.rBush_.getInExtent(vertexExtent);
-    var distinctFeatures = {};
     for (var i = 0, ii = segmentDataMatches.length; i < ii; ++i) {
       var segmentDataMatch = segmentDataMatches[i];
       var segment = segmentDataMatch.segment;
-      if (!(goog.getUid(segmentDataMatch.feature) in distinctFeatures)) {
-        var feature = segmentDataMatch.feature;
-        distinctFeatures[goog.getUid(feature)] = true;
-      }
       if (ol.coordinate.equals(segment[0], vertex)) {
         this.dragSegments_.push([segmentDataMatch, 0]);
       } else if (ol.coordinate.equals(segment[1], vertex)) {
