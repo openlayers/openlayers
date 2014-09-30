@@ -120,7 +120,8 @@ ol.style.Circle.prototype.getHitDetectionImage = function(pixelRatio) {
 
 
 /**
- * @inheritDoc
+ * @param {number} pixelRatio Pixel ratio.
+ * @return {HTMLCanvasElement} Canvas element.
  * @api
  */
 ol.style.Circle.prototype.getImage = function(pixelRatio) {

@@ -228,7 +228,8 @@ ol.style.Icon.prototype.getAnchor = function() {
 
 
 /**
- * @inheritDoc
+ * @param {number} pixelRatio Pixel ratio.
+ * @return {Image} Image element.
  * @api
  */
 ol.style.Icon.prototype.getImage = function(pixelRatio) {
