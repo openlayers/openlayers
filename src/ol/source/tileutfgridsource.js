@@ -51,6 +51,12 @@ ol.source.TileUTFGrid = function(options) {
    */
   this.tileCache = new ol.TileCache();
 
+  /**
+   * @private
+   * @type {string|undefined}
+   */
+  this.template_ = undefined;
+
   var request = new goog.net.Jsonp(options.url);
   request.send(undefined, goog.bind(this.handleTileJSONResponse, this));
 };
@@ -70,6 +76,15 @@ ol.source.TileUTFGrid.prototype.canExpireCache = function() {
  */
 ol.source.TileUTFGrid.prototype.expireCache = function(usedTiles) {
   this.tileCache.expireCache(usedTiles);
+};
+
+
+/**
+ * @return {string|undefined} The template from TileJSON.
+ * @api
+ */
+ol.source.TileUTFGrid.prototype.getTemplate = function() {
+  return this.template_;
 };
 
 
@@ -122,6 +137,8 @@ ol.source.TileUTFGrid.prototype.handleTileJSONResponse = function(tileJSON) {
     minZoom: minZoom
   });
   this.tileGrid = tileGrid;
+
+  this.template_ = tileJSON.template;
 
   var grids = tileJSON.grids;
   if (!goog.isDefAndNotNull(grids)) {
