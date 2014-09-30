@@ -1,6 +1,6 @@
 {
-  "name": "openlayers",
-  "version": "3.0.0-beta",
+  "name": "ol",
+  "version": "3.1.0-pre.1",
   "description": "Mapping library",
   "scripts": {
     "install": "node tasks/parse-examples.js",
