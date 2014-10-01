@@ -57,6 +57,7 @@
 }
 .ol-rotate.ol-hidden {
   opacity: 0;
+  display: none;
 }
 .ol-zoom-extent {
   top: 4.643em;
