@@ -8,7 +8,6 @@ goog.require('ol.animation');
 goog.require('ol.control.Control');
 goog.require('ol.css');
 goog.require('ol.easing');
-goog.require('ol.pointer.PointerEventHandler');
 
 
 
@@ -47,11 +46,6 @@ ol.control.Zoom = function(opt_options) {
     'title': zoomInTipLabel
   }, zoomInLabel);
 
-  var inElementHandler = new ol.pointer.PointerEventHandler(inElement);
-  this.registerDisposable(inElementHandler);
-  goog.events.listen(inElementHandler,
-      ol.pointer.EventType.POINTERUP, goog.partial(
-          ol.control.Zoom.prototype.handlePointerUp_, delta), false, this);
   goog.events.listen(inElement,
       goog.events.EventType.CLICK, goog.partial(
           ol.control.Zoom.prototype.handleClick_, delta), false, this);
@@ -69,11 +63,6 @@ ol.control.Zoom = function(opt_options) {
     'title': zoomOutTipLabel
   }, zoomOutLabel);
 
-  var outElementHandler = new ol.pointer.PointerEventHandler(outElement);
-  this.registerDisposable(outElementHandler);
-  goog.events.listen(outElementHandler,
-      ol.pointer.EventType.POINTERUP, goog.partial(
-          ol.control.Zoom.prototype.handlePointerUp_, -delta), false, this);
   goog.events.listen(outElement,
       goog.events.EventType.CLICK, goog.partial(
           ol.control.Zoom.prototype.handleClick_, -delta), false, this);
@@ -111,20 +100,7 @@ goog.inherits(ol.control.Zoom, ol.control.Control);
  * @private
  */
 ol.control.Zoom.prototype.handleClick_ = function(delta, event) {
-  if (event.screenX !== 0 && event.screenY !== 0) {
-    return;
-  }
-  this.zoomByDelta_(delta);
-};
-
-
-/**
- * @param {number} delta Zoom delta.
- * @param {ol.pointer.PointerEvent} pointerEvent The event to handle
- * @private
- */
-ol.control.Zoom.prototype.handlePointerUp_ = function(delta, pointerEvent) {
-  pointerEvent.browserEvent.preventDefault();
+  event.preventDefault();
   this.zoomByDelta_(delta);
 };
 
