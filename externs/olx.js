@@ -595,6 +595,13 @@ olx.ViewOptions.prototype.zoomFactor;
 
 
 /**
+ * Namespace.
+ * @type {Object}
+ */
+olx.animation;
+
+
+/**
  * @typedef {{resolution: number,
  *     start: (number|undefined),
  *     duration: (number|undefined),
@@ -777,6 +784,13 @@ olx.animation.ZoomOptions.prototype.duration;
  * @api
  */
 olx.animation.ZoomOptions.prototype.easing;
+
+
+/**
+ * Namespace.
+ * @type {Object}
+ */
+olx.control;
 
 
 /**
@@ -1280,6 +1294,13 @@ olx.control.ZoomToExtentOptions.prototype.extent;
 
 
 /**
+ * Namespace.
+ * @type {Object}
+ */
+olx.format;
+
+
+/**
  * @typedef {{dataProjection: (ol.proj.ProjectionLike|undefined),
  *     featureProjection: (ol.proj.ProjectionLike|undefined)}}
  * @api
@@ -1740,6 +1761,13 @@ olx.format.WKTOptions;
  * @api stable
  */
 olx.format.WKTOptions.prototype.splitCollection;
+
+
+/**
+ * Namespace.
+ * @type {Object}
+ */
+olx.interaction;
 
 
 /**
@@ -2305,6 +2333,13 @@ olx.interaction.SelectOptions.prototype.removeCondition;
  * @api
  */
 olx.interaction.SelectOptions.prototype.toggleCondition;
+
+
+/**
+ * Namespace.
+ * @type {Object}
+ */
+olx.layer;
 
 
 /**
@@ -3095,6 +3130,13 @@ olx.FeatureOverlayOptions.prototype.map;
  * @api
  */
 olx.FeatureOverlayOptions.prototype.style;
+
+
+/**
+ * Namespace.
+ * @type {Object}
+ */
+olx.source;
 
 
 /**
@@ -5242,6 +5284,13 @@ olx.source.ZoomifyOptions.prototype.size;
 
 
 /**
+ * Namespace.
+ * @type {Object}
+ */
+olx.style;
+
+
+/**
  * @typedef {{fill: (ol.style.Fill|undefined),
  *     radius: number,
  *     snapToPixel: (boolean|undefined),
@@ -5663,6 +5712,13 @@ olx.style.StyleOptions.prototype.zIndex;
 
 
 /**
+ * Namespace.
+ * @type {Object}
+ */
+olx.tilegrid;
+
+
+/**
  * @typedef {{minZoom: (number|undefined),
  *     origin: (ol.Coordinate|undefined),
  *     origins: (Array.<ol.Coordinate>|undefined),
@@ -5845,6 +5901,13 @@ olx.tilegrid.ZoomifyOptions;
  * @api
  */
 olx.tilegrid.ZoomifyOptions.prototype.resolutions;
+
+
+/**
+ * Namespace.
+ * @type {Object}
+ */
+olx.View;
 
 
 /**
