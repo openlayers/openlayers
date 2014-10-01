@@ -111,7 +111,6 @@ EXAMPLES_SRC = [path
                 if path.endswith('.js')
                 if not path.endswith('.combined.js')
                 if path != 'examples/Jugl.js'
-                if path != 'examples/jquery.min.js'
                 if path != 'examples/example-list.js']
 
 EXAMPLES_JSON = ['build/' + example.replace('.html', '.json')
@@ -638,8 +637,7 @@ def host_examples(t):
     t.cp('build/ol.js', 'build/ol-debug.js', build_dir)
     t.cp('build/ol.css', css_dir)
     t.cp('examples/index.html', 'examples/example-list.js',
-         'examples/example-list.xml', 'examples/Jugl.js',
-         'examples/jquery.min.js', examples_dir)
+         'examples/example-list.xml', 'examples/Jugl.js', examples_dir)
     t.rm_rf('build/hosted/%(BRANCH)s/closure-library')
     t.cp_r(closure_lib_path, 'build/hosted/%(BRANCH)s/closure-library')
     t.rm_rf('build/hosted/%(BRANCH)s/ol')
