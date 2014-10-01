@@ -57,9 +57,6 @@ ol.control.OverviewMap = function(opt_options) {
 
   var tipLabel = goog.isDef(options.tipLabel) ?
       options.tipLabel : 'Overview map';
-  var tip = goog.dom.createDom(goog.dom.TagName.SPAN, {
-    'role' : 'tooltip'
-  }, tipLabel);
 
   /**
    * @private
@@ -83,10 +80,9 @@ ol.control.OverviewMap = function(opt_options) {
    */
   this.labelSpan_ = label;
   var button = goog.dom.createDom(goog.dom.TagName.BUTTON, {
-    'class': 'ol-has-tooltip',
-    'type': 'button'
+    'type': 'button',
+    'title': tipLabel
   }, this.labelSpan_);
-  goog.dom.appendChild(button, tip);
 
   var buttonHandler = new ol.pointer.PointerEventHandler(button);
   this.registerDisposable(buttonHandler);
