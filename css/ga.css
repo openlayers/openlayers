@@ -62,6 +62,12 @@
 }
 
 /* Custom api css */
+.ol-rotate {
+    padding-top: 28px;
+}
+.ol-control {
+    background-color: rgba(255,255,255,0)
+}
 .ga-tooltip {
     display: none;
     position: absolute;
