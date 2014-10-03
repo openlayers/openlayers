@@ -4,6 +4,7 @@ goog.require('goog.asserts');
 goog.require('goog.dom');
 goog.require('goog.dom.NodeType');
 goog.require('goog.object');
+goog.require('ol.extent');
 goog.require('ol.format.GML');
 goog.require('ol.format.GMLBase');
 goog.require('ol.format.XSD');
@@ -96,6 +97,24 @@ ol.format.GML2.prototype.readFlatCoordinates_ = function(node, objectStack) {
  * @param {Node} node Node.
  * @param {Array.<*>} objectStack Object stack.
  * @private
+ * @return {ol.Extent|undefined} Envelope.
+ */
+ol.format.GML2.prototype.readBox_ = function(node, objectStack) {
+  goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT);
+  goog.asserts.assert(node.localName == 'Box');
+  var flatCoordinates = ol.xml.pushParseAndPop(
+      /** @type {Array.<number>} */ ([null]),
+      this.BOX_PARSERS_, node, objectStack, this);
+  return ol.extent.createOrUpdate(flatCoordinates[1][0],
+      flatCoordinates[1][1], flatCoordinates[1][3],
+      flatCoordinates[1][4]);
+};
+
+
+/**
+ * @param {Node} node Node.
+ * @param {Array.<*>} objectStack Object stack.
+ * @private
  */
 ol.format.GML2.prototype.innerBoundaryIsParser_ =
     function(node, objectStack) {
@@ -167,6 +186,19 @@ ol.format.GML2.prototype.FLAT_LINEAR_RINGS_PARSERS_ = Object({
  * @type {Object.<string, Object.<string, ol.xml.Parser>>}
  * @private
  */
+ol.format.GML2.prototype.BOX_PARSERS_ = Object({
+  'http://www.opengis.net/gml' : {
+    'coordinates': ol.xml.makeArrayPusher(
+        ol.format.GML2.prototype.readFlatCoordinates_)
+  }
+});
+
+
+/**
+ * @const
+ * @type {Object.<string, Object.<string, ol.xml.Parser>>}
+ * @private
+ */
 ol.format.GML2.prototype.GEOMETRY_PARSERS_ = Object({
   'http://www.opengis.net/gml' : {
     'Point': ol.xml.makeReplacer(ol.format.GMLBase.prototype.readPoint),
@@ -180,6 +212,7 @@ ol.format.GML2.prototype.GEOMETRY_PARSERS_ = Object({
         ol.format.GMLBase.prototype.readLinearRing),
     'Polygon': ol.xml.makeReplacer(ol.format.GMLBase.prototype.readPolygon),
     'MultiPolygon': ol.xml.makeReplacer(
-        ol.format.GMLBase.prototype.readMultiPolygon)
+        ol.format.GMLBase.prototype.readMultiPolygon),
+    'Box': ol.xml.makeReplacer(ol.format.GML2.prototype.readBox_)
   }
 });
