@@ -35,6 +35,17 @@ describe('ol.format.GML2', function() {
         expect(g.getCoordinates()).to.eql([-180, -90, 0]);
       });
 
+      it('can read a box element', function() {
+        var text = '<gml:Box xmlns:gml="http://www.opengis.net/gml" ' +
+            'srsName="EPSG:4326">' +
+            '  <gml:coordinates>-0.768746,47.003018 ' +
+            '    3.002191,47.925567</gml:coordinates>' +
+            '</gml:Box>';
+
+        var g = readGeometry(format, text);
+        expect(g).to.eql([47.003018, -0.768746, 47.925567, 3.002191]);
+      });
+
       it('can read a multipolygon with gml:coordinates', function() {
 
         var text =

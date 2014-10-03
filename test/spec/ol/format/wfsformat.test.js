@@ -80,6 +80,8 @@ describe('ol.format.WFS', function() {
       feature = features[0];
       expect(feature.getId()).to.equal('1');
       expect(feature.get('name')).to.equal('My Polygon with hole');
+      expect(feature.get('boundedBy')).to.eql(
+          [47.003018, -0.768746, 47.925567, 0.532597]);
       expect(feature.getGeometry()).to.be.an(ol.geom.MultiPolygon);
       expect(feature.getGeometry().getFlatCoordinates()).
           to.have.length(60);
