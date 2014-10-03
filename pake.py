@@ -89,7 +89,7 @@ class Target(object):
 
     def __init__(self, name, action=None, clean=True, dependencies=(),
                  help=None, help_group=None, makedirs=True, phony=False,
-                 precious=False):
+                 precious=False, override=False):
         self.name = name
         self.action = action
         self._clean = clean
@@ -97,6 +97,7 @@ class Target(object):
         self.help = help
         self.help_group = help_group
         self._makedirs = makedirs
+        self.override = override
         self.phony = phony
         self.precious = precious
         self.logger = logging.getLogger(self.name)
@@ -279,13 +280,17 @@ class TargetCollection(object):
 
     def add(self, target):
         """add adds a concrete target to self, raising an error if the target
-        already exists.  If target is the first target to be added, it becomes
-        the default for this TargetCollection."""
+        already exists and is not an "override" target.  If target is the first
+        target to be added, or if it overrides a target that is currently the
+        default, then it becomes the default for this TargetCollection."""
         if target.name in self.targets:
-            raise DuplicateTargetError(target)
-        self.targets[target.name] = target
-        if self.default is None:
+            if not target.override:
+                raise DuplicateTargetError(target)
+            if self.default == self.targets[target.name]:
+                self.default = target
+        elif self.default is None:
             self.default = target
+        self.targets[target.name] = target
 
     def get(self, name):
         """get searches for a target.  If it already exists, it is returned.

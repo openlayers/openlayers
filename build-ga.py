@@ -13,29 +13,15 @@ def prepend(name, template):
      ob = json.loads(temp) 
      open(name, "w").write( template % json.dumps(ob,sort_keys=True,indent=2))
 
-# Monkey patching build.py to allow redefining targets by 
-def add(self, target, force=True):
-        """add adds a concrete target to self, overriding it if the target
-        already exists.  If target is the first target to be added, it becomes
-        the default for this TargetCollection."""
-        if target.name in self.targets and not force:
-            raise DuplicateTargetError(target)
-        self.targets[target.name] = target
-        if self.default is None:
-            self.default = target
-
-from types import MethodType
-targets.add = MethodType(add, targets, TargetCollection)
-
 # We redefine 'build'
 virtual('build', 'build/ol.css', 'build/ga.css', 'build/ga.js',
-        'build/ga-debug.js','build/layersconfig', 'build/serverconfig')
+        'build/ga-debug.js','build/layersconfig', 'build/serverconfig', override=True)
 
 # We redefine 'check' to use ga.js instead of ol.js
-virtual('check', 'lint', 'build/ga.js', 'test')
+virtual('check', 'lint', 'build/ga.js', 'test', override=True)
 
 @target('build/jsdoc-%(BRANCH)s-timestamp' % vars(variables), 'host-resources',
-        SRC, SHADER_SRC, ifind('config/jsdoc/api/template'))
+        SRC, SHADER_SRC, ifind('config/jsdoc/api/template'), override=True)
 def jsdoc_BRANCH_timestamp(t):
     t.run('%(JSDOC)s', 'config/jsdoc/api/ga-index.md',
           '-c', 'config/jsdoc/api/ga-conf.json',
@@ -84,7 +70,7 @@ def serverconfig(t):
         f.write( """var GeoAdmin=GeoAdmin || {}; GeoAdmin.serviceUrl='"""+ api_url   + """'; """)
 
 #Overwrite host examples target
-@target('host-examples', 'build', 'host-resources', 'examples', phony=True)
+@target('host-examples', 'build', 'host-resources', 'examples', phony=True, override=True)
 def host_examples(t):
     examples_dir = 'build/hosted/%(BRANCH)s/examples'
     build_dir = 'build/hosted/%(BRANCH)s/build'
@@ -128,7 +114,7 @@ def host_examples(t):
 
 #Overwrite build all examples because of externs
 @target('build/examples/all.combined.js', 'build/examples/all.js',
-        SRC, SHADER_SRC, 'config/ga-examples-all.json')
+        SRC, SHADER_SRC, 'config/ga-examples-all.json', override=True)
 def build_examples_all_combined_js(t):
     t.run('node', 'tasks/build.js', 'config/examples-all.json',
           'build/examples/all.combined.js')
