@@ -141,12 +141,12 @@ ol.format.GML2.prototype.outerBoundaryIsParser_ =
  * @type {Object.<string, Object.<string, ol.xml.Parser>>}
  * @private
  */
-ol.format.GML2.prototype.GEOMETRY_FLAT_COORDINATES_PARSERS_ = {
+ol.format.GML2.prototype.GEOMETRY_FLAT_COORDINATES_PARSERS_ = Object({
   'http://www.opengis.net/gml' : {
     'coordinates': ol.xml.makeReplacer(
         ol.format.GML2.prototype.readFlatCoordinates_)
   }
-};
+});
 
 
 /**
@@ -154,12 +154,12 @@ ol.format.GML2.prototype.GEOMETRY_FLAT_COORDINATES_PARSERS_ = {
  * @type {Object.<string, Object.<string, ol.xml.Parser>>}
  * @private
  */
-ol.format.GML2.prototype.FLAT_LINEAR_RINGS_PARSERS_ = {
+ol.format.GML2.prototype.FLAT_LINEAR_RINGS_PARSERS_ = Object({
   'http://www.opengis.net/gml' : {
     'innerBoundaryIs': ol.format.GML2.prototype.innerBoundaryIsParser_,
     'outerBoundaryIs': ol.format.GML2.prototype.outerBoundaryIsParser_
   }
-};
+});
 
 
 /**
@@ -167,7 +167,7 @@ ol.format.GML2.prototype.FLAT_LINEAR_RINGS_PARSERS_ = {
  * @type {Object.<string, Object.<string, ol.xml.Parser>>}
  * @private
  */
-ol.format.GML2.prototype.GEOMETRY_PARSERS_ = {
+ol.format.GML2.prototype.GEOMETRY_PARSERS_ = Object({
   'http://www.opengis.net/gml' : {
     'Point': ol.xml.makeReplacer(ol.format.GMLBase.prototype.readPoint),
     'MultiPoint': ol.xml.makeReplacer(
@@ -182,4 +182,4 @@ ol.format.GML2.prototype.GEOMETRY_PARSERS_ = {
     'MultiPolygon': ol.xml.makeReplacer(
         ol.format.GMLBase.prototype.readMultiPolygon)
   }
-};
+});
