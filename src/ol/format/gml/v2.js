@@ -18,22 +18,30 @@ goog.require('ol.xml');
  * version 2.1.2.
  *
  * @constructor
- * @param {olx.format.GMLOptions=} opt_options
- *     Optional configuration object.
+ * @param {olx.format.GMLOptions=} opt_options Optional configuration object.
  * @extends {ol.format.GMLBase}
  * @api
  */
 ol.format.GML2 = function(opt_options) {
+  var options = /** @type {olx.format.GMLOptions} */
+      (goog.isDef(opt_options) ? opt_options : {});
 
-  goog.base(this, opt_options);
+  goog.base(this, options);
+
+  /**
+   * @inheritDoc
+   */
+  this.schemaLocation = goog.isDef(options.schemaLocation) ?
+      options.schemaLocation : ol.format.GML2.schemaLocation_;
+
 };
 goog.inherits(ol.format.GML2, ol.format.GMLBase);
 
 
 /**
  * @const
- * @private
  * @type {string}
+ * @private
  */
 ol.format.GML2.schemaLocation_ = 'http://www.opengis.net/gml ' +
     'http://schemas.opengis.net/gml/2.1.2/feature.xsd';

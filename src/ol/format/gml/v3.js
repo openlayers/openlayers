@@ -39,6 +39,8 @@ ol.format.GML3 = function(opt_options) {
   var options = /** @type {olx.format.GMLOptions} */
       (goog.isDef(opt_options) ? opt_options : {});
 
+  goog.base(this, options);
+
   /**
    * @private
    * @type {boolean}
@@ -67,8 +69,12 @@ ol.format.GML3 = function(opt_options) {
   this.multiSurface_ = goog.isDef(options.multiSurface) ?
       options.multiSurface : true;
 
+  /**
+   * @inheritDoc
+   */
+  this.schemaLocation = goog.isDef(options.schemaLocation) ?
+      options.schemaLocation : ol.format.GML3.schemaLocation_;
 
-  goog.base(this, opt_options);
 };
 goog.inherits(ol.format.GML3, ol.format.GMLBase);
 

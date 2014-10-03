@@ -62,8 +62,7 @@ ol.format.GMLBase = function(opt_options) {
    * @protected
    * @type {string}
    */
-  this.schemaLocation = goog.isDef(options.schemaLocation) ?
-      options.schemaLocation : this.constructor.schemaLocation_;
+  this.schemaLocation = '';
 
   goog.base(this);
 };
