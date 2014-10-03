@@ -110,7 +110,7 @@ if ('download' in exportGPXElement) {
           /** @type {Node} */ (node));
       var base64 = exampleNS.strToBase64(string);
       exportGPXElement.href =
-          'data:gpx+xml;base64,' + base64;
+          'data:text/gpx+xml;base64,' + base64;
     }
   }, false);
 } else {
