@@ -27,8 +27,10 @@ goog.require('ol.xml');
 
 /**
  * @classdesc
- * Feature format for reading and writing data in the GML format.
- * Currently only supports GML 3.1.1 Simple Features profile.
+ * Feature base format for reading and writing data in the GML format.
+ * This class cannot be instantiate, it contains only base content that
+ * is shared with versioned format classes ol.format.GML2 and
+ * ol.format.GML3.
  *
  * @constructor
  * @param {olx.format.GMLOptions=} opt_options
@@ -515,7 +517,7 @@ ol.format.GMLBase.prototype.readGeometryFromNode =
     function(node, opt_options) {
   var geometry = this.readGeometryElement(node,
       [this.getReadOptions(node, goog.isDef(opt_options) ? opt_options : {})]);
-  return (goog.isDef(geometry) ? geometry : null);
+  return goog.isDef(geometry) ? geometry : null;
 };
 
 
