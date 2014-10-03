@@ -127,7 +127,7 @@ ol.format.WFS.prototype.readFeaturesFromNode = function(node, opt_options) {
       goog.isDef(opt_options) ? opt_options : {}));
   var objectStack = [context];
   var features = ol.xml.pushParseAndPop([],
-      ol.format.GMLBase.FEATURE_COLLECTION_PARSERS, node,
+      this.gmlFormat_.FEATURE_COLLECTION_PARSERS, node,
       objectStack, this.gmlFormat_);
   if (!goog.isDef(features)) {
     features = [];

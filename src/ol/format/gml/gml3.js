@@ -116,7 +116,7 @@ ol.format.GML3.prototype.readMultiCurve_ = function(node, objectStack) {
   goog.asserts.assert(node.localName == 'MultiCurve');
   var lineStrings = ol.xml.pushParseAndPop(
       /** @type {Array.<ol.geom.LineString>} */ ([]),
-      ol.format.GML3.MULTICURVE_PARSERS_, node, objectStack, this);
+      this.MULTICURVE_PARSERS_, node, objectStack, this);
   if (goog.isDef(lineStrings)) {
     var multiLineString = new ol.geom.MultiLineString(null);
     multiLineString.setLineStrings(lineStrings);
@@ -138,7 +138,7 @@ ol.format.GML3.prototype.readMultiSurface_ = function(node, objectStack) {
   goog.asserts.assert(node.localName == 'MultiSurface');
   var polygons = ol.xml.pushParseAndPop(
       /** @type {Array.<ol.geom.Polygon>} */ ([]),
-      ol.format.GML3.MULTISURFACE_PARSERS_, node, objectStack, this);
+      this.MULTISURFACE_PARSERS_, node, objectStack, this);
   if (goog.isDef(polygons)) {
     var multiPolygon = new ol.geom.MultiPolygon(null);
     multiPolygon.setPolygons(polygons);
@@ -158,7 +158,7 @@ ol.format.GML3.prototype.curveMemberParser_ = function(node, objectStack) {
   goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT);
   goog.asserts.assert(node.localName == 'curveMember' ||
       node.localName == 'curveMembers');
-  ol.xml.parse(ol.format.GML3.CURVEMEMBER_PARSERS_, node, objectStack, this);
+  ol.xml.parse(this.CURVEMEMBER_PARSERS_, node, objectStack, this);
 };
 
 
@@ -171,7 +171,7 @@ ol.format.GML3.prototype.surfaceMemberParser_ = function(node, objectStack) {
   goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT);
   goog.asserts.assert(node.localName == 'surfaceMember' ||
       node.localName == 'surfaceMembers');
-  ol.xml.parse(ol.format.GML3.SURFACEMEMBER_PARSERS_,
+  ol.xml.parse(this.SURFACEMEMBER_PARSERS_,
       node, objectStack, this);
 };
 
@@ -187,7 +187,7 @@ ol.format.GML3.prototype.readPatch_ = function(node, objectStack) {
   goog.asserts.assert(node.localName == 'patches');
   return ol.xml.pushParseAndPop(
       /** @type {Array.<Array.<number>>} */ ([null]),
-      ol.format.GML3.PATCHES_PARSERS_, node, objectStack, this);
+      this.PATCHES_PARSERS_, node, objectStack, this);
 };
 
 
@@ -202,7 +202,7 @@ ol.format.GML3.prototype.readSegment_ = function(node, objectStack) {
   goog.asserts.assert(node.localName == 'segments');
   return ol.xml.pushParseAndPop(
       /** @type {Array.<number>} */ ([null]),
-      ol.format.GML3.SEGMENTS_PARSERS_, node, objectStack, this);
+      this.SEGMENTS_PARSERS_, node, objectStack, this);
 };
 
 
@@ -217,7 +217,7 @@ ol.format.GML3.prototype.readPolygonPatch_ = function(node, objectStack) {
   goog.asserts.assert(node.localName == 'PolygonPatch');
   return ol.xml.pushParseAndPop(
       /** @type {Array.<Array.<number>>} */ ([null]),
-      this.constructor.FLAT_LINEAR_RINGS_PARSERS_, node, objectStack, this);
+      this.FLAT_LINEAR_RINGS_PARSERS_, node, objectStack, this);
 };
 
 
@@ -233,7 +233,7 @@ ol.format.GML3.prototype.readLineStringSegment_ =
   goog.asserts.assert(node.localName == 'LineStringSegment');
   return ol.xml.pushParseAndPop(
       /** @type {Array.<number>} */ ([null]),
-      this.constructor.GEOMETRY_FLAT_COORDINATES_PARSERS_,
+      this.GEOMETRY_FLAT_COORDINATES_PARSERS_,
       node, objectStack, this);
 };
 
@@ -248,7 +248,7 @@ ol.format.GML3.prototype.interiorParser_ = function(node, objectStack) {
   goog.asserts.assert(node.localName == 'interior');
   var flatLinearRing = ol.xml.pushParseAndPop(
       /** @type {Array.<number>|undefined} */ (undefined),
-      ol.format.GMLBase.RING_PARSERS, node, objectStack, this);
+      this.RING_PARSERS, node, objectStack, this);
   if (goog.isDef(flatLinearRing)) {
     var flatLinearRings = /** @type {Array.<Array.<number>>} */
         (objectStack[objectStack.length - 1]);
@@ -269,7 +269,7 @@ ol.format.GML3.prototype.exteriorParser_ = function(node, objectStack) {
   goog.asserts.assert(node.localName == 'exterior');
   var flatLinearRing = ol.xml.pushParseAndPop(
       /** @type {Array.<number>|undefined} */ (undefined),
-      ol.format.GMLBase.RING_PARSERS, node, objectStack, this);
+      this.RING_PARSERS, node, objectStack, this);
   if (goog.isDef(flatLinearRing)) {
     var flatLinearRings = /** @type {Array.<Array.<number>>} */
         (objectStack[objectStack.length - 1]);
@@ -291,7 +291,7 @@ ol.format.GML3.prototype.readSurface_ = function(node, objectStack) {
   goog.asserts.assert(node.localName == 'Surface');
   var flatLinearRings = ol.xml.pushParseAndPop(
       /** @type {Array.<Array.<number>>} */ ([null]),
-      ol.format.GML3.SURFACE_PARSERS_, node, objectStack, this);
+      this.SURFACE_PARSERS_, node, objectStack, this);
   if (goog.isDef(flatLinearRings) &&
       !goog.isNull(flatLinearRings[0])) {
     var polygon = new ol.geom.Polygon(null);
@@ -322,7 +322,7 @@ ol.format.GML3.prototype.readCurve_ = function(node, objectStack) {
   goog.asserts.assert(node.localName == 'Curve');
   var flatCoordinates = ol.xml.pushParseAndPop(
       /** @type {Array.<number>} */ ([null]),
-      ol.format.GML3.CURVE_PARSERS_, node, objectStack, this);
+      this.CURVE_PARSERS_, node, objectStack, this);
   if (goog.isDef(flatCoordinates)) {
     var lineString = new ol.geom.LineString(null);
     lineString.setFlatCoordinates(ol.geom.GeometryLayout.XYZ, flatCoordinates);
@@ -344,7 +344,7 @@ ol.format.GML3.prototype.readEnvelope_ = function(node, objectStack) {
   goog.asserts.assert(node.localName == 'Envelope');
   var flatCoordinates = ol.xml.pushParseAndPop(
       /** @type {Array.<number>} */ ([null]),
-      ol.format.GML3.ENVELOPE_PARSERS_, node, objectStack, this);
+      this.ENVELOPE_PARSERS_, node, objectStack, this);
   return ol.extent.createOrUpdate(flatCoordinates[1][0],
       flatCoordinates[1][1], flatCoordinates[2][0],
       flatCoordinates[2][1]);
@@ -448,7 +448,7 @@ ol.format.GML3.prototype.readFlatPosList_ = function(node, objectStack) {
  * @type {Object.<string, Object.<string, ol.xml.Parser>>}
  * @private
  */
-ol.format.GML3.GEOMETRY_FLAT_COORDINATES_PARSERS_ = {
+ol.format.GML3.prototype.GEOMETRY_FLAT_COORDINATES_PARSERS_ = {
   'http://www.opengis.net/gml' : {
     'pos': ol.xml.makeReplacer(ol.format.GML3.prototype.readFlatPos_),
     'posList': ol.xml.makeReplacer(ol.format.GML3.prototype.readFlatPosList_)
@@ -461,7 +461,7 @@ ol.format.GML3.GEOMETRY_FLAT_COORDINATES_PARSERS_ = {
  * @type {Object.<string, Object.<string, ol.xml.Parser>>}
  * @private
  */
-ol.format.GML3.FLAT_LINEAR_RINGS_PARSERS_ = {
+ol.format.GML3.prototype.FLAT_LINEAR_RINGS_PARSERS_ = {
   'http://www.opengis.net/gml' : {
     'interior': ol.format.GML3.prototype.interiorParser_,
     'exterior': ol.format.GML3.prototype.exteriorParser_
@@ -474,7 +474,7 @@ ol.format.GML3.FLAT_LINEAR_RINGS_PARSERS_ = {
  * @type {Object.<string, Object.<string, ol.xml.Parser>>}
  * @private
  */
-ol.format.GML3.GEOMETRY_PARSERS_ = {
+ol.format.GML3.prototype.GEOMETRY_PARSERS_ = {
   'http://www.opengis.net/gml' : {
     'Point': ol.xml.makeReplacer(ol.format.GMLBase.prototype.readPoint),
     'MultiPoint': ol.xml.makeReplacer(
@@ -504,7 +504,7 @@ ol.format.GML3.GEOMETRY_PARSERS_ = {
  * @type {Object.<string, Object.<string, ol.xml.Parser>>}
  * @private
  */
-ol.format.GML3.MULTICURVE_PARSERS_ = {
+ol.format.GML3.prototype.MULTICURVE_PARSERS_ = {
   'http://www.opengis.net/gml' : {
     'curveMember': ol.xml.makeArrayPusher(
         ol.format.GML3.prototype.curveMemberParser_),
@@ -519,7 +519,7 @@ ol.format.GML3.MULTICURVE_PARSERS_ = {
  * @type {Object.<string, Object.<string, ol.xml.Parser>>}
  * @private
  */
-ol.format.GML3.MULTISURFACE_PARSERS_ = {
+ol.format.GML3.prototype.MULTISURFACE_PARSERS_ = {
   'http://www.opengis.net/gml' : {
     'surfaceMember': ol.xml.makeArrayPusher(
         ol.format.GML3.prototype.surfaceMemberParser_),
@@ -534,7 +534,7 @@ ol.format.GML3.MULTISURFACE_PARSERS_ = {
  * @type {Object.<string, Object.<string, ol.xml.Parser>>}
  * @private
  */
-ol.format.GML3.CURVEMEMBER_PARSERS_ = {
+ol.format.GML3.prototype.CURVEMEMBER_PARSERS_ = {
   'http://www.opengis.net/gml' : {
     'LineString': ol.xml.makeArrayPusher(
         ol.format.GMLBase.prototype.readLineString),
@@ -548,7 +548,7 @@ ol.format.GML3.CURVEMEMBER_PARSERS_ = {
  * @type {Object.<string, Object.<string, ol.xml.Parser>>}
  * @private
  */
-ol.format.GML3.SURFACEMEMBER_PARSERS_ = {
+ol.format.GML3.prototype.SURFACEMEMBER_PARSERS_ = {
   'http://www.opengis.net/gml' : {
     'Polygon': ol.xml.makeArrayPusher(ol.format.GMLBase.prototype.readPolygon),
     'Surface': ol.xml.makeArrayPusher(ol.format.GML3.prototype.readSurface_)
@@ -561,7 +561,7 @@ ol.format.GML3.SURFACEMEMBER_PARSERS_ = {
  * @type {Object.<string, Object.<string, ol.xml.Parser>>}
  * @private
  */
-ol.format.GML3.SURFACE_PARSERS_ = {
+ol.format.GML3.prototype.SURFACE_PARSERS_ = {
   'http://www.opengis.net/gml' : {
     'patches': ol.xml.makeReplacer(ol.format.GML3.prototype.readPatch_)
   }
@@ -573,7 +573,7 @@ ol.format.GML3.SURFACE_PARSERS_ = {
  * @type {Object.<string, Object.<string, ol.xml.Parser>>}
  * @private
  */
-ol.format.GML3.CURVE_PARSERS_ = {
+ol.format.GML3.prototype.CURVE_PARSERS_ = {
   'http://www.opengis.net/gml' : {
     'segments': ol.xml.makeReplacer(ol.format.GML3.prototype.readSegment_)
   }
@@ -585,7 +585,7 @@ ol.format.GML3.CURVE_PARSERS_ = {
  * @type {Object.<string, Object.<string, ol.xml.Parser>>}
  * @private
  */
-ol.format.GML3.ENVELOPE_PARSERS_ = {
+ol.format.GML3.prototype.ENVELOPE_PARSERS_ = {
   'http://www.opengis.net/gml' : {
     'lowerCorner': ol.xml.makeArrayPusher(
         ol.format.GML3.prototype.readFlatPosList_),
@@ -600,7 +600,7 @@ ol.format.GML3.ENVELOPE_PARSERS_ = {
  * @type {Object.<string, Object.<string, ol.xml.Parser>>}
  * @private
  */
-ol.format.GML3.PATCHES_PARSERS_ = {
+ol.format.GML3.prototype.PATCHES_PARSERS_ = {
   'http://www.opengis.net/gml' : {
     'PolygonPatch': ol.xml.makeReplacer(
         ol.format.GML3.prototype.readPolygonPatch_)
@@ -613,7 +613,7 @@ ol.format.GML3.PATCHES_PARSERS_ = {
  * @type {Object.<string, Object.<string, ol.xml.Parser>>}
  * @private
  */
-ol.format.GML3.SEGMENTS_PARSERS_ = {
+ol.format.GML3.prototype.SEGMENTS_PARSERS_ = {
   'http://www.opengis.net/gml' : {
     'LineStringSegment': ol.xml.makeReplacer(
         ol.format.GML3.prototype.readLineStringSegment_)
