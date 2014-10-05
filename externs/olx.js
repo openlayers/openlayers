@@ -4524,7 +4524,7 @@ olx.source.StamenOptions.prototype.url;
 /**
  * @typedef {{attributions: (Array.<ol.Attribution>|undefined),
  *     crossOrigin: (null|string|undefined),
- *     imageExtent: (ol.Extent|undefined),
+ *     imageExtent: (ol.Extent),
  *     imageSize: (ol.Size|undefined),
  *     logo: (string|olx.LogoOptions|undefined),
  *     projection: ol.proj.ProjectionLike,
@@ -4552,7 +4552,7 @@ olx.source.ImageStaticOptions.prototype.crossOrigin;
 
 /**
  * Extent of the image.
- * @type {ol.Extent|undefined}
+ * @type {ol.Extent}
  * @api stable
  */
 olx.source.ImageStaticOptions.prototype.imageExtent;
