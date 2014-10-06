@@ -67,14 +67,6 @@ function generateExterns(typedefs, symbols, externs, base) {
     return name;
   }
 
-  function noGoogTypes(typesWithGoog) {
-    var typesWithoutGoog = [];
-    typesWithGoog.forEach(function(type) {
-      typesWithoutGoog.push(type.replace(googRegEx, '*'));
-    });
-    return typesWithoutGoog;
-  }
-
   // Store in "constructorOptionsTypes" type names that start
   // with "ol." and end with "Options".
   function findConstructorOptionsTypes(types) {
@@ -111,7 +103,7 @@ function generateExterns(typedefs, symbols, externs, base) {
       }
     }
     if (symbol.types) {
-      lines.push(' * @type {' + noGoogTypes(symbol.types).join('|') + '}');
+      lines.push(' * @type {' + symbol.types.join('|') + '}');
     }
     var args = [];
     if (symbol.params) {
@@ -120,7 +112,7 @@ function generateExterns(typedefs, symbols, externs, base) {
         args.push(param.name);
         lines.push(' * @param {' +
             (param.variable ? '...' : '') +
-            noGoogTypes(param.types).join('|') +
+            param.types.join('|') +
             (param.optional ? '=' : '') + (param.nullable ? '!' : '') +
             '} ' + param.name);
       });
@@ -128,7 +120,7 @@ function generateExterns(typedefs, symbols, externs, base) {
     if (symbol.returns) {
       lines.push(' * @return {' +
           (symbol.returns.nullable ? '!' : '') +
-          noGoogTypes(symbol.returns.types).join('|') + '}');
+          symbol.returns.types.join('|') + '}');
     }
     if (symbol.template) {
       lines.push(' * @template ' + symbol.template);
@@ -155,7 +147,7 @@ function generateExterns(typedefs, symbols, externs, base) {
 
     addNamespaces(typedef.name);
     lines.push('/**');
-    lines.push(' * @typedef {' + noGoogTypes(typedef.types).join('|') + '}');
+    lines.push(' * @typedef {' + typedef.types.join('|') + '}');
     lines.push(' */');
     lines.push(nameToJS(typedef.name) + ';');
     lines.push('\n');
