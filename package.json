@@ -4,7 +4,7 @@
   "description": "Mapping library",
   "scripts": {
     "install": "node tasks/parse-examples.js",
-    "postinstall": "node ./node_modules/closure-util/install.js",
+    "postinstall": "closure-util update",
     "start": "node tasks/serve.js",
     "test": "node tasks/test.js"
   },
@@ -18,7 +18,7 @@
   },
   "dependencies": {
     "async": "~0.2.10",
-    "closure-util": "0.20.0",
+    "closure-util": "~1.0.0",
     "fs-extra": "~0.8.1",
     "graceful-fs": "~3.0.2",
     "htmlparser2": "~3.7.1",
