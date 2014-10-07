@@ -3596,14 +3596,6 @@ olx.source.TileVectorOptions.prototype.attributions;
 
 
 /**
- * Default projection.
- * @type {ol.proj.ProjectionLike}
- * @api
- */
-olx.source.TileVectorOptions.prototype.defaultProjection;
-
-
-/**
  * Format.
  * @type {ol.format.Feature}
  * @api
@@ -3617,14 +3609,6 @@ olx.source.TileVectorOptions.prototype.format;
  * @api
  */
 olx.source.TileVectorOptions.prototype.logo;
-
-
-/**
- * Object.
- * @type {GeoJSONObject|undefined}
- * @api
- */
-olx.source.TileVectorOptions.prototype.object;
 
 
 /**
