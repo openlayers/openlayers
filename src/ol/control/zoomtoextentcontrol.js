@@ -39,7 +39,8 @@ ol.control.ZoomToExtent = function(opt_options) {
     'role' : 'tooltip'
   }, tipLabel);
   var button = goog.dom.createDom(goog.dom.TagName.BUTTON, {
-    'class': 'ol-has-tooltip'
+    'class': 'ol-has-tooltip',
+    'type': 'button'
   });
   goog.dom.appendChild(button, tip);
 

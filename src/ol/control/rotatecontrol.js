@@ -49,7 +49,6 @@ ol.control.Rotate = function(opt_options) {
   }, tipLabel);
   var button = goog.dom.createDom(goog.dom.TagName.BUTTON, {
     'class': className + '-reset ol-has-tooltip',
-    'name' : 'ResetRotation',
     'type' : 'button'
   }, tip, this.label_);
 
