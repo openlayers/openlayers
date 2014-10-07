@@ -107,6 +107,7 @@ goog.inherits(ol.control.Rotate, ol.control.Control);
  * @private
  */
 ol.control.Rotate.prototype.handleClick_ = function(event) {
+  event.preventDefault();
   if (event.screenX !== 0 && event.screenY !== 0) {
     return;
   }
@@ -119,7 +120,6 @@ ol.control.Rotate.prototype.handleClick_ = function(event) {
  * @private
  */
 ol.control.Rotate.prototype.handlePointerUp_ = function(pointerEvent) {
-  pointerEvent.browserEvent.preventDefault();
   this.resetNorth_();
 };
 

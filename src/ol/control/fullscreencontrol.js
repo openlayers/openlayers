@@ -46,7 +46,8 @@ ol.control.FullScreen = function(opt_options) {
 
   var button = goog.dom.createDom(goog.dom.TagName.BUTTON, {
     'class': this.cssClassName_ + '-' + goog.dom.fullscreen.isFullScreen() +
-        ' ol-has-tooltip'
+        ' ol-has-tooltip',
+    'type': 'button'
   });
   goog.dom.appendChild(button, tip);
   var buttonHandler = new ol.pointer.PointerEventHandler(button);
@@ -92,6 +93,7 @@ goog.inherits(ol.control.FullScreen, ol.control.Control);
  * @private
  */
 ol.control.FullScreen.prototype.handleClick_ = function(event) {
+  event.preventDefault();
   if (event.screenX !== 0 && event.screenY !== 0) {
     return;
   }
@@ -104,7 +106,6 @@ ol.control.FullScreen.prototype.handleClick_ = function(event) {
  * @private
  */
 ol.control.FullScreen.prototype.handlePointerUp_ = function(pointerEvent) {
-  pointerEvent.browserEvent.preventDefault();
   this.handleFullScreen_();
 };
 
