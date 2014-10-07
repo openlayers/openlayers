@@ -33,6 +33,7 @@ ol.interaction.InteractionProperty = {
  *
  * @constructor
  * @extends {ol.Object}
+ * @api
  */
 ol.interaction.Interaction = function() {
 
