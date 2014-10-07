@@ -3573,10 +3573,8 @@ olx.source.TileImageOptions.prototype.tileUrlFunction;
 
 /**
  * @typedef {{attributions: (Array.<ol.Attribution>|undefined),
- *     defaultProjection: ol.proj.ProjectionLike,
  *     format: ol.format.Feature,
  *     logo: (string|olx.LogoOptions|undefined),
- *     object: (GeoJSONObject|undefined),
  *     projection: ol.proj.ProjectionLike,
  *     tileGrid: ol.tilegrid.TileGrid,
  *     tileUrlFunction: (ol.TileUrlFunctionType|undefined),
