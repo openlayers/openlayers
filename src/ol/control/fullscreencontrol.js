@@ -46,7 +46,8 @@ ol.control.FullScreen = function(opt_options) {
 
   var button = goog.dom.createDom(goog.dom.TagName.BUTTON, {
     'class': this.cssClassName_ + '-' + goog.dom.fullscreen.isFullScreen() +
-        ' ol-has-tooltip'
+        ' ol-has-tooltip',
+    'type': 'button'
   });
   goog.dom.appendChild(button, tip);
   var buttonHandler = new ol.pointer.PointerEventHandler(button);
