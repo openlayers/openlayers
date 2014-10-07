@@ -1893,7 +1893,7 @@ olx.interaction.DoubleClickZoomOptions.prototype.delta;
 
 /**
  * @typedef {{formatConstructors: (Array.<function(new: ol.format.Feature)>|undefined),
- *     reprojectTo: ol.proj.ProjectionLike}}
+ *     projection: ol.proj.ProjectionLike}}
  * @api
  */
 olx.interaction.DragAndDropOptions;
@@ -1912,7 +1912,7 @@ olx.interaction.DragAndDropOptions.prototype.formatConstructors;
  * @type {ol.proj.ProjectionLike}
  * @api
  */
-olx.interaction.DragAndDropOptions.prototype.reprojectTo;
+olx.interaction.DragAndDropOptions.prototype.projection;
 
 
 /**
@@ -4084,7 +4084,6 @@ olx.source.OSMOptions.prototype.url;
  *     logo: (string|olx.LogoOptions|undefined),
  *     node: (Node|undefined),
  *     projection: ol.proj.ProjectionLike,
- *     reprojectTo: ol.proj.ProjectionLike,
  *     text: (string|undefined),
  *     url: (string|undefined),
  *     urls: (Array.<string>|undefined)}}
@@ -4131,14 +4130,6 @@ olx.source.OSMXMLOptions.prototype.node;
  * @api
  */
 olx.source.OSMXMLOptions.prototype.projection;
-
-
-/**
- * Re-project to.
- * @type {ol.proj.ProjectionLike}
- * @api
- */
-olx.source.OSMXMLOptions.prototype.reprojectTo;
 
 
 /**
