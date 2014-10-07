@@ -33,6 +33,7 @@ ol.interaction.InteractionProperty = {
  *
  * @constructor
  * @extends {ol.Object}
+ * @implements {oli.interaction.Interaction}
  * @api
  */
 ol.interaction.Interaction = function() {
@@ -80,6 +81,7 @@ ol.interaction.Interaction.prototype.getMap = function() {
  * @return {boolean} Whether the map browser event should continue
  *     through the chain of interactions. false means stop, true
  *     means continue.
+ * @api
  */
 ol.interaction.Interaction.prototype.handleMapBrowserEvent =
     goog.abstractMethod;
