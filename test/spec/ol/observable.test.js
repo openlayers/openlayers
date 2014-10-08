@@ -144,7 +144,7 @@ describe('ol.Observable', function() {
 
   });
 
-  describe('#unByKey()', function() {
+  describe('ol.Observable.unByKey()', function() {
     var observable, listener;
     beforeEach(function() {
       observable = new ol.Observable();
@@ -157,7 +157,7 @@ describe('ol.Observable', function() {
       observable.dispatchEvent('foo');
       expect(listener.calledOnce).to.be(true);
 
-      observable.unByKey(key);
+      ol.Observable.unByKey(key);
       observable.dispatchEvent('foo');
       expect(listener.callCount).to.be(1);
     });
