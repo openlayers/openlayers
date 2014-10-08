@@ -33,10 +33,12 @@ class ThreadPool:
                     function(*args, **kargs)
                 except:
                     print(sys.exc_info()[0])
+                    self.tasks.errors = True
                 self.tasks.task_done()
 
     def __init__(self, num_threads = multiprocessing.cpu_count() + 1):
         self.tasks = Queue(num_threads)
+        self.tasks.errors = False
         # create num_threads Workers, by default the number of CPUs + 1
         for _ in range(num_threads): self.Worker(self.tasks)
 
@@ -46,6 +48,7 @@ class ThreadPool:
     def wait_completion(self):
         # wait for the queue to be empty
         self.tasks.join()
+        return self.tasks.errors
 
 
 if sys.platform == 'win32':
@@ -661,7 +664,9 @@ def check_examples(t):
     pool = ThreadPool()
     for example in all_examples:
         pool.add_task(t.run, '%(PHANTOMJS)s', 'bin/check-example.js', example)
-    pool.wait_completion()
+    errors = pool.wait_completion()
+    if errors:
+        sys.exit(1)
 
 
 @target('test', phony=True)
