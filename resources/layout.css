@@ -9,7 +9,7 @@ body {
   background: url(textured_paper.jpeg) repeat;
 }
 .ol-attribution {
-  max-width: calc(100%-3em);
+  max-width: calc(100% - 3em);
 }
 #tags {
   display: none;
