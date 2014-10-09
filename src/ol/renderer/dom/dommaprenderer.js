@@ -10,10 +10,12 @@ goog.require('ol.RendererType');
 goog.require('ol.css');
 goog.require('ol.layer.Image');
 goog.require('ol.layer.Tile');
+goog.require('ol.layer.Vector');
 goog.require('ol.renderer.Map');
 goog.require('ol.renderer.dom.ImageLayer');
 goog.require('ol.renderer.dom.Layer');
 goog.require('ol.renderer.dom.TileLayer');
+goog.require('ol.renderer.dom.VectorLayer');
 goog.require('ol.source.State');
 
 
@@ -68,6 +70,9 @@ ol.renderer.dom.Map.prototype.createLayerRenderer = function(layer) {
     layerRenderer = new ol.renderer.dom.ImageLayer(this, layer);
   } else if (ol.ENABLE_TILE && layer instanceof ol.layer.Tile) {
     layerRenderer = new ol.renderer.dom.TileLayer(this, layer);
+  } else if (!(ol.LEGACY_IE_SUPPORT && ol.IS_LEGACY_IE) &&
+      ol.ENABLE_VECTOR && layer instanceof ol.layer.Vector) {
+    layerRenderer = new ol.renderer.dom.VectorLayer(this, layer);
   } else {
     goog.asserts.fail();
     return null;
