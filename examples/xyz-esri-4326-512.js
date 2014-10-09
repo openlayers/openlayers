@@ -14,26 +14,45 @@ var attribution = new ol.Attribution({
 var projection = ol.proj.get('EPSG:4326');
 var projectionExtent = projection.getExtent();
 
-var size = ol.extent.getWidth(projectionExtent) / 256;
+// The tile size supported by the ArcGIS tile service.
+var tileSize = 512;
+
+// Calculate the resolutions supported by the ArcGIS tile service.
+// There are 16 resolutions, with a factor of 2 between successive
+// resolutions. The max resolution is such that the world (360°)
+// fits into two (512x512 px) tiles.
+var maxResolution = ol.extent.getWidth(projectionExtent) / (tileSize * 2);
 var resolutions = new Array(16);
-for (var z = 2; z < 18; ++z) {
-  resolutions[z - 2] = size / Math.pow(2, z);
+var z;
+for (z = 0; z < 16; ++z) {
+  resolutions[z] = maxResolution / Math.pow(2, z);
 }
 
-var url = 'http://services.arcgisonline.com/arcgis/rest/services/' +
-    'ESRI_Imagery_World_2D/MapServer/tile/';
+var urlTemplate = 'http://services.arcgisonline.com/arcgis/rest/services/' +
+    'ESRI_Imagery_World_2D/MapServer/tile/{z}/{y}/{x}';
 
 var map = new ol.Map({
   target: 'map',
   layers: [
     new ol.layer.Tile({
-      extent: projectionExtent,
-      /* ol.source.XYZ and ol.tilegrid.XYZ have nu resolutions config */
+      /* ol.source.XYZ and ol.tilegrid.XYZ have no resolutions config */
       source: new ol.source.TileImage({
         attributions: [attribution],
         tileUrlFunction: function(tileCoord, pixelRatio, projection) {
-          return url + tileCoord[0] + '/' + (-tileCoord[2] - 1) + '/' +
-              tileCoord[1];
+          var z = tileCoord[0];
+          var x = tileCoord[1];
+          var y = -tileCoord[2] - 1;
+          // wrap the world on the X axis
+          var n = Math.pow(2, z + 1); // 2 tiles at z=0
+          x = x % n;
+          if (x * n < 0) {
+            // x and n differ in sign so add n to wrap the result
+            // to the correct sign
+            x = x + n;
+          }
+          return urlTemplate.replace('{z}', z.toString())
+              .replace('{y}', y.toString())
+              .replace('{x}', x.toString());
         },
         projection: projection,
         tileGrid: new ol.tilegrid.TileGrid({
