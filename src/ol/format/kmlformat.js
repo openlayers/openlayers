@@ -277,13 +277,26 @@ ol.format.KML.DEFAULT_STROKE_STYLE_ = new ol.style.Stroke({
 
 /**
  * @const
+ * @type {ol.style.Text}
+ * @private
+ */
+ol.format.KML.DEFAULT_TEXT_STYLE_ = new ol.style.Text({
+  font: 'normal 16px Helvetica',
+  fill: ol.format.KML.DEFAULT_FILL_STYLE_,
+  stroke: ol.format.KML.DEFAULT_STROKE_STYLE_,
+  scale: 1
+});
+
+
+/**
+ * @const
  * @type {ol.style.Style}
  * @private
  */
 ol.format.KML.DEFAULT_STYLE_ = new ol.style.Style({
   fill: ol.format.KML.DEFAULT_FILL_STYLE_,
   image: ol.format.KML.DEFAULT_IMAGE_STYLE_,
-  text: null, // FIXME
+  text: ol.format.KML.DEFAULT_TEXT_STYLE_,
   stroke: ol.format.KML.DEFAULT_STROKE_STYLE_,
   zIndex: 0
 });
@@ -528,6 +541,34 @@ ol.format.KML.IconStyleParser_ = function(node, objectStack) {
     src: src
   });
   goog.object.set(styleObject, 'imageStyle', imageStyle);
+};
+
+
+/**
+ * @param {Node} node Node.
+ * @param {Array.<*>} objectStack Object stack.
+ * @private
+ */
+ol.format.KML.LabelStyleParser_ = function(node, objectStack) {
+  goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT);
+  goog.asserts.assert(node.localName == 'LabelStyle');
+  // FIXME colorMode
+  var object = ol.xml.pushParseAndPop(
+      {}, ol.format.KML.LABEL_STYLE_PARSERS_, node, objectStack);
+  if (!goog.isDef(object)) {
+    return;
+  }
+  var styleObject = objectStack[objectStack.length - 1];
+  goog.asserts.assert(goog.isObject(styleObject));
+  var textStyle = new ol.style.Text({
+    fill: new ol.style.Fill({
+      color: /** @type {ol.Color} */
+          (goog.object.get(object, 'color', ol.format.KML.DEFAULT_COLOR_))
+    }),
+    scale: /** @type {number|undefined} */
+        (goog.object.get(object, 'scale'))
+  });
+  goog.object.set(styleObject, 'textStyle', textStyle);
 };
 
 
@@ -910,6 +951,8 @@ ol.format.KML.readStyle_ = function(node, objectStack) {
   }
   var imageStyle = /** @type {ol.style.Image} */ (goog.object.get(
       styleObject, 'imageStyle', ol.format.KML.DEFAULT_IMAGE_STYLE_));
+  var textStyle = /** @type {ol.style.Text} */ (goog.object.get(
+      styleObject, 'textStyle', ol.format.KML.DEFAULT_TEXT_STYLE_));
   var strokeStyle = /** @type {ol.style.Stroke} */ (goog.object.get(
       styleObject, 'strokeStyle', ol.format.KML.DEFAULT_STROKE_STYLE_));
   var outline = /** @type {boolean|undefined} */
@@ -921,7 +964,7 @@ ol.format.KML.readStyle_ = function(node, objectStack) {
     fill: fillStyle,
     image: imageStyle,
     stroke: strokeStyle,
-    text: null, // FIXME
+    text: textStyle,
     zIndex: undefined // FIXME
   })];
 };
@@ -1243,6 +1286,18 @@ ol.format.KML.INNER_BOUNDARY_IS_PARSERS_ = ol.xml.makeParsersNS(
  * @type {Object.<string, Object.<string, ol.xml.Parser>>}
  * @private
  */
+ol.format.KML.LABEL_STYLE_PARSERS_ = ol.xml.makeParsersNS(
+    ol.format.KML.NAMESPACE_URIS_, {
+      'color': ol.xml.makeObjectPropertySetter(ol.format.KML.readColor_),
+      'scale': ol.xml.makeObjectPropertySetter(ol.format.KML.readScale_)
+    });
+
+
+/**
+ * @const
+ * @type {Object.<string, Object.<string, ol.xml.Parser>>}
+ * @private
+ */
 ol.format.KML.LINE_STYLE_PARSERS_ = ol.xml.makeParsersNS(
     ol.format.KML.NAMESPACE_URIS_, {
       'color': ol.xml.makeObjectPropertySetter(ol.format.KML.readColor_),
@@ -1369,6 +1424,7 @@ ol.format.KML.SCHEMA_DATA_PARSERS_ = ol.xml.makeParsersNS(
 ol.format.KML.STYLE_PARSERS_ = ol.xml.makeParsersNS(
     ol.format.KML.NAMESPACE_URIS_, {
       'IconStyle': ol.format.KML.IconStyleParser_,
+      'LabelStyle': ol.format.KML.LabelStyleParser_,
       'LineStyle': ol.format.KML.LineStyleParser_,
       'PolyStyle': ol.format.KML.PolyStyleParser_
     });
