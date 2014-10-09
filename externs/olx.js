@@ -1038,6 +1038,78 @@ olx.control.MousePositionOptions.prototype.undefinedHTML;
 
 
 /**
+ * @typedef {{collapsed: (boolean|undefined),
+ *     collapseLabel: (string|undefined),
+ *     collapsible: (boolean|undefined),
+ *     label: (string|undefined),
+ *     layers: (Array.<ol.layer.Layer>|ol.Collection|undefined),
+ *     target: (Element|undefined),
+ *     tipLabel: (string|undefined)}}
+ * @api
+ */
+olx.control.OverviewMapOptions;
+
+
+/**
+ * Whether the control should start collapsed or not (expanded).
+ * Default to `true`.
+ * @type {boolean|undefined}
+ * @api
+ */
+olx.control.OverviewMapOptions.prototype.collapsed;
+
+
+/**
+ * Text label to use for the expanded overviewmap button. Default is `«`
+ * @type {string|undefined}
+ * @api
+ */
+olx.control.OverviewMapOptions.prototype.collapseLabel;
+
+
+/**
+ * Whether the control can be collapsed or not. Default to `true`.
+ * @type {boolean|undefined}
+ * @api
+ */
+olx.control.OverviewMapOptions.prototype.collapsible;
+
+
+/**
+ * Text label to use for the collapsed overviewmap button. Default is `»`
+ * @type {string|undefined}
+ * @api
+ */
+olx.control.OverviewMapOptions.prototype.label;
+
+
+/**
+ * Layers for the overview map. If not set, then all main map layers are used
+ * instead.
+ * @type {!Array.<ol.layer.Layer>|!ol.Collection|undefined}
+ * @api
+ */
+olx.control.OverviewMapOptions.prototype.layers;
+
+
+/**
+ * Specify a target if you want the control to be rendered outside of the map's
+ * viewport.
+ * @type {Element|undefined}
+ * @api
+ */
+olx.control.OverviewMapOptions.prototype.target;
+
+
+/**
+ * Text label to use for the button tip. Default is `Overview map`
+ * @type {string|undefined}
+ * @api
+ */
+olx.control.OverviewMapOptions.prototype.tipLabel;
+
+
+/**
  * @typedef {{className: (string|undefined),
  *     minWidth: (number|undefined),
  *     target: (Element|undefined),

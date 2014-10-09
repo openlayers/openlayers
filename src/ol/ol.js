@@ -188,6 +188,20 @@ ol.MOUSEWHEELZOOM_TIMEOUT_DURATION = 80;
 
 
 /**
+ * @define {number} Maximum width and/or height extent ratio that determines
+ * when the overview map should be zoomed out.
+ */
+ol.OVERVIEWMAP_MAX_RATIO = 0.75;
+
+
+/**
+ * @define {number} Minimum width and/or height extent ratio that determines
+ * when the overview map should be zoomed in.
+ */
+ol.OVERVIEWMAP_MIN_RATIO = 0.1;
+
+
+/**
  * @define {number} Rotate animation duration.
  */
 ol.ROTATE_ANIMATION_DURATION = 250;
