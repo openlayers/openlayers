@@ -14,10 +14,18 @@ var attribution = new ol.Attribution({
 var projection = ol.proj.get('EPSG:4326');
 var projectionExtent = projection.getExtent();
 
-var size = ol.extent.getWidth(projectionExtent) / 256;
+// The tile size supported by the ArcGIS tile service.
+var tileSize = 512;
+
+// Calculate the resolutions supported by the ArcGIS tile service.
+// There are 16 resolutions, with a factor of 2 between successive
+// resolutions. The max resolution is such that the world (360°)
+// fits into two (512x512 px) tiles.
+var maxResolution = ol.extent.getWidth(projectionExtent) / (tileSize * 2);
 var resolutions = new Array(16);
-for (var z = 2; z < 18; ++z) {
-  resolutions[z - 2] = size / Math.pow(2, z);
+var z;
+for (z = 0; z < 16; ++z) {
+  resolutions[z] = maxResolution / Math.pow(2, z);
 }
 
 var url = 'http://services.arcgisonline.com/arcgis/rest/services/' +
