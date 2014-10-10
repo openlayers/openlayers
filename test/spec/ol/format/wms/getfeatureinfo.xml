@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<msGMLOutput xmlns="http://mapserver.gis.umn.edu/mapserver" xmlns:gml="http://www.opengis.net/gml" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<msGMLOutput xmlns:gml="http://www.opengis.net/gml" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
     <ADCP_2001_layer>
         <gml:name>ADCP de coque 2001</gml:name>
         <ADCP_2001_feature>
