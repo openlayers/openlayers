@@ -251,15 +251,20 @@ def build_examples_all_js(t):
 @rule(r'\Abuild/examples/(?P<id>.*).json\Z')
 def examples_star_json(name, match):
     def action(t):
-        # It would make more sense to use olx.js as an input file here. We use
-        # it as an externs file instead to prevent "Cannot read property '*' of
-        # undefined" error when running examples in "raw" or "whitespace" mode.
-        # Note that we use the proper way in config/examples-all.json, which
-        # is only used to check the examples code using the compiler.
         content = json.dumps({
           "exports": [],
-          "src": ["src/**/*.js", "examples/%(id)s.js" % match.groupdict()],
+          "src": [
+            "src/**/*.js",
+            "examples/%(id)s.js" % match.groupdict()],
           "compile": {
+            "js": [
+              # When compling the examples, the OpenLayers 'externs' can be used
+              # as inputs directly. By passing them directly to the compiler,
+              # they are handled like source code (as manage_closure_dependencies
+              # prevents them from being ignored by the compiler).
+              "externs/olx.js",
+              "externs/oli.js",
+            ],
             "externs": [
               "externs/bingmaps.js",
               "externs/bootstrap.js",
@@ -267,8 +272,6 @@ def examples_star_json(name, match):
               "externs/example.js",
               "externs/geojson.js",
               "externs/jquery-1.9.js",
-              "externs/oli.js",
-              "externs/olx.js",
               "externs/proj4js.js",
               "externs/tilejson.js",
               "externs/topojson.js",
