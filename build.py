@@ -258,6 +258,10 @@ def examples_star_json(name, match):
             "examples/%(id)s.js" % match.groupdict()],
           "compile": {
             "js": [
+              # When compling the examples, the OpenLayers 'externs' can be used
+              # as inputs directly. By passing them directly to the compiler,
+              # they are handled like source code (as manage_closure_dependencies
+              # prevents them from being ignored by the compiler).
               "externs/olx.js",
               "externs/oli.js",
             ],
