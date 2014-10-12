@@ -251,6 +251,21 @@ def build_examples_all_js(t):
 @rule(r'\Abuild/examples/(?P<id>.*).json\Z')
 def examples_star_json(name, match):
     def action(t):
+
+        # When compiling the ol3 code and the application code together it is
+        # better to use oli.js and olx.js files as "input" files rather than
+        # "externs" files. Indeed, externs prevent renaming, which is neither
+        # necessary nor desirable in this case.
+        #
+        # oli.js and olx.js do not provide or require namespaces (using
+        # "goog.provide" or "goog.require"). For that reason, if they are
+        # specified as input files through the "src" property, then
+        # closure-util will exclude them when creating the dependencies graph.
+        # So the compile "js" property is used instead. With that property the
+        # oli.js and olx.js files are passed directly to the compiler. And by
+        # setting "manage_closure_dependencies" to "true" the compiler will not
+        # exclude them from its dependencies graph.
+
         content = json.dumps({
           "exports": [],
           "src": [
@@ -258,10 +273,6 @@ def examples_star_json(name, match):
             "examples/%(id)s.js" % match.groupdict()],
           "compile": {
             "js": [
-              # When compling the examples, the OpenLayers 'externs' can be used
-              # as inputs directly. By passing them directly to the compiler,
-              # they are handled like source code (as manage_closure_dependencies
-              # prevents them from being ignored by the compiler).
               "externs/olx.js",
               "externs/oli.js",
             ],
