@@ -1,13 +1,10 @@
 goog.provide('ol.source.ImageStatic');
 
 goog.require('goog.events');
-goog.require('goog.events.EventType');
 goog.require('ol.Image');
-goog.require('ol.ImageState');
 goog.require('ol.extent');
 goog.require('ol.proj');
 goog.require('ol.source.Image');
-goog.require('ol.source.State');
 
 
 
@@ -28,13 +25,10 @@ ol.source.ImageStatic = function(options) {
 
   var imageExtent = options.imageExtent;
 
-  var state, resolution, resolutions;
+  var resolution, resolutions;
   if (goog.isDef(options.imageSize)) {
-    state = ol.source.State.READY;
     resolution = ol.extent.getHeight(imageExtent) / options.imageSize[1];
     resolutions = [resolution];
-  } else {
-    state = ol.source.State.LOADING;
   }
 
   var crossOrigin = goog.isDef(options.crossOrigin) ?
@@ -44,8 +38,7 @@ ol.source.ImageStatic = function(options) {
     attributions: attributions,
     logo: options.logo,
     projection: ol.proj.get(options.projection),
-    resolutions: resolutions,
-    state: state
+    resolutions: resolutions
   });
 
   /**
@@ -54,12 +47,6 @@ ol.source.ImageStatic = function(options) {
    */
   this.image_ = new ol.Image(imageExtent, resolution, 1, attributions,
       options.url, crossOrigin);
-
-  if (state !== ol.source.State.READY) {
-    goog.events.listen(this.image_, goog.events.EventType.CHANGE,
-        this.handleImageChange_, false, this);
-    this.image_.load();
-  }
 
 };
 goog.inherits(ol.source.ImageStatic, ol.source.Image);
@@ -74,18 +61,4 @@ ol.source.ImageStatic.prototype.getImage =
     return this.image_;
   }
   return null;
-};
-
-
-/**
- * Handle image change events.
- * @private
- */
-ol.source.ImageStatic.prototype.handleImageChange_ = function() {
-  var imageState = this.image_.getState();
-  if (imageState === ol.ImageState.LOADED) {
-    this.setState(ol.source.State.READY);
-  } else if (imageState === ol.ImageState.ERROR) {
-    this.setState(ol.source.State.ERROR);
-  }
 };
