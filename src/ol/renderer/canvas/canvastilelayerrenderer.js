@@ -81,11 +81,30 @@ ol.renderer.canvas.TileLayer = function(mapRenderer, tileLayer) {
    */
   this.renderedTiles_ = null;
 
-  goog.events.listen(
-      tileLayer, ol.Object.getChangeEventType(ol.layer.LayerProperty.EXTENT),
-      this.handleLayerExtentChanged_, false, this);
+  /**
+   * @private
+   * @type {Array.<goog.events.Key>}
+   */
+  this.eventKeys_ = [
+    goog.events.listen(
+        tileLayer, ol.Object.getChangeEventType(ol.layer.LayerProperty.EXTENT),
+        this.handleLayerExtentChanged_, false, this)
+  ];
+
 };
 goog.inherits(ol.renderer.canvas.TileLayer, ol.renderer.canvas.Layer);
+
+
+/**
+ * @inheritDoc
+ */
+ol.renderer.canvas.TileLayer.prototype.disposeInternal = function() {
+  for (var i = 0, ii = this.eventKeys_.length; i < ii; ++i) {
+    goog.events.unlistenByKey(this.eventKeys_[i]);
+  }
+  this.eventKeys_.length = 0;
+  goog.base(this, 'disposeInternal');
+};
 
 
 /**
