@@ -1,6 +1,7 @@
 goog.provide('ol.ImageBase');
 goog.provide('ol.ImageState');
 
+goog.require('goog.asserts');
 goog.require('goog.events.EventTarget');
 goog.require('goog.events.EventType');
 goog.require('ol.Attribution');
@@ -23,7 +24,7 @@ ol.ImageState = {
  * @constructor
  * @extends {goog.events.EventTarget}
  * @param {ol.Extent} extent Extent.
- * @param {number} resolution Resolution.
+ * @param {number|undefined} resolution Resolution.
  * @param {number} pixelRatio Pixel ratio.
  * @param {ol.ImageState} state State.
  * @param {Array.<ol.Attribution>} attributions Attributions.
@@ -39,10 +40,10 @@ ol.ImageBase = function(extent, resolution, pixelRatio, state, attributions) {
   this.attributions_ = attributions;
 
   /**
-   * @private
+   * @protected
    * @type {ol.Extent}
    */
-  this.extent_ = extent;
+  this.extent = extent;
 
   /**
    * @private
@@ -51,10 +52,10 @@ ol.ImageBase = function(extent, resolution, pixelRatio, state, attributions) {
   this.pixelRatio_ = pixelRatio;
 
   /**
-   * @private
-   * @type {number}
+   * @protected
+   * @type {number|undefined}
    */
-  this.resolution_ = resolution;
+  this.resolution = resolution;
 
   /**
    * @protected
@@ -86,7 +87,7 @@ ol.ImageBase.prototype.getAttributions = function() {
  * @return {ol.Extent} Extent.
  */
 ol.ImageBase.prototype.getExtent = function() {
-  return this.extent_;
+  return this.extent;
 };
 
 
@@ -109,7 +110,8 @@ ol.ImageBase.prototype.getPixelRatio = function() {
  * @return {number} Resolution.
  */
 ol.ImageBase.prototype.getResolution = function() {
-  return this.resolution_;
+  goog.asserts.assert(goog.isDef(this.resolution), 'resolution not yet set');
+  return this.resolution;
 };
 
 

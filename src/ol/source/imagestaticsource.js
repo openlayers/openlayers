@@ -1,5 +1,6 @@
 goog.provide('ol.source.ImageStatic');
 
+goog.require('goog.events');
 goog.require('ol.Image');
 goog.require('ol.extent');
 goog.require('ol.proj');
@@ -21,27 +22,31 @@ ol.source.ImageStatic = function(options) {
 
   var attributions = goog.isDef(options.attributions) ?
       options.attributions : null;
+
+  var imageExtent = options.imageExtent;
+
+  var resolution, resolutions;
+  if (goog.isDef(options.imageSize)) {
+    resolution = ol.extent.getHeight(imageExtent) / options.imageSize[1];
+    resolutions = [resolution];
+  }
+
   var crossOrigin = goog.isDef(options.crossOrigin) ?
       options.crossOrigin : null;
-  var imageExtent = options.imageExtent;
-  var imageSize = options.imageSize;
-  var imageResolution = (imageExtent[3] - imageExtent[1]) / imageSize[1];
-  var imageUrl = options.url;
-  var projection = ol.proj.get(options.projection);
 
   goog.base(this, {
     attributions: attributions,
     logo: options.logo,
-    projection: projection,
-    resolutions: [imageResolution]
+    projection: ol.proj.get(options.projection),
+    resolutions: resolutions
   });
 
   /**
    * @private
    * @type {ol.Image}
    */
-  this.image_ = new ol.Image(imageExtent, imageResolution, 1, attributions,
-      imageUrl, crossOrigin);
+  this.image_ = new ol.Image(imageExtent, resolution, 1, attributions,
+      options.url, crossOrigin);
 
 };
 goog.inherits(ol.source.ImageStatic, ol.source.Image);

@@ -7,6 +7,7 @@ goog.require('goog.events.EventType');
 goog.require('goog.object');
 goog.require('ol.ImageBase');
 goog.require('ol.ImageState');
+goog.require('ol.extent');
 
 
 
@@ -14,7 +15,7 @@ goog.require('ol.ImageState');
  * @constructor
  * @extends {ol.ImageBase}
  * @param {ol.Extent} extent Extent.
- * @param {number} resolution Resolution.
+ * @param {number|undefined} resolution Resolution.
  * @param {number} pixelRatio Pixel ratio.
  * @param {Array.<ol.Attribution>} attributions Attributions.
  * @param {string} src Image source URI.
@@ -103,6 +104,9 @@ ol.Image.prototype.handleImageError_ = function() {
  * @private
  */
 ol.Image.prototype.handleImageLoad_ = function() {
+  if (!goog.isDef(this.resolution)) {
+    this.resolution = ol.extent.getHeight(this.extent) / this.image_.height;
+  }
   this.state = ol.ImageState.LOADED;
   this.unlistenImage_();
   this.changed();

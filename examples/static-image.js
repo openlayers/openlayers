@@ -7,13 +7,14 @@ goog.require('ol.proj.Projection');
 goog.require('ol.source.ImageStatic');
 
 
-// Maps always need a projection, but the static image is not geo-referenced,
-// and are only measured in pixels.  So, we create a fake projection that the
-// map can use to properly display the layer.
-var pixelProjection = new ol.proj.Projection({
-  code: 'pixel',
+// Map views always need a projection.  Here we just want to map image
+// coordinates directly to map coordinates, so we create a projection that uses
+// the image extent in pixels.
+var extent = [0, 0, 1024, 968];
+var projection = new ol.proj.Projection({
+  code: 'xkcd-image',
   units: 'pixels',
-  extent: [0, 0, 1024, 968]
+  extent: extent
 });
 
 var map = new ol.Map({
@@ -26,16 +27,15 @@ var map = new ol.Map({
           })
         ],
         url: 'http://imgs.xkcd.com/comics/online_communities.png',
-        imageSize: [1024, 968],
-        projection: pixelProjection,
-        imageExtent: pixelProjection.getExtent()
+        projection: projection,
+        imageExtent: extent
       })
     })
   ],
   target: 'map',
   view: new ol.View({
-    projection: pixelProjection,
-    center: ol.extent.getCenter(pixelProjection.getExtent()),
+    projection: projection,
+    center: ol.extent.getCenter(extent),
     zoom: 2
   })
 });
