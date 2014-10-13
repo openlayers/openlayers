@@ -127,22 +127,22 @@ ol.control.ZoomSlider.prototype.setMap = function(map) {
  * @private
  */
 ol.control.ZoomSlider.prototype.initSlider_ = function() {
-  var container = this.element,
-      thumb = goog.dom.getFirstElementChild(container),
-      elemSize = goog.style.getContentBoxSize(container),
-      thumbBounds = goog.style.getBounds(thumb),
-      thumbMargins = goog.style.getMarginBox(thumb),
-      thumbBorderBox = goog.style.getBorderBox(thumb),
-      w = elemSize.width -
-          thumbMargins.left - thumbMargins.right -
-          thumbBorderBox.left - thumbBorderBox.right -
-          thumbBounds.width,
-      h = elemSize.height -
-          thumbMargins.top - thumbMargins.bottom -
-          thumbBorderBox.top - thumbBorderBox.bottom -
-          thumbBounds.height,
-      limits;
-  if (elemSize.width > elemSize.height) {
+  var container = this.element;
+  var containerSize = goog.style.getSize(container);
+  var thumb = goog.dom.getFirstElementChild(container);
+  var thumbBounds = goog.style.getBounds(thumb);
+  var thumbMargins = goog.style.getMarginBox(thumb);
+  var thumbBorderBox = goog.style.getBorderBox(thumb);
+  var w = containerSize.width -
+      thumbMargins.left - thumbMargins.right -
+      thumbBorderBox.left - thumbBorderBox.right -
+      thumbBounds.width;
+  var h = containerSize.height -
+      thumbMargins.top - thumbMargins.bottom -
+      thumbBorderBox.top - thumbBorderBox.bottom -
+      thumbBounds.height;
+  var limits;
+  if (containerSize.width > containerSize.height) {
     this.direction_ = ol.control.ZoomSlider.direction.HORIZONTAL;
     limits = new goog.math.Rect(0, 0, w, 0);
   } else {
