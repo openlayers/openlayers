@@ -15,6 +15,8 @@ goog.require('goog.math');
 goog.require('goog.math.Rect');
 goog.require('goog.style');
 goog.require('ol');
+goog.require('ol.Size');
+goog.require('ol.ViewHint');
 goog.require('ol.animation');
 goog.require('ol.control.Control');
 goog.require('ol.css');
@@ -57,6 +59,14 @@ ol.control.ZoomSlider = function(opt_options) {
   this.direction_ = ol.control.ZoomSlider.direction.VERTICAL;
 
   /**
+   * The calculated thumb size (border box plus margins).  Set when initSlider_
+   * is called.
+   * @type {ol.Size}
+   * @private
+   */
+  this.thumbSize_ = null;
+
+  /**
    * Whether the slider is initialized.
    * @type {boolean}
    * @private
@@ -67,8 +77,9 @@ ol.control.ZoomSlider = function(opt_options) {
       options.className : 'ol-zoomslider';
   var thumbElement = goog.dom.createDom(goog.dom.TagName.DIV,
       [className + '-thumb', ol.css.CLASS_UNSELECTABLE]);
-  var sliderElement = goog.dom.createDom(goog.dom.TagName.DIV,
-      [className, ol.css.CLASS_UNSELECTABLE], thumbElement);
+  var containerElement = goog.dom.createDom(goog.dom.TagName.DIV,
+      [className, ol.css.CLASS_UNSELECTABLE, ol.css.CLASS_CONTROL],
+      thumbElement);
 
   /**
    * @type {goog.fx.Dragger}
@@ -77,18 +88,20 @@ ol.control.ZoomSlider = function(opt_options) {
   this.dragger_ = new goog.fx.Dragger(thumbElement);
   this.registerDisposable(this.dragger_);
 
-  goog.events.listen(this.dragger_, [
-    goog.fx.Dragger.EventType.DRAG,
-    goog.fx.Dragger.EventType.END
-  ], this.handleSliderChange_, undefined, this);
+  goog.events.listen(this.dragger_, goog.fx.Dragger.EventType.START,
+      this.handleDraggerStart_, false, this);
+  goog.events.listen(this.dragger_, goog.fx.Dragger.EventType.DRAG,
+      this.handleDraggerDrag_, false, this);
+  goog.events.listen(this.dragger_, goog.fx.Dragger.EventType.END,
+      this.handleDraggerEnd_, false, this);
 
-  goog.events.listen(sliderElement, goog.events.EventType.CLICK,
+  goog.events.listen(containerElement, goog.events.EventType.CLICK,
       this.handleContainerClick_, false, this);
   goog.events.listen(thumbElement, goog.events.EventType.CLICK,
       goog.events.Event.stopPropagation);
 
   goog.base(this, {
-    element: sliderElement
+    element: containerElement
   });
 };
 goog.inherits(ol.control.ZoomSlider, ol.control.Control);
@@ -124,27 +137,28 @@ ol.control.ZoomSlider.prototype.setMap = function(map) {
  * @private
  */
 ol.control.ZoomSlider.prototype.initSlider_ = function() {
-  var container = this.element,
-      thumb = goog.dom.getFirstElementChild(container),
-      elemSize = goog.style.getContentBoxSize(container),
-      thumbBounds = goog.style.getBounds(thumb),
-      thumbMargins = goog.style.getMarginBox(thumb),
-      thumbBorderBox = goog.style.getBorderBox(thumb),
-      w = elemSize.width -
-          thumbMargins.left - thumbMargins.right -
-          thumbBorderBox.left - thumbBorderBox.right -
-          thumbBounds.width,
-      h = elemSize.height -
-          thumbMargins.top - thumbMargins.bottom -
-          thumbBorderBox.top - thumbBorderBox.bottom -
-          thumbBounds.height,
-      limits;
-  if (elemSize.width > elemSize.height) {
+  var container = this.element;
+  var containerSize = goog.style.getSize(container);
+
+  var thumb = goog.dom.getFirstElementChild(container);
+  var thumbMargins = goog.style.getMarginBox(thumb);
+  var thumbBorderBoxSize = goog.style.getBorderBoxSize(thumb);
+  var thumbWidth = thumbBorderBoxSize.width +
+      thumbMargins.right + thumbMargins.left;
+  var thumbHeight = thumbBorderBoxSize.height +
+      thumbMargins.top + thumbMargins.bottom;
+  this.thumbSize_ = [thumbWidth, thumbHeight];
+
+  var width = containerSize.width - thumbWidth;
+  var height = containerSize.height - thumbHeight;
+
+  var limits;
+  if (containerSize.width > containerSize.height) {
     this.direction_ = ol.control.ZoomSlider.direction.HORIZONTAL;
-    limits = new goog.math.Rect(0, 0, w, 0);
+    limits = new goog.math.Rect(0, 0, width, 0);
   } else {
     this.direction_ = ol.control.ZoomSlider.direction.VERTICAL;
-    limits = new goog.math.Rect(0, 0, 0, h);
+    limits = new goog.math.Rect(0, 0, 0, height);
   }
   this.dragger_.setLimits(limits);
   this.sliderInitialized_ = true;
@@ -158,15 +172,14 @@ ol.control.ZoomSlider.prototype.handleMapPostrender = function(mapEvent) {
   if (goog.isNull(mapEvent.frameState)) {
     return;
   }
-  goog.asserts.assert(
-      goog.isDefAndNotNull(mapEvent.frameState.viewState));
+  goog.asserts.assert(goog.isDefAndNotNull(mapEvent.frameState.viewState));
   if (!this.sliderInitialized_) {
     this.initSlider_();
   }
   var res = mapEvent.frameState.viewState.resolution;
   if (res !== this.currentResolution_) {
     this.currentResolution_ = res;
-    this.positionThumbForResolution_(res);
+    this.setThumbPosition_(res);
   }
 };
 
@@ -178,17 +191,60 @@ ol.control.ZoomSlider.prototype.handleMapPostrender = function(mapEvent) {
 ol.control.ZoomSlider.prototype.handleContainerClick_ = function(browserEvent) {
   var map = this.getMap();
   var view = map.getView();
-  var resolution;
-  var amountDragged = this.amountDragged_(browserEvent.offsetX,
-      browserEvent.offsetY);
-  resolution = this.resolutionForAmount_(amountDragged);
-  goog.asserts.assert(goog.isDef(resolution));
+  var currentResolution = view.getResolution();
+  goog.asserts.assert(goog.isDef(currentResolution));
   map.beforeRender(ol.animation.zoom({
-    resolution: resolution,
+    resolution: currentResolution,
     duration: ol.ZOOMSLIDER_ANIMATION_DURATION,
     easing: ol.easing.easeOut
   }));
-  resolution = view.constrainResolution(resolution);
+  var relativePosition = this.getRelativePosition_(
+      browserEvent.offsetX - this.thumbSize_[0] / 2,
+      browserEvent.offsetY - this.thumbSize_[1] / 2);
+  var resolution = this.getResolutionForPosition_(relativePosition);
+  view.setResolution(view.constrainResolution(resolution));
+};
+
+
+/**
+ * Handle dragger start events.
+ * @param {goog.fx.DragDropEvent} event The dragdropevent.
+ * @private
+ */
+ol.control.ZoomSlider.prototype.handleDraggerStart_ = function(event) {
+  this.getMap().getView().setHint(ol.ViewHint.INTERACTING, 1);
+};
+
+
+/**
+ * Handle dragger drag events.
+ *
+ * @param {goog.fx.DragDropEvent} event The dragdropevent.
+ * @private
+ */
+ol.control.ZoomSlider.prototype.handleDraggerDrag_ = function(event) {
+  var relativePosition = this.getRelativePosition_(event.left, event.top);
+  this.currentResolution_ = this.getResolutionForPosition_(relativePosition);
+  this.getMap().getView().setResolution(this.currentResolution_);
+};
+
+
+/**
+ * Handle dragger end events.
+ * @param {goog.fx.DragDropEvent} event The dragdropevent.
+ * @private
+ */
+ol.control.ZoomSlider.prototype.handleDraggerEnd_ = function(event) {
+  var map = this.getMap();
+  var view = map.getView();
+  view.setHint(ol.ViewHint.INTERACTING, -1);
+  goog.asserts.assert(goog.isDef(this.currentResolution_));
+  map.beforeRender(ol.animation.zoom({
+    resolution: this.currentResolution_,
+    duration: ol.ZOOMSLIDER_ANIMATION_DURATION,
+    easing: ol.easing.easeOut
+  }));
+  var resolution = view.constrainResolution(this.currentResolution_);
   view.setResolution(resolution);
 };
 
@@ -199,101 +255,67 @@ ol.control.ZoomSlider.prototype.handleContainerClick_ = function(browserEvent) {
  * @param {number} res The res.
  * @private
  */
-ol.control.ZoomSlider.prototype.positionThumbForResolution_ = function(res) {
-  var amount = this.amountForResolution_(res),
-      dragger = this.dragger_,
-      thumb = goog.dom.getFirstElementChild(this.element);
+ol.control.ZoomSlider.prototype.setThumbPosition_ = function(res) {
+  var position = this.getPositionForResolution_(res);
+  var dragger = this.dragger_;
+  var thumb = goog.dom.getFirstElementChild(this.element);
 
   if (this.direction_ == ol.control.ZoomSlider.direction.HORIZONTAL) {
-    var left = dragger.limits.left + dragger.limits.width * amount;
+    var left = dragger.limits.left + dragger.limits.width * position;
     goog.style.setPosition(thumb, left);
   } else {
-    var top = dragger.limits.top + dragger.limits.height * amount;
+    var top = dragger.limits.top + dragger.limits.height * position;
     goog.style.setPosition(thumb, dragger.limits.left, top);
   }
 };
 
 
 /**
- * Calculates the amount the thumb has been dragged to allow for calculation
- * of the corresponding resolution.
+ * Calculates the relative position of the thumb given x and y offsets.  The
+ * relative position scales from 0 to 1.  The x and y offsets are assumed to be
+ * in pixel units within the dragger limits.
  *
  * @param {number} x Pixel position relative to the left of the slider.
  * @param {number} y Pixel position relative to the top of the slider.
- * @return {number} The amount the thumb has been dragged.
+ * @return {number} The relative position of the thumb.
  * @private
  */
-ol.control.ZoomSlider.prototype.amountDragged_ = function(x, y) {
-  var draggerLimits = this.dragger_.limits,
-      amount = 0;
+ol.control.ZoomSlider.prototype.getRelativePosition_ = function(x, y) {
+  var draggerLimits = this.dragger_.limits;
+  var amount;
   if (this.direction_ === ol.control.ZoomSlider.direction.HORIZONTAL) {
     amount = (x - draggerLimits.left) / draggerLimits.width;
   } else {
     amount = (y - draggerLimits.top) / draggerLimits.height;
   }
-  return amount;
+  return goog.math.clamp(amount, 0, 1);
 };
 
 
 /**
- * Calculates the corresponding resolution of the thumb by the amount it has
- * been dragged from its minimum.
+ * Calculates the corresponding resolution of the thumb given its relative
+ * position (where 0 is the minimum and 1 is the maximum).
  *
- * @param {number} amount The amount the thumb has been dragged.
+ * @param {number} position The relative position of the thumb.
  * @return {number} The corresponding resolution.
  * @private
  */
-ol.control.ZoomSlider.prototype.resolutionForAmount_ = function(amount) {
-  // FIXME do we really need this affine transform?
-  amount = (goog.math.clamp(amount, 0, 1) - 1) * -1;
+ol.control.ZoomSlider.prototype.getResolutionForPosition_ = function(position) {
   var fn = this.getMap().getView().getResolutionForValueFunction();
-  return fn(amount);
+  return fn(1 - position);
 };
 
 
 /**
- * Determines an amount of dragging relative to this minimum position by the
- * given resolution.
+ * Determines the relative position of the slider for the given resolution.  A
+ * relative position of 0 corresponds to the minimum view resolution.  A
+ * relative position of 1 corresponds to the maximum view resolution.
  *
- * @param {number} res The resolution to get the amount for.
- * @return {number} The corresponding value (between 0 and 1).
+ * @param {number} res The resolution.
+ * @return {number} The relative position value (between 0 and 1).
  * @private
  */
-ol.control.ZoomSlider.prototype.amountForResolution_ = function(res) {
+ol.control.ZoomSlider.prototype.getPositionForResolution_ = function(res) {
   var fn = this.getMap().getView().getValueForResolutionFunction();
-  var value = fn(res);
-  // FIXME do we really need this affine transform?
-  return (value - 1) * -1;
-};
-
-
-/**
- * Handles the user caused changes of the slider thumb and adjusts the
- * resolution of our map accordingly. Will be called both while dragging and
- * when dragging ends.
- *
- * @param {goog.fx.DragDropEvent} e The dragdropevent.
- * @private
- */
-ol.control.ZoomSlider.prototype.handleSliderChange_ = function(e) {
-  var map = this.getMap();
-  var view = map.getView();
-  var resolution;
-  if (e.type === goog.fx.Dragger.EventType.DRAG) {
-    var amountDragged = this.amountDragged_(e.left, e.top);
-    resolution = this.resolutionForAmount_(amountDragged);
-    if (resolution !== this.currentResolution_) {
-      this.currentResolution_ = resolution;
-      view.setResolution(resolution);
-    }
-  } else {
-    goog.asserts.assert(goog.isDef(this.currentResolution_));
-    map.beforeRender(ol.animation.zoom({
-      resolution: this.currentResolution_,
-      duration: ol.ZOOMSLIDER_ANIMATION_DURATION,
-      easing: ol.easing.easeOut
-    }));
-    resolution = view.constrainResolution(this.currentResolution_);
-    view.setResolution(resolution);
-  }
+  return 1 - fn(res);
 };
