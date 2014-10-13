@@ -15,6 +15,7 @@ goog.require('goog.math');
 goog.require('goog.math.Rect');
 goog.require('goog.style');
 goog.require('ol');
+goog.require('ol.Size');
 goog.require('ol.ViewHint');
 goog.require('ol.animation');
 goog.require('ol.control.Control');
@@ -56,6 +57,14 @@ ol.control.ZoomSlider = function(opt_options) {
    * @private
    */
   this.direction_ = ol.control.ZoomSlider.direction.VERTICAL;
+
+  /**
+   * The calculated thumb size (border box plus margins).  Set when initSlider_
+   * is called.
+   * @type {ol.Size}
+   * @private
+   */
+  this.thumbSize_ = null;
 
   /**
    * Whether the slider is initialized.
@@ -130,25 +139,26 @@ ol.control.ZoomSlider.prototype.setMap = function(map) {
 ol.control.ZoomSlider.prototype.initSlider_ = function() {
   var container = this.element;
   var containerSize = goog.style.getSize(container);
+
   var thumb = goog.dom.getFirstElementChild(container);
-  var thumbBounds = goog.style.getBounds(thumb);
   var thumbMargins = goog.style.getMarginBox(thumb);
-  var thumbBorderBox = goog.style.getBorderBox(thumb);
-  var w = containerSize.width -
-      thumbMargins.left - thumbMargins.right -
-      thumbBorderBox.left - thumbBorderBox.right -
-      thumbBounds.width;
-  var h = containerSize.height -
-      thumbMargins.top - thumbMargins.bottom -
-      thumbBorderBox.top - thumbBorderBox.bottom -
-      thumbBounds.height;
+  var thumbBorderBoxSize = goog.style.getBorderBoxSize(thumb);
+  var thumbWidth = thumbBorderBoxSize.width +
+      thumbMargins.right + thumbMargins.left;
+  var thumbHeight = thumbBorderBoxSize.height +
+      thumbMargins.top + thumbMargins.bottom;
+  this.thumbSize_ = [thumbWidth, thumbHeight];
+
+  var width = containerSize.width - thumbWidth;
+  var height = containerSize.height - thumbHeight;
+
   var limits;
   if (containerSize.width > containerSize.height) {
     this.direction_ = ol.control.ZoomSlider.direction.HORIZONTAL;
-    limits = new goog.math.Rect(0, 0, w, 0);
+    limits = new goog.math.Rect(0, 0, width, 0);
   } else {
     this.direction_ = ol.control.ZoomSlider.direction.VERTICAL;
-    limits = new goog.math.Rect(0, 0, 0, h);
+    limits = new goog.math.Rect(0, 0, 0, height);
   }
   this.dragger_.setLimits(limits);
   this.sliderInitialized_ = true;
@@ -182,8 +192,9 @@ ol.control.ZoomSlider.prototype.handleMapPostrender = function(mapEvent) {
 ol.control.ZoomSlider.prototype.handleContainerClick_ = function(browserEvent) {
   var map = this.getMap();
   var view = map.getView();
-  var amountDragged = this.amountDragged_(browserEvent.offsetX,
-      browserEvent.offsetY);
+  var amountDragged = this.amountDragged_(
+      browserEvent.offsetX - this.thumbSize_[0] / 2,
+      browserEvent.offsetY - this.thumbSize_[1] / 2);
   var currentResolution = view.getResolution();
   goog.asserts.assert(goog.isDef(currentResolution));
   map.beforeRender(ol.animation.zoom({

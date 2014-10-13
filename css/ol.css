@@ -259,7 +259,7 @@ button.ol-full-screen-true:after {
   left: .5em;
   background: #eee;
   background: rgba(255, 255, 255, 0.4);
-  width: 1.7em;
+  width: 24px;
   height: 200px;
 }
 .ol-zoomslider-thumb {
@@ -268,10 +268,11 @@ button.ol-full-screen-true:after {
   background: rgba(0,60,136,0.5);
   border-radius: 2px;
   cursor: pointer;
-  height: 1.1em;
-  width: 1.6em;
+  height: 10px;
+  width: 22px;
   margin: 3px;
 }
+
 .ol-touch .ol-zoomslider {
   top: 5.5em;
   width: 2.052em;
