@@ -172,15 +172,14 @@ ol.control.ZoomSlider.prototype.handleMapPostrender = function(mapEvent) {
   if (goog.isNull(mapEvent.frameState)) {
     return;
   }
-  goog.asserts.assert(
-      goog.isDefAndNotNull(mapEvent.frameState.viewState));
+  goog.asserts.assert(goog.isDefAndNotNull(mapEvent.frameState.viewState));
   if (!this.sliderInitialized_) {
     this.initSlider_();
   }
   var res = mapEvent.frameState.viewState.resolution;
   if (res !== this.currentResolution_) {
     this.currentResolution_ = res;
-    this.positionThumbForResolution_(res);
+    this.setThumbPosition_(res);
   }
 };
 
@@ -192,9 +191,6 @@ ol.control.ZoomSlider.prototype.handleMapPostrender = function(mapEvent) {
 ol.control.ZoomSlider.prototype.handleContainerClick_ = function(browserEvent) {
   var map = this.getMap();
   var view = map.getView();
-  var amountDragged = this.amountDragged_(
-      browserEvent.offsetX - this.thumbSize_[0] / 2,
-      browserEvent.offsetY - this.thumbSize_[1] / 2);
   var currentResolution = view.getResolution();
   goog.asserts.assert(goog.isDef(currentResolution));
   map.beforeRender(ol.animation.zoom({
@@ -202,8 +198,10 @@ ol.control.ZoomSlider.prototype.handleContainerClick_ = function(browserEvent) {
     duration: ol.ZOOMSLIDER_ANIMATION_DURATION,
     easing: ol.easing.easeOut
   }));
-  var resolution = this.resolutionForAmount_(amountDragged);
-  goog.asserts.assert(goog.isDef(resolution));
+  var relativePosition = this.getRelativePosition_(
+      browserEvent.offsetX - this.thumbSize_[0] / 2,
+      browserEvent.offsetY - this.thumbSize_[1] / 2);
+  var resolution = this.getResolutionForPosition_(relativePosition);
   view.setResolution(view.constrainResolution(resolution));
 };
 
@@ -225,8 +223,8 @@ ol.control.ZoomSlider.prototype.handleDraggerStart_ = function(event) {
  * @private
  */
 ol.control.ZoomSlider.prototype.handleDraggerDrag_ = function(event) {
-  var amountDragged = this.amountDragged_(event.left, event.top);
-  this.currentResolution_ = this.resolutionForAmount_(amountDragged);
+  var relativePosition = this.getRelativePosition_(event.left, event.top);
+  this.currentResolution_ = this.getResolutionForPosition_(relativePosition);
   this.getMap().getView().setResolution(this.currentResolution_);
 };
 
@@ -257,39 +255,40 @@ ol.control.ZoomSlider.prototype.handleDraggerEnd_ = function(event) {
  * @param {number} res The res.
  * @private
  */
-ol.control.ZoomSlider.prototype.positionThumbForResolution_ = function(res) {
-  var amount = this.amountForResolution_(res),
-      dragger = this.dragger_,
-      thumb = goog.dom.getFirstElementChild(this.element);
+ol.control.ZoomSlider.prototype.setThumbPosition_ = function(res) {
+  var position = this.getPositionForResolution_(res);
+  var dragger = this.dragger_;
+  var thumb = goog.dom.getFirstElementChild(this.element);
 
   if (this.direction_ == ol.control.ZoomSlider.direction.HORIZONTAL) {
-    var left = dragger.limits.left + dragger.limits.width * amount;
+    var left = dragger.limits.left + dragger.limits.width * position;
     goog.style.setPosition(thumb, left);
   } else {
-    var top = dragger.limits.top + dragger.limits.height * amount;
+    var top = dragger.limits.top + dragger.limits.height * position;
     goog.style.setPosition(thumb, dragger.limits.left, top);
   }
 };
 
 
 /**
- * Calculates the amount the thumb has been dragged to allow for calculation
- * of the corresponding resolution.
+ * Calculates the relative position of the thumb given x and y offsets.  The
+ * relative position scales from 0 to 1.  The x and y offsets are assumed to be
+ * in pixel units within the dragger limits.
  *
  * @param {number} x Pixel position relative to the left of the slider.
  * @param {number} y Pixel position relative to the top of the slider.
- * @return {number} The amount the thumb has been dragged.
+ * @return {number} The relative position of the thumb.
  * @private
  */
-ol.control.ZoomSlider.prototype.amountDragged_ = function(x, y) {
-  var draggerLimits = this.dragger_.limits,
-      amount = 0;
+ol.control.ZoomSlider.prototype.getRelativePosition_ = function(x, y) {
+  var draggerLimits = this.dragger_.limits;
+  var amount;
   if (this.direction_ === ol.control.ZoomSlider.direction.HORIZONTAL) {
     amount = (x - draggerLimits.left) / draggerLimits.width;
   } else {
     amount = (y - draggerLimits.top) / draggerLimits.height;
   }
-  return amount;
+  return goog.math.clamp(amount, 0, 1);
 };
 
 
@@ -297,13 +296,13 @@ ol.control.ZoomSlider.prototype.amountDragged_ = function(x, y) {
  * Calculates the corresponding resolution of the thumb given its relative
  * position (where 0 is the minimum and 1 is the maximum).
  *
- * @param {number} amount The amount the thumb has been dragged.
+ * @param {number} position The relative position of the thumb.
  * @return {number} The corresponding resolution.
  * @private
  */
-ol.control.ZoomSlider.prototype.resolutionForAmount_ = function(amount) {
+ol.control.ZoomSlider.prototype.getResolutionForPosition_ = function(position) {
   var fn = this.getMap().getView().getResolutionForValueFunction();
-  return fn(1 - goog.math.clamp(amount, 0, 1));
+  return fn(1 - position);
 };
 
 
@@ -316,7 +315,7 @@ ol.control.ZoomSlider.prototype.resolutionForAmount_ = function(amount) {
  * @return {number} The relative position value (between 0 and 1).
  * @private
  */
-ol.control.ZoomSlider.prototype.amountForResolution_ = function(res) {
+ol.control.ZoomSlider.prototype.getPositionForResolution_ = function(res) {
   var fn = this.getMap().getView().getValueForResolutionFunction();
   return 1 - fn(res);
 };
