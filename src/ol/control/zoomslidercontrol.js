@@ -236,34 +236,31 @@ ol.control.ZoomSlider.prototype.amountDragged_ = function(x, y) {
 
 
 /**
- * Calculates the corresponding resolution of the thumb by the amount it has
- * been dragged from its minimum.
+ * Calculates the corresponding resolution of the thumb given its relative
+ * position (where 0 is the minimum and 1 is the maximum).
  *
  * @param {number} amount The amount the thumb has been dragged.
  * @return {number} The corresponding resolution.
  * @private
  */
 ol.control.ZoomSlider.prototype.resolutionForAmount_ = function(amount) {
-  // FIXME do we really need this affine transform?
-  amount = (goog.math.clamp(amount, 0, 1) - 1) * -1;
   var fn = this.getMap().getView().getResolutionForValueFunction();
-  return fn(amount);
+  return fn(1 - goog.math.clamp(amount, 0, 1));
 };
 
 
 /**
- * Determines an amount of dragging relative to this minimum position by the
- * given resolution.
+ * Determines the relative position of the slider for the given resolution.  A
+ * relative position of 0 corresponds to the minimum view resolution.  A
+ * relative position of 1 corresponds to the maximum view resolution.
  *
- * @param {number} res The resolution to get the amount for.
- * @return {number} The corresponding value (between 0 and 1).
+ * @param {number} res The resolution.
+ * @return {number} The relative position value (between 0 and 1).
  * @private
  */
 ol.control.ZoomSlider.prototype.amountForResolution_ = function(res) {
   var fn = this.getMap().getView().getValueForResolutionFunction();
-  var value = fn(res);
-  // FIXME do we really need this affine transform?
-  return (value - 1) * -1;
+  return 1 - fn(res);
 };
 
 
