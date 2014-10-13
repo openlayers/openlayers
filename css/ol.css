@@ -259,28 +259,18 @@ button.ol-full-screen-true:after {
   left: .5em;
   background: #eee;
   background: rgba(255, 255, 255, 0.4);
-  border-radius: 4px;
-  outline: none;
-  overflow: hidden;
-  width: 1.5675em;
+  width: 1.7em;
   height: 200px;
-  padding: 3px;
-  margin: 0;
 }
 .ol-zoomslider-thumb {
   position: absolute;
-  display: block;
   background: #7b98bc;
   background: rgba(0,60,136,0.5);
   border-radius: 2px;
-  outline: none;
-  overflow: hidden;
   cursor: pointer;
-  font-size: 1.14em;
-  height: 1em;
-  width: 1.375em;
+  height: 1.1em;
+  width: 1.6em;
   margin: 3px;
-  padding: 0;
 }
 .ol-touch .ol-zoomslider {
   top: 5.5em;

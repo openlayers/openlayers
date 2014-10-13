@@ -68,8 +68,9 @@ ol.control.ZoomSlider = function(opt_options) {
       options.className : 'ol-zoomslider';
   var thumbElement = goog.dom.createDom(goog.dom.TagName.DIV,
       [className + '-thumb', ol.css.CLASS_UNSELECTABLE]);
-  var sliderElement = goog.dom.createDom(goog.dom.TagName.DIV,
-      [className, ol.css.CLASS_UNSELECTABLE], thumbElement);
+  var containerElement = goog.dom.createDom(goog.dom.TagName.DIV,
+      [className, ol.css.CLASS_UNSELECTABLE, ol.css.CLASS_CONTROL],
+      thumbElement);
 
   /**
    * @type {goog.fx.Dragger}
@@ -85,13 +86,13 @@ ol.control.ZoomSlider = function(opt_options) {
   goog.events.listen(this.dragger_, goog.fx.Dragger.EventType.END,
       this.handleDraggerEnd_, false, this);
 
-  goog.events.listen(sliderElement, goog.events.EventType.CLICK,
+  goog.events.listen(containerElement, goog.events.EventType.CLICK,
       this.handleContainerClick_, false, this);
   goog.events.listen(thumbElement, goog.events.EventType.CLICK,
       goog.events.Event.stopPropagation);
 
   goog.base(this, {
-    element: sliderElement
+    element: containerElement
   });
 };
 goog.inherits(ol.control.ZoomSlider, ol.control.Control);
