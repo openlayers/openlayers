@@ -178,18 +178,18 @@ ol.control.ZoomSlider.prototype.handleMapPostrender = function(mapEvent) {
 ol.control.ZoomSlider.prototype.handleContainerClick_ = function(browserEvent) {
   var map = this.getMap();
   var view = map.getView();
-  var resolution;
   var amountDragged = this.amountDragged_(browserEvent.offsetX,
       browserEvent.offsetY);
-  resolution = this.resolutionForAmount_(amountDragged);
-  goog.asserts.assert(goog.isDef(resolution));
+  var currentResolution = view.getResolution();
+  goog.asserts.assert(goog.isDef(currentResolution));
   map.beforeRender(ol.animation.zoom({
-    resolution: resolution,
+    resolution: currentResolution,
     duration: ol.ZOOMSLIDER_ANIMATION_DURATION,
     easing: ol.easing.easeOut
   }));
-  resolution = view.constrainResolution(resolution);
-  view.setResolution(resolution);
+  var resolution = this.resolutionForAmount_(amountDragged);
+  goog.asserts.assert(goog.isDef(resolution));
+  view.setResolution(view.constrainResolution(resolution));
 };
 
 
