@@ -252,7 +252,8 @@ ol.proj.Projection.prototype.setWorldExtent = function(worldExtent) {
  * @return {number} Point resolution.
  */
 ol.proj.Projection.prototype.getPointResolution = function(resolution, point) {
-  if (this.getUnits() == ol.proj.Units.DEGREES) {
+  var units = this.getUnits();
+  if (units == ol.proj.Units.DEGREES) {
     return resolution;
   } else {
     // Estimate point resolution by transforming the center pixel to EPSG:4326,
@@ -272,10 +273,9 @@ ol.proj.Projection.prototype.getPointResolution = function(resolution, point) {
     var height = ol.sphere.NORMAL.haversineDistance(
         vertices.slice(4, 6), vertices.slice(6, 8));
     var pointResolution = (width + height) / 2;
-    if (this.getUnits() == ol.proj.Units.FEET) {
-      // The radius of the normal sphere is defined in meters, so we must
-      // convert back to feet.
-      pointResolution /= 0.3048;
+    var metersPerUnit = this.getMetersPerUnit();
+    if (goog.isDef(metersPerUnit)) {
+      pointResolution /= metersPerUnit;
     }
     return pointResolution;
   }
