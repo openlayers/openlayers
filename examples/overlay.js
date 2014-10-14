@@ -53,7 +53,7 @@ map.on('click', function(evt) {
 
   $(element).popover('destroy');
   popup.setPosition(coordinate);
-  // the keys are quoted to prevent renaming in ADVANCED_OPTIMIZATIONS mode.
+  // the keys are quoted to prevent renaming in ADVANCED mode.
   $(element).popover({
     'placement': 'top',
     'animation': false,
