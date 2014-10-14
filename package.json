@@ -1,7 +1,13 @@
 {
   "name": "openlayers",
   "version": "3.1.0-pre.2",
-  "description": "Mapping library",
+  "description": "Build tools and sources for developing OpenLayers based mapping applications",
+  "keywords": [
+    "map",
+    "mapping",
+    "ol3"
+  ],
+  "homepage": "http://openlayers.org/",
   "scripts": {
     "install": "node tasks/parse-examples.js",
     "postinstall": "closure-util update",
