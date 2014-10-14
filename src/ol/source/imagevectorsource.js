@@ -42,14 +42,6 @@ ol.source.ImageVector = function(options) {
 
   /**
    * @private
-   * @type {!ol.style.StyleFunction}
-   */
-  this.styleFunction_ = goog.isDefAndNotNull(options.style) ?
-      ol.style.createStyleFunction(options.style) :
-      ol.style.defaultStyleFunction;
-
-  /**
-   * @private
    * @type {!goog.vec.Mat4.Number}
    */
   this.transform_ = goog.vec.Mat4.createNumber();
@@ -81,6 +73,22 @@ ol.source.ImageVector = function(options) {
     resolutions: options.resolutions,
     state: this.source_.getState()
   });
+
+  /**
+   * User provided style.
+   * @type {ol.style.Style|Array.<ol.style.Style>|ol.style.StyleFunction}
+   * @private
+   */
+  this.style_ = null;
+
+  /**
+   * Style function for use within the library.
+   * @type {ol.style.StyleFunction|undefined}
+   * @private
+   */
+  this.styleFunction_ = undefined;
+
+  this.setStyle(options.style);
 
   goog.events.listen(this.source_, goog.events.EventType.CHANGE,
       this.handleSourceChange_, undefined, this);
@@ -182,6 +190,28 @@ ol.source.ImageVector.prototype.getSource = function() {
 
 
 /**
+ * Get the style for features.  This returns whatever was passed to the `style`
+ * option at construction or to the `setStyle` method.
+ * @return {ol.style.Style|Array.<ol.style.Style>|ol.style.StyleFunction}
+ *     Layer style.
+ * @api stable
+ */
+ol.source.ImageVector.prototype.getStyle = function() {
+  return this.style_;
+};
+
+
+/**
+ * Get the style function.
+ * @return {ol.style.StyleFunction|undefined} Layer style function.
+ * @api stable
+ */
+ol.source.ImageVector.prototype.getStyleFunction = function() {
+  return this.styleFunction_;
+};
+
+
+/**
  * @param {ol.Coordinate} center Center.
  * @param {number} resolution Resolution.
  * @param {number} pixelRatio Pixel ratio.
@@ -230,7 +260,12 @@ ol.source.ImageVector.prototype.handleSourceChange_ = function() {
  */
 ol.source.ImageVector.prototype.renderFeature_ =
     function(feature, resolution, pixelRatio, replayGroup) {
-  var styles = this.styleFunction_(feature, resolution);
+  var styles;
+  if (goog.isDef(feature.getStyleFunction())) {
+    styles = feature.getStyleFunction().call(feature, resolution);
+  } else if (goog.isDef(this.styleFunction_)) {
+    styles = this.styleFunction_(feature, resolution);
+  }
   if (!goog.isDefAndNotNull(styles)) {
     return false;
   }
@@ -242,4 +277,23 @@ ol.source.ImageVector.prototype.renderFeature_ =
         feature, this.handleImageChange_, this) || loading;
   }
   return loading;
+};
+
+
+/**
+ * Set the style for features.  This can be a single style object, an array
+ * of styles, or a function that takes a feature and resolution and returns
+ * an array of styles. If it is `undefined` the default style is used. If
+ * it is `null` the layer has no style (a `null` style), so only features
+ * that have their own styles will be rendered in the layer. See
+ * {@link ol.style} for information on the default style.
+ * @param {ol.style.Style|Array.<ol.style.Style>|ol.style.StyleFunction|undefined}
+ *     style Layer style.
+ * @api stable
+ */
+ol.source.ImageVector.prototype.setStyle = function(style) {
+  this.style_ = goog.isDef(style) ? style : ol.style.defaultStyleFunction;
+  this.styleFunction_ = goog.isNull(style) ?
+      undefined : ol.style.createStyleFunction(this.style_);
+  this.changed();
 };
