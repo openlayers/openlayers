@@ -17,25 +17,25 @@
     "url": "https://github.com/openlayers/ol3/issues"
   },
   "dependencies": {
-    "async": "~0.2.10",
-    "closure-util": "~1.0.0",
-    "fs-extra": "~0.8.1",
-    "graceful-fs": "~3.0.2",
-    "htmlparser2": "~3.7.1",
-    "jsdoc": "~3.3.0-alpha9",
-    "nomnom": "~1.6.2",
-    "temp": "~0.7.0",
-    "walk": "~2.3.3"
+    "async": "0.2.10",
+    "closure-util": "1.0.0",
+    "fs-extra": "0.8.1",
+    "graceful-fs": "3.0.2",
+    "htmlparser2": "3.7.1",
+    "jsdoc": "3.3.0-alpha9",
+    "nomnom": "1.6.2",
+    "temp": "0.7.0",
+    "walk": "2.3.3"
   },
   "devDependencies": {
-    "clean-css": "^2.2.7",
-    "expect.js": "~0.3.1",
-    "jquery": "~2.1.1",
-    "jshint": "~2.5.1",
-    "mocha": "~1.20.1",
-    "mocha-phantomjs": "~3.5.0",
-    "phantomjs": "~1.9.7-5",
-    "proj4": "~2.2.1",
-    "sinon": "~1.10.2"
+    "clean-css": "2.2.7",
+    "expect.js": "0.3.1",
+    "jquery": "2.1.1",
+    "jshint": "2.5.1",
+    "mocha": "1.20.1",
+    "mocha-phantomjs": "3.5.0",
+    "phantomjs": "1.9.10",
+    "proj4": "2.2.1",
+    "sinon": "1.10.2"
   }
 }
