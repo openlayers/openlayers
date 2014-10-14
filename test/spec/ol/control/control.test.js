@@ -1,22 +1,34 @@
 goog.provide('ol.test.control.Control');
 
 describe('ol.control.Control', function() {
-  var map, control;
+  var control, element;
 
   beforeEach(function() {
-    map = new ol.Map({
-      target: document.createElement('div')
-    });
-    var element = goog.dom.createDom(goog.dom.TagName.DIV);
-    control = new ol.control.Control({element: element});
-    control.setMap(map);
+    element = goog.dom.createDom(goog.dom.TagName.DIV);
   });
 
-  afterEach(function() {
-    goog.dispose(map);
+  describe('constructor', function() {
+    it('sets the "map" property to null', function() {
+      control = new ol.control.Control({element: element});
+      expect(control.getMap()).to.be(null);
+    });
   });
 
   describe('dispose', function() {
+    var map;
+
+    beforeEach(function() {
+      map = new ol.Map({
+        target: document.createElement('div')
+      });
+      control = new ol.control.Control({element: element});
+      control.setMap(map);
+    });
+
+    afterEach(function() {
+      goog.dispose(map);
+    });
+
     it('removes the control element from its parent', function() {
       goog.dispose(control);
       expect(goog.dom.getParentElement(control.element)).to.be(null);

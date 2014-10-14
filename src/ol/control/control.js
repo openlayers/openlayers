@@ -1,10 +1,19 @@
 goog.provide('ol.control.Control');
+goog.provide('ol.control.ControlProperty');
 
 goog.require('goog.array');
 goog.require('goog.dom');
 goog.require('goog.events');
 goog.require('ol.MapEventType');
 goog.require('ol.Object');
+
+
+/**
+ * @enum {string}
+ */
+ol.control.ControlProperty = {
+  MAP: 'map'
+};
 
 
 
@@ -33,13 +42,18 @@ goog.require('ol.Object');
  *
  * @constructor
  * @extends {ol.Object}
- * @implements {oli.control.Control}
  * @param {olx.control.ControlOptions} options Control options.
  * @api stable
  */
 ol.control.Control = function(options) {
 
-  goog.base(this);
+  /**
+   * @type {Object.<string, *>}
+   */
+  var values = {};
+  values[ol.control.ControlProperty.MAP] = null;
+
+  goog.base(this, values);
 
   /**
    * @protected
@@ -55,16 +69,14 @@ ol.control.Control = function(options) {
       goog.dom.getElement(options.target) : null;
 
   /**
-   * @private
-   * @type {ol.Map}
-   */
-  this.map_ = null;
-
-  /**
    * @protected
    * @type {!Array.<?number>}
    */
   this.listenerKeys = [];
+
+  goog.events.listen(this,
+      ol.Object.getChangeEventType(ol.control.ControlProperty.MAP),
+      this.handleMapChangedBase_, false, this);
 
 };
 goog.inherits(ol.control.Control, ol.Object);
@@ -82,11 +94,17 @@ ol.control.Control.prototype.disposeInternal = function() {
 /**
  * Get the map associated with this control.
  * @return {ol.Map} Map.
+ * @observable
  * @api stable
  */
 ol.control.Control.prototype.getMap = function() {
-  return this.map_;
+  return /** @type {ol.Map} */ (
+      this.get(ol.control.ControlProperty.MAP));
 };
+goog.exportProperty(
+    ol.control.Control.prototype,
+    'getMap',
+    ol.control.Control.prototype.getMap);
 
 
 /**
@@ -99,29 +117,43 @@ ol.control.Control.prototype.handleMapPostrender = goog.nullFunction;
 
 
 /**
- * Remove the control from its current map and attach it to the new map.
- * Subclasses may set up event handlers to get notified about changes to
- * the map here.
  * @param {ol.Map} map Map.
- * @api stable
+ * @observable
  */
 ol.control.Control.prototype.setMap = function(map) {
-  if (!goog.isNull(this.map_)) {
+  this.set(ol.control.ControlProperty.MAP, map);
+};
+goog.exportProperty(
+    ol.control.Control.prototype,
+    'setMap',
+    ol.control.Control.prototype.setMap);
+
+
+/**
+ * Remove the control from its current map and attach it to the new
+ * map.  "Base" is appended to the function name so that subclasses
+ * can use "handleMapChanged_" as their change:map listener.
+ * @param {ol.ObjectEvent} e Object event.
+ * @private
+ */
+ol.control.Control.prototype.handleMapChangedBase_ = function(e) {
+  var oldMap = /** @type {ol.Map} */ (e.oldValue);
+  if (!goog.isNull(oldMap)) {
     goog.dom.removeNode(this.element);
   }
   if (!goog.array.isEmpty(this.listenerKeys)) {
     goog.array.forEach(this.listenerKeys, goog.events.unlistenByKey);
     this.listenerKeys.length = 0;
   }
-  this.map_ = map;
-  if (!goog.isNull(this.map_)) {
+  var newMap = this.getMap();
+  if (!goog.isNull(newMap)) {
     var target = !goog.isNull(this.target_) ?
-        this.target_ : map.getOverlayContainerStopEvent();
+        this.target_ : newMap.getOverlayContainerStopEvent();
     goog.dom.appendChild(target, this.element);
     if (this.handleMapPostrender !== goog.nullFunction) {
-      this.listenerKeys.push(goog.events.listen(map,
+      this.listenerKeys.push(goog.events.listen(newMap,
           ol.MapEventType.POSTRENDER, this.handleMapPostrender, false, this));
     }
-    map.render();
+    newMap.render();
   }
 };

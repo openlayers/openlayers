@@ -119,17 +119,6 @@ ol.control.ZoomSlider.direction = {
 
 
 /**
- * @inheritDoc
- */
-ol.control.ZoomSlider.prototype.setMap = function(map) {
-  goog.base(this, 'setMap', map);
-  if (!goog.isNull(map)) {
-    map.render();
-  }
-};
-
-
-/**
  * Initializes the slider element. This will determine and set this controls
  * direction_ and also constrain the dragging of the thumb to always be within
  * the bounds of the container.
