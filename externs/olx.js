@@ -3599,7 +3599,7 @@ olx.source.TileImageOptions.prototype.state;
 
 
 /**
- * tile class
+ * Class used to instantiate image tiles. Default is {@link ol.ImageTile}.
  * @type {function(new: ol.ImageTile, ol.TileCoord,
  *                 ol.TileState, string, ?string,
  *                 ol.TileLoadFunctionType)|undefined}
@@ -4996,7 +4996,10 @@ olx.source.StaticVectorOptions.prototype.urls;
  *     url: (string|undefined),
  *     maxZoom: (number|undefined),
  *     tileLoadFunction: (ol.TileLoadFunctionType|undefined),
- *     urls: (Array.<string>|undefined)}}
+ *     urls: (Array.<string>|undefined),
+ *     tileClass: (function(new: ol.ImageTile, ol.TileCoord,
+ *                          ol.TileState, string, ?string,
+ *                          ol.TileLoadFunctionType)|undefined)}}
  * @api
  */
 olx.source.WMTSOptions;
@@ -5064,6 +5067,16 @@ olx.source.WMTSOptions.prototype.layer;
  * @api
  */
 olx.source.WMTSOptions.prototype.style;
+
+
+/**
+ * Class used to instantiate image tiles. Default is {@link ol.ImageTile}.
+ * @type {function(new: ol.ImageTile, ol.TileCoord,
+ *                 ol.TileState, string, ?string,
+ *                 ol.TileLoadFunctionType)|undefined}
+ * @api
+ */
+olx.source.WMTSOptions.prototype.tileClass;
 
 
 /**
