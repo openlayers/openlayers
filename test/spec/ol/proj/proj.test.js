@@ -175,8 +175,8 @@ describe('ol.proj', function() {
       var epsg3857Projection = ol.proj.get('EPSG:3857');
       var googleProjection = ol.proj.get('GOOGLE');
       var point, x, y;
-      for (x = -20; x <= 20; ++x) {
-        for (y = -20; y <= 20; ++y) {
+      for (x = -20; x <= 20; x += 2) {
+        for (y = -20; y <= 20; y += 2) {
           point = [1000000 * x, 1000000 * y];
           expect(googleProjection.getPointResolution(1, point)).to.roughlyEqual(
               epsg3857Projection.getPointResolution(1, point), 1e-1);
