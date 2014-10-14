@@ -22,7 +22,7 @@ Build configuration files are JSON files that are used to determine what should 
 
 **Optional configuration properties**
 
-  * **compile** - `Object` An object whose properties are [Closure Compiler options](https://github.com/openlayers/closure-util/blob/master/compiler-options.txt).  Property names match the option names without the `--` prefix (e.g. `"compilation_level": "ADVANCED_OPTIMIZATIONS"` would set the `--compilation_level` option).  Where an option can be specified multiple times, use an array for the value (e.g. `"externs": ["one.js", "two.js"]`).  Where an option is used as a flag, use a boolean value (e.g. `"use_types_for_optimization": true`).
+  * **compile** - `Object` An object whose properties are [Closure Compiler options](https://github.com/openlayers/closure-util/blob/master/compiler-options.txt).  Property names match the option names without the `--` prefix (e.g. `"compilation_level": "ADVANCED"` would set the `--compilation_level` option).  Where an option can be specified multiple times, use an array for the value (e.g. `"externs": ["one.js", "two.js"]`).  Where an option is used as a flag, use a boolean value (e.g. `"use_types_for_optimization": true`).
 
     If the **compile** object is not provided, the build task will generate a "debug" build of the library without any variable naming or other minification.  This is suitable for development or debugging purposes, but should not be used in production.
 
@@ -58,7 +58,7 @@ Below is a complete `build.json` configuration file that would generate a 'full'
       "goog.dom.ASSUME_STANDARDS_MODE=true",
       "goog.DEBUG=false"
     ],
-    "compilation_level": "ADVANCED_OPTIMIZATIONS",
+    "compilation_level": "ADVANCED",
     "output_wrapper": "(function(){%output%})();",
     "use_types_for_optimization": true,
     "manage_closure_dependencies": true
@@ -77,7 +77,7 @@ To export the `ol` symbol to somewhere other than the global namespace, a `names
   "exports": ["*"],
   "namespace": "AMD",
   "compile": {
-    "compilation_level": "ADVANCED_OPTIMIZATIONS",
+    "compilation_level": "ADVANCED",
     "output_wrapper": "define('ol',function(){var AMD={};%output%return AMD.ol;});"
   }
 }
