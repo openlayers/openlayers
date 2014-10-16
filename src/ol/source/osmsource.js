@@ -23,7 +23,11 @@ ol.source.OSM = function(opt_options) {
   if (goog.isDef(options.attributions)) {
     attributions = options.attributions;
   } else {
-    attributions = ol.source.OSM.ATTRIBUTIONS;
+    attributions = new ol.Attribution({
+      html: '&copy; ' +
+      '<a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> ' +
+      'contributors.'
+    });
   }
 
   var crossOrigin = goog.isDef(options.crossOrigin) ?
@@ -56,24 +60,3 @@ ol.source.OSM.DATA_ATTRIBUTION = new ol.Attribution({
       '<a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> ' +
       'contributors.'
 });
-
-
-/**
- * @const
- * @type {ol.Attribution}
- * @api
- */
-ol.source.OSM.TILE_ATTRIBUTION = new ol.Attribution({
-  html: '&copy; ' +
-      '<a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> ' +
-      'contributors.'
-});
-
-
-/**
- * @const
- * @type {Array.<ol.Attribution>}
- */
-ol.source.OSM.ATTRIBUTIONS = [
-  ol.source.OSM.TILE_ATTRIBUTION
-];
