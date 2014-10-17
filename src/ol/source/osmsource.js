@@ -24,9 +24,9 @@ ol.source.OSM = function(opt_options) {
     attributions = options.attributions;
   } else {
     attributions = new ol.Attribution({
-      html: '&copy; ' +
-      '<a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> ' +
-      'contributors.'
+          html: '&copy; ' +
+          '<a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> ' +
+          'contributors.'
     });
   }
 
