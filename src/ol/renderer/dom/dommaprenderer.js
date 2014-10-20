@@ -3,6 +3,9 @@ goog.provide('ol.renderer.dom.Map');
 goog.require('goog.asserts');
 goog.require('goog.dom');
 goog.require('goog.dom.TagName');
+goog.require('goog.events');
+goog.require('goog.events.Event');
+goog.require('goog.events.EventType');
 goog.require('goog.functions');
 goog.require('goog.style');
 goog.require('ol');
@@ -46,6 +49,10 @@ ol.renderer.dom.Map = function(container, map) {
     this.layersPane_.ondragstart = goog.functions.FALSE;
     this.layersPane_.onselectstart = goog.functions.FALSE;
   }
+
+  // prevent the img context menu on mobile devices
+  goog.events.listen(this.layersPane_, goog.events.EventType.TOUCHSTART,
+      goog.events.Event.preventDefault);
 
   goog.dom.insertChildAt(container, this.layersPane_, 0);
 
