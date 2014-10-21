@@ -153,12 +153,8 @@ ol.renderer.webgl.VectorLayer.prototype.prepareFrame =
   }
 
   var extent = this.renderedExtent_;
-  var xBuffer = ol.extent.getWidth(frameStateExtent) / 4;
-  var yBuffer = ol.extent.getHeight(frameStateExtent) / 4;
-  extent[0] = frameStateExtent[0] - xBuffer;
-  extent[1] = frameStateExtent[1] - yBuffer;
-  extent[2] = frameStateExtent[2] + xBuffer;
-  extent[3] = frameStateExtent[3] + yBuffer;
+  var renderBuffer = vectorLayer.getRenderBuffer();
+  ol.extent.buffer(frameStateExtent, renderBuffer * resolution, extent);
 
   if (!goog.isNull(this.replayGroup_)) {
     frameState.postRenderFunctions.push(
