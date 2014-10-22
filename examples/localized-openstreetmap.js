@@ -16,7 +16,7 @@ var openCycleMapLayer = new ol.layer.Tile({
         html: 'All maps &copy; ' +
             '<a href="http://www.opencyclemap.org/">OpenCycleMap</a>'
       }),
-      ol.source.OSM.DATA_ATTRIBUTION
+      ol.source.OSM.ATTRIBUTION
     ],
     url: 'http://{a-c}.tile.opencyclemap.org/cycle/{z}/{x}/{y}.png'
   })
@@ -29,7 +29,7 @@ var openSeaMapLayer = new ol.layer.Tile({
         html: 'All maps &copy; ' +
             '<a href="http://www.openseamap.org/">OpenSeaMap</a>'
       }),
-      ol.source.OSM.DATA_ATTRIBUTION
+      ol.source.OSM.ATTRIBUTION
     ],
     crossOrigin: null,
     url: 'http://tiles.openseamap.org/seamark/{z}/{x}/{y}.png'

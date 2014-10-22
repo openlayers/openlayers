@@ -27,7 +27,7 @@ var map = new ol.Map({
             html: 'Tiles &copy; <a href="http://www.opencyclemap.org/">' +
                 'OpenCycleMap</a>'
           }),
-          ol.source.OSM.DATA_ATTRIBUTION
+          ol.source.OSM.ATTRIBUTION
         ],
         url: 'http://{a-c}.tile.opencyclemap.org/cycle/{z}/{x}/{y}.png'
       })

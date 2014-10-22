@@ -59,7 +59,7 @@ ol.source.MapQuestConfig = {
     maxZoom: 28,
     attributions: [
       ol.source.MapQuest.TILE_ATTRIBUTION,
-      ol.source.OSM.DATA_ATTRIBUTION
+      ol.source.OSM.ATTRIBUTION
     ]
   },
   'sat': {
@@ -76,7 +76,7 @@ ol.source.MapQuestConfig = {
     maxZoom: 18,
     attributions: [
       ol.source.MapQuest.TILE_ATTRIBUTION,
-      ol.source.OSM.DATA_ATTRIBUTION
+      ol.source.OSM.ATTRIBUTION
     ]
   }
 };
