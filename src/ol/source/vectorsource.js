@@ -48,7 +48,7 @@ ol.source.VectorEventType = {
 
 /**
  * @classdesc
- * Base class for vector sources.
+ * Provides a source of features for vector layers.
  *
  * @constructor
  * @extends {ol.source.Source}
@@ -109,7 +109,10 @@ goog.inherits(ol.source.Vector, ol.source.Source);
 
 
 /**
- * @param {ol.Feature} feature Feature.
+ * Add a single feature to the source.  If you want to add a batch of features
+ * at once, call {@link ol.source.Vector#addFeatures source.addFeatures()}
+ * instead.
+ * @param {ol.Feature} feature Feature to add.
  * @api stable
  */
 ol.source.Vector.prototype.addFeature = function(feature) {
@@ -155,7 +158,8 @@ ol.source.Vector.prototype.addFeatureInternal = function(feature) {
 
 
 /**
- * @param {Array.<ol.Feature>} features Features.
+ * Add a batch of features to the source.
+ * @param {Array.<ol.Feature>} features Features to add.
  * @api stable
  */
 ol.source.Vector.prototype.addFeatures = function(features) {
@@ -179,7 +183,7 @@ ol.source.Vector.prototype.addFeaturesInternal = function(features) {
 
 
 /**
- * Remove all features.
+ * Remove all features from the source.
  * @api stable
  */
 ol.source.Vector.prototype.clear = function() {
@@ -194,32 +198,43 @@ ol.source.Vector.prototype.clear = function() {
 
 
 /**
- * @param {function(this: T, ol.Feature): S} f Callback.
- * @param {T=} opt_this The object to use as `this` in `f`.
- * @return {S|undefined}
+ * Iterate through all features on the source, calling the provided callback
+ * with each one.  If the callback returns any "truthy" value, iteration will
+ * stop and the function will return the same value.
+ *
+ * @param {function(this: T, ol.Feature): S} callback Called with each feature
+ *     on the source.  Return a truthy value to stop iteration.
+ * @param {T=} opt_this The object to use as `this` in the callback.
+ * @return {S|undefined} The return value from the last call to the callback.
  * @template T,S
  * @api stable
  */
-ol.source.Vector.prototype.forEachFeature = function(f, opt_this) {
-  return this.rBush_.forEach(f, opt_this);
+ol.source.Vector.prototype.forEachFeature = function(callback, opt_this) {
+  return this.rBush_.forEach(callback, opt_this);
 };
 
 
 /**
+ * Iterate through all features whose geometries contain the provided
+ * coordinate, calling the callback with each feature.  If the callback returns
+ * a "truthy" value, iteration will stop and the function will return the same
+ * value.
+ *
  * @param {ol.Coordinate} coordinate Coordinate.
- * @param {function(this: T, ol.Feature): S} f Callback.
- * @param {T=} opt_this The object to use as `this` in `f`.
- * @return {S|undefined}
+ * @param {function(this: T, ol.Feature): S} callback Called with each feature
+ *     whose goemetry contains the provided coordinate.
+ * @param {T=} opt_this The object to use as `this` in the callback.
+ * @return {S|undefined} The return value from the last call to the callback.
  * @template T,S
  */
 ol.source.Vector.prototype.forEachFeatureAtCoordinate =
-    function(coordinate, f, opt_this) {
+    function(coordinate, callback, opt_this) {
   var extent = [coordinate[0], coordinate[1], coordinate[0], coordinate[1]];
   return this.forEachFeatureInExtent(extent, function(feature) {
     var geometry = feature.getGeometry();
     goog.asserts.assert(goog.isDefAndNotNull(geometry));
     if (geometry.containsCoordinate(coordinate)) {
-      return f.call(opt_this, feature);
+      return callback.call(opt_this, feature);
     } else {
       return undefined;
     }
@@ -228,16 +243,26 @@ ol.source.Vector.prototype.forEachFeatureAtCoordinate =
 
 
 /**
+ * Iterate through all features whose bounding box intersects the provided
+ * extent (note that the feature's geometry may not intersect the extent),
+ * calling the callback with each feature.  If the callback returns a "truthy"
+ * value, iteration will stop and the function will return the same value.
+ *
+ * If you are interested in features whose geometry intersects an extent, call
+ * the {@link ol.source.Vector#forEachFeatureIntersectingExtent
+ * source.forEachFeatureIntersectingExtent()} method instead.
+ *
  * @param {ol.Extent} extent Extent.
- * @param {function(this: T, ol.Feature): S} f Callback.
- * @param {T=} opt_this The object to use as `this` in `f`.
- * @return {S|undefined}
+ * @param {function(this: T, ol.Feature): S} callback Called with each feature
+ *     whose bounding box intersects the provided extent.
+ * @param {T=} opt_this The object to use as `this` in the callback.
+ * @return {S|undefined} The return value from the last call to the callback.
  * @template T,S
  * @api
  */
 ol.source.Vector.prototype.forEachFeatureInExtent =
-    function(extent, f, opt_this) {
-  return this.rBush_.forEachInExtent(extent, f, opt_this);
+    function(extent, callback, opt_this) {
+  return this.rBush_.forEachInExtent(extent, callback, opt_this);
 };
 
 
@@ -256,19 +281,24 @@ ol.source.Vector.prototype.forEachFeatureInExtentAtResolution =
 
 
 /**
- * This function executes the `callback` function once for each feature
- * intersecting the `extent` until `callback` returns a truthy value. When
- * `callback` returns a truthy value the function immediately returns that
- * value. Otherwise the function returns `undefined`.
+ * Iterate through all features whose geometry intersects the provided extent,
+ * calling the callback with each feature.  If the callback returns a "truthy"
+ * value, iteration will stop and the function will return the same value.
+ *
+ * If you only want to test for bounding box intersection, call the
+ * {@link ol.source.Vector#forEachFeatureInExtent
+ * source.forEachFeatureInExtent()} method instead.
+ *
  * @param {ol.Extent} extent Extent.
- * @param {function(this: T, ol.Feature): S} f Callback.
- * @param {T=} opt_this The object to use as `this` in `f`.
- * @return {S|undefined}
+ * @param {function(this: T, ol.Feature): S} callback Called with each feature
+ *     whose geometry intersects the provided extent.
+ * @param {T=} opt_this The object to use as `this` in the callback.
+ * @return {S|undefined} The return value from the last call to the callback.
  * @template T,S
  * @api
  */
 ol.source.Vector.prototype.forEachFeatureIntersectingExtent =
-    function(extent, f, opt_this) {
+    function(extent, callback, opt_this) {
   return this.forEachFeatureInExtent(extent,
       /**
        * @param {ol.Feature} feature Feature.
@@ -279,7 +309,7 @@ ol.source.Vector.prototype.forEachFeatureIntersectingExtent =
         var geometry = feature.getGeometry();
         goog.asserts.assert(goog.isDefAndNotNull(geometry));
         if (geometry.intersectsExtent(extent)) {
-          var result = f.call(opt_this, feature);
+          var result = callback.call(opt_this, feature);
           if (result) {
             return result;
           }
@@ -289,6 +319,7 @@ ol.source.Vector.prototype.forEachFeatureIntersectingExtent =
 
 
 /**
+ * Get all features on the source.
  * @return {Array.<ol.Feature>} Features.
  * @api stable
  */
@@ -303,6 +334,7 @@ ol.source.Vector.prototype.getFeatures = function() {
 
 
 /**
+ * Get all features whose geometry intersects the provided coordinate.
  * @param {ol.Coordinate} coordinate Coordinate.
  * @return {Array.<ol.Feature>} Features.
  * @api stable
@@ -326,6 +358,7 @@ ol.source.Vector.prototype.getFeaturesInExtent = function(extent) {
 
 
 /**
+ * Get the closest feature to the provided coordinate.
  * @param {ol.Coordinate} coordinate Coordinate.
  * @return {ol.Feature} Closest feature.
  * @api stable
@@ -468,7 +501,10 @@ ol.source.Vector.prototype.loadFeatures = goog.nullFunction;
 
 
 /**
- * @param {ol.Feature} feature Feature.
+ * Remove a single feature from the source.  If you want to remove all features
+ * at once, use the {@link ol.source.Vector#clear source.clear()} method
+ * instead.
+ * @param {ol.Feature} feature Feature to remove.
  * @api stable
  */
 ol.source.Vector.prototype.removeFeature = function(feature) {
