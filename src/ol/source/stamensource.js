@@ -128,5 +128,5 @@ ol.source.Stamen.ATTRIBUTIONS = [
         'under <a href="http://creativecommons.org/licenses/by/3.0/">CC BY' +
         ' 3.0</a>.'
   }),
-  ol.source.OSM.DATA_ATTRIBUTION
+  ol.source.OSM.ATTRIBUTION
 ];
