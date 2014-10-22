@@ -5,7 +5,7 @@ goog.require('goog.events');
 goog.require('goog.events.EventType');
 goog.require('goog.object');
 goog.require('ol.layer.Base');
-goog.require('ol.source.Source');
+goog.require('ol.layer.LayerProperty');
 
 
 
@@ -33,13 +33,11 @@ ol.layer.Layer = function(options) {
 
   /**
    * @private
-   * @type {ol.source.Source}
+   * @type {goog.events.Key}
    */
-  this.source_ = options.source;
+  this.sourceChangeKey_ = null;
 
-  goog.events.listen(this.source_, goog.events.EventType.CHANGE,
-      this.handleSourceChange_, false, this);
-
+  this.setSource(options.source);
 };
 goog.inherits(ol.layer.Layer, ol.layer.Base);
 
@@ -79,12 +77,20 @@ ol.layer.Layer.prototype.getLayerStatesArray = function(opt_states) {
 
 
 /**
+ * Get the layer source.
  * @return {ol.source.Source} Source.
+ * @observable
  * @api stable
  */
 ol.layer.Layer.prototype.getSource = function() {
-  return this.source_;
+  var source = this.get(ol.layer.LayerProperty.SOURCE);
+  return goog.isDef(source) ?
+      /** @type {ol.source.Source} */ (source) : null;
 };
+goog.exportProperty(
+    ol.layer.Layer.prototype,
+    'getSource',
+    ol.layer.Layer.prototype.getSource);
 
 
 /**
@@ -101,3 +107,25 @@ ol.layer.Layer.prototype.getSourceState = function() {
 ol.layer.Layer.prototype.handleSourceChange_ = function() {
   this.changed();
 };
+
+
+/**
+ * Set the layer source.
+ * @param {ol.source.Source} source The layer source.
+ * @observable
+ * @api stable
+ */
+ol.layer.Layer.prototype.setSource = function(source) {
+  if (!goog.isNull(this.sourceChangeKey_)) {
+    goog.events.unlistenByKey(this.sourceChangeKey_);
+    this.sourceChangeKey_ = null;
+  }
+  this.sourceChangeKey_ = goog.events.listen(source,
+      goog.events.EventType.CHANGE, this.handleSourceChange_, false, this);
+  this.set(ol.layer.LayerProperty.SOURCE, source);
+  this.changed();
+};
+goog.exportProperty(
+    ol.layer.Layer.prototype,
+    'setSource',
+    ol.layer.Layer.prototype.setSource);

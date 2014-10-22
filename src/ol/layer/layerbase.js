@@ -21,7 +21,8 @@ ol.layer.LayerProperty = {
   VISIBLE: 'visible',
   EXTENT: 'extent',
   MAX_RESOLUTION: 'maxResolution',
-  MIN_RESOLUTION: 'minResolution'
+  MIN_RESOLUTION: 'minResolution',
+  SOURCE: 'source'
 };
 
 
