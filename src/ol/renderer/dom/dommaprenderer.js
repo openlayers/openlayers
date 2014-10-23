@@ -3,6 +3,9 @@ goog.provide('ol.renderer.dom.Map');
 goog.require('goog.asserts');
 goog.require('goog.dom');
 goog.require('goog.dom.TagName');
+goog.require('goog.events');
+goog.require('goog.events.Event');
+goog.require('goog.events.EventType');
 goog.require('goog.functions');
 goog.require('goog.style');
 goog.require('goog.vec.Mat4');
@@ -78,6 +81,10 @@ ol.renderer.dom.Map = function(container, map) {
     this.layersPane_.onselectstart = goog.functions.FALSE;
   }
 
+  // prevent the img context menu on mobile devices
+  goog.events.listen(this.layersPane_, goog.events.EventType.TOUCHSTART,
+      goog.events.Event.preventDefault);
+
   goog.dom.insertChildAt(container, this.layersPane_, 0);
 
   /**
@@ -88,6 +95,15 @@ ol.renderer.dom.Map = function(container, map) {
 
 };
 goog.inherits(ol.renderer.dom.Map, ol.renderer.Map);
+
+
+/**
+ * @inheritDoc
+ */
+ol.renderer.dom.Map.prototype.disposeInternal = function() {
+  goog.dom.removeNode(this.layersPane_);
+  goog.base(this, 'disposeInternal');
+};
 
 
 /**

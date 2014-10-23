@@ -385,10 +385,6 @@ ol.MapBrowserEventHandler.prototype.handlePointerDown_ =
           this.handlePointerUp_, false, this)
     ];
   }
-
-  // FIXME check if/when this is necessary
-  // prevent context menu
-  pointerEvent.preventDefault();
 };
 
 
