@@ -1,3 +1,6 @@
+// FIXME propertychange events include the oldValue so remove the
+//     beforepropertychange event type.
+
 /**
  * An implementation of Google Maps' MVCObject.
  * @see https://developers.google.com/maps/articles/mvcfun
@@ -41,11 +44,12 @@ ol.ObjectEventType = {
  *
  * @param {string} type The event type.
  * @param {string} key The property name.
+ * @param {*} oldValue The old value for `key`.
  * @extends {goog.events.Event}
  * @implements {oli.ObjectEvent}
  * @constructor
  */
-ol.ObjectEvent = function(type, key) {
+ol.ObjectEvent = function(type, key, oldValue) {
   goog.base(this, type);
 
   /**
@@ -54,6 +58,14 @@ ol.ObjectEvent = function(type, key) {
    * @api
    */
   this.key = key;
+
+  /**
+   * The old value. To get the new value use `e.target.get(e.key)` where
+   * `e` is the event object.
+   * @type {*}
+   * @api
+   */
+  this.oldValue = oldValue;
 
 };
 goog.inherits(ol.ObjectEvent, goog.events.Event);
@@ -109,9 +121,10 @@ ol.ObjectAccessor = function(source, target, sourceKey, targetKey) {
  * @api
  */
 ol.ObjectAccessor.prototype.transform = function(from, to) {
+  var oldValue = ol.Object.getKeyValue_(this.source, this.sourceKey);
   this.from = from;
   this.to = to;
-  this.source.notify(this.sourceKey);
+  this.source.notify(this.sourceKey, oldValue);
 };
 
 
@@ -269,6 +282,42 @@ ol.Object.getSetterName = function(key) {
 
 
 /**
+ * Get the value for an object and a key. Use the getter (`getX`) if it exists,
+ * otherwise use the generic `get` function.
+ * @param {ol.Object} obj Object.
+ * @param {string} key Key;
+ * @return {*} Value;
+ * @private
+ */
+ol.Object.getKeyValue_ = function(obj, key) {
+  var getterName = ol.Object.getGetterName(key);
+  var getter = /** @type {function(): *|undefined} */
+      (goog.object.get(obj, getterName));
+  return goog.isDef(getter) ? getter.call(obj) : obj.get(key);
+};
+
+
+/**
+ * Set the value for an object and a key. Use the setter (`setX`) if it exists,
+ * otherwise use the generic `set` function.
+ * @param {ol.Object} obj Object.
+ * @param {string} key Key.
+ * @param {*} value Value.
+ * @private
+ */
+ol.Object.setKeyValue_ = function(obj, key, value) {
+  var setterName = ol.Object.getSetterName(key);
+  var setter = /** @type {function(*)|undefined} */
+      (goog.object.get(obj, setterName));
+  if (goog.isDef(setter)) {
+    setter.call(obj, value);
+  } else {
+    obj.set(key, value);
+  }
+};
+
+
+/**
  * The bindTo method allows you to set up a two-way binding between a
  * `source` and `target` object. The method returns an object with a
  * `transform` method that you can use to provide `from` and `to`
@@ -306,10 +355,11 @@ ol.Object.prototype.bindTo = function(key, target, opt_targetKey) {
   var eventType = ol.Object.getChangeEventType(targetKey);
   this.listeners_[key] = goog.events.listen(target, eventType,
       /**
+       * @param {ol.ObjectEvent} e Event.
        * @this {ol.Object}
        */
-      function() {
-        this.notify(key);
+      function(e) {
+        this.notify(key, e.oldValue);
       }, undefined, this);
 
   // listen for beforechange events and relay if key matches
@@ -320,7 +370,7 @@ ol.Object.prototype.bindTo = function(key, target, opt_targetKey) {
 
   var accessor = new ol.ObjectAccessor(this, target, key, targetKey);
   this.accessors_[key] = accessor;
-  this.notify(key);
+  this.notify(key, this.values_[key]);
   return accessor;
 };
 
@@ -342,8 +392,8 @@ ol.Object.prototype.createBeforeChangeListener_ = function(key, targetKey) {
    */
   return function(event) {
     if (event.key === targetKey) {
-      this.dispatchEvent(
-          new ol.ObjectEvent(ol.ObjectEventType.BEFOREPROPERTYCHANGE, key));
+      this.dispatchEvent(new ol.ObjectEvent(
+          ol.ObjectEventType.BEFOREPROPERTYCHANGE, key, undefined));
     }
   };
 };
@@ -360,16 +410,7 @@ ol.Object.prototype.get = function(key) {
   var accessors = this.accessors_;
   if (accessors.hasOwnProperty(key)) {
     var accessor = accessors[key];
-    var target = accessor.target;
-    var targetKey = accessor.targetKey;
-    var getterName = ol.Object.getGetterName(targetKey);
-    var getter = /** @type {function(): *|undefined} */
-        (goog.object.get(target, getterName));
-    if (goog.isDef(getter)) {
-      value = getter.call(target);
-    } else {
-      value = target.get(targetKey);
-    }
+    value = ol.Object.getKeyValue_(accessor.target, accessor.targetKey);
     value = accessor.to(value);
   } else if (this.values_.hasOwnProperty(key)) {
     value = this.values_[key];
@@ -430,12 +471,14 @@ ol.Object.prototype.getProperties = function() {
 
 /**
  * @param {string} key Key name.
+ * @param {*} oldValue Old value.
  */
-ol.Object.prototype.notify = function(key) {
-  var eventType = ol.Object.getChangeEventType(key);
-  this.dispatchEvent(eventType);
-  this.dispatchEvent(
-      new ol.ObjectEvent(ol.ObjectEventType.PROPERTYCHANGE, key));
+ol.Object.prototype.notify = function(key, oldValue) {
+  var eventType;
+  eventType = ol.Object.getChangeEventType(key);
+  this.dispatchEvent(new ol.ObjectEvent(eventType, key, oldValue));
+  eventType = ol.ObjectEventType.PROPERTYCHANGE;
+  this.dispatchEvent(new ol.ObjectEvent(eventType, key, oldValue));
 };
 
 
@@ -446,25 +489,17 @@ ol.Object.prototype.notify = function(key) {
  * @api
  */
 ol.Object.prototype.set = function(key, value) {
-  this.dispatchEvent(
-      new ol.ObjectEvent(ol.ObjectEventType.BEFOREPROPERTYCHANGE, key));
+  this.dispatchEvent(new ol.ObjectEvent(
+      ol.ObjectEventType.BEFOREPROPERTYCHANGE, key, undefined));
   var accessors = this.accessors_;
   if (accessors.hasOwnProperty(key)) {
     var accessor = accessors[key];
-    var target = accessor.target;
-    var targetKey = accessor.targetKey;
     value = accessor.from(value);
-    var setterName = ol.Object.getSetterName(targetKey);
-    var setter = /** @type {function(*)|undefined} */
-        (goog.object.get(target, setterName));
-    if (goog.isDef(setter)) {
-      setter.call(target, value);
-    } else {
-      target.set(targetKey, value);
-    }
+    ol.Object.setKeyValue_(accessor.target, accessor.targetKey, value);
   } else {
+    var oldValue = this.values_[key];
     this.values_[key] = value;
-    this.notify(key);
+    this.notify(key, oldValue);
   }
 };
 

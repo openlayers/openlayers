@@ -55,8 +55,16 @@ oli.DrawEvent.prototype.feature;
 oli.ObjectEvent = function() {};
 
 
-/** @type {string} */
+/**
+ * @type {string}
+ */
 oli.ObjectEvent.prototype.key;
+
+
+/**
+ * @type {*}
+ */
+oli.ObjectEvent.prototype.oldValue;
 
 
 
