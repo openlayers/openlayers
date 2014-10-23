@@ -7,6 +7,7 @@ goog.require('goog.object');
 goog.require('ol.Object');
 goog.require('ol.layer.Base');
 goog.require('ol.layer.LayerProperty');
+goog.require('ol.source.State');
 
 
 
@@ -42,7 +43,8 @@ ol.layer.Layer = function(options) {
       ol.Object.getChangeEventType(ol.layer.LayerProperty.SOURCE),
       this.handleSourcePropertyChange_, false, this);
 
-  this.setSource(options.source);
+  var source = goog.isDef(options.source) ? options.source : null;
+  this.setSource(source);
 };
 goog.inherits(ol.layer.Layer, ol.layer.Base);
 
@@ -83,7 +85,7 @@ ol.layer.Layer.prototype.getLayerStatesArray = function(opt_states) {
 
 /**
  * Get the layer source.
- * @return {ol.source.Source} Source.
+ * @return {ol.source.Source} The layer source (or `null` if not yet set).
  * @observable
  * @api stable
  */
@@ -102,7 +104,14 @@ goog.exportProperty(
   * @inheritDoc
   */
 ol.layer.Layer.prototype.getSourceState = function() {
-  return this.getSource().getState();
+  var source = this.getSource();
+  var state;
+  if (!goog.isNull(source)) {
+    state = source.getState();
+  } else {
+    state = ol.source.State.UNDEFINED;
+  }
+  return state;
 };
 
 

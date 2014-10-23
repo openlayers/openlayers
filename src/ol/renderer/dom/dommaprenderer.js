@@ -244,6 +244,8 @@ ol.renderer.dom.Map.prototype.renderFrame = function(frameState) {
       if (layerRenderer.prepareFrame(frameState, layerState)) {
         layerRenderer.composeFrame(frameState, layerState);
       }
+    } else {
+      layerRenderer.clearFrame();
     }
   }
 

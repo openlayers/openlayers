@@ -24,10 +24,11 @@ ol.layer.TileProperty = {
  * @constructor
  * @extends {ol.layer.Layer}
  * @fires ol.render.Event
- * @param {olx.layer.TileOptions} options Tile layer options.
+ * @param {olx.layer.TileOptions=} opt_options Tile layer options.
  * @api stable
  */
-ol.layer.Tile = function(options) {
+ol.layer.Tile = function(opt_options) {
+  var options = goog.isDef(opt_options) ? opt_options : {};
   goog.base(this,  /** @type {olx.layer.LayerOptions} */ (options));
 };
 goog.inherits(ol.layer.Tile, ol.layer.Layer);

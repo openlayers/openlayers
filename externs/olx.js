@@ -2508,7 +2508,7 @@ olx.layer.BaseOptions.prototype.maxResolution;
  *     hue: (number|undefined),
  *     opacity: (number|undefined),
  *     saturation: (number|undefined),
- *     source: ol.source.Source,
+ *     source: (ol.source.Source|undefined),
  *     visible: (boolean|undefined),
  *     extent: (ol.Extent|undefined),
  *     minResolution: (number|undefined),
@@ -2559,8 +2559,10 @@ olx.layer.LayerOptions.prototype.saturation;
 
 
 /**
- * Source for this layer.
- * @type {ol.source.Source}
+ * Source for this layer.  If not provided to the constructor, the source can
+ * be set by calling {@link ol.layer.Layer#setSource layer.setSource(source)}
+ * after construction.
+ * @type {ol.source.Source|undefined}
  * @api stable
  */
 olx.layer.LayerOptions.prototype.source;
@@ -2710,7 +2712,7 @@ olx.layer.GroupOptions.prototype.layers;
  *     maxResolution: (number|undefined),
  *     opacity: (number|undefined),
  *     saturation: (number|undefined),
- *     source: ol.source.Vector,
+ *     source: (ol.source.Vector|undefined),
  *     visible: (boolean|undefined)}}
  * @api
  */
@@ -2847,7 +2849,7 @@ olx.layer.HeatmapOptions.prototype.visible;
  *     hue: (number|undefined),
  *     opacity: (number|undefined),
  *     saturation: (number|undefined),
- *     source: ol.source.Image,
+ *     source: (ol.source.Image|undefined),
  *     visible: (boolean|undefined),
  *     extent: (ol.Extent|undefined),
  *     minResolution: (number|undefined),
@@ -2945,7 +2947,7 @@ olx.layer.ImageOptions.prototype.maxResolution;
  *     opacity: (number|undefined),
  *     preload: (number|undefined),
  *     saturation: (number|undefined),
- *     source: ol.source.Tile,
+ *     source: (ol.source.Tile|undefined),
  *     visible: (boolean|undefined),
  *     extent: (ol.Extent|undefined),
  *     minResolution: (number|undefined),
@@ -3063,7 +3065,7 @@ olx.layer.TileOptions.prototype.useInterimTilesOnError;
  *     maxResolution: (number|undefined),
  *     opacity: (number|undefined),
  *     saturation: (number|undefined),
- *     source: ol.source.Vector,
+ *     source: (ol.source.Vector|undefined),
  *     style: (ol.style.Style|Array.<ol.style.Style>|ol.style.StyleFunction|undefined),
  *     visible: (boolean|undefined)}}
  * @api

@@ -169,6 +169,9 @@ ol.control.Attribution.prototype.getSourceAttributions = function(frameState) {
   var hiddenAttributions = {};
   for (i = 0, ii = layerStatesArray.length; i < ii; i++) {
     source = layerStatesArray[i].layer.getSource();
+    if (goog.isNull(source)) {
+      continue;
+    }
     sourceKey = goog.getUid(source).toString();
     sourceAttributions = source.getAttributions();
     if (goog.isNull(sourceAttributions)) {
