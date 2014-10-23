@@ -56,6 +56,7 @@ ol.source.BingMaps = function(options) {
   var jsonp = new goog.net.Jsonp(uri, 'jsonp');
   jsonp.send({
     'include': 'ImageryProviders',
+    'uriScheme': ol.IS_HTTPS ? 'https' : 'http',
     'key': options.key
   }, goog.bind(this.handleImageryMetadataResponse, this));
 
