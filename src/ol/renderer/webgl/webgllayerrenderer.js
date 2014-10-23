@@ -286,3 +286,12 @@ ol.renderer.webgl.Layer.prototype.handleWebGLContextLost = function() {
   this.framebuffer = null;
   this.framebufferDimension = undefined;
 };
+
+
+/**
+ * @param {olx.FrameState} frameState Frame state.
+ * @param {ol.layer.LayerState} layerState Layer state.
+ * @param {ol.webgl.Context} context Context.
+ * @return {boolean} whether composeFrame should be called.
+ */
+ol.renderer.webgl.Layer.prototype.prepareFrame = goog.abstractMethod;

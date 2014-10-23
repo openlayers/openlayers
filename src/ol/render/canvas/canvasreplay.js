@@ -2011,7 +2011,7 @@ ol.render.canvas.ReplayGroup.prototype.forEachGeometryAtPixel = function(
 
 
 /**
- * @inheritDoc
+ * FIXME empty description for jsdoc
  */
 ol.render.canvas.ReplayGroup.prototype.finish = function() {
   var zKey;

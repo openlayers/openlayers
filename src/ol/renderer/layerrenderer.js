@@ -6,7 +6,6 @@ goog.require('ol.ImageState');
 goog.require('ol.TileRange');
 goog.require('ol.TileState');
 goog.require('ol.layer.Layer');
-goog.require('ol.layer.LayerState');
 goog.require('ol.source.Source');
 goog.require('ol.source.State');
 goog.require('ol.source.Tile');
@@ -93,14 +92,6 @@ ol.renderer.Layer.prototype.handleImageChange = function(event) {
     this.renderIfReadyAndVisible();
   }
 };
-
-
-/**
- * @param {olx.FrameState} frameState Frame state.
- * @param {ol.layer.LayerState} layerState Layer state.
- * @return {boolean} whether composeFrame should be called.
- */
-ol.renderer.Layer.prototype.prepareFrame = goog.abstractMethod;
 
 
 /**
