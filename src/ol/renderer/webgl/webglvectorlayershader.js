@@ -21,14 +21,14 @@ goog.addSingletonGetter(ol.renderer.webgl.vectorlayer.shader.Fragment);
  * @const
  * @type {string}
  */
-ol.renderer.webgl.vectorlayer.shader.Fragment.DEBUG_SOURCE = 'precision mediump float;\n\n\n\nvoid main(void) {\n  gl_FragColor = vec4(1.0, 1.0, 0.0, 0.7);\n}\n';
+ol.renderer.webgl.vectorlayer.shader.Fragment.DEBUG_SOURCE = 'precision mediump float;\n\n\nvoid main(void) {\n  gl_FragColor = vec4(1.0, 1.0, 0.0, 1);\n}\n';
 
 
 /**
  * @const
  * @type {string}
  */
-ol.renderer.webgl.vectorlayer.shader.Fragment.OPTIMIZED_SOURCE = 'precision mediump float;void main(void){gl_FragColor=vec4(1.0,1.0,0.0,0.7);}';
+ol.renderer.webgl.vectorlayer.shader.Fragment.OPTIMIZED_SOURCE = 'precision mediump float;void main(void){gl_FragColor=vec4(1.0,1.0,0.0,1);}';
 
 
 /**
@@ -57,14 +57,14 @@ goog.addSingletonGetter(ol.renderer.webgl.vectorlayer.shader.Vertex);
  * @const
  * @type {string}
  */
-ol.renderer.webgl.vectorlayer.shader.Vertex.DEBUG_SOURCE = '\n\nattribute vec2 a_position;\n\nuniform mat4 u_projectionMatrix;\n\nvoid main(void) {\n  gl_PointSize = 10.0;\n  gl_Position = u_projectionMatrix * vec4(a_position, 0., 1.);\n}\n\n\n';
+ol.renderer.webgl.vectorlayer.shader.Vertex.DEBUG_SOURCE = '\nattribute vec2 a_position;\nattribute vec2 a_offsets;\n\nuniform mat4 u_projectionMatrix;\n\nvoid main(void) {\n  gl_Position = u_projectionMatrix * vec4(a_position, 0., 1.) + vec4(a_offsets, 0., 0.);\n}\n\n\n';
 
 
 /**
  * @const
  * @type {string}
  */
-ol.renderer.webgl.vectorlayer.shader.Vertex.OPTIMIZED_SOURCE = 'attribute vec2 a;uniform mat4 b;void main(void){gl_PointSize=10.0;gl_Position=b*vec4(a,0.,1.);}';
+ol.renderer.webgl.vectorlayer.shader.Vertex.OPTIMIZED_SOURCE = 'attribute vec2 a;attribute vec2 b;uniform mat4 c;void main(void){gl_Position=c*vec4(a,0.,1.)+vec4(b,0.,0.);}';
 
 
 /**
@@ -89,7 +89,13 @@ ol.renderer.webgl.vectorlayer.shader.Locations = function(gl, program) {
    * @type {WebGLUniformLocation}
    */
   this.u_projectionMatrix = gl.getUniformLocation(
-      program, goog.DEBUG ? 'u_projectionMatrix' : 'b');
+      program, goog.DEBUG ? 'u_projectionMatrix' : 'c');
+
+  /**
+   * @type {number}
+   */
+  this.a_offsets = gl.getAttribLocation(
+      program, goog.DEBUG ? 'a_offsets' : 'b');
 
   /**
    * @type {number}

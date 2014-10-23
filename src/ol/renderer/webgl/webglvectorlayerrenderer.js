@@ -114,6 +114,7 @@ ol.renderer.webgl.VectorLayer.prototype.composeFrame =
   if (!goog.isNull(replayGroup) && !replayGroup.isEmpty()) {
     replayGroup.replay(context,
         this.locations_.a_position,
+        this.locations_.a_offsets,
         this.locations_.u_projectionMatrix,
         frameState.extent, frameState.pixelRatio,
         this.projectionMatrix,

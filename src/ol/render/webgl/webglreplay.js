@@ -21,13 +21,25 @@ ol.render.webgl.Replay = function(tolerance) {
    * @protected
    * @type {Array.<number>}
    */
-  this.coordinates = [];
+  this.vertices = [];
+
+  /**
+   * @protected
+   * @type {Array.<number>}
+   */
+  this.indices = [];
 
   /**
    * @protected
    * @type {WebGLBuffer}
    */
-  this.buffer = null;
+  this.verticesBuffer = null;
+
+  /**
+   * @protected
+   * @type {WebGLBuffer}
+   */
+  this.indicesBuffer = null;
 
   /**
    * @private
@@ -44,22 +56,57 @@ ol.render.webgl.Replay = function(tolerance) {
  * @param {number} end End.
  * @param {number} stride Stride.
  * @param {boolean} close Close.
- * @protected
  * @return {number} My end.
+ * @protected
  */
 ol.render.webgl.Replay.prototype.appendFlatCoordinates =
     function(flatCoordinates, offset, end, stride, close) {
-  var myEnd = this.coordinates.length;
-  var i;
+  var numIndices = this.indices.length;
+  var numVertices = this.vertices.length;
+  var i, x, y, n;
+  var oy = 0.05;
+  var ox = 0.01;
   for (i = offset; i < end; i += stride) {
-    this.coordinates[myEnd++] = flatCoordinates[i];
-    this.coordinates[myEnd++] = flatCoordinates[i + 1];
+    x = flatCoordinates[i];
+    y = flatCoordinates[i + 1];
+
+    n = numVertices / 4;
+
+    // create 4 vertices per coordinate
+
+    this.vertices[numVertices++] = x;
+    this.vertices[numVertices++] = y;
+    this.vertices[numVertices++] = -ox;
+    this.vertices[numVertices++] = -oy;
+
+    this.vertices[numVertices++] = x;
+    this.vertices[numVertices++] = y;
+    this.vertices[numVertices++] = ox;
+    this.vertices[numVertices++] = -oy;
+
+    this.vertices[numVertices++] = x;
+    this.vertices[numVertices++] = y;
+    this.vertices[numVertices++] = ox;
+    this.vertices[numVertices++] = oy;
+
+    this.vertices[numVertices++] = x;
+    this.vertices[numVertices++] = y;
+    this.vertices[numVertices++] = -ox;
+    this.vertices[numVertices++] = oy;
+
+    this.indices[numIndices++] = n;
+    this.indices[numIndices++] = n + 1;
+    this.indices[numIndices++] = n + 2;
+    this.indices[numIndices++] = n;
+    this.indices[numIndices++] = n + 2;
+    this.indices[numIndices++] = n + 3;
   }
+
   if (close) {
-    this.coordinates[myEnd++] = flatCoordinates[offset];
-    this.coordinates[myEnd++] = flatCoordinates[offset + 1];
+    // FIXME
+    goog.asserts.fail();
   }
-  return myEnd;
+  return numVertices;
 };
 
 
@@ -71,7 +118,8 @@ ol.render.webgl.Replay.prototype.finish = goog.nullFunction;
 
 /**
  * @param {ol.webgl.Context} context Context.
- * @param {number} attribLocation Attribute location.
+ * @param {number} positionAttribLocation Attribute location for positions.
+ * @param {number} offsetsAttribLocation Attribute location for offsets.
  * @param {WebGLUniformLocation} projectionMatrixLocation Projection
  *     matrix location.
  * @param {number} pixelRatio Pixel ratio.
@@ -81,16 +129,23 @@ ol.render.webgl.Replay.prototype.finish = goog.nullFunction;
  * @template T
  */
 ol.render.webgl.Replay.prototype.replay =
-    function(context, attribLocation, projectionMatrixLocation,
-        pixelRatio, transform, skippedFeaturesHash) {
+    function(context, positionAttribLocation, offsetsAttribLocation,
+        projectionMatrixLocation, pixelRatio, transform,
+        skippedFeaturesHash) {
   var gl = context.getGL();
-  gl.bindBuffer(goog.webgl.ARRAY_BUFFER, this.buffer);
-  gl.uniformMatrix4fv(projectionMatrixLocation, false,
-      transform);
-  gl.enableVertexAttribArray(attribLocation);
-  gl.vertexAttribPointer(attribLocation, 2, goog.webgl.FLOAT,
-      false, 0, 0);
-  gl.drawArrays(goog.webgl.POINTS, 0, this.coordinates.length / 2);
+
+  gl.bindBuffer(goog.webgl.ARRAY_BUFFER, this.verticesBuffer);
+  gl.enableVertexAttribArray(positionAttribLocation);
+  gl.vertexAttribPointer(positionAttribLocation, 2, goog.webgl.FLOAT,
+      false, 16, 0);
+  gl.enableVertexAttribArray(offsetsAttribLocation);
+  gl.vertexAttribPointer(offsetsAttribLocation, 2, goog.webgl.FLOAT,
+      false, 16, 8);
+
+  gl.bindBuffer(goog.webgl.ELEMENT_ARRAY_BUFFER, this.indicesBuffer);
+  gl.uniformMatrix4fv(projectionMatrixLocation, false, transform);
+  gl.drawElements(goog.webgl.TRIANGLES, this.indices.length,
+      goog.webgl.UNSIGNED_SHORT, 0);
 };
 
 
@@ -243,10 +298,14 @@ ol.render.webgl.ImageReplay.prototype.drawMultiPointGeometry =
  */
 ol.render.webgl.ImageReplay.prototype.finish = function(context) {
   var gl = context.getGL();
-  this.buffer = gl.createBuffer();
-  gl.bindBuffer(goog.webgl.ARRAY_BUFFER, this.buffer);
+  this.verticesBuffer = gl.createBuffer();
+  gl.bindBuffer(goog.webgl.ARRAY_BUFFER, this.verticesBuffer);
   gl.bufferData(goog.webgl.ARRAY_BUFFER,
-      new Float32Array(this.coordinates), goog.webgl.STATIC_DRAW);
+      new Float32Array(this.vertices), goog.webgl.STATIC_DRAW);
+  this.indicesBuffer = gl.createBuffer();
+  gl.bindBuffer(goog.webgl.ELEMENT_ARRAY_BUFFER, this.indicesBuffer);
+  gl.bufferData(goog.webgl.ELEMENT_ARRAY_BUFFER,
+      new Uint16Array(this.indices), goog.webgl.STATIC_DRAW);
 };
 
 
@@ -326,7 +385,8 @@ ol.render.webgl.ReplayGroup.prototype.isEmpty = function() {
 
 /**
  * @param {ol.webgl.Context} context Context.
- * @param {number} attribLocation Attribute location.
+ * @param {number} positionAttribLocation Attribute location for positions.
+ * @param {number} offsetsAttribLocation Attribute location for offsets.
  * @param {WebGLUniformLocation} projectionMatrixLocation Projection
  *        matrix location.
  * @param {ol.Extent} extent Extent.
@@ -337,16 +397,18 @@ ol.render.webgl.ReplayGroup.prototype.isEmpty = function() {
  * @template T
  */
 ol.render.webgl.ReplayGroup.prototype.replay = function(
-    context, attribLocation, projectionMatrixLocation, extent,
-    pixelRatio, transform, skippedFeaturesHash) {
+    context, positionAttribLocation, offsetsAttribLocation,
+    projectionMatrixLocation, extent, pixelRatio, transform,
+    skippedFeaturesHash) {
   var i, ii, replay, result;
   for (i = 0, ii = ol.render.REPLAY_ORDER.length; i < ii; ++i) {
     replay = this.replays_[ol.render.REPLAY_ORDER[i]];
     if (goog.isDef(replay) &&
         ol.extent.intersects(extent, replay.getExtent())) {
       result = replay.replay(
-          context, attribLocation, projectionMatrixLocation,
-          pixelRatio, transform, skippedFeaturesHash);
+          context, positionAttribLocation, offsetsAttribLocation,
+          projectionMatrixLocation, pixelRatio, transform,
+          skippedFeaturesHash);
       if (result) {
         return result;
       }
