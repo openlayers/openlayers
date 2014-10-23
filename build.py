@@ -270,6 +270,7 @@ def examples_star_json(name, match):
           "exports": [],
           "src": [
             "src/**/*.js",
+            "build/ol.ext/*.js",
             "examples/%(id)s.js" % match.groupdict()],
           "compile": {
             "js": [

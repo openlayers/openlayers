@@ -2,6 +2,7 @@
   "exports": [],
   "src": [
     "src/**/*.js",
+    "build/ol.ext/*.js",
     "build/examples/all.js"
   ],
   "compile": {

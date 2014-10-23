@@ -9,7 +9,7 @@
   ],
   "homepage": "http://openlayers.org/",
   "scripts": {
-    "install": "node tasks/parse-examples.js",
+    "install": "node tasks/install.js",
     "postinstall": "closure-util update",
     "start": "node tasks/serve.js",
     "test": "node tasks/test.js"

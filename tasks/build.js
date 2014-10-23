@@ -127,7 +127,7 @@ function getDependencies(config, exports, callback) {
       };
     } else {
       options = {
-        lib: ['src/**/*.js'],
+        lib: ['src/**/*.js', 'build/ol.ext/*.js'],
         cwd: root
       };
     }

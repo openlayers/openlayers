@@ -71,9 +71,17 @@ function buildModules(modules, callback) {
 }
 
 
-if (require.main === module) {
+/**
+ * Build all external modules.
+ * @param {function(Error)} callback Called with any error.
+ */
+function main(callback) {
   var modules = getExternalModules();
-  buildModules(modules, function(err) {
+  buildModules(modules, callback);
+}
+
+if (require.main === module) {
+  main(function(err) {
     if (err) {
       process.stderr.write(err.message + '\n');
       process.exit(1);
@@ -82,3 +90,5 @@ if (require.main === module) {
     }
   });
 }
+
+module.exports = main;

@@ -22,6 +22,7 @@ var createServer = exports.createServer = function(callback) {
   var manager = new closure.Manager({
     lib: [
       'src/**/*.js',
+      'build/ol.ext/*.js',
       'test/spec/**/*.test.js'
     ],
     main: 'examples/*.js'
