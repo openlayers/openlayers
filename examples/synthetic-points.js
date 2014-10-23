@@ -51,6 +51,7 @@ var vector = new ol.layer.Vector({
 });
 
 var map = new ol.Map({
+  renderer: exampleNS.getRendererFromQueryString(),
   layers: [vector],
   target: document.getElementById('map'),
   view: new ol.View({

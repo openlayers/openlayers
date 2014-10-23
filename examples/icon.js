@@ -39,12 +39,11 @@ var vectorLayer = new ol.layer.Vector({
 });
 
 var rasterLayer = new ol.layer.Tile({
-  source: new ol.source.TileJSON({
-    url: 'http://api.tiles.mapbox.com/v3/mapbox.geography-class.jsonp'
-  })
+  source: new ol.source.OSM()
 });
 
 var map = new ol.Map({
+  renderer: exampleNS.getRendererFromQueryString(),
   layers: [rasterLayer, vectorLayer],
   target: document.getElementById('map'),
   view: new ol.View({
