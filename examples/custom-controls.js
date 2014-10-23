@@ -1,5 +1,6 @@
 goog.require('ol');
 goog.require('ol.Map');
+goog.require('ol.ObjectEvent');
 goog.require('ol.View');
 goog.require('ol.control');
 goog.require('ol.control.Control');
@@ -52,8 +53,22 @@ app.RotateNorthControl = function(opt_options) {
     target: options.target
   });
 
+  // Register a "change:map" listener to be notified when the
+  // control is added to, and removed from, the map.
+  this.on('change:map', this.handleMapChanged, this);
+
 };
 ol.inherits(app.RotateNorthControl, ol.control.Control);
+
+
+/**
+ * @param {ol.ObjectEvent} e Object event.
+ */
+app.RotateNorthControl.prototype.handleMapChanged = function(e) {
+  // When the control is added to the map `this.getMap()` returns the map
+  // object. When the control is removed from the map `this.getMap()`
+  // returns `null`.
+};
 
 
 //
