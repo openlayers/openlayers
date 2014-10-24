@@ -113,8 +113,7 @@ ol.DEFAULT_RENDERER_TYPES = [
 ol.MapProperty = {
   LAYERGROUP: 'layergroup',
   SIZE: 'size',
-  TARGET: 'target',
-  VIEW: 'view'
+  TARGET: 'target'
 };
 
 
@@ -373,16 +372,22 @@ ol.Map = function(options) {
   goog.events.listen(
       this, ol.Object.getChangeEventType(ol.MapProperty.LAYERGROUP),
       this.handleLayerGroupChanged_, false, this);
-  goog.events.listen(this, ol.Object.getChangeEventType(ol.MapProperty.VIEW),
-      this.handleViewChanged_, false, this);
   goog.events.listen(this, ol.Object.getChangeEventType(ol.MapProperty.SIZE),
       this.handleSizeChanged_, false, this);
   goog.events.listen(this, ol.Object.getChangeEventType(ol.MapProperty.TARGET),
       this.handleTargetChanged_, false, this);
 
-  // setProperties will trigger the rendering of the map if the map
-  // is "defined" already.
   this.setProperties(optionsInternal.values);
+
+  /**
+   * @private
+   * @type {ol.View}
+   */
+  this.view_ = null;
+
+  // This triggers a rendering if map.isDef() returns true.
+  this.setView(optionsInternal.view);
+
 
   this.controls_.forEach(
       /**
@@ -754,16 +759,11 @@ goog.exportProperty(
  * Get the view associated with this map. A view manages properties such as
  * center and resolution.
  * @return {ol.View} The view that controls this map.
- * @observable
  * @api stable
  */
 ol.Map.prototype.getView = function() {
-  return /** @type {ol.View} */ (this.get(ol.MapProperty.VIEW));
+  return this.view_;
 };
-goog.exportProperty(
-    ol.Map.prototype,
-    'getView',
-    ol.Map.prototype.getView);
 
 
 /**
@@ -978,24 +978,6 @@ ol.Map.prototype.handleTileChange_ = function() {
  * @private
  */
 ol.Map.prototype.handleViewPropertyChanged_ = function() {
-  this.render();
-};
-
-
-/**
- * @private
- */
-ol.Map.prototype.handleViewChanged_ = function() {
-  if (!goog.isNull(this.viewPropertyListenerKey_)) {
-    goog.events.unlistenByKey(this.viewPropertyListenerKey_);
-    this.viewPropertyListenerKey_ = null;
-  }
-  var view = this.getView();
-  if (!goog.isNull(view)) {
-    this.viewPropertyListenerKey_ = goog.events.listen(
-        view, ol.ObjectEventType.PROPERTYCHANGE,
-        this.handleViewPropertyChanged_, false, this);
-  }
   this.render();
 };
 
@@ -1320,16 +1302,25 @@ goog.exportProperty(
 /**
  * Set the view for this map.
  * @param {ol.View} view The view that controls this map.
- * @observable
  * @api stable
  */
 ol.Map.prototype.setView = function(view) {
-  this.set(ol.MapProperty.VIEW, view);
+  if (!goog.isNull(this.viewPropertyListenerKey_)) {
+    goog.events.unlistenByKey(this.viewPropertyListenerKey_);
+    this.viewPropertyListenerKey_ = null;
+  }
+  if (!goog.isNull(this.view_)) {
+    this.view_.setMap(null);
+  }
+  if (!goog.isNull(view)) {
+    this.viewPropertyListenerKey_ = goog.events.listen(
+        view, ol.ObjectEventType.PROPERTYCHANGE,
+        this.handleViewPropertyChanged_, false, this);
+    view.setMap(this);
+  }
+  this.view_ = view;
+  this.render();
 };
-goog.exportProperty(
-    ol.Map.prototype,
-    'setView',
-    ol.Map.prototype.setView);
 
 
 /**
@@ -1432,9 +1423,6 @@ ol.Map.createOptionsInternal = function(options) {
 
   values[ol.MapProperty.TARGET] = options.target;
 
-  values[ol.MapProperty.VIEW] = goog.isDef(options.view) ?
-      options.view : new ol.View();
-
   /**
    * @type {function(new: ol.renderer.Map, Element, ol.Map)}
    */
@@ -1525,6 +1513,7 @@ ol.Map.createOptionsInternal = function(options) {
     logos: logos,
     overlays: overlays,
     rendererConstructor: rendererConstructor,
+    view: goog.isDef(options.view) ? options.view : new ol.View(),
     values: values
   };
 

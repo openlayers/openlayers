@@ -100,7 +100,5 @@ ol.control.ZoomToExtent.prototype.handleZoomToExtent_ = function() {
   var view = map.getView();
   var extent = goog.isNull(this.extent_) ?
       view.getProjection().getExtent() : this.extent_;
-  var size = map.getSize();
-  goog.asserts.assert(goog.isDef(size));
-  view.fitExtent(extent, size);
+  view.setExtent(extent);
 };
