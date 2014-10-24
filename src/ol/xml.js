@@ -80,6 +80,7 @@ ol.xml.createElementNS =
  * @param {Node} node Node.
  * @param {boolean} normalizeWhitespace Normalize whitespace.
  * @return {string} All text content.
+ * @api
  */
 ol.xml.getAllTextContent = function(node, normalizeWhitespace) {
   return ol.xml.getAllTextContent_(node, normalizeWhitespace, []).join('');
@@ -334,6 +335,7 @@ ol.xml.setAttributeNS =
 /**
  * @param {string} xml XML.
  * @return {Document} Document.
+ * @api
  */
 ol.xml.load = function(xml) {
   return new DOMParser().parseFromString(xml, 'application/xml');
