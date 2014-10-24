@@ -40,7 +40,8 @@ function wrapModule(mod, callback) {
         '/** @typedef {function(*)} */\n' +
         'ol.ext.' + mod.name + ';\n' +
         '(function() {\n' +
-        'var module = {};\n' +
+        'var exports = {};\n' +
+        'var module = {exports: exports};\n' +
         '/**\n' +
         ' * @fileoverview\n' +
         ' * @suppress {accessControls, ambiguousFunctionDecl, ' +
