@@ -153,11 +153,11 @@ ol.ObjectAccessor.prototype.transform = function(from, to) {
  * function, `evt.target` would be the view, so `evt.target.getCenter()` would
  * return the new center.
  *
- * You can add your own observable properties with `set('myProp', 'new value')`,
- * and retrieve that with `get('myProp')`. A change listener can then be
- * registered with `on('change:myProp', ...)`. And a change can be triggered
- * with `dispatchEvent('change:myProp')`. You can get a list of all properties
- * with `getProperties()`.
+ * You can add your own observable properties with
+ * `object.set('prop', 'value')`, and retrieve that with `object.get('prop')`.
+ * You can listen for changes on that property value with
+ * `object.on('change:prop', listener)`. You can get a list of all
+ * properties with {@link ol.Object#getProperties object.getProperties()}.
  *
  * Note that the observable properties are separate from standard JS properties.
  * You can, for example, give your map object a title with
