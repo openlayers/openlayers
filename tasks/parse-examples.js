@@ -137,14 +137,25 @@ function writeExampleList(exampleInfos, callback) {
 
 /**
  * List examples, parse them, and write example list.
+ * @param {function(Error)} callback Called with any error.
  */
-async.waterfall([
-  listExamples,
-  parseExamples,
-  writeExampleList
-], function(err) {
-  if (err) {
-    process.stderr.write(err + '\n');
-    process.exit(1);
-  }
-});
+function main(callback) {
+  async.waterfall([
+    listExamples,
+    parseExamples,
+    writeExampleList
+  ], callback);
+}
+
+if (require.main === module) {
+  main(function(err) {
+    if (err) {
+      process.stderr.write(err.message + '\n');
+      process.exit(1);
+    } else {
+      process.exit(0);
+    }
+  });
+}
+
+module.exports = main;
