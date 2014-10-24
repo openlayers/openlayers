@@ -179,20 +179,6 @@ describe('ol.Object', function() {
       expect(event.key).to.be('k');
     });
 
-    it('dispatches beforechange events to object', function() {
-      o.set('k', 1);
-
-      var oldValue;
-      var beforeListener = sinon.spy(function(event) {
-        oldValue = o2.get(event.key);
-      });
-      o.on(ol.ObjectEventType.BEFOREPROPERTYCHANGE, beforeListener);
-
-      o.set('k', 2);
-      expect(beforeListener.calledOnce).to.be(true);
-      expect(oldValue).to.be(1);
-    });
-
     it('dispatches events to bound object', function() {
       o.set('k', 1);
       expect(listener3).to.be.called();
@@ -213,73 +199,6 @@ describe('ol.Object', function() {
       expect(args).to.have.length(1);
       var event = args[0];
       expect(event.key).to.be('k');
-    });
-
-    it('dispatches beforechange before changing bound objects', function() {
-      o2.set('k', 1);
-
-      var oldValue;
-      var beforeListener = sinon.spy(function(event) {
-        oldValue = o2.get(event.key);
-      });
-      o.on(ol.ObjectEventType.BEFOREPROPERTYCHANGE, beforeListener);
-
-      o2.set('k', 2);
-      expect(beforeListener.calledOnce).to.be(true);
-      var args = beforeListener.firstCall.args;
-      expect(args).to.have.length(1);
-      var event = args[0];
-      expect(event.key).to.be('k');
-
-      expect(oldValue).to.be(1);
-    });
-
-    it('relays beforechange events from bound objects', function() {
-      var target = new ol.Object({
-        foo: 'original value'
-      });
-      var object = new ol.Object();
-      object.bindTo('foo', target);
-
-      var oldValue;
-      var beforeListener = sinon.spy(function(event) {
-        oldValue = object.get(event.key);
-      });
-      object.on(ol.ObjectEventType.BEFOREPROPERTYCHANGE, beforeListener);
-
-      target.set('foo', 'new value');
-      expect(beforeListener.calledOnce).to.be(true);
-      var args = beforeListener.firstCall.args;
-      expect(args).to.have.length(1);
-      var event = args[0];
-      expect(event.key).to.be('foo');
-
-      expect(oldValue).to.be('original value');
-      expect(object.get('foo')).to.be('new value');
-    });
-
-    it('relays beforechange events when bound with a new key', function() {
-      var target = new ol.Object({
-        foo: 'original value'
-      });
-      var object = new ol.Object();
-      object.bindTo('bar', target, 'foo');
-
-      var oldValue;
-      var beforeListener = sinon.spy(function(event) {
-        oldValue = object.get(event.key);
-      });
-      object.on(ol.ObjectEventType.BEFOREPROPERTYCHANGE, beforeListener);
-
-      target.set('foo', 'new value');
-      expect(beforeListener.calledOnce).to.be(true);
-      var args = beforeListener.firstCall.args;
-      expect(args).to.have.length(1);
-      var event = args[0];
-      expect(event.key).to.be('bar');
-
-      expect(oldValue).to.be('original value');
-      expect(object.get('bar')).to.be('new value');
     });
 
   });
@@ -389,58 +308,6 @@ describe('ol.Object', function() {
       o2.set('k', 2);
       expect(o.get('k')).to.eql(1);
       expect(o2.get('k')).to.eql(2);
-    });
-
-    it('stops relaying beforechange events', function() {
-      var target = new ol.Object({
-        foo: 'original value'
-      });
-      var object = new ol.Object();
-      object.bindTo('foo', target);
-
-      var listener = sinon.spy();
-      object.on(ol.ObjectEventType.BEFOREPROPERTYCHANGE, listener);
-
-      target.set('foo', 'new value');
-      expect(listener.calledOnce).to.be(true);
-      var call = listener.firstCall;
-      expect(call.args).to.have.length(1);
-      expect(call.args[0].key).to.be('foo');
-
-      object.unbind('foo');
-      target.set('foo', 'another new value');
-      expect(listener.calledOnce).to.be(true);
-
-      expect(object.get('foo')).to.be('new value');
-    });
-
-    it('selectively stops relaying beforechange events', function() {
-      var target = new ol.Object({
-        foo: 'original foo',
-        bar: 'original bar'
-      });
-      var object = new ol.Object();
-      object.bindTo('foo', target);
-      object.bindTo('bar', target);
-
-      var listener = sinon.spy();
-      object.on(ol.ObjectEventType.BEFOREPROPERTYCHANGE, listener);
-
-      target.set('foo', 'new foo');
-      expect(listener.calledOnce).to.be(true);
-
-      target.set('bar', 'new bar');
-      expect(listener.callCount).to.be(2);
-
-      object.unbind('foo');
-      target.set('foo', 'another new foo');
-      expect(listener.callCount).to.be(2);
-
-      target.set('bar', 'another new bar');
-      expect(listener.callCount).to.be(3);
-      var lastCall = listener.getCall(2);
-      expect(lastCall.args).to.have.length(1);
-      expect(lastCall.args[0].key).to.be('bar');
     });
 
   });
