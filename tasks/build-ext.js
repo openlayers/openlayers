@@ -37,6 +37,8 @@ function wrapModule(mod, callback) {
       return;
     }
     var wrapped = 'goog.provide(\'ol.ext.' + mod.name + '\');\n' +
+        '/** @typedef {function(*)} */\n' +
+        'ol.ext.' + mod.name + ' = function() {};\n' +
         '(function() {\n' +
         'var module = {};\n' +
         '/**\n' +
