@@ -1,6 +1,3 @@
-// FIXME propertychange events include the oldValue so remove the
-//     beforepropertychange event type.
-
 /**
  * An implementation of Google Maps' MVCObject.
  * @see https://developers.google.com/maps/articles/mvcfun
@@ -22,12 +19,6 @@ goog.require('ol.Observable');
  * @enum {string}
  */
 ol.ObjectEventType = {
-  /**
-   * Triggered before a property is changed.
-   * @event ol.ObjectEvent#beforepropertychange
-   * @api
-   */
-  BEFOREPROPERTYCHANGE: 'beforepropertychange',
   /**
    * Triggered when a property is changed.
    * @event ol.ObjectEvent#propertychange
@@ -199,13 +190,6 @@ ol.Object = function(opt_values) {
   this.accessors_ = {};
 
   /**
-   * Lookup of beforechange listener keys.
-   * @type {Object.<string, goog.events.Key>}
-   * @private
-   */
-  this.beforeChangeListeners_ = {};
-
-  /**
    * @private
    * @type {Object.<string, goog.events.Key>}
    */
@@ -362,40 +346,10 @@ ol.Object.prototype.bindTo = function(key, target, opt_targetKey) {
         this.notify(key, e.oldValue);
       }, undefined, this);
 
-  // listen for beforechange events and relay if key matches
-  this.beforeChangeListeners_[key] = goog.events.listen(target,
-      ol.ObjectEventType.BEFOREPROPERTYCHANGE,
-      this.createBeforeChangeListener_(key, targetKey),
-      undefined, this);
-
   var accessor = new ol.ObjectAccessor(this, target, key, targetKey);
   this.accessors_[key] = accessor;
   this.notify(key, this.values_[key]);
   return accessor;
-};
-
-
-/**
- * Create a listener for beforechange events on a target object.  This listener
- * will relay events on this object if the event key matches the provided target
- * key.
- * @param {string} key The key on this object whose value will be changing.
- * @param {string} targetKey The key on the target object.
- * @return {function(this: ol.Object, ol.ObjectEvent)} Listener.
- * @private
- */
-ol.Object.prototype.createBeforeChangeListener_ = function(key, targetKey) {
-  /**
-   * Conditionally relay beforechange events if event key matches target key.
-   * @param {ol.ObjectEvent} event The beforechange event from the target.
-   * @this {ol.Object}
-   */
-  return function(event) {
-    if (event.key === targetKey) {
-      this.dispatchEvent(new ol.ObjectEvent(
-          ol.ObjectEventType.BEFOREPROPERTYCHANGE, key, undefined));
-    }
-  };
 };
 
 
@@ -489,8 +443,6 @@ ol.Object.prototype.notify = function(key, oldValue) {
  * @api
  */
 ol.Object.prototype.set = function(key, value) {
-  this.dispatchEvent(new ol.ObjectEvent(
-      ol.ObjectEventType.BEFOREPROPERTYCHANGE, key, undefined));
   var accessors = this.accessors_;
   if (accessors.hasOwnProperty(key)) {
     var accessor = accessors[key];
@@ -532,13 +484,6 @@ ol.Object.prototype.unbind = function(key) {
     var value = this.get(key);
     delete this.accessors_[key];
     this.values_[key] = value;
-  }
-
-  // unregister any beforechange listener
-  var listenerKey = this.beforeChangeListeners_[key];
-  if (listenerKey) {
-    goog.events.unlistenByKey(listenerKey);
-    delete this.beforeChangeListeners_[key];
   }
 };
 
