@@ -115,8 +115,10 @@ ol.renderer.webgl.VectorLayer.prototype.composeFrame =
     replayGroup.replay(context,
         this.locations_.a_position,
         this.locations_.a_offsets,
+        this.locations_.a_texCoord,
         this.locations_.u_projectionMatrix,
-        frameState.extent, frameState.pixelRatio,
+        this.locations_.u_sizeMatrix,
+        frameState.extent, frameState.pixelRatio, frameState.size,
         this.projectionMatrix,
         frameState.skippedFeatureUids);
   }

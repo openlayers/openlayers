@@ -21,14 +21,14 @@ goog.addSingletonGetter(ol.renderer.webgl.vectorlayer.shader.Fragment);
  * @const
  * @type {string}
  */
-ol.renderer.webgl.vectorlayer.shader.Fragment.DEBUG_SOURCE = 'precision mediump float;\n\n\nvoid main(void) {\n  gl_FragColor = vec4(1.0, 1.0, 0.0, 1);\n}\n';
+ol.renderer.webgl.vectorlayer.shader.Fragment.DEBUG_SOURCE = 'precision mediump float;\nvarying vec2 v_texCoord;\n\nuniform sampler2D u_image;\n\nvoid main(void) {\n  gl_FragColor = texture2D(u_image, v_texCoord);\n}\n';
 
 
 /**
  * @const
  * @type {string}
  */
-ol.renderer.webgl.vectorlayer.shader.Fragment.OPTIMIZED_SOURCE = 'precision mediump float;void main(void){gl_FragColor=vec4(1.0,1.0,0.0,1);}';
+ol.renderer.webgl.vectorlayer.shader.Fragment.OPTIMIZED_SOURCE = 'precision mediump float;varying vec2 a;uniform sampler2D g;void main(void){gl_FragColor=texture2D(g,a);}';
 
 
 /**
@@ -57,14 +57,14 @@ goog.addSingletonGetter(ol.renderer.webgl.vectorlayer.shader.Vertex);
  * @const
  * @type {string}
  */
-ol.renderer.webgl.vectorlayer.shader.Vertex.DEBUG_SOURCE = '\nattribute vec2 a_position;\nattribute vec2 a_offsets;\n\nuniform mat4 u_projectionMatrix;\n\nvoid main(void) {\n  gl_Position = u_projectionMatrix * vec4(a_position, 0., 1.) + vec4(a_offsets, 0., 0.);\n}\n\n\n';
+ol.renderer.webgl.vectorlayer.shader.Vertex.DEBUG_SOURCE = 'varying vec2 v_texCoord;\n\nattribute vec2 a_position;\nattribute vec2 a_texCoord;\nattribute vec2 a_offsets;\n\nuniform mat4 u_projectionMatrix;\nuniform mat2 u_sizeMatrix;\n\nvoid main(void) {\n  vec2 offsets = u_sizeMatrix * a_offsets;\n  gl_Position = u_projectionMatrix * vec4(a_position, 0., 1.) + vec4(offsets, 0., 0.);\n  v_texCoord = a_texCoord;\n}\n\n\n';
 
 
 /**
  * @const
  * @type {string}
  */
-ol.renderer.webgl.vectorlayer.shader.Vertex.OPTIMIZED_SOURCE = 'attribute vec2 a;attribute vec2 b;uniform mat4 c;void main(void){gl_Position=c*vec4(a,0.,1.)+vec4(b,0.,0.);}';
+ol.renderer.webgl.vectorlayer.shader.Vertex.OPTIMIZED_SOURCE = 'varying vec2 a;attribute vec2 b;attribute vec2 c;attribute vec2 d;uniform mat4 e;uniform mat2 f;void main(void){vec2 offsets=f*d;gl_Position=e*vec4(b,0.,1.)+vec4(offsets,0.,0.);a=c;}';
 
 
 /**
@@ -88,18 +88,36 @@ ol.renderer.webgl.vectorlayer.shader.Locations = function(gl, program) {
   /**
    * @type {WebGLUniformLocation}
    */
+  this.u_image = gl.getUniformLocation(
+      program, goog.DEBUG ? 'u_image' : 'g');
+
+  /**
+   * @type {WebGLUniformLocation}
+   */
   this.u_projectionMatrix = gl.getUniformLocation(
-      program, goog.DEBUG ? 'u_projectionMatrix' : 'c');
+      program, goog.DEBUG ? 'u_projectionMatrix' : 'e');
+
+  /**
+   * @type {WebGLUniformLocation}
+   */
+  this.u_sizeMatrix = gl.getUniformLocation(
+      program, goog.DEBUG ? 'u_sizeMatrix' : 'f');
 
   /**
    * @type {number}
    */
   this.a_offsets = gl.getAttribLocation(
-      program, goog.DEBUG ? 'a_offsets' : 'b');
+      program, goog.DEBUG ? 'a_offsets' : 'd');
 
   /**
    * @type {number}
    */
   this.a_position = gl.getAttribLocation(
-      program, goog.DEBUG ? 'a_position' : 'a');
+      program, goog.DEBUG ? 'a_position' : 'b');
+
+  /**
+   * @type {number}
+   */
+  this.a_texCoord = gl.getAttribLocation(
+      program, goog.DEBUG ? 'a_texCoord' : 'c');
 };

@@ -18,7 +18,7 @@ for (var i = 0; i < count; ++i) {
     'geometry': new ol.geom.Point(
         [2 * e * Math.random() - e, 2 * e * Math.random() - e]),
     'i': i,
-    'size': i % 2 ? 10 : 20
+    'size': 20
   });
 }
 
