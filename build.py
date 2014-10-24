@@ -141,11 +141,17 @@ TASKS = [path
          for path in ifind('tasks')
          if path.endswith('.js')]
 
-SRC = [path
+SRC_OL = [path
        for path in ifind('src/ol')
        if path.endswith('.js')
        if path not in SHADER_SRC]
 
+SRC_EXT = [path
+       for path in ifind('build/ol.ext')
+       if path.endswith('.js')
+       if path not in SHADER_SRC]
+
+SRC = SRC_OL + SRC_EXT
 
 def report_sizes(t):
     stringio = StringIO()
@@ -167,10 +173,11 @@ virtual('ci', 'lint', 'build', 'test',
     'build/examples/all.combined.js', 'check-examples', 'apidoc')
 
 
-virtual('build', 'build/ol.css', 'build/ol.js', 'build/ol-debug.js')
+virtual('build',
+    'import-external-libs', 'build/ol.css', 'build/ol.js', 'build/ol-debug.js')
 
 
-virtual('check', 'lint', 'build/ol.js', 'test')
+virtual('check', 'import-external-libs', 'lint', 'build/ol.js', 'test')
 
 
 virtual('todo', 'fixme')
@@ -222,7 +229,8 @@ virtual('build-examples', 'examples', 'build/examples/all.combined.js',
         EXAMPLES_COMBINED)
 
 
-virtual('examples', 'examples/example-list.xml', EXAMPLES_JSON)
+virtual('examples',
+    'import-external-libs', 'examples/example-list.xml', EXAMPLES_JSON)
 
 
 @target('examples/example-list.xml', 'examples/example-list.js')
@@ -367,7 +375,7 @@ virtual('lint', 'build/lint-timestamp', 'build/check-requires-timestamp',
     'build/check-whitespace-timestamp', 'jshint')
 
 
-@target('build/lint-timestamp', SRC, EXAMPLES_SRC, SPEC, precious=True)
+@target('build/lint-timestamp', SRC_OL, EXAMPLES_SRC, SPEC, precious=True)
 def build_lint_src_timestamp(t):
     t.run('%(GJSLINT)s',
           '--jslint_error=all',
@@ -447,6 +455,8 @@ def build_check_requires_timestamp(t):
             for require in require_linenos.iterkeys():
                 if require in line:
                     uses.add(require)
+        if filename == 'src/ol/structs/rbush.js':
+            del require_linenos['ol.ext.RBush']
         for require in sorted(set(require_linenos.keys()) - uses):
             t.info('%s:%d: unused goog.require: %r' % (
                 filename, require_linenos[require], require))
@@ -660,6 +670,7 @@ def host_examples(t):
     t.rm_rf('build/hosted/%(BRANCH)s/ol')
     t.makedirs('build/hosted/%(BRANCH)s/ol')
     t.cp_r('src/ol', 'build/hosted/%(BRANCH)s/ol/ol')
+    t.cp_r('build/ol.ext', 'build/hosted/%(BRANCH)s/ol/ol.ext')
     t.run('%(PYTHON)s', closure_lib_path + '/closure/bin/build/depswriter.py',
           '--root_with_prefix', 'src ../../../ol',
           '--root', 'build/hosted/%(BRANCH)s/closure-library/closure/goog',
@@ -683,9 +694,44 @@ def check_examples(t):
         sys.exit(1)
 
 
-@target('test', phony=True)
+@target('test', 'import-external-libs', phony=True)
 def test(t):
     t.run('node', 'tasks/test.js')
+
+
+@target('import-external-libs', phony=True)
+def import_external_libs(t):
+    # import rbush
+    source_file = 'node_modules/rbush/rbush.js'
+    target_file = 'build/ol.ext/rbush.js'
+
+    if not os.path.exists(source_file):
+        t.error('File ' + source_file + ' can not be found')
+    t.makedirs('build/ol.ext')
+    t.cp(source_file, target_file)
+
+    # add 'goog.provide', a flag to ignore all compiler errors and the
+    # license to the code
+    with open(target_file, 'r') as f:
+        rbush_code = f.read()
+    rbush_code = \
+        'goog.provide(\'ol.ext.RBush\');\n' +\
+        '/**\n' +\
+        ' * @fileoverview\n' +\
+        ' * @suppress {accessControls, ambiguousFunctionDecl, ' +\
+        'checkDebuggerStatement, checkRegExp, checkTypes, checkVars, const, ' +\
+        'constantProperty, deprecated, duplicate, es5Strict, fileoverviewTags, ' +\
+        'missingProperties, nonStandardJsDocs, strictModuleDepCheck, suspiciousCode, ' +\
+        'undefinedNames, undefinedVars, unknownDefines, uselessCode, visibility}\n' +\
+        ' */\n' +\
+        '/**\n' +\
+        ' * @license\n' +\
+        ' * (c) 2013, Vladimir Agafonkin\n' +\
+        ' * RBush: https://github.com/mourner/rbush\n' +\
+        ' */\n' +\
+        rbush_code
+    with open(target_file, 'w') as f:
+        f.write(rbush_code)
 
 
 @target('fixme', phony=True)
