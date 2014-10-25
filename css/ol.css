@@ -23,6 +23,10 @@
   margin: 1px;
   will-change: contents, width;
 }
+.ol-overlay-container {
+  will-change: left,right,top,bottom;
+}
+
 .ol-unsupported {
   display: none;
 }
