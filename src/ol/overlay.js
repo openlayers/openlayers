@@ -90,7 +90,9 @@ ol.Overlay = function(options) {
    * @private
    * @type {Element}
    */
-  this.element_ = goog.dom.createElement(goog.dom.TagName.DIV);
+  this.element_ = goog.dom.createDom(goog.dom.TagName.DIV, {
+    'class': 'ol-overlay-container'
+  });
   this.element_.style.position = 'absolute';
 
   /**
