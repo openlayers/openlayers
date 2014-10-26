@@ -28,6 +28,12 @@ goog.inherits(ol.renderer.dom.Layer, ol.renderer.Layer);
 
 
 /**
+ * Clear rendered elements.
+ */
+ol.renderer.dom.Layer.prototype.clearFrame = goog.nullFunction;
+
+
+/**
  * @param {olx.FrameState} frameState Frame state.
  * @param {ol.layer.LayerState} layerState Layer state.
  */

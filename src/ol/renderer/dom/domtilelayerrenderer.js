@@ -77,6 +77,15 @@ goog.inherits(ol.renderer.dom.TileLayer, ol.renderer.dom.Layer);
 /**
  * @inheritDoc
  */
+ol.renderer.dom.TileLayer.prototype.clearFrame = function() {
+  goog.dom.removeChildren(this.target);
+  this.renderedRevision_ = 0;
+};
+
+
+/**
+ * @inheritDoc
+ */
 ol.renderer.dom.TileLayer.prototype.prepareFrame =
     function(frameState, layerState) {
 
