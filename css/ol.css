@@ -217,6 +217,7 @@ button.ol-full-screen-true:after {
 }
 .ol-attribution img {
   max-height: 2em;
+  max-width: inherit;
 }
 .ol-attribution ul, .ol-attribution button {
   display: inline-block;
