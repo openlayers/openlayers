@@ -77,8 +77,10 @@ ol.xml.createElementNS =
 
 
 /**
+ * Recursively grab all text content of child nodes into a single string.
  * @param {Node} node Node.
- * @param {boolean} normalizeWhitespace Normalize whitespace.
+ * @param {boolean} normalizeWhitespace Normalize whitespace: remove all line
+ * breaks.
  * @return {string} All text content.
  * @api
  */
@@ -89,7 +91,8 @@ ol.xml.getAllTextContent = function(node, normalizeWhitespace) {
 
 /**
  * @param {Node} node Node.
- * @param {boolean} normalizeWhitespace Normalize whitespace.
+ * @param {boolean} normalizeWhitespace Normalize whitespace: remove all line
+ * breaks.
  * @param {Array.<String|string>} accumulator Accumulator.
  * @private
  * @return {Array.<String|string>} Accumulator.
