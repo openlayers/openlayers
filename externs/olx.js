@@ -4987,7 +4987,7 @@ olx.source.StaticVectorOptions.prototype.urls;
  *     logo: (string|olx.LogoOptions|undefined),
  *     tileGrid: ol.tilegrid.WMTS,
  *     projection: ol.proj.ProjectionLike,
- *     requestEncoding: (ol.source.WMTSRequestEncoding|undefined),
+ *     requestEncoding: (ol.source.WMTSRequestEncoding|string|undefined),
  *     layer: string,
  *     style: string,
  *     tilePixelRatio: (number|undefined),
@@ -5049,7 +5049,7 @@ olx.source.WMTSOptions.prototype.projection;
 
 /**
  * Request encoding. Default is `KVP`.
- * @type {ol.source.WMTSRequestEncoding|undefined}
+ * @type {ol.source.WMTSRequestEncoding|string|undefined}
  * @api
  */
 olx.source.WMTSOptions.prototype.requestEncoding;
