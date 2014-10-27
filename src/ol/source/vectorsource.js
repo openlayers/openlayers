@@ -128,6 +128,28 @@ ol.source.Vector.prototype.addFeature = function(feature) {
  */
 ol.source.Vector.prototype.addFeatureInternal = function(feature) {
   var featureKey = goog.getUid(feature).toString();
+  this.setupChangeEvents_(featureKey, feature);
+
+  var geometry = feature.getGeometry();
+  if (goog.isDefAndNotNull(geometry)) {
+    var extent = geometry.getExtent();
+    this.rBush_.insert(extent, feature);
+  } else {
+    this.nullGeometryFeatures_[featureKey] = feature;
+  }
+
+  this.addToIndex_(featureKey, feature);
+  this.dispatchEvent(
+      new ol.source.VectorEvent(ol.source.VectorEventType.ADDFEATURE, feature));
+};
+
+
+/**
+ * @param {string} featureKey
+ * @param {ol.Feature} feature
+ * @private
+ */
+ol.source.Vector.prototype.setupChangeEvents_ = function(featureKey, feature) {
   goog.asserts.assert(!(featureKey in this.featureChangeKeys_));
   this.featureChangeKeys_[featureKey] = [
     goog.events.listen(feature,
@@ -137,13 +159,15 @@ ol.source.Vector.prototype.addFeatureInternal = function(feature) {
         ol.ObjectEventType.PROPERTYCHANGE,
         this.handleFeatureChange_, false, this)
   ];
-  var geometry = feature.getGeometry();
-  if (goog.isDefAndNotNull(geometry)) {
-    var extent = geometry.getExtent();
-    this.rBush_.insert(extent, feature);
-  } else {
-    this.nullGeometryFeatures_[featureKey] = feature;
-  }
+};
+
+
+/**
+ * @param {string} featureKey
+ * @param {ol.Feature} feature
+ * @private
+ */
+ol.source.Vector.prototype.addToIndex_ = function(featureKey, feature) {
   var id = feature.getId();
   if (goog.isDef(id)) {
     this.idIndex_[id.toString()] = feature;
@@ -152,8 +176,6 @@ ol.source.Vector.prototype.addFeatureInternal = function(feature) {
         'Feature already added to the source');
     this.undefIdIndex_[featureKey] = feature;
   }
-  this.dispatchEvent(
-      new ol.source.VectorEvent(ol.source.VectorEventType.ADDFEATURE, feature));
 };
 
 
@@ -174,10 +196,31 @@ ol.source.Vector.prototype.addFeatures = function(features) {
  * @protected
  */
 ol.source.Vector.prototype.addFeaturesInternal = function(features) {
-  // FIXME use R-Bush bulk load when available
-  var i, ii;
-  for (i = 0, ii = features.length; i < ii; ++i) {
-    this.addFeatureInternal(features[i]);
+  var featureKey, i, length, feature;
+  var extents = [];
+  var validFeatures = [];
+  for (i = 0, length = features.length; i < length; i++) {
+    feature = features[i];
+    featureKey = goog.getUid(feature).toString();
+    this.setupChangeEvents_(featureKey, feature);
+
+    var geometry = feature.getGeometry();
+    if (goog.isDefAndNotNull(geometry)) {
+      var extent = geometry.getExtent();
+      extents.push(extent);
+      validFeatures.push(feature);
+    } else {
+      this.nullGeometryFeatures_[featureKey] = feature;
+    }
+  }
+  this.rBush_.load(extents, validFeatures);
+
+  for (i = 0, length = features.length; i < length; i++) {
+    feature = features[i];
+    featureKey = goog.getUid(feature).toString();
+    this.addToIndex_(featureKey, feature);
+    this.dispatchEvent(new ol.source.VectorEvent(
+        ol.source.VectorEventType.ADDFEATURE, feature));
   }
 };
 
