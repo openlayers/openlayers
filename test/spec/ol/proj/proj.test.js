@@ -316,6 +316,34 @@ describe('ol.proj', function() {
 
   });
 
+  describe('ol.proj.transform()', function() {
+
+    it('transforms a 2d coordinate', function() {
+      var got = ol.proj.transform([-10, -20], 'EPSG:4326', 'EPSG:3857');
+      expect(got).to.have.length(2);
+      expect(got[0]).to.roughlyEqual(-1113194.9079327357, 1e-3);
+      expect(got[1]).to.roughlyEqual(-2273030.92698769, 1e-3);
+    });
+
+    it('transforms a 3d coordinate', function() {
+      var got = ol.proj.transform([-10, -20, 3], 'EPSG:4326', 'EPSG:3857');
+      expect(got).to.have.length(3);
+      expect(got[0]).to.roughlyEqual(-1113194.9079327357, 1e-3);
+      expect(got[1]).to.roughlyEqual(-2273030.92698769, 1e-3);
+      expect(got[2]).to.be(3);
+    });
+
+    it('transforms a 4d coordinate', function() {
+      var got = ol.proj.transform([-10, -20, 3, 4], 'EPSG:4326', 'EPSG:3857');
+      expect(got).to.have.length(4);
+      expect(got[0]).to.roughlyEqual(-1113194.9079327357, 1e-3);
+      expect(got[1]).to.roughlyEqual(-2273030.92698769, 1e-3);
+      expect(got[2]).to.be(3);
+      expect(got[3]).to.be(4);
+    });
+
+  });
+
   describe('ol.proj.Projection.prototype.getMetersPerUnit()', function() {
 
     beforeEach(function() {
