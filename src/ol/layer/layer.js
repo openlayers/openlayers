@@ -105,13 +105,7 @@ goog.exportProperty(
   */
 ol.layer.Layer.prototype.getSourceState = function() {
   var source = this.getSource();
-  var state;
-  if (!goog.isNull(source)) {
-    state = source.getState();
-  } else {
-    state = ol.source.State.UNDEFINED;
-  }
-  return state;
+  return goog.isNull(source) ? ol.source.State.UNDEFINED : source.getState();
 };
 
 
