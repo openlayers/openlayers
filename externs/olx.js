@@ -1740,6 +1740,12 @@ olx.format.WFSWriteGetFeatureOptions.prototype.maxFeatures;
  */
 olx.format.WFSWriteGetFeatureOptions.prototype.geometryName;
 
+/**
+ * GML format to use within the WFS format.
+ * @type {ol.format.GMLBase|undefined}
+ * @api
+ */
+olx.format.WFSWriteGetFeatureOptions.prototype.gmlFormat;
 
 /**
  * Extent to use for the BBOX filter.

@@ -379,7 +379,8 @@ ol.xml.makeArrayPusher = function(valueReader, opt_this) {
        * @param {Array.<*>} objectStack Object stack.
        */
       function(node, objectStack) {
-        var value = valueReader.call(opt_this, node, objectStack);
+        var value = valueReader.call(goog.isDef(opt_this) ? opt_this : this,
+            node, objectStack);
         if (goog.isDef(value)) {
           var array = objectStack[objectStack.length - 1];
           goog.asserts.assert(goog.isArray(array));
@@ -402,7 +403,8 @@ ol.xml.makeReplacer = function(valueReader, opt_this) {
        * @param {Array.<*>} objectStack Object stack.
        */
       function(node, objectStack) {
-        var value = valueReader.call(opt_this, node, objectStack);
+        var value = valueReader.call(goog.isDef(opt_this) ? opt_this : this,
+            node, objectStack);
         if (goog.isDef(value)) {
           objectStack[objectStack.length - 1] = value;
         }
@@ -426,7 +428,8 @@ ol.xml.makeObjectPropertyPusher =
        * @param {Array.<*>} objectStack Object stack.
        */
       function(node, objectStack) {
-        var value = valueReader.call(opt_this, node, objectStack);
+        var value = valueReader.call(goog.isDef(opt_this) ? opt_this : this,
+            node, objectStack);
         if (goog.isDef(value)) {
           var object = /** @type {Object} */
               (objectStack[objectStack.length - 1]);
@@ -456,7 +459,8 @@ ol.xml.makeObjectPropertySetter =
        * @param {Array.<*>} objectStack Object stack.
        */
       function(node, objectStack) {
-        var value = valueReader.call(opt_this, node, objectStack);
+        var value = valueReader.call(goog.isDef(opt_this) ? opt_this : this,
+            node, objectStack);
         if (goog.isDef(value)) {
           var object = /** @type {Object} */
               (objectStack[objectStack.length - 1]);
@@ -494,7 +498,8 @@ ol.xml.makeParsersNS = function(namespaceURIs, parsers, opt_parsersNS) {
  */
 ol.xml.makeChildAppender = function(nodeWriter, opt_this) {
   return function(node, value, objectStack) {
-    nodeWriter.call(opt_this, node, value, objectStack);
+    nodeWriter.call(goog.isDef(opt_this) ? opt_this : this,
+        node, value, objectStack);
     var parent = objectStack[objectStack.length - 1];
     goog.asserts.assert(goog.isObject(parent));
     var parentNode = parent.node;
