@@ -342,6 +342,21 @@ describe('ol.proj', function() {
       expect(got[3]).to.be(4);
     });
 
+    it('works with 3d points and proj4 defs', function() {
+      proj4.defs('custom',
+          '+proj=somerc +lat_0=46.95240555555556 +lon_0=7.439583333333333 ' +
+          '+k_0=1 +x_0=600000 +y_0=200000 +ellps=bessel ' +
+          '+towgs84=674.374,15.056,405.346,0,0,0,0 +units=m +no_defs');
+
+      var got = ol.proj.transform([-111, 45.5, 123], 'EPSG:4326', 'custom');
+      expect(got).to.have.length(3);
+      expect(got[0]).to.roughlyEqual(-6601512.194209638, 1);
+      expect(got[1]).to.roughlyEqual(6145843.802742112, 1);
+      expect(got[2]).to.be(123);
+
+      delete proj4.defs.custom;
+    });
+
   });
 
   describe('ol.proj.Projection.prototype.getMetersPerUnit()', function() {
