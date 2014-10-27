@@ -4656,7 +4656,8 @@ olx.source.ServerVectorOptions.prototype.projection;
 /**
  * @typedef {{crossOrigin: (null|string|undefined),
  *     tileLoadFunction: (ol.TileLoadFunctionType|undefined),
- *     url: string}}
+ *     url: string,
+ *     wrapX: (boolean|undefined)}}
  * @api
  */
 olx.source.TileJSONOptions;
@@ -4684,6 +4685,14 @@ olx.source.TileJSONOptions.prototype.tileLoadFunction;
  * @api stable
  */
 olx.source.TileJSONOptions.prototype.url;
+
+
+/**
+ * Whether to wrap the world horizontally. Default is `true`.
+ * @type {boolean|undefined}
+ * @api
+ */
+olx.source.TileJSONOptions.prototype.wrapX;
 
 
 /**
