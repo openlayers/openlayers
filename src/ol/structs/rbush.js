@@ -1,5 +1,3 @@
-// FIXME bulk inserts
-
 goog.provide('ol.structs.RBush');
 
 goog.require('goog.array');
