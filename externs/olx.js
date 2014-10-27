@@ -5048,7 +5048,7 @@ olx.source.WMTSOptions.prototype.projection;
 
 
 /**
- * Request encoding.
+ * Request encoding. Default is `KVP`.
  * @type {ol.source.WMTSRequestEncoding|undefined}
  * @api
  */
