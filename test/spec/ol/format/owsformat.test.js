@@ -7,7 +7,7 @@ describe('ol.format.OWS 1.1', function() {
   var parser = new ol.format.OWS();
 
   it('should read ServiceProvider tag properly', function() {
-    var doc = ol.xml.load(
+    var doc = ol.xml.parse(
         '<ows:GetCapabilities xmlns:ows="http://www.opengis.net/ows/1.1" ' +
         'xmlns:xlink="http://www.w3.org/1999/xlink" >' +
         '<ows:ServiceProvider>' +
@@ -56,7 +56,7 @@ describe('ol.format.OWS 1.1', function() {
   });
 
   it('should read ServiceIdentification tag properly', function() {
-    var doc = ol.xml.load(
+    var doc = ol.xml.parse(
         '<ows:GetCapabilities xmlns:ows="http://www.opengis.net/ows/1.1" ' +
         'xmlns:xlink="http://www.w3.org/1999/xlink" >' +
         '<ows:ServiceIdentification>' +
@@ -86,7 +86,7 @@ describe('ol.format.OWS 1.1', function() {
   });
 
   it('should read OperationsMetadata tag properly', function() {
-    var doc = ol.xml.load(
+    var doc = ol.xml.parse(
         '<ows:GetCapabilities xmlns:ows="http://www.opengis.net/ows/1.1" ' +
         'xmlns:xlink="http://www.w3.org/1999/xlink" >' +
         '<ows:OperationsMetadata>' +

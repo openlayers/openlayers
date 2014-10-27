@@ -142,7 +142,7 @@ ol.format.GML3.prototype.curveMemberParser_ = function(node, objectStack) {
   goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT);
   goog.asserts.assert(node.localName == 'curveMember' ||
       node.localName == 'curveMembers');
-  ol.xml.parse(this.CURVEMEMBER_PARSERS_, node, objectStack, this);
+  ol.xml.parseNode(this.CURVEMEMBER_PARSERS_, node, objectStack, this);
 };
 
 
@@ -155,7 +155,7 @@ ol.format.GML3.prototype.surfaceMemberParser_ = function(node, objectStack) {
   goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT);
   goog.asserts.assert(node.localName == 'surfaceMember' ||
       node.localName == 'surfaceMembers');
-  ol.xml.parse(this.SURFACEMEMBER_PARSERS_,
+  ol.xml.parseNode(this.SURFACEMEMBER_PARSERS_,
       node, objectStack, this);
 };
 

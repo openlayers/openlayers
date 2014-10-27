@@ -91,7 +91,7 @@ ol.source.FormatVector.prototype.loadFeaturesFromURL =
               source = xhrIo.getResponseXml();
             }
             if (!goog.isDefAndNotNull(source)) {
-              source = ol.xml.load(xhrIo.getResponseText());
+              source = ol.xml.parse(xhrIo.getResponseText());
             }
           } else {
             goog.asserts.fail();

@@ -25,7 +25,7 @@ ol.format.XML.prototype.read = function(source) {
   } else if (ol.xml.isNode(source)) {
     return this.readFromNode(/** @type {Node} */ (source));
   } else if (goog.isString(source)) {
-    var doc = ol.xml.load(source);
+    var doc = ol.xml.parse(source);
     return this.readFromDocument(doc);
   } else {
     goog.asserts.fail();

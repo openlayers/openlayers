@@ -179,7 +179,7 @@ describe('ol.format.WFS', function() {
         srsName: 'urn:ogc:def:crs:EPSG::4326',
         propertyNames: ['STATE_NAME', 'STATE_FIPS', 'STATE_ABBR']
       });
-      expect(serialized).to.xmleql(ol.xml.load(text));
+      expect(serialized).to.xmleql(ol.xml.parse(text));
     });
 
     it('creates paging headers', function() {
@@ -204,7 +204,7 @@ describe('ol.format.WFS', function() {
         featurePrefix: 'topp',
         featureTypes: ['states']
       });
-      expect(serialized).to.xmleql(ol.xml.load(text));
+      expect(serialized).to.xmleql(ol.xml.parse(text));
     });
 
     it('creates a BBOX filter', function() {
@@ -231,7 +231,7 @@ describe('ol.format.WFS', function() {
         geometryName: 'the_geom',
         bbox: [1, 2, 3, 4]
       });
-      expect(serialized.firstElementChild).to.xmleql(ol.xml.load(text));
+      expect(serialized.firstElementChild).to.xmleql(ol.xml.parse(text));
     });
 
   });
@@ -247,7 +247,7 @@ describe('ol.format.WFS', function() {
           'http://schemas.opengis.net/wfs/1.1.0/wfs.xsd"/>';
       var serialized = new ol.format.WFS().writeTransaction(null, null, null,
           {handle: 'handle_t'});
-      expect(serialized).to.xmleql(ol.xml.load(text));
+      expect(serialized).to.xmleql(ol.xml.parse(text));
     });
 
   });
@@ -278,7 +278,7 @@ describe('ol.format.WFS', function() {
         featurePrefix: 'feature',
         gmlOptions: {multiCurve: true, srsName: 'EPSG:900913'}
       });
-      expect(serialized).to.xmleql(ol.xml.load(text));
+      expect(serialized).to.xmleql(ol.xml.parse(text));
     });
   });
 
@@ -309,7 +309,7 @@ describe('ol.format.WFS', function() {
         featurePrefix: 'foo',
         gmlOptions: {srsName: 'EPSG:900913'}
       });
-      expect(serialized).to.xmleql(ol.xml.load(text));
+      expect(serialized).to.xmleql(ol.xml.parse(text));
     });
   });
 
@@ -350,7 +350,7 @@ describe('ol.format.WFS', function() {
         featureType: 'states',
         featurePrefix: 'topp'
       });
-      expect(serialized).to.xmleql(ol.xml.load(text));
+      expect(serialized).to.xmleql(ol.xml.parse(text));
     });
 
   });
@@ -377,7 +377,7 @@ describe('ol.format.WFS', function() {
           value: 'Another native line goes here'
         }]
       });
-      expect(serialized).to.xmleql(ol.xml.load(text));
+      expect(serialized).to.xmleql(ol.xml.parse(text));
     });
   });
 
@@ -397,7 +397,7 @@ describe('ol.format.WFS', function() {
         featureTypes: ['states', 'cities'],
         featurePrefix: 'topp'
       });
-      expect(serialized).to.xmleql(ol.xml.load(text));
+      expect(serialized).to.xmleql(ol.xml.parse(text));
     });
   });
 
