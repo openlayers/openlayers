@@ -278,7 +278,7 @@ ol.format.WFS.OGC_FID_PARSERS_ = {
  * @private
  */
 ol.format.WFS.fidParser_ = function(node, objectStack) {
-  ol.xml.parse(ol.format.WFS.OGC_FID_PARSERS_, node, objectStack);
+  ol.xml.parseNode(ol.format.WFS.OGC_FID_PARSERS_, node, objectStack);
 };
 
 

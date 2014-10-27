@@ -274,7 +274,7 @@ ol.format.GMLBase.prototype.pointMemberParser_ = function(node, objectStack) {
   goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT);
   goog.asserts.assert(node.localName == 'pointMember' ||
       node.localName == 'pointMembers');
-  ol.xml.parse(this.POINTMEMBER_PARSERS_,
+  ol.xml.parseNode(this.POINTMEMBER_PARSERS_,
       node, objectStack, this);
 };
 
@@ -289,7 +289,7 @@ ol.format.GMLBase.prototype.lineStringMemberParser_ =
   goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT);
   goog.asserts.assert(node.localName == 'lineStringMember' ||
       node.localName == 'lineStringMembers');
-  ol.xml.parse(this.LINESTRINGMEMBER_PARSERS_,
+  ol.xml.parseNode(this.LINESTRINGMEMBER_PARSERS_,
       node, objectStack, this);
 };
 
@@ -304,7 +304,7 @@ ol.format.GMLBase.prototype.polygonMemberParser_ =
   goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT);
   goog.asserts.assert(node.localName == 'polygonMember' ||
       node.localName == 'polygonMembers');
-  ol.xml.parse(this.POLYGONMEMBER_PARSERS_, node,
+  ol.xml.parseNode(this.POLYGONMEMBER_PARSERS_, node,
       objectStack, this);
 };
 

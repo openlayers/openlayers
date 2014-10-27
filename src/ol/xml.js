@@ -643,7 +643,7 @@ ol.xml.makeStructureNS = function(namespaceURIs, structure, opt_structureNS) {
  * @param {Array.<*>} objectStack Object stack.
  * @param {*=} opt_this The object to use as `this`.
  */
-ol.xml.parse = function(parsersNS, node, objectStack, opt_this) {
+ol.xml.parseNode = function(parsersNS, node, objectStack, opt_this) {
   var n;
   for (n = node.firstElementChild; !goog.isNull(n); n = n.nextElementSibling) {
     var parsers = parsersNS[n.namespaceURI];
@@ -670,7 +670,7 @@ ol.xml.parse = function(parsersNS, node, objectStack, opt_this) {
 ol.xml.pushParseAndPop = function(
     object, parsersNS, node, objectStack, opt_this) {
   objectStack.push(object);
-  ol.xml.parse(parsersNS, node, objectStack, opt_this);
+  ol.xml.parseNode(parsersNS, node, objectStack, opt_this);
   return objectStack.pop();
 };
 
