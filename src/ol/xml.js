@@ -333,11 +333,12 @@ ol.xml.setAttributeNS =
 
 
 /**
+ * Parse an XML string to a XML Document
  * @param {string} xml XML.
  * @return {Document} Document.
  * @api
  */
-ol.xml.load = function(xml) {
+ol.xml.parse = function(xml) {
   return new DOMParser().parseFromString(xml, 'application/xml');
 };
 

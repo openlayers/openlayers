@@ -1,7 +1,7 @@
 goog.provide('ol.test.format.GML');
 
 var readGeometry = function(format, text, opt_options) {
-  var doc = ol.xml.load(text);
+  var doc = ol.xml.parse(text);
   // we need an intermediate node for testing purposes
   var node = goog.dom.createElement(goog.dom.TagName.PRE);
   node.appendChild(doc.documentElement);
@@ -131,7 +131,7 @@ describe('ol.format.GML3', function() {
         expect(g).to.be.an(ol.geom.Point);
         expect(g.getCoordinates()).to.eql([1, 2, 0]);
         var serialized = format.writeGeometry(g);
-        expect(serialized.firstElementChild).to.xmleql(ol.xml.load(text));
+        expect(serialized.firstElementChild).to.xmleql(ol.xml.parse(text));
       });
 
       it('can read a point geometry with scientific notation', function() {
@@ -201,7 +201,7 @@ describe('ol.format.GML3', function() {
         expect(g).to.be.an(ol.geom.Point);
         expect(g.getCoordinates()).to.eql([1, 2, 0]);
         var serialized = formatWGS84.writeGeometry(g);
-        expect(serialized.firstElementChild).to.xmleql(ol.xml.load(text));
+        expect(serialized.firstElementChild).to.xmleql(ol.xml.parse(text));
       });
 
     });
@@ -218,7 +218,7 @@ describe('ol.format.GML3', function() {
         expect(g).to.be.an(ol.geom.LineString);
         expect(g.getCoordinates()).to.eql([[1, 2, 0], [3, 4, 0]]);
         var serialized = format.writeGeometry(g);
-        expect(serialized.firstElementChild).to.xmleql(ol.xml.load(text));
+        expect(serialized.firstElementChild).to.xmleql(ol.xml.parse(text));
       });
 
       it('can read, transform and write a linestring geometry', function() {
@@ -257,7 +257,7 @@ describe('ol.format.GML3', function() {
         expect(g).to.be.an(ol.geom.LineString);
         expect(g.getCoordinates()).to.eql([[1, 2, 0], [3, 4, 0]]);
         var serialized = formatWGS84.writeGeometry(g);
-        expect(serialized.firstElementChild).to.xmleql(ol.xml.load(text));
+        expect(serialized.firstElementChild).to.xmleql(ol.xml.parse(text));
       });
 
     });
@@ -275,7 +275,7 @@ describe('ol.format.GML3', function() {
             expect(g).to.be.an(ol.geom.LineString);
             expect(g.getCoordinates()).to.eql([[-180, -90, 0], [180, 90, 0]]);
             var serialized = formatWGS84.writeGeometry(g);
-            expect(serialized.firstElementChild).to.xmleql(ol.xml.load(text));
+            expect(serialized.firstElementChild).to.xmleql(ol.xml.parse(text));
           });
 
       it('can read and write a point geometry with correct axis order',
@@ -289,7 +289,7 @@ describe('ol.format.GML3', function() {
             expect(g).to.be.an(ol.geom.Point);
             expect(g.getCoordinates()).to.eql([-180, -90, 0]);
             var serialized = formatWGS84.writeGeometry(g);
-            expect(serialized.firstElementChild).to.xmleql(ol.xml.load(text));
+            expect(serialized.firstElementChild).to.xmleql(ol.xml.parse(text));
           });
 
       it('can read and write a surface geometry with right axis order',
@@ -320,7 +320,7 @@ describe('ol.format.GML3', function() {
               srsName: 'urn:x-ogc:def:crs:EPSG:4326',
               surface: false});
             var serialized = format.writeGeometry(g);
-            expect(serialized.firstElementChild).to.xmleql(ol.xml.load(text));
+            expect(serialized.firstElementChild).to.xmleql(ol.xml.parse(text));
           });
 
     });
@@ -353,7 +353,7 @@ describe('ol.format.GML3', function() {
         expect(g.getCoordinates()).to.eql(
             [[1, 2, 0], [3, 4, 0], [5, 6, 0], [1, 2, 0]]);
         var serialized = format.writeGeometry(g);
-        expect(serialized.firstElementChild).to.xmleql(ol.xml.load(text));
+        expect(serialized.firstElementChild).to.xmleql(ol.xml.parse(text));
       });
 
     });
@@ -386,7 +386,7 @@ describe('ol.format.GML3', function() {
                 [1, 2, 0]], [[2, 3, 0], [2, 5, 0], [4, 5, 0], [2, 3, 0]],
               [[3, 4, 0], [3, 6, 0], [5, 6, 0], [3, 4, 0]]]);
         var serialized = format.writeGeometry(g);
-        expect(serialized.firstElementChild).to.xmleql(ol.xml.load(text));
+        expect(serialized.firstElementChild).to.xmleql(ol.xml.parse(text));
       });
 
     });
@@ -424,7 +424,7 @@ describe('ol.format.GML3', function() {
               [[3, 4, 0], [3, 6, 0], [5, 6, 0], [3, 4, 0]]]);
         format = new ol.format.GML({srsName: 'CRS:84', surface: true});
         var serialized = format.writeGeometry(g);
-        expect(serialized.firstElementChild).to.xmleql(ol.xml.load(text));
+        expect(serialized.firstElementChild).to.xmleql(ol.xml.parse(text));
       });
 
     });
@@ -446,7 +446,7 @@ describe('ol.format.GML3', function() {
         expect(g.getCoordinates()).to.eql([[1, 2, 0], [3, 4, 0]]);
         format = new ol.format.GML({srsName: 'CRS:84', curve: true});
         var serialized = format.writeGeometry(g);
-        expect(serialized.firstElementChild).to.xmleql(ol.xml.load(text));
+        expect(serialized.firstElementChild).to.xmleql(ol.xml.parse(text));
       });
 
     });
@@ -492,7 +492,7 @@ describe('ol.format.GML3', function() {
         expect(g).to.be.an(ol.geom.MultiPoint);
         expect(g.getCoordinates()).to.eql([[1, 2, 0], [2, 3, 0], [3, 4, 0]]);
         var serialized = format.writeGeometry(g);
-        expect(serialized.firstElementChild).to.xmleql(ol.xml.load(text));
+        expect(serialized.firstElementChild).to.xmleql(ol.xml.parse(text));
       });
 
       it('can read a plural multipoint geometry', function() {
@@ -541,7 +541,7 @@ describe('ol.format.GML3', function() {
             [[[1, 2, 0], [2, 3, 0]], [[3, 4, 0], [4, 5, 0]]]);
         format = new ol.format.GML({srsName: 'CRS:84', multiCurve: false});
         var serialized = format.writeGeometry(g);
-        expect(serialized.firstElementChild).to.xmleql(ol.xml.load(text));
+        expect(serialized.firstElementChild).to.xmleql(ol.xml.parse(text));
       });
 
       it('can read a plural multilinestring geometry', function() {
@@ -609,7 +609,7 @@ describe('ol.format.GML3', function() {
           [[[1, 2, 0], [3, 2, 0], [3, 4, 0], [1, 2, 0]]]]);
         format = new ol.format.GML({srsName: 'CRS:84', multiSurface: false});
         var serialized = format.writeGeometry(g);
-        expect(serialized.firstElementChild).to.xmleql(ol.xml.load(text));
+        expect(serialized.firstElementChild).to.xmleql(ol.xml.parse(text));
       });
 
       it('can read a plural multipolygon geometry', function() {
@@ -677,7 +677,7 @@ describe('ol.format.GML3', function() {
             expect(g.getCoordinates()).to.eql(
                 [[[1, 2, 0], [2, 3, 0]], [[3, 4, 0], [4, 5, 0]]]);
             var serialized = format.writeGeometry(g);
-            expect(serialized.firstElementChild).to.xmleql(ol.xml.load(text));
+            expect(serialized.firstElementChild).to.xmleql(ol.xml.parse(text));
           });
 
       it('can read and write a singular multicurve-curve geometry', function() {
@@ -709,7 +709,7 @@ describe('ol.format.GML3', function() {
             [[[1, 2, 0], [2, 3, 0]], [[3, 4, 0], [4, 5, 0]]]);
         format = new ol.format.GML({srsName: 'CRS:84', curve: true});
         var serialized = format.writeGeometry(g);
-        expect(serialized.firstElementChild).to.xmleql(ol.xml.load(text));
+        expect(serialized.firstElementChild).to.xmleql(ol.xml.parse(text));
       });
 
     });
@@ -757,7 +757,7 @@ describe('ol.format.GML3', function() {
             [[3, 4, 0], [3, 6, 0], [5, 6, 0], [3, 4, 0]]],
           [[[1, 2, 0], [3, 2, 0], [3, 4, 0], [1, 2, 0]]]]);
         var serialized = format.writeGeometry(g);
-        expect(serialized.firstElementChild).to.xmleql(ol.xml.load(text));
+        expect(serialized.firstElementChild).to.xmleql(ol.xml.parse(text));
       });
 
       it('can read a plural multisurface geometry', function() {
@@ -852,7 +852,7 @@ describe('ol.format.GML3', function() {
           [[[1, 2, 0], [3, 2, 0], [3, 4, 0], [1, 2, 0]]]]);
         format = new ol.format.GML({srsName: 'CRS:84', surface: true});
         var serialized = format.writeGeometry(g);
-        expect(serialized.firstElementChild).to.xmleql(ol.xml.load(text));
+        expect(serialized.firstElementChild).to.xmleql(ol.xml.parse(text));
       });
 
     });
@@ -979,7 +979,7 @@ describe('ol.format.GML3', function() {
     it('writes back features as GML', function() {
       this.timeout(4000);
       var serialized = gmlFormat.writeFeatures(features);
-      expect(serialized).to.xmleql(ol.xml.load(text));
+      expect(serialized).to.xmleql(ol.xml.parse(text));
     });
 
   });

@@ -149,7 +149,7 @@ ol.format.WFS.prototype.readTransactionResponse = function(source) {
   } else if (ol.xml.isNode(source)) {
     return this.readTransactionResponseFromNode(/** @type {Node} */ (source));
   } else if (goog.isString(source)) {
-    var doc = ol.xml.load(source);
+    var doc = ol.xml.parse(source);
     return this.readTransactionResponseFromDocument(doc);
   } else {
     goog.asserts.fail();
@@ -172,7 +172,7 @@ ol.format.WFS.prototype.readFeatureCollectionMetadata = function(source) {
     return this.readFeatureCollectionMetadataFromNode(
         /** @type {Node} */ (source));
   } else if (goog.isString(source)) {
-    var doc = ol.xml.load(source);
+    var doc = ol.xml.parse(source);
     return this.readFeatureCollectionMetadataFromDocument(doc);
   } else {
     goog.asserts.fail();
