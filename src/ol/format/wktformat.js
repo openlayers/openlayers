@@ -584,6 +584,7 @@ ol.format.WKT.Parser.prototype.parse = function() {
 /**
  * @return {!ol.geom.Geometry|!ol.geom.GeometryCollection} The geometry.
  * @private
+ * @suppress {missingReturn}
  */
 ol.format.WKT.Parser.prototype.parseGeometry_ = function() {
   var token = this.token_;
@@ -609,6 +610,7 @@ ol.format.WKT.Parser.prototype.parseGeometry_ = function() {
 /**
  * @return {!Array.<ol.geom.Geometry>} A collection of geometries.
  * @private
+ * @suppress {missingReturn}
  */
 ol.format.WKT.Parser.prototype.parseGeometryCollectionText_ = function() {
   if (this.match(ol.format.WKT.TokenType.LEFT_PAREN)) {
@@ -629,6 +631,7 @@ ol.format.WKT.Parser.prototype.parseGeometryCollectionText_ = function() {
 /**
  * @return {Array.<number>} All values in a point.
  * @private
+ * @suppress {missingReturn}
  */
 ol.format.WKT.Parser.prototype.parsePointText_ = function() {
   if (this.match(ol.format.WKT.TokenType.LEFT_PAREN)) {
@@ -646,6 +649,7 @@ ol.format.WKT.Parser.prototype.parsePointText_ = function() {
 /**
  * @return {!Array.<!Array.<number>>} All points in a linestring.
  * @private
+ * @suppress {missingReturn}
  */
 ol.format.WKT.Parser.prototype.parseLineStringText_ = function() {
   if (this.match(ol.format.WKT.TokenType.LEFT_PAREN)) {
@@ -663,6 +667,7 @@ ol.format.WKT.Parser.prototype.parseLineStringText_ = function() {
 /**
  * @return {!Array.<!Array.<number>>} All points in a polygon.
  * @private
+ * @suppress {missingReturn}
  */
 ol.format.WKT.Parser.prototype.parsePolygonText_ = function() {
   if (this.match(ol.format.WKT.TokenType.LEFT_PAREN)) {
@@ -680,6 +685,7 @@ ol.format.WKT.Parser.prototype.parsePolygonText_ = function() {
 /**
  * @return {!Array.<!Array.<number>>} All points in a multipoint.
  * @private
+ * @suppress {missingReturn}
  */
 ol.format.WKT.Parser.prototype.parseMultiPointText_ = function() {
   if (this.match(ol.format.WKT.TokenType.LEFT_PAREN)) {
@@ -703,6 +709,7 @@ ol.format.WKT.Parser.prototype.parseMultiPointText_ = function() {
  * @return {!Array.<!Array.<number>>} All linestring points
  *                                        in a multilinestring.
  * @private
+ * @suppress {missingReturn}
  */
 ol.format.WKT.Parser.prototype.parseMultiLineStringText_ = function() {
   if (this.match(ol.format.WKT.TokenType.LEFT_PAREN)) {
@@ -720,6 +727,7 @@ ol.format.WKT.Parser.prototype.parseMultiLineStringText_ = function() {
 /**
  * @return {!Array.<!Array.<number>>} All polygon points in a multipolygon.
  * @private
+ * @suppress {missingReturn}
  */
 ol.format.WKT.Parser.prototype.parseMultiPolygonText_ = function() {
   if (this.match(ol.format.WKT.TokenType.LEFT_PAREN)) {
@@ -737,6 +745,7 @@ ol.format.WKT.Parser.prototype.parseMultiPolygonText_ = function() {
 /**
  * @return {!Array.<number>} A point.
  * @private
+ * @suppress {missingReturn}
  */
 ol.format.WKT.Parser.prototype.parsePoint_ = function() {
   var coordinates = [];
