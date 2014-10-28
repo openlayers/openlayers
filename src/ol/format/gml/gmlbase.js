@@ -159,6 +159,7 @@ ol.format.GMLBase.prototype.readFeature_ = function(node, objectStack) {
   var values = {}, geometryName;
   for (n = node.firstElementChild; !goog.isNull(n);
       n = n.nextElementSibling) {
+    var localName = ol.xml.getLocalName(n);
     // Assume attribute elements have one child node and that the child
     // is a text node.  Otherwise assume it is a geometry node.
     if (n.childNodes.length === 0 ||
@@ -168,13 +169,13 @@ ol.format.GMLBase.prototype.readFeature_ = function(node, objectStack) {
       if (goog.string.isEmpty(value)) {
         value = undefined;
       }
-      values[ol.xml.getLocalName(n)] = value;
+      values[localName] = value;
     } else {
       // boundedBy is an extent and must not be considered as a geometry
-      if (n.localName !== 'boundedBy') {
-        geometryName = ol.xml.getLocalName(n);
+      if (localName !== 'boundedBy') {
+        geometryName = localName;
       }
-      values[ol.xml.getLocalName(n)] = this.readGeometryElement(n, objectStack);
+      values[localName] = this.readGeometryElement(n, objectStack);
     }
   }
   var feature = new ol.Feature(values);
