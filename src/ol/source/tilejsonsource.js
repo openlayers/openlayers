@@ -39,6 +39,12 @@ ol.source.TileJSON = function(options) {
     tileLoadFunction: options.tileLoadFunction
   });
 
+  /**
+   * @type {boolean|undefined}
+   * @private
+   */
+  this.wrapX_ = options.wrapX;
+
   var request = new goog.net.Jsonp(options.url);
   request.send(undefined, goog.bind(this.handleTileJSONResponse, this));
 
@@ -76,7 +82,8 @@ ol.source.TileJSON.prototype.handleTileJSONResponse = function(tileJSON) {
 
   this.tileUrlFunction = ol.TileUrlFunction.withTileCoordTransform(
       tileGrid.createTileCoordTransform({
-        extent: extent
+        extent: extent,
+        wrapX: this.wrapX_
       }),
       ol.TileUrlFunction.createFromTemplates(tileJSON.tiles));
 
