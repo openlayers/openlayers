@@ -4535,6 +4535,7 @@ olx.source.StamenOptions.prototype.url;
  *     crossOrigin: (null|string|undefined),
  *     imageExtent: (ol.Extent),
  *     imageSize: (ol.Size|undefined),
+ *     imageLoadFunction: (ol.ImageLoadFunctionType|undefined),
  *     logo: (string|olx.LogoOptions|undefined),
  *     projection: ol.proj.ProjectionLike,
  *     url: string}}
