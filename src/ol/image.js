@@ -66,8 +66,9 @@ goog.inherits(ol.Image, ol.ImageBase);
 /**
  * @param {Object=} opt_context Object.
  * @return {HTMLCanvasElement|Image|HTMLVideoElement} Image.
+ * @api
  */
-ol.Image.prototype.getImageElement = function(opt_context) {
+ol.Image.prototype.getImage = function(opt_context) {
   if (goog.isDef(opt_context)) {
     var image;
     var key = goog.getUid(opt_context);

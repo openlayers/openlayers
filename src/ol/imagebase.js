@@ -95,7 +95,7 @@ ol.ImageBase.prototype.getExtent = function() {
  * @param {Object=} opt_context Object.
  * @return {HTMLCanvasElement|Image|HTMLVideoElement} Image.
  */
-ol.ImageBase.prototype.getImageElement = goog.abstractMethod;
+ol.ImageBase.prototype.getImage = goog.abstractMethod;
 
 
 /**
