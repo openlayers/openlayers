@@ -134,6 +134,16 @@ describe('ol.source.ImageWMS', function() {
       expect(queryData.get('DPI')).to.be('180');
     });
 
+    it('creates an image with a custom imageLoadFunction', function() {
+      var imageLoadFunction = sinon.spy();
+      options.imageLoadFunction = imageLoadFunction;
+      var source = new ol.source.ImageWMS(options);
+      var image = source.getImage(extent, resolution, pixelRatio, projection);
+      image.load();
+      expect(imageLoadFunction).to.be.called();
+      expect(imageLoadFunction.calledWith(image, image.src_)).to.be(true);
+    });
+
   });
 
   describe('#getGetFeatureInfo', function() {
