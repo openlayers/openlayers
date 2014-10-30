@@ -41,13 +41,11 @@ ol.control.Zoom = function(opt_options) {
   var zoomOutTipLabel = goog.isDef(options.zoomOutTipLabel) ?
       options.zoomOutTipLabel : 'Zoom out';
 
-  var tTipZoomIn = goog.dom.createDom(goog.dom.TagName.SPAN, {
-    'role' : 'tooltip'
-  }, zoomInTipLabel);
   var inElement = goog.dom.createDom(goog.dom.TagName.BUTTON, {
-    'class': className + '-in ol-has-tooltip',
-    'type' : 'button'
-  }, tTipZoomIn, zoomInLabel);
+    'class': className + '-in',
+    'type' : 'button',
+    'title': zoomInTipLabel
+  }, zoomInLabel);
 
   var inElementHandler = new ol.pointer.PointerEventHandler(inElement);
   this.registerDisposable(inElementHandler);
@@ -65,13 +63,11 @@ ol.control.Zoom = function(opt_options) {
     this.blur();
   }, false);
 
-  var tTipsZoomOut = goog.dom.createDom(goog.dom.TagName.SPAN, {
-    'role' : 'tooltip'
-  }, zoomOutTipLabel);
   var outElement = goog.dom.createDom(goog.dom.TagName.BUTTON, {
-    'class': className + '-out  ol-has-tooltip',
-    'type' : 'button'
-  }, tTipsZoomOut, zoomOutLabel);
+    'class': className + '-out',
+    'type' : 'button',
+    'title': zoomOutTipLabel
+  }, zoomOutLabel);
 
   var outElementHandler = new ol.pointer.PointerEventHandler(outElement);
   this.registerDisposable(outElementHandler);
