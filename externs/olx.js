@@ -3936,6 +3936,15 @@ olx.source.ImageMapGuideOptions.prototype.ratio;
 olx.source.ImageMapGuideOptions.prototype.resolutions;
 
 
+
+/**
+ * Optional function to load an image given a URL.
+ * @type {ol.TileLoadFunctionType|undefined}
+ * @api
+ */
+olx.source.ImageMapGuideOptions.prototype.imageLoadFunction;
+
+
 /**
  * Additional parameters.
  * @type {Object|undefined}
@@ -4421,6 +4430,14 @@ olx.source.ImageWMSOptions.prototype.serverType;
 
 
 /**
+ * Optional function to load an image given a URL.
+ * @type {ol.TileLoadFunctionType|undefined}
+ * @api
+ */
+olx.source.ImageWMSOptions.prototype.imageLoadFunction;
+
+
+/**
  * Logo.
  * @type {string|olx.LogoOptions|undefined}
  * @api stable
@@ -4575,6 +4592,14 @@ olx.source.ImageStaticOptions.prototype.imageExtent;
  * @api stable
  */
 olx.source.ImageStaticOptions.prototype.imageSize;
+
+
+/**
+ * Optional function to load an image given a URL.
+ * @type {ol.TileLoadFunctionType|undefined}
+ * @api
+ */
+olx.source.ImageStaticOptions.prototype.imageLoadFunction;
 
 
 /**
