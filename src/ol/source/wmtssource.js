@@ -68,7 +68,6 @@ ol.source.WMTS = function(options) {
 
   var context = {
     'Layer': options.layer,
-    'style': options.style,
     'Style': options.style,
     'TileMatrixSet': options.matrixSet
   };
