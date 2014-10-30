@@ -346,7 +346,7 @@ def examples_star_json(name, match):
             ],
             "compilation_level": "ADVANCED",
             "warning_level": "VERBOSE",
-            "output_wrapper": "// OpenLayers 3. See http://ol3.js.org/\n(function(){%output%})();",
+            "output_wrapper": "(function(){%output%})();",
             "use_types_for_optimization": True,
             "manage_closure_dependencies": True
           }
