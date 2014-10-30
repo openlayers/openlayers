@@ -34,6 +34,9 @@ ol.source.ImageStatic = function(options) {
   var crossOrigin = goog.isDef(options.crossOrigin) ?
       options.crossOrigin : null;
 
+  var imageLoadFunction = goog.isDef(options.imageLoadFunction) ?
+      options.imageLoadFunction : ol.source.Image.defaultImageLoadFunction;
+
   goog.base(this, {
     attributions: attributions,
     logo: options.logo,
@@ -46,7 +49,7 @@ ol.source.ImageStatic = function(options) {
    * @type {ol.Image}
    */
   this.image_ = new ol.Image(imageExtent, resolution, 1, attributions,
-      options.url, crossOrigin);
+      options.url, crossOrigin, imageLoadFunction);
 
 };
 goog.inherits(ol.source.ImageStatic, ol.source.Image);

@@ -3863,6 +3863,7 @@ olx.source.IGCOptions.prototype.urls;
  *     projection: ol.proj.ProjectionLike,
  *     ratio: (number|undefined),
  *     resolutions: (Array.<number>|undefined),
+ *     imageLoadFunction: (ol.ImageLoadFunctionType|undefined),
  *     params: (Object|undefined)}}
  * @api
  */
@@ -3933,6 +3934,15 @@ olx.source.ImageMapGuideOptions.prototype.ratio;
  * @api stable
  */
 olx.source.ImageMapGuideOptions.prototype.resolutions;
+
+
+
+/**
+ * Optional function to load an image given a URL.
+ * @type {ol.TileLoadFunctionType|undefined}
+ * @api
+ */
+olx.source.ImageMapGuideOptions.prototype.imageLoadFunction;
 
 
 /**
@@ -4374,6 +4384,7 @@ olx.source.ImageVectorOptions.prototype.style;
  *     hidpi: (boolean|undefined),
  *     serverType: (ol.source.wms.ServerType|string|undefined),
  *     logo: (string|olx.LogoOptions|undefined),
+ *     imageLoadFunction: (ol.ImageLoadFunctionType|undefined),
  *     params: Object.<string,*>,
  *     projection: ol.proj.ProjectionLike,
  *     ratio: (number|undefined),
@@ -4416,6 +4427,14 @@ olx.source.ImageWMSOptions.prototype.hidpi;
  * @api
  */
 olx.source.ImageWMSOptions.prototype.serverType;
+
+
+/**
+ * Optional function to load an image given a URL.
+ * @type {ol.TileLoadFunctionType|undefined}
+ * @api
+ */
+olx.source.ImageWMSOptions.prototype.imageLoadFunction;
 
 
 /**
@@ -4534,6 +4553,7 @@ olx.source.StamenOptions.prototype.url;
  *     crossOrigin: (null|string|undefined),
  *     imageExtent: (ol.Extent),
  *     imageSize: (ol.Size|undefined),
+ *     imageLoadFunction: (ol.ImageLoadFunctionType|undefined),
  *     logo: (string|olx.LogoOptions|undefined),
  *     projection: ol.proj.ProjectionLike,
  *     url: string}}
@@ -4572,6 +4592,14 @@ olx.source.ImageStaticOptions.prototype.imageExtent;
  * @api stable
  */
 olx.source.ImageStaticOptions.prototype.imageSize;
+
+
+/**
+ * Optional function to load an image given a URL.
+ * @type {ol.TileLoadFunctionType|undefined}
+ * @api
+ */
+olx.source.ImageStaticOptions.prototype.imageLoadFunction;
 
 
 /**

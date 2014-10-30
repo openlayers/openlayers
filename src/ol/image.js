@@ -20,9 +20,10 @@ goog.require('ol.extent');
  * @param {Array.<ol.Attribution>} attributions Attributions.
  * @param {string} src Image source URI.
  * @param {?string} crossOrigin Cross origin.
+ * @param {ol.ImageLoadFunctionType} imageLoadFunction Image load function.
  */
-ol.Image =
-    function(extent, resolution, pixelRatio, attributions, src, crossOrigin) {
+ol.Image = function(extent, resolution, pixelRatio, attributions, src,
+    crossOrigin, imageLoadFunction) {
 
   goog.base(this, extent, resolution, pixelRatio, ol.ImageState.IDLE,
       attributions);
@@ -59,6 +60,13 @@ ol.Image =
    * @type {ol.ImageState}
    */
   this.state = ol.ImageState.IDLE;
+
+  /**
+   * @private
+   * @type {ol.ImageLoadFunctionType}
+   */
+  this.imageLoadFunction_ = imageLoadFunction;
+
 };
 goog.inherits(ol.Image, ol.ImageBase);
 
@@ -66,8 +74,9 @@ goog.inherits(ol.Image, ol.ImageBase);
 /**
  * @param {Object=} opt_context Object.
  * @return {HTMLCanvasElement|Image|HTMLVideoElement} Image.
+ * @api
  */
-ol.Image.prototype.getImageElement = function(opt_context) {
+ol.Image.prototype.getImage = function(opt_context) {
   if (goog.isDef(opt_context)) {
     var image;
     var key = goog.getUid(opt_context);
@@ -126,7 +135,7 @@ ol.Image.prototype.load = function() {
       goog.events.listenOnce(this.image_, goog.events.EventType.LOAD,
           this.handleImageLoad_, false, this)
     ];
-    this.image_.src = this.src_;
+    this.imageLoadFunction_(this, this.src_);
   }
 };
 
