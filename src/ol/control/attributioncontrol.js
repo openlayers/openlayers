@@ -111,12 +111,12 @@ ol.control.Attribution = function(opt_options) {
     this.blur();
   }, false);
 
-  var element = goog.dom.createDom(goog.dom.TagName.DIV, {
-    'class': className + ' ' + ol.css.CLASS_UNSELECTABLE + ' ' +
-        ol.css.CLASS_CONTROL +
-        (this.collapsed_ && this.collapsible_ ? ' ol-collapsed' : '') +
-        (this.collapsible_ ? '' : ' ol-uncollapsible')
-  }, this.ulElement_, button);
+  var cssClasses = className + ' ' + ol.css.CLASS_UNSELECTABLE + ' ' +
+      ol.css.CLASS_CONTROL +
+      (this.collapsed_ && this.collapsible_ ? ' ol-collapsed' : '') +
+      (this.collapsible_ ? '' : ' ol-uncollapsible');
+  var element = goog.dom.createDom(goog.dom.TagName.DIV,
+      cssClasses, this.ulElement_, button);
 
   goog.base(this, {
     element: element,
