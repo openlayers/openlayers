@@ -42,16 +42,16 @@ ol.render.webgl.Replay = function(tolerance) {
   this.indicesBuffer = null;
 
   /**
-   * @protected
-   * @type {WebGLTexture}
-   */
-  this.texture = null;
-
-  /**
    * @private
    * @type {ol.Extent}
    */
   this.extent_ = ol.extent.createEmpty();
+
+  /**
+   * @protected
+   * @type {Array.<Array.<*>>}
+   */
+  this.textures = [];
 
 };
 
@@ -96,15 +96,23 @@ ol.render.webgl.Replay.prototype.replay = function(context,
   gl.vertexAttribPointer(texCoordAttribLocation, 2, goog.webgl.FLOAT,
       false, 24, 16);
 
-  gl.bindTexture(goog.webgl.TEXTURE_2D, this.texture);
 
   gl.uniformMatrix4fv(projectionMatrixLocation, false, transform);
   gl.uniformMatrix2fv(sizeMatrixLocation, false,
       new Float32Array([1 / size[0], 0.0, 0.0, 1 / size[1]]));
 
   gl.bindBuffer(goog.webgl.ELEMENT_ARRAY_BUFFER, this.indicesBuffer);
-  gl.drawElements(goog.webgl.TRIANGLES, this.indices.length,
-      goog.webgl.UNSIGNED_SHORT, 0);
+
+  var i;
+  var ii = this.textures.length;
+  var texture;
+  for (i = 0; i < ii; ++i) {
+    texture = this.textures[i];
+    gl.bindTexture(goog.webgl.TEXTURE_2D,
+        /** @type {WebGLTexture} */ (texture[0]));
+    gl.drawElements(goog.webgl.TRIANGLES, /** @type {number} */ (texture[1]),
+        goog.webgl.UNSIGNED_SHORT, 0);
+  }
 };
 
 
@@ -215,9 +223,33 @@ ol.render.webgl.ImageReplay = function(tolerance) {
 
   /**
    * @private
-   * @type {HTMLCanvasElement|HTMLVideoElement|Image}
+   * @type {Array.<Array.<*>>}
    */
-  this.image_ = null;
+  this.images_ = [];
+
+  /**
+   * @private
+   * @type {number|undefined}
+   */
+  this.imageHeight_ = undefined;
+
+  /**
+   * @private
+   * @type {number|undefined}
+   */
+  this.imageWidth_ = undefined;
+
+  /**
+   * @private
+   * @type {number|undefined}
+   */
+  this.originX_ = undefined;
+
+  /**
+   * @private
+   * @type {number|undefined}
+   */
+  this.originY_ = undefined;
 
   /**
    * @private
@@ -239,13 +271,21 @@ goog.inherits(ol.render.webgl.ImageReplay, ol.render.webgl.Replay);
  */
 ol.render.webgl.ImageReplay.prototype.drawCoordinates_ =
     function(flatCoordinates, offset, end, stride) {
-  goog.asserts.assert(goog.isDef(this.width_));
   goog.asserts.assert(goog.isDef(this.height_));
+  goog.asserts.assert(goog.isDef(this.imageHeight_));
+  goog.asserts.assert(goog.isDef(this.imageWidth_));
+  goog.asserts.assert(goog.isDef(this.originX_));
+  goog.asserts.assert(goog.isDef(this.originY_));
+  goog.asserts.assert(goog.isDef(this.width_));
+  var height = this.height_;
+  var imageHeight = this.imageHeight_;
+  var imageWidth = this.imageWidth_;
+  var originX = this.originX_;
+  var originY = this.originY_;
+  var width = this.width_;
   var numIndices = this.indices.length;
   var numVertices = this.vertices.length;
   var i, x, y, n;
-  var ox = this.width_;
-  var oy = this.height_;
   for (i = offset; i < end; i += stride) {
     x = flatCoordinates[i];
     y = flatCoordinates[i + 1];
@@ -256,31 +296,31 @@ ol.render.webgl.ImageReplay.prototype.drawCoordinates_ =
 
     this.vertices[numVertices++] = x;
     this.vertices[numVertices++] = y;
-    this.vertices[numVertices++] = -ox;
-    this.vertices[numVertices++] = -oy;
-    this.vertices[numVertices++] = 1;
-    this.vertices[numVertices++] = 1;
+    this.vertices[numVertices++] = -width;
+    this.vertices[numVertices++] = -height;
+    this.vertices[numVertices++] = (originX + width) / imageWidth;
+    this.vertices[numVertices++] = (originY + height) / imageHeight;
 
     this.vertices[numVertices++] = x;
     this.vertices[numVertices++] = y;
-    this.vertices[numVertices++] = ox;
-    this.vertices[numVertices++] = -oy;
-    this.vertices[numVertices++] = 0;
-    this.vertices[numVertices++] = 1;
+    this.vertices[numVertices++] = width;
+    this.vertices[numVertices++] = -height;
+    this.vertices[numVertices++] = originX / imageWidth;
+    this.vertices[numVertices++] = (originY + height) / imageHeight;
 
     this.vertices[numVertices++] = x;
     this.vertices[numVertices++] = y;
-    this.vertices[numVertices++] = ox;
-    this.vertices[numVertices++] = oy;
-    this.vertices[numVertices++] = 0;
-    this.vertices[numVertices++] = 0;
+    this.vertices[numVertices++] = width;
+    this.vertices[numVertices++] = height;
+    this.vertices[numVertices++] = originX / imageWidth;
+    this.vertices[numVertices++] = originY / imageHeight;
 
     this.vertices[numVertices++] = x;
     this.vertices[numVertices++] = y;
-    this.vertices[numVertices++] = -ox;
-    this.vertices[numVertices++] = oy;
-    this.vertices[numVertices++] = 1;
-    this.vertices[numVertices++] = 0;
+    this.vertices[numVertices++] = -width;
+    this.vertices[numVertices++] = height;
+    this.vertices[numVertices++] = (originX + width) / imageWidth;
+    this.vertices[numVertices++] = originY / imageHeight;
 
     this.indices[numIndices++] = n;
     this.indices[numIndices++] = n + 1;
@@ -325,6 +365,12 @@ ol.render.webgl.ImageReplay.prototype.drawMultiPointGeometry =
  */
 ol.render.webgl.ImageReplay.prototype.finish = function(context) {
   var gl = context.getGL();
+
+  goog.asserts.assert(this.images_.length > 0);
+  var current = this.images_[this.images_.length - 1];
+  goog.asserts.assert(!goog.isDef(current[1]));
+  current[1] = this.indices.length;
+
   this.verticesBuffer = gl.createBuffer();
   gl.bindBuffer(goog.webgl.ARRAY_BUFFER, this.verticesBuffer);
   gl.bufferData(goog.webgl.ARRAY_BUFFER,
@@ -334,22 +380,38 @@ ol.render.webgl.ImageReplay.prototype.finish = function(context) {
   gl.bufferData(goog.webgl.ELEMENT_ARRAY_BUFFER,
       new Uint16Array(this.indices), goog.webgl.STATIC_DRAW);
 
-  this.texture = gl.createTexture();
-  gl.bindTexture(goog.webgl.TEXTURE_2D, this.texture);
-  gl.texParameteri(goog.webgl.TEXTURE_2D,
-      goog.webgl.TEXTURE_WRAP_S, goog.webgl.CLAMP_TO_EDGE);
-  gl.texParameteri(goog.webgl.TEXTURE_2D,
-      goog.webgl.TEXTURE_WRAP_T, goog.webgl.CLAMP_TO_EDGE);
-  gl.texParameteri(goog.webgl.TEXTURE_2D,
-      goog.webgl.TEXTURE_MIN_FILTER, goog.webgl.NEAREST);
-  gl.texParameteri(goog.webgl.TEXTURE_2D,
-      goog.webgl.TEXTURE_MAG_FILTER, goog.webgl.NEAREST);
-  gl.texImage2D(goog.webgl.TEXTURE_2D, 0, goog.webgl.RGBA, goog.webgl.RGBA,
-      goog.webgl.UNSIGNED_BYTE, this.image_);
+  goog.asserts.assert(this.textures.length === 0);
 
-  this.image_ = null;
-  this.width_ = undefined;
+  var i;
+  var ii = this.images_.length;
+  var texture;
+  for (i = 0; i < ii; ++i) {
+    var image =
+        /** @type {HTMLCanvasElement|HTMLImageElement|HTMLVideoElement} */
+        (this.images_[i][0]);
+    current = this.images_[i];
+    texture = gl.createTexture();
+    gl.bindTexture(goog.webgl.TEXTURE_2D, texture);
+    gl.texParameteri(goog.webgl.TEXTURE_2D,
+        goog.webgl.TEXTURE_WRAP_S, goog.webgl.CLAMP_TO_EDGE);
+    gl.texParameteri(goog.webgl.TEXTURE_2D,
+        goog.webgl.TEXTURE_WRAP_T, goog.webgl.CLAMP_TO_EDGE);
+    gl.texParameteri(goog.webgl.TEXTURE_2D,
+        goog.webgl.TEXTURE_MIN_FILTER, goog.webgl.NEAREST);
+    gl.texParameteri(goog.webgl.TEXTURE_2D,
+        goog.webgl.TEXTURE_MAG_FILTER, goog.webgl.NEAREST);
+    gl.texImage2D(goog.webgl.TEXTURE_2D, 0, goog.webgl.RGBA, goog.webgl.RGBA,
+        goog.webgl.UNSIGNED_BYTE, image);
+    this.textures[i] = [texture, this.images_[i][1]];
+  }
+
   this.height_ = undefined;
+  this.images_.length = 0;
+  this.imageHeight_ = undefined;
+  this.imageWidth_ = undefined;
+  this.originX_ = undefined;
+  this.originY_ = undefined;
+  this.width_ = undefined;
 };
 
 
@@ -365,15 +427,36 @@ ol.render.webgl.Replay.prototype.getExtent = function() {
  * @inheritDoc
  */
 ol.render.webgl.ImageReplay.prototype.setImageStyle = function(imageStyle) {
-  if (goog.isNull(this.image_)) {
-    var image = imageStyle.getImage(1);
-    goog.asserts.assert(!goog.isNull(image));
-    var size = imageStyle.getSize();
-    goog.asserts.assert(!goog.isNull(size));
-    this.image_ = image;
-    this.width_ = size[0];
-    this.height_ = size[1];
+  var image = imageStyle.getImage(1);
+  goog.asserts.assert(!goog.isNull(image));
+  // FIXME getImageSize does not exist for circles
+  var imageSize = imageStyle.getImageSize();
+  goog.asserts.assert(!goog.isNull(imageSize));
+  var origin = imageStyle.getOrigin();
+  goog.asserts.assert(!goog.isNull(origin));
+  var size = imageStyle.getSize();
+  goog.asserts.assert(!goog.isNull(size));
+
+  if (this.images_.length === 0) {
+    this.images_.push([image, undefined]);
+  } else {
+    var current = this.images_[this.images_.length - 1];
+    var currentImage =
+        /** @type {HTMLCanvasElement|HTMLImageElement|HTMLVideoElement} */
+        (current[0]);
+    goog.asserts.assert(!goog.isDef(current[1]));
+    if (goog.getUid(currentImage) != goog.getUid(image)) {
+      current[1] = this.indices.length;
+      this.images_.push([image, undefined]);
+    }
   }
+
+  this.height_ = size[1];
+  this.imageHeight_ = imageSize[1];
+  this.imageWidth_ = imageSize[0];
+  this.originX_ = origin[0];
+  this.originY_ = origin[1];
+  this.width_ = size[0];
 };
 
 
