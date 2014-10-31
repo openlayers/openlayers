@@ -2,8 +2,10 @@ goog.provide('ol.style.Circle');
 
 goog.require('goog.dom');
 goog.require('goog.dom.TagName');
+goog.require('goog.string');
 goog.require('ol.color');
 goog.require('ol.render.canvas');
+goog.require('ol.structs.IHashable');
 goog.require('ol.style.Fill');
 goog.require('ol.style.Image');
 goog.require('ol.style.ImageState');
@@ -18,6 +20,7 @@ goog.require('ol.style.Stroke');
  * @constructor
  * @param {olx.style.CircleOptions=} opt_options Options.
  * @extends {ol.style.Image}
+ * @implements {ol.structs.IHashable}
  * @api
  */
 ol.style.Circle = function(opt_options) {
@@ -259,4 +262,21 @@ ol.style.Circle.prototype.render_ = function() {
   }
 
   return size;
+};
+
+
+/**
+ * @inheritDoc
+ */
+ol.style.Circle.prototype.hashCode = function() {
+  var hash = 17;
+
+  hash = hash * 23 + (!goog.isNull(this.stroke_) ?
+      this.stroke_.hashCode() : 0);
+  hash = hash * 23 + (!goog.isNull(this.fill_) ?
+      this.fill_.hashCode() : 0);
+  hash = hash * 23 + (goog.isDef(this.radius_) ?
+      goog.string.hashCode(this.radius_.toString()) : 0);
+
+  return hash;
 };

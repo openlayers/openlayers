@@ -1,5 +1,9 @@
 goog.provide('ol.style.Stroke');
 
+goog.require('goog.string');
+goog.require('ol.color');
+goog.require('ol.structs.IHashable');
+
 
 
 /**
@@ -11,6 +15,7 @@ goog.provide('ol.style.Stroke');
  *
  * @constructor
  * @param {olx.style.StrokeOptions=} opt_options Options.
+ * @implements {ol.structs.IHashable}
  * @api
  */
 ol.style.Stroke = function(opt_options) {
@@ -172,4 +177,27 @@ ol.style.Stroke.prototype.setMiterLimit = function(miterLimit) {
  */
 ol.style.Stroke.prototype.setWidth = function(width) {
   this.width_ = width;
+};
+
+
+/**
+ * @inheritDoc
+ */
+ol.style.Stroke.prototype.hashCode = function() {
+  var hash = 17;
+
+  hash = hash * 23 + (!goog.isNull(this.color_) ?
+      goog.string.hashCode(ol.color.asString(this.color_)) : 0);
+  hash = hash * 23 + (goog.isDef(this.lineCap_) ?
+      goog.string.hashCode(this.lineCap_.toString()) : 0);
+  hash = hash * 23 + (!goog.isNull(this.lineDash_) ?
+      goog.string.hashCode(this.lineDash_.toString()) : 0);
+  hash = hash * 23 + (goog.isDef(this.lineJoin_) ?
+      goog.string.hashCode(this.lineJoin_) : 0);
+  hash = hash * 23 + (goog.isDef(this.miterLimit_) ?
+      goog.string.hashCode(this.miterLimit_.toString()) : 0);
+  hash = hash * 23 + (goog.isDef(this.width_) ?
+      goog.string.hashCode(this.width_.toString()) : 0);
+
+  return hash;
 };
