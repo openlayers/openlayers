@@ -24,13 +24,19 @@ ol.render.webgl.ImageReplay = function(tolerance) {
   this.extent_ = ol.extent.createEmpty();
 
   /**
+   * @type {Array.<number>}
+   * @private
+   */
+  this.groupIndices_ = [];
+
+  /**
    * @type {number|undefined}
    * @private
    */
   this.height_ = undefined;
 
   /**
-   * @type {Array.<Array.<*>>}
+   * @type {Array.<HTMLCanvasElement|HTMLImageElement|HTMLVideoElement>}
    * @private
    */
   this.images_ = [];
@@ -72,6 +78,12 @@ ol.render.webgl.ImageReplay = function(tolerance) {
   this.originY_ = undefined;
 
   /**
+   * @type {Array.<WebGLTexture>}
+   * @private
+   */
+  this.textures_ = [];
+
+  /**
    * @type {Array.<number>}
    * @private
    */
@@ -88,12 +100,6 @@ ol.render.webgl.ImageReplay = function(tolerance) {
    * @private
    */
   this.width_ = undefined;
-
-  /**
-   * @type {Array.<Array.<*>>}
-   * @private
-   */
-  this.textures_ = [];
 
 };
 
@@ -261,10 +267,8 @@ ol.render.webgl.ImageReplay.prototype.drawText = goog.abstractMethod;
 ol.render.webgl.ImageReplay.prototype.finish = function(context) {
   var gl = context.getGL();
 
-  goog.asserts.assert(this.images_.length > 0);
-  var current = this.images_[this.images_.length - 1];
-  goog.asserts.assert(!goog.isDef(current[1]));
-  current[1] = this.indices_.length;
+  this.groupIndices_.push(this.indices_.length);
+  goog.asserts.assert(this.images_.length == this.groupIndices_.length);
 
   this.verticesBuffer_ = gl.createBuffer();
   gl.bindBuffer(goog.webgl.ARRAY_BUFFER, this.verticesBuffer_);
@@ -281,10 +285,7 @@ ol.render.webgl.ImageReplay.prototype.finish = function(context) {
   var ii = this.images_.length;
   var texture;
   for (i = 0; i < ii; ++i) {
-    var image =
-        /** @type {HTMLCanvasElement|HTMLImageElement|HTMLVideoElement} */
-        (this.images_[i][0]);
-    current = this.images_[i];
+    var image = this.images_[i];
     texture = gl.createTexture();
     gl.bindTexture(goog.webgl.TEXTURE_2D, texture);
     gl.texParameteri(goog.webgl.TEXTURE_2D,
@@ -297,15 +298,19 @@ ol.render.webgl.ImageReplay.prototype.finish = function(context) {
         goog.webgl.TEXTURE_MAG_FILTER, goog.webgl.NEAREST);
     gl.texImage2D(goog.webgl.TEXTURE_2D, 0, goog.webgl.RGBA, goog.webgl.RGBA,
         goog.webgl.UNSIGNED_BYTE, image);
-    this.textures_[i] = [texture, this.images_[i][1]];
+    this.textures_[i] = texture;
   }
 
+  goog.asserts.assert(this.textures_.length == this.groupIndices_.length);
+
   this.height_ = undefined;
-  this.images_.length = 0;
+  this.images_ = null;
   this.imageHeight_ = undefined;
   this.imageWidth_ = undefined;
+  this.indices_ = null;
   this.originX_ = undefined;
   this.originY_ = undefined;
+  this.vertices_ = null;
   this.width_ = undefined;
 };
 
@@ -359,14 +364,13 @@ ol.render.webgl.ImageReplay.prototype.replay = function(context,
 
   gl.bindBuffer(goog.webgl.ELEMENT_ARRAY_BUFFER, this.indicesBuffer_);
 
+  goog.asserts.assert(this.textures_.length == this.groupIndices_.length);
+
   var i;
   var ii = this.textures_.length;
-  var texture;
   for (i = 0; i < ii; ++i) {
-    texture = this.textures_[i];
-    gl.bindTexture(goog.webgl.TEXTURE_2D,
-        /** @type {WebGLTexture} */ (texture[0]));
-    gl.drawElements(goog.webgl.TRIANGLES, /** @type {number} */ (texture[1]),
+    gl.bindTexture(goog.webgl.TEXTURE_2D, this.textures_[i]);
+    gl.drawElements(goog.webgl.TRIANGLES, this.groupIndices_[i],
         goog.webgl.UNSIGNED_SHORT, 0);
   }
 };
@@ -393,16 +397,13 @@ ol.render.webgl.ImageReplay.prototype.setImageStyle = function(imageStyle) {
   goog.asserts.assert(!goog.isNull(size));
 
   if (this.images_.length === 0) {
-    this.images_.push([image, undefined]);
+    this.images_.push(image);
   } else {
-    var current = this.images_[this.images_.length - 1];
-    var currentImage =
-        /** @type {HTMLCanvasElement|HTMLImageElement|HTMLVideoElement} */
-        (current[0]);
-    goog.asserts.assert(!goog.isDef(current[1]));
+    var currentImage = this.images_[this.images_.length - 1];
     if (goog.getUid(currentImage) != goog.getUid(image)) {
-      current[1] = this.indices_.length;
-      this.images_.push([image, undefined]);
+      this.groupIndices_.push(this.indices_.length);
+      goog.asserts.assert(this.groupIndices_.length == this.images_.length);
+      this.images_.push(image);
     }
   }
 
