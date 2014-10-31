@@ -141,7 +141,7 @@ ol.render.webgl.ImageReplay.prototype.drawCoordinates_ =
 
     n = numVertices / 6;
 
-    // create 4 vertices per coordinate
+    // 4 vertices per coordinate, with 6 values per vertex
 
     this.vertices_[numVertices++] = x;
     this.vertices_[numVertices++] = y;
