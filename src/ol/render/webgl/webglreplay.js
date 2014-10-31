@@ -15,250 +15,93 @@ goog.require('ol.render.IReplayGroup');
  * @protected
  * @struct
  */
-ol.render.webgl.Replay = function(tolerance) {
+ol.render.webgl.ImageReplay = function(tolerance) {
 
   /**
-   * @protected
-   * @type {Array.<number>}
-   */
-  this.vertices = [];
-
-  /**
-   * @protected
-   * @type {Array.<number>}
-   */
-  this.indices = [];
-
-  /**
-   * @protected
-   * @type {WebGLBuffer}
-   */
-  this.verticesBuffer = null;
-
-  /**
-   * @protected
-   * @type {WebGLBuffer}
-   */
-  this.indicesBuffer = null;
-
-  /**
-   * @private
    * @type {ol.Extent}
+   * @private
    */
   this.extent_ = ol.extent.createEmpty();
 
   /**
-   * @protected
-   * @type {Array.<Array.<*>>}
-   */
-  this.textures = [];
-
-};
-
-
-/**
- * @param {ol.webgl.Context} context Context.
- */
-ol.render.webgl.Replay.prototype.finish = goog.nullFunction;
-
-
-/**
- * @param {ol.webgl.Context} context Context.
- * @param {number} positionAttribLocation Attribute location for positions.
- * @param {number} offsetsAttribLocation Attribute location for offsets.
- * @param {number} texCoordAttribLocation Attribute location for texCoord.
- * @param {WebGLUniformLocation} projectionMatrixLocation Proj matrix location.
- * @param {WebGLUniformLocation} sizeMatrixLocation Size matrix location.
- * @param {number} pixelRatio Pixel ratio.
- * @param {Array.<number>} size Size.
- * @param {goog.vec.Mat4.Number} transform Transform.
- * @param {Object} skippedFeaturesHash Ids of features to skip.
- * @return {T|undefined} Callback result.
- * @template T
- */
-ol.render.webgl.Replay.prototype.replay = function(context,
-    positionAttribLocation, offsetsAttribLocation, texCoordAttribLocation,
-    projectionMatrixLocation, sizeMatrixLocation,
-    pixelRatio, size, transform, skippedFeaturesHash) {
-  var gl = context.getGL();
-
-  gl.bindBuffer(goog.webgl.ARRAY_BUFFER, this.verticesBuffer);
-
-  gl.enableVertexAttribArray(positionAttribLocation);
-  gl.vertexAttribPointer(positionAttribLocation, 2, goog.webgl.FLOAT,
-      false, 24, 0);
-
-  gl.enableVertexAttribArray(offsetsAttribLocation);
-  gl.vertexAttribPointer(offsetsAttribLocation, 2, goog.webgl.FLOAT,
-      false, 24, 8);
-
-  gl.enableVertexAttribArray(texCoordAttribLocation);
-  gl.vertexAttribPointer(texCoordAttribLocation, 2, goog.webgl.FLOAT,
-      false, 24, 16);
-
-
-  gl.uniformMatrix4fv(projectionMatrixLocation, false, transform);
-  gl.uniformMatrix2fv(sizeMatrixLocation, false,
-      new Float32Array([1 / size[0], 0.0, 0.0, 1 / size[1]]));
-
-  gl.bindBuffer(goog.webgl.ELEMENT_ARRAY_BUFFER, this.indicesBuffer);
-
-  var i;
-  var ii = this.textures.length;
-  var texture;
-  for (i = 0; i < ii; ++i) {
-    texture = this.textures[i];
-    gl.bindTexture(goog.webgl.TEXTURE_2D,
-        /** @type {WebGLTexture} */ (texture[0]));
-    gl.drawElements(goog.webgl.TRIANGLES, /** @type {number} */ (texture[1]),
-        goog.webgl.UNSIGNED_SHORT, 0);
-  }
-};
-
-
-/**
- * @inheritDoc
- */
-ol.render.webgl.Replay.prototype.drawAsync = goog.abstractMethod;
-
-
-/**
- * @inheritDoc
- */
-ol.render.webgl.Replay.prototype.drawCircleGeometry = goog.abstractMethod;
-
-
-/**
- * @inheritDoc
- */
-ol.render.webgl.Replay.prototype.drawFeature = goog.abstractMethod;
-
-
-/**
- * @inheritDoc
- */
-ol.render.webgl.Replay.prototype.drawGeometryCollectionGeometry =
-    goog.abstractMethod;
-
-
-/**
- * @inheritDoc
- */
-ol.render.webgl.Replay.prototype.drawLineStringGeometry = goog.abstractMethod;
-
-
-/**
- * @inheritDoc
- */
-ol.render.webgl.Replay.prototype.drawMultiLineStringGeometry =
-    goog.abstractMethod;
-
-
-/**
- * @inheritDoc
- */
-ol.render.webgl.Replay.prototype.drawPointGeometry = goog.abstractMethod;
-
-
-/**
- * @inheritDoc
- */
-ol.render.webgl.Replay.prototype.drawMultiPointGeometry = goog.abstractMethod;
-
-
-/**
- * @inheritDoc
- */
-ol.render.webgl.Replay.prototype.drawPolygonGeometry = goog.abstractMethod;
-
-
-/**
- * @inheritDoc
- */
-ol.render.webgl.Replay.prototype.drawMultiPolygonGeometry =
-    goog.abstractMethod;
-
-
-/**
- * @inheritDoc
- */
-ol.render.webgl.Replay.prototype.drawText = goog.abstractMethod;
-
-
-/**
- * @inheritDoc
- */
-ol.render.webgl.Replay.prototype.setFillStrokeStyle = goog.abstractMethod;
-
-
-/**
- * @inheritDoc
- */
-ol.render.webgl.Replay.prototype.setImageStyle = goog.abstractMethod;
-
-
-/**
- * @inheritDoc
- */
-ol.render.webgl.Replay.prototype.setTextStyle = goog.abstractMethod;
-
-
-
-/**
- * @constructor
- * @extends {ol.render.webgl.Replay}
- * @param {number} tolerance Tolerance.
- * @protected
- * @struct
- */
-ol.render.webgl.ImageReplay = function(tolerance) {
-
-  goog.base(this, tolerance);
-
-  /**
-   * @private
    * @type {number|undefined}
+   * @private
    */
   this.height_ = undefined;
 
   /**
-   * @private
    * @type {Array.<Array.<*>>}
+   * @private
    */
   this.images_ = [];
 
   /**
-   * @private
    * @type {number|undefined}
+   * @private
    */
   this.imageHeight_ = undefined;
 
   /**
-   * @private
    * @type {number|undefined}
+   * @private
    */
   this.imageWidth_ = undefined;
 
   /**
+   * @type {Array.<number>}
    * @private
+   */
+  this.indices_ = [];
+
+  /**
+   * @type {WebGLBuffer}
+   * @private
+   */
+  this.indicesBuffer_ = null;
+
+  /**
    * @type {number|undefined}
+   * @private
    */
   this.originX_ = undefined;
 
   /**
-   * @private
    * @type {number|undefined}
+   * @private
    */
   this.originY_ = undefined;
 
   /**
+   * @type {Array.<number>}
    * @private
+   */
+  this.vertices_ = [];
+
+  /**
+   * @type {WebGLBuffer}
+   * @private
+   */
+  this.verticesBuffer_ = null;
+
+  /**
    * @type {number|undefined}
+   * @private
    */
   this.width_ = undefined;
 
+  /**
+   * @type {Array.<Array.<*>>}
+   * @private
+   */
+  this.textures_ = [];
+
 };
-goog.inherits(ol.render.webgl.ImageReplay, ol.render.webgl.Replay);
+
+
+/**
+ * @inheritDoc
+ */
+ol.render.webgl.ImageReplay.prototype.drawAsync = goog.abstractMethod;
 
 
 /**
@@ -283,8 +126,8 @@ ol.render.webgl.ImageReplay.prototype.drawCoordinates_ =
   var originX = this.originX_;
   var originY = this.originY_;
   var width = this.width_;
-  var numIndices = this.indices.length;
-  var numVertices = this.vertices.length;
+  var numIndices = this.indices_.length;
+  var numVertices = this.vertices_.length;
   var i, x, y, n;
   for (i = offset; i < end; i += stride) {
     x = flatCoordinates[i];
@@ -294,44 +137,97 @@ ol.render.webgl.ImageReplay.prototype.drawCoordinates_ =
 
     // create 4 vertices per coordinate
 
-    this.vertices[numVertices++] = x;
-    this.vertices[numVertices++] = y;
-    this.vertices[numVertices++] = -width;
-    this.vertices[numVertices++] = -height;
-    this.vertices[numVertices++] = (originX + width) / imageWidth;
-    this.vertices[numVertices++] = (originY + height) / imageHeight;
+    this.vertices_[numVertices++] = x;
+    this.vertices_[numVertices++] = y;
+    this.vertices_[numVertices++] = -width;
+    this.vertices_[numVertices++] = -height;
+    this.vertices_[numVertices++] = (originX + width) / imageWidth;
+    this.vertices_[numVertices++] = (originY + height) / imageHeight;
 
-    this.vertices[numVertices++] = x;
-    this.vertices[numVertices++] = y;
-    this.vertices[numVertices++] = width;
-    this.vertices[numVertices++] = -height;
-    this.vertices[numVertices++] = originX / imageWidth;
-    this.vertices[numVertices++] = (originY + height) / imageHeight;
+    this.vertices_[numVertices++] = x;
+    this.vertices_[numVertices++] = y;
+    this.vertices_[numVertices++] = width;
+    this.vertices_[numVertices++] = -height;
+    this.vertices_[numVertices++] = originX / imageWidth;
+    this.vertices_[numVertices++] = (originY + height) / imageHeight;
 
-    this.vertices[numVertices++] = x;
-    this.vertices[numVertices++] = y;
-    this.vertices[numVertices++] = width;
-    this.vertices[numVertices++] = height;
-    this.vertices[numVertices++] = originX / imageWidth;
-    this.vertices[numVertices++] = originY / imageHeight;
+    this.vertices_[numVertices++] = x;
+    this.vertices_[numVertices++] = y;
+    this.vertices_[numVertices++] = width;
+    this.vertices_[numVertices++] = height;
+    this.vertices_[numVertices++] = originX / imageWidth;
+    this.vertices_[numVertices++] = originY / imageHeight;
 
-    this.vertices[numVertices++] = x;
-    this.vertices[numVertices++] = y;
-    this.vertices[numVertices++] = -width;
-    this.vertices[numVertices++] = height;
-    this.vertices[numVertices++] = (originX + width) / imageWidth;
-    this.vertices[numVertices++] = originY / imageHeight;
+    this.vertices_[numVertices++] = x;
+    this.vertices_[numVertices++] = y;
+    this.vertices_[numVertices++] = -width;
+    this.vertices_[numVertices++] = height;
+    this.vertices_[numVertices++] = (originX + width) / imageWidth;
+    this.vertices_[numVertices++] = originY / imageHeight;
 
-    this.indices[numIndices++] = n;
-    this.indices[numIndices++] = n + 1;
-    this.indices[numIndices++] = n + 2;
-    this.indices[numIndices++] = n;
-    this.indices[numIndices++] = n + 2;
-    this.indices[numIndices++] = n + 3;
+    this.indices_[numIndices++] = n;
+    this.indices_[numIndices++] = n + 1;
+    this.indices_[numIndices++] = n + 2;
+    this.indices_[numIndices++] = n;
+    this.indices_[numIndices++] = n + 2;
+    this.indices_[numIndices++] = n + 3;
   }
 
   return numVertices;
 };
+
+
+/**
+ * @inheritDoc
+ */
+ol.render.webgl.ImageReplay.prototype.drawCircleGeometry = goog.abstractMethod;
+
+
+/**
+ * @inheritDoc
+ */
+ol.render.webgl.ImageReplay.prototype.drawFeature = goog.abstractMethod;
+
+
+/**
+ * @inheritDoc
+ */
+ol.render.webgl.ImageReplay.prototype.drawGeometryCollectionGeometry =
+    goog.abstractMethod;
+
+
+/**
+ * @inheritDoc
+ */
+ol.render.webgl.ImageReplay.prototype.drawLineStringGeometry =
+    goog.abstractMethod;
+
+
+/**
+ * @inheritDoc
+ */
+ol.render.webgl.ImageReplay.prototype.drawMultiLineStringGeometry =
+    goog.abstractMethod;
+
+
+/**
+ * @inheritDoc
+ */
+ol.render.webgl.ImageReplay.prototype.drawMultiPointGeometry =
+    function(multiPointGeometry, data) {
+  ol.extent.extend(this.extent_, multiPointGeometry.getExtent());
+  var flatCoordinates = multiPointGeometry.getFlatCoordinates();
+  var stride = multiPointGeometry.getStride();
+  this.drawCoordinates_(
+      flatCoordinates, 0, flatCoordinates.length, stride);
+};
+
+
+/**
+ * @inheritDoc
+ */
+ol.render.webgl.ImageReplay.prototype.drawMultiPolygonGeometry =
+    goog.abstractMethod;
 
 
 /**
@@ -350,14 +246,13 @@ ol.render.webgl.ImageReplay.prototype.drawPointGeometry =
 /**
  * @inheritDoc
  */
-ol.render.webgl.ImageReplay.prototype.drawMultiPointGeometry =
-    function(multiPointGeometry, data) {
-  ol.extent.extend(this.extent_, multiPointGeometry.getExtent());
-  var flatCoordinates = multiPointGeometry.getFlatCoordinates();
-  var stride = multiPointGeometry.getStride();
-  this.drawCoordinates_(
-      flatCoordinates, 0, flatCoordinates.length, stride);
-};
+ol.render.webgl.ImageReplay.prototype.drawPolygonGeometry = goog.abstractMethod;
+
+
+/**
+ * @inheritDoc
+ */
+ol.render.webgl.ImageReplay.prototype.drawText = goog.abstractMethod;
 
 
 /**
@@ -369,18 +264,18 @@ ol.render.webgl.ImageReplay.prototype.finish = function(context) {
   goog.asserts.assert(this.images_.length > 0);
   var current = this.images_[this.images_.length - 1];
   goog.asserts.assert(!goog.isDef(current[1]));
-  current[1] = this.indices.length;
+  current[1] = this.indices_.length;
 
-  this.verticesBuffer = gl.createBuffer();
-  gl.bindBuffer(goog.webgl.ARRAY_BUFFER, this.verticesBuffer);
+  this.verticesBuffer_ = gl.createBuffer();
+  gl.bindBuffer(goog.webgl.ARRAY_BUFFER, this.verticesBuffer_);
   gl.bufferData(goog.webgl.ARRAY_BUFFER,
-      new Float32Array(this.vertices), goog.webgl.STATIC_DRAW);
-  this.indicesBuffer = gl.createBuffer();
-  gl.bindBuffer(goog.webgl.ELEMENT_ARRAY_BUFFER, this.indicesBuffer);
+      new Float32Array(this.vertices_), goog.webgl.STATIC_DRAW);
+  this.indicesBuffer_ = gl.createBuffer();
+  gl.bindBuffer(goog.webgl.ELEMENT_ARRAY_BUFFER, this.indicesBuffer_);
   gl.bufferData(goog.webgl.ELEMENT_ARRAY_BUFFER,
-      new Uint16Array(this.indices), goog.webgl.STATIC_DRAW);
+      new Uint16Array(this.indices_), goog.webgl.STATIC_DRAW);
 
-  goog.asserts.assert(this.textures.length === 0);
+  goog.asserts.assert(this.textures_.length === 0);
 
   var i;
   var ii = this.images_.length;
@@ -402,7 +297,7 @@ ol.render.webgl.ImageReplay.prototype.finish = function(context) {
         goog.webgl.TEXTURE_MAG_FILTER, goog.webgl.NEAREST);
     gl.texImage2D(goog.webgl.TEXTURE_2D, 0, goog.webgl.RGBA, goog.webgl.RGBA,
         goog.webgl.UNSIGNED_BYTE, image);
-    this.textures[i] = [texture, this.images_[i][1]];
+    this.textures_[i] = [texture, this.images_[i][1]];
   }
 
   this.height_ = undefined;
@@ -418,9 +313,69 @@ ol.render.webgl.ImageReplay.prototype.finish = function(context) {
 /**
  * @return {ol.Extent} Extent.
  */
-ol.render.webgl.Replay.prototype.getExtent = function() {
+ol.render.webgl.ImageReplay.prototype.getExtent = function() {
   return this.extent_;
 };
+
+
+/**
+ * @param {ol.webgl.Context} context Context.
+ * @param {number} positionAttribLocation Attribute location for positions.
+ * @param {number} offsetsAttribLocation Attribute location for offsets.
+ * @param {number} texCoordAttribLocation Attribute location for texCoord.
+ * @param {WebGLUniformLocation} projectionMatrixLocation Proj matrix location.
+ * @param {WebGLUniformLocation} sizeMatrixLocation Size matrix location.
+ * @param {number} pixelRatio Pixel ratio.
+ * @param {Array.<number>} size Size.
+ * @param {goog.vec.Mat4.Number} transform Transform.
+ * @param {Object} skippedFeaturesHash Ids of features to skip.
+ * @return {T|undefined} Callback result.
+ * @template T
+ */
+ol.render.webgl.ImageReplay.prototype.replay = function(context,
+    positionAttribLocation, offsetsAttribLocation, texCoordAttribLocation,
+    projectionMatrixLocation, sizeMatrixLocation,
+    pixelRatio, size, transform, skippedFeaturesHash) {
+  var gl = context.getGL();
+
+  gl.bindBuffer(goog.webgl.ARRAY_BUFFER, this.verticesBuffer_);
+
+  gl.enableVertexAttribArray(positionAttribLocation);
+  gl.vertexAttribPointer(positionAttribLocation, 2, goog.webgl.FLOAT,
+      false, 24, 0);
+
+  gl.enableVertexAttribArray(offsetsAttribLocation);
+  gl.vertexAttribPointer(offsetsAttribLocation, 2, goog.webgl.FLOAT,
+      false, 24, 8);
+
+  gl.enableVertexAttribArray(texCoordAttribLocation);
+  gl.vertexAttribPointer(texCoordAttribLocation, 2, goog.webgl.FLOAT,
+      false, 24, 16);
+
+
+  gl.uniformMatrix4fv(projectionMatrixLocation, false, transform);
+  gl.uniformMatrix2fv(sizeMatrixLocation, false,
+      new Float32Array([1 / size[0], 0.0, 0.0, 1 / size[1]]));
+
+  gl.bindBuffer(goog.webgl.ELEMENT_ARRAY_BUFFER, this.indicesBuffer_);
+
+  var i;
+  var ii = this.textures_.length;
+  var texture;
+  for (i = 0; i < ii; ++i) {
+    texture = this.textures_[i];
+    gl.bindTexture(goog.webgl.TEXTURE_2D,
+        /** @type {WebGLTexture} */ (texture[0]));
+    gl.drawElements(goog.webgl.TRIANGLES, /** @type {number} */ (texture[1]),
+        goog.webgl.UNSIGNED_SHORT, 0);
+  }
+};
+
+
+/**
+ * @inheritDoc
+ */
+ol.render.webgl.ImageReplay.prototype.setFillStrokeStyle = goog.abstractMethod;
 
 
 /**
@@ -446,7 +401,7 @@ ol.render.webgl.ImageReplay.prototype.setImageStyle = function(imageStyle) {
         (current[0]);
     goog.asserts.assert(!goog.isDef(current[1]));
     if (goog.getUid(currentImage) != goog.getUid(image)) {
-      current[1] = this.indices.length;
+      current[1] = this.indices_.length;
       this.images_.push([image, undefined]);
     }
   }
@@ -460,6 +415,12 @@ ol.render.webgl.ImageReplay.prototype.setImageStyle = function(imageStyle) {
 };
 
 
+/**
+ * @inheritDoc
+ */
+ol.render.webgl.ImageReplay.prototype.setTextStyle = goog.abstractMethod;
+
+
 
 /**
  * @constructor
@@ -470,14 +431,15 @@ ol.render.webgl.ImageReplay.prototype.setImageStyle = function(imageStyle) {
 ol.render.webgl.ReplayGroup = function(tolerance) {
 
   /**
-   * @private
    * @type {number}
+   * @private
    */
   this.tolerance_ = tolerance;
 
   /**
+   * ImageReplay only is supported at this point.
+   * @type {Object.<ol.render.ReplayType, ol.render.webgl.ImageReplay>}
    * @private
-   * @type {Object.<ol.render.ReplayType, ol.render.webgl.Replay>}
    */
   this.replays_ = {};
 
@@ -560,7 +522,7 @@ ol.render.webgl.ReplayGroup.prototype.replay = function(context,
  * @const
  * @private
  * @type {Object.<ol.render.ReplayType,
- *                function(new: ol.render.webgl.Replay, number)>}
+ *                function(new: ol.render.webgl.ImageReplay, number)>}
  */
 ol.render.webgl.BATCH_CONSTRUCTORS_ = {
   'Image': ol.render.webgl.ImageReplay
