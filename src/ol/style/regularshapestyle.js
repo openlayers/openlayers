@@ -1,4 +1,4 @@
-goog.provide('ol.style.Shape');
+goog.provide('ol.style.RegularShape');
 
 goog.require('goog.dom');
 goog.require('goog.dom.TagName');
@@ -13,14 +13,14 @@ goog.require('ol.style.Stroke');
 
 /**
  * @classdesc
- * Set shape style for vector features.
+ * Set regular shape style for vector features.
  *
  * @constructor
- * @param {olx.style.ShapeOptions=} opt_options Options.
+ * @param {olx.style.RegularShapeOptions=} opt_options Options.
  * @extends {ol.style.Image}
  * @api
  */
-ol.style.Shape = function(opt_options) {
+ol.style.RegularShape = function(opt_options) {
 
   var options = goog.isDef(opt_options) ? opt_options : {};
 
@@ -72,7 +72,7 @@ ol.style.Shape = function(opt_options) {
    * @private
    * @type {number}
    */
-  this.angle0_ = goog.isDef(options.angle0) ? options.angle0 : 0;
+  this.angle_ = goog.isDef(options.angle) ? options.angle : 0;
 
   /**
    * @private
@@ -109,14 +109,14 @@ ol.style.Shape = function(opt_options) {
   });
 
 };
-goog.inherits(ol.style.Shape, ol.style.Image);
+goog.inherits(ol.style.RegularShape, ol.style.Image);
 
 
 /**
  * @inheritDoc
  * @api
  */
-ol.style.Shape.prototype.getAnchor = function() {
+ol.style.RegularShape.prototype.getAnchor = function() {
   return this.anchor_;
 };
 
@@ -125,7 +125,7 @@ ol.style.Shape.prototype.getAnchor = function() {
  * @return {ol.style.Fill} Fill style.
  * @api
  */
-ol.style.Shape.prototype.getFill = function() {
+ol.style.RegularShape.prototype.getFill = function() {
   return this.fill_;
 };
 
@@ -133,7 +133,7 @@ ol.style.Shape.prototype.getFill = function() {
 /**
  * @inheritDoc
  */
-ol.style.Shape.prototype.getHitDetectionImage = function(pixelRatio) {
+ol.style.RegularShape.prototype.getHitDetectionImage = function(pixelRatio) {
   return this.hitDetectionCanvas_;
 };
 
@@ -142,7 +142,7 @@ ol.style.Shape.prototype.getHitDetectionImage = function(pixelRatio) {
  * @inheritDoc
  * @api
  */
-ol.style.Shape.prototype.getImage = function(pixelRatio) {
+ol.style.RegularShape.prototype.getImage = function(pixelRatio) {
   return this.canvas_;
 };
 
@@ -150,7 +150,7 @@ ol.style.Shape.prototype.getImage = function(pixelRatio) {
 /**
  * @inheritDoc
  */
-ol.style.Shape.prototype.getImageState = function() {
+ol.style.RegularShape.prototype.getImageState = function() {
   return ol.style.ImageState.LOADED;
 };
 
@@ -159,7 +159,7 @@ ol.style.Shape.prototype.getImageState = function() {
  * @inheritDoc
  * @api
  */
-ol.style.Shape.prototype.getOrigin = function() {
+ol.style.RegularShape.prototype.getOrigin = function() {
   return this.origin_;
 };
 
@@ -168,7 +168,7 @@ ol.style.Shape.prototype.getOrigin = function() {
  * @return {number} Radius.
  * @api
  */
-ol.style.Shape.prototype.getRadius = function() {
+ol.style.RegularShape.prototype.getRadius = function() {
   return this.radius_;
 };
 
@@ -177,7 +177,7 @@ ol.style.Shape.prototype.getRadius = function() {
  * @inheritDoc
  * @api
  */
-ol.style.Shape.prototype.getSize = function() {
+ol.style.RegularShape.prototype.getSize = function() {
   return this.size_;
 };
 
@@ -186,7 +186,7 @@ ol.style.Shape.prototype.getSize = function() {
  * @return {ol.style.Stroke} Stroke style.
  * @api
  */
-ol.style.Shape.prototype.getStroke = function() {
+ol.style.RegularShape.prototype.getStroke = function() {
   return this.stroke_;
 };
 
@@ -194,26 +194,26 @@ ol.style.Shape.prototype.getStroke = function() {
 /**
  * @inheritDoc
  */
-ol.style.Shape.prototype.listenImageChange = goog.nullFunction;
+ol.style.RegularShape.prototype.listenImageChange = goog.nullFunction;
 
 
 /**
  * @inheritDoc
  */
-ol.style.Shape.prototype.load = goog.nullFunction;
+ol.style.RegularShape.prototype.load = goog.nullFunction;
 
 
 /**
  * @inheritDoc
  */
-ol.style.Shape.prototype.unlistenImageChange = goog.nullFunction;
+ol.style.RegularShape.prototype.unlistenImageChange = goog.nullFunction;
 
 
 /**
  * @private
  * @return {number} Size.
  */
-ol.style.Shape.prototype.render_ = function() {
+ol.style.RegularShape.prototype.render_ = function() {
   var canvas = this.canvas_;
   var strokeStyle, strokeWidth;
 
@@ -229,7 +229,7 @@ ol.style.Shape.prototype.render_ = function() {
 
   var size = 2 * (this.radius_ + strokeWidth) + 1;
 
-  // draw the shape on the canvas
+  // draw the regular shape on the canvas
 
   canvas.height = size;
   canvas.width = size;
