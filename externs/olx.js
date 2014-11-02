@@ -5447,12 +5447,12 @@ olx.style.IconOptions.prototype.src;
  *     points: number,
  *     radius: number,
  *     radius2: number,
- *     angle0: number,
+ *     angle: number,
  *     snapToPixel: (boolean|undefined),
  *     stroke: (ol.style.Stroke|undefined)}}
  * @api
  */
-olx.style.ShapeOptions;
+olx.style.RegularShapeOptions;
 
 
 /**
@@ -5460,7 +5460,7 @@ olx.style.ShapeOptions;
  * @type {ol.style.Fill|undefined}
  * @api
  */
-olx.style.ShapeOptions.prototype.fill;
+olx.style.RegularShapeOptions.prototype.fill;
 
 
 /**
@@ -5469,7 +5469,7 @@ olx.style.ShapeOptions.prototype.fill;
  * @type {number}
  * @api
  */
-olx.style.ShapeOptions.prototype.points;
+olx.style.RegularShapeOptions.prototype.points;
 
 
 /**
@@ -5477,17 +5477,17 @@ olx.style.ShapeOptions.prototype.points;
  * @type {number}
  * @api
  */
-olx.style.ShapeOptions.prototype.radius;
+olx.style.RegularShapeOptions.prototype.radius;
 
 
 /**
  * Shape secondary radius for drawing stars. If radius 2 is equal to radius,
- * the shape will be a regular polygon instead of a star.
+ * the regular shape will be a regular polygon instead of a star.
  * Default value is equal to radius.
  * @type {number}
  * @api
  */
-olx.style.ShapeOptions.prototype.radius2;
+olx.style.RegularShapeOptions.prototype.radius2;
 
 
 /**
@@ -5497,7 +5497,7 @@ olx.style.ShapeOptions.prototype.radius2;
  * @type {number}
  * @api
  */
-olx.style.ShapeOptions.prototype.angle0;
+olx.style.RegularShapeOptions.prototype.angle;
 
 
 /**
@@ -5511,7 +5511,7 @@ olx.style.ShapeOptions.prototype.angle0;
  * @type {boolean|undefined}
  * @api
  */
-olx.style.ShapeOptions.prototype.snapToPixel;
+olx.style.RegularShapeOptions.prototype.snapToPixel;
 
 
 /**
@@ -5519,7 +5519,7 @@ olx.style.ShapeOptions.prototype.snapToPixel;
  * @type {ol.style.Stroke|undefined}
  * @api
  */
-olx.style.ShapeOptions.prototype.stroke;
+olx.style.RegularShapeOptions.prototype.stroke;
 
 
 /**
