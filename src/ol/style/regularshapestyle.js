@@ -239,16 +239,16 @@ ol.style.RegularShape.prototype.render_ = function() {
 
   var context = /** @type {CanvasRenderingContext2D} */
       (canvas.getContext('2d'));
-  var i, angle, radiusC;
+  var i, angle0, radiusC;
   context.beginPath();
   if (this.radius2_ !== this.radius_) {
     this.points_ = 2 * this.points_;
   }
   for (i = 0; i <= this.points_; i++) {
-    angle = i * 2 * Math.PI / this.points_ - Math.PI / 2 + this.angle0_;
+    angle0 = i * 2 * Math.PI / this.points_ - Math.PI / 2 + this.angle_;
     radiusC = i % 2 === 0 ? this.radius_ : this.radius2_;
-    context.lineTo(size / 2 + radiusC * Math.cos(angle),
-                   size / 2 + radiusC * Math.sin(angle));
+    context.lineTo(size / 2 + radiusC * Math.cos(angle0),
+                   size / 2 + radiusC * Math.sin(angle0));
   }
 
   if (!goog.isNull(this.fill_)) {
@@ -280,10 +280,10 @@ ol.style.RegularShape.prototype.render_ = function() {
       this.points_ = 2 * this.points_;
     }
     for (i = 0; i <= this.points_; i++) {
-      angle = i * 2 * Math.PI / this.points_ - Math.PI / 2 + this.angle0_;
+      angle0 = i * 2 * Math.PI / this.points_ - Math.PI / 2 + this.angle_;
       radiusC = i % 2 === 0 ? this.radius_ : this.radius2_;
-      context.lineTo(size / 2 + radiusC * Math.cos(angle),
-                     size / 2 + radiusC * Math.sin(angle));
+      context.lineTo(size / 2 + radiusC * Math.cos(angle0),
+                     size / 2 + radiusC * Math.sin(angle0));
     }
 
     context.fillStyle = ol.render.canvas.defaultFillStyle;
