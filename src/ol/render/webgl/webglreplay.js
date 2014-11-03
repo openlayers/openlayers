@@ -3,9 +3,11 @@ goog.provide('ol.render.webgl.ReplayGroup');
 goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('goog.object');
+goog.require('goog.vec.Mat4');
 goog.require('ol.extent');
 goog.require('ol.render.IReplayGroup');
 goog.require('ol.render.webgl.imagereplay.shader');
+goog.require('ol.vec.Mat4');
 
 
 
@@ -13,10 +15,11 @@ goog.require('ol.render.webgl.imagereplay.shader');
  * @constructor
  * @implements {ol.render.IVectorContext}
  * @param {number} tolerance Tolerance.
+ * @param {ol.Extent} maxExtent Max extent.
  * @protected
  * @struct
  */
-ol.render.webgl.ImageReplay = function(tolerance) {
+ol.render.webgl.ImageReplay = function(tolerance, maxExtent) {
 
   /**
    * @type {number|undefined}
@@ -29,6 +32,12 @@ ol.render.webgl.ImageReplay = function(tolerance) {
    * @private
    */
   this.anchorY_ = undefined;
+
+  /**
+   * @private
+   * @type {ol.Extent}
+   */
+  this.origin_ = ol.extent.getBottomLeft(maxExtent);
 
   /**
    * @type {ol.Extent}
@@ -108,6 +117,12 @@ ol.render.webgl.ImageReplay = function(tolerance) {
    * @private
    */
   this.originY_ = undefined;
+
+  /**
+   * @type {!goog.vec.Mat4.Number}
+   * @private
+   */
+  this.projectionMatrix_ = goog.vec.Mat4.createNumberIdentity();
 
   /**
    * @type {Array.<WebGLTexture>}
@@ -205,8 +220,8 @@ ol.render.webgl.ImageReplay.prototype.drawCoordinates_ =
   var numVertices = this.vertices_.length;
   var i, x, y, n;
   for (i = offset; i < end; i += stride) {
-    x = flatCoordinates[i];
-    y = flatCoordinates[i + 1];
+    x = flatCoordinates[i] - this.origin_[0];
+    y = flatCoordinates[i + 1] - this.origin_[1];
 
     n = numVertices / 7;
 
@@ -401,15 +416,19 @@ ol.render.webgl.ImageReplay.prototype.getExtent = function() {
 
 /**
  * @param {ol.webgl.Context} context Context.
+ * @param {ol.Coordinate} center Center.
+ * @param {number} resolution Resolution.
+ * @param {number} rotation Rotation.
+ * @param {ol.Size} size Size.
+ * @param {ol.Extent} extent Extent.
  * @param {number} pixelRatio Pixel ratio.
- * @param {Array.<number>} size Size.
- * @param {goog.vec.Mat4.Number} transform Transform.
  * @param {Object} skippedFeaturesHash Ids of features to skip.
  * @return {T|undefined} Callback result.
  * @template T
  */
 ol.render.webgl.ImageReplay.prototype.replay = function(context,
-    pixelRatio, size, transform, skippedFeaturesHash) {
+    center, resolution, rotation, size, extent, pixelRatio,
+    skippedFeaturesHash) {
   var gl = context.getGL();
 
   var program = context.getProgram(
@@ -421,6 +440,14 @@ ol.render.webgl.ImageReplay.prototype.replay = function(context,
         new ol.render.webgl.imagereplay.shader.Locations(
             gl, program);
   }
+
+  var projectionMatrix = this.projectionMatrix_;
+  ol.vec.Mat4.makeTransform2D(projectionMatrix,
+      0.0, 0.0,
+      2 / (resolution * size[0]),
+      2 / (resolution * size[1]),
+      -rotation,
+      -(center[0] - this.origin_[0]), -(center[1] - this.origin_[1]));
 
   var locations = this.locations_;
 
@@ -442,7 +469,7 @@ ol.render.webgl.ImageReplay.prototype.replay = function(context,
   gl.vertexAttribPointer(locations.a_opacity, 1, goog.webgl.FLOAT,
       false, 28, 24);
 
-  gl.uniformMatrix4fv(locations.u_projectionMatrix, false, transform);
+  gl.uniformMatrix4fv(locations.u_projectionMatrix, false, projectionMatrix);
   gl.uniformMatrix2fv(locations.u_sizeMatrix, false,
       new Float32Array([1 / size[0], 0.0, 0.0, 1 / size[1]]));
 
@@ -519,9 +546,16 @@ ol.render.webgl.ImageReplay.prototype.setTextStyle = goog.abstractMethod;
  * @constructor
  * @implements {ol.render.IReplayGroup}
  * @param {number} tolerance Tolerance.
+ * @param {ol.Extent} maxExtent Max extent.
  * @struct
  */
-ol.render.webgl.ReplayGroup = function(tolerance) {
+ol.render.webgl.ReplayGroup = function(tolerance, maxExtent) {
+
+  /**
+   * @type {ol.Extent}
+   * @private
+   */
+  this.maxExtent_ = maxExtent;
 
   /**
    * @type {number}
@@ -572,7 +606,7 @@ ol.render.webgl.ReplayGroup.prototype.getReplay =
   if (!goog.isDef(replay)) {
     var constructor = ol.render.webgl.BATCH_CONSTRUCTORS_[replayType];
     goog.asserts.assert(goog.isDef(constructor));
-    replay = new constructor(this.tolerance_);
+    replay = new constructor(this.tolerance_, this.maxExtent_);
     this.replays_[replayType] = replay;
   }
   return replay;
@@ -589,23 +623,27 @@ ol.render.webgl.ReplayGroup.prototype.isEmpty = function() {
 
 /**
  * @param {ol.webgl.Context} context Context.
+ * @param {ol.Coordinate} center Center.
+ * @param {number} resolution Resolution.
+ * @param {number} rotation Rotation.
+ * @param {ol.Size} size Size.
  * @param {ol.Extent} extent Extent.
  * @param {number} pixelRatio Pixel ratio.
- * @param {Array.<number>} size Size.
- * @param {goog.vec.Mat4.Number} transform Transform.
  * @param {Object} skippedFeaturesHash Ids of features to skip.
  * @return {T|undefined} Callback result.
  * @template T
  */
 ol.render.webgl.ReplayGroup.prototype.replay = function(context,
-    extent, pixelRatio, size, transform, skippedFeaturesHash) {
+    center, resolution, rotation, size, extent, pixelRatio,
+    skippedFeaturesHash) {
   var i, ii, replay, result;
   for (i = 0, ii = ol.render.REPLAY_ORDER.length; i < ii; ++i) {
     replay = this.replays_[ol.render.REPLAY_ORDER[i]];
     if (goog.isDef(replay) &&
         ol.extent.intersects(extent, replay.getExtent())) {
       result = replay.replay(context,
-          pixelRatio, size, transform, skippedFeaturesHash);
+          center, resolution, rotation, size, extent, pixelRatio,
+          skippedFeaturesHash);
       if (result) {
         return result;
       }
@@ -619,7 +657,8 @@ ol.render.webgl.ReplayGroup.prototype.replay = function(context,
  * @const
  * @private
  * @type {Object.<ol.render.ReplayType,
- *                function(new: ol.render.webgl.ImageReplay, number)>}
+ *                function(new: ol.render.webgl.ImageReplay, number,
+ *                ol.Extent)>}
  */
 ol.render.webgl.BATCH_CONSTRUCTORS_ = {
   'Image': ol.render.webgl.ImageReplay
