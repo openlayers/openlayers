@@ -7,50 +7,46 @@ goog.require('goog.dom.TagName');
 goog.require('goog.object');
 
 
-
 /**
- * @constructor
- * @struct
- * @param {number} offsetX
- * @param {number} offsetY
- * @param {HTMLCanvasElement} image
+ * @typedef {{offsetX: number, offsetY: number, image: HTMLCanvasElement}}
  */
-ol.renderer.webgl.AtlasInfo = function(offsetX, offsetY, image) {
-
-  /**
-   * @type {number}
-   */
-  this.offsetX = offsetX;
-
-  /**
-   * @type {number}
-   */
-  this.offsetY = offsetY;
-
-  /**
-   * @type {HTMLCanvasElement}
-   */
-  this.image = image;
-};
+ol.renderer.webgl.AtlasInfo;
 
 
 
 /**
+ * Manages the creation of texture atlases.
+ *
+ * Images added to this manager will be inserted into an atlas, which
+ * will be used for rendering.
+ * The `size` given in the constructor is the size for the first
+ * atlas. After that, when new atlases are created, they will have
+ * twice the size as the latest atlas (until `maxSize` is reached.)
+ *
  * @constructor
  * @struct
- * @param {number=} opt_size The size in pixels of the sprite images
+ * @param {number=} opt_size The size in pixels of the first atlas image
  *      (default: 256).
+ * @param {number=} opt_maxSize The maximum size in pixels of atlas images
+ *      (default: 2048).
  * @param {number=} opt_space The space in pixels between images
  *      (default: 1).
  */
-ol.renderer.webgl.AtlasManager = function(opt_size, opt_space) {
+ol.renderer.webgl.AtlasManager = function(opt_size, opt_maxSize, opt_space) {
 
   /**
-   * The size in pixels of the sprite images.
+   * The size in pixels of the latest atlas image.
    * @private
    * @type {number}
    */
-  this.size_ = goog.isDef(opt_size) ? opt_size : 256;
+  this.currentSize_ = goog.isDef(opt_size) ? opt_size : 256;
+
+  /**
+   * The maximum size in pixels of atlas images.
+   * @private
+   * @type {number}
+   */
+  this.maxSize_ = goog.isDef(opt_maxSize) ? opt_maxSize : 2048;
 
   /**
    * The size in pixels between images.
@@ -63,7 +59,7 @@ ol.renderer.webgl.AtlasManager = function(opt_size, opt_space) {
    * @private
    * @type {Array.<ol.renderer.webgl.Atlas>}
    */
-  this.atlases_ = [new ol.renderer.webgl.Atlas(this.size_, this.space_)];
+  this.atlases_ = [new ol.renderer.webgl.Atlas(this.currentSize_, this.space_)];
 };
 
 
@@ -101,8 +97,9 @@ ol.renderer.webgl.AtlasManager.prototype.getInfo = function(hash) {
  */
 ol.renderer.webgl.AtlasManager.prototype.add =
     function(hash, width, height, renderCallback, opt_this) {
-  goog.asserts.assert(width <= this.size_ && height <= this.size_,
-      'the entry is too big for the current atlas size');
+  if (width > this.maxSize_ || height > this.maxSize_) {
+    return null;
+  }
 
   var atlas, info;
   for (var i = 0, l = this.atlases_.length; i < l; i++) {
@@ -110,15 +107,15 @@ ol.renderer.webgl.AtlasManager.prototype.add =
     info = atlas.add(hash, width, height, renderCallback, opt_this);
     if (info !== null) {
       return info;
+    } else {
+      // the entry could not be added to one of the existing atlases,
+      // create a new atlas that is twice as big and try to add to this one.
+      this.currentSize_ = Math.min(this.currentSize_ * 2, this.maxSize_);
+      atlas = new ol.renderer.webgl.Atlas(this.currentSize_, this.space_);
+      this.atlases_.push(atlas);
+      l++;
     }
   }
-
-  // the entry could not be added to one of the existing atlases,
-  // create a new atlas and add to this one.
-  // TODO double the size and check for max. size?
-  atlas = new ol.renderer.webgl.Atlas(this.size_, this.space_);
-  this.atlases_.push(atlas);
-  return atlas.add(hash, width, height, renderCallback, opt_this);
 };
 
 
@@ -205,8 +202,11 @@ ol.renderer.webgl.Atlas.prototype.add =
     if (block.width >= width + this.space_ &&
         block.height >= height + this.space_) {
       // we found a block that is big enough for our entry
-      var entry = new ol.renderer.webgl.AtlasInfo(
-          block.x + this.space_, block.y + this.space_, this.canvas_);
+      var entry = {
+        offsetX: block.x + this.space_,
+        offsetY: block.y + this.space_,
+        image: this.canvas_
+      };
       this.entries_[hash] = entry;
 
       // render the image on the atlas image
@@ -301,6 +301,6 @@ ol.renderer.webgl.Atlas.prototype.updateBlocks_ =
 
 
 /**
- * @typedef{{x: number, y: number, width: number, height: number}}
+ * @typedef {{x: number, y: number, width: number, height: number}}
  */
 ol.renderer.webgl.Atlas.Block;

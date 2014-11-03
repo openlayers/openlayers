@@ -198,8 +198,25 @@ describe('ol.renderer.webgl.AtlasManager', function() {
     it('creates a new atlas if needed', function() {
       var manager = new ol.renderer.webgl.AtlasManager(128);
       expect(manager.add(1, 100, 100, defaultRender)).to.be.ok();
-      expect(manager.add(2, 100, 100, defaultRender)).to.be.ok();
+      var info = manager.add(2, 100, 100, defaultRender);
+      expect(info).to.be.ok();
+      expect(info.image.width).to.eql(256);
       expect(manager.atlases_).to.have.length(2);
+    });
+
+    it('creates new atlases until one is large enough', function() {
+      var manager = new ol.renderer.webgl.AtlasManager(128);
+      expect(manager.add(1, 100, 100, defaultRender)).to.be.ok();
+      var info = manager.add(2, 500, 500, defaultRender);
+      expect(info).to.be.ok();
+      expect(info.image.width).to.eql(512);
+      expect(manager.atlases_).to.have.length(3);
+    });
+
+    it('returns null if the size exceeds the maximum size', function() {
+      var manager = new ol.renderer.webgl.AtlasManager(128);
+      expect(manager.add(1, 100, 100, defaultRender)).to.be.ok();
+      expect(manager.add(2, 3000, 3000, defaultRender)).to.eql(null);
     });
   });
 
