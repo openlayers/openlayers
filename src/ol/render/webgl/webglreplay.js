@@ -5,6 +5,7 @@ goog.require('goog.asserts');
 goog.require('goog.object');
 goog.require('ol.extent');
 goog.require('ol.render.IReplayGroup');
+goog.require('ol.render.webgl.imagereplay.shader');
 
 
 
@@ -22,6 +23,13 @@ ol.render.webgl.ImageReplay = function(tolerance) {
    * @private
    */
   this.extent_ = ol.extent.createEmpty();
+
+  /**
+   * @private
+   * @type {ol.webgl.shader.Fragment}
+   */
+  this.fragmentShader_ =
+      ol.render.webgl.imagereplay.shader.Fragment.getInstance();
 
   /**
    * @type {Array.<number>}
@@ -66,6 +74,12 @@ ol.render.webgl.ImageReplay = function(tolerance) {
   this.indicesBuffer_ = null;
 
   /**
+   * @private
+   * @type {ol.render.webgl.imagereplay.shader.Locations}
+   */
+  this.locations_ = null;
+
+  /**
    * @type {number|undefined}
    * @private
    */
@@ -82,6 +96,13 @@ ol.render.webgl.ImageReplay = function(tolerance) {
    * @private
    */
   this.textures_ = [];
+
+  /**
+   * @private
+   * @type {ol.webgl.shader.Vertex}
+   */
+  this.vertexShader_ =
+      ol.render.webgl.imagereplay.shader.Vertex.getInstance();
 
   /**
    * @type {Array.<number>}
@@ -325,11 +346,6 @@ ol.render.webgl.ImageReplay.prototype.getExtent = function() {
 
 /**
  * @param {ol.webgl.Context} context Context.
- * @param {number} positionAttribLocation Attribute location for positions.
- * @param {number} offsetsAttribLocation Attribute location for offsets.
- * @param {number} texCoordAttribLocation Attribute location for texCoord.
- * @param {WebGLUniformLocation} projectionMatrixLocation Proj matrix location.
- * @param {WebGLUniformLocation} sizeMatrixLocation Size matrix location.
  * @param {number} pixelRatio Pixel ratio.
  * @param {Array.<number>} size Size.
  * @param {goog.vec.Mat4.Number} transform Transform.
@@ -338,28 +354,37 @@ ol.render.webgl.ImageReplay.prototype.getExtent = function() {
  * @template T
  */
 ol.render.webgl.ImageReplay.prototype.replay = function(context,
-    positionAttribLocation, offsetsAttribLocation, texCoordAttribLocation,
-    projectionMatrixLocation, sizeMatrixLocation,
     pixelRatio, size, transform, skippedFeaturesHash) {
   var gl = context.getGL();
 
+  var program = context.getProgram(
+      this.fragmentShader_, this.vertexShader_);
+  context.useProgram(program);
+
+  if (goog.isNull(this.locations_)) {
+    this.locations_ =
+        new ol.render.webgl.imagereplay.shader.Locations(
+            gl, program);
+  }
+
+  var locations = this.locations_;
+
   gl.bindBuffer(goog.webgl.ARRAY_BUFFER, this.verticesBuffer_);
 
-  gl.enableVertexAttribArray(positionAttribLocation);
-  gl.vertexAttribPointer(positionAttribLocation, 2, goog.webgl.FLOAT,
+  gl.enableVertexAttribArray(locations.a_position);
+  gl.vertexAttribPointer(locations.a_position, 2, goog.webgl.FLOAT,
       false, 24, 0);
 
-  gl.enableVertexAttribArray(offsetsAttribLocation);
-  gl.vertexAttribPointer(offsetsAttribLocation, 2, goog.webgl.FLOAT,
+  gl.enableVertexAttribArray(locations.a_offsets);
+  gl.vertexAttribPointer(locations.a_offsets, 2, goog.webgl.FLOAT,
       false, 24, 8);
 
-  gl.enableVertexAttribArray(texCoordAttribLocation);
-  gl.vertexAttribPointer(texCoordAttribLocation, 2, goog.webgl.FLOAT,
+  gl.enableVertexAttribArray(locations.a_texCoord);
+  gl.vertexAttribPointer(locations.a_texCoord, 2, goog.webgl.FLOAT,
       false, 24, 16);
 
-
-  gl.uniformMatrix4fv(projectionMatrixLocation, false, transform);
-  gl.uniformMatrix2fv(sizeMatrixLocation, false,
+  gl.uniformMatrix4fv(locations.u_projectionMatrix, false, transform);
+  gl.uniformMatrix2fv(locations.u_sizeMatrix, false,
       new Float32Array([1 / size[0], 0.0, 0.0, 1 / size[1]]));
 
   gl.bindBuffer(goog.webgl.ELEMENT_ARRAY_BUFFER, this.indicesBuffer_);
@@ -484,11 +509,6 @@ ol.render.webgl.ReplayGroup.prototype.isEmpty = function() {
 
 /**
  * @param {ol.webgl.Context} context Context.
- * @param {number} positionAttribLocation Attribute location for positions.
- * @param {number} offsetsAttribLocation Attribute location for offsets.
- * @param {number} texCoordAttribLocation Attribute location for texCoord.
- * @param {WebGLUniformLocation} projectionMatrixLocation Proj matrix location.
- * @param {WebGLUniformLocation} sizeMatrixLocation Size matrix location.
  * @param {ol.Extent} extent Extent.
  * @param {number} pixelRatio Pixel ratio.
  * @param {Array.<number>} size Size.
@@ -498,8 +518,6 @@ ol.render.webgl.ReplayGroup.prototype.isEmpty = function() {
  * @template T
  */
 ol.render.webgl.ReplayGroup.prototype.replay = function(context,
-    positionAttribLocation, offsetsAttribLocation, texCoordAttribLocation,
-    projectionMatrixLocation, sizeMatrixLocation,
     extent, pixelRatio, size, transform, skippedFeaturesHash) {
   var i, ii, replay, result;
   for (i = 0, ii = ol.render.REPLAY_ORDER.length; i < ii; ++i) {
@@ -507,8 +525,6 @@ ol.render.webgl.ReplayGroup.prototype.replay = function(context,
     if (goog.isDef(replay) &&
         ol.extent.intersects(extent, replay.getExtent())) {
       result = replay.replay(context,
-          positionAttribLocation, offsetsAttribLocation, texCoordAttribLocation,
-          projectionMatrixLocation, sizeMatrixLocation,
           pixelRatio, size, transform, skippedFeaturesHash);
       if (result) {
         return result;

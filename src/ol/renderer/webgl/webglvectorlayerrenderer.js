@@ -9,7 +9,6 @@ goog.require('ol.layer.Vector');
 goog.require('ol.render.webgl.ReplayGroup');
 goog.require('ol.renderer.vector');
 goog.require('ol.renderer.webgl.Layer');
-goog.require('ol.renderer.webgl.vectorlayer.shader');
 goog.require('ol.vec.Mat4');
 
 
@@ -23,26 +22,6 @@ goog.require('ol.vec.Mat4');
 ol.renderer.webgl.VectorLayer = function(mapRenderer, vectorLayer) {
 
   goog.base(this, mapRenderer, vectorLayer);
-
-  /**
-   * @private
-   * @type {ol.webgl.shader.Fragment}
-   */
-  this.fragmentShader_ =
-      ol.renderer.webgl.vectorlayer.shader.Fragment.getInstance();
-
-  /**
-   * @private
-   * @type {ol.webgl.shader.Vertex}
-   */
-  this.vertexShader_ =
-      ol.renderer.webgl.vectorlayer.shader.Vertex.getInstance();
-
-  /**
-   * @private
-   * @type {ol.renderer.webgl.vectorlayer.shader.Locations}
-   */
-  this.locations_ = null;
 
   /**
    * @private
@@ -90,18 +69,6 @@ goog.inherits(ol.renderer.webgl.VectorLayer, ol.renderer.webgl.Layer);
 ol.renderer.webgl.VectorLayer.prototype.composeFrame =
     function(frameState, layerState, context) {
 
-  var gl = context.getGL();
-
-  var program = context.getProgram(
-      this.fragmentShader_, this.vertexShader_);
-  context.useProgram(program);
-
-  if (goog.isNull(this.locations_)) {
-    this.locations_ =
-        new ol.renderer.webgl.vectorlayer.shader.Locations(
-            gl, program);
-  }
-
   var viewState = frameState.viewState;
   ol.vec.Mat4.makeTransform2D(this.projectionMatrix,
       0.0, 0.0,
@@ -113,11 +80,6 @@ ol.renderer.webgl.VectorLayer.prototype.composeFrame =
   var replayGroup = this.replayGroup_;
   if (!goog.isNull(replayGroup) && !replayGroup.isEmpty()) {
     replayGroup.replay(context,
-        this.locations_.a_position,
-        this.locations_.a_offsets,
-        this.locations_.a_texCoord,
-        this.locations_.u_projectionMatrix,
-        this.locations_.u_sizeMatrix,
         frameState.extent, frameState.pixelRatio, frameState.size,
         this.projectionMatrix,
         frameState.skippedFeatureUids);
