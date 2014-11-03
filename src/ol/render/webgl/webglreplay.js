@@ -92,6 +92,12 @@ ol.render.webgl.ImageReplay = function(tolerance) {
   this.locations_ = null;
 
   /**
+   * @private
+   * @type {number|undefined}
+   */
+  this.opacity_ = undefined;
+
+  /**
    * @type {number|undefined}
    * @private
    */
@@ -182,6 +188,7 @@ ol.render.webgl.ImageReplay.prototype.drawCoordinates_ =
   goog.asserts.assert(goog.isDef(this.height_));
   goog.asserts.assert(goog.isDef(this.imageHeight_));
   goog.asserts.assert(goog.isDef(this.imageWidth_));
+  goog.asserts.assert(goog.isDef(this.opacity_));
   goog.asserts.assert(goog.isDef(this.originX_));
   goog.asserts.assert(goog.isDef(this.originY_));
   goog.asserts.assert(goog.isDef(this.width_));
@@ -190,6 +197,7 @@ ol.render.webgl.ImageReplay.prototype.drawCoordinates_ =
   var height = this.height_;
   var imageHeight = this.imageHeight_;
   var imageWidth = this.imageWidth_;
+  var opacity = this.opacity_;
   var originX = this.originX_;
   var originY = this.originY_;
   var width = this.width_;
@@ -200,9 +208,9 @@ ol.render.webgl.ImageReplay.prototype.drawCoordinates_ =
     x = flatCoordinates[i];
     y = flatCoordinates[i + 1];
 
-    n = numVertices / 6;
+    n = numVertices / 7;
 
-    // 4 vertices per coordinate, with 6 values per vertex
+    // 4 vertices per coordinate, with 7 values per vertex
 
     this.vertices_[numVertices++] = x;
     this.vertices_[numVertices++] = y;
@@ -210,6 +218,7 @@ ol.render.webgl.ImageReplay.prototype.drawCoordinates_ =
     this.vertices_[numVertices++] = -2 * (height - anchorY);
     this.vertices_[numVertices++] = (originX + width) / imageWidth;
     this.vertices_[numVertices++] = (originY + height) / imageHeight;
+    this.vertices_[numVertices++] = opacity;
 
     this.vertices_[numVertices++] = x;
     this.vertices_[numVertices++] = y;
@@ -217,6 +226,7 @@ ol.render.webgl.ImageReplay.prototype.drawCoordinates_ =
     this.vertices_[numVertices++] = -2 * (height - anchorY);
     this.vertices_[numVertices++] = originX / imageWidth;
     this.vertices_[numVertices++] = (originY + height) / imageHeight;
+    this.vertices_[numVertices++] = opacity;
 
     this.vertices_[numVertices++] = x;
     this.vertices_[numVertices++] = y;
@@ -224,6 +234,7 @@ ol.render.webgl.ImageReplay.prototype.drawCoordinates_ =
     this.vertices_[numVertices++] = 2 * anchorY;
     this.vertices_[numVertices++] = originX / imageWidth;
     this.vertices_[numVertices++] = originY / imageHeight;
+    this.vertices_[numVertices++] = opacity;
 
     this.vertices_[numVertices++] = x;
     this.vertices_[numVertices++] = y;
@@ -231,6 +242,7 @@ ol.render.webgl.ImageReplay.prototype.drawCoordinates_ =
     this.vertices_[numVertices++] = 2 * anchorY;
     this.vertices_[numVertices++] = (originX + width) / imageWidth;
     this.vertices_[numVertices++] = originY / imageHeight;
+    this.vertices_[numVertices++] = opacity;
 
     this.indices_[numIndices++] = n;
     this.indices_[numIndices++] = n + 1;
@@ -371,6 +383,7 @@ ol.render.webgl.ImageReplay.prototype.finish = function(context) {
   this.imageHeight_ = undefined;
   this.imageWidth_ = undefined;
   this.indices_ = null;
+  this.opacity_ = undefined;
   this.originX_ = undefined;
   this.originY_ = undefined;
   this.vertices_ = null;
@@ -415,15 +428,19 @@ ol.render.webgl.ImageReplay.prototype.replay = function(context,
 
   gl.enableVertexAttribArray(locations.a_position);
   gl.vertexAttribPointer(locations.a_position, 2, goog.webgl.FLOAT,
-      false, 24, 0);
+      false, 28, 0);
 
   gl.enableVertexAttribArray(locations.a_offsets);
   gl.vertexAttribPointer(locations.a_offsets, 2, goog.webgl.FLOAT,
-      false, 24, 8);
+      false, 28, 8);
 
   gl.enableVertexAttribArray(locations.a_texCoord);
   gl.vertexAttribPointer(locations.a_texCoord, 2, goog.webgl.FLOAT,
-      false, 24, 16);
+      false, 28, 16);
+
+  gl.enableVertexAttribArray(locations.a_opacity);
+  gl.vertexAttribPointer(locations.a_opacity, 1, goog.webgl.FLOAT,
+      false, 28, 24);
 
   gl.uniformMatrix4fv(locations.u_projectionMatrix, false, transform);
   gl.uniformMatrix2fv(locations.u_sizeMatrix, false,
@@ -461,6 +478,8 @@ ol.render.webgl.ImageReplay.prototype.setImageStyle = function(imageStyle) {
   // FIXME getImageSize does not exist for circles
   var imageSize = imageStyle.getImageSize();
   goog.asserts.assert(!goog.isNull(imageSize));
+  var opacity = imageStyle.getOpacity();
+  goog.asserts.assert(goog.isDef(opacity));
   var origin = imageStyle.getOrigin();
   goog.asserts.assert(!goog.isNull(origin));
   var size = imageStyle.getSize();
@@ -482,6 +501,7 @@ ol.render.webgl.ImageReplay.prototype.setImageStyle = function(imageStyle) {
   this.height_ = size[1];
   this.imageHeight_ = imageSize[1];
   this.imageWidth_ = imageSize[0];
+  this.opacity_ = opacity;
   this.originX_ = origin[0];
   this.originY_ = origin[1];
   this.width_ = size[0];
