@@ -1,5 +1,5 @@
-//! NAMESPACE=ol.renderer.webgl.vectorlayer.shader
-//! CLASS=ol.renderer.webgl.vectorlayer.shader.
+//! NAMESPACE=ol.render.webgl.imagereplay.shader
+//! CLASS=ol.render.webgl.imagereplay.shader.
 
 
 //! COMMON
