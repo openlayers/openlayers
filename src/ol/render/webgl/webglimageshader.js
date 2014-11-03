@@ -21,14 +21,14 @@ goog.addSingletonGetter(ol.render.webgl.imagereplay.shader.Fragment);
  * @const
  * @type {string}
  */
-ol.render.webgl.imagereplay.shader.Fragment.DEBUG_SOURCE = 'precision mediump float;\nvarying vec2 v_texCoord;\n\nuniform sampler2D u_image;\n\nvoid main(void) {\n  gl_FragColor = texture2D(u_image, v_texCoord);\n}\n';
+ol.render.webgl.imagereplay.shader.Fragment.DEBUG_SOURCE = 'precision mediump float;\nvarying vec2 v_texCoord;\nvarying float v_opacity;\n\nuniform sampler2D u_image;\n\nvoid main(void) {\n  vec4 texColor = texture2D(u_image, v_texCoord);\n  gl_FragColor.rgb = texColor.rgb;\n  gl_FragColor.a = texColor.a * v_opacity;\n}\n';
 
 
 /**
  * @const
  * @type {string}
  */
-ol.render.webgl.imagereplay.shader.Fragment.OPTIMIZED_SOURCE = 'precision mediump float;varying vec2 a;uniform sampler2D g;void main(void){gl_FragColor=texture2D(g,a);}';
+ol.render.webgl.imagereplay.shader.Fragment.OPTIMIZED_SOURCE = 'precision mediump float;varying vec2 a;varying float b;uniform sampler2D i;void main(void){vec4 texColor=texture2D(i,a);gl_FragColor.rgb=texColor.rgb;gl_FragColor.a=texColor.a*b;}';
 
 
 /**
@@ -57,14 +57,14 @@ goog.addSingletonGetter(ol.render.webgl.imagereplay.shader.Vertex);
  * @const
  * @type {string}
  */
-ol.render.webgl.imagereplay.shader.Vertex.DEBUG_SOURCE = 'varying vec2 v_texCoord;\n\nattribute vec2 a_position;\nattribute vec2 a_texCoord;\nattribute vec2 a_offsets;\n\nuniform mat4 u_projectionMatrix;\nuniform mat2 u_sizeMatrix;\n\nvoid main(void) {\n  vec2 offsets = u_sizeMatrix * a_offsets;\n  gl_Position = u_projectionMatrix * vec4(a_position, 0., 1.) + vec4(offsets, 0., 0.);\n  v_texCoord = a_texCoord;\n}\n\n\n';
+ol.render.webgl.imagereplay.shader.Vertex.DEBUG_SOURCE = 'varying vec2 v_texCoord;\nvarying float v_opacity;\n\nattribute vec2 a_position;\nattribute vec2 a_texCoord;\nattribute vec2 a_offsets;\nattribute float a_opacity;\n\nuniform mat4 u_projectionMatrix;\nuniform mat2 u_sizeMatrix;\n\nvoid main(void) {\n  vec2 offsets = u_sizeMatrix * a_offsets;\n  gl_Position = u_projectionMatrix * vec4(a_position, 0., 1.) + vec4(offsets, 0., 0.);\n  v_texCoord = a_texCoord;\n  v_opacity = a_opacity;\n}\n\n\n';
 
 
 /**
  * @const
  * @type {string}
  */
-ol.render.webgl.imagereplay.shader.Vertex.OPTIMIZED_SOURCE = 'varying vec2 a;attribute vec2 b;attribute vec2 c;attribute vec2 d;uniform mat4 e;uniform mat2 f;void main(void){vec2 offsets=f*d;gl_Position=e*vec4(b,0.,1.)+vec4(offsets,0.,0.);a=c;}';
+ol.render.webgl.imagereplay.shader.Vertex.OPTIMIZED_SOURCE = 'varying vec2 a;varying float b;attribute vec2 c;attribute vec2 d;attribute vec2 e;attribute float f;uniform mat4 g;uniform mat2 h;void main(void){vec2 offsets=h*e;gl_Position=g*vec4(c,0.,1.)+vec4(offsets,0.,0.);a=d;b=f;}';
 
 
 /**
@@ -89,35 +89,41 @@ ol.render.webgl.imagereplay.shader.Locations = function(gl, program) {
    * @type {WebGLUniformLocation}
    */
   this.u_image = gl.getUniformLocation(
-      program, goog.DEBUG ? 'u_image' : 'g');
+      program, goog.DEBUG ? 'u_image' : 'i');
 
   /**
    * @type {WebGLUniformLocation}
    */
   this.u_projectionMatrix = gl.getUniformLocation(
-      program, goog.DEBUG ? 'u_projectionMatrix' : 'e');
+      program, goog.DEBUG ? 'u_projectionMatrix' : 'g');
 
   /**
    * @type {WebGLUniformLocation}
    */
   this.u_sizeMatrix = gl.getUniformLocation(
-      program, goog.DEBUG ? 'u_sizeMatrix' : 'f');
+      program, goog.DEBUG ? 'u_sizeMatrix' : 'h');
 
   /**
    * @type {number}
    */
   this.a_offsets = gl.getAttribLocation(
-      program, goog.DEBUG ? 'a_offsets' : 'd');
+      program, goog.DEBUG ? 'a_offsets' : 'e');
+
+  /**
+   * @type {number}
+   */
+  this.a_opacity = gl.getAttribLocation(
+      program, goog.DEBUG ? 'a_opacity' : 'f');
 
   /**
    * @type {number}
    */
   this.a_position = gl.getAttribLocation(
-      program, goog.DEBUG ? 'a_position' : 'b');
+      program, goog.DEBUG ? 'a_position' : 'c');
 
   /**
    * @type {number}
    */
   this.a_texCoord = gl.getAttribLocation(
-      program, goog.DEBUG ? 'a_texCoord' : 'c');
+      program, goog.DEBUG ? 'a_texCoord' : 'd');
 };
