@@ -100,7 +100,7 @@ ol.format.GPX.parseLink_ = function(node, objectStack) {
   if (!goog.isNull(href)) {
     goog.object.set(values, 'link', href);
   }
-  ol.xml.parse(ol.format.GPX.LINK_PARSERS_, node, objectStack);
+  ol.xml.parseNode(ol.format.GPX.LINK_PARSERS_, node, objectStack);
 };
 
 
@@ -164,7 +164,7 @@ ol.format.GPX.parseTrkSeg_ = function(node, objectStack) {
   goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT);
   goog.asserts.assert(node.localName == 'trkseg');
   var values = /** @type {Object} */ (objectStack[objectStack.length - 1]);
-  ol.xml.parse(ol.format.GPX.TRKSEG_PARSERS_, node, objectStack);
+  ol.xml.parseNode(ol.format.GPX.TRKSEG_PARSERS_, node, objectStack);
   var flatCoordinates = /** @type {Array.<number>} */
       (goog.object.get(values, 'flatCoordinates'));
   var ends = /** @type {Array.<number>} */ (goog.object.get(values, 'ends'));

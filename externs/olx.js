@@ -1740,6 +1740,12 @@ olx.format.WFSWriteGetFeatureOptions.prototype.maxFeatures;
  */
 olx.format.WFSWriteGetFeatureOptions.prototype.geometryName;
 
+/**
+ * GML format to use within the WFS format.
+ * @type {ol.format.GMLBase|undefined}
+ * @api
+ */
+olx.format.WFSWriteGetFeatureOptions.prototype.gmlFormat;
 
 /**
  * Extent to use for the BBOX filter.
@@ -3857,6 +3863,7 @@ olx.source.IGCOptions.prototype.urls;
  *     projection: ol.proj.ProjectionLike,
  *     ratio: (number|undefined),
  *     resolutions: (Array.<number>|undefined),
+ *     imageLoadFunction: (ol.ImageLoadFunctionType|undefined),
  *     params: (Object|undefined)}}
  * @api
  */
@@ -3927,6 +3934,15 @@ olx.source.ImageMapGuideOptions.prototype.ratio;
  * @api stable
  */
 olx.source.ImageMapGuideOptions.prototype.resolutions;
+
+
+
+/**
+ * Optional function to load an image given a URL.
+ * @type {ol.TileLoadFunctionType|undefined}
+ * @api
+ */
+olx.source.ImageMapGuideOptions.prototype.imageLoadFunction;
 
 
 /**
@@ -4368,6 +4384,7 @@ olx.source.ImageVectorOptions.prototype.style;
  *     hidpi: (boolean|undefined),
  *     serverType: (ol.source.wms.ServerType|string|undefined),
  *     logo: (string|olx.LogoOptions|undefined),
+ *     imageLoadFunction: (ol.ImageLoadFunctionType|undefined),
  *     params: Object.<string,*>,
  *     projection: ol.proj.ProjectionLike,
  *     ratio: (number|undefined),
@@ -4410,6 +4427,14 @@ olx.source.ImageWMSOptions.prototype.hidpi;
  * @api
  */
 olx.source.ImageWMSOptions.prototype.serverType;
+
+
+/**
+ * Optional function to load an image given a URL.
+ * @type {ol.TileLoadFunctionType|undefined}
+ * @api
+ */
+olx.source.ImageWMSOptions.prototype.imageLoadFunction;
 
 
 /**
@@ -4528,6 +4553,7 @@ olx.source.StamenOptions.prototype.url;
  *     crossOrigin: (null|string|undefined),
  *     imageExtent: (ol.Extent),
  *     imageSize: (ol.Size|undefined),
+ *     imageLoadFunction: (ol.ImageLoadFunctionType|undefined),
  *     logo: (string|olx.LogoOptions|undefined),
  *     projection: ol.proj.ProjectionLike,
  *     url: string}}
@@ -4566,6 +4592,14 @@ olx.source.ImageStaticOptions.prototype.imageExtent;
  * @api stable
  */
 olx.source.ImageStaticOptions.prototype.imageSize;
+
+
+/**
+ * Optional function to load an image given a URL.
+ * @type {ol.TileLoadFunctionType|undefined}
+ * @api
+ */
+olx.source.ImageStaticOptions.prototype.imageLoadFunction;
 
 
 /**
@@ -4656,7 +4690,8 @@ olx.source.ServerVectorOptions.prototype.projection;
 /**
  * @typedef {{crossOrigin: (null|string|undefined),
  *     tileLoadFunction: (ol.TileLoadFunctionType|undefined),
- *     url: string}}
+ *     url: string,
+ *     wrapX: (boolean|undefined)}}
  * @api
  */
 olx.source.TileJSONOptions;
@@ -4684,6 +4719,14 @@ olx.source.TileJSONOptions.prototype.tileLoadFunction;
  * @api stable
  */
 olx.source.TileJSONOptions.prototype.url;
+
+
+/**
+ * Whether to wrap the world horizontally. Default is `true`.
+ * @type {boolean|undefined}
+ * @api
+ */
+olx.source.TileJSONOptions.prototype.wrapX;
 
 
 /**
@@ -4987,7 +5030,7 @@ olx.source.StaticVectorOptions.prototype.urls;
  *     logo: (string|olx.LogoOptions|undefined),
  *     tileGrid: ol.tilegrid.WMTS,
  *     projection: ol.proj.ProjectionLike,
- *     requestEncoding: (ol.source.WMTSRequestEncoding|undefined),
+ *     requestEncoding: (ol.source.WMTSRequestEncoding|string|undefined),
  *     layer: string,
  *     style: string,
  *     tilePixelRatio: (number|undefined),
@@ -5048,8 +5091,8 @@ olx.source.WMTSOptions.prototype.projection;
 
 
 /**
- * Request encoding.
- * @type {ol.source.WMTSRequestEncoding|undefined}
+ * Request encoding. Default is `KVP`.
+ * @type {ol.source.WMTSRequestEncoding|string|undefined}
  * @api
  */
 olx.source.WMTSOptions.prototype.requestEncoding;
@@ -5481,7 +5524,8 @@ olx.style.IconOptions.prototype.crossOrigin;
 
 /**
  * Image object for the icon. If the `src` option is not provided then the
- * provided image must already be loaded.
+ * provided image must already be loaded. And in that case, it is required
+ * to provide the size of the image, with the `size` option.
  * @type {Image|undefined}
  * @api
  */
@@ -5546,7 +5590,9 @@ olx.style.IconOptions.prototype.rotation;
 
 
 /**
- * Icon size in pixel.
+ * Icon size in pixel. Can be used together with `offset` to define the
+ * sub-rectangle to use from the origin (sprite) icon image. Also, setting
+ * the `size` is required if `img` is set and `src` is not.
  * @type {ol.Size|undefined}
  * @api
  */
@@ -5559,6 +5605,86 @@ olx.style.IconOptions.prototype.size;
  * @api
  */
 olx.style.IconOptions.prototype.src;
+
+
+/**
+ * @typedef {{fill: (ol.style.Fill|undefined),
+ *     points: number,
+ *     radius: number,
+ *     radius2: number,
+ *     angle: number,
+ *     snapToPixel: (boolean|undefined),
+ *     stroke: (ol.style.Stroke|undefined)}}
+ * @api
+ */
+olx.style.RegularShapeOptions;
+
+
+/**
+ * Fill style.
+ * @type {ol.style.Fill|undefined}
+ * @api
+ */
+olx.style.RegularShapeOptions.prototype.fill;
+
+
+/**
+ * Number of points for stars and regular polygons. In case of a polygon, the
+ * number of points is the number of sides.
+ * @type {number}
+ * @api
+ */
+olx.style.RegularShapeOptions.prototype.points;
+
+
+/**
+ * Shape radius.
+ * @type {number}
+ * @api
+ */
+olx.style.RegularShapeOptions.prototype.radius;
+
+
+/**
+ * Shape secondary radius for drawing stars. If radius 2 is equal to radius,
+ * the regular shape will be a regular polygon instead of a star.
+ * Default value is equal to radius.
+ * @type {number}
+ * @api
+ */
+olx.style.RegularShapeOptions.prototype.radius2;
+
+
+/**
+ * Shape's rotation in radians. A value of 0 will have one of the shape's point
+ * facing up.
+ * Default value is 0.
+ * @type {number}
+ * @api
+ */
+olx.style.RegularShapeOptions.prototype.angle;
+
+
+/**
+ * If `true` integral numbers of pixels are used as the X and Y pixel
+ * coordinate when drawing the shape in the output canvas. If `false`
+ * fractional numbers may be used. Using `true` allows for "sharp"
+ * rendering (no blur), while using `false` allows for "accurate"
+ * rendering. Note that accuracy is important if the shape's
+ * position is animated. Without it, the shape may jitter noticeably.
+ * Default value is `true`.
+ * @type {boolean|undefined}
+ * @api
+ */
+olx.style.RegularShapeOptions.prototype.snapToPixel;
+
+
+/**
+ * Stroke style.
+ * @type {ol.style.Stroke|undefined}
+ * @api
+ */
+olx.style.RegularShapeOptions.prototype.stroke;
 
 
 /**

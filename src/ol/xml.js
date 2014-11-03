@@ -77,9 +77,12 @@ ol.xml.createElementNS =
 
 
 /**
+ * Recursively grab all text content of child nodes into a single string.
  * @param {Node} node Node.
- * @param {boolean} normalizeWhitespace Normalize whitespace.
+ * @param {boolean} normalizeWhitespace Normalize whitespace: remove all line
+ * breaks.
  * @return {string} All text content.
+ * @api
  */
 ol.xml.getAllTextContent = function(node, normalizeWhitespace) {
   return ol.xml.getAllTextContent_(node, normalizeWhitespace, []).join('');
@@ -88,7 +91,8 @@ ol.xml.getAllTextContent = function(node, normalizeWhitespace) {
 
 /**
  * @param {Node} node Node.
- * @param {boolean} normalizeWhitespace Normalize whitespace.
+ * @param {boolean} normalizeWhitespace Normalize whitespace: remove all line
+ * breaks.
  * @param {Array.<String|string>} accumulator Accumulator.
  * @private
  * @return {Array.<String|string>} Accumulator.
@@ -332,10 +336,12 @@ ol.xml.setAttributeNS =
 
 
 /**
+ * Parse an XML string to a XML Document
  * @param {string} xml XML.
  * @return {Document} Document.
+ * @api
  */
-ol.xml.load = function(xml) {
+ol.xml.parse = function(xml) {
   return new DOMParser().parseFromString(xml, 'application/xml');
 };
 
@@ -379,7 +385,8 @@ ol.xml.makeArrayPusher = function(valueReader, opt_this) {
        * @param {Array.<*>} objectStack Object stack.
        */
       function(node, objectStack) {
-        var value = valueReader.call(opt_this, node, objectStack);
+        var value = valueReader.call(goog.isDef(opt_this) ? opt_this : this,
+            node, objectStack);
         if (goog.isDef(value)) {
           var array = objectStack[objectStack.length - 1];
           goog.asserts.assert(goog.isArray(array));
@@ -402,7 +409,8 @@ ol.xml.makeReplacer = function(valueReader, opt_this) {
        * @param {Array.<*>} objectStack Object stack.
        */
       function(node, objectStack) {
-        var value = valueReader.call(opt_this, node, objectStack);
+        var value = valueReader.call(goog.isDef(opt_this) ? opt_this : this,
+            node, objectStack);
         if (goog.isDef(value)) {
           objectStack[objectStack.length - 1] = value;
         }
@@ -426,7 +434,8 @@ ol.xml.makeObjectPropertyPusher =
        * @param {Array.<*>} objectStack Object stack.
        */
       function(node, objectStack) {
-        var value = valueReader.call(opt_this, node, objectStack);
+        var value = valueReader.call(goog.isDef(opt_this) ? opt_this : this,
+            node, objectStack);
         if (goog.isDef(value)) {
           var object = /** @type {Object} */
               (objectStack[objectStack.length - 1]);
@@ -456,7 +465,8 @@ ol.xml.makeObjectPropertySetter =
        * @param {Array.<*>} objectStack Object stack.
        */
       function(node, objectStack) {
-        var value = valueReader.call(opt_this, node, objectStack);
+        var value = valueReader.call(goog.isDef(opt_this) ? opt_this : this,
+            node, objectStack);
         if (goog.isDef(value)) {
           var object = /** @type {Object} */
               (objectStack[objectStack.length - 1]);
@@ -494,7 +504,8 @@ ol.xml.makeParsersNS = function(namespaceURIs, parsers, opt_parsersNS) {
  */
 ol.xml.makeChildAppender = function(nodeWriter, opt_this) {
   return function(node, value, objectStack) {
-    nodeWriter.call(opt_this, node, value, objectStack);
+    nodeWriter.call(goog.isDef(opt_this) ? opt_this : this,
+        node, value, objectStack);
     var parent = objectStack[objectStack.length - 1];
     goog.asserts.assert(goog.isObject(parent));
     var parentNode = parent.node;
@@ -636,7 +647,7 @@ ol.xml.makeStructureNS = function(namespaceURIs, structure, opt_structureNS) {
  * @param {Array.<*>} objectStack Object stack.
  * @param {*=} opt_this The object to use as `this`.
  */
-ol.xml.parse = function(parsersNS, node, objectStack, opt_this) {
+ol.xml.parseNode = function(parsersNS, node, objectStack, opt_this) {
   var n;
   for (n = node.firstElementChild; !goog.isNull(n); n = n.nextElementSibling) {
     var parsers = parsersNS[n.namespaceURI];
@@ -663,7 +674,7 @@ ol.xml.parse = function(parsersNS, node, objectStack, opt_this) {
 ol.xml.pushParseAndPop = function(
     object, parsersNS, node, objectStack, opt_this) {
   objectStack.push(object);
-  ol.xml.parse(parsersNS, node, objectStack, opt_this);
+  ol.xml.parseNode(parsersNS, node, objectStack, opt_this);
   return objectStack.pop();
 };
 

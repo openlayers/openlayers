@@ -38,19 +38,16 @@ ol.control.Rotate = function(opt_options) {
    * @private
    */
   this.label_ = goog.dom.createDom(goog.dom.TagName.SPAN,
-      { 'class': 'ol-compass' },
-      goog.isDef(options.label) ? options.label : '\u21E7');
+      'ol-compass', goog.isDef(options.label) ? options.label : '\u21E7');
 
   var tipLabel = goog.isDef(options.tipLabel) ?
       options.tipLabel : 'Reset rotation';
 
-  var tip = goog.dom.createDom(goog.dom.TagName.SPAN, {
-    'role' : 'tooltip'
-  }, tipLabel);
   var button = goog.dom.createDom(goog.dom.TagName.BUTTON, {
-    'class': className + '-reset ol-has-tooltip',
-    'type' : 'button'
-  }, tip, this.label_);
+    'class': className + '-reset',
+    'type' : 'button',
+    'title': tipLabel
+  }, this.label_);
 
   var handler = new ol.pointer.PointerEventHandler(button);
   this.registerDisposable(handler);

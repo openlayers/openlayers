@@ -345,7 +345,8 @@ def examples_star_json(name, match):
               "api", "observable"
             ],
             "compilation_level": "ADVANCED",
-            "output_wrapper": "// OpenLayers 3. See http://ol3.js.org/\n(function(){%output%})();",
+            "warning_level": "VERBOSE",
+            "output_wrapper": "(function(){%output%})();",
             "use_types_for_optimization": True,
             "manage_closure_dependencies": True
           }

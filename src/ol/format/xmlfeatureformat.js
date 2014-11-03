@@ -43,7 +43,7 @@ ol.format.XMLFeature.prototype.readFeature = function(source, opt_options) {
   } else if (ol.xml.isNode(source)) {
     return this.readFeatureFromNode(/** @type {Node} */ (source), opt_options);
   } else if (goog.isString(source)) {
-    var doc = ol.xml.load(source);
+    var doc = ol.xml.parse(source);
     return this.readFeatureFromDocument(doc, opt_options);
   } else {
     goog.asserts.fail();
@@ -86,7 +86,7 @@ ol.format.XMLFeature.prototype.readFeatures = function(source, opt_options) {
   } else if (ol.xml.isNode(source)) {
     return this.readFeaturesFromNode(/** @type {Node} */ (source), opt_options);
   } else if (goog.isString(source)) {
-    var doc = ol.xml.load(source);
+    var doc = ol.xml.parse(source);
     return this.readFeaturesFromDocument(doc, opt_options);
   } else {
     goog.asserts.fail();
@@ -134,7 +134,7 @@ ol.format.XMLFeature.prototype.readGeometry = function(source, opt_options) {
   } else if (ol.xml.isNode(source)) {
     return this.readGeometryFromNode(/** @type {Node} */ (source), opt_options);
   } else if (goog.isString(source)) {
-    var doc = ol.xml.load(source);
+    var doc = ol.xml.parse(source);
     return this.readGeometryFromDocument(doc, opt_options);
   } else {
     goog.asserts.fail();
@@ -170,7 +170,7 @@ ol.format.XMLFeature.prototype.readProjection = function(source) {
   } else if (ol.xml.isNode(source)) {
     return this.readProjectionFromNode(/** @type {Node} */ (source));
   } else if (goog.isString(source)) {
-    var doc = ol.xml.load(source);
+    var doc = ol.xml.parse(source);
     return this.readProjectionFromDocument(doc);
   } else {
     goog.asserts.fail();

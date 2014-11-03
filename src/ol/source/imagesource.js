@@ -88,3 +88,14 @@ ol.source.Image.prototype.findNearestResolution =
  * @return {ol.ImageBase} Single image.
  */
 ol.source.Image.prototype.getImage = goog.abstractMethod;
+
+
+/**
+ * Default image load function for image sources that use ol.Image image
+ * instances.
+ * @param {ol.Image} image Image.
+ * @param {string} src Source.
+ */
+ol.source.Image.defaultImageLoadFunction = function(image, src) {
+  image.getImage().src = src;
+};

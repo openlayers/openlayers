@@ -40,16 +40,11 @@ ol.control.FullScreen = function(opt_options) {
 
   var tipLabel = goog.isDef(options.tipLabel) ?
       options.tipLabel : 'Toggle full-screen';
-  var tip = goog.dom.createDom(goog.dom.TagName.SPAN, {
-    'role' : 'tooltip'
-  }, tipLabel);
-
   var button = goog.dom.createDom(goog.dom.TagName.BUTTON, {
-    'class': this.cssClassName_ + '-' + goog.dom.fullscreen.isFullScreen() +
-        ' ol-has-tooltip',
-    'type': 'button'
+    'class': this.cssClassName_ + '-' + goog.dom.fullscreen.isFullScreen(),
+    'type': 'button',
+    'title': tipLabel
   });
-  goog.dom.appendChild(button, tip);
   var buttonHandler = new ol.pointer.PointerEventHandler(button);
   this.registerDisposable(buttonHandler);
   goog.events.listen(buttonHandler,
@@ -69,7 +64,7 @@ ol.control.FullScreen = function(opt_options) {
       this.handleFullScreenChange_, false, this);
 
   var cssClasses = this.cssClassName_ + ' ' + ol.css.CLASS_UNSELECTABLE +
-      ' ' + ol.css.CLASS_CONTROL +
+      ' ' + ol.css.CLASS_CONTROL + ' ' +
       (!goog.dom.fullscreen.isSupported() ? ol.css.CLASS_UNSUPPORTED : '');
   var element = goog.dom.createDom(goog.dom.TagName.DIV, cssClasses, button);
 
