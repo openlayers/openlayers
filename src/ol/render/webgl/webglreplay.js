@@ -415,12 +415,13 @@ ol.render.webgl.ImageReplay.prototype.replay = function(context,
 
   goog.asserts.assert(this.textures_.length == this.groupIndices_.length);
 
-  var i;
-  var ii = this.textures_.length;
-  for (i = 0; i < ii; ++i) {
+  var i, ii, start;
+  for (i = 0, ii = this.textures_.length, start = 0; i < ii; ++i) {
     gl.bindTexture(goog.webgl.TEXTURE_2D, this.textures_[i]);
-    gl.drawElements(goog.webgl.TRIANGLES, this.groupIndices_[i],
-        goog.webgl.UNSIGNED_SHORT, 0);
+    var end = this.groupIndices_[i];
+    gl.drawElements(goog.webgl.TRIANGLES, end - start,
+        goog.webgl.UNSIGNED_SHORT, start);
+    start = end;
   }
 };
 
