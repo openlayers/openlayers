@@ -9,7 +9,6 @@ goog.require('ol.layer.Vector');
 goog.require('ol.render.webgl.ReplayGroup');
 goog.require('ol.renderer.vector');
 goog.require('ol.renderer.webgl.Layer');
-goog.require('ol.vec.Mat4');
 
 
 
@@ -68,20 +67,12 @@ goog.inherits(ol.renderer.webgl.VectorLayer, ol.renderer.webgl.Layer);
  */
 ol.renderer.webgl.VectorLayer.prototype.composeFrame =
     function(frameState, layerState, context) {
-
   var viewState = frameState.viewState;
-  ol.vec.Mat4.makeTransform2D(this.projectionMatrix,
-      0.0, 0.0,
-      2 / (viewState.resolution * frameState.size[0]),
-      2 / (viewState.resolution * frameState.size[1]),
-      -viewState.rotation,
-      -viewState.center[0], -viewState.center[1]);
-
   var replayGroup = this.replayGroup_;
   if (!goog.isNull(replayGroup) && !replayGroup.isEmpty()) {
     replayGroup.replay(context,
-        frameState.extent, frameState.pixelRatio, frameState.size,
-        this.projectionMatrix,
+        viewState.center, viewState.resolution, viewState.rotation,
+        frameState.size, frameState.extent, frameState.pixelRatio,
         frameState.skippedFeatureUids);
   }
 
@@ -160,7 +151,8 @@ ol.renderer.webgl.VectorLayer.prototype.prepareFrame =
   this.dirty_ = false;
 
   var replayGroup = new ol.render.webgl.ReplayGroup(
-      ol.renderer.vector.getTolerance(resolution, pixelRatio));
+      ol.renderer.vector.getTolerance(resolution, pixelRatio),
+      extent);
   vectorSource.loadFeatures(extent, resolution, projection);
   var renderFeature =
       /**
