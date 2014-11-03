@@ -126,6 +126,30 @@ ol.render.webgl.ImageReplay = function(tolerance) {
 
 
 /**
+ * @param {olx.FrameState} frameState Frame state.
+ * @param {ol.webgl.Context} context Context.
+ */
+ol.render.webgl.ImageReplay.prototype.deleteTextures =
+    function(frameState, context) {
+  frameState.postRenderFunctions.push(
+      goog.partial(
+          /**
+           * @param {WebGLRenderingContext} gl GL.
+           * @param {Array.<WebGLTexture>} textures Textures.
+           */
+          function(gl, textures) {
+            if (!gl.isContextLost()) {
+              var i, ii;
+              for (i = 0, ii = textures.length; i < ii; ++i) {
+                gl.deleteTexture(textures[i]);
+              }
+            }
+          }, context.getGL(), this.textures_));
+
+};
+
+
+/**
  * @inheritDoc
  */
 ol.render.webgl.ImageReplay.prototype.drawAsync = goog.abstractMethod;
@@ -469,6 +493,19 @@ ol.render.webgl.ReplayGroup = function(tolerance) {
    */
   this.replays_ = {};
 
+};
+
+
+/**
+ * @param {olx.FrameState} frameState Frame state.
+ * @param {ol.webgl.Context} context Context.
+ */
+ol.render.webgl.ReplayGroup.prototype.deleteTextures =
+    function(frameState, context) {
+  var replayKey;
+  for (replayKey in this.replays_) {
+    this.replays_[replayKey].deleteTextures(frameState, context);
+  }
 };
 
 

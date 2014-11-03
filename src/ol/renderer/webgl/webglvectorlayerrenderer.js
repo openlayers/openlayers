@@ -153,9 +153,9 @@ ol.renderer.webgl.VectorLayer.prototype.prepareFrame =
   extent[2] = frameStateExtent[2] + xBuffer;
   extent[3] = frameStateExtent[3] + yBuffer;
 
-  // FIXME dispose of old replayGroup in post render
-  goog.dispose(this.replayGroup_);
-  this.replayGroup_ = null;
+  if (!goog.isNull(this.replayGroup_)) {
+    this.replayGroup_.deleteTextures(frameState, context);
+  }
 
   this.dirty_ = false;
 
