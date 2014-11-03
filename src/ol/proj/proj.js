@@ -678,7 +678,7 @@ ol.proj.cloneTransform = function(input, opt_output, opt_dimension) {
  */
 ol.proj.transform = function(coordinate, source, destination) {
   var transformFn = ol.proj.getTransform(source, destination);
-  return transformFn(coordinate);
+  return transformFn(coordinate, undefined, coordinate.length);
 };
 
 

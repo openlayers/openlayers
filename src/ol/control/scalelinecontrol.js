@@ -66,17 +66,15 @@ ol.control.ScaleLine = function(opt_options) {
    * @private
    * @type {Element}
    */
-  this.innerElement_ = goog.dom.createDom(goog.dom.TagName.DIV, {
-    'class': className + '-inner'
-  });
+  this.innerElement_ = goog.dom.createDom(goog.dom.TagName.DIV,
+      className + '-inner');
 
   /**
    * @private
    * @type {Element}
    */
-  this.element_ = goog.dom.createDom(goog.dom.TagName.DIV, {
-    'class': className + ' ' + ol.css.CLASS_UNSELECTABLE
-  }, this.innerElement_);
+  this.element_ = goog.dom.createDom(goog.dom.TagName.DIV,
+      className + ' ' + ol.css.CLASS_UNSELECTABLE, this.innerElement_);
 
   /**
    * @private

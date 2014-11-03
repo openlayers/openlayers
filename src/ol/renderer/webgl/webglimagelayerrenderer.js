@@ -48,7 +48,7 @@ ol.renderer.webgl.ImageLayer.prototype.createTexture_ = function(image) {
   // http://www.khronos.org/webgl/wiki/WebGL_and_OpenGL_Differences#Non-Power_of_Two_Texture_Support
   // http://learningwebgl.com/blog/?p=2101
 
-  var imageElement = image.getImageElement();
+  var imageElement = image.getImage();
   var gl = this.getWebGLMapRenderer().getGL();
 
   var texture = gl.createTexture();

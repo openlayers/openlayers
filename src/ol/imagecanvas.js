@@ -33,6 +33,6 @@ goog.inherits(ol.ImageCanvas, ol.ImageBase);
 /**
  * @inheritDoc
  */
-ol.ImageCanvas.prototype.getImageElement = function(opt_context) {
+ol.ImageCanvas.prototype.getImage = function(opt_context) {
   return this.canvas_;
 };

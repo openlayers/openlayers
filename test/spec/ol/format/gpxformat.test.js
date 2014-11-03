@@ -56,7 +56,7 @@ describe('ol.format.GPX', function() {
         expect(f.get('number')).to.be(1);
         expect(f.get('type')).to.be('Type');
         var serialized = format.writeFeatures(fs);
-        expect(serialized).to.xmleql(ol.xml.load(text));
+        expect(serialized).to.xmleql(ol.xml.parse(text));
       });
 
       it('can read and write a rte with multiple rtepts', function() {
@@ -76,7 +76,7 @@ describe('ol.format.GPX', function() {
         expect(g.getCoordinates()).to.eql([[2, 1, 0, 0], [4, 3, 0, 0]]);
         expect(g.getLayout()).to.be(ol.geom.GeometryLayout.XYZM);
         var serialized = format.writeFeatures(fs);
-        expect(serialized).to.xmleql(ol.xml.load(text));
+        expect(serialized).to.xmleql(ol.xml.parse(text));
       });
 
       it('can transform, read and write a rte', function() {
@@ -104,7 +104,7 @@ describe('ol.format.GPX', function() {
         var serialized = format.writeFeatures(fs, {
           featureProjection: 'EPSG:3857'
         });
-        expect(serialized).to.xmleql(ol.xml.load(text));
+        expect(serialized).to.xmleql(ol.xml.parse(text));
       });
 
     });
@@ -156,7 +156,7 @@ describe('ol.format.GPX', function() {
         expect(f.get('number')).to.be(1);
         expect(f.get('type')).to.be('Type');
         var serialized = format.writeFeatures(fs);
-        expect(serialized).to.xmleql(ol.xml.load(text));
+        expect(serialized).to.xmleql(ol.xml.parse(text));
       });
 
       it('can read and write a trk with an empty trkseg', function() {
@@ -175,7 +175,7 @@ describe('ol.format.GPX', function() {
         expect(g.getCoordinates()).to.eql([[]]);
         expect(g.getLayout()).to.be(ol.geom.GeometryLayout.XYZM);
         var serialized = format.writeFeatures(fs);
-        expect(serialized).to.xmleql(ol.xml.load(text));
+        expect(serialized).to.xmleql(ol.xml.parse(text));
       });
 
       it('can read/write a trk with a trkseg with multiple trkpts', function() {
@@ -205,7 +205,7 @@ describe('ol.format.GPX', function() {
         ]);
         expect(g.getLayout()).to.be(ol.geom.GeometryLayout.XYZM);
         var serialized = format.writeFeatures(fs);
-        expect(serialized).to.xmleql(ol.xml.load(text));
+        expect(serialized).to.xmleql(ol.xml.parse(text));
       });
 
       it('can tranform, read and write a trk with a trkseg', function() {
@@ -241,7 +241,7 @@ describe('ol.format.GPX', function() {
         var serialized = format.writeFeatures(fs, {
           featureProjection: 'EPSG:3857'
         });
-        expect(serialized).to.xmleql(ol.xml.load(text));
+        expect(serialized).to.xmleql(ol.xml.parse(text));
       });
 
       it('can read and write a trk with multiple trksegs', function() {
@@ -282,7 +282,7 @@ describe('ol.format.GPX', function() {
         ]);
         expect(g.getLayout()).to.be(ol.geom.GeometryLayout.XYZM);
         var serialized = format.writeFeatures(fs);
-        expect(serialized).to.xmleql(ol.xml.load(text));
+        expect(serialized).to.xmleql(ol.xml.parse(text));
       });
 
     });
@@ -303,7 +303,7 @@ describe('ol.format.GPX', function() {
         expect(g.getCoordinates()).to.eql([2, 1, 0, 0]);
         expect(g.getLayout()).to.be(ol.geom.GeometryLayout.XYZM);
         var serialized = format.writeFeatures(fs);
-        expect(serialized).to.xmleql(ol.xml.load(text));
+        expect(serialized).to.xmleql(ol.xml.parse(text));
       });
 
       it('can transform, read and write a wpt', function() {
@@ -326,7 +326,7 @@ describe('ol.format.GPX', function() {
         var serialized = format.writeFeatures(fs, {
           featureProjection: 'EPSG:3857'
         });
-        expect(serialized).to.xmleql(ol.xml.load(text));
+        expect(serialized).to.xmleql(ol.xml.parse(text));
       });
 
       it('can read and write a wpt with ele', function() {
@@ -345,7 +345,7 @@ describe('ol.format.GPX', function() {
         expect(g.getCoordinates()).to.eql([2, 1, 3, 0]);
         expect(g.getLayout()).to.be(ol.geom.GeometryLayout.XYZM);
         var serialized = format.writeFeatures(fs);
-        expect(serialized).to.xmleql(ol.xml.load(text));
+        expect(serialized).to.xmleql(ol.xml.parse(text));
       });
 
       it('can read and write a wpt with time', function() {
@@ -364,7 +364,7 @@ describe('ol.format.GPX', function() {
         expect(g.getCoordinates()).to.eql([2, 1, 0, 1263115752]);
         expect(g.getLayout()).to.be(ol.geom.GeometryLayout.XYZM);
         var serialized = format.writeFeatures(fs);
-        expect(serialized).to.xmleql(ol.xml.load(text));
+        expect(serialized).to.xmleql(ol.xml.parse(text));
       });
 
       it('can read and write a wpt with ele and time', function() {
@@ -384,7 +384,7 @@ describe('ol.format.GPX', function() {
         expect(g.getCoordinates()).to.eql([2, 1, 3, 1263115752]);
         expect(g.getLayout()).to.be(ol.geom.GeometryLayout.XYZM);
         var serialized = format.writeFeatures(fs);
-        expect(serialized).to.xmleql(ol.xml.load(text));
+        expect(serialized).to.xmleql(ol.xml.parse(text));
       });
 
       it('can read and write various wpt attributes', function() {
@@ -434,7 +434,7 @@ describe('ol.format.GPX', function() {
         expect(f.get('ageofdgpsdata')).to.be(9);
         expect(f.get('dgpsid')).to.be(10);
         var serialized = format.writeFeatures(fs);
-        expect(serialized).to.xmleql(ol.xml.load(text));
+        expect(serialized).to.xmleql(ol.xml.parse(text));
       });
 
     });

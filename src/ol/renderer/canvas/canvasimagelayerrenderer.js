@@ -69,7 +69,7 @@ ol.renderer.canvas.ImageLayer.prototype.forEachFeatureAtPixel =
  */
 ol.renderer.canvas.ImageLayer.prototype.getImage = function() {
   return goog.isNull(this.image_) ?
-      null : this.image_.getImageElement();
+      null : this.image_.getImage();
 };
 
 

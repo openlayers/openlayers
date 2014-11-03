@@ -69,9 +69,6 @@ ol.control.Attribution = function(opt_options) {
 
   var tipLabel = goog.isDef(options.tipLabel) ?
       options.tipLabel : 'Attributions';
-  var tip = goog.dom.createDom(goog.dom.TagName.SPAN, {
-    'role' : 'tooltip'
-  }, tipLabel);
 
   /**
    * @private
@@ -96,10 +93,9 @@ ol.control.Attribution = function(opt_options) {
    */
   this.labelSpan_ = label;
   var button = goog.dom.createDom(goog.dom.TagName.BUTTON, {
-    'class': 'ol-has-tooltip',
-    'type': 'button'
+    'type': 'button',
+    'title': tipLabel
   }, this.labelSpan_);
-  goog.dom.appendChild(button, tip);
 
   var buttonHandler = new ol.pointer.PointerEventHandler(button);
   this.registerDisposable(buttonHandler);
@@ -115,12 +111,12 @@ ol.control.Attribution = function(opt_options) {
     this.blur();
   }, false);
 
-  var element = goog.dom.createDom(goog.dom.TagName.DIV, {
-    'class': className + ' ' + ol.css.CLASS_UNSELECTABLE + ' ' +
-        ol.css.CLASS_CONTROL +
-        (this.collapsed_ && this.collapsible_ ? ' ol-collapsed' : '') +
-        (this.collapsible_ ? '' : ' ol-uncollapsible')
-  }, this.ulElement_, button);
+  var cssClasses = className + ' ' + ol.css.CLASS_UNSELECTABLE + ' ' +
+      ol.css.CLASS_CONTROL +
+      (this.collapsed_ && this.collapsible_ ? ' ol-collapsed' : '') +
+      (this.collapsible_ ? '' : ' ol-uncollapsible');
+  var element = goog.dom.createDom(goog.dom.TagName.DIV,
+      cssClasses, this.ulElement_, button);
 
   goog.base(this, {
     element: element,
