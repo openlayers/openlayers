@@ -19,6 +19,18 @@ goog.require('ol.render.webgl.imagereplay.shader');
 ol.render.webgl.ImageReplay = function(tolerance) {
 
   /**
+   * @type {number|undefined}
+   * @private
+   */
+  this.anchorX_ = undefined;
+
+  /**
+   * @type {number|undefined}
+   * @private
+   */
+  this.anchorY_ = undefined;
+
+  /**
    * @type {ol.Extent}
    * @private
    */
@@ -165,12 +177,16 @@ ol.render.webgl.ImageReplay.prototype.drawAsync = goog.abstractMethod;
  */
 ol.render.webgl.ImageReplay.prototype.drawCoordinates_ =
     function(flatCoordinates, offset, end, stride) {
+  goog.asserts.assert(goog.isDef(this.anchorX_));
+  goog.asserts.assert(goog.isDef(this.anchorY_));
   goog.asserts.assert(goog.isDef(this.height_));
   goog.asserts.assert(goog.isDef(this.imageHeight_));
   goog.asserts.assert(goog.isDef(this.imageWidth_));
   goog.asserts.assert(goog.isDef(this.originX_));
   goog.asserts.assert(goog.isDef(this.originY_));
   goog.asserts.assert(goog.isDef(this.width_));
+  var anchorX = this.anchorX_;
+  var anchorY = this.anchorY_;
   var height = this.height_;
   var imageHeight = this.imageHeight_;
   var imageWidth = this.imageWidth_;
@@ -190,29 +206,29 @@ ol.render.webgl.ImageReplay.prototype.drawCoordinates_ =
 
     this.vertices_[numVertices++] = x;
     this.vertices_[numVertices++] = y;
-    this.vertices_[numVertices++] = -width;
-    this.vertices_[numVertices++] = -height;
+    this.vertices_[numVertices++] = -2 * anchorX;
+    this.vertices_[numVertices++] = -2 * (height - anchorY);
     this.vertices_[numVertices++] = (originX + width) / imageWidth;
     this.vertices_[numVertices++] = (originY + height) / imageHeight;
 
     this.vertices_[numVertices++] = x;
     this.vertices_[numVertices++] = y;
-    this.vertices_[numVertices++] = width;
-    this.vertices_[numVertices++] = -height;
+    this.vertices_[numVertices++] = 2 * (width - anchorX);
+    this.vertices_[numVertices++] = -2 * (height - anchorY);
     this.vertices_[numVertices++] = originX / imageWidth;
     this.vertices_[numVertices++] = (originY + height) / imageHeight;
 
     this.vertices_[numVertices++] = x;
     this.vertices_[numVertices++] = y;
-    this.vertices_[numVertices++] = width;
-    this.vertices_[numVertices++] = height;
+    this.vertices_[numVertices++] = 2 * (width - anchorX);
+    this.vertices_[numVertices++] = 2 * anchorY;
     this.vertices_[numVertices++] = originX / imageWidth;
     this.vertices_[numVertices++] = originY / imageHeight;
 
     this.vertices_[numVertices++] = x;
     this.vertices_[numVertices++] = y;
-    this.vertices_[numVertices++] = -width;
-    this.vertices_[numVertices++] = height;
+    this.vertices_[numVertices++] = -2 * anchorX;
+    this.vertices_[numVertices++] = 2 * anchorY;
     this.vertices_[numVertices++] = (originX + width) / imageWidth;
     this.vertices_[numVertices++] = originY / imageHeight;
 
@@ -348,6 +364,8 @@ ol.render.webgl.ImageReplay.prototype.finish = function(context) {
 
   goog.asserts.assert(this.textures_.length == this.groupIndices_.length);
 
+  this.anchorX_ = undefined;
+  this.anchorY_ = undefined;
   this.height_ = undefined;
   this.images_ = null;
   this.imageHeight_ = undefined;
@@ -436,6 +454,8 @@ ol.render.webgl.ImageReplay.prototype.setFillStrokeStyle = goog.abstractMethod;
  * @inheritDoc
  */
 ol.render.webgl.ImageReplay.prototype.setImageStyle = function(imageStyle) {
+  var anchor = imageStyle.getAnchor();
+  goog.asserts.assert(!goog.isNull(anchor));
   var image = imageStyle.getImage(1);
   goog.asserts.assert(!goog.isNull(image));
   // FIXME getImageSize does not exist for circles
@@ -457,6 +477,8 @@ ol.render.webgl.ImageReplay.prototype.setImageStyle = function(imageStyle) {
     }
   }
 
+  this.anchorX_ = anchor[0];
+  this.anchorY_ = anchor[1];
   this.height_ = size[1];
   this.imageHeight_ = imageSize[1];
   this.imageWidth_ = imageSize[0];
