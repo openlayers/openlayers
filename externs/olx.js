@@ -992,6 +992,7 @@ olx.control.FullScreenOptions.prototype.target;
  * @typedef {{className: (string|undefined),
  *     coordinateFormat: (ol.CoordinateFormatType|undefined),
  *     projection: ol.proj.ProjectionLike,
+ *     tagName: (string|undefined),
  *     target: (Element|undefined),
  *     undefinedHTML: (string|undefined)}}
  * @api stable
@@ -1022,6 +1023,13 @@ olx.control.MousePositionOptions.prototype.coordinateFormat;
  */
 olx.control.MousePositionOptions.prototype.projection;
 
+
+/**
+ * HTML element type. Default is `div`.
+ * @type {string|undefined}
+ * @api stable
+ */
+olx.control.MousePositionOptions.prototype.tagName;
 
 /**
  * Target.
