@@ -35,7 +35,7 @@ ol.render.webgl.ImageReplay = function(tolerance, maxExtent) {
 
   /**
    * @private
-   * @type {ol.Extent}
+   * @type {ol.Coordinate}
    */
   this.origin_ = ol.extent.getBottomLeft(maxExtent);
 
