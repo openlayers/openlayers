@@ -36,6 +36,44 @@ var jQuerySelector;
 /** @typedef {function(...)|Array.<function(...)>} */
 var jQueryCallback;
 
+/** @typedef {
+              {
+               accepts: (Object.<string, string>|undefined),
+               async: (?boolean|undefined),
+               beforeSend: (function(jQuery.jqXHR, (jQueryAjaxSettings|Object.<string, *>))|undefined),
+               cache: (?boolean|undefined),
+               complete: (function(jQuery.jqXHR, string)|undefined),
+               contents: (Object.<string, RegExp>|undefined),
+               contentType: (?string|undefined),
+               context: (Object.<?, ?>|jQueryAjaxSettings|undefined),
+               converters: (Object.<string, Function>|undefined),
+               crossDomain: (?boolean|undefined),
+               data: (Object.<?, ?>|?string|Array.<?>|undefined),
+               dataFilter: (function(string, string):Object.<?,?>|undefined),
+               dataType: (?string|undefined),
+               error: (function(jQuery.jqXHR, string, string)|undefined),
+               global: (?boolean|undefined),
+               headers: (Object.<?, ?>|undefined),
+               ifModified: (?boolean|undefined),
+               isLocal: (?boolean|undefined),
+               jsonp: (?string|undefined),
+               jsonpCallback: (?string|function()|undefined),
+               mimeType: (?string|undefined),
+               password: (?string|undefined),
+               processData: (?boolean|undefined),
+               scriptCharset: (?string|undefined),
+               statusCode: (Object.<number, function()>|undefined),
+               success: (function(?, string, jQuery.jqXHR)|undefined),
+               timeout: (?number|undefined),
+               traditional: (?boolean|undefined),
+               type: (?string|undefined),
+               url: (?string|undefined),
+               username: (?string|undefined),
+               xhr: (function():(ActiveXObject|XMLHttpRequest)|undefined),
+               xhrFields: (Object.<?, ?>|undefined)
+              }} */
+var jQueryAjaxSettings;
+
 /**
  * @constructor
  * @param {(jQuerySelector|Element|Object|Array.<Element>|jQuery|string|
@@ -86,104 +124,60 @@ jQuery.prototype.addClass = function(arg1) {};
 jQuery.prototype.after = function(arg1, content) {};
 
 /**
- * @param {(string|Object.<string,*>)} arg1
- * @param {Object.<string,*>=} settings
+ * @param {(string|jQueryAjaxSettings|Object.<string,*>)} arg1
+ * @param {(jQueryAjaxSettings|Object.<string, *>)=} settings
  * @return {jQuery.jqXHR}
  */
 jQuery.ajax = function(arg1, settings) {};
 
 /**
- * @param {(string|Object.<string,*>)} arg1
- * @param {Object.<string,*>=} settings
+ * @param {(string|jQueryAjaxSettings|Object.<string, *>)} arg1
+ * @param {(jQueryAjaxSettings|Object.<string, *>)=} settings
  * @return {jQuery.jqXHR}
  */
 $.ajax = function(arg1, settings) {};
 
 /**
- * @param {function(!jQuery.event,XMLHttpRequest,Object.<string, *>)} handler
+ * @param {function(!jQuery.event,XMLHttpRequest,(jQueryAjaxSettings|Object.<string, *>))} handler
  * @return {!jQuery}
  */
 jQuery.prototype.ajaxComplete = function(handler) {};
 
 /**
- * @param {function(!jQuery.event,jQuery.jqXHR,Object.<string, *>,*)} handler
+ * @param {function(!jQuery.event,jQuery.jqXHR,(jQueryAjaxSettings|Object.<string, *>),*)} handler
  * @return {!jQuery}
  */
 jQuery.prototype.ajaxError = function(handler) {};
 
 /**
- * @param {(string|
- *     function(Object.<string,*>,Object.<string, *>,jQuery.jqXHR))} dataTypes
- * @param {function(Object.<string,*>,Object.<string, *>,jQuery.jqXHR)=} handler
+ * @param {(string|function((jQueryAjaxSettings|Object.<string, *>),(jQueryAjaxSettings|Object.<string, *>),jQuery.jqXHR))} dataTypes
+ * @param {function((jQueryAjaxSettings|Object.<string, *>),(jQueryAjaxSettings|Object.<string, *>),jQuery.jqXHR)=} handler
  */
 jQuery.ajaxPrefilter = function(dataTypes, handler) {};
 
 /**
- * @param {(string|
- *     function(Object.<string,*>,Object.<string, *>,jQuery.jqXHR))} dataTypes
- * @param {function(Object.<string,*>,Object.<string, *>,jQuery.jqXHR)=} handler
+ * @param {(string|function((jQueryAjaxSettings|Object.<string, *>),(jQueryAjaxSettings|Object.<string, *>),jQuery.jqXHR))} dataTypes
+ * @param {function((jQueryAjaxSettings|Object.<string, *>),(jQueryAjaxSettings|Object.<string, *>),jQuery.jqXHR)=} handler
  */
 $.ajaxPrefilter = function(dataTypes, handler) {};
 
 /**
- * @param {function(!jQuery.event,jQuery.jqXHR,Object.<string, *>)} handler
+ * @param {function(!jQuery.event,jQuery.jqXHR,(jQueryAjaxSettings|Object.<string, *>))} handler
  * @return {!jQuery}
  */
 jQuery.prototype.ajaxSend = function(handler) {};
 
-/** @const */
-jQuery.ajaxSettings = {};
+/** @const {jQueryAjaxSettings|Object.<string, *>} */
+jQuery.ajaxSettings;
 
-/** @const */
+/** @const {jQueryAjaxSettings|Object.<string, *>} */
 $.ajaxSettings = {};
-
-/** @type {Object.<string, string>} */
-jQuery.ajaxSettings.accepts = {};
-
-/** @type {Object.<string, string>} */
-$.ajaxSettings.accepts = {};
-
-/** @type {boolean} */
-jQuery.ajaxSettings.async;
-
-/** @type {boolean} */
-$.ajaxSettings.async;
-
-/** @type {Object.<string, RegExp>} */
-jQuery.ajaxSettings.contents = {};
-
-/** @type {Object.<string, RegExp>} */
-$.ajaxSettings.contents = {};
-
-/** @type {string} */
-jQuery.ajaxSettings.contentType;
-
-/** @type {string} */
-$.ajaxSettings.contentType;
-
-/** @type {Object.<string, *>} */
-jQuery.ajaxSettings.converters = {};
-
-/** @type {Object.<string, *>} */
-$.ajaxSettings.converters = {};
 
 /** @type {Object.<string, boolean>} */
 jQuery.ajaxSettings.flatOptions = {};
 
 /** @type {Object.<string, boolean>} */
 $.ajaxSettings.flatOptions = {};
-
-/** @type {boolean} */
-jQuery.ajaxSettings.global;
-
-/** @type {boolean} */
-$.ajaxSettings.global;
-
-/** @type {boolean} */
-jQuery.ajaxSettings.isLocal;
-
-/** @type {boolean} */
-$.ajaxSettings.isLocal;
 
 /** @type {boolean} */
 jQuery.ajaxSettings.processData;
@@ -197,34 +191,10 @@ jQuery.ajaxSettings.responseFields = {};
 /** @type {Object.<string, string>} */
 $.ajaxSettings.responseFields = {};
 
-/** @type {boolean} */
-jQuery.ajaxSettings.traditional;
-
-/** @type {boolean} */
-$.ajaxSettings.traditional;
-
-/** @type {string} */
-jQuery.ajaxSettings.type;
-
-/** @type {string} */
-$.ajaxSettings.type;
-
-/** @type {string} */
-jQuery.ajaxSettings.url;
-
-/** @type {string} */
-$.ajaxSettings.url;
-
-/** @return {XMLHttpRequest|ActiveXObject} */
-jQuery.ajaxSettings.xhr = function() {};
-
-/** @return {XMLHttpRequest|ActiveXObject} */
-$.ajaxSettings.xhr = function() {};
-
-/** @param {Object.<string,*>} options */
+/** @param {jQueryAjaxSettings|Object.<string, *>} options */
 jQuery.ajaxSetup = function(options) {};
 
-/** @param {Object.<string,*>} options */
+/** @param {jQueryAjaxSettings|Object.<string, *>} options */
 $.ajaxSetup = function(options) {};
 
 /**
@@ -240,7 +210,7 @@ jQuery.prototype.ajaxStart = function(handler) {};
 jQuery.prototype.ajaxStop = function(handler) {};
 
 /**
- * @param {function(!jQuery.event,XMLHttpRequest,Object.<string, *>)} handler
+ * @param {function(!jQuery.event,XMLHttpRequest,(jQueryAjaxSettings|Object.<string, *>), ?)} handler
  * @return {!jQuery}
  */
 jQuery.prototype.ajaxSuccess = function(handler) {};
