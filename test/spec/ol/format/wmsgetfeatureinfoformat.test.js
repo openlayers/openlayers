@@ -1,6 +1,6 @@
-goog.provide('ol.test.format.GetFeatureInfo');
+goog.provide('ol.test.format.WMSGetFeatureInfo');
 
-describe('ol.format.GetFeatureInfo', function() {
+describe('ol.format.WMSGetFeatureInfo', function() {
 
   describe('#readFormat', function() {
 
@@ -200,4 +200,4 @@ describe('ol.format.GetFeatureInfo', function() {
 
 
 goog.require('goog.dom');
-goog.require('ol.format.GetFeatureInfo');
+goog.require('ol.format.WMSGetFeatureInfo');

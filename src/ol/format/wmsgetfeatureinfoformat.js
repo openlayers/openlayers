@@ -1,4 +1,4 @@
-goog.provide('ol.format.GetFeatureInfo');
+goog.provide('ol.format.WMSGetFeatureInfo');
 
 goog.require('goog.array');
 goog.require('goog.asserts');
