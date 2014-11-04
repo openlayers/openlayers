@@ -290,6 +290,7 @@ def examples_star_json(name, match):
               "externs/bootstrap.js",
               "externs/closure-compiler.js",
               "externs/example.js",
+              "externs/fastclick.js",
               "externs/geojson.js",
               "externs/jquery-1.9.js",
               "externs/proj4js.js",
