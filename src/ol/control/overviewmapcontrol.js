@@ -16,6 +16,7 @@ goog.require('ol.Overlay');
 goog.require('ol.OverlayPositioning');
 goog.require('ol.View');
 goog.require('ol.control.Control');
+goog.require('ol.control.ControlProperty');
 goog.require('ol.coordinate');
 goog.require('ol.css');
 goog.require('ol.extent');
@@ -140,38 +141,41 @@ ol.control.OverviewMap = function(opt_options) {
     element: element,
     target: options.target
   });
+
+  goog.events.listen(this,
+      ol.Object.getChangeEventType(ol.control.ControlProperty.MAP),
+      this.handleMapChanged_, false, this);
 };
 goog.inherits(ol.control.OverviewMap, ol.control.Control);
 
 
 /**
- * @inheritDoc
- * @api
+ * @param {ol.ObjectEvent} e Object event.
+ * @private
  */
-ol.control.OverviewMap.prototype.setMap = function(map) {
-  var currentMap = this.getMap();
+ol.control.OverviewMap.prototype.handleMapChanged_ = function(e) {
+  var oldMap = /** @type {ol.Map} */ (e.oldValue);
+  var newMap = this.getMap();
 
-  if (goog.isNull(map) && !goog.isNull(currentMap)) {
+  if (goog.isNull(newMap) && !goog.isNull(oldMap)) {
     goog.events.unlisten(
-        currentMap, ol.Object.getChangeEventType(ol.MapProperty.VIEW),
+        oldMap, ol.Object.getChangeEventType(ol.MapProperty.VIEW),
         this.handleViewChanged_, false, this);
   }
 
-  goog.base(this, 'setMap', map);
-
-  if (!goog.isNull(map)) {
+  if (!goog.isNull(newMap)) {
 
     // if no layers were set for the overviewmap map, then bind with
     // those in the main map
     if (this.ovmap_.getLayers().getLength() === 0) {
-      this.ovmap_.bindTo(ol.MapProperty.LAYERGROUP, map);
+      this.ovmap_.bindTo(ol.MapProperty.LAYERGROUP, newMap);
     }
 
     // bind current map view, or any new one
     this.bindView_();
 
     goog.events.listen(
-        map, ol.Object.getChangeEventType(ol.MapProperty.VIEW),
+        newMap, ol.Object.getChangeEventType(ol.MapProperty.VIEW),
         this.handleViewChanged_, false, this);
 
     this.ovmap_.updateSize();

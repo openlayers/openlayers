@@ -114,25 +114,6 @@ oli.MapEvent.prototype.frameState;
 /**
  * @type {Object}
  */
-oli.control;
-
-
-/**
- * @interface
- */
-oli.control.Control = function() {};
-
-
-/**
- * @param {ol.Map} map Map.
- * @return {undefined} Undefined.
- */
-oli.control.Control.prototype.setMap = function(map) {};
-
-
-/**
- * @type {Object}
- */
 oli.interaction;
 
 
