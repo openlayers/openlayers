@@ -34,10 +34,14 @@ ol.render.webgl.ImageReplay = function(tolerance, maxExtent) {
   this.anchorY_ = undefined;
 
   /**
+   * The origin of the coordinate system for the point coordinates sent to
+   * the GPU. To eliminate jitter caused by precision problems in the GPU
+   * we use the "Rendering Relative to Eye" technique described in the "3D
+   * Engine Design for Virtual Globes" book.
    * @private
    * @type {ol.Coordinate}
    */
-  this.origin_ = ol.extent.getBottomLeft(maxExtent);
+  this.origin_ = ol.extent.getCenter(maxExtent);
 
   /**
    * @type {ol.Extent}
