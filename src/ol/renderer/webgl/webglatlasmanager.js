@@ -100,7 +100,8 @@ ol.renderer.webgl.AtlasManager.prototype.getInfo = function(id) {
  */
 ol.renderer.webgl.AtlasManager.prototype.add =
     function(id, width, height, renderCallback, opt_this) {
-  if (width > this.maxSize_ || height > this.maxSize_) {
+  if (width + this.space_ > this.maxSize_ ||
+      height + this.space_ > this.maxSize_) {
     return null;
   }
 

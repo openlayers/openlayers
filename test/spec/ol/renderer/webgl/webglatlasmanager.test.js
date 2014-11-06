@@ -228,7 +228,7 @@ describe('ol.renderer.webgl.AtlasManager', function() {
     it('returns null if the size exceeds the maximum size', function() {
       var manager = new ol.renderer.webgl.AtlasManager(128);
       expect(manager.add('1', 100, 100, defaultRender)).to.be.ok();
-      expect(manager.add('2', 3000, 3000, defaultRender)).to.eql(null);
+      expect(manager.add('2', 2048, 2048, defaultRender)).to.eql(null);
     });
   });
 
