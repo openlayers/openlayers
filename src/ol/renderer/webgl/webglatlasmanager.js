@@ -72,7 +72,7 @@ ol.renderer.webgl.AtlasManager = function(opt_size, opt_maxSize, opt_space) {
  */
 ol.renderer.webgl.AtlasManager.prototype.getInfo = function(hash) {
   var atlas, info;
-  for (var i = 0, l = this.atlases_.length; i < l; i++) {
+  for (var i = 0, ii = this.atlases_.length; i < ii; i++) {
     atlas = this.atlases_[i];
     info = atlas.get(hash);
     if (info !== null) {
@@ -105,18 +105,18 @@ ol.renderer.webgl.AtlasManager.prototype.add =
   }
 
   var atlas, info;
-  for (var i = 0, l = this.atlases_.length; i < l; i++) {
+  for (var i = 0, ii = this.atlases_.length; i < ii; i++) {
     atlas = this.atlases_[i];
     info = atlas.add(hash, width, height, renderCallback, opt_this);
     if (info !== null) {
       return info;
-    } else {
+    } else if (info === null && i === ii - 1) {
       // the entry could not be added to one of the existing atlases,
       // create a new atlas that is twice as big and try to add to this one.
       this.currentSize_ = Math.min(this.currentSize_ * 2, this.maxSize_);
       atlas = new ol.renderer.webgl.Atlas(this.currentSize_, this.space_);
       this.atlases_.push(atlas);
-      l++;
+      ii++;
     }
   }
 };
@@ -200,7 +200,7 @@ ol.renderer.webgl.Atlas.prototype.get = function(hash) {
 ol.renderer.webgl.Atlas.prototype.add =
     function(hash, width, height, renderCallback, opt_this) {
   var block;
-  for (var i = 0, l = this.emptyBlocks_.length; i < l; i++) {
+  for (var i = 0, ii = this.emptyBlocks_.length; i < ii; i++) {
     block = this.emptyBlocks_[i];
     if (block.width >= width + this.space_ &&
         block.height >= height + this.space_) {
