@@ -11,13 +11,19 @@ attribute vec2 a_position;
 attribute vec2 a_texCoord;
 attribute vec2 a_offsets;
 attribute float a_opacity;
+attribute float a_rotateWithView;
 
 uniform mat4 u_projectionMatrix;
-uniform mat2 u_sizeMatrix;
+uniform mat4 u_offsetScaleMatrix;
+uniform mat4 u_offsetRotateMatrix;
 
 void main(void) {
-  vec2 offsets = u_sizeMatrix * a_offsets;
-  gl_Position = u_projectionMatrix * vec4(a_position, 0., 1.) + vec4(offsets, 0., 0.);
+  mat4 offsetMatrix = u_offsetScaleMatrix;
+  if (a_rotateWithView == 1.0) {
+    offsetMatrix = u_offsetScaleMatrix * u_offsetRotateMatrix;
+  }
+  vec4 offsets = offsetMatrix * vec4(a_offsets, 0., 0.);
+  gl_Position = u_projectionMatrix * vec4(a_position, 0., 1.) + offsets;
   v_texCoord = a_texCoord;
   v_opacity = a_opacity;
 }

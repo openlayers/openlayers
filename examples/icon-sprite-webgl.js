@@ -9,23 +9,26 @@ goog.require('ol.style.Style');
 
 
 var iconInfo = [{
-  size: [55, 55],
   offset: [0, 0],
   opacity: 1.0,
+  rotateWithView: true,
+  rotation: 0.0,
   scale: 1.0,
-  rotation: 0.0
+  size: [55, 55]
 }, {
-  size: [55, 55],
   offset: [110, 86],
   opacity: 0.75,
+  rotateWithView: false,
+  rotation: Math.PI / 2.0,
   scale: 1.25,
-  rotation: Math.PI / 2.0
+  size: [55, 55]
 }, {
-  size: [55, 86],
   offset: [55, 0],
   opacity: 0.5,
+  rotateWithView: true,
+  rotation: Math.PI / 3.0,
   scale: 1.5,
-  rotation: Math.PI / 3.0
+  size: [55, 86]
 }];
 
 var i;
@@ -35,12 +38,13 @@ var icons = new Array(iconCount);
 for (i = 0; i < iconCount; ++i) {
   var info = iconInfo[i];
   icons[i] = new ol.style.Icon({
-    src: 'data/Butterfly.png',
-    size: info.size,
     offset: info.offset,
     opacity: info.opacity,
+    rotateWithView: info.rotateWithView,
+    rotation: info.rotation,
     scale: info.scale,
-    rotation: info.rotation
+    size: info.size,
+    src: 'data/Butterfly.png'
   });
 }
 
