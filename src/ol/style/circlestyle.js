@@ -2,10 +2,9 @@ goog.provide('ol.style.Circle');
 
 goog.require('goog.dom');
 goog.require('goog.dom.TagName');
-goog.require('goog.string');
 goog.require('ol.color');
 goog.require('ol.render.canvas');
-goog.require('ol.structs.IHashable');
+goog.require('ol.structs.IHasChecksum');
 goog.require('ol.style.Fill');
 goog.require('ol.style.Image');
 goog.require('ol.style.ImageState');
@@ -20,7 +19,7 @@ goog.require('ol.style.Stroke');
  * @constructor
  * @param {olx.style.CircleOptions=} opt_options Options.
  * @extends {ol.style.Image}
- * @implements {ol.structs.IHashable}
+ * @implements {ol.structs.IHasChecksum}
  * @api
  */
 ol.style.Circle = function(opt_options) {
@@ -77,6 +76,12 @@ ol.style.Circle = function(opt_options) {
    * @type {ol.Size}
    */
   this.size_ = [size, size];
+
+  /**
+   * @private
+   * @type {Array.<ol.structs.Checksum>|null}
+   */
+  this.checksums_ = null;
 
   /**
    * @type {boolean}
@@ -268,15 +273,22 @@ ol.style.Circle.prototype.render_ = function() {
 /**
  * @inheritDoc
  */
-ol.style.Circle.prototype.hashCode = function() {
-  var hash = 17;
+ol.style.Circle.prototype.getChecksum = function() {
+  var strokeChecksum = !goog.isNull(this.stroke_) ?
+      this.stroke_.getChecksum() : '-';
+  var fillChecksum = !goog.isNull(this.fill_) ?
+      this.fill_.getChecksum() : '-';
 
-  hash = hash * 23 + (!goog.isNull(this.stroke_) ?
-      this.stroke_.hashCode() : 0);
-  hash = hash * 23 + (!goog.isNull(this.fill_) ?
-      this.fill_.hashCode() : 0);
-  hash = hash * 23 + (goog.isDef(this.radius_) ?
-      goog.string.hashCode(this.radius_.toString()) : 0);
+  var recalculate = goog.isNull(this.checksums_) ||
+      (strokeChecksum != this.checksums_[1] ||
+      fillChecksum != this.checksums_[2] ||
+      this.radius_ != this.checksums_[3]);
 
-  return hash;
+  if (recalculate) {
+    var checksum = 'c' + strokeChecksum + fillChecksum +
+        (goog.isDef(this.radius_) ? this.radius_.toString() : '-');
+    this.checksums_ = [checksum, strokeChecksum, fillChecksum, this.radius_];
+  }
+
+  return this.checksums_[0];
 };

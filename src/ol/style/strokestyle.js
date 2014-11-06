@@ -1,8 +1,9 @@
 goog.provide('ol.style.Stroke');
 
-goog.require('goog.string');
+goog.require('goog.crypt');
+goog.require('goog.crypt.Md5');
 goog.require('ol.color');
-goog.require('ol.structs.IHashable');
+goog.require('ol.structs.IHasChecksum');
 
 
 
@@ -15,7 +16,7 @@ goog.require('ol.structs.IHashable');
  *
  * @constructor
  * @param {olx.style.StrokeOptions=} opt_options Options.
- * @implements {ol.structs.IHashable}
+ * @implements {ol.structs.IHasChecksum}
  * @api
  */
 ol.style.Stroke = function(opt_options) {
@@ -57,6 +58,12 @@ ol.style.Stroke = function(opt_options) {
    * @type {number|undefined}
    */
   this.width_ = options.width;
+
+  /**
+   * @private
+   * @type {?ol.structs.Checksum}
+   */
+  this.checksum_ = null;
 };
 
 
@@ -122,6 +129,7 @@ ol.style.Stroke.prototype.getWidth = function() {
  */
 ol.style.Stroke.prototype.setColor = function(color) {
   this.color_ = color;
+  this.checksum_ = null;
 };
 
 
@@ -133,6 +141,7 @@ ol.style.Stroke.prototype.setColor = function(color) {
  */
 ol.style.Stroke.prototype.setLineCap = function(lineCap) {
   this.lineCap_ = lineCap;
+  this.checksum_ = null;
 };
 
 
@@ -144,6 +153,7 @@ ol.style.Stroke.prototype.setLineCap = function(lineCap) {
  */
 ol.style.Stroke.prototype.setLineDash = function(lineDash) {
   this.lineDash_ = lineDash;
+  this.checksum_ = null;
 };
 
 
@@ -155,6 +165,7 @@ ol.style.Stroke.prototype.setLineDash = function(lineDash) {
  */
 ol.style.Stroke.prototype.setLineJoin = function(lineJoin) {
   this.lineJoin_ = lineJoin;
+  this.checksum_ = null;
 };
 
 
@@ -166,6 +177,7 @@ ol.style.Stroke.prototype.setLineJoin = function(lineJoin) {
  */
 ol.style.Stroke.prototype.setMiterLimit = function(miterLimit) {
   this.miterLimit_ = miterLimit;
+  this.checksum_ = null;
 };
 
 
@@ -177,27 +189,33 @@ ol.style.Stroke.prototype.setMiterLimit = function(miterLimit) {
  */
 ol.style.Stroke.prototype.setWidth = function(width) {
   this.width_ = width;
+  this.checksum_ = null;
 };
 
 
 /**
  * @inheritDoc
  */
-ol.style.Stroke.prototype.hashCode = function() {
-  var hash = 17;
+ol.style.Stroke.prototype.getChecksum = function() {
+  if (goog.isNull(this.checksum_)) {
+    var raw = 's' +
+        (!goog.isNull(this.color_) ?
+            ol.color.asString(this.color_) : '-') + ',' +
+        (goog.isDef(this.lineCap_) ?
+            this.lineCap_.toString() : '-') + ',' +
+        (!goog.isNull(this.lineDash_) ?
+            this.lineDash_.toString() : '-') + ',' +
+        (goog.isDef(this.lineJoin_) ?
+            this.lineJoin_ : '-') + ',' +
+        (goog.isDef(this.miterLimit_) ?
+            this.miterLimit_.toString() : '-') + ',' +
+        (goog.isDef(this.width_) ?
+            this.width_.toString() : '-');
 
-  hash = hash * 23 + (!goog.isNull(this.color_) ?
-      goog.string.hashCode(ol.color.asString(this.color_)) : 0);
-  hash = hash * 23 + (goog.isDef(this.lineCap_) ?
-      goog.string.hashCode(this.lineCap_.toString()) : 0);
-  hash = hash * 23 + (!goog.isNull(this.lineDash_) ?
-      goog.string.hashCode(this.lineDash_.toString()) : 0);
-  hash = hash * 23 + (goog.isDef(this.lineJoin_) ?
-      goog.string.hashCode(this.lineJoin_) : 0);
-  hash = hash * 23 + (goog.isDef(this.miterLimit_) ?
-      goog.string.hashCode(this.miterLimit_.toString()) : 0);
-  hash = hash * 23 + (goog.isDef(this.width_) ?
-      goog.string.hashCode(this.width_.toString()) : 0);
+    var md5 = new goog.crypt.Md5();
+    md5.update(raw);
+    this.checksum_ = goog.crypt.byteArrayToString(md5.digest());
+  }
 
-  return hash;
+  return this.checksum_;
 };

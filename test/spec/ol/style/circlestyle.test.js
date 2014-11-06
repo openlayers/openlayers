@@ -3,12 +3,12 @@ goog.provide('ol.test.style.Circle');
 
 describe('ol.style.Circle', function() {
 
-  describe('#hashCode', function() {
+  describe('#getChecksum', function() {
 
     it('calculates the same hash code for default options', function() {
       var style1 = new ol.style.Circle();
       var style2 = new ol.style.Circle();
-      expect(style1.hashCode()).to.eql(style2.hashCode());
+      expect(style1.getChecksum()).to.eql(style2.getChecksum());
     });
 
     it('calculates not the same hash code (radius)', function() {
@@ -16,7 +16,7 @@ describe('ol.style.Circle', function() {
       var style2 = new ol.style.Circle({
         radius: 5
       });
-      expect(style1.hashCode()).to.not.eql(style2.hashCode());
+      expect(style1.getChecksum()).to.not.eql(style2.getChecksum());
     });
 
     it('calculates the same hash code (radius)', function() {
@@ -26,7 +26,7 @@ describe('ol.style.Circle', function() {
       var style2 = new ol.style.Circle({
         radius: 5
       });
-      expect(style1.hashCode()).to.eql(style2.hashCode());
+      expect(style1.getChecksum()).to.eql(style2.getChecksum());
     });
 
     it('calculates not the same hash code (color)', function() {
@@ -42,7 +42,7 @@ describe('ol.style.Circle', function() {
           color: '#319FD3'
         })
       });
-      expect(style1.hashCode()).to.not.eql(style2.hashCode());
+      expect(style1.getChecksum()).to.not.eql(style2.getChecksum());
     });
 
     it('calculates the same hash code (everything set)', function() {
@@ -74,7 +74,7 @@ describe('ol.style.Circle', function() {
           width: 2
         })
       });
-      expect(style1.hashCode()).to.eql(style2.hashCode());
+      expect(style1.getChecksum()).to.eql(style2.getChecksum());
     });
 
     it('calculates not the same hash code (stroke width differs)', function() {
@@ -106,7 +106,57 @@ describe('ol.style.Circle', function() {
           width: 2
         })
       });
-      expect(style1.hashCode()).to.not.eql(style2.hashCode());
+      expect(style1.getChecksum()).to.not.eql(style2.getChecksum());
+    });
+
+    it('invalidates a cached checksum if values change (fill)', function() {
+      var style1 = new ol.style.Circle({
+        radius: 5,
+        fill: new ol.style.Fill({
+          color: '#319FD3'
+        }),
+        stroke: new ol.style.Stroke({
+          color: '#319FD3'
+        })
+      });
+      var style2 = new ol.style.Circle({
+        radius: 5,
+        fill: new ol.style.Fill({
+          color: '#319FD3'
+        }),
+        stroke: new ol.style.Stroke({
+          color: '#319FD3'
+        })
+      });
+      expect(style1.getChecksum()).to.eql(style2.getChecksum());
+
+      style1.getFill().setColor('red');
+      expect(style1.getChecksum()).to.not.eql(style2.getChecksum());
+    });
+
+    it('invalidates a cached checksum if values change (stroke)', function() {
+      var style1 = new ol.style.Circle({
+        radius: 5,
+        fill: new ol.style.Fill({
+          color: '#319FD3'
+        }),
+        stroke: new ol.style.Stroke({
+          color: '#319FD3'
+        })
+      });
+      var style2 = new ol.style.Circle({
+        radius: 5,
+        fill: new ol.style.Fill({
+          color: '#319FD3'
+        }),
+        stroke: new ol.style.Stroke({
+          color: '#319FD3'
+        })
+      });
+      expect(style1.getChecksum()).to.eql(style2.getChecksum());
+
+      style1.getStroke().setWidth(4);
+      expect(style1.getChecksum()).to.not.eql(style2.getChecksum());
     });
 
   });
