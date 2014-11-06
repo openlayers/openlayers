@@ -23,6 +23,9 @@ ol.renderer.webgl.AtlasInfo;
  * atlas. After that, when new atlases are created, they will have
  * twice the size as the latest atlas (until `maxSize` is reached.)
  *
+ * It is recommended to use `ol.has.WEBGL_MAX_TEXTURE_SIZE` as
+ * `maxSize` value.
+ *
  * @constructor
  * @struct
  * @param {number=} opt_size The size in pixels of the first atlas image

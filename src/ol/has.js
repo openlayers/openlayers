@@ -114,26 +114,41 @@ ol.has.MSPOINTER = !!(goog.global.navigator.msPointerEnabled);
 
 
 /**
+ * The maximum supported WebGL texture size in pixels. If WebGL is not
+ * supported, the value is set to `-1`.
+ * @const
+ * @type {number}
+ */
+ol.has.WEBGL_MAX_TEXTURE_SIZE;
+
+
+/**
  * True if browser supports WebGL.
  * @const
  * @type {boolean}
  * @api stable
  */
-ol.has.WEBGL = ol.ENABLE_WEBGL && (
-    /**
-     * @return {boolean} WebGL supported.
-     */
-    function() {
-      if (!('WebGLRenderingContext' in goog.global)) {
-        return false;
-      }
+ol.has.WEBGL;
+
+
+(function() {
+  if (ol.ENABLE_WEBGL) {
+    var hasWebGL = false, textureSize = -1;
+    if ('WebGLRenderingContext' in goog.global) {
       try {
         var canvas = /** @type {HTMLCanvasElement} */
             (goog.dom.createElement(goog.dom.TagName.CANVAS));
-        return !goog.isNull(ol.webgl.getContext(canvas, {
+        var gl = ol.webgl.getContext(canvas, {
           failIfMajorPerformanceCaveat: true
-        }));
-      } catch (e) {
-        return false;
-      }
-    })();
+        });
+        if (!goog.isNull(gl)) {
+          hasWebGL = true;
+          textureSize = /** @type {number} */
+              (gl.getParameter(gl.MAX_TEXTURE_SIZE));
+        }
+      } catch (e) {}
+    }
+    ol.has.WEBGL = hasWebGL;
+    ol.has.WEBGL_MAX_TEXTURE_SIZE = textureSize;
+  }
+})();
