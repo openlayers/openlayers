@@ -132,6 +132,12 @@ ol.render.webgl.ImageReplay = function(tolerance, maxExtent) {
    * @private
    * @type {number|undefined}
    */
+  this.rotation_ = undefined;
+
+  /**
+   * @private
+   * @type {number|undefined}
+   */
   this.scale_ = undefined;
 
   /**
@@ -216,6 +222,7 @@ ol.render.webgl.ImageReplay.prototype.drawCoordinates_ =
   goog.asserts.assert(goog.isDef(this.opacity_));
   goog.asserts.assert(goog.isDef(this.originX_));
   goog.asserts.assert(goog.isDef(this.originY_));
+  goog.asserts.assert(goog.isDef(this.rotation_));
   goog.asserts.assert(goog.isDef(this.scale_));
   goog.asserts.assert(goog.isDef(this.width_));
   var anchorX = this.anchorX_;
@@ -226,11 +233,14 @@ ol.render.webgl.ImageReplay.prototype.drawCoordinates_ =
   var opacity = this.opacity_;
   var originX = this.originX_;
   var originY = this.originY_;
+  var rotation = this.rotation_;
   var scale = this.scale_;
   var width = this.width_;
+  var cos = Math.cos(rotation);
+  var sin = Math.sin(rotation);
   var numIndices = this.indices_.length;
   var numVertices = this.vertices_.length;
-  var i, x, y, n;
+  var i, n, offsetX, offsetY, x, y;
   for (i = offset; i < end; i += stride) {
     x = flatCoordinates[i] - this.origin_[0];
     y = flatCoordinates[i + 1] - this.origin_[1];
@@ -239,34 +249,42 @@ ol.render.webgl.ImageReplay.prototype.drawCoordinates_ =
 
     // 4 vertices per coordinate, with 7 values per vertex
 
+    offsetX = -scale * anchorX;
+    offsetY = -scale * (height - anchorY);
     this.vertices_[numVertices++] = x;
     this.vertices_[numVertices++] = y;
-    this.vertices_[numVertices++] = -2 * scale * anchorX;
-    this.vertices_[numVertices++] = -2 * scale * (height - anchorY);
+    this.vertices_[numVertices++] = offsetX * cos - offsetY * sin;
+    this.vertices_[numVertices++] = offsetX * sin + offsetY * cos;
     this.vertices_[numVertices++] = (originX + width) / imageWidth;
     this.vertices_[numVertices++] = (originY + height) / imageHeight;
     this.vertices_[numVertices++] = opacity;
 
+    offsetX = scale * (width - anchorX);
+    offsetY = -scale * (height - anchorY);
     this.vertices_[numVertices++] = x;
     this.vertices_[numVertices++] = y;
-    this.vertices_[numVertices++] = 2 * scale * (width - anchorX);
-    this.vertices_[numVertices++] = -2 * scale * (height - anchorY);
+    this.vertices_[numVertices++] = offsetX * cos - offsetY * sin;
+    this.vertices_[numVertices++] = offsetX * sin + offsetY * cos;
     this.vertices_[numVertices++] = originX / imageWidth;
     this.vertices_[numVertices++] = (originY + height) / imageHeight;
     this.vertices_[numVertices++] = opacity;
 
+    offsetX = scale * (width - anchorX);
+    offsetY = scale * anchorY;
     this.vertices_[numVertices++] = x;
     this.vertices_[numVertices++] = y;
-    this.vertices_[numVertices++] = 2 * scale * (width - anchorX);
-    this.vertices_[numVertices++] = 2 * scale * anchorY;
+    this.vertices_[numVertices++] = offsetX * cos - offsetY * sin;
+    this.vertices_[numVertices++] = offsetX * sin + offsetY * cos;
     this.vertices_[numVertices++] = originX / imageWidth;
     this.vertices_[numVertices++] = originY / imageHeight;
     this.vertices_[numVertices++] = opacity;
 
+    offsetX = -scale * anchorX;
+    offsetY = scale * anchorY;
     this.vertices_[numVertices++] = x;
     this.vertices_[numVertices++] = y;
-    this.vertices_[numVertices++] = -2 * scale * anchorX;
-    this.vertices_[numVertices++] = 2 * scale * anchorY;
+    this.vertices_[numVertices++] = offsetX * cos - offsetY * sin;
+    this.vertices_[numVertices++] = offsetX * sin + offsetY * cos;
     this.vertices_[numVertices++] = (originX + width) / imageWidth;
     this.vertices_[numVertices++] = originY / imageHeight;
     this.vertices_[numVertices++] = opacity;
@@ -413,6 +431,7 @@ ol.render.webgl.ImageReplay.prototype.finish = function(context) {
   this.opacity_ = undefined;
   this.originX_ = undefined;
   this.originY_ = undefined;
+  this.rotation_ = undefined;
   this.scale_ = undefined;
   this.vertices_ = null;
   this.width_ = undefined;
@@ -484,7 +503,7 @@ ol.render.webgl.ImageReplay.prototype.replay = function(context,
 
   gl.uniformMatrix4fv(locations.u_projectionMatrix, false, projectionMatrix);
   gl.uniformMatrix2fv(locations.u_sizeMatrix, false,
-      new Float32Array([1 / size[0], 0.0, 0.0, 1 / size[1]]));
+      new Float32Array([2 / size[0], 0.0, 0.0, 2 / size[1]]));
 
   gl.bindBuffer(goog.webgl.ELEMENT_ARRAY_BUFFER, this.indicesBuffer_);
 
@@ -521,6 +540,8 @@ ol.render.webgl.ImageReplay.prototype.setImageStyle = function(imageStyle) {
   goog.asserts.assert(goog.isDef(opacity));
   var origin = imageStyle.getOrigin();
   goog.asserts.assert(!goog.isNull(origin));
+  var rotation = imageStyle.getRotation();
+  goog.asserts.assert(goog.isDef(rotation));
   var size = imageStyle.getSize();
   goog.asserts.assert(!goog.isNull(size));
   var scale = imageStyle.getScale();
@@ -545,6 +566,7 @@ ol.render.webgl.ImageReplay.prototype.setImageStyle = function(imageStyle) {
   this.opacity_ = opacity;
   this.originX_ = origin[0];
   this.originY_ = origin[1];
+  this.rotation_ = rotation;
   this.scale_ = scale;
   this.width_ = size[0];
 };
