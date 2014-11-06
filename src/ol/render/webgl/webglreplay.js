@@ -129,6 +129,12 @@ ol.render.webgl.ImageReplay = function(tolerance, maxExtent) {
   this.projectionMatrix_ = goog.vec.Mat4.createNumberIdentity();
 
   /**
+   * @private
+   * @type {number|undefined}
+   */
+  this.scale_ = undefined;
+
+  /**
    * @type {Array.<WebGLTexture>}
    * @private
    */
@@ -210,6 +216,7 @@ ol.render.webgl.ImageReplay.prototype.drawCoordinates_ =
   goog.asserts.assert(goog.isDef(this.opacity_));
   goog.asserts.assert(goog.isDef(this.originX_));
   goog.asserts.assert(goog.isDef(this.originY_));
+  goog.asserts.assert(goog.isDef(this.scale_));
   goog.asserts.assert(goog.isDef(this.width_));
   var anchorX = this.anchorX_;
   var anchorY = this.anchorY_;
@@ -219,6 +226,7 @@ ol.render.webgl.ImageReplay.prototype.drawCoordinates_ =
   var opacity = this.opacity_;
   var originX = this.originX_;
   var originY = this.originY_;
+  var scale = this.scale_;
   var width = this.width_;
   var numIndices = this.indices_.length;
   var numVertices = this.vertices_.length;
@@ -233,32 +241,32 @@ ol.render.webgl.ImageReplay.prototype.drawCoordinates_ =
 
     this.vertices_[numVertices++] = x;
     this.vertices_[numVertices++] = y;
-    this.vertices_[numVertices++] = -2 * anchorX;
-    this.vertices_[numVertices++] = -2 * (height - anchorY);
+    this.vertices_[numVertices++] = -2 * scale * anchorX;
+    this.vertices_[numVertices++] = -2 * scale * (height - anchorY);
     this.vertices_[numVertices++] = (originX + width) / imageWidth;
     this.vertices_[numVertices++] = (originY + height) / imageHeight;
     this.vertices_[numVertices++] = opacity;
 
     this.vertices_[numVertices++] = x;
     this.vertices_[numVertices++] = y;
-    this.vertices_[numVertices++] = 2 * (width - anchorX);
-    this.vertices_[numVertices++] = -2 * (height - anchorY);
+    this.vertices_[numVertices++] = 2 * scale * (width - anchorX);
+    this.vertices_[numVertices++] = -2 * scale * (height - anchorY);
     this.vertices_[numVertices++] = originX / imageWidth;
     this.vertices_[numVertices++] = (originY + height) / imageHeight;
     this.vertices_[numVertices++] = opacity;
 
     this.vertices_[numVertices++] = x;
     this.vertices_[numVertices++] = y;
-    this.vertices_[numVertices++] = 2 * (width - anchorX);
-    this.vertices_[numVertices++] = 2 * anchorY;
+    this.vertices_[numVertices++] = 2 * scale * (width - anchorX);
+    this.vertices_[numVertices++] = 2 * scale * anchorY;
     this.vertices_[numVertices++] = originX / imageWidth;
     this.vertices_[numVertices++] = originY / imageHeight;
     this.vertices_[numVertices++] = opacity;
 
     this.vertices_[numVertices++] = x;
     this.vertices_[numVertices++] = y;
-    this.vertices_[numVertices++] = -2 * anchorX;
-    this.vertices_[numVertices++] = 2 * anchorY;
+    this.vertices_[numVertices++] = -2 * scale * anchorX;
+    this.vertices_[numVertices++] = 2 * scale * anchorY;
     this.vertices_[numVertices++] = (originX + width) / imageWidth;
     this.vertices_[numVertices++] = originY / imageHeight;
     this.vertices_[numVertices++] = opacity;
@@ -405,6 +413,7 @@ ol.render.webgl.ImageReplay.prototype.finish = function(context) {
   this.opacity_ = undefined;
   this.originX_ = undefined;
   this.originY_ = undefined;
+  this.scale_ = undefined;
   this.vertices_ = null;
   this.width_ = undefined;
 };
@@ -514,6 +523,8 @@ ol.render.webgl.ImageReplay.prototype.setImageStyle = function(imageStyle) {
   goog.asserts.assert(!goog.isNull(origin));
   var size = imageStyle.getSize();
   goog.asserts.assert(!goog.isNull(size));
+  var scale = imageStyle.getScale();
+  goog.asserts.assert(goog.isDef(scale));
 
   if (this.images_.length === 0) {
     this.images_.push(image);
@@ -534,6 +545,7 @@ ol.render.webgl.ImageReplay.prototype.setImageStyle = function(imageStyle) {
   this.opacity_ = opacity;
   this.originX_ = origin[0];
   this.originY_ = origin[1];
+  this.scale_ = scale;
   this.width_ = size[0];
 };
 
