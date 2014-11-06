@@ -150,6 +150,14 @@ ol.style.RegularShape.prototype.getImage = function(pixelRatio) {
 /**
  * @inheritDoc
  */
+ol.style.RegularShape.prototype.getImageSize = function() {
+  return this.size_;
+};
+
+
+/**
+ * @inheritDoc
+ */
 ol.style.RegularShape.prototype.getImageState = function() {
   return ol.style.ImageState.LOADED;
 };

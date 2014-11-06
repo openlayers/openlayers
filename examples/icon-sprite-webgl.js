@@ -9,9 +9,9 @@ goog.require('ol.style.Style');
 
 
 var iconInfo = [
-  {size: [55, 55], offset: [0, 0], opacity: 1.0},
-  {size: [55, 55], offset: [110, 86], opacity: 0.75},
-  {size: [55, 86], offset: [55, 0], opacity: 0.5}
+  {size: [55, 55], offset: [0, 0], opacity: 1.0, scale: 1.0},
+  {size: [55, 55], offset: [110, 86], opacity: 0.75, scale: 1.25},
+  {size: [55, 86], offset: [55, 0], opacity: 0.5, scale: 1.5}
 ];
 
 var i;
@@ -19,11 +19,13 @@ var i;
 var iconCount = iconInfo.length;
 var icons = new Array(iconCount);
 for (i = 0; i < iconCount; ++i) {
+  var info = iconInfo[i];
   icons[i] = new ol.style.Icon({
     src: 'data/Butterfly.png',
-    size: iconInfo[i].size,
-    offset: iconInfo[i].offset,
-    opacity: iconInfo[i].opacity
+    size: info.size,
+    offset: info.offset,
+    opacity: info.opacity,
+    scale: info.scale
   });
 }
 
