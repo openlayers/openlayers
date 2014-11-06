@@ -176,6 +176,8 @@ ol.FeatureOverlay.prototype.handleMapPostCompose_ = function(event) {
   var frameState = event.frameState;
   var pixelRatio = frameState.pixelRatio;
   var resolution = frameState.viewState.resolution;
+  var squaredTolerance = ol.renderer.vector.getSquaredTolerance(resolution,
+      pixelRatio);
   var i, ii, styles, featureStyleFunction;
   this.features_.forEach(function(feature) {
     featureStyleFunction = feature.getStyleFunction();
@@ -189,8 +191,7 @@ ol.FeatureOverlay.prototype.handleMapPostCompose_ = function(event) {
     ii = styles.length;
     for (i = 0; i < ii; ++i) {
       ol.renderer.vector.renderFeature(replayGroup, feature, styles[i],
-          ol.renderer.vector.getSquaredTolerance(resolution, pixelRatio),
-          feature, this.handleImageChange_, this);
+          squaredTolerance, feature, this.handleImageChange_, this);
     }
   }, this);
 };
