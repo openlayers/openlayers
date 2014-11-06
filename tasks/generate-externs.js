@@ -39,6 +39,7 @@ function generateExterns(typedefs, symbols, externs, base) {
   var lines = [];
   var processedSymbols = {};
   var constructors = {};
+  var constructorOptionsTypes = {};
 
   function addNamespaces(name) {
     var parts = name.split('.');
@@ -66,12 +67,14 @@ function generateExterns(typedefs, symbols, externs, base) {
     return name;
   }
 
-  function noGoogTypes(typesWithGoog) {
-    var typesWithoutGoog = [];
-    typesWithGoog.forEach(function(type) {
-      typesWithoutGoog.push(type.replace(googRegEx, '*'));
+  // Store in "constructorOptionsTypes" type names that start
+  // with "ol." and end with "Options".
+  function findConstructorOptionsTypes(types) {
+    types.forEach(function(type) {
+      if (type.match(/^ol\..*Options$/)) {
+        constructorOptionsTypes[type] = true;
+      }
     });
-    return typesWithoutGoog;
   }
 
   function processSymbol(symbol) {
@@ -100,15 +103,16 @@ function generateExterns(typedefs, symbols, externs, base) {
       }
     }
     if (symbol.types) {
-      lines.push(' * @type {' + noGoogTypes(symbol.types).join('|') + '}');
+      lines.push(' * @type {' + symbol.types.join('|') + '}');
     }
     var args = [];
     if (symbol.params) {
       symbol.params.forEach(function(param) {
+        findConstructorOptionsTypes(param.types);
         args.push(param.name);
         lines.push(' * @param {' +
             (param.variable ? '...' : '') +
-            noGoogTypes(param.types).join('|') +
+            param.types.join('|') +
             (param.optional ? '=' : '') + (param.nullable ? '!' : '') +
             '} ' + param.name);
       });
@@ -116,7 +120,7 @@ function generateExterns(typedefs, symbols, externs, base) {
     if (symbol.returns) {
       lines.push(' * @return {' +
           (symbol.returns.nullable ? '!' : '') +
-          noGoogTypes(symbol.returns.types).join('|') + '}');
+          symbol.returns.types.join('|') + '}');
     }
     if (symbol.template) {
       lines.push(' * @template ' + symbol.template);
@@ -137,11 +141,34 @@ function generateExterns(typedefs, symbols, externs, base) {
   symbols.forEach(processSymbol);
 
   typedefs.forEach(function(typedef) {
+    // we're about to add a @typedef for "typedef.name" so remove that
+    // type from constructorOptionsTypes
+    delete constructorOptionsTypes[typedef.name];
+
     addNamespaces(typedef.name);
     lines.push('/**');
-    lines.push(' * @typedef {' + noGoogTypes(typedef.types).join('|') + '}');
+    lines.push(' * @typedef {' + typedef.types.join('|') + '}');
     lines.push(' */');
     lines.push(nameToJS(typedef.name) + ';');
+    lines.push('\n');
+  });
+
+
+  // At this point constructorOptionsTypes includes options types for which we
+  // did not have a @typedef yet. For those we add @typedef {Object}.
+  //
+  // This is used for abstract base classes. Abstract base classes should be
+  // defined as types in the ol externs file. But the corresponding @typedef's
+  // are not marked with an @api annotation because abstract base classes are
+  // not instantiated by applications. Yet, we need to have a type defined
+  // in the ol externs file for these options types. So we just use
+  // @typedef {Object}.
+  Object.keys(constructorOptionsTypes).forEach(function(key) {
+    lines.push('/**');
+    lines.push(' * No `@api` annotation for `' + key + '`, use `Object`.');
+    lines.push(' * @typedef {Object}');
+    lines.push(' */');
+    lines.push(nameToJS(key) + ';');
     lines.push('\n');
   });
 

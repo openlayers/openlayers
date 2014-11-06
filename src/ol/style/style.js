@@ -12,7 +12,9 @@ goog.require('ol.style.Stroke');
 
 /**
  * @classdesc
- * Base class for vector feature rendering styles.
+ * Container for vector feature rendering styles. Any changes made to the style
+ * or its children through `set*()` methods will not take effect until the
+ * feature, layer or FeatureOverlay that uses the style is re-rendered.
  *
  * @constructor
  * @param {olx.style.StyleOptions=} opt_options Style options.
@@ -97,6 +99,17 @@ ol.style.Style.prototype.getText = function() {
  */
 ol.style.Style.prototype.getZIndex = function() {
   return this.zIndex_;
+};
+
+
+/**
+ * Set the zIndex.
+ *
+ * @param {number|undefined} zIndex ZIndex.
+ * @api
+ */
+ol.style.Style.prototype.setZIndex = function(zIndex) {
+  this.zIndex_ = zIndex;
 };
 
 

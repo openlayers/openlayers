@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="../resources/bootstrap/css/bootstrap.min.css" type="text/css">
     <link rel="stylesheet" href="../resources/layout.css" type="text/css">
     <link rel="stylesheet" href="../resources/bootstrap/css/bootstrap-responsive.min.css" type="text/css">
-    <title>R-Tree example</title>
+    <title>Box selection example</title>
   </head>
   <body>
 
@@ -30,22 +30,30 @@
 
       <div class="row-fluid">
 
-        <div class="span12">
-          <h4 id="title">R-Tree example</h4>
-          <p id="shortdesc">R-Tree example. Please note that this example only works locally, it does not work when the examples are hosted.  This is because it accesses internals the R-Tree data structure, which are not exported in the API.</p>
+        <div class="span4">
+          <h4 id="title">Box selection example</h4>
+          <p id="shortdesc">Using a DragBox interaction to select features.</p>
           <div id="docs">
-            <p>See the <a href="rtree.js" target="_blank">rtree.js source</a> to see how this is done.</p>
+            <p>This example shows how to use a <code>DragBox</code> interaction to select features. Selected features are added
+            to the feature overlay of a select interaction (<code>ol.interaction.Select</code>) for highlighting.</p>
+            <p>Use <code>SHIFT+drag</code> to draw boxes.</p>
+            <p>See the <a href="box-selection.js" target="_blank">box-selection.js source</a> to see how this is done.</p>
           </div>
-          <div id="tags">vector, rtree</div>
+          <div id="tags">DragBox, feature, selection, box</div>
+        </div>
+        <div class="span4 offset4">
+          <div id="info" class="alert alert-success">
+            &nbsp;
+          </div>
         </div>
 
       </div>
 
     </div>
 
-    <script src="jquery.min.js" type="text/javascript"></script>
+    <script src="../resources/jquery.min.js" type="text/javascript"></script>
     <script src="../resources/example-behaviour.js" type="text/javascript"></script>
-    <script src="loader.js?id=rtree" type="text/javascript"></script>
+    <script src="loader.js?id=box-selection" type="text/javascript"></script>
 
   </body>
 </html>

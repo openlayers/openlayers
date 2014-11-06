@@ -1,22 +1,30 @@
 {
   "exports": [],
-  "src": ["src/**/*.js", "build/examples/all.js"],
+  "src": [
+    "src/**/*.js",
+    "build/ol.ext/*.js",
+    "build/examples/all.js"
+  ],
   "compile": {
+    "js": [
+      "externs/olx.js",
+      "externs/oli.js"
+    ],
     "externs": [
       "externs/bingmaps.js",
       "externs/bootstrap.js",
       "externs/closure-compiler.js",
       "externs/example.js",
+      "externs/fastclick.js",
       "externs/geojson.js",
-      "externs/jquery-1.7.js",
-      "externs/oli.js",
-      "externs/olx.js",
+      "externs/jquery-1.9.js",
       "externs/proj4js.js",
       "externs/tilejson.js",
       "externs/topojson.js",
       "externs/vbarray.js"
     ],
     "define": [
+      "goog.array.ASSUME_NATIVE_FUNCTIONS=true",
       "goog.dom.ASSUME_STANDARDS_MODE=true",
       "goog.json.USE_NATIVE_JSON=true",
       "goog.DEBUG=false"
@@ -61,7 +69,8 @@
       "api", "observable"
     ],
     "compilation_level": "ADVANCED",
-    "output_wrapper": "// OpenLayers 3. See http://ol3.js.org/\n(function(){%output%})();",
+    "warning_level": "VERBOSE",
+    "output_wrapper": "(function(){%output%})();",
     "use_types_for_optimization": true,
     "manage_closure_dependencies": true
 

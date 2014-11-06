@@ -23,8 +23,13 @@
     <div class="container-fluid">
 
       <div class="row-fluid">
-        <div class="span12">
-          <div id="map" class="map"></div>
+        <div class="span6">
+          <h4>EPSG:4326</h4>
+          <div id="map4326" class="map"></div>
+        </div>
+        <div class="span6">
+          <h4>EPSG:3857</h4>
+          <div id="map3857" class="map"></div>
         </div>
       </div>
 
@@ -32,7 +37,7 @@
 
         <div class="span12">
           <h4 id="title">Tissot indicatrix example</h4>
-          <p id="shortdesc">Example of a <a href="http://en.wikipedia.org/wiki/Tissot's_indicatrix">Tissot indicatrix</a> map.</p>
+          <p id="shortdesc">Example of <a href="http://en.wikipedia.org/wiki/Tissot's_indicatrix">Tissot indicatrix</a> maps. The map on the left is an EPSG:4326 map. The one on the left is EPSG:3857.</p>
           <div id="docs">
             <p>See the <a href="tissot.js" target="_blank">tissot.js source</a> to see how this is done.</p>
           </div>
@@ -43,7 +48,7 @@
 
     </div>
 
-    <script src="jquery.min.js" type="text/javascript"></script>
+    <script src="../resources/jquery.min.js" type="text/javascript"></script>
     <script src="../resources/example-behaviour.js" type="text/javascript"></script>
     <script src="loader.js?id=tissot" type="text/javascript"></script>
 

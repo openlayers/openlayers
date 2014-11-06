@@ -175,8 +175,8 @@ describe('ol.proj', function() {
       var epsg3857Projection = ol.proj.get('EPSG:3857');
       var googleProjection = ol.proj.get('GOOGLE');
       var point, x, y;
-      for (x = -20; x <= 20; ++x) {
-        for (y = -20; y <= 20; ++y) {
+      for (x = -20; x <= 20; x += 2) {
+        for (y = -20; y <= 20; y += 2) {
           point = [1000000 * x, 1000000 * y];
           expect(googleProjection.getPointResolution(1, point)).to.roughlyEqual(
               epsg3857Projection.getPointResolution(1, point), 1e-1);
@@ -312,6 +312,49 @@ describe('ol.proj', function() {
       var removed = ol.proj.removeTransform(foo, bar);
       expect(removed).to.be(transform);
       expect(ol.proj.transforms_.foo).to.be(undefined);
+    });
+
+  });
+
+  describe('ol.proj.transform()', function() {
+
+    it('transforms a 2d coordinate', function() {
+      var got = ol.proj.transform([-10, -20], 'EPSG:4326', 'EPSG:3857');
+      expect(got).to.have.length(2);
+      expect(got[0]).to.roughlyEqual(-1113194.9079327357, 1e-3);
+      expect(got[1]).to.roughlyEqual(-2273030.92698769, 1e-3);
+    });
+
+    it('transforms a 3d coordinate', function() {
+      var got = ol.proj.transform([-10, -20, 3], 'EPSG:4326', 'EPSG:3857');
+      expect(got).to.have.length(3);
+      expect(got[0]).to.roughlyEqual(-1113194.9079327357, 1e-3);
+      expect(got[1]).to.roughlyEqual(-2273030.92698769, 1e-3);
+      expect(got[2]).to.be(3);
+    });
+
+    it('transforms a 4d coordinate', function() {
+      var got = ol.proj.transform([-10, -20, 3, 4], 'EPSG:4326', 'EPSG:3857');
+      expect(got).to.have.length(4);
+      expect(got[0]).to.roughlyEqual(-1113194.9079327357, 1e-3);
+      expect(got[1]).to.roughlyEqual(-2273030.92698769, 1e-3);
+      expect(got[2]).to.be(3);
+      expect(got[3]).to.be(4);
+    });
+
+    it('works with 3d points and proj4 defs', function() {
+      proj4.defs('custom',
+          '+proj=somerc +lat_0=46.95240555555556 +lon_0=7.439583333333333 ' +
+          '+k_0=1 +x_0=600000 +y_0=200000 +ellps=bessel ' +
+          '+towgs84=674.374,15.056,405.346,0,0,0,0 +units=m +no_defs');
+
+      var got = ol.proj.transform([-111, 45.5, 123], 'EPSG:4326', 'custom');
+      expect(got).to.have.length(3);
+      expect(got[0]).to.roughlyEqual(-6601512.194209638, 1);
+      expect(got[1]).to.roughlyEqual(6145843.802742112, 1);
+      expect(got[2]).to.be(123);
+
+      delete proj4.defs.custom;
     });
 
   });

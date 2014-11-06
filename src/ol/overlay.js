@@ -129,8 +129,7 @@ ol.Overlay = function(options) {
       this.handlePositionChanged, false, this);
 
   goog.events.listen(
-      this,
-      ol.Object.getChangeEventType(ol.OverlayProperty.POSITIONING),
+      this, ol.Object.getChangeEventType(ol.OverlayProperty.POSITIONING),
       this.handlePositioningChanged, false, this);
 
   if (goog.isDef(options.element)) {

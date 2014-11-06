@@ -47,8 +47,7 @@ goog.inherits(ol.source.MapQuest, ol.source.XYZ);
  * @type {ol.Attribution}
  */
 ol.source.MapQuest.TILE_ATTRIBUTION = new ol.Attribution({
-  html: 'Tiles Courtesy of ' +
-      '<a href="http://www.mapquest.com/" target="_blank">MapQuest</a>'
+  html: 'Tiles Courtesy of <a href="http://www.mapquest.com/">MapQuest</a>'
 });
 
 
@@ -60,7 +59,7 @@ ol.source.MapQuestConfig = {
     maxZoom: 28,
     attributions: [
       ol.source.MapQuest.TILE_ATTRIBUTION,
-      ol.source.OSM.DATA_ATTRIBUTION
+      ol.source.OSM.ATTRIBUTION
     ]
   },
   'sat': {
@@ -77,7 +76,7 @@ ol.source.MapQuestConfig = {
     maxZoom: 18,
     attributions: [
       ol.source.MapQuest.TILE_ATTRIBUTION,
-      ol.source.OSM.DATA_ATTRIBUTION
+      ol.source.OSM.ATTRIBUTION
     ]
   }
 };

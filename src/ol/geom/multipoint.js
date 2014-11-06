@@ -41,7 +41,7 @@ ol.geom.MultiPoint.prototype.appendPoint = function(point) {
   } else {
     ol.array.safeExtend(this.flatCoordinates, point.getFlatCoordinates());
   }
-  this.dispatchChangeEvent();
+  this.changed();
 };
 
 
@@ -143,6 +143,25 @@ ol.geom.MultiPoint.prototype.getType = function() {
 
 
 /**
+ * @inheritDoc
+ * @api
+ */
+ol.geom.MultiPoint.prototype.intersectsExtent = function(extent) {
+  var flatCoordinates = this.flatCoordinates;
+  var stride = this.stride;
+  var i, ii, x, y;
+  for (i = 0, ii = flatCoordinates.length; i < ii; i += stride) {
+    x = flatCoordinates[i];
+    y = flatCoordinates[i + 1];
+    if (ol.extent.containsXY(extent, x, y)) {
+      return true;
+    }
+  }
+  return false;
+};
+
+
+/**
  * @param {Array.<ol.Coordinate>} coordinates Coordinates.
  * @param {ol.geom.GeometryLayout=} opt_layout Layout.
  * @api stable
@@ -158,7 +177,7 @@ ol.geom.MultiPoint.prototype.setCoordinates =
     }
     this.flatCoordinates.length = ol.geom.flat.deflate.coordinates(
         this.flatCoordinates, 0, coordinates, this.stride);
-    this.dispatchChangeEvent();
+    this.changed();
   }
 };
 
@@ -170,5 +189,5 @@ ol.geom.MultiPoint.prototype.setCoordinates =
 ol.geom.MultiPoint.prototype.setFlatCoordinates =
     function(layout, flatCoordinates) {
   this.setFlatCoordinatesInternal(layout, flatCoordinates);
-  this.dispatchChangeEvent();
+  this.changed();
 };

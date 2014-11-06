@@ -29,7 +29,7 @@ var source = new ol.source.WMTS({
   style: 'normal',
   matrixSet: 'google3857',
   urls: urls,
-  requestEncoding: /** @type {ol.source.WMTSRequestEncoding} */ ('REST'),
+  requestEncoding: 'REST',
   tileGrid: new ol.tilegrid.WMTS({
     origin: [-20037508.3428, 20037508.3428],
     resolutions: [

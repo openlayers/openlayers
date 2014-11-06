@@ -121,5 +121,5 @@ ol.layer.Vector.prototype.setStyle = function(style) {
   this.style_ = goog.isDef(style) ? style : ol.style.defaultStyleFunction;
   this.styleFunction_ = goog.isNull(style) ?
       undefined : ol.style.createStyleFunction(this.style_);
-  this.dispatchChangeEvent();
+  this.changed();
 };

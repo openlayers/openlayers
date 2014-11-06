@@ -21,7 +21,8 @@ ol.layer.LayerProperty = {
   VISIBLE: 'visible',
   EXTENT: 'extent',
   MAX_RESOLUTION: 'maxResolution',
-  MIN_RESOLUTION: 'minResolution'
+  MIN_RESOLUTION: 'minResolution',
+  SOURCE: 'source'
 };
 
 
@@ -53,35 +54,32 @@ ol.layer.LayerState;
  * @constructor
  * @extends {ol.Object}
  * @param {olx.layer.BaseOptions} options Layer options.
+ * @api stable
  */
 ol.layer.Base = function(options) {
 
   goog.base(this);
 
+  /**
+   * @type {Object.<string, *>}
+   */
   var properties = goog.object.clone(options);
-
-  /** @type {number} */
-  properties.brightness = goog.isDef(properties.brightness) ?
-      properties.brightness : 0;
-  /** @type {number} */
-  properties.contrast = goog.isDef(properties.contrast) ?
-      properties.contrast : 1;
-  /** @type {number} */
-  properties.hue = goog.isDef(properties.hue) ? properties.hue : 0;
-  /** @type {number} */
-  properties.opacity = goog.isDef(properties.opacity) ? properties.opacity : 1;
-  /** @type {number} */
-  properties.saturation = goog.isDef(properties.saturation) ?
-      properties.saturation : 1;
-  /** @type {boolean} */
-  properties.visible = goog.isDef(properties.visible) ?
-      properties.visible : true;
-  /** @type {number} */
-  properties.maxResolution = goog.isDef(properties.maxResolution) ?
-      properties.maxResolution : Infinity;
-  /** @type {number} */
-  properties.minResolution = goog.isDef(properties.minResolution) ?
-      properties.minResolution : 0;
+  properties[ol.layer.LayerProperty.BRIGHTNESS] =
+      goog.isDef(options.brightness) ? options.brightness : 0;
+  properties[ol.layer.LayerProperty.CONTRAST] =
+      goog.isDef(options.contrast) ? options.contrast : 1;
+  properties[ol.layer.LayerProperty.HUE] =
+      goog.isDef(options.hue) ? options.hue : 0;
+  properties[ol.layer.LayerProperty.OPACITY] =
+      goog.isDef(options.opacity) ? options.opacity : 1;
+  properties[ol.layer.LayerProperty.SATURATION] =
+      goog.isDef(options.saturation) ? options.saturation : 1;
+  properties[ol.layer.LayerProperty.VISIBLE] =
+      goog.isDef(options.visible) ? options.visible : true;
+  properties[ol.layer.LayerProperty.MAX_RESOLUTION] =
+      goog.isDef(options.maxResolution) ? options.maxResolution : Infinity;
+  properties[ol.layer.LayerProperty.MIN_RESOLUTION] =
+      goog.isDef(options.minResolution) ? options.minResolution : 0;
 
   this.setProperties(properties);
 };

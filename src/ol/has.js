@@ -68,8 +68,7 @@ ol.has.CANVAS = ol.ENABLE_CANVAS && (
  * @type {boolean}
  * @api stable
  */
-ol.has.DEVICE_ORIENTATION =
-    'DeviceOrientationEvent' in goog.global;
+ol.has.DEVICE_ORIENTATION = 'DeviceOrientationEvent' in goog.global;
 
 
 /**
@@ -111,8 +110,7 @@ ol.has.POINTER = 'PointerEvent' in goog.global;
  * @const
  * @type {boolean}
  */
-ol.has.MSPOINTER =
-    !!(goog.global.navigator.msPointerEnabled);
+ol.has.MSPOINTER = !!(goog.global.navigator.msPointerEnabled);
 
 
 /**

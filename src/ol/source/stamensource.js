@@ -97,9 +97,10 @@ ol.source.Stamen = function(options) {
   goog.asserts.assert(options.layer in ol.source.StamenLayerConfig);
   var layerConfig = ol.source.StamenLayerConfig[options.layer];
 
-  var protocol = ol.IS_HTTPS ? 'https:' : 'http:';
+  var root = ol.IS_HTTPS ? 'https://stamen-tiles-{a-d}.a.ssl.fastly.net/' :
+      'http://{a-d}.tile.stamen.com/';
   var url = goog.isDef(options.url) ? options.url :
-      protocol + '//{a-d}.tile.stamen.com/' + options.layer + '/{z}/{x}/{y}.' +
+      root + options.layer + '/{z}/{x}/{y}.' +
       layerConfig.extension;
 
   goog.base(this, {
@@ -127,5 +128,5 @@ ol.source.Stamen.ATTRIBUTIONS = [
         'under <a href="http://creativecommons.org/licenses/by/3.0/">CC BY' +
         ' 3.0</a>.'
   }),
-  ol.source.OSM.DATA_ATTRIBUTION
+  ol.source.OSM.ATTRIBUTION
 ];

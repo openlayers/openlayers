@@ -3,11 +3,19 @@ goog.provide('ol.test.interaction.Interaction');
 describe('ol.interaction.Interaction', function() {
 
   describe('constructor', function() {
+    var interaction;
+
+    beforeEach(function() {
+      interaction = new ol.interaction.Interaction();
+    });
 
     it('creates a new interaction', function() {
-      var interaction = new ol.interaction.Interaction();
       expect(interaction).to.be.a(ol.interaction.Interaction);
       expect(interaction).to.be.a(goog.events.EventTarget);
+    });
+
+    it('creates an active interaction', function() {
+      expect(interaction.getActive()).to.be(true);
     });
 
   });

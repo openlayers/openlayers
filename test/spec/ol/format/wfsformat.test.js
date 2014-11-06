@@ -50,6 +50,45 @@ describe('ol.format.WFS', function() {
 
   });
 
+  describe('when parsing mapserver GML2 polygon', function() {
+
+    var features, feature, xml;
+    var config = {
+      'featureNS': 'http://mapserver.gis.umn.edu/mapserver',
+      'featureType': 'polygon',
+      'gmlFormat': new ol.format.GML2()
+    };
+
+    before(function(done) {
+      proj4.defs('urn:x-ogc:def:crs:EPSG:4326', proj4.defs('EPSG:4326'));
+      afterLoadText('spec/ol/format/wfs/polygonv2.xml', function(data) {
+        try {
+          xml = data;
+          features = new ol.format.WFS(config).readFeatures(xml);
+        } catch (e) {
+          done(e);
+        }
+        done();
+      });
+    });
+
+    it('creates 3 features', function() {
+      expect(features).to.have.length(3);
+    });
+
+    it('creates a polygon for My Polygon with hole', function() {
+      feature = features[0];
+      expect(feature.getId()).to.equal('1');
+      expect(feature.get('name')).to.equal('My Polygon with hole');
+      expect(feature.get('boundedBy')).to.eql(
+          [47.003018, -0.768746, 47.925567, 0.532597]);
+      expect(feature.getGeometry()).to.be.an(ol.geom.MultiPolygon);
+      expect(feature.getGeometry().getFlatCoordinates()).
+          to.have.length(60);
+    });
+
+  });
+
   describe('when parsing FeatureCollection', function() {
     var response;
     before(function(done) {
@@ -140,7 +179,7 @@ describe('ol.format.WFS', function() {
         srsName: 'urn:ogc:def:crs:EPSG::4326',
         propertyNames: ['STATE_NAME', 'STATE_FIPS', 'STATE_ABBR']
       });
-      expect(serialized).to.xmleql(ol.xml.load(text));
+      expect(serialized).to.xmleql(ol.xml.parse(text));
     });
 
     it('creates paging headers', function() {
@@ -165,7 +204,7 @@ describe('ol.format.WFS', function() {
         featurePrefix: 'topp',
         featureTypes: ['states']
       });
-      expect(serialized).to.xmleql(ol.xml.load(text));
+      expect(serialized).to.xmleql(ol.xml.parse(text));
     });
 
     it('creates a BBOX filter', function() {
@@ -192,7 +231,7 @@ describe('ol.format.WFS', function() {
         geometryName: 'the_geom',
         bbox: [1, 2, 3, 4]
       });
-      expect(serialized.firstElementChild).to.xmleql(ol.xml.load(text));
+      expect(serialized.firstElementChild).to.xmleql(ol.xml.parse(text));
     });
 
   });
@@ -208,7 +247,7 @@ describe('ol.format.WFS', function() {
           'http://schemas.opengis.net/wfs/1.1.0/wfs.xsd"/>';
       var serialized = new ol.format.WFS().writeTransaction(null, null, null,
           {handle: 'handle_t'});
-      expect(serialized).to.xmleql(ol.xml.load(text));
+      expect(serialized).to.xmleql(ol.xml.parse(text));
     });
 
   });
@@ -239,7 +278,7 @@ describe('ol.format.WFS', function() {
         featurePrefix: 'feature',
         gmlOptions: {multiCurve: true, srsName: 'EPSG:900913'}
       });
-      expect(serialized).to.xmleql(ol.xml.load(text));
+      expect(serialized).to.xmleql(ol.xml.parse(text));
     });
   });
 
@@ -270,7 +309,7 @@ describe('ol.format.WFS', function() {
         featurePrefix: 'foo',
         gmlOptions: {srsName: 'EPSG:900913'}
       });
-      expect(serialized).to.xmleql(ol.xml.load(text));
+      expect(serialized).to.xmleql(ol.xml.parse(text));
     });
   });
 
@@ -311,7 +350,7 @@ describe('ol.format.WFS', function() {
         featureType: 'states',
         featurePrefix: 'topp'
       });
-      expect(serialized).to.xmleql(ol.xml.load(text));
+      expect(serialized).to.xmleql(ol.xml.parse(text));
     });
 
   });
@@ -338,7 +377,7 @@ describe('ol.format.WFS', function() {
           value: 'Another native line goes here'
         }]
       });
-      expect(serialized).to.xmleql(ol.xml.load(text));
+      expect(serialized).to.xmleql(ol.xml.parse(text));
     });
   });
 
@@ -358,7 +397,7 @@ describe('ol.format.WFS', function() {
         featureTypes: ['states', 'cities'],
         featurePrefix: 'topp'
       });
-      expect(serialized).to.xmleql(ol.xml.load(text));
+      expect(serialized).to.xmleql(ol.xml.parse(text));
     });
   });
 
@@ -403,5 +442,6 @@ goog.require('ol.geom.MultiLineString');
 goog.require('ol.geom.MultiPoint');
 goog.require('ol.geom.MultiPolygon');
 goog.require('ol.geom.Polygon');
+goog.require('ol.format.GML2');
 goog.require('ol.format.WFS');
 goog.require('ol.proj');

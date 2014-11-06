@@ -43,7 +43,7 @@ ol.GeolocationProperty = {
  *
  *     var geolocation = new ol.Geolocation({
  *       // take the projection to use from the map's view
- *       projection: view.getprojection()
+ *       projection: view.getProjection()
  *     });
  *     // listen to changes in position
  *     geolocation.on('change', function(evt) {
@@ -173,7 +173,7 @@ ol.Geolocation.prototype.positionChange_ = function(position) {
       ol.sphere.WGS84, this.position_, coords.accuracy);
   geometry.applyTransform(this.transform_);
   this.set(ol.GeolocationProperty.ACCURACY_GEOMETRY, geometry);
-  this.dispatchChangeEvent();
+  this.changed();
 };
 
 

@@ -1,5 +1,18 @@
 goog.provide('ol.test.style.Style');
 
+describe('ol.style.Style', function() {
+
+  describe('#setZIndex', function() {
+
+    it('sets the zIndex', function() {
+      var style = new ol.style.Style();
+
+      style.setZIndex(0.7);
+      expect(style.getZIndex()).to.be(0.7);
+    });
+  });
+});
+
 describe('ol.style.createStyleFunction()', function() {
   var style = new ol.style.Style();
 

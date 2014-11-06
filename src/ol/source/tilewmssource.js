@@ -341,7 +341,7 @@ ol.source.TileWMS.prototype.setUrl = function(url) {
 ol.source.TileWMS.prototype.setUrls = function(urls) {
   this.urls_ = goog.isDefAndNotNull(urls) ? urls : [];
   this.resetCoordKeyPrefix_();
-  this.dispatchChangeEvent();
+  this.changed();
 };
 
 
@@ -407,7 +407,7 @@ ol.source.TileWMS.prototype.updateParams = function(params) {
   goog.object.extend(this.params_, params);
   this.resetCoordKeyPrefix_();
   this.updateV13_();
-  this.dispatchChangeEvent();
+  this.changed();
 };
 
 

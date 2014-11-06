@@ -100,9 +100,11 @@ ol.tilegrid.XYZ.prototype.createTileCoordTransform = function(opt_options) {
 ol.tilegrid.XYZ.prototype.getTileCoordChildTileRange =
     function(tileCoord, opt_tileRange) {
   if (tileCoord[0] < this.maxZoom) {
+    var doubleX = 2 * tileCoord[1];
+    var doubleY = 2 * tileCoord[2];
     return ol.TileRange.createOrUpdate(
-        2 * tileCoord[1], 2 * (tileCoord[1] + 1),
-        2 * tileCoord[2], 2 * (tileCoord[2] + 1),
+        doubleX, doubleX + 1,
+        doubleY, doubleY + 1,
         opt_tileRange);
   } else {
     return null;

@@ -9,6 +9,7 @@ goog.require('ol.geom.flat.closest');
 goog.require('ol.geom.flat.deflate');
 goog.require('ol.geom.flat.inflate');
 goog.require('ol.geom.flat.interpolate');
+goog.require('ol.geom.flat.intersectsextent');
 goog.require('ol.geom.flat.length');
 goog.require('ol.geom.flat.simplify');
 
@@ -70,7 +71,7 @@ ol.geom.LineString.prototype.appendCoordinate = function(coordinate) {
   } else {
     ol.array.safeExtend(this.flatCoordinates, coordinate);
   }
-  this.dispatchChangeEvent();
+  this.changed();
 };
 
 
@@ -191,6 +192,17 @@ ol.geom.LineString.prototype.getType = function() {
 
 
 /**
+ * @inheritDoc
+ * @api
+ */
+ol.geom.LineString.prototype.intersectsExtent = function(extent) {
+  return ol.geom.flat.intersectsextent.lineString(
+      this.flatCoordinates, 0, this.flatCoordinates.length, this.stride,
+      extent);
+};
+
+
+/**
  * @param {Array.<ol.Coordinate>} coordinates Coordinates.
  * @param {ol.geom.GeometryLayout=} opt_layout Layout.
  * @api stable
@@ -206,7 +218,7 @@ ol.geom.LineString.prototype.setCoordinates =
     }
     this.flatCoordinates.length = ol.geom.flat.deflate.coordinates(
         this.flatCoordinates, 0, coordinates, this.stride);
-    this.dispatchChangeEvent();
+    this.changed();
   }
 };
 
@@ -218,5 +230,5 @@ ol.geom.LineString.prototype.setCoordinates =
 ol.geom.LineString.prototype.setFlatCoordinates =
     function(layout, flatCoordinates) {
   this.setFlatCoordinatesInternal(layout, flatCoordinates);
-  this.dispatchChangeEvent();
+  this.changed();
 };

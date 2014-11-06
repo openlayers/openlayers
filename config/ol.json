@@ -13,6 +13,7 @@
       "externs/vbarray.js"
     ],
     "define": [
+      "goog.array.ASSUME_NATIVE_FUNCTIONS=true",
       "goog.dom.ASSUME_STANDARDS_MODE=true",
       "goog.json.USE_NATIVE_JSON=true",
       "goog.DEBUG=false"
@@ -57,6 +58,7 @@
       "api", "observable"
     ],
     "compilation_level": "ADVANCED",
+    "warning_level": "VERBOSE",
     "output_wrapper": "(function(){%output%})();",
     "use_types_for_optimization": true,
     "manage_closure_dependencies": true

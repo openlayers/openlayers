@@ -47,7 +47,7 @@ exports.handlers = {
         if (!cls.fires) {
           cls.fires = [];
         }
-        event = 'ol.ObjectEvent#event:change:' + name.toLowerCase();
+        event = 'ol.ObjectEvent#event:change:' + name;
         if (cls.fires.indexOf(event) == -1) {
           cls.fires.push(event);
         }

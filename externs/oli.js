@@ -10,8 +10,10 @@ var oli;
 
 
 
-/** @interface */
-oli.CollectionEvent;
+/**
+ * @interface
+ */
+oli.CollectionEvent = function() {};
 
 
 /**
@@ -21,8 +23,10 @@ oli.CollectionEvent.prototype.element;
 
 
 
-/** @interface */
-oli.DragBoxEvent;
+/**
+ * @interface
+ */
+oli.DragBoxEvent = function() {};
 
 
 /**
@@ -32,8 +36,10 @@ oli.DragBoxEvent.prototype.coordinate;
 
 
 
-/** @interface */
-oli.DrawEvent;
+/**
+ * @interface
+ */
+oli.DrawEvent = function() {};
 
 
 /**
@@ -43,17 +49,29 @@ oli.DrawEvent.prototype.feature;
 
 
 
-/** @interface */
-oli.ObjectEvent;
+/**
+ * @interface
+ */
+oli.ObjectEvent = function() {};
 
 
-/** @type {string} */
+/**
+ * @type {string}
+ */
 oli.ObjectEvent.prototype.key;
 
 
+/**
+ * @type {*}
+ */
+oli.ObjectEvent.prototype.oldValue;
 
-/** @interface */
-oli.MapBrowserEvent;
+
+
+/**
+ * @interface
+ */
+oli.MapBrowserEvent = function() {};
 
 
 /**
@@ -75,8 +93,10 @@ oli.MapBrowserEvent.prototype.pixel;
 
 
 
-/** @interface */
-oli.MapEvent;
+/**
+ * @interface
+ */
+oli.MapEvent = function() {};
 
 
 /**
@@ -91,11 +111,16 @@ oli.MapEvent.prototype.map;
 oli.MapEvent.prototype.frameState;
 
 
+/**
+ * @type {Object}
+ */
+oli.control;
+
 
 /**
  * @interface
  */
-oli.control.Control;
+oli.control.Control = function() {};
 
 
 /**
@@ -105,9 +130,17 @@ oli.control.Control;
 oli.control.Control.prototype.setMap = function(map) {};
 
 
+/**
+ * @type {Object}
+ */
+oli.interaction;
 
-/** @interface */
-oli.interaction.DragAndDropEvent;
+
+
+/**
+ * @interface
+ */
+oli.interaction.DragAndDropEvent = function() {};
 
 
 /**
@@ -128,9 +161,17 @@ oli.interaction.DragAndDropEvent.prototype.projection;
 oli.interaction.DragAndDropEvent.prototype.file;
 
 
+/**
+ * @type {Object}
+ */
+oli.render;
 
-/** @interface */
-oli.render.Event;
+
+
+/**
+ * @interface
+ */
+oli.render.Event = function() {};
 
 
 /**
@@ -157,9 +198,17 @@ oli.render.Event.prototype.glContext;
 oli.render.Event.prototype.vectorContext;
 
 
+/**
+ * @type {Object}
+ */
+oli.source;
 
-/** @interface */
-oli.source.VectorEvent;
+
+
+/**
+ * @interface
+ */
+oli.source.VectorEvent = function() {};
 
 
 /**

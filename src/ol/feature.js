@@ -50,7 +50,8 @@ goog.require('ol.style.Style');
  *
  * @constructor
  * @extends {ol.Object}
- * @fires change Triggered when the geometry or style of the feature changes.
+ * @fires change Triggered when the id, the geometry or the style of the
+ *     feature changes.
  * @param {ol.geom.Geometry|Object.<string, *>=} opt_geometryOrProperties
  *     You may pass a Geometry object directly, or an object literal
  *     containing properties.  If you pass an object literal, you may
@@ -174,9 +175,10 @@ ol.Feature.prototype.getGeometryName = function() {
 
 /**
  * @return {ol.style.Style|Array.<ol.style.Style>|
- *     ol.feature.FeatureStyleFunction} Return the style as set by setStyle in
- *     the same format that it was provided in. If setStyle has not been run,
- *     return `undefined`.
+ *     ol.feature.FeatureStyleFunction} Return the style as set by `setStyle`
+ * in the same format that it was provided in. If `setStyle` has not been
+ * called, or if it was called with `null`, then `getStyle()` will return
+ * `null`.
  * @api stable
  */
 ol.Feature.prototype.getStyle = function() {
@@ -198,7 +200,7 @@ ol.Feature.prototype.getStyleFunction = function() {
  * @private
  */
 ol.Feature.prototype.handleGeometryChange_ = function() {
-  this.dispatchChangeEvent();
+  this.changed();
 };
 
 
@@ -214,7 +216,7 @@ ol.Feature.prototype.handleGeometryChanged_ = function() {
   if (goog.isDefAndNotNull(geometry)) {
     this.geometryChangeKey_ = goog.events.listen(geometry,
         goog.events.EventType.CHANGE, this.handleGeometryChange_, false, this);
-    this.dispatchChangeEvent();
+    this.changed();
   }
 };
 
@@ -237,14 +239,18 @@ goog.exportProperty(
 
 
 /**
+ * Set the style for the feature.  This can be a single style object, an array
+ * of styles, or a function that takes a resolution and returns an array of
+ * styles. If it is `null` the feature has no style (a `null` style).
  * @param {ol.style.Style|Array.<ol.style.Style>|
- *     ol.feature.FeatureStyleFunction} style Set the style for this feature.
+ *     ol.feature.FeatureStyleFunction} style Style for this feature.
  * @api stable
  */
 ol.Feature.prototype.setStyle = function(style) {
   this.style_ = style;
-  this.styleFunction_ = ol.feature.createFeatureStyleFunction(style);
-  this.dispatchChangeEvent();
+  this.styleFunction_ = goog.isNull(style) ?
+      undefined : ol.feature.createFeatureStyleFunction(style);
+  this.changed();
 };
 
 
@@ -256,7 +262,7 @@ ol.Feature.prototype.setStyle = function(style) {
  */
 ol.Feature.prototype.setId = function(id) {
   this.id_ = id;
-  this.dispatchChangeEvent();
+  this.changed();
 };
 
 
@@ -293,9 +299,9 @@ ol.feature.FeatureStyleFunction;
  * Convert the provided object into a feature style function.  Functions passed
  * through unchanged.  Arrays of ol.style.Style or single style objects wrapped
  * in a new feature style function.
- * @param {ol.feature.FeatureStyleFunction|Array.<ol.style.Style>|
- *     ol.style.Style} obj A feature style function, a single style, or an array
- *     of styles.
+ * @param {ol.feature.FeatureStyleFunction|!Array.<ol.style.Style>|
+ *     !ol.style.Style} obj A feature style function, a single style, or an
+ *     array of styles.
  * @return {ol.feature.FeatureStyleFunction} A style function.
  */
 ol.feature.createFeatureStyleFunction = function(obj) {

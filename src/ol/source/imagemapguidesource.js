@@ -3,6 +3,7 @@ goog.provide('ol.source.ImageMapGuide');
 goog.require('goog.object');
 goog.require('goog.uri.utils');
 goog.require('ol.Image');
+goog.require('ol.ImageLoadFunctionType');
 goog.require('ol.ImageUrlFunction');
 goog.require('ol.extent');
 goog.require('ol.source.Image');
@@ -58,6 +59,13 @@ ol.source.ImageMapGuide = function(options) {
    * @type {ol.ImageUrlFunctionType}
    */
   this.imageUrlFunction_ = imageUrlFunction;
+
+  /**
+   * @private
+   * @type {ol.ImageLoadFunctionType}
+   */
+  this.imageLoadFunction_ = goog.isDef(options.imageLoadFunction) ?
+      options.imageLoadFunction : ol.source.Image.defaultImageLoadFunction;
 
   /**
    * @private
@@ -140,7 +148,8 @@ ol.source.ImageMapGuide.prototype.getImage =
   var imageUrl = this.imageUrlFunction_(extent, size, projection);
   if (goog.isDef(imageUrl)) {
     image = new ol.Image(extent, resolution, pixelRatio,
-        this.getAttributions(), imageUrl, this.crossOrigin_);
+        this.getAttributions(), imageUrl, this.crossOrigin_,
+        this.imageLoadFunction_);
   } else {
     image = null;
   }
@@ -179,7 +188,7 @@ ol.source.ImageMapGuide.getScale = function(extent, size, metersPerUnit, dpi) {
  */
 ol.source.ImageMapGuide.prototype.updateParams = function(params) {
   goog.object.extend(this.params_, params);
-  this.dispatchChangeEvent();
+  this.changed();
 };
 
 
