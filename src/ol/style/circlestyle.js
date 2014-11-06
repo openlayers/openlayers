@@ -139,6 +139,14 @@ ol.style.Circle.prototype.getImageState = function() {
 
 /**
  * @inheritDoc
+ */
+ol.style.Circle.prototype.getImageSize = function() {
+  return this.size_;
+};
+
+
+/**
+ * @inheritDoc
  * @api
  */
 ol.style.Circle.prototype.getOrigin = function() {

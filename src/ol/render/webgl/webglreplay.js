@@ -506,7 +506,6 @@ ol.render.webgl.ImageReplay.prototype.setImageStyle = function(imageStyle) {
   goog.asserts.assert(!goog.isNull(anchor));
   var image = imageStyle.getImage(1);
   goog.asserts.assert(!goog.isNull(image));
-  // FIXME getImageSize does not exist for circles
   var imageSize = imageStyle.getImageSize();
   goog.asserts.assert(!goog.isNull(imageSize));
   var opacity = imageStyle.getOpacity();

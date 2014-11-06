@@ -133,6 +133,12 @@ ol.style.Image.prototype.getImageState = goog.abstractMethod;
 
 
 /**
+ * @return {ol.Size} Image size.
+ */
+ol.style.Image.prototype.getImageSize = goog.abstractMethod;
+
+
+/**
  * @param {number} pixelRatio Pixel ratio.
  * @return {HTMLCanvasElement|HTMLVideoElement|Image} Image element.
  */
