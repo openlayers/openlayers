@@ -57,8 +57,8 @@ $(function () {
     var unstable = $('.unstable');
     var stabilityToggle = $('#stability-toggle');
     stabilityToggle.change(function() {
-        unstable[this.checked ? 'addClass' : 'removeClass']('hidden');
+        unstable.toggleClass('hidden', this.checked);
         return false;
     });
-    unstable[stabilityToggle[0].checked ? 'addClass' : 'removeClass']('hidden');
+    unstable.toggleClass('hidden', stabilityToggle[0].checked);
 });
