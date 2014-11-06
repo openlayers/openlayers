@@ -1,5 +1,5 @@
-goog.provide('ol.renderer.webgl.Atlas');
-goog.provide('ol.renderer.webgl.AtlasManager');
+goog.provide('ol.style.Atlas');
+goog.provide('ol.style.AtlasManager');
 
 goog.require('goog.asserts');
 goog.require('goog.dom');
@@ -10,7 +10,7 @@ goog.require('goog.object');
 /**
  * @typedef {{offsetX: number, offsetY: number, image: HTMLCanvasElement}}
  */
-ol.renderer.webgl.AtlasInfo;
+ol.style.AtlasInfo;
 
 
 
@@ -35,7 +35,7 @@ ol.renderer.webgl.AtlasInfo;
  * @param {number=} opt_space The space in pixels between images
  *      (default: 1).
  */
-ol.renderer.webgl.AtlasManager = function(opt_size, opt_maxSize, opt_space) {
+ol.style.AtlasManager = function(opt_size, opt_maxSize, opt_space) {
 
   /**
    * The size in pixels of the latest atlas image.
@@ -60,17 +60,17 @@ ol.renderer.webgl.AtlasManager = function(opt_size, opt_maxSize, opt_space) {
 
   /**
    * @private
-   * @type {Array.<ol.renderer.webgl.Atlas>}
+   * @type {Array.<ol.style.Atlas>}
    */
-  this.atlases_ = [new ol.renderer.webgl.Atlas(this.currentSize_, this.space_)];
+  this.atlases_ = [new ol.style.Atlas(this.currentSize_, this.space_)];
 };
 
 
 /**
  * @param {string} id The identifier of the entry to check.
- * @return {ol.renderer.webgl.AtlasInfo}
+ * @return {ol.style.AtlasInfo}
  */
-ol.renderer.webgl.AtlasManager.prototype.getInfo = function(id) {
+ol.style.AtlasManager.prototype.getInfo = function(id) {
   var atlas, info;
   for (var i = 0, ii = this.atlases_.length; i < ii; i++) {
     atlas = this.atlases_[i];
@@ -96,9 +96,9 @@ ol.renderer.webgl.AtlasManager.prototype.getInfo = function(id) {
  *  onto the sprite image.
  * @param {object=} opt_this Value to use as `this` when executing
  * `renderCallback`.
- * @return {ol.renderer.webgl.AtlasInfo}
+ * @return {ol.style.AtlasInfo}
  */
-ol.renderer.webgl.AtlasManager.prototype.add =
+ol.style.AtlasManager.prototype.add =
     function(id, width, height, renderCallback, opt_this) {
   if (width + this.space_ > this.maxSize_ ||
       height + this.space_ > this.maxSize_) {
@@ -115,7 +115,7 @@ ol.renderer.webgl.AtlasManager.prototype.add =
       // the entry could not be added to one of the existing atlases,
       // create a new atlas that is twice as big and try to add to this one.
       this.currentSize_ = Math.min(this.currentSize_ * 2, this.maxSize_);
-      atlas = new ol.renderer.webgl.Atlas(this.currentSize_, this.space_);
+      atlas = new ol.style.Atlas(this.currentSize_, this.space_);
       this.atlases_.push(atlas);
       ii++;
     }
@@ -137,7 +137,7 @@ ol.renderer.webgl.AtlasManager.prototype.add =
  * @param {number} size The size in pixels of the sprite images.
  * @param {number} space The space in pixels between images.
  */
-ol.renderer.webgl.Atlas = function(size, space) {
+ol.style.Atlas = function(size, space) {
 
   /**
    * @private
@@ -151,13 +151,13 @@ ol.renderer.webgl.Atlas = function(size, space) {
 
   /**
    * @private
-   * @type {Array.<ol.renderer.webgl.Atlas.Block>}
+   * @type {Array.<ol.style.Atlas.Block>}
    */
   this.emptyBlocks_ = [{x: 0, y: 0, width: size, height: size}];
 
   /**
    * @private
-   * @type {Object.<number, ol.renderer.webgl.AtlasInfo>}
+   * @type {Object.<number, ol.style.AtlasInfo>}
    */
   this.entries_ = {};
 
@@ -181,9 +181,9 @@ ol.renderer.webgl.Atlas = function(size, space) {
 
 /**
  * @param {string} id The identifier of the entry to check.
- * @return {ol.renderer.webgl.AtlasInfo}
+ * @return {ol.style.AtlasInfo}
  */
-ol.renderer.webgl.Atlas.prototype.get = function(id) {
+ol.style.Atlas.prototype.get = function(id) {
   return goog.object.get(this.entries_, id, null);
 };
 
@@ -196,9 +196,9 @@ ol.renderer.webgl.Atlas.prototype.get = function(id) {
  *  onto the sprite image.
  * @param {object=} opt_this Value to use as `this` when executing
  * `renderCallback`.
- * @return {ol.renderer.webgl.AtlasInfo}
+ * @return {ol.style.AtlasInfo}
  */
-ol.renderer.webgl.Atlas.prototype.add =
+ol.style.Atlas.prototype.add =
     function(id, width, height, renderCallback, opt_this) {
   var block;
   for (var i = 0, ii = this.emptyBlocks_.length; i < ii; i++) {
@@ -232,16 +232,16 @@ ol.renderer.webgl.Atlas.prototype.add =
 /**
  * @private
  * @param {number} index The index of the block.
- * @param {ol.renderer.webgl.Atlas.Block} block The block to split.
+ * @param {ol.style.Atlas.Block} block The block to split.
  * @param {number} width The width of the entry to insert.
  * @param {number} height The height of the entry to insert.
  */
-ol.renderer.webgl.Atlas.prototype.split_ =
+ol.style.Atlas.prototype.split_ =
     function(index, block, width, height) {
   var deltaWidth = block.width - width;
   var deltaHeight = block.height - height;
 
-  /** @type {ol.renderer.webgl.AtlasInfo} */
+  /** @type {ol.style.AtlasInfo} */
   var newBlock1, newBlock2;
 
   if (deltaWidth > deltaHeight) {
@@ -290,10 +290,10 @@ ol.renderer.webgl.Atlas.prototype.split_ =
  * blocks (that are potentially smaller) are filled first.
  * @private
  * @param {number} index The index of the block to remove.
- * @param {ol.renderer.webgl.Atlas.Block} newBlock1 The 1st block to add.
- * @param {ol.renderer.webgl.Atlas.Block} newBlock2 The 2nd block to add.
+ * @param {ol.style.Atlas.Block} newBlock1 The 1st block to add.
+ * @param {ol.style.Atlas.Block} newBlock2 The 2nd block to add.
  */
-ol.renderer.webgl.Atlas.prototype.updateBlocks_ =
+ol.style.Atlas.prototype.updateBlocks_ =
     function(index, newBlock1, newBlock2) {
   var args = [index, 1];
   if (newBlock1.width > 0 && newBlock1.height > 0) {
@@ -309,4 +309,4 @@ ol.renderer.webgl.Atlas.prototype.updateBlocks_ =
 /**
  * @typedef {{x: number, y: number, width: number, height: number}}
  */
-ol.renderer.webgl.Atlas.Block;
+ol.style.Atlas.Block;
