@@ -67,14 +67,14 @@ ol.renderer.webgl.AtlasManager = function(opt_size, opt_maxSize, opt_space) {
 
 
 /**
- * @param {number} hash The hash of the entry to check.
+ * @param {string} id The identifier of the entry to check.
  * @return {ol.renderer.webgl.AtlasInfo}
  */
-ol.renderer.webgl.AtlasManager.prototype.getInfo = function(hash) {
+ol.renderer.webgl.AtlasManager.prototype.getInfo = function(id) {
   var atlas, info;
   for (var i = 0, ii = this.atlases_.length; i < ii; i++) {
     atlas = this.atlases_[i];
-    info = atlas.get(hash);
+    info = atlas.get(id);
     if (info !== null) {
       return info;
     }
@@ -86,10 +86,10 @@ ol.renderer.webgl.AtlasManager.prototype.getInfo = function(hash) {
 /**
  * Add an image to the atlas manager.
  *
- * If an entry for the given hash already exists, the entry will
+ * If an entry for the given id already exists, the entry will
  * be overridden (but the space on the atlas graphic will not be freed).
  *
- * @param {number} hash The hash of the entry to add.
+ * @param {string} id The identifier of the entry to add.
  * @param {number} width The width.
  * @param {number} height The height.
  * @param {function(*)} renderCallback Called to render the new sprite entry
@@ -99,7 +99,7 @@ ol.renderer.webgl.AtlasManager.prototype.getInfo = function(hash) {
  * @return {ol.renderer.webgl.AtlasInfo}
  */
 ol.renderer.webgl.AtlasManager.prototype.add =
-    function(hash, width, height, renderCallback, opt_this) {
+    function(id, width, height, renderCallback, opt_this) {
   if (width > this.maxSize_ || height > this.maxSize_) {
     return null;
   }
@@ -107,7 +107,7 @@ ol.renderer.webgl.AtlasManager.prototype.add =
   var atlas, info;
   for (var i = 0, ii = this.atlases_.length; i < ii; i++) {
     atlas = this.atlases_[i];
-    info = atlas.add(hash, width, height, renderCallback, opt_this);
+    info = atlas.add(id, width, height, renderCallback, opt_this);
     if (info !== null) {
       return info;
     } else if (info === null && i === ii - 1) {
@@ -179,16 +179,16 @@ ol.renderer.webgl.Atlas = function(size, space) {
 
 
 /**
- * @param {number} hash The hash of the entry to check.
+ * @param {string} id The identifier of the entry to check.
  * @return {ol.renderer.webgl.AtlasInfo}
  */
-ol.renderer.webgl.Atlas.prototype.get = function(hash) {
-  return goog.object.get(this.entries_, hash, null);
+ol.renderer.webgl.Atlas.prototype.get = function(id) {
+  return goog.object.get(this.entries_, id, null);
 };
 
 
 /**
- * @param {number} hash The hash of the entry to add.
+ * @param {string} id The identifier of the entry to add.
  * @param {number} width The width.
  * @param {number} height The height.
  * @param {function(*)} renderCallback Called to render the new sprite entry
@@ -198,7 +198,7 @@ ol.renderer.webgl.Atlas.prototype.get = function(hash) {
  * @return {ol.renderer.webgl.AtlasInfo}
  */
 ol.renderer.webgl.Atlas.prototype.add =
-    function(hash, width, height, renderCallback, opt_this) {
+    function(id, width, height, renderCallback, opt_this) {
   var block;
   for (var i = 0, ii = this.emptyBlocks_.length; i < ii; i++) {
     block = this.emptyBlocks_[i];
@@ -210,7 +210,7 @@ ol.renderer.webgl.Atlas.prototype.add =
         offsetY: block.y + this.space_,
         image: this.canvas_
       };
-      this.entries_[hash] = entry;
+      this.entries_[id] = entry;
 
       // render the image on the atlas image
       renderCallback.call(opt_this, this.context_,
@@ -240,7 +240,9 @@ ol.renderer.webgl.Atlas.prototype.split_ =
   var deltaWidth = block.width - width;
   var deltaHeight = block.height - height;
 
+  /** @type {ol.renderer.webgl.AtlasInfo} */
   var newBlock1, newBlock2;
+
   if (deltaWidth > deltaHeight) {
     // split vertically
     // block right of the inserted entry
