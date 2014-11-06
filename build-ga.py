@@ -94,10 +94,11 @@ def host_examples(t):
     t.cp('build/ga.js', build_dir + '/ol.js')
     t.cp('build/ga-debug.js', build_dir + '/ol-debug.js')
     t.cp('build/ol.css', css_dir)
-    t.cp('build/ga.css', build_dir)
+    t.cp('build/ga.css', css_dir)
+    t.cp('css/marker.png', css_dir)
+    t.cp('css/editortoolbar.png', css_dir)
     t.cp('examples/index.html', 'examples/example-list.js',
-         'examples/example-list.xml', 'examples/Jugl.js',
-         'examples/jquery.min.js', examples_dir)
+         'examples/example-list.xml', 'examples/Jugl.js', examples_dir)
     t.rm_rf('build/hosted/%(BRANCH)s/closure-library')
     t.cp_r(closure_lib_path, 'build/hosted/%(BRANCH)s/closure-library')
     t.rm_rf('build/hosted/%(BRANCH)s/ol')
