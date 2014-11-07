@@ -24,7 +24,9 @@ goog.require('ol.layer.Vector');
 goog.require('ol.render.Event');
 goog.require('ol.render.EventType');
 goog.require('ol.render.webgl.Immediate');
+goog.require('ol.render.webgl.ReplayGroup');
 goog.require('ol.renderer.Map');
+goog.require('ol.renderer.vector');
 goog.require('ol.renderer.webgl.ImageLayer');
 goog.require('ol.renderer.webgl.Layer');
 goog.require('ol.renderer.webgl.TileLayer');
@@ -270,11 +272,29 @@ ol.renderer.webgl.Map.prototype.dispatchComposeEvent_ =
     function(type, frameState) {
   var map = this.getMap();
   if (map.hasListener(type)) {
-    var context = this.getContext();
-    var render = new ol.render.webgl.Immediate(context, frameState.pixelRatio);
-    var composeEvent = new ol.render.Event(
-        type, map, render, null, frameState, null, context);
+    var context = this.context_;
+    var extent = frameState.extent;
+
+    var viewState = frameState.viewState;
+    var resolution = viewState.resolution;
+    var pixelRatio = frameState.pixelRatio;
+    var tolerance = ol.renderer.vector.getTolerance(resolution, pixelRatio);
+
+    var vectorContext = new ol.render.webgl.Immediate(context, pixelRatio);
+    var replayGroup = new ol.render.webgl.ReplayGroup(tolerance, extent);
+    var composeEvent = new ol.render.Event(type, map, vectorContext,
+        replayGroup, frameState, null, context);
     map.dispatchEvent(composeEvent);
+
+    replayGroup.finish(context);
+    if (!replayGroup.isEmpty()) {
+      var center = viewState.center;
+      var rotation = viewState.rotation;
+      var size = frameState.size;
+      replayGroup.replay(context, center, resolution, rotation, size, extent,
+          pixelRatio, {});
+    }
+    this.replayGroup = replayGroup;
   }
 };
 

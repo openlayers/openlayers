@@ -1,4 +1,5 @@
 goog.require('ol.Feature');
+goog.require('ol.FeatureOverlay');
 goog.require('ol.Map');
 goog.require('ol.View');
 goog.require('ol.geom.Point');
@@ -29,6 +30,13 @@ var iconInfo = [{
   rotation: Math.PI / 3.0,
   scale: 1.5,
   size: [55, 86]
+}, {
+  offset: [212, 0],
+  opacity: 1.0,
+  rotateWithView: true,
+  rotation: 0.0,
+  scale: 1.0,
+  size: [44, 44]
 }];
 
 var i;
@@ -58,7 +66,7 @@ for (i = 0; i < featureCount; ++i) {
   feature = new ol.Feature(geometry);
   feature.setStyle(
       new ol.style.Style({
-        image: icons[i % iconCount]
+        image: icons[i % (iconCount - 1)]
       })
   );
   features[i] = feature;
@@ -85,4 +93,19 @@ var map = new ol.Map({
     center: [0, 0],
     zoom: 5
   })
+});
+
+var overlayFeatures = [];
+for (i = 0; i < featureCount; i += 30) {
+  var clone = features[i].clone();
+  clone.setStyle(null);
+  overlayFeatures.push(clone);
+}
+
+var featureOverlay = new ol.FeatureOverlay({
+  map: map,
+  style: new ol.style.Style({
+    image: icons[iconCount - 1]
+  }),
+  features: overlayFeatures
 });
