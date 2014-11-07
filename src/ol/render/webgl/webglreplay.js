@@ -111,6 +111,18 @@ ol.render.webgl.ImageReplay = function(tolerance, maxExtent) {
   this.opacity_ = undefined;
 
   /**
+   * @type {!goog.vec.Mat4.Number}
+   * @private
+   */
+  this.offsetRotateMatrix_ = goog.vec.Mat4.createNumberIdentity();
+
+  /**
+   * @type {!goog.vec.Mat4.Number}
+   * @private
+   */
+  this.offsetScaleMatrix_ = goog.vec.Mat4.createNumberIdentity();
+
+  /**
    * @type {number|undefined}
    * @private
    */
@@ -127,6 +139,18 @@ ol.render.webgl.ImageReplay = function(tolerance, maxExtent) {
    * @private
    */
   this.projectionMatrix_ = goog.vec.Mat4.createNumberIdentity();
+
+  /**
+   * @private
+   * @type {boolean|undefined}
+   */
+  this.rotateWithView_ = undefined;
+
+  /**
+   * @private
+   * @type {number|undefined}
+   */
+  this.rotation_ = undefined;
 
   /**
    * @private
@@ -216,6 +240,8 @@ ol.render.webgl.ImageReplay.prototype.drawCoordinates_ =
   goog.asserts.assert(goog.isDef(this.opacity_));
   goog.asserts.assert(goog.isDef(this.originX_));
   goog.asserts.assert(goog.isDef(this.originY_));
+  goog.asserts.assert(goog.isDef(this.rotateWithView_));
+  goog.asserts.assert(goog.isDef(this.rotation_));
   goog.asserts.assert(goog.isDef(this.scale_));
   goog.asserts.assert(goog.isDef(this.width_));
   var anchorX = this.anchorX_;
@@ -226,50 +252,74 @@ ol.render.webgl.ImageReplay.prototype.drawCoordinates_ =
   var opacity = this.opacity_;
   var originX = this.originX_;
   var originY = this.originY_;
+  var rotateWithView = this.rotateWithView_ ? 1.0 : 0.0;
+  var rotation = this.rotation_;
   var scale = this.scale_;
   var width = this.width_;
+  var cos = Math.cos(rotation);
+  var sin = Math.sin(rotation);
   var numIndices = this.indices_.length;
   var numVertices = this.vertices_.length;
-  var i, x, y, n;
+  var i, n, offsetX, offsetY, x, y;
   for (i = offset; i < end; i += stride) {
     x = flatCoordinates[i] - this.origin_[0];
     y = flatCoordinates[i + 1] - this.origin_[1];
 
-    n = numVertices / 7;
+    // There are 4 vertices per [x, y] point, one for each corner of the
+    // rectangle we're going to draw. We'd use 1 vertex per [x, y] point if
+    // WebGL supported Geometry Shaders (which can emit new vertices), but that
+    // is not currently the case.
+    //
+    // And each vertex includes 8 values: the x and y coordinates, the x and
+    // y offsets used to calculate the position of the corner, the u and
+    // v texture coordinates for the corner, the opacity, and whether the
+    // the image should be rotated with the view (rotateWithView).
 
-    // 4 vertices per coordinate, with 7 values per vertex
+    n = numVertices / 8;
 
+    offsetX = -scale * anchorX;
+    offsetY = -scale * (height - anchorY);
     this.vertices_[numVertices++] = x;
     this.vertices_[numVertices++] = y;
-    this.vertices_[numVertices++] = -2 * scale * anchorX;
-    this.vertices_[numVertices++] = -2 * scale * (height - anchorY);
+    this.vertices_[numVertices++] = offsetX * cos - offsetY * sin;
+    this.vertices_[numVertices++] = offsetX * sin + offsetY * cos;
     this.vertices_[numVertices++] = (originX + width) / imageWidth;
     this.vertices_[numVertices++] = (originY + height) / imageHeight;
     this.vertices_[numVertices++] = opacity;
+    this.vertices_[numVertices++] = rotateWithView;
 
+    offsetX = scale * (width - anchorX);
+    offsetY = -scale * (height - anchorY);
     this.vertices_[numVertices++] = x;
     this.vertices_[numVertices++] = y;
-    this.vertices_[numVertices++] = 2 * scale * (width - anchorX);
-    this.vertices_[numVertices++] = -2 * scale * (height - anchorY);
+    this.vertices_[numVertices++] = offsetX * cos - offsetY * sin;
+    this.vertices_[numVertices++] = offsetX * sin + offsetY * cos;
     this.vertices_[numVertices++] = originX / imageWidth;
     this.vertices_[numVertices++] = (originY + height) / imageHeight;
     this.vertices_[numVertices++] = opacity;
+    this.vertices_[numVertices++] = rotateWithView;
 
+    offsetX = scale * (width - anchorX);
+    offsetY = scale * anchorY;
     this.vertices_[numVertices++] = x;
     this.vertices_[numVertices++] = y;
-    this.vertices_[numVertices++] = 2 * scale * (width - anchorX);
-    this.vertices_[numVertices++] = 2 * scale * anchorY;
+    this.vertices_[numVertices++] = offsetX * cos - offsetY * sin;
+    this.vertices_[numVertices++] = offsetX * sin + offsetY * cos;
     this.vertices_[numVertices++] = originX / imageWidth;
     this.vertices_[numVertices++] = originY / imageHeight;
     this.vertices_[numVertices++] = opacity;
+    this.vertices_[numVertices++] = rotateWithView;
 
+    offsetX = -scale * anchorX;
+    offsetY = scale * anchorY;
     this.vertices_[numVertices++] = x;
     this.vertices_[numVertices++] = y;
-    this.vertices_[numVertices++] = -2 * scale * anchorX;
-    this.vertices_[numVertices++] = 2 * scale * anchorY;
+    this.vertices_[numVertices++] = offsetX * cos - offsetY * sin;
+    this.vertices_[numVertices++] = offsetX * sin + offsetY * cos;
     this.vertices_[numVertices++] = (originX + width) / imageWidth;
     this.vertices_[numVertices++] = originY / imageHeight;
     this.vertices_[numVertices++] = opacity;
+    this.vertices_[numVertices++] = rotateWithView;
 
     this.indices_[numIndices++] = n;
     this.indices_[numIndices++] = n + 1;
@@ -393,9 +443,9 @@ ol.render.webgl.ImageReplay.prototype.finish = function(context) {
     gl.texParameteri(goog.webgl.TEXTURE_2D,
         goog.webgl.TEXTURE_WRAP_T, goog.webgl.CLAMP_TO_EDGE);
     gl.texParameteri(goog.webgl.TEXTURE_2D,
-        goog.webgl.TEXTURE_MIN_FILTER, goog.webgl.NEAREST);
+        goog.webgl.TEXTURE_MIN_FILTER, goog.webgl.LINEAR);
     gl.texParameteri(goog.webgl.TEXTURE_2D,
-        goog.webgl.TEXTURE_MAG_FILTER, goog.webgl.NEAREST);
+        goog.webgl.TEXTURE_MAG_FILTER, goog.webgl.LINEAR);
     gl.texImage2D(goog.webgl.TEXTURE_2D, 0, goog.webgl.RGBA, goog.webgl.RGBA,
         goog.webgl.UNSIGNED_BYTE, image);
     this.textures_[i] = texture;
@@ -413,6 +463,8 @@ ol.render.webgl.ImageReplay.prototype.finish = function(context) {
   this.opacity_ = undefined;
   this.originX_ = undefined;
   this.originY_ = undefined;
+  this.rotateWithView_ = undefined;
+  this.rotation_ = undefined;
   this.scale_ = undefined;
   this.vertices_ = null;
   this.width_ = undefined;
@@ -462,29 +514,43 @@ ol.render.webgl.ImageReplay.prototype.replay = function(context,
       -rotation,
       -(center[0] - this.origin_[0]), -(center[1] - this.origin_[1]));
 
+  var offsetScaleMatrix = this.offsetScaleMatrix_;
+  goog.vec.Mat4.makeScale(offsetScaleMatrix, 2 / size[0], 2 / size[1], 1);
+
+  var offsetRotateMatrix = this.offsetRotateMatrix_;
+  goog.vec.Mat4.makeIdentity(offsetRotateMatrix);
+  if (rotation !== 0) {
+    goog.vec.Mat4.rotateZ(offsetRotateMatrix, -rotation);
+  }
+
   var locations = this.locations_;
 
   gl.bindBuffer(goog.webgl.ARRAY_BUFFER, this.verticesBuffer_);
 
   gl.enableVertexAttribArray(locations.a_position);
   gl.vertexAttribPointer(locations.a_position, 2, goog.webgl.FLOAT,
-      false, 28, 0);
+      false, 32, 0);
 
   gl.enableVertexAttribArray(locations.a_offsets);
   gl.vertexAttribPointer(locations.a_offsets, 2, goog.webgl.FLOAT,
-      false, 28, 8);
+      false, 32, 8);
 
   gl.enableVertexAttribArray(locations.a_texCoord);
   gl.vertexAttribPointer(locations.a_texCoord, 2, goog.webgl.FLOAT,
-      false, 28, 16);
+      false, 32, 16);
 
   gl.enableVertexAttribArray(locations.a_opacity);
   gl.vertexAttribPointer(locations.a_opacity, 1, goog.webgl.FLOAT,
-      false, 28, 24);
+      false, 32, 24);
+
+  gl.enableVertexAttribArray(locations.a_rotateWithView);
+  gl.vertexAttribPointer(locations.a_rotateWithView, 1, goog.webgl.FLOAT,
+      false, 32, 28);
 
   gl.uniformMatrix4fv(locations.u_projectionMatrix, false, projectionMatrix);
-  gl.uniformMatrix2fv(locations.u_sizeMatrix, false,
-      new Float32Array([1 / size[0], 0.0, 0.0, 1 / size[1]]));
+  gl.uniformMatrix4fv(locations.u_offsetScaleMatrix, false, offsetScaleMatrix);
+  gl.uniformMatrix4fv(locations.u_offsetRotateMatrix, false,
+      offsetRotateMatrix);
 
   gl.bindBuffer(goog.webgl.ELEMENT_ARRAY_BUFFER, this.indicesBuffer_);
 
@@ -521,6 +587,10 @@ ol.render.webgl.ImageReplay.prototype.setImageStyle = function(imageStyle) {
   goog.asserts.assert(goog.isDef(opacity));
   var origin = imageStyle.getOrigin();
   goog.asserts.assert(!goog.isNull(origin));
+  var rotateWithView = imageStyle.getRotateWithView();
+  goog.asserts.assert(goog.isDef(rotateWithView));
+  var rotation = imageStyle.getRotation();
+  goog.asserts.assert(goog.isDef(rotation));
   var size = imageStyle.getSize();
   goog.asserts.assert(!goog.isNull(size));
   var scale = imageStyle.getScale();
@@ -545,6 +615,8 @@ ol.render.webgl.ImageReplay.prototype.setImageStyle = function(imageStyle) {
   this.opacity_ = opacity;
   this.originX_ = origin[0];
   this.originY_ = origin[1];
+  this.rotation_ = rotation;
+  this.rotateWithView_ = rotateWithView;
   this.scale_ = scale;
   this.width_ = size[0];
 };

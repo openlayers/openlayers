@@ -28,7 +28,7 @@ ol.render.webgl.imagereplay.shader.Fragment.DEBUG_SOURCE = 'precision mediump fl
  * @const
  * @type {string}
  */
-ol.render.webgl.imagereplay.shader.Fragment.OPTIMIZED_SOURCE = 'precision mediump float;varying vec2 a;varying float b;uniform sampler2D i;void main(void){vec4 texColor=texture2D(i,a);gl_FragColor.rgb=texColor.rgb;gl_FragColor.a=texColor.a*b;}';
+ol.render.webgl.imagereplay.shader.Fragment.OPTIMIZED_SOURCE = 'precision mediump float;varying vec2 a;varying float b;uniform sampler2D k;void main(void){vec4 texColor=texture2D(k,a);gl_FragColor.rgb=texColor.rgb;gl_FragColor.a=texColor.a*b;}';
 
 
 /**
@@ -57,14 +57,14 @@ goog.addSingletonGetter(ol.render.webgl.imagereplay.shader.Vertex);
  * @const
  * @type {string}
  */
-ol.render.webgl.imagereplay.shader.Vertex.DEBUG_SOURCE = 'varying vec2 v_texCoord;\nvarying float v_opacity;\n\nattribute vec2 a_position;\nattribute vec2 a_texCoord;\nattribute vec2 a_offsets;\nattribute float a_opacity;\n\nuniform mat4 u_projectionMatrix;\nuniform mat2 u_sizeMatrix;\n\nvoid main(void) {\n  vec2 offsets = u_sizeMatrix * a_offsets;\n  gl_Position = u_projectionMatrix * vec4(a_position, 0., 1.) + vec4(offsets, 0., 0.);\n  v_texCoord = a_texCoord;\n  v_opacity = a_opacity;\n}\n\n\n';
+ol.render.webgl.imagereplay.shader.Vertex.DEBUG_SOURCE = 'varying vec2 v_texCoord;\nvarying float v_opacity;\n\nattribute vec2 a_position;\nattribute vec2 a_texCoord;\nattribute vec2 a_offsets;\nattribute float a_opacity;\nattribute float a_rotateWithView;\n\nuniform mat4 u_projectionMatrix;\nuniform mat4 u_offsetScaleMatrix;\nuniform mat4 u_offsetRotateMatrix;\n\nvoid main(void) {\n  mat4 offsetMatrix = u_offsetScaleMatrix;\n  if (a_rotateWithView == 1.0) {\n    offsetMatrix = u_offsetScaleMatrix * u_offsetRotateMatrix;\n  }\n  vec4 offsets = offsetMatrix * vec4(a_offsets, 0., 0.);\n  gl_Position = u_projectionMatrix * vec4(a_position, 0., 1.) + offsets;\n  v_texCoord = a_texCoord;\n  v_opacity = a_opacity;\n}\n\n\n';
 
 
 /**
  * @const
  * @type {string}
  */
-ol.render.webgl.imagereplay.shader.Vertex.OPTIMIZED_SOURCE = 'varying vec2 a;varying float b;attribute vec2 c;attribute vec2 d;attribute vec2 e;attribute float f;uniform mat4 g;uniform mat2 h;void main(void){vec2 offsets=h*e;gl_Position=g*vec4(c,0.,1.)+vec4(offsets,0.,0.);a=d;b=f;}';
+ol.render.webgl.imagereplay.shader.Vertex.OPTIMIZED_SOURCE = 'varying vec2 a;varying float b;attribute vec2 c;attribute vec2 d;attribute vec2 e;attribute float f;attribute float g;uniform mat4 h;uniform mat4 i;uniform mat4 j;void main(void){mat4 offsetMatrix=i;if(g==1.0){offsetMatrix=i*j;}vec4 offsets=offsetMatrix*vec4(e,0.,0.);gl_Position=h*vec4(c,0.,1.)+offsets;a=d;b=f;}';
 
 
 /**
@@ -89,19 +89,25 @@ ol.render.webgl.imagereplay.shader.Locations = function(gl, program) {
    * @type {WebGLUniformLocation}
    */
   this.u_image = gl.getUniformLocation(
-      program, goog.DEBUG ? 'u_image' : 'i');
+      program, goog.DEBUG ? 'u_image' : 'k');
+
+  /**
+   * @type {WebGLUniformLocation}
+   */
+  this.u_offsetRotateMatrix = gl.getUniformLocation(
+      program, goog.DEBUG ? 'u_offsetRotateMatrix' : 'j');
+
+  /**
+   * @type {WebGLUniformLocation}
+   */
+  this.u_offsetScaleMatrix = gl.getUniformLocation(
+      program, goog.DEBUG ? 'u_offsetScaleMatrix' : 'i');
 
   /**
    * @type {WebGLUniformLocation}
    */
   this.u_projectionMatrix = gl.getUniformLocation(
-      program, goog.DEBUG ? 'u_projectionMatrix' : 'g');
-
-  /**
-   * @type {WebGLUniformLocation}
-   */
-  this.u_sizeMatrix = gl.getUniformLocation(
-      program, goog.DEBUG ? 'u_sizeMatrix' : 'h');
+      program, goog.DEBUG ? 'u_projectionMatrix' : 'h');
 
   /**
    * @type {number}
@@ -120,6 +126,12 @@ ol.render.webgl.imagereplay.shader.Locations = function(gl, program) {
    */
   this.a_position = gl.getAttribLocation(
       program, goog.DEBUG ? 'a_position' : 'c');
+
+  /**
+   * @type {number}
+   */
+  this.a_rotateWithView = gl.getAttribLocation(
+      program, goog.DEBUG ? 'a_rotateWithView' : 'g');
 
   /**
    * @type {number}
