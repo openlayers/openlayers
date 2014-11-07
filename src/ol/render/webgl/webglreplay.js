@@ -443,9 +443,9 @@ ol.render.webgl.ImageReplay.prototype.finish = function(context) {
     gl.texParameteri(goog.webgl.TEXTURE_2D,
         goog.webgl.TEXTURE_WRAP_T, goog.webgl.CLAMP_TO_EDGE);
     gl.texParameteri(goog.webgl.TEXTURE_2D,
-        goog.webgl.TEXTURE_MIN_FILTER, goog.webgl.NEAREST);
+        goog.webgl.TEXTURE_MIN_FILTER, goog.webgl.LINEAR);
     gl.texParameteri(goog.webgl.TEXTURE_2D,
-        goog.webgl.TEXTURE_MAG_FILTER, goog.webgl.NEAREST);
+        goog.webgl.TEXTURE_MAG_FILTER, goog.webgl.LINEAR);
     gl.texImage2D(goog.webgl.TEXTURE_2D, 0, goog.webgl.RGBA, goog.webgl.RGBA,
         goog.webgl.UNSIGNED_BYTE, image);
     this.textures_[i] = texture;
