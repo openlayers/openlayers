@@ -265,9 +265,17 @@ ol.render.webgl.ImageReplay.prototype.drawCoordinates_ =
     x = flatCoordinates[i] - this.origin_[0];
     y = flatCoordinates[i + 1] - this.origin_[1];
 
-    n = numVertices / 8;
+    // There are 4 vertices per [x, y] point, one for each corner of the
+    // rectangle we're going to draw. We'd use 1 vertex per [x, y] point if
+    // WebGL supported Geometry Shaders (which can emit new vertices), but that
+    // is not currently the case.
+    //
+    // And each vertex includes 8 values: the x and y coordinates, the x and
+    // y offsets used to calculate the position of the corner, the u and
+    // v texture coordinates for the corner, the opacity, and whether the
+    // the image should be rotated with the view (rotateWithView).
 
-    // 4 vertices per coordinate, with 8 values per vertex
+    n = numVertices / 8;
 
     offsetX = -scale * anchorX;
     offsetY = -scale * (height - anchorY);
