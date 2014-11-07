@@ -126,6 +126,7 @@ ol.style.AtlasManager.prototype.add =
       ++ii;
     }
   }
+  goog.asserts.fail();
 };
 
 
