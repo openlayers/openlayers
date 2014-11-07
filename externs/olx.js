@@ -6227,3 +6227,36 @@ olx.ViewState.prototype.resolution;
  * @api
  */
 olx.ViewState.prototype.rotation;
+
+
+/**
+ * @typedef {{size: (number|undefined),
+ *     maxSize: (number|undefined),
+ *     space: (number|undefined)}}
+ * @api
+ */
+olx.style.AtlasManagerOptions;
+
+
+/**
+ * The size in pixels of the first atlas image (default: 256).
+ * @type {number|undefined}
+ * @api
+ */
+olx.style.AtlasManagerOptions.prototype.size;
+
+
+/**
+ * The maximum size in pixels of atlas images (default: 2048).
+ * @type {number|undefined}
+ * @api
+ */
+olx.style.AtlasManagerOptions.prototype.maxSize;
+
+
+/**
+ * The space in pixels between images (default: 1).
+ * @type {number|undefined}
+ * @api
+ */
+olx.style.AtlasManagerOptions.prototype.space;
