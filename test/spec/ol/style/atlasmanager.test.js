@@ -186,7 +186,7 @@ describe('ol.style.AtlasManager', function() {
   describe('#add', function() {
 
     it('adds one entry', function() {
-      var manager = new ol.style.AtlasManager(128);
+      var manager = new ol.style.AtlasManager({size: 128});
       var info = manager.add('1', 32, 32, defaultRender);
 
       expect(info).to.eql(
@@ -196,7 +196,7 @@ describe('ol.style.AtlasManager', function() {
     });
 
     it('creates a new atlas if needed', function() {
-      var manager = new ol.style.AtlasManager(128);
+      var manager = new ol.style.AtlasManager({size: 128});
       expect(manager.add('1', 100, 100, defaultRender)).to.be.ok();
       var info = manager.add('2', 100, 100, defaultRender);
       expect(info).to.be.ok();
@@ -205,7 +205,7 @@ describe('ol.style.AtlasManager', function() {
     });
 
     it('creates new atlases until one is large enough', function() {
-      var manager = new ol.style.AtlasManager(128);
+      var manager = new ol.style.AtlasManager({size: 128});
       expect(manager.add('1', 100, 100, defaultRender)).to.be.ok();
       expect(manager.atlases_).to.have.length(1);
       var info = manager.add('2', 500, 500, defaultRender);
@@ -215,7 +215,7 @@ describe('ol.style.AtlasManager', function() {
     });
 
     it('checks all existing atlases and create a new if needed', function() {
-      var manager = new ol.style.AtlasManager(128);
+      var manager = new ol.style.AtlasManager({size: 128});
       expect(manager.add('1', 100, 100, defaultRender)).to.be.ok();
       expect(manager.add('2', 100, 100, defaultRender)).to.be.ok();
       expect(manager.atlases_).to.have.length(2);
@@ -226,7 +226,7 @@ describe('ol.style.AtlasManager', function() {
     });
 
     it('returns null if the size exceeds the maximum size', function() {
-      var manager = new ol.style.AtlasManager(128);
+      var manager = new ol.style.AtlasManager({size: 128});
       expect(manager.add('1', 100, 100, defaultRender)).to.be.ok();
       expect(manager.add('2', 2048, 2048, defaultRender)).to.eql(null);
     });
@@ -235,7 +235,7 @@ describe('ol.style.AtlasManager', function() {
   describe('#getInfo', function() {
 
     it('returns null if no entry for the given id', function() {
-      var manager = new ol.style.AtlasManager(128);
+      var manager = new ol.style.AtlasManager({size: 128});
       expect(manager.getInfo('123456')).to.eql(null);
     });
   });

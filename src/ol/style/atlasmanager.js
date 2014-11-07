@@ -8,6 +8,9 @@ goog.require('goog.object');
 
 
 /**
+ * Provides information for an image inside an atlas.
+ * `offsetX` and `offsetY` are the position of the image inside
+ * the atlas image `image`.
  * @typedef {{offsetX: number, offsetY: number, image: HTMLCanvasElement}}
  */
 ol.style.AtlasInfo;
@@ -15,48 +18,48 @@ ol.style.AtlasInfo;
 
 
 /**
- * Manages the creation of texture atlases.
+ * Manages the creation of image atlases.
  *
  * Images added to this manager will be inserted into an atlas, which
  * will be used for rendering.
  * The `size` given in the constructor is the size for the first
  * atlas. After that, when new atlases are created, they will have
- * twice the size as the latest atlas (until `maxSize` is reached.)
+ * twice the size as the latest atlas (until `maxSize` is reached).
  *
- * It is recommended to use `ol.has.WEBGL_MAX_TEXTURE_SIZE` as
- * `maxSize` value.
+ * When used for WebGL, it is recommended to use `ol.has.WEBGL_MAX_TEXTURE_SIZE`
+ * as `maxSize` value. Also, if an application uses a lot, or a lot of
+ * large images, it is recommend to set a higher `size` value to avoid
+ * the creation of too many atlases.
  *
  * @constructor
  * @struct
- * @param {number=} opt_size The size in pixels of the first atlas image
- *      (default: 256).
- * @param {number=} opt_maxSize The maximum size in pixels of atlas images
- *      (default: 2048).
- * @param {number=} opt_space The space in pixels between images
- *      (default: 1).
+ * @api
+ * @param {olx.style.AtlasManagerOptions=} opt_options Options.
  */
-ol.style.AtlasManager = function(opt_size, opt_maxSize, opt_space) {
+ol.style.AtlasManager = function(opt_options) {
+
+  var options = goog.isDef(opt_options) ? opt_options : {};
 
   /**
    * The size in pixels of the latest atlas image.
    * @private
    * @type {number}
    */
-  this.currentSize_ = goog.isDef(opt_size) ? opt_size : 256;
+  this.currentSize_ = goog.isDef(options.size) ? options.size : 256;
 
   /**
    * The maximum size in pixels of atlas images.
    * @private
    * @type {number}
    */
-  this.maxSize_ = goog.isDef(opt_maxSize) ? opt_maxSize : 2048;
+  this.maxSize_ = goog.isDef(options.maxSize) ? options.maxSize : 2048;
 
   /**
    * The size in pixels between images.
    * @private
    * @type {number}
    */
-  this.space_ = goog.isDef(opt_space) ? opt_space : 1;
+  this.space_ = goog.isDef(options.space) ? options.space : 1;
 
   /**
    * @private
@@ -68,11 +71,12 @@ ol.style.AtlasManager = function(opt_size, opt_maxSize, opt_space) {
 
 /**
  * @param {string} id The identifier of the entry to check.
- * @return {ol.style.AtlasInfo}
+ * @return {?ol.style.AtlasInfo} The position and atlas image for the entry,
+ *    or `null` if the entry is not part of the atlas manager.
  */
 ol.style.AtlasManager.prototype.getInfo = function(id) {
-  var atlas, info;
-  for (var i = 0, ii = this.atlases_.length; i < ii; i++) {
+  var atlas, info, i, ii;
+  for (i = 0, ii = this.atlases_.length; i < ii; ++i) {
     atlas = this.atlases_[i];
     info = atlas.get(id);
     if (info !== null) {
@@ -92,11 +96,12 @@ ol.style.AtlasManager.prototype.getInfo = function(id) {
  * @param {string} id The identifier of the entry to add.
  * @param {number} width The width.
  * @param {number} height The height.
- * @param {function(*)} renderCallback Called to render the new sprite entry
- *  onto the sprite image.
- * @param {object=} opt_this Value to use as `this` when executing
- * `renderCallback`.
- * @return {ol.style.AtlasInfo}
+ * @param {function(CanvasRenderingContext2D, number, number)} renderCallback
+ *    Called to render the new image onto an atlas image.
+ * @param {Object=} opt_this Value to use as `this` when executing
+ *    `renderCallback`.
+ * @return {?ol.style.AtlasInfo}  The position and atlas image for the entry,
+ *    or `null` if the image is too big.
  */
 ol.style.AtlasManager.prototype.add =
     function(id, width, height, renderCallback, opt_this) {
@@ -105,8 +110,8 @@ ol.style.AtlasManager.prototype.add =
     return null;
   }
 
-  var atlas, info;
-  for (var i = 0, ii = this.atlases_.length; i < ii; i++) {
+  var atlas, info, i, ii;
+  for (i = 0, ii = this.atlases_.length; i < ii; ++i) {
     atlas = this.atlases_[i];
     info = atlas.add(id, width, height, renderCallback, opt_this);
     if (info !== null) {
@@ -117,7 +122,8 @@ ol.style.AtlasManager.prototype.add =
       this.currentSize_ = Math.min(this.currentSize_ * 2, this.maxSize_);
       atlas = new ol.style.Atlas(this.currentSize_, this.space_);
       this.atlases_.push(atlas);
-      ii++;
+      // run the loop another time
+      ++ii;
     }
   }
 };
@@ -125,16 +131,16 @@ ol.style.AtlasManager.prototype.add =
 
 
 /**
- * This class facilitates the creation of texture atlases.
+ * This class facilitates the creation of image atlases.
  *
  * Images added to an atlas will be rendered onto a single
- * atlas canvas. The distribution of images on the canvas are
+ * atlas canvas. The distribution of images on the canvas is
  * managed with the bin packing algorithm described in:
  * http://www.blackpawn.com/texts/lightmaps/
  *
  * @constructor
  * @struct
- * @param {number} size The size in pixels of the sprite images.
+ * @param {number} size The size in pixels of the sprite image.
  * @param {number} space The space in pixels between images.
  */
 ol.style.Atlas = function(size, space) {
@@ -143,7 +149,7 @@ ol.style.Atlas = function(size, space) {
    * @private
    * @type {number} The space in pixels between images.
    * Because texture coordinates are float values, the edges of
-   * texture might not be completely correct (in a way that the
+   * images might not be completely correct (in a way that the
    * edges overlap when being rendered). To avoid this we add a
    * padding around each image.
    */
@@ -157,7 +163,7 @@ ol.style.Atlas = function(size, space) {
 
   /**
    * @private
-   * @type {Object.<number, ol.style.AtlasInfo>}
+   * @type {Object.<string, ol.style.AtlasInfo>}
    */
   this.entries_ = {};
 
@@ -181,10 +187,11 @@ ol.style.Atlas = function(size, space) {
 
 /**
  * @param {string} id The identifier of the entry to check.
- * @return {ol.style.AtlasInfo}
+ * @return {?ol.style.AtlasInfo}
  */
 ol.style.Atlas.prototype.get = function(id) {
-  return goog.object.get(this.entries_, id, null);
+  return /** @type {?ol.style.AtlasInfo} */ (
+      goog.object.get(this.entries_, id, null));
 };
 
 
@@ -192,16 +199,16 @@ ol.style.Atlas.prototype.get = function(id) {
  * @param {string} id The identifier of the entry to add.
  * @param {number} width The width.
  * @param {number} height The height.
- * @param {function(*)} renderCallback Called to render the new sprite entry
- *  onto the sprite image.
- * @param {object=} opt_this Value to use as `this` when executing
- * `renderCallback`.
- * @return {ol.style.AtlasInfo}
+ * @param {function(CanvasRenderingContext2D, number, number)} renderCallback
+ *    Called to render the new image onto an atlas image.
+ * @param {Object=} opt_this Value to use as `this` when executing
+ *    `renderCallback`.
+ * @return {?ol.style.AtlasInfo} The position and atlas image for the entry.
  */
 ol.style.Atlas.prototype.add =
     function(id, width, height, renderCallback, opt_this) {
-  var block;
-  for (var i = 0, ii = this.emptyBlocks_.length; i < ii; i++) {
+  var block, i, ii;
+  for (i = 0, ii = this.emptyBlocks_.length; i < ii; ++i) {
     block = this.emptyBlocks_[i];
     if (block.width >= width + this.space_ &&
         block.height >= height + this.space_) {
@@ -241,8 +248,10 @@ ol.style.Atlas.prototype.split_ =
   var deltaWidth = block.width - width;
   var deltaHeight = block.height - height;
 
-  /** @type {ol.style.AtlasInfo} */
-  var newBlock1, newBlock2;
+  /** @type {ol.style.Atlas.Block} */
+  var newBlock1;
+  /** @type {ol.style.Atlas.Block} */
+  var newBlock2;
 
   if (deltaWidth > deltaHeight) {
     // split vertically
