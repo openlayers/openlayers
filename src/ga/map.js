@@ -91,7 +91,7 @@ ga.Map = function(options) {
   options.view = view;
   options.ol3Logo = false;
   options.interactions = goog.isDef(options.interactions) ? options.interactions : ol.interaction.defaults();
-  options.controls = ol.control.defaults({
+  options.controls = goog.isDef(options.controls) ? options.controls : ol.control.defaults({
     zoomOptions: /** @type {olx.control.ZoomOptions} */ ({
       zoomInTipLabel: ga.Lang.translate('Zoom in'),
       zoomOutTipLabel: ga.Lang.translate('Zoom out')
