@@ -33,6 +33,7 @@ ol.interaction.InteractionProperty = {
  *
  * @constructor
  * @extends {ol.Object}
+ * @implements {oli.interaction.Interaction}
  * @api
  */
 ol.interaction.Interaction = function() {
@@ -76,10 +77,16 @@ ol.interaction.Interaction.prototype.getMap = function() {
 
 
 /**
+ * Method called by the map to notify the interaction that a browser
+ * event was dispatched on the map. If the interaction wants to handle
+ * that event it can return `false` to prevent the propagation of the
+ * event to other interactions in the map's interactions chain.
  * @param {ol.MapBrowserEvent} mapBrowserEvent Map browser event.
  * @return {boolean} Whether the map browser event should continue
- *     through the chain of interactions. false means stop, true
+ *     through the chain of interactions. `false` means stop, `true`
  *     means continue.
+ * @function
+ * @api
  */
 ol.interaction.Interaction.prototype.handleMapBrowserEvent =
     goog.abstractMethod;
