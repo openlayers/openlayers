@@ -286,7 +286,7 @@ ol.interaction.Draw.prototype.handlePointerUp = function(event) {
       this.startDrawing_(event);
     } else if (this.mode_ === ol.interaction.DrawMode.POINT ||
         this.atFinish_(event)) {
-      this.finishDrawing_();
+      this.finishDrawing();
     } else {
       this.addToDrawing_(event);
     }
@@ -481,9 +481,9 @@ ol.interaction.Draw.prototype.addToDrawing_ = function(event) {
 
 /**
  * Stop drawing and add the sketch feature to the target layer.
- * @private
+ * @api
  */
-ol.interaction.Draw.prototype.finishDrawing_ = function() {
+ol.interaction.Draw.prototype.finishDrawing = function() {
   var sketchFeature = this.abortDrawing_();
   goog.asserts.assert(!goog.isNull(sketchFeature));
   var coordinates;
