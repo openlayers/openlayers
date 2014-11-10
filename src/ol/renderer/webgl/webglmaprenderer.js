@@ -291,8 +291,9 @@ ol.renderer.webgl.Map.prototype.dispatchComposeEvent_ =
       var center = viewState.center;
       var rotation = viewState.rotation;
       var size = frameState.size;
+      var opacity = 1;
       replayGroup.replay(context, center, resolution, rotation, size, extent,
-          pixelRatio, {});
+          pixelRatio, opacity, {});
     }
     this.replayGroup = replayGroup;
   }

@@ -21,14 +21,14 @@ goog.addSingletonGetter(ol.render.webgl.imagereplay.shader.Fragment);
  * @const
  * @type {string}
  */
-ol.render.webgl.imagereplay.shader.Fragment.DEBUG_SOURCE = 'precision mediump float;\nvarying vec2 v_texCoord;\nvarying float v_opacity;\n\nuniform sampler2D u_image;\n\nvoid main(void) {\n  vec4 texColor = texture2D(u_image, v_texCoord);\n  gl_FragColor.rgb = texColor.rgb;\n  float alpha = texColor.a * v_opacity;\n  if (alpha == 0.0) {\n    discard;\n  }\n  gl_FragColor.a = alpha;\n}\n';
+ol.render.webgl.imagereplay.shader.Fragment.DEBUG_SOURCE = 'precision mediump float;\nvarying vec2 v_texCoord;\nvarying float v_opacity;\n\nuniform float u_opacity;\nuniform sampler2D u_image;\n\nvoid main(void) {\n  vec4 texColor = texture2D(u_image, v_texCoord);\n  gl_FragColor.rgb = texColor.rgb;\n  float alpha = texColor.a * v_opacity * u_opacity;\n  if (alpha == 0.0) {\n    discard;\n  }\n  gl_FragColor.a = alpha;\n}\n';
 
 
 /**
  * @const
  * @type {string}
  */
-ol.render.webgl.imagereplay.shader.Fragment.OPTIMIZED_SOURCE = 'precision mediump float;varying vec2 a;varying float b;uniform sampler2D k;void main(void){vec4 texColor=texture2D(k,a);gl_FragColor.rgb=texColor.rgb;float alpha=texColor.a*b;if(alpha==0.0){discard;}gl_FragColor.a=alpha;}';
+ol.render.webgl.imagereplay.shader.Fragment.OPTIMIZED_SOURCE = 'precision mediump float;varying vec2 a;varying float b;uniform float k;uniform sampler2D l;void main(void){vec4 texColor=texture2D(l,a);gl_FragColor.rgb=texColor.rgb;float alpha=texColor.a*b*k;if(alpha==0.0){discard;}gl_FragColor.a=alpha;}';
 
 
 /**
@@ -89,7 +89,7 @@ ol.render.webgl.imagereplay.shader.Locations = function(gl, program) {
    * @type {WebGLUniformLocation}
    */
   this.u_image = gl.getUniformLocation(
-      program, goog.DEBUG ? 'u_image' : 'k');
+      program, goog.DEBUG ? 'u_image' : 'l');
 
   /**
    * @type {WebGLUniformLocation}
@@ -102,6 +102,12 @@ ol.render.webgl.imagereplay.shader.Locations = function(gl, program) {
    */
   this.u_offsetScaleMatrix = gl.getUniformLocation(
       program, goog.DEBUG ? 'u_offsetScaleMatrix' : 'i');
+
+  /**
+   * @type {WebGLUniformLocation}
+   */
+  this.u_opacity = gl.getUniformLocation(
+      program, goog.DEBUG ? 'u_opacity' : 'k');
 
   /**
    * @type {WebGLUniformLocation}

@@ -501,13 +501,14 @@ ol.render.webgl.ImageReplay.prototype.getExtent = function() {
  * @param {ol.Size} size Size.
  * @param {ol.Extent} extent Extent.
  * @param {number} pixelRatio Pixel ratio.
+ * @param {number} opacity Global opacity.
  * @param {Object} skippedFeaturesHash Ids of features to skip.
  * @return {T|undefined} Callback result.
  * @template T
  */
 ol.render.webgl.ImageReplay.prototype.replay = function(context,
     center, resolution, rotation, size, extent, pixelRatio,
-    skippedFeaturesHash) {
+    opacity, skippedFeaturesHash) {
   var gl = context.getGL();
 
   var program = context.getProgram(
@@ -566,6 +567,7 @@ ol.render.webgl.ImageReplay.prototype.replay = function(context,
   gl.uniformMatrix4fv(locations.u_offsetScaleMatrix, false, offsetScaleMatrix);
   gl.uniformMatrix4fv(locations.u_offsetRotateMatrix, false,
       offsetRotateMatrix);
+  gl.uniform1f(locations.u_opacity, opacity);
 
   goog.asserts.assert(!goog.isNull(this.indicesBuffer_));
   gl.bindBuffer(goog.webgl.ELEMENT_ARRAY_BUFFER, this.indicesBuffer_);
@@ -732,13 +734,14 @@ ol.render.webgl.ReplayGroup.prototype.isEmpty = function() {
  * @param {ol.Size} size Size.
  * @param {ol.Extent} extent Extent.
  * @param {number} pixelRatio Pixel ratio.
+ * @param {number} opacity Global opacity.
  * @param {Object} skippedFeaturesHash Ids of features to skip.
  * @return {T|undefined} Callback result.
  * @template T
  */
 ol.render.webgl.ReplayGroup.prototype.replay = function(context,
     center, resolution, rotation, size, extent, pixelRatio,
-    skippedFeaturesHash) {
+    opacity, skippedFeaturesHash) {
   var i, ii, replay, result;
   for (i = 0, ii = ol.render.REPLAY_ORDER.length; i < ii; ++i) {
     replay = this.replays_[ol.render.REPLAY_ORDER[i]];
@@ -746,7 +749,7 @@ ol.render.webgl.ReplayGroup.prototype.replay = function(context,
         ol.extent.intersects(extent, replay.getExtent())) {
       result = replay.replay(context,
           center, resolution, rotation, size, extent, pixelRatio,
-          skippedFeaturesHash);
+          opacity, skippedFeaturesHash);
       if (result) {
         return result;
       }

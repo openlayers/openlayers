@@ -30,12 +30,13 @@ void main(void) {
 
 
 //! FRAGMENT
+uniform float u_opacity;
 uniform sampler2D u_image;
 
 void main(void) {
   vec4 texColor = texture2D(u_image, v_texCoord);
   gl_FragColor.rgb = texColor.rgb;
-  float alpha = texColor.a * v_opacity;
+  float alpha = texColor.a * v_opacity * u_opacity;
   if (alpha == 0.0) {
     discard;
   }
