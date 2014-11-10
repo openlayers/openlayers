@@ -509,8 +509,15 @@ ol.render.webgl.ImageReplay.prototype.replay = function(context,
     opacity, brightness, contrast, hue, saturation, skippedFeaturesHash) {
   var gl = context.getGL();
 
+  // bind the vertices and indices buffers
+  goog.asserts.assert(!goog.isNull(this.verticesBuffer_));
+  gl.bindBuffer(goog.webgl.ARRAY_BUFFER, this.verticesBuffer_);
+  goog.asserts.assert(!goog.isNull(this.indicesBuffer_));
+  gl.bindBuffer(goog.webgl.ELEMENT_ARRAY_BUFFER, this.indicesBuffer_);
+
   var useColor = brightness || contrast != 1 || hue || saturation != 1;
 
+  // get the program
   var fragmentShader, vertexShader;
   if (useColor) {
     fragmentShader =
@@ -523,9 +530,9 @@ ol.render.webgl.ImageReplay.prototype.replay = function(context,
     vertexShader =
         ol.render.webgl.imagereplay.shader.DefaultVertex.getInstance();
   }
-
   var program = context.getProgram(fragmentShader, vertexShader);
 
+  // get the locations
   var locations;
   if (useColor) {
     if (goog.isNull(this.colorLocations_)) {
@@ -545,29 +552,10 @@ ol.render.webgl.ImageReplay.prototype.replay = function(context,
     }
   }
 
-  // FIXME check return value?
+  // use the program (FIXME: use the return value)
   context.useProgram(program);
 
-  var projectionMatrix = this.projectionMatrix_;
-  ol.vec.Mat4.makeTransform2D(projectionMatrix,
-      0.0, 0.0,
-      2 / (resolution * size[0]),
-      2 / (resolution * size[1]),
-      -rotation,
-      -(center[0] - this.origin_[0]), -(center[1] - this.origin_[1]));
-
-  var offsetScaleMatrix = this.offsetScaleMatrix_;
-  goog.vec.Mat4.makeScale(offsetScaleMatrix, 2 / size[0], 2 / size[1], 1);
-
-  var offsetRotateMatrix = this.offsetRotateMatrix_;
-  goog.vec.Mat4.makeIdentity(offsetRotateMatrix);
-  if (rotation !== 0) {
-    goog.vec.Mat4.rotateZ(offsetRotateMatrix, -rotation);
-  }
-
-  goog.asserts.assert(!goog.isNull(this.verticesBuffer_));
-  gl.bindBuffer(goog.webgl.ARRAY_BUFFER, this.verticesBuffer_);
-
+  // enable the vertex attrib arrays
   gl.enableVertexAttribArray(locations.a_position);
   gl.vertexAttribPointer(locations.a_position, 2, goog.webgl.FLOAT,
       false, 32, 0);
@@ -588,6 +576,24 @@ ol.render.webgl.ImageReplay.prototype.replay = function(context,
   gl.vertexAttribPointer(locations.a_rotateWithView, 1, goog.webgl.FLOAT,
       false, 32, 28);
 
+  // set the "uniform" values
+  var projectionMatrix = this.projectionMatrix_;
+  ol.vec.Mat4.makeTransform2D(projectionMatrix,
+      0.0, 0.0,
+      2 / (resolution * size[0]),
+      2 / (resolution * size[1]),
+      -rotation,
+      -(center[0] - this.origin_[0]), -(center[1] - this.origin_[1]));
+
+  var offsetScaleMatrix = this.offsetScaleMatrix_;
+  goog.vec.Mat4.makeScale(offsetScaleMatrix, 2 / size[0], 2 / size[1], 1);
+
+  var offsetRotateMatrix = this.offsetRotateMatrix_;
+  goog.vec.Mat4.makeIdentity(offsetRotateMatrix);
+  if (rotation !== 0) {
+    goog.vec.Mat4.rotateZ(offsetRotateMatrix, -rotation);
+  }
+
   gl.uniformMatrix4fv(locations.u_projectionMatrix, false, projectionMatrix);
   gl.uniformMatrix4fv(locations.u_offsetScaleMatrix, false, offsetScaleMatrix);
   gl.uniformMatrix4fv(locations.u_offsetRotateMatrix, false,
@@ -598,11 +604,8 @@ ol.render.webgl.ImageReplay.prototype.replay = function(context,
         this.colorMatrix_.getMatrix(brightness, contrast, hue, saturation));
   }
 
-  goog.asserts.assert(!goog.isNull(this.indicesBuffer_));
-  gl.bindBuffer(goog.webgl.ELEMENT_ARRAY_BUFFER, this.indicesBuffer_);
-
+  // draw!
   goog.asserts.assert(this.textures_.length == this.groupIndices_.length);
-
   var i, ii, start;
   for (i = 0, ii = this.textures_.length, start = 0; i < ii; ++i) {
     gl.bindTexture(goog.webgl.TEXTURE_2D, this.textures_[i]);
