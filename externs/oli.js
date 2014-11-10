@@ -149,7 +149,8 @@ oli.interaction.Interaction = function() {};
  *     through the chain of interactions. `false` means stop, `true`
  *     means continue.
  */
-oli.interaction.Interaction.prototype.handleMapBrowserEvent = function(e) {};
+oli.interaction.Interaction.prototype.handleMapBrowserEvent =
+    function(mapBrowserEvent) {};
 
 
 /**
