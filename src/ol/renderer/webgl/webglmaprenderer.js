@@ -291,8 +291,14 @@ ol.renderer.webgl.Map.prototype.dispatchComposeEvent_ =
       var center = viewState.center;
       var rotation = viewState.rotation;
       var size = frameState.size;
+      // use default color values
+      var opacity = 1;
+      var brightness = 0;
+      var contrast = 1;
+      var hue = 0;
+      var saturation = 1;
       replayGroup.replay(context, center, resolution, rotation, size, extent,
-          pixelRatio, {});
+          pixelRatio, opacity, brightness, contrast, hue, saturation, {});
     }
     this.replayGroup = replayGroup;
   }
