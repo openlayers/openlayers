@@ -196,22 +196,30 @@ ol.render.webgl.ImageReplay = function(tolerance, maxExtent) {
  * @param {olx.FrameState} frameState Frame state.
  * @param {ol.webgl.Context} context Context.
  */
-ol.render.webgl.ImageReplay.prototype.deleteTextures =
-    function(frameState, context) {
+ol.render.webgl.ImageReplay.prototype.dispose = function(frameState, context) {
+  goog.asserts.assert(!goog.isNull(this.verticesBuffer_));
+  goog.asserts.assert(!goog.isNull(this.indicesBuffer_));
   frameState.postRenderFunctions.push(
       goog.partial(
           /**
            * @param {WebGLRenderingContext} gl GL.
            * @param {Array.<WebGLTexture>} textures Textures.
+           * @param {WebGLBuffer} verticesBuffer Vertices buffer.
+           * @param {WebGLBuffer} indicesBuffer Indices buffer.
            */
-          function(gl, textures) {
+          function(gl, textures, verticesBuffer, indicesBuffer) {
             if (!gl.isContextLost()) {
               var i, ii;
               for (i = 0, ii = textures.length; i < ii; ++i) {
                 gl.deleteTexture(textures[i]);
               }
+
+              gl.deleteBuffer(verticesBuffer);
+              gl.deleteBuffer(indicesBuffer);
             }
-          }, context.getGL(), this.textures_));
+          },
+          context.getGL(), this.textures_, this.verticesBuffer_,
+          this.indicesBuffer_));
 
 };
 
@@ -424,6 +432,7 @@ ol.render.webgl.ImageReplay.prototype.finish = function(context) {
   gl.bindBuffer(goog.webgl.ARRAY_BUFFER, this.verticesBuffer_);
   gl.bufferData(goog.webgl.ARRAY_BUFFER,
       new Float32Array(this.vertices_), goog.webgl.STATIC_DRAW);
+
   this.indicesBuffer_ = gl.createBuffer();
   gl.bindBuffer(goog.webgl.ELEMENT_ARRAY_BUFFER, this.indicesBuffer_);
   gl.bufferData(goog.webgl.ELEMENT_ARRAY_BUFFER,
@@ -525,6 +534,7 @@ ol.render.webgl.ImageReplay.prototype.replay = function(context,
 
   var locations = this.locations_;
 
+  goog.asserts.assert(!goog.isNull(this.verticesBuffer_));
   gl.bindBuffer(goog.webgl.ARRAY_BUFFER, this.verticesBuffer_);
 
   gl.enableVertexAttribArray(locations.a_position);
@@ -552,6 +562,7 @@ ol.render.webgl.ImageReplay.prototype.replay = function(context,
   gl.uniformMatrix4fv(locations.u_offsetRotateMatrix, false,
       offsetRotateMatrix);
 
+  goog.asserts.assert(!goog.isNull(this.indicesBuffer_));
   gl.bindBuffer(goog.webgl.ELEMENT_ARRAY_BUFFER, this.indicesBuffer_);
 
   goog.asserts.assert(this.textures_.length == this.groupIndices_.length);
@@ -664,11 +675,11 @@ ol.render.webgl.ReplayGroup = function(tolerance, maxExtent) {
  * @param {olx.FrameState} frameState Frame state.
  * @param {ol.webgl.Context} context Context.
  */
-ol.render.webgl.ReplayGroup.prototype.deleteTextures =
+ol.render.webgl.ReplayGroup.prototype.dispose =
     function(frameState, context) {
   var replayKey;
   for (replayKey in this.replays_) {
-    this.replays_[replayKey].deleteTextures(frameState, context);
+    this.replays_[replayKey].dispose(frameState, context);
   }
 };
 

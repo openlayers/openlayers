@@ -145,7 +145,7 @@ ol.renderer.webgl.VectorLayer.prototype.prepareFrame =
   extent[3] = frameStateExtent[3] + yBuffer;
 
   if (!goog.isNull(this.replayGroup_)) {
-    this.replayGroup_.deleteTextures(frameState, context);
+    this.replayGroup_.dispose(frameState, context);
   }
 
   this.dirty_ = false;
