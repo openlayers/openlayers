@@ -627,6 +627,7 @@ ol.proj.getTransformFromProjections =
  * @param {Array.<number>=} opt_output Output array of coordinate values.
  * @param {number=} opt_dimension Dimension.
  * @return {Array.<number>} Input coordinate array (same array as input).
+ * @api
  */
 ol.proj.identityTransform = function(input, opt_output, opt_dimension) {
   if (goog.isDef(opt_output) && input !== opt_output) {
