@@ -1,3 +1,4 @@
+goog.provide('ol.render.webgl.ImageReplay');
 goog.provide('ol.render.webgl.ReplayGroup');
 
 goog.require('goog.array');
