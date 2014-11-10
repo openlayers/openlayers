@@ -83,6 +83,21 @@ ol.renderer.webgl.VectorLayer.prototype.composeFrame =
 /**
  * @inheritDoc
  */
+ol.renderer.webgl.VectorLayer.prototype.disposeInternal = function() {
+  var replayGroup = this.replayGroup_;
+  if (!goog.isNull(replayGroup)) {
+    var mapRenderer = this.getWebGLMapRenderer();
+    var context = mapRenderer.getContext();
+    replayGroup.getDeleteResourcesFunction(context)();
+    this.replayGroup_ = null;
+  }
+  goog.base(this, 'disposeInternal');
+};
+
+
+/**
+ * @inheritDoc
+ */
 ol.renderer.webgl.VectorLayer.prototype.forEachFeatureAtPixel =
     function(coordinate, frameState, callback, thisArg) {
 };
@@ -146,7 +161,8 @@ ol.renderer.webgl.VectorLayer.prototype.prepareFrame =
   extent[3] = frameStateExtent[3] + yBuffer;
 
   if (!goog.isNull(this.replayGroup_)) {
-    this.replayGroup_.dispose(frameState, context);
+    frameState.postRenderFunctions.push(
+        this.replayGroup_.getDeleteResourcesFunction(context));
   }
 
   this.dirty_ = false;

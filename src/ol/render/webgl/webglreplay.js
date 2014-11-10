@@ -3,6 +3,7 @@ goog.provide('ol.render.webgl.ReplayGroup');
 
 goog.require('goog.array');
 goog.require('goog.asserts');
+goog.require('goog.functions');
 goog.require('goog.object');
 goog.require('goog.vec.Mat4');
 goog.require('ol.color.Matrix');
@@ -194,34 +195,27 @@ ol.render.webgl.ImageReplay = function(tolerance, maxExtent) {
 
 
 /**
- * @param {olx.FrameState} frameState Frame state.
- * @param {ol.webgl.Context} context Context.
+ * @param {ol.webgl.Context} context WebGL context.
+ * @return {function()} Delete resources function.
  */
-ol.render.webgl.ImageReplay.prototype.dispose = function(frameState, context) {
+ol.render.webgl.ImageReplay.prototype.getDeleteResourcesFunction =
+    function(context) {
   goog.asserts.assert(!goog.isNull(this.verticesBuffer_));
   goog.asserts.assert(!goog.isNull(this.indicesBuffer_));
-  frameState.postRenderFunctions.push(
-      goog.partial(
-          /**
-           * @param {WebGLRenderingContext} gl GL.
-           * @param {Array.<WebGLTexture>} textures Textures.
-           * @param {WebGLBuffer} verticesBuffer Vertices buffer.
-           * @param {WebGLBuffer} indicesBuffer Indices buffer.
-           */
-          function(gl, textures, verticesBuffer, indicesBuffer) {
-            if (!gl.isContextLost()) {
-              var i, ii;
-              for (i = 0, ii = textures.length; i < ii; ++i) {
-                gl.deleteTexture(textures[i]);
-              }
-
-              gl.deleteBuffer(verticesBuffer);
-              gl.deleteBuffer(indicesBuffer);
-            }
-          },
-          context.getGL(), this.textures_, this.verticesBuffer_,
-          this.indicesBuffer_));
-
+  var verticesBuffer = this.verticesBuffer_;
+  var indicesBuffer = this.indicesBuffer_;
+  var textures = this.textures_;
+  var gl = context.getGL();
+  return function() {
+    if (!gl.isContextLost()) {
+      var i, ii;
+      for (i = 0, ii = textures.length; i < ii; ++i) {
+        gl.deleteTexture(textures[i]);
+      }
+      gl.deleteBuffer(verticesBuffer);
+      gl.deleteBuffer(indicesBuffer);
+    }
+  };
 };
 
 
@@ -714,15 +708,18 @@ ol.render.webgl.ReplayGroup = function(tolerance, maxExtent) {
 
 
 /**
- * @param {olx.FrameState} frameState Frame state.
- * @param {ol.webgl.Context} context Context.
+ * @param {ol.webgl.Context} context WebGL context.
+ * @return {function()} Delete resources function.
  */
-ol.render.webgl.ReplayGroup.prototype.dispose =
-    function(frameState, context) {
+ol.render.webgl.ReplayGroup.prototype.getDeleteResourcesFunction =
+    function(context) {
+  var functions = [];
   var replayKey;
   for (replayKey in this.replays_) {
-    this.replays_[replayKey].dispose(frameState, context);
+    functions.push(
+        this.replays_[replayKey].getDeleteResourcesFunction(context));
   }
+  return goog.functions.sequence.apply(null, functions);
 };
 
 
