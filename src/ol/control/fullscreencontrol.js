@@ -10,7 +10,6 @@ goog.require('goog.events');
 goog.require('goog.events.EventType');
 goog.require('ol.control.Control');
 goog.require('ol.css');
-goog.require('ol.pointer.PointerEventHandler');
 
 
 
@@ -45,10 +44,7 @@ ol.control.FullScreen = function(opt_options) {
     'type': 'button',
     'title': tipLabel
   });
-  var buttonHandler = new ol.pointer.PointerEventHandler(button);
-  this.registerDisposable(buttonHandler);
-  goog.events.listen(buttonHandler,
-      ol.pointer.EventType.POINTERUP, this.handlePointerUp_, false, this);
+
   goog.events.listen(button, goog.events.EventType.CLICK,
       this.handleClick_, false, this);
 
@@ -88,19 +84,7 @@ goog.inherits(ol.control.FullScreen, ol.control.Control);
  * @private
  */
 ol.control.FullScreen.prototype.handleClick_ = function(event) {
-  if (event.screenX !== 0 && event.screenY !== 0) {
-    return;
-  }
-  this.handleFullScreen_();
-};
-
-
-/**
- * @param {ol.pointer.PointerEvent} pointerEvent The event to handle
- * @private
- */
-ol.control.FullScreen.prototype.handlePointerUp_ = function(pointerEvent) {
-  pointerEvent.browserEvent.preventDefault();
+  event.preventDefault();
   this.handleFullScreen_();
 };
 

@@ -64,6 +64,23 @@ var self = this;
             }
             ?>
             </ul>
+            <ul class="fires itemMembers">
+            <?js
+            if (item.fires && item.fires.length) {
+            ?>
+            <span class="subtitle">Fires</span>
+            <?js
+                item.fires.forEach(function (v) {
+                    v = self.find({longname: v})[0] || {longname: v, name: v.split(/#?event:/)[1]};
+            ?>
+                <li data-name="<?js= v.longname ?>" class="<?js= (v.stability != 'stable' ? 'unstable' : '') ?>">
+                    <?js= self.linkto(v.longname, v.name) ?>
+                </li>
+            <?js
+                });
+            }
+            ?>
+            </ul>
         </li>
     <?js }); ?>
     </ul>
