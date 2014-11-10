@@ -286,7 +286,20 @@ ol.render.webgl.ImageReplay.prototype.drawCoordinates_ =
 
     n = numVertices / 8;
 
+    // bottom-left corner
     offsetX = -scale * anchorX;
+    offsetY = -scale * (height - anchorY);
+    this.vertices_[numVertices++] = x;
+    this.vertices_[numVertices++] = y;
+    this.vertices_[numVertices++] = offsetX * cos - offsetY * sin;
+    this.vertices_[numVertices++] = offsetX * sin + offsetY * cos;
+    this.vertices_[numVertices++] = originX / imageWidth;
+    this.vertices_[numVertices++] = (originY + height) / imageHeight;
+    this.vertices_[numVertices++] = opacity;
+    this.vertices_[numVertices++] = rotateWithView;
+
+    // bottom-right corner
+    offsetX = scale * (width - anchorX);
     offsetY = -scale * (height - anchorY);
     this.vertices_[numVertices++] = x;
     this.vertices_[numVertices++] = y;
@@ -297,35 +310,26 @@ ol.render.webgl.ImageReplay.prototype.drawCoordinates_ =
     this.vertices_[numVertices++] = opacity;
     this.vertices_[numVertices++] = rotateWithView;
 
-    offsetX = scale * (width - anchorX);
-    offsetY = -scale * (height - anchorY);
-    this.vertices_[numVertices++] = x;
-    this.vertices_[numVertices++] = y;
-    this.vertices_[numVertices++] = offsetX * cos - offsetY * sin;
-    this.vertices_[numVertices++] = offsetX * sin + offsetY * cos;
-    this.vertices_[numVertices++] = originX / imageWidth;
-    this.vertices_[numVertices++] = (originY + height) / imageHeight;
-    this.vertices_[numVertices++] = opacity;
-    this.vertices_[numVertices++] = rotateWithView;
-
+    // top-right corner
     offsetX = scale * (width - anchorX);
     offsetY = scale * anchorY;
     this.vertices_[numVertices++] = x;
     this.vertices_[numVertices++] = y;
     this.vertices_[numVertices++] = offsetX * cos - offsetY * sin;
     this.vertices_[numVertices++] = offsetX * sin + offsetY * cos;
-    this.vertices_[numVertices++] = originX / imageWidth;
+    this.vertices_[numVertices++] = (originX + width) / imageWidth;
     this.vertices_[numVertices++] = originY / imageHeight;
     this.vertices_[numVertices++] = opacity;
     this.vertices_[numVertices++] = rotateWithView;
 
+    // top-left corner
     offsetX = -scale * anchorX;
     offsetY = scale * anchorY;
     this.vertices_[numVertices++] = x;
     this.vertices_[numVertices++] = y;
     this.vertices_[numVertices++] = offsetX * cos - offsetY * sin;
     this.vertices_[numVertices++] = offsetX * sin + offsetY * cos;
-    this.vertices_[numVertices++] = (originX + width) / imageWidth;
+    this.vertices_[numVertices++] = originX / imageWidth;
     this.vertices_[numVertices++] = originY / imageHeight;
     this.vertices_[numVertices++] = opacity;
     this.vertices_[numVertices++] = rotateWithView;
