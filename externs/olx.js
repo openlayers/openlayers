@@ -474,7 +474,9 @@ olx.ViewOptions.prototype.constrainRotation;
 
 
 /**
- * Enable rotation. Default is `true`.
+ * Enable rotation. Default is `true`. If `false` a rotation constraint that
+ * always sets the rotation to zero is used. The `constrainRotation` option
+ * has no effect if `enableRotation` is `false`.
  * @type {boolean|undefined}
  * @api
  */
