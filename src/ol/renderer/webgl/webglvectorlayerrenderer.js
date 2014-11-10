@@ -73,8 +73,8 @@ ol.renderer.webgl.VectorLayer.prototype.composeFrame =
     replayGroup.replay(context,
         viewState.center, viewState.resolution, viewState.rotation,
         frameState.size, frameState.extent, frameState.pixelRatio,
-        layerState.opacity,
-        frameState.skippedFeatureUids);
+        layerState.opacity, layerState.brightness, layerState.contrast,
+        layerState.hue, layerState.saturation, frameState.skippedFeatureUids);
   }
 
 };

@@ -5,9 +5,11 @@ goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('goog.object');
 goog.require('goog.vec.Mat4');
+goog.require('ol.color.Matrix');
 goog.require('ol.extent');
 goog.require('ol.render.IReplayGroup');
-goog.require('ol.render.webgl.imagereplay.shader');
+goog.require('ol.render.webgl.imagereplay.shader.Color');
+goog.require('ol.render.webgl.imagereplay.shader.Default');
 goog.require('ol.vec.Mat4');
 
 
@@ -35,6 +37,12 @@ ol.render.webgl.ImageReplay = function(tolerance, maxExtent) {
   this.anchorY_ = undefined;
 
   /**
+   * @private
+   * @type {ol.color.Matrix}
+   */
+  this.colorMatrix_ = new ol.color.Matrix();
+
+  /**
    * The origin of the coordinate system for the point coordinates sent to
    * the GPU. To eliminate jitter caused by precision problems in the GPU
    * we use the "Rendering Relative to Eye" technique described in the "3D
@@ -49,13 +57,6 @@ ol.render.webgl.ImageReplay = function(tolerance, maxExtent) {
    * @private
    */
   this.extent_ = ol.extent.createEmpty();
-
-  /**
-   * @private
-   * @type {ol.webgl.shader.Fragment}
-   */
-  this.fragmentShader_ =
-      ol.render.webgl.imagereplay.shader.Fragment.getInstance();
 
   /**
    * @type {Array.<number>}
@@ -101,9 +102,15 @@ ol.render.webgl.ImageReplay = function(tolerance, maxExtent) {
 
   /**
    * @private
-   * @type {ol.render.webgl.imagereplay.shader.Locations}
+   * @type {ol.render.webgl.imagereplay.shader.Color.Locations}
    */
-  this.locations_ = null;
+  this.colorLocations_ = null;
+
+  /**
+   * @private
+   * @type {ol.render.webgl.imagereplay.shader.Default.Locations}
+   */
+  this.defaultLocations_ = null;
 
   /**
    * @private
@@ -164,13 +171,6 @@ ol.render.webgl.ImageReplay = function(tolerance, maxExtent) {
    * @private
    */
   this.textures_ = [];
-
-  /**
-   * @private
-   * @type {ol.webgl.shader.Vertex}
-   */
-  this.vertexShader_ =
-      ol.render.webgl.imagereplay.shader.Vertex.getInstance();
 
   /**
    * @type {Array.<number>}
@@ -502,24 +502,57 @@ ol.render.webgl.ImageReplay.prototype.getExtent = function() {
  * @param {ol.Extent} extent Extent.
  * @param {number} pixelRatio Pixel ratio.
  * @param {number} opacity Global opacity.
+ * @param {number} brightness Global brightness.
+ * @param {number} contrast Global contrast.
+ * @param {number} hue Global hue.
+ * @param {number} saturation Global saturation.
  * @param {Object} skippedFeaturesHash Ids of features to skip.
  * @return {T|undefined} Callback result.
  * @template T
  */
 ol.render.webgl.ImageReplay.prototype.replay = function(context,
     center, resolution, rotation, size, extent, pixelRatio,
-    opacity, skippedFeaturesHash) {
+    opacity, brightness, contrast, hue, saturation, skippedFeaturesHash) {
   var gl = context.getGL();
 
-  var program = context.getProgram(
-      this.fragmentShader_, this.vertexShader_);
-  context.useProgram(program);
+  var useColor = brightness || contrast != 1 || hue || saturation != 1;
 
-  if (goog.isNull(this.locations_)) {
-    this.locations_ =
-        new ol.render.webgl.imagereplay.shader.Locations(
-            gl, program);
+  var fragmentShader, vertexShader;
+  if (useColor) {
+    fragmentShader =
+        ol.render.webgl.imagereplay.shader.ColorFragment.getInstance();
+    vertexShader =
+        ol.render.webgl.imagereplay.shader.ColorVertex.getInstance();
+  } else {
+    fragmentShader =
+        ol.render.webgl.imagereplay.shader.DefaultFragment.getInstance();
+    vertexShader =
+        ol.render.webgl.imagereplay.shader.DefaultVertex.getInstance();
   }
+
+  var program = context.getProgram(fragmentShader, vertexShader);
+
+  var locations;
+  if (useColor) {
+    if (goog.isNull(this.colorLocations_)) {
+      locations =
+          new ol.render.webgl.imagereplay.shader.Color.Locations(gl, program);
+      this.colorLocations_ = locations;
+    } else {
+      locations = this.colorLocations_;
+    }
+  } else {
+    if (goog.isNull(this.defaultLocations_)) {
+      locations =
+          new ol.render.webgl.imagereplay.shader.Default.Locations(gl, program);
+      this.defaultLocations_ = locations;
+    } else {
+      locations = this.defaultLocations_;
+    }
+  }
+
+  // FIXME check return value?
+  context.useProgram(program);
 
   var projectionMatrix = this.projectionMatrix_;
   ol.vec.Mat4.makeTransform2D(projectionMatrix,
@@ -537,8 +570,6 @@ ol.render.webgl.ImageReplay.prototype.replay = function(context,
   if (rotation !== 0) {
     goog.vec.Mat4.rotateZ(offsetRotateMatrix, -rotation);
   }
-
-  var locations = this.locations_;
 
   goog.asserts.assert(!goog.isNull(this.verticesBuffer_));
   gl.bindBuffer(goog.webgl.ARRAY_BUFFER, this.verticesBuffer_);
@@ -568,6 +599,10 @@ ol.render.webgl.ImageReplay.prototype.replay = function(context,
   gl.uniformMatrix4fv(locations.u_offsetRotateMatrix, false,
       offsetRotateMatrix);
   gl.uniform1f(locations.u_opacity, opacity);
+  if (useColor) {
+    gl.uniformMatrix4fv(locations.u_colorMatrix, false,
+        this.colorMatrix_.getMatrix(brightness, contrast, hue, saturation));
+  }
 
   goog.asserts.assert(!goog.isNull(this.indicesBuffer_));
   gl.bindBuffer(goog.webgl.ELEMENT_ARRAY_BUFFER, this.indicesBuffer_);
@@ -735,13 +770,17 @@ ol.render.webgl.ReplayGroup.prototype.isEmpty = function() {
  * @param {ol.Extent} extent Extent.
  * @param {number} pixelRatio Pixel ratio.
  * @param {number} opacity Global opacity.
+ * @param {number} brightness Global brightness.
+ * @param {number} contrast Global contrast.
+ * @param {number} hue Global hue.
+ * @param {number} saturation Global saturation.
  * @param {Object} skippedFeaturesHash Ids of features to skip.
  * @return {T|undefined} Callback result.
  * @template T
  */
 ol.render.webgl.ReplayGroup.prototype.replay = function(context,
     center, resolution, rotation, size, extent, pixelRatio,
-    opacity, skippedFeaturesHash) {
+    opacity, brightness, contrast, hue, saturation, skippedFeaturesHash) {
   var i, ii, replay, result;
   for (i = 0, ii = ol.render.REPLAY_ORDER.length; i < ii; ++i) {
     replay = this.replays_[ol.render.REPLAY_ORDER[i]];
@@ -749,7 +788,7 @@ ol.render.webgl.ReplayGroup.prototype.replay = function(context,
         ol.extent.intersects(extent, replay.getExtent())) {
       result = replay.replay(context,
           center, resolution, rotation, size, extent, pixelRatio,
-          opacity, skippedFeaturesHash);
+          opacity, brightness, contrast, hue, saturation, skippedFeaturesHash);
       if (result) {
         return result;
       }
