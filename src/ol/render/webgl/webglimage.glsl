@@ -35,5 +35,9 @@ uniform sampler2D u_image;
 void main(void) {
   vec4 texColor = texture2D(u_image, v_texCoord);
   gl_FragColor.rgb = texColor.rgb;
-  gl_FragColor.a = texColor.a * v_opacity;
+  float alpha = texColor.a * v_opacity;
+  if (alpha == 0.0) {
+    discard;
+  }
+  gl_FragColor.a = alpha;
 }

@@ -21,14 +21,14 @@ goog.addSingletonGetter(ol.render.webgl.imagereplay.shader.Fragment);
  * @const
  * @type {string}
  */
-ol.render.webgl.imagereplay.shader.Fragment.DEBUG_SOURCE = 'precision mediump float;\nvarying vec2 v_texCoord;\nvarying float v_opacity;\n\nuniform sampler2D u_image;\n\nvoid main(void) {\n  vec4 texColor = texture2D(u_image, v_texCoord);\n  gl_FragColor.rgb = texColor.rgb;\n  gl_FragColor.a = texColor.a * v_opacity;\n}\n';
+ol.render.webgl.imagereplay.shader.Fragment.DEBUG_SOURCE = 'precision mediump float;\nvarying vec2 v_texCoord;\nvarying float v_opacity;\n\nuniform sampler2D u_image;\n\nvoid main(void) {\n  vec4 texColor = texture2D(u_image, v_texCoord);\n  gl_FragColor.rgb = texColor.rgb;\n  float alpha = texColor.a * v_opacity;\n  if (alpha == 0.0) {\n    discard;\n  }\n  gl_FragColor.a = alpha;\n}\n';
 
 
 /**
  * @const
  * @type {string}
  */
-ol.render.webgl.imagereplay.shader.Fragment.OPTIMIZED_SOURCE = 'precision mediump float;varying vec2 a;varying float b;uniform sampler2D k;void main(void){vec4 texColor=texture2D(k,a);gl_FragColor.rgb=texColor.rgb;gl_FragColor.a=texColor.a*b;}';
+ol.render.webgl.imagereplay.shader.Fragment.OPTIMIZED_SOURCE = 'precision mediump float;varying vec2 a;varying float b;uniform sampler2D k;void main(void){vec4 texColor=texture2D(k,a);gl_FragColor.rgb=texColor.rgb;float alpha=texColor.a*b;if(alpha==0.0){discard;}gl_FragColor.a=alpha;}';
 
 
 /**
