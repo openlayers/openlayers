@@ -169,7 +169,7 @@ ol.interaction.Select.prototype.handleMapBrowserEvent =
             }
           } else {
             if (remove || toggle) {
-              deselected.push(index);
+              deselected.push(feature);
             }
           }
         }, undefined, this.layerFilter_);
