@@ -582,7 +582,7 @@ ol.format.WKT.Parser.prototype.parse = function() {
 
 
 /**
- * @return {!ol.geom.Geometry|!ol.geom.GeometryCollection} The geometry.
+ * @return {!(ol.geom.Geometry|ol.geom.GeometryCollection)} The geometry.
  * @private
  */
 ol.format.WKT.Parser.prototype.parseGeometry_ = function() {
