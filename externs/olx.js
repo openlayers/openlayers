@@ -1175,6 +1175,7 @@ olx.control.ScaleLineOptions.prototype.units;
  *     className: (string|undefined),
  *     label: (string|undefined),
  *     tipLabel: (string|undefined),
+ *     tagName: (string|undefined),
  *     target: (Element|undefined),
  *     autoHide: (boolean|undefined)}}
  * @api stable
@@ -1196,6 +1197,14 @@ olx.control.RotateOptions.prototype.className;
  * @api stable
  */
 olx.control.RotateOptions.prototype.label;
+
+
+/**
+ * HTML element type. Default is `div`.
+ * @type {string|undefined}
+ * @api stable
+ */
+olx.control.RotateOptions.prototype.tagName;
 
 
 /**
