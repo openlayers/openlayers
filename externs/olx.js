@@ -1122,6 +1122,7 @@ olx.control.OverviewMapOptions.prototype.tipLabel;
 /**
  * @typedef {{className: (string|undefined),
  *     minWidth: (number|undefined),
+ *     tagName: (string|undefined),
  *     target: (Element|undefined),
  *     units: (ol.control.ScaleLineUnits|string|undefined)}}
  * @api stable
@@ -1143,6 +1144,14 @@ olx.control.ScaleLineOptions.prototype.className;
  * @api stable
  */
 olx.control.ScaleLineOptions.prototype.minWidth;
+
+
+/**
+ * HTML element type. Default is `div`.
+ * @type {string|undefined}
+ * @api stable
+ */
+olx.control.ScaleLineOptions.prototype.tagName;
 
 
 /**
