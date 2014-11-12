@@ -610,8 +610,10 @@ ol.render.webgl.ImageReplay.prototype.replay = function(context,
   for (i = 0, ii = this.textures_.length, start = 0; i < ii; ++i) {
     gl.bindTexture(goog.webgl.TEXTURE_2D, this.textures_[i]);
     var end = this.groupIndices_[i];
-    gl.drawElements(goog.webgl.TRIANGLES, end - start,
-        goog.webgl.UNSIGNED_SHORT, start);
+    var numItems = end - start;
+    var offsetInBytes = start * 2;  // 2 Bytes for UNSIGNED_SHORT
+    gl.drawElements(goog.webgl.TRIANGLES, numItems,
+        goog.webgl.UNSIGNED_SHORT, offsetInBytes);
     start = end;
   }
 };
