@@ -62,7 +62,11 @@ ol.control.FullScreen = function(opt_options) {
   var cssClasses = this.cssClassName_ + ' ' + ol.css.CLASS_UNSELECTABLE +
       ' ' + ol.css.CLASS_CONTROL + ' ' +
       (!goog.dom.fullscreen.isSupported() ? ol.css.CLASS_UNSUPPORTED : '');
-  var element = goog.dom.createDom(goog.dom.TagName.DIV, cssClasses, button);
+
+  var tagName = goog.isDef(options.tagName) ?
+      options.tagName : goog.dom.TagName.DIV;
+
+  var element = goog.dom.createDom(tagName, cssClasses, button);
 
   goog.base(this, {
     element: element,

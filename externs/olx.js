@@ -950,6 +950,7 @@ olx.control.DefaultsOptions.prototype.zoomOptions;
  * @typedef {{className: (string|undefined),
  *     tipLabel: (string|undefined),
  *     keys: (boolean|undefined),
+ *     tagName: (string|undefined),
  *     target: (Element|undefined)}}
  * @api
  */
@@ -978,6 +979,14 @@ olx.control.FullScreenOptions.prototype.tipLabel;
  * @api
  */
 olx.control.FullScreenOptions.prototype.keys;
+
+
+/**
+ * HTML element type. Default is `div`.
+ * @type {string|undefined}
+ * @api stable
+ */
+olx.control.FullScreenOptions.prototype.tagName;
 
 
 /**
