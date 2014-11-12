@@ -1229,6 +1229,7 @@ olx.control.RotateOptions.prototype.target;
  *     zoomInTipLabel: (string|undefined),
  *     zoomOutTipLabel: (string|undefined),
  *     delta: (number|undefined),
+ *     tagName: (string|undefined),
  *     target: (Element|undefined)}}
  * @api stable
  */
@@ -1289,6 +1290,14 @@ olx.control.ZoomOptions.prototype.zoomOutTipLabel;
  * @api stable
  */
 olx.control.ZoomOptions.prototype.delta;
+
+
+/**
+ * HTML element type. Default is `div`.
+ * @type {string|undefined}
+ * @api stable
+ */
+olx.control.ZoomOptions.prototype.tagName;
 
 
 /**
