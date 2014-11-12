@@ -797,6 +797,7 @@ olx.control;
 
 /**
  * @typedef {{className: (string|undefined),
+ *     tagName: (string|undefined),
  *     target: (Element|undefined)}}
  * @api
  */
@@ -809,6 +810,14 @@ olx.control.AttributionOptions;
  * @api
  */
 olx.control.AttributionOptions.prototype.className;
+
+
+/**
+ * HTML element type. Default is `div`.
+ * @type {string|undefined}
+ * @api stable
+ */
+olx.control.AttributionOptions.prototype.tagName;
 
 
 /**
