@@ -1334,6 +1334,7 @@ olx.control.ZoomSliderOptions.prototype.minResolution;
 
 /**
  * @typedef {{className: (string|undefined),
+ *     tagName: (string|undefined),
  *     target: (Element|undefined),
  *     tipLabel: (string|undefined),
  *     extent: (ol.Extent|undefined)}}
@@ -1356,6 +1357,13 @@ olx.control.ZoomToExtentOptions.prototype.className;
  * @api stable
  */
 olx.control.ZoomToExtentOptions.prototype.target;
+
+/**
+ * HTML element type. Default is `div`.
+ * @type {string|undefined}
+ * @api stable
+ */
+olx.control.ZoomToExtentOptions.prototype.tagName;
 
 
 /**
