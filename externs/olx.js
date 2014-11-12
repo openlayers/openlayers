@@ -5399,7 +5399,8 @@ olx.style;
  * @typedef {{fill: (ol.style.Fill|undefined),
  *     radius: number,
  *     snapToPixel: (boolean|undefined),
- *     stroke: (ol.style.Stroke|undefined)}}
+ *     stroke: (ol.style.Stroke|undefined),
+ *     atlasManager: (ol.style.AtlasManager|undefined)}}
  * @api
  */
 olx.style.CircleOptions;
@@ -5441,6 +5442,16 @@ olx.style.CircleOptions.prototype.snapToPixel;
  * @api
  */
 olx.style.CircleOptions.prototype.stroke;
+
+
+/**
+ * The atlas manager to use for this circle. When using WebGL it is
+ * recommended to use an atlas manager to avoid texture switching.
+ * If an atlas manager is given, the circle is added to an atlas.
+ * By default no atlas manager is used.
+ * @type {ol.style.AtlasManager|undefined}
+ */
+olx.style.CircleOptions.prototype.atlasManager;
 
 
 /**
