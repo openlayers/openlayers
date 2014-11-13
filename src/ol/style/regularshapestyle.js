@@ -18,11 +18,18 @@ goog.require('ol.style.Stroke');
  * @constructor
  * @param {olx.style.RegularShapeOptions=} opt_options Options.
  * @extends {ol.style.Image}
+ * @implements {ol.structs.IHasChecksum}
  * @api
  */
 ol.style.RegularShape = function(opt_options) {
 
   var options = goog.isDef(opt_options) ? opt_options : {};
+
+  /**
+   * @private
+   * @type {Array.<ol.structs.Checksum>|null}
+   */
+  this.checksums_ = null;
 
   /**
    * @private
@@ -304,4 +311,35 @@ ol.style.RegularShape.prototype.render_ = function() {
   }
 
   return size;
+};
+
+
+/**
+ * @inheritDoc
+ */
+ol.style.RegularShape.prototype.getChecksum = function() {
+  var strokeChecksum = !goog.isNull(this.stroke_) ?
+      this.stroke_.getChecksum() : '-';
+  var fillChecksum = !goog.isNull(this.fill_) ?
+      this.fill_.getChecksum() : '-';
+
+  var recalculate = goog.isNull(this.checksums_) ||
+      (strokeChecksum != this.checksums_[1] ||
+      fillChecksum != this.checksums_[2] ||
+      this.radius_ != this.checksums_[3] ||
+      this.radius2_ != this.checksums_[4] ||
+      this.angle_ != this.checksums_[5] ||
+      this.points_ != this.checksums_[6]);
+
+  if (recalculate) {
+    var checksum = 'r' + strokeChecksum + fillChecksum +
+        (goog.isDef(this.radius_) ? this.radius_.toString() : '-') +
+        (goog.isDef(this.radius2_) ? this.radius2_.toString() : '-') +
+        (goog.isDef(this.angle_) ? this.angle_.toString() : '-') +
+        (goog.isDef(this.points_) ? this.points_.toString() : '-');
+    this.checksums_ = [checksum, strokeChecksum, fillChecksum,
+      this.radius_, this.radius2_, this.angle_, this.points_];
+  }
+
+  return this.checksums_[0];
 };
