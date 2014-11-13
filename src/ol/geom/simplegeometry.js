@@ -245,6 +245,7 @@ ol.geom.SimpleGeometry.prototype.setLayout =
 
 /**
  * @inheritDoc
+ * @api stable
  */
 ol.geom.SimpleGeometry.prototype.applyTransform = function(transformFn) {
   if (!goog.isNull(this.flatCoordinates)) {
