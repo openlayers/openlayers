@@ -7,10 +7,14 @@ goog.require('ol.source.Vector');
 goog.require('ol.style.AtlasManager');
 goog.require('ol.style.Circle');
 goog.require('ol.style.Fill');
+goog.require('ol.style.RegularShape');
 goog.require('ol.style.Stroke');
 goog.require('ol.style.Style');
 
 var atlasManager = new ol.style.AtlasManager({
+  // we increase the default size so that all symbols fit into
+  // a single atlas image
+  size: 512,
   maxSize: ol.has.WEBGL_MAX_TEXTURE_SIZE});
 
 var symbolInfo = [{
@@ -36,12 +40,13 @@ var symbolInfo = [{
 }];
 
 var radiuses = [3, 6, 9, 15, 19, 25];
-var symbolCount = symbolInfo.length * radiuses.length;
+var symbolCount = symbolInfo.length * radiuses.length * 2;
 var symbols = [];
 var i, j;
 for (i = 0; i < symbolInfo.length; ++i) {
   var info = symbolInfo[i];
   for (j = 0; j < radiuses.length; ++j) {
+    // circle symbol
     symbols.push(new ol.style.Circle({
       opacity: info.opacity,
       scale: info.scale,
@@ -55,6 +60,24 @@ for (i = 0; i < symbolInfo.length; ++i) {
       }),
       // by passing the atlas manager to the symbol,
       // the symbol will be added to an atlas
+      atlasManager: atlasManager
+    }));
+
+    // star symbol
+    symbols.push(new ol.style.RegularShape({
+      points: 8,
+      opacity: info.opacity,
+      scale: info.scale,
+      radius: radiuses[j],
+      radius2: radiuses[j] * 0.7,
+      angle: 1.4,
+      fill: new ol.style.Fill({
+        color: info.fillColor
+      }),
+      stroke: new ol.style.Stroke({
+        color: info.strokeColor,
+        width: 1
+      }),
       atlasManager: atlasManager
     }));
   }
@@ -95,6 +118,6 @@ var map = new ol.Map({
   target: document.getElementById('map'),
   view: new ol.View({
     center: [0, 0],
-    zoom: 3
+    zoom: 4
   })
 });
