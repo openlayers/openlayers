@@ -111,11 +111,21 @@ ol.format.WMSCapabilities.readBoundingBox_ = function(node, objectStack) {
     ol.format.XSD.readDecimalString(node.getAttribute('resy'))
   ];
 
-  return {
-    'crs': node.getAttribute('CRS'),
+  var obj = {
     'extent': extent,
     'res': resolutions
   };
+
+  var crs = node.getAttribute('CRS');
+  var srs = node.getAttribute('SRS');
+
+  if (goog.isDefAndNotNull(crs)) {
+    goog.object.set(obj, 'crs', crs);
+  } else if (goog.isDefAndNotNull(srs)) {
+    goog.object.set(obj, 'srs', srs);
+  }
+
+  return obj;
 };
 
 
@@ -152,6 +162,27 @@ ol.format.WMSCapabilities.readEXGeographicBoundingBox_ =
     westBoundLongitude, southBoundLatitude,
     eastBoundLongitude, northBoundLatitude
   ];
+};
+
+
+/**
+ * @private
+ * @param {Node} node Node.
+ * @param {Array.<*>} objectStack Object stack.
+ * @return {Object} Bounding box object.
+ */
+ol.format.WMSCapabilities.readLatLonBoundingBox_ = function(node, objectStack) {
+  goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT);
+  goog.asserts.assert(node.localName == 'LatLonBoundingBox');
+
+  var extent = [
+    ol.format.XSD.readDecimalString(node.getAttribute('minx')),
+    ol.format.XSD.readDecimalString(node.getAttribute('miny')),
+    ol.format.XSD.readDecimalString(node.getAttribute('maxx')),
+    ol.format.XSD.readDecimalString(node.getAttribute('maxy'))
+  ];
+
+  return extent;
 };
 
 
@@ -321,7 +352,7 @@ ol.format.WMSCapabilities.readLayer_ = function(node, objectStack) {
   goog.object.set(layerObject, 'fixedHeight', fixedHeight);
 
   // See 7.2.4.8
-  var addKeys = ['Style', 'CRS', 'AuthorityURL'];
+  var addKeys = ['Style', 'CRS', 'SRS', 'AuthorityURL'];
   goog.array.forEach(addKeys, function(key) {
     var parentValue = goog.object.get(parentLayerObject, key);
     if (goog.isDef(parentValue)) {
@@ -331,8 +362,9 @@ ol.format.WMSCapabilities.readLayer_ = function(node, objectStack) {
     }
   });
 
-  var replaceKeys = ['EX_GeographicBoundingBox', 'BoundingBox', 'Dimension',
-    'Attribution', 'MinScaleDenominator', 'MaxScaleDenominator'];
+  var replaceKeys = ['LatLonBoundingBox', 'EX_GeographicBoundingBox',
+    'BoundingBox', 'Dimension', 'Attribution', 'MinScaleDenominator',
+    'MaxScaleDenominator'];
   goog.array.forEach(replaceKeys, function(key) {
     var childValue = goog.object.get(layerObject, key);
     if (!goog.isDef(childValue)) {
@@ -675,6 +707,9 @@ ol.format.WMSCapabilities.LAYER_PARSERS_ = ol.xml.makeParsersNS(
       'KeywordList': ol.xml.makeObjectPropertySetter(
           ol.format.WMSCapabilities.readKeywordList_),
       'CRS': ol.xml.makeObjectPropertyPusher(ol.format.XSD.readString),
+      'SRS': ol.xml.makeObjectPropertyPusher(ol.format.XSD.readString),
+      'LatLonBoundingBox': ol.xml.makeObjectPropertySetter(
+          ol.format.WMSCapabilities.readLatLonBoundingBox_),
       'EX_GeographicBoundingBox': ol.xml.makeObjectPropertySetter(
           ol.format.WMSCapabilities.readEXGeographicBoundingBox_),
       'BoundingBox': ol.xml.makeObjectPropertyPusher(
