@@ -1,5 +1,6 @@
 goog.provide('ol.style.RegularShape');
 
+goog.require('goog.asserts');
 goog.require('goog.dom');
 goog.require('goog.dom.TagName');
 goog.require('ol.color');
@@ -35,8 +36,7 @@ ol.style.RegularShape = function(opt_options) {
    * @private
    * @type {HTMLCanvasElement}
    */
-  this.canvas_ = /** @type {HTMLCanvasElement} */
-      (goog.dom.createElement(goog.dom.TagName.CANVAS));
+  this.canvas_ = null;
 
   /**
    * @private
@@ -87,19 +87,25 @@ ol.style.RegularShape = function(opt_options) {
    */
   this.stroke_ = goog.isDef(options.stroke) ? options.stroke : null;
 
-  var size = this.render_();
-
   /**
    * @private
    * @type {Array.<number>}
    */
-  this.anchor_ = [size / 2, size / 2];
+  this.anchor_ = null;
 
   /**
    * @private
    * @type {ol.Size}
    */
-  this.size_ = [size, size];
+  this.size_ = null;
+
+  /**
+   * @private
+   * @type {ol.Size}
+   */
+  this.imageSize_ = null;
+
+  this.render_(options.atlasManager);
 
   /**
    * @type {boolean}
@@ -158,7 +164,7 @@ ol.style.RegularShape.prototype.getImage = function(pixelRatio) {
  * @inheritDoc
  */
 ol.style.RegularShape.prototype.getImageSize = function() {
-  return this.size_;
+  return this.imageSize_;
 };
 
 
@@ -225,16 +231,20 @@ ol.style.RegularShape.prototype.unlistenImageChange = goog.nullFunction;
 
 
 /**
- * @private
- * @return {number} Size.
+ * @typedef {{strokeStyle: (string|undefined), strokeWidth: number,
+ *   size: number}}
  */
-ol.style.RegularShape.prototype.render_ = function() {
-  var canvas = this.canvas_;
-  var strokeStyle, strokeWidth;
+ol.style.RegularShape.RenderOptions;
 
-  if (goog.isNull(this.stroke_)) {
-    strokeWidth = 0;
-  } else {
+
+/**
+ * @private
+ * @param {ol.style.AtlasManager|undefined} atlasManager
+ */
+ol.style.RegularShape.prototype.render_ = function(atlasManager) {
+  var strokeStyle, strokeWidth = 0, imageSize;
+
+  if (!goog.isNull(this.stroke_)) {
     strokeStyle = ol.color.asString(this.stroke_.getColor());
     strokeWidth = this.stroke_.getWidth();
     if (!goog.isDef(strokeWidth)) {
@@ -244,17 +254,70 @@ ol.style.RegularShape.prototype.render_ = function() {
 
   var size = 2 * (this.radius_ + strokeWidth) + 1;
 
-  // draw the regular shape on the canvas
+  /** @type {ol.style.RegularShape.RenderOptions} */
+  var renderOptions = {
+    strokeStyle: strokeStyle,
+    strokeWidth: strokeWidth,
+    size: size
+  };
 
-  canvas.height = size;
-  canvas.width = size;
+  if (!goog.isDef(atlasManager)) {
+    // no atlas manager is used, create a new canvas
+    this.canvas_ = /** @type {HTMLCanvasElement} */
+        (goog.dom.createElement(goog.dom.TagName.CANVAS));
 
-  // canvas.width and height are rounded to the closest integer
-  size = canvas.width;
+    this.canvas_.height = size;
+    this.canvas_.width = size;
 
-  var context = /** @type {CanvasRenderingContext2D} */
-      (canvas.getContext('2d'));
+    // canvas.width and height are rounded to the closest integer
+    size = this.canvas_.width;
+    imageSize = size;
+
+    var context = /** @type {CanvasRenderingContext2D} */
+        (this.canvas_.getContext('2d'));
+    this.draw_(renderOptions, context, 0, 0);
+  } else {
+    // an atlas manager is used, add the symbol to an atlas
+    size = Math.round(size);
+
+    var id = this.getChecksum();
+    var info = atlasManager.add(
+        id, size, size, goog.bind(this.draw_, this, renderOptions));
+    goog.asserts.assert(info !== null, 'shape size is too large');
+
+    this.canvas_ = info.image;
+    this.origin_ = [info.offsetX, info.offsetY];
+    imageSize = info.image.width;
+  }
+
+  this.anchor_ = [size / 2, size / 2];
+  this.size_ = [size, size];
+  this.imageSize_ = [imageSize, imageSize];
+
+  // deal with the hit detection canvas
+  if (!goog.isNull(this.fill_)) {
+    this.hitDetectionCanvas_ = this.canvas_;
+  } else {
+    this.createHitDetectionCanvas_(renderOptions);
+  }
+};
+
+
+/**
+ * @private
+ * @param {ol.style.Circle.RenderOptions} renderOptions
+ * @param {CanvasRenderingContext2D} context
+ * @param {number} x The origin for the symbol (x).
+ * @param {number} y The origin for the symbol (y).
+ */
+ol.style.RegularShape.prototype.draw_ = function(renderOptions, context, x, y) {
   var i, angle0, radiusC;
+  // reset transform
+  context.setTransform(1, 0, 0, 1, 0, 0);
+
+  // then move to (x, y)
+  context.translate(x, y);
+
   context.beginPath();
   if (this.radius2_ !== this.radius_) {
     this.points_ = 2 * this.points_;
@@ -262,8 +325,8 @@ ol.style.RegularShape.prototype.render_ = function() {
   for (i = 0; i <= this.points_; i++) {
     angle0 = i * 2 * Math.PI / this.points_ - Math.PI / 2 + this.angle_;
     radiusC = i % 2 === 0 ? this.radius_ : this.radius2_;
-    context.lineTo(size / 2 + radiusC * Math.cos(angle0),
-                   size / 2 + radiusC * Math.sin(angle0));
+    context.lineTo(renderOptions.size / 2 + radiusC * Math.cos(angle0),
+                   renderOptions.size / 2 + radiusC * Math.sin(angle0));
   }
 
   if (!goog.isNull(this.fill_)) {
@@ -271,46 +334,48 @@ ol.style.RegularShape.prototype.render_ = function() {
     context.fill();
   }
   if (!goog.isNull(this.stroke_)) {
-    context.strokeStyle = strokeStyle;
-    context.lineWidth = strokeWidth;
+    context.strokeStyle = renderOptions.strokeStyle;
+    context.lineWidth = renderOptions.strokeWidth;
     context.stroke();
   }
+  context.closePath();
+};
 
-  // deal with the hit detection canvas
 
-  if (!goog.isNull(this.fill_)) {
-    this.hitDetectionCanvas_ = canvas;
-  } else {
-    this.hitDetectionCanvas_ = /** @type {HTMLCanvasElement} */
-        (goog.dom.createElement(goog.dom.TagName.CANVAS));
-    canvas = this.hitDetectionCanvas_;
+/**
+ * @private
+ * @param {ol.style.RegularShape.RenderOptions} renderOptions
+ */
+ol.style.RegularShape.prototype.createHitDetectionCanvas_ =
+    function(renderOptions) {
+  this.hitDetectionCanvas_ = /** @type {HTMLCanvasElement} */
+      (goog.dom.createElement(goog.dom.TagName.CANVAS));
+  var canvas = this.hitDetectionCanvas_;
 
-    canvas.height = size;
-    canvas.width = size;
+  canvas.height = renderOptions.size;
+  canvas.width = renderOptions.size;
 
-    context = /** @type {CanvasRenderingContext2D} */
-        (canvas.getContext('2d'));
-    context.beginPath();
-    if (this.radius2_ !== this.radius_) {
-      this.points_ = 2 * this.points_;
-    }
-    for (i = 0; i <= this.points_; i++) {
-      angle0 = i * 2 * Math.PI / this.points_ - Math.PI / 2 + this.angle_;
-      radiusC = i % 2 === 0 ? this.radius_ : this.radius2_;
-      context.lineTo(size / 2 + radiusC * Math.cos(angle0),
-                     size / 2 + radiusC * Math.sin(angle0));
-    }
-
-    context.fillStyle = ol.render.canvas.defaultFillStyle;
-    context.fill();
-    if (!goog.isNull(this.stroke_)) {
-      context.strokeStyle = strokeStyle;
-      context.lineWidth = strokeWidth;
-      context.stroke();
-    }
+  var context = /** @type {CanvasRenderingContext2D} */
+      (canvas.getContext('2d'));
+  context.beginPath();
+  if (this.radius2_ !== this.radius_) {
+    this.points_ = 2 * this.points_;
+  }
+  var i, radiusC, angle0;
+  for (i = 0; i <= this.points_; i++) {
+    angle0 = i * 2 * Math.PI / this.points_ - Math.PI / 2 + this.angle_;
+    radiusC = i % 2 === 0 ? this.radius_ : this.radius2_;
+    context.lineTo(renderOptions.size / 2 + radiusC * Math.cos(angle0),
+                   renderOptions.size / 2 + radiusC * Math.sin(angle0));
   }
 
-  return size;
+  context.fillStyle = ol.render.canvas.defaultFillStyle;
+  context.fill();
+  if (!goog.isNull(this.stroke_)) {
+    context.strokeStyle = renderOptions.strokeStyle;
+    context.lineWidth = renderOptions.strokeWidth;
+    context.stroke();
+  }
 };
 
 
