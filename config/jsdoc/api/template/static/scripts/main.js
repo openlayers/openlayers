@@ -54,11 +54,25 @@ $(function () {
     _onResize();
 
     // show/hide unstable items
+    var links = $('a[href^="ol."');
     var unstable = $('.unstable');
     var stabilityToggle = $('#stability-toggle');
     stabilityToggle.change(function() {
         unstable.toggleClass('hidden', this.checked);
+        var search = this.checked ? '' : '?unstable=true';
+        links.each(function(i, el) {
+            this.href = this.pathname + search + this.hash;
+        });
+        if (history.replaceState) {
+            var url = window.location.pathname + search + window.location.hash;
+            history.replaceState({}, '', url);
+        }
         return false;
     });
+    var search = window.location.search;
+    links.each(function(i, el) {
+        this.href = this.pathname + search + this.hash;
+    });
+    stabilityToggle.prop('checked', search !== '?unstable=true');
     unstable.toggleClass('hidden', stabilityToggle[0].checked);
 });
