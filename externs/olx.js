@@ -3569,7 +3569,11 @@ olx.source.TileImageOptions.prototype.attributions;
 
 
 /**
- * crossOrigin setting for image requests. Default is `null`.
+ * The `crossOrigin` attribute for loaded images.  Note that you must provide a
+ * `crossOrigin` value if you are using the WebGL renderer or if you want to
+ * access pixel data with the Canvas renderer.  See
+ * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/CORS_enabled_image}
+ * for more detail.
  * @type {null|string|undefined}
  * @api
  */
@@ -4120,7 +4124,13 @@ olx.source.OSMOptions.prototype.attributions;
 
 
 /**
- * crossOrigin setting for image requests. Default is `anonymous`.
+ * The `crossOrigin` attribute for loaded images.  Note that you must provide a
+ * `crossOrigin` value if you are using the WebGL renderer or if you want to
+ * access pixel data with the Canvas renderer.  See
+ * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/CORS_enabled_image}
+ * for more detail.
+ *
+ * Default is `anonymous`.
  * @type {null|string|undefined}
  * @api stable
  */
@@ -4406,7 +4416,11 @@ olx.source.ImageWMSOptions.prototype.attributions;
 
 
 /**
- * crossOrigin setting for image requests.
+ * The `crossOrigin` attribute for loaded images.  Note that you must provide a
+ * `crossOrigin` value if you are using the WebGL renderer or if you want to
+ * access pixel data with the Canvas renderer.  See
+ * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/CORS_enabled_image}
+ * for more detail.
  * @type {null|string|undefined}
  * @api stable
  */
@@ -4573,7 +4587,11 @@ olx.source.ImageStaticOptions.prototype.attributions;
 
 
 /**
- * crossOrigin setting for image requests.
+ * The `crossOrigin` attribute for loaded images.  Note that you must provide a
+ * `crossOrigin` value if you are using the WebGL renderer or if you want to
+ * access pixel data with the Canvas renderer.  See
+ * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/CORS_enabled_image}
+ * for more detail.
  * @type {null|string|undefined}
  * @api stable
  */
@@ -4581,7 +4599,8 @@ olx.source.ImageStaticOptions.prototype.crossOrigin;
 
 
 /**
- * Extent of the image.
+ * Extent of the image in map coordinates.  This is the [left, bottom, right,
+ * top] map coordinates of your image.
  * @type {ol.Extent}
  * @api stable
  */
@@ -4589,7 +4608,7 @@ olx.source.ImageStaticOptions.prototype.imageExtent;
 
 
 /**
- * Size of the image.
+ * Size of the image in pixels.
  * @type {ol.Size|undefined}
  * @api stable
  */
@@ -4605,7 +4624,7 @@ olx.source.ImageStaticOptions.prototype.imageLoadFunction;
 
 
 /**
- * Logo.
+ * Optional logo.
  * @type {string|olx.LogoOptions|undefined}
  * @api stable
  */
@@ -4621,7 +4640,7 @@ olx.source.ImageStaticOptions.prototype.projection;
 
 
 /**
- * Url.
+ * Image URL.
  * @type {string}
  * @api stable
  */
@@ -4700,7 +4719,11 @@ olx.source.TileJSONOptions;
 
 
 /**
- * crossOrigin setting for image requests.
+ * The `crossOrigin` attribute for loaded images.  Note that you must provide a
+ * `crossOrigin` value if you are using the WebGL renderer or if you want to
+ * access pixel data with the Canvas renderer.  See
+ * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/CORS_enabled_image}
+ * for more detail.
  * @type {null|string|undefined}
  * @api stable
  */
@@ -4769,7 +4792,11 @@ olx.source.TileWMSOptions.prototype.params;
 
 
 /**
- * crossOrigin setting for image requests.
+ * The `crossOrigin` attribute for loaded images.  Note that you must provide a
+ * `crossOrigin` value if you are using the WebGL renderer or if you want to
+ * access pixel data with the Canvas renderer.  See
+ * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/CORS_enabled_image}
+ * for more detail.
  * @type {null|string|undefined}
  * @api stable
  */
@@ -5061,7 +5088,11 @@ olx.source.WMTSOptions.prototype.attributions;
 
 
 /**
- * crossOrigin setting for image requests.
+ * The `crossOrigin` attribute for loaded images.  Note that you must provide a
+ * `crossOrigin` value if you are using the WebGL renderer or if you want to
+ * access pixel data with the Canvas renderer.  See
+ * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/CORS_enabled_image}
+ * for more detail.
  * @type {string|null|undefined}
  * @api
  */
@@ -5229,7 +5260,11 @@ olx.source.XYZOptions.prototype.attributions;
 
 
 /**
- * Cross origin setting for image requests.
+ * The `crossOrigin` attribute for loaded images.  Note that you must provide a
+ * `crossOrigin` value if you are using the WebGL renderer or if you want to
+ * access pixel data with the Canvas renderer.  See
+ * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/CORS_enabled_image}
+ * for more detail.
  * @type {null|string|undefined}
  * @api stable
  */
@@ -5349,7 +5384,11 @@ olx.source.ZoomifyOptions.prototype.attributions;
 
 
 /**
- * Cross origin setting for image requests.
+ * The `crossOrigin` attribute for loaded images.  Note that you must provide a
+ * `crossOrigin` value if you are using the WebGL renderer or if you want to
+ * access pixel data with the Canvas renderer.  See
+ * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/CORS_enabled_image}
+ * for more detail.
  * @type {null|string|undefined}
  * @api stable
  */
@@ -5517,7 +5556,11 @@ olx.style.IconOptions.prototype.anchorYUnits;
 
 
 /**
- * crossOrigin setting for image.
+ * The `crossOrigin` attribute for loaded images.  Note that you must provide a
+ * `crossOrigin` value if you are using the WebGL renderer or if you want to
+ * access pixel data with the Canvas renderer.  See
+ * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/CORS_enabled_image}
+ * for more detail.
  * @type {null|string|undefined}
  * @api
  */
