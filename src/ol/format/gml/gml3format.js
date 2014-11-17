@@ -1,12 +1,12 @@
 goog.provide('ol.format.GML');
 goog.provide('ol.format.GML3');
 
+goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('goog.dom');
 goog.require('goog.dom.NodeType');
 goog.require('goog.object');
 goog.require('ol.Feature');
-goog.require('ol.array');
 goog.require('ol.extent');
 goog.require('ol.format.Feature');
 goog.require('ol.format.GMLBase');
@@ -283,7 +283,7 @@ ol.format.GML3.prototype.readSurface_ = function(node, objectStack) {
     var ends = [flatCoordinates.length];
     var i, ii;
     for (i = 1, ii = flatLinearRings.length; i < ii; ++i) {
-      ol.array.safeExtend(flatCoordinates, flatLinearRings[i]);
+      goog.array.extend(flatCoordinates, flatLinearRings[i]);
       ends.push(flatCoordinates.length);
     }
     polygon.setFlatCoordinates(
