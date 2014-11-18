@@ -54,7 +54,7 @@ $(function () {
     _onResize();
 
     // show/hide unstable items
-    var links = $('a[href^="ol."');
+    var links = $('a[href^="ol."]');
     var unstable = $('.unstable');
     var stabilityToggle = $('#stability-toggle');
     stabilityToggle.change(function() {
