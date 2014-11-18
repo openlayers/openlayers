@@ -382,6 +382,12 @@ describe('ol.layer.Group', function() {
       maxResolution: 500,
       minResolution: 0.25
     });
+    var layer3 = new ol.layer.Layer({
+      source: new ol.source.Source({
+        projection: 'EPSG:4326'
+      }),
+      extent: [-5, -2, 5, 2]
+    });
 
     it('does not transform layerStates by default', function() {
       var layerGroup = new ol.layer.Group({
@@ -402,6 +408,29 @@ describe('ol.layer.Group', function() {
 
       expect(layerStatesArray[1]).to.eql(layer2.getLayerState());
 
+      goog.dispose(layerGroup);
+    });
+
+    it('uses the layer group extent if layer has no extent', function() {
+      var groupExtent = [-10, -5, 10, 5];
+      var layerGroup = new ol.layer.Group({
+        extent: groupExtent,
+        layers: [layer1]
+      });
+      var layerStatesArray = layerGroup.getLayerStatesArray();
+      expect(layerStatesArray[0].extent).to.eql(groupExtent);
+      goog.dispose(layerGroup);
+    });
+
+    it('uses the intersection of group and child extent', function() {
+      var groupExtent = [-10, -5, 10, 5];
+      var layerGroup = new ol.layer.Group({
+        extent: groupExtent,
+        layers: [layer3]
+      });
+      var layerStatesArray = layerGroup.getLayerStatesArray();
+      expect(layerStatesArray[0].extent).to.eql(
+          ol.extent.getIntersection(layer3.getExtent(), groupExtent));
       goog.dispose(layerGroup);
     });
 
@@ -451,6 +480,7 @@ describe('ol.layer.Group', function() {
 
     goog.dispose(layer1);
     goog.dispose(layer2);
+    goog.dispose(layer3);
 
   });
 
@@ -460,6 +490,7 @@ goog.require('goog.dispose');
 goog.require('goog.events.EventType');
 goog.require('goog.object');
 goog.require('ol.ObjectEventType');
+goog.require('ol.extent');
 goog.require('ol.layer.Layer');
 goog.require('ol.layer.Group');
 goog.require('ol.source.Source');
