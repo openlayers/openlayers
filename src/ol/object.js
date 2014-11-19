@@ -12,6 +12,7 @@ goog.require('goog.events');
 goog.require('goog.events.Event');
 goog.require('goog.functions');
 goog.require('goog.object');
+goog.require('goog.string');
 goog.require('ol.Observable');
 
 
@@ -224,15 +225,6 @@ ol.Object.setterNameCache_ = {};
 
 
 /**
- * @param {string} str String.
- * @return {string} Capitalized string.
- */
-ol.Object.capitalize = function(str) {
-  return str.substr(0, 1).toUpperCase() + str.substr(1);
-};
-
-
-/**
  * @param {string} key Key name.
  * @return {string} Change name.
  */
@@ -250,7 +242,7 @@ ol.Object.getChangeEventType = function(key) {
 ol.Object.getGetterName = function(key) {
   return ol.Object.getterNameCache_.hasOwnProperty(key) ?
       ol.Object.getterNameCache_[key] :
-      (ol.Object.getterNameCache_[key] = 'get' + ol.Object.capitalize(key));
+      (ol.Object.getterNameCache_[key] = 'get' + goog.string.capitalize(key));
 };
 
 
@@ -261,7 +253,7 @@ ol.Object.getGetterName = function(key) {
 ol.Object.getSetterName = function(key) {
   return ol.Object.setterNameCache_.hasOwnProperty(key) ?
       ol.Object.setterNameCache_[key] :
-      (ol.Object.setterNameCache_[key] = 'set' + ol.Object.capitalize(key));
+      (ol.Object.setterNameCache_[key] = 'set' + goog.string.capitalize(key));
 };
 
 
