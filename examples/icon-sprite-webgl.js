@@ -56,7 +56,7 @@ for (i = 0; i < iconCount; ++i) {
   });
 }
 
-var featureCount = 30000;
+var featureCount = 50000;
 var features = new Array(featureCount);
 var feature, geometry;
 var e = 25000000;
