@@ -434,8 +434,19 @@ ol.render.webgl.ImageReplay.prototype.finish = function(context) {
 
   this.indicesBuffer_ = gl.createBuffer();
   gl.bindBuffer(goog.webgl.ELEMENT_ARRAY_BUFFER, this.indicesBuffer_);
-  gl.bufferData(goog.webgl.ELEMENT_ARRAY_BUFFER,
-      new Uint16Array(this.indices_), goog.webgl.STATIC_DRAW);
+  var /** @type {ArrayBufferView} */ arrayBuffer, bits;
+  if (context.hasOESElementIndexUint) {
+    bits = 32;
+    arrayBuffer = new Uint32Array(this.indices_);
+  } else {
+    bits = 16;
+    arrayBuffer = new Uint16Array(this.indices_);
+  }
+  goog.asserts.assert(this.indices_[this.indices_.length - 1] < (1 << bits),
+      'Too large element index detected, and OES_element_index_uint ' +
+      'extension not available.');
+  gl.bufferData(goog.webgl.ELEMENT_ARRAY_BUFFER, arrayBuffer,
+      goog.webgl.STATIC_DRAW);
 
   goog.asserts.assert(this.textures_.length === 0);
 
@@ -620,9 +631,10 @@ ol.render.webgl.ImageReplay.prototype.replay = function(context,
     gl.bindTexture(goog.webgl.TEXTURE_2D, this.textures_[i]);
     var end = this.groupIndices_[i];
     var numItems = end - start;
-    var offsetInBytes = start * 2;  // 2 Bytes for UNSIGNED_SHORT
-    gl.drawElements(goog.webgl.TRIANGLES, numItems,
-        goog.webgl.UNSIGNED_SHORT, offsetInBytes);
+    var offsetInBytes = start * (context.hasOESElementIndexUint ? 4 : 2);
+    var elementType = context.hasOESElementIndexUint ?
+        goog.webgl.UNSIGNED_INT : goog.webgl.UNSIGNED_SHORT;
+    gl.drawElements(goog.webgl.TRIANGLES, numItems, elementType, offsetInBytes);
     start = end;
   }
 };

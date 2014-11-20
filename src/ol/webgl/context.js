@@ -1,9 +1,11 @@
 goog.provide('ol.webgl.Context');
 
+goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('goog.events');
 goog.require('goog.log');
 goog.require('goog.object');
+goog.require('ol.has');
 goog.require('ol.structs.Buffer');
 goog.require('ol.structs.IntegerSet');
 goog.require('ol.webgl.WebGLContextEventType');
@@ -65,6 +67,18 @@ ol.webgl.Context = function(canvas, gl) {
    * @type {WebGLProgram}
    */
   this.currentProgram_ = null;
+
+  /**
+   * @type {boolean}
+   */
+  this.hasOESElementIndexUint = goog.array.contains(
+      ol.has.WEBGL_EXTENSIONS, 'OES_element_index_uint');
+
+  // use the OES_element_index_uint extension if available
+  if (this.hasOESElementIndexUint) {
+    var ext = gl.getExtension('OES_element_index_uint');
+    goog.asserts.assert(!goog.isNull(ext));
+  }
 
   goog.events.listen(this.canvas_, ol.webgl.WebGLContextEventType.LOST,
       this.handleWebGLContextLost, false, this);
