@@ -154,8 +154,12 @@ ol.render.webgl.Immediate.prototype.drawGeometryCollectionGeometry =
   for (i = 0, ii = geometries.length; i < ii; ++i) {
     var geometry = geometries[i];
     var geometryRenderer = renderers[geometry.getType()];
-    goog.asserts.assert(goog.isDef(geometryRenderer));
-    geometryRenderer.call(this, geometry, data);
+    // Do not assert since all kinds of geometries are not handled yet.
+    // In order to support hierarchies, delegate instead what we can to
+    // valid renderers.
+    if (geometryRenderer) {
+      geometryRenderer.call(this, geometry, data);
+    }
   }
 };
 
