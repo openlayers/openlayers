@@ -143,16 +143,16 @@ ol.style.AtlasManager.prototype.add =
  * @struct
  * @param {number} size The size in pixels of the sprite image.
  * @param {number} space The space in pixels between images.
+ *    Because texture coordinates are float values, the edges of
+ *    images might not be completely correct (in a way that the
+ *    edges overlap when being rendered). To avoid this we add a
+ *    padding around each image.
  */
 ol.style.Atlas = function(size, space) {
 
   /**
    * @private
-   * @type {number} The space in pixels between images.
-   * Because texture coordinates are float values, the edges of
-   * images might not be completely correct (in a way that the
-   * edges overlap when being rendered). To avoid this we add a
-   * padding around each image.
+   * @type {number}
    */
   this.space_ = space;
 
