@@ -1,6 +1,5 @@
 goog.provide('ol.render.webgl.Immediate');
 goog.require('goog.array');
-goog.require('goog.asserts');
 goog.require('goog.object');
 goog.require('ol.extent');
 goog.require('ol.render.webgl.ReplayGroup');
@@ -135,10 +134,13 @@ ol.render.webgl.Immediate.prototype.drawFeature = function(feature, style) {
     render.setFillStrokeStyle(style.getFill(), style.getStroke());
     render.setImageStyle(style.getImage());
     render.setTextStyle(style.getText());
-    var renderGeometry =
-        ol.render.webgl.Immediate.GEOMETRY_RENDERERS_[geometry.getType()];
-    goog.asserts.assert(goog.isDef(renderGeometry));
-    renderGeometry.call(render, geometry, null);
+    var type = geometry.getType();
+    var renderGeometry = ol.render.webgl.Immediate.GEOMETRY_RENDERERS_[type];
+    // Do not assert since all kinds of geometries are not handled yet.
+    // In spite, render what we support.
+    if (renderGeometry) {
+      renderGeometry.call(render, geometry, null);
+    }
   });
 };
 
