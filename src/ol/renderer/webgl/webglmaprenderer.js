@@ -273,14 +273,19 @@ ol.renderer.webgl.Map.prototype.dispatchComposeEvent_ =
   var map = this.getMap();
   if (map.hasListener(type)) {
     var context = this.context_;
-    var extent = frameState.extent;
 
+    var extent = frameState.extent;
+    var size = frameState.size;
     var viewState = frameState.viewState;
-    var resolution = viewState.resolution;
     var pixelRatio = frameState.pixelRatio;
+
+    var resolution = viewState.resolution;
+    var center = viewState.center;
+    var rotation = viewState.rotation;
     var tolerance = ol.renderer.vector.getTolerance(resolution, pixelRatio);
 
-    var vectorContext = new ol.render.webgl.Immediate(context, pixelRatio);
+    var vectorContext = new ol.render.webgl.Immediate(context,
+        center, resolution, rotation, size, extent, pixelRatio);
     var replayGroup = new ol.render.webgl.ReplayGroup(tolerance, extent);
     var composeEvent = new ol.render.Event(type, map, vectorContext,
         replayGroup, frameState, null, context);
@@ -288,9 +293,6 @@ ol.renderer.webgl.Map.prototype.dispatchComposeEvent_ =
 
     replayGroup.finish(context);
     if (!replayGroup.isEmpty()) {
-      var center = viewState.center;
-      var rotation = viewState.rotation;
-      var size = frameState.size;
       // use default color values
       var opacity = 1;
       var brightness = 0;
