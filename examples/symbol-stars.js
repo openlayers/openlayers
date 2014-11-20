@@ -66,7 +66,7 @@ for (i = 0; i < featureCount; ++i) {
   feature = new ol.Feature(geometry);
   feature.setStyle(
       new ol.style.Style({
-        image: symbols[i % (symbolCount - 1)]
+        image: symbols[i % symbolCount]
       })
   );
   features[i] = feature;
