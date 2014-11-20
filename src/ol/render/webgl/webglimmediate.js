@@ -64,12 +64,6 @@ ol.render.webgl.Immediate = function(context,
 
   /**
    * @private
-   * @type {ol.style.Text}
-   */
-  this.textStyle_ = null;
-
-  /**
-   * @private
    * @type {Object.<string,
    *        Array.<function(ol.render.webgl.Immediate)>>}
    */
@@ -247,13 +241,6 @@ ol.render.webgl.Immediate.prototype.drawPolygonGeometry =
  */
 ol.render.webgl.Immediate.prototype.drawText =
     function(flatCoordinates, offset, end, stride, geometry, data) {
-  var replayGroup = new ol.render.webgl.ReplayGroup(1, this.extent_);
-  var replay = replayGroup.getReplay(0, ol.render.ReplayType.TEXT);
-  replay.setTextStyle(this.textStyle_);
-  replay.drawText(flatCoordinates, offset, end, stride, geometry, data);
-  replay.finish(this.context_);
-  replay.replay(this.context_, this.center_, this.resolution_, this.rotation_,
-      this.size_, this.extent_, this.pixelRatio_, {});
 };
 
 
@@ -277,7 +264,6 @@ ol.render.webgl.Immediate.prototype.setImageStyle = function(imageStyle) {
  * @inheritDoc
  */
 ol.render.webgl.Immediate.prototype.setTextStyle = function(textStyle) {
-  this.textStyle_ = textStyle;
 };
 
 
