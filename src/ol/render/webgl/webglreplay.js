@@ -439,23 +439,32 @@ ol.render.webgl.ImageReplay.prototype.finish = function(context) {
 
   goog.asserts.assert(this.textures_.length === 0);
 
+  var texture, image, uid;
+  /** @type {Object.<string, WebGLTexture>} */
+  var texturePerImage = {};
   var i;
   var ii = this.images_.length;
-  var texture;
   for (i = 0; i < ii; ++i) {
-    var image = this.images_[i];
-    texture = gl.createTexture();
-    gl.bindTexture(goog.webgl.TEXTURE_2D, texture);
-    gl.texParameteri(goog.webgl.TEXTURE_2D,
-        goog.webgl.TEXTURE_WRAP_S, goog.webgl.CLAMP_TO_EDGE);
-    gl.texParameteri(goog.webgl.TEXTURE_2D,
-        goog.webgl.TEXTURE_WRAP_T, goog.webgl.CLAMP_TO_EDGE);
-    gl.texParameteri(goog.webgl.TEXTURE_2D,
-        goog.webgl.TEXTURE_MIN_FILTER, goog.webgl.LINEAR);
-    gl.texParameteri(goog.webgl.TEXTURE_2D,
-        goog.webgl.TEXTURE_MAG_FILTER, goog.webgl.LINEAR);
-    gl.texImage2D(goog.webgl.TEXTURE_2D, 0, goog.webgl.RGBA, goog.webgl.RGBA,
-        goog.webgl.UNSIGNED_BYTE, image);
+    image = this.images_[i];
+
+    uid = goog.getUid(image).toString();
+    if (goog.object.containsKey(texturePerImage, uid)) {
+      texture = goog.object.get(texturePerImage, uid);
+    } else {
+      texture = gl.createTexture();
+      gl.bindTexture(goog.webgl.TEXTURE_2D, texture);
+      gl.texParameteri(goog.webgl.TEXTURE_2D,
+          goog.webgl.TEXTURE_WRAP_S, goog.webgl.CLAMP_TO_EDGE);
+      gl.texParameteri(goog.webgl.TEXTURE_2D,
+          goog.webgl.TEXTURE_WRAP_T, goog.webgl.CLAMP_TO_EDGE);
+      gl.texParameteri(goog.webgl.TEXTURE_2D,
+          goog.webgl.TEXTURE_MIN_FILTER, goog.webgl.LINEAR);
+      gl.texParameteri(goog.webgl.TEXTURE_2D,
+          goog.webgl.TEXTURE_MAG_FILTER, goog.webgl.LINEAR);
+      gl.texImage2D(goog.webgl.TEXTURE_2D, 0, goog.webgl.RGBA, goog.webgl.RGBA,
+          goog.webgl.UNSIGNED_BYTE, image);
+      goog.object.set(texturePerImage, uid, texture);
+    }
     this.textures_[i] = texture;
   }
 
