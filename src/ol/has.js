@@ -127,6 +127,7 @@ ol.has.WEBGL;
  * supported, the value is set to `-1`.
  * @const
  * @type {number}
+ * @api
  */
 ol.has.WEBGL_MAX_TEXTURE_SIZE;
 
