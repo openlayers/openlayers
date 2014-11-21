@@ -201,6 +201,10 @@ ol.render.webgl.ImageReplay = function(tolerance, maxExtent) {
  */
 ol.render.webgl.ImageReplay.prototype.getDeleteResourcesFunction =
     function(context) {
+  // We only delete our stuff here. The shaders and the program may
+  // be used by other ImageReplay instances (for other layers). And
+  // they will be deleted when disposing of the ol.webgl.Context
+  // object.
   goog.asserts.assert(!goog.isNull(this.verticesBuffer_));
   goog.asserts.assert(!goog.isNull(this.indicesBuffer_));
   var verticesBuffer = this.verticesBuffer_;
