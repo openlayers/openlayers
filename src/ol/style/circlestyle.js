@@ -73,6 +73,12 @@ ol.style.Circle = function(opt_options) {
    * @private
    * @type {Array.<number>}
    */
+  this.hitDetectionOrigin_ = [0, 0];
+
+  /**
+   * @private
+   * @type {Array.<number>}
+   */
   this.anchor_ = null;
 
   /**
@@ -86,6 +92,12 @@ ol.style.Circle = function(opt_options) {
    * @type {ol.Size}
    */
   this.imageSize_ = null;
+
+  /**
+   * @private
+   * @type {ol.Size}
+   */
+  this.hitDetectionImageSize_ = null;
 
   this.render_(options.atlasManager);
 
@@ -161,10 +173,26 @@ ol.style.Circle.prototype.getImageSize = function() {
 
 /**
  * @inheritDoc
+ */
+ol.style.Circle.prototype.getHitDetectionImageSize = function() {
+  return this.hitDetectionImageSize_;
+};
+
+
+/**
+ * @inheritDoc
  * @api
  */
 ol.style.Circle.prototype.getOrigin = function() {
   return this.origin_;
+};
+
+
+/**
+ * @inheritDoc
+ */
+ol.style.Circle.prototype.getHitDetectionOrigin = function() {
+  return this.hitDetectionOrigin_;
 };
 
 
@@ -259,30 +287,45 @@ ol.style.Circle.prototype.render_ = function(atlasManager) {
     var context = /** @type {CanvasRenderingContext2D} */
         (this.canvas_.getContext('2d'));
     this.draw_(renderOptions, context, 0, 0);
+
+    this.createHitDetectionCanvas_(renderOptions);
   } else {
     // an atlas manager is used, add the symbol to an atlas
     size = Math.round(size);
 
+    var hasCustomHitDetectionImage = goog.isNull(this.fill_);
+    var renderHitDetectionCallback;
+    if (hasCustomHitDetectionImage) {
+      // render the hit-detection image into a separate atlas image
+      renderHitDetectionCallback =
+          goog.bind(this.drawHitDetectionCanvas_, this, renderOptions);
+    }
+
     var id = this.getChecksum();
     var info = atlasManager.add(
-        id, size, size, goog.bind(this.draw_, this, renderOptions));
+        id, size, size, goog.bind(this.draw_, this, renderOptions),
+        renderHitDetectionCallback);
     goog.asserts.assert(info !== null, 'circle radius is too large');
 
     this.canvas_ = info.image;
     this.origin_ = [info.offsetX, info.offsetY];
     imageSize = info.image.width;
+
+    if (hasCustomHitDetectionImage) {
+      this.hitDetectionCanvas_ = info.hitImage;
+      this.hitDetectionOrigin_ = [info.hitOffsetX, info.hitOffsetY];
+      this.hitDetectionImageSize_ =
+          [info.hitImage.width, info.hitImage.height];
+    } else {
+      this.hitDetectionCanvas_ = this.canvas_;
+      this.hitDetectionOrigin_ = this.origin_;
+      this.hitDetectionImageSize_ = [imageSize, imageSize];
+    }
   }
 
   this.anchor_ = [size / 2, size / 2];
   this.size_ = [size, size];
   this.imageSize_ = [imageSize, imageSize];
-
-  // deal with the hit detection canvas
-  if (!goog.isNull(this.fill_)) {
-    this.hitDetectionCanvas_ = this.canvas_;
-  } else {
-    this.createHitDetectionCanvas_(renderOptions);
-  }
 };
 
 
@@ -323,6 +366,14 @@ ol.style.Circle.prototype.draw_ = function(renderOptions, context, x, y) {
  * @param {ol.style.Circle.RenderOptions} renderOptions
  */
 ol.style.Circle.prototype.createHitDetectionCanvas_ = function(renderOptions) {
+  this.hitDetectionImageSize_ = [renderOptions.size, renderOptions.size];
+  if (!goog.isNull(this.fill_)) {
+    this.hitDetectionCanvas_ = this.canvas_;
+    return;
+  }
+
+  // if no fill style is set, create an extra hit-detection image with a
+  // default fill style
   this.hitDetectionCanvas_ = /** @type {HTMLCanvasElement} */
       (goog.dom.createElement(goog.dom.TagName.CANVAS));
   var canvas = this.hitDetectionCanvas_;
@@ -332,6 +383,26 @@ ol.style.Circle.prototype.createHitDetectionCanvas_ = function(renderOptions) {
 
   var context = /** @type {CanvasRenderingContext2D} */
       (canvas.getContext('2d'));
+  this.drawHitDetectionCanvas_(renderOptions, context, 0, 0);
+};
+
+
+/**
+ * @private
+ * @param {ol.style.Circle.RenderOptions} renderOptions
+ * @param {CanvasRenderingContext2D} context
+ * @param {number} x The origin for the symbol (x).
+ * @param {number} y The origin for the symbol (y).
+ */
+ol.style.Circle.prototype.drawHitDetectionCanvas_ =
+    function(renderOptions, context, x, y) {
+  // reset transform
+  context.setTransform(1, 0, 0, 1, 0, 0);
+
+  // then move to (x, y)
+  context.translate(x, y);
+
+  context.beginPath();
   context.arc(
       renderOptions.size / 2, renderOptions.size / 2,
       this.radius_, 0, 2 * Math.PI, true);
@@ -343,6 +414,7 @@ ol.style.Circle.prototype.createHitDetectionCanvas_ = function(renderOptions) {
     context.lineWidth = renderOptions.strokeWidth;
     context.stroke();
   }
+  context.closePath();
 };
 
 
