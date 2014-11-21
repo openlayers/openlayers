@@ -5,7 +5,7 @@ goog.require('ol.View');
 goog.require('ol.geom.Point');
 goog.require('ol.layer.Tile');
 goog.require('ol.layer.Vector');
-goog.require('ol.source.OSM');
+goog.require('ol.source.TileJSON');
 goog.require('ol.source.Vector');
 goog.require('ol.style.Icon');
 goog.require('ol.style.Style');
@@ -39,11 +39,12 @@ var vectorLayer = new ol.layer.Vector({
 });
 
 var rasterLayer = new ol.layer.Tile({
-  source: new ol.source.OSM()
+  source: new ol.source.TileJSON({
+    url: 'http://api.tiles.mapbox.com/v3/mapbox.geography-class.jsonp'
+  })
 });
 
 var map = new ol.Map({
-  renderer: exampleNS.getRendererFromQueryString(),
   layers: [rasterLayer, vectorLayer],
   target: document.getElementById('map'),
   view: new ol.View({
