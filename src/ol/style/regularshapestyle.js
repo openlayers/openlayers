@@ -58,6 +58,12 @@ ol.style.RegularShape = function(opt_options) {
 
   /**
    * @private
+   * @type {Array.<number>}
+   */
+  this.hitDetectionOrigin_ = [0, 0];
+
+  /**
+   * @private
    * @type {number}
    */
   this.points_ = options.points;
@@ -104,6 +110,12 @@ ol.style.RegularShape = function(opt_options) {
    * @type {ol.Size}
    */
   this.imageSize_ = null;
+
+  /**
+   * @private
+   * @type {ol.Size}
+   */
+  this.hitDetectionImageSize_ = null;
 
   this.render_(options.atlasManager);
 
@@ -171,6 +183,14 @@ ol.style.RegularShape.prototype.getImageSize = function() {
 /**
  * @inheritDoc
  */
+ol.style.RegularShape.prototype.getHitDetectionImageSize = function() {
+  return this.hitDetectionImageSize_;
+};
+
+
+/**
+ * @inheritDoc
+ */
 ol.style.RegularShape.prototype.getImageState = function() {
   return ol.style.ImageState.LOADED;
 };
@@ -182,6 +202,14 @@ ol.style.RegularShape.prototype.getImageState = function() {
  */
 ol.style.RegularShape.prototype.getOrigin = function() {
   return this.origin_;
+};
+
+
+/**
+ * @inheritDoc
+ */
+ol.style.RegularShape.prototype.getHitDetectionOrigin = function() {
+  return this.hitDetectionOrigin_;
 };
 
 
@@ -276,30 +304,45 @@ ol.style.RegularShape.prototype.render_ = function(atlasManager) {
     var context = /** @type {CanvasRenderingContext2D} */
         (this.canvas_.getContext('2d'));
     this.draw_(renderOptions, context, 0, 0);
+
+    this.createHitDetectionCanvas_(renderOptions);
   } else {
     // an atlas manager is used, add the symbol to an atlas
     size = Math.round(size);
 
+    var hasCustomHitDetectionImage = goog.isNull(this.fill_);
+    var renderHitDetectionCallback;
+    if (hasCustomHitDetectionImage) {
+      // render the hit-detection image into a separate atlas image
+      renderHitDetectionCallback =
+          goog.bind(this.drawHitDetectionCanvas_, this, renderOptions);
+    }
+
     var id = this.getChecksum();
     var info = atlasManager.add(
-        id, size, size, goog.bind(this.draw_, this, renderOptions));
+        id, size, size, goog.bind(this.draw_, this, renderOptions),
+        renderHitDetectionCallback);
     goog.asserts.assert(info !== null, 'shape size is too large');
 
     this.canvas_ = info.image;
     this.origin_ = [info.offsetX, info.offsetY];
     imageSize = info.image.width;
+
+    if (hasCustomHitDetectionImage) {
+      this.hitDetectionCanvas_ = info.hitImage;
+      this.hitDetectionOrigin_ = [info.hitOffsetX, info.hitOffsetY];
+      this.hitDetectionImageSize_ =
+          [info.hitImage.width, info.hitImage.height];
+    } else {
+      this.hitDetectionCanvas_ = this.canvas_;
+      this.hitDetectionOrigin_ = this.origin_;
+      this.hitDetectionImageSize_ = [imageSize, imageSize];
+    }
   }
 
   this.anchor_ = [size / 2, size / 2];
   this.size_ = [size, size];
   this.imageSize_ = [imageSize, imageSize];
-
-  // deal with the hit detection canvas
-  if (!goog.isNull(this.fill_)) {
-    this.hitDetectionCanvas_ = this.canvas_;
-  } else {
-    this.createHitDetectionCanvas_(renderOptions);
-  }
 };
 
 
@@ -348,6 +391,14 @@ ol.style.RegularShape.prototype.draw_ = function(renderOptions, context, x, y) {
  */
 ol.style.RegularShape.prototype.createHitDetectionCanvas_ =
     function(renderOptions) {
+  this.hitDetectionImageSize_ = [renderOptions.size, renderOptions.size];
+  if (!goog.isNull(this.fill_)) {
+    this.hitDetectionCanvas_ = this.canvas_;
+    return;
+  }
+
+  // if no fill style is set, create an extra hit-detection image with a
+  // default fill style
   this.hitDetectionCanvas_ = /** @type {HTMLCanvasElement} */
       (goog.dom.createElement(goog.dom.TagName.CANVAS));
   var canvas = this.hitDetectionCanvas_;
@@ -357,6 +408,25 @@ ol.style.RegularShape.prototype.createHitDetectionCanvas_ =
 
   var context = /** @type {CanvasRenderingContext2D} */
       (canvas.getContext('2d'));
+  this.drawHitDetectionCanvas_(renderOptions, context, 0, 0);
+};
+
+
+/**
+ * @private
+ * @param {ol.style.RegularShape.RenderOptions} renderOptions
+ * @param {CanvasRenderingContext2D} context
+ * @param {number} x The origin for the symbol (x).
+ * @param {number} y The origin for the symbol (y).
+ */
+ol.style.RegularShape.prototype.drawHitDetectionCanvas_ =
+    function(renderOptions, context, x, y) {
+  // reset transform
+  context.setTransform(1, 0, 0, 1, 0, 0);
+
+  // then move to (x, y)
+  context.translate(x, y);
+
   context.beginPath();
   if (this.radius2_ !== this.radius_) {
     this.points_ = 2 * this.points_;
@@ -376,6 +446,7 @@ ol.style.RegularShape.prototype.createHitDetectionCanvas_ =
     context.lineWidth = renderOptions.strokeWidth;
     context.stroke();
   }
+  context.closePath();
 };
 
 
