@@ -171,11 +171,12 @@ ol.render.webgl.Immediate.prototype.drawGeometryCollectionGeometry =
  */
 ol.render.webgl.Immediate.prototype.drawPointGeometry =
     function(pointGeometry, data) {
+  var context = this.context_;
   var replayGroup = new ol.render.webgl.ReplayGroup(1, this.extent_);
   var replay = replayGroup.getReplay(0, ol.render.ReplayType.IMAGE);
   replay.setImageStyle(this.imageStyle_);
   replay.drawPointGeometry(pointGeometry, data);
-  replay.finish(this.context_);
+  replay.finish(context);
   // default colors
   var opacity = 1;
   var brightness = 0;
@@ -185,6 +186,7 @@ ol.render.webgl.Immediate.prototype.drawPointGeometry =
   replay.replay(this.context_, this.center_, this.resolution_, this.rotation_,
       this.size_, this.extent_, this.pixelRatio_, opacity, brightness,
       contrast, hue, saturation, {});
+  replay.getDeleteResourcesFunction(context)();
 };
 
 
@@ -212,11 +214,12 @@ ol.render.webgl.Immediate.prototype.drawMultiLineStringGeometry =
  */
 ol.render.webgl.Immediate.prototype.drawMultiPointGeometry =
     function(multiPointGeometry, data) {
+  var context = this.context_;
   var replayGroup = new ol.render.webgl.ReplayGroup(1, this.extent_);
   var replay = replayGroup.getReplay(0, ol.render.ReplayType.IMAGE);
   replay.setImageStyle(this.imageStyle_);
   replay.drawMultiPointGeometry(multiPointGeometry, data);
-  replay.finish(this.context_);
+  replay.finish(context);
   // default colors
   var opacity = 1;
   var brightness = 0;
@@ -226,6 +229,7 @@ ol.render.webgl.Immediate.prototype.drawMultiPointGeometry =
   replay.replay(this.context_, this.center_, this.resolution_, this.rotation_,
       this.size_, this.extent_, this.pixelRatio_, opacity, brightness,
       contrast, hue, saturation, {});
+  replay.getDeleteResourcesFunction(context)();
 };
 
 
