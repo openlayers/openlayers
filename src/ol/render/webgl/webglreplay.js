@@ -11,6 +11,7 @@ goog.require('ol.extent');
 goog.require('ol.render.IReplayGroup');
 goog.require('ol.render.webgl.imagereplay.shader.Color');
 goog.require('ol.render.webgl.imagereplay.shader.Default');
+goog.require('ol.structs.Buffer');
 goog.require('ol.vec.Mat4');
 
 
@@ -96,7 +97,7 @@ ol.render.webgl.ImageReplay = function(tolerance, maxExtent) {
   this.indices_ = [];
 
   /**
-   * @type {WebGLBuffer}
+   * @type {ol.structs.Buffer}
    * @private
    */
   this.indicesBuffer_ = null;
@@ -180,7 +181,7 @@ ol.render.webgl.ImageReplay = function(tolerance, maxExtent) {
   this.vertices_ = [];
 
   /**
-   * @type {WebGLBuffer}
+   * @type {ol.structs.Buffer}
    * @private
    */
   this.verticesBuffer_ = null;
@@ -212,9 +213,9 @@ ol.render.webgl.ImageReplay.prototype.getDeleteResourcesFunction =
       for (i = 0, ii = textures.length; i < ii; ++i) {
         gl.deleteTexture(textures[i]);
       }
-      gl.deleteBuffer(verticesBuffer);
-      gl.deleteBuffer(indicesBuffer);
     }
+    context.deleteBuffer(verticesBuffer);
+    context.deleteBuffer(indicesBuffer);
   };
 };
 
@@ -427,31 +428,23 @@ ol.render.webgl.ImageReplay.prototype.finish = function(context) {
   this.groupIndices_.push(this.indices_.length);
   goog.asserts.assert(this.images_.length == this.groupIndices_.length);
 
-  this.verticesBuffer_ = gl.createBuffer();
-  gl.bindBuffer(goog.webgl.ARRAY_BUFFER, this.verticesBuffer_);
-  gl.bufferData(goog.webgl.ARRAY_BUFFER,
-      new Float32Array(this.vertices_), goog.webgl.STATIC_DRAW);
+  // create, bind, and populate the vertices buffer
+  this.verticesBuffer_ = new ol.structs.Buffer(this.vertices_);
+  context.bindBuffer(goog.webgl.ARRAY_BUFFER, this.verticesBuffer_);
 
-  this.indicesBuffer_ = gl.createBuffer();
-  gl.bindBuffer(goog.webgl.ELEMENT_ARRAY_BUFFER, this.indicesBuffer_);
   var indices = this.indices_;
-  var /** @type {ArrayBufferView} */ arrayBuffer, bits;
-  if (context.hasOESElementIndexUint) {
-    bits = 32;
-    arrayBuffer = new Uint32Array(indices);
-  } else {
-    bits = 16;
-    arrayBuffer = new Uint16Array(indices);
-  }
+  var bits = context.hasOESElementIndexUint ? 32 : 16;
   goog.asserts.assert(indices[indices.length - 1] < Math.pow(2, bits),
       'Too large element index detected [%s] (OES_element_index_uint "%s")',
       indices[indices.length - 1], context.hasOESElementIndexUint);
 
-  gl.bufferData(goog.webgl.ELEMENT_ARRAY_BUFFER, arrayBuffer,
-      goog.webgl.STATIC_DRAW);
+  // create, bind, and populate the indices buffer
+  this.indicesBuffer_ = new ol.structs.Buffer(indices);
+  context.bindBuffer(goog.webgl.ELEMENT_ARRAY_BUFFER, this.indicesBuffer_);
 
   goog.asserts.assert(this.textures_.length === 0);
 
+  // create textures
   var texture, image, uid;
   /** @type {Object.<string, WebGLTexture>} */
   var texturePerImage = {};
@@ -531,11 +524,13 @@ ol.render.webgl.ImageReplay.prototype.replay = function(context,
     opacity, brightness, contrast, hue, saturation, skippedFeaturesHash) {
   var gl = context.getGL();
 
-  // bind the vertices and indices buffers
+  // bind the vertices buffer
   goog.asserts.assert(!goog.isNull(this.verticesBuffer_));
-  gl.bindBuffer(goog.webgl.ARRAY_BUFFER, this.verticesBuffer_);
+  context.bindBuffer(goog.webgl.ARRAY_BUFFER, this.verticesBuffer_);
+
+  // bind the indices buffer
   goog.asserts.assert(!goog.isNull(this.indicesBuffer_));
-  gl.bindBuffer(goog.webgl.ELEMENT_ARRAY_BUFFER, this.indicesBuffer_);
+  context.bindBuffer(goog.webgl.ELEMENT_ARRAY_BUFFER, this.indicesBuffer_);
 
   var useColor = brightness || contrast != 1 || hue || saturation != 1;
 
