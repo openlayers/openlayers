@@ -1,6 +1,7 @@
 goog.require('ol.Feature');
 goog.require('ol.Map');
 goog.require('ol.View');
+goog.require('ol.geom.LineString');
 goog.require('ol.geom.Point');
 goog.require('ol.layer.Vector');
 goog.require('ol.source.Vector');
@@ -18,7 +19,7 @@ for (var i = 0; i < count; ++i) {
     'geometry': new ol.geom.Point(
         [2 * e * Math.random() - e, 2 * e * Math.random() - e]),
     'i': i,
-    'size': 20
+    'size': i % 2 ? 10 : 20
   });
 }
 
@@ -50,13 +51,69 @@ var vector = new ol.layer.Vector({
 });
 
 var map = new ol.Map({
-  renderer: exampleNS.getRendererFromQueryString(),
   layers: [vector],
   target: document.getElementById('map'),
   view: new ol.View({
     center: [0, 0],
     zoom: 2
   })
+});
+
+var point = null;
+var line = null;
+var displaySnap = function(coordinate) {
+  var closestFeature = vectorSource.getClosestFeatureToCoordinate(coordinate);
+  if (closestFeature === null) {
+    point = null;
+    line = null;
+  } else {
+    var geometry = closestFeature.getGeometry();
+    var closestPoint = geometry.getClosestPoint(coordinate);
+    if (point === null) {
+      point = new ol.geom.Point(closestPoint);
+    } else {
+      point.setCoordinates(closestPoint);
+    }
+    if (line === null) {
+      line = new ol.geom.LineString([coordinate, closestPoint]);
+    } else {
+      line.setCoordinates([coordinate, closestPoint]);
+    }
+  }
+  map.render();
+};
+
+$(map.getViewport()).on('mousemove', function(evt) {
+  var coordinate = map.getEventCoordinate(evt.originalEvent);
+  displaySnap(coordinate);
+});
+
+map.on('click', function(evt) {
+  displaySnap(evt.coordinate);
+});
+
+var imageStyle = new ol.style.Circle({
+  radius: 10,
+  fill: null,
+  stroke: new ol.style.Stroke({
+    color: 'rgba(255,255,0,0.9)',
+    width: 3
+  })
+});
+var strokeStyle = new ol.style.Stroke({
+  color: 'rgba(255,255,0,0.9)',
+  width: 3
+});
+map.on('postcompose', function(evt) {
+  var vectorContext = evt.vectorContext;
+  if (point !== null) {
+    vectorContext.setImageStyle(imageStyle);
+    vectorContext.drawPointGeometry(point);
+  }
+  if (line !== null) {
+    vectorContext.setFillStrokeStyle(null, strokeStyle);
+    vectorContext.drawLineStringGeometry(line);
+  }
 });
 
 $(map.getViewport()).on('mousemove', function(e) {
