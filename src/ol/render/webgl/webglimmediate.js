@@ -73,6 +73,7 @@ ol.render.webgl.Immediate = function(context,
 
 /**
  * FIXME: empty description for jsdoc
+ * @api
  */
 ol.render.webgl.Immediate.prototype.flush = function() {
   /** @type {Array.<number>} */
@@ -91,6 +92,7 @@ ol.render.webgl.Immediate.prototype.flush = function() {
 /**
  * @param {number} zIndex Z index.
  * @param {function(ol.render.webgl.Immediate)} callback Callback.
+ * @api
  */
 ol.render.webgl.Immediate.prototype.drawAsync = function(zIndex, callback) {
   var zIndexKey = zIndex.toString();
@@ -105,6 +107,7 @@ ol.render.webgl.Immediate.prototype.drawAsync = function(zIndex, callback) {
 
 /**
  * @inheritDoc
+ * @api
  */
 ol.render.webgl.Immediate.prototype.drawCircleGeometry =
     function(circleGeometry, data) {
@@ -113,6 +116,7 @@ ol.render.webgl.Immediate.prototype.drawCircleGeometry =
 
 /**
  * @inheritDoc
+ * @api
  */
 ol.render.webgl.Immediate.prototype.drawFeature = function(feature, style) {
   var geometry = feature.getGeometry();
@@ -141,6 +145,7 @@ ol.render.webgl.Immediate.prototype.drawFeature = function(feature, style) {
 
 /**
  * @inheritDoc
+ * @api
  */
 ol.render.webgl.Immediate.prototype.drawGeometryCollectionGeometry =
     function(geometryCollectionGeometry, data) {
@@ -162,6 +167,7 @@ ol.render.webgl.Immediate.prototype.drawGeometryCollectionGeometry =
 
 /**
  * @inheritDoc
+ * @api
  */
 ol.render.webgl.Immediate.prototype.drawPointGeometry =
     function(pointGeometry, data) {
@@ -184,6 +190,7 @@ ol.render.webgl.Immediate.prototype.drawPointGeometry =
 
 /**
  * @inheritDoc
+ * @api
  */
 ol.render.webgl.Immediate.prototype.drawLineStringGeometry =
     function(lineStringGeometry, data) {
@@ -192,6 +199,7 @@ ol.render.webgl.Immediate.prototype.drawLineStringGeometry =
 
 /**
  * @inheritDoc
+ * @api
  */
 ol.render.webgl.Immediate.prototype.drawMultiLineStringGeometry =
     function(multiLineStringGeometry, data) {
@@ -200,6 +208,7 @@ ol.render.webgl.Immediate.prototype.drawMultiLineStringGeometry =
 
 /**
  * @inheritDoc
+ * @api
  */
 ol.render.webgl.Immediate.prototype.drawMultiPointGeometry =
     function(multiPointGeometry, data) {
@@ -222,6 +231,7 @@ ol.render.webgl.Immediate.prototype.drawMultiPointGeometry =
 
 /**
  * @inheritDoc
+ * @api
  */
 ol.render.webgl.Immediate.prototype.drawMultiPolygonGeometry =
     function(multiPolygonGeometry, data) {
@@ -230,6 +240,7 @@ ol.render.webgl.Immediate.prototype.drawMultiPolygonGeometry =
 
 /**
  * @inheritDoc
+ * @api
  */
 ol.render.webgl.Immediate.prototype.drawPolygonGeometry =
     function(polygonGeometry, data) {
@@ -238,6 +249,7 @@ ol.render.webgl.Immediate.prototype.drawPolygonGeometry =
 
 /**
  * @inheritDoc
+ * @api
  */
 ol.render.webgl.Immediate.prototype.drawText =
     function(flatCoordinates, offset, end, stride, geometry, data) {
@@ -246,6 +258,7 @@ ol.render.webgl.Immediate.prototype.drawText =
 
 /**
  * @inheritDoc
+ * @api
  */
 ol.render.webgl.Immediate.prototype.setFillStrokeStyle =
     function(fillStyle, strokeStyle) {
@@ -254,6 +267,7 @@ ol.render.webgl.Immediate.prototype.setFillStrokeStyle =
 
 /**
  * @inheritDoc
+ * @api
  */
 ol.render.webgl.Immediate.prototype.setImageStyle = function(imageStyle) {
   this.imageStyle_ = imageStyle;
@@ -262,6 +276,7 @@ ol.render.webgl.Immediate.prototype.setImageStyle = function(imageStyle) {
 
 /**
  * @inheritDoc
+ * @api
  */
 ol.render.webgl.Immediate.prototype.setTextStyle = function(textStyle) {
 };

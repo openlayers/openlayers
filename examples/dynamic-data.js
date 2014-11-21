@@ -74,8 +74,6 @@ map.on('postcompose', function(event) {
   vectorContext.setImageStyle(headOuterImageStyle);
   vectorContext.drawMultiPointGeometry(headPoint, null);
 
-  vectorContext.flush();
-
   map.render();
 });
 map.render();
