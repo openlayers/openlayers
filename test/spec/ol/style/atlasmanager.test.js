@@ -189,46 +189,73 @@ describe('ol.style.AtlasManager', function() {
       var manager = new ol.style.AtlasManager({size: 128});
       var info = manager.add('1', 32, 32, defaultRender);
 
-      expect(info).to.eql(
-          {offsetX: 1, offsetY: 1, image: manager.atlases_[0].canvas_});
+      expect(info).to.eql({
+        offsetX: 1, offsetY: 1, image: manager.atlases_[0].canvas_,
+        hitOffsetX: undefined, hitOffsetY: undefined, hitImage: undefined});
+
+      expect(manager.getInfo('1')).to.eql(info);
+    });
+
+    it('adds one entry (also to the hit detection atlas)', function() {
+      var manager = new ol.style.AtlasManager({size: 128});
+      var info = manager.add('1', 32, 32, defaultRender, defaultRender);
+
+      expect(info).to.eql({
+        offsetX: 1, offsetY: 1, image: manager.atlases_[0].canvas_,
+        hitOffsetX: 1, hitOffsetY: 1,
+        hitImage: manager.hitAtlases_[0].canvas_});
 
       expect(manager.getInfo('1')).to.eql(info);
     });
 
     it('creates a new atlas if needed', function() {
       var manager = new ol.style.AtlasManager({size: 128});
-      expect(manager.add('1', 100, 100, defaultRender)).to.be.ok();
-      var info = manager.add('2', 100, 100, defaultRender);
+      expect(manager.add('1', 100, 100, defaultRender, defaultRender))
+          .to.be.ok();
+      var info = manager.add('2', 100, 100, defaultRender, defaultRender);
       expect(info).to.be.ok();
       expect(info.image.width).to.eql(256);
       expect(manager.atlases_).to.have.length(2);
+      expect(info.hitImage.width).to.eql(256);
+      expect(manager.hitAtlases_).to.have.length(2);
     });
 
     it('creates new atlases until one is large enough', function() {
       var manager = new ol.style.AtlasManager({size: 128});
-      expect(manager.add('1', 100, 100, defaultRender)).to.be.ok();
+      expect(manager.add('1', 100, 100, defaultRender, defaultRender))
+          .to.be.ok();
       expect(manager.atlases_).to.have.length(1);
-      var info = manager.add('2', 500, 500, defaultRender);
+      expect(manager.hitAtlases_).to.have.length(1);
+      var info = manager.add('2', 500, 500, defaultRender, defaultRender);
       expect(info).to.be.ok();
       expect(info.image.width).to.eql(512);
       expect(manager.atlases_).to.have.length(3);
+      expect(info.hitImage.width).to.eql(512);
+      expect(manager.hitAtlases_).to.have.length(3);
     });
 
     it('checks all existing atlases and create a new if needed', function() {
       var manager = new ol.style.AtlasManager({size: 128});
-      expect(manager.add('1', 100, 100, defaultRender)).to.be.ok();
-      expect(manager.add('2', 100, 100, defaultRender)).to.be.ok();
+      expect(manager.add('1', 100, 100, defaultRender, defaultRender))
+          .to.be.ok();
+      expect(manager.add('2', 100, 100, defaultRender, defaultRender))
+          .to.be.ok();
       expect(manager.atlases_).to.have.length(2);
-      var info = manager.add(3, 500, 500, defaultRender);
+      expect(manager.hitAtlases_).to.have.length(2);
+      var info = manager.add(3, 500, 500, defaultRender, defaultRender);
       expect(info).to.be.ok();
       expect(info.image.width).to.eql(512);
       expect(manager.atlases_).to.have.length(3);
+      expect(info.hitImage.width).to.eql(512);
+      expect(manager.hitAtlases_).to.have.length(3);
     });
 
     it('returns null if the size exceeds the maximum size', function() {
       var manager = new ol.style.AtlasManager({size: 128});
-      expect(manager.add('1', 100, 100, defaultRender)).to.be.ok();
-      expect(manager.add('2', 2048, 2048, defaultRender)).to.eql(null);
+      expect(manager.add('1', 100, 100, defaultRender, defaultRender))
+          .to.be.ok();
+      expect(manager.add('2', 2048, 2048, defaultRender, defaultRender))
+          .to.eql(null);
     });
   });
 

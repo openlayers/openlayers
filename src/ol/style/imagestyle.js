@@ -127,6 +127,13 @@ ol.style.Image.prototype.getImage = goog.abstractMethod;
 
 
 /**
+ * @param {number} pixelRatio Pixel ratio.
+ * @return {HTMLCanvasElement|HTMLVideoElement|Image} Image element.
+ */
+ol.style.Image.prototype.getHitDetectionImage = goog.abstractMethod;
+
+
+/**
  * @return {ol.style.ImageState} Image state.
  */
 ol.style.Image.prototype.getImageState = goog.abstractMethod;
@@ -139,10 +146,9 @@ ol.style.Image.prototype.getImageSize = goog.abstractMethod;
 
 
 /**
- * @param {number} pixelRatio Pixel ratio.
- * @return {HTMLCanvasElement|HTMLVideoElement|Image} Image element.
+ * @return {ol.Size} Size of the hit-detection image.
  */
-ol.style.Image.prototype.getHitDetectionImage = goog.abstractMethod;
+ol.style.Image.prototype.getHitDetectionImageSize = goog.abstractMethod;
 
 
 /**
@@ -150,6 +156,13 @@ ol.style.Image.prototype.getHitDetectionImage = goog.abstractMethod;
  * @return {Array.<number>} Origin.
  */
 ol.style.Image.prototype.getOrigin = goog.abstractMethod;
+
+
+/**
+ * @function
+ * @return {Array.<number>} Origin for the hit-detection image.
+ */
+ol.style.Image.prototype.getHitDetectionOrigin = goog.abstractMethod;
 
 
 /**

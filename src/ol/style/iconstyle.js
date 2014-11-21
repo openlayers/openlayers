@@ -249,6 +249,14 @@ ol.style.Icon.prototype.getImageSize = function() {
 /**
  * @inheritDoc
  */
+ol.style.Icon.prototype.getHitDetectionImageSize = function() {
+  return this.getImageSize();
+};
+
+
+/**
+ * @inheritDoc
+ */
 ol.style.Icon.prototype.getImageState = function() {
   return this.iconImage_.getImageState();
 };
@@ -290,6 +298,14 @@ ol.style.Icon.prototype.getOrigin = function() {
   }
   this.origin_ = offset;
   return this.origin_;
+};
+
+
+/**
+ * @inheritDoc
+ */
+ol.style.Icon.prototype.getHitDetectionOrigin = function() {
+  return this.getOrigin();
 };
 
 
