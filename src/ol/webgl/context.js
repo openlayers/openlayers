@@ -103,11 +103,18 @@ ol.webgl.Context.prototype.bindBuffer = function(target, buf) {
   } else {
     var buffer = gl.createBuffer();
     gl.bindBuffer(target, buffer);
-    gl.bufferData(
-        target,
-        target == goog.webgl.ARRAY_BUFFER ?
-        new Float32Array(arr) : new Uint16Array(arr),
-        buf.getUsage());
+    goog.asserts.assert(target == goog.webgl.ARRAY_BUFFER ||
+        target == goog.webgl.ELEMENT_ARRAY_BUFFER);
+    var /** @type {ArrayBufferView} */ arrayBuffer;
+    if (target == goog.webgl.ARRAY_BUFFER) {
+      arrayBuffer = new Float32Array(arr);
+    } else if (target == goog.webgl.ELEMENT_ARRAY_BUFFER) {
+      arrayBuffer = this.hasOESElementIndexUint ?
+          new Uint32Array(arr) : new Uint16Array(arr);
+    } else {
+      goog.asserts.fail();
+    }
+    gl.bufferData(target, arrayBuffer, buf.getUsage());
     this.bufferCache_[bufferKey] = {
       buf: buf,
       buffer: buffer
