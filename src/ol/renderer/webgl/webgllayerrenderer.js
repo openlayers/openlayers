@@ -10,7 +10,7 @@ goog.require('ol.render.webgl.Immediate');
 goog.require('ol.renderer.Layer');
 goog.require('ol.renderer.webgl.map.shader.Color');
 goog.require('ol.renderer.webgl.map.shader.Default');
-goog.require('ol.structs.Buffer');
+goog.require('ol.webgl.Buffer');
 
 
 
@@ -26,9 +26,9 @@ ol.renderer.webgl.Layer = function(mapRenderer, layer) {
 
   /**
    * @private
-   * @type {ol.structs.Buffer}
+   * @type {ol.webgl.Buffer}
    */
-  this.arrayBuffer_ = new ol.structs.Buffer([
+  this.arrayBuffer_ = new ol.webgl.Buffer([
     -1, -1, 0, 0,
     1, -1, 1, 0,
     -1, 1, 0, 1,

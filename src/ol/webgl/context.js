@@ -6,12 +6,12 @@ goog.require('goog.events');
 goog.require('goog.log');
 goog.require('goog.object');
 goog.require('ol.has');
-goog.require('ol.structs.Buffer');
+goog.require('ol.webgl.Buffer');
 goog.require('ol.webgl.WebGLContextEventType');
 
 
 /**
- * @typedef {{buf: ol.structs.Buffer,
+ * @typedef {{buf: ol.webgl.Buffer,
  *            buffer: WebGLBuffer}}
  */
 ol.webgl.BufferCacheEntry;
@@ -91,7 +91,7 @@ ol.webgl.Context = function(canvas, gl) {
  * the WebGL buffer, bind it, populate it, and add an entry to
  * the cache.
  * @param {number} target Target.
- * @param {ol.structs.Buffer} buf Buffer.
+ * @param {ol.webgl.Buffer} buf Buffer.
  */
 ol.webgl.Context.prototype.bindBuffer = function(target, buf) {
   var gl = this.getGL();
@@ -124,7 +124,7 @@ ol.webgl.Context.prototype.bindBuffer = function(target, buf) {
 
 
 /**
- * @param {ol.structs.Buffer} buf Buffer.
+ * @param {ol.webgl.Buffer} buf Buffer.
  */
 ol.webgl.Context.prototype.deleteBuffer = function(buf) {
   var gl = this.getGL();

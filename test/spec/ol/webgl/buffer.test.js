@@ -1,7 +1,7 @@
-goog.provide('ol.test.structs.Buffer');
+goog.provide('ol.test.webgl.Buffer');
 
 
-describe('ol.structs.Buffer', function() {
+describe('ol.webgl.Buffer', function() {
 
   describe('constructor', function() {
 
@@ -9,7 +9,7 @@ describe('ol.structs.Buffer', function() {
 
       var b;
       beforeEach(function() {
-        b = new ol.structs.Buffer();
+        b = new ol.webgl.Buffer();
       });
 
       it('constructs an empty instance', function() {
@@ -22,7 +22,7 @@ describe('ol.structs.Buffer', function() {
 
       var b;
       beforeEach(function() {
-        b = new ol.structs.Buffer([0, 1, 2, 3]);
+        b = new ol.webgl.Buffer([0, 1, 2, 3]);
       });
 
       it('constructs a populated instance', function() {
@@ -37,7 +37,7 @@ describe('ol.structs.Buffer', function() {
 
     var b;
     beforeEach(function() {
-      b = new ol.structs.Buffer();
+      b = new ol.webgl.Buffer();
     });
 
     describe('getArray', function() {
@@ -52,4 +52,4 @@ describe('ol.structs.Buffer', function() {
 
 });
 
-goog.require('ol.structs.Buffer');
+goog.require('ol.webgl.Buffer');
