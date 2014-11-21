@@ -7,14 +7,12 @@ goog.require('goog.log');
 goog.require('goog.object');
 goog.require('ol.has');
 goog.require('ol.structs.Buffer');
-goog.require('ol.structs.IntegerSet');
 goog.require('ol.webgl.WebGLContextEventType');
 
 
 /**
  * @typedef {{buf: ol.structs.Buffer,
- *            buffer: WebGLBuffer,
- *            dirtySet: ol.structs.IntegerSet}}
+ *            buffer: WebGLBuffer}}
  */
 ol.webgl.BufferCacheEntry;
 
@@ -89,6 +87,9 @@ ol.webgl.Context = function(canvas, gl) {
 
 
 /**
+ * Just bind the buffer if it's in the cache. Otherwise create
+ * the WebGL buffer, bind it, populate it, and add an entry to
+ * the cache.
  * @param {number} target Target.
  * @param {ol.structs.Buffer} buf Buffer.
  */
@@ -99,17 +100,6 @@ ol.webgl.Context.prototype.bindBuffer = function(target, buf) {
   if (bufferKey in this.bufferCache_) {
     var bufferCacheEntry = this.bufferCache_[bufferKey];
     gl.bindBuffer(target, bufferCacheEntry.buffer);
-    bufferCacheEntry.dirtySet.forEachRange(function(start, stop) {
-      // FIXME check if slice is really efficient here
-      var slice = arr.slice(start, stop);
-      gl.bufferSubData(
-          target,
-          start,
-          target == goog.webgl.ARRAY_BUFFER ?
-          new Float32Array(slice) :
-          new Uint16Array(slice));
-    });
-    bufferCacheEntry.dirtySet.clear();
   } else {
     var buffer = gl.createBuffer();
     gl.bindBuffer(target, buffer);
@@ -118,12 +108,9 @@ ol.webgl.Context.prototype.bindBuffer = function(target, buf) {
         target == goog.webgl.ARRAY_BUFFER ?
         new Float32Array(arr) : new Uint16Array(arr),
         buf.getUsage());
-    var dirtySet = new ol.structs.IntegerSet();
-    buf.addDirtySet(dirtySet);
     this.bufferCache_[bufferKey] = {
       buf: buf,
-      buffer: buffer,
-      dirtySet: dirtySet
+      buffer: buffer
     };
   }
 };
@@ -137,7 +124,6 @@ ol.webgl.Context.prototype.deleteBuffer = function(buf) {
   var bufferKey = goog.getUid(buf);
   goog.asserts.assert(bufferKey in this.bufferCache_);
   var bufferCacheEntry = this.bufferCache_[bufferKey];
-  bufferCacheEntry.buf.removeDirtySet(bufferCacheEntry.dirtySet);
   if (!gl.isContextLost()) {
     gl.deleteBuffer(bufferCacheEntry.buffer);
   }
@@ -149,9 +135,6 @@ ol.webgl.Context.prototype.deleteBuffer = function(buf) {
  * @inheritDoc
  */
 ol.webgl.Context.prototype.disposeInternal = function() {
-  goog.object.forEach(this.bufferCache_, function(bufferCacheEntry) {
-    bufferCacheEntry.buf.removeDirtySet(bufferCacheEntry.dirtySet);
-  });
   var gl = this.getGL();
   if (!gl.isContextLost()) {
     goog.object.forEach(this.bufferCache_, function(bufferCacheEntry) {
@@ -185,6 +168,8 @@ ol.webgl.Context.prototype.getGL = function() {
 
 
 /**
+ * Get shader from the cache if it's in the cache. Otherwise, create
+ * the WebGL shader, compile it, and add entry to cache.
  * @param {ol.webgl.Shader} shaderObject Shader object.
  * @return {WebGLShader} Shader.
  */
@@ -213,6 +198,9 @@ ol.webgl.Context.prototype.getShader = function(shaderObject) {
 
 
 /**
+ * Get the program from the cache if it's in the cache. Otherwise create
+ * the WebGL program, attach the shaders to it, and add an entry to the
+ * cache.
  * @param {ol.webgl.shader.Fragment} fragmentShaderObject Fragment shader.
  * @param {ol.webgl.shader.Vertex} vertexShaderObject Vertex shader.
  * @return {WebGLProgram} Program.
@@ -263,6 +251,9 @@ ol.webgl.Context.prototype.handleWebGLContextRestored = function() {
 
 
 /**
+ * Just return false if that program is used already. Other use
+ * that program (call `gl.useProgram`) and make it the "current
+ * program".
  * @param {WebGLProgram} program Program.
  * @return {boolean} Changed.
  * @api
