@@ -302,6 +302,7 @@ ol.renderer.webgl.Map.prototype.dispatchComposeEvent_ =
       replayGroup.replay(context, center, resolution, rotation, size, extent,
           pixelRatio, opacity, brightness, contrast, hue, saturation, {});
     }
+    replayGroup.getDeleteResourcesFunction(context)();
 
     vectorContext.flush();
     this.replayGroup = replayGroup;

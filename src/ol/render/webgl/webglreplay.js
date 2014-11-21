@@ -638,6 +638,13 @@ ol.render.webgl.ImageReplay.prototype.replay = function(context,
     gl.drawElements(goog.webgl.TRIANGLES, numItems, elementType, offsetInBytes);
     start = end;
   }
+
+  // disable the vertex attrib arrays
+  gl.disableVertexAttribArray(locations.a_position);
+  gl.disableVertexAttribArray(locations.a_offsets);
+  gl.disableVertexAttribArray(locations.a_texCoord);
+  gl.disableVertexAttribArray(locations.a_opacity);
+  gl.disableVertexAttribArray(locations.a_rotateWithView);
 };
 
 
