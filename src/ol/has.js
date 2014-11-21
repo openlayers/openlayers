@@ -124,9 +124,10 @@ ol.has.WEBGL;
 
 /**
  * The maximum supported WebGL texture size in pixels. If WebGL is not
- * supported, the value is set to `-1`.
+ * supported, the value is set to `undefined`.
  * @const
- * @type {number}
+ * @type {number|undefined}
+ * @api
  */
 ol.has.WEBGL_MAX_TEXTURE_SIZE;
 
@@ -142,8 +143,9 @@ ol.has.WEBGL_EXTENSIONS;
 (function() {
   if (ol.ENABLE_WEBGL) {
     var hasWebGL = false;
-    var textureSize = -1;
+    var textureSize;
     var /** @type {Array.<string>} */ extensions = [];
+
     if ('WebGLRenderingContext' in goog.global) {
       try {
         var canvas = /** @type {HTMLCanvasElement} */
