@@ -16,8 +16,8 @@ goog.require('ol.layer.Tile');
 goog.require('ol.math');
 goog.require('ol.renderer.webgl.Layer');
 goog.require('ol.renderer.webgl.tilelayer.shader');
-goog.require('ol.structs.Buffer');
 goog.require('ol.tilecoord');
+goog.require('ol.webgl.Buffer');
 
 
 
@@ -52,9 +52,9 @@ ol.renderer.webgl.TileLayer = function(mapRenderer, tileLayer) {
 
   /**
    * @private
-   * @type {ol.structs.Buffer}
+   * @type {ol.webgl.Buffer}
    */
-  this.renderArrayBuffer_ = new ol.structs.Buffer([
+  this.renderArrayBuffer_ = new ol.webgl.Buffer([
     0, 0, 0, 1,
     1, 0, 1, 1,
     0, 1, 0, 0,

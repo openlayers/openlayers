@@ -11,8 +11,8 @@ goog.require('ol.extent');
 goog.require('ol.render.IReplayGroup');
 goog.require('ol.render.webgl.imagereplay.shader.Color');
 goog.require('ol.render.webgl.imagereplay.shader.Default');
-goog.require('ol.structs.Buffer');
 goog.require('ol.vec.Mat4');
+goog.require('ol.webgl.Buffer');
 
 
 
@@ -97,7 +97,7 @@ ol.render.webgl.ImageReplay = function(tolerance, maxExtent) {
   this.indices_ = [];
 
   /**
-   * @type {ol.structs.Buffer}
+   * @type {ol.webgl.Buffer}
    * @private
    */
   this.indicesBuffer_ = null;
@@ -181,7 +181,7 @@ ol.render.webgl.ImageReplay = function(tolerance, maxExtent) {
   this.vertices_ = [];
 
   /**
-   * @type {ol.structs.Buffer}
+   * @type {ol.webgl.Buffer}
    * @private
    */
   this.verticesBuffer_ = null;
@@ -433,7 +433,7 @@ ol.render.webgl.ImageReplay.prototype.finish = function(context) {
   goog.asserts.assert(this.images_.length == this.groupIndices_.length);
 
   // create, bind, and populate the vertices buffer
-  this.verticesBuffer_ = new ol.structs.Buffer(this.vertices_);
+  this.verticesBuffer_ = new ol.webgl.Buffer(this.vertices_);
   context.bindBuffer(goog.webgl.ARRAY_BUFFER, this.verticesBuffer_);
 
   var indices = this.indices_;
@@ -443,7 +443,7 @@ ol.render.webgl.ImageReplay.prototype.finish = function(context) {
       indices[indices.length - 1], context.hasOESElementIndexUint);
 
   // create, bind, and populate the indices buffer
-  this.indicesBuffer_ = new ol.structs.Buffer(indices);
+  this.indicesBuffer_ = new ol.webgl.Buffer(indices);
   context.bindBuffer(goog.webgl.ELEMENT_ARRAY_BUFFER, this.indicesBuffer_);
 
   goog.asserts.assert(this.textures_.length === 0);
