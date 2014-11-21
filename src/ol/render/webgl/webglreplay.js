@@ -434,17 +434,19 @@ ol.render.webgl.ImageReplay.prototype.finish = function(context) {
 
   this.indicesBuffer_ = gl.createBuffer();
   gl.bindBuffer(goog.webgl.ELEMENT_ARRAY_BUFFER, this.indicesBuffer_);
+  var indices = this.indices_;
   var /** @type {ArrayBufferView} */ arrayBuffer, bits;
   if (context.hasOESElementIndexUint) {
     bits = 32;
-    arrayBuffer = new Uint32Array(this.indices_);
+    arrayBuffer = new Uint32Array(indices);
   } else {
     bits = 16;
-    arrayBuffer = new Uint16Array(this.indices_);
+    arrayBuffer = new Uint16Array(indices);
   }
-  goog.asserts.assert(this.indices_[this.indices_.length - 1] < (1 << bits),
-      'Too large element index detected, and OES_element_index_uint ' +
-      'extension not available.');
+  goog.asserts.assert(indices[indices.length - 1] < Math.pow(2, bits),
+      'Too large element index detected [%s] (OES_element_index_uint "%s")',
+      indices[indices.length - 1], context.hasOESElementIndexUint);
+
   gl.bufferData(goog.webgl.ELEMENT_ARRAY_BUFFER, arrayBuffer,
       goog.webgl.STATIC_DRAW);
 
