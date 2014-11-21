@@ -95,7 +95,7 @@ ol.style.AtlasManager.prototype.getInfo = function(id) {
   /** @type {?ol.style.AtlasInfo} */
   var info = this.getInfo_(this.atlases_, id);
 
-  if (info === null) {
+  if (goog.isNull(info)) {
     return null;
   }
   /** @type {?ol.style.AtlasInfo} */
@@ -117,7 +117,7 @@ ol.style.AtlasManager.prototype.getInfo_ = function(atlases, id) {
   for (i = 0, ii = atlases.length; i < ii; ++i) {
     atlas = atlases[i];
     info = atlas.get(id);
-    if (info !== null) {
+    if (!goog.isNull(info)) {
       return info;
     }
   }
@@ -138,9 +138,9 @@ ol.style.AtlasManager.prototype.mergeInfos_ = function(info, hitInfo) {
     offsetX: info.offsetX,
     offsetY: info.offsetY,
     image: info.image,
-    hitOffsetX: (hitInfo === null) ? undefined : hitInfo.offsetX,
-    hitOffsetY: (hitInfo === null) ? undefined : hitInfo.offsetY,
-    hitImage: (hitInfo === null) ? undefined : hitInfo.image
+    hitOffsetX: goog.isNull(hitInfo) ? undefined : hitInfo.offsetX,
+    hitOffsetY: goog.isNull(hitInfo) ? undefined : hitInfo.offsetY,
+    hitImage: goog.isNull(hitInfo) ? undefined : hitInfo.image
   });
 };
 
@@ -178,13 +178,13 @@ ol.style.AtlasManager.prototype.add =
   /** @type {?ol.style.AtlasInfo} */
   var info = this.add_(false,
       id, width, height, renderCallback, opt_this);
-  if (info === null) {
+  if (goog.isNull(info)) {
     return null;
   }
 
   /** @type {?ol.style.AtlasInfo} */
   var hitInfo = null;
-  if (opt_renderHitCallback !== undefined) {
+  if (goog.isDef(opt_renderHitCallback)) {
     hitInfo = this.add_(true,
         id, width, height, opt_renderHitCallback, opt_this);
   }
@@ -213,9 +213,9 @@ ol.style.AtlasManager.prototype.add_ =
   for (i = 0, ii = atlases.length; i < ii; ++i) {
     atlas = atlases[i];
     info = atlas.add(id, width, height, renderCallback, opt_this);
-    if (info !== null) {
+    if (!goog.isNull(info)) {
       return info;
-    } else if (info === null && i === ii - 1) {
+    } else if (goog.isNull(info) && i === ii - 1) {
       // the entry could not be added to one of the existing atlases,
       // create a new atlas that is twice as big and try to add to this one.
       var size;
