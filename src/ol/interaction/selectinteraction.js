@@ -179,7 +179,7 @@ ol.interaction.Select.prototype.handleMapBrowserEvent =
     }
     features.extend(selected);
   }
-  return false;
+  return this.condition_ == ol.events.condition.mouseMove;
 };
 
 
