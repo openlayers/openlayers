@@ -6271,7 +6271,9 @@ olx.style.AtlasManagerOptions.prototype.size;
 
 
 /**
- * The maximum size in pixels of atlas images (default: 2048).
+ * The maximum size in pixels of atlas images. If no value is given,
+ * `ol.WEBGL_MAX_TEXTURE_SIZE` will be used (if WebGL is supported), otherwise
+ * the default is 2048.
  * @type {number|undefined}
  * @api
  */

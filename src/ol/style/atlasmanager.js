@@ -30,10 +30,8 @@ ol.style.AtlasManagerInfo;
  * atlas. After that, when new atlases are created, they will have
  * twice the size as the latest atlas (until `maxSize` is reached).
  *
- * When used for WebGL, it is recommended to use `ol.has.WEBGL_MAX_TEXTURE_SIZE`
- * as `maxSize` value. Also, if an application uses a lot, or a lot of
- * large images, it is recommend to set a higher `size` value to avoid
- * the creation of too many atlases.
+ * If an application uses a lot, or a lot of large images, it is recommend to
+ * set a higher `size` value to avoid the creation of too many atlases.
  *
  * @constructor
  * @struct
@@ -56,7 +54,8 @@ ol.style.AtlasManager = function(opt_options) {
    * @private
    * @type {number}
    */
-  this.maxSize_ = goog.isDef(options.maxSize) ? options.maxSize : 2048;
+  this.maxSize_ = goog.isDef(options.maxSize) ? options.maxSize :
+      goog.isDef(ol.WEBGL_MAX_TEXTURE_SIZE) ? ol.WEBGL_MAX_TEXTURE_SIZE : 2048;
 
   /**
    * The size in pixels between images.
