@@ -15,7 +15,7 @@ var atlasManager = new ol.style.AtlasManager({
   // we increase the default size so that all symbols fit into
   // a single atlas image
   size: 512,
-  maxSize: ol.has.WEBGL_MAX_TEXTURE_SIZE
+  maxSize: ol.WEBGL_MAX_TEXTURE_SIZE
 });
 
 var symbolInfo = [{

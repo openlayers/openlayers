@@ -5,7 +5,6 @@ goog.require('goog.asserts');
 goog.require('goog.events');
 goog.require('goog.log');
 goog.require('goog.object');
-goog.require('ol.has');
 goog.require('ol.webgl.Buffer');
 goog.require('ol.webgl.WebGLContextEventType');
 
@@ -70,7 +69,7 @@ ol.webgl.Context = function(canvas, gl) {
    * @type {boolean}
    */
   this.hasOESElementIndexUint = goog.array.contains(
-      ol.has.WEBGL_EXTENSIONS, 'OES_element_index_uint');
+      ol.WEBGL_EXTENSIONS, 'OES_element_index_uint');
 
   // use the OES_element_index_uint extension if available
   if (this.hasOESElementIndexUint) {

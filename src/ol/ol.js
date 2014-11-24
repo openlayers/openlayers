@@ -220,6 +220,24 @@ ol.WEBGL_TEXTURE_CACHE_HIGH_WATER_MARK = 1024;
 
 
 /**
+ * The maximum supported WebGL texture size in pixels. If WebGL is not
+ * supported, the value is set to `undefined`.
+ * @const
+ * @type {number|undefined}
+ * @api
+ */
+ol.WEBGL_MAX_TEXTURE_SIZE; // value is set in `ol.has`
+
+
+/**
+ * List of supported WebGL extensions.
+ * @const
+ * @type {Array.<string>}
+ */
+ol.WEBGL_EXTENSIONS; // value is set in `ol.has`
+
+
+/**
  * @define {number} Zoom slider animation duration.
  */
 ol.ZOOMSLIDER_ANIMATION_DURATION = 200;
