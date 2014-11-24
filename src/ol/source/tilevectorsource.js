@@ -184,6 +184,15 @@ ol.source.TileVector.prototype.loadFeatures =
   var tileRange = tileGrid.getTileRangeForExtentAndZ(extent, z);
   var tileCoord = [z, 0, 0];
   var x, y;
+  /**
+   * @param {string} tileKey Tile key.
+   * @param {Array.<ol.Feature>} features Features.
+   * @this {ol.source.TileVector}
+   */
+  function success(tileKey, features) {
+    tiles[tileKey] = features;
+    this.setState(ol.source.State.READY);
+  }
   for (x = tileRange.minX; x <= tileRange.maxX; ++x) {
     for (y = tileRange.minY; y <= tileRange.maxY; ++y) {
       var tileKey = this.getTileKeyZXY_(z, x, y);
@@ -195,16 +204,8 @@ ol.source.TileVector.prototype.loadFeatures =
         var url = tileUrlFunction(tileCoord, 1, projection);
         if (goog.isDef(url)) {
           tiles[tileKey] = [];
-          this.loadFeaturesFromURL(url, goog.partial(
-              /**
-               * @param {string} tileKey Tile key.
-               * @param {Array.<ol.Feature>} features Features.
-               * @this {ol.source.TileVector}
-               */
-              function(tileKey, features) {
-                tiles[tileKey] = features;
-                this.setState(ol.source.State.READY);
-              }, tileKey), this);
+          this.loadFeaturesFromURL(url, goog.partial(success, tileKey),
+              goog.nullFunction, this);
         }
       }
     }
