@@ -251,7 +251,7 @@ describe('ol.style.AtlasManager', function() {
     });
 
     it('returns null if the size exceeds the maximum size', function() {
-      var manager = new ol.style.AtlasManager({size: 128});
+      var manager = new ol.style.AtlasManager({size: 128, maxSize: 2048});
       expect(manager.add('1', 100, 100, defaultRender, defaultRender))
           .to.be.ok();
       expect(manager.add('2', 2048, 2048, defaultRender, defaultRender))

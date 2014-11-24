@@ -322,7 +322,7 @@ ol.style.RegularShape.prototype.render_ = function(atlasManager) {
     var info = atlasManager.add(
         id, size, size, goog.bind(this.draw_, this, renderOptions),
         renderHitDetectionCallback);
-    goog.asserts.assert(info !== null, 'shape size is too large');
+    goog.asserts.assert(!goog.isNull(info), 'shape size is too large');
 
     this.canvas_ = info.image;
     this.origin_ = [info.offsetX, info.offsetY];
