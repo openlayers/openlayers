@@ -12,7 +12,7 @@ describe('ol.format.WMSGetFeatureInfo', function() {
         proj4.defs('urn:x-ogc:def:crs:EPSG:4326', proj4.defs('EPSG:4326'));
         afterLoadText('spec/ol/format/wms/getfeatureinfo.xml', function(data) {
           try {
-            features = new ol.format.GetFeatureInfo().readFeatures(data);
+            features = new ol.format.WMSGetFeatureInfo().readFeatures(data);
           } catch (e) {
             done(e);
           }
@@ -47,7 +47,7 @@ describe('ol.format.WMSGetFeatureInfo', function() {
             '  <AAA64_layer>' +
             '  </AAA64_layer>' +
             '</msGMLOutput>';
-        var features = new ol.format.GetFeatureInfo().readFeatures(text);
+        var features = new ol.format.WMSGetFeatureInfo().readFeatures(text);
         expect(features.length).to.be(0);
       });
 
@@ -72,7 +72,7 @@ describe('ol.format.WMSGetFeatureInfo', function() {
             '    </AAA64_feature>' +
             '  </AAA64_layer>' +
             '</msGMLOutput>';
-        var features = new ol.format.GetFeatureInfo().readFeatures(text);
+        var features = new ol.format.WMSGetFeatureInfo().readFeatures(text);
         expect(features.length).to.be(1);
         expect(features[0].get('FOO')).to.be('bar');
         // FIXME is that really wanted ?
@@ -132,7 +132,7 @@ describe('ol.format.WMSGetFeatureInfo', function() {
             '   </AAA62_feature>' +
             '  </AAA62_layer>' +
             '</msGMLOutput>';
-        var features = new ol.format.GetFeatureInfo().readFeatures(text);
+        var features = new ol.format.WMSGetFeatureInfo().readFeatures(text);
         expect(features.length).to.be(2);
         expect(features[0].get('OBJECTID')).to.be('287');
         expect(features[1].get('OBJECTID')).to.be('1251');
@@ -188,7 +188,7 @@ describe('ol.format.WMSGetFeatureInfo', function() {
             '    </opengeo:roads>' +
             '  </gml:featureMember>' +
             '</wfs:FeatureCollection>';
-        var features = new ol.format.GetFeatureInfo().readFeatures(text);
+        var features = new ol.format.WMSGetFeatureInfo().readFeatures(text);
         expect(features.length).to.be(1);
         expect(features[0].get('cat')).to.be('3');
         expect(features[0].getGeometry().getType()).to.be('MultiLineString');

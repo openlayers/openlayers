@@ -8,7 +8,6 @@ goog.require('goog.object');
 goog.require('goog.string');
 goog.require('ol.format.GML');
 goog.require('ol.format.GML2');
-goog.require('ol.format.GMLBase');
 goog.require('ol.format.XMLFeature');
 goog.require('ol.xml');
 
@@ -16,16 +15,14 @@ goog.require('ol.xml');
 
 /**
  * @classdesc
- * Format for reading GetFeatureInfo format.It uses
- * ol.format.GML2 to read features.
+ * Format for reading WMSGetFeatureInfo format. It uses
+ * {@link ol.format.GML2} to read features.
  *
  * @constructor
- * @param {olx.format.GMLOptions=} opt_options
- *     Optional configuration object.
  * @extends {ol.format.XMLFeature}
  * @api
  */
-ol.format.GetFeatureInfo = function(opt_options) {
+ol.format.WMSGetFeatureInfo = function() {
 
   /**
    * @private
@@ -36,27 +33,13 @@ ol.format.GetFeatureInfo = function(opt_options) {
 
   /**
    * @private
-   * @type {string}
-   */
-  this.featureIdentifier_ = '_feature';
-
-
-  /**
-   * @private
-   * @type {string}
-   */
-  this.layerIdentifier_ = '_layer';
-
-
-  /**
-   * @private
-   * @type {ol.format.GMLBase}
+   * @type {ol.format.GML2}
    */
   this.gmlFormat_ = new ol.format.GML2();
 
   goog.base(this);
 };
-goog.inherits(ol.format.GetFeatureInfo, ol.format.XMLFeature);
+goog.inherits(ol.format.WMSGetFeatureInfo, ol.format.XMLFeature);
 
 
 /**
@@ -64,7 +47,15 @@ goog.inherits(ol.format.GetFeatureInfo, ol.format.XMLFeature);
  * @type {string}
  * @private
  */
-ol.format.GetFeatureInfo.schemaLocation_ = '';
+ol.format.WMSGetFeatureInfo.featureIdentifier_ = '_feature';
+
+
+/**
+ * @const
+ * @type {string}
+ * @private
+ */
+ol.format.WMSGetFeatureInfo.layerIdentifier_ = '_layer';
 
 
 /**
@@ -73,11 +64,13 @@ ol.format.GetFeatureInfo.schemaLocation_ = '';
  * @return {Array.<ol.Feature>} Features.
  * @private
  */
-ol.format.GetFeatureInfo.prototype.readFeatures_ = function(node, objectStack) {
+ol.format.WMSGetFeatureInfo.prototype.readFeatures_ =
+    function(node, objectStack) {
 
   node.namespaceURI = this.featureNS_;
   goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT);
   var localName = ol.xml.getLocalName(node);
+  /** @type {Array.<ol.Feature>} */
   var features = [];
   if (node.childNodes.length === 0) {
     return features;
@@ -90,10 +83,12 @@ ol.format.GetFeatureInfo.prototype.readFeatures_ = function(node, objectStack) {
       var context = objectStack[0];
       goog.asserts.assert(goog.isObject(context));
 
-      goog.asserts.assert(layer.localName.indexOf(this.layerIdentifier_) >= 0);
+      goog.asserts.assert(layer.localName.indexOf(
+          ol.format.WMSGetFeatureInfo.layerIdentifier_) >= 0);
 
       var featureType = goog.string.remove(layer.localName,
-          this.layerIdentifier_) + this.featureIdentifier_;
+          ol.format.WMSGetFeatureInfo.layerIdentifier_) +
+          ol.format.WMSGetFeatureInfo.featureIdentifier_;
 
       goog.object.set(context, 'featureType', featureType);
       goog.object.set(context, 'featureNS', this.featureNS_);
@@ -107,17 +102,17 @@ ol.format.GetFeatureInfo.prototype.readFeatures_ = function(node, objectStack) {
       var layerFeatures = ol.xml.pushParseAndPop(
           [], parsersNS, layer, objectStack, this.gmlFormat_);
       if (goog.isDef(layerFeatures)) {
-        goog.array.extend(/** @type {Array} */ (features), layerFeatures);
+        goog.array.extend(features, layerFeatures);
       }
     }, this);
   }
   if (localName == 'FeatureCollection') {
-    features = ol.xml.pushParseAndPop([],
+    var gmlFeatures = ol.xml.pushParseAndPop([],
         this.gmlFormat_.FEATURE_COLLECTION_PARSERS, node,
         [{}], this.gmlFormat_);
-  }
-  if (!goog.isDef(features)) {
-    features = [];
+    if (goog.isDef(gmlFeatures)) {
+      features = gmlFeatures;
+    }
   }
   return features;
 };
@@ -126,7 +121,7 @@ ol.format.GetFeatureInfo.prototype.readFeatures_ = function(node, objectStack) {
 /**
  * @inheritDoc
  */
-ol.format.GetFeatureInfo.prototype.readFeaturesFromNode =
+ol.format.WMSGetFeatureInfo.prototype.readFeaturesFromNode =
     function(node, opt_options) {
   var options = {
     'featureType': this.featureType,
