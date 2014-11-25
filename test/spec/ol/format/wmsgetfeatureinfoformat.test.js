@@ -20,6 +20,10 @@ describe('ol.format.WMSGetFeatureInfo', function() {
         });
       });
 
+      after(function() {
+        proj4.defs('urn:x-ogc:def:crs:EPSG:4326', undefined);
+      });
+
       it('creates 3 features', function() {
         expect(features).to.have.length(3);
       });
