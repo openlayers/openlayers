@@ -56,7 +56,7 @@ ol.source.MapQuest.TILE_ATTRIBUTION = new ol.Attribution({
  */
 ol.source.MapQuestConfig = {
   'osm': {
-    maxZoom: 28,
+    maxZoom: 19,
     attributions: [
       ol.source.MapQuest.TILE_ATTRIBUTION,
       ol.source.OSM.ATTRIBUTION
