@@ -3,6 +3,7 @@ goog.provide('ol.style.RegularShape');
 goog.require('goog.dom');
 goog.require('goog.dom.TagName');
 goog.require('ol.color');
+goog.require('ol.has');
 goog.require('ol.render.canvas');
 goog.require('ol.style.Fill');
 goog.require('ol.style.Image');
@@ -215,7 +216,7 @@ ol.style.RegularShape.prototype.unlistenImageChange = goog.nullFunction;
  */
 ol.style.RegularShape.prototype.render_ = function() {
   var canvas = this.canvas_;
-  var strokeStyle, strokeWidth;
+  var strokeStyle, strokeWidth, lineDash;
 
   if (goog.isNull(this.stroke_)) {
     strokeWidth = 0;
@@ -257,6 +258,10 @@ ol.style.RegularShape.prototype.render_ = function() {
   }
   if (!goog.isNull(this.stroke_)) {
     context.strokeStyle = strokeStyle;
+    lineDash = this.stroke_.getLineDash();
+    if (ol.has.CANVAS_LINE_DASH && !goog.isNull(lineDash)) {
+      context.setLineDash(lineDash);
+    }
     context.lineWidth = strokeWidth;
     context.stroke();
   }
@@ -290,6 +295,10 @@ ol.style.RegularShape.prototype.render_ = function() {
     context.fill();
     if (!goog.isNull(this.stroke_)) {
       context.strokeStyle = strokeStyle;
+      lineDash = this.stroke_.getLineDash();
+      if (ol.has.CANVAS_LINE_DASH && !goog.isNull(lineDash)) {
+        context.setLineDash(lineDash);
+      }
       context.lineWidth = strokeWidth;
       context.stroke();
     }
