@@ -1,6 +1,7 @@
 goog.provide('ol.source.TileVector');
 
 goog.require('goog.array');
+goog.require('goog.asserts');
 goog.require('goog.object');
 goog.require('ol.TileCoord');
 goog.require('ol.TileUrlFunction');
@@ -92,6 +93,48 @@ ol.source.TileVector.prototype.forEachFeature = goog.abstractMethod;
 
 
 /**
+ * Iterate through all features whose geometries contain the provided
+ * coordinate at the provided resolution, calling the callback with each
+ * feature. If the callback returns a "truthy" value, iteration will stop and
+ * the function will return the same value.
+ *
+ * @param {ol.Coordinate} coordinate Coordinate.
+ * @param {number} resolution Resolution.
+ * @param {function(this: T, ol.Feature): S} callback Called with each feature
+ *     whose goemetry contains the provided coordinate.
+ * @param {T=} opt_this The object to use as `this` in the callback.
+ * @return {S|undefined} The return value from the last call to the callback.
+ * @template T,S
+ */
+ol.source.TileVector.prototype.forEachFeatureAtCoordinateAtResolution =
+    function(coordinate, resolution, callback, opt_this) {
+
+  var tileGrid = this.tileGrid_;
+  var tiles = this.tiles_;
+  var tileCoord = tileGrid.getTileCoordForCoordAndResolution(coordinate,
+      resolution);
+
+  var tileKey = this.getTileKeyZXY_(tileCoord[0], tileCoord[1], tileCoord[2]);
+  var features = tiles[tileKey];
+  if (goog.isDef(features)) {
+    var i, ii;
+    for (i = 0, ii = features.length; i < ii; ++i) {
+      var feature = features[i];
+      var geometry = feature.getGeometry();
+      goog.asserts.assert(goog.isDefAndNotNull(geometry));
+      if (geometry.containsCoordinate(coordinate)) {
+        var result = callback.call(opt_this, feature);
+        if (result) {
+          return result;
+        }
+      }
+    }
+  }
+  return undefined;
+};
+
+
+/**
  * @inheritDoc
  */
 ol.source.TileVector.prototype.forEachFeatureInExtent = goog.abstractMethod;
@@ -149,6 +192,28 @@ ol.source.TileVector.prototype.getFeatures = function() {
   for (tileKey in tiles) {
     goog.array.extend(features, tiles[tileKey]);
   }
+  return features;
+};
+
+
+/**
+ * Get all features whose geometry intersects the provided coordinate for the
+ * provided resolution.
+ * @param {ol.Coordinate} coordinate Coordinate.
+ * @param {number} resolution Resolution.
+ * @return {Array.<ol.Feature>} Features.
+ * @api stable
+ */
+ol.source.TileVector.prototype.getFeaturesAtCoordinateAtResolution =
+    function(coordinate, resolution) {
+  var features = [];
+  this.forEachFeatureAtCoordinateAtResolution(coordinate, resolution,
+      /**
+       * @param {ol.Feature} feature Feature.
+       */
+      function(feature) {
+        features.push(feature);
+      });
   return features;
 };
 
