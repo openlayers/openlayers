@@ -141,6 +141,7 @@ ol.source.TileVector.prototype.getExtent = goog.abstractMethod;
 
 /**
  * @inheritDoc
+ * @api
  */
 ol.source.TileVector.prototype.getFeatures = function() {
   var tiles = this.tiles_;
