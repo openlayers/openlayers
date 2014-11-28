@@ -13,7 +13,9 @@ goog.require('ol.style.Stroke');
 
 /**
  * @classdesc
- * Set regular shape style for vector features.
+ * Set regular shape style for vector features. The resulting shape will be
+ * a regular polygon when `radius` is provided, or a star when `radius1` and
+ * `radius2` are provided.
  *
  * @constructor
  * @param {olx.style.RegularShapeOptions=} opt_options Options.
@@ -59,14 +61,14 @@ ol.style.RegularShape = function(opt_options) {
    * @private
    * @type {number}
    */
-  this.radius_ = options.radius;
+  this.radius_ = goog.isDef(options.radius) ? options.radius : options.radius1;
 
   /**
    * @private
    * @type {number}
    */
   this.radius2_ =
-      goog.isDef(options.radius2) ? options.radius2 : options.radius;
+      goog.isDef(options.radius2) ? options.radius2 : this.radius_;
 
   /**
    * @private
@@ -170,6 +172,15 @@ ol.style.RegularShape.prototype.getOrigin = function() {
  */
 ol.style.RegularShape.prototype.getRadius = function() {
   return this.radius_;
+};
+
+
+/**
+ * @return {number} Radius2.
+ * @api
+ */
+ol.style.RegularShape.prototype.getRadius2 = function() {
+  return this.radius2_;
 };
 
 

@@ -5653,9 +5653,11 @@ olx.style.IconOptions.prototype.src;
 
 
 /**
+ * Specify radius for regular polygons, or radius1 and radius2 for stars.
  * @typedef {{fill: (ol.style.Fill|undefined),
  *     points: number,
  *     radius: number,
+ *     radius1: number,
  *     radius2: number,
  *     angle: number,
  *     snapToPixel: (boolean|undefined),
@@ -5683,7 +5685,7 @@ olx.style.RegularShapeOptions.prototype.points;
 
 
 /**
- * Shape radius.
+ * Radius of a regular polygon.
  * @type {number}
  * @api
  */
@@ -5691,9 +5693,15 @@ olx.style.RegularShapeOptions.prototype.radius;
 
 
 /**
- * Shape secondary radius for drawing stars. If radius 2 is equal to radius,
- * the regular shape will be a regular polygon instead of a star.
- * Default value is equal to radius.
+* Inner radius of a star.
+* @type {number}
+* @api
+*/
+olx.style.RegularShapeOptions.prototype.radius1;
+
+
+/**
+ * Outer radius of a star.
  * @type {number}
  * @api
  */
@@ -6120,7 +6128,6 @@ olx.tilegrid.XYZOptions.prototype.tileSize;
 
 /**
  * @typedef {{resolutions: !Array.<number>}}
- * @api
  * @api
  */
 olx.tilegrid.ZoomifyOptions;
