@@ -225,6 +225,10 @@ ol.source.TileWMS.prototype.getRequestUrl_ =
   goog.object.set(params, 'WIDTH', tileSize);
   goog.object.set(params, 'HEIGHT', tileSize);
 
+  if (goog.isDef(this.getProjection())) {
+    projection = this.getProjection();
+  }
+
   params[this.v13_ ? 'CRS' : 'SRS'] = projection.getCode();
 
   if (!('STYLES' in this.params_)) {
