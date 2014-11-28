@@ -108,8 +108,14 @@ ol.renderer.canvas.ImageLayer.prototype.prepareFrame =
 
   if (!hints[ol.ViewHint.ANIMATING] && !hints[ol.ViewHint.INTERACTING] &&
       !ol.extent.isEmpty(renderedExtent)) {
+    var projection = viewState.projection;
+    var sourceProjection = imageSource.getProjection()
+    if (goog.isDefAndNotNull(sourceProjection)) {
+      goog.asserts.assert(ol.proj.equivalent(projection, sourceProjection));
+      projection = sourceProjection;
+    }
     image = imageSource.getImage(
-        renderedExtent, viewResolution, pixelRatio, viewState.projection);
+        renderedExtent, viewResolution, pixelRatio, projection);
     if (!goog.isNull(image)) {
       var imageState = image.getState();
       if (imageState == ol.ImageState.IDLE) {
