@@ -48,13 +48,15 @@ ol.source.StaticVector = function(options) {
   if (goog.isDef(options.url) || goog.isDef(options.urls)) {
     this.setState(ol.source.State.LOADING);
     if (goog.isDef(options.url)) {
-      this.loadFeaturesFromURL(options.url, this.onFeaturesLoaded_, this);
+      this.loadFeaturesFromURL(options.url,
+          this.onFeaturesLoadedSuccess_, this.onFeaturesLoadedError_, this);
     }
     if (goog.isDef(options.urls)) {
       var urls = options.urls;
       var i, ii;
       for (i = 0, ii = urls.length; i < ii; ++i) {
-        this.loadFeaturesFromURL(urls[i], this.onFeaturesLoaded_, this);
+        this.loadFeaturesFromURL(urls[i],
+            this.onFeaturesLoadedSuccess_, this.onFeaturesLoadedError_, this);
       }
     }
   }
@@ -64,10 +66,18 @@ goog.inherits(ol.source.StaticVector, ol.source.FormatVector);
 
 
 /**
+ * @private
+ */
+ol.source.StaticVector.prototype.onFeaturesLoadedError_ = function() {
+  this.setState(ol.source.State.ERROR);
+};
+
+
+/**
  * @param {Array.<ol.Feature>} features Features.
  * @private
  */
-ol.source.StaticVector.prototype.onFeaturesLoaded_ = function(features) {
+ol.source.StaticVector.prototype.onFeaturesLoadedSuccess_ = function(features) {
   this.addFeaturesInternal(features);
   this.setState(ol.source.State.READY);
 };
