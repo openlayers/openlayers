@@ -1,5 +1,6 @@
 goog.provide('ol.style.RegularShape');
 
+goog.require('goog.asserts');
 goog.require('goog.dom');
 goog.require('goog.dom.TagName');
 goog.require('ol.color');
@@ -58,11 +59,15 @@ ol.style.RegularShape = function(opt_options) {
    */
   this.points_ = options.points;
 
+  goog.asserts.assert(goog.isDef(options.radius) ||
+      goog.isDef(options.radius1));
+
   /**
    * @private
    * @type {number}
    */
-  this.radius_ = goog.isDef(options.radius) ? options.radius : options.radius1;
+  this.radius_ = /** @type {number} */ (goog.isDef(options.radius) ?
+      options.radius : options.radius1);
 
   /**
    * @private

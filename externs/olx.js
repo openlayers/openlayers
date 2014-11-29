@@ -5656,10 +5656,10 @@ olx.style.IconOptions.prototype.src;
  * Specify radius for regular polygons, or radius1 and radius2 for stars.
  * @typedef {{fill: (ol.style.Fill|undefined),
  *     points: number,
- *     radius: number,
- *     radius1: number,
- *     radius2: number,
- *     angle: number,
+ *     radius: (number|undefined),
+ *     radius1: (number|undefined),
+ *     radius2: (number|undefined),
+ *     angle: (number|undefined),
  *     snapToPixel: (boolean|undefined),
  *     stroke: (ol.style.Stroke|undefined)}}
  * @api
@@ -5686,7 +5686,7 @@ olx.style.RegularShapeOptions.prototype.points;
 
 /**
  * Radius of a regular polygon.
- * @type {number}
+ * @type {number|undefined}
  * @api
  */
 olx.style.RegularShapeOptions.prototype.radius;
@@ -5694,7 +5694,7 @@ olx.style.RegularShapeOptions.prototype.radius;
 
 /**
 * Inner radius of a star.
-* @type {number}
+* @type {number|undefined}
 * @api
 */
 olx.style.RegularShapeOptions.prototype.radius1;
@@ -5702,7 +5702,7 @@ olx.style.RegularShapeOptions.prototype.radius1;
 
 /**
  * Outer radius of a star.
- * @type {number}
+ * @type {number|undefined}
  * @api
  */
 olx.style.RegularShapeOptions.prototype.radius2;
@@ -5712,7 +5712,7 @@ olx.style.RegularShapeOptions.prototype.radius2;
  * Shape's rotation in radians. A value of 0 will have one of the shape's point
  * facing up.
  * Default value is 0.
- * @type {number}
+ * @type {number|undefined}
  * @api
  */
 olx.style.RegularShapeOptions.prototype.angle;
