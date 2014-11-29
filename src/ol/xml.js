@@ -95,7 +95,7 @@ ol.xml.getAllTextContent = function(node, normalizeWhitespace) {
  * breaks.
  * @param {Array.<String|string>} accumulator Accumulator.
  * @private
- * @return {Array.<String|string>} Accumulator.
+ * @return {Array.<String>} Accumulator.
  */
 ol.xml.getAllTextContent_ = function(node, normalizeWhitespace, accumulator) {
   if (node.nodeType == goog.dom.NodeType.CDATA_SECTION ||
@@ -114,6 +114,34 @@ ol.xml.getAllTextContent_ = function(node, normalizeWhitespace, accumulator) {
   }
   return accumulator;
 };
+
+/**
+ * Recursively grab content of child nodes into a nested object.
+ * @param {Node} node Node.
+ * @param {boolean} normalizeWhitespace Normalize whitespace: remove all line
+ * breaks from text nodes.
+ * @return {Object.<*>} Content.
+ * @api
+ */
+
+ol.xml.getStructuredTextContent = function(node, normalizeWhitespace) {
+  var accumulator = {};
+  if (node.nodeType == goog.dom.NodeType.CDATA_SECTION ||
+      node.nodeType == goog.dom.NodeType.TEXT) {
+    accumulator["text_"] =  normalizeWhitespace ? String(node.nodeValue).replace(/(\r\n|\r|\n)/g, '') : node.nodeValue;
+  } else {
+    var n;
+    for (n = node.firstChild; !goog.isNull(n); n = n.nextSibling) {
+      if (n.nodeType == goog.dom.NodeType.TEXT) {
+        accumulator["text_"] = (accumulator["text_"] || "") + (normalizeWhitespace ? String(n.nodeValue).replace(/(\r\n|\r|\n)/g, '') : n.nodeValue);
+      } else {
+        accumulator[n.localName] = ol.xml.getStructuredTextContent(n, normalizeWhitespace);
+      }
+    }
+  }
+  return accumulator;
+};
+
 
 
 /**
