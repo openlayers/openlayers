@@ -149,30 +149,48 @@ ol.format.GMLBase.prototype.readGeometryElement = function(node, objectStack) {
 
 
 /**
+ * @type {Object.<string, Object.<string, Object>>}
+ */
+ol.format.GMLBase.prototype.FEATURE_COLLECTION_PARSERS = Object({
+  'http://www.opengis.net/gml': {
+    'featureMember': ol.xml.makeArrayPusher(
+        ol.format.GMLBase.prototype.readFeatures_),
+    'featureMembers': ol.xml.makeReplacer(
+        ol.format.GMLBase.prototype.readFeatures_),
+    'boundedBy': ol.xml.makeObjectPropertySetter(
+        ol.format.GMLBase.prototype.readGeometryElement, 'bounds')
+  }
+});
+
+
+/**
  * @param {Node} node Node.
  * @param {Array.<*>} objectStack Object stack.
  * @return {ol.Feature} Feature.
  */
 ol.format.GMLBase.prototype.readFeatureElement = function(node, objectStack) {
-  var n;
+  var n, i, hasGeometry;
+  var knownGeometries = goog.object.getKeys(this.GEOMETRY_PARSERS_['http://www.opengis.net/gml']);
   var fid = node.getAttribute('fid') ||
       ol.xml.getAttributeNS(node, ol.format.GMLBase.GMLNS, 'id');
   var values = {}, geometryName;
   for (n = node.firstElementChild; !goog.isNull(n);
       n = n.nextElementSibling) {
+    // Assume there is only one geometry node, and that is has a know geometry as child node:
+    hasGeometry = false;
+    for (i=0;i<n.childNodes.length;i++) {
+      hasGeometry = hasGeometry | (knownGeometries.indexOf(n.childNodes[i].localName) > -1);
+    }
     var localName = ol.xml.getLocalName(n);
-    // Assume attribute elements have one child node and that the child
-    // is a text node.  Otherwise assume it is a geometry node.
-    if (n.childNodes.length === 0 ||
-        (n.childNodes.length === 1 &&
-        n.firstChild.nodeType === 3)) {
-      var value = ol.xml.getAllTextContent(n, false);
-      if (goog.string.isEmpty(value)) {
-        value = undefined;
+    if (!hasGeometry) {
+      var data = ol.xml.getStructuredTextContent(n, false);
+      if (goog.object.isEmpty(data)) {
+        data = undefined;
+      } else if (goog.array.equals(goog.object.getKeys(data), ['text_'])) {
+        data = data['text_'];
       }
-      values[localName] = value;
+      values[localName] = data;
     } else {
-      // boundedBy is an extent and must not be considered as a geometry
       if (localName !== 'boundedBy') {
         geometryName = localName;
       }
