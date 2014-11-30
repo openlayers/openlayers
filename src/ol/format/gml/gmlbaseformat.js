@@ -170,16 +170,20 @@ ol.format.GMLBase.prototype.FEATURE_COLLECTION_PARSERS = Object({
  */
 ol.format.GMLBase.prototype.readFeatureElement = function(node, objectStack) {
   var n, i, hasGeometry;
-  var knownGeometries = goog.object.getKeys(this.GEOMETRY_PARSERS_['http://www.opengis.net/gml']);
+  var knownGeometries = goog.object.getKeys(
+      this.GEOMETRY_PARSERS_['http://www.opengis.net/gml']
+      );
   var fid = node.getAttribute('fid') ||
       ol.xml.getAttributeNS(node, ol.format.GMLBase.GMLNS, 'id');
   var values = {}, geometryName;
   for (n = node.firstElementChild; !goog.isNull(n);
       n = n.nextElementSibling) {
-    // Assume there is only one geometry node, and that is has a know geometry as child node:
+    // Assume there is only one geometry node,
+    // and that is has a know geometry as child node:
     hasGeometry = false;
     for (i = 0; i < n.childNodes.length; i++) {
-      hasGeometry = hasGeometry | (knownGeometries.indexOf(n.childNodes[i].localName) > -1);
+      hasGeometry = hasGeometry |
+          (knownGeometries.indexOf(n.childNodes[i].localName) > -1);
     }
     var localName = ol.xml.getLocalName(n);
     if (!hasGeometry) {
