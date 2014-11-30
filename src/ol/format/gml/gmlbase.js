@@ -3,11 +3,11 @@
 // envelopes/extents, only geometries!
 goog.provide('ol.format.GMLBase');
 
+goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('goog.dom');
 goog.require('goog.dom.NodeType');
 goog.require('goog.object');
-goog.require('goog.string');
 goog.require('ol.Feature');
 goog.require('ol.array');
 goog.require('ol.format.Feature');
@@ -176,7 +176,7 @@ ol.format.GMLBase.prototype.readFeatureElement = function(node, objectStack) {
       if (goog.object.isEmpty(data)) {
         data = undefined;
       } else if (goog.array.equals(goog.object.getKeys(data), ['text_'])) {
-        data = data['text_'];
+        data = data.text_;
       }
       values[localName] = data;
     } else {
