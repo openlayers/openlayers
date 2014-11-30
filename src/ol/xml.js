@@ -129,14 +129,14 @@ ol.xml.getStructuredTextContent = function(node, normalizeWhitespace) {
   if (node.nodeType == goog.dom.NodeType.CDATA_SECTION ||
       node.nodeType == goog.dom.NodeType.TEXT) {
     accumulator['text_'] = normalizeWhitespace ?
-      String(node.nodeValue).replace(/(\r\n|\r|\n)/g, '') :
-      node.nodeValue;
+        String(node.nodeValue).replace(/(\r\n|\r|\n)/g, '') :
+        node.nodeValue;
   } else {
     var n;
     for (n = node.firstChild; !goog.isNull(n); n = n.nextSibling) {
       if (n.nodeType == goog.dom.NodeType.TEXT) {
         accumulator['text_'] = (accumulator['text_'] || '') +
-          (normalizeWhitespace ?
+            (normalizeWhitespace ?
             String(n.nodeValue).replace(/(\r\n|\r|\n)/g, '') :
             n.nodeValue);
       } else {
@@ -146,7 +146,6 @@ ol.xml.getStructuredTextContent = function(node, normalizeWhitespace) {
   }
   return accumulator;
 };
-
 
 
 /**

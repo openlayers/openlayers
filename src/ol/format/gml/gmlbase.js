@@ -112,7 +112,6 @@ ol.format.GMLBase.prototype.readFeatures_ = function(node, objectStack) {
 };
 
 
-
 /**
  * @param {Node} node Node.
  * @param {Array.<*>} objectStack Object stack.
