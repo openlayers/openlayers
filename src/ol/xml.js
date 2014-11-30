@@ -140,7 +140,8 @@ ol.xml.getStructuredTextContent = function(node, normalizeWhitespace) {
             String(n.nodeValue).replace(/(\r\n|\r|\n)/g, '') :
             n.nodeValue);
       } else {
-        accumulator[n.localName] = ol.xml.getStructuredTextContent(n, normalizeWhitespace);
+        accumulator[n.localName] =
+            ol.xml.getStructuredTextContent(n, normalizeWhitespace);
       }
     }
   }
