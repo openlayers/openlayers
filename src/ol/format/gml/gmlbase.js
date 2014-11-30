@@ -164,7 +164,7 @@ ol.format.GMLBase.prototype.readFeatureElement = function(node, objectStack) {
       n = n.nextElementSibling) {
     // Assume there is only one geometry node, and that is has a know geometry as child node:
     hasGeometry = false;
-    for (i=0;i<n.childNodes.length;i++) {
+    for (i = 0; i < n.childNodes.length; i++) {
       hasGeometry = hasGeometry | (knownGeometries.indexOf(n.childNodes[i].localName) > -1);
     }
     var localName = ol.xml.getLocalName(n);
