@@ -125,7 +125,7 @@ ol.renderer.webgl.ImageLayer.prototype.prepareFrame =
   if (!hints[ol.ViewHint.ANIMATING] && !hints[ol.ViewHint.INTERACTING] &&
       !ol.extent.isEmpty(renderedExtent)) {
     var projection = viewState.projection;
-    var sourceProjection = imageSource.getProjection()
+    var sourceProjection = imageSource.getProjection();
     if (goog.isDefAndNotNull(sourceProjection)) {
       goog.asserts.assert(ol.proj.equivalent(projection, sourceProjection));
       projection = sourceProjection;
