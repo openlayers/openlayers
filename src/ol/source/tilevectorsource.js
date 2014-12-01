@@ -106,7 +106,7 @@ ol.source.TileVector.prototype.forEachFeature = goog.abstractMethod;
  * @return {S|undefined} The return value from the last call to the callback.
  * @template T,S
  */
-ol.source.TileVector.prototype.forEachFeatureAtCoordinateAtResolution =
+ol.source.TileVector.prototype.forEachFeatureAtCoordinateAndResolution =
     function(coordinate, resolution, callback, opt_this) {
 
   var tileGrid = this.tileGrid_;
@@ -205,10 +205,10 @@ ol.source.TileVector.prototype.getFeatures = function() {
  * @return {Array.<ol.Feature>} Features.
  * @api
  */
-ol.source.TileVector.prototype.getFeaturesAtCoordinateAtResolution =
+ol.source.TileVector.prototype.getFeaturesAtCoordinateAndResolution =
     function(coordinate, resolution) {
   var features = [];
-  this.forEachFeatureAtCoordinateAtResolution(coordinate, resolution,
+  this.forEachFeatureAtCoordinateAndResolution(coordinate, resolution,
       /**
        * @param {ol.Feature} feature Feature.
        */
