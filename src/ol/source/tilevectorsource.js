@@ -203,7 +203,7 @@ ol.source.TileVector.prototype.getFeatures = function() {
  * @param {ol.Coordinate} coordinate Coordinate.
  * @param {number} resolution Resolution.
  * @return {Array.<ol.Feature>} Features.
- * @api stable
+ * @api
  */
 ol.source.TileVector.prototype.getFeaturesAtCoordinateAtResolution =
     function(coordinate, resolution) {
