@@ -152,6 +152,15 @@ ol.style.RegularShape.prototype.getAnchor = function() {
 
 
 /**
+ * @return {number} Shape's rotation in radians.
+ * @api
+ */
+ol.style.RegularShape.prototype.getAngle = function() {
+  return this.angle_;
+};
+
+
+/**
  * @return {ol.style.Fill} Fill style.
  * @api
  */
@@ -215,6 +224,15 @@ ol.style.RegularShape.prototype.getOrigin = function() {
  */
 ol.style.RegularShape.prototype.getHitDetectionOrigin = function() {
   return this.hitDetectionOrigin_;
+};
+
+
+/**
+ * @return {number} Number of points for stars and regular polygons.
+ * @api
+ */
+ol.style.RegularShape.prototype.getPoints = function() {
+  return this.points_;
 };
 
 
