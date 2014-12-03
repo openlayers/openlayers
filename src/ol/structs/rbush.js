@@ -228,7 +228,7 @@ ol.structs.RBush.prototype.isEmpty = function() {
  */
 ol.structs.RBush.prototype.clear = function() {
   this.rbush_.clear();
-  goog.object.clear(this.items_);
+  this.items_ = {};
 };
 
 
