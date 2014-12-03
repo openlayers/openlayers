@@ -13,7 +13,7 @@ var layers = [
   new ol.layer.Image({
     extent: [-13884991, 2870341, -7455066, 6338219],
     source: new ol.source.ImageWMS({
-      url: 'http://demo.opengeo.org/geoserver/wms',
+      url: 'http://demo.boundlessgeo.com/geoserver/wms',
       params: {'LAYERS': 'topp:states'},
       serverType: 'geoserver'
     })
