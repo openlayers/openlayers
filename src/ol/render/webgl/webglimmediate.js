@@ -73,7 +73,6 @@ ol.render.webgl.Immediate = function(context,
 
 /**
  * FIXME: empty description for jsdoc
- * @api
  */
 ol.render.webgl.Immediate.prototype.flush = function() {
   /** @type {Array.<number>} */
