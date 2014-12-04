@@ -94,6 +94,8 @@ ol.color.blend = function(dst, src, opt_color) {
 
 
 /**
+ * Return the color as an array. This function maintains a cache of calculated
+ * arrays which means the result should not be modified.
  * @param {ol.Color|string} color Color.
  * @return {ol.Color} Color.
  * @api
@@ -109,6 +111,7 @@ ol.color.asArray = function(color) {
 
 
 /**
+ * Return the color as an rgba string.
  * @param {ol.Color|string} color Color.
  * @return {string} Rgba string.
  * @api
