@@ -5,8 +5,8 @@ goog.provide('ol.render.IVectorContext');
 
 
 /**
- * VectorContext interface. Currently implemented by
- * {@link ol.render.canvas.Immediate}
+ * VectorContext interface. Implemented by
+ * {@link ol.render.canvas.Immediate} and {@link ol.render.webgl.Immediate}.
  * @interface
  */
 ol.render.IVectorContext = function() {
@@ -15,7 +15,7 @@ ol.render.IVectorContext = function() {
 
 /**
  * @param {number} zIndex Z index.
- * @param {function(ol.render.canvas.Immediate)} callback Callback.
+ * @param {function(ol.render.IVectorContext)} callback Callback.
  */
 ol.render.IVectorContext.prototype.drawAsync = function(zIndex, callback) {
 };

@@ -1,45 +1,12 @@
-goog.provide('ol.test.style.RegularShape');
+goog.provide('ol.test.style.Circle');
 
-describe('ol.style.RegularShape', function() {
+
+describe('ol.style.Circle', function() {
 
   describe('#constructor', function() {
 
-    it('can use radius', function() {
-      var style = new ol.style.RegularShape({
-        radius: 5,
-        radius2: 10
-      });
-      expect(style.getRadius()).to.eql(5);
-      expect(style.getRadius2()).to.eql(10);
-    });
-
-    it('can use radius1 as an alias for radius', function() {
-      var style = new ol.style.RegularShape({
-        radius1: 5,
-        radius2: 10
-      });
-      expect(style.getRadius()).to.eql(5);
-      expect(style.getRadius2()).to.eql(10);
-    });
-
-    it('will use radius for radius2 if radius2 not defined', function() {
-      var style = new ol.style.RegularShape({
-        radius: 5
-      });
-      expect(style.getRadius()).to.eql(5);
-      expect(style.getRadius2()).to.eql(5);
-    });
-
-    it('will use radius1 for radius2 if radius2 not defined', function() {
-      var style = new ol.style.RegularShape({
-        radius1: 5
-      });
-      expect(style.getRadius()).to.eql(5);
-      expect(style.getRadius2()).to.eql(5);
-    });
-
     it('creates a canvas if no atlas is used (no fill-style)', function() {
-      var style = new ol.style.RegularShape({radius: 10});
+      var style = new ol.style.Circle({radius: 10});
       expect(style.getImage()).to.be.an(HTMLCanvasElement);
       expect(style.getSize()).to.eql([21, 21]);
       expect(style.getImageSize()).to.eql([21, 21]);
@@ -53,7 +20,7 @@ describe('ol.style.RegularShape', function() {
     });
 
     it('creates a canvas if no atlas is used (fill-style)', function() {
-      var style = new ol.style.RegularShape({
+      var style = new ol.style.Circle({
         radius: 10,
         fill: new ol.style.Fill({
           color: '#FFFF00'
@@ -73,8 +40,7 @@ describe('ol.style.RegularShape', function() {
 
     it('adds itself to an atlas manager (no fill-style)', function() {
       var atlasManager = new ol.style.AtlasManager({initialSize: 512});
-      var style = new ol.style.RegularShape(
-          {radius: 10, atlasManager: atlasManager});
+      var style = new ol.style.Circle({radius: 10, atlasManager: atlasManager});
       expect(style.getImage()).to.be.an(HTMLCanvasElement);
       expect(style.getSize()).to.eql([21, 21]);
       expect(style.getImageSize()).to.eql([512, 512]);
@@ -89,7 +55,7 @@ describe('ol.style.RegularShape', function() {
 
     it('adds itself to an atlas manager (fill-style)', function() {
       var atlasManager = new ol.style.AtlasManager({initialSize: 512});
-      var style = new ol.style.RegularShape({
+      var style = new ol.style.Circle({
         radius: 10,
         atlasManager: atlasManager,
         fill: new ol.style.Fill({
@@ -109,51 +75,40 @@ describe('ol.style.RegularShape', function() {
     });
   });
 
-
   describe('#getChecksum', function() {
 
-    it('calculates not the same hash code (radius)', function() {
-      var style1 = new ol.style.RegularShape({
-        radius: 4,
-        radius2: 5
-      });
-      var style2 = new ol.style.RegularShape({
-        radius: 3,
-        radius2: 5
-      });
-      expect(style1.getChecksum()).to.not.eql(style2.getChecksum());
+    it('calculates the same hash code for default options', function() {
+      var style1 = new ol.style.Circle();
+      var style2 = new ol.style.Circle();
+      expect(style1.getChecksum()).to.eql(style2.getChecksum());
     });
 
-    it('calculates not the same hash code (radius2)', function() {
-      var style1 = new ol.style.RegularShape({
-        radius: 4,
-        radius2: 5
-      });
-      var style2 = new ol.style.RegularShape({
-        radius: 4,
-        radius2: 6
+    it('calculates not the same hash code (radius)', function() {
+      var style1 = new ol.style.Circle();
+      var style2 = new ol.style.Circle({
+        radius: 5
       });
       expect(style1.getChecksum()).to.not.eql(style2.getChecksum());
     });
 
     it('calculates the same hash code (radius)', function() {
-      var style1 = new ol.style.RegularShape({
+      var style1 = new ol.style.Circle({
         radius: 5
       });
-      var style2 = new ol.style.RegularShape({
+      var style2 = new ol.style.Circle({
         radius: 5
       });
       expect(style1.getChecksum()).to.eql(style2.getChecksum());
     });
 
     it('calculates not the same hash code (color)', function() {
-      var style1 = new ol.style.RegularShape({
+      var style1 = new ol.style.Circle({
         radius: 5,
         fill: new ol.style.Fill({
           color: '#319FD3'
         })
       });
-      var style2 = new ol.style.RegularShape({
+      var style2 = new ol.style.Circle({
         radius: 5,
         stroke: new ol.style.Stroke({
           color: '#319FD3'
@@ -163,11 +118,8 @@ describe('ol.style.RegularShape', function() {
     });
 
     it('calculates the same hash code (everything set)', function() {
-      var style1 = new ol.style.RegularShape({
+      var style1 = new ol.style.Circle({
         radius: 5,
-        radius2: 3,
-        angle: 1.41,
-        points: 5,
         fill: new ol.style.Fill({
           color: '#319FD3'
         }),
@@ -180,11 +132,8 @@ describe('ol.style.RegularShape', function() {
           width: 2
         })
       });
-      var style2 = new ol.style.RegularShape({
+      var style2 = new ol.style.Circle({
         radius: 5,
-        radius2: 3,
-        angle: 1.41,
-        points: 5,
         fill: new ol.style.Fill({
           color: '#319FD3'
         }),
@@ -201,11 +150,8 @@ describe('ol.style.RegularShape', function() {
     });
 
     it('calculates not the same hash code (stroke width differs)', function() {
-      var style1 = new ol.style.RegularShape({
+      var style1 = new ol.style.Circle({
         radius: 5,
-        radius2: 3,
-        angle: 1.41,
-        points: 5,
         fill: new ol.style.Fill({
           color: '#319FD3'
         }),
@@ -218,11 +164,8 @@ describe('ol.style.RegularShape', function() {
           width: 3
         })
       });
-      var style2 = new ol.style.RegularShape({
+      var style2 = new ol.style.Circle({
         radius: 5,
-        radius2: 3,
-        angle: 1.41,
-        points: 5,
         fill: new ol.style.Fill({
           color: '#319FD3'
         }),
@@ -239,7 +182,7 @@ describe('ol.style.RegularShape', function() {
     });
 
     it('invalidates a cached checksum if values change (fill)', function() {
-      var style1 = new ol.style.RegularShape({
+      var style1 = new ol.style.Circle({
         radius: 5,
         fill: new ol.style.Fill({
           color: '#319FD3'
@@ -248,7 +191,7 @@ describe('ol.style.RegularShape', function() {
           color: '#319FD3'
         })
       });
-      var style2 = new ol.style.RegularShape({
+      var style2 = new ol.style.Circle({
         radius: 5,
         fill: new ol.style.Fill({
           color: '#319FD3'
@@ -264,7 +207,7 @@ describe('ol.style.RegularShape', function() {
     });
 
     it('invalidates a cached checksum if values change (stroke)', function() {
-      var style1 = new ol.style.RegularShape({
+      var style1 = new ol.style.Circle({
         radius: 5,
         fill: new ol.style.Fill({
           color: '#319FD3'
@@ -273,7 +216,7 @@ describe('ol.style.RegularShape', function() {
           color: '#319FD3'
         })
       });
-      var style2 = new ol.style.RegularShape({
+      var style2 = new ol.style.Circle({
         radius: 5,
         fill: new ol.style.Fill({
           color: '#319FD3'
@@ -292,6 +235,6 @@ describe('ol.style.RegularShape', function() {
 });
 
 goog.require('ol.style.AtlasManager');
-goog.require('ol.style.RegularShape');
+goog.require('ol.style.Circle');
 goog.require('ol.style.Fill');
 goog.require('ol.style.Stroke');
