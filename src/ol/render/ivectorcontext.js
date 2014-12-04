@@ -5,8 +5,8 @@ goog.provide('ol.render.IVectorContext');
 
 
 /**
- * VectorContext interface. Currently implemented by
- * {@link ol.render.canvas.Immediate} and {@link ol.render.webgl.Immediate}
+ * VectorContext interface. Implemented by
+ * {@link ol.render.canvas.Immediate} and {@link ol.render.webgl.Immediate}.
  * @interface
  */
 ol.render.IVectorContext = function() {
