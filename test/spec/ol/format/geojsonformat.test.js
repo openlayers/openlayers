@@ -498,6 +498,15 @@ describe('ol.format.GeoJSON', function() {
       }
     });
 
+    it('writes out a feature with a different geometryName correctly',
+        function() {
+          var feature = new ol.Feature({'foo': 'bar'});
+          feature.setGeometryName('mygeom');
+          feature.setGeometry(new ol.geom.Point([5, 10]));
+          var geojson = format.writeFeatures([feature]);
+          expect(geojson.features[0].properties.mygeom).to.eql(undefined);
+        });
+
   });
 
   describe('#writeGeometry', function() {
