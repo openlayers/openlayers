@@ -30,8 +30,8 @@ ol.style.AtlasManagerInfo;
  * atlas. After that, when new atlases are created, they will have
  * twice the size as the latest atlas (until `maxSize` is reached).
  *
- * If an application uses a lot, or a lot of large images, it is recommended to
- * set a higher `size` value to avoid the creation of too many atlases.
+ * If an application uses many images or very large images, it is recommended
+ * to set a higher `size` value to avoid the creation of too many atlases.
  *
  * @constructor
  * @struct
