@@ -100,8 +100,8 @@ ol.format.GMLBase.prototype.readFeatures_ = function(node, objectStack) {
     var parsers = {};
     var parsersNS = {};
     parsers[featureType] = (localName == 'featureMembers') ?
-        ol.xml.makeArrayPusher(this.readFeature_, this) :
-        ol.xml.makeReplacer(this.readFeature_, this);
+        ol.xml.makeArrayPusher(this.readFeatureElement, this) :
+        ol.xml.makeReplacer(this.readFeatureElement, this);
     parsersNS[goog.object.get(context, 'featureNS')] = parsers;
     features = ol.xml.pushParseAndPop([], parsersNS, node, objectStack);
   }
@@ -150,9 +150,8 @@ ol.format.GMLBase.prototype.readGeometryElement = function(node, objectStack) {
  * @param {Node} node Node.
  * @param {Array.<*>} objectStack Object stack.
  * @return {ol.Feature} Feature.
- * @private
  */
-ol.format.GMLBase.prototype.readFeature_ = function(node, objectStack) {
+ol.format.GMLBase.prototype.readFeatureElement = function(node, objectStack) {
   var n;
   var fid = node.getAttribute('fid') ||
       ol.xml.getAttributeNS(node, 'http://www.opengis.net/gml', 'id');

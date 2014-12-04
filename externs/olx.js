@@ -3569,7 +3569,11 @@ olx.source.TileImageOptions.prototype.attributions;
 
 
 /**
- * crossOrigin setting for image requests. Default is `null`.
+ * The `crossOrigin` attribute for loaded images.  Note that you must provide a
+ * `crossOrigin` value if you are using the WebGL renderer or if you want to
+ * access pixel data with the Canvas renderer.  See
+ * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/CORS_enabled_image}
+ * for more detail.
  * @type {null|string|undefined}
  * @api
  */
@@ -4120,7 +4124,13 @@ olx.source.OSMOptions.prototype.attributions;
 
 
 /**
- * crossOrigin setting for image requests. Default is `anonymous`.
+ * The `crossOrigin` attribute for loaded images.  Note that you must provide a
+ * `crossOrigin` value if you are using the WebGL renderer or if you want to
+ * access pixel data with the Canvas renderer.  See
+ * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/CORS_enabled_image}
+ * for more detail.
+ *
+ * Default is `anonymous`.
  * @type {null|string|undefined}
  * @api stable
  */
@@ -4406,7 +4416,11 @@ olx.source.ImageWMSOptions.prototype.attributions;
 
 
 /**
- * crossOrigin setting for image requests.
+ * The `crossOrigin` attribute for loaded images.  Note that you must provide a
+ * `crossOrigin` value if you are using the WebGL renderer or if you want to
+ * access pixel data with the Canvas renderer.  See
+ * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/CORS_enabled_image}
+ * for more detail.
  * @type {null|string|undefined}
  * @api stable
  */
@@ -4573,7 +4587,11 @@ olx.source.ImageStaticOptions.prototype.attributions;
 
 
 /**
- * crossOrigin setting for image requests.
+ * The `crossOrigin` attribute for loaded images.  Note that you must provide a
+ * `crossOrigin` value if you are using the WebGL renderer or if you want to
+ * access pixel data with the Canvas renderer.  See
+ * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/CORS_enabled_image}
+ * for more detail.
  * @type {null|string|undefined}
  * @api stable
  */
@@ -4581,7 +4599,8 @@ olx.source.ImageStaticOptions.prototype.crossOrigin;
 
 
 /**
- * Extent of the image.
+ * Extent of the image in map coordinates.  This is the [left, bottom, right,
+ * top] map coordinates of your image.
  * @type {ol.Extent}
  * @api stable
  */
@@ -4589,7 +4608,7 @@ olx.source.ImageStaticOptions.prototype.imageExtent;
 
 
 /**
- * Size of the image.
+ * Size of the image in pixels.
  * @type {ol.Size|undefined}
  * @api stable
  */
@@ -4605,7 +4624,7 @@ olx.source.ImageStaticOptions.prototype.imageLoadFunction;
 
 
 /**
- * Logo.
+ * Optional logo.
  * @type {string|olx.LogoOptions|undefined}
  * @api stable
  */
@@ -4621,7 +4640,7 @@ olx.source.ImageStaticOptions.prototype.projection;
 
 
 /**
- * Url.
+ * Image URL.
  * @type {string}
  * @api stable
  */
@@ -4700,7 +4719,11 @@ olx.source.TileJSONOptions;
 
 
 /**
- * crossOrigin setting for image requests.
+ * The `crossOrigin` attribute for loaded images.  Note that you must provide a
+ * `crossOrigin` value if you are using the WebGL renderer or if you want to
+ * access pixel data with the Canvas renderer.  See
+ * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/CORS_enabled_image}
+ * for more detail.
  * @type {null|string|undefined}
  * @api stable
  */
@@ -4769,7 +4792,11 @@ olx.source.TileWMSOptions.prototype.params;
 
 
 /**
- * crossOrigin setting for image requests.
+ * The `crossOrigin` attribute for loaded images.  Note that you must provide a
+ * `crossOrigin` value if you are using the WebGL renderer or if you want to
+ * access pixel data with the Canvas renderer.  See
+ * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/CORS_enabled_image}
+ * for more detail.
  * @type {null|string|undefined}
  * @api stable
  */
@@ -5061,7 +5088,11 @@ olx.source.WMTSOptions.prototype.attributions;
 
 
 /**
- * crossOrigin setting for image requests.
+ * The `crossOrigin` attribute for loaded images.  Note that you must provide a
+ * `crossOrigin` value if you are using the WebGL renderer or if you want to
+ * access pixel data with the Canvas renderer.  See
+ * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/CORS_enabled_image}
+ * for more detail.
  * @type {string|null|undefined}
  * @api
  */
@@ -5229,7 +5260,11 @@ olx.source.XYZOptions.prototype.attributions;
 
 
 /**
- * Cross origin setting for image requests.
+ * The `crossOrigin` attribute for loaded images.  Note that you must provide a
+ * `crossOrigin` value if you are using the WebGL renderer or if you want to
+ * access pixel data with the Canvas renderer.  See
+ * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/CORS_enabled_image}
+ * for more detail.
  * @type {null|string|undefined}
  * @api stable
  */
@@ -5349,7 +5384,11 @@ olx.source.ZoomifyOptions.prototype.attributions;
 
 
 /**
- * Cross origin setting for image requests.
+ * The `crossOrigin` attribute for loaded images.  Note that you must provide a
+ * `crossOrigin` value if you are using the WebGL renderer or if you want to
+ * access pixel data with the Canvas renderer.  See
+ * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/CORS_enabled_image}
+ * for more detail.
  * @type {null|string|undefined}
  * @api stable
  */
@@ -5528,7 +5567,11 @@ olx.style.IconOptions.prototype.anchorYUnits;
 
 
 /**
- * crossOrigin setting for image.
+ * The `crossOrigin` attribute for loaded images.  Note that you must provide a
+ * `crossOrigin` value if you are using the WebGL renderer or if you want to
+ * access pixel data with the Canvas renderer.  See
+ * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/CORS_enabled_image}
+ * for more detail.
  * @type {null|string|undefined}
  * @api
  */
@@ -5621,11 +5664,13 @@ olx.style.IconOptions.prototype.src;
 
 
 /**
+ * Specify radius for regular polygons, or radius1 and radius2 for stars.
  * @typedef {{fill: (ol.style.Fill|undefined),
  *     points: number,
- *     radius: number,
- *     radius2: number,
- *     angle: number,
+ *     radius: (number|undefined),
+ *     radius1: (number|undefined),
+ *     radius2: (number|undefined),
+ *     angle: (number|undefined),
  *     snapToPixel: (boolean|undefined),
  *     stroke: (ol.style.Stroke|undefined),
  *     atlasManager: (ol.style.AtlasManager|undefined)}}
@@ -5652,18 +5697,24 @@ olx.style.RegularShapeOptions.prototype.points;
 
 
 /**
- * Shape radius.
- * @type {number}
+ * Radius of a regular polygon.
+ * @type {number|undefined}
  * @api
  */
 olx.style.RegularShapeOptions.prototype.radius;
 
 
 /**
- * Shape secondary radius for drawing stars. If radius 2 is equal to radius,
- * the regular shape will be a regular polygon instead of a star.
- * Default value is equal to radius.
- * @type {number}
+* Inner radius of a star.
+* @type {number|undefined}
+* @api
+*/
+olx.style.RegularShapeOptions.prototype.radius1;
+
+
+/**
+ * Outer radius of a star.
+ * @type {number|undefined}
  * @api
  */
 olx.style.RegularShapeOptions.prototype.radius2;
@@ -5673,7 +5724,7 @@ olx.style.RegularShapeOptions.prototype.radius2;
  * Shape's rotation in radians. A value of 0 will have one of the shape's point
  * facing up.
  * Default value is 0.
- * @type {number}
+ * @type {number|undefined}
  * @api
  */
 olx.style.RegularShapeOptions.prototype.angle;
@@ -6099,7 +6150,6 @@ olx.tilegrid.XYZOptions.prototype.tileSize;
 
 /**
  * @typedef {{resolutions: !Array.<number>}}
- * @api
  * @api
  */
 olx.tilegrid.ZoomifyOptions;

@@ -214,9 +214,13 @@ ol.layer.Group.prototype.getLayerStatesArray = function(opt_states) {
         layerState.maxResolution, ownLayerState.maxResolution);
     layerState.minResolution = Math.max(
         layerState.minResolution, ownLayerState.minResolution);
-    if (goog.isDef(ownLayerState.extent) && goog.isDef(layerState.extent)) {
-      layerState.extent = ol.extent.getIntersection(
-          layerState.extent, ownLayerState.extent);
+    if (goog.isDef(ownLayerState.extent)) {
+      if (goog.isDef(layerState.extent)) {
+        layerState.extent = ol.extent.getIntersection(
+            layerState.extent, ownLayerState.extent);
+      } else {
+        layerState.extent = ownLayerState.extent;
+      }
     }
   }
 

@@ -6,7 +6,6 @@ goog.require('goog.dom');
 goog.require('goog.dom.TagName');
 goog.require('goog.events');
 goog.require('goog.events.EventType');
-goog.require('goog.style');
 goog.require('ol.CoordinateFormatType');
 goog.require('ol.Object');
 goog.require('ol.Pixel');
@@ -162,9 +161,7 @@ goog.exportProperty(
  */
 ol.control.MousePosition.prototype.handleMouseMove = function(browserEvent) {
   var map = this.getMap();
-  var eventPosition = goog.style.getRelativePosition(
-      browserEvent, map.getViewport());
-  this.lastMouseMovePixel_ = [eventPosition.x, eventPosition.y];
+  this.lastMouseMovePixel_ = map.getEventPixel(browserEvent.getBrowserEvent());
   this.updateHTML_(this.lastMouseMovePixel_);
 };
 

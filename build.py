@@ -673,8 +673,11 @@ def host_examples(t):
     t.rm_rf('build/hosted/%(BRANCH)s/ol')
     t.makedirs('build/hosted/%(BRANCH)s/ol')
     t.cp_r('src/ol', 'build/hosted/%(BRANCH)s/ol/ol')
+    t.rm_rf('build/hosted/%(BRANCH)s/ol.ext')
+    t.cp_r('build/ol.ext', 'build/hosted/%(BRANCH)s/ol.ext')
     t.run('%(PYTHON)s', closure_lib_path + '/closure/bin/build/depswriter.py',
           '--root_with_prefix', 'src ../../../ol',
+          '--root_with_prefix', 'build/ol.ext ../../../ol.ext',
           '--root', 'build/hosted/%(BRANCH)s/closure-library/closure/goog',
           '--root_with_prefix', 'build/hosted/%(BRANCH)s/closure-library/'
           'third_party ../../third_party',

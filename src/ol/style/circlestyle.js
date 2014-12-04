@@ -4,6 +4,7 @@ goog.require('goog.asserts');
 goog.require('goog.dom');
 goog.require('goog.dom.TagName');
 goog.require('ol.color');
+goog.require('ol.has');
 goog.require('ol.render.canvas');
 goog.require('ol.structs.IHasChecksum');
 goog.require('ol.style.Fill');
@@ -243,7 +244,7 @@ ol.style.Circle.prototype.unlistenImageChange = goog.nullFunction;
 
 /**
  * @typedef {{strokeStyle: (string|undefined), strokeWidth: number,
- *   size: number}}
+ *   size: number, lineDash: Array.<number>}}
  */
 ol.style.Circle.RenderOptions;
 
@@ -253,7 +254,10 @@ ol.style.Circle.RenderOptions;
  * @param {ol.style.AtlasManager|undefined} atlasManager
  */
 ol.style.Circle.prototype.render_ = function(atlasManager) {
-  var strokeStyle, strokeWidth = 0, imageSize;
+  var imageSize;
+  var lineDash = null;
+  var strokeStyle;
+  var strokeWidth = 0;
 
   if (!goog.isNull(this.stroke_)) {
     strokeStyle = ol.color.asString(this.stroke_.getColor());
@@ -261,7 +265,12 @@ ol.style.Circle.prototype.render_ = function(atlasManager) {
     if (!goog.isDef(strokeWidth)) {
       strokeWidth = ol.render.canvas.defaultLineWidth;
     }
+    lineDash = this.stroke_.getLineDash();
+    if (!ol.has.CANVAS_LINE_DASH) {
+      lineDash = null;
+    }
   }
+
 
   var size = 2 * (this.radius_ + strokeWidth) + 1;
 
@@ -269,7 +278,8 @@ ol.style.Circle.prototype.render_ = function(atlasManager) {
   var renderOptions = {
     strokeStyle: strokeStyle,
     strokeWidth: strokeWidth,
-    size: size
+    size: size,
+    lineDash: lineDash
   };
 
   if (!goog.isDef(atlasManager)) {
@@ -355,6 +365,9 @@ ol.style.Circle.prototype.draw_ = function(renderOptions, context, x, y) {
   if (!goog.isNull(this.stroke_)) {
     context.strokeStyle = renderOptions.strokeStyle;
     context.lineWidth = renderOptions.strokeWidth;
+    if (!goog.isNull(renderOptions.lineDash)) {
+      context.setLineDash(renderOptions.lineDash);
+    }
     context.stroke();
   }
   context.closePath();
@@ -412,6 +425,9 @@ ol.style.Circle.prototype.drawHitDetectionCanvas_ =
   if (!goog.isNull(this.stroke_)) {
     context.strokeStyle = renderOptions.strokeStyle;
     context.lineWidth = renderOptions.strokeWidth;
+    if (!goog.isNull(renderOptions.lineDash)) {
+      context.setLineDash(renderOptions.lineDash);
+    }
     context.stroke();
   }
   context.closePath();

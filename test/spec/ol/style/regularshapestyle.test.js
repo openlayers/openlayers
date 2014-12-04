@@ -1,9 +1,42 @@
 goog.provide('ol.test.style.RegularShape');
 
-
 describe('ol.style.RegularShape', function() {
 
   describe('#constructor', function() {
+
+    it('can use radius', function() {
+      var style = new ol.style.RegularShape({
+        radius: 5,
+        radius2: 10
+      });
+      expect(style.getRadius()).to.eql(5);
+      expect(style.getRadius2()).to.eql(10);
+    });
+
+    it('can use radius1 as an alias for radius', function() {
+      var style = new ol.style.RegularShape({
+        radius1: 5,
+        radius2: 10
+      });
+      expect(style.getRadius()).to.eql(5);
+      expect(style.getRadius2()).to.eql(10);
+    });
+
+    it('will use radius for radius2 if radius2 not defined', function() {
+      var style = new ol.style.RegularShape({
+        radius: 5
+      });
+      expect(style.getRadius()).to.eql(5);
+      expect(style.getRadius2()).to.eql(5);
+    });
+
+    it('will use radius1 for radius2 if radius2 not defined', function() {
+      var style = new ol.style.RegularShape({
+        radius1: 5
+      });
+      expect(style.getRadius()).to.eql(5);
+      expect(style.getRadius2()).to.eql(5);
+    });
 
     it('creates a canvas if no atlas is used (no fill-style)', function() {
       var style = new ol.style.RegularShape({radius: 10});
@@ -79,18 +112,26 @@ describe('ol.style.RegularShape', function() {
 
   describe('#getChecksum', function() {
 
-    it('calculates the same hash code for default options', function() {
-      var style1 = new ol.style.RegularShape();
-      var style2 = new ol.style.RegularShape();
-      expect(style1.getChecksum()).to.eql(style2.getChecksum());
-    });
-
     it('calculates not the same hash code (radius)', function() {
       var style1 = new ol.style.RegularShape({
+        radius: 4,
         radius2: 5
       });
       var style2 = new ol.style.RegularShape({
-        radius: 5
+        radius: 3,
+        radius2: 5
+      });
+      expect(style1.getChecksum()).to.not.eql(style2.getChecksum());
+    });
+
+    it('calculates not the same hash code (radius2)', function() {
+      var style1 = new ol.style.RegularShape({
+        radius: 4,
+        radius2: 5
+      });
+      var style2 = new ol.style.RegularShape({
+        radius: 4,
+        radius2: 6
       });
       expect(style1.getChecksum()).to.not.eql(style2.getChecksum());
     });

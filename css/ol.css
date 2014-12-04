@@ -99,7 +99,6 @@
 }
 .ol-compass {
   display: block;
-  font-family: Arial;
   font-weight: normal;
   font-size: 1.2em;
 }
@@ -220,12 +219,6 @@ button.ol-full-screen-true:after {
 }
 .ol-touch .ol-zoomslider-thumb {
   width: 1.8em;
-}
-
-.ol-control button,
-.ol-attribution,
-.ol-scale-line-inner {
-  font-family: 'Lucida Grande',Verdana,Geneva,Lucida,Arial,Helvetica,sans-serif;
 }
 
 .ol-overviewmap {

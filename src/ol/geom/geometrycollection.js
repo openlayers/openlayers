@@ -265,6 +265,7 @@ ol.geom.GeometryCollection.prototype.setGeometriesArray = function(geometries) {
 
 /**
  * @inheritDoc
+ * @api stable
  */
 ol.geom.GeometryCollection.prototype.applyTransform = function(transformFn) {
   var geometries = this.geometries_;

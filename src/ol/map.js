@@ -265,7 +265,7 @@ ol.Map = function(options) {
     goog.events.EventType.TOUCHSTART,
     goog.events.EventType.MSPOINTERDOWN,
     ol.MapBrowserEvent.EventType.POINTERDOWN,
-    goog.events.EventType.MOUSEWHEEL
+    goog.userAgent.GECKO ? 'DOMMouseScroll' : 'mousewheel'
   ], goog.events.Event.stopPropagation);
   goog.dom.appendChild(this.viewport_, this.overlayContainerStopEvent_);
 
@@ -592,18 +592,25 @@ ol.Map.prototype.getEventCoordinate = function(event) {
 
 
 /**
- * Returns the map pixel position for a browser event.
+ * Returns the map pixel position for a browser event relative to the viewport.
  * @param {Event} event Event.
  * @return {ol.Pixel} Pixel.
  * @api stable
  */
 ol.Map.prototype.getEventPixel = function(event) {
-  // goog.style.getRelativePosition is based on event.targetTouches,
-  // but touchend and touchcancel events have no targetTouches when
-  // the last finger is removed from the screen.
-  // So we ourselves compute the position of touch events.
-  // See https://github.com/google/closure-library/pull/323
-  if (goog.isDef(event.changedTouches)) {
+  // Use the offsetX and offsetY values if available.
+  // See http://www.w3.org/TR/cssom-view/#dom-mouseevent-offsetx and
+  // http://www.w3.org/TR/cssom-view/#dom-mouseevent-offsety
+  if (goog.isDef(event.offsetX) && goog.isDef(event.offsetY)) {
+    return [event.offsetX, event.offsetY];
+  } else if (goog.isDef(event.changedTouches)) {
+    // offsetX and offsetY are not defined for Touch Event
+    //
+    // goog.style.getRelativePosition is based on event.targetTouches,
+    // but touchend and touchcancel events have no targetTouches when
+    // the last finger is removed from the screen.
+    // So we ourselves compute the position of touch events.
+    // See https://github.com/google/closure-library/pull/323
     var touch = event.changedTouches[0];
     var viewportPosition = goog.style.getClientPosition(this.viewport_);
     return [
@@ -611,6 +618,8 @@ ol.Map.prototype.getEventPixel = function(event) {
       touch.clientY - viewportPosition.y
     ];
   } else {
+    // Compute offsetX and offsetY values for browsers that don't implement
+    // cssom-view specification
     var eventPosition = goog.style.getRelativePosition(event, this.viewport_);
     return [eventPosition.x, eventPosition.y];
   }

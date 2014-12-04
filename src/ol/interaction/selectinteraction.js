@@ -154,7 +154,7 @@ ol.interaction.Select.prototype.handleMapBrowserEvent =
     }
   } else {
     // Modify the currently selected feature(s).
-    var /** @type {Array.<number>} */ deselected = [];
+    var /** @type {Array.<ol.Feature>} */ deselected = [];
     var /** @type {Array.<ol.Feature>} */ selected = [];
     map.forEachFeatureAtPixel(mapBrowserEvent.pixel,
         /**
@@ -169,17 +169,17 @@ ol.interaction.Select.prototype.handleMapBrowserEvent =
             }
           } else {
             if (remove || toggle) {
-              deselected.push(index);
+              deselected.push(feature);
             }
           }
         }, undefined, this.layerFilter_);
     var i;
     for (i = deselected.length - 1; i >= 0; --i) {
-      features.removeAt(deselected[i]);
+      features.remove(deselected[i]);
     }
     features.extend(selected);
   }
-  return false;
+  return this.condition_ == ol.events.condition.mouseMove;
 };
 
 
