@@ -87,7 +87,11 @@ ol.interaction.DragPan.handleDragEvent_ = function(mapBrowserEvent) {
     ol.coordinate.scale(center, viewState.resolution);
     ol.coordinate.rotate(center, viewState.rotation);
     ol.coordinate.add(center, viewState.center);
-    center = view.constrainCenter(center, view.getResolution());
+    if (this.targetPointers.length == 1) {
+      // the map goes crazy when constraining the center while pinching,
+      // so we do not constrain the center multiple pointers are detected
+      center = view.constrainCenter(center, viewState.resolution);
+    }
     map.render();
     view.setCenter(center);
   }
