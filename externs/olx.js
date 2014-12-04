@@ -6254,7 +6254,7 @@ olx.ViewState.prototype.rotation;
 
 
 /**
- * @typedef {{size: (number|undefined),
+ * @typedef {{initialSize: (number|undefined),
  *     maxSize: (number|undefined),
  *     space: (number|undefined)}}
  * @api
@@ -6267,7 +6267,7 @@ olx.style.AtlasManagerOptions;
  * @type {number|undefined}
  * @api
  */
-olx.style.AtlasManagerOptions.prototype.size;
+olx.style.AtlasManagerOptions.prototype.initialSize;
 
 
 /**

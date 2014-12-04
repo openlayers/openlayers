@@ -39,7 +39,7 @@ describe('ol.style.Circle', function() {
     });
 
     it('adds itself to an atlas manager (no fill-style)', function() {
-      var atlasManager = new ol.style.AtlasManager({size: 512});
+      var atlasManager = new ol.style.AtlasManager({initialSize: 512});
       var style = new ol.style.Circle({radius: 10, atlasManager: atlasManager});
       expect(style.getImage()).to.be.an(HTMLCanvasElement);
       expect(style.getSize()).to.eql([21, 21]);
@@ -54,7 +54,7 @@ describe('ol.style.Circle', function() {
     });
 
     it('adds itself to an atlas manager (fill-style)', function() {
-      var atlasManager = new ol.style.AtlasManager({size: 512});
+      var atlasManager = new ol.style.AtlasManager({initialSize: 512});
       var style = new ol.style.Circle({
         radius: 10,
         atlasManager: atlasManager,

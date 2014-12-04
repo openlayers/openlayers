@@ -39,7 +39,7 @@ describe('ol.style.RegularShape', function() {
     });
 
     it('adds itself to an atlas manager (no fill-style)', function() {
-      var atlasManager = new ol.style.AtlasManager({size: 512});
+      var atlasManager = new ol.style.AtlasManager({initialSize: 512});
       var style = new ol.style.RegularShape(
           {radius: 10, atlasManager: atlasManager});
       expect(style.getImage()).to.be.an(HTMLCanvasElement);
@@ -55,7 +55,7 @@ describe('ol.style.RegularShape', function() {
     });
 
     it('adds itself to an atlas manager (fill-style)', function() {
-      var atlasManager = new ol.style.AtlasManager({size: 512});
+      var atlasManager = new ol.style.AtlasManager({initialSize: 512});
       var style = new ol.style.RegularShape({
         radius: 10,
         atlasManager: atlasManager,

@@ -47,7 +47,8 @@ ol.style.AtlasManager = function(opt_options) {
    * @private
    * @type {number}
    */
-  this.currentSize_ = goog.isDef(options.size) ? options.size : 256;
+  this.currentSize_ = goog.isDef(options.initialSize) ?
+      options.initialSize : 256;
 
   /**
    * The maximum size in pixels of atlas images.

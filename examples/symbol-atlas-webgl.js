@@ -12,9 +12,9 @@ goog.require('ol.style.Stroke');
 goog.require('ol.style.Style');
 
 var atlasManager = new ol.style.AtlasManager({
-  // we increase the default size so that all symbols fit into
+  // we increase the initial size so that all symbols fit into
   // a single atlas image
-  size: 512
+  initialSize: 512
 });
 
 var symbolInfo = [{
