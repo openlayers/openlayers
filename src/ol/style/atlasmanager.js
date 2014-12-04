@@ -5,6 +5,7 @@ goog.require('goog.asserts');
 goog.require('goog.dom');
 goog.require('goog.dom.TagName');
 goog.require('goog.object');
+goog.require('ol');
 
 
 /**
@@ -48,15 +49,17 @@ ol.style.AtlasManager = function(opt_options) {
    * @type {number}
    */
   this.currentSize_ = goog.isDef(options.initialSize) ?
-      options.initialSize : 256;
+      options.initialSize : ol.INITIAL_ATLAS_SIZE;
 
   /**
    * The maximum size in pixels of atlas images.
    * @private
    * @type {number}
    */
-  this.maxSize_ = goog.isDef(options.maxSize) ? options.maxSize :
-      goog.isDef(ol.WEBGL_MAX_TEXTURE_SIZE) ? ol.WEBGL_MAX_TEXTURE_SIZE : 2048;
+  this.maxSize_ = goog.isDef(options.maxSize) ?
+      options.maxSize : ol.MAX_ATLAS_SIZE != -1 ?
+          ol.MAX_ATLAS_SIZE : goog.isDef(ol.WEBGL_MAX_TEXTURE_SIZE) ?
+              ol.WEBGL_MAX_TEXTURE_SIZE : 2048;
 
   /**
    * The size in pixels between images.

@@ -6263,7 +6263,8 @@ olx.style.AtlasManagerOptions;
 
 
 /**
- * The size in pixels of the first atlas image (default: 256).
+ * The size in pixels of the first atlas image. If no value is given the
+ * `ol.INITIAL_ATLAS_SIZE` compile-time constant will be used.
  * @type {number|undefined}
  * @api
  */
@@ -6271,9 +6272,11 @@ olx.style.AtlasManagerOptions.prototype.initialSize;
 
 
 /**
- * The maximum size in pixels of atlas images. If no value is given,
- * `ol.WEBGL_MAX_TEXTURE_SIZE` will be used (if WebGL is supported), otherwise
- * the default is 2048.
+ * The maximum size in pixels of atlas images. If no value is given then
+ * the `ol.MAX_ATLAS_SIZE` compile-time constant will be used. And if
+ * `ol.MAX_ATLAS_SIZE` is set to `-1` (the default) then
+ * `ol.WEBGL_MAX_TEXTURE_SIZE` will used if WebGL is supported. Otherwise
+ * 2048 is used.
  * @type {number|undefined}
  * @api
  */

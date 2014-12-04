@@ -153,6 +153,13 @@ ol.LEGACY_IE_SUPPORT = false;
 
 
 /**
+ * @define {number} The size in pixels of the first atlas image. Default is
+ * `256`.
+ */
+ol.INITIAL_ATLAS_SIZE = 256;
+
+
+/**
  * The page is loaded using HTTPS.
  * @const
  * @type {boolean}
@@ -173,6 +180,14 @@ ol.IS_LEGACY_IE = goog.userAgent.IE &&
  * @define {number} Keyboard pan duration.
  */
 ol.KEYBOARD_PAN_DURATION = 100;
+
+
+/**
+ * @define {number} The maximum size in pixels of atlas images. Default is
+ * `-1`, meaning it is not used (and `ol.ol.WEBGL_MAX_TEXTURE_SIZE` is
+ * used instead).
+ */
+ol.MAX_ATLAS_SIZE = -1;
 
 
 /**
