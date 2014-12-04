@@ -29,7 +29,7 @@ ol.style.Circle = function(opt_options) {
 
   /**
    * @private
-   * @type {Array.<ol.structs.Checksum>|null}
+   * @type {Array.<string>}
    */
   this.checksums_ = null;
 

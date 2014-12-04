@@ -26,9 +26,9 @@ ol.style.Fill = function(opt_options) {
 
   /**
    * @private
-   * @type {?ol.structs.Checksum}
+   * @type {string|undefined}
    */
-  this.checksum_ = null;
+  this.checksum_ = undefined;
 };
 
 
@@ -49,7 +49,7 @@ ol.style.Fill.prototype.getColor = function() {
  */
 ol.style.Fill.prototype.setColor = function(color) {
   this.color_ = color;
-  this.checksum_ = null;
+  this.checksum_ = undefined;
 };
 
 
@@ -57,7 +57,7 @@ ol.style.Fill.prototype.setColor = function(color) {
  * @inheritDoc
  */
 ol.style.Fill.prototype.getChecksum = function() {
-  if (goog.isNull(this.checksum_)) {
+  if (!goog.isDef(this.checksum_)) {
     this.checksum_ = 'f' + (!goog.isNull(this.color_) ?
         ol.color.asString(this.color_) : '-');
   }

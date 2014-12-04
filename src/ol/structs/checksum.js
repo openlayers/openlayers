@@ -1,12 +1,6 @@
 goog.provide('ol.structs.IHasChecksum');
 
 
-/**
- * @typedef {string}
- */
-ol.structs.Checksum;
-
-
 
 /**
  * @interface

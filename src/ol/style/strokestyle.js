@@ -61,9 +61,9 @@ ol.style.Stroke = function(opt_options) {
 
   /**
    * @private
-   * @type {?ol.structs.Checksum}
+   * @type {string|undefined}
    */
-  this.checksum_ = null;
+  this.checksum_ = undefined;
 };
 
 
@@ -129,7 +129,7 @@ ol.style.Stroke.prototype.getWidth = function() {
  */
 ol.style.Stroke.prototype.setColor = function(color) {
   this.color_ = color;
-  this.checksum_ = null;
+  this.checksum_ = undefined;
 };
 
 
@@ -141,7 +141,7 @@ ol.style.Stroke.prototype.setColor = function(color) {
  */
 ol.style.Stroke.prototype.setLineCap = function(lineCap) {
   this.lineCap_ = lineCap;
-  this.checksum_ = null;
+  this.checksum_ = undefined;
 };
 
 
@@ -153,7 +153,7 @@ ol.style.Stroke.prototype.setLineCap = function(lineCap) {
  */
 ol.style.Stroke.prototype.setLineDash = function(lineDash) {
   this.lineDash_ = lineDash;
-  this.checksum_ = null;
+  this.checksum_ = undefined;
 };
 
 
@@ -165,7 +165,7 @@ ol.style.Stroke.prototype.setLineDash = function(lineDash) {
  */
 ol.style.Stroke.prototype.setLineJoin = function(lineJoin) {
   this.lineJoin_ = lineJoin;
-  this.checksum_ = null;
+  this.checksum_ = undefined;
 };
 
 
@@ -177,7 +177,7 @@ ol.style.Stroke.prototype.setLineJoin = function(lineJoin) {
  */
 ol.style.Stroke.prototype.setMiterLimit = function(miterLimit) {
   this.miterLimit_ = miterLimit;
-  this.checksum_ = null;
+  this.checksum_ = undefined;
 };
 
 
@@ -189,7 +189,7 @@ ol.style.Stroke.prototype.setMiterLimit = function(miterLimit) {
  */
 ol.style.Stroke.prototype.setWidth = function(width) {
   this.width_ = width;
-  this.checksum_ = null;
+  this.checksum_ = undefined;
 };
 
 
@@ -197,7 +197,7 @@ ol.style.Stroke.prototype.setWidth = function(width) {
  * @inheritDoc
  */
 ol.style.Stroke.prototype.getChecksum = function() {
-  if (goog.isNull(this.checksum_)) {
+  if (!goog.isDef(this.checksum_)) {
     var raw = 's' +
         (!goog.isNull(this.color_) ?
             ol.color.asString(this.color_) : '-') + ',' +
