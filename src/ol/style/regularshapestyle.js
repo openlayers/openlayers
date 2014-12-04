@@ -20,14 +20,15 @@ goog.require('ol.style.Stroke');
  * `radius2` are provided.
  *
  * @constructor
- * @param {olx.style.RegularShapeOptions=} opt_options Options.
+ * @param {olx.style.RegularShapeOptions} options Options.
  * @extends {ol.style.Image}
  * @implements {ol.structs.IHasChecksum}
  * @api
  */
-ol.style.RegularShape = function(opt_options) {
+ol.style.RegularShape = function(options) {
 
-  var options = goog.isDef(opt_options) ? opt_options : {};
+  goog.asserts.assert(goog.isDef(options.radius) ||
+      goog.isDef(options.radius1));
 
   /**
    * @private
@@ -70,9 +71,6 @@ ol.style.RegularShape = function(opt_options) {
    * @type {number}
    */
   this.points_ = options.points;
-
-  goog.asserts.assert(goog.isDef(options.radius) ||
-      goog.isDef(options.radius1));
 
   /**
    * @private
