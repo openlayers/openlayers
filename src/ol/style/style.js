@@ -1,7 +1,9 @@
 goog.provide('ol.style.Style');
+goog.provide('ol.style.defaultGeometryFunction');
 
 goog.require('goog.asserts');
 goog.require('goog.functions');
+goog.require('ol.geom.Geometry');
 goog.require('ol.geom.GeometryType');
 goog.require('ol.style.Circle');
 goog.require('ol.style.Fill');
@@ -23,6 +25,18 @@ goog.require('ol.style.Stroke');
 ol.style.Style = function(opt_options) {
 
   var options = goog.isDef(opt_options) ? opt_options : {};
+
+  /**
+   * Function that is called with a feature and returns the geometry to render
+   * for this style.
+   * @private
+   * @type {!function(ol.Feature): ol.geom.Geometry}
+   */
+  this.geometryFunction_ = ol.style.defaultGeometryFunction;
+
+  if (goog.isDef(options.geometry)) {
+    this.setGeometry(options.geometry);
+  }
 
   /**
    * @private
@@ -54,6 +68,16 @@ ol.style.Style = function(opt_options) {
    */
   this.zIndex_ = options.zIndex;
 
+};
+
+
+/**
+ * @return {!function(ol.Feature): ol.geom.Geometry} Function that is called
+ * with a feature and returns the geometry to render instead of the feature's
+ * geometry.
+ */
+ol.style.Style.prototype.getGeometryFunction = function() {
+  return this.geometryFunction_;
 };
 
 
@@ -99,6 +123,32 @@ ol.style.Style.prototype.getText = function() {
  */
 ol.style.Style.prototype.getZIndex = function() {
   return this.zIndex_;
+};
+
+
+/**
+ * Set a geometry that is rendered instead of the feature's geometry.
+ *
+ * @param {string|ol.geom.Geometry|function(ol.Feature): ol.geom.Geometry} geometry
+ *     Feature property or geometry or function returning a geometry to render
+ *     for this style.
+ * @api
+ */
+ol.style.Style.prototype.setGeometry = function(geometry) {
+  if (goog.isFunction(geometry)) {
+    this.geometryFunction_ = geometry;
+  } else if (goog.isString(geometry)) {
+    this.geometryFunction_ = function(feature) {
+      return feature.get(geometry);
+    };
+  } else if (goog.isDef(geometry)) {
+    goog.asserts.assertInstanceof(geometry, ol.geom.Geometry);
+    this.geometryFunction_ = function() {
+      return geometry;
+    };
+  } else {
+    this.geometryFunction_ = ol.style.defaultGeometryFunction;
+  }
 };
 
 
@@ -263,4 +313,15 @@ ol.style.createDefaultEditingStyles = function() {
       );
 
   return styles;
+};
+
+
+/**
+ * @param {ol.Feature} feature Feature to get the geometry for.
+ * @return {ol.geom.Geometry} Geometry to render.
+ */
+ol.style.defaultGeometryFunction = function(feature) {
+  goog.asserts.assert(!goog.isNull(feature));
+  var geometry = feature.getGeometry();
+  return goog.isDef(geometry) ? geometry : null;
 };
