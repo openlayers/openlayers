@@ -195,14 +195,14 @@ ol.render.canvas.Replay.prototype.appendFlatCoordinates =
 /**
  * @protected
  * @param {ol.geom.Geometry} geometry Geometry.
- * @param {Object} data Opaque data object.
+ * @param {ol.Feature} feature Feature.
  */
-ol.render.canvas.Replay.prototype.beginGeometry = function(geometry, data) {
+ol.render.canvas.Replay.prototype.beginGeometry = function(geometry, feature) {
   this.beginGeometryInstruction1_ =
-      [ol.render.canvas.Instruction.BEGIN_GEOMETRY, geometry, data, 0];
+      [ol.render.canvas.Instruction.BEGIN_GEOMETRY, feature, 0];
   this.instructions.push(this.beginGeometryInstruction1_);
   this.beginGeometryInstruction2_ =
-      [ol.render.canvas.Instruction.BEGIN_GEOMETRY, geometry, data, 0];
+      [ol.render.canvas.Instruction.BEGIN_GEOMETRY, feature, 0];
   this.hitDetectionInstructions.push(this.beginGeometryInstruction2_);
 };
 
@@ -215,14 +215,13 @@ ol.render.canvas.Replay.prototype.beginGeometry = function(geometry, data) {
  * @param {number} viewRotation View rotation.
  * @param {Object} skippedFeaturesHash Ids of features to skip.
  * @param {Array.<*>} instructions Instructions array.
- * @param {function(ol.geom.Geometry, Object): T|undefined} geometryCallback
- *     Geometry callback.
+ * @param {function(ol.Feature): T|undefined} featureCallback Feature callback.
  * @return {T|undefined} Callback result.
  * @template T
  */
 ol.render.canvas.Replay.prototype.replay_ = function(
     context, pixelRatio, transform, viewRotation, skippedFeaturesHash,
-    instructions, geometryCallback) {
+    instructions, featureCallback) {
   /** @type {Array.<number>} */
   var pixelCoordinates;
   if (ol.vec.Mat4.equals2D(transform, this.renderedTransform_)) {
@@ -242,16 +241,15 @@ ol.render.canvas.Replay.prototype.replay_ = function(
   while (i < ii) {
     var instruction = instructions[i];
     var type = /** @type {ol.render.canvas.Instruction} */ (instruction[0]);
-    var data, fill, geometry, stroke, text, x, y;
+    var feature, fill, stroke, text, x, y;
     switch (type) {
       case ol.render.canvas.Instruction.BEGIN_GEOMETRY:
-        geometry = /** @type {ol.geom.Geometry} */ (instruction[1]);
-        data = /** @type {Object} */ (instruction[2]);
-        var dataUid = goog.getUid(data).toString();
-        if (!goog.isDef(goog.object.get(skippedFeaturesHash, dataUid))) {
+        feature = /** @type {ol.Feature} */ (instruction[1]);
+        var featureUid = goog.getUid(feature).toString();
+        if (!goog.isDef(goog.object.get(skippedFeaturesHash, featureUid))) {
           ++i;
         } else {
-          i = /** @type {number} */ (instruction[3]);
+          i = /** @type {number} */ (instruction[2]);
         }
         break;
       case ol.render.canvas.Instruction.BEGIN_PATH:
@@ -381,10 +379,9 @@ ol.render.canvas.Replay.prototype.replay_ = function(
         ++i;
         break;
       case ol.render.canvas.Instruction.END_GEOMETRY:
-        if (goog.isDef(geometryCallback)) {
-          geometry = /** @type {ol.geom.Geometry} */ (instruction[1]);
-          data = /** @type {Object} */ (instruction[2]);
-          var result = geometryCallback(geometry, data);
+        if (goog.isDef(featureCallback)) {
+          feature = /** @type {ol.Feature} */ (instruction[1]);
+          var result = featureCallback(feature);
           if (result) {
             return result;
           }
@@ -475,17 +472,16 @@ ol.render.canvas.Replay.prototype.replay = function(
  * @param {goog.vec.Mat4.Number} transform Transform.
  * @param {number} viewRotation View rotation.
  * @param {Object} skippedFeaturesHash Ids of features to skip
- * @param {function(ol.geom.Geometry, Object): T=} opt_geometryCallback
- *     Geometry callback.
+ * @param {function(ol.Feature): T=} opt_featureCallback Feature callback.
  * @return {T|undefined} Callback result.
  * @template T
  */
 ol.render.canvas.Replay.prototype.replayHitDetection = function(
     context, transform, viewRotation, skippedFeaturesHash,
-    opt_geometryCallback) {
+    opt_featureCallback) {
   var instructions = this.hitDetectionInstructions;
   return this.replay_(context, 1, transform, viewRotation,
-      skippedFeaturesHash, instructions, opt_geometryCallback);
+      skippedFeaturesHash, instructions, opt_featureCallback);
 };
 
 
@@ -510,7 +506,7 @@ ol.render.canvas.Replay.prototype.reverseHitDetectionInstructions_ =
       goog.asserts.assert(begin == -1);
       begin = i;
     } else if (type == ol.render.canvas.Instruction.BEGIN_GEOMETRY) {
-      instruction[3] = i;
+      instruction[2] = i;
       goog.asserts.assert(begin >= 0);
       ol.array.reverseSubArray(this.hitDetectionInstructions, begin, i);
       begin = -1;
@@ -590,17 +586,17 @@ ol.render.canvas.Replay.prototype.drawText = goog.abstractMethod;
 
 /**
  * @param {ol.geom.Geometry} geometry Geometry.
- * @param {Object} data Opaque data object.
+ * @param {ol.Feature} feature Feature.
  */
-ol.render.canvas.Replay.prototype.endGeometry = function(geometry, data) {
+ol.render.canvas.Replay.prototype.endGeometry = function(geometry, feature) {
   goog.asserts.assert(!goog.isNull(this.beginGeometryInstruction1_));
-  this.beginGeometryInstruction1_[3] = this.instructions.length;
+  this.beginGeometryInstruction1_[2] = this.instructions.length;
   this.beginGeometryInstruction1_ = null;
   goog.asserts.assert(!goog.isNull(this.beginGeometryInstruction2_));
-  this.beginGeometryInstruction2_[3] = this.hitDetectionInstructions.length;
+  this.beginGeometryInstruction2_[2] = this.hitDetectionInstructions.length;
   this.beginGeometryInstruction2_ = null;
   var endGeometryInstruction =
-      [ol.render.canvas.Instruction.END_GEOMETRY, geometry, data];
+      [ol.render.canvas.Instruction.END_GEOMETRY, feature];
   this.instructions.push(endGeometryInstruction);
   this.hitDetectionInstructions.push(endGeometryInstruction);
 };
@@ -765,7 +761,7 @@ ol.render.canvas.ImageReplay.prototype.drawCoordinates_ =
  * @inheritDoc
  */
 ol.render.canvas.ImageReplay.prototype.drawPointGeometry =
-    function(pointGeometry, data) {
+    function(pointGeometry, feature) {
   if (goog.isNull(this.image_)) {
     return;
   }
@@ -780,7 +776,7 @@ ol.render.canvas.ImageReplay.prototype.drawPointGeometry =
   goog.asserts.assert(goog.isDef(this.scale_));
   goog.asserts.assert(goog.isDef(this.width_));
   ol.extent.extend(this.extent_, pointGeometry.getExtent());
-  this.beginGeometry(pointGeometry, data);
+  this.beginGeometry(pointGeometry, feature);
   var flatCoordinates = pointGeometry.getFlatCoordinates();
   var stride = pointGeometry.getStride();
   var myBegin = this.coordinates.length;
@@ -801,7 +797,7 @@ ol.render.canvas.ImageReplay.prototype.drawPointGeometry =
     this.originX_, this.originY_, this.rotateWithView_, this.rotation_,
     this.scale_, this.snapToPixel_, this.width_
   ]);
-  this.endGeometry(pointGeometry, data);
+  this.endGeometry(pointGeometry, feature);
 };
 
 
@@ -809,7 +805,7 @@ ol.render.canvas.ImageReplay.prototype.drawPointGeometry =
  * @inheritDoc
  */
 ol.render.canvas.ImageReplay.prototype.drawMultiPointGeometry =
-    function(multiPointGeometry, data) {
+    function(multiPointGeometry, feature) {
   if (goog.isNull(this.image_)) {
     return;
   }
@@ -824,7 +820,7 @@ ol.render.canvas.ImageReplay.prototype.drawMultiPointGeometry =
   goog.asserts.assert(goog.isDef(this.scale_));
   goog.asserts.assert(goog.isDef(this.width_));
   ol.extent.extend(this.extent_, multiPointGeometry.getExtent());
-  this.beginGeometry(multiPointGeometry, data);
+  this.beginGeometry(multiPointGeometry, feature);
   var flatCoordinates = multiPointGeometry.getFlatCoordinates();
   var stride = multiPointGeometry.getStride();
   var myBegin = this.coordinates.length;
@@ -845,7 +841,7 @@ ol.render.canvas.ImageReplay.prototype.drawMultiPointGeometry =
     this.originX_, this.originY_, this.rotateWithView_, this.rotation_,
     this.scale_, this.snapToPixel_, this.width_
   ]);
-  this.endGeometry(multiPointGeometry, data);
+  this.endGeometry(multiPointGeometry, feature);
 };
 
 
@@ -1032,7 +1028,7 @@ ol.render.canvas.LineStringReplay.prototype.setStrokeStyle_ = function() {
  * @inheritDoc
  */
 ol.render.canvas.LineStringReplay.prototype.drawLineStringGeometry =
-    function(lineStringGeometry, data) {
+    function(lineStringGeometry, feature) {
   var state = this.state_;
   goog.asserts.assert(!goog.isNull(state));
   var strokeStyle = state.strokeStyle;
@@ -1042,7 +1038,7 @@ ol.render.canvas.LineStringReplay.prototype.drawLineStringGeometry =
   }
   ol.extent.extend(this.extent_, lineStringGeometry.getExtent());
   this.setStrokeStyle_();
-  this.beginGeometry(lineStringGeometry, data);
+  this.beginGeometry(lineStringGeometry, feature);
   this.hitDetectionInstructions.push(
       [ol.render.canvas.Instruction.SET_STROKE_STYLE,
        state.strokeStyle, state.lineWidth, state.lineCap, state.lineJoin,
@@ -1053,7 +1049,7 @@ ol.render.canvas.LineStringReplay.prototype.drawLineStringGeometry =
   this.drawFlatCoordinates_(
       flatCoordinates, 0, flatCoordinates.length, stride);
   this.hitDetectionInstructions.push([ol.render.canvas.Instruction.STROKE]);
-  this.endGeometry(lineStringGeometry, data);
+  this.endGeometry(lineStringGeometry, feature);
 };
 
 
@@ -1061,7 +1057,7 @@ ol.render.canvas.LineStringReplay.prototype.drawLineStringGeometry =
  * @inheritDoc
  */
 ol.render.canvas.LineStringReplay.prototype.drawMultiLineStringGeometry =
-    function(multiLineStringGeometry, data) {
+    function(multiLineStringGeometry, feature) {
   var state = this.state_;
   goog.asserts.assert(!goog.isNull(state));
   var strokeStyle = state.strokeStyle;
@@ -1071,7 +1067,7 @@ ol.render.canvas.LineStringReplay.prototype.drawMultiLineStringGeometry =
   }
   ol.extent.extend(this.extent_, multiLineStringGeometry.getExtent());
   this.setStrokeStyle_();
-  this.beginGeometry(multiLineStringGeometry, data);
+  this.beginGeometry(multiLineStringGeometry, feature);
   this.hitDetectionInstructions.push(
       [ol.render.canvas.Instruction.SET_STROKE_STYLE,
        state.strokeStyle, state.lineWidth, state.lineCap, state.lineJoin,
@@ -1087,7 +1083,7 @@ ol.render.canvas.LineStringReplay.prototype.drawMultiLineStringGeometry =
         flatCoordinates, offset, ends[i], stride);
   }
   this.hitDetectionInstructions.push([ol.render.canvas.Instruction.STROKE]);
-  this.endGeometry(multiLineStringGeometry, data);
+  this.endGeometry(multiLineStringGeometry, feature);
 };
 
 
@@ -1236,7 +1232,7 @@ ol.render.canvas.PolygonReplay.prototype.drawFlatCoordinatess_ =
  * @inheritDoc
  */
 ol.render.canvas.PolygonReplay.prototype.drawCircleGeometry =
-    function(circleGeometry, data) {
+    function(circleGeometry, feature) {
   var state = this.state_;
   goog.asserts.assert(!goog.isNull(state));
   var fillStyle = state.fillStyle;
@@ -1249,7 +1245,7 @@ ol.render.canvas.PolygonReplay.prototype.drawCircleGeometry =
   }
   ol.extent.extend(this.extent_, circleGeometry.getExtent());
   this.setFillStrokeStyles_();
-  this.beginGeometry(circleGeometry, data);
+  this.beginGeometry(circleGeometry, feature);
   // always fill the circle for hit detection
   this.hitDetectionInstructions.push(
       [ol.render.canvas.Instruction.SET_FILL_STYLE,
@@ -1280,7 +1276,7 @@ ol.render.canvas.PolygonReplay.prototype.drawCircleGeometry =
     this.instructions.push(strokeInstruction);
     this.hitDetectionInstructions.push(strokeInstruction);
   }
-  this.endGeometry(circleGeometry, data);
+  this.endGeometry(circleGeometry, feature);
 };
 
 
@@ -1288,7 +1284,7 @@ ol.render.canvas.PolygonReplay.prototype.drawCircleGeometry =
  * @inheritDoc
  */
 ol.render.canvas.PolygonReplay.prototype.drawPolygonGeometry =
-    function(polygonGeometry, data) {
+    function(polygonGeometry, feature) {
   var state = this.state_;
   goog.asserts.assert(!goog.isNull(state));
   var fillStyle = state.fillStyle;
@@ -1301,7 +1297,7 @@ ol.render.canvas.PolygonReplay.prototype.drawPolygonGeometry =
   }
   ol.extent.extend(this.extent_, polygonGeometry.getExtent());
   this.setFillStrokeStyles_();
-  this.beginGeometry(polygonGeometry, data);
+  this.beginGeometry(polygonGeometry, feature);
   // always fill the polygon for hit detection
   this.hitDetectionInstructions.push(
       [ol.render.canvas.Instruction.SET_FILL_STYLE,
@@ -1316,7 +1312,7 @@ ol.render.canvas.PolygonReplay.prototype.drawPolygonGeometry =
   var flatCoordinates = polygonGeometry.getOrientedFlatCoordinates();
   var stride = polygonGeometry.getStride();
   this.drawFlatCoordinatess_(flatCoordinates, 0, ends, stride);
-  this.endGeometry(polygonGeometry, data);
+  this.endGeometry(polygonGeometry, feature);
 };
 
 
@@ -1324,7 +1320,7 @@ ol.render.canvas.PolygonReplay.prototype.drawPolygonGeometry =
  * @inheritDoc
  */
 ol.render.canvas.PolygonReplay.prototype.drawMultiPolygonGeometry =
-    function(multiPolygonGeometry, data) {
+    function(multiPolygonGeometry, feature) {
   var state = this.state_;
   goog.asserts.assert(!goog.isNull(state));
   var fillStyle = state.fillStyle;
@@ -1337,7 +1333,7 @@ ol.render.canvas.PolygonReplay.prototype.drawMultiPolygonGeometry =
   }
   ol.extent.extend(this.extent_, multiPolygonGeometry.getExtent());
   this.setFillStrokeStyles_();
-  this.beginGeometry(multiPolygonGeometry, data);
+  this.beginGeometry(multiPolygonGeometry, feature);
   // always fill the multi-polygon for hit detection
   this.hitDetectionInstructions.push(
       [ol.render.canvas.Instruction.SET_FILL_STYLE,
@@ -1357,7 +1353,7 @@ ol.render.canvas.PolygonReplay.prototype.drawMultiPolygonGeometry =
     offset = this.drawFlatCoordinatess_(
         flatCoordinates, offset, endss[i], stride);
   }
-  this.endGeometry(multiPolygonGeometry, data);
+  this.endGeometry(multiPolygonGeometry, feature);
 };
 
 
@@ -1573,7 +1569,7 @@ goog.inherits(ol.render.canvas.TextReplay, ol.render.canvas.Replay);
  * @inheritDoc
  */
 ol.render.canvas.TextReplay.prototype.drawText =
-    function(flatCoordinates, offset, end, stride, geometry, data) {
+    function(flatCoordinates, offset, end, stride, geometry, feature) {
   if (this.text_ === '' ||
       goog.isNull(this.textState_) ||
       (goog.isNull(this.textFillState_) &&
@@ -1589,7 +1585,7 @@ ol.render.canvas.TextReplay.prototype.drawText =
     this.setReplayStrokeState_(this.textStrokeState_);
   }
   this.setReplayTextState_(this.textState_);
-  this.beginGeometry(geometry, data);
+  this.beginGeometry(geometry, feature);
   var myBegin = this.coordinates.length;
   var myEnd =
       this.appendFlatCoordinates(flatCoordinates, offset, end, stride, false);
@@ -1601,7 +1597,7 @@ ol.render.canvas.TextReplay.prototype.drawText =
     fill, stroke];
   this.instructions.push(drawTextInstruction);
   this.hitDetectionInstructions.push(drawTextInstruction);
-  this.endGeometry(geometry, data);
+  this.endGeometry(geometry, feature);
 };
 
 
@@ -1875,7 +1871,7 @@ ol.render.canvas.ReplayGroup.prototype.finish = function() {
  * @param {number} rotation Rotation.
  * @param {ol.Coordinate} coordinate Coordinate.
  * @param {Object} skippedFeaturesHash Ids of features to skip
- * @param {function(ol.geom.Geometry, Object): T} callback Geometry callback.
+ * @param {function(ol.Feature): T} callback Feature callback.
  * @return {T|undefined} Callback result.
  * @template T
  */
@@ -1894,14 +1890,13 @@ ol.render.canvas.ReplayGroup.prototype.forEachGeometryAtPixel = function(
   return this.replayHitDetection_(context, extent, transform,
       rotation, skippedFeaturesHash,
       /**
-       * @param {ol.geom.Geometry} geometry Geometry.
-       * @param {Object} data Opaque data object.
+       * @param {ol.Feature} feature Feature.
        * @return {?} Callback result.
        */
-      function(geometry, data) {
+      function(feature) {
         var imageData = context.getImageData(0, 0, 1, 1).data;
         if (imageData[3] > 0) {
-          var result = callback(geometry, data);
+          var result = callback(feature);
           if (result) {
             return result;
           }
@@ -1998,14 +1993,13 @@ ol.render.canvas.ReplayGroup.prototype.replay = function(
  * @param {goog.vec.Mat4.Number} transform Transform.
  * @param {number} viewRotation View rotation.
  * @param {Object} skippedFeaturesHash Ids of features to skip
- * @param {function(ol.geom.Geometry, Object): T} geometryCallback Geometry
- *     callback.
+ * @param {function(ol.Feature): T} featureCallback Feature callback.
  * @return {T|undefined} Callback result.
  * @template T
  */
 ol.render.canvas.ReplayGroup.prototype.replayHitDetection_ = function(
     context, extent, transform, viewRotation, skippedFeaturesHash,
-    geometryCallback) {
+    featureCallback) {
   /** @type {Array.<number>} */
   var zs = goog.array.map(goog.object.getKeys(this.replaysByZIndex_), Number);
   goog.array.sort(zs, function(a, b) { return b - a; });
@@ -2018,7 +2012,7 @@ ol.render.canvas.ReplayGroup.prototype.replayHitDetection_ = function(
       if (goog.isDef(replay) &&
           ol.extent.intersects(extent, replay.getExtent())) {
         result = replay.replayHitDetection(context, transform, viewRotation,
-            skippedFeaturesHash, geometryCallback);
+            skippedFeaturesHash, featureCallback);
         if (result) {
           return result;
         }
