@@ -93,11 +93,52 @@ ol.control.OverviewMap = function(opt_options) {
     this.blur();
   }, false);
 
-  var ovmapDiv = goog.dom.createDom(goog.dom.TagName.DIV, 'ol-overviewmap-map');
+  this.ovmapDiv_ = goog.dom.createDom(
+      goog.dom.TagName.DIV, 'ol-overviewmap-map'
+      );
 
-  this.usesParentProjection_ = !goog.isDef(options.projection);
-  var projection = this.usesParentProjection_ ?
-      'EPSG:3857' : options.projection;
+  if (goog.isDef(options.projection)) {
+    this.projection_ = options.projection;
+  } else {
+    this.usesParentProjection_ = true;
+  }
+
+  if (goog.isDef(options.layers_)) {
+    this.layers_ = options.layers;
+  }
+
+  // ol.Map is not initialized before we know the parent map.
+
+  var cssClasses = className + ' ' + ol.css.CLASS_UNSELECTABLE + ' ' +
+      ol.css.CLASS_CONTROL +
+      (this.collapsed_ && this.collapsible_ ? ' ol-collapsed' : '') +
+      (this.collapsible_ ? '' : ' ol-uncollapsible');
+  var element = goog.dom.createDom(goog.dom.TagName.DIV,
+      cssClasses, this.ovmapDiv_, button);
+
+  goog.base(this, {
+    element: element,
+    target: options.target
+  });
+};
+goog.inherits(ol.control.OverviewMap, ol.control.Control);
+
+
+/**
+ * This initializes the ol.Map object once all parameters are known.
+ * In particular, we wait for the control to be added to a base map.
+ * @private
+ */
+ol.control.OverviewMap.prototype.initMap_ = function() {
+
+  //this overview cannot be built without base map
+  goog.asserts.assertBoolean(goog.isDef(this.getMap()));
+
+  // if no projection parameter was specified, our view should use the same
+  // projection
+  if (this.usesParentProjection_) {
+    this.projection_ = this.getMap().getView().getProjection();
+  }
 
   /**
    * @type {ol.Map}
@@ -105,16 +146,16 @@ ol.control.OverviewMap = function(opt_options) {
    */
   this.ovmap_ = new ol.Map({
     view: new ol.View({
-      projection: projection
+      projection: this.projection_ || 'EPSG:3857'
     }),
     controls: new ol.Collection(),
     interactions: new ol.Collection(),
-    target: ovmapDiv
+    target: this.ovmapDiv_
   });
   var ovmap = this.ovmap_;
 
-  if (goog.isDef(options.layers)) {
-    options.layers.forEach(
+  if (goog.isDef(this.layers_)) {
+    this.layers_.forEach(
         /**
        * @param {ol.layer.Layer} layer Layer.
        */
@@ -135,20 +176,7 @@ ol.control.OverviewMap = function(opt_options) {
     element: box
   });
   this.ovmap_.addOverlay(this.boxOverlay_);
-
-  var cssClasses = className + ' ' + ol.css.CLASS_UNSELECTABLE + ' ' +
-      ol.css.CLASS_CONTROL +
-      (this.collapsed_ && this.collapsible_ ? ' ol-collapsed' : '') +
-      (this.collapsible_ ? '' : ' ol-uncollapsible');
-  var element = goog.dom.createDom(goog.dom.TagName.DIV,
-      cssClasses, ovmapDiv, button);
-
-  goog.base(this, {
-    element: element,
-    target: options.target
-  });
 };
-goog.inherits(ol.control.OverviewMap, ol.control.Control);
 
 
 /**
@@ -167,15 +195,15 @@ ol.control.OverviewMap.prototype.setMap = function(map) {
   goog.base(this, 'setMap', map);
 
   if (!goog.isNull(map)) {
+    this.initMap_();
+    // bind current map view, or any new one
+    this.bindView_();
 
     // if no layers were set for the overviewmap map, then bind with
     // those in the main map
     if (this.ovmap_.getLayers().getLength() === 0) {
       this.ovmap_.bindTo(ol.MapProperty.LAYERGROUP, map);
     }
-
-    // bind current map view, or any new one
-    this.bindView_();
 
     goog.events.listen(
         map, ol.Object.getChangeEventType(ol.MapProperty.VIEW),
@@ -201,13 +229,6 @@ ol.control.OverviewMap.prototype.bindView_ = function() {
     return;
   }
 
-  // if no projection parameter was specified, our view should use the same
-  // projection
-  if (this.usesParentProjection_) {
-    this.ovmap_.setView(new ol.View({
-      projection: view.getProjection()
-    }));
-  }
 
   // FIXME - the overviewmap view rotation currently follows the one used
   // by the main map view.  We could support box rotation instead.  The choice
