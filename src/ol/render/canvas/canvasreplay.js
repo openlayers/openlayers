@@ -461,13 +461,11 @@ ol.render.canvas.Replay.prototype.replay_ = function(
  * @param {goog.vec.Mat4.Number} transform Transform.
  * @param {number} viewRotation View rotation.
  * @param {Object} skippedFeaturesHash Ids of features to skip
- * @return {T|undefined} Callback result.
- * @template T
  */
 ol.render.canvas.Replay.prototype.replay = function(
     context, pixelRatio, transform, viewRotation, skippedFeaturesHash) {
   var instructions = this.instructions;
-  return this.replay_(context, pixelRatio, transform, viewRotation,
+  this.replay_(context, pixelRatio, transform, viewRotation,
       skippedFeaturesHash, instructions, undefined);
 };
 
@@ -1863,15 +1861,13 @@ ol.render.canvas.ReplayGroup = function(tolerance, maxExtent, resolution) {
  * @param {goog.vec.Mat4.Number} transform Transform.
  * @param {number} viewRotation View rotation.
  * @param {Object} skippedFeaturesHash Ids of features to skip
- * @return {T|undefined} Callback result.
- * @template T
  */
 ol.render.canvas.ReplayGroup.prototype.replay = function(context, extent,
     pixelRatio, transform, viewRotation, skippedFeaturesHash) {
   /** @type {Array.<number>} */
   var zs = goog.array.map(goog.object.getKeys(this.replaysByZIndex_), Number);
   goog.array.sort(zs);
-  return this.replay_(zs, context, extent, pixelRatio, transform,
+  this.replay_(zs, context, extent, pixelRatio, transform,
       viewRotation, skippedFeaturesHash);
 };
 
@@ -1920,8 +1916,6 @@ ol.render.canvas.ReplayGroup.prototype.replayHitDetection_ = function(
  * @param {goog.vec.Mat4.Number} transform Transform.
  * @param {number} viewRotation View rotation.
  * @param {Object} skippedFeaturesHash Ids of features to skip
- * @return {T|undefined} Callback result.
- * @template T
  */
 ol.render.canvas.ReplayGroup.prototype.replay_ = function(
     zs, context, extent, pixelRatio, transform, viewRotation,
@@ -1951,17 +1945,13 @@ ol.render.canvas.ReplayGroup.prototype.replay_ = function(
       replay = replays[ol.render.REPLAY_ORDER[j]];
       if (goog.isDef(replay) &&
           ol.extent.intersects(extent, replay.getExtent())) {
-        result = replay.replay(context, pixelRatio, transform, viewRotation,
+        replay.replay(context, pixelRatio, transform, viewRotation,
             skippedFeaturesHash);
-        if (result) {
-          return result;
-        }
       }
     }
   }
 
   context.restore();
-  return undefined;
 };
 
 
