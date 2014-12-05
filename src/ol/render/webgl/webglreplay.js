@@ -382,7 +382,7 @@ ol.render.webgl.ImageReplay.prototype.drawMultiLineStringGeometry =
  * @inheritDoc
  */
 ol.render.webgl.ImageReplay.prototype.drawMultiPointGeometry =
-    function(multiPointGeometry, data) {
+    function(multiPointGeometry, feature) {
   ol.extent.extend(this.extent_, multiPointGeometry.getExtent());
   var flatCoordinates = multiPointGeometry.getFlatCoordinates();
   var stride = multiPointGeometry.getStride();
@@ -402,7 +402,7 @@ ol.render.webgl.ImageReplay.prototype.drawMultiPolygonGeometry =
  * @inheritDoc
  */
 ol.render.webgl.ImageReplay.prototype.drawPointGeometry =
-    function(pointGeometry, data) {
+    function(pointGeometry, feature) {
   ol.extent.extend(this.extent_, pointGeometry.getExtent());
   var flatCoordinates = pointGeometry.getFlatCoordinates();
   var stride = pointGeometry.getStride();

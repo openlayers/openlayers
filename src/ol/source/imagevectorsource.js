@@ -163,12 +163,10 @@ ol.source.ImageVector.prototype.forEachFeatureAtPixel = function(
     return this.replayGroup_.forEachGeometryAtPixel(
         extent, resolution, 0, coordinate, skippedFeatureUids,
         /**
-         * @param {ol.geom.Geometry} geometry Geometry.
-         * @param {Object} data Data.
+         * @param {ol.Feature} feature Feature.
          * @return {?} Callback result.
          */
-        function(geometry, data) {
-          var feature = /** @type {ol.Feature} */ (data);
+        function(feature) {
           goog.asserts.assert(goog.isDef(feature));
           var key = goog.getUid(feature).toString();
           if (!(key in features)) {
@@ -274,7 +272,7 @@ ol.source.ImageVector.prototype.renderFeature_ =
     loading = ol.renderer.vector.renderFeature(
         replayGroup, feature, styles[i],
         ol.renderer.vector.getSquaredTolerance(resolution, pixelRatio),
-        feature, this.handleImageChange_, this) || loading;
+        this.handleImageChange_, this) || loading;
   }
   return loading;
 };

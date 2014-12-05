@@ -234,7 +234,7 @@ ol.renderer.webgl.VectorLayer.prototype.renderFeature =
     loading = ol.renderer.vector.renderFeature(
         replayGroup, feature, styles[i],
         ol.renderer.vector.getSquaredTolerance(resolution, pixelRatio),
-        feature, this.handleImageChange_, this) || loading;
+        this.handleImageChange_, this) || loading;
   }
   return loading;
 };
