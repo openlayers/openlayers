@@ -39,8 +39,10 @@ map.on('pointermove', function(evt) {
         //  load the mustache.js library separately and call
         //  info.innerHTML = Mustache.render(gridSource.getTemplate(), data);
         mapElement.style.cursor = data ? 'pointer' : '';
+        /* jshint -W069 */
         flag.src = data ? 'data:image/png;base64,' + data['flag_png'] : '';
         flag.style.visibility = data ? 'visible' : 'hidden';
         admin_name.innerHTML = data ? data['admin'] : '&nbsp;';
+        /* jshint +W069 */
       });
 });
