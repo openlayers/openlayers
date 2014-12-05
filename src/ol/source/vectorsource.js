@@ -37,7 +37,14 @@ ol.source.VectorEventType = {
   CHANGEFEATURE: 'changefeature',
 
   /**
-   * Triggered when a feature is removed from the source.
+   * Triggered when a clear is called on the source.
+   * @event ol.source.VectorEvent#clear
+   * @api
+   */
+  CLEAR: 'clear',
+
+  /**
+   * Triggered when a single feature is removed from the source.
    * @event ol.source.VectorEvent#removefeature
    * @api stable
    */
@@ -230,12 +237,18 @@ ol.source.Vector.prototype.addFeaturesInternal = function(features) {
  * @api stable
  */
 ol.source.Vector.prototype.clear = function() {
-  this.rBush_.forEach(this.removeFeatureInternal, this);
+  for (var featureId in this.featureChangeKeys_) {
+    var keys = this.featureChangeKeys_[featureId];
+    goog.array.forEach(keys, goog.events.unlistenByKey);
+  }
+  this.featureChangeKeys_ = {};
+  this.idIndex_ = {};
+  this.undefIdIndex_ = {};
   this.rBush_.clear();
-  goog.object.forEach(
-      this.nullGeometryFeatures_, this.removeFeatureInternal, this);
-  goog.object.clear(this.nullGeometryFeatures_);
-  goog.asserts.assert(goog.object.isEmpty(this.featureChangeKeys_));
+  this.nullGeometryFeatures_ = {};
+
+  var clearEvent = new ol.source.VectorEvent(ol.source.VectorEventType.CLEAR);
+  this.dispatchEvent(clearEvent);
   this.changed();
 };
 
