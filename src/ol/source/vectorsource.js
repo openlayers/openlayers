@@ -37,14 +37,15 @@ ol.source.VectorEventType = {
   CHANGEFEATURE: 'changefeature',
 
   /**
-   * Triggered when a clear is called on the source.
+   * Triggered when the clear method is called on the source.
    * @event ol.source.VectorEvent#clear
    * @api
    */
   CLEAR: 'clear',
 
   /**
-   * Triggered when a single feature is removed from the source.
+   * Triggered when a feature is removed from the source.
+   * See {@link ol.source.Vector#clear source.clear()} for exceptions.
    * @event ol.source.VectorEvent#removefeature
    * @api stable
    */
@@ -234,16 +235,27 @@ ol.source.Vector.prototype.addFeaturesInternal = function(features) {
 
 /**
  * Remove all features from the source.
+ * @param {boolean=} opt_fast Skip dispatching of {@link removefeature} events.
  * @api stable
  */
-ol.source.Vector.prototype.clear = function() {
-  for (var featureId in this.featureChangeKeys_) {
-    var keys = this.featureChangeKeys_[featureId];
-    goog.array.forEach(keys, goog.events.unlistenByKey);
+ol.source.Vector.prototype.clear = function(opt_fast) {
+  if (opt_fast) {
+    for (var featureId in this.featureChangeKeys_) {
+      var keys = this.featureChangeKeys_[featureId];
+      goog.array.forEach(keys, goog.events.unlistenByKey);
+    }
+    this.featureChangeKeys_ = {};
+    this.idIndex_ = {};
+    this.undefIdIndex_ = {};
+  } else {
+    var rmFeatureInternal = this.removeFeatureInternal;
+    this.rBush_.forEach(rmFeatureInternal, this);
+    goog.object.forEach(this.nullGeometryFeatures_, rmFeatureInternal, this);
+    goog.asserts.assert(goog.object.isEmpty(this.featureChangeKeys_));
+    goog.asserts.assert(goog.object.isEmpty(this.idIndex_));
+    goog.asserts.assert(goog.object.isEmpty(this.undefIdIndex_));
   }
-  this.featureChangeKeys_ = {};
-  this.idIndex_ = {};
-  this.undefIdIndex_ = {};
+
   this.rBush_.clear();
   this.nullGeometryFeatures_ = {};
 
