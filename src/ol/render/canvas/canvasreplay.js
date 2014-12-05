@@ -461,13 +461,11 @@ ol.render.canvas.Replay.prototype.replay_ = function(
  * @param {goog.vec.Mat4.Number} transform Transform.
  * @param {number} viewRotation View rotation.
  * @param {Object} skippedFeaturesHash Ids of features to skip
- * @return {T|undefined} Callback result.
- * @template T
  */
 ol.render.canvas.Replay.prototype.replay = function(
     context, pixelRatio, transform, viewRotation, skippedFeaturesHash) {
   var instructions = this.instructions;
-  return this.replay_(context, pixelRatio, transform, viewRotation,
+  this.replay_(context, pixelRatio, transform, viewRotation,
       skippedFeaturesHash, instructions, undefined);
 };
 
@@ -1857,110 +1855,17 @@ ol.render.canvas.ReplayGroup = function(tolerance, maxExtent, resolution) {
 
 
 /**
- * @param {CanvasRenderingContext2D} context Context.
- * @param {ol.Extent} extent Extent.
- * @param {number} pixelRatio Pixel ratio.
- * @param {goog.vec.Mat4.Number} transform Transform.
- * @param {number} viewRotation View rotation.
- * @param {Object} skippedFeaturesHash Ids of features to skip
- * @return {T|undefined} Callback result.
- * @template T
+ * FIXME empty description for jsdoc
  */
-ol.render.canvas.ReplayGroup.prototype.replay = function(context, extent,
-    pixelRatio, transform, viewRotation, skippedFeaturesHash) {
-  /** @type {Array.<number>} */
-  var zs = goog.array.map(goog.object.getKeys(this.replaysByZIndex_), Number);
-  goog.array.sort(zs);
-  return this.replay_(zs, context, extent, pixelRatio, transform,
-      viewRotation, skippedFeaturesHash);
-};
-
-
-/**
- * @private
- * @param {Array.<number>} zs Z-indices array.
- * @param {CanvasRenderingContext2D} context Context.
- * @param {ol.Extent} extent Extent.
- * @param {goog.vec.Mat4.Number} transform Transform.
- * @param {number} viewRotation View rotation.
- * @param {Object} skippedFeaturesHash Ids of features to skip
- * @param {function(ol.geom.Geometry, Object): T} geometryCallback Geometry
- *     callback.
- * @return {T|undefined} Callback result.
- * @template T
- */
-ol.render.canvas.ReplayGroup.prototype.replayHitDetection_ = function(
-    zs, context, extent, transform, viewRotation, skippedFeaturesHash,
-    geometryCallback) {
-  var i, ii, replays, replayType, replay, result;
-  for (i = 0, ii = zs.length; i < ii; ++i) {
-    replays = this.replaysByZIndex_[zs[i].toString()];
-    for (replayType in replays) {
-      replay = replays[replayType];
-      if (ol.extent.intersects(extent, replay.getExtent())) {
-        result = replay.replayHitDetection(context, transform, viewRotation,
-            skippedFeaturesHash, geometryCallback);
-        if (result) {
-          return result;
-        }
-      }
+ol.render.canvas.ReplayGroup.prototype.finish = function() {
+  var zKey;
+  for (zKey in this.replaysByZIndex_) {
+    var replays = this.replaysByZIndex_[zKey];
+    var replayKey;
+    for (replayKey in replays) {
+      replays[replayKey].finish();
     }
   }
-  return undefined;
-};
-
-
-/**
- * @private
- * @param {Array.<number>} zs Z-indices array.
- * @param {CanvasRenderingContext2D} context Context.
- * @param {ol.Extent} extent Extent.
- * @param {number} pixelRatio Pixel ratio.
- * @param {goog.vec.Mat4.Number} transform Transform.
- * @param {number} viewRotation View rotation.
- * @param {Object} skippedFeaturesHash Ids of features to skip
- * @return {T|undefined} Callback result.
- * @template T
- */
-ol.render.canvas.ReplayGroup.prototype.replay_ = function(
-    zs, context, extent, pixelRatio, transform, viewRotation,
-    skippedFeaturesHash) {
-
-  var maxExtent = this.maxExtent_;
-  var minX = maxExtent[0];
-  var minY = maxExtent[1];
-  var maxX = maxExtent[2];
-  var maxY = maxExtent[3];
-  var flatClipCoords = ol.geom.flat.transform.transform2D(
-      [minX, minY, minX, maxY, maxX, maxY, maxX, minY],
-      0, 8, 2, transform);
-  context.save();
-  context.beginPath();
-  context.moveTo(flatClipCoords[0], flatClipCoords[1]);
-  context.lineTo(flatClipCoords[2], flatClipCoords[3]);
-  context.lineTo(flatClipCoords[4], flatClipCoords[5]);
-  context.lineTo(flatClipCoords[6], flatClipCoords[7]);
-  context.closePath();
-  context.clip();
-
-  var i, ii, j, jj, replays, replayType, replay, result;
-  for (i = 0, ii = zs.length; i < ii; ++i) {
-    replays = this.replaysByZIndex_[zs[i].toString()];
-    for (j = 0, jj = ol.render.REPLAY_ORDER.length; j < jj; ++j) {
-      replay = replays[ol.render.REPLAY_ORDER[j]];
-      if (goog.isDef(replay) &&
-          ol.extent.intersects(extent, replay.getExtent())) {
-        result = replay.replay(context, pixelRatio, transform, viewRotation,
-            skippedFeaturesHash);
-        if (result) {
-          return result;
-        }
-      }
-    }
-  }
-
-  context.restore();
-  return undefined;
 };
 
 
@@ -1983,14 +1888,10 @@ ol.render.canvas.ReplayGroup.prototype.forEachGeometryAtPixel = function(
       1 / resolution, -1 / resolution, -rotation,
       -coordinate[0], -coordinate[1]);
 
-  /** @type {Array.<number>} */
-  var zs = goog.array.map(goog.object.getKeys(this.replaysByZIndex_), Number);
-  goog.array.sort(zs, function(a, b) { return b - a; });
-
   var context = this.hitDetectionContext_;
   context.clearRect(0, 0, 1, 1);
 
-  return this.replayHitDetection_(zs, context, extent, transform,
+  return this.replayHitDetection_(context, extent, transform,
       rotation, skippedFeaturesHash,
       /**
        * @param {ol.geom.Geometry} geometry Geometry.
@@ -2007,21 +1908,6 @@ ol.render.canvas.ReplayGroup.prototype.forEachGeometryAtPixel = function(
           context.clearRect(0, 0, 1, 1);
         }
       });
-};
-
-
-/**
- * FIXME empty description for jsdoc
- */
-ol.render.canvas.ReplayGroup.prototype.finish = function() {
-  var zKey;
-  for (zKey in this.replaysByZIndex_) {
-    var replays = this.replaysByZIndex_[zKey];
-    var replayKey;
-    for (replayKey in replays) {
-      replays[replayKey].finish();
-    }
-  }
 };
 
 
@@ -2053,6 +1939,93 @@ ol.render.canvas.ReplayGroup.prototype.getReplay =
  */
 ol.render.canvas.ReplayGroup.prototype.isEmpty = function() {
   return goog.object.isEmpty(this.replaysByZIndex_);
+};
+
+
+/**
+ * @param {CanvasRenderingContext2D} context Context.
+ * @param {ol.Extent} extent Extent.
+ * @param {number} pixelRatio Pixel ratio.
+ * @param {goog.vec.Mat4.Number} transform Transform.
+ * @param {number} viewRotation View rotation.
+ * @param {Object} skippedFeaturesHash Ids of features to skip
+ */
+ol.render.canvas.ReplayGroup.prototype.replay = function(
+    context, extent, pixelRatio, transform, viewRotation, skippedFeaturesHash) {
+
+  /** @type {Array.<number>} */
+  var zs = goog.array.map(goog.object.getKeys(this.replaysByZIndex_), Number);
+  goog.array.sort(zs);
+
+  var maxExtent = this.maxExtent_;
+  var minX = maxExtent[0];
+  var minY = maxExtent[1];
+  var maxX = maxExtent[2];
+  var maxY = maxExtent[3];
+  var flatClipCoords = ol.geom.flat.transform.transform2D(
+      [minX, minY, minX, maxY, maxX, maxY, maxX, minY],
+      0, 8, 2, transform);
+  context.save();
+  context.beginPath();
+  context.moveTo(flatClipCoords[0], flatClipCoords[1]);
+  context.lineTo(flatClipCoords[2], flatClipCoords[3]);
+  context.lineTo(flatClipCoords[4], flatClipCoords[5]);
+  context.lineTo(flatClipCoords[6], flatClipCoords[7]);
+  context.closePath();
+  context.clip();
+
+  var i, ii, j, jj, replays, replay, result;
+  for (i = 0, ii = zs.length; i < ii; ++i) {
+    replays = this.replaysByZIndex_[zs[i].toString()];
+    for (j = 0, jj = ol.render.REPLAY_ORDER.length; j < jj; ++j) {
+      replay = replays[ol.render.REPLAY_ORDER[j]];
+      if (goog.isDef(replay) &&
+          ol.extent.intersects(extent, replay.getExtent())) {
+        replay.replay(context, pixelRatio, transform, viewRotation,
+            skippedFeaturesHash);
+      }
+    }
+  }
+
+  context.restore();
+};
+
+
+/**
+ * @private
+ * @param {CanvasRenderingContext2D} context Context.
+ * @param {ol.Extent} extent Extent.
+ * @param {goog.vec.Mat4.Number} transform Transform.
+ * @param {number} viewRotation View rotation.
+ * @param {Object} skippedFeaturesHash Ids of features to skip
+ * @param {function(ol.geom.Geometry, Object): T} geometryCallback Geometry
+ *     callback.
+ * @return {T|undefined} Callback result.
+ * @template T
+ */
+ol.render.canvas.ReplayGroup.prototype.replayHitDetection_ = function(
+    context, extent, transform, viewRotation, skippedFeaturesHash,
+    geometryCallback) {
+  /** @type {Array.<number>} */
+  var zs = goog.array.map(goog.object.getKeys(this.replaysByZIndex_), Number);
+  goog.array.sort(zs, function(a, b) { return b - a; });
+
+  var i, ii, j, replays, replay, result;
+  for (i = 0, ii = zs.length; i < ii; ++i) {
+    replays = this.replaysByZIndex_[zs[i].toString()];
+    for (j = ol.render.REPLAY_ORDER.length - 1; j >= 0; --j) {
+      replay = replays[ol.render.REPLAY_ORDER[j]];
+      if (goog.isDef(replay) &&
+          ol.extent.intersects(extent, replay.getExtent())) {
+        result = replay.replayHitDetection(context, transform, viewRotation,
+            skippedFeaturesHash, geometryCallback);
+        if (result) {
+          return result;
+        }
+      }
+    }
+  }
+  return undefined;
 };
 
 
