@@ -1892,12 +1892,13 @@ ol.render.canvas.ReplayGroup.prototype.replay = function(context, extent,
 ol.render.canvas.ReplayGroup.prototype.replayHitDetection_ = function(
     zs, context, extent, transform, viewRotation, skippedFeaturesHash,
     geometryCallback) {
-  var i, ii, replays, replayType, replay, result;
+  var i, ii, j, replays, replay, result;
   for (i = 0, ii = zs.length; i < ii; ++i) {
     replays = this.replaysByZIndex_[zs[i].toString()];
-    for (replayType in replays) {
-      replay = replays[replayType];
-      if (ol.extent.intersects(extent, replay.getExtent())) {
+    for (j = ol.render.REPLAY_ORDER.length - 1; j >= 0; --j) {
+      replay = replays[ol.render.REPLAY_ORDER[j]];
+      if (goog.isDef(replay) &&
+          ol.extent.intersects(extent, replay.getExtent())) {
         result = replay.replayHitDetection(context, transform, viewRotation,
             skippedFeaturesHash, geometryCallback);
         if (result) {
