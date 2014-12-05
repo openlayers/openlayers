@@ -47,8 +47,8 @@ ol.interaction.DragPan = function(opt_options) {
    * @private
    * @type {ol.events.ConditionType}
    */
-  this.condition_ = goog.isDef(opt_options.condition) ?
-      opt_options.condition : ol.events.condition.noModifierKeys;
+  this.condition_ = goog.isDef(options.condition) ?
+      options.condition : ol.events.condition.noModifierKeys;
 
   /**
    * @private
