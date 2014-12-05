@@ -1855,26 +1855,7 @@ ol.render.canvas.ReplayGroup = function(tolerance, maxExtent, resolution) {
 
 
 /**
- * @param {CanvasRenderingContext2D} context Context.
- * @param {ol.Extent} extent Extent.
- * @param {number} pixelRatio Pixel ratio.
- * @param {goog.vec.Mat4.Number} transform Transform.
- * @param {number} viewRotation View rotation.
- * @param {Object} skippedFeaturesHash Ids of features to skip
- */
-ol.render.canvas.ReplayGroup.prototype.replay = function(context, extent,
-    pixelRatio, transform, viewRotation, skippedFeaturesHash) {
-  /** @type {Array.<number>} */
-  var zs = goog.array.map(goog.object.getKeys(this.replaysByZIndex_), Number);
-  goog.array.sort(zs);
-  this.replay_(zs, context, extent, pixelRatio, transform,
-      viewRotation, skippedFeaturesHash);
-};
-
-
-/**
  * @private
- * @param {Array.<number>} zs Z-indices array.
  * @param {CanvasRenderingContext2D} context Context.
  * @param {ol.Extent} extent Extent.
  * @param {goog.vec.Mat4.Number} transform Transform.
@@ -1886,8 +1867,12 @@ ol.render.canvas.ReplayGroup.prototype.replay = function(context, extent,
  * @template T
  */
 ol.render.canvas.ReplayGroup.prototype.replayHitDetection_ = function(
-    zs, context, extent, transform, viewRotation, skippedFeaturesHash,
+    context, extent, transform, viewRotation, skippedFeaturesHash,
     geometryCallback) {
+  /** @type {Array.<number>} */
+  var zs = goog.array.map(goog.object.getKeys(this.replaysByZIndex_), Number);
+  goog.array.sort(zs, function(a, b) { return b - a; });
+
   var i, ii, j, replays, replay, result;
   for (i = 0, ii = zs.length; i < ii; ++i) {
     replays = this.replaysByZIndex_[zs[i].toString()];
@@ -1908,8 +1893,6 @@ ol.render.canvas.ReplayGroup.prototype.replayHitDetection_ = function(
 
 
 /**
- * @private
- * @param {Array.<number>} zs Z-indices array.
  * @param {CanvasRenderingContext2D} context Context.
  * @param {ol.Extent} extent Extent.
  * @param {number} pixelRatio Pixel ratio.
@@ -1917,9 +1900,12 @@ ol.render.canvas.ReplayGroup.prototype.replayHitDetection_ = function(
  * @param {number} viewRotation View rotation.
  * @param {Object} skippedFeaturesHash Ids of features to skip
  */
-ol.render.canvas.ReplayGroup.prototype.replay_ = function(
-    zs, context, extent, pixelRatio, transform, viewRotation,
-    skippedFeaturesHash) {
+ol.render.canvas.ReplayGroup.prototype.replay = function(
+    context, extent, pixelRatio, transform, viewRotation, skippedFeaturesHash) {
+
+  /** @type {Array.<number>} */
+  var zs = goog.array.map(goog.object.getKeys(this.replaysByZIndex_), Number);
+  goog.array.sort(zs);
 
   var maxExtent = this.maxExtent_;
   var minX = maxExtent[0];
@@ -1974,14 +1960,10 @@ ol.render.canvas.ReplayGroup.prototype.forEachGeometryAtPixel = function(
       1 / resolution, -1 / resolution, -rotation,
       -coordinate[0], -coordinate[1]);
 
-  /** @type {Array.<number>} */
-  var zs = goog.array.map(goog.object.getKeys(this.replaysByZIndex_), Number);
-  goog.array.sort(zs, function(a, b) { return b - a; });
-
   var context = this.hitDetectionContext_;
   context.clearRect(0, 0, 1, 1);
 
-  return this.replayHitDetection_(zs, context, extent, transform,
+  return this.replayHitDetection_(context, extent, transform,
       rotation, skippedFeaturesHash,
       /**
        * @param {ol.geom.Geometry} geometry Geometry.
