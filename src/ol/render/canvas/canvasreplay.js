@@ -1855,40 +1855,90 @@ ol.render.canvas.ReplayGroup = function(tolerance, maxExtent, resolution) {
 
 
 /**
- * @private
- * @param {CanvasRenderingContext2D} context Context.
+ * FIXME empty description for jsdoc
+ */
+ol.render.canvas.ReplayGroup.prototype.finish = function() {
+  var zKey;
+  for (zKey in this.replaysByZIndex_) {
+    var replays = this.replaysByZIndex_[zKey];
+    var replayKey;
+    for (replayKey in replays) {
+      replays[replayKey].finish();
+    }
+  }
+};
+
+
+/**
  * @param {ol.Extent} extent Extent.
- * @param {goog.vec.Mat4.Number} transform Transform.
- * @param {number} viewRotation View rotation.
+ * @param {number} resolution Resolution.
+ * @param {number} rotation Rotation.
+ * @param {ol.Coordinate} coordinate Coordinate.
  * @param {Object} skippedFeaturesHash Ids of features to skip
- * @param {function(ol.geom.Geometry, Object): T} geometryCallback Geometry
- *     callback.
+ * @param {function(ol.geom.Geometry, Object): T} callback Geometry callback.
  * @return {T|undefined} Callback result.
  * @template T
  */
-ol.render.canvas.ReplayGroup.prototype.replayHitDetection_ = function(
-    context, extent, transform, viewRotation, skippedFeaturesHash,
-    geometryCallback) {
-  /** @type {Array.<number>} */
-  var zs = goog.array.map(goog.object.getKeys(this.replaysByZIndex_), Number);
-  goog.array.sort(zs, function(a, b) { return b - a; });
+ol.render.canvas.ReplayGroup.prototype.forEachGeometryAtPixel = function(
+    extent, resolution, rotation, coordinate,
+    skippedFeaturesHash, callback) {
 
-  var i, ii, j, replays, replay, result;
-  for (i = 0, ii = zs.length; i < ii; ++i) {
-    replays = this.replaysByZIndex_[zs[i].toString()];
-    for (j = ol.render.REPLAY_ORDER.length - 1; j >= 0; --j) {
-      replay = replays[ol.render.REPLAY_ORDER[j]];
-      if (goog.isDef(replay) &&
-          ol.extent.intersects(extent, replay.getExtent())) {
-        result = replay.replayHitDetection(context, transform, viewRotation,
-            skippedFeaturesHash, geometryCallback);
-        if (result) {
-          return result;
+  var transform = this.hitDetectionTransform_;
+  ol.vec.Mat4.makeTransform2D(transform, 0.5, 0.5,
+      1 / resolution, -1 / resolution, -rotation,
+      -coordinate[0], -coordinate[1]);
+
+  var context = this.hitDetectionContext_;
+  context.clearRect(0, 0, 1, 1);
+
+  return this.replayHitDetection_(context, extent, transform,
+      rotation, skippedFeaturesHash,
+      /**
+       * @param {ol.geom.Geometry} geometry Geometry.
+       * @param {Object} data Opaque data object.
+       * @return {?} Callback result.
+       */
+      function(geometry, data) {
+        var imageData = context.getImageData(0, 0, 1, 1).data;
+        if (imageData[3] > 0) {
+          var result = callback(geometry, data);
+          if (result) {
+            return result;
+          }
+          context.clearRect(0, 0, 1, 1);
         }
-      }
-    }
+      });
+};
+
+
+/**
+ * @inheritDoc
+ */
+ol.render.canvas.ReplayGroup.prototype.getReplay =
+    function(zIndex, replayType) {
+  var zIndexKey = goog.isDef(zIndex) ? zIndex.toString() : '0';
+  var replays = this.replaysByZIndex_[zIndexKey];
+  if (!goog.isDef(replays)) {
+    replays = {};
+    this.replaysByZIndex_[zIndexKey] = replays;
   }
-  return undefined;
+  var replay = replays[replayType];
+  if (!goog.isDef(replay)) {
+    var Constructor = ol.render.canvas.BATCH_CONSTRUCTORS_[replayType];
+    goog.asserts.assert(goog.isDef(Constructor));
+    replay = new Constructor(this.tolerance_, this.maxExtent_,
+        this.resolution_);
+    replays[replayType] = replay;
+  }
+  return replay;
+};
+
+
+/**
+ * @inheritDoc
+ */
+ol.render.canvas.ReplayGroup.prototype.isEmpty = function() {
+  return goog.object.isEmpty(this.replaysByZIndex_);
 };
 
 
@@ -1942,90 +1992,40 @@ ol.render.canvas.ReplayGroup.prototype.replay = function(
 
 
 /**
+ * @private
+ * @param {CanvasRenderingContext2D} context Context.
  * @param {ol.Extent} extent Extent.
- * @param {number} resolution Resolution.
- * @param {number} rotation Rotation.
- * @param {ol.Coordinate} coordinate Coordinate.
+ * @param {goog.vec.Mat4.Number} transform Transform.
+ * @param {number} viewRotation View rotation.
  * @param {Object} skippedFeaturesHash Ids of features to skip
- * @param {function(ol.geom.Geometry, Object): T} callback Geometry callback.
+ * @param {function(ol.geom.Geometry, Object): T} geometryCallback Geometry
+ *     callback.
  * @return {T|undefined} Callback result.
  * @template T
  */
-ol.render.canvas.ReplayGroup.prototype.forEachGeometryAtPixel = function(
-    extent, resolution, rotation, coordinate,
-    skippedFeaturesHash, callback) {
+ol.render.canvas.ReplayGroup.prototype.replayHitDetection_ = function(
+    context, extent, transform, viewRotation, skippedFeaturesHash,
+    geometryCallback) {
+  /** @type {Array.<number>} */
+  var zs = goog.array.map(goog.object.getKeys(this.replaysByZIndex_), Number);
+  goog.array.sort(zs, function(a, b) { return b - a; });
 
-  var transform = this.hitDetectionTransform_;
-  ol.vec.Mat4.makeTransform2D(transform, 0.5, 0.5,
-      1 / resolution, -1 / resolution, -rotation,
-      -coordinate[0], -coordinate[1]);
-
-  var context = this.hitDetectionContext_;
-  context.clearRect(0, 0, 1, 1);
-
-  return this.replayHitDetection_(context, extent, transform,
-      rotation, skippedFeaturesHash,
-      /**
-       * @param {ol.geom.Geometry} geometry Geometry.
-       * @param {Object} data Opaque data object.
-       * @return {?} Callback result.
-       */
-      function(geometry, data) {
-        var imageData = context.getImageData(0, 0, 1, 1).data;
-        if (imageData[3] > 0) {
-          var result = callback(geometry, data);
-          if (result) {
-            return result;
-          }
-          context.clearRect(0, 0, 1, 1);
+  var i, ii, j, replays, replay, result;
+  for (i = 0, ii = zs.length; i < ii; ++i) {
+    replays = this.replaysByZIndex_[zs[i].toString()];
+    for (j = ol.render.REPLAY_ORDER.length - 1; j >= 0; --j) {
+      replay = replays[ol.render.REPLAY_ORDER[j]];
+      if (goog.isDef(replay) &&
+          ol.extent.intersects(extent, replay.getExtent())) {
+        result = replay.replayHitDetection(context, transform, viewRotation,
+            skippedFeaturesHash, geometryCallback);
+        if (result) {
+          return result;
         }
-      });
-};
-
-
-/**
- * FIXME empty description for jsdoc
- */
-ol.render.canvas.ReplayGroup.prototype.finish = function() {
-  var zKey;
-  for (zKey in this.replaysByZIndex_) {
-    var replays = this.replaysByZIndex_[zKey];
-    var replayKey;
-    for (replayKey in replays) {
-      replays[replayKey].finish();
+      }
     }
   }
-};
-
-
-/**
- * @inheritDoc
- */
-ol.render.canvas.ReplayGroup.prototype.getReplay =
-    function(zIndex, replayType) {
-  var zIndexKey = goog.isDef(zIndex) ? zIndex.toString() : '0';
-  var replays = this.replaysByZIndex_[zIndexKey];
-  if (!goog.isDef(replays)) {
-    replays = {};
-    this.replaysByZIndex_[zIndexKey] = replays;
-  }
-  var replay = replays[replayType];
-  if (!goog.isDef(replay)) {
-    var Constructor = ol.render.canvas.BATCH_CONSTRUCTORS_[replayType];
-    goog.asserts.assert(goog.isDef(Constructor));
-    replay = new Constructor(this.tolerance_, this.maxExtent_,
-        this.resolution_);
-    replays[replayType] = replay;
-  }
-  return replay;
-};
-
-
-/**
- * @inheritDoc
- */
-ol.render.canvas.ReplayGroup.prototype.isEmpty = function() {
-  return goog.object.isEmpty(this.replaysByZIndex_);
+  return undefined;
 };
 
 
