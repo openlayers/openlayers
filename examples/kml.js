@@ -73,7 +73,7 @@ if ('download' in exportKMLElement) {
         clone.getGeometry().transform(projection, 'EPSG:4326');
         features.push(clone);
       });
-      var node = new ol.format.KML().writeFeatures(features);
+      var node = new ol.format.KML().writeFeaturesNode(features);
       var string = new XMLSerializer().serializeToString(
           /** @type {Node} */ (node));
       var base64 = exampleNS.strToBase64(string);

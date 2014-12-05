@@ -1247,9 +1247,15 @@ ol.format.GML3.prototype.GEOMETRY_NODE_FACTORY_ =
 
 
 /**
- * @inheritDoc
+ * Encode a geometry in GML 3.1.1 Simple Features.
+ *
+ * @param {ol.geom.Geometry} geometry Geometry.
+ * @param {olx.format.WriteOptions=} opt_options Options.
+ * @return {Node} Node.
+ * @api
  */
 ol.format.GML3.prototype.writeGeometryNode = function(geometry, opt_options) {
+  opt_options = this.adaptOptions(opt_options);
   var geom = ol.xml.createElementNS('http://www.opengis.net/gml', 'geom');
   var context = {node: geom, srsName: this.srsName,
     curve: this.curve_, surface: this.surface_,
@@ -1268,16 +1274,22 @@ ol.format.GML3.prototype.writeGeometryNode = function(geometry, opt_options) {
  * @function
  * @param {Array.<ol.Feature>} features Features.
  * @param {olx.format.WriteOptions=} opt_options Options.
- * @return {Node} Result.
+ * @return {string} Result.
  * @api stable
  */
 ol.format.GML3.prototype.writeFeatures;
 
 
 /**
- * @inheritDoc
+ * Encode an array of features in the GML 3.1.1 format as an XML node.
+ *
+ * @param {Array.<ol.Feature>} features Features.
+ * @param {olx.format.WriteOptions=} opt_options Options.
+ * @return {Node} Node.
+ * @api
  */
 ol.format.GML3.prototype.writeFeaturesNode = function(features, opt_options) {
+  opt_options = this.adaptOptions(opt_options);
   var node = ol.xml.createElementNS('http://www.opengis.net/gml',
       'featureMembers');
   ol.xml.setAttributeNS(node, 'http://www.w3.org/2001/XMLSchema-instance',
@@ -1321,7 +1333,19 @@ ol.format.GML = ol.format.GML3;
  * @function
  * @param {Array.<ol.Feature>} features Features.
  * @param {olx.format.WriteOptions=} opt_options Options.
- * @return {Node} Result.
+ * @return {string} Result.
  * @api stable
  */
 ol.format.GML.prototype.writeFeatures;
+
+
+/**
+ * Encode an array of features in the GML 3.1.1 format as an XML node.
+ *
+ * @function
+ * @param {ol.Feature} feature Feature.
+ * @param {olx.format.WriteOptions=} opt_options Options.
+ * @return {Node} Node.
+ * @api
+ */
+ol.format.GML.prototype.writeFeaturesNode;
