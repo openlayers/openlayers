@@ -3542,11 +3542,28 @@ olx.source.GPXOptions.prototype.urls;
 
 
 /**
- * @typedef {{url: string,
- *            preemptive: (boolean|undefined)}}
+ * @typedef {{preemptive: (boolean|undefined),
+ *            url: string}}
  * @api
  */
 olx.source.TileUTFGridOptions;
+
+
+/**
+ * If true, the TileUTFGrid source loads the tiles based on their "visibility".
+ * This can be used to improve the speed of response, but increases traffic.
+ * Default is `false`.
+ * @type {boolean|undefined}
+ * @api
+ */
+olx.source.TileUTFGridOptions.prototype.preemptive;
+
+
+/**
+ * @type {string}
+ * @api
+ */
+olx.source.TileUTFGridOptions.prototype.url;
 
 
 /**
