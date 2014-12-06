@@ -40,16 +40,16 @@ ol.source.TileUTFGrid = function(options) {
       options.preemptive : false;
 
   /**
-   * @protected
-   * @type {ol.TileUrlFunctionType}
+   * @private
+   * @type {!ol.TileUrlFunctionType}
    */
-  this.tileUrlFunction = ol.TileUrlFunction.nullTileUrlFunction;
+  this.tileUrlFunction_ = ol.TileUrlFunction.nullTileUrlFunction;
 
   /**
-   * @protected
-   * @type {ol.TileCache}
+   * @private
+   * @type {!ol.TileCache}
    */
-  this.tileCache = new ol.TileCache();
+  this.tileCache_ = new ol.TileCache();
 
   /**
    * @private
@@ -67,7 +67,7 @@ goog.inherits(ol.source.TileUTFGrid, ol.source.Tile);
  * @inheritDoc
  */
 ol.source.TileUTFGrid.prototype.canExpireCache = function() {
-  return this.tileCache.canExpireCache();
+  return this.tileCache_.canExpireCache();
 };
 
 
@@ -75,7 +75,7 @@ ol.source.TileUTFGrid.prototype.canExpireCache = function() {
  * @inheritDoc
  */
 ol.source.TileUTFGrid.prototype.expireCache = function(usedTiles) {
-  this.tileCache.expireCache(usedTiles);
+  this.tileCache_.expireCache(usedTiles);
 };
 
 
@@ -146,7 +146,7 @@ ol.source.TileUTFGrid.prototype.handleTileJSONResponse = function(tileJSON) {
     return;
   }
 
-  this.tileUrlFunction = ol.TileUrlFunction.withTileCoordTransform(
+  this.tileUrlFunction_ = ol.TileUrlFunction.withTileCoordTransform(
       tileGrid.createTileCoordTransform({
         extent: extent
       }),
@@ -182,19 +182,19 @@ ol.source.TileUTFGrid.prototype.handleTileJSONResponse = function(tileJSON) {
 ol.source.TileUTFGrid.prototype.getTile =
     function(z, x, y, pixelRatio, projection) {
   var tileCoordKey = this.getKeyZXY(z, x, y);
-  if (this.tileCache.containsKey(tileCoordKey)) {
-    return /** @type {!ol.Tile} */ (this.tileCache.get(tileCoordKey));
+  if (this.tileCache_.containsKey(tileCoordKey)) {
+    return /** @type {!ol.Tile} */ (this.tileCache_.get(tileCoordKey));
   } else {
     goog.asserts.assert(projection);
     var tileCoord = [z, x, y];
-    var tileUrl = this.tileUrlFunction(tileCoord, pixelRatio, projection);
+    var tileUrl = this.tileUrlFunction_(tileCoord, pixelRatio, projection);
     var tile = new ol.source.TileUTFGridTile_(
         tileCoord,
         goog.isDef(tileUrl) ? ol.TileState.IDLE : ol.TileState.EMPTY,
         goog.isDef(tileUrl) ? tileUrl : '',
         this.tileGrid.getTileCoordExtent(tileCoord),
         this.preemptive_);
-    this.tileCache.set(tileCoordKey, tile);
+    this.tileCache_.set(tileCoordKey, tile);
     return tile;
   }
 };
@@ -205,8 +205,8 @@ ol.source.TileUTFGrid.prototype.getTile =
  */
 ol.source.TileUTFGrid.prototype.useTile = function(z, x, y) {
   var tileCoordKey = this.getKeyZXY(z, x, y);
-  if (this.tileCache.containsKey(tileCoordKey)) {
-    this.tileCache.get(tileCoordKey);
+  if (this.tileCache_.containsKey(tileCoordKey)) {
+    this.tileCache_.get(tileCoordKey);
   }
 };
 
