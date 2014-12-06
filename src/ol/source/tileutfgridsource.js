@@ -91,7 +91,7 @@ ol.source.TileUTFGrid.prototype.getTemplate = function() {
 /**
  * @param {ol.Coordinate} coordinate Coordinate.
  * @param {number} resolution Resolution.
- * @param {function(this: T, (Object|undefined))} callback Callback.
+ * @param {function(this: T, Object)} callback Callback.
  * @param {T=} opt_this The object to use as `this` in the callback.
  * @param {boolean=} opt_noRequest Only process already loaded data.
  * @template T
@@ -277,12 +277,12 @@ ol.source.TileUTFGridTile_.prototype.getImage = function(opt_context) {
 /**
  * Synchronously returns data at given coordinate (if available).
  * @param {ol.Coordinate} coordinate Coordinate.
- * @return {Object|undefined}
+ * @return {Object}
  */
 ol.source.TileUTFGridTile_.prototype.getData = function(coordinate) {
   if (goog.isNull(this.grid_) || goog.isNull(this.keys_) ||
       goog.isNull(this.data_)) {
-    return undefined;
+    return null;
   }
   var xRelative = (coordinate[0] - this.extent_[0]) /
       (this.extent_[2] - this.extent_[0]);
@@ -292,7 +292,7 @@ ol.source.TileUTFGridTile_.prototype.getData = function(coordinate) {
   var row = this.grid_[Math.floor((1 - yRelative) * this.grid_.length)];
 
   if (!goog.isString(row)) {
-    return undefined;
+    return null;
   }
 
   var code = row.charCodeAt(Math.floor(xRelative * row.length));
@@ -306,16 +306,16 @@ ol.source.TileUTFGridTile_.prototype.getData = function(coordinate) {
 
   var key = this.keys_[code];
 
-  return goog.isDefAndNotNull(key) ? this.data_[key] : undefined;
+  return goog.isDefAndNotNull(key) ? this.data_[key] : null;
 };
 
 
 /**
  * Calls the callback when the data for given coordinate is available.
  * @param {ol.Coordinate} coordinate Coordinate.
- * @param {function(this: T, (Object|undefined))} callback Callback.
+ * @param {function(this: T, Object)} callback Callback.
  * @param {T=} opt_this The object to use as `this` in the callback.
- * @param {boolean=} opt_noRequest If not loaded, callback with `undefined`
+ * @param {boolean=} opt_noRequest If not loaded, callback with `null`
  *                                     without loading the tile.
  * @template T
  */
