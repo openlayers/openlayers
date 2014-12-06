@@ -41,9 +41,9 @@ var infoOverlay = new ol.Overlay({
 });
 map.addOverlay(infoOverlay);
 
-map.on('pointermove', function(evt) {
+var displayCountryInfo = function(coordinate) {
   var viewResolution = /** @type {number} */ (view.getResolution());
-  gridSource.forDataAtCoordinateAndResolution(evt.coordinate, viewResolution,
+  gridSource.forDataAtCoordinateAndResolution(coordinate, viewResolution,
       function(data) {
         // If you want to use the template from the TileJSON,
         //  load the mustache.js library separately and call
@@ -55,6 +55,15 @@ map.on('pointermove', function(evt) {
           nameElement.innerHTML = data['admin'];
           /* jshint +W069 */
         }
-        infoOverlay.setPosition(data ? evt.coordinate : undefined);
+        infoOverlay.setPosition(data ? coordinate : undefined);
       });
+};
+
+$(map.getViewport()).on('mousemove', function(evt) {
+  var coordinate = map.getEventCoordinate(evt.originalEvent);
+  displayCountryInfo(coordinate);
+});
+
+map.on('click', function(evt) {
+  displayCountryInfo(evt.coordinate);
 });
