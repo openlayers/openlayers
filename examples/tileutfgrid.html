@@ -8,6 +8,14 @@
     <link rel="stylesheet" href="../resources/bootstrap/css/bootstrap.min.css" type="text/css">
     <link rel="stylesheet" href="../resources/layout.css" type="text/css">
     <link rel="stylesheet" href="../resources/bootstrap/css/bootstrap-responsive.min.css" type="text/css">
+    <style type="text/css">
+      #country-name {
+        color: black;
+        font-size: 12pt;
+        font-weight: bold;
+        text-shadow: white 0.1em 0.1em 0.2em;
+      }
+    </style>
     <title>TileUTFGrid example</title>
   </head>
   <body>
@@ -30,24 +38,27 @@
 
       <div class="row-fluid">
 
-        <div class="span8">
+        <div class="span12">
           <h4 id="title">TileUTFGrid example</h4>
           <p id="shortdesc">This example shows how to read data from a TileUTFGrid layer.</p>
+          <p>Point to a country to see its name and flag.</p>
           <div id="docs">
             <p>Tiles made with <a href="http://tilemill.com/">TileMill</a>. Hosting on MapBox.com or with open-source <a href="https://github.com/klokantech/tileserver-php/">TileServer</a>.</p>
             <p>See the <a href="tileutfgrid.js" target="_blank">tileutfgrid.js source</a> to see how this is done.</p>
           </div>
           <div id="tags">utfgrid, tileutfgrid, tilejson</div>
         </div>
-        <div class="span4">
-          <div id="info" class="alert alert-success">
-            <img id="flag" src="" />
-            <div id="admin_name">&nbsp;</div>
-          </div>
-        </div>
 
       </div>
 
+    </div>
+
+    <div style="display: none;">
+      <!-- Overlay with the country info -->
+      <div id="country-info">
+        <div id="country-name">&nbsp;</div>
+        <img id="country-flag" src="" />
+      </div>
     </div>
 
     <script src="../resources/jquery.min.js" type="text/javascript"></script>

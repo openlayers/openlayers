@@ -1,4 +1,5 @@
 goog.require('ol.Map');
+goog.require('ol.Overlay');
 goog.require('ol.View');
 goog.require('ol.layer.Tile');
 goog.require('ol.source.TileJSON');
@@ -29,8 +30,17 @@ var map = new ol.Map({
   view: view
 });
 
-var flag = document.getElementById('flag');
-var adminName = document.getElementById('admin_name');
+var infoElement = document.getElementById('country-info');
+var flagElement = document.getElementById('country-flag');
+var nameElement = document.getElementById('country-name');
+
+var infoOverlay = new ol.Overlay({
+  element: infoElement,
+  offset: [15, 15],
+  stopEvent: false
+});
+map.addOverlay(infoOverlay);
+
 map.on('pointermove', function(evt) {
   var viewResolution = /** @type {number} */ (view.getResolution());
   gridSource.forDataAtCoordinateAndResolution(evt.coordinate, viewResolution,
@@ -39,10 +49,12 @@ map.on('pointermove', function(evt) {
         //  load the mustache.js library separately and call
         //  info.innerHTML = Mustache.render(gridSource.getTemplate(), data);
         mapElement.style.cursor = data ? 'pointer' : '';
-        /* jshint -W069 */
-        flag.src = data ? 'data:image/png;base64,' + data['flag_png'] : '';
-        flag.style.visibility = data ? 'visible' : 'hidden';
-        adminName.innerHTML = data ? data['admin'] : '&nbsp;';
-        /* jshint +W069 */
+        if (data) {
+          /* jshint -W069 */
+          flagElement.src = 'data:image/png;base64,' + data['flag_png'];
+          nameElement.innerHTML = data['admin'];
+          /* jshint +W069 */
+        }
+        infoOverlay.setPosition(data ? evt.coordinate : undefined);
       });
 });
