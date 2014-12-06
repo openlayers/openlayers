@@ -91,20 +91,20 @@ ol.source.TileUTFGrid.prototype.getTemplate = function() {
 /**
  * @param {ol.Coordinate} coordinate Coordinate.
  * @param {number} resolution Resolution.
- * @param {function(this: T, (Object|undefined))} f Callback.
- * @param {T=} opt_this The object to use as `this` in `f`.
+ * @param {function(this: T, (Object|undefined))} callback Callback.
+ * @param {T=} opt_this The object to use as `this` in the callback.
  * @param {boolean=} opt_noRequest Only process already loaded data.
  * @template T
  * @api
  */
 ol.source.TileUTFGrid.prototype.forDataAtCoordinateAndResolution = function(
-    coordinate, resolution, f, opt_this, opt_noRequest) {
+    coordinate, resolution, callback, opt_this, opt_noRequest) {
   if (!goog.isNull(this.tileGrid)) {
     var tileCoord = this.tileGrid.getTileCoordForCoordAndResolution(
         coordinate, resolution);
     var tile = /** @type {!ol.source.TileUTFGridTile_} */(this.getTile(
         tileCoord[0], tileCoord[1], tileCoord[2], 1, this.getProjection()));
-    tile.forDataAtCoordinate(coordinate, f, opt_this, opt_noRequest);
+    tile.forDataAtCoordinate(coordinate, callback, opt_this, opt_noRequest);
   }
 };
 
@@ -247,19 +247,19 @@ ol.source.TileUTFGridTile_ =
 
   /**
    * @private
-   * @type {?Array.<string>}
+   * @type {Array.<string>}
    */
   this.grid_ = null;
 
   /**
    * @private
-   * @type {?Array.<string>}
+   * @type {Array.<string>}
    */
   this.keys_ = null;
 
   /**
    * @private
-   * @type {?Object.<string, Object>|undefined}
+   * @type {Object.<string, Object>|undefined}
    */
   this.data_ = null;
 };
@@ -285,9 +285,9 @@ ol.source.TileUTFGridTile_.prototype.getData = function(coordinate) {
     return undefined;
   }
   var xRelative = (coordinate[0] - this.extent_[0]) /
-                      (this.extent_[2] - this.extent_[0]);
+      (this.extent_[2] - this.extent_[0]);
   var yRelative = (coordinate[1] - this.extent_[1]) /
-                      (this.extent_[3] - this.extent_[1]);
+      (this.extent_[3] - this.extent_[1]);
 
   var row = this.grid_[Math.floor((1 - yRelative) * this.grid_.length)];
 
@@ -296,8 +296,12 @@ ol.source.TileUTFGridTile_.prototype.getData = function(coordinate) {
   }
 
   var code = row.charCodeAt(Math.floor(xRelative * row.length));
-  if (code >= 93) code--;
-  if (code >= 35) code--;
+  if (code >= 93) {
+    code--;
+  }
+  if (code >= 35) {
+    code--;
+  }
   code -= 32;
 
   var key = this.keys_[code];
@@ -307,23 +311,23 @@ ol.source.TileUTFGridTile_.prototype.getData = function(coordinate) {
 
 
 /**
- * Calls `f` when the data for given coordinate is available.
+ * Calls the callback when the data for given coordinate is available.
  * @param {ol.Coordinate} coordinate Coordinate.
- * @param {function(this: T, (Object|undefined))} f Callback.
- * @param {T=} opt_this The object to use as `this` in `f`.
+ * @param {function(this: T, (Object|undefined))} callback Callback.
+ * @param {T=} opt_this The object to use as `this` in the callback.
  * @param {boolean=} opt_noRequest If not loaded, callback with `undefined`
  *                                     without loading the tile.
  * @template T
  */
 ol.source.TileUTFGridTile_.prototype.forDataAtCoordinate =
-    function(coordinate, f, opt_this, opt_noRequest) {
+    function(coordinate, callback, opt_this, opt_noRequest) {
   if (this.state == ol.TileState.IDLE && opt_noRequest !== true) {
-    this.listenOnce(goog.events.EventType.CHANGE, function(e) {
-      f.call(opt_this, this.getData(coordinate));
+    goog.events.listenOnce(this, goog.events.EventType.CHANGE, function(e) {
+      callback.call(opt_this, this.getData(coordinate));
     }, false, this);
     this.loadInternal_();
   } else {
-    f.call(opt_this, this.getData(coordinate));
+    callback.call(opt_this, this.getData(coordinate));
   }
 };
 

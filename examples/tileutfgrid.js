@@ -30,7 +30,7 @@ var map = new ol.Map({
 });
 
 var flag = document.getElementById('flag');
-var admin_name = document.getElementById('admin_name');
+var adminName = document.getElementById('admin_name');
 map.on('pointermove', function(evt) {
   var viewResolution = /** @type {number} */ (view.getResolution());
   gridSource.forDataAtCoordinateAndResolution(evt.coordinate, viewResolution,
@@ -42,7 +42,7 @@ map.on('pointermove', function(evt) {
         /* jshint -W069 */
         flag.src = data ? 'data:image/png;base64,' + data['flag_png'] : '';
         flag.style.visibility = data ? 'visible' : 'hidden';
-        admin_name.innerHTML = data ? data['admin'] : '&nbsp;';
+        adminName.innerHTML = data ? data['admin'] : '&nbsp;';
         /* jshint +W069 */
       });
 });
