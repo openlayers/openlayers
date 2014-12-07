@@ -869,7 +869,7 @@ ol.format.GPX.GPX_SERIALIZERS_ = ol.xml.makeStructureNS(
  * @function
  * @param {Array.<ol.Feature>} features Features.
  * @param {olx.format.WriteOptions=} opt_options Write options.
- * @return {Node} Result.
+ * @return {string} Result.
  * @api stable
  */
 ol.format.GPX.prototype.writeFeatures;
