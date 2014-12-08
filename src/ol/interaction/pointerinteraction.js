@@ -17,11 +17,19 @@ goog.require('ol.interaction.Interaction');
  * instantiated in apps.
  *
  * @constructor
+ * @param {olx.interaction.PointerOptions=} opt_options Options.
  * @extends {ol.interaction.Interaction}
  */
-ol.interaction.Pointer = function() {
+ol.interaction.Pointer = function(opt_options) {
 
-  goog.base(this);
+  var options = goog.isDef(opt_options) ? opt_options : {};
+
+  var handleEvent = goog.isDef(options.handleEvent) ?
+      options.handleEvent : ol.interaction.Pointer.handleEvent;
+
+  goog.base(this, {
+    handleEvent: handleEvent
+  });
 
   /**
    * @type {boolean}
@@ -124,10 +132,12 @@ ol.interaction.Pointer.prototype.handlePointerDown = goog.functions.FALSE;
 
 
 /**
- * @inheritDoc
+ * @param {ol.MapBrowserEvent} mapBrowserEvent Map browser event.
+ * @return {boolean} `false` to stop event propagation.
+ * @this {ol.interaction.Pointer}
+ * @api
  */
-ol.interaction.Pointer.prototype.handleMapBrowserEvent =
-    function(mapBrowserEvent) {
+ol.interaction.Pointer.handleEvent = function(mapBrowserEvent) {
   if (!(mapBrowserEvent instanceof ol.MapBrowserPointerEvent)) {
     return true;
   }

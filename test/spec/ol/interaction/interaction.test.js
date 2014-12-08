@@ -6,7 +6,7 @@ describe('ol.interaction.Interaction', function() {
     var interaction;
 
     beforeEach(function() {
-      interaction = new ol.interaction.Interaction();
+      interaction = new ol.interaction.Interaction({});
     });
 
     it('creates a new interaction', function() {
@@ -24,13 +24,13 @@ describe('ol.interaction.Interaction', function() {
 
     it('retrieves the associated map', function() {
       var map = new ol.Map({});
-      var interaction = new ol.interaction.Interaction();
+      var interaction = new ol.interaction.Interaction({});
       interaction.setMap(map);
       expect(interaction.getMap()).to.be(map);
     });
 
     it('returns null if no map', function() {
-      var interaction = new ol.interaction.Interaction();
+      var interaction = new ol.interaction.Interaction({});
       expect(interaction.getMap()).to.be(null);
     });
 
@@ -40,13 +40,13 @@ describe('ol.interaction.Interaction', function() {
 
     it('allows a map to be set', function() {
       var map = new ol.Map({});
-      var interaction = new ol.interaction.Interaction();
+      var interaction = new ol.interaction.Interaction({});
       interaction.setMap(map);
       expect(interaction.getMap()).to.be(map);
     });
 
     it('accepts null', function() {
-      var interaction = new ol.interaction.Interaction();
+      var interaction = new ol.interaction.Interaction({});
       interaction.setMap(null);
       expect(interaction.getMap()).to.be(null);
     });

@@ -47,8 +47,9 @@ ol.interaction.SegmentDataType;
  */
 ol.interaction.Modify = function(options) {
 
-  goog.base(this);
-
+  goog.base(this, {
+    handleEvent: ol.interaction.Modify.handleEvent
+  });
 
   /**
    * @type {ol.events.ConditionType}
@@ -481,10 +482,12 @@ ol.interaction.Modify.prototype.handlePointerUp = function(evt) {
 
 
 /**
- * @inheritDoc
+ * @param {ol.MapBrowserEvent} mapBrowserEvent Map browser event.
+ * @return {boolean} `false` to stop event propagation.
+ * @this {ol.interaction.Modify}
+ * @api
  */
-ol.interaction.Modify.prototype.handleMapBrowserEvent =
-    function(mapBrowserEvent) {
+ol.interaction.Modify.handleEvent = function(mapBrowserEvent) {
   var handled;
   if (!mapBrowserEvent.map.getView().getHints()[ol.ViewHint.INTERACTING] &&
       mapBrowserEvent.type == ol.MapBrowserEvent.EventType.POINTERMOVE) {
@@ -496,7 +499,8 @@ ol.interaction.Modify.prototype.handleMapBrowserEvent =
     goog.asserts.assertInstanceof(geometry, ol.geom.Point);
     handled = this.removeVertex_();
   }
-  return goog.base(this, 'handleMapBrowserEvent', mapBrowserEvent) && !handled;
+  return ol.interaction.Pointer.handleEvent.call(this, mapBrowserEvent) &&
+      !handled;
 };
 
 

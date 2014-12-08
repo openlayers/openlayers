@@ -870,7 +870,7 @@ ol.Map.prototype.handleMapBrowserEvent = function(mapBrowserEvent) {
       if (!interaction.getActive()) {
         continue;
       }
-      var cont = interaction.handleMapBrowserEvent(mapBrowserEvent);
+      var cont = interaction.handleEvent(mapBrowserEvent);
       if (!cont) {
         break;
       }

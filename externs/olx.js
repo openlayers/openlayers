@@ -173,6 +173,25 @@ olx.GraticuleOptions.prototype.targetSize;
 
 
 /**
+ * Object literal with config options for interactions.
+ * @typedef {{handleEvent: function(ol.MapBrowserEvent):boolean}}
+ * @api
+ */
+olx.interaction.InteractionOptions;
+
+
+/**
+ * Method called by the map to notify the interaction that a browser event was
+ * dispatched to the map. The function may return `false` to prevent the
+ * propagation of the event to other interactions in the map's interactions
+ * chain. Required.
+ * @type {function(ol.MapBrowserEvent):boolean}
+ * @api
+ */
+olx.interaction.InteractionOptions.prototype.handleEvent;
+
+
+/**
  * Object literal with config options for the map.
  * @typedef {{controls: (ol.Collection.<ol.control.Control>|Array.<ol.control.Control>|undefined),
  *     deviceOptions: (olx.DeviceOptions|undefined),
@@ -2408,6 +2427,24 @@ olx.interaction.PinchZoomOptions;
  * @api
  */
 olx.interaction.PinchZoomOptions.prototype.duration;
+
+
+/**
+ * @typedef {{handleEvent: function(ol.MapBrowserEvent):boolean}}
+ * @api
+ */
+olx.interaction.PointerOptions;
+
+
+/**
+ * Method called by the map to notify the interaction that a browser event was
+ * dispatched to the map. The function may return `false` to prevent the
+ * propagation of the event to other interactions in the map's interactions
+ * chain.
+ * @type {function(ol.MapBrowserEvent):boolean}
+ * @api
+ */
+olx.interaction.PointerOptions.prototype.handleEvent;
 
 
 /**
