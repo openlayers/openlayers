@@ -38,6 +38,13 @@ ol.layer.Vector = function(opt_options) {
   goog.base(this, /** @type {olx.layer.LayerOptions} */ (baseOptions));
 
   /**
+   * Function to calculate a geometry from a feature, a resolution, and a style.
+   * @type {undefined|function(ol.Feature, number, ol.style.Style): ol.geom.Geometry}
+   * @private
+   */
+  this.geometryFunction_ = options.geometryFunction;
+
+  /**
    * User provided style.
    * @type {ol.style.Style|Array.<ol.style.Style>|ol.style.StyleFunction}
    * @private
@@ -55,6 +62,17 @@ ol.layer.Vector = function(opt_options) {
 
 };
 goog.inherits(ol.layer.Vector, ol.layer.Layer);
+
+
+/**
+ * Get the geometry function.
+ * @return {undefined|function(ol.Feature, number, ol.style.Style): ol.geom.Geometry}
+ *     Layer style function.
+ * @api
+ */
+ol.layer.Vector.prototype.getGeometryFunction = function() {
+  return this.geometryFunction_;
+};
 
 
 /**

@@ -222,19 +222,28 @@ ol.renderer.webgl.VectorLayer.prototype.prepareFrame =
  * @param {number} pixelRatio Pixel ratio.
  * @param {Array.<ol.style.Style>} styles Array of styles
  * @param {ol.render.webgl.ReplayGroup} replayGroup Replay group.
+ * @param {(function(ol.Feature, number, ol.style.Style): ol.geom.Geometry)=} opt_geometryFunction
+ *     Geometry function.
  * @return {boolean} `true` if an image is loading.
  */
-ol.renderer.webgl.VectorLayer.prototype.renderFeature =
-    function(feature, resolution, pixelRatio, styles, replayGroup) {
+ol.renderer.webgl.VectorLayer.prototype.renderFeature = function(feature,
+    resolution, pixelRatio, styles, replayGroup, opt_geometryFunction) {
   if (!goog.isDefAndNotNull(styles)) {
     return false;
   }
-  var i, ii, loading = false;
+  var geometry, i, ii, style;
+  var loading = false;
   for (i = 0, ii = styles.length; i < ii; ++i) {
-    loading = ol.renderer.vector.renderFeature(
-        replayGroup, feature, styles[i],
-        ol.renderer.vector.getSquaredTolerance(resolution, pixelRatio),
-        this.handleImageChange_, this) || loading;
+    style = styles[i];
+    geometry = goog.isDef(opt_geometryFunction) ?
+        opt_geometryFunction(feature, resolution, style) :
+        feature.getGeometry();
+    if (goog.isDefAndNotNull(geometry)) {
+      loading = ol.renderer.vector.renderFeature(
+          replayGroup, feature, geometry, style,
+          ol.renderer.vector.getSquaredTolerance(resolution, pixelRatio),
+          this.handleImageChange_, this) || loading;
+    }
   }
   return loading;
 };

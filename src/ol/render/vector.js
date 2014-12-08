@@ -76,6 +76,7 @@ ol.renderer.vector.renderCircleGeometry_ =
 /**
  * @param {ol.render.IReplayGroup} replayGroup Replay group.
  * @param {ol.Feature} feature Feature.
+ * @param {ol.geom.Geometry} geometry Geometry.
  * @param {ol.style.Style} style Style.
  * @param {number} squaredTolerance Squared tolerance.
  * @param {function(this: T, goog.events.Event)} listener Listener function.
@@ -83,14 +84,14 @@ ol.renderer.vector.renderCircleGeometry_ =
  * @return {boolean} `true` if style is loading.
  * @template T
  */
-ol.renderer.vector.renderFeature = function(
-    replayGroup, feature, style, squaredTolerance, listener, thisArg) {
+ol.renderer.vector.renderFeature = function(replayGroup, feature, geometry,
+    style, squaredTolerance, listener, thisArg) {
   var loading = false;
   var imageStyle, imageState;
   imageStyle = style.getImage();
   if (goog.isNull(imageStyle)) {
     ol.renderer.vector.renderFeature_(
-        replayGroup, feature, style, squaredTolerance);
+        replayGroup, feature, geometry, style, squaredTolerance);
   } else {
     imageState = imageStyle.getImageState();
     if (imageState == ol.style.ImageState.LOADED ||
@@ -98,7 +99,7 @@ ol.renderer.vector.renderFeature = function(
       imageStyle.unlistenImageChange(listener, thisArg);
       if (imageState == ol.style.ImageState.LOADED) {
         ol.renderer.vector.renderFeature_(
-            replayGroup, feature, style, squaredTolerance);
+            replayGroup, feature, geometry, style, squaredTolerance);
       }
     } else {
       if (imageState == ol.style.ImageState.IDLE) {
@@ -117,16 +118,13 @@ ol.renderer.vector.renderFeature = function(
 /**
  * @param {ol.render.IReplayGroup} replayGroup Replay group.
  * @param {ol.Feature} feature Feature.
+ * @param {ol.geom.Geometry} geometry Geometry.
  * @param {ol.style.Style} style Style.
  * @param {number} squaredTolerance Squared tolerance.
  * @private
  */
 ol.renderer.vector.renderFeature_ = function(
-    replayGroup, feature, style, squaredTolerance) {
-  var geometry = feature.getGeometry();
-  if (!goog.isDefAndNotNull(geometry)) {
-    return;
-  }
+    replayGroup, feature, geometry, style, squaredTolerance) {
   var simplifiedGeometry = geometry.getSimplifiedGeometry(squaredTolerance);
   var geometryRenderer =
       ol.renderer.vector.GEOMETRY_RENDERERS_[simplifiedGeometry.getType()];
