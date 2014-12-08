@@ -74,7 +74,7 @@ ol.structs.RBush.prototype.load = function(extents, values) {
   }
   goog.asserts.assert(extents.length === values.length);
 
-  var items = [];
+  var items = new Array(values.length);
   for (var i = 0, l = values.length; i < l; i++) {
     var extent = extents[i];
     var value = values[i];
@@ -86,7 +86,7 @@ ol.structs.RBush.prototype.load = function(extents, values) {
       extent[3],
       value
     ];
-    items.push(item);
+    items[i] = item;
     goog.object.add(this.items_, goog.getUid(value).toString(), item);
   }
   this.rbush_.load(items);
@@ -228,7 +228,7 @@ ol.structs.RBush.prototype.isEmpty = function() {
  */
 ol.structs.RBush.prototype.clear = function() {
   this.rbush_.clear();
-  goog.object.clear(this.items_);
+  this.items_ = {};
 };
 
 
