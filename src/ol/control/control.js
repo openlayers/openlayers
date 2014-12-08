@@ -66,6 +66,11 @@ ol.control.Control = function(options) {
    */
   this.listenerKeys = [];
 
+  /**
+   * @type {function(ol.MapEvent)}
+   */
+  this.render = goog.isDef(options.render) ? options.render : goog.nullFunction;
+
 };
 goog.inherits(ol.control.Control, ol.Object);
 
@@ -90,15 +95,6 @@ ol.control.Control.prototype.getMap = function() {
 
 
 /**
- * Function called on each map render. Executes in a requestAnimationFrame
- * callback. Can be implemented in sub-classes to re-render the control's
- * UI.
- * @param {ol.MapEvent} mapEvent Map event.
- */
-ol.control.Control.prototype.handleMapPostrender = goog.nullFunction;
-
-
-/**
  * Remove the control from its current map and attach it to the new map.
  * Subclasses may set up event handlers to get notified about changes to
  * the map here.
@@ -118,9 +114,9 @@ ol.control.Control.prototype.setMap = function(map) {
     var target = !goog.isNull(this.target_) ?
         this.target_ : map.getOverlayContainerStopEvent();
     goog.dom.appendChild(target, this.element);
-    if (this.handleMapPostrender !== goog.nullFunction) {
+    if (this.render !== goog.nullFunction) {
       this.listenerKeys.push(goog.events.listen(map,
-          ol.MapEventType.POSTRENDER, this.handleMapPostrender, false, this));
+          ol.MapEventType.POSTRENDER, this.render, false, this));
     }
     map.render();
   }
