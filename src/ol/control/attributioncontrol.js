@@ -110,7 +110,9 @@ ol.control.Attribution = function(opt_options) {
       ol.css.CLASS_CONTROL +
       (this.collapsed_ && this.collapsible_ ? ' ol-collapsed' : '') +
       (this.collapsible_ ? '' : ' ol-uncollapsible');
-  var element = goog.dom.createDom(goog.dom.TagName.DIV,
+  var tagName = goog.isDef(options.tagName) ?
+      options.tagName : goog.dom.TagName.DIV;
+  var element = goog.dom.createDom(tagName,
       cssClasses, this.ulElement_, button);
 
   goog.base(this, {

@@ -797,6 +797,12 @@ olx.control;
 
 /**
  * @typedef {{className: (string|undefined),
+ *     collapsible: (boolean|undefined),
+ *     collapsed: (boolean|undefined),
+ *     tipLabel: (string|undefined),
+ *     label: (string|undefined),
+ *     collapseLabel: (string|undefined),
+ *     tagName: (string|undefined),
  *     target: (Element|undefined)}}
  * @api
  */
@@ -809,6 +815,14 @@ olx.control.AttributionOptions;
  * @api
  */
 olx.control.AttributionOptions.prototype.className;
+
+
+/**
+ * HTML element type. Default is `div`.
+ * @type {string|undefined}
+ * @api stable
+ */
+olx.control.AttributionOptions.prototype.tagName;
 
 
 /**
@@ -950,6 +964,7 @@ olx.control.DefaultsOptions.prototype.zoomOptions;
  * @typedef {{className: (string|undefined),
  *     tipLabel: (string|undefined),
  *     keys: (boolean|undefined),
+ *     tagName: (string|undefined),
  *     target: (Element|undefined)}}
  * @api
  */
@@ -981,6 +996,14 @@ olx.control.FullScreenOptions.prototype.keys;
 
 
 /**
+ * HTML element type. Default is `div`.
+ * @type {string|undefined}
+ * @api stable
+ */
+olx.control.FullScreenOptions.prototype.tagName;
+
+
+/**
  * Target.
  * @type {Element|undefined}
  * @api
@@ -992,6 +1015,7 @@ olx.control.FullScreenOptions.prototype.target;
  * @typedef {{className: (string|undefined),
  *     coordinateFormat: (ol.CoordinateFormatType|undefined),
  *     projection: ol.proj.ProjectionLike,
+ *     tagName: (string|undefined),
  *     target: (Element|undefined),
  *     undefinedHTML: (string|undefined)}}
  * @api stable
@@ -1022,6 +1046,13 @@ olx.control.MousePositionOptions.prototype.coordinateFormat;
  */
 olx.control.MousePositionOptions.prototype.projection;
 
+
+/**
+ * HTML element type. Default is `div`.
+ * @type {string|undefined}
+ * @api stable
+ */
+olx.control.MousePositionOptions.prototype.tagName;
 
 /**
  * Target.
@@ -1114,6 +1145,7 @@ olx.control.OverviewMapOptions.prototype.tipLabel;
 /**
  * @typedef {{className: (string|undefined),
  *     minWidth: (number|undefined),
+ *     tagName: (string|undefined),
  *     target: (Element|undefined),
  *     units: (ol.control.ScaleLineUnits|string|undefined)}}
  * @api stable
@@ -1138,6 +1170,14 @@ olx.control.ScaleLineOptions.prototype.minWidth;
 
 
 /**
+ * HTML element type. Default is `div`.
+ * @type {string|undefined}
+ * @api stable
+ */
+olx.control.ScaleLineOptions.prototype.tagName;
+
+
+/**
  * Target.
  * @type {Element|undefined}
  * @api stable
@@ -1158,6 +1198,7 @@ olx.control.ScaleLineOptions.prototype.units;
  *     className: (string|undefined),
  *     label: (string|undefined),
  *     tipLabel: (string|undefined),
+ *     tagName: (string|undefined),
  *     target: (Element|undefined),
  *     autoHide: (boolean|undefined)}}
  * @api stable
@@ -1179,6 +1220,14 @@ olx.control.RotateOptions.prototype.className;
  * @api stable
  */
 olx.control.RotateOptions.prototype.label;
+
+
+/**
+ * HTML element type. Default is `div`.
+ * @type {string|undefined}
+ * @api stable
+ */
+olx.control.RotateOptions.prototype.tagName;
 
 
 /**
@@ -1221,6 +1270,7 @@ olx.control.RotateOptions.prototype.target;
  *     zoomInTipLabel: (string|undefined),
  *     zoomOutTipLabel: (string|undefined),
  *     delta: (number|undefined),
+ *     tagName: (string|undefined),
  *     target: (Element|undefined)}}
  * @api stable
  */
@@ -1284,6 +1334,14 @@ olx.control.ZoomOptions.prototype.delta;
 
 
 /**
+ * HTML element type. Default is `div`.
+ * @type {string|undefined}
+ * @api stable
+ */
+olx.control.ZoomOptions.prototype.tagName;
+
+
+/**
  * Target.
  * @type {Element|undefined}
  * @api stable
@@ -1326,6 +1384,7 @@ olx.control.ZoomSliderOptions.prototype.minResolution;
 
 /**
  * @typedef {{className: (string|undefined),
+ *     tagName: (string|undefined),
  *     target: (Element|undefined),
  *     tipLabel: (string|undefined),
  *     extent: (ol.Extent|undefined)}}
@@ -1348,6 +1407,13 @@ olx.control.ZoomToExtentOptions.prototype.className;
  * @api stable
  */
 olx.control.ZoomToExtentOptions.prototype.target;
+
+/**
+ * HTML element type. Default is `div`.
+ * @type {string|undefined}
+ * @api stable
+ */
+olx.control.ZoomToExtentOptions.prototype.tagName;
 
 
 /**

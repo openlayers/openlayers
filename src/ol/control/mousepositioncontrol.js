@@ -44,8 +44,10 @@ ol.control.MousePosition = function(opt_options) {
 
   var className = goog.isDef(options.className) ?
       options.className : 'ol-mouse-position';
+  var tagName = goog.isDef(options.tagName) ?
+      options.tagName : goog.dom.TagName.DIV;
 
-  var element = goog.dom.createDom(goog.dom.TagName.DIV, className);
+  var element = goog.dom.createDom(tagName, className);
 
   goog.base(this, {
     element: element,
