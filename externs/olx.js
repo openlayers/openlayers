@@ -1637,6 +1637,7 @@ olx.format.GPXOptions.prototype.readExtensions;
 /**
  * @typedef {{featureNS: string,
  *     featureType: string,
+ *     gmlFormat: (ol.format.GMLBase|undefined),
  *     schemaLocation: (string|undefined)}}
  * @api
  */
@@ -1657,6 +1658,14 @@ olx.format.WFSOptions.prototype.featureNS;
  * @api stable
  */
 olx.format.WFSOptions.prototype.featureType;
+
+
+/**
+ * The GML format to use to parse the response. Default is `ol.format.GML3`.
+ * @type {ol.format.GMLBase|undefined}
+ * @api
+ */
+olx.format.WFSOptions.prototype.gmlFormat;
 
 
 /**
