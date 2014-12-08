@@ -797,6 +797,11 @@ olx.control;
 
 /**
  * @typedef {{className: (string|undefined),
+ *     collapsible: (boolean|undefined),
+ *     collapsed: (boolean|undefined),
+ *     tipLabel: (string|undefined),
+ *     label: (string|undefined),
+ *     collapseLabel: (string|undefined),
  *     target: (Element|undefined)}}
  * @api
  */
