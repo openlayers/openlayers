@@ -39,11 +39,11 @@ function getInfoTime(callback) {
 
 
 /**
- * Test whether externs/olx.js is newer than the provided date.
+ * Test whether any externs are newer than the provided date.
  * @param {Date} date Modification time of info file.
  * @param {function(Error, Date, boolen)} callback Called with any
  *     error, the mtime of the info file (zero date if it doesn't exist), and
- *     whether externs/olx.js is newer than that date.
+ *     whether any externs are newer than that date.
  */
 function getNewerExterns(date, callback) {
   var newer = false;
@@ -70,7 +70,7 @@ function getNewerExterns(date, callback) {
  * Generate a list of all .js paths in the source directory if any are newer
  * than the provided date.
  * @param {Date} date Modification time of info file.
- * @param {boolean} newer Whether externs/olx.js is newer than date.
+ * @param {boolean} newer Whether any externs are newer than date.
  * @param {function(Error, Array.<string>)} callback Called with any
  *     error and the array of source paths (empty if none newer).
  */
