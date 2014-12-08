@@ -58,7 +58,7 @@ function getNewerExterns(date, callback) {
     next();
   });
   walker.on('errors', function() {
-    callback(new Error('Trouble walking ' + sourceDir));
+    callback(new Error('Trouble walking ' + externsDir));
   });
   walker.on('end', function() {
     callback(null, date, newer);
