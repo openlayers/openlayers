@@ -256,7 +256,7 @@ ol.Overlay.prototype.handleMapChanged = function() {
   var map = this.getMap();
   if (goog.isDefAndNotNull(map)) {
     this.mapPostrenderListenerKey_ = goog.events.listen(map,
-        ol.MapEventType.POSTRENDER, this.handleMapPostrender, false, this);
+        ol.MapEventType.POSTRENDER, this.render, false, this);
     this.updatePixelPosition_();
     var container = this.stopEvent_ ?
         map.getOverlayContainerStopEvent() : map.getOverlayContainer();
@@ -273,7 +273,7 @@ ol.Overlay.prototype.handleMapChanged = function() {
 /**
  * @protected
  */
-ol.Overlay.prototype.handleMapPostrender = function() {
+ol.Overlay.prototype.render = function() {
   this.updatePixelPosition_();
 };
 
