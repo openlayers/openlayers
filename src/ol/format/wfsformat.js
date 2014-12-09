@@ -64,7 +64,7 @@ goog.inherits(ol.format.WFS, ol.format.XMLFeature);
  * @const
  * @type {string}
  */
-ol.format.WFS.featurePrefix = 'feature';
+ol.format.WFS.FEATURE_PREFIX = 'feature';
 
 
 /**
@@ -403,7 +403,7 @@ ol.format.WFS.writeDelete_ = function(node, feature, objectStack) {
   var featureType = goog.object.get(context, 'featureType');
   var featurePrefix = goog.object.get(context, 'featurePrefix');
   featurePrefix = goog.isDef(featurePrefix) ? featurePrefix :
-      ol.format.WFS.featurePrefix;
+      ol.format.WFS.FEATURE_PREFIX;
   var featureNS = goog.object.get(context, 'featureNS');
   node.setAttribute('typeName', featurePrefix + ':' + featureType);
   ol.xml.setAttributeNS(node, ol.format.WFS.xmlns, 'xmlns:' + featurePrefix,
@@ -427,7 +427,7 @@ ol.format.WFS.writeUpdate_ = function(node, feature, objectStack) {
   var featureType = goog.object.get(context, 'featureType');
   var featurePrefix = goog.object.get(context, 'featurePrefix');
   featurePrefix = goog.isDef(featurePrefix) ? featurePrefix :
-      ol.format.WFS.featurePrefix;
+      ol.format.WFS.FEATURE_PREFIX;
   var featureNS = goog.object.get(context, 'featureNS');
   node.setAttribute('typeName', featurePrefix + ':' + featureType);
   ol.xml.setAttributeNS(node, ol.format.WFS.xmlns, 'xmlns:' + featurePrefix,
