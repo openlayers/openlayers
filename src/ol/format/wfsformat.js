@@ -71,7 +71,7 @@ ol.format.WFS.FEATURE_PREFIX = 'feature';
  * @const
  * @type {string}
  */
-ol.format.WFS.xmlns = 'http://www.w3.org/2000/xmlns/';
+ol.format.WFS.XMLNS = 'http://www.w3.org/2000/xmlns/';
 
 
 /**
@@ -406,7 +406,7 @@ ol.format.WFS.writeDelete_ = function(node, feature, objectStack) {
       ol.format.WFS.FEATURE_PREFIX;
   var featureNS = goog.object.get(context, 'featureNS');
   node.setAttribute('typeName', featurePrefix + ':' + featureType);
-  ol.xml.setAttributeNS(node, ol.format.WFS.xmlns, 'xmlns:' + featurePrefix,
+  ol.xml.setAttributeNS(node, ol.format.WFS.XMLNS, 'xmlns:' + featurePrefix,
       featureNS);
   var fid = feature.getId();
   if (goog.isDef(fid)) {
@@ -430,7 +430,7 @@ ol.format.WFS.writeUpdate_ = function(node, feature, objectStack) {
       ol.format.WFS.FEATURE_PREFIX;
   var featureNS = goog.object.get(context, 'featureNS');
   node.setAttribute('typeName', featurePrefix + ':' + featureType);
-  ol.xml.setAttributeNS(node, ol.format.WFS.xmlns, 'xmlns:' + featurePrefix,
+  ol.xml.setAttributeNS(node, ol.format.WFS.XMLNS, 'xmlns:' + featurePrefix,
       featureNS);
   var fid = feature.getId();
   if (goog.isDef(fid)) {
@@ -529,7 +529,7 @@ ol.format.WFS.writeQuery_ = function(node, featureType, objectStack) {
     node.setAttribute('srsName', srsName);
   }
   if (goog.isDef(featureNS)) {
-    ol.xml.setAttributeNS(node, ol.format.WFS.xmlns, 'xmlns:' + featurePrefix,
+    ol.xml.setAttributeNS(node, ol.format.WFS.XMLNS, 'xmlns:' + featurePrefix,
         featureNS);
   }
   var item = goog.object.clone(context);
