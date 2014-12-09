@@ -1,6 +1,6 @@
 goog.require('ol.Map');
 goog.require('ol.Overlay');
-goog.require('ol.View2D');
+goog.require('ol.View');
 goog.require('ol.coordinate');
 goog.require('ol.layer.Tile');
 goog.require('ol.proj');
@@ -15,7 +15,7 @@ var map = new ol.Map({
   layers: [layer],
   renderer: exampleNS.getRendererFromQueryString(),
   target: 'map',
-  view: new ol.View2D({
+  view: new ol.View({
     center: [0, 0],
     zoom: 2
   })
@@ -53,7 +53,7 @@ map.on('click', function(evt) {
 
   $(element).popover('destroy');
   popup.setPosition(coordinate);
-  // the keys are quoted to prevent renaming in ADVANCED_OPTIMIZATIONS mode.
+  // the keys are quoted to prevent renaming in ADVANCED mode.
   $(element).popover({
     'placement': 'top',
     'animation': false,

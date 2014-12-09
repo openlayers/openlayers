@@ -15,8 +15,20 @@ goog.require('goog.math');
 
 
 /**
+ * @classdesc
+ * Class to create objects that can be used with {@link
+ * ol.geom.Polygon.circular}.
+ *
+ * For example to create a sphere whose radius is equal to the semi-major
+ * axis of the WGS84 ellipsoid:
+ *
+ * ```js
+ * var wgs84Sphere= new ol.Sphere(6378137);
+ * ```
+ *
  * @constructor
  * @param {number} radius Radius.
+ * @api
  */
 ol.Sphere = function(radius) {
 
@@ -202,12 +214,13 @@ ol.Sphere.prototype.midpoint = function(c1, c2) {
 
 
 /**
- * Returns the coordinate at the given distance and bearing from c.
+ * Returns the coordinate at the given distance and bearing from `c1`.
  *
- * @param {ol.Coordinate} c1 Coordinate.
- * @param {number} distance Distance.
- * @param {number} bearing Bearing.
- * @return {ol.Coordinate} Coordinate.
+ * @param {ol.Coordinate} c1 The origin point (`[lon, lat]` in degrees).
+ * @param {number} distance The great-circle distance between the origin
+ *     point and the target point.
+ * @param {number} bearing The bearing (in radians).
+ * @return {ol.Coordinate} The target point.
  */
 ol.Sphere.prototype.offset = function(c1, distance, bearing) {
   var lat1 = goog.math.toRadians(c1[1]);

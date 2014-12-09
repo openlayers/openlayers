@@ -1,5 +1,6 @@
 goog.require('ol.Map');
-goog.require('ol.View2D');
+goog.require('ol.View');
+goog.require('ol.control');
 goog.require('ol.format.OSMXML');
 goog.require('ol.layer.Tile');
 goog.require('ol.layer.Vector');
@@ -90,8 +91,8 @@ var styles = {
 var vectorSource = new ol.source.ServerVector({
   format: new ol.format.OSMXML(),
   loader: function(extent, resolution, projection) {
-    var transform = ol.proj.getTransform(projection, 'EPSG:4326');
-    var epsg4326Extent = transform(extent, []);
+    var epsg4326Extent =
+        ol.proj.transformExtent(extent, projection, 'EPSG:4326');
     var url = 'http://overpass-api.de/api/xapi?map?bbox=' +
         epsg4326Extent.join(',');
     $.ajax(url).then(function(response) {
@@ -131,7 +132,12 @@ var raster = new ol.layer.Tile({
 var map = new ol.Map({
   layers: [raster, vector],
   target: document.getElementById('map'),
-  view: new ol.View2D({
+  controls: ol.control.defaults({
+    attributionOptions: /** @type {olx.control.AttributionOptions} */ ({
+      collapsible: false
+    })
+  }),
+  view: new ol.View({
     center: [739218, 5906096],
     maxZoom: 19,
     zoom: 17

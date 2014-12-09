@@ -4,7 +4,6 @@ goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('ol.Attribution');
 goog.require('ol.Extent');
-goog.require('ol.Image');
 goog.require('ol.array');
 goog.require('ol.source.Source');
 
@@ -12,10 +11,10 @@ goog.require('ol.source.Source');
 /**
  * @typedef {{attributions: (Array.<ol.Attribution>|undefined),
  *            extent: (null|ol.Extent|undefined),
- *            logo: (string|undefined),
+ *            logo: (string|olx.LogoOptions|undefined),
  *            projection: ol.proj.ProjectionLike,
  *            resolutions: (Array.<number>|undefined),
- *            state: (ol.source.State|string|undefined)}}
+ *            state: (ol.source.State|undefined)}}
  */
 ol.source.ImageOptions;
 
@@ -30,6 +29,7 @@ ol.source.ImageOptions;
  * @constructor
  * @extends {ol.source.Source}
  * @param {ol.source.ImageOptions} options Single image source options.
+ * @api
  */
 ol.source.Image = function(options) {
 
@@ -88,3 +88,14 @@ ol.source.Image.prototype.findNearestResolution =
  * @return {ol.ImageBase} Single image.
  */
 ol.source.Image.prototype.getImage = goog.abstractMethod;
+
+
+/**
+ * Default image load function for image sources that use ol.Image image
+ * instances.
+ * @param {ol.Image} image Image.
+ * @param {string} src Source.
+ */
+ol.source.Image.defaultImageLoadFunction = function(image, src) {
+  image.getImage().src = src;
+};

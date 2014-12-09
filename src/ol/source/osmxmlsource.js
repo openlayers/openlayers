@@ -13,7 +13,7 @@ goog.require('ol.source.StaticVector');
  * @extends {ol.source.StaticVector}
  * @fires ol.source.VectorEvent
  * @param {olx.source.OSMXMLOptions=} opt_options Options.
- * @todo api
+ * @api
  */
 ol.source.OSMXML = function(opt_options) {
 
@@ -22,14 +22,13 @@ ol.source.OSMXML = function(opt_options) {
   goog.base(this, {
     attributions: options.attributions,
     doc: options.doc,
-    extent: options.extent,
     format: new ol.format.OSMXML(),
     logo: options.logo,
     node: options.node,
     projection: options.projection,
-    reprojectTo: options.reprojectTo,
     text: options.text,
-    url: options.url
+    url: options.url,
+    urls: options.urls
   });
 
 };

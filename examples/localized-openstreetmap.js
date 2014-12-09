@@ -1,6 +1,7 @@
 goog.require('ol.Attribution');
 goog.require('ol.Map');
-goog.require('ol.View2D');
+goog.require('ol.View');
+goog.require('ol.control');
 goog.require('ol.layer.Tile');
 goog.require('ol.source.OSM');
 
@@ -15,7 +16,7 @@ var openCycleMapLayer = new ol.layer.Tile({
         html: 'All maps &copy; ' +
             '<a href="http://www.opencyclemap.org/">OpenCycleMap</a>'
       }),
-      ol.source.OSM.DATA_ATTRIBUTION
+      ol.source.OSM.ATTRIBUTION
     ],
     url: 'http://{a-c}.tile.opencyclemap.org/cycle/{z}/{x}/{y}.png'
   })
@@ -28,7 +29,7 @@ var openSeaMapLayer = new ol.layer.Tile({
         html: 'All maps &copy; ' +
             '<a href="http://www.openseamap.org/">OpenSeaMap</a>'
       }),
-      ol.source.OSM.DATA_ATTRIBUTION
+      ol.source.OSM.ATTRIBUTION
     ],
     crossOrigin: null,
     url: 'http://tiles.openseamap.org/seamark/{z}/{x}/{y}.png'
@@ -42,7 +43,12 @@ var map = new ol.Map({
     openSeaMapLayer
   ],
   target: 'map',
-  view: new ol.View2D({
+  controls: ol.control.defaults({
+    attributionOptions: /** @type {olx.control.AttributionOptions} */ ({
+      collapsible: false
+    })
+  }),
+  view: new ol.View({
     maxZoom: 18,
     center: [-244780.24508882355, 5986452.183179816],
     zoom: 15

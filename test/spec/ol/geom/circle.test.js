@@ -203,16 +203,6 @@ describe('ol.geom.Circle', function() {
 
     });
 
-    describe('#transform', function() {
-
-      it('throws an exception', function() {
-        expect(function() {
-          circle.applyTransform(ol.proj.identityTransform);
-        }).to.throwException();
-      });
-
-    });
-
   });
 
 });
@@ -220,4 +210,3 @@ describe('ol.geom.Circle', function() {
 
 goog.require('ol.geom.Circle');
 goog.require('ol.geom.GeometryType');
-goog.require('ol.proj');

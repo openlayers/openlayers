@@ -9,7 +9,7 @@ describe('ol.Feature', function() {
       expect(feature).to.be.a(ol.Feature);
     });
 
-    it('takes attribute values', function() {
+    it('takes properties', function() {
       var feature = new ol.Feature({
         foo: 'bar'
       });
@@ -320,6 +320,14 @@ describe('ol.Feature', function() {
       expect(feature.getStyleFunction()).to.be(styleFunction);
     });
 
+    it('accepts null', function() {
+      var feature = new ol.Feature();
+      feature.setStyle(style);
+      feature.setStyle(null);
+      expect(feature.getStyle()).to.be(null);
+      expect(feature.getStyleFunction()).to.be(undefined);
+    });
+
     it('dispatches a change event', function(done) {
       var feature = new ol.Feature();
       feature.on('change', function() {
@@ -375,7 +383,7 @@ describe('ol.Feature', function() {
 
     it('correctly clones features', function() {
       var feature = new ol.Feature();
-      feature.setValues({'fookey': 'fooval'});
+      feature.setProperties({'fookey': 'fooval'});
       feature.setId(1);
       feature.setGeometryName('geom');
       var geometry = new ol.geom.Point([1, 2]);
@@ -408,35 +416,6 @@ describe('ol.Feature', function() {
     });
   });
 
-
-});
-
-describe('ol.feature.createStyleFunction()', function() {
-  var style = new ol.style.Style();
-
-  it('creates a style function from a single style', function() {
-    var styleFunction = ol.feature.createStyleFunction(style);
-    expect(styleFunction()).to.eql([style]);
-  });
-
-  it('creates a style function from an array of styles', function() {
-    var styleFunction = ol.feature.createStyleFunction([style]);
-    expect(styleFunction()).to.eql([style]);
-  });
-
-  it('passes through a function', function() {
-    var original = function() {
-      return [style];
-    };
-    var styleFunction = ol.feature.createStyleFunction(original);
-    expect(styleFunction).to.be(original);
-  });
-
-  it('throws on (some) unexpected input', function() {
-    expect(function() {
-      ol.feature.createStyleFunction({bogus: 'input'});
-    }).to.throwException();
-  });
 
 });
 

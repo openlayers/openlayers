@@ -4,6 +4,13 @@ goog.provide('ol');
 
 
 /**
+ * Constants defined with the define tag cannot be changed in application
+ * code, but can be set at compile time.
+ * Some reduce the size of the build in advanced compile mode.
+ */
+
+
+/**
  * @define {boolean} Assume touch.  Default is `false`.
  */
 ol.ASSUME_TOUCH = false;
@@ -66,35 +73,42 @@ ol.DRAGZOOM_ANIMATION_DURATION = 200;
 
 
 /**
- * @define {number} Hysterisis pixels.
+ * @define {number} Hysteresis pixels.
  */
 ol.DRAG_BOX_HYSTERESIS_PIXELS = 8;
 
 
 /**
- * @define {boolean} Enable the Canvas renderer.  Default is `true`.
+ * @define {boolean} Enable the Canvas renderer.  Default is `true`. Setting
+ *     this to false at compile time in advanced mode removes all code
+ *     supporting the Canvas renderer from the build.
  */
 ol.ENABLE_CANVAS = true;
 
 
 /**
  * @define {boolean} Enable the DOM renderer (used as a fallback where Canvas is
- *     not available).  Default is `true`.
+ *     not available).  Default is `true`. Setting this to false at compile time
+ *     in advanced mode removes all code supporting the DOM renderer from the
+ *     build.
  */
 ol.ENABLE_DOM = true;
 
 
 /**
  * @define {boolean} Enable rendering of ol.layer.Image based layers.  Default
- *     is `true`.
+ *     is `true`. Setting this to false at compile time in advanced mode removes
+ *     all code supporting Image layers from the build.
  */
 ol.ENABLE_IMAGE = true;
 
 
 /**
- * @define {boolean} Enable named colors.  Enabling named colors adds about 3KB
- *     uncompressed / 1.5KB compressed to the final build size.  Default is
- *     `false`.
+ * @define {boolean} Enable Closure named colors (`goog.color.names`).
+ *     Enabling these colors adds about 3KB uncompressed / 1.5KB compressed to
+ *     the final build size.  Default is `false`. This setting has no effect
+ *     with Canvas renderer, which uses its own names, whether this is true or
+ *     false.
  */
 ol.ENABLE_NAMED_COLORS = false;
 
@@ -108,26 +122,32 @@ ol.ENABLE_PROJ4JS = true;
 
 /**
  * @define {boolean} Enable rendering of ol.layer.Tile based layers.  Default is
- *     `true`.
+ *     `true`. Setting this to false at compile time in advanced mode removes
+ *     all code supporting Tile layers from the build.
  */
 ol.ENABLE_TILE = true;
 
 
 /**
  * @define {boolean} Enable rendering of ol.layer.Vector based layers.  Default
- *     is `true`.
+ *     is `true`. Setting this to false at compile time in advanced mode removes
+ *     all code supporting Vector layers from the build.
  */
 ol.ENABLE_VECTOR = true;
 
 
 /**
- * @define {boolean} Enable the WebGL renderer.  Default is `true`.
+ * @define {boolean} Enable the WebGL renderer.  Default is `true`. Setting
+ *     this to false at compile time in advanced mode removes all code
+ *     supporting the WebGL renderer from the build.
  */
 ol.ENABLE_WEBGL = true;
 
 
 /**
  * @define {boolean} Support legacy IE (7-8).  Default is `false`.
+ *     If set to `true`, `goog.array.ASSUME_NATIVE_FUNCTIONS` must be set
+ *     to `false` because legacy IE do not support ECMAScript 5 array functions.
  */
 ol.LEGACY_IE_SUPPORT = false;
 
@@ -168,9 +188,29 @@ ol.MOUSEWHEELZOOM_TIMEOUT_DURATION = 80;
 
 
 /**
+ * @define {number} Maximum width and/or height extent ratio that determines
+ * when the overview map should be zoomed out.
+ */
+ol.OVERVIEWMAP_MAX_RATIO = 0.75;
+
+
+/**
+ * @define {number} Minimum width and/or height extent ratio that determines
+ * when the overview map should be zoomed in.
+ */
+ol.OVERVIEWMAP_MIN_RATIO = 0.1;
+
+
+/**
  * @define {number} Rotate animation duration.
  */
 ol.ROTATE_ANIMATION_DURATION = 250;
+
+
+/**
+ * @define {number} Tolerance for geometry simplification in device pixels.
+ */
+ol.SIMPLIFY_TOLERANCE = 0.5;
 
 
 /**
@@ -186,14 +226,35 @@ ol.ZOOMSLIDER_ANIMATION_DURATION = 200;
 
 
 /**
- * ol.inherits is an alias to the goog.inherits function. It is exported
- * for use in non-compiled application code.
+ * Inherit the prototype methods from one constructor into another.
  *
- * FIXME: We use a new line to fake the linter. Without the new line the
- * linter complains with:
+ * Usage:
  *
- * "Missing newline between constructor and goog.inherits"
- * @todo api
+ *     function ParentClass(a, b) { }
+ *     ParentClass.prototype.foo = function(a) { }
+ *
+ *     function ChildClass(a, b, c) {
+ *       // Call parent constructor
+ *       ParentClass.call(this, a, b);
+ *     }
+ *     ol.inherits(ChildClass, ParentClass);
+ *
+ *     var child = new ChildClass('a', 'b', 'see');
+ *     child.foo(); // This works.
+ *
+ * In addition, a superclass' implementation of a method can be invoked as
+ * follows:
+ *
+ *     ChildClass.prototype.foo = function(a) {
+ *       ChildClass.base(this, 'foo', a);
+ *       // Other code here.
+ *     };
+ *
+ * @param {Function} childCtor Child constructor.
+ * @param {Function} parentCtor Parent constructor.
+ * @function
+ * @api
  */
 ol.inherits =
     goog.inherits;
+// note that the newline above is necessary to satisfy the linter

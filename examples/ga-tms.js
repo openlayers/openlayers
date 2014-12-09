@@ -1,6 +1,6 @@
 goog.require('ol.Attribution');
 goog.require('ol.Map');
-goog.require('ol.View2D');
+goog.require('ol.View');
 goog.require('ol.control');
 goog.require('ol.control.FullScreen');
 goog.require('ol.control.MousePosition');
@@ -42,6 +42,9 @@ var map = new ol.Map({
           resolutions: resolutions
         }),
         tileUrlFunction: function(tileCoord, pixelRatio, projection) {
+          tileCoord.x = tileCoord[1];
+          tileCoord.y = tileCoord[2];
+          tileCoord.z = tileCoord[0];
           if (tileCoord.x < 0 || tileCoord.y < 0 || tileCoord.z < 0) {
             return undefined;
           }
@@ -68,7 +71,7 @@ var map = new ol.Map({
   renderer: 'canvas',
   target: 'map',
   ol3Logo: false,
-  view: new ol.View2D({
+  view: new ol.View({
     projection: new ol.proj.Projection({
       code: 'PIXELS',
       units: 'pixels',

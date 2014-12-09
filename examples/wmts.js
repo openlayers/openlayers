@@ -1,6 +1,7 @@
 goog.require('ol.Attribution');
 goog.require('ol.Map');
-goog.require('ol.View2D');
+goog.require('ol.View');
+goog.require('ol.control');
 goog.require('ol.extent');
 goog.require('ol.layer.Tile');
 goog.require('ol.proj');
@@ -34,6 +35,7 @@ var map = new ol.Map({
     }),
     new ol.layer.Tile({
       opacity: 0.7,
+      extent: projectionExtent,
       source: new ol.source.WMTS({
         attributions: [attribution],
         url: 'http://services.arcgisonline.com/arcgis/rest/' +
@@ -47,13 +49,17 @@ var map = new ol.Map({
           resolutions: resolutions,
           matrixIds: matrixIds
         }),
-        extent: projectionExtent,
         style: 'default'
       })
     })
   ],
   target: 'map',
-  view: new ol.View2D({
+  controls: ol.control.defaults({
+    attributionOptions: /** @type {olx.control.AttributionOptions} */ ({
+      collapsible: false
+    })
+  }),
+  view: new ol.View({
     center: [-11158582, 4813697],
     zoom: 4
   })

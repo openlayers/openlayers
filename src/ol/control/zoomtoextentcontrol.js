@@ -1,5 +1,3 @@
-// FIXME works for View2D only
-
 goog.provide('ol.control.ZoomToExtent');
 
 goog.require('goog.asserts');
@@ -9,7 +7,6 @@ goog.require('goog.events');
 goog.require('goog.events.EventType');
 goog.require('ol.control.Control');
 goog.require('ol.css');
-goog.require('ol.pointer.PointerEventHandler');
 
 
 
@@ -21,7 +18,7 @@ goog.require('ol.pointer.PointerEventHandler');
  * @constructor
  * @extends {ol.control.Control}
  * @param {olx.control.ZoomToExtentOptions=} opt_options Options.
- * @todo api
+ * @api stable
  */
 ol.control.ZoomToExtent = function(opt_options) {
   var options = goog.isDef(opt_options) ? opt_options : {};
@@ -37,18 +34,11 @@ ol.control.ZoomToExtent = function(opt_options) {
 
   var tipLabel = goog.isDef(options.tipLabel) ?
       options.tipLabel : 'Fit to extent';
-  var tip = goog.dom.createDom(goog.dom.TagName.SPAN, {
-    'role' : 'tooltip'
-  }, tipLabel);
   var button = goog.dom.createDom(goog.dom.TagName.BUTTON, {
-    'class': 'ol-has-tooltip'
+    'type': 'button',
+    'title': tipLabel
   });
-  goog.dom.appendChild(button, tip);
 
-  var buttonHandler = new ol.pointer.PointerEventHandler(button);
-  this.registerDisposable(buttonHandler);
-  goog.events.listen(buttonHandler, ol.pointer.EventType.POINTERUP,
-      this.handlePointerUp_, false, this);
   goog.events.listen(button, goog.events.EventType.CLICK,
       this.handleClick_, false, this);
 
@@ -76,19 +66,7 @@ goog.inherits(ol.control.ZoomToExtent, ol.control.Control);
  * @private
  */
 ol.control.ZoomToExtent.prototype.handleClick_ = function(event) {
-  if (event.screenX !== 0 && event.screenY !== 0) {
-    return;
-  }
-  this.handleZoomToExtent_();
-};
-
-
-/**
- * @param {ol.pointer.PointerEvent} pointerEvent The event to handle
- * @private
- */
-ol.control.ZoomToExtent.prototype.handlePointerUp_ = function(pointerEvent) {
-  pointerEvent.browserEvent.preventDefault();
+  event.preventDefault();
   this.handleZoomToExtent_();
 };
 
@@ -99,9 +77,9 @@ ol.control.ZoomToExtent.prototype.handlePointerUp_ = function(pointerEvent) {
 ol.control.ZoomToExtent.prototype.handleZoomToExtent_ = function() {
   var map = this.getMap();
   var view = map.getView();
-  goog.asserts.assert(goog.isDef(view));
-  var view2D = view.getView2D();
   var extent = goog.isNull(this.extent_) ?
-      view2D.getProjection().getExtent() : this.extent_;
-  view2D.fitExtent(extent, map.getSize());
+      view.getProjection().getExtent() : this.extent_;
+  var size = map.getSize();
+  goog.asserts.assert(goog.isDef(size));
+  view.fitExtent(extent, size);
 };

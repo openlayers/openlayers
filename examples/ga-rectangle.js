@@ -2,7 +2,7 @@ goog.require('ga.Map');
 goog.require('ga.layer');
 goog.require('ol.Feature');
 goog.require('ol.FeatureOverlay');
-goog.require('ol.View2D');
+goog.require('ol.View');
 goog.require('ol.geom.Polygon');
 goog.require('ol.interaction.DragBox');
 goog.require('ol.style.Fill');
@@ -20,7 +20,7 @@ var map = new ga.Map({
     ga.layer.create('ch.swisstopo.pixelkarte-farbe-pk200.noscale'),
     ga.layer.create('ch.swisstopo.pixelkarte-farbe-pk500.noscale')
   ],
-  view: new ol.View2D({
+  view: new ol.View({
     resolution: 500,
     center: [660500, 186000],
     zoom: 2

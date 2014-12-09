@@ -13,7 +13,7 @@ goog.require('ol.source.XYZ');
  * @constructor
  * @extends {ol.source.XYZ}
  * @param {olx.source.OSMOptions=} opt_options Open Street Map options.
- * @todo api
+ * @api stable
  */
 ol.source.OSM = function(opt_options) {
 
@@ -23,7 +23,7 @@ ol.source.OSM = function(opt_options) {
   if (goog.isDef(options.attributions)) {
     attributions = options.attributions;
   } else {
-    attributions = ol.source.OSM.ATTRIBUTIONS;
+    attributions = [ol.source.OSM.ATTRIBUTION];
   }
 
   var crossOrigin = goog.isDef(options.crossOrigin) ?
@@ -37,7 +37,7 @@ ol.source.OSM = function(opt_options) {
     attributions: attributions,
     crossOrigin: crossOrigin,
     opaque: true,
-    maxZoom: options.maxZoom,
+    maxZoom: goog.isDef(options.maxZoom) ? options.maxZoom : 19,
     tileLoadFunction: options.tileLoadFunction,
     url: url
   });
@@ -49,34 +49,10 @@ goog.inherits(ol.source.OSM, ol.source.XYZ);
 /**
  * @const
  * @type {ol.Attribution}
- * @todo api
+ * @api
  */
-ol.source.OSM.DATA_ATTRIBUTION = new ol.Attribution({
-  html: 'Data &copy; ' +
-      '<a href="http://www.openstreetmap.org/">OpenStreetMap</a> ' +
-      'contributors, ' +
-      '<a href="http://www.openstreetmap.org/copyright">ODbL</a>'
+ol.source.OSM.ATTRIBUTION = new ol.Attribution({
+  html: '&copy; ' +
+      '<a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> ' +
+      'contributors.'
 });
-
-
-/**
- * @const
- * @type {ol.Attribution}
- * @todo api
- */
-ol.source.OSM.TILE_ATTRIBUTION = new ol.Attribution({
-  html: 'Tiles &copy; ' +
-      '<a href="http://www.openstreetmap.org/">OpenStreetMap</a> ' +
-      'contributors, ' +
-      '<a href="http://creativecommons.org/licenses/by-sa/2.0/">CC BY-SA</a>'
-});
-
-
-/**
- * @const
- * @type {Array.<ol.Attribution>}
- */
-ol.source.OSM.ATTRIBUTIONS = [
-  ol.source.OSM.TILE_ATTRIBUTION,
-  ol.source.OSM.DATA_ATTRIBUTION
-];

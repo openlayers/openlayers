@@ -45,11 +45,15 @@ ol.renderer.canvas.Layer.prototype.composeFrame =
   var image = this.getImage();
   if (!goog.isNull(image)) {
     var imageTransform = this.getImageTransform();
+    // for performance reasons, context.save / context.restore is not used
+    // to save and restore the transformation matrix and the opacity.
+    // see http://jsperf.com/context-save-restore-versus-variable
+    var alpha = context.globalAlpha;
     context.globalAlpha = layerState.opacity;
 
     // for performance reasons, context.setTransform is only used
     // when the view is rotated. see http://jsperf.com/canvas-transform
-    if (frameState.view2DState.rotation === 0) {
+    if (frameState.viewState.rotation === 0) {
       var dx = goog.vec.Mat4.getElement(imageTransform, 0, 3);
       var dy = goog.vec.Mat4.getElement(imageTransform, 1, 3);
       var dw = image.width * goog.vec.Mat4.getElement(imageTransform, 0, 0);
@@ -67,6 +71,7 @@ ol.renderer.canvas.Layer.prototype.composeFrame =
       context.drawImage(image, 0, 0);
       context.setTransform(1, 0, 0, 1, 0, 0);
     }
+    context.globalAlpha = alpha;
   }
 
   this.dispatchPostComposeEvent(context, frameState);
@@ -89,9 +94,9 @@ ol.renderer.canvas.Layer.prototype.dispatchComposeEvent_ =
         opt_transform : this.getTransform(frameState);
     var render = new ol.render.canvas.Immediate(
         context, frameState.pixelRatio, frameState.extent, transform,
-        frameState.view2DState.rotation);
-    var composeEvent = new ol.render.Event(type, layer, render, frameState,
-        context, null);
+        frameState.viewState.rotation);
+    var composeEvent = new ol.render.Event(type, layer, render, null,
+        frameState, context, null);
     layer.dispatchEvent(composeEvent);
     render.flush();
   }
@@ -155,15 +160,15 @@ ol.renderer.canvas.Layer.prototype.getImageTransform = goog.abstractMethod;
  * @return {!goog.vec.Mat4.Number} Transform.
  */
 ol.renderer.canvas.Layer.prototype.getTransform = function(frameState) {
-  var view2DState = frameState.view2DState;
+  var viewState = frameState.viewState;
   var pixelRatio = frameState.pixelRatio;
   return ol.vec.Mat4.makeTransform2D(this.transform_,
       pixelRatio * frameState.size[0] / 2,
       pixelRatio * frameState.size[1] / 2,
-      pixelRatio / view2DState.resolution,
-      -pixelRatio / view2DState.resolution,
-      -view2DState.rotation,
-      -view2DState.center[0], -view2DState.center[1]);
+      pixelRatio / viewState.resolution,
+      -pixelRatio / viewState.resolution,
+      -viewState.rotation,
+      -viewState.center[0], -viewState.center[1]);
 };
 
 

@@ -109,7 +109,7 @@ describe('ol.source.TileWMS', function() {
     it('returns a tile if it is contained within layers extent', function() {
       options.extent = [-80, -40, -50, -10];
       var source = new ol.source.TileWMS(options);
-      var tileCoord = new ol.TileCoord(3, 2, 1);
+      var tileCoord = [3, 2, 1];
       var url = source.tileUrlFunction(tileCoord, 1, ol.proj.get('EPSG:4326'));
       var uri = new goog.Uri(url);
       var queryData = uri.getQueryData();
@@ -119,27 +119,11 @@ describe('ol.source.TileWMS', function() {
     it('returns a tile if it intersects layers extent', function() {
       options.extent = [-80, -40, -40, -10];
       var source = new ol.source.TileWMS(options);
-      var tileCoord = new ol.TileCoord(3, 3, 1);
+      var tileCoord = [3, 3, 1];
       var url = source.tileUrlFunction(tileCoord, 1, ol.proj.get('EPSG:4326'));
       var uri = new goog.Uri(url);
       var queryData = uri.getQueryData();
       expect(queryData.get('BBOX')).to.be('-45,-45,0,0');
-    });
-
-    it('does not return a tile if it touches layers extent', function() {
-      options.extent = [-80, -40, -45, -10];
-      var source = new ol.source.TileWMS(options);
-      var tileCoord = new ol.TileCoord(3, 3, 1);
-      var url = source.tileUrlFunction(tileCoord, 1, ol.proj.get('EPSG:4326'));
-      expect(url).to.be(undefined);
-    });
-
-    it('does not return a tile outside of layers extent', function() {
-      options.extent = [-80, -40, -45, -10];
-      var source = new ol.source.TileWMS(options);
-      var tileCoord = new ol.TileCoord(3, 4, 2);
-      var url = source.tileUrlFunction(tileCoord, 1, ol.proj.get('EPSG:4326'));
-      expect(url).to.be(undefined);
     });
 
   });
@@ -217,5 +201,4 @@ describe('ol.source.TileWMS', function() {
 goog.require('goog.Uri');
 goog.require('ol.ImageTile');
 goog.require('ol.source.TileWMS');
-goog.require('ol.TileCoord');
 goog.require('ol.proj');

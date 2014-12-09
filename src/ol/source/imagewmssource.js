@@ -8,6 +8,7 @@ goog.require('goog.string');
 goog.require('goog.uri.utils');
 goog.require('ol');
 goog.require('ol.Image');
+goog.require('ol.ImageLoadFunctionType');
 goog.require('ol.extent');
 goog.require('ol.proj');
 goog.require('ol.source.Image');
@@ -23,7 +24,7 @@ goog.require('ol.source.wms.ServerType');
  * @constructor
  * @extends {ol.source.Image}
  * @param {olx.source.ImageWMSOptions=} opt_options Options.
- * @todo api
+ * @api stable
  */
 ol.source.ImageWMS = function(opt_options) {
 
@@ -31,7 +32,6 @@ ol.source.ImageWMS = function(opt_options) {
 
   goog.base(this, {
     attributions: options.attributions,
-    extent: options.extent,
     logo: options.logo,
     projection: options.projection,
     resolutions: options.resolutions
@@ -49,6 +49,13 @@ ol.source.ImageWMS = function(opt_options) {
    * @type {string|undefined}
    */
   this.url_ = options.url;
+
+  /**
+   * @private
+   * @type {ol.ImageLoadFunctionType}
+   */
+  this.imageLoadFunction_ = goog.isDef(options.imageLoadFunction) ?
+      options.imageLoadFunction : ol.source.Image.defaultImageLoadFunction;
 
   /**
    * @private
@@ -90,18 +97,6 @@ ol.source.ImageWMS = function(opt_options) {
 
   /**
    * @private
-   * @type {ol.proj.Projection}
-   */
-  this.renderedProjection_ = null;
-
-  /**
-   * @private
-   * @type {number}
-   */
-  this.renderedResolution_ = NaN;
-
-  /**
-   * @private
    * @type {number}
    */
   this.renderedRevision_ = 0;
@@ -117,40 +112,39 @@ goog.inherits(ol.source.ImageWMS, ol.source.Image);
 
 
 /**
+ * @const
+ * @type {ol.Size}
+ * @private
+ */
+ol.source.ImageWMS.GETFEATUREINFO_IMAGE_SIZE_ = [101, 101];
+
+
+/**
  * Return the GetFeatureInfo URL for the passed coordinate, resolution, and
  * projection. Return `undefined` if the GetFeatureInfo URL cannot be
  * constructed.
  * @param {ol.Coordinate} coordinate Coordinate.
  * @param {number} resolution Resolution.
- * @param {ol.proj.Projection} projection Projection.
+ * @param {ol.proj.ProjectionLike} projection Projection.
  * @param {!Object} params GetFeatureInfo params. `INFO_FORMAT` at least should
  *     be provided. If `QUERY_LAYERS` is not provided then the layers specified
  *     in the `LAYERS` parameter will be used. `VERSION` should not be
  *     specified here.
  * @return {string|undefined} GetFeatureInfo URL.
- * @todo api
+ * @api stable
  */
 ol.source.ImageWMS.prototype.getGetFeatureInfoUrl =
     function(coordinate, resolution, projection, params) {
 
   goog.asserts.assert(!('VERSION' in params));
 
-  if (!goog.isDef(this.url_) || goog.isNull(this.image_)) {
+  if (!goog.isDef(this.url_)) {
     return undefined;
   }
 
-  goog.asserts.assert(this.imageSize_[0] !== 0 &&
-      this.imageSize_[1] !== 0);
-  goog.asserts.assert(!isNaN(this.renderedResolution_));
-  goog.asserts.assert(!goog.isNull(this.renderedProjection_));
-
-  if (resolution != this.renderedResolution_ ||
-      !ol.proj.equivalent(projection, this.renderedProjection_)) {
-    return undefined;
-  }
-
-  var extent = this.image_.getExtent();
-  var pixelRatio = this.image_.getPixelRatio();
+  var extent = ol.extent.getForViewAndSize(
+      coordinate, resolution, 0,
+      ol.source.ImageWMS.GETFEATUREINFO_IMAGE_SIZE_);
 
   var baseParams = {
     'SERVICE': 'WMS',
@@ -162,15 +156,14 @@ ol.source.ImageWMS.prototype.getGetFeatureInfoUrl =
   };
   goog.object.extend(baseParams, this.params_, params);
 
-  var imageResolution = resolution / pixelRatio;
-
-  var x = Math.floor((coordinate[0] - extent[0]) / imageResolution);
-  var y = Math.floor((extent[3] - coordinate[1]) / imageResolution);
+  var x = Math.floor((coordinate[0] - extent[0]) / resolution);
+  var y = Math.floor((extent[3] - coordinate[1]) / resolution);
   goog.object.set(baseParams, this.v13_ ? 'I' : 'X', x);
   goog.object.set(baseParams, this.v13_ ? 'J' : 'Y', y);
 
-  return this.getRequestUrl_(extent, this.imageSize_, pixelRatio, projection,
-      baseParams);
+  return this.getRequestUrl_(
+      extent, ol.source.ImageWMS.GETFEATUREINFO_IMAGE_SIZE_,
+      1, ol.proj.get(projection), baseParams);
 };
 
 
@@ -178,7 +171,7 @@ ol.source.ImageWMS.prototype.getGetFeatureInfoUrl =
  * Get the user-provided params, i.e. those passed to the constructor through
  * the "params" option, and possibly updated using the updateParams method.
  * @return {Object} Params.
- * @todo api
+ * @api stable
  */
 ol.source.ImageWMS.prototype.getParams = function() {
   return this.params_;
@@ -250,10 +243,8 @@ ol.source.ImageWMS.prototype.getImage =
       projection, params);
 
   this.image_ = new ol.Image(extent, resolution, pixelRatio,
-      this.getAttributions(), url, this.crossOrigin_);
+      this.getAttributions(), url, this.crossOrigin_, this.imageLoadFunction_);
 
-  this.renderedProjection_ = projection;
-  this.renderedResolution_ = resolution;
   this.renderedRevision_ = this.getRevision();
 
   return this.image_;
@@ -321,7 +312,7 @@ ol.source.ImageWMS.prototype.getRequestUrl_ =
 /**
  * Return the URL used for this WMS source.
  * @return {string|undefined} URL.
- * @todo api
+ * @api stable
  */
 ol.source.ImageWMS.prototype.getUrl = function() {
   return this.url_;
@@ -330,13 +321,13 @@ ol.source.ImageWMS.prototype.getUrl = function() {
 
 /**
  * @param {string|undefined} url URL.
- * @todo api
+ * @api stable
  */
 ol.source.ImageWMS.prototype.setUrl = function(url) {
   if (url != this.url_) {
     this.url_ = url;
     this.image_ = null;
-    this.dispatchChangeEvent();
+    this.changed();
   }
 };
 
@@ -344,13 +335,13 @@ ol.source.ImageWMS.prototype.setUrl = function(url) {
 /**
  * Update the user-provided params.
  * @param {Object} params Params.
- * @todo api
+ * @api stable
  */
 ol.source.ImageWMS.prototype.updateParams = function(params) {
   goog.object.extend(this.params_, params);
   this.updateV13_();
   this.image_ = null;
-  this.dispatchChangeEvent();
+  this.changed();
 };
 
 

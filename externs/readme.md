@@ -11,8 +11,10 @@ These two files are special externs that belong to ol3, and this document explai
 For events, we make properties available to the application. Methods can be made available by just marking them with the `@api` annotation directly where they are defined; properties should also be added to `oli.js`:
 
 ```js
-/** @interface */
-oli.MapBrowserEvent;
+/**
+ * @interface
+ */
+oli.MapBrowserEvent = function() {};
 
 /**
  * @type {ol.Coordinate}
@@ -32,7 +34,7 @@ ol.MapBrowserEvent = function(type, map, browserEvent, opt_frameState) {
 
   /**
    * @type {ol.Coordinate}
-   * @todo api
+   * @api
    */
   this.coordinate = map.getEventCoordinate(this.originalEvent);
 
@@ -48,7 +50,7 @@ For custom subclasses in applications, which can be created using `ol.inherits`,
 /**
  * @interface
  */
-oli.control.Control;
+oli.control.Control = function() {};
 
 /**
  * @param {ol.Map} map Map.
@@ -73,7 +75,7 @@ ol.control.Control = function(options) {
 /**
  * Application subclasses may override this.
  * @param {ol.Map} map Map.
- * @todo api
+ * @api
  */
 ol.control.Control.prototype.setMap = function(map) {
   // ...
@@ -88,7 +90,7 @@ Object literals cannot be exported like classes. To make sure that their propert
 /**
  * @typedef {{element: (Element|undefined),
  *     target: (Element|string|undefined)}}
- * @todo api
+ * @api
  */
 olx.control.ControlOptions;
 

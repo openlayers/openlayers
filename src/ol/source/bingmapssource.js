@@ -12,6 +12,7 @@ goog.require('ol.extent');
 goog.require('ol.proj');
 goog.require('ol.source.State');
 goog.require('ol.source.TileImage');
+goog.require('ol.tilecoord');
 goog.require('ol.tilegrid.XYZ');
 
 
@@ -23,7 +24,7 @@ goog.require('ol.tilegrid.XYZ');
  * @constructor
  * @extends {ol.source.TileImage}
  * @param {olx.source.BingMapsOptions} options Bing Maps options.
- * @todo api
+ * @api stable
  */
 ol.source.BingMaps = function(options) {
 
@@ -41,6 +42,12 @@ ol.source.BingMaps = function(options) {
    */
   this.culture_ = goog.isDef(options.culture) ? options.culture : 'en-us';
 
+  /**
+   * @private
+   * @type {number}
+   */
+  this.maxZoom_ = goog.isDef(options.maxZoom) ? options.maxZoom : -1;
+
   var protocol = ol.IS_HTTPS ? 'https:' : 'http:';
   var uri = new goog.Uri(
       protocol + '//dev.virtualearth.net/REST/v1/Imagery/Metadata/' +
@@ -49,6 +56,7 @@ ol.source.BingMaps = function(options) {
   var jsonp = new goog.net.Jsonp(uri, 'jsonp');
   jsonp.send({
     'include': 'ImageryProviders',
+    'uriScheme': ol.IS_HTTPS ? 'https' : 'http',
     'key': options.key
   }, goog.bind(this.handleImageryMetadataResponse, this));
 
@@ -59,10 +67,10 @@ goog.inherits(ol.source.BingMaps, ol.source.TileImage);
 /**
  * @const
  * @type {ol.Attribution}
- * @todo api
+ * @api
  */
 ol.source.BingMaps.TOS_ATTRIBUTION = new ol.Attribution({
-  html: '<a class="ol-attribution-bing-tos" target="_blank" ' +
+  html: '<a class="ol-attribution-bing-tos" ' +
       'href="http://www.microsoft.com/maps/product/terms.html">' +
       'Terms of Use</a>'
 });
@@ -86,17 +94,19 @@ ol.source.BingMaps.prototype.handleImageryMetadataResponse =
   var brandLogoUri = response.brandLogoUri;
   //var copyright = response.copyright;  // FIXME do we need to display this?
   var resource = response.resourceSets[0].resources[0];
-
   goog.asserts.assert(resource.imageWidth == resource.imageHeight);
+  var maxZoom = this.maxZoom_ == -1 ? resource.zoomMax : this.maxZoom_;
+
+  var sourceProjection = this.getProjection();
   var tileGrid = new ol.tilegrid.XYZ({
+    extent: ol.tilegrid.extentFromProjection(sourceProjection),
     minZoom: resource.zoomMin,
-    maxZoom: resource.zoomMax,
+    maxZoom: maxZoom,
     tileSize: resource.imageWidth
   });
   this.tileGrid = tileGrid;
 
   var culture = this.culture_;
-  var sourceProjection = this.getProjection();
   this.tileUrlFunction = ol.TileUrlFunction.withTileCoordTransform(
       tileGrid.createTileCoordTransform(),
       ol.TileUrlFunction.createFromTileUrlFunctions(
@@ -120,7 +130,7 @@ ol.source.BingMaps.prototype.handleImageryMetadataResponse =
                         return undefined;
                       } else {
                         return imageUrl.replace(
-                            '{quadkey}', tileCoord.quadKey());
+                            '{quadkey}', ol.tilecoord.quadKey(tileCoord));
                       }
                     });
               })));
@@ -139,7 +149,7 @@ ol.source.BingMaps.prototype.handleImageryMetadataResponse =
               imageryProvider.coverageAreas,
               function(coverageArea) {
                 var minZ = coverageArea.zoomMin;
-                var maxZ = coverageArea.zoomMax;
+                var maxZ = Math.min(coverageArea.zoomMax, maxZoom);
                 var bbox = coverageArea.bbox;
                 var epsg4326Extent = [bbox[1], bbox[0], bbox[3], bbox[2]];
                 var extent = ol.extent.applyTransform(

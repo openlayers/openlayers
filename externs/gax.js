@@ -9,19 +9,19 @@ var gax;
 
 /**
  * Object literal with config options for the map.
- * @typedef {{controls: (ol.Collection|Array.<ol.control.Control>|undefined),
+ * @typedef {{controls: (ol.Collection.<ol.control.Control>|Array.<ol.control.Control>|undefined),
  *     deviceOptions: (olx.DeviceOptions|undefined),
  *     pixelRatio: (number|undefined),
- *     interactions: (ol.Collection|Array.<ol.interaction.Interaction>|undefined),
+ *     interactions: (ol.Collection.<ol.interaction.Interaction>|Array.<ol.interaction.Interaction>|undefined),
  *     keyboardEventTarget: (Element|Document|string|undefined),
- *     layers: (Array.<ol.layer.Base>|ol.Collection|undefined),
- *     ol3Logo: (boolean|undefined),
- *     overlays: (ol.Collection|Array.<ol.Overlay>|undefined),
+ *     layers: (Array.<ol.layer.Base>|ol.Collection.<ol.layer.Base>|undefined),
+ *     logo: (boolean|string|olx.LogoOptions|undefined),
+ *     overlays: (ol.Collection.<ol.Overlay>|Array.<ol.Overlay>|undefined),
  *     renderer: (ol.RendererType|Array.<ol.RendererType|string>|string|undefined),
  *     target: (Element|string|undefined),
  *     tooltip: (boolean|undefined),
- *     view: (ol.IView|undefined)}}
- * @todo api
+ *     view: (ol.View|undefined)}}
+ * @api stable
  */
 gax.MapOptions;
 
@@ -109,7 +109,7 @@ gax.MapOptions.prototype.target;
 gax.MapOptions.prototype.tooltip;
 
 /**
- * The map's view. Currently {@link ol.View2D} is available as view. Center, resolution and rotation can be passed to the map through a custom view. Resolutions are set: [650, 500, 250, 100, 50, 20, 10, 5, 2.5, 2, 1, 0.5, 0.25, 0.1]. Extent is set: [420000, 30000, 900000, 350000]. Coordinate system is set: EPSG 21781.
- * @type {ol.IView|undefined}
+ * The map's view. Currently {@link ol.View} is available as view. Center, resolution and rotation can be passed to the map through a custom view. Resolutions are set: [650, 500, 250, 100, 50, 20, 10, 5, 2.5, 2, 1, 0.5, 0.25, 0.1]. Extent is set: [420000, 30000, 900000, 350000]. Coordinate system is set: EPSG 21781.
+ * @type {ol.View|undefined}
  */
 gax.MapOptions.prototype.view;

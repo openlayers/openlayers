@@ -10,9 +10,9 @@ goog.require('ol.ImageBase');
 goog.require('ol.ImageState');
 goog.require('ol.ViewHint');
 goog.require('ol.dom');
+goog.require('ol.extent');
 goog.require('ol.layer.Image');
 goog.require('ol.renderer.dom.Layer');
-goog.require('ol.source.Image');
 goog.require('ol.vec.Mat4');
 
 
@@ -53,11 +53,10 @@ ol.renderer.dom.ImageLayer.prototype.forEachFeatureAtPixel =
     function(coordinate, frameState, callback, thisArg) {
   var layer = this.getLayer();
   var source = layer.getSource();
-  goog.asserts.assertInstanceof(source, ol.source.Image);
   var extent = frameState.extent;
-  var resolution = frameState.view2DState.resolution;
-  var rotation = frameState.view2DState.rotation;
-  var skippedFeatureUids = frameState.skippedFeatureUids_;
+  var resolution = frameState.viewState.resolution;
+  var rotation = frameState.viewState.rotation;
+  var skippedFeatureUids = frameState.skippedFeatureUids;
   return source.forEachFeatureAtPixel(
       extent, resolution, rotation, coordinate, skippedFeatureUids,
       /**
@@ -73,25 +72,40 @@ ol.renderer.dom.ImageLayer.prototype.forEachFeatureAtPixel =
 /**
  * @inheritDoc
  */
+ol.renderer.dom.ImageLayer.prototype.clearFrame = function() {
+  goog.dom.removeChildren(this.target);
+  this.image_ = null;
+};
+
+
+/**
+ * @inheritDoc
+ */
 ol.renderer.dom.ImageLayer.prototype.prepareFrame =
     function(frameState, layerState) {
 
-  var view2DState = frameState.view2DState;
-  var viewCenter = view2DState.center;
-  var viewResolution = view2DState.resolution;
-  var viewRotation = view2DState.rotation;
+  var viewState = frameState.viewState;
+  var viewCenter = viewState.center;
+  var viewResolution = viewState.resolution;
+  var viewRotation = viewState.rotation;
 
   var image = this.image_;
   var imageLayer = this.getLayer();
   goog.asserts.assertInstanceof(imageLayer, ol.layer.Image);
   var imageSource = imageLayer.getSource();
-  goog.asserts.assertInstanceof(imageSource, ol.source.Image);
 
   var hints = frameState.viewHints;
 
-  if (!hints[ol.ViewHint.ANIMATING] && !hints[ol.ViewHint.INTERACTING]) {
-    var image_ = imageSource.getImage(frameState.extent, viewResolution,
-        frameState.pixelRatio, view2DState.projection);
+  var renderedExtent = frameState.extent;
+  if (goog.isDef(layerState.extent)) {
+    renderedExtent = ol.extent.getIntersection(
+        renderedExtent, layerState.extent);
+  }
+
+  if (!hints[ol.ViewHint.ANIMATING] && !hints[ol.ViewHint.INTERACTING] &&
+      !ol.extent.isEmpty(renderedExtent)) {
+    var image_ = imageSource.getImage(renderedExtent, viewResolution,
+        frameState.pixelRatio, viewState.projection);
     if (!goog.isNull(image_)) {
       var imageState = image_.getState();
       if (imageState == ol.ImageState.IDLE) {
@@ -115,7 +129,7 @@ ol.renderer.dom.ImageLayer.prototype.prepareFrame =
         (imageExtent[0] - viewCenter[0]) / imageResolution,
         (viewCenter[1] - imageExtent[3]) / imageResolution);
     if (image != this.image_) {
-      var imageElement = image.getImageElement(this);
+      var imageElement = image.getImage(this);
       // Bootstrap sets the style max-width: 100% for all images, which breaks
       // prevents the image from being displayed in FireFox.  Workaround by
       // overriding the max-width style.
@@ -130,6 +144,7 @@ ol.renderer.dom.ImageLayer.prototype.prepareFrame =
     this.updateLogos(frameState, imageSource);
   }
 
+  return true;
 };
 
 

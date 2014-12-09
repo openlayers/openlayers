@@ -1,5 +1,6 @@
 goog.require('ol.Map');
-goog.require('ol.View2D');
+goog.require('ol.View');
+goog.require('ol.control');
 goog.require('ol.layer.Tile');
 goog.require('ol.source.OSM');
 goog.require('ol.source.TileJSON');
@@ -27,7 +28,12 @@ var map = new ol.Map({
   ],
   renderer: exampleNS.getRendererFromQueryString(),
   target: 'map',
-  view: new ol.View2D({
+  controls: ol.control.defaults({
+    attributionOptions: /** @type {olx.control.AttributionOptions} */ ({
+      collapsible: false
+    })
+  }),
+  view: new ol.View({
     center: [653600, 5723680],
     zoom: 5
   })

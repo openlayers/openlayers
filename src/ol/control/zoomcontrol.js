@@ -1,18 +1,13 @@
-// FIXME works for View2D only
-
 goog.provide('ol.control.Zoom');
 
-goog.require('goog.asserts');
 goog.require('goog.dom');
 goog.require('goog.dom.TagName');
 goog.require('goog.events');
 goog.require('goog.events.EventType');
-goog.require('ol.View2D');
 goog.require('ol.animation');
 goog.require('ol.control.Control');
 goog.require('ol.css');
 goog.require('ol.easing');
-goog.require('ol.pointer.PointerEventHandler');
 
 
 
@@ -25,7 +20,7 @@ goog.require('ol.pointer.PointerEventHandler');
  * @constructor
  * @extends {ol.control.Control}
  * @param {olx.control.ZoomOptions=} opt_options Zoom options.
- * @todo api
+ * @api stable
  */
 ol.control.Zoom = function(opt_options) {
 
@@ -45,19 +40,12 @@ ol.control.Zoom = function(opt_options) {
   var zoomOutTipLabel = goog.isDef(options.zoomOutTipLabel) ?
       options.zoomOutTipLabel : 'Zoom out';
 
-  var tTipZoomIn = goog.dom.createDom(goog.dom.TagName.SPAN, {
-    'role' : 'tooltip'
-  }, zoomInTipLabel);
   var inElement = goog.dom.createDom(goog.dom.TagName.BUTTON, {
-    'class': className + '-in ol-has-tooltip',
-    'type' : 'button'
-  }, tTipZoomIn, zoomInLabel);
+    'class': className + '-in',
+    'type' : 'button',
+    'title': zoomInTipLabel
+  }, zoomInLabel);
 
-  var inElementHandler = new ol.pointer.PointerEventHandler(inElement);
-  this.registerDisposable(inElementHandler);
-  goog.events.listen(inElementHandler,
-      ol.pointer.EventType.POINTERUP, goog.partial(
-          ol.control.Zoom.prototype.handlePointerUp_, delta), false, this);
   goog.events.listen(inElement,
       goog.events.EventType.CLICK, goog.partial(
           ol.control.Zoom.prototype.handleClick_, delta), false, this);
@@ -69,19 +57,12 @@ ol.control.Zoom = function(opt_options) {
     this.blur();
   }, false);
 
-  var tTipsZoomOut = goog.dom.createDom(goog.dom.TagName.SPAN, {
-    'role' : 'tooltip'
-  }, zoomOutTipLabel);
   var outElement = goog.dom.createDom(goog.dom.TagName.BUTTON, {
-    'class': className + '-out  ol-has-tooltip',
-    'type' : 'button'
-  }, tTipsZoomOut, zoomOutLabel);
+    'class': className + '-out',
+    'type' : 'button',
+    'title': zoomOutTipLabel
+  }, zoomOutLabel);
 
-  var outElementHandler = new ol.pointer.PointerEventHandler(outElement);
-  this.registerDisposable(outElementHandler);
-  goog.events.listen(outElementHandler,
-      ol.pointer.EventType.POINTERUP, goog.partial(
-          ol.control.Zoom.prototype.handlePointerUp_, -delta), false, this);
   goog.events.listen(outElement,
       goog.events.EventType.CLICK, goog.partial(
           ol.control.Zoom.prototype.handleClick_, -delta), false, this);
@@ -119,20 +100,7 @@ goog.inherits(ol.control.Zoom, ol.control.Control);
  * @private
  */
 ol.control.Zoom.prototype.handleClick_ = function(delta, event) {
-  if (event.screenX !== 0 && event.screenY !== 0) {
-    return;
-  }
-  this.zoomByDelta_(delta);
-};
-
-
-/**
- * @param {number} delta Zoom delta.
- * @param {ol.pointer.PointerEvent} pointerEvent The event to handle
- * @private
- */
-ol.control.Zoom.prototype.handlePointerUp_ = function(delta, pointerEvent) {
-  pointerEvent.browserEvent.preventDefault();
+  event.preventDefault();
   this.zoomByDelta_(delta);
 };
 
@@ -143,12 +111,13 @@ ol.control.Zoom.prototype.handlePointerUp_ = function(delta, pointerEvent) {
  */
 ol.control.Zoom.prototype.zoomByDelta_ = function(delta) {
   var map = this.getMap();
-  // FIXME works for View2D only
   var view = map.getView();
-  goog.asserts.assert(goog.isDef(view));
-  var view2D = view.getView2D();
-  goog.asserts.assertInstanceof(view2D, ol.View2D);
-  var currentResolution = view2D.getResolution();
+  if (goog.isNull(view)) {
+    // the map does not have a view, so we can't act
+    // upon it
+    return;
+  }
+  var currentResolution = view.getResolution();
   if (goog.isDef(currentResolution)) {
     if (this.duration_ > 0) {
       map.beforeRender(ol.animation.zoom({
@@ -157,7 +126,7 @@ ol.control.Zoom.prototype.zoomByDelta_ = function(delta) {
         easing: ol.easing.easeOut
       }));
     }
-    var newResolution = view2D.constrainResolution(currentResolution, delta);
-    view2D.setResolution(newResolution);
+    var newResolution = view.constrainResolution(currentResolution, delta);
+    view.setResolution(newResolution);
   }
 };

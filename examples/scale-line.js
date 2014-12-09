@@ -1,5 +1,5 @@
 goog.require('ol.Map');
-goog.require('ol.View2D');
+goog.require('ol.View');
 goog.require('ol.control');
 goog.require('ol.control.ScaleLine');
 goog.require('ol.dom.Input');
@@ -10,7 +10,11 @@ goog.require('ol.source.OSM');
 var scaleLineControl = new ol.control.ScaleLine();
 
 var map = new ol.Map({
-  controls: ol.control.defaults().extend([
+  controls: ol.control.defaults({
+    attributionOptions: /** @type {olx.control.AttributionOptions} */ ({
+      collapsible: false
+    })
+  }).extend([
     scaleLineControl
   ]),
   layers: [
@@ -20,7 +24,7 @@ var map = new ol.Map({
   ],
   renderer: exampleNS.getRendererFromQueryString(),
   target: 'map',
-  view: new ol.View2D({
+  view: new ol.View({
     center: [0, 0],
     zoom: 2
   })

@@ -1,14 +1,15 @@
 goog.require('ol.Geolocation');
 goog.require('ol.Map');
 goog.require('ol.Overlay');
-goog.require('ol.View2D');
+goog.require('ol.View');
+goog.require('ol.control');
 goog.require('ol.geom.LineString');
 goog.require('ol.layer.Tile');
 goog.require('ol.proj');
 goog.require('ol.source.OSM');
 
 // creating the view
-var view = new ol.View2D({
+var view = new ol.View({
   center: ol.proj.transform([5.8713, 45.6452], 'EPSG:4326', 'EPSG:3857'),
   zoom: 19
 });
@@ -21,6 +22,11 @@ var map = new ol.Map({
     })
   ],
   target: 'map',
+  controls: ol.control.defaults({
+    attributionOptions: /** @type {olx.control.AttributionOptions} */ ({
+      collapsible: false
+    })
+  }),
   view: view
 });
 
@@ -41,13 +47,13 @@ var positions = new ol.geom.LineString([],
 
 // Geolocation Control
 var geolocation = new ol.Geolocation(/** @type {olx.GeolocationOptions} */ ({
+  projection: view.getProjection(),
   trackingOptions: {
     maximumAge: 10000,
     enableHighAccuracy: true,
     timeout: 600000
   }
 }));
-geolocation.bindTo('projection', view);
 
 var deltaMean = 500; // the geolocation sampling period mean in ms
 
@@ -134,7 +140,7 @@ map.beforeRender(function(map, frameState) {
     previousM = m;
     // interpolate position along positions LineString
     var c = positions.getCoordinateAtM(m, true);
-    var view = frameState.view2DState;
+    var view = frameState.viewState;
     if (c) {
       view.center = getCenterWithHeading(c, -c[2], view.resolution);
       view.rotation = -c[2];
@@ -214,7 +220,7 @@ function simulatePositionChange(position) {
       'EPSG:3857');
   geolocation.set('position', projectedPosition);
   geolocation.set('speed', coords.speed);
-  geolocation.dispatchChangeEvent();
+  geolocation.changed();
 }
 
 function disableButtons() {

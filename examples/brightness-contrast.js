@@ -1,6 +1,6 @@
-goog.require('ol.BrowserFeature');
 goog.require('ol.Map');
-goog.require('ol.View2D');
+goog.require('ol.View');
+goog.require('ol.has');
 goog.require('ol.layer.Tile');
 goog.require('ol.source.MapQuest');
 
@@ -14,7 +14,7 @@ function setResetContrastButtonHTML() {
   resetContrast.innerHTML = 'Contrast (' + layer.getContrast().toFixed(3) + ')';
 }
 
-if (!ol.BrowserFeature.HAS_WEBGL) {
+if (!ol.has.WEBGL) {
   var info = document.getElementById('no-webgl');
   /**
    * display error message
@@ -29,7 +29,7 @@ if (!ol.BrowserFeature.HAS_WEBGL) {
     layers: [layer],
     renderer: 'webgl',
     target: 'map',
-    view: new ol.View2D({
+    view: new ol.View({
       center: [0, 0],
       zoom: 2
     })

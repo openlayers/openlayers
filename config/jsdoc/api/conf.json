@@ -1,0 +1,42 @@
+{
+    "opts": {
+        "recurse": true,
+        "template": "config/jsdoc/api/template"
+    },
+    "tags": {
+        "allowUnknownTags": true
+    },
+    "source": {
+        "includePattern": ".+\\.js(doc)?$",
+        "excludePattern": "(^|\\/|\\\\)_",
+        "include": [
+            "src",
+            "externs/oli.js",
+            "externs/olx.js"
+        ]
+    },
+    "plugins": [
+        "node_modules/jsdoc/plugins/markdown",
+        "config/jsdoc/api/plugins/inheritdoc",
+        "config/jsdoc/api/plugins/interface",
+        "config/jsdoc/api/plugins/typedefs",
+        "config/jsdoc/api/plugins/events",
+        "config/jsdoc/api/plugins/observable",
+        "config/jsdoc/api/plugins/api"
+    ],
+    "markdown": {
+        "parser": "gfm"
+    },
+    "stability": {
+      "levels": ["deprecated","experimental","unstable","stable","frozen","locked"]
+    },
+    "templates": {
+        "cleverLinks": true,
+        "monospaceLinks": true,
+        "default": {
+            "outputSourceFiles": true
+        },
+        "applicationName": "OpenLayers 3"
+    },
+    "jsVersion": 180
+}

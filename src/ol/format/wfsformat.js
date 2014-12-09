@@ -3,7 +3,8 @@ goog.provide('ol.format.WFS');
 goog.require('goog.asserts');
 goog.require('goog.dom.NodeType');
 goog.require('goog.object');
-goog.require('ol.format.GML');
+goog.require('ol.format.GML3');
+goog.require('ol.format.GMLBase');
 goog.require('ol.format.XMLFeature');
 goog.require('ol.format.XSD');
 goog.require('ol.geom.Geometry');
@@ -15,12 +16,15 @@ goog.require('ol.xml');
 /**
  * @classdesc
  * Feature format for reading and writing data in the WFS format.
+ * By default, supports WFS version 1.1.0. You can pass a GML format
+ * as option if you want to read a WFS that contains GML2 (WFS 1.0.0).
+ * Also see {@link ol.format.GMLBase} which is used by this format.
  *
  * @constructor
  * @param {olx.format.WFSOptions=} opt_options
  *     Optional configuration object.
  * @extends {ol.format.XMLFeature}
- * @todo api
+ * @api stable
  */
 ol.format.WFS = function(opt_options) {
   var options = /** @type {olx.format.WFSOptions} */
@@ -37,6 +41,13 @@ ol.format.WFS = function(opt_options) {
    * @type {string}
    */
   this.featureNS_ = options.featureNS;
+
+  /**
+   * @private
+   * @type {ol.format.GMLBase}
+   */
+  this.gmlFormat_ = goog.isDef(options.gmlFormat) ?
+      options.gmlFormat : new ol.format.GML3();
 
   /**
    * @private
@@ -65,17 +76,21 @@ ol.format.WFS.xmlns = 'http://www.w3.org/2000/xmlns/';
 
 
 /**
+ * Number of features; bounds/extent.
  * @typedef {{numberOfFeatures: number,
  *            bounds: ol.Extent}}
+ * @api stable
  */
 ol.format.WFS.FeatureCollectionMetadata;
 
 
 /**
+ * Total deleted; total inserted; total updated; array of insert ids.
  * @typedef {{totalDeleted: number,
  *            totalInserted: number,
-              totalUpdated: number,
-              insertIds: Array.<string>}}
+ *            totalUpdated: number,
+ *            insertIds: Array.<string>}}
+ * @api stable
  */
 ol.format.WFS.TransactionResponse;
 
@@ -94,8 +109,9 @@ ol.format.WFS.schemaLocation_ = 'http://www.opengis.net/wfs ' +
  *
  * @function
  * @param {ArrayBuffer|Document|Node|Object|string} source Source.
+ * @param {olx.format.ReadOptions=} opt_options Read options.
  * @return {Array.<ol.Feature>} Features.
- * @todo api
+ * @api stable
  */
 ol.format.WFS.prototype.readFeatures;
 
@@ -103,13 +119,17 @@ ol.format.WFS.prototype.readFeatures;
 /**
  * @inheritDoc
  */
-ol.format.WFS.prototype.readFeaturesFromNode = function(node) {
-  var objectStack = [{
+ol.format.WFS.prototype.readFeaturesFromNode = function(node, opt_options) {
+  var context = {
     'featureType': this.featureType_,
     'featureNS': this.featureNS_
-  }];
+  };
+  goog.object.extend(context, this.getReadOptions(node,
+      goog.isDef(opt_options) ? opt_options : {}));
+  var objectStack = [context];
   var features = ol.xml.pushParseAndPop([],
-      ol.format.GML.FEATURE_COLLECTION_PARSERS, node, objectStack);
+      this.gmlFormat_.FEATURE_COLLECTION_PARSERS, node,
+      objectStack, this.gmlFormat_);
   if (!goog.isDef(features)) {
     features = [];
   }
@@ -120,7 +140,7 @@ ol.format.WFS.prototype.readFeaturesFromNode = function(node) {
 /**
  * @param {ArrayBuffer|Document|Node|Object|string} source Source.
  * @return {ol.format.WFS.TransactionResponse|undefined} Transaction response.
- * @todo api
+ * @api stable
  */
 ol.format.WFS.prototype.readTransactionResponse = function(source) {
   if (ol.xml.isDocument(source)) {
@@ -129,7 +149,7 @@ ol.format.WFS.prototype.readTransactionResponse = function(source) {
   } else if (ol.xml.isNode(source)) {
     return this.readTransactionResponseFromNode(/** @type {Node} */ (source));
   } else if (goog.isString(source)) {
-    var doc = ol.xml.load(source);
+    var doc = ol.xml.parse(source);
     return this.readTransactionResponseFromDocument(doc);
   } else {
     goog.asserts.fail();
@@ -142,7 +162,7 @@ ol.format.WFS.prototype.readTransactionResponse = function(source) {
  * @param {ArrayBuffer|Document|Node|Object|string} source Source.
  * @return {ol.format.WFS.FeatureCollectionMetadata|undefined}
  *     FeatureCollection metadata.
- * @todo api
+ * @api stable
  */
 ol.format.WFS.prototype.readFeatureCollectionMetadata = function(source) {
   if (ol.xml.isDocument(source)) {
@@ -152,7 +172,7 @@ ol.format.WFS.prototype.readFeatureCollectionMetadata = function(source) {
     return this.readFeatureCollectionMetadataFromNode(
         /** @type {Node} */ (source));
   } else if (goog.isString(source)) {
-    var doc = ol.xml.load(source);
+    var doc = ol.xml.parse(source);
     return this.readFeatureCollectionMetadataFromDocument(doc);
   } else {
     goog.asserts.fail();
@@ -186,7 +206,7 @@ ol.format.WFS.prototype.readFeatureCollectionMetadataFromDocument =
 ol.format.WFS.FEATURE_COLLECTION_PARSERS_ = {
   'http://www.opengis.net/gml': {
     'boundedBy': ol.xml.makeObjectPropertySetter(
-        ol.format.GML.readGeometry, 'bounds')
+        ol.format.GMLBase.prototype.readGeometryElement, 'bounds')
   }
 };
 
@@ -205,7 +225,7 @@ ol.format.WFS.prototype.readFeatureCollectionMetadataFromNode = function(node) {
   goog.object.set(result, 'numberOfFeatures', value);
   return ol.xml.pushParseAndPop(
       /** @type {ol.format.WFS.FeatureCollectionMetadata} */ (result),
-      ol.format.WFS.FEATURE_COLLECTION_PARSERS_, node, []);
+      ol.format.WFS.FEATURE_COLLECTION_PARSERS_, node, [], this.gmlFormat_);
 };
 
 
@@ -258,7 +278,7 @@ ol.format.WFS.OGC_FID_PARSERS_ = {
  * @private
  */
 ol.format.WFS.fidParser_ = function(node, objectStack) {
-  ol.xml.parse(ol.format.WFS.OGC_FID_PARSERS_, node, objectStack);
+  ol.xml.parseNode(ol.format.WFS.OGC_FID_PARSERS_, node, objectStack);
 };
 
 
@@ -353,7 +373,7 @@ ol.format.WFS.writeFeature_ = function(node, feature, objectStack) {
   var featureNS = goog.object.get(context, 'featureNS');
   var child = ol.xml.createElementNS(featureNS, featureType);
   node.appendChild(child);
-  ol.format.GML.writeFeature(child, feature, objectStack);
+  ol.format.GML3.prototype.writeFeatureElement(child, feature, objectStack);
 };
 
 
@@ -447,7 +467,8 @@ ol.format.WFS.writeProperty_ = function(node, pair, objectStack) {
     var value = ol.xml.createElementNS('http://www.opengis.net/wfs', 'Value');
     node.appendChild(value);
     if (pair.value instanceof ol.geom.Geometry) {
-      ol.format.GML.writeGeometry(value, pair.value, objectStack);
+      ol.format.GML3.prototype.writeGeometryElement(value,
+          pair.value, objectStack);
     } else {
       ol.format.XSD.writeStringTextNode(value, pair.value);
     }
@@ -554,7 +575,7 @@ ol.format.WFS.writeOgcBBOX_ = function(node, bbox, objectStack) {
   var bboxNode = ol.xml.createElementNS('http://www.opengis.net/ogc', 'BBOX');
   node.appendChild(bboxNode);
   ol.format.WFS.writeOgcPropertyName_(bboxNode, geometryName, objectStack);
-  ol.format.GML.writeGeometry(bboxNode, bbox, objectStack);
+  ol.format.GML3.prototype.writeGeometryElement(bboxNode, bbox, objectStack);
 };
 
 
@@ -591,7 +612,7 @@ ol.format.WFS.writeGetFeature_ = function(node, featureTypes, objectStack) {
 /**
  * @param {olx.format.WFSWriteGetFeatureOptions} options Options.
  * @return {Node} Result.
- * @todo api
+ * @api stable
  */
 ol.format.WFS.prototype.writeGetFeature = function(options) {
   var node = ol.xml.createElementNS('http://www.opengis.net/wfs',
@@ -643,7 +664,7 @@ ol.format.WFS.prototype.writeGetFeature = function(options) {
  * @param {Array.<ol.Feature>} deletes The features to delete.
  * @param {olx.format.WFSWriteTransactionOptions} options Write options.
  * @return {Node} Result.
- * @todo api
+ * @api stable
  */
 ol.format.WFS.prototype.writeTransaction = function(inserts, updates, deletes,
     options) {
@@ -703,7 +724,7 @@ ol.format.WFS.prototype.writeTransaction = function(inserts, updates, deletes,
  * @function
  * @param {ArrayBuffer|Document|Node|Object|string} source Source.
  * @return {?ol.proj.Projection} Projection.
- * @todo api
+ * @api stable
  */
 ol.format.WFS.prototype.readProjection;
 
@@ -736,7 +757,7 @@ ol.format.WFS.prototype.readProjectionFromNode = function(node) {
           (n.childNodes.length === 1 &&
           n.firstChild.nodeType === 3))) {
         var objectStack = [{}];
-        ol.format.GML.readGeometry(n, objectStack);
+        this.gmlFormat_.readGeometryElement(n, objectStack);
         return ol.proj.get(objectStack.pop().srsName);
       }
     }

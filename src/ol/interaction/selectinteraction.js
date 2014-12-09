@@ -8,20 +8,23 @@ goog.require('ol.CollectionEventType');
 goog.require('ol.Feature');
 goog.require('ol.FeatureOverlay');
 goog.require('ol.events.condition');
-goog.require('ol.feature');
 goog.require('ol.geom.GeometryType');
 goog.require('ol.interaction.Interaction');
+goog.require('ol.style.Style');
 
 
 
 /**
  * @classdesc
- * Handles selection of vector data.
+ * Handles selection of vector data. A {@link ol.FeatureOverlay} is maintained
+ * internally to store the selected feature(s). Which features are selected is
+ * determined by the `condition` option, and optionally the `toggle` or
+ * `add`/`remove` options.
  *
  * @constructor
  * @extends {ol.interaction.Interaction}
  * @param {olx.interaction.SelectOptions=} opt_options Options.
- * @todo api
+ * @api stable
  */
 ol.interaction.Select = function(opt_options) {
 
@@ -87,7 +90,7 @@ ol.interaction.Select = function(opt_options) {
    * @type {ol.FeatureOverlay}
    */
   this.featureOverlay_ = new ol.FeatureOverlay({
-    style: (goog.isDef(options.style)) ? options.style :
+    style: goog.isDef(options.style) ? options.style :
         ol.interaction.Select.getDefaultStyleFunction()
   });
 
@@ -102,8 +105,9 @@ goog.inherits(ol.interaction.Select, ol.interaction.Interaction);
 
 
 /**
- * @return {ol.Collection} Features collection.
- * @todo api
+ * Get the selected features.
+ * @return {ol.Collection.<ol.Feature>} Features collection.
+ * @api stable
  */
 ol.interaction.Select.prototype.getFeatures = function() {
   return this.featureOverlay_.getFeatures();
@@ -150,6 +154,8 @@ ol.interaction.Select.prototype.handleMapBrowserEvent =
     }
   } else {
     // Modify the currently selected feature(s).
+    var /** @type {Array.<number>} */ deselected = [];
+    var /** @type {Array.<ol.Feature>} */ selected = [];
     map.forEachFeatureAtPixel(mapBrowserEvent.pixel,
         /**
          * @param {ol.Feature} feature Feature.
@@ -159,14 +165,19 @@ ol.interaction.Select.prototype.handleMapBrowserEvent =
           var index = goog.array.indexOf(features.getArray(), feature);
           if (index == -1) {
             if (add || toggle) {
-              features.push(feature);
+              selected.push(feature);
             }
           } else {
             if (remove || toggle) {
-              features.removeAt(index);
+              deselected.push(index);
             }
           }
         }, undefined, this.layerFilter_);
+    var i;
+    for (i = deselected.length - 1; i >= 0; --i) {
+      features.removeAt(deselected[i]);
+    }
+    features.extend(selected);
   }
   return false;
 };
@@ -176,7 +187,7 @@ ol.interaction.Select.prototype.handleMapBrowserEvent =
  * Remove the interaction from its current map, if any,  and attach it to a new
  * map, if any. Pass `null` to just remove the interaction from the current map.
  * @param {ol.Map} map Map.
- * @todo api
+ * @api stable
  */
 ol.interaction.Select.prototype.setMap = function(map) {
   var currentMap = this.getMap();
@@ -193,10 +204,10 @@ ol.interaction.Select.prototype.setMap = function(map) {
 
 
 /**
- * @return {ol.feature.StyleFunction} Styles.
+ * @return {ol.style.StyleFunction} Styles.
  */
 ol.interaction.Select.getDefaultStyleFunction = function() {
-  var styles = ol.feature.createDefaultEditingStyles();
+  var styles = ol.style.createDefaultEditingStyles();
   goog.array.extend(styles[ol.geom.GeometryType.POLYGON],
       styles[ol.geom.GeometryType.LINE_STRING]);
   goog.array.extend(styles[ol.geom.GeometryType.GEOMETRY_COLLECTION],

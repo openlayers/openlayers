@@ -399,6 +399,19 @@ describe('ol.geom.Polygon', function() {
     });
   });
 
+  describe('ol.geom.Polygon.fromExtent', function() {
+    it('creates the correct polygon', function() {
+      var extent = [1, 2, 3, 5];
+      var polygon = ol.geom.Polygon.fromExtent(extent);
+      var flatCoordinates = polygon.getFlatCoordinates();
+      expect(flatCoordinates).to.eql(
+          [1, 2, 1, 5, 3, 5, 3, 2, 1, 2]);
+      var orientedFlatCoordinates = polygon.getOrientedFlatCoordinates();
+      expect(orientedFlatCoordinates).to.eql(
+          [1, 2, 1, 5, 3, 5, 3, 2, 1, 2]);
+    });
+  });
+
 });
 
 

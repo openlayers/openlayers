@@ -42,6 +42,7 @@
           <h4 id="title">Bing Maps example</h4>
           <p id="shortdesc">Example of a Bing Maps layer.</p>
           <div id="docs">
+            <p>When the Bing Maps tile service doesn't have tiles for a given resolution and region it returns "placeholder" tiles indicating that. Zoom the map beyond level 19 to see the "placeholder" tiles. If you want OpenLayers to display stretched tiles in place of "placeholder" tiles beyond zoom level 19 then set <code>maxZoom</code> to <code>19</code> in the options passed to <code>ol.source.BingMaps</code>.</p>
             <p>See the <a href="bing-maps.js" target="_blank">bing-maps.js source</a> to see how this is done.</p>
           </div>
           <div id="tags">bing, bing-maps</div>
@@ -51,7 +52,7 @@
 
     </div>
 
-    <script src="jquery.min.js" type="text/javascript"></script>
+    <script src="../resources/jquery.min.js" type="text/javascript"></script>
     <script src="../resources/example-behaviour.js" type="text/javascript"></script>
     <script src="loader.js?id=bing-maps" type="text/javascript"></script>
 

@@ -18,7 +18,7 @@ goog.require('ol.xml');
  *
  * @constructor
  * @extends {ol.format.XML}
- * @todo api
+ * @api
  */
 ol.format.WMSCapabilities = function() {
 
@@ -38,7 +38,7 @@ goog.inherits(ol.format.WMSCapabilities, ol.format.XML);
  * @function
  * @param {Document|Node|string} source The XML source.
  * @return {Object} An object representing the WMS capabilities.
- * @todo api
+ * @api
  */
 ol.format.WMSCapabilities.prototype.read;
 
@@ -327,6 +327,7 @@ ol.format.WMSCapabilities.readLayer_ = function(node, objectStack) {
     if (goog.isDef(parentValue)) {
       var childValue = goog.object.setIfUndefined(layerObject, key, []);
       childValue = childValue.concat(parentValue);
+      goog.object.set(layerObject, key, childValue);
     }
   });
 

@@ -1,0 +1,37 @@
+<?js
+    var props = obj;
+?>
+
+<table class="props">
+    <thead>
+  <tr>
+    <th>Name</th>
+    <th>Type</th>
+    <th>Settable</th>
+    <th><a href="ol.ObjectEvent.html">ol.ObjectEvent</a> type</th>
+    <th class="last">Description</th>
+  </tr>
+  </thead>
+
+  <tbody>
+  <?js
+      var self = this;
+      props.forEach(function(prop) {
+        if (!prop) { return; }
+        var setter = prop.readonly ? 'no' : 'yes';
+  ?>
+
+    <tr class="<?js= prop.stability !== 'stable' ? 'unstable' : '' ?>">
+      <td class="name"><code><?js= prop.name ?></code></td>
+      <td class="type">
+      <?js if (prop.type && prop.type.names) {?>
+      <?js= self.partial('type.tmpl', prop.type.names) ?>
+      <?js } ?>
+      </td>
+      <td class="setter"><?js= setter ?></td>
+      <td class="event"><code>change:<?js= prop.name.toLowerCase() ?></code></td>
+      <td class="description last"><?js= prop.description ?></td>
+    </tr>
+    <?js }); ?>
+  </tbody>
+</table>

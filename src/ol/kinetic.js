@@ -7,13 +7,16 @@ goog.require('ol.animation');
 
 
 /**
+ * @classdesc
+ * Implementation of inertial deceleration for map movement.
+ *
  * @constructor
  * @param {number} decay Rate of decay (must be negative).
  * @param {number} minVelocity Minimum velocity (pixels/millisecond).
  * @param {number} delay Delay to consider to calculate the kinetic
  *     initial values (milliseconds).
  * @struct
- * @todo api
+ * @api
  */
 ol.Kinetic = function(decay, minVelocity, delay) {
 
@@ -78,25 +81,30 @@ ol.Kinetic.prototype.update = function(x, y) {
  * @return {boolean} Whether we should do kinetic animation.
  */
 ol.Kinetic.prototype.end = function() {
+  if (this.points_.length < 6) {
+    // at least 2 points are required (i.e. there must be at least 6 elements
+    // in the array)
+    return false;
+  }
   var delay = goog.now() - this.delay_;
   var lastIndex = this.points_.length - 3;
   if (this.points_[lastIndex + 2] < delay) {
-    // the user stopped panning before releasing the map
+    // the last tracked point is too old, which means that the user stopped
+    // panning before releasing the map
     return false;
   }
+
+  // get the first point which still falls into the delay time
   var firstIndex = lastIndex - 3;
-  while (firstIndex >= 0 && this.points_[firstIndex + 2] > delay) {
+  while (firstIndex > 0 && this.points_[firstIndex + 2] > delay) {
     firstIndex -= 3;
   }
-  if (firstIndex >= 0) {
-    var duration = this.points_[lastIndex + 2] - this.points_[firstIndex + 2];
-    var dx = this.points_[lastIndex] - this.points_[firstIndex];
-    var dy = this.points_[lastIndex + 1] - this.points_[firstIndex + 1];
-    this.angle_ = Math.atan2(dy, dx);
-    this.initialVelocity_ = Math.sqrt(dx * dx + dy * dy) / duration;
-    return this.initialVelocity_ > this.minVelocity_;
-  }
-  return false;
+  var duration = this.points_[lastIndex + 2] - this.points_[firstIndex + 2];
+  var dx = this.points_[lastIndex] - this.points_[firstIndex];
+  var dy = this.points_[lastIndex + 1] - this.points_[firstIndex + 1];
+  this.angle_ = Math.atan2(dy, dx);
+  this.initialVelocity_ = Math.sqrt(dx * dx + dy * dy) / duration;
+  return this.initialVelocity_ > this.minVelocity_;
 };
 
 
@@ -107,7 +115,7 @@ ol.Kinetic.prototype.end = function() {
 ol.Kinetic.prototype.pan = function(source) {
   var decay = this.decay_;
   var initialVelocity = this.initialVelocity_;
-  var minVelocity = this.minVelocity_;
+  var velocity = this.minVelocity_ - initialVelocity;
   var duration = this.getDuration_();
   var easingFunction = (
       /**
@@ -116,7 +124,7 @@ ol.Kinetic.prototype.pan = function(source) {
        */
       function(t) {
         return initialVelocity * (Math.exp((decay * t) * duration) - 1) /
-            (minVelocity - initialVelocity);
+            velocity;
       });
   return ol.animation.pan({
     source: source,

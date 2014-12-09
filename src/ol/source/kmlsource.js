@@ -13,7 +13,7 @@ goog.require('ol.source.StaticVector');
  * @extends {ol.source.StaticVector}
  * @fires ol.source.VectorEvent
  * @param {olx.source.KMLOptions=} opt_options Options.
- * @todo api
+ * @api
  */
 ol.source.KML = function(opt_options) {
 
@@ -22,8 +22,8 @@ ol.source.KML = function(opt_options) {
   goog.base(this, {
     attributions: options.attributions,
     doc: options.doc,
-    extent: options.extent,
     format: new ol.format.KML({
+      extractStyles: options.extractStyles,
       defaultStyle: options.defaultStyle
     }),
     logo: options.logo,

@@ -56,6 +56,7 @@ describe('ol.layer.Layer', function() {
         saturation: 1,
         visible: true,
         sourceState: ol.source.State.READY,
+        extent: undefined,
         maxResolution: Infinity,
         minResolution: 0
       });
@@ -99,6 +100,7 @@ describe('ol.layer.Layer', function() {
         saturation: 5,
         visible: false,
         sourceState: ol.source.State.READY,
+        extent: undefined,
         maxResolution: 500,
         minResolution: 0.25
       });
@@ -191,6 +193,7 @@ describe('ol.layer.Layer', function() {
         saturation: 0.3,
         visible: false,
         sourceState: ol.source.State.READY,
+        extent: undefined,
         maxResolution: 500,
         minResolution: 0.25
       });
@@ -212,6 +215,7 @@ describe('ol.layer.Layer', function() {
         saturation: 0,
         visible: false,
         sourceState: ol.source.State.READY,
+        extent: undefined,
         maxResolution: Infinity,
         minResolution: 0
       });
@@ -231,9 +235,112 @@ describe('ol.layer.Layer', function() {
         saturation: 42,
         visible: true,
         sourceState: ol.source.State.READY,
+        extent: undefined,
         maxResolution: Infinity,
         minResolution: 0
       });
+    });
+
+  });
+
+  describe('#getSource', function() {
+
+    it('gets the layer source', function() {
+      var source = new ol.source.Source({projection: ol.proj.get('EPSG:4326')});
+      var layer = new ol.layer.Layer({source: source});
+      expect(layer.getSource()).to.be(source);
+    });
+
+  });
+
+  describe('#set("source", source)', function() {
+    var projection = ol.proj.get('EPSG:4326');
+
+    it('sets the layer source', function() {
+      var layer = new ol.layer.Layer({
+        source: new ol.source.Source({projection: projection})
+      });
+
+      var source = new ol.source.Source({projection: projection});
+      layer.set('source', source);
+      expect(layer.getSource()).to.be(source);
+    });
+
+    it('calls changed', function() {
+      var layer = new ol.layer.Layer({
+        source: new ol.source.Source({projection: projection})
+      });
+      sinon.spy(layer, 'changed');
+
+      var source = new ol.source.Source({projection: projection});
+      layer.set('source', source);
+      expect(layer.changed.calledOnce).to.be(true);
+    });
+
+    it('sets up event listeners', function() {
+      sinon.spy(ol.layer.Layer.prototype, 'handleSourceChange_');
+
+      var first = new ol.source.Source({projection: projection});
+      var layer = new ol.layer.Layer({source: first});
+
+      first.setState(ol.source.State.READY);
+      expect(layer.handleSourceChange_.calledOnce).to.be(true);
+
+      var second = new ol.source.Source({projection: projection});
+      layer.set('source', second);
+
+      expect(layer.handleSourceChange_.calledOnce).to.be(true);
+      second.setState(ol.source.State.READY);
+      expect(layer.handleSourceChange_.callCount).to.be(2);
+
+      // remove spy
+      ol.layer.Layer.prototype.handleSourceChange_.restore();
+    });
+
+  });
+
+  describe('#setSource()', function() {
+    var projection = ol.proj.get('EPSG:4326');
+
+    it('sets the layer source', function() {
+      var layer = new ol.layer.Layer({
+        source: new ol.source.Source({projection: projection})
+      });
+
+      var source = new ol.source.Source({projection: projection});
+      layer.setSource(source);
+      expect(layer.getSource()).to.be(source);
+    });
+
+    it('calls changed', function() {
+      var layer = new ol.layer.Layer({
+        source: new ol.source.Source({projection: projection})
+      });
+      sinon.spy(layer, 'changed');
+
+      var source = new ol.source.Source({projection: projection});
+      layer.setSource(source);
+      expect(layer.changed.calledOnce).to.be(true);
+    });
+
+    it('sets up event listeners', function() {
+      sinon.spy(ol.layer.Layer.prototype, 'handleSourceChange_');
+
+      var first = new ol.source.Source({projection: projection});
+      var layer = new ol.layer.Layer({source: first});
+
+      first.setState(ol.source.State.READY);
+      expect(layer.handleSourceChange_.calledOnce).to.be(true);
+
+      var second = new ol.source.Source({projection: projection});
+      layer.setSource(second);
+
+      expect(layer.handleSourceChange_.calledOnce).to.be(true);
+      second.setState(ol.source.State.READY);
+      expect(layer.handleSourceChange_.callCount).to.be(2);
+
+      // remove spy
+      ol.layer.Layer.prototype.handleSourceChange_.restore();
     });
 
   });

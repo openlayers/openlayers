@@ -14,7 +14,7 @@
  * zoom-out buttons.
  */
 #map2 .ol-zoom .ol-zoom-out {
-  margin-top: 202px;
+  margin-top: 204px;
 }
 #map2 .ol-zoomslider {
   background-color: transparent;
@@ -26,6 +26,16 @@
 }
 #map2 .ol-touch .ol-zoomslider {
   top: 2.75em;
+}
+
+#map2 .ol-zoom-in.ol-has-tooltip:hover [role=tooltip],
+#map2 .ol-zoom-in.ol-has-tooltip:focus [role=tooltip] {
+  top: 3px;
+}
+
+#map2 .ol-zoom-out.ol-has-tooltip:hover [role=tooltip],
+#map2 .ol-zoom-out.ol-has-tooltip:focus [role=tooltip] {
+  top: 232px;
 }
 
 /**
@@ -60,7 +70,7 @@
   background-color: rgba(255,69,0,0.7);
 }
     </style>
-    <title>ol3 ZoomSlider demo</title>
+    <title>Zoom slider example</title>
   </head>
   <body>
 
@@ -107,7 +117,7 @@
       </div>
     </div>
 
-    <script src="jquery.min.js" type="text/javascript"></script>
+    <script src="../resources/jquery.min.js" type="text/javascript"></script>
     <script src="../resources/example-behaviour.js" type="text/javascript"></script>
     <script src="loader.js?id=zoomslider" type="text/javascript"></script>
 

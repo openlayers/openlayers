@@ -2,6 +2,7 @@
 
 goog.provide('ol.source.ServerVector');
 
+goog.require('goog.object');
 goog.require('ol.extent');
 goog.require('ol.loadingstrategy');
 goog.require('ol.source.FormatVector');
@@ -17,13 +18,12 @@ goog.require('ol.structs.RBush');
  * @constructor
  * @extends {ol.source.FormatVector}
  * @param {olx.source.ServerVectorOptions} options Options.
- * @todo api
+ * @api
  */
 ol.source.ServerVector = function(options) {
 
   goog.base(this, {
     attributions: options.attributions,
-    extent: options.extent,
     format: options.format,
     logo: options.logo,
     projection: options.projection
@@ -69,12 +69,24 @@ ol.source.ServerVector.prototype.addFeaturesInternal = function(features) {
   for (i = 0, ii = features.length; i < ii; ++i) {
     var feature = features[i];
     var featureId = feature.getId();
-    if (!(featureId in this.loadedFeatures_)) {
+    if (!goog.isDef(featureId)) {
+      notLoadedFeatures.push(feature);
+    } else if (!(featureId in this.loadedFeatures_)) {
       notLoadedFeatures.push(feature);
       this.loadedFeatures_[featureId] = true;
     }
   }
   goog.base(this, 'addFeaturesInternal', notLoadedFeatures);
+};
+
+
+/**
+ * @inheritDoc
+ */
+ol.source.ServerVector.prototype.clear = function() {
+  goog.object.clear(this.loadedFeatures_);
+  this.loadedExtents_.clear();
+  goog.base(this, 'clear');
 };
 
 
@@ -108,6 +120,6 @@ ol.source.ServerVector.prototype.loadFeatures =
  * @function
  * @param {ArrayBuffer|Document|Node|Object|string} source Source.
  * @return {Array.<ol.Feature>} Features.
- * @todo api
+ * @api
  */
 ol.source.ServerVector.prototype.readFeatures;

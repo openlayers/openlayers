@@ -29,7 +29,7 @@ ol.control.ScaleLineProperty = {
  * Units for the scale line. Supported values are `'degrees'`, `'imperial'`,
  * `'nautical'`, `'metric'`, `'us'`.
  * @enum {string}
- * @todo api
+ * @api stable
  */
 ol.control.ScaleLineUnits = {
   DEGREES: 'degrees',
@@ -43,14 +43,17 @@ ol.control.ScaleLineUnits = {
 
 /**
  * @classdesc
- * A control displaying rough x-axis distances.
- * By default it will show in the bottom left portion of the map, but this can
- * be changed by using the css selector `.ol-scale-line`.
+ * A control displaying rough x-axis distances, calculated for the center of the
+ * viewport.
+ * No scale line will be shown when the x-axis distance cannot be calculated in
+ * the view projection (e.g. at or beyond the poles in EPSG:4326).
+ * By default the scale line will show in the bottom left portion of the map,
+ * but this can be changed by using the css selector `.ol-scale-line`.
  *
  * @constructor
  * @extends {ol.control.Control}
  * @param {olx.control.ScaleLineOptions=} opt_options Scale line options.
- * @todo api
+ * @api stable
  */
 ol.control.ScaleLine = function(opt_options) {
 
@@ -63,23 +66,21 @@ ol.control.ScaleLine = function(opt_options) {
    * @private
    * @type {Element}
    */
-  this.innerElement_ = goog.dom.createDom(goog.dom.TagName.DIV, {
-    'class': className + '-inner'
-  });
+  this.innerElement_ = goog.dom.createDom(goog.dom.TagName.DIV,
+      className + '-inner');
 
   /**
    * @private
    * @type {Element}
    */
-  this.element_ = goog.dom.createDom(goog.dom.TagName.DIV, {
-    'class': className + ' ' + ol.css.CLASS_UNSELECTABLE
-  }, this.innerElement_);
+  this.element_ = goog.dom.createDom(goog.dom.TagName.DIV,
+      className + ' ' + ol.css.CLASS_UNSELECTABLE, this.innerElement_);
 
   /**
    * @private
-   * @type {?olx.View2DState}
+   * @type {?olx.ViewState}
    */
-  this.view2DState_ = null;
+  this.viewState_ = null;
 
   /**
    * @private
@@ -137,8 +138,8 @@ ol.control.ScaleLine.LEADING_DIGITS = [1, 2, 5];
 /**
  * @return {ol.control.ScaleLineUnits|undefined} The units to use in the scale
  *     line.
- * @todo observable
- * @todo api
+ * @observable
+ * @api stable
  */
 ol.control.ScaleLine.prototype.getUnits = function() {
   return /** @type {ol.control.ScaleLineUnits|undefined} */ (
@@ -156,9 +157,9 @@ goog.exportProperty(
 ol.control.ScaleLine.prototype.handleMapPostrender = function(mapEvent) {
   var frameState = mapEvent.frameState;
   if (goog.isNull(frameState)) {
-    this.view2DState_ = null;
+    this.viewState_ = null;
   } else {
-    this.view2DState_ = frameState.view2DState;
+    this.viewState_ = frameState.viewState;
   }
   this.updateElement_();
 };
@@ -174,8 +175,8 @@ ol.control.ScaleLine.prototype.handleUnitsChanged_ = function() {
 
 /**
  * @param {ol.control.ScaleLineUnits} units The units to use in the scale line.
- * @todo observable
- * @todo api
+ * @observable
+ * @api stable
  */
 ol.control.ScaleLine.prototype.setUnits = function(units) {
   this.set(ol.control.ScaleLineProperty.UNITS, units);
@@ -190,9 +191,9 @@ goog.exportProperty(
  * @private
  */
 ol.control.ScaleLine.prototype.updateElement_ = function() {
-  var view2DState = this.view2DState_;
+  var viewState = this.viewState_;
 
-  if (goog.isNull(view2DState)) {
+  if (goog.isNull(viewState)) {
     if (this.renderedVisible_) {
       goog.style.setElementShown(this.element_, false);
       this.renderedVisible_ = false;
@@ -200,17 +201,19 @@ ol.control.ScaleLine.prototype.updateElement_ = function() {
     return;
   }
 
-  var center = view2DState.center;
-  var projection = view2DState.projection;
+  var center = viewState.center;
+  var projection = viewState.projection;
   var pointResolution =
-      projection.getPointResolution(view2DState.resolution, center);
+      projection.getPointResolution(viewState.resolution, center);
   var projectionUnits = projection.getUnits();
 
   var cosLatitude;
   var units = this.getUnits();
   if (projectionUnits == ol.proj.Units.DEGREES &&
       (units == ol.control.ScaleLineUnits.METRIC ||
-       units == ol.control.ScaleLineUnits.IMPERIAL)) {
+       units == ol.control.ScaleLineUnits.IMPERIAL ||
+       units == ol.control.ScaleLineUnits.US ||
+       units == ol.control.ScaleLineUnits.NAUTICAL)) {
 
     // Convert pointResolution from degrees to meters
     this.toEPSG4326_ = null;
@@ -241,7 +244,9 @@ ol.control.ScaleLine.prototype.updateElement_ = function() {
 
   goog.asserts.assert(
       ((units == ol.control.ScaleLineUnits.METRIC ||
-        units == ol.control.ScaleLineUnits.IMPERIAL) &&
+        units == ol.control.ScaleLineUnits.IMPERIAL ||
+        units == ol.control.ScaleLineUnits.US ||
+        units == ol.control.ScaleLineUnits.NAUTICAL) &&
        projectionUnits == ol.proj.Units.METERS) ||
       (units == ol.control.ScaleLineUnits.DEGREES &&
        projectionUnits == ol.proj.Units.DEGREES));
@@ -304,7 +309,11 @@ ol.control.ScaleLine.prototype.updateElement_ = function() {
     count = ol.control.ScaleLine.LEADING_DIGITS[i % 3] *
         Math.pow(10, Math.floor(i / 3));
     width = Math.round(count / pointResolution);
-    if (width >= this.minWidth_) {
+    if (isNaN(width)) {
+      goog.style.setElementShown(this.element_, false);
+      this.renderedVisible_ = false;
+      return;
+    } else if (width >= this.minWidth_) {
       break;
     }
     ++i;

@@ -14,7 +14,6 @@ goog.require('ol.interaction.PinchZoom');
 
 
 /**
- * @classdesc
  * Set of interactions included in maps by default. Specific interactions can be
  * excluded by setting the appropriate option to false in the constructor
  * options, but the order of the interactions is fixed.  If you want to specify
@@ -32,10 +31,13 @@ goog.require('ol.interaction.PinchZoom');
  * * {@link ol.interaction.MouseWheelZoom}
  * * {@link ol.interaction.DragZoom}
  *
+ * Note that DragZoom renders a box as a vector polygon, so this interaction
+ * should be excluded if you want a build with no vector support.
+ *
  * @param {olx.interaction.DefaultsOptions=} opt_options Defaults options.
- * @return {ol.Collection} A collection of interactions to be used with
- * the ol.Map constructor's interactions option.
- * @todo api
+ * @return {ol.Collection.<ol.interaction.Interaction>} A collection of
+ * interactions to be used with the ol.Map constructor's interactions option.
+ * @api stable
  */
 ol.interaction.defaults = function(opt_options) {
 

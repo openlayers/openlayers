@@ -2,7 +2,6 @@ goog.provide('ol.source.TileImage');
 
 goog.require('goog.asserts');
 goog.require('ol.ImageTile');
-goog.require('ol.Tile');
 goog.require('ol.TileCache');
 goog.require('ol.TileCoord');
 goog.require('ol.TileLoadFunctionType');
@@ -20,7 +19,7 @@ goog.require('ol.source.Tile');
  * @constructor
  * @extends {ol.source.Tile}
  * @param {olx.source.TileImageOptions} options Image tile options.
- * @todo api
+ * @api
  */
 ol.source.TileImage = function(options) {
 
@@ -30,6 +29,8 @@ ol.source.TileImage = function(options) {
     logo: options.logo,
     opaque: options.opaque,
     projection: options.projection,
+    state: goog.isDef(options.state) ?
+        /** @type {ol.source.State} */ (options.state) : undefined,
     tileGrid: options.tileGrid,
     tilePixelRatio: options.tilePixelRatio
   });
@@ -109,7 +110,7 @@ ol.source.TileImage.prototype.getTile =
     return /** @type {!ol.Tile} */ (this.tileCache.get(tileCoordKey));
   } else {
     goog.asserts.assert(projection);
-    var tileCoord = new ol.TileCoord(z, x, y);
+    var tileCoord = [z, x, y];
     var tileUrl = this.tileUrlFunction(tileCoord, pixelRatio, projection);
     var tile = new this.tileClass(
         tileCoord,
@@ -125,7 +126,7 @@ ol.source.TileImage.prototype.getTile =
 
 /**
  * @return {ol.TileLoadFunctionType} TileLoadFunction
- * @todo api
+ * @api
  */
 ol.source.TileImage.prototype.getTileLoadFunction = function() {
   return this.tileLoadFunction;
@@ -134,7 +135,7 @@ ol.source.TileImage.prototype.getTileLoadFunction = function() {
 
 /**
  * @return {ol.TileUrlFunctionType} TileUrlFunction
- * @todo api
+ * @api
  */
 ol.source.TileImage.prototype.getTileUrlFunction = function() {
   return this.tileUrlFunction;
@@ -143,18 +144,18 @@ ol.source.TileImage.prototype.getTileUrlFunction = function() {
 
 /**
  * @param {ol.TileLoadFunctionType} tileLoadFunction Tile load function.
- * @todo api
+ * @api
  */
 ol.source.TileImage.prototype.setTileLoadFunction = function(tileLoadFunction) {
   this.tileCache.clear();
   this.tileLoadFunction = tileLoadFunction;
-  this.dispatchChangeEvent();
+  this.changed();
 };
 
 
 /**
  * @param {ol.TileUrlFunctionType} tileUrlFunction Tile URL function.
- * @todo api
+ * @api
  */
 ol.source.TileImage.prototype.setTileUrlFunction = function(tileUrlFunction) {
   // FIXME It should be possible to be more intelligent and avoid clearing the
@@ -162,7 +163,7 @@ ol.source.TileImage.prototype.setTileUrlFunction = function(tileUrlFunction) {
   // FIXME cache key somehow.
   this.tileCache.clear();
   this.tileUrlFunction = tileUrlFunction;
-  this.dispatchChangeEvent();
+  this.changed();
 };
 
 

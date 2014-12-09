@@ -6,11 +6,11 @@ goog.require('goog.events.EventType');
 goog.require('goog.vec.Mat4');
 goog.require('ol.dom');
 goog.require('ol.extent');
-goog.require('ol.feature');
 goog.require('ol.render.canvas.ReplayGroup');
 goog.require('ol.renderer.vector');
 goog.require('ol.source.ImageCanvas');
 goog.require('ol.source.Vector');
+goog.require('ol.style.Style');
 goog.require('ol.vec.Mat4');
 
 
@@ -30,7 +30,7 @@ goog.require('ol.vec.Mat4');
  * @constructor
  * @extends {ol.source.ImageCanvas}
  * @param {olx.source.ImageVectorOptions} options Options.
- * @todo api
+ * @api
  */
 ol.source.ImageVector = function(options) {
 
@@ -39,14 +39,6 @@ ol.source.ImageVector = function(options) {
    * @type {ol.source.Vector}
    */
   this.source_ = options.source;
-
-  /**
-   * @private
-   * @type {!ol.feature.StyleFunction}
-   */
-  this.styleFunction_ = goog.isDef(options.style) ?
-      ol.feature.createStyleFunction(options.style) :
-      ol.feature.defaultStyleFunction;
 
   /**
    * @private
@@ -75,13 +67,28 @@ ol.source.ImageVector = function(options) {
   goog.base(this, {
     attributions: options.attributions,
     canvasFunction: goog.bind(this.canvasFunctionInternal_, this),
-    extent: options.extent,
     logo: options.logo,
     projection: options.projection,
     ratio: options.ratio,
     resolutions: options.resolutions,
     state: this.source_.getState()
   });
+
+  /**
+   * User provided style.
+   * @type {ol.style.Style|Array.<ol.style.Style>|ol.style.StyleFunction}
+   * @private
+   */
+  this.style_ = null;
+
+  /**
+   * Style function for use within the library.
+   * @type {ol.style.StyleFunction|undefined}
+   * @private
+   */
+  this.styleFunction_ = undefined;
+
+  this.setStyle(options.style);
 
   goog.events.listen(this.source_, goog.events.EventType.CHANGE,
       this.handleSourceChange_, undefined, this);
@@ -102,9 +109,11 @@ goog.inherits(ol.source.ImageVector, ol.source.ImageCanvas);
 ol.source.ImageVector.prototype.canvasFunctionInternal_ =
     function(extent, resolution, pixelRatio, size, projection) {
 
-  var tolerance = resolution / (2 * pixelRatio);
-  var replayGroup = new ol.render.canvas.ReplayGroup(tolerance, extent,
+  var replayGroup = new ol.render.canvas.ReplayGroup(
+      ol.renderer.vector.getTolerance(resolution, pixelRatio), extent,
       resolution);
+
+  this.source_.loadFeatures(extent, resolution, projection);
 
   var loading = false;
   this.source_.forEachFeatureInExtentAtResolution(extent, resolution,
@@ -149,6 +158,8 @@ ol.source.ImageVector.prototype.forEachFeatureAtPixel = function(
   if (goog.isNull(this.replayGroup_)) {
     return undefined;
   } else {
+    /** @type {Object.<string, boolean>} */
+    var features = {};
     return this.replayGroup_.forEachGeometryAtPixel(
         extent, resolution, 0, coordinate, skippedFeatureUids,
         /**
@@ -158,7 +169,12 @@ ol.source.ImageVector.prototype.forEachFeatureAtPixel = function(
          */
         function(geometry, data) {
           var feature = /** @type {ol.Feature} */ (data);
-          return callback(feature);
+          goog.asserts.assert(goog.isDef(feature));
+          var key = goog.getUid(feature).toString();
+          if (!(key in features)) {
+            features[key] = true;
+            return callback(feature);
+          }
         });
   }
 };
@@ -166,10 +182,32 @@ ol.source.ImageVector.prototype.forEachFeatureAtPixel = function(
 
 /**
  * @return {ol.source.Vector} Source.
- * @todo api
+ * @api
  */
 ol.source.ImageVector.prototype.getSource = function() {
   return this.source_;
+};
+
+
+/**
+ * Get the style for features.  This returns whatever was passed to the `style`
+ * option at construction or to the `setStyle` method.
+ * @return {ol.style.Style|Array.<ol.style.Style>|ol.style.StyleFunction}
+ *     Layer style.
+ * @api stable
+ */
+ol.source.ImageVector.prototype.getStyle = function() {
+  return this.style_;
+};
+
+
+/**
+ * Get the style function.
+ * @return {ol.style.StyleFunction|undefined} Layer style function.
+ * @api stable
+ */
+ol.source.ImageVector.prototype.getStyleFunction = function() {
+  return this.styleFunction_;
 };
 
 
@@ -198,7 +236,7 @@ ol.source.ImageVector.prototype.getTransform_ =
  */
 ol.source.ImageVector.prototype.handleImageChange_ =
     function(event) {
-  this.dispatchChangeEvent();
+  this.changed();
 };
 
 
@@ -222,18 +260,40 @@ ol.source.ImageVector.prototype.handleSourceChange_ = function() {
  */
 ol.source.ImageVector.prototype.renderFeature_ =
     function(feature, resolution, pixelRatio, replayGroup) {
-  var styles = this.styleFunction_(feature, resolution);
+  var styles;
+  if (goog.isDef(feature.getStyleFunction())) {
+    styles = feature.getStyleFunction().call(feature, resolution);
+  } else if (goog.isDef(this.styleFunction_)) {
+    styles = this.styleFunction_(feature, resolution);
+  }
   if (!goog.isDefAndNotNull(styles)) {
     return false;
   }
-  // simplify to a tolerance of half a device pixel
-  var squaredTolerance =
-      resolution * resolution / (4 * pixelRatio * pixelRatio);
   var i, ii, loading = false;
   for (i = 0, ii = styles.length; i < ii; ++i) {
     loading = ol.renderer.vector.renderFeature(
-        replayGroup, feature, styles[i], squaredTolerance, feature,
-        this.handleImageChange_, this) || loading;
+        replayGroup, feature, styles[i],
+        ol.renderer.vector.getSquaredTolerance(resolution, pixelRatio),
+        feature, this.handleImageChange_, this) || loading;
   }
   return loading;
+};
+
+
+/**
+ * Set the style for features.  This can be a single style object, an array
+ * of styles, or a function that takes a feature and resolution and returns
+ * an array of styles. If it is `undefined` the default style is used. If
+ * it is `null` the layer has no style (a `null` style), so only features
+ * that have their own styles will be rendered in the layer. See
+ * {@link ol.style} for information on the default style.
+ * @param {ol.style.Style|Array.<ol.style.Style>|ol.style.StyleFunction|undefined}
+ *     style Layer style.
+ * @api stable
+ */
+ol.source.ImageVector.prototype.setStyle = function(style) {
+  this.style_ = goog.isDef(style) ? style : ol.style.defaultStyleFunction;
+  this.styleFunction_ = goog.isNull(style) ?
+      undefined : ol.style.createStyleFunction(this.style_);
+  this.changed();
 };

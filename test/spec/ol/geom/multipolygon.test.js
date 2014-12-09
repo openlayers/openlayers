@@ -10,7 +10,7 @@ describe('ol.geom.MultiPolygon', function() {
     }).not.to.throwException();
   });
 
-  describe('with an empty MultiPolygon', function() {
+  describe('with a null MultiPolygon', function() {
 
     var multiPolygon;
     beforeEach(function() {
@@ -28,6 +28,30 @@ describe('ol.geom.MultiPolygon', function() {
         [[[0, 0], [0, 2], [1, 1], [2, 0]]],
         [[[3, 0], [4, 1], [5, 2], [5, 0]]]
       ]);
+      expect(multiPolygon.getPolygons().length).to.eql(2);
+    });
+
+  });
+
+  describe('with an empty MultiPolygon', function() {
+
+    var multiPolygon;
+    beforeEach(function() {
+      multiPolygon = new ol.geom.MultiPolygon([]);
+    });
+
+    it('can append polygons', function() {
+      multiPolygon.appendPolygon(
+          new ol.geom.Polygon([[[0, 0], [0, 2], [1, 1], [2, 0]]]));
+      expect(multiPolygon.getCoordinates()).to.eql(
+          [[[[0, 0], [0, 2], [1, 1], [2, 0]]]]);
+      multiPolygon.appendPolygon(
+          new ol.geom.Polygon([[[3, 0], [4, 1], [5, 2], [5, 0]]]));
+      expect(multiPolygon.getCoordinates()).to.eql([
+        [[[0, 0], [0, 2], [1, 1], [2, 0]]],
+        [[[3, 0], [4, 1], [5, 2], [5, 0]]]
+      ]);
+      expect(multiPolygon.getPolygons().length).to.eql(2);
     });
 
   });

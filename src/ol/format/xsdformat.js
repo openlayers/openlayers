@@ -127,6 +127,15 @@ ol.format.XSD.readString = function(node) {
 
 
 /**
+ * @param {Node} node Node to append a TextNode with the boolean to.
+ * @param {boolean} bool Boolean.
+ */
+ol.format.XSD.writeBooleanTextNode = function(node, bool) {
+  ol.format.XSD.writeStringTextNode(node, (bool) ? '1' : '0');
+};
+
+
+/**
  * @param {Node} node Node to append a TextNode with the dateTime to.
  * @param {number} dateTime DateTime in seconds.
  */

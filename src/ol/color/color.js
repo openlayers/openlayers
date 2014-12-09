@@ -18,6 +18,7 @@ goog.require('ol');
  * red, green, and blue should be integers in the range 0..255 inclusive.
  * alpha should be a float in the range 0..1 inclusive.
  * @typedef {Array.<number>}
+ * @api
  */
 ol.Color;
 
@@ -95,7 +96,7 @@ ol.color.blend = function(dst, src, opt_color) {
 /**
  * @param {ol.Color|string} color Color.
  * @return {ol.Color} Color.
- * @todo api
+ * @api
  */
 ol.color.asArray = function(color) {
   if (goog.isArray(color)) {
@@ -109,8 +110,8 @@ ol.color.asArray = function(color) {
 
 /**
  * @param {ol.Color|string} color Color.
- * @return {string} String.
- * @todo api
+ * @return {string} Rgba string.
+ * @api
  */
 ol.color.asString = function(color) {
   if (goog.isString(color)) {
@@ -241,7 +242,7 @@ ol.color.fromStringInternal_ = function(s) {
     color = [r, g, b, 1];
     return ol.color.normalize(color, color);
   } else {
-    throw new Error(s + ' is not a valid color');
+    goog.asserts.fail(s + ' is not a valid color');
   }
 
 };
@@ -315,9 +316,9 @@ ol.color.toString = function(color) {
 
 
 /**
- * @param {ol.Color} color Color.
+ * @param {!ol.Color} color Color.
  * @param {goog.vec.Mat4.Number} transform Transform.
- * @param {ol.Color=} opt_color Color.
+ * @param {!ol.Color=} opt_color Color.
  * @return {ol.Color} Transformed color.
  */
 ol.color.transform = function(color, transform, opt_color) {

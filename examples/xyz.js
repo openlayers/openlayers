@@ -1,6 +1,7 @@
 goog.require('ol.Attribution');
 goog.require('ol.Map');
-goog.require('ol.View2D');
+goog.require('ol.View');
+goog.require('ol.control');
 goog.require('ol.layer.Tile');
 goog.require('ol.source.OSM');
 goog.require('ol.source.XYZ');
@@ -13,6 +14,11 @@ var attribution = new ol.Attribution({
 
 var map = new ol.Map({
   target: 'map',
+  controls: ol.control.defaults({
+    attributionOptions: /** @type {olx.control.AttributionOptions} */ ({
+      collapsible: false
+    })
+  }),
   layers: [
     new ol.layer.Tile({
       source: new ol.source.OSM({
@@ -21,7 +27,7 @@ var map = new ol.Map({
             html: 'Tiles &copy; <a href="http://www.opencyclemap.org/">' +
                 'OpenCycleMap</a>'
           }),
-          ol.source.OSM.DATA_ATTRIBUTION
+          ol.source.OSM.ATTRIBUTION
         ],
         url: 'http://{a-c}.tile.opencyclemap.org/cycle/{z}/{x}/{y}.png'
       })
@@ -33,7 +39,7 @@ var map = new ol.Map({
       })
     })
   ],
-  view: new ol.View2D({
+  view: new ol.View({
     center: [-472202, 7530279],
     zoom: 12
   })

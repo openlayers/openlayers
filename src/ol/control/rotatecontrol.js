@@ -1,30 +1,29 @@
-// FIXME works for View2D only
-
 goog.provide('ol.control.Rotate');
 
 goog.require('goog.asserts');
 goog.require('goog.dom');
 goog.require('goog.dom.TagName');
+goog.require('goog.dom.classlist');
 goog.require('goog.events');
 goog.require('goog.events.EventType');
-goog.require('ol.View2D');
+goog.require('goog.math');
 goog.require('ol.animation');
 goog.require('ol.control.Control');
 goog.require('ol.css');
 goog.require('ol.easing');
-goog.require('ol.pointer.PointerEventHandler');
 
 
 
 /**
  * @classdesc
  * A button control to reset rotation to 0.
- * To style this control use css selector `.ol-rotate`.
+ * To style this control use css selector `.ol-rotate`. A `.ol-hidden` css
+ * selector is added to the button when the rotation is 0.
  *
  * @constructor
  * @extends {ol.control.Control}
  * @param {olx.control.RotateOptions=} opt_options Rotate options.
- * @todo api
+ * @api stable
  */
 ol.control.Rotate = function(opt_options) {
 
@@ -33,27 +32,22 @@ ol.control.Rotate = function(opt_options) {
   var className = goog.isDef(options.className) ?
       options.className : 'ol-rotate';
 
-  var label = goog.dom.createDom(goog.dom.TagName.SPAN,
-      { 'class': 'ol-compass' },
-      goog.isDef(options.label) ? options.label : '\u21E7');
-  this.label_ = label;
+  /**
+   * @type {Element}
+   * @private
+   */
+  this.label_ = goog.dom.createDom(goog.dom.TagName.SPAN,
+      'ol-compass', goog.isDef(options.label) ? options.label : '\u21E7');
 
   var tipLabel = goog.isDef(options.tipLabel) ?
       options.tipLabel : 'Reset rotation';
 
-  var tip = goog.dom.createDom(goog.dom.TagName.SPAN, {
-    'role' : 'tooltip'
-  }, tipLabel);
   var button = goog.dom.createDom(goog.dom.TagName.BUTTON, {
-    'class': className + '-reset ol-has-tooltip',
-    'name' : 'ResetRotation',
-    'type' : 'button'
-  }, tip, label);
+    'class': className + '-reset',
+    'type' : 'button',
+    'title': tipLabel
+  }, this.label_);
 
-  var handler = new ol.pointer.PointerEventHandler(button);
-  this.registerDisposable(handler);
-  goog.events.listen(handler, ol.pointer.EventType.POINTERUP,
-      ol.control.Rotate.prototype.handlePointerUp_, false, this);
   goog.events.listen(button, goog.events.EventType.CLICK,
       ol.control.Rotate.prototype.handleClick_, false, this);
 
@@ -85,7 +79,15 @@ ol.control.Rotate = function(opt_options) {
    */
   this.autoHide_ = goog.isDef(options.autoHide) ? options.autoHide : true;
 
-  element.style.opacity = (this.autoHide_) ? 0 : 1;
+  /**
+   * @private
+   * @type {number|undefined}
+   */
+  this.rotation_ = undefined;
+
+  if (this.autoHide_) {
+    goog.dom.classlist.add(this.element, ol.css.CLASS_HIDDEN);
+  }
 
 };
 goog.inherits(ol.control.Rotate, ol.control.Control);
@@ -96,19 +98,7 @@ goog.inherits(ol.control.Rotate, ol.control.Control);
  * @private
  */
 ol.control.Rotate.prototype.handleClick_ = function(event) {
-  if (event.screenX !== 0 && event.screenY !== 0) {
-    return;
-  }
-  this.resetNorth_();
-};
-
-
-/**
- * @param {ol.pointer.PointerEvent} pointerEvent The event to handle
- * @private
- */
-ol.control.Rotate.prototype.handlePointerUp_ = function(pointerEvent) {
-  pointerEvent.browserEvent.preventDefault();
+  event.preventDefault();
   this.resetNorth_();
 };
 
@@ -118,12 +108,13 @@ ol.control.Rotate.prototype.handlePointerUp_ = function(pointerEvent) {
  */
 ol.control.Rotate.prototype.resetNorth_ = function() {
   var map = this.getMap();
-  // FIXME works for View2D only
   var view = map.getView();
-  goog.asserts.assert(goog.isDef(view));
-  var view2D = view.getView2D();
-  goog.asserts.assertInstanceof(view2D, ol.View2D);
-  var currentRotation = view2D.getRotation();
+  if (goog.isNull(view)) {
+    // the map does not have a view, so we can't act
+    // upon it
+    return;
+  }
+  var currentRotation = view.getRotation();
   while (currentRotation < -Math.PI) {
     currentRotation += 2 * Math.PI;
   }
@@ -138,7 +129,7 @@ ol.control.Rotate.prototype.resetNorth_ = function() {
         easing: ol.easing.easeOut
       }));
     }
-    view2D.setRotation(0);
+    view.setRotation(0);
   }
 };
 
@@ -151,12 +142,16 @@ ol.control.Rotate.prototype.handleMapPostrender = function(mapEvent) {
   if (goog.isNull(frameState)) {
     return;
   }
-  var rotation = frameState.view2DState.rotation;
-  var transform = 'rotate(' + rotation * 360 / (Math.PI * 2) + 'deg)';
-  if (this.autoHide_) {
-    this.element.style.opacity = (rotation === 0) ? 0 : 1;
+  var rotation = frameState.viewState.rotation;
+  if (rotation != this.rotation_) {
+    var transform = 'rotate(' + goog.math.toDegrees(rotation) + 'deg)';
+    if (this.autoHide_) {
+      goog.dom.classlist.enable(
+          this.element, ol.css.CLASS_HIDDEN, rotation === 0);
+    }
+    this.label_.style.msTransform = transform;
+    this.label_.style.webkitTransform = transform;
+    this.label_.style.transform = transform;
   }
-  this.label_.style.msTransform = transform;
-  this.label_.style.webkitTransform = transform;
-  this.label_.style.transform = transform;
+  this.rotation_ = rotation;
 };

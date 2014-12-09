@@ -242,6 +242,17 @@ describe('ol.source.Vector', function() {
       expect(listener).to.be.called();
     });
 
+    it('fires a changefeature event when updating a feature', function() {
+      var feature = new ol.Feature(new ol.geom.Point([1, 1]));
+      vectorSource.addFeature(feature);
+      var listener = sinon.spy(function(event) {
+        expect(event.feature).to.be(feature);
+      });
+      vectorSource.on('changefeature', listener);
+      feature.setStyle(null);
+      expect(listener).to.be.called();
+    });
+
   });
 
   describe('#getFeatureById()', function() {
@@ -338,27 +349,25 @@ describe('ol.source.Vector', function() {
       source = new ol.source.Vector();
     });
 
-    it('enforces a uniqueness constraint (on add)', function() {
+    it('allows adding feature with the same id', function() {
       var feature = new ol.Feature();
       feature.setId('foo');
       source.addFeature(feature);
       var dupe = new ol.Feature();
       dupe.setId('foo');
-      expect(function() {
-        source.addFeature(dupe);
-      }).to.throwException();
+      source.addFeature(dupe);
+      expect(source.getFeatureById('foo')).to.be(dupe);
     });
 
-    it('enforces a uniqueness constraint (on change)', function() {
+    it('allows changing feature and set the same id', function() {
       var foo = new ol.Feature();
       foo.setId('foo');
       source.addFeature(foo);
       var bar = new ol.Feature();
       bar.setId('bar');
       source.addFeature(bar);
-      expect(function() {
-        bar.setId('foo');
-      }).to.throwException();
+      bar.setId('foo');
+      expect(source.getFeatureById('foo')).to.be(bar);
     });
 
   });
