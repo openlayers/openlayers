@@ -6182,6 +6182,7 @@ olx.view;
  * @typedef {{padding: !Array.<number>,
  *     constrainResolution: (boolean|undefined),
  *     nearest: (boolean|undefined),
+ *     maxZoom: (number|undefined),
  *     minResolution: (number|undefined)}}
  * @api
  */
