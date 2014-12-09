@@ -27,8 +27,7 @@ goog.require('ol.xml');
  * @api stable
  */
 ol.format.WFS = function(opt_options) {
-  var options = /** @type {olx.format.WFSOptions} */
-      (goog.isDef(opt_options) ? opt_options : {});
+  var options = goog.isDef(opt_options) ? opt_options : {};
 
   /**
    * @private
