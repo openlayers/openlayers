@@ -27,8 +27,7 @@ goog.require('ol.xml');
  * @api stable
  */
 ol.format.WFS = function(opt_options) {
-  var options = /** @type {olx.format.WFSOptions} */
-      (goog.isDef(opt_options) ? opt_options : {});
+  var options = goog.isDef(opt_options) ? opt_options : {};
 
   /**
    * @private
@@ -54,7 +53,7 @@ ol.format.WFS = function(opt_options) {
    * @type {string}
    */
   this.schemaLocation_ = goog.isDef(options.schemaLocation) ?
-      options.schemaLocation : ol.format.WFS.schemaLocation_;
+      options.schemaLocation : ol.format.WFS.SCHEMA_LOCATION;
 
   goog.base(this);
 };
@@ -65,14 +64,14 @@ goog.inherits(ol.format.WFS, ol.format.XMLFeature);
  * @const
  * @type {string}
  */
-ol.format.WFS.featurePrefix = 'feature';
+ol.format.WFS.FEATURE_PREFIX = 'feature';
 
 
 /**
  * @const
  * @type {string}
  */
-ol.format.WFS.xmlns = 'http://www.w3.org/2000/xmlns/';
+ol.format.WFS.XMLNS = 'http://www.w3.org/2000/xmlns/';
 
 
 /**
@@ -98,9 +97,8 @@ ol.format.WFS.TransactionResponse;
 /**
  * @const
  * @type {string}
- * @private
  */
-ol.format.WFS.schemaLocation_ = 'http://www.opengis.net/wfs ' +
+ol.format.WFS.SCHEMA_LOCATION = 'http://www.opengis.net/wfs ' +
     'http://schemas.opengis.net/wfs/1.1.0/wfs.xsd';
 
 
@@ -404,10 +402,10 @@ ol.format.WFS.writeDelete_ = function(node, feature, objectStack) {
   var featureType = goog.object.get(context, 'featureType');
   var featurePrefix = goog.object.get(context, 'featurePrefix');
   featurePrefix = goog.isDef(featurePrefix) ? featurePrefix :
-      ol.format.WFS.featurePrefix;
+      ol.format.WFS.FEATURE_PREFIX;
   var featureNS = goog.object.get(context, 'featureNS');
   node.setAttribute('typeName', featurePrefix + ':' + featureType);
-  ol.xml.setAttributeNS(node, ol.format.WFS.xmlns, 'xmlns:' + featurePrefix,
+  ol.xml.setAttributeNS(node, ol.format.WFS.XMLNS, 'xmlns:' + featurePrefix,
       featureNS);
   var fid = feature.getId();
   if (goog.isDef(fid)) {
@@ -428,10 +426,10 @@ ol.format.WFS.writeUpdate_ = function(node, feature, objectStack) {
   var featureType = goog.object.get(context, 'featureType');
   var featurePrefix = goog.object.get(context, 'featurePrefix');
   featurePrefix = goog.isDef(featurePrefix) ? featurePrefix :
-      ol.format.WFS.featurePrefix;
+      ol.format.WFS.FEATURE_PREFIX;
   var featureNS = goog.object.get(context, 'featureNS');
   node.setAttribute('typeName', featurePrefix + ':' + featureType);
-  ol.xml.setAttributeNS(node, ol.format.WFS.xmlns, 'xmlns:' + featurePrefix,
+  ol.xml.setAttributeNS(node, ol.format.WFS.XMLNS, 'xmlns:' + featurePrefix,
       featureNS);
   var fid = feature.getId();
   if (goog.isDef(fid)) {
@@ -530,7 +528,7 @@ ol.format.WFS.writeQuery_ = function(node, featureType, objectStack) {
     node.setAttribute('srsName', srsName);
   }
   if (goog.isDef(featureNS)) {
-    ol.xml.setAttributeNS(node, ol.format.WFS.xmlns, 'xmlns:' + featurePrefix,
+    ol.xml.setAttributeNS(node, ol.format.WFS.XMLNS, 'xmlns:' + featurePrefix,
         featureNS);
   }
   var item = goog.object.clone(context);
