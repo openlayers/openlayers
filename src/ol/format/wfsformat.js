@@ -53,7 +53,7 @@ ol.format.WFS = function(opt_options) {
    * @type {string}
    */
   this.schemaLocation_ = goog.isDef(options.schemaLocation) ?
-      options.schemaLocation : ol.format.WFS.schemaLocation_;
+      options.schemaLocation : ol.format.WFS.SCHEMA_LOCATION;
 
   goog.base(this);
 };
@@ -97,9 +97,8 @@ ol.format.WFS.TransactionResponse;
 /**
  * @const
  * @type {string}
- * @private
  */
-ol.format.WFS.schemaLocation_ = 'http://www.opengis.net/wfs ' +
+ol.format.WFS.SCHEMA_LOCATION = 'http://www.opengis.net/wfs ' +
     'http://schemas.opengis.net/wfs/1.1.0/wfs.xsd';
 
 
