@@ -1,7 +1,7 @@
 goog.provide('ol.geom.MultiPoint');
 
+goog.require('goog.array');
 goog.require('goog.asserts');
-goog.require('ol.array');
 goog.require('ol.extent');
 goog.require('ol.geom.GeometryType');
 goog.require('ol.geom.Point');
@@ -39,7 +39,7 @@ ol.geom.MultiPoint.prototype.appendPoint = function(point) {
   if (goog.isNull(this.flatCoordinates)) {
     this.flatCoordinates = point.getFlatCoordinates().slice();
   } else {
-    ol.array.safeExtend(this.flatCoordinates, point.getFlatCoordinates());
+    goog.array.extend(this.flatCoordinates, point.getFlatCoordinates());
   }
   this.changed();
 };

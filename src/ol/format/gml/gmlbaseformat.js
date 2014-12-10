@@ -3,13 +3,13 @@
 // envelopes/extents, only geometries!
 goog.provide('ol.format.GMLBase');
 
+goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('goog.dom');
 goog.require('goog.dom.NodeType');
 goog.require('goog.object');
 goog.require('goog.string');
 goog.require('ol.Feature');
-goog.require('ol.array');
 goog.require('ol.format.Feature');
 goog.require('ol.format.XMLFeature');
 goog.require('ol.geom.Geometry');
@@ -390,7 +390,7 @@ ol.format.GMLBase.prototype.readPolygon = function(node, objectStack) {
     var ends = [flatCoordinates.length];
     var i, ii;
     for (i = 1, ii = flatLinearRings.length; i < ii; ++i) {
-      ol.array.safeExtend(flatCoordinates, flatLinearRings[i]);
+      goog.array.extend(flatCoordinates, flatLinearRings[i]);
       ends.push(flatCoordinates.length);
     }
     polygon.setFlatCoordinates(
