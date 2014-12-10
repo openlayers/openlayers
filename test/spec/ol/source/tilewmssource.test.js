@@ -48,9 +48,12 @@ describe('ol.source.TileWMS', function() {
       expect(tile).to.be.an(ol.ImageTile);
       var uri = new goog.Uri(tile.src_);
       var queryData = uri.getQueryData();
-      expect(queryData.get('BBOX')).to.be(
-          '-10331840.239250705,-15341217.324948015,' +
-          '-4696291.017841229,-9705668.103538537');
+      var bbox = queryData.get('BBOX').split(',');
+      var expected = [-10331840.239250705, -15341217.324948015,
+        -4696291.017841229, -9705668.103538537];
+      for (var i = 0, ii = bbox.length; i < ii; ++i) {
+        expect(parseFloat(bbox[i])).to.roughlyEqual(expected[i], 1e-9);
+      }
       expect(queryData.get('HEIGHT')).to.be('288');
       expect(queryData.get('WIDTH')).to.be('288');
     });

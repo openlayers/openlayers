@@ -53,7 +53,7 @@ describe('ol.format.OSMXML', function() {
           '    <tag k="name" v="3"/>' +
           '    <nd ref="1" />' +
           '    <nd ref="2" />' +
-          '  </node>' +
+          '  </way>' +
           '</osm>';
       var fs = format.readFeatures(text);
       expect(fs).to.have.length(3);
