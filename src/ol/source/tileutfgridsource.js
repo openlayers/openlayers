@@ -111,7 +111,7 @@ ol.source.TileUTFGrid.prototype.forDataAtCoordinateAndResolution = function(
         tileCoord[0], tileCoord[1], tileCoord[2], 1, this.getProjection()));
     tile.forDataAtCoordinate(coordinate, callback, opt_this, opt_request);
   } else {
-    if (opt_request == true) {
+    if (opt_request === true) {
       goog.async.nextTick(function() {
         callback.call(opt_this, null);
       });
@@ -335,13 +335,13 @@ ol.source.TileUTFGridTile_.prototype.getData = function(coordinate) {
  */
 ol.source.TileUTFGridTile_.prototype.forDataAtCoordinate =
     function(coordinate, callback, opt_this, opt_request) {
-  if (this.state == ol.TileState.IDLE && opt_request == true) {
+  if (this.state == ol.TileState.IDLE && opt_request === true) {
     goog.events.listenOnce(this, goog.events.EventType.CHANGE, function(e) {
       callback.call(opt_this, this.getData(coordinate));
     }, false, this);
     this.loadInternal_();
   } else {
-    if (opt_request == true) {
+    if (opt_request === true) {
       goog.async.nextTick(function() {
         callback.call(opt_this, this.getData(coordinate));
       }, this);
