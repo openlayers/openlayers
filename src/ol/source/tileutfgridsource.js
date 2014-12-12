@@ -1,6 +1,7 @@
 goog.provide('ol.source.TileUTFGrid');
 
 goog.require('goog.asserts');
+goog.require('goog.async.nextTick');
 goog.require('goog.events');
 goog.require('goog.events.EventType');
 goog.require('goog.net.Jsonp');
@@ -89,22 +90,34 @@ ol.source.TileUTFGrid.prototype.getTemplate = function() {
 
 
 /**
+ * Calls the callback (synchronously by default) with the available data
+ * for given coordinate and resolution (or `null` if not yet loaded or
+ * in case of an error).
  * @param {ol.Coordinate} coordinate Coordinate.
  * @param {number} resolution Resolution.
  * @param {function(this: T, Object)} callback Callback.
  * @param {T=} opt_this The object to use as `this` in the callback.
- * @param {boolean=} opt_noRequest Only process already loaded data.
+ * @param {boolean=} opt_request If `true` the callback is always async.
+ *                               The tile data is requested if not yet loaded.
  * @template T
  * @api
  */
 ol.source.TileUTFGrid.prototype.forDataAtCoordinateAndResolution = function(
-    coordinate, resolution, callback, opt_this, opt_noRequest) {
+    coordinate, resolution, callback, opt_this, opt_request) {
   if (!goog.isNull(this.tileGrid)) {
     var tileCoord = this.tileGrid.getTileCoordForCoordAndResolution(
         coordinate, resolution);
     var tile = /** @type {!ol.source.TileUTFGridTile_} */(this.getTile(
         tileCoord[0], tileCoord[1], tileCoord[2], 1, this.getProjection()));
-    tile.forDataAtCoordinate(coordinate, callback, opt_this, opt_noRequest);
+    tile.forDataAtCoordinate(coordinate, callback, opt_this, opt_request);
+  } else {
+    if (opt_request == true) {
+      goog.async.nextTick(function() {
+        callback.call(opt_this, null);
+      });
+    } else {
+      callback.call(opt_this, null);
+    }
   }
 };
 
@@ -311,23 +324,30 @@ ol.source.TileUTFGridTile_.prototype.getData = function(coordinate) {
 
 
 /**
- * Calls the callback when the data for given coordinate is available.
+ * Calls the callback (synchronously by default) with the available data
+ * for given coordinate (or `null` if not yet loaded).
  * @param {ol.Coordinate} coordinate Coordinate.
  * @param {function(this: T, Object)} callback Callback.
  * @param {T=} opt_this The object to use as `this` in the callback.
- * @param {boolean=} opt_noRequest If not loaded, callback with `null`
- *                                     without loading the tile.
+ * @param {boolean=} opt_request If `true` the callback is always async.
+ *                               The tile data is requested if not yet loaded.
  * @template T
  */
 ol.source.TileUTFGridTile_.prototype.forDataAtCoordinate =
-    function(coordinate, callback, opt_this, opt_noRequest) {
-  if (this.state == ol.TileState.IDLE && opt_noRequest !== true) {
+    function(coordinate, callback, opt_this, opt_request) {
+  if (this.state == ol.TileState.IDLE && opt_request == true) {
     goog.events.listenOnce(this, goog.events.EventType.CHANGE, function(e) {
       callback.call(opt_this, this.getData(coordinate));
     }, false, this);
     this.loadInternal_();
   } else {
-    callback.call(opt_this, this.getData(coordinate));
+    if (opt_request == true) {
+      goog.async.nextTick(function() {
+        callback.call(opt_this, this.getData(coordinate));
+      }, this);
+    } else {
+      callback.call(opt_this, this.getData(coordinate));
+    }
   }
 };
 
