@@ -3550,9 +3550,12 @@ olx.source.TileUTFGridOptions;
 
 
 /**
- * If true, the TileUTFGrid source loads the tiles based on their "visibility".
- * This can be used to improve the speed of response, but increases traffic.
- * Default is `false`.
+ * If `true` the TileUTFGrid source loads the tiles based on their "visibility".
+ * This improves the speed of response, but increases traffic.
+ * Note that if set to `false`, you need to pass `true` as `opt_request`
+ * to the `forDataAtCoordinateAndResolution` method otherwise no data
+ * will ever be loaded.
+ * Default is `true`.
  * @type {boolean|undefined}
  * @api
  */

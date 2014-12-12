@@ -38,7 +38,7 @@ ol.source.TileUTFGrid = function(options) {
    * @type {boolean}
    */
   this.preemptive_ = goog.isDef(options.preemptive) ?
-      options.preemptive : false;
+      options.preemptive : true;
 
   /**
    * @private

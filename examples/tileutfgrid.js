@@ -12,8 +12,7 @@ var mapLayer = new ol.layer.Tile({
 });
 
 var gridSource = new ol.source.TileUTFGrid({
-  url: 'http://api.tiles.mapbox.com/v3/mapbox.geography-class.json',
-  preemptive: true
+  url: 'http://api.tiles.mapbox.com/v3/mapbox.geography-class.json'
 });
 
 var gridLayer = new ol.layer.Tile({source: gridSource});
