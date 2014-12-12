@@ -95,11 +95,18 @@ ol.control.OverviewMap = function(opt_options) {
 
   var ovmapDiv = goog.dom.createDom(goog.dom.TagName.DIV, 'ol-overviewmap-map');
 
+  this.usesParentProjection_ = !goog.isDef(options.projection);
+  var projection = this.usesParentProjection_ ?
+      'EPSG:3857' : options.projection;
+
   /**
    * @type {ol.Map}
    * @private
    */
   this.ovmap_ = new ol.Map({
+    view: new ol.View({
+      projection: projection
+    }),
     controls: new ol.Collection(),
     interactions: new ol.Collection(),
     target: ovmapDiv
@@ -188,9 +195,18 @@ ol.control.OverviewMap.prototype.bindView_ = function() {
   var map = this.getMap();
   var view = map.getView();
 
+
   // if the map does not have a view, we can't act upon it
   if (goog.isNull(view)) {
     return;
+  }
+
+  // if no projection parameter was specified, our view should use the same
+  // projection
+  if (this.usesParentProjection_) {
+    this.ovmap_.setView(new ol.View({
+      projection: view.getProjection()
+    }));
   }
 
   // FIXME - the overviewmap view rotation currently follows the one used
