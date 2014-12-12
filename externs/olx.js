@@ -3550,6 +3550,34 @@ olx.source.GPXOptions.prototype.urls;
 
 
 /**
+ * @typedef {{preemptive: (boolean|undefined),
+ *            url: string}}
+ * @api
+ */
+olx.source.TileUTFGridOptions;
+
+
+/**
+ * If `true` the TileUTFGrid source loads the tiles based on their "visibility".
+ * This improves the speed of response, but increases traffic.
+ * Note that if set to `false`, you need to pass `true` as `opt_request`
+ * to the `forDataAtCoordinateAndResolution` method otherwise no data
+ * will ever be loaded.
+ * Default is `true`.
+ * @type {boolean|undefined}
+ * @api
+ */
+olx.source.TileUTFGridOptions.prototype.preemptive;
+
+
+/**
+ * @type {string}
+ * @api
+ */
+olx.source.TileUTFGridOptions.prototype.url;
+
+
+/**
  * @typedef {{attributions: (Array.<ol.Attribution>|undefined),
  *            crossOrigin: (null|string|undefined),
  *            logo: (string|olx.LogoOptions|undefined),
