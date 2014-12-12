@@ -5709,6 +5709,7 @@ olx.style.IconOptions.prototype.src;
  *     angle: (number|undefined),
  *     snapToPixel: (boolean|undefined),
  *     stroke: (ol.style.Stroke|undefined),
+ *     rotation: (number|undefined),
  *     atlasManager: (ol.style.AtlasManager|undefined)}}
  * @api
  */
@@ -5757,7 +5758,7 @@ olx.style.RegularShapeOptions.prototype.radius2;
 
 
 /**
- * Shape's rotation in radians. A value of 0 will have one of the shape's point
+ * Shape's angle in radians. A value of 0 will have one of the shape's point
  * facing up.
  * Default value is 0.
  * @type {number|undefined}
@@ -5786,6 +5787,14 @@ olx.style.RegularShapeOptions.prototype.snapToPixel;
  * @api
  */
 olx.style.RegularShapeOptions.prototype.stroke;
+
+
+/**
+ * Rotation in radians (positive rotation clockwise). Default is `0`.
+ * @type {number|undefined}
+ * @api
+ */
+olx.style.RegularShapeOptions.prototype.rotation;
 
 
 /**

@@ -31,6 +31,7 @@ var styles = {
           stroke: stroke,
           points: 3,
           radius: 10,
+          rotation: Math.PI / 4,
           angle: 0
         }))
   })],

@@ -133,7 +133,7 @@ ol.style.RegularShape = function(options) {
   goog.base(this, {
     opacity: 1,
     rotateWithView: false,
-    rotation: 0,
+    rotation: goog.isDef(options.rotation) ? options.rotation : 0,
     scale: 1,
     snapToPixel: snapToPixel
   });
