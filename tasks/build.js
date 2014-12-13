@@ -16,9 +16,23 @@ var generateExports = require('./generate-exports');
 var log = closure.log;
 var root = path.join(__dirname, '..');
 
+var umdWrapper = '(function (root, factory) {\n' +
+    '  if (typeof define === "function" && define.amd) {\n' +
+    '    define([], factory);\n' +
+    '  } else if (typeof exports === "object") {\n' +
+    '    module.exports = factory();\n' +
+    '  } else {\n' +
+    '    root.ol = factory();\n' +
+    '  }\n' +
+    '}(this, function () {\n' +
+    '  var OPENLAYERS = {};\n' +
+    '  %output%\n' +
+    '  return OPENLAYERS.ol;\n' +
+    '}));\n';
+
 
 /**
- * Assert that a provided config object is valid.
+ * Apply defaults and assert that a provided config object is valid.
  * @param {Object} config Build configuration object.
  * @param {function(Error)} callback Called with an error if config is invalid.
  */
@@ -43,6 +57,12 @@ function assertValidConfig(config, callback) {
     if (config.src && !Array.isArray(config.src)) {
       callback(new Error('Config "src" must be an array'));
       return;
+    }
+    if (config.umd) {
+      config.namespace = 'OPENLAYERS';
+      if (config.compile) {
+        config.compile.output_wrapper = umdWrapper;
+      }
     }
     callback(null);
   });
@@ -156,7 +176,10 @@ function concatenate(paths, callback) {
       callback(new Error(msg));
     } else {
       var preamble = 'var CLOSURE_NO_DEPS = true;\n';
-      callback(null, preamble + results.join('\n'));
+      var parts = umdWrapper.split('%output%');
+      var postamble = 'OPENLAYERS.ol = ol;\n';
+      callback(null,
+          preamble + parts[0] + results.join('\n') + postamble + parts[1]);
     }
   });
 }
