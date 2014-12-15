@@ -477,8 +477,8 @@ ol.render.canvas.Immediate.prototype.drawCircleGeometry =
  * @api
  */
 ol.render.canvas.Immediate.prototype.drawFeature = function(feature, style) {
-  var geometry = feature.getGeometry();
-  if (!goog.isDefAndNotNull(geometry) ||
+  var geometry = style.getGeometryFunction()(feature);
+  if (goog.isNull(geometry) ||
       !ol.extent.intersects(this.extent_, geometry.getExtent())) {
     return;
   }
