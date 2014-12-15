@@ -433,6 +433,10 @@ ol.interaction.Modify.prototype.handlePointerDrag = function(evt) {
     var segment = segmentData.segment;
     var index = dragSegment[1];
 
+    while (vertex.length < geometry.getStride()) {
+      vertex.push(0);
+    }
+
     switch (geometry.getType()) {
       case ol.geom.GeometryType.POINT:
         coordinates = vertex;
@@ -587,6 +591,10 @@ ol.interaction.Modify.prototype.insertVertex_ = function(segmentData, vertex) {
   var depth = segmentData.depth;
   var index = segmentData.index;
   var coordinates;
+
+  while (vertex.length < geometry.getStride()) {
+    vertex.push(0);
+  }
 
   switch (geometry.getType()) {
     case ol.geom.GeometryType.MULTI_LINE_STRING:
