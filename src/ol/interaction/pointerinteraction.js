@@ -19,6 +19,7 @@ goog.require('ol.interaction.Interaction');
  * @constructor
  * @param {olx.interaction.PointerOptions=} opt_options Options.
  * @extends {ol.interaction.Interaction}
+ * @api
  */
 ol.interaction.Pointer = function(opt_options) {
 
