@@ -1050,6 +1050,7 @@ olx.control.MousePositionOptions.prototype.undefinedHTML;
  *     collapsible: (boolean|undefined),
  *     label: (string|undefined),
  *     layers: (Array.<ol.layer.Layer>|ol.Collection|undefined),
+ *     projection: (ol.proj.ProjectionLike),
  *     target: (Element|undefined),
  *     tipLabel: (string|undefined)}}
  * @api
@@ -1097,6 +1098,15 @@ olx.control.OverviewMapOptions.prototype.label;
  * @api
  */
 olx.control.OverviewMapOptions.prototype.layers;
+
+/**
+ * A projection object or string which defines the overview map projection. If 
+ * not set, this will be set to the base map projection when the control is 
+ * added to a map.
+ * @type {ol.proj.ProjectionLike}
+ * @api
+ */
+olx.control.OverviewMapOptions.prototype.projection;
 
 
 /**
