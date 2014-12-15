@@ -1094,6 +1094,15 @@ olx.control.OverviewMapOptions.prototype.label;
  */
 olx.control.OverviewMapOptions.prototype.layers;
 
+/**
+ * A projection object or string which defines the overview map projection. If 
+ * not set, this will be set to the base map projection when the control is 
+ * added to a map.
+ * @type {ol.proj.ProjectionLike}
+ * @api
+ */
+olx.control.OverviewMapOptions.prototype.projection;
+
 
 /**
  * Specify a target if you want the control to be rendered outside of the map's
