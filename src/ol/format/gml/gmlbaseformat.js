@@ -544,8 +544,8 @@ ol.format.GMLBase.prototype.readFeatures;
 ol.format.GMLBase.prototype.readFeaturesFromNode =
     function(node, opt_options) {
   var options = {
-    'featureType': this.featureType,
-    'featureNS': this.featureNS
+    featureType: this.featureType,
+    featureNS: this.featureNS
   };
   if (goog.isDef(opt_options)) {
     goog.object.extend(options, this.getReadOptions(node, opt_options));
