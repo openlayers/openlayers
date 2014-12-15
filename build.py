@@ -32,7 +32,11 @@ class ThreadPool:
                 try:
                     function(*args, **kargs)
                 except:
+                    print("ERROR")
+                    for count, thing in enumerate(args):
+                        print '{0}. {1}'.format(count, thing)
                     print(sys.exc_info()[0])
+                    print("ERROR")
                     self.tasks.errors = True
                 self.tasks.task_done()
 
