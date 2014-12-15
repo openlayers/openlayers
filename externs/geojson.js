@@ -34,9 +34,9 @@ var GeoJSONCRS = function() {};
 
 
 /**
- * @type {!GeoJSONCRSCode|!GeoJSONCRSName|!GeoJSONLink}
  * TODO: remove GeoJSONCRSCode when http://jira.codehaus.org/browse/GEOS-5996
  * is fixed and widely deployed.
+ * @type {!GeoJSONCRSCode|!GeoJSONCRSName|!GeoJSONLink}
  */
 GeoJSONCRS.prototype.properties;
 
@@ -60,9 +60,9 @@ var GeoJSONCRSName = function() {};
 
 
 /**
- * @type {string}
  * TODO: remove this when http://jira.codehaus.org/browse/GEOS-5996 is fixed
  * and widely deployed.
+ * @type {string}
  */
 GeoJSONCRSName.prototype.code;
 
