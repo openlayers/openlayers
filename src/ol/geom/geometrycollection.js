@@ -278,6 +278,22 @@ ol.geom.GeometryCollection.prototype.applyTransform = function(transformFn) {
 
 
 /**
+ * Translate the geometry.
+ * @param {number} deltaX Delta X.
+ * @param {number} deltaY Delta Y.
+ * @api
+ */
+ol.geom.GeometryCollection.prototype.translate = function(deltaX, deltaY) {
+  var geometries = this.geometries_;
+  var i, ii;
+  for (i = 0, ii = geometries.length; i < ii; ++i) {
+    geometries[i].translate(deltaX, deltaY);
+  }
+  this.changed();
+};
+
+
+/**
  * @inheritDoc
  */
 ol.geom.GeometryCollection.prototype.disposeInternal = function() {

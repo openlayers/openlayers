@@ -195,6 +195,16 @@ ol.geom.Geometry.prototype.intersectsExtent = goog.abstractMethod;
 
 
 /**
+ * Translate the geometry.
+ * @param {number} deltaX Delta X.
+ * @param {number} deltaY Delta Y.
+ * @function
+ * @api
+ */
+ol.geom.Geometry.prototype.translate = goog.abstractMethod;
+
+
+/**
  * Transform each coordinate of the geometry from one coordinate reference
  * system to another. The geometry is modified in place.
  * For example, a line will be transformed to a line and a circle to a circle.
