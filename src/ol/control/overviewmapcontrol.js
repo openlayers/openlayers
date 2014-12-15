@@ -136,8 +136,12 @@ ol.control.OverviewMap = function(opt_options) {
   var element = goog.dom.createDom(goog.dom.TagName.DIV,
       cssClasses, ovmapDiv, button);
 
+  var render = goog.isDef(options.render) ?
+      options.render : ol.control.OverviewMap.render;
+
   goog.base(this, {
     element: element,
+    render: render,
     target: options.target
   });
 };
@@ -201,12 +205,11 @@ ol.control.OverviewMap.prototype.bindView_ = function() {
 
 
 /**
- * Function called on each map render. Executes in a requestAnimationFrame
- * callback. Manage the extent of the overview map accordingly,
- * then update the overview map box.
- * @param {goog.events.Event} event Event.
+ * @param {ol.MapEvent} mapEvent Map event.
+ * @this {ol.control.OverviewMap}
+ * @api
  */
-ol.control.OverviewMap.prototype.handleMapPostrender = function(event) {
+ol.control.OverviewMap.render = function(mapEvent) {
   this.validateExtent_();
   this.updateBox_();
 };

@@ -137,22 +137,6 @@ oli.control.Control.prototype.setMap = function(map) {};
 oli.interaction;
 
 
-
-/**
- * @interface
- */
-oli.interaction.Interaction = function() {};
-
-/**
- * @param {ol.MapBrowserEvent} mapBrowserEvent Map browser event.
- * @return {boolean} Whether the map browser event should continue
- *     through the chain of interactions. `false` means stop, `true`
- *     means continue.
- */
-oli.interaction.Interaction.prototype.handleMapBrowserEvent =
-    function(mapBrowserEvent) {};
-
-
 /**
  * @interface
  */
