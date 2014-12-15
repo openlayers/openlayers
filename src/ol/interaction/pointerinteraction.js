@@ -198,6 +198,8 @@ ol.interaction.Pointer.handleEvent = function(mapBrowserEvent) {
     var handled = this.handleDownEvent_(mapBrowserEvent);
     this.handlingDownUpSequence = handled;
     stopEvent = this.shouldStopEvent(handled);
+  } else if (mapBrowserEvent.type == ol.MapBrowserEvent.EventType.POINTERMOVE) {
+    this.handleMoveEvent_(mapBrowserEvent);
   }
   return !stopEvent;
 };
