@@ -1957,9 +1957,9 @@ ol.render.canvas.ReplayGroup.prototype.replay = function(
   var minY = maxExtent[1];
   var maxX = maxExtent[2];
   var maxY = maxExtent[3];
-  var flatClipCoords = ol.geom.flat.transform.transform2D(
-      [minX, minY, minX, maxY, maxX, maxY, maxX, minY],
-      0, 8, 2, transform);
+  var flatClipCoords = [minX, minY, minX, maxY, maxX, maxY, maxX, minY];
+  ol.geom.flat.transform.transform2D(
+      flatClipCoords, 0, 8, 2, transform, flatClipCoords);
   context.save();
   context.beginPath();
   context.moveTo(flatClipCoords[0], flatClipCoords[1]);
