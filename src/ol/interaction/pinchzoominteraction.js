@@ -150,3 +150,9 @@ ol.interaction.PinchZoom.handleDownEvent_ =
     return false;
   }
 };
+
+
+/**
+ * @inheritDoc
+ */
+ol.interaction.PinchZoom.prototype.shouldStopEvent = goog.functions.FALSE;

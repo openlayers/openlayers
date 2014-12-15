@@ -761,12 +761,6 @@ ol.interaction.Modify.prototype.removeVertex_ = function() {
 
 
 /**
- * @inheritDoc
- */
-ol.interaction.Modify.prototype.shouldStopEvent = goog.functions.identity;
-
-
-/**
  * @param {ol.geom.SimpleGeometry} geometry Geometry.
  * @param {number} index Index.
  * @param {Array.<number>|undefined} depth Depth.

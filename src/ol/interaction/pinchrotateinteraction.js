@@ -161,3 +161,9 @@ ol.interaction.PinchRotate.handleDownEvent_ = function(mapBrowserEvent) {
     return false;
   }
 };
+
+
+/**
+ * @inheritDoc
+ */
+ol.interaction.PinchRotate.prototype.shouldStopEvent = goog.functions.FALSE;

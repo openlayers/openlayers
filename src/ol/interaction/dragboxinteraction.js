@@ -3,7 +3,6 @@ goog.provide('ol.DragBoxEvent');
 goog.provide('ol.interaction.DragBox');
 
 goog.require('goog.events.Event');
-goog.require('goog.functions');
 goog.require('ol');
 goog.require('ol.events.ConditionType');
 goog.require('ol.events.condition');
@@ -205,9 +204,3 @@ ol.interaction.DragBox.handleDownEvent_ = function(mapBrowserEvent) {
     return false;
   }
 };
-
-
-/**
- * @inheritDoc
- */
-ol.interaction.DragBox.prototype.shouldStopEvent = goog.functions.identity;

@@ -1,7 +1,6 @@
 goog.provide('ol.interaction.DragRotateAndZoom');
 
 goog.require('goog.asserts');
-goog.require('goog.functions');
 goog.require('goog.math.Vec2');
 goog.require('ol');
 goog.require('ol.ViewHint');
@@ -150,12 +149,3 @@ ol.interaction.DragRotateAndZoom.handleDownEvent_ = function(mapBrowserEvent) {
     return false;
   }
 };
-
-
-/**
- * @inheritDoc
- * Stop the event if it was handled, so that interaction `DragZoom`
- * does not interfere.
- */
-ol.interaction.DragRotateAndZoom.prototype.shouldStopEvent =
-    goog.functions.identity;

@@ -206,12 +206,16 @@ ol.interaction.Pointer.handleEvent = function(mapBrowserEvent) {
 
 
 /**
- * This method allows inheriting classes to stop the event from being
- * passed to further interactions. For example, this is required for
- * interaction `DragRotateAndZoom`.
+ * This method is used to determine if "down" events should be propagated to
+ * other interactions or should be stopped.
  *
- * @protected
+ * The method receives the return code of the "handleDownEvent" function.
+ *
+ * By default this function is the "identity" function. It's overidden in
+ * child classes.
+ *
  * @param {boolean} handled Was the event handled by the interaction?
  * @return {boolean} Should the event be stopped?
+ * @protected
  */
-ol.interaction.Pointer.prototype.shouldStopEvent = goog.functions.FALSE;
+ol.interaction.Pointer.prototype.shouldStopEvent = goog.functions.identity;

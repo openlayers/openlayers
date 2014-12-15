@@ -120,3 +120,9 @@ ol.interaction.DragRotate.handleDownEvent_ = function(mapBrowserEvent) {
     return false;
   }
 };
+
+
+/**
+ * @inheritDoc
+ */
+ol.interaction.DragRotate.prototype.shouldStopEvent = goog.functions.FALSE;

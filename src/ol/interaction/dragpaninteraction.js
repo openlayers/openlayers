@@ -160,3 +160,9 @@ ol.interaction.DragPan.handleDownEvent_ = function(mapBrowserEvent) {
     return false;
   }
 };
+
+
+/**
+ * @inheritDoc
+ */
+ol.interaction.DragPan.prototype.shouldStopEvent = goog.functions.FALSE;

@@ -555,6 +555,12 @@ ol.interaction.Draw.prototype.abortDrawing_ = function() {
 
 
 /**
+ * @inheritDoc
+ */
+ol.interaction.Draw.prototype.shouldStopEvent = goog.functions.FALSE;
+
+
+/**
  * Redraw the skecth features.
  * @private
  */
