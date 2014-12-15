@@ -3,7 +3,6 @@ goog.provide('ol.interaction.Pointer');
 goog.require('goog.asserts');
 goog.require('goog.functions');
 goog.require('goog.object');
-goog.require('ol.MapBrowserEvent');
 goog.require('ol.MapBrowserEvent.EventType');
 goog.require('ol.MapBrowserPointerEvent');
 goog.require('ol.Pixel');
@@ -13,8 +12,13 @@ goog.require('ol.interaction.Interaction');
 
 /**
  * @classdesc
- * Abstract base class; normally only used for creating subclasses and not
- * instantiated in apps.
+ * Base class that calls user-defined functions on `down`, `move` and `up`
+ * events. This class also manages "drag sequences".
+ *
+ * When the `handleDownEvent` user function returns `true` a drag sequence is
+ * started. During a drag sequence the `handleDragEvent` user function is
+ * called on `move` events. The drag sequence ends when the `handleUpEvent`
+ * user function is called and returns `false`.
  *
  * @constructor
  * @param {olx.interaction.PointerOptions=} opt_options Options.
@@ -31,6 +35,34 @@ ol.interaction.Pointer = function(opt_options) {
   goog.base(this, {
     handleEvent: handleEvent
   });
+
+  /**
+   * @type {function(ol.MapBrowserPointerEvent):boolean}
+   * @private
+   */
+  this.handleDownEvent_ = goog.isDef(options.handleDownEvent) ?
+      options.handleDownEvent : ol.interaction.Pointer.handleDownEvent;
+
+  /**
+   * @type {function(ol.MapBrowserPointerEvent)}
+   * @private
+   */
+  this.handleDragEvent_ = goog.isDef(options.handleDragEvent) ?
+      options.handleDragEvent : ol.interaction.Pointer.handleDragEvent;
+
+  /**
+   * @type {function(ol.MapBrowserPointerEvent)}
+   * @private
+   */
+  this.handleMoveEvent_ = goog.isDef(options.handleMoveEvent) ?
+      options.handleMoveEvent : ol.interaction.Pointer.handleMoveEvent;
+
+  /**
+   * @type {function(ol.MapBrowserPointerEvent):boolean}
+   * @private
+   */
+  this.handleUpEvent_ = goog.isDef(options.handleUpEvent) ?
+      options.handleUpEvent : ol.interaction.Pointer.handleUpEvent;
 
   /**
    * @type {boolean}
@@ -111,25 +143,32 @@ ol.interaction.Pointer.prototype.updateTrackedPointers_ =
 
 /**
  * @param {ol.MapBrowserPointerEvent} mapBrowserEvent Event.
- * @protected
+ * @this {ol.interaction.Pointer}
  */
-ol.interaction.Pointer.prototype.handlePointerDrag = goog.nullFunction;
+ol.interaction.Pointer.handleDragEvent = goog.nullFunction;
 
 
 /**
  * @param {ol.MapBrowserPointerEvent} mapBrowserEvent Event.
- * @protected
  * @return {boolean} Capture dragging.
+ * @this {ol.interaction.Pointer}
  */
-ol.interaction.Pointer.prototype.handlePointerUp = goog.functions.FALSE;
+ol.interaction.Pointer.handleUpEvent = goog.functions.FALSE;
 
 
 /**
  * @param {ol.MapBrowserPointerEvent} mapBrowserEvent Event.
- * @protected
  * @return {boolean} Capture dragging.
+ * @this {ol.interaction.Pointer}
  */
-ol.interaction.Pointer.prototype.handlePointerDown = goog.functions.FALSE;
+ol.interaction.Pointer.handleDownEvent = goog.functions.FALSE;
+
+
+/**
+ * @param {ol.MapBrowserPointerEvent} mapBrowserEvent Event.
+ * @this {ol.interaction.Pointer}
+ */
+ol.interaction.Pointer.handleMoveEvent = goog.nullFunction;
 
 
 /**
@@ -148,15 +187,15 @@ ol.interaction.Pointer.handleEvent = function(mapBrowserEvent) {
   if (this.handlingDownUpSequence) {
     if (mapBrowserEvent.type ==
         ol.MapBrowserEvent.EventType.POINTERDRAG) {
-      this.handlePointerDrag(mapBrowserEvent);
+      this.handleDragEvent_(mapBrowserEvent);
     } else if (mapBrowserEvent.type ==
         ol.MapBrowserEvent.EventType.POINTERUP) {
       this.handlingDownUpSequence =
-          this.handlePointerUp(mapBrowserEvent);
+          this.handleUpEvent_(mapBrowserEvent);
     }
   }
   if (mapBrowserEvent.type == ol.MapBrowserEvent.EventType.POINTERDOWN) {
-    var handled = this.handlePointerDown(mapBrowserEvent);
+    var handled = this.handleDownEvent_(mapBrowserEvent);
     this.handlingDownUpSequence = handled;
     stopEvent = this.shouldStopEvent(handled);
   }

@@ -2430,10 +2430,32 @@ olx.interaction.PinchZoomOptions.prototype.duration;
 
 
 /**
- * @typedef {{handleEvent: function(ol.MapBrowserEvent):boolean}}
+ * @typedef {{handleDownEvent: (function(ol.MapBrowserPointerEvent):boolean|undefined),
+ *     handleDragEvent: (function(ol.MapBrowserPointerEvent)|undefined),
+ *     handleEvent: (function(ol.MapBrowserEvent):boolean|undefined),
+ *     handleMoveEvent: (function(ol.MapBrowserPointerEvent)|undefined),
+ *     handleUpEvent: (function(ol.MapBrowserPointerEvent):boolean|undefined)}}
  * @api
  */
 olx.interaction.PointerOptions;
+
+
+/**
+ * Function handling "down" events. If the function returns `true` then a drag
+ * sequence is started.
+ * @type {(function(ol.MapBrowserPointerEvent):boolean|undefined)}
+ * @api
+ */
+olx.interaction.PointerOptions.prototype.handleDownEvent;
+
+
+/**
+ * Function handling "drag" events. This function is called on "move" events
+ * during a drag sequence.
+ * @type {(function(ol.MapBrowserPointerEvent):boolean|undefined)}
+ * @api
+ */
+olx.interaction.PointerOptions.prototype.handleDragEvent;
 
 
 /**
@@ -2441,10 +2463,29 @@ olx.interaction.PointerOptions;
  * dispatched to the map. The function may return `false` to prevent the
  * propagation of the event to other interactions in the map's interactions
  * chain.
- * @type {function(ol.MapBrowserEvent):boolean}
+ * @type {(function(ol.MapBrowserEvent):boolean|undefined)}
  * @api
  */
 olx.interaction.PointerOptions.prototype.handleEvent;
+
+
+/**
+ * Function handling "move" events. This function is called on "move" events,
+ * also during a drag sequence (so during a drag sequence both the
+ * `handleDragEvent` function and this function are called).
+ * @type {(function(ol.MapBrowserPointerEvent):boolean|undefined)}
+ * @api
+ */
+olx.interaction.PointerOptions.prototype.handleMoveEvent;
+
+
+/**
+ * Function handling "up" events. If the function returns `false` then the
+ * current drag sequence is stopped.
+ * @type {(function(ol.MapBrowserPointerEvent):boolean|undefined)}
+ * @api
+ */
+olx.interaction.PointerOptions.prototype.handleUpEvent;
 
 
 /**

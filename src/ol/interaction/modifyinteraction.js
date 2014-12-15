@@ -48,7 +48,10 @@ ol.interaction.SegmentDataType;
 ol.interaction.Modify = function(options) {
 
   goog.base(this, {
-    handleEvent: ol.interaction.Modify.handleEvent
+    handleDownEvent: ol.interaction.Modify.handleDownEvent_,
+    handleDragEvent: ol.interaction.Modify.handleDragEvent_,
+    handleEvent: ol.interaction.Modify.handleEvent,
+    handleUpEvent: ol.interaction.Modify.handleUpEvent_
   });
 
   /**
@@ -389,9 +392,12 @@ ol.interaction.Modify.prototype.createOrUpdateVertexFeature_ =
 
 
 /**
- * @inheritDoc
+ * @param {ol.MapBrowserPointerEvent} evt Event.
+ * @return {boolean} Start drag sequence?
+ * @this {ol.interaction.Modify}
+ * @private
  */
-ol.interaction.Modify.prototype.handlePointerDown = function(evt) {
+ol.interaction.Modify.handleDownEvent_ = function(evt) {
   this.handlePointerAtPixel_(evt.pixel, evt.map);
   this.dragSegments_ = [];
   var vertexFeature = this.vertexFeature_;
@@ -421,9 +427,11 @@ ol.interaction.Modify.prototype.handlePointerDown = function(evt) {
 
 
 /**
- * @inheritDoc
+ * @param {ol.MapBrowserPointerEvent} evt Event.
+ * @this {ol.interaction.Modify}
+ * @private
  */
-ol.interaction.Modify.prototype.handlePointerDrag = function(evt) {
+ol.interaction.Modify.handleDragEvent_ = function(evt) {
   var vertex = evt.coordinate;
   for (var i = 0, ii = this.dragSegments_.length; i < ii; ++i) {
     var dragSegment = this.dragSegments_[i];
@@ -472,9 +480,12 @@ ol.interaction.Modify.prototype.handlePointerDrag = function(evt) {
 
 
 /**
- * @inheritDoc
+ * @param {ol.MapBrowserPointerEvent} evt Event.
+ * @return {boolean} Stop drag sequence?
+ * @this {ol.interaction.Modify}
+ * @private
  */
-ol.interaction.Modify.prototype.handlePointerUp = function(evt) {
+ol.interaction.Modify.handleUpEvent_ = function(evt) {
   var segmentData;
   for (var i = this.dragSegments_.length - 1; i >= 0; --i) {
     segmentData = this.dragSegments_[i][0];
