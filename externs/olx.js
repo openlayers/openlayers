@@ -3188,6 +3188,7 @@ olx.layer.TileOptions.prototype.useInterimTilesOnError;
  *     minResolution: (number|undefined),
  *     maxResolution: (number|undefined),
  *     opacity: (number|undefined),
+ *     ratio: (number|undefined),
  *     saturation: (number|undefined),
  *     source: (ol.source.Vector|undefined),
  *     style: (ol.style.Style|Array.<ol.style.Style>|ol.style.StyleFunction|undefined),
@@ -3262,6 +3263,15 @@ olx.layer.VectorOptions.prototype.maxResolution;
  * @api stable
  */
 olx.layer.VectorOptions.prototype.opacity;
+
+
+/**
+ * Ratio. `1` means requests are the size of the map viewport, `2` means
+ * twice the size of the map viewport, and so on. Default is `1.5`.
+ * @type {number|undefined}
+ * @api stable
+ */
+olx.layer.VectorOptions.prototype.ratio;
 
 
 /**
