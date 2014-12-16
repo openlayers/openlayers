@@ -6075,7 +6075,7 @@ olx.style.TextOptions.prototype.stroke;
 
 
 /**
- * @typedef {{geometry: (undefined|string|ol.geom.Geometry|function(ol.Feature): ol.geom.Geometry),
+ * @typedef {{geometry: (undefined|string|ol.geom.Geometry|function(ol.Feature): (ol.geom.Geometry|undefined)),
  *     fill: (ol.style.Fill|undefined),
  *     image: (ol.style.Image|undefined),
  *     stroke: (ol.style.Stroke|undefined),
@@ -6089,7 +6089,7 @@ olx.style.StyleOptions;
 /**
  * Feature property or geometry or function returning a geometry to render
  * for this style.
- * @type {undefined|string|ol.geom.Geometry|function(ol.Feature): ol.geom.Geometry}
+ * @type {undefined|string|ol.geom.Geometry|function(ol.Feature): (ol.geom.Geometry|undefined)}
  * @api
  */
 olx.style.StyleOptions.prototype.geometry;

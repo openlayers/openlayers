@@ -30,7 +30,7 @@ ol.style.Style = function(opt_options) {
    * Function that is called with a feature and returns the geometry to render
    * for this style.
    * @private
-   * @type {!function(ol.Feature): ol.geom.Geometry}
+   * @type {!function(ol.Feature): (ol.geom.Geometry|undefined)}
    */
   this.geometryFunction_ = ol.style.defaultGeometryFunction;
 
@@ -72,9 +72,9 @@ ol.style.Style = function(opt_options) {
 
 
 /**
- * @return {!function(ol.Feature): ol.geom.Geometry} Function that is called
- * with a feature and returns the geometry to render instead of the feature's
- * geometry.
+ * @return {!function(ol.Feature): (ol.geom.Geometry|undefined)} Function that
+ * is called with a feature and returns the geometry to render instead of the
+ * feature's geometry.
  */
 ol.style.Style.prototype.getGeometryFunction = function() {
   return this.geometryFunction_;
@@ -129,7 +129,7 @@ ol.style.Style.prototype.getZIndex = function() {
 /**
  * Set a geometry that is rendered instead of the feature's geometry.
  *
- * @param {string|ol.geom.Geometry|function(ol.Feature): ol.geom.Geometry} geometry
+ * @param {string|ol.geom.Geometry|function(ol.Feature): (ol.geom.Geometry|undefined)} geometry
  *     Feature property or geometry or function returning a geometry to render
  *     for this style.
  * @api
@@ -318,10 +318,9 @@ ol.style.createDefaultEditingStyles = function() {
 
 /**
  * @param {ol.Feature} feature Feature to get the geometry for.
- * @return {ol.geom.Geometry} Geometry to render.
+ * @return {ol.geom.Geometry|undefined} Geometry to render.
  */
 ol.style.defaultGeometryFunction = function(feature) {
   goog.asserts.assert(!goog.isNull(feature));
-  var geometry = feature.getGeometry();
-  return goog.isDef(geometry) ? geometry : null;
+  return feature.getGeometry();
 };
