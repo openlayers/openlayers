@@ -75,6 +75,13 @@ ol.source.ImageVector = function(options) {
   });
 
   /**
+   * Function to calculate a geometry from a feature, a resolution, and a style.
+   * @type {undefined|function(ol.Feature, number, ol.style.Style): ol.geom.Geometry}
+   * @private
+   */
+  this.geometryFunction_ = options.geometryFunction;
+
+  /**
    * User provided style.
    * @type {ol.style.Style|Array.<ol.style.Style>|ol.style.StyleFunction}
    * @private
@@ -267,12 +274,19 @@ ol.source.ImageVector.prototype.renderFeature_ =
   if (!goog.isDefAndNotNull(styles)) {
     return false;
   }
-  var i, ii, loading = false;
+  var geometry, i, ii, style;
+  var loading = false;
   for (i = 0, ii = styles.length; i < ii; ++i) {
-    loading = ol.renderer.vector.renderFeature(
-        replayGroup, feature, styles[i],
-        ol.renderer.vector.getSquaredTolerance(resolution, pixelRatio),
-        this.handleImageChange_, this) || loading;
+    style = styles[i];
+    geometry = goog.isDef(this.geometryFunction_) ?
+        this.geometryFunction_(feature, resolution, style) :
+        feature.getGeometry();
+    if (goog.isDefAndNotNull(geometry)) {
+      loading = ol.renderer.vector.renderFeature(
+          replayGroup, feature, geometry, style,
+          ol.renderer.vector.getSquaredTolerance(resolution, pixelRatio),
+          this.handleImageChange_, this) || loading;
+    }
   }
   return loading;
 };

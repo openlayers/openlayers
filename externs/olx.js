@@ -3183,6 +3183,7 @@ olx.layer.TileOptions.prototype.useInterimTilesOnError;
 /**
  * @typedef {{brightness: (number|undefined),
  *     contrast: (number|undefined),
+ *     geometryFunction: (undefined|function(ol.Feature, number, ol.style.Style): ol.geom.Geometry),
  *     renderOrder: (function(ol.Feature, ol.Feature):number|null|undefined),
  *     hue: (number|undefined),
  *     minResolution: (number|undefined),
@@ -3211,6 +3212,16 @@ olx.layer.VectorOptions.prototype.brightness;
  * @api
  */
 olx.layer.VectorOptions.prototype.contrast;
+
+
+/**
+ * Function that receives a feature, a resolution and a style as argument, and
+ * is expected to return the geometry that will be rendered for the given
+ * feature, resolution and style.
+ * @type {undefined|function(ol.Feature, number, ol.style.Style): ol.geom.Geometry}
+ * @api
+ */
+olx.layer.VectorOptions.prototype.geometryFunction;
 
 
 /**
@@ -3299,6 +3310,7 @@ olx.layer.VectorOptions.prototype.visible;
 
 /**
  * @typedef {{features: (Array.<ol.Feature>|ol.Collection.<ol.Feature>|undefined),
+ *     geometryFunction: (undefined|function(ol.Feature, number, ol.style.Style): ol.geom.Geometry),
  *     map: (ol.Map|undefined),
  *     style: (ol.style.Style|Array.<ol.style.Style>|ol.style.StyleFunction|undefined)}}
  * @api
@@ -3312,6 +3324,16 @@ olx.FeatureOverlayOptions;
  * @api
  */
 olx.FeatureOverlayOptions.prototype.features;
+
+
+/**
+ * Function that receives a feature, a resolution and a style as argument, and
+ * is expected to return the geometry that will be rendered for the given
+ * feature, resolution and style.
+ * @type {undefined|function(ol.Feature, number, ol.style.Style): ol.geom.Geometry}
+ * @api
+ */
+olx.FeatureOverlayOptions.prototype.geometryFunction;
 
 
 /**
@@ -4464,6 +4486,7 @@ olx.source.ImageCanvasOptions.prototype.state;
 
 /**
  * @typedef {{attributions: (Array.<ol.Attribution>|undefined),
+ *     geometryFunction: (undefined|function(ol.Feature, number, ol.style.Style): ol.geom.Geometry),
  *     logo: (string|olx.LogoOptions|undefined),
  *     projection: ol.proj.ProjectionLike,
  *     ratio: (number|undefined),
@@ -4481,6 +4504,16 @@ olx.source.ImageVectorOptions;
  * @api
  */
 olx.source.ImageVectorOptions.prototype.attributions;
+
+
+/**
+ * Function that receives a feature, a resolution and a style as argument, and
+ * is expected to return the geometry that will be rendered for the given
+ * feature, resolution and style.
+ * @type {undefined|function(ol.Feature, number, ol.style.Style): ol.geom.Geometry}
+ * @api
+ */
+olx.source.ImageVectorOptions.prototype.geometryFunction;
 
 
 /**

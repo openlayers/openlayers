@@ -51,6 +51,12 @@ ol.FeatureOverlay = function(opt_options) {
 
   /**
    * @private
+   * @type {undefined|function(ol.Feature, number, ol.style.Style): ol.geom.Geometry}
+   */
+  this.geometryFunction_ = options.geometryFunction;
+
+  /**
+   * @private
    * @type {ol.Map}
    */
   this.map_ = null;
@@ -178,7 +184,7 @@ ol.FeatureOverlay.prototype.handleMapPostCompose_ = function(event) {
   var resolution = frameState.viewState.resolution;
   var squaredTolerance = ol.renderer.vector.getSquaredTolerance(resolution,
       pixelRatio);
-  var i, ii, styles, featureStyleFunction;
+  var featureStyleFunction, geometry, i, ii, style, styles;
   this.features_.forEach(function(feature) {
     featureStyleFunction = feature.getStyleFunction();
     styles = goog.isDef(featureStyleFunction) ?
@@ -190,8 +196,14 @@ ol.FeatureOverlay.prototype.handleMapPostCompose_ = function(event) {
     }
     ii = styles.length;
     for (i = 0; i < ii; ++i) {
-      ol.renderer.vector.renderFeature(replayGroup, feature, styles[i],
-          squaredTolerance, this.handleImageChange_, this);
+      style = styles[i];
+      geometry = goog.isDef(this.geometryFunction_) ?
+          this.geometryFunction_(feature, resolution, style) :
+          feature.getGeometry();
+      if (goog.isDefAndNotNull(geometry)) {
+        ol.renderer.vector.renderFeature(replayGroup, feature, geometry, style,
+            squaredTolerance, this.handleImageChange_, this);
+      }
     }
   }, this);
 };
