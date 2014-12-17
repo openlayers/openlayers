@@ -38,6 +38,12 @@ ol.layer.Vector = function(opt_options) {
   goog.base(this, /** @type {olx.layer.LayerOptions} */ (baseOptions));
 
   /**
+   * @type {number}
+   * @private
+   */
+  this.ratio_ = goog.isDef(options.ratio) ? options.ratio : 1.5;
+
+  /**
    * User provided style.
    * @type {ol.style.Style|Array.<ol.style.Style>|ol.style.StyleFunction}
    * @private
@@ -73,6 +79,14 @@ ol.layer.Vector.prototype.getRenderOrder = function() {
  * @api stable
  */
 ol.layer.Vector.prototype.getSource;
+
+
+/**
+ * @return {number}
+ */
+ol.layer.Vector.prototype.getRatio = function() {
+  return this.ratio_;
+};
 
 
 /**

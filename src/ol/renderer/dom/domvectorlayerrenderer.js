@@ -67,6 +67,12 @@ ol.renderer.dom.VectorLayer = function(mapRenderer, vectorLayer) {
 
   /**
    * @private
+   * @type {number}
+   */
+  this.renderedRatio_ = NaN;
+
+  /**
+   * @private
    * @type {function(ol.Feature, ol.Feature): number|null}
    */
   this.renderedRenderOrder_ = null;
@@ -221,6 +227,7 @@ ol.renderer.dom.VectorLayer.prototype.prepareFrame =
   var projection = viewState.projection;
   var resolution = viewState.resolution;
   var pixelRatio = frameState.pixelRatio;
+  var vectorLayerRatio = vectorLayer.getRatio();
   var vectorLayerRevision = vectorLayer.getRevision();
   var vectorLayerRenderOrder = vectorLayer.getRenderOrder();
   if (!goog.isDef(vectorLayerRenderOrder)) {
@@ -229,6 +236,7 @@ ol.renderer.dom.VectorLayer.prototype.prepareFrame =
 
   if (!this.dirty_ &&
       this.renderedResolution_ == resolution &&
+      this.renderedRatio_ == vectorLayerRatio &&
       this.renderedRevision_ == vectorLayerRevision &&
       this.renderedRenderOrder_ == vectorLayerRenderOrder &&
       ol.extent.containsExtent(this.renderedExtent_, frameStateExtent)) {
@@ -236,8 +244,9 @@ ol.renderer.dom.VectorLayer.prototype.prepareFrame =
   }
 
   var extent = this.renderedExtent_;
-  var xBuffer = ol.extent.getWidth(frameStateExtent) / 4;
-  var yBuffer = ol.extent.getHeight(frameStateExtent) / 4;
+  var scale = vectorLayerRatio - 1;
+  var xBuffer = scale * ol.extent.getWidth(frameStateExtent) / 2;
+  var yBuffer = scale * ol.extent.getHeight(frameStateExtent) / 2;
   extent[0] = frameStateExtent[0] - xBuffer;
   extent[1] = frameStateExtent[1] - yBuffer;
   extent[2] = frameStateExtent[2] + xBuffer;
@@ -291,6 +300,7 @@ ol.renderer.dom.VectorLayer.prototype.prepareFrame =
   replayGroup.finish();
 
   this.renderedResolution_ = resolution;
+  this.renderedRatio_ = vectorLayerRatio;
   this.renderedRevision_ = vectorLayerRevision;
   this.renderedRenderOrder_ = vectorLayerRenderOrder;
   this.replayGroup_ = replayGroup;
