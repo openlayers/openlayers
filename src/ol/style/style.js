@@ -28,6 +28,12 @@ ol.style.Style = function(opt_options) {
 
   /**
    * @private
+   * @type {string|ol.geom.Geometry|ol.style.GeometryFunction}
+   */
+  this.geometry_ = null;
+
+  /**
+   * @private
    * @type {!ol.style.GeometryFunction}
    */
   this.geometryFunction_ = ol.style.defaultGeometryFunction;
@@ -70,9 +76,20 @@ ol.style.Style = function(opt_options) {
 
 
 /**
- * @return {!ol.style.GeometryFunction} Function that
- * is called with a feature and returns the geometry to render instead of the
- * feature's geometry.
+ * @return {string|ol.geom.Geometry|ol.style.GeometryFunction}
+ * Feature property or geometry or function that returns the geometry that will
+ * be rendered with this style.
+ * @api
+ */
+ol.style.Style.prototype.getGeometry = function() {
+  return this.geometry_;
+};
+
+
+/**
+ * @return {!ol.style.GeometryFunction} Function that is called with a feature
+ * and returns the geometry to render instead of the feature's geometry.
+ * @api
  */
 ol.style.Style.prototype.getGeometryFunction = function() {
   return this.geometryFunction_;
@@ -143,14 +160,15 @@ ol.style.Style.prototype.setGeometry = function(geometry) {
       }
       return result;
     };
+  } else if (goog.isNull(geometry)) {
+    this.geometryFunction_ = ol.style.defaultGeometryFunction;
   } else if (goog.isDef(geometry)) {
     goog.asserts.assertInstanceof(geometry, ol.geom.Geometry);
     this.geometryFunction_ = function() {
       return geometry;
     };
-  } else {
-    this.geometryFunction_ = ol.style.defaultGeometryFunction;
   }
+  this.geometry_ = geometry;
 };
 
 
@@ -319,8 +337,8 @@ ol.style.createDefaultEditingStyles = function() {
 
 
 /**
- * A function that takes an `{ol.Feature}` as argument and returns a geometry
- * that will be rendered and styled for the feature.
+ * A function that takes an {@link ol.Feature} as argument and returns an
+ * {@link ol.geom.Geometry} that will be rendered and styled for the feature.
  *
  * @typedef {function(ol.Feature): (ol.geom.Geometry|undefined)}
  * @api

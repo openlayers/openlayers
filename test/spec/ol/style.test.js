@@ -40,6 +40,24 @@ describe('ol.style.Style', function() {
     });
   });
 
+  describe('#getGeometry', function() {
+
+    it('returns whatever was passed to setGeometry', function() {
+      var style = new ol.style.Style();
+      style.setGeometry('foo');
+      expect(style.getGeometry()).to.eql('foo');
+      var geom = new ol.geom.Point([1, 2]);
+      style.setGeometry(geom);
+      expect(style.getGeometry()).to.eql(geom);
+      var fn = function() { return geom; };
+      style.setGeometry(fn);
+      expect(style.getGeometry()).to.eql(fn);
+      style.setGeometry(null);
+      expect(style.getGeometry()).to.eql(null);
+    });
+
+  });
+
 });
 
 describe('ol.style.createStyleFunction()', function() {
