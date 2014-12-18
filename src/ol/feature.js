@@ -286,10 +286,9 @@ ol.Feature.prototype.setGeometryName = function(name) {
 /**
  * A function that takes a `{number}` representing the view's resolution. It
  * returns an Array of {@link ol.style.Style}. This way individual features
- * can be styled. The this keyword inside the function references the
- * {@link ol.Feature} to be styled.
+ * can be styled.
  *
- * @typedef {function(this: ol.Feature, number): Array.<ol.style.Style>}
+ * @typedef {function(number): Array.<ol.style.Style>}
  * @api stable
  */
 ol.feature.FeatureStyleFunction;
