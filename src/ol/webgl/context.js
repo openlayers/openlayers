@@ -67,6 +67,24 @@ ol.webgl.Context = function(canvas, gl) {
   this.currentProgram_ = null;
 
   /**
+   * @private
+   * @type {WebGLFramebuffer}
+   */
+  this.hitDetectionFramebuffer_ = null;
+
+  /**
+   * @private
+   * @type {WebGLTexture}
+   */
+  this.hitDetectionTexture_ = null;
+
+  /**
+   * @private
+   * @type {WebGLRenderbuffer}
+   */
+  this.hitDetectionRenderbuffer_ = null;
+
+  /**
    * @type {boolean}
    */
   this.hasOESElementIndexUint = goog.array.contains(
@@ -153,6 +171,10 @@ ol.webgl.Context.prototype.disposeInternal = function() {
     goog.object.forEach(this.shaderCache_, function(shader) {
       gl.deleteShader(shader);
     });
+    // delete objects for hit-detection
+    gl.deleteFramebuffer(this.hitDetectionFramebuffer_);
+    gl.deleteRenderbuffer(this.hitDetectionRenderbuffer_);
+    gl.deleteTexture(this.hitDetectionTexture_);
   }
 };
 
@@ -171,6 +193,18 @@ ol.webgl.Context.prototype.getCanvas = function() {
  */
 ol.webgl.Context.prototype.getGL = function() {
   return this.gl_;
+};
+
+
+/**
+ * @return {WebGLFramebuffer} The framebuffer for the hit-detection.
+ * @api
+ */
+ol.webgl.Context.prototype.getHitDetectionFramebuffer = function() {
+  if (goog.isNull(this.hitDetectionFramebuffer_)) {
+    this.initHitDetectionFramebuffer_();
+  }
+  return this.hitDetectionFramebuffer_;
 };
 
 
@@ -247,6 +281,7 @@ ol.webgl.Context.prototype.handleWebGLContextLost = function() {
   goog.object.clear(this.shaderCache_);
   goog.object.clear(this.programCache_);
   this.currentProgram_ = null;
+  this.hitDetectionFramebuffer_ = null;
 };
 
 
@@ -254,6 +289,39 @@ ol.webgl.Context.prototype.handleWebGLContextLost = function() {
  * FIXME empy description for jsdoc
  */
 ol.webgl.Context.prototype.handleWebGLContextRestored = function() {
+};
+
+
+/**
+ * Creates a 1x1 pixel framebuffer for the hit-detection.
+ * @private
+ */
+ol.webgl.Context.prototype.initHitDetectionFramebuffer_ = function() {
+  var gl = this.gl_;
+  var framebuffer = gl.createFramebuffer();
+  gl.bindFramebuffer(gl.FRAMEBUFFER, framebuffer);
+
+  var texture = gl.createTexture();
+  gl.bindTexture(gl.TEXTURE_2D, texture);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+  gl.texParameteri(
+      gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_NEAREST);
+  gl.texImage2D(
+      gl.TEXTURE_2D, 0, gl.RGBA, 1, 1, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
+
+  var renderbuffer = gl.createRenderbuffer();
+  gl.bindRenderbuffer(gl.RENDERBUFFER, renderbuffer);
+  gl.renderbufferStorage(gl.RENDERBUFFER, gl.DEPTH_COMPONENT16, 1, 1);
+  gl.framebufferTexture2D(
+      gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, texture, 0);
+  gl.framebufferRenderbuffer(gl.FRAMEBUFFER, gl.DEPTH_ATTACHMENT,
+      gl.RENDERBUFFER, renderbuffer);
+
+  gl.bindTexture(gl.TEXTURE_2D, null);
+  gl.bindRenderbuffer(gl.RENDERBUFFER, null);
+  gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+
+  this.hitDetectionFramebuffer_ = framebuffer;
 };
 
 
