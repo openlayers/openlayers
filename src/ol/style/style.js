@@ -138,8 +138,9 @@ ol.style.Style.prototype.setGeometry = function(geometry) {
   } else if (goog.isString(geometry)) {
     this.geometryFunction_ = function(feature) {
       var result = feature.get(geometry);
-      goog.asserts.assert(!goog.isDefAndNotNull(result) ||
-          goog.asserts.assertInstanceof(result, ol.geom.Geometry));
+      if (goog.isDefAndNotNull(result)) {
+        goog.asserts.assertInstanceof(result, ol.geom.Geometry);
+      }
       return result;
     };
   } else if (goog.isDef(geometry)) {
