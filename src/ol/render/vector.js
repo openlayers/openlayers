@@ -123,7 +123,7 @@ ol.renderer.vector.renderFeature = function(
  */
 ol.renderer.vector.renderFeature_ = function(
     replayGroup, feature, style, squaredTolerance) {
-  var geometry = feature.getGeometry();
+  var geometry = style.getGeometryFunction()(feature);
   if (!goog.isDefAndNotNull(geometry)) {
     return;
   }
