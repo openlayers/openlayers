@@ -55,12 +55,6 @@ ol.render.webgl.ImageReplay = function(tolerance, maxExtent) {
   this.origin_ = ol.extent.getCenter(maxExtent);
 
   /**
-   * @type {ol.Extent}
-   * @private
-   */
-  this.extent_ = ol.extent.createEmpty();
-
-  /**
    * @type {Array.<number>}
    * @private
    */
@@ -383,7 +377,6 @@ ol.render.webgl.ImageReplay.prototype.drawMultiLineStringGeometry =
  */
 ol.render.webgl.ImageReplay.prototype.drawMultiPointGeometry =
     function(multiPointGeometry, feature) {
-  ol.extent.extend(this.extent_, multiPointGeometry.getExtent());
   var flatCoordinates = multiPointGeometry.getFlatCoordinates();
   var stride = multiPointGeometry.getStride();
   this.drawCoordinates_(
@@ -403,7 +396,6 @@ ol.render.webgl.ImageReplay.prototype.drawMultiPolygonGeometry =
  */
 ol.render.webgl.ImageReplay.prototype.drawPointGeometry =
     function(pointGeometry, feature) {
-  ol.extent.extend(this.extent_, pointGeometry.getExtent());
   var flatCoordinates = pointGeometry.getFlatCoordinates();
   var stride = pointGeometry.getStride();
   this.drawCoordinates_(
@@ -499,20 +491,11 @@ ol.render.webgl.ImageReplay.prototype.finish = function(context) {
 
 
 /**
- * @return {ol.Extent} Extent.
- */
-ol.render.webgl.ImageReplay.prototype.getExtent = function() {
-  return this.extent_;
-};
-
-
-/**
  * @param {ol.webgl.Context} context Context.
  * @param {ol.Coordinate} center Center.
  * @param {number} resolution Resolution.
  * @param {number} rotation Rotation.
  * @param {ol.Size} size Size.
- * @param {ol.Extent} extent Extent.
  * @param {number} pixelRatio Pixel ratio.
  * @param {number} opacity Global opacity.
  * @param {number} brightness Global brightness.
@@ -524,7 +507,7 @@ ol.render.webgl.ImageReplay.prototype.getExtent = function() {
  * @template T
  */
 ol.render.webgl.ImageReplay.prototype.replay = function(context,
-    center, resolution, rotation, size, extent, pixelRatio,
+    center, resolution, rotation, size, pixelRatio,
     opacity, brightness, contrast, hue, saturation, skippedFeaturesHash) {
   var gl = context.getGL();
 
@@ -798,7 +781,6 @@ ol.render.webgl.ReplayGroup.prototype.isEmpty = function() {
  * @param {number} resolution Resolution.
  * @param {number} rotation Rotation.
  * @param {ol.Size} size Size.
- * @param {ol.Extent} extent Extent.
  * @param {number} pixelRatio Pixel ratio.
  * @param {number} opacity Global opacity.
  * @param {number} brightness Global brightness.
@@ -810,15 +792,14 @@ ol.render.webgl.ReplayGroup.prototype.isEmpty = function() {
  * @template T
  */
 ol.render.webgl.ReplayGroup.prototype.replay = function(context,
-    center, resolution, rotation, size, extent, pixelRatio,
+    center, resolution, rotation, size, pixelRatio,
     opacity, brightness, contrast, hue, saturation, skippedFeaturesHash) {
   var i, ii, replay, result;
   for (i = 0, ii = ol.render.REPLAY_ORDER.length; i < ii; ++i) {
     replay = this.replays_[ol.render.REPLAY_ORDER[i]];
-    if (goog.isDef(replay) &&
-        ol.extent.intersects(extent, replay.getExtent())) {
+    if (goog.isDef(replay)) {
       result = replay.replay(context,
-          center, resolution, rotation, size, extent, pixelRatio,
+          center, resolution, rotation, size, pixelRatio,
           opacity, brightness, contrast, hue, saturation, skippedFeaturesHash);
       if (result) {
         return result;

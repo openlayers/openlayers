@@ -160,8 +160,7 @@ ol.renderer.dom.Map.prototype.dispatchComposeEvent_ =
     map.dispatchEvent(composeEvent);
     replayGroup.finish();
     if (!replayGroup.isEmpty()) {
-      replayGroup.replay(context, extent, pixelRatio, this.transform_,
-          rotation, {});
+      replayGroup.replay(context, pixelRatio, this.transform_, rotation, {});
     }
     vectorContext.flush();
     this.replayGroup = replayGroup;
