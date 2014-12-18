@@ -27,10 +27,8 @@ ol.style.Style = function(opt_options) {
   var options = goog.isDef(opt_options) ? opt_options : {};
 
   /**
-   * Function that is called with a feature and returns the geometry to render
-   * for this style.
    * @private
-   * @type {!function(ol.Feature): (ol.geom.Geometry|undefined)}
+   * @type {!ol.style.GeometryFunction}
    */
   this.geometryFunction_ = ol.style.defaultGeometryFunction;
 
@@ -72,7 +70,7 @@ ol.style.Style = function(opt_options) {
 
 
 /**
- * @return {!function(ol.Feature): (ol.geom.Geometry|undefined)} Function that
+ * @return {!ol.style.GeometryFunction} Function that
  * is called with a feature and returns the geometry to render instead of the
  * feature's geometry.
  */
@@ -129,7 +127,7 @@ ol.style.Style.prototype.getZIndex = function() {
 /**
  * Set a geometry that is rendered instead of the feature's geometry.
  *
- * @param {string|ol.geom.Geometry|function(ol.Feature): (ol.geom.Geometry|undefined)} geometry
+ * @param {string|ol.geom.Geometry|ol.style.GeometryFunction} geometry
  *     Feature property or geometry or function returning a geometry to render
  *     for this style.
  * @api
@@ -139,7 +137,10 @@ ol.style.Style.prototype.setGeometry = function(geometry) {
     this.geometryFunction_ = geometry;
   } else if (goog.isString(geometry)) {
     this.geometryFunction_ = function(feature) {
-      return feature.get(geometry);
+      var result = feature.get(geometry);
+      goog.asserts.assert(!goog.isDefAndNotNull(result) ||
+          goog.asserts.assertInstanceof(result, ol.geom.Geometry));
+      return result;
     };
   } else if (goog.isDef(geometry)) {
     goog.asserts.assertInstanceof(geometry, ol.geom.Geometry);
@@ -317,6 +318,17 @@ ol.style.createDefaultEditingStyles = function() {
 
 
 /**
+ * A function that takes an `{ol.Feature}` as argument and returns a geometry
+ * that will be rendered and styled for the feature.
+ *
+ * @typedef {function(ol.Feature): (ol.geom.Geometry|undefined)}
+ * @api
+ */
+ol.style.GeometryFunction;
+
+
+/**
+ * Function that is called with a feature and returns its default geometry.
  * @param {ol.Feature} feature Feature to get the geometry for.
  * @return {ol.geom.Geometry|undefined} Geometry to render.
  */
