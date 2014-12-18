@@ -71,15 +71,15 @@ ol.tilecoord.createFromString = function(str) {
  * @param {number} z Z.
  * @param {number} x X.
  * @param {number} y Y.
- * @param {ol.TileCoord|undefined} tileCoord Tile coordinate.
+ * @param {ol.TileCoord=} opt_tileCoord Tile coordinate.
  * @return {ol.TileCoord} Tile coordinate.
  */
-ol.tilecoord.createOrUpdate = function(z, x, y, tileCoord) {
-  if (goog.isDef(tileCoord)) {
-    tileCoord[0] = z;
-    tileCoord[1] = x;
-    tileCoord[2] = y;
-    return tileCoord;
+ol.tilecoord.createOrUpdate = function(z, x, y, opt_tileCoord) {
+  if (goog.isDef(opt_tileCoord)) {
+    opt_tileCoord[0] = z;
+    opt_tileCoord[1] = x;
+    opt_tileCoord[2] = y;
+    return opt_tileCoord;
   } else {
     return [z, x, y];
   }

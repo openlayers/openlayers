@@ -85,7 +85,9 @@ goog.inherits(ol.DrawEvent, goog.events.Event);
  */
 ol.interaction.Draw = function(options) {
 
-  goog.base(this);
+  goog.base(this, {
+    handleEvent: ol.interaction.Draw.handleEvent
+  });
 
   /**
    * @type {ol.Pixel}
@@ -236,20 +238,23 @@ ol.interaction.Draw.prototype.setMap = function(map) {
 
 
 /**
- * @inheritDoc
+ * @param {ol.MapBrowserEvent} mapBrowserEvent Map browser event.
+ * @return {boolean} `false` to stop event propagation.
+ * @this {ol.interaction.Draw}
+ * @api
  */
-ol.interaction.Draw.prototype.handleMapBrowserEvent = function(event) {
-  var map = event.map;
+ol.interaction.Draw.handleEvent = function(mapBrowserEvent) {
+  var map = mapBrowserEvent.map;
   if (!map.isDef()) {
     return true;
   }
   var pass = true;
-  if (event.type === ol.MapBrowserEvent.EventType.POINTERMOVE) {
-    pass = this.handlePointerMove_(event);
-  } else if (event.type === ol.MapBrowserEvent.EventType.DBLCLICK) {
+  if (mapBrowserEvent.type === ol.MapBrowserEvent.EventType.POINTERMOVE) {
+    pass = this.handlePointerMove_(mapBrowserEvent);
+  } else if (mapBrowserEvent.type === ol.MapBrowserEvent.EventType.DBLCLICK) {
     pass = false;
   }
-  return (goog.base(this, 'handleMapBrowserEvent', event) && pass);
+  return ol.interaction.Pointer.handleEvent.call(this, mapBrowserEvent) && pass;
 };
 
 

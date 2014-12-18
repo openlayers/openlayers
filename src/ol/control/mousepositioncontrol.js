@@ -47,8 +47,12 @@ ol.control.MousePosition = function(opt_options) {
 
   var element = goog.dom.createDom(goog.dom.TagName.DIV, className);
 
+  var render = goog.isDef(options.render) ?
+      options.render : ol.control.MousePosition.render;
+
   goog.base(this, {
     element: element,
+    render: render,
     target: options.target
   });
 
@@ -99,9 +103,11 @@ goog.inherits(ol.control.MousePosition, ol.control.Control);
 
 
 /**
- * @inheritDoc
+ * @param {ol.MapEvent} mapEvent Map event.
+ * @this {ol.control.MousePosition}
+ * @api
  */
-ol.control.MousePosition.prototype.handleMapPostrender = function(mapEvent) {
+ol.control.MousePosition.render = function(mapEvent) {
   var frameState = mapEvent.frameState;
   if (goog.isNull(frameState)) {
     this.mapProjection_ = null;

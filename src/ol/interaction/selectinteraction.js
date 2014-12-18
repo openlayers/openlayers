@@ -28,7 +28,9 @@ goog.require('ol.style.Style');
  */
 ol.interaction.Select = function(opt_options) {
 
-  goog.base(this);
+  goog.base(this, {
+    handleEvent: ol.interaction.Select.handleEvent
+  });
 
   var options = goog.isDef(opt_options) ? opt_options : {};
 
@@ -115,10 +117,12 @@ ol.interaction.Select.prototype.getFeatures = function() {
 
 
 /**
- * @inheritDoc
+ * @param {ol.MapBrowserEvent} mapBrowserEvent Map browser event.
+ * @return {boolean} `false` to stop event propagation.
+ * @this {ol.interaction.Select}
+ * @api
  */
-ol.interaction.Select.prototype.handleMapBrowserEvent =
-    function(mapBrowserEvent) {
+ol.interaction.Select.handleEvent = function(mapBrowserEvent) {
   if (!this.condition_(mapBrowserEvent)) {
     return true;
   }
@@ -179,7 +183,7 @@ ol.interaction.Select.prototype.handleMapBrowserEvent =
     }
     features.extend(selected);
   }
-  return this.condition_ == ol.events.condition.mouseMove;
+  return ol.events.condition.mouseMove(mapBrowserEvent);
 };
 
 

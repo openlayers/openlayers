@@ -62,8 +62,12 @@ ol.control.Rotate = function(opt_options) {
       ol.css.CLASS_CONTROL;
   var element = goog.dom.createDom(goog.dom.TagName.DIV, cssClasses, button);
 
+  var render = goog.isDef(options.render) ?
+      options.render : ol.control.Rotate.render;
+
   goog.base(this, {
     element: element,
+    render: render,
     target: options.target
   });
 
@@ -135,9 +139,11 @@ ol.control.Rotate.prototype.resetNorth_ = function() {
 
 
 /**
- * @inheritDoc
+ * @param {ol.MapEvent} mapEvent Map event.
+ * @this {ol.control.Rotate}
+ * @api
  */
-ol.control.Rotate.prototype.handleMapPostrender = function(mapEvent) {
+ol.control.Rotate.render = function(mapEvent) {
   var frameState = mapEvent.frameState;
   if (goog.isNull(frameState)) {
     return;
