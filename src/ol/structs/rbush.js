@@ -129,10 +129,12 @@ ol.structs.RBush.prototype.update = function(extent, value) {
  * @return {Array.<T>} All.
  */
 ol.structs.RBush.prototype.getAll = function() {
-  var items = this.rbush_.all();
-  return goog.array.map(items, function(item) {
-    return item[4];
-  });
+  var items = [];
+  var i = 0;
+  for (var item in this.items_) {
+    items[i++] = this.items_[item][4];
+  }
+  return items;
 };
 
 
