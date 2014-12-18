@@ -118,7 +118,7 @@ ol.renderer.webgl.VectorLayer.prototype.forEachFeatureAtPixel =
     var layerState = this.layerState_;
     /** @type {Object.<string, boolean>} */
     var features = {};
-    return this.replayGroup_.forEachGeometryAtPixel(context,
+    return this.replayGroup_.forEachFeatureAtPixel(context,
         viewState.center, viewState.resolution, viewState.rotation,
         frameState.size, frameState.pixelRatio,
         layerState.opacity, layerState.brightness, layerState.contrast,

@@ -61,6 +61,12 @@ ol.render.webgl.ImageReplay = function(tolerance, maxExtent) {
   this.groupIndices_ = [];
 
   /**
+   * @type {Array.<number>}
+   * @private
+   */
+  this.hitDetectionGroupIndices_ = [];
+
+  /**
    * @type {number|undefined}
    * @private
    */
@@ -71,6 +77,12 @@ ol.render.webgl.ImageReplay = function(tolerance, maxExtent) {
    * @private
    */
   this.images_ = [];
+
+  /**
+   * @type {Array.<HTMLCanvasElement|HTMLImageElement|HTMLVideoElement>}
+   * @private
+   */
+  this.hitDetectionImages_ = [];
 
   /**
    * @type {number|undefined}
@@ -169,6 +181,12 @@ ol.render.webgl.ImageReplay = function(tolerance, maxExtent) {
   this.textures_ = [];
 
   /**
+   * @type {Array.<WebGLTexture>}
+   * @private
+   */
+  this.hitDetectionTextures_ = [];
+
+  /**
    * @type {Array.<number>}
    * @private
    */
@@ -211,12 +229,16 @@ ol.render.webgl.ImageReplay.prototype.getDeleteResourcesFunction =
   var verticesBuffer = this.verticesBuffer_;
   var indicesBuffer = this.indicesBuffer_;
   var textures = this.textures_;
+  var hitDetectionTextures = this.hitDetectionTextures_;
   var gl = context.getGL();
   return function() {
     if (!gl.isContextLost()) {
       var i, ii;
       for (i = 0, ii = textures.length; i < ii; ++i) {
         gl.deleteTexture(textures[i]);
+      }
+      for (i = 0, ii = hitDetectionTextures.length; i < ii; ++i) {
+        gl.deleteTexture(hitDetectionTextures[i]);
       }
     }
     context.deleteBuffer(verticesBuffer);
@@ -431,7 +453,10 @@ ol.render.webgl.ImageReplay.prototype.finish = function(context) {
   var gl = context.getGL();
 
   this.groupIndices_.push(this.indices_.length);
-  goog.asserts.assert(this.images_.length == this.groupIndices_.length);
+  goog.asserts.assert(this.images_.length === this.groupIndices_.length);
+  this.hitDetectionGroupIndices_.push(this.indices_.length);
+  goog.asserts.assert(this.hitDetectionImages_.length ===
+      this.hitDetectionGroupIndices_.length);
 
   // create, bind, and populate the vertices buffer
   this.verticesBuffer_ = new ol.webgl.Buffer(this.vertices_);
@@ -447,16 +472,53 @@ ol.render.webgl.ImageReplay.prototype.finish = function(context) {
   this.indicesBuffer_ = new ol.webgl.Buffer(indices);
   context.bindBuffer(goog.webgl.ELEMENT_ARRAY_BUFFER, this.indicesBuffer_);
 
-  goog.asserts.assert(this.textures_.length === 0);
-
   // create textures
-  var texture, image, uid;
   /** @type {Object.<string, WebGLTexture>} */
   var texturePerImage = {};
-  var i;
-  var ii = this.images_.length;
+
+  this.createTextures_(this.textures_, this.images_, texturePerImage, gl);
+  goog.asserts.assert(this.textures_.length === this.groupIndices_.length);
+
+  this.createTextures_(this.hitDetectionTextures_, this.hitDetectionImages_,
+      texturePerImage, gl);
+  goog.asserts.assert(this.hitDetectionTextures_.length ===
+      this.hitDetectionGroupIndices_.length);
+
+  this.anchorX_ = undefined;
+  this.anchorY_ = undefined;
+  this.height_ = undefined;
+  this.images_ = null;
+  this.hitDetectionImages_ = null;
+  this.imageHeight_ = undefined;
+  this.imageWidth_ = undefined;
+  this.indices_ = null;
+  this.opacity_ = undefined;
+  this.originX_ = undefined;
+  this.originY_ = undefined;
+  this.rotateWithView_ = undefined;
+  this.rotation_ = undefined;
+  this.scale_ = undefined;
+  this.vertices_ = null;
+  this.width_ = undefined;
+};
+
+
+/**
+ * @private
+ * @param {Array.<WebGLTexture>} textures Textures.
+ * @param {Array.<HTMLCanvasElement|HTMLImageElement|HTMLVideoElement>} images
+ *    Images.
+ * @param {Object.<string, WebGLTexture>} texturePerImage Texture cache.
+ * @param {WebGLRenderingContext} gl Gl.
+ */
+ol.render.webgl.ImageReplay.prototype.createTextures_ =
+    function(textures, images, texturePerImage, gl) {
+  goog.asserts.assert(textures.length === 0);
+
+  var texture, image, uid, i;
+  var ii = images.length;
   for (i = 0; i < ii; ++i) {
-    image = this.images_[i];
+    image = images[i];
 
     uid = goog.getUid(image).toString();
     if (goog.object.containsKey(texturePerImage, uid)) {
@@ -476,26 +538,8 @@ ol.render.webgl.ImageReplay.prototype.finish = function(context) {
           goog.webgl.UNSIGNED_BYTE, image);
       texturePerImage[uid] = texture;
     }
-    this.textures_[i] = texture;
+    textures[i] = texture;
   }
-
-  goog.asserts.assert(this.textures_.length == this.groupIndices_.length);
-
-  this.anchorX_ = undefined;
-  this.anchorY_ = undefined;
-  this.height_ = undefined;
-  this.images_ = null;
-  this.imageHeight_ = undefined;
-  this.imageWidth_ = undefined;
-  this.indices_ = null;
-  this.opacity_ = undefined;
-  this.originX_ = undefined;
-  this.originY_ = undefined;
-  this.rotateWithView_ = undefined;
-  this.rotation_ = undefined;
-  this.scale_ = undefined;
-  this.vertices_ = null;
-  this.width_ = undefined;
 };
 
 
@@ -646,7 +690,7 @@ ol.render.webgl.ImageReplay.prototype.replay = function(context,
  */
 ol.render.webgl.ImageReplay.prototype.drawReplay_ =
     function(gl, context) {
-  goog.asserts.assert(this.textures_.length == this.groupIndices_.length);
+  goog.asserts.assert(this.textures_.length === this.groupIndices_.length);
   var elementType = context.hasOESElementIndexUint ?
       goog.webgl.UNSIGNED_INT : goog.webgl.UNSIGNED_SHORT;
   var elementSize = context.hasOESElementIndexUint ? 4 : 2;
@@ -673,17 +717,18 @@ ol.render.webgl.ImageReplay.prototype.drawReplay_ =
  */
 ol.render.webgl.ImageReplay.prototype.drawHitDetectionReplay_ =
     function(gl, context, featureCallback) {
-  goog.asserts.assert(this.textures_.length == this.groupIndices_.length);
+  goog.asserts.assert(this.hitDetectionTextures_.length ===
+      this.hitDetectionGroupIndices_.length);
   var elementType = context.hasOESElementIndexUint ?
       goog.webgl.UNSIGNED_INT : goog.webgl.UNSIGNED_SHORT;
   var elementSize = context.hasOESElementIndexUint ? 4 : 2;
 
   var i, groupStart, groupEnd, numItems, featureInfo, start, end;
   var featureIndex = this.startIndexForFeature_.length - 1;
-  for (i = this.textures_.length - 1; i >= 0; --i) {
-    gl.bindTexture(goog.webgl.TEXTURE_2D, this.textures_[i]);
-    groupStart = (i > 0) ? this.groupIndices_[i - 1] : 0;
-    end = this.groupIndices_[i];
+  for (i = this.hitDetectionTextures_.length - 1; i >= 0; --i) {
+    gl.bindTexture(goog.webgl.TEXTURE_2D, this.hitDetectionTextures_[i]);
+    groupStart = (i > 0) ? this.hitDetectionGroupIndices_[i - 1] : 0;
+    end = this.hitDetectionGroupIndices_[i];
 
     // draw all features for this texture group
     while (featureIndex >= 0 &&
@@ -726,6 +771,10 @@ ol.render.webgl.ImageReplay.prototype.setImageStyle = function(imageStyle) {
   goog.asserts.assert(!goog.isNull(image));
   var imageSize = imageStyle.getImageSize();
   goog.asserts.assert(!goog.isNull(imageSize));
+  var hitDetectionImage = imageStyle.getHitDetectionImage(1);
+  goog.asserts.assert(!goog.isNull(hitDetectionImage));
+  var hitDetectionImageSize = imageStyle.getHitDetectionImageSize();
+  goog.asserts.assert(!goog.isNull(hitDetectionImageSize));
   var opacity = imageStyle.getOpacity();
   goog.asserts.assert(goog.isDef(opacity));
   var origin = imageStyle.getOrigin();
@@ -739,14 +788,28 @@ ol.render.webgl.ImageReplay.prototype.setImageStyle = function(imageStyle) {
   var scale = imageStyle.getScale();
   goog.asserts.assert(goog.isDef(scale));
 
+  var currentImage;
   if (this.images_.length === 0) {
     this.images_.push(image);
   } else {
-    var currentImage = this.images_[this.images_.length - 1];
+    currentImage = this.images_[this.images_.length - 1];
     if (goog.getUid(currentImage) != goog.getUid(image)) {
       this.groupIndices_.push(this.indices_.length);
-      goog.asserts.assert(this.groupIndices_.length == this.images_.length);
+      goog.asserts.assert(this.groupIndices_.length === this.images_.length);
       this.images_.push(image);
+    }
+  }
+
+  if (this.hitDetectionImages_.length === 0) {
+    this.hitDetectionImages_.push(hitDetectionImage);
+  } else {
+    currentImage =
+        this.hitDetectionImages_[this.hitDetectionImages_.length - 1];
+    if (goog.getUid(currentImage) != goog.getUid(hitDetectionImage)) {
+      this.hitDetectionGroupIndices_.push(this.indices_.length);
+      goog.asserts.assert(this.hitDetectionGroupIndices_.length ===
+          this.hitDetectionImages_.length);
+      this.hitDetectionImages_.push(hitDetectionImage);
     }
   }
 
@@ -941,7 +1004,7 @@ ol.render.webgl.ReplayGroup.prototype.replayHitDetection_ = function(context,
  * @return {T|undefined} Callback result.
  * @template T
  */
-ol.render.webgl.ReplayGroup.prototype.forEachGeometryAtPixel = function(
+ol.render.webgl.ReplayGroup.prototype.forEachFeatureAtPixel = function(
     context, center, resolution, rotation, size, pixelRatio,
     opacity, brightness, contrast, hue, saturation, skippedFeaturesHash,
     coordinate, callback) {
@@ -950,8 +1013,9 @@ ol.render.webgl.ReplayGroup.prototype.forEachGeometryAtPixel = function(
       gl.FRAMEBUFFER, context.getHitDetectionFramebuffer());
 
   return this.replayHitDetection_(context,
-      coordinate, resolution, rotation, [1, 1], pixelRatio,
-      opacity, brightness, contrast, hue, saturation, skippedFeaturesHash,
+      coordinate, resolution, rotation, ol.render.webgl.HIT_DETECTION_SIZE_,
+      pixelRatio, opacity, brightness, contrast, hue, saturation,
+      skippedFeaturesHash,
       /**
        * @param {ol.Feature} feature Feature.
        * @return {?} Callback result.
@@ -980,3 +1044,11 @@ ol.render.webgl.ReplayGroup.prototype.forEachGeometryAtPixel = function(
 ol.render.webgl.BATCH_CONSTRUCTORS_ = {
   'Image': ol.render.webgl.ImageReplay
 };
+
+
+/**
+ * @const
+ * @private
+ * @type {Array.<number>}
+ */
+ol.render.webgl.HIT_DETECTION_SIZE_ = [1, 1];

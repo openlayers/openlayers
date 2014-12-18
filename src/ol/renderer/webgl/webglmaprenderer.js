@@ -560,7 +560,7 @@ ol.renderer.webgl.Map.prototype.forEachFeatureAtPixel =
     // use default color values
     var d = ol.renderer.webgl.Map.DEFAULT_COLOR_VALUES_;
 
-    result = this.replayGroup.forEachGeometryAtPixel(context,
+    result = this.replayGroup.forEachFeatureAtPixel(context,
         viewState.center, viewState.resolution, viewState.rotation,
         frameState.size, frameState.pixelRatio,
         d.opacity, d.brightness, d.contrast, d.hue, d.saturation, {},

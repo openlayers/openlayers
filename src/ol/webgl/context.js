@@ -282,6 +282,8 @@ ol.webgl.Context.prototype.handleWebGLContextLost = function() {
   goog.object.clear(this.programCache_);
   this.currentProgram_ = null;
   this.hitDetectionFramebuffer_ = null;
+  this.hitDetectionTexture_ = null;
+  this.hitDetectionRenderbuffer_ = null;
 };
 
 
@@ -304,8 +306,7 @@ ol.webgl.Context.prototype.initHitDetectionFramebuffer_ = function() {
   var texture = gl.createTexture();
   gl.bindTexture(gl.TEXTURE_2D, texture);
   gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
-  gl.texParameteri(
-      gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_NEAREST);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
   gl.texImage2D(
       gl.TEXTURE_2D, 0, gl.RGBA, 1, 1, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
 
@@ -322,6 +323,8 @@ ol.webgl.Context.prototype.initHitDetectionFramebuffer_ = function() {
   gl.bindFramebuffer(gl.FRAMEBUFFER, null);
 
   this.hitDetectionFramebuffer_ = framebuffer;
+  this.hitDetectionTexture_ = texture;
+  this.hitDetectionRenderbuffer_ = renderbuffer;
 };
 
 
