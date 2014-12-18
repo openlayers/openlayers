@@ -302,14 +302,6 @@ ol.style.Icon.prototype.getOrigin = function() {
 
 
 /**
- * @inheritDoc
- */
-ol.style.Icon.prototype.getHitDetectionOrigin = function() {
-  return this.getOrigin();
-};
-
-
-/**
  * @return {string|undefined} Image src.
  * @api
  */
