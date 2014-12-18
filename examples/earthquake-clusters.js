@@ -65,8 +65,7 @@ function calculateClusterInfo(resolution) {
     var originalFeatures = feature.get('features');
     var extent = ol.extent.createEmpty();
     for (var j = 0, jj = originalFeatures.length; j < jj; ++j) {
-      ol.extent.extendCoordinate(extent,
-          originalFeatures[j].getGeometry().getCoordinates());
+      ol.extent.extend(extent, originalFeatures[j].getGeometry().getExtent());
     }
     maxFeatureCount = Math.max(maxFeatureCount, jj);
     radius = 0.25 * (ol.extent.getWidth(extent) + ol.extent.getHeight(extent)) /
