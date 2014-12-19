@@ -46,13 +46,13 @@ ol.format.GMLBase = function(opt_options) {
 
   /**
    * @protected
-   * @type {string}
+   * @type {Array.<string>|string|undefined}
    */
   this.featureType = options.featureType;
 
   /**
    * @protected
-   * @type {string}
+   * @type {string|undefined}
    */
   this.featureNS = options.featureNS;
 
@@ -99,9 +99,12 @@ ol.format.GMLBase.prototype.readFeatures_ = function(node, objectStack) {
     }
     var parsers = {};
     var parsersNS = {};
-    parsers[featureType] = (localName == 'featureMembers') ?
-        ol.xml.makeArrayPusher(this.readFeatureElement, this) :
-        ol.xml.makeReplacer(this.readFeatureElement, this);
+    var featureTypes = goog.isArray(featureType) ? featureType : [featureType];
+    for (var i = 0, ii = featureTypes.length; i < ii; ++i) {
+      parsers[featureTypes[i]] = (localName == 'featureMembers') ?
+          ol.xml.makeArrayPusher(this.readFeatureElement, this) :
+          ol.xml.makeReplacer(this.readFeatureElement, this);
+    }
     parsersNS[goog.object.get(context, 'featureNS')] = parsers;
     features = ol.xml.pushParseAndPop([], parsersNS, node, objectStack);
   }
