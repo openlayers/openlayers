@@ -175,11 +175,14 @@ function concatenate(paths, callback) {
       var msg = 'Trouble concatenating sources.  ' + err.message;
       callback(new Error(msg));
     } else {
-      var preamble = 'var CLOSURE_NO_DEPS = true;\n';
       var parts = umdWrapper.split('%output%');
-      var postamble = 'OPENLAYERS.ol = ol;\n';
-      callback(null,
-          preamble + parts[0] + results.join('\n') + postamble + parts[1]);
+      var src = 'var CLOSURE_NO_DEPS = true;\n' +
+          parts[0] +
+          'var goog = this.goog = {};\n' +
+          results.join('\n') +
+          'OPENLAYERS.ol = ol;\n' +
+          parts[1];
+      callback(null, src);
     }
   });
 }
