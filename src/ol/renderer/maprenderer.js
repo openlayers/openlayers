@@ -170,6 +170,26 @@ ol.renderer.Map.prototype.forEachFeatureAtPixel =
 
 
 /**
+ * @param {ol.Coordinate} coordinate Coordinate.
+ * @param {olx.FrameState} frameState FrameState.
+ * @param {function(this: U, ol.layer.Layer): boolean} layerFilter Layer filter
+ *     function, only layers which are visible and for which this function
+ *     returns `true` will be tested for features.  By default, all visible
+ *     layers will be tested.
+ * @param {U} thisArg Value to use as `this` when executing `layerFilter`.
+ * @return {boolean} Is there a feature at the given pixel?
+ * @template U
+ */
+ol.renderer.Map.prototype.hasFeatureAtPixel =
+    function(coordinate, frameState, layerFilter, thisArg) {
+  var hasFeature = this.forEachFeatureAtPixel(
+      coordinate, frameState, goog.functions.TRUE, this, layerFilter, thisArg);
+
+  return goog.isDef(hasFeature) ? hasFeature : false;
+};
+
+
+/**
  * @param {ol.layer.Layer} layer Layer.
  * @protected
  * @return {ol.renderer.Layer} Layer renderer.
