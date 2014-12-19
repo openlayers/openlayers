@@ -145,7 +145,6 @@ button.ol-full-screen-true:after {
   line-height: 1.375em;
   color: #000;
   text-shadow: 0 0 2px #fff;
-  max-width: calc(100% - 3.6em);
 }
 .ol-attribution li {
   display: inline;
