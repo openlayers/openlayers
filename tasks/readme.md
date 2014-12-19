@@ -26,6 +26,8 @@ Build configuration files are JSON files that are used to determine what should 
 
     If the **compile** object is not provided, the build task will generate a "debug" build of the library without any variable naming or other minification.  This is suitable for development or debugging purposes, but should not be used in production.
 
+  * **umd** - `boolean` Optional flag to wrap the build in [UMD syntax](https://github.com/umdjs/umd).  If set to `true`, the build output can be used with a CommonJS module loader (e.g. [Browserify](http://browserify.org/)), an AMD script loader (e.g. [RequireJS](http://requirejs.org/)), or just loaded with a `<script>` tag.  If this option is specified, the **namespace** and any **compile.output_wrapper** options will be ignored.
+
   * **src** - `Array.<string>` Optional array of [path patterns](https://github.com/isaacs/minimatch/blob/master/README.md) for source files, that is, those that provide the symbols/names included in `exports`.  By default, all of the library source files will be included (`'src/**/*.js'`).  If you want to provide additional source files to be configured together with the library, you need to provide path patterns to your source files *and* the library source files.  Note that these patterns are `/` delimited even on Windows.  There is a bit of special handling with the `src` config.
 
   * **cwd** - `string` Optional path to be used as the current working directory.  All paths in the `compile` object are assumed to be relative to `cwd`.  Default is the root of the ol3 repository.
