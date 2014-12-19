@@ -1107,6 +1107,49 @@ describe('ol.format.GML3', function() {
 
   });
 
+  describe('when parsing multiple feature types', function() {
+
+    var features;
+    before(function(done) {
+      afterLoadText('spec/ol/format/gml/multiple-typenames.xml', function(xml) {
+        try {
+          features = new ol.format.GML({
+            featureNS: 'http://localhost:8080/official',
+            featureType: ['planet_osm_polygon', 'planet_osm_line']
+          }).readFeatures(xml);
+        } catch (e) {
+          done(e);
+        }
+        done();
+      });
+    });
+
+    it('reads all features', function() {
+      expect(features.length).to.be(12);
+    });
+
+  });
+
+  describe('when parsing multiple feature types', function() {
+
+    var features;
+    before(function(done) {
+      afterLoadText('spec/ol/format/gml/multiple-typenames.xml', function(xml) {
+        try {
+          features = new ol.format.GML().readFeatures(xml);
+        } catch (e) {
+          done(e);
+        }
+        done();
+      });
+    });
+
+    it('reads all features with autoconfigure', function() {
+      expect(features.length).to.be(12);
+    });
+
+  });
+
 });
 
 
