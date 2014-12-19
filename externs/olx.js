@@ -3229,6 +3229,7 @@ olx.layer.TileOptions.prototype.useInterimTilesOnError;
  *     minResolution: (number|undefined),
  *     maxResolution: (number|undefined),
  *     opacity: (number|undefined),
+ *     renderBuffer: (number|undefined),
  *     saturation: (number|undefined),
  *     source: (ol.source.Vector|undefined),
  *     style: (ol.style.Style|Array.<ol.style.Style>|ol.style.StyleFunction|undefined),
@@ -3303,6 +3304,16 @@ olx.layer.VectorOptions.prototype.maxResolution;
  * @api stable
  */
 olx.layer.VectorOptions.prototype.opacity;
+
+
+/**
+ * The buffer around the viewport extent used by the renderer when getting
+ * features from the vector source. Recommended value: the size of the
+ * largest symbol or line width. Default is 100 pixels.
+ * @type {number|undefined}
+ * @api
+ */
+olx.layer.VectorOptions.prototype.renderBuffer;
 
 
 /**

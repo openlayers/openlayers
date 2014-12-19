@@ -72,9 +72,9 @@ ol.renderer.webgl.VectorLayer.prototype.composeFrame =
   if (!goog.isNull(replayGroup) && !replayGroup.isEmpty()) {
     replayGroup.replay(context,
         viewState.center, viewState.resolution, viewState.rotation,
-        frameState.size, frameState.extent, frameState.pixelRatio,
-        layerState.opacity, layerState.brightness, layerState.contrast,
-        layerState.hue, layerState.saturation, frameState.skippedFeatureUids);
+        frameState.size, frameState.pixelRatio, layerState.opacity,
+        layerState.brightness, layerState.contrast, layerState.hue,
+        layerState.saturation, frameState.skippedFeatureUids);
   }
 
 };
@@ -139,26 +139,23 @@ ol.renderer.webgl.VectorLayer.prototype.prepareFrame =
   var resolution = viewState.resolution;
   var pixelRatio = frameState.pixelRatio;
   var vectorLayerRevision = vectorLayer.getRevision();
+  var vectorLayerRenderBuffer = vectorLayer.getRenderBuffer();
   var vectorLayerRenderOrder = vectorLayer.getRenderOrder();
+
   if (!goog.isDef(vectorLayerRenderOrder)) {
     vectorLayerRenderOrder = ol.renderer.vector.defaultOrder;
   }
+
+  var extent = ol.extent.buffer(frameStateExtent,
+      vectorLayerRenderBuffer * resolution);
 
   if (!this.dirty_ &&
       this.renderedResolution_ == resolution &&
       this.renderedRevision_ == vectorLayerRevision &&
       this.renderedRenderOrder_ == vectorLayerRenderOrder &&
-      ol.extent.containsExtent(this.renderedExtent_, frameStateExtent)) {
+      ol.extent.containsExtent(this.renderedExtent_, extent)) {
     return true;
   }
-
-  var extent = this.renderedExtent_;
-  var xBuffer = ol.extent.getWidth(frameStateExtent) / 4;
-  var yBuffer = ol.extent.getHeight(frameStateExtent) / 4;
-  extent[0] = frameStateExtent[0] - xBuffer;
-  extent[1] = frameStateExtent[1] - yBuffer;
-  extent[2] = frameStateExtent[2] + xBuffer;
-  extent[3] = frameStateExtent[3] + yBuffer;
 
   if (!goog.isNull(this.replayGroup_)) {
     frameState.postRenderFunctions.push(
@@ -210,6 +207,7 @@ ol.renderer.webgl.VectorLayer.prototype.prepareFrame =
   this.renderedResolution_ = resolution;
   this.renderedRevision_ = vectorLayerRevision;
   this.renderedRenderOrder_ = vectorLayerRenderOrder;
+  this.renderedExtent_ = extent;
   this.replayGroup_ = replayGroup;
 
   return true;

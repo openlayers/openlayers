@@ -70,7 +70,7 @@ describe('ol.renderer.canvas.VectorLayer', function() {
           map.getRenderer(), layer);
       var replayGroup = {};
       renderer.replayGroup_ = replayGroup;
-      replayGroup.forEachGeometryAtPixel = function(extent, resolution,
+      replayGroup.forEachGeometryAtPixel = function(resolution,
           rotation, coordinate, skippedFeaturesUids, callback) {
         var geometry = new ol.geom.Point([0, 0]);
         var feature = new ol.Feature();
@@ -83,7 +83,6 @@ describe('ol.renderer.canvas.VectorLayer', function() {
       var spy = sinon.spy();
       var coordinate = [0, 0];
       var frameState = {
-        extent: [1, 1, 10, 10],
         skippedFeatureUids: {},
         viewState: {
           resolution: 1,

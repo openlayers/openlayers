@@ -123,7 +123,7 @@ ol.renderer.canvas.Map.prototype.dispatchComposeEvent_ =
 
     replayGroup.finish();
     if (!replayGroup.isEmpty()) {
-      replayGroup.replay(context, extent, pixelRatio, this.transform_,
+      replayGroup.replay(context, pixelRatio, this.transform_,
           rotation, {});
     }
     vectorContext.flush();

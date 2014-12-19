@@ -299,7 +299,7 @@ ol.renderer.webgl.Map.prototype.dispatchComposeEvent_ =
       var contrast = 1;
       var hue = 0;
       var saturation = 1;
-      replayGroup.replay(context, center, resolution, rotation, size, extent,
+      replayGroup.replay(context, center, resolution, rotation, size,
           pixelRatio, opacity, brightness, contrast, hue, saturation, {});
     }
     replayGroup.getDeleteResourcesFunction(context)();

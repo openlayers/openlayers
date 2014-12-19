@@ -121,9 +121,8 @@ ol.renderer.dom.VectorLayer.prototype.composeFrame =
   if (!goog.isNull(replayGroup) && !replayGroup.isEmpty()) {
 
     context.globalAlpha = layerState.opacity;
-    replayGroup.replay(
-        context, frameState.extent, pixelRatio, transform,
-        viewRotation, frameState.skippedFeatureUids);
+    replayGroup.replay(context, pixelRatio, transform, viewRotation,
+        frameState.skippedFeatureUids);
 
     this.dispatchEvent_(ol.render.EventType.RENDER, frameState, transform);
   }
@@ -162,13 +161,12 @@ ol.renderer.dom.VectorLayer.prototype.forEachFeatureAtPixel =
   if (goog.isNull(this.replayGroup_)) {
     return undefined;
   } else {
-    var extent = frameState.extent;
     var resolution = frameState.viewState.resolution;
     var rotation = frameState.viewState.rotation;
     var layer = this.getLayer();
     /** @type {Object.<string, boolean>} */
     var features = {};
-    return this.replayGroup_.forEachGeometryAtPixel(extent, resolution,
+    return this.replayGroup_.forEachGeometryAtPixel(resolution,
         rotation, coordinate, frameState.skippedFeatureUids,
         /**
          * @param {ol.Feature} feature Feature.
@@ -222,26 +220,23 @@ ol.renderer.dom.VectorLayer.prototype.prepareFrame =
   var resolution = viewState.resolution;
   var pixelRatio = frameState.pixelRatio;
   var vectorLayerRevision = vectorLayer.getRevision();
+  var vectorLayerRenderBuffer = vectorLayer.getRenderBuffer();
   var vectorLayerRenderOrder = vectorLayer.getRenderOrder();
+
   if (!goog.isDef(vectorLayerRenderOrder)) {
     vectorLayerRenderOrder = ol.renderer.vector.defaultOrder;
   }
+
+  var extent = ol.extent.buffer(frameStateExtent,
+      vectorLayerRenderBuffer * resolution);
 
   if (!this.dirty_ &&
       this.renderedResolution_ == resolution &&
       this.renderedRevision_ == vectorLayerRevision &&
       this.renderedRenderOrder_ == vectorLayerRenderOrder &&
-      ol.extent.containsExtent(this.renderedExtent_, frameStateExtent)) {
+      ol.extent.containsExtent(this.renderedExtent_, extent)) {
     return true;
   }
-
-  var extent = this.renderedExtent_;
-  var xBuffer = ol.extent.getWidth(frameStateExtent) / 4;
-  var yBuffer = ol.extent.getHeight(frameStateExtent) / 4;
-  extent[0] = frameStateExtent[0] - xBuffer;
-  extent[1] = frameStateExtent[1] - yBuffer;
-  extent[2] = frameStateExtent[2] + xBuffer;
-  extent[3] = frameStateExtent[3] + yBuffer;
 
   // FIXME dispose of old replayGroup in post render
   goog.dispose(this.replayGroup_);
@@ -293,6 +288,7 @@ ol.renderer.dom.VectorLayer.prototype.prepareFrame =
   this.renderedResolution_ = resolution;
   this.renderedRevision_ = vectorLayerRevision;
   this.renderedRenderOrder_ = vectorLayerRenderOrder;
+  this.renderedExtent_ = extent;
   this.replayGroup_ = replayGroup;
 
   return true;
