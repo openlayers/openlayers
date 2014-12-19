@@ -602,6 +602,53 @@ ol.renderer.webgl.Map.prototype.forEachFeatureAtPixel =
 
 
 /**
+ * @inheritDoc
+ */
+ol.renderer.webgl.Map.prototype.hasFeatureAtPixel =
+    function(coordinate, frameState, layerFilter, thisArg2) {
+  var hasFeature = false;
+
+  if (this.getGL().isContextLost()) {
+    return false;
+  }
+
+  var context = this.getContext();
+  var viewState = frameState.viewState;
+
+  // do the hit-detection for the overlays first
+  if (!goog.isNull(this.replayGroup)) {
+    // use default color values
+    var d = ol.renderer.webgl.Map.DEFAULT_COLOR_VALUES_;
+
+    hasFeature = this.replayGroup.hasFeatureAtPixel(context,
+        viewState.center, viewState.resolution, viewState.rotation,
+        frameState.size, frameState.pixelRatio,
+        d.opacity, d.brightness, d.contrast, d.hue, d.saturation, {},
+        coordinate);
+    if (hasFeature) {
+      return true;
+    }
+  }
+  var layerStates = this.getMap().getLayerGroup().getLayerStatesArray();
+  var numLayers = layerStates.length;
+  var i;
+  for (i = numLayers - 1; i >= 0; --i) {
+    var layerState = layerStates[i];
+    var layer = layerState.layer;
+    if (ol.layer.Layer.visibleAtResolution(layerState, viewState.resolution) &&
+        layerFilter.call(thisArg2, layer)) {
+      var layerRenderer = this.getLayerRenderer(layer);
+      hasFeature = layerRenderer.hasFeatureAtPixel(coordinate, frameState);
+      if (hasFeature) {
+        return true;
+      }
+    }
+  }
+  return hasFeature;
+};
+
+
+/**
  * @private
  */
 ol.renderer.webgl.Map.DEFAULT_COLOR_VALUES_ = {

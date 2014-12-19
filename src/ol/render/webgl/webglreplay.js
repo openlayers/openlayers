@@ -557,6 +557,7 @@ ol.render.webgl.ImageReplay.prototype.createTextures_ =
  * @param {number} saturation Global saturation.
  * @param {Object} skippedFeaturesHash Ids of features to skip.
  * @param {function(ol.Feature): T|undefined} featureCallback Feature callback.
+ * @param {boolean} oneByOne Draw features one-by-one for the hit-detecion.
  * @param {ol.Extent=} opt_hitExtent Hit extent: Only features intersecting
  *  this extent are checked.
  * @return {T|undefined} Callback result.
@@ -565,7 +566,7 @@ ol.render.webgl.ImageReplay.prototype.createTextures_ =
 ol.render.webgl.ImageReplay.prototype.replay = function(context,
     center, resolution, rotation, size, pixelRatio,
     opacity, brightness, contrast, hue, saturation, skippedFeaturesHash,
-    featureCallback, opt_hitExtent) {
+    featureCallback, oneByOne, opt_hitExtent) {
   var gl = context.getGL();
 
   // bind the vertices buffer
@@ -672,7 +673,7 @@ ol.render.webgl.ImageReplay.prototype.replay = function(context,
   } else {
     // draw feature by feature for the hit-detection
     result = this.drawHitDetectionReplay_(gl, context, featureCallback,
-        opt_hitExtent);
+        oneByOne, opt_hitExtent);
   }
 
   // disable the vertex attrib arrays
@@ -715,21 +716,76 @@ ol.render.webgl.ImageReplay.prototype.drawReplay_ =
  * @param {WebGLRenderingContext} gl gl.
  * @param {ol.webgl.Context} context Context.
  * @param {function(ol.Feature): T|undefined} featureCallback Feature callback.
+ * @param {boolean} oneByOne Draw features one-by-one for the hit-detecion.
  * @param {ol.Extent=} opt_hitExtent Hit extent: Only features intersecting
  *  this extent are checked.
  * @return {T|undefined} Callback result.
  * @template T
  */
 ol.render.webgl.ImageReplay.prototype.drawHitDetectionReplay_ =
-    function(gl, context, featureCallback, opt_hitExtent) {
+    function(gl, context, featureCallback, oneByOne, opt_hitExtent) {
   goog.asserts.assert(this.hitDetectionTextures_.length ===
       this.hitDetectionGroupIndices_.length);
   var elementType = context.hasOESElementIndexUint ?
       goog.webgl.UNSIGNED_INT : goog.webgl.UNSIGNED_SHORT;
   var elementSize = context.hasOESElementIndexUint ? 4 : 2;
 
-  var i, groupStart, groupEnd, numItems, start, end, feature;
+  if (!oneByOne) {
+    // draw all hit-detection features in "once" (by texture group)
+    return this.drawHitDetectionReplayAll_(gl, context, featureCallback,
+        elementType, elementSize);
+  } else {
+    // draw hit-detection features one by one
+    return this.drawHitDetectionReplayOneByOne_(gl, context, featureCallback,
+        elementType, elementSize, opt_hitExtent);
+  }
+};
+
+
+/**
+ * @private
+ * @param {WebGLRenderingContext} gl gl.
+ * @param {ol.webgl.Context} context Context.
+ * @param {function(ol.Feature): T|undefined} featureCallback Feature callback.
+ * @param {number} elementType Element type.
+ * @param {number} elementSize Element size.
+ * @return {T|undefined} Callback result.
+ * @template T
+ */
+ol.render.webgl.ImageReplay.prototype.drawHitDetectionReplayAll_ =
+    function(gl, context, featureCallback, elementType, elementSize) {
+  var i, ii, start;
+  for (i = 0, ii = this.hitDetectionTextures_.length, start = 0; i < ii; ++i) {
+    gl.bindTexture(goog.webgl.TEXTURE_2D, this.hitDetectionTextures_[i]);
+    var end = this.hitDetectionGroupIndices_[i];
+    var numItems = end - start;
+    var offsetInBytes = start * elementSize;
+    gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+    gl.drawElements(goog.webgl.TRIANGLES, numItems, elementType, offsetInBytes);
+    start = end;
+  }
+  return featureCallback(null);
+};
+
+
+/**
+ * @private
+ * @param {WebGLRenderingContext} gl gl.
+ * @param {ol.webgl.Context} context Context.
+ * @param {function(ol.Feature): T|undefined} featureCallback Feature callback.
+ * @param {number} elementType Element type.
+ * @param {number} elementSize Element size.
+ * @param {ol.Extent=} opt_hitExtent Hit extent: Only features intersecting
+ *  this extent are checked.
+ * @return {T|undefined} Callback result.
+ * @template T
+ */
+ol.render.webgl.ImageReplay.prototype.drawHitDetectionReplayOneByOne_ =
+    function(gl, context, featureCallback, elementType, elementSize,
+        opt_hitExtent) {
+  var i, groupStart, groupEnd, numItems, featureInfo, start, end, feature;
   var featureIndex = this.startIndices_.length - 1;
+
   for (i = this.hitDetectionTextures_.length - 1; i >= 0; --i) {
     gl.bindTexture(goog.webgl.TEXTURE_2D, this.hitDetectionTextures_[i]);
     groupStart = (i > 0) ? this.hitDetectionGroupIndices_[i - 1] : 0;
@@ -957,7 +1013,7 @@ ol.render.webgl.ReplayGroup.prototype.replay = function(context,
       replay.replay(context,
           center, resolution, rotation, size, pixelRatio,
           opacity, brightness, contrast, hue, saturation, skippedFeaturesHash,
-          undefined);
+          undefined, false);
     }
   }
 };
@@ -978,6 +1034,7 @@ ol.render.webgl.ReplayGroup.prototype.replay = function(context,
  * @param {number} saturation Global saturation.
  * @param {Object} skippedFeaturesHash Ids of features to skip.
  * @param {function(ol.Feature): T|undefined} featureCallback Feature callback.
+ * @param {boolean} oneByOne Draw features one-by-one for the hit-detecion.
  * @param {ol.Extent=} opt_hitExtent Hit extent: Only features intersecting
  *  this extent are checked.
  * @return {T|undefined} Callback result.
@@ -986,7 +1043,7 @@ ol.render.webgl.ReplayGroup.prototype.replay = function(context,
 ol.render.webgl.ReplayGroup.prototype.replayHitDetection_ = function(context,
     center, resolution, rotation, size, pixelRatio,
     opacity, brightness, contrast, hue, saturation, skippedFeaturesHash,
-    featureCallback, opt_hitExtent) {
+    featureCallback, oneByOne, opt_hitExtent) {
   var i, replay, result;
   for (i = ol.render.REPLAY_ORDER.length - 1; i >= 0; --i) {
     replay = this.replays_[ol.render.REPLAY_ORDER[i]];
@@ -994,7 +1051,7 @@ ol.render.webgl.ReplayGroup.prototype.replayHitDetection_ = function(context,
       result = replay.replay(context,
           center, resolution, rotation, size, pixelRatio,
           opacity, brightness, contrast, hue, saturation,
-          skippedFeaturesHash, featureCallback, opt_hitExtent);
+          skippedFeaturesHash, featureCallback, oneByOne, opt_hitExtent);
       if (result) {
         return result;
       }
@@ -1061,7 +1118,49 @@ ol.render.webgl.ReplayGroup.prototype.forEachFeatureAtPixel = function(
             return result;
           }
         }
-      }, hitExtent);
+      }, true, hitExtent);
+};
+
+
+/**
+ * @param {ol.webgl.Context} context Context.
+ * @param {ol.Coordinate} center Center.
+ * @param {number} resolution Resolution.
+ * @param {number} rotation Rotation.
+ * @param {ol.Size} size Size.
+ * @param {number} pixelRatio Pixel ratio.
+ * @param {number} opacity Global opacity.
+ * @param {number} brightness Global brightness.
+ * @param {number} contrast Global contrast.
+ * @param {number} hue Global hue.
+ * @param {number} saturation Global saturation.
+ * @param {Object} skippedFeaturesHash Ids of features to skip.
+ * @param {ol.Coordinate} coordinate Coordinate.
+ * @return {boolean} Is there a feature at the given pixel?
+ */
+ol.render.webgl.ReplayGroup.prototype.hasFeatureAtPixel = function(
+    context, center, resolution, rotation, size, pixelRatio,
+    opacity, brightness, contrast, hue, saturation, skippedFeaturesHash,
+    coordinate) {
+  var gl = context.getGL();
+  gl.bindFramebuffer(
+      gl.FRAMEBUFFER, context.getHitDetectionFramebuffer());
+
+  var hasFeature = this.replayHitDetection_(context,
+      coordinate, resolution, rotation, ol.render.webgl.HIT_DETECTION_SIZE_,
+      pixelRatio, opacity, brightness, contrast, hue, saturation,
+      skippedFeaturesHash,
+      /**
+       * @param {ol.Feature} feature Feature.
+       * @return {boolean} Is there a feature?
+       */
+      function(feature) {
+        var imageData = new Uint8Array(4);
+        gl.readPixels(0, 0, 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, imageData);
+        return imageData[3] > 0;
+      }, false);
+
+  return goog.isDef(hasFeature) ? hasFeature : false;
 };
 
 
