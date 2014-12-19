@@ -256,6 +256,24 @@ ol.geom.SimpleGeometry.prototype.applyTransform = function(transformFn) {
 
 
 /**
+ * Translate the geometry.
+ * @param {number} deltaX Delta X.
+ * @param {number} deltaY Delta Y.
+ * @api
+ */
+ol.geom.SimpleGeometry.prototype.translate = function(deltaX, deltaY) {
+  var flatCoordinates = this.getFlatCoordinates();
+  if (!goog.isNull(flatCoordinates)) {
+    var stride = this.getStride();
+    ol.geom.flat.transform.translate(
+        flatCoordinates, 0, flatCoordinates.length, stride,
+        deltaX, deltaY, flatCoordinates);
+    this.changed();
+  }
+};
+
+
+/**
  * @param {ol.geom.SimpleGeometry} simpleGeometry Simple geometry.
  * @param {goog.vec.Mat4.Number} transform Transform.
  * @param {Array.<number>=} opt_dest Destination.

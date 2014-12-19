@@ -22,7 +22,11 @@ goog.require('ol.interaction.Pointer');
  */
 ol.interaction.PinchRotate = function(opt_options) {
 
-  goog.base(this);
+  goog.base(this, {
+    handleDownEvent: ol.interaction.PinchRotate.handleDownEvent_,
+    handleDragEvent: ol.interaction.PinchRotate.handleDragEvent_,
+    handleUpEvent: ol.interaction.PinchRotate.handleUpEvent_
+  });
 
   var options = goog.isDef(opt_options) ? opt_options : {};
 
@@ -61,10 +65,11 @@ goog.inherits(ol.interaction.PinchRotate, ol.interaction.Pointer);
 
 
 /**
- * @inheritDoc
+ * @param {ol.MapBrowserPointerEvent} mapBrowserEvent Event.
+ * @this {ol.interaction.PinchRotate}
+ * @private
  */
-ol.interaction.PinchRotate.prototype.handlePointerDrag =
-    function(mapBrowserEvent) {
+ol.interaction.PinchRotate.handleDragEvent_ = function(mapBrowserEvent) {
   goog.asserts.assert(this.targetPointers.length >= 2);
   var rotationDelta = 0.0;
 
@@ -111,10 +116,12 @@ ol.interaction.PinchRotate.prototype.handlePointerDrag =
 
 
 /**
- * @inheritDoc
+ * @param {ol.MapBrowserPointerEvent} mapBrowserEvent Event.
+ * @return {boolean} Stop drag sequence?
+ * @this {ol.interaction.PinchRotate}
+ * @private
  */
-ol.interaction.PinchRotate.prototype.handlePointerUp =
-    function(mapBrowserEvent) {
+ol.interaction.PinchRotate.handleUpEvent_ = function(mapBrowserEvent) {
   if (this.targetPointers.length < 2) {
     var map = mapBrowserEvent.map;
     var view = map.getView();
@@ -133,10 +140,12 @@ ol.interaction.PinchRotate.prototype.handlePointerUp =
 
 
 /**
- * @inheritDoc
+ * @param {ol.MapBrowserPointerEvent} mapBrowserEvent Event.
+ * @return {boolean} Start drag sequence?
+ * @this {ol.interaction.PinchRotate}
+ * @private
  */
-ol.interaction.PinchRotate.prototype.handlePointerDown =
-    function(mapBrowserEvent) {
+ol.interaction.PinchRotate.handleDownEvent_ = function(mapBrowserEvent) {
   if (this.targetPointers.length >= 2) {
     var map = mapBrowserEvent.map;
     this.anchor_ = null;
@@ -152,3 +161,9 @@ ol.interaction.PinchRotate.prototype.handlePointerDown =
     return false;
   }
 };
+
+
+/**
+ * @inheritDoc
+ */
+ol.interaction.PinchRotate.prototype.shouldStopEvent = goog.functions.FALSE;

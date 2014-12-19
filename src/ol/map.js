@@ -646,6 +646,19 @@ goog.exportProperty(
 
 
 /**
+ * Get the DOM element into which this map is rendered. In contrast to
+ * `getTarget` this method always return an `Element`, or `null` if the
+ * map has no target.
+ * @return {Element} The element that the map is rendered in.
+ * @api
+ */
+ol.Map.prototype.getTargetElement = function() {
+  var target = this.getTarget();
+  return goog.isDef(target) ? goog.dom.getElement(target) : null;
+};
+
+
+/**
  * @param {ol.Pixel} pixel Pixel.
  * @return {ol.Coordinate} Coordinate.
  * @api stable

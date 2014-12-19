@@ -1,7 +1,6 @@
 goog.provide('ol.interaction.DragRotateAndZoom');
 
 goog.require('goog.asserts');
-goog.require('goog.functions');
 goog.require('goog.math.Vec2');
 goog.require('ol');
 goog.require('ol.ViewHint');
@@ -31,7 +30,11 @@ ol.interaction.DragRotateAndZoom = function(opt_options) {
 
   var options = goog.isDef(opt_options) ? opt_options : {};
 
-  goog.base(this);
+  goog.base(this, {
+    handleDownEvent: ol.interaction.DragRotateAndZoom.handleDownEvent_,
+    handleDragEvent: ol.interaction.DragRotateAndZoom.handleDragEvent_,
+    handleUpEvent: ol.interaction.DragRotateAndZoom.handleUpEvent_
+  });
 
   /**
    * @private
@@ -64,10 +67,11 @@ goog.inherits(ol.interaction.DragRotateAndZoom,
 
 
 /**
- * @inheritDoc
+ * @param {ol.MapBrowserPointerEvent} mapBrowserEvent Event.
+ * @this {ol.interaction.DragRotateAndZoom}
+ * @private
  */
-ol.interaction.DragRotateAndZoom.prototype.handlePointerDrag =
-    function(mapBrowserEvent) {
+ol.interaction.DragRotateAndZoom.handleDragEvent_ = function(mapBrowserEvent) {
   if (!ol.events.condition.mouseOnly(mapBrowserEvent)) {
     return;
   }
@@ -101,10 +105,12 @@ ol.interaction.DragRotateAndZoom.prototype.handlePointerDrag =
 
 
 /**
- * @inheritDoc
+ * @param {ol.MapBrowserPointerEvent} mapBrowserEvent Event.
+ * @return {boolean} Stop drag sequence?
+ * @this {ol.interaction.DragRotateAndZoom}
+ * @private
  */
-ol.interaction.DragRotateAndZoom.prototype.handlePointerUp =
-    function(mapBrowserEvent) {
+ol.interaction.DragRotateAndZoom.handleUpEvent_ = function(mapBrowserEvent) {
   if (!ol.events.condition.mouseOnly(mapBrowserEvent)) {
     return true;
   }
@@ -124,10 +130,12 @@ ol.interaction.DragRotateAndZoom.prototype.handlePointerUp =
 
 
 /**
- * @inheritDoc
+ * @param {ol.MapBrowserPointerEvent} mapBrowserEvent Event.
+ * @return {boolean} Start drag sequence?
+ * @this {ol.interaction.DragRotateAndZoom}
+ * @private
  */
-ol.interaction.DragRotateAndZoom.prototype.handlePointerDown =
-    function(mapBrowserEvent) {
+ol.interaction.DragRotateAndZoom.handleDownEvent_ = function(mapBrowserEvent) {
   if (!ol.events.condition.mouseOnly(mapBrowserEvent)) {
     return false;
   }
@@ -141,12 +149,3 @@ ol.interaction.DragRotateAndZoom.prototype.handlePointerDown =
     return false;
   }
 };
-
-
-/**
- * @inheritDoc
- * Stop the event if it was handled, so that interaction `DragZoom`
- * does not interfere.
- */
-ol.interaction.DragRotateAndZoom.prototype.shouldStopEvent =
-    goog.functions.identity;

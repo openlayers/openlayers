@@ -86,7 +86,9 @@ goog.inherits(ol.DrawEvent, goog.events.Event);
 ol.interaction.Draw = function(options) {
 
   goog.base(this, {
-    handleEvent: ol.interaction.Draw.handleEvent
+    handleDownEvent: ol.interaction.Draw.handleDownEvent_,
+    handleEvent: ol.interaction.Draw.handleEvent,
+    handleUpEvent: ol.interaction.Draw.handleUpEvent_
   });
 
   /**
@@ -259,11 +261,12 @@ ol.interaction.Draw.handleEvent = function(mapBrowserEvent) {
 
 
 /**
- * Handle down events.
- * @param {ol.MapBrowserEvent} event A down event.
- * @return {boolean} Pass the event to other interactions.
+ * @param {ol.MapBrowserPointerEvent} event Event.
+ * @return {boolean} Start drag sequence?
+ * @this {ol.interaction.Draw}
+ * @private
  */
-ol.interaction.Draw.prototype.handlePointerDown = function(event) {
+ol.interaction.Draw.handleDownEvent_ = function(event) {
   if (this.condition_(event)) {
     this.downPx_ = event.pixel;
     return true;
@@ -274,11 +277,12 @@ ol.interaction.Draw.prototype.handlePointerDown = function(event) {
 
 
 /**
- * Handle up events.
- * @param {ol.MapBrowserEvent} event An up event.
- * @return {boolean} Pass the event to other interactions.
+ * @param {ol.MapBrowserPointerEvent} event Event.
+ * @return {boolean} Stop drag sequence?
+ * @this {ol.interaction.Draw}
+ * @private
  */
-ol.interaction.Draw.prototype.handlePointerUp = function(event) {
+ol.interaction.Draw.handleUpEvent_ = function(event) {
   var downPx = this.downPx_;
   var clickPx = event.pixel;
   var dx = downPx[0] - clickPx[0];
@@ -548,6 +552,12 @@ ol.interaction.Draw.prototype.abortDrawing_ = function() {
   }
   return sketchFeature;
 };
+
+
+/**
+ * @inheritDoc
+ */
+ol.interaction.Draw.prototype.shouldStopEvent = goog.functions.FALSE;
 
 
 /**

@@ -27,7 +27,11 @@ ol.interaction.DragRotate = function(opt_options) {
 
   var options = goog.isDef(opt_options) ? opt_options : {};
 
-  goog.base(this);
+  goog.base(this, {
+    handleDownEvent: ol.interaction.DragRotate.handleDownEvent_,
+    handleDragEvent: ol.interaction.DragRotate.handleDragEvent_,
+    handleUpEvent: ol.interaction.DragRotate.handleUpEvent_
+  });
 
   /**
    * @private
@@ -47,10 +51,11 @@ goog.inherits(ol.interaction.DragRotate, ol.interaction.Pointer);
 
 
 /**
- * @inheritDoc
+ * @param {ol.MapBrowserPointerEvent} mapBrowserEvent Event.
+ * @this {ol.interaction.DragRotate}
+ * @private
  */
-ol.interaction.DragRotate.prototype.handlePointerDrag =
-    function(mapBrowserEvent) {
+ol.interaction.DragRotate.handleDragEvent_ = function(mapBrowserEvent) {
   if (!ol.events.condition.mouseOnly(mapBrowserEvent)) {
     return;
   }
@@ -73,10 +78,12 @@ ol.interaction.DragRotate.prototype.handlePointerDrag =
 
 
 /**
- * @inheritDoc
+ * @param {ol.MapBrowserPointerEvent} mapBrowserEvent Event.
+ * @return {boolean} Stop drag sequence?
+ * @this {ol.interaction.DragRotate}
+ * @private
  */
-ol.interaction.DragRotate.prototype.handlePointerUp =
-    function(mapBrowserEvent) {
+ol.interaction.DragRotate.handleUpEvent_ = function(mapBrowserEvent) {
   if (!ol.events.condition.mouseOnly(mapBrowserEvent)) {
     return true;
   }
@@ -92,10 +99,12 @@ ol.interaction.DragRotate.prototype.handlePointerUp =
 
 
 /**
- * @inheritDoc
+ * @param {ol.MapBrowserPointerEvent} mapBrowserEvent Event.
+ * @return {boolean} Start drag sequence?
+ * @this {ol.interaction.DragRotate}
+ * @private
  */
-ol.interaction.DragRotate.prototype.handlePointerDown =
-    function(mapBrowserEvent) {
+ol.interaction.DragRotate.handleDownEvent_ = function(mapBrowserEvent) {
   if (!ol.events.condition.mouseOnly(mapBrowserEvent)) {
     return false;
   }
@@ -111,3 +120,9 @@ ol.interaction.DragRotate.prototype.handlePointerDown =
     return false;
   }
 };
+
+
+/**
+ * @inheritDoc
+ */
+ol.interaction.DragRotate.prototype.shouldStopEvent = goog.functions.FALSE;
