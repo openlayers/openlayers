@@ -1679,8 +1679,8 @@ olx.format.KMLOptions.prototype.defaultStyle;
 
 
 /**
- * @typedef {{featureNS: string,
- *     featureType: string,
+ * @typedef {{featureNS: (string|undefined),
+ *     featureType: (Array.<string>|string|undefined),
  *     srsName: string,
  *     surface: (boolean|undefined),
  *     curve: (boolean|undefined),
@@ -1693,16 +1693,16 @@ olx.format.GMLOptions;
 
 
 /**
- * Feature namespace.
- * @type {string}
+ * Feature namespace. If not defined will be derived from GML.
+ * @type {string|undefined}
  * @api stable
  */
 olx.format.GMLOptions.prototype.featureNS;
 
 
 /**
- * Feature type to parse.
- * @type {string}
+ * Feature type(s) to parse.
+ * @type {Array.<string>|string|undefined}
  * @api stable
  */
 olx.format.GMLOptions.prototype.featureType;
