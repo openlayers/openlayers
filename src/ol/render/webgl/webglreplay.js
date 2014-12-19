@@ -199,11 +199,18 @@ ol.render.webgl.ImageReplay = function(tolerance, maxExtent) {
   this.verticesBuffer_ = null;
 
   /**
-   * Start indices per feature.
-   * @type {Array.<Array.<?>>}
+   * Start index per feature (the index).
+   * @type {Array.<number>}
    * @private
    */
-  this.startIndexForFeature_ = [];
+  this.startIndices_ = [];
+
+  /**
+   * Start index per feature (the feature).
+   * @type {Array.<ol.Feature>}
+   * @private
+   */
+  this.startIndicesFeature_ = [];
 
   /**
    * @type {number|undefined}
@@ -406,7 +413,8 @@ ol.render.webgl.ImageReplay.prototype.drawMultiLineStringGeometry =
  */
 ol.render.webgl.ImageReplay.prototype.drawMultiPointGeometry =
     function(multiPointGeometry, feature) {
-  this.startIndexForFeature_.push([this.indices_.length, feature]);
+  this.startIndices_.push(this.indices_.length);
+  this.startIndicesFeature_.push(feature);
   var flatCoordinates = multiPointGeometry.getFlatCoordinates();
   var stride = multiPointGeometry.getStride();
   this.drawCoordinates_(
@@ -426,7 +434,8 @@ ol.render.webgl.ImageReplay.prototype.drawMultiPolygonGeometry =
  */
 ol.render.webgl.ImageReplay.prototype.drawPointGeometry =
     function(pointGeometry, feature) {
-  this.startIndexForFeature_.push([this.indices_.length, feature]);
+  this.startIndices_.push(this.indices_.length);
+  this.startIndicesFeature_.push(feature);
   var flatCoordinates = pointGeometry.getFlatCoordinates();
   var stride = pointGeometry.getStride();
   this.drawCoordinates_(
@@ -723,8 +732,8 @@ ol.render.webgl.ImageReplay.prototype.drawHitDetectionReplay_ =
       goog.webgl.UNSIGNED_INT : goog.webgl.UNSIGNED_SHORT;
   var elementSize = context.hasOESElementIndexUint ? 4 : 2;
 
-  var i, groupStart, groupEnd, numItems, featureInfo, start, end;
-  var featureIndex = this.startIndexForFeature_.length - 1;
+  var i, groupStart, groupEnd, numItems, start, end;
+  var featureIndex = this.startIndices_.length - 1;
   for (i = this.hitDetectionTextures_.length - 1; i >= 0; --i) {
     gl.bindTexture(goog.webgl.TEXTURE_2D, this.hitDetectionTextures_[i]);
     groupStart = (i > 0) ? this.hitDetectionGroupIndices_[i - 1] : 0;
@@ -732,9 +741,8 @@ ol.render.webgl.ImageReplay.prototype.drawHitDetectionReplay_ =
 
     // draw all features for this texture group
     while (featureIndex >= 0 &&
-        this.startIndexForFeature_[featureIndex][0] >= groupStart) {
-      featureInfo = this.startIndexForFeature_[featureIndex];
-      start = featureInfo[0];
+        this.startIndices_[featureIndex] >= groupStart) {
+      start = this.startIndices_[featureIndex];
       numItems = end - start;
       var offsetInBytes = start * elementSize;
 
@@ -742,7 +750,7 @@ ol.render.webgl.ImageReplay.prototype.drawHitDetectionReplay_ =
       gl.drawElements(
           goog.webgl.TRIANGLES, numItems, elementType, offsetInBytes);
 
-      var result = featureCallback(/** @type {ol.Feature} */ (featureInfo[1]));
+      var result = featureCallback(this.startIndicesFeature_[featureIndex]);
       if (result) {
         return result;
       }
