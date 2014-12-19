@@ -566,13 +566,15 @@ ol.render.webgl.ImageReplay.prototype.createTextures_ =
  * @param {number} saturation Global saturation.
  * @param {Object} skippedFeaturesHash Ids of features to skip.
  * @param {function(ol.Feature): T|undefined} featureCallback Feature callback.
+ * @param {ol.Extent=} opt_hitExtent Hit extent: Only features intersecting
+ *  this extent are checked.
  * @return {T|undefined} Callback result.
  * @template T
  */
 ol.render.webgl.ImageReplay.prototype.replay = function(context,
     center, resolution, rotation, size, pixelRatio,
     opacity, brightness, contrast, hue, saturation, skippedFeaturesHash,
-    featureCallback) {
+    featureCallback, opt_hitExtent) {
   var gl = context.getGL();
 
   // bind the vertices buffer
@@ -678,7 +680,8 @@ ol.render.webgl.ImageReplay.prototype.replay = function(context,
     this.drawReplay_(gl, context);
   } else {
     // draw feature by feature for the hit-detection
-    result = this.drawHitDetectionReplay_(gl, context, featureCallback);
+    result = this.drawHitDetectionReplay_(gl, context, featureCallback,
+        opt_hitExtent);
   }
 
   // disable the vertex attrib arrays
@@ -721,18 +724,20 @@ ol.render.webgl.ImageReplay.prototype.drawReplay_ =
  * @param {WebGLRenderingContext} gl gl.
  * @param {ol.webgl.Context} context Context.
  * @param {function(ol.Feature): T|undefined} featureCallback Feature callback.
+ * @param {ol.Extent=} opt_hitExtent Hit extent: Only features intersecting
+ *  this extent are checked.
  * @return {T|undefined} Callback result.
  * @template T
  */
 ol.render.webgl.ImageReplay.prototype.drawHitDetectionReplay_ =
-    function(gl, context, featureCallback) {
+    function(gl, context, featureCallback, opt_hitExtent) {
   goog.asserts.assert(this.hitDetectionTextures_.length ===
       this.hitDetectionGroupIndices_.length);
   var elementType = context.hasOESElementIndexUint ?
       goog.webgl.UNSIGNED_INT : goog.webgl.UNSIGNED_SHORT;
   var elementSize = context.hasOESElementIndexUint ? 4 : 2;
 
-  var i, groupStart, groupEnd, numItems, start, end;
+  var i, groupStart, groupEnd, numItems, start, end, feature;
   var featureIndex = this.startIndices_.length - 1;
   for (i = this.hitDetectionTextures_.length - 1; i >= 0; --i) {
     gl.bindTexture(goog.webgl.TEXTURE_2D, this.hitDetectionTextures_[i]);
@@ -744,15 +749,19 @@ ol.render.webgl.ImageReplay.prototype.drawHitDetectionReplay_ =
         this.startIndices_[featureIndex] >= groupStart) {
       start = this.startIndices_[featureIndex];
       numItems = end - start;
-      var offsetInBytes = start * elementSize;
+      feature = this.startIndicesFeature_[featureIndex];
 
-      gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-      gl.drawElements(
-          goog.webgl.TRIANGLES, numItems, elementType, offsetInBytes);
+      if (!goog.isDef(opt_hitExtent) || ol.extent.intersects(
+          opt_hitExtent, feature.getGeometry().getExtent())) {
+        var offsetInBytes = start * elementSize;
+        gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+        gl.drawElements(
+            goog.webgl.TRIANGLES, numItems, elementType, offsetInBytes);
 
-      var result = featureCallback(this.startIndicesFeature_[featureIndex]);
-      if (result) {
-        return result;
+        var result = featureCallback(feature);
+        if (result) {
+          return result;
+        }
       }
 
       end = start;
@@ -848,9 +857,11 @@ ol.render.webgl.ImageReplay.prototype.setTextStyle = goog.abstractMethod;
  * @implements {ol.render.IReplayGroup}
  * @param {number} tolerance Tolerance.
  * @param {ol.Extent} maxExtent Max extent.
+ * @param {number=} opt_renderBuffer Render buffer.
  * @struct
  */
-ol.render.webgl.ReplayGroup = function(tolerance, maxExtent) {
+ol.render.webgl.ReplayGroup = function(
+    tolerance, maxExtent, opt_renderBuffer) {
 
   /**
    * @type {ol.Extent}
@@ -863,6 +874,12 @@ ol.render.webgl.ReplayGroup = function(tolerance, maxExtent) {
    * @private
    */
   this.tolerance_ = tolerance;
+
+  /**
+   * @type {number|undefined}
+   * @private
+   */
+  this.renderBuffer_ = opt_renderBuffer;
 
   /**
    * ImageReplay only is supported at this point.
@@ -970,13 +987,15 @@ ol.render.webgl.ReplayGroup.prototype.replay = function(context,
  * @param {number} saturation Global saturation.
  * @param {Object} skippedFeaturesHash Ids of features to skip.
  * @param {function(ol.Feature): T|undefined} featureCallback Feature callback.
+ * @param {ol.Extent=} opt_hitExtent Hit extent: Only features intersecting
+ *  this extent are checked.
  * @return {T|undefined} Callback result.
  * @template T
  */
 ol.render.webgl.ReplayGroup.prototype.replayHitDetection_ = function(context,
     center, resolution, rotation, size, pixelRatio,
     opacity, brightness, contrast, hue, saturation, skippedFeaturesHash,
-    featureCallback) {
+    featureCallback, opt_hitExtent) {
   var i, replay, result;
   for (i = ol.render.REPLAY_ORDER.length - 1; i >= 0; --i) {
     replay = this.replays_[ol.render.REPLAY_ORDER[i]];
@@ -984,7 +1003,7 @@ ol.render.webgl.ReplayGroup.prototype.replayHitDetection_ = function(context,
       result = replay.replay(context,
           center, resolution, rotation, size, pixelRatio,
           opacity, brightness, contrast, hue, saturation,
-          skippedFeaturesHash, featureCallback);
+          skippedFeaturesHash, featureCallback, opt_hitExtent);
       if (result) {
         return result;
       }
@@ -1020,6 +1039,19 @@ ol.render.webgl.ReplayGroup.prototype.forEachFeatureAtPixel = function(
   gl.bindFramebuffer(
       gl.FRAMEBUFFER, context.getHitDetectionFramebuffer());
 
+
+  /**
+   * @type {ol.Extent}
+   */
+  var hitExtent;
+  if (goog.isDef(this.renderBuffer_)) {
+    // build an extent around the coordinate, so that only features that
+    // intersect this extent are checked
+    hitExtent = ol.extent.buffer(
+        ol.extent.boundingExtent([coordinate]),
+        resolution * this.renderBuffer_);
+  }
+
   return this.replayHitDetection_(context,
       coordinate, resolution, rotation, ol.render.webgl.HIT_DETECTION_SIZE_,
       pixelRatio, opacity, brightness, contrast, hue, saturation,
@@ -1038,7 +1070,7 @@ ol.render.webgl.ReplayGroup.prototype.forEachFeatureAtPixel = function(
             return result;
           }
         }
-      });
+      }, hitExtent);
 };
 
 

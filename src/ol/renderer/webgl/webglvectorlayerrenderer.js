@@ -203,7 +203,7 @@ ol.renderer.webgl.VectorLayer.prototype.prepareFrame =
 
   var replayGroup = new ol.render.webgl.ReplayGroup(
       ol.renderer.vector.getTolerance(resolution, pixelRatio),
-      extent);
+      extent, vectorLayer.getRenderBuffer());
   vectorSource.loadFeatures(extent, resolution, projection);
   var renderFeature =
       /**
