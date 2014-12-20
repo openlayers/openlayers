@@ -14,6 +14,11 @@ set -o errexit
 PROFILES="ol ol-debug"
 
 #
+# Destination directory for builds.
+#
+BUILDS=dist
+
+#
 # URL for canonical repo.
 #
 REMOTE=https://github.com/openlayers/ol3.git
@@ -35,7 +40,6 @@ display_usage() {
   The tag must be pushed to ${REMOTE} before the release can be published.
 
 EOF
-  exit 1
 }
 
 #
@@ -62,8 +66,8 @@ assert_version_match() {
 #
 build_profiles() {
   for p in ${@}; do
-    echo building dist/${p}.js
-    node ./tasks/build.js config/${p}.json dist/${p}.js
+    echo building ${BUILDS}/${p}.js
+    node ./tasks/build.js config/${p}.json ${BUILDS}/${p}.js
   done
 }
 
@@ -78,19 +82,21 @@ checkout_tag() {
 
 #
 # Build all profiles and publish.
+#
 main() {
   root=$(cd -P -- "$(dirname -- "${0}")" && pwd -P)/..
   cd ${root}
   assert_clean
   checkout_tag ${1}
   assert_version_match ${1}
-  rm -rf dist
+  rm -rf ${BUILDS}
   build_profiles ${PROFILES}
   npm publish
 }
 
 if test ${#} -ne 1; then
   display_usage ${0}
+  exit 1
 else
   main ${1}
 fi
