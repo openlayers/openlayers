@@ -14,6 +14,7 @@
     "start": "node tasks/serve.js",
     "test": "node tasks/test.js"
   },
+  "main": "dist/ol.js",
   "repository": {
     "type": "git",
     "url": "git://github.com/openlayers/ol3.git"
