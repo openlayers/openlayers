@@ -210,12 +210,14 @@ ol.render.canvas.Replay.prototype.beginGeometry = function(geometry, feature) {
  * @param {Object} skippedFeaturesHash Ids of features to skip.
  * @param {Array.<*>} instructions Instructions array.
  * @param {function(ol.Feature): T|undefined} featureCallback Feature callback.
+ * @param {ol.Extent=} opt_hitExtent Only check features that intersect this
+ *     extent.
  * @return {T|undefined} Callback result.
  * @template T
  */
 ol.render.canvas.Replay.prototype.replay_ = function(
     context, pixelRatio, transform, viewRotation, skippedFeaturesHash,
-    instructions, featureCallback) {
+    instructions, featureCallback, opt_hitExtent) {
   /** @type {Array.<number>} */
   var pixelCoordinates;
   if (ol.vec.Mat4.equals2D(transform, this.renderedTransform_)) {
@@ -240,10 +242,13 @@ ol.render.canvas.Replay.prototype.replay_ = function(
       case ol.render.canvas.Instruction.BEGIN_GEOMETRY:
         feature = /** @type {ol.Feature} */ (instruction[1]);
         var featureUid = goog.getUid(feature).toString();
-        if (!goog.isDef(skippedFeaturesHash[featureUid])) {
-          ++i;
-        } else {
+        if (goog.isDef(skippedFeaturesHash[featureUid])) {
           i = /** @type {number} */ (instruction[2]);
+        } else if (goog.isDef(opt_hitExtent) && !ol.extent.intersects(
+            opt_hitExtent, feature.getGeometry().getExtent())) {
+          i = /** @type {number} */ (instruction[2]);
+        } else {
+          ++i;
         }
         break;
       case ol.render.canvas.Instruction.BEGIN_PATH:
@@ -467,15 +472,17 @@ ol.render.canvas.Replay.prototype.replay = function(
  * @param {number} viewRotation View rotation.
  * @param {Object} skippedFeaturesHash Ids of features to skip
  * @param {function(ol.Feature): T=} opt_featureCallback Feature callback.
+ * @param {ol.Extent=} opt_hitExtent Only check features that intersect this
+ *     extent.
  * @return {T|undefined} Callback result.
  * @template T
  */
 ol.render.canvas.Replay.prototype.replayHitDetection = function(
     context, transform, viewRotation, skippedFeaturesHash,
-    opt_featureCallback) {
+    opt_featureCallback, opt_hitExtent) {
   var instructions = this.hitDetectionInstructions;
   return this.replay_(context, 1, transform, viewRotation,
-      skippedFeaturesHash, instructions, opt_featureCallback);
+      skippedFeaturesHash, instructions, opt_featureCallback, opt_hitExtent);
 };
 
 
@@ -1783,9 +1790,11 @@ ol.render.canvas.TextReplay.prototype.setTextStyle = function(textStyle) {
  * @param {number} tolerance Tolerance.
  * @param {ol.Extent} maxExtent Max extent.
  * @param {number} resolution Resolution.
+ * @param {number=} opt_renderBuffer Optional rendering buffer.
  * @struct
  */
-ol.render.canvas.ReplayGroup = function(tolerance, maxExtent, resolution) {
+ol.render.canvas.ReplayGroup = function(
+    tolerance, maxExtent, resolution, opt_renderBuffer) {
 
   /**
    * @private
@@ -1804,6 +1813,12 @@ ol.render.canvas.ReplayGroup = function(tolerance, maxExtent, resolution) {
    * @type {number}
    */
   this.resolution_ = resolution;
+
+  /**
+   * @private
+   * @type {number|undefined}
+   */
+  this.renderBuffer_ = opt_renderBuffer;
 
   /**
    * @private
@@ -1862,6 +1877,16 @@ ol.render.canvas.ReplayGroup.prototype.forEachGeometryAtPixel = function(
   var context = this.hitDetectionContext_;
   context.clearRect(0, 0, 1, 1);
 
+  /**
+   * @type {ol.Extent}
+   */
+  var hitExtent;
+  if (goog.isDef(this.renderBuffer_)) {
+    hitExtent = ol.extent.createEmpty();
+    ol.extent.extendCoordinate(hitExtent, coordinate);
+    ol.extent.buffer(hitExtent, resolution * this.renderBuffer_, hitExtent);
+  }
+
   return this.replayHitDetection_(context, transform, rotation,
       skippedFeaturesHash,
       /**
@@ -1877,7 +1902,7 @@ ol.render.canvas.ReplayGroup.prototype.forEachGeometryAtPixel = function(
           }
           context.clearRect(0, 0, 1, 1);
         }
-      });
+      }, hitExtent);
 };
 
 
@@ -1966,12 +1991,14 @@ ol.render.canvas.ReplayGroup.prototype.replay = function(
  * @param {number} viewRotation View rotation.
  * @param {Object} skippedFeaturesHash Ids of features to skip
  * @param {function(ol.Feature): T} featureCallback Feature callback.
+ * @param {ol.Extent=} opt_hitExtent Only check features that intersect this
+ *     extent.
  * @return {T|undefined} Callback result.
  * @template T
  */
 ol.render.canvas.ReplayGroup.prototype.replayHitDetection_ = function(
     context, transform, viewRotation, skippedFeaturesHash,
-    featureCallback) {
+    featureCallback, opt_hitExtent) {
   /** @type {Array.<number>} */
   var zs = goog.array.map(goog.object.getKeys(this.replaysByZIndex_), Number);
   goog.array.sort(zs, function(a, b) { return b - a; });
@@ -1983,7 +2010,7 @@ ol.render.canvas.ReplayGroup.prototype.replayHitDetection_ = function(
       replay = replays[ol.render.REPLAY_ORDER[j]];
       if (goog.isDef(replay)) {
         result = replay.replayHitDetection(context, transform, viewRotation,
-            skippedFeaturesHash, featureCallback);
+            skippedFeaturesHash, featureCallback, opt_hitExtent);
         if (result) {
           return result;
         }
