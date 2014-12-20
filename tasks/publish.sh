@@ -16,7 +16,7 @@ PROFILES="ol ol-debug"
 #
 # URL for canonical repo.
 #
-REMOTE=https://github.com/openlayers/ol3.git
+REMOTE=https://github.com/tschaub/ol3.git
 
 #
 # Display usage and exit.
