@@ -176,9 +176,9 @@ function concatenate(paths, callback) {
       callback(new Error(msg));
     } else {
       var parts = umdWrapper.split('%output%');
-      var src = 'var CLOSURE_NO_DEPS = true;\n' +
-          parts[0] +
+      var src = parts[0] +
           'var goog = this.goog = {};\n' +
+          'this.CLOSURE_NO_DEPS = true;\n' +
           results.join('\n') +
           'OPENLAYERS.ol = ol;\n' +
           parts[1];
