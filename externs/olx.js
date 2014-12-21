@@ -24,32 +24,6 @@ olx.AttributionOptions.prototype.html;
 
 
 /**
- * @typedef {{loadTilesWhileAnimating: (boolean|undefined),
- *     loadTilesWhileInteracting: (boolean|undefined)}}
- * @api
- */
-olx.DeviceOptions;
-
-
-/**
- * When set to false, no tiles will be loaded while animating, which improves
- * responsiveness on devices with slow memory. Default is `true`.
- * @type {boolean|undefined}
- * @api
- */
-olx.DeviceOptions.prototype.loadTilesWhileAnimating;
-
-
-/**
- * When set to false, no tiles will be loaded while interacting, which improves
- * responsiveness on devices with slow memory. Default is `true`.
- * @type {boolean|undefined}
- * @api
- */
-olx.DeviceOptions.prototype.loadTilesWhileInteracting;
-
-
-/**
  * @typedef {{tracking: (boolean|undefined)}}
  * @api
  */
@@ -194,11 +168,12 @@ olx.interaction.InteractionOptions.prototype.handleEvent;
 /**
  * Object literal with config options for the map.
  * @typedef {{controls: (ol.Collection.<ol.control.Control>|Array.<ol.control.Control>|undefined),
- *     deviceOptions: (olx.DeviceOptions|undefined),
  *     pixelRatio: (number|undefined),
  *     interactions: (ol.Collection.<ol.interaction.Interaction>|Array.<ol.interaction.Interaction>|undefined),
  *     keyboardEventTarget: (Element|Document|string|undefined),
  *     layers: (Array.<ol.layer.Base>|ol.Collection.<ol.layer.Base>|undefined),
+ *     loadTilesWhileAnimating: (boolean|undefined),
+ *     loadTilesWhileInteracting: (boolean|undefined),
  *     logo: (boolean|string|olx.LogoOptions|undefined),
  *     overlays: (ol.Collection.<ol.Overlay>|Array.<ol.Overlay>|undefined),
  *     renderer: (ol.RendererType|Array.<ol.RendererType|string>|string|undefined),
@@ -216,14 +191,6 @@ olx.MapOptions;
  * @api stable
  */
 olx.MapOptions.prototype.controls;
-
-
-/**
- * Device options for the map.
- * @type {olx.DeviceOptions|undefined}
- * @api
- */
-olx.MapOptions.prototype.deviceOptions;
 
 
 /**
@@ -264,6 +231,26 @@ olx.MapOptions.prototype.keyboardEventTarget;
  * @api stable
  */
 olx.MapOptions.prototype.layers;
+
+
+/**
+ * When set to true, tiles will be loaded during animations. This may improve
+ * the user experience, but can also make animations stutter on devices with
+ * slow memory. Default is `false`.
+ * @type {boolean|undefined}
+ * @api
+ */
+olx.MapOptions.prototype.loadTilesWhileAnimating;
+
+
+/**
+ * When set to true, tiles will be loaded while interacting with the map. This
+ * may improve the user experience, but can also make map panning and zooming
+ * choppy on devices with slow memory. Default is `false`.
+ * @type {boolean|undefined}
+ * @api
+ */
+olx.MapOptions.prototype.loadTilesWhileInteracting;
 
 
 /**
