@@ -126,10 +126,6 @@ ol.renderer.webgl.Map = function(container, map) {
    * @type {ol.structs.PriorityQueue.<Array>}
    */
   this.tileTextureQueue_ = new ol.structs.PriorityQueue(
-      /**
-       * @param {Array.<*>} element Element.
-       * @return {number} Priority.
-       */
       goog.bind(
           /**
            * @param {Array.<*>} element Element.
