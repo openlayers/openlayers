@@ -97,10 +97,13 @@ ol.control.OverviewMap = function(opt_options) {
       goog.dom.TagName.DIV, 'ol-overviewmap-map'
       );
 
+  /**
+   * @private
+   * @type {ol.proj.ProjectionLike}
+   */
+  this.projection_ = null;
   if (goog.isDef(options.projection)) {
     this.projection_ = options.projection;
-  } else {
-    this.usesParentProjection_ = true;
   }
 
   if (goog.isDef(options.layers_)) {
@@ -136,7 +139,7 @@ ol.control.OverviewMap.prototype.initMap_ = function() {
 
   // if no projection parameter was specified, our view should use the same
   // projection
-  if (this.usesParentProjection_) {
+  if (goog.isNull(this.projection_)) {
     this.projection_ = this.getMap().getView().getProjection();
   }
 
@@ -146,7 +149,7 @@ ol.control.OverviewMap.prototype.initMap_ = function() {
    */
   this.ovmap_ = new ol.Map({
     view: new ol.View({
-      projection: this.projection_ || 'EPSG:3857'
+      projection: this.projection_
     }),
     controls: new ol.Collection(),
     interactions: new ol.Collection(),
