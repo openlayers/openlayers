@@ -125,14 +125,13 @@ ol.renderer.Map.prototype.forEachFeatureAtPixel =
     function(coordinate, frameState, callback, thisArg,
         layerFilter, thisArg2) {
   var result;
-  var extent = frameState.extent;
   var viewState = frameState.viewState;
   var viewResolution = viewState.resolution;
   var viewRotation = viewState.rotation;
   if (!goog.isNull(this.replayGroup)) {
     /** @type {Object.<string, boolean>} */
     var features = {};
-    result = this.replayGroup.forEachGeometryAtPixel(extent, viewResolution,
+    result = this.replayGroup.forEachGeometryAtPixel(viewResolution,
         viewRotation, coordinate, {},
         /**
          * @param {ol.Feature} feature Feature.
