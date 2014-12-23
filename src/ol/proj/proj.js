@@ -196,7 +196,7 @@ ol.proj.Projection.prototype.getAxisOrientation = function() {
 
 /**
  * Is this projection a global projection which spans the whole world?
- * @return {boolean} Wether the projection is global.
+ * @return {boolean} Whether the projection is global.
  * @api stable
  */
 ol.proj.Projection.prototype.isGlobal = function() {
