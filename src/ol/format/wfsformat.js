@@ -31,7 +31,7 @@ ol.format.WFS = function(opt_options) {
 
   /**
    * @private
-   * @type {string}
+   * @type {Array.<string>|string|undefined}
    */
   this.featureType_ = options.featureType;
 
