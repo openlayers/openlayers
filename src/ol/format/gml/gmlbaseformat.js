@@ -106,17 +106,29 @@ ol.format.GMLBase.prototype.readFeaturesInternal = function(node, objectStack) {
   } else if (localName == 'featureMembers' || localName == 'featureMember') {
     var context = objectStack[0];
     goog.asserts.assert(goog.isObject(context));
-    var featureType = context['featureType'];
-    if (!goog.isDef(featureType) && !goog.isNull(node.firstElementChild)) {
-      var member = node.firstElementChild;
-      featureType = member.nodeName.split(':').pop();
+    var featureType = goog.object.get(context, 'featureType');
+    var i, ii, featureNS;
+    if (!goog.isDef(featureType) && goog.isDefAndNotNull(node.childNodes)) {
+      featureType = [];
+      for (i = 0, ii = node.childNodes.length; i < ii; ++i) {
+        var child = node.childNodes[i];
+        if (child.nodeType === 1) {
+          var ft = child.nodeName.split(':').pop();
+          if (goog.array.indexOf(featureType, ft) === -1) {
+            featureType.push(ft);
+            if (!goog.isDef(featureNS)) {
+              featureNS = child.namespaceURI;
+            }
+          }
+        }
+      }
       context['featureType'] = featureType;
-      context['featureNS'] = member.namespaceURI;
+      context['featureNS'] = featureNS;
     }
     var parsers = {};
     var parsersNS = {};
     var featureTypes = goog.isArray(featureType) ? featureType : [featureType];
-    for (var i = 0, ii = featureTypes.length; i < ii; ++i) {
+    for (i = 0, ii = featureTypes.length; i < ii; ++i) {
       parsers[featureTypes[i]] = (localName == 'featureMembers') ?
           ol.xml.makeArrayPusher(this.readFeatureElement, this) :
           ol.xml.makeReplacer(this.readFeatureElement, this);
