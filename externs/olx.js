@@ -1783,7 +1783,7 @@ olx.format.GPXOptions.prototype.readExtensions;
 
 /**
  * @typedef {{featureNS: string,
- *     featureType: string,
+ *     featureType: (Array.<string>|string|undefined),
  *     gmlFormat: (ol.format.GMLBase|undefined),
  *     schemaLocation: (string|undefined)}}
  * @api
@@ -1801,7 +1801,7 @@ olx.format.WFSOptions.prototype.featureNS;
 
 /**
  * The feature type to parse. Only used for read operations.
- * @type {string}
+ * @type {Array.<string>|string|undefined}
  * @api stable
  */
 olx.format.WFSOptions.prototype.featureType;
