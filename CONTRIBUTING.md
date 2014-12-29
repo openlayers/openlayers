@@ -132,7 +132,7 @@ To run the tests on the console (headless testing with PhantomJS) use the `test`
 
     $ ./build.py test
 
-See also the test-specific [README](../blob/master/test/README.md).
+See also the test-specific [README](../master/test/README.md).
 
 ## Running the integration tests
 
