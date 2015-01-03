@@ -9,9 +9,9 @@ goog.require('ol.source.StaticVector');
  * @classdesc
  * Static vector source in GeoJSON format.  
  * Note, although the {@link ol.format.GeoJSON} format class, used by this source,
- * allows to read features and geometries, the source limits this to only allow to read
- * <em>features</em>, (see definition of source at {@link ol.source.Vector}). So
- * next is a valid GeoJSON to pass to this source:
+ * allows to read/write features and geometries, the GeoJSON source limits this 
+ * to only allow to read <em>features</em>, which follow the definition of source 
+ * at {@link ol.source.Vector}). So next is a valid GeoJSON to pass to this source:
  *
  *     {
  *       "type": "Feature",
@@ -27,6 +27,10 @@ goog.require('ol.source.StaticVector');
  *       "type": "Point",
  *       "coordinates": [0,0]
  *     }
+ *
+ * To read a GeoJSON formed of geometries you must read it using the 
+ * {@link ol.format.GeoJSON} format class and, for each geometry, create a feature
+ * and add it to a vector source.
  *
  * @constructor
  * @extends {ol.source.StaticVector}

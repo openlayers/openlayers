@@ -31,6 +31,7 @@ OpenLayers contributors:
 * Corey Puffault
 * Peter William Robins
 * Gregers Rygg
+* Antonio Santiago
 * Tim Schaub
 * Christopher Schmidt
 * Tobias Schwinger
