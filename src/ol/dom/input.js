@@ -64,10 +64,6 @@ goog.inherits(ol.dom.Input, ol.Object);
 ol.dom.Input.prototype.getChecked = function() {
   return /** @type {boolean} */ (this.get(ol.dom.InputProperty.CHECKED));
 };
-goog.exportProperty(
-    ol.dom.Input.prototype,
-    'getChecked',
-    ol.dom.Input.prototype.getChecked);
 
 
 /**
@@ -79,10 +75,6 @@ goog.exportProperty(
 ol.dom.Input.prototype.getValue = function() {
   return /** @type {string} */ (this.get(ol.dom.InputProperty.VALUE));
 };
-goog.exportProperty(
-    ol.dom.Input.prototype,
-    'getValue',
-    ol.dom.Input.prototype.getValue);
 
 
 /**
@@ -94,10 +86,6 @@ goog.exportProperty(
 ol.dom.Input.prototype.setValue = function(value) {
   this.set(ol.dom.InputProperty.VALUE, value);
 };
-goog.exportProperty(
-    ol.dom.Input.prototype,
-    'setValue',
-    ol.dom.Input.prototype.setValue);
 
 
 /**
@@ -109,10 +97,6 @@ goog.exportProperty(
 ol.dom.Input.prototype.setChecked = function(checked) {
   this.set(ol.dom.InputProperty.CHECKED, checked);
 };
-goog.exportProperty(
-    ol.dom.Input.prototype,
-    'setChecked',
-    ol.dom.Input.prototype.setChecked);
 
 
 /**

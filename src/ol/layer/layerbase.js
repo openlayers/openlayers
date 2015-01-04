@@ -95,10 +95,6 @@ ol.layer.Base.prototype.getBrightness = function() {
   return /** @type {number|undefined} */ (
       this.get(ol.layer.LayerProperty.BRIGHTNESS));
 };
-goog.exportProperty(
-    ol.layer.Base.prototype,
-    'getBrightness',
-    ol.layer.Base.prototype.getBrightness);
 
 
 /**
@@ -110,10 +106,6 @@ ol.layer.Base.prototype.getContrast = function() {
   return /** @type {number|undefined} */ (
       this.get(ol.layer.LayerProperty.CONTRAST));
 };
-goog.exportProperty(
-    ol.layer.Base.prototype,
-    'getContrast',
-    ol.layer.Base.prototype.getContrast);
 
 
 /**
@@ -124,10 +116,6 @@ goog.exportProperty(
 ol.layer.Base.prototype.getHue = function() {
   return /** @type {number|undefined} */ (this.get(ol.layer.LayerProperty.HUE));
 };
-goog.exportProperty(
-    ol.layer.Base.prototype,
-    'getHue',
-    ol.layer.Base.prototype.getHue);
 
 
 /**
@@ -185,10 +173,6 @@ ol.layer.Base.prototype.getExtent = function() {
   return /** @type {ol.Extent|undefined} */ (
       this.get(ol.layer.LayerProperty.EXTENT));
 };
-goog.exportProperty(
-    ol.layer.Base.prototype,
-    'getExtent',
-    ol.layer.Base.prototype.getExtent);
 
 
 /**
@@ -200,10 +184,6 @@ ol.layer.Base.prototype.getMaxResolution = function() {
   return /** @type {number|undefined} */ (
       this.get(ol.layer.LayerProperty.MAX_RESOLUTION));
 };
-goog.exportProperty(
-    ol.layer.Base.prototype,
-    'getMaxResolution',
-    ol.layer.Base.prototype.getMaxResolution);
 
 
 /**
@@ -215,10 +195,6 @@ ol.layer.Base.prototype.getMinResolution = function() {
   return /** @type {number|undefined} */ (
       this.get(ol.layer.LayerProperty.MIN_RESOLUTION));
 };
-goog.exportProperty(
-    ol.layer.Base.prototype,
-    'getMinResolution',
-    ol.layer.Base.prototype.getMinResolution);
 
 
 /**
@@ -230,10 +206,6 @@ ol.layer.Base.prototype.getOpacity = function() {
   return /** @type {number|undefined} */ (
       this.get(ol.layer.LayerProperty.OPACITY));
 };
-goog.exportProperty(
-    ol.layer.Base.prototype,
-    'getOpacity',
-    ol.layer.Base.prototype.getOpacity);
 
 
 /**
@@ -245,10 +217,6 @@ ol.layer.Base.prototype.getSaturation = function() {
   return /** @type {number|undefined} */ (
       this.get(ol.layer.LayerProperty.SATURATION));
 };
-goog.exportProperty(
-    ol.layer.Base.prototype,
-    'getSaturation',
-    ol.layer.Base.prototype.getSaturation);
 
 
 /**
@@ -266,10 +234,6 @@ ol.layer.Base.prototype.getVisible = function() {
   return /** @type {boolean|undefined} */ (
       this.get(ol.layer.LayerProperty.VISIBLE));
 };
-goog.exportProperty(
-    ol.layer.Base.prototype,
-    'getVisible',
-    ol.layer.Base.prototype.getVisible);
 
 
 /**
@@ -297,10 +261,6 @@ goog.exportProperty(
 ol.layer.Base.prototype.setBrightness = function(brightness) {
   this.set(ol.layer.LayerProperty.BRIGHTNESS, brightness);
 };
-goog.exportProperty(
-    ol.layer.Base.prototype,
-    'setBrightness',
-    ol.layer.Base.prototype.setBrightness);
 
 
 /**
@@ -315,10 +275,6 @@ goog.exportProperty(
 ol.layer.Base.prototype.setContrast = function(contrast) {
   this.set(ol.layer.LayerProperty.CONTRAST, contrast);
 };
-goog.exportProperty(
-    ol.layer.Base.prototype,
-    'setContrast',
-    ol.layer.Base.prototype.setContrast);
 
 
 /**
@@ -331,10 +287,6 @@ goog.exportProperty(
 ol.layer.Base.prototype.setHue = function(hue) {
   this.set(ol.layer.LayerProperty.HUE, hue);
 };
-goog.exportProperty(
-    ol.layer.Base.prototype,
-    'setHue',
-    ol.layer.Base.prototype.setHue);
 
 
 /**
@@ -347,10 +299,6 @@ goog.exportProperty(
 ol.layer.Base.prototype.setExtent = function(extent) {
   this.set(ol.layer.LayerProperty.EXTENT, extent);
 };
-goog.exportProperty(
-    ol.layer.Base.prototype,
-    'setExtent',
-    ol.layer.Base.prototype.setExtent);
 
 
 /**
@@ -361,10 +309,6 @@ goog.exportProperty(
 ol.layer.Base.prototype.setMaxResolution = function(maxResolution) {
   this.set(ol.layer.LayerProperty.MAX_RESOLUTION, maxResolution);
 };
-goog.exportProperty(
-    ol.layer.Base.prototype,
-    'setMaxResolution',
-    ol.layer.Base.prototype.setMaxResolution);
 
 
 /**
@@ -375,10 +319,6 @@ goog.exportProperty(
 ol.layer.Base.prototype.setMinResolution = function(minResolution) {
   this.set(ol.layer.LayerProperty.MIN_RESOLUTION, minResolution);
 };
-goog.exportProperty(
-    ol.layer.Base.prototype,
-    'setMinResolution',
-    ol.layer.Base.prototype.setMinResolution);
 
 
 /**
@@ -389,10 +329,6 @@ goog.exportProperty(
 ol.layer.Base.prototype.setOpacity = function(opacity) {
   this.set(ol.layer.LayerProperty.OPACITY, opacity);
 };
-goog.exportProperty(
-    ol.layer.Base.prototype,
-    'setOpacity',
-    ol.layer.Base.prototype.setOpacity);
 
 
 /**
@@ -408,10 +344,6 @@ goog.exportProperty(
 ol.layer.Base.prototype.setSaturation = function(saturation) {
   this.set(ol.layer.LayerProperty.SATURATION, saturation);
 };
-goog.exportProperty(
-    ol.layer.Base.prototype,
-    'setSaturation',
-    ol.layer.Base.prototype.setSaturation);
 
 
 /**
@@ -422,7 +354,3 @@ goog.exportProperty(
 ol.layer.Base.prototype.setVisible = function(visible) {
   this.set(ol.layer.LayerProperty.VISIBLE, visible);
 };
-goog.exportProperty(
-    ol.layer.Base.prototype,
-    'setVisible',
-    ol.layer.Base.prototype.setVisible);

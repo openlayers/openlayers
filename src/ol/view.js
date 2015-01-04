@@ -250,10 +250,6 @@ ol.View.prototype.getCenter = function() {
   return /** @type {ol.Coordinate|undefined} */ (
       this.get(ol.ViewProperty.CENTER));
 };
-goog.exportProperty(
-    ol.View.prototype,
-    'getCenter',
-    ol.View.prototype.getCenter);
 
 
 /**
@@ -303,10 +299,6 @@ ol.View.prototype.getResolution = function() {
   return /** @type {number|undefined} */ (
       this.get(ol.ViewProperty.RESOLUTION));
 };
-goog.exportProperty(
-    ol.View.prototype,
-    'getResolution',
-    ol.View.prototype.getResolution);
 
 
 /**
@@ -357,10 +349,6 @@ ol.View.prototype.getResolutionForValueFunction = function(opt_power) {
 ol.View.prototype.getRotation = function() {
   return /** @type {number|undefined} */ (this.get(ol.ViewProperty.ROTATION));
 };
-goog.exportProperty(
-    ol.View.prototype,
-    'getRotation',
-    ol.View.prototype.getRotation);
 
 
 /**
@@ -589,10 +577,6 @@ ol.View.prototype.rotate = function(rotation, opt_anchor) {
 ol.View.prototype.setCenter = function(center) {
   this.set(ol.ViewProperty.CENTER, center);
 };
-goog.exportProperty(
-    ol.View.prototype,
-    'setCenter',
-    ol.View.prototype.setCenter);
 
 
 /**
@@ -617,10 +601,6 @@ ol.View.prototype.setHint = function(hint, delta) {
 ol.View.prototype.setResolution = function(resolution) {
   this.set(ol.ViewProperty.RESOLUTION, resolution);
 };
-goog.exportProperty(
-    ol.View.prototype,
-    'setResolution',
-    ol.View.prototype.setResolution);
 
 
 /**
@@ -632,10 +612,6 @@ goog.exportProperty(
 ol.View.prototype.setRotation = function(rotation) {
   this.set(ol.ViewProperty.ROTATION, rotation);
 };
-goog.exportProperty(
-    ol.View.prototype,
-    'setRotation',
-    ol.View.prototype.setRotation);
 
 
 /**

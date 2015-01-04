@@ -164,10 +164,6 @@ ol.layer.Heatmap.prototype.getGradient = function() {
   return /** @type {Array.<string>} */ (
       this.get(ol.layer.HeatmapLayerProperty.GRADIENT));
 };
-goog.exportProperty(
-    ol.layer.Heatmap.prototype,
-    'getGradient',
-    ol.layer.Heatmap.prototype.getGradient);
 
 
 /**
@@ -209,7 +205,3 @@ ol.layer.Heatmap.prototype.handleRender_ = function(event) {
 ol.layer.Heatmap.prototype.setGradient = function(colors) {
   this.set(ol.layer.HeatmapLayerProperty.GRADIENT, colors);
 };
-goog.exportProperty(
-    ol.layer.Heatmap.prototype,
-    'setGradient',
-    ol.layer.Heatmap.prototype.setGradient);

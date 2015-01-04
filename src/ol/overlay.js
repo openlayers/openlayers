@@ -160,10 +160,6 @@ ol.Overlay.prototype.getElement = function() {
   return /** @type {Element|undefined} */ (
       this.get(ol.OverlayProperty.ELEMENT));
 };
-goog.exportProperty(
-    ol.Overlay.prototype,
-    'getElement',
-    ol.Overlay.prototype.getElement);
 
 
 /**
@@ -176,10 +172,6 @@ ol.Overlay.prototype.getMap = function() {
   return /** @type {ol.Map|undefined} */ (
       this.get(ol.OverlayProperty.MAP));
 };
-goog.exportProperty(
-    ol.Overlay.prototype,
-    'getMap',
-    ol.Overlay.prototype.getMap);
 
 
 /**
@@ -192,10 +184,6 @@ ol.Overlay.prototype.getOffset = function() {
   return /** @type {Array.<number>} */ (
       this.get(ol.OverlayProperty.OFFSET));
 };
-goog.exportProperty(
-    ol.Overlay.prototype,
-    'getOffset',
-    ol.Overlay.prototype.getOffset);
 
 
 /**
@@ -209,10 +197,6 @@ ol.Overlay.prototype.getPosition = function() {
   return /** @type {ol.Coordinate|undefined} */ (
       this.get(ol.OverlayProperty.POSITION));
 };
-goog.exportProperty(
-    ol.Overlay.prototype,
-    'getPosition',
-    ol.Overlay.prototype.getPosition);
 
 
 /**
@@ -226,10 +210,6 @@ ol.Overlay.prototype.getPositioning = function() {
   return /** @type {ol.OverlayPositioning} */ (
       this.get(ol.OverlayProperty.POSITIONING));
 };
-goog.exportProperty(
-    ol.Overlay.prototype,
-    'getPositioning',
-    ol.Overlay.prototype.getPositioning);
 
 
 /**
@@ -311,10 +291,6 @@ ol.Overlay.prototype.handlePositioningChanged = function() {
 ol.Overlay.prototype.setElement = function(element) {
   this.set(ol.OverlayProperty.ELEMENT, element);
 };
-goog.exportProperty(
-    ol.Overlay.prototype,
-    'setElement',
-    ol.Overlay.prototype.setElement);
 
 
 /**
@@ -326,10 +302,6 @@ goog.exportProperty(
 ol.Overlay.prototype.setMap = function(map) {
   this.set(ol.OverlayProperty.MAP, map);
 };
-goog.exportProperty(
-    ol.Overlay.prototype,
-    'setMap',
-    ol.Overlay.prototype.setMap);
 
 
 /**
@@ -341,10 +313,6 @@ goog.exportProperty(
 ol.Overlay.prototype.setOffset = function(offset) {
   this.set(ol.OverlayProperty.OFFSET, offset);
 };
-goog.exportProperty(
-    ol.Overlay.prototype,
-    'setOffset',
-    ol.Overlay.prototype.setOffset);
 
 
 /**
@@ -357,10 +325,6 @@ goog.exportProperty(
 ol.Overlay.prototype.setPosition = function(position) {
   this.set(ol.OverlayProperty.POSITION, position);
 };
-goog.exportProperty(
-    ol.Overlay.prototype,
-    'setPosition',
-    ol.Overlay.prototype.setPosition);
 
 
 /**
@@ -373,10 +337,6 @@ goog.exportProperty(
 ol.Overlay.prototype.setPositioning = function(positioning) {
   this.set(ol.OverlayProperty.POSITIONING, positioning);
 };
-goog.exportProperty(
-    ol.Overlay.prototype,
-    'setPositioning',
-    ol.Overlay.prototype.setPositioning);
 
 
 /**

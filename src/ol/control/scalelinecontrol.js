@@ -149,10 +149,6 @@ ol.control.ScaleLine.prototype.getUnits = function() {
   return /** @type {ol.control.ScaleLineUnits|undefined} */ (
       this.get(ol.control.ScaleLineProperty.UNITS));
 };
-goog.exportProperty(
-    ol.control.ScaleLine.prototype,
-    'getUnits',
-    ol.control.ScaleLine.prototype.getUnits);
 
 
 /**
@@ -187,10 +183,6 @@ ol.control.ScaleLine.prototype.handleUnitsChanged_ = function() {
 ol.control.ScaleLine.prototype.setUnits = function(units) {
   this.set(ol.control.ScaleLineProperty.UNITS, units);
 };
-goog.exportProperty(
-    ol.control.ScaleLine.prototype,
-    'setUnits',
-    ol.control.ScaleLine.prototype.setUnits);
 
 
 /**
