@@ -648,10 +648,6 @@ ol.Map.prototype.getTarget = function() {
   return /** @type {Element|string|undefined} */ (
       this.get(ol.MapProperty.TARGET));
 };
-goog.exportProperty(
-    ol.Map.prototype,
-    'getTarget',
-    ol.Map.prototype.getTarget);
 
 
 /**
@@ -724,10 +720,6 @@ ol.Map.prototype.getInteractions = function() {
 ol.Map.prototype.getLayerGroup = function() {
   return /** @type {ol.layer.Group} */ (this.get(ol.MapProperty.LAYERGROUP));
 };
-goog.exportProperty(
-    ol.Map.prototype,
-    'getLayerGroup',
-    ol.Map.prototype.getLayerGroup);
 
 
 /**
@@ -775,10 +767,6 @@ ol.Map.prototype.getRenderer = function() {
 ol.Map.prototype.getSize = function() {
   return /** @type {ol.Size|undefined} */ (this.get(ol.MapProperty.SIZE));
 };
-goog.exportProperty(
-    ol.Map.prototype,
-    'getSize',
-    ol.Map.prototype.getSize);
 
 
 /**
@@ -791,10 +779,6 @@ goog.exportProperty(
 ol.Map.prototype.getView = function() {
   return /** @type {ol.View} */ (this.get(ol.MapProperty.VIEW));
 };
-goog.exportProperty(
-    ol.Map.prototype,
-    'getView',
-    ol.Map.prototype.getView);
 
 
 /**
@@ -1309,10 +1293,6 @@ ol.Map.prototype.renderFrame_ = function(time) {
 ol.Map.prototype.setLayerGroup = function(layerGroup) {
   this.set(ol.MapProperty.LAYERGROUP, layerGroup);
 };
-goog.exportProperty(
-    ol.Map.prototype,
-    'setLayerGroup',
-    ol.Map.prototype.setLayerGroup);
 
 
 /**
@@ -1324,10 +1304,6 @@ goog.exportProperty(
 ol.Map.prototype.setSize = function(size) {
   this.set(ol.MapProperty.SIZE, size);
 };
-goog.exportProperty(
-    ol.Map.prototype,
-    'setSize',
-    ol.Map.prototype.setSize);
 
 
 /**
@@ -1340,10 +1316,6 @@ goog.exportProperty(
 ol.Map.prototype.setTarget = function(target) {
   this.set(ol.MapProperty.TARGET, target);
 };
-goog.exportProperty(
-    ol.Map.prototype,
-    'setTarget',
-    ol.Map.prototype.setTarget);
 
 
 /**
@@ -1355,10 +1327,6 @@ goog.exportProperty(
 ol.Map.prototype.setView = function(view) {
   this.set(ol.MapProperty.VIEW, view);
 };
-goog.exportProperty(
-    ol.Map.prototype,
-    'setView',
-    ol.Map.prototype.setView);
 
 
 /**

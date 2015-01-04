@@ -43,10 +43,6 @@ ol.layer.Tile.prototype.getPreload = function() {
   return /** @type {number|undefined} */ (
       this.get(ol.layer.TileProperty.PRELOAD));
 };
-goog.exportProperty(
-    ol.layer.Tile.prototype,
-    'getPreload',
-    ol.layer.Tile.prototype.getPreload);
 
 
 /**
@@ -65,10 +61,6 @@ ol.layer.Tile.prototype.getSource;
 ol.layer.Tile.prototype.setPreload = function(preload) {
   this.set(ol.layer.TileProperty.PRELOAD, preload);
 };
-goog.exportProperty(
-    ol.layer.Tile.prototype,
-    'setPreload',
-    ol.layer.Tile.prototype.setPreload);
 
 
 /**
@@ -80,10 +72,6 @@ ol.layer.Tile.prototype.getUseInterimTilesOnError = function() {
   return /** @type {boolean|undefined} */ (
       this.get(ol.layer.TileProperty.USE_INTERIM_TILES_ON_ERROR));
 };
-goog.exportProperty(
-    ol.layer.Tile.prototype,
-    'getUseInterimTilesOnError',
-    ol.layer.Tile.prototype.getUseInterimTilesOnError);
 
 
 /**
@@ -96,7 +84,3 @@ ol.layer.Tile.prototype.setUseInterimTilesOnError =
   this.set(
       ol.layer.TileProperty.USE_INTERIM_TILES_ON_ERROR, useInterimTilesOnError);
 };
-goog.exportProperty(
-    ol.layer.Tile.prototype,
-    'setUseInterimTilesOnError',
-    ol.layer.Tile.prototype.setUseInterimTilesOnError);
