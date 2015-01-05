@@ -20,7 +20,7 @@ var closer = document.getElementById('popup-closer');
  * @return {boolean} Don't follow the href.
  */
 closer.onclick = function() {
-  container.style.display = 'none';
+  overlay.setPosition(undefined);
   closer.blur();
   return false;
 };
@@ -65,9 +65,7 @@ map.on('click', function(evt) {
   var hdms = ol.coordinate.toStringHDMS(ol.proj.transform(
       coordinate, 'EPSG:3857', 'EPSG:4326'));
 
-  overlay.setPosition(coordinate);
   content.innerHTML = '<p>You clicked here:</p><code>' + hdms +
       '</code>';
-  container.style.display = 'block';
-
+  overlay.setPosition(coordinate);
 });
