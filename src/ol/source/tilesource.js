@@ -239,6 +239,14 @@ ol.source.Tile.prototype.getTileCoordForTileUrlFunction =
 
 
 /**
+ * @return {number} Tile pixel ratio.
+ */
+ol.source.Tile.prototype.getTilePixelRatio = function() {
+  return this.tilePixelRatio_;
+};
+
+
+/**
  * Marks a tile coord as being used, without triggering a load.
  * @param {number} z Tile coordinate z.
  * @param {number} x Tile coordinate x.

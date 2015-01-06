@@ -253,6 +253,18 @@ ol.structs.LRUCache.prototype.set = function(key, value) {
 
 
 /**
+ * @param {string} key Key.
+ * @param {T} value Value.
+ */
+ol.structs.LRUCache.prototype.replace = function(key, value) {
+  var entry = this.entries_[key];
+  goog.asserts.assert(goog.isDef(entry));
+  this.get(key); // make sure this entry gets refreshed
+  entry.value_ = value;
+};
+
+
+/**
  * @typedef {{key_: string,
  *            newer: ol.structs.LRUCacheEntry,
  *            older: ol.structs.LRUCacheEntry,

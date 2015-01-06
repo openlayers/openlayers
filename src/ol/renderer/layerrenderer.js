@@ -320,6 +320,29 @@ ol.renderer.Layer.prototype.manageTilePyramid = function(
               tileQueue.enqueue([tile, tileSourceKey,
                 tileGrid.getTileCoordCenter(tile.tileCoord), tileResolution]);
             }
+          // if the tile has an out-of-band tile, see if the
+          // out-of-band tile needs to be loaded
+          } else if (tile.getOutOfBandTile !== undefined && (
+              tile.getState() == ol.TileState.LOADED ||
+              tile.getState() == ol.TileState.ERROR)) {
+            var outOfBandTile = tile.getOutOfBandTile();
+            if (outOfBandTile !== null) {
+              var coordString = ol.tilecoord.toString(outOfBandTile.tileCoord);
+              wantedTiles[coordString] = true;
+              if (outOfBandTile.getState() == ol.TileState.IDLE) {
+                if (!tileQueue.isKeyQueued(outOfBandTile.getKey())) {
+                  // nothing is loading here yet, so start loading this tile
+                  tileQueue.enqueue([outOfBandTile, tileSourceKey,
+                    tileGrid.getTileCoordCenter(outOfBandTile.tileCoord),
+                    tileResolution]);
+                } else {
+                  // another tile is already loading at this position
+                  // we can't load this tile yet, so wait for the first
+                  // load to finish we'll get another chance to load this
+                  // tile the next time this method gets called
+                }
+              }
+            }
           }
           if (goog.isDef(opt_tileCallback)) {
             opt_tileCallback.call(opt_this, tile);
