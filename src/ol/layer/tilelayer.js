@@ -30,18 +30,21 @@ ol.layer.TileProperty = {
 ol.layer.Tile = function(opt_options) {
   var options = goog.isDef(opt_options) ? opt_options : {};
   goog.base(this,  /** @type {olx.layer.LayerOptions} */ (options));
+
+  if (!goog.isDef(this.getPreload())) {
+    this.setPreload(0);
+  }
 };
 goog.inherits(ol.layer.Tile, ol.layer.Layer);
 
 
 /**
- * @return {number|undefined} The level to preload tiles up to.
+ * @return {number} The level to preload tiles up to.
  * @observable
  * @api
  */
 ol.layer.Tile.prototype.getPreload = function() {
-  return /** @type {number|undefined} */ (
-      this.get(ol.layer.TileProperty.PRELOAD));
+  return /** @type {number} */ (this.get(ol.layer.TileProperty.PRELOAD));
 };
 goog.exportProperty(
     ol.layer.Tile.prototype,
