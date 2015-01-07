@@ -111,6 +111,11 @@ ol.format.GMLBase.prototype.readFeatures_ = function(node, objectStack) {
     }
     var parsers = {};
     var parsersNS = {};
+    if (goog.object.get(context, 'useArrayPusher') === true) {
+      var ns = 'http://www.opengis.net/gml';
+      goog.object.set(this.FEATURE_COLLECTION_PARSERS[ns], 'featureMember',
+          ol.xml.makeArrayPusher(ol.format.GMLBase.prototype.readFeatures_));
+    }
     var featureTypes = goog.isArray(featureType) ? featureType : [featureType];
     for (i = 0, ii = featureTypes.length; i < ii; ++i) {
       parsers[featureTypes[i]] = (localName == 'featureMembers') ?
@@ -132,7 +137,7 @@ ol.format.GMLBase.prototype.readFeatures_ = function(node, objectStack) {
  */
 ol.format.GMLBase.prototype.FEATURE_COLLECTION_PARSERS = Object({
   'http://www.opengis.net/gml': {
-    'featureMember': ol.xml.makeArrayPusher(
+    'featureMember': ol.xml.makeReplacer/*ArrayPusher*/(
         ol.format.GMLBase.prototype.readFeatures_),
     'featureMembers': ol.xml.makeReplacer(
         ol.format.GMLBase.prototype.readFeatures_)

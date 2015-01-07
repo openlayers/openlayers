@@ -120,7 +120,8 @@ ol.format.WFS.prototype.readFeatures;
 ol.format.WFS.prototype.readFeaturesFromNode = function(node, opt_options) {
   var context = {
     'featureType': this.featureType_,
-    'featureNS': this.featureNS_
+    'featureNS': this.featureNS_,
+    'useArrayPusher': true
   };
   goog.object.extend(context, this.getReadOptions(node,
       goog.isDef(opt_options) ? opt_options : {}));
