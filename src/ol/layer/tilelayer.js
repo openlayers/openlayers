@@ -34,6 +34,9 @@ ol.layer.Tile = function(opt_options) {
   if (!goog.isDef(this.getPreload())) {
     this.setPreload(0);
   }
+  if (!goog.isDef(this.getUseInterimTilesOnError())) {
+    this.setUseInterimTilesOnError(true);
+  }
 };
 goog.inherits(ol.layer.Tile, ol.layer.Layer);
 
@@ -75,12 +78,12 @@ goog.exportProperty(
 
 
 /**
- * @return {boolean|undefined} Use interim tiles on error.
+ * @return {boolean} Use interim tiles on error.
  * @observable
  * @api
  */
 ol.layer.Tile.prototype.getUseInterimTilesOnError = function() {
-  return /** @type {boolean|undefined} */ (
+  return /** @type {boolean} */ (
       this.get(ol.layer.TileProperty.USE_INTERIM_TILES_ON_ERROR));
 };
 goog.exportProperty(
@@ -90,7 +93,7 @@ goog.exportProperty(
 
 
 /**
- * @param {boolean|undefined} useInterimTilesOnError Use interim tiles on error.
+ * @param {boolean} useInterimTilesOnError Use interim tiles on error.
  * @observable
  * @api
  */

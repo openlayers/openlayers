@@ -24,6 +24,10 @@ describe('ol.layer.Tile', function() {
       expect(layer.getPreload()).to.be(0);
     });
 
+    it('provides default useInterimTilesOnError', function() {
+      expect(layer.getUseInterimTilesOnError()).to.be(true);
+    });
+
   });
 
 });

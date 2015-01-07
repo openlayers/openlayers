@@ -281,9 +281,6 @@ ol.renderer.canvas.TileLayer.prototype.prepareFrame =
       tilesToDrawByZ, getTileIfLoaded);
 
   var useInterimTilesOnError = tileLayer.getUseInterimTilesOnError();
-  if (!goog.isDef(useInterimTilesOnError)) {
-    useInterimTilesOnError = true;
-  }
 
   var tmpExtent = ol.extent.createEmpty();
   var tmpTileRange = new ol.TileRange(0, 0, 0, 0);
