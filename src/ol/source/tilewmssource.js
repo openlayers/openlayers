@@ -168,8 +168,8 @@ ol.source.TileWMS.prototype.getGetFeatureInfoUrl =
   var x = Math.floor((coordinate[0] - tileExtent[0]) / tileResolution);
   var y = Math.floor((tileExtent[3] - coordinate[1]) / tileResolution);
 
-  goog.object.set(baseParams, this.v13_ ? 'I' : 'X', x);
-  goog.object.set(baseParams, this.v13_ ? 'J' : 'Y', y);
+  baseParams[this.v13_ ? 'I' : 'X'] = x;
+  baseParams[this.v13_ ? 'J' : 'Y'] = y;
 
   return this.getRequestUrl_(tileCoord, tileSize, tileExtent,
       1, projectionObj, baseParams);
@@ -222,14 +222,14 @@ ol.source.TileWMS.prototype.getRequestUrl_ =
     return undefined;
   }
 
-  goog.object.set(params, 'WIDTH', tileSize);
-  goog.object.set(params, 'HEIGHT', tileSize);
+  params['WIDTH'] = tileSize;
+  params['HEIGHT'] = tileSize;
 
   params[this.v13_ ? 'CRS' : 'SRS'] = projection.getCode();
 
   if (!('STYLES' in this.params_)) {
     /* jshint -W053 */
-    goog.object.set(params, 'STYLES', new String(''));
+    params['STYLES'] = new String('');
     /* jshint +W053 */
   }
 
@@ -237,14 +237,14 @@ ol.source.TileWMS.prototype.getRequestUrl_ =
     switch (this.serverType_) {
       case ol.source.wms.ServerType.GEOSERVER:
         var dpi = (90 * pixelRatio + 0.5) | 0;
-        goog.object.set(params, 'FORMAT_OPTIONS', 'dpi:' + dpi);
+        params['FORMAT_OPTIONS'] = 'dpi:' + dpi;
         break;
       case ol.source.wms.ServerType.MAPSERVER:
-        goog.object.set(params, 'MAP_RESOLUTION', 90 * pixelRatio);
+        params['MAP_RESOLUTION'] = 90 * pixelRatio;
         break;
       case ol.source.wms.ServerType.CARMENTA_SERVER:
       case ol.source.wms.ServerType.QGIS:
-        goog.object.set(params, 'DPI', 90 * pixelRatio);
+        params['DPI'] = 90 * pixelRatio;
         break;
       default:
         goog.asserts.fail();
@@ -263,7 +263,7 @@ ol.source.TileWMS.prototype.getRequestUrl_ =
     bbox[2] = tileExtent[3];
     bbox[3] = tmp;
   }
-  goog.object.set(params, 'BBOX', bbox.join(','));
+  params['BBOX'] = bbox.join(',');
 
   var url;
   if (urls.length == 1) {

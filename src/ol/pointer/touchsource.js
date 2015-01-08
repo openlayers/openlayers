@@ -312,11 +312,11 @@ ol.pointer.TouchSource.prototype.touchstart = function(inEvent) {
  * @param {Object} inPointer
  */
 ol.pointer.TouchSource.prototype.overDown_ = function(browserEvent, inPointer) {
-  goog.object.set(this.pointerMap, inPointer.pointerId, {
+  this.pointerMap[inPointer.pointerId] = {
     target: inPointer.target,
     out: inPointer,
     outTarget: inPointer.target
-  });
+  };
   this.dispatcher.over(inPointer, browserEvent);
   this.dispatcher.enter(inPointer, browserEvent);
   this.dispatcher.down(inPointer, browserEvent);

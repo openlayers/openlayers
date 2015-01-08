@@ -148,7 +148,7 @@ ol.format.OWS.readGet_ = function(node, objectStack) {
   }
   var get = goog.object.get(object, 'get');
   if (!goog.isDef(get)) {
-    goog.object.set(object, 'get', [value]);
+    object['get'] = [value];
   }else {
     goog.asserts.assert(goog.isArray(get));
     get.push(value);
@@ -189,7 +189,7 @@ ol.format.OWS.readOperation_ = function(node, objectStack) {
   var object = /** @type {Object} */
       (objectStack[objectStack.length - 1]);
   goog.asserts.assert(goog.isObject(object));
-  goog.object.set(object, name, value);
+  object[name] = value;
 
 };
 
@@ -285,7 +285,7 @@ ol.format.OWS.readValue_ = function(node, objectStack) {
   if (!goog.isDef(key)) {
     return undefined;
   }
-  goog.object.set(object, key, true);
+  object[key] = true;
 };
 
 

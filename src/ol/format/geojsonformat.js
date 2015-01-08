@@ -505,18 +505,17 @@ ol.format.GeoJSON.prototype.writeFeatureObject = function(
   };
   var id = feature.getId();
   if (goog.isDefAndNotNull(id)) {
-    goog.object.set(object, 'id', id);
+    object['id'] = id;
   }
   var geometry = feature.getGeometry();
   if (goog.isDefAndNotNull(geometry)) {
-    goog.object.set(
-        object, 'geometry',
-        ol.format.GeoJSON.writeGeometry_(geometry, opt_options));
+    object['geometry'] =
+        ol.format.GeoJSON.writeGeometry_(geometry, opt_options);
   }
   var properties = feature.getProperties();
   goog.object.remove(properties, feature.getGeometryName());
   if (!goog.object.isEmpty(properties)) {
-    goog.object.set(object, 'properties', properties);
+    object['properties'] = properties;
   }
   return object;
 };

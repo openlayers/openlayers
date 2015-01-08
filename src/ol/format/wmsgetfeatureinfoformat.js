@@ -90,8 +90,8 @@ ol.format.WMSGetFeatureInfo.prototype.readFeatures_ =
           ol.format.WMSGetFeatureInfo.layerIdentifier_) +
           ol.format.WMSGetFeatureInfo.featureIdentifier_;
 
-      goog.object.set(context, 'featureType', featureType);
-      goog.object.set(context, 'featureNS', this.featureNS_);
+      context['featureType'] = featureType;
+      context['featureNS'] = this.featureNS_;
 
       var parsers = {};
       parsers[featureType] = ol.xml.makeArrayPusher(

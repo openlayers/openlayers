@@ -98,7 +98,7 @@ ol.format.GPX.parseLink_ = function(node, objectStack) {
   var values = /** @type {Object} */ (objectStack[objectStack.length - 1]);
   var href = node.getAttribute('href');
   if (!goog.isNull(href)) {
-    goog.object.set(values, 'link', href);
+    values['link'] = href;
   }
   ol.xml.parseNode(ol.format.GPX.LINK_PARSERS_, node, objectStack);
 };
@@ -113,7 +113,7 @@ ol.format.GPX.parseExtensions_ = function(node, objectStack) {
   goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT);
   goog.asserts.assert(node.localName == 'extensions');
   var values = /** @type {Object} */ (objectStack[objectStack.length - 1]);
-  goog.object.set(values, 'extensionsNode_', node);
+  values['extensionsNode_'] = node;
 };
 
 
@@ -559,16 +559,16 @@ ol.format.GPX.writeWptType_ = function(node, coordinate, objectStack) {
   switch (geometryLayout) {
     case ol.geom.GeometryLayout.XYZM:
       if (coordinate[3] !== 0) {
-        goog.object.set(properties, 'time', coordinate[3]);
+        properties['time'] = coordinate[3];
       }
     case ol.geom.GeometryLayout.XYZ:
       if (coordinate[2] !== 0) {
-        goog.object.set(properties, 'ele', coordinate[2]);
+        properties['ele'] = coordinate[2];
       }
       break;
     case ol.geom.GeometryLayout.XYM:
       if (coordinate[2] !== 0) {
-        goog.object.set(properties, 'time', coordinate[2]);
+        properties['time'] = coordinate[2];
       }
   }
   /* jshint +W086 */
@@ -596,8 +596,8 @@ ol.format.GPX.writeRte_ = function(node, feature, objectStack) {
     goog.asserts.assertInstanceof(geometry, ol.geom.LineString);
     geometry = /** @type {ol.geom.LineString} */
         (ol.format.Feature.transformWithOptions(geometry, true, options));
-    goog.object.set(context, 'geometryLayout', geometry.getLayout());
-    goog.object.set(properties, 'rtept', geometry.getCoordinates());
+    context['geometryLayout'] = geometry.getLayout();
+    properties['rtept'] = geometry.getCoordinates();
   }
   var parentNode = objectStack[objectStack.length - 1].node;
   var orderedKeys = ol.format.GPX.RTE_SEQUENCE_[parentNode.namespaceURI];
@@ -623,7 +623,7 @@ ol.format.GPX.writeTrk_ = function(node, feature, objectStack) {
     goog.asserts.assertInstanceof(geometry, ol.geom.MultiLineString);
     geometry = /** @type {ol.geom.MultiLineString} */
         (ol.format.Feature.transformWithOptions(geometry, true, options));
-    goog.object.set(properties, 'trkseg', geometry.getLineStrings());
+    properties['trkseg'] = geometry.getLineStrings();
   }
   var parentNode = objectStack[objectStack.length - 1].node;
   var orderedKeys = ol.format.GPX.TRK_SEQUENCE_[parentNode.namespaceURI];
@@ -659,13 +659,13 @@ ol.format.GPX.writeWpt_ = function(node, feature, objectStack) {
   var options = /** @type {olx.format.WriteOptions} */ (objectStack[0]);
   var context = objectStack[objectStack.length - 1];
   goog.asserts.assert(goog.isObject(context));
-  goog.object.set(context, 'properties', feature.getProperties());
+  context['properties'] = feature.getProperties();
   var geometry = feature.getGeometry();
   if (goog.isDef(geometry)) {
     goog.asserts.assertInstanceof(geometry, ol.geom.Point);
     geometry = /** @type {ol.geom.Point} */
         (ol.format.Feature.transformWithOptions(geometry, true, options));
-    goog.object.set(context, 'geometryLayout', geometry.getLayout());
+    context['geometryLayout'] = geometry.getLayout();
     ol.format.GPX.writeWptType_(node, geometry.getCoordinates(), objectStack);
   }
 };

@@ -158,8 +158,8 @@ ol.source.ImageWMS.prototype.getGetFeatureInfoUrl =
 
   var x = Math.floor((coordinate[0] - extent[0]) / resolution);
   var y = Math.floor((extent[3] - coordinate[1]) / resolution);
-  goog.object.set(baseParams, this.v13_ ? 'I' : 'X', x);
-  goog.object.set(baseParams, this.v13_ ? 'J' : 'Y', y);
+  baseParams[this.v13_ ? 'I' : 'X'] = x;
+  baseParams[this.v13_ ? 'J' : 'Y'] = y;
 
   return this.getRequestUrl_(
       extent, ol.source.ImageWMS.GETFEATUREINFO_IMAGE_SIZE_,
@@ -270,7 +270,7 @@ ol.source.ImageWMS.prototype.getRequestUrl_ =
 
   if (!('STYLES' in this.params_)) {
     /* jshint -W053 */
-    goog.object.set(params, 'STYLES', new String(''));
+    params['STYLES'] = new String('');
     /* jshint +W053 */
   }
 
@@ -278,14 +278,14 @@ ol.source.ImageWMS.prototype.getRequestUrl_ =
     switch (this.serverType_) {
       case ol.source.wms.ServerType.GEOSERVER:
         var dpi = (90 * pixelRatio + 0.5) | 0;
-        goog.object.set(params, 'FORMAT_OPTIONS', 'dpi:' + dpi);
+        params['FORMAT_OPTIONS'] = 'dpi:' + dpi;
         break;
       case ol.source.wms.ServerType.MAPSERVER:
-        goog.object.set(params, 'MAP_RESOLUTION', 90 * pixelRatio);
+        params['MAP_RESOLUTION'] = 90 * pixelRatio;
         break;
       case ol.source.wms.ServerType.CARMENTA_SERVER:
       case ol.source.wms.ServerType.QGIS:
-        goog.object.set(params, 'DPI', 90 * pixelRatio);
+        params['DPI'] = 90 * pixelRatio;
         break;
       default:
         goog.asserts.fail();
@@ -293,8 +293,8 @@ ol.source.ImageWMS.prototype.getRequestUrl_ =
     }
   }
 
-  goog.object.set(params, 'WIDTH', size[0]);
-  goog.object.set(params, 'HEIGHT', size[1]);
+  params['WIDTH'] = size[0];
+  params['HEIGHT'] = size[1];
 
   var axisOrientation = projection.getAxisOrientation();
   var bbox;
@@ -303,7 +303,7 @@ ol.source.ImageWMS.prototype.getRequestUrl_ =
   } else {
     bbox = extent;
   }
-  goog.object.set(params, 'BBOX', bbox.join(','));
+  params['BBOX'] = bbox.join(',');
 
   return goog.uri.utils.appendParamsFromMap(this.url_, params);
 };

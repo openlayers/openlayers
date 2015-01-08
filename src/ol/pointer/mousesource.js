@@ -169,8 +169,7 @@ ol.pointer.MouseSource.prototype.mousedown = function(inEvent) {
       this.cancel(inEvent);
     }
     var e = ol.pointer.MouseSource.prepareEvent(inEvent, this.dispatcher);
-    goog.object.set(this.pointerMap,
-        ol.pointer.MouseSource.POINTER_ID.toString(), inEvent);
+    this.pointerMap[ol.pointer.MouseSource.POINTER_ID.toString()] = inEvent;
     this.dispatcher.down(e, inEvent);
   }
 };

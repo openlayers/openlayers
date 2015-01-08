@@ -67,7 +67,7 @@ ol.format.OSMXML.readNode_ = function(node, objectStack) {
     parseFloat(node.getAttribute('lon')),
     parseFloat(node.getAttribute('lat'))
   ]);
-  goog.object.set(state.nodes, id, coordinates);
+  state.nodes[id] = coordinates;
 
   var values = ol.xml.pushParseAndPop({
     tags: {}
@@ -145,7 +145,7 @@ ol.format.OSMXML.readTag_ = function(node, objectStack) {
   goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT);
   goog.asserts.assert(node.localName == 'tag');
   var values = /** @type {Object} */ (objectStack[objectStack.length - 1]);
-  goog.object.set(values.tags, node.getAttribute('k'), node.getAttribute('v'));
+  values.tags[node.getAttribute('k')] = node.getAttribute('v');
 };
 
 

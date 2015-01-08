@@ -759,7 +759,7 @@ ol.format.GML3.prototype.RING_NODE_FACTORY_ =
   goog.asserts.assert(goog.isObject(context));
   var exteriorWritten = goog.object.get(context, 'exteriorWritten');
   if (!goog.isDef(exteriorWritten)) {
-    goog.object.set(context, 'exteriorWritten', true);
+    context['exteriorWritten'] = true;
   }
   return ol.xml.createElementNS(parentNode.namespaceURI,
       goog.isDef(exteriorWritten) ? 'interior' : 'exterior');

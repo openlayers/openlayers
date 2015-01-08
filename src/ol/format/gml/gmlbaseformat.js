@@ -94,8 +94,8 @@ ol.format.GMLBase.prototype.readFeatures_ = function(node, objectStack) {
     if (!goog.isDef(featureType) && !goog.isNull(node.firstElementChild)) {
       var member = node.firstElementChild;
       featureType = member.nodeName.split(':').pop();
-      goog.object.set(context, 'featureType', featureType);
-      goog.object.set(context, 'featureNS', member.namespaceURI);
+      context['featureType'] = featureType;
+      context['featureNS'] = member.namespaceURI;
     }
     var parsers = {};
     var parsersNS = {};
@@ -133,8 +133,7 @@ ol.format.GMLBase.prototype.FEATURE_COLLECTION_PARSERS = Object({
 ol.format.GMLBase.prototype.readGeometryElement = function(node, objectStack) {
   var context = objectStack[0];
   goog.asserts.assert(goog.isObject(context));
-  goog.object.set(context, 'srsName',
-      node.firstElementChild.getAttribute('srsName'));
+  context['srsName'] = node.firstElementChild.getAttribute('srsName');
   var geometry = ol.xml.pushParseAndPop(/** @type {ol.geom.Geometry} */(null),
       this.GEOMETRY_PARSERS_, node, objectStack, this);
   if (goog.isDefAndNotNull(geometry)) {

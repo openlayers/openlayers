@@ -282,43 +282,41 @@ ol.format.WMSCapabilities.readLayer_ = function(node, objectStack) {
   if (!goog.isDef(queryable)) {
     queryable = goog.object.get(parentLayerObject, 'queryable');
   }
-  goog.object.set(
-      layerObject, 'queryable', goog.isDef(queryable) ? queryable : false);
+  layerObject['queryable'] = goog.isDef(queryable) ? queryable : false;
 
   var cascaded = ol.format.XSD.readNonNegativeIntegerString(
       node.getAttribute('cascaded'));
   if (!goog.isDef(cascaded)) {
     cascaded = goog.object.get(parentLayerObject, 'cascaded');
   }
-  goog.object.set(layerObject, 'cascaded', cascaded);
+  layerObject['cascaded'] = cascaded;
 
   var opaque = ol.format.XSD.readBooleanString(node.getAttribute('opaque'));
   if (!goog.isDef(opaque)) {
     opaque = goog.object.get(parentLayerObject, 'opaque');
   }
-  goog.object.set(layerObject, 'opaque', goog.isDef(opaque) ? opaque : false);
+  layerObject['opaque'] = goog.isDef(opaque) ? opaque : false;
 
   var noSubsets =
       ol.format.XSD.readBooleanString(node.getAttribute('noSubsets'));
   if (!goog.isDef(noSubsets)) {
     noSubsets = goog.object.get(parentLayerObject, 'noSubsets');
   }
-  goog.object.set(
-      layerObject, 'noSubsets', goog.isDef(noSubsets) ? noSubsets : false);
+  layerObject['noSubsets'] = goog.isDef(noSubsets) ? noSubsets : false;
 
   var fixedWidth =
       ol.format.XSD.readDecimalString(node.getAttribute('fixedWidth'));
   if (!goog.isDef(fixedWidth)) {
     fixedWidth = goog.object.get(parentLayerObject, 'fixedWidth');
   }
-  goog.object.set(layerObject, 'fixedWidth', fixedWidth);
+  layerObject['fixedWidth'] = fixedWidth;
 
   var fixedHeight =
       ol.format.XSD.readDecimalString(node.getAttribute('fixedHeight'));
   if (!goog.isDef(fixedHeight)) {
     fixedHeight = goog.object.get(parentLayerObject, 'fixedHeight');
   }
-  goog.object.set(layerObject, 'fixedHeight', fixedHeight);
+  layerObject['fixedHeight'] = fixedHeight;
 
   // See 7.2.4.8
   var addKeys = ['Style', 'CRS', 'AuthorityURL'];
@@ -327,7 +325,7 @@ ol.format.WMSCapabilities.readLayer_ = function(node, objectStack) {
     if (goog.isDef(parentValue)) {
       var childValue = goog.object.setIfUndefined(layerObject, key, []);
       childValue = childValue.concat(parentValue);
-      goog.object.set(layerObject, key, childValue);
+      layerObject[key] = childValue;
     }
   });
 
@@ -337,7 +335,7 @@ ol.format.WMSCapabilities.readLayer_ = function(node, objectStack) {
     var childValue = goog.object.get(layerObject, key);
     if (!goog.isDef(childValue)) {
       var parentValue = goog.object.get(parentLayerObject, key);
-      goog.object.set(layerObject, key, parentValue);
+      layerObject[key] = parentValue;
     }
   });
 
@@ -456,7 +454,7 @@ ol.format.WMSCapabilities.readSizedFormatOnlineresource_ =
       ol.format.XSD.readNonNegativeIntegerString(node.getAttribute('width')),
       ol.format.XSD.readNonNegativeIntegerString(node.getAttribute('height'))
     ];
-    goog.object.set(formatOnlineresource, 'size', size);
+    formatOnlineresource['size'] = size;
     return formatOnlineresource;
   }
   return undefined;
@@ -475,7 +473,7 @@ ol.format.WMSCapabilities.readAuthorityURL_ = function(node, objectStack) {
   var authorityObject =
       ol.format.WMSCapabilities.readFormatOnlineresource_(node, objectStack);
   if (goog.isDef(authorityObject)) {
-    goog.object.set(authorityObject, 'name', node.getAttribute('name'));
+    authorityObject['name'] = node.getAttribute('name');
     return authorityObject;
   }
   return undefined;
@@ -494,7 +492,7 @@ ol.format.WMSCapabilities.readMetadataURL_ = function(node, objectStack) {
   var metadataObject =
       ol.format.WMSCapabilities.readFormatOnlineresource_(node, objectStack);
   if (goog.isDef(metadataObject)) {
-    goog.object.set(metadataObject, 'type', node.getAttribute('type'));
+    metadataObject['type'] = node.getAttribute('type');
     return metadataObject;
   }
   return undefined;
