@@ -189,7 +189,7 @@ ol.renderer.dom.VectorLayer.prototype.forEachFeatureAtPixel =
  * @param {goog.events.Event} event Image style change event.
  * @private
  */
-ol.renderer.dom.VectorLayer.prototype.handleImageChange_ =
+ol.renderer.dom.VectorLayer.prototype.handleStyleImageChange_ =
     function(event) {
   this.renderIfReadyAndVisible();
 };
@@ -313,7 +313,7 @@ ol.renderer.dom.VectorLayer.prototype.renderFeature =
     loading = ol.renderer.vector.renderFeature(
         replayGroup, feature, styles[i],
         ol.renderer.vector.getSquaredTolerance(resolution, pixelRatio),
-        this.handleImageChange_, this) || loading;
+        this.handleStyleImageChange_, this) || loading;
   }
   return loading;
 };

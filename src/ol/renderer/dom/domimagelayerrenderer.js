@@ -3,11 +3,8 @@ goog.provide('ol.renderer.dom.ImageLayer');
 goog.require('goog.asserts');
 goog.require('goog.dom');
 goog.require('goog.dom.TagName');
-goog.require('goog.events');
-goog.require('goog.events.EventType');
 goog.require('goog.vec.Mat4');
 goog.require('ol.ImageBase');
-goog.require('ol.ImageState');
 goog.require('ol.ViewHint');
 goog.require('ol.dom');
 goog.require('ol.extent');
@@ -113,12 +110,8 @@ ol.renderer.dom.ImageLayer.prototype.prepareFrame =
     var image_ = imageSource.getImage(renderedExtent, viewResolution,
         frameState.pixelRatio, projection);
     if (!goog.isNull(image_)) {
-      var imageState = image_.getState();
-      if (imageState == ol.ImageState.IDLE) {
-        goog.events.listenOnce(image_, goog.events.EventType.CHANGE,
-            this.handleImageChange, false, this);
-        image_.load();
-      } else if (imageState == ol.ImageState.LOADED) {
+      var loaded = this.loadImage(image_);
+      if (loaded) {
         image = image_;
       }
     }
