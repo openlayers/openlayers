@@ -13,6 +13,7 @@ goog.require('ol.render.webgl.imagereplay.shader.Color');
 goog.require('ol.render.webgl.imagereplay.shader.Default');
 goog.require('ol.vec.Mat4');
 goog.require('ol.webgl.Buffer');
+goog.require('ol.webgl.Context');
 
 
 
@@ -533,18 +534,8 @@ ol.render.webgl.ImageReplay.prototype.createTextures_ =
     if (goog.object.containsKey(texturePerImage, uid)) {
       texture = texturePerImage[uid];
     } else {
-      texture = gl.createTexture();
-      gl.bindTexture(goog.webgl.TEXTURE_2D, texture);
-      gl.texParameteri(goog.webgl.TEXTURE_2D,
-          goog.webgl.TEXTURE_WRAP_S, goog.webgl.CLAMP_TO_EDGE);
-      gl.texParameteri(goog.webgl.TEXTURE_2D,
-          goog.webgl.TEXTURE_WRAP_T, goog.webgl.CLAMP_TO_EDGE);
-      gl.texParameteri(goog.webgl.TEXTURE_2D,
-          goog.webgl.TEXTURE_MIN_FILTER, goog.webgl.LINEAR);
-      gl.texParameteri(goog.webgl.TEXTURE_2D,
-          goog.webgl.TEXTURE_MAG_FILTER, goog.webgl.LINEAR);
-      gl.texImage2D(goog.webgl.TEXTURE_2D, 0, goog.webgl.RGBA, goog.webgl.RGBA,
-          goog.webgl.UNSIGNED_BYTE, image);
+      texture = ol.webgl.Context.createTexture(
+          gl, image, goog.webgl.CLAMP_TO_EDGE, goog.webgl.CLAMP_TO_EDGE);
       texturePerImage[uid] = texture;
     }
     textures[i] = texture;
