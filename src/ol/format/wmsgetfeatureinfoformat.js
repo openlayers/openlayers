@@ -90,14 +90,14 @@ ol.format.WMSGetFeatureInfo.prototype.readFeatures_ =
           ol.format.WMSGetFeatureInfo.layerIdentifier_) +
           ol.format.WMSGetFeatureInfo.featureIdentifier_;
 
-      goog.object.set(context, 'featureType', featureType);
-      goog.object.set(context, 'featureNS', this.featureNS_);
+      context['featureType'] = featureType;
+      context['featureNS'] = this.featureNS_;
 
       var parsers = {};
       parsers[featureType] = ol.xml.makeArrayPusher(
           this.gmlFormat_.readFeatureElement, this.gmlFormat_);
       var parsersNS = ol.xml.makeParsersNS(
-          [goog.object.get(context, 'featureNS'), null], parsers);
+          [context['featureNS'], null], parsers);
       layer.namespaceURI = this.featureNS_;
       var layerFeatures = ol.xml.pushParseAndPop(
           [], parsersNS, layer, objectStack, this.gmlFormat_);

@@ -117,7 +117,7 @@ ol.source.Cluster.prototype.cluster_ = function() {
       neighbors = goog.array.filter(neighbors, function(neighbor) {
         var uid = goog.getUid(neighbor).toString();
         if (!goog.object.containsKey(clustered, uid)) {
-          goog.object.set(clustered, uid, true);
+          clustered[uid] = true;
           return true;
         } else {
           return false;

@@ -59,7 +59,9 @@ ol.structs.RBush.prototype.insert = function(extent, value) {
   ];
   this.rbush_.insert(item);
   // remember the object that was added to the internal rbush
-  goog.object.add(this.items_, goog.getUid(value).toString(), item);
+  goog.asserts.assert(
+      !goog.object.containsKey(this.items_, goog.getUid(value)));
+  this.items_[goog.getUid(value)] = item;
 };
 
 
@@ -87,7 +89,9 @@ ol.structs.RBush.prototype.load = function(extents, values) {
       value
     ];
     items[i] = item;
-    goog.object.add(this.items_, goog.getUid(value).toString(), item);
+    goog.asserts.assert(
+        !goog.object.containsKey(this.items_, goog.getUid(value)));
+    this.items_[goog.getUid(value)] = item;
   }
   this.rbush_.load(items);
 };
@@ -102,12 +106,12 @@ ol.structs.RBush.prototype.remove = function(value) {
   if (goog.DEBUG && this.readers_) {
     throw new Error('Can not remove value while reading');
   }
-  var uid = goog.getUid(value).toString();
+  var uid = goog.getUid(value);
   goog.asserts.assert(goog.object.containsKey(this.items_, uid));
 
   // get the object in which the value was wrapped when adding to the
   // internal rbush. then use that object to do the removal.
-  var item = goog.object.get(this.items_, uid);
+  var item = this.items_[uid];
   goog.object.remove(this.items_, uid);
   return this.rbush_.remove(item) !== null;
 };
