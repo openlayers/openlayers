@@ -101,6 +101,9 @@ ga.Map = function(options) {
     }),
     rotateOptions: /** @type {olx.control.RotateOptions} */ ({
       tipLabel: ga.Lang.translate('Reset rotation')
+    }),
+    attributionOptions: /** @type {olx.control.AttributionOptions} */ ({
+      collapsible: false
     })
   });
 

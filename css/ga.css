@@ -28,6 +28,12 @@
     font-size:  11px;
     font-family: Arial,"Helvetica Neue",Helvetica,sans-serif;
 }
+.ol-attribution a {
+  color: rgba(255,255,255,1);
+}
+.ol-attribution ul {
+  max-width: none;
+}
 .ol-zoom button,
 .ol-zoom-extent button,
 .ol-full-screen button,
