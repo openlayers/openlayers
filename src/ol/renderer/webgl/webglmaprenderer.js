@@ -650,6 +650,7 @@ ol.renderer.webgl.Map.prototype.hasFeatureAtPixel =
 
 /**
  * @private
+ * @const
  */
 ol.renderer.webgl.Map.DEFAULT_COLOR_VALUES_ = {
   opacity: 1,
