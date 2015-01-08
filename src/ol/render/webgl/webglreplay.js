@@ -789,7 +789,7 @@ ol.render.webgl.ImageReplay.prototype.drawHitDetectionReplayAll_ =
 ol.render.webgl.ImageReplay.prototype.drawHitDetectionReplayOneByOne_ =
     function(gl, context, featureCallback, elementType, elementSize,
         opt_hitExtent) {
-  var i, groupStart, groupEnd, numItems, featureInfo, start, end, feature;
+  var i, groupStart, numItems, start, end, feature;
   var featureIndex = this.startIndices_.length - 1;
 
   for (i = this.hitDetectionTextures_.length - 1; i >= 0; --i) {

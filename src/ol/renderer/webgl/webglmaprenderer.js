@@ -605,7 +605,7 @@ ol.renderer.webgl.Map.prototype.forEachFeatureAtPixel =
  * @inheritDoc
  */
 ol.renderer.webgl.Map.prototype.hasFeatureAtPixel =
-    function(coordinate, frameState, layerFilter, thisArg2) {
+    function(coordinate, frameState, layerFilter, thisArg) {
   var hasFeature = false;
 
   if (this.getGL().isContextLost()) {
@@ -636,7 +636,7 @@ ol.renderer.webgl.Map.prototype.hasFeatureAtPixel =
     var layerState = layerStates[i];
     var layer = layerState.layer;
     if (ol.layer.Layer.visibleAtResolution(layerState, viewState.resolution) &&
-        layerFilter.call(thisArg2, layer)) {
+        layerFilter.call(thisArg, layer)) {
       var layerRenderer = this.getLayerRenderer(layer);
       hasFeature = layerRenderer.hasFeatureAtPixel(coordinate, frameState);
       if (hasFeature) {
