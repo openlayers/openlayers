@@ -764,7 +764,13 @@ ol.render.webgl.ImageReplay.prototype.drawHitDetectionReplayAll_ =
     gl.drawElements(goog.webgl.TRIANGLES, numItems, elementType, offsetInBytes);
     start = end;
   }
-  return featureCallback(null);
+
+  var result = featureCallback(null);
+  if (result) {
+    return result;
+  } else {
+    return undefined;
+  }
 };
 
 
@@ -1160,7 +1166,7 @@ ol.render.webgl.ReplayGroup.prototype.hasFeatureAtPixel = function(
         return imageData[3] > 0;
       }, false);
 
-  return goog.isDef(hasFeature) ? hasFeature : false;
+  return goog.isDef(hasFeature);
 };
 
 

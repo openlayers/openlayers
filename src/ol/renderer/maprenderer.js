@@ -185,7 +185,7 @@ ol.renderer.Map.prototype.hasFeatureAtPixel =
   var hasFeature = this.forEachFeatureAtPixel(
       coordinate, frameState, goog.functions.TRUE, this, layerFilter, thisArg);
 
-  return goog.isDef(hasFeature) ? hasFeature : false;
+  return goog.isDef(hasFeature);
 };
 
 
