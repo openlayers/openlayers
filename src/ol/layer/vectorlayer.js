@@ -35,6 +35,7 @@ ol.layer.Vector = function(opt_options) {
   var baseOptions = goog.object.clone(options);
 
   delete baseOptions.style;
+  delete baseOptions.renderBuffer;
   goog.base(this, /** @type {olx.layer.LayerOptions} */ (baseOptions));
 
   /**
