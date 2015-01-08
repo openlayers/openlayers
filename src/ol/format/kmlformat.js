@@ -472,7 +472,7 @@ ol.format.KML.IconStyleParser_ = function(node, objectStack) {
   var IconObject = /** @type {Object} */ (goog.object.get(object, 'Icon', {}));
   var src;
   var href = /** @type {string|undefined} */
-      (goog.object.get(IconObject, 'href'));
+      (IconObject['href']);
   if (goog.isDef(href)) {
     src = href;
   } else {
@@ -480,7 +480,7 @@ ol.format.KML.IconStyleParser_ = function(node, objectStack) {
   }
   var anchor, anchorXUnits, anchorYUnits;
   var hotSpot = /** @type {ol.format.KMLVec2_|undefined} */
-      (goog.object.get(object, 'hotSpot'));
+      (object['hotSpot']);
   if (goog.isDef(hotSpot)) {
     anchor = [hotSpot.x, hotSpot.y];
     anchorXUnits = hotSpot.xunits;
@@ -497,31 +497,31 @@ ol.format.KML.IconStyleParser_ = function(node, objectStack) {
 
   var offset;
   var x = /** @type {number|undefined} */
-      (goog.object.get(IconObject, 'x'));
+      (IconObject['x']);
   var y = /** @type {number|undefined} */
-      (goog.object.get(IconObject, 'y'));
+      (IconObject['y']);
   if (goog.isDef(x) && goog.isDef(y)) {
     offset = [x, y];
   }
 
   var size;
   var w = /** @type {number|undefined} */
-      (goog.object.get(IconObject, 'w'));
+      (IconObject['w']);
   var h = /** @type {number|undefined} */
-      (goog.object.get(IconObject, 'h'));
+      (IconObject['h']);
   if (goog.isDef(w) && goog.isDef(h)) {
     size = [w, h];
   }
 
   var rotation;
   var heading = /** @type {number|undefined} */
-      (goog.object.get(object, 'heading'));
+      (object['heading']);
   if (goog.isDef(heading)) {
     rotation = goog.math.toRadians(heading);
   }
 
   var scale = /** @type {number|undefined} */
-      (goog.object.get(object, 'scale'));
+      (object['scale']);
   if (src == ol.format.KML.DEFAULT_IMAGE_STYLE_SRC_) {
     size = ol.format.KML.DEFAULT_IMAGE_STYLE_SIZE_;
   }
@@ -565,7 +565,7 @@ ol.format.KML.LabelStyleParser_ = function(node, objectStack) {
           (goog.object.get(object, 'color', ol.format.KML.DEFAULT_COLOR_))
     }),
     scale: /** @type {number|undefined} */
-        (goog.object.get(object, 'scale'))
+        (object['scale'])
   });
   styleObject['textStyle'] = textStyle;
 };
@@ -621,12 +621,12 @@ ol.format.KML.PolyStyleParser_ = function(node, objectStack) {
         (goog.object.get(object, 'color', ol.format.KML.DEFAULT_COLOR_))
   });
   styleObject['fillStyle'] = fillStyle;
-  var fill = /** @type {boolean|undefined} */ (goog.object.get(object, 'fill'));
+  var fill = /** @type {boolean|undefined} */ (object['fill']);
   if (goog.isDef(fill)) {
     styleObject['fill'] = fill;
   }
   var outline =
-      /** @type {boolean|undefined} */ (goog.object.get(object, 'outline'));
+      /** @type {boolean|undefined} */ (object['outline']);
   if (goog.isDef(outline)) {
     styleObject['outline'] = outline;
   }
@@ -944,7 +944,7 @@ ol.format.KML.readStyle_ = function(node, objectStack) {
   var fillStyle = /** @type {ol.style.Fill} */ (goog.object.get(
       styleObject, 'fillStyle', ol.format.KML.DEFAULT_FILL_STYLE_));
   var fill = /** @type {boolean|undefined} */
-      (goog.object.get(styleObject, 'fill'));
+      (styleObject['fill']);
   if (goog.isDef(fill) && !fill) {
     fillStyle = null;
   }
@@ -955,7 +955,7 @@ ol.format.KML.readStyle_ = function(node, objectStack) {
   var strokeStyle = /** @type {ol.style.Stroke} */ (goog.object.get(
       styleObject, 'strokeStyle', ol.format.KML.DEFAULT_STROKE_STYLE_));
   var outline = /** @type {boolean|undefined} */
-      (goog.object.get(styleObject, 'outline'));
+      (styleObject['outline']);
   if (goog.isDef(outline) && !outline) {
     strokeStyle = null;
   }
@@ -1017,15 +1017,15 @@ ol.format.KML.PairDataParser_ = function(node, objectStack) {
     return;
   }
   var key = /** @type {string|undefined} */
-      (goog.object.get(pairObject, 'key'));
+      (pairObject['key']);
   if (goog.isDef(key) && key == 'normal') {
     var styleUrl = /** @type {string|undefined} */
-        (goog.object.get(pairObject, 'styleUrl'));
+        (pairObject['styleUrl']);
     if (goog.isDef(styleUrl)) {
       objectStack[objectStack.length - 1] = styleUrl;
     }
     var Style = /** @type {ol.style.Style} */
-        (goog.object.get(pairObject, 'Style'));
+        (pairObject['Style']);
     if (goog.isDef(Style)) {
       objectStack[objectStack.length - 1] = Style;
     }
@@ -1766,8 +1766,8 @@ ol.format.KML.writeCoordinatesTextNode_ =
   var context = objectStack[objectStack.length - 1];
   goog.asserts.assert(goog.isObject(context));
 
-  var layout = goog.object.get(context, 'layout');
-  var stride = goog.object.get(context, 'stride');
+  var layout = context['layout'];
+  var stride = context['stride'];
 
   var dimension;
   if (layout == ol.geom.GeometryLayout.XY ||

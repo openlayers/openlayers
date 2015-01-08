@@ -240,7 +240,7 @@ ol.render.canvas.Replay.prototype.replay_ = function(
       case ol.render.canvas.Instruction.BEGIN_GEOMETRY:
         feature = /** @type {ol.Feature} */ (instruction[1]);
         var featureUid = goog.getUid(feature).toString();
-        if (!goog.isDef(goog.object.get(skippedFeaturesHash, featureUid))) {
+        if (!goog.isDef(skippedFeaturesHash[featureUid])) {
           ++i;
         } else {
           i = /** @type {number} */ (instruction[2]);

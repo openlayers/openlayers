@@ -2,7 +2,6 @@ goog.provide('ol.format.OWS');
 
 goog.require('goog.asserts');
 goog.require('goog.dom.NodeType');
-goog.require('goog.object');
 goog.require('ol.format.XLink');
 goog.require('ol.format.XML');
 goog.require('ol.format.XSD');
@@ -146,7 +145,7 @@ ol.format.OWS.readGet_ = function(node, objectStack) {
   if (!goog.isDef(value)) {
     return undefined;
   }
-  var get = goog.object.get(object, 'get');
+  var get = object['get'];
   if (!goog.isDef(get)) {
     object['get'] = [value];
   }else {

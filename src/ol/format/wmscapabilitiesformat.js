@@ -136,14 +136,14 @@ ol.format.WMSCapabilities.readEXGeographicBoundingBox_ =
   if (!goog.isDef(geographicBoundingBox)) {
     return undefined;
   }
-  var westBoundLongitude = /** @type {number|undefined} */ (goog.object.get(
-      geographicBoundingBox, 'westBoundLongitude'));
-  var southBoundLatitude = /** @type {number|undefined} */ (goog.object.get(
-      geographicBoundingBox, 'southBoundLatitude'));
-  var eastBoundLongitude = /** @type {number|undefined} */ (goog.object.get(
-      geographicBoundingBox, 'eastBoundLongitude'));
-  var northBoundLatitude = /** @type {number|undefined} */ (goog.object.get(
-      geographicBoundingBox, 'northBoundLatitude'));
+  var westBoundLongitude = /** @type {number|undefined} */
+      (geographicBoundingBox['westBoundLongitude']);
+  var southBoundLatitude = /** @type {number|undefined} */
+      (geographicBoundingBox['southBoundLatitude']);
+  var eastBoundLongitude = /** @type {number|undefined} */
+      (geographicBoundingBox['eastBoundLongitude']);
+  var northBoundLatitude = /** @type {number|undefined} */
+      (geographicBoundingBox['northBoundLatitude']);
   if (!goog.isDef(westBoundLongitude) || !goog.isDef(southBoundLatitude) ||
       !goog.isDef(eastBoundLongitude) || !goog.isDef(northBoundLatitude)) {
     return undefined;
@@ -280,48 +280,48 @@ ol.format.WMSCapabilities.readLayer_ = function(node, objectStack) {
   var queryable =
       ol.format.XSD.readBooleanString(node.getAttribute('queryable'));
   if (!goog.isDef(queryable)) {
-    queryable = goog.object.get(parentLayerObject, 'queryable');
+    queryable = parentLayerObject['queryable'];
   }
   layerObject['queryable'] = goog.isDef(queryable) ? queryable : false;
 
   var cascaded = ol.format.XSD.readNonNegativeIntegerString(
       node.getAttribute('cascaded'));
   if (!goog.isDef(cascaded)) {
-    cascaded = goog.object.get(parentLayerObject, 'cascaded');
+    cascaded = parentLayerObject['cascaded'];
   }
   layerObject['cascaded'] = cascaded;
 
   var opaque = ol.format.XSD.readBooleanString(node.getAttribute('opaque'));
   if (!goog.isDef(opaque)) {
-    opaque = goog.object.get(parentLayerObject, 'opaque');
+    opaque = parentLayerObject['opaque'];
   }
   layerObject['opaque'] = goog.isDef(opaque) ? opaque : false;
 
   var noSubsets =
       ol.format.XSD.readBooleanString(node.getAttribute('noSubsets'));
   if (!goog.isDef(noSubsets)) {
-    noSubsets = goog.object.get(parentLayerObject, 'noSubsets');
+    noSubsets = parentLayerObject['noSubsets'];
   }
   layerObject['noSubsets'] = goog.isDef(noSubsets) ? noSubsets : false;
 
   var fixedWidth =
       ol.format.XSD.readDecimalString(node.getAttribute('fixedWidth'));
   if (!goog.isDef(fixedWidth)) {
-    fixedWidth = goog.object.get(parentLayerObject, 'fixedWidth');
+    fixedWidth = parentLayerObject['fixedWidth'];
   }
   layerObject['fixedWidth'] = fixedWidth;
 
   var fixedHeight =
       ol.format.XSD.readDecimalString(node.getAttribute('fixedHeight'));
   if (!goog.isDef(fixedHeight)) {
-    fixedHeight = goog.object.get(parentLayerObject, 'fixedHeight');
+    fixedHeight = parentLayerObject['fixedHeight'];
   }
   layerObject['fixedHeight'] = fixedHeight;
 
   // See 7.2.4.8
   var addKeys = ['Style', 'CRS', 'AuthorityURL'];
   goog.array.forEach(addKeys, function(key) {
-    var parentValue = goog.object.get(parentLayerObject, key);
+    var parentValue = parentLayerObject[key];
     if (goog.isDef(parentValue)) {
       var childValue = goog.object.setIfUndefined(layerObject, key, []);
       childValue = childValue.concat(parentValue);
@@ -332,9 +332,9 @@ ol.format.WMSCapabilities.readLayer_ = function(node, objectStack) {
   var replaceKeys = ['EX_GeographicBoundingBox', 'BoundingBox', 'Dimension',
     'Attribution', 'MinScaleDenominator', 'MaxScaleDenominator'];
   goog.array.forEach(replaceKeys, function(key) {
-    var childValue = goog.object.get(layerObject, key);
+    var childValue = layerObject[key];
     if (!goog.isDef(childValue)) {
-      var parentValue = goog.object.get(parentLayerObject, key);
+      var parentValue = parentLayerObject[key];
       layerObject[key] = parentValue;
     }
   });

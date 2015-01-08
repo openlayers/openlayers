@@ -451,7 +451,7 @@ ol.render.webgl.ImageReplay.prototype.finish = function(context) {
 
     uid = goog.getUid(image).toString();
     if (goog.object.containsKey(texturePerImage, uid)) {
-      texture = goog.object.get(texturePerImage, uid);
+      texture = texturePerImage[uid];
     } else {
       texture = gl.createTexture();
       gl.bindTexture(goog.webgl.TEXTURE_2D, texture);

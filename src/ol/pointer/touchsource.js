@@ -342,7 +342,7 @@ ol.pointer.TouchSource.prototype.touchmove = function(inEvent) {
 ol.pointer.TouchSource.prototype.moveOverOut_ =
     function(browserEvent, inPointer) {
   var event = inPointer;
-  var pointer = goog.object.get(this.pointerMap, event.pointerId);
+  var pointer = this.pointerMap[event.pointerId];
   // a finger drifted off the screen, ignore it
   if (!pointer) {
     return;

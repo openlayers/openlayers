@@ -71,14 +71,14 @@ ol.format.GPX.appendCoordinate_ = function(flatCoordinates, node, values) {
       parseFloat(node.getAttribute('lat')));
   if (goog.object.containsKey(values, 'ele')) {
     flatCoordinates.push(
-        /** @type {number} */ (goog.object.get(values, 'ele')));
+        /** @type {number} */ (values['ele']));
     goog.object.remove(values, 'ele');
   } else {
     flatCoordinates.push(0);
   }
   if (goog.object.containsKey(values, 'time')) {
     flatCoordinates.push(
-        /** @type {number} */ (goog.object.get(values, 'time')));
+        /** @type {number} */ (values['time']));
     goog.object.remove(values, 'time');
   } else {
     flatCoordinates.push(0);
@@ -130,7 +130,7 @@ ol.format.GPX.parseRtePt_ = function(node, objectStack) {
   if (goog.isDef(values)) {
     var rteValues = /** @type {Object} */ (objectStack[objectStack.length - 1]);
     var flatCoordinates = /** @type {Array.<number>} */
-        (goog.object.get(rteValues, 'flatCoordinates'));
+        (rteValues['flatCoordinates']);
     ol.format.GPX.appendCoordinate_(flatCoordinates, node, values);
   }
 };
@@ -149,7 +149,7 @@ ol.format.GPX.parseTrkPt_ = function(node, objectStack) {
   if (goog.isDef(values)) {
     var trkValues = /** @type {Object} */ (objectStack[objectStack.length - 1]);
     var flatCoordinates = /** @type {Array.<number>} */
-        (goog.object.get(trkValues, 'flatCoordinates'));
+        (trkValues['flatCoordinates']);
     ol.format.GPX.appendCoordinate_(flatCoordinates, node, values);
   }
 };
@@ -166,8 +166,8 @@ ol.format.GPX.parseTrkSeg_ = function(node, objectStack) {
   var values = /** @type {Object} */ (objectStack[objectStack.length - 1]);
   ol.xml.parseNode(ol.format.GPX.TRKSEG_PARSERS_, node, objectStack);
   var flatCoordinates = /** @type {Array.<number>} */
-      (goog.object.get(values, 'flatCoordinates'));
-  var ends = /** @type {Array.<number>} */ (goog.object.get(values, 'ends'));
+      (values['flatCoordinates']);
+  var ends = /** @type {Array.<number>} */ (values['ends']);
   ends.push(flatCoordinates.length);
 };
 
@@ -189,7 +189,7 @@ ol.format.GPX.readRte_ = function(node, objectStack) {
     return undefined;
   }
   var flatCoordinates = /** @type {Array.<number>} */
-      (goog.object.get(values, 'flatCoordinates'));
+      (values['flatCoordinates']);
   goog.object.remove(values, 'flatCoordinates');
   var geometry = new ol.geom.LineString(null);
   geometry.setFlatCoordinates(ol.geom.GeometryLayout.XYZM, flatCoordinates);
@@ -218,9 +218,9 @@ ol.format.GPX.readTrk_ = function(node, objectStack) {
     return undefined;
   }
   var flatCoordinates = /** @type {Array.<number>} */
-      (goog.object.get(values, 'flatCoordinates'));
+      (values['flatCoordinates']);
   goog.object.remove(values, 'flatCoordinates');
-  var ends = /** @type {Array.<number>} */ (goog.object.get(values, 'ends'));
+  var ends = /** @type {Array.<number>} */ (values['ends']);
   goog.object.remove(values, 'ends');
   var geometry = new ol.geom.MultiLineString(null);
   geometry.setFlatCoordinates(
@@ -527,10 +527,10 @@ ol.format.GPX.writeLink_ = function(node, value, objectStack) {
   node.setAttribute('href', value);
   var context = objectStack[objectStack.length - 1];
   goog.asserts.assert(goog.isObject(context));
-  var properties = goog.object.get(context, 'properties');
+  var properties = context['properties'];
   var link = [
-    goog.object.get(properties, 'linkText'),
-    goog.object.get(properties, 'linkType')
+    properties['linkText'],
+    properties['linkType']
   ];
   ol.xml.pushSerializeAndPop(/** @type {ol.xml.NodeStackItem} */ ({node: node}),
       ol.format.GPX.LINK_SERIALIZERS_, ol.xml.OBJECT_PROPERTY_NODE_FACTORY,
@@ -550,11 +550,11 @@ ol.format.GPX.writeWptType_ = function(node, coordinate, objectStack) {
   var parentNode = context.node;
   goog.asserts.assert(ol.xml.isNode(parentNode));
   var namespaceURI = parentNode.namespaceURI;
-  var properties = goog.object.get(context, 'properties');
+  var properties = context['properties'];
   //FIXME Projection handling
   ol.xml.setAttributeNS(node, null, 'lat', coordinate[1]);
   ol.xml.setAttributeNS(node, null, 'lon', coordinate[0]);
-  var geometryLayout = goog.object.get(context, 'geometryLayout');
+  var geometryLayout = context['geometryLayout'];
   /* jshint -W086 */
   switch (geometryLayout) {
     case ol.geom.GeometryLayout.XYZM:

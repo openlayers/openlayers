@@ -100,7 +100,7 @@ ol.format.OSMXML.readWay_ = function(node, objectStack) {
   var state = /** @type {Object} */ (objectStack[objectStack.length - 1]);
   var flatCoordinates = /** @type {Array.<number>} */ ([]);
   for (var i = 0, ii = values.ndrefs.length; i < ii; i++) {
-    var point = goog.object.get(state.nodes, values.ndrefs[i]);
+    var point = state.nodes[values.ndrefs[i]];
     goog.array.extend(flatCoordinates, point);
   }
   var geometry;

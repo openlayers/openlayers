@@ -97,7 +97,7 @@ ol.format.WMSGetFeatureInfo.prototype.readFeatures_ =
       parsers[featureType] = ol.xml.makeArrayPusher(
           this.gmlFormat_.readFeatureElement, this.gmlFormat_);
       var parsersNS = ol.xml.makeParsersNS(
-          [goog.object.get(context, 'featureNS'), null], parsers);
+          [context['featureNS'], null], parsers);
       layer.namespaceURI = this.featureNS_;
       var layerFeatures = ol.xml.pushParseAndPop(
           [], parsersNS, layer, objectStack, this.gmlFormat_);

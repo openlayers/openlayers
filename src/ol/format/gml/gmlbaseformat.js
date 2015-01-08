@@ -90,7 +90,7 @@ ol.format.GMLBase.prototype.readFeatures_ = function(node, objectStack) {
   } else if (localName == 'featureMembers' || localName == 'featureMember') {
     var context = objectStack[0];
     goog.asserts.assert(goog.isObject(context));
-    var featureType = goog.object.get(context, 'featureType');
+    var featureType = context['featureType'];
     if (!goog.isDef(featureType) && !goog.isNull(node.firstElementChild)) {
       var member = node.firstElementChild;
       featureType = member.nodeName.split(':').pop();
@@ -102,7 +102,7 @@ ol.format.GMLBase.prototype.readFeatures_ = function(node, objectStack) {
     parsers[featureType] = (localName == 'featureMembers') ?
         ol.xml.makeArrayPusher(this.readFeatureElement, this) :
         ol.xml.makeReplacer(this.readFeatureElement, this);
-    parsersNS[goog.object.get(context, 'featureNS')] = parsers;
+    parsersNS[context['featureNS']] = parsers;
     features = ol.xml.pushParseAndPop([], parsersNS, node, objectStack);
   }
   if (!goog.isDef(features)) {

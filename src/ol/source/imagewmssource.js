@@ -152,7 +152,7 @@ ol.source.ImageWMS.prototype.getGetFeatureInfoUrl =
     'REQUEST': 'GetFeatureInfo',
     'FORMAT': 'image/png',
     'TRANSPARENT': true,
-    'QUERY_LAYERS': goog.object.get(this.params_, 'LAYERS')
+    'QUERY_LAYERS': this.params_['LAYERS']
   };
   goog.object.extend(baseParams, this.params_, params);
 
