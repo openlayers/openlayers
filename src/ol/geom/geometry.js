@@ -59,16 +59,16 @@ ol.geom.Geometry = function() {
   goog.base(this);
 
   /**
-   * @protected
+   * @private
    * @type {ol.Extent}
    */
-  this.extent = ol.extent.createEmpty();
+  this.extent_ = ol.extent.createEmpty();
 
   /**
-   * @protected
+   * @private
    * @type {number}
    */
-  this.extentRevision = -1;
+  this.extentRevision_ = -1;
 
   /**
    * @protected
@@ -157,11 +157,11 @@ ol.geom.Geometry.prototype.containsXY = goog.functions.FALSE;
  * @api stable
  */
 ol.geom.Geometry.prototype.getExtent = function(opt_extent) {
-  if (this.extentRevision != this.getRevision()) {
-    this.extent = this.computeExtent(this.extent);
-    this.extentRevision = this.getRevision();
+  if (this.extentRevision_ != this.getRevision()) {
+    this.extent_ = this.computeExtent(this.extent_);
+    this.extentRevision_ = this.getRevision();
   }
-  return ol.extent.returnOrUpdate(this.extent, opt_extent);
+  return ol.extent.returnOrUpdate(this.extent_, opt_extent);
 };
 
 
