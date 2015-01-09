@@ -31,8 +31,17 @@
 .ol-attribution a {
   color: rgba(255,255,255,1);
 }
+.ol-attribution a:hover{
+  color: rgba(255,255,255,1);
+  text-decoration: none;
+}
 .ol-attribution ul {
   max-width: none;
+  font-size: inherit;
+  text-shadow: none;
+}
+.ol-attribution:.ol-uncollapsible {
+  height: auto;
 }
 .ol-zoom button,
 .ol-zoom-extent button,
