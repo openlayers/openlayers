@@ -672,8 +672,8 @@ ol.render.webgl.ImageReplay.prototype.replay = function(context,
     this.drawReplay_(gl, context, skippedFeaturesHash);
   } else {
     // draw feature by feature for the hit-detection
-    result = this.drawHitDetectionReplay_(gl, context, featureCallback,
-        oneByOne, opt_hitExtent);
+    result = this.drawHitDetectionReplay_(gl, context, skippedFeaturesHash,
+        featureCallback, oneByOne, opt_hitExtent);
   }
 
   // disable the vertex attrib arrays
@@ -803,6 +803,7 @@ ol.render.webgl.ImageReplay.prototype.drawElements_ = function(
  * @private
  * @param {WebGLRenderingContext} gl gl.
  * @param {ol.webgl.Context} context Context.
+ * @param {Object} skippedFeaturesHash Ids of features to skip.
  * @param {function(ol.Feature): T|undefined} featureCallback Feature callback.
  * @param {boolean} oneByOne Draw features one-by-one for the hit-detecion.
  * @param {ol.Extent=} opt_hitExtent Hit extent: Only features intersecting
@@ -811,7 +812,8 @@ ol.render.webgl.ImageReplay.prototype.drawElements_ = function(
  * @template T
  */
 ol.render.webgl.ImageReplay.prototype.drawHitDetectionReplay_ =
-    function(gl, context, featureCallback, oneByOne, opt_hitExtent) {
+    function(gl, context, skippedFeaturesHash, featureCallback, oneByOne,
+    opt_hitExtent) {
   goog.asserts.assert(this.hitDetectionTextures_.length ===
       this.hitDetectionGroupIndices_.length);
   var elementType = context.hasOESElementIndexUint ?
@@ -824,8 +826,9 @@ ol.render.webgl.ImageReplay.prototype.drawHitDetectionReplay_ =
         elementType, elementSize);
   } else {
     // draw hit-detection features one by one
-    return this.drawHitDetectionReplayOneByOne_(gl, context, featureCallback,
-        elementType, elementSize, opt_hitExtent);
+    return this.drawHitDetectionReplayOneByOne_(gl, context,
+        skippedFeaturesHash, featureCallback, elementType, elementSize,
+        opt_hitExtent);
   }
 };
 
@@ -866,6 +869,7 @@ ol.render.webgl.ImageReplay.prototype.drawHitDetectionReplayAll_ =
  * @private
  * @param {WebGLRenderingContext} gl gl.
  * @param {ol.webgl.Context} context Context.
+ * @param {Object} skippedFeaturesHash Ids of features to skip.
  * @param {function(ol.Feature): T|undefined} featureCallback Feature callback.
  * @param {number} elementType Element type.
  * @param {number} elementSize Element size.
@@ -875,9 +879,9 @@ ol.render.webgl.ImageReplay.prototype.drawHitDetectionReplayAll_ =
  * @template T
  */
 ol.render.webgl.ImageReplay.prototype.drawHitDetectionReplayOneByOne_ =
-    function(gl, context, featureCallback, elementType, elementSize,
-        opt_hitExtent) {
-  var i, groupStart, numItems, start, end, feature;
+    function(gl, context, skippedFeaturesHash, featureCallback,
+        elementType, elementSize, opt_hitExtent) {
+  var i, groupStart, numItems, start, end, feature, featureUid;
   var featureIndex = this.startIndices_.length - 1;
 
   for (i = this.hitDetectionTextures_.length - 1; i >= 0; --i) {
@@ -891,9 +895,11 @@ ol.render.webgl.ImageReplay.prototype.drawHitDetectionReplayOneByOne_ =
       start = this.startIndices_[featureIndex];
       numItems = end - start;
       feature = this.startIndicesFeature_[featureIndex];
+      featureUid = goog.getUid(feature).toString();
 
-      if (!goog.isDef(opt_hitExtent) || ol.extent.intersects(
-          opt_hitExtent, feature.getGeometry().getExtent())) {
+      if (!goog.isDef(skippedFeaturesHash[featureUid]) &&
+          (!goog.isDef(opt_hitExtent) || ol.extent.intersects(
+              opt_hitExtent, feature.getGeometry().getExtent()))) {
         var offsetInBytes = start * elementSize;
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
         gl.drawElements(
