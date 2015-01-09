@@ -40,7 +40,7 @@
   font-size: inherit;
   text-shadow: none;
 }
-.ol-attribution:.ol-uncollapsible {
+.ol-attribution.ol-uncollapsible {
   height: auto;
 }
 .ol-zoom button,
