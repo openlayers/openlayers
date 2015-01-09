@@ -669,7 +669,7 @@ ol.render.webgl.ImageReplay.prototype.replay = function(context,
   // draw!
   var result;
   if (!goog.isDef(featureCallback)) {
-    this.drawReplay_(gl, context);
+    this.drawReplay_(gl, context, skippedFeaturesHash);
   } else {
     // draw feature by feature for the hit-detection
     result = this.drawHitDetectionReplay_(gl, context, featureCallback,
@@ -691,23 +691,111 @@ ol.render.webgl.ImageReplay.prototype.replay = function(context,
  * @private
  * @param {WebGLRenderingContext} gl gl.
  * @param {ol.webgl.Context} context Context.
+ * @param {Object} skippedFeaturesHash Ids of features to skip.
  */
 ol.render.webgl.ImageReplay.prototype.drawReplay_ =
-    function(gl, context) {
+    function(gl, context, skippedFeaturesHash) {
   goog.asserts.assert(this.textures_.length === this.groupIndices_.length);
   var elementType = context.hasOESElementIndexUint ?
       goog.webgl.UNSIGNED_INT : goog.webgl.UNSIGNED_SHORT;
   var elementSize = context.hasOESElementIndexUint ? 4 : 2;
 
-  var i, ii, start;
-  for (i = 0, ii = this.textures_.length, start = 0; i < ii; ++i) {
-    gl.bindTexture(goog.webgl.TEXTURE_2D, this.textures_[i]);
-    var end = this.groupIndices_[i];
-    var numItems = end - start;
-    var offsetInBytes = start * elementSize;
-    gl.drawElements(goog.webgl.TRIANGLES, numItems, elementType, offsetInBytes);
-    start = end;
+  if (!goog.object.isEmpty(skippedFeaturesHash)) {
+    this.drawReplaySkipping_(
+        gl, skippedFeaturesHash, elementType, elementSize);
+  } else {
+    var i, ii, start;
+    for (i = 0, ii = this.textures_.length, start = 0; i < ii; ++i) {
+      gl.bindTexture(goog.webgl.TEXTURE_2D, this.textures_[i]);
+      var end = this.groupIndices_[i];
+      this.drawElements_(gl, start, end, elementType, elementSize);
+      start = end;
+    }
   }
+};
+
+
+/**
+ * Draw the replay while paying attention to skipped features.
+ *
+ * This functions creates groups of features that can be drawn to together,
+ * so that the number of `drawElements` calls is minimized.
+ *
+ * For example given the following texture groups:
+ *
+ *    Group 1: A B C
+ *    Group 2: D [E] F G
+ *
+ * If feature E should be skipped, the following `drawElements` calls will be
+ * made:
+ *
+ *    drawElements with feature A, B and C
+ *    drawElements with feature D
+ *    drawElements with feature F and G
+ *
+ * @private
+ * @param {WebGLRenderingContext} gl gl.
+ * @param {Object} skippedFeaturesHash Ids of features to skip.
+ * @param {number} elementType Element type.
+ * @param {number} elementSize Element Size.
+ */
+ol.render.webgl.ImageReplay.prototype.drawReplaySkipping_ =
+    function(gl, skippedFeaturesHash, elementType, elementSize) {
+  var featureIndex = 0;
+
+  var i, ii;
+  for (i = 0, ii = this.textures_.length; i < ii; ++i) {
+    gl.bindTexture(goog.webgl.TEXTURE_2D, this.textures_[i]);
+    var groupStart = (i > 0) ? this.groupIndices_[i - 1] : 0;
+    var groupEnd = this.groupIndices_[i];
+
+    var start = groupStart;
+    var end = groupStart;
+    while (featureIndex < this.startIndices_.length &&
+        this.startIndices_[featureIndex] <= groupEnd) {
+      var feature = this.startIndicesFeature_[featureIndex];
+
+      var featureUid = goog.getUid(feature).toString();
+      if (goog.isDef(skippedFeaturesHash[featureUid])) {
+        // feature should be skipped
+        if (start !== end) {
+          // draw the features so far
+          this.drawElements_(gl, start, end, elementType, elementSize);
+        }
+        // continue with the next feature
+        start = (featureIndex === this.startIndices_.length - 1) ?
+            groupEnd : this.startIndices_[featureIndex + 1];
+        end = start;
+      } else {
+        // the feature is not skipped, augment the end index
+        end = (featureIndex === this.startIndices_.length - 1) ?
+            groupEnd : this.startIndices_[featureIndex + 1];
+      }
+      featureIndex++;
+    }
+
+    if (start !== end) {
+      // draw the remaining features (in case there was no skipped feature
+      // in this texture group, all features of a group are drawn together)
+      this.drawElements_(gl, start, end, elementType, elementSize);
+    }
+  }
+};
+
+
+/**
+ * @private
+ * @param {WebGLRenderingContext} gl gl.
+ * @param {number} start Start index.
+ * @param {number} end End index.
+ * @param {number} elementType Element type.
+ * @param {number} elementSize Element Size.
+ */
+ol.render.webgl.ImageReplay.prototype.drawElements_ = function(
+    gl, start, end, elementType, elementSize) {
+  var numItems = end - start;
+  var offsetInBytes = start * elementSize;
+  gl.drawElements(goog.webgl.TRIANGLES, numItems, elementType, offsetInBytes);
 };
 
 
