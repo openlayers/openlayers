@@ -172,7 +172,8 @@ virtual('ci', 'lint', 'build', 'test',
     'build/examples/all.combined.js', 'check-examples', 'apidoc')
 
 
-virtual('build', 'build/ol.css', 'build/ol.js', 'build/ol-debug.js')
+virtual('build', 'build/ol.css', 'build/ol.js', 'build/ol-debug.js',
+    'build/ol.js.map')
 
 
 virtual('check', 'lint', 'build/ol.js', 'test')
@@ -192,10 +193,19 @@ def build_ol_css(t):
     t.output('%(CLEANCSS)s', 'css/ol.css')
 
 
-@target('build/ol.js', SRC, SHADER_SRC, 'config/ol.json', NPM_INSTALL)
-def build_ol_new_js(t):
+def _build_js(t):
     t.run('node', 'tasks/build.js', 'config/ol.json', 'build/ol.js')
+
+
+@target('build/ol.js', SRC, SHADER_SRC, 'config/ol.json', NPM_INSTALL)
+def build_ol_js(t):
+    _build_js(t)
     report_sizes(t)
+
+
+@target('build/ol.js.map', SRC, SHADER_SRC, 'config/ol.json', NPM_INSTALL)
+def build_ol_js_map(t):
+    _build_js(t)
 
 
 @target('build/ol-debug.js', SRC, SHADER_SRC, 'config/ol-debug.json',
