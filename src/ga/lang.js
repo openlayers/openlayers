@@ -3,7 +3,7 @@ goog.provide('ga.Lang');
 // Mostly from https://github.com/openlayers/openlayers/blob/master/lib/OpenLayers/Lang.js
 
 /**
- * @type {Object}
+ * @type {Object<?,?>}
  * @api stable
  */
 ga.Lang = {};

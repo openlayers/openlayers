@@ -10,11 +10,12 @@ var gax;
 /**
  * Object literal with config options for the map.
  * @typedef {{controls: (ol.Collection.<ol.control.Control>|Array.<ol.control.Control>|undefined),
- *     deviceOptions: (olx.DeviceOptions|undefined),
  *     pixelRatio: (number|undefined),
  *     interactions: (ol.Collection.<ol.interaction.Interaction>|Array.<ol.interaction.Interaction>|undefined),
  *     keyboardEventTarget: (Element|Document|string|undefined),
  *     layers: (Array.<ol.layer.Base>|ol.Collection.<ol.layer.Base>|undefined),
+ *     loadTilesWhileAnimating: (boolean|undefined),
+ *     loadTilesWhileInteracting: (boolean|undefined),
  *     logo: (boolean|string|olx.LogoOptions|undefined),
  *     overlays: (ol.Collection.<ol.Overlay>|Array.<ol.Overlay>|undefined),
  *     renderer: (ol.RendererType|Array.<ol.RendererType|string>|string|undefined),
@@ -31,13 +32,6 @@ gax.MapOptions;
  * @type {ol.Collection|Array.<ol.control.Control>|undefined}
  */
 gax.MapOptions.prototype.controls;
-
-
-/**
- * Device options for the map.
- * @type {olx.DeviceOptions|undefined}
- */
-gax.MapOptions.prototype.deviceOptions;
 
 
 /**
@@ -76,10 +70,35 @@ gax.MapOptions.prototype.layers;
 
 
 /**
- * Show ol3 logo. It is set to false.
+ * When set to true, tiles will be loaded during animations. This may improve
+ * the user experience, but can also make animations stutter on devices with
+ * slow memory. Default is `false`.
  * @type {boolean|undefined}
+ * @api
  */
-gax.MapOptions.prototype.ol3Logo;
+gax.MapOptions.prototype.loadTilesWhileAnimating;
+
+
+/**
+ * When set to true, tiles will be loaded while interacting with the map. This
+ * may improve the user experience, but can also make map panning and zooming
+ * choppy on devices with slow memory. Default is `false`.
+ * @type {boolean|undefined}
+ * @api
+ */
+gax.MapOptions.prototype.loadTilesWhileInteracting;
+
+
+/**
+ * The map logo. A logo to be displayed on the map at all times. If a string is
+ * provided, it will be set as the image source of the logo. If an object is
+ * provided, the `src` property should be the URL for an image and the `href`
+ * property should be a URL for creating a link. To disable the map logo, set
+ * the option to `false`. By default, the OpenLayers 3 logo is shown.
+ * @type {boolean|string|olx.LogoOptions|undefined}
+ * @api stable
+ */
+gax.MapOptions.prototype.logo;
 
 
 /**
