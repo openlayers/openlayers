@@ -153,6 +153,13 @@ ol.LEGACY_IE_SUPPORT = false;
 
 
 /**
+ * @define {number} The size in pixels of the first atlas image. Default is
+ * `256`.
+ */
+ol.INITIAL_ATLAS_SIZE = 256;
+
+
+/**
  * The page is loaded using HTTPS.
  * @const
  * @type {boolean}
@@ -173,6 +180,14 @@ ol.IS_LEGACY_IE = goog.userAgent.IE &&
  * @define {number} Keyboard pan duration.
  */
 ol.KEYBOARD_PAN_DURATION = 100;
+
+
+/**
+ * @define {number} The maximum size in pixels of atlas images. Default is
+ * `-1`, meaning it is not used (and `ol.ol.WEBGL_MAX_TEXTURE_SIZE` is
+ * used instead).
+ */
+ol.MAX_ATLAS_SIZE = -1;
 
 
 /**
@@ -217,6 +232,24 @@ ol.SIMPLIFY_TOLERANCE = 0.5;
  * @define {number} Texture cache high water mark.
  */
 ol.WEBGL_TEXTURE_CACHE_HIGH_WATER_MARK = 1024;
+
+
+/**
+ * The maximum supported WebGL texture size in pixels. If WebGL is not
+ * supported, the value is set to `undefined`.
+ * @const
+ * @type {number|undefined}
+ * @api
+ */
+ol.WEBGL_MAX_TEXTURE_SIZE; // value is set in `ol.has`
+
+
+/**
+ * List of supported WebGL extensions.
+ * @const
+ * @type {Array.<string>}
+ */
+ol.WEBGL_EXTENSIONS; // value is set in `ol.has`
 
 
 /**

@@ -3,7 +3,6 @@ goog.provide('ol.format.GML2');
 goog.require('goog.asserts');
 goog.require('goog.dom');
 goog.require('goog.dom.NodeType');
-goog.require('goog.object');
 goog.require('ol.extent');
 goog.require('ol.format.GML');
 goog.require('ol.format.GMLBase');
@@ -58,7 +57,7 @@ ol.format.GML2.prototype.readFlatCoordinates_ = function(node, objectStack) {
   var s = ol.xml.getAllTextContent(node, false).replace(/^\s*|\s*$/g, '');
   var context = objectStack[0];
   goog.asserts.assert(goog.isObject(context));
-  var containerSrs = goog.object.get(context, 'srsName');
+  var containerSrs = context['srsName'];
   var containerDimension = node.parentNode.getAttribute('srsDimension');
   var axisOrientation = 'enu';
   if (!goog.isNull(containerSrs)) {

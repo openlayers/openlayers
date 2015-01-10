@@ -172,6 +172,11 @@ function generateExports(symbols, namespace) {
   Object.keys(requires).sort().reverse().forEach(function(name) {
     blocks.unshift('goog.require(\'' + name + '\');');
   });
+  blocks.unshift(
+      '/**\n' +
+      ' * @fileoverview Custom exports file.\n' +
+      ' * @suppress {checkVars}\n' +
+      ' */\n');
   return blocks.join('\n');
 }
 

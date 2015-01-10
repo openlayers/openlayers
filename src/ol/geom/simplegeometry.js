@@ -245,10 +245,29 @@ ol.geom.SimpleGeometry.prototype.setLayout =
 
 /**
  * @inheritDoc
+ * @api stable
  */
 ol.geom.SimpleGeometry.prototype.applyTransform = function(transformFn) {
   if (!goog.isNull(this.flatCoordinates)) {
     transformFn(this.flatCoordinates, this.flatCoordinates, this.stride);
+    this.changed();
+  }
+};
+
+
+/**
+ * Translate the geometry.
+ * @param {number} deltaX Delta X.
+ * @param {number} deltaY Delta Y.
+ * @api
+ */
+ol.geom.SimpleGeometry.prototype.translate = function(deltaX, deltaY) {
+  var flatCoordinates = this.getFlatCoordinates();
+  if (!goog.isNull(flatCoordinates)) {
+    var stride = this.getStride();
+    ol.geom.flat.transform.translate(
+        flatCoordinates, 0, flatCoordinates.length, stride,
+        deltaX, deltaY, flatCoordinates);
     this.changed();
   }
 };

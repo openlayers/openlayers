@@ -10,8 +10,7 @@ goog.require('ol.source.Image');
 
 /**
  * @classdesc
- * An image source for 'static', that is, non-georeferenced, images.
- * See examples/static-image for example.
+ * A layer source for displaying a single, static image.
  *
  * @constructor
  * @extends {ol.source.Image}

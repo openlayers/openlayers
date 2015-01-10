@@ -20,13 +20,17 @@ goog.require('ol.dom');
 goog.require('ol.layer.Image');
 goog.require('ol.layer.Layer');
 goog.require('ol.layer.Tile');
+goog.require('ol.layer.Vector');
 goog.require('ol.render.Event');
 goog.require('ol.render.EventType');
 goog.require('ol.render.webgl.Immediate');
+goog.require('ol.render.webgl.ReplayGroup');
 goog.require('ol.renderer.Map');
+goog.require('ol.renderer.vector');
 goog.require('ol.renderer.webgl.ImageLayer');
 goog.require('ol.renderer.webgl.Layer');
 goog.require('ol.renderer.webgl.TileLayer');
+goog.require('ol.renderer.webgl.VectorLayer');
 goog.require('ol.source.State');
 goog.require('ol.structs.LRUCache');
 goog.require('ol.structs.PriorityQueue');
@@ -122,10 +126,6 @@ ol.renderer.webgl.Map = function(container, map) {
    * @type {ol.structs.PriorityQueue.<Array>}
    */
   this.tileTextureQueue_ = new ol.structs.PriorityQueue(
-      /**
-       * @param {Array.<*>} element Element.
-       * @return {number} Priority.
-       */
       goog.bind(
           /**
            * @param {Array.<*>} element Element.
@@ -250,6 +250,8 @@ ol.renderer.webgl.Map.prototype.createLayerRenderer = function(layer) {
     return new ol.renderer.webgl.ImageLayer(this, layer);
   } else if (ol.ENABLE_TILE && layer instanceof ol.layer.Tile) {
     return new ol.renderer.webgl.TileLayer(this, layer);
+  } else if (ol.ENABLE_VECTOR && layer instanceof ol.layer.Vector) {
+    return new ol.renderer.webgl.VectorLayer(this, layer);
   } else {
     goog.asserts.fail();
     return null;
@@ -266,11 +268,40 @@ ol.renderer.webgl.Map.prototype.dispatchComposeEvent_ =
     function(type, frameState) {
   var map = this.getMap();
   if (map.hasListener(type)) {
-    var context = this.getContext();
-    var render = new ol.render.webgl.Immediate(context, frameState.pixelRatio);
-    var composeEvent = new ol.render.Event(
-        type, map, render, null, frameState, null, context);
+    var context = this.context_;
+
+    var extent = frameState.extent;
+    var size = frameState.size;
+    var viewState = frameState.viewState;
+    var pixelRatio = frameState.pixelRatio;
+
+    var resolution = viewState.resolution;
+    var center = viewState.center;
+    var rotation = viewState.rotation;
+    var tolerance = ol.renderer.vector.getTolerance(resolution, pixelRatio);
+
+    var vectorContext = new ol.render.webgl.Immediate(context,
+        center, resolution, rotation, size, extent, pixelRatio);
+    var replayGroup = new ol.render.webgl.ReplayGroup(tolerance, extent);
+    var composeEvent = new ol.render.Event(type, map, vectorContext,
+        replayGroup, frameState, null, context);
     map.dispatchEvent(composeEvent);
+
+    replayGroup.finish(context);
+    if (!replayGroup.isEmpty()) {
+      // use default color values
+      var opacity = 1;
+      var brightness = 0;
+      var contrast = 1;
+      var hue = 0;
+      var saturation = 1;
+      replayGroup.replay(context, center, resolution, rotation, size,
+          pixelRatio, opacity, brightness, contrast, hue, saturation, {});
+    }
+    replayGroup.getDeleteResourcesFunction(context)();
+
+    vectorContext.flush();
+    this.replayGroup = replayGroup;
   }
 };
 
@@ -455,7 +486,7 @@ ol.renderer.webgl.Map.prototype.renderFrame = function(frameState) {
         layerState.sourceState == ol.source.State.READY) {
       layerRenderer = this.getLayerRenderer(layerState.layer);
       goog.asserts.assertInstanceof(layerRenderer, ol.renderer.webgl.Layer);
-      if (layerRenderer.prepareFrame(frameState, layerState)) {
+      if (layerRenderer.prepareFrame(frameState, layerState, context)) {
         layerStatesToDraw.push(layerState);
       }
     }

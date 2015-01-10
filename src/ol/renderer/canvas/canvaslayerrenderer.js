@@ -1,8 +1,10 @@
 goog.provide('ol.renderer.canvas.Layer');
 
 goog.require('goog.array');
+goog.require('goog.asserts');
 goog.require('goog.vec.Mat4');
 goog.require('ol.dom');
+goog.require('ol.extent');
 goog.require('ol.layer.Layer');
 goog.require('ol.render.Event');
 goog.require('ol.render.EventType');
@@ -44,6 +46,35 @@ ol.renderer.canvas.Layer.prototype.composeFrame =
 
   var image = this.getImage();
   if (!goog.isNull(image)) {
+
+    // clipped rendering if layer extent is set
+    var extent = layerState.extent;
+    var clipped = goog.isDef(extent);
+    if (clipped) {
+      goog.asserts.assert(goog.isDef(extent));
+      var topLeft = ol.extent.getTopLeft(extent);
+      var topRight = ol.extent.getTopRight(extent);
+      var bottomRight = ol.extent.getBottomRight(extent);
+      var bottomLeft = ol.extent.getBottomLeft(extent);
+
+      ol.vec.Mat4.multVec2(frameState.coordinateToPixelMatrix,
+          topLeft, topLeft);
+      ol.vec.Mat4.multVec2(frameState.coordinateToPixelMatrix,
+          topRight, topRight);
+      ol.vec.Mat4.multVec2(frameState.coordinateToPixelMatrix,
+          bottomRight, bottomRight);
+      ol.vec.Mat4.multVec2(frameState.coordinateToPixelMatrix,
+          bottomLeft, bottomLeft);
+
+      context.save();
+      context.beginPath();
+      context.moveTo(topLeft[0], topLeft[1]);
+      context.lineTo(topRight[0], topRight[1]);
+      context.lineTo(bottomRight[0], bottomRight[1]);
+      context.lineTo(bottomLeft[0], bottomLeft[1]);
+      context.clip();
+    }
+
     var imageTransform = this.getImageTransform();
     // for performance reasons, context.save / context.restore is not used
     // to save and restore the transformation matrix and the opacity.
@@ -72,6 +103,10 @@ ol.renderer.canvas.Layer.prototype.composeFrame =
       context.setTransform(1, 0, 0, 1, 0, 0);
     }
     context.globalAlpha = alpha;
+
+    if (clipped) {
+      context.restore();
+    }
   }
 
   this.dispatchPostComposeEvent(context, frameState);
@@ -170,6 +205,14 @@ ol.renderer.canvas.Layer.prototype.getTransform = function(frameState) {
       -viewState.rotation,
       -viewState.center[0], -viewState.center[1]);
 };
+
+
+/**
+ * @param {olx.FrameState} frameState Frame state.
+ * @param {ol.layer.LayerState} layerState Layer state.
+ * @return {boolean} whether composeFrame should be called.
+ */
+ol.renderer.canvas.Layer.prototype.prepareFrame = goog.abstractMethod;
 
 
 /**

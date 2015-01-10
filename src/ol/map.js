@@ -166,6 +166,21 @@ ol.Map = function(options) {
   var optionsInternal = ol.Map.createOptionsInternal(options);
 
   /**
+   * @type {boolean}
+   * @private
+   */
+  this.loadTilesWhileAnimating_ = goog.isDef(options.loadTilesWhileAnimating) ?
+      options.loadTilesWhileAnimating : false;
+
+  /**
+   * @type {boolean}
+   * @private
+   */
+  this.loadTilesWhileInteracting_ =
+      goog.isDef(options.loadTilesWhileInteracting) ?
+          options.loadTilesWhileInteracting : false;
+
+  /**
    * @private
    * @type {number}
    */
@@ -215,7 +230,7 @@ ol.Map = function(options) {
    * @private
    * @type {ol.Extent}
    */
-  this.previousExtent_ = null;
+  this.previousExtent_ = ol.extent.createEmpty();
 
   /**
    * @private
@@ -265,7 +280,7 @@ ol.Map = function(options) {
     goog.events.EventType.TOUCHSTART,
     goog.events.EventType.MSPOINTERDOWN,
     ol.MapBrowserEvent.EventType.POINTERDOWN,
-    goog.events.EventType.MOUSEWHEEL
+    goog.userAgent.GECKO ? 'DOMMouseScroll' : 'mousewheel'
   ], goog.events.Event.stopPropagation);
   goog.dom.appendChild(this.viewport_, this.overlayContainerStopEvent_);
 
@@ -301,12 +316,6 @@ ol.Map = function(options) {
    * @private
    */
   this.controls_ = optionsInternal.controls;
-
-  /**
-   * @type {olx.DeviceOptions}
-   * @private
-   */
-  this.deviceOptions_ = optionsInternal.deviceOptions;
 
   /**
    * @type {ol.Collection.<ol.interaction.Interaction>}
@@ -592,18 +601,25 @@ ol.Map.prototype.getEventCoordinate = function(event) {
 
 
 /**
- * Returns the map pixel position for a browser event.
+ * Returns the map pixel position for a browser event relative to the viewport.
  * @param {Event} event Event.
  * @return {ol.Pixel} Pixel.
  * @api stable
  */
 ol.Map.prototype.getEventPixel = function(event) {
-  // goog.style.getRelativePosition is based on event.targetTouches,
-  // but touchend and touchcancel events have no targetTouches when
-  // the last finger is removed from the screen.
-  // So we ourselves compute the position of touch events.
-  // See https://github.com/google/closure-library/pull/323
-  if (goog.isDef(event.changedTouches)) {
+  // Use the offsetX and offsetY values if available.
+  // See http://www.w3.org/TR/cssom-view/#dom-mouseevent-offsetx and
+  // http://www.w3.org/TR/cssom-view/#dom-mouseevent-offsety
+  if (goog.isDef(event.offsetX) && goog.isDef(event.offsetY)) {
+    return [event.offsetX, event.offsetY];
+  } else if (goog.isDef(event.changedTouches)) {
+    // offsetX and offsetY are not defined for Touch Event
+    //
+    // goog.style.getRelativePosition is based on event.targetTouches,
+    // but touchend and touchcancel events have no targetTouches when
+    // the last finger is removed from the screen.
+    // So we ourselves compute the position of touch events.
+    // See https://github.com/google/closure-library/pull/323
     var touch = event.changedTouches[0];
     var viewportPosition = goog.style.getClientPosition(this.viewport_);
     return [
@@ -611,6 +627,8 @@ ol.Map.prototype.getEventPixel = function(event) {
       touch.clientY - viewportPosition.y
     ];
   } else {
+    // Compute offsetX and offsetY values for browsers that don't implement
+    // cssom-view specification
     var eventPosition = goog.style.getRelativePosition(event, this.viewport_);
     return [eventPosition.x, eventPosition.y];
   }
@@ -634,6 +652,19 @@ goog.exportProperty(
     ol.Map.prototype,
     'getTarget',
     ol.Map.prototype.getTarget);
+
+
+/**
+ * Get the DOM element into which this map is rendered. In contrast to
+ * `getTarget` this method always return an `Element`, or `null` if the
+ * map has no target.
+ * @return {Element} The element that the map is rendered in.
+ * @api
+ */
+ol.Map.prototype.getTargetElement = function() {
+  var target = this.getTarget();
+  return goog.isDef(target) ? goog.dom.getElement(target) : null;
+};
 
 
 /**
@@ -861,7 +892,7 @@ ol.Map.prototype.handleMapBrowserEvent = function(mapBrowserEvent) {
       if (!interaction.getActive()) {
         continue;
       }
-      var cont = interaction.handleMapBrowserEvent(mapBrowserEvent);
+      var cont = interaction.handleEvent(mapBrowserEvent);
       if (!cont) {
         break;
       }
@@ -893,15 +924,14 @@ ol.Map.prototype.handlePostRender = function() {
     var tileSourceCount = 0;
     if (!goog.isNull(frameState)) {
       var hints = frameState.viewHints;
-      var deviceOptions = this.deviceOptions_;
       if (hints[ol.ViewHint.ANIMATING]) {
-        maxTotalLoading = deviceOptions.loadTilesWhileAnimating === false ?
-            0 : 8;
+        maxTotalLoading = this.loadTilesWhileAnimating_ === true ?
+            8 : 0;
         maxNewLoads = 2;
       }
       if (hints[ol.ViewHint.INTERACTING]) {
-        maxTotalLoading = deviceOptions.loadTilesWhileInteracting === false ?
-            0 : 8;
+        maxTotalLoading = this.loadTilesWhileInteracting_ === true ?
+            8 : 0;
         maxNewLoads = 2;
       }
       tileSourceCount = goog.object.getCount(frameState.wantedTiles);
@@ -1252,13 +1282,12 @@ ol.Map.prototype.renderFrame_ = function(time) {
     var idle = this.preRenderFunctions_.length === 0 &&
         !frameState.viewHints[ol.ViewHint.ANIMATING] &&
         !frameState.viewHints[ol.ViewHint.INTERACTING] &&
-        (!this.previousExtent_ ||
-            !ol.extent.equals(frameState.extent, this.previousExtent_));
+        !ol.extent.equals(frameState.extent, this.previousExtent_);
 
     if (idle) {
       this.dispatchEvent(
           new ol.MapEvent(ol.MapEventType.MOVEEND, this, frameState));
-      this.previousExtent_ = ol.extent.clone(frameState.extent);
+      ol.extent.clone(frameState.extent, this.previousExtent_);
     }
   }
 
@@ -1376,7 +1405,6 @@ ol.Map.prototype.unskipFeature = function(feature) {
 
 /**
  * @typedef {{controls: ol.Collection.<ol.control.Control>,
- *            deviceOptions: olx.DeviceOptions,
  *            interactions: ol.Collection.<ol.interaction.Interaction>,
  *            keyboardEventTarget: (Element|Document),
  *            logos: Object,
@@ -1490,9 +1518,6 @@ ol.Map.createOptionsInternal = function(options) {
     controls = ol.control.defaults();
   }
 
-  var deviceOptions = goog.isDef(options.deviceOptions) ?
-      options.deviceOptions : /** @type {olx.DeviceOptions} */ ({});
-
   var interactions;
   if (goog.isDef(options.interactions)) {
     if (goog.isArray(options.interactions)) {
@@ -1519,7 +1544,6 @@ ol.Map.createOptionsInternal = function(options) {
 
   return {
     controls: controls,
-    deviceOptions: deviceOptions,
     interactions: interactions,
     keyboardEventTarget: keyboardEventTarget,
     logos: logos,

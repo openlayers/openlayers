@@ -130,11 +130,11 @@ oli.control.Control = function() {};
 oli.control.Control.prototype.setMap = function(map) {};
 
 
+
 /**
  * @type {Object}
  */
 oli.interaction;
-
 
 
 /**

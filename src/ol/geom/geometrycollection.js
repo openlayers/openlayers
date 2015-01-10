@@ -265,12 +265,29 @@ ol.geom.GeometryCollection.prototype.setGeometriesArray = function(geometries) {
 
 /**
  * @inheritDoc
+ * @api stable
  */
 ol.geom.GeometryCollection.prototype.applyTransform = function(transformFn) {
   var geometries = this.geometries_;
   var i, ii;
   for (i = 0, ii = geometries.length; i < ii; ++i) {
     geometries[i].applyTransform(transformFn);
+  }
+  this.changed();
+};
+
+
+/**
+ * Translate the geometry.
+ * @param {number} deltaX Delta X.
+ * @param {number} deltaY Delta Y.
+ * @api
+ */
+ol.geom.GeometryCollection.prototype.translate = function(deltaX, deltaY) {
+  var geometries = this.geometries_;
+  var i, ii;
+  for (i = 0, ii = geometries.length; i < ii; ++i) {
+    geometries[i].translate(deltaX, deltaY);
   }
   this.changed();
 };

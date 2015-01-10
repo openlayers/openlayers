@@ -105,9 +105,7 @@ if ('download' in exportGPXElement) {
         clone.getGeometry().transform(projection, 'EPSG:4326');
         features.push(clone);
       });
-      var node = new ol.format.GPX().writeFeatures(features);
-      var string = new XMLSerializer().serializeToString(
-          /** @type {Node} */ (node));
+      var string = new ol.format.GPX().writeFeatures(features);
       var base64 = exampleNS.strToBase64(string);
       exportGPXElement.href =
           'data:text/gpx+xml;base64,' + base64;

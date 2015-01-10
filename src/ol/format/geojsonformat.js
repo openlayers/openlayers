@@ -478,39 +478,44 @@ ol.format.GeoJSON.prototype.readProjectionFromObject = function(object) {
 
 
 /**
- * Encode a feature as a GeoJSON Feature object.
+ * Encode a feature as a GeoJSON Feature string.
  *
  * @function
  * @param {ol.Feature} feature Feature.
  * @param {olx.format.WriteOptions} options Write options.
- * @return {GeoJSONFeature} GeoJSON.
+ * @return {string} GeoJSON.
  * @api stable
  */
 ol.format.GeoJSON.prototype.writeFeature;
 
 
 /**
- * @inheritDoc
+ * Encode a feature as a GeoJSON Feature object.
+ *
+ * @param {ol.Feature} feature Feature.
+ * @param {olx.format.WriteOptions=} opt_options Write options.
+ * @api
+ * @return {Object} Object.
  */
 ol.format.GeoJSON.prototype.writeFeatureObject = function(
     feature, opt_options) {
+  opt_options = this.adaptOptions(opt_options);
   var object = {
     'type': 'Feature'
   };
   var id = feature.getId();
   if (goog.isDefAndNotNull(id)) {
-    goog.object.set(object, 'id', id);
+    object['id'] = id;
   }
   var geometry = feature.getGeometry();
   if (goog.isDefAndNotNull(geometry)) {
-    goog.object.set(
-        object, 'geometry',
-        ol.format.GeoJSON.writeGeometry_(geometry, opt_options));
+    object['geometry'] =
+        ol.format.GeoJSON.writeGeometry_(geometry, opt_options);
   }
   var properties = feature.getProperties();
-  goog.object.remove(properties, 'geometry');
+  goog.object.remove(properties, feature.getGeometryName());
   if (!goog.object.isEmpty(properties)) {
-    goog.object.set(object, 'properties', properties);
+    object['properties'] = properties;
   }
   return object;
 };
@@ -522,17 +527,23 @@ ol.format.GeoJSON.prototype.writeFeatureObject = function(
  * @function
  * @param {Array.<ol.Feature>} features Features.
  * @param {olx.format.WriteOptions} options Write options.
- * @return {GeoJSONObject} GeoJSON.
+ * @return {string} GeoJSON.
  * @api stable
  */
 ol.format.GeoJSON.prototype.writeFeatures;
 
 
 /**
- * @inheritDoc
+ * Encode an array of features as a GeoJSON object.
+ *
+ * @param {Array.<ol.Feature>} features Features.
+ * @param {olx.format.WriteOptions=} opt_options Write options.
+ * @return {Object} GeoJSON Object.
+ * @api
  */
 ol.format.GeoJSON.prototype.writeFeaturesObject =
     function(features, opt_options) {
+  opt_options = this.adaptOptions(opt_options);
   var objects = [];
   var i, ii;
   for (i = 0, ii = features.length; i < ii; ++i) {
@@ -546,19 +557,27 @@ ol.format.GeoJSON.prototype.writeFeaturesObject =
 
 
 /**
- * Encode a geometry as GeoJSON.
+ * Encode a geometry as a GeoJSON string.
  *
  * @function
  * @param {ol.geom.Geometry} geometry Geometry.
  * @param {olx.format.WriteOptions} options Write options.
- * @return {GeoJSONGeometry|GeoJSONGeometryCollection} GeoJSON.
+ * @return {string} GeoJSON.
  * @api stable
  */
 ol.format.GeoJSON.prototype.writeGeometry;
 
 
 /**
- * @inheritDoc
+ * Encode a geometry as a GeoJSON object.
+ *
+ * @param {ol.geom.Geometry} geometry Geometry.
+ * @param {olx.format.WriteOptions=} opt_options Write options.
+ * @return {GeoJSONGeometry|GeoJSONGeometryCollection} Object.
+ * @api
  */
-ol.format.GeoJSON.prototype.writeGeometryObject =
-    ol.format.GeoJSON.writeGeometry_;
+ol.format.GeoJSON.prototype.writeGeometryObject = function(geometry,
+    opt_options) {
+  return ol.format.GeoJSON.writeGeometry_(geometry,
+      this.adaptOptions(opt_options));
+};

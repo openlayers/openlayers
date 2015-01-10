@@ -55,6 +55,9 @@ var map = new ol.Map({
     })
   ],
   renderer: exampleNS.getRendererFromQueryString(),
+  // Improve user experience by loading tiles while animating. Will make
+  // animations stutter on mobile or slow devices.
+  loadTilesWhileAnimating: true,
   target: 'map',
   controls: ol.control.defaults({
     attributionOptions: /** @type {olx.control.AttributionOptions} */ ({

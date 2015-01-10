@@ -23,7 +23,7 @@ describe('ol.Map', function() {
   describe('#addInteraction()', function() {
     it('adds an interaction to the map', function() {
       var map = new ol.Map({});
-      var interaction = new ol.interaction.Interaction();
+      var interaction = new ol.interaction.Interaction({});
 
       var before = map.getInteractions().getLength();
       map.addInteraction(interaction);
@@ -36,7 +36,7 @@ describe('ol.Map', function() {
   describe('#removeInteraction()', function() {
     it('removes an interaction from the map', function() {
       var map = new ol.Map({});
-      var interaction = new ol.interaction.Interaction();
+      var interaction = new ol.interaction.Interaction({});
 
       var before = map.getInteractions().getLength();
       map.addInteraction(interaction);

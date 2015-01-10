@@ -38,7 +38,7 @@ ol.source.ServerVector = function(options) {
   /**
    * @private
    * @type {function(this: ol.source.ServerVector, ol.Extent, number,
-   *                 ol.proj.Projection): string}
+   *                 ol.proj.Projection)}
    */
   this.loader_ = options.loader;
 

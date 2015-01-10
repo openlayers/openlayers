@@ -6,7 +6,6 @@ goog.require('ol.ImageState');
 goog.require('ol.TileRange');
 goog.require('ol.TileState');
 goog.require('ol.layer.Layer');
-goog.require('ol.layer.LayerState');
 goog.require('ol.source.Source');
 goog.require('ol.source.State');
 goog.require('ol.source.Tile');
@@ -93,14 +92,6 @@ ol.renderer.Layer.prototype.handleImageChange = function(event) {
     this.renderIfReadyAndVisible();
   }
 };
-
-
-/**
- * @param {olx.FrameState} frameState Frame state.
- * @param {ol.layer.LayerState} layerState Layer state.
- * @return {boolean} whether composeFrame should be called.
- */
-ol.renderer.Layer.prototype.prepareFrame = goog.abstractMethod;
 
 
 /**
@@ -255,8 +246,7 @@ ol.renderer.Layer.prototype.snapCenterToPixel =
  * @param {ol.proj.Projection} projection Projection.
  * @param {ol.Extent} extent Extent.
  * @param {number} currentZ Current Z.
- * @param {number|undefined} preload Load low resolution tiles up to 'preload'
- *     levels.
+ * @param {number} preload Load low resolution tiles up to 'preload' levels.
  * @param {function(this: T, ol.Tile)=} opt_tileCallback Tile callback.
  * @param {T=} opt_this Object to use as `this` in `opt_tileCallback`.
  * @protected
@@ -273,9 +263,6 @@ ol.renderer.Layer.prototype.manageTilePyramid = function(
   var tileQueue = frameState.tileQueue;
   var minZoom = tileGrid.getMinZoom();
   var tile, tileRange, tileResolution, x, y, z;
-  if (!goog.isDef(preload)) {
-    preload = 0;
-  }
   for (z = currentZ; z >= minZoom; --z) {
     tileRange = tileGrid.getTileRangeForExtentAndZ(extent, z, tileRange);
     tileResolution = tileGrid.getResolution(z);

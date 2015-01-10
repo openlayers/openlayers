@@ -46,3 +46,11 @@ ol.renderer.dom.Layer.prototype.composeFrame = goog.nullFunction;
 ol.renderer.dom.Layer.prototype.getTarget = function() {
   return this.target;
 };
+
+
+/**
+ * @param {olx.FrameState} frameState Frame state.
+ * @param {ol.layer.LayerState} layerState Layer state.
+ * @return {boolean} whether composeFrame should be called.
+ */
+ol.renderer.dom.Layer.prototype.prepareFrame = goog.abstractMethod;

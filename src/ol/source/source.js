@@ -3,7 +3,6 @@ goog.provide('ol.source.State');
 
 goog.require('goog.events.EventType');
 goog.require('ol.Attribution');
-goog.require('ol.Extent');
 goog.require('ol.Observable');
 goog.require('ol.proj');
 
@@ -78,7 +77,6 @@ goog.inherits(ol.source.Source, ol.Observable);
 
 
 /**
- * @param {ol.Extent} extent Extent.
  * @param {number} resolution Resolution.
  * @param {number} rotation Rotation.
  * @param {ol.Coordinate} coordinate Coordinate.

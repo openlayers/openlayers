@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wfs:FeatureCollection numberOfFeatures="3" timeStamp="2008-09-12T00:24:21.013-04:00"
+    xsi:schemaLocation="http://www.openplans.org/topp http://sigma.openplans.org:80/geoserver/wfs?service=WFS&amp;version=1.1.0&amp;request=DescribeFeatureType&amp;typeName=topp:states http://www.opengis.net/wfs http://sigma.openplans.org:80/geoserver/schemas/wfs/1.1.0/wfs.xsd"
+    xmlns:ogc="http://www.opengis.net/ogc" xmlns:opengeo="http://open-geo.com"
+    xmlns:tiger="http://www.census.gov" xmlns:wfs="http://www.opengis.net/wfs"
+    xmlns:topp="http://www.openplans.org/topp" xmlns:seb="http://seb.com"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ows="http://www.opengis.net/ows"
+    xmlns:gml="http://www.opengis.net/gml" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <gml:featureMembers>
+        <topp:states gml:id="states.1">
+            <gml:boundedBy>
+                <gml:Envelope srsName="urn:x-ogc:def:crs:EPSG:4326">
+                    <gml:lowerCorner>36.986 -91.516</gml:lowerCorner>
+                    <gml:upperCorner>42.509 -87.507</gml:upperCorner>
+                </gml:Envelope>
+            </gml:boundedBy>
+            <topp:STATE_NAME>Illinois</topp:STATE_NAME>
+            <topp:STATE_FIPS>17</topp:STATE_FIPS>
+            <topp:SUB_REGION>E N Cen</topp:SUB_REGION>
+            <topp:STATE_ABBR>IL</topp:STATE_ABBR>
+            <topp:LAND_KM>143986.61</topp:LAND_KM>
+            <topp:WATER_KM>1993.335</topp:WATER_KM>
+            <topp:PERSONS>1.143E7</topp:PERSONS>
+            <topp:FAMILIES>2924880.0</topp:FAMILIES>
+            <topp:HOUSHOLD>4202240.0</topp:HOUSHOLD>
+            <topp:MALE>5552233.0</topp:MALE>
+            <topp:FEMALE>5878369.0</topp:FEMALE>
+            <topp:WORKERS>4199206.0</topp:WORKERS>
+            <topp:DRVALONE>3741715.0</topp:DRVALONE>
+            <topp:CARPOOL>652603.0</topp:CARPOOL>
+            <topp:PUBTRANS>538071.0</topp:PUBTRANS>
+            <topp:EMPLOYED>5417967.0</topp:EMPLOYED>
+            <topp:UNEMPLOY>385040.0</topp:UNEMPLOY>
+            <topp:SERVICE>1360159.0</topp:SERVICE>
+            <topp:MANUAL>828906.0</topp:MANUAL>
+            <topp:P_MALE>0.486</topp:P_MALE>
+            <topp:P_FEMALE>0.514</topp:P_FEMALE>
+            <topp:SAMP_POP>1747776.0</topp:SAMP_POP>
+        </topp:states>
+    </gml:featureMembers>
+</wfs:FeatureCollection>

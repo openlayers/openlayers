@@ -12,6 +12,7 @@ goog.require('ol.ImageState');
 goog.require('ol.ViewHint');
 goog.require('ol.extent');
 goog.require('ol.layer.Image');
+goog.require('ol.proj');
 goog.require('ol.renderer.webgl.Layer');
 
 
@@ -79,12 +80,11 @@ ol.renderer.webgl.ImageLayer.prototype.forEachFeatureAtPixel =
     function(coordinate, frameState, callback, thisArg) {
   var layer = this.getLayer();
   var source = layer.getSource();
-  var extent = frameState.extent;
   var resolution = frameState.viewState.resolution;
   var rotation = frameState.viewState.rotation;
   var skippedFeatureUids = frameState.skippedFeatureUids;
   return source.forEachFeatureAtPixel(
-      extent, resolution, rotation, coordinate, skippedFeatureUids,
+      resolution, rotation, coordinate, skippedFeatureUids,
 
       /**
        * @param {ol.Feature} feature Feature.
@@ -100,7 +100,7 @@ ol.renderer.webgl.ImageLayer.prototype.forEachFeatureAtPixel =
  * @inheritDoc
  */
 ol.renderer.webgl.ImageLayer.prototype.prepareFrame =
-    function(frameState, layerState) {
+    function(frameState, layerState, context) {
 
   var gl = this.getWebGLMapRenderer().getGL();
 
@@ -124,8 +124,14 @@ ol.renderer.webgl.ImageLayer.prototype.prepareFrame =
   }
   if (!hints[ol.ViewHint.ANIMATING] && !hints[ol.ViewHint.INTERACTING] &&
       !ol.extent.isEmpty(renderedExtent)) {
+    var projection = viewState.projection;
+    var sourceProjection = imageSource.getProjection();
+    if (!goog.isNull(sourceProjection)) {
+      goog.asserts.assert(ol.proj.equivalent(projection, sourceProjection));
+      projection = sourceProjection;
+    }
     var image_ = imageSource.getImage(renderedExtent, viewResolution,
-        frameState.pixelRatio, viewState.projection);
+        frameState.pixelRatio, projection);
     if (!goog.isNull(image_)) {
       var imageState = image_.getState();
       if (imageState == ol.ImageState.IDLE) {

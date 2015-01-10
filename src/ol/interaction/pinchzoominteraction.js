@@ -21,9 +21,13 @@ goog.require('ol.interaction.Pointer');
  */
 ol.interaction.PinchZoom = function(opt_options) {
 
-  var options = goog.isDef(opt_options) ? opt_options : {};
+  goog.base(this, {
+    handleDownEvent: ol.interaction.PinchZoom.handleDownEvent_,
+    handleDragEvent: ol.interaction.PinchZoom.handleDragEvent_,
+    handleUpEvent: ol.interaction.PinchZoom.handleUpEvent_
+  });
 
-  goog.base(this);
+  var options = goog.isDef(opt_options) ? opt_options : {};
 
   /**
    * @private
@@ -54,10 +58,11 @@ goog.inherits(ol.interaction.PinchZoom, ol.interaction.Pointer);
 
 
 /**
- * @inheritDoc
+ * @param {ol.MapBrowserPointerEvent} mapBrowserEvent Event.
+ * @this {ol.interaction.PinchZoom}
+ * @private
  */
-ol.interaction.PinchZoom.prototype.handlePointerDrag =
-    function(mapBrowserEvent) {
+ol.interaction.PinchZoom.handleDragEvent_ = function(mapBrowserEvent) {
   goog.asserts.assert(this.targetPointers.length >= 2);
   var scaleDelta = 1.0;
 
@@ -98,9 +103,12 @@ ol.interaction.PinchZoom.prototype.handlePointerDrag =
 
 
 /**
- * @inheritDoc
+ * @param {ol.MapBrowserPointerEvent} mapBrowserEvent Event.
+ * @return {boolean} Stop drag sequence?
+ * @this {ol.interaction.PinchZoom}
+ * @private
  */
-ol.interaction.PinchZoom.prototype.handlePointerUp =
+ol.interaction.PinchZoom.handleUpEvent_ =
     function(mapBrowserEvent) {
   if (this.targetPointers.length < 2) {
     var map = mapBrowserEvent.map;
@@ -121,9 +129,12 @@ ol.interaction.PinchZoom.prototype.handlePointerUp =
 
 
 /**
- * @inheritDoc
+ * @param {ol.MapBrowserPointerEvent} mapBrowserEvent Event.
+ * @return {boolean} Start drag sequence?
+ * @this {ol.interaction.PinchZoom}
+ * @private
  */
-ol.interaction.PinchZoom.prototype.handlePointerDown =
+ol.interaction.PinchZoom.handleDownEvent_ =
     function(mapBrowserEvent) {
   if (this.targetPointers.length >= 2) {
     var map = mapBrowserEvent.map;
@@ -139,3 +150,9 @@ ol.interaction.PinchZoom.prototype.handlePointerDown =
     return false;
   }
 };
+
+
+/**
+ * @inheritDoc
+ */
+ol.interaction.PinchZoom.prototype.shouldStopEvent = goog.functions.FALSE;

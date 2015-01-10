@@ -35,7 +35,15 @@ ol.layer.Vector = function(opt_options) {
   var baseOptions = goog.object.clone(options);
 
   delete baseOptions.style;
+  delete baseOptions.renderBuffer;
   goog.base(this, /** @type {olx.layer.LayerOptions} */ (baseOptions));
+
+  /**
+   * @type {number}
+   * @private
+   */
+  this.renderBuffer_ = goog.isDef(options.renderBuffer) ?
+      options.renderBuffer : 100;
 
   /**
    * User provided style.
@@ -55,6 +63,14 @@ ol.layer.Vector = function(opt_options) {
 
 };
 goog.inherits(ol.layer.Vector, ol.layer.Layer);
+
+
+/**
+ * @return {number|undefined} Render buffer.
+ */
+ol.layer.Vector.prototype.getRenderBuffer = function() {
+  return this.renderBuffer_;
+};
 
 
 /**

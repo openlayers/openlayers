@@ -113,8 +113,12 @@ ol.control.Attribution = function(opt_options) {
   var element = goog.dom.createDom(goog.dom.TagName.DIV,
       cssClasses, this.ulElement_, button);
 
+  var render = goog.isDef(options.render) ?
+      options.render : ol.control.Attribution.render;
+
   goog.base(this, {
     element: element,
+    render: render,
     target: options.target
   });
 
@@ -192,9 +196,11 @@ ol.control.Attribution.prototype.getSourceAttributions = function(frameState) {
 
 
 /**
- * @inheritDoc
+ * @param {ol.MapEvent} mapEvent Map event.
+ * @this {ol.control.Attribution}
+ * @api
  */
-ol.control.Attribution.prototype.handleMapPostrender = function(mapEvent) {
+ol.control.Attribution.render = function(mapEvent) {
   this.updateElement_(mapEvent.frameState);
 };
 
