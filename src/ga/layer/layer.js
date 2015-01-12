@@ -107,6 +107,42 @@ ga.layer.create = function(layer, options) {
         return layerConfig['searchable'];
       }
     },
+    timeEnabled: {
+      get: function() {
+        return layerConfig['timeEnabled'];
+      }     
+    },
+    timestamps: {
+      get: function() {
+        return layerConfig['timestamps'];
+      }
+    },
+    time: {
+      get: function() {
+        if (olLayer instanceof ol.layer.Layer) {
+          var src = olLayer.getSource();
+          if (src instanceof ol.source.WMTS) {
+            return src.getDimensions().Time;
+          } else if (src instanceof ol.source.ImageWMS ||
+            src instanceof ol.source.TileWMS) {
+            return src.getParams().TIME;
+          }
+        }
+        return undefined;
+      },
+      set: function(val) {
+        if (olLayer instanceof ol.layer.Layer) {
+          var src = olLayer.getSource();
+          if (src instanceof ol.source.WMTS) {
+            src.updateDimensions({'Time': val});
+          } else if (src instanceof ol.source.ImageWMS ||
+              src instanceof ol.source.TileWMS) {
+            src.updateParams({'TIME': val});
+          }
+          olLayer.set('time', val);
+        }
+      }
+    },
     //[''] annotation is not allowed within
     //compiled code on struct definitions. Therfore,
     //we create those internal properties, which
@@ -187,12 +223,14 @@ ga.source.wmts = function(layer, options) {
         '" target="new">' +
         options['attribution'] + '</a>')
     ],
-    url: ('http://wmts{5-9}.geo.admin.ch/1.0.0/{Layer}/default/'+
-        timestamp + '/21781/' +
+    url: ('http://wmts{5-9}.geo.admin.ch/1.0.0/{Layer}/default/{Time}/21781/' +
         '{TileMatrix}/{TileRow}/{TileCol}.').replace('http:',location.protocol) + extension,
     tileGrid: tileGrid,
     layer: options['serverLayerName'] ? options['serverLayerName'] : layer,
-    requestEncoding: 'REST'
+    requestEncoding: 'REST',
+    dimensions: {
+      'Time': timestamp
+    }
   }));
 };
 
@@ -216,7 +254,8 @@ ga.source.wms = function(layer, options) {
         options['attribution'] + '</a>')
     ],
     params: {
-      'LAYERS': options['wmsLayers'] || layer
+      'LAYERS': options['wmsLayers'] || layer,
+      'TIME': options['timestamp']
     },
     url: options['wmsUrl'].split('?')[0].replace('http:',location.protocol)
   });
@@ -240,7 +279,8 @@ ga.source.imageWms = function(layer, options) {
         options['attribution'] + '</a>')
     ],
     params: {
-      'LAYERS': options['wmsLayers'] || layer
+      'LAYERS': options['wmsLayers'] || layer,
+      'TIME': options['timestamp']
     },
     ratio: 1,
     url: options['wmsUrl'].split('?')[0].replace('http:',location.protocol)
