@@ -42,7 +42,7 @@ as described below.
 The minimum requirements are:
 
 * Git
-* [Node.js](http://nodejs.org/) 
+* [Node.js](http://nodejs.org/) (0.10.x or higher)
 * Python 2.6 or 2.7 with a couple of extra modules (see below)
 * Java 7 (JRE and JDK)
 
