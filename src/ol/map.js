@@ -607,19 +607,12 @@ ol.Map.prototype.getEventCoordinate = function(event) {
  * @api stable
  */
 ol.Map.prototype.getEventPixel = function(event) {
-  // Use the offsetX and offsetY values if available.
-  // See http://www.w3.org/TR/cssom-view/#dom-mouseevent-offsetx and
-  // http://www.w3.org/TR/cssom-view/#dom-mouseevent-offsety
-  if (goog.isDef(event.offsetX) && goog.isDef(event.offsetY)) {
-    return [event.offsetX, event.offsetY];
-  } else if (goog.isDef(event.changedTouches)) {
-    // offsetX and offsetY are not defined for Touch Event
-    //
-    // goog.style.getRelativePosition is based on event.targetTouches,
-    // but touchend and touchcancel events have no targetTouches when
-    // the last finger is removed from the screen.
-    // So we ourselves compute the position of touch events.
-    // See https://github.com/google/closure-library/pull/323
+  // goog.style.getRelativePosition is based on event.targetTouches,
+  // but touchend and touchcancel events have no targetTouches when
+  // the last finger is removed from the screen.
+  // So we ourselves compute the position of touch events.
+  // See https://github.com/google/closure-library/pull/323
+  if (goog.isDef(event.changedTouches)) {
     var touch = event.changedTouches[0];
     var viewportPosition = goog.style.getClientPosition(this.viewport_);
     return [
@@ -627,8 +620,6 @@ ol.Map.prototype.getEventPixel = function(event) {
       touch.clientY - viewportPosition.y
     ];
   } else {
-    // Compute offsetX and offsetY values for browsers that don't implement
-    // cssom-view specification
     var eventPosition = goog.style.getRelativePosition(event, this.viewport_);
     return [eventPosition.x, eventPosition.y];
   }
