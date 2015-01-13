@@ -747,8 +747,10 @@ ol.format.WFS.prototype.readProjectionFromDocument = function(doc) {
 ol.format.WFS.prototype.readProjectionFromNode = function(node) {
   goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT);
   goog.asserts.assert(node.localName == 'FeatureCollection');
-  node = node.firstElementChild.firstElementChild;
-  if (goog.isDefAndNotNull(node)) {
+
+  if (goog.isDefAndNotNull(node.firstElementChild) &&
+      goog.isDefAndNotNull(node.firstElementChild.firstElementChild)) {
+    node = node.firstElementChild.firstElementChild;
     for (var n = node.firstElementChild; !goog.isNull(n);
         n = n.nextElementSibling) {
       if (!(n.childNodes.length === 0 ||
@@ -760,5 +762,6 @@ ol.format.WFS.prototype.readProjectionFromNode = function(node) {
       }
     }
   }
+
   return null;
 };
