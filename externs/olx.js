@@ -3220,6 +3220,7 @@ olx.layer.TileOptions.prototype.useInterimTilesOnError;
  *     saturation: (number|undefined),
  *     source: (ol.source.Vector|undefined),
  *     style: (ol.style.Style|Array.<ol.style.Style>|ol.style.StyleFunction|undefined),
+ *     updateWhileAnimating: (boolean|undefined),
  *     visible: (boolean|undefined)}}
  * @api
  */
@@ -3326,6 +3327,17 @@ olx.layer.VectorOptions.prototype.source;
  * @api stable
  */
 olx.layer.VectorOptions.prototype.style;
+
+
+/**
+ * When set to `true`, feature batches will be recreated during animations.
+ * This means that no vectors will be shown clipped, but the setting will have a
+ * performance impact for large amounts of vector data. When set to `false`,
+ * batches will be recreated when no animation is active.  Default is `false`.
+ * @type {boolean|undefined}
+ * @api
+ */
+olx.layer.VectorOptions.prototype.updateWhileAnimating;
 
 
 /**
