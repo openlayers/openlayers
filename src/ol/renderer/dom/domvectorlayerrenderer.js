@@ -209,7 +209,8 @@ ol.renderer.dom.VectorLayer.prototype.prepareFrame =
       frameState.attributions, vectorSource.getAttributions());
   this.updateLogos(frameState, vectorSource);
 
-  if (!this.dirty_ && (frameState.viewHints[ol.ViewHint.ANIMATING] ||
+  if (!this.dirty_ && (!vectorLayer.getUpdateWhileAnimating() &&
+      frameState.viewHints[ol.ViewHint.ANIMATING] ||
       frameState.viewHints[ol.ViewHint.INTERACTING])) {
     return true;
   }
