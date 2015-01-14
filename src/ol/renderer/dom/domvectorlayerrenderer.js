@@ -83,6 +83,12 @@ ol.renderer.dom.VectorLayer = function(mapRenderer, vectorLayer) {
    */
   this.transform_ = goog.vec.Mat4.createNumber();
 
+  /**
+   * @private
+   * @type {goog.vec.Mat4.Number}
+   */
+  this.elementTransform_ = goog.vec.Mat4.createNumber();
+
 };
 goog.inherits(ol.renderer.dom.VectorLayer, ol.renderer.dom.Layer);
 
@@ -97,22 +103,36 @@ ol.renderer.dom.VectorLayer.prototype.composeFrame =
   goog.asserts.assertInstanceof(vectorLayer, ol.layer.Vector);
 
   var viewState = frameState.viewState;
+  var viewCenter = viewState.center;
   var viewRotation = viewState.rotation;
+  var viewResolution = viewState.resolution;
   var pixelRatio = frameState.pixelRatio;
+  var viewWidth = frameState.size[0];
+  var viewHeight = frameState.size[1];
+  var imageWidth = viewWidth * pixelRatio;
+  var imageHeight = viewHeight * pixelRatio;
 
   var transform = ol.vec.Mat4.makeTransform2D(this.transform_,
-      pixelRatio * frameState.size[0] / 2,
-      pixelRatio * frameState.size[1] / 2,
-      pixelRatio / viewState.resolution,
-      -pixelRatio / viewState.resolution,
-      -viewState.rotation,
-      -viewState.center[0], -viewState.center[1]);
+      pixelRatio * viewWidth / 2,
+      pixelRatio * viewHeight / 2,
+      pixelRatio / viewResolution,
+      -pixelRatio / viewResolution,
+      -viewRotation,
+      -viewCenter[0], -viewCenter[1]);
 
   var context = this.context_;
 
   // Clear the canvas and set the correct size
-  context.canvas.width = frameState.size[0];
-  context.canvas.height = frameState.size[1];
+  context.canvas.width = imageWidth;
+  context.canvas.height = imageHeight;
+
+  var elementTransform = ol.vec.Mat4.makeTransform2D(this.elementTransform_,
+      0, 0,
+      1 / pixelRatio, 1 / pixelRatio,
+      0,
+      -(imageWidth - viewWidth) / 2 * pixelRatio,
+      -(imageHeight - viewHeight) / 2 * pixelRatio);
+  ol.dom.transformElement2D(context.canvas, elementTransform, 6);
 
   this.dispatchEvent_(ol.render.EventType.PRECOMPOSE, frameState, transform);
 

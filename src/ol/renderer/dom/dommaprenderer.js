@@ -224,8 +224,9 @@ ol.renderer.dom.Map.prototype.renderFrame = function(frameState) {
       (map.hasListener(ol.render.EventType.PRECOMPOSE) ||
       map.hasListener(ol.render.EventType.POSTCOMPOSE))) {
     var canvas = this.context_.canvas;
-    canvas.width = frameState.size[0];
-    canvas.height = frameState.size[1];
+    var pixelRatio = frameState.pixelRatio;
+    canvas.width = frameState.size[0] * pixelRatio;
+    canvas.height = frameState.size[1] * pixelRatio;
   }
 
   this.dispatchComposeEvent_(ol.render.EventType.PRECOMPOSE, frameState);
