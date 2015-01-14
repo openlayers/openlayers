@@ -44,6 +44,14 @@ describe('ol.structs.RBush', function() {
       expect(rBush.getInExtent([2, 2, 3, 3])).to.eql([obj]);
     });
 
+    it('don\'t throws an exception if the extent is not modified', function() {
+      expect(function() {
+        rBush.forEach(function(value) {
+          rBush.update([0, 0, 1, 1], obj);
+        });
+      }).not.to.throwException();
+    });
+
   });
 
   describe('with a few objects', function() {
