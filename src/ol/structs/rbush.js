@@ -28,7 +28,7 @@ ol.structs.RBush = function(opt_maxEntries) {
    * A mapping between the objects added to this rbush wrapper
    * and the objects that are actually added to the internal rbush.
    * @private
-   * @type {Object.<number, Object>}
+   * @type {Object.<string, Object>}
    */
   this.items_ = {};
 
