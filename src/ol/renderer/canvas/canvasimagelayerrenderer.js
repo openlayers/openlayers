@@ -131,17 +131,22 @@ ol.renderer.canvas.ImageLayer.prototype.prepareFrame =
   if (!goog.isNull(this.image_)) {
     image = this.image_;
     var imageExtent = image.getExtent();
-    var imageResolution = image.getResolution();
     var imagePixelRatio = image.getPixelRatio();
-    var scale = pixelRatio * imageResolution /
+    var imageResolution = image.getResolution();
+    var imageResolution_w = imageResolution[0];
+    var imageResolution_h = imageResolution[1];
+
+    var scale_w = pixelRatio * imageResolution_w /
+        (viewResolution * imagePixelRatio);
+    var scale_h = pixelRatio * imageResolution_h /
         (viewResolution * imagePixelRatio);
     ol.vec.Mat4.makeTransform2D(this.imageTransform_,
         pixelRatio * frameState.size[0] / 2,
         pixelRatio * frameState.size[1] / 2,
-        scale, scale,
+        scale_w, scale_h,
         viewRotation,
-        imagePixelRatio * (imageExtent[0] - viewCenter[0]) / imageResolution,
-        imagePixelRatio * (viewCenter[1] - imageExtent[3]) / imageResolution);
+        imagePixelRatio * (imageExtent[0] - viewCenter[0]) / imageResolution_w,
+        imagePixelRatio * (viewCenter[1] - imageExtent[3]) / imageResolution_h);
     this.updateAttributions(frameState.attributions, image.getAttributions());
     this.updateLogos(frameState, imageSource);
   }
