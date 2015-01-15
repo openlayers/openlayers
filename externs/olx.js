@@ -980,6 +980,8 @@ olx.control.DefaultsOptions.prototype.zoomOptions;
 
 /**
  * @typedef {{className: (string|undefined),
+ *     label: (string|undefined),
+ *     labelActive: (string|undefined),
  *     tipLabel: (string|undefined),
  *     keys: (boolean|undefined),
  *     target: (Element|undefined)}}
@@ -994,6 +996,23 @@ olx.control.FullScreenOptions;
  * @api
  */
 olx.control.FullScreenOptions.prototype.className;
+
+
+/**
+ * Text label to use for the button. Default is `\u2194` (an arrow).
+ * @type {string|undefined}
+ * @api
+ */
+olx.control.FullScreenOptions.prototype.label;
+
+
+/**
+ * Text label to use for the button when full-screen is active.
+ * Default is `\u00d7` (a cross).
+ * @type {string|undefined}
+ * @api
+ */
+olx.control.FullScreenOptions.prototype.labelActive;
 
 
 /**

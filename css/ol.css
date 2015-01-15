@@ -120,12 +120,6 @@
 .ol-zoom .ol-zoom-out {
   border-radius: 0 0 2px 2px;
 }
-button.ol-full-screen-false:after {
-  content: "\2194";
-}
-button.ol-full-screen-true:after {
-  content: "\00d7";
-}
 
 
 .ol-attribution {
