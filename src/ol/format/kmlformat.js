@@ -1501,7 +1501,7 @@ ol.format.KML.prototype.readPlacemark_ = function(node, objectStack) {
   }
   feature.setProperties(object);
   if (this.extractStyles_) {
-    feature.setStyle(this.featureStyleFunction_);
+    feature.setStyle(goog.bind(this.featureStyleFunction_, feature));
   }
   return feature;
 };

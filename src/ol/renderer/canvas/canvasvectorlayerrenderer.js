@@ -218,7 +218,7 @@ ol.renderer.canvas.VectorLayer.prototype.prepareFrame =
       function(feature) {
     var styles;
     if (goog.isDef(feature.getStyleFunction())) {
-      styles = feature.getStyleFunction().call(feature, resolution);
+      styles = feature.getStyleFunction()(resolution);
     } else if (goog.isDef(vectorLayer.getStyleFunction())) {
       styles = vectorLayer.getStyleFunction()(feature, resolution);
     }

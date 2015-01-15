@@ -259,7 +259,7 @@ ol.source.ImageVector.prototype.renderFeature_ =
     function(feature, resolution, pixelRatio, replayGroup) {
   var styles;
   if (goog.isDef(feature.getStyleFunction())) {
-    styles = feature.getStyleFunction().call(feature, resolution);
+    styles = feature.getStyleFunction()(resolution);
   } else if (goog.isDef(this.styleFunction_)) {
     styles = this.styleFunction_(feature, resolution);
   }
