@@ -114,9 +114,6 @@
   background-color: #4c6079;
   background-color: rgba(0,60,136,0.7);
 }
-.ol-zoom-extent button:after {
-    content: "E";
-}
 .ol-zoom .ol-zoom-in {
   border-radius: 2px 2px 0 0;
 }

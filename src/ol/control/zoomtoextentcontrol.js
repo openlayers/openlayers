@@ -32,12 +32,14 @@ ol.control.ZoomToExtent = function(opt_options) {
   var className = goog.isDef(options.className) ? options.className :
       'ol-zoom-extent';
 
+  var label = goog.isDef(options.label) ?
+      options.label : 'E';
   var tipLabel = goog.isDef(options.tipLabel) ?
       options.tipLabel : 'Fit to extent';
   var button = goog.dom.createDom(goog.dom.TagName.BUTTON, {
     'type': 'button',
     'title': tipLabel
-  });
+  }, label);
 
   goog.events.listen(button, goog.events.EventType.CLICK,
       this.handleClick_, false, this);
