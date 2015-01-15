@@ -1,6 +1,5 @@
 goog.provide('ol.format.Feature');
 
-goog.require('goog.array');
 goog.require('ol.geom.Geometry');
 goog.require('ol.proj');
 
@@ -177,7 +176,7 @@ ol.format.Feature.transformWithOptions = function(
       // FIXME this is necessary because ol.format.GML treats extents
       // as geometries
       return ol.proj.transformExtent(
-          write ? goog.array.clone(geometry) : geometry,
+          write ? geometry.slice() : geometry,
           write ? featureProjection : dataProjection,
           write ? dataProjection : featureProjection);
     }

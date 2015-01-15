@@ -260,7 +260,7 @@ goog.exportProperty(
  * @return {Array.<number>} Hint.
  */
 ol.View.prototype.getHints = function() {
-  return goog.array.clone(this.hints_);
+  return this.hints_.slice();
 };
 
 

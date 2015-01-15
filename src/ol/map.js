@@ -1500,7 +1500,7 @@ ol.Map.createOptionsInternal = function(options) {
   var controls;
   if (goog.isDef(options.controls)) {
     if (goog.isArray(options.controls)) {
-      controls = new ol.Collection(goog.array.clone(options.controls));
+      controls = new ol.Collection(options.controls.slice());
     } else {
       goog.asserts.assertInstanceof(options.controls, ol.Collection);
       controls = options.controls;
@@ -1512,7 +1512,7 @@ ol.Map.createOptionsInternal = function(options) {
   var interactions;
   if (goog.isDef(options.interactions)) {
     if (goog.isArray(options.interactions)) {
-      interactions = new ol.Collection(goog.array.clone(options.interactions));
+      interactions = new ol.Collection(options.interactions.slice());
     } else {
       goog.asserts.assertInstanceof(options.interactions, ol.Collection);
       interactions = options.interactions;
@@ -1524,7 +1524,7 @@ ol.Map.createOptionsInternal = function(options) {
   var overlays;
   if (goog.isDef(options.overlays)) {
     if (goog.isArray(options.overlays)) {
-      overlays = new ol.Collection(goog.array.clone(options.overlays));
+      overlays = new ol.Collection(options.overlays.slice());
     } else {
       goog.asserts.assertInstanceof(options.overlays, ol.Collection);
       overlays = options.overlays;

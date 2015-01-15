@@ -78,7 +78,7 @@ ol.FeatureOverlay = function(opt_options) {
 
   if (goog.isDef(options.features)) {
     if (goog.isArray(options.features)) {
-      this.setFeatures(new ol.Collection(goog.array.clone(options.features)));
+      this.setFeatures(new ol.Collection(options.features.slice()));
     } else {
       goog.asserts.assertInstanceof(options.features, ol.Collection);
       this.setFeatures(options.features);
