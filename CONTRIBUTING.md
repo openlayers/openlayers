@@ -239,6 +239,14 @@ style of the existing OpenLayers 3 code, which includes:
 
  * Do not use assignments inside expressions.
 
+ * Avoid the use of `goog.array.clone` with arrays (use slice instead).
+
+ * Use `array.length = 0` instead of `goog.array.clear`.
+
+ * Use bracket notation instead of `goog.object.set` and `goog.object.get` (with
+   two arguments).
+
+ * Use uppercase for `@const` variables.
 
 ### Pass the integration tests run automatically by the Travis CI system
 
