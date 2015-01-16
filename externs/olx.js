@@ -3393,7 +3393,8 @@ olx.source;
  *     key: string,
  *     imagerySet: string,
  *     maxZoom: (number|undefined),
- *     tileLoadFunction: (ol.TileLoadFunctionType|undefined)}}
+ *     tileLoadFunction: (ol.TileLoadFunctionType|undefined),
+ *     wrapX: (boolean|undefined)}}
  * @api
  */
 olx.source.BingMapsOptions;
@@ -3438,6 +3439,15 @@ olx.source.BingMapsOptions.prototype.maxZoom;
  * @api
  */
 olx.source.BingMapsOptions.prototype.tileLoadFunction;
+
+
+/**
+ * Whether to wrap the world horizontally. Default is `true`.
+ * @type {boolean|undefined}
+ * @api
+ */
+olx.source.BingMapsOptions.prototype.wrapX;
+
 
 /**
  * @typedef {{attributions: (Array.<ol.Attribution>|undefined),
@@ -4304,7 +4314,8 @@ olx.source.TileDebugOptions.prototype.tileGrid;
  *     crossOrigin: (null|string|undefined),
  *     maxZoom: (number|undefined),
  *     tileLoadFunction: (ol.TileLoadFunctionType|undefined),
- *     url: (string|undefined)}}
+ *     url: (string|undefined),
+ *     wrapX: (boolean|undefined)}}
  * @api
  */
 olx.source.OSMOptions;
@@ -4355,6 +4366,14 @@ olx.source.OSMOptions.prototype.tileLoadFunction;
  * @api stable
  */
 olx.source.OSMOptions.prototype.url;
+
+
+/**
+ * Whether to wrap the world horizontally. Default is `true`.
+ * @type {boolean|undefined}
+ * @api
+ */
+olx.source.OSMOptions.prototype.wrapX;
 
 
 /**
