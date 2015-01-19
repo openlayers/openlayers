@@ -35,7 +35,7 @@ goog.inherits(ol.Observable, goog.events.EventTarget);
 
 
 /**
- * Removes an event listener using the key returned by `on()` or `once()`.
+ * Unregister an event listener using the key returned by `on()` or `once()`.
  * @param {goog.events.Key} key The key returned by `on()` or `once()`.
  * @api stable
  */
@@ -66,6 +66,8 @@ ol.Observable.prototype.getRevision = function() {
 
 /**
  * Listen for a certain type of event.
+ * Use {@link ol.Observable.prototype.un} or {@link ol.Observable.unByKey} to
+ * unregister the event listener.
  * @param {string|Array.<string>} type The event type or array of event types.
  * @param {function(?): ?} listener The listener function.
  * @param {Object=} opt_this The object to use as `this` in `listener`.
@@ -79,6 +81,8 @@ ol.Observable.prototype.on = function(type, listener, opt_this) {
 
 /**
  * Listen once for a certain type of event.
+ * Use {@link ol.Observable.prototype.un} or {@link ol.Observable.unByKey} to
+ * unregister the event listener.
  * @param {string|Array.<string>} type The event type or array of event types.
  * @param {function(?): ?} listener The listener function.
  * @param {Object=} opt_this The object to use as `this` in `listener`.
@@ -104,11 +108,12 @@ ol.Observable.prototype.un = function(type, listener, opt_this) {
 
 
 /**
- * Removes an event listener using the key returned by `on()` or `once()`.
- * Note that using the {@link ol.Observable.unByKey} static function is to
- * be preferred.
+ * Unregister an event listener using the key returned by `on()` or `once()`.
+ * This function will be removed in the future.
+ * Use {@link ol.Observable.unByKey} static function instead.
  * @param {goog.events.Key} key The key returned by `on()` or `once()`.
  * @function
+ * @deprecated Use {@link ol.Observable.unByKey} static function.
  * @api stable
  */
 ol.Observable.prototype.unByKey = ol.Observable.unByKey;
