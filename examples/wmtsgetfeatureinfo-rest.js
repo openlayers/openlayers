@@ -1,16 +1,11 @@
 goog.require('ol.Attribution');
 goog.require('ol.Map');
 goog.require('ol.View');
-goog.require('ol.extent');
 goog.require('ol.layer.Tile');
 goog.require('ol.proj');
 goog.require('ol.source.OSM');
 goog.require('ol.source.WMTS');
 goog.require('ol.tilegrid.WMTS');
-
-var projection = ol.proj.get('EPSG:3857');
-var projectionExtent = projection.getExtent();
-var size = ol.extent.getWidth(projectionExtent) / 256;
 
 var attribution = new ol.Attribution({
   html: 'Tiles &copy; <a href="https://labs.koordinates.com/">Koordinates</a>'
@@ -18,19 +13,23 @@ var attribution = new ol.Attribution({
 
 var wmtsSource = new ol.source.WMTS({
   attributions: [attribution],
-  extent: projectionExtent,
   layer: 'layer-7328',
   matrixSet: 'EPSG:3857',
   format: 'image/png',
-  projection: projection,
-  requestEncoding: 'REST',
+  projection: 'EPSG:3857',
   style: 'style=39',
+  requestEncoding: 'REST',
   getFeatureInfoOptions: {
     url: 'https://labs.koordinates.com/services;' +
-        'key=d740ea02e0c44cafb70dce31a774ca10/wmts/',
-    requestEncoding: 'KVP',
+        'key=d740ea02e0c44cafb70dce31a774ca10/wmts/1.0.0/layer/7328/' +
+        'featureinfo/{TileMatrixSet}/{TileMatrix}/{TileCol}/{TileRow}/' +
+        '{I}/{J}.json',
+    requestEncoding: 'REST',
     infoFormat: 'application/json'
   },
+  url: 'https://koordinates-tiles-a.global.ssl.fastly.net/' +
+      'services;key=d740ea02e0c44cafb70dce31a774ca10/tiles/v4/layer=7328,' +
+      '{style}/{TileMatrixSet}/{TileMatrix}/{TileCol}/{TileRow}.png',
   tileGrid: new ol.tilegrid.WMTS({
     origin: [-20037508.3428, 20037508.3428],
     resolutions: [
@@ -58,10 +57,7 @@ var wmtsSource = new ol.source.WMTS({
     matrixIds: [
       0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19
     ]
-  }),
-  url: 'https://koordinates-tiles-a.global.ssl.fastly.net/services;' +
-      'key=d740ea02e0c44cafb70dce31a774ca10/tiles/v4/layer=7328,{style}/' +
-      '{TileMatrixSet}/{TileMatrix}/{TileCol}/{TileRow}.png'
+  })
 });
 
 
@@ -97,6 +93,6 @@ map.on('singleclick', function(evt) {
       evt.coordinate, viewResolution, viewProjection);
   if (url) {
     document.getElementById('info').innerHTML =
-        '<iframe seamless src="' + url + '"></iframe>';
+        '<iframe seamless frameBorder="0" src="' + url + '"></iframe>';
   }
 });
