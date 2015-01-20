@@ -111,6 +111,12 @@ var GeoJSONFeature = function() {};
 
 
 /**
+ * @type {!Array.<number>|undefined}
+ */
+GeoJSONFeature.prototype.bbox;
+
+
+/**
  * @type {GeoJSONGeometry}
  */
 GeoJSONFeature.prototype.geometry;
