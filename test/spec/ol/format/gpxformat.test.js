@@ -7,6 +7,18 @@ describe('ol.format.GPX', function() {
     format = new ol.format.GPX();
   });
 
+  describe('#readProjection', function() {
+    it('returns the default projection from document', function() {
+      var projection = format.readProjectionFromDocument();
+      expect(projection).to.eql(ol.proj.get('EPSG:4326'));
+    });
+
+    it('returns the default projection from node', function() {
+      var projection = format.readProjectionFromNode();
+      expect(projection).to.eql(ol.proj.get('EPSG:4326'));
+    });
+  });
+
   describe('readFeatures', function() {
 
     describe('rte', function() {
