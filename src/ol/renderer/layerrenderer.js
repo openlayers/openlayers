@@ -2,6 +2,8 @@ goog.provide('ol.renderer.Layer');
 
 goog.require('goog.Disposable');
 goog.require('goog.asserts');
+goog.require('goog.events');
+goog.require('goog.events.EventType');
 goog.require('ol.ImageState');
 goog.require('ol.TileRange');
 goog.require('ol.TileState');
@@ -84,13 +86,41 @@ ol.renderer.Layer.prototype.getMapRenderer = function() {
 /**
  * Handle changes in image state.
  * @param {goog.events.Event} event Image change event.
- * @protected
+ * @private
  */
-ol.renderer.Layer.prototype.handleImageChange = function(event) {
+ol.renderer.Layer.prototype.handleImageChange_ = function(event) {
   var image = /** @type {ol.Image} */ (event.target);
   if (image.getState() === ol.ImageState.LOADED) {
     this.renderIfReadyAndVisible();
   }
+};
+
+
+/**
+ * Load the image if not already loaded, and register the image change
+ * listener if needed.
+ * @param {ol.ImageBase} image Image.
+ * @return {boolean} `true` if the image is already loaded, `false`
+ *     otherwise.
+ * @protected
+ */
+ol.renderer.Layer.prototype.loadImage = function(image) {
+  var imageState = image.getState();
+  if (imageState != ol.ImageState.LOADED &&
+      imageState != ol.ImageState.ERROR) {
+    // the image is either "idle" or "loading", register the change
+    // listener (a noop if the listener was already registered)
+    goog.asserts.assert(imageState == ol.ImageState.IDLE ||
+        imageState == ol.ImageState.LOADING);
+    goog.events.listenOnce(image, goog.events.EventType.CHANGE,
+        this.handleImageChange_, false, this);
+  }
+  if (imageState == ol.ImageState.IDLE) {
+    image.load();
+    imageState = image.getState();
+    goog.asserts.assert(imageState == ol.ImageState.LOADING);
+  }
+  return imageState == ol.ImageState.LOADED;
 };
 
 
