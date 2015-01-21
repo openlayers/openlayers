@@ -4,6 +4,13 @@ describe('ol.format.WKT', function() {
 
   var format = new ol.format.WKT();
 
+  describe('#readProjectionFromText', function() {
+    it('returns the default projection', function() {
+      var projection = format.readProjectionFromText('POINT(1 2)');
+      expect(projection).to.be(null);
+    });
+  });
+
   describe('#readGeometry()', function() {
 
     it('transforms with dataProjection and featureProjection', function() {

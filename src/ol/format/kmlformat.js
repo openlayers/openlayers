@@ -1722,22 +1722,6 @@ ol.format.KML.prototype.readProjection;
 
 
 /**
- * @inheritDoc
- */
-ol.format.KML.prototype.readProjectionFromDocument = function(doc) {
-  return this.defaultDataProjection;
-};
-
-
-/**
- * @inheritDoc
- */
-ol.format.KML.prototype.readProjectionFromNode = function(node) {
-  return this.defaultDataProjection;
-};
-
-
-/**
  * @param {Node} node Node to append a TextNode with the color to.
  * @param {ol.Color|string} color Color.
  * @private

@@ -502,22 +502,6 @@ ol.format.GPX.prototype.readProjection;
 
 
 /**
- * @inheritDoc
- */
-ol.format.GPX.prototype.readProjectionFromDocument = function(doc) {
-  return this.defaultDataProjection;
-};
-
-
-/**
- * @inheritDoc
- */
-ol.format.GPX.prototype.readProjectionFromNode = function(node) {
-  return this.defaultDataProjection;
-};
-
-
-/**
  * @param {Node} node Node.
  * @param {string} value Value for the link's `href` attribute.
  * @param {Array.<*>} objectStack Node stack.

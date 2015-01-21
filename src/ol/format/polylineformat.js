@@ -343,14 +343,6 @@ ol.format.Polyline.prototype.readProjection;
 /**
  * @inheritDoc
  */
-ol.format.Polyline.prototype.readProjectionFromText = function(text) {
-  return this.defaultDataProjection;
-};
-
-
-/**
- * @inheritDoc
- */
 ol.format.Polyline.prototype.writeFeatureText = function(feature, opt_options) {
   var geometry = feature.getGeometry();
   if (goog.isDefAndNotNull(geometry)) {
