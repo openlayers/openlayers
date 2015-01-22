@@ -590,6 +590,34 @@ ol.Map.prototype.forEachFeatureAtPixel =
 
 
 /**
+ * Detect if features intersect a pixel on the viewport. Layers included in the
+ * detection can be configured through `opt_layerFilter`. Feature overlays will
+ * always be included in the detection.
+ * @param {ol.Pixel} pixel Pixel.
+ * @param {(function(this: U, ol.layer.Layer): boolean)=} opt_layerFilter Layer
+ *     filter function, only layers which are visible and for which this
+ *     function returns `true` will be tested for features. By default, all
+ *     visible layers will be tested. Feature overlays will always be tested.
+ * @param {U=} opt_this2 Value to use as `this` when executing `layerFilter`.
+ * @return {boolean} Is there a feature at the given pixel?
+ * @template U
+ * @api
+ */
+ol.Map.prototype.hasFeatureAtPixel =
+    function(pixel, opt_layerFilter, opt_this2) {
+  if (goog.isNull(this.frameState_)) {
+    return false;
+  }
+  var coordinate = this.getCoordinateFromPixel(pixel);
+  var layerFilter = goog.isDef(opt_layerFilter) ?
+      opt_layerFilter : goog.functions.TRUE;
+  var thisArg2 = goog.isDef(opt_this2) ? opt_this2 : null;
+  return this.renderer_.hasFeatureAtPixel(
+      coordinate, this.frameState_, layerFilter, thisArg2);
+};
+
+
+/**
  * Returns the geographical coordinate for a browser event.
  * @param {Event} event Event.
  * @return {ol.Coordinate} Coordinate.

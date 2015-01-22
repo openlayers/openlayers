@@ -57,6 +57,14 @@ ol.renderer.Layer.prototype.forEachFeatureAtPixel = goog.nullFunction;
 
 
 /**
+ * @param {ol.Coordinate} coordinate Coordinate.
+ * @param {olx.FrameState} frameState Frame state.
+ * @return {boolean} Is there a feature at the given pixel?
+ */
+ol.renderer.Layer.prototype.hasFeatureAtPixel = goog.functions.FALSE;
+
+
+/**
  * @protected
  * @return {ol.layer.Layer} Layer.
  */

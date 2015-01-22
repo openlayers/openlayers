@@ -141,6 +141,28 @@ ol.renderer.webgl.VectorLayer.prototype.forEachFeatureAtPixel =
 
 
 /**
+ * @inheritDoc
+ */
+ol.renderer.webgl.VectorLayer.prototype.hasFeatureAtPixel =
+    function(coordinate, frameState) {
+  if (goog.isNull(this.replayGroup_) || goog.isNull(this.layerState_)) {
+    return false;
+  } else {
+    var mapRenderer = this.getWebGLMapRenderer();
+    var context = mapRenderer.getContext();
+    var viewState = frameState.viewState;
+    var layerState = this.layerState_;
+    return this.replayGroup_.hasFeatureAtPixel(context,
+        viewState.center, viewState.resolution, viewState.rotation,
+        frameState.size, frameState.pixelRatio,
+        layerState.opacity, layerState.brightness, layerState.contrast,
+        layerState.hue, layerState.saturation, frameState.skippedFeatureUids,
+        coordinate);
+  }
+};
+
+
+/**
  * Handle changes in image style state.
  * @param {goog.events.Event} event Image style change event.
  * @private
