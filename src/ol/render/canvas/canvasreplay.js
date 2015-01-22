@@ -1951,6 +1951,8 @@ ol.render.canvas.ReplayGroup.prototype.replay = function(
   var zs = goog.array.map(goog.object.getKeys(this.replaysByZIndex_), Number);
   goog.array.sort(zs);
 
+  // setup clipping so that the parts of over-simplified geometries are not
+  // visible outside the current extent when panning
   var maxExtent = this.maxExtent_;
   var minX = maxExtent[0];
   var minY = maxExtent[1];

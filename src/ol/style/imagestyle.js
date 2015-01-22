@@ -163,13 +163,6 @@ ol.style.Image.prototype.getOrigin = goog.abstractMethod;
 
 /**
  * @function
- * @return {Array.<number>} Origin for the hit-detection image.
- */
-ol.style.Image.prototype.getHitDetectionOrigin = goog.abstractMethod;
-
-
-/**
- * @function
  * @return {ol.Size} Size.
  */
 ol.style.Image.prototype.getSize = goog.abstractMethod;

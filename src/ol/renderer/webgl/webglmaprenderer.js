@@ -290,13 +290,10 @@ ol.renderer.webgl.Map.prototype.dispatchComposeEvent_ =
     replayGroup.finish(context);
     if (!replayGroup.isEmpty()) {
       // use default color values
-      var opacity = 1;
-      var brightness = 0;
-      var contrast = 1;
-      var hue = 0;
-      var saturation = 1;
+      var d = ol.renderer.webgl.Map.DEFAULT_COLOR_VALUES_;
       replayGroup.replay(context, center, resolution, rotation, size,
-          pixelRatio, opacity, brightness, contrast, hue, saturation, {});
+          pixelRatio, d.opacity, d.brightness, d.contrast,
+          d.hue, d.saturation, {});
     }
     replayGroup.getDeleteResourcesFunction(context)();
 
@@ -537,4 +534,80 @@ ol.renderer.webgl.Map.prototype.renderFrame = function(frameState) {
   this.scheduleRemoveUnusedLayerRenderers(frameState);
   this.scheduleExpireIconCache(frameState);
 
+};
+
+
+/**
+ * @inheritDoc
+ */
+ol.renderer.webgl.Map.prototype.forEachFeatureAtPixel =
+    function(coordinate, frameState, callback, thisArg,
+        layerFilter, thisArg2) {
+  var result;
+
+  if (this.getGL().isContextLost()) {
+    return false;
+  }
+
+  var context = this.getContext();
+  var viewState = frameState.viewState;
+
+  // do the hit-detection for the overlays first
+  if (!goog.isNull(this.replayGroup)) {
+    /** @type {Object.<string, boolean>} */
+    var features = {};
+
+    // use default color values
+    var d = ol.renderer.webgl.Map.DEFAULT_COLOR_VALUES_;
+
+    result = this.replayGroup.forEachFeatureAtPixel(context,
+        viewState.center, viewState.resolution, viewState.rotation,
+        frameState.size, frameState.pixelRatio,
+        d.opacity, d.brightness, d.contrast, d.hue, d.saturation, {},
+        coordinate,
+        /**
+         * @param {ol.Feature} feature Feature.
+         * @return {?} Callback result.
+         */
+        function(feature) {
+          goog.asserts.assert(goog.isDef(feature));
+          var key = goog.getUid(feature).toString();
+          if (!(key in features)) {
+            features[key] = true;
+            return callback.call(thisArg, feature, null);
+          }
+        });
+    if (result) {
+      return result;
+    }
+  }
+  var layerStates = this.getMap().getLayerGroup().getLayerStatesArray();
+  var numLayers = layerStates.length;
+  var i;
+  for (i = numLayers - 1; i >= 0; --i) {
+    var layerState = layerStates[i];
+    var layer = layerState.layer;
+    if (ol.layer.Layer.visibleAtResolution(layerState, viewState.resolution) &&
+        layerFilter.call(thisArg2, layer)) {
+      var layerRenderer = this.getLayerRenderer(layer);
+      result = layerRenderer.forEachFeatureAtPixel(
+          coordinate, frameState, callback, thisArg);
+      if (result) {
+        return result;
+      }
+    }
+  }
+  return undefined;
+};
+
+
+/**
+ * @private
+ */
+ol.renderer.webgl.Map.DEFAULT_COLOR_VALUES_ = {
+  opacity: 1,
+  brightness: 0,
+  contrast: 1,
+  hue: 0,
+  saturation: 1
 };

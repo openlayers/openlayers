@@ -58,6 +58,13 @@ ol.renderer.webgl.VectorLayer = function(mapRenderer, vectorLayer) {
    */
   this.replayGroup_ = null;
 
+  /**
+   * The last layer state.
+   * @private
+   * @type {?ol.layer.LayerState}
+   */
+  this.layerState_ = null;
+
 };
 goog.inherits(ol.renderer.webgl.VectorLayer, ol.renderer.webgl.Layer);
 
@@ -67,6 +74,7 @@ goog.inherits(ol.renderer.webgl.VectorLayer, ol.renderer.webgl.Layer);
  */
 ol.renderer.webgl.VectorLayer.prototype.composeFrame =
     function(frameState, layerState, context) {
+  this.layerState_ = layerState;
   var viewState = frameState.viewState;
   var replayGroup = this.replayGroup_;
   if (!goog.isNull(replayGroup) && !replayGroup.isEmpty()) {
@@ -100,6 +108,35 @@ ol.renderer.webgl.VectorLayer.prototype.disposeInternal = function() {
  */
 ol.renderer.webgl.VectorLayer.prototype.forEachFeatureAtPixel =
     function(coordinate, frameState, callback, thisArg) {
+  if (goog.isNull(this.replayGroup_) || goog.isNull(this.layerState_)) {
+    return undefined;
+  } else {
+    var mapRenderer = this.getWebGLMapRenderer();
+    var context = mapRenderer.getContext();
+    var viewState = frameState.viewState;
+    var layer = this.getLayer();
+    var layerState = this.layerState_;
+    /** @type {Object.<string, boolean>} */
+    var features = {};
+    return this.replayGroup_.forEachFeatureAtPixel(context,
+        viewState.center, viewState.resolution, viewState.rotation,
+        frameState.size, frameState.pixelRatio,
+        layerState.opacity, layerState.brightness, layerState.contrast,
+        layerState.hue, layerState.saturation, frameState.skippedFeatureUids,
+        coordinate,
+        /**
+         * @param {ol.Feature} feature Feature.
+         * @return {?} Callback result.
+         */
+        function(feature) {
+          goog.asserts.assert(goog.isDef(feature));
+          var key = goog.getUid(feature).toString();
+          if (!(key in features)) {
+            features[key] = true;
+            return callback.call(thisArg, feature, layer);
+          }
+        });
+  }
 };
 
 
@@ -167,7 +204,7 @@ ol.renderer.webgl.VectorLayer.prototype.prepareFrame =
 
   var replayGroup = new ol.render.webgl.ReplayGroup(
       ol.renderer.vector.getTolerance(resolution, pixelRatio),
-      extent);
+      extent, vectorLayer.getRenderBuffer());
   vectorSource.loadFeatures(extent, resolution, projection);
   var renderFeature =
       /**

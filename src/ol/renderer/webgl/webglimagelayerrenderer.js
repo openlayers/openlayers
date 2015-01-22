@@ -11,6 +11,7 @@ goog.require('ol.extent');
 goog.require('ol.layer.Image');
 goog.require('ol.proj');
 goog.require('ol.renderer.webgl.Layer');
+goog.require('ol.webgl.Context');
 
 
 
@@ -49,24 +50,8 @@ ol.renderer.webgl.ImageLayer.prototype.createTexture_ = function(image) {
   var imageElement = image.getImage();
   var gl = this.getWebGLMapRenderer().getGL();
 
-  var texture = gl.createTexture();
-
-  gl.bindTexture(goog.webgl.TEXTURE_2D, texture);
-  gl.texImage2D(goog.webgl.TEXTURE_2D, 0, goog.webgl.RGBA,
-      goog.webgl.RGBA, goog.webgl.UNSIGNED_BYTE, imageElement);
-
-  gl.texParameteri(
-      goog.webgl.TEXTURE_2D, goog.webgl.TEXTURE_WRAP_S,
-      goog.webgl.CLAMP_TO_EDGE);
-  gl.texParameteri(
-      goog.webgl.TEXTURE_2D, goog.webgl.TEXTURE_WRAP_T,
-      goog.webgl.CLAMP_TO_EDGE);
-  gl.texParameteri(
-      goog.webgl.TEXTURE_2D, goog.webgl.TEXTURE_MIN_FILTER, goog.webgl.LINEAR);
-  gl.texParameteri(
-      goog.webgl.TEXTURE_2D, goog.webgl.TEXTURE_MAG_FILTER, goog.webgl.LINEAR);
-
-  return texture;
+  return ol.webgl.Context.createTexture(
+      gl, imageElement, goog.webgl.CLAMP_TO_EDGE, goog.webgl.CLAMP_TO_EDGE);
 };
 
 
