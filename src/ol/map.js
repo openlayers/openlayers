@@ -944,13 +944,11 @@ ol.Map.prototype.handlePostRender = function() {
     if (!goog.isNull(frameState)) {
       var hints = frameState.viewHints;
       if (hints[ol.ViewHint.ANIMATING]) {
-        maxTotalLoading = this.loadTilesWhileAnimating_ === true ?
-            8 : 0;
+        maxTotalLoading = this.loadTilesWhileAnimating_ ? 8 : 0;
         maxNewLoads = 2;
       }
       if (hints[ol.ViewHint.INTERACTING]) {
-        maxTotalLoading = this.loadTilesWhileInteracting_ === true ?
-            8 : 0;
+        maxTotalLoading = this.loadTilesWhileInteracting_ ? 8 : 0;
         maxNewLoads = 2;
       }
       tileSourceCount = goog.object.getCount(frameState.wantedTiles);
