@@ -3,6 +3,7 @@ goog.provide('ol.layer.Heatmap');
 goog.require('goog.asserts');
 goog.require('goog.events');
 goog.require('goog.math');
+goog.require('goog.object');
 goog.require('ol.Object');
 goog.require('ol.dom');
 goog.require('ol.layer.Vector');
@@ -36,7 +37,14 @@ ol.layer.HeatmapLayerProperty = {
 ol.layer.Heatmap = function(opt_options) {
   var options = goog.isDef(opt_options) ? opt_options : {};
 
-  goog.base(this, /** @type {olx.layer.VectorOptions} */ (options));
+  var baseOptions = goog.object.clone(options);
+
+  delete baseOptions.gradient;
+  delete baseOptions.radius;
+  delete baseOptions.blur;
+  delete baseOptions.shadow;
+  delete baseOptions.weight;
+  goog.base(this, /** @type {olx.layer.VectorOptions} */ (baseOptions));
 
   /**
    * @private
