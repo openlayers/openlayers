@@ -163,6 +163,21 @@ ol.renderer.webgl.VectorLayer.prototype.hasFeatureAtPixel =
 
 
 /**
+ * @inheritDoc
+ */
+ol.renderer.webgl.VectorLayer.prototype.forEachLayerAtPixel =
+    function(coordinate, frameState, callback, thisArg) {
+  var hasFeature = this.hasFeatureAtPixel(coordinate, frameState);
+
+  if (hasFeature) {
+    return callback.call(thisArg, this.getLayer());
+  } else {
+    return undefined;
+  }
+};
+
+
+/**
  * Handle changes in image style state.
  * @param {goog.events.Event} event Image style change event.
  * @private
