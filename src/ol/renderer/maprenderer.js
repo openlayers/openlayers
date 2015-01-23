@@ -149,7 +149,7 @@ ol.renderer.Map.prototype.forEachFeatureAtPixel =
       return result;
     }
   }
-  var layerStates = this.map_.getLayerGroup().getLayerStatesArray();
+  var layerStates = frameState.layerStatesArray;
   var numLayers = layerStates.length;
   var i;
   for (i = numLayers - 1; i >= 0; --i) {

@@ -581,7 +581,7 @@ ol.renderer.webgl.Map.prototype.forEachFeatureAtPixel =
       return result;
     }
   }
-  var layerStates = this.getMap().getLayerGroup().getLayerStatesArray();
+  var layerStates = frameState.layerStatesArray;
   var numLayers = layerStates.length;
   var i;
   for (i = numLayers - 1; i >= 0; --i) {
@@ -629,7 +629,7 @@ ol.renderer.webgl.Map.prototype.hasFeatureAtPixel =
       return true;
     }
   }
-  var layerStates = this.getMap().getLayerGroup().getLayerStatesArray();
+  var layerStates = frameState.layerStatesArray;
   var numLayers = layerStates.length;
   var i;
   for (i = numLayers - 1; i >= 0; --i) {
