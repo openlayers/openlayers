@@ -62,6 +62,12 @@ ol.renderer.canvas.TileLayer = function(mapRenderer, tileLayer) {
 
   /**
    * @private
+   * @type {?goog.vec.Mat4.Number}
+   */
+  this.imageTransformInv_ = null;
+
+  /**
+   * @private
    * @type {number}
    */
   this.renderedCanvasZ_ = NaN;
@@ -408,6 +414,35 @@ ol.renderer.canvas.TileLayer.prototype.prepareFrame =
       viewState.rotation,
       (origin[0] - center[0]) / tilePixelResolution,
       (center[1] - origin[1]) / tilePixelResolution);
+  this.imageTransformInv_ = null;
 
   return true;
+};
+
+
+/**
+ * @inheritDoc
+ */
+ol.renderer.canvas.TileLayer.prototype.forEachLayerAtPixel =
+    function(coordinate, frameState, callback, thisArg) {
+  if (goog.isNull(this.context_)) {
+    return undefined;
+  }
+
+  if (goog.isNull(this.imageTransformInv_)) {
+    this.imageTransformInv_ = goog.vec.Mat4.createNumber();
+    goog.vec.Mat4.invert(this.imageTransform_, this.imageTransformInv_);
+  }
+
+  var pixelOnCanvas =
+      this.getPixelFromCoordinates(coordinate, this.imageTransformInv_);
+
+  var imageData = this.context_.getImageData(
+      pixelOnCanvas[0], pixelOnCanvas[1], 1, 1).data;
+
+  if (imageData[3] > 0) {
+    return callback.call(thisArg, this.getLayer());
+  } else {
+    return undefined;
+  }
 };
