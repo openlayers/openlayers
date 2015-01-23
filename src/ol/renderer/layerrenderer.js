@@ -59,6 +59,27 @@ ol.renderer.Layer.prototype.forEachFeatureAtPixel = goog.nullFunction;
 /**
  * @param {ol.Coordinate} coordinate Coordinate.
  * @param {olx.FrameState} frameState Frame state.
+ * @param {function(this: S, ol.layer.Layer): T} callback Layer callback.
+ * @param {S} thisArg Value to use as `this` when executing `callback`.
+ * @return {T|undefined} Callback result.
+ * @template S,T
+ */
+ol.renderer.Layer.prototype.forEachLayerAtPixel =
+    function(coordinate, frameState, callback, thisArg) {
+  var hasFeature = this.forEachFeatureAtPixel(
+      coordinate, frameState, goog.functions.TRUE, this);
+
+  if (hasFeature) {
+    return callback.call(thisArg, this.layer_);
+  } else {
+    return undefined;
+  }
+};
+
+
+/**
+ * @param {ol.Coordinate} coordinate Coordinate.
+ * @param {olx.FrameState} frameState Frame state.
  * @return {boolean} Is there a feature at the given pixel?
  */
 ol.renderer.Layer.prototype.hasFeatureAtPixel = goog.functions.FALSE;

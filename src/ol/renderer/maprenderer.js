@@ -172,6 +172,59 @@ ol.renderer.Map.prototype.forEachFeatureAtPixel =
 /**
  * @param {ol.Coordinate} coordinate Coordinate.
  * @param {olx.FrameState} frameState FrameState.
+ * @param {function(this: S, ol.layer.Layer): T} callback Layer
+ *     callback.
+ * @param {S} thisArg Value to use as `this` when executing `callback`.
+ * @param {function(this: U, ol.layer.Layer): boolean} layerFilter Layer filter
+ *     function, only layers which are visible and for which this function
+ *     returns `true` will be tested for features.  By default, all visible
+ *     layers will be tested.
+ * @param {U} thisArg2 Value to use as `this` when executing `layerFilter`.
+ * @return {T|undefined} Callback result.
+ * @template S,T,U
+ */
+ol.renderer.Map.prototype.forEachLayerAtPixel =
+    function(coordinate, frameState, callback, thisArg,
+        layerFilter, thisArg2) {
+  var result;
+  var viewState = frameState.viewState;
+  var viewResolution = viewState.resolution;
+  var viewRotation = viewState.rotation;
+
+  if (!goog.isNull(this.replayGroup)) {
+    var hasFeature = this.replayGroup.forEachFeatureAtPixel(viewResolution,
+        viewRotation, coordinate, {}, goog.functions.TRUE);
+
+    if (hasFeature) {
+      result = callback.call(thisArg, null);
+      if (result) {
+        return result;
+      }
+    }
+  }
+  var layerStates = frameState.layerStatesArray;
+  var numLayers = layerStates.length;
+  var i;
+  for (i = numLayers - 1; i >= 0; --i) {
+    var layerState = layerStates[i];
+    var layer = layerState.layer;
+    if (ol.layer.Layer.visibleAtResolution(layerState, viewResolution) &&
+        layerFilter.call(thisArg2, layer)) {
+      var layerRenderer = this.getLayerRenderer(layer);
+      result = layerRenderer.forEachLayerAtPixel(
+          coordinate, frameState, callback, thisArg);
+      if (result) {
+        return result;
+      }
+    }
+  }
+  return undefined;
+};
+
+
+/**
+ * @param {ol.Coordinate} coordinate Coordinate.
+ * @param {olx.FrameState} frameState FrameState.
  * @param {function(this: U, ol.layer.Layer): boolean} layerFilter Layer filter
  *     function, only layers which are visible and for which this function
  *     returns `true` will be tested for features.  By default, all visible
