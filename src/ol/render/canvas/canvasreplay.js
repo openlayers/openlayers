@@ -1866,7 +1866,7 @@ ol.render.canvas.ReplayGroup.prototype.finish = function() {
  * @return {T|undefined} Callback result.
  * @template T
  */
-ol.render.canvas.ReplayGroup.prototype.forEachGeometryAtPixel = function(
+ol.render.canvas.ReplayGroup.prototype.forEachFeatureAtPixel = function(
     resolution, rotation, coordinate, skippedFeaturesHash, callback) {
 
   var transform = this.hitDetectionTransform_;

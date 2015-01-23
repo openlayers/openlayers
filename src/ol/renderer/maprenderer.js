@@ -131,7 +131,7 @@ ol.renderer.Map.prototype.forEachFeatureAtPixel =
   if (!goog.isNull(this.replayGroup)) {
     /** @type {Object.<string, boolean>} */
     var features = {};
-    result = this.replayGroup.forEachGeometryAtPixel(viewResolution,
+    result = this.replayGroup.forEachFeatureAtPixel(viewResolution,
         viewRotation, coordinate, {},
         /**
          * @param {ol.Feature} feature Feature.

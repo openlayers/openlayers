@@ -186,7 +186,7 @@ ol.renderer.dom.VectorLayer.prototype.forEachFeatureAtPixel =
     var layer = this.getLayer();
     /** @type {Object.<string, boolean>} */
     var features = {};
-    return this.replayGroup_.forEachGeometryAtPixel(resolution,
+    return this.replayGroup_.forEachFeatureAtPixel(resolution,
         rotation, coordinate, frameState.skippedFeatureUids,
         /**
          * @param {ol.Feature} feature Feature.

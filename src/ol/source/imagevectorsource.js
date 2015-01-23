@@ -159,7 +159,7 @@ ol.source.ImageVector.prototype.forEachFeatureAtPixel = function(
   } else {
     /** @type {Object.<string, boolean>} */
     var features = {};
-    return this.replayGroup_.forEachGeometryAtPixel(
+    return this.replayGroup_.forEachFeatureAtPixel(
         resolution, 0, coordinate, skippedFeatureUids,
         /**
          * @param {ol.Feature} feature Feature.

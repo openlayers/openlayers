@@ -70,7 +70,7 @@ describe('ol.renderer.canvas.VectorLayer', function() {
           map.getRenderer(), layer);
       var replayGroup = {};
       renderer.replayGroup_ = replayGroup;
-      replayGroup.forEachGeometryAtPixel = function(resolution,
+      replayGroup.forEachFeatureAtPixel = function(resolution,
           rotation, coordinate, skippedFeaturesUids, callback) {
         var geometry = new ol.geom.Point([0, 0]);
         var feature = new ol.Feature();
