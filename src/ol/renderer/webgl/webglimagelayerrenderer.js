@@ -193,3 +193,14 @@ ol.renderer.webgl.ImageLayer.prototype.updateProjectionMatrix_ =
   goog.vec.Mat4.translate(projectionMatrix, 1, 1, 0);
 
 };
+
+
+/**
+ * @inheritDoc
+ */
+ol.renderer.webgl.ImageLayer.prototype.hasFeatureAtPixel =
+    function(coordinate, frameState) {
+  var hasFeature = this.forEachFeatureAtPixel(
+      coordinate, frameState, goog.functions.TRUE, this);
+  return goog.isDef(hasFeature);
+};
