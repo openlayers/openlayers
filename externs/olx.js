@@ -4301,7 +4301,8 @@ olx.source.KMLOptions.prototype.urls;
 
 /**
  * @typedef {{layer: string,
- *     tileLoadFunction: (ol.TileLoadFunctionType|undefined)}}
+ *     tileLoadFunction: (ol.TileLoadFunctionType|undefined),
+ *     url: (string|undefined)}}
  * @api
  */
 olx.source.MapQuestOptions;
@@ -4321,6 +4322,14 @@ olx.source.MapQuestOptions.prototype.layer;
  * @api
  */
 olx.source.MapQuestOptions.prototype.tileLoadFunction;
+
+
+/**
+ * URL template. Must include `{x}`, `{y}` or `{-y}`, and `{z}` placeholders.
+ * @type {string|undefined}
+ * @api
+ */
+olx.source.MapQuestOptions.prototype.url;
 
 
 /**
