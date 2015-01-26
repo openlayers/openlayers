@@ -115,6 +115,7 @@ ol.View = function(opt_options) {
 
   /**
    * @private
+   * @const
    * @type {ol.proj.Projection}
    */
   this.projection_ = ol.proj.createProjection(options.projection, 'EPSG:3857');
