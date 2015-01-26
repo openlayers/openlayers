@@ -108,8 +108,7 @@ ol.interaction.PinchZoom.handleDragEvent_ = function(mapBrowserEvent) {
  * @this {ol.interaction.PinchZoom}
  * @private
  */
-ol.interaction.PinchZoom.handleUpEvent_ =
-    function(mapBrowserEvent) {
+ol.interaction.PinchZoom.handleUpEvent_ = function(mapBrowserEvent) {
   if (this.targetPointers.length < 2) {
     var map = mapBrowserEvent.map;
     var view = map.getView();
@@ -134,8 +133,7 @@ ol.interaction.PinchZoom.handleUpEvent_ =
  * @this {ol.interaction.PinchZoom}
  * @private
  */
-ol.interaction.PinchZoom.handleDownEvent_ =
-    function(mapBrowserEvent) {
+ol.interaction.PinchZoom.handleDownEvent_ = function(mapBrowserEvent) {
   if (this.targetPointers.length >= 2) {
     var map = mapBrowserEvent.map;
     this.anchor_ = null;
