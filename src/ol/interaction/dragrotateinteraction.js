@@ -68,10 +68,10 @@ ol.interaction.DragRotate.handleDragEvent_ = function(mapBrowserEvent) {
   if (goog.isDef(this.lastAngle_)) {
     var delta = theta - this.lastAngle_;
     var view = map.getView();
-    var viewState = view.getState();
+    var rotation = view.getRotation();
     map.render();
     ol.interaction.Interaction.rotateWithoutConstraints(
-        map, view, viewState.rotation - delta);
+        map, view, rotation - delta);
   }
   this.lastAngle_ = theta;
 };
@@ -91,8 +91,8 @@ ol.interaction.DragRotate.handleUpEvent_ = function(mapBrowserEvent) {
   var map = mapBrowserEvent.map;
   var view = map.getView();
   view.setHint(ol.ViewHint.INTERACTING, -1);
-  var viewState = view.getState();
-  ol.interaction.Interaction.rotate(map, view, viewState.rotation,
+  var rotation = view.getRotation();
+  ol.interaction.Interaction.rotate(map, view, rotation,
       undefined, ol.DRAGROTATE_ANIMATION_DURATION);
   return false;
 };
