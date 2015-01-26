@@ -6524,6 +6524,13 @@ olx.ViewState.prototype.center;
 
 
 /**
+ * @type {ol.proj.Projection}
+ * @api
+ */
+olx.ViewState.prototype.projection;
+
+
+/**
  * @type {number}
  * @api
  */
