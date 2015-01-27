@@ -1,6 +1,24 @@
 goog.provide('ol.test.View');
 
 describe('ol.View', function() {
+
+  describe('constructor (defaults)', function() {
+    var view;
+
+    beforeEach(function() {
+      view = new ol.View();
+    });
+
+    it('creates an instance', function() {
+      expect(view).to.be.a(ol.View);
+    });
+
+    it('provides default rotation', function() {
+      expect(view.getRotation()).to.be(0);
+    });
+
+  });
+
   describe('create constraints', function() {
 
     describe('create resolution constraint', function() {
