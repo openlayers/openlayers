@@ -117,12 +117,12 @@ goog.exportProperty(
 
 
 /**
- * @return {number|undefined} The hue of the layer.
+ * @return {number} The hue of the layer.
  * @observable
  * @api
  */
 ol.layer.Base.prototype.getHue = function() {
-  return /** @type {number|undefined} */ (this.get(ol.layer.LayerProperty.HUE));
+  return /** @type {number} */ (this.get(ol.layer.LayerProperty.HUE));
 };
 goog.exportProperty(
     ol.layer.Base.prototype,
@@ -148,7 +148,7 @@ ol.layer.Base.prototype.getLayerState = function() {
     layer: /** @type {ol.layer.Layer} */ (this),
     brightness: goog.isDef(brightness) ? goog.math.clamp(brightness, -1, 1) : 0,
     contrast: goog.isDef(contrast) ? Math.max(contrast, 0) : 1,
-    hue: goog.isDef(hue) ? hue : 0,
+    hue: hue,
     opacity: goog.isDef(opacity) ? goog.math.clamp(opacity, 0, 1) : 1,
     saturation: goog.isDef(saturation) ? Math.max(saturation, 0) : 1,
     sourceState: sourceState,
@@ -323,7 +323,7 @@ goog.exportProperty(
 /**
  * Apply a hue-rotation to the layer.  A value of 0 will leave the hue
  * unchanged.  Other values are radians around the color circle.
- * @param {number|undefined} hue The hue of the layer.
+ * @param {number} hue The hue of the layer.
  * @observable
  * @api
  */
