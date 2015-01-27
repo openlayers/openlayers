@@ -14,6 +14,12 @@ var GeoJSONObject = function() {};
 
 
 /**
+ * @type {!Array.<number>|undefined}
+ */
+GeoJSONObject.prototype.bbox;
+
+
+/**
  * @type {string}
  */
 GeoJSONObject.prototype.type;
@@ -111,12 +117,6 @@ var GeoJSONFeature = function() {};
 
 
 /**
- * @type {!Array.<number>|undefined}
- */
-GeoJSONFeature.prototype.bbox;
-
-
-/**
  * @type {GeoJSONGeometry}
  */
 GeoJSONFeature.prototype.geometry;
@@ -146,12 +146,6 @@ var GeoJSONFeatureCollection = function() {};
  * @type {!Array.<GeoJSONFeature>}
  */
 GeoJSONFeatureCollection.prototype.features;
-
-
-/**
- * @type {!Array.<number>|undefined}
- */
-GeoJSONFeatureCollection.prototype.bbox;
 
 
 
