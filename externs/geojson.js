@@ -34,9 +34,15 @@ GeoJSONObject.prototype.crs;
 
 /**
  * @constructor
- * @extends {GeoJSONObject}
  */
 var GeoJSONCRS = function() {};
+
+
+/**
+ * CRS type. One of `link` or `name`.
+ * @type {string}
+ */
+GeoJSONCRS.prototype.type;
 
 
 /**
