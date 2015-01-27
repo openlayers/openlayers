@@ -152,7 +152,7 @@ ol.layer.Base.prototype.getLayerState = function() {
     opacity: goog.isDef(opacity) ? goog.math.clamp(opacity, 0, 1) : 1,
     saturation: goog.isDef(saturation) ? Math.max(saturation, 0) : 1,
     sourceState: sourceState,
-    visible: goog.isDef(visible) ? !!visible : true,
+    visible: visible,
     extent: extent,
     maxResolution: goog.isDef(maxResolution) ? maxResolution : Infinity,
     minResolution: goog.isDef(minResolution) ? Math.max(minResolution, 0) : 0
@@ -258,13 +258,12 @@ ol.layer.Base.prototype.getSourceState = goog.abstractMethod;
 
 
 /**
- * @return {boolean|undefined} The visiblity of the layer.
+ * @return {boolean} The visibility of the layer.
  * @observable
  * @api stable
  */
 ol.layer.Base.prototype.getVisible = function() {
-  return /** @type {boolean|undefined} */ (
-      this.get(ol.layer.LayerProperty.VISIBLE));
+  return /** @type {boolean} */ (this.get(ol.layer.LayerProperty.VISIBLE));
 };
 goog.exportProperty(
     ol.layer.Base.prototype,
@@ -415,7 +414,7 @@ goog.exportProperty(
 
 
 /**
- * @param {boolean|undefined} visible The visiblity of the layer.
+ * @param {boolean} visible The visibility of the layer.
  * @observable
  * @api stable
  */
