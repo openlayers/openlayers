@@ -153,7 +153,7 @@ ol.layer.Base.prototype.getLayerState = function() {
     visible: visible,
     extent: extent,
     maxResolution: maxResolution,
-    minResolution: goog.isDef(minResolution) ? Math.max(minResolution, 0) : 0
+    minResolution: Math.max(minResolution, 0)
   };
 };
 
@@ -205,12 +205,12 @@ goog.exportProperty(
 
 
 /**
- * @return {number|undefined} The minimum resolution of the layer.
+ * @return {number} The minimum resolution of the layer.
  * @observable
  * @api stable
  */
 ol.layer.Base.prototype.getMinResolution = function() {
-  return /** @type {number|undefined} */ (
+  return /** @type {number} */ (
       this.get(ol.layer.LayerProperty.MIN_RESOLUTION));
 };
 goog.exportProperty(
@@ -363,7 +363,7 @@ goog.exportProperty(
 
 
 /**
- * @param {number|undefined} minResolution The minimum resolution of the layer.
+ * @param {number} minResolution The minimum resolution of the layer.
  * @observable
  * @api stable
  */
