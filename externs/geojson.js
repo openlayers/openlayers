@@ -157,7 +157,6 @@ GeoJSONFeatureCollection.prototype.features;
 
 /**
  * @constructor
- * @extends {GeoJSONObject}
  */
 var GeoJSONLink = function() {};
 
@@ -166,3 +165,8 @@ var GeoJSONLink = function() {};
  * @type {string}
  */
 GeoJSONLink.prototype.href;
+
+/**
+ * @type {string}
+ */
+GeoJSONLink.prototype.type;
