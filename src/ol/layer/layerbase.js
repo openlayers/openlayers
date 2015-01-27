@@ -87,13 +87,12 @@ goog.inherits(ol.layer.Base, ol.Object);
 
 
 /**
- * @return {number|undefined} The brightness of the layer.
+ * @return {number} The brightness of the layer.
  * @observable
  * @api
  */
 ol.layer.Base.prototype.getBrightness = function() {
-  return /** @type {number|undefined} */ (
-      this.get(ol.layer.LayerProperty.BRIGHTNESS));
+  return /** @type {number} */ (this.get(ol.layer.LayerProperty.BRIGHTNESS));
 };
 goog.exportProperty(
     ol.layer.Base.prototype,
@@ -146,7 +145,7 @@ ol.layer.Base.prototype.getLayerState = function() {
   var minResolution = this.getMinResolution();
   return {
     layer: /** @type {ol.layer.Layer} */ (this),
-    brightness: goog.isDef(brightness) ? goog.math.clamp(brightness, -1, 1) : 0,
+    brightness: goog.math.clamp(brightness, -1, 1),
     contrast: goog.isDef(contrast) ? Math.max(contrast, 0) : 1,
     hue: hue,
     opacity: goog.math.clamp(opacity, 0, 1),
@@ -288,7 +287,7 @@ goog.exportProperty(
  * [2] https://github.com/WebKit/webkit/commit/8f4765e569
  * [3] https://www.w3.org/Bugs/Public/show_bug.cgi?id=15647
  *
- * @param {number|undefined} brightness The brightness of the layer.
+ * @param {number} brightness The brightness of the layer.
  * @observable
  * @api
  */
