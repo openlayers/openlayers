@@ -113,6 +113,15 @@ ol.FeatureOverlay.prototype.getFeatures = function() {
 
 
 /**
+ * @return {?ol.Map} The map with which this feature overlay is associated.
+ * @api
+ */
+ol.FeatureOverlay.prototype.getMap = function() {
+  return this.map_;
+};
+
+
+/**
  * @private
  */
 ol.FeatureOverlay.prototype.handleFeatureChange_ = function() {
