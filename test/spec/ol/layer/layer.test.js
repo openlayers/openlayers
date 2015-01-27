@@ -46,6 +46,10 @@ describe('ol.layer.Layer', function() {
       expect(layer.getVisible()).to.be(true);
     });
 
+    it('provides default max resolution', function() {
+      expect(layer.getMaxResolution()).to.be(Infinity);
+    });
+
     it('provides default layerState', function() {
       expect(layer.getLayerState()).to.eql({
         layer: layer,

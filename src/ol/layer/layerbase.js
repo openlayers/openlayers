@@ -152,7 +152,7 @@ ol.layer.Base.prototype.getLayerState = function() {
     sourceState: sourceState,
     visible: visible,
     extent: extent,
-    maxResolution: goog.isDef(maxResolution) ? maxResolution : Infinity,
+    maxResolution: maxResolution,
     minResolution: goog.isDef(minResolution) ? Math.max(minResolution, 0) : 0
   };
 };
@@ -190,12 +190,12 @@ goog.exportProperty(
 
 
 /**
- * @return {number|undefined} The maximum resolution of the layer.
+ * @return {number} The maximum resolution of the layer.
  * @observable
  * @api stable
  */
 ol.layer.Base.prototype.getMaxResolution = function() {
-  return /** @type {number|undefined} */ (
+  return /** @type {number} */ (
       this.get(ol.layer.LayerProperty.MAX_RESOLUTION));
 };
 goog.exportProperty(
@@ -349,7 +349,7 @@ goog.exportProperty(
 
 
 /**
- * @param {number|undefined} maxResolution The maximum resolution of the layer.
+ * @param {number} maxResolution The maximum resolution of the layer.
  * @observable
  * @api stable
  */
