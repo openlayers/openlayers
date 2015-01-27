@@ -101,13 +101,12 @@ goog.exportProperty(
 
 
 /**
- * @return {number|undefined} The contrast of the layer.
+ * @return {number} The contrast of the layer.
  * @observable
  * @api
  */
 ol.layer.Base.prototype.getContrast = function() {
-  return /** @type {number|undefined} */ (
-      this.get(ol.layer.LayerProperty.CONTRAST));
+  return /** @type {number} */ (this.get(ol.layer.LayerProperty.CONTRAST));
 };
 goog.exportProperty(
     ol.layer.Base.prototype,
@@ -146,7 +145,7 @@ ol.layer.Base.prototype.getLayerState = function() {
   return {
     layer: /** @type {ol.layer.Layer} */ (this),
     brightness: goog.math.clamp(brightness, -1, 1),
-    contrast: goog.isDef(contrast) ? Math.max(contrast, 0) : 1,
+    contrast: Math.max(contrast, 0),
     hue: hue,
     opacity: goog.math.clamp(opacity, 0, 1),
     saturation: goog.isDef(saturation) ? Math.max(saturation, 0) : 1,
@@ -305,7 +304,7 @@ goog.exportProperty(
  * grey.  A value of 1 will leave the contrast unchanged.  Other values are
  * linear multipliers on the effect (and values over 1 are permitted).
  *
- * @param {number|undefined} contrast The contrast of the layer.
+ * @param {number} contrast The contrast of the layer.
  * @observable
  * @api
  */
