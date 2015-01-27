@@ -3564,7 +3564,7 @@ olx.source.FormatVectorOptions.prototype.projection;
  * @typedef {{attributions: (Array.<ol.Attribution>|undefined),
  *     defaultProjection: ol.proj.ProjectionLike,
  *     logo: (string|olx.LogoOptions|undefined),
- *     object: (GeoJSONObject|undefined),
+ *     object: (GeoJSONFeature|GeoJSONFeatureCollection|undefined),
  *     projection: ol.proj.ProjectionLike,
  *     text: (string|undefined),
  *     url: (string|undefined),
@@ -3599,8 +3599,8 @@ olx.source.GeoJSONOptions.prototype.logo;
 
 
 /**
- * Object.
- * @type {GeoJSONObject|undefined}
+ * GeoJSON feature or feature collection.
+ * @type {GeoJSONFeature|GeoJSONFeatureCollection|undefined}
  * @api
  */
 olx.source.GeoJSONOptions.prototype.object;
