@@ -149,7 +149,7 @@ ol.layer.Base.prototype.getLayerState = function() {
     brightness: goog.isDef(brightness) ? goog.math.clamp(brightness, -1, 1) : 0,
     contrast: goog.isDef(contrast) ? Math.max(contrast, 0) : 1,
     hue: hue,
-    opacity: goog.isDef(opacity) ? goog.math.clamp(opacity, 0, 1) : 1,
+    opacity: goog.math.clamp(opacity, 0, 1),
     saturation: goog.isDef(saturation) ? Math.max(saturation, 0) : 1,
     sourceState: sourceState,
     visible: visible,
@@ -222,13 +222,12 @@ goog.exportProperty(
 
 
 /**
- * @return {number|undefined} The opacity of the layer.
+ * @return {number} The opacity of the layer.
  * @observable
  * @api stable
  */
 ol.layer.Base.prototype.getOpacity = function() {
-  return /** @type {number|undefined} */ (
-      this.get(ol.layer.LayerProperty.OPACITY));
+  return /** @type {number} */ (this.get(ol.layer.LayerProperty.OPACITY));
 };
 goog.exportProperty(
     ol.layer.Base.prototype,
@@ -381,7 +380,7 @@ goog.exportProperty(
 
 
 /**
- * @param {number|undefined} opacity The opacity of the layer.
+ * @param {number} opacity The opacity of the layer.
  * @observable
  * @api stable
  */
