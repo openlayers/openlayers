@@ -148,7 +148,7 @@ ol.layer.Base.prototype.getLayerState = function() {
     contrast: Math.max(contrast, 0),
     hue: hue,
     opacity: goog.math.clamp(opacity, 0, 1),
-    saturation: goog.isDef(saturation) ? Math.max(saturation, 0) : 1,
+    saturation: Math.max(saturation, 0),
     sourceState: sourceState,
     visible: visible,
     extent: extent,
@@ -234,13 +234,12 @@ goog.exportProperty(
 
 
 /**
- * @return {number|undefined} The saturation of the layer.
+ * @return {number} The saturation of the layer.
  * @observable
  * @api
  */
 ol.layer.Base.prototype.getSaturation = function() {
-  return /** @type {number|undefined} */ (
-      this.get(ol.layer.LayerProperty.SATURATION));
+  return /** @type {number} */ (this.get(ol.layer.LayerProperty.SATURATION));
 };
 goog.exportProperty(
     ol.layer.Base.prototype,
@@ -397,7 +396,7 @@ goog.exportProperty(
  * values are linear multipliers of the effect (and values over 1 are
  * permitted).
  *
- * @param {number|undefined} saturation The saturation of the layer.
+ * @param {number} saturation The saturation of the layer.
  * @observable
  * @api
  */
