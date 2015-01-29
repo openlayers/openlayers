@@ -85,7 +85,7 @@ goog.inherits(ol.source.Source, ol.Observable);
  * @return {T|undefined} Callback result.
  * @template T
  */
-ol.source.Source.prototype.forEachFeatureAtPixel =
+ol.source.Source.prototype.forEachFeatureAtCoordinate =
     goog.nullFunction;
 
 

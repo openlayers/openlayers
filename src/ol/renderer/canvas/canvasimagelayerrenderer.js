@@ -56,14 +56,14 @@ goog.inherits(ol.renderer.canvas.ImageLayer, ol.renderer.canvas.Layer);
 /**
  * @inheritDoc
  */
-ol.renderer.canvas.ImageLayer.prototype.forEachFeatureAtPixel =
+ol.renderer.canvas.ImageLayer.prototype.forEachFeatureAtCoordinate =
     function(coordinate, frameState, callback, thisArg) {
   var layer = this.getLayer();
   var source = layer.getSource();
   var resolution = frameState.viewState.resolution;
   var rotation = frameState.viewState.rotation;
   var skippedFeatureUids = frameState.skippedFeatureUids;
-  return source.forEachFeatureAtPixel(
+  return source.forEachFeatureAtCoordinate(
       coordinate, resolution, rotation, skippedFeatureUids,
       /**
        * @param {ol.Feature} feature Feature.
@@ -88,7 +88,7 @@ ol.renderer.canvas.ImageLayer.prototype.forEachLayerAtPixel =
     // for ImageVector sources use the original hit-detection logic,
     // so that for example also transparent polygons are detected
     var coordinate = this.getMap().getCoordinateFromPixel(pixel);
-    var hasFeature = this.forEachFeatureAtPixel(
+    var hasFeature = this.forEachFeatureAtCoordinate(
         coordinate, frameState, goog.functions.TRUE, this);
 
     if (hasFeature) {

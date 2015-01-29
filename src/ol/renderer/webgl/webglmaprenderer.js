@@ -540,7 +540,7 @@ ol.renderer.webgl.Map.prototype.renderFrame = function(frameState) {
 /**
  * @inheritDoc
  */
-ol.renderer.webgl.Map.prototype.forEachFeatureAtPixel =
+ol.renderer.webgl.Map.prototype.forEachFeatureAtCoordinate =
     function(coordinate, frameState, callback, thisArg,
         layerFilter, thisArg2) {
   var result;
@@ -560,7 +560,7 @@ ol.renderer.webgl.Map.prototype.forEachFeatureAtPixel =
     // use default color values
     var d = ol.renderer.webgl.Map.DEFAULT_COLOR_VALUES_;
 
-    result = this.replayGroup.forEachFeatureAtPixel(coordinate,
+    result = this.replayGroup.forEachFeatureAtCoordinate(coordinate,
         context, viewState.center, viewState.resolution, viewState.rotation,
         frameState.size, frameState.pixelRatio,
         d.opacity, d.brightness, d.contrast, d.hue, d.saturation, {},
@@ -589,7 +589,7 @@ ol.renderer.webgl.Map.prototype.forEachFeatureAtPixel =
     if (ol.layer.Layer.visibleAtResolution(layerState, viewState.resolution) &&
         layerFilter.call(thisArg2, layer)) {
       var layerRenderer = this.getLayerRenderer(layer);
-      result = layerRenderer.forEachFeatureAtPixel(
+      result = layerRenderer.forEachFeatureAtCoordinate(
           coordinate, frameState, callback, thisArg);
       if (result) {
         return result;
@@ -603,7 +603,7 @@ ol.renderer.webgl.Map.prototype.forEachFeatureAtPixel =
 /**
  * @inheritDoc
  */
-ol.renderer.webgl.Map.prototype.hasFeatureAtPixel =
+ol.renderer.webgl.Map.prototype.hasFeatureAtCoordinate =
     function(coordinate, frameState, layerFilter, thisArg) {
   var hasFeature = false;
 
@@ -619,7 +619,7 @@ ol.renderer.webgl.Map.prototype.hasFeatureAtPixel =
     // use default color values
     var d = ol.renderer.webgl.Map.DEFAULT_COLOR_VALUES_;
 
-    hasFeature = this.replayGroup.hasFeatureAtPixel(coordinate,
+    hasFeature = this.replayGroup.hasFeatureAtCoordinate(coordinate,
         context, viewState.center, viewState.resolution, viewState.rotation,
         frameState.size, frameState.pixelRatio,
         d.opacity, d.brightness, d.contrast, d.hue, d.saturation, {});
@@ -636,7 +636,8 @@ ol.renderer.webgl.Map.prototype.hasFeatureAtPixel =
     if (ol.layer.Layer.visibleAtResolution(layerState, viewState.resolution) &&
         layerFilter.call(thisArg, layer)) {
       var layerRenderer = this.getLayerRenderer(layer);
-      hasFeature = layerRenderer.hasFeatureAtPixel(coordinate, frameState);
+      hasFeature =
+          layerRenderer.hasFeatureAtCoordinate(coordinate, frameState);
       if (hasFeature) {
         return true;
       }
@@ -666,7 +667,7 @@ ol.renderer.webgl.Map.prototype.forEachLayerAtPixel =
     var d = ol.renderer.webgl.Map.DEFAULT_COLOR_VALUES_;
     var coordinate = this.getMap().getCoordinateFromPixel(pixel);
 
-    var hasFeature = this.replayGroup.hasFeatureAtPixel(coordinate,
+    var hasFeature = this.replayGroup.hasFeatureAtCoordinate(coordinate,
         context, viewState.center, viewState.resolution, viewState.rotation,
         frameState.size, frameState.pixelRatio,
         d.opacity, d.brightness, d.contrast, d.hue, d.saturation, {});

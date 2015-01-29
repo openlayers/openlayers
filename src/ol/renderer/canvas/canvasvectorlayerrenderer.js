@@ -116,7 +116,7 @@ ol.renderer.canvas.VectorLayer.prototype.composeFrame =
 /**
  * @inheritDoc
  */
-ol.renderer.canvas.VectorLayer.prototype.forEachFeatureAtPixel =
+ol.renderer.canvas.VectorLayer.prototype.forEachFeatureAtCoordinate =
     function(coordinate, frameState, callback, thisArg) {
   if (goog.isNull(this.replayGroup_)) {
     return undefined;
@@ -126,7 +126,7 @@ ol.renderer.canvas.VectorLayer.prototype.forEachFeatureAtPixel =
     var layer = this.getLayer();
     /** @type {Object.<string, boolean>} */
     var features = {};
-    return this.replayGroup_.forEachFeatureAtPixel(coordinate,
+    return this.replayGroup_.forEachFeatureAtCoordinate(coordinate,
         resolution, rotation, frameState.skippedFeatureUids,
         /**
          * @param {ol.Feature} feature Feature.

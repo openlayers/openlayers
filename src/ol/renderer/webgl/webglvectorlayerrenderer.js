@@ -106,7 +106,7 @@ ol.renderer.webgl.VectorLayer.prototype.disposeInternal = function() {
 /**
  * @inheritDoc
  */
-ol.renderer.webgl.VectorLayer.prototype.forEachFeatureAtPixel =
+ol.renderer.webgl.VectorLayer.prototype.forEachFeatureAtCoordinate =
     function(coordinate, frameState, callback, thisArg) {
   if (goog.isNull(this.replayGroup_) || goog.isNull(this.layerState_)) {
     return undefined;
@@ -118,7 +118,7 @@ ol.renderer.webgl.VectorLayer.prototype.forEachFeatureAtPixel =
     var layerState = this.layerState_;
     /** @type {Object.<string, boolean>} */
     var features = {};
-    return this.replayGroup_.forEachFeatureAtPixel(coordinate,
+    return this.replayGroup_.forEachFeatureAtCoordinate(coordinate,
         context, viewState.center, viewState.resolution, viewState.rotation,
         frameState.size, frameState.pixelRatio,
         layerState.opacity, layerState.brightness, layerState.contrast,
@@ -142,8 +142,8 @@ ol.renderer.webgl.VectorLayer.prototype.forEachFeatureAtPixel =
 /**
  * @inheritDoc
  */
-ol.renderer.webgl.VectorLayer.prototype.hasFeatureAtPixel =
-    function(pixel, frameState) {
+ol.renderer.webgl.VectorLayer.prototype.hasFeatureAtCoordinate =
+    function(coordinate, frameState) {
   if (goog.isNull(this.replayGroup_) || goog.isNull(this.layerState_)) {
     return false;
   } else {
@@ -151,8 +151,7 @@ ol.renderer.webgl.VectorLayer.prototype.hasFeatureAtPixel =
     var context = mapRenderer.getContext();
     var viewState = frameState.viewState;
     var layerState = this.layerState_;
-    var coordinate = this.getMap().getCoordinateFromPixel(pixel);
-    return this.replayGroup_.hasFeatureAtPixel(coordinate,
+    return this.replayGroup_.hasFeatureAtCoordinate(coordinate,
         context, viewState.center, viewState.resolution, viewState.rotation,
         frameState.size, frameState.pixelRatio,
         layerState.opacity, layerState.brightness, layerState.contrast,
@@ -165,8 +164,9 @@ ol.renderer.webgl.VectorLayer.prototype.hasFeatureAtPixel =
  * @inheritDoc
  */
 ol.renderer.webgl.VectorLayer.prototype.forEachLayerAtPixel =
-    function(coordinate, frameState, callback, thisArg) {
-  var hasFeature = this.hasFeatureAtPixel(coordinate, frameState);
+    function(pixel, frameState, callback, thisArg) {
+  var coordinate = this.getMap().getCoordinateFromPixel(pixel);
+  var hasFeature = this.hasFeatureAtCoordinate(coordinate, frameState);
 
   if (hasFeature) {
     return callback.call(thisArg, this.getLayer());

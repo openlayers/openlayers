@@ -583,7 +583,7 @@ ol.Map.prototype.forEachFeatureAtPixel =
   var layerFilter = goog.isDef(opt_layerFilter) ?
       opt_layerFilter : goog.functions.TRUE;
   var thisArg2 = goog.isDef(opt_this2) ? opt_this2 : null;
-  return this.renderer_.forEachFeatureAtPixel(
+  return this.renderer_.forEachFeatureAtCoordinate(
       coordinate, this.frameState_, callback, thisArg,
       layerFilter, thisArg2);
 };
@@ -649,7 +649,7 @@ ol.Map.prototype.hasFeatureAtPixel =
   var layerFilter = goog.isDef(opt_layerFilter) ?
       opt_layerFilter : goog.functions.TRUE;
   var thisArg = goog.isDef(opt_this) ? opt_this : null;
-  return this.renderer_.hasFeatureAtPixel(
+  return this.renderer_.hasFeatureAtCoordinate(
       coordinate, this.frameState_, layerFilter, thisArg);
 };
 

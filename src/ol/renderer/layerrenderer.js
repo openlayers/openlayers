@@ -53,7 +53,7 @@ goog.inherits(ol.renderer.Layer, goog.Disposable);
  * @return {T|undefined} Callback result.
  * @template S,T
  */
-ol.renderer.Layer.prototype.forEachFeatureAtPixel = goog.nullFunction;
+ol.renderer.Layer.prototype.forEachFeatureAtCoordinate = goog.nullFunction;
 
 
 /**
@@ -67,7 +67,7 @@ ol.renderer.Layer.prototype.forEachFeatureAtPixel = goog.nullFunction;
 ol.renderer.Layer.prototype.forEachLayerAtPixel =
     function(pixel, frameState, callback, thisArg) {
   var coordinate = this.getMap().getCoordinateFromPixel(pixel);
-  var hasFeature = this.forEachFeatureAtPixel(
+  var hasFeature = this.forEachFeatureAtCoordinate(
       coordinate, frameState, goog.functions.TRUE, this);
 
   if (hasFeature) {
@@ -81,9 +81,9 @@ ol.renderer.Layer.prototype.forEachLayerAtPixel =
 /**
  * @param {ol.Coordinate} coordinate Coordinate.
  * @param {olx.FrameState} frameState Frame state.
- * @return {boolean} Is there a feature at the given pixel?
+ * @return {boolean} Is there a feature at the given coordinate?
  */
-ol.renderer.Layer.prototype.hasFeatureAtPixel = goog.functions.FALSE;
+ol.renderer.Layer.prototype.hasFeatureAtCoordinate = goog.functions.FALSE;
 
 
 /**

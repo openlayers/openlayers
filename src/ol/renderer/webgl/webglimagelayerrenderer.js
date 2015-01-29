@@ -73,14 +73,14 @@ ol.renderer.webgl.ImageLayer.prototype.createTexture_ = function(image) {
 /**
  * @inheritDoc
  */
-ol.renderer.webgl.ImageLayer.prototype.forEachFeatureAtPixel =
+ol.renderer.webgl.ImageLayer.prototype.forEachFeatureAtCoordinate =
     function(coordinate, frameState, callback, thisArg) {
   var layer = this.getLayer();
   var source = layer.getSource();
   var resolution = frameState.viewState.resolution;
   var rotation = frameState.viewState.rotation;
   var skippedFeatureUids = frameState.skippedFeatureUids;
-  return source.forEachFeatureAtPixel(
+  return source.forEachFeatureAtCoordinate(
       coordinate, resolution, rotation, skippedFeatureUids,
 
       /**
@@ -214,9 +214,9 @@ ol.renderer.webgl.ImageLayer.prototype.updateProjectionMatrix_ =
 /**
  * @inheritDoc
  */
-ol.renderer.webgl.ImageLayer.prototype.hasFeatureAtPixel =
+ol.renderer.webgl.ImageLayer.prototype.hasFeatureAtCoordinate =
     function(coordinate, frameState) {
-  var hasFeature = this.forEachFeatureAtPixel(
+  var hasFeature = this.forEachFeatureAtCoordinate(
       coordinate, frameState, goog.functions.TRUE, this);
   return goog.isDef(hasFeature);
 };
@@ -235,7 +235,7 @@ ol.renderer.webgl.ImageLayer.prototype.forEachLayerAtPixel =
     // for ImageVector sources use the original hit-detection logic,
     // so that for example also transparent polygons are detected
     var coordinate = this.getMap().getCoordinateFromPixel(pixel);
-    var hasFeature = this.forEachFeatureAtPixel(
+    var hasFeature = this.forEachFeatureAtCoordinate(
         coordinate, frameState, goog.functions.TRUE, this);
 
     if (hasFeature) {

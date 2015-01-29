@@ -58,7 +58,7 @@ describe('ol.renderer.canvas.VectorLayer', function() {
 
   });
 
-  describe('#forEachFeatureAtPixel', function() {
+  describe('#forEachFeatureAtCoordinate', function() {
     var renderer;
 
     beforeEach(function() {
@@ -70,8 +70,8 @@ describe('ol.renderer.canvas.VectorLayer', function() {
           map.getRenderer(), layer);
       var replayGroup = {};
       renderer.replayGroup_ = replayGroup;
-      replayGroup.forEachFeatureAtPixel = function(resolution,
-          rotation, coordinate, skippedFeaturesUids, callback) {
+      replayGroup.forEachFeatureAtCoordinate = function(coordinate,
+          resolution, rotation, skippedFeaturesUids, callback) {
         var geometry = new ol.geom.Point([0, 0]);
         var feature = new ol.Feature();
         callback(geometry, feature);
@@ -89,7 +89,7 @@ describe('ol.renderer.canvas.VectorLayer', function() {
           rotation: 0
         }
       };
-      renderer.forEachFeatureAtPixel(
+      renderer.forEachFeatureAtCoordinate(
           coordinate, frameState, spy, undefined);
       expect(spy.callCount).to.be(1);
     });

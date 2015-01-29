@@ -1171,7 +1171,7 @@ ol.render.webgl.ReplayGroup.prototype.replayHitDetection_ = function(context,
  * @return {T|undefined} Callback result.
  * @template T
  */
-ol.render.webgl.ReplayGroup.prototype.forEachFeatureAtPixel = function(
+ol.render.webgl.ReplayGroup.prototype.forEachFeatureAtCoordinate = function(
     coordinate, context, center, resolution, rotation, size, pixelRatio,
     opacity, brightness, contrast, hue, saturation, skippedFeaturesHash,
     callback) {
@@ -1228,9 +1228,9 @@ ol.render.webgl.ReplayGroup.prototype.forEachFeatureAtPixel = function(
  * @param {number} hue Global hue.
  * @param {number} saturation Global saturation.
  * @param {Object} skippedFeaturesHash Ids of features to skip.
- * @return {boolean} Is there a feature at the given pixel?
+ * @return {boolean} Is there a feature at the given coordinate?
  */
-ol.render.webgl.ReplayGroup.prototype.hasFeatureAtPixel = function(
+ol.render.webgl.ReplayGroup.prototype.hasFeatureAtCoordinate = function(
     coordinate, context, center, resolution, rotation, size, pixelRatio,
     opacity, brightness, contrast, hue, saturation, skippedFeaturesHash) {
   var gl = context.getGL();

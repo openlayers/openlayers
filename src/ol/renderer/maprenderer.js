@@ -121,7 +121,7 @@ ol.renderer.Map.expireIconCache_ = function(map, frameState) {
  * @return {T|undefined} Callback result.
  * @template S,T,U
  */
-ol.renderer.Map.prototype.forEachFeatureAtPixel =
+ol.renderer.Map.prototype.forEachFeatureAtCoordinate =
     function(coordinate, frameState, callback, thisArg,
         layerFilter, thisArg2) {
   var result;
@@ -131,7 +131,7 @@ ol.renderer.Map.prototype.forEachFeatureAtPixel =
   if (!goog.isNull(this.replayGroup)) {
     /** @type {Object.<string, boolean>} */
     var features = {};
-    result = this.replayGroup.forEachFeatureAtPixel(coordinate,
+    result = this.replayGroup.forEachFeatureAtCoordinate(coordinate,
         viewResolution, viewRotation, {},
         /**
          * @param {ol.Feature} feature Feature.
@@ -158,7 +158,7 @@ ol.renderer.Map.prototype.forEachFeatureAtPixel =
     if (ol.layer.Layer.visibleAtResolution(layerState, viewResolution) &&
         layerFilter.call(thisArg2, layer)) {
       var layerRenderer = this.getLayerRenderer(layer);
-      result = layerRenderer.forEachFeatureAtPixel(
+      result = layerRenderer.forEachFeatureAtCoordinate(
           coordinate, frameState, callback, thisArg);
       if (result) {
         return result;
@@ -193,7 +193,7 @@ ol.renderer.Map.prototype.forEachLayerAtPixel =
 
   if (!goog.isNull(this.replayGroup)) {
     var coordinate = this.getMap().getCoordinateFromPixel(pixel);
-    var hasFeature = this.replayGroup.forEachFeatureAtPixel(coordinate,
+    var hasFeature = this.replayGroup.forEachFeatureAtCoordinate(coordinate,
         viewResolution, viewRotation, {}, goog.functions.TRUE);
 
     if (hasFeature) {
@@ -231,12 +231,12 @@ ol.renderer.Map.prototype.forEachLayerAtPixel =
  *     returns `true` will be tested for features.  By default, all visible
  *     layers will be tested.
  * @param {U} thisArg Value to use as `this` when executing `layerFilter`.
- * @return {boolean} Is there a feature at the given pixel?
+ * @return {boolean} Is there a feature at the given coordinate?
  * @template U
  */
-ol.renderer.Map.prototype.hasFeatureAtPixel =
+ol.renderer.Map.prototype.hasFeatureAtCoordinate =
     function(coordinate, frameState, layerFilter, thisArg) {
-  var hasFeature = this.forEachFeatureAtPixel(
+  var hasFeature = this.forEachFeatureAtCoordinate(
       coordinate, frameState, goog.functions.TRUE, this, layerFilter, thisArg);
 
   return goog.isDef(hasFeature);
