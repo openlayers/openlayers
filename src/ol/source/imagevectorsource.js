@@ -153,14 +153,14 @@ ol.source.ImageVector.prototype.canvasFunctionInternal_ =
  * @inheritDoc
  */
 ol.source.ImageVector.prototype.forEachFeatureAtPixel = function(
-    resolution, rotation, coordinate, skippedFeatureUids, callback) {
+    coordinate, resolution, rotation, skippedFeatureUids, callback) {
   if (goog.isNull(this.replayGroup_)) {
     return undefined;
   } else {
     /** @type {Object.<string, boolean>} */
     var features = {};
     return this.replayGroup_.forEachFeatureAtPixel(
-        resolution, 0, coordinate, skippedFeatureUids,
+        coordinate, resolution, 0, skippedFeatureUids,
         /**
          * @param {ol.Feature} feature Feature.
          * @return {?} Callback result.

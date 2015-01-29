@@ -560,11 +560,10 @@ ol.renderer.webgl.Map.prototype.forEachFeatureAtPixel =
     // use default color values
     var d = ol.renderer.webgl.Map.DEFAULT_COLOR_VALUES_;
 
-    result = this.replayGroup.forEachFeatureAtPixel(context,
-        viewState.center, viewState.resolution, viewState.rotation,
+    result = this.replayGroup.forEachFeatureAtPixel(coordinate,
+        context, viewState.center, viewState.resolution, viewState.rotation,
         frameState.size, frameState.pixelRatio,
         d.opacity, d.brightness, d.contrast, d.hue, d.saturation, {},
-        coordinate,
         /**
          * @param {ol.Feature} feature Feature.
          * @return {?} Callback result.
@@ -620,11 +619,10 @@ ol.renderer.webgl.Map.prototype.hasFeatureAtPixel =
     // use default color values
     var d = ol.renderer.webgl.Map.DEFAULT_COLOR_VALUES_;
 
-    hasFeature = this.replayGroup.hasFeatureAtPixel(context,
-        viewState.center, viewState.resolution, viewState.rotation,
+    hasFeature = this.replayGroup.hasFeatureAtPixel(coordinate,
+        context, viewState.center, viewState.resolution, viewState.rotation,
         frameState.size, frameState.pixelRatio,
-        d.opacity, d.brightness, d.contrast, d.hue, d.saturation, {},
-        coordinate);
+        d.opacity, d.brightness, d.contrast, d.hue, d.saturation, {});
     if (hasFeature) {
       return true;
     }
@@ -667,11 +665,10 @@ ol.renderer.webgl.Map.prototype.forEachLayerAtPixel =
     // use default color values
     var d = ol.renderer.webgl.Map.DEFAULT_COLOR_VALUES_;
 
-    var hasFeature = this.replayGroup.hasFeatureAtPixel(context,
-        viewState.center, viewState.resolution, viewState.rotation,
+    var hasFeature = this.replayGroup.hasFeatureAtPixel(coordinate,
+        context, viewState.center, viewState.resolution, viewState.rotation,
         frameState.size, frameState.pixelRatio,
-        d.opacity, d.brightness, d.contrast, d.hue, d.saturation, {},
-        coordinate);
+        d.opacity, d.brightness, d.contrast, d.hue, d.saturation, {});
     if (hasFeature) {
       result = callback.call(thisArg, null);
       if (result) {

@@ -64,7 +64,7 @@ ol.renderer.canvas.ImageLayer.prototype.forEachFeatureAtPixel =
   var rotation = frameState.viewState.rotation;
   var skippedFeatureUids = frameState.skippedFeatureUids;
   return source.forEachFeatureAtPixel(
-      resolution, rotation, coordinate, skippedFeatureUids,
+      coordinate, resolution, rotation, skippedFeatureUids,
       /**
        * @param {ol.Feature} feature Feature.
        * @return {?} Callback result.

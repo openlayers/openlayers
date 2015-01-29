@@ -131,8 +131,8 @@ ol.renderer.Map.prototype.forEachFeatureAtPixel =
   if (!goog.isNull(this.replayGroup)) {
     /** @type {Object.<string, boolean>} */
     var features = {};
-    result = this.replayGroup.forEachFeatureAtPixel(viewResolution,
-        viewRotation, coordinate, {},
+    result = this.replayGroup.forEachFeatureAtPixel(coordinate,
+        viewResolution, viewRotation, {},
         /**
          * @param {ol.Feature} feature Feature.
          * @return {?} Callback result.
@@ -192,8 +192,8 @@ ol.renderer.Map.prototype.forEachLayerAtPixel =
   var viewRotation = viewState.rotation;
 
   if (!goog.isNull(this.replayGroup)) {
-    var hasFeature = this.replayGroup.forEachFeatureAtPixel(viewResolution,
-        viewRotation, coordinate, {}, goog.functions.TRUE);
+    var hasFeature = this.replayGroup.forEachFeatureAtPixel(coordinate,
+        viewResolution, viewRotation, {}, goog.functions.TRUE);
 
     if (hasFeature) {
       result = callback.call(thisArg, null);

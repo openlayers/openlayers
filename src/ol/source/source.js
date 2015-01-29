@@ -77,9 +77,9 @@ goog.inherits(ol.source.Source, ol.Observable);
 
 
 /**
+ * @param {ol.Coordinate} coordinate Coordinate.
  * @param {number} resolution Resolution.
  * @param {number} rotation Rotation.
- * @param {ol.Coordinate} coordinate Coordinate.
  * @param {Object.<string, boolean>} skippedFeatureUids Skipped feature uids.
  * @param {function(ol.Feature): T} callback Feature callback.
  * @return {T|undefined} Callback result.

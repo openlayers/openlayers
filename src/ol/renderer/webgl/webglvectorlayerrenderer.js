@@ -118,12 +118,11 @@ ol.renderer.webgl.VectorLayer.prototype.forEachFeatureAtPixel =
     var layerState = this.layerState_;
     /** @type {Object.<string, boolean>} */
     var features = {};
-    return this.replayGroup_.forEachFeatureAtPixel(context,
-        viewState.center, viewState.resolution, viewState.rotation,
+    return this.replayGroup_.forEachFeatureAtPixel(coordinate,
+        context, viewState.center, viewState.resolution, viewState.rotation,
         frameState.size, frameState.pixelRatio,
         layerState.opacity, layerState.brightness, layerState.contrast,
         layerState.hue, layerState.saturation, frameState.skippedFeatureUids,
-        coordinate,
         /**
          * @param {ol.Feature} feature Feature.
          * @return {?} Callback result.
@@ -152,12 +151,11 @@ ol.renderer.webgl.VectorLayer.prototype.hasFeatureAtPixel =
     var context = mapRenderer.getContext();
     var viewState = frameState.viewState;
     var layerState = this.layerState_;
-    return this.replayGroup_.hasFeatureAtPixel(context,
-        viewState.center, viewState.resolution, viewState.rotation,
+    return this.replayGroup_.hasFeatureAtPixel(coordinate,
+        context, viewState.center, viewState.resolution, viewState.rotation,
         frameState.size, frameState.pixelRatio,
         layerState.opacity, layerState.brightness, layerState.contrast,
-        layerState.hue, layerState.saturation, frameState.skippedFeatureUids,
-        coordinate);
+        layerState.hue, layerState.saturation, frameState.skippedFeatureUids);
   }
 };
 

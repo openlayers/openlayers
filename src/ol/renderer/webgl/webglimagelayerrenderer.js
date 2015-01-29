@@ -81,7 +81,7 @@ ol.renderer.webgl.ImageLayer.prototype.forEachFeatureAtPixel =
   var rotation = frameState.viewState.rotation;
   var skippedFeatureUids = frameState.skippedFeatureUids;
   return source.forEachFeatureAtPixel(
-      resolution, rotation, coordinate, skippedFeatureUids,
+      coordinate, resolution, rotation, skippedFeatureUids,
 
       /**
        * @param {ol.Feature} feature Feature.

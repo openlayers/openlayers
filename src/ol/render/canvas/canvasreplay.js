@@ -1858,16 +1858,16 @@ ol.render.canvas.ReplayGroup.prototype.finish = function() {
 
 
 /**
+ * @param {ol.Coordinate} coordinate Coordinate.
  * @param {number} resolution Resolution.
  * @param {number} rotation Rotation.
- * @param {ol.Coordinate} coordinate Coordinate.
  * @param {Object} skippedFeaturesHash Ids of features to skip
  * @param {function(ol.Feature): T} callback Feature callback.
  * @return {T|undefined} Callback result.
  * @template T
  */
 ol.render.canvas.ReplayGroup.prototype.forEachFeatureAtPixel = function(
-    resolution, rotation, coordinate, skippedFeaturesHash, callback) {
+    coordinate, resolution, rotation, skippedFeaturesHash, callback) {
 
   var transform = this.hitDetectionTransform_;
   ol.vec.Mat4.makeTransform2D(transform, 0.5, 0.5,
