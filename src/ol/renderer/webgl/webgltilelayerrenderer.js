@@ -333,16 +333,15 @@ ol.renderer.webgl.TileLayer.prototype.prepareFrame =
  * @inheritDoc
  */
 ol.renderer.webgl.TileLayer.prototype.forEachLayerAtPixel =
-    function(coordinate, frameState, callback, thisArg) {
+    function(pixel, frameState, callback, thisArg) {
   if (goog.isNull(this.framebuffer)) {
     return undefined;
   }
   var mapSize = this.getMap().getSize();
 
-  var pixelOnMap = this.getMap().getPixelFromCoordinate(coordinate);
   var pixelOnMapScaled = [
-    pixelOnMap[0] / mapSize[0],
-    (mapSize[1] - pixelOnMap[1]) / mapSize[1]];
+    pixel[0] / mapSize[0],
+    (mapSize[1] - pixel[1]) / mapSize[1]];
 
   var pixelOnFrameBufferScaled = [0, 0];
   ol.vec.Mat4.multVec2(

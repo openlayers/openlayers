@@ -217,15 +217,14 @@ ol.renderer.canvas.Layer.prototype.prepareFrame = goog.abstractMethod;
 
 
 /**
- * @param {ol.Coordinate} coordinate Coordinate.
+ * @param {ol.Pixel} pixelOnMap Pixel.
  * @param {goog.vec.Mat4.Number} imageTransformInv The transformation matrix
  *        to convert from a map pixel to a canvas pixel.
  * @return {ol.Pixel}
  * @protected
  */
-ol.renderer.canvas.Layer.prototype.getPixelFromCoordinates =
-    function(coordinate, imageTransformInv) {
-  var pixelOnMap = this.getMap().getPixelFromCoordinate(coordinate);
+ol.renderer.canvas.Layer.prototype.getPixelOnCanvas =
+    function(pixelOnMap, imageTransformInv) {
   var pixelOnCanvas = [0, 0];
   ol.vec.Mat4.multVec2(imageTransformInv, pixelOnMap, pixelOnCanvas);
   return pixelOnCanvas;

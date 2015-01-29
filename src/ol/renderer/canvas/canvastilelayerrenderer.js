@@ -424,7 +424,7 @@ ol.renderer.canvas.TileLayer.prototype.prepareFrame =
  * @inheritDoc
  */
 ol.renderer.canvas.TileLayer.prototype.forEachLayerAtPixel =
-    function(coordinate, frameState, callback, thisArg) {
+    function(pixel, frameState, callback, thisArg) {
   if (goog.isNull(this.context_)) {
     return undefined;
   }
@@ -435,7 +435,7 @@ ol.renderer.canvas.TileLayer.prototype.forEachLayerAtPixel =
   }
 
   var pixelOnCanvas =
-      this.getPixelFromCoordinates(coordinate, this.imageTransformInv_);
+      this.getPixelOnCanvas(pixel, this.imageTransformInv_);
 
   var imageData = this.context_.getImageData(
       pixelOnCanvas[0], pixelOnCanvas[1], 1, 1).data;

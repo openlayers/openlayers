@@ -650,7 +650,7 @@ ol.renderer.webgl.Map.prototype.hasFeatureAtPixel =
  * @inheritDoc
  */
 ol.renderer.webgl.Map.prototype.forEachLayerAtPixel =
-    function(coordinate, frameState, callback, thisArg,
+    function(pixel, frameState, callback, thisArg,
         layerFilter, thisArg2) {
   if (this.getGL().isContextLost()) {
     return false;
@@ -664,6 +664,7 @@ ol.renderer.webgl.Map.prototype.forEachLayerAtPixel =
   if (!goog.isNull(this.replayGroup)) {
     // use default color values
     var d = ol.renderer.webgl.Map.DEFAULT_COLOR_VALUES_;
+    var coordinate = this.getMap().getCoordinateFromPixel(pixel);
 
     var hasFeature = this.replayGroup.hasFeatureAtPixel(coordinate,
         context, viewState.center, viewState.resolution, viewState.rotation,
@@ -686,7 +687,7 @@ ol.renderer.webgl.Map.prototype.forEachLayerAtPixel =
         layerFilter.call(thisArg, layer)) {
       var layerRenderer = this.getLayerRenderer(layer);
       result = layerRenderer.forEachLayerAtPixel(
-          coordinate, frameState, callback, thisArg);
+          pixel, frameState, callback, thisArg);
       if (result) {
         return result;
       }

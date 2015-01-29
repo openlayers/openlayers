@@ -57,7 +57,7 @@ ol.renderer.Layer.prototype.forEachFeatureAtPixel = goog.nullFunction;
 
 
 /**
- * @param {ol.Coordinate} coordinate Coordinate.
+ * @param {ol.Pixel} pixel Pixel.
  * @param {olx.FrameState} frameState Frame state.
  * @param {function(this: S, ol.layer.Layer): T} callback Layer callback.
  * @param {S} thisArg Value to use as `this` when executing `callback`.
@@ -65,7 +65,8 @@ ol.renderer.Layer.prototype.forEachFeatureAtPixel = goog.nullFunction;
  * @template S,T
  */
 ol.renderer.Layer.prototype.forEachLayerAtPixel =
-    function(coordinate, frameState, callback, thisArg) {
+    function(pixel, frameState, callback, thisArg) {
+  var coordinate = this.getMap().getCoordinateFromPixel(pixel);
   var hasFeature = this.forEachFeatureAtPixel(
       coordinate, frameState, goog.functions.TRUE, this);
 

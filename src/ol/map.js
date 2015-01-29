@@ -616,13 +616,12 @@ ol.Map.prototype.forEachLayerAtPixel =
   if (goog.isNull(this.frameState_)) {
     return;
   }
-  var coordinate = this.getCoordinateFromPixel(pixel);
   var thisArg = goog.isDef(opt_this) ? opt_this : null;
   var layerFilter = goog.isDef(opt_layerFilter) ?
       opt_layerFilter : goog.functions.TRUE;
   var thisArg2 = goog.isDef(opt_this2) ? opt_this2 : null;
   return this.renderer_.forEachLayerAtPixel(
-      coordinate, this.frameState_, callback, thisArg,
+      pixel, this.frameState_, callback, thisArg,
       layerFilter, thisArg2);
 };
 

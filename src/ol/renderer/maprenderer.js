@@ -170,7 +170,7 @@ ol.renderer.Map.prototype.forEachFeatureAtPixel =
 
 
 /**
- * @param {ol.Coordinate} coordinate Coordinate.
+ * @param {ol.Pixel} pixel Pixel.
  * @param {olx.FrameState} frameState FrameState.
  * @param {function(this: S, ol.layer.Layer): T} callback Layer
  *     callback.
@@ -184,7 +184,7 @@ ol.renderer.Map.prototype.forEachFeatureAtPixel =
  * @template S,T,U
  */
 ol.renderer.Map.prototype.forEachLayerAtPixel =
-    function(coordinate, frameState, callback, thisArg,
+    function(pixel, frameState, callback, thisArg,
         layerFilter, thisArg2) {
   var result;
   var viewState = frameState.viewState;
@@ -192,6 +192,7 @@ ol.renderer.Map.prototype.forEachLayerAtPixel =
   var viewRotation = viewState.rotation;
 
   if (!goog.isNull(this.replayGroup)) {
+    var coordinate = this.getMap().getCoordinateFromPixel(pixel);
     var hasFeature = this.replayGroup.forEachFeatureAtPixel(coordinate,
         viewResolution, viewRotation, {}, goog.functions.TRUE);
 
@@ -212,7 +213,7 @@ ol.renderer.Map.prototype.forEachLayerAtPixel =
         layerFilter.call(thisArg2, layer)) {
       var layerRenderer = this.getLayerRenderer(layer);
       result = layerRenderer.forEachLayerAtPixel(
-          coordinate, frameState, callback, thisArg);
+          pixel, frameState, callback, thisArg);
       if (result) {
         return result;
       }

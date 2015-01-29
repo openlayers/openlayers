@@ -79,7 +79,7 @@ ol.renderer.canvas.ImageLayer.prototype.forEachFeatureAtPixel =
  * @inheritDoc
  */
 ol.renderer.canvas.ImageLayer.prototype.forEachLayerAtPixel =
-    function(coordinate, frameState, callback, thisArg) {
+    function(pixel, frameState, callback, thisArg) {
   if (goog.isNull(this.getImage())) {
     return undefined;
   }
@@ -87,6 +87,7 @@ ol.renderer.canvas.ImageLayer.prototype.forEachLayerAtPixel =
   if (this.getLayer().getSource() instanceof ol.source.ImageVector) {
     // for ImageVector sources use the original hit-detection logic,
     // so that for example also transparent polygons are detected
+    var coordinate = this.getMap().getCoordinateFromPixel(pixel);
     var hasFeature = this.forEachFeatureAtPixel(
         coordinate, frameState, goog.functions.TRUE, this);
 
@@ -103,7 +104,7 @@ ol.renderer.canvas.ImageLayer.prototype.forEachLayerAtPixel =
     }
 
     var pixelOnCanvas =
-        this.getPixelFromCoordinates(coordinate, this.imageTransformInv_);
+        this.getPixelOnCanvas(pixel, this.imageTransformInv_);
 
     if (goog.isNull(this.hitCanvasContext_)) {
       this.hitCanvasContext_ = ol.dom.createCanvasContext2D(1, 1);

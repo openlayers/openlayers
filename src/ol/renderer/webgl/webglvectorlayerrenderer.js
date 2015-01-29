@@ -143,7 +143,7 @@ ol.renderer.webgl.VectorLayer.prototype.forEachFeatureAtPixel =
  * @inheritDoc
  */
 ol.renderer.webgl.VectorLayer.prototype.hasFeatureAtPixel =
-    function(coordinate, frameState) {
+    function(pixel, frameState) {
   if (goog.isNull(this.replayGroup_) || goog.isNull(this.layerState_)) {
     return false;
   } else {
@@ -151,6 +151,7 @@ ol.renderer.webgl.VectorLayer.prototype.hasFeatureAtPixel =
     var context = mapRenderer.getContext();
     var viewState = frameState.viewState;
     var layerState = this.layerState_;
+    var coordinate = this.getMap().getCoordinateFromPixel(pixel);
     return this.replayGroup_.hasFeatureAtPixel(coordinate,
         context, viewState.center, viewState.resolution, viewState.rotation,
         frameState.size, frameState.pixelRatio,

@@ -226,7 +226,7 @@ ol.renderer.webgl.ImageLayer.prototype.hasFeatureAtPixel =
  * @inheritDoc
  */
 ol.renderer.webgl.ImageLayer.prototype.forEachLayerAtPixel =
-    function(coordinate, frameState, callback, thisArg) {
+    function(pixel, frameState, callback, thisArg) {
   if (goog.isNull(this.image_) || goog.isNull(this.image_.getImage())) {
     return undefined;
   }
@@ -234,6 +234,7 @@ ol.renderer.webgl.ImageLayer.prototype.forEachLayerAtPixel =
   if (this.getLayer().getSource() instanceof ol.source.ImageVector) {
     // for ImageVector sources use the original hit-detection logic,
     // so that for example also transparent polygons are detected
+    var coordinate = this.getMap().getCoordinateFromPixel(pixel);
     var hasFeature = this.forEachFeatureAtPixel(
         coordinate, frameState, goog.functions.TRUE, this);
 
@@ -251,10 +252,9 @@ ol.renderer.webgl.ImageLayer.prototype.forEachLayerAtPixel =
           frameState.size, imageSize);
     }
 
-    var pixelOnMap = this.getMap().getPixelFromCoordinate(coordinate);
     var pixelOnFrameBuffer = [0, 0];
     ol.vec.Mat4.multVec2(
-        this.hitTransformationMatrix_, pixelOnMap, pixelOnFrameBuffer);
+        this.hitTransformationMatrix_, pixel, pixelOnFrameBuffer);
 
     if (pixelOnFrameBuffer[0] < 0 || pixelOnFrameBuffer[0] > imageSize[0] ||
         pixelOnFrameBuffer[1] < 0 || pixelOnFrameBuffer[1] > imageSize[1]) {
