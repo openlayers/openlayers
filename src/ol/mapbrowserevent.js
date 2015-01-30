@@ -64,6 +64,9 @@ ol.MapBrowserEvent = function(type, map, browserEvent, opt_dragging,
   this.coordinate = map.getCoordinateFromPixel(this.pixel);
 
   /**
+   * Indicates if the map is currently being dragged. Only set for
+   * `POINTERDRAG` and `POINTERMOVE` events. Default is `false`.
+   *
    * @type {boolean}
    * @api stable
    */
@@ -173,6 +176,8 @@ ol.MapBrowserEventHandler = function(map) {
   }
 
   /**
+   * The most recent "down" type event (or null if none have occurred).
+   * Set on pointerdown.
    * @type {ol.pointer.PointerEvent}
    * @private
    */
@@ -231,16 +236,6 @@ ol.MapBrowserEventHandler = function(map) {
 
 };
 goog.inherits(ol.MapBrowserEventHandler, goog.events.EventTarget);
-
-
-/**
- * Get the last "down" type event. This will be set on pointerdown.
- * @return {ol.pointer.PointerEvent} The most recent "down" type event (or null
- * if none have occurred).
- */
-ol.MapBrowserEventHandler.prototype.getDown = function() {
-  return this.down_;
-};
 
 
 /**
