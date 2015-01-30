@@ -1343,7 +1343,7 @@ ol.format.GML.prototype.writeFeatures;
  * Encode an array of features in the GML 3.1.1 format as an XML node.
  *
  * @function
- * @param {ol.Feature} feature Feature.
+ * @param {Array.<ol.Feature>} features Features.
  * @param {olx.format.WriteOptions=} opt_options Options.
  * @return {Node} Node.
  * @api
