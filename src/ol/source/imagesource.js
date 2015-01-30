@@ -1,7 +1,6 @@
 goog.provide('ol.source.Image');
 
 goog.require('goog.array');
-goog.require('goog.asserts');
 goog.require('ol.Attribution');
 goog.require('ol.Extent');
 goog.require('ol.array');
@@ -47,11 +46,6 @@ ol.source.Image = function(options) {
    */
   this.resolutions_ = goog.isDef(options.resolutions) ?
       options.resolutions : null;
-  goog.asserts.assert(goog.isNull(this.resolutions_) ||
-      goog.array.isSorted(this.resolutions_,
-          function(a, b) {
-            return b - a;
-          }, true));
 
 };
 goog.inherits(ol.source.Image, ol.source.Source);

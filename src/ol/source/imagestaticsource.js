@@ -24,10 +24,11 @@ ol.source.ImageStatic = function(options) {
 
   var imageExtent = options.imageExtent;
 
-  var resolution, resolutions;
+  var resolution_w, resolution_h, resolutions;
   if (goog.isDef(options.imageSize)) {
-    resolution = ol.extent.getHeight(imageExtent) / options.imageSize[1];
-    resolutions = [resolution];
+    resolution_w = ol.extent.getWidth(imageExtent) / options.imageSize[0];
+    resolution_h = ol.extent.getHeight(imageExtent) / options.imageSize[1];
+    resolutions = [resolution_w, resolution_h];
   }
 
   var crossOrigin = goog.isDef(options.crossOrigin) ?
@@ -47,7 +48,7 @@ ol.source.ImageStatic = function(options) {
    * @private
    * @type {ol.Image}
    */
-  this.image_ = new ol.Image(imageExtent, resolution, 1, attributions,
+  this.image_ = new ol.Image(imageExtent, resolutions, 1, attributions,
       options.url, crossOrigin, imageLoadFunction);
 
 };
@@ -58,7 +59,7 @@ goog.inherits(ol.source.ImageStatic, ol.source.Image);
  * @inheritDoc
  */
 ol.source.ImageStatic.prototype.getImage =
-    function(extent, resolution, pixelRatio, projection) {
+    function(extent, resolutions, pixelRatio, projection) {
   if (ol.extent.intersects(extent, this.image_.getExtent())) {
     return this.image_;
   }
