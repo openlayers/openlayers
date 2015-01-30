@@ -208,7 +208,7 @@ ol.format.KML.DEFAULT_FILL_STYLE_ = new ol.style.Fill({
  * @type {ol.Size}
  * @private
  */
-ol.format.KML.DEFAULT_IMAGE_STYLE_ANCHOR_ = [2, 20]; // FIXME maybe [8, 32] ?
+ol.format.KML.DEFAULT_IMAGE_STYLE_ANCHOR_ = [20, 2]; // FIXME maybe [8, 32] ?
 
 
 /**
@@ -234,7 +234,7 @@ ol.format.KML.DEFAULT_IMAGE_STYLE_ANCHOR_Y_UNITS_ =
  * @type {ol.Size}
  * @private
  */
-ol.format.KML.DEFAULT_IMAGE_STYLE_SIZE_ = [32, 32];
+ol.format.KML.DEFAULT_IMAGE_STYLE_SIZE_ = [64, 64];
 
 
 /**
@@ -253,11 +253,12 @@ ol.format.KML.DEFAULT_IMAGE_STYLE_SRC_ =
  */
 ol.format.KML.DEFAULT_IMAGE_STYLE_ = new ol.style.Icon({
   anchor: ol.format.KML.DEFAULT_IMAGE_STYLE_ANCHOR_,
+  anchorOrigin: ol.style.IconOrigin.BOTTOM_LEFT,
   anchorXUnits: ol.format.KML.DEFAULT_IMAGE_STYLE_ANCHOR_X_UNITS_,
   anchorYUnits: ol.format.KML.DEFAULT_IMAGE_STYLE_ANCHOR_Y_UNITS_,
   crossOrigin: 'anonymous',
   rotation: 0,
-  scale: 1,
+  scale: 0.5,
   size: ol.format.KML.DEFAULT_IMAGE_STYLE_SIZE_,
   src: ol.format.KML.DEFAULT_IMAGE_STYLE_SRC_
 });
