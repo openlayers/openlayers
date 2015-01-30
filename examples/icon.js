@@ -86,7 +86,11 @@ map.on('click', function(evt) {
 });
 
 // change mouse cursor when over marker
-$(map.getViewport()).on('mousemove', function(e) {
+map.on('pointermove', function(e) {
+  if (e.dragging) {
+    $(element).popover('destroy');
+    return;
+  }
   var pixel = map.getEventPixel(e.originalEvent);
   var hit = map.hasFeatureAtPixel(pixel);
   map.getTarget().style.cursor = hit ? 'pointer' : '';
