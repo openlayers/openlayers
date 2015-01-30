@@ -590,7 +590,7 @@ ol.Map.prototype.forEachFeatureAtPixel =
 
 
 /**
- * Detect layers that have a colour value at a pixel on the viewport, and
+ * Detect layers that have a color value at a pixel on the viewport, and
  * execute a callback with each matching layer. Layers included in the
  * detection can be configured through `opt_layerFilter`. Feature overlays will
  * always be included in the detection.
