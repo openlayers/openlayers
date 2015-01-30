@@ -132,7 +132,10 @@ map.on('click', function(evt) {
   }, 1);
 });
 
-$(map.getViewport()).on('mousemove', function(evt) {
+map.on('pointermove', function(evt) {
+  if (evt.dragging) {
+    return;
+  }
   var pixel = map.getEventPixel(evt.originalEvent);
   var hit = map.hasFeatureAtPixel(pixel);
   map.getTarget().style.cursor = hit ? 'pointer' : '';
