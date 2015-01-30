@@ -68,6 +68,18 @@ ol.format.GMLBase = function(opt_options) {
    */
   this.schemaLocation = '';
 
+  /**
+   * @type {Object.<string, Object.<string, Object>>}
+   */
+  this.FEATURE_COLLECTION_PARSERS = Object({
+    'http://www.opengis.net/gml': {
+      'featureMember': ol.xml.makeReplacer(
+          ol.format.GMLBase.prototype.readFeaturesInternal),
+      'featureMembers': ol.xml.makeReplacer(
+          ol.format.GMLBase.prototype.readFeaturesInternal)
+    }
+  });
+
   goog.base(this);
 };
 goog.inherits(ol.format.GMLBase, ol.format.XMLFeature);
@@ -116,19 +128,6 @@ ol.format.GMLBase.prototype.readFeaturesInternal = function(node, objectStack) {
   }
   return features;
 };
-
-
-/**
- * @type {Object.<string, Object.<string, Object>>}
- */
-ol.format.GMLBase.prototype.FEATURE_COLLECTION_PARSERS = Object({
-  'http://www.opengis.net/gml': {
-    'featureMember': ol.xml.makeReplacer(
-        ol.format.GMLBase.prototype.readFeaturesInternal),
-    'featureMembers': ol.xml.makeReplacer(
-        ol.format.GMLBase.prototype.readFeaturesInternal)
-  }
-});
 
 
 /**
