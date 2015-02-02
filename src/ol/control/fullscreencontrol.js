@@ -36,8 +36,7 @@ ol.control.FullScreen = function(opt_options) {
   this.cssClassName_ = goog.isDef(options.className) ?
       options.className : 'ol-full-screen';
 
-  var label = goog.isDef(options.label) ?
-      options.label : '\u2194';
+  var label = goog.isDef(options.label) ? options.label : '\u2194';
 
   /**
    * @private
