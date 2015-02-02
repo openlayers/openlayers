@@ -84,8 +84,8 @@ goog.inherits(ol.format.GML3, ol.format.GMLBase);
  * @type {string}
  * @private
  */
-ol.format.GML3.schemaLocation_ = 'http://www.opengis.net/gml ' +
-    'http://schemas.opengis.net/gml/3.1.1/profiles/gmlsfProfile/' +
+ol.format.GML3.schemaLocation_ = ol.format.GMLBase.GMLNS +
+    ' http://schemas.opengis.net/gml/3.1.1/profiles/gmlsfProfile/' +
     '1.0.0/gmlsf.xsd';
 
 

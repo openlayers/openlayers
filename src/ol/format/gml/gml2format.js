@@ -43,8 +43,8 @@ goog.inherits(ol.format.GML2, ol.format.GMLBase);
  * @type {string}
  * @private
  */
-ol.format.GML2.schemaLocation_ = 'http://www.opengis.net/gml ' +
-    'http://schemas.opengis.net/gml/2.1.2/feature.xsd';
+ol.format.GML2.schemaLocation_ = ol.format.GMLBase.GMLNS +
+    ' http://schemas.opengis.net/gml/2.1.2/feature.xsd';
 
 
 /**

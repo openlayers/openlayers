@@ -125,6 +125,9 @@ ol.format.WFS.prototype.readFeaturesFromNode = function(node, opt_options) {
   goog.object.extend(context, this.getReadOptions(node,
       goog.isDef(opt_options) ? opt_options : {}));
   var objectStack = [context];
+  this.gmlFormat_.FEATURE_COLLECTION_PARSERS[ol.format.GMLBase.GMLNS][
+      'featureMember'] =
+      ol.xml.makeArrayPusher(ol.format.GMLBase.prototype.readFeaturesInternal);
   var features = ol.xml.pushParseAndPop([],
       this.gmlFormat_.FEATURE_COLLECTION_PARSERS, node,
       objectStack, this.gmlFormat_);
