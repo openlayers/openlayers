@@ -1277,7 +1277,8 @@ ol.Map.prototype.renderFrame_ = function(time) {
   var frameState = null;
   if (goog.isDef(size) && hasArea(size) &&
       !goog.isNull(view) && view.isDef()) {
-    var viewHints = view.getHints();
+    var viewHints = view.getHints(goog.isNull(this.frameState_) ?
+        undefined : this.frameState_.viewHints);
     var layerStatesArray = this.getLayerGroup().getLayerStatesArray();
     var layerStates = {};
     for (i = 0, ii = layerStatesArray.length; i < ii; ++i) {
