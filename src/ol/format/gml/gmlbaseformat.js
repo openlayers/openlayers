@@ -71,14 +71,13 @@ ol.format.GMLBase = function(opt_options) {
   /**
    * @type {Object.<string, Object.<string, Object>>}
    */
-  this.FEATURE_COLLECTION_PARSERS = Object({
-    'http://www.opengis.net/gml': {
-      'featureMember': ol.xml.makeReplacer(
-          ol.format.GMLBase.prototype.readFeaturesInternal),
-      'featureMembers': ol.xml.makeReplacer(
-          ol.format.GMLBase.prototype.readFeaturesInternal)
-    }
-  });
+  this.FEATURE_COLLECTION_PARSERS = {};
+  this.FEATURE_COLLECTION_PARSERS[ol.format.GMLBase.GMLNS] = {
+    'featureMember': ol.xml.makeReplacer(
+        ol.format.GMLBase.prototype.readFeaturesInternal),
+    'featureMembers': ol.xml.makeReplacer(
+        ol.format.GMLBase.prototype.readFeaturesInternal)
+  };
 
   goog.base(this);
 };
