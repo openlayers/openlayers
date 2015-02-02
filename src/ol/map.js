@@ -1320,7 +1320,8 @@ ol.Map.prototype.renderFrame_ = function(time) {
     preRenderFunctions.length = n;
 
     frameState.extent = ol.extent.getForViewAndSize(viewState.center,
-        viewState.resolution, viewState.rotation, frameState.size);
+        viewState.resolution, viewState.rotation, frameState.size,
+        goog.isNull(this.frameState_) ? undefined : this.frameState_.extent);
   }
 
   this.frameState_ = frameState;
