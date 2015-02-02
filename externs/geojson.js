@@ -14,6 +14,12 @@ var GeoJSONObject = function() {};
 
 
 /**
+ * @type {!Array.<number>|undefined}
+ */
+GeoJSONObject.prototype.bbox;
+
+
+/**
  * @type {string}
  */
 GeoJSONObject.prototype.type;
@@ -28,9 +34,15 @@ GeoJSONObject.prototype.crs;
 
 /**
  * @constructor
- * @extends {GeoJSONObject}
  */
 var GeoJSONCRS = function() {};
+
+
+/**
+ * CRS type. One of `link` or `name`.
+ * @type {string}
+ */
+GeoJSONCRS.prototype.type;
 
 
 /**
@@ -111,12 +123,6 @@ var GeoJSONFeature = function() {};
 
 
 /**
- * @type {!Array.<number>|undefined}
- */
-GeoJSONFeature.prototype.bbox;
-
-
-/**
  * @type {GeoJSONGeometry}
  */
 GeoJSONFeature.prototype.geometry;
@@ -148,16 +154,9 @@ var GeoJSONFeatureCollection = function() {};
 GeoJSONFeatureCollection.prototype.features;
 
 
-/**
- * @type {!Array.<number>|undefined}
- */
-GeoJSONFeatureCollection.prototype.bbox;
-
-
 
 /**
  * @constructor
- * @extends {GeoJSONObject}
  */
 var GeoJSONLink = function() {};
 
@@ -166,3 +165,8 @@ var GeoJSONLink = function() {};
  * @type {string}
  */
 GeoJSONLink.prototype.href;
+
+/**
+ * @type {string}
+ */
+GeoJSONLink.prototype.type;
