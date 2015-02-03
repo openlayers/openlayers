@@ -2,6 +2,7 @@ goog.provide('ol.render.webgl.Immediate');
 goog.require('goog.array');
 goog.require('goog.object');
 goog.require('ol.extent');
+goog.require('ol.render.IVectorContext');
 goog.require('ol.render.webgl.ReplayGroup');
 
 
