@@ -1,0 +1,20 @@
+0 info it worked if it ends with ok
+1 verbose cli [ 'C:\\Program Files\\nodejs\\\\node.exe',
+1 verbose cli   'C:\\Program Files\\nodejs\\node_modules\\npm\\bin\\npm-cli.js',
+1 verbose cli   'start' ]
+2 info using npm@1.4.28
+3 info using node@v0.10.35
+4 verbose node symlink C:\Program Files\nodejs\\node.exe
+5 error Error: ENOENT, open 'D:\TFS-Webstorm\Celfinet.Web.GIS\ol3\test\package.json'
+6 error If you need help, you may report this *entire* log,
+6 error including the npm and node versions, at:
+6 error     <http://github.com/npm/npm/issues>
+7 error System Windows_NT 6.2.9200
+8 error command "C:\\Program Files\\nodejs\\\\node.exe" "C:\\Program Files\\nodejs\\node_modules\\npm\\bin\\npm-cli.js" "start"
+9 error cwd D:\TFS-Webstorm\Celfinet.Web.GIS\ol3\test
+10 error node -v v0.10.35
+11 error npm -v 1.4.28
+12 error path D:\TFS-Webstorm\Celfinet.Web.GIS\ol3\test\package.json
+13 error code ENOENT
+14 error errno 34
+15 verbose exit [ 34, true ]
