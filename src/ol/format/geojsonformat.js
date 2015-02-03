@@ -64,7 +64,7 @@ ol.format.GeoJSON.EXTENSIONS_ = ['.geojson'];
 
 
 /**
- * @param {GeoJSONObject} object Object.
+ * @param {GeoJSONGeometry|GeoJSONGeometryCollection} object Object.
  * @param {olx.format.ReadOptions=} opt_options Read options.
  * @private
  * @return {ol.geom.Geometry} Geometry.
@@ -92,7 +92,7 @@ ol.format.GeoJSON.readGeometryCollectionGeometry_ = function(
   goog.asserts.assert(object.type == 'GeometryCollection');
   var geometries = goog.array.map(object.geometries,
       /**
-       * @param {GeoJSONObject} geometry Geometry.
+       * @param {GeoJSONGeometry} geometry Geometry.
        * @return {ol.geom.Geometry} geometry Geometry.
        */
       function(geometry) {

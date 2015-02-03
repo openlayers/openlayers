@@ -53,11 +53,12 @@
 .ol-rotate {
   top: .5em;
   right: .5em;
-  transition: opacity .25s;
+  transition: opacity .25s linear, visibility 0s linear;
 }
 .ol-rotate.ol-hidden {
   opacity: 0;
-  display: none;
+  visibility: hidden;
+  transition: opacity .25s linear, visibility 0s linear .25s;
 }
 .ol-zoom-extent {
   top: 4.643em;
@@ -114,20 +115,11 @@
   background-color: #4c6079;
   background-color: rgba(0,60,136,0.7);
 }
-.ol-zoom-extent button:after {
-    content: "E";
-}
 .ol-zoom .ol-zoom-in {
   border-radius: 2px 2px 0 0;
 }
 .ol-zoom .ol-zoom-out {
   border-radius: 0 0 2px 2px;
-}
-button.ol-full-screen-false:after {
-  content: "\2194";
-}
-button.ol-full-screen-true:after {
-  content: "\00d7";
 }
 
 

@@ -40,6 +40,12 @@ describe('ol.format.Polyline', function() {
   // Reset testing data
   beforeEach(resetTestingData);
 
+  describe('#readProjectionFromText', function() {
+    it('returns the default projection', function() {
+      var projection = format.readProjectionFromText(encodedFlatPoints);
+      expect(projection).to.eql(ol.proj.get('EPSG:4326'));
+    });
+  });
 
   describe('encodeDeltas', function() {
     it('returns expected value', function() {

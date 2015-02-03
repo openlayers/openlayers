@@ -121,8 +121,8 @@ ol.geom.MultiLineString.prototype.closestPointXY =
  * LineStrings.
  *
  * @param {number} m M.
- * @param {boolean=} opt_extrapolate Extrapolate.
- * @param {boolean=} opt_interpolate Interpolate.
+ * @param {boolean=} opt_extrapolate Extrapolate. Default is `false`.
+ * @param {boolean=} opt_interpolate Interpolate. Default is `false`.
  * @return {ol.Coordinate} Coordinate.
  * @api stable
  */

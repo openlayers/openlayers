@@ -185,7 +185,9 @@ ol.format.XMLFeature.prototype.readProjection = function(source) {
  * @protected
  * @return {ol.proj.Projection} Projection.
  */
-ol.format.XMLFeature.prototype.readProjectionFromDocument = goog.abstractMethod;
+ol.format.XMLFeature.prototype.readProjectionFromDocument = function(doc) {
+  return this.defaultDataProjection;
+};
 
 
 /**
@@ -193,7 +195,9 @@ ol.format.XMLFeature.prototype.readProjectionFromDocument = goog.abstractMethod;
  * @protected
  * @return {ol.proj.Projection} Projection.
  */
-ol.format.XMLFeature.prototype.readProjectionFromNode = goog.abstractMethod;
+ol.format.XMLFeature.prototype.readProjectionFromNode = function(node) {
+  return this.defaultDataProjection;
+};
 
 
 /**

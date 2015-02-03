@@ -115,6 +115,7 @@ ol.View = function(opt_options) {
 
   /**
    * @private
+   * @const
    * @type {ol.proj.Projection}
    */
   this.projection_ = ol.proj.createProjection(options.projection, 'EPSG:3857');
@@ -260,7 +261,7 @@ goog.exportProperty(
  * @return {Array.<number>} Hint.
  */
 ol.View.prototype.getHints = function() {
-  return goog.array.clone(this.hints_);
+  return this.hints_.slice();
 };
 
 
@@ -350,12 +351,12 @@ ol.View.prototype.getResolutionForValueFunction = function(opt_power) {
 
 
 /**
- * @return {number|undefined} The rotation of the view.
+ * @return {number} The rotation of the view.
  * @observable
  * @api stable
  */
 ol.View.prototype.getRotation = function() {
-  return /** @type {number|undefined} */ (this.get(ol.ViewProperty.ROTATION));
+  return /** @type {number} */ (this.get(ol.ViewProperty.ROTATION));
 };
 goog.exportProperty(
     ol.View.prototype,
@@ -401,7 +402,7 @@ ol.View.prototype.getState = function() {
     center: center.slice(),
     projection: goog.isDef(projection) ? projection : null,
     resolution: resolution,
-    rotation: goog.isDef(rotation) ? rotation : 0
+    rotation: rotation
   });
 };
 
@@ -625,7 +626,7 @@ goog.exportProperty(
 
 /**
  * Set the rotation for this view.
- * @param {number|undefined} rotation The rotation of the view.
+ * @param {number} rotation The rotation of the view.
  * @observable
  * @api stable
  */

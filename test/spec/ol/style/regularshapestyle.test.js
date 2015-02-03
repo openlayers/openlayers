@@ -49,7 +49,6 @@ describe('ol.style.RegularShape', function() {
       expect(style.getImage()).to.not.be(style.getHitDetectionImage());
       expect(style.getHitDetectionImage()).to.be.an(HTMLCanvasElement);
       expect(style.getHitDetectionImageSize()).to.eql([21, 21]);
-      expect(style.getHitDetectionOrigin()).to.eql([0, 0]);
     });
 
     it('creates a canvas if no atlas is used (fill-style)', function() {
@@ -68,7 +67,6 @@ describe('ol.style.RegularShape', function() {
       expect(style.getImage()).to.be(style.getHitDetectionImage());
       expect(style.getHitDetectionImage()).to.be.an(HTMLCanvasElement);
       expect(style.getHitDetectionImageSize()).to.eql([21, 21]);
-      expect(style.getHitDetectionOrigin()).to.eql([0, 0]);
     });
 
     it('adds itself to an atlas manager (no fill-style)', function() {
@@ -84,7 +82,6 @@ describe('ol.style.RegularShape', function() {
       expect(style.getImage()).to.not.be(style.getHitDetectionImage());
       expect(style.getHitDetectionImage()).to.be.an(HTMLCanvasElement);
       expect(style.getHitDetectionImageSize()).to.eql([512, 512]);
-      expect(style.getHitDetectionOrigin()).to.eql([1, 1]);
     });
 
     it('adds itself to an atlas manager (fill-style)', function() {
@@ -105,7 +102,6 @@ describe('ol.style.RegularShape', function() {
       expect(style.getImage()).to.be(style.getHitDetectionImage());
       expect(style.getHitDetectionImage()).to.be.an(HTMLCanvasElement);
       expect(style.getHitDetectionImageSize()).to.eql([512, 512]);
-      expect(style.getHitDetectionOrigin()).to.eql([1, 1]);
     });
   });
 

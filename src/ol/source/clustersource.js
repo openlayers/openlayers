@@ -93,7 +93,7 @@ ol.source.Cluster.prototype.cluster_ = function() {
   if (!goog.isDef(this.resolution_)) {
     return;
   }
-  goog.array.clear(this.features_);
+  this.features_.length = 0;
   var extent = ol.extent.createEmpty();
   var mapDistance = this.distance_ * this.resolution_;
   var features = this.source_.getFeatures();

@@ -84,7 +84,7 @@ ol.interaction.PinchZoom.handleDragEvent_ = function(mapBrowserEvent) {
 
   var map = mapBrowserEvent.map;
   var view = map.getView();
-  var viewState = view.getState();
+  var resolution = view.getResolution();
 
   // scale anchor point.
   var viewportPosition = goog.style.getClientPosition(map.getViewport());
@@ -97,7 +97,7 @@ ol.interaction.PinchZoom.handleDragEvent_ = function(mapBrowserEvent) {
   // scale, bypass the resolution constraint
   map.render();
   ol.interaction.Interaction.zoomWithoutConstraints(
-      map, view, viewState.resolution * scaleDelta, this.anchor_);
+      map, view, resolution * scaleDelta, this.anchor_);
 
 };
 
@@ -108,18 +108,17 @@ ol.interaction.PinchZoom.handleDragEvent_ = function(mapBrowserEvent) {
  * @this {ol.interaction.PinchZoom}
  * @private
  */
-ol.interaction.PinchZoom.handleUpEvent_ =
-    function(mapBrowserEvent) {
+ol.interaction.PinchZoom.handleUpEvent_ = function(mapBrowserEvent) {
   if (this.targetPointers.length < 2) {
     var map = mapBrowserEvent.map;
     var view = map.getView();
     view.setHint(ol.ViewHint.INTERACTING, -1);
-    var viewState = view.getState();
+    var resolution = view.getResolution();
     // Zoom to final resolution, with an animation, and provide a
     // direction not to zoom out/in if user was pinching in/out.
     // Direction is > 0 if pinching out, and < 0 if pinching in.
     var direction = this.lastScaleDelta_ - 1;
-    ol.interaction.Interaction.zoom(map, view, viewState.resolution,
+    ol.interaction.Interaction.zoom(map, view, resolution,
         this.anchor_, this.duration_, direction);
     return false;
   } else {
@@ -134,8 +133,7 @@ ol.interaction.PinchZoom.handleUpEvent_ =
  * @this {ol.interaction.PinchZoom}
  * @private
  */
-ol.interaction.PinchZoom.handleDownEvent_ =
-    function(mapBrowserEvent) {
+ol.interaction.PinchZoom.handleDownEvent_ = function(mapBrowserEvent) {
   if (this.targetPointers.length >= 2) {
     var map = mapBrowserEvent.map;
     this.anchor_ = null;

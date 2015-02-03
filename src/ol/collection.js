@@ -95,7 +95,7 @@ ol.Collection = function(opt_array) {
    * @private
    * @type {Array.<T>}
    */
-  this.array_ = opt_array || [];
+  this.array_ = goog.isDef(opt_array) ? opt_array : [];
 
   this.updateLength_();
 

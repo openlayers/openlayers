@@ -1858,16 +1858,16 @@ ol.render.canvas.ReplayGroup.prototype.finish = function() {
 
 
 /**
+ * @param {ol.Coordinate} coordinate Coordinate.
  * @param {number} resolution Resolution.
  * @param {number} rotation Rotation.
- * @param {ol.Coordinate} coordinate Coordinate.
  * @param {Object} skippedFeaturesHash Ids of features to skip
  * @param {function(ol.Feature): T} callback Feature callback.
  * @return {T|undefined} Callback result.
  * @template T
  */
-ol.render.canvas.ReplayGroup.prototype.forEachGeometryAtPixel = function(
-    resolution, rotation, coordinate, skippedFeaturesHash, callback) {
+ol.render.canvas.ReplayGroup.prototype.forEachFeatureAtCoordinate = function(
+    coordinate, resolution, rotation, skippedFeaturesHash, callback) {
 
   var transform = this.hitDetectionTransform_;
   ol.vec.Mat4.makeTransform2D(transform, 0.5, 0.5,
@@ -1951,6 +1951,8 @@ ol.render.canvas.ReplayGroup.prototype.replay = function(
   var zs = goog.array.map(goog.object.getKeys(this.replaysByZIndex_), Number);
   goog.array.sort(zs);
 
+  // setup clipping so that the parts of over-simplified geometries are not
+  // visible outside the current extent when panning
   var maxExtent = this.maxExtent_;
   var minX = maxExtent[0];
   var minY = maxExtent[1];

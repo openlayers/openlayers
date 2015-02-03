@@ -84,8 +84,8 @@ goog.inherits(ol.format.GML3, ol.format.GMLBase);
  * @type {string}
  * @private
  */
-ol.format.GML3.schemaLocation_ = 'http://www.opengis.net/gml ' +
-    'http://schemas.opengis.net/gml/3.1.1/profiles/gmlsfProfile/' +
+ol.format.GML3.schemaLocation_ = ol.format.GMLBase.GMLNS +
+    ' http://schemas.opengis.net/gml/3.1.1/profiles/gmlsfProfile/' +
     '1.0.0/gmlsf.xsd';
 
 
@@ -1343,7 +1343,7 @@ ol.format.GML.prototype.writeFeatures;
  * Encode an array of features in the GML 3.1.1 format as an XML node.
  *
  * @function
- * @param {ol.Feature} feature Feature.
+ * @param {Array.<ol.Feature>} features Features.
  * @param {olx.format.WriteOptions=} opt_options Options.
  * @return {Node} Node.
  * @api
