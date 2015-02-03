@@ -9,6 +9,7 @@ goog.require('goog.vec.Mat4');
 goog.require('ol.color.Matrix');
 goog.require('ol.extent');
 goog.require('ol.render.IReplayGroup');
+goog.require('ol.render.IVectorContext');
 goog.require('ol.render.webgl.imagereplay.shader.Color');
 goog.require('ol.render.webgl.imagereplay.shader.Default');
 goog.require('ol.vec.Mat4');
