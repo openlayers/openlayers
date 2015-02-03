@@ -2,7 +2,6 @@ goog.provide('ol.format.WMSGetFeatureInfo');
 
 goog.require('goog.array');
 goog.require('goog.asserts');
-goog.require('goog.dom');
 goog.require('goog.dom.NodeType');
 goog.require('goog.object');
 goog.require('goog.string');

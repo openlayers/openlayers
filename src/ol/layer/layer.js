@@ -1,6 +1,5 @@
 goog.provide('ol.layer.Layer');
 
-goog.require('goog.asserts');
 goog.require('goog.events');
 goog.require('goog.events.EventType');
 goog.require('goog.object');

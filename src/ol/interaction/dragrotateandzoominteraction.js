@@ -1,6 +1,5 @@
 goog.provide('ol.interaction.DragRotateAndZoom');
 
-goog.require('goog.asserts');
 goog.require('goog.math.Vec2');
 goog.require('ol');
 goog.require('ol.ViewHint');

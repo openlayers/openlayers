@@ -1,6 +1,5 @@
 goog.provide('ol.interaction.Pointer');
 
-goog.require('goog.asserts');
 goog.require('goog.functions');
 goog.require('goog.object');
 goog.require('ol.MapBrowserEvent.EventType');
