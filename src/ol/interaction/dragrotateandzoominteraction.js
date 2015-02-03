@@ -62,8 +62,7 @@ ol.interaction.DragRotateAndZoom = function(opt_options) {
   this.lastScaleDelta_ = 0;
 
 };
-goog.inherits(ol.interaction.DragRotateAndZoom,
-    ol.interaction.Pointer);
+goog.inherits(ol.interaction.DragRotateAndZoom, ol.interaction.Pointer);
 
 
 /**
