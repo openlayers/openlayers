@@ -234,19 +234,3 @@ ol.format.OSMXML.prototype.readFeaturesFromNode = function(node, opt_options) {
  * @api stable
  */
 ol.format.OSMXML.prototype.readProjection;
-
-
-/**
- * @inheritDoc
- */
-ol.format.OSMXML.prototype.readProjectionFromDocument = function(doc) {
-  return this.defaultDataProjection;
-};
-
-
-/**
- * @inheritDoc
- */
-ol.format.OSMXML.prototype.readProjectionFromNode = function(node) {
-  return this.defaultDataProjection;
-};

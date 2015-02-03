@@ -126,7 +126,10 @@ var displaySnap = function(coordinate) {
   map.render();
 };
 
-$(map.getViewport()).on('mousemove', function(evt) {
+map.on('pointermove', function(evt) {
+  if (evt.dragging) {
+    return;
+  }
   var coordinate = map.getEventCoordinate(evt.originalEvent);
   displaySnap(coordinate);
 });

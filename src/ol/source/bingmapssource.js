@@ -48,6 +48,12 @@ ol.source.BingMaps = function(options) {
    */
   this.maxZoom_ = goog.isDef(options.maxZoom) ? options.maxZoom : -1;
 
+  /**
+   * @private
+   * @type {boolean}
+   */
+  this.wrapX_ = goog.isDef(options.wrapX) ? options.wrapX : true;
+
   var protocol = ol.IS_HTTPS ? 'https:' : 'http:';
   var uri = new goog.Uri(
       protocol + '//dev.virtualearth.net/REST/v1/Imagery/Metadata/' +
@@ -108,7 +114,7 @@ ol.source.BingMaps.prototype.handleImageryMetadataResponse =
 
   var culture = this.culture_;
   this.tileUrlFunction = ol.TileUrlFunction.withTileCoordTransform(
-      tileGrid.createTileCoordTransform(),
+      tileGrid.createTileCoordTransform({wrapX: this.wrapX_}),
       ol.TileUrlFunction.createFromTileUrlFunctions(
           goog.array.map(
               resource.imageUrlSubdomains,

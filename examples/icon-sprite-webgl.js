@@ -109,3 +109,34 @@ var featureOverlay = new ol.FeatureOverlay({
   }),
   features: overlayFeatures
 });
+
+map.on('click', function(evt) {
+  var info = document.getElementById('info');
+  info.innerHTML =
+      'Hold on a second, while I catch those butterflies for you ...';
+
+  window.setTimeout(function() {
+    var features = [];
+    map.forEachFeatureAtPixel(evt.pixel, function(feature, layer) {
+      features.push(features);
+      return false;
+    });
+
+    if (features.length === 1) {
+      info.innerHTML = 'Got one butterfly';
+    } else if (features.length > 1) {
+      info.innerHTML = 'Got ' + features.length + ' butterflies';
+    } else {
+      info.innerHTML = 'Couldn\'t catch a single butterfly';
+    }
+  }, 1);
+});
+
+map.on('pointermove', function(evt) {
+  if (evt.dragging) {
+    return;
+  }
+  var pixel = map.getEventPixel(evt.originalEvent);
+  var hit = map.hasFeatureAtPixel(pixel);
+  map.getTarget().style.cursor = hit ? 'pointer' : '';
+});

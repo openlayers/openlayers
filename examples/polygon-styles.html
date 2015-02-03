@@ -5,10 +5,16 @@
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
     <meta name="viewport" content="initial-scale=1.0, user-scalable=no, width=device-width">
     <link rel="stylesheet" href="../css/ol.css" type="text/css">
+    <link rel="stylesheet" href="../css/ol.css" type="text/css">
     <link rel="stylesheet" href="../resources/bootstrap/css/bootstrap.min.css" type="text/css">
     <link rel="stylesheet" href="../resources/layout.css" type="text/css">
     <link rel="stylesheet" href="../resources/bootstrap/css/bootstrap-responsive.min.css" type="text/css">
-    <title>Icon sprites with WebGL example</title>
+    <title>Custom styles for polygons</title>
+    <style>
+      .map {
+        background: grey;
+      }
+    </style>
   </head>
   <body>
 
@@ -30,19 +36,13 @@
 
       <div class="row-fluid">
 
-        <div class="span8">
-          <h4 id="title">Icon sprite with WebGL example</h4>
-          <p id="shortdesc">Icon sprite with WebGL.</p>
+        <div class="span12">
+          <h4 id="title">Custom styles for polygons</h4>
+          <p id="shortdesc">Showing the vertices of a polygon with a custom style geometry.</p>
           <div id="docs">
-            <p>See the <a href="icon-sprite-webgl.js" target="_blank">icon-sprite-webgl.js source</a> to see how this is done.</p>
-            <p>In this example a sprite image is used for the icon styles. Using a sprite is required to get good performance with WebGL.</p>
+            <p>See the <a href="polygon-styles.js" target="_blank">polygon-styles.js source</a> to see how this is done.</p>
           </div>
-          <div id="tags">webgl, icon, sprite, vector, point</div>
-        </div>
-        <div class="span2 offset2">
-          <div id="info" class="alert alert-success">
-            &nbsp;
-          </div>
+          <div id="tags">polygon, vector, style, GeometryFunction</div>
         </div>
 
       </div>
@@ -50,9 +50,8 @@
     </div>
 
     <script src="../resources/jquery.min.js" type="text/javascript"></script>
-    <script src="../resources/bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
+    <script src="loader.js?id=polygon-styles" type="text/javascript"></script>
     <script src="../resources/example-behaviour.js" type="text/javascript"></script>
-    <script src="loader.js?id=icon-sprite-webgl" type="text/javascript"></script>
 
   </body>
 </html>

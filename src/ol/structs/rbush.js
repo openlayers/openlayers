@@ -4,6 +4,7 @@ goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('goog.object');
 goog.require('ol.ext.rbush');
+goog.require('ol.extent');
 
 
 
@@ -123,8 +124,17 @@ ol.structs.RBush.prototype.remove = function(value) {
  * @param {T} value Value.
  */
 ol.structs.RBush.prototype.update = function(extent, value) {
-  this.remove(value);
-  this.insert(extent, value);
+  var uid = goog.getUid(value);
+  goog.asserts.assert(goog.object.containsKey(this.items_, uid));
+
+  var item = this.items_[uid];
+  if (!ol.extent.equals(item.slice(0, 4), extent)) {
+    if (goog.DEBUG && this.readers_) {
+      throw new Error('Can not update extent while reading');
+    }
+    this.remove(value);
+    this.insert(extent, value);
+  }
 };
 
 

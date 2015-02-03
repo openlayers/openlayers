@@ -1,7 +1,6 @@
 goog.provide('ol.geom.GeometryCollection');
 
 goog.require('goog.array');
-goog.require('goog.asserts');
 goog.require('goog.events');
 goog.require('goog.events.EventType');
 goog.require('goog.object');
@@ -130,21 +129,14 @@ ol.geom.GeometryCollection.prototype.containsXY = function(x, y) {
 
 /**
  * @inheritDoc
- * @api stable
  */
-ol.geom.GeometryCollection.prototype.getExtent = function(opt_extent) {
-  if (this.extentRevision != this.getRevision()) {
-    var extent = ol.extent.createOrUpdateEmpty(this.extent);
-    var geometries = this.geometries_;
-    var i, ii;
-    for (i = 0, ii = geometries.length; i < ii; ++i) {
-      ol.extent.extend(extent, geometries[i].getExtent());
-    }
-    this.extent = extent;
-    this.extentRevision = this.getRevision();
+ol.geom.GeometryCollection.prototype.computeExtent = function(extent) {
+  ol.extent.createOrUpdateEmpty(extent);
+  var geometries = this.geometries_;
+  for (var i = 0, ii = geometries.length; i < ii; ++i) {
+    ol.extent.extend(extent, geometries[i].getExtent());
   }
-  goog.asserts.assert(goog.isDef(this.extent));
-  return ol.extent.returnOrUpdate(this.extent, opt_extent);
+  return extent;
 };
 
 

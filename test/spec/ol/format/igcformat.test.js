@@ -29,6 +29,13 @@ describe('ol.format.IGC', function() {
     format = new ol.format.IGC();
   });
 
+  describe('#readProjectionFromText', function() {
+    it('returns the default projection', function() {
+      var projection = format.readProjectionFromText(igc);
+      expect(projection).to.eql(ol.proj.get('EPSG:4326'));
+    });
+  });
+
   describe('#readFeature', function() {
     it('does not read invalid features', function() {
       expect(format.readFeature('invalid')).to.be(null);

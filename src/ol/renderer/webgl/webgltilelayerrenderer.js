@@ -17,6 +17,7 @@ goog.require('ol.math');
 goog.require('ol.renderer.webgl.Layer');
 goog.require('ol.renderer.webgl.tilelayer.shader');
 goog.require('ol.tilecoord');
+goog.require('ol.vec.Mat4');
 goog.require('ol.webgl.Buffer');
 
 
@@ -325,4 +326,39 @@ ol.renderer.webgl.TileLayer.prototype.prepareFrame =
       0);
 
   return true;
+};
+
+
+/**
+ * @inheritDoc
+ */
+ol.renderer.webgl.TileLayer.prototype.forEachLayerAtPixel =
+    function(pixel, frameState, callback, thisArg) {
+  if (goog.isNull(this.framebuffer)) {
+    return undefined;
+  }
+  var mapSize = this.getMap().getSize();
+
+  var pixelOnMapScaled = [
+    pixel[0] / mapSize[0],
+    (mapSize[1] - pixel[1]) / mapSize[1]];
+
+  var pixelOnFrameBufferScaled = [0, 0];
+  ol.vec.Mat4.multVec2(
+      this.texCoordMatrix, pixelOnMapScaled, pixelOnFrameBufferScaled);
+  var pixelOnFrameBuffer = [
+    pixelOnFrameBufferScaled[0] * this.framebufferDimension,
+    pixelOnFrameBufferScaled[1] * this.framebufferDimension];
+
+  var gl = this.getWebGLMapRenderer().getContext().getGL();
+  gl.bindFramebuffer(gl.FRAMEBUFFER, this.framebuffer);
+  var imageData = new Uint8Array(4);
+  gl.readPixels(pixelOnFrameBuffer[0], pixelOnFrameBuffer[1], 1, 1,
+      gl.RGBA, gl.UNSIGNED_BYTE, imageData);
+
+  if (imageData[3] > 0) {
+    return callback.call(thisArg, this.getLayer());
+  } else {
+    return undefined;
+  }
 };

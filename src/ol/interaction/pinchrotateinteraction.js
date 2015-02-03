@@ -107,10 +107,10 @@ ol.interaction.PinchRotate.handleDragEvent_ = function(mapBrowserEvent) {
   // rotate
   if (this.rotating_) {
     var view = map.getView();
-    var viewState = view.getState();
+    var rotation = view.getRotation();
     map.render();
     ol.interaction.Interaction.rotateWithoutConstraints(map, view,
-        viewState.rotation + rotationDelta, this.anchor_);
+        rotation + rotationDelta, this.anchor_);
   }
 };
 
@@ -127,10 +127,9 @@ ol.interaction.PinchRotate.handleUpEvent_ = function(mapBrowserEvent) {
     var view = map.getView();
     view.setHint(ol.ViewHint.INTERACTING, -1);
     if (this.rotating_) {
-      var viewState = view.getState();
+      var rotation = view.getRotation();
       ol.interaction.Interaction.rotate(
-          map, view, viewState.rotation, this.anchor_,
-          ol.ROTATE_ANIMATION_DURATION);
+          map, view, rotation, this.anchor_, ol.ROTATE_ANIMATION_DURATION);
     }
     return false;
   } else {

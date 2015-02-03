@@ -325,7 +325,7 @@ ol.control.ScaleLine.prototype.updateElement_ = function() {
     ++i;
   }
 
-  var html = count + suffix;
+  var html = count + ' ' + suffix;
   if (this.renderedHTML_ != html) {
     this.innerElement_.innerHTML = html;
     this.renderedHTML_ = html;

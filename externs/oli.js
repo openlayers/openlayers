@@ -92,6 +92,12 @@ oli.MapBrowserEvent.prototype.originalEvent;
 oli.MapBrowserEvent.prototype.pixel;
 
 
+/**
+ * @type {boolean}
+ */
+oli.MapBrowserEvent.prototype.dragging;
+
+
 
 /**
  * @interface

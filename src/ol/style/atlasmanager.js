@@ -11,12 +11,10 @@ goog.require('ol');
 /**
  * Provides information for an image inside an atlas manager.
  * `offsetX` and `offsetY` is the position of the image inside
- * the atlas image `image`.
- * `hitOffsetX` and `hitOffsetY` ist the position of the hit-detection image
- * inside the hit-detection atlas image `hitImage` (only when a hit-detection
- * image was created for this image).
+ * the atlas image `image` and the position of the hit-detection image
+ * inside the hit-detection atlas image `hitImage`.
  * @typedef {{offsetX: number, offsetY: number, image: HTMLCanvasElement,
- *    hitOffsetX: number, hitOffsetY: number, hitImage: HTMLCanvasElement}}
+ *    hitImage: HTMLCanvasElement}}
  */
 ol.style.AtlasManagerInfo;
 
@@ -103,6 +101,7 @@ ol.style.AtlasManager.prototype.getInfo = function(id) {
   }
   /** @type {?ol.style.AtlasInfo} */
   var hitInfo = this.getInfo_(this.hitAtlases_, id);
+  goog.asserts.assert(!goog.isNull(hitInfo));
 
   return this.mergeInfos_(info, hitInfo);
 };
@@ -131,19 +130,19 @@ ol.style.AtlasManager.prototype.getInfo_ = function(atlases, id) {
 /**
  * @private
  * @param {ol.style.AtlasInfo} info The info for the real image.
- * @param {?ol.style.AtlasInfo} hitInfo The info for the hit-detection
+ * @param {ol.style.AtlasInfo} hitInfo The info for the hit-detection
  *    image.
  * @return {?ol.style.AtlasManagerInfo} The position and atlas image for the
  *    entry, or `null` if the entry is not part of the atlases.
  */
 ol.style.AtlasManager.prototype.mergeInfos_ = function(info, hitInfo) {
+  goog.asserts.assert(info.offsetX === hitInfo.offsetX);
+  goog.asserts.assert(info.offsetY === hitInfo.offsetY);
   return /** @type {ol.style.AtlasManagerInfo} */ ({
     offsetX: info.offsetX,
     offsetY: info.offsetY,
     image: info.image,
-    hitOffsetX: goog.isNull(hitInfo) ? undefined : hitInfo.offsetX,
-    hitOffsetY: goog.isNull(hitInfo) ? undefined : hitInfo.offsetY,
-    hitImage: goog.isNull(hitInfo) ? undefined : hitInfo.image
+    hitImage: hitInfo.image
   });
 };
 
@@ -185,12 +184,17 @@ ol.style.AtlasManager.prototype.add =
     return null;
   }
 
+  // even if no hit-detection entry is requested, we insert a fake entry into
+  // the hit-detection atlas, to make sure that the offset is the same for
+  // the original image and the hit-detection image.
+  var renderHitCallback = goog.isDef(opt_renderHitCallback) ?
+      opt_renderHitCallback : goog.functions.NULL;
+
   /** @type {?ol.style.AtlasInfo} */
-  var hitInfo = null;
-  if (goog.isDef(opt_renderHitCallback)) {
-    hitInfo = this.add_(true,
-        id, width, height, opt_renderHitCallback, opt_this);
-  }
+  var hitInfo = this.add_(true,
+      id, width, height, renderHitCallback, opt_this);
+  goog.asserts.assert(!goog.isNull(hitInfo));
+
   return this.mergeInfos_(info, hitInfo);
 };
 

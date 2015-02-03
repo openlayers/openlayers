@@ -96,22 +96,22 @@ describe('ol.MapBrowserEventHandler', function() {
 
   });
 
-  describe('#getDown()', function() {
+  describe('#down_', function() {
 
     var handler;
     beforeEach(function() {
       handler = new ol.MapBrowserEventHandler(new ol.Map({}));
     });
 
-    it('returns null if no "down" type event has been handled', function() {
-      expect(handler.getDown()).to.be(null);
+    it('is null if no "down" type event has been handled', function() {
+      expect(handler.down_).to.be(null);
     });
 
-    it('returns an event after handlePointerDown_ has been called', function() {
+    it('is an event after handlePointerDown_ has been called', function() {
       var event = new ol.pointer.PointerEvent('pointerdown',
           new goog.events.BrowserEvent({}));
       handler.handlePointerDown_(event);
-      expect(handler.getDown()).to.be(event);
+      expect(handler.down_).to.be(event);
     });
 
   });
