@@ -25,8 +25,10 @@ module.exports = function(config) {
         {pattern: 'src/**/*.js', included: false},
 
         // external deps
-        {pattern: './closure-library/closure/goog/deps.js', included: false, served: false},
-        {pattern: './closure-library/closure/goog/**/*.js', included: false}
+        {pattern: '../closure-library/closure/goog/deps.js', included: false, served: false},
+        {pattern: '../closure-library/closure/goog/**/*.js', included: false},
+        {pattern: 'ol.ext/*.js'}
+
     ],
 
 
@@ -42,8 +44,11 @@ module.exports = function(config) {
         'test/**/*.js': ['closure', 'closure-iit'],
         // source files are preprocessed for dependencies
         'src/**/*.js': ['closure'],
+        'ol.ext/*.js': ['closure'],
         // external deps
-        '../closure-library/closure/goog/deps.js': ['closure-deps']
+        '../closure-library/closure/goog/deps.js': ['closure-deps'],
+        '../dist/webmapping-lib.deps.js' : ['closure-deps']
+
     },
 
 
