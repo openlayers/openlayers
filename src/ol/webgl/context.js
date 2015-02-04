@@ -277,9 +277,9 @@ ol.webgl.Context.prototype.getProgram = function(
  * FIXME empy description for jsdoc
  */
 ol.webgl.Context.prototype.handleWebGLContextLost = function() {
-  goog.object.clear(this.bufferCache_);
-  goog.object.clear(this.shaderCache_);
-  goog.object.clear(this.programCache_);
+  this.bufferCache_ = {};
+  this.shaderCache_ = {};
+  this.programCache_ = {};
   this.currentProgram_ = null;
   this.hitDetectionFramebuffer_ = null;
   this.hitDetectionTexture_ = null;

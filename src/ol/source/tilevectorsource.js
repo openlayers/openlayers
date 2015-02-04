@@ -2,7 +2,6 @@ goog.provide('ol.source.TileVector');
 
 goog.require('goog.array');
 goog.require('goog.asserts');
-goog.require('goog.object');
 goog.require('ol.TileCoord');
 goog.require('ol.TileUrlFunction');
 goog.require('ol.source.FormatVector');
@@ -82,7 +81,7 @@ ol.source.TileVector.prototype.addFeatures = goog.abstractMethod;
  * @inheritDoc
  */
 ol.source.TileVector.prototype.clear = function() {
-  goog.object.clear(this.tiles_);
+  this.tiles_ = {};
 };
 
 
