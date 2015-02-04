@@ -1189,7 +1189,7 @@ ol.render.webgl.ReplayGroup.prototype.forEachFeatureAtCoordinate = function(
     // build an extent around the coordinate, so that only features that
     // intersect this extent are checked
     hitExtent = ol.extent.buffer(
-        ol.extent.boundingExtent([coordinate]),
+        ol.extent.createOrUpdateFromCoordinate(coordinate),
         resolution * this.renderBuffer_);
   }
 
