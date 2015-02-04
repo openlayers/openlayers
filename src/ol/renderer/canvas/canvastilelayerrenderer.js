@@ -72,6 +72,12 @@ ol.renderer.canvas.TileLayer = function(tileLayer) {
 
   /**
    * @private
+   * @type {number}
+   */
+  this.renderedTileSize_ = NaN;
+
+  /**
+   * @private
    * @type {ol.TileRange}
    */
   this.renderedCanvasTileRange_ = null;
@@ -228,9 +234,11 @@ ol.renderer.canvas.TileLayer.prototype.prepareFrame =
     context = this.context_;
     if (this.canvasSize_[0] < canvasWidth ||
         this.canvasSize_[1] < canvasHeight ||
+        this.renderedTileSize_ !== tilePixelSize ||
         (this.canvasTooBig_ && (this.canvasSize_[0] > canvasWidth ||
         this.canvasSize_[1] > canvasHeight))) {
-      // Canvas is too small, resize it. We never shrink the canvas, unless
+      // Canvas is too small or tileSize has changed, resize it.
+      // We never shrink the canvas, unless
       // we know that the current canvas size exceeds the maximum size
       canvas.width = canvasWidth;
       canvas.height = canvasHeight;
@@ -257,6 +265,7 @@ ol.renderer.canvas.TileLayer.prototype.prepareFrame =
     minY = tileRange.minY -
         Math.floor((canvasTileRangeHeight - tileRange.getHeight()) / 2);
     this.renderedCanvasZ_ = z;
+    this.renderedTileSize_ = tilePixelSize;
     this.renderedCanvasTileRange_ = new ol.TileRange(
         minX, minX + canvasTileRangeWidth - 1,
         minY, minY + canvasTileRangeHeight - 1);
