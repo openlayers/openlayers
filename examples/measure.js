@@ -1,4 +1,5 @@
 goog.require('ol.Map');
+goog.require('ol.Overlay');
 goog.require('ol.View');
 goog.require('ol.geom.LineString');
 goog.require('ol.geom.Polygon');
@@ -40,38 +41,85 @@ var vector = new ol.layer.Vector({
 
 
 /**
- * Currently drawed feature
+ * Currently drawn feature.
  * @type {ol.Feature}
  */
 var sketch;
 
 
 /**
- * Element for currently drawed feature
+ * The help tooltip element.
  * @type {Element}
  */
-var sketchElement;
+var helpTooltipElement;
 
 
 /**
- * handle pointer move
- * @param {Event} evt
+ * Overlay to show the help messages.
+ * @type {ol.Overlay}
+ */
+var helpTooltip;
+
+
+/**
+ * The measure tooltip element.
+ * @type {Element}
+ */
+var measureTooltipElement;
+
+
+/**
+ * Overlay to show the measurement.
+ * @type {ol.Overlay}
+ */
+var measureTooltip;
+
+
+/**
+ * Message to show when the user is drawing a polygon.
+ * @type {string}
+ */
+var continuePolygonMsg = 'Click to continue drawing the polygon';
+
+
+/**
+ * Message to show when the user is drawing a line.
+ * @type {string}
+ */
+var continueLineMsg = 'Click to continue drawing the line';
+
+
+/**
+ * Handle pointer move.
+ * @param {ol.MapBrowserEvent} evt
  */
 var pointerMoveHandler = function(evt) {
   if (evt.dragging) {
     return;
   }
+  /** @type {string} */
+  var helpMsg = 'Click to start drawing';
+  /** @type {ol.Coordinate|undefined} */
+  var tooltipCoord = evt.coordinate;
+
   if (sketch) {
     var output;
     var geom = (sketch.getGeometry());
     if (geom instanceof ol.geom.Polygon) {
       output = formatArea(/** @type {ol.geom.Polygon} */ (geom));
-
+      helpMsg = continuePolygonMsg;
+      tooltipCoord = geom.getInteriorPoint().getCoordinates();
     } else if (geom instanceof ol.geom.LineString) {
       output = formatLength( /** @type {ol.geom.LineString} */ (geom));
+      helpMsg = continueLineMsg;
+      tooltipCoord = geom.getLastCoordinate();
     }
-    sketchElement.innerHTML = output;
+    measureTooltipElement.innerHTML = output;
+    measureTooltip.setPosition(tooltipCoord);
   }
+
+  helpTooltipElement.innerHTML = helpMsg;
+  helpTooltip.setPosition(evt.coordinate);
 };
 
 
@@ -97,26 +145,61 @@ function addInteraction() {
   });
   map.addInteraction(draw);
 
+  createMeasureTooltip();
+  createHelpTooltip();
+
   draw.on('drawstart',
       function(evt) {
         // set sketch
         sketch = evt.feature;
-        sketchElement = document.createElement('li');
-        var outputList = document.getElementById('measureOutput');
-
-        if (outputList.childNodes) {
-          outputList.insertBefore(sketchElement, outputList.firstChild);
-        } else {
-          outputList.appendChild(sketchElement);
-        }
       }, this);
 
   draw.on('drawend',
       function(evt) {
+        measureTooltipElement.className = 'tooltip tooltip-static';
+        measureTooltip.setOffset([0, -7]);
         // unset sketch
         sketch = null;
-        sketchElement = null;
+        // unset tooltip so that a new one can be created
+        measureTooltipElement = null;
+        createMeasureTooltip();
       }, this);
+}
+
+
+/**
+ * Creates a new help tooltip
+ */
+function createHelpTooltip() {
+  if (helpTooltipElement) {
+    helpTooltipElement.parentNode.removeChild(helpTooltipElement);
+  }
+  helpTooltipElement = document.createElement('div');
+  helpTooltipElement.className = 'tooltip';
+  helpTooltip = new ol.Overlay({
+    element: helpTooltipElement,
+    offset: [15, 0],
+    positioning: 'center-left'
+  });
+  map.addOverlay(helpTooltip);
+}
+
+
+/**
+ * Creates a new measure tooltip
+ */
+function createMeasureTooltip() {
+  if (measureTooltipElement) {
+    measureTooltipElement.parentNode.removeChild(measureTooltipElement);
+  }
+  measureTooltipElement = document.createElement('div');
+  measureTooltipElement.className = 'tooltip tooltip-measure';
+  measureTooltip = new ol.Overlay({
+    element: measureTooltipElement,
+    offset: [0, -15],
+    positioning: 'bottom-center'
+  });
+  map.addOverlay(measureTooltip);
 }
 
 
