@@ -1,6 +1,7 @@
 goog.provide('ol.renderer.canvas.ImageLayer');
 
 goog.require('goog.asserts');
+goog.require('goog.functions');
 goog.require('goog.vec.Mat4');
 goog.require('ol.ImageBase');
 goog.require('ol.ViewHint');
