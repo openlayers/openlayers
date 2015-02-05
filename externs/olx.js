@@ -4499,6 +4499,31 @@ olx.source.ImageVectorOptions.prototype.style;
 
 
 /**
+ * @typedef {{sources: Array.<ol.source.Source>,
+ *     operations: (Array.<ol.raster.Operation>|undefined)}}
+ * @api
+ */
+olx.source.RasterOptions;
+
+
+/**
+ * Input sources.
+ * @type {Array.<ol.source.Source>}
+ * @api
+ */
+olx.source.RasterOptions.prototype.sources;
+
+
+/**
+ * Pixel operations.  Operations will be called with pixels from input sources
+ * and the final output will be assigned to the raster source.
+ * @type {Array.<ol.raster.Operation>|undefined}
+ * @api
+ */
+olx.source.RasterOptions.prototype.operations;
+
+
+/**
  * @typedef {{attributions: (Array.<ol.Attribution>|undefined),
  *     crossOrigin: (null|string|undefined),
  *     hidpi: (boolean|undefined),
