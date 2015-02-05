@@ -230,8 +230,8 @@ ol.renderer.canvas.TileLayer.prototype.prepareFrame =
     context = this.context_;
     if (this.canvasSize_[0] < canvasWidth ||
         this.canvasSize_[1] < canvasHeight ||
-        this.canvasSize_[0] % tilePixelSize != 0 ||
-        this.canvasSize_[1] % tilePixelSize != 0 ||
+        this.canvasSize_[0] % tilePixelSize !== 0 ||
+        this.canvasSize_[1] % tilePixelSize !== 0 ||
         (this.canvasTooBig_ && (this.canvasSize_[0] > canvasWidth ||
         this.canvasSize_[1] > canvasHeight))) {
       // Canvas is too small or not a multiple of tileSize, resize it.
