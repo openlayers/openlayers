@@ -4,6 +4,7 @@ goog.provide('ol.renderer.Map');
 goog.require('goog.Disposable');
 goog.require('goog.asserts');
 goog.require('goog.dispose');
+goog.require('goog.functions');
 goog.require('goog.object');
 goog.require('goog.vec.Mat4');
 goog.require('ol.layer.Layer');
@@ -121,26 +122,23 @@ ol.renderer.Map.expireIconCache_ = function(map, frameState) {
  * @return {T|undefined} Callback result.
  * @template S,T,U
  */
-ol.renderer.Map.prototype.forEachFeatureAtPixel =
+ol.renderer.Map.prototype.forEachFeatureAtCoordinate =
     function(coordinate, frameState, callback, thisArg,
         layerFilter, thisArg2) {
   var result;
-  var extent = frameState.extent;
   var viewState = frameState.viewState;
   var viewResolution = viewState.resolution;
   var viewRotation = viewState.rotation;
   if (!goog.isNull(this.replayGroup)) {
     /** @type {Object.<string, boolean>} */
     var features = {};
-    result = this.replayGroup.forEachGeometryAtPixel(extent, viewResolution,
-        viewRotation, coordinate, {},
+    result = this.replayGroup.forEachFeatureAtCoordinate(coordinate,
+        viewResolution, viewRotation, {},
         /**
-         * @param {ol.geom.Geometry} geometry Geometry.
-         * @param {Object} data Data.
+         * @param {ol.Feature} feature Feature.
          * @return {?} Callback result.
          */
-        function(geometry, data) {
-          var feature = /** @type {ol.Feature} */ (data);
+        function(feature) {
           goog.asserts.assert(goog.isDef(feature));
           var key = goog.getUid(feature).toString();
           if (!(key in features)) {
@@ -152,7 +150,7 @@ ol.renderer.Map.prototype.forEachFeatureAtPixel =
       return result;
     }
   }
-  var layerStates = this.map_.getLayerGroup().getLayerStatesArray();
+  var layerStates = frameState.layerStatesArray;
   var numLayers = layerStates.length;
   var i;
   for (i = numLayers - 1; i >= 0; --i) {
@@ -161,7 +159,7 @@ ol.renderer.Map.prototype.forEachFeatureAtPixel =
     if (ol.layer.Layer.visibleAtResolution(layerState, viewResolution) &&
         layerFilter.call(thisArg2, layer)) {
       var layerRenderer = this.getLayerRenderer(layer);
-      result = layerRenderer.forEachFeatureAtPixel(
+      result = layerRenderer.forEachFeatureAtCoordinate(
           coordinate, frameState, callback, thisArg);
       if (result) {
         return result;
@@ -169,6 +167,80 @@ ol.renderer.Map.prototype.forEachFeatureAtPixel =
     }
   }
   return undefined;
+};
+
+
+/**
+ * @param {ol.Pixel} pixel Pixel.
+ * @param {olx.FrameState} frameState FrameState.
+ * @param {function(this: S, ol.layer.Layer): T} callback Layer
+ *     callback.
+ * @param {S} thisArg Value to use as `this` when executing `callback`.
+ * @param {function(this: U, ol.layer.Layer): boolean} layerFilter Layer filter
+ *     function, only layers which are visible and for which this function
+ *     returns `true` will be tested for features.  By default, all visible
+ *     layers will be tested.
+ * @param {U} thisArg2 Value to use as `this` when executing `layerFilter`.
+ * @return {T|undefined} Callback result.
+ * @template S,T,U
+ */
+ol.renderer.Map.prototype.forEachLayerAtPixel =
+    function(pixel, frameState, callback, thisArg,
+        layerFilter, thisArg2) {
+  var result;
+  var viewState = frameState.viewState;
+  var viewResolution = viewState.resolution;
+  var viewRotation = viewState.rotation;
+
+  if (!goog.isNull(this.replayGroup)) {
+    var coordinate = this.getMap().getCoordinateFromPixel(pixel);
+    var hasFeature = this.replayGroup.forEachFeatureAtCoordinate(coordinate,
+        viewResolution, viewRotation, {}, goog.functions.TRUE);
+
+    if (hasFeature) {
+      result = callback.call(thisArg, null);
+      if (result) {
+        return result;
+      }
+    }
+  }
+  var layerStates = frameState.layerStatesArray;
+  var numLayers = layerStates.length;
+  var i;
+  for (i = numLayers - 1; i >= 0; --i) {
+    var layerState = layerStates[i];
+    var layer = layerState.layer;
+    if (ol.layer.Layer.visibleAtResolution(layerState, viewResolution) &&
+        layerFilter.call(thisArg2, layer)) {
+      var layerRenderer = this.getLayerRenderer(layer);
+      result = layerRenderer.forEachLayerAtPixel(
+          pixel, frameState, callback, thisArg);
+      if (result) {
+        return result;
+      }
+    }
+  }
+  return undefined;
+};
+
+
+/**
+ * @param {ol.Coordinate} coordinate Coordinate.
+ * @param {olx.FrameState} frameState FrameState.
+ * @param {function(this: U, ol.layer.Layer): boolean} layerFilter Layer filter
+ *     function, only layers which are visible and for which this function
+ *     returns `true` will be tested for features.  By default, all visible
+ *     layers will be tested.
+ * @param {U} thisArg Value to use as `this` when executing `layerFilter`.
+ * @return {boolean} Is there a feature at the given coordinate?
+ * @template U
+ */
+ol.renderer.Map.prototype.hasFeatureAtCoordinate =
+    function(coordinate, frameState, layerFilter, thisArg) {
+  var hasFeature = this.forEachFeatureAtCoordinate(
+      coordinate, frameState, goog.functions.TRUE, this, layerFilter, thisArg);
+
+  return goog.isDef(hasFeature);
 };
 
 

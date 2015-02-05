@@ -465,7 +465,7 @@ describe('ol.format.GeoJSON', function() {
     it('encodes feature collection', function() {
       var str = JSON.stringify(data),
           array = format.readFeatures(str);
-      var geojson = format.writeFeatures(array);
+      var geojson = format.writeFeaturesObject(array);
       var result = format.readFeatures(geojson);
       expect(array.length).to.equal(result.length);
       var got, exp, gotProp, expProp;
@@ -497,6 +497,15 @@ describe('ol.format.GeoJSON', function() {
             .getCoordinates()).to.eql(exp.getGeometry().getCoordinates());
       }
     });
+
+    it('writes out a feature with a different geometryName correctly',
+        function() {
+          var feature = new ol.Feature({'foo': 'bar'});
+          feature.setGeometryName('mygeom');
+          feature.setGeometry(new ol.geom.Point([5, 10]));
+          var geojson = format.writeFeaturesObject([feature]);
+          expect(geojson.features[0].properties.mygeom).to.eql(undefined);
+        });
 
   });
 
@@ -546,7 +555,7 @@ describe('ol.format.GeoJSON', function() {
 
     it('encodes a circle as an empty geometry collection', function() {
       var circle = new ol.geom.Circle([0, 0], 1);
-      var geojson = format.writeGeometry(circle);
+      var geojson = format.writeGeometryObject(circle);
       expect(geojson).to.eql({
         'type': 'GeometryCollection',
         'geometries': []

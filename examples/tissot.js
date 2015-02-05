@@ -20,7 +20,7 @@ var map4326 = new ol.Map({
   layers: [
     new ol.layer.Tile({
       source: new ol.source.TileWMS({
-        url: 'http://demo.opengeo.org/geoserver/wms',
+        url: 'http://demo.boundlessgeo.com/geoserver/wms',
         params: {
           'LAYERS': 'ne:NE1_HR_LC_SR_W_DR'
         }
@@ -41,7 +41,7 @@ var map3857 = new ol.Map({
   layers: [
     new ol.layer.Tile({
       source: new ol.source.TileWMS({
-        url: 'http://demo.opengeo.org/geoserver/wms',
+        url: 'http://demo.boundlessgeo.com/geoserver/wms',
         params: {
           'LAYERS': 'ne:NE1_HR_LC_SR_W_DR'
         }

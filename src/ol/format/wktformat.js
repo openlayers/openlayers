@@ -292,14 +292,6 @@ ol.format.WKT.prototype.readGeometryFromText = function(text, opt_options) {
 
 
 /**
- * @inheritDoc
- */
-ol.format.WKT.prototype.readProjectionFromText = function(text) {
-  return null;
-};
-
-
-/**
  * Encode a feature as a WKT string.
  *
  * @function
@@ -582,7 +574,7 @@ ol.format.WKT.Parser.prototype.parse = function() {
 
 
 /**
- * @return {!ol.geom.Geometry|!ol.geom.GeometryCollection} The geometry.
+ * @return {!(ol.geom.Geometry|ol.geom.GeometryCollection)} The geometry.
  * @private
  */
 ol.format.WKT.Parser.prototype.parseGeometry_ = function() {

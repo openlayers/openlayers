@@ -31,7 +31,9 @@ goog.require('ol.interaction.Interaction');
  */
 ol.interaction.KeyboardPan = function(opt_options) {
 
-  goog.base(this);
+  goog.base(this, {
+    handleEvent: ol.interaction.KeyboardPan.handleEvent
+  });
 
   var options = goog.isDef(opt_options) ? opt_options : {};
 
@@ -54,10 +56,12 @@ goog.inherits(ol.interaction.KeyboardPan, ol.interaction.Interaction);
 
 
 /**
- * @inheritDoc
+ * @param {ol.MapBrowserEvent} mapBrowserEvent Map browser event.
+ * @return {boolean} `false` to stop event propagation.
+ * @this {ol.interaction.KeyboardPan}
+ * @api
  */
-ol.interaction.KeyboardPan.prototype.handleMapBrowserEvent =
-    function(mapBrowserEvent) {
+ol.interaction.KeyboardPan.handleEvent = function(mapBrowserEvent) {
   var stopEvent = false;
   if (mapBrowserEvent.type == goog.events.KeyHandler.EventType.KEY) {
     var keyEvent = /** @type {goog.events.KeyEvent} */

@@ -1,7 +1,7 @@
 goog.provide('ol.geom.LineString');
 
+goog.require('goog.array');
 goog.require('goog.asserts');
-goog.require('ol.array');
 goog.require('ol.extent');
 goog.require('ol.geom.GeometryType');
 goog.require('ol.geom.SimpleGeometry');
@@ -69,7 +69,7 @@ ol.geom.LineString.prototype.appendCoordinate = function(coordinate) {
   if (goog.isNull(this.flatCoordinates)) {
     this.flatCoordinates = coordinate.slice();
   } else {
-    ol.array.safeExtend(this.flatCoordinates, coordinate);
+    goog.array.extend(this.flatCoordinates, coordinate);
   }
   this.changed();
 };
@@ -117,7 +117,7 @@ ol.geom.LineString.prototype.closestPointXY =
  * return the last coordinate.
  *
  * @param {number} m M.
- * @param {boolean=} opt_extrapolate Extrapolate.
+ * @param {boolean=} opt_extrapolate Extrapolate. Default is `false`.
  * @return {ol.Coordinate} Coordinate.
  * @api stable
  */

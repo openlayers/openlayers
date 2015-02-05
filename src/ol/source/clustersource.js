@@ -93,7 +93,7 @@ ol.source.Cluster.prototype.cluster_ = function() {
   if (!goog.isDef(this.resolution_)) {
     return;
   }
-  goog.array.clear(this.features_);
+  this.features_.length = 0;
   var extent = ol.extent.createEmpty();
   var mapDistance = this.distance_ * this.resolution_;
   var features = this.source_.getFeatures();
@@ -117,7 +117,7 @@ ol.source.Cluster.prototype.cluster_ = function() {
       neighbors = goog.array.filter(neighbors, function(neighbor) {
         var uid = goog.getUid(neighbor).toString();
         if (!goog.object.containsKey(clustered, uid)) {
-          goog.object.set(clustered, uid, true);
+          clustered[uid] = true;
           return true;
         } else {
           return false;

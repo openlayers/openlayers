@@ -3,7 +3,6 @@ goog.provide('ol.source.State');
 
 goog.require('goog.events.EventType');
 goog.require('ol.Attribution');
-goog.require('ol.Extent');
 goog.require('ol.Observable');
 goog.require('ol.proj');
 
@@ -78,16 +77,15 @@ goog.inherits(ol.source.Source, ol.Observable);
 
 
 /**
- * @param {ol.Extent} extent Extent.
+ * @param {ol.Coordinate} coordinate Coordinate.
  * @param {number} resolution Resolution.
  * @param {number} rotation Rotation.
- * @param {ol.Coordinate} coordinate Coordinate.
  * @param {Object.<string, boolean>} skippedFeatureUids Skipped feature uids.
  * @param {function(ol.Feature): T} callback Feature callback.
  * @return {T|undefined} Callback result.
  * @template T
  */
-ol.source.Source.prototype.forEachFeatureAtPixel =
+ol.source.Source.prototype.forEachFeatureAtCoordinate =
     goog.nullFunction;
 
 

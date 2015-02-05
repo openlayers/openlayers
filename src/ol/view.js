@@ -77,14 +77,19 @@ ol.ViewHint = {
  * the "next" resolution. And releasing the fingers after pinch-zooming
  * snaps to the closest resolution (with an animation).
  *
- * So the *resolution constraint* snaps to specific resolutions. It is
+ * The *resolution constraint* snaps to specific resolutions. It is
  * determined by the following options: `resolutions`, `maxResolution`,
  * `maxZoom`, and `zoomFactor`. If `resolutions` is set, the other three
  * options are ignored. See documentation for each option for more
  * information.
  *
- * The *rotation constraint* is currently not configurable. It snaps the
- * rotation value to zero when approaching the horizontal.
+ * The *rotation constraint* snaps to specific angles. It is determined
+ * by the following options: `enableRotation` and `constrainRotation`.
+ * By default the rotation value is snapped to zero when approaching the
+ * horizontal.
+ *
+ * The *center constraint* is determined by the `extent` option. By
+ * default the center is not constrained at all.
  *
  * @constructor
  * @extends {ol.Object}
@@ -110,6 +115,7 @@ ol.View = function(opt_options) {
 
   /**
    * @private
+   * @const
    * @type {ol.proj.Projection}
    */
   this.projection_ = ol.proj.createProjection(options.projection, 'EPSG:3857');
@@ -255,7 +261,7 @@ goog.exportProperty(
  * @return {Array.<number>} Hint.
  */
 ol.View.prototype.getHints = function() {
-  return goog.array.clone(this.hints_);
+  return this.hints_.slice();
 };
 
 
@@ -345,12 +351,12 @@ ol.View.prototype.getResolutionForValueFunction = function(opt_power) {
 
 
 /**
- * @return {number|undefined} The rotation of the view.
+ * @return {number} The rotation of the view.
  * @observable
  * @api stable
  */
 ol.View.prototype.getRotation = function() {
-  return /** @type {number|undefined} */ (this.get(ol.ViewProperty.ROTATION));
+  return /** @type {number} */ (this.get(ol.ViewProperty.ROTATION));
 };
 goog.exportProperty(
     ol.View.prototype,
@@ -396,7 +402,7 @@ ol.View.prototype.getState = function() {
     center: center.slice(),
     projection: goog.isDef(projection) ? projection : null,
     resolution: resolution,
-    rotation: goog.isDef(rotation) ? rotation : 0
+    rotation: rotation
   });
 };
 
@@ -620,7 +626,7 @@ goog.exportProperty(
 
 /**
  * Set the rotation for this view.
- * @param {number|undefined} rotation The rotation of the view.
+ * @param {number} rotation The rotation of the view.
  * @observable
  * @api stable
  */

@@ -48,12 +48,14 @@ goog.inherits(ol.source.FormatVector, ol.source.Vector);
 
 /**
  * @param {goog.Uri|string} url URL.
- * @param {function(this: T, Array.<ol.Feature>)} callback Callback.
- * @param {T} thisArg Value to use as `this` when executing `callback`.
+ * @param {function(this: T, Array.<ol.Feature>)} success Success Callback.
+ * @param {function(this: T)} error Error callback.
+ * @param {T} thisArg Value to use as `this` when executing `success` or
+ *     `error`.
  * @template T
  */
 ol.source.FormatVector.prototype.loadFeaturesFromURL =
-    function(url, callback, thisArg) {
+    function(url, success, error, thisArg) {
   var xhrIo = new goog.net.XhrIo();
   var type = this.format.getType();
   var responseType;
@@ -97,13 +99,13 @@ ol.source.FormatVector.prototype.loadFeaturesFromURL =
             goog.asserts.fail();
           }
           if (goog.isDefAndNotNull(source)) {
-            callback.call(thisArg, this.readFeatures(source));
+            success.call(thisArg, this.readFeatures(source));
           } else {
             this.setState(ol.source.State.ERROR);
             goog.asserts.fail();
           }
         } else {
-          this.setState(ol.source.State.ERROR);
+          error.call(thisArg);
         }
         goog.dispose(xhrIo);
       }, false, this);

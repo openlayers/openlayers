@@ -5,8 +5,8 @@ goog.provide('ol.render.IVectorContext');
 
 
 /**
- * VectorContext interface. Currently implemented by
- * {@link ol.render.canvas.Immediate}
+ * VectorContext interface. Implemented by
+ * {@link ol.render.canvas.Immediate} and {@link ol.render.webgl.Immediate}.
  * @interface
  */
 ol.render.IVectorContext = function() {
@@ -15,7 +15,7 @@ ol.render.IVectorContext = function() {
 
 /**
  * @param {number} zIndex Z index.
- * @param {function(ol.render.canvas.Immediate)} callback Callback.
+ * @param {function(ol.render.IVectorContext)} callback Callback.
  */
 ol.render.IVectorContext.prototype.drawAsync = function(zIndex, callback) {
 };
@@ -23,10 +23,10 @@ ol.render.IVectorContext.prototype.drawAsync = function(zIndex, callback) {
 
 /**
  * @param {ol.geom.Circle} circleGeometry Circle geometry.
- * @param {Object} data Opaque data object,
+ * @param {ol.Feature} feature Feature,
  */
 ol.render.IVectorContext.prototype.drawCircleGeometry =
-    function(circleGeometry, data) {
+    function(circleGeometry, feature) {
 };
 
 
@@ -41,65 +41,65 @@ ol.render.IVectorContext.prototype.drawFeature = function(feature, style) {
 /**
  * @param {ol.geom.GeometryCollection} geometryCollectionGeometry Geometry
  *     collection.
- * @param {Object} data Opaque data object.
+ * @param {ol.Feature} feature Feature.
  */
 ol.render.IVectorContext.prototype.drawGeometryCollectionGeometry =
-    function(geometryCollectionGeometry, data) {
+    function(geometryCollectionGeometry, feature) {
 };
 
 
 /**
  * @param {ol.geom.Point} pointGeometry Point geometry.
- * @param {Object} data Opaque data object.
+ * @param {ol.Feature} feature Feature.
  */
 ol.render.IVectorContext.prototype.drawPointGeometry =
-    function(pointGeometry, data) {
+    function(pointGeometry, feature) {
 };
 
 
 /**
  * @param {ol.geom.LineString} lineStringGeometry Line string geometry.
- * @param {Object} data Opaque data object.
+ * @param {ol.Feature} feature Feature.
  */
 ol.render.IVectorContext.prototype.drawLineStringGeometry =
-    function(lineStringGeometry, data) {
+    function(lineStringGeometry, feature) {
 };
 
 
 /**
  * @param {ol.geom.MultiLineString} multiLineStringGeometry
  *     MultiLineString geometry.
- * @param {Object} data Opaque data object.
+ * @param {ol.Feature} feature Feature.
  */
 ol.render.IVectorContext.prototype.drawMultiLineStringGeometry =
-    function(multiLineStringGeometry, data) {
+    function(multiLineStringGeometry, feature) {
 };
 
 
 /**
  * @param {ol.geom.MultiPoint} multiPointGeometry MultiPoint geometry.
- * @param {Object} data Opaque data object.
+ * @param {ol.Feature} feature Feature.
  */
 ol.render.IVectorContext.prototype.drawMultiPointGeometry =
-    function(multiPointGeometry, data) {
+    function(multiPointGeometry, feature) {
 };
 
 
 /**
  * @param {ol.geom.MultiPolygon} multiPolygonGeometry MultiPolygon geometry.
- * @param {Object} data Opaque data object.
+ * @param {ol.Feature} feature Feature.
  */
 ol.render.IVectorContext.prototype.drawMultiPolygonGeometry =
-    function(multiPolygonGeometry, data) {
+    function(multiPolygonGeometry, feature) {
 };
 
 
 /**
  * @param {ol.geom.Polygon} polygonGeometry Polygon geometry.
- * @param {Object} data Opaque data object.
+ * @param {ol.Feature} feature Feature.
  */
 ol.render.IVectorContext.prototype.drawPolygonGeometry =
-    function(polygonGeometry, data) {
+    function(polygonGeometry, feature) {
 };
 
 
@@ -109,10 +109,10 @@ ol.render.IVectorContext.prototype.drawPolygonGeometry =
  * @param {number} end End.
  * @param {number} stride Stride.
  * @param {ol.geom.Geometry} geometry Geometry.
- * @param {Object} data Opaque data object.
+ * @param {ol.Feature} feature Feature.
  */
 ol.render.IVectorContext.prototype.drawText =
-    function(flatCoordinates, offset, end, stride, geometry, data) {
+    function(flatCoordinates, offset, end, stride, geometry, feature) {
 };
 
 

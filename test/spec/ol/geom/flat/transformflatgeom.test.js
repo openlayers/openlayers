@@ -62,6 +62,22 @@ describe('ol.geom.flat.transform', function() {
 
   });
 
+  describe('ol.geom.flat.transform.translate', function() {
+    it('translates the coordinates array', function() {
+      var multiPolygon = new ol.geom.MultiPolygon([
+        [[[0, 0, 2], [0, 1, 2], [1, 1, 2], [1, 0, 2], [0, 0, 2]]],
+        [[[2, 2, 3], [2, 3, 3], [3, 3, 3], [3, 2, 3], [2, 2, 3]]]]);
+      var flatCoordinates = multiPolygon.getFlatCoordinates();
+      var deltaX = 1;
+      var deltaY = 2;
+      ol.geom.flat.transform.translate(flatCoordinates, 0,
+          flatCoordinates.length, multiPolygon.getStride(),
+          deltaX, deltaY, flatCoordinates);
+      expect(flatCoordinates).to.eql([
+        1, 2, 2, 1, 3, 2, 2, 3, 2, 2, 2, 2, 1, 2, 2,
+        3, 4, 3, 3, 5, 3, 4, 5, 3, 4, 4, 3, 3, 4, 3]);
+    });
+  });
 
 });
 

@@ -11,6 +11,10 @@ body {
 .ol-attribution {
   max-width: calc(100% - 3em);
 }
+.ol-control button, .ol-attribution, .ol-scale-line-inner {
+  font-family: 'Lucida Grande',Verdana,Geneva,Lucida,Arial,Helvetica,sans-serif;
+}
+
 #tags {
   display: none;
 }

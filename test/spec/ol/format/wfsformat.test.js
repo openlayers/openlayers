@@ -90,6 +90,21 @@ describe('ol.format.WFS', function() {
   });
 
   describe('when parsing FeatureCollection', function() {
+    var xml;
+    before(function(done) {
+      afterLoadText('spec/ol/format/wfs/EmptyFeatureCollection.xml',
+          function(_xml) {
+            xml = _xml;
+            done();
+          });
+    });
+    it('returns an empty array of features when none exist', function() {
+      var result = new ol.format.WFS().readFeatures(xml);
+      expect(result).to.have.length(0);
+    });
+  });
+
+  describe('when parsing FeatureCollection', function() {
     var response;
     before(function(done) {
       afterLoadText('spec/ol/format/wfs/NumberOfFeatures.xml',
@@ -296,11 +311,11 @@ describe('ol.format.WFS', function() {
       var updateFeature = new ol.Feature();
       updateFeature.setGeometryName('the_geom');
       updateFeature.setGeometry(new ol.geom.MultiLineString([[
-        [-12279454.47665902, 6741885.67968707],
-        [-12064207.805007964, 6732101.740066567],
-        [-11941908.559751684, 6595126.585379533],
-        [-12240318.718177011, 6507071.128795006],
-        [-12416429.631346056, 6604910.52500003]
+        [-12279454, 6741885],
+        [-12064207, 6732101],
+        [-11941908, 6595126],
+        [-12240318, 6507071],
+        [-12416429, 6604910]
       ]]));
       updateFeature.setId('FAULTS.4455');
       var serialized = format.writeTransaction(null, [updateFeature], null, {

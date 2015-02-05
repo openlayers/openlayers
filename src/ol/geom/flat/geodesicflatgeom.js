@@ -37,7 +37,7 @@ ol.geom.flat.geodesic.line_ =
   /** @type {Array.<number>} */
   var fractionStack = [1, 0];
 
-  /** @type {Object.<number, boolean>} */
+  /** @type {Object.<string, boolean>} */
   var fractions = {};
 
   var maxIterations = 1e5;
@@ -52,7 +52,7 @@ ol.geom.flat.geodesic.line_ =
     key = fracA.toString();
     if (!goog.object.containsKey(fractions, key)) {
       flatCoordinates.push(a[0], a[1]);
-      goog.object.set(fractions, key, true);
+      fractions[key] = true;
     }
     // Pop the b coordinate off the stack
     fracB = fractionStack.pop();
@@ -70,7 +70,7 @@ ol.geom.flat.geodesic.line_ =
       flatCoordinates.push(b[0], b[1]);
       key = fracB.toString();
       goog.asserts.assert(!goog.object.containsKey(fractions, key));
-      goog.object.set(fractions, key, true);
+      fractions[key] = true;
     } else {
       // Otherwise, we need to subdivide the current line segment.  Split it
       // into two and push the two line segments onto the stack.

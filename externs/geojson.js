@@ -14,6 +14,12 @@ var GeoJSONObject = function() {};
 
 
 /**
+ * @type {!Array.<number>|undefined}
+ */
+GeoJSONObject.prototype.bbox;
+
+
+/**
  * @type {string}
  */
 GeoJSONObject.prototype.type;
@@ -28,15 +34,21 @@ GeoJSONObject.prototype.crs;
 
 /**
  * @constructor
- * @extends {GeoJSONObject}
  */
 var GeoJSONCRS = function() {};
 
 
 /**
- * @type {!GeoJSONCRSCode|!GeoJSONCRSName|!GeoJSONLink}
+ * CRS type. One of `link` or `name`.
+ * @type {string}
+ */
+GeoJSONCRS.prototype.type;
+
+
+/**
  * TODO: remove GeoJSONCRSCode when http://jira.codehaus.org/browse/GEOS-5996
  * is fixed and widely deployed.
+ * @type {!GeoJSONCRSCode|!GeoJSONCRSName|!GeoJSONLink}
  */
 GeoJSONCRS.prototype.properties;
 
@@ -60,9 +72,9 @@ var GeoJSONCRSName = function() {};
 
 
 /**
- * @type {string}
  * TODO: remove this when http://jira.codehaus.org/browse/GEOS-5996 is fixed
  * and widely deployed.
+ * @type {string}
  */
 GeoJSONCRSName.prototype.code;
 
@@ -142,16 +154,9 @@ var GeoJSONFeatureCollection = function() {};
 GeoJSONFeatureCollection.prototype.features;
 
 
-/**
- * @type {!Array.<number>|undefined}
- */
-GeoJSONFeatureCollection.prototype.bbox;
-
-
 
 /**
  * @constructor
- * @extends {GeoJSONObject}
  */
 var GeoJSONLink = function() {};
 
@@ -160,3 +165,8 @@ var GeoJSONLink = function() {};
  * @type {string}
  */
 GeoJSONLink.prototype.href;
+
+/**
+ * @type {string}
+ */
+GeoJSONLink.prototype.type;

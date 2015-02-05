@@ -3,15 +3,13 @@ goog.provide('ol.renderer.dom.ImageLayer');
 goog.require('goog.asserts');
 goog.require('goog.dom');
 goog.require('goog.dom.TagName');
-goog.require('goog.events');
-goog.require('goog.events.EventType');
 goog.require('goog.vec.Mat4');
 goog.require('ol.ImageBase');
-goog.require('ol.ImageState');
 goog.require('ol.ViewHint');
 goog.require('ol.dom');
 goog.require('ol.extent');
 goog.require('ol.layer.Image');
+goog.require('ol.proj');
 goog.require('ol.renderer.dom.Layer');
 goog.require('ol.vec.Mat4');
 
@@ -49,16 +47,15 @@ goog.inherits(ol.renderer.dom.ImageLayer, ol.renderer.dom.Layer);
 /**
  * @inheritDoc
  */
-ol.renderer.dom.ImageLayer.prototype.forEachFeatureAtPixel =
+ol.renderer.dom.ImageLayer.prototype.forEachFeatureAtCoordinate =
     function(coordinate, frameState, callback, thisArg) {
   var layer = this.getLayer();
   var source = layer.getSource();
-  var extent = frameState.extent;
   var resolution = frameState.viewState.resolution;
   var rotation = frameState.viewState.rotation;
   var skippedFeatureUids = frameState.skippedFeatureUids;
-  return source.forEachFeatureAtPixel(
-      extent, resolution, rotation, coordinate, skippedFeatureUids,
+  return source.forEachFeatureAtCoordinate(
+      coordinate, resolution, rotation, skippedFeatureUids,
       /**
        * @param {ol.Feature} feature Feature.
        * @return {?} Callback result.
@@ -104,15 +101,17 @@ ol.renderer.dom.ImageLayer.prototype.prepareFrame =
 
   if (!hints[ol.ViewHint.ANIMATING] && !hints[ol.ViewHint.INTERACTING] &&
       !ol.extent.isEmpty(renderedExtent)) {
+    var projection = viewState.projection;
+    var sourceProjection = imageSource.getProjection();
+    if (!goog.isNull(sourceProjection)) {
+      goog.asserts.assert(ol.proj.equivalent(projection, sourceProjection));
+      projection = sourceProjection;
+    }
     var image_ = imageSource.getImage(renderedExtent, viewResolution,
-        frameState.pixelRatio, viewState.projection);
+        frameState.pixelRatio, projection);
     if (!goog.isNull(image_)) {
-      var imageState = image_.getState();
-      if (imageState == ol.ImageState.IDLE) {
-        goog.events.listenOnce(image_, goog.events.EventType.CHANGE,
-            this.handleImageChange, false, this);
-        image_.load();
-      } else if (imageState == ol.ImageState.LOADED) {
+      var loaded = this.loadImage(image_);
+      if (loaded) {
         image = image_;
       }
     }

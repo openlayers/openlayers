@@ -51,8 +51,7 @@ ol.control.Control = function(options) {
    * @private
    * @type {Element}
    */
-  this.target_ = goog.isDef(options.target) ?
-      goog.dom.getElement(options.target) : null;
+  this.target_ = null;
 
   /**
    * @private
@@ -65,6 +64,15 @@ ol.control.Control = function(options) {
    * @type {!Array.<?number>}
    */
   this.listenerKeys = [];
+
+  /**
+   * @type {function(ol.MapEvent)}
+   */
+  this.render = goog.isDef(options.render) ? options.render : goog.nullFunction;
+
+  if (goog.isDef(options.target)) {
+    this.setTarget(options.target);
+  }
 
 };
 goog.inherits(ol.control.Control, ol.Object);
@@ -90,15 +98,6 @@ ol.control.Control.prototype.getMap = function() {
 
 
 /**
- * Function called on each map render. Executes in a requestAnimationFrame
- * callback. Can be implemented in sub-classes to re-render the control's
- * UI.
- * @param {ol.MapEvent} mapEvent Map event.
- */
-ol.control.Control.prototype.handleMapPostrender = goog.nullFunction;
-
-
-/**
  * Remove the control from its current map and attach it to the new map.
  * Subclasses may set up event handlers to get notified about changes to
  * the map here.
@@ -118,10 +117,24 @@ ol.control.Control.prototype.setMap = function(map) {
     var target = !goog.isNull(this.target_) ?
         this.target_ : map.getOverlayContainerStopEvent();
     goog.dom.appendChild(target, this.element);
-    if (this.handleMapPostrender !== goog.nullFunction) {
+    if (this.render !== goog.nullFunction) {
       this.listenerKeys.push(goog.events.listen(map,
-          ol.MapEventType.POSTRENDER, this.handleMapPostrender, false, this));
+          ol.MapEventType.POSTRENDER, this.render, false, this));
     }
     map.render();
   }
+};
+
+
+/**
+ * This function is used to set a target element for the control. It has no
+ * effect if it is called after the control has been added to the map (i.e.
+ * after `setMap` is called on the control). If no `target` is set in the
+ * options passed to the control constructor and if `setTarget` is not called
+ * then the control is added to the map's overlay container.
+ * @param {Element|string} target Target.
+ * @api
+ */
+ol.control.Control.prototype.setTarget = function(target) {
+  this.target_ = goog.dom.getElement(target);
 };

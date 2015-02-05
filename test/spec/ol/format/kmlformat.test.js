@@ -8,6 +8,18 @@ describe('ol.format.KML', function() {
     format = new ol.format.KML();
   });
 
+  describe('#readProjection', function() {
+    it('returns the default projection from document', function() {
+      var projection = format.readProjectionFromDocument();
+      expect(projection).to.eql(ol.proj.get('EPSG:4326'));
+    });
+
+    it('returns the default projection from node', function() {
+      var projection = format.readProjectionFromNode();
+      expect(projection).to.eql(ol.proj.get('EPSG:4326'));
+    });
+  });
+
   describe('#readFeatures', function() {
 
     describe('id', function() {
@@ -38,7 +50,7 @@ describe('ol.format.KML', function() {
 
       it('can write a Feature', function() {
         var features = [new ol.Feature()];
-        var node = format.writeFeatures(features);
+        var node = format.writeFeaturesNode(features);
         var text =
             '<kml xmlns="http://www.opengis.net/kml/2.2"' +
             ' xmlns:gx="http://www.google.com/kml/ext/2.2"' +
@@ -50,11 +62,25 @@ describe('ol.format.KML', function() {
         expect(node).to.xmleql(ol.xml.parse(text));
       });
 
+      it('can write a Feature as string', function() {
+        var features = [new ol.Feature()];
+        var node = format.writeFeatures(features);
+        var text =
+            '<kml xmlns="http://www.opengis.net/kml/2.2"' +
+            ' xmlns:gx="http://www.google.com/kml/ext/2.2"' +
+            ' xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"' +
+            ' xsi:schemaLocation="http://www.opengis.net/kml/2.2' +
+            ' https://developers.google.com/kml/schema/kml22gx.xsd">' +
+            '  <Placemark/>' +
+            '</kml>';
+        expect(ol.xml.parse(node)).to.xmleql(ol.xml.parse(text));
+      });
+
       it('can write a Feature\'s id', function() {
         var feature = new ol.Feature();
         feature.setId('foo');
         var features = [feature];
-        var node = format.writeFeatures(features);
+        var node = format.writeFeaturesNode(features);
         var text =
             '<kml xmlns="http://www.opengis.net/kml/2.2"' +
             ' xmlns:gx="http://www.google.com/kml/ext/2.2"' +
@@ -85,7 +111,7 @@ describe('ol.format.KML', function() {
 
       it('can write feature with null geometries', function() {
         var features = [new ol.Feature(null)];
-        var node = format.writeFeatures(features);
+        var node = format.writeFeaturesNode(features);
         var text =
             '<kml xmlns="http://www.opengis.net/kml/2.2"' +
             ' xmlns:gx="http://www.google.com/kml/ext/2.2"' +
@@ -193,7 +219,7 @@ describe('ol.format.KML', function() {
         var layout = ol.geom.GeometryLayout.XY;
         var point = new ol.geom.Point([1, 2], layout);
         var features = [new ol.Feature(point)];
-        var node = format.writeFeatures(features);
+        var node = format.writeFeaturesNode(features);
         var text =
             '<kml xmlns="http://www.opengis.net/kml/2.2"' +
             ' xmlns:gx="http://www.google.com/kml/ext/2.2"' +
@@ -213,7 +239,7 @@ describe('ol.format.KML', function() {
         var layout = ol.geom.GeometryLayout.XYZ;
         var point = new ol.geom.Point([1, 2, 3], layout);
         var features = [new ol.Feature(point)];
-        var node = format.writeFeatures(features);
+        var node = format.writeFeaturesNode(features);
         var text =
             '<kml xmlns="http://www.opengis.net/kml/2.2"' +
             ' xmlns:gx="http://www.google.com/kml/ext/2.2"' +
@@ -243,7 +269,7 @@ describe('ol.format.KML', function() {
         var point = new ol.geom.Point([1, 2, 3], layout).transform(
             'EPSG:4326', 'double');
         var features = [new ol.Feature(point)];
-        var node = format.writeFeatures(features, {
+        var node = format.writeFeaturesNode(features, {
           featureProjection: 'double'
         });
         var text =
@@ -270,7 +296,7 @@ describe('ol.format.KML', function() {
         var layout = ol.geom.GeometryLayout.XYM;
         var point = new ol.geom.Point([1, 2, 100], layout);
         var features = [new ol.Feature(point)];
-        var node = format.writeFeatures(features);
+        var node = format.writeFeaturesNode(features);
         var text =
             '<kml xmlns="http://www.opengis.net/kml/2.2"' +
             ' xmlns:gx="http://www.google.com/kml/ext/2.2"' +
@@ -290,7 +316,7 @@ describe('ol.format.KML', function() {
         var layout = ol.geom.GeometryLayout.XYZM;
         var point = new ol.geom.Point([1, 2, 3, 100], layout);
         var features = [new ol.Feature(point)];
-        var node = format.writeFeatures(features);
+        var node = format.writeFeaturesNode(features);
         var text =
             '<kml xmlns="http://www.opengis.net/kml/2.2"' +
             ' xmlns:gx="http://www.google.com/kml/ext/2.2"' +
@@ -328,7 +354,7 @@ describe('ol.format.KML', function() {
         var layout = ol.geom.GeometryLayout.XY;
         var lineString = new ol.geom.LineString([[1, 2], [3, 4]], layout);
         var features = [new ol.Feature(lineString)];
-        var node = format.writeFeatures(features);
+        var node = format.writeFeaturesNode(features);
         var text =
             '<kml xmlns="http://www.opengis.net/kml/2.2"' +
             ' xmlns:gx="http://www.google.com/kml/ext/2.2"' +
@@ -349,7 +375,7 @@ describe('ol.format.KML', function() {
         var lineString = new ol.geom.LineString(
             [[1, 2, 3], [4, 5, 6]], layout);
         var features = [new ol.Feature(lineString)];
-        var node = format.writeFeatures(features);
+        var node = format.writeFeaturesNode(features);
         var text =
             '<kml xmlns="http://www.opengis.net/kml/2.2"' +
             ' xmlns:gx="http://www.google.com/kml/ext/2.2"' +
@@ -370,7 +396,7 @@ describe('ol.format.KML', function() {
         var lineString = new ol.geom.LineString(
             [[1, 2, 100], [3, 4, 200]], layout);
         var features = [new ol.Feature(lineString)];
-        var node = format.writeFeatures(features);
+        var node = format.writeFeaturesNode(features);
         var text =
             '<kml xmlns="http://www.opengis.net/kml/2.2"' +
             ' xmlns:gx="http://www.google.com/kml/ext/2.2"' +
@@ -391,7 +417,7 @@ describe('ol.format.KML', function() {
         var lineString = new ol.geom.LineString(
             [[1, 2, 3, 100], [4, 5, 6, 200]], layout);
         var features = [new ol.Feature(lineString)];
-        var node = format.writeFeatures(features);
+        var node = format.writeFeaturesNode(features);
         var text =
             '<kml xmlns="http://www.opengis.net/kml/2.2"' +
             ' xmlns:gx="http://www.google.com/kml/ext/2.2"' +
@@ -430,7 +456,7 @@ describe('ol.format.KML', function() {
         var linearRing = new ol.geom.LinearRing(
             [[1, 2], [3, 4], [1, 2]], layout);
         var features = [new ol.Feature(linearRing)];
-        var node = format.writeFeatures(features);
+        var node = format.writeFeaturesNode(features);
         var text =
             '<kml xmlns="http://www.opengis.net/kml/2.2"' +
             ' xmlns:gx="http://www.google.com/kml/ext/2.2"' +
@@ -451,7 +477,7 @@ describe('ol.format.KML', function() {
         var linearRing = new ol.geom.LinearRing(
             [[1, 2, 3], [4, 5, 6], [1, 2, 3]], layout);
         var features = [new ol.Feature(linearRing)];
-        var node = format.writeFeatures(features);
+        var node = format.writeFeaturesNode(features);
         var text =
             '<kml xmlns="http://www.opengis.net/kml/2.2"' +
             ' xmlns:gx="http://www.google.com/kml/ext/2.2"' +
@@ -472,7 +498,7 @@ describe('ol.format.KML', function() {
         var linearRing = new ol.geom.LinearRing(
             [[1, 2, 100], [3, 4, 200], [1, 2, 100]], layout);
         var features = [new ol.Feature(linearRing)];
-        var node = format.writeFeatures(features);
+        var node = format.writeFeaturesNode(features);
         var text =
             '<kml xmlns="http://www.opengis.net/kml/2.2"' +
             ' xmlns:gx="http://www.google.com/kml/ext/2.2"' +
@@ -493,7 +519,7 @@ describe('ol.format.KML', function() {
         var linearRing = new ol.geom.LinearRing(
             [[1, 2, 3, 100], [4, 5, 6, 200], [1, 2, 3, 100]], layout);
         var features = [new ol.Feature(linearRing)];
-        var node = format.writeFeatures(features);
+        var node = format.writeFeaturesNode(features);
         var text =
             '<kml xmlns="http://www.opengis.net/kml/2.2"' +
             ' xmlns:gx="http://www.google.com/kml/ext/2.2"' +
@@ -537,7 +563,7 @@ describe('ol.format.KML', function() {
         var polygon = new ol.geom.Polygon(
             [[[0, 0], [0, 2], [2, 2], [2, 0], [0, 0]]], layout);
         var features = [new ol.Feature(polygon)];
-        var node = format.writeFeatures(features);
+        var node = format.writeFeaturesNode(features);
         var text =
             '<kml xmlns="http://www.opengis.net/kml/2.2"' +
             ' xmlns:gx="http://www.google.com/kml/ext/2.2"' +
@@ -562,7 +588,7 @@ describe('ol.format.KML', function() {
         var polygon = new ol.geom.Polygon(
             [[[0, 0, 1], [0, 2, 2], [2, 2, 3], [2, 0, 4], [0, 0, 5]]], layout);
         var features = [new ol.Feature(polygon)];
-        var node = format.writeFeatures(features);
+        var node = format.writeFeaturesNode(features);
         var text =
             '<kml xmlns="http://www.opengis.net/kml/2.2"' +
             ' xmlns:gx="http://www.google.com/kml/ext/2.2"' +
@@ -589,7 +615,7 @@ describe('ol.format.KML', function() {
         var polygon = new ol.geom.Polygon(
             [[[0, 0, 1], [0, 2, 1], [2, 2, 1], [2, 0, 1], [0, 0, 1]]], layout);
         var features = [new ol.Feature(polygon)];
-        var node = format.writeFeatures(features);
+        var node = format.writeFeaturesNode(features);
         var text =
             '<kml xmlns="http://www.opengis.net/kml/2.2"' +
             ' xmlns:gx="http://www.google.com/kml/ext/2.2"' +
@@ -617,7 +643,7 @@ describe('ol.format.KML', function() {
             [[[0, 0, 1, 1], [0, 2, 2, 1], [2, 2, 3, 1],
               [2, 0, 4, 1], [0, 0, 5, 1]]], layout);
         var features = [new ol.Feature(polygon)];
-        var node = format.writeFeatures(features);
+        var node = format.writeFeaturesNode(features);
         var text =
             '<kml xmlns="http://www.opengis.net/kml/2.2"' +
             ' xmlns:gx="http://www.google.com/kml/ext/2.2"' +
@@ -679,7 +705,7 @@ describe('ol.format.KML', function() {
              [[1, 1, 0], [1, 2, 0], [2, 2, 0], [2, 1, 0]],
              [[3, 3, 0], [3, 4, 0], [4, 4, 0], [4, 3, 0]]], layout);
         var features = [new ol.Feature(polygon)];
-        var node = format.writeFeatures(features);
+        var node = format.writeFeaturesNode(features);
         var text =
             '<kml xmlns="http://www.opengis.net/kml/2.2"' +
             ' xmlns:gx="http://www.google.com/kml/ext/2.2"' +
@@ -737,7 +763,7 @@ describe('ol.format.KML', function() {
         var multiPoint = new ol.geom.MultiPoint(
             [[1, 2, 3], [4, 5, 6]], layout);
         var features = [new ol.Feature(multiPoint)];
-        var node = format.writeFeatures(features);
+        var node = format.writeFeaturesNode(features);
         var text =
             '<kml xmlns="http://www.opengis.net/kml/2.2"' +
             ' xmlns:gx="http://www.google.com/kml/ext/2.2"' +
@@ -787,7 +813,7 @@ describe('ol.format.KML', function() {
         var multiLineString = new ol.geom.MultiLineString(
             [[[1, 2, 3], [4, 5, 6]], [[7, 8, 9], [10, 11, 12]]], layout);
         var features = [new ol.Feature(multiLineString)];
-        var node = format.writeFeatures(features);
+        var node = format.writeFeaturesNode(features);
         var text =
             '<kml xmlns="http://www.opengis.net/kml/2.2"' +
             ' xmlns:gx="http://www.google.com/kml/ext/2.2"' +
@@ -847,7 +873,7 @@ describe('ol.format.KML', function() {
             [[[[0, 0, 0], [0, 1, 0], [1, 1, 0], [1, 0, 0]]],
              [[[3, 0, 0], [3, 1, 0], [4, 1, 0], [4, 0, 0]]]], layout);
         var features = [new ol.Feature(multiPolygon)];
-        var node = format.writeFeatures(features);
+        var node = format.writeFeaturesNode(features);
         var text =
             '<kml xmlns="http://www.opengis.net/kml/2.2"' +
             ' xmlns:gx="http://www.google.com/kml/ext/2.2"' +
@@ -1126,7 +1152,7 @@ describe('ol.format.KML', function() {
         feature.set('name', 'My name');
         feature.set('phoneNumber', 'My phone number');
         var features = [feature];
-        var node = format.writeFeatures(features);
+        var node = format.writeFeaturesNode(features);
         var text =
             '<kml xmlns="http://www.opengis.net/kml/2.2"' +
             ' xmlns:gx="http://www.google.com/kml/ext/2.2"' +
@@ -1148,7 +1174,7 @@ describe('ol.format.KML', function() {
         feature.set('open', true);
         feature.set('visibility', false);
         var features = [feature];
-        var node = format.writeFeatures(features);
+        var node = format.writeFeaturesNode(features);
         var text =
             '<kml xmlns="http://www.opengis.net/kml/2.2"' +
             ' xmlns:gx="http://www.google.com/kml/ext/2.2"' +
@@ -1583,7 +1609,7 @@ describe('ol.format.KML', function() {
         imageStyle.iconImage_.size_ = [192, 144]; // sprite de 12 images(4*3)
         var feature = new ol.Feature();
         feature.setStyle([style]);
-        var node = format.writeFeatures([feature]);
+        var node = format.writeFeaturesNode([feature]);
         var text =
             '<kml xmlns="http://www.opengis.net/kml/2.2"' +
             ' xmlns:gx="http://www.google.com/kml/ext/2.2"' +
@@ -1623,7 +1649,7 @@ describe('ol.format.KML', function() {
         });
         var feature = new ol.Feature();
         feature.setStyle([style]);
-        var node = format.writeFeatures([feature]);
+        var node = format.writeFeaturesNode([feature]);
         var text =
             '<kml xmlns="http://www.opengis.net/kml/2.2"' +
             ' xmlns:gx="http://www.google.com/kml/ext/2.2"' +
@@ -1652,7 +1678,7 @@ describe('ol.format.KML', function() {
         });
         var feature = new ol.Feature();
         feature.setStyle([style]);
-        var node = format.writeFeatures([feature]);
+        var node = format.writeFeaturesNode([feature]);
         var text =
             '<kml xmlns="http://www.opengis.net/kml/2.2"' +
             ' xmlns:gx="http://www.google.com/kml/ext/2.2"' +
@@ -1679,7 +1705,7 @@ describe('ol.format.KML', function() {
         });
         var feature = new ol.Feature();
         feature.setStyle([style]);
-        var node = format.writeFeatures([feature]);
+        var node = format.writeFeaturesNode([feature]);
         var text =
             '<kml xmlns="http://www.opengis.net/kml/2.2"' +
             ' xmlns:gx="http://www.google.com/kml/ext/2.2"' +
@@ -2196,7 +2222,7 @@ describe('ol.format.KML', function() {
         feature1.setId('1');
         var feature2 = new ol.Feature();
         feature2.setId('2');
-        var node = format.writeFeatures([feature1, feature2]);
+        var node = format.writeFeaturesNode([feature1, feature2]);
         var text =
             '<kml xmlns="http://www.opengis.net/kml/2.2"' +
             ' xmlns:gx="http://www.google.com/kml/ext/2.2"' +
@@ -2459,6 +2485,45 @@ describe('ol.format.KML', function() {
           '  </Document>' +
           '</kml>';
       expect(format.readName(kml)).to.be('Document name');
+    });
+
+  });
+
+  describe('#readNetworkLinks', function() {
+    it('returns empty array if no network links found', function() {
+      var text =
+          '<kml xmlns="http://www.opengis.net/kml/2.2">' +
+          '  <Document>' +
+          '  </Document>' +
+          '</kml>';
+      var nl = format.readNetworkLinks(text);
+      expect(nl).to.have.length(0);
+    });
+
+    it('returns an array of network links', function() {
+      var text =
+          '<kml xmlns="http://www.opengis.net/kml/2.2">' +
+          '  <Document>' +
+          '    <NetworkLink>' +
+          '      <name>bar</name>' +
+          '      <Link>' +
+          '        <href>bar/bar.kml</href>' +
+          '      </Link>' +
+          '    </NetworkLink>' +
+          '  </Document>' +
+          '  <Folder>' +
+          '    <NetworkLink>' +
+          '      <Link>' +
+          '        <href>http://foo.com/foo.kml</href>' +
+          '      </Link>' +
+          '    </NetworkLink>' +
+          '  </Folder>' +
+          '</kml>';
+      var nl = format.readNetworkLinks(text);
+      expect(nl).to.have.length(2);
+      expect(nl[0].name).to.be('bar');
+      expect(nl[0].href).to.be('bar/bar.kml');
+      expect(nl[1].href).to.be('http://foo.com/foo.kml');
     });
 
   });

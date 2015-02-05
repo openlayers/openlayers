@@ -94,6 +94,8 @@ ol.color.blend = function(dst, src, opt_color) {
 
 
 /**
+ * Return the color as an array. This function maintains a cache of calculated
+ * arrays which means the result should not be modified.
  * @param {ol.Color|string} color Color.
  * @return {ol.Color} Color.
  * @api
@@ -109,6 +111,7 @@ ol.color.asArray = function(color) {
 
 
 /**
+ * Return the color as an rgba string.
  * @param {ol.Color|string} color Color.
  * @return {string} Rgba string.
  * @api
@@ -137,12 +140,11 @@ ol.color.equals = function(color1, color2) {
 
 /**
  * @param {string} s String.
- * @param {ol.Color=} opt_color Color.
  * @return {ol.Color} Color.
  */
 ol.color.fromString = (
     /**
-     * @return {function(string, ol.Color=): ol.Color}
+     * @return {function(string): ol.Color}
      */
     function() {
 
@@ -169,10 +171,9 @@ ol.color.fromString = (
       return (
           /**
            * @param {string} s String.
-           * @param {ol.Color=} opt_color Color.
            * @return {ol.Color} Color.
            */
-          function(s, opt_color) {
+          function(s) {
             var color;
             if (cache.hasOwnProperty(s)) {
               color = cache[s];
@@ -191,7 +192,7 @@ ol.color.fromString = (
               cache[s] = color;
               ++cacheSize;
             }
-            return ol.color.returnOrUpdate(color, opt_color);
+            return color;
           });
 
     })();
@@ -272,24 +273,6 @@ ol.color.normalize = function(color, opt_color) {
   result[2] = goog.math.clamp((color[2] + 0.5) | 0, 0, 255);
   result[3] = goog.math.clamp(color[3], 0, 1);
   return result;
-};
-
-
-/**
- * @param {ol.Color} color Color.
- * @param {ol.Color=} opt_color Color.
- * @return {ol.Color} Color.
- */
-ol.color.returnOrUpdate = function(color, opt_color) {
-  if (goog.isDef(opt_color)) {
-    opt_color[0] = color[0];
-    opt_color[1] = color[1];
-    opt_color[2] = color[2];
-    opt_color[3] = color[3];
-    return opt_color;
-  } else {
-    return color;
-  }
 };
 
 

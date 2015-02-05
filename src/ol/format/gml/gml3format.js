@@ -1,12 +1,11 @@
 goog.provide('ol.format.GML');
 goog.provide('ol.format.GML3');
 
+goog.require('goog.array');
 goog.require('goog.asserts');
-goog.require('goog.dom');
 goog.require('goog.dom.NodeType');
 goog.require('goog.object');
 goog.require('ol.Feature');
-goog.require('ol.array');
 goog.require('ol.extent');
 goog.require('ol.format.Feature');
 goog.require('ol.format.GMLBase');
@@ -84,8 +83,8 @@ goog.inherits(ol.format.GML3, ol.format.GMLBase);
  * @type {string}
  * @private
  */
-ol.format.GML3.schemaLocation_ = 'http://www.opengis.net/gml ' +
-    'http://schemas.opengis.net/gml/3.1.1/profiles/gmlsfProfile/' +
+ol.format.GML3.schemaLocation_ = ol.format.GMLBase.GMLNS +
+    ' http://schemas.opengis.net/gml/3.1.1/profiles/gmlsfProfile/' +
     '1.0.0/gmlsf.xsd';
 
 
@@ -283,7 +282,7 @@ ol.format.GML3.prototype.readSurface_ = function(node, objectStack) {
     var ends = [flatCoordinates.length];
     var i, ii;
     for (i = 1, ii = flatLinearRings.length; i < ii; ++i) {
-      ol.array.safeExtend(flatCoordinates, flatLinearRings[i]);
+      goog.array.extend(flatCoordinates, flatLinearRings[i]);
       ends.push(flatCoordinates.length);
     }
     polygon.setFlatCoordinates(
@@ -356,7 +355,7 @@ ol.format.GML3.prototype.readFlatPos_ = function(node, objectStack) {
   }
   var context = objectStack[0];
   goog.asserts.assert(goog.isObject(context));
-  var containerSrs = goog.object.get(context, 'srsName');
+  var containerSrs = context['srsName'];
   var axisOrientation = 'enu';
   if (!goog.isNull(containerSrs)) {
     var proj = ol.proj.get(containerSrs);
@@ -392,7 +391,7 @@ ol.format.GML3.prototype.readFlatPosList_ = function(node, objectStack) {
   var s = ol.xml.getAllTextContent(node, false).replace(/^\s*|\s*$/g, '');
   var context = objectStack[0];
   goog.asserts.assert(goog.isObject(context));
-  var containerSrs = goog.object.get(context, 'srsName');
+  var containerSrs = context['srsName'];
   var containerDimension = node.parentNode.getAttribute('srsDimension');
   var axisOrientation = 'enu';
   if (!goog.isNull(containerSrs)) {
@@ -614,7 +613,7 @@ ol.format.GML3.prototype.SEGMENTS_PARSERS_ = Object({
 ol.format.GML3.prototype.writePos_ = function(node, value, objectStack) {
   var context = objectStack[objectStack.length - 1];
   goog.asserts.assert(goog.isObject(context));
-  var srsName = goog.object.get(context, 'srsName');
+  var srsName = context['srsName'];
   var axisOrientation = 'enu';
   if (goog.isDefAndNotNull(srsName)) {
     axisOrientation = ol.proj.get(srsName).getAxisOrientation();
@@ -657,7 +656,7 @@ ol.format.GML3.prototype.getCoords_ = function(point, opt_srsName) {
 ol.format.GML3.prototype.writePosList_ = function(node, value, objectStack) {
   var context = objectStack[objectStack.length - 1];
   goog.asserts.assert(goog.isObject(context));
-  var srsName = goog.object.get(context, 'srsName');
+  var srsName = context['srsName'];
   // only 2d for simple features profile
   var points = value.getCoordinates();
   var len = points.length;
@@ -680,7 +679,7 @@ ol.format.GML3.prototype.writePosList_ = function(node, value, objectStack) {
 ol.format.GML3.prototype.writePoint_ = function(node, geometry, objectStack) {
   var context = objectStack[objectStack.length - 1];
   goog.asserts.assert(goog.isObject(context));
-  var srsName = goog.object.get(context, 'srsName');
+  var srsName = context['srsName'];
   if (goog.isDefAndNotNull(srsName)) {
     node.setAttribute('srsName', srsName);
   }
@@ -711,7 +710,7 @@ ol.format.GML3.prototype.writeEnvelope = function(node, extent, objectStack) {
   goog.asserts.assert(extent.length == 4);
   var context = objectStack[objectStack.length - 1];
   goog.asserts.assert(goog.isObject(context));
-  var srsName = goog.object.get(context, 'srsName');
+  var srsName = context['srsName'];
   if (goog.isDef(srsName)) {
     node.setAttribute('srsName', srsName);
   }
@@ -735,7 +734,7 @@ ol.format.GML3.prototype.writeLinearRing_ =
     function(node, geometry, objectStack) {
   var context = objectStack[objectStack.length - 1];
   goog.asserts.assert(goog.isObject(context));
-  var srsName = goog.object.get(context, 'srsName');
+  var srsName = context['srsName'];
   if (goog.isDefAndNotNull(srsName)) {
     node.setAttribute('srsName', srsName);
   }
@@ -757,9 +756,9 @@ ol.format.GML3.prototype.RING_NODE_FACTORY_ =
   var context = objectStack[objectStack.length - 1];
   var parentNode = context.node;
   goog.asserts.assert(goog.isObject(context));
-  var exteriorWritten = goog.object.get(context, 'exteriorWritten');
+  var exteriorWritten = context['exteriorWritten'];
   if (!goog.isDef(exteriorWritten)) {
-    goog.object.set(context, 'exteriorWritten', true);
+    context['exteriorWritten'] = true;
   }
   return ol.xml.createElementNS(parentNode.namespaceURI,
       goog.isDef(exteriorWritten) ? 'interior' : 'exterior');
@@ -776,7 +775,7 @@ ol.format.GML3.prototype.writeSurfaceOrPolygon_ =
     function(node, geometry, objectStack) {
   var context = objectStack[objectStack.length - 1];
   goog.asserts.assert(goog.isObject(context));
-  var srsName = goog.object.get(context, 'srsName');
+  var srsName = context['srsName'];
   if (node.nodeName !== 'PolygonPatch' && goog.isDefAndNotNull(srsName)) {
     node.setAttribute('srsName', srsName);
   }
@@ -806,7 +805,7 @@ ol.format.GML3.prototype.writeCurveOrLineString_ =
     function(node, geometry, objectStack) {
   var context = objectStack[objectStack.length - 1];
   goog.asserts.assert(goog.isObject(context));
-  var srsName = goog.object.get(context, 'srsName');
+  var srsName = context['srsName'];
   if (node.nodeName !== 'LineStringSegment' &&
       goog.isDefAndNotNull(srsName)) {
     node.setAttribute('srsName', srsName);
@@ -835,8 +834,8 @@ ol.format.GML3.prototype.writeMultiSurfaceOrPolygon_ =
     function(node, geometry, objectStack) {
   var context = objectStack[objectStack.length - 1];
   goog.asserts.assert(goog.isObject(context));
-  var srsName = goog.object.get(context, 'srsName');
-  var surface = goog.object.get(context, 'surface');
+  var srsName = context['srsName'];
+  var surface = context['surface'];
   if (goog.isDefAndNotNull(srsName)) {
     node.setAttribute('srsName', srsName);
   }
@@ -858,7 +857,7 @@ ol.format.GML3.prototype.writeMultiPoint_ = function(node, geometry,
     objectStack) {
   var context = objectStack[objectStack.length - 1];
   goog.asserts.assert(goog.isObject(context));
-  var srsName = goog.object.get(context, 'srsName');
+  var srsName = context['srsName'];
   if (goog.isDefAndNotNull(srsName)) {
     node.setAttribute('srsName', srsName);
   }
@@ -880,8 +879,8 @@ ol.format.GML3.prototype.writeMultiCurveOrLineString_ =
     function(node, geometry, objectStack) {
   var context = objectStack[objectStack.length - 1];
   goog.asserts.assert(goog.isObject(context));
-  var srsName = goog.object.get(context, 'srsName');
-  var curve = goog.object.get(context, 'curve');
+  var srsName = context['srsName'];
+  var curve = context['curve'];
   if (goog.isDefAndNotNull(srsName)) {
     node.setAttribute('srsName', srsName);
   }
@@ -1030,7 +1029,7 @@ ol.format.GML3.prototype.writeFeatureElement =
   }
   var context = objectStack[objectStack.length - 1];
   goog.asserts.assert(goog.isObject(context));
-  var featureNS = goog.object.get(context, 'featureNS');
+  var featureNS = context['featureNS'];
   var geometryName = feature.getGeometryName();
   if (!goog.isDef(context.serializers)) {
     context.serializers = {};
@@ -1076,8 +1075,8 @@ ol.format.GML3.prototype.writeFeatureMembers_ =
     function(node, features, objectStack) {
   var context = objectStack[objectStack.length - 1];
   goog.asserts.assert(goog.isObject(context));
-  var featureType = goog.object.get(context, 'featureType');
-  var featureNS = goog.object.get(context, 'featureNS');
+  var featureType = context['featureType'];
+  var featureNS = context['featureNS'];
   var serializers = {};
   serializers[featureNS] = {};
   serializers[featureNS][featureType] = ol.xml.makeChildAppender(
@@ -1219,10 +1218,10 @@ ol.format.GML3.prototype.GEOMETRY_NODE_FACTORY_ =
     function(value, objectStack, opt_nodeName) {
   var context = objectStack[objectStack.length - 1];
   goog.asserts.assert(goog.isObject(context));
-  var multiSurface = goog.object.get(context, 'multiSurface');
-  var surface = goog.object.get(context, 'surface');
-  var curve = goog.object.get(context, 'curve');
-  var multiCurve = goog.object.get(context, 'multiCurve');
+  var multiSurface = context['multiSurface'];
+  var surface = context['surface'];
+  var curve = context['curve'];
+  var multiCurve = context['multiCurve'];
   var parentNode = objectStack[objectStack.length - 1].node;
   goog.asserts.assert(ol.xml.isNode(parentNode));
   var nodeName;
@@ -1247,9 +1246,15 @@ ol.format.GML3.prototype.GEOMETRY_NODE_FACTORY_ =
 
 
 /**
- * @inheritDoc
+ * Encode a geometry in GML 3.1.1 Simple Features.
+ *
+ * @param {ol.geom.Geometry} geometry Geometry.
+ * @param {olx.format.WriteOptions=} opt_options Options.
+ * @return {Node} Node.
+ * @api
  */
 ol.format.GML3.prototype.writeGeometryNode = function(geometry, opt_options) {
+  opt_options = this.adaptOptions(opt_options);
   var geom = ol.xml.createElementNS('http://www.opengis.net/gml', 'geom');
   var context = {node: geom, srsName: this.srsName,
     curve: this.curve_, surface: this.surface_,
@@ -1268,16 +1273,22 @@ ol.format.GML3.prototype.writeGeometryNode = function(geometry, opt_options) {
  * @function
  * @param {Array.<ol.Feature>} features Features.
  * @param {olx.format.WriteOptions=} opt_options Options.
- * @return {Node} Result.
+ * @return {string} Result.
  * @api stable
  */
 ol.format.GML3.prototype.writeFeatures;
 
 
 /**
- * @inheritDoc
+ * Encode an array of features in the GML 3.1.1 format as an XML node.
+ *
+ * @param {Array.<ol.Feature>} features Features.
+ * @param {olx.format.WriteOptions=} opt_options Options.
+ * @return {Node} Node.
+ * @api
  */
 ol.format.GML3.prototype.writeFeaturesNode = function(features, opt_options) {
+  opt_options = this.adaptOptions(opt_options);
   var node = ol.xml.createElementNS('http://www.opengis.net/gml',
       'featureMembers');
   ol.xml.setAttributeNS(node, 'http://www.w3.org/2001/XMLSchema-instance',
@@ -1321,7 +1332,19 @@ ol.format.GML = ol.format.GML3;
  * @function
  * @param {Array.<ol.Feature>} features Features.
  * @param {olx.format.WriteOptions=} opt_options Options.
- * @return {Node} Result.
+ * @return {string} Result.
  * @api stable
  */
 ol.format.GML.prototype.writeFeatures;
+
+
+/**
+ * Encode an array of features in the GML 3.1.1 format as an XML node.
+ *
+ * @function
+ * @param {Array.<ol.Feature>} features Features.
+ * @param {olx.format.WriteOptions=} opt_options Options.
+ * @return {Node} Node.
+ * @api
+ */
+ol.format.GML.prototype.writeFeaturesNode;

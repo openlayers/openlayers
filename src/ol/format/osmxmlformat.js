@@ -67,7 +67,7 @@ ol.format.OSMXML.readNode_ = function(node, objectStack) {
     parseFloat(node.getAttribute('lon')),
     parseFloat(node.getAttribute('lat'))
   ]);
-  goog.object.set(state.nodes, id, coordinates);
+  state.nodes[id] = coordinates;
 
   var values = ol.xml.pushParseAndPop({
     tags: {}
@@ -100,7 +100,7 @@ ol.format.OSMXML.readWay_ = function(node, objectStack) {
   var state = /** @type {Object} */ (objectStack[objectStack.length - 1]);
   var flatCoordinates = /** @type {Array.<number>} */ ([]);
   for (var i = 0, ii = values.ndrefs.length; i < ii; i++) {
-    var point = goog.object.get(state.nodes, values.ndrefs[i]);
+    var point = state.nodes[values.ndrefs[i]];
     goog.array.extend(flatCoordinates, point);
   }
   var geometry;
@@ -145,7 +145,7 @@ ol.format.OSMXML.readTag_ = function(node, objectStack) {
   goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT);
   goog.asserts.assert(node.localName == 'tag');
   var values = /** @type {Object} */ (objectStack[objectStack.length - 1]);
-  goog.object.set(values.tags, node.getAttribute('k'), node.getAttribute('v'));
+  values.tags[node.getAttribute('k')] = node.getAttribute('v');
 };
 
 
@@ -234,19 +234,3 @@ ol.format.OSMXML.prototype.readFeaturesFromNode = function(node, opt_options) {
  * @api stable
  */
 ol.format.OSMXML.prototype.readProjection;
-
-
-/**
- * @inheritDoc
- */
-ol.format.OSMXML.prototype.readProjectionFromDocument = function(doc) {
-  return this.defaultDataProjection;
-};
-
-
-/**
- * @inheritDoc
- */
-ol.format.OSMXML.prototype.readProjectionFromNode = function(node) {
-  return this.defaultDataProjection;
-};

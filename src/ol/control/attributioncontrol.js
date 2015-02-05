@@ -69,32 +69,33 @@ ol.control.Attribution = function(opt_options) {
   var tipLabel = goog.isDef(options.tipLabel) ?
       options.tipLabel : 'Attributions';
 
-  /**
-   * @private
-   * @type {string}
-   */
-  this.collapseLabel_ = goog.isDef(options.collapseLabel) ?
+  var collapseLabel = goog.isDef(options.collapseLabel) ?
       options.collapseLabel : '\u00BB';
 
   /**
    * @private
-   * @type {string}
+   * @type {Node}
    */
-  this.label_ = goog.isDef(options.label) ? options.label : 'i';
-  var label = goog.dom.createDom(goog.dom.TagName.SPAN, {},
-      (this.collapsible_ && !this.collapsed_) ?
-      this.collapseLabel_ : this.label_);
+  this.collapseLabel_ = /** @type {Node} */ (goog.isString(collapseLabel) ?
+      goog.dom.createDom(goog.dom.TagName.SPAN, {}, collapseLabel) :
+      collapseLabel);
 
+  var label = goog.isDef(options.label) ? options.label : 'i';
 
   /**
    * @private
-   * @type {Element}
+   * @type {Node}
    */
-  this.labelSpan_ = label;
+  this.label_ = /** @type {Node} */ (goog.isString(label) ?
+      goog.dom.createDom(goog.dom.TagName.SPAN, {}, label) :
+      label);
+
+  var activeLabel = (this.collapsible_ && !this.collapsed_) ?
+      this.collapseLabel_ : this.label_;
   var button = goog.dom.createDom(goog.dom.TagName.BUTTON, {
     'type': 'button',
     'title': tipLabel
-  }, this.labelSpan_);
+  }, activeLabel);
 
   goog.events.listen(button, goog.events.EventType.CLICK,
       this.handleClick_, false, this);
@@ -113,8 +114,12 @@ ol.control.Attribution = function(opt_options) {
   var element = goog.dom.createDom(goog.dom.TagName.DIV,
       cssClasses, this.ulElement_, button);
 
+  var render = goog.isDef(options.render) ?
+      options.render : ol.control.Attribution.render;
+
   goog.base(this, {
     element: element,
+    render: render,
     target: options.target
   });
 
@@ -192,9 +197,11 @@ ol.control.Attribution.prototype.getSourceAttributions = function(frameState) {
 
 
 /**
- * @inheritDoc
+ * @param {ol.MapEvent} mapEvent Map event.
+ * @this {ol.control.Attribution}
+ * @api
  */
-ol.control.Attribution.prototype.handleMapPostrender = function(mapEvent) {
+ol.control.Attribution.render = function(mapEvent) {
   this.updateElement_(mapEvent.frameState);
 };
 
@@ -335,8 +342,11 @@ ol.control.Attribution.prototype.handleClick_ = function(event) {
  */
 ol.control.Attribution.prototype.handleToggle_ = function() {
   goog.dom.classlist.toggle(this.element, 'ol-collapsed');
-  goog.dom.setTextContent(this.labelSpan_,
-      (this.collapsed_) ? this.collapseLabel_ : this.label_);
+  if (this.collapsed_) {
+    goog.dom.replaceNode(this.collapseLabel_, this.label_);
+  } else {
+    goog.dom.replaceNode(this.label_, this.collapseLabel_);
+  }
   this.collapsed_ = !this.collapsed_;
 };
 

@@ -53,11 +53,12 @@
 .ol-rotate {
   top: .5em;
   right: .5em;
-  transition: opacity .25s;
+  transition: opacity .25s linear, visibility 0s linear;
 }
 .ol-rotate.ol-hidden {
   opacity: 0;
-  display: none;
+  visibility: hidden;
+  transition: opacity .25s linear, visibility 0s linear .25s;
 }
 .ol-zoom-extent {
   top: 4.643em;
@@ -99,7 +100,6 @@
 }
 .ol-compass {
   display: block;
-  font-family: Arial;
   font-weight: normal;
   font-size: 1.2em;
 }
@@ -115,20 +115,11 @@
   background-color: #4c6079;
   background-color: rgba(0,60,136,0.7);
 }
-.ol-zoom-extent button:after {
-    content: "E";
-}
 .ol-zoom .ol-zoom-in {
   border-radius: 2px 2px 0 0;
 }
 .ol-zoom .ol-zoom-out {
   border-radius: 0 0 2px 2px;
-}
-button.ol-full-screen-false:after {
-  content: "\2194";
-}
-button.ol-full-screen-true:after {
-  content: "\00d7";
 }
 
 
@@ -146,7 +137,6 @@ button.ol-full-screen-true:after {
   line-height: 1.375em;
   color: #000;
   text-shadow: 0 0 2px #fff;
-  max-width: calc(100% - 3.6em);
 }
 .ol-attribution li {
   display: inline;
@@ -220,12 +210,6 @@ button.ol-full-screen-true:after {
 }
 .ol-touch .ol-zoomslider-thumb {
   width: 1.8em;
-}
-
-.ol-control button,
-.ol-attribution,
-.ol-scale-line-inner {
-  font-family: 'Lucida Grande',Verdana,Geneva,Lucida,Arial,Helvetica,sans-serif;
 }
 
 .ol-overviewmap {

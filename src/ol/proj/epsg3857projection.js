@@ -80,6 +80,7 @@ ol.proj.EPSG3857.CODES = [
   'EPSG:102113',
   'EPSG:900913',
   'urn:ogc:def:crs:EPSG:6.18:3:3857',
+  'urn:ogc:def:crs:EPSG::3857',
   'http://www.opengis.net/gml/srs/epsg.xml#3857'
 ];
 

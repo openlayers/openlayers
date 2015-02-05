@@ -5,12 +5,17 @@ goog.require('ol.Feature');
 goog.require('ol.format.Feature');
 goog.require('ol.format.TextFeature');
 goog.require('ol.geom.LineString');
+goog.require('ol.geom.flat.flip');
 goog.require('ol.geom.flat.inflate');
 goog.require('ol.proj');
 
 
 
 /**
+ * @classdesc
+ * Feature format for reading and writing data in the Encoded
+ * Polyline Algorithm Format.
+ *
  * @constructor
  * @extends {ol.format.TextFeature}
  * @param {olx.format.PolylineOptions=} opt_options
@@ -250,7 +255,8 @@ ol.format.Polyline.encodeUnsignedInteger = function(num) {
 
 
 /**
- * Read the feature from the Polyline source.
+ * Read the feature from the Polyline source. The coordinates are assumed to be
+ * in two dimensions and in latitude, longitude order.
  *
  * @function
  * @param {ArrayBuffer|Document|Node|Object|string} source Source.
@@ -311,6 +317,8 @@ ol.format.Polyline.prototype.readGeometry;
 ol.format.Polyline.prototype.readGeometryFromText =
     function(text, opt_options) {
   var flatCoordinates = ol.format.Polyline.decodeDeltas(text, 2, this.factor_);
+  ol.geom.flat.flip.flipXY(
+      flatCoordinates, 0, flatCoordinates.length, 2, flatCoordinates);
   var coordinates = ol.geom.flat.inflate.coordinates(
       flatCoordinates, 0, flatCoordinates.length, 2);
 
@@ -330,14 +338,6 @@ ol.format.Polyline.prototype.readGeometryFromText =
  * @api stable
  */
 ol.format.Polyline.prototype.readProjection;
-
-
-/**
- * @inheritDoc
- */
-ol.format.Polyline.prototype.readProjectionFromText = function(text) {
-  return this.defaultDataProjection;
-};
 
 
 /**
@@ -387,5 +387,7 @@ ol.format.Polyline.prototype.writeGeometryText =
           geometry, true, this.adaptOptions(opt_options)));
   var flatCoordinates = geometry.getFlatCoordinates();
   var stride = geometry.getStride();
+  ol.geom.flat.flip.flipXY(
+      flatCoordinates, 0, flatCoordinates.length, stride, flatCoordinates);
   return ol.format.Polyline.encodeDeltas(flatCoordinates, stride, this.factor_);
 };

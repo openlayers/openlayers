@@ -83,6 +83,12 @@ ol.renderer.dom.VectorLayer = function(mapRenderer, vectorLayer) {
    */
   this.transform_ = goog.vec.Mat4.createNumber();
 
+  /**
+   * @private
+   * @type {goog.vec.Mat4.Number}
+   */
+  this.elementTransform_ = goog.vec.Mat4.createNumber();
+
 };
 goog.inherits(ol.renderer.dom.VectorLayer, ol.renderer.dom.Layer);
 
@@ -97,22 +103,36 @@ ol.renderer.dom.VectorLayer.prototype.composeFrame =
   goog.asserts.assertInstanceof(vectorLayer, ol.layer.Vector);
 
   var viewState = frameState.viewState;
+  var viewCenter = viewState.center;
   var viewRotation = viewState.rotation;
+  var viewResolution = viewState.resolution;
   var pixelRatio = frameState.pixelRatio;
+  var viewWidth = frameState.size[0];
+  var viewHeight = frameState.size[1];
+  var imageWidth = viewWidth * pixelRatio;
+  var imageHeight = viewHeight * pixelRatio;
 
   var transform = ol.vec.Mat4.makeTransform2D(this.transform_,
-      pixelRatio * frameState.size[0] / 2,
-      pixelRatio * frameState.size[1] / 2,
-      pixelRatio / viewState.resolution,
-      -pixelRatio / viewState.resolution,
-      -viewState.rotation,
-      -viewState.center[0], -viewState.center[1]);
+      pixelRatio * viewWidth / 2,
+      pixelRatio * viewHeight / 2,
+      pixelRatio / viewResolution,
+      -pixelRatio / viewResolution,
+      -viewRotation,
+      -viewCenter[0], -viewCenter[1]);
 
   var context = this.context_;
 
   // Clear the canvas and set the correct size
-  context.canvas.width = frameState.size[0];
-  context.canvas.height = frameState.size[1];
+  context.canvas.width = imageWidth;
+  context.canvas.height = imageHeight;
+
+  var elementTransform = ol.vec.Mat4.makeTransform2D(this.elementTransform_,
+      0, 0,
+      1 / pixelRatio, 1 / pixelRatio,
+      0,
+      -(imageWidth - viewWidth) / 2 * pixelRatio,
+      -(imageHeight - viewHeight) / 2 * pixelRatio);
+  ol.dom.transformElement2D(context.canvas, elementTransform, 6);
 
   this.dispatchEvent_(ol.render.EventType.PRECOMPOSE, frameState, transform);
 
@@ -121,9 +141,8 @@ ol.renderer.dom.VectorLayer.prototype.composeFrame =
   if (!goog.isNull(replayGroup) && !replayGroup.isEmpty()) {
 
     context.globalAlpha = layerState.opacity;
-    replayGroup.replay(
-        context, frameState.extent, pixelRatio, transform,
-        viewRotation, frameState.skippedFeatureUids);
+    replayGroup.replay(context, pixelRatio, transform, viewRotation,
+        frameState.skippedFeatureUids);
 
     this.dispatchEvent_(ol.render.EventType.RENDER, frameState, transform);
   }
@@ -157,26 +176,23 @@ ol.renderer.dom.VectorLayer.prototype.dispatchEvent_ =
 /**
  * @inheritDoc
  */
-ol.renderer.dom.VectorLayer.prototype.forEachFeatureAtPixel =
+ol.renderer.dom.VectorLayer.prototype.forEachFeatureAtCoordinate =
     function(coordinate, frameState, callback, thisArg) {
   if (goog.isNull(this.replayGroup_)) {
     return undefined;
   } else {
-    var extent = frameState.extent;
     var resolution = frameState.viewState.resolution;
     var rotation = frameState.viewState.rotation;
     var layer = this.getLayer();
     /** @type {Object.<string, boolean>} */
     var features = {};
-    return this.replayGroup_.forEachGeometryAtPixel(extent, resolution,
-        rotation, coordinate, frameState.skippedFeatureUids,
+    return this.replayGroup_.forEachFeatureAtCoordinate(coordinate,
+        resolution, rotation, frameState.skippedFeatureUids,
         /**
-         * @param {ol.geom.Geometry} geometry Geometry.
-         * @param {Object} data Data.
+         * @param {ol.Feature} feature Feature.
          * @return {?} Callback result.
          */
-        function(geometry, data) {
-          var feature = /** @type {ol.Feature} */ (data);
+        function(feature) {
           goog.asserts.assert(goog.isDef(feature));
           var key = goog.getUid(feature).toString();
           if (!(key in features)) {
@@ -193,7 +209,7 @@ ol.renderer.dom.VectorLayer.prototype.forEachFeatureAtPixel =
  * @param {goog.events.Event} event Image style change event.
  * @private
  */
-ol.renderer.dom.VectorLayer.prototype.handleImageChange_ =
+ol.renderer.dom.VectorLayer.prototype.handleStyleImageChange_ =
     function(event) {
   this.renderIfReadyAndVisible();
 };
@@ -213,7 +229,8 @@ ol.renderer.dom.VectorLayer.prototype.prepareFrame =
       frameState.attributions, vectorSource.getAttributions());
   this.updateLogos(frameState, vectorSource);
 
-  if (!this.dirty_ && (frameState.viewHints[ol.ViewHint.ANIMATING] ||
+  if (!this.dirty_ && (!vectorLayer.getUpdateWhileAnimating() &&
+      frameState.viewHints[ol.ViewHint.ANIMATING] ||
       frameState.viewHints[ol.ViewHint.INTERACTING])) {
     return true;
   }
@@ -224,26 +241,23 @@ ol.renderer.dom.VectorLayer.prototype.prepareFrame =
   var resolution = viewState.resolution;
   var pixelRatio = frameState.pixelRatio;
   var vectorLayerRevision = vectorLayer.getRevision();
+  var vectorLayerRenderBuffer = vectorLayer.getRenderBuffer();
   var vectorLayerRenderOrder = vectorLayer.getRenderOrder();
+
   if (!goog.isDef(vectorLayerRenderOrder)) {
     vectorLayerRenderOrder = ol.renderer.vector.defaultOrder;
   }
+
+  var extent = ol.extent.buffer(frameStateExtent,
+      vectorLayerRenderBuffer * resolution);
 
   if (!this.dirty_ &&
       this.renderedResolution_ == resolution &&
       this.renderedRevision_ == vectorLayerRevision &&
       this.renderedRenderOrder_ == vectorLayerRenderOrder &&
-      ol.extent.containsExtent(this.renderedExtent_, frameStateExtent)) {
+      ol.extent.containsExtent(this.renderedExtent_, extent)) {
     return true;
   }
-
-  var extent = this.renderedExtent_;
-  var xBuffer = ol.extent.getWidth(frameStateExtent) / 4;
-  var yBuffer = ol.extent.getHeight(frameStateExtent) / 4;
-  extent[0] = frameStateExtent[0] - xBuffer;
-  extent[1] = frameStateExtent[1] - yBuffer;
-  extent[2] = frameStateExtent[2] + xBuffer;
-  extent[3] = frameStateExtent[3] + yBuffer;
 
   // FIXME dispose of old replayGroup in post render
   goog.dispose(this.replayGroup_);
@@ -254,7 +268,7 @@ ol.renderer.dom.VectorLayer.prototype.prepareFrame =
   var replayGroup =
       new ol.render.canvas.ReplayGroup(
           ol.renderer.vector.getTolerance(resolution, pixelRatio), extent,
-          resolution);
+          resolution, vectorLayer.getRenderBuffer());
   vectorSource.loadFeatures(extent, resolution, projection);
   var renderFeature =
       /**
@@ -295,6 +309,7 @@ ol.renderer.dom.VectorLayer.prototype.prepareFrame =
   this.renderedResolution_ = resolution;
   this.renderedRevision_ = vectorLayerRevision;
   this.renderedRenderOrder_ = vectorLayerRenderOrder;
+  this.renderedExtent_ = extent;
   this.replayGroup_ = replayGroup;
 
   return true;
@@ -319,7 +334,7 @@ ol.renderer.dom.VectorLayer.prototype.renderFeature =
     loading = ol.renderer.vector.renderFeature(
         replayGroup, feature, styles[i],
         ol.renderer.vector.getSquaredTolerance(resolution, pixelRatio),
-        feature, this.handleImageChange_, this) || loading;
+        this.handleStyleImageChange_, this) || loading;
   }
   return loading;
 };

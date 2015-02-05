@@ -92,6 +92,12 @@ oli.MapBrowserEvent.prototype.originalEvent;
 oli.MapBrowserEvent.prototype.pixel;
 
 
+/**
+ * @type {boolean}
+ */
+oli.MapBrowserEvent.prototype.dragging;
+
+
 
 /**
  * @interface
@@ -130,11 +136,11 @@ oli.control.Control = function() {};
 oli.control.Control.prototype.setMap = function(map) {};
 
 
+
 /**
  * @type {Object}
  */
 oli.interaction;
-
 
 
 /**

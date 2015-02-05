@@ -22,7 +22,11 @@ goog.require('ol.interaction.Pointer');
  */
 ol.interaction.DragPan = function(opt_options) {
 
-  goog.base(this);
+  goog.base(this, {
+    handleDownEvent: ol.interaction.DragPan.handleDownEvent_,
+    handleDragEvent: ol.interaction.DragPan.handleDragEvent_,
+    handleUpEvent: ol.interaction.DragPan.handleUpEvent_
+  });
 
   var options = goog.isDef(opt_options) ? opt_options : {};
 
@@ -47,8 +51,8 @@ ol.interaction.DragPan = function(opt_options) {
    * @private
    * @type {ol.events.ConditionType}
    */
-  this.condition_ = goog.isDef(opt_options.condition) ?
-      opt_options.condition : ol.events.condition.noModifierKeys;
+  this.condition_ = goog.isDef(options.condition) ?
+      options.condition : ol.events.condition.noModifierKeys;
 
   /**
    * @private
@@ -61,9 +65,11 @@ goog.inherits(ol.interaction.DragPan, ol.interaction.Pointer);
 
 
 /**
- * @inheritDoc
+ * @param {ol.MapBrowserPointerEvent} mapBrowserEvent Event.
+ * @this {ol.interaction.DragPan}
+ * @private
  */
-ol.interaction.DragPan.prototype.handlePointerDrag = function(mapBrowserEvent) {
+ol.interaction.DragPan.handleDragEvent_ = function(mapBrowserEvent) {
   goog.asserts.assert(this.targetPointers.length >= 1);
   var centroid =
       ol.interaction.Pointer.centroid(this.targetPointers);
@@ -89,9 +95,12 @@ ol.interaction.DragPan.prototype.handlePointerDrag = function(mapBrowserEvent) {
 
 
 /**
- * @inheritDoc
+ * @param {ol.MapBrowserPointerEvent} mapBrowserEvent Event.
+ * @return {boolean} Stop drag sequence?
+ * @this {ol.interaction.DragPan}
+ * @private
  */
-ol.interaction.DragPan.prototype.handlePointerUp = function(mapBrowserEvent) {
+ol.interaction.DragPan.handleUpEvent_ = function(mapBrowserEvent) {
   var map = mapBrowserEvent.map;
   var view = map.getView();
   if (this.targetPointers.length === 0) {
@@ -121,9 +130,12 @@ ol.interaction.DragPan.prototype.handlePointerUp = function(mapBrowserEvent) {
 
 
 /**
- * @inheritDoc
+ * @param {ol.MapBrowserPointerEvent} mapBrowserEvent Event.
+ * @return {boolean} Start drag sequence?
+ * @this {ol.interaction.DragPan}
+ * @private
  */
-ol.interaction.DragPan.prototype.handlePointerDown = function(mapBrowserEvent) {
+ol.interaction.DragPan.handleDownEvent_ = function(mapBrowserEvent) {
   if (this.targetPointers.length > 0 && this.condition_(mapBrowserEvent)) {
     var map = mapBrowserEvent.map;
     var view = map.getView();
@@ -148,3 +160,9 @@ ol.interaction.DragPan.prototype.handlePointerDown = function(mapBrowserEvent) {
     return false;
   }
 };
+
+
+/**
+ * @inheritDoc
+ */
+ol.interaction.DragPan.prototype.shouldStopEvent = goog.functions.FALSE;

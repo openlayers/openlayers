@@ -2,6 +2,7 @@ goog.provide('ol.tilegrid.TileGrid');
 
 goog.require('goog.array');
 goog.require('goog.asserts');
+goog.require('goog.functions');
 goog.require('ol');
 goog.require('ol.Coordinate');
 goog.require('ol.TileCoord');
@@ -101,12 +102,16 @@ ol.tilegrid.TileGrid.tmpTileCoord_ = [0, 0, 0];
 
 
 /**
+ * Returns the identity function. May be overridden in subclasses.
  * @param {{extent: (ol.Extent|undefined),
  *          wrapX: (boolean|undefined)}=} opt_options Options.
  * @return {function(ol.TileCoord, ol.proj.Projection, ol.TileCoord=):
  *     ol.TileCoord} Tile coordinate transform.
  */
-ol.tilegrid.TileGrid.prototype.createTileCoordTransform = goog.abstractMethod;
+ol.tilegrid.TileGrid.prototype.createTileCoordTransform =
+    function(opt_options) {
+  return goog.functions.identity;
+};
 
 
 /**
@@ -300,6 +305,7 @@ ol.tilegrid.TileGrid.prototype.getTileCoordExtent =
  * @param {number} resolution Resolution.
  * @param {ol.TileCoord=} opt_tileCoord Destination ol.TileCoord object.
  * @return {ol.TileCoord} Tile coordinate.
+ * @api
  */
 ol.tilegrid.TileGrid.prototype.getTileCoordForCoordAndResolution = function(
     coordinate, resolution, opt_tileCoord) {
@@ -346,6 +352,7 @@ ol.tilegrid.TileGrid.prototype.getTileCoordForXYAndResolution_ = function(
  * @param {number} z Z.
  * @param {ol.TileCoord=} opt_tileCoord Destination ol.TileCoord object.
  * @return {ol.TileCoord} Tile coordinate.
+ * @api
  */
 ol.tilegrid.TileGrid.prototype.getTileCoordForCoordAndZ =
     function(coordinate, z, opt_tileCoord) {

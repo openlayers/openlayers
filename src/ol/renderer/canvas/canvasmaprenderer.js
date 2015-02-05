@@ -104,24 +104,26 @@ ol.renderer.canvas.Map.prototype.dispatchComposeEvent_ =
     var viewState = frameState.viewState;
     var resolution = viewState.resolution;
     var rotation = viewState.rotation;
+
     ol.vec.Mat4.makeTransform2D(this.transform_,
-        this.canvas_.width / 2,
-        this.canvas_.height / 2,
-        pixelRatio / viewState.resolution,
-        -pixelRatio / viewState.resolution,
-        -viewState.rotation,
+        this.canvas_.width / 2, this.canvas_.height / 2,
+        pixelRatio / resolution, -pixelRatio / resolution,
+        -rotation,
         -viewState.center[0], -viewState.center[1]);
+
+    var tolerance = ol.renderer.vector.getTolerance(resolution, pixelRatio);
+    var replayGroup = new ol.render.canvas.ReplayGroup(tolerance, extent,
+        resolution);
+
     var vectorContext = new ol.render.canvas.Immediate(context, pixelRatio,
         extent, this.transform_, rotation);
-    var replayGroup = new ol.render.canvas.ReplayGroup(
-        ol.renderer.vector.getTolerance(resolution, pixelRatio), extent,
-        resolution);
     var composeEvent = new ol.render.Event(type, map, vectorContext,
         replayGroup, frameState, context, null);
     map.dispatchEvent(composeEvent);
+
     replayGroup.finish();
     if (!replayGroup.isEmpty()) {
-      replayGroup.replay(context, extent, pixelRatio, this.transform_,
+      replayGroup.replay(context, pixelRatio, this.transform_,
           rotation, {});
     }
     vectorContext.flush();

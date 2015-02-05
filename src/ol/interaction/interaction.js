@@ -3,7 +3,6 @@
 goog.provide('ol.interaction.Interaction');
 goog.provide('ol.interaction.InteractionProperty');
 
-goog.require('goog.asserts');
 goog.require('ol.MapBrowserEvent');
 goog.require('ol.Object');
 goog.require('ol.animation');
@@ -32,10 +31,11 @@ ol.interaction.InteractionProperty = {
  * vectors and so are visible on the screen.
  *
  * @constructor
+ * @param {olx.interaction.InteractionOptions} options Options.
  * @extends {ol.Object}
  * @api
  */
-ol.interaction.Interaction = function() {
+ol.interaction.Interaction = function(options) {
 
   goog.base(this);
 
@@ -46,6 +46,11 @@ ol.interaction.Interaction = function() {
   this.map_ = null;
 
   this.setActive(true);
+
+  /**
+   * @type {function(ol.MapBrowserEvent):boolean}
+   */
+  this.handleEvent = options.handleEvent;
 
 };
 goog.inherits(ol.interaction.Interaction, ol.Object);
@@ -73,16 +78,6 @@ goog.exportProperty(
 ol.interaction.Interaction.prototype.getMap = function() {
   return this.map_;
 };
-
-
-/**
- * @param {ol.MapBrowserEvent} mapBrowserEvent Map browser event.
- * @return {boolean} Whether the map browser event should continue
- *     through the chain of interactions. false means stop, true
- *     means continue.
- */
-ol.interaction.Interaction.prototype.handleMapBrowserEvent =
-    goog.abstractMethod;
 
 
 /**

@@ -17,7 +17,10 @@ describe('ol.format.Polyline', function() {
     flatPoints = [-120.20000, 38.50000,
                   -120.95000, 40.70000,
                   -126.45300, 43.25200];
-    encodedFlatPoints = '~ps|U_p~iFnnqC_ulLvxq`@_mqN';
+    flippedFlatPoints = [38.50000, -120.20000,
+                         40.70000, -120.95000,
+                         43.25200, -126.45300];
+    encodedFlatPoints = '_p~iF~ps|U_ulLnnqC_mqNvxq`@';
     points3857 = [
       ol.proj.transform([-120.20000, 38.50000], 'EPSG:4326', 'EPSG:3857'),
       ol.proj.transform([-120.95000, 40.70000], 'EPSG:4326', 'EPSG:3857'),
@@ -37,12 +40,18 @@ describe('ol.format.Polyline', function() {
   // Reset testing data
   beforeEach(resetTestingData);
 
+  describe('#readProjectionFromText', function() {
+    it('returns the default projection', function() {
+      var projection = format.readProjectionFromText(encodedFlatPoints);
+      expect(projection).to.eql(ol.proj.get('EPSG:4326'));
+    });
+  });
 
   describe('encodeDeltas', function() {
     it('returns expected value', function() {
       var encodeDeltas = ol.format.Polyline.encodeDeltas;
 
-      expect(encodeDeltas(flatPoints, 2)).to.eql(encodedFlatPoints);
+      expect(encodeDeltas(flippedFlatPoints, 2)).to.eql(encodedFlatPoints);
     });
   });
 
@@ -50,7 +59,7 @@ describe('ol.format.Polyline', function() {
     it('returns expected value', function() {
       var decodeDeltas = ol.format.Polyline.decodeDeltas;
 
-      expect(decodeDeltas(encodedFlatPoints, 2)).to.eql(flatPoints);
+      expect(decodeDeltas(encodedFlatPoints, 2)).to.eql(flippedFlatPoints);
     });
   });
 
