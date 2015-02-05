@@ -1,6 +1,7 @@
 goog.provide('ol.interaction.PinchRotate');
 
 goog.require('goog.asserts');
+goog.require('goog.functions');
 goog.require('goog.style');
 goog.require('ol');
 goog.require('ol.Coordinate');

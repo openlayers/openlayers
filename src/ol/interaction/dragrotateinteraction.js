@@ -1,6 +1,5 @@
 goog.provide('ol.interaction.DragRotate');
 
-goog.require('goog.asserts');
 goog.require('ol');
 goog.require('ol.ViewHint');
 goog.require('ol.events.ConditionType');

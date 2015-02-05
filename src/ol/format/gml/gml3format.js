@@ -3,7 +3,6 @@ goog.provide('ol.format.GML3');
 
 goog.require('goog.array');
 goog.require('goog.asserts');
-goog.require('goog.dom');
 goog.require('goog.dom.NodeType');
 goog.require('goog.object');
 goog.require('ol.Feature');
