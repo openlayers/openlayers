@@ -1135,6 +1135,18 @@ ol.format.KML.outerBoundaryIsParser_ = function(node, objectStack) {
  * @param {Array.<*>} objectStack Object stack.
  * @private
  */
+ol.format.KML.LinkParser_ = function(node, objectStack) {
+  goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT);
+  goog.asserts.assert(node.localName == 'Link');
+  ol.xml.parseNode(ol.format.KML.LINK_PARSERS_, node, objectStack);
+};
+
+
+/**
+ * @param {Node} node Node.
+ * @param {Array.<*>} objectStack Object stack.
+ * @private
+ */
 ol.format.KML.whenParser_ = function(node, objectStack) {
   goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT);
   goog.asserts.assert(node.localName == 'when');
@@ -1328,6 +1340,35 @@ ol.format.KML.MULTI_GEOMETRY_PARSERS_ = ol.xml.makeParsersNS(
 ol.format.KML.GX_MULTITRACK_GEOMETRY_PARSERS_ = ol.xml.makeParsersNS(
     ol.format.KML.GX_NAMESPACE_URIS_, {
       'Track': ol.xml.makeArrayPusher(ol.format.KML.readGxTrack_)
+    });
+
+
+/**
+ * @const
+ * @type {Object.<string, Object.<string, ol.xml.Parser>>}
+ * @private
+ */
+ol.format.KML.NETWORK_LINK_PARSERS_ = ol.xml.makeParsersNS(
+    ol.format.KML.NAMESPACE_URIS_, {
+      'ExtendedData': ol.format.KML.ExtendedDataParser_,
+      'Link': ol.format.KML.LinkParser_,
+      'address': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
+      'description': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
+      'name': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
+      'open': ol.xml.makeObjectPropertySetter(ol.format.XSD.readBoolean),
+      'phoneNumber': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
+      'visibility': ol.xml.makeObjectPropertySetter(ol.format.XSD.readBoolean)
+    });
+
+
+/**
+ * @const
+ * @type {Object.<string, Object.<string, ol.xml.Parser>>}
+ * @private
+ */
+ol.format.KML.LINK_PARSERS_ = ol.xml.makeParsersNS(
+    ol.format.KML.NAMESPACE_URIS_, {
+      'href': ol.xml.makeObjectPropertySetter(ol.format.KML.readURI_)
     });
 
 
@@ -1708,6 +1749,71 @@ ol.format.KML.prototype.readNameFromNode = function(node) {
     }
   }
   return undefined;
+};
+
+
+/**
+ * @param {Document|Node|string} source Souce.
+ * @return {Array.<Object>} Network links.
+ * @api
+ */
+ol.format.KML.prototype.readNetworkLinks = function(source) {
+  var networkLinks = [];
+  if (ol.xml.isDocument(source)) {
+    goog.array.extend(networkLinks, this.readNetworkLinksFromDocument(
+        /** @type {Document} */ (source)));
+  } else if (ol.xml.isNode(source)) {
+    goog.array.extend(networkLinks, this.readNetworkLinksFromNode(
+        /** @type {Node} */ (source)));
+  } else if (goog.isString(source)) {
+    var doc = ol.xml.parse(source);
+    goog.array.extend(networkLinks, this.readNetworkLinksFromDocument(doc));
+  } else {
+    goog.asserts.fail();
+  }
+  return networkLinks;
+};
+
+
+/**
+ * @param {Document} doc Document.
+ * @return {Array.<Object>} Network links.
+ */
+ol.format.KML.prototype.readNetworkLinksFromDocument = function(doc) {
+  var n, networkLinks = [];
+  for (n = doc.firstChild; !goog.isNull(n); n = n.nextSibling) {
+    if (n.nodeType == goog.dom.NodeType.ELEMENT) {
+      goog.array.extend(networkLinks, this.readNetworkLinksFromNode(n));
+    }
+  }
+  return networkLinks;
+};
+
+
+/**
+ * @param {Node} node Node.
+ * @return {Array.<Object>} Network links.
+ */
+ol.format.KML.prototype.readNetworkLinksFromNode = function(node) {
+  var n, networkLinks = [];
+  for (n = node.firstElementChild; !goog.isNull(n); n = n.nextElementSibling) {
+    if (goog.array.contains(ol.format.KML.NAMESPACE_URIS_, n.namespaceURI) &&
+        n.localName == 'NetworkLink') {
+      var obj = ol.xml.pushParseAndPop({}, ol.format.KML.NETWORK_LINK_PARSERS_,
+          n, []);
+      networkLinks.push(obj);
+    }
+  }
+  for (n = node.firstElementChild; !goog.isNull(n); n = n.nextElementSibling) {
+    var localName = ol.xml.getLocalName(n);
+    if (goog.array.contains(ol.format.KML.NAMESPACE_URIS_, n.namespaceURI) &&
+        (localName == 'Document' ||
+         localName == 'Folder' ||
+         localName == 'kml')) {
+      goog.array.extend(networkLinks, this.readNetworkLinksFromNode(n));
+    }
+  }
+  return networkLinks;
 };
 
 
