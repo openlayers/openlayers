@@ -5,7 +5,7 @@ module.exports = function(config) {
   config.set({
 
     // base path that will be used to resolve all patterns (eg. files, exclude)
-    basePath: '',
+    basePath: "",
 
 
     // frameworks to use
@@ -18,16 +18,18 @@ module.exports = function(config) {
         // closure base
         {pattern: '../closure-library/closure/goog/base.js'},
 
-        // included files - tests
+        {pattern: '../closure-library/closure/goog/deps.js'},
+        {pattern: '../plugins/popup/dist/webmappping-popup.deps.js'},
+        {pattern: '../dist/webmapping-lib.deps.js'},
+        //
         {pattern: 'test/**/*.js' },
+        //{pattern: '../src/main.js'}
+        //{pattern: 'ol.ext/rbush.js'},
+        //{pattern: 'src/**/*.js'},
+        //{pattern: '../plugins/popup/src/**/*.js'},
+        //{pattern: '../src/**/*.js'},
+        //
 
-        // these are only watched and served
-        {pattern: 'src/**/*.js', included: false},
-
-        // external deps
-        {pattern: '../closure-library/closure/goog/deps.js', included: false, served: false},
-        {pattern: '../closure-library/closure/goog/**/*.js', included: false},
-        {pattern: 'ol.ext/*.js'}
 
     ],
 
@@ -41,12 +43,17 @@ module.exports = function(config) {
     // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
     preprocessors: {
         // tests are preprocessed for dependencies (closure) and for iits
-        'test/**/*.js': ['closure', 'closure-iit'],
-        // source files are preprocessed for dependencies
+        'test/**/*.js': ['closure'],
+        //
+        //// source files are preprocessed for dependencies
+        //'ol.ext/rbush.js': ['closure'],
         'src/**/*.js': ['closure'],
-        'ol.ext/*.js': ['closure'],
-        // external deps
+        //'../plugins/popup/src/**/*.js':['closure'],
+        //'../src/**/*.js':['closure'],
+        //
+        //// external deps
         '../closure-library/closure/goog/deps.js': ['closure-deps'],
+        '../plugins/popup/dist/webmappping-popup.deps.js': ['closure-deps'],
         '../dist/webmapping-lib.deps.js' : ['closure-deps']
 
     },
@@ -72,7 +79,7 @@ module.exports = function(config) {
 
 
     // enable / disable watching file and executing tests whenever any file changes
-    autoWatch: true,
+    autoWatch: false,
 
 
     // start these browsers
