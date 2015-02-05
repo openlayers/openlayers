@@ -1,6 +1,7 @@
 goog.provide('ol.interaction.PinchZoom');
 
 goog.require('goog.asserts');
+goog.require('goog.functions');
 goog.require('goog.style');
 goog.require('ol.Coordinate');
 goog.require('ol.ViewHint');

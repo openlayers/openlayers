@@ -253,6 +253,15 @@ ol.source.ImageWMS.prototype.getImage =
 
 
 /**
+ * @return {ol.ImageLoadFunctionType} The image load function.
+ * @api
+ */
+ol.source.ImageWMS.prototype.getImageLoadFunction = function() {
+  return this.imageLoadFunction_;
+};
+
+
+/**
  * @param {ol.Extent} extent Extent.
  * @param {ol.Size} size Size.
  * @param {number} pixelRatio Pixel ratio.
@@ -316,6 +325,18 @@ ol.source.ImageWMS.prototype.getRequestUrl_ =
  */
 ol.source.ImageWMS.prototype.getUrl = function() {
   return this.url_;
+};
+
+
+/**
+ * @param {ol.ImageLoadFunctionType} imageLoadFunction Image load function.
+ * @api
+ */
+ol.source.ImageWMS.prototype.setImageLoadFunction = function(
+    imageLoadFunction) {
+  this.image_ = null;
+  this.imageLoadFunction_ = imageLoadFunction;
+  this.changed();
 };
 
 

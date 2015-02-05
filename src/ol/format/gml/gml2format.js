@@ -1,7 +1,6 @@
 goog.provide('ol.format.GML2');
 
 goog.require('goog.asserts');
-goog.require('goog.dom');
 goog.require('goog.dom.NodeType');
 goog.require('ol.extent');
 goog.require('ol.format.GML');
