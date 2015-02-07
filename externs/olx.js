@@ -6550,6 +6550,13 @@ olx.FrameState.prototype.pixelRatio;
 
 
 /**
+ * @type {ol.TileQueue}
+ * @api
+ */
+olx.FrameState.prototype.tileQueue;
+
+
+/**
  * @type {number}
  * @api
  */
