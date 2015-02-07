@@ -13,6 +13,7 @@ goog.require('ol.source.Source');
 goog.require('ol.source.State');
 goog.require('ol.source.Tile');
 goog.require('ol.tilecoord');
+goog.require('ol.vec.Mat4');
 
 
 
@@ -67,7 +68,10 @@ ol.renderer.Layer.prototype.forEachFeatureAtCoordinate = goog.nullFunction;
  */
 ol.renderer.Layer.prototype.forEachLayerAtPixel =
     function(pixel, frameState, callback, thisArg) {
-  var coordinate = this.getMap().getCoordinateFromPixel(pixel);
+  var coordinate = pixel.slice();
+  ol.vec.Mat4.multVec2(
+      frameState.pixelToCoordinateMatrix, coordinate, coordinate);
+
   var hasFeature = this.forEachFeatureAtCoordinate(
       coordinate, frameState, goog.functions.TRUE, this);
 
