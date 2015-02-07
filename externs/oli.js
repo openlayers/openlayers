@@ -269,6 +269,18 @@ oli.source.ImageEvent.prototype.image;
 /**
  * @interface
  */
+oli.source.RasterEvent = function() {};
+
+
+/**
+ * @type {number}
+ */
+oli.source.RasterEvent.prototype.resolution;
+
+
+/**
+ * @interface
+ */
 oli.source.TileEvent = function() {};
 
 
