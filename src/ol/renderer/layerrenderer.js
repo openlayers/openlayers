@@ -6,6 +6,7 @@ goog.require('goog.events');
 goog.require('goog.events.EventType');
 goog.require('goog.functions');
 goog.require('ol.ImageState');
+goog.require('ol.Observable');
 goog.require('ol.TileRange');
 goog.require('ol.TileState');
 goog.require('ol.layer.Layer');
@@ -19,7 +20,7 @@ goog.require('ol.vec.Mat4');
 
 /**
  * @constructor
- * @extends {goog.Disposable}
+ * @extends {ol.Observable}
  * @param {ol.renderer.Map} mapRenderer Map renderer.
  * @param {ol.layer.Layer} layer Layer.
  * @suppress {checkStructDictInheritance}
@@ -43,7 +44,7 @@ ol.renderer.Layer = function(mapRenderer, layer) {
 
 
 };
-goog.inherits(ol.renderer.Layer, goog.Disposable);
+goog.inherits(ol.renderer.Layer, ol.Observable);
 
 
 /**
