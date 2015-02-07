@@ -3,7 +3,21 @@ template: example.html
 title: Raster Source
 shortdesc: Demonstrates pixelwise operations with a raster source.
 docs: >
-  A dynamically generated raster source.
+  <p>
+    This example uses a <code>ol.source.Raster</code> to generate data
+    based on another source.  The raster source accepts any number of
+    input sources (tile or image based) and runs a pipeline of
+    operations on the input pixels.  The return from the final
+    operation is used as the data for the output source.
+  </p>
+  <p>
+    In this case, a single tiled source of imagery is used as input.
+    For each pixel, the Triangular Greenness Index
+    (<a href="http://digitalcommons.unl.edu/cgi/viewcontent.cgi?article=2161&context=usdaarsfacpub">TGI</a>)
+    is calculated from the input pixels.  A second operation colors
+    those pixels based on a threshold value (values above the
+    threshold are green and those below are transparent).
+  </p>
 tags: "raster, pixel"
 ---
 <div class="row-fluid">
