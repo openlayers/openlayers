@@ -103,15 +103,6 @@ ol.renderer.Layer.prototype.getLayer = function() {
 
 /**
  * @protected
- * @return {ol.Map} Map.
- */
-ol.renderer.Layer.prototype.getMap = function() {
-  return this.mapRenderer_.getMap();
-};
-
-
-/**
- * @protected
  * @return {ol.renderer.Map} Map renderer.
  */
 ol.renderer.Layer.prototype.getMapRenderer = function() {
