@@ -88,7 +88,9 @@ ol.renderer.canvas.ImageLayer.prototype.forEachLayerAtPixel =
   if (this.getLayer().getSource() instanceof ol.source.ImageVector) {
     // for ImageVector sources use the original hit-detection logic,
     // so that for example also transparent polygons are detected
-    var coordinate = this.getMap().getCoordinateFromPixel(pixel);
+    var coordinate = pixel.slice();
+    ol.vec.Mat4.multVec2(
+        frameState.pixelToCoordinateMatrix, coordinate, coordinate);
     var hasFeature = this.forEachFeatureAtCoordinate(
         coordinate, frameState, goog.functions.TRUE, this);
 
