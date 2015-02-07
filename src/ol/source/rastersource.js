@@ -117,8 +117,8 @@ ol.source.Raster.prototype.updateFrameState_ =
   var frameState = this.frameState_;
 
   var center = ol.extent.getCenter(extent);
-  var width = ol.extent.getWidth(extent) / resolution;
-  var height = ol.extent.getHeight(extent) / resolution;
+  var width = Math.round(ol.extent.getWidth(extent) / resolution);
+  var height = Math.round(ol.extent.getHeight(extent) / resolution);
 
   frameState.extent = extent;
   frameState.focus = ol.extent.getCenter(extent);
@@ -142,8 +142,8 @@ ol.source.Raster.prototype.getImage =
   var context = this.canvasContext_;
   var canvas = context.canvas;
 
-  var width = ol.extent.getWidth(extent) / resolution;
-  var height = ol.extent.getHeight(extent) / resolution;
+  var width = Math.round(ol.extent.getWidth(extent) / resolution);
+  var height = Math.round(ol.extent.getHeight(extent) / resolution);
 
   if (width !== canvas.width ||
       height !== canvas.height) {
@@ -178,8 +178,7 @@ ol.source.Raster.prototype.composeFrame_ = function(frameState) {
   for (var i = 0; i < len; ++i) {
     pixels[i] = [0, 0, 0, 0];
     imageDatas[i] = ol.source.Raster.getImageData_(
-        this.renderers_[i], canvas.width, canvas.height,
-        frameState, frameState.layerStatesArray[i]);
+        this.renderers_[i], frameState, frameState.layerStatesArray[i]);
   }
 
   var targetImageData = context.getImageData(0, 0, canvas.width, canvas.height);
@@ -234,15 +233,12 @@ ol.source.Raster.prototype.runOperations_ = function(pixels) {
 /**
  * Get image data from a renderer.
  * @param {ol.renderer.canvas.Layer} renderer Layer renderer.
- * @param {number} width Data width.
- * @param {number} height Data height.
  * @param {olx.FrameState} frameState The frame state.
  * @param {ol.layer.LayerState} layerState The layer state.
  * @return {ImageData} The image data.
  * @private
  */
-ol.source.Raster.getImageData_ =
-    function(renderer, width, height, frameState, layerState) {
+ol.source.Raster.getImageData_ = function(renderer, frameState, layerState) {
   renderer.prepareFrame(frameState, layerState);
   var canvas = renderer.getImage();
   var imageTransform = renderer.getImageTransform();
@@ -250,7 +246,7 @@ ol.source.Raster.getImageData_ =
   var dy = goog.vec.Mat4.getElement(imageTransform, 1, 3);
   return canvas.getContext('2d').getImageData(
       Math.round(-dx), Math.round(-dy),
-      width, height);
+      frameState.size[0], frameState.size[1]);
 };
 
 
