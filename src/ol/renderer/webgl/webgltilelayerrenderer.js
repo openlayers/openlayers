@@ -337,11 +337,10 @@ ol.renderer.webgl.TileLayer.prototype.forEachLayerAtPixel =
   if (goog.isNull(this.framebuffer)) {
     return undefined;
   }
-  var mapSize = this.getMap().getSize();
 
   var pixelOnMapScaled = [
-    pixel[0] / mapSize[0],
-    (mapSize[1] - pixel[1]) / mapSize[1]];
+    pixel[0] / frameState.size[0],
+    (frameState.size[1] - pixel[1]) / frameState.size[1]];
 
   var pixelOnFrameBufferScaled = [0, 0];
   ol.vec.Mat4.multVec2(
