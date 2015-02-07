@@ -84,9 +84,7 @@ ol.renderer.Map.prototype.calculateMatrices2D = function(frameState) {
  * @protected
  * @return {ol.renderer.Layer} layerRenderer Layer renderer.
  */
-ol.renderer.Map.prototype.createLayerRenderer = function(layer) {
-  return new ol.renderer.Layer(this, layer);
-};
+ol.renderer.Map.prototype.createLayerRenderer = goog.abstractMethod;
 
 
 /**
