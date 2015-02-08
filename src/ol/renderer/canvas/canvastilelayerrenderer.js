@@ -13,7 +13,6 @@ goog.require('ol.TileState');
 goog.require('ol.dom');
 goog.require('ol.extent');
 goog.require('ol.layer.Tile');
-goog.require('ol.renderer.Map');
 goog.require('ol.renderer.canvas.Layer');
 goog.require('ol.tilecoord');
 goog.require('ol.vec.Mat4');
@@ -23,12 +22,11 @@ goog.require('ol.vec.Mat4');
 /**
  * @constructor
  * @extends {ol.renderer.canvas.Layer}
- * @param {ol.renderer.Map} mapRenderer Map renderer.
  * @param {ol.layer.Tile} tileLayer Tile layer.
  */
-ol.renderer.canvas.TileLayer = function(mapRenderer, tileLayer) {
+ol.renderer.canvas.TileLayer = function(tileLayer) {
 
-  goog.base(this, mapRenderer, tileLayer);
+  goog.base(this, tileLayer);
 
   /**
    * @private

@@ -9,7 +9,6 @@ goog.require('ol.dom');
 goog.require('ol.extent');
 goog.require('ol.layer.Image');
 goog.require('ol.proj');
-goog.require('ol.renderer.Map');
 goog.require('ol.renderer.canvas.Layer');
 goog.require('ol.source.ImageVector');
 goog.require('ol.vec.Mat4');
@@ -19,12 +18,11 @@ goog.require('ol.vec.Mat4');
 /**
  * @constructor
  * @extends {ol.renderer.canvas.Layer}
- * @param {ol.renderer.Map} mapRenderer Map renderer.
  * @param {ol.layer.Image} imageLayer Single image layer.
  */
-ol.renderer.canvas.ImageLayer = function(mapRenderer, imageLayer) {
+ol.renderer.canvas.ImageLayer = function(imageLayer) {
 
-  goog.base(this, mapRenderer, imageLayer);
+  goog.base(this, imageLayer);
 
   /**
    * @private
