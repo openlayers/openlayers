@@ -25,7 +25,7 @@ goog.require('ol.webgl.Buffer');
 /**
  * @constructor
  * @extends {ol.renderer.webgl.Layer}
- * @param {ol.renderer.Map} mapRenderer Map renderer.
+ * @param {ol.renderer.webgl.Map} mapRenderer Map renderer.
  * @param {ol.layer.Tile} tileLayer Tile layer.
  */
 ol.renderer.webgl.TileLayer = function(mapRenderer, tileLayer) {
@@ -88,8 +88,7 @@ goog.inherits(ol.renderer.webgl.TileLayer, ol.renderer.webgl.Layer);
  * @inheritDoc
  */
 ol.renderer.webgl.TileLayer.prototype.disposeInternal = function() {
-  var mapRenderer = this.getWebGLMapRenderer();
-  var context = mapRenderer.getContext();
+  var context = this.mapRenderer.getContext();
   context.deleteBuffer(this.renderArrayBuffer_);
   goog.base(this, 'disposeInternal');
 };
@@ -110,7 +109,7 @@ ol.renderer.webgl.TileLayer.prototype.handleWebGLContextLost = function() {
 ol.renderer.webgl.TileLayer.prototype.prepareFrame =
     function(frameState, layerState, context) {
 
-  var mapRenderer = this.getWebGLMapRenderer();
+  var mapRenderer = this.mapRenderer;
   var gl = context.getGL();
 
   var viewState = frameState.viewState;
@@ -349,7 +348,7 @@ ol.renderer.webgl.TileLayer.prototype.forEachLayerAtPixel =
     pixelOnFrameBufferScaled[0] * this.framebufferDimension,
     pixelOnFrameBufferScaled[1] * this.framebufferDimension];
 
-  var gl = this.getWebGLMapRenderer().getContext().getGL();
+  var gl = this.mapRenderer.getContext().getGL();
   gl.bindFramebuffer(gl.FRAMEBUFFER, this.framebuffer);
   var imageData = new Uint8Array(4);
   gl.readPixels(pixelOnFrameBuffer[0], pixelOnFrameBuffer[1], 1, 1,
