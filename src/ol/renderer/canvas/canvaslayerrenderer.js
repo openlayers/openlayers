@@ -17,12 +17,11 @@ goog.require('ol.vec.Mat4');
 /**
  * @constructor
  * @extends {ol.renderer.Layer}
- * @param {ol.renderer.Map} mapRenderer Map renderer.
  * @param {ol.layer.Layer} layer Layer.
  */
-ol.renderer.canvas.Layer = function(mapRenderer, layer) {
+ol.renderer.canvas.Layer = function(layer) {
 
-  goog.base(this, mapRenderer, layer);
+  goog.base(this, layer);
 
   /**
    * @private
@@ -52,6 +51,7 @@ ol.renderer.canvas.Layer.prototype.composeFrame =
     var clipped = goog.isDef(extent);
     if (clipped) {
       goog.asserts.assert(goog.isDef(extent));
+      var pixelRatio = frameState.pixelRatio;
       var topLeft = ol.extent.getTopLeft(extent);
       var topRight = ol.extent.getTopRight(extent);
       var bottomRight = ol.extent.getBottomRight(extent);
@@ -68,10 +68,10 @@ ol.renderer.canvas.Layer.prototype.composeFrame =
 
       context.save();
       context.beginPath();
-      context.moveTo(topLeft[0], topLeft[1]);
-      context.lineTo(topRight[0], topRight[1]);
-      context.lineTo(bottomRight[0], bottomRight[1]);
-      context.lineTo(bottomLeft[0], bottomLeft[1]);
+      context.moveTo(topLeft[0] * pixelRatio, topLeft[1] * pixelRatio);
+      context.lineTo(topRight[0] * pixelRatio, topRight[1] * pixelRatio);
+      context.lineTo(bottomRight[0] * pixelRatio, bottomRight[1] * pixelRatio);
+      context.lineTo(bottomLeft[0] * pixelRatio, bottomLeft[1] * pixelRatio);
       context.clip();
     }
 
@@ -213,6 +213,21 @@ ol.renderer.canvas.Layer.prototype.getTransform = function(frameState) {
  * @return {boolean} whether composeFrame should be called.
  */
 ol.renderer.canvas.Layer.prototype.prepareFrame = goog.abstractMethod;
+
+
+/**
+ * @param {ol.Pixel} pixelOnMap Pixel.
+ * @param {goog.vec.Mat4.Number} imageTransformInv The transformation matrix
+ *        to convert from a map pixel to a canvas pixel.
+ * @return {ol.Pixel}
+ * @protected
+ */
+ol.renderer.canvas.Layer.prototype.getPixelOnCanvas =
+    function(pixelOnMap, imageTransformInv) {
+  var pixelOnCanvas = [0, 0];
+  ol.vec.Mat4.multVec2(imageTransformInv, pixelOnMap, pixelOnCanvas);
+  return pixelOnCanvas;
+};
 
 
 /**

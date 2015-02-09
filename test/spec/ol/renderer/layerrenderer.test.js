@@ -5,10 +5,8 @@ describe('ol.renderer.Layer', function() {
   var eventType = goog.events.EventType.CHANGE;
 
   beforeEach(function() {
-    var map = new ol.Map({});
-    var mapRenderer = map.getRenderer();
     var layer = new ol.layer.Layer({});
-    renderer = new ol.renderer.Layer(mapRenderer, layer);
+    renderer = new ol.renderer.Layer(layer);
   });
 
   describe('#loadImage', function() {
@@ -84,6 +82,5 @@ describe('ol.renderer.Layer', function() {
 goog.require('goog.events.EventType');
 goog.require('ol.Image');
 goog.require('ol.ImageState');
-goog.require('ol.Map');
 goog.require('ol.layer.Layer');
 goog.require('ol.renderer.Layer');

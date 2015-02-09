@@ -98,6 +98,9 @@ ol.source.BingMaps.prototype.handleImageryMetadataResponse =
   }
 
   var brandLogoUri = response.brandLogoUri;
+  if (ol.IS_HTTPS && brandLogoUri.indexOf('https') == -1) {
+    brandLogoUri = brandLogoUri.replace('http', 'https');
+  }
   //var copyright = response.copyright;  // FIXME do we need to display this?
   var resource = response.resourceSets[0].resources[0];
   goog.asserts.assert(resource.imageWidth == resource.imageHeight);

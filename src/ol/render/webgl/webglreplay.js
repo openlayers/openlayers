@@ -9,6 +9,7 @@ goog.require('goog.vec.Mat4');
 goog.require('ol.color.Matrix');
 goog.require('ol.extent');
 goog.require('ol.render.IReplayGroup');
+goog.require('ol.render.IVectorContext');
 goog.require('ol.render.webgl.imagereplay.shader.Color');
 goog.require('ol.render.webgl.imagereplay.shader.Default');
 goog.require('ol.vec.Mat4');
@@ -1154,6 +1155,7 @@ ol.render.webgl.ReplayGroup.prototype.replayHitDetection_ = function(context,
 
 
 /**
+ * @param {ol.Coordinate} coordinate Coordinate.
  * @param {ol.webgl.Context} context Context.
  * @param {ol.Coordinate} center Center.
  * @param {number} resolution Resolution.
@@ -1166,15 +1168,14 @@ ol.render.webgl.ReplayGroup.prototype.replayHitDetection_ = function(context,
  * @param {number} hue Global hue.
  * @param {number} saturation Global saturation.
  * @param {Object} skippedFeaturesHash Ids of features to skip.
- * @param {ol.Coordinate} coordinate Coordinate.
  * @param {function(ol.Feature): T|undefined} callback Feature callback.
  * @return {T|undefined} Callback result.
  * @template T
  */
-ol.render.webgl.ReplayGroup.prototype.forEachFeatureAtPixel = function(
-    context, center, resolution, rotation, size, pixelRatio,
+ol.render.webgl.ReplayGroup.prototype.forEachFeatureAtCoordinate = function(
+    coordinate, context, center, resolution, rotation, size, pixelRatio,
     opacity, brightness, contrast, hue, saturation, skippedFeaturesHash,
-    coordinate, callback) {
+    callback) {
   var gl = context.getGL();
   gl.bindFramebuffer(
       gl.FRAMEBUFFER, context.getHitDetectionFramebuffer());
@@ -1188,7 +1189,7 @@ ol.render.webgl.ReplayGroup.prototype.forEachFeatureAtPixel = function(
     // build an extent around the coordinate, so that only features that
     // intersect this extent are checked
     hitExtent = ol.extent.buffer(
-        ol.extent.boundingExtent([coordinate]),
+        ol.extent.createOrUpdateFromCoordinate(coordinate),
         resolution * this.renderBuffer_);
   }
 
@@ -1215,6 +1216,7 @@ ol.render.webgl.ReplayGroup.prototype.forEachFeatureAtPixel = function(
 
 
 /**
+ * @param {ol.Coordinate} coordinate Coordinate.
  * @param {ol.webgl.Context} context Context.
  * @param {ol.Coordinate} center Center.
  * @param {number} resolution Resolution.
@@ -1227,13 +1229,11 @@ ol.render.webgl.ReplayGroup.prototype.forEachFeatureAtPixel = function(
  * @param {number} hue Global hue.
  * @param {number} saturation Global saturation.
  * @param {Object} skippedFeaturesHash Ids of features to skip.
- * @param {ol.Coordinate} coordinate Coordinate.
- * @return {boolean} Is there a feature at the given pixel?
+ * @return {boolean} Is there a feature at the given coordinate?
  */
-ol.render.webgl.ReplayGroup.prototype.hasFeatureAtPixel = function(
-    context, center, resolution, rotation, size, pixelRatio,
-    opacity, brightness, contrast, hue, saturation, skippedFeaturesHash,
-    coordinate) {
+ol.render.webgl.ReplayGroup.prototype.hasFeatureAtCoordinate = function(
+    coordinate, context, center, resolution, rotation, size, pixelRatio,
+    opacity, brightness, contrast, hue, saturation, skippedFeaturesHash) {
   var gl = context.getGL();
   gl.bindFramebuffer(
       gl.FRAMEBUFFER, context.getHitDetectionFramebuffer());

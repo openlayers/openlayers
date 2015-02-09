@@ -17,6 +17,7 @@ goog.require('ol.math');
 goog.require('ol.renderer.webgl.Layer');
 goog.require('ol.renderer.webgl.tilelayer.shader');
 goog.require('ol.tilecoord');
+goog.require('ol.vec.Mat4');
 goog.require('ol.webgl.Buffer');
 
 
@@ -24,7 +25,7 @@ goog.require('ol.webgl.Buffer');
 /**
  * @constructor
  * @extends {ol.renderer.webgl.Layer}
- * @param {ol.renderer.Map} mapRenderer Map renderer.
+ * @param {ol.renderer.webgl.Map} mapRenderer Map renderer.
  * @param {ol.layer.Tile} tileLayer Tile layer.
  */
 ol.renderer.webgl.TileLayer = function(mapRenderer, tileLayer) {
@@ -87,8 +88,7 @@ goog.inherits(ol.renderer.webgl.TileLayer, ol.renderer.webgl.Layer);
  * @inheritDoc
  */
 ol.renderer.webgl.TileLayer.prototype.disposeInternal = function() {
-  var mapRenderer = this.getWebGLMapRenderer();
-  var context = mapRenderer.getContext();
+  var context = this.mapRenderer.getContext();
   context.deleteBuffer(this.renderArrayBuffer_);
   goog.base(this, 'disposeInternal');
 };
@@ -109,7 +109,7 @@ ol.renderer.webgl.TileLayer.prototype.handleWebGLContextLost = function() {
 ol.renderer.webgl.TileLayer.prototype.prepareFrame =
     function(frameState, layerState, context) {
 
-  var mapRenderer = this.getWebGLMapRenderer();
+  var mapRenderer = this.mapRenderer;
   var gl = context.getGL();
 
   var viewState = frameState.viewState;
@@ -325,4 +325,38 @@ ol.renderer.webgl.TileLayer.prototype.prepareFrame =
       0);
 
   return true;
+};
+
+
+/**
+ * @inheritDoc
+ */
+ol.renderer.webgl.TileLayer.prototype.forEachLayerAtPixel =
+    function(pixel, frameState, callback, thisArg) {
+  if (goog.isNull(this.framebuffer)) {
+    return undefined;
+  }
+
+  var pixelOnMapScaled = [
+    pixel[0] / frameState.size[0],
+    (frameState.size[1] - pixel[1]) / frameState.size[1]];
+
+  var pixelOnFrameBufferScaled = [0, 0];
+  ol.vec.Mat4.multVec2(
+      this.texCoordMatrix, pixelOnMapScaled, pixelOnFrameBufferScaled);
+  var pixelOnFrameBuffer = [
+    pixelOnFrameBufferScaled[0] * this.framebufferDimension,
+    pixelOnFrameBufferScaled[1] * this.framebufferDimension];
+
+  var gl = this.mapRenderer.getContext().getGL();
+  gl.bindFramebuffer(gl.FRAMEBUFFER, this.framebuffer);
+  var imageData = new Uint8Array(4);
+  gl.readPixels(pixelOnFrameBuffer[0], pixelOnFrameBuffer[1], 1, 1,
+      gl.RGBA, gl.UNSIGNED_BYTE, imageData);
+
+  if (imageData[3] > 0) {
+    return callback.call(thisArg, this.getLayer());
+  } else {
+    return undefined;
+  }
 };

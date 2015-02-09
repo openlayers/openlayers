@@ -5,11 +5,10 @@
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
     <meta name="viewport" content="initial-scale=1.0, user-scalable=no, width=device-width">
     <link rel="stylesheet" href="../css/ol.css" type="text/css">
-    <link rel="stylesheet" href="../css/ol.css" type="text/css">
     <link rel="stylesheet" href="../resources/bootstrap/css/bootstrap.min.css" type="text/css">
     <link rel="stylesheet" href="../resources/layout.css" type="text/css">
     <link rel="stylesheet" href="../resources/bootstrap/css/bootstrap-responsive.min.css" type="text/css">
-    <title>WMS GetFeatureInfo example (tile layer)</title>
+    <title>WMTS GetCapabilities parsing example</title>
   </head>
   <body>
 
@@ -24,27 +23,18 @@
     <div class="container-fluid">
 
       <div class="row-fluid">
-        <div class="span12">
-          <div id="map" class="map"></div>
-        </div>
-      </div>
-
-      <div class="row-fluid">
 
         <div class="span4">
-          <h4 id="title">WMS GetFeatureInfo example (tile layer)</h4>
-          <p id="shortdesc">This example shows how to trigger WMS GetFeatureInfo requests on click for a WMS tile layer.</p>
+          <h4 id="title">WMTS GetCapabilities parsing example</h4>
+          <p id="shortdesc">Example of parsing a WMTS GetCapabilities response.</p>
           <div id="docs">
-            <p>Additionally <code>map.forEachLayerAtPixel</code> is used to change the mouse
-            pointer when hovering a non-transparent pixel on the map.</p>
-            <p>See the <a href="getfeatureinfo-tile.js" target="_blank">getfeatureinfo-tile.js source</a> to see how this is done.</p>
+            <p>See the <a href="wmts-capabilities.js" target="_blank">wmts-capabilities.js source</a> to see how this is done.</p>
           </div>
-          <div id="tags">getfeatureinfo, forEachLayerAtPixel</div>
+          <div id="tags">wmts, capabilities, getcapabilities</div>
         </div>
-        <div class="span4 offset4">
-          <div id="info" class="alert alert-success">
-            &nbsp;
-          </div>
+
+        <div class="span8">
+          <pre id="log"></pre>
         </div>
 
       </div>
@@ -53,7 +43,7 @@
 
     <script src="../resources/jquery.min.js" type="text/javascript"></script>
     <script src="../resources/example-behaviour.js" type="text/javascript"></script>
-    <script src="loader.js?id=getfeatureinfo-tile" type="text/javascript"></script>
+    <script src="loader.js?id=wmts-capabilities" type="text/javascript"></script>
 
   </body>
 </html>

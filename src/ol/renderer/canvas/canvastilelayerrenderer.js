@@ -13,7 +13,6 @@ goog.require('ol.TileState');
 goog.require('ol.dom');
 goog.require('ol.extent');
 goog.require('ol.layer.Tile');
-goog.require('ol.renderer.Map');
 goog.require('ol.renderer.canvas.Layer');
 goog.require('ol.tilecoord');
 goog.require('ol.vec.Mat4');
@@ -23,12 +22,11 @@ goog.require('ol.vec.Mat4');
 /**
  * @constructor
  * @extends {ol.renderer.canvas.Layer}
- * @param {ol.renderer.Map} mapRenderer Map renderer.
  * @param {ol.layer.Tile} tileLayer Tile layer.
  */
-ol.renderer.canvas.TileLayer = function(mapRenderer, tileLayer) {
+ol.renderer.canvas.TileLayer = function(tileLayer) {
 
-  goog.base(this, mapRenderer, tileLayer);
+  goog.base(this, tileLayer);
 
   /**
    * @private
@@ -59,6 +57,12 @@ ol.renderer.canvas.TileLayer = function(mapRenderer, tileLayer) {
    * @type {!goog.vec.Mat4.Number}
    */
   this.imageTransform_ = goog.vec.Mat4.createNumber();
+
+  /**
+   * @private
+   * @type {?goog.vec.Mat4.Number}
+   */
+  this.imageTransformInv_ = null;
 
   /**
    * @private
@@ -408,6 +412,35 @@ ol.renderer.canvas.TileLayer.prototype.prepareFrame =
       viewState.rotation,
       (origin[0] - center[0]) / tilePixelResolution,
       (center[1] - origin[1]) / tilePixelResolution);
+  this.imageTransformInv_ = null;
 
   return true;
+};
+
+
+/**
+ * @inheritDoc
+ */
+ol.renderer.canvas.TileLayer.prototype.forEachLayerAtPixel =
+    function(pixel, frameState, callback, thisArg) {
+  if (goog.isNull(this.context_)) {
+    return undefined;
+  }
+
+  if (goog.isNull(this.imageTransformInv_)) {
+    this.imageTransformInv_ = goog.vec.Mat4.createNumber();
+    goog.vec.Mat4.invert(this.imageTransform_, this.imageTransformInv_);
+  }
+
+  var pixelOnCanvas =
+      this.getPixelOnCanvas(pixel, this.imageTransformInv_);
+
+  var imageData = this.context_.getImageData(
+      pixelOnCanvas[0], pixelOnCanvas[1], 1, 1).data;
+
+  if (imageData[3] > 0) {
+    return callback.call(thisArg, this.getLayer());
+  } else {
+    return undefined;
+  }
 };

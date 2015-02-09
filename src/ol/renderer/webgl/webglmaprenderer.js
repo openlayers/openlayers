@@ -540,7 +540,7 @@ ol.renderer.webgl.Map.prototype.renderFrame = function(frameState) {
 /**
  * @inheritDoc
  */
-ol.renderer.webgl.Map.prototype.forEachFeatureAtPixel =
+ol.renderer.webgl.Map.prototype.forEachFeatureAtCoordinate =
     function(coordinate, frameState, callback, thisArg,
         layerFilter, thisArg2) {
   var result;
@@ -560,11 +560,10 @@ ol.renderer.webgl.Map.prototype.forEachFeatureAtPixel =
     // use default color values
     var d = ol.renderer.webgl.Map.DEFAULT_COLOR_VALUES_;
 
-    result = this.replayGroup.forEachFeatureAtPixel(context,
-        viewState.center, viewState.resolution, viewState.rotation,
+    result = this.replayGroup.forEachFeatureAtCoordinate(coordinate,
+        context, viewState.center, viewState.resolution, viewState.rotation,
         frameState.size, frameState.pixelRatio,
         d.opacity, d.brightness, d.contrast, d.hue, d.saturation, {},
-        coordinate,
         /**
          * @param {ol.Feature} feature Feature.
          * @return {?} Callback result.
@@ -590,7 +589,7 @@ ol.renderer.webgl.Map.prototype.forEachFeatureAtPixel =
     if (ol.layer.Layer.visibleAtResolution(layerState, viewState.resolution) &&
         layerFilter.call(thisArg2, layer)) {
       var layerRenderer = this.getLayerRenderer(layer);
-      result = layerRenderer.forEachFeatureAtPixel(
+      result = layerRenderer.forEachFeatureAtCoordinate(
           coordinate, frameState, callback, thisArg);
       if (result) {
         return result;
@@ -604,7 +603,7 @@ ol.renderer.webgl.Map.prototype.forEachFeatureAtPixel =
 /**
  * @inheritDoc
  */
-ol.renderer.webgl.Map.prototype.hasFeatureAtPixel =
+ol.renderer.webgl.Map.prototype.hasFeatureAtCoordinate =
     function(coordinate, frameState, layerFilter, thisArg) {
   var hasFeature = false;
 
@@ -620,11 +619,10 @@ ol.renderer.webgl.Map.prototype.hasFeatureAtPixel =
     // use default color values
     var d = ol.renderer.webgl.Map.DEFAULT_COLOR_VALUES_;
 
-    hasFeature = this.replayGroup.hasFeatureAtPixel(context,
-        viewState.center, viewState.resolution, viewState.rotation,
+    hasFeature = this.replayGroup.hasFeatureAtCoordinate(coordinate,
+        context, viewState.center, viewState.resolution, viewState.rotation,
         frameState.size, frameState.pixelRatio,
-        d.opacity, d.brightness, d.contrast, d.hue, d.saturation, {},
-        coordinate);
+        d.opacity, d.brightness, d.contrast, d.hue, d.saturation, {});
     if (hasFeature) {
       return true;
     }
@@ -638,13 +636,65 @@ ol.renderer.webgl.Map.prototype.hasFeatureAtPixel =
     if (ol.layer.Layer.visibleAtResolution(layerState, viewState.resolution) &&
         layerFilter.call(thisArg, layer)) {
       var layerRenderer = this.getLayerRenderer(layer);
-      hasFeature = layerRenderer.hasFeatureAtPixel(coordinate, frameState);
+      hasFeature =
+          layerRenderer.hasFeatureAtCoordinate(coordinate, frameState);
       if (hasFeature) {
         return true;
       }
     }
   }
   return hasFeature;
+};
+
+
+/**
+ * @inheritDoc
+ */
+ol.renderer.webgl.Map.prototype.forEachLayerAtPixel =
+    function(pixel, frameState, callback, thisArg,
+        layerFilter, thisArg2) {
+  if (this.getGL().isContextLost()) {
+    return false;
+  }
+
+  var context = this.getContext();
+  var viewState = frameState.viewState;
+  var result;
+
+  // do the hit-detection for the overlays first
+  if (!goog.isNull(this.replayGroup)) {
+    // use default color values
+    var d = ol.renderer.webgl.Map.DEFAULT_COLOR_VALUES_;
+    var coordinate = this.getMap().getCoordinateFromPixel(pixel);
+
+    var hasFeature = this.replayGroup.hasFeatureAtCoordinate(coordinate,
+        context, viewState.center, viewState.resolution, viewState.rotation,
+        frameState.size, frameState.pixelRatio,
+        d.opacity, d.brightness, d.contrast, d.hue, d.saturation, {});
+    if (hasFeature) {
+      result = callback.call(thisArg, null);
+      if (result) {
+        return result;
+      }
+    }
+  }
+  var layerStates = frameState.layerStatesArray;
+  var numLayers = layerStates.length;
+  var i;
+  for (i = numLayers - 1; i >= 0; --i) {
+    var layerState = layerStates[i];
+    var layer = layerState.layer;
+    if (ol.layer.Layer.visibleAtResolution(layerState, viewState.resolution) &&
+        layerFilter.call(thisArg, layer)) {
+      var layerRenderer = this.getLayerRenderer(layer);
+      result = layerRenderer.forEachLayerAtPixel(
+          pixel, frameState, callback, thisArg);
+      if (result) {
+        return result;
+      }
+    }
+  }
+  return undefined;
 };
 
 

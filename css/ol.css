@@ -115,20 +115,11 @@
   background-color: #4c6079;
   background-color: rgba(0,60,136,0.7);
 }
-.ol-zoom-extent button:after {
-    content: "E";
-}
 .ol-zoom .ol-zoom-in {
   border-radius: 2px 2px 0 0;
 }
 .ol-zoom .ol-zoom-out {
   border-radius: 0 0 2px 2px;
-}
-button.ol-full-screen-false:after {
-  content: "\2194";
-}
-button.ol-full-screen-true:after {
-  content: "\00d7";
 }
 
 
