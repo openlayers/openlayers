@@ -71,7 +71,7 @@ ol.renderer.canvas.TileLayer = function(mapRenderer, tileLayer) {
    * @type {number}
    */
   this.renderedCanvasZ_ = NaN;
-  
+
   /**
    * @private
    * @type {number}
