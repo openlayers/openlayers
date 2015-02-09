@@ -18,14 +18,13 @@ goog.require('ol.vec.Mat4');
 /**
  * @constructor
  * @extends {ol.renderer.dom.Layer}
- * @param {ol.renderer.Map} mapRenderer Map renderer.
  * @param {ol.layer.Image} imageLayer Image layer.
  */
-ol.renderer.dom.ImageLayer = function(mapRenderer, imageLayer) {
+ol.renderer.dom.ImageLayer = function(imageLayer) {
   var target = goog.dom.createElement(goog.dom.TagName.DIV);
   target.style.position = 'absolute';
 
-  goog.base(this, mapRenderer, imageLayer, target);
+  goog.base(this, imageLayer, target);
 
   /**
    * The last rendered image.

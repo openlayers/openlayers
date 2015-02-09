@@ -6,6 +6,7 @@ goog.require('goog.events');
 goog.require('goog.events.EventType');
 goog.require('goog.functions');
 goog.require('ol.ImageState');
+goog.require('ol.Observable');
 goog.require('ol.TileRange');
 goog.require('ol.TileState');
 goog.require('ol.layer.Layer');
@@ -13,26 +14,20 @@ goog.require('ol.source.Source');
 goog.require('ol.source.State');
 goog.require('ol.source.Tile');
 goog.require('ol.tilecoord');
+goog.require('ol.vec.Mat4');
 
 
 
 /**
  * @constructor
- * @extends {goog.Disposable}
- * @param {ol.renderer.Map} mapRenderer Map renderer.
+ * @extends {ol.Observable}
  * @param {ol.layer.Layer} layer Layer.
  * @suppress {checkStructDictInheritance}
  * @struct
  */
-ol.renderer.Layer = function(mapRenderer, layer) {
+ol.renderer.Layer = function(layer) {
 
   goog.base(this);
-
-  /**
-   * @private
-   * @type {ol.renderer.Map}
-   */
-  this.mapRenderer_ = mapRenderer;
 
   /**
    * @private
@@ -42,7 +37,7 @@ ol.renderer.Layer = function(mapRenderer, layer) {
 
 
 };
-goog.inherits(ol.renderer.Layer, goog.Disposable);
+goog.inherits(ol.renderer.Layer, ol.Observable);
 
 
 /**
@@ -67,7 +62,10 @@ ol.renderer.Layer.prototype.forEachFeatureAtCoordinate = goog.nullFunction;
  */
 ol.renderer.Layer.prototype.forEachLayerAtPixel =
     function(pixel, frameState, callback, thisArg) {
-  var coordinate = this.getMap().getCoordinateFromPixel(pixel);
+  var coordinate = pixel.slice();
+  ol.vec.Mat4.multVec2(
+      frameState.pixelToCoordinateMatrix, coordinate, coordinate);
+
   var hasFeature = this.forEachFeatureAtCoordinate(
       coordinate, frameState, goog.functions.TRUE, this);
 
@@ -93,24 +91,6 @@ ol.renderer.Layer.prototype.hasFeatureAtCoordinate = goog.functions.FALSE;
  */
 ol.renderer.Layer.prototype.getLayer = function() {
   return this.layer_;
-};
-
-
-/**
- * @protected
- * @return {ol.Map} Map.
- */
-ol.renderer.Layer.prototype.getMap = function() {
-  return this.mapRenderer_.getMap();
-};
-
-
-/**
- * @protected
- * @return {ol.renderer.Map} Map renderer.
- */
-ol.renderer.Layer.prototype.getMapRenderer = function() {
-  return this.mapRenderer_;
 };
 
 
@@ -161,7 +141,7 @@ ol.renderer.Layer.prototype.loadImage = function(image) {
 ol.renderer.Layer.prototype.renderIfReadyAndVisible = function() {
   var layer = this.getLayer();
   if (layer.getVisible() && layer.getSourceState() == ol.source.State.READY) {
-    this.getMap().render();
+    this.changed();
   }
 };
 
