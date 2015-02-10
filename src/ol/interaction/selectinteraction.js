@@ -152,9 +152,8 @@ ol.interaction.Select.handleEvent = function(mapBrowserEvent) {
         function(feature, layer) {
           selected.push(feature);
         }, undefined, this.layerFilter_);
-    if (selected.length > 0 &&
-        features.getLength() == 1 &&
-        features.item(0) == selected[selected.length - 1]) {
+    if (selected.length > 0 && features.getLength() == 1 &&
+        features.item(0) == selected[0]) {
       // No change
     } else {
       if (features.getLength() !== 0) {
@@ -163,7 +162,7 @@ ol.interaction.Select.handleEvent = function(mapBrowserEvent) {
       if (this.multi_) {
         features.extend(selected);
       } else if (selected.length > 0) {
-        features.push(selected[selected.length - 1]);
+        features.push(selected[0]);
       }
     }
   } else {
