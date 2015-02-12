@@ -16,7 +16,8 @@ goog.require('ol.style.Style');
  * @enum {string}
  */
 ol.layer.HeatmapLayerProperty = {
-  GRADIENT: 'gradient'
+  GRADIENT: 'gradient',
+  RADIUS: 'radius'
 };
 
 
@@ -62,27 +63,32 @@ ol.layer.Heatmap = function(opt_options) {
    * @private
    * @type {number}
    */
-  this.radius_ = goog.isDef(options.radius) ? options.radius : 8;
+  this.shadow_ = goog.isDef(options.shadow) ? options.shadow : 250;
 
   /**
    * @private
-   * @type {number}
+   * @type {string|undefined}
    */
-  this.shadow_ = goog.isDef(options.shadow) ? options.shadow : 250;
+  this.circleImage_ = undefined;
+
+  /**
+   * @private
+   * @type {Array.<Array.<ol.style.Style>>}
+   */
+  this.styleCache_ = null;
 
   goog.events.listen(this,
       ol.Object.getChangeEventType(ol.layer.HeatmapLayerProperty.GRADIENT),
       this.handleGradientChanged_, false, this);
 
+  goog.events.listen(this,
+      ol.Object.getChangeEventType(ol.layer.HeatmapLayerProperty.RADIUS),
+      this.handleStyleChanged_, false, this);
+
   this.setGradient(goog.isDef(options.gradient) ?
       options.gradient : ol.layer.Heatmap.DEFAULT_GRADIENT);
 
-  var circle = this.createCircle_();
-
-  /**
-   * @type {Array.<Array.<ol.style.Style>>}
-   */
-  var styleCache = new Array(256);
+  this.setRadius(goog.isDef(options.radius) ? options.radius : 8);
 
   var weight = goog.isDef(options.weight) ? options.weight : 'weight';
   var weightFunction;
@@ -95,25 +101,25 @@ ol.layer.Heatmap = function(opt_options) {
   }
   goog.asserts.assert(goog.isFunction(weightFunction));
 
-  this.setStyle(function(feature, resolution) {
+  this.setStyle(goog.bind(function(feature, resolution) {
     var weight = weightFunction(feature);
     var opacity = goog.isDef(weight) ? goog.math.clamp(weight, 0, 1) : 1;
     // cast to 8 bits
     var index = (255 * opacity) | 0;
-    var style = styleCache[index];
+    var style = this.styleCache_[index];
     if (!goog.isDef(style)) {
       style = [
         new ol.style.Style({
           image: new ol.style.Icon({
             opacity: opacity,
-            src: circle
+            src: this.circleImage_
           })
         })
       ];
-      styleCache[index] = style;
+      this.styleCache_[index] = style;
     }
     return style;
-  });
+  }, this));
 
   // For performance reasons, don't sort the features before rendering.
   // The render order is not relevant for a heatmap representation.
@@ -161,7 +167,8 @@ ol.layer.Heatmap.createGradient_ = function(colors) {
  * @private
  */
 ol.layer.Heatmap.prototype.createCircle_ = function() {
-  var halfSize = this.radius_ + this.blur_ + 1;
+  var radius = this.getRadius();
+  var halfSize = radius + this.blur_ + 1;
   var size = 2 * halfSize;
   var context = ol.dom.createCanvasContext2D(size, size);
   context.shadowOffsetX = context.shadowOffsetY = this.shadow_;
@@ -169,7 +176,7 @@ ol.layer.Heatmap.prototype.createCircle_ = function() {
   context.shadowColor = '#000';
   context.beginPath();
   var center = halfSize - this.shadow_;
-  context.arc(center, center, this.radius_, 0, Math.PI * 2, true);
+  context.arc(center, center, radius, 0, Math.PI * 2, true);
   context.fill();
   return context.canvas.toDataURL();
 };
@@ -191,10 +198,34 @@ goog.exportProperty(
 
 
 /**
+ * @return {number} Radius size in pixel.
+ * @api
+ * @observable
+ */
+ol.layer.Heatmap.prototype.getRadius = function() {
+  return /** @type {number} */ (this.get(ol.layer.HeatmapLayerProperty.RADIUS));
+};
+goog.exportProperty(
+    ol.layer.Heatmap.prototype,
+    'getRadius',
+    ol.layer.Heatmap.prototype.getRadius);
+
+
+/**
  * @private
  */
 ol.layer.Heatmap.prototype.handleGradientChanged_ = function() {
   this.gradient_ = ol.layer.Heatmap.createGradient_(this.getGradient());
+};
+
+
+/**
+ * @private
+ */
+ol.layer.Heatmap.prototype.handleStyleChanged_ = function() {
+  this.circleImage_ = this.createCircle_();
+  this.styleCache_ = new Array(256);
+  this.changed();
 };
 
 
@@ -233,3 +264,17 @@ goog.exportProperty(
     ol.layer.Heatmap.prototype,
     'setGradient',
     ol.layer.Heatmap.prototype.setGradient);
+
+
+/**
+ * @param {number} radius Radius size in pixel.
+ * @api
+ * @observable
+ */
+ol.layer.Heatmap.prototype.setRadius = function(radius) {
+  this.set(ol.layer.HeatmapLayerProperty.RADIUS, radius);
+};
+goog.exportProperty(
+    ol.layer.Heatmap.prototype,
+    'setRadius',
+    ol.layer.Heatmap.prototype.setRadius);
