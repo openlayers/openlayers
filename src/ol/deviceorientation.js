@@ -28,7 +28,7 @@ ol.DeviceOrientationProperty = {
  *
  * Many new computers, and especially mobile phones
  * and tablets, provide hardware support for device orientation. Web
- * developers targetting mobile devices will be especially interested in this
+ * developers targeting mobile devices will be especially interested in this
  * class.
  *
  * Device orientation data are relative to a common starting point. For mobile

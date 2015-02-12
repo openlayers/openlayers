@@ -187,7 +187,7 @@ ol.pointer.TouchSource.prototype.touchToPointer_ =
   // Touch identifiers can start at 0.
   // Add 2 to the touch identifier for compatibility.
   e.pointerId = inTouch.identifier + 2;
-  // TODO: check if this is neccessary?
+  // TODO: check if this is necessary?
   //e.target = findTarget(e);
   e.bubbles = true;
   e.cancelable = true;
