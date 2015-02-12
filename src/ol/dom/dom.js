@@ -158,7 +158,7 @@ ol.dom.setOpacity = function(element, value) {
     var alpha;
 
     if (goog.userAgent.VERSION == '8.0') {
-      regex = /progid:DXImageTransform\.Microsoft\.Alpha\(.*?\)/i,
+      regex = /progid:DXImageTransform\.Microsoft\.Alpha\(.*?\)/i;
       alpha = 'progid:DXImageTransform.Microsoft.Alpha(Opacity=' +
           (value * 100) + ')';
     } else {
