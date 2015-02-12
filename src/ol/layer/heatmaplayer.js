@@ -52,6 +52,24 @@ ol.layer.Heatmap = function(opt_options) {
    */
   this.gradient_ = null;
 
+  /**
+   * @private
+   * @type {number}
+   */
+  this.blur_ = goog.isDef(options.blur) ? options.blur : 15;
+
+  /**
+   * @private
+   * @type {number}
+   */
+  this.radius_ = goog.isDef(options.radius) ? options.radius : 8;
+
+  /**
+   * @private
+   * @type {number}
+   */
+  this.shadow_ = goog.isDef(options.shadow) ? options.shadow : 250;
+
   goog.events.listen(this,
       ol.Object.getChangeEventType(ol.layer.HeatmapLayerProperty.GRADIENT),
       this.handleGradientChanged_, false, this);
@@ -59,10 +77,7 @@ ol.layer.Heatmap = function(opt_options) {
   this.setGradient(goog.isDef(options.gradient) ?
       options.gradient : ol.layer.Heatmap.DEFAULT_GRADIENT);
 
-  var circle = ol.layer.Heatmap.createCircle_(
-      goog.isDef(options.radius) ? options.radius : 8,
-      goog.isDef(options.blur) ? options.blur : 15,
-      goog.isDef(options.shadow) ? options.shadow : 250);
+  var circle = this.createCircle_();
 
   /**
    * @type {Array.<Array.<ol.style.Style>>}
@@ -142,22 +157,19 @@ ol.layer.Heatmap.createGradient_ = function(colors) {
 
 
 /**
- * @param {number} radius Radius size in pixel.
- * @param {number} blur Blur size in pixel.
- * @param {number} shadow Shadow offset size in pixel.
  * @return {string}
  * @private
  */
-ol.layer.Heatmap.createCircle_ = function(radius, blur, shadow) {
-  var halfSize = radius + blur + 1;
+ol.layer.Heatmap.prototype.createCircle_ = function() {
+  var halfSize = this.radius_ + this.blur_ + 1;
   var size = 2 * halfSize;
   var context = ol.dom.createCanvasContext2D(size, size);
-  context.shadowOffsetX = context.shadowOffsetY = shadow;
-  context.shadowBlur = blur;
+  context.shadowOffsetX = context.shadowOffsetY = this.shadow_;
+  context.shadowBlur = this.blur_;
   context.shadowColor = '#000';
   context.beginPath();
-  var center = halfSize - shadow;
-  context.arc(center, center, radius, 0, Math.PI * 2, true);
+  var center = halfSize - this.shadow_;
+  context.arc(center, center, this.radius_, 0, Math.PI * 2, true);
   context.fill();
   return context.canvas.toDataURL();
 };
