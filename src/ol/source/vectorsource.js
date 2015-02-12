@@ -12,10 +12,10 @@ goog.require('goog.events');
 goog.require('goog.events.Event');
 goog.require('goog.events.EventType');
 goog.require('goog.object');
-goog.require('ol.Collection');
 goog.require('ol.ObjectEventType');
 goog.require('ol.proj');
 goog.require('ol.source.Source');
+goog.require('ol.structs.CollectionRBush');
 goog.require('ol.structs.RBush');
 
 
@@ -79,17 +79,10 @@ ol.source.Vector = function(opt_options) {
 
   /**
    * @private
-   * @type {ol.structs.RBush.<ol.Feature>}
+   * @type {ol.structs.RBush.<ol.Feature>|ol.structs.CollectionRBush.<ol.Feature>}
    */
   this.rBush_ = options.useSpatialIndex !== false ? new ol.structs.RBush() :
-      null;
-
-  /**
-   * @private
-   * @type {ol.Collection.<ol.Feature>}
-   */
-  this.featuresCollection_ = options.useSpatialIndex !== false ? null :
-      new ol.Collection();
+      new ol.structs.CollectionRBush();
 
   /**
    * @private
@@ -149,12 +142,8 @@ ol.source.Vector.prototype.addFeatureInternal = function(feature) {
 
   var geometry = feature.getGeometry();
   if (goog.isDefAndNotNull(geometry)) {
-    if (!goog.isNull(this.rBush_)) {
-      var extent = geometry.getExtent();
-      this.rBush_.insert(extent, feature);
-    } else {
-      this.featuresCollection_.push(feature);
-    }
+    var extent = geometry.getExtent();
+    this.rBush_.insert(extent, feature);
   } else {
     this.nullGeometryFeatures_[featureKey] = feature;
   }
@@ -227,20 +216,14 @@ ol.source.Vector.prototype.addFeaturesInternal = function(features) {
 
     var geometry = feature.getGeometry();
     if (goog.isDefAndNotNull(geometry)) {
-      if (!goog.isNull(this.rBush_)) {
-        var extent = geometry.getExtent();
-        extents.push(extent);
-      }
+      var extent = geometry.getExtent();
+      extents.push(extent);
       validFeatures.push(feature);
     } else {
       this.nullGeometryFeatures_[featureKey] = feature;
     }
   }
-  if (!goog.isNull(this.rBush_)) {
-    this.rBush_.load(extents, validFeatures);
-  } else {
-    this.featuresCollection_.extend(validFeatures);
-  }
+  this.rBush_.load(extents, validFeatures);
 
   for (i = 0, length = features.length; i < length; i++) {
     feature = features[i];
@@ -268,21 +251,13 @@ ol.source.Vector.prototype.clear = function(opt_fast) {
     this.undefIdIndex_ = {};
   } else {
     var rmFeatureInternal = this.removeFeatureInternal;
-    if (!goog.isNull(this.rBush_)) {
-      this.rBush_.forEach(rmFeatureInternal, this);
-    } else {
-      this.featuresCollection_.forEach(rmFeatureInternal, this);
-    }
+    this.rBush_.forEach(rmFeatureInternal, this);
     goog.object.forEach(this.nullGeometryFeatures_, rmFeatureInternal, this);
     goog.asserts.assert(goog.object.isEmpty(this.featureChangeKeys_));
     goog.asserts.assert(goog.object.isEmpty(this.idIndex_));
     goog.asserts.assert(goog.object.isEmpty(this.undefIdIndex_));
   }
-  if (!goog.isNull(this.rBush_)) {
-    this.rBush_.clear();
-  } else {
-    this.featuresCollection_.clear();
-  }
+  this.rBush_.clear();
   this.nullGeometryFeatures_ = {};
 
   var clearEvent = new ol.source.VectorEvent(ol.source.VectorEventType.CLEAR);
@@ -304,11 +279,7 @@ ol.source.Vector.prototype.clear = function(opt_fast) {
  * @api stable
  */
 ol.source.Vector.prototype.forEachFeature = function(callback, opt_this) {
-  if (!goog.isNull(this.rBush_)) {
-    return this.rBush_.forEach(callback, opt_this);
-  } else {
-    return this.featuresCollection_.forEach(callback, opt_this);
-  }
+  return this.rBush_.forEach(callback, opt_this);
 };
 
 
@@ -360,15 +331,7 @@ ol.source.Vector.prototype.forEachFeatureAtCoordinateDirect =
  */
 ol.source.Vector.prototype.forEachFeatureInExtent =
     function(extent, callback, opt_this) {
-  if (!goog.isNull(this.rBush_)) {
-    return this.rBush_.forEachInExtent(extent, callback, opt_this);
-  } else {
-    this.featuresCollection_.forEach(function(feature) {
-      if (feature.getGeometry().intersectsExtent(extent)) {
-        return callback.call(opt_this, feature);
-      }
-    });
-  }
+  return this.rBush_.forEachInExtent(extent, callback, opt_this);
 };
 
 
@@ -430,8 +393,7 @@ ol.source.Vector.prototype.forEachFeatureIntersectingExtent =
  * @api stable
  */
 ol.source.Vector.prototype.getFeatures = function() {
-  var features = !goog.isNull(this.rBush_) ? this.rBush_.getAll() :
-      this.featuresCollection_.getArray();
+  var features = this.rBush_.getAll();
   if (!goog.object.isEmpty(this.nullGeometryFeatures_)) {
     goog.array.extend(
         features, goog.object.getValues(this.nullGeometryFeatures_));
@@ -460,17 +422,7 @@ ol.source.Vector.prototype.getFeaturesAtCoordinate = function(coordinate) {
  * @return {Array.<ol.Feature>} Features.
  */
 ol.source.Vector.prototype.getFeaturesInExtent = function(extent) {
-  if (!goog.isNull(this.rBush_)) {
-    return this.rBush_.getInExtent(extent);
-  } else {
-    var features = [];
-    this.featuresCollection_.forEach(function(feature) {
-      if (feature.getGeometry().intersectsExtent(extent)) {
-        features.push(feature);
-      }
-    });
-    return features;
-  }
+  return this.rBush_.getInExtent(extent);
 };
 
 
