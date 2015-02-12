@@ -220,7 +220,7 @@ describe('ol.format.GPX', function() {
         expect(serialized).to.xmleql(ol.xml.parse(text));
       });
 
-      it('can tranform, read and write a trk with a trkseg', function() {
+      it('can transform, read and write a trk with a trkseg', function() {
         var text =
             '<gpx xmlns="http://www.topografix.com/GPX/1/1">' +
             '  <trk>' +

@@ -2,7 +2,7 @@
  * @license
  * Latitude/longitude spherical geodesy formulae taken from
  * http://www.movable-type.co.uk/scripts/latlong.html
- * Licenced under CC-BY-3.0.
+ * Licensed under CC-BY-3.0.
  */
 
 // FIXME add intersection of two paths given start points and bearings

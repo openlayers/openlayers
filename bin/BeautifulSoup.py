@@ -1095,7 +1095,7 @@ class BeautifulStoneSoup(Tag, SGMLParser):
             p = self.tagStack[i]
             if (not p or p.name == name) and not isNestable:
                 #Non-nestable tags get popped to the top or to their
-                #last occurance.
+                #last occurrence.
                 popTo = name
                 break
             if (nestingResetTriggers != None
@@ -1242,14 +1242,14 @@ class BeautifulSoup(BeautifulStoneSoup):
 
     * Tag nesting rules:
 
-      Most tags can't be nested at all. For instance, the occurance of
+      Most tags can't be nested at all. For instance, the occurrence of
       a <p> tag should implicitly close the previous <p> tag.
 
        <p>Para1<p>Para2
         should be transformed into:
        <p>Para1</p><p>Para2
 
-      Some tags can be nested arbitrarily. For instance, the occurance
+      Some tags can be nested arbitrarily. For instance, the occurrence
       of a <blockquote> tag should _not_ implicitly close the previous
       <blockquote> tag.
 
