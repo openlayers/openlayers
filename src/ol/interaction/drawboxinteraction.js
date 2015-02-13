@@ -225,10 +225,11 @@ ol.interaction.DrawBox.prototype.startDrawing_ = function(event) {
   this.sketchLine_ = new ol.Feature(new ol.geom.LineString([start.slice(),
         start.slice()]));
   var geometry = new ol.geom.Polygon([[start.slice(), start.slice()]]);
-  this.sketchFeature_ = new ol.Feature(geometry);
+  this.sketchFeature_ = new ol.Feature();
   if (goog.isDef(this.geometryName_)) {
     this.sketchFeature_.setGeometryName(this.geometryName_);
   }
+  this.sketchFeature_.setGeometry(geometry);
 
   this.updateSketchFeatures_();
   this.dispatchEvent(new ol.DrawEvent(ol.DrawEventType.DRAWSTART,

@@ -1,0 +1,338 @@
+goog.provide('ol.test.interaction.DrawBox');
+
+describe('ol.interaction.DrawBox', function() {
+  var target, map, source;
+
+  var width = 360;
+  var height = 180;
+
+  beforeEach(function(done) {
+    target = document.createElement('div');
+    var style = target.style;
+    style.position = 'absolute';
+    style.left = '-1000px';
+    style.top = '-1000px';
+    style.width = width + 'px';
+    style.height = height + 'px';
+    document.body.appendChild(target);
+    source = new ol.source.Vector();
+    var layer = new ol.layer.Vector({source: source});
+    map = new ol.Map({
+      target: target,
+      layers: [layer],
+      view: new ol.View({
+        projection: 'EPSG:4326',
+        center: [0, 0],
+        resolution: 1
+      })
+    });
+    map.on('postrender', function() {
+      done();
+    });
+  });
+
+  afterEach(function() {
+    goog.dispose(map);
+    document.body.removeChild(target);
+  });
+
+  /**
+   * Simulates a browser event on the map viewport.  The client x/y location
+   * will be adjusted as if the map were centered at 0,0.
+   * @param {string} type Event type.
+   * @param {number} x Horizontal offset from map center.
+   * @param {number} y Vertical offset from map center.
+   * @param {boolean=} opt_shiftKey Shift key is pressed.
+   */
+  function simulateEvent(type, x, y, opt_shiftKey) {
+    var viewport = map.getViewport();
+    // calculated in case body has top < 0 (test runner with small window)
+    var position = goog.style.getClientPosition(viewport);
+    var shiftKey = goog.isDef(opt_shiftKey) ? opt_shiftKey : false;
+    var event = new ol.MapBrowserPointerEvent(type, map,
+        new ol.pointer.PointerEvent(type,
+            new goog.events.BrowserEvent({
+              clientX: position.x + x + width / 2,
+              clientY: position.y + y + height / 2,
+              shiftKey: shiftKey
+            })));
+    map.handleMapBrowserEvent(event);
+  }
+
+  describe('constructor', function() {
+
+    it('creates a new interaction', function() {
+      var draw = new ol.interaction.DrawBox({
+        source: source
+      });
+      expect(draw).to.be.a(ol.interaction.DrawBox);
+      expect(draw).to.be.a(ol.interaction.Interaction);
+    });
+
+  });
+
+  describe('specifying a geometryName', function() {
+
+    beforeEach(function() {
+      var draw = new ol.interaction.DrawBox({
+        source: source,
+        geometryName: 'the_geom'
+      });
+      map.addInteraction(draw);
+    });
+
+    it('creates a feature with the correct geometryName', function() {
+      simulateEvent('pointermove', 10, 20);
+      simulateEvent('pointerdown', 10, 20);
+      simulateEvent('pointerup', 10, 20);
+
+      simulateEvent('pointermove', 20, 30);
+      simulateEvent('pointerdown', 20, 30);
+      simulateEvent('pointerup', 20, 30);
+
+      var features = source.getFeatures();
+      var geometry = features[0].getGeometry();
+      expect(features[0].getGeometryName()).to.equal('the_geom');
+      expect(geometry).to.be.a(ol.geom.Polygon);
+    });
+  });
+
+  describe('drawing rectangles', function() {
+    var draw;
+
+    beforeEach(function() {
+      draw = new ol.interaction.DrawBox({
+        source: source
+      });
+      map.addInteraction(draw);
+    });
+
+    it('draws a rectangle with clicks', function() {
+      // first point
+      simulateEvent('pointermove', 10, 20);
+      simulateEvent('pointerdown', 10, 20);
+      simulateEvent('pointerup', 10, 20);
+
+      // finish with second point
+      simulateEvent('pointermove', 20, 32);
+      simulateEvent('pointerdown', 20, 32);
+      simulateEvent('pointerup', 20, 32);
+
+      var features = source.getFeatures();
+      expect(features).to.have.length(1);
+      var geometry = features[0].getGeometry();
+      expect(geometry).to.be.a(ol.geom.Polygon);
+
+      expect(geometry.getCoordinates()).to.eql([
+        [[10, -32], [10, -20], [20, -20], [20, -32]]
+      ]);
+    });
+
+    it('triggers draw events', function() {
+      var ds = sinon.spy();
+      var de = sinon.spy();
+      goog.events.listen(draw, ol.DrawEventType.DRAWSTART, ds);
+      goog.events.listen(draw, ol.DrawEventType.DRAWEND, de);
+
+      // first point
+      simulateEvent('pointermove', 10, 20);
+      simulateEvent('pointerdown', 10, 20);
+      simulateEvent('pointerup', 10, 20);
+
+      // finish with second point
+      simulateEvent('pointermove', 20, 30);
+      simulateEvent('pointerdown', 20, 30);
+      simulateEvent('pointerup', 20, 30);
+
+      expect(ds).to.be.called(1);
+      expect(de).to.be.called(1);
+    });
+
+  });
+
+  describe('drawing squares', function() {
+    var draw;
+
+    beforeEach(function() {
+      draw = new ol.interaction.DrawBox({
+        source: source,
+        condition: ol.events.condition.always
+      });
+      map.addInteraction(draw);
+    });
+
+    it('draws a square with clicks', function() {
+      // first point
+      simulateEvent('pointermove', 10, 20);
+      simulateEvent('pointerdown', 10, 20);
+      simulateEvent('pointerup', 10, 20);
+
+      // finish with second point
+      simulateEvent('pointermove', 20, 32);
+      simulateEvent('pointerdown', 20, 32);
+      simulateEvent('pointerup', 20, 32);
+
+      var features = source.getFeatures();
+      expect(features).to.have.length(1);
+      var geometry = features[0].getGeometry();
+      expect(geometry).to.be.a(ol.geom.Polygon);
+
+      expect(geometry.getCoordinates()).to.eql([
+        [[10, -32], [10, -20], [22, -20], [22, -32]]
+      ]);
+    });
+
+    it('triggers draw events', function() {
+      var ds = sinon.spy();
+      var de = sinon.spy();
+      goog.events.listen(draw, ol.DrawEventType.DRAWSTART, ds);
+      goog.events.listen(draw, ol.DrawEventType.DRAWEND, de);
+
+      // first point
+      simulateEvent('pointermove', 10, 20);
+      simulateEvent('pointerdown', 10, 20);
+      simulateEvent('pointerup', 10, 20);
+
+      // finish with second point
+      simulateEvent('pointermove', 20, 30);
+      simulateEvent('pointerdown', 20, 30);
+      simulateEvent('pointerup', 20, 30);
+
+      expect(ds).to.be.called(1);
+      expect(de).to.be.called(1);
+    });
+
+  });
+
+  describe('#setActive()', function() {
+    var interaction;
+
+    beforeEach(function() {
+      interaction = new ol.interaction.DrawBox({
+        source: source
+      });
+
+      expect(interaction.getActive()).to.be(true);
+
+      map.addInteraction(interaction);
+
+      // first point
+      simulateEvent('pointermove', 10, 20);
+      simulateEvent('pointerdown', 10, 20);
+      simulateEvent('pointerup', 10, 20);
+
+      expect(interaction.sketchFeature_).not.to.be(null);
+    });
+
+    afterEach(function() {
+      map.removeInteraction(interaction);
+    });
+
+    describe('#setActive(false)', function() {
+      it('unsets the map from the feature overlay', function() {
+        interaction.setActive(false);
+        expect(interaction.overlay_.map_).to.be(null);
+      });
+      it('aborts the drawing', function() {
+        interaction.setActive(false);
+        expect(interaction.sketchFeature_).to.be(null);
+      });
+      it('fires change:active', function() {
+        var listenerSpy = sinon.spy(function() {
+          // test that the interaction's change:active listener is called first
+          expect(interaction.overlay_.map_).to.be(null);
+        });
+        interaction.on('change:active', listenerSpy);
+        interaction.setActive(false);
+        expect(listenerSpy.callCount).to.be(1);
+      });
+    });
+
+    describe('#setActive(true)', function() {
+      beforeEach(function() {
+        interaction.setActive(false);
+      });
+      it('sets the map into the feature overlay', function() {
+        interaction.setActive(true);
+        expect(interaction.overlay_.map_).to.be(map);
+      });
+      it('fires change:active', function() {
+        var listenerSpy = sinon.spy(function() {
+          // test that the interaction's change:active listener is called first
+          expect(interaction.overlay_.map_).not.to.be(null);
+        });
+        interaction.on('change:active', listenerSpy);
+        interaction.setActive(true);
+        expect(listenerSpy.callCount).to.be(1);
+      });
+    });
+
+  });
+
+  describe('#setMap()', function() {
+    var interaction;
+
+    beforeEach(function() {
+      interaction = new ol.interaction.DrawBox({
+        source: source
+      });
+      expect(interaction.getActive()).to.be(true);
+    });
+
+    describe('#setMap(null)', function() {
+      beforeEach(function() {
+        map.addInteraction(interaction);
+        // first point
+        simulateEvent('pointermove', 10, 20);
+        simulateEvent('pointerdown', 10, 20);
+        simulateEvent('pointerup', 10, 20);
+        expect(interaction.sketchFeature_).not.to.be(null);
+      });
+      afterEach(function() {
+        map.removeInteraction(interaction);
+      });
+      describe('#setMap(null) when interaction is active', function() {
+        it('unsets the map from the feature overlay', function() {
+          interaction.setMap(null);
+          expect(interaction.overlay_.map_).to.be(null);
+        });
+        it('aborts the drawing', function() {
+          interaction.setMap(null);
+          expect(interaction.sketchFeature_).to.be(null);
+        });
+      });
+    });
+
+    describe('#setMap(map)', function() {
+      describe('#setMap(map) when interaction is active', function() {
+        it('sets the map into the feature overlay', function() {
+          interaction.setMap(map);
+          expect(interaction.overlay_.map_).to.be(map);
+        });
+      });
+      describe('#setMap(map) when interaction is not active', function() {
+        it('does not set the map into the feature overlay', function() {
+          interaction.setActive(false);
+          interaction.setMap(map);
+          expect(interaction.overlay_.map_).to.be(null);
+        });
+      });
+
+    });
+  });
+});
+
+goog.require('goog.dispose');
+goog.require('goog.events');
+goog.require('goog.events.BrowserEvent');
+goog.require('goog.style');
+goog.require('ol.Map');
+goog.require('ol.MapBrowserPointerEvent');
+goog.require('ol.View');
+goog.require('ol.events.condition');
+goog.require('ol.geom.Polygon');
+goog.require('ol.interaction.DrawBox');
+goog.require('ol.interaction.Interaction');
+goog.require('ol.layer.Vector');
+goog.require('ol.pointer.PointerEvent');
+goog.require('ol.source.Vector');

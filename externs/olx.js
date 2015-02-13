@@ -2302,8 +2302,11 @@ olx.interaction.DrawOptions.prototype.condition;
 
 
 /**
- * @typedef {{condition: (ol.events.ConditionType|undefined),
- *     style: ol.style.Style}}
+ * @typedef {{features: (ol.Collection.<ol.Feature>|undefined),
+ *     source: (ol.source.Vector|undefined),
+ *     style: (ol.style.Style|Array.<ol.style.Style>|ol.style.StyleFunction|undefined),
+ *     geometryName: (string|undefined),
+ *     condition: (ol.events.ConditionType|undefined)}}
  * @api
  */
 olx.interaction.DrawBoxOptions;
