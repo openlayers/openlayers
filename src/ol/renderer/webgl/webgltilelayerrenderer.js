@@ -95,6 +95,40 @@ ol.renderer.webgl.TileLayer.prototype.disposeInternal = function() {
 
 
 /**
+ * Create a function that adds loaded tiles to the tile lookup.
+ * @param {ol.source.Tile} source Tile source.
+ * @param {Object.<number, Object.<string, ol.Tile>>} tiles Lookup of loaded
+ *     tiles by zoom level.
+ * @return {function(number, ol.TileRange):boolean} A function that can be
+ *     called with a zoom level and a tile range to add loaded tiles to the
+ *     lookup.
+ * @protected
+ */
+ol.renderer.webgl.TileLayer.prototype.createLoadedTileFinder =
+    function(source, tiles) {
+  var mapRenderer = this.mapRenderer;
+
+  /**
+   * @param {number} zoom Zoom level.
+   * @param {ol.TileRange} tileRange Tile range.
+   * @return {boolean} The tile range is fully loaded.
+   */
+  return function(zoom, tileRange) {
+    return source.forEachLoadedTile(zoom, tileRange, function(tile) {
+      var loaded = mapRenderer.isTileTextureLoaded(tile);
+      if (loaded) {
+        if (!tiles[zoom]) {
+          tiles[zoom] = {};
+        }
+        tiles[zoom][tile.tileCoord.toString()] = tile;
+      }
+      return loaded;
+    });
+  };
+};
+
+
+/**
  * @inheritDoc
  */
 ol.renderer.webgl.TileLayer.prototype.handleWebGLContextLost = function() {
@@ -190,12 +224,8 @@ ol.renderer.webgl.TileLayer.prototype.prepareFrame =
     var tilesToDrawByZ = {};
     tilesToDrawByZ[z] = {};
 
-    var getTileIfLoaded = this.createGetTileIfLoadedFunction(function(tile) {
-      return !goog.isNull(tile) && tile.getState() == ol.TileState.LOADED &&
-          mapRenderer.isTileTextureLoaded(tile);
-    }, tileSource, pixelRatio, projection);
-    var findLoadedTiles = goog.bind(tileSource.findLoadedTiles, tileSource,
-        tilesToDrawByZ, getTileIfLoaded);
+    var findLoadedTiles = this.createLoadedTileFinder(
+        tileSource, tilesToDrawByZ);
 
     var useInterimTilesOnError = tileLayer.getUseInterimTilesOnError();
     var allTilesLoaded = true;
