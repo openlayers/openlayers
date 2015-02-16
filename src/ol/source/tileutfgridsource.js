@@ -7,7 +7,6 @@ goog.require('goog.events.EventType');
 goog.require('goog.net.Jsonp');
 goog.require('ol.Attribution');
 goog.require('ol.Tile');
-goog.require('ol.TileCache');
 goog.require('ol.TileState');
 goog.require('ol.TileUrlFunction');
 goog.require('ol.extent');
@@ -48,12 +47,6 @@ ol.source.TileUTFGrid = function(options) {
 
   /**
    * @private
-   * @type {!ol.TileCache}
-   */
-  this.tileCache_ = new ol.TileCache();
-
-  /**
-   * @private
    * @type {string|undefined}
    */
   this.template_ = undefined;
@@ -62,22 +55,6 @@ ol.source.TileUTFGrid = function(options) {
   request.send(undefined, goog.bind(this.handleTileJSONResponse, this));
 };
 goog.inherits(ol.source.TileUTFGrid, ol.source.Tile);
-
-
-/**
- * @inheritDoc
- */
-ol.source.TileUTFGrid.prototype.canExpireCache = function() {
-  return this.tileCache_.canExpireCache();
-};
-
-
-/**
- * @inheritDoc
- */
-ol.source.TileUTFGrid.prototype.expireCache = function(usedTiles) {
-  this.tileCache_.expireCache(usedTiles);
-};
 
 
 /**
@@ -195,8 +172,8 @@ ol.source.TileUTFGrid.prototype.handleTileJSONResponse = function(tileJSON) {
 ol.source.TileUTFGrid.prototype.getTile =
     function(z, x, y, pixelRatio, projection) {
   var tileCoordKey = this.getKeyZXY(z, x, y);
-  if (this.tileCache_.containsKey(tileCoordKey)) {
-    return /** @type {!ol.Tile} */ (this.tileCache_.get(tileCoordKey));
+  if (this.tileCache.containsKey(tileCoordKey)) {
+    return /** @type {!ol.Tile} */ (this.tileCache.get(tileCoordKey));
   } else {
     goog.asserts.assert(projection);
     var tileCoord = [z, x, y];
@@ -207,7 +184,7 @@ ol.source.TileUTFGrid.prototype.getTile =
         goog.isDef(tileUrl) ? tileUrl : '',
         this.tileGrid.getTileCoordExtent(tileCoord),
         this.preemptive_);
-    this.tileCache_.set(tileCoordKey, tile);
+    this.tileCache.set(tileCoordKey, tile);
     return tile;
   }
 };
@@ -218,8 +195,8 @@ ol.source.TileUTFGrid.prototype.getTile =
  */
 ol.source.TileUTFGrid.prototype.useTile = function(z, x, y) {
   var tileCoordKey = this.getKeyZXY(z, x, y);
-  if (this.tileCache_.containsKey(tileCoordKey)) {
-    this.tileCache_.get(tileCoordKey);
+  if (this.tileCache.containsKey(tileCoordKey)) {
+    this.tileCache.get(tileCoordKey);
   }
 };
 
