@@ -179,10 +179,9 @@ ol.source.Tile.prototype.getTileGrid = function() {
  */
 ol.source.Tile.prototype.getTileGridForProjection = function(projection) {
   if (goog.isNull(this.tileGrid)) {
-    return ol.tilegrid.getForProjection(projection);
-  } else {
-    return this.tileGrid;
+    this.tileGrid = ol.tilegrid.getForProjection(projection);
   }
+  return this.tileGrid;
 };
 
 
