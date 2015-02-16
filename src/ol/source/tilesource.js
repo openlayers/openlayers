@@ -6,6 +6,7 @@ goog.require('ol.Attribution');
 goog.require('ol.Extent');
 goog.require('ol.TileCache');
 goog.require('ol.TileRange');
+goog.require('ol.TileState');
 goog.require('ol.source.Source');
 goog.require('ol.tilecoord');
 goog.require('ol.tilegrid.TileGrid');
@@ -92,41 +93,33 @@ ol.source.Tile.prototype.expireCache = function(usedTiles) {
 
 
 /**
- * Look for loaded tiles over a given tile range and zoom level.  Adds
- * properties to the provided lookup representing key/tile pairs for already
- * loaded tiles.
- *
- * @param {Object.<number, Object.<string, ol.Tile>>} loadedTilesByZ A lookup of
- *     loaded tiles by zoom level.
- * @param {function(number, number, number): ol.Tile} getTileIfLoaded A function
- *     that returns the tile only if it is fully loaded.
  * @param {number} z Zoom level.
  * @param {ol.TileRange} tileRange Tile range.
+ * @param {function(ol.Tile):(boolean|undefined)} callback Called with each
+ *     loaded tile.  If the callback returns `false`, the tile will not be
+ *     considered loaded.
  * @return {boolean} The tile range is fully covered with loaded tiles.
  */
-ol.source.Tile.prototype.findLoadedTiles = function(loadedTilesByZ,
-    getTileIfLoaded, z, tileRange) {
-  // FIXME this could be more efficient about filling partial holes
-  var fullyCovered = true;
-  var tile, tileCoordKey, x, y;
-  for (x = tileRange.minX; x <= tileRange.maxX; ++x) {
-    for (y = tileRange.minY; y <= tileRange.maxY; ++y) {
+ol.source.Tile.prototype.forEachLoadedTile = function(z, tileRange, callback) {
+  var covered = true;
+  var tile, tileCoordKey, loaded;
+  for (var x = tileRange.minX; x <= tileRange.maxX; ++x) {
+    for (var y = tileRange.minY; y <= tileRange.maxY; ++y) {
       tileCoordKey = this.getKeyZXY(z, x, y);
-      if (loadedTilesByZ[z] && loadedTilesByZ[z][tileCoordKey]) {
-        continue;
-      }
-      tile = getTileIfLoaded(z, x, y);
-      if (!goog.isNull(tile)) {
-        if (!loadedTilesByZ[z]) {
-          loadedTilesByZ[z] = {};
+      loaded = false;
+      if (this.tileCache.containsKey(tileCoordKey)) {
+        tile = /** @type {!ol.Tile} */ (this.tileCache.get(tileCoordKey));
+        loaded = tile.getState() === ol.TileState.LOADED;
+        if (loaded) {
+          loaded = (callback(tile) !== false);
         }
-        loadedTilesByZ[z][tileCoordKey] = tile;
-      } else {
-        fullyCovered = false;
+      }
+      if (!loaded) {
+        covered = false;
       }
     }
   }
-  return fullyCovered;
+  return covered;
 };
 
 
