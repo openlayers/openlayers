@@ -210,6 +210,17 @@ oli.render.Event.prototype.vectorContext;
 oli.source;
 
 
+/**
+ * @interface
+ */
+oli.source.TileEvent = function() {};
+
+
+/**
+ * @type {ol.Tile}
+ */
+oli.source.TileEvent.prototype.tile;
+
 
 /**
  * @interface
