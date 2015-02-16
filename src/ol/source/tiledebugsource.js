@@ -1,7 +1,6 @@
 goog.provide('ol.source.TileDebug');
 
 goog.require('ol.Tile');
-goog.require('ol.TileCache');
 goog.require('ol.TileCoord');
 goog.require('ol.TileState');
 goog.require('ol.dom');
@@ -89,12 +88,6 @@ ol.source.TileDebug = function(options) {
     tileGrid: options.tileGrid
   });
 
-  /**
-   * @private
-   * @type {ol.TileCache}
-   */
-  this.tileCache_ = new ol.TileCache();
-
 };
 goog.inherits(ol.source.TileDebug, ol.source.Tile);
 
@@ -102,29 +95,13 @@ goog.inherits(ol.source.TileDebug, ol.source.Tile);
 /**
  * @inheritDoc
  */
-ol.source.TileDebug.prototype.canExpireCache = function() {
-  return this.tileCache_.canExpireCache();
-};
-
-
-/**
- * @inheritDoc
- */
-ol.source.TileDebug.prototype.expireCache = function(usedTiles) {
-  this.tileCache_.expireCache(usedTiles);
-};
-
-
-/**
- * @inheritDoc
- */
 ol.source.TileDebug.prototype.getTile = function(z, x, y) {
   var tileCoordKey = this.getKeyZXY(z, x, y);
-  if (this.tileCache_.containsKey(tileCoordKey)) {
-    return /** @type {!ol.DebugTile_} */ (this.tileCache_.get(tileCoordKey));
+  if (this.tileCache.containsKey(tileCoordKey)) {
+    return /** @type {!ol.DebugTile_} */ (this.tileCache.get(tileCoordKey));
   } else {
     var tile = new ol.DebugTile_([z, x, y], this.tileGrid);
-    this.tileCache_.set(tileCoordKey, tile);
+    this.tileCache.set(tileCoordKey, tile);
     return tile;
   }
 };

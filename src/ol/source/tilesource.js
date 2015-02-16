@@ -4,6 +4,7 @@ goog.provide('ol.source.TileOptions');
 goog.require('goog.functions');
 goog.require('ol.Attribution');
 goog.require('ol.Extent');
+goog.require('ol.TileCache');
 goog.require('ol.TileRange');
 goog.require('ol.source.Source');
 goog.require('ol.tilecoord');
@@ -64,6 +65,12 @@ ol.source.Tile = function(options) {
    */
   this.tileGrid = goog.isDef(options.tileGrid) ? options.tileGrid : null;
 
+  /**
+   * @protected
+   * @type {ol.TileCache}
+   */
+  this.tileCache = new ol.TileCache();
+
 };
 goog.inherits(ol.source.Tile, ol.source.Source);
 
@@ -71,13 +78,17 @@ goog.inherits(ol.source.Tile, ol.source.Source);
 /**
  * @return {boolean} Can expire cache.
  */
-ol.source.Tile.prototype.canExpireCache = goog.functions.FALSE;
+ol.source.Tile.prototype.canExpireCache = function() {
+  return this.tileCache.canExpireCache();
+};
 
 
 /**
  * @param {Object.<string, ol.TileRange>} usedTiles Used tiles.
  */
-ol.source.Tile.prototype.expireCache = goog.abstractMethod;
+ol.source.Tile.prototype.expireCache = function(usedTiles) {
+  this.tileCache.expireCache(usedTiles);
+};
 
 
 /**
