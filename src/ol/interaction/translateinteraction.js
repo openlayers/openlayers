@@ -17,7 +17,6 @@ ol.interaction.Translate = function(options) {
   goog.base(this, {
     handleDownEvent: ol.interaction.Translate.handleDownEvent_,
     handleDragEvent: ol.interaction.Translate.handleDragEvent_,
-    handleEvent: ol.interaction.Translate.handleEvent,
     handleUpEvent: ol.interaction.Translate.handleUpEvent_
   });
 
@@ -100,17 +99,6 @@ ol.interaction.Translate.handleDragEvent_ = function(event) {
 
     this.lastCoordinate_ = newCoordinate;
   }
-};
-
-
-/**
- * @param {ol.MapBrowserEvent} event Map browser event.
- * @return {boolean} `false` to stop event propagation.
- * @this {ol.interaction.Modify}
- * @api
- */
-ol.interaction.Translate.handleEvent = function(event) {
-  return true;
 };
 
 
