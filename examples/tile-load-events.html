@@ -49,7 +49,17 @@
           <h4 id="title">Tile load events example</h4>
           <p id="shortdesc">Example using tile load events.</p>
           <div id="docs">
-            <p>See the <a href="tile-load-events.js" target="_blank">tile-load-events.js source</a> to see how this is done.</p>
+            <p>
+              Image tile sources fire events related to tile loading.  You can
+              listen for <code>tileloadstart</code>, <code>tileloadend</code>,
+              and <code>tileloaderror</code> type events to monitor tile loading
+              progress.  This example registers listeners for these events and
+              renders a tile loading progress bar at the bottom of the map.
+            </p>
+            <p>
+              See the <a href="tile-load-events.js" target="_blank">tile-load-events.js source</a>
+              for more detail on how this is done.
+            </p>
           </div>
           <div id="tags">tile, events, loading</div>
         </div>
