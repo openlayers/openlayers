@@ -406,7 +406,7 @@ ol.interaction.Draw.prototype.startDrawing_ = function(event) {
       this.sketchPolygonCoords_ = [[start.slice(), start.slice()]];
       geometry = new ol.geom.Polygon(this.sketchPolygonCoords_);
     } else if (this.mode_ === ol.interaction.DrawMode.CIRCLE) {
-      geometry = new ol.geom.Circle(start.slice(), 1000);
+      geometry = new ol.geom.Circle(start.slice(), 0);
       this.sketchLine_ = new ol.Feature(new ol.geom.LineString([start.slice(),
             start.slice()]));
     }
