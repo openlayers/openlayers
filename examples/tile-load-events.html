@@ -9,6 +9,20 @@
     <link rel="stylesheet" href="../resources/layout.css" type="text/css">
     <link rel="stylesheet" href="../resources/bootstrap/css/bootstrap-responsive.min.css" type="text/css">
     <title>Tile load events example</title>
+    <style>
+      .wrapper {
+        position: relative;
+      }
+      #progress {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        height: 2px;
+        background: rgba(0, 60, 136, 0.4);
+        width: 0;
+        transition: width 250ms;
+      }
+    </style>
   </head>
   <body>
 
@@ -23,8 +37,9 @@
     <div class="container-fluid">
 
       <div class="row-fluid">
-        <div class="span12">
+        <div class="span12 wrapper">
           <div id="map" class="map"></div>
+          <div id="progress"></div>
         </div>
       </div>
 
