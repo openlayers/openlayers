@@ -2489,6 +2489,21 @@ olx.interaction.DrawOptions.prototype.wrapX;
 
 
 /**
+ * @typedef {{features: (ol.Collection.<ol.Feature>|undefined)}}
+ * @api
+ */
+olx.interaction.TranslateOptions;
+
+
+/**
+ * The features the interaction works on.
+ * @type {ol.Collection.<ol.Feature>|undefined}
+ * @api
+ */
+olx.interaction.TranslateOptions.prototype.features;
+
+
+/**
  * @typedef {{condition: (ol.events.ConditionType|undefined),
  *     duration: (number|undefined),
  *     pixelDelta: (number|undefined)}}
