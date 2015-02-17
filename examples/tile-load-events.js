@@ -1,7 +1,7 @@
 goog.require('ol.Map');
 goog.require('ol.View');
 goog.require('ol.layer.Tile');
-goog.require('ol.source.OSM');
+goog.require('ol.source.TileJSON');
 
 
 
@@ -74,7 +74,10 @@ Progress.prototype.hide = function() {
 
 var progress = new Progress(document.getElementById('progress'));
 
-var source = new ol.source.OSM();
+var source = new ol.source.TileJSON({
+  url: 'http://api.tiles.mapbox.com/v3/mapbox.world-bright.jsonp',
+  crossOrigin: 'anonymous'
+});
 
 source.on('tileloadstart', function(event) {
   progress.addLoading();
@@ -88,6 +91,7 @@ source.on('tileloaderror', function(event) {
 });
 
 var map = new ol.Map({
+  logo: false,
   layers: [
     new ol.layer.Tile({source: source})
   ],
