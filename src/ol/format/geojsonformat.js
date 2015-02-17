@@ -64,7 +64,7 @@ ol.format.GeoJSON.EXTENSIONS_ = ['.geojson'];
 
 
 /**
- * @param {GeoJSONObject} object Object.
+ * @param {GeoJSONGeometry|GeoJSONGeometryCollection} object Object.
  * @param {olx.format.ReadOptions=} opt_options Read options.
  * @private
  * @return {ol.geom.Geometry} Geometry.
@@ -92,7 +92,7 @@ ol.format.GeoJSON.readGeometryCollectionGeometry_ = function(
   goog.asserts.assert(object.type == 'GeometryCollection');
   var geometries = goog.array.map(object.geometries,
       /**
-       * @param {GeoJSONObject} geometry Geometry.
+       * @param {GeoJSONGeometry} geometry Geometry.
        * @return {ol.geom.Geometry} geometry Geometry.
        */
       function(geometry) {
@@ -505,18 +505,17 @@ ol.format.GeoJSON.prototype.writeFeatureObject = function(
   };
   var id = feature.getId();
   if (goog.isDefAndNotNull(id)) {
-    goog.object.set(object, 'id', id);
+    object['id'] = id;
   }
   var geometry = feature.getGeometry();
   if (goog.isDefAndNotNull(geometry)) {
-    goog.object.set(
-        object, 'geometry',
-        ol.format.GeoJSON.writeGeometry_(geometry, opt_options));
+    object['geometry'] =
+        ol.format.GeoJSON.writeGeometry_(geometry, opt_options);
   }
   var properties = feature.getProperties();
   goog.object.remove(properties, feature.getGeometryName());
   if (!goog.object.isEmpty(properties)) {
-    goog.object.set(object, 'properties', properties);
+    object['properties'] = properties;
   }
   return object;
 };

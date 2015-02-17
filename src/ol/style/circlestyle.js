@@ -74,12 +74,6 @@ ol.style.Circle = function(opt_options) {
    * @private
    * @type {Array.<number>}
    */
-  this.hitDetectionOrigin_ = [0, 0];
-
-  /**
-   * @private
-   * @type {Array.<number>}
-   */
   this.anchor_ = null;
 
   /**
@@ -186,14 +180,6 @@ ol.style.Circle.prototype.getHitDetectionImageSize = function() {
  */
 ol.style.Circle.prototype.getOrigin = function() {
   return this.origin_;
-};
-
-
-/**
- * @inheritDoc
- */
-ol.style.Circle.prototype.getHitDetectionOrigin = function() {
-  return this.hitDetectionOrigin_;
 };
 
 
@@ -323,12 +309,10 @@ ol.style.Circle.prototype.render_ = function(atlasManager) {
 
     if (hasCustomHitDetectionImage) {
       this.hitDetectionCanvas_ = info.hitImage;
-      this.hitDetectionOrigin_ = [info.hitOffsetX, info.hitOffsetY];
       this.hitDetectionImageSize_ =
           [info.hitImage.width, info.hitImage.height];
     } else {
       this.hitDetectionCanvas_ = this.canvas_;
-      this.hitDetectionOrigin_ = this.origin_;
       this.hitDetectionImageSize_ = [imageSize, imageSize];
     }
   }

@@ -57,31 +57,33 @@ ol.control.OverviewMap = function(opt_options) {
   var tipLabel = goog.isDef(options.tipLabel) ?
       options.tipLabel : 'Overview map';
 
-  /**
-   * @private
-   * @type {string}
-   */
-  this.collapseLabel_ = goog.isDef(options.collapseLabel) ?
+  var collapseLabel = goog.isDef(options.collapseLabel) ?
       options.collapseLabel : '\u00AB';
 
   /**
    * @private
-   * @type {string}
+   * @type {Node}
    */
-  this.label_ = goog.isDef(options.label) ? options.label : '\u00BB';
-  var label = goog.dom.createDom(goog.dom.TagName.SPAN, {},
-      (this.collapsible_ && !this.collapsed_) ?
-      this.collapseLabel_ : this.label_);
+  this.collapseLabel_ = /** @type {Node} */ (goog.isString(collapseLabel) ?
+      goog.dom.createDom(goog.dom.TagName.SPAN, {}, collapseLabel) :
+      collapseLabel);
+
+  var label = goog.isDef(options.label) ? options.label : '\u00BB';
 
   /**
    * @private
-   * @type {Element}
+   * @type {Node}
    */
-  this.labelSpan_ = label;
+  this.label_ = /** @type {Node} */ (goog.isString(label) ?
+      goog.dom.createDom(goog.dom.TagName.SPAN, {}, label) :
+      label);
+
+  var activeLabel = (this.collapsible_ && !this.collapsed_) ?
+      this.collapseLabel_ : this.label_;
   var button = goog.dom.createDom(goog.dom.TagName.BUTTON, {
     'type': 'button',
     'title': tipLabel
-  }, this.labelSpan_);
+  }, activeLabel);
 
   goog.events.listen(button, goog.events.EventType.CLICK,
       this.handleClick_, false, this);
@@ -427,8 +429,11 @@ ol.control.OverviewMap.prototype.handleClick_ = function(event) {
  */
 ol.control.OverviewMap.prototype.handleToggle_ = function() {
   goog.dom.classlist.toggle(this.element, 'ol-collapsed');
-  goog.dom.setTextContent(this.labelSpan_,
-      (this.collapsed_) ? this.collapseLabel_ : this.label_);
+  if (this.collapsed_) {
+    goog.dom.replaceNode(this.collapseLabel_, this.label_);
+  } else {
+    goog.dom.replaceNode(this.label_, this.collapseLabel_);
+  }
   this.collapsed_ = !this.collapsed_;
 
   // manage overview map if it had not been rendered before and control

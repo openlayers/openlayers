@@ -1,9 +1,9 @@
 goog.provide('ol.geom.Geometry');
 goog.provide('ol.geom.GeometryType');
 
-goog.require('goog.asserts');
 goog.require('goog.functions');
 goog.require('ol.Observable');
+goog.require('ol.extent');
 goog.require('ol.proj');
 
 
@@ -59,16 +59,16 @@ ol.geom.Geometry = function() {
   goog.base(this);
 
   /**
-   * @protected
-   * @type {ol.Extent|undefined}
+   * @private
+   * @type {ol.Extent}
    */
-  this.extent = undefined;
+  this.extent_ = ol.extent.createEmpty();
 
   /**
-   * @protected
+   * @private
    * @type {number}
    */
-  this.extentRevision = -1;
+  this.extentRevision_ = -1;
 
   /**
    * @protected
@@ -135,6 +135,14 @@ ol.geom.Geometry.prototype.containsCoordinate = function(coordinate) {
 
 
 /**
+ * @param {ol.Extent} extent Extent.
+ * @protected
+ * @return {ol.Extent} extent Extent.
+ */
+ol.geom.Geometry.prototype.computeExtent = goog.abstractMethod;
+
+
+/**
  * @param {number} x X.
  * @param {number} y Y.
  * @return {boolean} Contains (x, y).
@@ -144,12 +152,17 @@ ol.geom.Geometry.prototype.containsXY = goog.functions.FALSE;
 
 /**
  * Get the extent of the geometry.
- * @function
  * @param {ol.Extent=} opt_extent Extent.
  * @return {ol.Extent} extent Extent.
  * @api stable
  */
-ol.geom.Geometry.prototype.getExtent = goog.abstractMethod;
+ol.geom.Geometry.prototype.getExtent = function(opt_extent) {
+  if (this.extentRevision_ != this.getRevision()) {
+    this.extent_ = this.computeExtent(this.extent_);
+    this.extentRevision_ = this.getRevision();
+  }
+  return ol.extent.returnOrUpdate(this.extent_, opt_extent);
+};
 
 
 /**

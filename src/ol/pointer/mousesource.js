@@ -169,8 +169,7 @@ ol.pointer.MouseSource.prototype.mousedown = function(inEvent) {
       this.cancel(inEvent);
     }
     var e = ol.pointer.MouseSource.prepareEvent(inEvent, this.dispatcher);
-    goog.object.set(this.pointerMap,
-        ol.pointer.MouseSource.POINTER_ID.toString(), inEvent);
+    this.pointerMap[ol.pointer.MouseSource.POINTER_ID.toString()] = inEvent;
     this.dispatcher.down(e, inEvent);
   }
 };
@@ -196,8 +195,7 @@ ol.pointer.MouseSource.prototype.mousemove = function(inEvent) {
  */
 ol.pointer.MouseSource.prototype.mouseup = function(inEvent) {
   if (!this.isEventSimulatedFromTouch_(inEvent)) {
-    var p = goog.object.get(this.pointerMap,
-        ol.pointer.MouseSource.POINTER_ID.toString());
+    var p = this.pointerMap[ol.pointer.MouseSource.POINTER_ID.toString()];
 
     if (p && p.button === inEvent.button) {
       var e = ol.pointer.MouseSource.prepareEvent(inEvent, this.dispatcher);

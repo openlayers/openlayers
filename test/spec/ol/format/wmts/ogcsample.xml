@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Capabilities version="1.0.0" xmlns="http://www.opengis.net/wmts/1.0" xmlns:gml="http://www.opengis.net/gml" xmlns:ows="http://www.opengis.net/ows/1.1" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.opengis.net/wmts/1.0 http://schemas.opengis.net/wmts/1.0.0/wmtsGetCapabilities_response.xsd">
+	<ows:ServiceIdentification>
+		<ows:Title>Web Map Tile Service</ows:Title>
+		<ows:Abstract>Service that contrains the map
+access interface to some TileMatrixSets</ows:Abstract>
+		<ows:Keywords>
+			<ows:Keyword>tile</ows:Keyword>
+			<ows:Keyword>tile matrix set</ows:Keyword>
+			<ows:Keyword>map</ows:Keyword>
+		</ows:Keywords>
+		<ows:ServiceType>OGC WMTS</ows:ServiceType>
+		<ows:ServiceTypeVersion>1.0.0</ows:ServiceTypeVersion>
+		<ows:Fees>none</ows:Fees>
+		<ows:AccessConstraints>none</ows:AccessConstraints>
+	</ows:ServiceIdentification>
+	<ows:ServiceProvider>
+		<ows:ProviderName>MiraMon</ows:ProviderName>
+		<ows:ProviderSite xlink:href="http://www.creaf.uab.cat/miramon"/>
+		<ows:ServiceContact>
+			<ows:IndividualName>Joan Maso Pau</ows:IndividualName>
+			<ows:PositionName>Senior Software Engineer</ows:PositionName>
+			<ows:ContactInfo>
+				<ows:Phone>
+					<ows:Voice>+34 93 581 1312</ows:Voice>
+					<ows:Facsimile>+34 93 581 4151</ows:Facsimile>
+				</ows:Phone>
+				<ows:Address>
+					<ows:DeliveryPoint>Fac Ciencies UAB</ows:DeliveryPoint>
+					<ows:City>Bellaterra</ows:City>
+					<ows:AdministrativeArea>Barcelona
+</ows:AdministrativeArea>
+					<ows:PostalCode>08193</ows:PostalCode>
+					<ows:Country>Spain</ows:Country>
+					<ows:ElectronicMailAddress>joan.maso@uab.cat
+</ows:ElectronicMailAddress>
+				</ows:Address>
+			</ows:ContactInfo>
+		</ows:ServiceContact>
+	</ows:ServiceProvider>
+	<ows:OperationsMetadata>
+		<ows:Operation name="GetCapabilities">
+			<ows:DCP>
+				<ows:HTTP>
+					<ows:Get xlink:href="http://www.maps.bob/cgi-bin/MiraMon5_0.cgi?">
+						<ows:Constraint name="GetEncoding">
+							<ows:AllowedValues>
+								<ows:Value>KVP</ows:Value>
+                                <ows:Value>SOAP</ows:Value>
+							</ows:AllowedValues>
+						</ows:Constraint>
+					</ows:Get>
+				</ows:HTTP>
+			</ows:DCP>
+		</ows:Operation>
+		<ows:Operation name="GetTile">
+			<ows:DCP>
+				<ows:HTTP>
+					<ows:Get xlink:href="http://www.maps.bob/cgi-bin/MiraMon5_0.cgi?">
+						<ows:Constraint name="GetEncoding">
+							<ows:AllowedValues>
+								<ows:Value>KVP</ows:Value>
+							</ows:AllowedValues>
+						</ows:Constraint>
+					</ows:Get>
+				</ows:HTTP>
+			</ows:DCP>
+		</ows:Operation>
+	</ows:OperationsMetadata>
+	<Contents>
+		<Layer>
+			<ows:Title>Blue Marble Next Generation</ows:Title>
+			<ows:Abstract>Blue Marble Next Generation NASA Product
+</ows:Abstract>
+			<ows:WGS84BoundingBox>
+				<ows:LowerCorner>-180 -90</ows:LowerCorner>
+				<ows:UpperCorner>180 90</ows:UpperCorner>
+			</ows:WGS84BoundingBox>
+			<ows:Identifier>BlueMarbleNextGeneration</ows:Identifier>
+			<Style isDefault="true">
+				<ows:Title>Dark Blue</ows:Title>
+				<ows:Identifier>DarkBlue</ows:Identifier>
+				<LegendURL format="image/png" xlink:href="http://www.miramon.uab.es/wmts/Coastlines/coastlines_darkBlue.png"/>
+			</Style>
+			<Style>
+				<ows:Title>Thick And Red</ows:Title>
+				<ows:Abstract>Specify this style if you want your maps to have thick red coastlines.
+</ows:Abstract>
+				<ows:Identifier>thickAndRed</ows:Identifier>
+			</Style>
+			<Format>image/jpeg</Format>
+			<Format>image/gif</Format>
+			<TileMatrixSetLink>
+				<TileMatrixSet>BigWorldPixel</TileMatrixSet>
+			</TileMatrixSetLink>
+			<ResourceURL format="image/png" resourceType="tile" template="http://www.example.com/wmts/coastlines/{TileMatrix}/{TileRow}/{TileCol}.png"/>
+			<ResourceURL format="application/gml+xml; version=3.1" resourceType="FeatureInfo" template="http://www.example.com/wmts/coastlines/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}/{J}/{I}.xml"/>
+		</Layer>
+		<TileMatrixSet>
+			<ows:Identifier>BigWorldPixel</ows:Identifier>
+			<ows:SupportedCRS>urn:ogc:def:crs:OGC:1.3:CRS84
+</ows:SupportedCRS>
+			<WellKnownScaleSet>urn:ogc:def:wkss:OGC:1.0:GlobalCRS84Pixel
+</WellKnownScaleSet>
+			<TileMatrix>
+				<ows:Identifier>10000m</ows:Identifier>
+				<ScaleDenominator>33130800.83133142</ScaleDenominator>
+				<TopLeftCorner>-180 90</TopLeftCorner>
+				<TileWidth>640</TileWidth>
+				<TileHeight>480</TileHeight>
+				<MatrixWidth>7</MatrixWidth>
+				<MatrixHeight>5</MatrixHeight>
+			</TileMatrix>
+			<TileMatrix>
+				<ows:Identifier>20000m</ows:Identifier>
+				<ScaleDenominator>66261601.66266284</ScaleDenominator>
+				<TopLeftCorner>-180 90</TopLeftCorner>
+				<TileWidth>640</TileWidth>
+				<TileHeight>480</TileHeight>
+				<MatrixWidth>4</MatrixWidth>
+				<MatrixHeight>3</MatrixHeight>
+			</TileMatrix>
+			<TileMatrix>
+				<ows:Identifier>40000m</ows:Identifier>
+				<ScaleDenominator>132523203.3253257</ScaleDenominator>
+				<TopLeftCorner>-180 90</TopLeftCorner>
+				<TileWidth>640</TileWidth>
+				<TileHeight>480</TileHeight>
+				<MatrixWidth>2</MatrixWidth>
+				<MatrixHeight>2</MatrixHeight>
+			</TileMatrix>
+			<TileMatrix>
+				<ows:Identifier>60000m</ows:Identifier>
+				<ScaleDenominator>198784804.9879885</ScaleDenominator>
+				<TopLeftCorner>-180 90</TopLeftCorner>
+				<TileWidth>640</TileWidth>
+				<TileHeight>480</TileHeight>
+				<MatrixWidth>1</MatrixWidth>
+				<MatrixHeight>1</MatrixHeight>
+			</TileMatrix>
+			<TileMatrix>
+				<ows:Identifier>120000m</ows:Identifier>
+				<ScaleDenominator>397569609.9759771</ScaleDenominator>
+				<TopLeftCorner>-180 90</TopLeftCorner>
+				<TileWidth>640</TileWidth>
+				<TileHeight>480</TileHeight>
+				<MatrixWidth>1</MatrixWidth>
+				<MatrixHeight>1</MatrixHeight>
+			</TileMatrix>
+			<TileMatrix>
+				<ows:Identifier>240000m</ows:Identifier>
+				<ScaleDenominator>795139219.9519541</ScaleDenominator>
+				<TopLeftCorner>-180 90</TopLeftCorner>
+				<TileWidth>640</TileWidth>
+				<TileHeight>480</TileHeight>
+				<MatrixWidth>1</MatrixWidth>
+				<MatrixHeight>1</MatrixHeight>
+			</TileMatrix>
+		</TileMatrixSet>
+		<TileMatrixSet>
+            <ows:Identifier>BigWorld</ows:Identifier>
+            <ows:SupportedCRS>urn:ogc:def:crs:OGC:1.3:CRS84</ows:SupportedCRS>
+            <TileMatrix>
+                <ows:Identifier>1e6</ows:Identifier>
+                <ScaleDenominator>1e6</ScaleDenominator>
+                <TopLeftCorner>-180 84</TopLeftCorner>
+                <TileWidth>256</TileWidth>
+                <TileHeight>256</TileHeight>
+                <MatrixWidth>60000</MatrixWidth>
+                <MatrixHeight>50000</MatrixHeight>
+            </TileMatrix>
+            <TileMatrix>
+                <ows:Identifier>2.5e6</ows:Identifier>
+                <ScaleDenominator>2.5e6</ScaleDenominator>
+                <TopLeftCorner>-180 84</TopLeftCorner>
+                <TileWidth>256</TileWidth>
+                <TileHeight>256</TileHeight>
+                <MatrixWidth>9000</MatrixWidth>
+                <MatrixHeight>7000</MatrixHeight>
+            </TileMatrix>
+        </TileMatrixSet>
+	</Contents>
+	<ServiceMetadataURL xlink:href="http://www.maps.bob/wmts/1.0.0/WMTSCapabilities.xml"/>
+</Capabilities>

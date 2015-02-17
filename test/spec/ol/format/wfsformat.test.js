@@ -90,6 +90,21 @@ describe('ol.format.WFS', function() {
   });
 
   describe('when parsing FeatureCollection', function() {
+    var xml;
+    before(function(done) {
+      afterLoadText('spec/ol/format/wfs/EmptyFeatureCollection.xml',
+          function(_xml) {
+            xml = _xml;
+            done();
+          });
+    });
+    it('returns an empty array of features when none exist', function() {
+      var result = new ol.format.WFS().readFeatures(xml);
+      expect(result).to.have.length(0);
+    });
+  });
+
+  describe('when parsing FeatureCollection', function() {
     var response;
     before(function(done) {
       afterLoadText('spec/ol/format/wfs/NumberOfFeatures.xml',

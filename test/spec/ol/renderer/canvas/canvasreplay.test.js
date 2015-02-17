@@ -82,7 +82,7 @@ describe('ol.render.canvas.LineStringReplay', function() {
 
   describe('#getBufferedMaxExtent()', function() {
 
-    it('buffers the max extent to accomodate stroke width', function() {
+    it('buffers the max extent to accommodate stroke width', function() {
       var tolerance = 1;
       var extent = [-180, -90, 180, 90];
       var resolution = 10;
@@ -104,7 +104,7 @@ describe('ol.render.canvas.PolygonReplay', function() {
 
   describe('#getBufferedMaxExtent()', function() {
 
-    it('buffers the max extent to accomodate stroke width', function() {
+    it('buffers the max extent to accommodate stroke width', function() {
       var tolerance = 1;
       var extent = [-180, -90, 180, 90];
       var resolution = 10;

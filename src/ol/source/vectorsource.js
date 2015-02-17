@@ -295,7 +295,7 @@ ol.source.Vector.prototype.forEachFeature = function(callback, opt_this) {
  * @return {S|undefined} The return value from the last call to the callback.
  * @template T,S
  */
-ol.source.Vector.prototype.forEachFeatureAtCoordinate =
+ol.source.Vector.prototype.forEachFeatureAtCoordinateDirect =
     function(coordinate, callback, opt_this) {
   var extent = [coordinate[0], coordinate[1], coordinate[0], coordinate[1]];
   return this.forEachFeatureInExtent(extent, function(feature) {
@@ -409,7 +409,7 @@ ol.source.Vector.prototype.getFeatures = function() {
  */
 ol.source.Vector.prototype.getFeaturesAtCoordinate = function(coordinate) {
   var features = [];
-  this.forEachFeatureAtCoordinate(coordinate, function(feature) {
+  this.forEachFeatureAtCoordinateDirect(coordinate, function(feature) {
     features.push(feature);
   });
   return features;

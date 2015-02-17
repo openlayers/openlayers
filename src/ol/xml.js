@@ -473,7 +473,7 @@ ol.xml.makeObjectPropertySetter =
           var property = goog.isDef(opt_property) ?
               opt_property : node.localName;
           goog.asserts.assert(goog.isObject(object));
-          goog.object.set(object, property, value);
+          object[property] = value;
         }
       });
 };
@@ -535,8 +535,8 @@ ol.xml.makeArraySerializer = function(nodeWriter, opt_this) {
     if (!goog.isDef(serializersNS)) {
       serializersNS = {};
       var serializers = {};
-      goog.object.set(serializers, node.localName, nodeWriter);
-      goog.object.set(serializersNS, node.namespaceURI, serializers);
+      serializers[node.localName] = nodeWriter;
+      serializersNS[node.namespaceURI] = serializers;
       nodeFactory = ol.xml.makeSimpleNodeFactory(node.localName);
     }
     ol.xml.serialize(serializersNS, nodeFactory, value, objectStack);

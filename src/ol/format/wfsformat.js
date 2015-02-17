@@ -125,6 +125,9 @@ ol.format.WFS.prototype.readFeaturesFromNode = function(node, opt_options) {
   goog.object.extend(context, this.getReadOptions(node,
       goog.isDef(opt_options) ? opt_options : {}));
   var objectStack = [context];
+  this.gmlFormat_.FEATURE_COLLECTION_PARSERS[ol.format.GMLBase.GMLNS][
+      'featureMember'] =
+      ol.xml.makeArrayPusher(ol.format.GMLBase.prototype.readFeaturesInternal);
   var features = ol.xml.pushParseAndPop([],
       this.gmlFormat_.FEATURE_COLLECTION_PARSERS, node,
       objectStack, this.gmlFormat_);
@@ -220,7 +223,7 @@ ol.format.WFS.prototype.readFeatureCollectionMetadataFromNode = function(node) {
   var result = {};
   var value = ol.format.XSD.readNonNegativeIntegerString(
       node.getAttribute('numberOfFeatures'));
-  goog.object.set(result, 'numberOfFeatures', value);
+  result['numberOfFeatures'] = value;
   return ol.xml.pushParseAndPop(
       /** @type {ol.format.WFS.FeatureCollectionMetadata} */ (result),
       ol.format.WFS.FEATURE_COLLECTION_PARSERS_, node, [], this.gmlFormat_);
@@ -367,8 +370,8 @@ ol.format.WFS.QUERY_SERIALIZERS_ = {
 ol.format.WFS.writeFeature_ = function(node, feature, objectStack) {
   var context = objectStack[objectStack.length - 1];
   goog.asserts.assert(goog.isObject(context));
-  var featureType = goog.object.get(context, 'featureType');
-  var featureNS = goog.object.get(context, 'featureNS');
+  var featureType = context['featureType'];
+  var featureNS = context['featureNS'];
   var child = ol.xml.createElementNS(featureNS, featureType);
   node.appendChild(child);
   ol.format.GML3.prototype.writeFeatureElement(child, feature, objectStack);
@@ -399,11 +402,11 @@ ol.format.WFS.writeOgcFidFilter_ = function(node, fid, objectStack) {
 ol.format.WFS.writeDelete_ = function(node, feature, objectStack) {
   var context = objectStack[objectStack.length - 1];
   goog.asserts.assert(goog.isObject(context));
-  var featureType = goog.object.get(context, 'featureType');
-  var featurePrefix = goog.object.get(context, 'featurePrefix');
+  var featureType = context['featureType'];
+  var featurePrefix = context['featurePrefix'];
   featurePrefix = goog.isDef(featurePrefix) ? featurePrefix :
       ol.format.WFS.FEATURE_PREFIX;
-  var featureNS = goog.object.get(context, 'featureNS');
+  var featureNS = context['featureNS'];
   node.setAttribute('typeName', featurePrefix + ':' + featureType);
   ol.xml.setAttributeNS(node, ol.format.WFS.XMLNS, 'xmlns:' + featurePrefix,
       featureNS);
@@ -423,11 +426,11 @@ ol.format.WFS.writeDelete_ = function(node, feature, objectStack) {
 ol.format.WFS.writeUpdate_ = function(node, feature, objectStack) {
   var context = objectStack[objectStack.length - 1];
   goog.asserts.assert(goog.isObject(context));
-  var featureType = goog.object.get(context, 'featureType');
-  var featurePrefix = goog.object.get(context, 'featurePrefix');
+  var featureType = context['featureType'];
+  var featurePrefix = context['featurePrefix'];
   featurePrefix = goog.isDef(featurePrefix) ? featurePrefix :
       ol.format.WFS.FEATURE_PREFIX;
-  var featureNS = goog.object.get(context, 'featureNS');
+  var featureNS = context['featureNS'];
   node.setAttribute('typeName', featurePrefix + ':' + featureType);
   ol.xml.setAttributeNS(node, ol.format.WFS.XMLNS, 'xmlns:' + featurePrefix,
       featureNS);
@@ -442,7 +445,7 @@ ol.format.WFS.writeUpdate_ = function(node, feature, objectStack) {
       }
     }
     ol.xml.pushSerializeAndPop({node: node, srsName:
-          goog.object.get(context, 'srsName')},
+          context['srsName']},
     ol.format.WFS.TRANSACTION_SERIALIZERS_,
     ol.xml.makeSimpleNodeFactory('Property'), values,
     objectStack);
@@ -518,10 +521,10 @@ ol.format.WFS.TRANSACTION_SERIALIZERS_ = {
 ol.format.WFS.writeQuery_ = function(node, featureType, objectStack) {
   var context = objectStack[objectStack.length - 1];
   goog.asserts.assert(goog.isObject(context));
-  var featurePrefix = goog.object.get(context, 'featurePrefix');
-  var featureNS = goog.object.get(context, 'featureNS');
-  var propertyNames = goog.object.get(context, 'propertyNames');
-  var srsName = goog.object.get(context, 'srsName');
+  var featurePrefix = context['featurePrefix'];
+  var featureNS = context['featureNS'];
+  var propertyNames = context['propertyNames'];
+  var srsName = context['srsName'];
   var prefix = goog.isDef(featurePrefix) ? featurePrefix + ':' : '';
   node.setAttribute('typeName', prefix + featureType);
   if (goog.isDef(srsName)) {
@@ -537,7 +540,7 @@ ol.format.WFS.writeQuery_ = function(node, featureType, objectStack) {
       ol.format.WFS.QUERY_SERIALIZERS_,
       ol.xml.makeSimpleNodeFactory('PropertyName'), propertyNames,
       objectStack);
-  var bbox = goog.object.get(context, 'bbox');
+  var bbox = context['bbox'];
   if (goog.isDef(bbox)) {
     var child = ol.xml.createElementNS('http://www.opengis.net/ogc', 'Filter');
     ol.format.WFS.writeOgcBBOX_(child, bbox, objectStack);
@@ -569,7 +572,7 @@ ol.format.WFS.writeOgcPropertyName_ = function(node, value, objectStack) {
 ol.format.WFS.writeOgcBBOX_ = function(node, bbox, objectStack) {
   var context = objectStack[objectStack.length - 1];
   goog.asserts.assert(goog.isObject(context));
-  var geometryName = goog.object.get(context, 'geometryName');
+  var geometryName = context['geometryName'];
   var bboxNode = ol.xml.createElementNS('http://www.opengis.net/ogc', 'BBOX');
   node.appendChild(bboxNode);
   ol.format.WFS.writeOgcPropertyName_(bboxNode, geometryName, objectStack);
@@ -747,8 +750,10 @@ ol.format.WFS.prototype.readProjectionFromDocument = function(doc) {
 ol.format.WFS.prototype.readProjectionFromNode = function(node) {
   goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT);
   goog.asserts.assert(node.localName == 'FeatureCollection');
-  node = node.firstElementChild.firstElementChild;
-  if (goog.isDefAndNotNull(node)) {
+
+  if (goog.isDefAndNotNull(node.firstElementChild) &&
+      goog.isDefAndNotNull(node.firstElementChild.firstElementChild)) {
+    node = node.firstElementChild.firstElementChild;
     for (var n = node.firstElementChild; !goog.isNull(n);
         n = n.nextElementSibling) {
       if (!(n.childNodes.length === 0 ||
@@ -760,5 +765,6 @@ ol.format.WFS.prototype.readProjectionFromNode = function(node) {
       }
     }
   }
+
   return null;
 };

@@ -21,10 +21,9 @@ goog.require('ol.vec.Mat4');
 /**
  * @constructor
  * @extends {ol.renderer.dom.Layer}
- * @param {ol.renderer.Map} mapRenderer Map renderer.
  * @param {ol.layer.Vector} vectorLayer Vector layer.
  */
-ol.renderer.dom.VectorLayer = function(mapRenderer, vectorLayer) {
+ol.renderer.dom.VectorLayer = function(vectorLayer) {
 
   /**
    * @private
@@ -39,7 +38,7 @@ ol.renderer.dom.VectorLayer = function(mapRenderer, vectorLayer) {
   target.style.maxWidth = 'none';
   target.style.position = 'absolute';
 
-  goog.base(this, mapRenderer, vectorLayer, target);
+  goog.base(this, vectorLayer, target);
 
   /**
    * @private
@@ -83,6 +82,12 @@ ol.renderer.dom.VectorLayer = function(mapRenderer, vectorLayer) {
    */
   this.transform_ = goog.vec.Mat4.createNumber();
 
+  /**
+   * @private
+   * @type {goog.vec.Mat4.Number}
+   */
+  this.elementTransform_ = goog.vec.Mat4.createNumber();
+
 };
 goog.inherits(ol.renderer.dom.VectorLayer, ol.renderer.dom.Layer);
 
@@ -97,22 +102,36 @@ ol.renderer.dom.VectorLayer.prototype.composeFrame =
   goog.asserts.assertInstanceof(vectorLayer, ol.layer.Vector);
 
   var viewState = frameState.viewState;
+  var viewCenter = viewState.center;
   var viewRotation = viewState.rotation;
+  var viewResolution = viewState.resolution;
   var pixelRatio = frameState.pixelRatio;
+  var viewWidth = frameState.size[0];
+  var viewHeight = frameState.size[1];
+  var imageWidth = viewWidth * pixelRatio;
+  var imageHeight = viewHeight * pixelRatio;
 
   var transform = ol.vec.Mat4.makeTransform2D(this.transform_,
-      pixelRatio * frameState.size[0] / 2,
-      pixelRatio * frameState.size[1] / 2,
-      pixelRatio / viewState.resolution,
-      -pixelRatio / viewState.resolution,
-      -viewState.rotation,
-      -viewState.center[0], -viewState.center[1]);
+      pixelRatio * viewWidth / 2,
+      pixelRatio * viewHeight / 2,
+      pixelRatio / viewResolution,
+      -pixelRatio / viewResolution,
+      -viewRotation,
+      -viewCenter[0], -viewCenter[1]);
 
   var context = this.context_;
 
   // Clear the canvas and set the correct size
-  context.canvas.width = frameState.size[0];
-  context.canvas.height = frameState.size[1];
+  context.canvas.width = imageWidth;
+  context.canvas.height = imageHeight;
+
+  var elementTransform = ol.vec.Mat4.makeTransform2D(this.elementTransform_,
+      0, 0,
+      1 / pixelRatio, 1 / pixelRatio,
+      0,
+      -(imageWidth - viewWidth) / 2 * pixelRatio,
+      -(imageHeight - viewHeight) / 2 * pixelRatio);
+  ol.dom.transformElement2D(context.canvas, elementTransform, 6);
 
   this.dispatchEvent_(ol.render.EventType.PRECOMPOSE, frameState, transform);
 
@@ -156,7 +175,7 @@ ol.renderer.dom.VectorLayer.prototype.dispatchEvent_ =
 /**
  * @inheritDoc
  */
-ol.renderer.dom.VectorLayer.prototype.forEachFeatureAtPixel =
+ol.renderer.dom.VectorLayer.prototype.forEachFeatureAtCoordinate =
     function(coordinate, frameState, callback, thisArg) {
   if (goog.isNull(this.replayGroup_)) {
     return undefined;
@@ -166,8 +185,8 @@ ol.renderer.dom.VectorLayer.prototype.forEachFeatureAtPixel =
     var layer = this.getLayer();
     /** @type {Object.<string, boolean>} */
     var features = {};
-    return this.replayGroup_.forEachGeometryAtPixel(resolution,
-        rotation, coordinate, frameState.skippedFeatureUids,
+    return this.replayGroup_.forEachFeatureAtCoordinate(coordinate,
+        resolution, rotation, frameState.skippedFeatureUids,
         /**
          * @param {ol.Feature} feature Feature.
          * @return {?} Callback result.
@@ -189,7 +208,7 @@ ol.renderer.dom.VectorLayer.prototype.forEachFeatureAtPixel =
  * @param {goog.events.Event} event Image style change event.
  * @private
  */
-ol.renderer.dom.VectorLayer.prototype.handleImageChange_ =
+ol.renderer.dom.VectorLayer.prototype.handleStyleImageChange_ =
     function(event) {
   this.renderIfReadyAndVisible();
 };
@@ -209,7 +228,8 @@ ol.renderer.dom.VectorLayer.prototype.prepareFrame =
       frameState.attributions, vectorSource.getAttributions());
   this.updateLogos(frameState, vectorSource);
 
-  if (!this.dirty_ && (frameState.viewHints[ol.ViewHint.ANIMATING] ||
+  if (!this.dirty_ && (!vectorLayer.getUpdateWhileAnimating() &&
+      frameState.viewHints[ol.ViewHint.ANIMATING] ||
       frameState.viewHints[ol.ViewHint.INTERACTING])) {
     return true;
   }
@@ -247,7 +267,7 @@ ol.renderer.dom.VectorLayer.prototype.prepareFrame =
   var replayGroup =
       new ol.render.canvas.ReplayGroup(
           ol.renderer.vector.getTolerance(resolution, pixelRatio), extent,
-          resolution);
+          resolution, vectorLayer.getRenderBuffer());
   vectorSource.loadFeatures(extent, resolution, projection);
   var renderFeature =
       /**
@@ -313,7 +333,7 @@ ol.renderer.dom.VectorLayer.prototype.renderFeature =
     loading = ol.renderer.vector.renderFeature(
         replayGroup, feature, styles[i],
         ol.renderer.vector.getSquaredTolerance(resolution, pixelRatio),
-        this.handleImageChange_, this) || loading;
+        this.handleStyleImageChange_, this) || loading;
   }
   return loading;
 };

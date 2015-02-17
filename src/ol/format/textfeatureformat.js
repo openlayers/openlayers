@@ -111,7 +111,9 @@ ol.format.TextFeature.prototype.readProjection = function(source) {
  * @protected
  * @return {ol.proj.Projection} Projection.
  */
-ol.format.TextFeature.prototype.readProjectionFromText = goog.abstractMethod;
+ol.format.TextFeature.prototype.readProjectionFromText = function(text) {
+  return this.defaultDataProjection;
+};
 
 
 /**

@@ -16,7 +16,13 @@ describe('ol.render.webgl.ImageReplay', function() {
     imageStyle.getImage = function() {
       return image;
     };
+    imageStyle.getHitDetectionImage = function() {
+      return image;
+    };
     imageStyle.getImageSize = function() {
+      return [512, 512];
+    };
+    imageStyle.getHitDetectionImageSize = function() {
       return [512, 512];
     };
     imageStyle.getOrigin = function() {
@@ -59,14 +65,20 @@ describe('ol.render.webgl.ImageReplay', function() {
       expect(replay.width_).to.be(256);
       expect(replay.images_).to.have.length(1);
       expect(replay.groupIndices_).to.have.length(0);
+      expect(replay.hitDetectionImages_).to.have.length(1);
+      expect(replay.hitDetectionGroupIndices_).to.have.length(0);
 
       replay.setImageStyle(imageStyle1);
       expect(replay.images_).to.have.length(1);
       expect(replay.groupIndices_).to.have.length(0);
+      expect(replay.hitDetectionImages_).to.have.length(1);
+      expect(replay.hitDetectionGroupIndices_).to.have.length(0);
 
       replay.setImageStyle(imageStyle2);
       expect(replay.images_).to.have.length(2);
       expect(replay.groupIndices_).to.have.length(1);
+      expect(replay.hitDetectionImages_).to.have.length(2);
+      expect(replay.hitDetectionGroupIndices_).to.have.length(1);
     });
   });
 

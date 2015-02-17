@@ -5,7 +5,6 @@ goog.provide('ol.format.GMLBase');
 
 goog.require('goog.array');
 goog.require('goog.asserts');
-goog.require('goog.dom');
 goog.require('goog.dom.NodeType');
 goog.require('goog.object');
 goog.require('goog.string');
@@ -68,18 +67,35 @@ ol.format.GMLBase = function(opt_options) {
    */
   this.schemaLocation = '';
 
+  /**
+   * @type {Object.<string, Object.<string, Object>>}
+   */
+  this.FEATURE_COLLECTION_PARSERS = {};
+  this.FEATURE_COLLECTION_PARSERS[ol.format.GMLBase.GMLNS] = {
+    'featureMember': ol.xml.makeReplacer(
+        ol.format.GMLBase.prototype.readFeaturesInternal),
+    'featureMembers': ol.xml.makeReplacer(
+        ol.format.GMLBase.prototype.readFeaturesInternal)
+  };
+
   goog.base(this);
 };
 goog.inherits(ol.format.GMLBase, ol.format.XMLFeature);
 
 
 /**
+ * @const
+ * @type {string}
+ */
+ol.format.GMLBase.GMLNS = 'http://www.opengis.net/gml';
+
+
+/**
  * @param {Node} node Node.
  * @param {Array.<*>} objectStack Object stack.
  * @return {Array.<ol.Feature>} Features.
- * @private
  */
-ol.format.GMLBase.prototype.readFeatures_ = function(node, objectStack) {
+ol.format.GMLBase.prototype.readFeaturesInternal = function(node, objectStack) {
   goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT);
   var localName = ol.xml.getLocalName(node);
   var features;
@@ -90,19 +106,19 @@ ol.format.GMLBase.prototype.readFeatures_ = function(node, objectStack) {
   } else if (localName == 'featureMembers' || localName == 'featureMember') {
     var context = objectStack[0];
     goog.asserts.assert(goog.isObject(context));
-    var featureType = goog.object.get(context, 'featureType');
+    var featureType = context['featureType'];
     if (!goog.isDef(featureType) && !goog.isNull(node.firstElementChild)) {
       var member = node.firstElementChild;
       featureType = member.nodeName.split(':').pop();
-      goog.object.set(context, 'featureType', featureType);
-      goog.object.set(context, 'featureNS', member.namespaceURI);
+      context['featureType'] = featureType;
+      context['featureNS'] = member.namespaceURI;
     }
     var parsers = {};
     var parsersNS = {};
     parsers[featureType] = (localName == 'featureMembers') ?
         ol.xml.makeArrayPusher(this.readFeatureElement, this) :
         ol.xml.makeReplacer(this.readFeatureElement, this);
-    parsersNS[goog.object.get(context, 'featureNS')] = parsers;
+    parsersNS[context['featureNS']] = parsers;
     features = ol.xml.pushParseAndPop([], parsersNS, node, objectStack);
   }
   if (!goog.isDef(features)) {
@@ -113,19 +129,6 @@ ol.format.GMLBase.prototype.readFeatures_ = function(node, objectStack) {
 
 
 /**
- * @type {Object.<string, Object.<string, Object>>}
- */
-ol.format.GMLBase.prototype.FEATURE_COLLECTION_PARSERS = Object({
-  'http://www.opengis.net/gml': {
-    'featureMember': ol.xml.makeArrayPusher(
-        ol.format.GMLBase.prototype.readFeatures_),
-    'featureMembers': ol.xml.makeReplacer(
-        ol.format.GMLBase.prototype.readFeatures_)
-  }
-});
-
-
-/**
  * @param {Node} node Node.
  * @param {Array.<*>} objectStack Object stack.
  * @return {ol.geom.Geometry|undefined} Geometry.
@@ -133,8 +136,7 @@ ol.format.GMLBase.prototype.FEATURE_COLLECTION_PARSERS = Object({
 ol.format.GMLBase.prototype.readGeometryElement = function(node, objectStack) {
   var context = objectStack[0];
   goog.asserts.assert(goog.isObject(context));
-  goog.object.set(context, 'srsName',
-      node.firstElementChild.getAttribute('srsName'));
+  context['srsName'] = node.firstElementChild.getAttribute('srsName');
   var geometry = ol.xml.pushParseAndPop(/** @type {ol.geom.Geometry} */(null),
       this.GEOMETRY_PARSERS_, node, objectStack, this);
   if (goog.isDefAndNotNull(geometry)) {
@@ -154,7 +156,7 @@ ol.format.GMLBase.prototype.readGeometryElement = function(node, objectStack) {
 ol.format.GMLBase.prototype.readFeatureElement = function(node, objectStack) {
   var n;
   var fid = node.getAttribute('fid') ||
-      ol.xml.getAttributeNS(node, 'http://www.opengis.net/gml', 'id');
+      ol.xml.getAttributeNS(node, ol.format.GMLBase.GMLNS, 'id');
   var values = {}, geometryName;
   for (n = node.firstElementChild; !goog.isNull(n);
       n = n.nextElementSibling) {
@@ -550,7 +552,7 @@ ol.format.GMLBase.prototype.readFeaturesFromNode =
   if (goog.isDef(opt_options)) {
     goog.object.extend(options, this.getReadOptions(node, opt_options));
   }
-  return this.readFeatures_(node, [options]);
+  return this.readFeaturesInternal(node, [options]);
 };
 
 

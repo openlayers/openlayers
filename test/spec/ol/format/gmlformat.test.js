@@ -1087,6 +1087,26 @@ describe('ol.format.GML3', function() {
 
   });
 
+  describe('when parsing from OGR', function() {
+
+    var features;
+    before(function(done) {
+      afterLoadText('spec/ol/format/gml/ogr.xml', function(xml) {
+        try {
+          features = new ol.format.GML().readFeatures(xml);
+        } catch (e) {
+          done(e);
+        }
+        done();
+      });
+    });
+
+    it('reads all features', function() {
+      expect(features.length).to.be(1);
+    });
+
+  });
+
 });
 
 
