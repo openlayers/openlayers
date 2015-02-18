@@ -504,7 +504,7 @@ describe('ol.interaction.Draw', function() {
         expect(interaction.sketchFeature_).to.be(null);
       });
       it('fires change:active', function() {
-        listenerSpy = sinon.spy(function() {
+        var listenerSpy = sinon.spy(function() {
           // test that the interaction's change:active listener is called first
           expect(interaction.overlay_.map_).to.be(null);
         });
@@ -523,7 +523,7 @@ describe('ol.interaction.Draw', function() {
         expect(interaction.overlay_.map_).to.be(map);
       });
       it('fires change:active', function() {
-        listenerSpy = sinon.spy(function() {
+        var listenerSpy = sinon.spy(function() {
           // test that the interaction's change:active listener is called first
           expect(interaction.overlay_.map_).not.to.be(null);
         });
