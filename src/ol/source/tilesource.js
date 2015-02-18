@@ -1,6 +1,7 @@
 goog.provide('ol.source.Tile');
 goog.provide('ol.source.TileOptions');
 
+goog.require('goog.events.Event');
 goog.require('goog.functions');
 goog.require('ol.Attribution');
 goog.require('ol.Extent');
@@ -206,3 +207,59 @@ ol.source.Tile.prototype.getTilePixelSize =
  * @param {number} y Tile coordinate y.
  */
 ol.source.Tile.prototype.useTile = goog.nullFunction;
+
+
+
+/**
+ * @classdesc
+ * Events emitted by {@link ol.source.Tile} instances are instances of this
+ * type.
+ *
+ * @constructor
+ * @extends {goog.events.Event}
+ * @implements {oli.source.TileEvent}
+ * @param {string} type Type.
+ * @param {ol.Tile} tile The tile.
+ */
+ol.source.TileEvent = function(type, tile) {
+
+  goog.base(this, type);
+
+  /**
+   * The tile related to the event.
+   * @type {ol.Tile}
+   * @api
+   */
+  this.tile = tile;
+
+};
+goog.inherits(ol.source.TileEvent, goog.events.Event);
+
+
+/**
+ * @enum {string}
+ */
+ol.source.TileEventType = {
+
+  /**
+   * Triggered when a tile starts loading.
+   * @event ol.source.TileEvent#tileloadstart
+   * @api
+   */
+  TILELOADSTART: 'tileloadstart',
+
+  /**
+   * Triggered when a tile finishes loading.
+   * @event ol.source.TileEvent#tileloadend
+   * @api
+   */
+  TILELOADEND: 'tileloadend',
+
+  /**
+   * Triggered if tile loading results in an error.
+   * @event ol.source.TileEvent#tileloaderror
+   * @api
+   */
+  TILELOADERROR: 'tileloaderror'
+
+};

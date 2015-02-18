@@ -4,6 +4,7 @@ goog.provide('ol.TileQueue');
 goog.require('goog.events');
 goog.require('goog.events.EventType');
 goog.require('ol.Coordinate');
+goog.require('ol.TileState');
 goog.require('ol.structs.PriorityQueue');
 
 
@@ -67,11 +68,17 @@ ol.TileQueue.prototype.getTilesLoading = function() {
 
 
 /**
+ * @param {goog.events.Event} event Event.
  * @protected
  */
-ol.TileQueue.prototype.handleTileChange = function() {
-  --this.tilesLoading_;
-  this.tileChangeCallback_();
+ol.TileQueue.prototype.handleTileChange = function(event) {
+  var tile = /** @type {ol.Tile} */ (event.target);
+  var state = tile.getState();
+  if (state === ol.TileState.LOADED || state === ol.TileState.ERROR ||
+      state === ol.TileState.EMPTY) {
+    --this.tilesLoading_;
+    this.tileChangeCallback_();
+  }
 };
 
 
@@ -85,7 +92,7 @@ ol.TileQueue.prototype.loadMoreTiles = function(maxTotalLoading, maxNewLoads) {
   var i, tile;
   for (i = 0; i < newLoads; ++i) {
     tile = /** @type {ol.Tile} */ (this.dequeue()[0]);
-    goog.events.listenOnce(tile, goog.events.EventType.CHANGE,
+    goog.events.listen(tile, goog.events.EventType.CHANGE,
         this.handleTileChange, false, this);
     tile.load();
   }
