@@ -58,7 +58,10 @@ var displayCountryInfo = function(coordinate) {
       });
 };
 
-$(map.getViewport()).on('mousemove', function(evt) {
+map.on('pointermove', function(evt) {
+  if (evt.dragging) {
+    return;
+  }
   var coordinate = map.getEventCoordinate(evt.originalEvent);
   displayCountryInfo(coordinate);
 });

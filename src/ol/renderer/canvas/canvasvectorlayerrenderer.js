@@ -17,12 +17,11 @@ goog.require('ol.renderer.vector');
 /**
  * @constructor
  * @extends {ol.renderer.canvas.Layer}
- * @param {ol.renderer.Map} mapRenderer Map renderer.
  * @param {ol.layer.Vector} vectorLayer Vector layer.
  */
-ol.renderer.canvas.VectorLayer = function(mapRenderer, vectorLayer) {
+ol.renderer.canvas.VectorLayer = function(vectorLayer) {
 
-  goog.base(this, mapRenderer, vectorLayer);
+  goog.base(this, vectorLayer);
 
   /**
    * @private
@@ -116,7 +115,7 @@ ol.renderer.canvas.VectorLayer.prototype.composeFrame =
 /**
  * @inheritDoc
  */
-ol.renderer.canvas.VectorLayer.prototype.forEachFeatureAtPixel =
+ol.renderer.canvas.VectorLayer.prototype.forEachFeatureAtCoordinate =
     function(coordinate, frameState, callback, thisArg) {
   if (goog.isNull(this.replayGroup_)) {
     return undefined;
@@ -126,8 +125,8 @@ ol.renderer.canvas.VectorLayer.prototype.forEachFeatureAtPixel =
     var layer = this.getLayer();
     /** @type {Object.<string, boolean>} */
     var features = {};
-    return this.replayGroup_.forEachGeometryAtPixel(resolution,
-        rotation, coordinate, frameState.skippedFeatureUids,
+    return this.replayGroup_.forEachFeatureAtCoordinate(coordinate,
+        resolution, rotation, frameState.skippedFeatureUids,
         /**
          * @param {ol.Feature} feature Feature.
          * @return {?} Callback result.
@@ -149,7 +148,7 @@ ol.renderer.canvas.VectorLayer.prototype.forEachFeatureAtPixel =
  * @param {goog.events.Event} event Image style change event.
  * @private
  */
-ol.renderer.canvas.VectorLayer.prototype.handleImageChange_ =
+ol.renderer.canvas.VectorLayer.prototype.handleStyleImageChange_ =
     function(event) {
   this.renderIfReadyAndVisible();
 };
@@ -169,7 +168,8 @@ ol.renderer.canvas.VectorLayer.prototype.prepareFrame =
       frameState.attributions, vectorSource.getAttributions());
   this.updateLogos(frameState, vectorSource);
 
-  if (!this.dirty_ && (frameState.viewHints[ol.ViewHint.ANIMATING] ||
+  if (!this.dirty_ && (!vectorLayer.getUpdateWhileAnimating() &&
+      frameState.viewHints[ol.ViewHint.ANIMATING] ||
       frameState.viewHints[ol.ViewHint.INTERACTING])) {
     return true;
   }
@@ -207,7 +207,7 @@ ol.renderer.canvas.VectorLayer.prototype.prepareFrame =
   var replayGroup =
       new ol.render.canvas.ReplayGroup(
           ol.renderer.vector.getTolerance(resolution, pixelRatio), extent,
-          resolution);
+          resolution, vectorLayer.getRenderBuffer());
   vectorSource.loadFeatures(extent, resolution, projection);
   var renderFeature =
       /**
@@ -273,7 +273,7 @@ ol.renderer.canvas.VectorLayer.prototype.renderFeature =
     loading = ol.renderer.vector.renderFeature(
         replayGroup, feature, styles[i],
         ol.renderer.vector.getSquaredTolerance(resolution, pixelRatio),
-        this.handleImageChange_, this) || loading;
+        this.handleStyleImageChange_, this) || loading;
   }
   return loading;
 };

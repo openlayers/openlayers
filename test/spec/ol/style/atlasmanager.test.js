@@ -191,7 +191,7 @@ describe('ol.style.AtlasManager', function() {
 
       expect(info).to.eql({
         offsetX: 1, offsetY: 1, image: manager.atlases_[0].canvas_,
-        hitOffsetX: undefined, hitOffsetY: undefined, hitImage: undefined});
+        hitImage: manager.hitAtlases_[0].canvas_});
 
       expect(manager.getInfo('1')).to.eql(info);
     });
@@ -202,7 +202,6 @@ describe('ol.style.AtlasManager', function() {
 
       expect(info).to.eql({
         offsetX: 1, offsetY: 1, image: manager.atlases_[0].canvas_,
-        hitOffsetX: 1, hitOffsetY: 1,
         hitImage: manager.hitAtlases_[0].canvas_});
 
       expect(manager.getInfo('1')).to.eql(info);
@@ -257,6 +256,20 @@ describe('ol.style.AtlasManager', function() {
           .to.be.ok();
       expect(manager.add('2', 2048, 2048, defaultRender, defaultRender))
           .to.eql(null);
+    });
+
+    it('always has the same offset for the hit-detection', function() {
+      var manager = new ol.style.AtlasManager({initialSize: 128});
+      // add one image without hit-detection callback
+      var info = manager.add('1', 32, 32, defaultRender);
+      // add then one with hit-detection callback
+      info = manager.add('2', 32, 32, defaultRender, defaultRender);
+
+      expect(info).to.eql({
+        offsetX: 34, offsetY: 1, image: manager.atlases_[0].canvas_,
+        hitImage: manager.hitAtlases_[0].canvas_});
+
+      expect(manager.getInfo('2')).to.eql(info);
     });
   });
 

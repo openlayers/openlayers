@@ -39,7 +39,8 @@ ol.source.OSM = function(opt_options) {
     opaque: true,
     maxZoom: goog.isDef(options.maxZoom) ? options.maxZoom : 19,
     tileLoadFunction: options.tileLoadFunction,
-    url: url
+    url: url,
+    wrapX: options.wrapX
   });
 
 };

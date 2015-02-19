@@ -268,7 +268,7 @@ ol.Object.getSetterName = function(key) {
 ol.Object.getKeyValue_ = function(obj, key) {
   var getterName = ol.Object.getGetterName(key);
   var getter = /** @type {function(): *|undefined} */
-      (goog.object.get(obj, getterName));
+      (/** @type {Object} */ (obj)[getterName]);
   return goog.isDef(getter) ? getter.call(obj) : obj.get(key);
 };
 
@@ -284,7 +284,7 @@ ol.Object.getKeyValue_ = function(obj, key) {
 ol.Object.setKeyValue_ = function(obj, key, value) {
   var setterName = ol.Object.getSetterName(key);
   var setter = /** @type {function(*)|undefined} */
-      (goog.object.get(obj, setterName));
+      (/** @type {Object} */ (obj)[setterName]);
   if (goog.isDef(setter)) {
     setter.call(obj, value);
   } else {

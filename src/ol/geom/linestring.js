@@ -117,7 +117,7 @@ ol.geom.LineString.prototype.closestPointXY =
  * return the last coordinate.
  *
  * @param {number} m M.
- * @param {boolean=} opt_extrapolate Extrapolate.
+ * @param {boolean=} opt_extrapolate Extrapolate. Default is `false`.
  * @return {ol.Coordinate} Coordinate.
  * @api stable
  */

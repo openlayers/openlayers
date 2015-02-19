@@ -66,6 +66,15 @@ goog.inherits(ol.ImageTile, ol.Tile);
 
 /**
  * @inheritDoc
+ */
+ol.ImageTile.prototype.disposeInternal = function() {
+  this.unlistenImage_();
+  goog.base(this, 'disposeInternal');
+};
+
+
+/**
+ * @inheritDoc
  * @api
  */
 ol.ImageTile.prototype.getImage = function(opt_context) {
@@ -136,6 +145,7 @@ ol.ImageTile.prototype.handleImageLoad_ = function() {
 ol.ImageTile.prototype.load = function() {
   if (this.state == ol.TileState.IDLE) {
     this.state = ol.TileState.LOADING;
+    this.changed();
     goog.asserts.assert(goog.isNull(this.imageListenerKeys_));
     this.imageListenerKeys_ = [
       goog.events.listenOnce(this.image_, goog.events.EventType.ERROR,

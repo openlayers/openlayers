@@ -348,7 +348,8 @@ goog.exportProperty(
 
 
 /**
- * Set the position for this overlay.
+ * Set the position for this overlay. If the position is `undefined` the
+ * overlay is hidden.
  * @param {ol.Coordinate|undefined} position The spatial point that the overlay
  *     is anchored at.
  * @observable

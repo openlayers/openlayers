@@ -397,7 +397,7 @@ ol.format.TopoJSON.prototype.readProjection = function(object) {
 /**
  * @const
  * @private
- * @type {Object.<string, function(TopoJSONGeometry, Array, ...[Array]): ol.geom.Geometry>}
+ * @type {Object.<string, function(TopoJSONGeometry, Array, ...Array): ol.geom.Geometry>}
  */
 ol.format.TopoJSON.GEOMETRY_READERS_ = {
   'Point': ol.format.TopoJSON.readPointGeometry_,

@@ -1,26 +1,28 @@
 goog.provide('ol.renderer.webgl.ImageLayer');
 
 goog.require('goog.asserts');
-goog.require('goog.events');
-goog.require('goog.events.EventType');
+goog.require('goog.functions');
 goog.require('goog.vec.Mat4');
 goog.require('goog.webgl');
 goog.require('ol.Coordinate');
 goog.require('ol.Extent');
 goog.require('ol.ImageBase');
-goog.require('ol.ImageState');
 goog.require('ol.ViewHint');
+goog.require('ol.dom');
 goog.require('ol.extent');
 goog.require('ol.layer.Image');
 goog.require('ol.proj');
 goog.require('ol.renderer.webgl.Layer');
+goog.require('ol.source.ImageVector');
+goog.require('ol.vec.Mat4');
+goog.require('ol.webgl.Context');
 
 
 
 /**
  * @constructor
  * @extends {ol.renderer.webgl.Layer}
- * @param {ol.renderer.Map} mapRenderer Map renderer.
+ * @param {ol.renderer.webgl.Map} mapRenderer Map renderer.
  * @param {ol.layer.Image} imageLayer Tile layer.
  */
 ol.renderer.webgl.ImageLayer = function(mapRenderer, imageLayer) {
@@ -33,6 +35,18 @@ ol.renderer.webgl.ImageLayer = function(mapRenderer, imageLayer) {
    * @type {?ol.ImageBase}
    */
   this.image_ = null;
+
+  /**
+   * @private
+   * @type {CanvasRenderingContext2D}
+   */
+  this.hitCanvasContext_ = null;
+
+  /**
+   * @private
+   * @type {?goog.vec.Mat4.Number}
+   */
+  this.hitTransformationMatrix_ = null;
 
 };
 goog.inherits(ol.renderer.webgl.ImageLayer, ol.renderer.webgl.Layer);
@@ -50,41 +64,25 @@ ol.renderer.webgl.ImageLayer.prototype.createTexture_ = function(image) {
   // http://learningwebgl.com/blog/?p=2101
 
   var imageElement = image.getImage();
-  var gl = this.getWebGLMapRenderer().getGL();
+  var gl = this.mapRenderer.getGL();
 
-  var texture = gl.createTexture();
-
-  gl.bindTexture(goog.webgl.TEXTURE_2D, texture);
-  gl.texImage2D(goog.webgl.TEXTURE_2D, 0, goog.webgl.RGBA,
-      goog.webgl.RGBA, goog.webgl.UNSIGNED_BYTE, imageElement);
-
-  gl.texParameteri(
-      goog.webgl.TEXTURE_2D, goog.webgl.TEXTURE_WRAP_S,
-      goog.webgl.CLAMP_TO_EDGE);
-  gl.texParameteri(
-      goog.webgl.TEXTURE_2D, goog.webgl.TEXTURE_WRAP_T,
-      goog.webgl.CLAMP_TO_EDGE);
-  gl.texParameteri(
-      goog.webgl.TEXTURE_2D, goog.webgl.TEXTURE_MIN_FILTER, goog.webgl.LINEAR);
-  gl.texParameteri(
-      goog.webgl.TEXTURE_2D, goog.webgl.TEXTURE_MAG_FILTER, goog.webgl.LINEAR);
-
-  return texture;
+  return ol.webgl.Context.createTexture(
+      gl, imageElement, goog.webgl.CLAMP_TO_EDGE, goog.webgl.CLAMP_TO_EDGE);
 };
 
 
 /**
  * @inheritDoc
  */
-ol.renderer.webgl.ImageLayer.prototype.forEachFeatureAtPixel =
+ol.renderer.webgl.ImageLayer.prototype.forEachFeatureAtCoordinate =
     function(coordinate, frameState, callback, thisArg) {
   var layer = this.getLayer();
   var source = layer.getSource();
   var resolution = frameState.viewState.resolution;
   var rotation = frameState.viewState.rotation;
   var skippedFeatureUids = frameState.skippedFeatureUids;
-  return source.forEachFeatureAtPixel(
-      resolution, rotation, coordinate, skippedFeatureUids,
+  return source.forEachFeatureAtCoordinate(
+      coordinate, resolution, rotation, skippedFeatureUids,
 
       /**
        * @param {ol.Feature} feature Feature.
@@ -102,7 +100,7 @@ ol.renderer.webgl.ImageLayer.prototype.forEachFeatureAtPixel =
 ol.renderer.webgl.ImageLayer.prototype.prepareFrame =
     function(frameState, layerState, context) {
 
-  var gl = this.getWebGLMapRenderer().getGL();
+  var gl = this.mapRenderer.getGL();
 
   var viewState = frameState.viewState;
   var viewCenter = viewState.center;
@@ -133,12 +131,8 @@ ol.renderer.webgl.ImageLayer.prototype.prepareFrame =
     var image_ = imageSource.getImage(renderedExtent, viewResolution,
         frameState.pixelRatio, projection);
     if (!goog.isNull(image_)) {
-      var imageState = image_.getState();
-      if (imageState == ol.ImageState.IDLE) {
-        goog.events.listenOnce(image_, goog.events.EventType.CHANGE,
-            this.handleImageChange, false, this);
-        image_.load();
-      } else if (imageState == ol.ImageState.LOADED) {
+      var loaded = this.loadImage(image_);
+      if (loaded) {
         image = image_;
         texture = this.createTexture_(image_);
         if (!goog.isNull(this.texture)) {
@@ -161,10 +155,11 @@ ol.renderer.webgl.ImageLayer.prototype.prepareFrame =
   if (!goog.isNull(image)) {
     goog.asserts.assert(!goog.isNull(texture));
 
-    var canvas = this.getWebGLMapRenderer().getContext().getCanvas();
+    var canvas = this.mapRenderer.getContext().getCanvas();
 
     this.updateProjectionMatrix_(canvas.width, canvas.height,
         viewCenter, viewResolution, viewRotation, image.getExtent());
+    this.hitTransformationMatrix_ = null;
 
     // Translate and scale to flip the Y coord.
     var texCoordMatrix = this.texCoordMatrix;
@@ -214,4 +209,117 @@ ol.renderer.webgl.ImageLayer.prototype.updateProjectionMatrix_ =
       1);
   goog.vec.Mat4.translate(projectionMatrix, 1, 1, 0);
 
+};
+
+
+/**
+ * @inheritDoc
+ */
+ol.renderer.webgl.ImageLayer.prototype.hasFeatureAtCoordinate =
+    function(coordinate, frameState) {
+  var hasFeature = this.forEachFeatureAtCoordinate(
+      coordinate, frameState, goog.functions.TRUE, this);
+  return goog.isDef(hasFeature);
+};
+
+
+/**
+ * @inheritDoc
+ */
+ol.renderer.webgl.ImageLayer.prototype.forEachLayerAtPixel =
+    function(pixel, frameState, callback, thisArg) {
+  if (goog.isNull(this.image_) || goog.isNull(this.image_.getImage())) {
+    return undefined;
+  }
+
+  if (this.getLayer().getSource() instanceof ol.source.ImageVector) {
+    // for ImageVector sources use the original hit-detection logic,
+    // so that for example also transparent polygons are detected
+    var coordinate = pixel.slice();
+    ol.vec.Mat4.multVec2(
+        frameState.pixelToCoordinateMatrix, coordinate, coordinate);
+    var hasFeature = this.forEachFeatureAtCoordinate(
+        coordinate, frameState, goog.functions.TRUE, this);
+
+    if (hasFeature) {
+      return callback.call(thisArg, this.getLayer());
+    } else {
+      return undefined;
+    }
+  } else {
+    var imageSize =
+        [this.image_.getImage().width, this.image_.getImage().height];
+
+    if (goog.isNull(this.hitTransformationMatrix_)) {
+      this.hitTransformationMatrix_ = this.getHitTransformationMatrix_(
+          frameState.size, imageSize);
+    }
+
+    var pixelOnFrameBuffer = [0, 0];
+    ol.vec.Mat4.multVec2(
+        this.hitTransformationMatrix_, pixel, pixelOnFrameBuffer);
+
+    if (pixelOnFrameBuffer[0] < 0 || pixelOnFrameBuffer[0] > imageSize[0] ||
+        pixelOnFrameBuffer[1] < 0 || pixelOnFrameBuffer[1] > imageSize[1]) {
+      // outside the image, no need to check
+      return undefined;
+    }
+
+    if (goog.isNull(this.hitCanvasContext_)) {
+      this.hitCanvasContext_ = ol.dom.createCanvasContext2D(1, 1);
+    }
+
+    this.hitCanvasContext_.clearRect(0, 0, 1, 1);
+    this.hitCanvasContext_.drawImage(this.image_.getImage(),
+        pixelOnFrameBuffer[0], pixelOnFrameBuffer[1], 1, 1, 0, 0, 1, 1);
+
+    var imageData = this.hitCanvasContext_.getImageData(0, 0, 1, 1).data;
+    if (imageData[3] > 0) {
+      return callback.call(thisArg, this.getLayer());
+    } else {
+      return undefined;
+    }
+  }
+};
+
+
+/**
+ * The transformation matrix to get the pixel on the image for a
+ * pixel on the map.
+ * @param {ol.Size} mapSize
+ * @param {ol.Size} imageSize
+ * @return {goog.vec.Mat4.Number}
+ * @private
+ */
+ol.renderer.webgl.ImageLayer.prototype.getHitTransformationMatrix_ =
+    function(mapSize, imageSize) {
+  // the first matrix takes a map pixel, flips the y-axis and scales to
+  // a range between -1 ... 1
+  var mapCoordMatrix = goog.vec.Mat4.createNumber();
+  goog.vec.Mat4.makeIdentity(mapCoordMatrix);
+  goog.vec.Mat4.translate(mapCoordMatrix, -1, -1, 0);
+  goog.vec.Mat4.scale(mapCoordMatrix, 2 / mapSize[0], 2 / mapSize[1], 1);
+  goog.vec.Mat4.translate(mapCoordMatrix, 0, mapSize[1], 0);
+  goog.vec.Mat4.scale(mapCoordMatrix, 1, -1, 1);
+
+  // the second matrix is the inverse of the projection matrix used in the
+  // shader for drawing
+  var projectionMatrixInv = goog.vec.Mat4.createNumber();
+  goog.vec.Mat4.invert(this.projectionMatrix, projectionMatrixInv);
+
+  // the third matrix scales to the image dimensions and flips the y-axis again
+  var imageCoordMatrix = goog.vec.Mat4.createNumber();
+  goog.vec.Mat4.makeIdentity(imageCoordMatrix);
+  goog.vec.Mat4.translate(imageCoordMatrix, 0, imageSize[1], 0);
+  goog.vec.Mat4.scale(imageCoordMatrix, 1, -1, 1);
+  goog.vec.Mat4.scale(imageCoordMatrix, imageSize[0] / 2, imageSize[1] / 2, 1);
+  goog.vec.Mat4.translate(imageCoordMatrix, 1, 1, 0);
+
+  var transformMatrix = goog.vec.Mat4.createNumber();
+  goog.vec.Mat4.multMat(
+      imageCoordMatrix, projectionMatrixInv, transformMatrix);
+  goog.vec.Mat4.multMat(
+      transformMatrix, mapCoordMatrix, transformMatrix);
+
+  return transformMatrix;
 };

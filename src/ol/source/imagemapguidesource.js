@@ -161,6 +161,15 @@ ol.source.ImageMapGuide.prototype.getImage =
 
 
 /**
+ * @return {ol.ImageLoadFunctionType} The image load function.
+ * @api
+ */
+ol.source.ImageMapGuide.prototype.getImageLoadFunction = function() {
+  return this.imageLoadFunction_;
+};
+
+
+/**
  * @param {ol.Extent} extent The map extents.
  * @param {ol.Size} size the viewport size.
  * @param {number} metersPerUnit The meters-per-unit value.
@@ -220,4 +229,16 @@ ol.source.ImageMapGuide.prototype.getUrl =
   };
   goog.object.extend(baseParams, params);
   return goog.uri.utils.appendParamsFromMap(baseUrl, baseParams);
+};
+
+
+/**
+ * @param {ol.ImageLoadFunctionType} imageLoadFunction Image load function.
+ * @api
+ */
+ol.source.ImageMapGuide.prototype.setImageLoadFunction = function(
+    imageLoadFunction) {
+  this.image_ = null;
+  this.imageLoadFunction_ = imageLoadFunction;
+  this.changed();
 };

@@ -112,12 +112,12 @@ ol.renderer.dom.Map.prototype.disposeInternal = function() {
 ol.renderer.dom.Map.prototype.createLayerRenderer = function(layer) {
   var layerRenderer;
   if (ol.ENABLE_IMAGE && layer instanceof ol.layer.Image) {
-    layerRenderer = new ol.renderer.dom.ImageLayer(this, layer);
+    layerRenderer = new ol.renderer.dom.ImageLayer(layer);
   } else if (ol.ENABLE_TILE && layer instanceof ol.layer.Tile) {
-    layerRenderer = new ol.renderer.dom.TileLayer(this, layer);
+    layerRenderer = new ol.renderer.dom.TileLayer(layer);
   } else if (!(ol.LEGACY_IE_SUPPORT && ol.IS_LEGACY_IE) &&
       ol.ENABLE_VECTOR && layer instanceof ol.layer.Vector) {
-    layerRenderer = new ol.renderer.dom.VectorLayer(this, layer);
+    layerRenderer = new ol.renderer.dom.VectorLayer(layer);
   } else {
     goog.asserts.fail();
     return null;
@@ -224,8 +224,9 @@ ol.renderer.dom.Map.prototype.renderFrame = function(frameState) {
       (map.hasListener(ol.render.EventType.PRECOMPOSE) ||
       map.hasListener(ol.render.EventType.POSTCOMPOSE))) {
     var canvas = this.context_.canvas;
-    canvas.width = frameState.size[0];
-    canvas.height = frameState.size[1];
+    var pixelRatio = frameState.pixelRatio;
+    canvas.width = frameState.size[0] * pixelRatio;
+    canvas.height = frameState.size[1] * pixelRatio;
   }
 
   this.dispatchComposeEvent_(ol.render.EventType.PRECOMPOSE, frameState);

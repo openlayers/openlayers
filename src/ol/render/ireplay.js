@@ -1,6 +1,5 @@
 goog.provide('ol.render.IReplayGroup');
 
-goog.require('goog.functions');
 goog.require('ol.render.IVectorContext');
 
 

@@ -1,6 +1,5 @@
 goog.provide('ol.interaction.DragRotateAndZoom');
 
-goog.require('goog.asserts');
 goog.require('goog.math.Vec2');
 goog.require('ol');
 goog.require('ol.ViewHint');
@@ -62,8 +61,7 @@ ol.interaction.DragRotateAndZoom = function(opt_options) {
   this.lastScaleDelta_ = 0;
 
 };
-goog.inherits(ol.interaction.DragRotateAndZoom,
-    ol.interaction.Pointer);
+goog.inherits(ol.interaction.DragRotateAndZoom, ol.interaction.Pointer);
 
 
 /**

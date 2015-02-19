@@ -1,6 +1,5 @@
 goog.provide('ol.control.Rotate');
 
-goog.require('goog.asserts');
 goog.require('goog.dom');
 goog.require('goog.dom.TagName');
 goog.require('goog.dom.classlist');
@@ -32,12 +31,22 @@ ol.control.Rotate = function(opt_options) {
   var className = goog.isDef(options.className) ?
       options.className : 'ol-rotate';
 
+  var label = goog.isDef(options.label) ?
+      options.label : '\u21E7';
+
   /**
-   * @type {Element}
+   * @type {Node}
    * @private
    */
-  this.label_ = goog.dom.createDom(goog.dom.TagName.SPAN,
-      'ol-compass', goog.isDef(options.label) ? options.label : '\u21E7');
+  this.label_ = null;
+
+  if (goog.isString(label)) {
+    this.label_ = goog.dom.createDom(goog.dom.TagName.SPAN,
+        'ol-compass', label);
+  } else {
+    this.label_ = label;
+    goog.dom.classlist.add(this.label_, 'ol-compass');
+  }
 
   var tipLabel = goog.isDef(options.tipLabel) ?
       options.tipLabel : 'Reset rotation';
