@@ -2520,6 +2520,7 @@ olx.interaction.PointerOptions.prototype.handleUpEvent;
  *     style: (ol.style.Style|Array.<ol.style.Style>|ol.style.StyleFunction|undefined),
  *     removeCondition: (ol.events.ConditionType|undefined),
  *     toggleCondition: (ol.events.ConditionType|undefined),
+ *     type: (Array.<ol.geom.GeometryType>),
  *     multi: (boolean|undefined)}}
  * @api
  */
@@ -2596,6 +2597,16 @@ olx.interaction.SelectOptions.prototype.removeCondition;
  * @api
  */
 olx.interaction.SelectOptions.prototype.toggleCondition;
+
+
+/**
+ * Array of geometry types allowed to be selected ('Point', 'LineString', 
+ * 'Polygon', 'MultiPoint', 'MultiLineString', or 'MultiPolygon').
+ * @type {Array.<ol.geom.GeometryType>}
+ * @api
+ */
+olx.interaction.DrawOptions.prototype.type;
+
 
 /**
  * A boolean that determines if the default behaviour should select only
