@@ -373,7 +373,7 @@ ol.style.RegularShape.prototype.render_ = function(atlasManager) {
 
 /**
  * @private
- * @param {ol.style.Circle.RenderOptions} renderOptions
+ * @param {ol.style.RegularShape.RenderOptions} renderOptions
  * @param {CanvasRenderingContext2D} context
  * @param {number} x The origin for the symbol (x).
  * @param {number} y The origin for the symbol (y).
