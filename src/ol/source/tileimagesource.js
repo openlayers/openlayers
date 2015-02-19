@@ -4,7 +4,6 @@ goog.require('goog.asserts');
 goog.require('goog.events');
 goog.require('goog.events.EventType');
 goog.require('ol.ImageTile');
-goog.require('ol.TileCache');
 goog.require('ol.TileCoord');
 goog.require('ol.TileLoadFunctionType');
 goog.require('ol.TileState');
@@ -55,12 +54,6 @@ ol.source.TileImage = function(options) {
 
   /**
    * @protected
-   * @type {ol.TileCache}
-   */
-  this.tileCache = new ol.TileCache();
-
-  /**
-   * @protected
    * @type {ol.TileLoadFunctionType}
    */
   this.tileLoadFunction = goog.isDef(options.tileLoadFunction) ?
@@ -84,22 +77,6 @@ goog.inherits(ol.source.TileImage, ol.source.Tile);
  */
 ol.source.TileImage.defaultTileLoadFunction = function(imageTile, src) {
   imageTile.getImage().src = src;
-};
-
-
-/**
- * @inheritDoc
- */
-ol.source.TileImage.prototype.canExpireCache = function() {
-  return this.tileCache.canExpireCache();
-};
-
-
-/**
- * @inheritDoc
- */
-ol.source.TileImage.prototype.expireCache = function(usedTiles) {
-  this.tileCache.expireCache(usedTiles);
 };
 
 

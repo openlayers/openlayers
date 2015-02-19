@@ -86,6 +86,33 @@ ol.renderer.Layer.prototype.hasFeatureAtCoordinate = goog.functions.FALSE;
 
 
 /**
+ * Create a function that adds loaded tiles to the tile lookup.
+ * @param {ol.source.Tile} source Tile source.
+ * @param {Object.<number, Object.<string, ol.Tile>>} tiles Lookup of loaded
+ *     tiles by zoom level.
+ * @return {function(number, ol.TileRange):boolean} A function that can be
+ *     called with a zoom level and a tile range to add loaded tiles to the
+ *     lookup.
+ * @protected
+ */
+ol.renderer.Layer.prototype.createLoadedTileFinder = function(source, tiles) {
+  /**
+   * @param {number} zoom Zoom level.
+   * @param {ol.TileRange} tileRange Tile range.
+   * @return {boolean} The tile range is fully loaded.
+   */
+  return function(zoom, tileRange) {
+    return source.forEachLoadedTile(zoom, tileRange, function(tile) {
+      if (!tiles[zoom]) {
+        tiles[zoom] = {};
+      }
+      tiles[zoom][tile.tileCoord.toString()] = tile;
+    });
+  };
+};
+
+
+/**
  * @protected
  * @return {ol.layer.Layer} Layer.
  */
