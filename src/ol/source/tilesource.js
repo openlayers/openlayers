@@ -2,7 +2,6 @@ goog.provide('ol.source.Tile');
 goog.provide('ol.source.TileOptions');
 
 goog.require('goog.events.Event');
-goog.require('goog.functions');
 goog.require('ol.Attribution');
 goog.require('ol.Extent');
 goog.require('ol.TileCache');
