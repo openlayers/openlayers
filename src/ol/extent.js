@@ -463,7 +463,7 @@ ol.extent.forEachCorner = function(extent, callback, opt_this) {
   if (val) {
     return val;
   }
-  val = callback.call(opt_this, ol.extent.getBottomRight(extent));
+  val = callback.call(opt_this, ol.extent.getTopLeft(extent));
   if (val) {
     return val;
   }
