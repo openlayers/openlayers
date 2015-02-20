@@ -2605,7 +2605,7 @@ olx.interaction.SelectOptions.prototype.toggleCondition;
  * @type {Array.<ol.geom.GeometryType>}
  * @api
  */
-olx.interaction.DrawOptions.prototype.type;
+olx.interaction.SelectOptions.prototype.type;
 
 
 /**
