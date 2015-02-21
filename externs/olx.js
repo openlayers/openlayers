@@ -2520,8 +2520,8 @@ olx.interaction.PointerOptions.prototype.handleUpEvent;
  *     style: (ol.style.Style|Array.<ol.style.Style>|ol.style.StyleFunction|undefined),
  *     removeCondition: (ol.events.ConditionType|undefined),
  *     toggleCondition: (ol.events.ConditionType|undefined),
- *     type: (Array.<ol.geom.GeometryType>),
- *     multi: (boolean|undefined)}}
+ *     multi: (boolean|undefined),
+ *     type: (Array.<ol.geom.GeometryType>)}}
  * @api
  */
 olx.interaction.SelectOptions;
@@ -2600,15 +2600,6 @@ olx.interaction.SelectOptions.prototype.toggleCondition;
 
 
 /**
- * Array of geometry types allowed to be selected ('Point', 'LineString', 
- * 'Polygon', 'MultiPoint', 'MultiLineString', or 'MultiPolygon').
- * @type {Array.<ol.geom.GeometryType>}
- * @api
- */
-olx.interaction.SelectOptions.prototype.type;
-
-
-/**
  * A boolean that determines if the default behaviour should select only
  * single features or all (overlapping) features at the clicked map
  * position. Default is false i.e single select
@@ -2616,6 +2607,16 @@ olx.interaction.SelectOptions.prototype.type;
  * @api
  */
 olx.interaction.SelectOptions.prototype.multi;
+
+
+/**
+ * Array of geometry types allowed to be selected ('Point', 'LineString', 
+ * 'Polygon', 'MultiPoint', 'MultiLineString', or 'MultiPolygon'). An empty
+ * array means we can select any geometry.
+ * @type {Array.<ol.geom.GeometryType>}
+ * @api
+ */
+olx.interaction.SelectOptions.prototype.type;
 
 
 /**

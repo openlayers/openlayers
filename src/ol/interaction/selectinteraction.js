@@ -63,7 +63,8 @@ ol.interaction.Select = function(opt_options) {
       options.toggleCondition : ol.events.condition.shiftKeyOnly;
 
   /**
-   * Geometry type.
+   * Geometry types allowed to be selected. Empty array means we can select
+   * any geometry.
    * @type {Array.<ol.geom.GeometryType>}
    * @private
    */
