@@ -2521,7 +2521,7 @@ olx.interaction.PointerOptions.prototype.handleUpEvent;
  *     removeCondition: (ol.events.ConditionType|undefined),
  *     toggleCondition: (ol.events.ConditionType|undefined),
  *     multi: (boolean|undefined),
- *     type: (Array.<ol.geom.GeometryType>)}}
+ *     type: (Array.<ol.geom.GeometryType>|undefined)}}
  * @api
  */
 olx.interaction.SelectOptions;
