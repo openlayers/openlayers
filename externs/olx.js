@@ -2613,7 +2613,7 @@ olx.interaction.SelectOptions.prototype.multi;
  * Array of geometry types allowed to be selected ('Point', 'LineString', 
  * 'Polygon', 'MultiPoint', 'MultiLineString', or 'MultiPolygon'). An empty
  * array means we can select any geometry.
- * @type {Array.<ol.geom.GeometryType>}
+ * @type {Array.<ol.geom.GeometryType>|undefined}
  * @api
  */
 olx.interaction.SelectOptions.prototype.type;
