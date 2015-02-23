@@ -310,7 +310,10 @@ olx.MapOptions.prototype.view;
  *     position: (ol.Coordinate|undefined),
  *     positioning: (ol.OverlayPositioning|string|undefined),
  *     stopEvent: (boolean|undefined),
- *     insertFirst: (boolean|undefined)}}
+ *     insertFirst: (boolean|undefined),
+ *     autoPan: (boolean|undefined),
+ *     autoPanAnimation: (olx.animation.PanOptions|undefined),
+ *     autoPanMargin: (number|undefined)}}
  * @api stable
  */
 olx.OverlayOptions;
@@ -374,6 +377,35 @@ olx.OverlayOptions.prototype.stopEvent;
  * @api stable
  */
 olx.OverlayOptions.prototype.insertFirst;
+
+
+/**
+ * If set to `true` the map is panned when calling `setPosition`, so that the
+ * overlay is entirely visible in the current viewport.
+ * The default is `true`.
+ * @type {boolean|undefined}
+ * @api
+ */
+olx.OverlayOptions.prototype.autoPan;
+
+
+/**
+ * The options used to create a `ol.animation.pan` animation. This animation
+ * is only used when `autoPan` is enabled. By default the default options for
+ * `ol.animation.pan` are used. If set to `null` the panning is not animated.
+ * @type {olx.animation.PanOptions|undefined}
+ * @api
+ */
+olx.OverlayOptions.prototype.autoPanAnimation;
+
+
+/**
+ * The margin (in pixels) between the overlay and the borders of the map when
+ * autopanning. The default is `20`.
+ * @type {number|undefined}
+ * @api
+ */
+olx.OverlayOptions.prototype.autoPanMargin;
 
 
 /**
