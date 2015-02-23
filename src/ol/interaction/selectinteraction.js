@@ -12,6 +12,13 @@ goog.require('ol.geom.GeometryType');
 goog.require('ol.interaction.Interaction');
 goog.require('ol.style.Style');
 
+/**
+ * A function that takes an {@link ol.Feature}. The function should return true
+ * if the feature must be selected or false otherwise.
+ * @typedef {function(ol.Feature): boolean}
+ * @api
+ */
+ol.interaction.SelectFilterFunction;
 
 
 /**
@@ -67,6 +74,12 @@ ol.interaction.Select = function(opt_options) {
    * @type {boolean}
    */
   this.multi_ = goog.isDef(options.multi) ? options.multi : false;
+
+  /**
+   * @private
+   * @type {ol.interaction.SelectFilterFunction}
+   */
+  this.filter_ = goog.isDef(options.filter) ? options.filter : null;  
 
   var layerFilter;
   if (goog.isDef(options.layers)) {
@@ -140,6 +153,7 @@ ol.interaction.Select.handleEvent = function(mapBrowserEvent) {
   var features = this.featureOverlay_.getFeatures();
   var /** @type {Array.<ol.Feature>} */ deselected = [];
   var /** @type {Array.<ol.Feature>} */ selected = [];
+  var filter = this.filter_;
   if (set) {
     // Replace the currently selected feature(s) with the feature(s) at the
     // pixel, or clear the selected feature(s) if there is no feature at
@@ -150,7 +164,10 @@ ol.interaction.Select.handleEvent = function(mapBrowserEvent) {
          * @param {ol.layer.Layer} layer Layer.
          */
         function(feature, layer) {
-          selected.push(feature);
+          if(!goog.isDef(filter) || goog.isFunction(filter) && 
+            filter.call(this, feature)) {
+            selected.push(feature);
+          }
         }, undefined, this.layerFilter_);
     if (selected.length > 0 && features.getLength() == 1 &&
         features.item(0) == selected[0]) {
