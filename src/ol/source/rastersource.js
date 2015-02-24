@@ -107,9 +107,11 @@ goog.inherits(ol.source.Raster, ol.source.Image);
 /**
  * Reset the operations.
  * @param {Array.<ol.raster.Operation>} operations New operations.
+ * @api
  */
 ol.source.Raster.prototype.setOperations = function(operations) {
   this.operations_ = operations;
+  this.changed();
 };
 
 
