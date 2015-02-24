@@ -16,6 +16,7 @@ goog.require('ol.style.Style');
  * @enum {string}
  */
 ol.layer.HeatmapLayerProperty = {
+  BLUR: 'blur',
   GRADIENT: 'gradient',
   RADIUS: 'radius'
 };
@@ -57,12 +58,6 @@ ol.layer.Heatmap = function(opt_options) {
    * @private
    * @type {number}
    */
-  this.blur_ = goog.isDef(options.blur) ? options.blur : 15;
-
-  /**
-   * @private
-   * @type {number}
-   */
   this.shadow_ = goog.isDef(options.shadow) ? options.shadow : 250;
 
   /**
@@ -81,9 +76,12 @@ ol.layer.Heatmap = function(opt_options) {
       ol.Object.getChangeEventType(ol.layer.HeatmapLayerProperty.GRADIENT),
       this.handleGradientChanged_, false, this);
 
-  goog.events.listen(this,
-      ol.Object.getChangeEventType(ol.layer.HeatmapLayerProperty.RADIUS),
-      this.handleStyleChanged_, false, this);
+  goog.events.listen(this, [
+    ol.Object.getChangeEventType(ol.layer.HeatmapLayerProperty.BLUR),
+    ol.Object.getChangeEventType(ol.layer.HeatmapLayerProperty.RADIUS)
+  ], this.handleStyleChanged_, false, this);
+
+  this.setBlur(goog.isDef(options.blur) ? options.blur : 15);
 
   this.setGradient(goog.isDef(options.gradient) ?
       options.gradient : ol.layer.Heatmap.DEFAULT_GRADIENT);
@@ -168,11 +166,12 @@ ol.layer.Heatmap.createGradient_ = function(colors) {
  */
 ol.layer.Heatmap.prototype.createCircle_ = function() {
   var radius = this.getRadius();
-  var halfSize = radius + this.blur_ + 1;
+  var blur = this.getBlur();
+  var halfSize = radius + blur + 1;
   var size = 2 * halfSize;
   var context = ol.dom.createCanvasContext2D(size, size);
   context.shadowOffsetX = context.shadowOffsetY = this.shadow_;
-  context.shadowBlur = this.blur_;
+  context.shadowBlur = blur;
   context.shadowColor = '#000';
   context.beginPath();
   var center = halfSize - this.shadow_;
@@ -180,6 +179,20 @@ ol.layer.Heatmap.prototype.createCircle_ = function() {
   context.fill();
   return context.canvas.toDataURL();
 };
+
+
+/**
+ * @return {number} Blur size in pixels.
+ * @api
+ * @observable
+ */
+ol.layer.Heatmap.prototype.getBlur = function() {
+  return /** @type {number} */ (this.get(ol.layer.HeatmapLayerProperty.BLUR));
+};
+goog.exportProperty(
+    ol.layer.Heatmap.prototype,
+    'getBlur',
+    ol.layer.Heatmap.prototype.getBlur);
 
 
 /**
@@ -250,6 +263,20 @@ ol.layer.Heatmap.prototype.handleRender_ = function(event) {
   }
   context.putImageData(image, 0, 0);
 };
+
+
+/**
+ * @param {number} blur Blur size in pixels.
+ * @api
+ * @observable
+ */
+ol.layer.Heatmap.prototype.setBlur = function(blur) {
+  this.set(ol.layer.HeatmapLayerProperty.BLUR, blur);
+};
+goog.exportProperty(
+    ol.layer.Heatmap.prototype,
+    'setBlur',
+    ol.layer.Heatmap.prototype.setBlur);
 
 
 /**
