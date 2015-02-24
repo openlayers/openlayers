@@ -108,23 +108,24 @@ ol.renderer.webgl.TileLayer.prototype.createLoadedTileFinder =
     function(source, tiles) {
   var mapRenderer = this.mapRenderer;
 
-  /**
-   * @param {number} zoom Zoom level.
-   * @param {ol.TileRange} tileRange Tile range.
-   * @return {boolean} The tile range is fully loaded.
-   */
-  return function(zoom, tileRange) {
-    return source.forEachLoadedTile(zoom, tileRange, function(tile) {
-      var loaded = mapRenderer.isTileTextureLoaded(tile);
-      if (loaded) {
-        if (!tiles[zoom]) {
-          tiles[zoom] = {};
-        }
-        tiles[zoom][tile.tileCoord.toString()] = tile;
-      }
-      return loaded;
-    });
-  };
+  return (
+      /**
+       * @param {number} zoom Zoom level.
+       * @param {ol.TileRange} tileRange Tile range.
+       * @return {boolean} The tile range is fully loaded.
+       */
+      function(zoom, tileRange) {
+        return source.forEachLoadedTile(zoom, tileRange, function(tile) {
+          var loaded = mapRenderer.isTileTextureLoaded(tile);
+          if (loaded) {
+            if (!tiles[zoom]) {
+              tiles[zoom] = {};
+            }
+            tiles[zoom][tile.tileCoord.toString()] = tile;
+          }
+          return loaded;
+        });
+      });
 };
 
 
