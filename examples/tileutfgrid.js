@@ -36,7 +36,8 @@ var nameElement = document.getElementById('country-name');
 var infoOverlay = new ol.Overlay({
   element: infoElement,
   offset: [15, 15],
-  stopEvent: false
+  stopEvent: false,
+  autoPan: false
 });
 map.addOverlay(infoOverlay);
 

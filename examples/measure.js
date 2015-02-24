@@ -204,7 +204,8 @@ function createHelpTooltip() {
   helpTooltip = new ol.Overlay({
     element: helpTooltipElement,
     offset: [15, 0],
-    positioning: 'center-left'
+    positioning: 'center-left',
+    autoPan: false
   });
   map.addOverlay(helpTooltip);
 }
@@ -222,7 +223,8 @@ function createMeasureTooltip() {
   measureTooltip = new ol.Overlay({
     element: measureTooltipElement,
     offset: [0, -15],
-    positioning: 'bottom-center'
+    positioning: 'bottom-center',
+    autoPan: false
   });
   map.addOverlay(measureTooltip);
 }
