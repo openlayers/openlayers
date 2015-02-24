@@ -56,6 +56,28 @@ ol.source.WMTS = function(options) {
   this.coordKeyPrefix_ = '';
   this.resetCoordKeyPrefix_();
 
+
+  /**
+   * @private
+   * @type {string}
+   */
+  this.layer_ = options.layer;
+
+
+  /**
+   * @private
+   * @type {?number}
+   */
+  this.pixelRatio_ = options.tilePixelRatio || 1;
+
+
+  /**
+   * @private
+   * @type {string}
+   */
+  this.matrixSet_ = options.matrixSet;
+
+
   // FIXME: should we guess this requestEncoding from options.url(s)
   //        structure? that would mean KVP only if a template is not provided.
   var requestEncoding = goog.isDef(options.requestEncoding) ?
@@ -65,6 +87,12 @@ ol.source.WMTS = function(options) {
   // FIXME: should we create a default tileGrid?
   // we could issue a getCapabilities xhr to retrieve missing configuration
   var tileGrid = options.tileGrid;
+
+  /**
+   * @private
+   * @type {?Object}
+   */
+  this.tileGrid_ = tileGrid;
 
   var context = {
     'Layer': options.layer,
@@ -138,6 +166,8 @@ ol.source.WMTS = function(options) {
     tileUrlFunction = ol.TileUrlFunction.createFromTileUrlFunctions(
         goog.array.map(urls, createFromWMTSTemplate));
   }
+
+  this.urls_ = urls;
 
   var tmpExtent = ol.extent.createEmpty();
   var tmpTileCoord = [0, 0, 0];
@@ -334,4 +364,108 @@ ol.source.WMTS.optionsFromCapabilities = function(wmtsCap, layer) {
 
   /* jshint +W069 */
 
+};
+
+
+/**
+ * Return the GetFeatureInfo URL for the passed coordinate, resolution, and
+ * projection. Return `undefined` if the GetFeatureInfo URL cannot be
+ * constructed.
+ * @param {ol.Coordinate} coordinate Coordinate.
+ * @param {number} resolution Resolution.
+ * @param {ol.proj.Projection} projection Projection.
+ * @param {!Object} params GetFeatureInfo params. `INFOFORMAT` at least should
+ *     be provided.
+ * @return {string|undefined} GetFeatureInfo URL.
+ * @api
+ */
+ol.source.WMTS.prototype.getGetFeatureInfoUrl =
+    function(coordinate, resolution, projection, params) {
+
+  goog.asserts.assert(!('VERSION' in params));
+
+  var pixelRatio = this.pixelRatio_;
+  if (isNaN(pixelRatio)) {
+    return undefined;
+  }
+
+  var tileGrid = this.tileGrid_;
+  if (goog.isNull(tileGrid)) {
+    tileGrid = this.getTileGridForProjection(projection);
+  }
+
+  var tileCoord = tileGrid.getTileCoordForCoordAndResolution(
+      coordinate, resolution);
+
+  // TODO: this code is duplicated from createFromWMTSTemplate function
+  var getTransformedTileCoord = function(tileCoord, tileGrid, projection) {
+    var tmpTileCoord = new ol.TileCoord(0, 0, 0);
+    var tmpExtent = ol.extent.createEmpty();
+    var x = tileCoord.x;
+    var y = -tileCoord.y - 1;
+    var tileExtent = tileGrid.getTileCoordExtent(tileCoord);
+    var projectionExtent = projection.getExtent();
+    var extent = projectionExtent;
+
+    if (!goog.isNull(extent) && projection.isGlobal() &&
+        extent[0] === projectionExtent[0] &&
+        extent[2] === projectionExtent[2]) {
+      var numCols = Math.ceil(
+          ol.extent.getWidth(extent) /
+          ol.extent.getWidth(tileExtent));
+      x = goog.math.modulo(x, numCols);
+      tmpTileCoord.z = tileCoord.z;
+      tmpTileCoord.x = x;
+      tmpTileCoord.y = tileCoord.y;
+      tileExtent = tileGrid.getTileCoordExtent(tmpTileCoord, tmpExtent);
+    }
+    if (!ol.extent.intersects(tileExtent, extent) ||
+        ol.extent.touches(tileExtent, extent)) {
+      return null;
+    }
+    return new ol.TileCoord(tileCoord.z, x, y);
+  };
+
+  var tileExtent = tileGrid.getTileCoordExtent(tileCoord);
+  var transformedTileCoord = getTransformedTileCoord(tileCoord,
+      tileGrid, projection);
+
+  if (tileGrid.getResolutions().length <= tileCoord.z) {
+    return undefined;
+  }
+
+  var tileResolution = tileGrid.getResolution(tileCoord.z);
+  //var tileExtent = tileGrid.getTileCoordExtent(
+  //    tileCoord, this.tmpExtent_);
+  //var tileSize = tileGrid.getTileSize(tileCoord.z);
+  var tileMatrix = tileGrid.getMatrixIds()[tileCoord.z];
+
+  var baseParams = {
+    'SERVICE': 'WMTS',
+    'VERSION': '1.0.0',
+    'REQUEST': 'GetFeatureInfo',
+    'LAYER': this.layer_,
+    'TileCol': transformedTileCoord.x,
+    'TileRow': transformedTileCoord.y,
+    'TileMatrix': tileMatrix,
+    'TileMatrixSet': this.matrixSet_
+  };
+
+  goog.object.extend(baseParams, params);
+
+  var x = Math.floor((coordinate[0] - tileExtent[0]) /
+      (tileResolution / pixelRatio));
+  var y = Math.floor((tileExtent[3] - coordinate[1]) /
+      (tileResolution / pixelRatio));
+
+  goog.object.set(baseParams, 'I', x);
+  goog.object.set(baseParams, 'J', y);
+
+  var url = this.urls_[0];
+
+  // TODO: this is working only for WMTSRequestEncoding == 'KVP'
+  // the function for creating the url shoul be abstracted
+  var featureInfoUrl = goog.uri.utils.appendParamsFromMap(url, baseParams);
+
+  return featureInfoUrl;
 };
