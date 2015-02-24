@@ -105,6 +105,15 @@ goog.inherits(ol.source.Raster, ol.source.Image);
 
 
 /**
+ * Reset the operations.
+ * @param {Array.<ol.raster.Operation>} operations New operations.
+ */
+ol.source.Raster.prototype.setOperations = function(operations) {
+  this.operations_ = operations;
+};
+
+
+/**
  * Update the stored frame state.
  * @param {ol.Extent} extent The view extent (in map units).
  * @param {number} resolution The view resolution.
@@ -199,8 +208,7 @@ ol.source.Raster.prototype.composeFrame_ = function(frameState) {
       pixel[2] = source[j + 2];
       pixel[3] = source[j + 3];
     }
-    this.runOperations_(pixels);
-    pixel = pixels[0];
+    pixel = this.runOperations_(pixels)[0];
     target[j] = pixel[0];
     target[j + 1] = pixel[1];
     target[j + 2] = pixel[2];
