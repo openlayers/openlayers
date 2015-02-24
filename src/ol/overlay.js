@@ -97,7 +97,7 @@ ol.Overlay = function(options) {
    * @private
    * @type {boolean}
    */
-  this.autoPan_ = goog.isDef(options.autoPan) ? options.autoPan : true;
+  this.autoPan_ = goog.isDef(options.autoPan) ? options.autoPan : false;
 
   /**
    * @private
