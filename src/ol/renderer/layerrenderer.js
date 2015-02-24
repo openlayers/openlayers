@@ -259,32 +259,6 @@ ol.renderer.Layer.prototype.updateUsedTiles =
 
 
 /**
- * @param {function(ol.Tile): boolean} isLoadedFunction Function to
- *     determine if the tile is loaded.
- * @param {ol.source.Tile} tileSource Tile source.
- * @param {number} pixelRatio Pixel ratio.
- * @param {ol.proj.Projection} projection Projection.
- * @protected
- * @return {function(number, number, number): ol.Tile} Returns a tile if it is
- *     loaded.
- */
-ol.renderer.Layer.prototype.createGetTileIfLoadedFunction =
-    function(isLoadedFunction, tileSource, pixelRatio, projection) {
-  return (
-      /**
-       * @param {number} z Z.
-       * @param {number} x X.
-       * @param {number} y Y.
-       * @return {ol.Tile} Tile.
-       */
-      function(z, x, y) {
-        var tile = tileSource.getTile(z, x, y, pixelRatio, projection);
-        return isLoadedFunction(tile) ? tile : null;
-      });
-};
-
-
-/**
  * @param {ol.Coordinate} center Center.
  * @param {number} resolution Resolution.
  * @param {ol.Size} size Size.
