@@ -382,7 +382,7 @@ olx.OverlayOptions.prototype.insertFirst;
 /**
  * If set to `true` the map is panned when calling `setPosition`, so that the
  * overlay is entirely visible in the current viewport.
- * The default is `true`.
+ * The default is `false`.
  * @type {boolean|undefined}
  * @api
  */
