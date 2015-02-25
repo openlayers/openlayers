@@ -193,7 +193,10 @@ ol.interaction.Select.handleEvent = function(mapBrowserEvent) {
           var index = goog.array.indexOf(features.getArray(), feature);
           if (index == -1) {
             if (add || toggle) {
-              selected.push(feature);
+              if(!goog.isDef(filter) || goog.isFunction(filter) && 
+                filter.call(this, feature)) {
+                selected.push(feature);
+              }
             }
           } else {
             if (remove || toggle) {
