@@ -178,6 +178,7 @@ ol.source.ImageVector.prototype.forEachFeatureAtCoordinate = function(
 
 
 /**
+ * Get a reference to the wrapped source.
  * @return {ol.source.Vector} Source.
  * @api
  */
