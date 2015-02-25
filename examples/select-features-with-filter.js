@@ -1,3 +1,4 @@
+goog.require('goog.array');
 goog.require('ol.Map');
 goog.require('ol.View');
 goog.require('ol.interaction');
@@ -63,7 +64,7 @@ var changeFilter = function() {
 
 // select interaction
 var selectInteraction = new ol.interaction.Select({
-  filter: function(feature) {
+  filter: function(feature, layer) {
     if (types === null) {
       return true;
     } else {

@@ -2520,7 +2520,8 @@ olx.interaction.PointerOptions.prototype.handleUpEvent;
  *     style: (ol.style.Style|Array.<ol.style.Style>|ol.style.StyleFunction|undefined),
  *     removeCondition: (ol.events.ConditionType|undefined),
  *     toggleCondition: (ol.events.ConditionType|undefined),
- *     multi: (boolean|undefined)}}
+ *     multi: (boolean|undefined),
+ *	   filter: (ol.interaction.SelectFilterFunction|undefined)}}
  * @api
  */
 olx.interaction.SelectOptions;
@@ -2605,6 +2606,14 @@ olx.interaction.SelectOptions.prototype.toggleCondition;
  * @api
  */
 olx.interaction.SelectOptions.prototype.multi;
+
+/**
+ * A function that takes an {@link ol.Feature} and an {ol.layer.Layer} and
+ * returns true if the feature may be selected or false otherwise.
+ * @typedef {function(ol.Feature, ol.layer.Layer): boolean}
+ * @api
+ */
+olx.interaction.SelectOptions.prototype.filter;
 
 
 /**

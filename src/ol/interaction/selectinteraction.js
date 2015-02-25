@@ -14,9 +14,9 @@ goog.require('ol.style.Style');
 
 
 /**
- * A function that takes an {@link ol.Feature}. The function should return true
- * if the feature must be selected or false otherwise.
- * @typedef {function(ol.Feature): boolean}
+ * A function that takes an {@link ol.Feature} and an {ol.layer.Layer} and
+ * returns true if the feature may be selected or false otherwise.
+ * @typedef {function(ol.Feature, ol.layer.Layer): boolean}
  * @api
  */
 ol.interaction.SelectFilterFunction;
@@ -81,7 +81,8 @@ ol.interaction.Select = function(opt_options) {
    * @private
    * @type {ol.interaction.SelectFilterFunction}
    */
-  this.filter_ = goog.isDef(options.filter) ? options.filter : null;
+  this.filter_ = goog.isDef(options.filter) ? options.filter :
+      goog.functions.TRUE;
 
   var layerFilter;
   if (goog.isDef(options.layers)) {
@@ -166,8 +167,7 @@ ol.interaction.Select.handleEvent = function(mapBrowserEvent) {
          * @param {ol.layer.Layer} layer Layer.
          */
         function(feature, layer) {
-          if (!goog.isDef(filter) || goog.isFunction(filter) &&
-              filter.call(this, feature)) {
+          if (goog.isFunction(filter) && filter(feature, layer)) {
             selected.push(feature);
           }
         }, undefined, this.layerFilter_);
@@ -195,8 +195,7 @@ ol.interaction.Select.handleEvent = function(mapBrowserEvent) {
           var index = goog.array.indexOf(features.getArray(), feature);
           if (index == -1) {
             if (add || toggle) {
-              if (!goog.isDef(filter) || goog.isFunction(filter) &&
-                  filter.call(this, feature)) {
+              if (goog.isFunction(filter) && filter(feature, layer)) {
                 selected.push(feature);
               }
             }
