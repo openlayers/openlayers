@@ -1,4 +1,5 @@
 goog.provide('ol.DrawEvent');
+goog.provide('ol.DrawEventType');
 goog.provide('ol.interaction.Draw');
 
 goog.require('goog.asserts');
