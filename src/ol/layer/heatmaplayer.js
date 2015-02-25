@@ -76,17 +76,19 @@ ol.layer.Heatmap = function(opt_options) {
       ol.Object.getChangeEventType(ol.layer.HeatmapLayerProperty.GRADIENT),
       this.handleGradientChanged_, false, this);
 
+  this.setGradient(goog.isDef(options.gradient) ?
+      options.gradient : ol.layer.Heatmap.DEFAULT_GRADIENT);
+
+  this.setBlur(goog.isDef(options.blur) ? options.blur : 15);
+
+  this.setRadius(goog.isDef(options.radius) ? options.radius : 8);
+
   goog.events.listen(this, [
     ol.Object.getChangeEventType(ol.layer.HeatmapLayerProperty.BLUR),
     ol.Object.getChangeEventType(ol.layer.HeatmapLayerProperty.RADIUS)
   ], this.handleStyleChanged_, false, this);
 
-  this.setBlur(goog.isDef(options.blur) ? options.blur : 15);
-
-  this.setGradient(goog.isDef(options.gradient) ?
-      options.gradient : ol.layer.Heatmap.DEFAULT_GRADIENT);
-
-  this.setRadius(goog.isDef(options.radius) ? options.radius : 8);
+  this.handleStyleChanged_();
 
   var weight = goog.isDef(options.weight) ? options.weight : 'weight';
   var weightFunction;
@@ -100,6 +102,8 @@ ol.layer.Heatmap = function(opt_options) {
   goog.asserts.assert(goog.isFunction(weightFunction));
 
   this.setStyle(goog.bind(function(feature, resolution) {
+    goog.asserts.assert(!goog.isNull(this.styleCache_));
+    goog.asserts.assert(goog.isDef(this.circleImage_));
     var weight = weightFunction(feature);
     var opacity = goog.isDef(weight) ? goog.math.clamp(weight, 0, 1) : 1;
     // cast to 8 bits
@@ -167,6 +171,7 @@ ol.layer.Heatmap.createGradient_ = function(colors) {
 ol.layer.Heatmap.prototype.createCircle_ = function() {
   var radius = this.getRadius();
   var blur = this.getBlur();
+  goog.asserts.assert(goog.isDef(radius) && goog.isDef(blur));
   var halfSize = radius + blur + 1;
   var size = 2 * halfSize;
   var context = ol.dom.createCanvasContext2D(size, size);
@@ -248,6 +253,7 @@ ol.layer.Heatmap.prototype.handleStyleChanged_ = function() {
  */
 ol.layer.Heatmap.prototype.handleRender_ = function(event) {
   goog.asserts.assert(event.type == ol.render.EventType.RENDER);
+  goog.asserts.assert(!goog.isNull(this.gradient_));
   var context = event.context;
   var canvas = context.canvas;
   var image = context.getImageData(0, 0, canvas.width, canvas.height);
