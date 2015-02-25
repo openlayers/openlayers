@@ -12,6 +12,7 @@ goog.require('ol.geom.GeometryType');
 goog.require('ol.interaction.Interaction');
 goog.require('ol.style.Style');
 
+
 /**
  * A function that takes an {@link ol.Feature}. The function should return true
  * if the feature must be selected or false otherwise.
@@ -19,6 +20,7 @@ goog.require('ol.style.Style');
  * @api
  */
 ol.interaction.SelectFilterFunction;
+
 
 
 /**
@@ -79,7 +81,7 @@ ol.interaction.Select = function(opt_options) {
    * @private
    * @type {ol.interaction.SelectFilterFunction}
    */
-  this.filter_ = goog.isDef(options.filter) ? options.filter : null;  
+  this.filter_ = goog.isDef(options.filter) ? options.filter : null;
 
   var layerFilter;
   if (goog.isDef(options.layers)) {
@@ -164,8 +166,8 @@ ol.interaction.Select.handleEvent = function(mapBrowserEvent) {
          * @param {ol.layer.Layer} layer Layer.
          */
         function(feature, layer) {
-          if(!goog.isDef(filter) || goog.isFunction(filter) && 
-            filter.call(this, feature)) {
+          if (!goog.isDef(filter) || goog.isFunction(filter) &&
+              filter.call(this, feature)) {
             selected.push(feature);
           }
         }, undefined, this.layerFilter_);
@@ -193,8 +195,8 @@ ol.interaction.Select.handleEvent = function(mapBrowserEvent) {
           var index = goog.array.indexOf(features.getArray(), feature);
           if (index == -1) {
             if (add || toggle) {
-              if(!goog.isDef(filter) || goog.isFunction(filter) && 
-                filter.call(this, feature)) {
+              if (!goog.isDef(filter) || goog.isFunction(filter) &&
+                  filter.call(this, feature)) {
                 selected.push(feature);
               }
             }

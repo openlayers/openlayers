@@ -64,7 +64,7 @@ var changeFilter = function() {
 // select interaction
 var selectInteraction = new ol.interaction.Select({
   filter: function(feature) {
-    if(types===null) {
+    if (types === null) {
       return true;
     } else {
       return goog.array.contains(types, feature.getGeometry().getType());
@@ -72,6 +72,7 @@ var selectInteraction = new ol.interaction.Select({
   }
 });
 map.addInteraction(selectInteraction);
+
 
 /**
  * onchange callback on the type element.
