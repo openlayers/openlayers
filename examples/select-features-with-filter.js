@@ -47,28 +47,21 @@ var typeElement = document.getElementById('type');
 var typesElement = document.getElementById('types');
 
 // Filter geometries
-var types;
 var changeFilter = function() {
   var type = typeElement.value;
   typesElement.innerHTML = type === 'Any' ? type :
       typesElement.innerHTML === 'Any' ? type :
           typesElement.innerHTML + ',' + type;
-
-  if (typesElement.innerHTML !== 'Any') {
-    types = typesElement.innerHTML.split(',');
-  } else {
-    types = null;
-  }
-
 };
 
 // select interaction
 var selectInteraction = new ol.interaction.Select({
   filter: function(feature, layer) {
-    if (types === null) {
+    var types = typesElement.innerHTML;
+    if (types === 'Any') {
       return true;
     } else {
-      return goog.array.contains(types, feature.getGeometry().getType());
+      return types.indexOf(feature.getGeometry().getType()) !== -1;
     }
   }
 });

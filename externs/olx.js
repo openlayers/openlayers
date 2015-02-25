@@ -2608,9 +2608,9 @@ olx.interaction.SelectOptions.prototype.toggleCondition;
 olx.interaction.SelectOptions.prototype.multi;
 
 /**
- * A function that takes an {@link ol.Feature} and an {ol.layer.Layer} and
+ * A function that takes an {@link ol.Feature} and an {@link ol.layer.Layer} and
  * returns true if the feature may be selected or false otherwise.
- * @typedef {function(ol.Feature, ol.layer.Layer): boolean}
+ * @type {ol.interaction.SelectFilterFunction|undefined}
  * @api
  */
 olx.interaction.SelectOptions.prototype.filter;
