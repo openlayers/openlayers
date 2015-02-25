@@ -60,6 +60,7 @@ goog.inherits(ol.source.Cluster, ol.source.Vector);
 
 
 /**
+ * Get a reference to the wrapped source.
  * @return {ol.source.Vector} Source.
  * @api
  */
