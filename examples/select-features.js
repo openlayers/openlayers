@@ -61,6 +61,11 @@ var changeInteraction = function() {
   }
   if (select !== null) {
     map.addInteraction(select);
+    select.on('select', function(e) {
+      $('#status').html('&nbsp;' + e.target.getFeatures().getLength() +
+          ' selected features (last operation selected ' + e.selected.length +
+          ' and deselected ' + e.deselected.length + ' features)');
+    });
   }
 };
 
