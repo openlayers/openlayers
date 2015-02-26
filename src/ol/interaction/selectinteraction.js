@@ -167,7 +167,7 @@ ol.interaction.Select.handleEvent = function(mapBrowserEvent) {
          * @param {ol.layer.Layer} layer Layer.
          */
         function(feature, layer) {
-          if (goog.isFunction(filter) && filter(feature, layer)) {
+          if (filter(feature, layer)) {
             selected.push(feature);
           }
         }, undefined, this.layerFilter_);
@@ -195,7 +195,7 @@ ol.interaction.Select.handleEvent = function(mapBrowserEvent) {
           var index = goog.array.indexOf(features.getArray(), feature);
           if (index == -1) {
             if (add || toggle) {
-              if (goog.isFunction(filter) && filter(feature, layer)) {
+              if (filter(feature, layer)) {
                 selected.push(feature);
               }
             }
