@@ -156,7 +156,7 @@ ol.MapBrowserEventHandler = function(map) {
   this.dragging_ = false;
 
   /**
-   * @type {Array.<number>}
+   * @type {Array.<goog.events.Key>}
    * @private
    */
   this.dragListenerKeys_ = null;
