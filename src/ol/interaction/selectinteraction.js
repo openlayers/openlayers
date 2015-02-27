@@ -190,7 +190,7 @@ ol.interaction.Select.handleEvent = function(mapBrowserEvent) {
     }
     features.extend(selected);
   }
-  return ol.events.condition.mouseMove(mapBrowserEvent);
+  return ol.events.condition.pointerMove(mapBrowserEvent);
 };
 
 
