@@ -67,16 +67,6 @@ ol.events.condition.click = function(mapBrowserEvent) {
 
 
 /**
- * @param {ol.MapBrowserEvent} mapBrowserEvent Map browser event.
- * @return {boolean} True if the browser event is a `mousemove` event.
- * @api
- */
-ol.events.condition.mouseMove = function(mapBrowserEvent) {
-  return mapBrowserEvent.originalEvent.type == 'mousemove';
-};
-
-
-/**
  * Always false.
  * @param {ol.MapBrowserEvent} mapBrowserEvent Map browser event.
  * @return {boolean} False.
@@ -84,6 +74,16 @@ ol.events.condition.mouseMove = function(mapBrowserEvent) {
  * @api stable
  */
 ol.events.condition.never = goog.functions.FALSE;
+
+
+/**
+ * @param {ol.MapBrowserEvent} mapBrowserEvent Map browser event.
+ * @return {boolean} True if the browser event is a `pointermove` event.
+ * @api
+ */
+ol.events.condition.pointerMove = function(mapBrowserEvent) {
+  return mapBrowserEvent.type == 'pointermove';
+};
 
 
 /**
