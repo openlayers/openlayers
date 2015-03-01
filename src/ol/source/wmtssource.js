@@ -5,6 +5,7 @@ goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('goog.math');
 goog.require('goog.object');
+goog.require('goog.string');
 goog.require('goog.uri.utils');
 goog.require('ol.TileUrlFunction');
 goog.require('ol.TileUrlFunctionType');
@@ -422,8 +423,22 @@ ol.source.WMTS.optionsFromCapabilities = function(wmtsCap, config) {
   /** @type {!Array.<string>} */
   var urls = [];
   var requestEncoding = config['requestEncoding'];
-  if (wmtsCap['OperationsMetadata'].hasOwnProperty('GetTile') &&
-      requestEncoding != 'REST') {
+  requestEncoding = goog.isDef(requestEncoding) ? requestEncoding : '';
+
+  goog.asserts.assert(
+      goog.array.contains(['REST', 'RESTful', 'KVP', ''], requestEncoding));
+
+  if (!wmtsCap['OperationsMetadata'].hasOwnProperty('GetTile') ||
+      goog.string.startsWith(requestEncoding, 'REST')) {
+    // Add REST tile resource url
+    requestEncoding = ol.source.WMTSRequestEncoding.REST;
+    goog.array.forEach(l['ResourceURL'], function(elt, index, array) {
+      if (elt['resourceType'] == 'tile') {
+        format = elt['format'];
+        urls.push(/** @type {string} */ (elt['template']));
+      }
+    });
+  } else {
     var gets = wmtsCap['OperationsMetadata']['GetTile']['DCP']['HTTP']['Get'];
 
     var constraint = goog.array.find(gets[0]['Constraint'],
@@ -436,15 +451,6 @@ ol.source.WMTS.optionsFromCapabilities = function(wmtsCap, config) {
       urls.push(/** @type {string} */ (gets[0]['href']));
 
     }
-  } else {
-    // Add REST tile resource url
-    requestEncoding = ol.source.WMTSRequestEncoding.REST;
-    goog.array.forEach(l['ResourceURL'], function(elt, index, array) {
-      if (elt['resourceType'] == 'tile') {
-        format = elt['format'];
-        urls.push(/** @type {string} */ (elt['template']));
-      }
-    });
   }
   goog.asserts.assert(urls.length > 0);
 
