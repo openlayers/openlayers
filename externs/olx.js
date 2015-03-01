@@ -5832,6 +5832,7 @@ olx.style.FillOptions.prototype.color;
  *     img: (Image|undefined),
  *     offset: (Array.<number>|undefined),
  *     offsetOrigin: (ol.style.IconOrigin|undefined),
+ *     opacity: (number|undefined),
  *     scale: (number|undefined),
  *     snapToPixel: (boolean|undefined),
  *     rotateWithView: (boolean|undefined),
@@ -5919,6 +5920,14 @@ olx.style.IconOptions.prototype.offset;
  * @api
  */
 olx.style.IconOptions.prototype.offsetOrigin;
+
+
+/**
+ * Opacity of the icon. Default is `1`.
+ * @type {number|undefined}
+ * @api
+ */
+olx.style.IconOptions.prototype.opacity;
 
 
 /**
