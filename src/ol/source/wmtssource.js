@@ -46,7 +46,11 @@ ol.source.WMTS = function(options) {
    */
   this.version_ = goog.isDef(options.version) ? options.version : '1.0.0';
 
-  var format = goog.isDef(options.format) ? options.format : 'image/jpeg';
+  /**
+   * @private
+   * @type {string}
+   */
+  this.format_ = goog.isDef(options.format) ? options.format : 'image/jpeg';
 
   /**
    * @private
@@ -96,7 +100,7 @@ ol.source.WMTS = function(options) {
       'Service': 'WMTS',
       'Request': 'GetTile',
       'Version': this.version_,
-      'Format': format
+      'Format': this.format_
     });
   }
 
@@ -220,6 +224,15 @@ goog.inherits(ol.source.WMTS, ol.source.TileImage);
  */
 ol.source.WMTS.prototype.getDimensions = function() {
   return this.dimensions_;
+};
+
+
+/**
+ * @return {string} Format.
+ * @api
+ */
+ol.source.WMTS.prototype.getFormat = function() {
+  return this.format_;
 };
 
 
