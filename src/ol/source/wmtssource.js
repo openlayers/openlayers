@@ -75,6 +75,12 @@ ol.source.WMTS = function(options) {
    * @private
    * @type {string}
    */
+  this.matrixSet_ = options.matrixSet;
+
+  /**
+   * @private
+   * @type {string}
+   */
   this.style_ = options.style;
 
   // FIXME: should we guess this requestEncoding from options.url(s)
@@ -92,7 +98,7 @@ ol.source.WMTS = function(options) {
   var context = {
     'layer': this.layer_,
     'style': this.style_,
-    'tilematrixset': options.matrixSet
+    'tilematrixset': this.matrixSet_
   };
 
   if (requestEncoding == ol.source.WMTSRequestEncoding.KVP) {
@@ -250,6 +256,15 @@ ol.source.WMTS.prototype.getKeyZXY = function(z, x, y) {
  */
 ol.source.WMTS.prototype.getLayer = function() {
   return this.layer_;
+};
+
+
+/**
+ * @return {string} MatrixSet.
+ * @api
+ */
+ol.source.WMTS.prototype.getMatrixSet = function() {
+  return this.matrixSet_;
 };
 
 
