@@ -40,7 +40,12 @@ ol.source.WMTS = function(options) {
 
   // TODO: add support for TileMatrixLimits
 
-  var version = goog.isDef(options.version) ? options.version : '1.0.0';
+  /**
+   * @private
+   * @type {string}
+   */
+  this.version_ = goog.isDef(options.version) ? options.version : '1.0.0';
+
   var format = goog.isDef(options.format) ? options.format : 'image/jpeg';
 
   /**
@@ -90,7 +95,7 @@ ol.source.WMTS = function(options) {
     goog.object.extend(context, {
       'Service': 'WMTS',
       'Request': 'GetTile',
-      'Version': version,
+      'Version': this.version_,
       'Format': format
     });
   }
@@ -241,6 +246,15 @@ ol.source.WMTS.prototype.getLayer = function() {
  */
 ol.source.WMTS.prototype.getStyle = function() {
   return this.style_;
+};
+
+
+/**
+ * @return {string} Version.
+ * @api
+ */
+ol.source.WMTS.prototype.getVersion = function() {
+  return this.version_;
 };
 
 
