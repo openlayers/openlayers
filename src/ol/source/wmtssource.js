@@ -56,6 +56,12 @@ ol.source.WMTS = function(options) {
   this.coordKeyPrefix_ = '';
   this.resetCoordKeyPrefix_();
 
+  /**
+   * @private
+   * @type {string}
+   */
+  this.layer_ = options.layer;
+
   // FIXME: should we guess this requestEncoding from options.url(s)
   //        structure? that would mean KVP only if a template is not provided.
   var requestEncoding = goog.isDef(options.requestEncoding) ?
@@ -69,7 +75,7 @@ ol.source.WMTS = function(options) {
   // context property names are lower case to allow for a case insensitive
   // replacement as some services use different naming conventions
   var context = {
-    'layer': options.layer,
+    'layer': this.layer_,
     'style': options.style,
     'tilematrixset': options.matrixSet
   };
@@ -211,6 +217,15 @@ ol.source.WMTS.prototype.getDimensions = function() {
  */
 ol.source.WMTS.prototype.getKeyZXY = function(z, x, y) {
   return this.coordKeyPrefix_ + goog.base(this, 'getKeyZXY', z, x, y);
+};
+
+
+/**
+ * @return {string} Layer.
+ * @api
+ */
+ol.source.WMTS.prototype.getLayer = function() {
+  return this.layer_;
 };
 
 
