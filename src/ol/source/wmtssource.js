@@ -40,8 +40,17 @@ ol.source.WMTS = function(options) {
 
   // TODO: add support for TileMatrixLimits
 
-  var version = goog.isDef(options.version) ? options.version : '1.0.0';
-  var format = goog.isDef(options.format) ? options.format : 'image/jpeg';
+  /**
+   * @private
+   * @type {string}
+   */
+  this.version_ = goog.isDef(options.version) ? options.version : '1.0.0';
+
+  /**
+   * @private
+   * @type {string}
+   */
+  this.format_ = goog.isDef(options.format) ? options.format : 'image/jpeg';
 
   /**
    * @private
@@ -56,6 +65,24 @@ ol.source.WMTS = function(options) {
   this.coordKeyPrefix_ = '';
   this.resetCoordKeyPrefix_();
 
+  /**
+   * @private
+   * @type {string}
+   */
+  this.layer_ = options.layer;
+
+  /**
+   * @private
+   * @type {string}
+   */
+  this.matrixSet_ = options.matrixSet;
+
+  /**
+   * @private
+   * @type {string}
+   */
+  this.style_ = options.style;
+
   // FIXME: should we guess this requestEncoding from options.url(s)
   //        structure? that would mean KVP only if a template is not provided.
   var requestEncoding = goog.isDef(options.requestEncoding) ?
@@ -69,17 +96,17 @@ ol.source.WMTS = function(options) {
   // context property names are lower case to allow for a case insensitive
   // replacement as some services use different naming conventions
   var context = {
-    'layer': options.layer,
-    'style': options.style,
-    'tilematrixset': options.matrixSet
+    'layer': this.layer_,
+    'style': this.style_,
+    'tilematrixset': this.matrixSet_
   };
 
   if (requestEncoding == ol.source.WMTSRequestEncoding.KVP) {
     goog.object.extend(context, {
       'Service': 'WMTS',
       'Request': 'GetTile',
-      'Version': version,
-      'Format': format
+      'Version': this.version_,
+      'Format': this.format_
     });
   }
 
@@ -207,10 +234,55 @@ ol.source.WMTS.prototype.getDimensions = function() {
 
 
 /**
+ * @return {string} Format.
+ * @api
+ */
+ol.source.WMTS.prototype.getFormat = function() {
+  return this.format_;
+};
+
+
+/**
  * @inheritDoc
  */
 ol.source.WMTS.prototype.getKeyZXY = function(z, x, y) {
   return this.coordKeyPrefix_ + goog.base(this, 'getKeyZXY', z, x, y);
+};
+
+
+/**
+ * @return {string} Layer.
+ * @api
+ */
+ol.source.WMTS.prototype.getLayer = function() {
+  return this.layer_;
+};
+
+
+/**
+ * @return {string} MatrixSet.
+ * @api
+ */
+ol.source.WMTS.prototype.getMatrixSet = function() {
+  return this.matrixSet_;
+};
+
+
+/**
+ * @return {string} Style.
+ * @api
+ */
+ol.source.WMTS.prototype.getStyle = function() {
+  return this.style_;
+};
+
+
+/**
+ * @return {string} Version.
+ * @api
+ */
+ol.source.WMTS.prototype.getVersion = function() {
+  return this.version_;
 };
 
 
