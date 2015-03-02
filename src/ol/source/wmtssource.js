@@ -62,6 +62,12 @@ ol.source.WMTS = function(options) {
    */
   this.layer_ = options.layer;
 
+  /**
+   * @private
+   * @type {string}
+   */
+  this.style_ = options.style;
+
   // FIXME: should we guess this requestEncoding from options.url(s)
   //        structure? that would mean KVP only if a template is not provided.
   var requestEncoding = goog.isDef(options.requestEncoding) ?
@@ -76,7 +82,7 @@ ol.source.WMTS = function(options) {
   // replacement as some services use different naming conventions
   var context = {
     'layer': this.layer_,
-    'style': options.style,
+    'style': this.style_,
     'tilematrixset': options.matrixSet
   };
 
@@ -226,6 +232,15 @@ ol.source.WMTS.prototype.getKeyZXY = function(z, x, y) {
  */
 ol.source.WMTS.prototype.getLayer = function() {
   return this.layer_;
+};
+
+
+/**
+ * @return {string} Style.
+ * @api
+ */
+ol.source.WMTS.prototype.getStyle = function() {
+  return this.style_;
 };
 
 
