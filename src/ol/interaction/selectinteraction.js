@@ -109,6 +109,14 @@ ol.interaction.Select = function(opt_options) {
       options.toggleCondition : ol.events.condition.shiftKeyOnly;
 
   /**
+   * Geometry types allowed to be selected. Empty array means we can select
+   * any geometry.
+   * @type {Array.<ol.geom.GeometryType>}
+   * @private
+   */
+  this.type_ = options.type ? options.type : [];
+
+  /**
    * @private
    * @type {boolean}
    */
@@ -184,6 +192,7 @@ ol.interaction.Select.handleEvent = function(mapBrowserEvent) {
   var set = !add && !remove && !toggle;
   var map = mapBrowserEvent.map;
   var features = this.featureOverlay_.getFeatures();
+  var type = this.type_;
   var /** @type {Array.<ol.Feature>} */ deselected = [];
   var /** @type {Array.<ol.Feature>} */ selected = [];
   var change = false;
@@ -197,7 +206,10 @@ ol.interaction.Select.handleEvent = function(mapBrowserEvent) {
          * @param {ol.layer.Layer} layer Layer.
          */
         function(feature, layer) {
-          selected.push(feature);
+          if (goog.array.isEmpty(type) ||
+              goog.array.contains(type, feature.getGeometry().getType())) {
+            selected.push(feature);
+          }
         }, undefined, this.layerFilter_);
     if (selected.length > 0 && features.getLength() == 1 &&
         features.item(0) == selected[0]) {
@@ -225,7 +237,10 @@ ol.interaction.Select.handleEvent = function(mapBrowserEvent) {
           var index = goog.array.indexOf(features.getArray(), feature);
           if (index == -1) {
             if (add || toggle) {
-              selected.push(feature);
+              if (goog.array.isEmpty(type) ||
+                  goog.array.contains(type, feature.getGeometry().getType())) {
+                selected.push(feature);
+              }
             }
           } else {
             if (remove || toggle) {

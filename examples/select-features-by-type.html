@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no, width=device-width">
+    <link rel="stylesheet" href="../css/ol.css" type="text/css">
+    <link rel="stylesheet" href="../css/ol.css" type="text/css">
+    <link rel="stylesheet" href="../resources/bootstrap/css/bootstrap.min.css" type="text/css">
+    <link rel="stylesheet" href="../resources/layout.css" type="text/css">
+    <link rel="stylesheet" href="../resources/bootstrap/css/bootstrap-responsive.min.css" type="text/css">
+    <title>Select features by type example</title>
+  </head>
+  <body>
+
+    <div class="navbar navbar-inverse navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container">
+          <a class="brand" href="./"><img src="../resources/logo.png"> OpenLayers 3 Examples</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="container-fluid">
+
+      <div class="row-fluid">
+        <div class="span12">
+          <div id="map" class="map"></div>
+        </div>
+      </div>
+
+      <div class="row-fluid">
+
+        <div class="span12">
+          <h4 id="title">Select features by type example</h4>
+          <p id="shortdesc">Example of using the Select interaction restricting the type of geometry allowed to be selected. Select which geometries you desire to be selectable <code>Point</code>, <code>LineString</code>, <code>Polygon</code>, ... or <code>Any</code> to restrict the geometry and click on the features to select them.</p>
+          
+          <form class="form-inline">
+            <label>Add geometry type &nbsp;</label>
+              <select id="type">
+                <option value="Any">Any</option>
+                <option value="Point">Point</option>
+                <option value="LineString">LineString</option>
+                <option value="Polygon">Polygon</option>
+                <option value="MultiPoint">MultiPoint</option>
+                <option value="MultiLineString">MultiLineString</option>
+                <option value="MultiPolygon">MultiPolygon</option>
+              </select>
+            <label>Selectable types: <strong><span id="types"></span></strong></label>
+          </form>
+          <div id="docs">
+            <p>See the <a href="select-features-by-type.js" target="_blank">select-features-by-type.js source</a> to see how this is done.</p>
+          </div>
+          <div id="tags">select, vector</div>
+        </div>
+
+      </div>
+
+    </div>
+
+    <script src="../resources/jquery.min.js" type="text/javascript"></script>
+    <script src="../resources/example-behaviour.js" type="text/javascript"></script>
+    <script src="loader.js?id=select-features-by-type" type="text/javascript"></script>
+
+  </body>
+</html>
