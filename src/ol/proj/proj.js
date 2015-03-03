@@ -32,7 +32,8 @@ ol.proj.Units = {
   DEGREES: 'degrees',
   FEET: 'ft',
   METERS: 'm',
-  PIXELS: 'pixels'
+  PIXELS: 'pixels',
+  USFEET: 'us-ft'
 };
 
 
@@ -47,6 +48,7 @@ ol.proj.METERS_PER_UNIT[ol.proj.Units.DEGREES] =
     2 * Math.PI * ol.sphere.NORMAL.radius / 360;
 ol.proj.METERS_PER_UNIT[ol.proj.Units.FEET] = 0.3048;
 ol.proj.METERS_PER_UNIT[ol.proj.Units.METERS] = 1;
+ol.proj.METERS_PER_UNIT[ol.proj.Units.USFEET] = 1200 / 3937;
 
 
 
