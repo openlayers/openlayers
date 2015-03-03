@@ -366,10 +366,15 @@ describe('ol.proj', function() {
           '+proj=lcc +lat_1=29.3 +lat_2=30.7 +lat_0=28.66666666666667 ' +
           '+lon_0=-91.33333333333333 +x_0=609601.2192024384 +y_0=0 ' +
           '+ellps=clrk66 +datum=NAD27 +to_meter=0.3048006096012192 +no_defs');
+      proj4.defs('EPSG:3739', '+proj=tmerc +lat_0=40.5 ' +
+          '+lon_0=-110.0833333333333 +k=0.9999375 +x_0=800000.0000101599 ' +
+          '+y_0=99999.99998983997 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 ' +
+          '+units=us-ft +no_defs');
     });
 
     afterEach(function() {
       delete proj4.defs['EPSG:26782'];
+      delete proj4.defs['EPSG:3739'];
     });
 
     it('returns value in meters', function() {
@@ -380,6 +385,11 @@ describe('ol.proj', function() {
     it('works for proj4js projections without units', function() {
       var epsg26782 = ol.proj.get('EPSG:26782');
       expect(epsg26782.getMetersPerUnit()).to.eql(0.3048006096012192);
+    });
+
+    it('works for proj4js projections with units other than m', function() {
+      var epsg3739 = ol.proj.get('EPSG:3739');
+      expect(epsg3739.getMetersPerUnit()).to.eql(1200 / 3937);
     });
 
   });
