@@ -232,6 +232,18 @@ oli.source;
 /**
  * @interface
  */
+oli.source.ImageEvent = function() {};
+
+
+/**
+ * @type {ol.Image}
+ */
+oli.source.ImageEvent.prototype.image;
+
+
+/**
+ * @interface
+ */
 oli.source.TileEvent = function() {};
 
 

@@ -2,8 +2,10 @@ goog.provide('ol.source.Image');
 
 goog.require('goog.array');
 goog.require('goog.asserts');
+goog.require('goog.events.Event');
 goog.require('ol.Attribution');
 goog.require('ol.Extent');
+goog.require('ol.ImageState');
 goog.require('ol.array');
 goog.require('ol.source.Source');
 
@@ -91,6 +93,33 @@ ol.source.Image.prototype.getImage = goog.abstractMethod;
 
 
 /**
+ * Handle image change events.
+ * @param {goog.events.Event} event Event.
+ * @protected
+ */
+ol.source.Image.prototype.handleImageChange = function(event) {
+  var image = /** @type {ol.Image} */ (event.target);
+  switch (image.getState()) {
+    case ol.ImageState.LOADING:
+      this.dispatchEvent(
+          new ol.source.ImageEvent(ol.source.ImageEventType.IMAGELOADSTART,
+              image));
+      break;
+    case ol.ImageState.LOADED:
+      this.dispatchEvent(
+          new ol.source.ImageEvent(ol.source.ImageEventType.IMAGELOADEND,
+              image));
+      break;
+    case ol.ImageState.ERROR:
+      this.dispatchEvent(
+          new ol.source.ImageEvent(ol.source.ImageEventType.IMAGELOADERROR,
+              image));
+      break;
+  }
+};
+
+
+/**
  * Default image load function for image sources that use ol.Image image
  * instances.
  * @param {ol.Image} image Image.
@@ -98,4 +127,60 @@ ol.source.Image.prototype.getImage = goog.abstractMethod;
  */
 ol.source.Image.defaultImageLoadFunction = function(image, src) {
   image.getImage().src = src;
+};
+
+
+
+/**
+ * @classdesc
+ * Events emitted by {@link ol.source.Image} instances are instances of this
+ * type.
+ *
+ * @constructor
+ * @extends {goog.events.Event}
+ * @implements {oli.source.ImageEvent}
+ * @param {string} type Type.
+ * @param {ol.Image} image The image.
+ */
+ol.source.ImageEvent = function(type, image) {
+
+  goog.base(this, type);
+
+  /**
+   * The image related to the event.
+   * @type {ol.Image}
+   * @api
+   */
+  this.image = image;
+
+};
+goog.inherits(ol.source.ImageEvent, goog.events.Event);
+
+
+/**
+ * @enum {string}
+ */
+ol.source.ImageEventType = {
+
+  /**
+   * Triggered when an image starts loading.
+   * @event ol.source.ImageEvent#imageloadstart
+   * @api
+   */
+  IMAGELOADSTART: 'imageloadstart',
+
+  /**
+   * Triggered when an image finishes loading.
+   * @event ol.source.ImageEvent#imageloadend
+   * @api
+   */
+  IMAGELOADEND: 'imageloadend',
+
+  /**
+   * Triggered if image loading results in an error.
+   * @event ol.source.ImageEvent#imageloaderror
+   * @api
+   */
+  IMAGELOADERROR: 'imageloaderror'
+
 };
