@@ -1693,7 +1693,13 @@ olx.format.GMLOptions;
 
 
 /**
- * Feature namespace. If not defined will be derived from GML.
+ * Feature namespace. If not defined will be derived from GML. If multiple
+ * feature types have been configured which come from different feature
+ * namespaces, this will be an object with the keys being the prefixes used
+ * in the entries of featureType array. The values of the object will be the
+ * feature namespaces themselves. So for instance there might be a featureType
+ * item `topp:states` in the `featureType` array and then there will be a key
+ * `topp` in the featureNS object with value `http://www.openplans.org/topp`.
  * @type {Object.<string, string>|string|undefined}
  * @api stable
  */
@@ -1701,7 +1707,13 @@ olx.format.GMLOptions.prototype.featureNS;
 
 
 /**
- * Feature type(s) to parse.
+ * Feature type(s) to parse. If multiple feature types need to be configured
+ * which come from different feature namespaces, `featureNS` will be an object
+ * with the keys being the prefixes used in the entries of featureType array.
+ * The values of the object will be the feature namespaces themselves.
+ * So for instance there might be a featureType item `topp:states` and then
+ * there will be a key named `topp` in the featureNS object with value
+ * `http://www.openplans.org/topp`.
  * @type {Array.<string>|string|undefined}
  * @api stable
  */
