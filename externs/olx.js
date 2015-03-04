@@ -310,7 +310,10 @@ olx.MapOptions.prototype.view;
  *     position: (ol.Coordinate|undefined),
  *     positioning: (ol.OverlayPositioning|string|undefined),
  *     stopEvent: (boolean|undefined),
- *     insertFirst: (boolean|undefined)}}
+ *     insertFirst: (boolean|undefined),
+ *     autoPan: (boolean|undefined),
+ *     autoPanAnimation: (olx.animation.PanOptions|undefined),
+ *     autoPanMargin: (number|undefined)}}
  * @api stable
  */
 olx.OverlayOptions;
@@ -374,6 +377,35 @@ olx.OverlayOptions.prototype.stopEvent;
  * @api stable
  */
 olx.OverlayOptions.prototype.insertFirst;
+
+
+/**
+ * If set to `true` the map is panned when calling `setPosition`, so that the
+ * overlay is entirely visible in the current viewport.
+ * The default is `false`.
+ * @type {boolean|undefined}
+ * @api
+ */
+olx.OverlayOptions.prototype.autoPan;
+
+
+/**
+ * The options used to create a `ol.animation.pan` animation. This animation
+ * is only used when `autoPan` is enabled. By default the default options for
+ * `ol.animation.pan` are used. If set to `null` the panning is not animated.
+ * @type {olx.animation.PanOptions|undefined}
+ * @api
+ */
+olx.OverlayOptions.prototype.autoPanAnimation;
+
+
+/**
+ * The margin (in pixels) between the overlay and the borders of the map when
+ * autopanning. The default is `20`.
+ * @type {number|undefined}
+ * @api
+ */
+olx.OverlayOptions.prototype.autoPanMargin;
 
 
 /**
@@ -1647,8 +1679,8 @@ olx.format.KMLOptions.prototype.defaultStyle;
 
 
 /**
- * @typedef {{featureNS: string,
- *     featureType: string,
+ * @typedef {{featureNS: (Object.<string, string>|string|undefined),
+ *     featureType: (Array.<string>|string|undefined),
  *     srsName: string,
  *     surface: (boolean|undefined),
  *     curve: (boolean|undefined),
@@ -1661,16 +1693,28 @@ olx.format.GMLOptions;
 
 
 /**
- * Feature namespace.
- * @type {string}
+ * Feature namespace. If not defined will be derived from GML. If multiple
+ * feature types have been configured which come from different feature
+ * namespaces, this will be an object with the keys being the prefixes used
+ * in the entries of featureType array. The values of the object will be the
+ * feature namespaces themselves. So for instance there might be a featureType
+ * item `topp:states` in the `featureType` array and then there will be a key
+ * `topp` in the featureNS object with value `http://www.openplans.org/topp`.
+ * @type {Object.<string, string>|string|undefined}
  * @api stable
  */
 olx.format.GMLOptions.prototype.featureNS;
 
 
 /**
- * Feature type to parse.
- * @type {string}
+ * Feature type(s) to parse. If multiple feature types need to be configured
+ * which come from different feature namespaces, `featureNS` will be an object
+ * with the keys being the prefixes used in the entries of featureType array.
+ * The values of the object will be the feature namespaces themselves.
+ * So for instance there might be a featureType item `topp:states` and then
+ * there will be a key named `topp` in the featureNS object with value
+ * `http://www.openplans.org/topp`.
+ * @type {Array.<string>|string|undefined}
  * @api stable
  */
 olx.format.GMLOptions.prototype.featureType;
@@ -1750,8 +1794,8 @@ olx.format.GPXOptions.prototype.readExtensions;
 
 
 /**
- * @typedef {{featureNS: string,
- *     featureType: string,
+ * @typedef {{featureNS: (Object.<string, string>|string|undefined),
+ *     featureType: (Array.<string>|string|undefined),
  *     gmlFormat: (ol.format.GMLBase|undefined),
  *     schemaLocation: (string|undefined)}}
  * @api
@@ -1761,7 +1805,7 @@ olx.format.WFSOptions;
 
 /**
  * The namespace URI used for features.
- * @type {string}
+ * @type {Object.<string, string>|string|undefined}
  * @api stable
  */
 olx.format.WFSOptions.prototype.featureNS;
@@ -1769,7 +1813,7 @@ olx.format.WFSOptions.prototype.featureNS;
 
 /**
  * The feature type to parse. Only used for read operations.
- * @type {string}
+ * @type {Array.<string>|string|undefined}
  * @api stable
  */
 olx.format.WFSOptions.prototype.featureType;
@@ -4987,6 +5031,93 @@ olx.source.ServerVectorOptions.prototype.logo;
  */
 olx.source.ServerVectorOptions.prototype.projection;
 
+/**
+ * @typedef {{attributions: (Array.<ol.Attribution>|undefined),
+ *     params: (Object.<string, *>|undefined),
+ *     logo: (string|olx.LogoOptions|undefined),
+ *     tileGrid: (ol.tilegrid.TileGrid|undefined),
+ *     projection: ol.proj.ProjectionLike,
+ *     tileLoadFunction: (ol.TileLoadFunctionType|undefined),
+ *     url: (string|undefined),
+ *     urls: (Array.<string>|undefined)}}
+ * @api
+ */
+olx.source.TileArcGISRestOptions;
+
+/**
+ * Attributions.
+ * @type {Array.<ol.Attribution>|undefined}
+ * @api
+ */
+olx.source.TileArcGISRestOptions.prototype.attributions;
+
+
+/**
+ * ArcGIS Rest parameters. This field is optional. Service defaults will be
+ * used for any fields not specified. `FORMAT` is `PNG32` by default. `F` is `IMAGE` by
+ * default. `TRANSPARENT` is `true` by default.  `BBOX, `SIZE`, `BBOXSR`, 
+ * and `IMAGESR` will be set dynamically. Set `LAYERS` to
+ * override the default service layer visibility. See 
+ * {@link http://resources.arcgis.com/en/help/arcgis-rest-api/index.html#/Export_Map/02r3000000v7000000/}
+ * for further reference.
+ * @type {Object.<string,*>|undefined}
+ * @api
+ */
+olx.source.TileArcGISRestOptions.prototype.params;
+
+
+/**
+ * Logo.
+ * @type {string|olx.LogoOptions|undefined}
+ * @api
+ */
+olx.source.TileArcGISRestOptions.prototype.logo;
+
+
+/**
+ * Tile grid. Base this on the resolutions, tilesize and extent supported by the
+ * server.
+ * If this is not defined, a default grid will be used: if there is a projection
+ * extent, the grid will be based on that; if not, a grid based on a global
+ * extent with origin at 0,0 will be used.
+ * @type {ol.tilegrid.TileGrid|undefined}
+ * @api
+ */
+olx.source.TileArcGISRestOptions.prototype.tileGrid;
+
+/**
+ * Projection.
+ * @type {ol.proj.ProjectionLike}
+ * @api
+ */
+olx.source.TileArcGISRestOptions.prototype.projection;
+
+
+/**
+ * Optional function to load a tile given a URL.
+ * @type {ol.TileLoadFunctionType|undefined}
+ * @api
+ */
+olx.source.TileArcGISRestOptions.prototype.tileLoadFunction;
+
+
+/**
+ * ArcGIS Rest service URL for a Map Service or Image Service. The
+ * url should include /MapServer or /ImageServer.
+ * @type {string|undefined}
+ * @api
+ */
+olx.source.TileArcGISRestOptions.prototype.url;
+
+
+/**
+ * ArcGIS Rest service urls. Use this instead of `url` when the ArcGIS Service supports multiple
+ * urls for export requests.
+ * @type {Array.<string>|undefined}
+ * @api
+ */
+olx.source.TileArcGISRestOptions.prototype.urls;
+
 
 /**
  * @typedef {{attributions: (Array.<ol.Attribution>|undefined),
@@ -5809,6 +5940,7 @@ olx.style.FillOptions.prototype.color;
  *     img: (Image|undefined),
  *     offset: (Array.<number>|undefined),
  *     offsetOrigin: (ol.style.IconOrigin|undefined),
+ *     opacity: (number|undefined),
  *     scale: (number|undefined),
  *     snapToPixel: (boolean|undefined),
  *     rotateWithView: (boolean|undefined),
@@ -5896,6 +6028,14 @@ olx.style.IconOptions.prototype.offset;
  * @api
  */
 olx.style.IconOptions.prototype.offsetOrigin;
+
+
+/**
+ * Opacity of the icon. Default is `1`.
+ * @type {number|undefined}
+ * @api
+ */
+olx.style.IconOptions.prototype.opacity;
 
 
 /**

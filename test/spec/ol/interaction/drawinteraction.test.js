@@ -592,6 +592,7 @@ goog.require('goog.dispose');
 goog.require('goog.events');
 goog.require('goog.events.BrowserEvent');
 goog.require('goog.style');
+goog.require('ol.DrawEventType');
 goog.require('ol.Map');
 goog.require('ol.MapBrowserPointerEvent');
 goog.require('ol.View');
