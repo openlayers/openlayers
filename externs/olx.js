@@ -1679,7 +1679,7 @@ olx.format.KMLOptions.prototype.defaultStyle;
 
 
 /**
- * @typedef {{featureNS: (string|undefined),
+ * @typedef {{featureNS: (Object.<string, string>|string|undefined),
  *     featureType: (Array.<string>|string|undefined),
  *     srsName: string,
  *     surface: (boolean|undefined),
@@ -1694,7 +1694,7 @@ olx.format.GMLOptions;
 
 /**
  * Feature namespace. If not defined will be derived from GML.
- * @type {string|undefined}
+ * @type {Object.<string, string>|string|undefined}
  * @api stable
  */
 olx.format.GMLOptions.prototype.featureNS;
@@ -1782,7 +1782,7 @@ olx.format.GPXOptions.prototype.readExtensions;
 
 
 /**
- * @typedef {{featureNS: string,
+ * @typedef {{featureNS: (Object.<string, string>|string|undefined),
  *     featureType: (Array.<string>|string|undefined),
  *     gmlFormat: (ol.format.GMLBase|undefined),
  *     schemaLocation: (string|undefined)}}
@@ -1793,7 +1793,7 @@ olx.format.WFSOptions;
 
 /**
  * The namespace URI used for features.
- * @type {string}
+ * @type {Object.<string, string>|string|undefined}
  * @api stable
  */
 olx.format.WFSOptions.prototype.featureNS;
