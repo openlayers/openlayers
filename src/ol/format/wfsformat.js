@@ -37,7 +37,7 @@ ol.format.WFS = function(opt_options) {
 
   /**
    * @private
-   * @type {string}
+   * @type {Object.<string, string>|string|undefined}
    */
   this.featureNS_ = options.featureNS;
 
