@@ -198,7 +198,8 @@ ol.interaction.Select.handleEvent = function(mapBrowserEvent) {
          */
         function(feature, layer) {
           selected.push(feature);
-        }, undefined, this.layerFilter_);
+          return !this.multi_;
+        }, this, this.layerFilter_);
     if (selected.length > 0 && features.getLength() == 1 &&
         features.item(0) == selected[0]) {
       // No change
@@ -208,11 +209,7 @@ ol.interaction.Select.handleEvent = function(mapBrowserEvent) {
         deselected = Array.prototype.concat(features.getArray());
         features.clear();
       }
-      if (this.multi_) {
-        features.extend(selected);
-      } else if (selected.length > 0) {
-        features.push(selected[0]);
-      }
+      features.extend(selected);
     }
   } else {
     // Modify the currently selected feature(s).
