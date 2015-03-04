@@ -168,6 +168,23 @@ ol.source.TileArcGISRest.prototype.setUrls = function(urls) {
 
 
 /**
+ * @param {number} z Z.
+ * @param {number} pixelRatio Pixel ratio.
+ * @param {ol.proj.Projection} projection Projection.
+ * @return {number} Size.
+ */
+ol.source.TileArcGISRest.prototype.getTilePixelSize =
+    function(z, pixelRatio, projection) {
+  var tileSize = goog.base(this, 'getTilePixelSize', z, pixelRatio, projection);
+  if (pixelRatio == 1) {
+    return tileSize;
+  } else {
+    return (tileSize * pixelRatio + 0.5) | 0;
+  }
+};
+
+
+/**
  * @param {ol.TileCoord} tileCoord Tile coordinate.
  * @param {number} pixelRatio Pixel ratio.
  * @param {ol.proj.Projection} projection Projection.
