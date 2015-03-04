@@ -74,7 +74,9 @@ ol.format.GMLBase = function(opt_options) {
     'featureMember': ol.xml.makeReplacer(
         ol.format.GMLBase.prototype.readFeaturesInternal),
     'featureMembers': ol.xml.makeReplacer(
-        ol.format.GMLBase.prototype.readFeaturesInternal)
+        ol.format.GMLBase.prototype.readFeaturesInternal),
+    'boundedBy': ol.xml.makeObjectPropertySetter(
+        ol.format.GMLBase.prototype.readGeometryElement, 'bounds')
   };
 
   goog.base(this);
@@ -145,21 +147,6 @@ ol.format.GMLBase.prototype.readGeometryElement = function(node, objectStack) {
     return undefined;
   }
 };
-
-
-/**
- * @type {Object.<string, Object.<string, Object>>}
- */
-ol.format.GMLBase.prototype.FEATURE_COLLECTION_PARSERS = Object({
-  'http://www.opengis.net/gml': {
-    'featureMember': ol.xml.makeArrayPusher(
-        ol.format.GMLBase.prototype.readFeatures_),
-    'featureMembers': ol.xml.makeReplacer(
-        ol.format.GMLBase.prototype.readFeatures_),
-    'boundedBy': ol.xml.makeObjectPropertySetter(
-        ol.format.GMLBase.prototype.readGeometryElement, 'bounds')
-  }
-});
 
 
 /**
