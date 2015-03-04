@@ -89,7 +89,14 @@ describe('ol.interaction.Select', function() {
     });
 
     it('select with single-click', function() {
+      var listenerSpy = sinon.spy(function(e) {
+        expect(e.selected).to.have.length(1);
+      });
+      select.on('select', listenerSpy);
+
       simulateEvent(ol.MapBrowserEvent.EventType.SINGLECLICK, 10, -20);
+
+      expect(listenerSpy.callCount).to.be(1);
 
       var features = select.getFeatures();
       expect(features.getLength()).to.equal(1);
@@ -107,7 +114,14 @@ describe('ol.interaction.Select', function() {
     });
 
     it('select with single-click', function() {
+      var listenerSpy = sinon.spy(function(e) {
+        expect(e.selected).to.have.length(2);
+      });
+      select.on('select', listenerSpy);
+
       simulateEvent(ol.MapBrowserEvent.EventType.SINGLECLICK, 10, -20);
+
+      expect(listenerSpy.callCount).to.be(1);
 
       var features = select.getFeatures();
       expect(features.getLength()).to.equal(2);
