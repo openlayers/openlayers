@@ -1679,8 +1679,8 @@ olx.format.KMLOptions.prototype.defaultStyle;
 
 
 /**
- * @typedef {{featureNS: string,
- *     featureType: string,
+ * @typedef {{featureNS: (Object.<string, string>|string|undefined),
+ *     featureType: (Array.<string>|string|undefined),
  *     srsName: string,
  *     surface: (boolean|undefined),
  *     curve: (boolean|undefined),
@@ -1693,16 +1693,28 @@ olx.format.GMLOptions;
 
 
 /**
- * Feature namespace.
- * @type {string}
+ * Feature namespace. If not defined will be derived from GML. If multiple
+ * feature types have been configured which come from different feature
+ * namespaces, this will be an object with the keys being the prefixes used
+ * in the entries of featureType array. The values of the object will be the
+ * feature namespaces themselves. So for instance there might be a featureType
+ * item `topp:states` in the `featureType` array and then there will be a key
+ * `topp` in the featureNS object with value `http://www.openplans.org/topp`.
+ * @type {Object.<string, string>|string|undefined}
  * @api stable
  */
 olx.format.GMLOptions.prototype.featureNS;
 
 
 /**
- * Feature type to parse.
- * @type {string}
+ * Feature type(s) to parse. If multiple feature types need to be configured
+ * which come from different feature namespaces, `featureNS` will be an object
+ * with the keys being the prefixes used in the entries of featureType array.
+ * The values of the object will be the feature namespaces themselves.
+ * So for instance there might be a featureType item `topp:states` and then
+ * there will be a key named `topp` in the featureNS object with value
+ * `http://www.openplans.org/topp`.
+ * @type {Array.<string>|string|undefined}
  * @api stable
  */
 olx.format.GMLOptions.prototype.featureType;
@@ -1782,8 +1794,8 @@ olx.format.GPXOptions.prototype.readExtensions;
 
 
 /**
- * @typedef {{featureNS: string,
- *     featureType: string,
+ * @typedef {{featureNS: (Object.<string, string>|string|undefined),
+ *     featureType: (Array.<string>|string|undefined),
  *     gmlFormat: (ol.format.GMLBase|undefined),
  *     schemaLocation: (string|undefined)}}
  * @api
@@ -1793,7 +1805,7 @@ olx.format.WFSOptions;
 
 /**
  * The namespace URI used for features.
- * @type {string}
+ * @type {Object.<string, string>|string|undefined}
  * @api stable
  */
 olx.format.WFSOptions.prototype.featureNS;
@@ -1801,7 +1813,7 @@ olx.format.WFSOptions.prototype.featureNS;
 
 /**
  * The feature type to parse. Only used for read operations.
- * @type {string}
+ * @type {Array.<string>|string|undefined}
  * @api stable
  */
 olx.format.WFSOptions.prototype.featureType;
