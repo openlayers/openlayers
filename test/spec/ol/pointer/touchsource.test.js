@@ -5,10 +5,18 @@ goog.require('goog.object');
 describe('ol.pointer.TouchSource', function() {
   var handler;
   var target;
+  var targetTouches;
   var eventSpy;
 
   beforeEach(function() {
     target = goog.dom.createElement(goog.dom.TagName.DIV);
+    targetTouches = [{
+      target: target,
+      clientX: 15,
+      clientY: 15,
+      screenX: 15,
+      screenY: 15
+    }];
 
     // make sure that a mouse and touch event source is used
     ol.has.POINTER = false;
@@ -123,7 +131,8 @@ describe('ol.pointer.TouchSource', function() {
     var event = new goog.events.BrowserEvent({
       type: type,
       touches: touches,
-      changedTouches: changedTouches
+      changedTouches: changedTouches,
+      targetTouches: targetTouches
     });
     goog.events.fireListeners(target, type, false, event);
   }
