@@ -246,10 +246,6 @@ ol.interaction.Draw.prototype.setMap = function(map) {
  * @api
  */
 ol.interaction.Draw.handleEvent = function(mapBrowserEvent) {
-  var map = mapBrowserEvent.map;
-  if (!map.isDef()) {
-    return true;
-  }
   var pass = true;
   if (mapBrowserEvent.type === ol.MapBrowserEvent.EventType.POINTERMOVE) {
     pass = this.handlePointerMove_(mapBrowserEvent);
