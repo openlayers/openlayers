@@ -89,33 +89,68 @@ ol.source.StamenProviderConfig = {
  */
 ol.source.Stamen = function(options) {
 
-  var i = options.layer.indexOf('-');
-  var provider = i == -1 ? options.layer : options.layer.slice(0, i);
-  goog.asserts.assert(provider in ol.source.StamenProviderConfig);
-  var providerConfig = ol.source.StamenProviderConfig[provider];
-
-  goog.asserts.assert(options.layer in ol.source.StamenLayerConfig);
-  var layerConfig = ol.source.StamenLayerConfig[options.layer];
-
+  /**
+   * @type {string} url URL
+   * @private
+   */
   var root = ol.IS_HTTPS ? 'https://stamen-tiles-{a-d}.a.ssl.fastly.net/' :
       'http://{a-d}.tile.stamen.com/';
-  var url = goog.isDef(options.url) ? options.url :
-      root + options.layer + '/{z}/{x}/{y}.' +
-      layerConfig.extension;
+  this.rootUrl_ = goog.isDef(options.url) ? options.url : root;
+
+  /**
+   * Layer
+   * @type {string}
+   * @private
+   */
+  this.layer_ = options.layer;
 
   goog.base(this, {
     attributions: ol.source.Stamen.ATTRIBUTIONS,
     crossOrigin: 'anonymous',
-    maxZoom: providerConfig.maxZoom,
-    // FIXME uncomment the following when tilegrid supports minZoom
-    //minZoom: providerConfig.minZoom,
-    opaque: layerConfig.opaque,
-    tileLoadFunction: options.tileLoadFunction,
-    url: url
+    tileLoadFunction: options.tileLoadFunction
   });
+  this.setLayer(this.layer_);
 
 };
 goog.inherits(ol.source.Stamen, ol.source.XYZ);
+
+
+/**
+ * @param {string} layer
+ * @api stable
+ */
+ol.source.Stamen.prototype.setLayer = function(layer) {
+
+  this.layer_ = layer;
+
+  var i = this.layer_.indexOf('-');
+  var provider = i == -1 ? this.layer_ : this.layer_.slice(0, i);
+  goog.asserts.assert(provider in ol.source.StamenProviderConfig);
+  var providerConfig = ol.source.StamenProviderConfig[provider];
+
+  goog.asserts.assert(this.layer_ in ol.source.StamenLayerConfig);
+  var layerConfig = ol.source.StamenLayerConfig[this.layer_];
+
+  var url = this.rootUrl_ +
+      this.layer_ +
+      '/{z}/{x}/{y}.' +
+      layerConfig.extension;
+
+  this.setUrl(url);
+  this.set('maxZoom', providerConfig.maxZoom);
+  // FIXME uncomment the following when tilegrid supports minZoom
+  //this.set('minZoom',providerConfig.minZoom);
+  this.set('opaque', layerConfig.opaque);
+};
+
+
+/**
+ * @return {string} Layer
+ * @api
+ */
+ol.source.Stamen.prototype.getLayer = function() {
+  return this.layer_;
+};
 
 
 /**
