@@ -118,6 +118,25 @@ oli.MapEvent.prototype.frameState;
 
 
 /**
+ * @interface
+ */
+ oli.SelectEvent = function() {};
+
+
+ /**
+  * @type {Array.<ol.Feature>}
+  */
+oli.SelectEvent.prototype.deselected;
+
+
+ /**
+  * @type {Array.<ol.Feature>}
+  */
+oli.SelectEvent.prototype.selected;
+
+
+
+/**
  * @type {Object}
  */
 oli.control;
