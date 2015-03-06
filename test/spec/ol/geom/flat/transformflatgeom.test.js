@@ -79,7 +79,22 @@ describe('ol.geom.flat.transform', function() {
     });
   });
 
+  describe('ol.geom.flat.transform.scale', function() {
+    it('scales the coordinates array', function() {
+      var polygon = new ol.geom.Polygon([
+        [[0, 0], [0, 1], [1, 1], [1, 0]]]);
+      var flatCoordinates = polygon.getFlatCoordinates();
+      var scaleX = 1.24;
+      var scaleY = 1.24;
+      ol.geom.flat.transform.scale(flatCoordinates, 0,
+          flatCoordinates.length, polygon.getStride(),
+          scaleX, scaleY, 0.5, 0.5, flatCoordinates);
+      expect(flatCoordinates).to.eql([
+        -0.12, -0.12, -0.12, 1.12, 1.12, 1.12, 1.12, -0.12]);
+    });
+  });
 });
 
+goog.require('ol.geom.Polygon');
 goog.require('ol.geom.MultiPolygon');
 goog.require('ol.geom.flat.transform');
