@@ -25,6 +25,6 @@ var map = new ol.Map({
 
 
 $('#source-layer-select').change(function() {
-  var layer = $(this).find(':selected').val();
+  var layer = /** @type {string} */ ($(this).find(':selected').val());
   stamenSource.setLayer(layer);
 });
