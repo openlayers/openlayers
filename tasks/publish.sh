@@ -64,11 +64,16 @@ assert_version_match() {
 #
 # Build all of the distribution profiles.
 #
-build_profiles() {
+build_js() {
   for p in ${@}; do
     echo building ${BUILDS}/${p}.js
     node ./tasks/build.js config/${p}.json ${BUILDS}/${p}.js
   done
+}
+
+build_css() {
+  ./node_modules/clean-css/bin/cleancss css/ol.css -o ${BUILDS}/ol.css
+  cp css/ol.css ${BUILDS}/ol-debug.css
 }
 
 #
@@ -90,7 +95,8 @@ main() {
   checkout_tag ${1}
   assert_version_match ${1}
   rm -rf ${BUILDS}
-  build_profiles ${PROFILES}
+  build_js ${PROFILES}
+  build_css
   npm publish
 }
 
