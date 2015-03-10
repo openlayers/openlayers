@@ -2650,6 +2650,15 @@ olx.interaction.SelectOptions.prototype.toggleCondition;
  */
 olx.interaction.SelectOptions.prototype.multi;
 
+/**
+ * A boolean that determines if the default behaviour should trigger event
+ * even if there is no change detected
+ * position. Default is false i.e trigger only if change detected
+ * @type {boolean|undefined}
+ * @api
+ */
+olx.interaction.SelectOptions.prototype.triggerNoChange;
+
 
 /**
  * Namespace.

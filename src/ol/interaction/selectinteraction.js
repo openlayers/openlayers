@@ -115,6 +115,12 @@ ol.interaction.Select = function(opt_options) {
    */
   this.multi_ = goog.isDef(options.multi) ? options.multi : false;
 
+  /**
+   * @private
+   * @type {boolean}
+   */
+  this.triggerNoChange_ = goog.isDef(options.triggerNoChange) ? options.triggerNoChange : false;
+
   var layerFilter;
   if (goog.isDef(options.layers)) {
     if (goog.isFunction(options.layers)) {
@@ -240,7 +246,7 @@ ol.interaction.Select.handleEvent = function(mapBrowserEvent) {
       change = true;
     }
   }
-  if (change) {
+  if (this.triggerNoChange_ || change) {
     this.dispatchEvent(
         new ol.SelectEvent(ol.SelectEventType.SELECT, selected, deselected));
   }
