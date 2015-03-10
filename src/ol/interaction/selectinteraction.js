@@ -119,7 +119,8 @@ ol.interaction.Select = function(opt_options) {
    * @private
    * @type {boolean}
    */
-  this.triggerNoChange_ = goog.isDef(options.triggerNoChange) ? options.triggerNoChange : false;
+  this.triggerNoChange_ = goog.isDef(options.triggerNoChange) ?
+      options.triggerNoChange : false;
 
   var layerFilter;
   if (goog.isDef(options.layers)) {
