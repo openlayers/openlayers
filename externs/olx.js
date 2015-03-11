@@ -2346,6 +2346,57 @@ olx.interaction.DrawOptions.prototype.condition;
 
 
 /**
+ * @typedef {{features: (ol.Collection.<ol.Feature>|undefined),
+ *     source: (ol.source.Vector|undefined),
+ *     style: (ol.style.Style|Array.<ol.style.Style>|ol.style.StyleFunction|undefined),
+ *     geometryName: (string|undefined),
+ *     condition: (ol.events.ConditionType|undefined)}}
+ * @api
+ */
+olx.interaction.DrawBoxOptions;
+
+
+/**
+ * Destination collection for the drawn features.
+ * @type {ol.Collection.<ol.Feature>|undefined}
+ * @api
+ */
+olx.interaction.DrawBoxOptions.prototype.features;
+
+
+/**
+ * Destination source for the drawn features.
+ * @type {ol.source.Vector|undefined}
+ * @api
+ */
+olx.interaction.DrawBoxOptions.prototype.source;
+
+/**
+ * A function that takes an {@link ol.MapBrowserEvent} and returns a boolean
+ * to indicate whether that event should be handled.
+ * Default is {@link ol.events.condition.shiftKeyOnly}.
+ * @type {ol.events.ConditionType|undefined}
+ * @api
+ */
+olx.interaction.DrawBoxOptions.prototype.condition;
+
+/**
+ * Style for sketch features.
+ * @type {ol.style.Style|Array.<ol.style.Style>|ol.style.StyleFunction|undefined}
+ * @api
+ */
+olx.interaction.DrawBoxOptions.prototype.style;
+
+
+/**
+ * Geometry name to use for features created by the draw interaction.
+ * @type {string|undefined}
+ * @api
+ */
+olx.interaction.DrawBoxOptions.prototype.geometryName;
+
+
+/**
  * @typedef {{condition: (ol.events.ConditionType|undefined),
  *     pixelDelta: (number|undefined)}}
  * @api

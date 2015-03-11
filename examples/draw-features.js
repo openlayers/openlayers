@@ -2,6 +2,7 @@ goog.require('ol.Map');
 goog.require('ol.View');
 goog.require('ol.interaction');
 goog.require('ol.interaction.Draw');
+goog.require('ol.interaction.DrawBox');
 goog.require('ol.layer.Tile');
 goog.require('ol.layer.Vector');
 goog.require('ol.source.MapQuest');
@@ -51,11 +52,17 @@ var typeSelect = document.getElementById('type');
 var draw; // global so we can remove it later
 function addInteraction() {
   var value = typeSelect.value;
-  if (value !== 'None') {
+  if (value === 'Box') {
+    draw = new ol.interaction.DrawBox({
+      source: source
+    });
+  } else if (value !== 'None') {
     draw = new ol.interaction.Draw({
       source: source,
       type: /** @type {ol.geom.GeometryType} */ (value)
     });
+  }
+  if (draw) {
     map.addInteraction(draw);
   }
 }
