@@ -314,7 +314,6 @@ ol.style.createDefaultEditingStyles = function() {
           styles[ol.geom.GeometryType.LINE_STRING]
       );
 
-  console.log(styles[ol.geom.GeometryType.CIRCLE]);
 
   styles[ol.geom.GeometryType.POINT] = [
     new ol.style.Style({
