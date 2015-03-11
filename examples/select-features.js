@@ -38,9 +38,9 @@ var selectClick = new ol.interaction.Select({
   condition: ol.events.condition.click
 });
 
-// select interaction working on "mousemove"
-var selectMouseMove = new ol.interaction.Select({
-  condition: ol.events.condition.mouseMove
+// select interaction working on "pointermove"
+var selectPointerMove = new ol.interaction.Select({
+  condition: ol.events.condition.pointerMove
 });
 
 var selectElement = document.getElementById('type');
@@ -54,13 +54,18 @@ var changeInteraction = function() {
     select = selectSingleClick;
   } else if (value == 'click') {
     select = selectClick;
-  } else if (value == 'mousemove') {
-    select = selectMouseMove;
+  } else if (value == 'pointermove') {
+    select = selectPointerMove;
   } else {
     select = null;
   }
   if (select !== null) {
     map.addInteraction(select);
+    select.on('select', function(e) {
+      $('#status').html('&nbsp;' + e.target.getFeatures().getLength() +
+          ' selected features (last operation selected ' + e.selected.length +
+          ' and deselected ' + e.deselected.length + ' features)');
+    });
   }
 };
 

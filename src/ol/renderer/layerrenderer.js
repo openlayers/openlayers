@@ -86,6 +86,34 @@ ol.renderer.Layer.prototype.hasFeatureAtCoordinate = goog.functions.FALSE;
 
 
 /**
+ * Create a function that adds loaded tiles to the tile lookup.
+ * @param {ol.source.Tile} source Tile source.
+ * @param {Object.<number, Object.<string, ol.Tile>>} tiles Lookup of loaded
+ *     tiles by zoom level.
+ * @return {function(number, ol.TileRange):boolean} A function that can be
+ *     called with a zoom level and a tile range to add loaded tiles to the
+ *     lookup.
+ * @protected
+ */
+ol.renderer.Layer.prototype.createLoadedTileFinder = function(source, tiles) {
+  return (
+      /**
+       * @param {number} zoom Zoom level.
+       * @param {ol.TileRange} tileRange Tile range.
+       * @return {boolean} The tile range is fully loaded.
+       */
+      function(zoom, tileRange) {
+        return source.forEachLoadedTile(zoom, tileRange, function(tile) {
+          if (!tiles[zoom]) {
+            tiles[zoom] = {};
+          }
+          tiles[zoom][tile.tileCoord.toString()] = tile;
+        });
+      });
+};
+
+
+/**
  * @protected
  * @return {ol.layer.Layer} Layer.
  */
@@ -228,32 +256,6 @@ ol.renderer.Layer.prototype.updateUsedTiles =
     usedTiles[tileSourceKey] = {};
     usedTiles[tileSourceKey][zKey] = tileRange;
   }
-};
-
-
-/**
- * @param {function(ol.Tile): boolean} isLoadedFunction Function to
- *     determine if the tile is loaded.
- * @param {ol.source.Tile} tileSource Tile source.
- * @param {number} pixelRatio Pixel ratio.
- * @param {ol.proj.Projection} projection Projection.
- * @protected
- * @return {function(number, number, number): ol.Tile} Returns a tile if it is
- *     loaded.
- */
-ol.renderer.Layer.prototype.createGetTileIfLoadedFunction =
-    function(isLoadedFunction, tileSource, pixelRatio, projection) {
-  return (
-      /**
-       * @param {number} z Z.
-       * @param {number} x X.
-       * @param {number} y Y.
-       * @return {ol.Tile} Tile.
-       */
-      function(z, x, y) {
-        var tile = tileSource.getTile(z, x, y, pixelRatio, projection);
-        return isLoadedFunction(tile) ? tile : null;
-      });
 };
 
 

@@ -1,8 +1,9 @@
 goog.provide('ol.source.TileImage');
 
 goog.require('goog.asserts');
+goog.require('goog.events');
+goog.require('goog.events.EventType');
 goog.require('ol.ImageTile');
-goog.require('ol.TileCache');
 goog.require('ol.TileCoord');
 goog.require('ol.TileLoadFunctionType');
 goog.require('ol.TileState');
@@ -17,6 +18,7 @@ goog.require('ol.source.Tile');
  * Base class for sources providing images divided into a tile grid.
  *
  * @constructor
+ * @fires ol.source.TileEvent
  * @extends {ol.source.Tile}
  * @param {olx.source.TileImageOptions} options Image tile options.
  * @api
@@ -52,12 +54,6 @@ ol.source.TileImage = function(options) {
 
   /**
    * @protected
-   * @type {ol.TileCache}
-   */
-  this.tileCache = new ol.TileCache();
-
-  /**
-   * @protected
    * @type {ol.TileLoadFunctionType}
    */
   this.tileLoadFunction = goog.isDef(options.tileLoadFunction) ?
@@ -87,22 +83,6 @@ ol.source.TileImage.defaultTileLoadFunction = function(imageTile, src) {
 /**
  * @inheritDoc
  */
-ol.source.TileImage.prototype.canExpireCache = function() {
-  return this.tileCache.canExpireCache();
-};
-
-
-/**
- * @inheritDoc
- */
-ol.source.TileImage.prototype.expireCache = function(usedTiles) {
-  this.tileCache.expireCache(usedTiles);
-};
-
-
-/**
- * @inheritDoc
- */
 ol.source.TileImage.prototype.getTile =
     function(z, x, y, pixelRatio, projection) {
   var tileCoordKey = this.getKeyZXY(z, x, y);
@@ -118,6 +98,9 @@ ol.source.TileImage.prototype.getTile =
         goog.isDef(tileUrl) ? tileUrl : '',
         this.crossOrigin,
         this.tileLoadFunction);
+    goog.events.listen(tile, goog.events.EventType.CHANGE,
+        this.handleTileChange_, false, this);
+
     this.tileCache.set(tileCoordKey, tile);
     return tile;
   }
@@ -139,6 +122,30 @@ ol.source.TileImage.prototype.getTileLoadFunction = function() {
  */
 ol.source.TileImage.prototype.getTileUrlFunction = function() {
   return this.tileUrlFunction;
+};
+
+
+/**
+ * Handle tile change events.
+ * @param {goog.events.Event} event Event.
+ * @private
+ */
+ol.source.TileImage.prototype.handleTileChange_ = function(event) {
+  var tile = /** @type {ol.Tile} */ (event.target);
+  switch (tile.getState()) {
+    case ol.TileState.LOADING:
+      this.dispatchEvent(
+          new ol.source.TileEvent(ol.source.TileEventType.TILELOADSTART, tile));
+      break;
+    case ol.TileState.LOADED:
+      this.dispatchEvent(
+          new ol.source.TileEvent(ol.source.TileEventType.TILELOADEND, tile));
+      break;
+    case ol.TileState.ERROR:
+      this.dispatchEvent(
+          new ol.source.TileEvent(ol.source.TileEventType.TILELOADERROR, tile));
+      break;
+  }
 };
 
 

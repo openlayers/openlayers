@@ -1,10 +1,12 @@
 goog.provide('ol.source.Tile');
 goog.provide('ol.source.TileOptions');
 
-goog.require('goog.functions');
+goog.require('goog.events.Event');
 goog.require('ol.Attribution');
 goog.require('ol.Extent');
+goog.require('ol.TileCache');
 goog.require('ol.TileRange');
+goog.require('ol.TileState');
 goog.require('ol.source.Source');
 goog.require('ol.tilecoord');
 goog.require('ol.tilegrid.TileGrid');
@@ -64,6 +66,12 @@ ol.source.Tile = function(options) {
    */
   this.tileGrid = goog.isDef(options.tileGrid) ? options.tileGrid : null;
 
+  /**
+   * @protected
+   * @type {ol.TileCache}
+   */
+  this.tileCache = new ol.TileCache();
+
 };
 goog.inherits(ol.source.Tile, ol.source.Source);
 
@@ -71,51 +79,47 @@ goog.inherits(ol.source.Tile, ol.source.Source);
 /**
  * @return {boolean} Can expire cache.
  */
-ol.source.Tile.prototype.canExpireCache = goog.functions.FALSE;
+ol.source.Tile.prototype.canExpireCache = function() {
+  return this.tileCache.canExpireCache();
+};
 
 
 /**
  * @param {Object.<string, ol.TileRange>} usedTiles Used tiles.
  */
-ol.source.Tile.prototype.expireCache = goog.abstractMethod;
+ol.source.Tile.prototype.expireCache = function(usedTiles) {
+  this.tileCache.expireCache(usedTiles);
+};
 
 
 /**
- * Look for loaded tiles over a given tile range and zoom level.  Adds
- * properties to the provided lookup representing key/tile pairs for already
- * loaded tiles.
- *
- * @param {Object.<number, Object.<string, ol.Tile>>} loadedTilesByZ A lookup of
- *     loaded tiles by zoom level.
- * @param {function(number, number, number): ol.Tile} getTileIfLoaded A function
- *     that returns the tile only if it is fully loaded.
  * @param {number} z Zoom level.
  * @param {ol.TileRange} tileRange Tile range.
+ * @param {function(ol.Tile):(boolean|undefined)} callback Called with each
+ *     loaded tile.  If the callback returns `false`, the tile will not be
+ *     considered loaded.
  * @return {boolean} The tile range is fully covered with loaded tiles.
  */
-ol.source.Tile.prototype.findLoadedTiles = function(loadedTilesByZ,
-    getTileIfLoaded, z, tileRange) {
-  // FIXME this could be more efficient about filling partial holes
-  var fullyCovered = true;
-  var tile, tileCoordKey, x, y;
-  for (x = tileRange.minX; x <= tileRange.maxX; ++x) {
-    for (y = tileRange.minY; y <= tileRange.maxY; ++y) {
+ol.source.Tile.prototype.forEachLoadedTile = function(z, tileRange, callback) {
+  var covered = true;
+  var tile, tileCoordKey, loaded;
+  for (var x = tileRange.minX; x <= tileRange.maxX; ++x) {
+    for (var y = tileRange.minY; y <= tileRange.maxY; ++y) {
       tileCoordKey = this.getKeyZXY(z, x, y);
-      if (loadedTilesByZ[z] && loadedTilesByZ[z][tileCoordKey]) {
-        continue;
-      }
-      tile = getTileIfLoaded(z, x, y);
-      if (!goog.isNull(tile)) {
-        if (!loadedTilesByZ[z]) {
-          loadedTilesByZ[z] = {};
+      loaded = false;
+      if (this.tileCache.containsKey(tileCoordKey)) {
+        tile = /** @type {!ol.Tile} */ (this.tileCache.get(tileCoordKey));
+        loaded = tile.getState() === ol.TileState.LOADED;
+        if (loaded) {
+          loaded = (callback(tile) !== false);
         }
-        loadedTilesByZ[z][tileCoordKey] = tile;
-      } else {
-        fullyCovered = false;
+      }
+      if (!loaded) {
+        covered = false;
       }
     }
   }
-  return fullyCovered;
+  return covered;
 };
 
 
@@ -206,3 +210,59 @@ ol.source.Tile.prototype.getTilePixelSize =
  * @param {number} y Tile coordinate y.
  */
 ol.source.Tile.prototype.useTile = goog.nullFunction;
+
+
+
+/**
+ * @classdesc
+ * Events emitted by {@link ol.source.Tile} instances are instances of this
+ * type.
+ *
+ * @constructor
+ * @extends {goog.events.Event}
+ * @implements {oli.source.TileEvent}
+ * @param {string} type Type.
+ * @param {ol.Tile} tile The tile.
+ */
+ol.source.TileEvent = function(type, tile) {
+
+  goog.base(this, type);
+
+  /**
+   * The tile related to the event.
+   * @type {ol.Tile}
+   * @api
+   */
+  this.tile = tile;
+
+};
+goog.inherits(ol.source.TileEvent, goog.events.Event);
+
+
+/**
+ * @enum {string}
+ */
+ol.source.TileEventType = {
+
+  /**
+   * Triggered when a tile starts loading.
+   * @event ol.source.TileEvent#tileloadstart
+   * @api
+   */
+  TILELOADSTART: 'tileloadstart',
+
+  /**
+   * Triggered when a tile finishes loading.
+   * @event ol.source.TileEvent#tileloadend
+   * @api
+   */
+  TILELOADEND: 'tileloadend',
+
+  /**
+   * Triggered if tile loading results in an error.
+   * @event ol.source.TileEvent#tileloaderror
+   * @api
+   */
+  TILELOADERROR: 'tileloaderror'
+
+};

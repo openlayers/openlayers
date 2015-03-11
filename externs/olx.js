@@ -310,7 +310,10 @@ olx.MapOptions.prototype.view;
  *     position: (ol.Coordinate|undefined),
  *     positioning: (ol.OverlayPositioning|string|undefined),
  *     stopEvent: (boolean|undefined),
- *     insertFirst: (boolean|undefined)}}
+ *     insertFirst: (boolean|undefined),
+ *     autoPan: (boolean|undefined),
+ *     autoPanAnimation: (olx.animation.PanOptions|undefined),
+ *     autoPanMargin: (number|undefined)}}
  * @api stable
  */
 olx.OverlayOptions;
@@ -374,6 +377,35 @@ olx.OverlayOptions.prototype.stopEvent;
  * @api stable
  */
 olx.OverlayOptions.prototype.insertFirst;
+
+
+/**
+ * If set to `true` the map is panned when calling `setPosition`, so that the
+ * overlay is entirely visible in the current viewport.
+ * The default is `false`.
+ * @type {boolean|undefined}
+ * @api
+ */
+olx.OverlayOptions.prototype.autoPan;
+
+
+/**
+ * The options used to create a `ol.animation.pan` animation. This animation
+ * is only used when `autoPan` is enabled. By default the default options for
+ * `ol.animation.pan` are used. If set to `null` the panning is not animated.
+ * @type {olx.animation.PanOptions|undefined}
+ * @api
+ */
+olx.OverlayOptions.prototype.autoPanAnimation;
+
+
+/**
+ * The margin (in pixels) between the overlay and the borders of the map when
+ * autopanning. The default is `20`.
+ * @type {number|undefined}
+ * @api
+ */
+olx.OverlayOptions.prototype.autoPanMargin;
 
 
 /**
@@ -4978,15 +5010,113 @@ olx.source.ServerVectorOptions.prototype.logo;
  */
 olx.source.ServerVectorOptions.prototype.projection;
 
+/**
+ * @typedef {{attributions: (Array.<ol.Attribution>|undefined),
+ *     params: (Object.<string, *>|undefined),
+ *     logo: (string|olx.LogoOptions|undefined),
+ *     tileGrid: (ol.tilegrid.TileGrid|undefined),
+ *     projection: ol.proj.ProjectionLike,
+ *     tileLoadFunction: (ol.TileLoadFunctionType|undefined),
+ *     url: (string|undefined),
+ *     urls: (Array.<string>|undefined)}}
+ * @api
+ */
+olx.source.TileArcGISRestOptions;
 
 /**
- * @typedef {{crossOrigin: (null|string|undefined),
+ * Attributions.
+ * @type {Array.<ol.Attribution>|undefined}
+ * @api
+ */
+olx.source.TileArcGISRestOptions.prototype.attributions;
+
+
+/**
+ * ArcGIS Rest parameters. This field is optional. Service defaults will be
+ * used for any fields not specified. `FORMAT` is `PNG32` by default. `F` is `IMAGE` by
+ * default. `TRANSPARENT` is `true` by default.  `BBOX, `SIZE`, `BBOXSR`, 
+ * and `IMAGESR` will be set dynamically. Set `LAYERS` to
+ * override the default service layer visibility. See 
+ * {@link http://resources.arcgis.com/en/help/arcgis-rest-api/index.html#/Export_Map/02r3000000v7000000/}
+ * for further reference.
+ * @type {Object.<string,*>|undefined}
+ * @api
+ */
+olx.source.TileArcGISRestOptions.prototype.params;
+
+
+/**
+ * Logo.
+ * @type {string|olx.LogoOptions|undefined}
+ * @api
+ */
+olx.source.TileArcGISRestOptions.prototype.logo;
+
+
+/**
+ * Tile grid. Base this on the resolutions, tilesize and extent supported by the
+ * server.
+ * If this is not defined, a default grid will be used: if there is a projection
+ * extent, the grid will be based on that; if not, a grid based on a global
+ * extent with origin at 0,0 will be used.
+ * @type {ol.tilegrid.TileGrid|undefined}
+ * @api
+ */
+olx.source.TileArcGISRestOptions.prototype.tileGrid;
+
+/**
+ * Projection.
+ * @type {ol.proj.ProjectionLike}
+ * @api
+ */
+olx.source.TileArcGISRestOptions.prototype.projection;
+
+
+/**
+ * Optional function to load a tile given a URL.
+ * @type {ol.TileLoadFunctionType|undefined}
+ * @api
+ */
+olx.source.TileArcGISRestOptions.prototype.tileLoadFunction;
+
+
+/**
+ * ArcGIS Rest service URL for a Map Service or Image Service. The
+ * url should include /MapServer or /ImageServer.
+ * @type {string|undefined}
+ * @api
+ */
+olx.source.TileArcGISRestOptions.prototype.url;
+
+
+/**
+ * ArcGIS Rest service urls. Use this instead of `url` when the ArcGIS Service supports multiple
+ * urls for export requests.
+ * @type {Array.<string>|undefined}
+ * @api
+ */
+olx.source.TileArcGISRestOptions.prototype.urls;
+
+
+/**
+ * @typedef {{attributions: (Array.<ol.Attribution>|undefined),
+ *     crossOrigin: (null|string|undefined),
  *     tileLoadFunction: (ol.TileLoadFunctionType|undefined),
  *     url: string,
  *     wrapX: (boolean|undefined)}}
  * @api
  */
 olx.source.TileJSONOptions;
+
+
+/**
+ * Optional attributions for the source.  If provided, these will be used
+ * instead of any attribution data advertised by the server.  If not provided,
+ * any attributions advertised by the server will be used.
+ * @type {Array.<ol.Attribution>|undefined}
+ * @api stable
+ */
+olx.source.TileJSONOptions.prototype.attributions;
 
 
 /**
@@ -5789,6 +5919,7 @@ olx.style.FillOptions.prototype.color;
  *     img: (Image|undefined),
  *     offset: (Array.<number>|undefined),
  *     offsetOrigin: (ol.style.IconOrigin|undefined),
+ *     opacity: (number|undefined),
  *     scale: (number|undefined),
  *     snapToPixel: (boolean|undefined),
  *     rotateWithView: (boolean|undefined),
@@ -5876,6 +6007,14 @@ olx.style.IconOptions.prototype.offset;
  * @api
  */
 olx.style.IconOptions.prototype.offsetOrigin;
+
+
+/**
+ * Opacity of the icon. Default is `1`.
+ * @type {number|undefined}
+ * @api
+ */
+olx.style.IconOptions.prototype.opacity;
 
 
 /**

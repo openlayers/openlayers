@@ -504,7 +504,7 @@ describe('ol.interaction.Draw', function() {
         expect(interaction.sketchFeature_).to.be(null);
       });
       it('fires change:active', function() {
-        listenerSpy = sinon.spy(function() {
+        var listenerSpy = sinon.spy(function() {
           // test that the interaction's change:active listener is called first
           expect(interaction.overlay_.map_).to.be(null);
         });
@@ -523,7 +523,7 @@ describe('ol.interaction.Draw', function() {
         expect(interaction.overlay_.map_).to.be(map);
       });
       it('fires change:active', function() {
-        listenerSpy = sinon.spy(function() {
+        var listenerSpy = sinon.spy(function() {
           // test that the interaction's change:active listener is called first
           expect(interaction.overlay_.map_).not.to.be(null);
         });
@@ -592,6 +592,7 @@ goog.require('goog.dispose');
 goog.require('goog.events');
 goog.require('goog.events.BrowserEvent');
 goog.require('goog.style');
+goog.require('ol.DrawEventType');
 goog.require('ol.Map');
 goog.require('ol.MapBrowserPointerEvent');
 goog.require('ol.View');

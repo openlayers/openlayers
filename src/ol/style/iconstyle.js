@@ -377,7 +377,7 @@ ol.style.IconImage_ = function(image, src, crossOrigin, imageState) {
 
   /**
    * @private
-   * @type {Array.<number>}
+   * @type {Array.<goog.events.Key>}
    */
   this.imageListenerKeys_ = null;
 

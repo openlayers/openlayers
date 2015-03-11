@@ -29,7 +29,7 @@
 
       <div class="row-fluid">
 
-        <div class="span12">
+        <div class="span8">
           <h4 id="title">Earthquakes heatmap</h4>
           <p id="shortdesc">Demonstrates the use of a heatmap layer.</p>
           <div id="docs">
@@ -40,8 +40,17 @@
           </div>
           <div id="tags">heatmap, kml, vector, style</div>
         </div>
-      </div>
 
+        <div class="span4">
+          <form>
+            <label>radius size</label>
+            <input id="radius" type="range" min="1" max="50" step="1" value="5"/>
+            <label>blur size</label>
+            <input id="blur" type="range" min="1" max="50" step="1" value="15"/>
+          </form>
+        </div>
+
+      </div>
     </div>
 
     <script src="../resources/jquery.min.js" type="text/javascript"></script>

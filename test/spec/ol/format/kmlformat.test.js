@@ -919,7 +919,7 @@ describe('ol.format.KML', function() {
         expect(g.getGeometries()).to.be.empty();
       });
 
-      it('can read heterogenous GeometryCollection geometries', function() {
+      it('can read heterogeneous GeometryCollection geometries', function() {
         var text =
             '<kml xmlns="http://earth.google.com/kml/2.2">' +
             '  <Placemark>' +
@@ -2407,7 +2407,7 @@ describe('ol.format.KML', function() {
       expect(features).to.have.length(50);
     });
 
-    it('creates features with heterogenous geometry collections', function() {
+    it('creates features with heterogeneous geometry collections', function() {
       // FIXME decide if we should instead create features with multiple geoms
       var feature = features[0];
       expect(feature).to.be.an(ol.Feature);
