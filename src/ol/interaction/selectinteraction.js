@@ -36,6 +36,7 @@ ol.SelectEventType = {
 ol.interaction.SelectFilterFunction;
 
 
+
 /**
  * @classdesc
  * Events emitted by {@link ol.interaction.Select} instances are instances of
@@ -65,6 +66,7 @@ ol.SelectEvent = function(type, selected, deselected) {
   this.deselected = deselected;
 };
 goog.inherits(ol.SelectEvent, goog.events.Event);
+
 
 
 /**
@@ -213,9 +215,9 @@ ol.interaction.Select.handleEvent = function(mapBrowserEvent) {
          * @param {ol.layer.Layer} layer Layer.
          */
         function(feature, layer) {
-          if (filter(feature, layer)) {
+          // if (filter(feature, layer)) {
             selected.push(feature);
-          }
+          // }
         }, undefined, this.layerFilter_);
     if (selected.length > 0 && features.getLength() == 1 &&
         features.item(0) == selected[0]) {
@@ -226,7 +228,11 @@ ol.interaction.Select.handleEvent = function(mapBrowserEvent) {
         deselected = Array.prototype.concat(features.getArray());
         features.clear();
       }
-      features.extend(selected);
+      if (this.multi_) {
+        features.extend(selected);
+      } else if (selected.length > 0) {
+        features.push(selected[0]);
+      }
     }
   } else {
     // Modify the currently selected feature(s).
@@ -239,9 +245,9 @@ ol.interaction.Select.handleEvent = function(mapBrowserEvent) {
           var index = goog.array.indexOf(features.getArray(), feature);
           if (index == -1) {
             if (add || toggle) {
-              if (filter(feature, layer)) {
+              // if (filter(feature, layer)) {
                 selected.push(feature);
-              }
+              // }
             }
           } else {
             if (remove || toggle) {
