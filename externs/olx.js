@@ -6060,7 +6060,7 @@ olx.style.IconOptions.prototype.rotateWithView;
 
 
 /**
- * Rotation.
+ * Rotation in radians (positive rotation clockwise). Default is `0`.
  * @type {number|undefined}
  * @api
  */
@@ -6305,7 +6305,7 @@ olx.style.TextOptions.prototype.scale;
 
 
 /**
- * Rotation.
+ * Rotation in radians (positive rotation clockwise). Default is `0`.
  * @type {number|undefined}
  * @api
  */

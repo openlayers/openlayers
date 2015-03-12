@@ -4,7 +4,6 @@ goog.require('ol.Sphere');
 goog.require('ol.View');
 goog.require('ol.geom.LineString');
 goog.require('ol.geom.Polygon');
-goog.require('ol.interaction');
 goog.require('ol.interaction.Draw');
 goog.require('ol.layer.Tile');
 goog.require('ol.layer.Vector');
