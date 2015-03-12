@@ -516,6 +516,8 @@ ol.format.GeoJSON.prototype.writeFeatureObject = function(
   goog.object.remove(properties, feature.getGeometryName());
   if (!goog.object.isEmpty(properties)) {
     object['properties'] = properties;
+  } else {
+    object['properties'] = null;
   }
   return object;
 };
