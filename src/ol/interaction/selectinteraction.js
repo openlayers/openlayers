@@ -45,6 +45,7 @@ ol.interaction.SelectFilterFunction;
  * @param {string} type The event type.
  * @param {Array.<ol.Feature>} selected Selected features.
  * @param {Array.<ol.Feature>} deselected Deselected features.
+ * @implements {oli.SelectEvent}
  * @extends {goog.events.Event}
  * @constructor
  */
