@@ -11,6 +11,7 @@ goog.require('ol.geom.flat.inflate');
 goog.require('ol.geom.flat.interpolate');
 goog.require('ol.geom.flat.intersectsextent');
 goog.require('ol.geom.flat.length');
+goog.require('ol.geom.flat.segments');
 goog.require('ol.geom.flat.simplify');
 
 
@@ -104,6 +105,23 @@ ol.geom.LineString.prototype.closestPointXY =
   return ol.geom.flat.closest.getClosestPoint(
       this.flatCoordinates, 0, this.flatCoordinates.length, this.stride,
       this.maxDelta_, false, x, y, closestPoint, minSquaredDistance);
+};
+
+
+/**
+ * Iterate over each segment, calling the provided callback.
+ * If the callback returns a truthy value the function returns that
+ * value immediately. Otherwise the function returns `false`.
+ *
+ * @param {function(ol.Coordinate, ol.Coordinate): T} callback Function
+ *     called for each segment.
+ * @return {T|boolean} Value.
+ * @template T
+ * @api
+ */
+ol.geom.LineString.prototype.forEachSegment = function(callback) {
+  return ol.geom.flat.segments.forEach(this.flatCoordinates, 0,
+      this.flatCoordinates.length, this.stride, callback);
 };
 
 
