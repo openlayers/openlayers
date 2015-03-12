@@ -54,7 +54,7 @@ var changeFilter = function() {
           typesElement.innerHTML + ',' + type;
 
   if (typesElement.innerHTML !== 'Any') {
-    types = typesElement.innerHTML.split(',');
+    types = typesElement.innerHTML;
   } else {
     types = null;
   }
@@ -64,14 +64,15 @@ var changeFilter = function() {
 // select interaction
 var selectInteraction = new ol.interaction.Select({
   filter: function(feature) {
-    if(types===null) {
+    if (types === null) {
       return true;
     } else {
-      return goog.array.contains(types, feature.getGeometry().getType());
+      return types.indexOf(feature.getGeometry().getType()) !== -1;
     }
   }
 });
 map.addInteraction(selectInteraction);
+
 
 /**
  * onchange callback on the type element.
