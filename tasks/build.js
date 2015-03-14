@@ -207,6 +207,11 @@ function build(config, paths, callback) {
     concatenate(paths, callback);
   } else {
     log.info('ol', 'Compiling ' + paths.length + ' sources');
+    if (options.compile.source_map_location_mapping &&
+        options.compile.source_map_location_mapping.split('|').length === 1) {
+      options.compile.source_map_location_mapping = options.cwd + '|' +
+          options.compile.source_map_location_mapping;
+    }
     options.compile.js = paths.concat(options.compile.js || []);
     closure.compile(options, callback);
   }
@@ -228,6 +233,23 @@ function addHeader(compiledSource, callback) {
       header += '// Version: ' + stdout + '\n';
     }
     callback(null, header + compiledSource);
+  });
+}
+
+
+/**
+ * Adds a file footer with the path to the source map if it exists
+ * in the same directory.
+ * @param {string} source The compiled library including the header.
+ * @param {function(Error, string)} callback Called with the output
+ *     ready to be written into a file, or any error.
+ */
+function addSourceMapping(outputFile, compiledSource, callback) {
+  fs.exists(outputFile + '.map', function(exists) {
+    if (exists) {
+      compiledSource += '//# sourceMappingURL=ol.js.map\n';
+    }
+    callback(null, compiledSource);
   });
 }
 
@@ -285,6 +307,7 @@ if (require.main === module) {
   async.waterfall([
     readConfig.bind(null, options.config),
     main,
+    addSourceMapping.bind(null, options.output),
     fse.outputFile.bind(fse, options.output)
   ], function(err) {
     if (err) {
