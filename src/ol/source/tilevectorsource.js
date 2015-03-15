@@ -89,7 +89,21 @@ ol.source.TileVector.prototype.clear = function() {
 /**
  * @inheritDoc
  */
-ol.source.TileVector.prototype.forEachFeature = goog.abstractMethod;
+ol.source.TileVector.prototype.forEachFeature = function(callback, opt_this) {
+  var tiles = this.tiles_;
+  var tileKey;
+  for (tileKey in tiles) {
+    var features = tiles[tileKey];
+    var i, ii;
+    for (i = 0, ii = features.length; i < ii; ++i) {
+      var result = callback.call(opt_this, features[i]);
+      if (result) {
+        return result;
+      }
+    }
+  }
+  return undefined;
+};
 
 
 /**
