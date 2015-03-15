@@ -7,6 +7,8 @@ goog.require('ol.TileCoord');
 goog.require('ol.TileUrlFunction');
 goog.require('ol.source.FormatVector');
 goog.require('ol.source.State');
+goog.require('ol.source.VectorEvent');
+goog.require('ol.source.VectorEventType');
 goog.require('ol.tilegrid.TileGrid');
 
 
@@ -272,6 +274,11 @@ ol.source.TileVector.prototype.loadFeatures =
   function success(tileKey, features) {
     tiles[tileKey] = features;
     this.setState(ol.source.State.READY);
+    var i, ii;
+    for (i = 0, ii = features.length; i < ii; ++i) {
+      this.dispatchEvent(new ol.source.VectorEvent(
+          ol.source.VectorEventType.ADDFEATURE, features[i]));
+    }
   }
   for (x = tileRange.minX; x <= tileRange.maxX; ++x) {
     for (y = tileRange.minY; y <= tileRange.maxY; ++y) {
