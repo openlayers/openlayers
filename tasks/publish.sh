@@ -106,6 +106,7 @@ bower_publish() {
   git ci -m "v${1}"
   bower version ${1}
   git push origin
+  git push origin --tags
   popd
 }
 
