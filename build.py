@@ -359,6 +359,8 @@ def examples_star_json(name, match):
             "extra_annotation_name": [
               "api", "observable"
             ],
+            "language_in": "ECMASCRIPT5_STRICT",
+            "language_out": "ECMASCRIPT5_STRICT",
             "compilation_level": "ADVANCED",
             "warning_level": "VERBOSE",
             "output_wrapper": "(function(){%output%})();",
