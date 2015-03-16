@@ -1,0 +1,54 @@
+/**
+ * The ol.proj namespace stores:
+ * * a list of {@link ol.proj.Projection}
+ * objects, one for each projection supported by the application
+ * * a list of transform functions needed to convert coordinates in one projection
+ * into another.
+ *
+ * The static functions are the methods used to maintain these.
+ * Each transform function can handle not only simple coordinate pairs, but also
+ * large arrays of coordinates such as vector geometries.
+ *
+ * When loaded, the library adds projection objects for EPSG:4326 (WGS84
+ * geographic coordinates) and EPSG:3857 (Web or Spherical Mercator, as used
+ * for example by Bing Maps or OpenStreetMap), together with the relevant
+ * transform functions.
+ *
+ * Additional transforms may be added by using the {@link http://proj4js.org/}
+ * library (version 2.2 or later). You can use the full build supplied by
+ * Proj4js, or create a custom build to support those projections you need; see
+ * the Proj4js website for how to do this. You also need the Proj4js definitions
+ * for the required projections. These definitions can be obtained from
+ * {@link http://epsg.io/}, and are a JS function, so can be loaded in a script
+ * tag (as in the examples) or pasted into your application.
+ * The first time there is a request for a projection, either with a
+ * {@link ol.proj.projectionLike} or directly with {@link ol.proj.get}, the
+ * code will check if the Proj4js library and the necessary definition are
+ * loaded; if so, it will register the appropriate {@link ol.proj.Projection}
+ * object and add transform functions between the new projection and all the
+ * existing ones. See examples/wms-image-custom-proj for an example of this.
+ * Because the check for presence of the Proj4js library and the definition only
+ * takes place on the first request for them, this means they can be loaded
+ * dynamically as needed; for example, with user-supplied data where you don't
+ * know in advance what projections are needed, you can initially load minimal
+ * support and then load whichever are requested.
+ *
+ * Note that Proj4js does not support projection extents. If you want to add
+ * one for creating default tile grids, you can add it after the Projection
+ * object has been created with `setExtent`, for example,
+ * `ol.proj.get('EPSG:1234').setExtent(extent)`.
+ *
+ * In addition to Proj4js support, any transform functions can be added with
+ * {@link ol.proj.addCoordinateTransforms}. To use this, you must first create
+ * a {@link ol.proj.Projection} object for the new projection and add it with
+ * {@link ol.proj.addProjection}. You can then add the forward and inverse
+ * functions with {@link ol.proj.addCoordinateTransforms}. See
+ * examples/wms-custom-proj for an example of this.
+ *
+ * Note that if no transforms are needed and you only need to define the
+ * projection, just add a {@link ol.proj.Projection} with
+ * {@link ol.proj.addProjection}. See examples/wms-no-proj for an example of
+ * this.
+ *
+ * @namespace ol.proj
+ */

@@ -1,0 +1,8 @@
+/**
+ * Colors can be defined as a {@link ol.Color} array, or as strings in
+ * `rgb(r,g,b)` or `rgba(r,g,b,a)` format, or in hex `#rrggbb` or `#rgb` format.
+ * Color names, like 'red', 'blue' or 'green', may also be used with the
+ * Canvas renderer.
+ *
+ * @namespace ol.color
+ */
