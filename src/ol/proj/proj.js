@@ -122,6 +122,13 @@ ol.proj.Projection = function(options) {
   this.global_ = goog.isDef(options.global) ? options.global : false;
 
   /**
+  * @private
+  * @type {function(number, ol.Coordinate):number}
+  */
+  this.getPointResolutionFunc_ = goog.isDef(options.getPointResolution) ?
+      options.getPointResolution : this.getPointResolution_;
+
+  /**
    * @private
    * @type {ol.tilegrid.TileGrid}
    */
@@ -207,6 +214,16 @@ ol.proj.Projection.prototype.isGlobal = function() {
 
 
 /**
+* Set if the projection is a global projection which spans the whole world
+* @param {boolean} global Whether the projection is global.
+* @api stable
+*/
+ol.proj.Projection.prototype.setGlobal = function(global) {
+  this.global_ = global;
+};
+
+
+/**
  * @return {ol.tilegrid.TileGrid} The default tile grid.
  */
 ol.proj.Projection.prototype.getDefaultTileGrid = function() {
@@ -244,16 +261,29 @@ ol.proj.Projection.prototype.setWorldExtent = function(worldExtent) {
 
 
 /**
- * Get the resolution of the point in degrees. For projections with degrees as
- * the unit this will simply return the provided resolution. For other
- * projections the point resolution is estimated by transforming the center
- * pixel to EPSG:4326, measuring its width and height on the normal sphere,
- * and taking the average of the width and height.
- * @param {number} resolution Resolution.
- * @param {ol.Coordinate} point Point.
- * @return {number} Point resolution.
- */
-ol.proj.Projection.prototype.getPointResolution = function(resolution, point) {
+* Set the getPointResolution function for this projection.
+* @param {function(number, ol.Coordinate):number} func Function
+* @api
+*/
+ol.proj.Projection.prototype.setGetPointResolution = function(func) {
+  this.getPointResolutionFunc_ = func;
+};
+
+
+/**
+* Default version.
+* Get the resolution of the point in degrees or distance units.
+* For projections with degrees as the unit this will simply return the
+* provided resolution. For other projections the point resolution is
+* estimated by transforming the 'point' pixel to EPSG:4326,
+* measuring its width and height on the normal sphere,
+* and taking the average of the width and height.
+* @param {number} resolution Nominal resolution in projection units.
+* @param {ol.Coordinate} point Point to find adjusted resolution at.
+* @return {number} Point resolution at point in projection units.
+* @private
+*/
+ol.proj.Projection.prototype.getPointResolution_ = function(resolution, point) {
   var units = this.getUnits();
   if (units == ol.proj.Units.DEGREES) {
     return resolution;
@@ -281,6 +311,26 @@ ol.proj.Projection.prototype.getPointResolution = function(resolution, point) {
     }
     return pointResolution;
   }
+};
+
+
+/**
+ * Get the resolution of the point in degrees or distance units.
+ * For projections with degrees as the unit this will simply return the
+ * provided resolution. The default for other projections is to estimate
+ * the point resolution by transforming the 'point' pixel to EPSG:4326,
+ * measuring its width and height on the normal sphere,
+ * and taking the average of the width and height.
+ * An alternative implementation may be given when constructing a
+ * projection. For many local projections,
+ * such a custom function will return the resolution unchanged.
+ * @param {number} resolution Resolution in projection units.
+ * @param {ol.Coordinate} point Point.
+ * @return {number} Point resolution in projection units.
+ * @api
+ */
+ol.proj.Projection.prototype.getPointResolution = function(resolution, point) {
+  return this.getPointResolutionFunc_(resolution, point);
 };
 
 
