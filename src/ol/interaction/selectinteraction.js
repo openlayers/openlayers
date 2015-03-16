@@ -203,7 +203,6 @@ ol.interaction.Select.handleEvent = function(mapBrowserEvent) {
   var features = this.featureOverlay_.getFeatures();
   var /** @type {Array.<ol.Feature>} */ deselected = [];
   var /** @type {Array.<ol.Feature>} */ selected = [];
-  var filter = this.filter_;
   var change = false;
 
   if (set) {
@@ -216,7 +215,7 @@ ol.interaction.Select.handleEvent = function(mapBrowserEvent) {
          * @param {ol.layer.Layer} layer Layer.
          */
         function(feature, layer) {
-          if (filter(feature, layer)) {
+          if (this.filter_(feature, layer)) {
             selected.push(feature);
           }
           return !this.multi_;
@@ -243,7 +242,7 @@ ol.interaction.Select.handleEvent = function(mapBrowserEvent) {
           var index = goog.array.indexOf(features.getArray(), feature);
           if (index == -1) {
             if (add || toggle) {
-              if (filter(feature, layer)) {
+              if (this.filter_(feature, layer)) {
                 selected.push(feature);
               }
             }
@@ -252,7 +251,7 @@ ol.interaction.Select.handleEvent = function(mapBrowserEvent) {
               deselected.push(feature);
             }
           }
-        }, undefined, this.layerFilter_);
+        }, this, this.layerFilter_);
     var i;
     for (i = deselected.length - 1; i >= 0; --i) {
       features.remove(deselected[i]);
