@@ -415,7 +415,8 @@ olx.OverlayOptions.prototype.autoPanMargin;
  *     extent: (ol.Extent|undefined),
  *     axisOrientation: (string|undefined),
  *     global: (boolean|undefined),
- *     worldExtent: (ol.Extent|undefined)}}
+ *     worldExtent: (ol.Extent|undefined),
+ *     getPointResolution: (function(number, ol.Coordinate):number|undefined) }}
  * @api
  */
 olx.ProjectionOptions;
@@ -467,6 +468,13 @@ olx.ProjectionOptions.prototype.global;
  * @api
  */
 olx.ProjectionOptions.prototype.worldExtent;
+
+/**
+* Function to determine resolution at a point.
+* @type {(function(number, ol.Coordinate):number|undefined)}
+* @api
+*/
+olx.ProjectionOptions.prototype.getPointResolution;
 
 
 /**
