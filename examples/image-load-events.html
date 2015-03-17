@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no, width=device-width">
+    <link rel="stylesheet" href="../css/ol.css" type="text/css">
+    <link rel="stylesheet" href="../resources/bootstrap/css/bootstrap.min.css" type="text/css">
+    <link rel="stylesheet" href="../resources/layout.css" type="text/css">
+    <link rel="stylesheet" href="../resources/bootstrap/css/bootstrap-responsive.min.css" type="text/css">
+    <title>Image load events example</title>
+    <style>
+      .map {
+        background: #E0ECED;
+      }
+      .wrapper {
+        position: relative;
+      }
+      #progress {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        height: 2px;
+        background: rgba(0, 60, 136, 0.4);
+        width: 0;
+        transition: width 250ms;
+      }
+    </style>
+  </head>
+  <body>
+
+    <div class="navbar navbar-inverse navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container">
+          <a class="brand" href="./"><img src="../resources/logo.png"> OpenLayers 3 Examples</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="container-fluid">
+
+      <div class="row-fluid">
+        <div class="span12 wrapper">
+          <div id="map" class="map"></div>
+          <div id="progress"></div>
+        </div>
+      </div>
+
+      <div class="row-fluid">
+
+        <div class="span12">
+          <h4 id="title">Image load events example</h4>
+          <p id="shortdesc">Example using image load events.</p>
+          <div id="docs">
+            <p>
+              Image sources fire events related to image loading.  You can
+              listen for <code>imageloadstart</code>, <code>imageloadend</code>,
+              and <code>imageloaderror</code> type events to monitor image loading
+              progress.  This example registers listeners for these events and
+              renders an image loading progress bar at the bottom of the map.
+            </p>
+            <p>
+              See the <a href="image-load-events.js" target="_blank">image-load-events.js source</a>
+              for more detail on how this is done.
+            </p>
+          </div>
+          <div id="tags">image, events, loading</div>
+        </div>
+
+      </div>
+
+    </div>
+
+    <script src="../resources/jquery.min.js" type="text/javascript"></script>
+    <script src="../resources/example-behaviour.js" type="text/javascript"></script>
+    <script src="loader.js?id=image-load-events" type="text/javascript"></script>
+
+  </body>
+</html>
