@@ -470,10 +470,12 @@ olx.ProjectionOptions.prototype.global;
 olx.ProjectionOptions.prototype.worldExtent;
 
 /**
-* Function to determine resolution at a point.
-* @type {(function(number, ol.Coordinate):number|undefined)}
-* @api
-*/
+ * Function to determine resolution at a point. The function is called with a
+ * `{number}` view resolution and an `{ol.Coordinate}` as arguments, and returns
+ * the `{number}` resolution at the passed coordinate.
+ * @type {(function(number, ol.Coordinate):number|undefined)}
+ * @api
+ */
 olx.ProjectionOptions.prototype.getPointResolution;
 
 
@@ -5054,9 +5056,9 @@ olx.source.TileArcGISRestOptions.prototype.attributions;
 /**
  * ArcGIS Rest parameters. This field is optional. Service defaults will be
  * used for any fields not specified. `FORMAT` is `PNG32` by default. `F` is `IMAGE` by
- * default. `TRANSPARENT` is `true` by default.  `BBOX, `SIZE`, `BBOXSR`, 
+ * default. `TRANSPARENT` is `true` by default.  `BBOX, `SIZE`, `BBOXSR`,
  * and `IMAGESR` will be set dynamically. Set `LAYERS` to
- * override the default service layer visibility. See 
+ * override the default service layer visibility. See
  * {@link http://resources.arcgis.com/en/help/arcgis-rest-api/index.html#/Export_Map/02r3000000v7000000/}
  * for further reference.
  * @type {Object.<string,*>|undefined}
