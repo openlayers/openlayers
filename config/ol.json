@@ -1,6 +1,7 @@
 {
   "exports": ["*"],
   "umd": true,
+  "use_strict": true,
   "compile": {
     "externs": [
       "externs/bingmaps.js",
