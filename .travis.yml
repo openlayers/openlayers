@@ -1,8 +1,12 @@
-before_install:
-  - "sudo pip install -r requirements.txt"
-  - "npm install -g npm && npm install"
+install:
+  - sudo pip install -r requirements.txt
+  - npm install -g npm && npm install
 
 before_script:
-  - "rm src/ol/renderer/webgl/*shader.js"
+  - rm -f src/ol/renderer/webgl/*shader.js
 
-script: "./build.py ci"
+script: 
+  - ./build.py ci
+
+after_success:
+  - ./benchmark.sh
