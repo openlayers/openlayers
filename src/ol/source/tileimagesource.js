@@ -34,7 +34,8 @@ ol.source.TileImage = function(options) {
     state: goog.isDef(options.state) ?
         /** @type {ol.source.State} */ (options.state) : undefined,
     tileGrid: options.tileGrid,
-    tilePixelRatio: options.tilePixelRatio
+    tilePixelRatio: options.tilePixelRatio,
+    wrapX: options.wrapX
   });
 
   /**
@@ -91,7 +92,9 @@ ol.source.TileImage.prototype.getTile =
   } else {
     goog.asserts.assert(projection);
     var tileCoord = [z, x, y];
-    var tileUrl = this.tileUrlFunction(tileCoord, pixelRatio, projection);
+    var urlTileCoord = this.getWrapXTileCoord(tileCoord, projection);
+    var tileUrl = goog.isNull(urlTileCoord) ? undefined :
+        this.tileUrlFunction(urlTileCoord, pixelRatio, projection);
     var tile = new this.tileClass(
         tileCoord,
         goog.isDef(tileUrl) ? ol.TileState.IDLE : ol.TileState.EMPTY,

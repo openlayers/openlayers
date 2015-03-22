@@ -3861,7 +3861,8 @@ olx.source.TileUTFGridOptions.prototype.url;
  *            tileGrid: (ol.tilegrid.TileGrid|undefined),
  *            tileLoadFunction: (ol.TileLoadFunctionType|undefined),
  *            tilePixelRatio: (number|undefined),
- *            tileUrlFunction: (ol.TileUrlFunctionType|undefined)}}
+ *            tileUrlFunction: (ol.TileUrlFunctionType|undefined),
+ *            wrapX: (boolean|undefined)}}
  * @api
  */
 olx.source.TileImageOptions;
@@ -3962,6 +3963,17 @@ olx.source.TileImageOptions.prototype.tilePixelRatio;
  * @api
  */
 olx.source.TileImageOptions.prototype.tileUrlFunction;
+
+
+/**
+ * Whether to wrap the world horizontally. The default, `undefined`, is to
+ * request out-of-bounds tiles from the server. When set to `false`, only one
+ * world will be rendered. When set to `true`, tiles will be requested for one
+ * world only, but they will be wrapped horizontally to render multiple worlds.
+ * @type {boolean|undefined}
+ * @api
+ */
+olx.source.TileImageOptions.prototype.wrapX;
 
 
 /**
@@ -5040,7 +5052,8 @@ olx.source.ServerVectorOptions.prototype.projection;
  *     projection: ol.proj.ProjectionLike,
  *     tileLoadFunction: (ol.TileLoadFunctionType|undefined),
  *     url: (string|undefined),
- *     urls: (Array.<string>|undefined)}}
+ *     urls: (Array.<string>|undefined),
+ *     wrapX: (boolean|undefined)}}
  * @api
  */
 olx.source.TileArcGISRestOptions;
@@ -5109,6 +5122,14 @@ olx.source.TileArcGISRestOptions.prototype.tileLoadFunction;
  * @api
  */
 olx.source.TileArcGISRestOptions.prototype.url;
+
+
+/**
+ * Whether to wrap the world horizontally. Default is `true`.
+ * @type {boolean|undefined}
+ * @api
+ */
+olx.source.TileArcGISRestOptions.prototype.wrapX;
 
 
 /**
@@ -5190,7 +5211,8 @@ olx.source.TileJSONOptions.prototype.wrapX;
  *     serverType: (ol.source.wms.ServerType|string|undefined),
  *     tileLoadFunction: (ol.TileLoadFunctionType|undefined),
  *     url: (string|undefined),
- *     urls: (Array.<string>|undefined)}}
+ *     urls: (Array.<string>|undefined),
+ *     wrapX: (boolean|undefined)}}
  * @api
  */
 olx.source.TileWMSOptions;
@@ -5318,6 +5340,18 @@ olx.source.TileWMSOptions.prototype.url;
  * @api stable
  */
 olx.source.TileWMSOptions.prototype.urls;
+
+
+/**
+ * Whether to wrap the world horizontally. The default, `undefined`, is to
+ * request out-of-bounds tiles from the server. This works well in e.g.
+ * GeoServer. When set to `false`, only one world will be rendered. When set to
+ * `true`, tiles will be requested for one world only, but they will be wrapped
+ * horizontally to render multiple worlds.
+ * @type {boolean|undefined}
+ * @api
+ */
+olx.source.TileWMSOptions.prototype.wrapX;
 
 
 /**

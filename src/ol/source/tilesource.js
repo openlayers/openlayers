@@ -20,7 +20,8 @@ goog.require('ol.tilegrid.TileGrid');
  *            tilePixelRatio: (number|undefined),
  *            projection: ol.proj.ProjectionLike,
  *            state: (ol.source.State|undefined),
- *            tileGrid: (ol.tilegrid.TileGrid|undefined)}}
+ *            tileGrid: (ol.tilegrid.TileGrid|undefined),
+ *            wrapX: (boolean|undefined)}}
  */
 ol.source.TileOptions;
 
@@ -71,6 +72,12 @@ ol.source.Tile = function(options) {
    * @type {ol.TileCache}
    */
   this.tileCache = new ol.TileCache();
+
+  /**
+   * @private
+   * @type {boolean|undefined}
+   */
+  this.wrapX_ = options.wrapX;
 
 };
 goog.inherits(ol.source.Tile, ol.source.Source);
@@ -200,6 +207,32 @@ ol.source.Tile.prototype.getTilePixelSize =
     function(z, pixelRatio, projection) {
   var tileGrid = this.getTileGridForProjection(projection);
   return tileGrid.getTileSize(z) * this.tilePixelRatio_;
+};
+
+
+/**
+ * Handles x-axis wrapping. When `this.wrapX_` is undefined or the projection
+ * is not a global projection, `tileCoord` will be returned unaltered. When
+ * `this.wrapX_` is true, the tile coordinate will be wrapped horizontally.
+ * When `this.wrapX_` is `false`, `null` will be returned for tiles that are
+ * outside the projection extent.
+ * @param {ol.TileCoord} tileCoord Tile coordinate.
+ * @param {ol.proj.Projection=} opt_projection Projection.
+ * @return {ol.TileCoord} Tile coordinate.
+ */
+ol.source.Tile.prototype.getWrapXTileCoord =
+    function(tileCoord, opt_projection) {
+  var projection = goog.isDef(opt_projection) ?
+      opt_projection : this.getProjection();
+  if (goog.isDef(this.wrapX_) && projection.isGlobal()) {
+    var tileGrid = this.getTileGridForProjection(projection);
+    var extent = ol.tilegrid.extentFromProjection(projection);
+    return this.wrapX_ ?
+        ol.tilecoord.wrapX(tileCoord, tileGrid, extent) :
+        ol.tilecoord.clipX(tileCoord, tileGrid, extent);
+  } else {
+    return tileCoord;
+  }
 };
 
 

@@ -103,8 +103,7 @@ ol.tilegrid.TileGrid.tmpTileCoord_ = [0, 0, 0];
 
 /**
  * Returns the identity function. May be overridden in subclasses.
- * @param {{extent: (ol.Extent|undefined),
- *          wrapX: (boolean|undefined)}=} opt_options Options.
+ * @param {{extent: (ol.Extent|undefined)}=} opt_options Options.
  * @return {function(ol.TileCoord, ol.proj.Projection, ol.TileCoord=):
  *     ol.TileCoord} Tile coordinate transform.
  */
