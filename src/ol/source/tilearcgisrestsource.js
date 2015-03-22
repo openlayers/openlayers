@@ -42,7 +42,8 @@ ol.source.TileArcGISRest = function(opt_options) {
     projection: options.projection,
     tileGrid: options.tileGrid,
     tileLoadFunction: options.tileLoadFunction,
-    tileUrlFunction: goog.bind(this.tileUrlFunction_, this)
+    tileUrlFunction: goog.bind(this.tileUrlFunction_, this),
+    wrapX: goog.isDef(options.wrapX) ? options.wrapX : true
   });
 
   var urls = options.urls;
