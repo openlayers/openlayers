@@ -1538,7 +1538,8 @@ olx.format;
 
 /**
  * @typedef {{dataProjection: ol.proj.ProjectionLike,
- *     featureProjection: ol.proj.ProjectionLike}}
+ *     featureProjection: ol.proj.ProjectionLike,
+ *     layout: (ol.geom.GeometryLayout|undefined)}}
  * @api
  */
 olx.format.ReadOptions;
@@ -1566,8 +1567,17 @@ olx.format.ReadOptions.prototype.featureProjection;
 
 
 /**
+ * Layout of the feature geometries created by the format reader.
+ * @type {ol.geom.GeometryLayout|undefined}
+ * @api
+ */
+olx.format.ReadOptions.prototype.layout;
+
+
+/**
  * @typedef {{dataProjection: ol.proj.ProjectionLike,
- *     featureProjection: ol.proj.ProjectionLike}}
+ *     featureProjection: ol.proj.ProjectionLike,
+ *     layout: (ol.geom.GeometryLayout|undefined)}}
  * @api
  */
 olx.format.WriteOptions;
@@ -1591,6 +1601,14 @@ olx.format.WriteOptions.prototype.dataProjection;
  * @api stable
  */
 olx.format.WriteOptions.prototype.featureProjection;
+
+
+/**
+ * Layout of the feature geometries that will be serialized by the format writer.
+ * @type {ol.geom.GeometryLayout|undefined}
+ * @api
+ */
+olx.format.WriteOptions.prototype.layout;
 
 
 /**
