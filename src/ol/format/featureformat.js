@@ -46,7 +46,8 @@ ol.format.Feature.prototype.getReadOptions = function(source, opt_options) {
     options = {
       dataProjection: goog.isDef(opt_options.dataProjection) ?
           opt_options.dataProjection : this.readProjection(source),
-      featureProjection: opt_options.featureProjection
+      featureProjection: opt_options.featureProjection,
+      layout: opt_options.layout
     };
   }
   return this.adaptOptions(options);
@@ -68,7 +69,8 @@ ol.format.Feature.prototype.adaptOptions = function(options) {
     updatedOptions = {
       featureProjection: options.featureProjection,
       dataProjection: goog.isDefAndNotNull(options.dataProjection) ?
-          options.dataProjection : this.defaultDataProjection
+          options.dataProjection : this.defaultDataProjection,
+      layout: options.layout
     };
   }
   return updatedOptions;

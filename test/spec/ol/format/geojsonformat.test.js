@@ -304,6 +304,20 @@ describe('ol.format.GeoJSON', function() {
       expect(obj.getLayout()).to.eql(ol.geom.GeometryLayout.XY);
     });
 
+    it('parses XYM point', function() {
+      var str = JSON.stringify({
+        type: 'Point',
+        coordinates: [10, 20, 0.9]
+      });
+
+      var obj = format.readGeometry(str, {
+        layout: ol.geom.GeometryLayout.XYM
+      });
+      expect(obj).to.be.a(ol.geom.Point);
+      expect(obj.getCoordinates()).to.eql([10, 20, 0.9]);
+      expect(obj.getLayout()).to.eql(ol.geom.GeometryLayout.XYM);
+    });
+
     it('parses linestring', function() {
       var str = JSON.stringify({
         type: 'LineString',
