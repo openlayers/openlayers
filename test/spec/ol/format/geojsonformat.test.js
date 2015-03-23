@@ -301,6 +301,7 @@ describe('ol.format.GeoJSON', function() {
       var obj = format.readGeometry(str);
       expect(obj).to.be.a(ol.geom.Point);
       expect(obj.getCoordinates()).to.eql([10, 20]);
+      expect(obj.getLayout()).to.eql(ol.geom.GeometryLayout.XY);
     });
 
     it('parses linestring', function() {
@@ -312,6 +313,19 @@ describe('ol.format.GeoJSON', function() {
       var obj = format.readGeometry(str);
       expect(obj).to.be.a(ol.geom.LineString);
       expect(obj.getCoordinates()).to.eql([[10, 20], [30, 40]]);
+      expect(obj.getLayout()).to.eql(ol.geom.GeometryLayout.XY);
+    });
+
+    it('parses XYZ linestring', function() {
+      var str = JSON.stringify({
+        type: 'LineString',
+        coordinates: [[10, 20, 1534], [30, 40, 1420]]
+      });
+
+      var obj = format.readGeometry(str);
+      expect(obj).to.be.a(ol.geom.LineString);
+      expect(obj.getLayout()).to.eql(ol.geom.GeometryLayout.XYZ);
+      expect(obj.getCoordinates()).to.eql([[10, 20, 1534], [30, 40, 1420]]);
     });
 
     it('parses polygon', function() {
@@ -325,6 +339,7 @@ describe('ol.format.GeoJSON', function() {
 
       var obj = format.readGeometry(str);
       expect(obj).to.be.a(ol.geom.Polygon);
+      expect(obj.getLayout()).to.eql(ol.geom.GeometryLayout.XY);
       var rings = obj.getLinearRings();
       expect(rings.length).to.be(3);
       expect(rings[0]).to.be.a(ol.geom.LinearRing);
@@ -346,7 +361,9 @@ describe('ol.format.GeoJSON', function() {
       var array = geometryCollection.getGeometries();
       expect(array.length).to.be(2);
       expect(array[0]).to.be.a(ol.geom.Point);
+      expect(array[0].getLayout()).to.eql(ol.geom.GeometryLayout.XY);
       expect(array[1]).to.be.a(ol.geom.LineString);
+      expect(array[1].getLayout()).to.eql(ol.geom.GeometryLayout.XY);
     });
 
   });
