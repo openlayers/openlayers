@@ -3,6 +3,7 @@ goog.provide('ol.tilegrid.TileGrid');
 goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('goog.functions');
+goog.require('goog.math');
 goog.require('ol');
 goog.require('ol.Coordinate');
 goog.require('ol.TileCoord');
@@ -393,7 +394,8 @@ ol.tilegrid.TileGrid.prototype.getTileSize = function(z) {
  * @return {number} Z.
  */
 ol.tilegrid.TileGrid.prototype.getZForResolution = function(resolution) {
-  return ol.array.linearFindNearest(this.resolutions_, resolution, 0);
+  var z = ol.array.linearFindNearest(this.resolutions_, resolution, 0);
+  return goog.math.clamp(z, this.minZoom, this.maxZoom);
 };
 
 
