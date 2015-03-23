@@ -115,6 +115,56 @@ describe('ol.source.Tile', function() {
 
   });
 
+  describe('#getWrapXTileCoord()', function() {
+
+    it('returns the expected tile coordinate - {wrapX: undefined}', function() {
+      var tileSource = new ol.source.Tile({
+        projection: 'EPSG:3857'
+      });
+
+      var tileCoord = tileSource.getWrapXTileCoord([6, -31, 22]);
+      expect(tileCoord).to.eql([6, -31, 22]);
+
+      tileCoord = tileSource.getWrapXTileCoord([6, 33, 22]);
+      expect(tileCoord).to.eql([6, 33, 22]);
+
+      tileCoord = tileSource.getWrapXTileCoord([6, 97, 22]);
+      expect(tileCoord).to.eql([6, 97, 22]);
+    });
+
+    it('returns the expected tile coordinate - {wrapX: true}', function() {
+      var tileSource = new ol.source.Tile({
+        projection: 'EPSG:3857',
+        wrapX: true
+      });
+
+      var tileCoord = tileSource.getWrapXTileCoord([6, -31, 22]);
+      expect(tileCoord).to.eql([6, 33, 22]);
+
+      tileCoord = tileSource.getWrapXTileCoord([6, 33, 22]);
+      expect(tileCoord).to.eql([6, 33, 22]);
+
+      tileCoord = tileSource.getWrapXTileCoord([6, 97, 22]);
+      expect(tileCoord).to.eql([6, 33, 22]);
+    });
+
+    it('returns the expected tile coordinate - {wrapX: false}', function() {
+      var tileSource = new ol.source.Tile({
+        projection: 'EPSG:3857',
+        wrapX: false
+      });
+
+      var tileCoord = tileSource.getWrapXTileCoord([6, -31, 22]);
+      expect(tileCoord).to.eql(null);
+
+      tileCoord = tileSource.getWrapXTileCoord([6, 33, 22]);
+      expect(tileCoord).to.eql([6, 33, 22]);
+
+      tileCoord = tileSource.getWrapXTileCoord([6, 97, 22]);
+      expect(tileCoord).to.eql(null);
+    });
+  });
+
 });
 
 
