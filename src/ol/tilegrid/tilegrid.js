@@ -65,7 +65,7 @@ ol.tilegrid.TileGrid = function(options) {
   this.origins_ = null;
   if (goog.isDef(options.origins)) {
     this.origins_ = options.origins;
-    goog.asserts.assert(this.origins_.length == this.maxZoom + 1);
+    goog.asserts.assert(this.origins_.length == this.resolutions_.length);
   }
   goog.asserts.assert(
       (goog.isNull(this.origin_) && !goog.isNull(this.origins_)) ||
@@ -78,7 +78,7 @@ ol.tilegrid.TileGrid = function(options) {
   this.tileSizes_ = null;
   if (goog.isDef(options.tileSizes)) {
     this.tileSizes_ = options.tileSizes;
-    goog.asserts.assert(this.tileSizes_.length == this.maxZoom + 1);
+    goog.asserts.assert(this.tileSizes_.length == this.resolutions_.length);
   }
 
   /**

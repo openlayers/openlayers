@@ -6503,8 +6503,8 @@ olx.tilegrid.TileGridOptions.prototype.origin;
 
 
 /**
- * Origins. If given, the array should match the `resolutions` array, i.e.
- * each resolution can have a different origin.
+ * Origins. If given, the array length should match the length of the
+ * `resolutions` array, i.e. each resolution can have a different origin.
  * @type {Array.<ol.Coordinate>|undefined}
  * @api stable
  */
@@ -6512,7 +6512,9 @@ olx.tilegrid.TileGridOptions.prototype.origins;
 
 
 /**
- * Resolutions.
+ * Resolutions. The array index of each resolution needs to match the zoom
+ * level. This means that even if a `minZoom` is configured, the resolutions
+ * array will have a length of `maxZoom + 1`.
  * @type {!Array.<number>}
  * @api stable
  */
@@ -6528,8 +6530,8 @@ olx.tilegrid.TileGridOptions.prototype.tileSize;
 
 
 /**
- * Tile sizes. If given, the array should match the `resolutions` array, i.e.
- * each resolution can have a different tile size.
+ * Tile sizes. If given, the array length should match the length of the
+ * `resolutions` array, i.e. each resolution can have a different tile size.
  * @type {Array.<number>|undefined}
  * @api stable
  */
@@ -6567,7 +6569,8 @@ olx.tilegrid.WMTSOptions.prototype.origin;
 
 
 /**
- * Origins.
+ * Origins. The length of this array needs to match the length of the
+ * `resolutions` array.
  * @type {Array.<ol.Coordinate>|undefined}
  * @api
  */
@@ -6575,7 +6578,9 @@ olx.tilegrid.WMTSOptions.prototype.origins;
 
 
 /**
- * Resolutions.
+ * Resolutions. The array index of each resolution needs to match the zoom
+ * level. This means that even if a `minZoom` is configured, the resolutions
+ * array will have a length of `maxZoom + 1`
  * @type {!Array.<number>}
  * @api
  */
@@ -6583,7 +6588,8 @@ olx.tilegrid.WMTSOptions.prototype.resolutions;
 
 
 /**
- * matrix IDs.
+ * matrix IDs. The length of this array needs to match the length of the
+ * `resolutions` array.
  * @type {!Array.<string>}
  * @api
  */
@@ -6599,7 +6605,8 @@ olx.tilegrid.WMTSOptions.prototype.tileSize;
 
 
 /**
- * Tile sizes.
+ * Tile sizes. The length of this array needs to match the length of the
+ * `resolutions` array.
  * @type {Array.<number>|undefined}
  * @api
  */
