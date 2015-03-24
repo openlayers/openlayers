@@ -6479,7 +6479,8 @@ olx.tilegrid;
  *     origins: (Array.<ol.Coordinate>|undefined),
  *     resolutions: !Array.<number>,
  *     tileSize: (number|undefined),
- *     tileSizes: (Array.<number>|undefined)}}
+ *     tileSizes: (Array.<number>|undefined),
+ *     widths: (Array.<number>|undefined)}}
  * @api
  */
 olx.tilegrid.TileGridOptions;
@@ -6536,12 +6537,22 @@ olx.tilegrid.TileGridOptions.prototype.tileSizes;
 
 
 /**
+ * Widths in tiles. If given, the array length should match the length of the
+ * `resolutions` array, i.e. each resolution will have a number of tile columns.
+ * @type {Array.<number>|undefined}
+ * @api
+ */
+olx.tilegrid.TileGridOptions.prototype.widths;
+
+
+/**
  * @typedef {{origin: (ol.Coordinate|undefined),
  *     origins: (Array.<ol.Coordinate>|undefined),
  *     resolutions: !Array.<number>,
  *     matrixIds: !Array.<string>,
  *     tileSize: (number|undefined),
- *     tileSizes: (Array.<number>|undefined)}}
+ *     tileSizes: (Array.<number>|undefined),
+ *     widths: (Array.<number>|undefined)}}
  * @api
  */
 olx.tilegrid.WMTSOptions;
@@ -6593,6 +6604,15 @@ olx.tilegrid.WMTSOptions.prototype.tileSize;
  * @api
  */
 olx.tilegrid.WMTSOptions.prototype.tileSizes;
+
+
+/**
+ * Widths in tiles. If given, the array length should match the length of the
+ * `resolutions` array, i.e. each resolution will have a number of tile columns.
+ * @type {Array.<number>|undefined}
+ * @api
+ */
+olx.tilegrid.WMTSOptions.prototype.widths;
 
 
 /**
