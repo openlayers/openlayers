@@ -2,7 +2,6 @@ goog.require('ol.Map');
 goog.require('ol.View');
 goog.require('ol.format.WMTSCapabilities');
 goog.require('ol.layer.Tile');
-goog.require('ol.proj');
 goog.require('ol.source.OSM');
 goog.require('ol.source.WMTS');
 
@@ -14,8 +13,6 @@ $.ajax('data/WMTSCapabilities.xml').then(function(response) {
   var options = ol.source.WMTS.optionsFromCapabilities(result,
       {layer: 'layer-7328', matrixSet: 'EPSG:3857'});
 
-  var projection = ol.proj.get('EPSG:3857');
-  var projectionExtent = projection.getExtent();
   map = new ol.Map({
     layers: [
       new ol.layer.Tile({
@@ -24,7 +21,6 @@ $.ajax('data/WMTSCapabilities.xml').then(function(response) {
       }),
       new ol.layer.Tile({
         opacity: 1,
-        extent: projectionExtent,
         source: new ol.source.WMTS(options)
       })
     ],

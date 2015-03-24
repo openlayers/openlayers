@@ -35,7 +35,6 @@ var map = new ol.Map({
     }),
     new ol.layer.Tile({
       opacity: 0.7,
-      extent: projectionExtent,
       source: new ol.source.WMTS({
         attributions: [attribution],
         url: 'http://services.arcgisonline.com/arcgis/rest/' +
@@ -49,7 +48,8 @@ var map = new ol.Map({
           resolutions: resolutions,
           matrixIds: matrixIds
         }),
-        style: 'default'
+        style: 'default',
+        wrapX: true
       })
     })
   ],
