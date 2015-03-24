@@ -1618,7 +1618,8 @@ olx.format.GeoJSONOptions.prototype.geometryName;
 
 
 /**
- * @typedef {{factor: (number|undefined)}}
+ * @typedef {{factor: (number|undefined),
+ *     geometryLayout: (ol.geom.GeometryLayout|undefined)}}
  * @api
  */
 olx.format.PolylineOptions;
@@ -1631,6 +1632,15 @@ olx.format.PolylineOptions;
  * @api stable
  */
 olx.format.PolylineOptions.prototype.factor;
+
+
+/**
+ * Layout of the feature geometries created by the format reader.
+ * Default is `ol.geom.GeometryLayout.XY`.
+ * @type {ol.geom.GeometryLayout|undefined}
+ * @api
+ */
+olx.format.PolylineOptions.prototype.geometryLayout;
 
 
 /**

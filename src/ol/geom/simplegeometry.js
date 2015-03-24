@@ -64,10 +64,9 @@ ol.geom.SimpleGeometry.getLayoutForStride_ = function(stride) {
 
 /**
  * @param {ol.geom.GeometryLayout} layout Layout.
- * @private
  * @return {number} Stride.
  */
-ol.geom.SimpleGeometry.getStrideForLayout_ = function(layout) {
+ol.geom.SimpleGeometry.getStrideForLayout = function(layout) {
   if (layout == ol.geom.GeometryLayout.XY) {
     return 2;
   } else if (layout == ol.geom.GeometryLayout.XYZ) {
@@ -200,7 +199,7 @@ ol.geom.SimpleGeometry.prototype.getStride = function() {
  */
 ol.geom.SimpleGeometry.prototype.setFlatCoordinatesInternal =
     function(layout, flatCoordinates) {
-  this.stride = ol.geom.SimpleGeometry.getStrideForLayout_(layout);
+  this.stride = ol.geom.SimpleGeometry.getStrideForLayout(layout);
   this.layout = layout;
   this.flatCoordinates = flatCoordinates;
 };
@@ -217,7 +216,7 @@ ol.geom.SimpleGeometry.prototype.setLayout =
   /** @type {number} */
   var stride;
   if (goog.isDef(layout)) {
-    stride = ol.geom.SimpleGeometry.getStrideForLayout_(layout);
+    stride = ol.geom.SimpleGeometry.getStrideForLayout(layout);
   } else {
     var i;
     for (i = 0; i < nesting; ++i) {
