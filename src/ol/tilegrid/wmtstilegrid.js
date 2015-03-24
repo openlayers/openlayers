@@ -34,7 +34,8 @@ ol.tilegrid.WMTS = function(options) {
     origins: options.origins,
     resolutions: options.resolutions,
     tileSize: options.tileSize,
-    tileSizes: options.tileSizes
+    tileSizes: options.tileSizes,
+    widths: options.widths
   });
 
 };
@@ -77,6 +78,8 @@ ol.tilegrid.WMTS.createFromCapabilitiesMatrixSet =
   var origins = [];
   /** @type {!Array.<number>} */
   var tileSizes = [];
+  /** @type {!Array.<number>} */
+  var widths = [];
 
   var supportedCRSPropName = 'SupportedCRS';
   var matrixIdsPropName = 'TileMatrix';
@@ -112,12 +115,14 @@ ol.tilegrid.WMTS.createFromCapabilitiesMatrixSet =
         var tileHeight = elt[tileHeightPropName];
         goog.asserts.assert(tileWidth == tileHeight);
         tileSizes.push(tileWidth);
+        widths.push(elt['MatrixWidth']);
       });
 
   return new ol.tilegrid.WMTS({
     origins: origins,
     resolutions: resolutions,
     matrixIds: matrixIds,
-    tileSizes: tileSizes
+    tileSizes: tileSizes,
+    widths: widths
   });
 };

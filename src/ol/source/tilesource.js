@@ -224,12 +224,11 @@ ol.source.Tile.prototype.getWrapXTileCoord =
     function(tileCoord, opt_projection) {
   var projection = goog.isDef(opt_projection) ?
       opt_projection : this.getProjection();
-  if (goog.isDef(this.wrapX_) && projection.isGlobal()) {
-    var tileGrid = this.getTileGridForProjection(projection);
-    var extent = ol.tilegrid.extentFromProjection(projection);
+  var tileGrid = this.getTileGridForProjection(projection);
+  if (goog.isDef(this.wrapX_) && tileGrid.isGlobal(tileCoord[0], projection)) {
     return this.wrapX_ ?
-        ol.tilecoord.wrapX(tileCoord, tileGrid, extent) :
-        ol.tilecoord.clipX(tileCoord, tileGrid, extent);
+        ol.tilecoord.wrapX(tileCoord, tileGrid, projection) :
+        ol.tilecoord.clipX(tileCoord, tileGrid, projection);
   } else {
     return tileCoord;
   }
