@@ -66,7 +66,6 @@ describe('ol.interaction.Select', function() {
               clientY: position.y + y + height / 2,
               shiftKey: shiftKey
             })));
-    console.debug(event);
     map.handleMapBrowserEvent(event);
   }
 
