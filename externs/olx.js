@@ -6549,8 +6549,11 @@ olx.tilegrid.TileGridOptions.prototype.tileSizes;
 
 
 /**
- * Widths in tiles. If given, the array length should match the length of the
- * `resolutions` array, i.e. each resolution will have a number of tile columns.
+ * Number of tile columns that cover the grid's extent for each zoom level. Only
+ * required when used with a source that has `wrapX` set to `true`, and only
+ * when the grid's origin differs from the one of the projection's extent. The
+ * array length has to match the length of the `resolutions` array, i.e. each
+ * resolution will have a matching entry here.
  * @type {Array.<number>|undefined}
  * @api
  */
@@ -6624,8 +6627,11 @@ olx.tilegrid.WMTSOptions.prototype.tileSizes;
 
 
 /**
- * Widths in tiles. If given, the array length should match the length of the
- * `resolutions` array, i.e. each resolution will have a number of tile columns.
+ * Number of tile columns that cover the grid's extent for each zoom level. Only
+ * required when used with a source that has `wrapX` set to `true`, and only
+ * when the grid's origin differs from the one of the projection's extent. The
+ * array length has to match the length of the `resolutions` array, i.e. each
+ * resolution will have a matching entry here.
  * @type {Array.<number>|undefined}
  * @api
  */
