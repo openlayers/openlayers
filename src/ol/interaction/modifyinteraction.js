@@ -430,11 +430,22 @@ ol.interaction.Modify.handleDownEvent_ = function(evt) {
       if (ol.coordinate.equals(segment[0], vertex) &&
           !componentSegments[uid][0]) {
         this.dragSegments_.push([segmentDataMatch, 0]);
-        componentSegments[uid][0] = true;
+        componentSegments[uid][0] = segmentDataMatch;
       } else if (ol.coordinate.equals(segment[1], vertex) &&
           !componentSegments[uid][1]) {
+
+        // prevent dragging closed linestrings by the connecting node
+        if ((segmentDataMatch.geometry.getType() ===
+          ol.geom.GeometryType.LINE_STRING ||
+          segmentDataMatch.geometry.getType() ===
+          ol.geom.GeometryType.MULTI_LINE_STRING) &&
+          componentSegments[uid][0] &&
+          componentSegments[uid][0].index === 0) {
+          continue;
+        }
+
         this.dragSegments_.push([segmentDataMatch, 1]);
-        componentSegments[uid][1] = true;
+        componentSegments[uid][1] = segmentDataMatch;
       } else if (goog.getUid(segment) in this.vertexSegments_ &&
           (!componentSegments[uid][0] && !componentSegments[uid][1])) {
         insertVertices.push([segmentDataMatch, vertex]);

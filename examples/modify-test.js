@@ -114,6 +114,7 @@ var source = new ol.source.GeoJSON(
               'type': 'MultiLineString',
               'coordinates': [
                 [[-1e6, -7.5e5], [-1e6, 7.5e5]],
+                [[-1e6, -7.5e5], [-1e6, 7.5e5], [-5e5, 0], [-1e6, -7.5e5]],
                 [[1e6, -7.5e5],  [15e5, 0], [15e5, 0], [1e6, 7.5e5]],
                 [[-7.5e5, -1e6], [7.5e5, -1e6]],
                 [[-7.5e5, 1e6], [7.5e5, 1e6]]
