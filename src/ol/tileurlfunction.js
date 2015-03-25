@@ -115,7 +115,6 @@ ol.TileUrlFunction.nullTileUrlFunction =
  */
 ol.TileUrlFunction.withTileCoordTransform =
     function(transformFn, tileUrlFunction) {
-  var tmpTileCoord = [0, 0, 0];
   return (
       /**
        * @param {ol.TileCoord} tileCoord Tile Coordinate.
@@ -128,7 +127,7 @@ ol.TileUrlFunction.withTileCoordTransform =
           return undefined;
         } else {
           return tileUrlFunction(
-              transformFn(tileCoord, projection, tmpTileCoord),
+              transformFn(tileCoord, projection, ol.tilecoord.tileCoord),
               pixelRatio,
               projection);
         }
