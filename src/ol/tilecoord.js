@@ -142,23 +142,20 @@ ol.tilecoord.toString = function(tileCoord) {
 
 /**
  * @param {ol.TileCoord} tileCoord Tile coordinate.
- * @param {ol.tilegrid.TileGrid} tilegrid Tile grid.
+ * @param {ol.tilegrid.TileGrid} tileGrid Tile grid.
  * @param {ol.proj.Projection} projection Projection.
  * @return {ol.TileCoord} Tile coordinate.
  */
-ol.tilecoord.wrapX = (function() {
-  var tmpTileCoord = [0, 0, 0];
-  return function(tileCoord, tileGrid, projection) {
-    var z = tileCoord[0];
-    var x = tileCoord[1];
-    var tileRange = tileGrid.getTileRange(z, projection);
-    if (x < tileRange.minX || x > tileRange.maxX) {
-      x = goog.math.modulo(x, tileRange.getWidth());
-      return ol.tilecoord.createOrUpdate(z, x, tileCoord[2], tmpTileCoord);
-    }
-    return tileCoord;
-  };
-})();
+ol.tilecoord.wrapX = function(tileCoord, tileGrid, projection) {
+  var z = tileCoord[0];
+  var x = tileCoord[1];
+  var tileRange = tileGrid.getTileRange(z, projection);
+  if (x < tileRange.minX || x > tileRange.maxX) {
+    x = goog.math.modulo(x, tileRange.getWidth());
+    return [z, x, tileCoord[2]];
+  }
+  return tileCoord;
+};
 
 
 /**
