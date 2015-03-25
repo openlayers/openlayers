@@ -392,19 +392,23 @@ ol.interaction.Modify.prototype.createOrUpdateVertexFeature_ =
 
 
 /**
+ * @param {ol.interaction.SegmentDataType} a
+ * @param {ol.interaction.SegmentDataType} b
+ * @return {number}
+ * @private
+ */
+ol.interaction.Modify.compareIndexes_ = function(a, b) {
+  return a.index - b.index;
+};
+
+
+/**
  * @param {ol.MapBrowserPointerEvent} evt Event.
  * @return {boolean} Start drag sequence?
  * @this {ol.interaction.Modify}
  * @private
  */
 ol.interaction.Modify.handleDownEvent_ = function(evt) {
-  /**
-  * @param {ol.interaction.SegmentDataType} a
-  * @param {ol.interaction.SegmentDataType} b
-  * @return {number}
-  */
-  function sorter(a, b) { return a.index - b.index; }
-
   this.handlePointerAtPixel_(evt.pixel, evt.map);
   this.dragSegments_ = [];
   var vertexFeature = this.vertexFeature_;
@@ -415,7 +419,7 @@ ol.interaction.Modify.handleDownEvent_ = function(evt) {
     var vertexExtent = ol.extent.boundingExtent([vertex]);
     var segmentDataMatches = this.rBush_.getInExtent(vertexExtent);
     var componentSegments = {};
-    segmentDataMatches.sort(sorter);
+    segmentDataMatches.sort(ol.interaction.Modify.compareIndexes_);
     for (var i = 0, ii = segmentDataMatches.length; i < ii; ++i) {
       var segmentDataMatch = segmentDataMatches[i];
       var segment = segmentDataMatch.segment;
