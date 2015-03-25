@@ -5540,7 +5540,8 @@ olx.source.StaticVectorOptions.prototype.urls;
  *     urls: (Array.<string>|undefined),
  *     tileClass: (function(new: ol.ImageTile, ol.TileCoord,
  *                          ol.TileState, string, ?string,
- *                          ol.TileLoadFunctionType)|undefined)}}
+ *                          ol.TileLoadFunctionType)|undefined),
+ *     wrapX: (boolean|undefined)}}
  * @api
  */
 olx.source.WMTSOptions;
@@ -5697,6 +5698,14 @@ olx.source.WMTSOptions.prototype.tileLoadFunction;
  * @api
  */
 olx.source.WMTSOptions.prototype.urls;
+
+
+/**
+ * Whether to wrap the world horizontally. Default is `false`.
+ * @type {boolean|undefined}
+ * @api
+ */
+olx.source.WMTSOptions.prototype.wrapX;
 
 
 /**
@@ -6480,7 +6489,8 @@ olx.tilegrid;
  *     origins: (Array.<ol.Coordinate>|undefined),
  *     resolutions: !Array.<number>,
  *     tileSize: (number|undefined),
- *     tileSizes: (Array.<number>|undefined)}}
+ *     tileSizes: (Array.<number>|undefined),
+ *     widths: (Array.<number>|undefined)}}
  * @api
  */
 olx.tilegrid.TileGridOptions;
@@ -6503,8 +6513,8 @@ olx.tilegrid.TileGridOptions.prototype.origin;
 
 
 /**
- * Origins. If given, the array should match the `resolutions` array, i.e.
- * each resolution can have a different origin.
+ * Origins. If given, the array length should match the length of the
+ * `resolutions` array, i.e. each resolution can have a different origin.
  * @type {Array.<ol.Coordinate>|undefined}
  * @api stable
  */
@@ -6512,7 +6522,9 @@ olx.tilegrid.TileGridOptions.prototype.origins;
 
 
 /**
- * Resolutions.
+ * Resolutions. The array index of each resolution needs to match the zoom
+ * level. This means that even if a `minZoom` is configured, the resolutions
+ * array will have a length of `maxZoom + 1`.
  * @type {!Array.<number>}
  * @api stable
  */
@@ -6528,12 +6540,21 @@ olx.tilegrid.TileGridOptions.prototype.tileSize;
 
 
 /**
- * Tile sizes. If given, the array should match the `resolutions` array, i.e.
- * each resolution can have a different tile size.
+ * Tile sizes. If given, the array length should match the length of the
+ * `resolutions` array, i.e. each resolution can have a different tile size.
  * @type {Array.<number>|undefined}
  * @api stable
  */
 olx.tilegrid.TileGridOptions.prototype.tileSizes;
+
+
+/**
+ * Widths in tiles. If given, the array length should match the length of the
+ * `resolutions` array, i.e. each resolution will have a number of tile columns.
+ * @type {Array.<number>|undefined}
+ * @api
+ */
+olx.tilegrid.TileGridOptions.prototype.widths;
 
 
 /**
@@ -6542,7 +6563,8 @@ olx.tilegrid.TileGridOptions.prototype.tileSizes;
  *     resolutions: !Array.<number>,
  *     matrixIds: !Array.<string>,
  *     tileSize: (number|undefined),
- *     tileSizes: (Array.<number>|undefined)}}
+ *     tileSizes: (Array.<number>|undefined),
+ *     widths: (Array.<number>|undefined)}}
  * @api
  */
 olx.tilegrid.WMTSOptions;
@@ -6557,7 +6579,8 @@ olx.tilegrid.WMTSOptions.prototype.origin;
 
 
 /**
- * Origins.
+ * Origins. The length of this array needs to match the length of the
+ * `resolutions` array.
  * @type {Array.<ol.Coordinate>|undefined}
  * @api
  */
@@ -6565,7 +6588,9 @@ olx.tilegrid.WMTSOptions.prototype.origins;
 
 
 /**
- * Resolutions.
+ * Resolutions. The array index of each resolution needs to match the zoom
+ * level. This means that even if a `minZoom` is configured, the resolutions
+ * array will have a length of `maxZoom + 1`
  * @type {!Array.<number>}
  * @api
  */
@@ -6573,7 +6598,8 @@ olx.tilegrid.WMTSOptions.prototype.resolutions;
 
 
 /**
- * matrix IDs.
+ * matrix IDs. The length of this array needs to match the length of the
+ * `resolutions` array.
  * @type {!Array.<string>}
  * @api
  */
@@ -6589,11 +6615,21 @@ olx.tilegrid.WMTSOptions.prototype.tileSize;
 
 
 /**
- * Tile sizes.
+ * Tile sizes. The length of this array needs to match the length of the
+ * `resolutions` array.
  * @type {Array.<number>|undefined}
  * @api
  */
 olx.tilegrid.WMTSOptions.prototype.tileSizes;
+
+
+/**
+ * Widths in tiles. If given, the array length should match the length of the
+ * `resolutions` array, i.e. each resolution will have a number of tile columns.
+ * @type {Array.<number>|undefined}
+ * @api
+ */
+olx.tilegrid.WMTSOptions.prototype.widths;
 
 
 /**
