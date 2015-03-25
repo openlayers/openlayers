@@ -82,7 +82,7 @@ describe('ol.interaction.Translate', function() {
 
     beforeEach(function() {
       draw = new ol.interaction.Translate({
-        features: [features[0]]
+        features: new ol.Collection([features[0]])
       });
       map.addInteraction(draw);
     });
@@ -113,6 +113,7 @@ goog.require('goog.dispose');
 goog.require('goog.events');
 goog.require('goog.events.BrowserEvent');
 goog.require('goog.style');
+goog.require('ol.Collection');
 goog.require('ol.Feature');
 goog.require('ol.Map');
 goog.require('ol.MapBrowserPointerEvent');

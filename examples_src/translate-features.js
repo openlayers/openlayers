@@ -11,10 +11,6 @@ goog.require('ol.layer.Tile');
 goog.require('ol.layer.Vector');
 goog.require('ol.source.MapQuest');
 goog.require('ol.source.Vector');
-goog.require('ol.style.Fill');
-goog.require('ol.style.Icon');
-goog.require('ol.style.Stroke');
-goog.require('ol.style.Style');
 
 
 var raster = new ol.layer.Tile({
@@ -36,22 +32,6 @@ var lineFeature = new ol.Feature(
 var vector2 = new ol.layer.Vector({
   source: new ol.source.Vector({
     features: [pointFeature, lineFeature]
-  }),
-  style: new ol.style.Style({
-    image: new ol.style.Icon(/** @type {olx.style.IconOptions} */ ({
-      anchor: [0.5, 46],
-      anchorXUnits: 'fraction',
-      anchorYUnits: 'pixels',
-      opacity: 0.95,
-      src: 'data/icon.png'
-    })),
-    stroke: new ol.style.Stroke({
-      width: 3,
-      color: [255, 0, 0, 1]
-    }),
-    fill: new ol.style.Fill({
-      color: [0, 0, 255, 0.6]
-    })
   })
 });
 

@@ -2496,7 +2496,8 @@ olx.interaction.TranslateOptions;
 
 
 /**
- * The features the interaction works on.
+ * Only features contained in this collection will be able to be translated. If
+ * not specified, all features on the map will be able to be translated.
  * @type {ol.Collection.<ol.Feature>|undefined}
  * @api
  */
