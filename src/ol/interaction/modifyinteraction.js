@@ -541,7 +541,7 @@ ol.interaction.Modify.handleEvent = function(mapBrowserEvent) {
       mapBrowserEvent.type == ol.MapBrowserEvent.EventType.POINTERMOVE) {
     this.handlePointerMove_(mapBrowserEvent);
   }
-  if (!goog.isNull(this.vertexFeature_) && this.snappedToVertex_ &&
+  if (!goog.isNull(this.vertexFeature_) &&
       this.deleteCondition_(mapBrowserEvent)) {
     var geometry = this.vertexFeature_.getGeometry();
     goog.asserts.assertInstanceof(geometry, ol.geom.Point);
@@ -707,9 +707,8 @@ ol.interaction.Modify.prototype.insertVertex_ = function(segmentData, vertex) {
 ol.interaction.Modify.prototype.removeVertex_ = function() {
   var dragSegments = this.dragSegments_;
   var segmentsByFeature = {};
-  var deleted = false;
   var component, coordinates, dragSegment, geometry, i, index, left;
-  var newIndex, newSegment, right, segmentData, uid;
+  var newIndex, newSegment, right, segmentData, uid, deleted;
   for (i = dragSegments.length - 1; i >= 0; --i) {
     dragSegment = dragSegments[i];
     segmentData = dragSegment[0];
@@ -793,7 +792,7 @@ ol.interaction.Modify.prototype.removeVertex_ = function() {
       }
     }
   }
-  return deleted;
+  return true;
 };
 
 
