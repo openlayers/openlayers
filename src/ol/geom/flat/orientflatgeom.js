@@ -60,7 +60,7 @@ ol.geom.flat.orient.linearRingsAreOriented =
  * @return {boolean} `true` if all rings are correctly oriented, `false`
  *     otherwise.
  */
-ol.geom.flat.linearRingssAreOriented =
+ol.geom.flat.orient.linearRingssAreOriented =
     function(flatCoordinates, offset, endss, stride) {
   var i, ii;
   for (i = 0, ii = endss.length; i < ii; ++i) {

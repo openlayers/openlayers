@@ -213,7 +213,7 @@ ol.geom.MultiPolygon.prototype.getInteriorPoints = function() {
 ol.geom.MultiPolygon.prototype.getOrientedFlatCoordinates = function() {
   if (this.orientedRevision_ != this.getRevision()) {
     var flatCoordinates = this.flatCoordinates;
-    if (ol.geom.flat.linearRingssAreOriented(
+    if (ol.geom.flat.orient.linearRingssAreOriented(
         flatCoordinates, 0, this.endss_, this.stride)) {
       this.orientedFlatCoordinates_ = flatCoordinates;
     } else {
