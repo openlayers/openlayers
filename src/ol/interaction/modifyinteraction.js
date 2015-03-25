@@ -436,11 +436,11 @@ ol.interaction.Modify.handleDownEvent_ = function(evt) {
 
         // prevent dragging closed linestrings by the connecting node
         if ((segmentDataMatch.geometry.getType() ===
-          ol.geom.GeometryType.LINE_STRING ||
-          segmentDataMatch.geometry.getType() ===
-          ol.geom.GeometryType.MULTI_LINE_STRING) &&
-          componentSegments[uid][0] &&
-          componentSegments[uid][0].index === 0) {
+            ol.geom.GeometryType.LINE_STRING ||
+            segmentDataMatch.geometry.getType() ===
+            ol.geom.GeometryType.MULTI_LINE_STRING) &&
+            componentSegments[uid][0] &&
+            componentSegments[uid][0].index === 0) {
           continue;
         }
 
@@ -507,8 +507,8 @@ ol.interaction.Modify.handleDragEvent_ = function(evt) {
     }
 
     geometry.setCoordinates(coordinates);
-    this.createOrUpdateVertexFeature_(vertex);
   }
+  this.createOrUpdateVertexFeature_(vertex);
 };
 
 
@@ -538,7 +538,8 @@ ol.interaction.Modify.handleUpEvent_ = function(evt) {
 ol.interaction.Modify.handleEvent = function(mapBrowserEvent) {
   var handled;
   if (!mapBrowserEvent.map.getView().getHints()[ol.ViewHint.INTERACTING] &&
-      mapBrowserEvent.type == ol.MapBrowserEvent.EventType.POINTERMOVE) {
+      mapBrowserEvent.type == ol.MapBrowserEvent.EventType.POINTERMOVE &&
+      !this.handlingDownUpSequence) {
     this.handlePointerMove_(mapBrowserEvent);
   }
   if (!goog.isNull(this.vertexFeature_) &&
