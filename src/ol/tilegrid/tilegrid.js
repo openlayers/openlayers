@@ -106,13 +106,6 @@ ol.tilegrid.TileGrid = function(options) {
 
 
 /**
- * @private
- * @type {ol.TileCoord}
- */
-ol.tilegrid.TileGrid.tmpTileCoord_ = [0, 0, 0];
-
-
-/**
  * Returns the identity function. May be overridden in subclasses.
  * @param {{extent: (ol.Extent|undefined)}=} opt_options Options.
  * @return {function(ol.TileCoord, ol.proj.Projection, ol.TileCoord=):
@@ -247,7 +240,7 @@ ol.tilegrid.TileGrid.prototype.getTileRangeExtent =
  */
 ol.tilegrid.TileGrid.prototype.getTileRangeForExtentAndResolution =
     function(extent, resolution, opt_tileRange) {
-  var tileCoord = ol.tilegrid.TileGrid.tmpTileCoord_;
+  var tileCoord = ol.tilecoord.tileCoord;
   this.getTileCoordForXYAndResolution_(
       extent[0], extent[1], resolution, false, tileCoord);
   var minX = tileCoord[1];
