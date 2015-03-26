@@ -69,14 +69,6 @@ ol.interaction.Snap = function(opt_options) {
           options.features :
       null;
 
-  var features;
-  if (!goog.isNull(this.features_)) {
-    features = this.features_;
-  } else if (!goog.isNull(this.source_)) {
-    features = this.source_.getFeatures();
-  }
-  goog.asserts.assert(goog.isDef(features));
-
   /**
    * @type {ol.Collection.<goog.events.Key>}
    * @private
@@ -120,8 +112,6 @@ ol.interaction.Snap = function(opt_options) {
     'MultiPolygon': this.writeMultiPolygonGeometry_,
     'GeometryCollection': this.writeGeometryCollectionGeometry_
   };
-
-  features.forEach(this.addFeature, this);
 };
 goog.inherits(ol.interaction.Snap, ol.interaction.Pointer);
 
@@ -174,6 +164,40 @@ ol.interaction.Snap.prototype.featurePending_ = null;
 
 
 /**
+ * @param {ol.Feature} feature Feature.
+ * @private
+ */
+ol.interaction.Snap.prototype.forEachFeatureAdd_ = function(feature) {
+  this.addFeature(feature);
+};
+
+
+/**
+ * @param {ol.Feature} feature Feature.
+ * @private
+ */
+ol.interaction.Snap.prototype.forEachFeatureRemove_ = function(feature) {
+  this.removeFeature(feature);
+};
+
+
+/**
+ * @return {ol.Collection.<ol.Feature>|Array.<ol.Feature>}
+ * @private
+ */
+ol.interaction.Snap.prototype.getFeatures_ = function() {
+  var features;
+  if (!goog.isNull(this.features_)) {
+    features = this.features_;
+  } else if (!goog.isNull(this.source_)) {
+    features = this.source_.getFeatures();
+  }
+  goog.asserts.assert(goog.isDef(features));
+  return features;
+};
+
+
+/**
  * Handle 'pointerdown', 'pointermove' and 'pointerup' events.
  * @param {ol.MapBrowserEvent} evt A move event.
  * @return {boolean} Pass the event to other interactions.
@@ -217,8 +241,7 @@ ol.interaction.Snap.prototype.handleFeatureRemove_ = function(evt) {
     feature = evt.element;
   }
   goog.asserts.assertInstanceof(feature, ol.Feature);
-  this.removeFeature(feature,
-      feature.getGeometry().getExtent());
+  this.removeFeature(feature);
 };
 
 
@@ -240,14 +263,13 @@ ol.interaction.Snap.prototype.handleGeometryChanged_ = function(feature, evt) {
 
 /**
  * @param {ol.Feature} feature Feature
- * @param {ol.Extent} extent Extent.
  * @param {boolean=} opt_unlisten Whether to unlisten to the geometry change
  *     or not. Defaults to `true`.
  * @api
  */
-ol.interaction.Snap.prototype.removeFeature = function(feature, extent,
-    opt_unlisten) {
+ol.interaction.Snap.prototype.removeFeature = function(feature, opt_unlisten) {
   var unlisten = goog.isDef(opt_unlisten) ? opt_unlisten : true;
+  var extent = feature.getGeometry().getExtent();
   var rBush = this.rBush_;
   var i, nodesToRemove = [];
   rBush.forEachInExtent(extent, function(node) {
@@ -279,28 +301,29 @@ goog.exportProperty(
 ol.interaction.Snap.prototype.setMap = function(map) {
   var currentMap = this.getMap();
   var keys = this.featuresListenerKeys_;
-  var features = this.features_;
-  var source = this.source_;
+  var features = this.getFeatures_();
 
   if (currentMap) {
     keys.forEach(ol.Observable.unByKey, this);
     keys.clear();
+    features.forEach(this.forEachFeatureRemove_, this);
   }
 
   goog.base(this, 'setMap', map);
 
   if (map) {
-    if (!goog.isNull(features)) {
-      keys.push(features.on(ol.CollectionEventType.ADD,
+    if (!goog.isNull(this.features_)) {
+      keys.push(this.features_.on(ol.CollectionEventType.ADD,
           this.handleFeatureAdd_, this));
-      keys.push(features.on(ol.CollectionEventType.REMOVE,
+      keys.push(this.features_.on(ol.CollectionEventType.REMOVE,
           this.handleFeatureRemove_, this));
-    } else if (!goog.isNull(source)) {
-      keys.push(source.on(ol.source.VectorEventType.ADDFEATURE,
+    } else if (!goog.isNull(this.source_)) {
+      keys.push(this.source_.on(ol.source.VectorEventType.ADDFEATURE,
           this.handleFeatureAdd_, this));
-      keys.push(source.on(ol.source.VectorEventType.REMOVEFEATURE,
+      keys.push(this.source_.on(ol.source.VectorEventType.REMOVEFEATURE,
           this.handleFeatureRemove_, this));
     }
+    features.forEach(this.forEachFeatureAdd_, this);
   }
 };
 
@@ -367,7 +390,7 @@ ol.interaction.Snap.prototype.snapTo = function(pixel, pixelCoordinate, map) {
  * @private
  */
 ol.interaction.Snap.prototype.updateFeature_ = function(feature) {
-  this.removeFeature(feature, feature.getGeometry().getExtent(), false);
+  this.removeFeature(feature, false);
   this.addFeature(feature, false);
 };
 
