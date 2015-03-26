@@ -1538,7 +1538,8 @@ olx.format;
 
 /**
  * @typedef {{dataProjection: ol.proj.ProjectionLike,
- *     featureProjection: ol.proj.ProjectionLike}}
+ *     featureProjection: ol.proj.ProjectionLike,
+ *     rightHanded: (boolean|undefined)}}
  * @api
  */
 olx.format.ReadOptions;
@@ -1567,7 +1568,8 @@ olx.format.ReadOptions.prototype.featureProjection;
 
 /**
  * @typedef {{dataProjection: ol.proj.ProjectionLike,
- *     featureProjection: ol.proj.ProjectionLike}}
+ *     featureProjection: ol.proj.ProjectionLike,
+ *     rightHanded: (boolean|undefined)}}
  * @api
  */
 olx.format.WriteOptions;
@@ -1591,6 +1593,22 @@ olx.format.WriteOptions.prototype.dataProjection;
  * @api stable
  */
 olx.format.WriteOptions.prototype.featureProjection;
+
+
+/**
+ * When writing geometries, follow the right-hand rule for linear ring
+ * orientation.  This means that polygons will have counter-clockwise exterior
+ * rings and clockwise interior rings.  By default, coordinates are serialized
+ * as they are provided at construction.  If `true`, the right-hand rule will
+ * be applied.  If `false`, the left-hand rule will be applied (clockwise for
+ * exterior and counter-clockwise for interior rings).  Note that not all
+ * formats support this.  The GeoJSON format does use this property when writing
+ * geometries.
+ *
+ * @type {boolean|undefined}
+ * @api
+ */
+olx.format.WriteOptions.prototype.rightHanded;
 
 
 /**

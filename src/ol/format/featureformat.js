@@ -68,7 +68,8 @@ ol.format.Feature.prototype.adaptOptions = function(options) {
     updatedOptions = {
       featureProjection: options.featureProjection,
       dataProjection: goog.isDefAndNotNull(options.dataProjection) ?
-          options.dataProjection : this.defaultDataProjection
+          options.dataProjection : this.defaultDataProjection,
+      rightHanded: options.rightHanded
     };
   }
   return updatedOptions;
