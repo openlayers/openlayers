@@ -140,10 +140,9 @@ optionsForm.onchange = function(e) {
 Draw.setActive(true);
 Modify.setActive(false);
 
-
-// snap duplicates the geometries so it can create a index.
-// when a gemetry is modified, index needs to be rebuild for that
-// geometry by removeing the old and adding the new
+// The snap interaction must be added after the Modify and Draw interactions
+// in order for its map browser event handlers to be fired first. Its handlers
+// are responsible of doing the snapping.
 var snap = new ol.interaction.Snap({
   features: featureOverlay.getFeatures()
 });

@@ -23,7 +23,14 @@ goog.require('ol.structs.RBush');
 
 /**
  * @classdesc
- * Helper class for providing snap in ol.interaction.Pointer.
+ * Handles snapping of vector features while modifying or drawing them.  The
+ * features can come from a {@link ol.source.Vector}, a {@link ol.Collection}
+ * or a plain array. Any interaction object that allows the user to interact
+ * with the features using the mouse can benefit from the snapping, as long
+ * as it is added before.
+ *
+ * The snap interaction modifies map browser event `coordinate` and `pixel`
+ * properties to force the snap to occur to any interaction that them.
  *
  * Example:
  *
@@ -120,26 +127,6 @@ goog.inherits(ol.interaction.Snap, ol.interaction.Pointer);
 
 
 /**
- * Flag turned on when detecting a pointer drag|move event, and turned off when
- * detecting any other type of event. Skip the update of the geometry index
- * while dragging.
- * @type {boolean}
- * @private
- */
-ol.interaction.Snap.prototype.dragging_ = false;
-
-
-/**
- * If a feature geometry changes while a pointer drag|move event occurs, the
- * feature doesn't get updated right away.  It will be at the next 'pointerup'
- * event fired.
- * @type {?ol.Feature}
- * @private
- */
-ol.interaction.Snap.prototype.featurePending_ = null;
-
-
-/**
  * @param {ol.Feature} feature Feature.
  * @param {boolean=} opt_listen Whether to listen to the geometry change or not
  *     Defaults to `true`.
@@ -167,71 +154,23 @@ goog.exportProperty(
 
 
 /**
- * @inheritDoc
+ * Flag turned on when detecting a pointer drag|move event, and turned off when
+ * detecting any other type of event. Skip the update of the geometry index
+ * while dragging.
+ * @type {boolean}
+ * @private
  */
-ol.interaction.Snap.prototype.setMap = function(map) {
-  var currentMap = this.getMap();
-  var keys = this.featuresListenerKeys_;
-  var features = this.features_;
-  var source = this.source_;
-
-  if (currentMap) {
-    keys.forEach(ol.Observable.unByKey, this);
-    keys.clear();
-  }
-
-  goog.base(this, 'setMap', map);
-
-  if (map) {
-    if (!goog.isNull(features)) {
-      keys.push(features.on(ol.CollectionEventType.ADD,
-          this.handleFeatureAdd_, this));
-      keys.push(features.on(ol.CollectionEventType.REMOVE,
-          this.handleFeatureRemove_, this));
-    } else if (!goog.isNull(source)) {
-      keys.push(source.on(ol.source.VectorEventType.ADDFEATURE,
-          this.handleFeatureAdd_, this));
-      keys.push(source.on(ol.source.VectorEventType.REMOVEFEATURE,
-          this.handleFeatureRemove_, this));
-    }
-  }
-};
+ol.interaction.Snap.prototype.dragging_ = false;
 
 
 /**
- * @param {ol.MapBrowserPointerEvent} evt Event.
- * @return {boolean} Stop drag sequence?
- * @this {ol.interaction.Snap}
- * @api
+ * If a feature geometry changes while a pointer drag|move event occurs, the
+ * feature doesn't get updated right away.  It will be at the next 'pointerup'
+ * event fired.
+ * @type {?ol.Feature}
+ * @private
  */
-ol.interaction.Snap.handleDownAndUpEvent = function(evt) {
-  this.dragging_ = false;
-  if (evt.type === ol.MapBrowserEvent.EventType.POINTERUP &&
-      !goog.isNull(this.featurePending_)) {
-    this.updateFeature_(this.featurePending_);
-    this.featurePending_ = null;
-  }
-  return this.handleEvent_(evt);
-};
-
-
-/**
- * @param {ol.MapBrowserEvent} mapBrowserEvent Map browser event.
- * @return {boolean} `false` to stop event propagation.
- * @this {ol.interaction.Snap}
- * @api
- */
-ol.interaction.Snap.handleEvent = function(mapBrowserEvent) {
-  var pass = true;
-  if (mapBrowserEvent.type === ol.MapBrowserEvent.EventType.POINTERDRAG ||
-      mapBrowserEvent.type === ol.MapBrowserEvent.EventType.POINTERMOVE) {
-    pass = this.handleEvent_(mapBrowserEvent);
-    this.dragging_ = true;
-  } else {
-    this.dragging_ = false;
-  }
-  return ol.interaction.Pointer.handleEvent.call(this, mapBrowserEvent) && pass;
-};
+ol.interaction.Snap.prototype.featurePending_ = null;
 
 
 /**
@@ -301,149 +240,6 @@ ol.interaction.Snap.prototype.handleGeometryChanged_ = function(feature, evt) {
 
 /**
  * @param {ol.Feature} feature Feature
- * @param {ol.geom.Point} geometry Geometry.
- * @private
- */
-ol.interaction.Snap.prototype.writePointGeometry_ =
-    function(feature, geometry) {
-  var coordinates = geometry.getCoordinates();
-  var segmentData = /** @type {ol.interaction.Snap.SegmentDataType} */ ({
-    feature: feature,
-    segment: [coordinates, coordinates]
-  });
-  this.rBush_.insert(geometry.getExtent(), segmentData);
-};
-
-
-/**
- * @param {ol.Feature} feature Feature
- * @param {ol.geom.MultiPoint} geometry Geometry.
- * @private
- */
-ol.interaction.Snap.prototype.writeMultiPointGeometry_ =
-    function(feature, geometry) {
-  var points = geometry.getCoordinates();
-  var coordinates, i, ii, segmentData;
-  for (i = 0, ii = points.length; i < ii; ++i) {
-    coordinates = points[i];
-    segmentData = /** @type {ol.interaction.Snap.SegmentDataType} */ ({
-      feature: feature,
-      segment: [coordinates, coordinates]
-    });
-    this.rBush_.insert(geometry.getExtent(), segmentData);
-  }
-};
-
-
-/**
- * @param {ol.Feature} feature Feature
- * @param {ol.geom.LineString} geometry Geometry.
- * @private
- */
-ol.interaction.Snap.prototype.writeLineStringGeometry_ =
-    function(feature, geometry) {
-  var coordinates = geometry.getCoordinates();
-  var i, ii, segment, segmentData;
-  for (i = 0, ii = coordinates.length - 1; i < ii; ++i) {
-    segment = coordinates.slice(i, i + 2);
-    segmentData = /** @type {ol.interaction.Snap.SegmentDataType} */ ({
-      feature: feature,
-      segment: segment
-    });
-    this.rBush_.insert(ol.extent.boundingExtent(segment), segmentData);
-  }
-};
-
-
-/**
- * @param {ol.Feature} feature Feature
- * @param {ol.geom.MultiLineString} geometry Geometry.
- * @private
- */
-ol.interaction.Snap.prototype.writeMultiLineStringGeometry_ =
-    function(feature, geometry) {
-  var lines = geometry.getCoordinates();
-  var coordinates, i, ii, j, jj, segment, segmentData;
-  for (j = 0, jj = lines.length; j < jj; ++j) {
-    coordinates = lines[j];
-    for (i = 0, ii = coordinates.length - 1; i < ii; ++i) {
-      segment = coordinates.slice(i, i + 2);
-      segmentData = /** @type {ol.interaction.Snap.SegmentDataType} */ ({
-        feature: feature,
-        segment: segment
-      });
-      this.rBush_.insert(ol.extent.boundingExtent(segment), segmentData);
-    }
-  }
-};
-
-
-/**
- * @param {ol.Feature} feature Feature
- * @param {ol.geom.Polygon} geometry Geometry.
- * @private
- */
-ol.interaction.Snap.prototype.writePolygonGeometry_ =
-    function(feature, geometry) {
-  var rings = geometry.getCoordinates();
-  var coordinates, i, ii, j, jj, segment, segmentData;
-  for (j = 0, jj = rings.length; j < jj; ++j) {
-    coordinates = rings[j];
-    for (i = 0, ii = coordinates.length - 1; i < ii; ++i) {
-      segment = coordinates.slice(i, i + 2);
-      segmentData = /** @type {ol.interaction.Snap.SegmentDataType} */ ({
-        feature: feature,
-        segment: segment
-      });
-      this.rBush_.insert(ol.extent.boundingExtent(segment), segmentData);
-    }
-  }
-};
-
-
-/**
- * @param {ol.Feature} feature Feature
- * @param {ol.geom.MultiPolygon} geometry Geometry.
- * @private
- */
-ol.interaction.Snap.prototype.writeMultiPolygonGeometry_ =
-    function(feature, geometry) {
-  var polygons = geometry.getCoordinates();
-  var coordinates, i, ii, j, jj, k, kk, rings, segment, segmentData;
-  for (k = 0, kk = polygons.length; k < kk; ++k) {
-    rings = polygons[k];
-    for (j = 0, jj = rings.length; j < jj; ++j) {
-      coordinates = rings[j];
-      for (i = 0, ii = coordinates.length - 1; i < ii; ++i) {
-        segment = coordinates.slice(i, i + 2);
-        segmentData = /** @type {ol.interaction.Snap.SegmentDataType} */ ({
-          feature: feature,
-          segment: segment
-        });
-        this.rBush_.insert(ol.extent.boundingExtent(segment), segmentData);
-      }
-    }
-  }
-};
-
-
-/**
- * @param {ol.Feature} feature Feature
- * @param {ol.geom.GeometryCollection} geometry Geometry.
- * @private
- */
-ol.interaction.Snap.prototype.writeGeometryCollectionGeometry_ =
-    function(feature, geometry) {
-  var i, geometries = geometry.getGeometriesArray();
-  for (i = 0; i < geometries.length; ++i) {
-    this.SEGMENT_WRITERS_[geometries[i].getType()].call(
-        this, feature, geometries[i]);
-  }
-};
-
-
-/**
- * @param {ol.Feature} feature Feature
  * @param {ol.Extent} extent Extent.
  * @param {boolean=} opt_unlisten Whether to unlisten to the geometry change
  *     or not. Defaults to `true`.
@@ -478,13 +274,41 @@ goog.exportProperty(
 
 
 /**
- * @param {ol.Feature} feature Feature
- * @private
+ * @inheritDoc
  */
-ol.interaction.Snap.prototype.updateFeature_ = function(feature) {
-  this.removeFeature(feature, feature.getGeometry().getExtent(), false);
-  this.addFeature(feature, false);
+ol.interaction.Snap.prototype.setMap = function(map) {
+  var currentMap = this.getMap();
+  var keys = this.featuresListenerKeys_;
+  var features = this.features_;
+  var source = this.source_;
+
+  if (currentMap) {
+    keys.forEach(ol.Observable.unByKey, this);
+    keys.clear();
+  }
+
+  goog.base(this, 'setMap', map);
+
+  if (map) {
+    if (!goog.isNull(features)) {
+      keys.push(features.on(ol.CollectionEventType.ADD,
+          this.handleFeatureAdd_, this));
+      keys.push(features.on(ol.CollectionEventType.REMOVE,
+          this.handleFeatureRemove_, this));
+    } else if (!goog.isNull(source)) {
+      keys.push(source.on(ol.source.VectorEventType.ADDFEATURE,
+          this.handleFeatureAdd_, this));
+      keys.push(source.on(ol.source.VectorEventType.REMOVEFEATURE,
+          this.handleFeatureRemove_, this));
+    }
+  }
 };
+
+
+/**
+ * @inheritDoc
+ */
+ol.interaction.Snap.prototype.shouldStopEvent = goog.functions.FALSE;
 
 
 /**
@@ -539,22 +363,156 @@ ol.interaction.Snap.prototype.snapTo = function(pixel, pixelCoordinate, map) {
 
 
 /**
- * Sort segments by distance, helper function
- * @param {ol.Coordinate} pixelCoordinate Coordinate to determine distance
- * @param {ol.interaction.Snap.SegmentDataType} a
- * @param {ol.interaction.Snap.SegmentDataType} b
- * @return {number}
+ * @param {ol.Feature} feature Feature
+ * @private
  */
-ol.interaction.Snap.sortByDistance = function(pixelCoordinate, a, b) {
-  return ol.coordinate.squaredDistanceToSegment(pixelCoordinate, a.segment) -
-      ol.coordinate.squaredDistanceToSegment(pixelCoordinate, b.segment);
+ol.interaction.Snap.prototype.updateFeature_ = function(feature) {
+  this.removeFeature(feature, feature.getGeometry().getExtent(), false);
+  this.addFeature(feature, false);
 };
 
 
 /**
- * @inheritDoc
+ * @param {ol.Feature} feature Feature
+ * @param {ol.geom.GeometryCollection} geometry Geometry.
+ * @private
  */
-ol.interaction.Snap.prototype.shouldStopEvent = goog.functions.FALSE;
+ol.interaction.Snap.prototype.writeGeometryCollectionGeometry_ =
+    function(feature, geometry) {
+  var i, geometries = geometry.getGeometriesArray();
+  for (i = 0; i < geometries.length; ++i) {
+    this.SEGMENT_WRITERS_[geometries[i].getType()].call(
+        this, feature, geometries[i]);
+  }
+};
+
+
+/**
+ * @param {ol.Feature} feature Feature
+ * @param {ol.geom.LineString} geometry Geometry.
+ * @private
+ */
+ol.interaction.Snap.prototype.writeLineStringGeometry_ =
+    function(feature, geometry) {
+  var coordinates = geometry.getCoordinates();
+  var i, ii, segment, segmentData;
+  for (i = 0, ii = coordinates.length - 1; i < ii; ++i) {
+    segment = coordinates.slice(i, i + 2);
+    segmentData = /** @type {ol.interaction.Snap.SegmentDataType} */ ({
+      feature: feature,
+      segment: segment
+    });
+    this.rBush_.insert(ol.extent.boundingExtent(segment), segmentData);
+  }
+};
+
+
+/**
+ * @param {ol.Feature} feature Feature
+ * @param {ol.geom.MultiLineString} geometry Geometry.
+ * @private
+ */
+ol.interaction.Snap.prototype.writeMultiLineStringGeometry_ =
+    function(feature, geometry) {
+  var lines = geometry.getCoordinates();
+  var coordinates, i, ii, j, jj, segment, segmentData;
+  for (j = 0, jj = lines.length; j < jj; ++j) {
+    coordinates = lines[j];
+    for (i = 0, ii = coordinates.length - 1; i < ii; ++i) {
+      segment = coordinates.slice(i, i + 2);
+      segmentData = /** @type {ol.interaction.Snap.SegmentDataType} */ ({
+        feature: feature,
+        segment: segment
+      });
+      this.rBush_.insert(ol.extent.boundingExtent(segment), segmentData);
+    }
+  }
+};
+
+
+/**
+ * @param {ol.Feature} feature Feature
+ * @param {ol.geom.MultiPoint} geometry Geometry.
+ * @private
+ */
+ol.interaction.Snap.prototype.writeMultiPointGeometry_ =
+    function(feature, geometry) {
+  var points = geometry.getCoordinates();
+  var coordinates, i, ii, segmentData;
+  for (i = 0, ii = points.length; i < ii; ++i) {
+    coordinates = points[i];
+    segmentData = /** @type {ol.interaction.Snap.SegmentDataType} */ ({
+      feature: feature,
+      segment: [coordinates, coordinates]
+    });
+    this.rBush_.insert(geometry.getExtent(), segmentData);
+  }
+};
+
+
+/**
+ * @param {ol.Feature} feature Feature
+ * @param {ol.geom.MultiPolygon} geometry Geometry.
+ * @private
+ */
+ol.interaction.Snap.prototype.writeMultiPolygonGeometry_ =
+    function(feature, geometry) {
+  var polygons = geometry.getCoordinates();
+  var coordinates, i, ii, j, jj, k, kk, rings, segment, segmentData;
+  for (k = 0, kk = polygons.length; k < kk; ++k) {
+    rings = polygons[k];
+    for (j = 0, jj = rings.length; j < jj; ++j) {
+      coordinates = rings[j];
+      for (i = 0, ii = coordinates.length - 1; i < ii; ++i) {
+        segment = coordinates.slice(i, i + 2);
+        segmentData = /** @type {ol.interaction.Snap.SegmentDataType} */ ({
+          feature: feature,
+          segment: segment
+        });
+        this.rBush_.insert(ol.extent.boundingExtent(segment), segmentData);
+      }
+    }
+  }
+};
+
+
+/**
+ * @param {ol.Feature} feature Feature
+ * @param {ol.geom.Point} geometry Geometry.
+ * @private
+ */
+ol.interaction.Snap.prototype.writePointGeometry_ =
+    function(feature, geometry) {
+  var coordinates = geometry.getCoordinates();
+  var segmentData = /** @type {ol.interaction.Snap.SegmentDataType} */ ({
+    feature: feature,
+    segment: [coordinates, coordinates]
+  });
+  this.rBush_.insert(geometry.getExtent(), segmentData);
+};
+
+
+/**
+ * @param {ol.Feature} feature Feature
+ * @param {ol.geom.Polygon} geometry Geometry.
+ * @private
+ */
+ol.interaction.Snap.prototype.writePolygonGeometry_ =
+    function(feature, geometry) {
+  var rings = geometry.getCoordinates();
+  var coordinates, i, ii, j, jj, segment, segmentData;
+  for (j = 0, jj = rings.length; j < jj; ++j) {
+    coordinates = rings[j];
+    for (i = 0, ii = coordinates.length - 1; i < ii; ++i) {
+      segment = coordinates.slice(i, i + 2);
+      segmentData = /** @type {ol.interaction.Snap.SegmentDataType} */ ({
+        feature: feature,
+        segment: segment
+      });
+      this.rBush_.insert(ol.extent.boundingExtent(segment), segmentData);
+    }
+  }
+};
 
 
 /**
@@ -574,3 +532,52 @@ ol.interaction.Snap.ResultType;
  * }}
  */
 ol.interaction.Snap.SegmentDataType;
+
+
+/**
+ * @param {ol.MapBrowserPointerEvent} evt Event.
+ * @return {boolean} Stop drag sequence?
+ * @this {ol.interaction.Snap}
+ * @api
+ */
+ol.interaction.Snap.handleDownAndUpEvent = function(evt) {
+  this.dragging_ = false;
+  if (evt.type === ol.MapBrowserEvent.EventType.POINTERUP &&
+      !goog.isNull(this.featurePending_)) {
+    this.updateFeature_(this.featurePending_);
+    this.featurePending_ = null;
+  }
+  return this.handleEvent_(evt);
+};
+
+
+/**
+ * @param {ol.MapBrowserEvent} mapBrowserEvent Map browser event.
+ * @return {boolean} `false` to stop event propagation.
+ * @this {ol.interaction.Snap}
+ * @api
+ */
+ol.interaction.Snap.handleEvent = function(mapBrowserEvent) {
+  var pass = true;
+  if (mapBrowserEvent.type === ol.MapBrowserEvent.EventType.POINTERDRAG ||
+      mapBrowserEvent.type === ol.MapBrowserEvent.EventType.POINTERMOVE) {
+    pass = this.handleEvent_(mapBrowserEvent);
+    this.dragging_ = true;
+  } else {
+    this.dragging_ = false;
+  }
+  return ol.interaction.Pointer.handleEvent.call(this, mapBrowserEvent) && pass;
+};
+
+
+/**
+ * Sort segments by distance, helper function
+ * @param {ol.Coordinate} pixelCoordinate Coordinate to determine distance
+ * @param {ol.interaction.Snap.SegmentDataType} a
+ * @param {ol.interaction.Snap.SegmentDataType} b
+ * @return {number}
+ */
+ol.interaction.Snap.sortByDistance = function(pixelCoordinate, a, b) {
+  return ol.coordinate.squaredDistanceToSegment(pixelCoordinate, a.segment) -
+      ol.coordinate.squaredDistanceToSegment(pixelCoordinate, b.segment);
+};
