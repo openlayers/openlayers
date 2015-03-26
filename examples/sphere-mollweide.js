@@ -2,7 +2,7 @@ goog.require('ol.Graticule');
 goog.require('ol.Map');
 goog.require('ol.View');
 goog.require('ol.layer.Vector');
-goog.require('ol.proj');
+goog.require('ol.proj.Projection');
 goog.require('ol.source.GeoJSON');
 
 
@@ -11,11 +11,12 @@ proj4.defs('ESRI:53009', '+proj=moll +lon_0=0 +x_0=0 +y_0=0 +a=6371000 ' +
 
 // Configure the Sphere Mollweide projection object with an extent,
 // and a world extent. These are required for the Graticule.
-var sphereMollweideProjection = ol.proj.get('ESRI:53009');
-sphereMollweideProjection.setExtent([
-  -9009954.605703328, -9009954.605703328,
-  9009954.605703328, 9009954.605703328]);
-sphereMollweideProjection.setWorldExtent([-179, -90, 179, 90]);
+var sphereMollweideProjection = new ol.proj.Projection({
+  code: 'ESRI:53009',
+  extent: [-9009954.605703328, -9009954.605703328,
+    9009954.605703328, 9009954.605703328],
+  worldExtent: [-179, -90, 179, 90]
+});
 
 var map = new ol.Map({
   keyboardEventTarget: document,

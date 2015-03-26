@@ -5,21 +5,29 @@ goog.require('ol.control');
 goog.require('ol.control.ScaleLine');
 goog.require('ol.layer.Image');
 goog.require('ol.proj');
+goog.require('ol.proj.Projection');
 goog.require('ol.source.ImageWMS');
 
 
-// Transparent Proj4js support: ol.proj.get() creates and returns a projection
-// known to Proj4js if it is unknown to OpenLayers, and registers functions to
-// transform between all registered projections.
+// Transparent Proj4js support:
+//
 // EPSG:21781 is known to Proj4js because its definition was loaded in the html.
-// Note that we are getting the projection object here to set the extent. If
-// you do not need this, you do not have to use ol.proj.get(); simply use the
-// string code in the view projection below and the transforms will be
-// registered transparently.
-var projection = ol.proj.get('EPSG:21781');
-// The extent is used to determine zoom level 0. Recommended values for a
+// Now when we create an ol.proj.Projection instance with the 'EPSG:21781' code,
+// OpenLayers will pick up parameters like units and transform functions from
+// Proj4js.
+//
+// Note that we are setting the projection's extent here, which is used to
+// determine the view resolution for zoom level 0. Recommended values for a
 // projection's validity extent can be found at http://epsg.io/.
-projection.setExtent([485869.5728, 76443.1884, 837076.5648, 299941.7864]);
+//
+// If you use Proj4js only to transform coordinates, you don't even need to
+// create an ol.proj.Projection instance. ol.proj.get() will take care of it
+// internally.
+
+var projection = new ol.proj.Projection({
+  code: 'EPSG:21781',
+  extent: [485869.5728, 76443.1884, 837076.5648, 299941.7864]
+});
 
 var extent = [420000, 30000, 900000, 350000];
 var layers = [
@@ -67,7 +75,7 @@ var map = new ol.Map({
   target: 'map',
   view: new ol.View({
     projection: projection,
-    center: ol.proj.transform([8.23, 46.86], 'EPSG:4326', 'EPSG:21781'),
+    center: ol.proj.transform([8.23, 46.86], 'EPSG:4326', projection),
     extent: extent,
     zoom: 2
   })
