@@ -8,7 +8,6 @@ goog.require('ol.Collection');
 goog.require('ol.CollectionEvent');
 goog.require('ol.CollectionEventType');
 goog.require('ol.Feature');
-goog.require('ol.MapBrowserEvent.EventType');
 goog.require('ol.Observable');
 goog.require('ol.coordinate');
 goog.require('ol.extent');
@@ -46,9 +45,9 @@ goog.require('ol.structs.RBush');
 ol.interaction.Snap = function(opt_options) {
 
   goog.base(this, {
-    handleDownEvent: ol.interaction.Snap.handleDownAndUpEvent,
     handleEvent: ol.interaction.Snap.handleEvent,
-    handleUpEvent: ol.interaction.Snap.handleDownAndUpEvent
+    handleDownEvent: goog.functions.TRUE,
+    handleUpEvent: ol.interaction.Snap.handleUpEvent
   });
 
   var options = goog.isDef(opt_options) ? opt_options : {};
@@ -125,8 +124,9 @@ goog.inherits(ol.interaction.Snap, ol.interaction.Pointer);
 ol.interaction.Snap.prototype.addFeature = function(feature, opt_listen) {
   var listen = goog.isDef(opt_listen) ? opt_listen : true;
   var geometry = feature.getGeometry();
-  if (goog.isDef(this.SEGMENT_WRITERS_[geometry.getType()])) {
-    this.SEGMENT_WRITERS_[geometry.getType()].call(this, feature, geometry);
+  var segmentWriter = this.SEGMENT_WRITERS_[geometry.getType()];
+  if (goog.isDef(segmentWriter)) {
+    segmentWriter.call(this, feature, geometry);
   }
 
   if (listen) {
@@ -141,16 +141,6 @@ goog.exportProperty(
     ol.interaction.Snap.prototype,
     'addFeature',
     ol.interaction.Snap.prototype.addFeature);
-
-
-/**
- * Flag turned on when detecting a pointer drag|move event, and turned off when
- * detecting any other type of event. Skip the update of the geometry index
- * while dragging.
- * @type {boolean}
- * @private
- */
-ol.interaction.Snap.prototype.dragging_ = false;
 
 
 /**
@@ -198,7 +188,7 @@ ol.interaction.Snap.prototype.getFeatures_ = function() {
 
 
 /**
- * Handle 'pointerdown', 'pointermove' and 'pointerup' events.
+ * Handle all pointer events events.
  * @param {ol.MapBrowserEvent} evt A move event.
  * @return {boolean} Pass the event to other interactions.
  * @private
@@ -251,7 +241,7 @@ ol.interaction.Snap.prototype.handleFeatureRemove_ = function(evt) {
  * @private
  */
 ol.interaction.Snap.prototype.handleGeometryChanged_ = function(feature, evt) {
-  if (this.dragging_) {
+  if (this.handlingDownUpSequence) {
     if (goog.isNull(this.featurePending_)) {
       this.featurePending_ = feature;
     }
@@ -563,14 +553,12 @@ ol.interaction.Snap.SegmentDataType;
  * @this {ol.interaction.Snap}
  * @api
  */
-ol.interaction.Snap.handleDownAndUpEvent = function(evt) {
-  this.dragging_ = false;
-  if (evt.type === ol.MapBrowserEvent.EventType.POINTERUP &&
-      !goog.isNull(this.featurePending_)) {
+ol.interaction.Snap.handleUpEvent = function(evt) {
+  if (!goog.isNull(this.featurePending_)) {
     this.updateFeature_(this.featurePending_);
     this.featurePending_ = null;
   }
-  return this.handleEvent_(evt);
+  return false;
 };
 
 
@@ -581,15 +569,8 @@ ol.interaction.Snap.handleDownAndUpEvent = function(evt) {
  * @api
  */
 ol.interaction.Snap.handleEvent = function(mapBrowserEvent) {
-  var pass = true;
-  if (mapBrowserEvent.type === ol.MapBrowserEvent.EventType.POINTERDRAG ||
-      mapBrowserEvent.type === ol.MapBrowserEvent.EventType.POINTERMOVE) {
-    pass = this.handleEvent_(mapBrowserEvent);
-    this.dragging_ = true;
-  } else {
-    this.dragging_ = false;
-  }
-  return ol.interaction.Pointer.handleEvent.call(this, mapBrowserEvent) && pass;
+  return ol.interaction.Pointer.handleEvent.call(this, mapBrowserEvent) &&
+      this.handleEvent_(mapBrowserEvent);
 };
 
 
