@@ -3,6 +3,7 @@ goog.provide('ol.interaction.SnapProperty');
 
 goog.require('goog.asserts');
 goog.require('goog.events');
+goog.require('goog.events.EventType');
 goog.require('ol.Collection');
 goog.require('ol.CollectionEvent');
 goog.require('ol.CollectionEventType');
@@ -11,6 +12,7 @@ goog.require('ol.MapBrowserEvent.EventType');
 goog.require('ol.Observable');
 goog.require('ol.coordinate');
 goog.require('ol.extent');
+goog.require('ol.geom.Geometry');
 goog.require('ol.interaction.Pointer');
 goog.require('ol.source.Vector');
 goog.require('ol.source.VectorEvent');
@@ -75,6 +77,12 @@ ol.interaction.Snap = function(opt_options) {
   this.featuresListenerKeys_ = new ol.Collection();
 
   /**
+   * @type {Object.<number, goog.events.Key>}
+   * @private
+   */
+  this.geometryListenerKeys_ = {};
+
+  /**
    * @type {number}
    * @private
    */
@@ -106,20 +114,50 @@ ol.interaction.Snap = function(opt_options) {
     'GeometryCollection': this.writeGeometryCollectionGeometry_
   };
 
-
   features.forEach(this.addFeature, this);
 };
 goog.inherits(ol.interaction.Snap, ol.interaction.Pointer);
 
 
 /**
+ * Flag turned on when detecting a pointer drag|move event, and turned off when
+ * detecting any other type of event. Skip the update of the geometry index
+ * while dragging.
+ * @type {boolean}
+ * @private
+ */
+ol.interaction.Snap.prototype.dragging_ = false;
+
+
+/**
+ * If a feature geometry changes while a pointer drag|move event occurs, the
+ * feature doesn't get updated right away.  It will be at the next 'pointerup'
+ * event fired.
+ * @type {?ol.Feature}
+ * @private
+ */
+ol.interaction.Snap.prototype.featurePending_ = null;
+
+
+/**
  * @param {ol.Feature} feature Feature.
+ * @param {boolean=} opt_listen Whether to listen to the geometry change or not
+ *     Defaults to `true`.
  * @api
  */
-ol.interaction.Snap.prototype.addFeature = function(feature) {
+ol.interaction.Snap.prototype.addFeature = function(feature, opt_listen) {
+  var listen = goog.isDef(opt_listen) ? opt_listen : true;
   var geometry = feature.getGeometry();
   if (goog.isDef(this.SEGMENT_WRITERS_[geometry.getType()])) {
     this.SEGMENT_WRITERS_[geometry.getType()].call(this, feature, geometry);
+  }
+
+  if (listen) {
+    var uid = goog.getUid(geometry);
+    this.geometryListenerKeys_[uid] = geometry.on(
+        goog.events.EventType.CHANGE,
+        goog.bind(this.handleGeometryChanged_, this, feature),
+        this);
   }
 };
 goog.exportProperty(
@@ -167,6 +205,12 @@ ol.interaction.Snap.prototype.setMap = function(map) {
  * @api
  */
 ol.interaction.Snap.handleDownAndUpEvent = function(evt) {
+  this.dragging_ = false;
+  if (evt.type === ol.MapBrowserEvent.EventType.POINTERUP &&
+      !goog.isNull(this.featurePending_)) {
+    this.updateFeature_(this.featurePending_);
+    this.featurePending_ = null;
+  }
   return this.handleEvent_(evt);
 };
 
@@ -182,6 +226,9 @@ ol.interaction.Snap.handleEvent = function(mapBrowserEvent) {
   if (mapBrowserEvent.type === ol.MapBrowserEvent.EventType.POINTERDRAG ||
       mapBrowserEvent.type === ol.MapBrowserEvent.EventType.POINTERMOVE) {
     pass = this.handleEvent_(mapBrowserEvent);
+    this.dragging_ = true;
+  } else {
+    this.dragging_ = false;
   }
   return ol.interaction.Pointer.handleEvent.call(this, mapBrowserEvent) && pass;
 };
@@ -233,6 +280,22 @@ ol.interaction.Snap.prototype.handleFeatureRemove_ = function(evt) {
   goog.asserts.assertInstanceof(feature, ol.Feature);
   this.removeFeature(feature,
       feature.getGeometry().getExtent());
+};
+
+
+/**
+ * @param {ol.Feature} feature Feature which geometry changed.
+ * @param {goog.events.Event} evt Event.
+ * @private
+ */
+ol.interaction.Snap.prototype.handleGeometryChanged_ = function(feature, evt) {
+  if (this.dragging_) {
+    if (goog.isNull(this.featurePending_)) {
+      this.featurePending_ = feature;
+    }
+  } else {
+    this.updateFeature_(feature);
+  }
 };
 
 
@@ -382,9 +445,13 @@ ol.interaction.Snap.prototype.writeGeometryCollectionGeometry_ =
 /**
  * @param {ol.Feature} feature Feature
  * @param {ol.Extent} extent Extent.
+ * @param {boolean=} opt_unlisten Whether to unlisten to the geometry change
+ *     or not. Defaults to `true`.
  * @api
  */
-ol.interaction.Snap.prototype.removeFeature = function(feature, extent) {
+ol.interaction.Snap.prototype.removeFeature = function(feature, extent,
+    opt_unlisten) {
+  var unlisten = goog.isDef(opt_unlisten) ? opt_unlisten : true;
   var rBush = this.rBush_;
   var i, nodesToRemove = [];
   rBush.forEachInExtent(extent, function(node) {
@@ -395,11 +462,29 @@ ol.interaction.Snap.prototype.removeFeature = function(feature, extent) {
   for (i = nodesToRemove.length - 1; i >= 0; --i) {
     rBush.remove(nodesToRemove[i]);
   }
+
+  if (unlisten) {
+    var geometry = feature.getGeometry();
+    goog.asserts.assertInstanceof(geometry, ol.geom.Geometry);
+    var uid = goog.getUid(geometry);
+    ol.Observable.unByKey(this.geometryListenerKeys_[uid]);
+    delete this.geometryListenerKeys_[uid];
+  }
 };
 goog.exportProperty(
     ol.interaction.Snap.prototype,
     'removeFeature',
     ol.interaction.Snap.prototype.removeFeature);
+
+
+/**
+ * @param {ol.Feature} feature Feature
+ * @private
+ */
+ol.interaction.Snap.prototype.updateFeature_ = function(feature) {
+  this.removeFeature(feature, feature.getGeometry().getExtent(), false);
+  this.addFeature(feature, false);
+};
 
 
 /**

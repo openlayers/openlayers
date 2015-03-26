@@ -67,18 +67,6 @@ var Modify = {
     this.select.on('change:active', function() {
       selectedFeatures.forEach(selectedFeatures.remove, selectedFeatures);
     });
-
-    // since snap control duplicates the geometry of features
-    // when creating the index and it doesn't rebuild the index
-    // on 'change:geometry', modified geometries should be handled manualy
-    selectedFeatures.on('add', function(evt) {
-      // removes the feature geometry from the snap index
-      featureOverlay.getFeatures().remove(evt.element);
-    });
-    selectedFeatures.on('remove', function(evt) {
-      // adds the feature geometry to the snap index
-      featureOverlay.getFeatures().push(evt.element);
-    });
   },
   setActive: function(active) {
     this.select.setActive(active);
