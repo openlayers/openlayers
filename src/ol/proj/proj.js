@@ -427,7 +427,8 @@ ol.proj.addEquivalentTransforms =
 
 
 /**
- * Add a Projection object to the list of supported projections.
+ * Add a Projection object to the list of supported projections that can be
+ * looked up by their code.
  *
  * @param {ol.proj.Projection} projection Projection instance.
  * @api stable
