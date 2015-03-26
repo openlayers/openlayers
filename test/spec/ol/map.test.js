@@ -187,6 +187,11 @@ describe('ol.Map', function() {
       expect(map.getOverlayContainer()).to.be(null);
       expect(map.getOverlayContainerStopEvent()).to.be(null);
     });
+
+    it('nullify the view', function() {
+      goog.dispose(map);
+      expect(map.getView()).to.be(null);
+    });
   });
 
   describe('create interactions', function() {
