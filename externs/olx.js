@@ -411,7 +411,7 @@ olx.OverlayOptions.prototype.autoPanMargin;
 /**
  * Object literal with config options for the projection.
  * @typedef {{code: string,
- *     units: (ol.proj.Units|string),
+ *     units: (ol.proj.Units|string|undefined),
  *     extent: (ol.Extent|undefined),
  *     axisOrientation: (string|undefined),
  *     global: (boolean|undefined),
@@ -431,8 +431,8 @@ olx.ProjectionOptions.prototype.code;
 
 
 /**
- * Units.
- * @type {ol.proj.Units|string}
+ * Units. Required unless a proj4 projection is defined for `code`.
+ * @type {ol.proj.Units|string|undefined}
  * @api stable
  */
 olx.ProjectionOptions.prototype.units;
