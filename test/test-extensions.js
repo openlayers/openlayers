@@ -118,23 +118,30 @@
     var testPrefix = (options && options.prefix === true);
     if (node1.nodeType !== node2.nodeType) {
       errors.push('nodeType test failed for: ' + node1.nodeName + ' | ' +
-        node2.nodeName);
+        node2.nodeName + ' | expected ' + node1.nodeType + ' to equal ' +
+        node2.nodeType);
     }
     if (testPrefix) {
-        if (node1.nodeName !== node2.nodeName) {
-          errors.push('nodeName test failed for: ' + node1.nodeName + ' | ' +
-              node2.nodeName);
-        }
-    } else if (node1.nodeName.split(':').pop() !==
-        node2.nodeName.split(':').pop()) {
-      errors.push('nodeName test failed for: ' + node1.nodeName + ' | ' +
-        node2.nodeName);
+      if (node1.nodeName !== node2.nodeName) {
+        errors.push('nodeName test failed for: ' + node1.nodeName + ' | ' +
+            node2.nodeName + ' | expected ' + node1.nodeName + ' to equal ' +
+            node2.nodeName);
+      }
+    } else {
+      var n1 = node1.nodeName.split(':').pop();
+      var n2 = node2.nodeName.split(':').pop();
+      if (n1 !== n2) {
+        errors.push('nodeName test failed for: ' + node1.nodeName + ' | ' +
+            node2.nodeName + ' | expected ' + n1 + ' to equal ' + n2);
+      }
     }
     // for text nodes compare value
     if (node1.nodeType === 3) {
-      if (node1.nodeValue.replace(/\s/g, '') !==
-          node2.nodeValue.replace(/\s/g, '')) {
-        errors.push('nodeValue test failed');
+      var nv1 = node1.nodeValue.replace(/\s/g, '');
+      var nv2 = node2.nodeValue.replace(/\s/g, '');
+      if (nv1 !== nv2) {
+        errors.push('nodeValue test failed | expected ' + nv1 + ' to equal ' +
+            nv2);
       }
     }
     // for element type nodes compare namespace, attributes, and children
@@ -143,13 +150,16 @@
       if (node1.prefix || node2.prefix) {
         if (testPrefix) {
           if (node1.prefix !== node2.prefix) {
-            errors.push('Prefix test failed for: ' + node1.nodeName);
+            errors.push('Prefix test failed for: ' + node1.nodeName +
+                ' | expected ' + node1.prefix + ' to equal ' + node2.prefix);
           }
         }
       }
       if (node1.namespaceURI || node2.namespaceURI) {
         if (node1.namespaceURI !== node2.namespaceURI) {
-          errors.push('namespaceURI test failed for: ' + node1.nodeName);
+          errors.push('namespaceURI test failed for: ' + node1.nodeName +
+              ' | expected ' + node1.namespaceURI + ' to equal ' +
+              node2.namespaceURI);
         }
       }
       // compare attributes - disregard xmlns given namespace handling above
@@ -184,7 +194,8 @@
         }
       }
       if (node1AttrLen !== node2AttrLen) {
-        errors.push('Number of attributes test failed for: ' + node1.nodeName);
+        errors.push('Number of attributes test failed for: ' + node1.nodeName +
+            ' | expected ' + node1AttrLen + ' to equal ' + node2AttrLen);
       }
       var gv, ev;
       for (var name in node1Attr) {
@@ -200,10 +211,13 @@
         if ((node1Attr[name].namespaceURI || null) !==
             (node2Attr[name].namespaceURI || null)) {
           errors.push('namespaceURI attribute test failed for: ' +
-            node1.nodeName);
+            node1.nodeName + ' | expected ' + node1Attr[name].namespaceURI +
+            ' to equal ' + node2Attr[name].namespaceURI);
         }
         if (node1Attr[name].value !== node2Attr[name].value) {
-          errors.push('Attribute value test failed for: ' + node1.nodeName);
+          errors.push('Attribute value test failed for: ' + node1.nodeName +
+              ' | expected ' + node1Attr[name].value + ' to equal ' +
+              node2Attr[name].value);
         }
       }
       // compare children
@@ -229,7 +243,8 @@
         }
         if (!allText) {
           errors.push('Number of childNodes test failed for: ' +
-            node1.nodeName);
+            node1.nodeName + ' | expected ' + node1ChildNodes.length +
+            ' to equal ' + node2ChildNodes.length);
         }
       }
       // only compare if they are equal
