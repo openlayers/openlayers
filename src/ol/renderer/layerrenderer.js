@@ -1,6 +1,5 @@
 goog.provide('ol.renderer.Layer');
 
-goog.require('goog.Disposable');
 goog.require('goog.asserts');
 goog.require('goog.events');
 goog.require('goog.events.EventType');
