@@ -192,6 +192,11 @@ describe('ol.Map', function() {
       goog.dispose(map);
       expect(map.getView()).to.be(null);
     });
+
+    it('nullify the layer group', function() {
+      goog.dispose(map);
+      expect(map.getLayerGroup()).to.be(null);
+    });
   });
 
   describe('create interactions', function() {

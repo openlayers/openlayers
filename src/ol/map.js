@@ -547,6 +547,7 @@ ol.Map.prototype.removePreRenderFunction = function(preRenderFunction) {
  */
 ol.Map.prototype.disposeInternal = function() {
   this.setView(null);
+  this.setLayerGroup(null);
 
   goog.dom.removeNode(this.overlayContainer_);
   this.overlayContainer_ = null;
