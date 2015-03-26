@@ -1,12 +1,15 @@
 goog.provide('ol.interaction.Snap');
 goog.provide('ol.interaction.SnapProperty');
 
+goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('goog.events');
 goog.require('goog.events.EventType');
+goog.require('goog.object');
 goog.require('ol.Collection');
 goog.require('ol.CollectionEvent');
 goog.require('ol.CollectionEventType');
+goog.require('ol.Extent');
 goog.require('ol.Feature');
 goog.require('ol.Observable');
 goog.require('ol.coordinate');
@@ -81,6 +84,14 @@ ol.interaction.Snap = function(opt_options) {
   this.geometryListenerKeys_ = {};
 
   /**
+   * Extents are preserved so indexed segment can be quickly removed
+   * when its feature geometry changes
+   * @type {Object.<number, ol.Extent>}
+   * @private
+   */
+  this.indexedFeaturesExtents_ = {};
+
+  /**
    * @type {number}
    * @private
    */
@@ -126,12 +137,14 @@ ol.interaction.Snap.prototype.addFeature = function(feature, opt_listen) {
   var geometry = feature.getGeometry();
   var segmentWriter = this.SEGMENT_WRITERS_[geometry.getType()];
   if (goog.isDef(segmentWriter)) {
+    var feature_uid = goog.getUid(feature);
+    this.indexedFeaturesExtents_[feature_uid] = geometry.getExtent();
     segmentWriter.call(this, feature, geometry);
   }
 
   if (listen) {
-    var uid = goog.getUid(geometry);
-    this.geometryListenerKeys_[uid] = geometry.on(
+    var geom_uid = goog.getUid(geometry);
+    this.geometryListenerKeys_[geom_uid] = geometry.on(
         goog.events.EventType.CHANGE,
         goog.bind(this.handleGeometryChanged_, this, feature),
         this);
@@ -147,10 +160,10 @@ goog.exportProperty(
  * If a feature geometry changes while a pointer drag|move event occurs, the
  * feature doesn't get updated right away.  It will be at the next 'pointerup'
  * event fired.
- * @type {?ol.Feature}
+ * @type {Object.<number, ol.Feature>}
  * @private
  */
-ol.interaction.Snap.prototype.featurePending_ = null;
+ol.interaction.Snap.prototype.pendingFeatures_ = null;
 
 
 /**
@@ -242,8 +255,9 @@ ol.interaction.Snap.prototype.handleFeatureRemove_ = function(evt) {
  */
 ol.interaction.Snap.prototype.handleGeometryChanged_ = function(feature, evt) {
   if (this.handlingDownUpSequence) {
-    if (goog.isNull(this.featurePending_)) {
-      this.featurePending_ = feature;
+    var uid = goog.getUid(feature);
+    if (!(uid in this.pendingFeatures_)) {
+      this.pendingFeatures_[uid] = feature;
     }
   } else {
     this.updateFeature_(feature);
@@ -259,7 +273,9 @@ ol.interaction.Snap.prototype.handleGeometryChanged_ = function(feature, evt) {
  */
 ol.interaction.Snap.prototype.removeFeature = function(feature, opt_unlisten) {
   var unlisten = goog.isDef(opt_unlisten) ? opt_unlisten : true;
-  var extent = feature.getGeometry().getExtent();
+  var feature_uid = goog.getUid(feature);
+  var extent = this.indexedFeaturesExtents_[feature_uid];
+  goog.asserts.assertArray(extent);
   var rBush = this.rBush_;
   var i, nodesToRemove = [];
   rBush.forEachInExtent(extent, function(node) {
@@ -274,9 +290,9 @@ ol.interaction.Snap.prototype.removeFeature = function(feature, opt_unlisten) {
   if (unlisten) {
     var geometry = feature.getGeometry();
     goog.asserts.assertInstanceof(geometry, ol.geom.Geometry);
-    var uid = goog.getUid(geometry);
-    ol.Observable.unByKey(this.geometryListenerKeys_[uid]);
-    delete this.geometryListenerKeys_[uid];
+    var geom_uid = goog.getUid(geometry);
+    ol.Observable.unByKey(this.geometryListenerKeys_[geom_uid]);
+    delete this.geometryListenerKeys_[geom_uid];
   }
 };
 goog.exportProperty(
@@ -380,6 +396,7 @@ ol.interaction.Snap.prototype.snapTo = function(pixel, pixelCoordinate, map) {
  * @private
  */
 ol.interaction.Snap.prototype.updateFeature_ = function(feature) {
+  console.log(3);
   this.removeFeature(feature, false);
   this.addFeature(feature, false);
 };
@@ -554,10 +571,9 @@ ol.interaction.Snap.SegmentDataType;
  * @api
  */
 ol.interaction.Snap.handleUpEvent = function(evt) {
-  if (!goog.isNull(this.featurePending_)) {
-    this.updateFeature_(this.featurePending_);
-    this.featurePending_ = null;
-  }
+  goog.array.forEach(goog.object.getValues(this.pendingFeatures_),
+      this.updateFeature_, this);
+  this.pendingFeatures_ = {};
   return false;
 };
 
