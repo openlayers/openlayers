@@ -179,7 +179,8 @@ ol.interaction.Snap.handleDownAndUpEvent = function(evt) {
  */
 ol.interaction.Snap.handleEvent = function(mapBrowserEvent) {
   var pass = true;
-  if (mapBrowserEvent.type === ol.MapBrowserEvent.EventType.POINTERMOVE) {
+  if (mapBrowserEvent.type === ol.MapBrowserEvent.EventType.POINTERDRAG ||
+      mapBrowserEvent.type === ol.MapBrowserEvent.EventType.POINTERMOVE) {
     pass = this.handleEvent_(mapBrowserEvent);
   }
   return ol.interaction.Pointer.handleEvent.call(this, mapBrowserEvent) && pass;
