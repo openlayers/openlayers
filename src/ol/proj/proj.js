@@ -134,6 +134,41 @@ ol.proj.Projection = function(options) {
    */
   this.defaultTileGrid_ = null;
 
+  if (ol.ENABLE_PROJ4JS && typeof proj4 == 'function') {
+    var code = options.code;
+    var def = proj4.defs(code);
+    if (goog.isDef(def)) {
+      if (goog.isDef(def.axis) && !goog.isDef(options.axisOrientation)) {
+        this.axisOrientation_ = def.axis;
+      }
+      if (!goog.isDef(options.units)) {
+        var units = def.units;
+        if (!goog.isDef(units)) {
+          if (goog.isDef(def.to_meter)) {
+            units = def.to_meter.toString();
+            ol.proj.METERS_PER_UNIT[units] = def.to_meter;
+          }
+        }
+        this.units_ = units;
+      }
+      var projections = ol.proj.projections_;
+      var currentCode, currentDef, currentProj, proj4Transform;
+      for (currentCode in projections) {
+        currentDef = proj4.defs(currentCode);
+        if (goog.isDef(currentDef)) {
+          currentProj = ol.proj.get(currentCode);
+          if (currentDef === def) {
+            ol.proj.addEquivalentProjections([currentProj, this]);
+          } else {
+            proj4Transform = proj4(currentCode, code);
+            ol.proj.addCoordinateTransforms(currentProj, this,
+                proj4Transform.forward, proj4Transform.inverse);
+          }
+        }
+      }
+    }
+  }
+
 };
 
 
@@ -562,43 +597,11 @@ ol.proj.get = function(projectionLike) {
     projection = projectionLike;
   } else if (goog.isString(projectionLike)) {
     var code = projectionLike;
-    var projections = ol.proj.projections_;
-    projection = projections[code];
+    projection = ol.proj.projections_[code];
     if (ol.ENABLE_PROJ4JS && !goog.isDef(projection) &&
-        typeof proj4 == 'function') {
-      var def = proj4.defs(code);
-      if (goog.isDef(def)) {
-        var units = def.units;
-        if (!goog.isDef(units)) {
-          if (goog.isDef(def.to_meter)) {
-            units = def.to_meter.toString();
-            ol.proj.METERS_PER_UNIT[units] = def.to_meter;
-          }
-        }
-        projection = new ol.proj.Projection({
-          code: code,
-          units: units,
-          axisOrientation: def.axis
-        });
-        ol.proj.addProjection(projection);
-        var currentCode, currentDef, currentProj, proj4Transform;
-        for (currentCode in projections) {
-          currentDef = proj4.defs(currentCode);
-          if (goog.isDef(currentDef)) {
-            currentProj = ol.proj.get(currentCode);
-            if (currentDef === def) {
-              ol.proj.addEquivalentProjections([currentProj, projection]);
-            } else {
-              proj4Transform = proj4(currentCode, code);
-              ol.proj.addCoordinateTransforms(currentProj, projection,
-                  proj4Transform.forward, proj4Transform.inverse);
-            }
-          }
-        }
-      } else {
-        goog.asserts.assert(goog.isDef(projection));
-        projection = null;
-      }
+        typeof proj4 == 'function' && goog.isDef(proj4.defs(code))) {
+      projection = new ol.proj.Projection({code: code});
+      ol.proj.addProjection(projection);
     }
   } else {
     projection = null;
