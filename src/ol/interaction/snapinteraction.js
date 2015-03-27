@@ -48,7 +48,7 @@ goog.require('ol.structs.RBush');
 ol.interaction.Snap = function(opt_options) {
 
   goog.base(this, {
-    handleEvent: ol.interaction.Snap.handleEvent,
+    handleEvent: this.handleEvent_,
     handleDownEvent: goog.functions.TRUE,
     handleUpEvent: ol.interaction.Snap.handleUpEvent
   });
@@ -92,11 +92,24 @@ ol.interaction.Snap = function(opt_options) {
   this.indexedFeaturesExtents_ = {};
 
   /**
+   * Used for distance sorting in sortByDistance_
+   * @type {ol.Coordinate}
+   * @private
+   */
+  this.pixelCoordinate_ = null;
+
+  /**
    * @type {number}
    * @private
    */
   this.pixelTolerance_ = goog.isDef(options.pixelTolerance) ?
       options.pixelTolerance : 10;
+
+  /**
+   * @type {Function}
+   * @private
+   */
+  this.sortByDistance_ = goog.bind(ol.interaction.Snap.sortByDistance, this);
 
 
   /**
@@ -212,7 +225,7 @@ ol.interaction.Snap.prototype.handleEvent_ = function(evt) {
     evt.coordinate = result.vertex;
     evt.pixel = result.vertexPixel;
   }
-  return true;
+  return ol.interaction.Pointer.handleEvent.call(this, evt);
 };
 
 
@@ -360,8 +373,8 @@ ol.interaction.Snap.prototype.snapTo = function(pixel, pixelCoordinate, map) {
   var vertex = null;
   var vertexPixel = null;
   if (segments.length > 0) {
-    segments.sort(goog.partial(
-        ol.interaction.Snap.sortByDistance, pixelCoordinate));
+    this.pixelCoordinate_ = pixelCoordinate;
+    segments.sort(this.sortByDistance_);
     var closestSegment = segments[0].segment;
     vertex = (ol.coordinate.closestOnSegment(pixelCoordinate,
         closestSegment));
@@ -396,7 +409,6 @@ ol.interaction.Snap.prototype.snapTo = function(pixel, pixelCoordinate, map) {
  * @private
  */
 ol.interaction.Snap.prototype.updateFeature_ = function(feature) {
-  console.log(3);
   this.removeFeature(feature, false);
   this.addFeature(feature, false);
 };
@@ -568,7 +580,6 @@ ol.interaction.Snap.SegmentDataType;
  * @param {ol.MapBrowserPointerEvent} evt Event.
  * @return {boolean} Stop drag sequence?
  * @this {ol.interaction.Snap}
- * @api
  */
 ol.interaction.Snap.handleUpEvent = function(evt) {
   goog.array.forEach(goog.object.getValues(this.pendingFeatures_),
@@ -579,25 +590,15 @@ ol.interaction.Snap.handleUpEvent = function(evt) {
 
 
 /**
- * @param {ol.MapBrowserEvent} mapBrowserEvent Map browser event.
- * @return {boolean} `false` to stop event propagation.
- * @this {ol.interaction.Snap}
- * @api
- */
-ol.interaction.Snap.handleEvent = function(mapBrowserEvent) {
-  return ol.interaction.Pointer.handleEvent.call(this, mapBrowserEvent) &&
-      this.handleEvent_(mapBrowserEvent);
-};
-
-
-/**
  * Sort segments by distance, helper function
- * @param {ol.Coordinate} pixelCoordinate Coordinate to determine distance
  * @param {ol.interaction.Snap.SegmentDataType} a
  * @param {ol.interaction.Snap.SegmentDataType} b
  * @return {number}
+ * @this {ol.interaction.Snap}
  */
-ol.interaction.Snap.sortByDistance = function(pixelCoordinate, a, b) {
-  return ol.coordinate.squaredDistanceToSegment(pixelCoordinate, a.segment) -
-      ol.coordinate.squaredDistanceToSegment(pixelCoordinate, b.segment);
+ol.interaction.Snap.sortByDistance = function(a, b) {
+  return ol.coordinate.squaredDistanceToSegment(
+      this.pixelCoordinate_, a.segment) -
+      ol.coordinate.squaredDistanceToSegment(
+      this.pixelCoordinate_, b.segment);
 };

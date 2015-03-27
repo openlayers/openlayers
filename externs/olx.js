@@ -2684,7 +2684,7 @@ olx.interaction.SnapOptions;
 
 
 /**
- * Snap to this features
+ * Snap to these features. Either this option or source should be provided.
  * @type {Array.<ol.Feature>|ol.Collection.<ol.Feature>|undefined}
  * @api
  */
@@ -2701,8 +2701,9 @@ olx.interaction.SnapOptions.prototype.pixelTolerance;
 
 
 /**
- * Snap to features from this source
+ * Snap to features from this source. Either this option or features should be provided
  * @type {ol.source.Vector|undefined}
+ * @api
  */
 olx.interaction.SnapOptions.prototype.source;
 
