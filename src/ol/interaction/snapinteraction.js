@@ -56,13 +56,13 @@ ol.interaction.Snap = function(opt_options) {
   var options = goog.isDef(opt_options) ? opt_options : {};
 
   /**
-   * @type {?ol.source.Vector}
+   * @type {ol.source.Vector}
    * @private
    */
   this.source_ = goog.isDef(options.source) ? options.source : null;
 
   /**
-   * @type {?ol.Collection.<ol.Feature>}
+   * @type {ol.Collection.<ol.Feature>}
    * @private
    */
   this.features_ = goog.isDef(options.features) ? options.features : null;
