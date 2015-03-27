@@ -48,9 +48,9 @@ goog.require('ol.structs.RBush');
 ol.interaction.Snap = function(opt_options) {
 
   goog.base(this, {
-    handleEvent: this.handleEvent_,
+    handleEvent: ol.interaction.Snap.handleEvent_,
     handleDownEvent: goog.functions.TRUE,
-    handleUpEvent: ol.interaction.Snap.handleUpEvent
+    handleUpEvent: ol.interaction.Snap.handleUpEvent_
   });
 
   var options = goog.isDef(opt_options) ? opt_options : {};
@@ -206,22 +206,6 @@ ol.interaction.Snap.prototype.getFeatures_ = function() {
   }
   goog.asserts.assert(goog.isDef(features));
   return features;
-};
-
-
-/**
- * Handle all pointer events events.
- * @param {ol.MapBrowserEvent} evt A move event.
- * @return {boolean} Pass the event to other interactions.
- * @private
- */
-ol.interaction.Snap.prototype.handleEvent_ = function(evt) {
-  var result = this.snapTo(evt.pixel, evt.coordinate, evt.map);
-  if (result.snapped) {
-    evt.coordinate = result.vertex;
-    evt.pixel = result.vertexPixel;
-  }
-  return ol.interaction.Pointer.handleEvent.call(this, evt);
 };
 
 
@@ -573,11 +557,29 @@ ol.interaction.Snap.SegmentDataType;
 
 
 /**
+ * Handle all pointer events events.
+ * @param {ol.MapBrowserEvent} evt A move event.
+ * @return {boolean} Pass the event to other interactions.
+ * @this {ol.interaction.Snap}
+ * @private
+ */
+ol.interaction.Snap.handleEvent_ = function(evt) {
+  var result = this.snapTo(evt.pixel, evt.coordinate, evt.map);
+  if (result.snapped) {
+    evt.coordinate = result.vertex;
+    evt.pixel = result.vertexPixel;
+  }
+  return ol.interaction.Pointer.handleEvent.call(this, evt);
+};
+
+
+/**
  * @param {ol.MapBrowserPointerEvent} evt Event.
  * @return {boolean} Stop drag sequence?
  * @this {ol.interaction.Snap}
+ * @private
  */
-ol.interaction.Snap.handleUpEvent = function(evt) {
+ol.interaction.Snap.handleUpEvent_ = function(evt) {
   goog.array.forEach(goog.object.getValues(this.pendingFeatures_),
       this.updateFeature_, this);
   this.pendingFeatures_ = {};
