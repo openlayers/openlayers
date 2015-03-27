@@ -2468,7 +2468,7 @@ olx.interaction.ModifyOptions.prototype.deleteCondition;
 
 /**
  * Pixel tolerance for considering the pointer close enough to a segment or
- * vertex for editing. Default is `10` pixels.
+ * vertex for editing.
  * @type {number|undefined}
  * @api
  */
@@ -2687,6 +2687,43 @@ olx.interaction.SelectOptions.prototype.toggleCondition;
  * @api
  */
 olx.interaction.SelectOptions.prototype.multi;
+
+
+/**
+ * Options for snap
+ * @typedef {{
+ *     features: (ol.Collection.<ol.Feature>|undefined),
+ *     pixelTolerance: (number|undefined),
+ *     source: (ol.source.Vector|undefined)
+ * }}
+ * @api
+ */
+olx.interaction.SnapOptions;
+
+
+/**
+ * Snap to these features. Either this option or source should be provided.
+ * @type {ol.Collection.<ol.Feature>|undefined}
+ * @api
+ */
+olx.interaction.SnapOptions.prototype.features;
+
+
+/**
+ * Pixel tolerance for considering the pointer close enough to a segment or
+ * vertex for editing. Default is `10` pixels.
+ * @type {number|undefined}
+ * @api
+ */
+olx.interaction.SnapOptions.prototype.pixelTolerance;
+
+
+/**
+ * Snap to features from this source. Either this option or features should be provided
+ * @type {ol.source.Vector|undefined}
+ * @api
+ */
+olx.interaction.SnapOptions.prototype.source;
 
 
 /**
