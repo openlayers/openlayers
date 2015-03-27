@@ -65,11 +65,7 @@ ol.interaction.Snap = function(opt_options) {
    * @type {?ol.Collection.<ol.Feature>}
    * @private
    */
-  this.features_ = goog.isDef(options.features) ?
-      goog.isArray(options.features) ?
-          new ol.Collection(options.features) :
-          options.features :
-      null;
+  this.features_ = goog.isDef(options.features) ? options.features : null;
 
   /**
    * @type {ol.Collection.<goog.events.Key>}

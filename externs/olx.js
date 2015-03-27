@@ -2674,7 +2674,7 @@ olx.interaction.SelectOptions.prototype.multi;
 /**
  * Options for snap
  * @typedef {{
- *     features: (Array.<ol.Feature>|ol.Collection.<ol.Feature>|undefined),
+ *     features: (ol.Collection.<ol.Feature>|undefined),
  *     pixelTolerance: (number|undefined),
  *     source: (ol.source.Vector|undefined)
  * }}
@@ -2685,7 +2685,7 @@ olx.interaction.SnapOptions;
 
 /**
  * Snap to these features. Either this option or source should be provided.
- * @type {Array.<ol.Feature>|ol.Collection.<ol.Feature>|undefined}
+ * @type {ol.Collection.<ol.Feature>|undefined}
  * @api
  */
 olx.interaction.SnapOptions.prototype.features;
