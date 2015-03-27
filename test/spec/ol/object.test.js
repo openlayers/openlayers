@@ -7,7 +7,7 @@ describe('ol.Object', function() {
     o = new ol.Object();
   });
 
-  describe('get and set', function() {
+  describe('get, set and unset', function() {
 
     describe('get an unset property', function() {
       var v;
@@ -18,7 +18,6 @@ describe('ol.Object', function() {
       it('returns undefined', function() {
         expect(v).to.be(undefined);
       });
-
     });
 
     describe('get a set property', function() {
@@ -30,6 +29,17 @@ describe('ol.Object', function() {
 
       it('returns expected value', function() {
         expect(v).to.eql(1);
+      });
+    });
+
+    describe('unset a set property', function() {
+      beforeEach(function() {
+        o.set('k', 1);
+      });
+
+      it('returns undefined', function() {
+        var v = o.unset('k');
+        expect(v).to.be(undefined);
       });
     });
   });
