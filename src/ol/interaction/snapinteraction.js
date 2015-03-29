@@ -68,10 +68,10 @@ ol.interaction.Snap = function(opt_options) {
   this.features_ = goog.isDef(options.features) ? options.features : null;
 
   /**
-   * @type {ol.Collection.<goog.events.Key>}
+   * @type {Array.<goog.events.Key>}
    * @private
    */
-  this.featuresListenerKeys_ = new ol.Collection();
+  this.featuresListenerKeys_ = [];
 
   /**
    * @type {Object.<number, goog.events.Key>}
@@ -303,8 +303,8 @@ ol.interaction.Snap.prototype.setMap = function(map) {
   var features = this.getFeatures_();
 
   if (currentMap) {
-    keys.forEach(ol.Observable.unByKey, this);
-    keys.clear();
+    goog.array.forEach(keys, ol.Observable.unByKey);
+    keys.length = 0;
     features.forEach(this.forEachFeatureRemove_, this);
   }
 
