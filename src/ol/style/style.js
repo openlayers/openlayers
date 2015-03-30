@@ -156,14 +156,16 @@ ol.style.Style.prototype.setGeometry = function(geometry) {
     this.geometryFunction_ = function(feature) {
       var result = feature.get(geometry);
       if (goog.isDefAndNotNull(result)) {
-        goog.asserts.assertInstanceof(result, ol.geom.Geometry);
+        goog.asserts.assertInstanceof(result, ol.geom.Geometry,
+            'feature geometry must be an ol.geom.Geometry instance');
       }
       return result;
     };
   } else if (goog.isNull(geometry)) {
     this.geometryFunction_ = ol.style.defaultGeometryFunction;
   } else if (goog.isDef(geometry)) {
-    goog.asserts.assertInstanceof(geometry, ol.geom.Geometry);
+    goog.asserts.assertInstanceof(geometry, ol.geom.Geometry,
+        'geometry must be an ol.geom.Geometry instance');
     this.geometryFunction_ = function() {
       return geometry;
     };
@@ -218,7 +220,8 @@ ol.style.createStyleFunction = function(obj) {
     if (goog.isArray(obj)) {
       styles = obj;
     } else {
-      goog.asserts.assertInstanceof(obj, ol.style.Style);
+      goog.asserts.assertInstanceof(obj, ol.style.Style,
+          'obj geometry must be an ol.style.Style instance');
       styles = [obj];
     }
     styleFunction = goog.functions.constant(styles);
@@ -358,6 +361,7 @@ ol.style.GeometryFunction;
  * @return {ol.geom.Geometry|undefined} Geometry to render.
  */
 ol.style.defaultGeometryFunction = function(feature) {
-  goog.asserts.assert(!goog.isNull(feature));
+  goog.asserts.assert(!goog.isNull(feature),
+      'feature must not be null');
   return feature.getGeometry();
 };

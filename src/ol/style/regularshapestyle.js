@@ -28,8 +28,9 @@ goog.require('ol.style.Stroke');
  */
 ol.style.RegularShape = function(options) {
 
-  goog.asserts.assert(goog.isDef(options.radius) ||
-      goog.isDef(options.radius1));
+  goog.asserts.assert(
+      goog.isDef(options.radius) || goog.isDef(options.radius1),
+      'must provide either "radius" or "radius1"');
 
   /**
    * @private

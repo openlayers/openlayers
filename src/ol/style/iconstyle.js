@@ -103,7 +103,8 @@ ol.style.Icon = function(opt_options) {
   if ((!goog.isDef(src) || src.length === 0) && !goog.isNull(image)) {
     src = image.src;
   }
-  goog.asserts.assert(goog.isDef(src) && src.length > 0);
+  goog.asserts.assert(goog.isDef(src) && src.length > 0,
+      'must provide a defined and non-empty src');
 
   /**
    * @type {ol.style.ImageState}
@@ -529,8 +530,10 @@ ol.style.IconImage_.prototype.getSrc = function() {
  */
 ol.style.IconImage_.prototype.load = function() {
   if (this.imageState_ == ol.style.ImageState.IDLE) {
-    goog.asserts.assert(goog.isDef(this.src_));
-    goog.asserts.assert(goog.isNull(this.imageListenerKeys_));
+    goog.asserts.assert(goog.isDef(this.src_),
+        'this.src_ must not be undefined');
+    goog.asserts.assert(goog.isNull(this.imageListenerKeys_),
+        'no listener keys existing');
     this.imageState_ = ol.style.ImageState.LOADING;
     this.imageListenerKeys_ = [
       goog.events.listenOnce(this.image_, goog.events.EventType.ERROR,
@@ -553,7 +556,8 @@ ol.style.IconImage_.prototype.load = function() {
  * @private
  */
 ol.style.IconImage_.prototype.unlistenImage_ = function() {
-  goog.asserts.assert(!goog.isNull(this.imageListenerKeys_));
+  goog.asserts.assert(!goog.isNull(this.imageListenerKeys_),
+      'we must have listeners registered');
   goog.array.forEach(this.imageListenerKeys_, goog.events.unlistenByKey);
   this.imageListenerKeys_ = null;
 };
@@ -593,7 +597,8 @@ goog.addSingletonGetter(ol.style.IconImageCache);
  * @return {string} Cache key.
  */
 ol.style.IconImageCache.getKey = function(src, crossOrigin) {
-  goog.asserts.assert(goog.isDef(crossOrigin));
+  goog.asserts.assert(goog.isDef(crossOrigin),
+      'argument crossOrigin must be defined');
   return crossOrigin + ':' + src;
 };
 

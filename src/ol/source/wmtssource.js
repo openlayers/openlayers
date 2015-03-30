@@ -177,7 +177,8 @@ ol.source.WMTS = function(options) {
        * @return {ol.TileCoord} Tile coordinate.
        */
       function(tileCoord, projection, opt_tileCoord) {
-        goog.asserts.assert(!goog.isNull(tileGrid));
+        goog.asserts.assert(!goog.isNull(tileGrid),
+            'tileGrid must not be null');
         if (tileGrid.getResolutions().length <= tileCoord[0]) {
           return null;
         }
@@ -328,15 +329,18 @@ ol.source.WMTS.optionsFromCapabilities = function(wmtsCap, config) {
   /* jshint -W069 */
 
   // TODO: add support for TileMatrixLimits
-  goog.asserts.assert(!goog.isNull(config['layer']));
+  goog.asserts.assert(!goog.isNull(config['layer']),
+      'config "layer" must not be null');
 
   var layers = wmtsCap['Contents']['Layer'];
   var l = goog.array.find(layers, function(elt, index, array) {
     return elt['Identifier'] == config['layer'];
   });
-  goog.asserts.assert(!goog.isNull(l));
+  goog.asserts.assert(!goog.isNull(l),
+      'found a matching layer in Contents/Layer');
 
-  goog.asserts.assert(l['TileMatrixSetLink'].length > 0);
+  goog.asserts.assert(l['TileMatrixSetLink'].length > 0,
+      'layer has TileMatrixSetLink');
   var idx, matrixSet, wrapX;
   if (l['TileMatrixSetLink'].length > 1) {
     idx = goog.array.findIndex(l['TileMatrixSetLink'],
@@ -359,7 +363,8 @@ ol.source.WMTS.optionsFromCapabilities = function(wmtsCap, config) {
   matrixSet = /** @type {string} */
       (l['TileMatrixSetLink'][idx]['TileMatrixSet']);
 
-  goog.asserts.assert(!goog.isNull(matrixSet));
+  goog.asserts.assert(!goog.isNull(matrixSet),
+      'TileMatrixSet must not be null');
 
   var wgs84BoundingBox = l['WGS84BoundingBox'];
   if (goog.isDef(wgs84BoundingBox)) {
@@ -390,11 +395,12 @@ ol.source.WMTS.optionsFromCapabilities = function(wmtsCap, config) {
       var key = elt['Identifier'];
       var value = elt['default'];
       if (goog.isDef(value)) {
-        goog.asserts.assert(goog.array.contains(elt['values'], value));
+        goog.asserts.assert(goog.array.contains(elt['values'], value),
+            'default value contained in values');
       } else {
         value = elt['values'][0];
       }
-      goog.asserts.assert(goog.isDef(value));
+      goog.asserts.assert(goog.isDef(value), 'value could be found');
       dimensions[key] = value;
     });
   }
@@ -403,7 +409,8 @@ ol.source.WMTS.optionsFromCapabilities = function(wmtsCap, config) {
   var matrixSetObj = goog.array.find(matrixSets, function(elt, index, array) {
     return elt['Identifier'] == matrixSet;
   });
-  goog.asserts.assert(!goog.isNull(matrixSetObj));
+  goog.asserts.assert(!goog.isNull(matrixSetObj),
+      'found matrixSet in Contents/TileMatrixSet');
 
   var tileGrid = ol.tilegrid.WMTS.createFromCapabilitiesMatrixSet(
       matrixSetObj);
@@ -422,7 +429,9 @@ ol.source.WMTS.optionsFromCapabilities = function(wmtsCap, config) {
   requestEncoding = goog.isDef(requestEncoding) ? requestEncoding : '';
 
   goog.asserts.assert(
-      goog.array.contains(['REST', 'RESTful', 'KVP', ''], requestEncoding));
+      goog.array.contains(['REST', 'RESTful', 'KVP', ''], requestEncoding),
+      'requestEncoding (%s) is one of "REST", "RESTful", "KVP" or ""',
+      requestEncoding);
 
   if (!wmtsCap['OperationsMetadata'].hasOwnProperty('GetTile') ||
       goog.string.startsWith(requestEncoding, 'REST')) {
@@ -448,7 +457,7 @@ ol.source.WMTS.optionsFromCapabilities = function(wmtsCap, config) {
 
     }
   }
-  goog.asserts.assert(urls.length > 0);
+  goog.asserts.assert(urls.length > 0, 'At least one URL found');
 
   return {
     urls: urls,

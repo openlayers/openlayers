@@ -98,7 +98,8 @@ ol.source.BingMaps.prototype.handleImageryMetadataResponse =
   }
   //var copyright = response.copyright;  // FIXME do we need to display this?
   var resource = response.resourceSets[0].resources[0];
-  goog.asserts.assert(resource.imageWidth == resource.imageHeight);
+  goog.asserts.assert(resource.imageWidth == resource.imageHeight,
+      'resource has imageWidth equal to imageHeight, i.e. is square');
   var maxZoom = this.maxZoom_ == -1 ? resource.zoomMax : this.maxZoom_;
 
   var sourceProjection = this.getProjection();
@@ -129,7 +130,8 @@ ol.source.BingMaps.prototype.handleImageryMetadataResponse =
                      */
                     function(tileCoord, pixelRatio, projection) {
                       goog.asserts.assert(ol.proj.equivalent(
-                          projection, sourceProjection));
+                          projection, sourceProjection),
+                          'projections are equivalent');
                       if (goog.isNull(tileCoord)) {
                         return undefined;
                       } else {
