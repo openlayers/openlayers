@@ -8,6 +8,7 @@ describe('ol.interaction.Select', function() {
 
   beforeEach(function(done) {
     target = document.createElement('div');
+
     var style = target.style;
     style.position = 'absolute';
     style.left = '-1000px';
@@ -15,6 +16,7 @@ describe('ol.interaction.Select', function() {
     style.width = width + 'px';
     style.height = height + 'px';
     document.body.appendChild(target);
+
     var geometry = new ol.geom.Polygon([[[0, 0], [0, 40], [40, 40], [40, 0]]]);
     var geometry2 = new ol.geom.Polygon([[[0, 0], [0, 40], [40, 40], [40, 0]]]);
     var feature = new ol.Feature({
@@ -23,10 +25,12 @@ describe('ol.interaction.Select', function() {
     var feature2 = new ol.Feature({
       geometry: geometry2
     });
+
     source = new ol.source.Vector({
       features: [feature, feature2]
     });
     var layer = new ol.layer.Vector({source: source});
+
     map = new ol.Map({
       target: target,
       layers: [layer],
@@ -36,6 +40,7 @@ describe('ol.interaction.Select', function() {
         resolution: 1
       })
     });
+
     map.on('postrender', function() {
       done();
     });
