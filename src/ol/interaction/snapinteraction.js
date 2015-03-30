@@ -27,8 +27,8 @@ goog.require('ol.structs.RBush');
 /**
  * @classdesc
  * Handles snapping of vector features while modifying or drawing them.  The
- * features can come from a {@link ol.source.Vector}, a {@link ol.Collection}
- * or a plain array. Any interaction object that allows the user to interact
+ * features can come from a {@link ol.source.Vector} or {@link ol.Collection}
+ * Any interaction object that allows the user to interact
  * with the features using the mouse can benefit from the snapping, as long
  * as it is added before.
  *
@@ -163,7 +163,8 @@ ol.interaction.Snap.prototype.addFeature = function(feature, opt_listen) {
   var segmentWriter = this.SEGMENT_WRITERS_[geometry.getType()];
   if (goog.isDef(segmentWriter)) {
     var feature_uid = goog.getUid(feature);
-    this.indexedFeaturesExtents_[feature_uid] = geometry.getExtent();
+    this.indexedFeaturesExtents_[feature_uid] = geometry.getExtent(
+        ol.extent.createEmpty());
     segmentWriter.call(this, feature, geometry);
 
     if (listen) {
