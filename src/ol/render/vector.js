@@ -54,7 +54,8 @@ ol.renderer.vector.getTolerance = function(resolution, pixelRatio) {
  */
 ol.renderer.vector.renderCircleGeometry_ =
     function(replayGroup, geometry, style, feature) {
-  goog.asserts.assertInstanceof(geometry, ol.geom.Circle);
+  goog.asserts.assertInstanceof(geometry, ol.geom.Circle,
+      'geometry should be an ol.geom.Circle');
   var fillStyle = style.getFill();
   var strokeStyle = style.getStroke();
   if (!goog.isNull(fillStyle) || !goog.isNull(strokeStyle)) {
@@ -98,7 +99,8 @@ ol.renderer.vector.renderFeature = function(
         imageStyle.load();
       }
       imageState = imageStyle.getImageState();
-      goog.asserts.assert(imageState == ol.style.ImageState.LOADING);
+      goog.asserts.assert(imageState == ol.style.ImageState.LOADING,
+          'imageState should be LOADING');
       imageStyle.listenImageChange(listener, thisArg);
       loading = true;
     }
@@ -125,7 +127,8 @@ ol.renderer.vector.renderFeature_ = function(
   var simplifiedGeometry = geometry.getSimplifiedGeometry(squaredTolerance);
   var geometryRenderer =
       ol.renderer.vector.GEOMETRY_RENDERERS_[simplifiedGeometry.getType()];
-  goog.asserts.assert(goog.isDef(geometryRenderer));
+  goog.asserts.assert(goog.isDef(geometryRenderer),
+      'geometryRenderer should be defined');
   geometryRenderer(replayGroup, simplifiedGeometry, style, feature);
 };
 
@@ -139,13 +142,15 @@ ol.renderer.vector.renderFeature_ = function(
  */
 ol.renderer.vector.renderGeometryCollectionGeometry_ =
     function(replayGroup, geometry, style, feature) {
-  goog.asserts.assertInstanceof(geometry, ol.geom.GeometryCollection);
+  goog.asserts.assertInstanceof(geometry, ol.geom.GeometryCollection,
+      'geometry should be an ol.geom.GeometryCollection');
   var geometries = geometry.getGeometriesArray();
   var i, ii;
   for (i = 0, ii = geometries.length; i < ii; ++i) {
     var geometryRenderer =
         ol.renderer.vector.GEOMETRY_RENDERERS_[geometries[i].getType()];
-    goog.asserts.assert(goog.isDef(geometryRenderer));
+    goog.asserts.assert(goog.isDef(geometryRenderer),
+        'geometryRenderer should be defined');
     geometryRenderer(replayGroup, geometries[i], style, feature);
   }
 };
@@ -160,7 +165,8 @@ ol.renderer.vector.renderGeometryCollectionGeometry_ =
  */
 ol.renderer.vector.renderLineStringGeometry_ =
     function(replayGroup, geometry, style, feature) {
-  goog.asserts.assertInstanceof(geometry, ol.geom.LineString);
+  goog.asserts.assertInstanceof(geometry, ol.geom.LineString,
+      'geometry should be an ol.geom.LineString');
   var strokeStyle = style.getStroke();
   if (!goog.isNull(strokeStyle)) {
     var lineStringReplay = replayGroup.getReplay(
@@ -187,7 +193,8 @@ ol.renderer.vector.renderLineStringGeometry_ =
  */
 ol.renderer.vector.renderMultiLineStringGeometry_ =
     function(replayGroup, geometry, style, feature) {
-  goog.asserts.assertInstanceof(geometry, ol.geom.MultiLineString);
+  goog.asserts.assertInstanceof(geometry, ol.geom.MultiLineString,
+      'geometry should be an ol.geom.MultiLineString');
   var strokeStyle = style.getStroke();
   if (!goog.isNull(strokeStyle)) {
     var lineStringReplay = replayGroup.getReplay(
@@ -216,7 +223,8 @@ ol.renderer.vector.renderMultiLineStringGeometry_ =
  */
 ol.renderer.vector.renderMultiPolygonGeometry_ =
     function(replayGroup, geometry, style, feature) {
-  goog.asserts.assertInstanceof(geometry, ol.geom.MultiPolygon);
+  goog.asserts.assertInstanceof(geometry, ol.geom.MultiPolygon,
+      'geometry should be an ol.geom.MultiPolygon');
   var fillStyle = style.getFill();
   var strokeStyle = style.getStroke();
   if (!goog.isNull(strokeStyle) || !goog.isNull(fillStyle)) {
@@ -246,7 +254,8 @@ ol.renderer.vector.renderMultiPolygonGeometry_ =
  */
 ol.renderer.vector.renderPointGeometry_ =
     function(replayGroup, geometry, style, feature) {
-  goog.asserts.assertInstanceof(geometry, ol.geom.Point);
+  goog.asserts.assertInstanceof(geometry, ol.geom.Point,
+      'geometry should be an ol.geom.Point');
   var imageStyle = style.getImage();
   if (!goog.isNull(imageStyle)) {
     if (imageStyle.getImageState() != ol.style.ImageState.LOADED) {
@@ -276,7 +285,8 @@ ol.renderer.vector.renderPointGeometry_ =
  */
 ol.renderer.vector.renderMultiPointGeometry_ =
     function(replayGroup, geometry, style, feature) {
-  goog.asserts.assertInstanceof(geometry, ol.geom.MultiPoint);
+  goog.asserts.assertInstanceof(geometry, ol.geom.MultiPoint,
+      'geometry should be an ol.goem.MultiPoint');
   var imageStyle = style.getImage();
   if (!goog.isNull(imageStyle)) {
     if (imageStyle.getImageState() != ol.style.ImageState.LOADED) {
@@ -308,7 +318,8 @@ ol.renderer.vector.renderMultiPointGeometry_ =
  */
 ol.renderer.vector.renderPolygonGeometry_ =
     function(replayGroup, geometry, style, feature) {
-  goog.asserts.assertInstanceof(geometry, ol.geom.Polygon);
+  goog.asserts.assertInstanceof(geometry, ol.geom.Polygon,
+      'geometry should be an ol.geom.Polygon');
   var fillStyle = style.getFill();
   var strokeStyle = style.getStroke();
   if (!goog.isNull(fillStyle) || !goog.isNull(strokeStyle)) {

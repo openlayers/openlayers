@@ -87,7 +87,8 @@ goog.inherits(ol.geom.Polygon, ol.geom.SimpleGeometry);
  * @api stable
  */
 ol.geom.Polygon.prototype.appendLinearRing = function(linearRing) {
-  goog.asserts.assert(linearRing.getLayout() == this.layout);
+  goog.asserts.assert(linearRing.getLayout() == this.layout,
+      'layout of linearRing should match layout');
   if (goog.isNull(this.flatCoordinates)) {
     this.flatCoordinates = linearRing.getFlatCoordinates().slice();
   } else {
@@ -233,7 +234,8 @@ ol.geom.Polygon.prototype.getLinearRingCount = function() {
  * @api stable
  */
 ol.geom.Polygon.prototype.getLinearRing = function(index) {
-  goog.asserts.assert(0 <= index && index < this.ends_.length);
+  goog.asserts.assert(0 <= index && index < this.ends_.length,
+      'index should be in between 0 and and length of this.ends_');
   if (index < 0 || this.ends_.length <= index) {
     return null;
   }
@@ -353,11 +355,14 @@ ol.geom.Polygon.prototype.setCoordinates = function(coordinates, opt_layout) {
 ol.geom.Polygon.prototype.setFlatCoordinates =
     function(layout, flatCoordinates, ends) {
   if (goog.isNull(flatCoordinates)) {
-    goog.asserts.assert(!goog.isNull(ends) && ends.length === 0);
+    goog.asserts.assert(!goog.isNull(ends) && ends.length === 0,
+        'ends cannot be null and should be an empty array');
   } else if (ends.length === 0) {
-    goog.asserts.assert(flatCoordinates.length === 0);
+    goog.asserts.assert(flatCoordinates.length === 0,
+        'flatCoordinates should be an empty array');
   } else {
-    goog.asserts.assert(flatCoordinates.length == ends[ends.length - 1]);
+    goog.asserts.assert(flatCoordinates.length == ends[ends.length - 1],
+        'the length of flatCoordinates should be the last entry of ends');
   }
   this.setFlatCoordinatesInternal(layout, flatCoordinates);
   this.ends_ = ends;

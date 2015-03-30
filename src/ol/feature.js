@@ -104,7 +104,8 @@ ol.Feature = function(opt_geometryOrProperties) {
       var geometry = /** @type {ol.geom.Geometry} */ (opt_geometryOrProperties);
       this.setGeometry(geometry);
     } else {
-      goog.asserts.assert(goog.isObject(opt_geometryOrProperties));
+      goog.asserts.assert(goog.isObject(opt_geometryOrProperties),
+          'opt_geometryOrProperties should be an Object');
       var properties = /** @type {Object.<string, *>} */
           (opt_geometryOrProperties);
       this.setProperties(properties);
@@ -320,7 +321,8 @@ ol.feature.createFeatureStyleFunction = function(obj) {
     if (goog.isArray(obj)) {
       styles = obj;
     } else {
-      goog.asserts.assertInstanceof(obj, ol.style.Style);
+      goog.asserts.assertInstanceof(obj, ol.style.Style,
+          'obj should be an ol.style.Style');
       styles = [obj];
     }
     styleFunction = goog.functions.constant(styles);

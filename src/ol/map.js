@@ -479,7 +479,7 @@ goog.inherits(ol.Map, ol.Object);
  */
 ol.Map.prototype.addControl = function(control) {
   var controls = this.getControls();
-  goog.asserts.assert(goog.isDef(controls));
+  goog.asserts.assert(goog.isDef(controls), 'controls should be defined');
   controls.push(control);
 };
 
@@ -491,7 +491,8 @@ ol.Map.prototype.addControl = function(control) {
  */
 ol.Map.prototype.addInteraction = function(interaction) {
   var interactions = this.getInteractions();
-  goog.asserts.assert(goog.isDef(interactions));
+  goog.asserts.assert(goog.isDef(interactions),
+      'interactions should be defined');
   interactions.push(interaction);
 };
 
@@ -514,7 +515,7 @@ ol.Map.prototype.addLayer = function(layer) {
  */
 ol.Map.prototype.addOverlay = function(overlay) {
   var overlays = this.getOverlays();
-  goog.asserts.assert(goog.isDef(overlays));
+  goog.asserts.assert(goog.isDef(overlays), 'overlays should be defined');
   overlays.push(overlay);
 };
 
@@ -939,7 +940,8 @@ ol.Map.prototype.handleMapBrowserEvent = function(mapBrowserEvent) {
   this.focus_ = mapBrowserEvent.coordinate;
   mapBrowserEvent.frameState = this.frameState_;
   var interactions = this.getInteractions();
-  goog.asserts.assert(goog.isDef(interactions));
+  goog.asserts.assert(goog.isDef(interactions),
+      'interactions should be defined');
   var interactionsArray = interactions.getArray();
   var i;
   if (this.dispatchEvent(mapBrowserEvent) !== false) {
@@ -1083,7 +1085,8 @@ ol.Map.prototype.handleViewChanged_ = function() {
  * @private
  */
 ol.Map.prototype.handleLayerGroupMemberChanged_ = function(event) {
-  goog.asserts.assertInstanceof(event, goog.events.Event);
+  goog.asserts.assertInstanceof(event, goog.events.Event,
+      'event should be an Event');
   this.render();
 };
 
@@ -1093,7 +1096,8 @@ ol.Map.prototype.handleLayerGroupMemberChanged_ = function(event) {
  * @private
  */
 ol.Map.prototype.handleLayerGroupPropertyChanged_ = function(event) {
-  goog.asserts.assertInstanceof(event, ol.ObjectEvent);
+  goog.asserts.assertInstanceof(event, ol.ObjectEvent,
+      'event should be an ol.ObjectEvent');
   this.render();
 };
 
@@ -1187,7 +1191,7 @@ ol.Map.prototype.render = function() {
  */
 ol.Map.prototype.removeControl = function(control) {
   var controls = this.getControls();
-  goog.asserts.assert(goog.isDef(controls));
+  goog.asserts.assert(goog.isDef(controls), 'controls should be defined');
   if (goog.isDef(controls.remove(control))) {
     return control;
   }
@@ -1205,7 +1209,8 @@ ol.Map.prototype.removeControl = function(control) {
 ol.Map.prototype.removeInteraction = function(interaction) {
   var removed;
   var interactions = this.getInteractions();
-  goog.asserts.assert(goog.isDef(interactions));
+  goog.asserts.assert(goog.isDef(interactions),
+      'interactions should be defined');
   if (goog.isDef(interactions.remove(interaction))) {
     removed = interaction;
   }
@@ -1235,7 +1240,7 @@ ol.Map.prototype.removeLayer = function(layer) {
  */
 ol.Map.prototype.removeOverlay = function(overlay) {
   var overlays = this.getOverlays();
-  goog.asserts.assert(goog.isDef(overlays));
+  goog.asserts.assert(goog.isDef(overlays), 'overlays should be defined');
   if (goog.isDef(overlays.remove(overlay))) {
     return overlay;
   }
@@ -1491,8 +1496,8 @@ ol.Map.createOptionsInternal = function(options) {
     if (goog.isString(logo)) {
       logos[logo] = '';
     } else if (goog.isObject(logo)) {
-      goog.asserts.assertString(logo.href);
-      goog.asserts.assertString(logo.src);
+      goog.asserts.assertString(logo.href, 'logo.href should be a string');
+      goog.asserts.assertString(logo.src, 'logo.src should be a string');
       logos[logo.src] = logo.href;
     }
   }
@@ -1554,7 +1559,8 @@ ol.Map.createOptionsInternal = function(options) {
     if (goog.isArray(options.controls)) {
       controls = new ol.Collection(options.controls.slice());
     } else {
-      goog.asserts.assertInstanceof(options.controls, ol.Collection);
+      goog.asserts.assertInstanceof(options.controls, ol.Collection,
+          'options.controls should be an ol.Collection');
       controls = options.controls;
     }
   } else {
@@ -1566,7 +1572,8 @@ ol.Map.createOptionsInternal = function(options) {
     if (goog.isArray(options.interactions)) {
       interactions = new ol.Collection(options.interactions.slice());
     } else {
-      goog.asserts.assertInstanceof(options.interactions, ol.Collection);
+      goog.asserts.assertInstanceof(options.interactions, ol.Collection,
+          'options.interactions should be an ol.Collection');
       interactions = options.interactions;
     }
   } else {
@@ -1578,7 +1585,8 @@ ol.Map.createOptionsInternal = function(options) {
     if (goog.isArray(options.overlays)) {
       overlays = new ol.Collection(options.overlays.slice());
     } else {
-      goog.asserts.assertInstanceof(options.overlays, ol.Collection);
+      goog.asserts.assertInstanceof(options.overlays, ol.Collection,
+          'options.overlays should be an ol.Collection');
       overlays = options.overlays;
     }
   } else {

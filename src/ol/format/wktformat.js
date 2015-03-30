@@ -164,7 +164,8 @@ ol.format.WKT.encodeMultiPolygonGeometry_ = function(geom) {
 ol.format.WKT.encode_ = function(geom) {
   var type = geom.getType();
   var geometryEncoder = ol.format.WKT.GeometryEncoder_[type];
-  goog.asserts.assert(goog.isDef(geometryEncoder));
+  goog.asserts.assert(goog.isDef(geometryEncoder),
+      'geometryEncoder should be defined');
   var enc = geometryEncoder(geom);
   type = type.toUpperCase();
   if (enc.length === 0) {
@@ -568,7 +569,8 @@ ol.format.WKT.Parser.prototype.match = function(type) {
 ol.format.WKT.Parser.prototype.parse = function() {
   this.consume_();
   var geometry = this.parseGeometry_();
-  goog.asserts.assert(this.token_.type == ol.format.WKT.TokenType.EOF);
+  goog.asserts.assert(this.token_.type == ol.format.WKT.TokenType.EOF,
+      'token type should be end of file');
   return geometry;
 };
 

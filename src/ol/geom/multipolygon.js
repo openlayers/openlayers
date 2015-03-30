@@ -88,7 +88,8 @@ goog.inherits(ol.geom.MultiPolygon, ol.geom.SimpleGeometry);
  * @api stable
  */
 ol.geom.MultiPolygon.prototype.appendPolygon = function(polygon) {
-  goog.asserts.assert(polygon.getLayout() == this.layout);
+  goog.asserts.assert(polygon.getLayout() == this.layout,
+      'layout of polygon should match layout');
   /** @type {Array.<number>} */
   var ends;
   if (goog.isNull(this.flatCoordinates)) {
@@ -270,7 +271,8 @@ ol.geom.MultiPolygon.prototype.getSimplifiedGeometryInternal =
  * @api stable
  */
 ol.geom.MultiPolygon.prototype.getPolygon = function(index) {
-  goog.asserts.assert(0 <= index && index < this.endss_.length);
+  goog.asserts.assert(0 <= index && index < this.endss_.length,
+      'index should be in between 0 and the length of this.endss_');
   if (index < 0 || this.endss_.length <= index) {
     return null;
   }
@@ -379,13 +381,14 @@ ol.geom.MultiPolygon.prototype.setCoordinates =
  */
 ol.geom.MultiPolygon.prototype.setFlatCoordinates =
     function(layout, flatCoordinates, endss) {
-  goog.asserts.assert(!goog.isNull(endss));
+  goog.asserts.assert(!goog.isNull(endss), 'endss cannot be null');
   if (goog.isNull(flatCoordinates) || flatCoordinates.length === 0) {
-    goog.asserts.assert(endss.length === 0);
+    goog.asserts.assert(endss.length === 0, 'the length of endss should be 0');
   } else {
-    goog.asserts.assert(endss.length > 0);
+    goog.asserts.assert(endss.length > 0, 'endss cannot be an empty array');
     var ends = endss[endss.length - 1];
-    goog.asserts.assert(flatCoordinates.length == ends[ends.length - 1]);
+    goog.asserts.assert(flatCoordinates.length == ends[ends.length - 1],
+        'the length of flatCoordinates should be the last value of ends');
   }
   this.setFlatCoordinatesInternal(layout, flatCoordinates);
   this.endss_ = endss;
@@ -407,7 +410,8 @@ ol.geom.MultiPolygon.prototype.setPolygons = function(polygons) {
       layout = polygon.getLayout();
     } else {
       // FIXME better handle the case of non-matching layouts
-      goog.asserts.assert(polygon.getLayout() == layout);
+      goog.asserts.assert(polygon.getLayout() == layout,
+          'layout of polygon should be layout');
     }
     var offset = flatCoordinates.length;
     ends = polygon.getEnds();

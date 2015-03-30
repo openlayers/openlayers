@@ -315,11 +315,13 @@ ol.MapBrowserEventHandler.prototype.handlePointerUp_ = function(pointerEvent) {
   // to 0).
   // See http://www.w3.org/TR/pointerevents/#button-states
   if (!this.dragging_ && this.isMouseActionButton_(pointerEvent)) {
-    goog.asserts.assert(!goog.isNull(this.down_));
+    goog.asserts.assert(!goog.isNull(this.down_),
+        'this.down_ should not be null');
     this.emulateClick_(this.down_);
   }
 
-  goog.asserts.assert(this.activePointers_ >= 0);
+  goog.asserts.assert(this.activePointers_ >= 0,
+      'this.activePointers_ should be equal to or larger than 0');
   if (this.activePointers_ === 0) {
     goog.array.forEach(this.dragListenerKeys_, goog.events.unlistenByKey);
     this.dragListenerKeys_ = null;

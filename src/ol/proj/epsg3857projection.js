@@ -118,7 +118,8 @@ ol.proj.EPSG3857.fromEPSG4326 = function(input, opt_output, opt_dimension) {
       output = new Array(length);
     }
   }
-  goog.asserts.assert(output.length % dimension === 0);
+  goog.asserts.assert(output.length % dimension === 0,
+      'modulus of output.length with dimension should be 0');
   for (var i = 0; i < length; i += dimension) {
     output[i] = ol.proj.EPSG3857.RADIUS * Math.PI * input[i] / 180;
     output[i + 1] = ol.proj.EPSG3857.RADIUS *
@@ -148,7 +149,8 @@ ol.proj.EPSG3857.toEPSG4326 = function(input, opt_output, opt_dimension) {
       output = new Array(length);
     }
   }
-  goog.asserts.assert(output.length % dimension === 0);
+  goog.asserts.assert(output.length % dimension === 0,
+      'modulus of output.length with dimension should be 0');
   for (var i = 0; i < length; i += dimension) {
     output[i] = 180 * input[i] / (ol.proj.EPSG3857.RADIUS * Math.PI);
     output[i + 1] = 360 * Math.atan(

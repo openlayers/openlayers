@@ -140,7 +140,8 @@ ol.geom.Circle.prototype.getType = function() {
  */
 ol.geom.Circle.prototype.setCenter = function(center) {
   var stride = this.stride;
-  goog.asserts.assert(center.length == stride);
+  goog.asserts.assert(center.length == stride,
+      'center array length should match stride');
   var radius = this.flatCoordinates[stride] - this.flatCoordinates[0];
   var flatCoordinates = center.slice();
   flatCoordinates[stride] = flatCoordinates[0] + radius;
@@ -199,7 +200,8 @@ ol.geom.Circle.prototype.setFlatCoordinates =
  * @api
  */
 ol.geom.Circle.prototype.setRadius = function(radius) {
-  goog.asserts.assert(!goog.isNull(this.flatCoordinates));
+  goog.asserts.assert(!goog.isNull(this.flatCoordinates),
+      'this.flatCoordinates cannot be null');
   this.flatCoordinates[this.stride] = this.flatCoordinates[0] + radius;
   this.changed();
 };

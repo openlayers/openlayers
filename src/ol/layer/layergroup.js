@@ -60,7 +60,8 @@ ol.layer.Group = function(opt_options) {
     if (goog.isArray(layers)) {
       layers = new ol.Collection(layers.slice());
     } else {
-      goog.asserts.assertInstanceof(layers, ol.Collection);
+      goog.asserts.assertInstanceof(layers, ol.Collection,
+          'layers should be an ol.Collection');
       layers = layers;
     }
   } else {

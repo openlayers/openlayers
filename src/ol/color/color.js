@@ -88,7 +88,8 @@ ol.color.blend = function(dst, src, opt_color) {
       out[3] = outA;
     }
   }
-  goog.asserts.assert(ol.color.isValid(out));
+  goog.asserts.assert(ol.color.isValid(out),
+      'Output color of blend should be a valid color');
   return out;
 };
 
@@ -104,7 +105,7 @@ ol.color.asArray = function(color) {
   if (goog.isArray(color)) {
     return color;
   } else {
-    goog.asserts.assert(goog.isString(color));
+    goog.asserts.assert(goog.isString(color), 'Color should be a string');
     return ol.color.fromString(color);
   }
 };
@@ -120,7 +121,7 @@ ol.color.asString = function(color) {
   if (goog.isString(color)) {
     return color;
   } else {
-    goog.asserts.assert(goog.isArray(color));
+    goog.asserts.assert(goog.isArray(color), 'Color should be an array');
     return ol.color.toString(color);
   }
 };
@@ -215,7 +216,8 @@ ol.color.fromStringInternal_ = function(s) {
   var r, g, b, a, color, match;
   if (isHex || (match = ol.color.hexColorRe_.exec(s))) { // hex
     var n = s.length - 1; // number of hex digits
-    goog.asserts.assert(n == 3 || n == 6);
+    goog.asserts.assert(n == 3 || n == 6,
+        'Color string length should be 3 or 6');
     var d = n == 3 ? 1 : 2; // number of digits per channel
     r = parseInt(s.substr(1 + 0 * d, d), 16);
     g = parseInt(s.substr(1 + 1 * d, d), 16);
@@ -227,7 +229,8 @@ ol.color.fromStringInternal_ = function(s) {
     }
     a = 1;
     color = [r, g, b, a];
-    goog.asserts.assert(ol.color.isValid(color));
+    goog.asserts.assert(ol.color.isValid(color),
+        'Color should be a valid color');
     return color;
   } else if ((match = ol.color.rgbaColorRe_.exec(s))) { // rgba()
     r = Number(match[1]);
@@ -307,7 +310,7 @@ ol.color.toString = function(color) {
 ol.color.transform = function(color, transform, opt_color) {
   var result = goog.isDef(opt_color) ? opt_color : [];
   result = goog.vec.Mat4.multVec3(transform, color, result);
-  goog.asserts.assert(goog.isArray(result));
+  goog.asserts.assert(goog.isArray(result), 'result should be an array');
   result[3] = color[3];
   return ol.color.normalize(result, result);
 };

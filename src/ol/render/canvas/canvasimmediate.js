@@ -253,8 +253,9 @@ ol.render.canvas.Immediate.prototype.drawImages_ =
   if (goog.isNull(this.image_)) {
     return;
   }
-  goog.asserts.assert(offset === 0);
-  goog.asserts.assert(end == flatCoordinates.length);
+  goog.asserts.assert(offset === 0, 'offset should be 0');
+  goog.asserts.assert(end == flatCoordinates.length,
+      'end should be equal to the length of flatCoordinates');
   var pixelCoordinates = ol.geom.flat.transform.transform2D(
       flatCoordinates, offset, end, 2, this.transform_,
       this.pixelCoordinates_);
@@ -322,8 +323,9 @@ ol.render.canvas.Immediate.prototype.drawText_ =
     this.setContextStrokeState_(this.textStrokeState_);
   }
   this.setContextTextState_(this.textState_);
-  goog.asserts.assert(offset === 0);
-  goog.asserts.assert(end == flatCoordinates.length);
+  goog.asserts.assert(offset === 0, 'offset should be 0');
+  goog.asserts.assert(end == flatCoordinates.length,
+      'end should be equal to the length of flatCoordinates');
   var pixelCoordinates = ol.geom.flat.transform.transform2D(
       flatCoordinates, offset, end, stride, this.transform_,
       this.pixelCoordinates_);
@@ -492,7 +494,8 @@ ol.render.canvas.Immediate.prototype.drawFeature = function(feature, style) {
     render.setTextStyle(style.getText());
     var renderGeometry =
         ol.render.canvas.Immediate.GEOMETRY_RENDERERS_[geometry.getType()];
-    goog.asserts.assert(goog.isDef(renderGeometry));
+    goog.asserts.assert(goog.isDef(renderGeometry),
+        'renderGeometry should be defined');
     renderGeometry.call(render, geometry, null);
   });
 };
@@ -514,7 +517,8 @@ ol.render.canvas.Immediate.prototype.drawGeometryCollectionGeometry =
     var geometry = geometries[i];
     var geometryRenderer =
         ol.render.canvas.Immediate.GEOMETRY_RENDERERS_[geometry.getType()];
-    goog.asserts.assert(goog.isDef(geometryRenderer));
+    goog.asserts.assert(goog.isDef(geometryRenderer),
+        'geometryRenderer should be defined');
     geometryRenderer.call(this, geometry, feature);
   }
 };
@@ -901,10 +905,14 @@ ol.render.canvas.Immediate.prototype.setImageStyle = function(imageStyle) {
     var imageImage = imageStyle.getImage(1);
     var imageOrigin = imageStyle.getOrigin();
     var imageSize = imageStyle.getSize();
-    goog.asserts.assert(!goog.isNull(imageAnchor));
-    goog.asserts.assert(!goog.isNull(imageImage));
-    goog.asserts.assert(!goog.isNull(imageOrigin));
-    goog.asserts.assert(!goog.isNull(imageSize));
+    goog.asserts.assert(!goog.isNull(imageAnchor),
+        'imageAnchor should not be null');
+    goog.asserts.assert(!goog.isNull(imageImage),
+        'imageImage should not be null');
+    goog.asserts.assert(!goog.isNull(imageOrigin),
+        'imageOrigin should not be null');
+    goog.asserts.assert(!goog.isNull(imageSize),
+        'imageSize should not be null');
     this.imageAnchorX_ = imageAnchor[0];
     this.imageAnchorY_ = imageAnchor[1];
     this.imageHeight_ = imageSize[1];

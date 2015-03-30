@@ -48,7 +48,8 @@ ol.dom.canUseCssTransform = (function() {
   var canUseCssTransform;
   return function() {
     if (!goog.isDef(canUseCssTransform)) {
-      goog.asserts.assert(!goog.isNull(document.body));
+      goog.asserts.assert(!goog.isNull(document.body),
+          'document.body should not be null');
       if (!goog.global.getComputedStyle) {
         // this browser is ancient
         canUseCssTransform = false;
@@ -90,7 +91,8 @@ ol.dom.canUseCssTransform3D = (function() {
   var canUseCssTransform3D;
   return function() {
     if (!goog.isDef(canUseCssTransform3D)) {
-      goog.asserts.assert(!goog.isNull(document.body));
+      goog.asserts.assert(!goog.isNull(document.body),
+          'document.body should not be null');
       if (!goog.global.getComputedStyle) {
         // this browser is ancient
         canUseCssTransform3D = false;

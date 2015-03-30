@@ -68,8 +68,8 @@ ol.extent.boundingExtent = function(coordinates) {
  * @return {ol.Extent} Extent.
  */
 ol.extent.boundingExtentXYs_ = function(xs, ys, opt_extent) {
-  goog.asserts.assert(xs.length > 0);
-  goog.asserts.assert(ys.length > 0);
+  goog.asserts.assert(xs.length > 0, 'xs length should be larger than 0');
+  goog.asserts.assert(ys.length > 0, 'ys length should be larger than 0');
   var minX = Math.min.apply(null, xs);
   var minY = Math.min.apply(null, ys);
   var maxX = Math.max.apply(null, xs);
@@ -533,7 +533,7 @@ ol.extent.getCorner = function(extent, corner) {
   } else {
     goog.asserts.fail('Invalid corner: %s', corner);
   }
-  goog.asserts.assert(goog.isDef(coordinate));
+  goog.asserts.assert(goog.isDef(coordinate), 'coordinate should be defined');
   return coordinate;
 };
 
