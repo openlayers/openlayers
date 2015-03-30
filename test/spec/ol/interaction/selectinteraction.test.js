@@ -2,7 +2,6 @@ goog.provide('ol.test.interaction.Select');
 
 describe('ol.interaction.Select', function() {
   var target, map, source;
-  var feature1, feature2;
 
   var width = 360;
   var height = 180;
@@ -18,22 +17,34 @@ describe('ol.interaction.Select', function() {
     style.height = height + 'px';
     document.body.appendChild(target);
 
-    var geometry1 = new ol.geom.Polygon([[[0, 0], [0, 40], [40, 40], [40, 0]]]);
-    var geometry2 = new ol.geom.Polygon([[[0, 0], [0, 40], [40, 40], [40, 0]]]);
+    var geometry = new ol.geom.Polygon([[[0, 0], [0, 40], [40, 40], [40, 0]]]);
 
-    feature1 = new ol.Feature({
-      geometry: geometry1
-    });
-    feature1.setId('fid1');
-
-    feature2 = new ol.Feature({
-      geometry: geometry2
-    });
-    feature2.setId('fid2');
+    // Four overlapping features, two features of type "foo" and two features
+    // of type "bar". The rendering order is, from top to bottom, foo -> bar
+    // -> foo -> bar.
+    var features = [];
+    features.push(
+        new ol.Feature({
+          geometry: geometry,
+          type: 'bar'
+        }),
+        new ol.Feature({
+          geometry: geometry,
+          type: 'foo'
+        }),
+        new ol.Feature({
+          geometry: geometry,
+          type: 'bar'
+        }),
+        new ol.Feature({
+          geometry: geometry,
+          type: 'foo'
+        }));
 
     source = new ol.source.Vector({
-      features: [feature1, feature2]
+      features: features
     });
+
     var layer = new ol.layer.Vector({source: source});
 
     map = new ol.Map({
@@ -124,7 +135,7 @@ describe('ol.interaction.Select', function() {
 
     it('select with single-click', function() {
       var listenerSpy = sinon.spy(function(e) {
-        expect(e.selected).to.have.length(2);
+        expect(e.selected).to.have.length(4);
       });
       select.on('select', listenerSpy);
 
@@ -133,44 +144,46 @@ describe('ol.interaction.Select', function() {
       expect(listenerSpy.callCount).to.be(1);
 
       var features = select.getFeatures();
-      expect(features.getLength()).to.equal(2);
+      expect(features.getLength()).to.equal(4);
     });
   });
 
-  describe('filter out features using the filter option', function() {
+  describe('filter features using the filter option', function() {
     var select;
 
     describe('with multi set to true', function() {
 
-      it('does not select features that are filtered out', function() {
+      it('only selects features that pass the filter', function() {
         var select = new ol.interaction.Select({
           multi: true,
           filter: function(feature, layer) {
-            return feature.getId() !== 'fid2';
+            return feature.get('type') === 'bar';
           }
         });
         map.addInteraction(select);
 
         simulateEvent(ol.MapBrowserEvent.EventType.SINGLECLICK, 10, -20);
         var features = select.getFeatures();
-        expect(features.getLength()).to.equal(1);
-        expect(features.item(0).getId()).not.to.be('fid2');
+        expect(features.getLength()).to.equal(2);
+        expect(features.item(0).get('type')).to.be('bar');
+        expect(features.item(1).get('type')).to.be('bar');
       });
     });
 
     describe('with multi set to false', function() {
 
-      it('does not select features that are filtered out', function() {
+      it('only selects the first feature that passes the filter', function() {
         var select = new ol.interaction.Select({
           multi: false,
           filter: function(feature, layer) {
-            return feature.getId() !== 'fid2';
+            return feature.get('type') === 'bar';
           }
         });
         map.addInteraction(select);
         simulateEvent(ol.MapBrowserEvent.EventType.SINGLECLICK, 10, -20);
         var features = select.getFeatures();
-        expect(features.getLength()).to.equal(0);
+        expect(features.getLength()).to.equal(1);
+        expect(features.item(0).get('type')).to.be('bar');
       });
     });
 
