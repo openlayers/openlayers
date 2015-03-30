@@ -90,7 +90,7 @@ ol.source.TileImage.prototype.getTile =
   if (this.tileCache.containsKey(tileCoordKey)) {
     return /** @type {!ol.Tile} */ (this.tileCache.get(tileCoordKey));
   } else {
-    goog.asserts.assert(projection);
+    goog.asserts.assert(projection, 'argument projection is truthy');
     var tileCoord = [z, x, y];
     var urlTileCoord = this.getWrapXTileCoord(tileCoord, projection);
     var tileUrl = goog.isNull(urlTileCoord) ? undefined :

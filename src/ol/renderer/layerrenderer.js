@@ -149,14 +149,16 @@ ol.renderer.Layer.prototype.loadImage = function(image) {
     // the image is either "idle" or "loading", register the change
     // listener (a noop if the listener was already registered)
     goog.asserts.assert(imageState == ol.ImageState.IDLE ||
-        imageState == ol.ImageState.LOADING);
+        imageState == ol.ImageState.LOADING,
+        'imageState is "idle" or "loading"');
     goog.events.listen(image, goog.events.EventType.CHANGE,
         this.handleImageChange_, false, this);
   }
   if (imageState == ol.ImageState.IDLE) {
     image.load();
     imageState = image.getState();
-    goog.asserts.assert(imageState == ol.ImageState.LOADING);
+    goog.asserts.assert(imageState == ol.ImageState.LOADING,
+        'imageState is "loading"');
   }
   return imageState == ol.ImageState.LOADED;
 };
@@ -225,8 +227,8 @@ ol.renderer.Layer.prototype.updateLogos = function(frameState, source) {
     if (goog.isString(logo)) {
       frameState.logos[logo] = '';
     } else if (goog.isObject(logo)) {
-      goog.asserts.assertString(logo.href);
-      goog.asserts.assertString(logo.src);
+      goog.asserts.assertString(logo.href, 'logo.href is a string');
+      goog.asserts.assertString(logo.src, 'logo.src is a string');
       frameState.logos[logo.src] = logo.href;
     }
   }

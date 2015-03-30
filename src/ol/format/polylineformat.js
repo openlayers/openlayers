@@ -358,7 +358,7 @@ ol.format.Polyline.prototype.writeFeatureText = function(feature, opt_options) {
   if (goog.isDefAndNotNull(geometry)) {
     return this.writeGeometryText(geometry, opt_options);
   } else {
-    goog.asserts.fail();
+    goog.asserts.fail('geometry needs to be defined');
     return '';
   }
 };
@@ -369,7 +369,8 @@ ol.format.Polyline.prototype.writeFeatureText = function(feature, opt_options) {
  */
 ol.format.Polyline.prototype.writeFeaturesText =
     function(features, opt_options) {
-  goog.asserts.assert(features.length == 1);
+  goog.asserts.assert(features.length == 1,
+      'features array should have 1 item');
   return this.writeFeatureText(features[0], opt_options);
 };
 
@@ -391,7 +392,8 @@ ol.format.Polyline.prototype.writeGeometry;
  */
 ol.format.Polyline.prototype.writeGeometryText =
     function(geometry, opt_options) {
-  goog.asserts.assertInstanceof(geometry, ol.geom.LineString);
+  goog.asserts.assertInstanceof(geometry, ol.geom.LineString,
+      'geometry should be an ol.geom.LineString');
   geometry = /** @type {ol.geom.LineString} */
       (ol.format.Feature.transformWithOptions(
           geometry, true, this.adaptOptions(opt_options)));

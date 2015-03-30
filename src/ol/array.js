@@ -92,8 +92,10 @@ ol.array.linearFindNearest = function(arr, target, direction) {
  * @param {number} end End index.
  */
 ol.array.reverseSubArray = function(arr, begin, end) {
-  goog.asserts.assert(begin >= 0);
-  goog.asserts.assert(end < arr.length);
+  goog.asserts.assert(begin >= 0,
+      'Array begin index should be equal to or greater than 0');
+  goog.asserts.assert(end < arr.length,
+      'Array end index should be less than the array length');
   while (begin < end) {
     var tmp = arr[begin];
     arr[begin] = arr[end];

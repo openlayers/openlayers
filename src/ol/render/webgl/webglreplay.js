@@ -233,8 +233,10 @@ ol.render.webgl.ImageReplay.prototype.getDeleteResourcesFunction =
   // be used by other ImageReplay instances (for other layers). And
   // they will be deleted when disposing of the ol.webgl.Context
   // object.
-  goog.asserts.assert(!goog.isNull(this.verticesBuffer_));
-  goog.asserts.assert(!goog.isNull(this.indicesBuffer_));
+  goog.asserts.assert(!goog.isNull(this.verticesBuffer_),
+      'verticesBuffer must not be null');
+  goog.asserts.assert(!goog.isNull(this.indicesBuffer_),
+      'indicesBuffer must not be null');
   var verticesBuffer = this.verticesBuffer_;
   var indicesBuffer = this.indicesBuffer_;
   var textures = this.textures_;
@@ -272,18 +274,19 @@ ol.render.webgl.ImageReplay.prototype.drawAsync = goog.abstractMethod;
  */
 ol.render.webgl.ImageReplay.prototype.drawCoordinates_ =
     function(flatCoordinates, offset, end, stride) {
-  goog.asserts.assert(goog.isDef(this.anchorX_));
-  goog.asserts.assert(goog.isDef(this.anchorY_));
-  goog.asserts.assert(goog.isDef(this.height_));
-  goog.asserts.assert(goog.isDef(this.imageHeight_));
-  goog.asserts.assert(goog.isDef(this.imageWidth_));
-  goog.asserts.assert(goog.isDef(this.opacity_));
-  goog.asserts.assert(goog.isDef(this.originX_));
-  goog.asserts.assert(goog.isDef(this.originY_));
-  goog.asserts.assert(goog.isDef(this.rotateWithView_));
-  goog.asserts.assert(goog.isDef(this.rotation_));
-  goog.asserts.assert(goog.isDef(this.scale_));
-  goog.asserts.assert(goog.isDef(this.width_));
+  goog.asserts.assert(goog.isDef(this.anchorX_), 'anchorX is defined');
+  goog.asserts.assert(goog.isDef(this.anchorY_), 'anchorY is defined');
+  goog.asserts.assert(goog.isDef(this.height_), 'height is defined');
+  goog.asserts.assert(goog.isDef(this.imageHeight_), 'imageHeight is defined');
+  goog.asserts.assert(goog.isDef(this.imageWidth_), 'imageWidth is defined');
+  goog.asserts.assert(goog.isDef(this.opacity_), 'opacity is defined');
+  goog.asserts.assert(goog.isDef(this.originX_), 'originX is defined');
+  goog.asserts.assert(goog.isDef(this.originY_), 'originY is defined');
+  goog.asserts.assert(goog.isDef(this.rotateWithView_),
+      'rotateWithView is defined');
+  goog.asserts.assert(goog.isDef(this.rotation_), 'rotation is defined');
+  goog.asserts.assert(goog.isDef(this.scale_), 'scale is defined');
+  goog.asserts.assert(goog.isDef(this.width_), 'width is defined');
   var anchorX = this.anchorX_;
   var anchorY = this.anchorY_;
   var height = this.height_;
@@ -464,10 +467,12 @@ ol.render.webgl.ImageReplay.prototype.finish = function(context) {
   var gl = context.getGL();
 
   this.groupIndices_.push(this.indices_.length);
-  goog.asserts.assert(this.images_.length === this.groupIndices_.length);
+  goog.asserts.assert(this.images_.length === this.groupIndices_.length,
+      'number of images and groupIndices match');
   this.hitDetectionGroupIndices_.push(this.indices_.length);
   goog.asserts.assert(this.hitDetectionImages_.length ===
-      this.hitDetectionGroupIndices_.length);
+      this.hitDetectionGroupIndices_.length,
+      'number of hitDetectionImages and hitDetectionGroupIndices match');
 
   // create, bind, and populate the vertices buffer
   this.verticesBuffer_ = new ol.webgl.Buffer(this.vertices_);
@@ -488,12 +493,14 @@ ol.render.webgl.ImageReplay.prototype.finish = function(context) {
   var texturePerImage = {};
 
   this.createTextures_(this.textures_, this.images_, texturePerImage, gl);
-  goog.asserts.assert(this.textures_.length === this.groupIndices_.length);
+  goog.asserts.assert(this.textures_.length === this.groupIndices_.length,
+      'number of textures and groupIndices match');
 
   this.createTextures_(this.hitDetectionTextures_, this.hitDetectionImages_,
       texturePerImage, gl);
   goog.asserts.assert(this.hitDetectionTextures_.length ===
-      this.hitDetectionGroupIndices_.length);
+      this.hitDetectionGroupIndices_.length,
+      'number of hitDetectionTextures and hitDetectionGroupIndices match');
 
   this.anchorX_ = undefined;
   this.anchorY_ = undefined;
@@ -524,7 +531,8 @@ ol.render.webgl.ImageReplay.prototype.finish = function(context) {
  */
 ol.render.webgl.ImageReplay.prototype.createTextures_ =
     function(textures, images, texturePerImage, gl) {
-  goog.asserts.assert(textures.length === 0);
+  goog.asserts.assert(textures.length === 0,
+      'upon creation, textures is empty');
 
   var texture, image, uid, i;
   var ii = images.length;
@@ -571,11 +579,13 @@ ol.render.webgl.ImageReplay.prototype.replay = function(context,
   var gl = context.getGL();
 
   // bind the vertices buffer
-  goog.asserts.assert(!goog.isNull(this.verticesBuffer_));
+  goog.asserts.assert(!goog.isNull(this.verticesBuffer_),
+      'verticesBuffer must not be null');
   context.bindBuffer(goog.webgl.ARRAY_BUFFER, this.verticesBuffer_);
 
   // bind the indices buffer
-  goog.asserts.assert(!goog.isNull(this.indicesBuffer_));
+  goog.asserts.assert(!goog.isNull(this.indicesBuffer_),
+      'indecesBuffer must not be null');
   context.bindBuffer(goog.webgl.ELEMENT_ARRAY_BUFFER, this.indicesBuffer_);
 
   var useColor = brightness || contrast != 1 || hue || saturation != 1;
@@ -699,7 +709,8 @@ ol.render.webgl.ImageReplay.prototype.replay = function(context,
  */
 ol.render.webgl.ImageReplay.prototype.drawReplay_ =
     function(gl, context, skippedFeaturesHash, textures, groupIndices) {
-  goog.asserts.assert(textures.length === groupIndices.length);
+  goog.asserts.assert(textures.length === groupIndices.length,
+      'number of textures and groupIndeces match');
   var elementType = context.hasOESElementIndexUint ?
       goog.webgl.UNSIGNED_INT : goog.webgl.UNSIGNED_SHORT;
   var elementSize = context.hasOESElementIndexUint ? 4 : 2;
@@ -873,7 +884,8 @@ ol.render.webgl.ImageReplay.prototype.drawHitDetectionReplayOneByOne_ =
     function(gl, context, skippedFeaturesHash, featureCallback,
     opt_hitExtent) {
   goog.asserts.assert(this.hitDetectionTextures_.length ===
-      this.hitDetectionGroupIndices_.length);
+      this.hitDetectionGroupIndices_.length,
+      'number of hitDetectionTextures and hitDetectionGroupIndices match');
   var elementType = context.hasOESElementIndexUint ?
       goog.webgl.UNSIGNED_INT : goog.webgl.UNSIGNED_SHORT;
   var elementSize = context.hasOESElementIndexUint ? 4 : 2;
@@ -923,27 +935,31 @@ ol.render.webgl.ImageReplay.prototype.setFillStrokeStyle = goog.abstractMethod;
  */
 ol.render.webgl.ImageReplay.prototype.setImageStyle = function(imageStyle) {
   var anchor = imageStyle.getAnchor();
-  goog.asserts.assert(!goog.isNull(anchor));
+  goog.asserts.assert(!goog.isNull(anchor), 'imageStyle anchor is not null');
   var image = imageStyle.getImage(1);
-  goog.asserts.assert(!goog.isNull(image));
+  goog.asserts.assert(!goog.isNull(image), 'imageStyle image is not null');
   var imageSize = imageStyle.getImageSize();
-  goog.asserts.assert(!goog.isNull(imageSize));
+  goog.asserts.assert(!goog.isNull(imageSize),
+      'imageStyle imageSize is not null');
   var hitDetectionImage = imageStyle.getHitDetectionImage(1);
-  goog.asserts.assert(!goog.isNull(hitDetectionImage));
+  goog.asserts.assert(!goog.isNull(hitDetectionImage),
+      'imageStyle hitDetectionImage is not null');
   var hitDetectionImageSize = imageStyle.getHitDetectionImageSize();
-  goog.asserts.assert(!goog.isNull(hitDetectionImageSize));
+  goog.asserts.assert(!goog.isNull(hitDetectionImageSize),
+      'imageStyle hitDetectionImageSize is not null');
   var opacity = imageStyle.getOpacity();
-  goog.asserts.assert(goog.isDef(opacity));
+  goog.asserts.assert(goog.isDef(opacity), 'imageStyle opacity is defined');
   var origin = imageStyle.getOrigin();
-  goog.asserts.assert(!goog.isNull(origin));
+  goog.asserts.assert(!goog.isNull(origin), 'imageStyle origin is not null');
   var rotateWithView = imageStyle.getRotateWithView();
-  goog.asserts.assert(goog.isDef(rotateWithView));
+  goog.asserts.assert(goog.isDef(rotateWithView),
+      'imageStyle rotateWithView is defined');
   var rotation = imageStyle.getRotation();
-  goog.asserts.assert(goog.isDef(rotation));
+  goog.asserts.assert(goog.isDef(rotation), 'imageStyle rotation is defined');
   var size = imageStyle.getSize();
-  goog.asserts.assert(!goog.isNull(size));
+  goog.asserts.assert(!goog.isNull(size), 'imageStyle size is not null');
   var scale = imageStyle.getScale();
-  goog.asserts.assert(goog.isDef(scale));
+  goog.asserts.assert(goog.isDef(scale), 'imageStyle scale is defined');
 
   var currentImage;
   if (this.images_.length === 0) {
@@ -952,7 +968,8 @@ ol.render.webgl.ImageReplay.prototype.setImageStyle = function(imageStyle) {
     currentImage = this.images_[this.images_.length - 1];
     if (goog.getUid(currentImage) != goog.getUid(image)) {
       this.groupIndices_.push(this.indices_.length);
-      goog.asserts.assert(this.groupIndices_.length === this.images_.length);
+      goog.asserts.assert(this.groupIndices_.length === this.images_.length,
+          'number of groupIndices and images match');
       this.images_.push(image);
     }
   }
@@ -965,7 +982,8 @@ ol.render.webgl.ImageReplay.prototype.setImageStyle = function(imageStyle) {
     if (goog.getUid(currentImage) != goog.getUid(hitDetectionImage)) {
       this.hitDetectionGroupIndices_.push(this.indices_.length);
       goog.asserts.assert(this.hitDetectionGroupIndices_.length ===
-          this.hitDetectionImages_.length);
+          this.hitDetectionImages_.length,
+          'number of hitDetectionGroupIndices and hitDetectionImages match');
       this.hitDetectionImages_.push(hitDetectionImage);
     }
   }
@@ -1066,7 +1084,8 @@ ol.render.webgl.ReplayGroup.prototype.getReplay =
   var replay = this.replays_[replayType];
   if (!goog.isDef(replay)) {
     var constructor = ol.render.webgl.BATCH_CONSTRUCTORS_[replayType];
-    goog.asserts.assert(goog.isDef(constructor));
+    goog.asserts.assert(goog.isDef(constructor),
+        'a constructor could be found in ol.render.webgl.BATCH_CONSTRUCTORS_');
     replay = new constructor(this.tolerance_, this.maxExtent_);
     this.replays_[replayType] = replay;
   }

@@ -20,7 +20,8 @@ goog.require('ol.source.XYZ');
 ol.source.MapQuest = function(opt_options) {
 
   var options = goog.isDef(opt_options) ? opt_options : {};
-  goog.asserts.assert(options.layer in ol.source.MapQuestConfig);
+  goog.asserts.assert(options.layer in ol.source.MapQuestConfig,
+      'known layer configured');
 
   var layerConfig = ol.source.MapQuestConfig[options.layer];
 

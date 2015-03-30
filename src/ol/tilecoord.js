@@ -60,7 +60,8 @@ ol.tilecoord.createFromQuadKey = function(quadKey) {
  */
 ol.tilecoord.createFromString = function(str) {
   var v = str.split('/');
-  goog.asserts.assert(v.length === 3);
+  goog.asserts.assert(v.length === 3,
+      'must provide a string in "z/x/y" format, got "%s"', str);
   v = goog.array.map(v, function(e, i, a) {
     return parseInt(e, 10);
   });

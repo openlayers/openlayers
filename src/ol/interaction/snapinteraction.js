@@ -213,7 +213,7 @@ ol.interaction.Snap.prototype.getFeatures_ = function() {
   } else if (!goog.isNull(this.source_)) {
     features = this.source_.getFeatures();
   }
-  goog.asserts.assert(goog.isDef(features));
+  goog.asserts.assert(goog.isDef(features), 'features should be defined');
   return features;
 };
 
@@ -229,7 +229,8 @@ ol.interaction.Snap.prototype.handleFeatureAdd_ = function(evt) {
   } else if (evt instanceof ol.CollectionEvent) {
     feature = evt.element;
   }
-  goog.asserts.assertInstanceof(feature, ol.Feature);
+  goog.asserts.assertInstanceof(feature, ol.Feature,
+      'feature should be an ol.Feature');
   this.addFeature(feature);
 };
 
@@ -245,7 +246,8 @@ ol.interaction.Snap.prototype.handleFeatureRemove_ = function(evt) {
   } else if (evt instanceof ol.CollectionEvent) {
     feature = evt.element;
   }
-  goog.asserts.assertInstanceof(feature, ol.Feature);
+  goog.asserts.assertInstanceof(feature, ol.Feature,
+      'feature should be an ol.Feature');
   this.removeFeature(feature);
 };
 
@@ -300,7 +302,6 @@ ol.interaction.Snap.prototype.removeFeature = function(feature, opt_unlisten) {
     for (i = nodesToRemove.length - 1; i >= 0; --i) {
       rBush.remove(nodesToRemove[i]);
     }
-
     if (unlisten) {
       ol.Observable.unByKey(this.geometryModifyListenerKeys_[feature_uid]);
       delete this.geometryModifyListenerKeys_[feature_uid];

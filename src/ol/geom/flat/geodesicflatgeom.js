@@ -69,7 +69,8 @@ ol.geom.flat.geodesic.line_ =
       // segment.
       flatCoordinates.push(b[0], b[1]);
       key = fracB.toString();
-      goog.asserts.assert(!goog.object.containsKey(fractions, key));
+      goog.asserts.assert(!goog.object.containsKey(fractions, key),
+          'fractions object should contain key : ' + key);
       fractions[key] = true;
     } else {
       // Otherwise, we need to subdivide the current line segment.  Split it
@@ -79,7 +80,8 @@ ol.geom.flat.geodesic.line_ =
       geoStack.push(geoB, geoM, geoM, geoA);
     }
   }
-  goog.asserts.assert(maxIterations > 0);
+  goog.asserts.assert(maxIterations > 0,
+      'maxIterations should be more than 0');
 
   return flatCoordinates;
 };

@@ -137,7 +137,8 @@ ol.xml.getLocalNameIE_ = function(node) {
     return localName;
   }
   var baseName = node.baseName;
-  goog.asserts.assert(goog.isDefAndNotNull(baseName));
+  goog.asserts.assert(goog.isDefAndNotNull(baseName),
+      'Failed to get localName/baseName of node %s', node);
   return baseName;
 };
 
@@ -362,10 +363,12 @@ ol.xml.makeArrayExtender = function(valueReader, opt_this) {
       function(node, objectStack) {
         var value = valueReader.call(opt_this, node, objectStack);
         if (goog.isDef(value)) {
-          goog.asserts.assert(goog.isArray(value));
+          goog.asserts.assert(goog.isArray(value),
+              'valueReader function is expected to return an array of values');
           var array = /** @type {Array.<*>} */
               (objectStack[objectStack.length - 1]);
-          goog.asserts.assert(goog.isArray(array));
+          goog.asserts.assert(goog.isArray(array),
+              'objectStack is supposed to be an array of arrays');
           goog.array.extend(array, value);
         }
       });
@@ -389,7 +392,8 @@ ol.xml.makeArrayPusher = function(valueReader, opt_this) {
             node, objectStack);
         if (goog.isDef(value)) {
           var array = objectStack[objectStack.length - 1];
-          goog.asserts.assert(goog.isArray(array));
+          goog.asserts.assert(goog.isArray(array),
+              'objectStack is supposed to be an array of arrays');
           array.push(value);
         }
       });
@@ -427,7 +431,8 @@ ol.xml.makeReplacer = function(valueReader, opt_this) {
  */
 ol.xml.makeObjectPropertyPusher =
     function(valueReader, opt_property, opt_this) {
-  goog.asserts.assert(goog.isDef(valueReader));
+  goog.asserts.assert(goog.isDef(valueReader),
+      'undefined valueReader, expected function(this: T, Node, Array.<*>)');
   return (
       /**
        * @param {Node} node Node.
@@ -441,7 +446,8 @@ ol.xml.makeObjectPropertyPusher =
               (objectStack[objectStack.length - 1]);
           var property = goog.isDef(opt_property) ?
               opt_property : node.localName;
-          goog.asserts.assert(goog.isObject(object));
+          goog.asserts.assert(goog.isObject(object),
+              'entity from stack was not an object');
           var array = goog.object.setIfUndefined(object, property, []);
           array.push(value);
         }
@@ -458,7 +464,8 @@ ol.xml.makeObjectPropertyPusher =
  */
 ol.xml.makeObjectPropertySetter =
     function(valueReader, opt_property, opt_this) {
-  goog.asserts.assert(goog.isDef(valueReader));
+  goog.asserts.assert(goog.isDef(valueReader),
+      'undefined valueReader, expected function(this: T, Node, Array.<*>)');
   return (
       /**
        * @param {Node} node Node.
@@ -472,7 +479,8 @@ ol.xml.makeObjectPropertySetter =
               (objectStack[objectStack.length - 1]);
           var property = goog.isDef(opt_property) ?
               opt_property : node.localName;
-          goog.asserts.assert(goog.isObject(object));
+          goog.asserts.assert(goog.isObject(object),
+              'entity from stack was not an object');
           object[property] = value;
         }
       });
@@ -507,10 +515,12 @@ ol.xml.makeChildAppender = function(nodeWriter, opt_this) {
     nodeWriter.call(goog.isDef(opt_this) ? opt_this : this,
         node, value, objectStack);
     var parent = objectStack[objectStack.length - 1];
-    goog.asserts.assert(goog.isObject(parent));
+    goog.asserts.assert(goog.isObject(parent),
+        'entity from stack was not an object');
     var parentNode = parent.node;
     goog.asserts.assert(ol.xml.isNode(parentNode) ||
-        ol.xml.isDocument(parentNode));
+        ol.xml.isDocument(parentNode),
+        'expected parentNode %s to be a Node or a Document', parentNode);
     parentNode.appendChild(node);
   };
 };
@@ -569,7 +579,8 @@ ol.xml.makeSimpleNodeFactory = function(opt_nodeName, opt_namespaceURI) {
       function(value, objectStack, opt_nodeName) {
         var context = objectStack[objectStack.length - 1];
         var node = context.node;
-        goog.asserts.assert(ol.xml.isNode(node) || ol.xml.isDocument(node));
+        goog.asserts.assert(ol.xml.isNode(node) || ol.xml.isDocument(node),
+            'expected node %s to be a Node or a Document', node);
         var nodeName = fixedNodeName;
         if (!goog.isDef(nodeName)) {
           nodeName = opt_nodeName;
@@ -578,7 +589,7 @@ ol.xml.makeSimpleNodeFactory = function(opt_nodeName, opt_namespaceURI) {
         if (!goog.isDef(opt_namespaceURI)) {
           namespaceURI = node.namespaceURI;
         }
-        goog.asserts.assert(goog.isDef(nodeName));
+        goog.asserts.assert(goog.isDef(nodeName), 'nodeName was undefined');
         return ol.xml.createElementNS(namespaceURI, nodeName);
       }
   );

@@ -120,7 +120,8 @@ goog.exportProperty(
  * @private
  */
 ol.dom.Input.prototype.handleInputChanged_ = function(browserEvent) {
-  goog.asserts.assert(browserEvent.currentTarget == this.target_);
+  goog.asserts.assert(browserEvent.currentTarget == this.target_,
+      'currentTarget should be the same as this.target_');
   var target = this.target_;
   if (target.type === 'checkbox' || target.type === 'radio') {
     this.setChecked(target.checked);

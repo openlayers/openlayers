@@ -238,7 +238,8 @@ ol.control.ScaleLine.prototype.updateElement_ = function() {
     }
     cosLatitude = Math.cos(goog.math.toRadians(this.toEPSG4326_(center)[1]));
     var radius = ol.sphere.NORMAL.radius;
-    goog.asserts.assert(goog.isDef(ol.proj.METERS_PER_UNIT[projectionUnits]));
+    goog.asserts.assert(goog.isDef(ol.proj.METERS_PER_UNIT[projectionUnits]),
+        'Meters per unit should be defined for the projection unit');
     radius /= ol.proj.METERS_PER_UNIT[projectionUnits];
     pointResolution *= 180 / (Math.PI * cosLatitude * radius);
     projectionUnits = ol.proj.Units.DEGREES;
@@ -254,7 +255,8 @@ ol.control.ScaleLine.prototype.updateElement_ = function() {
         units == ol.control.ScaleLineUnits.NAUTICAL) &&
        projectionUnits == ol.proj.Units.METERS) ||
       (units == ol.control.ScaleLineUnits.DEGREES &&
-       projectionUnits == ol.proj.Units.DEGREES));
+       projectionUnits == ol.proj.Units.DEGREES),
+      'Scale line units and projection units should match');
 
   var nominalCount = this.minWidth_ * pointResolution;
   var suffix = '';
@@ -304,7 +306,7 @@ ol.control.ScaleLine.prototype.updateElement_ = function() {
       pointResolution /= 1609.3472;
     }
   } else {
-    goog.asserts.fail();
+    goog.asserts.fail('Scale line element cannot be updated');
   }
 
   var i = 3 * Math.floor(

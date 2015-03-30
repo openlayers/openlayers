@@ -158,7 +158,8 @@ ol.source.Vector.prototype.addFeatureInternal = function(feature) {
  * @private
  */
 ol.source.Vector.prototype.setupChangeEvents_ = function(featureKey, feature) {
-  goog.asserts.assert(!(featureKey in this.featureChangeKeys_));
+  goog.asserts.assert(!(featureKey in this.featureChangeKeys_),
+      'key (%s) not yet registered in featurChangeKey', featureKey);
   this.featureChangeKeys_[featureKey] = [
     goog.events.listen(feature,
         goog.events.EventType.CHANGE,
@@ -251,9 +252,12 @@ ol.source.Vector.prototype.clear = function(opt_fast) {
     var rmFeatureInternal = this.removeFeatureInternal;
     this.rBush_.forEach(rmFeatureInternal, this);
     goog.object.forEach(this.nullGeometryFeatures_, rmFeatureInternal, this);
-    goog.asserts.assert(goog.object.isEmpty(this.featureChangeKeys_));
-    goog.asserts.assert(goog.object.isEmpty(this.idIndex_));
-    goog.asserts.assert(goog.object.isEmpty(this.undefIdIndex_));
+    goog.asserts.assert(goog.object.isEmpty(this.featureChangeKeys_),
+        'featureChangeKeys is an empty object now');
+    goog.asserts.assert(goog.object.isEmpty(this.idIndex_),
+        'idIndex is an empty object now');
+    goog.asserts.assert(goog.object.isEmpty(this.undefIdIndex_),
+        'undefIdIndex is an empty object now');
   }
 
   this.rBush_.clear();
@@ -300,7 +304,8 @@ ol.source.Vector.prototype.forEachFeatureAtCoordinateDirect =
   var extent = [coordinate[0], coordinate[1], coordinate[0], coordinate[1]];
   return this.forEachFeatureInExtent(extent, function(feature) {
     var geometry = feature.getGeometry();
-    goog.asserts.assert(goog.isDefAndNotNull(geometry));
+    goog.asserts.assert(goog.isDefAndNotNull(geometry),
+        'feature geometry is defined and not null');
     if (geometry.containsCoordinate(coordinate)) {
       return callback.call(opt_this, feature);
     } else {
@@ -375,7 +380,8 @@ ol.source.Vector.prototype.forEachFeatureIntersectingExtent =
        */
       function(feature) {
         var geometry = feature.getGeometry();
-        goog.asserts.assert(goog.isDefAndNotNull(geometry));
+        goog.asserts.assert(goog.isDefAndNotNull(geometry),
+            'feature geometry is defined and not null');
         if (geometry.intersectsExtent(extent)) {
           var result = callback.call(opt_this, feature);
           if (result) {
@@ -452,7 +458,8 @@ ol.source.Vector.prototype.getClosestFeatureToCoordinate =
        */
       function(feature) {
         var geometry = feature.getGeometry();
-        goog.asserts.assert(goog.isDefAndNotNull(geometry));
+        goog.asserts.assert(goog.isDefAndNotNull(geometry),
+            'feature geometry is defined and not null');
         var previousMinSquaredDistance = minSquaredDistance;
         minSquaredDistance = geometry.closestPointXY(
             x, y, closestPoint, minSquaredDistance);
@@ -542,7 +549,8 @@ ol.source.Vector.prototype.handleFeatureChange_ = function(event) {
           'Expected feature to be removed from index');
       this.undefIdIndex_[featureKey] = feature;
     } else {
-      goog.asserts.assert(this.undefIdIndex_[featureKey] === feature);
+      goog.asserts.assert(this.undefIdIndex_[featureKey] === feature,
+          'feature keyed under %s in undefIdKeys', featureKey);
     }
   }
   this.changed();
@@ -594,7 +602,8 @@ ol.source.Vector.prototype.removeFeature = function(feature) {
  */
 ol.source.Vector.prototype.removeFeatureInternal = function(feature) {
   var featureKey = goog.getUid(feature).toString();
-  goog.asserts.assert(featureKey in this.featureChangeKeys_);
+  goog.asserts.assert(featureKey in this.featureChangeKeys_,
+      'featureKey exists in featureChangeKeys');
   goog.array.forEach(this.featureChangeKeys_[featureKey],
       goog.events.unlistenByKey);
   delete this.featureChangeKeys_[featureKey];

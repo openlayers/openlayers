@@ -470,7 +470,8 @@ ol.proj.createProjection = function(projection, defaultCode) {
   } else if (goog.isString(projection)) {
     return ol.proj.get(projection);
   } else {
-    goog.asserts.assertInstanceof(projection, ol.proj.Projection);
+    goog.asserts.assertInstanceof(projection, ol.proj.Projection,
+        'projection should be an ol.proj.Projection');
     return projection;
   }
 };
@@ -571,8 +572,10 @@ ol.proj.removeTransform = function(source, destination) {
   var sourceCode = source.getCode();
   var destinationCode = destination.getCode();
   var transforms = ol.proj.transforms_;
-  goog.asserts.assert(sourceCode in transforms);
-  goog.asserts.assert(destinationCode in transforms[sourceCode]);
+  goog.asserts.assert(sourceCode in transforms,
+      'sourceCode should be in transforms');
+  goog.asserts.assert(destinationCode in transforms[sourceCode],
+      'destinationCode should be in transforms of sourceCode');
   var transform = transforms[sourceCode][destinationCode];
   delete transforms[sourceCode][destinationCode];
   var keys = goog.object.getKeys(transforms[sourceCode]);
@@ -671,7 +674,7 @@ ol.proj.getTransformFromProjections =
     transform = transforms[sourceCode][destinationCode];
   }
   if (!goog.isDef(transform)) {
-    goog.asserts.assert(goog.isDef(transform));
+    goog.asserts.assert(goog.isDef(transform), 'transform should be defined');
     transform = ol.proj.identityTransform;
   }
   return transform;

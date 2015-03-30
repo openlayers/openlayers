@@ -75,7 +75,8 @@ ol.source.FormatVector.prototype.loadFeaturesFromURL =
        */
       function(event) {
         var xhrIo = event.target;
-        goog.asserts.assertInstanceof(xhrIo, goog.net.XhrIo);
+        goog.asserts.assertInstanceof(xhrIo, goog.net.XhrIo,
+            'event.target/xhrIo is an instance of goog.net.XhrIo');
         if (xhrIo.isSuccess()) {
           var type = this.format.getType();
           /** @type {ArrayBuffer|Document|Node|Object|string|undefined} */
@@ -83,7 +84,8 @@ ol.source.FormatVector.prototype.loadFeaturesFromURL =
           if (type == ol.format.FormatType.BINARY &&
               ol.has.ARRAY_BUFFER) {
             source = xhrIo.getResponse();
-            goog.asserts.assertInstanceof(source, ArrayBuffer);
+            goog.asserts.assertInstanceof(source, ArrayBuffer,
+                'source is an instance of ArrayBuffer');
           } else if (type == ol.format.FormatType.JSON) {
             source = xhrIo.getResponseText();
           } else if (type == ol.format.FormatType.TEXT) {
@@ -96,13 +98,13 @@ ol.source.FormatVector.prototype.loadFeaturesFromURL =
               source = ol.xml.parse(xhrIo.getResponseText());
             }
           } else {
-            goog.asserts.fail();
+            goog.asserts.fail('unexpected format type');
           }
           if (goog.isDefAndNotNull(source)) {
             success.call(thisArg, this.readFeatures(source));
           } else {
             this.setState(ol.source.State.ERROR);
-            goog.asserts.fail();
+            goog.asserts.fail('undefined or null source');
           }
         } else {
           error.call(thisArg);

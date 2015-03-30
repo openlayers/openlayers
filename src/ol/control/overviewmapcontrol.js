@@ -247,17 +247,17 @@ ol.control.OverviewMap.prototype.validateExtent_ = function() {
   }
 
   var mapSize = map.getSize();
-  goog.asserts.assertArray(mapSize);
+  goog.asserts.assertArray(mapSize, 'mapSize should be an array');
 
   var view = map.getView();
-  goog.asserts.assert(goog.isDef(view));
+  goog.asserts.assert(goog.isDef(view), 'view should be defined');
   var extent = view.calculateExtent(mapSize);
 
   var ovmapSize = ovmap.getSize();
-  goog.asserts.assertArray(ovmapSize);
+  goog.asserts.assertArray(ovmapSize, 'ovmapSize should be an array');
 
   var ovview = ovmap.getView();
-  goog.asserts.assert(goog.isDef(ovview));
+  goog.asserts.assert(goog.isDef(ovview), 'ovview should be defined');
   var ovextent = ovview.calculateExtent(ovmapSize);
 
   var topLeftPixel =
@@ -296,17 +296,17 @@ ol.control.OverviewMap.prototype.resetExtent_ = function() {
   var ovmap = this.ovmap_;
 
   var mapSize = map.getSize();
-  goog.asserts.assertArray(mapSize);
+  goog.asserts.assertArray(mapSize, 'mapSize should be an array');
 
   var view = map.getView();
-  goog.asserts.assert(goog.isDef(view));
+  goog.asserts.assert(goog.isDef(view), 'view should be defined');
   var extent = view.calculateExtent(mapSize);
 
   var ovmapSize = ovmap.getSize();
-  goog.asserts.assertArray(ovmapSize);
+  goog.asserts.assertArray(ovmapSize, 'ovmapSize should be an array');
 
   var ovview = ovmap.getView();
-  goog.asserts.assert(goog.isDef(ovview));
+  goog.asserts.assert(goog.isDef(ovview), 'ovview should be defined');
 
   // get how many times the current map overview could hold different
   // box sizes using the min and max ratio, pick the step in the middle used
@@ -329,10 +329,10 @@ ol.control.OverviewMap.prototype.recenter_ = function() {
   var ovmap = this.ovmap_;
 
   var view = map.getView();
-  goog.asserts.assert(goog.isDef(view));
+  goog.asserts.assert(goog.isDef(view), 'view should be defined');
 
   var ovview = ovmap.getView();
-  goog.asserts.assert(goog.isDef(ovview));
+  goog.asserts.assert(goog.isDef(ovview), 'ovview should be defined');
 
   ovview.setCenter(view.getCenter());
 };
@@ -351,19 +351,19 @@ ol.control.OverviewMap.prototype.updateBox_ = function() {
   }
 
   var mapSize = map.getSize();
-  goog.asserts.assertArray(mapSize);
+  goog.asserts.assertArray(mapSize, 'mapSize should be an array');
 
   var view = map.getView();
-  goog.asserts.assert(goog.isDef(view));
+  goog.asserts.assert(goog.isDef(view), 'view should be defined');
 
   var ovview = ovmap.getView();
-  goog.asserts.assert(goog.isDef(ovview));
+  goog.asserts.assert(goog.isDef(ovview), 'ovview should be defined');
 
   var ovmapSize = ovmap.getSize();
-  goog.asserts.assertArray(ovmapSize);
+  goog.asserts.assertArray(ovmapSize, 'ovmapSize should be an array');
 
   var rotation = view.getRotation();
-  goog.asserts.assert(goog.isDef(rotation));
+  goog.asserts.assert(goog.isDef(rotation), 'rotation should be defined');
 
   var overlay = this.boxOverlay_;
   var box = this.boxOverlay_.getElement();
@@ -398,7 +398,7 @@ ol.control.OverviewMap.prototype.calculateCoordinateRotate_ = function(
 
   var map = this.getMap();
   var view = map.getView();
-  goog.asserts.assert(goog.isDef(view));
+  goog.asserts.assert(goog.isDef(view), 'view should be defined');
 
   var currentCenter = view.getCenter();
 
