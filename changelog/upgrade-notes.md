@@ -1,5 +1,9 @@
 ## Upgrade notes
 
+### v3.5.0
+
+* If your application is using an `ol.source.ImageMapGuide`, `ol.source.ImageWMS`, or `ol.source.ImageStatic` with a custom `imageLoadFunction`, this function will now be called with an HTML image element instead of an `ol.Image` element as the first argument (see [#3427](https://github.com/openlayers/ol3/pull/3427)).
+
 ### v3.4.0
 
 ### v3.3.0
