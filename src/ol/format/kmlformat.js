@@ -802,11 +802,15 @@ ol.format.KML.readLineString_ = function(node, objectStack) {
       'node.nodeType should be ELEMENT');
   goog.asserts.assert(node.localName == 'LineString',
       'localName should be LineString');
+  var properties = ol.xml.pushParseAndPop(/** @type {Object<string,*>} */ ({}),
+      ol.format.KML.EXTRUDE_AND_ALTITUDE_MODE_PARSERS_, node,
+      objectStack);
   var flatCoordinates =
       ol.format.KML.readFlatCoordinatesFromNode_(node, objectStack);
   if (goog.isDef(flatCoordinates)) {
     var lineString = new ol.geom.LineString(null);
     lineString.setFlatCoordinates(ol.geom.GeometryLayout.XYZ, flatCoordinates);
+    lineString.setProperties(properties);
     return lineString;
   } else {
     return undefined;
@@ -825,12 +829,16 @@ ol.format.KML.readLinearRing_ = function(node, objectStack) {
       'node.nodeType should be ELEMENT');
   goog.asserts.assert(node.localName == 'LinearRing',
       'localName should be LinearRing');
+  var properties = ol.xml.pushParseAndPop(/** @type {Object<string,*>} */ ({}),
+      ol.format.KML.EXTRUDE_AND_ALTITUDE_MODE_PARSERS_, node,
+      objectStack);
   var flatCoordinates =
       ol.format.KML.readFlatCoordinatesFromNode_(node, objectStack);
   if (goog.isDef(flatCoordinates)) {
     var polygon = new ol.geom.Polygon(null);
     polygon.setFlatCoordinates(ol.geom.GeometryLayout.XYZ, flatCoordinates,
         [flatCoordinates.length]);
+    polygon.setProperties(properties);
     return polygon;
   } else {
     return undefined;
@@ -920,6 +928,9 @@ ol.format.KML.readPoint_ = function(node, objectStack) {
   goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT,
       'node.nodeType should be ELEMENT');
   goog.asserts.assert(node.localName == 'Point', 'localName should be Point');
+  var properties = ol.xml.pushParseAndPop(/** @type {Object<string,*>} */ ({}),
+      ol.format.KML.EXTRUDE_AND_ALTITUDE_MODE_PARSERS_, node,
+      objectStack);
   var flatCoordinates =
       ol.format.KML.readFlatCoordinatesFromNode_(node, objectStack);
   if (goog.isDefAndNotNull(flatCoordinates)) {
@@ -927,6 +938,7 @@ ol.format.KML.readPoint_ = function(node, objectStack) {
     goog.asserts.assert(flatCoordinates.length == 3,
         'flatCoordinates should have a length of 3');
     point.setFlatCoordinates(ol.geom.GeometryLayout.XYZ, flatCoordinates);
+    point.setProperties(properties);
     return point;
   } else {
     return undefined;
@@ -945,6 +957,9 @@ ol.format.KML.readPolygon_ = function(node, objectStack) {
       'node.nodeType should be ELEMENT');
   goog.asserts.assert(node.localName == 'Polygon',
       'localName should be Polygon');
+  var properties = ol.xml.pushParseAndPop(/** @type {Object<string,*>} */ ({}),
+      ol.format.KML.EXTRUDE_AND_ALTITUDE_MODE_PARSERS_, node,
+      objectStack);
   var flatLinearRings = ol.xml.pushParseAndPop(
       /** @type {Array.<Array.<number>>} */ ([null]),
       ol.format.KML.FLAT_LINEAR_RINGS_PARSERS_, node, objectStack);
@@ -960,6 +975,7 @@ ol.format.KML.readPolygon_ = function(node, objectStack) {
     }
     polygon.setFlatCoordinates(
         ol.geom.GeometryLayout.XYZ, flatCoordinates, ends);
+    polygon.setProperties(properties);
     return polygon;
   } else {
     return undefined;
@@ -1263,6 +1279,18 @@ ol.format.KML.EXTENDED_DATA_PARSERS_ = ol.xml.makeParsersNS(
     ol.format.KML.NAMESPACE_URIS_, {
       'Data': ol.format.KML.DataParser_,
       'SchemaData': ol.format.KML.SchemaDataParser_
+    });
+
+
+/**
+ * @const
+ * @type {Object.<string, Object.<string, ol.xml.Parser>>}
+ * @private
+ */
+ol.format.KML.EXTRUDE_AND_ALTITUDE_MODE_PARSERS_ = ol.xml.makeParsersNS(
+    ol.format.KML.NAMESPACE_URIS_, {
+      'extrude': ol.xml.makeObjectPropertySetter(ol.format.XSD.readBoolean),
+      'altitudeMode': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString)
     });
 
 
