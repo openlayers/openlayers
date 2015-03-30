@@ -27,6 +27,15 @@ ol.SelectEventType = {
 };
 
 
+/**
+ * A function that takes an {@link ol.Feature} and an {@link ol.layer.Layer}
+ * and returns `true` if the feature may be selected or `false` otherwise.
+ * @typedef {function(ol.Feature, ol.layer.Layer): boolean}
+ * @api
+ */
+ol.interaction.SelectFilterFunction;
+
+
 
 /**
  * @classdesc
@@ -115,6 +124,13 @@ ol.interaction.Select = function(opt_options) {
    */
   this.multi_ = goog.isDef(options.multi) ? options.multi : false;
 
+  /**
+   * @private
+   * @type {ol.interaction.SelectFilterFunction}
+   */
+  this.filter_ = goog.isDef(options.filter) ? options.filter :
+      goog.functions.TRUE;
+
   var layerFilter;
   if (goog.isDef(options.layers)) {
     if (goog.isFunction(options.layers)) {
@@ -198,7 +214,9 @@ ol.interaction.Select.handleEvent = function(mapBrowserEvent) {
          * @param {ol.layer.Layer} layer Layer.
          */
         function(feature, layer) {
-          selected.push(feature);
+          if (this.filter_(feature, layer)) {
+            selected.push(feature);
+          }
           return !this.multi_;
         }, this, this.layerFilter_);
     if (selected.length > 0 && features.getLength() == 1 &&
@@ -223,14 +241,16 @@ ol.interaction.Select.handleEvent = function(mapBrowserEvent) {
           var index = goog.array.indexOf(features.getArray(), feature);
           if (index == -1) {
             if (add || toggle) {
-              selected.push(feature);
+              if (this.filter_(feature, layer)) {
+                selected.push(feature);
+              }
             }
           } else {
             if (remove || toggle) {
               deselected.push(feature);
             }
           }
-        }, undefined, this.layerFilter_);
+        }, this, this.layerFilter_);
     var i;
     for (i = deselected.length - 1; i >= 0; --i) {
       features.remove(deselected[i]);

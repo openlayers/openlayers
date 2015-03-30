@@ -2,12 +2,14 @@ goog.provide('ol.test.interaction.Select');
 
 describe('ol.interaction.Select', function() {
   var target, map, source;
+  var feature1, feature2;
 
   var width = 360;
   var height = 180;
 
   beforeEach(function(done) {
     target = document.createElement('div');
+
     var style = target.style;
     style.position = 'absolute';
     style.left = '-1000px';
@@ -15,18 +17,25 @@ describe('ol.interaction.Select', function() {
     style.width = width + 'px';
     style.height = height + 'px';
     document.body.appendChild(target);
-    var geometry = new ol.geom.Polygon([[[0, 0], [0, 40], [40, 40], [40, 0]]]);
+
+    var geometry1 = new ol.geom.Polygon([[[0, 0], [0, 40], [40, 40], [40, 0]]]);
     var geometry2 = new ol.geom.Polygon([[[0, 0], [0, 40], [40, 40], [40, 0]]]);
-    var feature = new ol.Feature({
-      geometry: geometry
+
+    feature1 = new ol.Feature({
+      geometry: geometry1
     });
-    var feature2 = new ol.Feature({
+    feature1.setId('fid1');
+
+    feature2 = new ol.Feature({
       geometry: geometry2
     });
+    feature2.setId('fid2');
+
     source = new ol.source.Vector({
-      features: [feature, feature2]
+      features: [feature1, feature2]
     });
     var layer = new ol.layer.Vector({source: source});
+
     map = new ol.Map({
       target: target,
       layers: [layer],
@@ -36,6 +45,7 @@ describe('ol.interaction.Select', function() {
         resolution: 1
       })
     });
+
     map.on('postrender', function() {
       done();
     });
@@ -125,6 +135,45 @@ describe('ol.interaction.Select', function() {
       var features = select.getFeatures();
       expect(features.getLength()).to.equal(2);
     });
+  });
+
+  describe.only('filter out features using the filter option', function() {
+    var select;
+
+    describe('with multi set to true', function() {
+
+      it('does not select features that are filtered out', function() {
+        var select = new ol.interaction.Select({
+          multi: true,
+          filter: function(feature, layer) {
+            return feature.getId() !== 'fid2';
+          }
+        });
+        map.addInteraction(select);
+
+        simulateEvent(ol.MapBrowserEvent.EventType.SINGLECLICK, 10, -20);
+        var features = select.getFeatures();
+        expect(features.getLength()).to.equal(1);
+        expect(features.item(0).getId()).not.to.be('fid2');
+      });
+    });
+
+    describe('with multi set to false', function() {
+
+      it('does not select features that are filtered out', function() {
+        var select = new ol.interaction.Select({
+          multi: false,
+          filter: function(feature, layer) {
+            return feature.getId() !== 'fid2';
+          }
+        });
+        map.addInteraction(select);
+        simulateEvent(ol.MapBrowserEvent.EventType.SINGLECLICK, 10, -20);
+        var features = select.getFeatures();
+        expect(features.getLength()).to.equal(0);
+      });
+    });
+
   });
 
   describe('#setActive()', function() {
