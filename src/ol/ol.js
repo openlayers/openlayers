@@ -233,7 +233,6 @@ ol.WEBGL_TEXTURE_CACHE_HIGH_WATER_MARK = 1024;
  * supported, the value is set to `undefined`.
  * @const
  * @type {number|undefined}
- * @api
  */
 ol.WEBGL_MAX_TEXTURE_SIZE; // value is set in `ol.has`
 
