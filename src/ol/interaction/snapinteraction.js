@@ -11,6 +11,7 @@ goog.require('ol.CollectionEvent');
 goog.require('ol.CollectionEventType');
 goog.require('ol.Extent');
 goog.require('ol.Feature');
+goog.require('ol.Object');
 goog.require('ol.Observable');
 goog.require('ol.coordinate');
 goog.require('ol.extent');
@@ -68,16 +69,22 @@ ol.interaction.Snap = function(opt_options) {
   this.features_ = goog.isDef(options.features) ? options.features : null;
 
   /**
-   * @type {ol.Collection.<goog.events.Key>}
+   * @type {Array.<goog.events.Key>}
    * @private
    */
-  this.featuresListenerKeys_ = new ol.Collection();
+  this.featuresListenerKeys_ = [];
 
   /**
    * @type {Object.<number, goog.events.Key>}
    * @private
    */
-  this.geometryListenerKeys_ = {};
+  this.geometryChangeListenerKeys_ = {};
+
+  /**
+   * @type {Object.<number, goog.events.Key>}
+   * @private
+   */
+  this.geometryModifyListenerKeys_ = {};
 
   /**
    * Extents are preserved so indexed segment can be quickly removed
@@ -149,14 +156,16 @@ ol.interaction.Snap.prototype.addFeature = function(feature, opt_listen) {
     var feature_uid = goog.getUid(feature);
     this.indexedFeaturesExtents_[feature_uid] = geometry.getExtent();
     segmentWriter.call(this, feature, geometry);
-  }
 
-  if (listen) {
-    var geom_uid = goog.getUid(geometry);
-    this.geometryListenerKeys_[geom_uid] = geometry.on(
-        goog.events.EventType.CHANGE,
-        goog.bind(this.handleGeometryChanged_, this, feature),
-        this);
+    if (listen) {
+      this.geometryModifyListenerKeys_[feature_uid] = geometry.on(
+          goog.events.EventType.CHANGE,
+          goog.bind(this.handleGeometryModify_, this, feature),
+          this);
+      this.geometryChangeListenerKeys_[feature_uid] = feature.on(
+          ol.Object.getChangeEventType(feature.getGeometryName()),
+          this.handleGeometryChange_, this);
+    }
   }
 };
 goog.exportProperty(
@@ -242,11 +251,23 @@ ol.interaction.Snap.prototype.handleFeatureRemove_ = function(evt) {
 
 
 /**
- * @param {ol.Feature} feature Feature which geometry changed.
  * @param {goog.events.Event} evt Event.
  * @private
  */
-ol.interaction.Snap.prototype.handleGeometryChanged_ = function(feature, evt) {
+ol.interaction.Snap.prototype.handleGeometryChange_ = function(evt) {
+  var feature = evt.currentTarget;
+  goog.asserts.assertInstanceof(feature, ol.Feature);
+  this.removeFeature(feature, true);
+  this.addFeature(feature, true);
+};
+
+
+/**
+ * @param {ol.Feature} feature Feature which geometry was modified.
+ * @param {goog.events.Event} evt Event.
+ * @private
+ */
+ol.interaction.Snap.prototype.handleGeometryModify_ = function(feature, evt) {
   if (this.handlingDownUpSequence) {
     var uid = goog.getUid(feature);
     if (!(uid in this.pendingFeatures_)) {
@@ -268,24 +289,25 @@ ol.interaction.Snap.prototype.removeFeature = function(feature, opt_unlisten) {
   var unlisten = goog.isDef(opt_unlisten) ? opt_unlisten : true;
   var feature_uid = goog.getUid(feature);
   var extent = this.indexedFeaturesExtents_[feature_uid];
-  goog.asserts.assertArray(extent);
-  var rBush = this.rBush_;
-  var i, nodesToRemove = [];
-  rBush.forEachInExtent(extent, function(node) {
-    if (feature === node.feature) {
-      nodesToRemove.push(node);
+  if (extent) {
+    var rBush = this.rBush_;
+    var i, nodesToRemove = [];
+    rBush.forEachInExtent(extent, function(node) {
+      if (feature === node.feature) {
+        nodesToRemove.push(node);
+      }
+    });
+    for (i = nodesToRemove.length - 1; i >= 0; --i) {
+      rBush.remove(nodesToRemove[i]);
     }
-  });
-  for (i = nodesToRemove.length - 1; i >= 0; --i) {
-    rBush.remove(nodesToRemove[i]);
-  }
 
-  if (unlisten) {
-    var geometry = feature.getGeometry();
-    goog.asserts.assertInstanceof(geometry, ol.geom.Geometry);
-    var geom_uid = goog.getUid(geometry);
-    ol.Observable.unByKey(this.geometryListenerKeys_[geom_uid]);
-    delete this.geometryListenerKeys_[geom_uid];
+    if (unlisten) {
+      ol.Observable.unByKey(this.geometryModifyListenerKeys_[feature_uid]);
+      delete this.geometryModifyListenerKeys_[feature_uid];
+
+      ol.Observable.unByKey(this.geometryChangeListenerKeys_[feature_uid]);
+      delete this.geometryChangeListenerKeys_[feature_uid];
+    }
   }
 };
 goog.exportProperty(
@@ -303,8 +325,8 @@ ol.interaction.Snap.prototype.setMap = function(map) {
   var features = this.getFeatures_();
 
   if (currentMap) {
-    keys.forEach(ol.Observable.unByKey, this);
-    keys.clear();
+    goog.array.forEach(keys, ol.Observable.unByKey);
+    keys.length = 0;
     features.forEach(this.forEachFeatureRemove_, this);
   }
 
