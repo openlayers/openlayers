@@ -42,6 +42,13 @@ ol.source.Cluster = function(options) {
   this.distance_ = goog.isDef(options.distance) ? options.distance : 20;
 
   /**
+   * @type {number}
+   * @private
+   */
+  this.minResolution_ =
+      goog.isDef(options.minResolution) ? options.minResolution : 0;
+
+  /**
    * @type {Array.<ol.Feature>}
    * @private
    */
@@ -89,7 +96,7 @@ ol.source.Cluster.prototype.loadFeatures = function(extent, resolution,
  * @private
  */
 ol.source.Cluster.prototype.onSourceChange_ = function() {
-  this.clear();
+  this.clear(true);
   this.cluster_();
   this.addFeatures(this.features_);
   this.changed();
@@ -122,18 +129,25 @@ ol.source.Cluster.prototype.cluster_ = function() {
       ol.extent.createOrUpdateFromCoordinate(coordinates, extent);
       ol.extent.buffer(extent, mapDistance, extent);
 
-      var neighbors = this.source_.getFeaturesInExtent(extent);
-      goog.asserts.assert(neighbors.length >= 1);
-      neighbors = goog.array.filter(neighbors, function(neighbor) {
-        var uid = goog.getUid(neighbor).toString();
-        if (!goog.object.containsKey(clustered, uid)) {
-          clustered[uid] = true;
-          return true;
-        } else {
-          return false;
-        }
-      });
-      this.features_.push(this.createCluster_(neighbors));
+      var neighbors;
+      if (this.resolution_ > this.minResolution_) {
+        neighbors = this.source_.getFeaturesInExtent(extent);
+        goog.asserts.assert(neighbors.length >= 1);
+        neighbors = goog.array.filter(neighbors, function(neighbor) {
+          var uid = goog.getUid(neighbor).toString();
+          if (!goog.object.containsKey(clustered, uid)) {
+            clustered[uid] = true;
+            return true;
+          } else {
+            return false;
+          }
+        });
+        this.features_.push(this.createCluster_(neighbors));
+      } else {
+        var uid = goog.getUid(feature).toString();
+        clustered[uid] = true;
+        this.features_.push(this.createCluster_([feature]));
+      }
     }
   }
   goog.asserts.assert(
