@@ -131,7 +131,7 @@ ol.ObjectAccessor.prototype.transform = function(from, to) {
  * property is observable as well as the object as a whole.
  *
  * Classes that inherit from this have pre-defined properties, to which you can
- * add your own. The pre-defined properties are listed in this documentation as
+ * add your owns. The pre-defined properties are listed in this documentation as
  * 'Observable Properties', and have their own accessors; for example,
  * {@link ol.Map} has a `target` property, accessed with `getTarget()`  and
  * changed with `setTarget()`. Not all properties are however settable. There
@@ -162,6 +162,9 @@ ol.ObjectAccessor.prototype.transform = function(from, to) {
  * automatically be reflected in the other. See `bindTo` method for more
  * details, and see {@link ol.dom.Input} for the specific case of binding an
  * object with an HTML element.
+ *
+ * Properties can be deleted by using the unset method. E.g.
+ * object.unset('foo').
  *
  * @constructor
  * @extends {ol.Observable}
@@ -487,5 +490,19 @@ ol.Object.prototype.unbind = function(key) {
 ol.Object.prototype.unbindAll = function() {
   for (var key in this.listeners_) {
     this.unbind(key);
+  }
+};
+
+
+/**
+ * Unsets a property.
+ * @param {string} key Key name.
+ * @api
+ */
+ol.Object.prototype.unset = function(key) {
+  if (key in this.values_) {
+    var oldValue = this.values_[key];
+    delete this.values_[key];
+    this.notify(key, oldValue);
   }
 };
