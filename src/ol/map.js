@@ -338,13 +338,17 @@ ol.Map = function(options) {
   this.registerDisposable(this.renderer_);
 
   /**
+   * @type {goog.dom.ViewportSizeMonitor}
    * @private
    */
   this.viewportSizeMonitor_ = new goog.dom.ViewportSizeMonitor();
   this.registerDisposable(this.viewportSizeMonitor_);
 
-  goog.events.listen(this.viewportSizeMonitor_, goog.events.EventType.RESIZE,
-      this.updateSize, false, this);
+  /**
+   * @type {goog.events.Key}
+   * @private
+   */
+  this.viewportResizeListenerKey_ = null;
 
   /**
    * @private
@@ -1030,12 +1034,22 @@ ol.Map.prototype.handleTargetChanged_ = function() {
 
   if (goog.isNull(targetElement)) {
     goog.dom.removeNode(this.viewport_);
+    if (!goog.isNull(this.viewportResizeListenerKey_)) {
+      goog.events.unlistenByKey(this.viewportResizeListenerKey_);
+      this.viewportResizeListenerKey_ = null;
+    }
   } else {
     goog.dom.appendChild(targetElement, this.viewport_);
 
     var keyboardEventTarget = goog.isNull(this.keyboardEventTarget_) ?
         targetElement : this.keyboardEventTarget_;
     this.keyHandler_.attach(keyboardEventTarget);
+
+    if (goog.isNull(this.viewportResizeListenerKey_)) {
+      this.viewportResizeListenerKey_ = goog.events.listen(
+          this.viewportSizeMonitor_, goog.events.EventType.RESIZE,
+          this.updateSize, false, this);
+    }
   }
 
   this.updateSize();

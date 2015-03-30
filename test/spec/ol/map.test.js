@@ -187,6 +187,39 @@ describe('ol.Map', function() {
     });
   });
 
+  describe('#setTarget', function() {
+    var map;
+
+    beforeEach(function() {
+      map = new ol.Map({
+        target: document.createElement('div')
+      });
+      var viewportResizeListeners = map.viewportSizeMonitor_.getListeners(
+          goog.events.EventType.RESIZE, false);
+      expect(viewportResizeListeners).to.have.length(1);
+    });
+
+    describe('call setTarget with null', function() {
+      it('unregisters the viewport resize listener', function() {
+        map.setTarget(null);
+        var viewportResizeListeners = map.viewportSizeMonitor_.getListeners(
+            goog.events.EventType.RESIZE, false);
+        expect(viewportResizeListeners).to.have.length(0);
+      });
+    });
+
+    describe('call setTarget with an element', function() {
+      it('registers a viewport resize listener', function() {
+        map.setTarget(null);
+        map.setTarget(document.createElement('div'));
+        var viewportResizeListeners = map.viewportSizeMonitor_.getListeners(
+            goog.events.EventType.RESIZE, false);
+        expect(viewportResizeListeners).to.have.length(1);
+      });
+    });
+
+  });
+
   describe('create interactions', function() {
 
     var options;
@@ -244,6 +277,7 @@ describe('ol.Map', function() {
 
 goog.require('goog.dispose');
 goog.require('goog.dom');
+goog.require('goog.events.EventType');
 goog.require('ol.Map');
 goog.require('ol.MapEvent');
 goog.require('ol.View');
