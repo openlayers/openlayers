@@ -679,7 +679,7 @@ ol.xml.parseNode = function(parsersNS, node, objectStack, opt_this) {
  * @param {Node} node Node.
  * @param {Array.<*>} objectStack Object stack.
  * @param {*=} opt_this The object to use as `this`.
- * @return {T|undefined} Object.
+ * @return {T} Object.
  * @template T
  */
 ol.xml.pushParseAndPop = function(
