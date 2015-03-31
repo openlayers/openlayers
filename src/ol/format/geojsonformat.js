@@ -347,7 +347,7 @@ ol.format.GeoJSON.writePolygonGeometry_ = function(geometry, opt_options) {
  * @private
  * @return {GeoJSONGeometry} GeoJSON geometry.
  */
-ol.format.GeoJSON.writeCircleGeometry_ = function(geometry, opt_layout) {
+ol.format.GeoJSON.writeCircleGeometry_ = function(geometry, opt_options) {
   goog.asserts.assertInstanceof(geometry, ol.geom.Circle,
       'geometry should be an ol.geom.Circle);
   return /** @type {GeoJSONGeometry} */ ({
