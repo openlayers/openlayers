@@ -75,6 +75,7 @@ ol.proj.EPSG3857.WORLD_EXTENT = [-180, -85, 180, 85];
  * @type {Array.<string>}
  */
 ol.proj.EPSG3857.CODES = [
+  'WEB',
   'EPSG:3857',
   'EPSG:102100',
   'EPSG:102113',
