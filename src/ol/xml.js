@@ -90,6 +90,7 @@ ol.xml.getAllTextContent = function(node, normalizeWhitespace) {
 
 
 /**
+ * Recursively grab all text content of child nodes into a single string.
  * @param {Node} node Node.
  * @param {boolean} normalizeWhitespace Normalize whitespace: remove all line
  * breaks.
@@ -337,7 +338,7 @@ ol.xml.setAttributeNS =
 
 
 /**
- * Parse an XML string to a XML Document
+ * Parse an XML string to an XML Document.
  * @param {string} xml XML.
  * @return {Document} Document.
  * @api
@@ -348,6 +349,8 @@ ol.xml.parse = function(xml) {
 
 
 /**
+ * Make an array extender function for extending the array at the top of the
+ * object stack.
  * @param {function(this: T, Node, Array.<*>): (Array.<*>|undefined)}
  *     valueReader Value reader.
  * @param {T=} opt_this The object to use as `this` in `valueReader`.
@@ -376,6 +379,8 @@ ol.xml.makeArrayExtender = function(valueReader, opt_this) {
 
 
 /**
+ * Make an array pusher function for pushing to the array at the top of the
+ * object stack.
  * @param {function(this: T, Node, Array.<*>): *} valueReader Value reader.
  * @param {T=} opt_this The object to use as `this` in `valueReader`.
  * @return {ol.xml.Parser} Parser.
@@ -401,6 +406,8 @@ ol.xml.makeArrayPusher = function(valueReader, opt_this) {
 
 
 /**
+ * Make an object stack replacer function for replacing the object at the
+ * top of the stack.
  * @param {function(this: T, Node, Array.<*>): *} valueReader Value reader.
  * @param {T=} opt_this The object to use as `this` in `valueReader`.
  * @return {ol.xml.Parser} Parser.
@@ -423,6 +430,8 @@ ol.xml.makeReplacer = function(valueReader, opt_this) {
 
 
 /**
+ * Make an object property pusher function for adding a property to the
+ * object at the top of the stack.
  * @param {function(this: T, Node, Array.<*>): *} valueReader Value reader.
  * @param {string=} opt_property Property.
  * @param {T=} opt_this The object to use as `this` in `valueReader`.
@@ -456,6 +465,7 @@ ol.xml.makeObjectPropertyPusher =
 
 
 /**
+ * Make an object property setter function.
  * @param {function(this: T, Node, Array.<*>): *} valueReader Value reader.
  * @param {string=} opt_property Property.
  * @param {T=} opt_this The object to use as `this` in `valueReader`.
@@ -488,6 +498,7 @@ ol.xml.makeObjectPropertySetter =
 
 
 /**
+ * Make a parserNS hash.
  * @param {Array.<string>} namespaceURIs Namespace URIs.
  * @param {Object.<string, ol.xml.Parser>} parsers Parsers.
  * @param {Object.<string, Object.<string, ol.xml.Parser>>=} opt_parsersNS
@@ -501,7 +512,7 @@ ol.xml.makeParsersNS = function(namespaceURIs, parsers, opt_parsersNS) {
 
 
 /**
- * Creates a serializer that appends nodes written by its `nodeWriter` to its
+ * Create a serializer that appends nodes written by its `nodeWriter` to its
  * designated parent. The parent is the `node` of the
  * {@link ol.xml.NodeStackItem} at the top of the `objectStack`.
  * @param {function(this: T, Node, V, Array.<*>)}
@@ -527,7 +538,7 @@ ol.xml.makeChildAppender = function(nodeWriter, opt_this) {
 
 
 /**
- * Creates a serializer that calls the provided `nodeWriter` from
+ * Create a serializer that calls the provided `nodeWriter` from
  * {@link ol.xml.serialize}. This can be used by the parent writer to have the
  * 'nodeWriter' called with an array of values when the `nodeWriter` was
  * designed to serialize a single item. An example would be a LineString
@@ -555,7 +566,7 @@ ol.xml.makeArraySerializer = function(nodeWriter, opt_this) {
 
 
 /**
- * Creates a node factory which can use the `opt_keys` passed to
+ * Create a node factory which can use the `opt_keys` passed to
  * {@link ol.xml.serialize} or {@link ol.xml.pushSerializeAndPop} as node names,
  * or a fixed node name. The namespace of the created nodes can either be fixed,
  * or the parent namespace will be used.
@@ -607,7 +618,7 @@ ol.xml.OBJECT_PROPERTY_NODE_FACTORY = ol.xml.makeSimpleNodeFactory();
 
 
 /**
- * Creates an array of `values` to be used with {@link ol.xml.serialize} or
+ * Create an array of `values` to be used with {@link ol.xml.serialize} or
  * {@link ol.xml.pushSerializeAndPop}, where `orderedKeys` has to be provided as
  * `opt_key` argument.
  * @param {Object.<string, V>} object Key-value pairs for the sequence. Keys can
@@ -629,7 +640,7 @@ ol.xml.makeSequence = function(object, orderedKeys) {
 
 
 /**
- * Creates a namespaced structure, using the same values for each namespace.
+ * Create a namespaced structure, using the same values for each namespace.
  * This can be used as a starting point for versioned parsers, when only a few
  * values are version specific.
  * @param {Array.<string>} namespaceURIs Namespace URIs.
@@ -652,6 +663,7 @@ ol.xml.makeStructureNS = function(namespaceURIs, structure, opt_structureNS) {
 
 
 /**
+ * Parse a node using the parsers and object stack.
  * @param {Object.<string, Object.<string, ol.xml.Parser>>} parsersNS
  *     Parsers by namespace.
  * @param {Node} node Node.
@@ -673,6 +685,7 @@ ol.xml.parseNode = function(parsersNS, node, objectStack, opt_this) {
 
 
 /**
+ * Push an object on top of the stack, parse and return the popped object.
  * @param {T} object Object.
  * @param {Object.<string, Object.<string, ol.xml.Parser>>} parsersNS
  *     Parsers by namespace.
@@ -691,7 +704,7 @@ ol.xml.pushParseAndPop = function(
 
 
 /**
- * Walks through an array of `values` and calls a serializer for each value.
+ * Walk through an array of `values` and call a serializer for each value.
  * @param {Object.<string, Object.<string, ol.xml.Serializer>>} serializersNS
  *     Namespaced serializers.
  * @param {function(this: T, *, Array.<*>, (string|undefined)): (Node|undefined)} nodeFactory
