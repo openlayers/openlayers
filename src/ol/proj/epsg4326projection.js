@@ -57,6 +57,7 @@ ol.proj.EPSG4326.EXTENT = [-180, -90, 180, 90];
  * @type {Array.<ol.proj.Projection>}
  */
 ol.proj.EPSG4326.PROJECTIONS = [
+  new ol.proj.EPSG4326_('WGS84'),
   new ol.proj.EPSG4326_('CRS:84'),
   new ol.proj.EPSG4326_('EPSG:4326', 'neu'),
   new ol.proj.EPSG4326_('urn:ogc:def:crs:EPSG::4326', 'neu'),

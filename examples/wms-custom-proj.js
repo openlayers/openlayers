@@ -90,7 +90,7 @@ var map = new ol.Map({
   target: 'map',
   view: new ol.View({
     projection: projection,
-    center: ol.proj.transform([8.23, 46.86], 'EPSG:4326', 'EPSG:21781'),
+    center: ol.proj.transform([8.23, 46.86], 'WGS84', 'EPSG:21781'),
     extent: extent,
     zoom: 2
   })
