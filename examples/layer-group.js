@@ -33,7 +33,7 @@ var map = new ol.Map({
   renderer: exampleNS.getRendererFromQueryString(),
   target: 'map',
   view: new ol.View({
-    center: ol.proj.transform([37.40570, 8.81566], 'EPSG:4326', 'EPSG:3857'),
+    center: ol.proj.fromLonLat([37.40570, 8.81566]),
     zoom: 4
   })
 });

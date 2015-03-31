@@ -75,7 +75,7 @@ var map = new ol.Map({
   target: 'map',
   view: new ol.View({
     projection: projection,
-    center: ol.proj.transform([8.23, 46.86], 'EPSG:4326', projection),
+    center: ol.proj.fromLonLat([8.23, 46.86], projection),
     extent: extent,
     zoom: 2
   })
