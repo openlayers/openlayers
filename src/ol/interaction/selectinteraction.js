@@ -1,4 +1,5 @@
 goog.provide('ol.interaction.Select');
+goog.provide('ol.interaction.SelectFilterFunction');
 
 goog.require('goog.array');
 goog.require('goog.asserts');
