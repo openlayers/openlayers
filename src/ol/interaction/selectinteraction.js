@@ -217,8 +217,8 @@ ol.interaction.Select.handleEvent = function(mapBrowserEvent) {
         function(feature, layer) {
           if (this.filter_(feature, layer)) {
             selected.push(feature);
+            return !this.multi_;
           }
-          return !this.multi_;
         }, this, this.layerFilter_);
     if (selected.length > 0 && features.getLength() == 1 &&
         features.item(0) == selected[0]) {
