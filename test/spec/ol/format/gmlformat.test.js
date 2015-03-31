@@ -1197,6 +1197,19 @@ describe('ol.format.GML3', function() {
 
   });
 
+  describe('when constructing', function() {
+
+    var gml2;
+    before(function() {
+      gml2 = new ol.format.GML2({defaultDataProjection: 'EPSG:4326'});
+    });
+
+    it('sets the defaultDataProjection correctly', function() {
+      expect(gml2.defaultDataProjection.getCode()).to.be('EPSG:4326');
+    });
+
+  });
+
 });
 
 

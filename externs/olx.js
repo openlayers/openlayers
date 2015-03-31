@@ -1724,7 +1724,8 @@ olx.format.KMLOptions.prototype.defaultStyle;
  *     curve: (boolean|undefined),
  *     multiCurve: (boolean|undefined),
  *     multiSurface: (boolean|undefined),
- *     schemaLocation: (string|undefined)}}
+ *     schemaLocation: (string|undefined),
+ *     defaultDataProjection: ol.proj.ProjectionLike}}
  * @api
  */
 olx.format.GMLOptions;
@@ -1809,6 +1810,14 @@ olx.format.GMLOptions.prototype.multiSurface;
  * @api stable
  */
 olx.format.GMLOptions.prototype.schemaLocation;
+
+
+/**
+ * Default data projection.
+ * @type {ol.proj.ProjectionLike}
+ * @api stable
+ */
+olx.format.GMLOptions.prototype.defaultDataProjection;
 
 
 /**

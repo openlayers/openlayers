@@ -79,6 +79,13 @@ ol.format.GMLBase = function(opt_options) {
   };
 
   goog.base(this);
+
+  /**
+   * @inheritDoc
+   */
+  this.defaultDataProjection = goog.isDef(options.defaultDataProjection) ?
+      ol.proj.get(options.defaultDataProjection) : null;
+
 };
 goog.inherits(ol.format.GMLBase, ol.format.XMLFeature);
 
