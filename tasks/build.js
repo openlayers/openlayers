@@ -7,6 +7,7 @@ var async = require('async');
 var closure = require('closure-util');
 var fse = require('fs-extra');
 var fs = require('graceful-fs');
+var sourceMapGenerator = require('inline-source-map');
 var nomnom = require('nomnom');
 var temp = require('temp').track();
 var exec = require('child_process').exec;
@@ -16,19 +17,19 @@ var generateExports = require('./generate-exports');
 var log = closure.log;
 var root = path.join(__dirname, '..');
 
-var umdWrapper = '(function (root, factory) {\n' +
-    '  if (typeof define === "function" && define.amd) {\n' +
-    '    define([], factory);\n' +
-    '  } else if (typeof exports === "object") {\n' +
-    '    module.exports = factory();\n' +
-    '  } else {\n' +
-    '    root.ol = factory();\n' +
-    '  }\n' +
-    '}(this, function () {\n' +
-    '  var OPENLAYERS = {};\n' +
+var umdWrapper = '(function (root, factory) {' +
+    '  if (typeof define === "function" && define.amd) {' +
+    '    define([], factory);' +
+    '  } else if (typeof exports === "object") {' +
+    '    module.exports = factory();' +
+    '  } else {' +
+    '    root.ol = factory();' +
+    '  }' +
+    '}(this, function () {' +
+    '  var OPENLAYERS = {};' +
     '  %output%\n' +
-    '  return OPENLAYERS.ol;\n' +
-    '}));\n';
+    '  return OPENLAYERS.ol;' +
+    '}));';
 
 
 /**
@@ -164,24 +165,69 @@ function getDependencies(config, exports, callback) {
 
 
 /**
+ * Read a file and generate an object representing the file.
+ * @param {string} file File path.
+ * @param {function(Error, Object)} callback Called with any error and an object
+ *     with references to the path and content of the file.
+ * @return {[type]} [description]
+ */
+function readFile(file, callback) {
+  fs.readFile(file, function(err, content) {
+    if (err) {
+      callback(err);
+    } else {
+      callback(null, {path: file, content: content});
+    }
+  });
+}
+
+
+/**
+ * Get the number of newlines in a string.
+ * @param {string} content Content with newlines.
+ * @return {number} The number of newlines.
+ */
+function newlineCount(content) {
+  var newlines = content.match(/\n/g);
+  return newlines ? newlines.length : 0;
+}
+
+
+var header = '// OpenLayers 3. See http://openlayers.org/\n' +
+    '// License: https://raw.githubusercontent.com/openlayers/' +
+    'ol3/master/LICENSE.md\n';
+
+
+/**
  * Concatenate all sources.
  * @param {Array.<string>} paths List of paths to source files.
  * @param {function(Error, string)} callback Called with the concatenated
  *     output or any error.
  */
 function concatenate(paths, callback) {
-  async.map(paths, fs.readFile, function(err, results) {
+  async.map(paths, readFile, function(err, results) {
     if (err) {
       var msg = 'Trouble concatenating sources.  ' + err.message;
       callback(new Error(msg));
     } else {
       var parts = umdWrapper.split('%output%');
+      var sourceMap = sourceMapGenerator();
+
       var src = parts[0] +
-          'var goog = this.goog = {};\n' +
-          'this.CLOSURE_NO_DEPS = true;\n' +
-          results.join('\n') +
-          'OPENLAYERS.ol = ol;\n' +
-          parts[1];
+          'var goog = this.goog = {};' +
+          'this.CLOSURE_NO_DEPS = true;\n';
+
+      var offset = newlineCount(header) + newlineCount(src);
+      for (var i = 0, ii = results.length; i < ii; ++i) {
+        var content = String(results[i].content);
+        src += content;
+        sourceMap.addGeneratedMappings(results[i].path, content,
+            {line: offset});
+        sourceMap.addSourceContent(results[i].path, content);
+        offset += newlineCount(content);
+      }
+      src += '\nOPENLAYERS.ol = ol;' + parts[1] + '\n';
+      src += sourceMap.inlineMappingUrl() + '\n';
       callback(null, src);
     }
   });
@@ -214,20 +260,22 @@ function build(config, paths, callback) {
 
 
 /**
- * Adds a file header with the most recent Git tag.
+ * Adds a file header with the license and a footer with the most recent tag.
  * @param {string} compiledSource The compiled library.
  * @param {function(Error, string)} callback Called with the output
  *     ready to be written into a file, or any error.
  */
 function addHeader(compiledSource, callback) {
   exec('git describe --tags', function(error, stdout, stderr) {
-    var header = '// OpenLayers 3. See http://openlayers.org/\n';
-    header += '// License: https://raw.githubusercontent.com/openlayers/' +
-        'ol3/master/LICENSE.md\n';
+    var source = header + compiledSource;
     if (stdout !== '') {
-      header += '// Version: ' + stdout + '\n';
+      // Note that this is appended to the end of the file instead of the start
+      // so that source map offsets still work.  If we conditionally add to the
+      // header length, then we cannot generate offsets to the sourcemap during
+      // compilation.
+      source += '\n// Version: ' + stdout + '\n';
     }
-    callback(null, header + compiledSource);
+    callback(null, source);
   });
 }
 
