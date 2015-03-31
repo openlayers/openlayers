@@ -897,14 +897,17 @@ ol.format.KML.readMultiGeometry_ = function(node, objectStack) {
       }
       var multiPoint = new ol.geom.MultiPoint(null);
       multiPoint.setFlatCoordinates(layout, flatCoordinates);
+      ol.format.KML.setCommonGeometryProperties_(multiPoint, geometries);
       return multiPoint;
     } else if (type == ol.geom.GeometryType.LINE_STRING) {
       var multiLineString = new ol.geom.MultiLineString(null);
       multiLineString.setLineStrings(geometries);
+      ol.format.KML.setCommonGeometryProperties_(multiLineString, geometries);
       return multiLineString;
     } else if (type == ol.geom.GeometryType.POLYGON) {
       var multiPolygon = new ol.geom.MultiPolygon(null);
       multiPolygon.setPolygons(geometries);
+      ol.format.KML.setCommonGeometryProperties_(multiPolygon, geometries);
       return multiPolygon;
     } else if (type == ol.geom.GeometryType.GEOMETRY_COLLECTION) {
       return new ol.geom.GeometryCollection(geometries);
@@ -1023,6 +1026,37 @@ ol.format.KML.readStyle_ = function(node, objectStack) {
     text: textStyle,
     zIndex: undefined // FIXME
   })];
+};
+
+
+/**
+ * Reads an array of geometries and creates arrays for common geometry
+ * properties. Then sets them to the multi geometry.
+ * @param {ol.geom.MultiPoint|ol.geom.MultiLineString|ol.geom.MultiPolygon}
+ * multiGeometry
+ * @param {Array.<ol.geom.Geometry>} geometries
+ * @private
+ */
+ol.format.KML.setCommonGeometryProperties_ = function(multiGeometry,
+    geometries) {
+  var ii = geometries.length;
+  var extrudes = new Array(geometries.length);
+  var altitudeModes = new Array(geometries.length);
+  var geometry, i, hasExtrude, hasAltitudeMode;
+  hasExtrude = hasAltitudeMode = false;
+  for (i = 0; i < ii; ++i) {
+    geometry = geometries[i];
+    extrudes[i] = geometry.get('extrude');
+    altitudeModes[i] = geometry.get('altitudeMode');
+    hasExtrude = hasExtrude || goog.isDef(extrudes[i]);
+    hasAltitudeMode = hasAltitudeMode || goog.isDef(altitudeModes[i]);
+  }
+  if (hasExtrude) {
+    multiGeometry.set('extrude', extrudes);
+  }
+  if (hasAltitudeMode) {
+    multiGeometry.set('altitudeMode', altitudeModes);
+  }
 };
 
 

@@ -754,9 +754,13 @@ describe('ol.format.KML', function() {
             '    <MultiGeometry>' +
             '      <Point>' +
             '        <coordinates>1,2,3</coordinates>' +
+            '        <extrude>0</extrude>' +
+            '        <altitudeMode>absolute</altitudeMode>' +
             '      </Point>' +
             '      <Point>' +
             '        <coordinates>4,5,6</coordinates>' +
+            '        <extrude>1</extrude>' +
+            '        <altitudeMode>clampToGround</altitudeMode>' +
             '      </Point>' +
             '    </MultiGeometry>' +
             '  </Placemark>' +
@@ -768,6 +772,14 @@ describe('ol.format.KML', function() {
         var g = f.getGeometry();
         expect(g).to.be.an(ol.geom.MultiPoint);
         expect(g.getCoordinates()).to.eql([[1, 2, 3], [4, 5, 6]]);
+        expect(g.get('extrude')).to.be.an('array');
+        expect(g.get('extrude')).to.have.length(2);
+        expect(g.get('extrude')[0]).to.be(false);
+        expect(g.get('extrude')[1]).to.be(true);
+        expect(g.get('altitudeMode')).to.be.an('array');
+        expect(g.get('altitudeMode')).to.have.length(2);
+        expect(g.get('altitudeMode')[0]).to.be('absolute');
+        expect(g.get('altitudeMode')[1]).to.be('clampToGround');
       });
 
       it('can write MultiPoint geometries', function() {
@@ -802,6 +814,8 @@ describe('ol.format.KML', function() {
             '  <Placemark>' +
             '    <MultiGeometry>' +
             '      <LineString>' +
+            '        <extrude>0</extrude>' +
+            '        <altitudeMode>absolute</altitudeMode>' +
             '        <coordinates>1,2,3 4,5,6</coordinates>' +
             '      </LineString>' +
             '      <LineString>' +
@@ -818,6 +832,14 @@ describe('ol.format.KML', function() {
         expect(g).to.be.an(ol.geom.MultiLineString);
         expect(g.getCoordinates()).to.eql(
             [[[1, 2, 3], [4, 5, 6]], [[7, 8, 9], [10, 11, 12]]]);
+        expect(g.get('extrude')).to.be.an('array');
+        expect(g.get('extrude')).to.have.length(2);
+        expect(g.get('extrude')[0]).to.be(false);
+        expect(g.get('extrude')[1]).to.be(undefined);
+        expect(g.get('altitudeMode')).to.be.an('array');
+        expect(g.get('altitudeMode')).to.have.length(2);
+        expect(g.get('altitudeMode')[0]).to.be('absolute');
+        expect(g.get('altitudeMode')[1]).to.be(undefined);
       });
 
       it('can write MultiLineString geometries', function() {
@@ -852,6 +874,8 @@ describe('ol.format.KML', function() {
             '  <Placemark>' +
             '    <MultiGeometry>' +
             '      <Polygon>' +
+            '        <extrude>0</extrude>' +
+            '        <altitudeMode>absolute</altitudeMode>' +
             '        <outerBoundaryIs>' +
             '          <LinearRing>' +
             '            <coordinates>0,0,0 0,1,0 1,1,0 1,0,0</coordinates>' +
@@ -877,6 +901,14 @@ describe('ol.format.KML', function() {
         expect(g.getCoordinates()).to.eql(
             [[[[0, 0, 0], [0, 1, 0], [1, 1, 0], [1, 0, 0]]],
              [[[3, 0, 0], [3, 1, 0], [4, 1, 0], [4, 0, 0]]]]);
+        expect(g.get('extrude')).to.be.an('array');
+        expect(g.get('extrude')).to.have.length(2);
+        expect(g.get('extrude')[0]).to.be(false);
+        expect(g.get('extrude')[1]).to.be(undefined);
+        expect(g.get('altitudeMode')).to.be.an('array');
+        expect(g.get('altitudeMode')).to.have.length(2);
+        expect(g.get('altitudeMode')[0]).to.be('absolute');
+        expect(g.get('altitudeMode')[1]).to.be(undefined);
       });
 
       it('can write MultiPolygon geometries', function() {
