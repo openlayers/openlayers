@@ -935,30 +935,30 @@ ol.render.webgl.ImageReplay.prototype.setFillStrokeStyle = goog.abstractMethod;
  */
 ol.render.webgl.ImageReplay.prototype.setImageStyle = function(imageStyle) {
   var anchor = imageStyle.getAnchor();
-  goog.asserts.assert(!goog.isNull(anchor), 'imageStyle anchor is not null');
   var image = imageStyle.getImage(1);
-  goog.asserts.assert(!goog.isNull(image), 'imageStyle image is not null');
   var imageSize = imageStyle.getImageSize();
+  var hitDetectionImage = imageStyle.getHitDetectionImage(1);
+  var hitDetectionImageSize = imageStyle.getHitDetectionImageSize();
+  var opacity = imageStyle.getOpacity();
+  var origin = imageStyle.getOrigin();
+  var rotateWithView = imageStyle.getRotateWithView();
+  var rotation = imageStyle.getRotation();
+  var size = imageStyle.getSize();
+  var scale = imageStyle.getScale();
+  goog.asserts.assert(!goog.isNull(anchor), 'imageStyle anchor is not null');
+  goog.asserts.assert(!goog.isNull(image), 'imageStyle image is not null');
   goog.asserts.assert(!goog.isNull(imageSize),
       'imageStyle imageSize is not null');
-  var hitDetectionImage = imageStyle.getHitDetectionImage(1);
   goog.asserts.assert(!goog.isNull(hitDetectionImage),
       'imageStyle hitDetectionImage is not null');
-  var hitDetectionImageSize = imageStyle.getHitDetectionImageSize();
   goog.asserts.assert(!goog.isNull(hitDetectionImageSize),
       'imageStyle hitDetectionImageSize is not null');
-  var opacity = imageStyle.getOpacity();
   goog.asserts.assert(goog.isDef(opacity), 'imageStyle opacity is defined');
-  var origin = imageStyle.getOrigin();
   goog.asserts.assert(!goog.isNull(origin), 'imageStyle origin is not null');
-  var rotateWithView = imageStyle.getRotateWithView();
   goog.asserts.assert(goog.isDef(rotateWithView),
       'imageStyle rotateWithView is defined');
-  var rotation = imageStyle.getRotation();
   goog.asserts.assert(goog.isDef(rotation), 'imageStyle rotation is defined');
-  var size = imageStyle.getSize();
   goog.asserts.assert(!goog.isNull(size), 'imageStyle size is not null');
-  var scale = imageStyle.getScale();
   goog.asserts.assert(goog.isDef(scale), 'imageStyle scale is defined');
 
   var currentImage;
