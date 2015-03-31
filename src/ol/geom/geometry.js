@@ -2,7 +2,7 @@ goog.provide('ol.geom.Geometry');
 goog.provide('ol.geom.GeometryType');
 
 goog.require('goog.functions');
-goog.require('ol.Observable');
+goog.require('ol.Object');
 goog.require('ol.extent');
 goog.require('ol.proj');
 
@@ -50,7 +50,7 @@ ol.geom.GeometryLayout = {
  * Base class for vector geometries.
  *
  * @constructor
- * @extends {ol.Observable}
+ * @extends {ol.Object}
  * @fires change Triggered when the geometry changes.
  * @api stable
  */
@@ -89,7 +89,7 @@ ol.geom.Geometry = function() {
   this.simplifiedGeometryRevision = 0;
 
 };
-goog.inherits(ol.geom.Geometry, ol.Observable);
+goog.inherits(ol.geom.Geometry, ol.Object);
 
 
 /**
