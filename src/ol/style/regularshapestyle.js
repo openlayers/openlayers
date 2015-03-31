@@ -7,6 +7,7 @@ goog.require('ol.color');
 goog.require('ol.has');
 goog.require('ol.render.canvas');
 goog.require('ol.structs.IHasChecksum');
+goog.require('ol.style.AtlasManager');
 goog.require('ol.style.Fill');
 goog.require('ol.style.Image');
 goog.require('ol.style.ImageState');
