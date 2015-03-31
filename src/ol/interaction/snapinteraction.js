@@ -118,7 +118,7 @@ ol.interaction.Snap = function(opt_options) {
       options.pixelTolerance : 10;
 
   /**
-   * @type {Function}
+   * @type {function(ol.interaction.Snap.SegmentDataType, ol.interaction.Snap.SegmentDataType): number}
    * @private
    */
   this.sortByDistance_ = goog.bind(ol.interaction.Snap.sortByDistance, this);
@@ -126,7 +126,7 @@ ol.interaction.Snap = function(opt_options) {
 
   /**
   * Segment RTree for each layer
-  * @type {Object.<*, ol.structs.RBush>}
+  * @type {ol.structs.RBush.<ol.interaction.Snap.SegmentDataType>}
   * @private
   */
   this.rBush_ = new ol.structs.RBush();
