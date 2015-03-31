@@ -14,6 +14,11 @@ When you want to get involved and discuss new features or changes, please use [t
 Please use the [GitHub issue tracker](https://github.com/openlayers/ol3/issues). Before creating a new issue, do a quick search to see if the problem has been reported already.
 
 
+## Getting Familiar with the Code in the Repository
+
+Look for `readme.md` files! Several directories contain a `readme.md` file that explains the contents of the directory and how to work with them.
+
+
 ## Contributing Code
 
 Our preferred means of receiving contributions is through [pull requests](https://help.github.com/articles/using-pull-requests). Make sure
