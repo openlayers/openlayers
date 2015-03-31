@@ -10,7 +10,7 @@ goog.require('ol.source.OSM');
 
 // creating the view
 var view = new ol.View({
-  center: ol.proj.transform([5.8713, 45.6452], 'EPSG:4326', 'EPSG:3857'),
+  center: ol.proj.fromLonLat([5.8713, 45.6452]),
   zoom: 19
 });
 

@@ -18,7 +18,7 @@ var map = new ol.Map({
   layers: [roads, imagery],
   target: 'map',
   view: new ol.View({
-    center: ol.proj.transform([-109, 46.5], 'EPSG:4326', 'EPSG:3857'),
+    center: ol.proj.fromLonLat([-109, 46.5]),
     zoom: 6
   })
 });
