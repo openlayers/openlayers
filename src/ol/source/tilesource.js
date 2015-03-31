@@ -1,4 +1,5 @@
 goog.provide('ol.source.Tile');
+goog.provide('ol.source.TileEvent');
 goog.provide('ol.source.TileOptions');
 
 goog.require('goog.events.Event');
