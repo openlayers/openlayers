@@ -1,5 +1,11 @@
 ## Upgrade notes
 
+### v3.5.0
+
+* When manually loading an image for `ol.style.Icon`, the image size should now be set
+with the `imgSize` option and not with `size`. `size` is supposed to be used for the
+size of a sub-rectangle in an image sprite.
+
 ### v3.4.0
 
 ### v3.3.0
