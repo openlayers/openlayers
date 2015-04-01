@@ -33,7 +33,8 @@ ol.source.FormatVector = function(options) {
   goog.base(this, {
     attributions: options.attributions,
     logo: options.logo,
-    projection: options.projection
+    projection: options.projection,
+    useSpatialIndex: options.useSpatialIndex
   });
 
   /**

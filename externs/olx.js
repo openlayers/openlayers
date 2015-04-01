@@ -3698,7 +3698,8 @@ olx.source.ClusterOptions.prototype.source;
  * @typedef {{attributions: (Array.<ol.Attribution>|undefined),
  *     format: ol.format.Feature,
  *     logo: (string|olx.LogoOptions|undefined),
- *     projection: ol.proj.ProjectionLike}}
+ *     projection: ol.proj.ProjectionLike,
+ *     useSpatialIndex: (boolean|undefined)}}
  * @api
  */
 olx.source.FormatVectorOptions;
@@ -3734,6 +3735,14 @@ olx.source.FormatVectorOptions.prototype.logo;
  * @api
  */
 olx.source.FormatVectorOptions.prototype.projection;
+
+
+/**
+ * Use the spatial index or not?
+ * @type {boolean|undefined}
+ * @api
+ */
+olx.source.FormatVectorOptions.prototype.useSpatialIndex;
 
 
 /**
@@ -5064,7 +5073,8 @@ olx.source.ImageStaticOptions.prototype.url;
  *     loader: function(this: ol.source.ServerVector, ol.Extent, number, ol.proj.Projection),
  *     strategy: (function(ol.Extent, number): Array.<ol.Extent>|undefined),
  *     logo: (string|olx.LogoOptions|undefined),
- *     projection: ol.proj.ProjectionLike}}
+ *     projection: ol.proj.ProjectionLike,
+ *     useSpatialIndex: (boolean|undefined)}}
  * @api
  */
 olx.source.ServerVectorOptions;
@@ -5213,6 +5223,14 @@ olx.source.TileArcGISRestOptions.prototype.wrapX;
  * @api
  */
 olx.source.TileArcGISRestOptions.prototype.urls;
+
+
+/**
+ * Use the spatial index or not?
+ * @type {boolean|undefined}
+ * @api
+ */
+olx.source.ServerVectorOptions.prototype.useSpatialIndex;
 
 
 /**
@@ -5433,7 +5451,8 @@ olx.source.TileWMSOptions.prototype.wrapX;
  *     features: (Array.<ol.Feature>|undefined),
  *     logo: (string|olx.LogoOptions|undefined),
  *     projection: ol.proj.ProjectionLike,
- *     state: (ol.source.State|string|undefined)}}
+ *     state: (ol.source.State|string|undefined),
+ *     useSpatialIndex: (boolean|undefined)}}
  * @api
  */
 olx.source.VectorOptions;
@@ -5477,6 +5496,14 @@ olx.source.VectorOptions.prototype.projection;
  * @api
  */
 olx.source.VectorOptions.prototype.state;
+
+
+/**
+ * Use the spatial index or not?
+ * @type {boolean|undefined}
+ * @api
+ */
+olx.source.VectorOptions.prototype.useSpatialIndex;
 
 
 /**

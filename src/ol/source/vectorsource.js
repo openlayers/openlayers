@@ -15,6 +15,7 @@ goog.require('goog.object');
 goog.require('ol.ObjectEventType');
 goog.require('ol.proj');
 goog.require('ol.source.Source');
+goog.require('ol.structs.CollectionRBush');
 goog.require('ol.structs.RBush');
 
 
@@ -78,9 +79,10 @@ ol.source.Vector = function(opt_options) {
 
   /**
    * @private
-   * @type {ol.structs.RBush.<ol.Feature>}
+   * @type {ol.structs.RBush.<ol.Feature>|ol.structs.CollectionRBush.<ol.Feature>}
    */
-  this.rBush_ = new ol.structs.RBush();
+  this.rBush_ = options.useSpatialIndex !== false ? new ol.structs.RBush() :
+      new ol.structs.CollectionRBush();
 
   /**
    * @private
@@ -259,7 +261,6 @@ ol.source.Vector.prototype.clear = function(opt_fast) {
     goog.asserts.assert(goog.object.isEmpty(this.undefIdIndex_),
         'undefIdIndex is an empty object now');
   }
-
   this.rBush_.clear();
   this.nullGeometryFeatures_ = {};
 

@@ -26,7 +26,8 @@ ol.source.ServerVector = function(options) {
     attributions: options.attributions,
     format: options.format,
     logo: options.logo,
-    projection: options.projection
+    projection: options.projection,
+    useSpatialIndex: options.useSpatialIndex
   });
 
   /**
