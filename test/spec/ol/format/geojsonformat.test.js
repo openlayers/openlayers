@@ -681,8 +681,8 @@ describe('ol.format.GeoJSON', function() {
       var geojson = format.writeGeometryObject(circle);
       expect(geojson).to.eql({
         'type': 'Circle',
-+        'center': [0, 0],
-+        'radius': 1
+        'center': [0, 0],
+        'radius': 1
       });
     });
 
