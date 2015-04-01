@@ -6,6 +6,7 @@ describe('ol.renderer.webgl.ImageLayer', function() {
     var renderer;
     var canvasWidth;
     var canvasHeight;
+    var pixelRatio;
     var viewResolution;
     var viewRotation;
     var viewCenter;
@@ -27,6 +28,7 @@ describe('ol.renderer.webgl.ImageLayer', function() {
       // input params
       canvasWidth = 512;
       canvasHeight = 256;
+      pixelRatio = 2;
       viewResolution = 10;
       viewRotation = 0;
       viewCenter = [7680, 3840];
@@ -44,7 +46,7 @@ describe('ol.renderer.webgl.ImageLayer', function() {
     it('produces a correct matrix', function() {
 
       renderer.updateProjectionMatrix_(canvasWidth, canvasHeight,
-          viewCenter, viewResolution, viewRotation, imageExtent);
+          pixelRatio, viewCenter, viewResolution, viewRotation, imageExtent);
       var matrix = renderer.getProjectionMatrix();
 
       var input;
@@ -52,27 +54,27 @@ describe('ol.renderer.webgl.ImageLayer', function() {
 
       input = goog.vec.Vec4.createFromValues(-1, -1, 0, 1);
       goog.vec.Mat4.multVec4(matrix, input, output);
-      expect(output[0]).to.eql(-3);
-      expect(output[1]).to.eql(-3);
+      expect(output[0]).to.eql(-6);
+      expect(output[1]).to.eql(-6);
 
       input = goog.vec.Vec4.createFromValues(1, -1, 0, 1);
       goog.vec.Mat4.multVec4(matrix, input, output);
-      expect(output[0]).to.eql(1);
-      expect(output[1]).to.eql(-3);
+      expect(output[0]).to.eql(2);
+      expect(output[1]).to.eql(-6);
 
       input = goog.vec.Vec4.createFromValues(-1, 1, 0, 1);
       goog.vec.Mat4.multVec4(matrix, input, output);
-      expect(output[0]).to.eql(-3);
-      expect(output[1]).to.eql(3);
+      expect(output[0]).to.eql(-6);
+      expect(output[1]).to.eql(6);
 
       input = goog.vec.Vec4.createFromValues(1, 1, 0, 1);
       goog.vec.Mat4.multVec4(matrix, input, output);
-      expect(output[0]).to.eql(1);
-      expect(output[1]).to.eql(3);
+      expect(output[0]).to.eql(2);
+      expect(output[1]).to.eql(6);
 
       input = goog.vec.Vec4.createFromValues(0, 0, 0, 1);
       goog.vec.Mat4.multVec4(matrix, input, output);
-      expect(output[0]).to.eql(-1);
+      expect(output[0]).to.eql(-2);
       expect(output[1]).to.eql(0);
     });
   });
