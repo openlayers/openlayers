@@ -60,6 +60,11 @@ serve.createServer(function(err, server) {
       url + '/test/index.html'
     ];
 
+    if (process.argv.length > 2 && process.argv[2] === 'istanbul') {
+      args.push('spec', '{"hooks": "' +
+          path.join(__dirname, '../test/phantom_hooks.js') + '"}');
+    }
+
     var child = spawn(phantomjs.path, args, {stdio: 'inherit'});
     child.on('exit', function(code) {
       process.exit(code);

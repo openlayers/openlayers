@@ -12,7 +12,8 @@
     "install": "node tasks/install.js",
     "postinstall": "closure-util update",
     "start": "node tasks/serve.js",
-    "test": "node tasks/test.js"
+    "test": "node tasks/test.js",
+    "test-coverage": "istanbul instrument src -o src_instrumented && mv src src_old && mv src_instrumented src && istanbul cover npm test istanbul && mv src src_instrumented && mv src_old src && istanbul report --root coverage lcov && cat coverage/lcov.info | coveralls"
   },
   "main": "dist/ol.js",
   "repository": {
@@ -37,7 +38,9 @@
   },
   "devDependencies": {
     "clean-css": "2.2.16",
+    "coveralls": "2.11.2",
     "expect.js": "0.3.1",
+    "istanbul": "0.3.13",
     "jquery": "2.1.1",
     "jshint": "2.5.6",
     "mocha": "1.21.5",
