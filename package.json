@@ -34,6 +34,7 @@
     "browserify": "13.1.1",
     "closure-util": "1.15.1",
     "derequire": "2.0.3",
+    "earcut": "^1.4.2",
     "fs-extra": "1.0.0",
     "glob": "7.1.1",
     "handlebars": "4.0.6",
@@ -123,6 +124,7 @@
       "module": "vector-tile",
       "name": "vectortile",
       "browserify": true
-    }
+    },
+    "earcut"
   ]
 }
