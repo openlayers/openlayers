@@ -2005,7 +2005,8 @@ ol.render.canvas.ReplayGroup.prototype.getReplay =
   if (!goog.isDef(replay)) {
     var Constructor = ol.render.canvas.BATCH_CONSTRUCTORS_[replayType];
     goog.asserts.assert(goog.isDef(Constructor),
-        'Constructor should be defined');
+        replayType +
+        ' constructor missing from ol.render.canvas.BATCH_CONSTRUCTORS_');
     replay = new Constructor(this.tolerance_, this.maxExtent_,
         this.resolution_);
     replays[replayType] = replay;
