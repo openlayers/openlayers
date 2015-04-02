@@ -272,7 +272,7 @@ ol.View.prototype.getHints = function() {
  * that is `map.getSize()`.
  * @param {ol.Size} size Box pixel size.
  * @return {ol.Extent} Extent.
- * @api
+ * @api stable
  */
 ol.View.prototype.calculateExtent = function(size) {
   goog.asserts.assert(this.isDef(),
@@ -317,7 +317,6 @@ goog.exportProperty(
  * @param {ol.Size} size Box pixel size.
  * @return {number} The resolution at which the provided extent will render at
  *     the given size.
- * @api
  */
 ol.View.prototype.getResolutionForExtent = function(extent, size) {
   var xResolution = ol.extent.getWidth(extent) / size[0];

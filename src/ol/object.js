@@ -23,7 +23,7 @@ ol.ObjectEventType = {
   /**
    * Triggered when a property is changed.
    * @event ol.ObjectEvent#propertychange
-   * @api
+   * @api stable
    */
   PROPERTYCHANGE: 'propertychange'
 };
@@ -47,7 +47,7 @@ ol.ObjectEvent = function(type, key, oldValue) {
   /**
    * The name of the property whose value is changing.
    * @type {string}
-   * @api
+   * @api stable
    */
   this.key = key;
 
@@ -55,7 +55,7 @@ ol.ObjectEvent = function(type, key, oldValue) {
    * The old value. To get the new value use `e.target.get(e.key)` where
    * `e` is the event object.
    * @type {*}
-   * @api
+   * @api stable
    */
   this.oldValue = oldValue;
 
@@ -352,7 +352,7 @@ ol.Object.prototype.bindTo = function(key, target, opt_targetKey) {
  * Gets a value.
  * @param {string} key Key name.
  * @return {*} Value.
- * @api
+ * @api stable
  */
 ol.Object.prototype.get = function(key) {
   var value;
@@ -371,7 +371,7 @@ ol.Object.prototype.get = function(key) {
 /**
  * Get a list of object property names.
  * @return {Array.<string>} List of property names.
- * @api
+ * @api stable
  */
 ol.Object.prototype.getKeys = function() {
   var accessors = this.accessors_;
@@ -403,7 +403,7 @@ ol.Object.prototype.getKeys = function() {
 /**
  * Get an object of all property names and values.
  * @return {Object.<string, *>} Object.
- * @api
+ * @api stable
  */
 ol.Object.prototype.getProperties = function() {
   var properties = {};
@@ -435,7 +435,7 @@ ol.Object.prototype.notify = function(key, oldValue) {
  * Sets a value.
  * @param {string} key Key name.
  * @param {*} value Value.
- * @api
+ * @api stable
  */
 ol.Object.prototype.set = function(key, value) {
   var accessors = this.accessors_;
@@ -452,9 +452,10 @@ ol.Object.prototype.set = function(key, value) {
 
 
 /**
- * Sets a collection of key-value pairs.
+ * Sets a collection of key-value pairs.  Note that this changes any existing
+ * properties and adds new ones (it does not remove any existing properties).
  * @param {Object.<string, *>} values Values.
- * @api
+ * @api stable
  */
 ol.Object.prototype.setProperties = function(values) {
   var key;
@@ -497,7 +498,7 @@ ol.Object.prototype.unbindAll = function() {
 /**
  * Unsets a property.
  * @param {string} key Key name.
- * @api
+ * @api stable
  */
 ol.Object.prototype.unset = function(key) {
   if (key in this.values_) {

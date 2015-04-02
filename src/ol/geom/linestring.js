@@ -214,7 +214,7 @@ ol.geom.LineString.prototype.getType = function() {
 
 /**
  * @inheritDoc
- * @api
+ * @api stable
  */
 ol.geom.LineString.prototype.intersectsExtent = function(extent) {
   return ol.geom.flat.intersectsextent.lineString(

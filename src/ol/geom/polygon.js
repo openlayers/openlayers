@@ -318,7 +318,7 @@ ol.geom.Polygon.prototype.getType = function() {
 
 /**
  * @inheritDoc
- * @api
+ * @api stable
  */
 ol.geom.Polygon.prototype.intersectsExtent = function(extent) {
   return ol.geom.flat.intersectsextent.linearRings(

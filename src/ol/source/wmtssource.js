@@ -34,7 +34,7 @@ ol.source.WMTSRequestEncoding = {
  * @constructor
  * @extends {ol.source.TileImage}
  * @param {olx.source.WMTSOptions} options WMTS options.
- * @api
+ * @api stable
  */
 ol.source.WMTS = function(options) {
 

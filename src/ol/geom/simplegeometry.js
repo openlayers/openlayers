@@ -249,10 +249,8 @@ ol.geom.SimpleGeometry.prototype.applyTransform = function(transformFn) {
 
 
 /**
- * Translate the geometry.
- * @param {number} deltaX Delta X.
- * @param {number} deltaY Delta Y.
- * @api
+ * @inheritDoc
+ * @api stable
  */
 ol.geom.SimpleGeometry.prototype.translate = function(deltaX, deltaY) {
   var flatCoordinates = this.getFlatCoordinates();

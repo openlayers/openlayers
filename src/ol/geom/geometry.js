@@ -96,7 +96,6 @@ goog.inherits(ol.geom.Geometry, ol.Object);
  * Make a complete copy of the geometry.
  * @function
  * @return {!ol.geom.Geometry} Clone.
- * @api stable
  */
 ol.geom.Geometry.prototype.clone = goog.abstractMethod;
 
@@ -180,7 +179,6 @@ ol.geom.Geometry.prototype.getSimplifiedGeometry = goog.abstractMethod;
  * Get the type of this geometry.
  * @function
  * @return {ol.geom.GeometryType} Geometry type.
- * @api stable
  */
 ol.geom.Geometry.prototype.getType = goog.abstractMethod;
 
@@ -192,7 +190,6 @@ ol.geom.Geometry.prototype.getType = goog.abstractMethod;
  * then use this function on the clone.
  * @function
  * @param {ol.TransformFunction} transformFn Transform.
- * @api stable
  */
 ol.geom.Geometry.prototype.applyTransform = goog.abstractMethod;
 
@@ -202,17 +199,16 @@ ol.geom.Geometry.prototype.applyTransform = goog.abstractMethod;
  * @param {ol.Extent} extent Extent.
  * @return {boolean} `true` if the geometry and the extent intersect.
  * @function
- * @api
  */
 ol.geom.Geometry.prototype.intersectsExtent = goog.abstractMethod;
 
 
 /**
- * Translate the geometry.
+ * Translate the geometry.  This modifies the geometry coordinates in place.  If
+ * instead you want a new geometry, first `clone()` this geometry.
  * @param {number} deltaX Delta X.
  * @param {number} deltaY Delta Y.
  * @function
- * @api
  */
 ol.geom.Geometry.prototype.translate = goog.abstractMethod;
 
@@ -230,7 +226,6 @@ ol.geom.Geometry.prototype.translate = goog.abstractMethod;
  *     string identifier or a {@link ol.proj.Projection} object.
  * @return {ol.geom.Geometry} This geometry.  Note that original geometry is
  *     modified in place.
- * @api stable
  */
 ol.geom.Geometry.prototype.transform = function(source, destination) {
   this.applyTransform(ol.proj.getTransform(source, destination));

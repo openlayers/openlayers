@@ -212,7 +212,7 @@ ol.geom.GeometryCollection.prototype.getType = function() {
 
 /**
  * @inheritDoc
- * @api
+ * @api stable
  */
 ol.geom.GeometryCollection.prototype.intersectsExtent = function(extent) {
   var geometries = this.geometries_;
