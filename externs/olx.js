@@ -1606,7 +1606,7 @@ olx.format.WriteOptions.prototype.featureProjection;
  * geometries.
  *
  * @type {boolean|undefined}
- * @api
+ * @api stable
  */
 olx.format.WriteOptions.prototype.rightHanded;
 
