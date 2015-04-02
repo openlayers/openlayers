@@ -93,10 +93,6 @@ ol.layer.Layer.prototype.getSource = function() {
   return goog.isDef(source) ?
       /** @type {ol.source.Source} */ (source) : null;
 };
-goog.exportProperty(
-    ol.layer.Layer.prototype,
-    'getSource',
-    ol.layer.Layer.prototype.getSource);
 
 
 /**
@@ -142,7 +138,3 @@ ol.layer.Layer.prototype.handleSourcePropertyChange_ = function() {
 ol.layer.Layer.prototype.setSource = function(source) {
   this.set(ol.layer.LayerProperty.SOURCE, source);
 };
-goog.exportProperty(
-    ol.layer.Layer.prototype,
-    'setSource',
-    ol.layer.Layer.prototype.setSource);

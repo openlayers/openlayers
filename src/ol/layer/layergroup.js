@@ -155,10 +155,6 @@ ol.layer.Group.prototype.getLayers = function() {
   return /** @type {!ol.Collection.<ol.layer.Base>} */ (this.get(
       ol.layer.GroupProperty.LAYERS));
 };
-goog.exportProperty(
-    ol.layer.Group.prototype,
-    'getLayers',
-    ol.layer.Group.prototype.getLayers);
 
 
 /**
@@ -170,10 +166,6 @@ goog.exportProperty(
 ol.layer.Group.prototype.setLayers = function(layers) {
   this.set(ol.layer.GroupProperty.LAYERS, layers);
 };
-goog.exportProperty(
-    ol.layer.Group.prototype,
-    'setLayers',
-    ol.layer.Group.prototype.setLayers);
 
 
 /**
