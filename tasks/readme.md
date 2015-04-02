@@ -111,6 +111,18 @@ Called internally to parse the library for annotations and write out a `build/in
 
 Called after install to generate an example index.  After new examples are added, run `node tasks/parse-examples.js` to regenerate the example index.
 
+## `build-examples.js`
+
+Called internally by `parse-examples.js` to build the examples from templates.
+
+The `.html` files in the `examples/` folder are built by applying the templates in the `config/examples/` folder. Examples have [YAML front-matter](http://www.metalsmith.io) headers with the following properties:
+
+* template: The template from the `config/examples/` directory to use for this example
+* title: The title of the example
+* shortdesc: A short description for the example index
+* docs: Documentation of the example. Can be markdown.
+* tags: Tags for the example index
+* resources: Additional js or css resources required by the example. This is a comma separated list of URLs.
 
 ## `serve.js`
 
