@@ -4,6 +4,7 @@ var path = require('path');
 var async = require('async');
 var Parser = require('htmlparser2').Parser;
 
+var buildExamples = require('./build-examples');
 
 var exampleDir = path.join(__dirname, '..', 'examples');
 
@@ -141,6 +142,7 @@ function writeExampleList(exampleInfos, callback) {
  */
 function main(callback) {
   async.waterfall([
+    buildExamples,
     listExamples,
     parseExamples,
     writeExampleList

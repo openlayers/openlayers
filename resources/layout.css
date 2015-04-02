@@ -15,7 +15,7 @@ body {
   font-family: 'Lucida Grande',Verdana,Geneva,Lucida,Arial,Helvetica,sans-serif;
 }
 
-#tags {
+#tags, #shortdesc, .hidden {
   display: none;
 }
 
