@@ -423,8 +423,12 @@ ol.source.Vector.prototype.getFeaturesAtCoordinate = function(coordinate) {
 
 
 /**
+ * Get all features in the provided extent.  Note that this returns all features
+ * whose bounding boxes intersect the given extent (so it may include features
+ * whose geometries do not intersect the extent).
  * @param {ol.Extent} extent Extent.
  * @return {Array.<ol.Feature>} Features.
+ * @api
  */
 ol.source.Vector.prototype.getFeaturesInExtent = function(extent) {
   return this.rBush_.getInExtent(extent);
