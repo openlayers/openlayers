@@ -3,6 +3,7 @@ goog.provide('ol.render.webgl.PolygonReplay');
 goog.provide('ol.render.webgl.ReplayGroup');
 
 goog.require('ol');
+goog.require('ol.color');
 goog.require('ol.ext.earcut');
 goog.require('ol.extent');
 goog.require('ol.obj');
@@ -921,9 +922,10 @@ ol.render.webgl.PolygonReplay = function(tolerance, maxExtent) {
 
   /**
    * @private
-   * @type {ol.color.Matrix}
+   * @type {ol.Color}
    */
-  this.colorMatrix_ = new ol.color.Matrix();
+  this.fillColor_ = null;
+
 
   /**
    * The origin of the coordinate system for the point coordinates sent to
@@ -993,21 +995,27 @@ goog.inherits(ol.render.webgl.PolygonReplay, ol.render.VectorContext);
  */
 ol.render.webgl.PolygonReplay.prototype.drawCoordinates_ =
     function(coordinates) {
+  // Triangulate the polgon
   var triangulation = ol.ext.earcut(coordinates, true);
-  var offset = this.vertices_.length / 2;
-  if (offset === 0) {
-    this.indices_ = triangulation.indices;
-    this.vertices_ = triangulation.vertices;
-  } else {
-    var i, ii;
-    var indices = triangulation.indices;
-    for (i = 0, ii = indices.length; i < ii; ++i) {
-      this.indices_.push(indices[i] + offset);
-    }
-    var vertices = triangulation.vertices;
-    for (i = 0, ii = vertices.length; i < ii; ++i) {
-      this.vertices_.push(vertices[i]);
-    }
+  var i, ii;
+  var indices = triangulation.indices;
+
+  // Shift the indices to take into account previously handled polygons
+  var offset = this.vertices_.length / 6;
+  for (i = 0, ii = indices.length; i < ii; ++i) {
+    this.indices_.push(indices[i] + offset);
+  }
+
+  // Add the color property to each vertex
+  // TODO performance: make it more efficient
+  var vertices = triangulation.vertices;
+  for (i = 0, ii = vertices.length / 2; i < ii; ++i) {
+    this.vertices_.push(vertices[2 * i]);
+    this.vertices_.push(vertices[2 * i + 1]);
+    this.vertices_.push(this.fillColor_[0]);
+    this.vertices_.push(this.fillColor_[1]);
+    this.vertices_.push(this.fillColor_[2]);
+    this.vertices_.push(this.fillColor_[3]);
   }
 };
 
@@ -1031,6 +1039,9 @@ ol.render.webgl.PolygonReplay.prototype.drawMultiLineStringGeometry =
  */
 ol.render.webgl.PolygonReplay.prototype.drawMultiPolygonGeometry =
     function(geometry, feature) {
+  if (goog.isNull(this.fillColor_)) {
+    return;
+  }
   var coordinatess = geometry.getCoordinates();
   this.startIndices_.push(this.indices_.length);
   this.startIndicesFeature_.push(feature);
@@ -1046,6 +1057,9 @@ ol.render.webgl.PolygonReplay.prototype.drawMultiPolygonGeometry =
  */
 ol.render.webgl.PolygonReplay.prototype.drawPolygonGeometry =
     function(polygonGeometry, feature) {
+  if (goog.isNull(this.fillColor_)) {
+    return;
+  }
   var coordinates = polygonGeometry.getCoordinates();
   this.startIndices_.push(this.indices_.length);
   this.startIndicesFeature_.push(feature);
@@ -1143,8 +1157,8 @@ ol.render.webgl.PolygonReplay.prototype.replay = function(context,
   // get the locations
   var locations;
   if (goog.isNull(this.defaultLocations_)) {
-    locations =
-        new ol.render.webgl.polygonreplay.shader.Default.Locations(gl, program);
+    locations = new ol.render.webgl.polygonreplay.shader.Default
+      .Locations(gl, program);
     this.defaultLocations_ = locations;
   } else {
     locations = this.defaultLocations_;
@@ -1155,8 +1169,11 @@ ol.render.webgl.PolygonReplay.prototype.replay = function(context,
   // enable the vertex attrib arrays
   gl.enableVertexAttribArray(locations.a_position);
   gl.vertexAttribPointer(locations.a_position, 2, goog.webgl.FLOAT,
-      false, 8, 0);
+      false, 24, 0);
 
+  gl.enableVertexAttribArray(locations.a_color);
+  gl.vertexAttribPointer(locations.a_color, 4, goog.webgl.FLOAT,
+      false, 24, 8);
 
   // set the "uniform" values
   // TODO: use RTE to avoid jitter
@@ -1180,6 +1197,7 @@ ol.render.webgl.PolygonReplay.prototype.replay = function(context,
 
   // disable the vertex attrib arrays
   gl.disableVertexAttribArray(locations.a_position);
+  gl.disableVertexAttribArray(locations.a_color);
 
   return result;
 };
@@ -1213,6 +1231,13 @@ ol.render.webgl.PolygonReplay.prototype.drawReplay_ =
 ol.render.webgl.PolygonReplay.prototype.setFillStrokeStyle =
     function(fillStyle, strokeStyle) {
   // TODO implement
+  if (!goog.isNull(fillStyle)) {
+    var fillStyleColor = fillStyle.getColor();
+    this.fillColor_ = !goog.isNull(fillStyleColor) ?
+        ol.color.asArray(fillStyleColor) : [0.0, 0.0, 0.0, 1.0];
+  } else {
+    this.fillColor_ = null;
+  }
 };
 
 
