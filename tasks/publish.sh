@@ -19,9 +19,19 @@ PROFILES="ol ol-debug"
 BUILDS=dist
 
 #
+# Temporary directory
+#
+TMP=tmp
+
+#
 # URL for canonical repo.
 #
 REMOTE=https://github.com/openlayers/ol3.git
+
+#
+# Name of bower repo
+#
+BOWER=bower-ol3
 
 #
 # Display usage and exit.
@@ -86,6 +96,26 @@ checkout_tag() {
 }
 
 #
+# Publishes to bower repo.
+#
+bower_publish() {
+  rm -rf $TMP/$BOWER
+
+  git clone git@github.com:openlayers/$BOWER $TMP/$BOWER
+
+  cp $BUILDS/* $TMP/$BOWER/
+  cp css/* $TMP/$BOWER/
+
+  pushd $TMP/$BOWER
+  git add -A
+  git ci -m "v${1}"
+  bower version ${1}
+  git push origin
+  git push origin --tags
+  popd
+}
+
+#
 # Build all profiles and publish.
 #
 main() {
@@ -98,6 +128,7 @@ main() {
   build_js ${PROFILES}
   build_css
   npm publish
+  bower_publish ${1}
 }
 
 if test ${#} -ne 1; then
