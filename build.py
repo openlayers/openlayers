@@ -718,6 +718,11 @@ def test(t):
     t.run('node', 'tasks/test.js')
 
 
+@target('test-coverage', NPM_INSTALL, phony=True)
+def test_coverage(t):
+    t.run('node', 'tasks/test-coverage.js')
+
+
 @target('fixme', phony=True)
 def find_fixme(t):
     regex = re.compile('FIXME|TODO')
@@ -794,6 +799,7 @@ Other less frequently used targets are:
                      targets: lint, build, build-all, test, build-examples,
                      check-examples and apidoc. This is the target run on
                      Travis CI.
+  test-coverage    - Generates a test coverage report in the coverage folder.
   reallyclean      - Remove untracked files from the repository.
   checkdeps        - Checks whether all required development software is
                      installed on your machine.
