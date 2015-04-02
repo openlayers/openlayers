@@ -1,0 +1,13 @@
+#info {
+  position: absolute;
+  font-size: 0.7em;
+  top: 70px;
+  right: 30px;
+  background-color: lightgrey;
+  padding: 4px;
+}
+.button {
+  position: absolute;
+  bottom: 10px;
+  left: 30px;
+}
