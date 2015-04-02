@@ -88,7 +88,7 @@ ol.geom.Point.prototype.getType = function() {
 
 /**
  * @inheritDoc
- * @api
+ * @api stable
  */
 ol.geom.Point.prototype.intersectsExtent = function(extent) {
   return ol.extent.containsXY(extent,

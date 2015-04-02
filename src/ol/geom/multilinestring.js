@@ -249,7 +249,7 @@ ol.geom.MultiLineString.prototype.getType = function() {
 
 /**
  * @inheritDoc
- * @api
+ * @api stable
  */
 ol.geom.MultiLineString.prototype.intersectsExtent = function(extent) {
   return ol.geom.flat.intersectsextent.lineStrings(

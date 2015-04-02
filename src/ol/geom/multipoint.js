@@ -146,7 +146,7 @@ ol.geom.MultiPoint.prototype.getType = function() {
 
 /**
  * @inheritDoc
- * @api
+ * @api stable
  */
 ol.geom.MultiPoint.prototype.intersectsExtent = function(extent) {
   var flatCoordinates = this.flatCoordinates;

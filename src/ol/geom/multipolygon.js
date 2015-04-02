@@ -338,7 +338,7 @@ ol.geom.MultiPolygon.prototype.getType = function() {
 
 /**
  * @inheritDoc
- * @api
+ * @api stable
  */
 ol.geom.MultiPolygon.prototype.intersectsExtent = function(extent) {
   return ol.geom.flat.intersectsextent.linearRingss(
