@@ -52,6 +52,19 @@ oli.DrawEvent.prototype.feature;
 /**
  * @interface
  */
+oli.ModifyEvent = function() {};
+
+
+/**
+ * @type {ol.Collection.<ol.Feature>}
+ */
+oli.ModifyEvent.prototype.features;
+
+
+
+/**
+ * @interface
+ */
 oli.ObjectEvent = function() {};
 
 
