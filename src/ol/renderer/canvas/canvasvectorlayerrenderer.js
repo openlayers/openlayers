@@ -169,9 +169,13 @@ ol.renderer.canvas.VectorLayer.prototype.prepareFrame =
       frameState.attributions, vectorSource.getAttributions());
   this.updateLogos(frameState, vectorSource);
 
-  if (!this.dirty_ && (!vectorLayer.getUpdateWhileAnimating() &&
-      frameState.viewHints[ol.ViewHint.ANIMATING] ||
-      frameState.viewHints[ol.ViewHint.INTERACTING])) {
+  var animating = frameState.viewHints[ol.ViewHint.ANIMATING];
+  var interacting = frameState.viewHints[ol.ViewHint.INTERACTING];
+  var updateWhileAnimating = vectorLayer.getUpdateWhileAnimating();
+  var updateWhileInteracting = vectorLayer.getUpdateWhileInteracting();
+
+  if (!this.dirty_ && (!updateWhileAnimating && animating) ||
+      (!updateWhileInteracting && interacting)) {
     return true;
   }
 

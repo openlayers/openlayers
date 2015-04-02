@@ -3397,6 +3397,7 @@ olx.layer.TileOptions.prototype.useInterimTilesOnError;
  *     source: (ol.source.Vector|undefined),
  *     style: (ol.style.Style|Array.<ol.style.Style>|ol.style.StyleFunction|undefined),
  *     updateWhileAnimating: (boolean|undefined),
+ *     updateWhileInteracting: (boolean|undefined),
  *     visible: (boolean|undefined)}}
  * @api
  */
@@ -3514,6 +3515,15 @@ olx.layer.VectorOptions.prototype.style;
  * @api
  */
 olx.layer.VectorOptions.prototype.updateWhileAnimating;
+
+
+/**
+ * When set to `true`, feature batches will be recreated during interactions.
+ * See also `updateWhileInteracting`. Default is `false`.
+ * @type {boolean|undefined}
+ * @api
+ */
+olx.layer.VectorOptions.prototype.updateWhileInteracting;
 
 
 /**
