@@ -74,7 +74,6 @@ goog.inherits(ol.Image, ol.ImageBase);
 /**
  * @param {Object=} opt_context Object.
  * @return {HTMLCanvasElement|Image|HTMLVideoElement} Image.
- * @api
  */
 ol.Image.prototype.getImage = function(opt_context) {
   if (goog.isDef(opt_context)) {
@@ -137,7 +136,7 @@ ol.Image.prototype.load = function() {
       goog.events.listenOnce(this.image_, goog.events.EventType.LOAD,
           this.handleImageLoad_, false, this)
     ];
-    this.imageLoadFunction_(this, this.src_);
+    this.imageLoadFunction_(this.getImage(), this.src_);
   }
 };
 

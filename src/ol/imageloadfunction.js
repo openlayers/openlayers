@@ -2,20 +2,20 @@ goog.provide('ol.ImageLoadFunctionType');
 
 
 /**
- * A function that takes an {@link ol.Image} for the image and a `{string}` for
- * the src as arguments. It is supposed to make it so the underlying image
- * {@link ol.Image#getImage} is assigned the content specified by the src. If
- * not specified, the default is
+ * A function used to load an image.  The function is called with the image
+ * element and the URL for the image.  The simplest image load function (which
+ * is provided for you by default) would set the `image.src` attribute to the
+ * provided URL.  E.g.
  *
  *     function(image, src) {
- *       image.getImage().src = src;
+ *       image.src = src;
  *     }
  *
  * Providing a custom `imageLoadFunction` can be useful to load images with
  * post requests or - in general - through XHR requests, where the src of the
  * image element would be set to a data URI when the content is loaded.
  *
- * @typedef {function(ol.Image, string)}
+ * @typedef {function((HTMLCanvasElement|Image|HTMLVideoElement), string)}
  * @api
  */
 ol.ImageLoadFunctionType;
