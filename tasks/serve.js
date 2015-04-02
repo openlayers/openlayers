@@ -23,7 +23,10 @@ var createServer = exports.createServer = function(callback) {
     lib: [
       'src/**/*.js',
       'build/ol.ext/*.js',
-      'test/spec/**/*.test.js'
+      'test/spec/**/*.test.js',
+      'test_rendering/spec/**/*.test.js',
+      'build/test_requires.js',
+      'build/test_rendering_requires.js'
     ],
     main: 'examples/*.js'
   });
@@ -41,12 +44,21 @@ var createServer = exports.createServer = function(callback) {
       getMain: function(req) {
         var main;
         var query = url.parse(req.url, true).query;
-        if (query.id) {
-          var referer = req.headers.referer;
-          if (referer) {
-            var from = path.join(process.cwd(),
-                path.dirname(url.parse(referer).pathname));
-            main = path.resolve(from, query.id + '.js');
+        var referer = req.headers.referer;
+        var pathName = url.parse(referer).pathname;
+        if (pathName.indexOf('/test/') === 0) {
+          main = path.resolve(
+            path.join(process.cwd(), 'build'), 'test_requires.js');
+        } else if (pathName.indexOf('/test_rendering/') === 0) {
+          main = path.resolve(
+            path.join(process.cwd(), 'build'), 'test_rendering_requires.js');
+        } else {
+          if (query.id) {
+            if (referer) {
+              var from = path.join(process.cwd(),
+                  path.dirname(url.parse(referer).pathname));
+              main = path.resolve(from, query.id + '.js');
+            }
           }
         }
         return main;

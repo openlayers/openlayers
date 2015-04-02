@@ -81,6 +81,9 @@ if (require.main === module) {
   });
 }
 
-module.exports = runTests;
+module.exports = {
+  runTests: runTests,
+  listen: listen
+};
 
 

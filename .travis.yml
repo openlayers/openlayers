@@ -1,9 +1,13 @@
+env:
+  - DISPLAY=:99.0
+
 before_install:
   - "sudo pip install -r requirements.txt"
   - "npm install -g npm && npm install"
 
 before_script:
   - "rm src/ol/renderer/webgl/*shader.js"
+  - "sh -e /etc/init.d/xvfb start"
 
 script: "./build.py ci"
 
