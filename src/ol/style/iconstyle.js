@@ -96,15 +96,29 @@ ol.style.Icon = function(opt_options) {
   var image = goog.isDef(options.img) ? options.img : null;
 
   /**
+   * @type {ol.Size}
+   */
+  var imgSize = goog.isDef(options.imgSize) ? options.imgSize : null;
+
+  /**
    * @type {string|undefined}
    */
   var src = options.src;
+
+  goog.asserts.assert(!(goog.isDef(src) && !goog.isNull(image)),
+      'image and src can not provided at the same time');
+  goog.asserts.assert(
+      !goog.isDef(src) || (goog.isDef(src) && goog.isNull(imgSize)),
+      'imgSize should not be set when src is provided');
+  goog.asserts.assert(
+      goog.isNull(image) || (!goog.isNull(image) && !goog.isNull(imgSize)),
+      'imgSize must be set when image is provided');
 
   if ((!goog.isDef(src) || src.length === 0) && !goog.isNull(image)) {
     src = image.src;
   }
   goog.asserts.assert(goog.isDef(src) && src.length > 0,
-      'must provide a defined and non-empty src');
+      'must provide a defined and non-empty src or image');
 
   /**
    * @type {ol.style.ImageState}
@@ -117,7 +131,7 @@ ol.style.Icon = function(opt_options) {
    * @type {ol.style.IconImage_}
    */
   this.iconImage_ = ol.style.IconImage_.get(
-      image, src, crossOrigin, imageState);
+      image, src, imgSize, crossOrigin, imageState);
 
   /**
    * @private
@@ -351,12 +365,13 @@ ol.style.Icon.prototype.unlistenImageChange = function(listener, thisArg) {
  * @constructor
  * @param {Image} image Image.
  * @param {string|undefined} src Src.
+ * @param {ol.Size} size Size.
  * @param {?string} crossOrigin Cross origin.
  * @param {ol.style.ImageState} imageState Image state.
  * @extends {goog.events.EventTarget}
  * @private
  */
-ol.style.IconImage_ = function(image, src, crossOrigin, imageState) {
+ol.style.IconImage_ = function(image, src, size, crossOrigin, imageState) {
 
   goog.base(this);
 
@@ -392,7 +407,7 @@ ol.style.IconImage_ = function(image, src, crossOrigin, imageState) {
    * @private
    * @type {ol.Size}
    */
-  this.size_ = null;
+  this.size_ = size;
 
   /**
    * @private
@@ -413,15 +428,17 @@ goog.inherits(ol.style.IconImage_, goog.events.EventTarget);
 /**
  * @param {Image} image Image.
  * @param {string} src Src.
+ * @param {ol.Size} size Size.
  * @param {?string} crossOrigin Cross origin.
  * @param {ol.style.ImageState} imageState Image state.
  * @return {ol.style.IconImage_} Icon image.
  */
-ol.style.IconImage_.get = function(image, src, crossOrigin, imageState) {
+ol.style.IconImage_.get = function(image, src, size, crossOrigin, imageState) {
   var iconImageCache = ol.style.IconImageCache.getInstance();
   var iconImage = iconImageCache.get(src, crossOrigin);
   if (goog.isNull(iconImage)) {
-    iconImage = new ol.style.IconImage_(image, src, crossOrigin, imageState);
+    iconImage = new ol.style.IconImage_(
+        image, src, size, crossOrigin, imageState);
     iconImageCache.set(src, crossOrigin, iconImage);
   }
   return iconImage;

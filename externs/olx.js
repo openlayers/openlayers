@@ -6076,6 +6076,7 @@ olx.style.FillOptions.prototype.color;
  *     rotateWithView: (boolean|undefined),
  *     rotation: (number|undefined),
  *     size: (ol.Size|undefined),
+ *     imgSize: (ol.Size|undefined),
  *     src: (string|undefined)}}
  * @api
  */
@@ -6134,7 +6135,7 @@ olx.style.IconOptions.prototype.crossOrigin;
 /**
  * Image object for the icon. If the `src` option is not provided then the
  * provided image must already be loaded. And in that case, it is required
- * to provide the size of the image, with the `size` option.
+ * to provide the size of the image, with the `imgSize` option.
  * @type {Image|undefined}
  * @api
  */
@@ -6208,12 +6209,19 @@ olx.style.IconOptions.prototype.rotation;
 
 /**
  * Icon size in pixel. Can be used together with `offset` to define the
- * sub-rectangle to use from the origin (sprite) icon image. Also, setting
- * the `size` is required if `img` is set and `src` is not.
+ * sub-rectangle to use from the origin (sprite) icon image.
  * @type {ol.Size|undefined}
  * @api
  */
 olx.style.IconOptions.prototype.size;
+
+
+/**
+ * Image size in pixel. Only required if `img` is set and `src` is not.
+ * @type {ol.Size|undefined}
+ * @api
+ */
+olx.style.IconOptions.prototype.imgSize;
 
 
 /**
