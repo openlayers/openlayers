@@ -170,7 +170,7 @@ ol.control.OverviewMap.prototype.setMap = function(map) {
     // if no layers were set for the overviewmap map, then bind with
     // those in the main map
     if (this.ovmap_.getLayers().getLength() === 0) {
-      this.ovmap_.bindTo(ol.MapProperty.LAYERGROUP, map);
+      this.ovmap_.setLayerGroup(map.getLayerGroup());
     }
 
     // bind current map view, or any new one
@@ -202,7 +202,7 @@ ol.control.OverviewMap.prototype.bindView_ = function() {
   // FIXME - the overviewmap view rotation currently follows the one used
   // by the main map view.  We could support box rotation instead.  The choice
   // between the 2 modes would be made in a single option
-  this.ovmap_.getView().bindTo(ol.ViewProperty.ROTATION, view);
+  // this.ovmap_.getView().bindTo(ol.ViewProperty.ROTATION, view);
 };
 
 
