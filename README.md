@@ -1,6 +1,7 @@
 # OpenLayers 3
 
 [![Travis CI Status](https://secure.travis-ci.org/openlayers/ol3.svg)](http://travis-ci.org/#!/openlayers/ol3)
+[![Coverage Status](https://coveralls.io/repos/openlayers/ol3/badge.svg)](https://coveralls.io/r/openlayers/ol3)
 
 Welcome to [OpenLayers 3](http://openlayers.org/)!
 
