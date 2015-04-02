@@ -1,15 +1,47 @@
 @import url(http://fonts.googleapis.com/css?family=Quattrocento+Sans:400,400italic,700);
+.navbar-inverse {
+  border: 0;
+}
 .navbar-inverse .navbar-inner {
   background: #1F6B75;
   height: 50px;
+  text-shadow: 1px 1px 2px rgba(0,0,0,0.25);
 }
 .navbar-inverse .brand {
-  color: white;
-  font-size: 20px;
+  color: #fff;
+  font-size: 160%;
+  font-weight: bold;
+  position: absolute;
+  top: 6px;
+  left: 16px;
+}
+.navbar-inverse .brand:hover,
+.navbar-inverse .brand:focus {
+  color: #aae1e9;
+  text-decoration: none;
+}
+.navbar-inverse .brand img {
+  width: 35px;
+  height: 35px;
+  vertical-align: middle;
+  margin-right: 5px;
+  border:0;
 }
 .navbar-inverse .container {
-  padding: 5px 0 5px 0;
+  padding: 0;
 }
+.navbar-inverse .navbar-nav>li>a {
+  color: #fff;
+}
+.navbar-inverse .navbar-nav>li>a:hover,
+.navbar-inverse .navbar-nav>li>a:focus,
+.navbar-inverse .navbar-nav>li>a.active
+ {
+  outline:0;
+  color: #fff;
+  background-color: #268591;
+}
+
 body {
   padding-top: 50px;
 }
@@ -20,6 +52,8 @@ body {
 a {
   position: relative;
   z-index: 1;
+  -webkit-transition: all .2s;
+  transition: all .2s;
 }
 .navigation li {
   color: #888;
@@ -379,5 +413,6 @@ footer {
   color: white;
   position: absolute;
   top: 1em;
-  right: 8em;
+  left: 250px;
+  font-weight: normal;
 }
