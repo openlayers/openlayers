@@ -181,9 +181,21 @@ describe('ol.Map', function() {
       });
     });
 
-    it('removes the viewport from its parent', function() {
+    it('removes all the dom nodes', function() {
       goog.dispose(map);
-      expect(goog.dom.getParentElement(map.getViewport())).to.be(null);
+      expect(map.getViewport()).to.be(null);
+      expect(map.getOverlayContainer()).to.be(null);
+      expect(map.getOverlayContainerStopEvent()).to.be(null);
+    });
+
+    it('nullify the view', function() {
+      goog.dispose(map);
+      expect(map.getView()).to.be(null);
+    });
+
+    it('nullify the layer group', function() {
+      goog.dispose(map);
+      expect(map.getLayerGroup()).to.be(null);
     });
   });
 
@@ -243,7 +255,6 @@ describe('ol.Map', function() {
 });
 
 goog.require('goog.dispose');
-goog.require('goog.dom');
 goog.require('ol.Map');
 goog.require('ol.MapEvent');
 goog.require('ol.View');

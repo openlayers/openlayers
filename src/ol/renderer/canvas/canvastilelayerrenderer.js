@@ -95,6 +95,16 @@ goog.inherits(ol.renderer.canvas.TileLayer, ol.renderer.canvas.Layer);
 /**
  * @inheritDoc
  */
+ol.renderer.canvas.TileLayer.prototype.disposeInternal = function() {
+  this.context_ = null;
+  this.canvas_ = null;
+  goog.base(this, 'disposeInternal');
+};
+
+
+/**
+ * @inheritDoc
+ */
 ol.renderer.canvas.TileLayer.prototype.getImage = function() {
   return this.canvas_;
 };

@@ -75,6 +75,17 @@ goog.inherits(ol.renderer.canvas.Map, ol.renderer.Map);
 /**
  * @inheritDoc
  */
+ol.renderer.canvas.Map.prototype.disposeInternal = function() {
+  this.context_ = null;
+  goog.dom.removeNode(this.canvas_);
+  this.canvas_ = null;
+  goog.base(this, 'disposeInternal');
+};
+
+
+/**
+ * @inheritDoc
+ */
 ol.renderer.canvas.Map.prototype.createLayerRenderer = function(layer) {
   if (ol.ENABLE_IMAGE && layer instanceof ol.layer.Image) {
     return new ol.renderer.canvas.ImageLayer(layer);
