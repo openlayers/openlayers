@@ -8,6 +8,8 @@ var pjson = require('../package.json');
 
 var fileRegEx = /([^\/^\.]*)\.html$/;
 var cleanupJSRegEx = /.*(goog\.require(.*);|.*renderer: exampleNS\..*,?)[\n]*/g;
+var isCssRegEx = /\.css$/;
+var isJsRegEx = /\.js$/;
 
 function main(callback) {
 
@@ -36,6 +38,23 @@ function main(callback) {
             file.css_resource = '<link rel="stylesheet" href="' + match[1] +
                 '.css">';
             file.css_inline = fs.readFileSync(cssFile, 'utf-8');
+          }
+          if (file.resources) {
+            var resources = file.resources.split(',');
+            var resource;
+            for (var i = resources.length - 1; i >= 0; --i) {
+              resource = resources[i];
+              if (isJsRegEx.test(resource)) {
+                resources[i] = '<script src="' + resource + '"></script>"';
+              } else if (isCssRegEx.test(resource)) {
+                resources[i] = '<link rel="stylesheet" href="' + resource +
+                    '">"';
+              } else {
+                callback(new Error('Resource ' + resource +
+                    ' is no .js or .css'));
+              }
+              file.resources = resources.join('\n');
+            }
           }
         }
       }
