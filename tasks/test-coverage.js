@@ -1,9 +1,9 @@
 /**
- * This tasks instruments our source code with istanbul, runs the test suite
- * on the instrumented source and collects the coverage data. It the creates
+ * This task instruments our source code with istanbul, runs the test suite
+ * on the instrumented source and collects the coverage data. It then creates
  * test coverage reports.
  *
- * TODO this can be improved in style. We should possibly rewrite it and use
+ * TODO This can be improved in style. We should possibly rewrite it and use
  *      async.waterfall.
  */
 
