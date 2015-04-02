@@ -1,7 +1,9 @@
 goog.provide('ol.render.webgl.ImageReplay');
+goog.provide('ol.render.webgl.PolygonReplay');
 goog.provide('ol.render.webgl.ReplayGroup');
 
 goog.require('ol');
+goog.require('ol.ext.earcut');
 goog.require('ol.extent');
 goog.require('ol.obj');
 goog.require('ol.render.ReplayGroup');
@@ -9,6 +11,7 @@ goog.require('ol.render.VectorContext');
 goog.require('ol.render.replay');
 goog.require('ol.render.webgl.imagereplay.defaultshader');
 goog.require('ol.transform');
+goog.require('ol.render.webgl.polygonreplay.shader.Default');
 goog.require('ol.vec.Mat4');
 goog.require('ol.webgl');
 goog.require('ol.webgl.Buffer');
@@ -907,6 +910,315 @@ ol.render.webgl.ImageReplay.prototype.setImageStyle = function(imageStyle) {
 
 /**
  * @constructor
+ * @extends {ol.render.VectorContext}
+ * @param {number} tolerance Tolerance.
+ * @param {ol.Extent} maxExtent Max extent.
+ * @protected
+ * @struct
+ */
+ol.render.webgl.PolygonReplay = function(tolerance, maxExtent) {
+  goog.base(this);
+
+  /**
+   * @private
+   * @type {ol.color.Matrix}
+   */
+  this.colorMatrix_ = new ol.color.Matrix();
+
+  /**
+   * The origin of the coordinate system for the point coordinates sent to
+   * the GPU.
+   * @private
+   * @type {ol.Coordinate}
+   */
+  this.origin_ = ol.extent.getCenter(maxExtent);
+
+  /**
+   * @type {Array.<number>}
+   * @private
+   */
+  this.indices_ = [];
+
+  /**
+   * @type {ol.webgl.Buffer}
+   * @private
+   */
+  this.indicesBuffer_ = null;
+
+  /**
+   * @private
+   * @type {ol.render.webgl.polygonreplay.shader.Default.Locations}
+   */
+  this.defaultLocations_ = null;
+
+  /**
+   * @type {!goog.vec.Mat4.Number}
+   * @private
+   */
+  this.projectionMatrix_ = goog.vec.Mat4.createNumberIdentity();
+
+  /**
+   * @type {Array.<number>}
+   * @private
+   */
+  this.vertices_ = [];
+
+  /**
+   * @type {ol.webgl.Buffer}
+   * @private
+   */
+  this.verticesBuffer_ = null;
+
+  /**
+   * Start index per feature (the index).
+   * @type {Array.<number>}
+   * @private
+   */
+  this.startIndices_ = [];
+
+  /**
+   * Start index per feature (the feature).
+   * @type {Array.<ol.Feature>}
+   * @private
+   */
+  this.startIndicesFeature_ = [];
+};
+goog.inherits(ol.render.webgl.PolygonReplay, ol.render.VectorContext);
+
+
+/**
+ * Draw one polygon.
+ * @param {Array.<Array.<ol.Coordinate>>} coordinates
+ * @private
+ */
+ol.render.webgl.PolygonReplay.prototype.drawCoordinates_ =
+    function(coordinates) {
+  var triangulation = ol.ext.earcut(coordinates, true);
+  var offset = this.vertices_.length / 2;
+  if (offset === 0) {
+    this.indices_ = triangulation.indices;
+    this.vertices_ = triangulation.vertices;
+  } else {
+    var i, ii;
+    var indices = triangulation.indices;
+    for (i = 0, ii = indices.length; i < ii; ++i) {
+      this.indices_.push(indices[i] + offset);
+    }
+    var vertices = triangulation.vertices;
+    for (i = 0, ii = vertices.length; i < ii; ++i) {
+      this.vertices_.push(vertices[i]);
+    }
+  }
+};
+
+
+/**
+ * @inheritDoc
+ */
+ol.render.webgl.PolygonReplay.prototype.drawLineStringGeometry =
+    goog.abstractMethod;
+
+
+/**
+ * @inheritDoc
+ */
+ol.render.webgl.PolygonReplay.prototype.drawMultiLineStringGeometry =
+    goog.abstractMethod;
+
+
+/**
+ * @inheritDoc
+ */
+ol.render.webgl.PolygonReplay.prototype.drawMultiPolygonGeometry =
+    function(geometry, feature) {
+  var coordinatess = geometry.getCoordinates();
+  this.startIndices_.push(this.indices_.length);
+  this.startIndicesFeature_.push(feature);
+  var i, ii;
+  for (i = 0, ii = coordinatess.length; i < ii; i++) {
+    this.drawCoordinates_(coordinatess[i]);
+  }
+};
+
+
+/**
+ * @inheritDoc
+ */
+ol.render.webgl.PolygonReplay.prototype.drawPolygonGeometry =
+    function(polygonGeometry, feature) {
+  var coordinates = polygonGeometry.getCoordinates();
+  this.startIndices_.push(this.indices_.length);
+  this.startIndicesFeature_.push(feature);
+  this.drawCoordinates_(coordinates);
+};
+
+
+/**
+ * @param {ol.webgl.Context} context Context.
+ **/
+ol.render.webgl.PolygonReplay.prototype.finish = function(context) {
+  // create, bind, and populate the vertices buffer
+  this.verticesBuffer_ = new ol.webgl.Buffer(this.vertices_);
+  context.bindBuffer(goog.webgl.ARRAY_BUFFER, this.verticesBuffer_);
+
+  var indices = this.indices_;
+  var bits = context.hasOESElementIndexUint ? 32 : 16;
+  goog.asserts.assert(indices[indices.length - 1] < Math.pow(2, bits),
+      'Too large element index detected [%s] (OES_element_index_uint "%s")',
+      indices[indices.length - 1], context.hasOESElementIndexUint);
+
+  // create, bind, and populate the indices buffer
+  this.indicesBuffer_ = new ol.webgl.Buffer(indices);
+  context.bindBuffer(goog.webgl.ELEMENT_ARRAY_BUFFER, this.indicesBuffer_);
+};
+
+
+/**
+ * @param {ol.webgl.Context} context WebGL context.
+ * @return {function()} Delete resources function.
+ */
+ol.render.webgl.PolygonReplay.prototype.getDeleteResourcesFunction =
+    function(context) {
+  // We only delete our stuff here. The shaders and the program may
+  // be used by other PolygonReplay instances (for other layers). And
+  // they will be deleted when disposing of the ol.webgl.Context
+  // object.
+  goog.asserts.assert(!goog.isNull(this.verticesBuffer_),
+      'verticesBuffer must not be null');
+  goog.asserts.assert(!goog.isNull(this.indicesBuffer_),
+      'indicesBuffer must not be null');
+  var verticesBuffer = this.verticesBuffer_;
+  var indicesBuffer = this.indicesBuffer_;
+  return function() {
+    context.deleteBuffer(verticesBuffer);
+    context.deleteBuffer(indicesBuffer);
+  };
+};
+
+
+/**
+ * @param {ol.webgl.Context} context Context.
+ * @param {ol.Coordinate} center Center.
+ * @param {number} resolution Resolution.
+ * @param {number} rotation Rotation.
+ * @param {ol.Size} size Size.
+ * @param {number} pixelRatio Pixel ratio.
+ * @param {number} opacity Global opacity.
+ * @param {number} brightness Global brightness.
+ * @param {number} contrast Global contrast.
+ * @param {number} hue Global hue.
+ * @param {number} saturation Global saturation.
+ * @param {Object} skippedFeaturesHash Ids of features to skip.
+ * @param {function(ol.Feature): T|undefined} featureCallback Feature callback.
+ * @param {boolean} oneByOne Draw features one-by-one for the hit-detecion.
+ * @param {ol.Extent=} opt_hitExtent Hit extent: Only features intersecting
+ *  this extent are checked.
+ * @return {T|undefined} Callback result.
+ * @template T
+ */
+ol.render.webgl.PolygonReplay.prototype.replay = function(context,
+    center, resolution, rotation, size, pixelRatio,
+    opacity, brightness, contrast, hue, saturation, skippedFeaturesHash,
+    featureCallback, oneByOne, opt_hitExtent) {
+  var gl = context.getGL();
+
+  // bind the vertices buffer
+  goog.asserts.assert(!goog.isNull(this.verticesBuffer_),
+      'verticesBuffer must not be null');
+  context.bindBuffer(goog.webgl.ARRAY_BUFFER, this.verticesBuffer_);
+
+  // bind the indices buffer
+  goog.asserts.assert(!goog.isNull(this.indicesBuffer_),
+      'indicesBuffer must not be null');
+  context.bindBuffer(goog.webgl.ELEMENT_ARRAY_BUFFER, this.indicesBuffer_);
+
+  // get the program
+  var fragmentShader, vertexShader;
+  fragmentShader =
+      ol.render.webgl.polygonreplay.shader.DefaultFragment.getInstance();
+  vertexShader =
+      ol.render.webgl.polygonreplay.shader.DefaultVertex.getInstance();
+  var program = context.getProgram(fragmentShader, vertexShader);
+
+  // get the locations
+  var locations;
+  if (goog.isNull(this.defaultLocations_)) {
+    locations =
+        new ol.render.webgl.polygonreplay.shader.Default.Locations(gl, program);
+    this.defaultLocations_ = locations;
+  } else {
+    locations = this.defaultLocations_;
+  }
+
+  context.useProgram(program);
+
+  // enable the vertex attrib arrays
+  gl.enableVertexAttribArray(locations.a_position);
+  gl.vertexAttribPointer(locations.a_position, 2, goog.webgl.FLOAT,
+      false, 8, 0);
+
+
+  // set the "uniform" values
+  // TODO: use RTE to avoid jitter
+  var projectionMatrix = this.projectionMatrix_;
+  ol.vec.Mat4.makeTransform2D(projectionMatrix,
+      0.0, 0.0,
+      2 / (resolution * size[0]),
+      2 / (resolution * size[1]),
+      -rotation,
+      -center[0], -center[1]);
+
+  gl.uniformMatrix4fv(locations.u_projectionMatrix, false, projectionMatrix);
+
+  // draw!
+  var result;
+  if (!goog.isDef(featureCallback)) {
+    this.drawReplay_(gl, context, skippedFeaturesHash);
+  } else {
+    // TODO: draw feature by feature for the hit-detection
+  }
+
+  // disable the vertex attrib arrays
+  gl.disableVertexAttribArray(locations.a_position);
+
+  return result;
+};
+
+
+/**
+ * @private
+ * @param {WebGLRenderingContext} gl gl.
+ * @param {ol.webgl.Context} context Context.
+ * @param {Object} skippedFeaturesHash Ids of features to skip.
+ */
+ol.render.webgl.PolygonReplay.prototype.drawReplay_ =
+    function(gl, context, skippedFeaturesHash) {
+  var elementType = context.hasOESElementIndexUint ?
+      goog.webgl.UNSIGNED_INT : goog.webgl.UNSIGNED_SHORT;
+  //  var elementSize = context.hasOESElementIndexUint ? 4 : 2;
+
+  if (!goog.object.isEmpty(skippedFeaturesHash)) {
+    // TODO: draw by blocks to skip features
+  } else {
+    var numItems = this.indices_.length;
+    gl.drawElements(goog.webgl.TRIANGLES, numItems, elementType, 0);
+  }
+};
+
+
+/**
+ * @inheritDoc
+ */
+
+ol.render.webgl.PolygonReplay.prototype.setFillStrokeStyle =
+    function(fillStyle, strokeStyle) {
+  // TODO implement
+};
+
+
+
+/**
+ * @constructor
  * @extends {ol.render.ReplayGroup}
  * @param {number} tolerance Tolerance.
  * @param {ol.Extent} maxExtent Max extent.
@@ -1166,7 +1478,8 @@ ol.render.webgl.ReplayGroup.prototype.hasFeatureAtCoordinate = function(
  *                ol.Extent)>}
  */
 ol.render.webgl.BATCH_CONSTRUCTORS_ = {
-  'Image': ol.render.webgl.ImageReplay
+  'Image': ol.render.webgl.ImageReplay,
+  'Polygon': ol.render.webgl.PolygonReplay
 };
 
 
