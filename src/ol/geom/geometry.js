@@ -202,17 +202,18 @@ ol.geom.Geometry.prototype.applyTransform = goog.abstractMethod;
  * @param {ol.Extent} extent Extent.
  * @return {boolean} `true` if the geometry and the extent intersect.
  * @function
- * @api
+ * @api stable
  */
 ol.geom.Geometry.prototype.intersectsExtent = goog.abstractMethod;
 
 
 /**
- * Translate the geometry.
+ * Translate the geometry.  This modifies the geometry coordinates in place.  If
+ * instead you want a new geometry, first `clone()` this geometry.
  * @param {number} deltaX Delta X.
  * @param {number} deltaY Delta Y.
  * @function
- * @api
+ * @api stable
  */
 ol.geom.Geometry.prototype.translate = goog.abstractMethod;
 
