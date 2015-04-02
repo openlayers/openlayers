@@ -50,8 +50,8 @@ function main(callback) {
                 resources[i] = '<link rel="stylesheet" href="' + resource +
                     '">';
               } else {
-                callback(new Error('Resource ' + resource +
-                    ' is no .js or .css'));
+                callback(new Error(f + ': Invalid value for "resource": ' +
+                    resource + ' is no .js or .css.'));
               }
               file.resources = resources.join('\n');
             }
