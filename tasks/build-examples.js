@@ -45,10 +45,10 @@ function main(callback) {
             for (var i = resources.length - 1; i >= 0; --i) {
               resource = resources[i];
               if (isJsRegEx.test(resource)) {
-                resources[i] = '<script src="' + resource + '"></script>"';
+                resources[i] = '<script src="' + resource + '"></script>';
               } else if (isCssRegEx.test(resource)) {
                 resources[i] = '<link rel="stylesheet" href="' + resource +
-                    '">"';
+                    '">';
               } else {
                 callback(new Error('Resource ' + resource +
                     ' is no .js or .css'));
