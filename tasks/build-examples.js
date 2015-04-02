@@ -19,7 +19,7 @@ function main(callback) {
       file = files[f];
       match = f.match(fileRegEx);
       if (match) {
-        if (file.title) {
+        if (file.template) {
           if (file.docs) {
             file.docs = marked(file.docs);
           }
@@ -56,6 +56,8 @@ function main(callback) {
               file.resources = resources.join('\n');
             }
           }
+        } else if (f !== 'index.html'){
+          callback(new Error(f + ': Invalid YAML front-matter.'));
         }
       }
     }
