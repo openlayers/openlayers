@@ -1,77 +1,38 @@
-<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="chrome=1">
-    <meta name="viewport" content="initial-scale=1.0, user-scalable=no, width=device-width">
-    <link rel="stylesheet" href="../css/ol.css" type="text/css">
-    <link rel="stylesheet" href="../resources/bootstrap/css/bootstrap.min.css" type="text/css">
-    <link rel="stylesheet" href="../resources/layout.css" type="text/css">
-    <link rel="stylesheet" href="../resources/bootstrap/css/bootstrap-responsive.min.css" type="text/css">
-    <title> Snap example </title>
-  </head>
-  <body>
-
-    <div class="navbar navbar-inverse navbar-fixed-top">
-      <div class="navbar-inner">
-        <div class="container">
-          <a class="brand" href="./"><img src="../resources/logo.png"> OpenLayers 3 Examples</a>
-        </div>
-      </div>
+---
+template: "example.html"
+title: "Snap interaction example"
+shortdesc: "Example of using the snap interaction together with draw and modify interactions."
+docs: >
+  Example of using the snap interaction together with
+  draw and modify interactions. The snap interaction must be added
+  last, as it needs to be the first to handle the
+  <code>pointermove</code> event.</p>
+  <form id="options-form" automplete="off">
+    <div class="radio">
+      <label>
+        <input type="radio" name="interaction" value="draw" id="draw" checked>
+        Draw &nbsp;
+      </label>
     </div>
-
-    <div class="container-fluid">
-
-      <div class="row-fluid">
-        <div class="span12">
-          <div id="map" class="map"></div>
-        </div>
-      </div>
-
-      <div class="row-fluid">
-
-        <div class="span12">
-          <h4 id="title">Snap interaction example</h4>
-          <p id="shortdesc">Example of using the snap interaction together with
-          draw and modify interactions. The snap interaction must be added
-          last, as it needs to be the first to handle the
-          <code>pointermove</code> event.</p>
-          <form id="options-form" automplete="off">
-            <div class="radio">
-              <label>
-                <input type="radio" name="interaction" value="draw" id="draw" checked>
-                Draw &nbsp;
-              </label>
-            </div>
-            <div class="radio">
-              <label>
-                <input type="radio" name="interaction" value="modify">
-                Modify &nbsp;
-              </label>
-            </div>
-            <div class="form-group">
-              <label>Draw type &nbsp;</label>
-              <select name="draw-type" id="draw-type">
-                <option value="Point">Point</option>
-                <option value="LineString">LineString</option>
-                <option value="Polygon">Polygon</option>
-              </select>
-            </div>
-          </form>
-
-          <div id="docs">
-            <p>See the <a href="snap.js" target="_blank">snap.js source</a> to see how this is done.</p>
-          </div>
-          <div id="tags">draw, edit, modify, vector, featureoverlay, snap</div>
-        </div>
-
-      </div>
-
+    <div class="radio">
+      <label>
+        <input type="radio" name="interaction" value="modify">
+        Modify &nbsp;
+      </label>
     </div>
-
-    <script src="../resources/jquery.min.js" type="text/javascript"></script>
-    <script src="../resources/example-behaviour.js" type="text/javascript"></script>
-    <script src="loader.js?id=snap" type="text/javascript"></script>
-
-  </body>
-</html>
+    <div class="form-group">
+      <label>Draw type &nbsp;</label>
+      <select name="draw-type" id="draw-type">
+        <option value="Point">Point</option>
+        <option value="LineString">LineString</option>
+        <option value="Polygon">Polygon</option>
+      </select>
+    </div>
+  </form>
+tags: "draw, edit, modify, vector, featureoverlay, snap"
+---
+<div class="row-fluid">
+  <div class="span12">
+    <div id="map" class="map"></div>
+  </div>
+</div>
