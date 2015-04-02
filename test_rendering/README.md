@@ -14,8 +14,9 @@ From the command-line the tests can be run with the build target `./build.py tes
 
 ## Adding new tests
 When creating a new test case, a reference image has to be created. By appending `?generate`
-to the URL, a canvas with the rendered map will be shown on the page. Then the reference
-image can simply be created with a right-click and "Save image as".
+to the URL, a canvas with the rendered map will be shown on the page when calling
+`expectResemble`. Then the reference image can simply be created with a right-click
+and "Save image as".
 
 It is recommended to only run a single test case when generating the reference image.
 

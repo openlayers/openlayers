@@ -395,7 +395,12 @@
   function expectResembleWebGL(map, referenceImage, tolerance, done) {
     map.render();
     map.on('postcompose', function(event) {
-      var webglCanvas = map.getTarget().children[0].children[0];
+      if (event.frameState.animate) {
+        // make sure the tile-queue is empty
+        return;
+      }
+
+      var webglCanvas = event.glContext.getCanvas();
       expect(webglCanvas).to.be.a(HTMLCanvasElement);
 
       // draw the WebGL canvas on a new canvas, because we can not create
