@@ -4,6 +4,123 @@ describe('ol.format.WKT', function() {
 
   var format = new ol.format.WKT();
 
+  describe('#readProjectionFromText', function() {
+    it('returns the default projection', function() {
+      var projection = format.readProjectionFromText('POINT(1 2)');
+      expect(projection).to.be(null);
+    });
+  });
+
+  describe('#readGeometry()', function() {
+
+    it('transforms with dataProjection and featureProjection', function() {
+      var wkt = 'POINT(1 2)';
+      var geom = format.readGeometry(wkt, {
+        dataProjection: 'EPSG:4326',
+        featureProjection: 'EPSG:3857'
+      });
+      expect(geom.getCoordinates()).to.eql(
+          ol.proj.transform([1, 2], 'EPSG:4326', 'EPSG:3857'));
+    });
+
+  });
+
+  describe('#writeGeometry()', function() {
+
+    it('transforms with dataProjection and featureProjection', function() {
+      var geom = new ol.geom.Point([1, 2]).transform('EPSG:4326', 'EPSG:3857');
+      var wkt = format.writeGeometry(geom, {
+        dataProjection: 'EPSG:4326',
+        featureProjection: 'EPSG:3857'
+      });
+      var got = format.readGeometry(wkt).getCoordinates();
+      expect(got[0]).to.roughlyEqual(1, 1e-6);
+      expect(got[1]).to.roughlyEqual(2, 1e-6);
+    });
+
+  });
+
+  describe('#readFeature()', function() {
+
+    it('transforms with dataProjection and featureProjection', function() {
+      var wkt = 'POINT(1 2)';
+      var feature = format.readFeature(wkt, {
+        dataProjection: 'EPSG:4326',
+        featureProjection: 'EPSG:3857'
+      });
+      var geom = feature.getGeometry();
+      expect(geom.getCoordinates()).to.eql(
+          ol.proj.transform([1, 2], 'EPSG:4326', 'EPSG:3857'));
+    });
+
+  });
+
+  describe('#writeFeature()', function() {
+
+    it('transforms with dataProjection and featureProjection', function() {
+      var feature = new ol.Feature(
+          new ol.geom.Point([1, 2]).transform('EPSG:4326', 'EPSG:3857'));
+      var wkt = format.writeFeature(feature, {
+        dataProjection: 'EPSG:4326',
+        featureProjection: 'EPSG:3857'
+      });
+      var gotFeature = format.readFeature(wkt);
+      expect(gotFeature).to.be.a(ol.Feature);
+      var got = gotFeature.getGeometry().getCoordinates();
+      expect(got[0]).to.roughlyEqual(1, 1e-6);
+      expect(got[1]).to.roughlyEqual(2, 1e-6);
+    });
+
+  });
+
+  describe('#readFeatures()', function() {
+
+    it('transforms with dataProjection and featureProjection', function() {
+      var wkt = 'GEOMETRYCOLLECTION(POINT(1 2),POINT(4 5))';
+      var features = format.readFeatures(wkt, {
+        dataProjection: 'EPSG:4326',
+        featureProjection: 'EPSG:3857'
+      });
+      expect(features.length).to.eql(2);
+      var point1 = features[0].getGeometry();
+      var point2 = features[1].getGeometry();
+      expect(point1.getType()).to.eql(ol.geom.GeometryType.POINT);
+      expect(point2.getType()).to.eql(ol.geom.GeometryType.POINT);
+      expect(point1.getCoordinates()).to.eql(
+          ol.proj.transform([1, 2], 'EPSG:4326', 'EPSG:3857'));
+      expect(point2.getCoordinates()).to.eql(
+          ol.proj.transform([4, 5], 'EPSG:4326', 'EPSG:3857'));
+    });
+  });
+
+  describe('#writeFeatures()', function() {
+
+    it('transforms with dataProjection and featureProjection', function() {
+      var features = [
+        new ol.Feature(
+            new ol.geom.Point([1, 2]).transform('EPSG:4326', 'EPSG:3857')),
+        new ol.Feature(
+            new ol.geom.Point([4, 5]).transform('EPSG:4326', 'EPSG:3857'))
+      ];
+      var wkt = format.writeFeatures(features, {
+        dataProjection: 'EPSG:4326',
+        featureProjection: 'EPSG:3857'
+      });
+      var gotFeatures = format.readFeatures(wkt);
+      expect(gotFeatures).to.have.length(2);
+      expect(gotFeatures[0].getGeometry().getCoordinates()[0])
+          .to.roughlyEqual(1, 1e-6);
+      expect(gotFeatures[0].getGeometry().getCoordinates()[1])
+          .to.roughlyEqual(2, 1e-6);
+      expect(gotFeatures[1].getGeometry().getCoordinates()[0])
+          .to.roughlyEqual(4, 1e-6);
+      expect(gotFeatures[1].getGeometry().getCoordinates()[1])
+          .to.roughlyEqual(5, 1e-6);
+    });
+
+  });
+
+
   it('Point read / written correctly', function() {
     var wkt = 'POINT(30 10)';
     var geom = format.readGeometry(wkt);
@@ -13,21 +130,6 @@ describe('ol.format.WKT', function() {
     wkt = 'POINT (30 10)';
     geom = format.readGeometry(wkt);
     expect(geom.getCoordinates()).to.eql([30, 10]);
-  });
-
-  it('Point transformed / read / written correctly', function() {
-    var wkt = 'POINT(1 2)';
-    var geom = format.readGeometry(wkt, {
-      dataProjection: 'EPSG:4326',
-      featureProjection: 'EPSG:3857'
-    });
-    expect(geom.getCoordinates()).to.eql(
-        ol.proj.transform([1, 2], 'EPSG:4326', 'EPSG:3857'));
-    var newWkt = format.writeGeometry(geom, {
-      dataProjection: 'EPSG:4326',
-      featureProjection: 'EPSG:3857'
-    });
-    expect(newWkt).to.eql(wkt);
   });
 
   it('MultiPoint read / written correctly', function() {
@@ -254,22 +356,6 @@ describe('ol.format.WKT', function() {
     expect(format.writeFeature(feature)).to.eql(wkt);
   });
 
-  it('Point feature transformed / read / written correctly', function() {
-    var wkt = 'POINT(1 2)';
-    var feature = format.readFeature(wkt, {
-      dataProjection: 'EPSG:4326',
-      featureProjection: 'EPSG:3857'
-    });
-    var geom = feature.getGeometry();
-    expect(geom.getCoordinates()).to.eql(
-        ol.proj.transform([1, 2], 'EPSG:4326', 'EPSG:3857'));
-    var newWkt = format.writeFeature(feature, {
-      dataProjection: 'EPSG:4326',
-      featureProjection: 'EPSG:3857'
-    });
-    expect(newWkt).to.eql(wkt);
-  });
-
   it('Features read / written correctly', function() {
     var wkt = 'GEOMETRYCOLLECTION(POINT(1 2),POINT(3 4))';
     var features = format.readFeatures(wkt);
@@ -283,30 +369,10 @@ describe('ol.format.WKT', function() {
     expect(format.writeFeatures(features)).to.eql(wkt);
   });
 
-  it('Features transformed / read / written correctly', function() {
-    var wkt = 'GEOMETRYCOLLECTION(POINT(1 2),POINT(4 5))';
-    var features = format.readFeatures(wkt, {
-      dataProjection: 'EPSG:4326',
-      featureProjection: 'EPSG:3857'
-    });
-    expect(features.length).to.eql(2);
-    var point1 = features[0].getGeometry();
-    var point2 = features[1].getGeometry();
-    expect(point1.getType()).to.eql(ol.geom.GeometryType.POINT);
-    expect(point2.getType()).to.eql(ol.geom.GeometryType.POINT);
-    expect(point1.getCoordinates()).to.eql(
-        ol.proj.transform([1, 2], 'EPSG:4326', 'EPSG:3857'));
-    expect(point2.getCoordinates()).to.eql(
-        ol.proj.transform([4, 5], 'EPSG:4326', 'EPSG:3857'));
-    var newWkt = format.writeFeatures(features, {
-      dataProjection: 'EPSG:4326',
-      featureProjection: 'EPSG:3857'
-    });
-    expect(newWkt).to.eql(wkt);
-  });
-
 });
 
+goog.require('ol.Feature');
 goog.require('ol.geom.GeometryType');
+goog.require('ol.geom.Point');
 goog.require('ol.format.WKT');
 goog.require('ol.proj');

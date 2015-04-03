@@ -10,25 +10,32 @@ goog.require('ol.render.webgl.Immediate');
 goog.require('ol.renderer.Layer');
 goog.require('ol.renderer.webgl.map.shader.Color');
 goog.require('ol.renderer.webgl.map.shader.Default');
-goog.require('ol.structs.Buffer');
+goog.require('ol.webgl.Buffer');
+goog.require('ol.webgl.Context');
 
 
 
 /**
  * @constructor
  * @extends {ol.renderer.Layer}
- * @param {ol.renderer.Map} mapRenderer Map renderer.
+ * @param {ol.renderer.webgl.Map} mapRenderer Map renderer.
  * @param {ol.layer.Layer} layer Layer.
  */
 ol.renderer.webgl.Layer = function(mapRenderer, layer) {
 
-  goog.base(this, mapRenderer, layer);
+  goog.base(this, layer);
+
+  /**
+   * @protected
+   * @type {ol.renderer.webgl.Map}
+   */
+  this.mapRenderer = mapRenderer;
 
   /**
    * @private
-   * @type {ol.structs.Buffer}
+   * @type {ol.webgl.Buffer}
    */
-  this.arrayBuffer_ = new ol.structs.Buffer([
+  this.arrayBuffer_ = new ol.webgl.Buffer([
     -1, -1, 0, 0,
     1, -1, 1, 0,
     -1, 1, 0, 1,
@@ -95,8 +102,7 @@ goog.inherits(ol.renderer.webgl.Layer, ol.renderer.Layer);
 ol.renderer.webgl.Layer.prototype.bindFramebuffer =
     function(frameState, framebufferDimension) {
 
-  var mapRenderer = this.getWebGLMapRenderer();
-  var gl = mapRenderer.getGL();
+  var gl = this.mapRenderer.getGL();
 
   if (!goog.isDef(this.framebufferDimension) ||
       this.framebufferDimension != framebufferDimension) {
@@ -115,15 +121,8 @@ ol.renderer.webgl.Layer.prototype.bindFramebuffer =
               }
             }, gl, this.framebuffer, this.texture));
 
-    var texture = gl.createTexture();
-    gl.bindTexture(goog.webgl.TEXTURE_2D, texture);
-    gl.texImage2D(goog.webgl.TEXTURE_2D, 0, goog.webgl.RGBA,
-        framebufferDimension, framebufferDimension, 0, goog.webgl.RGBA,
-        goog.webgl.UNSIGNED_BYTE, null);
-    gl.texParameteri(goog.webgl.TEXTURE_2D, goog.webgl.TEXTURE_MAG_FILTER,
-        goog.webgl.LINEAR);
-    gl.texParameteri(goog.webgl.TEXTURE_2D, goog.webgl.TEXTURE_MIN_FILTER,
-        goog.webgl.LINEAR);
+    var texture = ol.webgl.Context.createEmptyTexture(
+        gl, framebufferDimension, framebufferDimension);
 
     var framebuffer = gl.createFramebuffer();
     gl.bindFramebuffer(goog.webgl.FRAMEBUFFER, framebuffer);
@@ -237,20 +236,20 @@ ol.renderer.webgl.Layer.prototype.dispatchComposeEvent_ =
     function(type, context, frameState) {
   var layer = this.getLayer();
   if (layer.hasListener(type)) {
-    var render = new ol.render.webgl.Immediate(context, frameState.pixelRatio);
+    var viewState = frameState.viewState;
+    var resolution = viewState.resolution;
+    var pixelRatio = frameState.pixelRatio;
+    var extent = frameState.extent;
+    var center = viewState.center;
+    var rotation = viewState.rotation;
+    var size = frameState.size;
+
+    var render = new ol.render.webgl.Immediate(
+        context, center, resolution, rotation, size, extent, pixelRatio);
     var composeEvent = new ol.render.Event(
         type, layer, render, null, frameState, null, context);
     layer.dispatchEvent(composeEvent);
   }
-};
-
-
-/**
- * @protected
- * @return {ol.renderer.webgl.Map} MapRenderer.
- */
-ol.renderer.webgl.Layer.prototype.getWebGLMapRenderer = function() {
-  return /** @type {ol.renderer.webgl.Map} */ (this.getMapRenderer());
 };
 
 
@@ -286,3 +285,12 @@ ol.renderer.webgl.Layer.prototype.handleWebGLContextLost = function() {
   this.framebuffer = null;
   this.framebufferDimension = undefined;
 };
+
+
+/**
+ * @param {olx.FrameState} frameState Frame state.
+ * @param {ol.layer.LayerState} layerState Layer state.
+ * @param {ol.webgl.Context} context Context.
+ * @return {boolean} whether composeFrame should be called.
+ */
+ol.renderer.webgl.Layer.prototype.prepareFrame = goog.abstractMethod;

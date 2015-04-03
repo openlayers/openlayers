@@ -97,7 +97,7 @@
         return node.childNodes;
     } else {
       var nodes = [];
-      for (var i = 0, ii=node.childNodes.length; i < ii; i++ ) {
+      for (var i = 0, ii = node.childNodes.length; i < ii; i++) {
         var child = node.childNodes[i];
         if (child.nodeType == 1) {
           // element node, add it
@@ -116,36 +116,32 @@
 
   function assertElementNodesEqual(node1, node2, options, errors) {
     var testPrefix = (options && options.prefix === true);
-    try {
-      expect(node1.nodeType).to.equal(node2.nodeType);
-    } catch(e) {
+    if (node1.nodeType !== node2.nodeType) {
       errors.push('nodeType test failed for: ' + node1.nodeName + ' | ' +
-          node2.nodeName + ' | ' + e.message);
+        node2.nodeName + ' | expected ' + node1.nodeType + ' to equal ' +
+        node2.nodeType);
     }
     if (testPrefix) {
-      try {
-        expect(node1.nodeName).to.equal(node2.nodeName);
-      } catch(e) {
+      if (node1.nodeName !== node2.nodeName) {
         errors.push('nodeName test failed for: ' + node1.nodeName + ' | ' +
-            node2.nodeName + ' | ' + e.message);
+            node2.nodeName + ' | expected ' + node1.nodeName + ' to equal ' +
+            node2.nodeName);
       }
     } else {
-      try {
-        expect(node1.nodeName.split(':').pop()).to.equal(
-            node2.nodeName.split(':').pop());
-      } catch(e) {
+      var n1 = node1.nodeName.split(':').pop();
+      var n2 = node2.nodeName.split(':').pop();
+      if (n1 !== n2) {
         errors.push('nodeName test failed for: ' + node1.nodeName + ' | ' +
-            node2.nodeName + ' | ' + e.message);
+            node2.nodeName + ' | expected ' + n1 + ' to equal ' + n2);
       }
     }
     // for text nodes compare value
     if (node1.nodeType === 3) {
-      try {
-        // TODO should we make this optional?
-        expect(node1.nodeValue.replace(/\s/g, '')).to.equal(
-            node2.nodeValue.replace(/\s/g, ''));
-      } catch(e) {
-        errors.push('nodeValue test failed | ' + e.message);
+      var nv1 = node1.nodeValue.replace(/\s/g, '');
+      var nv2 = node2.nodeValue.replace(/\s/g, '');
+      if (nv1 !== nv2) {
+        errors.push('nodeValue test failed | expected ' + nv1 + ' to equal ' +
+            nv2);
       }
     }
     // for element type nodes compare namespace, attributes, and children
@@ -153,20 +149,17 @@
       // test namespace alias and uri
       if (node1.prefix || node2.prefix) {
         if (testPrefix) {
-          try {
-            expect(node1.prefix).to.equal(node2.prefix);
-          } catch(e) {
-            errors.push('Prefix test failed for: ' + node1.nodeName + ' | ' +
-                e.message);
+          if (node1.prefix !== node2.prefix) {
+            errors.push('Prefix test failed for: ' + node1.nodeName +
+                ' | expected ' + node1.prefix + ' to equal ' + node2.prefix);
           }
         }
       }
       if (node1.namespaceURI || node2.namespaceURI) {
-        try {
-          expect(node1.namespaceURI).to.equal(node2.namespaceURI);
-        } catch(e) {
+        if (node1.namespaceURI !== node2.namespaceURI) {
           errors.push('namespaceURI test failed for: ' + node1.nodeName +
-              ' | ' + e.message);
+              ' | expected ' + node1.namespaceURI + ' to equal ' +
+              node2.namespaceURI);
         }
       }
       // compare attributes - disregard xmlns given namespace handling above
@@ -177,7 +170,7 @@
       var ga, ea, gn, en;
       var i, ii;
       if (node1.attributes) {
-        for (i=0, ii=node1.attributes.length; i<ii; ++i) {
+        for (i = 0, ii = node1.attributes.length; i < ii; ++i) {
           ga = node1.attributes[i];
           if (ga.specified === undefined || ga.specified === true) {
             if (ga.name.split(':').shift() != 'xmlns') {
@@ -189,7 +182,7 @@
         }
       }
       if (node2.attributes) {
-        for (i=0, ii=node2.attributes.length; i<ii; ++i) {
+        for (i = 0, ii = node2.attributes.length; i < ii; ++i) {
           ea = node2.attributes[i];
           if (ea.specified === undefined || ea.specified === true) {
             if (ea.name.split(':').shift() != 'xmlns') {
@@ -200,11 +193,9 @@
           }
         }
       }
-      try {
-        expect(node1AttrLen).to.equal(node2AttrLen);
-      } catch(e) {
+      if (node1AttrLen !== node2AttrLen) {
         errors.push('Number of attributes test failed for: ' + node1.nodeName +
-            ' | ' + e.message);
+            ' | expected ' + node1AttrLen + ' to equal ' + node2AttrLen);
       }
       var gv, ev;
       for (var name in node1Attr) {
@@ -213,36 +204,52 @@
               ' expected for element ' + node1.nodeName);
         }
         // test attribute namespace
-        try {
-          // we do not care about the difference between an empty string and
-          // null for namespaceURI some tests will fail in IE9 otherwise
-          // see also 
-          // http://msdn.microsoft.com/en-us/library/ff460650(v=vs.85).aspx
-          expect(node1Attr[name].namespaceURI || null).to.be(
-              node2Attr[name].namespaceURI || null);
-        } catch(e) {
+        // we do not care about the difference between an empty string and
+        // null for namespaceURI some tests will fail in IE9 otherwise
+        // see also
+        // http://msdn.microsoft.com/en-us/library/ff460650(v=vs.85).aspx
+        if ((node1Attr[name].namespaceURI || null) !==
+            (node2Attr[name].namespaceURI || null)) {
           errors.push('namespaceURI attribute test failed for: ' +
-              node1.nodeName + ' | ' + e.message);
+            node1.nodeName + ' | expected ' + node1Attr[name].namespaceURI +
+            ' to equal ' + node2Attr[name].namespaceURI);
         }
-        try {
-          expect(node1Attr[name].value).to.equal(node2Attr[name].value);
-        } catch(e) {
+        if (node1Attr[name].value !== node2Attr[name].value) {
           errors.push('Attribute value test failed for: ' + node1.nodeName +
-              ' | ' + e.message);
+              ' | expected ' + node1Attr[name].value + ' to equal ' +
+              node2Attr[name].value);
         }
       }
       // compare children
       var node1ChildNodes = getChildNodes(node1, options);
       var node2ChildNodes = getChildNodes(node2, options);
-      try {
-        expect(node1ChildNodes.length).to.equal(node2ChildNodes.length);
-      } catch(e) {
-        errors.push('Number of childNodes test failed for: ' + node1.nodeName +
-            ' | ' + e.message);
+      if (node1ChildNodes.length !== node2ChildNodes.length) {
+        // check if all child nodes are text, they could be split up in
+        // 4096 chunks
+        // if so, ignore the childnode count error
+        var allText = true;
+        var c, cc;
+        for (c = 0, cc = node1ChildNodes.length; c < cc; ++c) {
+          if (node1ChildNodes[c].nodeType !== 3) {
+            allText = false;
+            break;
+          }
+        }
+        for (c = 0, cc = node2ChildNodes.length; c < cc; ++c) {
+          if (node2ChildNodes[c].nodeType !== 3) {
+            allText = false;
+            break;
+          }
+        }
+        if (!allText) {
+          errors.push('Number of childNodes test failed for: ' +
+            node1.nodeName + ' | expected ' + node1ChildNodes.length +
+            ' to equal ' + node2ChildNodes.length);
+        }
       }
       // only compare if they are equal
       if (node1ChildNodes.length === node2ChildNodes.length) {
-        for (var j=0, jj=node1ChildNodes.length; j<jj; ++j) {
+        for (var j = 0, jj = node1ChildNodes.length; j < jj; ++j) {
           assertElementNodesEqual(
               node1ChildNodes[j], node2ChildNodes[j], options, errors);
         }
@@ -283,7 +290,7 @@
   /**
    * Checks if the array sort of equals another array.
    */
-  expect.Assertion.prototype.arreql = function (obj) {
+  expect.Assertion.prototype.arreql = function(obj) {
     this.assert(
         goog.array.equals(this.obj, obj),
         function() {
@@ -301,7 +308,7 @@
   /**
    * Checks if the array sort of equals another array (allows NaNs to be equal).
    */
-  expect.Assertion.prototype.arreqlNaN = function (obj) {
+  expect.Assertion.prototype.arreqlNaN = function(obj) {
     function compare(a, b) {
       return a === b || (typeof a === 'number' && typeof b === 'number' &&
           isNaN(a) && isNaN(b));

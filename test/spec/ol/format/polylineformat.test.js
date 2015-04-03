@@ -4,7 +4,7 @@ describe('ol.format.Polyline', function() {
 
   var format;
   var points;
-  var flatPoints, encodedFlatPoints;
+  var flatPoints, encodedFlatPoints, flippedFlatPoints;
   var floats, smallFloats, encodedFloats;
   var signedIntegers, encodedSignedIntegers;
   var unsignedIntegers, encodedUnsignedIntegers;
@@ -17,7 +17,10 @@ describe('ol.format.Polyline', function() {
     flatPoints = [-120.20000, 38.50000,
                   -120.95000, 40.70000,
                   -126.45300, 43.25200];
-    encodedFlatPoints = '~ps|U_p~iFnnqC_ulLvxq`@_mqN';
+    flippedFlatPoints = [38.50000, -120.20000,
+                         40.70000, -120.95000,
+                         43.25200, -126.45300];
+    encodedFlatPoints = '_p~iF~ps|U_ulLnnqC_mqNvxq`@';
     points3857 = [
       ol.proj.transform([-120.20000, 38.50000], 'EPSG:4326', 'EPSG:3857'),
       ol.proj.transform([-120.95000, 40.70000], 'EPSG:4326', 'EPSG:3857'),
@@ -37,12 +40,18 @@ describe('ol.format.Polyline', function() {
   // Reset testing data
   beforeEach(resetTestingData);
 
+  describe('#readProjectionFromText', function() {
+    it('returns the default projection', function() {
+      var projection = format.readProjectionFromText(encodedFlatPoints);
+      expect(projection).to.eql(ol.proj.get('EPSG:4326'));
+    });
+  });
 
   describe('encodeDeltas', function() {
     it('returns expected value', function() {
       var encodeDeltas = ol.format.Polyline.encodeDeltas;
 
-      expect(encodeDeltas(flatPoints, 2)).to.eql(encodedFlatPoints);
+      expect(encodeDeltas(flippedFlatPoints, 2)).to.eql(encodedFlatPoints);
     });
   });
 
@@ -50,7 +59,7 @@ describe('ol.format.Polyline', function() {
     it('returns expected value', function() {
       var decodeDeltas = ol.format.Polyline.decodeDeltas;
 
-      expect(decodeDeltas(encodedFlatPoints, 2)).to.eql(flatPoints);
+      expect(decodeDeltas(encodedFlatPoints, 2)).to.eql(flippedFlatPoints);
     });
   });
 
@@ -303,6 +312,25 @@ describe('ol.format.Polyline', function() {
       var geometry = format.readGeometry(encodedFlatPoints);
       expect(geometry).to.be.an(ol.geom.LineString);
       expect(geometry.getFlatCoordinates()).to.eql(flatPoints);
+    });
+
+    it('parses XYZ linestring', function() {
+      var xyz = ol.format.Polyline.encodeDeltas([
+        38.500, -120.200, 100,
+        40.700, -120.950, 200,
+        43.252, -126.453, 20
+      ], 3);
+      var format = new ol.format.Polyline({
+        geometryLayout: ol.geom.GeometryLayout.XYZ
+      });
+
+      var geometry = format.readGeometry(xyz);
+      expect(geometry.getLayout()).to.eql(ol.geom.GeometryLayout.XYZ);
+      expect(geometry.getCoordinates()).to.eql([
+        [-120.200, 38.500, 100],
+        [-120.950, 40.700, 200],
+        [-126.453, 43.252, 20]
+      ]);
     });
 
     it('transforms and returns the expected geometry', function() {

@@ -140,7 +140,7 @@
 
   console.log('Capturing ' + lenHtmlFiles + ' example screenshots.');
 
-  // The main interval function that is executed regularily and renders a
+  // The main interval function that is executed regularly and renders a
   // page to a file
   var interval = setInterval(function() {
     if (!loadInProgress && pageindex < lenHtmlFiles) {

@@ -21,9 +21,11 @@ goog.require('ol.interaction.Interaction');
  */
 ol.interaction.MouseWheelZoom = function(opt_options) {
 
-  var options = goog.isDef(opt_options) ? opt_options : {};
+  goog.base(this, {
+    handleEvent: ol.interaction.MouseWheelZoom.handleEvent
+  });
 
-  goog.base(this);
+  var options = goog.isDef(opt_options) ? opt_options : {};
 
   /**
    * @private
@@ -60,16 +62,19 @@ goog.inherits(ol.interaction.MouseWheelZoom, ol.interaction.Interaction);
 
 
 /**
- * @inheritDoc
+ * @param {ol.MapBrowserEvent} mapBrowserEvent Map browser event.
+ * @return {boolean} `false` to stop event propagation.
+ * @this {ol.interaction.MouseWheelZoom}
+ * @api
  */
-ol.interaction.MouseWheelZoom.prototype.handleMapBrowserEvent =
-    function(mapBrowserEvent) {
+ol.interaction.MouseWheelZoom.handleEvent = function(mapBrowserEvent) {
   var stopEvent = false;
   if (mapBrowserEvent.type ==
       goog.events.MouseWheelHandler.EventType.MOUSEWHEEL) {
     var map = mapBrowserEvent.map;
     var mouseWheelEvent = mapBrowserEvent.browserEvent;
-    goog.asserts.assertInstanceof(mouseWheelEvent, goog.events.MouseWheelEvent);
+    goog.asserts.assertInstanceof(mouseWheelEvent, goog.events.MouseWheelEvent,
+        'mouseWheelEvent should be of type MouseWheelEvent');
 
     this.lastAnchor_ = mapBrowserEvent.coordinate;
     this.delta_ += mouseWheelEvent.deltaY;
@@ -101,7 +106,7 @@ ol.interaction.MouseWheelZoom.prototype.doZoom_ = function(map) {
   var delta = goog.math.clamp(this.delta_, -maxDelta, maxDelta);
 
   var view = map.getView();
-  goog.asserts.assert(!goog.isNull(view));
+  goog.asserts.assert(!goog.isNull(view), 'view should not be null');
 
   map.render();
   ol.interaction.Interaction.zoomByDelta(map, view, -delta, this.lastAnchor_,

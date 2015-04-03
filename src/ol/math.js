@@ -36,7 +36,7 @@ ol.math.csch = function(x) {
  * @return {number} The smallest power of two greater than or equal to x.
  */
 ol.math.roundUpToPowerOfTwo = function(x) {
-  goog.asserts.assert(0 < x);
+  goog.asserts.assert(0 < x, 'x should be larger than 0');
   return Math.pow(2, Math.ceil(Math.log(x) / Math.LN2));
 };
 

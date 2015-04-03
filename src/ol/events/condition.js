@@ -67,16 +67,6 @@ ol.events.condition.click = function(mapBrowserEvent) {
 
 
 /**
- * @param {ol.MapBrowserEvent} mapBrowserEvent Map browser event.
- * @return {boolean} True if the browser event is a `mousemove` event.
- * @api
- */
-ol.events.condition.mouseMove = function(mapBrowserEvent) {
-  return mapBrowserEvent.originalEvent.type == 'mousemove';
-};
-
-
-/**
  * Always false.
  * @param {ol.MapBrowserEvent} mapBrowserEvent Map browser event.
  * @return {boolean} False.
@@ -84,6 +74,16 @@ ol.events.condition.mouseMove = function(mapBrowserEvent) {
  * @api stable
  */
 ol.events.condition.never = goog.functions.FALSE;
+
+
+/**
+ * @param {ol.MapBrowserEvent} mapBrowserEvent Map browser event.
+ * @return {boolean} True if the browser event is a `pointermove` event.
+ * @api
+ */
+ol.events.condition.pointerMove = function(mapBrowserEvent) {
+  return mapBrowserEvent.type == 'pointermove';
+};
 
 
 /**
@@ -145,7 +145,8 @@ ol.events.condition.shiftKeyOnly = function(mapBrowserEvent) {
  */
 ol.events.condition.targetNotEditable = function(mapBrowserEvent) {
   var target = mapBrowserEvent.browserEvent.target;
-  goog.asserts.assertInstanceof(target, Element);
+  goog.asserts.assertInstanceof(target, Element,
+      'target should be an Element');
   var tagName = target.tagName;
   return (
       tagName !== goog.dom.TagName.INPUT &&
@@ -160,7 +161,8 @@ ol.events.condition.targetNotEditable = function(mapBrowserEvent) {
  * @api stable
  */
 ol.events.condition.mouseOnly = function(mapBrowserEvent) {
-  goog.asserts.assertInstanceof(mapBrowserEvent, ol.MapBrowserPointerEvent);
+  goog.asserts.assertInstanceof(mapBrowserEvent, ol.MapBrowserPointerEvent,
+      'mapBrowserEvent should be an instance of ol.MapBrowserPointerEvent');
   /* pointerId must be 1 for mouse devices,
    * see: http://www.w3.org/Submission/pointer-events/#pointerevent-interface
    */

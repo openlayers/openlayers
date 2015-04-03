@@ -26,10 +26,12 @@ ol.style.ImageOptions;
 
 /**
  * @classdesc
- * Set image style for vector features.
+ * Abstract base class; used for creating subclasses and not instantiated in
+ * apps. Base class for {@link ol.style.Icon} and {@link ol.style.Circle}.
  *
  * @constructor
  * @param {ol.style.ImageOptions} options Options.
+ * @api
  */
 ol.style.Image = function(options) {
 
@@ -68,6 +70,7 @@ ol.style.Image = function(options) {
 
 /**
  * @return {number} Opacity.
+ * @api
  */
 ol.style.Image.prototype.getOpacity = function() {
   return this.opacity_;
@@ -76,6 +79,7 @@ ol.style.Image.prototype.getOpacity = function() {
 
 /**
  * @return {boolean} Rotate with map.
+ * @api
  */
 ol.style.Image.prototype.getRotateWithView = function() {
   return this.rotateWithView_;
@@ -102,6 +106,7 @@ ol.style.Image.prototype.getScale = function() {
 
 /**
  * @return {boolean} Snap to pixel?
+ * @api
  */
 ol.style.Image.prototype.getSnapToPixel = function() {
   return this.snapToPixel_;
@@ -124,16 +129,28 @@ ol.style.Image.prototype.getImage = goog.abstractMethod;
 
 
 /**
+ * @param {number} pixelRatio Pixel ratio.
+ * @return {HTMLCanvasElement|HTMLVideoElement|Image} Image element.
+ */
+ol.style.Image.prototype.getHitDetectionImage = goog.abstractMethod;
+
+
+/**
  * @return {ol.style.ImageState} Image state.
  */
 ol.style.Image.prototype.getImageState = goog.abstractMethod;
 
 
 /**
- * @param {number} pixelRatio Pixel ratio.
- * @return {HTMLCanvasElement|HTMLVideoElement|Image} Image element.
+ * @return {ol.Size} Image size.
  */
-ol.style.Image.prototype.getHitDetectionImage = goog.abstractMethod;
+ol.style.Image.prototype.getImageSize = goog.abstractMethod;
+
+
+/**
+ * @return {ol.Size} Size of the hit-detection image.
+ */
+ol.style.Image.prototype.getHitDetectionImageSize = goog.abstractMethod;
 
 
 /**

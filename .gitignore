@@ -1,6 +1,6 @@
 *.pyc
-/build
-/examples/*.html.png
-/examples/example-list.js
-/examples/example-list.xml
+/build/
+/examples/
 /node_modules/
+/dist/
+/coverage/

@@ -43,7 +43,7 @@ ol.GeolocationProperty = {
  *
  *     var geolocation = new ol.Geolocation({
  *       // take the projection to use from the map's view
- *       projection: view.getprojection()
+ *       projection: view.getProjection()
  *     });
  *     // listen to changes in position
  *     geolocation.on('change', function(evt) {

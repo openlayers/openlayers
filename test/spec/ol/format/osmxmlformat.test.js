@@ -8,6 +8,18 @@ describe('ol.format.OSMXML', function() {
     format = new ol.format.OSMXML();
   });
 
+  describe('#readProjection', function() {
+    it('returns the default projection from document', function() {
+      var projection = format.readProjectionFromDocument();
+      expect(projection).to.eql(ol.proj.get('EPSG:4326'));
+    });
+
+    it('returns the default projection from node', function() {
+      var projection = format.readProjectionFromNode();
+      expect(projection).to.eql(ol.proj.get('EPSG:4326'));
+    });
+  });
+
   describe('#readFeatures', function() {
 
     it('can read an empty document', function() {
@@ -53,7 +65,7 @@ describe('ol.format.OSMXML', function() {
           '    <tag k="name" v="3"/>' +
           '    <nd ref="1" />' +
           '    <nd ref="2" />' +
-          '  </node>' +
+          '  </way>' +
           '</osm>';
       var fs = format.readFeatures(text);
       expect(fs).to.have.length(3);

@@ -25,10 +25,18 @@ describe('ol.FeatureOverlay', function() {
       expect(featureOverlay.getStyleFunction()()).to.eql(style);
     });
 
+    it('takes a map', function() {
+      var map = new ol.Map({});
+      var featureOverlay = new ol.FeatureOverlay({
+        map: map
+      });
+      expect(featureOverlay.getMap()).to.eql(map);
+    });
   });
 });
 
 goog.require('ol.Feature');
 goog.require('ol.FeatureOverlay');
+goog.require('ol.Map');
 goog.require('ol.geom.Point');
 goog.require('ol.style.Style');

@@ -1,12 +1,20 @@
 // FIXME factor out key precondition (shift et. al)
 
 goog.provide('ol.interaction.Interaction');
+goog.provide('ol.interaction.InteractionProperty');
 
-goog.require('goog.asserts');
 goog.require('ol.MapBrowserEvent');
-goog.require('ol.Observable');
+goog.require('ol.Object');
 goog.require('ol.animation');
 goog.require('ol.easing');
+
+
+/**
+ * @enum {string}
+ */
+ol.interaction.InteractionProperty = {
+  ACTIVE: 'active'
+};
 
 
 
@@ -23,9 +31,12 @@ goog.require('ol.easing');
  * vectors and so are visible on the screen.
  *
  * @constructor
- * @extends {ol.Observable}
+ * @param {olx.interaction.InteractionOptions} options Options.
+ * @extends {ol.Object}
+ * @api
  */
-ol.interaction.Interaction = function() {
+ol.interaction.Interaction = function(options) {
+
   goog.base(this);
 
   /**
@@ -34,23 +45,30 @@ ol.interaction.Interaction = function() {
    */
   this.map_ = null;
 
+  this.setActive(true);
+
   /**
-   * @private
-   * @type {boolean}
+   * @type {function(ol.MapBrowserEvent):boolean}
    */
-  this.active_ = true;
+  this.handleEvent = options.handleEvent;
 
 };
-goog.inherits(ol.interaction.Interaction, ol.Observable);
+goog.inherits(ol.interaction.Interaction, ol.Object);
 
 
 /**
  * @return {boolean} `true` if the interaction is active, `false` otherwise.
+ * @observable
  * @api
  */
 ol.interaction.Interaction.prototype.getActive = function() {
-  return this.active_;
+  return /** @type {boolean} */ (
+      this.get(ol.interaction.InteractionProperty.ACTIVE));
 };
+goog.exportProperty(
+    ol.interaction.Interaction.prototype,
+    'getActive',
+    ol.interaction.Interaction.prototype.getActive);
 
 
 /**
@@ -63,23 +81,18 @@ ol.interaction.Interaction.prototype.getMap = function() {
 
 
 /**
- * @param {ol.MapBrowserEvent} mapBrowserEvent Map browser event.
- * @return {boolean} Whether the map browser event should continue
- *     through the chain of interactions. false means stop, true
- *     means continue.
- */
-ol.interaction.Interaction.prototype.handleMapBrowserEvent =
-    goog.abstractMethod;
-
-
-/**
  * Activate or deactivate the interaction.
  * @param {boolean} active Active.
+ * @observable
  * @api
  */
 ol.interaction.Interaction.prototype.setActive = function(active) {
-  this.active_ = active;
+  this.set(ol.interaction.InteractionProperty.ACTIVE, active);
 };
+goog.exportProperty(
+    ol.interaction.Interaction.prototype,
+    'setActive',
+    ol.interaction.Interaction.prototype.setActive);
 
 
 /**

@@ -9,9 +9,13 @@ body {
   background: url(textured_paper.jpeg) repeat;
 }
 .ol-attribution {
-  max-width: calc(100%-3em);
+  max-width: calc(100% - 3em);
 }
-#tags {
+.ol-control button, .ol-attribution, .ol-scale-line-inner {
+  font-family: 'Lucida Grande',Verdana,Geneva,Lucida,Arial,Helvetica,sans-serif;
+}
+
+#tags, #shortdesc, .hidden {
   display: none;
 }
 

@@ -11,8 +11,10 @@ These two files are special externs that belong to ol3, and this document explai
 For events, we make properties available to the application. Methods can be made available by just marking them with the `@api` annotation directly where they are defined; properties should also be added to `oli.js`:
 
 ```js
-/** @interface */
-oli.MapBrowserEvent;
+/**
+ * @interface
+ */
+oli.MapBrowserEvent = function() {};
 
 /**
  * @type {ol.Coordinate}
@@ -48,7 +50,7 @@ For custom subclasses in applications, which can be created using `ol.inherits`,
 /**
  * @interface
  */
-oli.control.Control;
+oli.control.Control = function() {};
 
 /**
  * @param {ol.Map} map Map.

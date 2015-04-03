@@ -94,20 +94,14 @@ ol.geom.Circle.prototype.getCenter = function() {
 
 /**
  * @inheritDoc
- * @api
  */
-ol.geom.Circle.prototype.getExtent = function(opt_extent) {
-  if (this.extentRevision != this.getRevision()) {
-    var flatCoordinates = this.flatCoordinates;
-    var radius = flatCoordinates[this.stride] - flatCoordinates[0];
-    this.extent = ol.extent.createOrUpdate(
-        flatCoordinates[0] - radius, flatCoordinates[1] - radius,
-        flatCoordinates[0] + radius, flatCoordinates[1] + radius,
-        this.extent);
-    this.extentRevision = this.getRevision();
-  }
-  goog.asserts.assert(goog.isDef(this.extent));
-  return ol.extent.returnOrUpdate(this.extent, opt_extent);
+ol.geom.Circle.prototype.computeExtent = function(extent) {
+  var flatCoordinates = this.flatCoordinates;
+  var radius = flatCoordinates[this.stride] - flatCoordinates[0];
+  return ol.extent.createOrUpdate(
+      flatCoordinates[0] - radius, flatCoordinates[1] - radius,
+      flatCoordinates[0] + radius, flatCoordinates[1] + radius,
+      extent);
 };
 
 
@@ -146,7 +140,8 @@ ol.geom.Circle.prototype.getType = function() {
  */
 ol.geom.Circle.prototype.setCenter = function(center) {
   var stride = this.stride;
-  goog.asserts.assert(center.length == stride);
+  goog.asserts.assert(center.length == stride,
+      'center array length should match stride');
   var radius = this.flatCoordinates[stride] - this.flatCoordinates[0];
   var flatCoordinates = center.slice();
   flatCoordinates[stride] = flatCoordinates[0] + radius;
@@ -205,7 +200,8 @@ ol.geom.Circle.prototype.setFlatCoordinates =
  * @api
  */
 ol.geom.Circle.prototype.setRadius = function(radius) {
-  goog.asserts.assert(!goog.isNull(this.flatCoordinates));
+  goog.asserts.assert(!goog.isNull(this.flatCoordinates),
+      'this.flatCoordinates cannot be null');
   this.flatCoordinates[this.stride] = this.flatCoordinates[0] + radius;
   this.changed();
 };

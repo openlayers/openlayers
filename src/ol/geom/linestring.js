@@ -1,7 +1,7 @@
 goog.provide('ol.geom.LineString');
 
+goog.require('goog.array');
 goog.require('goog.asserts');
-goog.require('ol.array');
 goog.require('ol.extent');
 goog.require('ol.geom.GeometryType');
 goog.require('ol.geom.SimpleGeometry');
@@ -11,6 +11,7 @@ goog.require('ol.geom.flat.inflate');
 goog.require('ol.geom.flat.interpolate');
 goog.require('ol.geom.flat.intersectsextent');
 goog.require('ol.geom.flat.length');
+goog.require('ol.geom.flat.segments');
 goog.require('ol.geom.flat.simplify');
 
 
@@ -65,11 +66,12 @@ goog.inherits(ol.geom.LineString, ol.geom.SimpleGeometry);
  * @api stable
  */
 ol.geom.LineString.prototype.appendCoordinate = function(coordinate) {
-  goog.asserts.assert(coordinate.length == this.stride);
+  goog.asserts.assert(coordinate.length == this.stride,
+      'length of coordinate array should match stride');
   if (goog.isNull(this.flatCoordinates)) {
     this.flatCoordinates = coordinate.slice();
   } else {
-    ol.array.safeExtend(this.flatCoordinates, coordinate);
+    goog.array.extend(this.flatCoordinates, coordinate);
   }
   this.changed();
 };
@@ -108,6 +110,25 @@ ol.geom.LineString.prototype.closestPointXY =
 
 
 /**
+ * Iterate over each segment, calling the provided callback.
+ * If the callback returns a truthy value the function returns that
+ * value immediately. Otherwise the function returns `false`.
+ *
+ * @param {function(this: S, ol.Coordinate, ol.Coordinate): T} callback Function
+ *     called for each segment.
+ * @param {S=} opt_this The object to be used as the value of 'this'
+ *     within callback.
+ * @return {T|boolean} Value.
+ * @template T,S
+ * @api
+ */
+ol.geom.LineString.prototype.forEachSegment = function(callback, opt_this) {
+  return ol.geom.flat.segments.forEach(this.flatCoordinates, 0,
+      this.flatCoordinates.length, this.stride, callback, opt_this);
+};
+
+
+/**
  * Returns the coordinate at `m` using linear interpolation, or `null` if no
  * such coordinate exists.
  *
@@ -117,7 +138,7 @@ ol.geom.LineString.prototype.closestPointXY =
  * return the last coordinate.
  *
  * @param {number} m M.
- * @param {boolean=} opt_extrapolate Extrapolate.
+ * @param {boolean=} opt_extrapolate Extrapolate. Default is `false`.
  * @return {ol.Coordinate} Coordinate.
  * @api stable
  */
@@ -193,7 +214,7 @@ ol.geom.LineString.prototype.getType = function() {
 
 /**
  * @inheritDoc
- * @api
+ * @api stable
  */
 ol.geom.LineString.prototype.intersectsExtent = function(extent) {
   return ol.geom.flat.intersectsextent.lineString(

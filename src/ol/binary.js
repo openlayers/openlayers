@@ -42,14 +42,15 @@ ol.binary.Buffer.prototype.getReader = function() {
         uint8View[i] = data.charCodeAt(i);
       }
     } else {
-      goog.asserts.fail();
+      goog.asserts.fail('Unknown data type, should be string or ArrayBuffer');
       return null;
     }
     return new ol.binary.ArrayBufferReader(arrayBuffer);
   } else {
-    goog.asserts.assert(goog.isString(data));
+    goog.asserts.assert(goog.isString(data), 'Data should be a string');
     goog.asserts.assert(
-        goog.userAgent.IE && !goog.userAgent.isVersionOrHigher('10.0'));
+        goog.userAgent.IE && !goog.userAgent.isVersionOrHigher('10.0'),
+        'In IE10 and above ArrayBuffer should be used instead');
     return new ol.binary.ArrayReader(new VBArray(data).toArray());
   }
 };
@@ -118,7 +119,8 @@ ol.binary.ArrayBufferReader.prototype.readByte = function() {
   if (this.offset_ < this.length_) {
     return this.uint8View_[this.offset_++];
   } else {
-    goog.asserts.fail();
+    goog.asserts.fail(
+        'readByte fails because offset is larger than or equal to length');
     return 0;
   }
 };
@@ -168,7 +170,8 @@ ol.binary.ArrayReader.prototype.readByte = function() {
   if (this.offset_ < this.length_) {
     return this.array_[this.offset_++];
   } else {
-    goog.asserts.fail();
+    goog.asserts.fail(
+        'readByte fails because offset is larger than or equal to length');
     return 0;
   }
 };

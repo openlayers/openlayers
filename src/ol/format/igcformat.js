@@ -218,11 +218,3 @@ ol.format.IGC.prototype.readFeaturesFromText = function(text, opt_options) {
  * @api
  */
 ol.format.IGC.prototype.readProjection;
-
-
-/**
- * @inheritDoc
- */
-ol.format.IGC.prototype.readProjectionFromText = function(text) {
-  return this.defaultDataProjection;
-};

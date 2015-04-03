@@ -2,6 +2,7 @@
 
 goog.provide('ol.control.Attribution');
 
+goog.require('goog.asserts');
 goog.require('goog.dom');
 goog.require('goog.dom.TagName');
 goog.require('goog.dom.classlist');
@@ -12,7 +13,7 @@ goog.require('goog.style');
 goog.require('ol.Attribution');
 goog.require('ol.control.Control');
 goog.require('ol.css');
-goog.require('ol.pointer.PointerEventHandler');
+goog.require('ol.source.Tile');
 
 
 
@@ -69,42 +70,35 @@ ol.control.Attribution = function(opt_options) {
 
   var tipLabel = goog.isDef(options.tipLabel) ?
       options.tipLabel : 'Attributions';
-  var tip = goog.dom.createDom(goog.dom.TagName.SPAN, {
-    'role' : 'tooltip'
-  }, tipLabel);
 
-  /**
-   * @private
-   * @type {string}
-   */
-  this.collapseLabel_ = goog.isDef(options.collapseLabel) ?
+  var collapseLabel = goog.isDef(options.collapseLabel) ?
       options.collapseLabel : '\u00BB';
 
   /**
    * @private
-   * @type {string}
+   * @type {Node}
    */
-  this.label_ = goog.isDef(options.label) ? options.label : 'i';
-  var label = goog.dom.createDom(goog.dom.TagName.SPAN, {},
-      (this.collapsible_ && !this.collapsed_) ?
-      this.collapseLabel_ : this.label_);
+  this.collapseLabel_ = /** @type {Node} */ (goog.isString(collapseLabel) ?
+      goog.dom.createDom(goog.dom.TagName.SPAN, {}, collapseLabel) :
+      collapseLabel);
 
+  var label = goog.isDef(options.label) ? options.label : 'i';
 
   /**
    * @private
-   * @type {Element}
+   * @type {Node}
    */
-  this.labelSpan_ = label;
-  var button = goog.dom.createDom(goog.dom.TagName.BUTTON, {
-    'class': 'ol-has-tooltip',
-    'type': 'button'
-  }, this.labelSpan_);
-  goog.dom.appendChild(button, tip);
+  this.label_ = /** @type {Node} */ (goog.isString(label) ?
+      goog.dom.createDom(goog.dom.TagName.SPAN, {}, label) :
+      label);
 
-  var buttonHandler = new ol.pointer.PointerEventHandler(button);
-  this.registerDisposable(buttonHandler);
-  goog.events.listen(buttonHandler, ol.pointer.EventType.POINTERUP,
-      this.handlePointerUp_, false, this);
+  var activeLabel = (this.collapsible_ && !this.collapsed_) ?
+      this.collapseLabel_ : this.label_;
+  var button = goog.dom.createDom(goog.dom.TagName.BUTTON, {
+    'type': 'button',
+    'title': tipLabel
+  }, activeLabel);
+
   goog.events.listen(button, goog.events.EventType.CLICK,
       this.handleClick_, false, this);
 
@@ -115,15 +109,19 @@ ol.control.Attribution = function(opt_options) {
     this.blur();
   }, false);
 
-  var element = goog.dom.createDom(goog.dom.TagName.DIV, {
-    'class': className + ' ' + ol.css.CLASS_UNSELECTABLE + ' ' +
-        ol.css.CLASS_CONTROL +
-        (this.collapsed_ && this.collapsible_ ? ' ol-collapsed' : '') +
-        (this.collapsible_ ? '' : ' ol-uncollapsible')
-  }, this.ulElement_, button);
+  var cssClasses = className + ' ' + ol.css.CLASS_UNSELECTABLE + ' ' +
+      ol.css.CLASS_CONTROL +
+      (this.collapsed_ && this.collapsible_ ? ' ol-collapsed' : '') +
+      (this.collapsible_ ? '' : ' ol-uncollapsible');
+  var element = goog.dom.createDom(goog.dom.TagName.DIV,
+      cssClasses, this.ulElement_, button);
+
+  var render = goog.isDef(options.render) ?
+      options.render : ol.control.Attribution.render;
 
   goog.base(this, {
     element: element,
+    render: render,
     target: options.target
   });
 
@@ -162,13 +160,19 @@ goog.inherits(ol.control.Attribution, ol.control.Control);
 ol.control.Attribution.prototype.getSourceAttributions = function(frameState) {
   var i, ii, j, jj, tileRanges, source, sourceAttribution,
       sourceAttributionKey, sourceAttributions, sourceKey;
+  var intersectsTileRange;
   var layerStatesArray = frameState.layerStatesArray;
   /** @type {Object.<string, ol.Attribution>} */
   var attributions = goog.object.clone(frameState.attributions);
   /** @type {Object.<string, ol.Attribution>} */
   var hiddenAttributions = {};
+  var projection = frameState.viewState.projection;
+  goog.asserts.assert(!goog.isNull(projection), 'projection cannot be null');
   for (i = 0, ii = layerStatesArray.length; i < ii; i++) {
     source = layerStatesArray[i].layer.getSource();
+    if (goog.isNull(source)) {
+      continue;
+    }
     sourceKey = goog.getUid(source).toString();
     sourceAttributions = source.getAttributions();
     if (goog.isNull(sourceAttributions)) {
@@ -181,14 +185,22 @@ ol.control.Attribution.prototype.getSourceAttributions = function(frameState) {
         continue;
       }
       tileRanges = frameState.usedTiles[sourceKey];
-      if (goog.isDef(tileRanges) &&
-          sourceAttribution.intersectsAnyTileRange(tileRanges)) {
+      if (goog.isDef(tileRanges)) {
+        goog.asserts.assertInstanceof(source, ol.source.Tile,
+            'source should be an ol.source.Tile');
+        var tileGrid = source.getTileGridForProjection(projection);
+        goog.asserts.assert(!goog.isNull(tileGrid), 'tileGrid cannot be null');
+        intersectsTileRange = sourceAttribution.intersectsAnyTileRange(
+            tileRanges, tileGrid, projection);
+      } else {
+        intersectsTileRange = false;
+      }
+      if (intersectsTileRange) {
         if (sourceAttributionKey in hiddenAttributions) {
           delete hiddenAttributions[sourceAttributionKey];
         }
         attributions[sourceAttributionKey] = sourceAttribution;
-      }
-      else {
+      } else {
         hiddenAttributions[sourceAttributionKey] = sourceAttribution;
       }
     }
@@ -198,9 +210,11 @@ ol.control.Attribution.prototype.getSourceAttributions = function(frameState) {
 
 
 /**
- * @inheritDoc
+ * @param {ol.MapEvent} mapEvent Map event.
+ * @this {ol.control.Attribution}
+ * @api
  */
-ol.control.Attribution.prototype.handleMapPostrender = function(mapEvent) {
+ol.control.Attribution.render = function(mapEvent) {
   this.updateElement_(mapEvent.frameState);
 };
 
@@ -331,19 +345,7 @@ ol.control.Attribution.prototype.insertLogos_ = function(frameState) {
  * @private
  */
 ol.control.Attribution.prototype.handleClick_ = function(event) {
-  if (event.screenX !== 0 && event.screenY !== 0) {
-    return;
-  }
-  this.handleToggle_();
-};
-
-
-/**
- * @param {ol.pointer.PointerEvent} pointerEvent The event to handle
- * @private
- */
-ol.control.Attribution.prototype.handlePointerUp_ = function(pointerEvent) {
-  pointerEvent.browserEvent.preventDefault();
+  event.preventDefault();
   this.handleToggle_();
 };
 
@@ -353,8 +355,11 @@ ol.control.Attribution.prototype.handlePointerUp_ = function(pointerEvent) {
  */
 ol.control.Attribution.prototype.handleToggle_ = function() {
   goog.dom.classlist.toggle(this.element, 'ol-collapsed');
-  goog.dom.setTextContent(this.labelSpan_,
-      (this.collapsed_) ? this.collapseLabel_ : this.label_);
+  if (this.collapsed_) {
+    goog.dom.replaceNode(this.collapseLabel_, this.label_);
+  } else {
+    goog.dom.replaceNode(this.label_, this.collapseLabel_);
+  }
   this.collapsed_ = !this.collapsed_;
 };
 

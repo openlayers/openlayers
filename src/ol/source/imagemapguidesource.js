@@ -1,8 +1,11 @@
 goog.provide('ol.source.ImageMapGuide');
 
+goog.require('goog.events');
+goog.require('goog.events.EventType');
 goog.require('goog.object');
 goog.require('goog.uri.utils');
 goog.require('ol.Image');
+goog.require('ol.ImageLoadFunctionType');
 goog.require('ol.ImageUrlFunction');
 goog.require('ol.extent');
 goog.require('ol.source.Image');
@@ -14,6 +17,7 @@ goog.require('ol.source.Image');
  * Source for images from Mapguide servers
  *
  * @constructor
+ * @fires ol.source.ImageEvent
  * @extends {ol.source.Image}
  * @param {olx.source.ImageMapGuideOptions} options Options.
  * @api stable
@@ -58,6 +62,13 @@ ol.source.ImageMapGuide = function(options) {
    * @type {ol.ImageUrlFunctionType}
    */
   this.imageUrlFunction_ = imageUrlFunction;
+
+  /**
+   * @private
+   * @type {ol.ImageLoadFunctionType}
+   */
+  this.imageLoadFunction_ = goog.isDef(options.imageLoadFunction) ?
+      options.imageLoadFunction : ol.source.Image.defaultImageLoadFunction;
 
   /**
    * @private
@@ -140,7 +151,10 @@ ol.source.ImageMapGuide.prototype.getImage =
   var imageUrl = this.imageUrlFunction_(extent, size, projection);
   if (goog.isDef(imageUrl)) {
     image = new ol.Image(extent, resolution, pixelRatio,
-        this.getAttributions(), imageUrl, this.crossOrigin_);
+        this.getAttributions(), imageUrl, this.crossOrigin_,
+        this.imageLoadFunction_);
+    goog.events.listen(image, goog.events.EventType.CHANGE,
+        this.handleImageChange, false, this);
   } else {
     image = null;
   }
@@ -148,6 +162,15 @@ ol.source.ImageMapGuide.prototype.getImage =
   this.renderedRevision_ = this.getRevision();
 
   return image;
+};
+
+
+/**
+ * @return {ol.ImageLoadFunctionType} The image load function.
+ * @api
+ */
+ol.source.ImageMapGuide.prototype.getImageLoadFunction = function() {
+  return this.imageLoadFunction_;
 };
 
 
@@ -211,4 +234,16 @@ ol.source.ImageMapGuide.prototype.getUrl =
   };
   goog.object.extend(baseParams, params);
   return goog.uri.utils.appendParamsFromMap(baseUrl, baseParams);
+};
+
+
+/**
+ * @param {ol.ImageLoadFunctionType} imageLoadFunction Image load function.
+ * @api
+ */
+ol.source.ImageMapGuide.prototype.setImageLoadFunction = function(
+    imageLoadFunction) {
+  this.image_ = null;
+  this.imageLoadFunction_ = imageLoadFunction;
+  this.changed();
 };

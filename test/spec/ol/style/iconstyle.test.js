@@ -109,6 +109,32 @@ describe('ol.style.Icon', function() {
       expect(iconStyle.getOrigin()).to.eql([92, 20]);
     });
   });
+
+  describe('#getImageSize', function() {
+    var imgSize = [144, 192];
+
+    it('takes the real image size', function() {
+      // pretend that the image is already in the cache,
+      // this image will be used for the icon.
+      var cache = ol.style.IconImageCache.getInstance();
+      var src = 'test.png';
+      var iconImage = new ol.style.IconImage_(null, 'test.png', imgSize);
+      cache.set(src, null, iconImage);
+
+      var iconStyle = new ol.style.Icon({
+        src: 'test.png'
+      });
+      expect(iconStyle.getImageSize()).to.eql(imgSize);
+    });
+
+    it('uses the given image size', function() {
+      var iconStyle = new ol.style.Icon({
+        img: {src: 'test.png'},
+        imgSize: imgSize
+      });
+      expect(iconStyle.getImageSize()).to.eql(imgSize);
+    });
+  });
 });
 
 describe('ol.style.IconImageCache', function() {

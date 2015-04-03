@@ -12,6 +12,7 @@ goog.require('goog.events');
 goog.require('goog.events.Event');
 goog.require('goog.functions');
 goog.require('goog.object');
+goog.require('goog.string');
 goog.require('ol.Observable');
 
 
@@ -20,15 +21,9 @@ goog.require('ol.Observable');
  */
 ol.ObjectEventType = {
   /**
-   * Triggered before a property is changed.
-   * @event ol.ObjectEvent#beforepropertychange
-   * @api
-   */
-  BEFOREPROPERTYCHANGE: 'beforepropertychange',
-  /**
    * Triggered when a property is changed.
    * @event ol.ObjectEvent#propertychange
-   * @api
+   * @api stable
    */
   PROPERTYCHANGE: 'propertychange'
 };
@@ -41,19 +36,28 @@ ol.ObjectEventType = {
  *
  * @param {string} type The event type.
  * @param {string} key The property name.
+ * @param {*} oldValue The old value for `key`.
  * @extends {goog.events.Event}
  * @implements {oli.ObjectEvent}
  * @constructor
  */
-ol.ObjectEvent = function(type, key) {
+ol.ObjectEvent = function(type, key, oldValue) {
   goog.base(this, type);
 
   /**
    * The name of the property whose value is changing.
    * @type {string}
-   * @api
+   * @api stable
    */
   this.key = key;
+
+  /**
+   * The old value. To get the new value use `e.target.get(e.key)` where
+   * `e` is the event object.
+   * @type {*}
+   * @api stable
+   */
+  this.oldValue = oldValue;
 
 };
 goog.inherits(ol.ObjectEvent, goog.events.Event);
@@ -109,9 +113,10 @@ ol.ObjectAccessor = function(source, target, sourceKey, targetKey) {
  * @api
  */
 ol.ObjectAccessor.prototype.transform = function(from, to) {
+  var oldValue = ol.Object.getKeyValue_(this.source, this.sourceKey);
   this.from = from;
   this.to = to;
-  this.source.notify(this.sourceKey);
+  this.source.notify(this.sourceKey, oldValue);
 };
 
 
@@ -126,7 +131,7 @@ ol.ObjectAccessor.prototype.transform = function(from, to) {
  * property is observable as well as the object as a whole.
  *
  * Classes that inherit from this have pre-defined properties, to which you can
- * add your own. The pre-defined properties are listed in this documentation as
+ * add your owns. The pre-defined properties are listed in this documentation as
  * 'Observable Properties', and have their own accessors; for example,
  * {@link ol.Map} has a `target` property, accessed with `getTarget()`  and
  * changed with `setTarget()`. Not all properties are however settable. There
@@ -140,11 +145,11 @@ ol.ObjectAccessor.prototype.transform = function(from, to) {
  * function, `evt.target` would be the view, so `evt.target.getCenter()` would
  * return the new center.
  *
- * You can add your own observable properties with `set('myProp', 'new value')`,
- * and retrieve that with `get('myProp')`. A change listener can then be
- * registered with `on('change:myProp', ...)`. And a change can be triggered
- * with `dispatchEvent('change:myProp')`. You can get a list of all properties
- * with `getProperties()`.
+ * You can add your own observable properties with
+ * `object.set('prop', 'value')`, and retrieve that with `object.get('prop')`.
+ * You can listen for changes on that property value with
+ * `object.on('change:prop', listener)`. You can get a list of all
+ * properties with {@link ol.Object#getProperties object.getProperties()}.
  *
  * Note that the observable properties are separate from standard JS properties.
  * You can, for example, give your map object a title with
@@ -157,6 +162,9 @@ ol.ObjectAccessor.prototype.transform = function(from, to) {
  * automatically be reflected in the other. See `bindTo` method for more
  * details, and see {@link ol.dom.Input} for the specific case of binding an
  * object with an HTML element.
+ *
+ * Properties can be deleted by using the unset method. E.g.
+ * object.unset('foo').
  *
  * @constructor
  * @extends {ol.Observable}
@@ -184,13 +192,6 @@ ol.Object = function(opt_values) {
    * @type {Object.<string, ol.ObjectAccessor>}
    */
   this.accessors_ = {};
-
-  /**
-   * Lookup of beforechange listener keys.
-   * @type {Object.<string, goog.events.Key>}
-   * @private
-   */
-  this.beforeChangeListeners_ = {};
 
   /**
    * @private
@@ -227,15 +228,6 @@ ol.Object.setterNameCache_ = {};
 
 
 /**
- * @param {string} str String.
- * @return {string} Capitalized string.
- */
-ol.Object.capitalize = function(str) {
-  return str.substr(0, 1).toUpperCase() + str.substr(1);
-};
-
-
-/**
  * @param {string} key Key name.
  * @return {string} Change name.
  */
@@ -253,7 +245,7 @@ ol.Object.getChangeEventType = function(key) {
 ol.Object.getGetterName = function(key) {
   return ol.Object.getterNameCache_.hasOwnProperty(key) ?
       ol.Object.getterNameCache_[key] :
-      (ol.Object.getterNameCache_[key] = 'get' + ol.Object.capitalize(key));
+      (ol.Object.getterNameCache_[key] = 'get' + goog.string.capitalize(key));
 };
 
 
@@ -264,7 +256,43 @@ ol.Object.getGetterName = function(key) {
 ol.Object.getSetterName = function(key) {
   return ol.Object.setterNameCache_.hasOwnProperty(key) ?
       ol.Object.setterNameCache_[key] :
-      (ol.Object.setterNameCache_[key] = 'set' + ol.Object.capitalize(key));
+      (ol.Object.setterNameCache_[key] = 'set' + goog.string.capitalize(key));
+};
+
+
+/**
+ * Get the value for an object and a key. Use the getter (`getX`) if it exists,
+ * otherwise use the generic `get` function.
+ * @param {ol.Object} obj Object.
+ * @param {string} key Key;
+ * @return {*} Value;
+ * @private
+ */
+ol.Object.getKeyValue_ = function(obj, key) {
+  var getterName = ol.Object.getGetterName(key);
+  var getter = /** @type {function(): *|undefined} */
+      (/** @type {Object} */ (obj)[getterName]);
+  return goog.isDef(getter) ? getter.call(obj) : obj.get(key);
+};
+
+
+/**
+ * Set the value for an object and a key. Use the setter (`setX`) if it exists,
+ * otherwise use the generic `set` function.
+ * @param {ol.Object} obj Object.
+ * @param {string} key Key.
+ * @param {*} value Value.
+ * @private
+ */
+ol.Object.setKeyValue_ = function(obj, key, value) {
+  var setterName = ol.Object.getSetterName(key);
+  var setter = /** @type {function(*)|undefined} */
+      (/** @type {Object} */ (obj)[setterName]);
+  if (goog.isDef(setter)) {
+    setter.call(obj, value);
+  } else {
+    obj.set(key, value);
+  }
 };
 
 
@@ -306,46 +334,17 @@ ol.Object.prototype.bindTo = function(key, target, opt_targetKey) {
   var eventType = ol.Object.getChangeEventType(targetKey);
   this.listeners_[key] = goog.events.listen(target, eventType,
       /**
+       * @param {ol.ObjectEvent} e Event.
        * @this {ol.Object}
        */
-      function() {
-        this.notify(key);
+      function(e) {
+        this.notify(key, e.oldValue);
       }, undefined, this);
-
-  // listen for beforechange events and relay if key matches
-  this.beforeChangeListeners_[key] = goog.events.listen(target,
-      ol.ObjectEventType.BEFOREPROPERTYCHANGE,
-      this.createBeforeChangeListener_(key, targetKey),
-      undefined, this);
 
   var accessor = new ol.ObjectAccessor(this, target, key, targetKey);
   this.accessors_[key] = accessor;
-  this.notify(key);
+  this.notify(key, this.values_[key]);
   return accessor;
-};
-
-
-/**
- * Create a listener for beforechange events on a target object.  This listener
- * will relay events on this object if the event key matches the provided target
- * key.
- * @param {string} key The key on this object whose value will be changing.
- * @param {string} targetKey The key on the target object.
- * @return {function(this: ol.Object, ol.ObjectEvent)} Listener.
- * @private
- */
-ol.Object.prototype.createBeforeChangeListener_ = function(key, targetKey) {
-  /**
-   * Conditionally relay beforechange events if event key matches target key.
-   * @param {ol.ObjectEvent} event The beforechange event from the target.
-   * @this {ol.Object}
-   */
-  return function(event) {
-    if (event.key === targetKey) {
-      this.dispatchEvent(
-          new ol.ObjectEvent(ol.ObjectEventType.BEFOREPROPERTYCHANGE, key));
-    }
-  };
 };
 
 
@@ -353,23 +352,14 @@ ol.Object.prototype.createBeforeChangeListener_ = function(key, targetKey) {
  * Gets a value.
  * @param {string} key Key name.
  * @return {*} Value.
- * @api
+ * @api stable
  */
 ol.Object.prototype.get = function(key) {
   var value;
   var accessors = this.accessors_;
   if (accessors.hasOwnProperty(key)) {
     var accessor = accessors[key];
-    var target = accessor.target;
-    var targetKey = accessor.targetKey;
-    var getterName = ol.Object.getGetterName(targetKey);
-    var getter = /** @type {function(): *|undefined} */
-        (goog.object.get(target, getterName));
-    if (goog.isDef(getter)) {
-      value = getter.call(target);
-    } else {
-      value = target.get(targetKey);
-    }
+    value = ol.Object.getKeyValue_(accessor.target, accessor.targetKey);
     value = accessor.to(value);
   } else if (this.values_.hasOwnProperty(key)) {
     value = this.values_[key];
@@ -381,7 +371,7 @@ ol.Object.prototype.get = function(key) {
 /**
  * Get a list of object property names.
  * @return {Array.<string>} List of property names.
- * @api
+ * @api stable
  */
 ol.Object.prototype.getKeys = function() {
   var accessors = this.accessors_;
@@ -413,7 +403,7 @@ ol.Object.prototype.getKeys = function() {
 /**
  * Get an object of all property names and values.
  * @return {Object.<string, *>} Object.
- * @api
+ * @api stable
  */
 ol.Object.prototype.getProperties = function() {
   var properties = {};
@@ -430,12 +420,14 @@ ol.Object.prototype.getProperties = function() {
 
 /**
  * @param {string} key Key name.
+ * @param {*} oldValue Old value.
  */
-ol.Object.prototype.notify = function(key) {
-  var eventType = ol.Object.getChangeEventType(key);
-  this.dispatchEvent(eventType);
-  this.dispatchEvent(
-      new ol.ObjectEvent(ol.ObjectEventType.PROPERTYCHANGE, key));
+ol.Object.prototype.notify = function(key, oldValue) {
+  var eventType;
+  eventType = ol.Object.getChangeEventType(key);
+  this.dispatchEvent(new ol.ObjectEvent(eventType, key, oldValue));
+  eventType = ol.ObjectEventType.PROPERTYCHANGE;
+  this.dispatchEvent(new ol.ObjectEvent(eventType, key, oldValue));
 };
 
 
@@ -443,36 +435,27 @@ ol.Object.prototype.notify = function(key) {
  * Sets a value.
  * @param {string} key Key name.
  * @param {*} value Value.
- * @api
+ * @api stable
  */
 ol.Object.prototype.set = function(key, value) {
-  this.dispatchEvent(
-      new ol.ObjectEvent(ol.ObjectEventType.BEFOREPROPERTYCHANGE, key));
   var accessors = this.accessors_;
   if (accessors.hasOwnProperty(key)) {
     var accessor = accessors[key];
-    var target = accessor.target;
-    var targetKey = accessor.targetKey;
     value = accessor.from(value);
-    var setterName = ol.Object.getSetterName(targetKey);
-    var setter = /** @type {function(*)|undefined} */
-        (goog.object.get(target, setterName));
-    if (goog.isDef(setter)) {
-      setter.call(target, value);
-    } else {
-      target.set(targetKey, value);
-    }
+    ol.Object.setKeyValue_(accessor.target, accessor.targetKey, value);
   } else {
+    var oldValue = this.values_[key];
     this.values_[key] = value;
-    this.notify(key);
+    this.notify(key, oldValue);
   }
 };
 
 
 /**
- * Sets a collection of key-value pairs.
+ * Sets a collection of key-value pairs.  Note that this changes any existing
+ * properties and adds new ones (it does not remove any existing properties).
  * @param {Object.<string, *>} values Values.
- * @api
+ * @api stable
  */
 ol.Object.prototype.setProperties = function(values) {
   var key;
@@ -498,13 +481,6 @@ ol.Object.prototype.unbind = function(key) {
     delete this.accessors_[key];
     this.values_[key] = value;
   }
-
-  // unregister any beforechange listener
-  var listenerKey = this.beforeChangeListeners_[key];
-  if (listenerKey) {
-    goog.events.unlistenByKey(listenerKey);
-    delete this.beforeChangeListeners_[key];
-  }
 };
 
 
@@ -515,5 +491,19 @@ ol.Object.prototype.unbind = function(key) {
 ol.Object.prototype.unbindAll = function() {
   for (var key in this.listeners_) {
     this.unbind(key);
+  }
+};
+
+
+/**
+ * Unsets a property.
+ * @param {string} key Key name.
+ * @api stable
+ */
+ol.Object.prototype.unset = function(key) {
+  if (key in this.values_) {
+    var oldValue = this.values_[key];
+    delete this.values_[key];
+    this.notify(key, oldValue);
   }
 };

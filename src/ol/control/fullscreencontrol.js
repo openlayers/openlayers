@@ -10,7 +10,6 @@ goog.require('goog.events');
 goog.require('goog.events.EventType');
 goog.require('ol.control.Control');
 goog.require('ol.css');
-goog.require('ol.pointer.PointerEventHandler');
 
 
 
@@ -38,21 +37,33 @@ ol.control.FullScreen = function(opt_options) {
   this.cssClassName_ = goog.isDef(options.className) ?
       options.className : 'ol-full-screen';
 
+  var label = goog.isDef(options.label) ? options.label : '\u2194';
+
+  /**
+   * @private
+   * @type {Node}
+   */
+  this.labelNode_ = /** @type {Node} */ (goog.isString(label) ?
+          goog.dom.createTextNode(label) : label);
+
+  var labelActive = goog.isDef(options.labelActive) ?
+      options.labelActive : '\u00d7';
+
+  /**
+   * @private
+   * @type {Node}
+   */
+  this.labelActiveNode_ = /** @type {Node} */ (goog.isString(labelActive) ?
+          goog.dom.createTextNode(labelActive) : labelActive);
+
   var tipLabel = goog.isDef(options.tipLabel) ?
       options.tipLabel : 'Toggle full-screen';
-  var tip = goog.dom.createDom(goog.dom.TagName.SPAN, {
-    'role' : 'tooltip'
-  }, tipLabel);
-
   var button = goog.dom.createDom(goog.dom.TagName.BUTTON, {
-    'class': this.cssClassName_ + '-' + goog.dom.fullscreen.isFullScreen() +
-        ' ol-has-tooltip'
-  });
-  goog.dom.appendChild(button, tip);
-  var buttonHandler = new ol.pointer.PointerEventHandler(button);
-  this.registerDisposable(buttonHandler);
-  goog.events.listen(buttonHandler,
-      ol.pointer.EventType.POINTERUP, this.handlePointerUp_, false, this);
+    'class': this.cssClassName_ + '-' + goog.dom.fullscreen.isFullScreen(),
+    'type': 'button',
+    'title': tipLabel
+  }, this.labelNode_);
+
   goog.events.listen(button, goog.events.EventType.CLICK,
       this.handleClick_, false, this);
 
@@ -68,7 +79,7 @@ ol.control.FullScreen = function(opt_options) {
       this.handleFullScreenChange_, false, this);
 
   var cssClasses = this.cssClassName_ + ' ' + ol.css.CLASS_UNSELECTABLE +
-      ' ' + ol.css.CLASS_CONTROL +
+      ' ' + ol.css.CLASS_CONTROL + ' ' +
       (!goog.dom.fullscreen.isSupported() ? ol.css.CLASS_UNSUPPORTED : '');
   var element = goog.dom.createDom(goog.dom.TagName.DIV, cssClasses, button);
 
@@ -92,19 +103,7 @@ goog.inherits(ol.control.FullScreen, ol.control.Control);
  * @private
  */
 ol.control.FullScreen.prototype.handleClick_ = function(event) {
-  if (event.screenX !== 0 && event.screenY !== 0) {
-    return;
-  }
-  this.handleFullScreen_();
-};
-
-
-/**
- * @param {ol.pointer.PointerEvent} pointerEvent The event to handle
- * @private
- */
-ol.control.FullScreen.prototype.handlePointerUp_ = function(pointerEvent) {
-  pointerEvent.browserEvent.preventDefault();
+  event.preventDefault();
   this.handleFullScreen_();
 };
 
@@ -124,9 +123,11 @@ ol.control.FullScreen.prototype.handleFullScreen_ = function() {
     goog.dom.fullscreen.exitFullScreen();
   } else {
     var target = map.getTarget();
-    goog.asserts.assert(goog.isDefAndNotNull(target));
+    goog.asserts.assert(goog.isDefAndNotNull(target),
+        'target should be defined');
     var element = goog.dom.getElement(target);
-    goog.asserts.assert(goog.isDefAndNotNull(element));
+    goog.asserts.assert(goog.isDefAndNotNull(element),
+        'element should be defined');
     if (this.keys_) {
       goog.dom.fullscreen.requestFullScreenWithKeys(element);
     } else {
@@ -142,12 +143,14 @@ ol.control.FullScreen.prototype.handleFullScreen_ = function() {
 ol.control.FullScreen.prototype.handleFullScreenChange_ = function() {
   var opened = this.cssClassName_ + '-true';
   var closed = this.cssClassName_ + '-false';
-  var anchor = goog.dom.getFirstElementChild(this.element);
+  var button = goog.dom.getFirstElementChild(this.element);
   var map = this.getMap();
   if (goog.dom.fullscreen.isFullScreen()) {
-    goog.dom.classlist.swap(anchor, closed, opened);
+    goog.dom.classlist.swap(button, closed, opened);
+    goog.dom.replaceNode(this.labelActiveNode_, this.labelNode_);
   } else {
-    goog.dom.classlist.swap(anchor, opened, closed);
+    goog.dom.classlist.swap(button, opened, closed);
+    goog.dom.replaceNode(this.labelNode_, this.labelActiveNode_);
   }
   if (!goog.isNull(map)) {
     map.updateSize();

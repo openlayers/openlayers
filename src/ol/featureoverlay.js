@@ -78,9 +78,10 @@ ol.FeatureOverlay = function(opt_options) {
 
   if (goog.isDef(options.features)) {
     if (goog.isArray(options.features)) {
-      this.setFeatures(new ol.Collection(goog.array.clone(options.features)));
+      this.setFeatures(new ol.Collection(options.features.slice()));
     } else {
-      goog.asserts.assertInstanceof(options.features, ol.Collection);
+      goog.asserts.assertInstanceof(options.features, ol.Collection,
+          'options.features should be an ol.Collection');
       this.setFeatures(options.features);
     }
   } else {
@@ -113,6 +114,15 @@ ol.FeatureOverlay.prototype.getFeatures = function() {
 
 
 /**
+ * @return {?ol.Map} The map with which this feature overlay is associated.
+ * @api
+ */
+ol.FeatureOverlay.prototype.getMap = function() {
+  return this.map_;
+};
+
+
+/**
  * @private
  */
 ol.FeatureOverlay.prototype.handleFeatureChange_ = function() {
@@ -125,7 +135,8 @@ ol.FeatureOverlay.prototype.handleFeatureChange_ = function() {
  * @param {ol.CollectionEvent} collectionEvent Collection event.
  */
 ol.FeatureOverlay.prototype.handleFeaturesAdd_ = function(collectionEvent) {
-  goog.asserts.assert(!goog.isNull(this.featureChangeListenerKeys_));
+  goog.asserts.assert(!goog.isNull(this.featureChangeListenerKeys_),
+      'this.featureChangeListenerKeys_ should not be null');
   var feature = /** @type {ol.Feature} */ (collectionEvent.element);
   this.featureChangeListenerKeys_[goog.getUid(feature).toString()] =
       goog.events.listen(feature, goog.events.EventType.CHANGE,
@@ -139,7 +150,8 @@ ol.FeatureOverlay.prototype.handleFeaturesAdd_ = function(collectionEvent) {
  * @param {ol.CollectionEvent} collectionEvent Collection event.
  */
 ol.FeatureOverlay.prototype.handleFeaturesRemove_ = function(collectionEvent) {
-  goog.asserts.assert(!goog.isNull(this.featureChangeListenerKeys_));
+  goog.asserts.assert(!goog.isNull(this.featureChangeListenerKeys_),
+      'this.featureChangeListenerKeys_ should not be null');
   var feature = /** @type {ol.Feature} */ (collectionEvent.element);
   var key = goog.getUid(feature).toString();
   goog.events.unlistenByKey(this.featureChangeListenerKeys_[key]);
@@ -172,10 +184,13 @@ ol.FeatureOverlay.prototype.handleMapPostCompose_ = function(event) {
   }
   var replayGroup = /** @type {ol.render.IReplayGroup} */
       (event.replayGroup);
-  goog.asserts.assert(goog.isDef(replayGroup));
+  goog.asserts.assert(goog.isDef(replayGroup),
+      'replayGroup should be defined');
   var frameState = event.frameState;
   var pixelRatio = frameState.pixelRatio;
   var resolution = frameState.viewState.resolution;
+  var squaredTolerance = ol.renderer.vector.getSquaredTolerance(resolution,
+      pixelRatio);
   var i, ii, styles, featureStyleFunction;
   this.features_.forEach(function(feature) {
     featureStyleFunction = feature.getStyleFunction();
@@ -189,8 +204,7 @@ ol.FeatureOverlay.prototype.handleMapPostCompose_ = function(event) {
     ii = styles.length;
     for (i = 0; i < ii; ++i) {
       ol.renderer.vector.renderFeature(replayGroup, feature, styles[i],
-          ol.renderer.vector.getSquaredTolerance(resolution, pixelRatio),
-          feature, this.handleImageChange_, this);
+          squaredTolerance, this.handleImageChange_, this);
     }
   }, this);
 };

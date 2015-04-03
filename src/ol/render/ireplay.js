@@ -1,6 +1,5 @@
 goog.provide('ol.render.IReplayGroup');
 
-goog.require('goog.functions');
 goog.require('ol.render.IVectorContext');
 
 
@@ -32,13 +31,6 @@ ol.render.REPLAY_ORDER = [
  * @interface
  */
 ol.render.IReplayGroup = function() {
-};
-
-
-/**
- * FIXME empty description for jsdoc
- */
-ol.render.IReplayGroup.prototype.finish = function() {
 };
 
 

@@ -60,13 +60,24 @@ goog.inherits(ol.source.Cluster, ol.source.Vector);
 
 
 /**
- * @param {ol.Extent} extent
- * @param {number} resolution
+ * Get a reference to the wrapped source.
+ * @return {ol.source.Vector} Source.
+ * @api
  */
-ol.source.Cluster.prototype.loadFeatures = function(extent, resolution) {
+ol.source.Cluster.prototype.getSource = function() {
+  return this.source_;
+};
+
+
+/**
+ * @inheritDoc
+ */
+ol.source.Cluster.prototype.loadFeatures = function(extent, resolution,
+    projection) {
   if (resolution !== this.resolution_) {
     this.clear();
     this.resolution_ = resolution;
+    this.source_.loadFeatures(extent, resolution, projection);
     this.cluster_();
     this.addFeatures(this.features_);
   }
@@ -92,7 +103,7 @@ ol.source.Cluster.prototype.cluster_ = function() {
   if (!goog.isDef(this.resolution_)) {
     return;
   }
-  goog.array.clear(this.features_);
+  this.features_.length = 0;
   var extent = ol.extent.createEmpty();
   var mapDistance = this.distance_ * this.resolution_;
   var features = this.source_.getFeatures();
@@ -106,17 +117,18 @@ ol.source.Cluster.prototype.cluster_ = function() {
     var feature = features[i];
     if (!goog.object.containsKey(clustered, goog.getUid(feature).toString())) {
       var geometry = feature.getGeometry();
-      goog.asserts.assert(geometry instanceof ol.geom.Point);
+      goog.asserts.assert(geometry instanceof ol.geom.Point,
+          'feature geometry is a ol.geom.Point instance');
       var coordinates = geometry.getCoordinates();
       ol.extent.createOrUpdateFromCoordinate(coordinates, extent);
       ol.extent.buffer(extent, mapDistance, extent);
 
       var neighbors = this.source_.getFeaturesInExtent(extent);
-      goog.asserts.assert(neighbors.length >= 1);
+      goog.asserts.assert(neighbors.length >= 1, 'at least one neighbor found');
       neighbors = goog.array.filter(neighbors, function(neighbor) {
         var uid = goog.getUid(neighbor).toString();
         if (!goog.object.containsKey(clustered, uid)) {
-          goog.object.set(clustered, uid, true);
+          clustered[uid] = true;
           return true;
         } else {
           return false;
@@ -126,7 +138,8 @@ ol.source.Cluster.prototype.cluster_ = function() {
     }
   }
   goog.asserts.assert(
-      goog.object.getCount(clustered) == this.source_.getFeatures().length);
+      goog.object.getCount(clustered) == this.source_.getFeatures().length,
+      'number of clustered equals number of features in the source');
 };
 
 
@@ -140,7 +153,8 @@ ol.source.Cluster.prototype.createCluster_ = function(features) {
   var centroid = [0, 0];
   for (var i = 0; i < length; i++) {
     var geometry = features[i].getGeometry();
-    goog.asserts.assert(geometry instanceof ol.geom.Point);
+    goog.asserts.assert(geometry instanceof ol.geom.Point,
+        'feature geometry is a ol.geom.Point instance');
     var coordinates = geometry.getCoordinates();
     ol.coordinate.add(centroid, coordinates);
   }

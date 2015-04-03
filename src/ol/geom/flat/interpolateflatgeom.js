@@ -17,12 +17,13 @@ goog.require('goog.math');
 ol.geom.flat.interpolate.lineString =
     function(flatCoordinates, offset, end, stride, fraction, opt_dest) {
   // FIXME interpolate extra dimensions
-  goog.asserts.assert(0 <= fraction && fraction <= 1);
+  goog.asserts.assert(0 <= fraction && fraction <= 1,
+      'fraction should be in between 0 and 1');
   var pointX = NaN;
   var pointY = NaN;
   var n = (end - offset) / stride;
   if (n === 0) {
-    goog.asserts.fail();
+    goog.asserts.fail('n cannot be 0');
   } else if (n == 1) {
     pointX = flatCoordinates[offset];
     pointY = flatCoordinates[offset + 1];
@@ -121,8 +122,8 @@ ol.geom.flat.lineStringCoordinateAtM =
     return flatCoordinates.slice((lo - 1) * stride, (lo - 1) * stride + stride);
   }
   var m1 = flatCoordinates[(lo + 1) * stride - 1];
-  goog.asserts.assert(m0 < m);
-  goog.asserts.assert(m <= m1);
+  goog.asserts.assert(m0 < m, 'm0 should be less than m');
+  goog.asserts.assert(m <= m1, 'm should be less than or equal to m1');
   var t = (m - m0) / (m1 - m0);
   coordinate = [];
   var i;
@@ -131,7 +132,8 @@ ol.geom.flat.lineStringCoordinateAtM =
         flatCoordinates[lo * stride + i], t));
   }
   coordinate.push(m);
-  goog.asserts.assert(coordinate.length == stride);
+  goog.asserts.assert(coordinate.length == stride,
+      'length of coordinate array should match stride');
   return coordinate;
 };
 
@@ -185,6 +187,7 @@ ol.geom.flat.lineStringsCoordinateAtM = function(
     }
     offset = end;
   }
-  goog.asserts.fail();
+  goog.asserts.fail(
+      'ol.geom.flat.lineStringsCoordinateAtM should have returned');
   return null;
 };

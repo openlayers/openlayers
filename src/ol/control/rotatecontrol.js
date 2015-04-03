@@ -1,6 +1,5 @@
 goog.provide('ol.control.Rotate');
 
-goog.require('goog.asserts');
 goog.require('goog.dom');
 goog.require('goog.dom.TagName');
 goog.require('goog.dom.classlist');
@@ -11,7 +10,6 @@ goog.require('ol.animation');
 goog.require('ol.control.Control');
 goog.require('ol.css');
 goog.require('ol.easing');
-goog.require('ol.pointer.PointerEventHandler');
 
 
 
@@ -33,30 +31,32 @@ ol.control.Rotate = function(opt_options) {
   var className = goog.isDef(options.className) ?
       options.className : 'ol-rotate';
 
+  var label = goog.isDef(options.label) ?
+      options.label : '\u21E7';
+
   /**
-   * @type {Element}
+   * @type {Node}
    * @private
    */
-  this.label_ = goog.dom.createDom(goog.dom.TagName.SPAN,
-      { 'class': 'ol-compass' },
-      goog.isDef(options.label) ? options.label : '\u21E7');
+  this.label_ = null;
+
+  if (goog.isString(label)) {
+    this.label_ = goog.dom.createDom(goog.dom.TagName.SPAN,
+        'ol-compass', label);
+  } else {
+    this.label_ = label;
+    goog.dom.classlist.add(this.label_, 'ol-compass');
+  }
 
   var tipLabel = goog.isDef(options.tipLabel) ?
       options.tipLabel : 'Reset rotation';
 
-  var tip = goog.dom.createDom(goog.dom.TagName.SPAN, {
-    'role' : 'tooltip'
-  }, tipLabel);
   var button = goog.dom.createDom(goog.dom.TagName.BUTTON, {
-    'class': className + '-reset ol-has-tooltip',
-    'name' : 'ResetRotation',
-    'type' : 'button'
-  }, tip, this.label_);
+    'class': className + '-reset',
+    'type' : 'button',
+    'title': tipLabel
+  }, this.label_);
 
-  var handler = new ol.pointer.PointerEventHandler(button);
-  this.registerDisposable(handler);
-  goog.events.listen(handler, ol.pointer.EventType.POINTERUP,
-      ol.control.Rotate.prototype.handlePointerUp_, false, this);
   goog.events.listen(button, goog.events.EventType.CLICK,
       ol.control.Rotate.prototype.handleClick_, false, this);
 
@@ -71,8 +71,12 @@ ol.control.Rotate = function(opt_options) {
       ol.css.CLASS_CONTROL;
   var element = goog.dom.createDom(goog.dom.TagName.DIV, cssClasses, button);
 
+  var render = goog.isDef(options.render) ?
+      options.render : ol.control.Rotate.render;
+
   goog.base(this, {
     element: element,
+    render: render,
     target: options.target
   });
 
@@ -107,19 +111,7 @@ goog.inherits(ol.control.Rotate, ol.control.Control);
  * @private
  */
 ol.control.Rotate.prototype.handleClick_ = function(event) {
-  if (event.screenX !== 0 && event.screenY !== 0) {
-    return;
-  }
-  this.resetNorth_();
-};
-
-
-/**
- * @param {ol.pointer.PointerEvent} pointerEvent The event to handle
- * @private
- */
-ol.control.Rotate.prototype.handlePointerUp_ = function(pointerEvent) {
-  pointerEvent.browserEvent.preventDefault();
+  event.preventDefault();
   this.resetNorth_();
 };
 
@@ -156,9 +148,11 @@ ol.control.Rotate.prototype.resetNorth_ = function() {
 
 
 /**
- * @inheritDoc
+ * @param {ol.MapEvent} mapEvent Map event.
+ * @this {ol.control.Rotate}
+ * @api
  */
-ol.control.Rotate.prototype.handleMapPostrender = function(mapEvent) {
+ol.control.Rotate.render = function(mapEvent) {
   var frameState = mapEvent.frameState;
   if (goog.isNull(frameState)) {
     return;
