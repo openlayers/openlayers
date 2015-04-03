@@ -1,9 +1,10 @@
 goog.require('ol.Graticule');
 goog.require('ol.Map');
 goog.require('ol.View');
+goog.require('ol.format.GeoJSON');
 goog.require('ol.layer.Vector');
 goog.require('ol.proj.Projection');
-goog.require('ol.source.GeoJSON');
+goog.require('ol.source.Vector');
 
 
 proj4.defs('ESRI:53009', '+proj=moll +lon_0=0 +x_0=0 +y_0=0 +a=6371000 ' +
@@ -22,9 +23,9 @@ var map = new ol.Map({
   keyboardEventTarget: document,
   layers: [
     new ol.layer.Vector({
-      source: new ol.source.GeoJSON({
-        projection: sphereMollweideProjection,
-        url: 'data/geojson/countries-110m.geojson'
+      source: new ol.source.Vector({
+        url: 'data/geojson/countries-110m.geojson',
+        format: new ol.format.GeoJSON()
       })
     })
   ],

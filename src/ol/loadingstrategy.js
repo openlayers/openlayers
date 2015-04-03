@@ -41,7 +41,7 @@ ol.loadingstrategy.bbox = function(extent, resolution) {
  * @return {function(ol.Extent, number): Array.<ol.Extent>} Loading strategy.
  * @api
  */
-ol.loadingstrategy.createTile = function(tileGrid) {
+ol.loadingstrategy.tile = function(tileGrid) {
   return (
       /**
        * @param {ol.Extent} extent Extent.
