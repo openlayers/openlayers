@@ -9,4 +9,4 @@ script: "./build.py ci"
 
 after_success:
   - "npm run test-coverage"
-  - "cat coverage/lcov.info | node ./node_modules/coveralls/bin/coveralls.js"
+  - "cat coverage/lcov.info | ./node_modules/.bin/coveralls"
