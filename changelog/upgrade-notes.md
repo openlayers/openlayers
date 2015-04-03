@@ -6,6 +6,10 @@
 
 * The `minPointsPerRing` config option has been renamed to `minPoints`. It is now also available for linestring drawing, not only for polygons.
 
+#### Replace `ol.View.fitExtent()` and `ol.View.fitGeometry()` with `ol.View.fit()`
+* This combines two previously distinct functions into one more flexible call which takes either a geometry or an extent.
+* Rename all calls to `fitExtent` and `fitGeometry` to `fit`
+
 #### `ol.tilegrid` changes
 
 * The `ol.tilegrid.XYZ` constructor has been replaced by a static `ol.tilegrid.createXYZ()` function. The `ol.tilegrid.createXYZ()` function takes the same arguments as the previous `ol.tilegrid.XYZ` constructor, but returns an `ol.tilegrid.TileGrid` instance.

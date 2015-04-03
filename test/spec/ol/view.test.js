@@ -364,7 +364,7 @@ describe('ol.View', function() {
     });
   });
 
-  describe('fitGeometry', function() {
+  describe('fit', function() {
     var view;
     beforeEach(function() {
       view = new ol.View({
@@ -372,7 +372,7 @@ describe('ol.View', function() {
       });
     });
     it('fit correctly to the geometry', function() {
-      view.fitGeometry(
+      view.fit(
           new ol.geom.LineString([[6000, 46000], [6000, 47100], [7000, 46000]]),
           [200, 200],
           {
@@ -384,7 +384,7 @@ describe('ol.View', function() {
       expect(view.getCenter()[0]).to.be(5950);
       expect(view.getCenter()[1]).to.be(47100);
 
-      view.fitGeometry(
+      view.fit(
           new ol.geom.LineString([[6000, 46000], [6000, 47100], [7000, 46000]]),
           [200, 200],
           {
@@ -395,7 +395,7 @@ describe('ol.View', function() {
       expect(view.getCenter()[0]).to.be(5500);
       expect(view.getCenter()[1]).to.be(47550);
 
-      view.fitGeometry(
+      view.fit(
           new ol.geom.LineString([[6000, 46000], [6000, 47100], [7000, 46000]]),
           [200, 200],
           {
@@ -407,7 +407,7 @@ describe('ol.View', function() {
       expect(view.getCenter()[0]).to.be(6000);
       expect(view.getCenter()[1]).to.be(47050);
 
-      view.fitGeometry(
+      view.fit(
           new ol.geom.Point([6000, 46000]),
           [200, 200],
           {
@@ -419,7 +419,7 @@ describe('ol.View', function() {
       expect(view.getCenter()[0]).to.be(5900);
       expect(view.getCenter()[1]).to.be(46100);
 
-      view.fitGeometry(
+      view.fit(
           new ol.geom.Point([6000, 46000]),
           [200, 200],
           {
@@ -433,7 +433,7 @@ describe('ol.View', function() {
       expect(view.getCenter()[1]).to.be(46100);
 
       view.setRotation(Math.PI / 4);
-      view.fitGeometry(
+      view.fit(
           new ol.geom.LineString([[6000, 46000], [6000, 47100], [7000, 46000]]),
           [200, 200],
           {
@@ -444,6 +444,12 @@ describe('ol.View', function() {
       expect(view.getResolution()).to.roughlyEqual(14.849242404917458, 1e-9);
       expect(view.getCenter()[0]).to.roughlyEqual(5200, 1e-9);
       expect(view.getCenter()[1]).to.roughlyEqual(46300, 1e-9);
+    });
+    it('fit correctly to the extent', function() {
+      view.fit([1000, 1000, 2000, 2000], [200, 200]);
+      expect(view.getResolution()).to.be(5);
+      expect(view.getCenter()[0]).to.be(1500);
+      expect(view.getCenter()[1]).to.be(1500);
     });
   });
 

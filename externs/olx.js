@@ -1,3 +1,4 @@
+
 /**
  * @type {Object}
  */
@@ -6301,7 +6302,7 @@ olx.view;
  *     minResolution: (number|undefined)}}
  * @api
  */
-olx.view.FitGeometryOptions;
+olx.view.FitOptions;
 
 
 /**
@@ -6310,7 +6311,7 @@ olx.view.FitGeometryOptions;
  * @type {!Array.<number>}
  * @api
  */
-olx.view.FitGeometryOptions.prototype.padding;
+olx.view.FitOptions.prototype.padding;
 
 
 /**
@@ -6318,7 +6319,7 @@ olx.view.FitGeometryOptions.prototype.padding;
  * @type {boolean|undefined}
  * @api
  */
-olx.view.FitGeometryOptions.prototype.constrainResolution;
+olx.view.FitOptions.prototype.constrainResolution;
 
 
 /**
@@ -6326,7 +6327,7 @@ olx.view.FitGeometryOptions.prototype.constrainResolution;
  * @type {boolean|undefined}
  * @api
  */
-olx.view.FitGeometryOptions.prototype.nearest;
+olx.view.FitOptions.prototype.nearest;
 
 
 /**
@@ -6334,7 +6335,7 @@ olx.view.FitGeometryOptions.prototype.nearest;
  * @type {number|undefined}
  * @api
  */
-olx.view.FitGeometryOptions.prototype.minResolution;
+olx.view.FitOptions.prototype.minResolution;
 
 
 /**
@@ -6343,7 +6344,7 @@ olx.view.FitGeometryOptions.prototype.minResolution;
  * @type {number|undefined}
  * @api
  */
-olx.view.FitGeometryOptions.prototype.maxZoom;
+olx.view.FitOptions.prototype.maxZoom;
 
 
 /* typedefs for object literals exposed by the library */
