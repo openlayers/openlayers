@@ -163,8 +163,91 @@ describe('ol.render.webgl.ImageReplay', function() {
   });
 });
 
+
+describe('ol.render.webgl.PolygonReplay', function() {
+  var replay;
+
+  var fillStyle = new ol.style.Fill({
+    color: [0, 0, 255, 0.5]
+  });
+
+  beforeEach(function() {
+    var tolerance = 0.1;
+    var maxExtent = [-10000, -20000, 10000, 20000];
+    replay = new ol.render.webgl.PolygonReplay(tolerance, maxExtent);
+  });
+
+  describe('#drawPolygonGeometry', function() {
+    beforeEach(function() {
+      replay.setFillStrokeStyle(fillStyle, null);
+    });
+
+    it('sets the buffer data', function() {
+      var polygon1 = new ol.geom.Polygon(
+          [[[1000, 2000], [1200, 2000], [1200, 3000]]]
+          );
+      replay.drawPolygonGeometry(polygon1, null);
+      expect(replay.vertices_).to.have.length(18);
+      expect(replay.indices_).to.have.length(3);
+
+      expect(replay.vertices_).to.eql([
+        1200, 2000, 0, 0, 255, 0.5,
+        1200, 3000, 0, 0, 255, 0.5,
+        1000, 2000, 0, 0, 255, 0.5]);
+      expect(replay.indices_).to.eql([0, 1, 2]);
+
+      var polygon2 = new ol.geom.Polygon(
+          [[[4000, 2000], [4200, 2000], [4200, 3000]]]
+          );
+      replay.drawPolygonGeometry(polygon2, null);
+      expect(replay.vertices_).to.have.length(36);
+      expect(replay.indices_).to.have.length(6);
+
+      expect(replay.vertices_).to.eql([
+        1200, 2000, 0, 0, 255, 0.5,
+        1200, 3000, 0, 0, 255, 0.5,
+        1000, 2000, 0, 0, 255, 0.5,
+        4200, 2000, 0, 0, 255, 0.5,
+        4200, 3000, 0, 0, 255, 0.5,
+        4000, 2000, 0, 0, 255, 0.5
+      ]);
+      expect(replay.indices_).to.eql([0, 1, 2, 3, 4, 5]);
+    });
+  });
+
+  describe('#drawMultiPolygonGeometry', function() {
+    beforeEach(function() {
+      replay.setFillStrokeStyle(fillStyle, null);
+    });
+
+    it('sets the buffer data', function() {
+      var multiPolygon = new ol.geom.MultiPolygon([
+        [[[1000, 2000], [1200, 2000], [1200, 3000]]],
+        [[[4000, 2000], [4200, 2000], [4200, 3000]]]
+      ]);
+      replay.drawMultiPolygonGeometry(multiPolygon, null);
+      expect(replay.vertices_).to.have.length(36);
+      expect(replay.indices_).to.have.length(6);
+
+      expect(replay.vertices_).to.eql([
+        1200, 2000, 0, 0, 255, 0.5,
+        1200, 3000, 0, 0, 255, 0.5,
+        1000, 2000, 0, 0, 255, 0.5,
+        4200, 2000, 0, 0, 255, 0.5,
+        4200, 3000, 0, 0, 255, 0.5,
+        4000, 2000, 0, 0, 255, 0.5
+      ]);
+      expect(replay.indices_).to.eql([0, 1, 2, 3, 4, 5]);
+    });
+  });
+});
+
 goog.require('ol.extent');
 goog.require('ol.geom.MultiPoint');
+goog.require('ol.geom.MultiPolygon');
 goog.require('ol.geom.Point');
+goog.require('ol.geom.Polygon');
 goog.require('ol.render.webgl.ImageReplay');
+goog.require('ol.render.webgl.PolygonReplay');
+goog.require('ol.style.Fill');
 goog.require('ol.style.Image');
