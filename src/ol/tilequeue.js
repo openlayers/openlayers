@@ -76,6 +76,8 @@ ol.TileQueue.prototype.handleTileChange = function(event) {
   var state = tile.getState();
   if (state === ol.TileState.LOADED || state === ol.TileState.ERROR ||
       state === ol.TileState.EMPTY) {
+    goog.events.unlisten(tile, goog.events.EventType.CHANGE,
+        this.handleTileChange, false, this);
     --this.tilesLoading_;
     this.tileChangeCallback_();
   }
