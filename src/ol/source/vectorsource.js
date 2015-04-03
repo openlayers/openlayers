@@ -12,9 +12,16 @@ goog.require('goog.events');
 goog.require('goog.events.Event');
 goog.require('goog.events.EventType');
 goog.require('goog.object');
+goog.require('ol.Extent');
+goog.require('ol.FeatureLoader');
+goog.require('ol.LoadingStrategy');
 goog.require('ol.ObjectEventType');
+goog.require('ol.extent');
+goog.require('ol.featureloader');
+goog.require('ol.loadingstrategy');
 goog.require('ol.proj');
 goog.require('ol.source.Source');
+goog.require('ol.source.State');
 goog.require('ol.structs.RBush');
 
 
@@ -71,16 +78,43 @@ ol.source.Vector = function(opt_options) {
   goog.base(this, {
     attributions: options.attributions,
     logo: options.logo,
-    projection: options.projection,
-    state: goog.isDef(options.state) ?
-        /** @type {ol.source.State} */ (options.state) : undefined
+    projection: undefined,
+    state: ol.source.State.READY
   });
+
+  /**
+   * @private
+   * @type {ol.FeatureLoader}
+   */
+  this.loader_ = goog.nullFunction;
+
+  if (goog.isDef(options.loader)) {
+    this.loader_ = options.loader;
+  } else if (goog.isDef(options.url)) {
+    goog.asserts.assert(goog.isDef(options.format),
+        'format must be set when url is set');
+    // create a XHR feature loader for "url" and "format"
+    this.loader_ = ol.featureloader.xhr(options.url, options.format);
+  }
+
+  /**
+   * @private
+   * @type {ol.LoadingStrategy}
+   */
+  this.strategy_ = goog.isDef(options.strategy) ? options.strategy :
+      ol.loadingstrategy.all;
 
   /**
    * @private
    * @type {ol.structs.RBush.<ol.Feature>}
    */
   this.rBush_ = new ol.structs.RBush();
+
+  /**
+   * @private
+   * @type {ol.structs.RBush.<{extent: ol.Extent}>}
+   */
+  this.loadedExtentsRtree_ = new ol.structs.RBush();
 
   /**
    * @private
@@ -261,6 +295,7 @@ ol.source.Vector.prototype.clear = function(opt_fast) {
   }
 
   this.rBush_.clear();
+  this.loadedExtentsRtree_.clear();
   this.nullGeometryFeatures_ = {};
 
   var clearEvent = new ol.source.VectorEvent(ol.source.VectorEventType.CLEAR);
@@ -577,7 +612,27 @@ ol.source.Vector.prototype.isEmpty = function() {
  * @param {number} resolution Resolution.
  * @param {ol.proj.Projection} projection Projection.
  */
-ol.source.Vector.prototype.loadFeatures = goog.nullFunction;
+ol.source.Vector.prototype.loadFeatures = function(
+    extent, resolution, projection) {
+  var loadedExtentsRtree = this.loadedExtentsRtree_;
+  var extentsToLoad = this.strategy_(extent, resolution);
+  var i, ii;
+  for (i = 0, ii = extentsToLoad.length; i < ii; ++i) {
+    var extentToLoad = extentsToLoad[i];
+    var alreadyLoaded = loadedExtentsRtree.forEachInExtent(extentToLoad,
+        /**
+         * @param {{extent: ol.Extent}} object Object.
+         * @return {boolean} Contains.
+         */
+        function(object) {
+          return ol.extent.containsExtent(object.extent, extentToLoad);
+        });
+    if (!alreadyLoaded) {
+      this.loader_.call(this, extentToLoad, resolution, projection);
+      loadedExtentsRtree.insert(extentToLoad, {extent: extentToLoad.slice()});
+    }
+  }
+};
 
 
 /**

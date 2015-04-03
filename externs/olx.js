@@ -4883,9 +4883,11 @@ olx.source.TileWMSOptions.prototype.wrapX;
 /**
  * @typedef {{attributions: (Array.<ol.Attribution>|undefined),
  *     features: (Array.<ol.Feature>|undefined),
+ *     format: (ol.format.Feature|undefined),
+ *     loader: (ol.FeatureLoader|undefined),
  *     logo: (string|olx.LogoOptions|undefined),
- *     projection: ol.proj.ProjectionLike,
- *     state: (ol.source.State|string|undefined)}}
+ *     strategy: (ol.LoadingStrategy|undefined),
+ *     url: (string|undefined)}}
  * @api
  */
 olx.source.VectorOptions;
@@ -4908,6 +4910,25 @@ olx.source.VectorOptions.prototype.features;
 
 
 /**
+ * The feature format used by the XHR loader when `url` is set. Required
+ * if `url` is set, otherwise ignored. Default is `undefined`.
+ * `url`
+ * @type {ol.format.Feature|undefined}
+ * @api
+ */
+olx.source.VectorOptions.prototype.format;
+
+
+/**
+ * The loader function used to load features, from a remote source for example.
+ * Note that the source will create and use an XHR loader when `src` is set.
+ * @type {ol.FeatureLoader|undefined}
+ * @api
+ */
+olx.source.VectorOptions.prototype.loader;
+
+
+/**
  * Logo.
  * @type {string|olx.LogoOptions|undefined}
  * @api stable
@@ -4916,19 +4937,23 @@ olx.source.VectorOptions.prototype.logo;
 
 
 /**
- * Projection.
- * @type {ol.proj.ProjectionLike}
+ * The loading strategy to use. By default an {@link ol.loadingstrategy.all}
+ * strategy is used, which means that features at loaded all at once, and
+ * once.
+ * @type {ol.LoadingStrategy|undefined}
  * @api
  */
-olx.source.VectorOptions.prototype.projection;
+olx.source.VectorOptions.prototype.strategy;
 
 
 /**
- * State.
- * @type {ol.source.State|string|undefined}
+ * Set this option if you want the source to download features all at once
+ * and once for good. Internally the source uses an XHR feature loader (see
+ * {@link ol.featureloader.xhr}). Requires `format` to be set as well.
+ * @type {string|undefined}
  * @api
  */
-olx.source.VectorOptions.prototype.state;
+olx.source.VectorOptions.prototype.url;
 
 
 /**
