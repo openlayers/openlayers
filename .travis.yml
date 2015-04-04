@@ -5,8 +5,6 @@ before_install:
 before_script:
   - "rm src/ol/renderer/webgl/*shader.js"
 
-script: "./build.py ci"
-
-after_success:
-  - "npm run test-coverage"
+script:
+  - "./build.py ci"
   - "cat coverage/lcov.info | ./node_modules/.bin/coveralls"
