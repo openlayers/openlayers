@@ -243,6 +243,7 @@ ol.style.Icon.prototype.getAnchor = function() {
 
 
 /**
+ * Get the image icon.
  * @param {number} pixelRatio Pixel ratio.
  * @return {Image} Image element.
  * @api
@@ -317,6 +318,7 @@ ol.style.Icon.prototype.getOrigin = function() {
 
 
 /**
+ * Get the image URL.
  * @return {string|undefined} Image src.
  * @api
  */
