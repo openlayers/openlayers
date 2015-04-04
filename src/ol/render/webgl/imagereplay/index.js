@@ -1,4 +1,5 @@
 goog.provide('ol.render.webgl.ImageReplay');
+goog.provide('ol.render.webgl.LineStringReplay');
 goog.provide('ol.render.webgl.PolygonReplay');
 goog.provide('ol.render.webgl.ReplayGroup');
 
@@ -917,6 +918,267 @@ ol.render.webgl.ImageReplay.prototype.setImageStyle = function(imageStyle) {
  * @protected
  * @struct
  */
+ol.render.webgl.LineStringReplay = function(tolerance, maxExtent) {
+  goog.base(this);
+
+  /**
+   * @private
+   * @type {ol.Color}
+   */
+  this.strokeColor_ = null;
+
+
+  /**
+   * The origin of the coordinate system for the point coordinates sent to
+   * the GPU.
+   * @private
+   * @type {ol.Coordinate}
+   */
+  this.origin_ = ol.extent.getCenter(maxExtent);
+
+
+  /**
+   * @private
+   * @type {ol.render.webgl.polygonreplay.shader.Default.Locations}
+   */
+  this.defaultLocations_ = null;
+
+  /**
+   * @type {!goog.vec.Mat4.Number}
+   * @private
+   */
+  this.projectionMatrix_ = goog.vec.Mat4.createNumberIdentity();
+
+  /**
+   * @type {Array.<number>}
+   * @private
+   */
+  this.vertices_ = [];
+
+  /**
+   * @type {ol.webgl.Buffer}
+   * @private
+   */
+  this.verticesBuffer_ = null;
+};
+goog.inherits(ol.render.webgl.LineStringReplay, ol.render.VectorContext);
+
+
+/**
+ * Draw one line.
+ * @param {Array.<ol.Coordinate>} coordinates
+ * @private
+ */
+ol.render.webgl.LineStringReplay.prototype.drawCoordinates_ =
+    function(coordinates) {
+  var i, ii;
+
+  // Shift the indices to take into account previously handled lines
+  for (i = 0, ii = coordinates.length - 1; i < ii; ++i) {
+    var point1 = coordinates[i];
+    this.vertices_.push(point1[0]);
+    this.vertices_.push(point1[1]);
+    this.vertices_.push(this.strokeColor_[0]);
+    this.vertices_.push(this.strokeColor_[1]);
+    this.vertices_.push(this.strokeColor_[2]);
+    this.vertices_.push(this.strokeColor_[3]);
+
+    var point2 = coordinates[i + 1];
+    this.vertices_.push(point2[0]);
+    this.vertices_.push(point2[1]);
+    this.vertices_.push(this.strokeColor_[0]);
+    this.vertices_.push(this.strokeColor_[1]);
+    this.vertices_.push(this.strokeColor_[2]);
+    this.vertices_.push(this.strokeColor_[3]);
+  }
+};
+
+
+/**
+ * @inheritDoc
+ */
+ol.render.webgl.LineStringReplay.prototype.drawLineStringGeometry =
+    function(geometry, feature) {
+  this.drawCoordinates_(geometry.getCoordinates());
+};
+
+
+/**
+ * @inheritDoc
+ */
+ol.render.webgl.LineStringReplay.prototype.drawMultiLineStringGeometry =
+    function(geometry, feature) {
+  var coordinatess = geometry.getCoordinates();
+  var i, ii;
+  for (i = 0, ii = coordinatess.length; i < ii; ++i) {
+    this.drawCoordinates_(coordinatess[i]);
+  }
+};
+
+
+/**
+ * @param {ol.webgl.Context} context Context.
+ **/
+ol.render.webgl.LineStringReplay.prototype.finish = function(context) {
+  // create, bind, and populate the vertices buffer
+  this.verticesBuffer_ = new ol.webgl.Buffer(this.vertices_);
+  context.bindBuffer(goog.webgl.ARRAY_BUFFER, this.verticesBuffer_);
+};
+
+
+/**
+ * @param {ol.webgl.Context} context WebGL context.
+ * @return {function()} Delete resources function.
+ */
+ol.render.webgl.LineStringReplay.prototype.getDeleteResourcesFunction =
+    function(context) {
+  // We only delete our stuff here. The shaders and the program may
+  // be used by other LineStringReplay instances (for other layers). And
+  // they will be deleted when disposing of the ol.webgl.Context
+  // object.
+  goog.asserts.assert(!goog.isNull(this.verticesBuffer_),
+      'verticesBuffer must not be null');
+  var verticesBuffer = this.verticesBuffer_;
+  return function() {
+    context.deleteBuffer(verticesBuffer);
+  };
+};
+
+
+/**
+ * @param {ol.webgl.Context} context Context.
+ * @param {ol.Coordinate} center Center.
+ * @param {number} resolution Resolution.
+ * @param {number} rotation Rotation.
+ * @param {ol.Size} size Size.
+ * @param {number} pixelRatio Pixel ratio.
+ * @param {number} opacity Global opacity.
+ * @param {number} brightness Global brightness.
+ * @param {number} contrast Global contrast.
+ * @param {number} hue Global hue.
+ * @param {number} saturation Global saturation.
+ * @param {Object} skippedFeaturesHash Ids of features to skip.
+ * @param {function(ol.Feature): T|undefined} featureCallback Feature callback.
+ * @param {boolean} oneByOne Draw features one-by-one for the hit-detecion.
+ * @param {ol.Extent=} opt_hitExtent Hit extent: Only features intersecting
+ *  this extent are checked.
+ * @return {T|undefined} Callback result.
+ * @template T
+ */
+ol.render.webgl.LineStringReplay.prototype.replay = function(context,
+    center, resolution, rotation, size, pixelRatio,
+    opacity, brightness, contrast, hue, saturation, skippedFeaturesHash,
+    featureCallback, oneByOne, opt_hitExtent) {
+  var gl = context.getGL();
+
+  // bind the vertices buffer
+  goog.asserts.assert(!goog.isNull(this.verticesBuffer_),
+      'verticesBuffer must not be null');
+  context.bindBuffer(goog.webgl.ARRAY_BUFFER, this.verticesBuffer_);
+
+  // get the program
+  var fragmentShader, vertexShader;
+  fragmentShader =
+      ol.render.webgl.polygonreplay.shader.DefaultFragment.getInstance();
+  vertexShader =
+      ol.render.webgl.polygonreplay.shader.DefaultVertex.getInstance();
+  var program = context.getProgram(fragmentShader, vertexShader);
+
+  // get the locations
+  var locations;
+  if (goog.isNull(this.defaultLocations_)) {
+    locations = new ol.render.webgl.polygonreplay.shader.Default
+      .Locations(gl, program);
+    this.defaultLocations_ = locations;
+  } else {
+    locations = this.defaultLocations_;
+  }
+
+  context.useProgram(program);
+
+  // enable the vertex attrib arrays
+  gl.enableVertexAttribArray(locations.a_position);
+  gl.vertexAttribPointer(locations.a_position, 2, goog.webgl.FLOAT,
+      false, 24, 0);
+
+  gl.enableVertexAttribArray(locations.a_color);
+  gl.vertexAttribPointer(locations.a_color, 4, goog.webgl.FLOAT,
+      false, 24, 8);
+
+  // set the "uniform" values
+  // TODO: use RTE to avoid jitter
+  var projectionMatrix = this.projectionMatrix_;
+  ol.vec.Mat4.makeTransform2D(projectionMatrix,
+      0.0, 0.0,
+      pixelRatio * 2 / (resolution * size[0]),
+      pixelRatio * 2 / (resolution * size[1]),
+      -rotation,
+      -center[0], -center[1]);
+
+  gl.uniformMatrix4fv(locations.u_projectionMatrix, false, projectionMatrix);
+
+  // draw!
+  var result;
+  if (!goog.isDef(featureCallback)) {
+    this.drawReplay_(gl, context, skippedFeaturesHash);
+  } else {
+    // TODO: draw feature by feature for the hit-detection
+  }
+
+  // disable the vertex attrib arrays
+  gl.disableVertexAttribArray(locations.a_position);
+  gl.disableVertexAttribArray(locations.a_color);
+
+  return result;
+};
+
+
+/**
+ * @private
+ * @param {WebGLRenderingContext} gl gl.
+ * @param {ol.webgl.Context} context Context.
+ * @param {Object} skippedFeaturesHash Ids of features to skip.
+ */
+ol.render.webgl.LineStringReplay.prototype.drawReplay_ =
+    function(gl, context, skippedFeaturesHash) {
+  if (!goog.object.isEmpty(skippedFeaturesHash)) {
+    // TODO: draw by blocks to skip features
+  } else {
+    var numItems = this.vertices_.length / 6;
+    // FIXME: not compatible with batching, hardcoding some arbitrary value
+    gl.lineWidth(3);
+    gl.drawArrays(goog.webgl.LINES, 0, numItems);
+    gl.lineWidth(1);
+  }
+};
+
+
+/**
+ * @inheritDoc
+ */
+ol.render.webgl.LineStringReplay.prototype.setFillStrokeStyle =
+    function(fillStyle, strokeStyle) {
+  if (!goog.isNull(strokeStyle)) {
+    var strokeStyleColor = strokeStyle.getColor();
+    this.strokeColor_ = !goog.isNull(strokeStyleColor) ?
+        ol.color.asArray(strokeStyleColor).map(function(c, i) {
+          return i != 3 ? c / 255 : c;
+        }) : [0.0, 0.0, 0.0, 1.0];
+  } else {
+    this.strokeColor_ = null;
+  }
+};
+
+
+
+/**
+ * @constructor
+ * @extends {ol.render.VectorContext}
+ * @param {number} tolerance Tolerance.
+ * @param {ol.Extent} maxExtent Max extent.
+ * @protected
+ * @struct
+ */
 ol.render.webgl.PolygonReplay = function(tolerance, maxExtent) {
   goog.base(this);
 
@@ -926,6 +1188,12 @@ ol.render.webgl.PolygonReplay = function(tolerance, maxExtent) {
    */
   this.fillColor_ = null;
 
+
+  /**
+   * @private
+   */
+  this.lineStringReplay_ = new ol.render.webgl.LineStringReplay(
+      tolerance, maxExtent);
 
   /**
    * The origin of the coordinate system for the point coordinates sent to
@@ -1023,20 +1291,6 @@ ol.render.webgl.PolygonReplay.prototype.drawCoordinates_ =
 /**
  * @inheritDoc
  */
-ol.render.webgl.PolygonReplay.prototype.drawLineStringGeometry =
-    goog.abstractMethod;
-
-
-/**
- * @inheritDoc
- */
-ol.render.webgl.PolygonReplay.prototype.drawMultiLineStringGeometry =
-    goog.abstractMethod;
-
-
-/**
- * @inheritDoc
- */
 ol.render.webgl.PolygonReplay.prototype.drawMultiPolygonGeometry =
     function(geometry, feature) {
   if (goog.isNull(this.fillColor_)) {
@@ -1064,6 +1318,14 @@ ol.render.webgl.PolygonReplay.prototype.drawPolygonGeometry =
   this.startIndices_.push(this.indices_.length);
   this.startIndicesFeature_.push(feature);
   this.drawCoordinates_(coordinates);
+
+  if (!goog.isNull(this.lineStringReplay_.strokeColor_)) {
+    var linearRings = polygonGeometry.getLinearRings();
+    var i, ii;
+    for (i = 0, ii = linearRings.length; i < ii; i++) {
+      this.lineStringReplay_.drawCoordinates_(linearRings[i].getCoordinates());
+    }
+  }
 };
 
 
@@ -1084,6 +1346,7 @@ ol.render.webgl.PolygonReplay.prototype.finish = function(context) {
   // create, bind, and populate the indices buffer
   this.indicesBuffer_ = new ol.webgl.Buffer(indices);
   context.bindBuffer(goog.webgl.ELEMENT_ARRAY_BUFFER, this.indicesBuffer_);
+  this.lineStringReplay_.finish(context);
 };
 
 
@@ -1103,9 +1366,11 @@ ol.render.webgl.PolygonReplay.prototype.getDeleteResourcesFunction =
       'indicesBuffer must not be null');
   var verticesBuffer = this.verticesBuffer_;
   var indicesBuffer = this.indicesBuffer_;
+  var lineDeleter = this.lineStringReplay_.getDeleteResourcesFunction(context);
   return function() {
     context.deleteBuffer(verticesBuffer);
     context.deleteBuffer(indicesBuffer);
+    lineDeleter();
   };
 };
 
@@ -1180,8 +1445,8 @@ ol.render.webgl.PolygonReplay.prototype.replay = function(context,
   var projectionMatrix = this.projectionMatrix_;
   ol.vec.Mat4.makeTransform2D(projectionMatrix,
       0.0, 0.0,
-      2 / (resolution * size[0]),
-      2 / (resolution * size[1]),
+      pixelRatio * 2 / (resolution * size[0]),
+      pixelRatio * 2 / (resolution * size[1]),
       -rotation,
       -center[0], -center[1]);
 
@@ -1199,6 +1464,11 @@ ol.render.webgl.PolygonReplay.prototype.replay = function(context,
   gl.disableVertexAttribArray(locations.a_position);
   gl.disableVertexAttribArray(locations.a_color);
 
+  this.lineStringReplay_.replay(context,
+      center, resolution, rotation, size, pixelRatio,
+      opacity, brightness, contrast, hue, saturation, skippedFeaturesHash,
+      featureCallback, oneByOne, opt_hitExtent);
+  // FIXME get result
   return result;
 };
 
@@ -1234,10 +1504,13 @@ ol.render.webgl.PolygonReplay.prototype.setFillStrokeStyle =
   if (!goog.isNull(fillStyle)) {
     var fillStyleColor = fillStyle.getColor();
     this.fillColor_ = !goog.isNull(fillStyleColor) ?
-        ol.color.asArray(fillStyleColor) : [0.0, 0.0, 0.0, 1.0];
+        ol.color.asArray(fillStyleColor).map(function(c, i) {
+          return i != 3 ? c / 255.0 : c;
+        }) : [0.0, 0.0, 0.0, 1.0];
   } else {
     this.fillColor_ = null;
   }
+  this.lineStringReplay_.setFillStrokeStyle(fillStyle, strokeStyle);
 };
 
 
@@ -1504,6 +1777,7 @@ ol.render.webgl.ReplayGroup.prototype.hasFeatureAtCoordinate = function(
  */
 ol.render.webgl.BATCH_CONSTRUCTORS_ = {
   'Image': ol.render.webgl.ImageReplay,
+  'LineString': ol.render.webgl.LineStringReplay,
   'Polygon': ol.render.webgl.PolygonReplay
 };
 

@@ -9,6 +9,7 @@ goog.require('ol.render.webgl.ImageReplay');
 goog.require('ol.render.webgl.PolygonReplay');
 goog.require('ol.style.Fill');
 goog.require('ol.style.Image');
+goog.require('ol.style.Stroke');
 
 
 describe('ol.render.webgl.ImageReplay', function() {
@@ -181,6 +182,9 @@ describe('ol.render.webgl.PolygonReplay', function() {
   var fillStyle = new ol.style.Fill({
     color: [0, 0, 255, 0.5]
   });
+  var strokeStyle = new ol.style.Stroke({
+    color: [0, 255, 0, 0.4]
+  });
 
   beforeEach(function() {
     var tolerance = 0.1;
@@ -190,7 +194,7 @@ describe('ol.render.webgl.PolygonReplay', function() {
 
   describe('#drawPolygonGeometry', function() {
     beforeEach(function() {
-      replay.setFillStrokeStyle(fillStyle, null);
+      replay.setFillStrokeStyle(fillStyle, strokeStyle);
     });
 
     it('sets the buffer data', function() {
@@ -202,10 +206,18 @@ describe('ol.render.webgl.PolygonReplay', function() {
       expect(replay.indices_).to.have.length(3);
 
       expect(replay.vertices_).to.eql([
-        1200, 2000, 0, 0, 255, 0.5,
-        1200, 3000, 0, 0, 255, 0.5,
-        1000, 2000, 0, 0, 255, 0.5]);
+        1200, 2000, 0, 0, 1, 0.5,
+        1200, 3000, 0, 0, 1, 0.5,
+        1000, 2000, 0, 0, 1, 0.5]);
       expect(replay.indices_).to.eql([0, 1, 2]);
+
+      expect(replay.lineStringReplay_.vertices_).to.have.length(24);
+      expect(replay.lineStringReplay_.vertices_).to.eql([
+        1000, 2000, 0, 1, 0, 0.4,
+        1200, 2000, 0, 1, 0, 0.4,
+        1200, 2000, 0, 1, 0, 0.4,
+        1200, 3000, 0, 1, 0, 0.4
+      ]);
 
       var polygon2 = new ol.geom.Polygon(
           [[[4000, 2000], [4200, 2000], [4200, 3000]]]
@@ -215,12 +227,12 @@ describe('ol.render.webgl.PolygonReplay', function() {
       expect(replay.indices_).to.have.length(6);
 
       expect(replay.vertices_).to.eql([
-        1200, 2000, 0, 0, 255, 0.5,
-        1200, 3000, 0, 0, 255, 0.5,
-        1000, 2000, 0, 0, 255, 0.5,
-        4200, 2000, 0, 0, 255, 0.5,
-        4200, 3000, 0, 0, 255, 0.5,
-        4000, 2000, 0, 0, 255, 0.5
+        1200, 2000, 0, 0, 1, 0.5,
+        1200, 3000, 0, 0, 1, 0.5,
+        1000, 2000, 0, 0, 1, 0.5,
+        4200, 2000, 0, 0, 1, 0.5,
+        4200, 3000, 0, 0, 1, 0.5,
+        4000, 2000, 0, 0, 1, 0.5
       ]);
       expect(replay.indices_).to.eql([0, 1, 2, 3, 4, 5]);
     });
@@ -228,7 +240,7 @@ describe('ol.render.webgl.PolygonReplay', function() {
 
   describe('#drawMultiPolygonGeometry', function() {
     beforeEach(function() {
-      replay.setFillStrokeStyle(fillStyle, null);
+      replay.setFillStrokeStyle(fillStyle, strokeStyle);
     });
 
     it('sets the buffer data', function() {
@@ -241,12 +253,12 @@ describe('ol.render.webgl.PolygonReplay', function() {
       expect(replay.indices_).to.have.length(6);
 
       expect(replay.vertices_).to.eql([
-        1200, 2000, 0, 0, 255, 0.5,
-        1200, 3000, 0, 0, 255, 0.5,
-        1000, 2000, 0, 0, 255, 0.5,
-        4200, 2000, 0, 0, 255, 0.5,
-        4200, 3000, 0, 0, 255, 0.5,
-        4000, 2000, 0, 0, 255, 0.5
+        1200, 2000, 0, 0, 1, 0.5,
+        1200, 3000, 0, 0, 1, 0.5,
+        1000, 2000, 0, 0, 1, 0.5,
+        4200, 2000, 0, 0, 1, 0.5,
+        4200, 3000, 0, 0, 1, 0.5,
+        4000, 2000, 0, 0, 1, 0.5
       ]);
       expect(replay.indices_).to.eql([0, 1, 2, 3, 4, 5]);
     });
