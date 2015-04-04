@@ -371,14 +371,15 @@ describe('ol.source.Vector', function() {
       source = new ol.source.Vector();
     });
 
-    it('allows adding feature with the same id', function() {
+    it('ignores features with the same id', function() {
       var feature = new ol.Feature();
       feature.setId('foo');
       source.addFeature(feature);
       var dupe = new ol.Feature();
       dupe.setId('foo');
       source.addFeature(dupe);
-      expect(source.getFeatureById('foo')).to.be(dupe);
+      expect(source.getFeatures()).to.have.length(1);
+      expect(source.getFeatureById('foo')).to.be(feature);
     });
 
     it('allows changing feature and set the same id', function() {

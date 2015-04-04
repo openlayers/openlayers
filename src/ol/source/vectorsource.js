@@ -170,6 +170,11 @@ ol.source.Vector.prototype.addFeature = function(feature) {
  */
 ol.source.Vector.prototype.addFeatureInternal = function(feature) {
   var featureKey = goog.getUid(feature).toString();
+
+  if (!this.addToIndex_(featureKey, feature)) {
+    return;
+  }
+
   this.setupChangeEvents_(featureKey, feature);
 
   var geometry = feature.getGeometry();
@@ -180,7 +185,6 @@ ol.source.Vector.prototype.addFeatureInternal = function(feature) {
     this.nullGeometryFeatures_[featureKey] = feature;
   }
 
-  this.addToIndex_(featureKey, feature);
   this.dispatchEvent(
       new ol.source.VectorEvent(ol.source.VectorEventType.ADDFEATURE, feature));
 };
@@ -208,17 +212,25 @@ ol.source.Vector.prototype.setupChangeEvents_ = function(featureKey, feature) {
 /**
  * @param {string} featureKey
  * @param {ol.Feature} feature
+ * @return {boolean} `true` if the feature is "valid", in the sense that it is
+ *     also a candidate for insertion into the Rtree, otherwise `false`.
  * @private
  */
 ol.source.Vector.prototype.addToIndex_ = function(featureKey, feature) {
+  var valid = true;
   var id = feature.getId();
   if (goog.isDef(id)) {
-    this.idIndex_[id.toString()] = feature;
+    if (!(id.toString() in this.idIndex_)) {
+      this.idIndex_[id.toString()] = feature;
+    } else {
+      valid = false;
+    }
   } else {
     goog.asserts.assert(!(featureKey in this.undefIdIndex_),
         'Feature already added to the source');
     this.undefIdIndex_[featureKey] = feature;
   }
+  return valid;
 };
 
 
@@ -240,10 +252,21 @@ ol.source.Vector.prototype.addFeatures = function(features) {
  */
 ol.source.Vector.prototype.addFeaturesInternal = function(features) {
   var featureKey, i, length, feature;
+
   var extents = [];
-  var validFeatures = [];
+  var newFeatures = [];
+  var geometryFeatures = [];
+
   for (i = 0, length = features.length; i < length; i++) {
     feature = features[i];
+    featureKey = goog.getUid(feature).toString();
+    if (this.addToIndex_(featureKey, feature)) {
+      newFeatures.push(feature);
+    }
+  }
+
+  for (i = 0, length = newFeatures.length; i < length; i++) {
+    feature = newFeatures[i];
     featureKey = goog.getUid(feature).toString();
     this.setupChangeEvents_(featureKey, feature);
 
@@ -251,19 +274,16 @@ ol.source.Vector.prototype.addFeaturesInternal = function(features) {
     if (goog.isDefAndNotNull(geometry)) {
       var extent = geometry.getExtent();
       extents.push(extent);
-      validFeatures.push(feature);
+      geometryFeatures.push(feature);
     } else {
       this.nullGeometryFeatures_[featureKey] = feature;
     }
   }
-  this.rBush_.load(extents, validFeatures);
+  this.rBush_.load(extents, geometryFeatures);
 
-  for (i = 0, length = features.length; i < length; i++) {
-    feature = features[i];
-    featureKey = goog.getUid(feature).toString();
-    this.addToIndex_(featureKey, feature);
+  for (i = 0, length = newFeatures.length; i < length; i++) {
     this.dispatchEvent(new ol.source.VectorEvent(
-        ol.source.VectorEventType.ADDFEATURE, feature));
+        ol.source.VectorEventType.ADDFEATURE, newFeatures[i]));
   }
 };
 
