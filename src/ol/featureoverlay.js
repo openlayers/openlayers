@@ -96,6 +96,7 @@ ol.FeatureOverlay = function(opt_options) {
 
 
 /**
+ * Add a feature to the overlay.
  * @param {ol.Feature} feature Feature.
  * @api
  */
@@ -105,6 +106,7 @@ ol.FeatureOverlay.prototype.addFeature = function(feature) {
 
 
 /**
+ * Get the features on the overlay.
  * @return {ol.Collection.<ol.Feature>} Features collection.
  * @api
  */
@@ -114,6 +116,7 @@ ol.FeatureOverlay.prototype.getFeatures = function() {
 
 
 /**
+ * Get the map associated with the overlay.
  * @return {?ol.Map} The map with which this feature overlay is associated.
  * @api
  */
@@ -211,7 +214,8 @@ ol.FeatureOverlay.prototype.handleMapPostCompose_ = function(event) {
 
 
 /**
- * @param {ol.Feature} feature Feature.
+ * Remove a feature from the overlay.
+ * @param {ol.Feature} feature The feature to be removed.
  * @api
  */
 ol.FeatureOverlay.prototype.removeFeature = function(feature) {
@@ -230,6 +234,7 @@ ol.FeatureOverlay.prototype.render_ = function() {
 
 
 /**
+ * Set the features for the overlay.
  * @param {ol.Collection.<ol.Feature>} features Features collection.
  * @api
  */
@@ -264,6 +269,7 @@ ol.FeatureOverlay.prototype.setFeatures = function(features) {
 
 
 /**
+ * Set the map for the overlay.
  * @param {ol.Map} map Map.
  * @api
  */
