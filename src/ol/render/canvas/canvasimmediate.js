@@ -12,7 +12,7 @@ goog.require('ol.color');
 goog.require('ol.extent');
 goog.require('ol.geom.flat.transform');
 goog.require('ol.has');
-goog.require('ol.render.IVectorContext');
+goog.require('ol.render.VectorContext');
 goog.require('ol.render.canvas');
 goog.require('ol.vec.Mat4');
 
@@ -20,7 +20,7 @@ goog.require('ol.vec.Mat4');
 
 /**
  * @classdesc
- * A concrete subclass of {@link ol.render.IVectorContext} that implements
+ * A concrete subclass of {@link ol.render.VectorContext} that implements
  * direct rendering of features and geometries to an HTML5 Canvas context.
  * Instances of this class are created internally by the library and
  * provided to application code as vectorContext member of the
@@ -28,7 +28,7 @@ goog.require('ol.vec.Mat4');
  * render events emitted by layers and maps.
  *
  * @constructor
- * @implements {ol.render.IVectorContext}
+ * @extends {ol.render.VectorContext}
  * @param {CanvasRenderingContext2D} context Context.
  * @param {number} pixelRatio Pixel ratio.
  * @param {ol.Extent} extent Extent.

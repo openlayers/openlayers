@@ -9,7 +9,7 @@ goog.require('goog.vec.Mat4');
 goog.require('ol.color.Matrix');
 goog.require('ol.extent');
 goog.require('ol.render.IReplayGroup');
-goog.require('ol.render.IVectorContext');
+goog.require('ol.render.VectorContext');
 goog.require('ol.render.webgl.imagereplay.shader.Color');
 goog.require('ol.render.webgl.imagereplay.shader.Default');
 goog.require('ol.vec.Mat4');
@@ -20,13 +20,14 @@ goog.require('ol.webgl.Context');
 
 /**
  * @constructor
- * @implements {ol.render.IVectorContext}
+ * @extends {ol.render.VectorContext}
  * @param {number} tolerance Tolerance.
  * @param {ol.Extent} maxExtent Max extent.
  * @protected
  * @struct
  */
 ol.render.webgl.ImageReplay = function(tolerance, maxExtent) {
+  goog.base(this);
 
   /**
    * @type {number|undefined}
@@ -219,8 +220,8 @@ ol.render.webgl.ImageReplay = function(tolerance, maxExtent) {
    * @private
    */
   this.width_ = undefined;
-
 };
+goog.inherits(ol.render.webgl.ImageReplay, ol.render.VectorContext);
 
 
 /**
@@ -383,39 +384,6 @@ ol.render.webgl.ImageReplay.prototype.drawCoordinates_ =
 /**
  * @inheritDoc
  */
-ol.render.webgl.ImageReplay.prototype.drawCircleGeometry = goog.abstractMethod;
-
-
-/**
- * @inheritDoc
- */
-ol.render.webgl.ImageReplay.prototype.drawFeature = goog.abstractMethod;
-
-
-/**
- * @inheritDoc
- */
-ol.render.webgl.ImageReplay.prototype.drawGeometryCollectionGeometry =
-    goog.abstractMethod;
-
-
-/**
- * @inheritDoc
- */
-ol.render.webgl.ImageReplay.prototype.drawLineStringGeometry =
-    goog.abstractMethod;
-
-
-/**
- * @inheritDoc
- */
-ol.render.webgl.ImageReplay.prototype.drawMultiLineStringGeometry =
-    goog.abstractMethod;
-
-
-/**
- * @inheritDoc
- */
 ol.render.webgl.ImageReplay.prototype.drawMultiPointGeometry =
     function(multiPointGeometry, feature) {
   this.startIndices_.push(this.indices_.length);
@@ -430,13 +398,6 @@ ol.render.webgl.ImageReplay.prototype.drawMultiPointGeometry =
 /**
  * @inheritDoc
  */
-ol.render.webgl.ImageReplay.prototype.drawMultiPolygonGeometry =
-    goog.abstractMethod;
-
-
-/**
- * @inheritDoc
- */
 ol.render.webgl.ImageReplay.prototype.drawPointGeometry =
     function(pointGeometry, feature) {
   this.startIndices_.push(this.indices_.length);
@@ -446,18 +407,6 @@ ol.render.webgl.ImageReplay.prototype.drawPointGeometry =
   this.drawCoordinates_(
       flatCoordinates, 0, flatCoordinates.length, stride);
 };
-
-
-/**
- * @inheritDoc
- */
-ol.render.webgl.ImageReplay.prototype.drawPolygonGeometry = goog.abstractMethod;
-
-
-/**
- * @inheritDoc
- */
-ol.render.webgl.ImageReplay.prototype.drawText = goog.abstractMethod;
 
 
 /**
@@ -1001,12 +950,6 @@ ol.render.webgl.ImageReplay.prototype.setImageStyle = function(imageStyle) {
   this.scale_ = scale;
   this.width_ = size[0];
 };
-
-
-/**
- * @inheritDoc
- */
-ol.render.webgl.ImageReplay.prototype.setTextStyle = goog.abstractMethod;
 
 
 
