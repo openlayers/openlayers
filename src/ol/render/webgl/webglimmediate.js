@@ -2,14 +2,15 @@ goog.provide('ol.render.webgl.Immediate');
 goog.require('goog.array');
 goog.require('goog.object');
 goog.require('ol.extent');
-goog.require('ol.render.IVectorContext');
+goog.require('ol.render.VectorContext');
+goog.require('ol.render.webgl.ImageReplay');
 goog.require('ol.render.webgl.ReplayGroup');
 
 
 
 /**
  * @constructor
- * @implements {ol.render.IVectorContext}
+ * @extends {ol.render.VectorContext}
  * @param {ol.webgl.Context} context Context.
  * @param {ol.Coordinate} center Center.
  * @param {number} resolution Resolution.
@@ -21,6 +22,7 @@ goog.require('ol.render.webgl.ReplayGroup');
  */
 ol.render.webgl.Immediate = function(context,
     center, resolution, rotation, size, extent, pixelRatio) {
+  goog.base(this);
 
   /**
    * @private
@@ -70,6 +72,7 @@ ol.render.webgl.Immediate = function(context,
    */
   this.callbacksByZIndex_ = {};
 };
+goog.inherits(ol.render.webgl.Immediate, ol.render.VectorContext);
 
 
 /**
@@ -173,7 +176,8 @@ ol.render.webgl.Immediate.prototype.drawPointGeometry =
     function(pointGeometry, data) {
   var context = this.context_;
   var replayGroup = new ol.render.webgl.ReplayGroup(1, this.extent_);
-  var replay = replayGroup.getReplay(0, ol.render.ReplayType.IMAGE);
+  var replay = /** @type {ol.render.webgl.ImageReplay} */ (
+      replayGroup.getReplay(0, ol.render.ReplayType.IMAGE));
   replay.setImageStyle(this.imageStyle_);
   replay.drawPointGeometry(pointGeometry, data);
   replay.finish(context);
@@ -183,9 +187,12 @@ ol.render.webgl.Immediate.prototype.drawPointGeometry =
   var contrast = 1;
   var hue = 0;
   var saturation = 1;
+  var skippedFeatures = {};
+  var featureCallback;
+  var oneByOne = false;
   replay.replay(this.context_, this.center_, this.resolution_, this.rotation_,
-      this.size_, this.extent_, this.pixelRatio_, opacity, brightness,
-      contrast, hue, saturation, {});
+      this.size_, this.pixelRatio_, opacity, brightness,
+      contrast, hue, saturation, skippedFeatures, featureCallback, oneByOne);
   replay.getDeleteResourcesFunction(context)();
 };
 
@@ -216,7 +223,8 @@ ol.render.webgl.Immediate.prototype.drawMultiPointGeometry =
     function(multiPointGeometry, data) {
   var context = this.context_;
   var replayGroup = new ol.render.webgl.ReplayGroup(1, this.extent_);
-  var replay = replayGroup.getReplay(0, ol.render.ReplayType.IMAGE);
+  var replay = /** @type {ol.render.webgl.ImageReplay} */ (
+      replayGroup.getReplay(0, ol.render.ReplayType.IMAGE));
   replay.setImageStyle(this.imageStyle_);
   replay.drawMultiPointGeometry(multiPointGeometry, data);
   replay.finish(context);
@@ -226,9 +234,12 @@ ol.render.webgl.Immediate.prototype.drawMultiPointGeometry =
   var contrast = 1;
   var hue = 0;
   var saturation = 1;
+  var skippedFeatures = {};
+  var featureCallback;
+  var oneByOne = false;
   replay.replay(this.context_, this.center_, this.resolution_, this.rotation_,
-      this.size_, this.extent_, this.pixelRatio_, opacity, brightness,
-      contrast, hue, saturation, {});
+      this.size_, this.pixelRatio_, opacity, brightness,
+      contrast, hue, saturation, skippedFeatures, featureCallback, oneByOne);
   replay.getDeleteResourcesFunction(context)();
 };
 

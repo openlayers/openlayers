@@ -17,7 +17,7 @@ goog.require('ol.geom.flat.simplify');
 goog.require('ol.geom.flat.transform');
 goog.require('ol.has');
 goog.require('ol.render.IReplayGroup');
-goog.require('ol.render.IVectorContext');
+goog.require('ol.render.VectorContext');
 goog.require('ol.render.canvas');
 goog.require('ol.vec.Mat4');
 
@@ -45,7 +45,7 @@ ol.render.canvas.Instruction = {
 
 /**
  * @constructor
- * @implements {ol.render.IVectorContext}
+ * @extends {ol.render.VectorContext}
  * @param {number} tolerance Tolerance.
  * @param {ol.Extent} maxExtent Maximum extent.
  * @param {number} resolution Resolution.
@@ -53,6 +53,7 @@ ol.render.canvas.Instruction = {
  * @struct
  */
 ol.render.canvas.Replay = function(tolerance, maxExtent, resolution) {
+  goog.base(this);
 
   /**
    * @protected
@@ -133,8 +134,8 @@ ol.render.canvas.Replay = function(tolerance, maxExtent, resolution) {
    * @type {!goog.vec.Mat4.Number}
    */
   this.tmpLocalTransform_ = goog.vec.Mat4.createNumber();
-
 };
+goog.inherits(ol.render.canvas.Replay, ol.render.VectorContext);
 
 
 /**
@@ -552,75 +553,6 @@ ol.render.canvas.Replay.prototype.reverseHitDetectionInstructions_ =
 
 
 /**
- * @inheritDoc
- */
-ol.render.canvas.Replay.prototype.drawAsync = goog.abstractMethod;
-
-
-/**
- * @inheritDoc
- */
-ol.render.canvas.Replay.prototype.drawCircleGeometry = goog.abstractMethod;
-
-
-/**
- * @inheritDoc
- */
-ol.render.canvas.Replay.prototype.drawFeature = goog.abstractMethod;
-
-
-/**
- * @inheritDoc
- */
-ol.render.canvas.Replay.prototype.drawGeometryCollectionGeometry =
-    goog.abstractMethod;
-
-
-/**
- * @inheritDoc
- */
-ol.render.canvas.Replay.prototype.drawLineStringGeometry = goog.abstractMethod;
-
-
-/**
- * @inheritDoc
- */
-ol.render.canvas.Replay.prototype.drawMultiLineStringGeometry =
-    goog.abstractMethod;
-
-
-/**
- * @inheritDoc
- */
-ol.render.canvas.Replay.prototype.drawPointGeometry = goog.abstractMethod;
-
-
-/**
- * @inheritDoc
- */
-ol.render.canvas.Replay.prototype.drawMultiPointGeometry = goog.abstractMethod;
-
-
-/**
- * @inheritDoc
- */
-ol.render.canvas.Replay.prototype.drawPolygonGeometry = goog.abstractMethod;
-
-
-/**
- * @inheritDoc
- */
-ol.render.canvas.Replay.prototype.drawMultiPolygonGeometry =
-    goog.abstractMethod;
-
-
-/**
- * @inheritDoc
- */
-ol.render.canvas.Replay.prototype.drawText = goog.abstractMethod;
-
-
-/**
  * @param {ol.geom.Geometry} geometry Geometry.
  * @param {ol.Feature} feature Feature.
  */
@@ -658,24 +590,6 @@ ol.render.canvas.Replay.prototype.getBufferedMaxExtent = function() {
 };
 
 
-/**
- * @inheritDoc
- */
-ol.render.canvas.Replay.prototype.setFillStrokeStyle = goog.abstractMethod;
-
-
-/**
- * @inheritDoc
- */
-ol.render.canvas.Replay.prototype.setImageStyle = goog.abstractMethod;
-
-
-/**
- * @inheritDoc
- */
-ol.render.canvas.Replay.prototype.setTextStyle = goog.abstractMethod;
-
-
 
 /**
  * @constructor
@@ -687,7 +601,6 @@ ol.render.canvas.Replay.prototype.setTextStyle = goog.abstractMethod;
  * @struct
  */
 ol.render.canvas.ImageReplay = function(tolerance, maxExtent, resolution) {
-
   goog.base(this, tolerance, maxExtent, resolution);
 
   /**

@@ -218,7 +218,7 @@ oli.render.Event.prototype.glContext;
 
 
 /**
- * @type {ol.render.IVectorContext|undefined}
+ * @type {ol.render.VectorContext|undefined}
  */
 oli.render.Event.prototype.vectorContext;
 
