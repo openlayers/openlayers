@@ -146,12 +146,14 @@ function main(callback, watchFiles) {
     .use(templates({
       engine: 'handlebars',
       directory: 'config/examples'
-    }))
+    }));
 
   if (watchFiles) {
     metalsmith.use(watch);
   }
-  metalsmith.build(callback);
+  metalsmith.build(function(err) {
+    callback(err);
+  });
 
 }
 
