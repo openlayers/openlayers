@@ -5,6 +5,7 @@ goog.provide('ol.render.VectorContext');
 /**
  * @constructor
  * @struct
+ * @api
  */
 ol.render.VectorContext = function() {
 };
