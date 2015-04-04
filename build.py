@@ -7,6 +7,7 @@ import json
 import multiprocessing
 import os
 import re
+import signal
 import shutil
 import sys
 
@@ -15,6 +16,9 @@ from pake import ifind, main, output, rule, target, variables, virtual, which
 from Queue import Queue
 from threading import Thread
 
+def sigint_handler(signal, frame):
+    print('Exiting')
+    sys.exit(0)
 
 class ThreadPool:
     """A basic pool of worker threads"""
@@ -814,4 +818,5 @@ and only seldom called targets.
     '''
 
 if __name__ == '__main__':
+    signal.signal(signal.SIGINT, sigint_handler)
     main()
