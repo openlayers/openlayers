@@ -353,7 +353,7 @@ ol.View.prototype.getResolutionForValueFunction = function(opt_power) {
 
 
 /**
- * @return {number} The rotation of the view.
+ * @return {number} The rotation of the view in radians.
  * @observable
  * @api stable
  */
@@ -632,7 +632,7 @@ goog.exportProperty(
 
 /**
  * Set the rotation for this view.
- * @param {number} rotation The rotation of the view.
+ * @param {number} rotation The rotation of the view in radians.
  * @observable
  * @api stable
  */
