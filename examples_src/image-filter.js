@@ -91,7 +91,6 @@ select.onchange = function() {
 
 /**
  * Apply a filter on "postcompose" events.
- * @param {ol.render.Event} event Render event.
  */
 imagery.on('postcompose', function(event) {
   convolve(event.context, selectedKernel);
