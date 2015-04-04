@@ -365,6 +365,23 @@ describe('ol.source.Vector', function() {
 
   });
 
+  describe('#loadFeatures', function() {
+
+    describe('with no loader and the "all" strategy', function() {
+
+      it('stores the infinity extent in the Rtree', function() {
+        var source = new ol.source.Vector();
+        source.loadFeatures([-10000, -10000, 10000, 10000], 1,
+            ol.proj.get('EPSG:3857'));
+        var loadedExtents = source.loadedExtentsRtree_.getAll();
+        expect(loadedExtents).to.have.length(1);
+        expect(loadedExtents[0].extent).to.eql(
+            [-Infinity, -Infinity, Infinity, Infinity]);
+      });
+    });
+
+  });
+
   describe('the feature id index', function() {
     var source;
     beforeEach(function() {
@@ -416,4 +433,5 @@ describe('ol.source.Vector', function() {
 goog.require('goog.events');
 goog.require('ol.Feature');
 goog.require('ol.geom.Point');
+goog.require('ol.proj');
 goog.require('ol.source.Vector');
