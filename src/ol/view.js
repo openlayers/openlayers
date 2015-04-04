@@ -243,6 +243,7 @@ ol.View.prototype.constrainRotation = function(rotation, opt_delta) {
 
 
 /**
+ * Get the view center.
  * @return {ol.Coordinate|undefined} The center of the view.
  * @observable
  * @api stable
@@ -266,8 +267,8 @@ ol.View.prototype.getHints = function() {
 
 
 /**
- * Calculate the extent for the current view state and the passed `size`.
- * `size` is the size in pixels of the box into which the calculated extent
+ * Calculate the extent for the current view state and the passed size.
+ * The size is the pixel dimensions of the box into which the calculated extent
  * should fit. In most cases you want to get the extent of the entire map,
  * that is `map.getSize()`.
  * @param {ol.Size} size Box pixel size.
@@ -288,6 +289,7 @@ ol.View.prototype.calculateExtent = function(size) {
 
 
 /**
+ * Get the view projection.
  * @return {ol.proj.Projection} The projection of the view.
  * @api stable
  */
@@ -297,6 +299,7 @@ ol.View.prototype.getProjection = function() {
 
 
 /**
+ * Get the view resolution.
  * @return {number|undefined} The resolution of the view.
  * @observable
  * @api stable
@@ -353,6 +356,7 @@ ol.View.prototype.getResolutionForValueFunction = function(opt_power) {
 
 
 /**
+ * Get the view rotation.
  * @return {number} The rotation of the view in radians.
  * @observable
  * @api stable
@@ -438,9 +442,9 @@ ol.View.prototype.getZoom = function() {
 
 
 /**
- * Fit the map view to the passed `extent` and `size`. `size` is the size in
- * pixels of the box to fit the extent into. In most cases you will want to
- * use the map size, that is `map.getSize()`.
+ * Fit the map view to the passed extent and size. The size is pixel dimensions
+ * of the box to fit the extent into. In most cases you will want to use the map
+ * size, that is `map.getSize()`.
  * @param {ol.Extent} extent Extent.
  * @param {ol.Size} size Box pixel size.
  * @api
@@ -460,8 +464,7 @@ ol.View.prototype.fitExtent = function(extent, size) {
 
 
 /**
- * Fit the given geometry based on the given map size and border.
- * Take care on the map angle.
+ * Fit the given geometry into the view based on the given map size and border.
  * @param {ol.geom.SimpleGeometry} geometry Geometry.
  * @param {ol.Size} size Box pixel size.
  * @param {olx.view.FitGeometryOptions=} opt_options Options.
@@ -535,7 +538,6 @@ ol.View.prototype.fitGeometry = function(geometry, size, opt_options) {
 
 /**
  * Center on coordinate and view position.
- * Take care on the map angle.
  * @param {ol.Coordinate} coordinate Coordinate.
  * @param {ol.Size} size Box pixel size.
  * @param {ol.Pixel} position Position on the view to center on.

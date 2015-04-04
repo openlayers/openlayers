@@ -56,6 +56,7 @@ ol.tilegrid.WMTS.prototype.getMatrixId = function(z) {
 
 
 /**
+ * Get the list of matrix identifiers.
  * @return {Array.<string>} MatrixIds.
  * @api
  */
@@ -65,6 +66,7 @@ ol.tilegrid.WMTS.prototype.getMatrixIds = function() {
 
 
 /**
+ * Create a tile grid from a WMTS capabilities matrix set.
  * @param {Object} matrixSet An object representing a matrixSet in the
  *     capabilities document.
  * @return {ol.tilegrid.WMTS} WMTS tileGrid instance.

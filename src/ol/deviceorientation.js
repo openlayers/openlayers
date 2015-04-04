@@ -22,8 +22,8 @@ ol.DeviceOrientationProperty = {
 
 /**
  * @classdesc
- * The ol.DeviceOrientation class provides access to DeviceOrientation
- * information and events, see the [HTML 5 DeviceOrientation Specification](
+ * The ol.DeviceOrientation class provides access to information from
+ * DeviceOrientation events.  See the [HTML 5 DeviceOrientation Specification](
  * http://www.w3.org/TR/orientation-event/) for more details.
  *
  * Many new computers, and especially mobile phones
@@ -137,6 +137,7 @@ ol.DeviceOrientation.prototype.orientationChange_ = function(browserEvent) {
 
 
 /**
+ * Rotation around the device z-axis (in radians).
  * @return {number|undefined} The euler angle in radians of the device from the
  *     standard Z axis.
  * @observable
@@ -153,6 +154,7 @@ goog.exportProperty(
 
 
 /**
+ * Rotation around the device x-axis (in radians).
  * @return {number|undefined} The euler angle in radians of the device from the
  *     planar X axis.
  * @observable
@@ -169,6 +171,7 @@ goog.exportProperty(
 
 
 /**
+ * Rotation around the device y-axis (in radians).
  * @return {number|undefined} The euler angle in radians of the device from the
  *     planar Y axis.
  * @observable
@@ -185,6 +188,7 @@ goog.exportProperty(
 
 
 /**
+ * The heading of the device relative to north (in radians).
  * @return {number|undefined} The heading of the device relative to north, in
  *     radians, normalizing for different browser behavior.
  * @observable
@@ -201,9 +205,8 @@ goog.exportProperty(
 
 
 /**
- * Are we tracking the device's orientation?
- * @return {boolean} The status of tracking changes to alpha, beta and gamma.
- *     If true, changes are tracked and reported immediately.
+ * Determine if orientation is being tracked.
+ * @return {boolean} Changes in device orientation are being tracked.
  * @observable
  * @api
  */
@@ -235,7 +238,7 @@ ol.DeviceOrientation.prototype.handleTrackingChanged_ = function() {
 
 
 /**
- * Enable or disable tracking of DeviceOrientation events.
+ * Enable or disable tracking of device orientation events.
  * @param {boolean} tracking The status of tracking changes to alpha, beta and
  *     gamma. If true, changes are tracked and reported immediately.
  * @observable

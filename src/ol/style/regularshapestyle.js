@@ -149,6 +149,7 @@ ol.style.RegularShape.prototype.getAnchor = function() {
 
 
 /**
+ * Get the angle used in generating the shape.
  * @return {number} Shape's rotation in radians.
  * @api
  */
@@ -158,6 +159,7 @@ ol.style.RegularShape.prototype.getAngle = function() {
 
 
 /**
+ * Get the fill style for the shape.
  * @return {ol.style.Fill} Fill style.
  * @api
  */
@@ -217,6 +219,7 @@ ol.style.RegularShape.prototype.getOrigin = function() {
 
 
 /**
+ * Get the number of points for generating the shape.
  * @return {number} Number of points for stars and regular polygons.
  * @api
  */
@@ -226,6 +229,7 @@ ol.style.RegularShape.prototype.getPoints = function() {
 
 
 /**
+ * Get the (primary) radius for the shape.
  * @return {number} Radius.
  * @api
  */
@@ -235,6 +239,7 @@ ol.style.RegularShape.prototype.getRadius = function() {
 
 
 /**
+ * Get the secondary radius for the shape.
  * @return {number} Radius2.
  * @api
  */
@@ -253,6 +258,7 @@ ol.style.RegularShape.prototype.getSize = function() {
 
 
 /**
+ * Get the stroke style for the shape.
  * @return {ol.style.Stroke} Stroke style.
  * @api
  */

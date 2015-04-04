@@ -154,6 +154,7 @@ ol.tilegrid.TileGrid.prototype.forEachTileCoordParentTileRange =
 
 
 /**
+ * Get the maximum zoom level for the grid.
  * @return {number} Max zoom.
  * @api
  */
@@ -163,6 +164,7 @@ ol.tilegrid.TileGrid.prototype.getMaxZoom = function() {
 
 
 /**
+ * Get the minimum zoom level for the grid.
  * @return {number} Min zoom.
  * @api
  */
@@ -172,6 +174,7 @@ ol.tilegrid.TileGrid.prototype.getMinZoom = function() {
 
 
 /**
+ * Get the origin for the grid at the given zoom level.
  * @param {number} z Z.
  * @return {ol.Coordinate} Origin.
  * @api stable
@@ -191,6 +194,7 @@ ol.tilegrid.TileGrid.prototype.getOrigin = function(z) {
 
 
 /**
+ * Get the resolution for the given zoom level.
  * @param {number} z Z.
  * @return {number} Resolution.
  * @api stable
@@ -204,6 +208,7 @@ ol.tilegrid.TileGrid.prototype.getResolution = function(z) {
 
 
 /**
+ * Get the list of resolutions for the tile grid.
  * @return {Array.<number>} Resolutions.
  * @api stable
  */
@@ -368,8 +373,9 @@ ol.tilegrid.TileGrid.prototype.getTileCoordForXYAndResolution_ = function(
 
 
 /**
+ * Get a tile coordinate given a map coordinate and zoom level.
  * @param {ol.Coordinate} coordinate Coordinate.
- * @param {number} z Z.
+ * @param {number} z Zoom level.
  * @param {ol.TileCoord=} opt_tileCoord Destination ol.TileCoord object.
  * @return {ol.TileCoord} Tile coordinate.
  * @api
@@ -415,6 +421,7 @@ ol.tilegrid.TileGrid.prototype.getTileRange =
 
 
 /**
+ * Get the tile size for a zoom level.
  * @param {number} z Z.
  * @return {number} Tile size.
  * @api stable
