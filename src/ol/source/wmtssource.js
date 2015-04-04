@@ -446,15 +446,16 @@ ol.source.WMTS.optionsFromCapabilities = function(wmtsCap, config) {
   } else {
     var gets = wmtsCap['OperationsMetadata']['GetTile']['DCP']['HTTP']['Get'];
 
-    var constraint = goog.array.find(gets[0]['Constraint'],
-        function(elt, index, array) {
-          return elt['name'] == 'GetEncoding';
-        });
-    var encodings = constraint['AllowedValues']['Value'];
-    if (encodings.length > 0 && goog.array.contains(encodings, 'KVP')) {
-      requestEncoding = ol.source.WMTSRequestEncoding.KVP;
-      urls.push(/** @type {string} */ (gets[0]['href']));
-
+    for (var i = 0, ii = gets.length; i < ii; ++i) {
+      var constraint = goog.array.find(gets[i]['Constraint'],
+          function(elt, index, array) {
+            return elt['name'] == 'GetEncoding';
+          });
+      var encodings = constraint['AllowedValues']['Value'];
+      if (encodings.length > 0 && goog.array.contains(encodings, 'KVP')) {
+        requestEncoding = ol.source.WMTSRequestEncoding.KVP;
+        urls.push(/** @type {string} */ (gets[i]['href']));
+      }
     }
   }
   goog.asserts.assert(urls.length > 0, 'At least one URL found');
