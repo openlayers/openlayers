@@ -729,8 +729,10 @@ ol.Map.prototype.getTargetElement = function() {
 
 
 /**
- * @param {ol.Pixel} pixel Pixel.
- * @return {ol.Coordinate} Coordinate.
+ * Get the coordinate for a given pixel.  This returns a coordinate in the
+ * map view projection.
+ * @param {ol.Pixel} pixel Pixel position in the map viewport.
+ * @return {ol.Coordinate} The coordinate for the pixel position.
  * @api stable
  */
 ol.Map.prototype.getCoordinateFromPixel = function(pixel) {
@@ -745,6 +747,8 @@ ol.Map.prototype.getCoordinateFromPixel = function(pixel) {
 
 
 /**
+ * Get the map controls. Modifying this collection changes the controls
+ * associated with the map.
  * @return {ol.Collection.<ol.control.Control>} Controls.
  * @api stable
  */
@@ -754,6 +758,8 @@ ol.Map.prototype.getControls = function() {
 
 
 /**
+ * Get the map overlays. Modifying this collection changes the overlays
+ * associated with the map.
  * @return {ol.Collection.<ol.Overlay>} Overlays.
  * @api stable
  */
@@ -763,8 +769,7 @@ ol.Map.prototype.getOverlays = function() {
 
 
 /**
- * Gets the collection of {@link ol.interaction.Interaction} instances
- * associated with this map. Modifying this collection changes the interactions
+ * Get the map interactions. Modifying this collection changes the interactions
  * associated with the map.
  *
  * Interactions are used for e.g. pan, zoom and rotate.
@@ -803,8 +808,10 @@ ol.Map.prototype.getLayers = function() {
 
 
 /**
- * @param {ol.Coordinate} coordinate Coordinate.
- * @return {ol.Pixel} Pixel.
+ * Get the pixel for a coordinate.  This takes a coordinate in the map view
+ * projection and returns the corresponding pixel.
+ * @param {ol.Coordinate} coordinate A map coordinate.
+ * @return {ol.Pixel} A pixel position in the map viewport.
  * @api stable
  */
 ol.Map.prototype.getPixelFromCoordinate = function(coordinate) {
@@ -859,6 +866,7 @@ goog.exportProperty(
 
 
 /**
+ * Get the element that serves as the map viewport.
  * @return {Element} Viewport.
  * @api stable
  */
@@ -868,10 +876,11 @@ ol.Map.prototype.getViewport = function() {
 
 
 /**
- * @return {Element} The map's overlay container. Elements added to this
- * container will let mousedown and touchstart events through to the map, so
- * clicks and gestures on an overlay will trigger {@link ol.MapBrowserEvent}
+ * Get the element that serves as the container for overlays.  Elements added to
+ * this container will let mousedown and touchstart events through to the map,
+ * so clicks and gestures on an overlay will trigger {@link ol.MapBrowserEvent}
  * events.
+ * @return {Element} The map's overlay container.
  */
 ol.Map.prototype.getOverlayContainer = function() {
   return this.overlayContainer_;
@@ -879,10 +888,11 @@ ol.Map.prototype.getOverlayContainer = function() {
 
 
 /**
- * @return {Element} The map's overlay container. Elements added to this
- * container won't let mousedown and touchstart events through to the map, so
- * clicks and gestures on an overlay don't trigger any
- * {@link ol.MapBrowserEvent}.
+ * Get the element that serves as a container for overlays that don't allow
+ * event propagation. Elements added to this container won't let mousedown and
+ * touchstart events through to the map, so clicks and gestures on an overlay
+ * don't trigger any {@link ol.MapBrowserEvent}.
+ * @return {Element} The map's overlay container that stops events.
  */
 ol.Map.prototype.getOverlayContainerStopEvent = function() {
   return this.overlayContainerStopEvent_;
@@ -1185,8 +1195,7 @@ ol.Map.prototype.renderSync = function() {
 
 
 /**
- * Requests a render frame; rendering will effectively occur at the next browser
- * animation frame.
+ * Request a map rendering (at the next animation frame).
  * @api stable
  */
 ol.Map.prototype.render = function() {
