@@ -323,8 +323,8 @@ goog.exportProperty(
 
 
 /**
- * Are we tracking the user's position?
- * @return {boolean} Whether to track the device's position.
+ * Determine if the device location is being tracked.
+ * @return {boolean} The device location is being tracked.
  * @observable
  * @api stable
  */
@@ -342,8 +342,8 @@ goog.exportProperty(
  * Get the tracking options.
  * @see http://www.w3.org/TR/geolocation-API/#position-options
  * @return {GeolocationPositionOptions|undefined} PositionOptions as defined by
- *     the HTML5 Geolocation spec at
- *     {@link http://www.w3.org/TR/geolocation-API/#position_options_interface}
+ *     the [HTML5 Geolocation spec
+ *     ](http://www.w3.org/TR/geolocation-API/#position_options_interface).
  * @observable
  * @api stable
  */
@@ -374,8 +374,8 @@ goog.exportProperty(
 
 
 /**
- * Enable/disable tracking.
- * @param {boolean} tracking Whether to track the device's position.
+ * Enable or disable tracking.
+ * @param {boolean} tracking Enable tracking.
  * @observable
  * @api stable
  */
@@ -392,8 +392,8 @@ goog.exportProperty(
  * Set the tracking options.
  * @see http://www.w3.org/TR/geolocation-API/#position-options
  * @param {GeolocationPositionOptions} options PositionOptions as defined by the
- *     HTML5 Geolocation spec at
- *     {@link http://www.w3.org/TR/geolocation-API/#position_options_interface}
+ *     [HTML5 Geolocation spec
+ *     ](http://www.w3.org/TR/geolocation-API/#position_options_interface).
  * @observable
  * @api stable
  */
