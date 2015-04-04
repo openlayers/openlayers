@@ -172,7 +172,7 @@ def report_sizes(t):
 virtual('default', 'build')
 
 
-virtual('ci', 'lint', 'build', 'test',
+virtual('ci', 'lint', 'build', 'test-coverage',
     'build/examples/all.combined.js', 'check-examples', 'apidoc')
 
 
