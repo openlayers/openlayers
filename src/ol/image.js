@@ -72,6 +72,7 @@ goog.inherits(ol.Image, ol.ImageBase);
 
 
 /**
+ * Get the HTML image element (may be a Canvas, Image, or Video).
  * @param {Object=} opt_context Object.
  * @return {HTMLCanvasElement|Image|HTMLVideoElement} Image.
  * @api
