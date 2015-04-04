@@ -191,7 +191,8 @@ ol.webgl.Context.prototype.getCanvas = function() {
 
 
 /**
- * @return {WebGLRenderingContext} GL.
+ * Get the WebGL rendering context
+ * @return {WebGLRenderingContext} The rendering context.
  * @api
  */
 ol.webgl.Context.prototype.getGL = function() {
@@ -200,7 +201,8 @@ ol.webgl.Context.prototype.getGL = function() {
 
 
 /**
- * @return {WebGLFramebuffer} The framebuffer for the hit-detection.
+ * Get the frame buffer for hit detection.
+ * @return {WebGLFramebuffer} The hit detection frame buffer.
  * @api
  */
 ol.webgl.Context.prototype.getHitDetectionFramebuffer = function() {
@@ -328,9 +330,7 @@ ol.webgl.Context.prototype.initHitDetectionFramebuffer_ = function() {
 
 
 /**
- * Just return false if that program is used already. Other use
- * that program (call `gl.useProgram`) and make it the "current
- * program".
+ * Use a program.  If the program is already in use, this will return `false`.
  * @param {WebGLProgram} program Program.
  * @return {boolean} Changed.
  * @api
