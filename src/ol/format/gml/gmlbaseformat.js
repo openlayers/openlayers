@@ -29,7 +29,7 @@ goog.require('ol.xml');
  * Abstract base class; normally only used for creating subclasses and not
  * instantiated in apps.
  * Feature base format for reading and writing data in the GML format.
- * This class cannot be instantiate, it contains only base content that
+ * This class cannot be instantiated, it contains only base content that
  * is shared with versioned format classes ol.format.GML2 and
  * ol.format.GML3.
  *
@@ -37,7 +37,6 @@ goog.require('ol.xml');
  * @param {olx.format.GMLOptions=} opt_options
  *     Optional configuration object.
  * @extends {ol.format.XMLFeature}
- * @api
  */
 ol.format.GMLBase = function(opt_options) {
   var options = /** @type {olx.format.GMLOptions} */
