@@ -12,6 +12,7 @@ goog.require('ol.style.Stroke');
 
 
 /**
+ * Render a grid for a coordinate system on a map.
  * @constructor
  * @param {olx.GraticuleOptions=} opt_options Options.
  * @api
@@ -272,6 +273,7 @@ ol.Graticule.prototype.getInterval_ = function(resolution) {
 
 
 /**
+ * Get the map associated with this graticule.
  * @return {ol.Map} The map.
  * @api
  */
@@ -304,6 +306,7 @@ ol.Graticule.prototype.getMeridian_ = function(lon, squaredTolerance, index) {
 
 
 /**
+ * Get the list of meridians.  Meridians are lines of equal longitude.
  * @return {Array.<ol.geom.LineString>} The meridians.
  * @api
  */
@@ -336,6 +339,7 @@ ol.Graticule.prototype.getParallel_ = function(lat, squaredTolerance, index) {
 
 
 /**
+ * Get the list of parallels.  Pallels are lines of equal latitude.
  * @return {Array.<ol.geom.LineString>} The parallels.
  * @api
  */
@@ -424,6 +428,8 @@ ol.Graticule.prototype.updateProjectionInfo_ = function(projection) {
 
 
 /**
+ * Set the map for this graticule.  The graticule will be rendered on the
+ * provided map.
  * @param {ol.Map} map Map.
  * @api
  */
