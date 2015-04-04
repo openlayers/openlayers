@@ -137,10 +137,10 @@ ol.Feature.prototype.clone = function() {
 
 
 /**
- * @return {ol.geom.Geometry|undefined} Returns the Geometry associated
- *     with this feature using the current geometry name property.  By
- *     default, this is `geometry` but it may be changed by calling
- *     `setGeometryName`.
+ * Get the feature's default geometry.  A feature may have any number of named
+ * geometries.  The "default" geometry (the one that is rendered by default) is
+ * set when calling {@link ol.Feature#setGeometry}.
+ * @return {ol.geom.Geometry|undefined} The default geometry for the feature.
  * @api stable
  * @observable
  */
@@ -164,9 +164,10 @@ ol.Feature.prototype.getId = function() {
 
 
 /**
- * @return {string} Get the property name associated with the geometry for
- *     this feature.  By default, this is `geometry` but it may be changed by
- *     calling `setGeometryName`.
+ * Get the name of the feature's default geometry.  By default, the default
+ * geometry is named `geometry`.
+ * @return {string} Get the property name associated with the default geometry
+ *     for this feature.
  * @api stable
  */
 ol.Feature.prototype.getGeometryName = function() {
@@ -175,11 +176,10 @@ ol.Feature.prototype.getGeometryName = function() {
 
 
 /**
+ * Get the feature's style.  This return for this method depends on what was
+ * provided to the {@link ol.Feature#setStyle} method.
  * @return {ol.style.Style|Array.<ol.style.Style>|
- *     ol.feature.FeatureStyleFunction} Return the style as set by `setStyle`
- * in the same format that it was provided in. If `setStyle` has not been
- * called, or if it was called with `null`, then `getStyle()` will return
- * `null`.
+ *     ol.feature.FeatureStyleFunction} The feature style.
  * @api stable
  */
 ol.Feature.prototype.getStyle = function() {
@@ -188,6 +188,7 @@ ol.Feature.prototype.getStyle = function() {
 
 
 /**
+ * Get the feature's style function.
  * @return {ol.feature.FeatureStyleFunction|undefined} Return a function
  * representing the current style of this feature.
  * @api stable
@@ -223,10 +224,9 @@ ol.Feature.prototype.handleGeometryChanged_ = function() {
 
 
 /**
- * @param {ol.geom.Geometry|undefined} geometry Set the geometry for this
- * feature. This will update the property associated with the current
- * geometry property name.  By default, this is `geometry` but it can be
- * changed by calling `setGeometryName`.
+ * Set the default geometry for the feature.  This will update the property
+ * with the name returned by {@link ol.Feature#getGeometryName}.
+ * @param {ol.geom.Geometry|undefined} geometry The new geometry.
  * @api stable
  * @observable
  */
@@ -256,9 +256,11 @@ ol.Feature.prototype.setStyle = function(style) {
 
 
 /**
- * @param {number|string|undefined} id Set a unique id for this feature.
- * The id may be used to retrieve a feature from a vector source with the
- * {@link ol.source.Vector#getFeatureById} method.
+ * Set the feature id.  The feature id is considered stable and may be used when
+ * requesting features or comparing identifiers returned from a remote source.
+ * The feature id can be used with the {@link ol.source.Vector#getFeatureById}
+ * method.
+ * @param {number|string|undefined} id The feature id.
  * @api stable
  */
 ol.Feature.prototype.setId = function(id) {
@@ -268,8 +270,10 @@ ol.Feature.prototype.setId = function(id) {
 
 
 /**
- * @param {string} name Set the property name from which this feature's
- *     geometry will be fetched when calling `getGeometry`.
+ * Set the property name to be used when getting the feature's default geometry.
+ * When calling {@link ol.Feature#getGeometry}, the value of the property with
+ * this name will be returned.
+ * @param {string} name The property name of the default geometry.
  * @api stable
  */
 ol.Feature.prototype.setGeometryName = function(name) {
@@ -285,10 +289,8 @@ ol.Feature.prototype.setGeometryName = function(name) {
 
 
 /**
- * A function that takes a `{number}` representing the view's resolution. It
- * returns an Array of {@link ol.style.Style}. This way individual features
- * can be styled. The this keyword inside the function references the
- * {@link ol.Feature} to be styled.
+ * A function that returns a style given a resolution. The `this` keyword inside
+ * the function references the {@link ol.Feature} to be styled.
  *
  * @typedef {function(this: ol.Feature, number): Array.<ol.style.Style>}
  * @api stable
