@@ -3864,7 +3864,6 @@ olx.source.TileImageOptions.prototype.wrapX;
  * @typedef {{attributions: (Array.<ol.Attribution>|undefined),
  *     format: ol.format.Feature,
  *     logo: (string|olx.LogoOptions|undefined),
- *     projection: ol.proj.ProjectionLike,
  *     tileGrid: ol.tilegrid.TileGrid,
  *     tileUrlFunction: (ol.TileUrlFunctionType|undefined),
  *     url: (string|undefined),
@@ -3896,15 +3895,6 @@ olx.source.TileVectorOptions.prototype.format;
  * @api
  */
 olx.source.TileVectorOptions.prototype.logo;
-
-
-/**
- * Destination projection. If provided, features will be transformed to this
- * projection. If not provided, features will not be transformed.
- * @type {ol.proj.ProjectionLike}
- * @api
- */
-olx.source.TileVectorOptions.prototype.projection;
 
 
 /**
