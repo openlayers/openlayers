@@ -4,7 +4,6 @@ goog.require('ol.Geolocation');
 goog.require('ol.Map');
 goog.require('ol.View');
 goog.require('ol.control');
-goog.require('ol.dom.Input');
 goog.require('ol.geom.Point');
 goog.require('ol.layer.Tile');
 goog.require('ol.source.OSM');
@@ -37,8 +36,9 @@ var geolocation = new ol.Geolocation({
   projection: view.getProjection()
 });
 
-var track = new ol.dom.Input(document.getElementById('track'));
-track.bindTo('checked', geolocation, 'tracking');
+$('#track').on('change', function() {
+  geolocation.setTracking(this.checked);
+});
 
 // update the HTML page when the position changes.
 geolocation.on('change', function() {
@@ -57,7 +57,9 @@ geolocation.on('error', function(error) {
 });
 
 var accuracyFeature = new ol.Feature();
-accuracyFeature.bindTo('geometry', geolocation, 'accuracyGeometry');
+geolocation.on('change:accuracyGeometry', function() {
+  accuracyFeature.setGeometry(geolocation.getAccuracyGeometry());
+});
 
 var positionFeature = new ol.Feature();
 positionFeature.setStyle(new ol.style.Style({
@@ -73,10 +75,11 @@ positionFeature.setStyle(new ol.style.Style({
   })
 }));
 
-positionFeature.bindTo('geometry', geolocation, 'position')
-    .transform(function() {}, function(coordinates) {
-      return coordinates ? new ol.geom.Point(coordinates) : null;
-    });
+geolocation.on('change:position', function() {
+  var coordinates = geolocation.getPosition();
+  positionFeature.setGeometry(coordinates ?
+      new ol.geom.Point(coordinates) : null);
+});
 
 var featuresOverlay = new ol.FeatureOverlay({
   map: map,
