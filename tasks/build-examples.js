@@ -1,4 +1,5 @@
 /*global Buffer */
+var path = require('path');
 
 var Metalsmith = require('metalsmith');
 var templates = require('metalsmith-templates');
@@ -10,6 +11,10 @@ var fileRegEx = /([^\/^\.]*)\.html$/;
 var cleanupJSRegEx = /.*(goog\.require(.*);|.*renderer: exampleNS\..*,?)[\n]*/g;
 var isCssRegEx = /\.css$/;
 var isJsRegEx = /\.js$/;
+
+var srcDir = path.join(__dirname, '..', 'examples_src');
+var destDir = path.join(__dirname, '..', 'examples');
+var templatesDir = path.join(__dirname, '..', 'config', 'examples');
 
 function main(callback) {
 
@@ -30,10 +35,9 @@ function main(callback) {
           file.ol_version = pjson.version;
           file.js_resource = '<script src="loader.js?id=' + match[1] +
               '"></script>';
-          var js = fs.readFileSync(__dirname + '/../examples_src/' +
-              match[1] + '.js', 'utf8');
+          var js = fs.readFileSync(path.join(srcDir, match[1] + '.js'), 'utf8');
           file.js_inline = js.replace(cleanupJSRegEx, '');
-          var cssFile = __dirname + '/../examples_src/' + match[1] + '.css';
+          var cssFile = path.join(srcDir, match[1] + '.css');
           if (fs.existsSync(cssFile)) {
             file.css_resource = '<link rel="stylesheet" href="' + match[1] +
                 '.css">';
@@ -65,12 +69,12 @@ function main(callback) {
 
 
   new Metalsmith('.')
-      .source('examples_src')
-      .destination('examples')
+      .source(srcDir)
+      .destination(destDir)
       .use(build)
       .use(templates({
         engine: 'handlebars',
-        directory: 'config/examples'
+        directory: templatesDir
       }))
       .build(function(err) {
         callback(err);
