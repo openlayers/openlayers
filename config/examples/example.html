@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="../resources/layout.css" type="text/css">
     <link rel="stylesheet" href="../resources/bootstrap/css/bootstrap-responsive.min.css" type="text/css">
     {{{ resources }}}
-    {{{ css_resource }}}
+    {{{ css.tag }}}
     <link rel="stylesheet" href="../resources/prism/prism.css" type="text/css">
     <script src="../resources/zeroclipboard/ZeroClipboard.min.js"></script>
     <title>{{ title }}</title>
@@ -46,8 +46,8 @@
         <form method="POST" target="_blank" action="http://jsfiddle.net/api/post/jquery/1.11.0/">
           <input type="button" class="btn btn-info" id="copy-button" value="Copy example code">
           <input type="submit" class="btn btn-primary" id="jsfiddle-button" value="Create JSFiddle">
-          <textarea class="hidden" name="js">{{ js_inline }}</textarea>
-          <textarea class="hidden" name="css">{{ css_inline }}</textarea>
+          <textarea class="hidden" name="js">{{ js.source }}</textarea>
+          <textarea class="hidden" name="css">{{ css.source }}</textarea>
           <textarea class="hidden" name="html">{{ contents }}</textarea>
           <input type="hidden" name="wrap" value="l">
           <input type="hidden" name="resources" value="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css,https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js,https://cdnjs.cloudflare.com/ajax/libs/ol3/{{ ol_version }}/ol.css,https://cdnjs.cloudflare.com/ajax/libs/ol3/{{ ol_version }}/ol.js">
@@ -61,9 +61,9 @@
 &lt;link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ol3/{{ ol_version }}/ol.css" type="text/css"&gt;
 &lt;script src="https://cdnjs.cloudflare.com/ajax/libs/ol3/{{ ol_version }}/ol.js"&gt;&lt;/script&gt;
 {{ resources }}
-{{#if css_inline}}
+{{#if css.source}}
 &lt;style&gt;
-{{ css_inline }}
+{{ css.source }}
 &lt;/style&gt;
 {{/if}}
 &lt;/head&gt;
@@ -73,7 +73,7 @@
 {{ contents }}
 &lt;/div&gt;
 &lt;script&gt;
-{{ js_inline }}
+{{ js.source }}
 &lt;/script&gt;
 &lt;/body&gt;
 &lt;/html&gt;</code></pre>
@@ -85,7 +85,7 @@
     <script src="../resources/bootstrap/js/bootstrap.min.js"></script>
     <script src="../resources/example-behaviour.js"></script>
     <script src="../resources/prism/prism.min.js"></script>
-    {{{ js_resource }}}
+    {{{ js.tag }}}
 
   </body>
 </html>
