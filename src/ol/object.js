@@ -1,9 +1,3 @@
-/**
- * An implementation of Google Maps' MVCObject.
- * @see https://developers.google.com/maps/articles/mvcfun
- * @see https://developers.google.com/maps/documentation/javascript/reference
- */
-
 goog.provide('ol.Object');
 goog.provide('ol.ObjectEvent');
 goog.provide('ol.ObjectEventType');
