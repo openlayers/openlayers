@@ -77,7 +77,7 @@ function augmentExamples(files, metalsmith, done) {
                 resource + ' is not .js or .css: ' + filename);
           }
         }
-        file.extra_head = resources.join('\n');
+        file.extraHead = resources.join('\n');
       }
     }
   }
@@ -88,7 +88,7 @@ function main(callback) {
       .source(srcDir)
       .destination(destDir)
       .metadata({
-        'ol_version': pkg.version
+        olVersion: pkg.version
       })
       .use(augmentExamples)
       .use(templates({

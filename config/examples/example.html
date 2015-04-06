@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="../resources/bootstrap/css/bootstrap.min.css" type="text/css">
     <link rel="stylesheet" href="../resources/layout.css" type="text/css">
     <link rel="stylesheet" href="../resources/bootstrap/css/bootstrap-responsive.min.css" type="text/css">
-    {{{ extra_head }}}
+    {{{ extraHead }}}
     {{{ css.tag }}}
     <link rel="stylesheet" href="../resources/prism/prism.css" type="text/css">
     <script src="../resources/zeroclipboard/ZeroClipboard.min.js"></script>
@@ -50,7 +50,7 @@
           <textarea class="hidden" name="css">{{ css.source }}</textarea>
           <textarea class="hidden" name="html">{{ contents }}</textarea>
           <input type="hidden" name="wrap" value="l">
-          <input type="hidden" name="resources" value="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css,https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js,https://cdnjs.cloudflare.com/ajax/libs/ol3/{{ ol_version }}/ol.css,https://cdnjs.cloudflare.com/ajax/libs/ol3/{{ ol_version }}/ol.js">
+          <input type="hidden" name="resources" value="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css,https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js,https://cdnjs.cloudflare.com/ajax/libs/ol3/{{ olVersion }}/ol.css,https://cdnjs.cloudflare.com/ajax/libs/ol3/{{ olVersion }}/ol.js">
           <pre><code id="example-source" class="language-markup">&lt;!DOCTYPE html&gt;
 &lt;html&gt;
 &lt;head&gt;
@@ -58,8 +58,8 @@
 &lt;script src="https://code.jquery.com/jquery-1.11.2.min.js"&gt;&lt;/script&gt;
 &lt;link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css"&gt;
 &lt;script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"&gt;&lt;/script&gt;
-&lt;link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ol3/{{ ol_version }}/ol.css" type="text/css"&gt;
-&lt;script src="https://cdnjs.cloudflare.com/ajax/libs/ol3/{{ ol_version }}/ol.js"&gt;&lt;/script&gt;
+&lt;link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ol3/{{ olVersion }}/ol.css" type="text/css"&gt;
+&lt;script src="https://cdnjs.cloudflare.com/ajax/libs/ol3/{{ olVersion }}/ol.js"&gt;&lt;/script&gt;
 {{ resources }}
 {{#if css.source}}
 &lt;style&gt;
