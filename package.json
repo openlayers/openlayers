@@ -40,7 +40,8 @@
     "rbush": "1.3.5",
     "temp": "0.8.1",
     "walk": "2.3.4",
-    "wrench": "1.5.8"
+    "wrench": "1.5.8",
+    "browserify": "9.0.3"
   },
   "devDependencies": {
     "clean-css": "2.2.16",

@@ -3,6 +3,7 @@ var path = require('path');
 
 var async = require('async');
 var fse = require('fs-extra');
+var browserify = require('browserify');
 
 var pkg = require('../package.json');
 
@@ -15,11 +16,22 @@ var buildDir = path.join(root, 'build', 'ol.ext');
  * @return {Array.<Object>} Array of objects representing external modules.
  */
 function getExternalModules() {
-  return pkg.ext.map(function(name) {
-    return {
-      name: name,
-      main: require.resolve(name)
-    };
+  return pkg.ext.map(function(item) {
+    if (typeof item === 'string') {
+      return {
+        name: item,
+        module: item,
+        main: require.resolve(item),
+        browserify: false
+      };
+    } else {
+      return {
+        module: item.module,
+        name: item.name !== undefined ? item.name : item.module,
+        main: require.resolve(item.module),
+        browserify: item.browserify !== undefined ? item.browserify : false
+      };
+    }
   });
 }
 
@@ -31,12 +43,8 @@ function getExternalModules() {
  *     wrapped module.
  */
 function wrapModule(mod, callback) {
-  fs.readFile(mod.main, function(err, data) {
-    if (err) {
-      callback(err);
-      return;
-    }
-    var wrapped = 'goog.provide(\'ol.ext.' + mod.name + '\');\n' +
+  var wrap = function(code) {
+    return 'goog.provide(\'ol.ext.' + mod.name + '\');\n' +
         '/** @typedef {function(*)} */\n' +
         'ol.ext.' + mod.name + ';\n' +
         '(function() {\n' +
@@ -50,11 +58,29 @@ function wrapModule(mod, callback) {
         'fileoverviewTags, missingProperties, nonStandardJsDocs, ' +
         'strictModuleDepCheck, suspiciousCode, undefinedNames, ' +
         'undefinedVars, unknownDefines, uselessCode, visibility}\n' +
-        ' */\n' + data.toString() + '\n' +
+        ' */\n' + code + '\n' +
         'ol.ext.' + mod.name + ' = module.exports;\n' +
         '})();\n';
-    callback(null, wrapped);
-  });
+  };
+
+  if (mod.browserify) {
+    var b = browserify(mod.main, {standalone: mod.name}).
+        bundle(function(err, buf) {
+      if (err) {
+        callback(err);
+        return;
+      }
+      callback(null, wrap(buf.toString()));
+    });
+  } else {
+    fs.readFile(mod.main, function(err, data) {
+      if (err) {
+        callback(err);
+        return;
+      }
+      callback(null, wrap(data.toString()));
+    });
+  }
 }
 
 
