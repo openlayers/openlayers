@@ -4,7 +4,6 @@ var path = require('path');
 var Metalsmith = require('metalsmith');
 var templates = require('metalsmith-templates');
 var marked = require('marked');
-var fs = require('fs');
 var pkg = require('../package.json');
 
 var fileRegEx = /([^\/^\.]*)\.html$/;
@@ -34,13 +33,13 @@ function main(callback) {
           }
           file.js_resource = '<script src="loader.js?id=' + match[1] +
               '"></script>';
-          var js = fs.readFileSync(path.join(srcDir, match[1] + '.js'), 'utf8');
+          var js = files[match[1] + '.js'].contents.toString();
           file.js_inline = js.replace(cleanupJSRegEx, '');
-          var cssFile = path.join(srcDir, match[1] + '.css');
-          if (fs.existsSync(cssFile)) {
-            file.css_resource = '<link rel="stylesheet" href="' + match[1] +
-                '.css">';
-            file.css_inline = fs.readFileSync(cssFile, 'utf-8');
+          var cssFilename = match[1] + '.css';
+          if (cssFilename in files) {
+            file.css_resource = '<link rel="stylesheet" href="' + cssFilename +
+                '">';
+            file.css_inline = files[cssFilename].contents.toString();
           }
           if (file.resources) {
             var resources = file.resources.split(',');
@@ -59,7 +58,7 @@ function main(callback) {
               file.resources = resources.join('\n');
             }
           }
-        } else if (f !== 'index.html'){
+        } else if (f !== 'index.html') {
           callback(new Error(f + ': Invalid YAML front-matter.'));
         }
       }
