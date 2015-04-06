@@ -70,22 +70,21 @@ function augmentExamples(files, metalsmith, done) {
 
       // add additional resources
       if (file.resources) {
-        var resources = file.resources.split(',');
-        var resource;
-        for (var i = resources.length - 1; i >= 0; --i) {
-          resource = resources[i];
+        var resources = [];
+        for (var i = file.resources.length - 1; i >= 0; --i) {
+          var resource = file.resources[i];
           if (isJsRegEx.test(resource)) {
             resources[i] = '<script src="' + resource + '"></script>';
           } else if (isCssRegEx.test(resource)) {
             resources[i] = '<link rel="stylesheet" href="' + resource +
                 '">';
           } else {
-            done(new Error('Invalid value for "resource": ' +
-                resource + 'is not .js or .css: ' + filename));
+            done(new Error('Invalid value for resource: ' +
+                resource + ' is not .js or .css: ' + filename));
             return;
           }
-          file.resources = resources.join('\n');
         }
+        file.extra_head = resources.join('\n');
       }
     }
   }
