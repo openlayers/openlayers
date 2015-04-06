@@ -54,7 +54,9 @@
     "mocha-phantomjs": "3.5.1",
     "phantomjs": "1.9.10",
     "proj4": "2.3.3",
-    "sinon": "1.10.3"
+    "sinon": "1.10.3",
+    "slimerjs-edge": "0.10.0-pre-2",
+    "resemblejs": "1.2.0"
   },
   "ext": [
     "rbush"

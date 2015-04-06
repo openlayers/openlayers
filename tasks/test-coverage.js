@@ -13,7 +13,7 @@ var wrench = require('wrench');
 var path = require('path');
 var glob = require('glob');
 
-var runTestsuite = require('./test');
+var runTestsuite = require('./test').runTests;
 
 // setup some pathes
 var dir = path.join(__dirname, '../src');
