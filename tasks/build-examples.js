@@ -5,7 +5,7 @@ var Metalsmith = require('metalsmith');
 var templates = require('metalsmith-templates');
 var marked = require('marked');
 var fs = require('fs');
-var pjson = require('../package.json');
+var pkg = require('../package.json');
 
 var fileRegEx = /([^\/^\.]*)\.html$/;
 var cleanupJSRegEx = /.*(goog\.require(.*);|.*renderer: exampleNS\..*,?)[\n]*/g;
@@ -32,7 +32,6 @@ function main(callback) {
             str = marked(file.contents.toString());
             file.contents = new Buffer(str);
           }
-          file.ol_version = pjson.version;
           file.js_resource = '<script src="loader.js?id=' + match[1] +
               '"></script>';
           var js = fs.readFileSync(path.join(srcDir, match[1] + '.js'), 'utf8');
@@ -71,6 +70,9 @@ function main(callback) {
   new Metalsmith('.')
       .source(srcDir)
       .destination(destDir)
+      .metadata({
+        'ol_version': pkg.version
+      })
       .use(build)
       .use(templates({
         engine: 'handlebars',
