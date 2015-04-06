@@ -12,6 +12,7 @@ var nomnom = require('nomnom');
 
 var log = closure.log;
 
+var buildExamples = require('./build-examples');
 
 /**
  * Create a debug server for ol and Closure Library sources.
@@ -93,6 +94,12 @@ if (require.main === module) {
   log.level = options.loglevel;
 
   log.info('serve', 'Parsing dependencies ...');
+
+  // Rebuild examples if changed
+  buildExamples(function(err, files) {
+    if (err) { log.error(err); }      
+  }, true);
+
   createServer(function(err, server) {
     if (err) {
       log.error('serve', 'Parsing failed');
