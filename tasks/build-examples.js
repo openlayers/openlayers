@@ -1,6 +1,7 @@
 var path = require('path');
 
 var Metalsmith = require('metalsmith');
+var handlebars = require('handlebars');
 var templates = require('metalsmith-templates');
 var marked = require('marked');
 var pkg = require('../package.json');
@@ -39,9 +40,6 @@ function augmentExamples(files, metalsmith, done) {
         throw new Error(filename + ': Missing template in YAML front-matter');
       }
       var id = match[1];
-      if (file.docs) {
-        file.docs = marked(file.docs);
-      }
 
       // add js tag and source
       var jsFilename = id + '.js';
@@ -93,7 +91,12 @@ function main(callback) {
       .use(augmentExamples)
       .use(templates({
         engine: 'handlebars',
-        directory: templatesDir
+        directory: templatesDir,
+        helpers: {
+          md: function(str) {
+            return new handlebars.SafeString(marked(str));
+          }
+        }
       }))
       .build(function(err) {
         callback(err);
