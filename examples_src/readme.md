@@ -7,4 +7,4 @@ The `.html` files in this folder are built by applying the templates in the `con
 * shortdesc: A short description for the example index
 * docs: Documentation of the example. Can be markdown.
 * tags: Tags for the example index
-* resources: Additional js or css resources required by the example. This is a comma separated list of URLs.
+* resources: Additional js or css resources required by the example. This is a YAML list of URLs.

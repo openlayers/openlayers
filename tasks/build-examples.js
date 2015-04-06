@@ -1,82 +1,107 @@
-/*global Buffer */
+var path = require('path');
 
 var Metalsmith = require('metalsmith');
+var handlebars = require('handlebars');
 var templates = require('metalsmith-templates');
 var marked = require('marked');
-var fs = require('fs');
-var pjson = require('../package.json');
+var pkg = require('../package.json');
 
-var fileRegEx = /([^\/^\.]*)\.html$/;
+var markupRegEx = /([^\/^\.]*)\.html$/;
 var cleanupJSRegEx = /.*(goog\.require(.*);|.*renderer: exampleNS\..*,?)[\n]*/g;
 var isCssRegEx = /\.css$/;
 var isJsRegEx = /\.js$/;
 
-function main(callback) {
+var srcDir = path.join(__dirname, '..', 'examples_src');
+var destDir = path.join(__dirname, '..', 'examples');
+var templatesDir = path.join(__dirname, '..', 'config', 'examples');
 
-  function build(files) {
-    var file, match, str;
-    for (var f in files) {
-      file = files[f];
-      match = f.match(fileRegEx);
-      if (match) {
-        if (file.template) {
-          if (file.docs) {
-            file.docs = marked(file.docs);
+/**
+ * A Metalsmith plugin that adds metadata to the example HTML files.  For each
+ * example HTML file, this adds metadata for related js and css resources. When
+ * these files are run through the example template, the extra metadata is used
+ * to show the complete example source in the textarea and submit the parts to
+ * jsFiddle.
+ *
+ * @param {Object} files The file lookup provided by Metalsmith.  Property names
+ *     are file paths relative to the source directory.  The file objects
+ *     include any existing metadata (e.g. from YAML front-matter), the file
+ *     contents, and stats.
+ * @param {Object} metalsmith The metalsmith instance the plugin is being used
+ *     with.
+ * @param {function(Error)} done Called when done (with any error).
+ */
+function augmentExamples(files, metalsmith, done) {
+  setImmediate(done); // all remaining code is synchronous
+  for (var filename in files) {
+    var file = files[filename];
+    var match = filename.match(markupRegEx);
+    if (match && filename !== 'index.html') {
+      if (!file.template) {
+        throw new Error(filename + ': Missing template in YAML front-matter');
+      }
+      var id = match[1];
+
+      // add js tag and source
+      var jsFilename = id + '.js';
+      if (!(jsFilename in files)) {
+        throw new Error('No .js file found for ' + filename);
+      }
+      file.js = {
+        tag: '<script src="loader.js?id=' + id + '"></script>',
+        source: files[jsFilename].contents.toString().replace(
+            cleanupJSRegEx, '')
+      };
+
+      // add css tag and source
+      var cssFilename = id + '.css';
+      if (cssFilename in files) {
+        file.css = {
+          tag: '<link rel="stylesheet" href="' + cssFilename + '">',
+          source: files[cssFilename].contents.toString()
+        };
+      }
+
+      // add additional resources
+      if (file.resources) {
+        var resources = [];
+        for (var i = 0, ii = file.resources.length; i < ii; ++i) {
+          var resource = file.resources[i];
+          if (isJsRegEx.test(resource)) {
+            resources[i] = '<script src="' + resource + '"></script>';
+          } else if (isCssRegEx.test(resource)) {
+            resources[i] = '<link rel="stylesheet" href="' + resource + '">';
+          } else {
+            throw new Error('Invalid value for resource: ' +
+                resource + ' is not .js or .css: ' + filename);
           }
-          if (file.contents) {
-            str = marked(file.contents.toString());
-            file.contents = new Buffer(str);
-          }
-          file.ol_version = pjson.version;
-          file.js_resource = '<script src="loader.js?id=' + match[1] +
-              '"></script>';
-          var js = fs.readFileSync(__dirname + '/../examples_src/' +
-              match[1] + '.js', 'utf8');
-          file.js_inline = js.replace(cleanupJSRegEx, '');
-          var cssFile = __dirname + '/../examples_src/' + match[1] + '.css';
-          if (fs.existsSync(cssFile)) {
-            file.css_resource = '<link rel="stylesheet" href="' + match[1] +
-                '.css">';
-            file.css_inline = fs.readFileSync(cssFile, 'utf-8');
-          }
-          if (file.resources) {
-            var resources = file.resources.split(',');
-            var resource;
-            for (var i = resources.length - 1; i >= 0; --i) {
-              resource = resources[i];
-              if (isJsRegEx.test(resource)) {
-                resources[i] = '<script src="' + resource + '"></script>';
-              } else if (isCssRegEx.test(resource)) {
-                resources[i] = '<link rel="stylesheet" href="' + resource +
-                    '">';
-              } else {
-                callback(new Error(f + ': Invalid value for "resource": ' +
-                    resource + ' is no .js or .css.'));
-              }
-              file.resources = resources.join('\n');
-            }
-          }
-        } else if (f !== 'index.html'){
-          callback(new Error(f + ': Invalid YAML front-matter.'));
         }
+        file.extraHead = resources.join('\n');
       }
     }
   }
+}
 
-
+function main(callback) {
   new Metalsmith('.')
-      .source('examples_src')
-      .destination('examples')
-      .use(build)
+      .source(srcDir)
+      .destination(destDir)
+      .metadata({
+        olVersion: pkg.version
+      })
+      .use(augmentExamples)
       .use(templates({
         engine: 'handlebars',
-        directory: 'config/examples'
+        directory: templatesDir,
+        helpers: {
+          md: function(str) {
+            return new handlebars.SafeString(marked(str));
+          }
+        }
       }))
       .build(function(err) {
         callback(err);
       });
 }
-
 
 if (require.main === module) {
   main(function(err) {
