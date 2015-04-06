@@ -1,4 +1,3 @@
-/*global Buffer */
 var path = require('path');
 
 var Metalsmith = require('metalsmith');
@@ -31,27 +30,23 @@ var templatesDir = path.join(__dirname, '..', 'config', 'examples');
  * @param {function(Error)} done Called when done (with any error).
  */
 function augmentExamples(files, metalsmith, done) {
+  setImmediate(done); // all remaining code is synchronous
   for (var filename in files) {
     var file = files[filename];
     var match = filename.match(markupRegEx);
     if (match && filename !== 'index.html') {
       if (!file.template) {
-        done(new Error('Missing template in YAML front-matter:' + filename));
-        return;
+        throw new Error(filename + ': Missing template in YAML front-matter');
       }
       var id = match[1];
       if (file.docs) {
         file.docs = marked(file.docs);
       }
-      if (file.contents) {
-        file.contents = new Buffer(marked(file.contents.toString()));
-      }
 
       // add js tag and source
       var jsFilename = id + '.js';
       if (!(jsFilename in files)) {
-        done(new Error('No .js file found for ' + filename));
-        return;
+        throw new Error('No .js file found for ' + filename);
       }
       file.js = {
         tag: '<script src="loader.js?id=' + id + '"></script>',
@@ -76,19 +71,16 @@ function augmentExamples(files, metalsmith, done) {
           if (isJsRegEx.test(resource)) {
             resources[i] = '<script src="' + resource + '"></script>';
           } else if (isCssRegEx.test(resource)) {
-            resources[i] = '<link rel="stylesheet" href="' + resource +
-                '">';
+            resources[i] = '<link rel="stylesheet" href="' + resource + '">';
           } else {
-            done(new Error('Invalid value for resource: ' +
-                resource + ' is not .js or .css: ' + filename));
-            return;
+            throw new Error('Invalid value for resource: ' +
+                resource + ' is not .js or .css: ' + filename);
           }
         }
         file.extra_head = resources.join('\n');
       }
     }
   }
-  done();
 }
 
 function main(callback) {
