@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Transaction xmlns="http://www.opengis.net/wfs" service="WFS" version="1.1.0"
+    xsi:schemaLocation="http://www.opengis.net/wfs http://schemas.opengis.net/wfs/1.1.0/wfs.xsd"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <Insert>
+    <foo:FAULTS xmlns:foo="http://foo">
+      <foo:the_geom>
+        <MultiLineString xmlns="http://www.opengis.net/gml" srsName="EPSG:900913">
+          <lineStringMember>
+            <LineString srsName="EPSG:900913">
+              <posList>-12279454 6741885 -12064207
+                6732101 -11941908 6595126
+                -12240318 6507071 -12416429
+                6604910</posList>
+            </LineString>
+          </lineStringMember>
+        </MultiLineString>
+      </foo:the_geom>
+      <foo:geom2>
+        <MultiLineString xmlns="http://www.opengis.net/gml" srsName="EPSG:900913">
+          <lineStringMember>
+            <LineString srsName="EPSG:900913">
+              <posList>-12000000 6700000 -12000001 6700001 -12000002 6700002</posList>
+            </LineString>
+          </lineStringMember>
+        </MultiLineString>
+      </foo:geom2>
+    </foo:FAULTS>
+  </Insert>
+</Transaction>

@@ -207,6 +207,7 @@
         if (node2Attr[name] === undefined) {
           errors.push('Attribute name ' + node1Attr[name].name +
               ' expected for element ' + node1.nodeName);
+          break;
         }
         // test attribute namespace
         // we do not care about the difference between an empty string and
