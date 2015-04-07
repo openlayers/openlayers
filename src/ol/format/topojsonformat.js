@@ -275,7 +275,7 @@ ol.format.TopoJSON.readFeatureFromGeometry_ = function(object, arcs,
  * Read all features from a TopoJSON source.
  *
  * @function
- * @param {ArrayBuffer|Document|Node|Object|string} source Source.
+ * @param {Document|Node|Object|string} source Source.
  * @return {Array.<ol.Feature>} Features.
  * @api stable
  */
@@ -386,7 +386,7 @@ ol.format.TopoJSON.transformVertex_ = function(vertex, scale, translate) {
  * Read the projection from a TopoJSON source.
  *
  * @function
- * @param {ArrayBuffer|Document|Node|Object|string} object Source.
+ * @param {Document|Node|Object|string} object Source.
  * @return {ol.proj.Projection} Projection.
  * @api stable
  */

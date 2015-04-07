@@ -124,7 +124,7 @@ ol.format.WMSGetFeatureInfo.prototype.readFeatures_ =
  * Read all features from a WMSGetFeatureInfo response.
  *
  * @function
- * @param {ArrayBuffer|Document|Node|Object|string} source Source.
+ * @param {Document|Node|Object|string} source Source.
  * @param {olx.format.ReadOptions=} opt_options Options.
  * @return {Array.<ol.Feature>} Features.
  * @api stable

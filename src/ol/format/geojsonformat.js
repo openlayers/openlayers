@@ -376,7 +376,7 @@ ol.format.GeoJSON.prototype.getExtensions = function() {
  * use `readFeatures` to read FeatureCollection source.
  *
  * @function
- * @param {ArrayBuffer|Document|Node|Object|string} source Source.
+ * @param {Document|Node|Object|string} source Source.
  * @param {olx.format.ReadOptions=} opt_options Read options.
  * @return {ol.Feature} Feature.
  * @api stable
@@ -389,7 +389,7 @@ ol.format.GeoJSON.prototype.readFeature;
  * FeatureCollection sources.
  *
  * @function
- * @param {ArrayBuffer|Document|Node|Object|string} source Source.
+ * @param {Document|Node|Object|string} source Source.
  * @param {olx.format.ReadOptions=} opt_options Read options.
  * @return {Array.<ol.Feature>} Features.
  * @api stable
@@ -453,7 +453,7 @@ ol.format.GeoJSON.prototype.readFeaturesFromObject = function(
  * Read a geometry from a GeoJSON source.
  *
  * @function
- * @param {ArrayBuffer|Document|Node|Object|string} source Source.
+ * @param {Document|Node|Object|string} source Source.
  * @param {olx.format.ReadOptions=} opt_options Read options.
  * @return {ol.geom.Geometry} Geometry.
  * @api stable
@@ -475,7 +475,7 @@ ol.format.GeoJSON.prototype.readGeometryFromObject = function(
  * Read the projection from a GeoJSON source.
  *
  * @function
- * @param {ArrayBuffer|Document|Node|Object|string} source Source.
+ * @param {Document|Node|Object|string} source Source.
  * @return {ol.proj.Projection} Projection.
  * @api stable
  */

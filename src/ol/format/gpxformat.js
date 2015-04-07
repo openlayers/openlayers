@@ -438,7 +438,7 @@ ol.format.GPX.prototype.handleReadExtensions_ = function(features) {
  * Read the first feature from a GPX source.
  *
  * @function
- * @param {ArrayBuffer|Document|Node|Object|string} source Source.
+ * @param {Document|Node|Object|string} source Source.
  * @param {olx.format.ReadOptions=} opt_options Read options.
  * @return {ol.Feature} Feature.
  * @api stable
@@ -472,7 +472,7 @@ ol.format.GPX.prototype.readFeatureFromNode = function(node, opt_options) {
  * Read all features from a GPX source.
  *
  * @function
- * @param {ArrayBuffer|Document|Node|Object|string} source Source.
+ * @param {Document|Node|Object|string} source Source.
  * @param {olx.format.ReadOptions=} opt_options Read options.
  * @return {Array.<ol.Feature>} Features.
  * @api stable
@@ -508,7 +508,7 @@ ol.format.GPX.prototype.readFeaturesFromNode = function(node, opt_options) {
  * Read the projection from a GPX source.
  *
  * @function
- * @param {ArrayBuffer|Document|Node|Object|string} source Source.
+ * @param {Document|Node|Object|string} source Source.
  * @return {ol.proj.Projection} Projection.
  * @api stable
  */

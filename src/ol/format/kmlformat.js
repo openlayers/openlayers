@@ -1736,7 +1736,7 @@ ol.format.KML.prototype.readSharedStyleMap_ = function(node, objectStack) {
  * Read the first feature from a KML source.
  *
  * @function
- * @param {ArrayBuffer|Document|Node|Object|string} source Source.
+ * @param {Document|Node|Object|string} source Source.
  * @param {olx.format.ReadOptions=} opt_options Read options.
  * @return {ol.Feature} Feature.
  * @api stable
@@ -1769,7 +1769,7 @@ ol.format.KML.prototype.readFeatureFromNode = function(node, opt_options) {
  * Read all features from a KML source.
  *
  * @function
- * @param {ArrayBuffer|Document|Node|Object|string} source Source.
+ * @param {Document|Node|Object|string} source Source.
  * @param {olx.format.ReadOptions=} opt_options Read options.
  * @return {Array.<ol.Feature>} Features.
  * @api stable
@@ -1957,7 +1957,7 @@ ol.format.KML.prototype.readNetworkLinksFromNode = function(node) {
  * Read the projection from a KML source.
  *
  * @function
- * @param {ArrayBuffer|Document|Node|Object|string} source Source.
+ * @param {Document|Node|Object|string} source Source.
  * @return {ol.proj.Projection} Projection.
  * @api stable
  */
