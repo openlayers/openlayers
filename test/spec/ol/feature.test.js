@@ -416,6 +416,19 @@ describe('ol.Feature', function() {
     });
   });
 
+  describe('#setGeometry()', function() {
+
+    it('dispatches a change event when geometry is set to null',
+        function() {
+          var feature = new ol.Feature({
+            geometry: new ol.geom.Point([0, 0])
+          });
+          var spy = sinon.spy();
+          feature.on('change', spy);
+          feature.setGeometry(null);
+          expect(spy.callCount).to.be(1);
+        });
+  });
 
 });
 
