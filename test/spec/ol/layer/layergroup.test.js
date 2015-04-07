@@ -341,9 +341,6 @@ describe('ol.layer.Group', function() {
       layerGroup.setLayers(layers);
       expect(layerGroup.getLayers()).to.be(layers);
 
-      layerGroup.setLayers(null);
-      expect(layerGroup.getLayers()).to.be(null);
-
       goog.dispose(layerGroup);
       goog.dispose(layer);
       goog.dispose(layers);
