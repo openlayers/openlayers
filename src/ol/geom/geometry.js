@@ -1,4 +1,5 @@
 goog.provide('ol.geom.Geometry');
+goog.provide('ol.geom.GeometryLayout');
 goog.provide('ol.geom.GeometryType');
 
 goog.require('goog.functions');

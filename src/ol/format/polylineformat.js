@@ -4,6 +4,7 @@ goog.require('goog.asserts');
 goog.require('ol.Feature');
 goog.require('ol.format.Feature');
 goog.require('ol.format.TextFeature');
+goog.require('ol.geom.GeometryLayout');
 goog.require('ol.geom.LineString');
 goog.require('ol.geom.SimpleGeometry');
 goog.require('ol.geom.flat.flip');

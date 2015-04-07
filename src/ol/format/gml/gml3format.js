@@ -11,6 +11,7 @@ goog.require('ol.format.Feature');
 goog.require('ol.format.GMLBase');
 goog.require('ol.format.XSD');
 goog.require('ol.geom.Geometry');
+goog.require('ol.geom.GeometryLayout');
 goog.require('ol.geom.LineString');
 goog.require('ol.geom.LinearRing');
 goog.require('ol.geom.MultiLineString');

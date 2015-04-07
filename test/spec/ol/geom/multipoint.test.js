@@ -253,5 +253,6 @@ describe('ol.geom.MultiPoint', function() {
 
 
 goog.require('ol.extent');
+goog.require('ol.geom.GeometryLayout');
 goog.require('ol.geom.MultiPoint');
 goog.require('ol.geom.Point');

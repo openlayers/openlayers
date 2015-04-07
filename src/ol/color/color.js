@@ -3,6 +3,7 @@
 // causes occasional loss of precision and rounding errors, especially in the
 // alpha channel.
 
+goog.provide('ol.Color');
 goog.provide('ol.color');
 
 goog.require('goog.asserts');

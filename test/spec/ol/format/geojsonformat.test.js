@@ -709,6 +709,7 @@ goog.require('ol.Feature');
 goog.require('ol.extent');
 goog.require('ol.format.GeoJSON');
 goog.require('ol.geom.Circle');
+goog.require('ol.geom.GeometryLayout');
 goog.require('ol.geom.GeometryCollection');
 goog.require('ol.geom.LineString');
 goog.require('ol.geom.LinearRing');

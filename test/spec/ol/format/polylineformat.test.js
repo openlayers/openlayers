@@ -404,5 +404,6 @@ describe('ol.format.Polyline', function() {
 
 goog.require('ol.Feature');
 goog.require('ol.format.Polyline');
+goog.require('ol.geom.GeometryLayout');
 goog.require('ol.geom.LineString');
 goog.require('ol.proj');
