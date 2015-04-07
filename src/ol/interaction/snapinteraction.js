@@ -178,10 +178,6 @@ ol.interaction.Snap.prototype.addFeature = function(feature, opt_listen) {
     }
   }
 };
-goog.exportProperty(
-    ol.interaction.Snap.prototype,
-    'addFeature',
-    ol.interaction.Snap.prototype.addFeature);
 
 
 /**
@@ -311,10 +307,6 @@ ol.interaction.Snap.prototype.removeFeature = function(feature, opt_unlisten) {
     }
   }
 };
-goog.exportProperty(
-    ol.interaction.Snap.prototype,
-    'removeFeature',
-    ol.interaction.Snap.prototype.removeFeature);
 
 
 /**

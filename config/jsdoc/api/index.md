@@ -29,11 +29,10 @@ Interactions for [vector features](ol.Feature.html)
 <br>[Vector sources](ol.source.Vector.html) for [ol.layer.Vector](ol.layer.Vector.html)
 <br>[Formats](ol.format.Feature.html) for reading/writing vector data
 <br>[ol.format.WMSCapabilities](ol.format.WMSCapabilities.html)</td></tr>
-<tr><th>Projections</th><th>2-way bindings</th><th>Other components</th></tr>
+<tr><th>Projections</th><th>Observable objects</th><th>Other components</th></tr>
 <tr><td><p>All coordinates and extents need to be provided in view projection (default: EPSG:3857). To transform, use [ol.proj.transform()](ol.proj.html#transform) and [ol.proj.transformExtent()](ol.proj.html#transformExtent).</p>
 [ol.proj](ol.proj.html)</td>
-<td><p>[Objects](ol.Object.html) can be kept in sync using the [bindTo()](ol.Object.html#bindTo) method.</p>
-<p>A [DOM Input](ol.dom.Input.html) class is available to bind Object properties to HTML Input elements.</p></td>
+<td><p>Changes to all [ol.Objects](ol.Object.html) can observed by calling the [object.on('propertychange')](ol.Object.html#on) method.  Listeners receive an [ol.ObjectEvent](ol.ObjectEvent.html) with information on the changed property and old value.</p>
 <td>[ol.DeviceOrientation](ol.DeviceOrientation.html)<br>
 [ol.Geolocation](ol.Geolocation.html)<br>
 [ol.Overlay](ol.Overlay.html)<br>

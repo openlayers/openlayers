@@ -1,6 +1,5 @@
 goog.require('ol.Map');
 goog.require('ol.View');
-goog.require('ol.dom.Input');
 goog.require('ol.layer.Group');
 goog.require('ol.layer.Tile');
 goog.require('ol.proj');
@@ -39,13 +38,19 @@ var map = new ol.Map({
 });
 
 function bindInputs(layerid, layer) {
-  new ol.dom.Input($(layerid + ' .visible')[0])
-      .bindTo('checked', layer, 'visible');
+  var visibilityInput = $(layerid + ' input.visible');
+  visibilityInput.on('change', function() {
+    layer.setVisible(this.checked);
+  });
+  visibilityInput.prop('checked', layer.getVisible());
+
   $.each(['opacity', 'hue', 'saturation', 'contrast', 'brightness'],
       function(i, v) {
-        new ol.dom.Input($(layerid + ' .' + v)[0])
-            .bindTo('value', layer, v)
-            .transform(parseFloat, String);
+        var input = $(layerid + ' input.' + v);
+        input.on('input change', function() {
+          layer.set(v, parseFloat(this.value));
+        });
+        input.val(String(layer.get(v)));
       }
   );
 }

@@ -198,10 +198,6 @@ ol.layer.Heatmap.prototype.createCircle_ = function() {
 ol.layer.Heatmap.prototype.getBlur = function() {
   return /** @type {number} */ (this.get(ol.layer.HeatmapLayerProperty.BLUR));
 };
-goog.exportProperty(
-    ol.layer.Heatmap.prototype,
-    'getBlur',
-    ol.layer.Heatmap.prototype.getBlur);
 
 
 /**
@@ -213,10 +209,6 @@ ol.layer.Heatmap.prototype.getGradient = function() {
   return /** @type {Array.<string>} */ (
       this.get(ol.layer.HeatmapLayerProperty.GRADIENT));
 };
-goog.exportProperty(
-    ol.layer.Heatmap.prototype,
-    'getGradient',
-    ol.layer.Heatmap.prototype.getGradient);
 
 
 /**
@@ -227,10 +219,6 @@ goog.exportProperty(
 ol.layer.Heatmap.prototype.getRadius = function() {
   return /** @type {number} */ (this.get(ol.layer.HeatmapLayerProperty.RADIUS));
 };
-goog.exportProperty(
-    ol.layer.Heatmap.prototype,
-    'getRadius',
-    ol.layer.Heatmap.prototype.getRadius);
 
 
 /**
@@ -285,10 +273,6 @@ ol.layer.Heatmap.prototype.handleRender_ = function(event) {
 ol.layer.Heatmap.prototype.setBlur = function(blur) {
   this.set(ol.layer.HeatmapLayerProperty.BLUR, blur);
 };
-goog.exportProperty(
-    ol.layer.Heatmap.prototype,
-    'setBlur',
-    ol.layer.Heatmap.prototype.setBlur);
 
 
 /**
@@ -299,10 +283,6 @@ goog.exportProperty(
 ol.layer.Heatmap.prototype.setGradient = function(colors) {
   this.set(ol.layer.HeatmapLayerProperty.GRADIENT, colors);
 };
-goog.exportProperty(
-    ol.layer.Heatmap.prototype,
-    'setGradient',
-    ol.layer.Heatmap.prototype.setGradient);
 
 
 /**
@@ -313,7 +293,3 @@ goog.exportProperty(
 ol.layer.Heatmap.prototype.setRadius = function(radius) {
   this.set(ol.layer.HeatmapLayerProperty.RADIUS, radius);
 };
-goog.exportProperty(
-    ol.layer.Heatmap.prototype,
-    'setRadius',
-    ol.layer.Heatmap.prototype.setRadius);

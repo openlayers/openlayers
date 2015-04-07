@@ -147,10 +147,6 @@ ol.DeviceOrientation.prototype.getAlpha = function() {
   return /** @type {number|undefined} */ (
       this.get(ol.DeviceOrientationProperty.ALPHA));
 };
-goog.exportProperty(
-    ol.DeviceOrientation.prototype,
-    'getAlpha',
-    ol.DeviceOrientation.prototype.getAlpha);
 
 
 /**
@@ -164,10 +160,6 @@ ol.DeviceOrientation.prototype.getBeta = function() {
   return /** @type {number|undefined} */ (
       this.get(ol.DeviceOrientationProperty.BETA));
 };
-goog.exportProperty(
-    ol.DeviceOrientation.prototype,
-    'getBeta',
-    ol.DeviceOrientation.prototype.getBeta);
 
 
 /**
@@ -181,10 +173,6 @@ ol.DeviceOrientation.prototype.getGamma = function() {
   return /** @type {number|undefined} */ (
       this.get(ol.DeviceOrientationProperty.GAMMA));
 };
-goog.exportProperty(
-    ol.DeviceOrientation.prototype,
-    'getGamma',
-    ol.DeviceOrientation.prototype.getGamma);
 
 
 /**
@@ -198,10 +186,6 @@ ol.DeviceOrientation.prototype.getHeading = function() {
   return /** @type {number|undefined} */ (
       this.get(ol.DeviceOrientationProperty.HEADING));
 };
-goog.exportProperty(
-    ol.DeviceOrientation.prototype,
-    'getHeading',
-    ol.DeviceOrientation.prototype.getHeading);
 
 
 /**
@@ -214,10 +198,6 @@ ol.DeviceOrientation.prototype.getTracking = function() {
   return /** @type {boolean} */ (
       this.get(ol.DeviceOrientationProperty.TRACKING));
 };
-goog.exportProperty(
-    ol.DeviceOrientation.prototype,
-    'getTracking',
-    ol.DeviceOrientation.prototype.getTracking);
 
 
 /**
@@ -247,7 +227,3 @@ ol.DeviceOrientation.prototype.handleTrackingChanged_ = function() {
 ol.DeviceOrientation.prototype.setTracking = function(tracking) {
   this.set(ol.DeviceOrientationProperty.TRACKING, tracking);
 };
-goog.exportProperty(
-    ol.DeviceOrientation.prototype,
-    'setTracking',
-    ol.DeviceOrientation.prototype.setTracking);
