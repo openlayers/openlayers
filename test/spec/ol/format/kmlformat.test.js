@@ -2580,6 +2580,7 @@ goog.require('goog.dom.xml');
 goog.require('ol.Feature');
 goog.require('ol.format.KML');
 goog.require('ol.geom.GeometryCollection');
+goog.require('ol.geom.GeometryLayout');
 goog.require('ol.geom.LineString');
 goog.require('ol.geom.LinearRing');
 goog.require('ol.geom.MultiLineString');

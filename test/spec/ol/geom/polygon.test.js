@@ -440,5 +440,6 @@ describe('ol.geom.Polygon', function() {
 
 
 goog.require('ol.extent');
+goog.require('ol.geom.GeometryLayout');
 goog.require('ol.geom.LinearRing');
 goog.require('ol.geom.Polygon');

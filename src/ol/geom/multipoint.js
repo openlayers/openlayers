@@ -3,6 +3,7 @@ goog.provide('ol.geom.MultiPoint');
 goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('ol.extent');
+goog.require('ol.geom.GeometryLayout');
 goog.require('ol.geom.GeometryType');
 goog.require('ol.geom.Point');
 goog.require('ol.geom.SimpleGeometry');

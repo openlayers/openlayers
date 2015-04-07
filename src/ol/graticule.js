@@ -3,6 +3,7 @@ goog.provide('ol.Graticule');
 goog.require('goog.asserts');
 goog.require('goog.math');
 goog.require('ol.extent');
+goog.require('ol.geom.GeometryLayout');
 goog.require('ol.geom.LineString');
 goog.require('ol.geom.flat.geodesic');
 goog.require('ol.proj');
