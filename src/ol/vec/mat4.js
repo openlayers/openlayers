@@ -1,6 +1,14 @@
 goog.provide('ol.vec.Mat4');
+goog.provide('ol.vec.Mat4.Number');
 
 goog.require('goog.vec.Mat4');
+
+
+/**
+ * A alias for the goog.vec.Number type.
+ * @typedef {goog.vec.Number}
+ */
+ol.vec.Mat4.Number;
 
 
 /**

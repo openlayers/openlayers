@@ -6850,7 +6850,7 @@ olx.view.FitGeometryOptions.prototype.maxZoom;
 /**
  * @typedef {{animate: boolean,
  *     attributions: Object.<string, ol.Attribution>,
- *     coordinateToPixelMatrix: goog.vec.Mat4.Number,
+ *     coordinateToPixelMatrix: ol.vec.Mat4.Number,
  *     extent: (null|ol.Extent),
  *     focus: ol.Coordinate,
  *     index: number,
@@ -6858,7 +6858,7 @@ olx.view.FitGeometryOptions.prototype.maxZoom;
  *     layerStatesArray: Array.<ol.layer.LayerState>,
  *     logos: Object.<string, string>,
  *     pixelRatio: number,
- *     pixelToCoordinateMatrix: goog.vec.Mat4.Number,
+ *     pixelToCoordinateMatrix: ol.vec.Mat4.Number,
  *     postRenderFunctions: Array.<ol.PostRenderFunction>,
  *     size: ol.Size,
  *     skippedFeatureUids: Object.<string, boolean>,
