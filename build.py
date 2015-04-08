@@ -117,12 +117,14 @@ EXAMPLES = [path
             if path.endswith('.html')
             if path != 'examples/index.html']
 
-EXAMPLES_SRC = [path
-                for path in ifind('examples')
-                if path.endswith('.js')
-                if not path.endswith('.combined.js')
-                if path != 'examples/Jugl.js'
-                if path != 'examples/example-list.js']
+EXAMPLES_JS = [path
+               for path in ifind('examples')
+               if path.endswith('.js')
+               if not path.endswith('.combined.js')
+               if path != 'examples/Jugl.js'
+               if path != 'examples/example-list.js']
+
+EXAMPLES_SRC = [path for path in ifind('examples_src')]
 
 EXAMPLES_JSON = ['build/' + example.replace('.html', '.json')
                  for example in EXAMPLES]
@@ -159,6 +161,7 @@ SRC = [path
        if path not in SHADER_SRC]
 
 NPM_INSTALL = 'build/npm-install-timestamp'
+BUILD_EXAMPLES = 'build/build-examples-timestamp'
 
 def report_sizes(t):
     stringio = StringIO()
@@ -189,11 +192,19 @@ virtual('check', 'lint', 'build/ol.js', 'test')
 
 virtual('todo', 'fixme')
 
+virtual('build-examples', BUILD_EXAMPLES)
+
 
 @target(NPM_INSTALL, 'package.json')
 def npm_install(t):
     t.run('npm', 'install')
     t.touch()
+
+
+@target(BUILD_EXAMPLES, EXAMPLES_SRC)
+def build_examples(t):
+    t.run('node', 'tasks/build-examples.js')
+    t.touch();
 
 
 @target('build/ol.css', 'css/ol.css', NPM_INSTALL)
@@ -257,11 +268,11 @@ def build_test_rendering_requires(t):
   build_requires(t)
 
 
-virtual('build-examples', 'examples', 'build/examples/all.combined.js',
+virtual('compile-examples', 'examples', 'build/examples/all.combined.js',
         EXAMPLES_COMBINED)
 
 
-virtual('examples', 'examples/example-list.xml', EXAMPLES_JSON)
+virtual('examples', 'examples/example-list.xml', EXAMPLES_JSON, BUILD_EXAMPLES)
 
 
 @target('examples/example-list.xml', 'examples/example-list.js')
@@ -282,7 +293,7 @@ def build_examples_all_combined_js(t):
     report_sizes(t)
 
 
-@target('build/examples/all.js', EXAMPLES_SRC)
+@target('build/examples/all.js', EXAMPLES_JS)
 def build_examples_all_js(t):
     t.output('%(PYTHON)s', 'bin/combine-examples.py', t.dependencies)
 
@@ -415,7 +426,7 @@ virtual('lint', 'build/lint-timestamp', 'build/check-requires-timestamp',
     'build/check-whitespace-timestamp', 'jshint')
 
 
-@target('build/lint-timestamp', SRC, EXAMPLES_SRC, SPEC, SPEC_RENDERING,
+@target('build/lint-timestamp', SRC, EXAMPLES_JS, SPEC, SPEC_RENDERING,
         precious=True)
 def build_lint_src_timestamp(t):
     t.run('%(GJSLINT)s',
@@ -427,7 +438,7 @@ def build_lint_src_timestamp(t):
 
 virtual('jshint', 'build/jshint-timestamp')
 
-@target('build/jshint-timestamp', SRC, EXAMPLES_SRC, SPEC, SPEC_RENDERING,
+@target('build/jshint-timestamp', SRC, EXAMPLES_JS, SPEC, SPEC_RENDERING,
         TASKS, NPM_INSTALL, precious=True)
 def build_jshint_timestamp(t):
     t.run(variables.JSHINT, '--verbose', t.newer(t.dependencies))
@@ -457,7 +468,7 @@ def _strip_comments(lines):
                 yield lineno, line
 
 
-@target('build/check-requires-timestamp', SRC, EXAMPLES_SRC, SHADER_SRC,
+@target('build/check-requires-timestamp', SRC, EXAMPLES_JS, SHADER_SRC,
         SPEC, SPEC_RENDERING)
 def build_check_requires_timestamp(t):
     unused_count = 0
@@ -598,7 +609,7 @@ def build_check_requires_timestamp(t):
     t.touch()
 
 
-@target('build/check-whitespace-timestamp', SRC, EXAMPLES_SRC,
+@target('build/check-whitespace-timestamp', SRC, EXAMPLES_JS,
         SPEC, SPEC_RENDERING, JSDOC_SRC, precious=True)
 def build_check_whitespace_timestamp(t):
     CR_RE = re.compile(r'\r')
@@ -834,7 +845,7 @@ Other less frequently used targets are:
   ci               - Builds all examples in various modes and usually takes a
                      long time to finish. This target calls the following
                      targets: lint, build, build-all, test, test-rendering,
-                     build-examples, check-examples and apidoc. This is the
+                     compile-examples, check-examples and apidoc. This is the
                      target run on Travis CI.
   test-coverage    - Generates a test coverage report in the coverage folder.
   reallyclean      - Remove untracked files from the repository.
