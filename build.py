@@ -247,7 +247,7 @@ def build_requires(task):
             f.write('goog.require(\'%s\');\n' % (require,))
 
 
-@target('build/test_requires.js', SPEC)
+@target('build/test_requires.js', SPEC, SRC)
 def build_test_requires(t):
   build_requires(t)
 
