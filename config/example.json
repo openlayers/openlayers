@@ -1,0 +1,79 @@
+{
+  "exports": [],
+  "src": [
+    "src/**/*.js",
+    "build/ol.ext/*.js",
+    "build/examples/{{id}}.js"
+  ],
+  "compile": {
+    "js": [
+      "externs/olx.js",
+      "externs/oli.js"
+    ],
+    "externs": [
+      "externs/bingmaps.js",
+      "externs/bootstrap.js",
+      "externs/closure-compiler.js",
+      "externs/example.js",
+      "externs/fastclick.js",
+      "externs/geojson.js",
+      "externs/jquery-1.9.js",
+      "externs/proj4js.js",
+      "externs/tilejson.js",
+      "externs/topojson.js",
+      "externs/vbarray.js"
+    ],
+    "define": [
+      "goog.array.ASSUME_NATIVE_FUNCTIONS=true",
+      "goog.dom.ASSUME_STANDARDS_MODE=true",
+      "goog.json.USE_NATIVE_JSON=true",
+      "goog.DEBUG=false"
+    ],
+    "jscomp_error": [
+      "accessControls",
+      "ambiguousFunctionDecl",
+      "checkEventfulObjectDisposal",
+      "checkRegExp",
+      "checkStructDictInheritance",
+      "checkTypes",
+      "checkVars",
+      "const",
+      "constantProperty",
+      "deprecated",
+      "duplicateMessage",
+      "es3",
+      "es5Strict",
+      "externsValidation",
+      "fileoverviewTags",
+      "globalThis",
+      "internetExplorerChecks",
+      "invalidCasts",
+      "misplacedTypeAnnotation",
+      "missingGetCssName",
+      "missingProperties",
+      "missingProvide",
+      "missingRequire",
+      "missingReturn",
+      "newCheckTypes",
+      "nonStandardJsDocs",
+      "suspiciousCode",
+      "strictModuleDepCheck",
+      "typeInvalidation",
+      "undefinedNames",
+      "undefinedVars",
+      "uselessCode",
+      "visibility"
+    ],
+    "jscomp_off": [
+      "unknownDefines"
+    ],
+    "extra_annotation_name": [
+      "api", "observable"
+    ],
+    "compilation_level": "ADVANCED",
+    "warning_level": "VERBOSE",
+    "output_wrapper": "(function(){%output%})();",
+    "use_types_for_optimization": true,
+    "manage_closure_dependencies": true
+  }
+}
