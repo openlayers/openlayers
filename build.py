@@ -257,7 +257,7 @@ def build_test_rendering_requires(t):
   build_requires(t)
 
 
-virtual('build-examples', 'examples', 'build/examples/all.combined.js',
+virtual('compile-examples', 'examples', 'build/examples/all.combined.js',
         EXAMPLES_COMBINED)
 
 
@@ -834,7 +834,7 @@ Other less frequently used targets are:
   ci               - Builds all examples in various modes and usually takes a
                      long time to finish. This target calls the following
                      targets: lint, build, build-all, test, test-rendering,
-                     build-examples, check-examples and apidoc. This is the
+                     compile-examples, check-examples and apidoc. This is the
                      target run on Travis CI.
   test-coverage    - Generates a test coverage report in the coverage folder.
   reallyclean      - Remove untracked files from the repository.
