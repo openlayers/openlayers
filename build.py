@@ -124,6 +124,8 @@ EXAMPLES_JS = [path
                if path != 'examples/Jugl.js'
                if path != 'examples/example-list.js']
 
+EXAMPLES_SRC = [path for path in ifind('examples_src')]
+
 EXAMPLES_JSON = ['build/' + example.replace('.html', '.json')
                  for example in EXAMPLES]
 
@@ -159,6 +161,7 @@ SRC = [path
        if path not in SHADER_SRC]
 
 NPM_INSTALL = 'build/npm-install-timestamp'
+BUILD_EXAMPLES = 'build/build-examples-timestamp'
 
 def report_sizes(t):
     stringio = StringIO()
@@ -194,6 +197,12 @@ virtual('todo', 'fixme')
 def npm_install(t):
     t.run('npm', 'install')
     t.touch()
+
+
+@target(BUILD_EXAMPLES, EXAMPLES_SRC)
+def build_examples(t):
+    t.run('node', 'tasks/build-examples.js')
+    t.touch();
 
 
 @target('build/ol.css', 'css/ol.css', NPM_INSTALL)
@@ -261,7 +270,7 @@ virtual('compile-examples', 'examples', 'build/examples/all.combined.js',
         EXAMPLES_COMBINED)
 
 
-virtual('examples', 'examples/example-list.xml', EXAMPLES_JSON)
+virtual('examples', 'examples/example-list.xml', EXAMPLES_JSON, BUILD_EXAMPLES)
 
 
 @target('examples/example-list.xml', 'examples/example-list.js')
