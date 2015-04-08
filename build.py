@@ -117,12 +117,12 @@ EXAMPLES = [path
             if path.endswith('.html')
             if path != 'examples/index.html']
 
-EXAMPLES_SRC = [path
-                for path in ifind('examples')
-                if path.endswith('.js')
-                if not path.endswith('.combined.js')
-                if path != 'examples/Jugl.js'
-                if path != 'examples/example-list.js']
+EXAMPLES_JS = [path
+               for path in ifind('examples')
+               if path.endswith('.js')
+               if not path.endswith('.combined.js')
+               if path != 'examples/Jugl.js'
+               if path != 'examples/example-list.js']
 
 EXAMPLES_JSON = ['build/' + example.replace('.html', '.json')
                  for example in EXAMPLES]
@@ -282,7 +282,7 @@ def build_examples_all_combined_js(t):
     report_sizes(t)
 
 
-@target('build/examples/all.js', EXAMPLES_SRC)
+@target('build/examples/all.js', EXAMPLES_JS)
 def build_examples_all_js(t):
     t.output('%(PYTHON)s', 'bin/combine-examples.py', t.dependencies)
 
@@ -415,7 +415,7 @@ virtual('lint', 'build/lint-timestamp', 'build/check-requires-timestamp',
     'build/check-whitespace-timestamp', 'jshint')
 
 
-@target('build/lint-timestamp', SRC, EXAMPLES_SRC, SPEC, SPEC_RENDERING,
+@target('build/lint-timestamp', SRC, EXAMPLES_JS, SPEC, SPEC_RENDERING,
         precious=True)
 def build_lint_src_timestamp(t):
     t.run('%(GJSLINT)s',
@@ -427,7 +427,7 @@ def build_lint_src_timestamp(t):
 
 virtual('jshint', 'build/jshint-timestamp')
 
-@target('build/jshint-timestamp', SRC, EXAMPLES_SRC, SPEC, SPEC_RENDERING,
+@target('build/jshint-timestamp', SRC, EXAMPLES_JS, SPEC, SPEC_RENDERING,
         TASKS, NPM_INSTALL, precious=True)
 def build_jshint_timestamp(t):
     t.run(variables.JSHINT, '--verbose', t.newer(t.dependencies))
@@ -457,7 +457,7 @@ def _strip_comments(lines):
                 yield lineno, line
 
 
-@target('build/check-requires-timestamp', SRC, EXAMPLES_SRC, SHADER_SRC,
+@target('build/check-requires-timestamp', SRC, EXAMPLES_JS, SHADER_SRC,
         SPEC, SPEC_RENDERING)
 def build_check_requires_timestamp(t):
     unused_count = 0
@@ -598,7 +598,7 @@ def build_check_requires_timestamp(t):
     t.touch()
 
 
-@target('build/check-whitespace-timestamp', SRC, EXAMPLES_SRC,
+@target('build/check-whitespace-timestamp', SRC, EXAMPLES_JS,
         SPEC, SPEC_RENDERING, JSDOC_SRC, precious=True)
 def build_check_whitespace_timestamp(t):
     CR_RE = re.compile(r'\r')
