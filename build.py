@@ -192,6 +192,8 @@ virtual('check', 'lint', 'build/ol.js', 'test')
 
 virtual('todo', 'fixme')
 
+virtual('build-examples', BUILD_EXAMPLES)
+
 
 @target(NPM_INSTALL, 'package.json')
 def npm_install(t):
