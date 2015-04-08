@@ -57,8 +57,7 @@ Creating a custom build requires writing a build configuration file. The format 
       "externs/olx.js",
       "externs/proj4js.js",
       "externs/tilejson.js",
-      "externs/topojson.js",
-      "externs/vbarray.js"
+      "externs/topojson.js"
     ],
     "define": [
       "goog.array.ASSUME_NATIVE_FUNCTIONS=true",

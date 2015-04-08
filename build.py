@@ -315,8 +315,7 @@ def examples_star_json(name, match):
               "externs/jquery-1.9.js",
               "externs/proj4js.js",
               "externs/tilejson.js",
-              "externs/topojson.js",
-              "externs/vbarray.js"
+              "externs/topojson.js"
             ],
             "define": [
               "goog.array.ASSUME_NATIVE_FUNCTIONS=true",

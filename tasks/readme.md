@@ -53,8 +53,7 @@ Below is a complete `build.json` configuration file that would generate a 'full'
       "externs/olx.js",
       "externs/proj4js.js",
       "externs/tilejson.js",
-      "externs/topojson.js",
-      "externs/vbarray.js"
+      "externs/topojson.js"
     ],
     "define": [
       "goog.dom.ASSUME_STANDARDS_MODE=true",

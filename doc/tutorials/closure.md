@@ -164,8 +164,7 @@ The minimum config file looks like this:
       "node_modules/openlayers/externs/geojson.js",
       "node_modules/openlayers/externs/proj4js.js",
       "node_modules/openlayers/externs/tilejson.js",
-      "node_modules/openlayers/externs/topojson.js",
-      "node_modules/openlayers/externs/vbarray.js"
+      "node_modules/openlayers/externs/topojson.js"
     ],
     "define": [
       "goog.array.ASSUME_NATIVE_FUNCTIONS=true",
@@ -221,8 +220,7 @@ Here is a version of `config.json` with more compilation checks enabled:
       "node_modules/openlayers/externs/geojson.js",
       "node_modules/openlayers/externs/proj4js.js",
       "node_modules/openlayers/externs/tilejson.js",
-      "node_modules/openlayers/externs/topojson.js",
-      "node_modules/openlayers/externs/vbarray.js"
+      "node_modules/openlayers/externs/topojson.js"
     ],
     "define": [
       "goog.array.ASSUME_NATIVE_FUNCTIONS=true",
