@@ -3705,206 +3705,6 @@ olx.source.ClusterOptions.prototype.source;
 
 
 /**
- * @typedef {{attributions: (Array.<ol.Attribution>|undefined),
- *     format: ol.format.Feature,
- *     logo: (string|olx.LogoOptions|undefined),
- *     projection: ol.proj.ProjectionLike}}
- * @api
- */
-olx.source.FormatVectorOptions;
-
-
-/**
- * Attributions.
- * @type {Array.<ol.Attribution>|undefined}
- * @api
- */
-olx.source.FormatVectorOptions.prototype.attributions;
-
-
-/**
- * Format.
- * @type {ol.format.Feature}
- * @api
- */
-olx.source.FormatVectorOptions.prototype.format;
-
-
-/**
- * Logo.
- * @type {string|olx.LogoOptions|undefined}
- * @api
- */
-olx.source.FormatVectorOptions.prototype.logo;
-
-
-/**
- * Projection.
- * @type {ol.proj.ProjectionLike}
- * @api
- */
-olx.source.FormatVectorOptions.prototype.projection;
-
-
-/**
- * @typedef {{attributions: (Array.<ol.Attribution>|undefined),
- *     defaultProjection: ol.proj.ProjectionLike,
- *     logo: (string|olx.LogoOptions|undefined),
- *     object: (GeoJSONFeature|GeoJSONFeatureCollection|undefined),
- *     projection: ol.proj.ProjectionLike,
- *     text: (string|undefined),
- *     url: (string|undefined),
- *     urls: (Array.<string>|undefined)}}
- * @api
- */
-olx.source.GeoJSONOptions;
-
-
-/**
- * Attributions.
- * @type {Array.<ol.Attribution>|undefined}
- * @api
- */
-olx.source.GeoJSONOptions.prototype.attributions;
-
-
-/**
- * Default projection.
- * @type {ol.proj.ProjectionLike}
- * @api
- */
-olx.source.GeoJSONOptions.prototype.defaultProjection;
-
-
-/**
- * Logo.
- * @type {string|olx.LogoOptions|undefined}
- * @api
- */
-olx.source.GeoJSONOptions.prototype.logo;
-
-
-/**
- * GeoJSON feature or feature collection.
- * @type {GeoJSONFeature|GeoJSONFeatureCollection|undefined}
- * @api
- */
-olx.source.GeoJSONOptions.prototype.object;
-
-
-/**
- * Destination projection. If provided, features will be transformed to this
- * projection. If not provided, features will not be transformed.
- * @type {ol.proj.ProjectionLike}
- * @api
- */
-olx.source.GeoJSONOptions.prototype.projection;
-
-
-/**
- * Text.
- * @type {string|undefined}
- * @api
- */
-olx.source.GeoJSONOptions.prototype.text;
-
-
-/**
- * URL.
- * @type {string|undefined}
- * @api
- */
-olx.source.GeoJSONOptions.prototype.url;
-
-
-/**
- * URLs.
- * @type {Array.<string>|undefined}
- * @api
- */
-olx.source.GeoJSONOptions.prototype.urls;
-
-
-/**
- * @typedef {{attributions: (Array.<ol.Attribution>|undefined),
- *     doc: (Document|undefined),
- *     logo: (string|olx.LogoOptions|undefined),
- *     node: (Node|undefined),
- *     projection: ol.proj.ProjectionLike,
- *     text: (string|undefined),
- *     url: (string|undefined),
- *     urls: (Array.<string>|undefined)}}
- * @api
- */
-olx.source.GPXOptions;
-
-
-/**
- * Attributions.
- * @type {Array.<ol.Attribution>|undefined}
- * @api
- */
-olx.source.GPXOptions.prototype.attributions;
-
-
-/**
- * Document.
- * @type {Document|undefined}
- * @api
- */
-olx.source.GPXOptions.prototype.doc;
-
-
-/**
- * Logo.
- * @type {string|olx.LogoOptions|undefined}
- * @api
- */
-olx.source.GPXOptions.prototype.logo;
-
-
-/**
- * Node.
- * @type {Node|undefined}
- * @api
- */
-olx.source.GPXOptions.prototype.node;
-
-
-/**
- * Destination projection. If provided, features will be transformed to this
- * projection. If not provided, features will not be transformed.
- * @type {ol.proj.ProjectionLike}
- * @api
- */
-olx.source.GPXOptions.prototype.projection;
-
-
-/**
- * Text.
- * @type {string|undefined}
- * @api
- */
-olx.source.GPXOptions.prototype.text;
-
-
-/**
- * URL.
- * @type {string|undefined}
- * @api
- */
-olx.source.GPXOptions.prototype.url;
-
-
-/**
- * URLs.
- * @type {Array.<string>|undefined}
- * @api
- */
-olx.source.GPXOptions.prototype.urls;
-
-
-/**
  * @typedef {{preemptive: (boolean|undefined),
  *            url: string}}
  * @api
@@ -4064,7 +3864,6 @@ olx.source.TileImageOptions.prototype.wrapX;
  * @typedef {{attributions: (Array.<ol.Attribution>|undefined),
  *     format: ol.format.Feature,
  *     logo: (string|olx.LogoOptions|undefined),
- *     projection: ol.proj.ProjectionLike,
  *     tileGrid: ol.tilegrid.TileGrid,
  *     tileUrlFunction: (ol.TileUrlFunctionType|undefined),
  *     url: (string|undefined),
@@ -4099,15 +3898,6 @@ olx.source.TileVectorOptions.prototype.logo;
 
 
 /**
- * Destination projection. If provided, features will be transformed to this
- * projection. If not provided, features will not be transformed.
- * @type {ol.proj.ProjectionLike}
- * @api
- */
-olx.source.TileVectorOptions.prototype.projection;
-
-
-/**
  * Tile grid.
  * @type {ol.tilegrid.TileGrid}
  * @api
@@ -4138,129 +3928,6 @@ olx.source.TileVectorOptions.prototype.url;
  * @api
  */
 olx.source.TileVectorOptions.prototype.urls;
-
-
-/**
- * @typedef {{attributions: (Array.<ol.Attribution>|undefined),
- *     defaultProjection: ol.proj.ProjectionLike,
- *     logo: (string|olx.LogoOptions|undefined),
- *     object: (GeoJSONObject|undefined),
- *     projection: ol.proj.ProjectionLike,
- *     text: (string|undefined),
- *     url: (string|undefined)}}
- * @api
- */
-olx.source.TopoJSONOptions;
-
-
-/**
- * Attributions.
- * @type {Array.<ol.Attribution>|undefined}
- * @api
- */
-olx.source.TopoJSONOptions.prototype.attributions;
-
-
-/**
- * Default projection.
- * @type {ol.proj.ProjectionLike}
- * @api
- */
-olx.source.TopoJSONOptions.prototype.defaultProjection;
-
-
-/**
- * Logo.
- * @type {string|olx.LogoOptions|undefined}
- * @api
- */
-olx.source.TopoJSONOptions.prototype.logo;
-
-
-/**
- * Object.
- * @type {GeoJSONObject|undefined}
- * @api
- */
-olx.source.TopoJSONOptions.prototype.object;
-
-
-/**
- * Destination projection. If provided, features will be transformed to this
- * projection. If not provided, features will not be transformed.
- * @type {ol.proj.ProjectionLike}
- * @api
- */
-olx.source.TopoJSONOptions.prototype.projection;
-
-
-/**
- * Text.
- * @type {string|undefined}
- * @api
- */
-olx.source.TopoJSONOptions.prototype.text;
-
-
-/**
- * URL.
- * @type {string|undefined}
- * @api
- */
-olx.source.TopoJSONOptions.prototype.url;
-
-
-/**
- * @typedef {{altitudeMode: (ol.format.IGCZ|undefined),
- *     projection: ol.proj.ProjectionLike,
- *     text: (string|undefined),
- *     url: (string|undefined),
- *     urls: (Array.<string>|undefined)}}
- * @api
- */
-olx.source.IGCOptions;
-
-
-/**
- * Altitude mode. Possible values are `barometric`, `gps`, and `none`. Default
- * is `none`.
- * @type {ol.format.IGCZ|undefined}
- * @api
- */
-olx.source.IGCOptions.prototype.altitudeMode;
-
-
-/**
- * Destination projection. If provided, features will be transformed to this
- * projection. If not provided, features will not be transformed.
- * @type {ol.proj.ProjectionLike}
- * @api
- */
-olx.source.IGCOptions.prototype.projection;
-
-
-/**
- * Text.
- * @type {string|undefined}
- * @api
- */
-olx.source.IGCOptions.prototype.text;
-
-
-/**
- * URL.
- * @type {string|undefined}
- * @api
- */
-olx.source.IGCOptions.prototype.url;
-
-
-/**
- * URLs.
- * @type {Array.<string>|undefined}
- * @api
- */
-olx.source.IGCOptions.prototype.urls;
 
 
 /**
@@ -4360,103 +4027,6 @@ olx.source.ImageMapGuideOptions.prototype.imageLoadFunction;
  * @api stable
  */
 olx.source.ImageMapGuideOptions.prototype.params;
-
-
-/**
- * @typedef {{attributions: (Array.<ol.Attribution>|undefined),
- *     defaultStyle: (Array.<ol.style.Style>|undefined),
- *     doc: (Document|undefined),
- *     extractStyles: (boolean|undefined),
- *     logo: (string|olx.LogoOptions|undefined),
- *     node: (Node|undefined),
- *     projection: ol.proj.ProjectionLike,
- *     text: (string|undefined),
- *     url: (string|undefined),
- *     urls: (Array.<string>|undefined)}}
- * @api
- */
-olx.source.KMLOptions;
-
-
-/**
- * Attributions.
- * @type {Array.<ol.Attribution>|undefined}
- * @api
- */
-olx.source.KMLOptions.prototype.attributions;
-
-
-/**
- * Default style.
- * @type {Array.<ol.style.Style>|undefined}
- * @api
- */
-olx.source.KMLOptions.prototype.defaultStyle;
-
-
-/**
- * Document.
- * @type {Document|undefined}
- * @api
- */
-olx.source.KMLOptions.prototype.doc;
-
-
-/**
- * Extract styles from the KML document. Default is `true`.
- * @type {boolean|undefined}
- * @api
- */
-olx.source.KMLOptions.prototype.extractStyles;
-
-
-/**
- * Logo.
- * @type {string|olx.LogoOptions|undefined}
- * @api
- */
-olx.source.KMLOptions.prototype.logo;
-
-
-/**
- * Node.
- * @type {Node|undefined}
- * @api
- */
-olx.source.KMLOptions.prototype.node;
-
-
-/**
- * Destination projection. If provided, features will be transformed to this
- * projection. If not provided, features will not be transformed.
- * @type {ol.proj.ProjectionLike}
- * @api
- */
-olx.source.KMLOptions.prototype.projection;
-
-
-/**
- * Text.
- * @type {string|undefined}
- * @api
- */
-olx.source.KMLOptions.prototype.text;
-
-
-/**
- * URL.
- * @type {string|undefined}
- * @api
- */
-olx.source.KMLOptions.prototype.url;
-
-
-/**
- * URLs.
- * @type {Array.<string>|undefined}
- * @api
- */
-olx.source.KMLOptions.prototype.urls;
 
 
 /**
@@ -4581,84 +4151,6 @@ olx.source.OSMOptions.prototype.url;
  * @api
  */
 olx.source.OSMOptions.prototype.wrapX;
-
-
-/**
- * @typedef {{attributions: (Array.<ol.Attribution>|undefined),
- *     doc: (Document|undefined),
- *     logo: (string|olx.LogoOptions|undefined),
- *     node: (Node|undefined),
- *     projection: ol.proj.ProjectionLike,
- *     text: (string|undefined),
- *     url: (string|undefined),
- *     urls: (Array.<string>|undefined)}}
- * @api
- */
-olx.source.OSMXMLOptions;
-
-
-/**
- * Attributions.
- * @type {Array.<ol.Attribution>|undefined}
- * @api
- */
-olx.source.OSMXMLOptions.prototype.attributions;
-
-
-/**
- * Document.
- * @type {Document|undefined}
- * @api
- */
-olx.source.OSMXMLOptions.prototype.doc;
-
-
-/**
- * Logo.
- * @type {string|olx.LogoOptions|undefined}
- * @api
- */
-olx.source.OSMXMLOptions.prototype.logo;
-
-
-/**
- * Node.
- * @type {Node|undefined}
- * @api
- */
-olx.source.OSMXMLOptions.prototype.node;
-
-
-/**
- * Projection.
- * @type {ol.proj.ProjectionLike}
- * @api
- */
-olx.source.OSMXMLOptions.prototype.projection;
-
-
-/**
- * Text.
- * @type {string|undefined}
- * @api
- */
-olx.source.OSMXMLOptions.prototype.text;
-
-
-/**
- * URL.
- * @type {string|undefined}
- * @api
- */
-olx.source.OSMXMLOptions.prototype.url;
-
-
-/**
- * URLs.
- * @type {Array.<string>|undefined}
- * @api
- */
-olx.source.OSMXMLOptions.prototype.urls;
 
 
 /**
@@ -5070,66 +4562,6 @@ olx.source.ImageStaticOptions.prototype.url;
 
 /**
  * @typedef {{attributions: (Array.<ol.Attribution>|undefined),
- *     format: ol.format.Feature,
- *     loader: function(this: ol.source.ServerVector, ol.Extent, number, ol.proj.Projection),
- *     strategy: (function(ol.Extent, number): Array.<ol.Extent>|undefined),
- *     logo: (string|olx.LogoOptions|undefined),
- *     projection: ol.proj.ProjectionLike}}
- * @api
- */
-olx.source.ServerVectorOptions;
-
-
-/**
- * Attributions.
- * @type {Array.<ol.Attribution>|undefined}
- * @api
- */
-olx.source.ServerVectorOptions.prototype.attributions;
-
-
-/**
- * Format.
- * @type {ol.format.Feature}
- * @api
- */
-olx.source.ServerVectorOptions.prototype.format;
-
-
-/**
- * Loading function.
- * @type {function(this: ol.source.ServerVector, ol.Extent, number, ol.proj.Projection)}
- * @api
- */
-olx.source.ServerVectorOptions.prototype.loader;
-
-
-/**
- * Loading strategy. An {@link ol.loadingstrategy} or a custom function.
- * Default is {@link ol.loadingstrategy.bbox}.
- * @type {function(ol.Extent, number): Array.<ol.Extent>|undefined}
- * @api
- */
-olx.source.ServerVectorOptions.prototype.strategy;
-
-
-/**
- * Logo.
- * @type {string|olx.LogoOptions|undefined}
- * @api
- */
-olx.source.ServerVectorOptions.prototype.logo;
-
-
-/**
- * Projection.
- * @type {ol.proj.ProjectionLike}
- * @api
- */
-olx.source.ServerVectorOptions.prototype.projection;
-
-/**
- * @typedef {{attributions: (Array.<ol.Attribution>|undefined),
  *     params: (Object.<string, *>|undefined),
  *     logo: (string|olx.LogoOptions|undefined),
  *     tileGrid: (ol.tilegrid.TileGrid|undefined),
@@ -5441,9 +4873,11 @@ olx.source.TileWMSOptions.prototype.wrapX;
 /**
  * @typedef {{attributions: (Array.<ol.Attribution>|undefined),
  *     features: (Array.<ol.Feature>|undefined),
+ *     format: (ol.format.Feature|undefined),
+ *     loader: (ol.FeatureLoader|undefined),
  *     logo: (string|olx.LogoOptions|undefined),
- *     projection: ol.proj.ProjectionLike,
- *     state: (ol.source.State|string|undefined)}}
+ *     strategy: (ol.LoadingStrategy|undefined),
+ *     url: (string|undefined)}}
  * @api
  */
 olx.source.VectorOptions;
@@ -5466,6 +4900,25 @@ olx.source.VectorOptions.prototype.features;
 
 
 /**
+ * The feature format used by the XHR loader when `url` is set. Required
+ * if `url` is set, otherwise ignored. Default is `undefined`.
+ * `url`
+ * @type {ol.format.Feature|undefined}
+ * @api
+ */
+olx.source.VectorOptions.prototype.format;
+
+
+/**
+ * The loader function used to load features, from a remote source for example.
+ * Note that the source will create and use an XHR loader when `src` is set.
+ * @type {ol.FeatureLoader|undefined}
+ * @api
+ */
+olx.source.VectorOptions.prototype.loader;
+
+
+/**
  * Logo.
  * @type {string|olx.LogoOptions|undefined}
  * @api stable
@@ -5474,124 +4927,23 @@ olx.source.VectorOptions.prototype.logo;
 
 
 /**
- * Projection.
- * @type {ol.proj.ProjectionLike}
+ * The loading strategy to use. By default an {@link ol.loadingstrategy.all}
+ * strategy is used, which means that features at loaded all at once, and
+ * once.
+ * @type {ol.LoadingStrategy|undefined}
  * @api
  */
-olx.source.VectorOptions.prototype.projection;
+olx.source.VectorOptions.prototype.strategy;
 
 
 /**
- * State.
- * @type {ol.source.State|string|undefined}
- * @api
- */
-olx.source.VectorOptions.prototype.state;
-
-
-/**
- * @typedef {{arrayBuffer: (ArrayBuffer|undefined),
- *     attributions: (Array.<ol.Attribution>|undefined),
- *     doc: (Document|undefined),
- *     format: ol.format.Feature,
- *     logo: (string|olx.LogoOptions|undefined),
- *     node: (Node|undefined),
- *     object: (Object|undefined),
- *     projection: ol.proj.ProjectionLike,
- *     text: (string|undefined),
- *     url: (string|undefined),
- *     urls: (Array.<string>|undefined)}}
- * @api
- */
-olx.source.StaticVectorOptions;
-
-
-/**
- * Array buffer.
- * @type {ArrayBuffer|undefined}
- * @api
- */
-olx.source.StaticVectorOptions.prototype.arrayBuffer;
-
-
-/**
- * Attributions.
- * @type {Array.<ol.Attribution>|undefined}
- * @api
- */
-olx.source.StaticVectorOptions.prototype.attributions;
-
-
-/**
- * Document.
- * @type {Document|undefined}
- * @api
- */
-olx.source.StaticVectorOptions.prototype.doc;
-
-
-/**
- * Format.
- * @type {ol.format.Feature}
- * @api
- */
-olx.source.StaticVectorOptions.prototype.format;
-
-
-/**
- * Logo.
- * @type {string|olx.LogoOptions|undefined}
- * @api
- */
-olx.source.StaticVectorOptions.prototype.logo;
-
-
-/**
- * Node.
- * @type {Node|undefined}
- * @api
- */
-olx.source.StaticVectorOptions.prototype.node;
-
-
-/**
- * Object.
- * @type {Object|undefined}
- * @api
- */
-olx.source.StaticVectorOptions.prototype.object;
-
-
-/**
- * Projection.
- * @type {ol.proj.ProjectionLike}
- * @api
- */
-olx.source.StaticVectorOptions.prototype.projection;
-
-
-/**
- * Text.
+ * Set this option if you want the source to download features all at once
+ * and once for good. Internally the source uses an XHR feature loader (see
+ * {@link ol.featureloader.xhr}). Requires `format` to be set as well.
  * @type {string|undefined}
  * @api
  */
-olx.source.StaticVectorOptions.prototype.text;
-
-
-/**
- * URL.
- * @type {string|undefined}
- * @api
- */
-olx.source.StaticVectorOptions.prototype.url;
-
-
-/**
- * URLs.
- * @type {Array.<string>|undefined}
- * @api
- */
-olx.source.StaticVectorOptions.prototype.urls;
+olx.source.VectorOptions.prototype.url;
 
 
 /**

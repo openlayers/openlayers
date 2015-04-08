@@ -4,12 +4,13 @@ goog.require('ol.FeatureOverlay');
 goog.require('ol.Map');
 goog.require('ol.View');
 goog.require('ol.control');
+goog.require('ol.format.IGC');
 goog.require('ol.geom.LineString');
 goog.require('ol.geom.Point');
 goog.require('ol.layer.Tile');
 goog.require('ol.layer.Vector');
-goog.require('ol.source.IGC');
 goog.require('ol.source.OSM');
+goog.require('ol.source.Vector');
 goog.require('ol.style.Circle');
 goog.require('ol.style.Fill');
 goog.require('ol.style.Stroke');
@@ -40,16 +41,24 @@ var styleFunction = function(feature, resolution) {
   return styleArray;
 };
 
-var vectorSource = new ol.source.IGC({
-  projection: 'EPSG:3857',
-  urls: [
-    'data/igc/Clement-Latour.igc',
-    'data/igc/Damien-de-Baenst.igc',
-    'data/igc/Sylvain-Dhonneur.igc',
-    'data/igc/Tom-Payne.igc',
-    'data/igc/Ulrich-Prinz.igc'
-  ]
-});
+var vectorSource = new ol.source.Vector();
+
+var igcUrls = [
+  'data/igc/Clement-Latour.igc',
+  'data/igc/Damien-de-Baenst.igc',
+  'data/igc/Sylvain-Dhonneur.igc',
+  'data/igc/Tom-Payne.igc',
+  'data/igc/Ulrich-Prinz.igc'
+];
+
+var igcFormat = new ol.format.IGC();
+for (var i = 0; i < igcUrls.length; ++i) {
+  $.ajax(igcUrls[i]).then(function(data) {
+    var features = igcFormat.readFeatures(data,
+        {featureProjection: 'EPSG:3857'});
+    vectorSource.addFeatures(features);
+  });
+}
 
 var time = {
   start: Infinity,

@@ -5,7 +5,7 @@ goog.require('ol.layer.Tile');
 goog.require('ol.layer.Vector');
 goog.require('ol.proj');
 goog.require('ol.source.BingMaps');
-goog.require('ol.source.KML');
+goog.require('ol.source.Vector');
 
 var projection = ol.proj.get('EPSG:3857');
 
@@ -17,9 +17,9 @@ var raster = new ol.layer.Tile({
 });
 
 var vector = new ol.layer.Vector({
-  source: new ol.source.KML({
-    projection: projection,
-    url: 'data/kml/2012-02-10.kml'
+  source: new ol.source.Vector({
+    url: 'data/kml/2012-02-10.kml',
+    format: new ol.format.KML()
   })
 });
 
