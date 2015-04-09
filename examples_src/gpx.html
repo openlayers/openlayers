@@ -1,0 +1,25 @@
+---
+template: example.html
+title: GPX example
+shortdesc: Example of using the GPX source.
+docs: >
+  Example of using the GPX source.
+tags: "GPX"
+---
+ <div class="row-fluid">
+   <div class="span12">
+     <div id="map" class="map"></div>
+   <div class="span4 offset4 pull-right">
+     <div id="info" class="alert alert-success">
+       &nbsp;
+     </div>
+   </div>
+     <div id="no-download" class="alert alert-error" style="display: none">
+       The "Export GPX" functionality requires a browser that supports the
+       <a href="http://caniuse.com/#feat=download">link download</a> attribute.
+     </div>
+     <a id="export-gpx" class="btn" download="map.gpx"><i class="icon-download"></i>Export GPX</a>
+   </div>
+   </div>
+ </div>
+

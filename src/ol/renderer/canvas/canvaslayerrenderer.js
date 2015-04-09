@@ -50,7 +50,8 @@ ol.renderer.canvas.Layer.prototype.composeFrame =
     var extent = layerState.extent;
     var clipped = goog.isDef(extent);
     if (clipped) {
-      goog.asserts.assert(goog.isDef(extent));
+      goog.asserts.assert(goog.isDef(extent),
+          'layerState extent is defined');
       var pixelRatio = frameState.pixelRatio;
       var topLeft = ol.extent.getTopLeft(extent);
       var topRight = ol.extent.getTopRight(extent);

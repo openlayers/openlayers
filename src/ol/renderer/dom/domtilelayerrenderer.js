@@ -101,7 +101,8 @@ ol.renderer.dom.TileLayer.prototype.prepareFrame =
   var projection = viewState.projection;
 
   var tileLayer = this.getLayer();
-  goog.asserts.assertInstanceof(tileLayer, ol.layer.Tile);
+  goog.asserts.assertInstanceof(tileLayer, ol.layer.Tile,
+      'layer is an instance of ol.layer.Tile');
   var tileSource = tileLayer.getSource();
   var tileGrid = tileSource.getTileGridForProjection(projection);
   var tileGutter = tileSource.getGutter();
@@ -353,7 +354,8 @@ ol.renderer.dom.TileLayerZ_.prototype.addTile = function(tile, tileGutter) {
   var tileCoordZ = tileCoord[0];
   var tileCoordX = tileCoord[1];
   var tileCoordY = tileCoord[2];
-  goog.asserts.assert(tileCoordZ == this.tileCoordOrigin_[0]);
+  goog.asserts.assert(tileCoordZ == this.tileCoordOrigin_[0],
+      'tileCoordZ matches z of tileCoordOrigin');
   var tileCoordKey = ol.tilecoord.toString(tileCoord);
   if (tileCoordKey in this.tiles_) {
     return;

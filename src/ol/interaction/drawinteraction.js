@@ -9,11 +9,11 @@ goog.require('ol.Collection');
 goog.require('ol.Coordinate');
 goog.require('ol.Feature');
 goog.require('ol.FeatureOverlay');
-goog.require('ol.Map');
 goog.require('ol.MapBrowserEvent');
 goog.require('ol.MapBrowserEvent.EventType');
 goog.require('ol.Object');
 goog.require('ol.events.condition');
+goog.require('ol.geom.Circle');
 goog.require('ol.geom.GeometryType');
 goog.require('ol.geom.LineString');
 goog.require('ol.geom.MultiLineString');
@@ -247,10 +247,6 @@ ol.interaction.Draw.prototype.setMap = function(map) {
  * @api
  */
 ol.interaction.Draw.handleEvent = function(mapBrowserEvent) {
-  var map = mapBrowserEvent.map;
-  if (!map.isDef()) {
-    return true;
-  }
   var pass = true;
   if (mapBrowserEvent.type === ol.MapBrowserEvent.EventType.POINTERMOVE) {
     pass = this.handlePointerMove_(mapBrowserEvent);
@@ -295,6 +291,8 @@ ol.interaction.Draw.handleUpEvent_ = function(event) {
     if (goog.isNull(this.finishCoordinate_)) {
       this.startDrawing_(event);
     } else if (this.mode_ === ol.interaction.DrawMode.POINT ||
+        this.mode_ === ol.interaction.DrawMode.CIRCLE &&
+            !goog.isNull(this.finishCoordinate_) ||
         this.atFinish_(event)) {
       this.finishDrawing();
     } else {
@@ -338,10 +336,12 @@ ol.interaction.Draw.prototype.atFinish_ = function(event) {
     var potentiallyDone = false;
     var potentiallyFinishCoordinates = [this.finishCoordinate_];
     if (this.mode_ === ol.interaction.DrawMode.LINE_STRING) {
-      goog.asserts.assertInstanceof(geometry, ol.geom.LineString);
+      goog.asserts.assertInstanceof(geometry, ol.geom.LineString,
+          'geometry should be an ol.geom.LineString');
       potentiallyDone = geometry.getCoordinates().length > 2;
     } else if (this.mode_ === ol.interaction.DrawMode.POLYGON) {
-      goog.asserts.assertInstanceof(geometry, ol.geom.Polygon);
+      goog.asserts.assertInstanceof(geometry, ol.geom.Polygon,
+          'geometry should be an ol.geom.Polygon');
       potentiallyDone = geometry.getCoordinates()[0].length >
           this.minPointsPerRing_;
       potentiallyFinishCoordinates = [this.sketchPolygonCoords_[0][0],
@@ -378,7 +378,8 @@ ol.interaction.Draw.prototype.createOrUpdateSketchPoint_ = function(event) {
     this.updateSketchFeatures_();
   } else {
     var sketchPointGeom = this.sketchPoint_.getGeometry();
-    goog.asserts.assertInstanceof(sketchPointGeom, ol.geom.Point);
+    goog.asserts.assertInstanceof(sketchPointGeom, ol.geom.Point,
+        'sketchPointGeom should be an ol.geom.Point');
     sketchPointGeom.setCoordinates(coordinates);
   }
 };
@@ -403,9 +404,13 @@ ol.interaction.Draw.prototype.startDrawing_ = function(event) {
             start.slice()]));
       this.sketchPolygonCoords_ = [[start.slice(), start.slice()]];
       geometry = new ol.geom.Polygon(this.sketchPolygonCoords_);
+    } else if (this.mode_ === ol.interaction.DrawMode.CIRCLE) {
+      geometry = new ol.geom.Circle(start.slice(), 0);
+      this.sketchLine_ = new ol.Feature(new ol.geom.LineString([start.slice(),
+            start.slice()]));
     }
   }
-  goog.asserts.assert(goog.isDef(geometry));
+  goog.asserts.assert(goog.isDef(geometry), 'geometry should be defined');
   this.sketchFeature_ = new ol.Feature();
   if (goog.isDef(this.geometryName_)) {
     this.sketchFeature_.setGeometryName(this.geometryName_);
@@ -425,40 +430,59 @@ ol.interaction.Draw.prototype.startDrawing_ = function(event) {
 ol.interaction.Draw.prototype.modifyDrawing_ = function(event) {
   var coordinate = event.coordinate;
   var geometry = this.sketchFeature_.getGeometry();
-  var coordinates, last;
+  var coordinates, last, sketchLineGeom;
   if (this.mode_ === ol.interaction.DrawMode.POINT) {
-    goog.asserts.assertInstanceof(geometry, ol.geom.Point);
+    goog.asserts.assertInstanceof(geometry, ol.geom.Point,
+        'geometry should be an ol.geom.Point');
     last = geometry.getCoordinates();
     last[0] = coordinate[0];
     last[1] = coordinate[1];
     geometry.setCoordinates(last);
   } else {
     if (this.mode_ === ol.interaction.DrawMode.LINE_STRING) {
-      goog.asserts.assertInstanceof(geometry, ol.geom.LineString);
+      goog.asserts.assertInstanceof(geometry, ol.geom.LineString,
+          'geometry should be an ol.geom.LineString');
       coordinates = geometry.getCoordinates();
     } else if (this.mode_ === ol.interaction.DrawMode.POLYGON) {
-      goog.asserts.assertInstanceof(geometry, ol.geom.Polygon);
+      goog.asserts.assertInstanceof(geometry, ol.geom.Polygon,
+          'geometry should be an ol.geom.Polygon');
       coordinates = this.sketchPolygonCoords_[0];
+    } else if (this.mode_ === ol.interaction.DrawMode.CIRCLE) {
+      goog.asserts.assertInstanceof(geometry, ol.geom.Circle,
+          'geometry should be an ol.geom.Circle');
+      coordinates = geometry.getCenter();
     }
     if (this.atFinish_(event)) {
       // snap to finish
       coordinate = this.finishCoordinate_.slice();
     }
     var sketchPointGeom = this.sketchPoint_.getGeometry();
-    goog.asserts.assertInstanceof(sketchPointGeom, ol.geom.Point);
+    goog.asserts.assertInstanceof(sketchPointGeom, ol.geom.Point,
+        'sketchPointGeom should be an ol.geom.Point');
     sketchPointGeom.setCoordinates(coordinate);
     last = coordinates[coordinates.length - 1];
     last[0] = coordinate[0];
     last[1] = coordinate[1];
     if (this.mode_ === ol.interaction.DrawMode.LINE_STRING) {
-      goog.asserts.assertInstanceof(geometry, ol.geom.LineString);
+      goog.asserts.assertInstanceof(geometry, ol.geom.LineString,
+          'geometry should be an ol.geom.LineString');
       geometry.setCoordinates(coordinates);
     } else if (this.mode_ === ol.interaction.DrawMode.POLYGON) {
-      var sketchLineGeom = this.sketchLine_.getGeometry();
-      goog.asserts.assertInstanceof(sketchLineGeom, ol.geom.LineString);
+      sketchLineGeom = this.sketchLine_.getGeometry();
+      goog.asserts.assertInstanceof(sketchLineGeom, ol.geom.LineString,
+          'sketchLineGeom should be an ol.geom.LineString');
       sketchLineGeom.setCoordinates(coordinates);
-      goog.asserts.assertInstanceof(geometry, ol.geom.Polygon);
+      goog.asserts.assertInstanceof(geometry, ol.geom.Polygon,
+          'geometry should be an ol.geom.Polygon');
       geometry.setCoordinates(this.sketchPolygonCoords_);
+    } else if (this.mode_ === ol.interaction.DrawMode.CIRCLE) {
+      goog.asserts.assertInstanceof(geometry, ol.geom.Circle,
+          'geometry should be an ol.geom.Circle');
+      sketchLineGeom = this.sketchLine_.getGeometry();
+      goog.asserts.assertInstanceof(sketchLineGeom, ol.geom.LineString,
+          'sketchLineGeom should be an ol.geom.LineString');
+      sketchLineGeom.setCoordinates([geometry.getCenter(), coordinate]);
+      geometry.setRadius(sketchLineGeom.getLength());
     }
   }
   this.updateSketchFeatures_();
@@ -476,13 +500,15 @@ ol.interaction.Draw.prototype.addToDrawing_ = function(event) {
   var coordinates;
   if (this.mode_ === ol.interaction.DrawMode.LINE_STRING) {
     this.finishCoordinate_ = coordinate.slice();
-    goog.asserts.assertInstanceof(geometry, ol.geom.LineString);
+    goog.asserts.assertInstanceof(geometry, ol.geom.LineString,
+        'geometry should be an ol.geom.LineString');
     coordinates = geometry.getCoordinates();
     coordinates.push(coordinate.slice());
     geometry.setCoordinates(coordinates);
   } else if (this.mode_ === ol.interaction.DrawMode.POLYGON) {
     this.sketchPolygonCoords_[0].push(coordinate.slice());
-    goog.asserts.assertInstanceof(geometry, ol.geom.Polygon);
+    goog.asserts.assertInstanceof(geometry, ol.geom.Polygon,
+        'geometry should be an ol.geom.Polygon');
     geometry.setCoordinates(this.sketchPolygonCoords_);
   }
   this.updateSketchFeatures_();
@@ -495,20 +521,24 @@ ol.interaction.Draw.prototype.addToDrawing_ = function(event) {
  */
 ol.interaction.Draw.prototype.finishDrawing = function() {
   var sketchFeature = this.abortDrawing_();
-  goog.asserts.assert(!goog.isNull(sketchFeature));
+  goog.asserts.assert(!goog.isNull(sketchFeature),
+      'sketchFeature should not be null');
   var coordinates;
   var geometry = sketchFeature.getGeometry();
   if (this.mode_ === ol.interaction.DrawMode.POINT) {
-    goog.asserts.assertInstanceof(geometry, ol.geom.Point);
+    goog.asserts.assertInstanceof(geometry, ol.geom.Point,
+        'geometry should be an ol.geom.Point');
     coordinates = geometry.getCoordinates();
   } else if (this.mode_ === ol.interaction.DrawMode.LINE_STRING) {
-    goog.asserts.assertInstanceof(geometry, ol.geom.LineString);
+    goog.asserts.assertInstanceof(geometry, ol.geom.LineString,
+        'geometry should be an ol.geom.LineString');
     coordinates = geometry.getCoordinates();
     // remove the redundant last point
     coordinates.pop();
     geometry.setCoordinates(coordinates);
   } else if (this.mode_ === ol.interaction.DrawMode.POLYGON) {
-    goog.asserts.assertInstanceof(geometry, ol.geom.Polygon);
+    goog.asserts.assertInstanceof(geometry, ol.geom.Polygon,
+        'geometry should be an ol.geom.Polygon');
     // When we finish drawing a polygon on the last point,
     // the last coordinate is duplicated as for LineString
     // we force the replacement by the first point
@@ -562,7 +592,7 @@ ol.interaction.Draw.prototype.shouldStopEvent = goog.functions.FALSE;
 
 
 /**
- * Redraw the skecth features.
+ * Redraw the sketch features.
  * @private
  */
 ol.interaction.Draw.prototype.updateSketchFeatures_ = function() {
@@ -611,8 +641,10 @@ ol.interaction.Draw.getMode_ = function(type) {
   } else if (type === ol.geom.GeometryType.POLYGON ||
       type === ol.geom.GeometryType.MULTI_POLYGON) {
     mode = ol.interaction.DrawMode.POLYGON;
+  } else if (type === ol.geom.GeometryType.CIRCLE) {
+    mode = ol.interaction.DrawMode.CIRCLE;
   }
-  goog.asserts.assert(goog.isDef(mode));
+  goog.asserts.assert(goog.isDef(mode), 'mode should be defined');
   return mode;
 };
 
@@ -625,5 +657,6 @@ ol.interaction.Draw.getMode_ = function(type) {
 ol.interaction.DrawMode = {
   POINT: 'Point',
   LINE_STRING: 'LineString',
-  POLYGON: 'Polygon'
+  POLYGON: 'Polygon',
+  CIRCLE: 'Circle'
 };

@@ -47,7 +47,8 @@ ol.source.TileWMS = function(opt_options) {
     projection: options.projection,
     tileGrid: options.tileGrid,
     tileLoadFunction: options.tileLoadFunction,
-    tileUrlFunction: goog.bind(this.tileUrlFunction_, this)
+    tileUrlFunction: goog.bind(this.tileUrlFunction_, this),
+    wrapX: options.wrapX
   });
 
   var urls = options.urls;
@@ -128,7 +129,8 @@ goog.inherits(ol.source.TileWMS, ol.source.TileImage);
 ol.source.TileWMS.prototype.getGetFeatureInfoUrl =
     function(coordinate, resolution, projection, params) {
 
-  goog.asserts.assert(!('VERSION' in params));
+  goog.asserts.assert(!('VERSION' in params),
+      'key VERSION is not allowed in params');
 
   var projectionObj = ol.proj.get(projection);
 
@@ -247,7 +249,7 @@ ol.source.TileWMS.prototype.getRequestUrl_ =
         params['DPI'] = 90 * pixelRatio;
         break;
       default:
-        goog.asserts.fail();
+        goog.asserts.fail('unknown serverType configured');
         break;
     }
   }

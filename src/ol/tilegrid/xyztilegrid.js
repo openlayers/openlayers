@@ -47,7 +47,6 @@ ol.tilegrid.XYZ.prototype.createTileCoordTransform = function(opt_options) {
   var options = goog.isDef(opt_options) ? opt_options : {};
   var minZ = this.minZoom;
   var maxZ = this.maxZoom;
-  var wrapX = goog.isDef(options.wrapX) ? options.wrapX : true;
   /** @type {Array.<ol.TileRange>} */
   var tileRangeByZ = null;
   if (goog.isDef(options.extent)) {
@@ -75,11 +74,6 @@ ol.tilegrid.XYZ.prototype.createTileCoordTransform = function(opt_options) {
         }
         var n = Math.pow(2, z);
         var x = tileCoord[1];
-        if (wrapX) {
-          x = goog.math.modulo(x, n);
-        } else if (x < 0 || n <= x) {
-          return null;
-        }
         var y = tileCoord[2];
         if (y < -n || -1 < y) {
           return null;

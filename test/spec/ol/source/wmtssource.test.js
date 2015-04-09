@@ -18,8 +18,7 @@ describe('ol.source.WMTS', function() {
 
     it('can create KVP options from spec/ol/format/wmts/ogcsample.xml',
         function() {
-          var options;
-          options = ol.source.WMTS.optionsFromCapabilities(
+          var options = ol.source.WMTS.optionsFromCapabilities(
               capabilities,
               { layer: 'BlueMarbleNextGeneration', matrixSet: 'google3857' });
 
@@ -49,8 +48,7 @@ describe('ol.source.WMTS', function() {
 
     it('can create REST options from spec/ol/format/wmts/ogcsample.xml',
         function() {
-          var options;
-          options = ol.source.WMTS.optionsFromCapabilities(
+          var options = ol.source.WMTS.optionsFromCapabilities(
               capabilities,
               { layer: 'BlueMarbleNextGeneration', matrixSet: 'google3857',
                 requestEncoding: 'REST' });
@@ -132,6 +130,36 @@ describe('ol.source.WMTS', function() {
           expect(url).to.be.eql('http://www.example.com/wmts/coastlines/' +
              'layer/default/EPSG:3857/1/1/1.jpg');
 
+        });
+  });
+
+  describe('when creating options from Esri capabilities', function() {
+    var parser = new ol.format.WMTSCapabilities();
+    var capabilities;
+    before(function(done) {
+      afterLoadText('spec/ol/format/wmts/arcgis.xml', function(xml) {
+        try {
+          capabilities = parser.read(xml);
+        } catch (e) {
+          done(e);
+        }
+        done();
+      });
+    });
+
+    it('can create KVP options from spec/ol/format/wmts/arcgis.xml',
+        function() {
+          var options = ol.source.WMTS.optionsFromCapabilities(
+              capabilities, {
+                layer: 'Demographics_USA_Population_Density',
+                matrixSet: 'default028mm'
+              });
+
+          expect(options.urls).to.be.an('array');
+          expect(options.urls).to.have.length(1);
+          expect(options.urls[0]).to.be.eql(
+             'http://services.arcgisonline.com/arcgis/rest/services/' +
+             'Demographics/USA_Population_Density/MapServer/WMTS?');
         });
   });
 });

@@ -75,7 +75,8 @@ goog.inherits(ol.renderer.Map, goog.Disposable);
 ol.renderer.Map.prototype.calculateMatrices2D = function(frameState) {
   var viewState = frameState.viewState;
   var coordinateToPixelMatrix = frameState.coordinateToPixelMatrix;
-  goog.asserts.assert(!goog.isNull(coordinateToPixelMatrix));
+  goog.asserts.assert(!goog.isNull(coordinateToPixelMatrix),
+      'frameState has non-null coordinateToPixelMatrix');
   ol.vec.Mat4.makeTransform2D(coordinateToPixelMatrix,
       frameState.size[0] / 2, frameState.size[1] / 2,
       1 / viewState.resolution, -1 / viewState.resolution,
@@ -83,7 +84,7 @@ ol.renderer.Map.prototype.calculateMatrices2D = function(frameState) {
       -viewState.center[0], -viewState.center[1]);
   var inverted = goog.vec.Mat4.invert(
       coordinateToPixelMatrix, frameState.pixelToCoordinateMatrix);
-  goog.asserts.assert(inverted);
+  goog.asserts.assert(inverted, 'matrix could be inverted');
 };
 
 
@@ -145,7 +146,7 @@ ol.renderer.Map.prototype.forEachFeatureAtCoordinate =
          * @return {?} Callback result.
          */
         function(feature) {
-          goog.asserts.assert(goog.isDef(feature));
+          goog.asserts.assert(goog.isDef(feature), 'received a feature');
           var key = goog.getUid(feature).toString();
           if (!(key in features)) {
             features[key] = true;
@@ -277,7 +278,8 @@ ol.renderer.Map.prototype.getLayerRenderer = function(layer) {
  * @return {ol.renderer.Layer} Layer renderer.
  */
 ol.renderer.Map.prototype.getLayerRendererByKey = function(layerKey) {
-  goog.asserts.assert(layerKey in this.layerRenderers_);
+  goog.asserts.assert(layerKey in this.layerRenderers_,
+      'given layerKey (%s) exists in layerRenderers', layerKey);
   return this.layerRenderers_[layerKey];
 };
 
@@ -320,11 +322,13 @@ ol.renderer.Map.prototype.handleLayerRendererChange_ = function() {
  * @private
  */
 ol.renderer.Map.prototype.removeLayerRendererByKey_ = function(layerKey) {
-  goog.asserts.assert(layerKey in this.layerRenderers_);
+  goog.asserts.assert(layerKey in this.layerRenderers_,
+      'given layerKey (%s) exists in layerRenderers', layerKey);
   var layerRenderer = this.layerRenderers_[layerKey];
   delete this.layerRenderers_[layerKey];
 
-  goog.asserts.assert(layerKey in this.layerRendererListeners_);
+  goog.asserts.assert(layerKey in this.layerRendererListeners_,
+      'given layerKey (%s) exists in layerRendererListeners', layerKey);
   goog.events.unlistenByKey(this.layerRendererListeners_[layerKey]);
   delete this.layerRendererListeners_[layerKey];
 

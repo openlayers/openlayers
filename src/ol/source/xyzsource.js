@@ -34,16 +34,15 @@ ol.source.XYZ = function(options) {
     tileGrid: tileGrid,
     tileLoadFunction: options.tileLoadFunction,
     tilePixelRatio: options.tilePixelRatio,
-    tileUrlFunction: ol.TileUrlFunction.nullTileUrlFunction
+    tileUrlFunction: ol.TileUrlFunction.nullTileUrlFunction,
+    wrapX: goog.isDef(options.wrapX) ? options.wrapX : true
   });
 
   /**
    * @private
    * @type {ol.TileCoordTransformType}
    */
-  this.tileCoordTransform_ = tileGrid.createTileCoordTransform({
-    wrapX: options.wrapX
-  });
+  this.tileCoordTransform_ = tileGrid.createTileCoordTransform();
 
   if (goog.isDef(options.tileUrlFunction)) {
     this.setTileUrlFunction(options.tileUrlFunction);

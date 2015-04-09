@@ -171,4 +171,5 @@ describe('ol.geom.Point', function() {
 
 
 goog.require('ol.extent');
+goog.require('ol.geom.GeometryLayout');
 goog.require('ol.geom.Point');

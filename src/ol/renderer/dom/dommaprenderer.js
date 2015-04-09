@@ -119,7 +119,7 @@ ol.renderer.dom.Map.prototype.createLayerRenderer = function(layer) {
       ol.ENABLE_VECTOR && layer instanceof ol.layer.Vector) {
     layerRenderer = new ol.renderer.dom.VectorLayer(layer);
   } else {
-    goog.asserts.fail();
+    goog.asserts.fail('unexpected layer configuration');
     return null;
   }
   return layerRenderer;
@@ -238,7 +238,8 @@ ol.renderer.dom.Map.prototype.renderFrame = function(frameState) {
     layer = layerState.layer;
     layerRenderer = /** @type {ol.renderer.dom.Layer} */ (
         this.getLayerRenderer(layer));
-    goog.asserts.assertInstanceof(layerRenderer, ol.renderer.dom.Layer);
+    goog.asserts.assertInstanceof(layerRenderer, ol.renderer.dom.Layer,
+        'renderer is an instance of ol.renderer.dom.Layer');
     addChild.call(this, layerRenderer.getTarget(), i);
     if (layerState.sourceState == ol.source.State.READY) {
       if (layerRenderer.prepareFrame(frameState, layerState)) {
@@ -254,7 +255,8 @@ ol.renderer.dom.Map.prototype.renderFrame = function(frameState) {
   for (layerKey in this.getLayerRenderers()) {
     if (!(layerKey in layerStates)) {
       layerRenderer = this.getLayerRendererByKey(layerKey);
-      goog.asserts.assertInstanceof(layerRenderer, ol.renderer.dom.Layer);
+      goog.asserts.assertInstanceof(layerRenderer, ol.renderer.dom.Layer,
+          'renderer is an instance of ol.renderer.dom.Layer');
       goog.dom.removeNode(layerRenderer.getTarget());
     }
   }

@@ -1,0 +1,21 @@
+---
+template: example.html
+title: Measure example
+shortdesc: Example of using the ol.interaction.Draw interaction for creating simple measuring application.
+docs: >
+  <p><i>NOTE: If use geodesic measures is not checked, measure is done in simple way on projected plane. Earth curvature is not taken into account</i></p>
+tags: "draw, edit, measure, vector"
+---
+<div class="row-fluid">
+  <div class="span12">
+    <div id="map" class="map"></div>
+  </div>
+</div>
+<form class="form-inline">
+  <label>Geometry type &nbsp;</label>
+    <select id="type">
+      <option value="length">Length</option>
+      <option value="area">Area</option>
+    </select>
+    <label class="checkbox"><input type="checkbox" id="geodesic"/>use geodesic measures</label>
+</form>

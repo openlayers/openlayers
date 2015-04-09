@@ -182,7 +182,8 @@ ol.renderer.canvas.TileLayer.prototype.prepareFrame =
   var projection = viewState.projection;
 
   var tileLayer = this.getLayer();
-  goog.asserts.assertInstanceof(tileLayer, ol.layer.Tile);
+  goog.asserts.assertInstanceof(tileLayer, ol.layer.Tile,
+      'layer is an instance of ol.layer.Tile');
   var tileSource = tileLayer.getSource();
   var tileGrid = tileSource.getTileGridForProjection(projection);
   var tileGutter = tileSource.getGutter();
@@ -218,9 +219,12 @@ ol.renderer.canvas.TileLayer.prototype.prepareFrame =
 
   var canvas, context;
   if (goog.isNull(this.canvas_)) {
-    goog.asserts.assert(goog.isNull(this.canvasSize_));
-    goog.asserts.assert(goog.isNull(this.context_));
-    goog.asserts.assert(goog.isNull(this.renderedCanvasTileRange_));
+    goog.asserts.assert(goog.isNull(this.canvasSize_),
+        'canvasSize is null (because canvas is null)');
+    goog.asserts.assert(goog.isNull(this.context_),
+        'context is null (because canvas is null)');
+    goog.asserts.assert(goog.isNull(this.renderedCanvasTileRange_),
+        'renderedCanvasTileRange is null (because canvas is null)');
     context = ol.dom.createCanvasContext2D(canvasWidth, canvasHeight);
     this.canvas_ = context.canvas;
     this.canvasSize_ = [canvasWidth, canvasHeight];
@@ -228,8 +232,10 @@ ol.renderer.canvas.TileLayer.prototype.prepareFrame =
     this.canvasTooBig_ =
         !ol.renderer.canvas.Layer.testCanvasSize(this.canvasSize_);
   } else {
-    goog.asserts.assert(!goog.isNull(this.canvasSize_));
-    goog.asserts.assert(!goog.isNull(this.context_));
+    goog.asserts.assert(!goog.isNull(this.canvasSize_),
+        'non-null canvasSize (because canvas is not null)');
+    goog.asserts.assert(!goog.isNull(this.context_),
+        'non-null context (because canvas is not null)');
     canvas = this.canvas_;
     context = this.context_;
     if (this.canvasSize_[0] < canvasWidth ||
@@ -277,7 +283,8 @@ ol.renderer.canvas.TileLayer.prototype.prepareFrame =
     canvasTileRangeWidth = canvasTileRange.getWidth();
   }
 
-  goog.asserts.assert(canvasTileRange.containsTileRange(tileRange));
+  goog.asserts.assert(canvasTileRange.containsTileRange(tileRange),
+      'tileRange is contained in canvasTileRange');
 
   /**
    * @type {Object.<number, Object.<string, ol.Tile>>}

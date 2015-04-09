@@ -67,7 +67,8 @@ ol.format.WMSGetFeatureInfo.prototype.readFeatures_ =
     function(node, objectStack) {
 
   node.namespaceURI = this.featureNS_;
-  goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT);
+  goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT,
+      'node.nodeType should be ELEMENT');
   var localName = ol.xml.getLocalName(node);
   /** @type {Array.<ol.Feature>} */
   var features = [];
@@ -80,10 +81,12 @@ ol.format.WMSGetFeatureInfo.prototype.readFeatures_ =
         return;
       }
       var context = objectStack[0];
-      goog.asserts.assert(goog.isObject(context));
+      goog.asserts.assert(goog.isObject(context),
+          'context should be an Object');
 
       goog.asserts.assert(layer.localName.indexOf(
-          ol.format.WMSGetFeatureInfo.layerIdentifier_) >= 0);
+          ol.format.WMSGetFeatureInfo.layerIdentifier_) >= 0,
+          'localName of layer node should match layerIdentifier');
 
       var featureType = goog.string.remove(layer.localName,
           ol.format.WMSGetFeatureInfo.layerIdentifier_) +

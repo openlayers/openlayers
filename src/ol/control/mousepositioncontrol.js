@@ -139,10 +139,6 @@ ol.control.MousePosition.prototype.getCoordinateFormat = function() {
   return /** @type {ol.CoordinateFormatType|undefined} */ (
       this.get(ol.control.MousePositionProperty.COORDINATE_FORMAT));
 };
-goog.exportProperty(
-    ol.control.MousePosition.prototype,
-    'getCoordinateFormat',
-    ol.control.MousePosition.prototype.getCoordinateFormat);
 
 
 /**
@@ -155,10 +151,6 @@ ol.control.MousePosition.prototype.getProjection = function() {
   return /** @type {ol.proj.Projection|undefined} */ (
       this.get(ol.control.MousePositionProperty.PROJECTION));
 };
-goog.exportProperty(
-    ol.control.MousePosition.prototype,
-    'getProjection',
-    ol.control.MousePosition.prototype.getProjection);
 
 
 /**
@@ -209,10 +201,6 @@ ol.control.MousePosition.prototype.setMap = function(map) {
 ol.control.MousePosition.prototype.setCoordinateFormat = function(format) {
   this.set(ol.control.MousePositionProperty.COORDINATE_FORMAT, format);
 };
-goog.exportProperty(
-    ol.control.MousePosition.prototype,
-    'setCoordinateFormat',
-    ol.control.MousePosition.prototype.setCoordinateFormat);
 
 
 /**
@@ -224,10 +212,6 @@ goog.exportProperty(
 ol.control.MousePosition.prototype.setProjection = function(projection) {
   this.set(ol.control.MousePositionProperty.PROJECTION, projection);
 };
-goog.exportProperty(
-    ol.control.MousePosition.prototype,
-    'setProjection',
-    ol.control.MousePosition.prototype.setProjection);
 
 
 /**

@@ -111,6 +111,9 @@ Called internally to parse the library for annotations and write out a `build/in
 
 Called after install to generate an example index.  After new examples are added, run `node tasks/parse-examples.js` to regenerate the example index.
 
+## `build-examples.js`
+
+Called internally by `parse-examples.js` to build the examples from templates.
 
 ## `serve.js`
 

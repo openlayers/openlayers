@@ -1,0 +1,22 @@
+---
+template: example.html
+title: Overlay example
+shortdesc: Demonstrates overlays.
+docs: >
+  <p>The popups are created using <a href="http://twitter.github.com/bootstrap/javascript.html#popovers">Popovers</a> from Bootstrap.</p>
+tags: "overlay, popup, bootstrap, popover, mapquest, openaerial"
+resources:
+  - overlay.css
+---
+<div class="row-fluid">
+  <div class="span12">
+    <div id="map" class="map"></div>
+  </div>
+</div>
+<div style="display: none;">
+  <!-- Clickable label for Vienna -->
+  <a class="overlay" id="vienna" target="_blank" href="http://en.wikipedia.org/wiki/Vienna">Vienna</a>
+  <div id="marker" title="Marker"></div>
+  <!-- Popup -->
+  <div id="popup" title="Welcome to ol3"></div>
+</div>

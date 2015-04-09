@@ -3,6 +3,8 @@
 goog.provide('ol.source.ImageWMS');
 
 goog.require('goog.asserts');
+goog.require('goog.events');
+goog.require('goog.events.EventType');
 goog.require('goog.object');
 goog.require('goog.string');
 goog.require('goog.uri.utils');
@@ -22,6 +24,7 @@ goog.require('ol.source.wms.ServerType');
  * Source for WMS servers providing single, untiled images.
  *
  * @constructor
+ * @fires ol.source.ImageEvent
  * @extends {ol.source.Image}
  * @param {olx.source.ImageWMSOptions=} opt_options Options.
  * @api stable
@@ -136,7 +139,8 @@ ol.source.ImageWMS.GETFEATUREINFO_IMAGE_SIZE_ = [101, 101];
 ol.source.ImageWMS.prototype.getGetFeatureInfoUrl =
     function(coordinate, resolution, projection, params) {
 
-  goog.asserts.assert(!('VERSION' in params));
+  goog.asserts.assert(!('VERSION' in params),
+      'key VERSION is not allowed in params');
 
   if (!goog.isDef(this.url_)) {
     return undefined;
@@ -247,6 +251,9 @@ ol.source.ImageWMS.prototype.getImage =
 
   this.renderedRevision_ = this.getRevision();
 
+  goog.events.listen(this.image_, goog.events.EventType.CHANGE,
+      this.handleImageChange, false, this);
+
   return this.image_;
 
 };
@@ -273,7 +280,7 @@ ol.source.ImageWMS.prototype.getImageLoadFunction = function() {
 ol.source.ImageWMS.prototype.getRequestUrl_ =
     function(extent, size, pixelRatio, projection, params) {
 
-  goog.asserts.assert(goog.isDef(this.url_));
+  goog.asserts.assert(goog.isDef(this.url_), 'url is defined');
 
   params[this.v13_ ? 'CRS' : 'SRS'] = projection.getCode();
 
@@ -297,7 +304,7 @@ ol.source.ImageWMS.prototype.getRequestUrl_ =
         params['DPI'] = 90 * pixelRatio;
         break;
       default:
-        goog.asserts.fail();
+        goog.asserts.fail('unknown serverType configured');
         break;
     }
   }

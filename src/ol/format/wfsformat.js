@@ -31,13 +31,13 @@ ol.format.WFS = function(opt_options) {
 
   /**
    * @private
-   * @type {string}
+   * @type {Array.<string>|string|undefined}
    */
   this.featureType_ = options.featureType;
 
   /**
    * @private
-   * @type {string}
+   * @type {Object.<string, string>|string|undefined}
    */
   this.featureNS_ = options.featureNS;
 
@@ -153,7 +153,7 @@ ol.format.WFS.prototype.readTransactionResponse = function(source) {
     var doc = ol.xml.parse(source);
     return this.readTransactionResponseFromDocument(doc);
   } else {
-    goog.asserts.fail();
+    goog.asserts.fail('Unknown source type');
     return undefined;
   }
 };
@@ -176,7 +176,7 @@ ol.format.WFS.prototype.readFeatureCollectionMetadata = function(source) {
     var doc = ol.xml.parse(source);
     return this.readFeatureCollectionMetadataFromDocument(doc);
   } else {
-    goog.asserts.fail();
+    goog.asserts.fail('Unknown source type');
     return undefined;
   }
 };
@@ -189,7 +189,8 @@ ol.format.WFS.prototype.readFeatureCollectionMetadata = function(source) {
  */
 ol.format.WFS.prototype.readFeatureCollectionMetadataFromDocument =
     function(doc) {
-  goog.asserts.assert(doc.nodeType == goog.dom.NodeType.DOCUMENT);
+  goog.asserts.assert(doc.nodeType == goog.dom.NodeType.DOCUMENT,
+      'doc.nodeType should be DOCUMENT');
   for (var n = doc.firstChild; !goog.isNull(n); n = n.nextSibling) {
     if (n.nodeType == goog.dom.NodeType.ELEMENT) {
       return this.readFeatureCollectionMetadataFromNode(n);
@@ -218,8 +219,10 @@ ol.format.WFS.FEATURE_COLLECTION_PARSERS_ = {
  *     FeatureCollection metadata.
  */
 ol.format.WFS.prototype.readFeatureCollectionMetadataFromNode = function(node) {
-  goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT);
-  goog.asserts.assert(node.localName == 'FeatureCollection');
+  goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT,
+      'node.nodeType should be ELEMENT');
+  goog.asserts.assert(node.localName == 'FeatureCollection',
+      'localName should be FeatureCollection');
   var result = {};
   var value = ol.format.XSD.readNonNegativeIntegerString(
       node.getAttribute('numberOfFeatures'));
@@ -327,7 +330,8 @@ ol.format.WFS.TRANSACTION_RESPONSE_PARSERS_ = {
  * @return {ol.format.WFS.TransactionResponse|undefined} Transaction response.
  */
 ol.format.WFS.prototype.readTransactionResponseFromDocument = function(doc) {
-  goog.asserts.assert(doc.nodeType == goog.dom.NodeType.DOCUMENT);
+  goog.asserts.assert(doc.nodeType == goog.dom.NodeType.DOCUMENT,
+      'doc.nodeType should be DOCUMENT');
   for (var n = doc.firstChild; !goog.isNull(n); n = n.nextSibling) {
     if (n.nodeType == goog.dom.NodeType.ELEMENT) {
       return this.readTransactionResponseFromNode(n);
@@ -342,8 +346,10 @@ ol.format.WFS.prototype.readTransactionResponseFromDocument = function(doc) {
  * @return {ol.format.WFS.TransactionResponse|undefined} Transaction response.
  */
 ol.format.WFS.prototype.readTransactionResponseFromNode = function(node) {
-  goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT);
-  goog.asserts.assert(node.localName == 'TransactionResponse');
+  goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT,
+      'node.nodeType should  be ELEMENT');
+  goog.asserts.assert(node.localName == 'TransactionResponse',
+      'localName should be TransactionResponse');
   return ol.xml.pushParseAndPop(
       /** @type {ol.format.WFS.TransactionResponse} */({}),
       ol.format.WFS.TRANSACTION_RESPONSE_PARSERS_, node, []);
@@ -369,7 +375,7 @@ ol.format.WFS.QUERY_SERIALIZERS_ = {
  */
 ol.format.WFS.writeFeature_ = function(node, feature, objectStack) {
   var context = objectStack[objectStack.length - 1];
-  goog.asserts.assert(goog.isObject(context));
+  goog.asserts.assert(goog.isObject(context), 'context should be an Object');
   var featureType = context['featureType'];
   var featureNS = context['featureNS'];
   var child = ol.xml.createElementNS(featureNS, featureType);
@@ -401,7 +407,7 @@ ol.format.WFS.writeOgcFidFilter_ = function(node, fid, objectStack) {
  */
 ol.format.WFS.writeDelete_ = function(node, feature, objectStack) {
   var context = objectStack[objectStack.length - 1];
-  goog.asserts.assert(goog.isObject(context));
+  goog.asserts.assert(goog.isObject(context), 'context should be an Object');
   var featureType = context['featureType'];
   var featurePrefix = context['featurePrefix'];
   featurePrefix = goog.isDef(featurePrefix) ? featurePrefix :
@@ -425,7 +431,7 @@ ol.format.WFS.writeDelete_ = function(node, feature, objectStack) {
  */
 ol.format.WFS.writeUpdate_ = function(node, feature, objectStack) {
   var context = objectStack[objectStack.length - 1];
-  goog.asserts.assert(goog.isObject(context));
+  goog.asserts.assert(goog.isObject(context), 'context should be an Object');
   var featureType = context['featureType'];
   var featurePrefix = context['featurePrefix'];
   featurePrefix = goog.isDef(featurePrefix) ? featurePrefix :
@@ -520,7 +526,7 @@ ol.format.WFS.TRANSACTION_SERIALIZERS_ = {
  */
 ol.format.WFS.writeQuery_ = function(node, featureType, objectStack) {
   var context = objectStack[objectStack.length - 1];
-  goog.asserts.assert(goog.isObject(context));
+  goog.asserts.assert(goog.isObject(context), 'context should be an Object');
   var featurePrefix = context['featurePrefix'];
   var featureNS = context['featureNS'];
   var propertyNames = context['propertyNames'];
@@ -571,7 +577,7 @@ ol.format.WFS.writeOgcPropertyName_ = function(node, value, objectStack) {
  */
 ol.format.WFS.writeOgcBBOX_ = function(node, bbox, objectStack) {
   var context = objectStack[objectStack.length - 1];
-  goog.asserts.assert(goog.isObject(context));
+  goog.asserts.assert(goog.isObject(context), 'context should be an Object');
   var geometryName = context['geometryName'];
   var bboxNode = ol.xml.createElementNS('http://www.opengis.net/ogc', 'BBOX');
   node.appendChild(bboxNode);
@@ -600,7 +606,7 @@ ol.format.WFS.GETFEATURE_SERIALIZERS_ = {
  */
 ol.format.WFS.writeGetFeature_ = function(node, featureTypes, objectStack) {
   var context = objectStack[objectStack.length - 1];
-  goog.asserts.assert(goog.isObject(context));
+  goog.asserts.assert(goog.isObject(context), 'context should be an Object');
   var item = goog.object.clone(context);
   item.node = node;
   ol.xml.pushSerializeAndPop(item,
@@ -653,7 +659,8 @@ ol.format.WFS.prototype.writeGetFeature = function(options) {
     propertyNames: goog.isDef(options.propertyNames) ?
         options.propertyNames : []
   };
-  goog.asserts.assert(goog.isArray(options.featureTypes));
+  goog.asserts.assert(goog.isArray(options.featureTypes),
+      'options.featureTypes should be an array');
   ol.format.WFS.writeGetFeature_(node, options.featureTypes, [context]);
   return node;
 };
@@ -734,7 +741,8 @@ ol.format.WFS.prototype.readProjection;
  * @inheritDoc
  */
 ol.format.WFS.prototype.readProjectionFromDocument = function(doc) {
-  goog.asserts.assert(doc.nodeType == goog.dom.NodeType.DOCUMENT);
+  goog.asserts.assert(doc.nodeType == goog.dom.NodeType.DOCUMENT,
+      'doc.nodeType should be a DOCUMENT');
   for (var n = doc.firstChild; !goog.isNull(n); n = n.nextSibling) {
     if (n.nodeType == goog.dom.NodeType.ELEMENT) {
       return this.readProjectionFromNode(n);
@@ -748,8 +756,10 @@ ol.format.WFS.prototype.readProjectionFromDocument = function(doc) {
  * @inheritDoc
  */
 ol.format.WFS.prototype.readProjectionFromNode = function(node) {
-  goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT);
-  goog.asserts.assert(node.localName == 'FeatureCollection');
+  goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT,
+      'node.nodeType should be ELEMENT');
+  goog.asserts.assert(node.localName == 'FeatureCollection',
+      'localName should be FeatureCollection');
 
   if (goog.isDefAndNotNull(node.firstElementChild) &&
       goog.isDefAndNotNull(node.firstElementChild.firstElementChild)) {

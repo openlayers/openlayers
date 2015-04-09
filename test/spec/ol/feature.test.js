@@ -209,17 +209,17 @@ describe('ol.Feature', function() {
       point.setCoordinates([0, 2]);
     });
 
-    it('changes property listener', function(done) {
+    it('changes property listener', function() {
       var feature = new ol.Feature();
       feature.setGeometry(point);
       var point2 = new ol.geom.Point([1, 2]);
       feature.set('altGeometry', point2);
       feature.setGeometryName('altGeometry');
 
-      feature.on('change', function() {
-        done();
-      });
+      var spy = sinon.spy();
+      feature.on('change', spy);
       point2.setCoordinates([0, 2]);
+      expect(spy.callCount).to.be(1);
     });
 
     it('can use a different geometry name', function() {
@@ -328,12 +328,12 @@ describe('ol.Feature', function() {
       expect(feature.getStyleFunction()).to.be(undefined);
     });
 
-    it('dispatches a change event', function(done) {
+    it('dispatches a change event', function() {
       var feature = new ol.Feature();
-      feature.on('change', function() {
-        done();
-      });
+      var spy = sinon.spy();
+      feature.on('change', spy);
       feature.setStyle(style);
+      expect(spy.callCount).to.be(1);
     });
 
   });
@@ -416,6 +416,19 @@ describe('ol.Feature', function() {
     });
   });
 
+  describe('#setGeometry()', function() {
+
+    it('dispatches a change event when geometry is set to null',
+        function() {
+          var feature = new ol.Feature({
+            geometry: new ol.geom.Point([0, 0])
+          });
+          var spy = sinon.spy();
+          feature.on('change', spy);
+          feature.setGeometry(null);
+          expect(spy.callCount).to.be(1);
+        });
+  });
 
 });
 

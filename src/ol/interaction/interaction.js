@@ -65,10 +65,6 @@ ol.interaction.Interaction.prototype.getActive = function() {
   return /** @type {boolean} */ (
       this.get(ol.interaction.InteractionProperty.ACTIVE));
 };
-goog.exportProperty(
-    ol.interaction.Interaction.prototype,
-    'getActive',
-    ol.interaction.Interaction.prototype.getActive);
 
 
 /**
@@ -89,10 +85,6 @@ ol.interaction.Interaction.prototype.getMap = function() {
 ol.interaction.Interaction.prototype.setActive = function(active) {
   this.set(ol.interaction.InteractionProperty.ACTIVE, active);
 };
-goog.exportProperty(
-    ol.interaction.Interaction.prototype,
-    'setActive',
-    ol.interaction.Interaction.prototype.setActive);
 
 
 /**

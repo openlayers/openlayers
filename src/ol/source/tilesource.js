@@ -1,4 +1,5 @@
 goog.provide('ol.source.Tile');
+goog.provide('ol.source.TileEvent');
 goog.provide('ol.source.TileOptions');
 
 goog.require('goog.events.Event');
@@ -20,7 +21,8 @@ goog.require('ol.tilegrid.TileGrid');
  *            tilePixelRatio: (number|undefined),
  *            projection: ol.proj.ProjectionLike,
  *            state: (ol.source.State|undefined),
- *            tileGrid: (ol.tilegrid.TileGrid|undefined)}}
+ *            tileGrid: (ol.tilegrid.TileGrid|undefined),
+ *            wrapX: (boolean|undefined)}}
  */
 ol.source.TileOptions;
 
@@ -71,6 +73,12 @@ ol.source.Tile = function(options) {
    * @type {ol.TileCache}
    */
   this.tileCache = new ol.TileCache();
+
+  /**
+   * @private
+   * @type {boolean|undefined}
+   */
+  this.wrapX_ = options.wrapX;
 
 };
 goog.inherits(ol.source.Tile, ol.source.Source);
@@ -204,6 +212,31 @@ ol.source.Tile.prototype.getTilePixelSize =
 
 
 /**
+ * Handles x-axis wrapping. When `this.wrapX_` is undefined or the projection
+ * is not a global projection, `tileCoord` will be returned unaltered. When
+ * `this.wrapX_` is true, the tile coordinate will be wrapped horizontally.
+ * When `this.wrapX_` is `false`, `null` will be returned for tiles that are
+ * outside the projection extent.
+ * @param {ol.TileCoord} tileCoord Tile coordinate.
+ * @param {ol.proj.Projection=} opt_projection Projection.
+ * @return {ol.TileCoord} Tile coordinate.
+ */
+ol.source.Tile.prototype.getWrapXTileCoord =
+    function(tileCoord, opt_projection) {
+  var projection = goog.isDef(opt_projection) ?
+      opt_projection : this.getProjection();
+  var tileGrid = this.getTileGridForProjection(projection);
+  if (goog.isDef(this.wrapX_) && tileGrid.isGlobal(tileCoord[0], projection)) {
+    return this.wrapX_ ?
+        ol.tilecoord.wrapX(tileCoord, tileGrid, projection) :
+        ol.tilecoord.clipX(tileCoord, tileGrid, projection);
+  } else {
+    return tileCoord;
+  }
+};
+
+
+/**
  * Marks a tile coord as being used, without triggering a load.
  * @param {number} z Tile coordinate z.
  * @param {number} x Tile coordinate x.
@@ -247,21 +280,21 @@ ol.source.TileEventType = {
   /**
    * Triggered when a tile starts loading.
    * @event ol.source.TileEvent#tileloadstart
-   * @api
+   * @api stable
    */
   TILELOADSTART: 'tileloadstart',
 
   /**
    * Triggered when a tile finishes loading.
    * @event ol.source.TileEvent#tileloadend
-   * @api
+   * @api stable
    */
   TILELOADEND: 'tileloadend',
 
   /**
    * Triggered if tile loading results in an error.
    * @event ol.source.TileEvent#tileloaderror
-   * @api
+   * @api stable
    */
   TILELOADERROR: 'tileloaderror'
 

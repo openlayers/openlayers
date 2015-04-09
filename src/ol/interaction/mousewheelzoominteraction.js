@@ -73,7 +73,8 @@ ol.interaction.MouseWheelZoom.handleEvent = function(mapBrowserEvent) {
       goog.events.MouseWheelHandler.EventType.MOUSEWHEEL) {
     var map = mapBrowserEvent.map;
     var mouseWheelEvent = mapBrowserEvent.browserEvent;
-    goog.asserts.assertInstanceof(mouseWheelEvent, goog.events.MouseWheelEvent);
+    goog.asserts.assertInstanceof(mouseWheelEvent, goog.events.MouseWheelEvent,
+        'mouseWheelEvent should be of type MouseWheelEvent');
 
     this.lastAnchor_ = mapBrowserEvent.coordinate;
     this.delta_ += mouseWheelEvent.deltaY;
@@ -105,7 +106,7 @@ ol.interaction.MouseWheelZoom.prototype.doZoom_ = function(map) {
   var delta = goog.math.clamp(this.delta_, -maxDelta, maxDelta);
 
   var view = map.getView();
-  goog.asserts.assert(!goog.isNull(view));
+  goog.asserts.assert(!goog.isNull(view), 'view should not be null');
 
   map.render();
   ol.interaction.Interaction.zoomByDelta(map, view, -delta, this.lastAnchor_,

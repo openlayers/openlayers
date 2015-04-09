@@ -17,12 +17,6 @@ ol.ASSUME_TOUCH = false;
 
 
 /**
- * @define {boolean} Replace unused entries with NaNs.
- */
-ol.BUFFER_REPLACE_UNUSED_ENTRIES_WITH_NANS = goog.DEBUG;
-
-
-/**
  * TODO: rename this to something having to do with tile grids
  * see https://github.com/openlayers/ol3/issues/2076
  * @define {number} Default maximum zoom for default tile grids.
@@ -184,7 +178,7 @@ ol.KEYBOARD_PAN_DURATION = 100;
 
 /**
  * @define {number} The maximum size in pixels of atlas images. Default is
- * `-1`, meaning it is not used (and `ol.ol.WEBGL_MAX_TEXTURE_SIZE` is
+ * `-1`, meaning it is not used (and `ol.WEBGL_MAX_TEXTURE_SIZE` is
  * used instead).
  */
 ol.MAX_ATLAS_SIZE = -1;
@@ -239,7 +233,6 @@ ol.WEBGL_TEXTURE_CACHE_HIGH_WATER_MARK = 1024;
  * supported, the value is set to `undefined`.
  * @const
  * @type {number|undefined}
- * @api
  */
 ol.WEBGL_MAX_TEXTURE_SIZE; // value is set in `ol.has`
 
