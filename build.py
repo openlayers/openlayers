@@ -309,6 +309,7 @@ def examples_star_json(name, match):
               "externs/bingmaps.js",
               "externs/bootstrap.js",
               "externs/closure-compiler.js",
+              "externs/esrijson.js",
               "externs/example.js",
               "externs/fastclick.js",
               "externs/geojson.js",
