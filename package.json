@@ -46,7 +46,9 @@
   "devDependencies": {
     "clean-css": "2.2.16",
     "coveralls": "2.11.2",
+    "debounce": "^1.0.0",
     "expect.js": "0.3.1",
+    "gaze": "^0.5.1",
     "istanbul": "0.3.13",
     "jquery": "2.1.1",
     "jshint": "2.5.6",
@@ -54,9 +56,9 @@
     "mocha-phantomjs": "3.5.1",
     "phantomjs": "1.9.10",
     "proj4": "2.3.3",
+    "resemblejs": "1.2.0",
     "sinon": "1.10.3",
-    "slimerjs-edge": "0.10.0-pre-2",
-    "resemblejs": "1.2.0"
+    "slimerjs-edge": "0.10.0-pre-2"
   },
   "ext": [
     "rbush"
