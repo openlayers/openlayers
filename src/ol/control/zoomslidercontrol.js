@@ -14,7 +14,6 @@ goog.require('goog.fx.Dragger.EventType');
 goog.require('goog.math');
 goog.require('goog.math.Rect');
 goog.require('goog.style');
-goog.require('ol');
 goog.require('ol.Size');
 goog.require('ol.ViewHint');
 goog.require('ol.animation');
@@ -72,6 +71,12 @@ ol.control.ZoomSlider = function(opt_options) {
    * @private
    */
   this.sliderInitialized_ = false;
+
+  /**
+   * @private
+   * @type {number}
+   */
+  this.duration_ = goog.isDef(options.duration) ? options.duration : 200;
 
   var className = goog.isDef(options.className) ?
       options.className : 'ol-zoomslider';
@@ -203,7 +208,7 @@ ol.control.ZoomSlider.prototype.handleContainerClick_ = function(browserEvent) {
       'currentResolution should be defined');
   map.beforeRender(ol.animation.zoom({
     resolution: currentResolution,
-    duration: ol.ZOOMSLIDER_ANIMATION_DURATION,
+    duration: this.duration_,
     easing: ol.easing.easeOut
   }));
   var relativePosition = this.getRelativePosition_(
@@ -250,7 +255,7 @@ ol.control.ZoomSlider.prototype.handleDraggerEnd_ = function(event) {
       'this.currentResolution_ should be defined');
   map.beforeRender(ol.animation.zoom({
     resolution: this.currentResolution_,
-    duration: ol.ZOOMSLIDER_ANIMATION_DURATION,
+    duration: this.duration_,
     easing: ol.easing.easeOut
   }));
   var resolution = view.constrainResolution(this.currentResolution_);

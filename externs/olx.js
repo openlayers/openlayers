@@ -1435,6 +1435,7 @@ olx.control.ZoomOptions.prototype.target;
 
 /**
  * @typedef {{className: (string|undefined),
+ *     duration: (number|undefined),
  *     maxResolution: (number|undefined),
  *     minResolution: (number|undefined),
  *     render: (function(ol.MapEvent)|undefined)}}
@@ -1449,6 +1450,14 @@ olx.control.ZoomSliderOptions;
  * @api stable
  */
 olx.control.ZoomSliderOptions.prototype.className;
+
+
+/**
+ * Animation duration in milliseconds. Default is `200`.
+ * @type {number|undefined}
+ * @api
+ */
+olx.control.ZoomSliderOptions.prototype.duration;
 
 
 /**

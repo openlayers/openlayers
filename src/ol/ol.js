@@ -240,12 +240,6 @@ ol.WEBGL_EXTENSIONS; // value is set in `ol.has`
 
 
 /**
- * @define {number} Zoom slider animation duration.
- */
-ol.ZOOMSLIDER_ANIMATION_DURATION = 200;
-
-
-/**
  * Inherit the prototype methods from one constructor into another.
  *
  * Usage:
