@@ -125,9 +125,6 @@ EXAMPLES_SRC_JS = [example.replace('.html', '.js')
 EXAMPLES_DEST_ALL = [path.replace('examples_src', 'examples')
             for path in EXAMPLES_SRC_ALL]
 
-EXAMPLES_JSON = ['build/' + example.replace('.html', '.json')
-                 for example in EXAMPLES_SRC_HTML]
-
 GLSL_SRC = [path
             for path in ifind('src')
             if path.endswith('.glsl')]
