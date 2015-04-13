@@ -49,12 +49,6 @@ ol.DEFAULT_WMS_VERSION = '1.3.0';
 
 
 /**
- * @define {number} Drag-rotate animation duration.
- */
-ol.DRAGROTATE_ANIMATION_DURATION = 250;
-
-
-/**
  * @define {number} Hysteresis pixels.
  */
 ol.DRAG_BOX_HYSTERESIS_PIXELS = 8;
