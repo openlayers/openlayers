@@ -128,9 +128,6 @@ EXAMPLES_DEST_ALL = [path.replace('examples_src', 'examples')
 EXAMPLES_JSON = ['build/' + example.replace('.html', '.json')
                  for example in EXAMPLES_SRC_HTML]
 
-EXAMPLES_COMBINED = ['build/' + example.replace('.html', '.combined.js')
-                     for example in EXAMPLES_SRC_HTML]
-
 GLSL_SRC = [path
             for path in ifind('src')
             if path.endswith('.glsl')]
@@ -256,10 +253,6 @@ def build_test_requires(t):
 @target('build/test_rendering_requires.js', SPEC_RENDERING)
 def build_test_rendering_requires(t):
   build_requires(t)
-
-
-virtual('build-examples', 'examples', 'build/examples/all.combined.js',
-        EXAMPLES_COMBINED)
 
 
 virtual('examples', EXAMPLES_DEST_ALL)
