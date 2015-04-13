@@ -359,7 +359,7 @@
 
   function resembleCanvas(canvas, referenceImage, tolerance, done) {
     if (window.showMap) {
-      document.getElementById('debug').appendChild(canvas);
+      document.body.appendChild(canvas);
     }
 
     resemble(referenceImage)
@@ -376,7 +376,7 @@
           if (window.showDiff) {
             var diffImage = new Image();
             diffImage.src = data.getImageDataUrl();
-            document.getElementById('debug').appendChild(diffImage);
+            document.body.appendChild(diffImage);
           }
           expect(data.misMatchPercentage).to.be.below(tolerance);
         }
