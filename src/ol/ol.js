@@ -49,12 +49,6 @@ ol.DEFAULT_WMS_VERSION = '1.3.0';
 
 
 /**
- * @define {number} Drag-rotate-zoom animation duration.
- */
-ol.DRAGROTATEANDZOOM_ANIMATION_DURATION = 400;
-
-
-/**
  * @define {number} Drag-rotate animation duration.
  */
 ol.DRAGROTATE_ANIMATION_DURATION = 250;

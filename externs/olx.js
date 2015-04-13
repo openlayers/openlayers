@@ -2251,7 +2251,8 @@ olx.interaction.DragPanOptions.prototype.kinetic;
 
 
 /**
- * @typedef {{condition: (ol.events.ConditionType|undefined)}}
+ * @typedef {{condition: (ol.events.ConditionType|undefined),
+ *     duration: (number|undefined)}}
  * @api
  */
 olx.interaction.DragRotateAndZoomOptions;
@@ -2265,6 +2266,14 @@ olx.interaction.DragRotateAndZoomOptions;
  * @api
  */
 olx.interaction.DragRotateAndZoomOptions.prototype.condition;
+
+
+/**
+ * Animation duration in milliseconds. Default is `400`.
+ * @type {number|undefined}
+ * @api
+ */
+olx.interaction.DragRotateAndZoomOptions.prototype.duration;
 
 
 /**
