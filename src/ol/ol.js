@@ -199,12 +199,6 @@ ol.OVERVIEWMAP_MIN_RATIO = 0.1;
 
 
 /**
- * @define {number} Rotate animation duration.
- */
-ol.ROTATE_ANIMATION_DURATION = 250;
-
-
-/**
  * @define {number} Tolerance for geometry simplification in device pixels.
  */
 ol.SIMPLIFY_TOLERANCE = 0.5;

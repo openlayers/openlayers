@@ -2534,10 +2534,19 @@ olx.interaction.MouseWheelZoomOptions.prototype.duration;
 
 
 /**
- * @typedef {{threshold: (number|undefined)}}
+ * @typedef {{threshold: (number|undefined),
+ *     duration: (number|undefined)}}
  * @api
  */
 olx.interaction.PinchRotateOptions;
+
+
+/**
+ * The duration of the animation in milliseconds. Default is `250`.
+ * @type {number|undefined}
+ * @api
+ */
+olx.interaction.PinchRotateOptions.prototype.duration;
 
 
 /**
