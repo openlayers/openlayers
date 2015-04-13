@@ -53,7 +53,7 @@ serve.createServer(function(err, server) {
         if (err) {
           process.stderr.write(
               'Error getting the exit status of SlimerJS' + '\n');
-          process.stderr.write(err);
+          process.stderr.write(err.stack + '\n');
           process.exit(1);
         } else {
           process.exit(data);
