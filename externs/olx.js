@@ -2286,6 +2286,7 @@ olx.interaction.DragRotateOptions.prototype.condition;
 
 /**
  * @typedef {{condition: (ol.events.ConditionType|undefined),
+ *     duration: (number|undefined),
  *     style: ol.style.Style}}
  * @api
  */
@@ -2300,6 +2301,14 @@ olx.interaction.DragZoomOptions;
  * @api
  */
 olx.interaction.DragZoomOptions.prototype.condition;
+
+
+/**
+ * Animation duration in milliseconds. Default is `200`.
+ * @type {number|undefined}
+ * @api
+ */
+olx.interaction.DragZoomOptions.prototype.duration;
 
 
 /**

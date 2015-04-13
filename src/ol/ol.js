@@ -61,12 +61,6 @@ ol.DRAGROTATE_ANIMATION_DURATION = 250;
 
 
 /**
- * @define {number} Drag-zoom animation duration.
- */
-ol.DRAGZOOM_ANIMATION_DURATION = 200;
-
-
-/**
  * @define {number} Hysteresis pixels.
  */
 ol.DRAG_BOX_HYSTERESIS_PIXELS = 8;
