@@ -7,9 +7,12 @@
 var path = require('path');
 var url = require('url');
 
+var Gaze = require('gaze').Gaze;
 var closure = require('closure-util');
+var debounce = require('debounce');
 var nomnom = require('nomnom');
 
+var buildExamples = require('./build-examples');
 var log = closure.log;
 
 
@@ -68,6 +71,26 @@ var createServer = exports.createServer = function(callback) {
   });
 };
 
+/**
+ * Build the examples and exit on any error.
+ * @param {Function=} opt_callback Called when done building examples.
+ */
+function buildExamplesOrFatal(opt_callback) {
+  log.info('serve', 'Building examples.');
+  buildExamples(function(err) {
+    if (err) {
+      log.error('serve', 'Building examples failed.');
+      log.error('serve', err.message);
+      log.error('serve', 'Use "verbose" logging to see the full stack trace.');
+      log.verbose('serve', err.stack);
+      process.exit(1);
+    }
+    log.verbose('serve', 'Done building examples.');
+    if (opt_callback) {
+      opt_callback();
+    }
+  });
+}
 
 /**
  * If running this module directly start the server.
@@ -92,21 +115,30 @@ if (require.main === module) {
   /** @type {string} */
   log.level = options.loglevel;
 
-  log.info('serve', 'Parsing dependencies ...');
-  createServer(function(err, server) {
-    if (err) {
-      log.error('serve', 'Parsing failed');
-      log.error('serve', err.message);
-      process.exit(1);
-    }
-    server.listen(options.port, function() {
-      log.info('serve', 'Listening on http://localhost:' +
-          options.port + '/ (Ctrl+C to stop)');
-    });
-    server.on('error', function(err) {
-      log.error('serve', 'Server failed to start: ' + err.message);
-      process.exit(1);
+  buildExamplesOrFatal(function() {
+    log.info('serve', 'Parsing dependencies.');
+    createServer(function(err, server) {
+      if (err) {
+        log.error('serve', 'Parsing failed');
+        log.error('serve', err.message);
+        process.exit(1);
+      }
+      server.listen(options.port, function() {
+        log.info('serve', 'Listening on http://localhost:' +
+            options.port + '/ (Ctrl+C to stop)');
+      });
+      server.on('error', function(err) {
+        log.error('serve', 'Server failed to start: ' + err.message);
+        process.exit(1);
+      });
     });
 
+    var gaze = new Gaze('examples_src/**/*');
+    var debouncedBuild = debounce(buildExamplesOrFatal, 250);
+    gaze.on('all', function(event, filepath) {
+      log.verbose('serve', 'Watch event: ' + event + ' ' + filepath);
+      debouncedBuild();
+    });
   });
+
 }

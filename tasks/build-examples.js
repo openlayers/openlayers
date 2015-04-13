@@ -81,14 +81,88 @@ function augmentExamples(files, metalsmith, done) {
   }
 }
 
+/**
+ * Create an inverted index of keywords from examples.  Property names are
+ * lowercased words.  Property values are objects mapping example index to word
+ * count.
+ * @param {Array.<Object>} exampleInfos Array of example info objects.
+ * @return {Object} Word index.
+ */
+function createWordIndex(exampleInfos) {
+  var index = {};
+  var keys = ['shortdesc', 'title', 'tags'];
+  exampleInfos.forEach(function(info, i) {
+    keys.forEach(function(key) {
+      var text = info[key];
+      var words = text ? text.split(/\W+/) : [];
+      words.forEach(function(word) {
+        if (word) {
+          word = word.toLowerCase();
+          var counts = index[word];
+          if (counts) {
+            if (index in counts) {
+              counts[i] += 1;
+            } else {
+              counts[i] = 1;
+            }
+          } else {
+            counts = {};
+            counts[i] = 1;
+            index[word] = counts;
+          }
+        }
+      });
+    });
+  });
+  return index;
+}
+
+/**
+ * A plugin that generates the example index.js file.  This file includes a
+ * list of example metadata objects and a word index used when searching for
+ * examples.
+ * @param {Object} files The file lookup provided by Metalsmith.  Property names
+ *     are file paths relative to the source directory.  The file objects
+ *     include any existing metadata (e.g. from YAML front-matter), the file
+ *     contents, and stats.
+ * @param {Object} metalsmith The metalsmith instance the plugin is being used
+ *     with.
+ * @param {function(Error)} done Called when done (with any error).
+ */
+function createIndex(files, metalsmith, done) {
+  setImmediate(done); // all remaining code is synchronous
+  var exampleInfos = [];
+  for (var filename in files) {
+    var example = files[filename];
+    if (markupRegEx.test(filename)) {
+      exampleInfos.push({
+        link: filename,
+        example: filename,
+        title: example.title,
+        shortdesc: example.shortdesc,
+        tags: example.tags
+      });
+    }
+  }
+  var info = {
+    examples: exampleInfos,
+    index: createWordIndex(exampleInfos)
+  };
+  files['index.js'] = {
+    contents: new Buffer('var info = ' + JSON.stringify(info)),
+    mode: '0644'
+  };
+}
+
 function main(callback) {
-  new Metalsmith('.')
+  var smith = new Metalsmith('.')
       .source(srcDir)
       .destination(destDir)
       .metadata({
         olVersion: pkg.version
       })
       .use(augmentExamples)
+      .use(createIndex)
       .use(templates({
         engine: 'handlebars',
         directory: templatesDir,
@@ -101,12 +175,15 @@ function main(callback) {
       .build(function(err) {
         callback(err);
       });
+  return smith;
 }
 
 if (require.main === module) {
   main(function(err) {
     if (err) {
-      process.stderr.write(err.message + '\n');
+      process.stderr.write(
+          'Building examples failed.  See the full trace below.\n\n' +
+          err.stack + '\n');
       process.exit(1);
     } else {
       process.exit(0);
