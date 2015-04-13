@@ -2385,6 +2385,7 @@ olx.interaction.DrawOptions.prototype.condition;
 
 /**
  * @typedef {{condition: (ol.events.ConditionType|undefined),
+ *     duration: (number|undefined),
  *     pixelDelta: (number|undefined)}}
  * @api
  */
@@ -2400,6 +2401,14 @@ olx.interaction.KeyboardPanOptions;
  * @api
  */
 olx.interaction.KeyboardPanOptions.prototype.condition;
+
+
+/**
+ * Animation duration in milliseconds. Default is `100`.
+ * @type {number|undefined}
+ * @api
+ */
+olx.interaction.KeyboardPanOptions.prototype.duration;
 
 
 /**

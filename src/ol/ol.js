@@ -171,12 +171,6 @@ ol.IS_LEGACY_IE = goog.userAgent.IE &&
 
 
 /**
- * @define {number} Keyboard pan duration.
- */
-ol.KEYBOARD_PAN_DURATION = 100;
-
-
-/**
  * @define {number} The maximum size in pixels of atlas images. Default is
  * `-1`, meaning it is not used (and `ol.WEBGL_MAX_TEXTURE_SIZE` is
  * used instead).
