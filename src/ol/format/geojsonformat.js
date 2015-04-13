@@ -1,4 +1,3 @@
-// FIXME coordinate order
 // FIXME reprojection
 
 goog.provide('ol.format.GeoJSON');
