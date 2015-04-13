@@ -42,8 +42,7 @@ map.addOverlay(marker);
 // LineString to store the different geolocation positions. This LineString
 // is time aware.
 // The Z dimension is actually used to store the rotation (heading).
-var positions = new ol.geom.LineString([],
-    /** @type {ol.geom.GeometryLayout} */ ('XYZM'));
+var positions = new ol.geom.LineString([], 'XYZM');
 
 // Geolocation Control
 var geolocation = new ol.Geolocation(/** @type {olx.GeolocationOptions} */ ({
