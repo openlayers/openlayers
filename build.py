@@ -825,9 +825,9 @@ Other less frequently used targets are:
   apidoc           - Builds the API-Documentation using JSDoc3.
   ci               - Builds all examples in various modes and usually takes a
                      long time to finish. This target calls the following
-                     targets: lint, build, build-all, test, test-rendering,
-                     build-examples, check-examples and apidoc. This is the
-                     target run on Travis CI.
+                     targets: 'lint', 'build', 'test', 'test-rendering',
+                     'build/examples/all.combined.js', 'check-examples',
+                     and 'apidoc'. This is the target run on Travis CI.
   test-coverage    - Generates a test coverage report in the coverage folder.
   reallyclean      - Remove untracked files from the repository.
   checkdeps        - Checks whether all required development software is
