@@ -172,7 +172,7 @@ virtual('default', 'build')
 
 
 virtual('ci', 'lint', 'build', 'test', 'test-rendering',
-    'build/examples/all.combined.js', 'check-examples', 'apidoc')
+    'build/compiled-examples/all.combined.js', 'check-examples', 'apidoc')
 
 
 virtual('build', 'build/ol.css', 'build/ol.js', 'build/ol-debug.js',
@@ -263,20 +263,20 @@ def examples_dest(name, match):
     return Target(name, action=action, dependencies=dependencies)
 
 
-@target('build/examples/all.combined.js', 'build/examples/all.js',
+@target('build/compiled-examples/all.combined.js', 'build/compiled-examples/all.js',
         SRC, SHADER_SRC, 'config/examples-all.json', NPM_INSTALL)
 def build_examples_all_combined_js(t):
     t.run('node', 'tasks/build.js', 'config/examples-all.json',
-          'build/examples/all.combined.js')
+          'build/compiled-examples/all.combined.js')
     report_sizes(t)
 
 
-@target('build/examples/all.js', EXAMPLES_SRC_JS)
+@target('build/compiled-examples/all.js', EXAMPLES_SRC_JS)
 def build_examples_all_js(t):
     t.output('%(PYTHON)s', 'bin/combine-examples.py', t.dependencies)
 
 
-@rule(r'\Abuild/examples/(?P<id>.*).json\Z')
+@rule(r'\Abuild/compiled-examples/(?P<id>.*).json\Z')
 def examples_star_json(name, match):
     def action(t):
 
@@ -381,15 +381,15 @@ def examples_star_json(name, match):
                   dependencies=[__file__, NPM_INSTALL])
 
 
-@rule(r'\Abuild/examples/(?P<id>.*).combined.js\Z')
+@rule(r'\Abuild/compiled-examples/(?P<id>.*).combined.js\Z')
 def examples_star_combined_js(name, match):
     def action(t):
-        config = 'build/examples/%(id)s.json' % match.groupdict()
+        config = 'build/compiled-examples/%(id)s.json' % match.groupdict()
         t.run('node', 'tasks/build.js', config, name)
         report_sizes(t)
     dependencies = [SRC, SHADER_SRC,
                     'examples/%(id)s.js' % match.groupdict(),
-                    'build/examples/%(id)s.json' % match.groupdict(),
+                    'build/compiled-examples/%(id)s.json' % match.groupdict(),
                     NPM_INSTALL]
     return Target(name, action=action, dependencies=dependencies)
 
@@ -816,7 +816,7 @@ Other less frequently used targets are:
   ci               - Builds all examples in various modes and usually takes a
                      long time to finish. This target calls the following
                      targets: 'lint', 'build', 'test', 'test-rendering',
-                     'build/examples/all.combined.js', 'check-examples',
+                     'build/compiled-examples/all.combined.js', 'check-examples',
                      and 'apidoc'. This is the target run on Travis CI.
   test-coverage    - Generates a test coverage report in the coverage folder.
   reallyclean      - Remove untracked files from the repository.
