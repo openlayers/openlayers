@@ -6,14 +6,40 @@ var templates = require('metalsmith-templates');
 var marked = require('marked');
 var pkg = require('../package.json');
 
+// The regex to replace … goog.require … and … renderer: exampleNS. … lines
+var cleanLineRegEx = /.*(goog\.require(.*);|.*renderer: exampleNS\..*,?)[\n]*/g;
+// The regex to replace inline type casts
+//
+// We capture a total of 1 group that consist of the following parts: the start
+// of a multiline comment, an optional space, the @-sign, 'type', a space,
+// opening curly brackets, any non-whitespace characters, closing curly brace,
+// an optional space, the end of a multiline comment followed by any number of
+// whitespace characters
+var cleanTypecastRegEx = /(\/\*\* ?@type \{\S*\} ?\*\/\s*)/g;
+
 var markupRegEx = /([^\/^\.]*)\.html$/;
-var cleanupJSRegEx = /.*(goog\.require(.*);|.*renderer: exampleNS\..*,?)[\n]*/g;
 var isCssRegEx = /\.css$/;
 var isJsRegEx = /\.js$/;
 
 var srcDir = path.join(__dirname, '..', 'examples_src');
 var destDir = path.join(__dirname, '..', 'examples');
 var templatesDir = path.join(__dirname, '..', 'config', 'examples');
+
+
+/**
+ * Cleans the passed JavaScript source from
+ *   * … goog.require … lines
+ *   * … renderer: exampleNS. … lines
+ *   * inline type casts
+ *
+ * @param {String} src The JavaScript source to cleanup.
+ * @returns {String} The cleaned JavaScript source.
+ */
+function cleanupScriptSource(src) {
+  src = src.replace(cleanLineRegEx, '');
+  src = src.replace(cleanTypecastRegEx, '');
+  return src;
+}
 
 /**
  * A Metalsmith plugin that adds metadata to the example HTML files.  For each
@@ -48,8 +74,7 @@ function augmentExamples(files, metalsmith, done) {
       }
       file.js = {
         tag: '<script src="loader.js?id=' + id + '"></script>',
-        source: files[jsFilename].contents.toString().replace(
-            cleanupJSRegEx, '')
+        source: cleanupScriptSource(files[jsFilename].contents.toString())
       };
 
       // add css tag and source
