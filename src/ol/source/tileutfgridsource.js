@@ -271,7 +271,7 @@ ol.source.TileUTFGridTile_.prototype.getImage = function(opt_context) {
  */
 ol.source.TileUTFGridTile_.prototype.getData = function(coordinate) {
   if (goog.isNull(this.grid_) || goog.isNull(this.keys_) ||
-      goog.isNull(this.data_)) {
+      !goog.isDefAndNotNull(this.data_)) {
     return null;
   }
   var xRelative = (coordinate[0] - this.extent_[0]) /
