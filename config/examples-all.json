@@ -3,7 +3,7 @@
   "src": [
     "src/**/*.js",
     "build/ol.ext/*.js",
-    "build/examples/all.js"
+    "build/compiled-examples/all.js"
   ],
   "compile": {
     "js": [

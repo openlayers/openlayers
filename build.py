@@ -122,7 +122,7 @@ EXAMPLES_SRC_HTML = [path
 EXAMPLES_SRC_JS = [example.replace('.html', '.js')
             for example in EXAMPLES_SRC_HTML]
 
-EXAMPLES_DEST_ALL = [path.replace('examples_src', 'examples')
+EXAMPLES_DEST_ALL = [path.replace('examples_src', 'build/examples')
             for path in EXAMPLES_SRC_ALL]
 
 GLSL_SRC = [path
@@ -255,7 +255,7 @@ def build_test_rendering_requires(t):
 virtual('examples', EXAMPLES_DEST_ALL)
 
 
-@rule(r'\Aexamples/(?P<filepath>.*)\Z')
+@rule(r'\Abuild\/examples/(?P<filepath>.*)\Z')
 def examples_dest(name, match):
     def action(t):
         t.run('node', 'tasks/build-examples.js')
@@ -299,7 +299,7 @@ def examples_star_json(name, match):
           "src": [
             "src/**/*.js",
             "build/ol.ext/*.js",
-            "examples/%(id)s.js" % match.groupdict()],
+            "build/examples/%(id)s.js" % match.groupdict()],
           "compile": {
             "js": [
               "externs/olx.js",
@@ -623,7 +623,7 @@ def build_check_whitespace_timestamp(t):
 virtual('apidoc', 'build/jsdoc-%(BRANCH)s-timestamp' % vars(variables))
 
 
-@target('build/jsdoc-%(BRANCH)s-timestamp' % vars(variables), 'host-resources',
+@target('build/jsdoc-%(BRANCH)s-timestamp' % vars(variables),
         SRC, SHADER_SRC, ifind('config/jsdoc/api/template'),
         NPM_INSTALL)
 def jsdoc_BRANCH_timestamp(t):
@@ -665,14 +665,7 @@ def split_example_file(example, dst_dir):
     target_require.close()
 
 
-@target('host-resources', phony=True)
-def host_resources(t):
-    resources_dir = 'build/hosted/%(BRANCH)s/resources'
-    t.rm_rf(resources_dir)
-    t.cp_r('resources', resources_dir)
-
-
-@target('host-examples', 'build', 'host-resources', 'examples', phony=True)
+@target('host-examples', 'build', 'examples', phony=True)
 def host_examples(t):
     examples_dir = 'build/hosted/%(BRANCH)s/examples'
     build_dir = 'build/hosted/%(BRANCH)s/build'
@@ -680,7 +673,7 @@ def host_examples(t):
     closure_lib_path = output('node', '-e',
         'process.stdout.write(require("closure-util").getLibraryPath())')
     t.rm_rf(examples_dir)
-    t.cp_r('examples', examples_dir)
+    t.cp_r('build/examples', examples_dir)
     for example in EXAMPLES_SRC_JS:
         split_example_file(example, examples_dir % vars(variables))
     t.cp('bin/loader_hosted_examples.js', examples_dir + '/loader.js')

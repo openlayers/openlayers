@@ -12,7 +12,7 @@ var isCssRegEx = /\.css$/;
 var isJsRegEx = /\.js$/;
 
 var srcDir = path.join(__dirname, '..', 'examples_src');
-var destDir = path.join(__dirname, '..', 'examples');
+var destDir = path.join(__dirname, '..', 'build', 'examples');
 var templatesDir = path.join(__dirname, '..', 'config', 'examples');
 
 /**
