@@ -107,7 +107,7 @@ ol.source.BingMaps.prototype.handleImageryMetadataResponse =
     extent: ol.tilegrid.extentFromProjection(sourceProjection),
     minZoom: resource.zoomMin,
     maxZoom: maxZoom,
-    tileSize: resource.imageWidth
+    tileSize: [resource.imageWidth, resource.imageHeight]
   });
   this.tileGrid = tileGrid;
 

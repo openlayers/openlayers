@@ -5145,7 +5145,7 @@ olx.source.WMTSOptions.prototype.wrapX;
  *     minZoom: (number|undefined),
  *     tileLoadFunction: (ol.TileLoadFunctionType|undefined),
  *     tilePixelRatio: (number|undefined),
- *     tileSize: (number|undefined),
+ *     tileSize: (number|ol.Size|undefined),
  *     tileUrlFunction: (ol.TileUrlFunctionType|undefined),
  *     url: (string|undefined),
  *     urls: (Array.<string>|undefined),
@@ -5227,8 +5227,8 @@ olx.source.XYZOptions.prototype.tilePixelRatio;
 
 
 /**
- * The tile size used by the tile service. Default is `256` pixels.
- * @type {number|undefined}
+ * The tile size used by the tile service. Default is `[256, 256]` pixels.
+ * @type {number|ol.Size|undefined}
  * @api
  */
 olx.source.XYZOptions.prototype.tileSize;
@@ -5924,8 +5924,8 @@ olx.tilegrid;
  *     origin: (ol.Coordinate|undefined),
  *     origins: (Array.<ol.Coordinate>|undefined),
  *     resolutions: !Array.<number>,
- *     tileSize: (number|undefined),
- *     tileSizes: (Array.<number>|undefined),
+ *     tileSize: (number|ol.Size|undefined),
+ *     tileSizes: (Array.<number|ol.Size>|undefined),
  *     widths: (Array.<number>|undefined)}}
  * @api
  */
@@ -5968,8 +5968,8 @@ olx.tilegrid.TileGridOptions.prototype.resolutions;
 
 
 /**
- * Tile size. Default is 256. (Only square tiles are supported.)
- * @type {number|undefined}
+ * Tile size. Default is `[256, 256]`.
+ * @type {number|ol.Size|undefined}
  * @api stable
  */
 olx.tilegrid.TileGridOptions.prototype.tileSize;
@@ -5978,7 +5978,7 @@ olx.tilegrid.TileGridOptions.prototype.tileSize;
 /**
  * Tile sizes. If given, the array length should match the length of the
  * `resolutions` array, i.e. each resolution can have a different tile size.
- * @type {Array.<number>|undefined}
+ * @type {Array.<number|ol.Size>|undefined}
  * @api stable
  */
 olx.tilegrid.TileGridOptions.prototype.tileSizes;
@@ -6001,8 +6001,8 @@ olx.tilegrid.TileGridOptions.prototype.widths;
  *     origins: (Array.<ol.Coordinate>|undefined),
  *     resolutions: !Array.<number>,
  *     matrixIds: !Array.<string>,
- *     tileSize: (number|undefined),
- *     tileSizes: (Array.<number>|undefined),
+ *     tileSize: (number|ol.Size|undefined),
+ *     tileSizes: (Array.<number|ol.Size>|undefined),
  *     widths: (Array.<number>|undefined)}}
  * @api
  */
@@ -6047,7 +6047,7 @@ olx.tilegrid.WMTSOptions.prototype.matrixIds;
 
 /**
  * Tile size.
- * @type {number|undefined}
+ * @type {number|ol.Size|undefined}
  * @api
  */
 olx.tilegrid.WMTSOptions.prototype.tileSize;
@@ -6056,7 +6056,7 @@ olx.tilegrid.WMTSOptions.prototype.tileSize;
 /**
  * Tile sizes. The length of this array needs to match the length of the
  * `resolutions` array.
- * @type {Array.<number>|undefined}
+ * @type {Array.<number|ol.Size>|undefined}
  * @api
  */
 olx.tilegrid.WMTSOptions.prototype.tileSizes;
@@ -6078,7 +6078,7 @@ olx.tilegrid.WMTSOptions.prototype.widths;
  * @typedef {{extent: (ol.Extent|undefined),
  *     maxZoom: (number|undefined),
  *     minZoom: (number|undefined),
- *     tileSize: (number|undefined)}}
+ *     tileSize: (number|ol.Size|undefined)}}
  * @api
  */
 olx.tilegrid.XYZOptions;
@@ -6114,8 +6114,8 @@ olx.tilegrid.XYZOptions.prototype.minZoom;
 
 
 /**
- * Tile size in pixels. Default is 256. (Only square tiles are supported.)
- * @type {number|undefined}
+ * Tile size in pixels. Default is `[256, 256]`.
+ * @type {number|ol.Size|undefined}
  * @api
  */
 olx.tilegrid.XYZOptions.prototype.tileSize;
