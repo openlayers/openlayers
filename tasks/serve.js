@@ -147,7 +147,7 @@ if (require.main === module) {
       });
     });
 
-    var gaze = new Gaze('examples_src/**/*');
+    var gaze = new Gaze('examples/**/*');
     var debouncedBuild = debounce(buildExamplesOrFatal, 250);
     gaze.on('all', function(event, filepath) {
       log.verbose('serve', 'Watch event: ' + event + ' ' + filepath);

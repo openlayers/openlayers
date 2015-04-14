@@ -112,17 +112,17 @@ EXECUTABLES = [variables.CLEANCSS, variables.GIT, variables.GJSLINT,
                variables.JSDOC, variables.JSHINT, variables.PYTHON,
                variables.PHANTOMJS]
 
-EXAMPLES_SRC_ALL = [path for path in ifind('examples_src')]
+EXAMPLES_SRC_ALL = [path for path in ifind('examples')]
 
 EXAMPLES_SRC_HTML = [path
             for path in EXAMPLES_SRC_ALL
             if path.endswith('.html')
-            if path != 'examples_src/index.html']
+            if path != 'examples/index.html']
 
 EXAMPLES_SRC_JS = [example.replace('.html', '.js')
             for example in EXAMPLES_SRC_HTML]
 
-EXAMPLES_DEST_ALL = [path.replace('examples_src', 'build/examples')
+EXAMPLES_DEST_ALL = [path.replace('examples', 'build/examples')
             for path in EXAMPLES_SRC_ALL]
 
 GLSL_SRC = [path
@@ -259,7 +259,7 @@ virtual('examples', EXAMPLES_DEST_ALL)
 def examples_dest(name, match):
     def action(t):
         t.run('node', 'tasks/build-examples.js')
-    dependencies = ['examples_src/%(filepath)s' % match.groupdict()]
+    dependencies = ['examples/%(filepath)s' % match.groupdict()]
     return Target(name, action=action, dependencies=dependencies)
 
 
@@ -701,7 +701,7 @@ def host_examples(t):
 
 @target('check-examples', 'host-examples', phony=True)
 def check_examples(t):
-    examples = ['build/hosted/%(BRANCH)s/' + e.replace('examples_src', 'examples')
+    examples = ['build/hosted/%(BRANCH)s/' + e
                 for e in EXAMPLES_SRC_HTML
                 if not open(e.replace('.html', '.js'), 'rU').readline().startswith('// NOCOMPILE')]
     all_examples = [e + '?mode=advanced' for e in examples]
