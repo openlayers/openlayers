@@ -55,7 +55,7 @@
     "mocha": "1.21.5",
     "mocha-phantomjs": "3.5.1",
     "phantomjs": "1.9.10",
-    "proj4": "2.3.3",
+    "proj4": "2.3.6",
     "resemblejs": "1.2.0",
     "sinon": "1.10.3",
     "slimerjs-edge": "0.10.0-pre-2"
