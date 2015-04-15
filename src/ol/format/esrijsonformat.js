@@ -111,7 +111,7 @@ ol.format.EsriJSON.convertRings_ = function(rings, hasZ) {
     }
   }
   while (holes.length) {
-    var hole = holes.pop();
+    var hole = holes.shift();
     var matched = false;
     for (i = outerRings.length - 1; i >= 0; i--) {
       var outerRing = outerRings[i][0];
@@ -222,6 +222,121 @@ ol.format.EsriJSON.readPolygonGeometry_ = function(object) {
 
 
 /**
+ * @param {ol.geom.Geometry} geometry Geometry.
+ * @param {olx.format.WriteOptions=} opt_options Write options.
+ * @private
+ * @return {EsriJSONGeometry} EsriJSON geometry.
+ */
+ol.format.EsriJSON.writePointGeometry_ = function(geometry, opt_options) {
+  goog.asserts.assertInstanceof(geometry, ol.geom.Point,
+      'geometry should be an ol.geom.Point');
+  var coordinates = geometry.getCoordinates();
+  if (geometry.getLayout() === ol.geom.GeometryLayout.XYZ) {
+    return /** @type {EsriJSONPoint} */ ({
+      'x': coordinates[0],
+      'y': coordinates[1],
+      'z': coordinates[2]
+    });
+  } else {
+    return /** @type {EsriJSONPoint} */ ({
+      'x': coordinates[0],
+      'y': coordinates[1]
+    });
+  }
+};
+
+
+/**
+ * @param {ol.geom.Geometry} geometry Geometry.
+ * @param {olx.format.WriteOptions=} opt_options Write options.
+ * @private
+ * @return {EsriJSONPolyline} EsriJSON geometry.
+ */
+ol.format.EsriJSON.writeLineStringGeometry_ = function(geometry, opt_options) {
+  goog.asserts.assertInstanceof(geometry, ol.geom.LineString,
+      'geometry should be an ol.geom.LineString');
+  return /** @type {EsriJSONPolyline} */ ({
+    'hasZ': (geometry.getLayout() === ol.geom.GeometryLayout.XYZ),
+    'paths': [geometry.getCoordinates()]
+  });
+};
+
+
+/**
+ * @param {ol.geom.Geometry} geometry Geometry.
+ * @param {olx.format.WriteOptions=} opt_options Write options.
+ * @private
+ * @return {EsriJSONPolygon} EsriJSON geometry.
+ */
+ol.format.EsriJSON.writePolygonGeometry_ = function(geometry, opt_options) {
+  goog.asserts.assertInstanceof(geometry, ol.geom.Polygon,
+      'geometry should be an ol.geom.Polygon');
+  // Esri geometries use the left-hand rule
+  return /** @type {EsriJSONPolygon} */ ({
+    'hasZ': (geometry.getLayout() === ol.geom.GeometryLayout.XYZ),
+    'rings': geometry.getCoordinates(false)
+  });
+};
+
+
+/**
+ * @param {ol.geom.Geometry} geometry Geometry.
+ * @param {olx.format.WriteOptions=} opt_options Write options.
+ * @private
+ * @return {EsriJSONPolyline} EsriJSON geometry.
+ */
+ol.format.EsriJSON.writeMultiLineStringGeometry_ =
+    function(geometry, opt_options) {
+  goog.asserts.assertInstanceof(geometry, ol.geom.MultiLineString,
+      'geometry should be an ol.geom.MultiLineString');
+  return /** @type {EsriJSONPolyline} */ ({
+    'hasZ': (geometry.getLayout() === ol.geom.GeometryLayout.XYZ),
+    'paths': geometry.getCoordinates()
+  });
+};
+
+
+/**
+ * @param {ol.geom.Geometry} geometry Geometry.
+ * @param {olx.format.WriteOptions=} opt_options Write options.
+ * @private
+ * @return {EsriJSONMultipoint} EsriJSON geometry.
+ */
+ol.format.EsriJSON.writeMultiPointGeometry_ = function(geometry, opt_options) {
+  goog.asserts.assertInstanceof(geometry, ol.geom.MultiPoint,
+      'geometry should be an ol.geom.MultiPoint');
+  return /** @type {EsriJSONMultipoint} */ ({
+    'hasZ': (geometry.getLayout() === ol.geom.GeometryLayout.XYZ),
+    'points': geometry.getCoordinates()
+  });
+};
+
+
+/**
+ * @param {ol.geom.Geometry} geometry Geometry.
+ * @param {olx.format.WriteOptions=} opt_options Write options.
+ * @private
+ * @return {EsriJSONPolygon} EsriJSON geometry.
+ */
+ol.format.EsriJSON.writeMultiPolygonGeometry_ = function(geometry,
+    opt_options) {
+  goog.asserts.assertInstanceof(geometry, ol.geom.MultiPolygon,
+      'geometry should be an ol.geom.MultiPolygon');
+  var coordinates = geometry.getCoordinates(false);
+  var output = [];
+  for (var i = 0; i < coordinates.length; i++) {
+    for (var x = coordinates[i].length - 1; x >= 0; x--) {
+      output.push(coordinates[i][x]);
+    }
+  }
+  return /** @type {EsriJSONPolygon} */ ({
+    'hasZ': (geometry.getLayout() === ol.geom.GeometryLayout.XYZ),
+    'rings': output
+  });
+};
+
+
+/**
  * @const
  * @private
  * @type {Object.<string, function(EsriJSONObject): ol.geom.Geometry>}
@@ -237,6 +352,21 @@ ol.format.EsriJSON.GEOMETRY_READERS_ = {
 
 
 /**
+ * @const
+ * @private
+ * @type {Object.<string, function(ol.geom.Geometry, olx.format.WriteOptions=): (EsriJSONGeometry)>}
+ */
+ol.format.EsriJSON.GEOMETRY_WRITERS_ = {
+  'Point': ol.format.EsriJSON.writePointGeometry_,
+  'LineString': ol.format.EsriJSON.writeLineStringGeometry_,
+  'Polygon': ol.format.EsriJSON.writePolygonGeometry_,
+  'MultiPoint': ol.format.EsriJSON.writeMultiPointGeometry_,
+  'MultiLineString': ol.format.EsriJSON.writeMultiLineStringGeometry_,
+  'MultiPolygon': ol.format.EsriJSON.writeMultiPolygonGeometry_
+};
+
+
+/**
  * Read a feature from a EsriJSON Feature source.  Only works for Feature,
  * use `readFeatures` to read FeatureCollection source.
  *
@@ -244,7 +374,7 @@ ol.format.EsriJSON.GEOMETRY_READERS_ = {
  * @param {ArrayBuffer|Document|Node|Object|string} source Source.
  * @param {olx.format.ReadOptions=} opt_options Read options.
  * @return {ol.Feature} Feature.
- * @api stable
+ * @api
  */
 ol.format.EsriJSON.prototype.readFeature;
 
@@ -257,7 +387,7 @@ ol.format.EsriJSON.prototype.readFeature;
  * @param {ArrayBuffer|Document|Node|Object|string} source Source.
  * @param {olx.format.ReadOptions=} opt_options Read options.
  * @return {Array.<ol.Feature>} Features.
- * @api stable
+ * @api
  */
 ol.format.EsriJSON.prototype.readFeatures;
 
@@ -327,7 +457,7 @@ ol.format.EsriJSON.prototype.readFeaturesFromObject = function(
  * @param {ArrayBuffer|Document|Node|Object|string} source Source.
  * @param {olx.format.ReadOptions=} opt_options Read options.
  * @return {ol.geom.Geometry} Geometry.
- * @api stable
+ * @api
  */
 ol.format.EsriJSON.prototype.readGeometry;
 
@@ -348,7 +478,7 @@ ol.format.EsriJSON.prototype.readGeometryFromObject = function(
  * @function
  * @param {ArrayBuffer|Document|Node|Object|string} source Source.
  * @return {ol.proj.Projection} Projection.
- * @api stable
+ * @api
  */
 ol.format.EsriJSON.prototype.readProjection;
 
@@ -365,4 +495,127 @@ ol.format.EsriJSON.prototype.readProjectionFromObject = function(object) {
   } else {
     return null;
   }
+};
+
+
+/**
+ * @param {ol.geom.Geometry} geometry Geometry.
+ * @param {olx.format.WriteOptions=} opt_options Write options.
+ * @private
+ * @return {EsriJSONGeometry} EsriJSON geometry.
+ */
+ol.format.EsriJSON.writeGeometry_ = function(geometry, opt_options) {
+  var geometryWriter = ol.format.EsriJSON.GEOMETRY_WRITERS_[geometry.getType()];
+  goog.asserts.assert(goog.isDef(geometryWriter),
+      'geometryWriter should be defined');
+  return geometryWriter(/** @type {ol.geom.Geometry} */ (
+      ol.format.Feature.transformWithOptions(geometry, true, opt_options)),
+      opt_options);
+};
+
+
+/**
+ * Encode a geometry as a EsriJSON string.
+ *
+ * @function
+ * @param {ol.geom.Geometry} geometry Geometry.
+ * @param {olx.format.WriteOptions=} opt_options Write options.
+ * @return {string} EsriJSON.
+ * @api
+ */
+ol.format.EsriJSON.prototype.writeGeometry;
+
+
+/**
+ * Encode a geometry as a EsriJSON object.
+ *
+ * @param {ol.geom.Geometry} geometry Geometry.
+ * @param {olx.format.WriteOptions=} opt_options Write options.
+ * @return {EsriJSONGeometry} Object.
+ * @api
+ */
+ol.format.EsriJSON.prototype.writeGeometryObject = function(geometry,
+    opt_options) {
+  return ol.format.EsriJSON.writeGeometry_(geometry,
+      this.adaptOptions(opt_options));
+};
+
+
+/**
+ * Encode a feature as a EsriJSON Feature string.
+ *
+ * @function
+ * @param {ol.Feature} feature Feature.
+ * @param {olx.format.WriteOptions=} opt_options Write options.
+ * @return {string} EsriJSON.
+ * @api
+ */
+ol.format.EsriJSON.prototype.writeFeature;
+
+
+/**
+ * Encode a feature as a esriJSON Feature object.
+ *
+ * @param {ol.Feature} feature Feature.
+ * @param {olx.format.WriteOptions=} opt_options Write options.
+ * @return {Object} Object.
+ * @api
+ */
+ol.format.EsriJSON.prototype.writeFeatureObject = function(
+    feature, opt_options) {
+  opt_options = this.adaptOptions(opt_options);
+  var object = {};
+  var geometry = feature.getGeometry();
+  if (goog.isDefAndNotNull(geometry)) {
+    object['geometry'] =
+        ol.format.EsriJSON.writeGeometry_(geometry, opt_options);
+  }
+  var properties = feature.getProperties();
+  goog.object.remove(properties, feature.getGeometryName());
+  if (!goog.object.isEmpty(properties)) {
+    object['attributes'] = properties;
+  } else {
+    object['attributes'] = {};
+  }
+  if (goog.isDef(opt_options) && goog.isDef(opt_options.featureProjection)) {
+    object['spatialReference'] = /** @type {EsriJSONCRS} */({
+      wkid: ol.proj.get(
+          opt_options.featureProjection).getCode().split(':').pop()
+    });
+  }
+  return object;
+};
+
+
+/**
+ * Encode an array of features as EsriJSON.
+ *
+ * @function
+ * @param {Array.<ol.Feature>} features Features.
+ * @param {olx.format.WriteOptions=} opt_options Write options.
+ * @return {string} EsriJSON.
+ * @api
+ */
+ol.format.EsriJSON.prototype.writeFeatures;
+
+
+/**
+ * Encode an array of features as a EsriJSON object.
+ *
+ * @param {Array.<ol.Feature>} features Features.
+ * @param {olx.format.WriteOptions=} opt_options Write options.
+ * @return {Object} EsriJSON Object.
+ * @api
+ */
+ol.format.EsriJSON.prototype.writeFeaturesObject =
+    function(features, opt_options) {
+  opt_options = this.adaptOptions(opt_options);
+  var objects = [];
+  var i, ii;
+  for (i = 0, ii = features.length; i < ii; ++i) {
+    objects.push(this.writeFeatureObject(features[i], opt_options));
+  }
+  return /** @type {EsriJSONFeatureCollection} */ ({
+    'features': objects
+  });
 };
