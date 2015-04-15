@@ -180,9 +180,18 @@ geolocateBtn.addEventListener('click', function() {
 
 // simulate device move
 var simulationData;
-$.getJSON('data/geolocation-orientation.json', function(data) {
-  simulationData = data.data;
-});
+var client = new XMLHttpRequest();
+client.open('GET', 'data/geolocation-orientation.json');
+
+
+/**
+ * Handle data loading.
+ */
+client.onload = function() {
+  simulationData = JSON.parse(client.responseText).data;
+};
+client.send();
+
 var simulateBtn = document.getElementById('simulate');
 simulateBtn.addEventListener('click', function() {
   var coordinates = simulationData;
