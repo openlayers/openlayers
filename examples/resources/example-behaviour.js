@@ -13,7 +13,7 @@
   if (window.location.host === 'localhost:3000') {
     return;
   }
-  var container = $('.navbar .navbar-inner .container')[0],
+  var container = document.getElementById('navbar-inner-container'),
       form = document.createElement('form'),
       select = document.createElement('select'),
       possibleModes = {
