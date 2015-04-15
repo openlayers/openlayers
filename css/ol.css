@@ -190,11 +190,8 @@
 }
 
 .ol-zoomslider {
-  position: absolute;
   top: 4.5em;
   left: .5em;
-  background: #eee;
-  background: rgba(255, 255, 255, 0.4);
   width: 24px;
   height: 200px;
 }
@@ -218,7 +215,6 @@
 }
 
 .ol-overviewmap {
-  position: absolute;
   left: 0.5em;
   bottom: 0.5em;
 }
