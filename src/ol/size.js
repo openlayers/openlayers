@@ -59,20 +59,25 @@ ol.size.scale = function(size, ratio, opt_size) {
 
 
 /**
+ * Returns an `ol.Size` array for the passed in number (meaning: square) or
+ * `ol.Size` array.
+ * (meaning: non-square),
  * @param {number|ol.Size} size Width and height.
  * @param {ol.Size=} opt_size Optional reusable size array.
  * @return {ol.Size} Size.
+ * @api stable
  */
 ol.size.toSize = function(size, opt_size) {
   if (goog.isArray(size)) {
     return size;
   } else {
-    if (!goog.isDef(opt_size)) {
-      opt_size = [0, 0];
-    }
     goog.asserts.assert(goog.isNumber(size));
-    opt_size[0] = size;
-    opt_size[1] = size;
+    if (!goog.isDef(opt_size)) {
+      opt_size = [size, size];
+    } else {
+      opt_size[0] = size;
+      opt_size[1] = size;
+    }
     return opt_size;
   }
 };
