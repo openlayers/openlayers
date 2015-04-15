@@ -39,11 +39,12 @@ var map = new ol.Map({
   })
 });
 
-$('#layer-select').change(function() {
-  var style = $(this).find(':selected').val();
-  var i, ii;
-  for (i = 0, ii = layers.length; i < ii; ++i) {
-    layers[i].setVisible(styles[i] == style);
+var select = document.getElementById('layer-select');
+function onChange() {
+  var style = select.value;
+  for (var i = 0, ii = layers.length; i < ii; ++i) {
+    layers[i].setVisible(styles[i] === style);
   }
-});
-$('#layer-select').trigger('change');
+}
+select.addEventListener('change', onChange);
+onChange();

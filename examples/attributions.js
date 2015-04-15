@@ -29,5 +29,5 @@ function checkSize() {
   attribution.setCollapsed(small);
 }
 
-$(window).on('resize', checkSize);
+window.addEventListener('resize', checkSize);
 checkSize();
