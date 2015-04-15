@@ -5146,6 +5146,138 @@ olx.source.WMTSOptions.prototype.wrapX;
  *     tileLoadFunction: (ol.TileLoadFunctionType|undefined),
  *     tilePixelRatio: (number|undefined),
  *     tileSize: (number|undefined),
+ *     url: (string),
+ *     layer: (string),
+ *     gridset: (string),
+ *     extension: (string|undefined),
+ *     wrapX: (boolean|undefined)}}
+ * @api
+ */
+olx.source.GWCOptions;
+
+
+/**
+ * Attributions.
+ * @type {Array.<ol.Attribution>|undefined}
+ * @api stable
+ */
+olx.source.GWCOptions.prototype.attributions;
+
+
+/**
+ * The `crossOrigin` attribute for loaded images.  Note that you must provide a
+ * `crossOrigin` value if you are using the WebGL renderer or if you want to
+ * access pixel data with the Canvas renderer.  See
+ * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/CORS_enabled_image}
+ * for more detail.
+ * @type {null|string|undefined}
+ * @api stable
+ */
+olx.source.GWCOptions.prototype.crossOrigin;
+
+
+/**
+ * Logo.
+ * @type {string|olx.LogoOptions|undefined}
+ * @api stable
+ */
+olx.source.GWCOptions.prototype.logo;
+
+
+/**
+ * Projection. Default is `EPSG:3857`.
+ * @type {ol.proj.ProjectionLike}
+ * @api
+ */
+olx.source.GWCOptions.prototype.projection;
+
+
+/**
+ * Optional max zoom level. Default is `18`.
+ * @type {number|undefined}
+ * @api
+ */
+olx.source.GWCOptions.prototype.maxZoom;
+
+
+/**
+ * Optional function to load a tile given a URL.
+ * @type {ol.TileLoadFunctionType|undefined}
+ * @api
+ */
+olx.source.GWCOptions.prototype.tileLoadFunction;
+
+
+/**
+ * The pixel ratio used by the tile service. For example, if the tile
+ * service advertizes 256px by 256px tiles but actually sends 512px
+ * by 512px images (for retina/hidpi devices) then `tilePixelRatio`
+ * should be set to `2`. Default is `1`.
+ * @type {number|undefined}
+ * @api
+ */
+olx.source.GWCOptions.prototype.tilePixelRatio;
+
+
+/**
+ * The tile size used by the tile service. Default is `256` pixels.
+ * @type {number|undefined}
+ * @api
+ */
+olx.source.GWCOptions.prototype.tileSize;
+
+
+/**
+ * URL to GeoWebCache cache directory.
+ * @type {string}
+ * @api stable
+ */
+olx.source.GWCOptions.prototype.url;
+
+
+/**
+ * GeoWebCache layer name. A layer corresponds to a directory inside the cache
+ * directory containing one or more caches.
+ * @type {string}
+ * @api stable
+ */
+olx.source.GWCOptions.prototype.layer;
+
+
+/**
+ * GeoWebCache gridset name. A gridset is a cache area definition in GeoWebCache
+ * and will be used to find the correct path inside a cache.
+ * @type {string}
+ * @api stable
+ */
+olx.source.GWCOptions.prototype.gridset;
+
+
+/**
+ * File extension. Default is 'png'.
+ * @type {string|undefined}
+ * @api stable
+ */
+olx.source.GWCOptions.prototype.extension;
+
+
+/**
+ * Whether to wrap the world horizontally. Default is `true`.
+ * @type {boolean|undefined}
+ * @api
+ */
+olx.source.GWCOptions.prototype.wrapX;
+
+/**
+ * @typedef {{attributions: (Array.<ol.Attribution>|undefined),
+ *     crossOrigin: (null|string|undefined),
+ *     logo: (string|olx.LogoOptions|undefined),
+ *     projection: ol.proj.ProjectionLike,
+ *     maxZoom: (number|undefined),
+ *     minZoom: (number|undefined),
+ *     tileLoadFunction: (ol.TileLoadFunctionType|undefined),
+ *     tilePixelRatio: (number|undefined),
+ *     tileSize: (number|undefined),
  *     tileUrlFunction: (ol.TileUrlFunctionType|undefined),
  *     url: (string|undefined),
  *     urls: (Array.<string>|undefined),
