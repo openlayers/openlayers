@@ -6,8 +6,8 @@ goog.require('ol.layer.Tile');
 goog.require('ol.source.Stamen');
 goog.require('ol.source.Vector');
 
-var blur = $('#blur');
-var radius = $('#radius');
+var blur = document.getElementById('blur');
+var radius = document.getElementById('radius');
 
 var vector = new ol.layer.Heatmap({
   source: new ol.source.Vector({
@@ -16,8 +16,8 @@ var vector = new ol.layer.Heatmap({
       extractStyles: false
     })
   }),
-  blur: parseInt(blur.val(), 10),
-  radius: parseInt(radius.val(), 10)
+  blur: parseInt(blur.value, 10),
+  radius: parseInt(radius.value, 10)
 });
 
 vector.getSource().on('addfeature', function(event) {
@@ -45,10 +45,10 @@ var map = new ol.Map({
 });
 
 
-blur.on('input', function() {
-  vector.setBlur(parseInt(blur.val(), 10));
+blur.addEventListener('input', function() {
+  vector.setBlur(parseInt(blur.value, 10));
 });
 
-radius.on('input', function() {
-  vector.setRadius(parseInt(radius.val(), 10));
+radius.addEventListener('input', function() {
+  vector.setRadius(parseInt(radius.value, 10));
 });
