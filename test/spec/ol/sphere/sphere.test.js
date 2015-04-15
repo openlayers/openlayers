@@ -264,8 +264,30 @@ describe('ol.Sphere', function() {
 
   });
 
+  describe('Vincenty area', function() {
+    var geometry;
+    before(function(done) {
+      afterLoadText('spec/ol/format/wkt/illinois.wkt', function(wkt) {
+        try {
+          var format = new ol.format.WKT();
+          geometry = format.readGeometry(wkt);
+        } catch (e) {
+          done(e);
+        }
+        done();
+      });
+    });
+
+    it('results match the expected area of Ilinois', function() {
+      var coords = geometry.getPolygon(0).getLinearRing(0).getCoordinates();
+      expect(ol.sphere.WGS84.geodesicArea(coords)).to.equal(145978332359.37125);
+    });
+  });
+
 });
 
 
 goog.require('goog.math');
 goog.require('ol.Sphere');
+goog.require('ol.sphere.WGS84');
+goog.require('ol.format.WKT');

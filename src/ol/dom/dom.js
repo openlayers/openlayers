@@ -158,7 +158,7 @@ ol.dom.setOpacity = function(element, value) {
     var alpha;
 
     if (goog.userAgent.VERSION == '8.0') {
-      regex = /progid:DXImageTransform\.Microsoft\.Alpha\(.*?\)/i,
+      regex = /progid:DXImageTransform\.Microsoft\.Alpha\(.*?\)/i;
       alpha = 'progid:DXImageTransform.Microsoft.Alpha(Opacity=' +
           (value * 100) + ')';
     } else {
@@ -297,4 +297,36 @@ ol.dom.transformElement2D =
     // width/height, because that only changes the container size, not the
     // content size.
   }
+};
+
+
+/**
+ * Get the current computed width for the given element including margin,
+ * padding and border.
+ * Equivalent to jQuery's `$(el).outerWidth(true)`.
+ * @param {!Element} element Element.
+ * @return {number}
+ */
+ol.dom.outerWidth = function(element) {
+  var width = element.offsetWidth;
+  var style = element.currentStyle || window.getComputedStyle(element);
+  width += parseInt(style.marginLeft, 10) + parseInt(style.marginRight, 10);
+
+  return width;
+};
+
+
+/**
+ * Get the current computed height for the given element including margin,
+ * padding and border.
+ * Equivalent to jQuery's `$(el).outerHeight(true)`.
+ * @param {!Element} element Element.
+ * @return {number}
+ */
+ol.dom.outerHeight = function(element) {
+  var height = element.offsetHeight;
+  var style = element.currentStyle || window.getComputedStyle(element);
+  height += parseInt(style.marginTop, 10) + parseInt(style.marginBottom, 10);
+
+  return height;
 };

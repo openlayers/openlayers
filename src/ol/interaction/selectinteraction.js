@@ -3,6 +3,7 @@ goog.provide('ol.interaction.Select');
 goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('goog.events');
+goog.require('goog.events.Event');
 goog.require('goog.functions');
 goog.require('ol.CollectionEventType');
 goog.require('ol.Feature');
@@ -11,6 +12,52 @@ goog.require('ol.events.condition');
 goog.require('ol.geom.GeometryType');
 goog.require('ol.interaction.Interaction');
 goog.require('ol.style.Style');
+
+
+/**
+ * @enum {string}
+ */
+ol.SelectEventType = {
+  /**
+   * Triggered when feature(s) has been (de)selected.
+   * @event ol.SelectEvent#select
+   * @api
+   */
+  SELECT: 'select'
+};
+
+
+
+/**
+ * @classdesc
+ * Events emitted by {@link ol.interaction.Select} instances are instances of
+ * this type.
+ *
+ * @param {string} type The event type.
+ * @param {Array.<ol.Feature>} selected Selected features.
+ * @param {Array.<ol.Feature>} deselected Deselected features.
+ * @implements {oli.SelectEvent}
+ * @extends {goog.events.Event}
+ * @constructor
+ */
+ol.SelectEvent = function(type, selected, deselected) {
+  goog.base(this, type);
+
+  /**
+   * Selected features array.
+   * @type {Array.<ol.Feature>}
+   * @api
+   */
+  this.selected = selected;
+
+  /**
+   * Deselected features array.
+   * @type {Array.<ol.Feature>}
+   * @api
+   */
+  this.deselected = deselected;
+};
+goog.inherits(ol.SelectEvent, goog.events.Event);
 
 
 
@@ -140,6 +187,7 @@ ol.interaction.Select.handleEvent = function(mapBrowserEvent) {
   var features = this.featureOverlay_.getFeatures();
   var /** @type {Array.<ol.Feature>} */ deselected = [];
   var /** @type {Array.<ol.Feature>} */ selected = [];
+  var change = false;
   if (set) {
     // Replace the currently selected feature(s) with the feature(s) at the
     // pixel, or clear the selected feature(s) if there is no feature at
@@ -151,20 +199,18 @@ ol.interaction.Select.handleEvent = function(mapBrowserEvent) {
          */
         function(feature, layer) {
           selected.push(feature);
-        }, undefined, this.layerFilter_);
-    if (selected.length > 0 &&
-        features.getLength() == 1 &&
-        features.item(0) == selected[selected.length - 1]) {
+          return !this.multi_;
+        }, this, this.layerFilter_);
+    if (selected.length > 0 && features.getLength() == 1 &&
+        features.item(0) == selected[0]) {
       // No change
     } else {
+      change = true;
       if (features.getLength() !== 0) {
+        deselected = Array.prototype.concat(features.getArray());
         features.clear();
       }
-      if (this.multi_) {
-        features.extend(selected);
-      } else if (selected.length > 0) {
-        features.push(selected[selected.length - 1]);
-      }
+      features.extend(selected);
     }
   } else {
     // Modify the currently selected feature(s).
@@ -190,8 +236,15 @@ ol.interaction.Select.handleEvent = function(mapBrowserEvent) {
       features.remove(deselected[i]);
     }
     features.extend(selected);
+    if (selected.length > 0 || deselected.length > 0) {
+      change = true;
+    }
   }
-  return ol.events.condition.mouseMove(mapBrowserEvent);
+  if (change) {
+    this.dispatchEvent(
+        new ol.SelectEvent(ol.SelectEventType.SELECT, selected, deselected));
+  }
+  return ol.events.condition.pointerMove(mapBrowserEvent);
 };
 
 

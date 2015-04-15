@@ -33,7 +33,8 @@ ol.source.BingMaps = function(options) {
     opaque: true,
     projection: ol.proj.get('EPSG:3857'),
     state: ol.source.State.LOADING,
-    tileLoadFunction: options.tileLoadFunction
+    tileLoadFunction: options.tileLoadFunction,
+    wrapX: goog.isDef(options.wrapX) ? options.wrapX : true
   });
 
   /**
@@ -47,12 +48,6 @@ ol.source.BingMaps = function(options) {
    * @type {number}
    */
   this.maxZoom_ = goog.isDef(options.maxZoom) ? options.maxZoom : -1;
-
-  /**
-   * @private
-   * @type {boolean}
-   */
-  this.wrapX_ = goog.isDef(options.wrapX) ? options.wrapX : true;
 
   var protocol = ol.IS_HTTPS ? 'https:' : 'http:';
   var uri = new goog.Uri(
@@ -98,6 +93,9 @@ ol.source.BingMaps.prototype.handleImageryMetadataResponse =
   }
 
   var brandLogoUri = response.brandLogoUri;
+  if (ol.IS_HTTPS && brandLogoUri.indexOf('https') == -1) {
+    brandLogoUri = brandLogoUri.replace('http', 'https');
+  }
   //var copyright = response.copyright;  // FIXME do we need to display this?
   var resource = response.resourceSets[0].resources[0];
   goog.asserts.assert(resource.imageWidth == resource.imageHeight);
@@ -114,7 +112,7 @@ ol.source.BingMaps.prototype.handleImageryMetadataResponse =
 
   var culture = this.culture_;
   this.tileUrlFunction = ol.TileUrlFunction.withTileCoordTransform(
-      tileGrid.createTileCoordTransform({wrapX: this.wrapX_}),
+      tileGrid.createTileCoordTransform(),
       ol.TileUrlFunction.createFromTileUrlFunctions(
           goog.array.map(
               resource.imageUrlSubdomains,

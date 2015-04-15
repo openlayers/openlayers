@@ -309,6 +309,12 @@ ol.style.createDefaultEditingStyles = function() {
   styles[ol.geom.GeometryType.MULTI_LINE_STRING] =
       styles[ol.geom.GeometryType.LINE_STRING];
 
+  styles[ol.geom.GeometryType.CIRCLE] =
+      styles[ol.geom.GeometryType.POLYGON].concat(
+          styles[ol.geom.GeometryType.LINE_STRING]
+      );
+
+
   styles[ol.geom.GeometryType.POINT] = [
     new ol.style.Style({
       image: new ol.style.Circle({

@@ -5,6 +5,7 @@ goog.require('ol.Feature');
 goog.require('ol.format.Feature');
 goog.require('ol.format.TextFeature');
 goog.require('ol.geom.LineString');
+goog.require('ol.geom.SimpleGeometry');
 goog.require('ol.geom.flat.flip');
 goog.require('ol.geom.flat.inflate');
 goog.require('ol.proj');
@@ -38,6 +39,13 @@ ol.format.Polyline = function(opt_options) {
    * @type {number}
    */
   this.factor_ = goog.isDef(options.factor) ? options.factor : 1e5;
+
+  /**
+   * @private
+   * @type {ol.geom.GeometryLayout}
+   */
+  this.geometryLayout_ = goog.isDef(options.geometryLayout) ?
+      options.geometryLayout : ol.geom.GeometryLayout.XY;
 };
 goog.inherits(ol.format.Polyline, ol.format.TextFeature);
 
@@ -316,15 +324,17 @@ ol.format.Polyline.prototype.readGeometry;
  */
 ol.format.Polyline.prototype.readGeometryFromText =
     function(text, opt_options) {
-  var flatCoordinates = ol.format.Polyline.decodeDeltas(text, 2, this.factor_);
+  var stride = ol.geom.SimpleGeometry.getStrideForLayout(this.geometryLayout_);
+  var flatCoordinates = ol.format.Polyline.decodeDeltas(
+      text, stride, this.factor_);
   ol.geom.flat.flip.flipXY(
-      flatCoordinates, 0, flatCoordinates.length, 2, flatCoordinates);
+      flatCoordinates, 0, flatCoordinates.length, stride, flatCoordinates);
   var coordinates = ol.geom.flat.inflate.coordinates(
-      flatCoordinates, 0, flatCoordinates.length, 2);
+      flatCoordinates, 0, flatCoordinates.length, stride);
 
   return /** @type {ol.geom.Geometry} */ (
       ol.format.Feature.transformWithOptions(
-          new ol.geom.LineString(coordinates), false,
+          new ol.geom.LineString(coordinates, this.geometryLayout_), false,
           this.adaptOptions(opt_options)));
 };
 

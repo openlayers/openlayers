@@ -310,7 +310,10 @@ olx.MapOptions.prototype.view;
  *     position: (ol.Coordinate|undefined),
  *     positioning: (ol.OverlayPositioning|string|undefined),
  *     stopEvent: (boolean|undefined),
- *     insertFirst: (boolean|undefined)}}
+ *     insertFirst: (boolean|undefined),
+ *     autoPan: (boolean|undefined),
+ *     autoPanAnimation: (olx.animation.PanOptions|undefined),
+ *     autoPanMargin: (number|undefined)}}
  * @api stable
  */
 olx.OverlayOptions;
@@ -377,13 +380,43 @@ olx.OverlayOptions.prototype.insertFirst;
 
 
 /**
+ * If set to `true` the map is panned when calling `setPosition`, so that the
+ * overlay is entirely visible in the current viewport.
+ * The default is `false`.
+ * @type {boolean|undefined}
+ * @api
+ */
+olx.OverlayOptions.prototype.autoPan;
+
+
+/**
+ * The options used to create a `ol.animation.pan` animation. This animation
+ * is only used when `autoPan` is enabled. By default the default options for
+ * `ol.animation.pan` are used. If set to `null` the panning is not animated.
+ * @type {olx.animation.PanOptions|undefined}
+ * @api
+ */
+olx.OverlayOptions.prototype.autoPanAnimation;
+
+
+/**
+ * The margin (in pixels) between the overlay and the borders of the map when
+ * autopanning. The default is `20`.
+ * @type {number|undefined}
+ * @api
+ */
+olx.OverlayOptions.prototype.autoPanMargin;
+
+
+/**
  * Object literal with config options for the projection.
  * @typedef {{code: string,
- *     units: (ol.proj.Units|string),
+ *     units: (ol.proj.Units|string|undefined),
  *     extent: (ol.Extent|undefined),
  *     axisOrientation: (string|undefined),
  *     global: (boolean|undefined),
- *     worldExtent: (ol.Extent|undefined)}}
+ *     worldExtent: (ol.Extent|undefined),
+ *     getPointResolution: (function(number, ol.Coordinate):number|undefined) }}
  * @api
  */
 olx.ProjectionOptions;
@@ -398,8 +431,8 @@ olx.ProjectionOptions.prototype.code;
 
 
 /**
- * Units.
- * @type {ol.proj.Units|string}
+ * Units. Required unless a proj4 projection is defined for `code`.
+ * @type {ol.proj.Units|string|undefined}
  * @api stable
  */
 olx.ProjectionOptions.prototype.units;
@@ -435,6 +468,15 @@ olx.ProjectionOptions.prototype.global;
  * @api
  */
 olx.ProjectionOptions.prototype.worldExtent;
+
+/**
+ * Function to determine resolution at a point. The function is called with a
+ * `{number}` view resolution and an `{ol.Coordinate}` as arguments, and returns
+ * the `{number}` resolution at the passed coordinate.
+ * @type {(function(number, ol.Coordinate):number|undefined)}
+ * @api
+ */
+olx.ProjectionOptions.prototype.getPointResolution;
 
 
 /**
@@ -1496,7 +1538,8 @@ olx.format;
 
 /**
  * @typedef {{dataProjection: ol.proj.ProjectionLike,
- *     featureProjection: ol.proj.ProjectionLike}}
+ *     featureProjection: ol.proj.ProjectionLike,
+ *     rightHanded: (boolean|undefined)}}
  * @api
  */
 olx.format.ReadOptions;
@@ -1525,7 +1568,8 @@ olx.format.ReadOptions.prototype.featureProjection;
 
 /**
  * @typedef {{dataProjection: ol.proj.ProjectionLike,
- *     featureProjection: ol.proj.ProjectionLike}}
+ *     featureProjection: ol.proj.ProjectionLike,
+ *     rightHanded: (boolean|undefined)}}
  * @api
  */
 olx.format.WriteOptions;
@@ -1549,6 +1593,22 @@ olx.format.WriteOptions.prototype.dataProjection;
  * @api stable
  */
 olx.format.WriteOptions.prototype.featureProjection;
+
+
+/**
+ * When writing geometries, follow the right-hand rule for linear ring
+ * orientation.  This means that polygons will have counter-clockwise exterior
+ * rings and clockwise interior rings.  By default, coordinates are serialized
+ * as they are provided at construction.  If `true`, the right-hand rule will
+ * be applied.  If `false`, the left-hand rule will be applied (clockwise for
+ * exterior and counter-clockwise for interior rings).  Note that not all
+ * formats support this.  The GeoJSON format does use this property when writing
+ * geometries.
+ *
+ * @type {boolean|undefined}
+ * @api
+ */
+olx.format.WriteOptions.prototype.rightHanded;
 
 
 /**
@@ -1576,7 +1636,8 @@ olx.format.GeoJSONOptions.prototype.geometryName;
 
 
 /**
- * @typedef {{factor: (number|undefined)}}
+ * @typedef {{factor: (number|undefined),
+ *     geometryLayout: (ol.geom.GeometryLayout|undefined)}}
  * @api
  */
 olx.format.PolylineOptions;
@@ -1589,6 +1650,15 @@ olx.format.PolylineOptions;
  * @api stable
  */
 olx.format.PolylineOptions.prototype.factor;
+
+
+/**
+ * Layout of the feature geometries created by the format reader.
+ * Default is `ol.geom.GeometryLayout.XY`.
+ * @type {ol.geom.GeometryLayout|undefined}
+ * @api
+ */
+olx.format.PolylineOptions.prototype.geometryLayout;
 
 
 /**
@@ -1647,8 +1717,8 @@ olx.format.KMLOptions.prototype.defaultStyle;
 
 
 /**
- * @typedef {{featureNS: string,
- *     featureType: string,
+ * @typedef {{featureNS: (Object.<string, string>|string|undefined),
+ *     featureType: (Array.<string>|string|undefined),
  *     srsName: string,
  *     surface: (boolean|undefined),
  *     curve: (boolean|undefined),
@@ -1661,16 +1731,28 @@ olx.format.GMLOptions;
 
 
 /**
- * Feature namespace.
- * @type {string}
+ * Feature namespace. If not defined will be derived from GML. If multiple
+ * feature types have been configured which come from different feature
+ * namespaces, this will be an object with the keys being the prefixes used
+ * in the entries of featureType array. The values of the object will be the
+ * feature namespaces themselves. So for instance there might be a featureType
+ * item `topp:states` in the `featureType` array and then there will be a key
+ * `topp` in the featureNS object with value `http://www.openplans.org/topp`.
+ * @type {Object.<string, string>|string|undefined}
  * @api stable
  */
 olx.format.GMLOptions.prototype.featureNS;
 
 
 /**
- * Feature type to parse.
- * @type {string}
+ * Feature type(s) to parse. If multiple feature types need to be configured
+ * which come from different feature namespaces, `featureNS` will be an object
+ * with the keys being the prefixes used in the entries of featureType array.
+ * The values of the object will be the feature namespaces themselves.
+ * So for instance there might be a featureType item `topp:states` and then
+ * there will be a key named `topp` in the featureNS object with value
+ * `http://www.openplans.org/topp`.
+ * @type {Array.<string>|string|undefined}
  * @api stable
  */
 olx.format.GMLOptions.prototype.featureType;
@@ -1750,8 +1832,8 @@ olx.format.GPXOptions.prototype.readExtensions;
 
 
 /**
- * @typedef {{featureNS: string,
- *     featureType: string,
+ * @typedef {{featureNS: (Object.<string, string>|string|undefined),
+ *     featureType: (Array.<string>|string|undefined),
  *     gmlFormat: (ol.format.GMLBase|undefined),
  *     schemaLocation: (string|undefined)}}
  * @api
@@ -1761,7 +1843,7 @@ olx.format.WFSOptions;
 
 /**
  * The namespace URI used for features.
- * @type {string}
+ * @type {Object.<string, string>|string|undefined}
  * @api stable
  */
 olx.format.WFSOptions.prototype.featureNS;
@@ -1769,7 +1851,7 @@ olx.format.WFSOptions.prototype.featureNS;
 
 /**
  * The feature type to parse. Only used for read operations.
- * @type {string}
+ * @type {Array.<string>|string|undefined}
  * @api stable
  */
 olx.format.WFSOptions.prototype.featureType;
@@ -3807,7 +3889,8 @@ olx.source.TileUTFGridOptions.prototype.url;
  *            tileGrid: (ol.tilegrid.TileGrid|undefined),
  *            tileLoadFunction: (ol.TileLoadFunctionType|undefined),
  *            tilePixelRatio: (number|undefined),
- *            tileUrlFunction: (ol.TileUrlFunctionType|undefined)}}
+ *            tileUrlFunction: (ol.TileUrlFunctionType|undefined),
+ *            wrapX: (boolean|undefined)}}
  * @api
  */
 olx.source.TileImageOptions;
@@ -3908,6 +3991,17 @@ olx.source.TileImageOptions.prototype.tilePixelRatio;
  * @api
  */
 olx.source.TileImageOptions.prototype.tileUrlFunction;
+
+
+/**
+ * Whether to wrap the world horizontally. The default, `undefined`, is to
+ * request out-of-bounds tiles from the server. When set to `false`, only one
+ * world will be rendered. When set to `true`, tiles will be requested for one
+ * world only, but they will be wrapped horizontally to render multiple worlds.
+ * @type {boolean|undefined}
+ * @api
+ */
+olx.source.TileImageOptions.prototype.wrapX;
 
 
 /**
@@ -4978,15 +5072,122 @@ olx.source.ServerVectorOptions.prototype.logo;
  */
 olx.source.ServerVectorOptions.prototype.projection;
 
+/**
+ * @typedef {{attributions: (Array.<ol.Attribution>|undefined),
+ *     params: (Object.<string, *>|undefined),
+ *     logo: (string|olx.LogoOptions|undefined),
+ *     tileGrid: (ol.tilegrid.TileGrid|undefined),
+ *     projection: ol.proj.ProjectionLike,
+ *     tileLoadFunction: (ol.TileLoadFunctionType|undefined),
+ *     url: (string|undefined),
+ *     urls: (Array.<string>|undefined),
+ *     wrapX: (boolean|undefined)}}
+ * @api
+ */
+olx.source.TileArcGISRestOptions;
 
 /**
- * @typedef {{crossOrigin: (null|string|undefined),
+ * Attributions.
+ * @type {Array.<ol.Attribution>|undefined}
+ * @api
+ */
+olx.source.TileArcGISRestOptions.prototype.attributions;
+
+
+/**
+ * ArcGIS Rest parameters. This field is optional. Service defaults will be
+ * used for any fields not specified. `FORMAT` is `PNG32` by default. `F` is `IMAGE` by
+ * default. `TRANSPARENT` is `true` by default.  `BBOX, `SIZE`, `BBOXSR`,
+ * and `IMAGESR` will be set dynamically. Set `LAYERS` to
+ * override the default service layer visibility. See
+ * {@link http://resources.arcgis.com/en/help/arcgis-rest-api/index.html#/Export_Map/02r3000000v7000000/}
+ * for further reference.
+ * @type {Object.<string,*>|undefined}
+ * @api
+ */
+olx.source.TileArcGISRestOptions.prototype.params;
+
+
+/**
+ * Logo.
+ * @type {string|olx.LogoOptions|undefined}
+ * @api
+ */
+olx.source.TileArcGISRestOptions.prototype.logo;
+
+
+/**
+ * Tile grid. Base this on the resolutions, tilesize and extent supported by the
+ * server.
+ * If this is not defined, a default grid will be used: if there is a projection
+ * extent, the grid will be based on that; if not, a grid based on a global
+ * extent with origin at 0,0 will be used.
+ * @type {ol.tilegrid.TileGrid|undefined}
+ * @api
+ */
+olx.source.TileArcGISRestOptions.prototype.tileGrid;
+
+/**
+ * Projection.
+ * @type {ol.proj.ProjectionLike}
+ * @api
+ */
+olx.source.TileArcGISRestOptions.prototype.projection;
+
+
+/**
+ * Optional function to load a tile given a URL.
+ * @type {ol.TileLoadFunctionType|undefined}
+ * @api
+ */
+olx.source.TileArcGISRestOptions.prototype.tileLoadFunction;
+
+
+/**
+ * ArcGIS Rest service URL for a Map Service or Image Service. The
+ * url should include /MapServer or /ImageServer.
+ * @type {string|undefined}
+ * @api
+ */
+olx.source.TileArcGISRestOptions.prototype.url;
+
+
+/**
+ * Whether to wrap the world horizontally. Default is `true`.
+ * @type {boolean|undefined}
+ * @api
+ */
+olx.source.TileArcGISRestOptions.prototype.wrapX;
+
+
+/**
+ * ArcGIS Rest service urls. Use this instead of `url` when the ArcGIS Service supports multiple
+ * urls for export requests.
+ * @type {Array.<string>|undefined}
+ * @api
+ */
+olx.source.TileArcGISRestOptions.prototype.urls;
+
+
+/**
+ * @typedef {{attributions: (Array.<ol.Attribution>|undefined),
+ *     crossOrigin: (null|string|undefined),
  *     tileLoadFunction: (ol.TileLoadFunctionType|undefined),
  *     url: string,
  *     wrapX: (boolean|undefined)}}
  * @api
  */
 olx.source.TileJSONOptions;
+
+
+/**
+ * Optional attributions for the source.  If provided, these will be used
+ * instead of any attribution data advertised by the server.  If not provided,
+ * any attributions advertised by the server will be used.
+ * @type {Array.<ol.Attribution>|undefined}
+ * @api stable
+ */
+olx.source.TileJSONOptions.prototype.attributions;
 
 
 /**
@@ -5038,7 +5239,8 @@ olx.source.TileJSONOptions.prototype.wrapX;
  *     serverType: (ol.source.wms.ServerType|string|undefined),
  *     tileLoadFunction: (ol.TileLoadFunctionType|undefined),
  *     url: (string|undefined),
- *     urls: (Array.<string>|undefined)}}
+ *     urls: (Array.<string>|undefined),
+ *     wrapX: (boolean|undefined)}}
  * @api
  */
 olx.source.TileWMSOptions;
@@ -5166,6 +5368,18 @@ olx.source.TileWMSOptions.prototype.url;
  * @api stable
  */
 olx.source.TileWMSOptions.prototype.urls;
+
+
+/**
+ * Whether to wrap the world horizontally. The default, `undefined`, is to
+ * request out-of-bounds tiles from the server. This works well in e.g.
+ * GeoServer. When set to `false`, only one world will be rendered. When set to
+ * `true`, tiles will be requested for one world only, but they will be wrapped
+ * horizontally to render multiple worlds.
+ * @type {boolean|undefined}
+ * @api
+ */
+olx.source.TileWMSOptions.prototype.wrapX;
 
 
 /**
@@ -5344,7 +5558,8 @@ olx.source.StaticVectorOptions.prototype.urls;
  *     urls: (Array.<string>|undefined),
  *     tileClass: (function(new: ol.ImageTile, ol.TileCoord,
  *                          ol.TileState, string, ?string,
- *                          ol.TileLoadFunctionType)|undefined)}}
+ *                          ol.TileLoadFunctionType)|undefined),
+ *     wrapX: (boolean|undefined)}}
  * @api
  */
 olx.source.WMTSOptions;
@@ -5501,6 +5716,14 @@ olx.source.WMTSOptions.prototype.tileLoadFunction;
  * @api
  */
 olx.source.WMTSOptions.prototype.urls;
+
+
+/**
+ * Whether to wrap the world horizontally. Default is `false`.
+ * @type {boolean|undefined}
+ * @api
+ */
+olx.source.WMTSOptions.prototype.wrapX;
 
 
 /**
@@ -5789,6 +6012,7 @@ olx.style.FillOptions.prototype.color;
  *     img: (Image|undefined),
  *     offset: (Array.<number>|undefined),
  *     offsetOrigin: (ol.style.IconOrigin|undefined),
+ *     opacity: (number|undefined),
  *     scale: (number|undefined),
  *     snapToPixel: (boolean|undefined),
  *     rotateWithView: (boolean|undefined),
@@ -5879,6 +6103,14 @@ olx.style.IconOptions.prototype.offsetOrigin;
 
 
 /**
+ * Opacity of the icon. Default is `1`.
+ * @type {number|undefined}
+ * @api
+ */
+olx.style.IconOptions.prototype.opacity;
+
+
+/**
  * Scale.
  * @type {number|undefined}
  * @api
@@ -5909,7 +6141,7 @@ olx.style.IconOptions.prototype.rotateWithView;
 
 
 /**
- * Rotation.
+ * Rotation in radians (positive rotation clockwise). Default is `0`.
  * @type {number|undefined}
  * @api
  */
@@ -6154,7 +6386,7 @@ olx.style.TextOptions.prototype.scale;
 
 
 /**
- * Rotation.
+ * Rotation in radians (positive rotation clockwise). Default is `0`.
  * @type {number|undefined}
  * @api
  */
@@ -6275,7 +6507,8 @@ olx.tilegrid;
  *     origins: (Array.<ol.Coordinate>|undefined),
  *     resolutions: !Array.<number>,
  *     tileSize: (number|undefined),
- *     tileSizes: (Array.<number>|undefined)}}
+ *     tileSizes: (Array.<number>|undefined),
+ *     widths: (Array.<number>|undefined)}}
  * @api
  */
 olx.tilegrid.TileGridOptions;
@@ -6298,8 +6531,8 @@ olx.tilegrid.TileGridOptions.prototype.origin;
 
 
 /**
- * Origins. If given, the array should match the `resolutions` array, i.e.
- * each resolution can have a different origin.
+ * Origins. If given, the array length should match the length of the
+ * `resolutions` array, i.e. each resolution can have a different origin.
  * @type {Array.<ol.Coordinate>|undefined}
  * @api stable
  */
@@ -6307,7 +6540,9 @@ olx.tilegrid.TileGridOptions.prototype.origins;
 
 
 /**
- * Resolutions.
+ * Resolutions. The array index of each resolution needs to match the zoom
+ * level. This means that even if a `minZoom` is configured, the resolutions
+ * array will have a length of `maxZoom + 1`.
  * @type {!Array.<number>}
  * @api stable
  */
@@ -6323,12 +6558,24 @@ olx.tilegrid.TileGridOptions.prototype.tileSize;
 
 
 /**
- * Tile sizes. If given, the array should match the `resolutions` array, i.e.
- * each resolution can have a different tile size.
+ * Tile sizes. If given, the array length should match the length of the
+ * `resolutions` array, i.e. each resolution can have a different tile size.
  * @type {Array.<number>|undefined}
  * @api stable
  */
 olx.tilegrid.TileGridOptions.prototype.tileSizes;
+
+
+/**
+ * Number of tile columns that cover the grid's extent for each zoom level. Only
+ * required when used with a source that has `wrapX` set to `true`, and only
+ * when the grid's origin differs from the one of the projection's extent. The
+ * array length has to match the length of the `resolutions` array, i.e. each
+ * resolution will have a matching entry here.
+ * @type {Array.<number>|undefined}
+ * @api
+ */
+olx.tilegrid.TileGridOptions.prototype.widths;
 
 
 /**
@@ -6337,7 +6584,8 @@ olx.tilegrid.TileGridOptions.prototype.tileSizes;
  *     resolutions: !Array.<number>,
  *     matrixIds: !Array.<string>,
  *     tileSize: (number|undefined),
- *     tileSizes: (Array.<number>|undefined)}}
+ *     tileSizes: (Array.<number>|undefined),
+ *     widths: (Array.<number>|undefined)}}
  * @api
  */
 olx.tilegrid.WMTSOptions;
@@ -6352,7 +6600,8 @@ olx.tilegrid.WMTSOptions.prototype.origin;
 
 
 /**
- * Origins.
+ * Origins. The length of this array needs to match the length of the
+ * `resolutions` array.
  * @type {Array.<ol.Coordinate>|undefined}
  * @api
  */
@@ -6360,7 +6609,9 @@ olx.tilegrid.WMTSOptions.prototype.origins;
 
 
 /**
- * Resolutions.
+ * Resolutions. The array index of each resolution needs to match the zoom
+ * level. This means that even if a `minZoom` is configured, the resolutions
+ * array will have a length of `maxZoom + 1`
  * @type {!Array.<number>}
  * @api
  */
@@ -6368,7 +6619,8 @@ olx.tilegrid.WMTSOptions.prototype.resolutions;
 
 
 /**
- * matrix IDs.
+ * matrix IDs. The length of this array needs to match the length of the
+ * `resolutions` array.
  * @type {!Array.<string>}
  * @api
  */
@@ -6384,11 +6636,24 @@ olx.tilegrid.WMTSOptions.prototype.tileSize;
 
 
 /**
- * Tile sizes.
+ * Tile sizes. The length of this array needs to match the length of the
+ * `resolutions` array.
  * @type {Array.<number>|undefined}
  * @api
  */
 olx.tilegrid.WMTSOptions.prototype.tileSizes;
+
+
+/**
+ * Number of tile columns that cover the grid's extent for each zoom level. Only
+ * required when used with a source that has `wrapX` set to `true`, and only
+ * when the grid's origin differs from the one of the projection's extent. The
+ * array length has to match the length of the `resolutions` array, i.e. each
+ * resolution will have a matching entry here.
+ * @type {Array.<number>|undefined}
+ * @api
+ */
+olx.tilegrid.WMTSOptions.prototype.widths;
 
 
 /**

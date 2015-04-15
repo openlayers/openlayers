@@ -1,5 +1,7 @@
 goog.provide('ol.Attribution');
 
+goog.require('goog.asserts');
+goog.require('goog.math');
 goog.require('ol.TileRange');
 
 
@@ -54,21 +56,42 @@ ol.Attribution.prototype.getHTML = function() {
 
 /**
  * @param {Object.<string, ol.TileRange>} tileRanges Tile ranges.
+ * @param {!ol.tilegrid.TileGrid} tileGrid Tile grid.
+ * @param {!ol.proj.Projection} projection Projection.
  * @return {boolean} Intersects any tile range.
  */
-ol.Attribution.prototype.intersectsAnyTileRange = function(tileRanges) {
+ol.Attribution.prototype.intersectsAnyTileRange =
+    function(tileRanges, tileGrid, projection) {
   if (goog.isNull(this.tileRanges_)) {
     return true;
   }
-  var i, ii, tileRange, z;
-  for (z in tileRanges) {
-    if (!(z in this.tileRanges_)) {
+  var i, ii, tileRange, zKey;
+  for (zKey in tileRanges) {
+    if (!(zKey in this.tileRanges_)) {
       continue;
     }
-    tileRange = tileRanges[z];
-    for (i = 0, ii = this.tileRanges_[z].length; i < ii; ++i) {
-      if (this.tileRanges_[z][i].intersects(tileRange)) {
+    tileRange = tileRanges[zKey];
+    var testTileRange;
+    for (i = 0, ii = this.tileRanges_[zKey].length; i < ii; ++i) {
+      testTileRange = this.tileRanges_[zKey][i];
+      if (testTileRange.intersects(tileRange)) {
         return true;
+      }
+      var extentTileRange = tileGrid.getTileRange(
+          parseInt(zKey, 10), projection);
+      var width = extentTileRange.getWidth();
+      if (tileRange.minX < extentTileRange.minX ||
+          tileRange.maxX > extentTileRange.maxX) {
+        if (testTileRange.intersects(new ol.TileRange(
+            goog.math.modulo(tileRange.minX, width),
+            goog.math.modulo(tileRange.maxX, width),
+            tileRange.minY, tileRange.maxY))) {
+          return true;
+        }
+        if (tileRange.getWidth() > width &&
+            testTileRange.intersects(extentTileRange)) {
+          return true;
+        }
       }
     }
   }

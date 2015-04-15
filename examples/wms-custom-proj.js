@@ -12,7 +12,8 @@ goog.require('ol.source.TileWMS');
 
 // By default OpenLayers does not know about the EPSG:21781 (Swiss) projection.
 // So we create a projection instance for EPSG:21781 and pass it to
-// ol.proj.addProjection to make it available to the library.
+// ol.proj.addProjection to make it available to the library for lookup by its
+// code.
 
 var projection = new ol.proj.Projection({
   code: 'EPSG:21781',

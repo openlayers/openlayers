@@ -3,6 +3,7 @@ goog.provide('ol.tilecoord');
 
 goog.require('goog.array');
 goog.require('goog.asserts');
+goog.require('goog.math');
 
 
 /**
@@ -136,4 +137,36 @@ ol.tilecoord.quadKey = function(tileCoord) {
  */
 ol.tilecoord.toString = function(tileCoord) {
   return ol.tilecoord.getKeyZXY(tileCoord[0], tileCoord[1], tileCoord[2]);
+};
+
+
+/**
+ * @param {ol.TileCoord} tileCoord Tile coordinate.
+ * @param {ol.tilegrid.TileGrid} tileGrid Tile grid.
+ * @param {ol.proj.Projection} projection Projection.
+ * @return {ol.TileCoord} Tile coordinate.
+ */
+ol.tilecoord.wrapX = function(tileCoord, tileGrid, projection) {
+  var z = tileCoord[0];
+  var x = tileCoord[1];
+  var tileRange = tileGrid.getTileRange(z, projection);
+  if (x < tileRange.minX || x > tileRange.maxX) {
+    x = goog.math.modulo(x, tileRange.getWidth());
+    return [z, x, tileCoord[2]];
+  }
+  return tileCoord;
+};
+
+
+/**
+ * @param {ol.TileCoord} tileCoord Tile coordinate.
+ * @param {ol.tilegrid.TileGrid} tileGrid Tile grid.
+ * @param {ol.proj.Projection} projection Projection.
+ * @return {ol.TileCoord} Tile coordinate.
+ */
+ol.tilecoord.clipX = function(tileCoord, tileGrid, projection) {
+  var z = tileCoord[0];
+  var x = tileCoord[1];
+  var tileRange = tileGrid.getTileRange(z, projection);
+  return (x < tileRange.minX || x > tileRange.maxX) ? null : tileCoord;
 };

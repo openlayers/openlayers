@@ -31,7 +31,7 @@ function listen(min, max, server, callback) {
         callback(err);
       }
     });
-    server.listen(port, callback);
+    server.listen(port, '127.0.0.1', callback);
   }
   _listen(min);
 }

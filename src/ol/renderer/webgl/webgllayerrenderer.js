@@ -18,12 +18,18 @@ goog.require('ol.webgl.Context');
 /**
  * @constructor
  * @extends {ol.renderer.Layer}
- * @param {ol.renderer.Map} mapRenderer Map renderer.
+ * @param {ol.renderer.webgl.Map} mapRenderer Map renderer.
  * @param {ol.layer.Layer} layer Layer.
  */
 ol.renderer.webgl.Layer = function(mapRenderer, layer) {
 
-  goog.base(this, mapRenderer, layer);
+  goog.base(this, layer);
+
+  /**
+   * @protected
+   * @type {ol.renderer.webgl.Map}
+   */
+  this.mapRenderer = mapRenderer;
 
   /**
    * @private
@@ -96,8 +102,7 @@ goog.inherits(ol.renderer.webgl.Layer, ol.renderer.Layer);
 ol.renderer.webgl.Layer.prototype.bindFramebuffer =
     function(frameState, framebufferDimension) {
 
-  var mapRenderer = this.getWebGLMapRenderer();
-  var gl = mapRenderer.getGL();
+  var gl = this.mapRenderer.getGL();
 
   if (!goog.isDef(this.framebufferDimension) ||
       this.framebufferDimension != framebufferDimension) {
@@ -245,15 +250,6 @@ ol.renderer.webgl.Layer.prototype.dispatchComposeEvent_ =
         type, layer, render, null, frameState, null, context);
     layer.dispatchEvent(composeEvent);
   }
-};
-
-
-/**
- * @protected
- * @return {ol.renderer.webgl.Map} MapRenderer.
- */
-ol.renderer.webgl.Layer.prototype.getWebGLMapRenderer = function() {
-  return /** @type {ol.renderer.webgl.Map} */ (this.getMapRenderer());
 };
 
 

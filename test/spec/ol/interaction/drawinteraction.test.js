@@ -470,6 +470,58 @@ describe('ol.interaction.Draw', function() {
 
   });
 
+  describe('drawing circles', function() {
+    var draw;
+
+    beforeEach(function() {
+      draw = new ol.interaction.Draw({
+        source: source,
+        type: ol.geom.GeometryType.CIRCLE
+      });
+      map.addInteraction(draw);
+    });
+
+    it('draws circle with clicks, finishing on second point', function() {
+      // first point
+      simulateEvent('pointermove', 10, 20);
+      simulateEvent('pointerdown', 10, 20);
+      simulateEvent('pointerup', 10, 20);
+
+      // finish on second point
+      simulateEvent('pointermove', 30, 20);
+      simulateEvent('pointerdown', 30, 20);
+      simulateEvent('pointerup', 30, 20);
+
+      var features = source.getFeatures();
+      expect(features).to.have.length(1);
+      var geometry = features[0].getGeometry();
+      expect(geometry).to.be.a(ol.geom.Circle);
+      expect(geometry.getCenter()).to.eql([10, -20]);
+      expect(geometry.getRadius()).to.eql(20);
+    });
+
+    it('triggers draw events', function() {
+      var ds = sinon.spy();
+      var de = sinon.spy();
+      goog.events.listen(draw, ol.DrawEventType.DRAWSTART, ds);
+      goog.events.listen(draw, ol.DrawEventType.DRAWEND, de);
+
+      // first point
+      simulateEvent('pointermove', 10, 20);
+      simulateEvent('pointerdown', 10, 20);
+      simulateEvent('pointerup', 10, 20);
+
+      // finish on second point
+      simulateEvent('pointermove', 30, 20);
+      simulateEvent('pointerdown', 30, 20);
+      simulateEvent('pointerup', 30, 20);
+
+      expect(ds).to.be.called(1);
+      expect(de).to.be.called(1);
+    });
+
+  });
+
   describe('#setActive()', function() {
     var interaction;
 
@@ -504,7 +556,7 @@ describe('ol.interaction.Draw', function() {
         expect(interaction.sketchFeature_).to.be(null);
       });
       it('fires change:active', function() {
-        listenerSpy = sinon.spy(function() {
+        var listenerSpy = sinon.spy(function() {
           // test that the interaction's change:active listener is called first
           expect(interaction.overlay_.map_).to.be(null);
         });
@@ -523,7 +575,7 @@ describe('ol.interaction.Draw', function() {
         expect(interaction.overlay_.map_).to.be(map);
       });
       it('fires change:active', function() {
-        listenerSpy = sinon.spy(function() {
+        var listenerSpy = sinon.spy(function() {
           // test that the interaction's change:active listener is called first
           expect(interaction.overlay_.map_).not.to.be(null);
         });
@@ -592,9 +644,11 @@ goog.require('goog.dispose');
 goog.require('goog.events');
 goog.require('goog.events.BrowserEvent');
 goog.require('goog.style');
+goog.require('ol.DrawEventType');
 goog.require('ol.Map');
 goog.require('ol.MapBrowserPointerEvent');
 goog.require('ol.View');
+goog.require('ol.geom.Circle');
 goog.require('ol.geom.GeometryType');
 goog.require('ol.geom.LineString');
 goog.require('ol.geom.MultiLineString');

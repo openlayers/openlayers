@@ -60,6 +60,16 @@ goog.inherits(ol.source.Cluster, ol.source.Vector);
 
 
 /**
+ * Get a reference to the wrapped source.
+ * @return {ol.source.Vector} Source.
+ * @api
+ */
+ol.source.Cluster.prototype.getSource = function() {
+  return this.source_;
+};
+
+
+/**
  * @inheritDoc
  */
 ol.source.Cluster.prototype.loadFeatures = function(extent, resolution,

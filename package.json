@@ -1,6 +1,6 @@
 {
   "name": "openlayers",
-  "version": "3.2.0",
+  "version": "3.4.0",
   "description": "Build tools and sources for developing OpenLayers based mapping applications",
   "keywords": [
     "map",
@@ -31,7 +31,7 @@
     "htmlparser2": "3.7.3",
     "jsdoc": "3.3.0-alpha9",
     "nomnom": "1.8.0",
-    "rbush": "1.3.4",
+    "rbush": "1.3.5",
     "temp": "0.8.1",
     "walk": "2.3.4"
   },

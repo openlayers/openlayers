@@ -53,6 +53,21 @@ $(function () {
     $(window).on('resize', _onResize);
     _onResize();
 
+    // create source code links to github
+    var srcLinks = $('div.tag-source');
+    var masterSearch = window.location.href.match(/\/([^\/]*\/)apidoc\//);
+    if (masterSearch && masterSearch.length) {
+      var branch = masterSearch[1];
+      srcLinks.each(function(i, el) {
+        var textParts = el.innerHTML.trim().split(', ');
+        var link = 'https://github.com/openlayers/ol3/blob/' + branch +
+            textParts[0];
+        el.innerHTML = '<a href="' + link + '">' + textParts[0] + '</a>, ' +
+            '<a href="' + link + textParts[1].replace('line ', '#l') + '">' +
+            textParts[1] + '</a>';
+      });
+    }
+
     // show/hide unstable items
     var links = $('a[href^="ol."]');
     var unstable = $('.unstable');

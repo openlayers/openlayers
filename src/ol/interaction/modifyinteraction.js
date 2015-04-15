@@ -392,6 +392,17 @@ ol.interaction.Modify.prototype.createOrUpdateVertexFeature_ =
 
 
 /**
+ * @param {ol.interaction.SegmentDataType} a
+ * @param {ol.interaction.SegmentDataType} b
+ * @return {number}
+ * @private
+ */
+ol.interaction.Modify.compareIndexes_ = function(a, b) {
+  return a.index - b.index;
+};
+
+
+/**
  * @param {ol.MapBrowserPointerEvent} evt Event.
  * @return {boolean} Start drag sequence?
  * @this {ol.interaction.Modify}
@@ -403,18 +414,44 @@ ol.interaction.Modify.handleDownEvent_ = function(evt) {
   var vertexFeature = this.vertexFeature_;
   if (!goog.isNull(vertexFeature)) {
     var insertVertices = [];
-    var geometry =  /** @type {ol.geom.Point} */ (vertexFeature.getGeometry());
+    var geometry = /** @type {ol.geom.Point} */ (vertexFeature.getGeometry());
     var vertex = geometry.getCoordinates();
     var vertexExtent = ol.extent.boundingExtent([vertex]);
     var segmentDataMatches = this.rBush_.getInExtent(vertexExtent);
+    var componentSegments = {};
+    segmentDataMatches.sort(ol.interaction.Modify.compareIndexes_);
     for (var i = 0, ii = segmentDataMatches.length; i < ii; ++i) {
       var segmentDataMatch = segmentDataMatches[i];
       var segment = segmentDataMatch.segment;
-      if (ol.coordinate.equals(segment[0], vertex)) {
+      var uid = goog.getUid(segmentDataMatch.feature);
+      var depth = segmentDataMatch.depth;
+      if (depth) {
+        uid += '-' + depth.join('-'); // separate feature components
+      }
+      if (!componentSegments[uid]) {
+        componentSegments[uid] = new Array(2);
+      }
+      if (ol.coordinate.equals(segment[0], vertex) &&
+          !componentSegments[uid][0]) {
         this.dragSegments_.push([segmentDataMatch, 0]);
-      } else if (ol.coordinate.equals(segment[1], vertex)) {
+        componentSegments[uid][0] = segmentDataMatch;
+      } else if (ol.coordinate.equals(segment[1], vertex) &&
+          !componentSegments[uid][1]) {
+
+        // prevent dragging closed linestrings by the connecting node
+        if ((segmentDataMatch.geometry.getType() ===
+            ol.geom.GeometryType.LINE_STRING ||
+            segmentDataMatch.geometry.getType() ===
+            ol.geom.GeometryType.MULTI_LINE_STRING) &&
+            componentSegments[uid][0] &&
+            componentSegments[uid][0].index === 0) {
+          continue;
+        }
+
         this.dragSegments_.push([segmentDataMatch, 1]);
-      } else if (goog.getUid(segment) in this.vertexSegments_) {
+        componentSegments[uid][1] = segmentDataMatch;
+      } else if (goog.getUid(segment) in this.vertexSegments_ &&
+          (!componentSegments[uid][0] && !componentSegments[uid][1])) {
         insertVertices.push([segmentDataMatch, vertex]);
       }
     }
@@ -474,8 +511,8 @@ ol.interaction.Modify.handleDragEvent_ = function(evt) {
     }
 
     geometry.setCoordinates(coordinates);
-    this.createOrUpdateVertexFeature_(vertex);
   }
+  this.createOrUpdateVertexFeature_(vertex);
 };
 
 
@@ -505,10 +542,11 @@ ol.interaction.Modify.handleUpEvent_ = function(evt) {
 ol.interaction.Modify.handleEvent = function(mapBrowserEvent) {
   var handled;
   if (!mapBrowserEvent.map.getView().getHints()[ol.ViewHint.INTERACTING] &&
-      mapBrowserEvent.type == ol.MapBrowserEvent.EventType.POINTERMOVE) {
+      mapBrowserEvent.type == ol.MapBrowserEvent.EventType.POINTERMOVE &&
+      !this.handlingDownUpSequence) {
     this.handlePointerMove_(mapBrowserEvent);
   }
-  if (!goog.isNull(this.vertexFeature_) && this.snappedToVertex_ &&
+  if (!goog.isNull(this.vertexFeature_) &&
       this.deleteCondition_(mapBrowserEvent)) {
     var geometry = this.vertexFeature_.getGeometry();
     goog.asserts.assertInstanceof(geometry, ol.geom.Point);
@@ -674,15 +712,18 @@ ol.interaction.Modify.prototype.insertVertex_ = function(segmentData, vertex) {
 ol.interaction.Modify.prototype.removeVertex_ = function() {
   var dragSegments = this.dragSegments_;
   var segmentsByFeature = {};
-  var deleted = false;
   var component, coordinates, dragSegment, geometry, i, index, left;
-  var newIndex, newSegment, right, segmentData, uid;
+  var newIndex, newSegment, right, segmentData, uid, deleted;
   for (i = dragSegments.length - 1; i >= 0; --i) {
     dragSegment = dragSegments[i];
     segmentData = dragSegment[0];
     geometry = segmentData.geometry;
     coordinates = geometry.getCoordinates();
     uid = goog.getUid(segmentData.feature);
+    if (segmentData.depth) {
+      // separate feature components
+      uid += '-' + segmentData.depth.join('-');
+    }
     left = right = index = undefined;
     if (dragSegment[1] === 0) {
       right = segmentData;
@@ -756,7 +797,7 @@ ol.interaction.Modify.prototype.removeVertex_ = function() {
       }
     }
   }
-  return deleted;
+  return true;
 };
 
 

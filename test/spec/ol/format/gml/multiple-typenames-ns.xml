@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wfs:FeatureCollection xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    xmlns:it.geosolutions="http://www.geo-solutions.it"
+    xmlns:cite="http://www.opengeospatial.net/cite" xmlns:ogc="http://www.opengis.net/ogc"
+    xmlns:tiger="http://www.census.gov" xmlns:sde="http://geoserver.sf.net"
+    xmlns:topp="http://www.openplans.org/topp" xmlns:wfs="http://www.opengis.net/wfs"
+    xmlns:ows="http://www.opengis.net/ows" xmlns:xlink="http://www.w3.org/1999/xlink"
+    xmlns:sf="http://www.openplans.org/spearfish" xmlns:gml="http://www.opengis.net/gml"
+    xmlns:nurc="http://www.nurc.nato.int" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    numberOfFeatures="874" timeStamp="2015-03-04T09:53:58.763Z"
+    xsi:schemaLocation="http://www.openplans.org/topp http://localhost:8080/geoserver/wfs?service=WFS&amp;version=1.1.0&amp;request=DescribeFeatureType&amp;typeName=topp%3Astates http://www.openplans.org/spearfish http://localhost:8080/geoserver/wfs?service=WFS&amp;version=1.1.0&amp;request=DescribeFeatureType&amp;typeName=sf%3Aroads http://www.opengis.net/wfs http://localhost:8080/geoserver/schemas/wfs/1.1.0/wfs.xsd">
+    <gml:featureMembers>
+        <topp:states gml:id="states.1">
+            <topp:the_geom>
+                <gml:MultiSurface srsDimension="2" srsName="EPSG:4326">
+                    <gml:surfaceMember>
+                        <gml:Polygon srsDimension="2">
+                            <gml:exterior>
+                                <gml:LinearRing srsDimension="2">
+                                    <gml:posList>37.51099000000001 -88.071564 37.476273000000006
+                                        -88.087883 37.442852 -88.311707 37.40930899999999 -88.359177
+                                        37.51099000000001 -88.071564</gml:posList>
+                                </gml:LinearRing>
+                            </gml:exterior>
+                        </gml:Polygon>
+                    </gml:surfaceMember>
+                </gml:MultiSurface>
+            </topp:the_geom>
+            <topp:STATE_NAME>Illinois</topp:STATE_NAME>
+            <topp:STATE_FIPS>17</topp:STATE_FIPS>
+            <topp:SUB_REGION>E N Cen</topp:SUB_REGION>
+            <topp:STATE_ABBR>IL</topp:STATE_ABBR>
+            <topp:LAND_KM>143986.61</topp:LAND_KM>
+            <topp:WATER_KM>1993.335</topp:WATER_KM>
+            <topp:PERSONS>1.1430602E7</topp:PERSONS>
+            <topp:FAMILIES>2924880.0</topp:FAMILIES>
+            <topp:HOUSHOLD>4202240.0</topp:HOUSHOLD>
+            <topp:MALE>5552233.0</topp:MALE>
+            <topp:FEMALE>5878369.0</topp:FEMALE>
+            <topp:WORKERS>4199206.0</topp:WORKERS>
+            <topp:DRVALONE>3741715.0</topp:DRVALONE>
+            <topp:CARPOOL>652603.0</topp:CARPOOL>
+            <topp:PUBTRANS>538071.0</topp:PUBTRANS>
+            <topp:EMPLOYED>5417967.0</topp:EMPLOYED>
+            <topp:UNEMPLOY>385040.0</topp:UNEMPLOY>
+            <topp:SERVICE>1360159.0</topp:SERVICE>
+            <topp:MANUAL>828906.0</topp:MANUAL>
+            <topp:P_MALE>0.486</topp:P_MALE>
+            <topp:P_FEMALE>0.514</topp:P_FEMALE>
+            <topp:SAMP_POP>1747776.0</topp:SAMP_POP>
+        </topp:states>
+        <sf:roads gml:id="roads.1">
+            <sf:the_geom>
+                <gml:MultiLineString srsDimension="2" srsName="EPSG:4326">
+                    <gml:lineStringMember>
+                        <gml:LineString srsDimension="2">
+                            <gml:posList>37.51099000000001 -88.071564 37.476273000000006
+                                -88.087883 37.442852 -88.311707 37.40930899999999 -88.359177
+                                37.51099000000001 -88.071564</gml:posList>
+                        </gml:LineString>
+                    </gml:lineStringMember>
+                </gml:MultiLineString>
+            </sf:the_geom>
+            <sf:cat>5</sf:cat>
+            <sf:label>unimproved road</sf:label>
+        </sf:roads>
+    </gml:featureMembers>
+</wfs:FeatureCollection>

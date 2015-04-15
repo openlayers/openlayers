@@ -216,7 +216,7 @@ ol.Collection.prototype.push = function(elem) {
 
 
 /**
- * Removes the first occurence of elem from the collection.
+ * Removes the first occurrence of elem from the collection.
  * @param {T} elem Element.
  * @return {T|undefined} The removed element or undefined if elem was not found.
  * @api stable

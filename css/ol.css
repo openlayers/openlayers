@@ -21,8 +21,12 @@
   font-size: 10px;
   text-align: center;
   margin: 1px;
-  padding: 0px 2px;
+  will-change: contents, width;
 }
+.ol-overlay-container {
+  will-change: left,right,top,bottom;
+}
+
 .ol-unsupported {
   display: none;
 }
@@ -102,6 +106,7 @@
   display: block;
   font-weight: normal;
   font-size: 1.2em;
+  will-change: transform;
 }
 .ol-touch .ol-control button {
   font-size: 1.5em;

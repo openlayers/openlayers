@@ -804,7 +804,7 @@ Other less frequently used targets are:
 If no target is given, the build-target will be executed.
 
 The above list is not complete, please see the source code for not-mentioned
-and only seldomly called targets.
+and only seldom called targets.
     '''
 
 if __name__ == '__main__':

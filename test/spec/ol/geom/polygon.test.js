@@ -120,6 +120,30 @@ describe('ol.geom.Polygon', function() {
       expect(polygon.containsCoordinate(insideInner)).to.be(false);
     });
 
+    describe('#getCoordinates()', function() {
+
+      var cw = [[-180, -90], [-180, 90], [180, 90], [180, -90], [-180, -90]];
+      var ccw = [[-180, -90], [180, -90], [180, 90], [-180, 90], [-180, -90]];
+      var right = new ol.geom.Polygon([ccw, cw]);
+      var left = new ol.geom.Polygon([cw, ccw]);
+
+      it('returns coordinates as they were constructed', function() {
+        expect(right.getCoordinates()).to.eql([ccw, cw]);
+        expect(left.getCoordinates()).to.eql([cw, ccw]);
+      });
+
+      it('can return coordinates with right-hand orientation', function() {
+        expect(right.getCoordinates(true)).to.eql([ccw, cw]);
+        expect(left.getCoordinates(true)).to.eql([ccw, cw]);
+      });
+
+      it('can return coordinates with left-hand orientation', function() {
+        expect(right.getCoordinates(false)).to.eql([cw, ccw]);
+        expect(left.getCoordinates(false)).to.eql([cw, ccw]);
+      });
+
+    });
+
     describe('#getOrientedFlatCoordinates', function() {
 
       it('reverses the outer ring if necessary', function() {

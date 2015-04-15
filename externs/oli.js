@@ -118,6 +118,25 @@ oli.MapEvent.prototype.frameState;
 
 
 /**
+ * @interface
+ */
+ oli.SelectEvent = function() {};
+
+
+ /**
+  * @type {Array.<ol.Feature>}
+  */
+oli.SelectEvent.prototype.deselected;
+
+
+ /**
+  * @type {Array.<ol.Feature>}
+  */
+oli.SelectEvent.prototype.selected;
+
+
+
+/**
  * @type {Object}
  */
 oli.control;
@@ -209,6 +228,29 @@ oli.render.Event.prototype.vectorContext;
  */
 oli.source;
 
+
+/**
+ * @interface
+ */
+oli.source.ImageEvent = function() {};
+
+
+/**
+ * @type {ol.Image}
+ */
+oli.source.ImageEvent.prototype.image;
+
+
+/**
+ * @interface
+ */
+oli.source.TileEvent = function() {};
+
+
+/**
+ * @type {ol.Tile}
+ */
+oli.source.TileEvent.prototype.tile;
 
 
 /**

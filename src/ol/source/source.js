@@ -3,7 +3,7 @@ goog.provide('ol.source.State');
 
 goog.require('goog.events.EventType');
 goog.require('ol.Attribution');
-goog.require('ol.Observable');
+goog.require('ol.Object');
 goog.require('ol.proj');
 
 
@@ -37,7 +37,7 @@ ol.source.SourceOptions;
  * Base class for {@link ol.layer.Layer} sources.
  *
  * @constructor
- * @extends {ol.Observable}
+ * @extends {ol.Object}
  * @fires change Triggered when the state of the source changes.
  * @param {ol.source.SourceOptions} options Source options.
  * @api stable
@@ -73,7 +73,7 @@ ol.source.Source = function(options) {
       options.state : ol.source.State.READY;
 
 };
-goog.inherits(ol.source.Source, ol.Observable);
+goog.inherits(ol.source.Source, ol.Object);
 
 
 /**
