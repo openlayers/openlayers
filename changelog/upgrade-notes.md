@@ -118,7 +118,7 @@ size of a sub-rectangle in an image sprite.
 
 ### Support for non-square tiles
 
-When using ´ol.tilegrid.TileGrid#getTileSize` on the tile grid of an `ol.source.BingMaps`, the return value will now be an `ol.Size` array instead of a number.
+The return value of ´ol.tilegrid.TileGrid#getTileSize()` will now be an `ol.Size` array instead of a number if non-square tiles (i.e. an `ol.Size` array instead of a number as `tilsSize`) are used. To always get an `ol.Size`, the new `ol.size.toSize()` was added.
 
 ### v3.4.0
 
