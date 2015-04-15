@@ -36,17 +36,21 @@ var geolocation = new ol.Geolocation({
   projection: view.getProjection()
 });
 
-$('#track').on('change', function() {
+function el(id) {
+  return document.getElementById(id);
+}
+
+el('track').addEventListener('change', function() {
   geolocation.setTracking(this.checked);
 });
 
 // update the HTML page when the position changes.
 geolocation.on('change', function() {
-  $('#accuracy').text(geolocation.getAccuracy() + ' [m]');
-  $('#altitude').text(geolocation.getAltitude() + ' [m]');
-  $('#altitudeAccuracy').text(geolocation.getAltitudeAccuracy() + ' [m]');
-  $('#heading').text(geolocation.getHeading() + ' [rad]');
-  $('#speed').text(geolocation.getSpeed() + ' [m/s]');
+  el('accuracy').innerText = geolocation.getAccuracy() + ' [m]';
+  el('altitude').innerText = geolocation.getAltitude() + ' [m]';
+  el('altitudeAccuracy').innerText = geolocation.getAltitudeAccuracy() + ' [m]';
+  el('heading').innerText = geolocation.getHeading() + ' [rad]';
+  el('speed').innerText = geolocation.getSpeed() + ' [m/s]';
 });
 
 // handle geolocation error.
