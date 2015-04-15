@@ -430,7 +430,8 @@ ol.tilegrid.TileGrid.prototype.getTileRange =
 
 /**
  * Get the tile size for a zoom level. The type of the return value matches the
- * `tileSize` or `tileSizes` that the tile grid was configured with.
+ * `tileSize` or `tileSizes` that the tile grid was configured with. To always
+ * get an `ol.Size`, run the result through `ol.size.toSize()`.
  * @param {number} z Z.
  * @return {number|ol.Size} Tile size.
  * @api stable
