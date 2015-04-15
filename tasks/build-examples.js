@@ -158,6 +158,7 @@ function main(callback) {
   var smith = new Metalsmith('.')
       .source(srcDir)
       .destination(destDir)
+      .concurrency(25)
       .metadata({
         olVersion: pkg.version
       })
