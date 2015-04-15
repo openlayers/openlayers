@@ -11,9 +11,10 @@ var radius = $('#radius');
 
 var vector = new ol.layer.Heatmap({
   source: new ol.source.Vector({
-    extractStyles: false,
     url: 'data/kml/2012_Earthquakes_Mag5.kml',
-    format: new ol.format.KML()
+    format: new ol.format.KML({
+      extractStyles: false
+    })
   }),
   blur: parseInt(blur.val(), 10),
   radius: parseInt(radius.val(), 10)
