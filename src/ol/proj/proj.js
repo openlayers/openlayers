@@ -12,6 +12,7 @@ goog.require('ol.Extent');
 goog.require('ol.TransformFunction');
 goog.require('ol.extent');
 goog.require('ol.sphere.NORMAL');
+goog.require('ol.sphere.WGS84');
 
 
 /**
@@ -49,6 +50,35 @@ ol.proj.METERS_PER_UNIT[ol.proj.Units.DEGREES] =
 ol.proj.METERS_PER_UNIT[ol.proj.Units.FEET] = 0.3048;
 ol.proj.METERS_PER_UNIT[ol.proj.Units.METERS] = 1;
 ol.proj.METERS_PER_UNIT[ol.proj.Units.USFEET] = 1200 / 3937;
+
+
+/**
+ * The length calculation method for ol.proj.getLength. One of `'Cartesian'`,
+ * `'Haversine'` or `'Rhumb'`. Haversine returns great circle distances
+ * as often used for navigation in the air. Rhumb returns Rhumb line
+ * distance as often used for navigation at sea.
+ *
+ * Cartesian should only be used for projections with constant scale
+ * over their extent (these will normally return false from isGlobal),
+ * or for projections with units of `'Pixels'`.
+ * Cartesian should return the most accurate results for such projections.
+ * Cartesian should not normally be used for EPSG:3857 or
+ * EPSG:4326 line strings.
+ *
+ * Haversine uses spherical maths to calculate great circle distances
+ * Accuracy will be adequate for most purposes.
+ *
+ * Rhumb Line calculates Rhumb Line distances using spherical maths.
+ * Straight lines on EPSG:3857 maps are Rhumb Lines.
+ *
+ * @enum {string}
+ * @api
+ */
+ol.proj.LengthMethod = {
+  CARTESIAN: 'C',
+  HAVERSINE: 'H',
+  RHUMB: 'R'
+};
 
 
 
@@ -658,6 +688,94 @@ ol.proj.get = function(projectionLike) {
     projection = null;
   }
   return projection;
+};
+
+
+/**
+ * Calculate the length of a line string in projection units except
+ * if the projection's units are degrees and the method is
+ * Haversine or Rhumb, when a length in meters is returned.
+ * You can use e.g. map.getView().getProjection() to get
+ * the projection to pass as the projection parameter.
+ * The default calculation method is Haversine for a global projection
+ * and Cartesian for a non-global projection. The Cartesian method is
+ * always used for projections with units of pixels.
+ * The Haversine method calculates great circle distances on a sphere
+ * with radius equal to the WGS84 equatorial radius.
+ * A Rhumb line is a line of constant bearing - a straight line on an
+ * EPSG:3857 map. Rhumb line calculations are again done on a sphere with
+ * radius equal to the WGS84 equatorial radius.
+ * @param {Array.<ol.Coordinate>} coordinates Coordinates of a line string.
+ * @param {ol.proj.ProjectionLike} projection of the coordinates.
+ * @param {ol.proj.LengthMethod=} opt_method calculation method.
+ * @return {number} Length sum of the length of the line segments.
+ * @api
+ */
+ol.proj.getLength = function(coordinates, projection, opt_method) {
+  var length = 0;
+  var method;
+  var proj = ol.proj.get(projection);
+  var units = proj.getUnits();
+  var aLen = coordinates.length;
+  var i;
+  var c1, c2;
+
+  /* See http://www.movable-type.co.uk/scripts/gis-faq-5.1.html for a
+    useful discussion on distance calculation. Using the WGS84 equatorial radius
+    is best for EPSG:3857 as it uses the same earth radius for its projection.
+   */
+
+  if (!goog.isDef(opt_method)) {
+    method = (proj.isGlobal()) ? ol.proj.LengthMethod.HAVERSINE :
+        ol.proj.LengthMethod.CARTESIAN;
+  } else {
+    method = opt_method;
+  }
+
+  if (units == ol.proj.Units.PIXELS) {
+    method = ol.proj.LengthMethod.CARTESIAN;
+  }
+
+  if (method == ol.proj.LengthMethod.CARTESIAN) {
+    var x1 = coordinates[0][0];
+    var y1 = coordinates[0][1];
+    var x2, y2;
+    for (i = 1; i < aLen; i++) {
+      x2 = coordinates[i][0];
+      y2 = coordinates[i][1];
+      length += Math.sqrt((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1));
+      x1 = x2;
+      y1 = y2;
+    }
+  }
+  else if (method == ol.proj.LengthMethod.HAVERSINE) {
+    c1 = ol.proj.toLonLat(coordinates[0], proj);
+    for (i = 1; i < aLen; i++) {
+      c2 = ol.proj.toLonLat(coordinates[i], proj);
+      length += ol.sphere.WGS84.haversineDistance(c1, c2);
+      c1 = c2;
+    }
+  }
+  else if (method == ol.proj.LengthMethod.RHUMB) {
+    c1 = ol.proj.toLonLat(coordinates[0], proj);
+    for (i = 1; i < aLen; i++) {
+      c2 = ol.proj.toLonLat(coordinates[i], proj);
+      length += ol.sphere.WGS84.rhumbLineDistance(c1, c2);
+      c1 = c2;
+    }
+  }
+  else {
+    return NaN;
+  }
+
+  if ((units != ol.proj.Units.DEGREES) && (units != ol.proj.Units.PIXELS)) {
+    var mpu = proj.getMetersPerUnit();
+    if (goog.isDef(mpu)) {
+      length /= mpu;
+    }
+  }
+
+  return length;
 };
 
 

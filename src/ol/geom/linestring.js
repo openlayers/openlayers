@@ -167,8 +167,12 @@ ol.geom.LineString.prototype.getCoordinates = function() {
 
 
 /**
- * Return the length of the linestring on projected plane.
- * @return {number} Length (on projected plane).
+ * Return the linestring length using cartesian maths.
+ * This method will not give useful results for geometries with
+ * EPSG:3857 or EPSG:4326 coordinates. To obtain line string lengths
+ * in metres, for these projections, use the getLength method of ol.proj
+ * instead.
+ * @return {number} Length, assuming cartesian coordinates.
  * @api stable
  */
 ol.geom.LineString.prototype.getLength = function() {

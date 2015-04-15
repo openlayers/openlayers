@@ -512,6 +512,126 @@ describe('ol.proj', function() {
 
   });
 
+
+  describe('ol.proj.getLength with a 3 segment linestring', function() {
+
+    var lineString = [[0, 0], [100, 0], [100, 100], [0, 0]];
+
+    var expectL = 100.0 + 100.0 + (100.0 * Math.sqrt(2.0));
+
+    var lineString4326 = [[0, 0], [20, 0], [20, 20], [0, 0]];
+
+    describe('EPSG:3857, CARTESIAN', function() {
+
+      it('returns the expected result', function() {
+        expect(ol.proj.getLength(lineString, 'EPSG:3857',
+            ol.proj.LengthMethod.CARTESIAN)
+        ).to.roughlyEqual(expectL, 1e-6);
+      });
+    });
+
+    describe('EPSG:3857, HAVERSINE', function() {
+
+      it('returns the expected result', function() {
+        expect(ol.proj.getLength(lineString, 'EPSG:3857',
+            ol.proj.LengthMethod.HAVERSINE)
+        ).to.roughlyEqual(expectL, 1);
+      });
+    });
+
+    describe('EPSG:3857, RHUMB', function() {
+
+      it('returns the expected result', function() {
+        expect(ol.proj.getLength(lineString, 'EPSG:3857',
+            ol.proj.LengthMethod.RHUMB)
+        ).to.roughlyEqual(expectL, 1);
+      });
+    });
+
+    describe('EPSG:3857, default method', function() {
+
+      it('returns the expected result', function() {
+        var hl = ol.proj.getLength(lineString, 'EPSG:3857',
+            ol.proj.LengthMethod.HAVERSINE);
+        expect(ol.proj.getLength(lineString, 'EPSG:3857')).to.be(hl);
+      });
+    });
+
+    describe('EPSG:4326, CARTESIAN', function() {
+
+      it('returns the expected result', function() {
+        expect(ol.proj.getLength(lineString, 'EPSG:4326',
+            ol.proj.LengthMethod.CARTESIAN)
+        ).to.roughlyEqual(expectL, 1e-6);
+      });
+    });
+
+    describe('EPSG:4326, HAVERSINE', function() {
+
+      it('returns the expected result', function() {
+        expect(ol.proj.getLength(lineString4326, 'EPSG:4326',
+            ol.proj.LengthMethod.HAVERSINE)
+        ).to.roughlyEqual(7568711, 1);
+      });
+    });
+
+    describe('EPSG:4326, RHUMB', function() {
+
+      it('returns the expected result', function() {
+        expect(ol.proj.getLength(lineString4326, 'EPSG:4326',
+            ol.proj.LengthMethod.RHUMB)
+        ).to.roughlyEqual(7569234, 1);
+      });
+    });
+
+    describe('Default non-global method is CARTESIAN', function() {
+
+      var localProj = new ol.proj.Projection(
+          { units: ol.proj.Units.METERS, code: 'local', global: false });
+
+      it('returns the expected result', function() {
+        expect(ol.proj.getLength(lineString, localProj)
+        ).to.roughlyEqual(expectL, 1e-6);
+      });
+    });
+
+    describe('Uses Meters Per Unit', function() {
+
+      var localProj = new ol.proj.Projection(
+          { units: ol.proj.Units.FEET, code: 'local', global: false });
+
+      it('returns the expected result', function() {
+        expect(ol.proj.getLength(lineString, localProj)
+        ).to.roughlyEqual(expectL / 0.3048, 1e-6);
+      });
+    });
+
+    describe('Pixels projection ignores HAVERSINE method', function() {
+
+      var pxProj = new ol.proj.Projection(
+          { units: ol.proj.Units.PIXELS, code: 'px' });
+
+      it('returns the expected result', function() {
+        expect(ol.proj.getLength(lineString, pxProj,
+            ol.proj.LengthMethod.HAVERSINE)
+        ).to.roughlyEqual(expectL, 1e-6);
+      });
+    });
+
+    describe('Pixels projection ignores RHUMB method', function() {
+
+      var pxProj = new ol.proj.Projection(
+          { units: ol.proj.Units.PIXELS, code: 'px' });
+
+      it('returns the expected result', function() {
+        expect(ol.proj.getLength(lineString, pxProj,
+            ol.proj.LengthMethod.RHUMB)
+        ).to.roughlyEqual(expectL, 1e-6);
+      });
+    });
+
+  });
+
 });
 
 
