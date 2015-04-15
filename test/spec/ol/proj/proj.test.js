@@ -136,6 +136,32 @@ describe('ol.proj', function() {
 
   describe('Proj4js integration', function() {
 
+    it('creates ol.proj.Projection instance from EPSG:21781', function() {
+      proj4.defs('EPSG:21781',
+          '+proj=somerc +lat_0=46.95240555555556 +lon_0=7.439583333333333 ' +
+          '+k_0=1 +x_0=600000 +y_0=200000 +ellps=bessel ' +
+          '+towgs84=674.374,15.056,405.346,0,0,0,0 +units=m +no_defs');
+      var proj = ol.proj.get('EPSG:21781');
+      expect(proj.getCode()).to.eql('EPSG:21781');
+      expect(proj.getUnits()).to.eql('m');
+      expect(proj.getMetersPerUnit()).to.eql(1);
+
+      delete proj4.defs['EPSG:21781'];
+    });
+
+    it('creates ol.proj.Projection instance from EPSG:3739', function() {
+      proj4.defs('EPSG:3739',
+          '+proj=tmerc +lat_0=40.5 +lon_0=-110.0833333333333 +k=0.9999375 ' +
+          '+x_0=800000.0000101599 +y_0=99999.99998983997 +ellps=GRS80 ' +
+          '+towgs84=0,0,0,0,0,0,0 +units=us-ft +no_defs');
+      var proj = ol.proj.get('EPSG:3739');
+      expect(proj.getCode()).to.eql('EPSG:3739');
+      expect(proj.getUnits()).to.eql('us-ft');
+      expect(proj.getMetersPerUnit()).to.eql(1200 / 3937);
+
+      delete proj4.defs['EPSG:3739'];
+    });
+
     it('allows Proj4js projections to be used transparently', function() {
       var point = ol.proj.transform(
           [-626172.13571216376, 6887893.4928337997], 'GOOGLE', 'WGS84');
