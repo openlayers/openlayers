@@ -31,15 +31,19 @@ var map = new ol.Map({
 
 var deviceOrientation = new ol.DeviceOrientation();
 
-$('#track').on('change', function() {
+function el(id) {
+  return document.getElementById(id);
+}
+
+el('track').addEventListener('change', function() {
   deviceOrientation.setTracking(this.checked);
 });
 
 deviceOrientation.on('change', function(event) {
-  $('#alpha').text(deviceOrientation.getAlpha() + ' [rad]');
-  $('#beta').text(deviceOrientation.getBeta() + ' [rad]');
-  $('#gamma').text(deviceOrientation.getGamma() + ' [rad]');
-  $('#heading').text(deviceOrientation.getHeading() + ' [rad]');
+  el('alpha').innerText = deviceOrientation.getAlpha() + ' [rad]';
+  el('beta').innerText = deviceOrientation.getBeta() + ' [rad]';
+  el('gamma').innerText = deviceOrientation.getGamma() + ' [rad]';
+  el('heading').innerText = deviceOrientation.getHeading() + ' [rad]';
 });
 
 // tilt the map
