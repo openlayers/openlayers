@@ -1,4 +1,3 @@
-// FIXME add support for hasM
 goog.provide('ol.format.EsriJSON');
 
 goog.require('goog.array');
@@ -69,7 +68,8 @@ ol.format.EsriJSON.readGeometry_ = function(object, opt_options) {
       type = 'MultiLineString';
     }
   } else if (goog.isDefAndNotNull(object.rings)) {
-    var rings = ol.format.EsriJSON.convertRings_(object.rings, object.hasZ);
+    var layout = ol.format.EsriJSON.getGeometryLayout_(object);
+    var rings = ol.format.EsriJSON.convertRings_(object.rings, layout);
     object = /** @type {EsriJSONGeometry} */(goog.object.clone(object));
     if (rings.length === 1) {
       type = 'Polygon';
@@ -92,18 +92,18 @@ ol.format.EsriJSON.readGeometry_ = function(object, opt_options) {
 /**
  * Determines inner and outer rings.
  * @param {Array.<!Array.<!Array.<number>>>} rings Rings.
- * @param {boolean|undefined} hasZ Do rings have Z values in them.
+ * @param {ol.geom.GeometryLayout} layout Geometry layout.
  * @private
  * @return {Array.<!Array.<!Array.<number>>>} Transoformed rings.
  */
-ol.format.EsriJSON.convertRings_ = function(rings, hasZ) {
+ol.format.EsriJSON.convertRings_ = function(rings, layout) {
   var outerRings = [];
   var holes = [];
   var i, ii;
   for (i = 0, ii = rings.length; i < ii; ++i) {
     var flatRing = goog.array.flatten(rings[i]);
     var clockwise = ol.geom.flat.orient.linearRingIsClockwise(flatRing, 0,
-        flatRing.length, hasZ === true ? 3 : 2);
+        flatRing.length, layout.length);
     if (clockwise) {
       outerRings.push([rings[i]]);
     } else {
@@ -140,9 +140,15 @@ ol.format.EsriJSON.readPointGeometry_ = function(object) {
   goog.asserts.assert(goog.isNumber(object.x), 'object.x should be number');
   goog.asserts.assert(goog.isNumber(object.y), 'object.y should be number');
   var point;
-  if (goog.isDefAndNotNull(object.z)) {
+  if (goog.isDefAndNotNull(object.m) && goog.isDefAndNotNull(object.z)) {
+    point = new ol.geom.Point([object.x, object.y, object.z, object.m],
+        ol.geom.GeometryLayout.XYZM);
+  } else if (goog.isDefAndNotNull(object.z)) {
     point = new ol.geom.Point([object.x, object.y, object.z],
         ol.geom.GeometryLayout.XYZ);
+  } else if (goog.isDefAndNotNull(object.m)) {
+    point = new ol.geom.Point([object.x, object.y, object.m],
+        ol.geom.GeometryLayout.XYM);
   } else {
     point = new ol.geom.Point([object.x, object.y]);
   }
@@ -160,9 +166,8 @@ ol.format.EsriJSON.readLineStringGeometry_ = function(object) {
       'object.paths should be an array');
   goog.asserts.assert(object.paths.length === 1,
       'object.paths array length should be 1');
-  return new ol.geom.LineString(object.paths[0].slice(0),
-      object.hasZ === true ? ol.geom.GeometryLayout.XYZ :
-      ol.geom.GeometryLayout.XY);
+  var layout = ol.format.EsriJSON.getGeometryLayout_(object);
+  return new ol.geom.LineString(object.paths[0], layout);
 };
 
 
@@ -176,7 +181,26 @@ ol.format.EsriJSON.readMultiLineStringGeometry_ = function(object) {
       'object.paths should be an array');
   goog.asserts.assert(object.paths.length > 1,
       'object.paths array length should be more than 1');
-  return new ol.geom.MultiLineString(object.paths.slice(0));
+  var layout = ol.format.EsriJSON.getGeometryLayout_(object);
+  return new ol.geom.MultiLineString(object.paths, layout);
+};
+
+
+/**
+ * @param {EsriJSONGeometry} object Object.
+ * @private
+ * @return {ol.geom.GeometryLayout} The geometry layout to use.
+ */
+ol.format.EsriJSON.getGeometryLayout_ = function(object) {
+  var layout = ol.geom.GeometryLayout.XY;
+  if (object.hasZ === true && object.hasM === true) {
+    layout = ol.geom.GeometryLayout.XYZM;
+  } else if (object.hasZ === true) {
+    layout = ol.geom.GeometryLayout.XYZ;
+  } else if (object.hasM === true) {
+    layout = ol.geom.GeometryLayout.XYM;
+  }
+  return layout;
 };
 
 
@@ -188,7 +212,8 @@ ol.format.EsriJSON.readMultiLineStringGeometry_ = function(object) {
 ol.format.EsriJSON.readMultiPointGeometry_ = function(object) {
   goog.asserts.assert(goog.isDefAndNotNull(object.points),
       'object.points should be defined');
-  return new ol.geom.MultiPoint(object.points);
+  var layout = ol.format.EsriJSON.getGeometryLayout_(object);
+  return new ol.geom.MultiPoint(object.points, layout);
 };
 
 
@@ -201,10 +226,10 @@ ol.format.EsriJSON.readMultiPolygonGeometry_ = function(object) {
   goog.asserts.assert(goog.isDefAndNotNull(object.rings));
   goog.asserts.assert(object.rings.length > 1,
       'object.rings should have length larger than 1');
+  var layout = ol.format.EsriJSON.getGeometryLayout_(object);
   return new ol.geom.MultiPolygon(
       /** @type {Array.<Array.<Array.<Array.<number>>>>} */(object.rings),
-      object.hasZ === true ? ol.geom.GeometryLayout.XYZ :
-      ol.geom.GeometryLayout.XY);
+      layout);
 };
 
 
@@ -215,9 +240,8 @@ ol.format.EsriJSON.readMultiPolygonGeometry_ = function(object) {
  */
 ol.format.EsriJSON.readPolygonGeometry_ = function(object) {
   goog.asserts.assert(goog.isDefAndNotNull(object.rings));
-  return new ol.geom.Polygon(object.rings,
-      object.hasZ === true ? ol.geom.GeometryLayout.XYZ :
-      ol.geom.GeometryLayout.XY);
+  var layout = ol.format.EsriJSON.getGeometryLayout_(object);
+  return new ol.geom.Polygon(object.rings, layout);
 };
 
 
@@ -231,18 +255,50 @@ ol.format.EsriJSON.writePointGeometry_ = function(geometry, opt_options) {
   goog.asserts.assertInstanceof(geometry, ol.geom.Point,
       'geometry should be an ol.geom.Point');
   var coordinates = geometry.getCoordinates();
-  if (geometry.getLayout() === ol.geom.GeometryLayout.XYZ) {
+  var layout = geometry.getLayout();
+  if (layout === ol.geom.GeometryLayout.XYZ) {
     return /** @type {EsriJSONPoint} */ ({
       'x': coordinates[0],
       'y': coordinates[1],
       'z': coordinates[2]
     });
-  } else {
+  } else if (layout === ol.geom.GeometryLayout.XYM) {
+    return /** @type {EsriJSONPoint} */ ({
+      'x': coordinates[0],
+      'y': coordinates[1],
+      'm': coordinates[2]
+    });
+  } else if (layout === ol.geom.GeometryLayout.XYZM) {
+    return /** @type {EsriJSONPoint} */ ({
+      'x': coordinates[0],
+      'y': coordinates[1],
+      'z': coordinates[2],
+      'm': coordinates[3]
+    });
+  } else if (layout === ol.geom.GeometryLayout.XY) {
     return /** @type {EsriJSONPoint} */ ({
       'x': coordinates[0],
       'y': coordinates[1]
     });
+  } else {
+    goog.asserts.fail('Unknown geometry layout');
   }
+};
+
+
+/**
+ * @param {ol.geom.SimpleGeometry} geometry Geometry.
+ * @private
+ * @return {Object} Object with boolean hasZ and hasM keys.
+ */
+ol.format.EsriJSON.getHasZM_ = function(geometry) {
+  var layout = geometry.getLayout();
+  return {
+    hasZ: (layout === ol.geom.GeometryLayout.XYZ ||
+        layout === ol.geom.GeometryLayout.XYZM),
+    hasM: (layout === ol.geom.GeometryLayout.XYM ||
+        layout === ol.geom.GeometryLayout.XYZM)
+  };
 };
 
 
@@ -255,8 +311,10 @@ ol.format.EsriJSON.writePointGeometry_ = function(geometry, opt_options) {
 ol.format.EsriJSON.writeLineStringGeometry_ = function(geometry, opt_options) {
   goog.asserts.assertInstanceof(geometry, ol.geom.LineString,
       'geometry should be an ol.geom.LineString');
+  var hasZM = ol.format.EsriJSON.getHasZM_(geometry);
   return /** @type {EsriJSONPolyline} */ ({
-    'hasZ': (geometry.getLayout() === ol.geom.GeometryLayout.XYZ),
+    'hasZ': hasZM.hasZ,
+    'hasM': hasZM.hasM,
     'paths': [geometry.getCoordinates()]
   });
 };
@@ -272,8 +330,10 @@ ol.format.EsriJSON.writePolygonGeometry_ = function(geometry, opt_options) {
   goog.asserts.assertInstanceof(geometry, ol.geom.Polygon,
       'geometry should be an ol.geom.Polygon');
   // Esri geometries use the left-hand rule
+  var hasZM = ol.format.EsriJSON.getHasZM_(geometry);
   return /** @type {EsriJSONPolygon} */ ({
-    'hasZ': (geometry.getLayout() === ol.geom.GeometryLayout.XYZ),
+    'hasZ': hasZM.hasZ,
+    'hasM': hasZM.hasM,
     'rings': geometry.getCoordinates(false)
   });
 };
@@ -289,8 +349,10 @@ ol.format.EsriJSON.writeMultiLineStringGeometry_ =
     function(geometry, opt_options) {
   goog.asserts.assertInstanceof(geometry, ol.geom.MultiLineString,
       'geometry should be an ol.geom.MultiLineString');
+  var hasZM = ol.format.EsriJSON.getHasZM_(geometry);
   return /** @type {EsriJSONPolyline} */ ({
-    'hasZ': (geometry.getLayout() === ol.geom.GeometryLayout.XYZ),
+    'hasZ': hasZM.hasZ,
+    'hasM': hasZM.hasM,
     'paths': geometry.getCoordinates()
   });
 };
@@ -305,8 +367,10 @@ ol.format.EsriJSON.writeMultiLineStringGeometry_ =
 ol.format.EsriJSON.writeMultiPointGeometry_ = function(geometry, opt_options) {
   goog.asserts.assertInstanceof(geometry, ol.geom.MultiPoint,
       'geometry should be an ol.geom.MultiPoint');
+  var hasZM = ol.format.EsriJSON.getHasZM_(geometry);
   return /** @type {EsriJSONMultipoint} */ ({
-    'hasZ': (geometry.getLayout() === ol.geom.GeometryLayout.XYZ),
+    'hasZ': hasZM.hasZ,
+    'hasM': hasZM.hasM,
     'points': geometry.getCoordinates()
   });
 };
@@ -322,6 +386,7 @@ ol.format.EsriJSON.writeMultiPolygonGeometry_ = function(geometry,
     opt_options) {
   goog.asserts.assertInstanceof(geometry, ol.geom.MultiPolygon,
       'geometry should be an ol.geom.MultiPolygon');
+  var hasZM = ol.format.EsriJSON.getHasZM_(geometry);
   var coordinates = geometry.getCoordinates(false);
   var output = [];
   for (var i = 0; i < coordinates.length; i++) {
@@ -330,7 +395,8 @@ ol.format.EsriJSON.writeMultiPolygonGeometry_ = function(geometry,
     }
   }
   return /** @type {EsriJSONPolygon} */ ({
-    'hasZ': (geometry.getLayout() === ol.geom.GeometryLayout.XYZ),
+    'hasZ': hasZM.hasZ,
+    'hasM': hasZM.hasM,
     'rings': output
   });
 };

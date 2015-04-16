@@ -42,6 +42,13 @@ var EsriJSONPoint = function() {};
 
 
 /**
+ * M value of point.
+ * @type {!number}
+ */
+EsriJSONPoint.prototype.m;
+
+
+/**
  * X coordinate of point.
  * @type {!number}
  */
