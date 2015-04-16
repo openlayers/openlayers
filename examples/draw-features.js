@@ -14,7 +14,7 @@ var raster = new ol.layer.Tile({
   source: new ol.source.MapQuest({layer: 'sat'})
 });
 
-var source = new ol.source.Vector();
+var source = new ol.source.Vector({wrapX: false});
 
 var vector = new ol.layer.Vector({
   source: source,
