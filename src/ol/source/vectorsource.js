@@ -146,6 +146,12 @@ ol.source.Vector = function(opt_options) {
     this.addFeaturesInternal(options.features);
   }
 
+  /**
+   * @type {boolean}
+   * @private
+   */
+  this.wrapX_ = goog.isDef(options.wrapX) ? options.wrapX : true;
+
 };
 goog.inherits(ol.source.Vector, ol.source.Source);
 
@@ -561,6 +567,14 @@ ol.source.Vector.prototype.getExtent = function() {
 ol.source.Vector.prototype.getFeatureById = function(id) {
   var feature = this.idIndex_[id.toString()];
   return goog.isDef(feature) ? feature : null;
+};
+
+
+/**
+ * @return {boolean}
+ */
+ol.source.Vector.prototype.getWrapX = function() {
+  return this.wrapX_;
 };
 
 

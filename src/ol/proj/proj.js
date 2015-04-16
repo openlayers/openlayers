@@ -120,6 +120,9 @@ ol.proj.Projection = function(options) {
    * @type {boolean}
    */
   this.global_ = goog.isDef(options.global) ? options.global : false;
+  if (this.global_) {
+    goog.asserts.assert(!goog.isNull(this.extent_));
+  }
 
   /**
   * @private

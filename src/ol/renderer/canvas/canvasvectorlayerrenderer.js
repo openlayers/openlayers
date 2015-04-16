@@ -11,6 +11,7 @@ goog.require('ol.render.EventType');
 goog.require('ol.render.canvas.ReplayGroup');
 goog.require('ol.renderer.canvas.Layer');
 goog.require('ol.renderer.vector');
+goog.require('ol.source.Vector');
 
 
 
@@ -75,6 +76,16 @@ goog.inherits(ol.renderer.canvas.VectorLayer, ol.renderer.canvas.Layer);
 ol.renderer.canvas.VectorLayer.prototype.composeFrame =
     function(frameState, layerState, context) {
 
+  var extent = frameState.extent;
+  var pixelRatio = frameState.pixelRatio;
+  var skippedFeatureUids = frameState.skippedFeatureUids;
+  var viewState = frameState.viewState;
+  var projection = viewState.projection;
+  var rotation = viewState.rotation;
+  var projectionExtent = projection.getExtent();
+  var vectorSource = this.getLayer().getSource();
+  goog.asserts.assertInstanceof(vectorSource, ol.source.Vector);
+
   var transform = this.getTransform(frameState);
 
   this.dispatchPreComposeEvent(context, frameState, transform);
@@ -97,8 +108,28 @@ ol.renderer.canvas.VectorLayer.prototype.composeFrame =
     var alpha = replayContext.globalAlpha;
     replayContext.globalAlpha = layerState.opacity;
     replayGroup.replay(
-        replayContext, frameState.pixelRatio, transform,
-        frameState.viewState.rotation, frameState.skippedFeatureUids);
+        replayContext, pixelRatio, transform, rotation, skippedFeatureUids);
+
+    if (vectorSource.getWrapX() && projection.isGlobal() &&
+        !ol.extent.containsExtent(projectionExtent, frameState.extent)) {
+      var startX = extent[0];
+      var worldWidth = ol.extent.getWidth(projectionExtent);
+      var world = 0;
+      while (startX < projectionExtent[0]) {
+        transform = this.getTransform(frameState, worldWidth * (--world));
+        replayGroup.replay(
+            replayContext, pixelRatio, transform, rotation, skippedFeatureUids);
+        startX += worldWidth;
+      }
+      world = 0;
+      startX = extent[2];
+      while (startX > projectionExtent[2]) {
+        transform = this.getTransform(frameState, worldWidth * (++world));
+        replayGroup.replay(
+            replayContext, pixelRatio, transform, rotation, skippedFeatureUids);
+        startX -= worldWidth;
+      }
+    }
 
     if (replayContext != context) {
       this.dispatchRenderEvent(replayContext, frameState, transform);
@@ -194,6 +225,14 @@ ol.renderer.canvas.VectorLayer.prototype.prepareFrame =
 
   var extent = ol.extent.buffer(frameStateExtent,
       vectorLayerRenderBuffer * resolution);
+  var projectionExtent = viewState.projection.getExtent();
+
+  if (vectorSource.getWrapX() && viewState.projection.isGlobal() &&
+      !ol.extent.containsExtent(projectionExtent, frameState.extent)) {
+    // do not clip when the view crosses the 0 or 180 meridians
+    extent[0] = projectionExtent[0];
+    extent[2] = projectionExtent[2];
+  }
 
   if (!this.dirty_ &&
       this.renderedResolution_ == resolution &&

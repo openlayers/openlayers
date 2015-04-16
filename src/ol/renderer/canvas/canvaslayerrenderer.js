@@ -192,19 +192,23 @@ ol.renderer.canvas.Layer.prototype.getImageTransform = goog.abstractMethod;
 
 /**
  * @param {olx.FrameState} frameState Frame state.
+ * @param {number=} opt_offsetX Offset on the x-axis in view coordinates.
  * @protected
  * @return {!goog.vec.Mat4.Number} Transform.
  */
-ol.renderer.canvas.Layer.prototype.getTransform = function(frameState) {
+ol.renderer.canvas.Layer.prototype.getTransform =
+    function(frameState, opt_offsetX) {
   var viewState = frameState.viewState;
   var pixelRatio = frameState.pixelRatio;
+  var offsetX = goog.isDef(opt_offsetX) ? opt_offsetX : 0;
   return ol.vec.Mat4.makeTransform2D(this.transform_,
       pixelRatio * frameState.size[0] / 2,
       pixelRatio * frameState.size[1] / 2,
       pixelRatio / viewState.resolution,
       -pixelRatio / viewState.resolution,
       -viewState.rotation,
-      -viewState.center[0], -viewState.center[1]);
+      -viewState.center[0] + offsetX,
+      -viewState.center[1]);
 };
 
 
