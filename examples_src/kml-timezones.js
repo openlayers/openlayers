@@ -47,9 +47,10 @@ var styleFunction = function(feature, resolution) {
 
 var vector = new ol.layer.Vector({
   source: new ol.source.Vector({
-    extractStyles: false,
     url: 'data/kml/timezones.kml',
-    format: new ol.format.KML()
+    format: new ol.format.KML({
+      extractStyles: false
+    })
   }),
   style: styleFunction
 });
