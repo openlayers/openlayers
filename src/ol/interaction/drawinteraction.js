@@ -517,6 +517,8 @@ ol.interaction.Draw.prototype.addToDrawing_ = function(event) {
 
 /**
  * Stop drawing and add the sketch feature to the target layer.
+ * The {@link ol.DrawEventType.DRAWEND} event is dispatched before inserting
+ * the feature.
  * @api
  */
 ol.interaction.Draw.prototype.finishDrawing = function() {
@@ -557,13 +559,16 @@ ol.interaction.Draw.prototype.finishDrawing = function() {
     sketchFeature.setGeometry(new ol.geom.MultiPolygon([coordinates]));
   }
 
+  // First dispatch event to allow full set up of feature
+  this.dispatchEvent(new ol.DrawEvent(ol.DrawEventType.DRAWEND, sketchFeature));
+
+  // Then insert feature
   if (!goog.isNull(this.features_)) {
     this.features_.push(sketchFeature);
   }
   if (!goog.isNull(this.source_)) {
     this.source_.addFeature(sketchFeature);
   }
-  this.dispatchEvent(new ol.DrawEvent(ol.DrawEventType.DRAWEND, sketchFeature));
 };
 
 

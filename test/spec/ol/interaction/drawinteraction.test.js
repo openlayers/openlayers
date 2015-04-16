@@ -145,6 +145,29 @@ describe('ol.interaction.Draw', function() {
       expect(ds).to.be.called(2);
       expect(de).to.be.called(1);
     });
+
+    it('triggers drawend event before inserting the feature', function() {
+      var receivedEvents = {
+        end: 0,
+        addfeature: 0
+      };
+      goog.events.listen(draw, ol.DrawEventType.DRAWEND, function() {
+        expect(receivedEvents.end).to.be(0);
+        expect(receivedEvents.addfeature).to.be(0);
+        ++receivedEvents.end;
+      });
+      source.on(ol.source.VectorEventType.ADDFEATURE, function() {
+        expect(receivedEvents.end).to.be(1);
+        expect(receivedEvents.addfeature).to.be(0);
+        receivedEvents.addfeature++;
+      });
+      simulateEvent('pointermove', 10, 20);
+      simulateEvent('pointerdown', 10, 20);
+      simulateEvent('pointerup', 10, 20);
+      simulateEvent('pointermove', 20, 20);
+      expect(receivedEvents.end).to.be(1);
+      expect(receivedEvents.addfeature).to.be(1);
+    });
   });
 
   describe('drawing multipoints', function() {
@@ -661,3 +684,4 @@ goog.require('ol.interaction.Interaction');
 goog.require('ol.layer.Vector');
 goog.require('ol.pointer.PointerEvent');
 goog.require('ol.source.Vector');
+goog.require('ol.source.VectorEventType');
