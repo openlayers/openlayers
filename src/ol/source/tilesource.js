@@ -8,6 +8,7 @@ goog.require('ol.Extent');
 goog.require('ol.TileCache');
 goog.require('ol.TileRange');
 goog.require('ol.TileState');
+goog.require('ol.size');
 goog.require('ol.source.Source');
 goog.require('ol.tilecoord');
 goog.require('ol.tilegrid.TileGrid');
@@ -73,6 +74,12 @@ ol.source.Tile = function(options) {
    * @type {ol.TileCache}
    */
   this.tileCache = new ol.TileCache();
+
+  /**
+   * @protected
+   * @type {ol.Size}
+   */
+  this.tmpSize = [0, 0];
 
   /**
    * @private
@@ -202,12 +209,13 @@ ol.source.Tile.prototype.getTileGridForProjection = function(projection) {
  * @param {number} z Z.
  * @param {number} pixelRatio Pixel ratio.
  * @param {ol.proj.Projection} projection Projection.
- * @return {number} Tile size.
+ * @return {ol.Size} Tile size.
  */
 ol.source.Tile.prototype.getTilePixelSize =
     function(z, pixelRatio, projection) {
   var tileGrid = this.getTileGridForProjection(projection);
-  return tileGrid.getTileSize(z) * this.tilePixelRatio_;
+  return ol.size.scale(ol.size.toSize(tileGrid.getTileSize(z), this.tmpSize),
+      this.tilePixelRatio_, this.tmpSize);
 };
 
 

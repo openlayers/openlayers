@@ -81,7 +81,7 @@ ol.tilegrid.WMTS.createFromCapabilitiesMatrixSet =
   var matrixIds = [];
   /** @type {!Array.<ol.Coordinate>} */
   var origins = [];
-  /** @type {!Array.<number>} */
+  /** @type {!Array.<ol.Size>} */
   var tileSizes = [];
   /** @type {!Array.<number>} */
   var widths = [];
@@ -118,10 +118,8 @@ ol.tilegrid.WMTS.createFromCapabilitiesMatrixSet =
             metersPerUnit);
         var tileWidth = elt[tileWidthPropName];
         var tileHeight = elt[tileHeightPropName];
-        goog.asserts.assert(tileWidth == tileHeight,
-            'square tiles are assumed, tileWidth (%s) ==  tileHeight (%s)',
-            tileWidth, tileHeight);
-        tileSizes.push(tileWidth);
+        tileSizes.push(tileWidth == tileHeight ?
+            tileWidth : [tileWidth, tileHeight]);
         widths.push(elt['MatrixWidth']);
       });
 

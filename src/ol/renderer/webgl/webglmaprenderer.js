@@ -71,7 +71,13 @@ ol.renderer.webgl.Map = function(container, map) {
    * @private
    * @type {number}
    */
-  this.clipTileCanvasSize_ = 0;
+  this.clipTileCanvasWidth_ = 0;
+
+  /**
+   * @private
+   * @type {number}
+   */
+  this.clipTileCanvasHeight_ = 0;
 
   /**
    * @private
@@ -158,7 +164,7 @@ ol.renderer.webgl.Map = function(container, map) {
           this.tileTextureQueue_.reprioritize();
           var element = this.tileTextureQueue_.dequeue();
           var tile = /** @type {ol.Tile} */ (element[0]);
-          var tileSize = /** @type {number} */ (element[3]);
+          var tileSize = /** @type {ol.Size} */ (element[3]);
           var tileGutter = /** @type {number} */ (element[4]);
           this.bindTileTexture(
               tile, tileSize, tileGutter, goog.webgl.LINEAR, goog.webgl.LINEAR);
@@ -179,7 +185,7 @@ goog.inherits(ol.renderer.webgl.Map, ol.renderer.Map);
 
 /**
  * @param {ol.Tile} tile Tile.
- * @param {number} tileSize Tile size.
+ * @param {ol.Size} tileSize Tile size.
  * @param {number} tileGutter Tile gutter.
  * @param {number} magFilter Mag filter.
  * @param {number} minFilter Min filter.
@@ -209,15 +215,17 @@ ol.renderer.webgl.Map.prototype.bindTileTexture =
     if (tileGutter > 0) {
       var clipTileCanvas = this.clipTileContext_.canvas;
       var clipTileContext = this.clipTileContext_;
-      if (this.clipTileCanvasSize_ != tileSize) {
-        clipTileCanvas.width = tileSize;
-        clipTileCanvas.height = tileSize;
-        this.clipTileCanvasSize_ = tileSize;
+      if (this.clipTileCanvasWidth_ !== tileSize[0] ||
+          this.clipTileCanvasHeight_ !== tileSize[1]) {
+        clipTileCanvas.width = tileSize[0];
+        clipTileCanvas.height = tileSize[1];
+        this.clipTileCanvasWidth_ = tileSize[0];
+        this.clipTileCanvasHeight_ = tileSize[1];
       } else {
-        clipTileContext.clearRect(0, 0, tileSize, tileSize);
+        clipTileContext.clearRect(0, 0, tileSize[0], tileSize[1]);
       }
       clipTileContext.drawImage(tile.getImage(), tileGutter, tileGutter,
-          tileSize, tileSize, 0, 0, tileSize, tileSize);
+          tileSize[0], tileSize[1], 0, 0, tileSize[0], tileSize[1]);
       gl.texImage2D(goog.webgl.TEXTURE_2D, 0,
           goog.webgl.RGBA, goog.webgl.RGBA,
           goog.webgl.UNSIGNED_BYTE, clipTileCanvas);
