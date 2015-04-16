@@ -11,6 +11,7 @@ goog.require('ol.xml');
 
 
 /**
+ * @api
  * @typedef {function(this:ol.source.Vector, ol.Extent, number,
  *                    ol.proj.Projection)}
  */
