@@ -437,7 +437,7 @@ ol.tilegrid.TileGrid.prototype.getTileRange =
  * @api stable
  */
 ol.tilegrid.TileGrid.prototype.getTileSize = function(z) {
-  if (goog.isDef(this.tileSize_)) {
+  if (!goog.isNull(this.tileSize_)) {
     return this.tileSize_;
   } else {
     goog.asserts.assert(!goog.isNull(this.tileSizes_),
