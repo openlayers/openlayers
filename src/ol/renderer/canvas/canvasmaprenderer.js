@@ -10,6 +10,7 @@ goog.require('ol');
 goog.require('ol.RendererType');
 goog.require('ol.css');
 goog.require('ol.dom');
+goog.require('ol.extent');
 goog.require('ol.layer.Image');
 goog.require('ol.layer.Layer');
 goog.require('ol.layer.Tile');
@@ -92,39 +93,60 @@ ol.renderer.canvas.Map.prototype.createLayerRenderer = function(layer) {
 /**
  * @param {ol.render.EventType} type Event type.
  * @param {olx.FrameState} frameState Frame state.
+ * @param {boolean=} opt_wrapX Wrap the x-axis.
  * @private
  */
 ol.renderer.canvas.Map.prototype.dispatchComposeEvent_ =
-    function(type, frameState) {
+    function(type, frameState, opt_wrapX) {
   var map = this.getMap();
   var context = this.context_;
   if (map.hasListener(type)) {
     var extent = frameState.extent;
     var pixelRatio = frameState.pixelRatio;
     var viewState = frameState.viewState;
+    var projection = viewState.projection;
+    var projectionExtent = projection.getExtent();
     var resolution = viewState.resolution;
     var rotation = viewState.rotation;
+    var repeatReplay = (opt_wrapX && projection.isGlobal() &&
+        !ol.extent.containsExtent(projectionExtent, extent));
 
-    ol.vec.Mat4.makeTransform2D(this.transform_,
-        this.canvas_.width / 2, this.canvas_.height / 2,
-        pixelRatio / resolution, -pixelRatio / resolution,
-        -rotation,
-        -viewState.center[0], -viewState.center[1]);
+    var transform = this.getTransform(frameState);
 
     var tolerance = ol.renderer.vector.getTolerance(resolution, pixelRatio);
-    var replayGroup = new ol.render.canvas.ReplayGroup(tolerance, extent,
+    var replayGroup = new ol.render.canvas.ReplayGroup(tolerance,
+        repeatReplay ?
+            [projectionExtent[0], extent[1], projectionExtent[2], extent[3]] :
+            extent,
         resolution);
 
     var vectorContext = new ol.render.canvas.Immediate(context, pixelRatio,
-        extent, this.transform_, rotation);
+        extent, transform, rotation);
     var composeEvent = new ol.render.Event(type, map, vectorContext,
         replayGroup, frameState, context, null);
     map.dispatchEvent(composeEvent);
 
     replayGroup.finish();
     if (!replayGroup.isEmpty()) {
-      replayGroup.replay(context, pixelRatio, this.transform_,
-          rotation, {});
+      replayGroup.replay(context, pixelRatio, transform, rotation, {});
+
+      if (repeatReplay) {
+        var startX = extent[0];
+        var worldWidth = ol.extent.getWidth(projectionExtent);
+        var world = 0;
+        while (startX < projectionExtent[0]) {
+          transform = this.getTransform(frameState, worldWidth * (--world));
+          replayGroup.replay(context, pixelRatio, transform, rotation, {});
+          startX += worldWidth;
+        }
+        world = 0;
+        startX = extent[2];
+        while (startX > projectionExtent[2]) {
+          transform = this.getTransform(frameState, worldWidth * (++world));
+          replayGroup.replay(context, pixelRatio, transform, rotation, {});
+          startX -= worldWidth;
+        }
+      }
     }
     vectorContext.flush();
     this.replayGroup = replayGroup;
@@ -133,14 +155,23 @@ ol.renderer.canvas.Map.prototype.dispatchComposeEvent_ =
 
 
 /**
- * @param {ol.layer.Layer} layer Layer.
- * @return {ol.renderer.canvas.Layer} Canvas layer renderer.
+ * @param {olx.FrameState} frameState Frame state.
+ * @param {number=} opt_offsetX Offset on the x-axis in view coordinates.
+ * @protected
+ * @return {!goog.vec.Mat4.Number} Transform.
  */
-ol.renderer.canvas.Map.prototype.getCanvasLayerRenderer = function(layer) {
-  var layerRenderer = this.getLayerRenderer(layer);
-  goog.asserts.assertInstanceof(layerRenderer, ol.renderer.canvas.Layer,
-      'layerRenderer is an instance of ol.renderer.canvas.Layer');
-  return /** @type {ol.renderer.canvas.Layer} */ (layerRenderer);
+ol.renderer.canvas.Map.prototype.getTransform =
+    function(frameState, opt_offsetX) {
+  var pixelRatio = frameState.pixelRatio;
+  var viewState = frameState.viewState;
+  var resolution = viewState.resolution;
+  var offsetX = goog.isDef(opt_offsetX) ? opt_offsetX : 0;
+  return ol.vec.Mat4.makeTransform2D(this.transform_,
+      this.canvas_.width / 2, this.canvas_.height / 2,
+      pixelRatio / resolution, -pixelRatio / resolution,
+      -viewState.rotation,
+      -viewState.center[0] + offsetX,
+      -viewState.center[1]);
 };
 
 
@@ -181,6 +212,7 @@ ol.renderer.canvas.Map.prototype.renderFrame = function(frameState) {
 
   var layerStatesArray = frameState.layerStatesArray;
   var viewResolution = frameState.viewState.resolution;
+  var wrapX = false;
   var i, ii, layer, layerRenderer, layerState;
   for (i = 0, ii = layerStatesArray.length; i < ii; ++i) {
     layerState = layerStatesArray[i];
@@ -193,11 +225,15 @@ ol.renderer.canvas.Map.prototype.renderFrame = function(frameState) {
       continue;
     }
     if (layerRenderer.prepareFrame(frameState, layerState)) {
+      if (layer instanceof ol.layer.Vector && layer.getSource().getWrapX()) {
+        wrapX = true;
+      }
       layerRenderer.composeFrame(frameState, layerState, context);
     }
   }
 
-  this.dispatchComposeEvent_(ol.render.EventType.POSTCOMPOSE, frameState);
+  this.dispatchComposeEvent_(
+      ol.render.EventType.POSTCOMPOSE, frameState, wrapX);
 
   if (!this.renderedVisible_) {
     goog.style.setElementShown(this.canvas_, true);
