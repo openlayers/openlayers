@@ -4,14 +4,14 @@ describe('ol.rendering.layer.Tile', function() {
 
   var target, map;
 
-  function createMap(renderer) {
+  function createMap(renderer, opt_center) {
     target = createMapDiv(50, 50);
 
     map = new ol.Map({
       target: target,
       renderer: renderer,
       view: new ol.View({
-        center: ol.proj.transform(
+        center: goog.isDef(opt_center) ? opt_center : ol.proj.transform(
             [-122.416667, 37.783333], 'EPSG:4326', 'EPSG:3857'),
         zoom: 5
       })
@@ -144,6 +144,50 @@ describe('ol.rendering.layer.Tile', function() {
       });
     });
   });
+
+  describe('tile layer with non-square tiles', function() {
+    var source;
+
+    beforeEach(function() {
+      source = new ol.source.TileImage({
+        tileUrlFunction: function(tileCoord, ratio, projection) {
+          return 'spec/ol/data/tiles/512x256/' + tileCoord[0] + '/' +
+              tileCoord[1] + '/' + tileCoord[2] + '.png';
+        },
+        tileGrid: new ol.tilegrid.TileGrid({
+          origin: [-20037508.342789244, -20037508.342789244],
+          resolutions: [
+            156543.03392804097, 78271.51696402048, 39135.75848201024,
+            19567.87924100512, 9783.93962050256, 4891.96981025128
+          ],
+          tileSize: [512, 256]
+        })
+      });
+    });
+
+    afterEach(function() {
+      disposeMap(map);
+    });
+
+    it('renders correcly using the canvas renderer', function(done) {
+      map = createMap('canvas', [-10997148, 4569099]);
+      waitForTiles([source], {}, function() {
+        expectResemble(map, 'spec/ol/layer/expected/512x256-canvas.png',
+            IMAGE_TOLERANCE, done);
+      });
+    });
+
+    it('renders correcly using the webgl renderer', function(done) {
+      assertWebGL();
+      map = createMap('webgl', [-10997148, 4569099]);
+      waitForTiles([source], {}, function() {
+        expectResemble(map, 'spec/ol/layer/expected/512x256-webgl.png',
+            IMAGE_TOLERANCE, done);
+      });
+    });
+
+  });
+
 });
 
 goog.require('goog.array');
@@ -152,4 +196,6 @@ goog.require('ol.proj');
 goog.require('ol.Map');
 goog.require('ol.View');
 goog.require('ol.layer.Tile');
+goog.require('ol.source.TileImage');
 goog.require('ol.source.XYZ');
+goog.require('ol.tilegrid.TileGrid');
