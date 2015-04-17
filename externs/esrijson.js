@@ -28,7 +28,7 @@ var EsriJSONCRS = function() {};
 
 /**
  * CRS well know identifier.
- * @type {!number}
+ * @type {number}
  */
 EsriJSONCRS.prototype.wkid;
 
@@ -43,14 +43,14 @@ var EsriJSONPoint = function() {};
 
 /**
  * M value of point.
- * @type {!number}
+ * @type {number}
  */
 EsriJSONPoint.prototype.m;
 
 
 /**
  * X coordinate of point.
- * @type {!number}
+ * @type {number}
  */
 EsriJSONPoint.prototype.x;
 
@@ -58,7 +58,7 @@ EsriJSONPoint.prototype.x;
 
 /**
  * Y coordinate of point.
- * @type {!number}
+ * @type {number}
  */
 EsriJSONPoint.prototype.y;
 
