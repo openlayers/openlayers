@@ -51,18 +51,6 @@
       }
     });
 
-    window.showDiff = false;
-    if (window.location.search.indexOf('showdiff') >= 0) {
-      // show a difference image if '?showdiff' is in the URL
-      window.showDiff = true;
-    }
-
-    window.showMap = false;
-    if (window.location.search.indexOf('generate') >= 0) {
-      // show the canvas of the test map if '?generate' is in the URL
-      window.showMap = true;
-    }
-
     if (window.console && console.log) {
       // write stacks to the console for failed tests
       runner.on('fail', function(test, err) {
@@ -88,6 +76,5 @@
     Tests should not depend on any specific markup and should instead create
     whatever elements are needed (cleaning up when done).
   -->
-  <div id="debug"></div>
 </body>
 </html>

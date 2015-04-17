@@ -3,6 +3,12 @@
 // helper functions for async testing and other utility functions.
 (function(global) {
 
+  // show generated maps for rendering tests
+  var showMap = (global.location.search.indexOf('generate') >= 0);
+
+  // show a diff when rendering tests fail
+  var showDiff = (global.location.search.indexOf('showdiff') >= 0);
+
   /**
    * The default tolerance for image comparisons.
    */
@@ -358,8 +364,8 @@
   };
 
   function resembleCanvas(canvas, referenceImage, tolerance, done) {
-    if (window.showMap) {
-      document.getElementById('debug').appendChild(canvas);
+    if (showMap) {
+      document.body.appendChild(canvas);
     }
 
     resemble(referenceImage)
@@ -373,10 +379,10 @@
         }
 
         if (data.misMatchPercentage > tolerance) {
-          if (window.showDiff) {
+          if (showDiff) {
             var diffImage = new Image();
             diffImage.src = data.getImageDataUrl();
-            document.getElementById('debug').appendChild(diffImage);
+            document.body.appendChild(diffImage);
           }
           expect(data.misMatchPercentage).to.be.below(tolerance);
         }
