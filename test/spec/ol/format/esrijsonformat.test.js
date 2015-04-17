@@ -9,65 +9,65 @@ describe('ol.format.EsriJSON', function() {
   });
 
   var pointEsriJSON = {
-    'geometry': {
-      'x': 102.0,
-      'y': 0.5
+    geometry: {
+      x: 102.0,
+      y: 0.5
     },
-    'attributes': {
+    attributes: {
       'prop0': 'value0'
     }
   };
 
   var multiPointEsriJSON = {
-    'geometry': {
+    geometry: {
       'points' : [[102.0, 0.0], [103.0, 1.0]]
     },
-    'attributes': {
+    attributes: {
       'prop0': 'value0'
     }
   };
 
   var lineStringEsriJSON = {
-    'geometry': {
-      'paths': [[
+    geometry: {
+      paths: [[
         [102.0, 0.0], [103.0, 1.0], [104.0, 0.0], [105.0, 1.0]
       ]]
     },
-    'attributes': {
+    attributes: {
       'prop0': 'value0',
       'prop1': 0.0
     }
   };
 
   var multiLineStringEsriJSON = {
-    'geometry': {
-      'paths': [[
+    geometry: {
+      paths: [[
         [102.0, 0.0], [103.0, 1.0], [104.0, 0.0], [105.0, 1.0]
       ], [
         [105.0, 3.0], [106.0, 4.0], [107.0, 3.0], [108.0, 4.0]
       ]]
     },
-    'attributes': {
+    attributes: {
       'prop0': 'value0',
       'prop1': 0.0
     }
   };
 
   var polygonEsriJSON = {
-    'geometry': {
-      'rings': [[
+    geometry: {
+      rings: [[
         [100.0, 0.0], [100.0, 1.0], [101.0, 1.0], [101.0, 0.0]
       ]]
     },
-    'attributes': {
+    attributes: {
       'prop0': 'value0',
       'prop1': {'this': 'that'}
     }
   };
 
   var multiPolygonEsriJSON = {
-    'geometry': {
-      'rings': [
+    geometry: {
+      rings: [
         [
           [0, 1],
           [1, 4],
@@ -89,13 +89,13 @@ describe('ol.format.EsriJSON', function() {
   };
 
   var featureCollectionEsriJSON = {
-    'features': [pointEsriJSON, lineStringEsriJSON, polygonEsriJSON]
+    features: [pointEsriJSON, lineStringEsriJSON, polygonEsriJSON]
   };
 
   var data = {
-    'features': [
+    features: [
       {
-        'attributes': {
+        attributes: {
           'LINK_ID': 573730499,
           'RP_TYPE': 14,
           'RP_FUNC': 0,
@@ -112,8 +112,8 @@ describe('ol.format.EsriJSON', function() {
           'ZIPCODE': '59330',
           'SHAPE_LEN': 46.3826
         },
-        'geometry': {
-          'paths': [[
+        geometry: {
+          paths: [[
             [1549497.66985, 6403707.96],
             [1549491.1, 6403710.1],
             [1549488.03995, 6403716.7504],
@@ -124,7 +124,7 @@ describe('ol.format.EsriJSON', function() {
           ]]
         }
       }, {
-        'attributes': {
+        attributes: {
           'LINK_ID': 30760556,
           'RP_TYPE': 12,
           'RP_FUNC': 1,
@@ -141,8 +141,8 @@ describe('ol.format.EsriJSON', function() {
           'ZIPCODE': '59330',
           'SHAPE_LEN': 70.3106
         },
-        'geometry': {
-          'paths': [[
+        geometry: {
+          paths: [[
             [1549754.2769, 6403854.8024],
             [1549728.45985, 6403920.2]
           ]]
