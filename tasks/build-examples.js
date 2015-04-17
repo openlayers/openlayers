@@ -8,7 +8,7 @@ var pkg = require('../package.json');
 
 var markupRegEx = /([^\/^\.]*)\.html$/;
 var cleanupJSRegEx = /.*(goog\.require(.*);|.*renderer: common\..*,?)[\n]*/g;
-var googRequiresRegEx = /.*goog\.require\('(ol\.\S*)'\);/g;
+var requiresRegEx = /.*goog\.require\('(ol\.\S*)'\);/g;
 var isCssRegEx = /\.css$/;
 var isJsRegEx = /\.js$/;
 
@@ -17,20 +17,20 @@ var destDir = path.join(__dirname, '..', 'build', 'examples');
 var templatesDir = path.join(__dirname, '..', 'config', 'examples');
 
 /**
- * Returns an array of classes that are explicitly required inside the source
- * by calling 'goog.require(…)'
+ * Returns an array of names that are explicitly required inside the source
+ * by calling `goog.require('ol.…')`.  Only returns `ol.` prefixed names.
  *
  * @param {string} src The JavaScript sourcecode to search for goog.require.
- * @returns {Array.<string>} An array of ol-classes that the source requires.
+ * @returns {Array.<string>} An array of `ol.*` names.
  */
-function getGoogRequires(src) {
-  var googRequires = [];
-  var match = googRequiresRegEx.exec(src);
+function getRequires(src) {
+  var requires = [];
+  var match = requiresRegEx.exec(src);
   while (match) {
-    googRequires.push(match[1]);
-    match = googRequiresRegEx.exec(src);
+    requires.push(match[1]);
+    match = requiresRegEx.exec(src);
   }
-  return googRequires;
+  return requires;
 }
 
 /**
@@ -38,12 +38,12 @@ function getGoogRequires(src) {
  * HTML-snippet with an unordered list to the API-docs for the particular
  * classes.
  *
- * @param {Array.<string>} googRequires An array of ol-classes that the source
+ * @param {Array.<string>} requires An array of `ol.` names that the source
  *   requires.
  * @returns {string} The HTML-snippet with the list of links to API-docs.
  */
-function getLinkToApiHtml(googRequires) {
-  var lis = googRequires.map(function(symb) {
+function getLinkToApiHtml(requires) {
+  var lis = requires.map(function(symb) {
     var href = '../apidoc/' + symb + '.html';
     return '<li><a href="' + href + '" title="API documentation for ' +
         symb +'">' + symb + '</a></li>';
@@ -83,7 +83,7 @@ function augmentExamples(files, metalsmith, done) {
         throw new Error('No .js file found for ' + filename);
       }
       var jsSource = files[jsFilename].contents.toString();
-      var requires = getGoogRequires(jsSource);
+      var requires = getRequires(jsSource);
       file.requires = requires;
       file.js = {
         tag: '<script src="loader.js?id=' + id + '"></script>',
