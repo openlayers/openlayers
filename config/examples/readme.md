@@ -14,7 +14,7 @@ To enable this, examples have the following, not needed in application code:
 
  * some js files use type definitions (comments with @type tags); these are also used by the compiler, and are only needed if the code is to be compiled together with the library
 
- * html files load `example-behaviour.js` and some js files define the Map renderer option as `exampleNS.getRendererFromQueryString()`; application code would not need these
+ * html files load `resources/common.js` and some js files define the Map renderer option as `exampleNS.getRendererFromQueryString()`; application code would not need these
 
  * in addition, examples use Twitter Bootstrap and jQuery; this is of course not a requirement - you may use whichever presentation/helper libraries you wish
 
