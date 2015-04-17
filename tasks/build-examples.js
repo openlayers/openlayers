@@ -83,10 +83,12 @@ function augmentExamples(files, metalsmith, done) {
         throw new Error('No .js file found for ' + filename);
       }
       var jsSource = files[jsFilename].contents.toString();
+      var requires = getGoogRequires(jsSource);
+      file.requires = requires;
       file.js = {
         tag: '<script src="loader.js?id=' + id + '"></script>',
         source: jsSource.replace(cleanupJSRegEx, ''),
-        apiHtml: getLinkToApiHtml(getGoogRequires(jsSource))
+        apiHtml: getLinkToApiHtml(requires)
       };
 
       // add css tag and source
@@ -127,10 +129,13 @@ function augmentExamples(files, metalsmith, done) {
  */
 function createWordIndex(exampleInfos) {
   var index = {};
-  var keys = ['shortdesc', 'title', 'tags'];
+  var keys = ['shortdesc', 'title', 'tags', 'requires'];
   exampleInfos.forEach(function(info, i) {
     keys.forEach(function(key) {
       var text = info[key];
+      if (Array.isArray(text)) {
+        text = text.join(' ');
+      }
       var words = text ? text.split(/\W+/) : [];
       words.forEach(function(word) {
         if (word) {
@@ -177,7 +182,8 @@ function createIndex(files, metalsmith, done) {
         example: filename,
         title: example.title,
         shortdesc: example.shortdesc,
-        tags: example.tags
+        tags: example.tags,
+        requires: example.requires
       });
     }
   }
