@@ -8,12 +8,48 @@ var pkg = require('../package.json');
 
 var markupRegEx = /([^\/^\.]*)\.html$/;
 var cleanupJSRegEx = /.*(goog\.require(.*);|.*renderer: common\..*,?)[\n]*/g;
+var googRequiresRegEx = /.*goog\.require\('(ol\.\S*)'\);/g;
 var isCssRegEx = /\.css$/;
 var isJsRegEx = /\.js$/;
 
 var srcDir = path.join(__dirname, '..', 'examples');
 var destDir = path.join(__dirname, '..', 'build', 'examples');
 var templatesDir = path.join(__dirname, '..', 'config', 'examples');
+
+/**
+ * Returns an array of classes that are explicitly required inside the source
+ * by calling 'goog.require(…)'
+ *
+ * @param {string} src The JavaScript sourcecode to search for goog.require.
+ * @returns {Array.<string>} An array of ol-classes that the source requires.
+ */
+function getGoogRequires(src) {
+  var googRequires = [];
+  var match = googRequiresRegEx.exec(src);
+  while (match) {
+    googRequires.push(match[1]);
+    match = googRequiresRegEx.exec(src);
+  }
+  return googRequires;
+}
+
+/**
+ * Takes an array of the names of required OpenLayers symbols and returns an
+ * HTML-snippet with an unordered list to the API-docs for the particular
+ * classes.
+ *
+ * @param {Array.<string>} googRequires An array of ol-classes that the source
+ *   requires.
+ * @returns {string} The HTML-snippet with the list of links to API-docs.
+ */
+function getLinkToApiHtml(googRequires) {
+  var lis = googRequires.map(function(symb) {
+    var href = '../apidoc/' + symb + '.html';
+    return '<li><a href="' + href + '" title="API documentation for ' +
+        symb +'">' + symb + '</a></li>';
+  });
+  return '<ul class="inline">' + lis.join() + '</ul>';
+}
 
 /**
  * A Metalsmith plugin that adds metadata to the example HTML files.  For each
@@ -46,10 +82,11 @@ function augmentExamples(files, metalsmith, done) {
       if (!(jsFilename in files)) {
         throw new Error('No .js file found for ' + filename);
       }
+      var jsSource = files[jsFilename].contents.toString();
       file.js = {
         tag: '<script src="loader.js?id=' + id + '"></script>',
-        source: files[jsFilename].contents.toString().replace(
-            cleanupJSRegEx, '')
+        source: jsSource.replace(cleanupJSRegEx, ''),
+        apiHtml: getLinkToApiHtml(getGoogRequires(jsSource))
       };
 
       // add css tag and source

@@ -18,6 +18,9 @@ body {
 #tags, #shortdesc, .hidden {
   display: none;
 }
+#api-links ul {
+  display: inline;
+}
 
 body, h1, h2, h3, h4, p, li, td, th {
   font-family: Quattrocento Sans;
