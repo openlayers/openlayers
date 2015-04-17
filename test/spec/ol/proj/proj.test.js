@@ -30,6 +30,27 @@ describe('ol.proj', function() {
       ]);
     });
 
+    it('gives that custom 3413 is equivalent to self', function() {
+      var code = 'EPSG:3413';
+
+      var source = new ol.proj.Projection({
+        code: code
+      });
+
+      var destination = new ol.proj.Projection({
+        code: code
+      });
+
+      expect(ol.proj.equivalent(source, destination)).to.be.ok();
+    });
+
+    it('gives that default 3857 is equivalent to self', function() {
+      _testAllEquivalent([
+        'EPSG:3857',
+        'EPSG:3857'
+      ]);
+    });
+
     it('gives that CRS:84, urn:ogc:def:crs:EPSG:6.6:4326, EPSG:4326 are ' +
        'equivalent', function() {
           _testAllEquivalent([
