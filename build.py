@@ -112,24 +112,18 @@ EXECUTABLES = [variables.CLEANCSS, variables.GIT, variables.GJSLINT,
                variables.JSDOC, variables.JSHINT, variables.PYTHON,
                variables.PHANTOMJS]
 
-EXAMPLES_SRC_ALL = [path for path in ifind('examples_src')]
+EXAMPLES_SRC_ALL = [path for path in ifind('examples')]
 
 EXAMPLES_SRC_HTML = [path
             for path in EXAMPLES_SRC_ALL
             if path.endswith('.html')
-            if path != 'examples_src/index.html']
+            if path != 'examples/index.html']
 
 EXAMPLES_SRC_JS = [example.replace('.html', '.js')
             for example in EXAMPLES_SRC_HTML]
 
-EXAMPLES_DEST_ALL = [path.replace('examples_src', 'examples')
+EXAMPLES_DEST_ALL = [path.replace('examples', 'build/examples')
             for path in EXAMPLES_SRC_ALL]
-
-EXAMPLES_JSON = ['build/' + example.replace('.html', '.json')
-                 for example in EXAMPLES_SRC_HTML]
-
-EXAMPLES_COMBINED = ['build/' + example.replace('.html', '.combined.js')
-                     for example in EXAMPLES_SRC_HTML]
 
 GLSL_SRC = [path
             for path in ifind('src')
@@ -178,7 +172,7 @@ virtual('default', 'build')
 
 
 virtual('ci', 'lint', 'build', 'test', 'test-rendering',
-    'build/examples/all.combined.js', 'check-examples', 'apidoc')
+    'build/compiled-examples/all.combined.js', 'check-examples', 'apidoc')
 
 
 virtual('build', 'build/ol.css', 'build/ol.js', 'build/ol-debug.js',
@@ -258,35 +252,31 @@ def build_test_rendering_requires(t):
   build_requires(t)
 
 
-virtual('build-examples', 'examples', 'build/examples/all.combined.js',
-        EXAMPLES_COMBINED)
-
-
 virtual('examples', EXAMPLES_DEST_ALL)
 
 
-@rule(r'\Aexamples/(?P<filepath>.*)\Z')
+@rule(r'\Abuild\/examples/(?P<filepath>.*)\Z')
 def examples_dest(name, match):
     def action(t):
         t.run('node', 'tasks/build-examples.js')
-    dependencies = ['examples_src/%(filepath)s' % match.groupdict()]
+    dependencies = ['examples/%(filepath)s' % match.groupdict()]
     return Target(name, action=action, dependencies=dependencies)
 
 
-@target('build/examples/all.combined.js', 'build/examples/all.js',
+@target('build/compiled-examples/all.combined.js', 'build/compiled-examples/all.js',
         SRC, SHADER_SRC, 'config/examples-all.json', NPM_INSTALL)
 def build_examples_all_combined_js(t):
     t.run('node', 'tasks/build.js', 'config/examples-all.json',
-          'build/examples/all.combined.js')
+          'build/compiled-examples/all.combined.js')
     report_sizes(t)
 
 
-@target('build/examples/all.js', EXAMPLES_SRC_JS)
+@target('build/compiled-examples/all.js', EXAMPLES_SRC_JS)
 def build_examples_all_js(t):
     t.output('%(PYTHON)s', 'bin/combine-examples.py', t.dependencies)
 
 
-@rule(r'\Abuild/examples/(?P<id>.*).json\Z')
+@rule(r'\Abuild/compiled-examples/(?P<id>.*).json\Z')
 def examples_star_json(name, match):
     def action(t):
 
@@ -309,7 +299,7 @@ def examples_star_json(name, match):
           "src": [
             "src/**/*.js",
             "build/ol.ext/*.js",
-            "examples/%(id)s.js" % match.groupdict()],
+            "build/examples/%(id)s.js" % match.groupdict()],
           "compile": {
             "js": [
               "externs/olx.js",
@@ -391,15 +381,15 @@ def examples_star_json(name, match):
                   dependencies=[__file__, NPM_INSTALL])
 
 
-@rule(r'\Abuild/examples/(?P<id>.*).combined.js\Z')
+@rule(r'\Abuild/compiled-examples/(?P<id>.*).combined.js\Z')
 def examples_star_combined_js(name, match):
     def action(t):
-        config = 'build/examples/%(id)s.json' % match.groupdict()
+        config = 'build/compiled-examples/%(id)s.json' % match.groupdict()
         t.run('node', 'tasks/build.js', config, name)
         report_sizes(t)
     dependencies = [SRC, SHADER_SRC,
                     'examples/%(id)s.js' % match.groupdict(),
-                    'build/examples/%(id)s.json' % match.groupdict(),
+                    'build/compiled-examples/%(id)s.json' % match.groupdict(),
                     NPM_INSTALL]
     return Target(name, action=action, dependencies=dependencies)
 
@@ -427,7 +417,7 @@ def build_lint_src_timestamp(t):
 virtual('jshint', 'build/jshint-timestamp')
 
 @target('build/jshint-timestamp', SRC, EXAMPLES_SRC_JS, SPEC, SPEC_RENDERING,
-        TASKS, NPM_INSTALL, precious=True)
+        'examples/resources/common.js', TASKS, NPM_INSTALL, precious=True)
 def build_jshint_timestamp(t):
     t.run(variables.JSHINT, '--verbose', t.newer(t.dependencies))
     t.touch()
@@ -633,7 +623,7 @@ def build_check_whitespace_timestamp(t):
 virtual('apidoc', 'build/jsdoc-%(BRANCH)s-timestamp' % vars(variables))
 
 
-@target('build/jsdoc-%(BRANCH)s-timestamp' % vars(variables), 'host-resources',
+@target('build/jsdoc-%(BRANCH)s-timestamp' % vars(variables),
         SRC, SHADER_SRC, ifind('config/jsdoc/api/template'),
         NPM_INSTALL)
 def jsdoc_BRANCH_timestamp(t):
@@ -675,14 +665,7 @@ def split_example_file(example, dst_dir):
     target_require.close()
 
 
-@target('host-resources', phony=True)
-def host_resources(t):
-    resources_dir = 'build/hosted/%(BRANCH)s/resources'
-    t.rm_rf(resources_dir)
-    t.cp_r('resources', resources_dir)
-
-
-@target('host-examples', 'build', 'host-resources', 'examples', phony=True)
+@target('host-examples', 'build', 'examples', phony=True)
 def host_examples(t):
     examples_dir = 'build/hosted/%(BRANCH)s/examples'
     build_dir = 'build/hosted/%(BRANCH)s/build'
@@ -690,7 +673,7 @@ def host_examples(t):
     closure_lib_path = output('node', '-e',
         'process.stdout.write(require("closure-util").getLibraryPath())')
     t.rm_rf(examples_dir)
-    t.cp_r('examples', examples_dir)
+    t.cp_r('build/examples', examples_dir)
     for example in EXAMPLES_SRC_JS:
         split_example_file(example, examples_dir % vars(variables))
     t.cp('bin/loader_hosted_examples.js', examples_dir + '/loader.js')
@@ -718,14 +701,15 @@ def host_examples(t):
 
 @target('check-examples', 'host-examples', phony=True)
 def check_examples(t):
-    examples = ['build/hosted/%(BRANCH)s/' + e.replace('examples_src', 'examples')
+    examples = ['build/hosted/%(BRANCH)s/' + e
                 for e in EXAMPLES_SRC_HTML
                 if not open(e.replace('.html', '.js'), 'rU').readline().startswith('// NOCOMPILE')]
     all_examples = [e + '?mode=advanced' for e in examples]
     # Run the examples checks in a pool of threads
     pool = ThreadPool()
     for example in all_examples:
-        pool.add_task(t.run, '%(PHANTOMJS)s', 'bin/check-example.js', example)
+        pool.add_task(t.run, '%(PHANTOMJS)s', '--ssl-protocol=any',
+                      '--ignore-ssl-errors=true', 'bin/check-example.js', example)
     errors = pool.wait_completion()
     if errors:
         sys.exit(1)
@@ -825,9 +809,9 @@ Other less frequently used targets are:
   apidoc           - Builds the API-Documentation using JSDoc3.
   ci               - Builds all examples in various modes and usually takes a
                      long time to finish. This target calls the following
-                     targets: lint, build, build-all, test, test-rendering,
-                     build-examples, check-examples and apidoc. This is the
-                     target run on Travis CI.
+                     targets: 'lint', 'build', 'test', 'test-rendering',
+                     'build/compiled-examples/all.combined.js', 'check-examples',
+                     and 'apidoc'. This is the target run on Travis CI.
   test-coverage    - Generates a test coverage report in the coverage folder.
   reallyclean      - Remove untracked files from the repository.
   checkdeps        - Checks whether all required development software is

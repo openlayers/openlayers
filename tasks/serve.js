@@ -10,6 +10,7 @@ var url = require('url');
 var Gaze = require('gaze').Gaze;
 var closure = require('closure-util');
 var debounce = require('debounce');
+var fse = require('fs-extra');
 var nomnom = require('nomnom');
 
 var buildExamples = require('./build-examples');
@@ -31,7 +32,7 @@ var createServer = exports.createServer = function(callback) {
       'build/test_requires.js',
       'build/test_rendering_requires.js'
     ],
-    main: 'examples/*.js'
+    main: 'build/examples/*.js'
   });
   manager.on('error', function(err) {
     if (server) {
@@ -43,7 +44,7 @@ var createServer = exports.createServer = function(callback) {
   manager.on('ready', function() {
     server = new closure.Server({
       manager: manager,
-      loader: /^\/\w+\/loader.js/,
+      loader: /^.*\/loader\.js/,
       getMain: function(req) {
         var main;
         var query = url.parse(req.url, true).query;
@@ -85,10 +86,23 @@ function buildExamplesOrFatal(opt_callback) {
       log.verbose('serve', err.stack);
       process.exit(1);
     }
-    log.verbose('serve', 'Done building examples.');
-    if (opt_callback) {
-      opt_callback();
-    }
+    // This is awkward, but then so is CSS itself
+    var src = path.join(__dirname, '..', 'css', 'ol.css');
+    var dest = path.join(__dirname, '..', 'build', 'css', 'ol.css');
+    fse.copy(src, dest, function(err2) {
+      if (err2) {
+        log.error('serve', 'Failed to copy CSS.');
+        log.error('serve', err.message);
+        log.error('serve',
+            'Use "verbose" logging to see the full stack trace.');
+        log.verbose('serve', err.stack);
+        process.exit(1);
+      }
+      log.verbose('serve', 'Done building examples.');
+      if (opt_callback) {
+        opt_callback();
+      }
+    });
   });
 }
 
@@ -133,7 +147,7 @@ if (require.main === module) {
       });
     });
 
-    var gaze = new Gaze('examples_src/**/*');
+    var gaze = new Gaze('examples/**/*');
     var debouncedBuild = debounce(buildExamplesOrFatal, 250);
     gaze.on('all', function(event, filepath) {
       log.verbose('serve', 'Watch event: ' + event + ' ' + filepath);

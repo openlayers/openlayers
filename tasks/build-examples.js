@@ -7,12 +7,12 @@ var marked = require('marked');
 var pkg = require('../package.json');
 
 var markupRegEx = /([^\/^\.]*)\.html$/;
-var cleanupJSRegEx = /.*(goog\.require(.*);|.*renderer: exampleNS\..*,?)[\n]*/g;
+var cleanupJSRegEx = /.*(goog\.require(.*);|.*renderer: common\..*,?)[\n]*/g;
 var isCssRegEx = /\.css$/;
 var isJsRegEx = /\.js$/;
 
-var srcDir = path.join(__dirname, '..', 'examples_src');
-var destDir = path.join(__dirname, '..', 'examples');
+var srcDir = path.join(__dirname, '..', 'examples');
+var destDir = path.join(__dirname, '..', 'build', 'examples');
 var templatesDir = path.join(__dirname, '..', 'config', 'examples');
 
 /**
@@ -158,6 +158,7 @@ function main(callback) {
   var smith = new Metalsmith('.')
       .source(srcDir)
       .destination(destDir)
+      .concurrency(25)
       .metadata({
         olVersion: pkg.version
       })
