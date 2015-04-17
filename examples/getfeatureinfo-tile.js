@@ -21,7 +21,7 @@ var view = new ol.View({
 });
 
 var map = new ol.Map({
-  renderer: exampleNS.getRendererFromQueryString(),
+  renderer: common.getRendererFromQueryString(),
   layers: [wmsLayer],
   target: 'map',
   view: view

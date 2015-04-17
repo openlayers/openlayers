@@ -73,9 +73,9 @@
   container.appendChild(form);
 })();
 
-var exampleNS = {};
+var common = {};
 
-exampleNS.getRendererFromQueryString = function() {
+common.getRendererFromQueryString = function() {
   var obj = {};
   var queryString = location.search.slice(1);
   var re = /([^&=]+)=([^&]*)/g;
@@ -265,6 +265,6 @@ function strToUTF8Arr (sDOMStr) {
 
 }
 
-exampleNS.strToBase64 = function(str) {
+common.strToBase64 = function(str) {
   return base64EncArr(strToUTF8Arr(str));
 };

@@ -109,7 +109,7 @@ if ('download' in exportGPXElement) {
         features.push(clone);
       });
       var string = new ol.format.GPX().writeFeatures(features);
-      var base64 = exampleNS.strToBase64(string);
+      var base64 = common.strToBase64(string);
       exportGPXElement.href =
           'data:text/gpx+xml;base64,' + base64;
     }

@@ -77,7 +77,7 @@ if ('download' in exportKMLElement) {
         features.push(clone);
       });
       var string = new ol.format.KML().writeFeatures(features);
-      var base64 = exampleNS.strToBase64(string);
+      var base64 = common.strToBase64(string);
       exportKMLElement.href =
           'data:application/vnd.google-earth.kml+xml;base64,' + base64;
     }

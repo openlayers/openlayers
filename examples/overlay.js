@@ -13,7 +13,7 @@ var layer = new ol.layer.Tile({
 
 var map = new ol.Map({
   layers: [layer],
-  renderer: exampleNS.getRendererFromQueryString(),
+  renderer: common.getRendererFromQueryString(),
   target: 'map',
   view: new ol.View({
     center: [0, 0],

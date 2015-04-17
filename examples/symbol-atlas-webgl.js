@@ -107,7 +107,7 @@ var vector = new ol.layer.Vector({
 });
 
 // Use the "webgl" renderer by default.
-var renderer = exampleNS.getRendererFromQueryString();
+var renderer = common.getRendererFromQueryString();
 if (!renderer) {
   renderer = 'webgl';
 }

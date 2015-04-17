@@ -28,7 +28,7 @@ for (i = 0, ii = styles.length; i < ii; ++i) {
 }
 var map = new ol.Map({
   layers: layers,
-  renderer: exampleNS.getRendererFromQueryString(),
+  renderer: common.getRendererFromQueryString(),
   // Improve user experience by loading tiles while dragging/zooming. Will make
   // zooming choppy on mobile or slow devices.
   loadTilesWhileInteracting: true,
