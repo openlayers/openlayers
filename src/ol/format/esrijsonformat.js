@@ -267,27 +267,27 @@ ol.format.EsriJSON.writePointGeometry_ = function(geometry, opt_options) {
   var layout = geometry.getLayout();
   if (layout === ol.geom.GeometryLayout.XYZ) {
     return /** @type {EsriJSONPoint} */ ({
-      'x': coordinates[0],
-      'y': coordinates[1],
-      'z': coordinates[2]
+      x: coordinates[0],
+      y: coordinates[1],
+      z: coordinates[2]
     });
   } else if (layout === ol.geom.GeometryLayout.XYM) {
     return /** @type {EsriJSONPoint} */ ({
-      'x': coordinates[0],
-      'y': coordinates[1],
-      'm': coordinates[2]
+      x: coordinates[0],
+      y: coordinates[1],
+      m: coordinates[2]
     });
   } else if (layout === ol.geom.GeometryLayout.XYZM) {
     return /** @type {EsriJSONPoint} */ ({
-      'x': coordinates[0],
-      'y': coordinates[1],
-      'z': coordinates[2],
-      'm': coordinates[3]
+      x: coordinates[0],
+      y: coordinates[1],
+      z: coordinates[2],
+      m: coordinates[3]
     });
   } else if (layout === ol.geom.GeometryLayout.XY) {
     return /** @type {EsriJSONPoint} */ ({
-      'x': coordinates[0],
-      'y': coordinates[1]
+      x: coordinates[0],
+      y: coordinates[1]
     });
   } else {
     goog.asserts.fail('Unknown geometry layout');
@@ -322,9 +322,9 @@ ol.format.EsriJSON.writeLineStringGeometry_ = function(geometry, opt_options) {
       'geometry should be an ol.geom.LineString');
   var hasZM = ol.format.EsriJSON.getHasZM_(geometry);
   return /** @type {EsriJSONPolyline} */ ({
-    'hasZ': hasZM.hasZ,
-    'hasM': hasZM.hasM,
-    'paths': [geometry.getCoordinates()]
+    hasZ: hasZM.hasZ,
+    hasM: hasZM.hasM,
+    paths: [geometry.getCoordinates()]
   });
 };
 
@@ -341,9 +341,9 @@ ol.format.EsriJSON.writePolygonGeometry_ = function(geometry, opt_options) {
   // Esri geometries use the left-hand rule
   var hasZM = ol.format.EsriJSON.getHasZM_(geometry);
   return /** @type {EsriJSONPolygon} */ ({
-    'hasZ': hasZM.hasZ,
-    'hasM': hasZM.hasM,
-    'rings': geometry.getCoordinates(false)
+    hasZ: hasZM.hasZ,
+    hasM: hasZM.hasM,
+    rings: geometry.getCoordinates(false)
   });
 };
 
@@ -360,9 +360,9 @@ ol.format.EsriJSON.writeMultiLineStringGeometry_ =
       'geometry should be an ol.geom.MultiLineString');
   var hasZM = ol.format.EsriJSON.getHasZM_(geometry);
   return /** @type {EsriJSONPolyline} */ ({
-    'hasZ': hasZM.hasZ,
-    'hasM': hasZM.hasM,
-    'paths': geometry.getCoordinates()
+    hasZ: hasZM.hasZ,
+    hasM: hasZM.hasM,
+    paths: geometry.getCoordinates()
   });
 };
 
@@ -378,9 +378,9 @@ ol.format.EsriJSON.writeMultiPointGeometry_ = function(geometry, opt_options) {
       'geometry should be an ol.geom.MultiPoint');
   var hasZM = ol.format.EsriJSON.getHasZM_(geometry);
   return /** @type {EsriJSONMultipoint} */ ({
-    'hasZ': hasZM.hasZ,
-    'hasM': hasZM.hasM,
-    'points': geometry.getCoordinates()
+    hasZ: hasZM.hasZ,
+    hasM: hasZM.hasM,
+    points: geometry.getCoordinates()
   });
 };
 
@@ -404,9 +404,9 @@ ol.format.EsriJSON.writeMultiPolygonGeometry_ = function(geometry,
     }
   }
   return /** @type {EsriJSONPolygon} */ ({
-    'hasZ': hasZM.hasZ,
-    'hasM': hasZM.hasM,
-    'rings': output
+    hasZ: hasZM.hasZ,
+    hasM: hasZM.hasM,
+    rings: output
   });
 };
 
