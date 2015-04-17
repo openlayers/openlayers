@@ -68,6 +68,7 @@ ol.source.XYZ.prototype.setTileUrlFunction = function(tileUrlFunction) {
 
 
 /**
+ * Set the URL to use for requests.
  * @param {string} url URL.
  * @api stable
  */
@@ -78,6 +79,7 @@ ol.source.XYZ.prototype.setUrl = function(url) {
 
 
 /**
+ * Set the URLs to use for requests.
  * @param {Array.<string>} urls URLs.
  */
 ol.source.XYZ.prototype.setUrls = function(urls) {

@@ -184,6 +184,7 @@ ol.source.Tile.prototype.getTile = goog.abstractMethod;
 
 
 /**
+ * Return the tile grid of the tile source.
  * @return {ol.tilegrid.TileGrid} Tile grid.
  * @api stable
  */

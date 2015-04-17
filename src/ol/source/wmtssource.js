@@ -225,6 +225,7 @@ ol.source.WMTS.prototype.getDimensions = function() {
 
 
 /**
+ * Return the image format of the WMTS source.
  * @return {string} Format.
  * @api
  */
@@ -242,6 +243,7 @@ ol.source.WMTS.prototype.getKeyZXY = function(z, x, y) {
 
 
 /**
+ * Return the layer of the WMTS source.
  * @return {string} Layer.
  * @api
  */
@@ -251,6 +253,7 @@ ol.source.WMTS.prototype.getLayer = function() {
 
 
 /**
+ * Return the matrix set of the WMTS source.
  * @return {string} MatrixSet.
  * @api
  */
@@ -260,6 +263,7 @@ ol.source.WMTS.prototype.getMatrixSet = function() {
 
 
 /**
+ * Return the style of the WMTS source.
  * @return {string} Style.
  * @api
  */
@@ -269,6 +273,7 @@ ol.source.WMTS.prototype.getStyle = function() {
 
 
 /**
+ * Return the version of the WMTS source.
  * @return {string} Version.
  * @api
  */

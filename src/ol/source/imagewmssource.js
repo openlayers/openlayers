@@ -260,6 +260,7 @@ ol.source.ImageWMS.prototype.getImage =
 
 
 /**
+ * Return the image load function of the source.
  * @return {ol.ImageLoadFunctionType} The image load function.
  * @api
  */
@@ -336,6 +337,7 @@ ol.source.ImageWMS.prototype.getUrl = function() {
 
 
 /**
+ * Set the image load function of the source.
  * @param {ol.ImageLoadFunctionType} imageLoadFunction Image load function.
  * @api
  */
@@ -348,6 +350,7 @@ ol.source.ImageWMS.prototype.setImageLoadFunction = function(
 
 
 /**
+ * Set the URL to use for requests.
  * @param {string|undefined} url URL.
  * @api stable
  */

@@ -58,6 +58,7 @@ goog.inherits(ol.source.TileUTFGrid, ol.source.Tile);
 
 
 /**
+ * Return the template from TileJSON.
  * @return {string|undefined} The template from TileJSON.
  * @api
  */
