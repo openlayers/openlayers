@@ -417,7 +417,7 @@ def build_lint_src_timestamp(t):
 virtual('jshint', 'build/jshint-timestamp')
 
 @target('build/jshint-timestamp', SRC, EXAMPLES_SRC_JS, SPEC, SPEC_RENDERING,
-        TASKS, NPM_INSTALL, precious=True)
+        'examples/resources/common.js', TASKS, NPM_INSTALL, precious=True)
 def build_jshint_timestamp(t):
     t.run(variables.JSHINT, '--verbose', t.newer(t.dependencies))
     t.touch()
