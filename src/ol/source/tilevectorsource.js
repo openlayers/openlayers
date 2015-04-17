@@ -194,6 +194,7 @@ ol.source.TileVector.prototype.getExtent = goog.abstractMethod;
 
 
 /**
+ * Return the features of the TileVector source.
  * @inheritDoc
  * @api
  */

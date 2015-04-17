@@ -16,6 +16,9 @@ goog.require('ol.source.Vector');
 
 
 /**
+ * @classdesc
+ * Layer source to cluster vector data.
+ *
  * @constructor
  * @param {olx.source.ClusterOptions} options
  * @extends {ol.source.Vector}

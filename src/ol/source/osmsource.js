@@ -46,6 +46,8 @@ goog.inherits(ol.source.OSM, ol.source.XYZ);
 
 
 /**
+ * The attribution containing a link to the OpenStreetMap Copyright and License
+ * page.
  * @const
  * @type {ol.Attribution}
  * @api

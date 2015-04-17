@@ -168,6 +168,7 @@ ol.source.TileArcGISRest.prototype.getUrls = function() {
 
 
 /**
+ * Set the URL to use for requests.
  * @param {string|undefined} url URL.
  * @api stable
  */
@@ -178,6 +179,7 @@ ol.source.TileArcGISRest.prototype.setUrl = function(url) {
 
 
 /**
+ * Set the URLs to use for requests.
  * @param {Array.<string>|undefined} urls URLs.
  * @api stable
  */

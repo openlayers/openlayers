@@ -64,6 +64,8 @@ goog.inherits(ol.source.BingMaps, ol.source.TileImage);
 
 
 /**
+ * The attribution containing a link to the Microsoft® Bing™ Maps Platform APIs’
+ * Terms Of Use.
  * @const
  * @type {ol.Attribution}
  * @api

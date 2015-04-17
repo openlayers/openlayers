@@ -90,6 +90,7 @@ ol.source.MapQuestConfig = {
 
 
 /**
+ * Get the layer of the source, either `osm`, `sat`, or `hyb`.
  * @return {string} Layer.
  * @api
  */
