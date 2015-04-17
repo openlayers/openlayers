@@ -154,14 +154,6 @@ ol.INITIAL_ATLAS_SIZE = 256;
 
 
 /**
- * The page is loaded using HTTPS.
- * @const
- * @type {boolean}
- */
-ol.IS_HTTPS = goog.global.location.protocol === 'https:';
-
-
-/**
  * Whether the current browser is legacy IE
  * @const
  * @type {boolean}
