@@ -96,28 +96,3 @@ map.on('pointermove', function(evt) {
 map.on('click', function(evt) {
   displayFeatureInfo(evt.pixel);
 });
-
-var exportGPXElement = document.getElementById('export-gpx');
-if ('download' in exportGPXElement) {
-  var vectorSource = vector.getSource();
-  exportGPXElement.addEventListener('click', function(e) {
-    if (!exportGPXElement.href) {
-      var features = [];
-      vectorSource.forEachFeature(function(feature) {
-        var clone = feature.clone();
-        clone.getGeometry().transform(projection, 'EPSG:4326');
-        features.push(clone);
-      });
-      var string = new ol.format.GPX().writeFeatures(features);
-      var base64 = common.strToBase64(string);
-      exportGPXElement.href =
-          'data:text/gpx+xml;base64,' + base64;
-    }
-  }, false);
-} else {
-  var info = document.getElementById('no-download');
-  /**
-   * display error message
-   */
-  info.style.display = '';
-}
