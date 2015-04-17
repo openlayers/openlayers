@@ -4,7 +4,6 @@ goog.require('goog.Uri');
 goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('goog.net.Jsonp');
-goog.require('ol');
 goog.require('ol.Attribution');
 goog.require('ol.TileRange');
 goog.require('ol.TileUrlFunction');
@@ -49,15 +48,14 @@ ol.source.BingMaps = function(options) {
    */
   this.maxZoom_ = goog.isDef(options.maxZoom) ? options.maxZoom : -1;
 
-  var protocol = ol.IS_HTTPS ? 'https:' : 'http:';
   var uri = new goog.Uri(
-      protocol + '//dev.virtualearth.net/REST/v1/Imagery/Metadata/' +
+      'https://dev.virtualearth.net/REST/v1/Imagery/Metadata/' +
       options.imagerySet);
 
   var jsonp = new goog.net.Jsonp(uri, 'jsonp');
   jsonp.send({
     'include': 'ImageryProviders',
-    'uriScheme': ol.IS_HTTPS ? 'https' : 'http',
+    'uriScheme': 'https',
     'key': options.key
   }, goog.bind(this.handleImageryMetadataResponse, this));
 
@@ -93,7 +91,7 @@ ol.source.BingMaps.prototype.handleImageryMetadataResponse =
   }
 
   var brandLogoUri = response.brandLogoUri;
-  if (ol.IS_HTTPS && brandLogoUri.indexOf('https') == -1) {
+  if (brandLogoUri.indexOf('https') == -1) {
     brandLogoUri = brandLogoUri.replace('http', 'https');
   }
   //var copyright = response.copyright;  // FIXME do we need to display this?
