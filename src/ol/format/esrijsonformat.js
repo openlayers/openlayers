@@ -8,6 +8,7 @@ goog.require('ol.extent');
 goog.require('ol.format.Feature');
 goog.require('ol.format.JSONFeature');
 goog.require('ol.geom.GeometryLayout');
+goog.require('ol.geom.GeometryType');
 goog.require('ol.geom.LineString');
 goog.require('ol.geom.LinearRing');
 goog.require('ol.geom.MultiLineString');
@@ -58,24 +59,24 @@ ol.format.EsriJSON.readGeometry_ = function(object, opt_options) {
   }
   var type;
   if (goog.isNumber(object.x) && goog.isNumber(object.y)) {
-    type = 'Point';
+    type = ol.geom.GeometryType.POINT;
   } else if (goog.isDefAndNotNull(object.points)) {
-    type = 'MultiPoint';
+    type = ol.geom.GeometryType.MULTI_POINT;
   } else if (goog.isDefAndNotNull(object.paths)) {
     if (object.paths.length === 1) {
-      type = 'LineString';
+      type = ol.geom.GeometryType.LINE_STRING;
     } else {
-      type = 'MultiLineString';
+      type = ol.geom.GeometryType.MULTI_LINE_STRING;
     }
   } else if (goog.isDefAndNotNull(object.rings)) {
     var layout = ol.format.EsriJSON.getGeometryLayout_(object);
     var rings = ol.format.EsriJSON.convertRings_(object.rings, layout);
     object = /** @type {EsriJSONGeometry} */(goog.object.clone(object));
     if (rings.length === 1) {
-      type = 'Polygon';
+      type = ol.geom.GeometryType.POLYGON;
       object.rings = rings[0];
     } else {
-      type = 'MultiPolygon';
+      type = ol.geom.GeometryType.MULTI_POLYGON;
       object.rings = rings;
     }
   }
@@ -91,6 +92,9 @@ ol.format.EsriJSON.readGeometry_ = function(object, opt_options) {
 
 /**
  * Determines inner and outer rings.
+ * Checks if any polygons in this array contain any other polygons in this
+ * array. It is used for checking for holes.
+ * Logic inspired by: https://github.com/Esri/terraformer-arcgis-parser
  * @param {Array.<!Array.<!Array.<number>>>} rings Rings.
  * @param {ol.geom.GeometryLayout} layout Geometry layout.
  * @private
@@ -102,6 +106,7 @@ ol.format.EsriJSON.convertRings_ = function(rings, layout) {
   var i, ii;
   for (i = 0, ii = rings.length; i < ii; ++i) {
     var flatRing = goog.array.flatten(rings[i]);
+    // is this ring an outer ring? is it clockwise?
     var clockwise = ol.geom.flat.orient.linearRingIsClockwise(flatRing, 0,
         flatRing.length, layout.length);
     if (clockwise) {
@@ -113,17 +118,21 @@ ol.format.EsriJSON.convertRings_ = function(rings, layout) {
   while (holes.length) {
     var hole = holes.shift();
     var matched = false;
+    // loop over all outer rings and see if they contain our hole.
     for (i = outerRings.length - 1; i >= 0; i--) {
       var outerRing = outerRings[i][0];
       if (ol.extent.containsExtent(new ol.geom.LinearRing(
           outerRing).getExtent(),
           new ol.geom.LinearRing(hole).getExtent())) {
+        // the hole is contained push it into our polygon
         outerRings[i].push(hole);
         matched = true;
         break;
       }
     }
     if (!matched) {
+      // no outer rings contain this hole turn it into and outer
+      // ring (reverse it)
       outerRings.push([hole.reverse()]);
     }
   }
@@ -132,9 +141,9 @@ ol.format.EsriJSON.convertRings_ = function(rings, layout) {
 
 
 /**
- * @param {EsriJSONPoint} object Object.
+ * @param {EsriJSONGeometry} object Object.
  * @private
- * @return {ol.geom.Point} Point.
+ * @return {ol.geom.Geometry} Point.
  */
 ol.format.EsriJSON.readPointGeometry_ = function(object) {
   goog.asserts.assert(goog.isNumber(object.x), 'object.x should be number');
@@ -157,9 +166,9 @@ ol.format.EsriJSON.readPointGeometry_ = function(object) {
 
 
 /**
- * @param {EsriJSONPolyline} object Object.
+ * @param {EsriJSONGeometry} object Object.
  * @private
- * @return {ol.geom.LineString} LineString.
+ * @return {ol.geom.Geometry} LineString.
  */
 ol.format.EsriJSON.readLineStringGeometry_ = function(object) {
   goog.asserts.assert(goog.isArray(object.paths),
@@ -172,9 +181,9 @@ ol.format.EsriJSON.readLineStringGeometry_ = function(object) {
 
 
 /**
- * @param {EsriJSONPolyline} object Object.
+ * @param {EsriJSONGeometry} object Object.
  * @private
- * @return {ol.geom.MultiLineString} MultiLineString.
+ * @return {ol.geom.Geometry} MultiLineString.
  */
 ol.format.EsriJSON.readMultiLineStringGeometry_ = function(object) {
   goog.asserts.assert(goog.isArray(object.paths),
@@ -205,9 +214,9 @@ ol.format.EsriJSON.getGeometryLayout_ = function(object) {
 
 
 /**
- * @param {EsriJSONMultipoint} object Object.
+ * @param {EsriJSONGeometry} object Object.
  * @private
- * @return {ol.geom.MultiPoint} MultiPoint.
+ * @return {ol.geom.Geometry} MultiPoint.
  */
 ol.format.EsriJSON.readMultiPointGeometry_ = function(object) {
   goog.asserts.assert(goog.isDefAndNotNull(object.points),
@@ -218,9 +227,9 @@ ol.format.EsriJSON.readMultiPointGeometry_ = function(object) {
 
 
 /**
- * @param {EsriJSONPolygon} object Object.
+ * @param {EsriJSONGeometry} object Object.
  * @private
- * @return {ol.geom.MultiPolygon} MultiPolygon.
+ * @return {ol.geom.Geometry} MultiPolygon.
  */
 ol.format.EsriJSON.readMultiPolygonGeometry_ = function(object) {
   goog.asserts.assert(goog.isDefAndNotNull(object.rings));
@@ -234,9 +243,9 @@ ol.format.EsriJSON.readMultiPolygonGeometry_ = function(object) {
 
 
 /**
- * @param {EsriJSONPolygon} object Object.
+ * @param {EsriJSONGeometry} object Object.
  * @private
- * @return {ol.geom.Polygon} Polygon.
+ * @return {ol.geom.Geometry} Polygon.
  */
 ol.format.EsriJSON.readPolygonGeometry_ = function(object) {
   goog.asserts.assert(goog.isDefAndNotNull(object.rings));
@@ -405,16 +414,21 @@ ol.format.EsriJSON.writeMultiPolygonGeometry_ = function(geometry,
 /**
  * @const
  * @private
- * @type {Object.<string, function(EsriJSONObject): ol.geom.Geometry>}
+ * @type {Object.<ol.geom.GeometryType, function(EsriJSONGeometry): ol.geom.Geometry>}
  */
-ol.format.EsriJSON.GEOMETRY_READERS_ = {
-  'Point': ol.format.EsriJSON.readPointGeometry_,
-  'LineString': ol.format.EsriJSON.readLineStringGeometry_,
-  'Polygon': ol.format.EsriJSON.readPolygonGeometry_,
-  'MultiPoint': ol.format.EsriJSON.readMultiPointGeometry_,
-  'MultiLineString': ol.format.EsriJSON.readMultiLineStringGeometry_,
-  'MultiPolygon': ol.format.EsriJSON.readMultiPolygonGeometry_
-};
+ol.format.EsriJSON.GEOMETRY_READERS_ = {};
+ol.format.EsriJSON.GEOMETRY_READERS_[ol.geom.GeometryType.POINT] =
+    ol.format.EsriJSON.readPointGeometry_;
+ol.format.EsriJSON.GEOMETRY_READERS_[ol.geom.GeometryType.LINE_STRING] =
+    ol.format.EsriJSON.readLineStringGeometry_;
+ol.format.EsriJSON.GEOMETRY_READERS_[ol.geom.GeometryType.POLYGON] =
+    ol.format.EsriJSON.readPolygonGeometry_;
+ol.format.EsriJSON.GEOMETRY_READERS_[ol.geom.GeometryType.MULTI_POINT] =
+    ol.format.EsriJSON.readMultiPointGeometry_;
+ol.format.EsriJSON.GEOMETRY_READERS_[ol.geom.GeometryType.MULTI_LINE_STRING] =
+    ol.format.EsriJSON.readMultiLineStringGeometry_;
+ol.format.EsriJSON.GEOMETRY_READERS_[ol.geom.GeometryType.MULTI_POLYGON] =
+    ol.format.EsriJSON.readMultiPolygonGeometry_;
 
 
 /**
@@ -422,14 +436,19 @@ ol.format.EsriJSON.GEOMETRY_READERS_ = {
  * @private
  * @type {Object.<string, function(ol.geom.Geometry, olx.format.WriteOptions=): (EsriJSONGeometry)>}
  */
-ol.format.EsriJSON.GEOMETRY_WRITERS_ = {
-  'Point': ol.format.EsriJSON.writePointGeometry_,
-  'LineString': ol.format.EsriJSON.writeLineStringGeometry_,
-  'Polygon': ol.format.EsriJSON.writePolygonGeometry_,
-  'MultiPoint': ol.format.EsriJSON.writeMultiPointGeometry_,
-  'MultiLineString': ol.format.EsriJSON.writeMultiLineStringGeometry_,
-  'MultiPolygon': ol.format.EsriJSON.writeMultiPolygonGeometry_
-};
+ol.format.EsriJSON.GEOMETRY_WRITERS_ = {};
+ol.format.EsriJSON.GEOMETRY_WRITERS_[ol.geom.GeometryType.POINT] =
+    ol.format.EsriJSON.writePointGeometry_;
+ol.format.EsriJSON.GEOMETRY_WRITERS_[ol.geom.GeometryType.LINE_STRING] =
+    ol.format.EsriJSON.writeLineStringGeometry_;
+ol.format.EsriJSON.GEOMETRY_WRITERS_[ol.geom.GeometryType.POLYGON] =
+    ol.format.EsriJSON.writePolygonGeometry_;
+ol.format.EsriJSON.GEOMETRY_WRITERS_[ol.geom.GeometryType.MULTI_POINT] =
+    ol.format.EsriJSON.writeMultiPointGeometry_;
+ol.format.EsriJSON.GEOMETRY_WRITERS_[ol.geom.GeometryType.MULTI_LINE_STRING] =
+    ol.format.EsriJSON.writeMultiLineStringGeometry_;
+ol.format.EsriJSON.GEOMETRY_WRITERS_[ol.geom.GeometryType.MULTI_POLYGON] =
+    ol.format.EsriJSON.writeMultiPolygonGeometry_;
 
 
 /**
