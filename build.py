@@ -708,7 +708,8 @@ def check_examples(t):
     # Run the examples checks in a pool of threads
     pool = ThreadPool()
     for example in all_examples:
-        pool.add_task(t.run, '%(PHANTOMJS)s', 'bin/check-example.js', example)
+        pool.add_task(t.run, '%(PHANTOMJS)s', '--ssl-protocol=any',
+                      '--ignore-ssl-errors=true', 'bin/check-example.js', example)
     errors = pool.wait_completion()
     if errors:
         sys.exit(1)
