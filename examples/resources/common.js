@@ -10,6 +10,31 @@
     });
   }
 
+  // Check whether links to API-docs of used classes actually point to
+  // existing html-files:
+  $('#api-links a').each(function() {
+    var url = this.href;
+    $.ajax({
+      type: 'HEAD',
+      url: url,
+      context: this,
+      error: function() {
+        // We get into the error if either the resource didn't exist
+        // or if HEAD was not allowed (when serving locally via node)
+        // => remove the <li> and the following comma
+        var li = $(this).parent();
+        var comma = $(li[0].nextSibling);
+        comma.remove();
+        li.remove();
+        // It may be that this was the last <li>, if that's the case,
+        // remove the complete <div>, as we don't have an API-links
+        if ($('#api-links li').length === 0) {
+          $('#api-links').remove();
+        }
+      }
+    });
+  });
+
   if (window.location.host === 'localhost:3000') {
     return;
   }
