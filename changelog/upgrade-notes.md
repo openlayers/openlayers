@@ -73,6 +73,29 @@
 
   See http://openlayers.org/en/master/examples/igc.html for a real example.
 
+* Note about KML
+
+  If you used `ol.source.KML`'s `extractStyles` or `defaultStyle` options, you will now have to set these options on `ol.format.KML` instead. For example, if you used:
+
+  ```js
+  var source = new ol.source.KML({
+    url: 'features.kml',
+    extractStyles: false,
+    projection: 'EPSG:3857'
+  });
+  ```
+
+  you will now use:
+
+  ```js
+  var source = new ol.source.Vector({
+    url: 'features.kml',
+    format: new ol.format.KML({
+      extractStyles: false
+    })
+  });
+  ```
+
 * The `ol.source.ServerVector` class has been removed. If you used it, for example as follows:
 
   ```js
