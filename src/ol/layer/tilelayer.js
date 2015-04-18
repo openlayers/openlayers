@@ -45,6 +45,7 @@ goog.inherits(ol.layer.Tile, ol.layer.Layer);
 
 
 /**
+ * Return the level as number to which we will preload tiles up to.
  * @return {number} The level to preload tiles up to.
  * @observable
  * @api
@@ -55,6 +56,7 @@ ol.layer.Tile.prototype.getPreload = function() {
 
 
 /**
+ * Return the associated {@link ol.source.Tile tilesource} of the layer.
  * @function
  * @return {ol.source.Tile} Source.
  * @api stable
@@ -63,6 +65,7 @@ ol.layer.Tile.prototype.getSource;
 
 
 /**
+ * Set the level as number to which we will preload tiles up to.
  * @param {number} preload The level to preload tiles up to.
  * @observable
  * @api
@@ -73,6 +76,7 @@ ol.layer.Tile.prototype.setPreload = function(preload) {
 
 
 /**
+ * Whether we use interim tiles on error.
  * @return {boolean} Use interim tiles on error.
  * @observable
  * @api
@@ -84,6 +88,7 @@ ol.layer.Tile.prototype.getUseInterimTilesOnError = function() {
 
 
 /**
+ * Set whether we use interim tiles on error.
  * @param {boolean} useInterimTilesOnError Use interim tiles on error.
  * @observable
  * @api

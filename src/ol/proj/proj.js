@@ -24,7 +24,7 @@ ol.proj.ProjectionLike;
 
 
 /**
- * Projection units: `'degrees'`, `'ft'`, `'m'` or `'pixels'`.
+ * Projection units: `'degrees'`, `'ft'`, `'m'`, `'pixels'`, or `'us-ft'`.
  * @enum {string}
  * @api stable
  */
