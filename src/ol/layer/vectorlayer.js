@@ -100,6 +100,7 @@ ol.layer.Vector.prototype.getRenderOrder = function() {
 
 
 /**
+ * Return the associated {@link ol.source.Vector vectorsource} of the layer.
  * @function
  * @return {ol.source.Vector} Source.
  * @api stable
