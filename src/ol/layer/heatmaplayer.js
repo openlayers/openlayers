@@ -191,6 +191,7 @@ ol.layer.Heatmap.prototype.createCircle_ = function() {
 
 
 /**
+ * Return the blur size in pixels.
  * @return {number} Blur size in pixels.
  * @api
  * @observable
@@ -201,6 +202,7 @@ ol.layer.Heatmap.prototype.getBlur = function() {
 
 
 /**
+ * Return the gradient colors as array of strings.
  * @return {Array.<string>} Colors.
  * @api
  * @observable
@@ -212,6 +214,7 @@ ol.layer.Heatmap.prototype.getGradient = function() {
 
 
 /**
+ * Return the size of the radius in pixels.
  * @return {number} Radius size in pixel.
  * @api
  * @observable
@@ -266,6 +269,7 @@ ol.layer.Heatmap.prototype.handleRender_ = function(event) {
 
 
 /**
+ * Set the blur size in pixels.
  * @param {number} blur Blur size in pixels.
  * @api
  * @observable
@@ -276,6 +280,7 @@ ol.layer.Heatmap.prototype.setBlur = function(blur) {
 
 
 /**
+ * Set the gradient colors as array of strings.
  * @param {Array.<string>} colors Gradient.
  * @api
  * @observable
@@ -286,6 +291,7 @@ ol.layer.Heatmap.prototype.setGradient = function(colors) {
 
 
 /**
+ * Set the size of the radius in pixels.
  * @param {number} radius Radius size in pixel.
  * @api
  * @observable
