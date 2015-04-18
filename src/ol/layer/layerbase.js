@@ -87,6 +87,7 @@ goog.inherits(ol.layer.Base, ol.Object);
 
 
 /**
+ * Return the brightness of the layer.
  * @return {number} The brightness of the layer.
  * @observable
  * @api
@@ -97,6 +98,7 @@ ol.layer.Base.prototype.getBrightness = function() {
 
 
 /**
+ * Return the contrast of the layer.
  * @return {number} The contrast of the layer.
  * @observable
  * @api
@@ -107,6 +109,7 @@ ol.layer.Base.prototype.getContrast = function() {
 
 
 /**
+ * Return the hue of the layer.
  * @return {number} The hue of the layer.
  * @observable
  * @api
@@ -163,6 +166,8 @@ ol.layer.Base.prototype.getLayerStatesArray = goog.abstractMethod;
 
 
 /**
+ * Return the {@link ol.Extent extent} of the layer or `undefined` if it
+ * will be visible regardless of extent.
  * @return {ol.Extent|undefined} The layer extent.
  * @observable
  * @api stable
@@ -174,6 +179,7 @@ ol.layer.Base.prototype.getExtent = function() {
 
 
 /**
+ * Return the maximum resolution of the layer.
  * @return {number} The maximum resolution of the layer.
  * @observable
  * @api stable
@@ -185,6 +191,7 @@ ol.layer.Base.prototype.getMaxResolution = function() {
 
 
 /**
+ * Return the minimum resolution of the layer.
  * @return {number} The minimum resolution of the layer.
  * @observable
  * @api stable
@@ -196,6 +203,7 @@ ol.layer.Base.prototype.getMinResolution = function() {
 
 
 /**
+ * Return the opacity of the layer (between 0 and 1).
  * @return {number} The opacity of the layer.
  * @observable
  * @api stable
@@ -206,6 +214,7 @@ ol.layer.Base.prototype.getOpacity = function() {
 
 
 /**
+ * Return the saturation of the layer.
  * @return {number} The saturation of the layer.
  * @observable
  * @api
@@ -222,6 +231,7 @@ ol.layer.Base.prototype.getSourceState = goog.abstractMethod;
 
 
 /**
+ * Return the visibility of the layer (`true` or `false`).
  * @return {boolean} The visibility of the layer.
  * @observable
  * @api stable
@@ -297,6 +307,7 @@ ol.layer.Base.prototype.setExtent = function(extent) {
 
 
 /**
+ * Set the maximum resolution at which the layer is visible.
  * @param {number} maxResolution The maximum resolution of the layer.
  * @observable
  * @api stable
@@ -307,6 +318,7 @@ ol.layer.Base.prototype.setMaxResolution = function(maxResolution) {
 
 
 /**
+ * Set the minimum resolution at which the layer is visible.
  * @param {number} minResolution The minimum resolution of the layer.
  * @observable
  * @api stable
@@ -317,6 +329,7 @@ ol.layer.Base.prototype.setMinResolution = function(minResolution) {
 
 
 /**
+ * Set the opacity of the layer, allowed values range from 0 to 1.
  * @param {number} opacity The opacity of the layer.
  * @observable
  * @api stable
@@ -342,6 +355,7 @@ ol.layer.Base.prototype.setSaturation = function(saturation) {
 
 
 /**
+ * Set the visibility of the layer (`true` or `false`).
  * @param {boolean} visible The visibility of the layer.
  * @observable
  * @api stable
