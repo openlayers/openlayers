@@ -209,7 +209,7 @@ ol.format.WKT.prototype.parse_ = function(wkt) {
  * Read a feature from a WKT source.
  *
  * @function
- * @param {ArrayBuffer|Document|Node|Object|string} source Source.
+ * @param {Document|Node|Object|string} source Source.
  * @param {olx.format.ReadOptions=} opt_options Read options.
  * @return {ol.Feature} Feature.
  * @api stable
@@ -235,7 +235,7 @@ ol.format.WKT.prototype.readFeatureFromText = function(text, opt_options) {
  * Read all features from a WKT source.
  *
  * @function
- * @param {ArrayBuffer|Document|Node|Object|string} source Source.
+ * @param {Document|Node|Object|string} source Source.
  * @param {olx.format.ReadOptions=} opt_options Read options.
  * @return {Array.<ol.Feature>} Features.
  * @api stable
@@ -270,7 +270,7 @@ ol.format.WKT.prototype.readFeaturesFromText = function(text, opt_options) {
  * Read a single geometry from a WKT source.
  *
  * @function
- * @param {ArrayBuffer|Document|Node|Object|string} source Source.
+ * @param {Document|Node|Object|string} source Source.
  * @param {olx.format.ReadOptions=} opt_options Read options.
  * @return {ol.geom.Geometry} Geometry.
  * @api stable

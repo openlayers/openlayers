@@ -101,7 +101,7 @@ ol.format.IGC.prototype.getExtensions = function() {
  * Read the feature from the IGC source.
  *
  * @function
- * @param {ArrayBuffer|Document|Node|Object|string} source Source.
+ * @param {Document|Node|Object|string} source Source.
  * @param {olx.format.ReadOptions=} opt_options Read options.
  * @return {ol.Feature} Feature.
  * @api
@@ -189,7 +189,7 @@ ol.format.IGC.prototype.readFeatureFromText = function(text, opt_options) {
  * feature, this will return the feature in an array.
  *
  * @function
- * @param {ArrayBuffer|Document|Node|Object|string} source Source.
+ * @param {Document|Node|Object|string} source Source.
  * @param {olx.format.ReadOptions=} opt_options Read options.
  * @return {Array.<ol.Feature>} Features.
  * @api
@@ -214,7 +214,7 @@ ol.format.IGC.prototype.readFeaturesFromText = function(text, opt_options) {
  * Read the projection from the IGC source.
  *
  * @function
- * @param {ArrayBuffer|Document|Node|Object|string} source Source.
+ * @param {Document|Node|Object|string} source Source.
  * @return {ol.proj.Projection} Projection.
  * @api
  */

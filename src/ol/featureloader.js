@@ -37,15 +37,7 @@ ol.featureloader.loadFeaturesXhr = function(url, format, success) {
       function(extent, resolution, projection) {
         var xhrIo = new goog.net.XhrIo();
         var type = format.getType();
-        var responseType;
-        // FIXME maybe use ResponseType.DOCUMENT?
-        if (type == ol.format.FormatType.BINARY &&
-            ol.has.ARRAY_BUFFER) {
-          responseType = goog.net.XhrIo.ResponseType.ARRAY_BUFFER;
-        } else {
-          responseType = goog.net.XhrIo.ResponseType.TEXT;
-        }
-        xhrIo.setResponseType(responseType);
+        xhrIo.setResponseType(goog.net.XhrIo.ResponseType.TEXT);
         goog.events.listen(xhrIo, goog.net.EventType.COMPLETE,
             /**
              * @param {Event} event Event.
@@ -58,14 +50,9 @@ ol.featureloader.loadFeaturesXhr = function(url, format, success) {
                   'event.target/xhrIo is an instance of goog.net.XhrIo');
               if (xhrIo.isSuccess()) {
                 var type = format.getType();
-                /** @type {ArrayBuffer|Document|Node|Object|string|undefined} */
+                /** @type {Document|Node|Object|string|undefined} */
                 var source;
-                if (type == ol.format.FormatType.BINARY &&
-                    ol.has.ARRAY_BUFFER) {
-                  source = xhrIo.getResponse();
-                  goog.asserts.assertInstanceof(source, ArrayBuffer,
-                      'source is an instance of ArrayBuffer');
-                } else if (type == ol.format.FormatType.JSON) {
+                if (type == ol.format.FormatType.JSON) {
                   source = xhrIo.getResponseText();
                 } else if (type == ol.format.FormatType.TEXT) {
                   source = xhrIo.getResponseText();

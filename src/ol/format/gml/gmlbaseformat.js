@@ -590,7 +590,7 @@ ol.format.GMLBase.prototype.readGeometryFromNode =
  * Read all features from a GML FeatureCollection.
  *
  * @function
- * @param {ArrayBuffer|Document|Node|Object|string} source Source.
+ * @param {Document|Node|Object|string} source Source.
  * @param {olx.format.ReadOptions=} opt_options Options.
  * @return {Array.<ol.Feature>} Features.
  * @api stable
