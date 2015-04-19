@@ -814,17 +814,20 @@ ol.extent.intersectsSegment = function(extent, start, end) {
       // potentially intersects top
       x = endX - ((endY - maxY) / slope);
       intersects = x >= minX && x <= maxX;
-    } else if (!!(endRel & ol.extent.Relationship.RIGHT) &&
+    }
+    if (!intersects && !!(endRel & ol.extent.Relationship.RIGHT) &&
         !(startRel & ol.extent.Relationship.RIGHT)) {
       // potentially intersects right
       y = endY - ((endX - maxX) * slope);
       intersects = y >= minY && y <= maxY;
-    } else if (!!(endRel & ol.extent.Relationship.BELOW) &&
+    }
+    if (!intersects && !!(endRel & ol.extent.Relationship.BELOW) &&
         !(startRel & ol.extent.Relationship.BELOW)) {
       // potentially intersects bottom
       x = endX - ((endY - minY) / slope);
       intersects = x >= minX && x <= maxX;
-    } else if (!!(endRel & ol.extent.Relationship.LEFT) &&
+    }
+    if (!intersects && !!(endRel & ol.extent.Relationship.LEFT) &&
         !(startRel & ol.extent.Relationship.LEFT)) {
       // potentially intersects left
       y = endY - ((endX - minX) * slope);
