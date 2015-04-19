@@ -1636,6 +1636,21 @@ olx.format.GeoJSONOptions.prototype.geometryName;
 
 
 /**
+ * @typedef {{geometryName: (string|undefined)}}
+ * @api
+ */
+olx.format.EsriJSONOptions;
+
+
+/**
+ * Geometry name to use when creating features.
+ * @type {string|undefined}
+ * @api
+ */
+olx.format.EsriJSONOptions.prototype.geometryName;
+
+
+/**
  * @typedef {{factor: (number|undefined),
  *     geometryLayout: (ol.geom.GeometryLayout|undefined)}}
  * @api
