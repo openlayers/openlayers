@@ -135,14 +135,16 @@ ol.renderer.canvas.Map.prototype.dispatchComposeEvent_ =
         var worldWidth = ol.extent.getWidth(projectionExtent);
         var world = 0;
         while (startX < projectionExtent[0]) {
-          transform = this.getTransform(frameState, worldWidth * (--world));
+          --world;
+          transform = this.getTransform(frameState, worldWidth * world);
           replayGroup.replay(context, pixelRatio, transform, rotation, {});
           startX += worldWidth;
         }
         world = 0;
         startX = extent[2];
         while (startX > projectionExtent[2]) {
-          transform = this.getTransform(frameState, worldWidth * (++world));
+          ++world;
+          transform = this.getTransform(frameState, worldWidth * ++world);
           replayGroup.replay(context, pixelRatio, transform, rotation, {});
           startX -= worldWidth;
         }

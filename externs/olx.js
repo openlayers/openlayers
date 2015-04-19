@@ -4949,7 +4949,7 @@ olx.source.VectorOptions.prototype.url;
 
 /**
  * Wrap the world horizontally. Default is `true`. For vector editing across the
- * 0° and 180° meridians to work properly, this should be set to `false`. The
+ * -180° and 180° meridians to work properly, this should be set to `false`. The
  * resulting geometry coordinates will then exceed the world bounds.
  * @type {boolean|undefined}
  * @api

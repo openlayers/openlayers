@@ -116,7 +116,8 @@ ol.renderer.canvas.VectorLayer.prototype.composeFrame =
       var worldWidth = ol.extent.getWidth(projectionExtent);
       var world = 0;
       while (startX < projectionExtent[0]) {
-        transform = this.getTransform(frameState, worldWidth * (--world));
+        --world;
+        transform = this.getTransform(frameState, worldWidth * world);
         replayGroup.replay(
             replayContext, pixelRatio, transform, rotation, skippedFeatureUids);
         startX += worldWidth;
@@ -124,7 +125,8 @@ ol.renderer.canvas.VectorLayer.prototype.composeFrame =
       world = 0;
       startX = extent[2];
       while (startX > projectionExtent[2]) {
-        transform = this.getTransform(frameState, worldWidth * (++world));
+        ++world;
+        transform = this.getTransform(frameState, worldWidth * world);
         replayGroup.replay(
             replayContext, pixelRatio, transform, rotation, skippedFeatureUids);
         startX -= worldWidth;
@@ -229,7 +231,7 @@ ol.renderer.canvas.VectorLayer.prototype.prepareFrame =
 
   if (vectorSource.getWrapX() && viewState.projection.isGlobal() &&
       !ol.extent.containsExtent(projectionExtent, frameState.extent)) {
-    // do not clip when the view crosses the 0 or 180 meridians
+    // do not clip when the view crosses the -180° or 180° meridians
     extent[0] = projectionExtent[0];
     extent[2] = projectionExtent[2];
   }
