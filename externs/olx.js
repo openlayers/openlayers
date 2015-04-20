@@ -4969,9 +4969,8 @@ olx.source.VectorOptions.prototype.features;
 
 
 /**
- * The feature format used by the XHR loader when `url` is set. Required
- * if `url` is set, otherwise ignored. Default is `undefined`.
- * `url`
+ * The feature format used by the XHR feature loader when `url` is set.
+ * Required if `url` is set, otherwise ignored. Default is `undefined`.
  * @type {ol.format.Feature|undefined}
  * @api
  */
@@ -4980,7 +4979,8 @@ olx.source.VectorOptions.prototype.format;
 
 /**
  * The loader function used to load features, from a remote source for example.
- * Note that the source will create and use an XHR loader when `src` is set.
+ * Note that the source will create and use an XHR feature loader when `url` is
+ * set.
  * @type {ol.FeatureLoader|undefined}
  * @api
  */
@@ -4997,8 +4997,7 @@ olx.source.VectorOptions.prototype.logo;
 
 /**
  * The loading strategy to use. By default an {@link ol.loadingstrategy.all}
- * strategy is used, which means that features at loaded all at once, and
- * once.
+ * strategy is used, a one-off strategy which loads all features at once.
  * @type {ol.LoadingStrategy|undefined}
  * @api
  */
@@ -5006,9 +5005,10 @@ olx.source.VectorOptions.prototype.strategy;
 
 
 /**
- * Set this option if you want the source to download features all at once
- * and once for good. Internally the source uses an XHR feature loader (see
- * {@link ol.featureloader.xhr}). Requires `format` to be set as well.
+ * Setting this option instructs the source to use an XHR loader (see
+ * {@link ol.featureloader.xhr}) and an {@link ol.loadingstrategy.all} for a
+ * one-off download of all features from that URL.
+ * Requires `format` to be set as well.
  * @type {string|undefined}
  * @api
  */
