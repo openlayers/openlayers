@@ -53,6 +53,7 @@ example:
 <!doctype html>
 <html>
   <head>
+    <meta charset="utf-8">
     <title>Using Browserify with OpenLayers</title>
     <link rel="stylesheet" href="node_modules/openlayers/dist/ol.css" type="text/css">
     <style>
