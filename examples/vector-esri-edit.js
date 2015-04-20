@@ -90,7 +90,7 @@ selected.on('remove', function(evt) {
   var fid = feature.getId();
   if (dirty[fid] === true) {
     var payload = '[' + esrijsonFormat.writeFeature(feature, {
-      featureProjection: select.getMap().getView().getProjection()
+      featureProjection: map.getView().getProjection()
     }) + ']';
     var url = serviceUrl + layer + '/updateFeatures';
     $.post(url, { f: 'json', features: payload }).done(function(data) {
@@ -110,7 +110,7 @@ selected.on('remove', function(evt) {
 draw.on('drawend', function(evt) {
   var feature = evt.feature;
   var payload = '[' + esrijsonFormat.writeFeature(feature, {
-    featureProjection: evt.target.getMap().getView().getProjection()
+    featureProjection: map.getView().getProjection()
   }) + ']';
   var url = serviceUrl + layer + '/addFeatures';
   $.post(url, { f: 'json', features: payload }).done(function(data) {
