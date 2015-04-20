@@ -432,16 +432,16 @@ describe('ol.Feature', function() {
 
 });
 
-describe('ol.feature.createFeatureStyleFunction()', function() {
+describe('ol.Feature.createStyleFunction()', function() {
   var style = new ol.style.Style();
 
   it('creates a feature style function from a single style', function() {
-    var styleFunction = ol.feature.createFeatureStyleFunction(style);
+    var styleFunction = ol.Feature.createStyleFunction(style);
     expect(styleFunction()).to.eql([style]);
   });
 
   it('creates a feature style function from an array of styles', function() {
-    var styleFunction = ol.feature.createFeatureStyleFunction([style]);
+    var styleFunction = ol.Feature.createStyleFunction([style]);
     expect(styleFunction()).to.eql([style]);
   });
 
@@ -449,13 +449,13 @@ describe('ol.feature.createFeatureStyleFunction()', function() {
     var original = function() {
       return [style];
     };
-    var styleFunction = ol.feature.createFeatureStyleFunction(original);
+    var styleFunction = ol.Feature.createStyleFunction(original);
     expect(styleFunction).to.be(original);
   });
 
   it('throws on (some) unexpected input', function() {
     expect(function() {
-      ol.feature.createFeatureStyleFunction({bogus: 'input'});
+      ol.Feature.createStyleFunction({bogus: 'input'});
     }).to.throwException();
   });
 
@@ -465,6 +465,5 @@ describe('ol.feature.createFeatureStyleFunction()', function() {
 goog.require('goog.events');
 goog.require('goog.object');
 goog.require('ol.Feature');
-goog.require('ol.feature');
 goog.require('ol.geom.Point');
 goog.require('ol.style.Style');
