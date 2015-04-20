@@ -1,7 +1,6 @@
 goog.provide('ol.interaction.DragZoom');
 
 goog.require('goog.asserts');
-goog.require('ol');
 goog.require('ol.events.condition');
 goog.require('ol.extent');
 goog.require('ol.interaction.DragBox');
@@ -27,6 +26,12 @@ ol.interaction.DragZoom = function(opt_options) {
 
   var condition = goog.isDef(options.condition) ?
       options.condition : ol.events.condition.shiftKeyOnly;
+
+  /**
+   * @private
+   * @type {number}
+   */
+  this.duration_ = goog.isDef(options.duration) ? options.duration : 200;
 
   /**
    * @private
@@ -61,5 +66,5 @@ ol.interaction.DragZoom.prototype.onBoxEnd = function() {
   goog.asserts.assert(goog.isDef(size), 'size should be defined');
   ol.interaction.Interaction.zoom(map, view,
       view.getResolutionForExtent(extent, size),
-      center, ol.DRAGZOOM_ANIMATION_DURATION);
+      center, this.duration_);
 };
