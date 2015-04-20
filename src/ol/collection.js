@@ -76,10 +76,6 @@ ol.CollectionProperty = {
  * Collection; they trigger events on the appropriate object, not on the
  * Collection as a whole.
  *
- * Because a Collection is itself an {@link ol.Object}, it can be bound to any
- * other Object or Collection such that a change in one will automatically be
- * reflected in the other.
- *
  * @constructor
  * @extends {ol.Object}
  * @fires ol.CollectionEvent
