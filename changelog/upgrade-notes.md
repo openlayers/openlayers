@@ -147,6 +147,10 @@ The return value of `ol.tilegrid.TileGrid#getTileSize()` will now be an `ol.Size
 
 When finishing a draw, the `drawend` event is now dispatched before the feature is inserted to either the source or the collection. This change allows application code to finish setting up the feature.
 
+#### Misc.
+
+If you compile your application together with the library and use the `ol.feature.FeatureStyleFunction` type annotation (this should be extremely rare), the type is now named `ol.FeatureStyleFunction`.
+
 ### v3.4.0
 
 There should be nothing special required when upgrading from v3.3.0 to v3.4.0.
