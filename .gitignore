@@ -1,5 +1,6 @@
 *.pyc
 /build/
+/examples/index.js
 /node_modules/
 /dist/
 /coverage/
