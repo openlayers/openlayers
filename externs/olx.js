@@ -2768,6 +2768,110 @@ olx.interaction.SelectOptions.prototype.filter;
 
 
 /**
+ * @typedef {{addCondition: (ol.events.ConditionType|undefined),
+ *     condition: (ol.events.ConditionType|undefined),
+ *     layers: (Array.<ol.layer.Layer>|function(ol.layer.Layer): boolean|undefined),
+ *     style: (ol.style.Style|Array.<ol.style.Style>|ol.style.StyleFunction|undefined),
+ *     boxStyle: (ol.style.Style|undefined),
+ *     removeCondition: (ol.events.ConditionType|undefined),
+ *     toggleCondition: (ol.events.ConditionType|undefined),
+ *     multi: (boolean|undefined),
+ *     filter: (ol.interaction.SelectFilterFunction|undefined)}}
+ * @api
+ */
+olx.interaction.SelectBoxOptions;
+
+
+/**
+ * A function that takes an {@link ol.MapBrowserEvent} and returns a boolean
+ * to indicate whether that event should be handled.
+ * By default, this is {@link ol.events.condition.never}. Use this if you want
+ * to use different events for add and remove instead of `toggle`.
+ * @type {ol.events.ConditionType|undefined}
+ * @api
+ */
+olx.interaction.SelectBoxOptions.prototype.addCondition;
+
+
+/**
+ * A function that takes an {@link ol.MapBrowserEvent} and returns a boolean
+ * to indicate whether that event should be handled.
+ * This is the event for the selected features as a whole. By default, this is
+ * {@link ol.events.condition.singleClick}. Clicking on a feature selects that
+ * feature and removes any that were in the selection. Clicking outside any
+ * feature removes all from the selection.
+ * See `toggle`, `add`, `remove` options for adding/removing extra features to/
+ * from the selection.
+ * @type {ol.events.ConditionType|undefined}
+ * @api
+ */
+olx.interaction.SelectBoxOptions.prototype.condition;
+
+
+/**
+ * A list of layers from which features should be
+ * selected. Alternatively, a filter function can be provided. The
+ * function will be called for each layer in the map and should return
+ * `true` for layers that you want to be selectable. If the option is
+ * absent, all visible layers will be considered selectable.
+ * @type {Array.<ol.layer.Layer>|function(ol.layer.Layer): boolean|undefined}
+ * @api
+ */
+olx.interaction.SelectBoxOptions.prototype.layers;
+
+
+/**
+ * Style for the selected features (those in the FeatureOverlay).
+ * @type {ol.style.Style|Array.<ol.style.Style>|ol.style.StyleFunction|undefined}
+ * @api
+ */
+olx.interaction.SelectBoxOptions.prototype.style;
+
+
+/**
+ * Style for the select box.
+ * @type {ol.style.Style|undefined}
+ * @api
+ */
+olx.interaction.SelectBoxOptions.prototype.boxStyle;
+
+
+/**
+ * A function that takes an {@link ol.MapBrowserEvent} and returns a boolean
+ * to indicate whether that event should be handled.
+ * By default, this is {@link ol.events.condition.never}. Use this if you want
+ * to use different events for add and remove instead of `toggle`.
+ * @type {ol.events.ConditionType|undefined}
+ * @api
+ */
+olx.interaction.SelectBoxOptions.prototype.removeCondition;
+
+
+/**
+ * A function that takes an {@link ol.MapBrowserEvent} and returns a boolean
+ * to indicate whether that event should be handled.
+ * This is in addition to the `condition` event. By default,
+ * {@link ol.events.condition.shiftKeyOnly}, i.e. pressing `shift` as well as
+ * the `condition` event, adds that feature to the current selection if it is
+ * not currently selected, and removes it if it is.
+ * See `add` and `remove` if you want to use different events instead of a
+ * toggle.
+ * @type {ol.events.ConditionType|undefined}
+ * @api
+ */
+olx.interaction.SelectBoxOptions.prototype.toggleCondition;
+
+
+/**
+ * A function that takes an {@link ol.Feature} and an {@link ol.layer.Layer} and
+ * returns `true` if the feature may be selected or `false` otherwise.
+ * @type {ol.interaction.SelectFilterFunction|undefined}
+ * @api
+ */
+olx.interaction.SelectBoxOptions.prototype.filter;
+
+
+/**
  * Options for snap
  * @typedef {{
  *     features: (ol.Collection.<ol.Feature>|undefined),
