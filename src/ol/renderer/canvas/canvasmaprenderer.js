@@ -229,6 +229,8 @@ ol.renderer.canvas.Map.prototype.renderFrame = function(frameState) {
       continue;
     }
     if (layerRenderer.prepareFrame(frameState, layerState)) {
+      // As soon as a vector layer on the map has wrapX set to true, we make
+      // feature overlays wrap the x-axis too.
       if (layer instanceof ol.layer.Vector && layer.getSource().getWrapX()) {
         wrapX = true;
       }
