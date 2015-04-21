@@ -3,6 +3,8 @@
 goog.provide('ol.interaction.Interaction');
 goog.provide('ol.interaction.InteractionProperty');
 
+goog.require('goog.asserts');
+goog.require('ol.Collection');
 goog.require('ol.MapBrowserEvent');
 goog.require('ol.Object');
 goog.require('ol.animation');
@@ -45,15 +47,57 @@ ol.interaction.Interaction = function(options) {
    */
   this.map_ = null;
 
-  this.setActive(true);
+  /** @type {!ol.Collection.<ol.interaction.Interaction>} */
+  var interactions;
+  if (!goog.isDef(options.interactions)) {
+    interactions = new ol.Collection();
+  } else if (goog.isArray(options.interactions)) {
+    interactions = new ol.Collection(options.interactions);
+  } else {
+    goog.asserts.assertInstanceof(options.interactions, ol.Collection);
+    interactions = options.interactions;
+  }
+
+  /**
+   * @private
+   * @type {!ol.Collection.<ol.interaction.Interaction>}
+   */
+  this.interactions_ = interactions;
 
   /**
    * @type {function(ol.MapBrowserEvent):boolean}
    */
-  this.handleEvent = options.handleEvent;
+  this.handleEvent = goog.isDef(options.handleEvent) ?
+      options.handleEvent : ol.interaction.Interaction.handleEvent;
+
+  this.setActive(true);
 
 };
 goog.inherits(ol.interaction.Interaction, ol.Object);
+
+
+/**
+ * Relay the map browser event to the inner interactions.
+ * @param {ol.MapBrowserEvent} mapBrowserEvent Map browser event.
+ * @return {boolean} `false` if one of the inner interactions returned `false`,
+ *     otherwise `true`.
+ * @this {ol.interaction.Interaction}
+ * @api
+ */
+ol.interaction.Interaction.handleEvent = function(mapBrowserEvent) {
+  var interactionsArray = this.interactions_.getArray();
+  for (var i = interactionsArray.length - 1; i >= 0; i--) {
+    var interaction = interactionsArray[i];
+    if (!interaction.getActive()) {
+      continue;
+    }
+    var cont = interaction.handleEvent(mapBrowserEvent);
+    if (!cont) {
+      return false;
+    }
+  }
+  return true;
+};
 
 
 /**
@@ -64,6 +108,17 @@ goog.inherits(ol.interaction.Interaction, ol.Object);
 ol.interaction.Interaction.prototype.getActive = function() {
   return /** @type {boolean} */ (
       this.get(ol.interaction.InteractionProperty.ACTIVE));
+};
+
+
+/**
+ * Return the collection of interactions.
+ * @return {ol.Collection.<ol.interaction.Interaction>} The collection of
+ *     interactions.
+ * @api
+ */
+ol.interaction.Interaction.prototype.getInteractions = function() {
+  return this.interactions_;
 };
 
 
@@ -95,6 +150,13 @@ ol.interaction.Interaction.prototype.setActive = function(active) {
  */
 ol.interaction.Interaction.prototype.setMap = function(map) {
   this.map_ = map;
+  this.interactions_.forEach(
+      /**
+       * @param {ol.interaction.Interaction} interaction Interaction.
+       */
+      function(interaction) {
+        interaction.setMap(map);
+      });
 };
 
 

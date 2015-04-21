@@ -148,18 +148,27 @@ olx.GraticuleOptions.prototype.targetSize;
 
 /**
  * Object literal with config options for interactions.
- * @typedef {{handleEvent: function(ol.MapBrowserEvent):boolean}}
+ * @typedef {{interactions: (Array.<ol.interaction.Interaction>|ol.Collection.<ol.interaction.Interaction>|undefined),
+ *     handleEvent: (function(ol.MapBrowserEvent):boolean|undefined)}}
  * @api
  */
 olx.interaction.InteractionOptions;
 
 
 /**
+ * Array or collection of interactions. Use when creating interactions as
+ * composition of other interactions.
+ * @type {Array.<ol.interaction.Interaction>|ol.Collection.<ol.interaction.Interaction>|undefined}
+ * @api
+ */
+olx.interaction.InteractionOptions.prototype.interactions;
+
+/**
  * Method called by the map to notify the interaction that a browser event was
  * dispatched to the map. The function may return `false` to prevent the
  * propagation of the event to other interactions in the map's interactions
  * chain. Required.
- * @type {function(ol.MapBrowserEvent):boolean}
+ * @type {function(ol.MapBrowserEvent):boolean|undefined}
  * @api
  */
 olx.interaction.InteractionOptions.prototype.handleEvent;
