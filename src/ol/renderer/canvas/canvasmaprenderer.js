@@ -108,7 +108,7 @@ ol.renderer.canvas.Map.prototype.dispatchComposeEvent_ =
     var projectionExtent = projection.getExtent();
     var resolution = viewState.resolution;
     var rotation = viewState.rotation;
-    var repeatReplay = (wrapX && projection.isGlobal() &&
+    var repeatReplay = (wrapX && projection.canWrapX() &&
         !ol.extent.containsExtent(projectionExtent, extent));
     var skippedFeaturesHash = {};
 

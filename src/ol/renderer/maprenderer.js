@@ -157,7 +157,7 @@ ol.renderer.Map.prototype.forEachFeatureAtCoordinate =
   var projection = viewState.projection;
 
   var translatedX;
-  if (projection.isGlobal()) {
+  if (projection.canWrapX()) {
     var projectionExtent = projection.getExtent();
     var worldWidth = ol.extent.getWidth(projectionExtent);
     var x = coordinate[0];
