@@ -55,7 +55,7 @@ describe('ol.renderer.canvas.Map', function() {
       };
       renderer.renderFrame(frameState);
       // precompose without wrapX
-      expect(spy.getCall(0).args[2]).to.be(undefined);
+      expect(spy.getCall(0).args[2]).to.be(false);
       // postcompose with wrapX
       expect(spy.getCall(1).args[2]).to.be(true);
     });

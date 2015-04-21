@@ -86,7 +86,7 @@ ol.renderer.canvas.VectorLayer.prototype.composeFrame =
   var vectorSource = this.getLayer().getSource();
   goog.asserts.assertInstanceof(vectorSource, ol.source.Vector);
 
-  var transform = this.getTransform(frameState);
+  var transform = this.getTransform(frameState, 0);
 
   this.dispatchPreComposeEvent(context, frameState, transform);
 

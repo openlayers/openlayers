@@ -93,11 +93,11 @@ ol.renderer.canvas.Map.prototype.createLayerRenderer = function(layer) {
 /**
  * @param {ol.render.EventType} type Event type.
  * @param {olx.FrameState} frameState Frame state.
- * @param {boolean=} opt_wrapX Wrap the x-axis.
+ * @param {boolean} wrapX Wrap the x-axis.
  * @private
  */
 ol.renderer.canvas.Map.prototype.dispatchComposeEvent_ =
-    function(type, frameState, opt_wrapX) {
+    function(type, frameState, wrapX) {
   var map = this.getMap();
   var context = this.context_;
   if (map.hasListener(type)) {
@@ -108,10 +108,11 @@ ol.renderer.canvas.Map.prototype.dispatchComposeEvent_ =
     var projectionExtent = projection.getExtent();
     var resolution = viewState.resolution;
     var rotation = viewState.rotation;
-    var repeatReplay = (opt_wrapX && projection.isGlobal() &&
+    var repeatReplay = (wrapX && projection.isGlobal() &&
         !ol.extent.containsExtent(projectionExtent, extent));
+    var skippedFeaturesHash = {};
 
-    var transform = this.getTransform(frameState);
+    var transform = this.getTransform(frameState, 0);
 
     var tolerance = ol.renderer.vector.getTolerance(resolution, pixelRatio);
     var replayGroup = new ol.render.canvas.ReplayGroup(tolerance,
@@ -128,7 +129,8 @@ ol.renderer.canvas.Map.prototype.dispatchComposeEvent_ =
 
     replayGroup.finish();
     if (!replayGroup.isEmpty()) {
-      replayGroup.replay(context, pixelRatio, transform, rotation, {});
+      replayGroup.replay(context, pixelRatio, transform, rotation,
+          skippedFeaturesHash);
 
       if (repeatReplay) {
         var startX = extent[0];
@@ -137,7 +139,8 @@ ol.renderer.canvas.Map.prototype.dispatchComposeEvent_ =
         while (startX < projectionExtent[0]) {
           --world;
           transform = this.getTransform(frameState, worldWidth * world);
-          replayGroup.replay(context, pixelRatio, transform, rotation, {});
+          replayGroup.replay(context, pixelRatio, transform, rotation,
+              skippedFeaturesHash);
           startX += worldWidth;
         }
         world = 0;
@@ -145,7 +148,8 @@ ol.renderer.canvas.Map.prototype.dispatchComposeEvent_ =
         while (startX > projectionExtent[2]) {
           ++world;
           transform = this.getTransform(frameState, worldWidth * ++world);
-          replayGroup.replay(context, pixelRatio, transform, rotation, {});
+          replayGroup.replay(context, pixelRatio, transform, rotation,
+              skippedFeaturesHash);
           startX -= worldWidth;
         }
       }
@@ -158,16 +162,14 @@ ol.renderer.canvas.Map.prototype.dispatchComposeEvent_ =
 
 /**
  * @param {olx.FrameState} frameState Frame state.
- * @param {number=} opt_offsetX Offset on the x-axis in view coordinates.
+ * @param {number} offsetX Offset on the x-axis in view coordinates.
  * @protected
  * @return {!goog.vec.Mat4.Number} Transform.
  */
-ol.renderer.canvas.Map.prototype.getTransform =
-    function(frameState, opt_offsetX) {
+ol.renderer.canvas.Map.prototype.getTransform = function(frameState, offsetX) {
   var pixelRatio = frameState.pixelRatio;
   var viewState = frameState.viewState;
   var resolution = viewState.resolution;
-  var offsetX = goog.isDef(opt_offsetX) ? opt_offsetX : 0;
   return ol.vec.Mat4.makeTransform2D(this.transform_,
       this.canvas_.width / 2, this.canvas_.height / 2,
       pixelRatio / resolution, -pixelRatio / resolution,
@@ -210,7 +212,7 @@ ol.renderer.canvas.Map.prototype.renderFrame = function(frameState) {
 
   this.calculateMatrices2D(frameState);
 
-  this.dispatchComposeEvent_(ol.render.EventType.PRECOMPOSE, frameState);
+  this.dispatchComposeEvent_(ol.render.EventType.PRECOMPOSE, frameState, false);
 
   var layerStatesArray = frameState.layerStatesArray;
   var viewResolution = frameState.viewState.resolution;
