@@ -112,6 +112,8 @@ ol.geom.Geometry.prototype.closestPointXY = goog.abstractMethod;
 
 
 /**
+ * Return the closest point of the geometry to the passed point as
+ * {@link ol.Coordinate coordinate}.
  * @param {ol.Coordinate} point Point.
  * @param {ol.Coordinate=} opt_closestPoint Closest point.
  * @return {ol.Coordinate} Closest point.

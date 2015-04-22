@@ -63,6 +63,7 @@ goog.inherits(ol.geom.LineString, ol.geom.SimpleGeometry);
 
 
 /**
+ * Append the passed coordinate to the coordinates of the linestring.
  * @param {ol.Coordinate} coordinate Coordinate.
  * @api stable
  */
@@ -155,6 +156,7 @@ ol.geom.LineString.prototype.getCoordinateAtM = function(m, opt_extrapolate) {
 
 
 /**
+ * Return the coordinates of the linestring.
  * @return {Array.<ol.Coordinate>} Coordinates.
  * @api stable
  */
@@ -165,6 +167,7 @@ ol.geom.LineString.prototype.getCoordinates = function() {
 
 
 /**
+ * Return the length of the linestring on projected plane.
  * @return {number} Length (on projected plane).
  * @api stable
  */
@@ -225,6 +228,7 @@ ol.geom.LineString.prototype.intersectsExtent = function(extent) {
 
 
 /**
+ * Set the coordinates of the linestring.
  * @param {Array.<ol.Coordinate>} coordinates Coordinates.
  * @param {ol.geom.GeometryLayout=} opt_layout Layout.
  * @api stable

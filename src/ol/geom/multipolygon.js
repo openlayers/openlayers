@@ -85,6 +85,7 @@ goog.inherits(ol.geom.MultiPolygon, ol.geom.SimpleGeometry);
 
 
 /**
+ * Append the passed polygon to this multipolygon.
  * @param {ol.geom.Polygon} polygon Polygon.
  * @api stable
  */
@@ -154,6 +155,7 @@ ol.geom.MultiPolygon.prototype.containsXY = function(x, y) {
 
 
 /**
+ * Return the area of the multipolygon on projected plane.
  * @return {number} Area (on projected plane).
  * @api stable
  */
@@ -216,6 +218,7 @@ ol.geom.MultiPolygon.prototype.getFlatInteriorPoints = function() {
 
 
 /**
+ * Return the interior points as {@link ol.geom.MultiPoint multipoint}.
  * @return {ol.geom.MultiPoint} Interior points.
  * @api stable
  */
@@ -267,6 +270,7 @@ ol.geom.MultiPolygon.prototype.getSimplifiedGeometryInternal =
 
 
 /**
+ * Return the polygon at the specified index.
  * @param {number} index Index.
  * @return {ol.geom.Polygon} Polygon.
  * @api stable
@@ -300,6 +304,7 @@ ol.geom.MultiPolygon.prototype.getPolygon = function(index) {
 
 
 /**
+ * Return the polygons of this multipolygon.
  * @return {Array.<ol.geom.Polygon>} Polygons.
  * @api stable
  */
@@ -348,6 +353,7 @@ ol.geom.MultiPolygon.prototype.intersectsExtent = function(extent) {
 
 
 /**
+ * Set the coordinates of the multipolygon.
  * @param {Array.<Array.<Array.<ol.Coordinate>>>} coordinates Coordinates.
  * @param {ol.geom.GeometryLayout=} opt_layout Layout.
  * @api stable

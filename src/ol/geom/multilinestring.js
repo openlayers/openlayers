@@ -56,6 +56,7 @@ goog.inherits(ol.geom.MultiLineString, ol.geom.SimpleGeometry);
 
 
 /**
+ * Append the passed linestring to the multilinestring.
  * @param {ol.geom.LineString} lineString LineString.
  * @api stable
  */
@@ -143,6 +144,7 @@ ol.geom.MultiLineString.prototype.getCoordinateAtM =
 
 
 /**
+ * Return the coordinates of the multilinestring.
  * @return {Array.<Array.<ol.Coordinate>>} Coordinates.
  * @api stable
  */
@@ -161,6 +163,7 @@ ol.geom.MultiLineString.prototype.getEnds = function() {
 
 
 /**
+ * Return the linestring at the specified index.
  * @param {number} index Index.
  * @return {ol.geom.LineString} LineString.
  * @api stable
@@ -179,6 +182,7 @@ ol.geom.MultiLineString.prototype.getLineString = function(index) {
 
 
 /**
+ * Return the linestrings of this multilinestring.
  * @return {Array.<ol.geom.LineString>} LineStrings.
  * @api stable
  */
@@ -259,6 +263,7 @@ ol.geom.MultiLineString.prototype.intersectsExtent = function(extent) {
 
 
 /**
+ * Set the coordinates of the multilinestring.
  * @param {Array.<Array.<ol.Coordinate>>} coordinates Coordinates.
  * @param {ol.geom.GeometryLayout=} opt_layout Layout.
  * @api stable
