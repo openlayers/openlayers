@@ -79,6 +79,7 @@ ol.geom.LinearRing.prototype.closestPointXY =
 
 
 /**
+ * Return the area of the linear ring on projected plane.
  * @return {number} Area (on projected plane).
  * @api stable
  */
@@ -89,6 +90,7 @@ ol.geom.LinearRing.prototype.getArea = function() {
 
 
 /**
+ * Return the coordinates of the linear ring.
  * @return {Array.<ol.Coordinate>} Coordinates.
  * @api stable
  */
@@ -124,6 +126,7 @@ ol.geom.LinearRing.prototype.getType = function() {
 
 
 /**
+ * Set the coordinates of the linear ring.
  * @param {Array.<ol.Coordinate>} coordinates Coordinates.
  * @param {ol.geom.GeometryLayout=} opt_layout Layout.
  * @api stable
