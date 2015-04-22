@@ -42,6 +42,16 @@ ol.size.equals = function(a, b) {
 
 
 /**
+ * Determines if a size has a positive area.
+ * @param {ol.Size} size The size to test.
+ * @return {boolean} The size has a positive area.
+ */
+ol.size.hasArea = function(size) {
+  return size[0] > 0 && size[1] > 0;
+};
+
+
+/**
  * Returns a size scaled by a ratio. The result will be an array of integers.
  * @param {ol.Size} size Size.
  * @param {number} ratio Ratio.

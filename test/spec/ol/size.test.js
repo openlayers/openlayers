@@ -3,7 +3,7 @@ goog.provide('ol.test.size');
 
 describe('ol.size', function() {
 
-  describe('#buffer()', function() {
+  describe('buffer()', function() {
 
     it('buffers a size', function() {
       var size = [50, 75];
@@ -20,7 +20,21 @@ describe('ol.size', function() {
 
   });
 
-  describe('#scale()', function() {
+  describe('hasArea()', function() {
+
+    it('determines if a size has a positive area', function() {
+      expect(ol.size.hasArea([50, 75])).to.equal(true);
+      expect(ol.size.hasArea([0, 75])).to.equal(false);
+      expect(ol.size.hasArea([50, 0])).to.equal(false);
+      expect(ol.size.hasArea([0, 0])).to.equal(false);
+      expect(ol.size.hasArea([-1, 75])).to.equal(false);
+      expect(ol.size.hasArea([50, -1])).to.equal(false);
+      expect(ol.size.hasArea([-1, -1])).to.equal(false);
+    });
+
+  });
+
+  describe('scale()', function() {
 
     it('scales a size and rounds the result', function() {
       var size = [50, 75];
@@ -37,7 +51,7 @@ describe('ol.size', function() {
 
   });
 
-  describe('#toSize()', function() {
+  describe('toSize()', function() {
 
     it('creates a size array from a number', function() {
       var size = ol.size.toSize(512);
