@@ -171,6 +171,9 @@ ol.interaction.Pointer.handleMoveEvent = goog.nullFunction;
 
 
 /**
+ * Handles the {@link ol.MapBrowserEvent map browser event} and may call into
+ * other functions, if event sequences like e.g. 'drag' or 'down-up' etc. are
+ * detected.
  * @param {ol.MapBrowserEvent} mapBrowserEvent Map browser event.
  * @return {boolean} `false` to stop event propagation.
  * @this {ol.interaction.Pointer}

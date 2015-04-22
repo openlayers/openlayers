@@ -136,6 +136,8 @@ ol.interaction.DragAndDrop.prototype.handleResult_ = function(file, result) {
 
 
 /**
+ * Handles the {@link ol.MapBrowserEvent map browser event} unconditionally and
+ * neither prevents the browser default nor stops event propagation.
  * @param {ol.MapBrowserEvent} mapBrowserEvent Map browser event.
  * @return {boolean} `false` to stop event propagation.
  * @this {ol.interaction.DragAndDrop}

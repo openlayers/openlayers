@@ -187,6 +187,8 @@ ol.interaction.Select.prototype.getFeatures = function() {
 
 
 /**
+ * Handles the {@link ol.MapBrowserEvent map browser event} and may change the
+ * selected state of features.
  * @param {ol.MapBrowserEvent} mapBrowserEvent Map browser event.
  * @return {boolean} `false` to stop event propagation.
  * @this {ol.interaction.Select}
