@@ -31,12 +31,17 @@ var vectorSource = new ol.source.Vector({
         '&geometryType=esriGeometryEnvelope&inSR=102100&outFields=*' +
         '&outSR=102100';
     $.ajax({url: url, dataType: 'jsonp', success: function(response) {
-      // dataProjection will be read from document
-      var features = esrijsonFormat.readFeatures(response, {
-        featureProjection: projection
-      });
-      if (features.length > 0) {
-        vectorSource.addFeatures(features);
+      if (response.error) {
+        alert(response.error.message + '\n' +
+            response.error.details.join('\n'));
+      } else {
+        // dataProjection will be read from document
+        var features = esrijsonFormat.readFeatures(response, {
+          featureProjection: projection
+        });
+        if (features.length > 0) {
+          vectorSource.addFeatures(features);
+        }
       }
     }});
   },
