@@ -215,7 +215,7 @@ ol.webgl.Context.prototype.getHitDetectionFramebuffer = function() {
 
 /**
  * Get shader from the cache if it's in the cache. Otherwise, create
- * the WebGL shader, compile it, and add entry to cache.
+ * the WebGL shader, compile it, and add entry to cache.
  * @param {ol.webgl.Shader} shaderObject Shader object.
  * @return {WebGLShader} Shader.
  */
@@ -246,7 +246,7 @@ ol.webgl.Context.prototype.getShader = function(shaderObject) {
 
 /**
  * Get the program from the cache if it's in the cache. Otherwise create
- * the WebGL program, attach the shaders to it, and add an entry to the
+ * the WebGL program, attach the shaders to it, and add an entry to the
  * cache.
  * @param {ol.webgl.shader.Fragment} fragmentShaderObject Fragment shader.
  * @param {ol.webgl.shader.Vertex} vertexShaderObject Vertex shader.

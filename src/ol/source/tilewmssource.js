@@ -298,7 +298,7 @@ ol.source.TileWMS.prototype.getTilePixelSize =
 
 
 /**
- * Return the URLs used for this WMS source.
+ * Return the URLs used for this WMS source.
  * @return {!Array.<string>} URLs.
  * @api stable
  */

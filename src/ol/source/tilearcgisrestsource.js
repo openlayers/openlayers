@@ -158,7 +158,7 @@ ol.source.TileArcGISRest.prototype.getTilePixelSize =
 
 
 /**
- * Return the URLs used for this ArcGIS source.
+ * Return the URLs used for this ArcGIS source.
  * @return {!Array.<string>} URLs.
  * @api stable
  */

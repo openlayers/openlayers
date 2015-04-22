@@ -159,7 +159,7 @@ As a test, you can use the following HTML file to verify that your custom build 
 
 Closure allows you to define constants that can be set at compile time. The `define` config property above sets four `goog` properties for the Closure library. The OpenLayers 3 code also has defined values you can set.
 
-Setting some of these to `false` means that the portions of the code relating to this setting become "dead", i.e. are never executed. As Closure Compiler's `ADVANCED` mode removes dead code, this makes the size of the advanced compiled file smaller.
+Setting some of these to `false` means that the portions of the code relating to this setting become "dead", i.e. are never executed. As Closure Compiler's `ADVANCED` mode removes dead code, this makes the size of the advanced compiled file smaller.
 
 You might have noticed that the build file you've just created is considerably smaller than the full build, but it can be reduced further. This is because all three renderers and all layer types are included by default. We only need one renderer, and only need the tile layer, so can exclude the others by setting these properties with `define`s. So add the following to the define section of the config above:
 ```
