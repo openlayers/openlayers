@@ -57,6 +57,7 @@ goog.inherits(ol.interaction.Interaction, ol.Object);
 
 
 /**
+ * Return whether the interaction is currently active.
  * @return {boolean} `true` if the interaction is active, `false` otherwise.
  * @observable
  * @api
