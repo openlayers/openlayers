@@ -79,7 +79,8 @@ ol.source.Vector = function(opt_options) {
     attributions: options.attributions,
     logo: options.logo,
     projection: undefined,
-    state: ol.source.State.READY
+    state: ol.source.State.READY,
+    wrapX: goog.isDef(options.wrapX) ? options.wrapX : true
   });
 
   /**

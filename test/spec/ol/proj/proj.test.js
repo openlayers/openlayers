@@ -138,6 +138,46 @@ describe('ol.proj', function() {
     });
   });
 
+  describe('canWrapX()', function() {
+
+    it('requires an extent for allowing wrapX', function() {
+      var proj = new ol.proj.Projection({
+        code: 'foo',
+        global: true
+      });
+      expect(proj.canWrapX()).to.be(false);
+      proj.setExtent([1, 2, 3, 4]);
+      expect(proj.canWrapX()).to.be(true);
+      proj = new ol.proj.Projection({
+        code: 'foo',
+        global: true,
+        extent: [1, 2, 3, 4]
+      });
+      expect(proj.canWrapX()).to.be(true);
+      proj.setExtent(null);
+      expect(proj.canWrapX()).to.be(false);
+    });
+
+    it('requires global to be true for allowing wrapX', function() {
+      var proj = new ol.proj.Projection({
+        code: 'foo',
+        extent: [1, 2, 3, 4]
+      });
+      expect(proj.canWrapX()).to.be(false);
+      proj.setGlobal(true);
+      expect(proj.canWrapX()).to.be(true);
+      proj = new ol.proj.Projection({
+        code: 'foo',
+        global: true,
+        extent: [1, 2, 3, 4]
+      });
+      expect(proj.canWrapX()).to.be(true);
+      proj.setGlobal(false);
+      expect(proj.canWrapX()).to.be(false);
+    });
+
+  });
+
   describe('transformExtent()', function() {
 
     it('transforms an extent given projection identifiers', function() {

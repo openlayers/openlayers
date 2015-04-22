@@ -121,6 +121,13 @@ ol.proj.Projection = function(options) {
    */
   this.global_ = goog.isDef(options.global) ? options.global : false;
 
+
+  /**
+   * @private
+   * @type {boolean}
+   */
+  this.canWrapX_ = this.global_ && !goog.isNull(this.extent_);
+
   /**
   * @private
   * @type {function(number, ol.Coordinate):number}
@@ -169,6 +176,14 @@ ol.proj.Projection = function(options) {
     }
   }
 
+};
+
+
+/**
+ * @return {boolean} The projection is suitable for wrapping the x-axis
+ */
+ol.proj.Projection.prototype.canWrapX = function() {
+  return this.canWrapX_;
 };
 
 
@@ -255,6 +270,7 @@ ol.proj.Projection.prototype.isGlobal = function() {
 */
 ol.proj.Projection.prototype.setGlobal = function(global) {
   this.global_ = global;
+  this.canWrapX_ = global && !goog.isNull(this.extent_);
 };
 
 
@@ -281,6 +297,7 @@ ol.proj.Projection.prototype.setDefaultTileGrid = function(tileGrid) {
  */
 ol.proj.Projection.prototype.setExtent = function(extent) {
   this.extent_ = extent;
+  this.canWrapX_ = this.global_ && !goog.isNull(extent);
 };
 
 

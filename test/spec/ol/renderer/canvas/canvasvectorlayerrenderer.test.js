@@ -5,14 +5,10 @@ describe('ol.renderer.canvas.VectorLayer', function() {
   describe('constructor', function() {
 
     it('creates a new instance', function() {
-      var map = new ol.Map({
-        target: document.createElement('div')
-      });
       var layer = new ol.layer.Vector({
         source: new ol.source.Vector()
       });
-      var renderer = new ol.renderer.canvas.VectorLayer(map.getRenderer(),
-          layer);
+      var renderer = new ol.renderer.canvas.VectorLayer(layer);
       expect(renderer).to.be.a(ol.renderer.canvas.VectorLayer);
     });
 
@@ -59,27 +55,24 @@ describe('ol.renderer.canvas.VectorLayer', function() {
   });
 
   describe('#forEachFeatureAtCoordinate', function() {
-    var renderer;
+    var layer, renderer;
 
     beforeEach(function() {
-      var map = new ol.Map({});
-      var layer = new ol.layer.Vector({
+      layer = new ol.layer.Vector({
         source: new ol.source.Vector()
       });
-      renderer = new ol.renderer.canvas.VectorLayer(
-          map.getRenderer(), layer);
+      renderer = new ol.renderer.canvas.VectorLayer(layer);
       var replayGroup = {};
       renderer.replayGroup_ = replayGroup;
       replayGroup.forEachFeatureAtCoordinate = function(coordinate,
           resolution, rotation, skippedFeaturesUids, callback) {
-        var geometry = new ol.geom.Point([0, 0]);
         var feature = new ol.Feature();
-        callback(geometry, feature);
-        callback(geometry, feature);
+        callback(feature);
+        callback(feature);
       };
     });
 
-    it('calls callback once per feature', function() {
+    it('calls callback once per feature with a layer as 2nd arg', function() {
       var spy = sinon.spy();
       var coordinate = [0, 0];
       var frameState = {
@@ -92,6 +85,7 @@ describe('ol.renderer.canvas.VectorLayer', function() {
       renderer.forEachFeatureAtCoordinate(
           coordinate, frameState, spy, undefined);
       expect(spy.callCount).to.be(1);
+      expect(spy.getCall(0).args[1]).to.equal(layer);
     });
   });
 
