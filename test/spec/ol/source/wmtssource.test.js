@@ -162,6 +162,53 @@ describe('ol.source.WMTS', function() {
              'Demographics/USA_Population_Density/MapServer/WMTS?');
         });
   });
+
+  describe('#getUrls', function() {
+
+    var sourceOptions;
+    var source;
+
+    beforeEach(function() {
+      sourceOptions = {
+        layer: 'layer',
+        style: 'default',
+        matrixSet: 'foo',
+        requestEncoding: 'REST',
+        tileGrid: new ol.tilegrid.WMTS({
+          origin: [0, 0],
+          resolutions: [],
+          matrixIds: []
+        })
+      };
+    });
+
+    describe('using a "url" option', function() {
+      beforeEach(function() {
+        sourceOptions.url = 'some_wmts_url';
+        source = new ol.source.WMTS(sourceOptions);
+      });
+
+      it('returns the WMTS URLs', function() {
+        var urls = source.getUrls();
+        expect(urls).to.be.eql(['some_wmts_url']);
+      });
+
+    });
+
+    describe('using a "urls" option', function() {
+      beforeEach(function() {
+        sourceOptions.urls = ['some_wmts_url1', 'some_wmts_url2'];
+        source = new ol.source.WMTS(sourceOptions);
+      });
+
+      it('returns the WMTS URLs', function() {
+        var urls = source.getUrls();
+        expect(urls).to.be.eql(['some_wmts_url1', 'some_wmts_url2']);
+      });
+
+    });
+
+  });
 });
 
 goog.require('ol.format.WMTSCapabilities');
