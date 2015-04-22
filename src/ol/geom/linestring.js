@@ -14,6 +14,7 @@ goog.require('ol.geom.flat.intersectsextent');
 goog.require('ol.geom.flat.length');
 goog.require('ol.geom.flat.segments');
 goog.require('ol.geom.flat.simplify');
+goog.require('ol.geom.flat.splice');
 
 
 
@@ -221,6 +222,39 @@ ol.geom.LineString.prototype.intersectsExtent = function(extent) {
   return ol.geom.flat.intersectsextent.lineString(
       this.flatCoordinates, 0, this.flatCoordinates.length, this.stride,
       extent);
+};
+
+
+/**
+ * Modifies the geometry's coordinates in place.
+ *
+ * ```js
+ * var lineString = new ol.geom.LineString(coords);
+ *
+ * // to add coordinates at index, do:
+ * lineString.spliceCoordinates(index, 0, [newCoord]);
+ *
+ * // to delete coordinate at index, do:
+ * lineString.spliceCoordinates(index, 1);
+ *
+ * // to replace coordinate at index, do:
+ * lineString.spliceCoordinates(index, 1, [newCoord]);
+ * ```
+ *
+ * @param {number} start Index at which to start changing the coordinates.
+ * @param {number} deleteCount Delete An integer indicating the number of old
+ *    coordinates to remove. If `deleteCount` is `0`, no elements are removed.
+ *    In this case, you should specify at least one new element.
+ * @param {Array.<ol.Coordinate>=} opt_coordinates The coordinates to add.
+ *    If you don't specify any elements, `spliceCoordinates()` will only remove
+ *    elements.
+ * @api
+ */
+ol.geom.LineString.prototype.spliceCoordinates =
+    function(start, deleteCount, opt_coordinates) {
+  ol.geom.flat.splice.coordinates(this.flatCoordinates,
+      this.stride, start, deleteCount, opt_coordinates);
+  this.changed();
 };
 
 

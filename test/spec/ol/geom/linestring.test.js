@@ -44,6 +44,13 @@ describe('ol.geom.LineString', function() {
       expect(lineString.getCoordinates()).to.eql([[1, 2], [3, 4]]);
     });
 
+    it('can splice coordinates', function() {
+      lineString.spliceCoordinates(0, 0, [[1, 2]]);
+      expect(lineString.getCoordinates()).to.eql([[1, 2]]);
+      lineString.spliceCoordinates(0, 1);
+      expect(lineString.getCoordinates()).to.be.empty();
+    });
+
   });
 
   describe('construct with 2D coordinates', function() {
