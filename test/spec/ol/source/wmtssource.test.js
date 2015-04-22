@@ -209,6 +209,32 @@ describe('ol.source.WMTS', function() {
     });
 
   });
+
+  describe('#getRequestEncoding', function() {
+
+    var source;
+
+    beforeEach(function() {
+      source = new ol.source.WMTS({
+        layer: 'layer',
+        style: 'default',
+        matrixSet: 'foo',
+        requestEncoding: 'REST',
+        tileGrid: new ol.tilegrid.WMTS({
+          origin: [0, 0],
+          resolutions: [],
+          matrixIds: []
+        })
+      });
+    });
+
+    it('returns the request encoding', function() {
+      var requestEncoding = source.getRequestEncoding();
+      expect(requestEncoding).to.be.eql('REST');
+    });
+
+  });
+
 });
 
 goog.require('ol.format.WMTSCapabilities');
