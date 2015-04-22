@@ -79,7 +79,8 @@ ol.source.Vector = function(opt_options) {
     attributions: options.attributions,
     logo: options.logo,
     projection: undefined,
-    state: ol.source.State.READY
+    state: ol.source.State.READY,
+    wrapX: goog.isDef(options.wrapX) ? options.wrapX : true
   });
 
   /**
@@ -145,12 +146,6 @@ ol.source.Vector = function(opt_options) {
   if (goog.isDef(options.features)) {
     this.addFeaturesInternal(options.features);
   }
-
-  /**
-   * @type {boolean}
-   * @private
-   */
-  this.wrapX_ = goog.isDef(options.wrapX) ? options.wrapX : true;
 
 };
 goog.inherits(ol.source.Vector, ol.source.Source);
@@ -567,14 +562,6 @@ ol.source.Vector.prototype.getExtent = function() {
 ol.source.Vector.prototype.getFeatureById = function(id) {
   var feature = this.idIndex_[id.toString()];
   return goog.isDef(feature) ? feature : null;
-};
-
-
-/**
- * @return {boolean}
- */
-ol.source.Vector.prototype.getWrapX = function() {
-  return this.wrapX_;
 };
 
 

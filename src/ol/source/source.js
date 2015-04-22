@@ -24,7 +24,8 @@ ol.source.State = {
  * @typedef {{attributions: (Array.<ol.Attribution>|undefined),
  *            logo: (string|olx.LogoOptions|undefined),
  *            projection: ol.proj.ProjectionLike,
- *            state: (ol.source.State|undefined)}}
+ *            state: (ol.source.State|undefined),
+ *            wrapX: (boolean|undefined)}}
  */
 ol.source.SourceOptions;
 
@@ -71,6 +72,12 @@ ol.source.Source = function(options) {
    */
   this.state_ = goog.isDef(options.state) ?
       options.state : ol.source.State.READY;
+
+  /**
+   * @private
+   * @type {boolean|undefined}
+   */
+  this.wrapX_ = options.wrapX;
 
 };
 goog.inherits(ol.source.Source, ol.Object);
@@ -132,6 +139,14 @@ ol.source.Source.prototype.getResolutions = goog.abstractMethod;
  */
 ol.source.Source.prototype.getState = function() {
   return this.state_;
+};
+
+
+/**
+ * @return {boolean|undefined} Wrap X.
+ */
+ol.source.Source.prototype.getWrapX = function() {
+  return this.wrapX_;
 };
 
 

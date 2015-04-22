@@ -41,6 +41,7 @@ ol.renderer.Map = function(container, map) {
 
   goog.base(this);
 
+
   /**
    * @private
    * @type {ol.Map}
@@ -156,25 +157,20 @@ ol.renderer.Map.prototype.forEachFeatureAtCoordinate =
 
   var projection = viewState.projection;
 
-  var translatedX;
+  var translatedCoordinate = coordinate;
   if (projection.canWrapX()) {
     var projectionExtent = projection.getExtent();
     var worldWidth = ol.extent.getWidth(projectionExtent);
     var x = coordinate[0];
     if (x < projectionExtent[0] || x > projectionExtent[2]) {
       var worldsAway = Math.ceil((projectionExtent[0] - x) / worldWidth);
-      translatedX = x + worldWidth * worldsAway;
+      translatedCoordinate = [x + worldWidth * worldsAway, coordinate[1]];
     }
   }
 
   if (!goog.isNull(this.replayGroup)) {
-    result = this.replayGroup.forEachFeatureAtCoordinate(coordinate,
+    result = this.replayGroup.forEachFeatureAtCoordinate(translatedCoordinate,
         viewResolution, viewRotation, {}, forEachFeatureAtCoordinate);
-    if (!result && goog.isDef(translatedX)) {
-      result = this.replayGroup.forEachFeatureAtCoordinate(
-          [translatedX, coordinate[1]],
-          viewResolution, viewRotation, {}, forEachFeatureAtCoordinate);
-    }
     if (result) {
       return result;
     }
@@ -189,11 +185,8 @@ ol.renderer.Map.prototype.forEachFeatureAtCoordinate =
         layerFilter.call(thisArg2, layer)) {
       var layerRenderer = this.getLayerRenderer(layer);
       result = layerRenderer.forEachFeatureAtCoordinate(
-          coordinate, frameState, callback, thisArg);
-      if (!result && goog.isDef(translatedX)) {
-        result = layerRenderer.forEachFeatureAtCoordinate(
-            [translatedX, coordinate[1]], frameState, callback, thisArg);
-      }
+          layer.getSource().getWrapX() ? translatedCoordinate : coordinate,
+          frameState, callback, thisArg);
       if (result) {
         return result;
       }

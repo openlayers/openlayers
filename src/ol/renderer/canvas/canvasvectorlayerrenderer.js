@@ -77,6 +77,7 @@ ol.renderer.canvas.VectorLayer.prototype.composeFrame =
     function(frameState, layerState, context) {
 
   var extent = frameState.extent;
+  var focus = frameState.focus;
   var pixelRatio = frameState.pixelRatio;
   var skippedFeatureUids = frameState.skippedFeatureUids;
   var viewState = frameState.viewState;
@@ -107,30 +108,47 @@ ol.renderer.canvas.VectorLayer.prototype.composeFrame =
     // see http://jsperf.com/context-save-restore-versus-variable
     var alpha = replayContext.globalAlpha;
     replayContext.globalAlpha = layerState.opacity;
-    replayGroup.replay(
-        replayContext, pixelRatio, transform, rotation, skippedFeatureUids);
+    var noSkip = {};
+    var focusX = focus[0];
 
     if (vectorSource.getWrapX() && projection.canWrapX() &&
-        !ol.extent.containsExtent(projectionExtent, frameState.extent)) {
+        !ol.extent.containsExtent(projectionExtent, extent)) {
+      var projLeft = projectionExtent[0];
+      var projRight = projectionExtent[2];
+      // A feature from skippedFeatureUids will only be skipped in the world
+      // that has the frameState's focus, because this is where a feature
+      // overlay for highlighting or selection would render the skipped
+      // feature.
+      replayGroup.replay(replayContext, pixelRatio, transform, rotation,
+          projLeft <= focusX && focusX <= projRight ?
+              skippedFeatureUids : noSkip);
       var startX = extent[0];
       var worldWidth = ol.extent.getWidth(projectionExtent);
       var world = 0;
+      var offsetX;
       while (startX < projectionExtent[0]) {
         --world;
-        transform = this.getTransform(frameState, worldWidth * world);
-        replayGroup.replay(
-            replayContext, pixelRatio, transform, rotation, skippedFeatureUids);
+        offsetX = worldWidth * world;
+        transform = this.getTransform(frameState, offsetX);
+        replayGroup.replay(replayContext, pixelRatio, transform, rotation,
+            projLeft + offsetX <= focusX && focusX <= projRight + offsetX ?
+                skippedFeatureUids : noSkip);
         startX += worldWidth;
       }
       world = 0;
       startX = extent[2];
       while (startX > projectionExtent[2]) {
         ++world;
-        transform = this.getTransform(frameState, worldWidth * world);
-        replayGroup.replay(
-            replayContext, pixelRatio, transform, rotation, skippedFeatureUids);
+        offsetX = worldWidth * world;
+        transform = this.getTransform(frameState, offsetX);
+        replayGroup.replay(replayContext, pixelRatio, transform, rotation,
+            projLeft + offsetX <= focusX && focusX <= projRight + offsetX ?
+                skippedFeatureUids : noSkip);
         startX -= worldWidth;
       }
+    } else {
+      replayGroup.replay(
+          replayContext, pixelRatio, transform, rotation, skippedFeatureUids);
     }
 
     if (replayContext != context) {
