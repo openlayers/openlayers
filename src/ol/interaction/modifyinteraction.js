@@ -535,6 +535,8 @@ ol.interaction.Modify.handleUpEvent_ = function(evt) {
 
 
 /**
+ * Handles the {@link ol.MapBrowserEvent map browser event} and may modify the
+ * geometry.
  * @param {ol.MapBrowserEvent} mapBrowserEvent Map browser event.
  * @return {boolean} `false` to stop event propagation.
  * @this {ol.interaction.Modify}
