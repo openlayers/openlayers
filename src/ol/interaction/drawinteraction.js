@@ -241,6 +241,8 @@ ol.interaction.Draw.prototype.setMap = function(map) {
 
 
 /**
+ * Handles the {@link ol.MapBrowserEvent map browser event} and may actually
+ * draw or finish the drawing.
  * @param {ol.MapBrowserEvent} mapBrowserEvent Map browser event.
  * @return {boolean} `false` to stop event propagation.
  * @this {ol.interaction.Draw}
