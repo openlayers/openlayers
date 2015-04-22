@@ -57,6 +57,7 @@ goog.require('ol.renderer.Map');
 goog.require('ol.renderer.canvas.Map');
 goog.require('ol.renderer.dom.Map');
 goog.require('ol.renderer.webgl.Map');
+goog.require('ol.size');
 goog.require('ol.structs.PriorityQueue');
 goog.require('ol.tilecoord');
 goog.require('ol.vec.Mat4');
@@ -1263,25 +1264,11 @@ ol.Map.prototype.renderFrame_ = function(time) {
 
   var i, ii, viewState;
 
-  /**
-   * Check whether a size has non-zero width and height.  Note that this
-   * function is here because the compiler doesn't recognize that size is
-   * defined in the frameState assignment below when the same code is inline in
-   * the condition below.  The compiler inlines this function itself, so the
-   * resulting code is the same.
-   *
-   * @param {ol.Size} size The size to test.
-   * @return {boolean} Has non-zero width and height.
-   */
-  function hasArea(size) {
-    return size[0] > 0 && size[1] > 0;
-  }
-
   var size = this.getSize();
   var view = this.getView();
   /** @type {?olx.FrameState} */
   var frameState = null;
-  if (goog.isDef(size) && hasArea(size) &&
+  if (goog.isDef(size) && ol.size.hasArea(size) &&
       !goog.isNull(view) && view.isDef()) {
     var viewHints = view.getHints();
     var layerStatesArray = this.getLayerGroup().getLayerStatesArray();
