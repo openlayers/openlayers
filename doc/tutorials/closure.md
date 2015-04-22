@@ -283,9 +283,9 @@ Here is a version of `config.json` with more compilation checks enabled:
 }
 ```
 
-## Create an HTML file for the Application
+## Create an HTML file for the Application
 
-You can now go ahead and create a simple HTML for the application. Create
+You can now go ahead and create a simple HTML for the application. Create
 a `index.html` file with the following content at the root the application
 directory:
 

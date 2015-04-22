@@ -338,7 +338,7 @@ ol.xml.setAttributeNS =
 
 
 /**
- * Parse an XML string to an XML Document.
+ * Parse an XML string to an XML Document.
  * @param {string} xml XML.
  * @return {Document} Document.
  * @api
