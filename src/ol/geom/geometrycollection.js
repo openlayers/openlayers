@@ -141,6 +141,7 @@ ol.geom.GeometryCollection.prototype.computeExtent = function(extent) {
 
 
 /**
+ * Return the geometries that make up this geometry collection.
  * @return {Array.<ol.geom.Geometry>} Geometries.
  * @api stable
  */
@@ -235,6 +236,7 @@ ol.geom.GeometryCollection.prototype.isEmpty = function() {
 
 
 /**
+ * Set the geometries that make up this geometry collection.
  * @param {Array.<ol.geom.Geometry>} geometries Geometries.
  * @api stable
  */
