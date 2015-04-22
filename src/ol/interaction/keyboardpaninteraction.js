@@ -61,6 +61,9 @@ goog.inherits(ol.interaction.KeyboardPan, ol.interaction.Interaction);
 
 
 /**
+ * Handles the {@link ol.MapBrowserEvent map browser event} if it was a
+ * `KeyEvent`, and decides the direction to pan to (if an arrow key was
+ * pressed).
  * @param {ol.MapBrowserEvent} mapBrowserEvent Map browser event.
  * @return {boolean} `false` to stop event propagation.
  * @this {ol.interaction.KeyboardPan}
