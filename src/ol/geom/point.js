@@ -62,6 +62,7 @@ ol.geom.Point.prototype.closestPointXY =
 
 
 /**
+ * Return the coordinate of the point.
  * @return {ol.Coordinate} Coordinates.
  * @api stable
  */
@@ -98,6 +99,7 @@ ol.geom.Point.prototype.intersectsExtent = function(extent) {
 
 
 /**
+ * Set the coordinate of the point.
  * @param {ol.Coordinate} coordinates Coordinates.
  * @param {ol.geom.GeometryLayout=} opt_layout Layout.
  * @api stable
