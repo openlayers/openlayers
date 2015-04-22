@@ -99,6 +99,7 @@ ol.geom.SimpleGeometry.prototype.computeExtent = function(extent) {
 
 
 /**
+ * Return the first coordinate of the geometry.
  * @return {ol.Coordinate} First coordinate.
  * @api stable
  */
@@ -116,6 +117,7 @@ ol.geom.SimpleGeometry.prototype.getFlatCoordinates = function() {
 
 
 /**
+ * Return the last coordinate of the geometry.
  * @return {ol.Coordinate} Last point.
  * @api stable
  */
@@ -125,6 +127,7 @@ ol.geom.SimpleGeometry.prototype.getLastCoordinate = function() {
 
 
 /**
+ * Return the {@link ol.geom.GeometryLayout layout} of the geometry.
  * @return {ol.geom.GeometryLayout} Layout.
  * @api stable
  */
