@@ -7,6 +7,8 @@ goog.require('ol.easing');
 
 
 /**
+ * Generate an animated transition that will "bounce" the resolution as it
+ * approaches the final value.
  * @param {olx.animation.BounceOptions} options Bounce options.
  * @return {ol.PreRenderFunction} Pre-render function.
  * @api
@@ -42,6 +44,7 @@ ol.animation.bounce = function(options) {
 
 
 /**
+ * Generate an animated transition while updating the view center.
  * @param {olx.animation.PanOptions} options Pan options.
  * @return {ol.PreRenderFunction} Pre-render function.
  * @api
@@ -81,6 +84,7 @@ ol.animation.pan = function(options) {
 
 
 /**
+ * Generate an animated transition while updating the view rotation.
  * @param {olx.animation.RotateOptions} options Rotate options.
  * @return {ol.PreRenderFunction} Pre-render function.
  * @api
@@ -126,6 +130,7 @@ ol.animation.rotate = function(options) {
 
 
 /**
+ * Generate an animated transition while updating the view resolution.
  * @param {olx.animation.ZoomOptions} options Zoom options.
  * @return {ol.PreRenderFunction} Pre-render function.
  * @api

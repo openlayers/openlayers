@@ -8,6 +8,7 @@ goog.require('ol.extent');
 goog.require('ol.extent.Corner');
 goog.require('ol.proj');
 goog.require('ol.proj.EPSG3857');
+goog.require('ol.size');
 goog.require('ol.tilecoord');
 goog.require('ol.tilegrid.TileGrid');
 
@@ -26,8 +27,12 @@ goog.require('ol.tilegrid.TileGrid');
 ol.tilegrid.XYZ = function(options) {
   var extent = goog.isDef(options.extent) ?
       options.extent : ol.proj.EPSG3857.EXTENT;
+  var tileSize;
+  if (goog.isDef(options.tileSize)) {
+    tileSize = ol.size.toSize(options.tileSize);
+  }
   var resolutions = ol.tilegrid.resolutionsFromExtent(
-      extent, options.maxZoom, options.tileSize);
+      extent, options.maxZoom, tileSize);
 
   goog.base(this, {
     minZoom: options.minZoom,
@@ -47,7 +52,6 @@ ol.tilegrid.XYZ.prototype.createTileCoordTransform = function(opt_options) {
   var options = goog.isDef(opt_options) ? opt_options : {};
   var minZ = this.minZoom;
   var maxZ = this.maxZoom;
-  var wrapX = goog.isDef(options.wrapX) ? options.wrapX : true;
   /** @type {Array.<ol.TileRange>} */
   var tileRangeByZ = null;
   if (goog.isDef(options.extent)) {
@@ -75,11 +79,6 @@ ol.tilegrid.XYZ.prototype.createTileCoordTransform = function(opt_options) {
         }
         var n = Math.pow(2, z);
         var x = tileCoord[1];
-        if (wrapX) {
-          x = goog.math.modulo(x, n);
-        } else if (x < 0 || n <= x) {
-          return null;
-        }
         var y = tileCoord[2];
         if (y < -n || -1 < y) {
           return null;

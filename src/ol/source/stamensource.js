@@ -1,7 +1,6 @@
 goog.provide('ol.source.Stamen');
 
 goog.require('goog.asserts');
-goog.require('ol');
 goog.require('ol.Attribution');
 goog.require('ol.source.OSM');
 goog.require('ol.source.XYZ');
@@ -125,10 +124,12 @@ ol.source.Stamen.prototype.setLayer = function(layer) {
 
   var i = this.layer_.indexOf('-');
   var provider = i == -1 ? this.layer_ : this.layer_.slice(0, i);
-  goog.asserts.assert(provider in ol.source.StamenProviderConfig);
+  goog.asserts.assert(provider in ol.source.StamenProviderConfig,
+      'known provider configured');
   var providerConfig = ol.source.StamenProviderConfig[provider];
 
-  goog.asserts.assert(this.layer_ in ol.source.StamenLayerConfig);
+  goog.asserts.assert(this.layer_ in ol.source.StamenLayerConfig,
+      'known layer configured');
   var layerConfig = ol.source.StamenLayerConfig[this.layer_];
 
   var url = this.rootUrl_ +

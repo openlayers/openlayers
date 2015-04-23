@@ -17,12 +17,6 @@ ol.ASSUME_TOUCH = false;
 
 
 /**
- * @define {boolean} Replace unused entries with NaNs.
- */
-ol.BUFFER_REPLACE_UNUSED_ENTRIES_WITH_NANS = goog.DEBUG;
-
-
-/**
  * TODO: rename this to something having to do with tile grids
  * see https://github.com/openlayers/ol3/issues/2076
  * @define {number} Default maximum zoom for default tile grids.
@@ -52,24 +46,6 @@ ol.DEFAULT_TILE_SIZE = 256;
  * @define {string} Default WMS version.
  */
 ol.DEFAULT_WMS_VERSION = '1.3.0';
-
-
-/**
- * @define {number} Drag-rotate-zoom animation duration.
- */
-ol.DRAGROTATEANDZOOM_ANIMATION_DURATION = 400;
-
-
-/**
- * @define {number} Drag-rotate animation duration.
- */
-ol.DRAGROTATE_ANIMATION_DURATION = 250;
-
-
-/**
- * @define {number} Drag-zoom animation duration.
- */
-ol.DRAGZOOM_ANIMATION_DURATION = 200;
 
 
 /**
@@ -160,14 +136,6 @@ ol.INITIAL_ATLAS_SIZE = 256;
 
 
 /**
- * The page is loaded using HTTPS.
- * @const
- * @type {boolean}
- */
-ol.IS_HTTPS = goog.global.location.protocol === 'https:';
-
-
-/**
  * Whether the current browser is legacy IE
  * @const
  * @type {boolean}
@@ -177,14 +145,8 @@ ol.IS_LEGACY_IE = goog.userAgent.IE &&
 
 
 /**
- * @define {number} Keyboard pan duration.
- */
-ol.KEYBOARD_PAN_DURATION = 100;
-
-
-/**
  * @define {number} The maximum size in pixels of atlas images. Default is
- * `-1`, meaning it is not used (and `ol.ol.WEBGL_MAX_TEXTURE_SIZE` is
+ * `-1`, meaning it is not used (and `ol.WEBGL_MAX_TEXTURE_SIZE` is
  * used instead).
  */
 ol.MAX_ATLAS_SIZE = -1;
@@ -217,12 +179,6 @@ ol.OVERVIEWMAP_MIN_RATIO = 0.1;
 
 
 /**
- * @define {number} Rotate animation duration.
- */
-ol.ROTATE_ANIMATION_DURATION = 250;
-
-
-/**
  * @define {number} Tolerance for geometry simplification in device pixels.
  */
 ol.SIMPLIFY_TOLERANCE = 0.5;
@@ -239,7 +195,6 @@ ol.WEBGL_TEXTURE_CACHE_HIGH_WATER_MARK = 1024;
  * supported, the value is set to `undefined`.
  * @const
  * @type {number|undefined}
- * @api
  */
 ol.WEBGL_MAX_TEXTURE_SIZE; // value is set in `ol.has`
 
@@ -250,12 +205,6 @@ ol.WEBGL_MAX_TEXTURE_SIZE; // value is set in `ol.has`
  * @type {Array.<string>}
  */
 ol.WEBGL_EXTENSIONS; // value is set in `ol.has`
-
-
-/**
- * @define {number} Zoom slider animation duration.
- */
-ol.ZOOMSLIDER_ANIMATION_DURATION = 200;
 
 
 /**

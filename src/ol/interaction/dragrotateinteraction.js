@@ -1,6 +1,5 @@
 goog.provide('ol.interaction.DragRotate');
 
-goog.require('ol');
 goog.require('ol.ViewHint');
 goog.require('ol.events.ConditionType');
 goog.require('ol.events.condition');
@@ -45,6 +44,11 @@ ol.interaction.DragRotate = function(opt_options) {
    */
   this.lastAngle_ = undefined;
 
+  /**
+   * @private
+   * @type {number}
+   */
+  this.duration_ = goog.isDef(options.duration) ? options.duration : 250;
 };
 goog.inherits(ol.interaction.DragRotate, ol.interaction.Pointer);
 
@@ -92,7 +96,7 @@ ol.interaction.DragRotate.handleUpEvent_ = function(mapBrowserEvent) {
   view.setHint(ol.ViewHint.INTERACTING, -1);
   var rotation = view.getRotation();
   ol.interaction.Interaction.rotate(map, view, rotation,
-      undefined, ol.DRAGROTATE_ANIMATION_DURATION);
+      undefined, this.duration_);
   return false;
 };
 

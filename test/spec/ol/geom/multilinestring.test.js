@@ -322,5 +322,6 @@ describe('ol.geom.MultiLineString', function() {
 
 
 goog.require('ol.extent');
+goog.require('ol.geom.GeometryLayout');
 goog.require('ol.geom.LineString');
 goog.require('ol.geom.MultiLineString');

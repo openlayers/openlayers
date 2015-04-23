@@ -152,7 +152,7 @@ var map = new ol.Map({
   renderer: 'canvas',
   target: document.getElementById('map'),
   view: new ol.View({
-    center: ol.proj.transform([-74.0064, 40.7142], 'EPSG:4326', 'EPSG:3857'),
+    center: ol.proj.fromLonLat([-74.0064, 40.7142]),
     maxZoom: 19,
     zoom: 15
   })

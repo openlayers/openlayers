@@ -4,7 +4,9 @@ goog.require('goog.asserts');
 goog.require('ol.Feature');
 goog.require('ol.format.Feature');
 goog.require('ol.format.TextFeature');
+goog.require('ol.geom.GeometryLayout');
 goog.require('ol.geom.LineString');
+goog.require('ol.geom.SimpleGeometry');
 goog.require('ol.geom.flat.flip');
 goog.require('ol.geom.flat.inflate');
 goog.require('ol.proj');
@@ -38,6 +40,13 @@ ol.format.Polyline = function(opt_options) {
    * @type {number}
    */
   this.factor_ = goog.isDef(options.factor) ? options.factor : 1e5;
+
+  /**
+   * @private
+   * @type {ol.geom.GeometryLayout}
+   */
+  this.geometryLayout_ = goog.isDef(options.geometryLayout) ?
+      options.geometryLayout : ol.geom.GeometryLayout.XY;
 };
 goog.inherits(ol.format.Polyline, ol.format.TextFeature);
 
@@ -259,7 +268,7 @@ ol.format.Polyline.encodeUnsignedInteger = function(num) {
  * in two dimensions and in latitude, longitude order.
  *
  * @function
- * @param {ArrayBuffer|Document|Node|Object|string} source Source.
+ * @param {Document|Node|Object|string} source Source.
  * @param {olx.format.ReadOptions=} opt_options Read options.
  * @return {ol.Feature} Feature.
  * @api stable
@@ -281,7 +290,7 @@ ol.format.Polyline.prototype.readFeatureFromText = function(text, opt_options) {
  * feature, this will return the feature in an array.
  *
  * @function
- * @param {ArrayBuffer|Document|Node|Object|string} source Source.
+ * @param {Document|Node|Object|string} source Source.
  * @param {olx.format.ReadOptions=} opt_options Read options.
  * @return {Array.<ol.Feature>} Features.
  * @api stable
@@ -303,7 +312,7 @@ ol.format.Polyline.prototype.readFeaturesFromText =
  * Read the geometry from the source.
  *
  * @function
- * @param {ArrayBuffer|Document|Node|Object|string} source Source.
+ * @param {Document|Node|Object|string} source Source.
  * @param {olx.format.ReadOptions=} opt_options Read options.
  * @return {ol.geom.Geometry} Geometry.
  * @api stable
@@ -316,15 +325,17 @@ ol.format.Polyline.prototype.readGeometry;
  */
 ol.format.Polyline.prototype.readGeometryFromText =
     function(text, opt_options) {
-  var flatCoordinates = ol.format.Polyline.decodeDeltas(text, 2, this.factor_);
+  var stride = ol.geom.SimpleGeometry.getStrideForLayout(this.geometryLayout_);
+  var flatCoordinates = ol.format.Polyline.decodeDeltas(
+      text, stride, this.factor_);
   ol.geom.flat.flip.flipXY(
-      flatCoordinates, 0, flatCoordinates.length, 2, flatCoordinates);
+      flatCoordinates, 0, flatCoordinates.length, stride, flatCoordinates);
   var coordinates = ol.geom.flat.inflate.coordinates(
-      flatCoordinates, 0, flatCoordinates.length, 2);
+      flatCoordinates, 0, flatCoordinates.length, stride);
 
   return /** @type {ol.geom.Geometry} */ (
       ol.format.Feature.transformWithOptions(
-          new ol.geom.LineString(coordinates), false,
+          new ol.geom.LineString(coordinates, this.geometryLayout_), false,
           this.adaptOptions(opt_options)));
 };
 
@@ -333,7 +344,7 @@ ol.format.Polyline.prototype.readGeometryFromText =
  * Read the projection from a Polyline source.
  *
  * @function
- * @param {ArrayBuffer|Document|Node|Object|string} source Source.
+ * @param {Document|Node|Object|string} source Source.
  * @return {ol.proj.Projection} Projection.
  * @api stable
  */
@@ -348,7 +359,7 @@ ol.format.Polyline.prototype.writeFeatureText = function(feature, opt_options) {
   if (goog.isDefAndNotNull(geometry)) {
     return this.writeGeometryText(geometry, opt_options);
   } else {
-    goog.asserts.fail();
+    goog.asserts.fail('geometry needs to be defined');
     return '';
   }
 };
@@ -359,7 +370,8 @@ ol.format.Polyline.prototype.writeFeatureText = function(feature, opt_options) {
  */
 ol.format.Polyline.prototype.writeFeaturesText =
     function(features, opt_options) {
-  goog.asserts.assert(features.length == 1);
+  goog.asserts.assert(features.length == 1,
+      'features array should have 1 item');
   return this.writeFeatureText(features[0], opt_options);
 };
 
@@ -381,7 +393,8 @@ ol.format.Polyline.prototype.writeGeometry;
  */
 ol.format.Polyline.prototype.writeGeometryText =
     function(geometry, opt_options) {
-  goog.asserts.assertInstanceof(geometry, ol.geom.LineString);
+  goog.asserts.assertInstanceof(geometry, ol.geom.LineString,
+      'geometry should be an ol.geom.LineString');
   geometry = /** @type {ol.geom.LineString} */
       (ol.format.Feature.transformWithOptions(
           geometry, true, this.adaptOptions(opt_options)));

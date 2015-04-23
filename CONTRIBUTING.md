@@ -2,6 +2,23 @@
 
 Thanks for your interest in contributing to OpenLayers 3.
 
+## Asking Questions
+
+Please ask questions about using the library on [stackoverflow using the tag 'openlayers-3'](http://stackoverflow.com/questions/tagged/openlayers-3).
+
+When you want to get involved and discuss new features or changes, please use [the mailing list](https://groups.google.com/forum/#!forum/ol3-dev).
+
+
+## Submitting Bug Reports
+
+Please use the [GitHub issue tracker](https://github.com/openlayers/ol3/issues). Before creating a new issue, do a quick search to see if the problem has been reported already.
+
+
+## Getting Familiar with the Code in the Repository
+
+Look for `readme.md` files! Several directories contain a `readme.md` file that explains the contents of the directory and how to work with them.
+
+
 ## Contributing Code
 
 Our preferred means of receiving contributions is through [pull requests](https://help.github.com/articles/using-pull-requests). Make sure
@@ -25,7 +42,7 @@ You will obviously start by
 
 ### Travis CI
 
-The Travis CI hook is enabled on the Github repository. This means every pull request 
+The Travis CI hook is enabled on the Github repository. This means every pull request
 is run through a full test suite to ensure it compiles and passes the tests. Failing
 pull requests will not be merged.
 
@@ -78,7 +95,7 @@ The `build.py` script is equivalent to a Makefile. It is actually based on
 The usage of the script is:
 
     $ ./build.py <target>
-    
+
 where `<target>` is the name of the build target you want to execute. For
 example:
 
@@ -247,6 +264,14 @@ style of the existing OpenLayers 3 code, which includes:
    two arguments).
 
  * Use uppercase for `@const` variables.
+
+### Configure your editor
+
+If possible, configure your editor to follow the coding conventions of the
+library.  A `.editorconfig` file is included at the root of the repository that
+can be used to configure whitespace and charset handling in your editor.  See
+that file for a description of the conventions.  The [EditorConfig](
+http://editorconfig.org/#download) site links to plugins for various editors.
 
 ### Pass the integration tests run automatically by the Travis CI system
 

@@ -1,7 +1,6 @@
 goog.provide('ol.interaction.DragRotateAndZoom');
 
 goog.require('goog.math.Vec2');
-goog.require('ol');
 goog.require('ol.ViewHint');
 goog.require('ol.events.ConditionType');
 goog.require('ol.events.condition');
@@ -59,6 +58,12 @@ ol.interaction.DragRotateAndZoom = function(opt_options) {
    * @type {number}
    */
   this.lastScaleDelta_ = 0;
+
+  /**
+   * @private
+   * @type {number}
+   */
+  this.duration_ = goog.isDef(options.duration) ? options.duration : 400;
 
 };
 goog.inherits(ol.interaction.DragRotateAndZoom, ol.interaction.Pointer);
@@ -120,8 +125,7 @@ ol.interaction.DragRotateAndZoom.handleUpEvent_ = function(mapBrowserEvent) {
   var direction = this.lastScaleDelta_ - 1;
   ol.interaction.Interaction.rotate(map, view, viewState.rotation);
   ol.interaction.Interaction.zoom(map, view, viewState.resolution,
-      undefined, ol.DRAGROTATEANDZOOM_ANIMATION_DURATION,
-      direction);
+      undefined, this.duration_, direction);
   this.lastScaleDelta_ = 0;
   return false;
 };

@@ -1,6 +1,5 @@
 goog.require('ol.Map');
 goog.require('ol.View');
-goog.require('ol.interaction');
 goog.require('ol.interaction.Draw');
 goog.require('ol.layer.Tile');
 goog.require('ol.layer.Vector');
@@ -15,7 +14,7 @@ var raster = new ol.layer.Tile({
   source: new ol.source.MapQuest({layer: 'sat'})
 });
 
-var source = new ol.source.Vector();
+var source = new ol.source.Vector({wrapX: false});
 
 var vector = new ol.layer.Vector({
   source: source,
@@ -38,7 +37,7 @@ var vector = new ol.layer.Vector({
 
 var map = new ol.Map({
   layers: [raster, vector],
-  renderer: exampleNS.getRendererFromQueryString(),
+  renderer: common.getRendererFromQueryString(),
   target: 'map',
   view: new ol.View({
     center: [-11000000, 4600000],

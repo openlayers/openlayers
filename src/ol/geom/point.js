@@ -1,6 +1,7 @@
 goog.provide('ol.geom.Point');
 
 goog.require('ol.extent');
+goog.require('ol.geom.GeometryLayout');
 goog.require('ol.geom.GeometryType');
 goog.require('ol.geom.SimpleGeometry');
 goog.require('ol.geom.flat.deflate');
@@ -61,6 +62,7 @@ ol.geom.Point.prototype.closestPointXY =
 
 
 /**
+ * Return the coordinate of the point.
  * @return {ol.Coordinate} Coordinates.
  * @api stable
  */
@@ -88,7 +90,7 @@ ol.geom.Point.prototype.getType = function() {
 
 /**
  * @inheritDoc
- * @api
+ * @api stable
  */
 ol.geom.Point.prototype.intersectsExtent = function(extent) {
   return ol.extent.containsXY(extent,
@@ -97,6 +99,7 @@ ol.geom.Point.prototype.intersectsExtent = function(extent) {
 
 
 /**
+ * Set the coordinate of the point.
  * @param {ol.Coordinate} coordinates Coordinates.
  * @param {ol.geom.GeometryLayout=} opt_layout Layout.
  * @api stable

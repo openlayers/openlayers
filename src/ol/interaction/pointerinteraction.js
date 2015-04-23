@@ -171,6 +171,9 @@ ol.interaction.Pointer.handleMoveEvent = goog.nullFunction;
 
 
 /**
+ * Handles the {@link ol.MapBrowserEvent map browser event} and may call into
+ * other functions, if event sequences like e.g. 'drag' or 'down-up' etc. are
+ * detected.
  * @param {ol.MapBrowserEvent} mapBrowserEvent Map browser event.
  * @return {boolean} `false` to stop event propagation.
  * @this {ol.interaction.Pointer}
@@ -184,13 +187,10 @@ ol.interaction.Pointer.handleEvent = function(mapBrowserEvent) {
   var stopEvent = false;
   this.updateTrackedPointers_(mapBrowserEvent);
   if (this.handlingDownUpSequence) {
-    if (mapBrowserEvent.type ==
-        ol.MapBrowserEvent.EventType.POINTERDRAG) {
+    if (mapBrowserEvent.type == ol.MapBrowserEvent.EventType.POINTERDRAG) {
       this.handleDragEvent_(mapBrowserEvent);
-    } else if (mapBrowserEvent.type ==
-        ol.MapBrowserEvent.EventType.POINTERUP) {
-      this.handlingDownUpSequence =
-          this.handleUpEvent_(mapBrowserEvent);
+    } else if (mapBrowserEvent.type == ol.MapBrowserEvent.EventType.POINTERUP) {
+      this.handlingDownUpSequence = this.handleUpEvent_(mapBrowserEvent);
     }
   }
   if (mapBrowserEvent.type == ol.MapBrowserEvent.EventType.POINTERDOWN) {

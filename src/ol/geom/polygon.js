@@ -3,6 +3,7 @@ goog.provide('ol.geom.Polygon');
 goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('ol.extent');
+goog.require('ol.geom.GeometryLayout');
 goog.require('ol.geom.GeometryType');
 goog.require('ol.geom.LinearRing');
 goog.require('ol.geom.Point');
@@ -83,11 +84,13 @@ goog.inherits(ol.geom.Polygon, ol.geom.SimpleGeometry);
 
 
 /**
+ * Append the passed linear ring to this polygon.
  * @param {ol.geom.LinearRing} linearRing Linear ring.
  * @api stable
  */
 ol.geom.Polygon.prototype.appendLinearRing = function(linearRing) {
-  goog.asserts.assert(linearRing.getLayout() == this.layout);
+  goog.asserts.assert(linearRing.getLayout() == this.layout,
+      'layout of linearRing should match layout');
   if (goog.isNull(this.flatCoordinates)) {
     this.flatCoordinates = linearRing.getFlatCoordinates().slice();
   } else {
@@ -141,6 +144,7 @@ ol.geom.Polygon.prototype.containsXY = function(x, y) {
 
 
 /**
+ * Return the area of the polygon on projected plane.
  * @return {number} Area (on projected plane).
  * @api stable
  */
@@ -151,12 +155,30 @@ ol.geom.Polygon.prototype.getArea = function() {
 
 
 /**
+ * Get the coordinate array for this geometry.  This array has the structure
+ * of a GeoJSON coordinate array for polygons.
+ *
+ * @param {boolean=} opt_right Orient coordinates according to the right-hand
+ *     rule (counter-clockwise for exterior and clockwise for interior rings).
+ *     If `false`, coordinates will be oriented according to the left-hand rule
+ *     (clockwise for exterior and counter-clockwise for interior rings).
+ *     By default, coordinate orientation will depend on how the geometry was
+ *     constructed.
  * @return {Array.<Array.<ol.Coordinate>>} Coordinates.
  * @api stable
  */
-ol.geom.Polygon.prototype.getCoordinates = function() {
+ol.geom.Polygon.prototype.getCoordinates = function(opt_right) {
+  var flatCoordinates;
+  if (goog.isDef(opt_right)) {
+    flatCoordinates = this.getOrientedFlatCoordinates().slice();
+    ol.geom.flat.orient.orientLinearRings(
+        flatCoordinates, 0, this.ends_, this.stride, opt_right);
+  } else {
+    flatCoordinates = this.flatCoordinates;
+  }
+
   return ol.geom.flat.inflate.coordinatess(
-      this.flatCoordinates, 0, this.ends_, this.stride);
+      flatCoordinates, 0, this.ends_, this.stride);
 };
 
 
@@ -184,6 +206,7 @@ ol.geom.Polygon.prototype.getFlatInteriorPoint = function() {
 
 
 /**
+ * Return an interior point of the polygon.
  * @return {ol.geom.Point} Interior point.
  * @api stable
  */
@@ -215,7 +238,8 @@ ol.geom.Polygon.prototype.getLinearRingCount = function() {
  * @api stable
  */
 ol.geom.Polygon.prototype.getLinearRing = function(index) {
-  goog.asserts.assert(0 <= index && index < this.ends_.length);
+  goog.asserts.assert(0 <= index && index < this.ends_.length,
+      'index should be in between 0 and and length of this.ends_');
   if (index < 0 || this.ends_.length <= index) {
     return null;
   }
@@ -227,6 +251,7 @@ ol.geom.Polygon.prototype.getLinearRing = function(index) {
 
 
 /**
+ * Return the linear rings of the polygon.
  * @return {Array.<ol.geom.LinearRing>} Linear rings.
  * @api stable
  */
@@ -298,7 +323,7 @@ ol.geom.Polygon.prototype.getType = function() {
 
 /**
  * @inheritDoc
- * @api
+ * @api stable
  */
 ol.geom.Polygon.prototype.intersectsExtent = function(extent) {
   return ol.geom.flat.intersectsextent.linearRings(
@@ -307,6 +332,7 @@ ol.geom.Polygon.prototype.intersectsExtent = function(extent) {
 
 
 /**
+ * Set the coordinates of the polygon.
  * @param {Array.<Array.<ol.Coordinate>>} coordinates Coordinates.
  * @param {ol.geom.GeometryLayout=} opt_layout Layout.
  * @api stable
@@ -335,11 +361,14 @@ ol.geom.Polygon.prototype.setCoordinates = function(coordinates, opt_layout) {
 ol.geom.Polygon.prototype.setFlatCoordinates =
     function(layout, flatCoordinates, ends) {
   if (goog.isNull(flatCoordinates)) {
-    goog.asserts.assert(!goog.isNull(ends) && ends.length === 0);
+    goog.asserts.assert(!goog.isNull(ends) && ends.length === 0,
+        'ends cannot be null and should be an empty array');
   } else if (ends.length === 0) {
-    goog.asserts.assert(flatCoordinates.length === 0);
+    goog.asserts.assert(flatCoordinates.length === 0,
+        'flatCoordinates should be an empty array');
   } else {
-    goog.asserts.assert(flatCoordinates.length == ends[ends.length - 1]);
+    goog.asserts.assert(flatCoordinates.length == ends[ends.length - 1],
+        'the length of flatCoordinates should be the last entry of ends');
   }
   this.setFlatCoordinatesInternal(layout, flatCoordinates);
   this.ends_ = ends;

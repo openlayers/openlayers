@@ -89,6 +89,32 @@ describe('ol.geom.MultiPolygon', function() {
           [[[3, 0], [4, 1], [5, 2], [5, 0]]]);
     });
 
+    describe('#getCoordinates()', function() {
+
+      var cw = [[-180, -90], [-180, 90], [180, 90], [180, -90], [-180, -90]];
+      var cw2 = [[-140, -60], [-140, 60], [140, 60], [140, -60], [-140, -60]];
+      var ccw = [[-180, -90], [180, -90], [180, 90], [-180, 90], [-180, -90]];
+      var ccw2 = [[-140, -60], [140, -60], [140, 60], [-140, 60], [-140, -60]];
+      var right = new ol.geom.MultiPolygon([[ccw, cw], [ccw2, cw2]]);
+      var left = new ol.geom.MultiPolygon([[cw, ccw], [cw2, ccw2]]);
+
+      it('returns coordinates as they were constructed', function() {
+        expect(right.getCoordinates()).to.eql([[ccw, cw], [ccw2, cw2]]);
+        expect(left.getCoordinates()).to.eql([[cw, ccw], [cw2, ccw2]]);
+      });
+
+      it('can return coordinates with right-hand orientation', function() {
+        expect(right.getCoordinates(true)).to.eql([[ccw, cw], [ccw2, cw2]]);
+        expect(left.getCoordinates(true)).to.eql([[ccw, cw], [ccw2, cw2]]);
+      });
+
+      it('can return coordinates with left-hand orientation', function() {
+        expect(right.getCoordinates(false)).to.eql([[cw, ccw], [cw2, ccw2]]);
+        expect(left.getCoordinates(false)).to.eql([[cw, ccw], [cw2, ccw2]]);
+      });
+
+    });
+
     describe('#getSimplifiedGeometry', function() {
 
       it('returns the expected result', function() {

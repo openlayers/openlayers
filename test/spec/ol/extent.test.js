@@ -472,6 +472,22 @@ describe('ol.extent', function() {
       expect(intersects).to.be(false);
     });
 
+    it('works for left/right intersection spanning top to bottom', function() {
+      var extent = [2, 1, 3, 4];
+      var start = [0, 0];
+      var end = [5, 5];
+      expect(ol.extent.intersectsSegment(extent, start, end)).to.be(true);
+      expect(ol.extent.intersectsSegment(extent, end, start)).to.be(true);
+    });
+
+    it('works for top/bottom intersection spanning left to right', function() {
+      var extent = [1, 2, 4, 3];
+      var start = [0, 0];
+      var end = [5, 5];
+      expect(ol.extent.intersectsSegment(extent, start, end)).to.be(true);
+      expect(ol.extent.intersectsSegment(extent, end, start)).to.be(true);
+    });
+
   });
 
   describe('#applyTransform()', function() {

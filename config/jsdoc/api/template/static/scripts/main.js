@@ -53,13 +53,28 @@ $(function () {
     $(window).on('resize', _onResize);
     _onResize();
 
+    // create source code links to github
+    var srcLinks = $('div.tag-source');
+    var masterSearch = window.location.href.match(/\/([^\/]*\/)apidoc\//);
+    if (masterSearch && masterSearch.length) {
+      var branch = masterSearch[1];
+      srcLinks.each(function(i, el) {
+        var textParts = el.innerHTML.trim().split(', ');
+        var link = 'https://github.com/openlayers/ol3/blob/' + branch +
+            textParts[0];
+        el.innerHTML = '<a href="' + link + '">' + textParts[0] + '</a>, ' +
+            '<a href="' + link + textParts[1].replace('line ', '#l') + '">' +
+            textParts[1] + '</a>';
+      });
+    }
+
     // show/hide unstable items
     var links = $('a[href^="ol."]');
     var unstable = $('.unstable');
     var stabilityToggle = $('#stability-toggle');
     stabilityToggle.change(function() {
         unstable.toggleClass('hidden', this.checked);
-        var search = this.checked ? '' : '?unstable=true';
+        var search = this.checked ? '?stableonly=true' : '';
         links.each(function(i, el) {
             this.href = this.pathname + search + this.hash;
         });
@@ -73,6 +88,6 @@ $(function () {
     links.each(function(i, el) {
         this.href = this.pathname + search + this.hash;
     });
-    stabilityToggle.prop('checked', search !== '?unstable=true');
+    stabilityToggle.prop('checked', search === '?stableonly=true');
     unstable.toggleClass('hidden', stabilityToggle[0].checked);
 });

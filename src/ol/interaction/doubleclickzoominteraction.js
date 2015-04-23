@@ -41,6 +41,8 @@ goog.inherits(ol.interaction.DoubleClickZoom, ol.interaction.Interaction);
 
 
 /**
+ * Handles the {@link ol.MapBrowserEvent map browser event} (if it was a
+ * doubleclick) and eventually zooms the map.
  * @param {ol.MapBrowserEvent} mapBrowserEvent Map browser event.
  * @return {boolean} `false` to stop event propagation.
  * @this {ol.interaction.DoubleClickZoom}
@@ -54,7 +56,7 @@ ol.interaction.DoubleClickZoom.handleEvent = function(mapBrowserEvent) {
     var anchor = mapBrowserEvent.coordinate;
     var delta = browserEvent.shiftKey ? -this.delta_ : this.delta_;
     var view = map.getView();
-    goog.asserts.assert(!goog.isNull(view));
+    goog.asserts.assert(!goog.isNull(view), 'view should not be null');
     ol.interaction.Interaction.zoomByDelta(
         map, view, delta, anchor, this.duration_);
     mapBrowserEvent.preventDefault();

@@ -8,6 +8,7 @@ describe('ol.interaction.Select', function() {
 
   beforeEach(function(done) {
     target = document.createElement('div');
+
     var style = target.style;
     style.position = 'absolute';
     style.left = '-1000px';
@@ -15,18 +16,37 @@ describe('ol.interaction.Select', function() {
     style.width = width + 'px';
     style.height = height + 'px';
     document.body.appendChild(target);
+
     var geometry = new ol.geom.Polygon([[[0, 0], [0, 40], [40, 40], [40, 0]]]);
-    var geometry2 = new ol.geom.Polygon([[[0, 0], [0, 40], [40, 40], [40, 0]]]);
-    var feature = new ol.Feature({
-      geometry: geometry
-    });
-    var feature2 = new ol.Feature({
-      geometry: geometry2
-    });
+
+    // Four overlapping features, two features of type "foo" and two features
+    // of type "bar". The rendering order is, from top to bottom, foo -> bar
+    // -> foo -> bar.
+    var features = [];
+    features.push(
+        new ol.Feature({
+          geometry: geometry,
+          type: 'bar'
+        }),
+        new ol.Feature({
+          geometry: geometry,
+          type: 'foo'
+        }),
+        new ol.Feature({
+          geometry: geometry,
+          type: 'bar'
+        }),
+        new ol.Feature({
+          geometry: geometry,
+          type: 'foo'
+        }));
+
     source = new ol.source.Vector({
-      features: [feature, feature2]
+      features: features
     });
+
     var layer = new ol.layer.Vector({source: source});
+
     map = new ol.Map({
       target: target,
       layers: [layer],
@@ -36,6 +56,7 @@ describe('ol.interaction.Select', function() {
         resolution: 1
       })
     });
+
     map.on('postrender', function() {
       done();
     });
@@ -66,7 +87,6 @@ describe('ol.interaction.Select', function() {
               clientY: position.y + y + height / 2,
               shiftKey: shiftKey
             })));
-    console.debug(event);
     map.handleMapBrowserEvent(event);
   }
 
@@ -115,7 +135,7 @@ describe('ol.interaction.Select', function() {
 
     it('select with single-click', function() {
       var listenerSpy = sinon.spy(function(e) {
-        expect(e.selected).to.have.length(2);
+        expect(e.selected).to.have.length(4);
       });
       select.on('select', listenerSpy);
 
@@ -124,8 +144,49 @@ describe('ol.interaction.Select', function() {
       expect(listenerSpy.callCount).to.be(1);
 
       var features = select.getFeatures();
-      expect(features.getLength()).to.equal(2);
+      expect(features.getLength()).to.equal(4);
     });
+  });
+
+  describe('filter features using the filter option', function() {
+    var select;
+
+    describe('with multi set to true', function() {
+
+      it('only selects features that pass the filter', function() {
+        var select = new ol.interaction.Select({
+          multi: true,
+          filter: function(feature, layer) {
+            return feature.get('type') === 'bar';
+          }
+        });
+        map.addInteraction(select);
+
+        simulateEvent(ol.MapBrowserEvent.EventType.SINGLECLICK, 10, -20);
+        var features = select.getFeatures();
+        expect(features.getLength()).to.equal(2);
+        expect(features.item(0).get('type')).to.be('bar');
+        expect(features.item(1).get('type')).to.be('bar');
+      });
+    });
+
+    describe('with multi set to false', function() {
+
+      it('only selects the first feature that passes the filter', function() {
+        var select = new ol.interaction.Select({
+          multi: false,
+          filter: function(feature, layer) {
+            return feature.get('type') === 'bar';
+          }
+        });
+        map.addInteraction(select);
+        simulateEvent(ol.MapBrowserEvent.EventType.SINGLECLICK, 10, -20);
+        var features = select.getFeatures();
+        expect(features.getLength()).to.equal(1);
+        expect(features.item(0).get('type')).to.be('bar');
+      });
+    });
+
   });
 
   describe('#setActive()', function() {

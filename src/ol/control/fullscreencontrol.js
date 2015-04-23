@@ -3,6 +3,7 @@ goog.provide('ol.control.FullScreen');
 goog.require('goog.asserts');
 goog.require('goog.dom');
 goog.require('goog.dom.TagName');
+goog.require('goog.dom.classlist');
 goog.require('goog.dom.fullscreen');
 goog.require('goog.dom.fullscreen.EventType');
 goog.require('goog.events');
@@ -122,9 +123,11 @@ ol.control.FullScreen.prototype.handleFullScreen_ = function() {
     goog.dom.fullscreen.exitFullScreen();
   } else {
     var target = map.getTarget();
-    goog.asserts.assert(goog.isDefAndNotNull(target));
+    goog.asserts.assert(goog.isDefAndNotNull(target),
+        'target should be defined');
     var element = goog.dom.getElement(target);
-    goog.asserts.assert(goog.isDefAndNotNull(element));
+    goog.asserts.assert(goog.isDefAndNotNull(element),
+        'element should be defined');
     if (this.keys_) {
       goog.dom.fullscreen.requestFullScreenWithKeys(element);
     } else {
@@ -138,10 +141,15 @@ ol.control.FullScreen.prototype.handleFullScreen_ = function() {
  * @private
  */
 ol.control.FullScreen.prototype.handleFullScreenChange_ = function() {
+  var opened = this.cssClassName_ + '-true';
+  var closed = this.cssClassName_ + '-false';
+  var button = goog.dom.getFirstElementChild(this.element);
   var map = this.getMap();
   if (goog.dom.fullscreen.isFullScreen()) {
+    goog.dom.classlist.swap(button, closed, opened);
     goog.dom.replaceNode(this.labelActiveNode_, this.labelNode_);
   } else {
+    goog.dom.classlist.swap(button, opened, closed);
     goog.dom.replaceNode(this.labelNode_, this.labelActiveNode_);
   }
   if (!goog.isNull(map)) {

@@ -45,7 +45,7 @@ ol.Observable.unByKey = function(key) {
 
 
 /**
- * Increases the revision counter and disptches a 'change' event.
+ * Increases the revision counter and dispatches a 'change' event.
  * @fires change
  * @api
  */

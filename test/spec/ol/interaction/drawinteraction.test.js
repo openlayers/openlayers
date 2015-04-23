@@ -145,6 +145,29 @@ describe('ol.interaction.Draw', function() {
       expect(ds).to.be.called(2);
       expect(de).to.be.called(1);
     });
+
+    it('triggers drawend event before inserting the feature', function() {
+      var receivedEvents = {
+        end: 0,
+        addfeature: 0
+      };
+      goog.events.listen(draw, ol.DrawEventType.DRAWEND, function() {
+        expect(receivedEvents.end).to.be(0);
+        expect(receivedEvents.addfeature).to.be(0);
+        ++receivedEvents.end;
+      });
+      source.on(ol.source.VectorEventType.ADDFEATURE, function() {
+        expect(receivedEvents.end).to.be(1);
+        expect(receivedEvents.addfeature).to.be(0);
+        receivedEvents.addfeature++;
+      });
+      simulateEvent('pointermove', 10, 20);
+      simulateEvent('pointerdown', 10, 20);
+      simulateEvent('pointerup', 10, 20);
+      simulateEvent('pointermove', 20, 20);
+      expect(receivedEvents.end).to.be(1);
+      expect(receivedEvents.addfeature).to.be(1);
+    });
   });
 
   describe('drawing multipoints', function() {
@@ -470,6 +493,58 @@ describe('ol.interaction.Draw', function() {
 
   });
 
+  describe('drawing circles', function() {
+    var draw;
+
+    beforeEach(function() {
+      draw = new ol.interaction.Draw({
+        source: source,
+        type: ol.geom.GeometryType.CIRCLE
+      });
+      map.addInteraction(draw);
+    });
+
+    it('draws circle with clicks, finishing on second point', function() {
+      // first point
+      simulateEvent('pointermove', 10, 20);
+      simulateEvent('pointerdown', 10, 20);
+      simulateEvent('pointerup', 10, 20);
+
+      // finish on second point
+      simulateEvent('pointermove', 30, 20);
+      simulateEvent('pointerdown', 30, 20);
+      simulateEvent('pointerup', 30, 20);
+
+      var features = source.getFeatures();
+      expect(features).to.have.length(1);
+      var geometry = features[0].getGeometry();
+      expect(geometry).to.be.a(ol.geom.Circle);
+      expect(geometry.getCenter()).to.eql([10, -20]);
+      expect(geometry.getRadius()).to.eql(20);
+    });
+
+    it('triggers draw events', function() {
+      var ds = sinon.spy();
+      var de = sinon.spy();
+      goog.events.listen(draw, ol.DrawEventType.DRAWSTART, ds);
+      goog.events.listen(draw, ol.DrawEventType.DRAWEND, de);
+
+      // first point
+      simulateEvent('pointermove', 10, 20);
+      simulateEvent('pointerdown', 10, 20);
+      simulateEvent('pointerup', 10, 20);
+
+      // finish on second point
+      simulateEvent('pointermove', 30, 20);
+      simulateEvent('pointerdown', 30, 20);
+      simulateEvent('pointerup', 30, 20);
+
+      expect(ds).to.be.called(1);
+      expect(de).to.be.called(1);
+    });
+
+  });
+
   describe('#setActive()', function() {
     var interaction;
 
@@ -596,6 +671,7 @@ goog.require('ol.DrawEventType');
 goog.require('ol.Map');
 goog.require('ol.MapBrowserPointerEvent');
 goog.require('ol.View');
+goog.require('ol.geom.Circle');
 goog.require('ol.geom.GeometryType');
 goog.require('ol.geom.LineString');
 goog.require('ol.geom.MultiLineString');
@@ -608,3 +684,4 @@ goog.require('ol.interaction.Interaction');
 goog.require('ol.layer.Vector');
 goog.require('ol.pointer.PointerEvent');
 goog.require('ol.source.Vector');
+goog.require('ol.source.VectorEventType');

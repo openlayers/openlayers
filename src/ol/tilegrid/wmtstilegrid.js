@@ -20,7 +20,9 @@ goog.require('ol.tilegrid.TileGrid');
 ol.tilegrid.WMTS = function(options) {
 
   goog.asserts.assert(
-      options.resolutions.length == options.matrixIds.length);
+      options.resolutions.length == options.matrixIds.length,
+      'options resolutions and matrixIds must have equal length (%s == %s)',
+      options.resolutions.length, options.matrixIds.length);
 
   /**
    * @private
@@ -34,7 +36,8 @@ ol.tilegrid.WMTS = function(options) {
     origins: options.origins,
     resolutions: options.resolutions,
     tileSize: options.tileSize,
-    tileSizes: options.tileSizes
+    tileSizes: options.tileSizes,
+    widths: options.widths
   });
 
 };
@@ -46,12 +49,14 @@ goog.inherits(ol.tilegrid.WMTS, ol.tilegrid.TileGrid);
  * @return {string} MatrixId..
  */
 ol.tilegrid.WMTS.prototype.getMatrixId = function(z) {
-  goog.asserts.assert(0 <= z && z < this.matrixIds_.length);
+  goog.asserts.assert(0 <= z && z < this.matrixIds_.length,
+      'attempted to retrive matrixId for illegal z (%s)', z);
   return this.matrixIds_[z];
 };
 
 
 /**
+ * Get the list of matrix identifiers.
  * @return {Array.<string>} MatrixIds.
  * @api
  */
@@ -61,6 +66,7 @@ ol.tilegrid.WMTS.prototype.getMatrixIds = function() {
 
 
 /**
+ * Create a tile grid from a WMTS capabilities matrix set.
  * @param {Object} matrixSet An object representing a matrixSet in the
  *     capabilities document.
  * @return {ol.tilegrid.WMTS} WMTS tileGrid instance.
@@ -75,8 +81,10 @@ ol.tilegrid.WMTS.createFromCapabilitiesMatrixSet =
   var matrixIds = [];
   /** @type {!Array.<ol.Coordinate>} */
   var origins = [];
-  /** @type {!Array.<number>} */
+  /** @type {!Array.<ol.Size>} */
   var tileSizes = [];
+  /** @type {!Array.<number>} */
+  var widths = [];
 
   var supportedCRSPropName = 'SupportedCRS';
   var matrixIdsPropName = 'TileMatrix';
@@ -110,14 +118,16 @@ ol.tilegrid.WMTS.createFromCapabilitiesMatrixSet =
             metersPerUnit);
         var tileWidth = elt[tileWidthPropName];
         var tileHeight = elt[tileHeightPropName];
-        goog.asserts.assert(tileWidth == tileHeight);
-        tileSizes.push(tileWidth);
+        tileSizes.push(tileWidth == tileHeight ?
+            tileWidth : [tileWidth, tileHeight]);
+        widths.push(elt['MatrixWidth']);
       });
 
   return new ol.tilegrid.WMTS({
     origins: origins,
     resolutions: resolutions,
     matrixIds: matrixIds,
-    tileSizes: tileSizes
+    tileSizes: tileSizes,
+    widths: widths
   });
 };
