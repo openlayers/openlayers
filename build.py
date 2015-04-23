@@ -15,6 +15,7 @@ from pake import Target
 from pake import ifind, main, output, rule, target, variables, virtual, which
 from Queue import Queue
 from threading import Thread
+from distutils import spawn
 
 def sigint_handler(signal, frame):
     print('Exiting')
@@ -102,7 +103,7 @@ else:
     variables.GJSLINT = 'gjslint'
     variables.JSHINT = './node_modules/.bin/jshint'
     variables.JSDOC = './node_modules/.bin/jsdoc'
-    variables.PYTHON = 'python'
+    variables.PYTHON = 'python2' if spawn.find_executable('python2') else 'python'
     variables.PHANTOMJS = './node_modules/.bin/phantomjs'
 
 variables.BRANCH = output(
