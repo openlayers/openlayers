@@ -244,6 +244,7 @@ ol.control.OverviewMap.prototype.handleRotationChanged_ = function() {
 
 
 /**
+ * Update the overview map element.
  * @param {ol.MapEvent} mapEvent Map event.
  * @this {ol.control.OverviewMap}
  * @api
@@ -479,6 +480,7 @@ ol.control.OverviewMap.prototype.handleToggle_ = function() {
 
 
 /**
+ * Return `true` if the overview map is collapsible, `false` otherwise.
  * @return {boolean} True if the widget is collapsible.
  * @api stable
  */
@@ -488,6 +490,7 @@ ol.control.OverviewMap.prototype.getCollapsible = function() {
 
 
 /**
+ * Set whether the overview map should be collapsible.
  * @param {boolean} collapsible True if the widget is collapsible.
  * @api stable
  */
@@ -504,6 +507,9 @@ ol.control.OverviewMap.prototype.setCollapsible = function(collapsible) {
 
 
 /**
+ * Collapse or expand the overview map according to the passed parameter. Will
+ * not do anything if the overview map isn't collapsible or if the current
+ * collapsed state is already the one requested.
  * @param {boolean} collapsed True if the widget is collapsed.
  * @api stable
  */
