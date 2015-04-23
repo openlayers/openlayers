@@ -175,6 +175,7 @@ ol.control.ZoomSlider.prototype.initSlider_ = function() {
 
 
 /**
+ * Update the zoomslider element.
  * @param {ol.MapEvent} mapEvent Map event.
  * @this {ol.control.ZoomSlider}
  * @api
