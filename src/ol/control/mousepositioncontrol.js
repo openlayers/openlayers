@@ -103,6 +103,7 @@ goog.inherits(ol.control.MousePosition, ol.control.Control);
 
 
 /**
+ * Update the mouseposition element.
  * @param {ol.MapEvent} mapEvent Map event.
  * @this {ol.control.MousePosition}
  * @api
@@ -130,6 +131,8 @@ ol.control.MousePosition.prototype.handleProjectionChanged_ = function() {
 
 
 /**
+ * Return the coordinate format type used to render the current position or
+ * undefined.
  * @return {ol.CoordinateFormatType|undefined} The format to render the current
  *     position in.
  * @observable
@@ -142,6 +145,7 @@ ol.control.MousePosition.prototype.getCoordinateFormat = function() {
 
 
 /**
+ * Return the projection that is used to report the mouse position.
  * @return {ol.proj.Projection|undefined} The projection to report mouse
  *     position in.
  * @observable
@@ -193,6 +197,7 @@ ol.control.MousePosition.prototype.setMap = function(map) {
 
 
 /**
+ * Set the coordinate format type used to render the current position.
  * @param {ol.CoordinateFormatType} format The format to render the current
  *     position in.
  * @observable
@@ -204,6 +209,7 @@ ol.control.MousePosition.prototype.setCoordinateFormat = function(format) {
 
 
 /**
+ * Set the projection that is used to report the mouse position.
  * @param {ol.proj.Projection} projection The projection to report mouse
  *     position in.
  * @observable
