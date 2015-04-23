@@ -27,6 +27,10 @@ ol.format.GML2 = function(opt_options) {
 
   goog.base(this, options);
 
+  this.FEATURE_COLLECTION_PARSERS[ol.format.GMLBase.GMLNS][
+      'featureMember'] =
+      ol.xml.makeArrayPusher(ol.format.GMLBase.prototype.readFeaturesInternal);
+
   /**
    * @inheritDoc
    */

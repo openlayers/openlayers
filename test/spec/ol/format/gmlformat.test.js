@@ -19,6 +19,25 @@ describe('ol.format.GML2', function() {
     formatNoSrs = new ol.format.GML2();
   });
 
+  describe('#readFeatures', function() {
+    var features;
+    before(function(done) {
+      var url = 'spec/ol/format/gml/osm-wfs-10.xml';
+      afterLoadText(url, function(xml) {
+        try {
+          features = new ol.format.GML2().readFeatures(xml);
+        } catch (e) {
+          done(e);
+        }
+        done();
+      });
+    });
+
+    it('reads all features', function() {
+      expect(features.length).to.be(3);
+    });
+
+  });
 
   describe('#readGeometry', function() {
 

@@ -101,9 +101,15 @@ ol.format.GMLBase.prototype.readFeaturesInternal = function(node, objectStack) {
   var localName = ol.xml.getLocalName(node);
   var features;
   if (localName == 'FeatureCollection') {
-    features = ol.xml.pushParseAndPop(null,
-        this.FEATURE_COLLECTION_PARSERS, node,
-        objectStack, this);
+    if (node.namespaceURI === 'http://www.opengis.net/wfs') {
+      features = ol.xml.pushParseAndPop([],
+          this.FEATURE_COLLECTION_PARSERS, node,
+          objectStack, this);
+    } else {
+      features = ol.xml.pushParseAndPop(null,
+          this.FEATURE_COLLECTION_PARSERS, node,
+          objectStack, this);
+    }
   } else if (localName == 'featureMembers' || localName == 'featureMember') {
     var context = objectStack[0];
     goog.asserts.assert(goog.isObject(context), 'context should be an Object');
