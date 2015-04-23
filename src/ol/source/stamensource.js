@@ -115,8 +115,13 @@ goog.inherits(ol.source.Stamen, ol.source.XYZ);
 
 
 /**
- * @param {string} layer
- * @api stable
+ * Set the Stamen Layer Source
+ * Available layers are: 
+ *  'terrain', 'terrain-background', 'terrain-labels', 
+ *  'terrain-lines', 'toner-background', 'toner', 'toner-hybrid', 
+ *  'toner-labels', 'toner-lines', 'toner-lite' and 'watercolor'.
+ * @param {string} The layer name
+ * @api
  */
 ol.source.Stamen.prototype.setLayer = function(layer) {
 
@@ -146,7 +151,8 @@ ol.source.Stamen.prototype.setLayer = function(layer) {
 
 
 /**
- * @return {string} Layer
+ * Get the layer of the source.
+ * @return {string} The Stamen layer name
  * @api
  */
 ol.source.Stamen.prototype.getLayer = function() {
