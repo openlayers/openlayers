@@ -207,8 +207,23 @@ function build(config, paths, callback) {
     concatenate(paths, callback);
   } else {
     log.info('ol', 'Compiling ' + paths.length + ' sources');
-    options.compile.js = paths.concat(options.compile.js || []);
-    closure.compile(options, callback);
+    var flags = paths.concat(options.compile.js || []).join(' ');
+    temp.open({prefix: 'flagfile'}, function(err, info) {
+      fs.writeFile(info.path, flags, function(err) {
+        if (err) {
+          callback(err);
+          return;
+        }
+        fs.close(info.fd, function(err) {
+          if (err) {
+            callback(err);
+            return;
+          }
+          options.compile.flagfile = info.path;
+          closure.compile(options, callback);
+        });
+      });
+    });
   }
 }
 

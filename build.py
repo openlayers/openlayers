@@ -62,13 +62,13 @@ class ThreadPool:
 if sys.platform == 'win32':
 
     win = {
-        'CLEANCSS': './node_modules/.bin/cleancss',
+        'CLEANCSS': '.\\node_modules\\.bin\\cleancss.cmd',
         'GIT': 'git.exe',
         'GJSLINT': 'gjslint.exe',
-        'JSDOC': './node_modules/.bin/jsdoc',
-        'JSHINT': './node_modules/.bin/jshint',
+        'JSDOC': '.\\node_modules\\.bin\\jsdoc.cmd',
+        'JSHINT': '.\\node_modules\\.bin\\jshint.cmd',
         'PYTHON': 'python.exe',
-        'PHANTOMJS': './node_modules/.bin/phantomjs'
+        'PHANTOMJS': '.\\node_modules\\.bin\\phantomjs.cmd'
     }
 
     sys_dir = os.environ.get('SYSTEMDRIVE')
