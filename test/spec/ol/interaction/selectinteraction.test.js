@@ -18,6 +18,9 @@ describe('ol.interaction.Select', function() {
     document.body.appendChild(target);
 
     var geometry = new ol.geom.Polygon([[[0, 0], [0, 40], [40, 40], [40, 0]]]);
+    var geometry2 = new ol.geom.Polygon([[
+      [50, 50], [50, 90], [90, 90], [90, 50]
+    ]]);
 
     // Four overlapping features, two features of type "foo" and two features
     // of type "bar". The rendering order is, from top to bottom, foo -> bar
@@ -39,6 +42,10 @@ describe('ol.interaction.Select', function() {
         new ol.Feature({
           geometry: geometry,
           type: 'foo'
+        }),
+        new ol.Feature({
+          geometry: geometry2,
+          type: 'other'
         }));
 
     source = new ol.source.Vector({
@@ -115,6 +122,21 @@ describe('ol.interaction.Select', function() {
       select.on('select', listenerSpy);
 
       simulateEvent(ol.MapBrowserEvent.EventType.SINGLECLICK, 10, -20);
+
+      expect(listenerSpy.callCount).to.be(1);
+
+      var features = select.getFeatures();
+      expect(features.getLength()).to.equal(1);
+    });
+
+    it('do not toggle selection with a second single-click', function() {
+      var listenerSpy = sinon.spy(function(e) {
+        expect(e.selected).to.have.length(1);
+      });
+      select.on('select', listenerSpy);
+
+      simulateEvent(ol.MapBrowserEvent.EventType.SINGLECLICK, 60, -70);
+      simulateEvent(ol.MapBrowserEvent.EventType.SINGLECLICK, 60, -70);
 
       expect(listenerSpy.callCount).to.be(1);
 
