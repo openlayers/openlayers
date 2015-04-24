@@ -133,6 +133,8 @@
 
 * The experimental `ol.loadingstrategy.createTile` function has been renamed to `ol.loadingstrategy.tile`. The signature of the function hasn't changed. See http://openlayers.org/en/master/examples/vector-osm.html for an example.
 
+* The `ol.Overlay` has one few nesting level: the `element` you give is now the one which is absolutely positioned. Previously one intermediate div element containing the element was positioned.
+
 #### Change to `ol.style.Icon`
 
 * When manually loading an image for `ol.style.Icon`, the image size should now be set
