@@ -89,11 +89,13 @@ ol.source.StamenProviderConfig = {
 ol.source.Stamen = function(options) {
 
   /**
-   * @type {string} url URL
+   * url
+   * @type {string}
    * @private
    */
 
-  this.rootUrl_ = goog.isDef(options.url) ? options.url : 'https://stamen-tiles-{a-d}.a.ssl.fastly.net/';
+  this.rootUrl_ = goog.isDef(options.url) ? options.url :
+      'https://stamen-tiles-{a-d}.a.ssl.fastly.net/';
 
   /**
    * Layer
