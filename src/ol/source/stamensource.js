@@ -92,9 +92,8 @@ ol.source.Stamen = function(options) {
    * @type {string} url URL
    * @private
    */
-  var root = ol.IS_HTTPS ? 'https://stamen-tiles-{a-d}.a.ssl.fastly.net/' :
-      'http://{a-d}.tile.stamen.com/';
-  this.rootUrl_ = goog.isDef(options.url) ? options.url : root;
+
+  this.rootUrl_ = goog.isDef(options.url) ? options.url : 'https://stamen-tiles-{a-d}.a.ssl.fastly.net/';
 
   /**
    * Layer
@@ -116,11 +115,11 @@ goog.inherits(ol.source.Stamen, ol.source.XYZ);
 
 /**
  * Set the Stamen Layer Source
- * Available layers are: 
- *  'terrain', 'terrain-background', 'terrain-labels', 
- *  'terrain-lines', 'toner-background', 'toner', 'toner-hybrid', 
+ * Available layers are:
+ *  'terrain', 'terrain-background', 'terrain-labels',
+ *  'terrain-lines', 'toner-background', 'toner', 'toner-hybrid',
  *  'toner-labels', 'toner-lines', 'toner-lite' and 'watercolor'.
- * @param {string} The layer name
+ * @param {string} layer The Stamen layer name
  * @api
  */
 ol.source.Stamen.prototype.setLayer = function(layer) {
@@ -152,7 +151,7 @@ ol.source.Stamen.prototype.setLayer = function(layer) {
 
 /**
  * Get the layer of the source.
- * @return {string} The Stamen layer name
+ * @return {string} layer The Stamen layer name
  * @api
  */
 ol.source.Stamen.prototype.getLayer = function() {
