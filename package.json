@@ -24,6 +24,12 @@
   "bugs": {
     "url": "https://github.com/openlayers/ol3/issues"
   },
+  "browser": {
+    "ol": "./node_modules/openlayers/dist/ol.js"
+  },
+  "style": [
+    "./node_modules/openlayers/css/ol.css"
+  ],
   "dependencies": {
     "async": "0.9.0",
     "closure-util": "1.4.0",
