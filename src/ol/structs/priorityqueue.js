@@ -138,6 +138,7 @@ ol.structs.PriorityQueue.prototype.enqueue = function(element) {
 
 /**
  * @return {number} Count.
+ * @api
  */
 ol.structs.PriorityQueue.prototype.getCount = function() {
   return this.elements_.length;

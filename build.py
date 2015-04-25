@@ -314,6 +314,7 @@ def examples_star_json(name, match):
               "externs/fastclick.js",
               "externs/geojson.js",
               "externs/jquery-1.9.js",
+              "externs/jspdf.js",
               "externs/proj4js.js",
               "externs/tilejson.js",
               "externs/topojson.js"

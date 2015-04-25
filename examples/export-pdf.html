@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no, width=device-width">
+    <link rel="stylesheet" href="../css/ol.css" type="text/css">
+    <link rel="stylesheet" href="../resources/bootstrap/css/bootstrap.min.css" type="text/css">
+    <link rel="stylesheet" href="../resources/layout.css" type="text/css">
+    <link rel="stylesheet" href="../resources/bootstrap/css/bootstrap-responsive.min.css" type="text/css">
+    <style>
+      .map {
+        max-width: 566px;
+      }
+    </style>
+    <title>Export PDF example</title>
+  </head>
+  <body>
+
+    <div class="navbar navbar-inverse navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container">
+          <a class="brand" href="./"><img src="../resources/logo.png"> OpenLayers 3 Examples</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="container-fluid">
+
+      <div class="row-fluid">
+        <div class="span12">
+          <div id="map" class="map"></div>
+        </div>
+      </div>
+
+      <div class="row-fluid">
+
+        <div class="span12">
+          <h4 id="title">Export PDF example</h4>
+          <p id="shortdesc">Example of exporting a map as a PDF.</p>
+          <div id="docs">
+            <p>See the <a href="export-pdf.js" target="_blank">export-pdf.js source</a> to see how this is done using the <a href="https://github.com/MrRio/jsPDF" target="_blank">jsPDF</a> library.</p>
+          </div>
+          <div>
+            <form class="form">
+              <label>Page size </label>
+              <select id="format">
+                <option value="a0">A0 (slow)</option>
+                <option value="a1">A1</option>
+                <option value="a2">A2</option>
+                <option value="a3">A3</option>
+                <option value="a4" selected>A4</option>
+                <option value="a5">A5 (fast)</option>
+              </select>
+              <label>Resolution </label>
+              <select id="resolution">
+                <option value="72">72 dpi (fast)</option>
+                <option value="150">150 dpi</option>
+                <option value="300">300 dpi (slow)</option>
+              </select>
+            </form>
+            <a id="export-pdf" class="btn"><i class="icon-download"></i><span id="button-label"> Export PDF<span></a>
+          </div>
+          <div id="tags">export, pdf, openstreetmap</div>
+        </div>
+
+      </div>
+
+    </div>
+
+    <script src="../resources/jquery.min.js" type="text/javascript"></script>
+    <script src="../resources/example-behaviour.js" type="text/javascript"></script>
+    <script src="http://mrrio.github.io/jsPDF/dist/jspdf.min.js" type="text/javascript"></script>
+    <script src="loader.js?id=export-pdf" type="text/javascript"></script>
+
+  </body>
+</html>
