@@ -9,8 +9,8 @@ before_script:
   - "rm src/ol/renderer/webgl/*shader.js"
   - "sh -e /etc/init.d/xvfb start"
 
-script: "./build.py ci"
+script: "make ci"
 
 after_success:
-  - "npm run test-coverage"
+  - "make test-coverage"
   - "cat coverage/lcov.info | ./node_modules/.bin/coveralls"

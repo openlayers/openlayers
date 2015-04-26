@@ -7,10 +7,10 @@ Similar to the unit tests, there are two ways to run the tests: directly in the
 browser or using [SlimerJS](http://slimerjs.org/) from the command-line.
 
 To run the tests in the browser, make sure the development server is running
-(`./build.py serve`) and open the URL
+(`make serve`) and open the URL
 [http://localhost:3000/test_rendering/index.html](http://localhost:3000/test_rendering/index.html).
 
-From the command-line the tests can be run with the build target `./build.py test-rendering`.
+From the command-line the tests can be run with the build target `make test-rendering`.
 
 ## Adding new tests
 When creating a new test case, a reference image has to be created. By appending `?generate`

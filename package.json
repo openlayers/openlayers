@@ -12,8 +12,7 @@
     "install": "node tasks/install.js",
     "postinstall": "closure-util update",
     "start": "node tasks/serve.js",
-    "test": "node tasks/test.js",
-    "test-coverage": "node tasks/test-coverage.js"
+    "test": "node tasks/test.js"
   },
   "main": "dist/ol.js",
   "repository": {
