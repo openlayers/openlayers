@@ -583,7 +583,7 @@ ol.interaction.Snap.SegmentDataType;
 ol.interaction.Snap.handleEvent_ = function(evt) {
   var result = this.snapTo(evt.pixel, evt.coordinate, evt.map);
   if (result.snapped) {
-    evt.coordinate = result.vertex;
+    evt.coordinate = result.vertex.slice(0, 2);
     evt.pixel = result.vertexPixel;
   }
   return ol.interaction.Pointer.handleEvent.call(this, evt);
