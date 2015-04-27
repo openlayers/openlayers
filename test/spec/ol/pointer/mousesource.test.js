@@ -3,12 +3,20 @@ goog.provide('ol.test.pointer.MouseSource');
 describe('ol.pointer.MouseSource', function() {
   var handler;
   var target;
+  var targetTouches;
   var eventSpy;
   var clock;
 
   beforeEach(function() {
     clock = sinon.useFakeTimers();
     target = goog.dom.createElement(goog.dom.TagName.DIV);
+    targetTouches = [{
+      target: target,
+      clientX: 15,
+      clientY: 15,
+      screenX: 15,
+      screenY: 15
+    }];
 
     // make sure that a mouse and touch event source is used
     ol.has.POINTER = false;
@@ -75,7 +83,8 @@ describe('ol.pointer.MouseSource', function() {
     var event = new goog.events.BrowserEvent({
       type: type,
       touches: touches,
-      changedTouches: touches
+      changedTouches: touches,
+      targetTouches: targetTouches
     });
     goog.events.fireListeners(target, type, false, event);
   }
