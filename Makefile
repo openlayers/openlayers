@@ -13,7 +13,7 @@ EXAMPLES := $(shell find examples -type f)
 EXAMPLES_HTML := $(filter-out examples/index.html,$(shell find examples -maxdepth 1 -type f -name '*.html'))
 EXAMPLES_JS := $(patsubst %.html,%.js,$(EXAMPLES_HTML))
 
-BUILD_EXAMPLES := $(subst examples,build/examples,$(EXAMPLES))
+BUILD_EXAMPLES := $(subst examples,build/examples,$(EXAMPLES)) build/examples/index.js
 
 BUILD_HOSTED := build/hosted/$(BRANCH)
 BUILD_HOSTED_EXAMPLES := $(addprefix $(BUILD_HOSTED)/,$(EXAMPLES))
@@ -151,6 +151,7 @@ host-examples: $(BUILD_HOSTED_EXAMPLES) \
                $(BUILD_HOSTED)/build/ol-debug.js \
                $(BUILD_HOSTED)/css/ol.css \
                $(BUILD_HOSTED)/examples/loader.js \
+               $(BUILD_HOSTED)/examples/index.js \
                $(BUILD_HOSTED)/build/ol-deps.js
 
 .PHONY: host-libraries
