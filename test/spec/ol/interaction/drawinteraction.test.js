@@ -225,6 +225,29 @@ describe('ol.interaction.Draw', function() {
       expect(geometry.getCoordinates()).to.eql([[10, -20], [30, -20]]);
     });
 
+    it('supports freehand drawing for linestrings', function() {
+      // freehand sequence
+      simulateEvent('pointermove', 10, 20);
+      simulateEvent('pointerdown', 10, 20, true);
+      simulateEvent('pointermove', 20, 30, true);
+      simulateEvent('pointerdrag', 20, 30, true);
+      simulateEvent('pointermove', 20, 40, true);
+      simulateEvent('pointerdrag', 20, 40, true);
+      simulateEvent('pointerup', 20, 40, true);
+
+      // finish on third point
+      simulateEvent('pointermove', 20, 40);
+      simulateEvent('pointerdown', 20, 40);
+      simulateEvent('pointerup', 20, 40);
+
+      var features = source.getFeatures();
+      expect(features).to.have.length(1);
+      var geometry = features[0].getGeometry();
+      expect(geometry).to.be.a(ol.geom.LineString);
+      expect(geometry.getCoordinates()).to.eql(
+          [[10, -20], [20, -30], [20, -40]]);
+    });
+
     it('does not add a point with a significant drag', function() {
       // first point
       simulateEvent('pointermove', 10, 20);
@@ -370,6 +393,30 @@ describe('ol.interaction.Draw', function() {
       simulateEvent('pointermove', 40, 10);
       simulateEvent('pointerdown', 40, 10);
       simulateEvent('pointerup', 40, 10);
+
+      // finish on last point
+      simulateEvent('pointerdown', 40, 10);
+      simulateEvent('pointerup', 40, 10);
+
+      var features = source.getFeatures();
+      expect(features).to.have.length(1);
+      var geometry = features[0].getGeometry();
+      expect(geometry).to.be.a(ol.geom.Polygon);
+
+      expect(geometry.getCoordinates()).to.eql([
+        [[10, -20], [30, -20], [40, -10], [10, -20]]
+      ]);
+    });
+
+    it('supports freehand drawing for polygons', function() {
+      // freehand sequence
+      simulateEvent('pointermove', 10, 20);
+      simulateEvent('pointerdown', 10, 20, true);
+      simulateEvent('pointermove', 30, 20, true);
+      simulateEvent('pointerdrag', 30, 20, true);
+      simulateEvent('pointermove', 40, 10, true);
+      simulateEvent('pointerdrag', 40, 10, true);
+      simulateEvent('pointerup', 40, 10, true);
 
       // finish on last point
       simulateEvent('pointerdown', 40, 10);

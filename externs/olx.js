@@ -2360,7 +2360,8 @@ olx.interaction.DragZoomOptions.prototype.style;
  *     minPointsPerRing: (number|undefined),
  *     style: (ol.style.Style|Array.<ol.style.Style>|ol.style.StyleFunction|undefined),
  *     geometryName: (string|undefined),
- *     condition: (ol.events.ConditionType|undefined)}}
+ *     condition: (ol.events.ConditionType|undefined),
+ *     freehandCondition: (ol.events.ConditionType|undefined)}}
  * @api
  */
 olx.interaction.DrawOptions;
@@ -2427,11 +2428,24 @@ olx.interaction.DrawOptions.prototype.geometryName;
 /**
  * A function that takes an {@link ol.MapBrowserEvent} and returns a boolean
  * to indicate whether that event should be handled.
- * By default {@link ol.events.condition.noModifierKeys} adds a vertex.
+ * By default {@link ol.events.condition.noModifierKeys}, i.e. a click, adds a
+ * vertex or deactivates freehand drawing.
  * @type {ol.events.ConditionType|undefined}
  * @api
  */
 olx.interaction.DrawOptions.prototype.condition;
+
+
+/**
+ * Condition that activates freehand drawing for lines and polygons. This
+ * function takes an {@link ol.MapBrowserEvent} and returns a boolean to
+ * indicate whether that event should be handled. The default is
+ * {@link ol.events.condition.shiftKeyOnly}, meaning that the Shift key
+ * activates freehand drawing.
+ * @type {ol.events.ConditionType|undefined}
+ * @api
+ */
+olx.interaction.DrawOptions.prototype.freehandCondition;
 
 
 /**

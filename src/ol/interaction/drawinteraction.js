@@ -99,6 +99,12 @@ ol.interaction.Draw = function(options) {
   this.downPx_ = null;
 
   /**
+   * @type {boolean}
+   * @private
+   */
+  this.freehand_ = false;
+
+  /**
    * Target source for drawn features.
    * @type {ol.source.Vector}
    * @private
@@ -212,6 +218,13 @@ ol.interaction.Draw = function(options) {
   this.condition_ = goog.isDef(options.condition) ?
       options.condition : ol.events.condition.noModifierKeys;
 
+  /**
+   * @private
+   * @type {ol.events.ConditionType}
+   */
+  this.freehandCondition_ = goog.isDef(options.freehandCondition) ?
+      options.freehandCondition : ol.events.condition.shiftKeyOnly;
+
   goog.events.listen(this,
       ol.Object.getChangeEventType(ol.interaction.InteractionProperty.ACTIVE),
       this.updateState_, false, this);
@@ -249,8 +262,13 @@ ol.interaction.Draw.prototype.setMap = function(map) {
  * @api
  */
 ol.interaction.Draw.handleEvent = function(mapBrowserEvent) {
-  var pass = true;
-  if (mapBrowserEvent.type === ol.MapBrowserEvent.EventType.POINTERMOVE) {
+  var pass = !this.freehand_;
+  if (this.freehand_ &&
+      mapBrowserEvent.type === ol.MapBrowserEvent.EventType.POINTERDRAG) {
+    this.addToDrawing_(mapBrowserEvent);
+    pass = false;
+  } else if (mapBrowserEvent.type ===
+      ol.MapBrowserEvent.EventType.POINTERMOVE) {
     pass = this.handlePointerMove_(mapBrowserEvent);
   } else if (mapBrowserEvent.type === ol.MapBrowserEvent.EventType.DBLCLICK) {
     pass = false;
@@ -269,6 +287,15 @@ ol.interaction.Draw.handleDownEvent_ = function(event) {
   if (this.condition_(event)) {
     this.downPx_ = event.pixel;
     return true;
+  } else if ((this.mode_ === ol.interaction.DrawMode.LINE_STRING ||
+      this.mode_ === ol.interaction.DrawMode.POLYGON) &&
+      this.freehandCondition_(event)) {
+    this.downPx_ = event.pixel;
+    this.freehand_ = true;
+    if (goog.isNull(this.finishCoordinate_)) {
+      this.startDrawing_(event);
+    }
+    return true;
   } else {
     return false;
   }
@@ -282,6 +309,7 @@ ol.interaction.Draw.handleDownEvent_ = function(event) {
  * @private
  */
 ol.interaction.Draw.handleUpEvent_ = function(event) {
+  this.freehand_ = false;
   var downPx = this.downPx_;
   var clickPx = event.pixel;
   var dx = downPx[0] - clickPx[0];
@@ -292,8 +320,8 @@ ol.interaction.Draw.handleUpEvent_ = function(event) {
     this.handlePointerMove_(event);
     if (goog.isNull(this.finishCoordinate_)) {
       this.startDrawing_(event);
-    } else if (this.mode_ === ol.interaction.DrawMode.POINT ||
-        this.mode_ === ol.interaction.DrawMode.CIRCLE &&
+    } else if ((this.mode_ === ol.interaction.DrawMode.POINT ||
+        this.mode_ === ol.interaction.DrawMode.CIRCLE) &&
             !goog.isNull(this.finishCoordinate_) ||
         this.atFinish_(event)) {
       this.finishDrawing();
@@ -357,7 +385,9 @@ ol.interaction.Draw.prototype.atFinish_ = function(event) {
         var pixel = event.pixel;
         var dx = pixel[0] - finishPixel[0];
         var dy = pixel[1] - finishPixel[1];
-        at = Math.sqrt(dx * dx + dy * dy) <= this.snapTolerance_;
+        var freehand = this.freehand_ && this.freehandCondition_(event);
+        var snapTolerance = freehand ? 1 : this.snapTolerance_;
+        at = Math.sqrt(dx * dx + dy * dy) <= snapTolerance;
         if (at) {
           this.finishCoordinate_ = finishCoordinate;
           break;
