@@ -2435,6 +2435,30 @@ olx.interaction.DrawOptions.prototype.condition;
 
 
 /**
+ * @typedef {{ features: ol.Collection.<ol.Feature>,
+ *     condition: (ol.events.ConditionType|undefined)}}
+ * @api
+ */
+olx.interaction.ScaleOptions;
+
+
+/**
+ * The features the interaction works on.
+ * @type {ol.Collection.<ol.Feature>}
+ * @api
+ */
+olx.interaction.ScaleOptions.prototype.features;
+
+
+/**
+ * Should the feature's aspect ratio be locked while scaling.
+ * @type {ol.events.ConditionType|undefined}
+ * @api
+ */
+olx.interaction.ScaleOptions.prototype.condition;
+
+
+/**
  * @typedef {{condition: (ol.events.ConditionType|undefined),
  *     duration: (number|undefined),
  *     pixelDelta: (number|undefined)}}
