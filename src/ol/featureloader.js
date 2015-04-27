@@ -36,7 +36,6 @@ ol.featureloader.loadFeaturesXhr = function(url, format, success) {
        */
       function(extent, resolution, projection) {
         var xhrIo = new goog.net.XhrIo();
-        var type = format.getType();
         xhrIo.setResponseType(goog.net.XhrIo.ResponseType.TEXT);
         goog.events.listen(xhrIo, goog.net.EventType.COMPLETE,
             /**
