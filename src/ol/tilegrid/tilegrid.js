@@ -534,27 +534,38 @@ ol.tilegrid.getForProjection = function(projection) {
  */
 ol.tilegrid.createForExtent =
     function(extent, opt_maxZoom, opt_tileSize, opt_corner) {
-  var tileSize = goog.isDef(opt_tileSize) ?
-      ol.size.toSize(opt_tileSize) : ol.size.toSize(ol.DEFAULT_TILE_SIZE);
-
   var corner = goog.isDef(opt_corner) ?
       opt_corner : ol.extent.Corner.BOTTOM_LEFT;
 
   var resolutions = ol.tilegrid.resolutionsFromExtent(
-      extent, opt_maxZoom, ol.size.toSize(tileSize));
-
-  var widths = new Array(resolutions.length);
-  var extentWidth = ol.extent.getWidth(extent);
-  for (var z = resolutions.length - 1; z >= 0; --z) {
-    widths[z] = extentWidth / tileSize[0] / resolutions[z];
-  }
+      extent, opt_maxZoom, opt_tileSize);
 
   return new ol.tilegrid.TileGrid({
+    extent: extent,
     origin: ol.extent.getCorner(extent, corner),
     resolutions: resolutions,
-    tileSize: goog.isDef(opt_tileSize) ? opt_tileSize : ol.DEFAULT_TILE_SIZE,
-    widths: widths
+    tileSize: opt_tileSize
   });
+};
+
+
+/**
+ * Creates a tile grid with a standard XYZ tiling scheme.
+ * @param {olx.tilegrid.XYZOptions=} opt_options Tile grid options.
+ * @return {ol.tilegrid.TileGrid} Tile grid instance.
+ * @api
+ */
+ol.tilegrid.createXYZ = function(opt_options) {
+  var options = /** @type {olx.tilegrid.TileGridOptions} */ ({});
+  goog.object.extend(options, goog.isDef(opt_options) ?
+      opt_options : /** @type {olx.tilegrid.XYZOptions} */ ({}));
+  if (!goog.isDef(options.extent)) {
+    options.extent = ol.proj.get('EPSG:3857').getExtent();
+  }
+  options.resolutions = ol.tilegrid.resolutionsFromExtent(
+      options.extent, options.maxZoom, options.tileSize);
+  delete options.maxZoom;
+  return new ol.tilegrid.TileGrid(options);
 };
 
 
@@ -563,7 +574,8 @@ ol.tilegrid.createForExtent =
  * @param {ol.Extent} extent Extent.
  * @param {number=} opt_maxZoom Maximum zoom level (default is
  *     ol.DEFAULT_MAX_ZOOM).
- * @param {ol.Size=} opt_tileSize Tile size (default uses ol.DEFAULT_TILE_SIZE).
+ * @param {number|ol.Size=} opt_tileSize Tile size (default uses
+ *     ol.DEFAULT_TILE_SIZE).
  * @return {!Array.<number>} Resolutions array.
  */
 ol.tilegrid.resolutionsFromExtent =
@@ -574,8 +586,8 @@ ol.tilegrid.resolutionsFromExtent =
   var height = ol.extent.getHeight(extent);
   var width = ol.extent.getWidth(extent);
 
-  var tileSize = goog.isDef(opt_tileSize) ?
-      opt_tileSize : ol.size.toSize(ol.DEFAULT_TILE_SIZE);
+  var tileSize = ol.size.toSize(goog.isDef(opt_tileSize) ?
+      opt_tileSize : ol.DEFAULT_TILE_SIZE);
   var maxResolution = Math.max(
       width / tileSize[0], height / tileSize[1]);
 
@@ -643,12 +655,8 @@ ol.tilegrid.createOriginTopLeftTileCoordTransform = function(tileGrid) {
         }
         var z = tileCoord[0];
         var fullTileRange = tileGrid.getFullTileRange(z);
-        var height;
-        if (goog.isNull(fullTileRange) || fullTileRange.minY < 0) {
-          height = 0;
-        } else {
-          height = fullTileRange.getHeight();
-        }
+        var height = (goog.isNull(fullTileRange) || fullTileRange.minY < 0) ?
+            0 : fullTileRange.getHeight();
         return ol.tilecoord.createOrUpdate(
             z, tileCoord[1], height - tileCoord[2] - 1, opt_tileCoord);
       }

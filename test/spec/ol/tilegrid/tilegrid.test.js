@@ -442,6 +442,32 @@ describe('ol.tilegrid.TileGrid', function() {
 
   });
 
+  describe('createXYZ()', function() {
+
+    it('uses defaults', function() {
+      var tileGrid = ol.tilegrid.createXYZ();
+      expect(tileGrid.getExtent()).to.eql(
+          ol.proj.get('EPSG:3857').getExtent());
+      expect(tileGrid.getMinZoom()).to.equal(0);
+      expect(tileGrid.getMaxZoom()).to.equal(ol.DEFAULT_MAX_ZOOM);
+      expect(tileGrid.getTileSize()).to.equal(ol.DEFAULT_TILE_SIZE);
+    });
+
+    it('respects configuration options', function() {
+      var tileGrid = ol.tilegrid.createXYZ({
+        extent: [10, 20, 30, 40],
+        minZoom: 1,
+        maxZoom: 2,
+        tileSize: 128
+      });
+      expect(tileGrid.getExtent()).to.eql([10, 20, 30, 40]);
+      expect(tileGrid.getMinZoom()).to.equal(1);
+      expect(tileGrid.getMaxZoom()).to.equal(2);
+      expect(tileGrid.getTileSize()).to.equal(128);
+    });
+
+  });
+
   describe('getForProjection', function() {
 
     it('gets the default tile grid for a projection', function() {

@@ -12,7 +12,6 @@ goog.require('ol.loadingstrategy');
 goog.require('ol.proj');
 goog.require('ol.source.Vector');
 goog.require('ol.source.XYZ');
-goog.require('ol.tilegrid.XYZ');
 
 
 var serviceUrl = 'http://services.arcgis.com/rOo16HdIMeOBI4Mb/arcgis/rest/' +
@@ -45,7 +44,7 @@ var vectorSource = new ol.source.Vector({
       }
     }});
   },
-  strategy: ol.loadingstrategy.tile(new ol.tilegrid.XYZ({
+  strategy: ol.loadingstrategy.tile(ol.tilegrid.createXYZ({
     tileSize: 512
   }))
 });

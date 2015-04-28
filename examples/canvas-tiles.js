@@ -5,7 +5,6 @@ goog.require('ol.layer.Tile');
 goog.require('ol.proj');
 goog.require('ol.source.OSM');
 goog.require('ol.source.TileDebug');
-goog.require('ol.tilegrid.XYZ');
 
 
 var map = new ol.Map({
@@ -16,9 +15,7 @@ var map = new ol.Map({
     new ol.layer.Tile({
       source: new ol.source.TileDebug({
         projection: 'EPSG:3857',
-        tileGrid: new ol.tilegrid.XYZ({
-          maxZoom: 22
-        })
+        tileGrid: ol.tilegrid.createXYZ({maxZoom: 22})
       })
     })
   ],

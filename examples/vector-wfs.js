@@ -8,7 +8,6 @@ goog.require('ol.source.BingMaps');
 goog.require('ol.source.Vector');
 goog.require('ol.style.Stroke');
 goog.require('ol.style.Style');
-goog.require('ol.tilegrid.XYZ');
 
 
 // format used to parse WFS GetFeature responses
@@ -24,7 +23,7 @@ var vectorSource = new ol.source.Vector({
     // parameter to the URL
     $.ajax({url: url, dataType: 'jsonp', jsonp: false});
   },
-  strategy: ol.loadingstrategy.tile(new ol.tilegrid.XYZ({
+  strategy: ol.loadingstrategy.tile(ol.tilegrid.createXYZ({
     maxZoom: 19
   }))
 });
