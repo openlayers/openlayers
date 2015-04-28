@@ -150,6 +150,129 @@ describe('ol.tilegrid.TileGrid', function() {
     });
   });
 
+  describe('create with extent exceeding tile ranges', function() {
+    it('throws an exception', function() {
+      expect(function() {
+        return new ol.tilegrid.TileGrid({
+          extent: [10, 20, 30, 40],
+          sizes: [[1, 1]],
+          tileSize: 10,
+          resolutions: [1]
+        });
+      }).to.throwException();
+      expect(function() {
+        return new ol.tilegrid.TileGrid({
+          extent: [10, 20, 30, 40],
+          origin: [10, 40], // top-left origin
+          sizes: [[3, 3]], // would have to be [[3, -3]] for this to not throw
+          tileSize: 10,
+          resolutions: [1]
+        });
+      }).to.throwException();
+    });
+  });
+
+  describe('create with origin', function() {
+    var tileGrid;
+    beforeEach(function() {
+      tileGrid = new ol.tilegrid.TileGrid({
+        origin: [10, 20],
+        tileSize: 10,
+        resolutions: [1]
+      });
+    });
+
+    it('returns the configured origin', function() {
+      expect(tileGrid.getOrigin()).to.eql([10, 20]);
+    });
+
+    it('returns null for an unknown extent', function() {
+      expect(tileGrid.getExtent()).to.equal(null);
+    });
+
+    it('returns null for an unknown full tile range', function() {
+      expect(tileGrid.getFullTileRange(0)).to.equal(null);
+    });
+  });
+
+  describe('create with extent', function() {
+    var tileGrid;
+    beforeEach(function() {
+      tileGrid = new ol.tilegrid.TileGrid({
+        extent: [10, 20, 30, 40],
+        tileSize: 10,
+        resolutions: [1]
+      });
+    });
+
+    it('assumes bottom left corner of extent as origin', function() {
+      expect(tileGrid.getOrigin()).to.eql([10, 20]);
+    });
+
+    it('calculates full tile ranges from extent', function() {
+      var fullTileRange = tileGrid.getFullTileRange(0);
+      expect(fullTileRange.minX).to.equal(0);
+      expect(fullTileRange.maxX).to.equal(1);
+      expect(fullTileRange.minY).to.equal(0);
+      expect(fullTileRange.maxY).to.equal(1);
+    });
+  });
+
+  describe('create with extent and sizes', function() {
+    var tileGrid;
+    beforeEach(function() {
+      tileGrid = new ol.tilegrid.TileGrid({
+        extent: [10, 20, 30, 40],
+        sizes: [[3, 3]],
+        tileSize: 10,
+        resolutions: [1]
+      });
+    });
+
+    it('returns the configured extent', function() {
+      expect(tileGrid.getExtent()).to.eql([10, 20, 30, 40]);
+    });
+
+    it('calculates full tile ranges from sizes', function() {
+      var fullTileRange = tileGrid.getFullTileRange(0);
+      expect(fullTileRange.minX).to.equal(0);
+      expect(fullTileRange.maxX).to.equal(2);
+      expect(fullTileRange.minY).to.equal(0);
+      expect(fullTileRange.maxY).to.equal(2);
+    });
+  });
+
+  describe('create with top-left origin and sizes', function() {
+    var tileGrid;
+    beforeEach(function() {
+      tileGrid = new ol.tilegrid.TileGrid({
+        origin: [10, 40],
+        sizes: [[3, -3]],
+        tileSize: 10,
+        resolutions: [1]
+      });
+    });
+
+    it('calculates correct minX and maxX for negative heights', function() {
+      var fullTileRange = tileGrid.getFullTileRange(0);
+      expect(fullTileRange.minY).to.equal(-3);
+      expect(fullTileRange.maxY).to.equal(-1);
+    });
+  });
+
+  describe('create with extent and origin', function() {
+    it('uses both origin and extent', function() {
+      var tileGrid = new ol.tilegrid.TileGrid({
+        origin: [0, 0],
+        extent: [10, 20, 30, 40],
+        tileSize: 10,
+        resolutions: [1]
+      });
+      expect(tileGrid.getOrigin()).to.eql([0, 0]);
+      expect(tileGrid.getExtent()).to.eql([10, 20, 30, 40]);
+    });
+  });
+
   describe('createForExtent', function() {
     it('allows creation of tile grid from extent', function() {
       var extent = ol.extent.createOrUpdate(-100, -100, 100, 100);
@@ -243,6 +366,78 @@ describe('ol.tilegrid.TileGrid', function() {
       var origin = grid.getOrigin();
       var half = ol.proj.EPSG3857.HALF_SIZE;
       expect(origin).to.eql([half, half]);
+    });
+
+  });
+
+  describe('createOriginTopLeftTileCoordTransform', function() {
+
+    it('transforms y to -y-1 for top-left origins', function() {
+      var tileGrid = new ol.tilegrid.TileGrid({
+        origin: [10, 40],
+        sizes: [[2, -2], [4, -4]],
+        resolutions: [1, 0.5],
+        tileSize: 10
+      });
+      var transformFn =
+          ol.tilegrid.createOriginTopLeftTileCoordTransform(tileGrid);
+      expect(transformFn([0, 0, -2])).to.eql([0, 0, 1]);
+      expect(transformFn([0, 0, -1])).to.eql([0, 0, 0]);
+      expect(transformFn([1, 0, -4])).to.eql([1, 0, 3]);
+      expect(transformFn([1, 0, -1])).to.eql([1, 0, 0]);
+    });
+
+    it('transforms y to -y-1 when origin corner is not specified', function() {
+      var tileGrid1 = new ol.tilegrid.TileGrid({
+        origin: [10, 20],
+        resolutions: [1, 0.5],
+        tileSize: 10
+      });
+      var tileGrid = new ol.tilegrid.TileGrid({
+        origin: [10, 40],
+        resolutions: [1, 0.5],
+        tileSize: 10
+      });
+      var transformFn1 =
+          ol.tilegrid.createOriginTopLeftTileCoordTransform(tileGrid);
+      var transformFn2 =
+          ol.tilegrid.createOriginTopLeftTileCoordTransform(tileGrid1);
+      expect(transformFn1([0, 0, -2])).to.eql([0, 0, 1]);
+      expect(transformFn2([0, 0, -2])).to.eql([0, 0, 1]);
+      expect(transformFn1([0, 0, -1])).to.eql([0, 0, 0]);
+      expect(transformFn2([0, 0, -1])).to.eql([0, 0, 0]);
+      expect(transformFn1([1, 0, -4])).to.eql([1, 0, 3]);
+      expect(transformFn2([1, 0, -4])).to.eql([1, 0, 3]);
+      expect(transformFn1([1, 0, -1])).to.eql([1, 0, 0]);
+      expect(transformFn2([1, 0, -1])).to.eql([1, 0, 0]);
+    });
+
+    it('transforms y to height-y-1 for bottom-left origins', function() {
+      var tileGrid1 = new ol.tilegrid.TileGrid({
+        extent: [10, 20, 30, 40],
+        resolutions: [1, 0.5],
+        tileSize: 10
+      });
+      var tileGrid2 = new ol.tilegrid.TileGrid({
+        origin: [10, 20],
+        sizes: [[2, 2], [4, 4]],
+        resolutions: [1, 0.5],
+        tileSize: 10
+      });
+      var transformFn1 =
+          ol.tilegrid.createOriginTopLeftTileCoordTransform(tileGrid1);
+      var transformFn2 =
+          ol.tilegrid.createOriginTopLeftTileCoordTransform(tileGrid2);
+      expect(tileGrid1.getFullTileRange(0).getHeight()).to.equal(2);
+      expect(transformFn1([0, 0, 0])).to.eql([0, 0, 1]);
+      expect(transformFn2([0, 0, 0])).to.eql([0, 0, 1]);
+      expect(transformFn1([0, 0, 1])).to.eql([0, 0, 0]);
+      expect(transformFn2([0, 0, 1])).to.eql([0, 0, 0]);
+      expect(tileGrid1.getFullTileRange(1).getHeight()).to.equal(4);
+      expect(transformFn1([1, 0, 0])).to.eql([1, 0, 3]);
+      expect(transformFn2([1, 0, 0])).to.eql([1, 0, 3]);
+      expect(transformFn1([1, 0, 3])).to.eql([1, 0, 0]);
+      expect(transformFn2([1, 0, 3])).to.eql([1, 0, 0]);
     });
 
   });
@@ -839,7 +1034,7 @@ describe('ol.tilegrid.TileGrid', function() {
     });
   });
 
-  describe('getZForResolution (approcimate)', function() {
+  describe('getZForResolution (approximate)', function() {
     it('returns the expected z value', function() {
       var tileGrid = new ol.tilegrid.TileGrid({
         resolutions: resolutions,
@@ -874,4 +1069,5 @@ goog.require('ol.proj');
 goog.require('ol.proj.EPSG3857');
 goog.require('ol.proj.Projection');
 goog.require('ol.proj.Units');
+goog.require('ol.TileRange');
 goog.require('ol.tilegrid.TileGrid');

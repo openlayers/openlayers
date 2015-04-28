@@ -75,9 +75,9 @@ ol.source.Source = function(options) {
 
   /**
    * @private
-   * @type {boolean|undefined}
+   * @type {boolean}
    */
-  this.wrapX_ = options.wrapX;
+  this.wrapX_ = goog.isDef(options.wrapX) ? options.wrapX : false;
 
 };
 goog.inherits(ol.source.Source, ol.Object);

@@ -2,6 +2,7 @@ goog.provide('ol.source.Tile');
 goog.provide('ol.source.TileEvent');
 goog.provide('ol.source.TileOptions');
 
+goog.require('goog.asserts');
 goog.require('goog.events.Event');
 goog.require('ol.Attribution');
 goog.require('ol.Extent');
@@ -216,28 +217,23 @@ ol.source.Tile.prototype.getTilePixelSize =
 
 
 /**
- * Handles x-axis wrapping. When `wrapX` is `undefined` or the projection is not
- * a global projection, `tileCoord` will be returned unaltered. When `wrapX` is
- * `true`, the tile coordinate will be wrapped horizontally.
- * When `wrapX` is `false`, `null` will be returned for tiles that are
- * outside the projection extent.
+ * Handles x-axis wrapping and returns a tile coordinate when it is within
+ * the resolution and extent range.
  * @param {ol.TileCoord} tileCoord Tile coordinate.
  * @param {ol.proj.Projection=} opt_projection Projection.
- * @return {ol.TileCoord} Tile coordinate.
+ * @return {ol.TileCoord} Tile coordinate to be passed to the tileUrlFunction or
+ *     null if no tile URL should be created for the passed `tileCoord`.
  */
-ol.source.Tile.prototype.getWrapXTileCoord =
+ol.source.Tile.prototype.getTileCoordForTileUrlFunction =
     function(tileCoord, opt_projection) {
   var projection = goog.isDef(opt_projection) ?
       opt_projection : this.getProjection();
   var tileGrid = this.getTileGridForProjection(projection);
-  var wrapX = this.getWrapX();
-  if (goog.isDef(wrapX) && tileGrid.isGlobal(tileCoord[0], projection)) {
-    return wrapX ?
-        ol.tilecoord.wrapX(tileCoord, tileGrid, projection) :
-        ol.tilecoord.clipX(tileCoord, tileGrid, projection);
-  } else {
-    return tileCoord;
+  goog.asserts.assert(!goog.isNull(tileGrid), 'tile grid needed');
+  if (this.getWrapX()) {
+    tileCoord = ol.tilecoord.wrapX(tileCoord, tileGrid, projection);
   }
+  return ol.tilecoord.restrictByExtentAndZ(tileCoord, tileGrid);
 };
 
 

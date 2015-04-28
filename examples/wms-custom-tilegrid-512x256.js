@@ -15,7 +15,7 @@ for (var i = 0, ii = resolutions.length; i < ii; ++i) {
   resolutions[i] = startResolution / Math.pow(2, i);
 }
 var tileGrid = new ol.tilegrid.TileGrid({
-  origin: ol.extent.getBottomLeft(projExtent),
+  extent: [-13884991, 2870341, -7455066, 6338219],
   resolutions: resolutions,
   tileSize: [512, 256]
 });
@@ -25,7 +25,6 @@ var layers = [
     source: new ol.source.MapQuest({layer: 'sat'})
   }),
   new ol.layer.Tile({
-    extent: [-13884991, 2870341, -7455066, 6338219],
     source: new ol.source.TileWMS({
       url: 'http://demo.boundlessgeo.com/geoserver/wms',
       params: {'LAYERS': 'topp:states', 'TILED': true},
