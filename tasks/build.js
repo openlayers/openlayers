@@ -20,9 +20,9 @@ var umdWrapper = '(function (root, factory) {\n' +
     '  if (typeof define === "function" && define.amd) {\n' +
     '    define([], factory);\n' +
     '  } else if (typeof exports === "object") {\n' +
-    '    module.exports = factory();\n' +
+    '    module.exports = factory.call(root);\n' +
     '  } else {\n' +
-    '    root.ol = factory();\n' +
+    '    root.ol = factory.call(root);\n' +
     '  }\n' +
     '}(this, function () {\n' +
     '  var OPENLAYERS = {};\n' +
@@ -63,6 +63,8 @@ function assertValidConfig(config, callback) {
       if (config.compile) {
         config.compile.output_wrapper = umdWrapper;
       }
+    } else {
+      config.compile.output_wrapper = '(function() { %output% }).call(this);';
     }
     callback(null);
   });
@@ -214,6 +216,20 @@ function build(config, paths, callback) {
 
 
 /**
+ * Optionally adds the `"use strict";` flag before the compiled source.
+ * @param {string} compiledSource The compiled library.
+ * @param {function(Error, string)} callback Called with the output
+ *     ready to be written into a file, or any error.
+ */
+function addStrictMode(config, compiledSource, callback) {
+  if (config.use_strict) {
+    compiledSource = '"use strict";\n' + compiledSource;
+  }
+  callback(null, compiledSource);
+}
+
+
+/**
  * Adds a file header with the most recent Git tag.
  * @param {string} compiledSource The compiled library.
  * @param {function(Error, string)} callback Called with the output
@@ -245,6 +261,7 @@ function main(config, callback) {
     generateExports.bind(null, config),
     getDependencies.bind(null, config),
     build.bind(null, config),
+    addStrictMode.bind(null, config),
     addHeader
   ], callback);
 }
