@@ -145,6 +145,7 @@ goog.require('ol.Feature');
 goog.require('ol.Map');
 goog.require('ol.MapBrowserPointerEvent');
 goog.require('ol.View');
+goog.require('ol.geom.Point');
 goog.require('ol.geom.Polygon');
 goog.require('ol.interaction.Modify');
 goog.require('ol.layer.Vector');
