@@ -8,6 +8,7 @@ goog.require('goog.functions');
 goog.require('ol.Object');
 goog.require('ol.geom.Geometry');
 goog.require('ol.style.Style');
+goog.require('ol.style.StyleFunction');
 
 
 
@@ -233,16 +234,25 @@ ol.Feature.prototype.setGeometry = function(geometry) {
 
 /**
  * Set the style for the feature.  This can be a single style object, an array
- * of styles, or a function that takes a resolution and returns an array of
- * styles. If it is `null` the feature has no style (a `null` style).
+ * of styles, a function that takes a feature and a resolution and returns an
+ * array of styles or a function that takes a resolution and returns an array
+ * of styles. If it is `null` the feature has no style (a `null` style).
  * @param {ol.style.Style|Array.<ol.style.Style>|
- *     ol.FeatureStyleFunction} style Style for this feature.
+ *     ol.FeatureStyleFunction|ol.style.StyleFunction} style Style for this
+ * feature.
  * @api stable
  */
 ol.Feature.prototype.setStyle = function(style) {
   this.style_ = style;
-  this.styleFunction_ = goog.isNull(style) ?
-      undefined : ol.Feature.createStyleFunction(style);
+  if (goog.isNull(style)) {
+    this.styleFunction_ = undefined;
+  } else if (goog.isFunction(style) && style.length === 2) {
+    this.styleFunction_ = function(resolution) {
+      return style.call(this, resolution);
+    };
+  } else {
+    this.styleFunction_ = ol.Feature.createStyleFunction(style);
+  }
   this.changed();
 };
 
@@ -294,7 +304,7 @@ ol.FeatureStyleFunction;
  * Convert the provided object into a feature style function.  Functions passed
  * through unchanged.  Arrays of ol.style.Style or single style objects wrapped
  * in a new feature style function.
- * @param {ol.FeatureStyleFunction|!Array.<ol.style.Style>|!ol.style.Style} obj
+ * @param {ol.FeatureStyleFunction|ol.style.StyleFunction|!Array.<ol.style.Style>|!ol.style.Style} obj
  *     A feature style function, a single style, or an array of styles.
  * @return {ol.FeatureStyleFunction} A style function.
  */
