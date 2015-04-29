@@ -43,6 +43,13 @@ var selectPointerMove = new ol.interaction.Select({
   condition: ol.events.condition.pointerMove
 });
 
+var selectAltClick = new ol.interaction.Select({
+  condition: function(mapBrowserEvent) {
+    return ol.events.condition.click(mapBrowserEvent) &&
+        ol.events.condition.altKeyOnly(mapBrowserEvent);
+  }
+});
+
 var selectElement = document.getElementById('type');
 
 var changeInteraction = function() {
@@ -56,6 +63,8 @@ var changeInteraction = function() {
     select = selectClick;
   } else if (value == 'pointermove') {
     select = selectPointerMove;
+  } else if (value == 'altclick') {
+    select = selectAltClick;
   } else {
     select = null;
   }
