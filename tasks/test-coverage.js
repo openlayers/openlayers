@@ -139,7 +139,15 @@ var foundAllJavaScriptSourceFiles = function(err, files) {
   files.forEach(function(file) {
     cnt++;
     var content = fs.readFileSync(file, 'utf-8');
-    var outfile = file.replace(/\/src\//, '/src-instrumented/');
+    // derive output file name from input file name, by replacing the *last*
+    // occurence of /src/ by /src-instrumented/
+    var re = new RegExp('/src/', 'g');
+    var m, match;
+    while ((m = re.exec(file)) !== null) {
+      match = m;
+    }
+    var outfile = file.substr(0, match.index) + '/src-instrumented/' +
+        file.substr(match.index + '/src/'.length);
     var instrumented = instrumenter.instrumentSync(content, file);
     fs.writeFileSync(outfile, instrumented);
     if (cnt % 10 === 0) {
