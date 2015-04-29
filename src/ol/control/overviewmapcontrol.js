@@ -108,13 +108,13 @@ ol.control.OverviewMap = function(opt_options) {
   });
 
   var resolutions = options.resolutions ? options.resolutions : false;
-  if(resolutions) {
+  if (resolutions) {
     view = new ol.View({
       projection: projection,
       resolutions: resolutions
     });
   }
-    /**
+  /**
    * @type {ol.Map}
    * @private
    */
