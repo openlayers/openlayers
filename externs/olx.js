@@ -1152,7 +1152,9 @@ olx.control.MousePositionOptions.prototype.undefinedHTML;
  *     collapsible: (boolean|undefined),
  *     label: (string|Node|undefined),
  *     layers: (Array.<ol.layer.Layer>|ol.Collection|undefined),
+ *     projection: (ol.proj.ProjectionLike|undefined),
  *     render: (function(ol.MapEvent)|undefined),
+ *     resolutions: (Array.<number>|undefined),
  *     target: (Element|undefined),
  *     tipLabel: (string|undefined)}}
  * @api
@@ -1203,6 +1205,14 @@ olx.control.OverviewMapOptions.prototype.label;
  */
 olx.control.OverviewMapOptions.prototype.layers;
 
+/**
+ * Projection of the overview map. If not set, then EPSG:3857 is used
+ * instead.
+ * @type {!ol.proj.ProjectionLike|undefined}
+ * @api
+ */
+olx.control.OverviewMapOptions.prototype.projection;
+
 
 /**
  * Function called when the control should be re-rendered. This is called
@@ -1211,6 +1221,14 @@ olx.control.OverviewMapOptions.prototype.layers;
  * @api
  */
 olx.control.OverviewMapOptions.prototype.render;
+
+/**
+ * Resolutions of the overview map. If not set, no resolutions will be
+ * set in the View.
+ * @type {!Array.<number>|undefined}
+ * @api
+ */
+olx.control.OverviewMapOptions.prototype.resolutions;
 
 
 /**
