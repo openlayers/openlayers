@@ -1,4 +1,4 @@
-var fs = require('fs');
+var fs = require('graceful-fs');
 
 // The number of files that we need to generate goog.require's for.
 var numFiles = process.argv.length - 1;
