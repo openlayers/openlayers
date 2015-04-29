@@ -37,8 +37,10 @@ def check_whitespace(*filenames):
         if whitespace:
             logger.info('%s: trailing whitespace at end of file', filename)
             errors += 1
-    if errors:
-        logger.error('%d whitespace errors' % (errors,))
+    return errors
 
 if __name__ == "__main__":
-    check_whitespace(*sys.argv[1:])
+    errors = check_whitespace(*sys.argv[1:])
+    if errors > 0:
+        logger.error('%d whitespace errors' % (errors,))
+        sys.exit(1)

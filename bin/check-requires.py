@@ -181,10 +181,13 @@ def check_requires(closure_lib, *filenames):
                             (filename, uses_linenos[missing_require],
                              missing_require))
                 missing_count += 1
-    if unused_count or missing_count:
-        logger.error('%d unused goog.requires, %d missing goog.requires' %
-                     (unused_count, missing_count))
+
+    return (unused_count, missing_count)
 
 
 if __name__ == "__main__":
-    check_requires(*sys.argv[1:])
+    unused_count, missing_count = check_requires(*sys.argv[1:])
+    if unused_count > 0 or missing_count > 0:
+        logger.error('%d unused goog.requires, %d missing goog.requires' %
+                     (unused_count, missing_count))
+        sys.exit(1)
