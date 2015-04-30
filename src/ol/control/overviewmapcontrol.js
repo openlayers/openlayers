@@ -127,12 +127,15 @@ ol.control.OverviewMap = function(opt_options) {
   });
   var ovmap = this.ovmap_;
 
+  // save layers for removing on update
+  this.currentLayers = [];
   if (goog.isDef(options.layers)) {
     options.layers.forEach(
         /**
        * @param {ol.layer.Layer} layer Layer.
        */
         function(layer) {
+          this.currentLayers.push(layer);
           ovmap.addLayer(layer);
         }, this);
   }
@@ -205,6 +208,32 @@ ol.control.OverviewMap.prototype.setMap = function(map) {
       }
     }
   }
+};
+
+
+/**
+ * Set new layers to the overview map. Current layers will be removed.
+ * @param {Array.<ol.layer.Layer>} layers Add these layers to the overview map.
+ * @public
+ */
+ol.control.OverviewMap.prototype.setLayers = function(layers) {
+  if (this.currentLayers && this.currentLayers.length > 0) {
+    this.currentLayers.forEach(
+        /**
+         * @param {ol.layer.Layer} layer Layer.
+         */
+        function(layer) {
+          this.ovmap_.removeLayer(layer);
+        }, this);
+  }
+  layers.forEach(
+      /**
+       * @param {ol.layer.Layer} layer Layer.
+       */
+      function(layer) {
+        this.currentLayers.push(layer);
+        this.ovmap_.addLayer(layer);
+      }, this);
 };
 
 

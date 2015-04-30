@@ -83,6 +83,65 @@ describe('ol.control.OverviewMap', function() {
     });
 
   });
+  describe('setLayers()', function() {
+
+    it('updates the layers of the overview map', function() {
+
+      var firstWmsSource = new ol.source.TileWMS({
+        url: 'http://demo.boundlessgeo.com/geoserver/wms',
+        params: {'LAYERS': 'ne:ne'},
+        serverType: 'geoserver',
+        crossOrigin: ''
+      });
+
+      var firstWmsLayer = new ol.layer.Tile({
+        source: firstWmsSource
+      });
+
+      var control = new ol.control.OverviewMap({layers: [firstWmsLayer]});
+      expect(control).to.be.a(ol.control.OverviewMap);
+      expect(control).to.be.a(ol.control.Control);
+
+      var view = new ol.View({
+        center: [0, 0],
+        zoom: 1
+      });
+
+      var firstLayerGroup = new ol.layer.Group({
+        layers: [firstWmsLayer]
+      });
+      map.setView(view);
+      map.setLayerGroup(firstLayerGroup);
+      map.addControl(control);
+
+      var ovLayers = control.ovmap_.getLayers();
+      expect(ovLayers.length === 1);
+      expect(ovLayers.item(0)).to.be(firstWmsLayer);
+
+      var secondWmsSource = new ol.source.TileWMS({
+        url: 'http://demo.boundlessgeo.com/geoserver/wms',
+        params: {'LAYERS': 'dark:dark'},
+        serverType: 'geoserver',
+        crossOrigin: ''
+      });
+
+      var secondWmsLayer = new ol.layer.Tile({
+        source: secondWmsSource
+      });
+
+      var secondLayerGroup = new ol.layer.Group({
+        layers: [secondWmsLayer]
+      });
+      map.setLayerGroup(secondLayerGroup);
+
+      control.setLayers([secondWmsLayer]);
+
+      ovLayers = control.ovmap_.getLayers();
+      expect(ovLayers.length === 1);
+      expect(ovLayers.item(0)).to.be(secondWmsLayer);
+
+    });
+  });
 
 });
 
@@ -90,3 +149,6 @@ goog.require('ol.Map');
 goog.require('ol.View');
 goog.require('ol.control.Control');
 goog.require('ol.control.OverviewMap');
+goog.require('ol.source.TileWMS');
+goog.require('ol.layer.Tile');
+goog.require('ol.layer.Group');
