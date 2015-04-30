@@ -24,9 +24,7 @@
   "bugs": {
     "url": "https://github.com/openlayers/ol3/issues"
   },
-  "browser": {
-    "openlayers": "dist/ol.js"
-  },
+  "browser": "dist/ol.js",
   "style": [
     "css/ol.css"
   ],
