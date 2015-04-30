@@ -214,7 +214,7 @@ ol.control.OverviewMap.prototype.setMap = function(map) {
 /**
  * Set new layers to the overview map. Current layers will be removed.
  * @param {Array.<ol.layer.Layer>} layers Add these layers to the overview map.
- * @public
+ * @api
  */
 ol.control.OverviewMap.prototype.setLayers = function(layers) {
   if (this.currentLayers && this.currentLayers.length > 0) {
