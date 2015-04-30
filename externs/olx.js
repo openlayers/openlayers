@@ -1152,7 +1152,7 @@ olx.control.MousePositionOptions.prototype.undefinedHTML;
  *     collapsible: (boolean|undefined),
  *     label: (string|Node|undefined),
  *     layers: (Array.<ol.layer.Layer>|ol.Collection|undefined),
- *     projection: (ol.proj.ProjectionLike|undefined),
+ *     projection: (ol.proj.ProjectionLike),
  *     render: (function(ol.MapEvent)|undefined),
  *     resolutions: (Array.<number>|undefined),
  *     target: (Element|undefined),

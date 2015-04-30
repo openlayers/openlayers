@@ -99,19 +99,20 @@ ol.control.OverviewMap = function(opt_options) {
 
   var ovmapDiv = goog.dom.createDom(goog.dom.TagName.DIV, 'ol-overviewmap-map');
 
+  var view;
+
   this.usesParentProjection_ = !goog.isDef(options.projection);
   var projection = this.usesParentProjection_ ?
       'EPSG:3857' : options.projection;
 
-  var view = new ol.View({
-    projection: projection
-  });
-
-  var resolutions = options.resolutions ? options.resolutions : false;
-  if (resolutions) {
+  if (options.resolutions) {
     view = new ol.View({
       projection: projection,
-      resolutions: resolutions
+      resolutions: options.resolutions
+    });
+  } else {
+    view = new ol.View({
+      projection: projection
     });
   }
   /**
