@@ -1,0 +1,23 @@
+---
+template: example.html
+title: Smooth parameters example 
+shortdesc: Example of smooth tile transitions when working with a WMTS server that takes extra parameters
+docs: >
+  <p> Demonstrates smooth reloading of layers when changing a dimension continously. The demonstration layer is a global sea-level computation (flooding computation from <a href="http://scalgo.com">SCALGO</a>, underlying data from <a href="http://www.cgiar-csi.org/data/srtm-90m-digital-elevation-database-v4-1">CGIAR-CSI SRTM</a>) where cells that are flooded if the sea-level rises to more than <em>x</em> m are colored blue. The user selects the sea-level dimension using a slider.</p>
+tags: "wmts, parameter"
+---
+<div class="row-fluid">
+	<div class="span6">
+		<h4>Regular</h4>
+		<div id="map" class="map"></div>
+	</div>
+	<div class="span6">
+		<h4>Smooth</h4>
+		<div id="map_smooth" class="map"></div>
+	</div><br />
+	<div class="span6 offset3">
+		Sea-level:	
+		<input id="slider" type="range" value="10" step="0.25" max="100" min="-1" />
+		<span id="theinfo"></span>
+	</div>
+</div>
