@@ -40,6 +40,18 @@ ol.interaction.MouseWheelZoom = function(opt_options) {
   this.duration_ = goog.isDef(options.duration) ? options.duration : 250;
 
   /**
+  * @private
+  * @type {number}
+  */
+  this.maxdelta_ = goog.isDef(options.maxdelta) ? options.maxdelta : ol.MOUSEWHEELZOOM_MAXDELTA;
+  
+    /**
+  * @private
+  * @type {number}
+  */
+  this.timeout_ = goog.isDef(options.timeout) ? options.timeout : ol.MOUSEWHEELZOOM_TIMEOUT_DURATION;
+
+  /**
    * @private
    * @type {?ol.Coordinate}
    */
@@ -85,7 +97,7 @@ ol.interaction.MouseWheelZoom.handleEvent = function(mapBrowserEvent) {
       this.startTime_ = goog.now();
     }
 
-    var duration = ol.MOUSEWHEELZOOM_TIMEOUT_DURATION;
+    var duration = this.timeout_;
     var timeLeft = Math.max(duration - (goog.now() - this.startTime_), 0);
 
     goog.global.clearTimeout(this.timeoutId_);
@@ -104,8 +116,7 @@ ol.interaction.MouseWheelZoom.handleEvent = function(mapBrowserEvent) {
  * @param {ol.Map} map Map.
  */
 ol.interaction.MouseWheelZoom.prototype.doZoom_ = function(map) {
-  var maxDelta = ol.MOUSEWHEELZOOM_MAXDELTA;
-  var delta = goog.math.clamp(this.delta_, -maxDelta, maxDelta);
+  var delta = goog.math.clamp(this.delta_, -this.maxdelta_, this.maxdelta_);
 
   var view = map.getView();
   goog.asserts.assert(!goog.isNull(view), 'view should not be null');

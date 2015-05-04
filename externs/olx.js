@@ -2581,6 +2581,21 @@ olx.interaction.MouseWheelZoomOptions.prototype.duration;
 
 
 /**
+ * Max delta. Default is `1`.
+ * @type {number|undefined}
+ * @api
+ */
+olx.interaction.MouseWheelZoomOptions.prototype.maxdelta;
+
+/**
+ * Timeout duration. Default is `80`.
+ * @type {number}
+ * @api
+ */
+olx.interaction.MouseWheelZoomOptions.prototype.timeout;
+
+
+/**
  * @typedef {{threshold: (number|undefined),
  *     duration: (number|undefined)}}
  * @api
