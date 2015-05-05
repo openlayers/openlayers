@@ -7,7 +7,7 @@
 
 ## Getting Started
 
-- Download the [latest release](https://github.com/openlayers/ol3/releases/tag/v3.4.0)
+- Download the [latest release](https://github.com/openlayers/ol3/releases/)
 - Install with npm: `npm install openlayers`
 - Clone the repo: `git clone git@github.com:openlayers/ol3.git`
 
