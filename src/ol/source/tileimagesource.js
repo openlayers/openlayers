@@ -93,7 +93,8 @@ ol.source.TileImage.prototype.getTile =
   } else {
     goog.asserts.assert(projection, 'argument projection is truthy');
     var tileCoord = [z, x, y];
-    var urlTileCoord = this.getWrapXTileCoord(tileCoord, projection);
+    var urlTileCoord = this.getTileCoordForTileUrlFunction(
+        tileCoord, projection);
     var tileUrl = goog.isNull(urlTileCoord) ? undefined :
         this.tileUrlFunction(urlTileCoord, pixelRatio, projection);
     var tile = new this.tileClass(

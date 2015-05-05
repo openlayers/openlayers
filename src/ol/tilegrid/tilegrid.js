@@ -4,6 +4,7 @@ goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('goog.functions');
 goog.require('goog.math');
+goog.require('goog.object');
 goog.require('ol');
 goog.require('ol.Coordinate');
 goog.require('ol.TileCoord');
@@ -69,6 +70,10 @@ ol.tilegrid.TileGrid = function(options) {
     goog.asserts.assert(this.origins_.length == this.resolutions_.length,
         'number of origins and resolutions must be equal');
   }
+  if (goog.isNull(this.origins_) && goog.isNull(this.origin_) &&
+      goog.isDef(options.extent)) {
+    this.origin_ = ol.extent.getBottomLeft(options.extent);
+  }
   goog.asserts.assert(
       (goog.isNull(this.origin_) && !goog.isNull(this.origins_)) ||
       (!goog.isNull(this.origin_) && goog.isNull(this.origins_)),
@@ -97,23 +102,57 @@ ol.tilegrid.TileGrid = function(options) {
       (!goog.isNull(this.tileSize_) && goog.isNull(this.tileSizes_)),
       'either tileSize or tileSizes must be configured, never both');
 
+  var extent = options.extent;
+
+  /**
+   * @private
+   * @type {ol.Extent}
+   */
+  this.extent_ = goog.isDef(extent) ? extent : null;
+
+  /**
+   * @private
+   * @type {Array.<ol.TileRange>}
+   */
+  this.fullTileRanges_ = null;
+
+  if (goog.isDef(options.sizes)) {
+    goog.asserts.assert(options.sizes.length == this.resolutions_.length,
+        'number of sizes and resolutions must be equal');
+    this.fullTileRanges_ = goog.array.map(options.sizes, function(size, z) {
+      goog.asserts.assert(size[0] > 0, 'width must be > 0');
+      goog.asserts.assert(size[1] !== 0, 'height must not be 0');
+      var tileRange = new ol.TileRange(0, size[0] - 1, 0, size[1] - 1);
+      if (tileRange.maxY < tileRange.minY) {
+        tileRange.minY = size[1];
+        tileRange.maxY = -1;
+      }
+      if (this.minZoom <= z && z <= this.maxZoom && goog.isDef(extent)) {
+        goog.asserts.assert(tileRange.containsTileRange(
+            this.getTileRangeForExtentAndZ(extent, z)),
+            'extent tile range must not exceed tilegrid width and height');
+      }
+      return tileRange;
+    }, this);
+  } else if (goog.isDef(extent)) {
+    var extentWidth = ol.extent.getWidth(extent);
+    var extentHeight = ol.extent.getHeight(extent);
+    var fullTileRanges = new Array(this.resolutions_.length);
+    var tileSize;
+    for (var z = 0, zz = fullTileRanges.length; z < zz; ++z) {
+      tileSize = ol.size.toSize(this.getTileSize(z), this.tmpSize_);
+      fullTileRanges[z] = new ol.TileRange(
+          0, Math.ceil(extentWidth / tileSize[0] / this.resolutions_[z]) - 1,
+          0, Math.ceil(extentHeight / tileSize[1] / this.resolutions_[z]) - 1);
+    }
+    this.fullTileRanges_ = fullTileRanges;
+  }
 
   /**
    * @private
    * @type {ol.Size}
    */
   this.tmpSize_ = [0, 0];
-
-  /**
-   * @private
-   * @type {Array.<number>}
-   */
-  this.widths_ = null;
-  if (goog.isDef(options.widths)) {
-    this.widths_ = options.widths;
-    goog.asserts.assert(this.widths_.length == this.resolutions_.length,
-        'number of widths and resolutions must be equal');
-  }
 
 };
 
@@ -158,6 +197,15 @@ ol.tilegrid.TileGrid.prototype.forEachTileCoordParentTileRange =
     --z;
   }
   return false;
+};
+
+
+/**
+ * Get the extent for this tile grid, if it was configured.
+ * @return {ol.Extent} Extent.
+ */
+ol.tilegrid.TileGrid.prototype.getExtent = function() {
+  return this.extent_;
 };
 
 
@@ -365,8 +413,11 @@ ol.tilegrid.TileGrid.prototype.getTileCoordForXYAndResolution_ = function(
   var origin = this.getOrigin(z);
   var tileSize = ol.size.toSize(this.getTileSize(z), this.tmpSize_);
 
-  var tileCoordX = scale * (x - origin[0]) / (resolution * tileSize[0]);
-  var tileCoordY = scale * (y - origin[1]) / (resolution * tileSize[1]);
+  var adjust = reverseIntersectionPolicy ? 0.5 : 0;
+  var xFromOrigin = ((x - origin[0]) / resolution + adjust) | 0;
+  var yFromOrigin = ((y - origin[1]) / resolution + adjust) | 0;
+  var tileCoordX = scale * xFromOrigin / tileSize[0];
+  var tileCoordY = scale * yFromOrigin / tileSize[1];
 
   if (reverseIntersectionPolicy) {
     tileCoordX = Math.ceil(tileCoordX) - 1;
@@ -410,25 +461,6 @@ ol.tilegrid.TileGrid.prototype.getTileCoordResolution = function(tileCoord) {
 
 
 /**
- * @param {number} z Zoom level.
- * @param {ol.proj.Projection} projection Projection.
- * @param {ol.TileRange=} opt_tileRange Tile range.
- * @return {ol.TileRange} Tile range.
- */
-ol.tilegrid.TileGrid.prototype.getTileRange =
-    function(z, projection, opt_tileRange) {
-  var projectionExtentTileRange = this.getTileRangeForExtentAndZ(
-      ol.tilegrid.extentFromProjection(projection), z);
-  var width = this.getWidth(z);
-  if (!goog.isDef(width)) {
-    width = projectionExtentTileRange.getWidth();
-  }
-  return ol.TileRange.createOrUpdate(
-      0, width - 1, 0, projectionExtentTileRange.getHeight(), opt_tileRange);
-};
-
-
-/**
  * Get the tile size for a zoom level. The type of the return value matches the
  * `tileSize` or `tileSizes` that the tile grid was configured with. To always
  * get an `ol.Size`, run the result through `ol.size.toSize()`.
@@ -452,15 +484,16 @@ ol.tilegrid.TileGrid.prototype.getTileSize = function(z) {
 
 /**
  * @param {number} z Zoom level.
- * @return {number|undefined} Width for the specified zoom level or `undefined`
- *     if unknown.
+ * @return {ol.TileRange} Extent tile range for the specified zoom level.
  */
-ol.tilegrid.TileGrid.prototype.getWidth = function(z) {
-  if (!goog.isNull(this.widths_)) {
+ol.tilegrid.TileGrid.prototype.getFullTileRange = function(z) {
+  if (goog.isNull(this.fullTileRanges_)) {
+    return null;
+  } else {
     goog.asserts.assert(this.minZoom <= z && z <= this.maxZoom,
         'z is not in allowed range (%s <= %s <= %s',
         this.minZoom, z, this.maxZoom);
-    return this.widths_[z];
+    return this.fullTileRanges_[z];
   }
 };
 
@@ -472,26 +505,6 @@ ol.tilegrid.TileGrid.prototype.getWidth = function(z) {
 ol.tilegrid.TileGrid.prototype.getZForResolution = function(resolution) {
   var z = ol.array.linearFindNearest(this.resolutions_, resolution, 0);
   return goog.math.clamp(z, this.minZoom, this.maxZoom);
-};
-
-
-/**
- * @param {number} z Zoom level.
- * @param {ol.proj.Projection} projection Projection.
- * @return {boolean} Whether the tile grid is defined for the whole globe when
- *     used with the provided `projection` at zoom level `z`.
- */
-ol.tilegrid.TileGrid.prototype.isGlobal = function(z, projection) {
-  var width = this.getWidth(z);
-  if (goog.isDef(width)) {
-    var projTileGrid = ol.tilegrid.getForProjection(projection);
-    var projExtent = projection.getExtent();
-    return ol.size.toSize(this.getTileSize(z), this.tmpSize_)[0] * width ==
-        projTileGrid.getTileSize(z) *
-        projTileGrid.getTileRangeForExtentAndZ(projExtent, z).getWidth();
-  } else {
-    return projection.isGlobal();
-  }
 };
 
 
@@ -521,27 +534,38 @@ ol.tilegrid.getForProjection = function(projection) {
  */
 ol.tilegrid.createForExtent =
     function(extent, opt_maxZoom, opt_tileSize, opt_corner) {
-  var tileSize = goog.isDef(opt_tileSize) ?
-      ol.size.toSize(opt_tileSize) : ol.size.toSize(ol.DEFAULT_TILE_SIZE);
-
   var corner = goog.isDef(opt_corner) ?
       opt_corner : ol.extent.Corner.BOTTOM_LEFT;
 
   var resolutions = ol.tilegrid.resolutionsFromExtent(
-      extent, opt_maxZoom, ol.size.toSize(tileSize));
-
-  var widths = new Array(resolutions.length);
-  var extentWidth = ol.extent.getWidth(extent);
-  for (var z = resolutions.length - 1; z >= 0; --z) {
-    widths[z] = extentWidth / tileSize[0] / resolutions[z];
-  }
+      extent, opt_maxZoom, opt_tileSize);
 
   return new ol.tilegrid.TileGrid({
+    extent: extent,
     origin: ol.extent.getCorner(extent, corner),
     resolutions: resolutions,
-    tileSize: goog.isDef(opt_tileSize) ? opt_tileSize : ol.DEFAULT_TILE_SIZE,
-    widths: widths
+    tileSize: opt_tileSize
   });
+};
+
+
+/**
+ * Creates a tile grid with a standard XYZ tiling scheme.
+ * @param {olx.tilegrid.XYZOptions=} opt_options Tile grid options.
+ * @return {ol.tilegrid.TileGrid} Tile grid instance.
+ * @api
+ */
+ol.tilegrid.createXYZ = function(opt_options) {
+  var options = /** @type {olx.tilegrid.TileGridOptions} */ ({});
+  goog.object.extend(options, goog.isDef(opt_options) ?
+      opt_options : /** @type {olx.tilegrid.XYZOptions} */ ({}));
+  if (!goog.isDef(options.extent)) {
+    options.extent = ol.proj.get('EPSG:3857').getExtent();
+  }
+  options.resolutions = ol.tilegrid.resolutionsFromExtent(
+      options.extent, options.maxZoom, options.tileSize);
+  delete options.maxZoom;
+  return new ol.tilegrid.TileGrid(options);
 };
 
 
@@ -550,7 +574,8 @@ ol.tilegrid.createForExtent =
  * @param {ol.Extent} extent Extent.
  * @param {number=} opt_maxZoom Maximum zoom level (default is
  *     ol.DEFAULT_MAX_ZOOM).
- * @param {ol.Size=} opt_tileSize Tile size (default uses ol.DEFAULT_TILE_SIZE).
+ * @param {number|ol.Size=} opt_tileSize Tile size (default uses
+ *     ol.DEFAULT_TILE_SIZE).
  * @return {!Array.<number>} Resolutions array.
  */
 ol.tilegrid.resolutionsFromExtent =
@@ -561,8 +586,8 @@ ol.tilegrid.resolutionsFromExtent =
   var height = ol.extent.getHeight(extent);
   var width = ol.extent.getWidth(extent);
 
-  var tileSize = goog.isDef(opt_tileSize) ?
-      opt_tileSize : ol.size.toSize(ol.DEFAULT_TILE_SIZE);
+  var tileSize = ol.size.toSize(goog.isDef(opt_tileSize) ?
+      opt_tileSize : ol.DEFAULT_TILE_SIZE);
   var maxResolution = Math.max(
       width / tileSize[0], height / tileSize[1]);
 
@@ -607,4 +632,33 @@ ol.tilegrid.extentFromProjection = function(projection) {
     extent = ol.extent.createOrUpdate(-half, -half, half, half);
   }
   return extent;
+};
+
+
+/**
+ * @param {ol.tilegrid.TileGrid} tileGrid Tile grid.
+ * @return {function(ol.TileCoord, ol.proj.Projection, ol.TileCoord=):
+ *     ol.TileCoord} Tile coordinate transform.
+ */
+ol.tilegrid.createOriginTopLeftTileCoordTransform = function(tileGrid) {
+  goog.asserts.assert(!goog.isNull(tileGrid), 'tileGrid required');
+  return (
+      /**
+       * @param {ol.TileCoord} tileCoord Tile coordinate.
+       * @param {ol.proj.Projection} projection Projection.
+       * @param {ol.TileCoord=} opt_tileCoord Destination tile coordinate.
+       * @return {ol.TileCoord} Tile coordinate.
+       */
+      function(tileCoord, projection, opt_tileCoord) {
+        if (goog.isNull(tileCoord)) {
+          return null;
+        }
+        var z = tileCoord[0];
+        var fullTileRange = tileGrid.getFullTileRange(z);
+        var height = (goog.isNull(fullTileRange) || fullTileRange.minY < 0) ?
+            0 : fullTileRange.getHeight();
+        return ol.tilecoord.createOrUpdate(
+            z, tileCoord[1], height - tileCoord[2] - 1, opt_tileCoord);
+      }
+  );
 };
