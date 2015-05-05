@@ -43,13 +43,15 @@ ol.interaction.MouseWheelZoom = function(opt_options) {
   * @private
   * @type {number}
   */
-  this.maxdelta_ = goog.isDef(options.maxdelta) ? options.maxdelta : ol.MOUSEWHEELZOOM_MAXDELTA;
-  
-    /**
+  this.maxdelta_ = goog.isDef(options.maxdelta) ?
+      options.maxdelta : ol.MOUSEWHEELZOOM_MAXDELTA;
+
+  /**
   * @private
   * @type {number}
   */
-  this.timeout_ = goog.isDef(options.timeout) ? options.timeout : ol.MOUSEWHEELZOOM_TIMEOUT_DURATION;
+  this.timeout_ = goog.isDef(options.timeout) ?
+      options.timeout : ol.MOUSEWHEELZOOM_TIMEOUT_DURATION;
 
   /**
    * @private
