@@ -3556,8 +3556,9 @@ olx.layer.VectorOptions.prototype.opacity;
 
 /**
  * The buffer around the viewport extent used by the renderer when getting
- * features from the vector source. Recommended value: the size of the
- * largest symbol or line width. Default is 100 pixels.
+ * features from the vector source for the rendering or hit-detection.
+ * Recommended value: the size of the largest symbol, line width or label.
+ * Default is 100 pixels.
  * @type {number|undefined}
  * @api
  */
