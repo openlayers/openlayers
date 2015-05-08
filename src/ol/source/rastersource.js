@@ -16,6 +16,7 @@ goog.require('ol.raster.IdentityOp');
 goog.require('ol.renderer.canvas.ImageLayer');
 goog.require('ol.renderer.canvas.TileLayer');
 goog.require('ol.source.Image');
+goog.require('ol.source.State');
 goog.require('ol.source.Tile');
 
 
@@ -173,12 +174,34 @@ ol.source.Raster.prototype.getImage =
 
 
 /**
+ * Determine if all sources are ready.
+ * @return {boolean} All sources are ready.
+ * @private
+ */
+ol.source.Raster.prototype.allSourcesReady_ = function() {
+  var ready = true;
+  var source;
+  for (var i = 0, ii = this.renderers_.length; i < ii; ++i) {
+    source = this.renderers_[i].getLayer().getSource();
+    if (source.getState() !== ol.source.State.READY) {
+      ready = false;
+      break;
+    }
+  }
+  return ready;
+};
+
+
+/**
  * Compose the frame.  This renders data from all sources, runs pixel-wise
  * operations, and renders the result to the stored canvas context.
  * @param {olx.FrameState} frameState The frame state.
  * @private
  */
 ol.source.Raster.prototype.composeFrame_ = function(frameState) {
+  if (!this.allSourcesReady_()) {
+    return;
+  }
   var len = this.renderers_.length;
   var imageDatas = new Array(len);
   var pixels = new Array(len);
