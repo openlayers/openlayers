@@ -14,15 +14,16 @@ free to ping us or to send a pull request enhancing this document.
 
 Table of contents:
 
-* [What projection is OpenLayers using?](#what-projection-is-openlayers-using)
-* [How do I change the projection of my map?](#how-do-i-change-the-projection-of-my-map)
-* [Why is my map centered on the gulf of guinea (or africa, the ocean, null-island)?](#why-is-my-map-centered-on-the-gulf-of-guinea-or-africa-the-ocean-null-island)
-* [Why is the order of a coordinate [lon,lat], and not [lat,lon]?](#why-is-the-order-of-a-coordinate-lonlat-and-not-latlon)
-* [Why aren't there any features in my source?](#why-arent-there-any-features-in-my-source)
-* [How do I force a re-render of the map?](#how-do-i-force-a-re-render-of-the-map)
-* [How do I create a custom build of OpenLayers?](#how-do-i-create-a-custom-build-of-openlayers)
-* [Do I need to write my own code using Closure library?](#do-i-need-to-write-my-own-code-using-closure-library)
-* [Do I need to compress my code with Closure compiler?](#do-i-need-to-compress-my-code-with-closure-compiler)
+* [What projection is OpenLayers using?](#what-projection-is-openlayers-using-)
+* [How do I change the projection of my map?](#how-do-i-change-the-projection-of-my-map-)
+* [Why is my map centered on the gulf of guinea (or africa, the ocean, null-island)?](#why-is-my-map-centered-on-the-gulf-of-guinea-or-africa-the-ocean-null-island-)
+* [Why is the order of a coordinate [lon,lat], and not [lat,lon]?](#why-is-the-order-of-a-coordinate-lon-lat-and-not-lat-lon-)
+* [Why aren't there any features in my source?](#why-aren-t-there-any-features-in-my-source-)
+* [How do I force a re-render of the map?](#how-do-i-force-a-re-render-of-the-map-)
+* [How do I create a custom build of OpenLayers?](#how-do-i-create-a-custom-build-of-openlayers-)
+* [Do I need to write my own code using Closure library?](#do-i-need-to-write-my-own-code-using-closure-library-)
+* [Do I need to compress my code with Closure compiler?](#do-i-need-to-compress-my-code-with-closure-compiler-)
+
 
 ## What projection is OpenLayers using?
 
@@ -302,7 +303,7 @@ map.renderSync();
 
 ## How do I create a custom build of OpenLayers?
 
-Please refer to [this blog post](http://boundlessgeo.com/2014/10/openlayers-custom-builds-revisited/)
+Please refer to the [official create custom builds tutorial](tutorials/custom-builds.html)
 which explains how to create a custom build of OpenLayers with just those parts
 included that you want.
 
@@ -326,7 +327,8 @@ compiler](https://developers.google.com/closure/compiler/).
 It may be a good choice though, because when your application code and the
 OpenLayers source code is compiled together using closure compiler, the
 resulting build will most probably be the smallest in terms of byte-size. For
-more details refer to [this tutorial](compile-application.md).
+more details refer to the
+[compile application and OpenLayers together tutorial](tutorials/closure.html).
 
 If you don't want to use the closure compiler, or you can't, you are not at all
 forced to use it.
