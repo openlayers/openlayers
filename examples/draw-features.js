@@ -51,9 +51,16 @@ var draw; // global so we can remove it later
 function addInteraction() {
   var value = typeSelect.value;
   if (value !== 'None') {
+    var geometryFunction;
+    if (value === 'Square') {
+      value = 'Circle';
+      geometryFunction =
+          ol.interaction.Draw.createRegularPolygon(4, Math.PI / 4);
+    }
     draw = new ol.interaction.Draw({
       source: source,
-      type: /** @type {ol.geom.GeometryType} */ (value)
+      type: /** @type {ol.geom.GeometryType} */ (value),
+      geometryFunction: geometryFunction
     });
     map.addInteraction(draw);
   }

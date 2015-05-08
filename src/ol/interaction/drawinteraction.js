@@ -706,6 +706,42 @@ ol.interaction.Draw.prototype.updateState_ = function() {
 
 
 /**
+ * Create a `geometryFunction` for `mode: 'Circle'` that will create a regular
+ * polygon with a user specified number of sides and start angle instead of an
+ * `ol.geom.Circle` geometry.
+ * @param {number=} opt_sides Number of sides of the regular polygon. Default is
+ *     32.
+ * @param {number=} opt_angle Angle of the first point in radians. 0 means East.
+ *     Default is 0.
+ * @return {ol.interaction.Draw.GeometryFunctionType} Function that draws a
+ *     polygon.
+ * @api
+ */
+ol.interaction.Draw.createRegularPolygon = function(opt_sides, opt_angle) {
+  var sides = goog.isDef(opt_sides) ? opt_sides : 32;
+  var angle = goog.isDef(opt_angle) ? opt_angle : 0;
+  return (
+      /**
+       * @param {ol.Coordinate|Array.<ol.Coordinate>|Array.<Array.<ol.Coordinate>>} coordinates
+       * @param {ol.geom.SimpleGeometry=} opt_geometry
+       * @return {ol.geom.SimpleGeometry}
+       */
+      function(coordinates, opt_geometry) {
+        var center = coordinates[0];
+        var radius = Math.sqrt(
+            ol.coordinate.squaredDistance(coordinates[0], coordinates[1]));
+        var geometry = goog.isDef(opt_geometry) ? opt_geometry :
+            ol.geom.Polygon.fromCircle(new ol.geom.Circle(center), sides);
+        goog.asserts.assertInstanceof(geometry, ol.geom.Polygon,
+            'geometry must be a polygon');
+        ol.geom.Polygon.makeRegular(geometry, center, radius, angle);
+        return geometry;
+      }
+  );
+};
+
+
+/**
  * Get the drawing mode.  The mode for mult-part geometries is the same as for
  * their single-part cousins.
  * @param {ol.geom.GeometryType} type Geometry type.
