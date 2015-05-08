@@ -364,6 +364,35 @@ describe('ol.View', function() {
     });
   });
 
+  describe('#calculateExtent', function() {
+    it('returns the expect extent', function() {
+      var view = new ol.View({
+        resolutions: [512],
+        zoom: 0,
+        center: [0, 0]
+      });
+
+      var extent = view.calculateExtent([100, 200]);
+      expect(extent[0]).to.be(-25600);
+      expect(extent[1]).to.be(-51200);
+      expect(extent[2]).to.be(25600);
+      expect(extent[3]).to.be(51200);
+    });
+    it('returns the expected extent with rotation', function() {
+      var view = new ol.View({
+        resolutions: [512],
+        zoom: 0,
+        center: [0, 0],
+        rotation: Math.PI / 2
+      });
+      var extent = view.calculateExtent([100, 200]);
+      expect(extent[0]).to.roughlyEqual(-51200, 1e-9);
+      expect(extent[1]).to.roughlyEqual(-25600, 1e-9);
+      expect(extent[2]).to.roughlyEqual(51200, 1e-9);
+      expect(extent[3]).to.roughlyEqual(25600, 1e-9);
+    });
+  });
+
   describe('fit', function() {
     var view;
     beforeEach(function() {
