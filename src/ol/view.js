@@ -275,15 +275,17 @@ ol.View.prototype.getHints = function() {
  * @api stable
  */
 ol.View.prototype.calculateExtent = function(size) {
-  goog.asserts.assert(this.isDef(),
-      'the view was not defined (had no center and/or resolution)');
   var center = this.getCenter();
+  goog.asserts.assert(goog.isDefAndNotNull(center),
+      'The view center is not defined');
   var resolution = this.getResolution();
-  var minX = center[0] - resolution * size[0] / 2;
-  var maxX = center[0] + resolution * size[0] / 2;
-  var minY = center[1] - resolution * size[1] / 2;
-  var maxY = center[1] + resolution * size[1] / 2;
-  return [minX, minY, maxX, maxY];
+  goog.asserts.assert(goog.isDef(resolution),
+      'The view resolution is not defined');
+  var rotation = this.getRotation();
+  goog.asserts.assert(goog.isDef(rotation),
+      'The view rotation is not defined');
+
+  return ol.extent.getForViewAndSize(center, resolution, rotation, size);
 };
 
 
