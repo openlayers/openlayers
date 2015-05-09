@@ -44,7 +44,7 @@ var createServer = exports.createServer = function(callback) {
   manager.on('ready', function() {
     server = new closure.Server({
       manager: manager,
-      loader: /^.*\/loader\.js/,
+      loader: /^\/(?:(?:build\/examples)|(?:test(?:_rendering)?))\/loader\.js/,
       getMain: function(req) {
         var main;
         var query = url.parse(req.url, true).query;
