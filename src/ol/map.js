@@ -503,7 +503,9 @@ ol.Map.prototype.addInteraction = function(interaction) {
 
 
 /**
- * Adds the given layer to the top of this map.
+ * Adds the given layer to the top of this map. If you want to add a layer
+ * elsewhere in the stack, use `getLayers()` and the methods available on
+ * {@link ol.Collection}.
  * @param {ol.layer.Base} layer Layer.
  * @api stable
  */
