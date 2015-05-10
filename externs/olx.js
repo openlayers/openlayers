@@ -226,7 +226,10 @@ olx.MapOptions.prototype.keyboardEventTarget;
 
 
 /**
- * Layers. If this is not defined, a map with no layers will be rendered.
+ * Layers. If this is not defined, a map with no layers will be rendered. Note
+ * that layers are rendered in the order supplied, so if you want, for example,
+ * a vector layer to appear on top of a tile layer, it must come after the tile
+ * layer.
  * @type {Array.<ol.layer.Base>|ol.Collection.<ol.layer.Base>|undefined}
  * @api stable
  */
