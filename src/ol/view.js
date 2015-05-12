@@ -436,6 +436,8 @@ ol.View.prototype.getZoom = function() {
 
 /**
  * Fit the given geometry or extent based on the given map size and border.
+ * The size is pixel deminsions of the box to fit the extent into.
+ * In most cases you will want to use the map size, that is `map.getSize()`.
  * Take care on the map angle.
  * @param {ol.geom.SimpleGeometry|ol.Extent} geometry Geometry.
  * @param {ol.Size} size Box pixel size.
@@ -443,8 +445,11 @@ ol.View.prototype.getZoom = function() {
  * @api
  */
 ol.View.prototype.fit = function(geometry, size, opt_options) {
-
   if (!(geometry instanceof ol.geom.SimpleGeometry)) {
+    goog.asserts.assert(goog.isArray(geometry),
+        'invalid extent or geometry');
+    goog.asserts.assert(!ol.extent.isEmpty(geometry),
+        'cannot fit empty extent');
     geometry = ol.geom.Polygon.fromExtent(geometry);
   }
 

@@ -8,7 +8,7 @@
 
 #### Replace `ol.View.fitExtent()` and `ol.View.fitGeometry()` with `ol.View.fit()`
 * This combines two previously distinct functions into one more flexible call which takes either a geometry or an extent.
-* Rename all calls to `fitExtent` and `fitGeometry` to `fit`
+* Rename all calls to `fitExtent` and `fitGeometry` to `fit`.
 
 #### `ol.tilegrid` changes
 
