@@ -480,6 +480,16 @@ describe('ol.View', function() {
       expect(view.getCenter()[0]).to.be(1500);
       expect(view.getCenter()[1]).to.be(1500);
     });
+    it('throws on invalid geometry/extent value', function() {
+      expect(function() {
+        view.fit(true, [200, 200]);
+      }).to.throwException();
+    });
+    it('throws on empty extent', function() {
+      expect(function() {
+        view.fit(ol.extent.createEmpty(), [200, 200]);
+      }).to.throwException();
+    });
   });
 
   describe('centerOn', function() {
@@ -512,5 +522,6 @@ describe('ol.View', function() {
 });
 
 goog.require('ol.View');
+goog.require('ol.extent');
 goog.require('ol.geom.LineString');
 goog.require('ol.geom.Point');
