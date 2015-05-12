@@ -4513,7 +4513,12 @@ olx.source.StamenOptions;
 
 
 /**
- * Layer.
+ * Layer. The Stamen layer name.
+ * Available layers are:
+ *  'terrain', 'terrain-background', 'terrain-labels',
+ *  'terrain-lines', 'toner-background', 'toner', 'toner-hybrid',
+ *  'toner-labels', 'toner-lines', 'toner-lite' and 'watercolor'.
+ * Required.
  * @type {string}
  * @api stable
  */
@@ -4553,7 +4558,7 @@ olx.source.StamenOptions.prototype.tileLoadFunction;
 
 
 /**
- * URL template. Must include `{x}`, `{y}` or `{-y}`, and `{z}` placeholders.
+ * Root URL. Default is 'https://stamen-tiles-{a-d}.a.ssl.fastly.net/'.
  * @type {string|undefined}
  * @api stable
  */
