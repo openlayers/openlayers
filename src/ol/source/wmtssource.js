@@ -458,7 +458,8 @@ ol.source.WMTS.optionsFromCapabilities = function(wmtsCap, config) {
       'requestEncoding (%s) is one of "REST", "RESTful", "KVP" or ""',
       requestEncoding);
 
-  if (!wmtsCap['OperationsMetadata'].hasOwnProperty('GetTile') ||
+  if (!wmtsCap.hasOwnProperty('OperationsMetadata') ||
+      !wmtsCap['OperationsMetadata'].hasOwnProperty('GetTile') ||
       goog.string.startsWith(requestEncoding, 'REST')) {
     // Add REST tile resource url
     requestEncoding = ol.source.WMTSRequestEncoding.REST;
