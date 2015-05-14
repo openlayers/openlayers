@@ -164,12 +164,15 @@ ol.extent.containsCoordinate = function(extent, coordinate) {
 
 
 /**
- * Check if one extent is contained by or on the edge of another.
+ * Check if one extent contains another.
+ *
+ * An extent is deemed contained if it lies completely within the other extent,
+ * including if they share one or more edges.
  *
  * @param {ol.Extent} extent1 Extent 1.
  * @param {ol.Extent} extent2 Extent 2.
- * @return {boolean} The first extent is contained by or on the edge of the
- *     second.
+ * @return {boolean} The second extent is contained by or on the edge of the
+ *     first.
  * @api stable
  */
 ol.extent.containsExtent = function(extent1, extent2) {
