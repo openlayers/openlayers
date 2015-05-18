@@ -491,12 +491,23 @@ ol.format.WKT.Lexer.prototype.nextToken = function() {
 ol.format.WKT.Lexer.prototype.readNumber_ = function() {
   var c, index = this.index_;
   var decimal = false;
+  var scientificNotation = false;
   do {
     if (c == '.') {
       decimal = true;
+    } else if (goog.isDef(c) && c.toLowerCase() == 'e') {
+      scientificNotation = true;
     }
     c = this.nextChar_();
-  } while (this.isNumeric_(c, decimal));
+  } while (
+      this.isNumeric_(c, decimal) ||
+      // once c is defined we may have a scientific number indicated by 'e'
+      // but only if we haven't detected a scientific number before
+      !scientificNotation && goog.isDef(c) && c.toLowerCase() == 'e' ||
+      // once we know that we have a scientific number, both '-' and '+'
+      // are allowed
+      scientificNotation && (c == '-' || c == '+')
+  );
   return parseFloat(this.wkt.substring(index, this.index_--));
 };
 
