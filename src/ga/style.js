@@ -1,7 +1,7 @@
 goog.provide('ga.style');
 goog.provide('ga.style.StylesFromLiterals');
 
-
+goog.require('goog.asserts');
 goog.require('ol.geom.Point');
 goog.require('ol.geom.MultiPoint');
 goog.require('ol.geom.LineString');
@@ -22,45 +22,66 @@ goog.require('ga');
 
 
 ga.style = {};
-ga.style.StylesFromLiterals = function(properties) {
-  var olStyle;
 
+/**
+ * @constructor
+ */
+ga.style.StylesFromLiterals = function(properties) {
+  /**
+   * @type {ol.style.Style}
+   */
   this.singleStyle = null;
 
+  /**
+   * @type {Object}
+   */
   this.styles = {
     point: {},
     line: {},
     polygon: {}
   };
 
-  this.type = properties.type;
+  /**
+   * @type {string}
+   */
+  this.type = properties['type'];
 
-  if (this.type === 'unique' || this.type === 'range') {
-      this.key = properties.property;
+  var olStyle;
+  var type = this.type;
+
+  if (type === 'unique' || type === 'range') {
+    this.key = properties['property'];
   }
 
-  if (this.type === 'single') {
+  if (type === 'single') {
     olStyle = this.getOlStyleFromLiterals_(properties);
     this.singleStyle = olStyle;
-  } else if (this.type === 'unique') {
-    var values = properties.values;
+  } else if (type === 'unique') {
+    var values = properties['values'];
     for (var i = 0; i < values.length; i++) {
       var value = values[i];
+      var geomType = value['geomType'];
       olStyle = this.getOlStyleFromLiterals_(value);
-      this.styles[value.geomType][value.value] = olStyle;
+      this.styles[geomType][value['value']] = olStyle;
     }
-  } else if (this.type === 'range') {
-    var ranges = properties.ranges;
+  } else if (type === 'range') {
+    var ranges = properties['ranges'];
     for (var i = 0; i < ranges.length; i++) {
       var range = ranges[i];
+      var geomType = range['geomType'];
       olStyle = this.getOlStyleFromLiterals_(range);
       var key = range.range.toLocaleString();
-      this.styles[range.geomType][key] = olStyle;
+      this.styles[geomType][key] = olStyle;
     }
   }
 };
 
-
+/**
+ * Get style for a given feature
+ * @method
+ * @param {ol.Feature} feature
+ * @return {ol.style.Style}
+ */
 ga.style.StylesFromLiterals.prototype.getFeatureStyle = function(feature) {
   var getGeomTypeFromGeometry = function(olGeometry) {
     if (olGeometry instanceof ol.geom.Point ||
@@ -74,17 +95,17 @@ ga.style.StylesFromLiterals.prototype.getFeatureStyle = function(feature) {
       return 'polygon';
     }
   };
-
-  if (this.type === 'single') {
+  var type = this.type;
+  if (type === 'single') {
     return this.singleStyle;
-  } else if (this.type === 'unique') {
+  } else if (type === 'unique') {
     var properties = feature.getProperties();
     var value = properties[this.key];
     var geomType = getGeomTypeFromGeometry(
       feature.getGeometry()
     );
     return this.styles[geomType][value];
-  } else if (this.type === 'range') {
+  } else if (type === 'range') {
     var properties = feature.getProperties();
     var value = properties[this.key];
     var geomType = getGeomTypeFromGeometry(
@@ -135,7 +156,9 @@ ga.style.StylesFromLiterals.prototype.getOlStyleForPoint_ = function(options, sh
         angle: 0
       }
     };
-    var style = {};
+    var style = {
+      points: 3
+    };
     for (var key in shapes[shape]) {
       style[key] = shapes[shape][key];
     }
@@ -166,8 +189,8 @@ ga.style.StylesFromLiterals.prototype.getOlBasicStyles_ = function(options) {
 ga.style.StylesFromLiterals.prototype.getOlStyleFromLiterals_ = function(value) {
   var k;
   var olStyles = {};
-  var style = value.vectorOptions;
-  var geomType = value.geomType;
+  var style = value['vectorOptions'];
+  var geomType = value['geomType'];
   if (geomType === 'point') {
       style = {
         image: style

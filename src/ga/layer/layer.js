@@ -2,12 +2,21 @@ goog.provide('ga.layer');
 goog.provide('ga.source.wms');
 goog.provide('ga.source.wmts');
 
+goog.require('ga.style.StylesFromLiterals');
+
 goog.require('goog.array');
 goog.require('goog.object');
+goog.require('goog.events');
+goog.require('goog.net.EventType');
+goog.require('goog.net.XhrIo');
+goog.require('goog.net.XhrIo.ResponseType');
 goog.require('ol.Attribution');
+goog.require('ol.format.GeoJSON');
+goog.require('ol.source.Vector');
 goog.require('ol.layer.Group');
 goog.require('ol.layer.Tile');
 goog.require('ol.layer.Image');
+goog.require('ol.layer.Vector');
 goog.require('ol.source.TileWMS');
 goog.require('ol.source.ImageWMS');
 goog.require('ol.source.WMTS');
@@ -22,7 +31,7 @@ goog.require('ol.tilegrid.WMTS');
  * @method
  * @param {string} layer Geoadmin layer id.
  * @param {Object=} options Optional layer options (used in order to overide options defined in the layer configuration).
- * @return {ol.layer.Group|ol.layer.Image|ol.layer.Tile|undefined}
+ * @return {ol.layer.Group|ol.layer.Image|ol.layer.Tile|ol.layer.Vector|undefined}
  * @api stable
  */
 ga.layer.create = function(layer, options) {
@@ -74,37 +83,88 @@ ga.layer.create = function(layer, options) {
         source: ga.source.wmts(layer, layerConfig),
         useInterimTilesOnError: false
       });
+    } else if (layerConfig.type == 'geojson') {
+      var geojsonFormat = new ol.format.GeoJSON();
+      var olSource = new ol.source.Vector();
+      olLayer = new ol.layer.Vector({
+        source: olSource
+      });
+      var setLayerStyle = function() {
+        var xhrIo = new goog.net.XhrIo;
+        xhrIo.setResponseType(goog.net.XhrIo.ResponseType.TEXT);
+        goog.events.listenOnce(xhrIo, goog.net.EventType.COMPLETE,
+          function(event) {
+            var source = xhrIo.getResponseText();
+            var olStyleForVector = new ga.style.StylesFromLiterals(source);
+            olLayer.setStyle(function(feature) {
+              return [olStyleForVector.getFeatureStyle(feature)];
+            });
+            xhrIo.dispose();
+          }
+        );
+        xhrIo.send(layerConfig.styleUrl, 'GET');
+      };
+      var setLayerSource = function() {
+        var xhrIo = new goog.net.XhrIo;
+        xhrIo.setResponseType(goog.net.XhrIo.ResponseType.TEXT);
+        goog.events.listenOnce(xhrIo, goog.net.EventType.COMPLETE,
+          function(event) {
+            var source = xhrIo.getResponseText();
+            olSource.clear();
+            olSource.addFeatures(geojsonFormat.readFeatures(source));
+            xhrIo.dispose();
+          }
+        );
+        xhrIo.send(layerConfig.geojsonUrl, 'GET');
+      };
+      setLayerStyle();
+      setLayerSource();
     }
   }
   Object.defineProperties(Object(olLayer), {
-   'id': {
+    id: {
       get: function() {
         return layer;
       }
     },
-    'hasLegend': {
+    hasLegend: {
       get: function() {
         return layerConfig['hasLegend'];
       }
     },
-    'highlighable': {
+    highlighable: {
       get: function() {
         return layerConfig['highlighable'];
       }
     },
-    'label': {
+    label: {
       get: function() {
         return layerConfig['label'];
       }
     },
-    'queryable': {
+    queryable: {
       get: function() {
         return layerConfig['queryable'];
       }
     },
-    'searchable': {
+    searchable: {
       get: function() {
         return layerConfig['searchable'];
+      }
+    },
+    geojsonUrl: {
+      get: function() {
+        return layerConfig['geojsonUrl'];
+      }
+    },
+    styleUrl: {
+      get: function() {
+        return layerConfig['styleUrl'];
+      }
+    },
+    updateDelay: {
+      get: function() {
+        return layerConfig['updateDelay'];
       }
     },
     timeEnabled: {
