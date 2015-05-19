@@ -28,9 +28,12 @@ var vectorSource = new ol.source.Vector({
   }))
 });
 
-// the global function whose name is specified in the URL of JSONP WFS
-// GetFeature requests
-var loadFeatures = function(response) {
+
+/**
+ * JSONP WFS callback function.
+ * @param {Object} response The response object.
+ */
+window.loadFeatures = function(response) {
   vectorSource.addFeatures(geojsonFormat.readFeatures(response));
 };
 
