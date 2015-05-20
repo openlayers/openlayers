@@ -40,7 +40,7 @@ var map = new ol.Map({
       source: source
     })
   ],
-  renderer: common.getRendererFromQueryString(),
+  renderer: exampleNS.getRendererFromQueryString(),
   target: 'map',
   view: new ol.View({
     projection: proj,

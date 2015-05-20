@@ -1,5 +1,5 @@
 /**
- * @fileoverview Externs for FastClick 1.0.6
+ * @fileoverview Externs for FastClick 1.0.3
  * @see https://github.com/ftlabs/fastclick
  * @externs
  */
@@ -13,8 +13,7 @@ var FastClick = {};
 /**
  * @typedef {{
  *   touchBoundary: (number|undefined),
- *   tapDelay: (number|undefined),
- *   tapTimeout: (number|undefined)
+ *   tapDelay: (number|undefined)
  * }}
  */
 FastClick.AttachOptions;

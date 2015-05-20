@@ -1,10 +1,9 @@
 goog.require('ol.Map');
 goog.require('ol.View');
-goog.require('ol.format.TopoJSON');
 goog.require('ol.layer.Tile');
 goog.require('ol.layer.Vector');
 goog.require('ol.source.TileJSON');
-goog.require('ol.source.Vector');
+goog.require('ol.source.TopoJSON');
 goog.require('ol.style.Fill');
 goog.require('ol.style.Stroke');
 goog.require('ol.style.Style');
@@ -27,9 +26,9 @@ var styleArray = [new ol.style.Style({
 })];
 
 var vector = new ol.layer.Vector({
-  source: new ol.source.Vector({
-    url: 'data/topojson/world-110m.json',
-    format: new ol.format.TopoJSON()
+  source: new ol.source.TopoJSON({
+    projection: 'EPSG:3857',
+    url: 'data/topojson/world-110m.json'
   }),
   style: function(feature, resolution) {
     // don't want to render the full world polygon, which repeats all countries

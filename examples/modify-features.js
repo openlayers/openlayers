@@ -1,13 +1,12 @@
 goog.require('ol.Map');
 goog.require('ol.View');
-goog.require('ol.format.GeoJSON');
 goog.require('ol.interaction');
 goog.require('ol.interaction.Modify');
 goog.require('ol.interaction.Select');
 goog.require('ol.layer.Tile');
 goog.require('ol.layer.Vector');
+goog.require('ol.source.GeoJSON');
 goog.require('ol.source.MapQuest');
-goog.require('ol.source.Vector');
 
 
 var raster = new ol.layer.Tile({
@@ -17,10 +16,9 @@ var raster = new ol.layer.Tile({
 });
 
 var vector = new ol.layer.Vector({
-  source: new ol.source.Vector({
-    url: 'data/geojson/countries.geojson',
-    format: new ol.format.GeoJSON(),
-    wrapX: false
+  source: new ol.source.GeoJSON({
+    projection: 'EPSG:3857',
+    url: 'data/geojson/countries.geojson'
   })
 });
 

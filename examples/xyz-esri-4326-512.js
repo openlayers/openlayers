@@ -35,7 +35,7 @@ var map = new ol.Map({
   target: 'map',
   layers: [
     new ol.layer.Tile({
-      /* ol.source.XYZ and ol.tilegrid.TileGrid have no resolutions config */
+      /* ol.source.XYZ and ol.tilegrid.XYZ have no resolutions config */
       source: new ol.source.TileImage({
         attributions: [attribution],
         tileUrlFunction: function(tileCoord, pixelRatio, projection) {

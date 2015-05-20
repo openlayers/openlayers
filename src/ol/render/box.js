@@ -63,11 +63,9 @@ goog.inherits(ol.render.Box, goog.Disposable);
  * @return {ol.geom.Polygon} Geometry.
  */
 ol.render.Box.prototype.createGeometry_ = function() {
-  goog.asserts.assert(!goog.isNull(this.startPixel_),
-      'this.startPixel_ should not be null');
-  goog.asserts.assert(!goog.isNull(this.endPixel_),
-      'this.endPixel_ should not be null');
-  goog.asserts.assert(!goog.isNull(this.map_), 'this.map_ should not be null');
+  goog.asserts.assert(!goog.isNull(this.startPixel_));
+  goog.asserts.assert(!goog.isNull(this.endPixel_));
+  goog.asserts.assert(!goog.isNull(this.map_));
   var startPixel = this.startPixel_;
   var endPixel = this.endPixel_;
   var pixels = [
@@ -98,10 +96,9 @@ ol.render.Box.prototype.disposeInternal = function() {
  */
 ol.render.Box.prototype.handleMapPostCompose_ = function(event) {
   var geometry = this.geometry_;
-  goog.asserts.assert(goog.isDefAndNotNull(geometry),
-      'geometry should be defined');
+  goog.asserts.assert(goog.isDefAndNotNull(geometry));
   var style = this.style_;
-  goog.asserts.assert(!goog.isNull(style), 'style should not be null');
+  goog.asserts.assert(!goog.isNull(style));
   // use drawAsync(Infinity) to draw above everything
   event.vectorContext.drawAsync(Infinity, function(render) {
     render.setFillStrokeStyle(style.getFill(), style.getStroke());

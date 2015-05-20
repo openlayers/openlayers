@@ -64,20 +64,14 @@ describe('ol.source.XYZ', function() {
     describe('wrap x', function() {
 
       it('returns the expected URL', function() {
-        var projection = xyzTileSource.getProjection();
         var tileUrl = xyzTileSource.tileUrlFunction(
-            xyzTileSource.getTileCoordForTileUrlFunction(
-                [6, -31, 41], projection));
+            [6, -31, -23]);
         expect(tileUrl).to.eql('6/33/22');
 
-        tileUrl = xyzTileSource.tileUrlFunction(
-            xyzTileSource.getTileCoordForTileUrlFunction(
-                [6, 33, 41], projection));
+        tileUrl = xyzTileSource.tileUrlFunction([6, 33, -23]);
         expect(tileUrl).to.eql('6/33/22');
 
-        tileUrl = xyzTileSource.tileUrlFunction(
-            xyzTileSource.getTileCoordForTileUrlFunction(
-                [6, 97, 41], projection));
+        tileUrl = xyzTileSource.tileUrlFunction([6, 97, -23]);
         expect(tileUrl).to.eql('6/33/22');
       });
 
@@ -86,20 +80,14 @@ describe('ol.source.XYZ', function() {
     describe('crop y', function() {
 
       it('returns the expected URL', function() {
-        var projection = xyzTileSource.getProjection();
         var tileUrl = xyzTileSource.tileUrlFunction(
-            xyzTileSource.getTileCoordForTileUrlFunction(
-                [6, 33, 150], projection));
+            [6, 33, -87]);
         expect(tileUrl).to.be(undefined);
 
-        tileUrl = xyzTileSource.tileUrlFunction(
-            xyzTileSource.getTileCoordForTileUrlFunction(
-                [6, 33, 41], projection));
+        tileUrl = xyzTileSource.tileUrlFunction([6, 33, -23]);
         expect(tileUrl).to.eql('6/33/22');
 
-        tileUrl = xyzTileSource.tileUrlFunction(
-            xyzTileSource.getTileCoordForTileUrlFunction(
-                [6, 33, -23], projection));
+        tileUrl = xyzTileSource.tileUrlFunction([6, 33, 41]);
         expect(tileUrl).to.be(undefined);
       });
 

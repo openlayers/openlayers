@@ -37,7 +37,6 @@ ol.layer.Vector = function(opt_options) {
   delete baseOptions.style;
   delete baseOptions.renderBuffer;
   delete baseOptions.updateWhileAnimating;
-  delete baseOptions.updateWhileInteracting;
   goog.base(this, /** @type {olx.layer.LayerOptions} */ (baseOptions));
 
   /**
@@ -70,13 +69,6 @@ ol.layer.Vector = function(opt_options) {
   this.updateWhileAnimating_ = goog.isDef(options.updateWhileAnimating) ?
       options.updateWhileAnimating : false;
 
-  /**
-   * @type {boolean}
-   * @private
-   */
-  this.updateWhileInteracting_ = goog.isDef(options.updateWhileInteracting) ?
-      options.updateWhileInteracting : false;
-
 };
 goog.inherits(ol.layer.Vector, ol.layer.Layer);
 
@@ -100,7 +92,6 @@ ol.layer.Vector.prototype.getRenderOrder = function() {
 
 
 /**
- * Return the associated {@link ol.source.Vector vectorsource} of the layer.
  * @function
  * @return {ol.source.Vector} Source.
  * @api stable
@@ -136,15 +127,6 @@ ol.layer.Vector.prototype.getStyleFunction = function() {
  */
 ol.layer.Vector.prototype.getUpdateWhileAnimating = function() {
   return this.updateWhileAnimating_;
-};
-
-
-/**
- * @return {boolean} Whether the rendered layer should be updated while
- *     interacting.
- */
-ol.layer.Vector.prototype.getUpdateWhileInteracting = function() {
-  return this.updateWhileInteracting_;
 };
 
 

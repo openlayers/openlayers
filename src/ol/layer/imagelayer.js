@@ -26,7 +26,6 @@ goog.inherits(ol.layer.Image, ol.layer.Layer);
 
 
 /**
- * Return the associated {@link ol.source.Image source} of the image layer.
  * @function
  * @return {ol.source.Image} Source.
  * @api stable

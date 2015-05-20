@@ -30,27 +30,6 @@ describe('ol.proj', function() {
       ]);
     });
 
-    it('gives that custom 3413 is equivalent to self', function() {
-      var code = 'EPSG:3413';
-
-      var source = new ol.proj.Projection({
-        code: code
-      });
-
-      var destination = new ol.proj.Projection({
-        code: code
-      });
-
-      expect(ol.proj.equivalent(source, destination)).to.be.ok();
-    });
-
-    it('gives that default 3857 is equivalent to self', function() {
-      _testAllEquivalent([
-        'EPSG:3857',
-        'EPSG:3857'
-      ]);
-    });
-
     it('gives that CRS:84, urn:ogc:def:crs:EPSG:6.6:4326, EPSG:4326 are ' +
        'equivalent', function() {
           _testAllEquivalent([
@@ -99,17 +78,9 @@ describe('ol.proj', function() {
   describe('transform from 4326 to 3857 (Alastaira)', function() {
     // http://alastaira.wordpress.com/2011/01/23/the-google-maps-bing-maps-spherical-mercator-projection/
 
-    it('returns expected value using ol.proj.transform', function() {
+    it('returns expected value', function() {
       var point = ol.proj.transform(
           [-5.625, 52.4827802220782], 'EPSG:4326', 'EPSG:900913');
-      expect(point).not.to.be(undefined);
-      expect(point).not.to.be(null);
-      expect(point[0]).to.roughlyEqual(-626172.13571216376, 1e-9);
-      expect(point[1]).to.roughlyEqual(6887893.4928337997, 1e-8);
-    });
-
-    it('returns expected value using ol.proj.fromLonLat', function() {
-      var point = ol.proj.fromLonLat([-5.625, 52.4827802220782]);
       expect(point).not.to.be(undefined);
       expect(point).not.to.be(null);
       expect(point[0]).to.roughlyEqual(-626172.13571216376, 1e-9);
@@ -120,7 +91,7 @@ describe('ol.proj', function() {
   describe('transform from 3857 to 4326 (Alastaira)', function() {
     // http://alastaira.wordpress.com/2011/01/23/the-google-maps-bing-maps-spherical-mercator-projection/
 
-    it('returns expected value using ol.proj.transform', function() {
+    it('returns expected value', function() {
       var point = ol.proj.transform([-626172.13571216376, 6887893.4928337997],
           'EPSG:900913', 'EPSG:4326');
       expect(point).not.to.be(undefined);
@@ -128,54 +99,6 @@ describe('ol.proj', function() {
       expect(point[0]).to.roughlyEqual(-5.625, 1e-9);
       expect(point[1]).to.roughlyEqual(52.4827802220782, 1e-9);
     });
-
-    it('returns expected value using ol.proj.toLonLat', function() {
-      var point = ol.proj.toLonLat([-626172.13571216376, 6887893.4928337997]);
-      expect(point).not.to.be(undefined);
-      expect(point).not.to.be(null);
-      expect(point[0]).to.roughlyEqual(-5.625, 1e-9);
-      expect(point[1]).to.roughlyEqual(52.4827802220782, 1e-9);
-    });
-  });
-
-  describe('canWrapX()', function() {
-
-    it('requires an extent for allowing wrapX', function() {
-      var proj = new ol.proj.Projection({
-        code: 'foo',
-        global: true
-      });
-      expect(proj.canWrapX()).to.be(false);
-      proj.setExtent([1, 2, 3, 4]);
-      expect(proj.canWrapX()).to.be(true);
-      proj = new ol.proj.Projection({
-        code: 'foo',
-        global: true,
-        extent: [1, 2, 3, 4]
-      });
-      expect(proj.canWrapX()).to.be(true);
-      proj.setExtent(null);
-      expect(proj.canWrapX()).to.be(false);
-    });
-
-    it('requires global to be true for allowing wrapX', function() {
-      var proj = new ol.proj.Projection({
-        code: 'foo',
-        extent: [1, 2, 3, 4]
-      });
-      expect(proj.canWrapX()).to.be(false);
-      proj.setGlobal(true);
-      expect(proj.canWrapX()).to.be(true);
-      proj = new ol.proj.Projection({
-        code: 'foo',
-        global: true,
-        extent: [1, 2, 3, 4]
-      });
-      expect(proj.canWrapX()).to.be(true);
-      proj.setGlobal(false);
-      expect(proj.canWrapX()).to.be(false);
-    });
-
   });
 
   describe('transformExtent()', function() {
@@ -197,32 +120,6 @@ describe('ol.proj', function() {
 
   describe('Proj4js integration', function() {
 
-    it('creates ol.proj.Projection instance from EPSG:21781', function() {
-      proj4.defs('EPSG:21781',
-          '+proj=somerc +lat_0=46.95240555555556 +lon_0=7.439583333333333 ' +
-          '+k_0=1 +x_0=600000 +y_0=200000 +ellps=bessel ' +
-          '+towgs84=674.374,15.056,405.346,0,0,0,0 +units=m +no_defs');
-      var proj = ol.proj.get('EPSG:21781');
-      expect(proj.getCode()).to.eql('EPSG:21781');
-      expect(proj.getUnits()).to.eql('m');
-      expect(proj.getMetersPerUnit()).to.eql(1);
-
-      delete proj4.defs['EPSG:21781'];
-    });
-
-    it('creates ol.proj.Projection instance from EPSG:3739', function() {
-      proj4.defs('EPSG:3739',
-          '+proj=tmerc +lat_0=40.5 +lon_0=-110.0833333333333 +k=0.9999375 ' +
-          '+x_0=800000.0000101599 +y_0=99999.99998983997 +ellps=GRS80 ' +
-          '+towgs84=0,0,0,0,0,0,0 +units=us-ft +no_defs');
-      var proj = ol.proj.get('EPSG:3739');
-      expect(proj.getCode()).to.eql('EPSG:3739');
-      expect(proj.getUnits()).to.eql('us-ft');
-      expect(proj.getMetersPerUnit()).to.eql(1200 / 3937);
-
-      delete proj4.defs['EPSG:3739'];
-    });
-
     it('allows Proj4js projections to be used transparently', function() {
       var point = ol.proj.transform(
           [-626172.13571216376, 6887893.4928337997], 'GOOGLE', 'WGS84');
@@ -239,21 +136,6 @@ describe('ol.proj', function() {
           'EPSG:4326', 'EPSG:21781');
       expect(point[0]).to.roughlyEqual(600072.300, 1);
       expect(point[1]).to.roughlyEqual(200146.976, 1);
-      delete proj4.defs['EPSG:21781'];
-    });
-
-    it('works with ol.proj.fromLonLat and ol.proj.toLonLat', function() {
-      proj4.defs('EPSG:21781',
-          '+proj=somerc +lat_0=46.95240555555556 +lon_0=7.439583333333333 ' +
-          '+k_0=1 +x_0=600000 +y_0=200000 +ellps=bessel ' +
-          '+towgs84=674.374,15.056,405.346,0,0,0,0 +units=m +no_defs');
-      var lonLat = [7.439583333333333, 46.95240555555556];
-      var point = ol.proj.fromLonLat(lonLat, 'EPSG:21781');
-      expect(point[0]).to.roughlyEqual(600072.300, 1);
-      expect(point[1]).to.roughlyEqual(200146.976, 1);
-      point = ol.proj.toLonLat(point, 'EPSG:21781');
-      expect(point[0]).to.roughlyEqual(lonLat[0], 1);
-      expect(point[1]).to.roughlyEqual(lonLat[1], 1);
       delete proj4.defs['EPSG:21781'];
     });
 
@@ -484,15 +366,10 @@ describe('ol.proj', function() {
           '+proj=lcc +lat_1=29.3 +lat_2=30.7 +lat_0=28.66666666666667 ' +
           '+lon_0=-91.33333333333333 +x_0=609601.2192024384 +y_0=0 ' +
           '+ellps=clrk66 +datum=NAD27 +to_meter=0.3048006096012192 +no_defs');
-      proj4.defs('EPSG:3739', '+proj=tmerc +lat_0=40.5 ' +
-          '+lon_0=-110.0833333333333 +k=0.9999375 +x_0=800000.0000101599 ' +
-          '+y_0=99999.99998983997 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 ' +
-          '+units=us-ft +no_defs');
     });
 
     afterEach(function() {
       delete proj4.defs['EPSG:26782'];
-      delete proj4.defs['EPSG:3739'];
     });
 
     it('returns value in meters', function() {
@@ -503,11 +380,6 @@ describe('ol.proj', function() {
     it('works for proj4js projections without units', function() {
       var epsg26782 = ol.proj.get('EPSG:26782');
       expect(epsg26782.getMetersPerUnit()).to.eql(0.3048006096012192);
-    });
-
-    it('works for proj4js projections with units other than m', function() {
-      var epsg3739 = ol.proj.get('EPSG:3739');
-      expect(epsg3739.getMetersPerUnit()).to.eql(1200 / 3937);
     });
 
   });

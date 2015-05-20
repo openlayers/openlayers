@@ -71,13 +71,7 @@ ol.renderer.webgl.Map = function(container, map) {
    * @private
    * @type {number}
    */
-  this.clipTileCanvasWidth_ = 0;
-
-  /**
-   * @private
-   * @type {number}
-   */
-  this.clipTileCanvasHeight_ = 0;
+  this.clipTileCanvasSize_ = 0;
 
   /**
    * @private
@@ -102,7 +96,7 @@ ol.renderer.webgl.Map = function(container, map) {
     preserveDrawingBuffer: false,
     stencil: true
   });
-  goog.asserts.assert(!goog.isNull(this.gl_), 'got a WebGLRenderingContext');
+  goog.asserts.assert(!goog.isNull(this.gl_));
 
   /**
    * @private
@@ -164,7 +158,7 @@ ol.renderer.webgl.Map = function(container, map) {
           this.tileTextureQueue_.reprioritize();
           var element = this.tileTextureQueue_.dequeue();
           var tile = /** @type {ol.Tile} */ (element[0]);
-          var tileSize = /** @type {ol.Size} */ (element[3]);
+          var tileSize = /** @type {number} */ (element[3]);
           var tileGutter = /** @type {number} */ (element[4]);
           this.bindTileTexture(
               tile, tileSize, tileGutter, goog.webgl.LINEAR, goog.webgl.LINEAR);
@@ -185,7 +179,7 @@ goog.inherits(ol.renderer.webgl.Map, ol.renderer.Map);
 
 /**
  * @param {ol.Tile} tile Tile.
- * @param {ol.Size} tileSize Tile size.
+ * @param {number} tileSize Tile size.
  * @param {number} tileGutter Tile gutter.
  * @param {number} magFilter Mag filter.
  * @param {number} minFilter Min filter.
@@ -196,8 +190,7 @@ ol.renderer.webgl.Map.prototype.bindTileTexture =
   var tileKey = tile.getKey();
   if (this.textureCache_.containsKey(tileKey)) {
     var textureCacheEntry = this.textureCache_.get(tileKey);
-    goog.asserts.assert(!goog.isNull(textureCacheEntry),
-        'a texture cache entry exists for key %s', tileKey);
+    goog.asserts.assert(!goog.isNull(textureCacheEntry));
     gl.bindTexture(goog.webgl.TEXTURE_2D, textureCacheEntry.texture);
     if (textureCacheEntry.magFilter != magFilter) {
       gl.texParameteri(
@@ -215,17 +208,15 @@ ol.renderer.webgl.Map.prototype.bindTileTexture =
     if (tileGutter > 0) {
       var clipTileCanvas = this.clipTileContext_.canvas;
       var clipTileContext = this.clipTileContext_;
-      if (this.clipTileCanvasWidth_ !== tileSize[0] ||
-          this.clipTileCanvasHeight_ !== tileSize[1]) {
-        clipTileCanvas.width = tileSize[0];
-        clipTileCanvas.height = tileSize[1];
-        this.clipTileCanvasWidth_ = tileSize[0];
-        this.clipTileCanvasHeight_ = tileSize[1];
+      if (this.clipTileCanvasSize_ != tileSize) {
+        clipTileCanvas.width = tileSize;
+        clipTileCanvas.height = tileSize;
+        this.clipTileCanvasSize_ = tileSize;
       } else {
-        clipTileContext.clearRect(0, 0, tileSize[0], tileSize[1]);
+        clipTileContext.clearRect(0, 0, tileSize, tileSize);
       }
       clipTileContext.drawImage(tile.getImage(), tileGutter, tileGutter,
-          tileSize[0], tileSize[1], 0, 0, tileSize[0], tileSize[1]);
+          tileSize, tileSize, 0, 0, tileSize, tileSize);
       gl.texImage2D(goog.webgl.TEXTURE_2D, 0,
           goog.webgl.RGBA, goog.webgl.RGBA,
           goog.webgl.UNSIGNED_BYTE, clipTileCanvas);
@@ -262,7 +253,7 @@ ol.renderer.webgl.Map.prototype.createLayerRenderer = function(layer) {
   } else if (ol.ENABLE_VECTOR && layer instanceof ol.layer.Vector) {
     return new ol.renderer.webgl.VectorLayer(this, layer);
   } else {
-    goog.asserts.fail('unexpected layer configuration');
+    goog.asserts.fail();
     return null;
   }
 };
@@ -406,8 +397,7 @@ ol.renderer.webgl.Map.prototype.handleWebGLContextLost = function(event) {
        * @param {Object.<string, ol.renderer.Layer>} object Object.
        */
       function(layerRenderer, key, object) {
-        goog.asserts.assertInstanceof(layerRenderer, ol.renderer.webgl.Layer,
-            'renderer is an instance of ol.renderer.webgl.Layer');
+        goog.asserts.assertInstanceof(layerRenderer, ol.renderer.webgl.Layer);
         var webGLLayerRenderer = /** @type {ol.renderer.webgl.Layer} */
             (layerRenderer);
         webGLLayerRenderer.handleWebGLContextLost();
@@ -492,8 +482,7 @@ ol.renderer.webgl.Map.prototype.renderFrame = function(frameState) {
     if (ol.layer.Layer.visibleAtResolution(layerState, viewResolution) &&
         layerState.sourceState == ol.source.State.READY) {
       layerRenderer = this.getLayerRenderer(layerState.layer);
-      goog.asserts.assertInstanceof(layerRenderer, ol.renderer.webgl.Layer,
-          'renderer is an instance of ol.renderer.webgl.Layer');
+      goog.asserts.assertInstanceof(layerRenderer, ol.renderer.webgl.Layer);
       if (layerRenderer.prepareFrame(frameState, layerState, context)) {
         layerStatesToDraw.push(layerState);
       }
@@ -519,8 +508,7 @@ ol.renderer.webgl.Map.prototype.renderFrame = function(frameState) {
   for (i = 0, ii = layerStatesToDraw.length; i < ii; ++i) {
     layerState = layerStatesToDraw[i];
     layerRenderer = this.getLayerRenderer(layerState.layer);
-    goog.asserts.assertInstanceof(layerRenderer, ol.renderer.webgl.Layer,
-        'renderer is an instance of ol.renderer.webgl.Layer');
+    goog.asserts.assertInstanceof(layerRenderer, ol.renderer.webgl.Layer);
     layerRenderer.composeFrame(frameState, layerState, context);
   }
 
@@ -581,7 +569,7 @@ ol.renderer.webgl.Map.prototype.forEachFeatureAtCoordinate =
          * @return {?} Callback result.
          */
         function(feature) {
-          goog.asserts.assert(goog.isDef(feature), 'received a feature');
+          goog.asserts.assert(goog.isDef(feature));
           var key = goog.getUid(feature).toString();
           if (!(key in features)) {
             features[key] = true;

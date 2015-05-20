@@ -22,7 +22,6 @@ var layers = [
 var map = new ol.Map({
   layers: layers,
   target: 'map',
-  renderer: common.getRendererFromQueryString(),
   view: new ol.View({
     center: [-10997148, 4569099],
     zoom: 4

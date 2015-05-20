@@ -76,6 +76,10 @@ ol.CollectionProperty = {
  * Collection; they trigger events on the appropriate object, not on the
  * Collection as a whole.
  *
+ * Because a Collection is itself an {@link ol.Object}, it can be bound to any
+ * other Object or Collection such that a change in one will automatically be
+ * reflected in the other.
+ *
  * @constructor
  * @extends {ol.Object}
  * @fires ol.CollectionEvent
@@ -111,8 +115,6 @@ ol.Collection.prototype.clear = function() {
 
 
 /**
- * Add elements to the collection.  This pushes each item in the provided array
- * to the end of the collection.
  * @param {Array.<T>} arr Array.
  * @return {ol.Collection.<T>} This collection.
  * @api stable
@@ -214,9 +216,9 @@ ol.Collection.prototype.push = function(elem) {
 
 
 /**
- * Remove the first occurrence of an element from the collection.
+ * Removes the first occurrence of elem from the collection.
  * @param {T} elem Element.
- * @return {T|undefined} The removed element or undefined if none found.
+ * @return {T|undefined} The removed element or undefined if elem was not found.
  * @api stable
  */
 ol.Collection.prototype.remove = function(elem) {

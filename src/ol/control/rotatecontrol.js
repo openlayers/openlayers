@@ -148,7 +148,6 @@ ol.control.Rotate.prototype.resetNorth_ = function() {
 
 
 /**
- * Update the rotate control element.
  * @param {ol.MapEvent} mapEvent Map event.
  * @this {ol.control.Rotate}
  * @api

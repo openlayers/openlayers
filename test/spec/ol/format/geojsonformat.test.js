@@ -301,7 +301,6 @@ describe('ol.format.GeoJSON', function() {
       var obj = format.readGeometry(str);
       expect(obj).to.be.a(ol.geom.Point);
       expect(obj.getCoordinates()).to.eql([10, 20]);
-      expect(obj.getLayout()).to.eql(ol.geom.GeometryLayout.XY);
     });
 
     it('parses linestring', function() {
@@ -313,19 +312,6 @@ describe('ol.format.GeoJSON', function() {
       var obj = format.readGeometry(str);
       expect(obj).to.be.a(ol.geom.LineString);
       expect(obj.getCoordinates()).to.eql([[10, 20], [30, 40]]);
-      expect(obj.getLayout()).to.eql(ol.geom.GeometryLayout.XY);
-    });
-
-    it('parses XYZ linestring', function() {
-      var str = JSON.stringify({
-        type: 'LineString',
-        coordinates: [[10, 20, 1534], [30, 40, 1420]]
-      });
-
-      var obj = format.readGeometry(str);
-      expect(obj).to.be.a(ol.geom.LineString);
-      expect(obj.getLayout()).to.eql(ol.geom.GeometryLayout.XYZ);
-      expect(obj.getCoordinates()).to.eql([[10, 20, 1534], [30, 40, 1420]]);
     });
 
     it('parses polygon', function() {
@@ -339,7 +325,6 @@ describe('ol.format.GeoJSON', function() {
 
       var obj = format.readGeometry(str);
       expect(obj).to.be.a(ol.geom.Polygon);
-      expect(obj.getLayout()).to.eql(ol.geom.GeometryLayout.XY);
       var rings = obj.getLinearRings();
       expect(rings.length).to.be(3);
       expect(rings[0]).to.be.a(ol.geom.LinearRing);
@@ -361,9 +346,7 @@ describe('ol.format.GeoJSON', function() {
       var array = geometryCollection.getGeometries();
       expect(array.length).to.be(2);
       expect(array[0]).to.be.a(ol.geom.Point);
-      expect(array[0].getLayout()).to.eql(ol.geom.GeometryLayout.XY);
       expect(array[1]).to.be.a(ol.geom.LineString);
-      expect(array[1].getLayout()).to.eql(ol.geom.GeometryLayout.XY);
     });
 
   });
@@ -524,12 +507,6 @@ describe('ol.format.GeoJSON', function() {
           expect(geojson.features[0].properties.mygeom).to.eql(undefined);
         });
 
-    it('writes out a feature without properties correctly', function() {
-      var feature = new ol.Feature(new ol.geom.Point([5, 10]));
-      var geojson = format.writeFeatureObject(feature);
-      expect(geojson.properties).to.eql(null);
-    });
-
   });
 
   describe('#writeGeometry', function() {
@@ -556,106 +533,6 @@ describe('ol.format.GeoJSON', function() {
       var geojson = format.writeGeometry(polygon);
       expect(polygon.getCoordinates()).to.eql(
           format.readGeometry(geojson).getCoordinates());
-    });
-
-    it('maintains coordinate order by default', function() {
-
-      var cw = [[-180, -90], [-180, 90], [180, 90], [180, -90], [-180, -90]];
-      var ccw = [[-180, -90], [180, -90], [180, 90], [-180, 90], [-180, -90]];
-
-      var right = new ol.geom.Polygon([ccw, cw]);
-      var rightMulti = new ol.geom.MultiPolygon([[ccw, cw]]);
-      var left = new ol.geom.Polygon([cw, ccw]);
-      var leftMulti = new ol.geom.MultiPolygon([[cw, ccw]]);
-
-      var rightObj = {
-        type: 'Polygon',
-        coordinates: [ccw, cw]
-      };
-
-      var rightMultiObj = {
-        type: 'MultiPolygon',
-        coordinates: [[ccw, cw]]
-      };
-
-      var leftObj = {
-        type: 'Polygon',
-        coordinates: [cw, ccw]
-      };
-
-      var leftMultiObj = {
-        type: 'MultiPolygon',
-        coordinates: [[cw, ccw]]
-      };
-
-      expect(JSON.parse(format.writeGeometry(right))).to.eql(rightObj);
-      expect(
-          JSON.parse(format.writeGeometry(rightMulti))).to.eql(rightMultiObj);
-      expect(JSON.parse(format.writeGeometry(left))).to.eql(leftObj);
-      expect(JSON.parse(format.writeGeometry(leftMulti))).to.eql(leftMultiObj);
-
-    });
-
-    it('allows serializing following the right-hand rule', function() {
-
-      var cw = [[-180, -90], [-180, 90], [180, 90], [180, -90], [-180, -90]];
-      var ccw = [[-180, -90], [180, -90], [180, 90], [-180, 90], [-180, -90]];
-      var right = new ol.geom.Polygon([ccw, cw]);
-      var rightMulti = new ol.geom.MultiPolygon([[ccw, cw]]);
-      var left = new ol.geom.Polygon([cw, ccw]);
-      var leftMulti = new ol.geom.MultiPolygon([[cw, ccw]]);
-
-      var rightObj = {
-        type: 'Polygon',
-        coordinates: [ccw, cw]
-      };
-
-      var rightMultiObj = {
-        type: 'MultiPolygon',
-        coordinates: [[ccw, cw]]
-      };
-
-      var json = format.writeGeometry(right, {rightHanded: true});
-      expect(JSON.parse(json)).to.eql(rightObj);
-      json = format.writeGeometry(rightMulti, {rightHanded: true});
-      expect(JSON.parse(json)).to.eql(rightMultiObj);
-
-      json = format.writeGeometry(left, {rightHanded: true});
-      expect(JSON.parse(json)).to.eql(rightObj);
-      json = format.writeGeometry(leftMulti, {rightHanded: true});
-      expect(JSON.parse(json)).to.eql(rightMultiObj);
-
-    });
-
-    it('allows serializing following the left-hand rule', function() {
-
-      var cw = [[-180, -90], [-180, 90], [180, 90], [180, -90], [-180, -90]];
-      var ccw = [[-180, -90], [180, -90], [180, 90], [-180, 90], [-180, -90]];
-      var right = new ol.geom.Polygon([ccw, cw]);
-      var rightMulti = new ol.geom.MultiPolygon([[ccw, cw]]);
-      var left = new ol.geom.Polygon([cw, ccw]);
-      var leftMulti = new ol.geom.MultiPolygon([[cw, ccw]]);
-
-      var leftObj = {
-        type: 'Polygon',
-        coordinates: [cw, ccw]
-      };
-
-      var leftMultiObj = {
-        type: 'MultiPolygon',
-        coordinates: [[cw, ccw]]
-      };
-
-      var json = format.writeGeometry(right, {rightHanded: false});
-      expect(JSON.parse(json)).to.eql(leftObj);
-      json = format.writeGeometry(rightMulti, {rightHanded: false});
-      expect(JSON.parse(json)).to.eql(leftMultiObj);
-
-      json = format.writeGeometry(left, {rightHanded: false});
-      expect(JSON.parse(json)).to.eql(leftObj);
-      json = format.writeGeometry(leftMulti, {rightHanded: false});
-      expect(JSON.parse(json)).to.eql(leftMultiObj);
-
     });
 
     it('encodes geometry collection', function() {
@@ -693,8 +570,7 @@ describe('ol.format.GeoJSON', function() {
       var newPoint = format.readGeometry(geojson, {
         featureProjection: 'EPSG:3857'
       });
-      expect(point.getCoordinates()[0]).to.roughlyEqual(
-          newPoint.getCoordinates()[0], 1e-8);
+      expect(point.getCoordinates()[0]).to.eql(newPoint.getCoordinates()[0]);
       expect(
           Math.abs(point.getCoordinates()[1] - newPoint.getCoordinates()[1]))
           .to.be.lessThan(0.0000001);
@@ -709,11 +585,9 @@ goog.require('ol.Feature');
 goog.require('ol.extent');
 goog.require('ol.format.GeoJSON');
 goog.require('ol.geom.Circle');
-goog.require('ol.geom.GeometryLayout');
 goog.require('ol.geom.GeometryCollection');
 goog.require('ol.geom.LineString');
 goog.require('ol.geom.LinearRing');
-goog.require('ol.geom.MultiPolygon');
 goog.require('ol.geom.Point');
 goog.require('ol.geom.Polygon');
 goog.require('ol.proj');

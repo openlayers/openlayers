@@ -3,7 +3,6 @@ goog.provide('ol.geom.MultiPolygon');
 goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('ol.extent');
-goog.require('ol.geom.GeometryLayout');
 goog.require('ol.geom.GeometryType');
 goog.require('ol.geom.MultiPoint');
 goog.require('ol.geom.Polygon');
@@ -85,13 +84,11 @@ goog.inherits(ol.geom.MultiPolygon, ol.geom.SimpleGeometry);
 
 
 /**
- * Append the passed polygon to this multipolygon.
  * @param {ol.geom.Polygon} polygon Polygon.
  * @api stable
  */
 ol.geom.MultiPolygon.prototype.appendPolygon = function(polygon) {
-  goog.asserts.assert(polygon.getLayout() == this.layout,
-      'layout of polygon should match layout');
+  goog.asserts.assert(polygon.getLayout() == this.layout);
   /** @type {Array.<number>} */
   var ends;
   if (goog.isNull(this.flatCoordinates)) {
@@ -155,7 +152,6 @@ ol.geom.MultiPolygon.prototype.containsXY = function(x, y) {
 
 
 /**
- * Return the area of the multipolygon on projected plane.
  * @return {number} Area (on projected plane).
  * @api stable
  */
@@ -166,30 +162,12 @@ ol.geom.MultiPolygon.prototype.getArea = function() {
 
 
 /**
- * Get the coordinate array for this geometry.  This array has the structure
- * of a GeoJSON coordinate array for multi-polygons.
- *
- * @param {boolean=} opt_right Orient coordinates according to the right-hand
- *     rule (counter-clockwise for exterior and clockwise for interior rings).
- *     If `false`, coordinates will be oriented according to the left-hand rule
- *     (clockwise for exterior and counter-clockwise for interior rings).
- *     By default, coordinate orientation will depend on how the geometry was
- *     constructed.
  * @return {Array.<Array.<Array.<ol.Coordinate>>>} Coordinates.
  * @api stable
  */
-ol.geom.MultiPolygon.prototype.getCoordinates = function(opt_right) {
-  var flatCoordinates;
-  if (goog.isDef(opt_right)) {
-    flatCoordinates = this.getOrientedFlatCoordinates().slice();
-    ol.geom.flat.orient.orientLinearRingss(
-        flatCoordinates, 0, this.endss_, this.stride, opt_right);
-  } else {
-    flatCoordinates = this.flatCoordinates;
-  }
-
+ol.geom.MultiPolygon.prototype.getCoordinates = function() {
   return ol.geom.flat.inflate.coordinatesss(
-      flatCoordinates, 0, this.endss_, this.stride);
+      this.flatCoordinates, 0, this.endss_, this.stride);
 };
 
 
@@ -218,7 +196,6 @@ ol.geom.MultiPolygon.prototype.getFlatInteriorPoints = function() {
 
 
 /**
- * Return the interior points as {@link ol.geom.MultiPoint multipoint}.
  * @return {ol.geom.MultiPoint} Interior points.
  * @api stable
  */
@@ -236,7 +213,7 @@ ol.geom.MultiPolygon.prototype.getInteriorPoints = function() {
 ol.geom.MultiPolygon.prototype.getOrientedFlatCoordinates = function() {
   if (this.orientedRevision_ != this.getRevision()) {
     var flatCoordinates = this.flatCoordinates;
-    if (ol.geom.flat.orient.linearRingssAreOriented(
+    if (ol.geom.flat.linearRingssAreOriented(
         flatCoordinates, 0, this.endss_, this.stride)) {
       this.orientedFlatCoordinates_ = flatCoordinates;
     } else {
@@ -270,14 +247,12 @@ ol.geom.MultiPolygon.prototype.getSimplifiedGeometryInternal =
 
 
 /**
- * Return the polygon at the specified index.
  * @param {number} index Index.
  * @return {ol.geom.Polygon} Polygon.
  * @api stable
  */
 ol.geom.MultiPolygon.prototype.getPolygon = function(index) {
-  goog.asserts.assert(0 <= index && index < this.endss_.length,
-      'index should be in between 0 and the length of this.endss_');
+  goog.asserts.assert(0 <= index && index < this.endss_.length);
   if (index < 0 || this.endss_.length <= index) {
     return null;
   }
@@ -304,7 +279,6 @@ ol.geom.MultiPolygon.prototype.getPolygon = function(index) {
 
 
 /**
- * Return the polygons of this multipolygon.
  * @return {Array.<ol.geom.Polygon>} Polygons.
  * @api stable
  */
@@ -344,7 +318,7 @@ ol.geom.MultiPolygon.prototype.getType = function() {
 
 /**
  * @inheritDoc
- * @api stable
+ * @api
  */
 ol.geom.MultiPolygon.prototype.intersectsExtent = function(extent) {
   return ol.geom.flat.intersectsextent.linearRingss(
@@ -353,7 +327,6 @@ ol.geom.MultiPolygon.prototype.intersectsExtent = function(extent) {
 
 
 /**
- * Set the coordinates of the multipolygon.
  * @param {Array.<Array.<Array.<ol.Coordinate>>>} coordinates Coordinates.
  * @param {ol.geom.GeometryLayout=} opt_layout Layout.
  * @api stable
@@ -388,14 +361,13 @@ ol.geom.MultiPolygon.prototype.setCoordinates =
  */
 ol.geom.MultiPolygon.prototype.setFlatCoordinates =
     function(layout, flatCoordinates, endss) {
-  goog.asserts.assert(!goog.isNull(endss), 'endss cannot be null');
+  goog.asserts.assert(!goog.isNull(endss));
   if (goog.isNull(flatCoordinates) || flatCoordinates.length === 0) {
-    goog.asserts.assert(endss.length === 0, 'the length of endss should be 0');
+    goog.asserts.assert(endss.length === 0);
   } else {
-    goog.asserts.assert(endss.length > 0, 'endss cannot be an empty array');
+    goog.asserts.assert(endss.length > 0);
     var ends = endss[endss.length - 1];
-    goog.asserts.assert(flatCoordinates.length == ends[ends.length - 1],
-        'the length of flatCoordinates should be the last value of ends');
+    goog.asserts.assert(flatCoordinates.length == ends[ends.length - 1]);
   }
   this.setFlatCoordinatesInternal(layout, flatCoordinates);
   this.endss_ = endss;
@@ -417,8 +389,7 @@ ol.geom.MultiPolygon.prototype.setPolygons = function(polygons) {
       layout = polygon.getLayout();
     } else {
       // FIXME better handle the case of non-matching layouts
-      goog.asserts.assert(polygon.getLayout() == layout,
-          'layout of polygon should be layout');
+      goog.asserts.assert(polygon.getLayout() == layout);
     }
     var offset = flatCoordinates.length;
     ends = polygon.getEnds();

@@ -3,7 +3,6 @@ goog.provide('ol.tilecoord');
 
 goog.require('goog.array');
 goog.require('goog.asserts');
-goog.require('ol.extent');
 
 
 /**
@@ -60,8 +59,7 @@ ol.tilecoord.createFromQuadKey = function(quadKey) {
  */
 ol.tilecoord.createFromString = function(str) {
   var v = str.split('/');
-  goog.asserts.assert(v.length === 3,
-      'must provide a string in "z/x/y" format, got "%s"', str);
+  goog.asserts.assert(v.length === 3);
   v = goog.array.map(v, function(e, i, a) {
     return parseInt(e, 10);
   });
@@ -138,53 +136,4 @@ ol.tilecoord.quadKey = function(tileCoord) {
  */
 ol.tilecoord.toString = function(tileCoord) {
   return ol.tilecoord.getKeyZXY(tileCoord[0], tileCoord[1], tileCoord[2]);
-};
-
-
-/**
- * @param {ol.TileCoord} tileCoord Tile coordinate.
- * @param {ol.tilegrid.TileGrid} tileGrid Tile grid.
- * @param {ol.proj.Projection} projection Projection.
- * @return {ol.TileCoord} Tile coordinate.
- */
-ol.tilecoord.wrapX = function(tileCoord, tileGrid, projection) {
-  var z = tileCoord[0];
-  var center = tileGrid.getTileCoordCenter(tileCoord);
-  var projectionExtent = ol.tilegrid.extentFromProjection(projection);
-  if (!ol.extent.containsCoordinate(projectionExtent, center)) {
-    var worldWidth = ol.extent.getWidth(projectionExtent);
-    var worldsAway = Math.ceil((projectionExtent[0] - center[0]) / worldWidth);
-    center[0] += worldWidth * worldsAway;
-    return tileGrid.getTileCoordForCoordAndZ(center, z);
-  } else {
-    return tileCoord;
-  }
-};
-
-
-/**
- * @param {ol.TileCoord} tileCoord Tile coordinate.
- * @param {!ol.tilegrid.TileGrid} tileGrid Tile grid.
- * @return {ol.TileCoord} Tile coordinate.
- */
-ol.tilecoord.restrictByExtentAndZ = function(tileCoord, tileGrid) {
-  var z = tileCoord[0];
-  var x = tileCoord[1];
-  var y = tileCoord[2];
-
-  if (tileGrid.getMinZoom() > z || z > tileGrid.getMaxZoom()) {
-    return null;
-  }
-  var extent = tileGrid.getExtent();
-  var tileRange;
-  if (goog.isNull(extent)) {
-    tileRange = tileGrid.getFullTileRange(z);
-  } else {
-    tileRange = tileGrid.getTileRangeForExtentAndZ(extent, z);
-  }
-  if (goog.isNull(tileRange)) {
-    return tileCoord;
-  } else {
-    return tileRange.containsXY(x, y) ? tileCoord : null;
-  }
 };
