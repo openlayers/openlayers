@@ -57,7 +57,6 @@ ol.Tile.prototype.changed = function() {
 
 
 /**
- * Get the HTML image element for this tile (may be a Canvas, Image, or Video).
  * @function
  * @param {Object=} opt_context Object.
  * @return {HTMLCanvasElement|HTMLImageElement|HTMLVideoElement} Image.
@@ -74,7 +73,6 @@ ol.Tile.prototype.getKey = function() {
 
 
 /**
- * Get the tile coordinate for this tile.
  * @return {ol.TileCoord}
  * @api
  */

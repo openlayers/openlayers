@@ -7,7 +7,6 @@ goog.require('goog.string.newlines');
 goog.require('ol.Feature');
 goog.require('ol.format.Feature');
 goog.require('ol.format.TextFeature');
-goog.require('ol.geom.GeometryLayout');
 goog.require('ol.geom.LineString');
 goog.require('ol.proj');
 
@@ -101,7 +100,7 @@ ol.format.IGC.prototype.getExtensions = function() {
  * Read the feature from the IGC source.
  *
  * @function
- * @param {Document|Node|Object|string} source Source.
+ * @param {ArrayBuffer|Document|Node|Object|string} source Source.
  * @param {olx.format.ReadOptions=} opt_options Read options.
  * @return {ol.Feature} Feature.
  * @api
@@ -189,7 +188,7 @@ ol.format.IGC.prototype.readFeatureFromText = function(text, opt_options) {
  * feature, this will return the feature in an array.
  *
  * @function
- * @param {Document|Node|Object|string} source Source.
+ * @param {ArrayBuffer|Document|Node|Object|string} source Source.
  * @param {olx.format.ReadOptions=} opt_options Read options.
  * @return {Array.<ol.Feature>} Features.
  * @api
@@ -214,7 +213,7 @@ ol.format.IGC.prototype.readFeaturesFromText = function(text, opt_options) {
  * Read the projection from the IGC source.
  *
  * @function
- * @param {Document|Node|Object|string} source Source.
+ * @param {ArrayBuffer|Document|Node|Object|string} source Source.
  * @return {ol.proj.Projection} Projection.
  * @api
  */

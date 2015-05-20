@@ -98,14 +98,13 @@ ol.interaction.DragAndDrop.prototype.handleDrop_ = function(event) {
  */
 ol.interaction.DragAndDrop.prototype.handleResult_ = function(file, result) {
   var map = this.getMap();
-  goog.asserts.assert(!goog.isNull(map), 'map should not be null');
+  goog.asserts.assert(!goog.isNull(map));
   var projection = this.projection_;
   if (goog.isNull(projection)) {
     var view = map.getView();
-    goog.asserts.assert(!goog.isNull(view), 'view should not be null');
+    goog.asserts.assert(!goog.isNull(view));
     projection = view.getProjection();
-    goog.asserts.assert(goog.isDef(projection),
-        'projection should be defined');
+    goog.asserts.assert(goog.isDef(projection));
   }
   var formatConstructors = this.formatConstructors_;
   var features = [];
@@ -136,8 +135,6 @@ ol.interaction.DragAndDrop.prototype.handleResult_ = function(file, result) {
 
 
 /**
- * Handles the {@link ol.MapBrowserEvent map browser event} unconditionally and
- * neither prevents the browser default nor stops event propagation.
  * @param {ol.MapBrowserEvent} mapBrowserEvent Map browser event.
  * @return {boolean} `false` to stop event propagation.
  * @this {ol.interaction.DragAndDrop}
@@ -158,8 +155,7 @@ ol.interaction.DragAndDrop.prototype.setMap = function(map) {
     goog.dispose(this.fileDropHandler_);
     this.fileDropHandler_ = null;
   }
-  goog.asserts.assert(!goog.isDef(this.dropListenKey_),
-      'this.dropListenKey_ should be undefined');
+  goog.asserts.assert(!goog.isDef(this.dropListenKey_));
   goog.base(this, 'setMap', map);
   if (!goog.isNull(map)) {
     this.fileDropHandler_ = new goog.events.FileDropHandler(map.getViewport());

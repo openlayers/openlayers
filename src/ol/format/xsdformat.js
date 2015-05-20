@@ -167,9 +167,8 @@ ol.format.XSD.writeDecimalTextNode = function(node, decimal) {
  */
 ol.format.XSD.writeNonNegativeIntegerTextNode =
     function(node, nonNegativeInteger) {
-  goog.asserts.assert(nonNegativeInteger >= 0, 'value should be more than 0');
-  goog.asserts.assert(nonNegativeInteger == (nonNegativeInteger | 0),
-      'value should be an integer value');
+  goog.asserts.assert(nonNegativeInteger >= 0);
+  goog.asserts.assert(nonNegativeInteger == (nonNegativeInteger | 0));
   var string = nonNegativeInteger.toString();
   node.appendChild(ol.xml.DOCUMENT.createTextNode(string));
 };

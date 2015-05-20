@@ -7,12 +7,14 @@ goog.require('goog.events.EventType');
 goog.require('goog.net.Jsonp');
 goog.require('ol.Attribution');
 goog.require('ol.Tile');
+goog.require('ol.TileCache');
 goog.require('ol.TileState');
 goog.require('ol.TileUrlFunction');
 goog.require('ol.extent');
 goog.require('ol.proj');
 goog.require('ol.source.State');
 goog.require('ol.source.Tile');
+goog.require('ol.tilegrid.XYZ');
 
 
 
@@ -46,6 +48,12 @@ ol.source.TileUTFGrid = function(options) {
 
   /**
    * @private
+   * @type {!ol.TileCache}
+   */
+  this.tileCache_ = new ol.TileCache();
+
+  /**
+   * @private
    * @type {string|undefined}
    */
   this.template_ = undefined;
@@ -57,7 +65,22 @@ goog.inherits(ol.source.TileUTFGrid, ol.source.Tile);
 
 
 /**
- * Return the template from TileJSON.
+ * @inheritDoc
+ */
+ol.source.TileUTFGrid.prototype.canExpireCache = function() {
+  return this.tileCache_.canExpireCache();
+};
+
+
+/**
+ * @inheritDoc
+ */
+ol.source.TileUTFGrid.prototype.expireCache = function(usedTiles) {
+  this.tileCache_.expireCache(usedTiles);
+};
+
+
+/**
  * @return {string|undefined} The template from TileJSON.
  * @api
  */
@@ -117,11 +140,11 @@ ol.source.TileUTFGrid.prototype.handleTileJSONResponse = function(tileJSON) {
   }
 
   if (goog.isDef(tileJSON.scheme)) {
-    goog.asserts.assert(tileJSON.scheme == 'xyz', 'tileJSON-scheme is "xyz"');
+    goog.asserts.assert(tileJSON.scheme == 'xyz');
   }
   var minZoom = tileJSON.minzoom || 0;
   var maxZoom = tileJSON.maxzoom || 22;
-  var tileGrid = ol.tilegrid.createXYZ({
+  var tileGrid = new ol.tilegrid.XYZ({
     extent: ol.tilegrid.extentFromProjection(sourceProjection),
     maxZoom: maxZoom,
     minZoom: minZoom
@@ -172,10 +195,10 @@ ol.source.TileUTFGrid.prototype.handleTileJSONResponse = function(tileJSON) {
 ol.source.TileUTFGrid.prototype.getTile =
     function(z, x, y, pixelRatio, projection) {
   var tileCoordKey = this.getKeyZXY(z, x, y);
-  if (this.tileCache.containsKey(tileCoordKey)) {
-    return /** @type {!ol.Tile} */ (this.tileCache.get(tileCoordKey));
+  if (this.tileCache_.containsKey(tileCoordKey)) {
+    return /** @type {!ol.Tile} */ (this.tileCache_.get(tileCoordKey));
   } else {
-    goog.asserts.assert(projection, 'argument projection is truthy');
+    goog.asserts.assert(projection);
     var tileCoord = [z, x, y];
     var tileUrl = this.tileUrlFunction_(tileCoord, pixelRatio, projection);
     var tile = new ol.source.TileUTFGridTile_(
@@ -184,7 +207,7 @@ ol.source.TileUTFGrid.prototype.getTile =
         goog.isDef(tileUrl) ? tileUrl : '',
         this.tileGrid.getTileCoordExtent(tileCoord),
         this.preemptive_);
-    this.tileCache.set(tileCoordKey, tile);
+    this.tileCache_.set(tileCoordKey, tile);
     return tile;
   }
 };
@@ -195,8 +218,8 @@ ol.source.TileUTFGrid.prototype.getTile =
  */
 ol.source.TileUTFGrid.prototype.useTile = function(z, x, y) {
   var tileCoordKey = this.getKeyZXY(z, x, y);
-  if (this.tileCache.containsKey(tileCoordKey)) {
-    this.tileCache.get(tileCoordKey);
+  if (this.tileCache_.containsKey(tileCoordKey)) {
+    this.tileCache_.get(tileCoordKey);
   }
 };
 
@@ -271,7 +294,7 @@ ol.source.TileUTFGridTile_.prototype.getImage = function(opt_context) {
  */
 ol.source.TileUTFGridTile_.prototype.getData = function(coordinate) {
   if (goog.isNull(this.grid_) || goog.isNull(this.keys_) ||
-      !goog.isDefAndNotNull(this.data_)) {
+      goog.isNull(this.data_)) {
     return null;
   }
   var xRelative = (coordinate[0] - this.extent_[0]) /

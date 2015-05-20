@@ -96,29 +96,14 @@ ol.style.Icon = function(opt_options) {
   var image = goog.isDef(options.img) ? options.img : null;
 
   /**
-   * @type {ol.Size}
-   */
-  var imgSize = goog.isDef(options.imgSize) ? options.imgSize : null;
-
-  /**
    * @type {string|undefined}
    */
   var src = options.src;
 
-  goog.asserts.assert(!(goog.isDef(src) && !goog.isNull(image)),
-      'image and src can not provided at the same time');
-  goog.asserts.assert(
-      !goog.isDef(src) || (goog.isDef(src) && goog.isNull(imgSize)),
-      'imgSize should not be set when src is provided');
-  goog.asserts.assert(
-      goog.isNull(image) || (!goog.isNull(image) && !goog.isNull(imgSize)),
-      'imgSize must be set when image is provided');
-
   if ((!goog.isDef(src) || src.length === 0) && !goog.isNull(image)) {
     src = image.src;
   }
-  goog.asserts.assert(goog.isDef(src) && src.length > 0,
-      'must provide a defined and non-empty src or image');
+  goog.asserts.assert(goog.isDef(src) && src.length > 0);
 
   /**
    * @type {ol.style.ImageState}
@@ -131,7 +116,7 @@ ol.style.Icon = function(opt_options) {
    * @type {ol.style.IconImage_}
    */
   this.iconImage_ = ol.style.IconImage_.get(
-      image, src, imgSize, crossOrigin, imageState);
+      image, src, crossOrigin, imageState);
 
   /**
    * @private
@@ -243,7 +228,6 @@ ol.style.Icon.prototype.getAnchor = function() {
 
 
 /**
- * Get the image icon.
  * @param {number} pixelRatio Pixel ratio.
  * @return {Image} Image element.
  * @api
@@ -318,7 +302,6 @@ ol.style.Icon.prototype.getOrigin = function() {
 
 
 /**
- * Get the image URL.
  * @return {string|undefined} Image src.
  * @api
  */
@@ -367,13 +350,12 @@ ol.style.Icon.prototype.unlistenImageChange = function(listener, thisArg) {
  * @constructor
  * @param {Image} image Image.
  * @param {string|undefined} src Src.
- * @param {ol.Size} size Size.
  * @param {?string} crossOrigin Cross origin.
  * @param {ol.style.ImageState} imageState Image state.
  * @extends {goog.events.EventTarget}
  * @private
  */
-ol.style.IconImage_ = function(image, src, size, crossOrigin, imageState) {
+ol.style.IconImage_ = function(image, src, crossOrigin, imageState) {
 
   goog.base(this);
 
@@ -395,7 +377,7 @@ ol.style.IconImage_ = function(image, src, size, crossOrigin, imageState) {
 
   /**
    * @private
-   * @type {Array.<goog.events.Key>}
+   * @type {Array.<number>}
    */
   this.imageListenerKeys_ = null;
 
@@ -409,7 +391,7 @@ ol.style.IconImage_ = function(image, src, size, crossOrigin, imageState) {
    * @private
    * @type {ol.Size}
    */
-  this.size_ = size;
+  this.size_ = null;
 
   /**
    * @private
@@ -430,17 +412,15 @@ goog.inherits(ol.style.IconImage_, goog.events.EventTarget);
 /**
  * @param {Image} image Image.
  * @param {string} src Src.
- * @param {ol.Size} size Size.
  * @param {?string} crossOrigin Cross origin.
  * @param {ol.style.ImageState} imageState Image state.
  * @return {ol.style.IconImage_} Icon image.
  */
-ol.style.IconImage_.get = function(image, src, size, crossOrigin, imageState) {
+ol.style.IconImage_.get = function(image, src, crossOrigin, imageState) {
   var iconImageCache = ol.style.IconImageCache.getInstance();
   var iconImage = iconImageCache.get(src, crossOrigin);
   if (goog.isNull(iconImage)) {
-    iconImage = new ol.style.IconImage_(
-        image, src, size, crossOrigin, imageState);
+    iconImage = new ol.style.IconImage_(image, src, crossOrigin, imageState);
     iconImageCache.set(src, crossOrigin, iconImage);
   }
   return iconImage;
@@ -549,10 +529,8 @@ ol.style.IconImage_.prototype.getSrc = function() {
  */
 ol.style.IconImage_.prototype.load = function() {
   if (this.imageState_ == ol.style.ImageState.IDLE) {
-    goog.asserts.assert(goog.isDef(this.src_),
-        'this.src_ must not be undefined');
-    goog.asserts.assert(goog.isNull(this.imageListenerKeys_),
-        'no listener keys existing');
+    goog.asserts.assert(goog.isDef(this.src_));
+    goog.asserts.assert(goog.isNull(this.imageListenerKeys_));
     this.imageState_ = ol.style.ImageState.LOADING;
     this.imageListenerKeys_ = [
       goog.events.listenOnce(this.image_, goog.events.EventType.ERROR,
@@ -575,8 +553,7 @@ ol.style.IconImage_.prototype.load = function() {
  * @private
  */
 ol.style.IconImage_.prototype.unlistenImage_ = function() {
-  goog.asserts.assert(!goog.isNull(this.imageListenerKeys_),
-      'we must have listeners registered');
+  goog.asserts.assert(!goog.isNull(this.imageListenerKeys_));
   goog.array.forEach(this.imageListenerKeys_, goog.events.unlistenByKey);
   this.imageListenerKeys_ = null;
 };
@@ -616,8 +593,7 @@ goog.addSingletonGetter(ol.style.IconImageCache);
  * @return {string} Cache key.
  */
 ol.style.IconImageCache.getKey = function(src, crossOrigin) {
-  goog.asserts.assert(goog.isDef(crossOrigin),
-      'argument crossOrigin must be defined');
+  goog.asserts.assert(goog.isDef(crossOrigin));
   return crossOrigin + ':' + src;
 };
 

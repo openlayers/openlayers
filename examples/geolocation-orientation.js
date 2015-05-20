@@ -10,7 +10,7 @@ goog.require('ol.source.OSM');
 
 // creating the view
 var view = new ol.View({
-  center: ol.proj.fromLonLat([5.8713, 45.6452]),
+  center: ol.proj.transform([5.8713, 45.6452], 'EPSG:4326', 'EPSG:3857'),
   zoom: 19
 });
 
@@ -180,18 +180,9 @@ geolocateBtn.addEventListener('click', function() {
 
 // simulate device move
 var simulationData;
-var client = new XMLHttpRequest();
-client.open('GET', 'data/geolocation-orientation.json');
-
-
-/**
- * Handle data loading.
- */
-client.onload = function() {
-  simulationData = JSON.parse(client.responseText).data;
-};
-client.send();
-
+$.getJSON('data/geolocation-orientation.json', function(data) {
+  simulationData = data.data;
+});
 var simulateBtn = document.getElementById('simulate');
 simulateBtn.addEventListener('click', function() {
   var coordinates = simulationData;

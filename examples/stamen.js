@@ -18,7 +18,7 @@ var map = new ol.Map({
       })
     })
   ],
-  renderer: common.getRendererFromQueryString(),
+  renderer: exampleNS.getRendererFromQueryString(),
   target: 'map',
   view: new ol.View({
     center: ol.proj.transform(

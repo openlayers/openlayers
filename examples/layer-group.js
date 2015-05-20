@@ -1,5 +1,6 @@
 goog.require('ol.Map');
 goog.require('ol.View');
+goog.require('ol.dom.Input');
 goog.require('ol.layer.Group');
 goog.require('ol.layer.Tile');
 goog.require('ol.proj');
@@ -29,28 +30,22 @@ var map = new ol.Map({
       ]
     })
   ],
-  renderer: common.getRendererFromQueryString(),
+  renderer: exampleNS.getRendererFromQueryString(),
   target: 'map',
   view: new ol.View({
-    center: ol.proj.fromLonLat([37.40570, 8.81566]),
+    center: ol.proj.transform([37.40570, 8.81566], 'EPSG:4326', 'EPSG:3857'),
     zoom: 4
   })
 });
 
 function bindInputs(layerid, layer) {
-  var visibilityInput = $(layerid + ' input.visible');
-  visibilityInput.on('change', function() {
-    layer.setVisible(this.checked);
-  });
-  visibilityInput.prop('checked', layer.getVisible());
-
+  new ol.dom.Input($(layerid + ' .visible')[0])
+      .bindTo('checked', layer, 'visible');
   $.each(['opacity', 'hue', 'saturation', 'contrast', 'brightness'],
       function(i, v) {
-        var input = $(layerid + ' input.' + v);
-        input.on('input change', function() {
-          layer.set(v, parseFloat(this.value));
-        });
-        input.val(String(layer.get(v)));
+        new ol.dom.Input($(layerid + ' .' + v)[0])
+            .bindTo('value', layer, v)
+            .transform(parseFloat, String);
       }
   );
 }

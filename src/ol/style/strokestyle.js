@@ -68,7 +68,6 @@ ol.style.Stroke = function(opt_options) {
 
 
 /**
- * Get the stroke color.
  * @return {ol.Color|string} Color.
  * @api
  */
@@ -78,7 +77,6 @@ ol.style.Stroke.prototype.getColor = function() {
 
 
 /**
- * Get the line cap type for the stroke.
  * @return {string|undefined} Line cap.
  * @api
  */
@@ -88,7 +86,6 @@ ol.style.Stroke.prototype.getLineCap = function() {
 
 
 /**
- * Get the line dash style for the stroke.
  * @return {Array.<number>} Line dash.
  * @api
  */
@@ -98,7 +95,6 @@ ol.style.Stroke.prototype.getLineDash = function() {
 
 
 /**
- * Get the line join type for the stroke.
  * @return {string|undefined} Line join.
  * @api
  */
@@ -108,7 +104,6 @@ ol.style.Stroke.prototype.getLineJoin = function() {
 
 
 /**
- * Get the miter limit for the stroke.
  * @return {number|undefined} Miter limit.
  * @api
  */
@@ -118,7 +113,6 @@ ol.style.Stroke.prototype.getMiterLimit = function() {
 
 
 /**
- * Get the stroke width.
  * @return {number|undefined} Width.
  * @api
  */

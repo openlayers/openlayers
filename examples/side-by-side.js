@@ -22,10 +22,10 @@ var domMap = new ol.Map({
 if (ol.has.WEBGL) {
   var webglMap = new ol.Map({
     renderer: 'webgl',
-    target: 'webglMap',
-    layers: domMap.getLayers(),
-    view: domMap.getView()
+    target: 'webglMap'
   });
+  webglMap.bindTo('layergroup', domMap);
+  webglMap.bindTo('view', domMap);
 } else {
   var info = document.getElementById('no-webgl');
   /**
@@ -35,7 +35,7 @@ if (ol.has.WEBGL) {
 }
 
 var canvasMap = new ol.Map({
-  target: 'canvasMap',
-  layers: domMap.getLayers(),
-  view: domMap.getView()
+  target: 'canvasMap'
 });
+canvasMap.bindTo('layergroup', domMap);
+canvasMap.bindTo('view', domMap);

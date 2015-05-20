@@ -4,13 +4,12 @@ goog.require('ol.FeatureOverlay');
 goog.require('ol.Map');
 goog.require('ol.View');
 goog.require('ol.control');
-goog.require('ol.format.IGC');
 goog.require('ol.geom.LineString');
 goog.require('ol.geom.Point');
 goog.require('ol.layer.Tile');
 goog.require('ol.layer.Vector');
+goog.require('ol.source.IGC');
 goog.require('ol.source.OSM');
-goog.require('ol.source.Vector');
 goog.require('ol.style.Circle');
 goog.require('ol.style.Fill');
 goog.require('ol.style.Stroke');
@@ -41,33 +40,16 @@ var styleFunction = function(feature, resolution) {
   return styleArray;
 };
 
-var vectorSource = new ol.source.Vector();
-
-var igcUrls = [
-  'data/igc/Clement-Latour.igc',
-  'data/igc/Damien-de-Baenst.igc',
-  'data/igc/Sylvain-Dhonneur.igc',
-  'data/igc/Tom-Payne.igc',
-  'data/igc/Ulrich-Prinz.igc'
-];
-
-function get(url, callback) {
-  var client = new XMLHttpRequest();
-  client.open('GET', url);
-  client.onload = function() {
-    callback(client.responseText);
-  };
-  client.send();
-}
-
-var igcFormat = new ol.format.IGC();
-for (var i = 0; i < igcUrls.length; ++i) {
-  get(igcUrls[i], function(data) {
-    var features = igcFormat.readFeatures(data,
-        {featureProjection: 'EPSG:3857'});
-    vectorSource.addFeatures(features);
-  });
-}
+var vectorSource = new ol.source.IGC({
+  projection: 'EPSG:3857',
+  urls: [
+    'data/igc/Clement-Latour.igc',
+    'data/igc/Damien-de-Baenst.igc',
+    'data/igc/Sylvain-Dhonneur.igc',
+    'data/igc/Tom-Payne.igc',
+    'data/igc/Ulrich-Prinz.igc'
+  ]
+});
 
 var time = {
   start: Infinity,
@@ -193,8 +175,8 @@ var featureOverlay = new ol.FeatureOverlay({
   })
 });
 
-document.getElementById('time').addEventListener('input', function() {
-  var value = parseInt(this.value, 10) / 100;
+$('#time').on('input', function(event) {
+  var value = parseInt($(this).val(), 10) / 100;
   var m = time.start + (time.duration * value);
   vectorSource.forEachFeature(function(feature) {
     var geometry = /** @type {ol.geom.LineString} */ (feature.getGeometry());

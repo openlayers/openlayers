@@ -1,14 +1,6 @@
-goog.provide('ol.LoadingStrategy');
 goog.provide('ol.loadingstrategy');
 
 goog.require('ol.TileCoord');
-
-
-/**
- * @typedef {function(ol.Extent, number): Array.<ol.Extent>}
- * @api
- */
-ol.LoadingStrategy;
 
 
 /**
@@ -42,7 +34,7 @@ ol.loadingstrategy.bbox = function(extent, resolution) {
  * @return {function(ol.Extent, number): Array.<ol.Extent>} Loading strategy.
  * @api
  */
-ol.loadingstrategy.tile = function(tileGrid) {
+ol.loadingstrategy.createTile = function(tileGrid) {
   return (
       /**
        * @param {ol.Extent} extent Extent.

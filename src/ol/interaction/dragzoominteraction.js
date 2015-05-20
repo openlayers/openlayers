@@ -1,6 +1,7 @@
 goog.provide('ol.interaction.DragZoom');
 
 goog.require('goog.asserts');
+goog.require('ol');
 goog.require('ol.events.condition');
 goog.require('ol.extent');
 goog.require('ol.interaction.DragBox');
@@ -29,12 +30,6 @@ ol.interaction.DragZoom = function(opt_options) {
 
   /**
    * @private
-   * @type {number}
-   */
-  this.duration_ = goog.isDef(options.duration) ? options.duration : 200;
-
-  /**
-   * @private
    * @type {ol.style.Style}
    */
   var style = goog.isDef(options.style) ?
@@ -59,12 +54,12 @@ goog.inherits(ol.interaction.DragZoom, ol.interaction.DragBox);
 ol.interaction.DragZoom.prototype.onBoxEnd = function() {
   var map = this.getMap();
   var view = map.getView();
-  goog.asserts.assert(!goog.isNull(view), 'view should not be null');
+  goog.asserts.assert(!goog.isNull(view));
   var extent = this.getGeometry().getExtent();
   var center = ol.extent.getCenter(extent);
   var size = map.getSize();
-  goog.asserts.assert(goog.isDef(size), 'size should be defined');
+  goog.asserts.assert(goog.isDef(size));
   ol.interaction.Interaction.zoom(map, view,
       view.getResolutionForExtent(extent, size),
-      center, this.duration_);
+      center, ol.DRAGZOOM_ANIMATION_DURATION);
 };

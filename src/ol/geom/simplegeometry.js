@@ -5,7 +5,6 @@ goog.require('goog.functions');
 goog.require('goog.object');
 goog.require('ol.extent');
 goog.require('ol.geom.Geometry');
-goog.require('ol.geom.GeometryLayout');
 goog.require('ol.geom.flat.transform');
 
 
@@ -65,9 +64,10 @@ ol.geom.SimpleGeometry.getLayoutForStride_ = function(stride) {
 
 /**
  * @param {ol.geom.GeometryLayout} layout Layout.
+ * @private
  * @return {number} Stride.
  */
-ol.geom.SimpleGeometry.getStrideForLayout = function(layout) {
+ol.geom.SimpleGeometry.getStrideForLayout_ = function(layout) {
   if (layout == ol.geom.GeometryLayout.XY) {
     return 2;
   } else if (layout == ol.geom.GeometryLayout.XYZ) {
@@ -99,13 +99,6 @@ ol.geom.SimpleGeometry.prototype.computeExtent = function(extent) {
 
 
 /**
- * @return {Array} Coordinates.
- */
-ol.geom.SimpleGeometry.prototype.getCoordinates = goog.abstractMethod;
-
-
-/**
- * Return the first coordinate of the geometry.
  * @return {ol.Coordinate} First coordinate.
  * @api stable
  */
@@ -123,7 +116,6 @@ ol.geom.SimpleGeometry.prototype.getFlatCoordinates = function() {
 
 
 /**
- * Return the last coordinate of the geometry.
  * @return {ol.Coordinate} Last point.
  * @api stable
  */
@@ -133,7 +125,6 @@ ol.geom.SimpleGeometry.prototype.getLastCoordinate = function() {
 
 
 /**
- * Return the {@link ol.geom.GeometryLayout layout} of the geometry.
  * @return {ol.geom.GeometryLayout} Layout.
  * @api stable
  */
@@ -209,17 +200,10 @@ ol.geom.SimpleGeometry.prototype.getStride = function() {
  */
 ol.geom.SimpleGeometry.prototype.setFlatCoordinatesInternal =
     function(layout, flatCoordinates) {
-  this.stride = ol.geom.SimpleGeometry.getStrideForLayout(layout);
+  this.stride = ol.geom.SimpleGeometry.getStrideForLayout_(layout);
   this.layout = layout;
   this.flatCoordinates = flatCoordinates;
 };
-
-
-/**
- * @param {Array} coordinates Coordinates.
- * @param {ol.geom.GeometryLayout=} opt_layout Layout.
- */
-ol.geom.SimpleGeometry.prototype.setCoordinates = goog.abstractMethod;
 
 
 /**
@@ -233,7 +217,7 @@ ol.geom.SimpleGeometry.prototype.setLayout =
   /** @type {number} */
   var stride;
   if (goog.isDef(layout)) {
-    stride = ol.geom.SimpleGeometry.getStrideForLayout(layout);
+    stride = ol.geom.SimpleGeometry.getStrideForLayout_(layout);
   } else {
     var i;
     for (i = 0; i < nesting; ++i) {
@@ -266,8 +250,10 @@ ol.geom.SimpleGeometry.prototype.applyTransform = function(transformFn) {
 
 
 /**
- * @inheritDoc
- * @api stable
+ * Translate the geometry.
+ * @param {number} deltaX Delta X.
+ * @param {number} deltaY Delta Y.
+ * @api
  */
 ol.geom.SimpleGeometry.prototype.translate = function(deltaX, deltaY) {
   var flatCoordinates = this.getFlatCoordinates();

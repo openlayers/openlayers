@@ -11,7 +11,6 @@ goog.require('ol.render.EventType');
 goog.require('ol.render.canvas.ReplayGroup');
 goog.require('ol.renderer.canvas.Layer');
 goog.require('ol.renderer.vector');
-goog.require('ol.source.Vector');
 
 
 
@@ -76,18 +75,7 @@ goog.inherits(ol.renderer.canvas.VectorLayer, ol.renderer.canvas.Layer);
 ol.renderer.canvas.VectorLayer.prototype.composeFrame =
     function(frameState, layerState, context) {
 
-  var extent = frameState.extent;
-  var focus = frameState.focus;
-  var pixelRatio = frameState.pixelRatio;
-  var skippedFeatureUids = frameState.skippedFeatureUids;
-  var viewState = frameState.viewState;
-  var projection = viewState.projection;
-  var rotation = viewState.rotation;
-  var projectionExtent = projection.getExtent();
-  var vectorSource = this.getLayer().getSource();
-  goog.asserts.assertInstanceof(vectorSource, ol.source.Vector);
-
-  var transform = this.getTransform(frameState, 0);
+  var transform = this.getTransform(frameState);
 
   this.dispatchPreComposeEvent(context, frameState, transform);
 
@@ -108,48 +96,9 @@ ol.renderer.canvas.VectorLayer.prototype.composeFrame =
     // see http://jsperf.com/context-save-restore-versus-variable
     var alpha = replayContext.globalAlpha;
     replayContext.globalAlpha = layerState.opacity;
-    var noSkip = {};
-    var focusX = focus[0];
-
-    if (vectorSource.getWrapX() && projection.canWrapX() &&
-        !ol.extent.containsExtent(projectionExtent, extent)) {
-      var projLeft = projectionExtent[0];
-      var projRight = projectionExtent[2];
-      // A feature from skippedFeatureUids will only be skipped in the world
-      // that has the frameState's focus, because this is where a feature
-      // overlay for highlighting or selection would render the skipped
-      // feature.
-      replayGroup.replay(replayContext, pixelRatio, transform, rotation,
-          projLeft <= focusX && focusX <= projRight ?
-              skippedFeatureUids : noSkip);
-      var startX = extent[0];
-      var worldWidth = ol.extent.getWidth(projectionExtent);
-      var world = 0;
-      var offsetX;
-      while (startX < projectionExtent[0]) {
-        --world;
-        offsetX = worldWidth * world;
-        transform = this.getTransform(frameState, offsetX);
-        replayGroup.replay(replayContext, pixelRatio, transform, rotation,
-            projLeft + offsetX <= focusX && focusX <= projRight + offsetX ?
-                skippedFeatureUids : noSkip);
-        startX += worldWidth;
-      }
-      world = 0;
-      startX = extent[2];
-      while (startX > projectionExtent[2]) {
-        ++world;
-        offsetX = worldWidth * world;
-        transform = this.getTransform(frameState, offsetX);
-        replayGroup.replay(replayContext, pixelRatio, transform, rotation,
-            projLeft + offsetX <= focusX && focusX <= projRight + offsetX ?
-                skippedFeatureUids : noSkip);
-        startX -= worldWidth;
-      }
-    } else {
-      replayGroup.replay(
-          replayContext, pixelRatio, transform, rotation, skippedFeatureUids);
-    }
+    replayGroup.replay(
+        replayContext, frameState.pixelRatio, transform,
+        frameState.viewState.rotation, frameState.skippedFeatureUids);
 
     if (replayContext != context) {
       this.dispatchRenderEvent(replayContext, frameState, transform);
@@ -183,7 +132,7 @@ ol.renderer.canvas.VectorLayer.prototype.forEachFeatureAtCoordinate =
          * @return {?} Callback result.
          */
         function(feature) {
-          goog.asserts.assert(goog.isDef(feature), 'received a feature');
+          goog.asserts.assert(goog.isDef(feature));
           var key = goog.getUid(feature).toString();
           if (!(key in features)) {
             features[key] = true;
@@ -212,21 +161,16 @@ ol.renderer.canvas.VectorLayer.prototype.prepareFrame =
     function(frameState, layerState) {
 
   var vectorLayer = /** @type {ol.layer.Vector} */ (this.getLayer());
-  goog.asserts.assertInstanceof(vectorLayer, ol.layer.Vector,
-      'layer is an instance of ol.layer.Vector');
+  goog.asserts.assertInstanceof(vectorLayer, ol.layer.Vector);
   var vectorSource = vectorLayer.getSource();
 
   this.updateAttributions(
       frameState.attributions, vectorSource.getAttributions());
   this.updateLogos(frameState, vectorSource);
 
-  var animating = frameState.viewHints[ol.ViewHint.ANIMATING];
-  var interacting = frameState.viewHints[ol.ViewHint.INTERACTING];
-  var updateWhileAnimating = vectorLayer.getUpdateWhileAnimating();
-  var updateWhileInteracting = vectorLayer.getUpdateWhileInteracting();
-
-  if (!this.dirty_ && (!updateWhileAnimating && animating) ||
-      (!updateWhileInteracting && interacting)) {
+  if (!this.dirty_ && (!vectorLayer.getUpdateWhileAnimating() &&
+      frameState.viewHints[ol.ViewHint.ANIMATING] ||
+      frameState.viewHints[ol.ViewHint.INTERACTING])) {
     return true;
   }
 
@@ -245,14 +189,6 @@ ol.renderer.canvas.VectorLayer.prototype.prepareFrame =
 
   var extent = ol.extent.buffer(frameStateExtent,
       vectorLayerRenderBuffer * resolution);
-  var projectionExtent = viewState.projection.getExtent();
-
-  if (vectorSource.getWrapX() && viewState.projection.canWrapX() &&
-      !ol.extent.containsExtent(projectionExtent, frameState.extent)) {
-    // do not clip when the view crosses the -180° or 180° meridians
-    extent[0] = projectionExtent[0];
-    extent[2] = projectionExtent[2];
-  }
 
   if (!this.dirty_ &&
       this.renderedResolution_ == resolution &&

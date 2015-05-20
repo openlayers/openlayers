@@ -57,9 +57,6 @@ goog.inherits(ol.interaction.KeyboardZoom, ol.interaction.Interaction);
 
 
 /**
- * Handles the {@link ol.MapBrowserEvent map browser event} if it was a
- * `KeyEvent`, and decides whether to zoom in or out (depending on whether the
- * key pressed was '+' or '-').
  * @param {ol.MapBrowserEvent} mapBrowserEvent Map browser event.
  * @return {boolean} `false` to stop event propagation.
  * @this {ol.interaction.KeyboardZoom}
@@ -77,7 +74,7 @@ ol.interaction.KeyboardZoom.handleEvent = function(mapBrowserEvent) {
       var delta = (charCode == '+'.charCodeAt(0)) ? this.delta_ : -this.delta_;
       map.render();
       var view = map.getView();
-      goog.asserts.assert(!goog.isNull(view), 'view should not be null');
+      goog.asserts.assert(!goog.isNull(view));
       ol.interaction.Interaction.zoomByDelta(
           map, view, delta, undefined, this.duration_);
       mapBrowserEvent.preventDefault();

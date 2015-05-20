@@ -2,7 +2,6 @@ goog.provide('ol.TileUrlFunction');
 goog.provide('ol.TileUrlFunctionType');
 
 goog.require('goog.array');
-goog.require('goog.asserts');
 goog.require('goog.math');
 goog.require('ol.TileCoord');
 goog.require('ol.tilecoord');
@@ -75,8 +74,6 @@ ol.TileUrlFunction.createFromTemplates = function(templates) {
  * @return {ol.TileUrlFunctionType} Tile URL function.
  */
 ol.TileUrlFunction.createFromTileUrlFunctions = function(tileUrlFunctions) {
-  goog.asserts.assert(tileUrlFunctions.length > 0,
-      'Length of tile url functions should be greater than 0');
   if (tileUrlFunctions.length === 1) {
     return tileUrlFunctions[0];
   }

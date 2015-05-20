@@ -112,13 +112,15 @@ var map = new ol.Map({
 
 dragAndDropInteraction.on('addfeatures', function(event) {
   var vectorSource = new ol.source.Vector({
-    features: event.features
+    features: event.features,
+    projection: event.projection
   });
-  map.addLayer(new ol.layer.Vector({
+  map.getLayers().push(new ol.layer.Vector({
     source: vectorSource,
     style: styleFunction
   }));
-  map.getView().fitExtent(
+  var view = map.getView();
+  view.fitExtent(
       vectorSource.getExtent(), /** @type {ol.Size} */ (map.getSize()));
 });
 

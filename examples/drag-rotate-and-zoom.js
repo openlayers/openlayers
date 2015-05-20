@@ -15,7 +15,7 @@ var map = new ol.Map({
       source: new ol.source.MapQuest({layer: 'sat'})
     })
   ],
-  renderer: common.getRendererFromQueryString(),
+  renderer: exampleNS.getRendererFromQueryString(),
   target: 'map',
   view: new ol.View({
     center: [0, 0],

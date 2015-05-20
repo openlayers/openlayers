@@ -21,7 +21,6 @@ goog.require('ol.dom.BrowserFeature');
 goog.require('ol.extent');
 goog.require('ol.layer.Tile');
 goog.require('ol.renderer.dom.Layer');
-goog.require('ol.size');
 goog.require('ol.tilecoord');
 goog.require('ol.tilegrid.TileGrid');
 goog.require('ol.vec.Mat4');
@@ -102,8 +101,7 @@ ol.renderer.dom.TileLayer.prototype.prepareFrame =
   var projection = viewState.projection;
 
   var tileLayer = this.getLayer();
-  goog.asserts.assertInstanceof(tileLayer, ol.layer.Tile,
-      'layer is an instance of ol.layer.Tile');
+  goog.asserts.assertInstanceof(tileLayer, ol.layer.Tile);
   var tileSource = tileLayer.getSource();
   var tileGrid = tileSource.getTileGridForProjection(projection);
   var tileGutter = tileSource.getGutter();
@@ -130,7 +128,11 @@ ol.renderer.dom.TileLayer.prototype.prepareFrame =
   var tilesToDrawByZ = {};
   tilesToDrawByZ[z] = {};
 
-  var findLoadedTiles = this.createLoadedTileFinder(tileSource, tilesToDrawByZ);
+  var getTileIfLoaded = this.createGetTileIfLoadedFunction(function(tile) {
+    return !goog.isNull(tile) && tile.getState() == ol.TileState.LOADED;
+  }, tileSource, pixelRatio, projection);
+  var findLoadedTiles = goog.bind(tileSource.findLoadedTiles, tileSource,
+      tilesToDrawByZ, getTileIfLoaded);
 
   var useInterimTilesOnError = tileLayer.getUseInterimTilesOnError();
 
@@ -343,12 +345,6 @@ ol.renderer.dom.TileLayerZ_ = function(tileGrid, tileCoordOrigin) {
    */
   this.transform_ = goog.vec.Mat4.createNumberIdentity();
 
-  /**
-   * @private
-   * @type {ol.Size}
-   */
-  this.tmpSize_ = [0, 0];
-
 };
 
 
@@ -361,14 +357,12 @@ ol.renderer.dom.TileLayerZ_.prototype.addTile = function(tile, tileGutter) {
   var tileCoordZ = tileCoord[0];
   var tileCoordX = tileCoord[1];
   var tileCoordY = tileCoord[2];
-  goog.asserts.assert(tileCoordZ == this.tileCoordOrigin_[0],
-      'tileCoordZ matches z of tileCoordOrigin');
+  goog.asserts.assert(tileCoordZ == this.tileCoordOrigin_[0]);
   var tileCoordKey = ol.tilecoord.toString(tileCoord);
   if (tileCoordKey in this.tiles_) {
     return;
   }
-  var tileSize = ol.size.toSize(
-      this.tileGrid_.getTileSize(tileCoordZ), this.tmpSize_);
+  var tileSize = this.tileGrid_.getTileSize(tileCoordZ);
   var image = tile.getImage(this);
   var imageStyle = image.style;
   // Bootstrap sets the style max-width: 100% for all images, which
@@ -381,25 +375,25 @@ ol.renderer.dom.TileLayerZ_.prototype.addTile = function(tile, tileGutter) {
     tileElement = goog.dom.createElement(goog.dom.TagName.DIV);
     tileElementStyle = tileElement.style;
     tileElementStyle.overflow = 'hidden';
-    tileElementStyle.width = tileSize[0] + 'px';
-    tileElementStyle.height = tileSize[1] + 'px';
+    tileElementStyle.width = tileSize + 'px';
+    tileElementStyle.height = tileSize + 'px';
     imageStyle.position = 'absolute';
     imageStyle.left = -tileGutter + 'px';
     imageStyle.top = -tileGutter + 'px';
-    imageStyle.width = (tileSize[0] + 2 * tileGutter) + 'px';
-    imageStyle.height = (tileSize[1] + 2 * tileGutter) + 'px';
+    imageStyle.width = (tileSize + 2 * tileGutter) + 'px';
+    imageStyle.height = (tileSize + 2 * tileGutter) + 'px';
     goog.dom.appendChild(tileElement, image);
   } else {
-    imageStyle.width = tileSize[0] + 'px';
-    imageStyle.height = tileSize[1] + 'px';
+    imageStyle.width = tileSize + 'px';
+    imageStyle.height = tileSize + 'px';
     tileElement = image;
     tileElementStyle = imageStyle;
   }
   tileElementStyle.position = 'absolute';
   tileElementStyle.left =
-      ((tileCoordX - this.tileCoordOrigin_[1]) * tileSize[0]) + 'px';
+      ((tileCoordX - this.tileCoordOrigin_[1]) * tileSize) + 'px';
   tileElementStyle.top =
-      ((this.tileCoordOrigin_[2] - tileCoordY) * tileSize[1]) + 'px';
+      ((this.tileCoordOrigin_[2] - tileCoordY) * tileSize) + 'px';
   if (goog.isNull(this.documentFragment_)) {
     this.documentFragment_ = document.createDocumentFragment();
   }
