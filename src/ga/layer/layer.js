@@ -10,6 +10,7 @@ goog.require('goog.events');
 goog.require('goog.net.EventType');
 goog.require('goog.net.XhrIo');
 goog.require('goog.net.XhrIo.ResponseType');
+goog.require('goog.json');
 goog.require('ol.Attribution');
 goog.require('ol.format.GeoJSON');
 goog.require('ol.source.Vector');
@@ -94,7 +95,7 @@ ga.layer.create = function(layer, options) {
         xhrIo.setResponseType(goog.net.XhrIo.ResponseType.TEXT);
         goog.events.listenOnce(xhrIo, goog.net.EventType.COMPLETE,
           function(event) {
-            var source = xhrIo.getResponseText();
+            var source = goog.json.parse(xhrIo.getResponseText());
             var olStyleForVector = new ga.style.StylesFromLiterals(source);
             olLayer.setStyle(function(feature) {
               return [olStyleForVector.getFeatureStyle(feature)];
