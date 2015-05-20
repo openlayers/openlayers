@@ -23,7 +23,7 @@ var map = new ol.Map({
       })
     })
   ],
-  renderer: exampleNS.getRendererFromQueryString(),
+  renderer: common.getRendererFromQueryString(),
   target: 'map',
   view: view
 });

@@ -16,6 +16,7 @@ goog.require('ol.layer.Tile');
 goog.require('ol.math');
 goog.require('ol.renderer.webgl.Layer');
 goog.require('ol.renderer.webgl.tilelayer.shader');
+goog.require('ol.size');
 goog.require('ol.tilecoord');
 goog.require('ol.vec.Mat4');
 goog.require('ol.webgl.Buffer');
@@ -80,6 +81,12 @@ ol.renderer.webgl.TileLayer = function(mapRenderer, tileLayer) {
    */
   this.renderedRevision_ = -1;
 
+  /**
+   * @private
+   * @type {ol.Size}
+   */
+  this.tmpSize_ = [0, 0];
+
 };
 goog.inherits(ol.renderer.webgl.TileLayer, ol.renderer.webgl.Layer);
 
@@ -91,6 +98,41 @@ ol.renderer.webgl.TileLayer.prototype.disposeInternal = function() {
   var context = this.mapRenderer.getContext();
   context.deleteBuffer(this.renderArrayBuffer_);
   goog.base(this, 'disposeInternal');
+};
+
+
+/**
+ * Create a function that adds loaded tiles to the tile lookup.
+ * @param {ol.source.Tile} source Tile source.
+ * @param {Object.<number, Object.<string, ol.Tile>>} tiles Lookup of loaded
+ *     tiles by zoom level.
+ * @return {function(number, ol.TileRange):boolean} A function that can be
+ *     called with a zoom level and a tile range to add loaded tiles to the
+ *     lookup.
+ * @protected
+ */
+ol.renderer.webgl.TileLayer.prototype.createLoadedTileFinder =
+    function(source, tiles) {
+  var mapRenderer = this.mapRenderer;
+
+  return (
+      /**
+       * @param {number} zoom Zoom level.
+       * @param {ol.TileRange} tileRange Tile range.
+       * @return {boolean} The tile range is fully loaded.
+       */
+      function(zoom, tileRange) {
+        return source.forEachLoadedTile(zoom, tileRange, function(tile) {
+          var loaded = mapRenderer.isTileTextureLoaded(tile);
+          if (loaded) {
+            if (!tiles[zoom]) {
+              tiles[zoom] = {};
+            }
+            tiles[zoom][tile.tileCoord.toString()] = tile;
+          }
+          return loaded;
+        });
+      });
 };
 
 
@@ -116,7 +158,8 @@ ol.renderer.webgl.TileLayer.prototype.prepareFrame =
   var projection = viewState.projection;
 
   var tileLayer = this.getLayer();
-  goog.asserts.assertInstanceof(tileLayer, ol.layer.Tile);
+  goog.asserts.assertInstanceof(tileLayer, ol.layer.Tile,
+      'layer is an instance of ol.layer.Tile');
   var tileSource = tileLayer.getSource();
   var tileGrid = tileSource.getTileGridForProjection(projection);
   var z = tileGrid.getZForResolution(viewState.resolution);
@@ -124,7 +167,8 @@ ol.renderer.webgl.TileLayer.prototype.prepareFrame =
 
   var tilePixelSize =
       tileSource.getTilePixelSize(z, frameState.pixelRatio, projection);
-  var pixelRatio = tilePixelSize / tileGrid.getTileSize(z);
+  var pixelRatio = tilePixelSize[0] /
+      ol.size.toSize(tileGrid.getTileSize(z), this.tmpSize_)[0];
   var tilePixelResolution = tileResolution / pixelRatio;
   var tileGutter = tileSource.getGutter();
 
@@ -150,12 +194,15 @@ ol.renderer.webgl.TileLayer.prototype.prepareFrame =
     var tileRangeSize = tileRange.getSize();
 
     var maxDimension = Math.max(
-        tileRangeSize[0] * tilePixelSize, tileRangeSize[1] * tilePixelSize);
+        tileRangeSize[0] * tilePixelSize[0],
+        tileRangeSize[1] * tilePixelSize[1]);
     var framebufferDimension = ol.math.roundUpToPowerOfTwo(maxDimension);
     var framebufferExtentDimension = tilePixelResolution * framebufferDimension;
     var origin = tileGrid.getOrigin(z);
-    var minX = origin[0] + tileRange.minX * tilePixelSize * tilePixelResolution;
-    var minY = origin[1] + tileRange.minY * tilePixelSize * tilePixelResolution;
+    var minX = origin[0] +
+        tileRange.minX * tilePixelSize[0] * tilePixelResolution;
+    var minY = origin[1] +
+        tileRange.minY * tilePixelSize[1] * tilePixelResolution;
     framebufferExtent = [
       minX, minY,
       minX + framebufferExtentDimension, minY + framebufferExtentDimension
@@ -190,12 +237,8 @@ ol.renderer.webgl.TileLayer.prototype.prepareFrame =
     var tilesToDrawByZ = {};
     tilesToDrawByZ[z] = {};
 
-    var getTileIfLoaded = this.createGetTileIfLoadedFunction(function(tile) {
-      return !goog.isNull(tile) && tile.getState() == ol.TileState.LOADED &&
-          mapRenderer.isTileTextureLoaded(tile);
-    }, tileSource, pixelRatio, projection);
-    var findLoadedTiles = goog.bind(tileSource.findLoadedTiles, tileSource,
-        tilesToDrawByZ, getTileIfLoaded);
+    var findLoadedTiles = this.createLoadedTileFinder(
+        tileSource, tilesToDrawByZ);
 
     var useInterimTilesOnError = tileLayer.getUseInterimTilesOnError();
     var allTilesLoaded = true;

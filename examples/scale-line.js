@@ -2,7 +2,6 @@ goog.require('ol.Map');
 goog.require('ol.View');
 goog.require('ol.control');
 goog.require('ol.control.ScaleLine');
-goog.require('ol.dom.Input');
 goog.require('ol.layer.Tile');
 goog.require('ol.source.OSM');
 
@@ -22,7 +21,7 @@ var map = new ol.Map({
       source: new ol.source.OSM()
     })
   ],
-  renderer: exampleNS.getRendererFromQueryString(),
+  renderer: common.getRendererFromQueryString(),
   target: 'map',
   view: new ol.View({
     center: [0, 0],
@@ -31,5 +30,8 @@ var map = new ol.Map({
 });
 
 
-var unitsSelect = new ol.dom.Input(document.getElementById('units'));
-unitsSelect.bindTo('value', scaleLineControl, 'units');
+var unitsSelect = $('#units');
+unitsSelect.on('change', function() {
+  scaleLineControl.setUnits(this.value);
+});
+unitsSelect.val(scaleLineControl.getUnits());

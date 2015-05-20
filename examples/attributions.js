@@ -15,7 +15,7 @@ var map = new ol.Map({
     })
   ],
   controls: ol.control.defaults({ attribution: false }).extend([attribution]),
-  renderer: exampleNS.getRendererFromQueryString(),
+  renderer: common.getRendererFromQueryString(),
   target: 'map',
   view: new ol.View({
     center: [0, 0],
@@ -29,5 +29,5 @@ function checkSize() {
   attribution.setCollapsed(small);
 }
 
-$(window).on('resize', checkSize);
+window.addEventListener('resize', checkSize);
 checkSize();

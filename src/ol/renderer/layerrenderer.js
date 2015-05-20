@@ -1,6 +1,5 @@
 goog.provide('ol.renderer.Layer');
 
-goog.require('goog.Disposable');
 goog.require('goog.asserts');
 goog.require('goog.events');
 goog.require('goog.events.EventType');
@@ -49,7 +48,24 @@ goog.inherits(ol.renderer.Layer, ol.Observable);
  * @return {T|undefined} Callback result.
  * @template S,T
  */
-ol.renderer.Layer.prototype.forEachFeatureAtCoordinate = goog.nullFunction;
+ol.renderer.Layer.prototype.forEachFeatureAtCoordinate =
+    function(coordinate, frameState, callback, thisArg) {
+  var layer = this.getLayer();
+  var source = layer.getSource();
+  var resolution = frameState.viewState.resolution;
+  var rotation = frameState.viewState.rotation;
+  var skippedFeatureUids = frameState.skippedFeatureUids;
+  return source.forEachFeatureAtCoordinate(
+      coordinate, resolution, rotation, skippedFeatureUids,
+
+      /**
+       * @param {ol.Feature} feature Feature.
+       * @return {?} Callback result.
+       */
+      function(feature) {
+        return callback.call(thisArg, feature, layer);
+      });
+};
 
 
 /**
@@ -83,6 +99,34 @@ ol.renderer.Layer.prototype.forEachLayerAtPixel =
  * @return {boolean} Is there a feature at the given coordinate?
  */
 ol.renderer.Layer.prototype.hasFeatureAtCoordinate = goog.functions.FALSE;
+
+
+/**
+ * Create a function that adds loaded tiles to the tile lookup.
+ * @param {ol.source.Tile} source Tile source.
+ * @param {Object.<number, Object.<string, ol.Tile>>} tiles Lookup of loaded
+ *     tiles by zoom level.
+ * @return {function(number, ol.TileRange):boolean} A function that can be
+ *     called with a zoom level and a tile range to add loaded tiles to the
+ *     lookup.
+ * @protected
+ */
+ol.renderer.Layer.prototype.createLoadedTileFinder = function(source, tiles) {
+  return (
+      /**
+       * @param {number} zoom Zoom level.
+       * @param {ol.TileRange} tileRange Tile range.
+       * @return {boolean} The tile range is fully loaded.
+       */
+      function(zoom, tileRange) {
+        return source.forEachLoadedTile(zoom, tileRange, function(tile) {
+          if (!tiles[zoom]) {
+            tiles[zoom] = {};
+          }
+          tiles[zoom][tile.tileCoord.toString()] = tile;
+        });
+      });
+};
 
 
 /**
@@ -122,14 +166,16 @@ ol.renderer.Layer.prototype.loadImage = function(image) {
     // the image is either "idle" or "loading", register the change
     // listener (a noop if the listener was already registered)
     goog.asserts.assert(imageState == ol.ImageState.IDLE ||
-        imageState == ol.ImageState.LOADING);
-    goog.events.listenOnce(image, goog.events.EventType.CHANGE,
+        imageState == ol.ImageState.LOADING,
+        'imageState is "idle" or "loading"');
+    goog.events.listen(image, goog.events.EventType.CHANGE,
         this.handleImageChange_, false, this);
   }
   if (imageState == ol.ImageState.IDLE) {
     image.load();
     imageState = image.getState();
-    goog.asserts.assert(imageState == ol.ImageState.LOADING);
+    goog.asserts.assert(imageState == ol.ImageState.LOADING,
+        'imageState is "loading"');
   }
   return imageState == ol.ImageState.LOADED;
 };
@@ -198,8 +244,8 @@ ol.renderer.Layer.prototype.updateLogos = function(frameState, source) {
     if (goog.isString(logo)) {
       frameState.logos[logo] = '';
     } else if (goog.isObject(logo)) {
-      goog.asserts.assertString(logo.href);
-      goog.asserts.assertString(logo.src);
+      goog.asserts.assertString(logo.href, 'logo.href is a string');
+      goog.asserts.assertString(logo.src, 'logo.src is a string');
       frameState.logos[logo.src] = logo.href;
     }
   }
@@ -228,32 +274,6 @@ ol.renderer.Layer.prototype.updateUsedTiles =
     usedTiles[tileSourceKey] = {};
     usedTiles[tileSourceKey][zKey] = tileRange;
   }
-};
-
-
-/**
- * @param {function(ol.Tile): boolean} isLoadedFunction Function to
- *     determine if the tile is loaded.
- * @param {ol.source.Tile} tileSource Tile source.
- * @param {number} pixelRatio Pixel ratio.
- * @param {ol.proj.Projection} projection Projection.
- * @protected
- * @return {function(number, number, number): ol.Tile} Returns a tile if it is
- *     loaded.
- */
-ol.renderer.Layer.prototype.createGetTileIfLoadedFunction =
-    function(isLoadedFunction, tileSource, pixelRatio, projection) {
-  return (
-      /**
-       * @param {number} z Z.
-       * @param {number} x X.
-       * @param {number} y Y.
-       * @return {ol.Tile} Tile.
-       */
-      function(z, x, y) {
-        var tile = tileSource.getTile(z, x, y, pixelRatio, projection);
-        return isLoadedFunction(tile) ? tile : null;
-      });
 };
 
 

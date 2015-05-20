@@ -51,7 +51,7 @@ ol.Image = function(extent, resolution, pixelRatio, attributions, src,
 
   /**
    * @private
-   * @type {Array.<number>}
+   * @type {Array.<goog.events.Key>}
    */
   this.imageListenerKeys_ = null;
 
@@ -72,6 +72,7 @@ goog.inherits(ol.Image, ol.ImageBase);
 
 
 /**
+ * Get the HTML image element (may be a Canvas, Image, or Video).
  * @param {Object=} opt_context Object.
  * @return {HTMLCanvasElement|Image|HTMLVideoElement} Image.
  * @api
@@ -128,7 +129,9 @@ ol.Image.prototype.handleImageLoad_ = function() {
 ol.Image.prototype.load = function() {
   if (this.state == ol.ImageState.IDLE) {
     this.state = ol.ImageState.LOADING;
-    goog.asserts.assert(goog.isNull(this.imageListenerKeys_));
+    this.changed();
+    goog.asserts.assert(goog.isNull(this.imageListenerKeys_),
+        'this.imageListenerKeys_ should be null');
     this.imageListenerKeys_ = [
       goog.events.listenOnce(this.image_, goog.events.EventType.ERROR,
           this.handleImageError_, false, this),
@@ -146,7 +149,8 @@ ol.Image.prototype.load = function() {
  * @private
  */
 ol.Image.prototype.unlistenImage_ = function() {
-  goog.asserts.assert(!goog.isNull(this.imageListenerKeys_));
+  goog.asserts.assert(!goog.isNull(this.imageListenerKeys_),
+      'this.imageListenerKeys_ should not be null');
   goog.array.forEach(this.imageListenerKeys_, goog.events.unlistenByKey);
   this.imageListenerKeys_ = null;
 };

@@ -80,7 +80,8 @@ ol.FeatureOverlay = function(opt_options) {
     if (goog.isArray(options.features)) {
       this.setFeatures(new ol.Collection(options.features.slice()));
     } else {
-      goog.asserts.assertInstanceof(options.features, ol.Collection);
+      goog.asserts.assertInstanceof(options.features, ol.Collection,
+          'options.features should be an ol.Collection');
       this.setFeatures(options.features);
     }
   } else {
@@ -95,6 +96,7 @@ ol.FeatureOverlay = function(opt_options) {
 
 
 /**
+ * Add a feature to the overlay.
  * @param {ol.Feature} feature Feature.
  * @api
  */
@@ -104,6 +106,7 @@ ol.FeatureOverlay.prototype.addFeature = function(feature) {
 
 
 /**
+ * Get the features on the overlay.
  * @return {ol.Collection.<ol.Feature>} Features collection.
  * @api
  */
@@ -113,6 +116,7 @@ ol.FeatureOverlay.prototype.getFeatures = function() {
 
 
 /**
+ * Get the map associated with the overlay.
  * @return {?ol.Map} The map with which this feature overlay is associated.
  * @api
  */
@@ -134,7 +138,8 @@ ol.FeatureOverlay.prototype.handleFeatureChange_ = function() {
  * @param {ol.CollectionEvent} collectionEvent Collection event.
  */
 ol.FeatureOverlay.prototype.handleFeaturesAdd_ = function(collectionEvent) {
-  goog.asserts.assert(!goog.isNull(this.featureChangeListenerKeys_));
+  goog.asserts.assert(!goog.isNull(this.featureChangeListenerKeys_),
+      'this.featureChangeListenerKeys_ should not be null');
   var feature = /** @type {ol.Feature} */ (collectionEvent.element);
   this.featureChangeListenerKeys_[goog.getUid(feature).toString()] =
       goog.events.listen(feature, goog.events.EventType.CHANGE,
@@ -148,7 +153,8 @@ ol.FeatureOverlay.prototype.handleFeaturesAdd_ = function(collectionEvent) {
  * @param {ol.CollectionEvent} collectionEvent Collection event.
  */
 ol.FeatureOverlay.prototype.handleFeaturesRemove_ = function(collectionEvent) {
-  goog.asserts.assert(!goog.isNull(this.featureChangeListenerKeys_));
+  goog.asserts.assert(!goog.isNull(this.featureChangeListenerKeys_),
+      'this.featureChangeListenerKeys_ should not be null');
   var feature = /** @type {ol.Feature} */ (collectionEvent.element);
   var key = goog.getUid(feature).toString();
   goog.events.unlistenByKey(this.featureChangeListenerKeys_[key]);
@@ -181,7 +187,8 @@ ol.FeatureOverlay.prototype.handleMapPostCompose_ = function(event) {
   }
   var replayGroup = /** @type {ol.render.IReplayGroup} */
       (event.replayGroup);
-  goog.asserts.assert(goog.isDef(replayGroup));
+  goog.asserts.assert(goog.isDef(replayGroup),
+      'replayGroup should be defined');
   var frameState = event.frameState;
   var pixelRatio = frameState.pixelRatio;
   var resolution = frameState.viewState.resolution;
@@ -207,7 +214,8 @@ ol.FeatureOverlay.prototype.handleMapPostCompose_ = function(event) {
 
 
 /**
- * @param {ol.Feature} feature Feature.
+ * Remove a feature from the overlay.
+ * @param {ol.Feature} feature The feature to be removed.
  * @api
  */
 ol.FeatureOverlay.prototype.removeFeature = function(feature) {
@@ -226,6 +234,7 @@ ol.FeatureOverlay.prototype.render_ = function() {
 
 
 /**
+ * Set the features for the overlay.
  * @param {ol.Collection.<ol.Feature>} features Features collection.
  * @api
  */
@@ -260,6 +269,7 @@ ol.FeatureOverlay.prototype.setFeatures = function(features) {
 
 
 /**
+ * Set the map for the overlay.
  * @param {ol.Map} map Map.
  * @api
  */

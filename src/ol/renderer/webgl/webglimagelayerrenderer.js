@@ -74,34 +74,12 @@ ol.renderer.webgl.ImageLayer.prototype.createTexture_ = function(image) {
 /**
  * @inheritDoc
  */
-ol.renderer.webgl.ImageLayer.prototype.forEachFeatureAtCoordinate =
-    function(coordinate, frameState, callback, thisArg) {
-  var layer = this.getLayer();
-  var source = layer.getSource();
-  var resolution = frameState.viewState.resolution;
-  var rotation = frameState.viewState.rotation;
-  var skippedFeatureUids = frameState.skippedFeatureUids;
-  return source.forEachFeatureAtCoordinate(
-      coordinate, resolution, rotation, skippedFeatureUids,
-
-      /**
-       * @param {ol.Feature} feature Feature.
-       * @return {?} Callback result.
-       */
-      function(feature) {
-        return callback.call(thisArg, feature, layer);
-      });
-};
-
-
-/**
- * @inheritDoc
- */
 ol.renderer.webgl.ImageLayer.prototype.prepareFrame =
     function(frameState, layerState, context) {
 
   var gl = this.mapRenderer.getGL();
 
+  var pixelRatio = frameState.pixelRatio;
   var viewState = frameState.viewState;
   var viewCenter = viewState.center;
   var viewResolution = viewState.resolution;
@@ -110,7 +88,8 @@ ol.renderer.webgl.ImageLayer.prototype.prepareFrame =
   var image = this.image_;
   var texture = this.texture;
   var imageLayer = this.getLayer();
-  goog.asserts.assertInstanceof(imageLayer, ol.layer.Image);
+  goog.asserts.assertInstanceof(imageLayer, ol.layer.Image,
+      'layer is an instance of ol.layer.Image');
   var imageSource = imageLayer.getSource();
 
   var hints = frameState.viewHints;
@@ -125,11 +104,12 @@ ol.renderer.webgl.ImageLayer.prototype.prepareFrame =
     var projection = viewState.projection;
     var sourceProjection = imageSource.getProjection();
     if (!goog.isNull(sourceProjection)) {
-      goog.asserts.assert(ol.proj.equivalent(projection, sourceProjection));
+      goog.asserts.assert(ol.proj.equivalent(projection, sourceProjection),
+          'projection and sourceProjection are equivalent');
       projection = sourceProjection;
     }
     var image_ = imageSource.getImage(renderedExtent, viewResolution,
-        frameState.pixelRatio, projection);
+        pixelRatio, projection);
     if (!goog.isNull(image_)) {
       var loaded = this.loadImage(image_);
       if (loaded) {
@@ -153,12 +133,13 @@ ol.renderer.webgl.ImageLayer.prototype.prepareFrame =
   }
 
   if (!goog.isNull(image)) {
-    goog.asserts.assert(!goog.isNull(texture));
+    goog.asserts.assert(!goog.isNull(texture), 'texture is not null');
 
     var canvas = this.mapRenderer.getContext().getCanvas();
 
     this.updateProjectionMatrix_(canvas.width, canvas.height,
-        viewCenter, viewResolution, viewRotation, image.getExtent());
+        pixelRatio, viewCenter, viewResolution, viewRotation,
+        image.getExtent());
     this.hitTransformationMatrix_ = null;
 
     // Translate and scale to flip the Y coord.
@@ -181,6 +162,7 @@ ol.renderer.webgl.ImageLayer.prototype.prepareFrame =
 /**
  * @param {number} canvasWidth Canvas width.
  * @param {number} canvasHeight Canvas height.
+ * @param {number} pixelRatio Pixel ratio.
  * @param {ol.Coordinate} viewCenter View center.
  * @param {number} viewResolution View resolution.
  * @param {number} viewRotation View rotation.
@@ -188,8 +170,8 @@ ol.renderer.webgl.ImageLayer.prototype.prepareFrame =
  * @private
  */
 ol.renderer.webgl.ImageLayer.prototype.updateProjectionMatrix_ =
-    function(canvasWidth, canvasHeight, viewCenter,
-        viewResolution, viewRotation, imageExtent) {
+    function(canvasWidth, canvasHeight, pixelRatio,
+        viewCenter, viewResolution, viewRotation, imageExtent) {
 
   var canvasExtentWidth = canvasWidth * viewResolution;
   var canvasExtentHeight = canvasHeight * viewResolution;
@@ -197,7 +179,8 @@ ol.renderer.webgl.ImageLayer.prototype.updateProjectionMatrix_ =
   var projectionMatrix = this.projectionMatrix;
   goog.vec.Mat4.makeIdentity(projectionMatrix);
   goog.vec.Mat4.scale(projectionMatrix,
-      2 / canvasExtentWidth, 2 / canvasExtentHeight, 1);
+      pixelRatio * 2 / canvasExtentWidth,
+      pixelRatio * 2 / canvasExtentHeight, 1);
   goog.vec.Mat4.rotateZ(projectionMatrix, -viewRotation);
   goog.vec.Mat4.translate(projectionMatrix,
       imageExtent[0] - viewCenter[0],

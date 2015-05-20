@@ -4,7 +4,6 @@ goog.require('goog.Uri');
 goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('goog.net.Jsonp');
-goog.require('ol');
 goog.require('ol.Attribution');
 goog.require('ol.TileRange');
 goog.require('ol.TileUrlFunction');
@@ -13,7 +12,6 @@ goog.require('ol.proj');
 goog.require('ol.source.State');
 goog.require('ol.source.TileImage');
 goog.require('ol.tilecoord');
-goog.require('ol.tilegrid.XYZ');
 
 
 
@@ -33,7 +31,8 @@ ol.source.BingMaps = function(options) {
     opaque: true,
     projection: ol.proj.get('EPSG:3857'),
     state: ol.source.State.LOADING,
-    tileLoadFunction: options.tileLoadFunction
+    tileLoadFunction: options.tileLoadFunction,
+    wrapX: goog.isDef(options.wrapX) ? options.wrapX : true
   });
 
   /**
@@ -48,21 +47,14 @@ ol.source.BingMaps = function(options) {
    */
   this.maxZoom_ = goog.isDef(options.maxZoom) ? options.maxZoom : -1;
 
-  /**
-   * @private
-   * @type {boolean}
-   */
-  this.wrapX_ = goog.isDef(options.wrapX) ? options.wrapX : true;
-
-  var protocol = ol.IS_HTTPS ? 'https:' : 'http:';
   var uri = new goog.Uri(
-      protocol + '//dev.virtualearth.net/REST/v1/Imagery/Metadata/' +
+      'https://dev.virtualearth.net/REST/v1/Imagery/Metadata/' +
       options.imagerySet);
 
   var jsonp = new goog.net.Jsonp(uri, 'jsonp');
   jsonp.send({
     'include': 'ImageryProviders',
-    'uriScheme': ol.IS_HTTPS ? 'https' : 'http',
+    'uriScheme': 'https',
     'key': options.key
   }, goog.bind(this.handleImageryMetadataResponse, this));
 
@@ -71,6 +63,8 @@ goog.inherits(ol.source.BingMaps, ol.source.TileImage);
 
 
 /**
+ * The attribution containing a link to the Microsoft® Bing™ Maps Platform APIs’
+ * Terms Of Use.
  * @const
  * @type {ol.Attribution}
  * @api
@@ -98,26 +92,30 @@ ol.source.BingMaps.prototype.handleImageryMetadataResponse =
   }
 
   var brandLogoUri = response.brandLogoUri;
-  if (ol.IS_HTTPS && brandLogoUri.indexOf('https') == -1) {
+  if (brandLogoUri.indexOf('https') == -1) {
     brandLogoUri = brandLogoUri.replace('http', 'https');
   }
   //var copyright = response.copyright;  // FIXME do we need to display this?
   var resource = response.resourceSets[0].resources[0];
-  goog.asserts.assert(resource.imageWidth == resource.imageHeight);
+  goog.asserts.assert(resource.imageWidth == resource.imageHeight,
+      'resource has imageWidth equal to imageHeight, i.e. is square');
   var maxZoom = this.maxZoom_ == -1 ? resource.zoomMax : this.maxZoom_;
 
   var sourceProjection = this.getProjection();
-  var tileGrid = new ol.tilegrid.XYZ({
-    extent: ol.tilegrid.extentFromProjection(sourceProjection),
+  var extent = ol.tilegrid.extentFromProjection(sourceProjection);
+  var tileSize = resource.imageWidth == resource.imageHeight ?
+      resource.imageWidth : [resource.imageWidth, resource.imageHeight];
+  var tileGrid = ol.tilegrid.createXYZ({
+    extent: extent,
     minZoom: resource.zoomMin,
     maxZoom: maxZoom,
-    tileSize: resource.imageWidth
+    tileSize: tileSize
   });
   this.tileGrid = tileGrid;
 
   var culture = this.culture_;
   this.tileUrlFunction = ol.TileUrlFunction.withTileCoordTransform(
-      tileGrid.createTileCoordTransform({wrapX: this.wrapX_}),
+      ol.tilegrid.createOriginTopLeftTileCoordTransform(tileGrid),
       ol.TileUrlFunction.createFromTileUrlFunctions(
           goog.array.map(
               resource.imageUrlSubdomains,
@@ -134,7 +132,8 @@ ol.source.BingMaps.prototype.handleImageryMetadataResponse =
                      */
                     function(tileCoord, pixelRatio, projection) {
                       goog.asserts.assert(ol.proj.equivalent(
-                          projection, sourceProjection));
+                          projection, sourceProjection),
+                          'projections are equivalent');
                       if (goog.isNull(tileCoord)) {
                         return undefined;
                       } else {

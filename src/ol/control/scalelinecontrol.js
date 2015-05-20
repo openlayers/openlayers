@@ -13,6 +13,7 @@ goog.require('ol.TransformFunction');
 goog.require('ol.control.Control');
 goog.require('ol.css');
 goog.require('ol.proj');
+goog.require('ol.proj.METERS_PER_UNIT');
 goog.require('ol.proj.Units');
 goog.require('ol.sphere.NORMAL');
 
@@ -140,6 +141,7 @@ ol.control.ScaleLine.LEADING_DIGITS = [1, 2, 5];
 
 
 /**
+ * Return the units to use in the scale line.
  * @return {ol.control.ScaleLineUnits|undefined} The units to use in the scale
  *     line.
  * @observable
@@ -149,13 +151,10 @@ ol.control.ScaleLine.prototype.getUnits = function() {
   return /** @type {ol.control.ScaleLineUnits|undefined} */ (
       this.get(ol.control.ScaleLineProperty.UNITS));
 };
-goog.exportProperty(
-    ol.control.ScaleLine.prototype,
-    'getUnits',
-    ol.control.ScaleLine.prototype.getUnits);
 
 
 /**
+ * Update the scale line element.
  * @param {ol.MapEvent} mapEvent Map event.
  * @this {ol.control.ScaleLine}
  * @api
@@ -180,6 +179,7 @@ ol.control.ScaleLine.prototype.handleUnitsChanged_ = function() {
 
 
 /**
+ * Set the units to use in the scale line.
  * @param {ol.control.ScaleLineUnits} units The units to use in the scale line.
  * @observable
  * @api stable
@@ -187,10 +187,6 @@ ol.control.ScaleLine.prototype.handleUnitsChanged_ = function() {
 ol.control.ScaleLine.prototype.setUnits = function(units) {
   this.set(ol.control.ScaleLineProperty.UNITS, units);
 };
-goog.exportProperty(
-    ol.control.ScaleLine.prototype,
-    'setUnits',
-    ol.control.ScaleLine.prototype.setUnits);
 
 
 /**
@@ -227,20 +223,19 @@ ol.control.ScaleLine.prototype.updateElement_ = function() {
     pointResolution *= Math.PI * cosLatitude * ol.sphere.NORMAL.radius / 180;
     projectionUnits = ol.proj.Units.METERS;
 
-  } else if ((projectionUnits == ol.proj.Units.FEET ||
-      projectionUnits == ol.proj.Units.METERS) &&
+  } else if (projectionUnits != ol.proj.Units.DEGREES &&
       units == ol.control.ScaleLineUnits.DEGREES) {
 
-    // Convert pointResolution from meters or feet to degrees
+    // Convert pointResolution from other units to degrees
     if (goog.isNull(this.toEPSG4326_)) {
       this.toEPSG4326_ = ol.proj.getTransformFromProjections(
           projection, ol.proj.get('EPSG:4326'));
     }
     cosLatitude = Math.cos(goog.math.toRadians(this.toEPSG4326_(center)[1]));
     var radius = ol.sphere.NORMAL.radius;
-    if (projectionUnits == ol.proj.Units.FEET) {
-      radius /= 0.3048;
-    }
+    goog.asserts.assert(goog.isDef(ol.proj.METERS_PER_UNIT[projectionUnits]),
+        'Meters per unit should be defined for the projection unit');
+    radius /= ol.proj.METERS_PER_UNIT[projectionUnits];
     pointResolution *= 180 / (Math.PI * cosLatitude * radius);
     projectionUnits = ol.proj.Units.DEGREES;
 
@@ -255,7 +250,8 @@ ol.control.ScaleLine.prototype.updateElement_ = function() {
         units == ol.control.ScaleLineUnits.NAUTICAL) &&
        projectionUnits == ol.proj.Units.METERS) ||
       (units == ol.control.ScaleLineUnits.DEGREES &&
-       projectionUnits == ol.proj.Units.DEGREES));
+       projectionUnits == ol.proj.Units.DEGREES),
+      'Scale line units and projection units should match');
 
   var nominalCount = this.minWidth_ * pointResolution;
   var suffix = '';
@@ -305,7 +301,7 @@ ol.control.ScaleLine.prototype.updateElement_ = function() {
       pointResolution /= 1609.3472;
     }
   } else {
-    goog.asserts.fail();
+    goog.asserts.fail('Scale line element cannot be updated');
   }
 
   var i = 3 * Math.floor(

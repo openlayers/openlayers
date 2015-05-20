@@ -20,7 +20,9 @@ goog.require('ol.tilegrid.TileGrid');
 ol.tilegrid.WMTS = function(options) {
 
   goog.asserts.assert(
-      options.resolutions.length == options.matrixIds.length);
+      options.resolutions.length == options.matrixIds.length,
+      'options resolutions and matrixIds must have equal length (%s == %s)',
+      options.resolutions.length, options.matrixIds.length);
 
   /**
    * @private
@@ -30,11 +32,13 @@ ol.tilegrid.WMTS = function(options) {
   // FIXME: should the matrixIds become optionnal?
 
   goog.base(this, {
+    extent: options.extent,
     origin: options.origin,
     origins: options.origins,
     resolutions: options.resolutions,
     tileSize: options.tileSize,
-    tileSizes: options.tileSizes
+    tileSizes: options.tileSizes,
+    sizes: options.sizes
   });
 
 };
@@ -46,12 +50,14 @@ goog.inherits(ol.tilegrid.WMTS, ol.tilegrid.TileGrid);
  * @return {string} MatrixId..
  */
 ol.tilegrid.WMTS.prototype.getMatrixId = function(z) {
-  goog.asserts.assert(0 <= z && z < this.matrixIds_.length);
+  goog.asserts.assert(0 <= z && z < this.matrixIds_.length,
+      'attempted to retrive matrixId for illegal z (%s)', z);
   return this.matrixIds_[z];
 };
 
 
 /**
+ * Get the list of matrix identifiers.
  * @return {Array.<string>} MatrixIds.
  * @api
  */
@@ -61,12 +67,16 @@ ol.tilegrid.WMTS.prototype.getMatrixIds = function() {
 
 
 /**
+ * Create a tile grid from a WMTS capabilities matrix set.
  * @param {Object} matrixSet An object representing a matrixSet in the
  *     capabilities document.
+ * @param {ol.Extent=} opt_extent An optional extent to restrict the tile
+ *     ranges the server provides.
  * @return {ol.tilegrid.WMTS} WMTS tileGrid instance.
+ * @api
  */
 ol.tilegrid.WMTS.createFromCapabilitiesMatrixSet =
-    function(matrixSet) {
+    function(matrixSet, opt_extent) {
 
   /** @type {!Array.<number>} */
   var resolutions = [];
@@ -74,19 +84,25 @@ ol.tilegrid.WMTS.createFromCapabilitiesMatrixSet =
   var matrixIds = [];
   /** @type {!Array.<ol.Coordinate>} */
   var origins = [];
-  /** @type {!Array.<number>} */
+  /** @type {!Array.<ol.Size>} */
   var tileSizes = [];
+  /** @type {!Array.<ol.Size>} */
+  var sizes = [];
 
-  var supportedCRSPropName = 'supportedCRS';
-  var matrixIdsPropName = 'matrixIds';
-  var identifierPropName = 'identifier';
-  var scaleDenominatorPropName = 'scaleDenominator';
-  var topLeftCornerPropName = 'topLeftCorner';
-  var tileWidthPropName = 'tileWidth';
-  var tileHeightPropName = 'tileHeight';
+  var supportedCRSPropName = 'SupportedCRS';
+  var matrixIdsPropName = 'TileMatrix';
+  var identifierPropName = 'Identifier';
+  var scaleDenominatorPropName = 'ScaleDenominator';
+  var topLeftCornerPropName = 'TopLeftCorner';
+  var tileWidthPropName = 'TileWidth';
+  var tileHeightPropName = 'TileHeight';
 
-  var projection = ol.proj.get(matrixSet[supportedCRSPropName]);
+  var projection;
+  projection = ol.proj.get(matrixSet[supportedCRSPropName].replace(
+      /urn:ogc:def:crs:(\w+):(.*:)?(\w+)$/, '$1:$3'));
   var metersPerUnit = projection.getMetersPerUnit();
+  // swap origin x and y coordinates if axis orientation is lat/long
+  var switchOriginXY = projection.getAxisOrientation().substr(0, 2) == 'ne';
 
   goog.array.sort(matrixSet[matrixIdsPropName], function(a, b) {
     return b[scaleDenominatorPropName] - a[scaleDenominatorPropName];
@@ -95,19 +111,30 @@ ol.tilegrid.WMTS.createFromCapabilitiesMatrixSet =
   goog.array.forEach(matrixSet[matrixIdsPropName],
       function(elt, index, array) {
         matrixIds.push(elt[identifierPropName]);
-        origins.push(elt[topLeftCornerPropName]);
-        resolutions.push(elt[scaleDenominatorPropName] * 0.28E-3 /
-            metersPerUnit);
+        var resolution = elt[scaleDenominatorPropName] * 0.28E-3 /
+            metersPerUnit;
         var tileWidth = elt[tileWidthPropName];
         var tileHeight = elt[tileHeightPropName];
-        goog.asserts.assert(tileWidth == tileHeight);
-        tileSizes.push(tileWidth);
+        var matrixHeight = elt['MatrixHeight'];
+        if (switchOriginXY) {
+          origins.push([elt[topLeftCornerPropName][1],
+            elt[topLeftCornerPropName][0]]);
+        } else {
+          origins.push(elt[topLeftCornerPropName]);
+        }
+        resolutions.push(resolution);
+        tileSizes.push(tileWidth == tileHeight ?
+            tileWidth : [tileWidth, tileHeight]);
+        // top-left origin, so height is negative
+        sizes.push([elt['MatrixWidth'], -matrixHeight]);
       });
 
   return new ol.tilegrid.WMTS({
+    extent: opt_extent,
     origins: origins,
     resolutions: resolutions,
     matrixIds: matrixIds,
-    tileSizes: tileSizes
+    tileSizes: tileSizes,
+    sizes: sizes
   });
 };

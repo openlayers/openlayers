@@ -1,9 +1,10 @@
 goog.require('ol.Map');
 goog.require('ol.View');
+goog.require('ol.format.KML');
 goog.require('ol.layer.Tile');
 goog.require('ol.layer.Vector');
-goog.require('ol.source.KML');
 goog.require('ol.source.Stamen');
+goog.require('ol.source.Vector');
 goog.require('ol.style.Fill');
 goog.require('ol.style.Stroke');
 goog.require('ol.style.Style');
@@ -45,10 +46,11 @@ var styleFunction = function(feature, resolution) {
 };
 
 var vector = new ol.layer.Vector({
-  source: new ol.source.KML({
-    extractStyles: false,
-    projection: 'EPSG:3857',
-    url: 'data/kml/timezones.kml'
+  source: new ol.source.Vector({
+    url: 'data/kml/timezones.kml',
+    format: new ol.format.KML({
+      extractStyles: false
+    })
   }),
   style: styleFunction
 });

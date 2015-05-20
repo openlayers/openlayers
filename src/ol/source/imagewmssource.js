@@ -3,6 +3,8 @@
 goog.provide('ol.source.ImageWMS');
 
 goog.require('goog.asserts');
+goog.require('goog.events');
+goog.require('goog.events.EventType');
 goog.require('goog.object');
 goog.require('goog.string');
 goog.require('goog.uri.utils');
@@ -22,6 +24,7 @@ goog.require('ol.source.wms.ServerType');
  * Source for WMS servers providing single, untiled images.
  *
  * @constructor
+ * @fires ol.source.ImageEvent
  * @extends {ol.source.Image}
  * @param {olx.source.ImageWMSOptions=} opt_options Options.
  * @api stable
@@ -136,7 +139,8 @@ ol.source.ImageWMS.GETFEATUREINFO_IMAGE_SIZE_ = [101, 101];
 ol.source.ImageWMS.prototype.getGetFeatureInfoUrl =
     function(coordinate, resolution, projection, params) {
 
-  goog.asserts.assert(!('VERSION' in params));
+  goog.asserts.assert(!('VERSION' in params),
+      'key VERSION is not allowed in params');
 
   if (!goog.isDef(this.url_)) {
     return undefined;
@@ -247,12 +251,16 @@ ol.source.ImageWMS.prototype.getImage =
 
   this.renderedRevision_ = this.getRevision();
 
+  goog.events.listen(this.image_, goog.events.EventType.CHANGE,
+      this.handleImageChange, false, this);
+
   return this.image_;
 
 };
 
 
 /**
+ * Return the image load function of the source.
  * @return {ol.ImageLoadFunctionType} The image load function.
  * @api
  */
@@ -273,7 +281,7 @@ ol.source.ImageWMS.prototype.getImageLoadFunction = function() {
 ol.source.ImageWMS.prototype.getRequestUrl_ =
     function(extent, size, pixelRatio, projection, params) {
 
-  goog.asserts.assert(goog.isDef(this.url_));
+  goog.asserts.assert(goog.isDef(this.url_), 'url is defined');
 
   params[this.v13_ ? 'CRS' : 'SRS'] = projection.getCode();
 
@@ -287,7 +295,11 @@ ol.source.ImageWMS.prototype.getRequestUrl_ =
     switch (this.serverType_) {
       case ol.source.wms.ServerType.GEOSERVER:
         var dpi = (90 * pixelRatio + 0.5) | 0;
-        params['FORMAT_OPTIONS'] = 'dpi:' + dpi;
+        if (goog.isDef(params['FORMAT_OPTIONS'])) {
+          params['FORMAT_OPTIONS'] += ';dpi:' + dpi;
+        } else {
+          params['FORMAT_OPTIONS'] = 'dpi:' + dpi;
+        }
         break;
       case ol.source.wms.ServerType.MAPSERVER:
         params['MAP_RESOLUTION'] = 90 * pixelRatio;
@@ -297,7 +309,7 @@ ol.source.ImageWMS.prototype.getRequestUrl_ =
         params['DPI'] = 90 * pixelRatio;
         break;
       default:
-        goog.asserts.fail();
+        goog.asserts.fail('unknown serverType configured');
         break;
     }
   }
@@ -319,7 +331,7 @@ ol.source.ImageWMS.prototype.getRequestUrl_ =
 
 
 /**
- * Return the URL used for this WMS source.
+ * Return the URL used for this WMS source.
  * @return {string|undefined} URL.
  * @api stable
  */
@@ -329,6 +341,7 @@ ol.source.ImageWMS.prototype.getUrl = function() {
 
 
 /**
+ * Set the image load function of the source.
  * @param {ol.ImageLoadFunctionType} imageLoadFunction Image load function.
  * @api
  */
@@ -341,6 +354,7 @@ ol.source.ImageWMS.prototype.setImageLoadFunction = function(
 
 
 /**
+ * Set the URL to use for requests.
  * @param {string|undefined} url URL.
  * @api stable
  */

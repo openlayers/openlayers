@@ -120,6 +120,30 @@ describe('ol.geom.Polygon', function() {
       expect(polygon.containsCoordinate(insideInner)).to.be(false);
     });
 
+    describe('#getCoordinates()', function() {
+
+      var cw = [[-180, -90], [-180, 90], [180, 90], [180, -90], [-180, -90]];
+      var ccw = [[-180, -90], [180, -90], [180, 90], [-180, 90], [-180, -90]];
+      var right = new ol.geom.Polygon([ccw, cw]);
+      var left = new ol.geom.Polygon([cw, ccw]);
+
+      it('returns coordinates as they were constructed', function() {
+        expect(right.getCoordinates()).to.eql([ccw, cw]);
+        expect(left.getCoordinates()).to.eql([cw, ccw]);
+      });
+
+      it('can return coordinates with right-hand orientation', function() {
+        expect(right.getCoordinates(true)).to.eql([ccw, cw]);
+        expect(left.getCoordinates(true)).to.eql([ccw, cw]);
+      });
+
+      it('can return coordinates with left-hand orientation', function() {
+        expect(right.getCoordinates(false)).to.eql([cw, ccw]);
+        expect(left.getCoordinates(false)).to.eql([cw, ccw]);
+      });
+
+    });
+
     describe('#getOrientedFlatCoordinates', function() {
 
       it('reverses the outer ring if necessary', function() {
@@ -412,9 +436,44 @@ describe('ol.geom.Polygon', function() {
     });
   });
 
+  describe('ol.geom.Polygon.fromCircle', function() {
+
+    it('creates a regular polygon', function() {
+      var circle = new ol.geom.Circle([0, 0, 0], 1, ol.geom.GeometryLayout.XYZ);
+      var polygon = ol.geom.Polygon.fromCircle(circle);
+      var coordinates = polygon.getLinearRing(0).getCoordinates();
+      expect(coordinates[0].length).to.eql(3);
+      expect(coordinates[0][2]).to.eql(0);
+      expect(coordinates[32]).to.eql(coordinates[0]);
+      // east
+      expect(coordinates[0][0]).to.roughlyEqual(1, 1e-9);
+      expect(coordinates[0][1]).to.roughlyEqual(0, 1e-9);
+      // south
+      expect(coordinates[8][0]).to.roughlyEqual(0, 1e-9);
+      expect(coordinates[8][1]).to.roughlyEqual(1, 1e-9);
+      // west
+      expect(coordinates[16][0]).to.roughlyEqual(-1, 1e-9);
+      expect(coordinates[16][1]).to.roughlyEqual(0, 1e-9);
+      // north
+      expect(coordinates[24][0]).to.roughlyEqual(0, 1e-9);
+      expect(coordinates[24][1]).to.roughlyEqual(-1, 1e-9);
+    });
+
+    it('creates a regular polygon with custom sides and angle', function() {
+      var circle = new ol.geom.Circle([0, 0], 1);
+      var polygon = ol.geom.Polygon.fromCircle(circle, 4, Math.PI / 2);
+      var coordinates = polygon.getLinearRing(0).getCoordinates();
+      expect(coordinates[4]).to.eql(coordinates[0]);
+      expect(coordinates[0][0]).to.roughlyEqual(0, 1e-9);
+      expect(coordinates[0][1]).to.roughlyEqual(1, 1e-9);
+    });
+  });
+
 });
 
 
 goog.require('ol.extent');
+goog.require('ol.geom.Circle');
+goog.require('ol.geom.GeometryLayout');
 goog.require('ol.geom.LinearRing');
 goog.require('ol.geom.Polygon');

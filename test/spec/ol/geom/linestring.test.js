@@ -302,4 +302,5 @@ describe('ol.geom.LineString', function() {
 
 
 goog.require('ol.extent');
+goog.require('ol.geom.GeometryLayout');
 goog.require('ol.geom.LineString');

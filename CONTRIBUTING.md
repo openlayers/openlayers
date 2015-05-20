@@ -2,6 +2,23 @@
 
 Thanks for your interest in contributing to OpenLayers 3.
 
+## Asking Questions
+
+Please ask questions about using the library on [stackoverflow using the tag 'openlayers-3'](http://stackoverflow.com/questions/tagged/openlayers-3).
+
+When you want to get involved and discuss new features or changes, please use [the mailing list](https://groups.google.com/forum/#!forum/ol3-dev).
+
+
+## Submitting Bug Reports
+
+Please use the [GitHub issue tracker](https://github.com/openlayers/ol3/issues). Before creating a new issue, do a quick search to see if the problem has been reported already.
+
+
+## Getting Familiar with the Code in the Repository
+
+Look for `readme.md` files! Several directories contain a `readme.md` file that explains the contents of the directory and how to work with them.
+
+
 ## Contributing Code
 
 Our preferred means of receiving contributions is through [pull requests](https://help.github.com/articles/using-pull-requests). Make sure
@@ -25,7 +42,7 @@ You will obviously start by
 
 ### Travis CI
 
-The Travis CI hook is enabled on the Github repository. This means every pull request 
+The Travis CI hook is enabled on the Github repository. This means every pull request
 is run through a full test suite to ensure it compiles and passes the tests. Failing
 pull requests will not be merged.
 
@@ -41,16 +58,17 @@ as described below.
 
 The minimum requirements are:
 
+* GNU Make
 * Git
 * [Node.js](http://nodejs.org/) (0.10.x or higher)
 * Python 2.6 or 2.7 with a couple of extra modules (see below)
 * Java 7 (JRE and JDK)
 
-The executables `git`, `java`, `jar`, and `python` should be in your `PATH`.
+The executables `git`, `node`, `python` and `java` should be in your `PATH`.
 
 You can check your configuration by running:
 
-    $ ./build.py checkdeps
+    $ make check-deps
 
 To install the Node.js dependencies run
 
@@ -65,24 +83,22 @@ or
 
 depending on your OS and Python installation.
 
+(You can also install the Python modules in a Python virtual environment if you want to.)
+
 ## Working with the build tool
 
-As an ol3 developer you will need to use the `build.py` Python script. This is
-the script to use to run the linter, the compiler, the tests, etc.  Windows users
-can use `build.cmd` which is a thin wrapper around `build.py`.
+As an ol3 developer you will use `make` to run build targets defined in the
+`Makefile` located at the root of the repository. The `Makefile` includes
+targets for running the linter, the compiler, the tests, etc.
 
-The `build.py` script is equivalent to a Makefile. It is actually based on
-[pake](https://github.com/twpayne/pake/), which is a simple implementation of
-`make` in Python.
+The usage of `make` is as follows:
 
-The usage of the script is:
+    $ make <target>
 
-    $ ./build.py <target>
-    
 where `<target>` is the name of the build target you want to execute. For
 example:
 
-    $ ./build.py test
+    $ make test
 
 The main build targets are `serve`, `lint`, `build`, `test`, and `check`. The
 latter is a meta-target that basically runs `lint`, `build`, and `test`.
@@ -99,7 +115,7 @@ and have therefore no chance of being merged into `master`.
 
 To run the `check` target:
 
-    $ ./build.py check
+    $ make check
 
 If you want to run the full suite of integration tests, see "Running the integration
 tests" below.
@@ -108,29 +124,29 @@ tests" below.
 
 To run the examples you first need to start the dev server:
 
-    $ ./build.py serve
+    $ make serve
 
-Then, just point your browser <http://localhost:3000/examples> in your browser. For example <http://localhost:3000/examples/side-by-side.html>.
+Then, just point your browser <http://localhost:3000/build/examples> in your browser. For example <http://localhost:3000/build/examples/side-by-side.html>.
 
 Run examples against the `ol.js` standalone build:
 
-The examples can also be run against the `ol.js` standalone lib, just like the examples
-[hosted](http://openlayers.github.com/ol3/master/examples/) on GitHub. Start by
-executing the `host-examples` build target:
+The examples can also be run against the `ol.js` standalone build, just like
+the examples [hosted](http://openlayers.org/en/master/examples/) on GitHub.
+Start by executing the `host-examples` build target:
 
-    $ ./build.py host-examples
+    $ make host-examples
 
-After running `host-examples` you can now open the examples index page in the browser, for example: <http://localhost/~elemoine/ol3/build/hosted/master/examples/>. (This assumes that the `hosted` directory is a web directory, served by Apache for example.)
+After running `host-examples` you can now open the examples index page in the browser: <http://localhost:3000/build/hosted/master/examples/>. (This assumes that you still have the dev server running.)
 
 Append `?mode=raw` to make the example work in full debug mode. In raw mode the OpenLayers and Closure Library scripts are loaded individually by the Closure Library's `base.js` script (which the example page loads and executes before any other script).
 
 ## Running tests
 
-To run the tests in a browser start the dev server (`./build.py serve`) and open <http://localhost:3000/test/index.html> in the browser.
+To run the tests in a browser start the dev server (`make serve`) and open <http://localhost:3000/test/index.html> in the browser.
 
 To run the tests on the console (headless testing with PhantomJS) use the `test` target:
 
-    $ ./build.py test
+    $ make test
 
 See also the test-specific [README](../master/test/README.md).
 
@@ -144,7 +160,7 @@ displayed in the pull request.
 
 To run the full suite of integration tests use the `ci` target:
 
-    $ ./build.py ci
+    $ make ci
 
 Running the full suite of integration tests currently takes 5-10 minutes.
 
@@ -157,13 +173,8 @@ Adding functionality often implies adding one or several examples. This
 section provides explanations related to adding examples.
 
 The examples are located in the `examples` directory. Adding a new example
-implies creating two files in this directory, an `.html` file and a `.js` file.
-See `examples/simple.html` and `examples/simple.js` for instance.
-
-The `.html` file needs to include a script tag with
-`loader.js?id=<example_name>` as its `src`. For example, if the two files for
-the example are `myexample.js` and `myexample.html` then the script tag's `src`
-should be set to `myexample`.
+implies creating two or three files in this directory, an `.html` file, a `.js`
+file, and, optionally, a `.css` file.
 
 You can use `simple.js` and `simple.html` as templates for new examples.
 
@@ -201,7 +212,7 @@ Your pull request must:
 
 It is strongly recommended that you run
 
-    $ ./build.py check
+    $ make check
 
 before every commit.  This will catch many problems quickly, and it is much
 faster than waiting for the Travis CI integration tests to run.
@@ -221,9 +232,9 @@ Guide](http://google-styleguide.googlecode.com/svn/trunk/javascriptguide.xml).
 This is checked using the [Closure
 Linter](https://developers.google.com/closure/utilities/) in strict mode.  You
 can run the linter locally on your machine before committing using the `lint`
-target to `build.py`:
+target:
 
-    $ ./build.py lint
+    $ make lint
 
 In addition to fixing problems identified by the linter, please also follow the
 style of the existing OpenLayers 3 code, which includes:
@@ -248,13 +259,21 @@ style of the existing OpenLayers 3 code, which includes:
 
  * Use uppercase for `@const` variables.
 
+### Configure your editor
+
+If possible, configure your editor to follow the coding conventions of the
+library.  A `.editorconfig` file is included at the root of the repository that
+can be used to configure whitespace and charset handling in your editor.  See
+that file for a description of the conventions.  The [EditorConfig](
+http://editorconfig.org/#download) site links to plugins for various editors.
+
 ### Pass the integration tests run automatically by the Travis CI system
 
 The integration tests contain a number of automated checks to ensure that the
 code follows the OpenLayers 3 style and does not break tests or examples.  You
 can run the integration tests locally using the `ci` target:
 
-    $ ./build.py ci
+    $ make ci
 
 
 ### Address a single issue or add a single item of functionality

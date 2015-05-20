@@ -11,6 +11,9 @@ goog.require('ol.Coordinate');
 goog.require('ol.Map');
 goog.require('ol.MapEventType');
 goog.require('ol.Object');
+goog.require('ol.animation');
+goog.require('ol.dom');
+goog.require('ol.extent');
 
 
 /**
@@ -48,7 +51,8 @@ ol.OverlayPositioning = {
 
 /**
  * @classdesc
- * Like {@link ol.control.Control}, Overlays are visible widgets.
+ * An element to be displayed over the map and attached to a single map
+ * location.  Like {@link ol.control.Control}, Overlays are visible widgets.
  * Unlike Controls, they are not in a fixed position on the screen, but are tied
  * to a geographical coordinate, so panning the map will move an Overlay but not
  * a Control.
@@ -87,8 +91,30 @@ ol.Overlay = function(options) {
    * @private
    * @type {Element}
    */
-  this.element_ = goog.dom.createElement(goog.dom.TagName.DIV);
+  this.element_ = goog.dom.createDom(goog.dom.TagName.DIV, {
+    'class': 'ol-overlay-container'
+  });
   this.element_.style.position = 'absolute';
+
+  /**
+   * @private
+   * @type {boolean}
+   */
+  this.autoPan_ = goog.isDef(options.autoPan) ? options.autoPan : false;
+
+  /**
+   * @private
+   * @type {olx.animation.PanOptions}
+   */
+  this.autoPanAnimation_ = goog.isDef(options.autoPanAnimation) ?
+      options.autoPanAnimation : /** @type {olx.animation.PanOptions} */ ({});
+
+  /**
+   * @private
+   * @type {number}
+   */
+  this.autoPanMargin_ = goog.isDef(options.autoPanMargin) ?
+      options.autoPanMargin : 20;
 
   /**
    * @private
@@ -160,10 +186,6 @@ ol.Overlay.prototype.getElement = function() {
   return /** @type {Element|undefined} */ (
       this.get(ol.OverlayProperty.ELEMENT));
 };
-goog.exportProperty(
-    ol.Overlay.prototype,
-    'getElement',
-    ol.Overlay.prototype.getElement);
 
 
 /**
@@ -176,10 +198,6 @@ ol.Overlay.prototype.getMap = function() {
   return /** @type {ol.Map|undefined} */ (
       this.get(ol.OverlayProperty.MAP));
 };
-goog.exportProperty(
-    ol.Overlay.prototype,
-    'getMap',
-    ol.Overlay.prototype.getMap);
 
 
 /**
@@ -192,10 +210,6 @@ ol.Overlay.prototype.getOffset = function() {
   return /** @type {Array.<number>} */ (
       this.get(ol.OverlayProperty.OFFSET));
 };
-goog.exportProperty(
-    ol.Overlay.prototype,
-    'getOffset',
-    ol.Overlay.prototype.getOffset);
 
 
 /**
@@ -209,10 +223,6 @@ ol.Overlay.prototype.getPosition = function() {
   return /** @type {ol.Coordinate|undefined} */ (
       this.get(ol.OverlayProperty.POSITION));
 };
-goog.exportProperty(
-    ol.Overlay.prototype,
-    'getPosition',
-    ol.Overlay.prototype.getPosition);
 
 
 /**
@@ -226,10 +236,6 @@ ol.Overlay.prototype.getPositioning = function() {
   return /** @type {ol.OverlayPositioning} */ (
       this.get(ol.OverlayProperty.POSITIONING));
 };
-goog.exportProperty(
-    ol.Overlay.prototype,
-    'getPositioning',
-    ol.Overlay.prototype.getPositioning);
 
 
 /**
@@ -291,6 +297,9 @@ ol.Overlay.prototype.handleOffsetChanged = function() {
  */
 ol.Overlay.prototype.handlePositionChanged = function() {
   this.updatePixelPosition_();
+  if (goog.isDef(this.get(ol.OverlayProperty.POSITION)) && this.autoPan_) {
+    this.panIntoView_();
+  }
 };
 
 
@@ -311,10 +320,6 @@ ol.Overlay.prototype.handlePositioningChanged = function() {
 ol.Overlay.prototype.setElement = function(element) {
   this.set(ol.OverlayProperty.ELEMENT, element);
 };
-goog.exportProperty(
-    ol.Overlay.prototype,
-    'setElement',
-    ol.Overlay.prototype.setElement);
 
 
 /**
@@ -326,10 +331,6 @@ goog.exportProperty(
 ol.Overlay.prototype.setMap = function(map) {
   this.set(ol.OverlayProperty.MAP, map);
 };
-goog.exportProperty(
-    ol.Overlay.prototype,
-    'setMap',
-    ol.Overlay.prototype.setMap);
 
 
 /**
@@ -341,10 +342,6 @@ goog.exportProperty(
 ol.Overlay.prototype.setOffset = function(offset) {
   this.set(ol.OverlayProperty.OFFSET, offset);
 };
-goog.exportProperty(
-    ol.Overlay.prototype,
-    'setOffset',
-    ol.Overlay.prototype.setOffset);
 
 
 /**
@@ -358,10 +355,91 @@ goog.exportProperty(
 ol.Overlay.prototype.setPosition = function(position) {
   this.set(ol.OverlayProperty.POSITION, position);
 };
-goog.exportProperty(
-    ol.Overlay.prototype,
-    'setPosition',
-    ol.Overlay.prototype.setPosition);
+
+
+/**
+ * Pan the map so that the overlay is entirely visible in the current viewport
+ * (if necessary).
+ * @private
+ */
+ol.Overlay.prototype.panIntoView_ = function() {
+  goog.asserts.assert(this.autoPan_, 'this.autoPan_ should be true');
+  var map = this.getMap();
+
+  if (!goog.isDef(map) || goog.isNull(map.getTargetElement())) {
+    return;
+  }
+
+  var mapRect = this.getRect_(map.getTargetElement(), map.getSize());
+  var element = this.getElement();
+  goog.asserts.assert(goog.isDefAndNotNull(element),
+      'element should be defined');
+  var overlayRect = this.getRect_(element,
+      [ol.dom.outerWidth(element), ol.dom.outerHeight(element)]);
+
+  var margin = this.autoPanMargin_;
+  if (!ol.extent.containsExtent(mapRect, overlayRect)) {
+    // the overlay is not completely inside the viewport, so pan the map
+    var offsetLeft = overlayRect[0] - mapRect[0];
+    var offsetRight = mapRect[2] - overlayRect[2];
+    var offsetTop = overlayRect[1] - mapRect[1];
+    var offsetBottom = mapRect[3] - overlayRect[3];
+
+    var delta = [0, 0];
+    if (offsetLeft < 0) {
+      // move map to the left
+      delta[0] = offsetLeft - margin;
+    } else if (offsetRight < 0) {
+      // move map to the right
+      delta[0] = Math.abs(offsetRight) + margin;
+    }
+    if (offsetTop < 0) {
+      // move map up
+      delta[1] = offsetTop - margin;
+    } else if (offsetBottom < 0) {
+      // move map down
+      delta[1] = Math.abs(offsetBottom) + margin;
+    }
+
+    if (delta[0] !== 0 || delta[1] !== 0) {
+      var center = map.getView().getCenter();
+      goog.asserts.assert(goog.isDef(center), 'center should be defined');
+      var centerPx = map.getPixelFromCoordinate(center);
+      var newCenterPx = [
+        centerPx[0] + delta[0],
+        centerPx[1] + delta[1]
+      ];
+
+      if (!goog.isNull(this.autoPanAnimation_)) {
+        this.autoPanAnimation_.source = center;
+        map.beforeRender(ol.animation.pan(this.autoPanAnimation_));
+      }
+      map.getView().setCenter(map.getCoordinateFromPixel(newCenterPx));
+    }
+  }
+};
+
+
+/**
+ * Get the extent of an element relative to the document
+ * @param {Element|undefined} element The element.
+ * @param {ol.Size|undefined} size The size of the element.
+ * @return {ol.Extent}
+ * @private
+ */
+ol.Overlay.prototype.getRect_ = function(element, size) {
+  goog.asserts.assert(goog.isDefAndNotNull(element),
+      'element should be defined');
+  goog.asserts.assert(goog.isDef(size), 'size should be defined');
+
+  var offset = goog.style.getPageOffset(element);
+  return [
+    offset.x,
+    offset.y,
+    offset.x + size[0],
+    offset.y + size[1]
+  ];
+};
 
 
 /**
@@ -374,10 +452,6 @@ goog.exportProperty(
 ol.Overlay.prototype.setPositioning = function(positioning) {
   this.set(ol.OverlayProperty.POSITIONING, positioning);
 };
-goog.exportProperty(
-    ol.Overlay.prototype,
-    'setPositioning',
-    ol.Overlay.prototype.setPositioning);
 
 
 /**
@@ -396,14 +470,15 @@ ol.Overlay.prototype.updatePixelPosition_ = function() {
   }
 
   var pixel = map.getPixelFromCoordinate(position);
-  goog.asserts.assert(!goog.isNull(pixel));
+  goog.asserts.assert(!goog.isNull(pixel), 'pixel should not be null');
   var mapSize = map.getSize();
-  goog.asserts.assert(goog.isDef(mapSize));
+  goog.asserts.assert(goog.isDef(mapSize), 'mapSize should be defined');
   var style = this.element_.style;
   var offset = this.getOffset();
-  goog.asserts.assert(goog.isArray(offset));
+  goog.asserts.assert(goog.isArray(offset), 'offset should be an array');
   var positioning = this.getPositioning();
-  goog.asserts.assert(goog.isDef(positioning));
+  goog.asserts.assert(goog.isDef(positioning),
+      'positioning should be defined');
 
   var offsetX = offset[0];
   var offsetY = offset[1];

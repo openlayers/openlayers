@@ -34,7 +34,7 @@ if (!ol.has.WEBGL) {
     renderer: 'webgl',
     target: 'map',
     view: new ol.View({
-      center: ol.proj.transform([-9.375, 51.483333], 'EPSG:4326', 'EPSG:3857'),
+      center: ol.proj.fromLonLat([-9.375, 51.483333]),
       zoom: 15
     })
   });

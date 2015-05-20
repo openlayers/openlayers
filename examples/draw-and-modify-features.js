@@ -2,7 +2,6 @@ goog.require('ol.FeatureOverlay');
 goog.require('ol.Map');
 goog.require('ol.View');
 goog.require('ol.events.condition');
-goog.require('ol.interaction');
 goog.require('ol.interaction.Draw');
 goog.require('ol.interaction.Modify');
 goog.require('ol.layer.Tile');

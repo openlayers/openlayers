@@ -5,31 +5,36 @@ goog.require('ol.layer.Tile');
 goog.require('ol.layer.Vector');
 goog.require('ol.loadingstrategy');
 goog.require('ol.source.BingMaps');
-goog.require('ol.source.ServerVector');
+goog.require('ol.source.Vector');
 goog.require('ol.style.Stroke');
 goog.require('ol.style.Style');
-goog.require('ol.tilegrid.XYZ');
 
-var vectorSource = new ol.source.ServerVector({
-  format: new ol.format.GeoJSON(),
+
+// format used to parse WFS GetFeature responses
+var geojsonFormat = new ol.format.GeoJSON();
+
+var vectorSource = new ol.source.Vector({
   loader: function(extent, resolution, projection) {
     var url = 'http://demo.boundlessgeo.com/geoserver/wfs?service=WFS&' +
         'version=1.1.0&request=GetFeature&typename=osm:water_areas&' +
         'outputFormat=text/javascript&format_options=callback:loadFeatures' +
         '&srsname=EPSG:3857&bbox=' + extent.join(',') + ',EPSG:3857';
-    $.ajax({
-      url: url,
-      dataType: 'jsonp'
-    });
+    // use jsonp: false to prevent jQuery from adding the "callback"
+    // parameter to the URL
+    $.ajax({url: url, dataType: 'jsonp', jsonp: false});
   },
-  strategy: ol.loadingstrategy.createTile(new ol.tilegrid.XYZ({
+  strategy: ol.loadingstrategy.tile(ol.tilegrid.createXYZ({
     maxZoom: 19
-  })),
-  projection: 'EPSG:3857'
+  }))
 });
 
-var loadFeatures = function(response) {
-  vectorSource.addFeatures(vectorSource.readFeatures(response));
+
+/**
+ * JSONP WFS callback function.
+ * @param {Object} response The response object.
+ */
+window.loadFeatures = function(response) {
+  vectorSource.addFeatures(geojsonFormat.readFeatures(response));
 };
 
 var vector = new ol.layer.Vector({
