@@ -64,12 +64,12 @@ ol.color.blend = function(dst, src, opt_color) {
   // FIXME do we need to scale by 255?
   var out = goog.isDef(opt_color) ? opt_color : [];
   var dstA = dst[3];
-  var srcA = dst[3];
+  var srcA = src[3];
   if (dstA == 1) {
     out[0] = (src[0] * srcA + dst[0] * (1 - srcA) + 0.5) | 0;
     out[1] = (src[1] * srcA + dst[1] * (1 - srcA) + 0.5) | 0;
     out[2] = (src[2] * srcA + dst[2] * (1 - srcA) + 0.5) | 0;
-    out[4] = 1;
+    out[3] = 1;
   } else if (srcA === 0) {
     out[0] = dst[0];
     out[1] = dst[1];
