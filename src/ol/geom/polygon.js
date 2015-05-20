@@ -432,6 +432,7 @@ ol.geom.Polygon.fromExtent = function(extent) {
  * @param {number=} opt_angle Start angle for the first vertex of the polygon in
  *     radians. Default is 0.
  * @return {ol.geom.Polygon} Polygon geometry.
+ * @api
  */
 ol.geom.Polygon.fromCircle = function(circle, opt_sides, opt_angle) {
   var sides = goog.isDef(opt_sides) ? opt_sides : 32;
