@@ -6,7 +6,10 @@ docs: >
   Example of using the Draw interaction. Select a geometry type from the
   dropdown above to start drawing. To finish drawing, click the last
   point. To activate freehand drawing for lines and polygons, hold the `Shift`
-  key.
+  key. Square drawing is achieved by using Circle mode with a `geometryFunction`
+  that creates a 4-sided regular polygon instead of a circle. Box drawing uses a
+  custom `geometryFunction` that takes start and end point of a line with 2
+  points and creates a rectangular box.
 tags: "draw, edit, freehand, vector"
 ---
 <div class="row-fluid">
@@ -20,6 +23,8 @@ tags: "draw, edit, freehand, vector"
         <option value="LineString">LineString</option>
         <option value="Polygon">Polygon</option>
         <option value="Circle">Circle</option>
+        <option value="Square">Square</option>
+        <option value="Box">Box</option>
       </select>
     </form>
   </div>

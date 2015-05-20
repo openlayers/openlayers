@@ -2,6 +2,10 @@
 
 ### v3.6.0
 
+#### `ol.interaction.Draw` changes
+
+* The `minPointsPerRing` config option has been renamed to `minPoints`. It is now also available for linestring drawing, not only for polygons.
+
 #### `ol.tilegrid` changes
 
 * The `ol.tilegrid.XYZ` constructor has been replaced by a static `ol.tilegrid.createXYZ()` function. The `ol.tilegrid.createXYZ()` function takes the same arguments as the previous `ol.tilegrid.XYZ` constructor, but returns an `ol.tilegrid.TileGrid` instance.

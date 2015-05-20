@@ -708,6 +708,36 @@ describe('ol.interaction.Draw', function() {
 
     });
   });
+
+  describe('ol.interaction.Draw.createRegularPolygon', function() {
+    it('creates a regular polygon in Circle mode', function() {
+      var draw = new ol.interaction.Draw({
+        source: source,
+        type: ol.geom.GeometryType.CIRCLE,
+        geometryFunction:
+            ol.interaction.Draw.createRegularPolygon(4, Math.PI / 4)
+      });
+      map.addInteraction(draw);
+
+      // first point
+      simulateEvent('pointermove', 0, 0);
+      simulateEvent('pointerdown', 0, 0);
+      simulateEvent('pointerup', 0, 0);
+
+      // finish on second point
+      simulateEvent('pointermove', 20, 20);
+      simulateEvent('pointerdown', 20, 20);
+      simulateEvent('pointerup', 20, 20);
+
+      var features = source.getFeatures();
+      var geometry = features[0].getGeometry();
+      expect(geometry).to.be.a(ol.geom.Polygon);
+      var coordinates = geometry.getCoordinates();
+      expect(coordinates[0].length).to.eql(5);
+      expect(coordinates[0][0][0]).to.roughlyEqual(20, 1e-9);
+      expect(coordinates[0][0][1]).to.roughlyEqual(20, 1e-9);
+    });
+  });
 });
 
 goog.require('goog.dispose');

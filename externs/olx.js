@@ -2357,8 +2357,10 @@ olx.interaction.DragZoomOptions.prototype.style;
  *     source: (ol.source.Vector|undefined),
  *     snapTolerance: (number|undefined),
  *     type: ol.geom.GeometryType,
- *     minPointsPerRing: (number|undefined),
+ *     maxPoints: (number|undefined),
+ *     minPoints: (number|undefined),
  *     style: (ol.style.Style|Array.<ol.style.Style>|ol.style.StyleFunction|undefined),
+ *     geometryFunction: (ol.interaction.Draw.GeometryFunctionType|undefined),
  *     geometryName: (string|undefined),
  *     condition: (ol.events.ConditionType|undefined),
  *     freehandCondition: (ol.events.ConditionType|undefined)}}
@@ -2393,7 +2395,7 @@ olx.interaction.DrawOptions.prototype.snapTolerance;
 
 /**
  * Drawing type ('Point', 'LineString', 'Polygon', 'MultiPoint',
- * 'MultiLineString', or 'MultiPolygon').
+ * 'MultiLineString', 'MultiPolygon' or 'Circle').
  * @type {ol.geom.GeometryType}
  * @api
  */
@@ -2401,12 +2403,21 @@ olx.interaction.DrawOptions.prototype.type;
 
 
 /**
- * The number of points that must be drawn before a polygon ring can be finished.
- * Default is `3`.
+ * The number of points that can be drawn before a polygon ring or line string
+ * is finished. The default is no restriction.
  * @type {number|undefined}
  * @api
  */
-olx.interaction.DrawOptions.prototype.minPointsPerRing;
+olx.interaction.DrawOptions.prototype.maxPoints;
+
+
+/**
+ * The number of points that must be drawn before a polygon ring or line string
+ * can be finished. Default is `3` for polygon rings and `2` for line strings.
+ * @type {number|undefined}
+ * @api
+ */
+olx.interaction.DrawOptions.prototype.minPoints;
 
 
 /**
@@ -2415,6 +2426,14 @@ olx.interaction.DrawOptions.prototype.minPointsPerRing;
  * @api
  */
 olx.interaction.DrawOptions.prototype.style;
+
+
+/**
+ * Function that is called when a geometry's coordinates are updated.
+ * @type {ol.interaction.Draw.GeometryFunctionType|undefined}
+ * @api
+ */
+olx.interaction.DrawOptions.prototype.geometryFunction;
 
 
 /**
