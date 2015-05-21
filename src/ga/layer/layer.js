@@ -103,7 +103,7 @@ ga.layer.create = function(layer, options) {
             xhrIo.dispose();
           }
         );
-        xhrIo.send(layerConfig.styleUrl, 'GET');
+        xhrIo.send(layerConfig['styleUrl'], 'GET');
       };
       var setLayerSource = function() {
         var xhrIo = new goog.net.XhrIo;
@@ -116,7 +116,7 @@ ga.layer.create = function(layer, options) {
             xhrIo.dispose();
           }
         );
-        xhrIo.send(layerConfig.geojsonUrl, 'GET');
+        xhrIo.send(layerConfig['geojsonUrl'], 'GET');
       };
       setLayerStyle();
       setLayerSource();
