@@ -1,5 +1,6 @@
 goog.provide('ol.layer.Vector');
 
+goog.require('goog.asserts');
 goog.require('goog.object');
 goog.require('ol.layer.Layer');
 goog.require('ol.style.Style');
@@ -31,6 +32,11 @@ ol.layer.Vector = function(opt_options) {
 
   var options = goog.isDef(opt_options) ?
       opt_options : /** @type {olx.layer.VectorOptions} */ ({});
+
+  goog.asserts.assert(
+      !goog.isDef(options.renderOrder) || goog.isNull(options.renderOrder) ||
+      goog.isFunction(options.renderOrder),
+      'renderOrder must be a comparator function');
 
   var baseOptions = goog.object.clone(options);
 
@@ -153,6 +159,10 @@ ol.layer.Vector.prototype.getUpdateWhileInteracting = function() {
  *     Render order.
  */
 ol.layer.Vector.prototype.setRenderOrder = function(renderOrder) {
+  goog.asserts.assert(
+      !goog.isDef(renderOrder) || goog.isNull(renderOrder) ||
+      goog.isFunction(renderOrder),
+      'renderOrder must be a comparator function');
   this.set(ol.layer.VectorProperty.RENDER_ORDER, renderOrder);
 };
 
