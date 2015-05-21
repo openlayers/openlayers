@@ -17,14 +17,12 @@ goog.require('ol.style.Text');
 goog.require('ol.style.Icon');
 goog.require('ol.style.RegularShape');
 
-
 goog.require('ga');
 
 
-ga.style = {};
-
 /**
  * @constructor
+ * @api stable
  */
 ga.style.StylesFromLiterals = function(properties) {
   /**
@@ -35,11 +33,11 @@ ga.style.StylesFromLiterals = function(properties) {
   /**
    * @type {Object}
    */
-  this.styles = {
-    point: {},
-    line: {},
-    polygon: {}
-  };
+  this.styles = {}
+
+  this.styles['point'] = {};
+  this.styles['line'] = {};
+  this.styles['polygon'] = {};
 
   /**
    * @type {string}
@@ -62,7 +60,8 @@ ga.style.StylesFromLiterals = function(properties) {
       var value = values[i];
       var geomType = value['geomType'];
       olStyle = this.getOlStyleFromLiterals_(value);
-      this.styles[geomType][value['value']] = olStyle;
+      var key = value.value;
+      this.styles[geomType][key] = olStyle;
     }
   } else if (type === 'range') {
     var ranges = properties['ranges'];
@@ -81,6 +80,7 @@ ga.style.StylesFromLiterals = function(properties) {
  * @method
  * @param {ol.Feature} feature
  * @return {ol.style.Style}
+ * @api stable
  */
 ga.style.StylesFromLiterals.prototype.getFeatureStyle = function(feature) {
   var getGeomTypeFromGeometry = function(olGeometry) {
