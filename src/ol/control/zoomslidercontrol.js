@@ -14,6 +14,7 @@ goog.require('goog.fx.Dragger.EventType');
 goog.require('goog.math');
 goog.require('goog.math.Rect');
 goog.require('goog.style');
+goog.require('ol');
 goog.require('ol.Size');
 goog.require('ol.ViewHint');
 goog.require('ol.animation');
@@ -71,12 +72,6 @@ ol.control.ZoomSlider = function(opt_options) {
    * @private
    */
   this.sliderInitialized_ = false;
-
-  /**
-   * @private
-   * @type {number}
-   */
-  this.duration_ = goog.isDef(options.duration) ? options.duration : 200;
 
   var className = goog.isDef(options.className) ?
       options.className : 'ol-zoomslider';
@@ -175,7 +170,6 @@ ol.control.ZoomSlider.prototype.initSlider_ = function() {
 
 
 /**
- * Update the zoomslider element.
  * @param {ol.MapEvent} mapEvent Map event.
  * @this {ol.control.ZoomSlider}
  * @api
@@ -184,8 +178,7 @@ ol.control.ZoomSlider.render = function(mapEvent) {
   if (goog.isNull(mapEvent.frameState)) {
     return;
   }
-  goog.asserts.assert(goog.isDefAndNotNull(mapEvent.frameState.viewState),
-      'viewState should be defined');
+  goog.asserts.assert(goog.isDefAndNotNull(mapEvent.frameState.viewState));
   if (!this.sliderInitialized_) {
     this.initSlider_();
   }
@@ -205,11 +198,10 @@ ol.control.ZoomSlider.prototype.handleContainerClick_ = function(browserEvent) {
   var map = this.getMap();
   var view = map.getView();
   var currentResolution = view.getResolution();
-  goog.asserts.assert(goog.isDef(currentResolution),
-      'currentResolution should be defined');
+  goog.asserts.assert(goog.isDef(currentResolution));
   map.beforeRender(ol.animation.zoom({
     resolution: currentResolution,
-    duration: this.duration_,
+    duration: ol.ZOOMSLIDER_ANIMATION_DURATION,
     easing: ol.easing.easeOut
   }));
   var relativePosition = this.getRelativePosition_(
@@ -252,11 +244,10 @@ ol.control.ZoomSlider.prototype.handleDraggerEnd_ = function(event) {
   var map = this.getMap();
   var view = map.getView();
   view.setHint(ol.ViewHint.INTERACTING, -1);
-  goog.asserts.assert(goog.isDef(this.currentResolution_),
-      'this.currentResolution_ should be defined');
+  goog.asserts.assert(goog.isDef(this.currentResolution_));
   map.beforeRender(ol.animation.zoom({
     resolution: this.currentResolution_,
-    duration: this.duration_,
+    duration: ol.ZOOMSLIDER_ANIMATION_DURATION,
     easing: ol.easing.easeOut
   }));
   var resolution = view.constrainResolution(this.currentResolution_);

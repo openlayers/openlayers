@@ -45,7 +45,7 @@ ol.extent.Relationship = {
 
 
 /**
- * Build an extent that includes all given coordinates.
+ * Builds an extent that includes all given coordinates.
  *
  * @param {Array.<ol.Coordinate>} coordinates Coordinates.
  * @return {ol.Extent} Bounding extent.
@@ -68,8 +68,8 @@ ol.extent.boundingExtent = function(coordinates) {
  * @return {ol.Extent} Extent.
  */
 ol.extent.boundingExtentXYs_ = function(xs, ys, opt_extent) {
-  goog.asserts.assert(xs.length > 0, 'xs length should be larger than 0');
-  goog.asserts.assert(ys.length > 0, 'ys length should be larger than 0');
+  goog.asserts.assert(xs.length > 0);
+  goog.asserts.assert(ys.length > 0);
   var minX = Math.min.apply(null, xs);
   var minY = Math.min.apply(null, ys);
   var maxX = Math.max.apply(null, xs);
@@ -151,11 +151,11 @@ ol.extent.closestSquaredDistanceXY = function(extent, x, y) {
 
 
 /**
- * Check if the passed coordinate is contained or on the edge of the extent.
+ * Checks if the passed coordinate is contained or on the edge of the extent.
  *
  * @param {ol.Extent} extent Extent.
  * @param {ol.Coordinate} coordinate Coordinate.
- * @return {boolean} The coordinate is contained in the extent.
+ * @return {boolean} Contains.
  * @api stable
  */
 ol.extent.containsCoordinate = function(extent, coordinate) {
@@ -164,15 +164,11 @@ ol.extent.containsCoordinate = function(extent, coordinate) {
 
 
 /**
- * Check if one extent contains another.
- *
- * An extent is deemed contained if it lies completely within the other extent,
- * including if they share one or more edges.
+ * Checks if `extent2` is contained by or on the edge of `extent1`.
  *
  * @param {ol.Extent} extent1 Extent 1.
  * @param {ol.Extent} extent2 Extent 2.
- * @return {boolean} The second extent is contained by or on the edge of the
- *     first.
+ * @return {boolean} Contains.
  * @api stable
  */
 ol.extent.containsExtent = function(extent1, extent2) {
@@ -182,12 +178,12 @@ ol.extent.containsExtent = function(extent1, extent2) {
 
 
 /**
- * Check if the passed coordinate is contained or on the edge of the extent.
+ * Checks if the passed coordinate is contained or on the edge of the extent.
  *
  * @param {ol.Extent} extent Extent.
  * @param {number} x X coordinate.
  * @param {number} y Y coordinate.
- * @return {boolean} The x, y values are contained in the extent.
+ * @return {boolean} Contains.
  * @api stable
  */
 ol.extent.containsXY = function(extent, x, y) {
@@ -228,7 +224,6 @@ ol.extent.coordinateRelationship = function(extent, coordinate) {
 
 
 /**
- * Create an empty extent.
  * @return {ol.Extent} Empty extent.
  * @api stable
  */
@@ -238,7 +233,6 @@ ol.extent.createEmpty = function() {
 
 
 /**
- * Create a new extent or update the provided extent.
  * @param {number} minX Minimum X.
  * @param {number} minY Minimum Y.
  * @param {number} maxX Maximum X.
@@ -260,7 +254,6 @@ ol.extent.createOrUpdate = function(minX, minY, maxX, maxY, opt_extent) {
 
 
 /**
- * Create a new empty extent or make the provided one empty.
  * @param {ol.Extent=} opt_extent Extent.
  * @return {ol.Extent} Extent.
  */
@@ -321,7 +314,7 @@ ol.extent.createOrUpdateFromRings = function(rings, opt_extent) {
 
 
 /**
- * Empty an extent in place.
+ * Empties extent in place.
  * @param {ol.Extent} extent Extent.
  * @return {ol.Extent} Extent.
  */
@@ -333,10 +326,9 @@ ol.extent.empty = function(extent) {
 
 
 /**
- * Determine if two extents are equivalent.
  * @param {ol.Extent} extent1 Extent 1.
  * @param {ol.Extent} extent2 Extent 2.
- * @return {boolean} The two extents are equivalent.
+ * @return {boolean} Equals.
  * @api stable
  */
 ol.extent.equals = function(extent1, extent2) {
@@ -346,10 +338,9 @@ ol.extent.equals = function(extent1, extent2) {
 
 
 /**
- * Modify an extent to include another extent.
- * @param {ol.Extent} extent1 The extent to be modified.
- * @param {ol.Extent} extent2 The extent that will be included in the first.
- * @return {ol.Extent} A reference to the first (extended) extent.
+ * @param {ol.Extent} extent1 Extent 1.
+ * @param {ol.Extent} extent2 Extent 2.
+ * @return {ol.Extent} Extent.
  * @api stable
  */
 ol.extent.extend = function(extent1, extent2) {
@@ -472,7 +463,7 @@ ol.extent.forEachCorner = function(extent, callback, opt_this) {
   if (val) {
     return val;
   }
-  val = callback.call(opt_this, ol.extent.getTopLeft(extent));
+  val = callback.call(opt_this, ol.extent.getBottomRight(extent));
   if (val) {
     return val;
   }
@@ -494,7 +485,6 @@ ol.extent.getArea = function(extent) {
 
 
 /**
- * Get the bottom left coordinate of an extent.
  * @param {ol.Extent} extent Extent.
  * @return {ol.Coordinate} Bottom left coordinate.
  * @api stable
@@ -505,7 +495,6 @@ ol.extent.getBottomLeft = function(extent) {
 
 
 /**
- * Get the bottom right coordinate of an extent.
  * @param {ol.Extent} extent Extent.
  * @return {ol.Coordinate} Bottom right coordinate.
  * @api stable
@@ -516,7 +505,6 @@ ol.extent.getBottomRight = function(extent) {
 
 
 /**
- * Get the center coordinate of an extent.
  * @param {ol.Extent} extent Extent.
  * @return {ol.Coordinate} Center.
  * @api stable
@@ -545,7 +533,7 @@ ol.extent.getCorner = function(extent, corner) {
   } else {
     goog.asserts.fail('Invalid corner: %s', corner);
   }
-  goog.asserts.assert(goog.isDef(coordinate), 'coordinate should be defined');
+  goog.asserts.assert(goog.isDef(coordinate));
   return coordinate;
 };
 
@@ -594,7 +582,6 @@ ol.extent.getForViewAndSize =
 
 
 /**
- * Get the height of an extent.
  * @param {ol.Extent} extent Extent.
  * @return {number} Height.
  * @api stable
@@ -662,9 +649,8 @@ ol.extent.getMargin = function(extent) {
 
 
 /**
- * Get the size (width, height) of an extent.
- * @param {ol.Extent} extent The extent.
- * @return {ol.Size} The extent size.
+ * @param {ol.Extent} extent Extent.
+ * @return {ol.Size} Size.
  * @api stable
  */
 ol.extent.getSize = function(extent) {
@@ -673,7 +659,6 @@ ol.extent.getSize = function(extent) {
 
 
 /**
- * Get the top left coordinate of an extent.
  * @param {ol.Extent} extent Extent.
  * @return {ol.Coordinate} Top left coordinate.
  * @api stable
@@ -684,7 +669,6 @@ ol.extent.getTopLeft = function(extent) {
 
 
 /**
- * Get the top right coordinate of an extent.
  * @param {ol.Extent} extent Extent.
  * @return {ol.Coordinate} Top right coordinate.
  * @api stable
@@ -695,7 +679,6 @@ ol.extent.getTopRight = function(extent) {
 
 
 /**
- * Get the width of an extent.
  * @param {ol.Extent} extent Extent.
  * @return {number} Width.
  * @api stable
@@ -706,10 +689,9 @@ ol.extent.getWidth = function(extent) {
 
 
 /**
- * Determine if one extent intersects another.
  * @param {ol.Extent} extent1 Extent 1.
  * @param {ol.Extent} extent2 Extent.
- * @return {boolean} The two extents intersect.
+ * @return {boolean} Intersects.
  * @api stable
  */
 ol.extent.intersects = function(extent1, extent2) {
@@ -721,7 +703,6 @@ ol.extent.intersects = function(extent1, extent2) {
 
 
 /**
- * Determine if an extent is empty.
  * @param {ol.Extent} extent Extent.
  * @return {boolean} Is empty.
  * @api stable
@@ -817,20 +798,17 @@ ol.extent.intersectsSegment = function(extent, start, end) {
       // potentially intersects top
       x = endX - ((endY - maxY) / slope);
       intersects = x >= minX && x <= maxX;
-    }
-    if (!intersects && !!(endRel & ol.extent.Relationship.RIGHT) &&
+    } else if (!!(endRel & ol.extent.Relationship.RIGHT) &&
         !(startRel & ol.extent.Relationship.RIGHT)) {
       // potentially intersects right
       y = endY - ((endX - maxX) * slope);
       intersects = y >= minY && y <= maxY;
-    }
-    if (!intersects && !!(endRel & ol.extent.Relationship.BELOW) &&
+    } else if (!!(endRel & ol.extent.Relationship.BELOW) &&
         !(startRel & ol.extent.Relationship.BELOW)) {
       // potentially intersects bottom
       x = endX - ((endY - minY) / slope);
       intersects = x >= minX && x <= maxX;
-    }
-    if (!intersects && !!(endRel & ol.extent.Relationship.LEFT) &&
+    } else if (!!(endRel & ol.extent.Relationship.LEFT) &&
         !(startRel & ol.extent.Relationship.LEFT)) {
       // potentially intersects left
       y = endY - ((endX - minX) * slope);

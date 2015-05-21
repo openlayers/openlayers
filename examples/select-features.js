@@ -1,21 +1,21 @@
 goog.require('ol.Map');
 goog.require('ol.View');
 goog.require('ol.events.condition');
-goog.require('ol.format.GeoJSON');
+goog.require('ol.interaction');
 goog.require('ol.interaction.Select');
 goog.require('ol.layer.Tile');
 goog.require('ol.layer.Vector');
+goog.require('ol.source.GeoJSON');
 goog.require('ol.source.MapQuest');
-goog.require('ol.source.Vector');
 
 var raster = new ol.layer.Tile({
   source: new ol.source.MapQuest({layer: 'sat'})
 });
 
 var vector = new ol.layer.Vector({
-  source: new ol.source.Vector({
-    url: 'data/geojson/countries.geojson',
-    format: new ol.format.GeoJSON()
+  source: new ol.source.GeoJSON({
+    projection: 'EPSG:3857',
+    url: 'data/geojson/countries.geojson'
   })
 });
 
@@ -38,16 +38,9 @@ var selectClick = new ol.interaction.Select({
   condition: ol.events.condition.click
 });
 
-// select interaction working on "pointermove"
-var selectPointerMove = new ol.interaction.Select({
-  condition: ol.events.condition.pointerMove
-});
-
-var selectAltClick = new ol.interaction.Select({
-  condition: function(mapBrowserEvent) {
-    return ol.events.condition.click(mapBrowserEvent) &&
-        ol.events.condition.altKeyOnly(mapBrowserEvent);
-  }
+// select interaction working on "mousemove"
+var selectMouseMove = new ol.interaction.Select({
+  condition: ol.events.condition.mouseMove
 });
 
 var selectElement = document.getElementById('type');
@@ -61,20 +54,13 @@ var changeInteraction = function() {
     select = selectSingleClick;
   } else if (value == 'click') {
     select = selectClick;
-  } else if (value == 'pointermove') {
-    select = selectPointerMove;
-  } else if (value == 'altclick') {
-    select = selectAltClick;
+  } else if (value == 'mousemove') {
+    select = selectMouseMove;
   } else {
     select = null;
   }
   if (select !== null) {
     map.addInteraction(select);
-    select.on('select', function(e) {
-      $('#status').html('&nbsp;' + e.target.getFeatures().getLength() +
-          ' selected features (last operation selected ' + e.selected.length +
-          ' and deselected ' + e.deselected.length + ' features)');
-    });
   }
 };
 

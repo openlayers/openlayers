@@ -50,8 +50,7 @@ ol.renderer.canvas.Layer.prototype.composeFrame =
     var extent = layerState.extent;
     var clipped = goog.isDef(extent);
     if (clipped) {
-      goog.asserts.assert(goog.isDef(extent),
-          'layerState extent is defined');
+      goog.asserts.assert(goog.isDef(extent));
       var pixelRatio = frameState.pixelRatio;
       var topLeft = ol.extent.getTopLeft(extent);
       var topRight = ol.extent.getTopRight(extent);
@@ -127,7 +126,7 @@ ol.renderer.canvas.Layer.prototype.dispatchComposeEvent_ =
   var layer = this.getLayer();
   if (layer.hasListener(type)) {
     var transform = goog.isDef(opt_transform) ?
-        opt_transform : this.getTransform(frameState, 0);
+        opt_transform : this.getTransform(frameState);
     var render = new ol.render.canvas.Immediate(
         context, frameState.pixelRatio, frameState.extent, transform,
         frameState.viewState.rotation);
@@ -192,12 +191,10 @@ ol.renderer.canvas.Layer.prototype.getImageTransform = goog.abstractMethod;
 
 /**
  * @param {olx.FrameState} frameState Frame state.
- * @param {number} offsetX Offset on the x-axis in view coordinates.
  * @protected
  * @return {!goog.vec.Mat4.Number} Transform.
  */
-ol.renderer.canvas.Layer.prototype.getTransform =
-    function(frameState, offsetX) {
+ol.renderer.canvas.Layer.prototype.getTransform = function(frameState) {
   var viewState = frameState.viewState;
   var pixelRatio = frameState.pixelRatio;
   return ol.vec.Mat4.makeTransform2D(this.transform_,
@@ -206,8 +203,7 @@ ol.renderer.canvas.Layer.prototype.getTransform =
       pixelRatio / viewState.resolution,
       -pixelRatio / viewState.resolution,
       -viewState.rotation,
-      -viewState.center[0] + offsetX,
-      -viewState.center[1]);
+      -viewState.center[0], -viewState.center[1]);
 };
 
 

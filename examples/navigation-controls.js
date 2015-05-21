@@ -24,7 +24,7 @@ var map = new ol.Map({
       source: new ol.source.OSM()
     })
   ],
-  renderer: common.getRendererFromQueryString(),
+  renderer: exampleNS.getRendererFromQueryString(),
   target: 'map',
   view: new ol.View({
     center: [0, 0],

@@ -209,17 +209,17 @@ describe('ol.Feature', function() {
       point.setCoordinates([0, 2]);
     });
 
-    it('changes property listener', function() {
+    it('changes property listener', function(done) {
       var feature = new ol.Feature();
       feature.setGeometry(point);
       var point2 = new ol.geom.Point([1, 2]);
       feature.set('altGeometry', point2);
       feature.setGeometryName('altGeometry');
 
-      var spy = sinon.spy();
-      feature.on('change', spy);
+      feature.on('change', function() {
+        done();
+      });
       point2.setCoordinates([0, 2]);
-      expect(spy.callCount).to.be(1);
     });
 
     it('can use a different geometry name', function() {
@@ -328,12 +328,12 @@ describe('ol.Feature', function() {
       expect(feature.getStyleFunction()).to.be(undefined);
     });
 
-    it('dispatches a change event', function() {
+    it('dispatches a change event', function(done) {
       var feature = new ol.Feature();
-      var spy = sinon.spy();
-      feature.on('change', spy);
+      feature.on('change', function() {
+        done();
+      });
       feature.setStyle(style);
-      expect(spy.callCount).to.be(1);
     });
 
   });
@@ -416,32 +416,19 @@ describe('ol.Feature', function() {
     });
   });
 
-  describe('#setGeometry()', function() {
-
-    it('dispatches a change event when geometry is set to null',
-        function() {
-          var feature = new ol.Feature({
-            geometry: new ol.geom.Point([0, 0])
-          });
-          var spy = sinon.spy();
-          feature.on('change', spy);
-          feature.setGeometry(null);
-          expect(spy.callCount).to.be(1);
-        });
-  });
 
 });
 
-describe('ol.Feature.createStyleFunction()', function() {
+describe('ol.feature.createFeatureStyleFunction()', function() {
   var style = new ol.style.Style();
 
   it('creates a feature style function from a single style', function() {
-    var styleFunction = ol.Feature.createStyleFunction(style);
+    var styleFunction = ol.feature.createFeatureStyleFunction(style);
     expect(styleFunction()).to.eql([style]);
   });
 
   it('creates a feature style function from an array of styles', function() {
-    var styleFunction = ol.Feature.createStyleFunction([style]);
+    var styleFunction = ol.feature.createFeatureStyleFunction([style]);
     expect(styleFunction()).to.eql([style]);
   });
 
@@ -449,13 +436,13 @@ describe('ol.Feature.createStyleFunction()', function() {
     var original = function() {
       return [style];
     };
-    var styleFunction = ol.Feature.createStyleFunction(original);
+    var styleFunction = ol.feature.createFeatureStyleFunction(original);
     expect(styleFunction).to.be(original);
   });
 
   it('throws on (some) unexpected input', function() {
     expect(function() {
-      ol.Feature.createStyleFunction({bogus: 'input'});
+      ol.feature.createFeatureStyleFunction({bogus: 'input'});
     }).to.throwException();
   });
 
@@ -465,5 +452,6 @@ describe('ol.Feature.createStyleFunction()', function() {
 goog.require('goog.events');
 goog.require('goog.object');
 goog.require('ol.Feature');
+goog.require('ol.feature');
 goog.require('ol.geom.Point');
 goog.require('ol.style.Style');

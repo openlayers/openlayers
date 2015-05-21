@@ -1,11 +1,18 @@
 /**
  * @type {Object}
  */
-var common;
+var exampleNS;
 
 
 
 /**
  * @return {string} Renderer type.
  */
-common.getRendererFromQueryString = function() {};
+exampleNS.getRendererFromQueryString = function() {};
+
+
+/**
+ * @param {string} str String.
+ * @return {string} Base64 string.
+ */
+exampleNS.strToBase64 = function(str) {};

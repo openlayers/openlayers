@@ -77,7 +77,6 @@ ol.style.Text = function(opt_options) {
 
 
 /**
- * Get the font name.
  * @return {string|undefined} Font.
  * @api
  */
@@ -87,7 +86,6 @@ ol.style.Text.prototype.getFont = function() {
 
 
 /**
- * Get the x-offset for the text.
  * @return {number} Horizontal text offset.
  * @api
  */
@@ -97,7 +95,6 @@ ol.style.Text.prototype.getOffsetX = function() {
 
 
 /**
- * Get the y-offset for the text.
  * @return {number} Vertical text offset.
  * @api
  */
@@ -107,7 +104,6 @@ ol.style.Text.prototype.getOffsetY = function() {
 
 
 /**
- * Get the fill style for the text.
  * @return {ol.style.Fill} Fill style.
  * @api
  */
@@ -117,7 +113,6 @@ ol.style.Text.prototype.getFill = function() {
 
 
 /**
- * Get the text rotation.
  * @return {number|undefined} Rotation.
  * @api
  */
@@ -127,7 +122,6 @@ ol.style.Text.prototype.getRotation = function() {
 
 
 /**
- * Get the text scale.
  * @return {number|undefined} Scale.
  * @api
  */
@@ -137,7 +131,6 @@ ol.style.Text.prototype.getScale = function() {
 
 
 /**
- * Get the stroke style for the text.
  * @return {ol.style.Stroke} Stroke style.
  * @api
  */
@@ -147,7 +140,6 @@ ol.style.Text.prototype.getStroke = function() {
 
 
 /**
- * Get the text to be rendered.
  * @return {string|undefined} Text.
  * @api
  */
@@ -157,7 +149,6 @@ ol.style.Text.prototype.getText = function() {
 
 
 /**
- * Get the text alignment.
  * @return {string|undefined} Text align.
  * @api
  */
@@ -167,7 +158,6 @@ ol.style.Text.prototype.getTextAlign = function() {
 
 
 /**
- * Get the text baseline.
  * @return {string|undefined} Text baseline.
  * @api
  */

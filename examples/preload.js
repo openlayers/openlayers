@@ -4,11 +4,6 @@ goog.require('ol.layer.Tile');
 goog.require('ol.source.BingMaps');
 
 
-var view = new ol.View({
-  center: [-4808600, -2620936],
-  zoom: 8
-});
-
 var map1 = new ol.Map({
   layers: [
     new ol.layer.Tile({
@@ -19,9 +14,12 @@ var map1 = new ol.Map({
       })
     })
   ],
-  renderer: common.getRendererFromQueryString(),
+  renderer: exampleNS.getRendererFromQueryString(),
   target: 'map1',
-  view: view
+  view: new ol.View({
+    center: [-4808600, -2620936],
+    zoom: 8
+  })
 });
 
 var map2 = new ol.Map({
@@ -34,7 +32,7 @@ var map2 = new ol.Map({
       })
     })
   ],
-  renderer: common.getRendererFromQueryString(),
-  target: 'map2',
-  view: view
+  renderer: exampleNS.getRendererFromQueryString(),
+  target: 'map2'
 });
+map2.bindTo('view', map1);

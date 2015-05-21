@@ -11,11 +11,11 @@ var layers = [
   }),
   new ol.layer.Tile({
     extent: [-13884991, 2870341, -7455066, 6338219],
-    source: new ol.source.TileWMS({
+    source: new ol.source.TileWMS(/** @type {olx.source.TileWMSOptions} */ ({
       url: 'http://demo.boundlessgeo.com/geoserver/wms',
       params: {'LAYERS': 'topp:states', 'TILED': true},
       serverType: 'geoserver'
-    })
+    }))
   })
 ];
 var map = new ol.Map({

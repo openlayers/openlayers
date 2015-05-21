@@ -55,6 +55,28 @@ goog.inherits(ol.renderer.canvas.ImageLayer, ol.renderer.canvas.Layer);
 /**
  * @inheritDoc
  */
+ol.renderer.canvas.ImageLayer.prototype.forEachFeatureAtCoordinate =
+    function(coordinate, frameState, callback, thisArg) {
+  var layer = this.getLayer();
+  var source = layer.getSource();
+  var resolution = frameState.viewState.resolution;
+  var rotation = frameState.viewState.rotation;
+  var skippedFeatureUids = frameState.skippedFeatureUids;
+  return source.forEachFeatureAtCoordinate(
+      coordinate, resolution, rotation, skippedFeatureUids,
+      /**
+       * @param {ol.Feature} feature Feature.
+       * @return {?} Callback result.
+       */
+      function(feature) {
+        return callback.call(thisArg, feature, layer);
+      });
+};
+
+
+/**
+ * @inheritDoc
+ */
 ol.renderer.canvas.ImageLayer.prototype.forEachLayerAtPixel =
     function(pixel, frameState, callback, thisArg) {
   if (goog.isNull(this.getImage())) {
@@ -134,8 +156,7 @@ ol.renderer.canvas.ImageLayer.prototype.prepareFrame =
 
   var image;
   var imageLayer = this.getLayer();
-  goog.asserts.assertInstanceof(imageLayer, ol.layer.Image,
-      'layer is an instance of ol.layer.Image');
+  goog.asserts.assertInstanceof(imageLayer, ol.layer.Image);
   var imageSource = imageLayer.getSource();
 
   var hints = frameState.viewHints;
@@ -151,8 +172,7 @@ ol.renderer.canvas.ImageLayer.prototype.prepareFrame =
     var projection = viewState.projection;
     var sourceProjection = imageSource.getProjection();
     if (!goog.isNull(sourceProjection)) {
-      goog.asserts.assert(ol.proj.equivalent(projection, sourceProjection),
-          'projection and sourceProjection are equivalent');
+      goog.asserts.assert(ol.proj.equivalent(projection, sourceProjection));
       projection = sourceProjection;
     }
     image = imageSource.getImage(

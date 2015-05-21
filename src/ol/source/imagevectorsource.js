@@ -166,7 +166,7 @@ ol.source.ImageVector.prototype.forEachFeatureAtCoordinate = function(
          * @return {?} Callback result.
          */
         function(feature) {
-          goog.asserts.assert(goog.isDef(feature), 'passed a feature');
+          goog.asserts.assert(goog.isDef(feature));
           var key = goog.getUid(feature).toString();
           if (!(key in features)) {
             features[key] = true;
@@ -178,7 +178,6 @@ ol.source.ImageVector.prototype.forEachFeatureAtCoordinate = function(
 
 
 /**
- * Get a reference to the wrapped source.
  * @return {ol.source.Vector} Source.
  * @api
  */

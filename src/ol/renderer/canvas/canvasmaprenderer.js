@@ -10,7 +10,6 @@ goog.require('ol');
 goog.require('ol.RendererType');
 goog.require('ol.css');
 goog.require('ol.dom');
-goog.require('ol.extent');
 goog.require('ol.layer.Image');
 goog.require('ol.layer.Layer');
 goog.require('ol.layer.Tile');
@@ -84,7 +83,7 @@ ol.renderer.canvas.Map.prototype.createLayerRenderer = function(layer) {
   } else if (ol.ENABLE_VECTOR && layer instanceof ol.layer.Vector) {
     return new ol.renderer.canvas.VectorLayer(layer);
   } else {
-    goog.asserts.fail('unexpected layer configuration');
+    goog.asserts.fail();
     return null;
   }
 };
@@ -103,41 +102,29 @@ ol.renderer.canvas.Map.prototype.dispatchComposeEvent_ =
     var extent = frameState.extent;
     var pixelRatio = frameState.pixelRatio;
     var viewState = frameState.viewState;
-    var projection = viewState.projection;
     var resolution = viewState.resolution;
     var rotation = viewState.rotation;
 
-    var offsetX = 0;
-    if (projection.canWrapX()) {
-      var projectionExtent = projection.getExtent();
-      var worldWidth = ol.extent.getWidth(projectionExtent);
-      var x = frameState.focus[0];
-      if (x < projectionExtent[0] || x > projectionExtent[2]) {
-        var worldsAway = Math.ceil((projectionExtent[0] - x) / worldWidth);
-        offsetX = worldWidth * worldsAway;
-        extent = [
-          extent[0] + offsetX, extent[1],
-          extent[2] + offsetX, extent[3]
-        ];
-      }
-    }
-
-    var transform = this.getTransform(frameState, offsetX);
+    ol.vec.Mat4.makeTransform2D(this.transform_,
+        this.canvas_.width / 2, this.canvas_.height / 2,
+        pixelRatio / resolution, -pixelRatio / resolution,
+        -rotation,
+        -viewState.center[0], -viewState.center[1]);
 
     var tolerance = ol.renderer.vector.getTolerance(resolution, pixelRatio);
-    var replayGroup = new ol.render.canvas.ReplayGroup(
-        tolerance, extent, resolution);
+    var replayGroup = new ol.render.canvas.ReplayGroup(tolerance, extent,
+        resolution);
 
     var vectorContext = new ol.render.canvas.Immediate(context, pixelRatio,
-        extent, transform, rotation);
+        extent, this.transform_, rotation);
     var composeEvent = new ol.render.Event(type, map, vectorContext,
         replayGroup, frameState, context, null);
     map.dispatchEvent(composeEvent);
 
     replayGroup.finish();
     if (!replayGroup.isEmpty()) {
-      replayGroup.replay(context, pixelRatio, transform, rotation, {});
-
+      replayGroup.replay(context, pixelRatio, this.transform_,
+          rotation, {});
     }
     vectorContext.flush();
     this.replayGroup = replayGroup;
@@ -146,21 +133,13 @@ ol.renderer.canvas.Map.prototype.dispatchComposeEvent_ =
 
 
 /**
- * @param {olx.FrameState} frameState Frame state.
- * @param {number} offsetX Offset on the x-axis in view coordinates.
- * @protected
- * @return {!goog.vec.Mat4.Number} Transform.
+ * @param {ol.layer.Layer} layer Layer.
+ * @return {ol.renderer.canvas.Layer} Canvas layer renderer.
  */
-ol.renderer.canvas.Map.prototype.getTransform = function(frameState, offsetX) {
-  var pixelRatio = frameState.pixelRatio;
-  var viewState = frameState.viewState;
-  var resolution = viewState.resolution;
-  return ol.vec.Mat4.makeTransform2D(this.transform_,
-      this.canvas_.width / 2, this.canvas_.height / 2,
-      pixelRatio / resolution, -pixelRatio / resolution,
-      -viewState.rotation,
-      -viewState.center[0] - offsetX,
-      -viewState.center[1]);
+ol.renderer.canvas.Map.prototype.getCanvasLayerRenderer = function(layer) {
+  var layerRenderer = this.getLayerRenderer(layer);
+  goog.asserts.assertInstanceof(layerRenderer, ol.renderer.canvas.Layer);
+  return /** @type {ol.renderer.canvas.Layer} */ (layerRenderer);
 };
 
 
@@ -206,8 +185,7 @@ ol.renderer.canvas.Map.prototype.renderFrame = function(frameState) {
     layerState = layerStatesArray[i];
     layer = layerState.layer;
     layerRenderer = this.getLayerRenderer(layer);
-    goog.asserts.assertInstanceof(layerRenderer, ol.renderer.canvas.Layer,
-        'layerRenderer is an instance of ol.renderer.canvas.Layer');
+    goog.asserts.assertInstanceof(layerRenderer, ol.renderer.canvas.Layer);
     if (!ol.layer.Layer.visibleAtResolution(layerState, viewResolution) ||
         layerState.sourceState != ol.source.State.READY) {
       continue;
@@ -217,8 +195,7 @@ ol.renderer.canvas.Map.prototype.renderFrame = function(frameState) {
     }
   }
 
-  this.dispatchComposeEvent_(
-      ol.render.EventType.POSTCOMPOSE, frameState);
+  this.dispatchComposeEvent_(ol.render.EventType.POSTCOMPOSE, frameState);
 
   if (!this.renderedVisible_) {
     goog.style.setElementShown(this.canvas_, true);

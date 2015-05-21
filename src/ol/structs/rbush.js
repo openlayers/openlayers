@@ -61,8 +61,7 @@ ol.structs.RBush.prototype.insert = function(extent, value) {
   this.rbush_.insert(item);
   // remember the object that was added to the internal rbush
   goog.asserts.assert(
-      !goog.object.containsKey(this.items_, goog.getUid(value)),
-      'uid (%s) of value (%s) already exists', goog.getUid(value), value);
+      !goog.object.containsKey(this.items_, goog.getUid(value)));
   this.items_[goog.getUid(value)] = item;
 };
 
@@ -76,9 +75,7 @@ ol.structs.RBush.prototype.load = function(extents, values) {
   if (goog.DEBUG && this.readers_) {
     throw new Error('Can not insert values while reading');
   }
-  goog.asserts.assert(extents.length === values.length,
-      'extens and values must have same length (%s === %s)',
-      extents.length, values.length);
+  goog.asserts.assert(extents.length === values.length);
 
   var items = new Array(values.length);
   for (var i = 0, l = values.length; i < l; i++) {
@@ -94,8 +91,7 @@ ol.structs.RBush.prototype.load = function(extents, values) {
     ];
     items[i] = item;
     goog.asserts.assert(
-        !goog.object.containsKey(this.items_, goog.getUid(value)),
-        'uid (%s) of value (%s) already exists', goog.getUid(value), value);
+        !goog.object.containsKey(this.items_, goog.getUid(value)));
     this.items_[goog.getUid(value)] = item;
   }
   this.rbush_.load(items);
@@ -112,8 +108,7 @@ ol.structs.RBush.prototype.remove = function(value) {
     throw new Error('Can not remove value while reading');
   }
   var uid = goog.getUid(value);
-  goog.asserts.assert(goog.object.containsKey(this.items_, uid),
-      'uid (%s) of value (%s) does not exist', uid, value);
+  goog.asserts.assert(goog.object.containsKey(this.items_, uid));
 
   // get the object in which the value was wrapped when adding to the
   // internal rbush. then use that object to do the removal.
@@ -130,8 +125,7 @@ ol.structs.RBush.prototype.remove = function(value) {
  */
 ol.structs.RBush.prototype.update = function(extent, value) {
   var uid = goog.getUid(value);
-  goog.asserts.assert(goog.object.containsKey(this.items_, uid),
-      'uid (%s) of value (%s) does not exist', uid, value);
+  goog.asserts.assert(goog.object.containsKey(this.items_, uid));
 
   var item = this.items_[uid];
   if (!ol.extent.equals(item.slice(0, 4), extent)) {

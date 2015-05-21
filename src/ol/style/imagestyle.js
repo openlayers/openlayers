@@ -26,7 +26,7 @@ ol.style.ImageOptions;
 
 /**
  * @classdesc
- * A base class used for creating subclasses and not instantiated in
+ * Abstract base class; used for creating subclasses and not instantiated in
  * apps. Base class for {@link ol.style.Icon} and {@link ol.style.Circle}.
  *
  * @constructor
@@ -69,7 +69,6 @@ ol.style.Image = function(options) {
 
 
 /**
- * Get the symbolizer opacity.
  * @return {number} Opacity.
  * @api
  */
@@ -79,7 +78,6 @@ ol.style.Image.prototype.getOpacity = function() {
 
 
 /**
- * Determine whether the symbolizer rotates with the map.
  * @return {boolean} Rotate with map.
  * @api
  */
@@ -89,7 +87,6 @@ ol.style.Image.prototype.getRotateWithView = function() {
 
 
 /**
- * Get the symoblizer rotation.
  * @return {number} Rotation.
  * @api
  */
@@ -99,7 +96,6 @@ ol.style.Image.prototype.getRotation = function() {
 
 
 /**
- * Get the symbolizer scale.
  * @return {number} Scale.
  * @api
  */
@@ -109,8 +105,7 @@ ol.style.Image.prototype.getScale = function() {
 
 
 /**
- * Determine whether the symbolizer should be snapped to a pixel.
- * @return {boolean} The symbolizer should snap to a pixel.
+ * @return {boolean} Snap to pixel?
  * @api
  */
 ol.style.Image.prototype.getSnapToPixel = function() {
@@ -129,6 +124,7 @@ ol.style.Image.prototype.getAnchor = goog.abstractMethod;
  * @function
  * @param {number} pixelRatio Pixel ratio.
  * @return {HTMLCanvasElement|HTMLVideoElement|Image} Image element.
+ * @api
  */
 ol.style.Image.prototype.getImage = goog.abstractMethod;
 

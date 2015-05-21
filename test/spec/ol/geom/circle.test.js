@@ -210,4 +210,3 @@ describe('ol.geom.Circle', function() {
 
 goog.require('ol.geom.Circle');
 goog.require('ol.geom.GeometryType');
-goog.require('ol.geom.GeometryLayout');

@@ -64,8 +64,7 @@ goog.inherits(ol.interaction.PinchZoom, ol.interaction.Pointer);
  * @private
  */
 ol.interaction.PinchZoom.handleDragEvent_ = function(mapBrowserEvent) {
-  goog.asserts.assert(this.targetPointers.length >= 2,
-      'length of this.targetPointers should be 2 or more');
+  goog.asserts.assert(this.targetPointers.length >= 2);
   var scaleDelta = 1.0;
 
   var touch0 = this.targetPointers[0];

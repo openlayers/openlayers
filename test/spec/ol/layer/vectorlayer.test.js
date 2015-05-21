@@ -1,5 +1,7 @@
 goog.provide('ol.test.layer.Vector');
 
+goog.require('ol.feature');
+
 describe('ol.layer.Vector', function() {
 
   describe('constructor', function() {

@@ -8,7 +8,6 @@ goog.require('ol.Feature');
 goog.require('ol.format.Feature');
 goog.require('ol.format.XMLFeature');
 goog.require('ol.format.XSD');
-goog.require('ol.geom.GeometryLayout');
 goog.require('ol.geom.LineString');
 goog.require('ol.geom.MultiLineString');
 goog.require('ol.geom.Point');
@@ -66,8 +65,7 @@ ol.format.GPX.NAMESPACE_URIS_ = [
  * @return {Array.<number>} Flat coordinates.
  */
 ol.format.GPX.appendCoordinate_ = function(flatCoordinates, node, values) {
-  goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT,
-      'node.nodeType should be ELEMENT');
+  goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT);
   flatCoordinates.push(
       parseFloat(node.getAttribute('lon')),
       parseFloat(node.getAttribute('lat')));
@@ -95,9 +93,8 @@ ol.format.GPX.appendCoordinate_ = function(flatCoordinates, node, values) {
  * @private
  */
 ol.format.GPX.parseLink_ = function(node, objectStack) {
-  goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT,
-      'node.nodeType should be ELEMENT');
-  goog.asserts.assert(node.localName == 'link', 'localName should be link');
+  goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT);
+  goog.asserts.assert(node.localName == 'link');
   var values = /** @type {Object} */ (objectStack[objectStack.length - 1]);
   var href = node.getAttribute('href');
   if (!goog.isNull(href)) {
@@ -113,10 +110,8 @@ ol.format.GPX.parseLink_ = function(node, objectStack) {
  * @private
  */
 ol.format.GPX.parseExtensions_ = function(node, objectStack) {
-  goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT,
-      'node.nodeType should be ELEMENT');
-  goog.asserts.assert(node.localName == 'extensions',
-      'localName should be extensions');
+  goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT);
+  goog.asserts.assert(node.localName == 'extensions');
   var values = /** @type {Object} */ (objectStack[objectStack.length - 1]);
   values['extensionsNode_'] = node;
 };
@@ -128,9 +123,8 @@ ol.format.GPX.parseExtensions_ = function(node, objectStack) {
  * @private
  */
 ol.format.GPX.parseRtePt_ = function(node, objectStack) {
-  goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT,
-      'node.nodeType should be ELEMENT');
-  goog.asserts.assert(node.localName == 'rtept', 'localName should be rtept');
+  goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT);
+  goog.asserts.assert(node.localName == 'rtept');
   var values = ol.xml.pushParseAndPop(
       {}, ol.format.GPX.RTEPT_PARSERS_, node, objectStack);
   if (goog.isDef(values)) {
@@ -148,9 +142,8 @@ ol.format.GPX.parseRtePt_ = function(node, objectStack) {
  * @private
  */
 ol.format.GPX.parseTrkPt_ = function(node, objectStack) {
-  goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT,
-      'node.nodeType should be ELEMENT');
-  goog.asserts.assert(node.localName == 'trkpt', 'localName should be trkpt');
+  goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT);
+  goog.asserts.assert(node.localName == 'trkpt');
   var values = ol.xml.pushParseAndPop(
       {}, ol.format.GPX.TRKPT_PARSERS_, node, objectStack);
   if (goog.isDef(values)) {
@@ -168,10 +161,8 @@ ol.format.GPX.parseTrkPt_ = function(node, objectStack) {
  * @private
  */
 ol.format.GPX.parseTrkSeg_ = function(node, objectStack) {
-  goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT,
-      'node.nodeType should be ELEMENT');
-  goog.asserts.assert(node.localName == 'trkseg',
-      'localName should be trkseg');
+  goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT);
+  goog.asserts.assert(node.localName == 'trkseg');
   var values = /** @type {Object} */ (objectStack[objectStack.length - 1]);
   ol.xml.parseNode(ol.format.GPX.TRKSEG_PARSERS_, node, objectStack);
   var flatCoordinates = /** @type {Array.<number>} */
@@ -188,9 +179,8 @@ ol.format.GPX.parseTrkSeg_ = function(node, objectStack) {
  * @return {ol.Feature|undefined} Track.
  */
 ol.format.GPX.readRte_ = function(node, objectStack) {
-  goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT,
-      'node.nodeType should be ELEMENT');
-  goog.asserts.assert(node.localName == 'rte', 'localName should be rte');
+  goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT);
+  goog.asserts.assert(node.localName == 'rte');
   var options = /** @type {olx.format.ReadOptions} */ (objectStack[0]);
   var values = ol.xml.pushParseAndPop({
     'flatCoordinates': []
@@ -217,9 +207,8 @@ ol.format.GPX.readRte_ = function(node, objectStack) {
  * @return {ol.Feature|undefined} Track.
  */
 ol.format.GPX.readTrk_ = function(node, objectStack) {
-  goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT,
-      'node.nodeType should be ELEMENT');
-  goog.asserts.assert(node.localName == 'trk', 'localName should be trk');
+  goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT);
+  goog.asserts.assert(node.localName == 'trk');
   var options = /** @type {olx.format.ReadOptions} */ (objectStack[0]);
   var values = ol.xml.pushParseAndPop({
     'flatCoordinates': [],
@@ -250,9 +239,8 @@ ol.format.GPX.readTrk_ = function(node, objectStack) {
  * @return {ol.Feature|undefined} Waypoint.
  */
 ol.format.GPX.readWpt_ = function(node, objectStack) {
-  goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT,
-      'node.nodeType should be ELEMENT');
-  goog.asserts.assert(node.localName == 'wpt', 'localName should be wpt');
+  goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT);
+  goog.asserts.assert(node.localName == 'wpt');
   var options = /** @type {olx.format.ReadOptions} */ (objectStack[0]);
   var values = ol.xml.pushParseAndPop(
       {}, ol.format.GPX.WPT_PARSERS_, node, objectStack);
@@ -438,7 +426,7 @@ ol.format.GPX.prototype.handleReadExtensions_ = function(features) {
  * Read the first feature from a GPX source.
  *
  * @function
- * @param {Document|Node|Object|string} source Source.
+ * @param {ArrayBuffer|Document|Node|Object|string} source Source.
  * @param {olx.format.ReadOptions=} opt_options Read options.
  * @return {ol.Feature} Feature.
  * @api stable
@@ -450,8 +438,7 @@ ol.format.GPX.prototype.readFeature;
  * @inheritDoc
  */
 ol.format.GPX.prototype.readFeatureFromNode = function(node, opt_options) {
-  goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT,
-      'node.nodeType should be ELEMENT');
+  goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT);
   if (!goog.array.contains(ol.format.GPX.NAMESPACE_URIS_, node.namespaceURI)) {
     return null;
   }
@@ -472,7 +459,7 @@ ol.format.GPX.prototype.readFeatureFromNode = function(node, opt_options) {
  * Read all features from a GPX source.
  *
  * @function
- * @param {Document|Node|Object|string} source Source.
+ * @param {ArrayBuffer|Document|Node|Object|string} source Source.
  * @param {olx.format.ReadOptions=} opt_options Read options.
  * @return {Array.<ol.Feature>} Features.
  * @api stable
@@ -484,8 +471,7 @@ ol.format.GPX.prototype.readFeatures;
  * @inheritDoc
  */
 ol.format.GPX.prototype.readFeaturesFromNode = function(node, opt_options) {
-  goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT,
-      'node.nodeType should be ELEMENT');
+  goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT);
   if (!goog.array.contains(ol.format.GPX.NAMESPACE_URIS_, node.namespaceURI)) {
     return [];
   }
@@ -508,7 +494,7 @@ ol.format.GPX.prototype.readFeaturesFromNode = function(node, opt_options) {
  * Read the projection from a GPX source.
  *
  * @function
- * @param {Document|Node|Object|string} source Source.
+ * @param {ArrayBuffer|Document|Node|Object|string} source Source.
  * @return {ol.proj.Projection} Projection.
  * @api stable
  */
@@ -524,7 +510,7 @@ ol.format.GPX.prototype.readProjection;
 ol.format.GPX.writeLink_ = function(node, value, objectStack) {
   node.setAttribute('href', value);
   var context = objectStack[objectStack.length - 1];
-  goog.asserts.assert(goog.isObject(context), 'context should be an Object');
+  goog.asserts.assert(goog.isObject(context));
   var properties = context['properties'];
   var link = [
     properties['linkText'],
@@ -544,10 +530,9 @@ ol.format.GPX.writeLink_ = function(node, value, objectStack) {
  */
 ol.format.GPX.writeWptType_ = function(node, coordinate, objectStack) {
   var context = objectStack[objectStack.length - 1];
-  goog.asserts.assert(goog.isObject(context), 'context should be an Object');
+  goog.asserts.assert(goog.isObject(context));
   var parentNode = context.node;
-  goog.asserts.assert(ol.xml.isNode(parentNode),
-      'parentNode should be an XML node');
+  goog.asserts.assert(ol.xml.isNode(parentNode));
   var namespaceURI = parentNode.namespaceURI;
   var properties = context['properties'];
   //FIXME Projection handling
@@ -592,8 +577,7 @@ ol.format.GPX.writeRte_ = function(node, feature, objectStack) {
   var context = {node: node, 'properties': properties};
   var geometry = feature.getGeometry();
   if (goog.isDef(geometry)) {
-    goog.asserts.assertInstanceof(geometry, ol.geom.LineString,
-        'geometry should be an ol.geom.LineString');
+    goog.asserts.assertInstanceof(geometry, ol.geom.LineString);
     geometry = /** @type {ol.geom.LineString} */
         (ol.format.Feature.transformWithOptions(geometry, true, options));
     context['geometryLayout'] = geometry.getLayout();
@@ -620,8 +604,7 @@ ol.format.GPX.writeTrk_ = function(node, feature, objectStack) {
   var context = {node: node, 'properties': properties};
   var geometry = feature.getGeometry();
   if (goog.isDef(geometry)) {
-    goog.asserts.assertInstanceof(geometry, ol.geom.MultiLineString,
-        'geometry should be an ol.geom.MultiLineString');
+    goog.asserts.assertInstanceof(geometry, ol.geom.MultiLineString);
     geometry = /** @type {ol.geom.MultiLineString} */
         (ol.format.Feature.transformWithOptions(geometry, true, options));
     properties['trkseg'] = geometry.getLineStrings();
@@ -659,12 +642,11 @@ ol.format.GPX.writeTrkSeg_ = function(node, lineString, objectStack) {
 ol.format.GPX.writeWpt_ = function(node, feature, objectStack) {
   var options = /** @type {olx.format.WriteOptions} */ (objectStack[0]);
   var context = objectStack[objectStack.length - 1];
-  goog.asserts.assert(goog.isObject(context), 'context should be an Object');
+  goog.asserts.assert(goog.isObject(context));
   context['properties'] = feature.getProperties();
   var geometry = feature.getGeometry();
   if (goog.isDef(geometry)) {
-    goog.asserts.assertInstanceof(geometry, ol.geom.Point,
-        'geometry should be an ol.geom.Point');
+    goog.asserts.assertInstanceof(geometry, ol.geom.Point);
     geometry = /** @type {ol.geom.Point} */
         (ol.format.Feature.transformWithOptions(geometry, true, options));
     context['geometryLayout'] = geometry.getLayout();
@@ -838,13 +820,11 @@ ol.format.GPX.GEOMETRY_TYPE_TO_NODENAME_ = {
  * @private
  */
 ol.format.GPX.GPX_NODE_FACTORY_ = function(value, objectStack, opt_nodeName) {
-  goog.asserts.assertInstanceof(value, ol.Feature,
-      'value should be an ol.Feature');
+  goog.asserts.assertInstanceof(value, ol.Feature);
   var geometry = value.getGeometry();
   if (goog.isDef(geometry)) {
     var parentNode = objectStack[objectStack.length - 1].node;
-    goog.asserts.assert(ol.xml.isNode(parentNode),
-        'parentNode should be an XML node');
+    goog.asserts.assert(ol.xml.isNode(parentNode));
     return ol.xml.createElementNS(parentNode.namespaceURI,
         ol.format.GPX.GEOMETRY_TYPE_TO_NODENAME_[geometry.getType()]);
   }

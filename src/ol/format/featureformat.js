@@ -68,8 +68,7 @@ ol.format.Feature.prototype.adaptOptions = function(options) {
     updatedOptions = {
       featureProjection: options.featureProjection,
       dataProjection: goog.isDefAndNotNull(options.dataProjection) ?
-          options.dataProjection : this.defaultDataProjection,
-      rightHanded: options.rightHanded
+          options.dataProjection : this.defaultDataProjection
     };
   }
   return updatedOptions;
@@ -85,7 +84,7 @@ ol.format.Feature.prototype.getType = goog.abstractMethod;
 /**
  * Read a single feature from a source.
  *
- * @param {Document|Node|Object|string} source Source.
+ * @param {ArrayBuffer|Document|Node|Object|string} source Source.
  * @param {olx.format.ReadOptions=} opt_options Read options.
  * @return {ol.Feature} Feature.
  */
@@ -95,7 +94,7 @@ ol.format.Feature.prototype.readFeature = goog.abstractMethod;
 /**
  * Read all features from a source.
  *
- * @param {Document|Node|Object|string} source Source.
+ * @param {ArrayBuffer|Document|Node|Object|string} source Source.
  * @param {olx.format.ReadOptions=} opt_options Read options.
  * @return {Array.<ol.Feature>} Features.
  */
@@ -105,7 +104,7 @@ ol.format.Feature.prototype.readFeatures = goog.abstractMethod;
 /**
  * Read a single geometry from a source.
  *
- * @param {Document|Node|Object|string} source Source.
+ * @param {ArrayBuffer|Document|Node|Object|string} source Source.
  * @param {olx.format.ReadOptions=} opt_options Read options.
  * @return {ol.geom.Geometry} Geometry.
  */
@@ -115,7 +114,7 @@ ol.format.Feature.prototype.readGeometry = goog.abstractMethod;
 /**
  * Read the projection from a source.
  *
- * @param {Document|Node|Object|string} source Source.
+ * @param {ArrayBuffer|Document|Node|Object|string} source Source.
  * @return {ol.proj.Projection} Projection.
  */
 ol.format.Feature.prototype.readProjection = goog.abstractMethod;

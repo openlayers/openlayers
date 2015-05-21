@@ -45,7 +45,6 @@ ol.MapBrowserEvent = function(type, map, browserEvent, opt_dragging,
   this.browserEvent = browserEvent;
 
   /**
-   * The original browser event.
    * @const
    * @type {Event}
    * @api stable
@@ -53,14 +52,12 @@ ol.MapBrowserEvent = function(type, map, browserEvent, opt_dragging,
   this.originalEvent = browserEvent.getBrowserEvent();
 
   /**
-   * The pixel of the original browser event.
    * @type {ol.Pixel}
    * @api stable
    */
   this.pixel = map.getEventPixel(this.originalEvent);
 
   /**
-   * The coordinate of the original browser event.
    * @type {ol.Coordinate}
    * @api stable
    */
@@ -159,7 +156,7 @@ ol.MapBrowserEventHandler = function(map) {
   this.dragging_ = false;
 
   /**
-   * @type {Array.<goog.events.Key>}
+   * @type {Array.<number>}
    * @private
    */
   this.dragListenerKeys_ = null;
@@ -318,13 +315,11 @@ ol.MapBrowserEventHandler.prototype.handlePointerUp_ = function(pointerEvent) {
   // to 0).
   // See http://www.w3.org/TR/pointerevents/#button-states
   if (!this.dragging_ && this.isMouseActionButton_(pointerEvent)) {
-    goog.asserts.assert(!goog.isNull(this.down_),
-        'this.down_ should not be null');
+    goog.asserts.assert(!goog.isNull(this.down_));
     this.emulateClick_(this.down_);
   }
 
-  goog.asserts.assert(this.activePointers_ >= 0,
-      'this.activePointers_ should be equal to or larger than 0');
+  goog.asserts.assert(this.activePointers_ >= 0);
   if (this.activePointers_ === 0) {
     goog.array.forEach(this.dragListenerKeys_, goog.events.unlistenByKey);
     this.dragListenerKeys_ = null;
@@ -489,29 +484,26 @@ ol.MapBrowserEventHandler.prototype.disposeInternal = function() {
  * @enum {string}
  */
 ol.MapBrowserEvent.EventType = {
-
+  // derived event types
   /**
    * A true single click with no dragging and no double click. Note that this
    * event is delayed by 250 ms to ensure that it is not a double click.
    * @event ol.MapBrowserEvent#singleclick
-   * @api stable
+   * @api
    */
   SINGLECLICK: 'singleclick',
-
   /**
    * A click with no dragging. A double click will fire two of this.
    * @event ol.MapBrowserEvent#click
-   * @api stable
+   * @api
    */
   CLICK: goog.events.EventType.CLICK,
-
   /**
    * A true double click, with no dragging.
    * @event ol.MapBrowserEvent#dblclick
-   * @api stable
+   * @api
    */
   DBLCLICK: goog.events.EventType.DBLCLICK,
-
   /**
    * Triggered when a pointer is dragged.
    * @event ol.MapBrowserEvent#pointerdrag
@@ -519,14 +511,14 @@ ol.MapBrowserEvent.EventType = {
    */
   POINTERDRAG: 'pointerdrag',
 
+  // original pointer event types
   /**
    * Triggered when a pointer is moved. Note that on touch devices this is
    * triggered when the map is panned, so is not the same as mousemove.
    * @event ol.MapBrowserEvent#pointermove
-   * @api stable
+   * @api
    */
   POINTERMOVE: 'pointermove',
-
   POINTERDOWN: 'pointerdown',
   POINTERUP: 'pointerup',
   POINTEROVER: 'pointerover',

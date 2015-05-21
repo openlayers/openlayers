@@ -280,9 +280,6 @@ ol.coordinate.squaredDistanceToSegment = function(coordinate, segment) {
 
 
 /**
- * Format a geographic coordinate with the hemisphere, degrees, minutes, and
- * seconds.
- *
  * Example:
  *
  *     var coord = [7.85, 47.983333];
@@ -304,8 +301,6 @@ ol.coordinate.toStringHDMS = function(coordinate) {
 
 
 /**
- * Format a coordinate as a comma delimited string.
- *
  * Example without specifying fractional digits:
  *
  *     var coord = [7.85, 47.983333];

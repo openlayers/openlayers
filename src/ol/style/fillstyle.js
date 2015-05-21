@@ -33,7 +33,6 @@ ol.style.Fill = function(opt_options) {
 
 
 /**
- * Get the fill color.
  * @return {ol.Color|string} Color.
  * @api
  */
