@@ -1,6 +1,8 @@
 goog.provide('ol.DrawEvent');
 goog.provide('ol.DrawEventType');
 goog.provide('ol.interaction.Draw');
+goog.provide('ol.interaction.Draw.GeometryFunctionType');
+goog.provide('ol.interaction.DrawMode');
 
 goog.require('goog.asserts');
 goog.require('goog.events');
