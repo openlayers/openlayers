@@ -1,7 +1,7 @@
-goog.provide('ol.DrawEvent');
-goog.provide('ol.DrawEventType');
 goog.provide('ol.interaction.Draw');
-goog.provide('ol.interaction.Draw.GeometryFunctionType');
+goog.provide('ol.interaction.DrawEvent');
+goog.provide('ol.interaction.DrawEventType');
+goog.provide('ol.interaction.DrawGeometryFunctionType');
 goog.provide('ol.interaction.DrawMode');
 
 goog.require('goog.asserts');
@@ -34,16 +34,16 @@ goog.require('ol.style.Style');
 /**
  * @enum {string}
  */
-ol.DrawEventType = {
+ol.interaction.DrawEventType = {
   /**
    * Triggered upon feature draw start
-   * @event ol.DrawEvent#drawstart
+   * @event ol.interaction.DrawEvent#drawstart
    * @api stable
    */
   DRAWSTART: 'drawstart',
   /**
    * Triggered upon feature draw end
-   * @event ol.DrawEvent#drawend
+   * @event ol.interaction.DrawEvent#drawend
    * @api stable
    */
   DRAWEND: 'drawend'
@@ -59,10 +59,10 @@ ol.DrawEventType = {
  * @constructor
  * @extends {goog.events.Event}
  * @implements {oli.DrawEvent}
- * @param {ol.DrawEventType} type Type.
+ * @param {ol.interaction.DrawEventType} type Type.
  * @param {ol.Feature} feature The feature drawn.
  */
-ol.DrawEvent = function(type, feature) {
+ol.interaction.DrawEvent = function(type, feature) {
 
   goog.base(this, type);
 
@@ -74,7 +74,7 @@ ol.DrawEvent = function(type, feature) {
   this.feature = feature;
 
 };
-goog.inherits(ol.DrawEvent, goog.events.Event);
+goog.inherits(ol.interaction.DrawEvent, goog.events.Event);
 
 
 
@@ -84,7 +84,7 @@ goog.inherits(ol.DrawEvent, goog.events.Event);
  *
  * @constructor
  * @extends {ol.interaction.Pointer}
- * @fires ol.DrawEvent
+ * @fires ol.interaction.DrawEvent
  * @param {olx.interaction.DrawOptions} options Options.
  * @api stable
  */
@@ -210,7 +210,7 @@ ol.interaction.Draw = function(options) {
   }
 
   /**
-   * @type {ol.interaction.Draw.GeometryFunctionType}
+   * @type {ol.interaction.DrawGeometryFunctionType}
    * @private
    */
   this.geometryFunction_ = geometryFunction;
@@ -516,8 +516,8 @@ ol.interaction.Draw.prototype.startDrawing_ = function(event) {
   }
   this.sketchFeature_.setGeometry(geometry);
   this.updateSketchFeatures_();
-  this.dispatchEvent(new ol.DrawEvent(ol.DrawEventType.DRAWSTART,
-      this.sketchFeature_));
+  this.dispatchEvent(new ol.interaction.DrawEvent(
+      ol.interaction.DrawEventType.DRAWSTART, this.sketchFeature_));
 };
 
 
@@ -614,8 +614,8 @@ ol.interaction.Draw.prototype.addToDrawing_ = function(event) {
 
 /**
  * Stop drawing and add the sketch feature to the target layer.
- * The {@link ol.DrawEventType.DRAWEND} event is dispatched before inserting
- * the feature.
+ * The {@link ol.interaction.DrawEventType.DRAWEND} event is dispatched before
+ * inserting the feature.
  * @api
  */
 ol.interaction.Draw.prototype.finishDrawing = function() {
@@ -649,7 +649,8 @@ ol.interaction.Draw.prototype.finishDrawing = function() {
   }
 
   // First dispatch event to allow full set up of feature
-  this.dispatchEvent(new ol.DrawEvent(ol.DrawEventType.DRAWEND, sketchFeature));
+  this.dispatchEvent(new ol.interaction.DrawEvent(
+      ol.interaction.DrawEventType.DRAWEND, sketchFeature));
 
   // Then insert feature
   if (!goog.isNull(this.features_)) {
@@ -726,7 +727,7 @@ ol.interaction.Draw.prototype.updateState_ = function() {
  * @param {number=} opt_angle Angle of the first point in radians. 0 means East.
  *     Default is the angle defined by the heading from the center of the
  *     regular polygon to the current pointer position.
- * @return {ol.interaction.Draw.GeometryFunctionType} Function that draws a
+ * @return {ol.interaction.DrawGeometryFunctionType} Function that draws a
  *     polygon.
  * @api
  */
@@ -791,7 +792,7 @@ ol.interaction.Draw.getMode_ = function(type) {
  *     ol.geom.SimpleGeometry}
  * @api
  */
-ol.interaction.Draw.GeometryFunctionType;
+ol.interaction.DrawGeometryFunctionType;
 
 
 /**

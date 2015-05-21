@@ -2360,7 +2360,7 @@ olx.interaction.DragZoomOptions.prototype.style;
  *     maxPoints: (number|undefined),
  *     minPoints: (number|undefined),
  *     style: (ol.style.Style|Array.<ol.style.Style>|ol.style.StyleFunction|undefined),
- *     geometryFunction: (ol.interaction.Draw.GeometryFunctionType|undefined),
+ *     geometryFunction: (ol.interaction.DrawGeometryFunctionType|undefined),
  *     geometryName: (string|undefined),
  *     condition: (ol.events.ConditionType|undefined),
  *     freehandCondition: (ol.events.ConditionType|undefined)}}
@@ -2430,7 +2430,7 @@ olx.interaction.DrawOptions.prototype.style;
 
 /**
  * Function that is called when a geometry's coordinates are updated.
- * @type {ol.interaction.Draw.GeometryFunctionType|undefined}
+ * @type {ol.interaction.DrawGeometryFunctionType|undefined}
  * @api
  */
 olx.interaction.DrawOptions.prototype.geometryFunction;
