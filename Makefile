@@ -23,7 +23,11 @@ CHECK_EXAMPLE_TIMESTAMPS = $(patsubst examples/%.html,build/timestamps/check-%-t
 
 TASKS_JS := $(shell find tasks -name '*.js')
 
-CLOSURE_LIB = $(shell node -e 'process.stdout.write(require("closure-util").getLibraryPath())')
+ifeq (CYGWIN,$(findstring CYGWIN,$(OS)))
+  CLOSURE_LIB = $(shell cygpath -u $(shell node -e 'process.stdout.write(require("closure-util").getLibraryPath())'))
+else
+  CLOSURE_LIB = $(shell node -e 'process.stdout.write(require("closure-util").getLibraryPath())')
+endif
 
 ifeq ($(OS),Darwin)
 	STAT_COMPRESSED = stat -f '  compressed: %z bytes'

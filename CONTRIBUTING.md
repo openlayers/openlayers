@@ -329,3 +329,33 @@ Occasionally other changes to `master` might mean that your pull request cannot
 be merged automatically.  In this case you may need to rebase your branch on a
 more recent `master`, resolve any conflicts, and `git push --force` to update
 your branch so that it can be merged automatically.
+
+## Building on Windows
+
+Most developers build on Linux. Building on Windows is possible under Cygwin.
+When installing Cygwin from https://www.cygwin.com/, include the developer
+tools to get GNU make.
+
+First (before npm install), to avoid file permission problems between Windows
+and Cygwin, edit Cygwin's /etc/fstab file to disable ACLs like this
+`none /cygdrive cygdrive binary,noacl,posix=0,user 0 0`
+
+Python is normally installed with Cygwin so need not be installed separately.
+By default Cygwin will use its own version of Python rather than Window's,
+so the Python modules should be installed for Cygwin's Python.
+
+The build targets `check-deps`, `serve`, `lint`, `build`, `test`, `check` and
+`host-examples` described above should all work. `host-examples` takes quite a
+while to run. If a target does not run properly first time, try it again.
+
+Currently, Firefox fails to run http://localhost:3000/build/examples
+from make serve, but Chrome and Internet Explorer will.
+
+Microsoft Visual Studio's javascript debugger may be used to debug the
+build/hosted/your-branch/examples. It will be convenient to set
+build/hosted/your-branch/examples/index.html as the startup page.
+
+Your ol3 source tree need not be under the Cygwin root.
+if you checkout to c:/ol3 then you can build under Cygwin at /cygdrive/c/ol3 .
+However, keep the path to the ol3 files short otherwise you may see
+`ENAMETOOLONG` errors.
