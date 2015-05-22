@@ -263,7 +263,8 @@ ol.interaction.Draw = function(options) {
    * @type {number}
    * @private
    */
-  this.squaredClickTolerance_ = 4;
+  this.squaredClickTolerance_ = goog.isDef(options.clickTolerance) ?
+      options.clickTolerance * options.clickTolerance : 4;
 
   /**
    * Draw overlay where our sketch features are drawn.
