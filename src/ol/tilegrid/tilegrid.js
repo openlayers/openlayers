@@ -2,7 +2,6 @@ goog.provide('ol.tilegrid.TileGrid');
 
 goog.require('goog.array');
 goog.require('goog.asserts');
-goog.require('goog.functions');
 goog.require('goog.math');
 goog.require('goog.object');
 goog.require('ol');
@@ -165,15 +164,13 @@ ol.tilegrid.TileGrid.tmpTileCoord_ = [0, 0, 0];
 
 
 /**
- * Returns the identity function. May be overridden in subclasses.
+ * Source specific TileCoord transform function. May be implemented by
+ * subclasses.
  * @param {{extent: (ol.Extent|undefined)}=} opt_options Options.
  * @return {function(ol.TileCoord, ol.proj.Projection, ol.TileCoord=):
  *     ol.TileCoord} Tile coordinate transform.
  */
-ol.tilegrid.TileGrid.prototype.createTileCoordTransform =
-    function(opt_options) {
-  return goog.functions.identity;
-};
+ol.tilegrid.TileGrid.prototype.createTileCoordTransform = goog.abstractMethod;
 
 
 /**

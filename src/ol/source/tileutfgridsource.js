@@ -137,9 +137,7 @@ ol.source.TileUTFGrid.prototype.handleTileJSONResponse = function(tileJSON) {
   }
 
   this.tileUrlFunction_ = ol.TileUrlFunction.withTileCoordTransform(
-      tileGrid.createTileCoordTransform({
-        extent: extent
-      }),
+      ol.tilegrid.createOriginTopLeftTileCoordTransform(tileGrid),
       ol.TileUrlFunction.createFromTemplates(grids));
 
   if (goog.isDef(tileJSON.attribution)) {
