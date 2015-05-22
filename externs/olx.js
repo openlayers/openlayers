@@ -2561,7 +2561,7 @@ olx.interaction.ModifyOptions.prototype.deleteCondition;
 
 /**
  * Pixel tolerance for considering the pointer close enough to a segment or
- * vertex for editing.
+ * vertex for editing. Default is `10`.
  * @type {number|undefined}
  * @api
  */
