@@ -136,8 +136,8 @@ describe('ol.interaction.Draw', function() {
     it('triggers draw events', function() {
       var ds = sinon.spy();
       var de = sinon.spy();
-      goog.events.listen(draw, ol.DrawEventType.DRAWSTART, ds);
-      goog.events.listen(draw, ol.DrawEventType.DRAWEND, de);
+      goog.events.listen(draw, ol.interaction.DrawEventType.DRAWSTART, ds);
+      goog.events.listen(draw, ol.interaction.DrawEventType.DRAWEND, de);
       simulateEvent('pointermove', 10, 20);
       simulateEvent('pointerdown', 10, 20);
       simulateEvent('pointerup', 10, 20);
@@ -151,11 +151,12 @@ describe('ol.interaction.Draw', function() {
         end: 0,
         addfeature: 0
       };
-      goog.events.listen(draw, ol.DrawEventType.DRAWEND, function() {
-        expect(receivedEvents.end).to.be(0);
-        expect(receivedEvents.addfeature).to.be(0);
-        ++receivedEvents.end;
-      });
+      goog.events.listen(draw, ol.interaction.DrawEventType.DRAWEND,
+          function() {
+            expect(receivedEvents.end).to.be(0);
+            expect(receivedEvents.addfeature).to.be(0);
+            ++receivedEvents.end;
+          });
       source.on(ol.source.VectorEventType.ADDFEATURE, function() {
         expect(receivedEvents.end).to.be(1);
         expect(receivedEvents.addfeature).to.be(0);
@@ -279,8 +280,8 @@ describe('ol.interaction.Draw', function() {
     it('triggers draw events', function() {
       var ds = sinon.spy();
       var de = sinon.spy();
-      goog.events.listen(draw, ol.DrawEventType.DRAWSTART, ds);
-      goog.events.listen(draw, ol.DrawEventType.DRAWEND, de);
+      goog.events.listen(draw, ol.interaction.DrawEventType.DRAWSTART, ds);
+      goog.events.listen(draw, ol.interaction.DrawEventType.DRAWEND, de);
 
       // first point
       simulateEvent('pointermove', 10, 20);
@@ -435,8 +436,8 @@ describe('ol.interaction.Draw', function() {
     it('triggers draw events', function() {
       var ds = sinon.spy();
       var de = sinon.spy();
-      goog.events.listen(draw, ol.DrawEventType.DRAWSTART, ds);
-      goog.events.listen(draw, ol.DrawEventType.DRAWEND, de);
+      goog.events.listen(draw, ol.interaction.DrawEventType.DRAWSTART, ds);
+      goog.events.listen(draw, ol.interaction.DrawEventType.DRAWEND, de);
 
       // first point
       simulateEvent('pointermove', 10, 20);
@@ -573,8 +574,8 @@ describe('ol.interaction.Draw', function() {
     it('triggers draw events', function() {
       var ds = sinon.spy();
       var de = sinon.spy();
-      goog.events.listen(draw, ol.DrawEventType.DRAWSTART, ds);
-      goog.events.listen(draw, ol.DrawEventType.DRAWEND, de);
+      goog.events.listen(draw, ol.interaction.DrawEventType.DRAWSTART, ds);
+      goog.events.listen(draw, ol.interaction.DrawEventType.DRAWEND, de);
 
       // first point
       simulateEvent('pointermove', 10, 20);
@@ -744,7 +745,6 @@ goog.require('goog.dispose');
 goog.require('goog.events');
 goog.require('goog.events.BrowserEvent');
 goog.require('goog.style');
-goog.require('ol.DrawEventType');
 goog.require('ol.Map');
 goog.require('ol.MapBrowserPointerEvent');
 goog.require('ol.View');
@@ -757,6 +757,7 @@ goog.require('ol.geom.MultiPolygon');
 goog.require('ol.geom.Point');
 goog.require('ol.geom.Polygon');
 goog.require('ol.interaction.Draw');
+goog.require('ol.interaction.DrawEventType');
 goog.require('ol.interaction.Interaction');
 goog.require('ol.layer.Vector');
 goog.require('ol.pointer.PointerEvent');
