@@ -2566,7 +2566,9 @@ olx.interaction.ModifyOptions.prototype.features;
 
 
 /**
- * @typedef {{duration: (number|undefined)}}
+ * @typedef {{duration: (number|undefined),
+ *     maxdelta: (number|undefined),
+ *     timeout: (number|undefined)}}
  * @api
  */
 olx.interaction.MouseWheelZoomOptions;
@@ -2589,7 +2591,7 @@ olx.interaction.MouseWheelZoomOptions.prototype.maxdelta;
 
 /**
  * Timeout duration. Default is `80`.
- * @type {number}
+ * @type {number|undefined}
  * @api
  */
 olx.interaction.MouseWheelZoomOptions.prototype.timeout;
