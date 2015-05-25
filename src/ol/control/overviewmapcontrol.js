@@ -528,3 +528,12 @@ ol.control.OverviewMap.prototype.setCollapsed = function(collapsed) {
 ol.control.OverviewMap.prototype.getCollapsed = function() {
   return this.collapsed_;
 };
+
+/**
+ * Return the overview map.
+ * @return {ol.Map} Overview map.
+ * @api add
+ */
+ol.control.OverviewMap.prototype.getOverviewMap = function() {
+  return this.ovmap_;
+};
