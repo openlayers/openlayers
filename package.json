@@ -10,7 +10,7 @@
   "homepage": "http://openlayers.org/",
   "scripts": {
     "install": "node tasks/install.js",
-    "postinstall": "closure-util update",
+    "postinstall": "node closure-util update",
     "start": "node tasks/serve.js",
     "test": "node tasks/test.js"
   },
