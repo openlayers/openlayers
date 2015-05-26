@@ -2388,7 +2388,7 @@ olx.interaction.DrawOptions.prototype.source;
 
 /**
  * Maximum distance in pixel between a down and a up event. If the value is
- * greater than this tolerance the up event is not handled. Default is `2`.
+ * greater than this tolerance the up event is not handled. Default is `6`.
  * @type {number|undefined}
  * @api
  */

@@ -119,8 +119,8 @@ describe('ol.interaction.Draw', function() {
     it('does not draw a point with a significant drag', function() {
       simulateEvent('pointermove', 10, 20);
       simulateEvent('pointerdown', 10, 20);
-      simulateEvent('pointermove', 15, 20);
-      simulateEvent('pointerup', 15, 20);
+      simulateEvent('pointermove', 18, 20);
+      simulateEvent('pointerup', 18, 20);
       var features = source.getFeatures();
       expect(features).to.have.length(0);
     });
@@ -257,8 +257,8 @@ describe('ol.interaction.Draw', function() {
       // drag map
       simulateEvent('pointermove', 15, 20);
       simulateEvent('pointerdown', 15, 20);
-      simulateEvent('pointermove', 20, 20);
-      simulateEvent('pointerup', 20, 20);
+      simulateEvent('pointermove', 23, 20);
+      simulateEvent('pointerup', 23, 20);
 
       // second point
       simulateEvent('pointermove', 30, 20);
