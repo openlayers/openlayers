@@ -14,6 +14,28 @@ goog.require('ol.tilecoord');
  * for the projection  as arguments and returns a `{string}` or
  * undefined representing the tile URL.
  *
+ * The {@link ol.TileCoord}'s `x` value
+ * increases from left to right, `y` increases from bottom to top. At the
+ * bottom left corner, `x` and `y` are `0`. To convert `y` to increase from
+ * top to bottom, use the following code:
+ * ```js
+ * var tileGrid = new ol.tilegrid.TileGrid({
+ *   extent: extent,
+ *   resolutions: resolutions,
+ *   tileSize: tileSize
+ * });
+ *
+ * function calculateY(tileCoord) {
+ *   var z = tileCoord[0];
+ *   var yFromBottom = tileCoord[2];
+ *   var resolution = tileGrid.getResolution(z);
+ *   var tileHeight = ol.size.toSize(tileSize)[1];
+ *   var matrixHeight =
+ *       Math.floor(ol.extent.getHeight(extent) / tileHeight / resolution);
+ *   return matrixHeight - yFromBottom - 1;
+ * };
+ * ```
+ *
  * @typedef {function(ol.TileCoord, number,
  *           ol.proj.Projection): (string|undefined)}
  * @api
