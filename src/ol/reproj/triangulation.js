@@ -17,24 +17,66 @@ ol.reproj.Triangulation;
 
 
 /**
+ * Adds triangle to the triangulation (and reprojects the vertices) if valid.
+ * @private
+ * @param {ol.reproj.Triangulation} triangulation
+ * @param {ol.Coordinate} a
+ * @param {ol.Coordinate} b
+ * @param {ol.Coordinate} c
+ * @param {ol.TransformFunction} transformInv Inverse transform (dst -> src).
+ * @param {ol.Extent=} opt_maxTargetExtent
+ * @param {ol.Extent=} opt_maxSourceExtent
+ */
+ol.reproj.triangulation.addTriangleIfValid_ = function(triangulation, a, b, c,
+    transformInv, opt_maxTargetExtent, opt_maxSourceExtent) {
+  if (goog.isDefAndNotNull(opt_maxTargetExtent)) {
+    if (!ol.extent.containsCoordinate(opt_maxTargetExtent, a) &&
+        !ol.extent.containsCoordinate(opt_maxTargetExtent, b) &&
+        !ol.extent.containsCoordinate(opt_maxTargetExtent, c)) {
+      // whole triangle outside target projection extent -> ignore
+      return;
+    }
+    // clamp the vertices to the extent edges before transforming
+    a = ol.extent.closestCoordinate(opt_maxTargetExtent, a);
+    b = ol.extent.closestCoordinate(opt_maxTargetExtent, b);
+    c = ol.extent.closestCoordinate(opt_maxTargetExtent, c);
+  }
+  var aSrc = transformInv(a);
+  var bSrc = transformInv(b);
+  var cSrc = transformInv(c);
+  if (goog.isDefAndNotNull(opt_maxSourceExtent)) {
+    var srcTriangleExtent = ol.extent.boundingExtent([aSrc, bSrc, cSrc]);
+    if (!ol.extent.intersects(srcTriangleExtent, opt_maxSourceExtent)) {
+      // whole triangle outside source projection extent -> ignore
+      return;
+    }
+  }
+  triangulation.push([[aSrc, a], [bSrc, b], [cSrc, c]]);
+};
+
+
+/**
  * Triangulates given extent and reprojects vertices.
  * TODO: improved triangulation, better error handling of some trans fails
  * @param {ol.Extent} extent
  * @param {ol.TransformFunction} transformInv Inverse transform (dst -> src).
+ * @param {ol.Extent=} opt_maxTargetExtent
+ * @param {ol.Extent=} opt_maxSourceExtent
  * @param {number=} opt_subdiv Subdivision factor (default 4).
  * @return {ol.reproj.Triangulation}
  */
 ol.reproj.triangulation.createForExtent = function(extent, transformInv,
+                                                   opt_maxTargetExtent,
+                                                   opt_maxSourceExtent,
                                                    opt_subdiv) {
+
   var triangulation = [];
 
   var tlDst = ol.extent.getTopLeft(extent);
   var brDst = ol.extent.getBottomRight(extent);
 
-  var projected = {0: {}}; // cache of already transformed values
   var subdiv = opt_subdiv || 4;
   for (var y = 0; y < subdiv; y++) {
-    projected[y + 1] = {}; // prepare cache for the next line
     for (var x = 0; x < subdiv; x++) {
       // do 2 triangle: [(x, y), (x + 1, y + 1), (x, y + 1)]
       //                [(x, y), (x + 1, y), (x + 1, y + 1)]
@@ -56,30 +98,12 @@ ol.reproj.triangulation.createForExtent = function(extent, transformInv,
         goog.math.lerp(tlDst[1], brDst[1], (y + 1) / subdiv)
       ];
 
-      if (!goog.isDef(projected[y][x])) {
-        projected[y][x] = transformInv(x0y0dst);
-      }
-      if (!goog.isDef(projected[y][x + 1])) {
-        projected[y][x + 1] = transformInv(x1y0dst);
-      }
-      if (!goog.isDef(projected[y + 1][x])) {
-        projected[y + 1][x] = transformInv(x0y1dst);
-      }
-      if (!goog.isDef(projected[y + 1][x + 1])) {
-        projected[y + 1][x + 1] = transformInv(x1y1dst);
-      }
-
-      triangulation.push(
-          [
-            [projected[y][x], x0y0dst],
-            [projected[y + 1][x + 1], x1y1dst],
-            [projected[y + 1][x], x0y1dst]
-          ], [
-            [projected[y][x], x0y0dst],
-            [projected[y][x + 1], x1y0dst],
-            [projected[y + 1][x + 1], x1y1dst]
-          ]
-      );
+      ol.reproj.triangulation.addTriangleIfValid_(
+          triangulation, x0y0dst, x1y1dst, x0y1dst,
+          transformInv, opt_maxTargetExtent, opt_maxSourceExtent);
+      ol.reproj.triangulation.addTriangleIfValid_(
+          triangulation, x0y0dst, x1y0dst, x1y1dst,
+          transformInv, opt_maxTargetExtent, opt_maxSourceExtent);
     }
   }
 
