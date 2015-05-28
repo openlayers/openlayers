@@ -49,13 +49,16 @@ ol.reproj.Image = function(sourceProj, targetProj,
   this.canvas_ = this.context_.canvas;
 
   var transformInv = ol.proj.getTransform(targetProj, sourceProj);
+  var maxTargetExtent = targetProj.getExtent();
+  var maxSourceExtent = sourceProj.getExtent();
 
   /**
    * @private
    * @type {!ol.reproj.Triangulation}
    */
   this.triangles_ = ol.reproj.triangulation.createForExtent(
-                        targetExtent, transformInv);
+                        targetExtent, transformInv,
+                        maxTargetExtent, maxSourceExtent);
 
   /**
    * @private
@@ -71,16 +74,15 @@ ol.reproj.Image = function(sourceProj, targetProj,
 
   var srcExtent = ol.reproj.triangulation.getSourceExtent(this.triangles_);
 
-  var idealSourceResolution =
-      targetProj.getPointResolution(targetResolution,
-                                    ol.extent.getCenter(targetExtent)) *
-      targetProj.getMetersPerUnit() / sourceProj.getMetersPerUnit();
+  var targetCenter = ol.extent.getCenter(targetExtent);
+  var sourceResolution = ol.reproj.calculateSourceResolution(
+      sourceProj, targetProj, targetCenter, targetResolution);
 
   /**
    * @private
    * @type {ol.ImageBase}
    */
-  this.srcImage_ = getImageFunction(srcExtent, idealSourceResolution,
+  this.srcImage_ = getImageFunction(srcExtent, sourceResolution,
                                     pixelRatio, sourceProj);
 
   /**

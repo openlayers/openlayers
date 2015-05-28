@@ -4,6 +4,7 @@ goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('goog.events');
 goog.require('goog.events.EventType');
+goog.require('goog.math');
 goog.require('goog.object');
 goog.require('ol.Tile');
 goog.require('ol.TileState');
@@ -56,16 +57,11 @@ ol.reproj.Tile = function(sourceProj, sourceTileGrid,
    */
   this.targetTileGrid_ = targetTileGrid;
 
-  var targetExtent = targetTileGrid.getTileCoordExtent(this.getTileCoord());
-  var targetResolution = targetTileGrid.getResolution(z);
-  var transformInv = ol.proj.getTransform(targetProj, sourceProj);
-
   /**
    * @private
    * @type {!ol.reproj.Triangulation}
    */
-  this.triangles_ = ol.reproj.triangulation.createForExtent(
-      targetExtent, transformInv);
+  this.triangles_ = [];
 
   /**
    * @private
@@ -79,17 +75,47 @@ ol.reproj.Tile = function(sourceProj, sourceTileGrid,
    */
   this.sourcesListenerKeys_ = null;
 
-  var idealSourceResolution =
-      targetProj.getPointResolution(targetResolution,
-                                    ol.extent.getCenter(targetExtent)) *
-      targetProj.getMetersPerUnit() / sourceProj.getMetersPerUnit();
-
   /**
    * @private
    * @type {number}
    */
-  this.srcZ_ = sourceTileGrid.getZForResolution(idealSourceResolution);
+  this.srcZ_ = 0;
+
+
+  var targetExtent = targetTileGrid.getTileCoordExtent(this.getTileCoord());
+  var maxTargetExtent = this.targetTileGrid_.getExtent();
+  var maxSourceExtent = this.sourceTileGrid_.getExtent();
+
+  if (!ol.extent.intersects(maxTargetExtent, targetExtent)) {
+    // Tile is completely outside range -> EMPTY
+    // TODO: is it actually correct that the source even creates the tile ?
+    this.state = ol.TileState.EMPTY;
+    //return;
+  }
+
+  var transformInv = ol.proj.getTransform(targetProj, sourceProj);
+  this.triangles_ = ol.reproj.triangulation.createForExtent(
+      targetExtent, transformInv, maxTargetExtent, maxSourceExtent);
+
+  var targetCenter = ol.extent.getCenter(targetExtent);
+  var targetResolution = targetTileGrid.getResolution(z);
+  var sourceResolution = ol.reproj.calculateSourceResolution(
+      sourceProj, targetProj, targetCenter, targetResolution);
+
+  if (!goog.math.isFiniteNumber(sourceResolution) || sourceResolution <= 0) {
+    // invalid sourceResolution -> EMPTY
+    // probably edges of the projections when no extent is defined
+    this.state = ol.TileState.EMPTY;
+    return;
+  }
+
+  this.srcZ_ = sourceTileGrid.getZForResolution(sourceResolution);
   var srcExtent = ol.reproj.triangulation.getSourceExtent(this.triangles_);
+
+  var sourceProjExtent = sourceProj.getExtent();
+  if (sourceProjExtent) {
+    srcExtent = ol.extent.getIntersection(srcExtent, sourceProjExtent);
+  }
 
   if (!ol.extent.intersects(sourceTileGrid.getExtent(), srcExtent)) {
     this.state = ol.TileState.EMPTY;
@@ -103,6 +129,14 @@ ol.reproj.Tile = function(sourceProj, sourceTileGrid,
     srcRange.minY = Math.max(srcRange.minY, srcFullRange.minY);
     srcRange.maxY = Math.min(srcRange.maxY, srcFullRange.maxY);
 
+    if (srcRange.getWidth() * srcRange.getHeight() > 100) {
+      // Too many source tiles are needed -- something probably went wrong
+      // This sometimes happens for certain non-global projections
+      // if no extent is specified.
+      // TODO: detect somehow better? or at least make this a define
+      this.state = ol.TileState.ERROR;
+      return;
+    }
     for (var srcX = srcRange.minX; srcX <= srcRange.maxX; srcX++) {
       for (var srcY = srcRange.minY; srcY <= srcRange.maxY; srcY++) {
         var tile = getTileFunction(this.srcZ_, srcX, srcY, pixelRatio);
