@@ -295,10 +295,13 @@ describe('ol.Feature', function() {
   describe('#setStyle()', function() {
 
     var style = new ol.style.Style();
+    var styleArray = [style];
 
     var styleFunction = function(feature, resolution) {
-      return null;
+      return styleArray;
     };
+
+    var featureStyleFunction = function(resolution) {};
 
     it('accepts a single style', function() {
       var feature = new ol.Feature();
@@ -309,15 +312,23 @@ describe('ol.Feature', function() {
 
     it('accepts an array of styles', function() {
       var feature = new ol.Feature();
-      feature.setStyle([style]);
+      feature.setStyle(styleArray);
       var func = feature.getStyleFunction();
-      expect(func()).to.eql([style]);
+      expect(func()).to.be(styleArray);
     });
 
-    it('accepts a style function', function() {
+    it('accepts a feature style function', function() {
+      var feature = new ol.Feature();
+      feature.setStyle(featureStyleFunction);
+      expect(feature.getStyleFunction()).to.be(featureStyleFunction);
+    });
+
+    it('accepts a plain style function', function() {
       var feature = new ol.Feature();
       feature.setStyle(styleFunction);
-      expect(feature.getStyleFunction()).to.be(styleFunction);
+      var func = feature.getStyleFunction();
+      expect(func).to.not.be(styleFunction);
+      expect(func(feature, 1)).to.be(styleArray);
     });
 
     it('accepts null', function() {
