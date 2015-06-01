@@ -8,9 +8,23 @@ describe('ol.source.TileJSON', function() {
     var source, tileGrid;
 
     beforeEach(function(done) {
+      var googNetJsonp = goog.net.Jsonp;
+      // mock goog.net.Jsonp (used in the ol.source.TileJSON constructor)
+      goog.net.Jsonp = function() {
+        this.send = function() {
+          var callback = arguments[1];
+          var client = new XMLHttpRequest();
+          client.open('GET', 'spec/ol/data/tilejson.json', true);
+          client.onload = function() {
+            callback(JSON.parse(client.responseText));
+          };
+          client.send();
+        };
+      };
       source = new ol.source.TileJSON({
         url: 'http://api.tiles.mapbox.com/v3/mapbox.geography-class.jsonp'
       });
+      goog.net.Jsonp = googNetJsonp;
       var key = source.on('change', function() {
         if (source.getState() === 'ready') {
           source.unByKey(key);
@@ -60,5 +74,5 @@ describe('ol.source.TileJSON', function() {
 
 });
 
-goog.require('ol.TileCoord');
+goog.require('goog.net.Jsonp');
 goog.require('ol.source.TileJSON');
