@@ -4,6 +4,7 @@ goog.provide('ol.reproj.triangulation');
 goog.require('goog.array');
 goog.require('goog.math');
 goog.require('ol.extent');
+goog.require('ol.proj');
 
 
 /**
@@ -23,12 +24,13 @@ ol.reproj.Triangulation;
  * @param {ol.Coordinate} a
  * @param {ol.Coordinate} b
  * @param {ol.Coordinate} c
+ * @param {ol.TransformFunction} transformFwd Forward transform (src -> dst).
  * @param {ol.TransformFunction} transformInv Inverse transform (dst -> src).
  * @param {ol.Extent=} opt_maxTargetExtent
  * @param {ol.Extent=} opt_maxSourceExtent
  */
 ol.reproj.triangulation.addTriangleIfValid_ = function(triangulation, a, b, c,
-    transformInv, opt_maxTargetExtent, opt_maxSourceExtent) {
+    transformFwd, transformInv, opt_maxTargetExtent, opt_maxSourceExtent) {
   if (goog.isDefAndNotNull(opt_maxTargetExtent)) {
     if (!ol.extent.containsCoordinate(opt_maxTargetExtent, a) &&
         !ol.extent.containsCoordinate(opt_maxTargetExtent, b) &&
@@ -48,7 +50,21 @@ ol.reproj.triangulation.addTriangleIfValid_ = function(triangulation, a, b, c,
     var srcTriangleExtent = ol.extent.boundingExtent([aSrc, bSrc, cSrc]);
     if (!ol.extent.intersects(srcTriangleExtent, opt_maxSourceExtent)) {
       // whole triangle outside source projection extent -> ignore
+      // TODO: intersect triangle with the extent rather than bbox ?
       return;
+    }
+    if (!ol.extent.containsCoordinate(opt_maxSourceExtent, aSrc) ||
+        !ol.extent.containsCoordinate(opt_maxSourceExtent, bSrc) ||
+        !ol.extent.containsCoordinate(opt_maxSourceExtent, cSrc)) {
+      // if any vertex is outside projection range, modify the target triangle
+      // TODO: do not do closestCoordinate, but rather scale the triangle with
+      //       respect to a point inside the extent
+      aSrc = ol.extent.closestCoordinate(opt_maxSourceExtent, aSrc);
+      bSrc = ol.extent.closestCoordinate(opt_maxSourceExtent, bSrc);
+      cSrc = ol.extent.closestCoordinate(opt_maxSourceExtent, cSrc);
+      a = transformFwd(aSrc);
+      b = transformFwd(bSrc);
+      c = transformFwd(cSrc);
     }
   }
   triangulation.push([[aSrc, a], [bSrc, b], [cSrc, c]]);
@@ -59,16 +75,18 @@ ol.reproj.triangulation.addTriangleIfValid_ = function(triangulation, a, b, c,
  * Triangulates given extent and reprojects vertices.
  * TODO: improved triangulation, better error handling of some trans fails
  * @param {ol.Extent} extent
- * @param {ol.TransformFunction} transformInv Inverse transform (dst -> src).
+ * @param {ol.proj.Projection} sourceProj
+ * @param {ol.proj.Projection} targetProj
  * @param {ol.Extent=} opt_maxTargetExtent
  * @param {ol.Extent=} opt_maxSourceExtent
  * @param {number=} opt_subdiv Subdivision factor (default 4).
  * @return {ol.reproj.Triangulation}
  */
-ol.reproj.triangulation.createForExtent = function(extent, transformInv,
-                                                   opt_maxTargetExtent,
-                                                   opt_maxSourceExtent,
-                                                   opt_subdiv) {
+ol.reproj.triangulation.createForExtent = function(extent, sourceProj,
+    targetProj, opt_maxTargetExtent, opt_maxSourceExtent, opt_subdiv) {
+
+  var transformFwd = ol.proj.getTransform(sourceProj, targetProj);
+  var transformInv = ol.proj.getTransform(targetProj, sourceProj);
 
   var triangulation = [];
 
@@ -100,10 +118,10 @@ ol.reproj.triangulation.createForExtent = function(extent, transformInv,
 
       ol.reproj.triangulation.addTriangleIfValid_(
           triangulation, x0y0dst, x1y1dst, x0y1dst,
-          transformInv, opt_maxTargetExtent, opt_maxSourceExtent);
+          transformFwd, transformInv, opt_maxTargetExtent, opt_maxSourceExtent);
       ol.reproj.triangulation.addTriangleIfValid_(
           triangulation, x0y0dst, x1y0dst, x1y1dst,
-          transformInv, opt_maxTargetExtent, opt_maxSourceExtent);
+          transformFwd, transformInv, opt_maxTargetExtent, opt_maxSourceExtent);
     }
   }
 

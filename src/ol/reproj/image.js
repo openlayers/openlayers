@@ -48,7 +48,6 @@ ol.reproj.Image = function(sourceProj, targetProj,
    */
   this.canvas_ = this.context_.canvas;
 
-  var transformInv = ol.proj.getTransform(targetProj, sourceProj);
   var maxTargetExtent = targetProj.getExtent();
   var maxSourceExtent = sourceProj.getExtent();
 
@@ -57,7 +56,7 @@ ol.reproj.Image = function(sourceProj, targetProj,
    * @type {!ol.reproj.Triangulation}
    */
   this.triangles_ = ol.reproj.triangulation.createForExtent(
-                        targetExtent, transformInv,
+                        targetExtent, sourceProj, targetProj,
                         maxTargetExtent, maxSourceExtent);
 
   /**

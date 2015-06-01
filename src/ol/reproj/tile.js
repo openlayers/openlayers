@@ -93,9 +93,9 @@ ol.reproj.Tile = function(sourceProj, sourceTileGrid,
     //return;
   }
 
-  var transformInv = ol.proj.getTransform(targetProj, sourceProj);
   this.triangles_ = ol.reproj.triangulation.createForExtent(
-      targetExtent, transformInv, maxTargetExtent, maxSourceExtent);
+      targetExtent, sourceProj, targetProj,
+      maxTargetExtent, maxSourceExtent);
 
   var targetCenter = ol.extent.getCenter(targetExtent);
   var targetResolution = targetTileGrid.getResolution(z);
