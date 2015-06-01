@@ -4,11 +4,13 @@ goog.require('goog.asserts');
 goog.require('goog.events');
 goog.require('goog.events.EventType');
 goog.require('ol.ImageTile');
+goog.require('ol.TileCache');
 goog.require('ol.TileCoord');
 goog.require('ol.TileLoadFunctionType');
 goog.require('ol.TileState');
 goog.require('ol.TileUrlFunction');
 goog.require('ol.TileUrlFunctionType');
+goog.require('ol.reproj.Tile');
 goog.require('ol.source.Tile');
 goog.require('ol.source.TileEvent');
 
@@ -69,6 +71,17 @@ ol.source.TileImage = function(options) {
   this.tileClass = options.tileClass !== undefined ?
       options.tileClass : ol.ImageTile;
 
+  /**
+   * @protected
+   * @type {ol.TileCache}
+   */
+  this.reprojectedTileCache = new ol.TileCache();
+
+  /**
+   * @protected
+   * @type {ol.proj.Projection}
+   */
+  this.lastProj = null;
 };
 goog.inherits(ol.source.TileImage, ol.source.Tile);
 
@@ -85,7 +98,60 @@ ol.source.TileImage.defaultTileLoadFunction = function(imageTile, src) {
 /**
  * @inheritDoc
  */
+ol.source.TileImage.prototype.getTileGridForProjection = function(projection) {
+  if (projection == this.getProjection() && !goog.isNull(this.tileGrid)) {
+    return this.tileGrid;
+  } else {
+    return ol.tilegrid.getForProjection(projection);
+  }
+};
+
+
+/**
+ * @inheritDoc
+ */
 ol.source.TileImage.prototype.getTile =
+    function(z, x, y, pixelRatio, projection) {
+  if (goog.isNull(this.getProjection()) || this.getProjection() == projection) {
+    return this.getTileInternal(z, x, y, pixelRatio, projection);
+  } else {
+    if (this.lastProj != projection) {
+      this.reprojectedTileCache.clear();
+      this.lastProj = projection;
+    }
+    var cache = this.reprojectedTileCache; //TODO: per-projection cache
+    var tileCoordKey = this.getKeyZXY(z, x, y);
+    if (cache.containsKey(tileCoordKey)) {
+      return /** @type {!ol.Tile} */(cache.get(tileCoordKey));
+    } else {
+      var sourceProjection = this.getProjection();
+      var sourceTileGrid = this.getTileGridForProjection(sourceProjection);
+      var targetTileGrid = ol.tilegrid.getForProjection(projection);
+      //TODO: init cache / tilegrid if needed
+      var tile = new ol.reproj.Tile(
+          sourceProjection, sourceTileGrid,
+          projection, targetTileGrid,
+          z, x, y, pixelRatio, goog.bind(function(z, x, y, pixelRatio) {
+            return this.getTileInternal(z, x, y, pixelRatio, sourceProjection);
+          }, this));
+
+      cache.set(tileCoordKey, tile);
+      return tile;
+    }
+  }
+};
+
+
+/**
+ * @param {number} z Tile coordinate z.
+ * @param {number} x Tile coordinate x.
+ * @param {number} y Tile coordinate y.
+ * @param {number} pixelRatio Pixel ratio.
+ * @param {ol.proj.Projection} projection Projection.
+ * @return {!ol.Tile} Tile.
+ * @protected
+ */
+ol.source.TileImage.prototype.getTileInternal =
     function(z, x, y, pixelRatio, projection) {
   var tileCoordKey = this.getKeyZXY(z, x, y);
   if (this.tileCache.containsKey(tileCoordKey)) {
