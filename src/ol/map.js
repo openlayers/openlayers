@@ -617,7 +617,7 @@ ol.Map.prototype.forEachFeatureAtPixel =
  * always be included in the detection.
  * @param {ol.Pixel} pixel Pixel.
  * @param {function(this: S, ol.layer.Layer): T} callback Layer
- *     callback. Will receive one arguemnt, the {@link ol.layer.Layer layer}
+ *     callback. Will receive one argument, the {@link ol.layer.Layer layer}
  *     that contains the color pixel. If the detected color value is not from a
  *     layer, but from a {@link ol.FeatureOverlay}, then the argument to this
  *     function will be `null`. To stop detection, callback functions can return
