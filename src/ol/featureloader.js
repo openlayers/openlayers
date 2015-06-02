@@ -67,7 +67,7 @@ ol.featureloader.loadFeaturesXhr = function(url, format, success) {
                     source = ol.xml.parse(xhrIo.getResponseText());
                   }
                 } else if (type == ol.format.FormatType.BINARY) {
-                  source = xhrIo.getResponse();
+                  source = /** @type {ArrayBuffer} */ (xhrIo.getResponse());
                 } else {
                   goog.asserts.fail('unexpected format type');
                 }
