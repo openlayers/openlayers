@@ -57,6 +57,17 @@ ol.reproj.calculateSourceResolution = function(sourceProj, targetProj,
  */
 ol.reproj.renderTriangles = function(context,
     sourceResolution, targetResolution, targetExtent, triangulation, sources) {
+
+  var renderImage = function(image) {
+    context.scale(sourceResolution, -sourceResolution);
+
+    // the image has to be scaled by half a pixel in every direction
+    //    in order to prevent artifacts between the original tiles
+    //    that are introduced by the canvas antialiasing.
+    context.drawImage(image, -0.5, -0.5,
+                      image.width + 1, image.height + 1);
+  };
+
   goog.array.forEach(triangulation, function(tri, i, arr) {
     context.save();
 
@@ -88,6 +99,11 @@ ol.reproj.renderTriangles = function(context,
     var u0 = tri[0][1][0] - targetTL[0], v0 = -(tri[0][1][1] - targetTL[1]),
         u1 = tri[1][1][0] - targetTL[0], v1 = -(tri[1][1][1] - targetTL[1]),
         u2 = tri[2][1][0] - targetTL[0], v2 = -(tri[2][1][1] - targetTL[1]);
+    if (tri.shiftDistance) {
+      x0 = goog.math.modulo(x0 + tri.shiftDistance, tri.shiftDistance);
+      x1 = goog.math.modulo(x1 + tri.shiftDistance, tri.shiftDistance);
+      x2 = goog.math.modulo(x2 + tri.shiftDistance, tri.shiftDistance);
+    }
     var augmentedMatrix = [
       [x0, y0, 1, 0, 0, 0, u0 / targetResolution],
       [x1, y1, 1, 0, 0, 0, u1 / targetResolution],
@@ -133,13 +149,22 @@ ol.reproj.renderTriangles = function(context,
       context.save();
       var tlSrcFromData = ol.extent.getTopLeft(src.extent);
       context.translate(tlSrcFromData[0], tlSrcFromData[1]);
-      context.scale(sourceResolution, -sourceResolution);
+      if (tri.shiftDistance) {
+        context.save();
+        context.translate(tri.shiftDistance, 0);
+        renderImage(src.image);
+        context.restore();
+        renderImage(src.image);
 
-      // the image has to be scaled by half a pixel in every direction
-      //    in order to prevent artifacts between the original tiles
-      //    that are introduced by the canvas antialiasing.
-      context.drawImage(src.image, -0.5, -0.5,
-                        src.image.width + 1, src.image.height + 1);
+        if (goog.DEBUG) {
+          context.fillStyle =
+              sources.length > 16 ? 'rgba(255,0,0,1)' :
+              (sources.length > 4 ? 'rgba(0,255,0,.3)' : 'rgba(0,0,255,.1)');
+          context.fillRect(0, 0, 256, 256);
+        }
+      } else {
+        renderImage(src.image);
+      }
       context.restore();
     });
 

@@ -97,6 +97,12 @@ ol.reproj.Tile = function(sourceProj, sourceTileGrid,
       targetExtent, sourceProj, targetProj,
       maxTargetExtent, maxSourceExtent);
 
+  if (this.triangles_.length === 0) {
+    // no valid triangles -> EMPTY
+    this.state = ol.TileState.EMPTY;
+    return;
+  }
+
   var targetCenter = ol.extent.getCenter(targetExtent);
   var targetResolution = targetTileGrid.getResolution(z);
   var sourceResolution = ol.reproj.calculateSourceResolution(
@@ -113,23 +119,35 @@ ol.reproj.Tile = function(sourceProj, sourceTileGrid,
   var srcExtent = ol.reproj.triangulation.getSourceExtent(this.triangles_);
 
   var sourceProjExtent = sourceProj.getExtent();
-  if (sourceProjExtent) {
+  if (!sourceProj.isGlobal() && sourceProjExtent) {
     srcExtent = ol.extent.getIntersection(srcExtent, sourceProjExtent);
   }
 
-  if (!ol.extent.intersects(sourceTileGrid.getExtent(), srcExtent)) {
+  if (!goog.isNull(maxSourceExtent) &&
+      !ol.extent.intersects(maxSourceExtent, srcExtent)) {
     this.state = ol.TileState.EMPTY;
   } else {
     var srcRange = sourceTileGrid.getTileRangeForExtentAndZ(
         srcExtent, this.srcZ_);
 
     var srcFullRange = sourceTileGrid.getFullTileRange(this.srcZ_);
-    srcRange.minX = Math.max(srcRange.minX, srcFullRange.minX);
-    srcRange.maxX = Math.min(srcRange.maxX, srcFullRange.maxX);
     srcRange.minY = Math.max(srcRange.minY, srcFullRange.minY);
     srcRange.maxY = Math.min(srcRange.maxY, srcFullRange.maxY);
 
-    if (srcRange.getWidth() * srcRange.getHeight() > 100) {
+    var xRange;
+    if (srcRange.minX > srcRange.maxX) {
+      xRange = goog.array.concat(
+          goog.array.range(srcRange.minX, srcFullRange.maxX + 1),
+          goog.array.range(srcFullRange.minX, srcRange.maxX + 1)
+          );
+    } else {
+      xRange = goog.array.range(
+          Math.max(srcRange.minX, srcFullRange.minX),
+          Math.min(srcRange.maxX, srcFullRange.maxX) + 1
+          );
+    }
+
+    if (xRange.length * srcRange.getHeight() > 100) {
       // Too many source tiles are needed -- something probably went wrong
       // This sometimes happens for certain non-global projections
       // if no extent is specified.
@@ -137,14 +155,14 @@ ol.reproj.Tile = function(sourceProj, sourceTileGrid,
       this.state = ol.TileState.ERROR;
       return;
     }
-    for (var srcX = srcRange.minX; srcX <= srcRange.maxX; srcX++) {
+    goog.array.forEach(xRange, function(srcX, i, arr) {
       for (var srcY = srcRange.minY; srcY <= srcRange.maxY; srcY++) {
         var tile = getTileFunction(this.srcZ_, srcX, srcY, pixelRatio);
         if (tile) {
           this.srcTiles_.push(tile);
         }
       }
-    }
+    }, this);
 
     if (this.srcTiles_.length === 0) {
       this.state = ol.TileState.EMPTY;
