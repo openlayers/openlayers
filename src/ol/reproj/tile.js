@@ -57,11 +57,18 @@ ol.reproj.Tile = function(sourceProj, sourceTileGrid,
    */
   this.targetTileGrid_ = targetTileGrid;
 
+
+  var targetExtent = targetTileGrid.getTileCoordExtent(this.getTileCoord());
+  var maxTargetExtent = this.targetTileGrid_.getExtent();
+  var maxSourceExtent = this.sourceTileGrid_.getExtent();
+
   /**
    * @private
    * @type {!ol.reproj.Triangulation}
    */
-  this.triangles_ = [];
+  this.triangulation_ = ol.reproj.triangulation.createForExtent(
+      targetExtent, sourceProj, targetProj,
+      maxTargetExtent, maxSourceExtent);
 
   /**
    * @private
@@ -81,23 +88,14 @@ ol.reproj.Tile = function(sourceProj, sourceTileGrid,
    */
   this.srcZ_ = 0;
 
-
-  var targetExtent = targetTileGrid.getTileCoordExtent(this.getTileCoord());
-  var maxTargetExtent = this.targetTileGrid_.getExtent();
-  var maxSourceExtent = this.sourceTileGrid_.getExtent();
-
   if (!ol.extent.intersects(maxTargetExtent, targetExtent)) {
     // Tile is completely outside range -> EMPTY
     // TODO: is it actually correct that the source even creates the tile ?
     this.state = ol.TileState.EMPTY;
-    //return;
+    return;
   }
 
-  this.triangles_ = ol.reproj.triangulation.createForExtent(
-      targetExtent, sourceProj, targetProj,
-      maxTargetExtent, maxSourceExtent);
-
-  if (this.triangles_.length === 0) {
+  if (this.triangulation_.triangles.length === 0) {
     // no valid triangles -> EMPTY
     this.state = ol.TileState.EMPTY;
     return;
@@ -116,7 +114,7 @@ ol.reproj.Tile = function(sourceProj, sourceTileGrid,
   }
 
   this.srcZ_ = sourceTileGrid.getZForResolution(sourceResolution);
-  var srcExtent = ol.reproj.triangulation.getSourceExtent(this.triangles_);
+  var srcExtent = ol.reproj.triangulation.getSourceExtent(this.triangulation_);
 
   var sourceProjExtent = sourceProj.getExtent();
   if (!sourceProj.isGlobal() && sourceProjExtent) {
@@ -241,7 +239,7 @@ ol.reproj.Tile.prototype.reproject_ = function() {
   if (sources.length > 0) {
     var targetExtent = this.targetTileGrid_.getTileCoordExtent(tileCoord);
     ol.reproj.renderTriangles(context, srcResolution, targetResolution,
-                              targetExtent, this.triangles_, sources);
+                              targetExtent, this.triangulation_, sources);
   }
 
   this.canvas_ = context.canvas;

@@ -55,9 +55,8 @@ ol.reproj.Image = function(sourceProj, targetProj,
    * @private
    * @type {!ol.reproj.Triangulation}
    */
-  this.triangles_ = ol.reproj.triangulation.createForExtent(
-                        targetExtent, sourceProj, targetProj,
-                        maxTargetExtent, maxSourceExtent);
+  this.triangulation_ = ol.reproj.triangulation.createForExtent(
+      targetExtent, sourceProj, targetProj, maxTargetExtent, maxSourceExtent);
 
   /**
    * @private
@@ -71,7 +70,7 @@ ol.reproj.Image = function(sourceProj, targetProj,
    */
   this.targetExtent_ = targetExtent;
 
-  var srcExtent = ol.reproj.triangulation.getSourceExtent(this.triangles_);
+  var srcExtent = ol.reproj.triangulation.getSourceExtent(this.triangulation_);
 
   var targetCenter = ol.extent.getCenter(targetExtent);
   var sourceResolution = ol.reproj.calculateSourceResolution(
@@ -133,7 +132,7 @@ ol.reproj.Image.prototype.reproject_ = function() {
     // render the reprojected content
     ol.reproj.renderTriangles(this.context_, this.srcImage_.getResolution(),
                               this.targetResolution_, this.targetExtent_,
-                              this.triangles_, [{
+                              this.triangulation_, [{
           extent: this.srcImage_.getExtent(),
           image: this.srcImage_.getImage()
         }]);
