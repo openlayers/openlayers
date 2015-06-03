@@ -4977,12 +4977,13 @@ olx.source.TileWMSOptions.prototype.wrapX;
 
 /**
  * @typedef {{attributions: (Array.<ol.Attribution>|undefined),
- *     features: (Array.<ol.Feature>|undefined),
+ *     features: (Array.<ol.Feature>|ol.Collection.<ol.Feature>|undefined),
  *     format: (ol.format.Feature|undefined),
  *     loader: (ol.FeatureLoader|undefined),
  *     logo: (string|olx.LogoOptions|undefined),
  *     strategy: (ol.LoadingStrategy|undefined),
  *     url: (string|undefined),
+ *     useSpatialIndex: (boolean|undefined),
  *     wrapX: (boolean|undefined)}}
  * @api
  */
@@ -4998,8 +4999,9 @@ olx.source.VectorOptions.prototype.attributions;
 
 
 /**
- * Features.
- * @type {Array.<ol.Feature>|undefined}
+ * Features. If provided as {@link ol.Collection}, the features in the source
+ * and the collection will stay in sync.
+ * @type {Array.<ol.Feature>|ol.Collection.<ol.Feature>|undefined}
  * @api stable
  */
 olx.source.VectorOptions.prototype.features;
@@ -5050,6 +5052,29 @@ olx.source.VectorOptions.prototype.strategy;
  * @api
  */
 olx.source.VectorOptions.prototype.url;
+
+
+/**
+ * By default, an RTree is used as spatial index. When features are removed and
+ * added frequently, and the total number of features is low, setting this to
+ * `false` may improve performance.
+ *
+ * Note that
+ * {@link ol.source.Vector#getFeaturesInExtent},
+ * {@link ol.source.Vector#getClosestFeatureToCoordinate} and
+ * {@link ol.source.Vector#getExtent} cannot be used when `useSpatialIndex` is
+ * set to `false`, and {@link ol.source.Vector#forEachFeatureInExtent} will loop
+ * through all features.
+ *
+ * When set to `false`, the features will be maintained in an
+ * {@link ol.Collection}, which can be retrieved through
+ * {@link ol.source.Vector#getFeaturesCollection}.
+ *
+ * The default is `true`.
+ * @type {boolean|undefined}
+ * @api
+ */
+olx.source.VectorOptions.prototype.useSpatialIndex;
 
 
 /**
