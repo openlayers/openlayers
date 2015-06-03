@@ -573,11 +573,34 @@ describe('ol.layer.Layer', function() {
 
   });
 
+  describe('As overlay', function() {
+
+    it('overlays the layer on the map', function() {
+      var map = new ol.Map({});
+      var layer = new ol.layer.Layer({
+        map: map
+      });
+      var frameState = {
+        layerStatesArray: [],
+        layerStates: {}
+      };
+      map.dispatchEvent(new ol.render.Event('precompose', map, null,
+          frameState, null, null));
+      var layerState = frameState.layerStatesArray[0];
+      expect(frameState.layerStatesArray.length).to.be(1);
+      expect(layerState.layer).to.equal(layer);
+      expect(frameState.layerStates[goog.getUid(layer)]).to.equal(layerState);
+    });
+
+  });
+
 });
 
 goog.require('goog.dispose');
+goog.require('ol.Map');
 goog.require('ol.ObjectEventType');
 goog.require('ol.layer.Layer');
 goog.require('ol.proj');
+goog.require('ol.render.Event');
 goog.require('ol.source.Source');
 goog.require('ol.source.State');
