@@ -68,7 +68,9 @@ ol.reproj.renderTriangles = function(context,
                       image.width + 1, image.height + 1);
   };
 
-  goog.array.forEach(triangulation, function(tri, i, arr) {
+  var shiftDistance = triangulation.shiftDistance;
+
+  goog.array.forEach(triangulation.triangles, function(tri, i, arr) {
     context.save();
 
     var targetTL = ol.extent.getTopLeft(targetExtent);
@@ -93,16 +95,17 @@ ol.reproj.renderTriangles = function(context,
      * |  0  0 0 x1 y1 1 |   |a11|   |v1|
      * |  0  0 0 x2 y2 1 |   |a12|   |v2|
      */
-    var x0 = tri[0][0][0], y0 = tri[0][0][1],
-        x1 = tri[1][0][0], y1 = tri[1][0][1],
-        x2 = tri[2][0][0], y2 = tri[2][0][1];
-    var u0 = tri[0][1][0] - targetTL[0], v0 = -(tri[0][1][1] - targetTL[1]),
-        u1 = tri[1][1][0] - targetTL[0], v1 = -(tri[1][1][1] - targetTL[1]),
-        u2 = tri[2][1][0] - targetTL[0], v2 = -(tri[2][1][1] - targetTL[1]);
-    if (tri.shiftDistance) {
-      x0 = goog.math.modulo(x0 + tri.shiftDistance, tri.shiftDistance);
-      x1 = goog.math.modulo(x1 + tri.shiftDistance, tri.shiftDistance);
-      x2 = goog.math.modulo(x2 + tri.shiftDistance, tri.shiftDistance);
+    var src = tri.source, tgt = tri.target;
+    var x0 = src[0][0], y0 = src[0][1],
+        x1 = src[1][0], y1 = src[1][1],
+        x2 = src[2][0], y2 = src[2][1];
+    var u0 = tgt[0][0] - targetTL[0], v0 = -(tgt[0][1] - targetTL[1]),
+        u1 = tgt[1][0] - targetTL[0], v1 = -(tgt[1][1] - targetTL[1]),
+        u2 = tgt[2][0] - targetTL[0], v2 = -(tgt[2][1] - targetTL[1]);
+    if (tri.needsShift) {
+      x0 = goog.math.modulo(x0 + shiftDistance, shiftDistance);
+      x1 = goog.math.modulo(x1 + shiftDistance, shiftDistance);
+      x2 = goog.math.modulo(x2 + shiftDistance, shiftDistance);
     }
     var augmentedMatrix = [
       [x0, y0, 1, 0, 0, 0, u0 / targetResolution],
@@ -149,9 +152,9 @@ ol.reproj.renderTriangles = function(context,
       context.save();
       var tlSrcFromData = ol.extent.getTopLeft(src.extent);
       context.translate(tlSrcFromData[0], tlSrcFromData[1]);
-      if (tri.shiftDistance) {
+      if (tri.needsShift) {
         context.save();
-        context.translate(tri.shiftDistance, 0);
+        context.translate(shiftDistance, 0);
         renderImage(src.image);
         context.restore();
         renderImage(src.image);

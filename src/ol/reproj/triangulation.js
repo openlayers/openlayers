@@ -3,16 +3,27 @@ goog.provide('ol.reproj.triangulation');
 
 goog.require('goog.array');
 goog.require('goog.math');
+goog.require('ol.coordinate');
 goog.require('ol.extent');
 goog.require('ol.proj');
 
 
 /**
- * Array of triangles,
- *   each triangles is Array (length=3) of
- *   projected point pairs (length=2; [src, dst]),
- *   each point is ol.Coordinate.
- * @typedef {Array.<Array.<Array.<ol.Coordinate>>>}
+ * Single triangle; consists of 3 source points and 3 target points.
+ *   `needsShift` can be used to indicate that the whole triangle has to be
+ *   shifted during reprojection. This is needed for triangles crossing edges
+ *   of the source projection (dateline).
+ *
+ * @typedef {{source: Array.<ol.Coordinate>,
+ *            target: Array.<ol.Coordinate>,
+ *            needsShift: boolean}}
+ */
+ol.reproj.Triangle;
+
+
+/**
+ * @typedef {{triangles: Array.<ol.reproj.Triangle>,
+ *            shiftDistance: number}}
  */
 ol.reproj.Triangulation;
 
@@ -69,50 +80,30 @@ ol.reproj.triangulation.addTriangleIfValid_ = function(triangulation, a, b, c,
       c = transformFwd(cSrc);
     }
   }
-  var shiftDistance = 0;
-  if (sourceProj.isGlobal()) {
+  var needsShift = false;
+  if (sourceProj.canWrapX()) {
     // determine if the triangle crosses the dateline here
     // This can be detected by transforming centroid of the target triangle.
     // If the transformed centroid is outside the transformed triangle,
     // the triangle wraps around projection extent.
-    // In such case, the
-
-    var srcExtent = ol.extent.createEmpty();
-    ol.extent.extendCoordinate(srcExtent, aSrc);
-    ol.extent.extendCoordinate(srcExtent, bSrc);
-    ol.extent.extendCoordinate(srcExtent, cSrc);
 
     var centroid = [(a[0] + b[0] + c[0]) / 3,
                     (a[1] + b[1] + c[1]) / 3];
     var centroidSrc = transformInv(centroid);
 
-    var pInTriangle = function(p, p0, p1, p2) {
-      //TODO: move somewhere else
-      var A = (-p1[1] * p2[0] + p0[1] * (-p1[0] + p2[0]) +
-               p0[0] * (p1[1] - p2[1]) + p1[0] * p2[1]) / 2;
-      var sign = A < 0 ? -1 : 1;
-      var s = (p0[1] * p2[0] - p0[0] * p2[1] +
-               (p2[1] - p0[1]) * p[0] +
-               (p0[0] - p2[0]) * p[1]) * sign;
-      var t = (p0[0] * p1[1] - p0[1] * p1[0] +
-               (p0[1] - p1[1]) * p[0] +
-               (p1[0] - p0[0]) * p[1]) * sign;
-
-      return s > 0 && t > 0 && (s + t) < 2 * A * sign;
-    };
-
-    if (!pInTriangle(centroidSrc, aSrc, bSrc, cSrc)) {
-      var sourceProjExtent = sourceProj.getExtent();
-      shiftDistance = ol.extent.getWidth(sourceProjExtent);
+    if (!ol.coordinate.isInTriangle(centroidSrc, aSrc, bSrc, cSrc)) {
+      needsShift = true;
     }
   }
-  var tri = [[aSrc, a], [bSrc, b], [cSrc, c]];
-  // TODO: typing ! do not add properties to arrays !
-  tri.shiftDistance = shiftDistance;
-  if (shiftDistance) {
-    triangulation.shiftDistance = shiftDistance;
+  triangulation.triangles.push({
+    source: [aSrc, bSrc, cSrc],
+    target: [a, b, c],
+    needsShift: needsShift
+  });
+  if (needsShift) {
+    var sourceProjExtent = sourceProj.getExtent();
+    triangulation.shiftDistance = ol.extent.getWidth(sourceProjExtent);
   }
-  triangulation.push(tri);
 };
 
 
@@ -130,7 +121,10 @@ ol.reproj.triangulation.addTriangleIfValid_ = function(triangulation, a, b, c,
 ol.reproj.triangulation.createForExtent = function(extent, sourceProj,
     targetProj, opt_maxTargetExtent, opt_maxSourceExtent, opt_subdiv) {
 
-  var triangulation = [];
+  var triangulation = {
+    triangles: [],
+    shiftDistance: 0
+  };
 
   var tlDst = ol.extent.getTopLeft(extent);
   var brDst = ol.extent.getBottomRight(extent);
@@ -178,26 +172,25 @@ ol.reproj.triangulation.createForExtent = function(extent, sourceProj,
 ol.reproj.triangulation.getSourceExtent = function(triangulation) {
   var extent = ol.extent.createEmpty();
 
-  if (triangulation.shiftDistance) {
-    var shiftDistance = triangulation.shiftDistance;
-    goog.array.forEach(triangulation, function(triangle, i, arr) {
+  var distance = triangulation.shiftDistance;
+  if (distance > 0) {
+    goog.array.forEach(triangulation.triangles, function(triangle, i, arr) {
+      var src = triangle.source;
       ol.extent.extendCoordinate(extent,
-          [goog.math.modulo(triangle[0][0][0] + shiftDistance, shiftDistance),
-           triangle[0][0][1]]);
+          [goog.math.modulo(src[0][0] + distance, distance), src[0][1]]);
       ol.extent.extendCoordinate(extent,
-          [goog.math.modulo(triangle[1][0][0] + shiftDistance, shiftDistance),
-           triangle[1][0][1]]);
+          [goog.math.modulo(src[1][0] + distance, distance), src[1][1]]);
       ol.extent.extendCoordinate(extent,
-          [goog.math.modulo(triangle[2][0][0] + shiftDistance, shiftDistance),
-           triangle[2][0][1]]);
+          [goog.math.modulo(src[2][0] + distance, distance), src[2][1]]);
     });
-    if (extent[0] > shiftDistance / 2) extent[0] -= shiftDistance;
-    if (extent[2] > shiftDistance / 2) extent[2] -= shiftDistance;
+    if (extent[0] > distance / 2) extent[0] -= distance;
+    if (extent[2] > distance / 2) extent[2] -= distance;
   } else {
-    goog.array.forEach(triangulation, function(triangle, i, arr) {
-      ol.extent.extendCoordinate(extent, triangle[0][0]);
-      ol.extent.extendCoordinate(extent, triangle[1][0]);
-      ol.extent.extendCoordinate(extent, triangle[2][0]);
+    goog.array.forEach(triangulation.triangles, function(triangle, i, arr) {
+      var src = triangle.source;
+      ol.extent.extendCoordinate(extent, src[0]);
+      ol.extent.extendCoordinate(extent, src[1]);
+      ol.extent.extendCoordinate(extent, src[2]);
     });
   }
 
