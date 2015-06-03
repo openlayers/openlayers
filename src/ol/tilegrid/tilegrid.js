@@ -114,11 +114,16 @@ ol.tilegrid.TileGrid = function(options) {
 
 
   /**
-   * TileCoord transform function for use with this tile grid. Returns unaltered
-   * tile coordinates by default.
+   * Creates a TileCoord transform function for use with this tile grid.
+   * Transforms the internal tile coordinates with bottom-left origin to
+   * the tile coordinates used by the {@link ol.TileUrlFunction}.
+   * The returned function expects an {@link ol.TileCoord} as first and an
+   * {@link ol.proj.Projection} as second argument and returns a transformed
+   * {@link ol.TileCoord}.
    * @param {{extent: (ol.Extent|undefined)}=} opt_options Options.
    * @return {function(ol.TileCoord, ol.proj.Projection, ol.TileCoord=):
    *     ol.TileCoord} Tile coordinate transform.
+   * @api
    */
   this.createTileCoordTransform = goog.isDef(options.createTileCoordTransform) ?
       options.createTileCoordTransform :
