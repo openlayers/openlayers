@@ -192,6 +192,32 @@ ol.coordinate.equals = function(coordinate1, coordinate2) {
 
 
 /**
+ * Calculates the intersection point between two infinite lines.
+ * Returns null if the lines do not intersect or are identical.
+ *
+ * @param {Array.<ol.Coordinate>} line1 The two coordinates of the line.
+ * @param {Array.<ol.Coordinate>} line2 The two coordinates of the line.
+ * @return {ol.Coordinate} Intersection point (or null)
+ */
+ol.coordinate.getLineIntersection = function(line1, line2) {
+  var a_x = line1[0][0], a_y = line1[0][1];
+  var b_x = line2[0][0], b_y = line2[0][1];
+  var u_x = line1[1][0] - a_x;
+  var u_y = line1[1][1] - a_y;
+  var v_x = line2[1][0] - b_x;
+  var v_y = line2[1][1] - b_y;
+
+  var div = (-v_x * u_y + u_x * v_y);
+  if (div === 0) {
+    return null;
+  }
+  var t = (v_x * (a_y - b_y) - v_y * (a_x - b_x)) / div;
+
+  return [a_x + (t * u_x), a_y + (t * u_y)];
+};
+
+
+/**
  * Rotate `coordinate` by `angle`. `coordinate` is modified in place and
  * returned by the function.
  *
