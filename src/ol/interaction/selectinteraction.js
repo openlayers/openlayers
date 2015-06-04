@@ -46,11 +46,13 @@ ol.interaction.SelectFilterFunction;
  * @param {string} type The event type.
  * @param {Array.<ol.Feature>} selected Selected features.
  * @param {Array.<ol.Feature>} deselected Deselected features.
+ * @param {ol.MapBrowserEvent} mapBrowserEvent Associated
+ *     {@link ol.MapBrowserEvent}.
  * @implements {oli.SelectEvent}
  * @extends {goog.events.Event}
  * @constructor
  */
-ol.SelectEvent = function(type, selected, deselected) {
+ol.SelectEvent = function(type, selected, deselected, mapBrowserEvent) {
   goog.base(this, type);
 
   /**
@@ -66,6 +68,13 @@ ol.SelectEvent = function(type, selected, deselected) {
    * @api
    */
   this.deselected = deselected;
+
+  /**
+   * Associated {@link ol.MapBrowserEvent}.
+   * @type {ol.MapBrowserEvent}
+   * @api
+   */
+  this.mapBrowserEvent = mapBrowserEvent;
 };
 goog.inherits(ol.SelectEvent, goog.events.Event);
 
@@ -266,7 +275,8 @@ ol.interaction.Select.handleEvent = function(mapBrowserEvent) {
   }
   if (change) {
     this.dispatchEvent(
-        new ol.SelectEvent(ol.SelectEventType.SELECT, selected, deselected));
+        new ol.SelectEvent(ol.SelectEventType.SELECT, selected, deselected,
+            mapBrowserEvent));
   }
   return ol.events.condition.pointerMove(mapBrowserEvent);
 };
