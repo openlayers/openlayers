@@ -58,22 +58,11 @@ ol.reproj.calculateSourceResolution = function(sourceProj, targetProj,
 ol.reproj.renderTriangles = function(context,
     sourceResolution, targetResolution, targetExtent, triangulation, sources) {
 
-  var renderImage = function(image) {
-    context.scale(sourceResolution, -sourceResolution);
-
-    // the image has to be scaled by half a pixel in every direction
-    //    in order to prevent artifacts between the original tiles
-    //    that are introduced by the canvas antialiasing.
-    context.drawImage(image, -0.5, -0.5,
-                      image.width + 1, image.height + 1);
-  };
-
   var shiftDistance = triangulation.shiftDistance;
+  var targetTL = ol.extent.getTopLeft(targetExtent);
 
   goog.array.forEach(triangulation.triangles, function(tri, i, arr) {
     context.save();
-
-    var targetTL = ol.extent.getTopLeft(targetExtent);
 
     /* Calculate affine transform (src -> dst)
      * Resulting matrix can be used to transform coordinate
@@ -150,24 +139,21 @@ ol.reproj.renderTriangles = function(context,
 
     goog.array.forEach(sources, function(src, i, arr) {
       context.save();
-      var tlSrcFromData = ol.extent.getTopLeft(src.extent);
-      context.translate(tlSrcFromData[0], tlSrcFromData[1]);
-      if (tri.needsShift) {
-        context.save();
+      var dataTL = ol.extent.getTopLeft(src.extent);
+      context.translate(dataTL[0], dataTL[1]);
+      // if the triangle needs to be shifted (because of the dateline wrapping),
+      // shift only the source images that need it
+      if (tri.needsShift && dataTL[0] < 0) {
         context.translate(shiftDistance, 0);
-        renderImage(src.image);
-        context.restore();
-        renderImage(src.image);
-
-        if (goog.DEBUG) {
-          context.fillStyle =
-              sources.length > 16 ? 'rgba(255,0,0,1)' :
-              (sources.length > 4 ? 'rgba(0,255,0,.3)' : 'rgba(0,0,255,.1)');
-          context.fillRect(0, 0, 256, 256);
-        }
-      } else {
-        renderImage(src.image);
       }
+      context.scale(sourceResolution, -sourceResolution);
+
+      // the image has to be scaled by half a pixel in every direction
+      //    in order to prevent artifacts between the original tiles
+      //    that are introduced by the canvas antialiasing.
+      context.drawImage(src.image, -0.5, -0.5,
+                        src.image.width + 1, src.image.height + 1);
+
       context.restore();
     });
 
