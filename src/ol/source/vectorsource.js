@@ -343,35 +343,6 @@ ol.source.Vector.prototype.forEachFeature = function(callback, opt_this) {
 
 
 /**
- * Iterate through all features whose geometries contain the provided
- * coordinate, calling the callback with each feature.  If the callback returns
- * a "truthy" value, iteration will stop and the function will return the same
- * value.
- *
- * @param {ol.Coordinate} coordinate Coordinate.
- * @param {function(this: T, ol.Feature): S} callback Called with each feature
- *     whose goemetry contains the provided coordinate.
- * @param {T=} opt_this The object to use as `this` in the callback.
- * @return {S|undefined} The return value from the last call to the callback.
- * @template T,S
- */
-ol.source.Vector.prototype.forEachFeatureAtCoordinateDirect =
-    function(coordinate, callback, opt_this) {
-  var extent = [coordinate[0], coordinate[1], coordinate[0], coordinate[1]];
-  return this.forEachFeatureInExtent(extent, function(feature) {
-    var geometry = feature.getGeometry();
-    goog.asserts.assert(goog.isDefAndNotNull(geometry),
-        'feature geometry is defined and not null');
-    if (geometry.intersectsExtent(extent)) {
-      return callback.call(opt_this, feature);
-    } else {
-      return undefined;
-    }
-  });
-};
-
-
-/**
  * Iterate through all features whose bounding box intersects the provided
  * extent (note that the feature's geometry may not intersect the extent),
  * calling the callback with each feature.  If the callback returns a "truthy"
@@ -471,7 +442,8 @@ ol.source.Vector.prototype.getFeatures = function() {
  */
 ol.source.Vector.prototype.getFeaturesAtCoordinate = function(coordinate) {
   var features = [];
-  this.forEachFeatureAtCoordinateDirect(coordinate, function(feature) {
+  var extent = [coordinate[0], coordinate[1], coordinate[0], coordinate[1]];
+  this.forEachFeatureIntersectingExtent(extent, function(feature) {
     features.push(feature);
   });
   return features;
