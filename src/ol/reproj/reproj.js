@@ -66,7 +66,7 @@ ol.reproj.renderTriangles = function(context,
       (sourceExtent[0] + sourceExtent[2]) / 2 : null;
   var targetTL = ol.extent.getTopLeft(targetExtent);
 
-  goog.array.forEach(triangulation.triangles, function(tri, i, arr) {
+  goog.array.forEach(triangulation.getTriangles(), function(tri, i, arr) {
     context.save();
 
     /* Calculate affine transform (src -> dst)

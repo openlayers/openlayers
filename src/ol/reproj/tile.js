@@ -12,7 +12,7 @@ goog.require('ol.dom');
 goog.require('ol.extent');
 goog.require('ol.proj');
 goog.require('ol.reproj');
-goog.require('ol.reproj.triangulation');
+goog.require('ol.reproj.Triangulation');
 
 
 
@@ -64,14 +64,6 @@ ol.reproj.Tile = function(sourceProj, sourceTileGrid,
 
   /**
    * @private
-   * @type {!ol.reproj.Triangulation}
-   */
-  this.triangulation_ = ol.reproj.triangulation.createForExtent(
-      targetExtent, sourceProj, targetProj,
-      maxTargetExtent, maxSourceExtent);
-
-  /**
-   * @private
    * @type {!Array.<ol.Tile>}
    */
   this.srcTiles_ = [];
@@ -88,21 +80,39 @@ ol.reproj.Tile = function(sourceProj, sourceTileGrid,
    */
   this.srcZ_ = 0;
 
-  if (!ol.extent.intersects(maxTargetExtent, targetExtent)) {
+  var limitedTargetExtent = ol.extent.getIntersection(
+      targetExtent, maxTargetExtent);
+
+  if (ol.extent.getArea(limitedTargetExtent) === 0) {
     // Tile is completely outside range -> EMPTY
     // TODO: is it actually correct that the source even creates the tile ?
     this.state = ol.TileState.EMPTY;
     return;
   }
 
-  if (this.triangulation_.triangles.length === 0) {
+  var targetResolution = targetTileGrid.getResolution(z);
+
+  var errorThresholdInPixels = 0.5;
+
+  // in source units
+  var errorThreshold = targetResolution * errorThresholdInPixels *
+      targetProj.getMetersPerUnit() / sourceProj.getMetersPerUnit();
+
+  /**
+   * @private
+   * @type {!ol.reproj.Triangulation}
+   */
+  this.triangulation_ = new ol.reproj.Triangulation(
+      sourceProj, targetProj, limitedTargetExtent, maxSourceExtent,
+      5, errorThreshold);
+
+  if (this.triangulation_.getTriangles().length === 0) {
     // no valid triangles -> EMPTY
     this.state = ol.TileState.EMPTY;
     return;
   }
 
-  var targetCenter = ol.extent.getCenter(targetExtent);
-  var targetResolution = targetTileGrid.getResolution(z);
+  var targetCenter = ol.extent.getCenter(limitedTargetExtent);
   var sourceResolution = ol.reproj.calculateSourceResolution(
       sourceProj, targetProj, targetCenter, targetResolution);
 
@@ -114,8 +124,7 @@ ol.reproj.Tile = function(sourceProj, sourceTileGrid,
   }
 
   this.srcZ_ = sourceTileGrid.getZForResolution(sourceResolution);
-  var srcExtent = ol.reproj.triangulation.getSourceExtent(
-      this.triangulation_, sourceProj);
+  var srcExtent = this.triangulation_.calculateSourceExtent();
 
   var sourceProjExtent = sourceProj.getExtent();
   if (!sourceProj.isGlobal() && sourceProjExtent) {

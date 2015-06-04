@@ -9,7 +9,7 @@ goog.require('ol.dom');
 goog.require('ol.extent');
 goog.require('ol.proj');
 goog.require('ol.reproj');
-goog.require('ol.reproj.triangulation');
+goog.require('ol.reproj.Triangulation');
 
 
 
@@ -55,14 +55,15 @@ ol.reproj.Image = function(sourceProj, targetProj,
   this.maxSourceExtent_ = sourceProj.getExtent();
   var maxTargetExtent = targetProj.getExtent();
 
+  var limitedTargetExtent = ol.extent.getIntersection(
+      targetExtent, maxTargetExtent);
 
   /**
    * @private
    * @type {!ol.reproj.Triangulation}
    */
-  this.triangulation_ = ol.reproj.triangulation.createForExtent(
-      targetExtent, sourceProj, targetProj,
-      maxTargetExtent, this.maxSourceExtent_);
+  this.triangulation_ = new ol.reproj.Triangulation(
+      sourceProj, targetProj, limitedTargetExtent, this.maxSourceExtent_);
 
   /**
    * @private
@@ -76,8 +77,7 @@ ol.reproj.Image = function(sourceProj, targetProj,
    */
   this.targetExtent_ = targetExtent;
 
-  var srcExtent = ol.reproj.triangulation.getSourceExtent(
-      this.triangulation_, sourceProj);
+  var srcExtent = this.triangulation_.calculateSourceExtent();
 
   var targetCenter = ol.extent.getCenter(targetExtent);
   var sourceResolution = ol.reproj.calculateSourceResolution(
