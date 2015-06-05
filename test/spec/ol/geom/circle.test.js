@@ -203,6 +203,30 @@ describe('ol.geom.Circle', function() {
 
     });
 
+    describe('#intersectsExtent', function() {
+
+      it('return false for non matching extent', function() {
+        expect(circle.intersectsExtent([0.9, 0.9, 10, 10])).to.be(false);
+      });
+
+      it('return true for extent within circle', function() {
+        expect(circle.intersectsExtent([0.5, 0.5, 0.5, 0.5])).to.be(true);
+      });
+
+      it('return true for extent overlapping circle', function() {
+        expect(circle.intersectsExtent([0.5, 0.5, 10, 10])).to.be(true);
+      });
+
+      it('return true for non-overlapping but intersecting extent', function() {
+        expect(circle.intersectsExtent([0, 1, 1, 2])).to.be(true);
+      });
+
+      it('returns true for the geom\'s own extent', function() {
+        expect(circle.intersectsExtent(circle.getExtent())).to.be(true);
+      });
+
+    });
+
   });
 
 });
