@@ -10,6 +10,7 @@ goog.require('ol.TileLoadFunctionType');
 goog.require('ol.TileState');
 goog.require('ol.TileUrlFunction');
 goog.require('ol.TileUrlFunctionType');
+goog.require('ol.proj');
 goog.require('ol.reproj.Tile');
 goog.require('ol.source.Tile');
 goog.require('ol.source.TileEvent');
@@ -73,15 +74,15 @@ ol.source.TileImage = function(options) {
 
   /**
    * @protected
-   * @type {ol.TileCache}
+   * @type {Object.<string, ol.TileCache>}
    */
-  this.reprojectedTileCache = new ol.TileCache();
+  this.tileCacheForProjection = {};
 
   /**
    * @protected
-   * @type {ol.proj.Projection}
+   * @type {Object.<string, ol.tilegrid.TileGrid>}
    */
-  this.lastProj = null;
+  this.tileGridForProjection = {};
 };
 goog.inherits(ol.source.TileImage, ol.source.Tile);
 
@@ -99,10 +100,34 @@ ol.source.TileImage.defaultTileLoadFunction = function(imageTile, src) {
  * @inheritDoc
  */
 ol.source.TileImage.prototype.getTileGridForProjection = function(projection) {
-  if (projection == this.getProjection() && !goog.isNull(this.tileGrid)) {
+  if (!goog.isNull(this.tileGrid) &&
+      ol.proj.equivalent(this.getProjection(), projection)) {
     return this.tileGrid;
   } else {
-    return ol.tilegrid.getForProjection(projection);
+    var projKey = goog.getUid(projection).toString();
+    if (!(projKey in this.tileGridForProjection)) {
+      this.tileGridForProjection[projKey] =
+          ol.tilegrid.getForProjection(projection);
+    }
+    return this.tileGridForProjection[projKey];
+  }
+};
+
+
+/**
+ * @param {ol.proj.Projection} projection Projection.
+ * @return {ol.TileCache} Tile cache.
+ * @protected
+ */
+ol.source.TileImage.prototype.getTileCacheForProjection = function(projection) {
+  if (ol.proj.equivalent(this.getProjection(), projection)) {
+    return this.tileCache;
+  } else {
+    var projKey = goog.getUid(projection).toString();
+    if (!(projKey in this.tileCacheForProjection)) {
+      this.tileCacheForProjection[projKey] = new ol.TileCache();
+    }
+    return this.tileCacheForProjection[projKey];
   }
 };
 
@@ -112,22 +137,19 @@ ol.source.TileImage.prototype.getTileGridForProjection = function(projection) {
  */
 ol.source.TileImage.prototype.getTile =
     function(z, x, y, pixelRatio, projection) {
-  if (goog.isNull(this.getProjection()) || this.getProjection() == projection) {
+  if (!goog.isDefAndNotNull(this.getProjection()) ||
+      !goog.isDefAndNotNull(projection) ||
+      ol.proj.equivalent(this.getProjection(), projection)) {
     return this.getTileInternal(z, x, y, pixelRatio, projection);
   } else {
-    if (this.lastProj != projection) {
-      this.reprojectedTileCache.clear();
-      this.lastProj = projection;
-    }
-    var cache = this.reprojectedTileCache; //TODO: per-projection cache
+    var cache = this.getTileCacheForProjection(projection);
     var tileCoordKey = this.getKeyZXY(z, x, y);
     if (cache.containsKey(tileCoordKey)) {
       return /** @type {!ol.Tile} */(cache.get(tileCoordKey));
     } else {
       var sourceProjection = this.getProjection();
       var sourceTileGrid = this.getTileGridForProjection(sourceProjection);
-      var targetTileGrid = ol.tilegrid.getForProjection(projection);
-      //TODO: init cache / tilegrid if needed
+      var targetTileGrid = this.getTileGridForProjection(projection);
       var tile = new ol.reproj.Tile(
           sourceProjection, sourceTileGrid,
           projection, targetTileGrid,
@@ -229,6 +251,7 @@ ol.source.TileImage.prototype.handleTileChange_ = function(event) {
  */
 ol.source.TileImage.prototype.setTileLoadFunction = function(tileLoadFunction) {
   this.tileCache.clear();
+  this.tileCacheForProjection = {};
   this.tileLoadFunction = tileLoadFunction;
   this.changed();
 };
@@ -244,6 +267,7 @@ ol.source.TileImage.prototype.setTileUrlFunction = function(tileUrlFunction) {
   // FIXME cache.  The tile URL function would need to be incorporated into the
   // FIXME cache key somehow.
   this.tileCache.clear();
+  this.tileCacheForProjection = {};
   this.tileUrlFunction = tileUrlFunction;
   this.changed();
 };
