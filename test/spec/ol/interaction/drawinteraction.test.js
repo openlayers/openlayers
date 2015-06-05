@@ -94,6 +94,33 @@ describe('ol.interaction.Draw', function() {
     });
   });
 
+  describe('specifying a clickTolerance', function() {
+    beforeEach(function() {
+      var draw = new ol.interaction.Draw({
+        source: source,
+        type: ol.geom.GeometryType.POINT,
+        clickTolerance: 6
+      });
+      map.addInteraction(draw);
+    });
+
+    it('adds a point when below the tolerance', function() {
+      var features;
+
+      simulateEvent('pointermove', 10, 20);
+      simulateEvent('pointerdown', 10, 20);
+      simulateEvent('pointerup', 15, 25);
+      features = source.getFeatures();
+      expect(features).to.length(0);
+
+      simulateEvent('pointermove', 10, 20);
+      simulateEvent('pointerdown', 10, 20);
+      simulateEvent('pointerup', 14, 24);
+      features = source.getFeatures();
+      expect(features).to.length(1);
+    });
+  });
+
   describe('drawing points', function() {
     var draw;
 
@@ -119,8 +146,8 @@ describe('ol.interaction.Draw', function() {
     it('does not draw a point with a significant drag', function() {
       simulateEvent('pointermove', 10, 20);
       simulateEvent('pointerdown', 10, 20);
-      simulateEvent('pointermove', 15, 20);
-      simulateEvent('pointerup', 15, 20);
+      simulateEvent('pointermove', 18, 20);
+      simulateEvent('pointerup', 18, 20);
       var features = source.getFeatures();
       expect(features).to.have.length(0);
     });
@@ -258,8 +285,8 @@ describe('ol.interaction.Draw', function() {
       // drag map
       simulateEvent('pointermove', 15, 20);
       simulateEvent('pointerdown', 15, 20);
-      simulateEvent('pointermove', 20, 20);
-      simulateEvent('pointerup', 20, 20);
+      simulateEvent('pointermove', 23, 20);
+      simulateEvent('pointerup', 23, 20);
 
       // second point
       simulateEvent('pointermove', 30, 20);
