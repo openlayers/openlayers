@@ -80,7 +80,7 @@ goog.inherits(ol.interaction.DrawEvent, goog.events.Event);
 
 /**
  * @classdesc
- * Interaction that allows drawing geometries.
+ * Interaction for drawing feature geometries.
  *
  * @constructor
  * @extends {ol.interaction.Pointer}
