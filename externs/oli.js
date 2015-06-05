@@ -117,6 +117,26 @@ oli.MapEvent.prototype.map;
 oli.MapEvent.prototype.frameState;
 
 
+
+/**
+ * @interface
+ */
+oli.SelectEventItem = function() {};
+
+
+/**
+ * @type {ol.Feature}
+ */
+oli.SelectEventItem.prototype.feature;
+
+
+/**
+ * @type {ol.layer.Layer}
+ */
+oli.SelectEventItem.prototype.layer;
+
+
+
 /**
  * @interface
  */
@@ -124,13 +144,13 @@ oli.SelectEvent = function() {};
 
 
 /**
- * @type {Array.<ol.Feature>}
+ * @type {Array.<oli.SelectEventItem>}
  */
 oli.SelectEvent.prototype.deselected;
 
 
 /**
- * @type {Array.<ol.Feature>}
+ * @type {Array.<ol.SelectEventItem>}
  */
 oli.SelectEvent.prototype.selected;
 
