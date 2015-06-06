@@ -362,7 +362,7 @@ ol.source.Vector.prototype.forEachFeatureAtCoordinateDirect =
     var geometry = feature.getGeometry();
     goog.asserts.assert(goog.isDefAndNotNull(geometry),
         'feature geometry is defined and not null');
-    if (geometry.containsCoordinate(coordinate)) {
+    if (geometry.intersectsExtent(extent)) {
       return callback.call(opt_this, feature);
     } else {
       return undefined;
