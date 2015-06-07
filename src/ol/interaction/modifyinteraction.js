@@ -38,7 +38,7 @@ ol.interaction.SegmentDataType;
 
 /**
  * @classdesc
- * Interaction for modifying vector data.
+ * Interaction for modifying feature geometries.
  *
  * @constructor
  * @extends {ol.interaction.Pointer}
