@@ -2358,6 +2358,7 @@ olx.interaction.DragZoomOptions.prototype.style;
 /**
  * @typedef {{features: (ol.Collection.<ol.Feature>|undefined),
  *     source: (ol.source.Vector|undefined),
+ *     clickTolerance: (number|undefined),
  *     snapTolerance: (number|undefined),
  *     type: ol.geom.GeometryType,
  *     maxPoints: (number|undefined),
@@ -2386,6 +2387,15 @@ olx.interaction.DrawOptions.prototype.features;
  * @api
  */
 olx.interaction.DrawOptions.prototype.source;
+
+
+/**
+ * Maximum distance in pixel between a down and a up event. If the value is
+ * greater than this tolerance the up event is not handled. Default is `6`.
+ * @type {number|undefined}
+ * @api
+ */
+olx.interaction.DrawOptions.prototype.clickTolerance;
 
 
 /**
