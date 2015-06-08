@@ -1,4 +1,5 @@
 goog.require('ol.Map');
+goog.require('ol.Observable');
 goog.require('ol.Overlay');
 goog.require('ol.Sphere');
 goog.require('ol.View');
@@ -116,6 +117,7 @@ var pointerMoveHandler = function(evt) {
   helpTooltipElement.innerHTML = helpMsg;
   helpTooltip.setPosition(evt.coordinate);
 
+  $(helpTooltipElement).removeClass('hidden');
 };
 
 
@@ -129,6 +131,10 @@ var map = new ol.Map({
 });
 
 map.on('pointermove', pointerMoveHandler);
+
+$(map.getViewport()).on('mouseout', function() {
+  $(helpTooltipElement).addClass('hidden');
+});
 
 var typeSelect = document.getElementById('type');
 var geodesicCheckbox = document.getElementById('geodesic');
@@ -210,7 +216,7 @@ function createHelpTooltip() {
     helpTooltipElement.parentNode.removeChild(helpTooltipElement);
   }
   helpTooltipElement = document.createElement('div');
-  helpTooltipElement.className = 'tooltip';
+  helpTooltipElement.className = 'tooltip hidden';
   helpTooltip = new ol.Overlay({
     element: helpTooltipElement,
     offset: [15, 0],
