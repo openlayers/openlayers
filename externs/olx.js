@@ -1910,6 +1910,7 @@ olx.format.WFSOptions.prototype.schemaLocation;
  *     outputFormat: (string|undefined),
  *     maxFeatures: (number|undefined),
  *     geometryName: (string|undefined),
+ *     propertyNames: (Array.<string>|undefined),
  *     bbox: (ol.Extent|undefined)}}
  * @api
  */
@@ -1979,6 +1980,14 @@ olx.format.WFSWriteGetFeatureOptions.prototype.maxFeatures;
  * @api
  */
 olx.format.WFSWriteGetFeatureOptions.prototype.geometryName;
+
+
+/**
+ * Optional list of property names to serialize.
+ * @type {Array.<string>|undefined}
+ * @api
+ */
+olx.format.WFSWriteGetFeatureOptions.prototype.propertyNames;
 
 
 /**
