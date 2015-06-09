@@ -471,8 +471,8 @@ ol.render.canvas.Immediate.prototype.drawCircleGeometry =
  * Render a feature into the canvas.  In order to respect the zIndex of the
  * style this method draws asynchronously and thus *after* calls to
  * drawXxxxGeometry have been finished, effectively drawing the feature
- * *on top* of everything else.  You probably should be using
- * {@link ol.FeatureOverlay} instead of calling this method directly.
+ * *on top* of everything else.  You probably should be using an
+ * {@link ol.layer.Vector} instead of calling this method directly.
  *
  * @param {ol.Feature} feature Feature.
  * @param {ol.style.Style} style Style.

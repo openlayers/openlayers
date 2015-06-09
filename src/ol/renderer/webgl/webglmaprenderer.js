@@ -24,9 +24,7 @@ goog.require('ol.layer.Vector');
 goog.require('ol.render.Event');
 goog.require('ol.render.EventType');
 goog.require('ol.render.webgl.Immediate');
-goog.require('ol.render.webgl.ReplayGroup');
 goog.require('ol.renderer.Map');
-goog.require('ol.renderer.vector');
 goog.require('ol.renderer.webgl.ImageLayer');
 goog.require('ol.renderer.webgl.Layer');
 goog.require('ol.renderer.webgl.TileLayer');
@@ -287,27 +285,14 @@ ol.renderer.webgl.Map.prototype.dispatchComposeEvent_ =
     var resolution = viewState.resolution;
     var center = viewState.center;
     var rotation = viewState.rotation;
-    var tolerance = ol.renderer.vector.getTolerance(resolution, pixelRatio);
 
     var vectorContext = new ol.render.webgl.Immediate(context,
         center, resolution, rotation, size, extent, pixelRatio);
-    var replayGroup = new ol.render.webgl.ReplayGroup(tolerance, extent);
     var composeEvent = new ol.render.Event(type, map, vectorContext,
-        replayGroup, frameState, null, context);
+        frameState, null, context);
     map.dispatchEvent(composeEvent);
 
-    replayGroup.finish(context);
-    if (!replayGroup.isEmpty()) {
-      // use default color values
-      var d = ol.renderer.webgl.Map.DEFAULT_COLOR_VALUES_;
-      replayGroup.replay(context, center, resolution, rotation, size,
-          pixelRatio, d.opacity, d.brightness, d.contrast,
-          d.hue, d.saturation, {});
-    }
-    replayGroup.getDeleteResourcesFunction(context)();
-
     vectorContext.flush();
-    this.replayGroup = replayGroup;
   }
 };
 
@@ -561,37 +546,8 @@ ol.renderer.webgl.Map.prototype.forEachFeatureAtCoordinate =
     return false;
   }
 
-  var context = this.getContext();
   var viewState = frameState.viewState;
 
-  // do the hit-detection for the overlays first
-  if (!goog.isNull(this.replayGroup)) {
-    /** @type {Object.<string, boolean>} */
-    var features = {};
-
-    // use default color values
-    var d = ol.renderer.webgl.Map.DEFAULT_COLOR_VALUES_;
-
-    result = this.replayGroup.forEachFeatureAtCoordinate(coordinate,
-        context, viewState.center, viewState.resolution, viewState.rotation,
-        frameState.size, frameState.pixelRatio,
-        d.opacity, d.brightness, d.contrast, d.hue, d.saturation, {},
-        /**
-         * @param {ol.Feature} feature Feature.
-         * @return {?} Callback result.
-         */
-        function(feature) {
-          goog.asserts.assert(goog.isDef(feature), 'received a feature');
-          var key = goog.getUid(feature).toString();
-          if (!(key in features)) {
-            features[key] = true;
-            return callback.call(thisArg, feature, null);
-          }
-        });
-    if (result) {
-      return result;
-    }
-  }
   var layerStates = frameState.layerStatesArray;
   var numLayers = layerStates.length;
   var i;
@@ -623,22 +579,8 @@ ol.renderer.webgl.Map.prototype.hasFeatureAtCoordinate =
     return false;
   }
 
-  var context = this.getContext();
   var viewState = frameState.viewState;
 
-  // do the hit-detection for the overlays first
-  if (!goog.isNull(this.replayGroup)) {
-    // use default color values
-    var d = ol.renderer.webgl.Map.DEFAULT_COLOR_VALUES_;
-
-    hasFeature = this.replayGroup.hasFeatureAtCoordinate(coordinate,
-        context, viewState.center, viewState.resolution, viewState.rotation,
-        frameState.size, frameState.pixelRatio,
-        d.opacity, d.brightness, d.contrast, d.hue, d.saturation, {});
-    if (hasFeature) {
-      return true;
-    }
-  }
   var layerStates = frameState.layerStatesArray;
   var numLayers = layerStates.length;
   var i;
@@ -669,27 +611,9 @@ ol.renderer.webgl.Map.prototype.forEachLayerAtPixel =
     return false;
   }
 
-  var context = this.getContext();
   var viewState = frameState.viewState;
   var result;
 
-  // do the hit-detection for the overlays first
-  if (!goog.isNull(this.replayGroup)) {
-    // use default color values
-    var d = ol.renderer.webgl.Map.DEFAULT_COLOR_VALUES_;
-    var coordinate = this.getMap().getCoordinateFromPixel(pixel);
-
-    var hasFeature = this.replayGroup.hasFeatureAtCoordinate(coordinate,
-        context, viewState.center, viewState.resolution, viewState.rotation,
-        frameState.size, frameState.pixelRatio,
-        d.opacity, d.brightness, d.contrast, d.hue, d.saturation, {});
-    if (hasFeature) {
-      result = callback.call(thisArg, null);
-      if (result) {
-        return result;
-      }
-    }
-  }
   var layerStates = frameState.layerStatesArray;
   var numLayers = layerStates.length;
   var i;

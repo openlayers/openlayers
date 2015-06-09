@@ -2366,7 +2366,8 @@ olx.interaction.DragZoomOptions.prototype.style;
  *     geometryFunction: (ol.interaction.DrawGeometryFunctionType|undefined),
  *     geometryName: (string|undefined),
  *     condition: (ol.events.ConditionType|undefined),
- *     freehandCondition: (ol.events.ConditionType|undefined)}}
+ *     freehandCondition: (ol.events.ConditionType|undefined),
+ *     wrapX: (boolean|undefined)}}
  * @api
  */
 olx.interaction.DrawOptions;
@@ -2471,6 +2472,14 @@ olx.interaction.DrawOptions.prototype.freehandCondition;
 
 
 /**
+ * Wrap the world horizontally on the sketch overlay. Default is `false`.
+ * @type {boolean|undefined}
+ * @api
+ */
+olx.interaction.DrawOptions.prototype.wrapX;
+
+
+/**
  * @typedef {{condition: (ol.events.ConditionType|undefined),
  *     duration: (number|undefined),
  *     pixelDelta: (number|undefined)}}
@@ -2545,7 +2554,8 @@ olx.interaction.KeyboardZoomOptions.prototype.delta;
  * @typedef {{deleteCondition: (ol.events.ConditionType|undefined),
  *     pixelTolerance: (number|undefined),
  *     style: (ol.style.Style|Array.<ol.style.Style>|ol.style.StyleFunction|undefined),
- *     features: ol.Collection.<ol.Feature>}}
+ *     features: ol.Collection.<ol.Feature>,
+ *     wrapX: (boolean|undefined)}}
  * @api
  */
 olx.interaction.ModifyOptions;
@@ -2585,6 +2595,14 @@ olx.interaction.ModifyOptions.prototype.style;
  * @api
  */
 olx.interaction.ModifyOptions.prototype.features;
+
+
+/**
+ * Wrap the world horizontally on the sketch overlay. Default is `false`.
+ * @type {boolean|undefined}
+ * @api
+ */
+olx.interaction.ModifyOptions.prototype.wrapX;
 
 
 /**
@@ -2708,7 +2726,8 @@ olx.interaction.PointerOptions.prototype.handleUpEvent;
  *     removeCondition: (ol.events.ConditionType|undefined),
  *     toggleCondition: (ol.events.ConditionType|undefined),
  *     multi: (boolean|undefined),
- *     filter: (ol.interaction.SelectFilterFunction|undefined)}}
+ *     filter: (ol.interaction.SelectFilterFunction|undefined),
+ *     wrapX: (boolean|undefined)}}
  * @api
  */
 olx.interaction.SelectOptions;
@@ -2801,6 +2820,14 @@ olx.interaction.SelectOptions.prototype.multi;
  * @api
  */
 olx.interaction.SelectOptions.prototype.filter;
+
+
+/**
+ * Wrap the world horizontally on the selection overlay. Default is `true`.
+ * @type {boolean|undefined}
+ * @api
+ */
+olx.interaction.SelectOptions.prototype.wrapX;
 
 
 /**

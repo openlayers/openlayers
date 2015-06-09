@@ -1,5 +1,39 @@
 ## Upgrade notes
 
+### v3.7.0
+
+#### Removal of `ol.FeatureOverlay`
+
+Instead of an `ol.FeatureOverlay`, we now use an `ol.layer.Vector` with an
+`ol.source.Vector`. If you previously had:
+```js
+var featureOverlay = new ol.FeatureOverlay({
+  map: map,
+  style: overlayStyle
+});
+featureOverlay.addFeature(feature);
+featureOverlay.removeFeature(feature);
+var collection = featureOverlay.getFeatures();
+```
+you will have to change this to:
+```js
+var collection = new ol.Collection();
+var featureOverlay = new ol.layer.Vector({
+  map: map,
+  style: overlayStyle,
+  source: new ol.source.Vector({
+    features: collection,
+    useSpatialIndex: false // optional, might improve performance
+  });
+});
+featureOverlay.getSource().addFeature(feature);
+featureOverlay.getSource().removeFeature(feature);
+```
+
+With the removal of `ol.FeatureOverlay`, `zIndex` symbolizer properties of overlays are no longer stacked per map, but per layer/overlay. If you previously had multiple feature overlays where you controlled the rendering order of features by using `zIndex` symbolizer properties, you can now achieve the same rendering order only if all overlay features are on the same layer.
+
+Note that `ol.FeatureOverlay#getFeatures()` returned an `{ol.Collection.<ol.Feature>}`, whereas `ol.source.Vector#getFeatures()` returns an `{Array.<ol.Feature>}`.
+
 ### v3.6.0
 
 #### `ol.interaction.Draw` changes

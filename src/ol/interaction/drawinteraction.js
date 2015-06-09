@@ -10,7 +10,6 @@ goog.require('goog.events.Event');
 goog.require('ol.Collection');
 goog.require('ol.Coordinate');
 goog.require('ol.Feature');
-goog.require('ol.FeatureOverlay');
 goog.require('ol.MapBrowserEvent');
 goog.require('ol.MapBrowserEvent.EventType');
 goog.require('ol.Object');
@@ -27,6 +26,7 @@ goog.require('ol.geom.Polygon');
 goog.require('ol.geom.SimpleGeometry');
 goog.require('ol.interaction.InteractionProperty');
 goog.require('ol.interaction.Pointer');
+goog.require('ol.layer.Vector');
 goog.require('ol.source.Vector');
 goog.require('ol.style.Style');
 
@@ -269,10 +269,14 @@ ol.interaction.Draw = function(options) {
 
   /**
    * Draw overlay where our sketch features are drawn.
-   * @type {ol.FeatureOverlay}
+   * @type {ol.layer.Vector}
    * @private
    */
-  this.overlay_ = new ol.FeatureOverlay({
+  this.overlay_ = new ol.layer.Vector({
+    source: new ol.source.Vector({
+      useSpatialIndex: false,
+      wrapX: goog.isDef(options.wrapX) ? options.wrapX : false
+    }),
     style: goog.isDef(options.style) ?
         options.style : ol.interaction.Draw.getDefaultStyleFunction()
   });
@@ -674,7 +678,7 @@ ol.interaction.Draw.prototype.abortDrawing_ = function() {
     this.sketchFeature_ = null;
     this.sketchPoint_ = null;
     this.sketchLine_ = null;
-    this.overlay_.getFeatures().clear();
+    this.overlay_.getSource().clear();
   }
   return sketchFeature;
 };
@@ -701,7 +705,9 @@ ol.interaction.Draw.prototype.updateSketchFeatures_ = function() {
   if (!goog.isNull(this.sketchPoint_)) {
     sketchFeatures.push(this.sketchPoint_);
   }
-  this.overlay_.setFeatures(new ol.Collection(sketchFeatures));
+  var overlaySource = this.overlay_.getSource();
+  overlaySource.clear();
+  overlaySource.addFeatures(sketchFeatures);
 };
 
 
