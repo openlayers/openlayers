@@ -13,6 +13,7 @@ goog.require('goog.debug.Console');
 goog.require('goog.dom');
 goog.require('goog.dom.TagName');
 goog.require('goog.dom.ViewportSizeMonitor');
+goog.require('goog.dom.classlist');
 goog.require('goog.events');
 goog.require('goog.events.BrowserEvent');
 goog.require('goog.events.Event');
@@ -266,7 +267,7 @@ ol.Map = function(options) {
   // prevent page zoom on IE >= 10 browsers
   this.viewport_.style.msTouchAction = 'none';
   if (ol.has.TOUCH) {
-    this.viewport_.className = 'ol-touch';
+    goog.dom.classlist.add(this.viewport_, 'ol-touch');
   }
 
   /**
