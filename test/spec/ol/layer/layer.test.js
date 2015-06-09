@@ -586,10 +586,17 @@ describe('ol.layer.Layer', function() {
       };
       map.dispatchEvent(new ol.render.Event('precompose', map, null,
           frameState, null, null));
-      var layerState = frameState.layerStatesArray[0];
       expect(frameState.layerStatesArray.length).to.be(1);
+      var layerState = frameState.layerStatesArray[0];
       expect(layerState.layer).to.equal(layer);
       expect(frameState.layerStates[goog.getUid(layer)]).to.equal(layerState);
+      frameState.layerStatesArray = [];
+      frameState.layerStates = {};
+
+      layer.setMap(null);
+      map.dispatchEvent(new ol.render.Event('precompose', map, null,
+          frameState, null, null));
+      expect(frameState.layerStatesArray.length).to.be(0);
     });
 
   });
