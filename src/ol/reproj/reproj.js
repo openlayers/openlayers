@@ -101,6 +101,19 @@ ol.reproj.renderTriangles = function(context,
       x1 = goog.math.modulo(x1, shiftDistance);
       x2 = goog.math.modulo(x2, shiftDistance);
     }
+
+    // Shift all the source points to improve numerical stability
+    // of all the subsequent calculations.
+    // The [x0, y0] is used here, because it should achieve reasonable results
+    // but any values could actually be chosen.
+    var srcShiftX = x0, srcShiftY = y0;
+    x0 = 0;
+    y0 = 0;
+    x1 -= srcShiftX;
+    y1 -= srcShiftY;
+    x2 -= srcShiftX;
+    y2 -= srcShiftY;
+
     var augmentedMatrix = [
       [x0, y0, 1, 0, 0, 0, u0 / targetResolution],
       [x1, y1, 1, 0, 0, 0, u1 / targetResolution],
@@ -145,7 +158,8 @@ ol.reproj.renderTriangles = function(context,
     goog.array.forEach(sources, function(src, i, arr) {
       context.save();
       var dataTL = ol.extent.getTopLeft(src.extent);
-      context.translate(dataTL[0], dataTL[1]);
+      context.translate(dataTL[0] - srcShiftX, dataTL[1] - srcShiftY);
+
       // if the triangle needs to be shifted (because of the dateline wrapping),
       // shift back only the source images that need it
       if (tri.needsShift && !goog.isNull(shiftDistance) &&
