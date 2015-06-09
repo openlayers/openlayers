@@ -79,6 +79,69 @@ ol.math.squaredDistance = function(x1, y1, x2, y2) {
 
 
 /**
+ * Solves system of linear equations using Gaussian elimination method.
+ *
+ * @param {Array.<Array.<number>>} A Augmented matrix (n x n + 1 column)
+ *                                   in row-major order.
+ * @return {Array.<number>} The resulting vector.
+ */
+ol.math.solveLinearSystem = function(A) {
+  var n = A.length;
+
+  if (goog.asserts.ENABLE_ASSERTS) {
+    for (var row = 0; row < n; row++) {
+      goog.asserts.assert(A[row].length == n + 1,
+                          'every row should have correct number of columns');
+    }
+  }
+
+  for (var i = 0; i < n; i++) {
+    // Find max in the i-th column (ignoring i - 1 first rows)
+    var maxRow = i;
+    var maxEl = Math.abs(A[i][i]);
+    for (var r = i + 1; r < n; r++) {
+      var absValue = Math.abs(A[r][i]);
+      if (absValue > maxEl) {
+        maxEl = absValue;
+        maxRow = r;
+      }
+    }
+
+    if (maxEl === 0) {
+      return null; // matrix is singular
+    }
+
+    // Swap max row with i-th (current) row
+    var tmp = A[maxRow];
+    A[maxRow] = A[i];
+    A[i] = tmp;
+
+    // Subtract the i-th row to make all the remaining rows 0 in the i-th column
+    for (var j = i + 1; j < n; j++) {
+      var coef = -A[j][i] / A[i][i];
+      for (var k = i; k < n + 1; k++) {
+        if (i == k) {
+          A[j][k] = 0;
+        } else {
+          A[j][k] += coef * A[i][k];
+        }
+      }
+    }
+  }
+
+  // Solve Ax=b for upper triangular matrix A
+  var x = new Array(n);
+  for (var l = n - 1; l >= 0; l--) {
+    x[l] = A[l][n] / A[l][l];
+    for (var m = l - 1; m >= 0; m--) {
+      A[m][n] -= A[m][l] * x[l];
+    }
+  }
+  return x;
+};
+
+
+/**
  * Converts radians to to degrees.
  *
  * @param {number} angleInRadians Angle in radians.
