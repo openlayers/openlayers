@@ -459,15 +459,23 @@ describe('ol.source.Vector', function() {
       expect(source.getFeaturesCollection()).to.equal(collection);
     });
 
-    it('keeps the collection in sync with the source\'s features', function() {
+    it('adding/removing features keeps the collection in sync', function() {
       var feature = new ol.Feature();
       source.addFeature(feature);
       expect(collection.getLength()).to.be(1);
       source.removeFeature(feature);
       expect(collection.getLength()).to.be(0);
+    });
+
+    it('#clear() features keeps the collection in sync', function() {
+      var feature = new ol.Feature();
       source.addFeatures([feature]);
       expect(collection.getLength()).to.be(1);
       source.clear();
+      expect(collection.getLength()).to.be(0);
+      source.addFeatures([feature]);
+      expect(collection.getLength()).to.be(1);
+      source.clear(true);
       expect(collection.getLength()).to.be(0);
     });
 

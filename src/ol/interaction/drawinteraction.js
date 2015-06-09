@@ -678,7 +678,7 @@ ol.interaction.Draw.prototype.abortDrawing_ = function() {
     this.sketchFeature_ = null;
     this.sketchPoint_ = null;
     this.sketchLine_ = null;
-    this.overlay_.getSource().clear();
+    this.overlay_.getSource().clear(true);
   }
   return sketchFeature;
 };
@@ -706,7 +706,7 @@ ol.interaction.Draw.prototype.updateSketchFeatures_ = function() {
     sketchFeatures.push(this.sketchPoint_);
   }
   var overlaySource = this.overlay_.getSource();
-  overlaySource.clear();
+  overlaySource.clear(true);
   overlaySource.addFeatures(sketchFeatures);
 };
 
