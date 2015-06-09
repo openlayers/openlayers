@@ -1,3 +1,4 @@
+goog.provide('ol.SelectEvent');
 goog.provide('ol.interaction.Select');
 goog.provide('ol.interaction.SelectFilterFunction');
 
