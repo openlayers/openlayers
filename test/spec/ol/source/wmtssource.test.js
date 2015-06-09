@@ -18,8 +18,7 @@ describe('ol.source.WMTS', function() {
 
     it('can create KVP options from spec/ol/format/wmts/ogcsample.xml',
         function() {
-          var options;
-          options = ol.source.WMTS.optionsFromCapabilities(
+          var options = ol.source.WMTS.optionsFromCapabilities(
               capabilities,
               { layer: 'BlueMarbleNextGeneration', matrixSet: 'google3857' });
 
@@ -49,8 +48,7 @@ describe('ol.source.WMTS', function() {
 
     it('can create REST options from spec/ol/format/wmts/ogcsample.xml',
         function() {
-          var options;
-          options = ol.source.WMTS.optionsFromCapabilities(
+          var options = ol.source.WMTS.optionsFromCapabilities(
               capabilities,
               { layer: 'BlueMarbleNextGeneration', matrixSet: 'google3857',
                 requestEncoding: 'REST' });
@@ -134,6 +132,109 @@ describe('ol.source.WMTS', function() {
 
         });
   });
+
+  describe('when creating options from Esri capabilities', function() {
+    var parser = new ol.format.WMTSCapabilities();
+    var capabilities;
+    before(function(done) {
+      afterLoadText('spec/ol/format/wmts/arcgis.xml', function(xml) {
+        try {
+          capabilities = parser.read(xml);
+        } catch (e) {
+          done(e);
+        }
+        done();
+      });
+    });
+
+    it('can create KVP options from spec/ol/format/wmts/arcgis.xml',
+        function() {
+          var options = ol.source.WMTS.optionsFromCapabilities(
+              capabilities, {
+                layer: 'Demographics_USA_Population_Density',
+                matrixSet: 'default028mm'
+              });
+
+          expect(options.urls).to.be.an('array');
+          expect(options.urls).to.have.length(1);
+          expect(options.urls[0]).to.be.eql(
+             'http://services.arcgisonline.com/arcgis/rest/services/' +
+             'Demographics/USA_Population_Density/MapServer/WMTS?');
+        });
+  });
+
+  describe('#getUrls', function() {
+
+    var sourceOptions;
+    var source;
+
+    beforeEach(function() {
+      sourceOptions = {
+        layer: 'layer',
+        style: 'default',
+        matrixSet: 'foo',
+        requestEncoding: 'REST',
+        tileGrid: new ol.tilegrid.WMTS({
+          origin: [0, 0],
+          resolutions: [],
+          matrixIds: []
+        })
+      };
+    });
+
+    describe('using a "url" option', function() {
+      beforeEach(function() {
+        sourceOptions.url = 'some_wmts_url';
+        source = new ol.source.WMTS(sourceOptions);
+      });
+
+      it('returns the WMTS URLs', function() {
+        var urls = source.getUrls();
+        expect(urls).to.be.eql(['some_wmts_url']);
+      });
+
+    });
+
+    describe('using a "urls" option', function() {
+      beforeEach(function() {
+        sourceOptions.urls = ['some_wmts_url1', 'some_wmts_url2'];
+        source = new ol.source.WMTS(sourceOptions);
+      });
+
+      it('returns the WMTS URLs', function() {
+        var urls = source.getUrls();
+        expect(urls).to.be.eql(['some_wmts_url1', 'some_wmts_url2']);
+      });
+
+    });
+
+  });
+
+  describe('#getRequestEncoding', function() {
+
+    var source;
+
+    beforeEach(function() {
+      source = new ol.source.WMTS({
+        layer: 'layer',
+        style: 'default',
+        matrixSet: 'foo',
+        requestEncoding: 'REST',
+        tileGrid: new ol.tilegrid.WMTS({
+          origin: [0, 0],
+          resolutions: [],
+          matrixIds: []
+        })
+      });
+    });
+
+    it('returns the request encoding', function() {
+      var requestEncoding = source.getRequestEncoding();
+      expect(requestEncoding).to.be.eql('REST');
+    });
+
+  });
+
 });
 
 goog.require('ol.format.WMTSCapabilities');

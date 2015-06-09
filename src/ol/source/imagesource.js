@@ -53,7 +53,7 @@ ol.source.Image = function(options) {
       goog.array.isSorted(this.resolutions_,
           function(a, b) {
             return b - a;
-          }, true));
+          }, true), 'resolutions must be null or sorted in descending order');
 
 };
 goog.inherits(ol.source.Image, ol.source.Source);

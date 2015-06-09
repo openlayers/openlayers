@@ -73,6 +73,18 @@ describe('ol.geom.MultiPoint', function() {
       expect(multiPoint.getStride()).to.be(2);
     });
 
+    describe('#intersectsExtent()', function() {
+
+      it('returns true for extent covering a point', function() {
+        expect(multiPoint.intersectsExtent([1, 2, 2, 2])).to.be(true);
+      });
+
+      it('returns false for non-matching extent within own extent', function() {
+        expect(multiPoint.intersectsExtent([2, 3, 2, 4])).to.be(false);
+      });
+
+    });
+
   });
 
   describe('construct with 3D coordinates', function() {
@@ -253,5 +265,6 @@ describe('ol.geom.MultiPoint', function() {
 
 
 goog.require('ol.extent');
+goog.require('ol.geom.GeometryLayout');
 goog.require('ol.geom.MultiPoint');
 goog.require('ol.geom.Point');

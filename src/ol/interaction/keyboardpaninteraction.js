@@ -4,7 +4,6 @@ goog.require('goog.asserts');
 goog.require('goog.events.KeyCodes');
 goog.require('goog.events.KeyHandler.EventType');
 goog.require('goog.functions');
-goog.require('ol');
 goog.require('ol.coordinate');
 goog.require('ol.events.ConditionType');
 goog.require('ol.events.condition');
@@ -49,6 +48,12 @@ ol.interaction.KeyboardPan = function(opt_options) {
    * @private
    * @type {number}
    */
+  this.duration_ = goog.isDef(options.duration) ? options.duration : 100;
+
+  /**
+   * @private
+   * @type {number}
+   */
   this.pixelDelta_ = goog.isDef(options.pixelDelta) ? options.pixelDelta : 128;
 
 };
@@ -56,6 +61,9 @@ goog.inherits(ol.interaction.KeyboardPan, ol.interaction.Interaction);
 
 
 /**
+ * Handles the {@link ol.MapBrowserEvent map browser event} if it was a
+ * `KeyEvent`, and decides the direction to pan to (if an arrow key was
+ * pressed).
  * @param {ol.MapBrowserEvent} mapBrowserEvent Map browser event.
  * @return {boolean} `false` to stop event propagation.
  * @this {ol.interaction.KeyboardPan}
@@ -74,7 +82,7 @@ ol.interaction.KeyboardPan.handleEvent = function(mapBrowserEvent) {
         keyCode == goog.events.KeyCodes.UP)) {
       var map = mapBrowserEvent.map;
       var view = map.getView();
-      goog.asserts.assert(!goog.isNull(view));
+      goog.asserts.assert(!goog.isNull(view), 'view should not be null');
       var viewState = view.getState();
       var mapUnitsDelta = viewState.resolution * this.pixelDelta_;
       var deltaX = 0, deltaY = 0;
@@ -89,8 +97,7 @@ ol.interaction.KeyboardPan.handleEvent = function(mapBrowserEvent) {
       }
       var delta = [deltaX, deltaY];
       ol.coordinate.rotate(delta, viewState.rotation);
-      ol.interaction.Interaction.pan(
-          map, view, delta, ol.KEYBOARD_PAN_DURATION);
+      ol.interaction.Interaction.pan(map, view, delta, this.duration_);
       mapBrowserEvent.preventDefault();
       stopEvent = true;
     }

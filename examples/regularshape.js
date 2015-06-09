@@ -15,58 +15,53 @@ var fill = new ol.style.Fill({color: 'red'});
 
 var styles = {
   'square': [new ol.style.Style({
-    image: new ol.style.RegularShape(
-        /** @type {olx.style.RegularShapeOptions} */({
-          fill: fill,
-          stroke: stroke,
-          points: 4,
-          radius: 10,
-          angle: Math.PI / 4
-        }))
+    image: new ol.style.RegularShape({
+      fill: fill,
+      stroke: stroke,
+      points: 4,
+      radius: 10,
+      angle: Math.PI / 4
+    })
   })],
   'triangle': [new ol.style.Style({
-    image: new ol.style.RegularShape(
-        /** @type {olx.style.RegularShapeOptions} */({
-          fill: fill,
-          stroke: stroke,
-          points: 3,
-          radius: 10,
-          rotation: Math.PI / 4,
-          angle: 0
-        }))
+    image: new ol.style.RegularShape({
+      fill: fill,
+      stroke: stroke,
+      points: 3,
+      radius: 10,
+      rotation: Math.PI / 4,
+      angle: 0
+    })
   })],
   'star': [new ol.style.Style({
-    image: new ol.style.RegularShape(
-        /** @type {olx.style.RegularShapeOptions} */({
-          fill: fill,
-          stroke: stroke,
-          points: 5,
-          radius: 10,
-          radius2: 4,
-          angle: 0
-        }))
+    image: new ol.style.RegularShape({
+      fill: fill,
+      stroke: stroke,
+      points: 5,
+      radius: 10,
+      radius2: 4,
+      angle: 0
+    })
   })],
   'cross': [new ol.style.Style({
-    image: new ol.style.RegularShape(
-        /** @type {olx.style.RegularShapeOptions} */({
-          fill: fill,
-          stroke: stroke,
-          points: 4,
-          radius: 10,
-          radius2: 0,
-          angle: 0
-        }))
+    image: new ol.style.RegularShape({
+      fill: fill,
+      stroke: stroke,
+      points: 4,
+      radius: 10,
+      radius2: 0,
+      angle: 0
+    })
   })],
   'x': [new ol.style.Style({
-    image: new ol.style.RegularShape(
-        /** @type {olx.style.RegularShapeOptions} */({
-          fill: fill,
-          stroke: stroke,
-          points: 4,
-          radius: 10,
-          radius2: 0,
-          angle: Math.PI / 4
-        }))
+    image: new ol.style.RegularShape({
+      fill: fill,
+      stroke: stroke,
+      points: 4,
+      radius: 10,
+      radius2: 0,
+      angle: Math.PI / 4
+    })
   })]
 };
 

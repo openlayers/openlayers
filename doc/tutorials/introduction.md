@@ -39,6 +39,4 @@ Class namespaces, such as `ol.layer` have a base class type with the same name, 
 
 Source files are similarly organised, with a directory for each class namespace. Names are however all lower-case, and the subclasses repeat the superclass type in their name, for example, `ol/layer/vectorlayer.js`.
 
-The naming structure means that there are sometimes 2 objects with the same name but different initial, such as `ol.feature`, a simple object with static functions to be used with features, and `ol.Feature`, a class used to instantiate new features. These two objects are however stored in the same file, in this case, `ol/feature.js`
-
 OL3 follows the convention that the names of private properties and methods, that is, those that are not part of the API, end in an underscore. In general, instance properties are private and accessed using accessors.

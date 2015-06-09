@@ -1,5 +1,6 @@
 goog.provide('ol.layer.Vector');
 
+goog.require('goog.asserts');
 goog.require('goog.object');
 goog.require('ol.layer.Layer');
 goog.require('ol.style.Style');
@@ -32,11 +33,17 @@ ol.layer.Vector = function(opt_options) {
   var options = goog.isDef(opt_options) ?
       opt_options : /** @type {olx.layer.VectorOptions} */ ({});
 
+  goog.asserts.assert(
+      !goog.isDef(options.renderOrder) || goog.isNull(options.renderOrder) ||
+      goog.isFunction(options.renderOrder),
+      'renderOrder must be a comparator function');
+
   var baseOptions = goog.object.clone(options);
 
   delete baseOptions.style;
   delete baseOptions.renderBuffer;
   delete baseOptions.updateWhileAnimating;
+  delete baseOptions.updateWhileInteracting;
   goog.base(this, /** @type {olx.layer.LayerOptions} */ (baseOptions));
 
   /**
@@ -69,6 +76,13 @@ ol.layer.Vector = function(opt_options) {
   this.updateWhileAnimating_ = goog.isDef(options.updateWhileAnimating) ?
       options.updateWhileAnimating : false;
 
+  /**
+   * @type {boolean}
+   * @private
+   */
+  this.updateWhileInteracting_ = goog.isDef(options.updateWhileInteracting) ?
+      options.updateWhileInteracting : false;
+
 };
 goog.inherits(ol.layer.Vector, ol.layer.Layer);
 
@@ -92,6 +106,7 @@ ol.layer.Vector.prototype.getRenderOrder = function() {
 
 
 /**
+ * Return the associated {@link ol.source.Vector vectorsource} of the layer.
  * @function
  * @return {ol.source.Vector} Source.
  * @api stable
@@ -131,10 +146,23 @@ ol.layer.Vector.prototype.getUpdateWhileAnimating = function() {
 
 
 /**
+ * @return {boolean} Whether the rendered layer should be updated while
+ *     interacting.
+ */
+ol.layer.Vector.prototype.getUpdateWhileInteracting = function() {
+  return this.updateWhileInteracting_;
+};
+
+
+/**
  * @param {function(ol.Feature, ol.Feature):number|null|undefined} renderOrder
  *     Render order.
  */
 ol.layer.Vector.prototype.setRenderOrder = function(renderOrder) {
+  goog.asserts.assert(
+      !goog.isDef(renderOrder) || goog.isNull(renderOrder) ||
+      goog.isFunction(renderOrder),
+      'renderOrder must be a comparator function');
   this.set(ol.layer.VectorProperty.RENDER_ORDER, renderOrder);
 };
 

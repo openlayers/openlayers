@@ -166,6 +166,7 @@ ol.source.ImageMapGuide.prototype.getImage =
 
 
 /**
+ * Return the image load function of the source.
  * @return {ol.ImageLoadFunctionType} The image load function.
  * @api
  */
@@ -176,7 +177,7 @@ ol.source.ImageMapGuide.prototype.getImageLoadFunction = function() {
 
 /**
  * @param {ol.Extent} extent The map extents.
- * @param {ol.Size} size the viewport size.
+ * @param {ol.Size} size The viewport size.
  * @param {number} metersPerUnit The meters-per-unit value.
  * @param {number} dpi The display resolution.
  * @return {number} The computed map scale.
@@ -238,6 +239,7 @@ ol.source.ImageMapGuide.prototype.getUrl =
 
 
 /**
+ * Set the image load function of the MapGuide source.
  * @param {ol.ImageLoadFunctionType} imageLoadFunction Image load function.
  * @api
  */

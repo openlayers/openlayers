@@ -161,7 +161,7 @@ function generateExterns(typedefs, symbols, externs, base) {
   // defined as types in the ol externs file. But the corresponding @typedef's
   // are not marked with an @api annotation because abstract base classes are
   // not instantiated by applications. Yet, we need to have a type defined
-  // in the ol externs file for these options types. So we just use
+  // in the ol externs file for these options types. So we just use
   // @typedef {Object}.
   Object.keys(constructorOptionsTypes).forEach(function(key) {
     lines.push('/**');

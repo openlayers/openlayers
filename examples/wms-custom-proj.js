@@ -86,7 +86,7 @@ var map = new ol.Map({
     })
   ]),
   layers: layers,
-  renderer: exampleNS.getRendererFromQueryString(),
+  renderer: common.getRendererFromQueryString(),
   target: 'map',
   view: new ol.View({
     projection: projection,

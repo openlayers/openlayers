@@ -14,7 +14,7 @@ var map = new ol.Map({
   layers: [imagery],
   target: 'map',
   view: new ol.View({
-    center: ol.proj.transform([-120, 50], 'EPSG:4326', 'EPSG:3857'),
+    center: ol.proj.fromLonLat([-120, 50]),
     zoom: 6
   })
 });
@@ -91,7 +91,6 @@ select.onchange = function() {
 
 /**
  * Apply a filter on "postcompose" events.
- * @param {ol.render.Event} event Render event.
  */
 imagery.on('postcompose', function(event) {
   convolve(event.context, selectedKernel);

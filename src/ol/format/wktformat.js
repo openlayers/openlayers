@@ -18,6 +18,10 @@ goog.require('ol.geom.Polygon');
 
 
 /**
+ * @classdesc
+ * Geometry format for reading and writing data in the `WellKnownText` (WKT)
+ * format.
+ *
  * @constructor
  * @extends {ol.format.TextFeature}
  * @param {olx.format.WKTOptions=} opt_options Options.
@@ -164,7 +168,8 @@ ol.format.WKT.encodeMultiPolygonGeometry_ = function(geom) {
 ol.format.WKT.encode_ = function(geom) {
   var type = geom.getType();
   var geometryEncoder = ol.format.WKT.GeometryEncoder_[type];
-  goog.asserts.assert(goog.isDef(geometryEncoder));
+  goog.asserts.assert(goog.isDef(geometryEncoder),
+      'geometryEncoder should be defined');
   var enc = geometryEncoder(geom);
   type = type.toUpperCase();
   if (enc.length === 0) {
@@ -208,7 +213,7 @@ ol.format.WKT.prototype.parse_ = function(wkt) {
  * Read a feature from a WKT source.
  *
  * @function
- * @param {ArrayBuffer|Document|Node|Object|string} source Source.
+ * @param {Document|Node|Object|string} source Source.
  * @param {olx.format.ReadOptions=} opt_options Read options.
  * @return {ol.Feature} Feature.
  * @api stable
@@ -234,7 +239,7 @@ ol.format.WKT.prototype.readFeatureFromText = function(text, opt_options) {
  * Read all features from a WKT source.
  *
  * @function
- * @param {ArrayBuffer|Document|Node|Object|string} source Source.
+ * @param {Document|Node|Object|string} source Source.
  * @param {olx.format.ReadOptions=} opt_options Read options.
  * @return {Array.<ol.Feature>} Features.
  * @api stable
@@ -269,7 +274,7 @@ ol.format.WKT.prototype.readFeaturesFromText = function(text, opt_options) {
  * Read a single geometry from a WKT source.
  *
  * @function
- * @param {ArrayBuffer|Document|Node|Object|string} source Source.
+ * @param {Document|Node|Object|string} source Source.
  * @param {olx.format.ReadOptions=} opt_options Read options.
  * @return {ol.geom.Geometry} Geometry.
  * @api stable
@@ -486,12 +491,23 @@ ol.format.WKT.Lexer.prototype.nextToken = function() {
 ol.format.WKT.Lexer.prototype.readNumber_ = function() {
   var c, index = this.index_;
   var decimal = false;
+  var scientificNotation = false;
   do {
     if (c == '.') {
       decimal = true;
+    } else if (c == 'e' || c == 'E') {
+      scientificNotation = true;
     }
     c = this.nextChar_();
-  } while (this.isNumeric_(c, decimal));
+  } while (
+      this.isNumeric_(c, decimal) ||
+      // if we haven't detected a scientific number before, 'e' or 'E'
+      // hint that we should continue to read
+      !scientificNotation && (c == 'e' || c == 'E') ||
+      // once we know that we have a scientific number, both '-' and '+'
+      // are allowed
+      scientificNotation && (c == '-' || c == '+')
+  );
   return parseFloat(this.wkt.substring(index, this.index_--));
 };
 
@@ -568,7 +584,8 @@ ol.format.WKT.Parser.prototype.match = function(type) {
 ol.format.WKT.Parser.prototype.parse = function() {
   this.consume_();
   var geometry = this.parseGeometry_();
-  goog.asserts.assert(this.token_.type == ol.format.WKT.TokenType.EOF);
+  goog.asserts.assert(this.token_.type == ol.format.WKT.TokenType.EOF,
+      'token type should be end of file');
   return geometry;
 };
 

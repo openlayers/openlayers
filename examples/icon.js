@@ -46,7 +46,7 @@ var rasterLayer = new ol.layer.Tile({
 });
 
 var map = new ol.Map({
-  renderer: exampleNS.getRendererFromQueryString(),
+  renderer: common.getRendererFromQueryString(),
   layers: [rasterLayer, vectorLayer],
   target: document.getElementById('map'),
   view: new ol.View({

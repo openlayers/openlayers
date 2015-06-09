@@ -203,6 +203,73 @@ describe('ol.geom.Circle', function() {
 
     });
 
+    describe('#intersectsExtent', function() {
+
+      it('returns false for non-intersecting extents (wide outside own bbox)',
+         function() {
+           var wideOutsideLeftTop = [-3, 2, -2, 3];
+           var wideOutsideRightTop = [2, 2, 3, 3];
+           var wideOutsideRightBottom = [2, -3, 3, -2];
+           var wideOutsideLeftBottom = [-3, -3, -2, -2];
+           expect(circle.intersectsExtent(wideOutsideLeftTop)).to.be(false);
+           expect(circle.intersectsExtent(wideOutsideRightTop)).to.be(false);
+           expect(circle.intersectsExtent(wideOutsideRightBottom)).to.be(false);
+           expect(circle.intersectsExtent(wideOutsideLeftBottom)).to.be(false);
+         }
+      );
+
+      it('returns false for non-intersecting extents (inside own bbox)',
+         function() {
+           var nearOutsideLeftTop = [-1, 0.9, -0.9, 1];
+           var nearOutsideRightTop = [0.9, 0.9, 1, 1];
+           var nearOutsideRightBottom = [0.9, -1, 1, -0.9];
+           var nearOutsideLeftBottom = [-1, -1, -0.9, -0.9];
+           expect(circle.intersectsExtent(nearOutsideLeftTop)).to.be(false);
+           expect(circle.intersectsExtent(nearOutsideRightTop)).to.be(false);
+           expect(circle.intersectsExtent(nearOutsideRightBottom)).to.be(false);
+           expect(circle.intersectsExtent(nearOutsideLeftBottom)).to.be(false);
+         }
+      );
+
+      it('returns true for extents that intersect clearly', function() {
+        var intersectingLeftTop = [-1.5, 0.5, -0.5, 1.5];
+        var intersectingRightTop = [0.5, 0.5, 1.5, 1.5];
+        var intersectingRightBottom = [0.5, -1.5, 1.5, -0.5];
+        var intersectingLeftBottom = [-1.5, -1.5, -0.5, -0.5];
+        expect(circle.intersectsExtent(intersectingLeftTop)).to.be(true);
+        expect(circle.intersectsExtent(intersectingRightTop)).to.be(true);
+        expect(circle.intersectsExtent(intersectingRightBottom)).to.be(true);
+        expect(circle.intersectsExtent(intersectingLeftBottom)).to.be(true);
+      });
+
+      it('returns true for extents that touch the circumference', function() {
+        var touchCircumferenceLeft = [-2, 0, -1, 1];
+        var touchCircumferenceTop = [0, 1, 1, 2];
+        var touchCircumferenceRight = [1, -1, 2, 0];
+        var touchCircumferenceBottom = [-1, -2, 0, -1];
+        expect(circle.intersectsExtent(touchCircumferenceLeft)).to.be(true);
+        expect(circle.intersectsExtent(touchCircumferenceTop)).to.be(true);
+        expect(circle.intersectsExtent(touchCircumferenceRight)).to.be(true);
+        expect(circle.intersectsExtent(touchCircumferenceBottom)).to.be(true);
+      });
+
+      it('returns true for a contained extent', function() {
+        var containedExtent = [-0.5, -0.5, 0.5, 0.5];
+        expect(circle.intersectsExtent(containedExtent)).to.be(true);
+      });
+
+      it('returns true for a covering extent', function() {
+        var bigCoveringExtent = [-5, -5, 5, 5];
+        expect(circle.intersectsExtent(bigCoveringExtent)).to.be(true);
+      });
+
+      it('returns true for the geom\'s own extent', function() {
+        var circleExtent = circle.getExtent();
+        expect(circle.intersectsExtent(circleExtent)).to.be(true);
+      });
+
+    });
+
   });
 
 });
@@ -210,3 +277,4 @@ describe('ol.geom.Circle', function() {
 
 goog.require('ol.geom.Circle');
 goog.require('ol.geom.GeometryType');
+goog.require('ol.geom.GeometryLayout');

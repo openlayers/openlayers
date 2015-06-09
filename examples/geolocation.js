@@ -4,7 +4,6 @@ goog.require('ol.Geolocation');
 goog.require('ol.Map');
 goog.require('ol.View');
 goog.require('ol.control');
-goog.require('ol.dom.Input');
 goog.require('ol.geom.Point');
 goog.require('ol.layer.Tile');
 goog.require('ol.source.OSM');
@@ -37,16 +36,21 @@ var geolocation = new ol.Geolocation({
   projection: view.getProjection()
 });
 
-var track = new ol.dom.Input(document.getElementById('track'));
-track.bindTo('checked', geolocation, 'tracking');
+function el(id) {
+  return document.getElementById(id);
+}
+
+el('track').addEventListener('change', function() {
+  geolocation.setTracking(this.checked);
+});
 
 // update the HTML page when the position changes.
 geolocation.on('change', function() {
-  $('#accuracy').text(geolocation.getAccuracy() + ' [m]');
-  $('#altitude').text(geolocation.getAltitude() + ' [m]');
-  $('#altitudeAccuracy').text(geolocation.getAltitudeAccuracy() + ' [m]');
-  $('#heading').text(geolocation.getHeading() + ' [rad]');
-  $('#speed').text(geolocation.getSpeed() + ' [m/s]');
+  el('accuracy').innerText = geolocation.getAccuracy() + ' [m]';
+  el('altitude').innerText = geolocation.getAltitude() + ' [m]';
+  el('altitudeAccuracy').innerText = geolocation.getAltitudeAccuracy() + ' [m]';
+  el('heading').innerText = geolocation.getHeading() + ' [rad]';
+  el('speed').innerText = geolocation.getSpeed() + ' [m/s]';
 });
 
 // handle geolocation error.
@@ -57,7 +61,9 @@ geolocation.on('error', function(error) {
 });
 
 var accuracyFeature = new ol.Feature();
-accuracyFeature.bindTo('geometry', geolocation, 'accuracyGeometry');
+geolocation.on('change:accuracyGeometry', function() {
+  accuracyFeature.setGeometry(geolocation.getAccuracyGeometry());
+});
 
 var positionFeature = new ol.Feature();
 positionFeature.setStyle(new ol.style.Style({
@@ -73,10 +79,11 @@ positionFeature.setStyle(new ol.style.Style({
   })
 }));
 
-positionFeature.bindTo('geometry', geolocation, 'position')
-    .transform(function() {}, function(coordinates) {
-      return coordinates ? new ol.geom.Point(coordinates) : null;
-    });
+geolocation.on('change:position', function() {
+  var coordinates = geolocation.getPosition();
+  positionFeature.setGeometry(coordinates ?
+      new ol.geom.Point(coordinates) : null);
+});
 
 var featuresOverlay = new ol.FeatureOverlay({
   map: map,

@@ -88,6 +88,18 @@ describe('ol.geom.MultiLineString', function() {
 
     });
 
+    describe('#intersectsExtent()', function() {
+
+      it('returns true for intersecting part of lineString', function() {
+        expect(multiLineString.intersectsExtent([1, 2, 2, 3])).to.be(true);
+      });
+
+      it('returns false for non-matching extent within own extent', function() {
+        expect(multiLineString.intersectsExtent([1, 7, 2, 8])).to.be(false);
+      });
+
+    });
+
   });
 
   describe('construct with 3D coordinates', function() {
@@ -322,5 +334,6 @@ describe('ol.geom.MultiLineString', function() {
 
 
 goog.require('ol.extent');
+goog.require('ol.geom.GeometryLayout');
 goog.require('ol.geom.LineString');
 goog.require('ol.geom.MultiLineString');

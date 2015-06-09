@@ -73,6 +73,22 @@ describe('ol.geom.LineString', function() {
       expect(lineString.getStride()).to.be(2);
     });
 
+    describe('#intersectsExtent', function() {
+
+      it('return false for non matching extent', function() {
+        expect(lineString.intersectsExtent([1, 3, 1.9, 4])).to.be(false);
+      });
+
+      it('return true for extent on midpoint', function() {
+        expect(lineString.intersectsExtent([2, 3, 4, 3])).to.be(true);
+      });
+
+      it('returns true for the geom\'s own extent', function() {
+        expect(lineString.intersectsExtent(lineString.getExtent())).to.be(true);
+      });
+
+    });
+
   });
 
   describe('construct with 3D coordinates', function() {
@@ -100,6 +116,22 @@ describe('ol.geom.LineString', function() {
 
     it('has the expected stride', function() {
       expect(lineString.getStride()).to.be(3);
+    });
+
+    describe('#intersectsExtent', function() {
+
+      it('return false for non matching extent', function() {
+        expect(lineString.intersectsExtent([1, 3, 1.9, 4])).to.be(false);
+      });
+
+      it('return true for extent on midpoint', function() {
+        expect(lineString.intersectsExtent([2, 3, 4, 3])).to.be(true);
+      });
+
+      it('returns true for the geom\'s own extent', function() {
+        expect(lineString.intersectsExtent(lineString.getExtent())).to.be(true);
+      });
+
     });
 
   });
@@ -132,6 +164,22 @@ describe('ol.geom.LineString', function() {
       expect(lineString.getStride()).to.be(3);
     });
 
+    describe('#intersectsExtent', function() {
+
+      it('return false for non matching extent', function() {
+        expect(lineString.intersectsExtent([1, 3, 1.9, 4])).to.be(false);
+      });
+
+      it('return true for extent on midpoint', function() {
+        expect(lineString.intersectsExtent([2, 3, 4, 3])).to.be(true);
+      });
+
+      it('returns true for the geom\'s own extent', function() {
+        expect(lineString.intersectsExtent(lineString.getExtent())).to.be(true);
+      });
+
+    });
+
   });
 
   describe('construct with 4D coordinates', function() {
@@ -159,6 +207,22 @@ describe('ol.geom.LineString', function() {
 
     it('has the expected stride', function() {
       expect(lineString.getStride()).to.be(4);
+    });
+
+    describe('#intersectsExtent', function() {
+
+      it('return false for non matching extent', function() {
+        expect(lineString.intersectsExtent([1, 3, 1.9, 4])).to.be(false);
+      });
+
+      it('return true for extent on midpoint', function() {
+        expect(lineString.intersectsExtent([2, 3, 4, 3])).to.be(true);
+      });
+
+      it('returns true for the geom\'s own extent', function() {
+        expect(lineString.intersectsExtent(lineString.getExtent())).to.be(true);
+      });
+
     });
 
   });
@@ -302,4 +366,5 @@ describe('ol.geom.LineString', function() {
 
 
 goog.require('ol.extent');
+goog.require('ol.geom.GeometryLayout');
 goog.require('ol.geom.LineString');

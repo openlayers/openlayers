@@ -1,6 +1,6 @@
 {
   "name": "openlayers",
-  "version": "3.4.0",
+  "version": "3.6.0",
   "description": "Build tools and sources for developing OpenLayers based mapping applications",
   "keywords": [
     "map",
@@ -19,32 +19,45 @@
     "type": "git",
     "url": "git://github.com/openlayers/ol3.git"
   },
-  "license": "BSD",
+  "license": "BSD-2-Clause",
   "bugs": {
     "url": "https://github.com/openlayers/ol3/issues"
   },
   "dependencies": {
     "async": "0.9.0",
-    "closure-util": "1.3.0",
+    "closure-util": "1.4.0",
     "fs-extra": "0.12.0",
+    "glob": "5.0.3",
     "graceful-fs": "3.0.2",
+    "handlebars": "3.0.1",
     "htmlparser2": "3.7.3",
     "jsdoc": "3.3.0-alpha9",
+    "marked": "0.3.3",
+    "metalsmith": "1.6.0",
+    "metalsmith-templates": "0.7.0",
     "nomnom": "1.8.0",
     "rbush": "1.3.5",
     "temp": "0.8.1",
-    "walk": "2.3.4"
+    "walk": "2.3.4",
+    "wrench": "1.5.8",
+    "browserify": "9.0.3"
   },
   "devDependencies": {
     "clean-css": "2.2.16",
+    "coveralls": "2.11.2",
+    "debounce": "^1.0.0",
     "expect.js": "0.3.1",
+    "gaze": "^0.5.1",
+    "istanbul": "0.3.13",
     "jquery": "2.1.1",
     "jshint": "2.5.6",
     "mocha": "1.21.5",
     "mocha-phantomjs": "3.5.1",
     "phantomjs": "1.9.10",
-    "proj4": "2.3.3",
-    "sinon": "1.10.3"
+    "proj4": "2.3.6",
+    "resemblejs": "1.2.0",
+    "sinon": "1.10.3",
+    "slimerjs-edge": "0.10.0-pre-2"
   },
   "ext": [
     "rbush"

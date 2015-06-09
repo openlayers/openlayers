@@ -12,9 +12,11 @@ goog.require('ol.Collection');
 goog.require('ol.Map');
 goog.require('ol.MapEventType');
 goog.require('ol.Object');
+goog.require('ol.ObjectEventType');
 goog.require('ol.Overlay');
 goog.require('ol.OverlayPositioning');
 goog.require('ol.View');
+goog.require('ol.ViewProperty');
 goog.require('ol.control.Control');
 goog.require('ol.coordinate');
 goog.require('ol.css');
@@ -88,12 +90,7 @@ ol.control.OverviewMap = function(opt_options) {
   goog.events.listen(button, goog.events.EventType.CLICK,
       this.handleClick_, false, this);
 
-  goog.events.listen(button, [
-    goog.events.EventType.MOUSEOUT,
-    goog.events.EventType.FOCUSOUT
-  ], function() {
-    this.blur();
-  }, false);
+  ol.control.Control.bindMouseOutFocusOutBlur(button);
 
   var ovmapDiv = goog.dom.createDom(goog.dom.TagName.DIV, 'ol-overviewmap-map');
 
@@ -155,58 +152,94 @@ goog.inherits(ol.control.OverviewMap, ol.control.Control);
  * @api
  */
 ol.control.OverviewMap.prototype.setMap = function(map) {
-  var currentMap = this.getMap();
-
-  if (goog.isNull(map) && !goog.isNull(currentMap)) {
-    goog.events.unlisten(
-        currentMap, ol.Object.getChangeEventType(ol.MapProperty.VIEW),
-        this.handleViewChanged_, false, this);
-  }
-
-  goog.base(this, 'setMap', map);
-
-  if (!goog.isNull(map)) {
-
-    // if no layers were set for the overviewmap map, then bind with
-    // those in the main map
-    if (this.ovmap_.getLayers().getLength() === 0) {
-      this.ovmap_.bindTo(ol.MapProperty.LAYERGROUP, map);
-    }
-
-    // bind current map view, or any new one
-    this.bindView_();
-
-    goog.events.listen(
-        map, ol.Object.getChangeEventType(ol.MapProperty.VIEW),
-        this.handleViewChanged_, false, this);
-
-    this.ovmap_.updateSize();
-    this.resetExtent_();
-  }
-};
-
-
-/**
- * Bind some actions to the main map view.
- * @private
- */
-ol.control.OverviewMap.prototype.bindView_ = function() {
-  var map = this.getMap();
-  var view = map.getView();
-
-  // if the map does not have a view, we can't act upon it
-  if (goog.isNull(view)) {
+  var oldMap = this.getMap();
+  if (map === oldMap) {
     return;
   }
+  if (oldMap) {
+    var oldView = oldMap.getView();
+    if (oldView) {
+      this.unbindView_(oldView);
+    }
+  }
+  goog.base(this, 'setMap', map);
 
-  // FIXME - the overviewmap view rotation currently follows the one used
-  // by the main map view.  We could support box rotation instead.  The choice
-  // between the 2 modes would be made in a single option
-  this.ovmap_.getView().bindTo(ol.ViewProperty.ROTATION, view);
+  if (map) {
+    this.listenerKeys.push(goog.events.listen(
+        map, ol.ObjectEventType.PROPERTYCHANGE,
+        this.handleMapPropertyChange_, false, this));
+
+    // TODO: to really support map switching, this would need to be reworked
+    if (this.ovmap_.getLayers().getLength() === 0) {
+      this.ovmap_.setLayerGroup(map.getLayerGroup());
+    }
+
+    var view = map.getView();
+    if (view) {
+      this.bindView_(view);
+      if (view.isDef()) {
+        this.ovmap_.updateSize();
+        this.resetExtent_();
+      }
+    }
+  }
 };
 
 
 /**
+ * Handle map property changes.  This only deals with changes to the map's view.
+ * @param {ol.ObjectEvent} event The propertychange event.
+ * @private
+ */
+ol.control.OverviewMap.prototype.handleMapPropertyChange_ = function(event) {
+  if (event.key === ol.MapProperty.VIEW) {
+    var oldView = /** @type {ol.View} */ (event.oldValue);
+    if (oldView) {
+      this.unbindView_(oldView);
+    }
+    var newView = this.getMap().getView();
+    this.bindView_(newView);
+  }
+};
+
+
+/**
+ * Register listeners for view property changes.
+ * @param {ol.View} view The view.
+ * @private
+ */
+ol.control.OverviewMap.prototype.bindView_ = function(view) {
+  goog.events.listen(view,
+      ol.Object.getChangeEventType(ol.ViewProperty.ROTATION),
+      this.handleRotationChanged_, false, this);
+};
+
+
+/**
+ * Unregister listeners for view property changes.
+ * @param {ol.View} view The view.
+ * @private
+ */
+ol.control.OverviewMap.prototype.unbindView_ = function(view) {
+  goog.events.unlisten(view,
+      ol.Object.getChangeEventType(ol.ViewProperty.ROTATION),
+      this.handleRotationChanged_, false, this);
+};
+
+
+/**
+ * Handle rotation changes to the main map.
+ * TODO: This should rotate the extent rectrangle instead of the
+ * overview map's view.
+ * @private
+ */
+ol.control.OverviewMap.prototype.handleRotationChanged_ = function() {
+  this.ovmap_.getView().setRotation(this.getMap().getView().getRotation());
+};
+
+
+/**
+ * Update the overview map element.
  * @param {ol.MapEvent} mapEvent Map event.
  * @this {ol.control.OverviewMap}
  * @api
@@ -214,16 +247,6 @@ ol.control.OverviewMap.prototype.bindView_ = function() {
 ol.control.OverviewMap.render = function(mapEvent) {
   this.validateExtent_();
   this.updateBox_();
-};
-
-
-/**
- * Called on main map view changed.
- * @param {goog.events.Event} event Event.
- * @private
- */
-ol.control.OverviewMap.prototype.handleViewChanged_ = function(event) {
-  this.bindView_();
 };
 
 
@@ -247,17 +270,17 @@ ol.control.OverviewMap.prototype.validateExtent_ = function() {
   }
 
   var mapSize = map.getSize();
-  goog.asserts.assertArray(mapSize);
+  goog.asserts.assertArray(mapSize, 'mapSize should be an array');
 
   var view = map.getView();
-  goog.asserts.assert(goog.isDef(view));
+  goog.asserts.assert(goog.isDef(view), 'view should be defined');
   var extent = view.calculateExtent(mapSize);
 
   var ovmapSize = ovmap.getSize();
-  goog.asserts.assertArray(ovmapSize);
+  goog.asserts.assertArray(ovmapSize, 'ovmapSize should be an array');
 
   var ovview = ovmap.getView();
-  goog.asserts.assert(goog.isDef(ovview));
+  goog.asserts.assert(goog.isDef(ovview), 'ovview should be defined');
   var ovextent = ovview.calculateExtent(ovmapSize);
 
   var topLeftPixel =
@@ -296,17 +319,17 @@ ol.control.OverviewMap.prototype.resetExtent_ = function() {
   var ovmap = this.ovmap_;
 
   var mapSize = map.getSize();
-  goog.asserts.assertArray(mapSize);
+  goog.asserts.assertArray(mapSize, 'mapSize should be an array');
 
   var view = map.getView();
-  goog.asserts.assert(goog.isDef(view));
+  goog.asserts.assert(goog.isDef(view), 'view should be defined');
   var extent = view.calculateExtent(mapSize);
 
   var ovmapSize = ovmap.getSize();
-  goog.asserts.assertArray(ovmapSize);
+  goog.asserts.assertArray(ovmapSize, 'ovmapSize should be an array');
 
   var ovview = ovmap.getView();
-  goog.asserts.assert(goog.isDef(ovview));
+  goog.asserts.assert(goog.isDef(ovview), 'ovview should be defined');
 
   // get how many times the current map overview could hold different
   // box sizes using the min and max ratio, pick the step in the middle used
@@ -329,10 +352,10 @@ ol.control.OverviewMap.prototype.recenter_ = function() {
   var ovmap = this.ovmap_;
 
   var view = map.getView();
-  goog.asserts.assert(goog.isDef(view));
+  goog.asserts.assert(goog.isDef(view), 'view should be defined');
 
   var ovview = ovmap.getView();
-  goog.asserts.assert(goog.isDef(ovview));
+  goog.asserts.assert(goog.isDef(ovview), 'ovview should be defined');
 
   ovview.setCenter(view.getCenter());
 };
@@ -351,19 +374,19 @@ ol.control.OverviewMap.prototype.updateBox_ = function() {
   }
 
   var mapSize = map.getSize();
-  goog.asserts.assertArray(mapSize);
+  goog.asserts.assertArray(mapSize, 'mapSize should be an array');
 
   var view = map.getView();
-  goog.asserts.assert(goog.isDef(view));
+  goog.asserts.assert(goog.isDef(view), 'view should be defined');
 
   var ovview = ovmap.getView();
-  goog.asserts.assert(goog.isDef(ovview));
+  goog.asserts.assert(goog.isDef(ovview), 'ovview should be defined');
 
   var ovmapSize = ovmap.getSize();
-  goog.asserts.assertArray(ovmapSize);
+  goog.asserts.assertArray(ovmapSize, 'ovmapSize should be an array');
 
   var rotation = view.getRotation();
-  goog.asserts.assert(goog.isDef(rotation));
+  goog.asserts.assert(goog.isDef(rotation), 'rotation should be defined');
 
   var overlay = this.boxOverlay_;
   var box = this.boxOverlay_.getElement();
@@ -398,7 +421,7 @@ ol.control.OverviewMap.prototype.calculateCoordinateRotate_ = function(
 
   var map = this.getMap();
   var view = map.getView();
-  goog.asserts.assert(goog.isDef(view));
+  goog.asserts.assert(goog.isDef(view), 'view should be defined');
 
   var currentCenter = view.getCenter();
 
@@ -452,6 +475,7 @@ ol.control.OverviewMap.prototype.handleToggle_ = function() {
 
 
 /**
+ * Return `true` if the overview map is collapsible, `false` otherwise.
  * @return {boolean} True if the widget is collapsible.
  * @api stable
  */
@@ -461,6 +485,7 @@ ol.control.OverviewMap.prototype.getCollapsible = function() {
 
 
 /**
+ * Set whether the overview map should be collapsible.
  * @param {boolean} collapsible True if the widget is collapsible.
  * @api stable
  */
@@ -477,6 +502,9 @@ ol.control.OverviewMap.prototype.setCollapsible = function(collapsible) {
 
 
 /**
+ * Collapse or expand the overview map according to the passed parameter. Will
+ * not do anything if the overview map isn't collapsible or if the current
+ * collapsed state is already the one requested.
  * @param {boolean} collapsed True if the widget is collapsed.
  * @api stable
  */

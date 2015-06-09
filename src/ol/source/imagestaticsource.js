@@ -1,6 +1,7 @@
 goog.provide('ol.source.ImageStatic');
 
 goog.require('goog.events');
+goog.require('goog.events.EventType');
 goog.require('ol.Image');
 goog.require('ol.extent');
 goog.require('ol.proj');
@@ -49,6 +50,8 @@ ol.source.ImageStatic = function(options) {
    */
   this.image_ = new ol.Image(imageExtent, resolution, 1, attributions,
       options.url, crossOrigin, imageLoadFunction);
+  goog.events.listen(this.image_, goog.events.EventType.CHANGE,
+      this.handleImageChange, false, this);
 
 };
 goog.inherits(ol.source.ImageStatic, ol.source.Image);

@@ -11,6 +11,7 @@ goog.require('ol.TileCoord');
 goog.require('ol.TileUrlFunction');
 goog.require('ol.extent');
 goog.require('ol.proj');
+goog.require('ol.size');
 goog.require('ol.source.TileImage');
 goog.require('ol.tilecoord');
 
@@ -86,7 +87,7 @@ ol.source.TileArcGISRest.prototype.getParams = function() {
 
 /**
  * @param {ol.TileCoord} tileCoord Tile coordinate.
- * @param {number} tileSize Tile size.
+ * @param {ol.Size} tileSize Tile size.
  * @param {ol.Extent} tileExtent Tile extent.
  * @param {number} pixelRatio Pixel ratio.
  * @param {ol.proj.Projection} projection Projection.
@@ -106,7 +107,7 @@ ol.source.TileArcGISRest.prototype.getRequestUrl_ =
   // ArcGIS Server only wants the numeric portion of the projection ID.
   var srid = projection.getCode().split(':').pop();
 
-  params['SIZE'] = tileSize + ',' + tileSize;
+  params['SIZE'] = tileSize[0] + ',' + tileSize[1];
   params['BBOX'] = tileExtent.join(',');
   params['BBOXSR'] = srid;
   params['IMAGESR'] = srid;
@@ -143,7 +144,7 @@ ol.source.TileArcGISRest.prototype.getRequestUrl_ =
  * @param {number} z Z.
  * @param {number} pixelRatio Pixel ratio.
  * @param {ol.proj.Projection} projection Projection.
- * @return {number} Size.
+ * @return {ol.Size} Size.
  */
 ol.source.TileArcGISRest.prototype.getTilePixelSize =
     function(z, pixelRatio, projection) {
@@ -151,13 +152,13 @@ ol.source.TileArcGISRest.prototype.getTilePixelSize =
   if (pixelRatio == 1) {
     return tileSize;
   } else {
-    return (tileSize * pixelRatio + 0.5) | 0;
+    return ol.size.scale(tileSize, pixelRatio, this.tmpSize);
   }
 };
 
 
 /**
- * Return the URLs used for this ArcGIS source.
+ * Return the URLs used for this ArcGIS source.
  * @return {!Array.<string>} URLs.
  * @api stable
  */
@@ -167,6 +168,7 @@ ol.source.TileArcGISRest.prototype.getUrls = function() {
 
 
 /**
+ * Set the URL to use for requests.
  * @param {string|undefined} url URL.
  * @api stable
  */
@@ -177,6 +179,7 @@ ol.source.TileArcGISRest.prototype.setUrl = function(url) {
 
 
 /**
+ * Set the URLs to use for requests.
  * @param {Array.<string>|undefined} urls URLs.
  * @api stable
  */
@@ -207,10 +210,11 @@ ol.source.TileArcGISRest.prototype.tileUrlFunction_ =
 
   var tileExtent = tileGrid.getTileCoordExtent(
       tileCoord, this.tmpExtent_);
-  var tileSize = tileGrid.getTileSize(tileCoord[0]);
+  var tileSize = ol.size.toSize(
+      tileGrid.getTileSize(tileCoord[0]), this.tmpSize);
 
   if (pixelRatio != 1) {
-    tileSize = (tileSize * pixelRatio + 0.5) | 0;
+    tileSize = ol.size.scale(tileSize, pixelRatio, this.tmpSize);
   }
 
   // Apply default params and override with user specified values.

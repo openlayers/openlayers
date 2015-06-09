@@ -693,7 +693,8 @@ describe('ol.format.GeoJSON', function() {
       var newPoint = format.readGeometry(geojson, {
         featureProjection: 'EPSG:3857'
       });
-      expect(point.getCoordinates()[0]).to.eql(newPoint.getCoordinates()[0]);
+      expect(point.getCoordinates()[0]).to.roughlyEqual(
+          newPoint.getCoordinates()[0], 1e-8);
       expect(
           Math.abs(point.getCoordinates()[1] - newPoint.getCoordinates()[1]))
           .to.be.lessThan(0.0000001);
@@ -708,6 +709,7 @@ goog.require('ol.Feature');
 goog.require('ol.extent');
 goog.require('ol.format.GeoJSON');
 goog.require('ol.geom.Circle');
+goog.require('ol.geom.GeometryLayout');
 goog.require('ol.geom.GeometryCollection');
 goog.require('ol.geom.LineString');
 goog.require('ol.geom.LinearRing');

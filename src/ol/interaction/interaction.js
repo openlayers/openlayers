@@ -57,6 +57,7 @@ goog.inherits(ol.interaction.Interaction, ol.Object);
 
 
 /**
+ * Return whether the interaction is currently active.
  * @return {boolean} `true` if the interaction is active, `false` otherwise.
  * @observable
  * @api
@@ -65,10 +66,6 @@ ol.interaction.Interaction.prototype.getActive = function() {
   return /** @type {boolean} */ (
       this.get(ol.interaction.InteractionProperty.ACTIVE));
 };
-goog.exportProperty(
-    ol.interaction.Interaction.prototype,
-    'getActive',
-    ol.interaction.Interaction.prototype.getActive);
 
 
 /**
@@ -89,10 +86,6 @@ ol.interaction.Interaction.prototype.getMap = function() {
 ol.interaction.Interaction.prototype.setActive = function(active) {
   this.set(ol.interaction.InteractionProperty.ACTIVE, active);
 };
-goog.exportProperty(
-    ol.interaction.Interaction.prototype,
-    'setActive',
-    ol.interaction.Interaction.prototype.setActive);
 
 
 /**

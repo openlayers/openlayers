@@ -37,33 +37,53 @@ function listen(min, max, server, callback) {
 }
 
 
-/**
- * Create the debug server and run tests.
- */
-serve.createServer(function(err, server) {
-  if (err) {
-    process.stderr.write(err.message + '\n');
-    process.exit(1);
-  }
-
-  listen(3001, 3005, server, function(err) {
+function runTests(includeCoverage, callback) {
+  /**
+   * Create the debug server and run tests.
+   */
+  serve.createServer(function(err, server) {
     if (err) {
-      process.stderr.write('Server failed to start: ' + err.message + '\n');
+      process.stderr.write(err.message + '\n');
       process.exit(1);
     }
 
-    var address = server.address();
-    var url = 'http://' + address.address + ':' + address.port;
-    var args = [
-      path.join(__dirname,
-          '../node_modules/mocha-phantomjs/lib/mocha-phantomjs.coffee'),
-      url + '/test/index.html'
-    ];
+    listen(3001, 3005, server, function(err) {
+      if (err) {
+        process.stderr.write('Server failed to start: ' + err.message + '\n');
+        process.exit(1);
+      }
+      var address = server.address();
+      var url = 'http://' + address.address + ':' + address.port;
+      var args = [
+        path.join(
+          __dirname,
+          '../node_modules/mocha-phantomjs/lib/mocha-phantomjs.coffee'
+        ),
+        url + '/test/index.html'
+      ];
 
-    var child = spawn(phantomjs.path, args, {stdio: 'inherit'});
-    child.on('exit', function(code) {
-      process.exit(code);
+      if (includeCoverage) {
+        args.push('spec', '{"hooks": "' +
+          path.join(__dirname, '../test/phantom_hooks.js') + '"}');
+      }
+
+      var child = spawn(phantomjs.path, args, {stdio: 'inherit'});
+      child.on('exit', function(code) {
+        callback(code);
+      });
     });
   });
+}
 
-});
+if (require.main === module) {
+  runTests(false, function(code){
+    process.exit(code);
+  });
+}
+
+module.exports = {
+  runTests: runTests,
+  listen: listen
+};
+
+

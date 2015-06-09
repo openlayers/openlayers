@@ -87,7 +87,8 @@ ol.renderer.dom.ImageLayer.prototype.prepareFrame =
 
   var image = this.image_;
   var imageLayer = this.getLayer();
-  goog.asserts.assertInstanceof(imageLayer, ol.layer.Image);
+  goog.asserts.assertInstanceof(imageLayer, ol.layer.Image,
+      'layer is an instance of ol.layer.Image');
   var imageSource = imageLayer.getSource();
 
   var hints = frameState.viewHints;
@@ -103,7 +104,8 @@ ol.renderer.dom.ImageLayer.prototype.prepareFrame =
     var projection = viewState.projection;
     var sourceProjection = imageSource.getProjection();
     if (!goog.isNull(sourceProjection)) {
-      goog.asserts.assert(ol.proj.equivalent(projection, sourceProjection));
+      goog.asserts.assert(ol.proj.equivalent(projection, sourceProjection),
+          'projection and sourceProjection are equivalent');
       projection = sourceProjection;
     }
     var image_ = imageSource.getImage(renderedExtent, viewResolution,
