@@ -49,6 +49,7 @@ ol.reproj.calculateSourceResolution = function(sourceProj, targetProj,
  * Renders the source into the canvas based on the triangulation.
  * @param {CanvasRenderingContext2D} context
  * @param {number} sourceResolution
+ * @param {ol.Extent} sourceExtent
  * @param {number} targetResolution
  * @param {ol.Extent} targetExtent
  * @param {ol.reproj.Triangulation} triangulation
@@ -56,9 +57,13 @@ ol.reproj.calculateSourceResolution = function(sourceProj, targetProj,
  *                 image: (HTMLCanvasElement|Image)}>} sources
  */
 ol.reproj.renderTriangles = function(context,
-    sourceResolution, targetResolution, targetExtent, triangulation, sources) {
+    sourceResolution, sourceExtent, targetResolution, targetExtent,
+    triangulation, sources) {
 
-  var shiftDistance = triangulation.shiftDistance;
+  var shiftDistance = !goog.isNull(sourceExtent) ?
+      ol.extent.getWidth(sourceExtent) : null;
+  var shiftThreshold = !goog.isNull(sourceExtent) ?
+      (sourceExtent[0] + sourceExtent[2]) / 2 : null;
   var targetTL = ol.extent.getTopLeft(targetExtent);
 
   goog.array.forEach(triangulation.triangles, function(tri, i, arr) {
@@ -91,10 +96,10 @@ ol.reproj.renderTriangles = function(context,
     var u0 = tgt[0][0] - targetTL[0], v0 = -(tgt[0][1] - targetTL[1]),
         u1 = tgt[1][0] - targetTL[0], v1 = -(tgt[1][1] - targetTL[1]),
         u2 = tgt[2][0] - targetTL[0], v2 = -(tgt[2][1] - targetTL[1]);
-    if (tri.needsShift) {
-      x0 = goog.math.modulo(x0 + shiftDistance, shiftDistance);
-      x1 = goog.math.modulo(x1 + shiftDistance, shiftDistance);
-      x2 = goog.math.modulo(x2 + shiftDistance, shiftDistance);
+    if (tri.needsShift && !goog.isNull(shiftDistance)) {
+      x0 = goog.math.modulo(x0, shiftDistance);
+      x1 = goog.math.modulo(x1, shiftDistance);
+      x2 = goog.math.modulo(x2, shiftDistance);
     }
     var augmentedMatrix = [
       [x0, y0, 1, 0, 0, 0, u0 / targetResolution],
@@ -142,8 +147,9 @@ ol.reproj.renderTriangles = function(context,
       var dataTL = ol.extent.getTopLeft(src.extent);
       context.translate(dataTL[0], dataTL[1]);
       // if the triangle needs to be shifted (because of the dateline wrapping),
-      // shift only the source images that need it
-      if (tri.needsShift && dataTL[0] < 0) {
+      // shift back only the source images that need it
+      if (tri.needsShift && !goog.isNull(shiftDistance) &&
+          dataTL[0] < shiftThreshold) {
         context.translate(shiftDistance, 0);
       }
       context.scale(sourceResolution, -sourceResolution);

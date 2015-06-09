@@ -114,7 +114,8 @@ ol.reproj.Tile = function(sourceProj, sourceTileGrid,
   }
 
   this.srcZ_ = sourceTileGrid.getZForResolution(sourceResolution);
-  var srcExtent = ol.reproj.triangulation.getSourceExtent(this.triangulation_);
+  var srcExtent = ol.reproj.triangulation.getSourceExtent(
+      this.triangulation_, sourceProj);
 
   var sourceProjExtent = sourceProj.getExtent();
   if (!sourceProj.isGlobal() && sourceProjExtent) {
@@ -238,8 +239,9 @@ ol.reproj.Tile.prototype.reproject_ = function() {
 
   if (sources.length > 0) {
     var targetExtent = this.targetTileGrid_.getTileCoordExtent(tileCoord);
-    ol.reproj.renderTriangles(context, srcResolution, targetResolution,
-                              targetExtent, this.triangulation_, sources);
+    ol.reproj.renderTriangles(context,
+        srcResolution, this.sourceTileGrid_.getExtent(),
+        targetResolution, targetExtent, this.triangulation_, sources);
   }
 
   this.canvas_ = context.canvas;
