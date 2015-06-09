@@ -1,8 +1,48 @@
 goog.provide('ol.reproj');
 
 goog.require('goog.array');
+goog.require('goog.math');
 goog.require('ol.extent');
 goog.require('ol.math');
+goog.require('ol.proj');
+
+
+/**
+ * Calculates ideal resolution to use from the source in order to achieve
+ * pixel mapping as close as possible to 1:1 during reprojection.
+ * The resolution is calculated regardless on what resolutions
+ * are actually available in the dataset (TileGrid, Image, ...).
+ *
+ * @param {ol.proj.Projection} sourceProj
+ * @param {ol.proj.Projection} targetProj
+ * @param {ol.Coordinate} targetCenter
+ * @param {number} targetResolution
+ * @return {number} The best resolution to use. Can be +-Infinity, NaN or 0.
+ */
+ol.reproj.calculateSourceResolution = function(sourceProj, targetProj,
+    targetCenter, targetResolution) {
+
+  var sourceCenter = ol.proj.transform(targetCenter, targetProj, sourceProj);
+
+  // calculate the ideal resolution of the source data
+  var sourceResolution =
+      targetProj.getPointResolution(targetResolution, targetCenter) *
+      targetProj.getMetersPerUnit() / sourceProj.getMetersPerUnit();
+
+  // based on the projection properties, the point resolution at the specified
+  // coordinates may be slightly different. We need to reverse-compensate this
+  // in order to achieve optimal results.
+
+  var compensationFactor =
+      sourceProj.getPointResolution(sourceResolution, sourceCenter) /
+      sourceResolution;
+
+  if (goog.math.isFiniteNumber(compensationFactor) && compensationFactor > 0) {
+    sourceResolution /= compensationFactor;
+  }
+
+  return sourceResolution;
+};
 
 
 /**
