@@ -221,8 +221,8 @@ ol.source.Tile.prototype.getTileGridForProjection = function(projection) {
  * @protected
  */
 ol.source.Tile.prototype.getTileCacheForProjection = function(projection) {
-  if (goog.isNull(this.tileCache) ||
-      !ol.proj.equivalent(this.getProjection(), projection)) {
+  var thisProj = this.getProjection();
+  if (!goog.isNull(thisProj) && !ol.proj.equivalent(thisProj, projection)) {
     return null;
   } else {
     return this.tileCache;

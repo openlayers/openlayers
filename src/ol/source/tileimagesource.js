@@ -129,8 +129,9 @@ ol.source.TileImage.prototype.expireCache = function(projection, usedTiles) {
  * @inheritDoc
  */
 ol.source.TileImage.prototype.getTileGridForProjection = function(projection) {
+  var thisProj = this.getProjection();
   if (!goog.isNull(this.tileGrid) &&
-      ol.proj.equivalent(this.getProjection(), projection)) {
+      (goog.isNull(thisProj) || ol.proj.equivalent(thisProj, projection))) {
     return this.tileGrid;
   } else {
     var projKey = goog.getUid(projection).toString();
@@ -147,7 +148,8 @@ ol.source.TileImage.prototype.getTileGridForProjection = function(projection) {
  * @inheritDoc
  */
 ol.source.TileImage.prototype.getTileCacheForProjection = function(projection) {
-  if (ol.proj.equivalent(this.getProjection(), projection)) {
+  var thisProj = this.getProjection();
+  if (goog.isNull(thisProj) || ol.proj.equivalent(thisProj, projection)) {
     return this.tileCache;
   } else {
     var projKey = goog.getUid(projection).toString();
