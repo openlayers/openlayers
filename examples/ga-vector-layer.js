@@ -2,7 +2,7 @@ goog.require('ga.Map');
 goog.require('ga.layer');
 goog.require('ol.View');
 goog.require('ol.layer.Vector');
-goog.require('ol.source.GeoJSON');
+goog.require('ol.format.GeoJSON');
 goog.require('ol.style.Circle');
 goog.require('ol.style.Fill');
 goog.require('ol.style.Stroke');
@@ -10,9 +10,10 @@ goog.require('ol.style.Style');
 goog.require('ol.style.Text');
 
 var vector = new ol.layer.Vector({
-  source: new ol.source.GeoJSON({
-    projection: 'EPSG:21781',
-    url: 'data/cities.geojson'
+  source: new ol.source.Vector({
+    url: 'data/cities.geojson',
+    format: new ol.format.GeoJSON(),
+    projection: 'EPSG:21781'
   }),
   style: function(feature, resolution) {
     var text = resolution < 251 ? feature.get('NAME') : '';

@@ -22,7 +22,6 @@ goog.require('ol.style.Fill');
 goog.require('ol.style.Stroke');
 goog.require('ol.style.Circle');
 goog.require('ol.source.Vector');
-goog.require('ol.source.GeoJSON');
 goog.require('ol.Feature');
 goog.require('ol.geom.Point');
 goog.require('ol.geom.LineString');
@@ -170,7 +169,7 @@ ga.Tooltip.prototype.handleIdentifyResponse_ = function(response) {
     this.source_.clear();
     this.map_.removeLayer(this.vector_);
   }
-  this.source_ = new ol.source.GeoJSON();
+  this.source_ = new ol.source.Vector();
   this.vector_ = new ol.layer.Vector({
     style: function(feature, resolution) {
       return [new ol.style.Style({

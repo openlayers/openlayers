@@ -24,10 +24,10 @@ var canvasMap = new ga.Map({
 if (ol.has.WEBGL) {
   var webglMap = new ga.Map({
     renderer: 'webgl',
-    target: 'webglMap'
+    target: 'webglMap',
+    layers: canvasMap.getLayers(),
+    view: canvasMap.getView()
   });
-  webglMap.bindTo('layergroup', canvasMap);
-  webglMap.bindTo('view', canvasMap);
 } else {
   var info = document.getElementById('no-webgl');
   /**

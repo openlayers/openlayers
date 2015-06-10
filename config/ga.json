@@ -1,31 +1,25 @@
 {
   "exports": ["*"],
-
-  "css-allowed-unrecognized-properties": [
-    "user-select"
+  "src": [
+    "src/**/*.js",
+    "build/ol.ext/*.js"
   ],
-
-  "css-inputs": [
-    "../css/ga.css"
-  ],
-
-  "css-output-file": "../build/ga.css",
-  
   "compile": {  
     "externs": [
       "externs/bingmaps.js",
       "externs/closure-compiler.js",
+      "externs/esrijson.js",
       "externs/geojson.js",
       "externs/oli.js",
       "externs/olx.js",
       "externs/proj4js.js",
       "externs/tilejson.js",
       "externs/topojson.js",
-      "externs/vbarray.js",
       "externs/ga.js",
       "externs/gax.js"
     ],
     "define": [
+      "goog.array.ASSUME_NATIVE_FUNCTIONS=true",
       "goog.dom.ASSUME_STANDARDS_MODE=true",
       "goog.json.USE_NATIVE_JSON=true",
       "goog.DEBUG=false"
@@ -70,8 +64,10 @@
       "api", "observable"
     ],
     "compilation_level": "ADVANCED",
-    "output_wrapper": "(function(){%output%})();",
+    "warning_level": "VERBOSE",
     "use_types_for_optimization": true,
-    "manage_closure_dependencies": true
+    "manage_closure_dependencies": true,
+    "create_source_map": "build/ga.js.map",
+    "source_map_format": "V3"
   }
 }

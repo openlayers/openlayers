@@ -113,6 +113,7 @@ ga.style.StylesFromLiterals.prototype.getFeatureStyle = function(feature) {
     );
     return this.findOlStyleInRange_(value, geomType);
   }
+  return null;
 };
 
 

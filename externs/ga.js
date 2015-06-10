@@ -1,4 +1,9 @@
 /**
+ * @externs
+ */
+
+
+/**
  *  @type {Object}
  */
 var GeoAdmin = {};
@@ -9,6 +14,6 @@ var GeoAdmin = {};
 GeoAdmin.serviceUrl;
 
 /**
- *  @type {function()}
+ * @interface
  */
-GeoAdmin.getConfig;
+GeoAdmin.getConfig = function() {};
