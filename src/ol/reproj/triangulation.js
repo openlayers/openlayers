@@ -76,6 +76,19 @@ ol.reproj.triangulation.addTriangleIfValid_ = function(triangulation, a, b, c,
       aSrc = ol.extent.closestCoordinate(opt_maxSourceExtent, aSrc);
       bSrc = ol.extent.closestCoordinate(opt_maxSourceExtent, bSrc);
       cSrc = ol.extent.closestCoordinate(opt_maxSourceExtent, cSrc);
+
+      var makeFinite = function(coord, extent) {
+        if (!goog.math.isFiniteNumber(coord[0])) {
+          coord[0] = goog.math.clamp(coord[0], extent[0], extent[2]);
+        }
+        if (!goog.math.isFiniteNumber(coord[1])) {
+          coord[1] = goog.math.clamp(coord[1], extent[1], extent[3]);
+        }
+      };
+      makeFinite(aSrc, opt_maxSourceExtent);
+      makeFinite(bSrc, opt_maxSourceExtent);
+      makeFinite(cSrc, opt_maxSourceExtent);
+
       var transformFwd = ol.proj.getTransform(sourceProj, targetProj);
       a = transformFwd(aSrc);
       b = transformFwd(bSrc);
