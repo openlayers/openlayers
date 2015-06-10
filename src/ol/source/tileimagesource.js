@@ -115,9 +115,7 @@ ol.source.TileImage.prototype.getTileGridForProjection = function(projection) {
 
 
 /**
- * @param {ol.proj.Projection} projection Projection.
- * @return {ol.TileCache} Tile cache.
- * @protected
+ * @inheritDoc
  */
 ol.source.TileImage.prototype.getTileCacheForProjection = function(projection) {
   if (ol.proj.equivalent(this.getProjection(), projection)) {
