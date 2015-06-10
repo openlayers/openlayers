@@ -8,10 +8,11 @@ goog.require('goog.events.Event');
 goog.require('goog.functions');
 goog.require('ol.CollectionEventType');
 goog.require('ol.Feature');
-goog.require('ol.FeatureOverlay');
 goog.require('ol.events.condition');
 goog.require('ol.geom.GeometryType');
 goog.require('ol.interaction.Interaction');
+goog.require('ol.layer.Vector');
+goog.require('ol.source.Vector');
 goog.require('ol.style.Style');
 
 
@@ -82,7 +83,7 @@ goog.inherits(ol.SelectEvent, goog.events.Event);
 
 /**
  * @classdesc
- * Handles selection of vector data. A {@link ol.FeatureOverlay} is maintained
+ * Handles selection of vector data. An {@link ol.source.Vector} is maintained
  * internally to store the selected feature(s). Which features are selected is
  * determined by the `condition` option, and optionally the `toggle` or
  * `add`/`remove` options.
@@ -169,14 +170,18 @@ ol.interaction.Select = function(opt_options) {
 
   /**
    * @private
-   * @type {ol.FeatureOverlay}
+   * @type {ol.layer.Vector}
    */
-  this.featureOverlay_ = new ol.FeatureOverlay({
+  this.featureOverlay_ = new ol.layer.Vector({
+    source: new ol.source.Vector({
+      useSpatialIndex: false,
+      wrapX: options.wrapX
+    }),
     style: goog.isDef(options.style) ? options.style :
         ol.interaction.Select.getDefaultStyleFunction()
   });
 
-  var features = this.featureOverlay_.getFeatures();
+  var features = this.featureOverlay_.getSource().getFeaturesCollection();
   goog.events.listen(features, ol.CollectionEventType.ADD,
       this.addFeature_, false, this);
   goog.events.listen(features, ol.CollectionEventType.REMOVE,
@@ -192,7 +197,7 @@ goog.inherits(ol.interaction.Select, ol.interaction.Interaction);
  * @api stable
  */
 ol.interaction.Select.prototype.getFeatures = function() {
-  return this.featureOverlay_.getFeatures();
+  return this.featureOverlay_.getSource().getFeaturesCollection();
 };
 
 
@@ -213,7 +218,7 @@ ol.interaction.Select.handleEvent = function(mapBrowserEvent) {
   var toggle = this.toggleCondition_(mapBrowserEvent);
   var set = !add && !remove && !toggle;
   var map = mapBrowserEvent.map;
-  var features = this.featureOverlay_.getFeatures();
+  var features = this.featureOverlay_.getSource().getFeaturesCollection();
   var /** @type {Array.<ol.Feature>} */ deselected = [];
   var /** @type {Array.<ol.Feature>} */ selected = [];
   var change = false;
@@ -290,7 +295,8 @@ ol.interaction.Select.handleEvent = function(mapBrowserEvent) {
  */
 ol.interaction.Select.prototype.setMap = function(map) {
   var currentMap = this.getMap();
-  var selectedFeatures = this.featureOverlay_.getFeatures();
+  var selectedFeatures =
+      this.featureOverlay_.getSource().getFeaturesCollection();
   if (!goog.isNull(currentMap)) {
     selectedFeatures.forEach(currentMap.unskipFeature, currentMap);
   }

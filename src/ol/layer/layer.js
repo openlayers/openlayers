@@ -6,6 +6,7 @@ goog.require('goog.object');
 goog.require('ol.Object');
 goog.require('ol.layer.Base');
 goog.require('ol.layer.LayerProperty');
+goog.require('ol.render.EventType');
 goog.require('ol.source.State');
 
 
@@ -36,7 +37,23 @@ ol.layer.Layer = function(options) {
    * @private
    * @type {goog.events.Key}
    */
+  this.mapPrecomposeKey_ = null;
+
+  /**
+   * @private
+   * @type {goog.events.Key}
+   */
+  this.mapRenderKey_ = null;
+
+  /**
+   * @private
+   * @type {goog.events.Key}
+   */
   this.sourceChangeKey_ = null;
+
+  if (goog.isDef(options.map)) {
+    this.setMap(options.map);
+  }
 
   goog.events.listen(this,
       ol.Object.getChangeEventType(ol.layer.LayerProperty.SOURCE),
@@ -126,6 +143,33 @@ ol.layer.Layer.prototype.handleSourcePropertyChange_ = function() {
         goog.events.EventType.CHANGE, this.handleSourceChange_, false, this);
   }
   this.changed();
+};
+
+
+/**
+ * Sets the layer to be rendered on a map. The map will not manage this layer in
+ * its layers collection, and the layer will be rendered on top. This is useful
+ * for temporary layers. To remove an unmanaged layer from the map, use
+ * `#setMap(null)`. To add the layer to a map and have it managed by the map,
+ * use {@link ol.Map#addLayer} instead.
+ * @param {ol.Map} map Map.
+ * @api
+ */
+ol.layer.Layer.prototype.setMap = function(map) {
+  goog.events.unlistenByKey(this.mapPrecomposeKey_);
+  this.changed();
+  goog.events.unlistenByKey(this.mapRenderKey_);
+  if (!goog.isNull(map)) {
+    this.mapPrecomposeKey_ = goog.events.listen(
+        map, ol.render.EventType.PRECOMPOSE, function(evt) {
+          var layerState = this.getLayerState();
+          layerState.unmanaged = true;
+          evt.frameState.layerStatesArray.push(layerState);
+          evt.frameState.layerStates[goog.getUid(this)] = layerState;
+        }, false, this);
+    this.mapRenderKey_ = goog.events.listen(
+        this, goog.events.EventType.CHANGE, map.render, false, map);
+  }
 };
 
 

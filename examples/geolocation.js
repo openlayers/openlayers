@@ -1,12 +1,13 @@
 goog.require('ol.Feature');
-goog.require('ol.FeatureOverlay');
 goog.require('ol.Geolocation');
 goog.require('ol.Map');
 goog.require('ol.View');
 goog.require('ol.control');
 goog.require('ol.geom.Point');
 goog.require('ol.layer.Tile');
+goog.require('ol.layer.Vector');
 goog.require('ol.source.OSM');
+goog.require('ol.source.Vector');
 goog.require('ol.style.Circle');
 goog.require('ol.style.Fill');
 goog.require('ol.style.Stroke');
@@ -85,7 +86,9 @@ geolocation.on('change:position', function() {
       new ol.geom.Point(coordinates) : null);
 });
 
-var featuresOverlay = new ol.FeatureOverlay({
+var featuresOverlay = new ol.layer.Vector({
   map: map,
-  features: [accuracyFeature, positionFeature]
+  source: new ol.source.Vector({
+    features: [accuracyFeature, positionFeature]
+  })
 });

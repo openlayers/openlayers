@@ -49,12 +49,6 @@ ol.renderer.Map = function(container, map) {
   this.map_ = map;
 
   /**
-   * @protected
-   * @type {ol.render.IReplayGroup}
-   */
-  this.replayGroup = null;
-
-  /**
    * @private
    * @type {Object.<string, ol.renderer.Layer>}
    */
@@ -137,7 +131,6 @@ ol.renderer.Map.prototype.forEachFeatureAtCoordinate =
   var result;
   var viewState = frameState.viewState;
   var viewResolution = viewState.resolution;
-  var viewRotation = viewState.rotation;
 
   /** @type {Object.<string, boolean>} */
   var features = {};
@@ -168,13 +161,6 @@ ol.renderer.Map.prototype.forEachFeatureAtCoordinate =
     }
   }
 
-  if (!goog.isNull(this.replayGroup)) {
-    result = this.replayGroup.forEachFeatureAtCoordinate(translatedCoordinate,
-        viewResolution, viewRotation, {}, forEachFeatureAtCoordinate);
-    if (result) {
-      return result;
-    }
-  }
   var layerStates = frameState.layerStatesArray;
   var numLayers = layerStates.length;
   var i;
@@ -216,20 +202,7 @@ ol.renderer.Map.prototype.forEachLayerAtPixel =
   var result;
   var viewState = frameState.viewState;
   var viewResolution = viewState.resolution;
-  var viewRotation = viewState.rotation;
 
-  if (!goog.isNull(this.replayGroup)) {
-    var coordinate = this.getMap().getCoordinateFromPixel(pixel);
-    var hasFeature = this.replayGroup.forEachFeatureAtCoordinate(coordinate,
-        viewResolution, viewRotation, {}, goog.functions.TRUE);
-
-    if (hasFeature) {
-      result = callback.call(thisArg, null);
-      if (result) {
-        return result;
-      }
-    }
-  }
   var layerStates = frameState.layerStatesArray;
   var numLayers = layerStates.length;
   var i;

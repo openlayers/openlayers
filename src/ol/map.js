@@ -578,10 +578,8 @@ ol.Map.prototype.disposeInternal = function() {
  * @param {function(this: S, ol.Feature, ol.layer.Layer): T} callback Feature
  *     callback. The callback will be called with two arguments. The first
  *     argument is one {@link ol.Feature feature} at the pixel, the second is
- *     the {@link ol.layer.Layer layer} of the feature. If the detected feature
- *     is not on a layer, but on a {@link ol.FeatureOverlay}, then the second
- *     argument to this function will be `null`. To stop detection, callback
- *     functions can return a truthy value.
+ *     the {@link ol.layer.Layer layer} of the feature. To stop detection,
+ *     callback functions can return a truthy value.
  * @param {S=} opt_this Value to use as `this` when executing `callback`.
  * @param {(function(this: U, ol.layer.Layer): boolean)=} opt_layerFilter Layer
  *     filter function. The filter function will receive one argument, the
@@ -619,10 +617,8 @@ ol.Map.prototype.forEachFeatureAtPixel =
  * @param {ol.Pixel} pixel Pixel.
  * @param {function(this: S, ol.layer.Layer): T} callback Layer
  *     callback. Will receive one argument, the {@link ol.layer.Layer layer}
- *     that contains the color pixel. If the detected color value is not from a
- *     layer, but from a {@link ol.FeatureOverlay}, then the argument to this
- *     function will be `null`. To stop detection, callback functions can return
- *     a truthy value.
+ *     that contains the color pixel. To stop detection, callback functions can
+ *     return a truthy value.
  * @param {S=} opt_this Value to use as `this` when executing `callback`.
  * @param {(function(this: U, ol.layer.Layer): boolean)=} opt_layerFilter Layer
  *     filter function. The filter function will receive one argument, the

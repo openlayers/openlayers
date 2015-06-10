@@ -142,7 +142,7 @@ ol.renderer.dom.VectorLayer.prototype.composeFrame =
 
     context.globalAlpha = layerState.opacity;
     replayGroup.replay(context, pixelRatio, transform, viewRotation,
-        frameState.skippedFeatureUids);
+        layerState.unmanaged ? {} : frameState.skippedFeatureUids);
 
     this.dispatchEvent_(ol.render.EventType.RENDER, frameState, transform);
   }
@@ -165,8 +165,8 @@ ol.renderer.dom.VectorLayer.prototype.dispatchEvent_ =
     var render = new ol.render.canvas.Immediate(
         context, frameState.pixelRatio, frameState.extent, transform,
         frameState.viewState.rotation);
-    var event = new ol.render.Event(type, layer, render, null,
-        frameState, context, null);
+    var event = new ol.render.Event(type, layer, render, frameState,
+        context, null);
     layer.dispatchEvent(event);
     render.flush();
   }

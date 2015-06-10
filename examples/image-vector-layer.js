@@ -1,9 +1,9 @@
-goog.require('ol.FeatureOverlay');
 goog.require('ol.Map');
 goog.require('ol.View');
 goog.require('ol.format.GeoJSON');
 goog.require('ol.layer.Image');
 goog.require('ol.layer.Tile');
+goog.require('ol.layer.Vector');
 goog.require('ol.source.ImageVector');
 goog.require('ol.source.MapQuest');
 goog.require('ol.source.Vector');
@@ -42,7 +42,8 @@ var map = new ol.Map({
   })
 });
 
-var featureOverlay = new ol.FeatureOverlay({
+var featureOverlay = new ol.layer.Vector({
+  source: new ol.source.Vector(),
   map: map,
   style: new ol.style.Style({
     stroke: new ol.style.Stroke({
@@ -71,10 +72,10 @@ var displayFeatureInfo = function(pixel) {
 
   if (feature !== highlight) {
     if (highlight) {
-      featureOverlay.removeFeature(highlight);
+      featureOverlay.getSource().removeFeature(highlight);
     }
     if (feature) {
-      featureOverlay.addFeature(feature);
+      featureOverlay.getSource().addFeature(feature);
     }
     highlight = feature;
   }

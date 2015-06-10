@@ -131,8 +131,8 @@ ol.renderer.canvas.Layer.prototype.dispatchComposeEvent_ =
     var render = new ol.render.canvas.Immediate(
         context, frameState.pixelRatio, frameState.extent, transform,
         frameState.viewState.rotation);
-    var composeEvent = new ol.render.Event(type, layer, render, null,
-        frameState, context, null);
+    var composeEvent = new ol.render.Event(type, layer, render, frameState,
+        context, null);
     layer.dispatchEvent(composeEvent);
     render.flush();
   }

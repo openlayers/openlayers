@@ -1,4 +1,3 @@
-goog.require('ol.FeatureOverlay');
 goog.require('ol.Map');
 goog.require('ol.View');
 goog.require('ol.format.GeoJSON');
@@ -60,7 +59,8 @@ var map = new ol.Map({
 
 var highlightStyleCache = {};
 
-var featureOverlay = new ol.FeatureOverlay({
+var featureOverlay = new ol.layer.Vector({
+  source: new ol.source.Vector(),
   map: map,
   style: function(feature, resolution) {
     var text = resolution < 5000 ? feature.get('name') : '';
@@ -106,10 +106,10 @@ var displayFeatureInfo = function(pixel) {
 
   if (feature !== highlight) {
     if (highlight) {
-      featureOverlay.removeFeature(highlight);
+      featureOverlay.getSource().removeFeature(highlight);
     }
     if (feature) {
-      featureOverlay.addFeature(feature);
+      featureOverlay.getSource().addFeature(feature);
     }
     highlight = feature;
   }

@@ -1,5 +1,4 @@
 // FIXME bulk feature upload - suppress events
-// FIXME put features in an ol.Collection
 // FIXME make change-detection more refined (notably, geometry hint)
 
 goog.provide('ol.source.Vector');
@@ -12,7 +11,10 @@ goog.require('goog.events');
 goog.require('goog.events.Event');
 goog.require('goog.events.EventType');
 goog.require('goog.object');
+goog.require('ol.Collection');
+goog.require('ol.CollectionEventType');
 goog.require('ol.Extent');
+goog.require('ol.Feature');
 goog.require('ol.FeatureLoader');
 goog.require('ol.LoadingStrategy');
 goog.require('ol.ObjectEventType');
@@ -105,11 +107,14 @@ ol.source.Vector = function(opt_options) {
   this.strategy_ = goog.isDef(options.strategy) ? options.strategy :
       ol.loadingstrategy.all;
 
+  var useSpatialIndex =
+      goog.isDef(options.useSpatialIndex) ? options.useSpatialIndex : true;
+
   /**
    * @private
    * @type {ol.structs.RBush.<ol.Feature>}
    */
-  this.featuresRtree_ = new ol.structs.RBush();
+  this.featuresRtree_ = useSpatialIndex ? new ol.structs.RBush() : null;
 
   /**
    * @private
@@ -143,8 +148,27 @@ ol.source.Vector = function(opt_options) {
    */
   this.featureChangeKeys_ = {};
 
-  if (goog.isDef(options.features)) {
-    this.addFeaturesInternal(options.features);
+  /**
+   * @private
+   * @type {ol.Collection.<ol.Feature>}
+   */
+  this.featuresCollection_ = null;
+
+  var collection, features;
+  if (options.features instanceof ol.Collection) {
+    collection = options.features;
+    features = collection.getArray();
+  } else if (goog.isArray(options.features)) {
+    features = options.features;
+  }
+  if (!useSpatialIndex && !goog.isDef(collection)) {
+    collection = new ol.Collection(features);
+  }
+  if (goog.isDef(features)) {
+    this.addFeaturesInternal(features);
+  }
+  if (goog.isDef(collection)) {
+    this.bindFeaturesCollection_(collection);
   }
 
 };
@@ -181,7 +205,9 @@ ol.source.Vector.prototype.addFeatureInternal = function(feature) {
   var geometry = feature.getGeometry();
   if (goog.isDefAndNotNull(geometry)) {
     var extent = geometry.getExtent();
-    this.featuresRtree_.insert(extent, feature);
+    if (!goog.isNull(this.featuresRtree_)) {
+      this.featuresRtree_.insert(extent, feature);
+    }
   } else {
     this.nullGeometryFeatures_[featureKey] = feature;
   }
@@ -280,12 +306,62 @@ ol.source.Vector.prototype.addFeaturesInternal = function(features) {
       this.nullGeometryFeatures_[featureKey] = feature;
     }
   }
-  this.featuresRtree_.load(extents, geometryFeatures);
+  if (!goog.isNull(this.featuresRtree_)) {
+    this.featuresRtree_.load(extents, geometryFeatures);
+  }
 
   for (i = 0, length = newFeatures.length; i < length; i++) {
     this.dispatchEvent(new ol.source.VectorEvent(
         ol.source.VectorEventType.ADDFEATURE, newFeatures[i]));
   }
+};
+
+
+/**
+ * @param {!ol.Collection.<ol.Feature>} collection Collection.
+ * @private
+ */
+ol.source.Vector.prototype.bindFeaturesCollection_ = function(collection) {
+  goog.asserts.assert(goog.isNull(this.featuresCollection_),
+      'bindFeaturesCollection can only be called once');
+  var modifyingCollection = false;
+  goog.events.listen(this, ol.source.VectorEventType.ADDFEATURE,
+      function(evt) {
+        if (!modifyingCollection) {
+          modifyingCollection = true;
+          collection.push(evt.feature);
+          modifyingCollection = false;
+        }
+      });
+  goog.events.listen(this, ol.source.VectorEventType.REMOVEFEATURE,
+      function(evt) {
+        if (!modifyingCollection) {
+          modifyingCollection = true;
+          collection.remove(evt.feature);
+          modifyingCollection = false;
+        }
+      });
+  goog.events.listen(collection, ol.CollectionEventType.ADD,
+      function(evt) {
+        if (!modifyingCollection) {
+          var feature = evt.element;
+          goog.asserts.assertInstanceof(feature, ol.Feature);
+          modifyingCollection = true;
+          this.addFeature(feature);
+          modifyingCollection = false;
+        }
+      }, false, this);
+  goog.events.listen(collection, ol.CollectionEventType.REMOVE,
+      function(evt) {
+        if (!modifyingCollection) {
+          var feature = evt.element;
+          goog.asserts.assertInstanceof(feature, ol.Feature);
+          modifyingCollection = true;
+          this.removeFeature(feature);
+          modifyingCollection = false;
+        }
+      }, false, this);
+  this.featuresCollection_ = collection;
 };
 
 
@@ -296,26 +372,34 @@ ol.source.Vector.prototype.addFeaturesInternal = function(features) {
  */
 ol.source.Vector.prototype.clear = function(opt_fast) {
   if (opt_fast) {
-    for (var featureId in this.featureChangeKeys_) {
-      var keys = this.featureChangeKeys_[featureId];
-      goog.array.forEach(keys, goog.events.unlistenByKey);
+    if (goog.isNull(this.featuresCollection_)) {
+      for (var featureId in this.featureChangeKeys_) {
+        var keys = this.featureChangeKeys_[featureId];
+        goog.array.forEach(keys, goog.events.unlistenByKey);
+      }
+      this.featureChangeKeys_ = {};
+      this.idIndex_ = {};
+      this.undefIdIndex_ = {};
+    } else {
+      this.featuresCollection_.clear();
     }
-    this.featureChangeKeys_ = {};
-    this.idIndex_ = {};
-    this.undefIdIndex_ = {};
   } else {
     var rmFeatureInternal = this.removeFeatureInternal;
-    this.featuresRtree_.forEach(rmFeatureInternal, this);
-    goog.object.forEach(this.nullGeometryFeatures_, rmFeatureInternal, this);
-    goog.asserts.assert(goog.object.isEmpty(this.featureChangeKeys_),
-        'featureChangeKeys is an empty object now');
-    goog.asserts.assert(goog.object.isEmpty(this.idIndex_),
-        'idIndex is an empty object now');
-    goog.asserts.assert(goog.object.isEmpty(this.undefIdIndex_),
-        'undefIdIndex is an empty object now');
+    if (!goog.isNull(this.featuresRtree_)) {
+      this.featuresRtree_.forEach(rmFeatureInternal, this);
+      goog.object.forEach(this.nullGeometryFeatures_, rmFeatureInternal, this);
+    }
   }
+  goog.asserts.assert(goog.object.isEmpty(this.featureChangeKeys_),
+      'featureChangeKeys is an empty object now');
+  goog.asserts.assert(goog.object.isEmpty(this.idIndex_),
+      'idIndex is an empty object now');
+  goog.asserts.assert(goog.object.isEmpty(this.undefIdIndex_),
+      'undefIdIndex is an empty object now');
 
-  this.featuresRtree_.clear();
+  if (!goog.isNull(this.featuresRtree_)) {
+    this.featuresRtree_.clear();
+  }
   this.loadedExtentsRtree_.clear();
   this.nullGeometryFeatures_ = {};
 
@@ -338,7 +422,11 @@ ol.source.Vector.prototype.clear = function(opt_fast) {
  * @api stable
  */
 ol.source.Vector.prototype.forEachFeature = function(callback, opt_this) {
-  return this.featuresRtree_.forEach(callback, opt_this);
+  if (!goog.isNull(this.featuresRtree_)) {
+    return this.featuresRtree_.forEach(callback, opt_this);
+  } else if (!goog.isNull(this.featuresCollection_)) {
+    return this.featuresCollection_.forEach(callback, opt_this);
+  }
 };
 
 
@@ -381,6 +469,9 @@ ol.source.Vector.prototype.forEachFeatureAtCoordinateDirect =
  * the {@link ol.source.Vector#forEachFeatureIntersectingExtent
  * source.forEachFeatureIntersectingExtent()} method instead.
  *
+ * When `useSpatialIndex` is set to false, this method will loop through all
+ * features, equivalent to {@link ol.source.Vector#forEachFeature}.
+ *
  * @param {ol.Extent} extent Extent.
  * @param {function(this: T, ol.Feature): S} callback Called with each feature
  *     whose bounding box intersects the provided extent.
@@ -391,7 +482,11 @@ ol.source.Vector.prototype.forEachFeatureAtCoordinateDirect =
  */
 ol.source.Vector.prototype.forEachFeatureInExtent =
     function(extent, callback, opt_this) {
-  return this.featuresRtree_.forEachInExtent(extent, callback, opt_this);
+  if (!goog.isNull(this.featuresRtree_)) {
+    return this.featuresRtree_.forEachInExtent(extent, callback, opt_this);
+  } else if (!goog.isNull(this.featuresCollection_)) {
+    return this.featuresCollection_.forEach(callback, opt_this);
+  }
 };
 
 
@@ -449,16 +544,35 @@ ol.source.Vector.prototype.forEachFeatureIntersectingExtent =
 
 
 /**
+ * Get the features collection associated with this source. Will be `null`
+ * unless the source was configured with `useSpatialIndex` set to `false`, or
+ * with an {@link ol.Collection} as `features`.
+ * @return {ol.Collection.<ol.Feature>}
+ * @api
+ */
+ol.source.Vector.prototype.getFeaturesCollection = function() {
+  return this.featuresCollection_;
+};
+
+
+/**
  * Get all features on the source.
  * @return {Array.<ol.Feature>} Features.
  * @api stable
  */
 ol.source.Vector.prototype.getFeatures = function() {
-  var features = this.featuresRtree_.getAll();
-  if (!goog.object.isEmpty(this.nullGeometryFeatures_)) {
-    goog.array.extend(
-        features, goog.object.getValues(this.nullGeometryFeatures_));
+  var features;
+  if (!goog.isNull(this.featuresCollection_)) {
+    features = this.featuresCollection_.getArray();
+  } else if (!goog.isNull(this.featuresRtree_)) {
+    features = this.featuresRtree_.getAll();
+    if (!goog.object.isEmpty(this.nullGeometryFeatures_)) {
+      goog.array.extend(
+          features, goog.object.getValues(this.nullGeometryFeatures_));
+    }
   }
+  goog.asserts.assert(goog.isDef(features),
+      'Neither featuresRtree_ nor featuresCollection_ are available');
   return features;
 };
 
@@ -482,17 +596,25 @@ ol.source.Vector.prototype.getFeaturesAtCoordinate = function(coordinate) {
  * Get all features in the provided extent.  Note that this returns all features
  * whose bounding boxes intersect the given extent (so it may include features
  * whose geometries do not intersect the extent).
+ *
+ * This method is not available when the source is configured with
+ * `useSpatialIndex` set to `false`.
  * @param {ol.Extent} extent Extent.
  * @return {Array.<ol.Feature>} Features.
  * @api
  */
 ol.source.Vector.prototype.getFeaturesInExtent = function(extent) {
+  goog.asserts.assert(!goog.isNull(this.featuresRtree_),
+      'getFeaturesInExtent does not work when useSpatialIndex is set to false');
   return this.featuresRtree_.getInExtent(extent);
 };
 
 
 /**
  * Get the closest feature to the provided coordinate.
+ *
+ * This method is not available when the source is configured with
+ * `useSpatialIndex` set to `false`.
  * @param {ol.Coordinate} coordinate Coordinate.
  * @return {ol.Feature} Closest feature.
  * @api stable
@@ -512,6 +634,9 @@ ol.source.Vector.prototype.getClosestFeatureToCoordinate =
   var closestPoint = [NaN, NaN];
   var minSquaredDistance = Infinity;
   var extent = [-Infinity, -Infinity, Infinity, Infinity];
+  goog.asserts.assert(!goog.isNull(this.featuresRtree_),
+      'getClosestFeatureToCoordinate does not work with useSpatialIndex set ' +
+      'to false');
   this.featuresRtree_.forEachInExtent(extent,
       /**
        * @param {ol.Feature} feature Feature.
@@ -542,10 +667,15 @@ ol.source.Vector.prototype.getClosestFeatureToCoordinate =
 
 /**
  * Get the extent of the features currently in the source.
+ *
+ * This method is not available when the source is configured with
+ * `useSpatialIndex` set to `false`.
  * @return {ol.Extent} Extent.
  * @api stable
  */
 ol.source.Vector.prototype.getExtent = function() {
+  goog.asserts.assert(!goog.isNull(this.featuresRtree_),
+      'getExtent does not work when useSpatialIndex is set to false');
   return this.featuresRtree_.getExtent();
 };
 
@@ -575,16 +705,22 @@ ol.source.Vector.prototype.handleFeatureChange_ = function(event) {
   var geometry = feature.getGeometry();
   if (!goog.isDefAndNotNull(geometry)) {
     if (!(featureKey in this.nullGeometryFeatures_)) {
-      this.featuresRtree_.remove(feature);
+      if (!goog.isNull(this.featuresRtree_)) {
+        this.featuresRtree_.remove(feature);
+      }
       this.nullGeometryFeatures_[featureKey] = feature;
     }
   } else {
     var extent = geometry.getExtent();
     if (featureKey in this.nullGeometryFeatures_) {
       delete this.nullGeometryFeatures_[featureKey];
-      this.featuresRtree_.insert(extent, feature);
+      if (!goog.isNull(this.featuresRtree_)) {
+        this.featuresRtree_.insert(extent, feature);
+      }
     } else {
-      this.featuresRtree_.update(extent, feature);
+      if (!goog.isNull(this.featuresRtree_)) {
+        this.featuresRtree_.update(extent, feature);
+      }
     }
   }
   var id = feature.getId();
@@ -668,7 +804,9 @@ ol.source.Vector.prototype.removeFeature = function(feature) {
   if (featureKey in this.nullGeometryFeatures_) {
     delete this.nullGeometryFeatures_[featureKey];
   } else {
-    this.featuresRtree_.remove(feature);
+    if (!goog.isNull(this.featuresRtree_)) {
+      this.featuresRtree_.remove(feature);
+    }
   }
   this.removeFeatureInternal(feature);
   this.changed();
