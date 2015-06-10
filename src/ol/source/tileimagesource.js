@@ -3,6 +3,7 @@ goog.provide('ol.source.TileImage');
 goog.require('goog.asserts');
 goog.require('goog.events');
 goog.require('goog.events.EventType');
+goog.require('goog.object');
 goog.require('ol.ImageTile');
 goog.require('ol.TileCache');
 goog.require('ol.TileCoord');
@@ -93,6 +94,34 @@ goog.inherits(ol.source.TileImage, ol.source.Tile);
  */
 ol.source.TileImage.defaultTileLoadFunction = function(imageTile, src) {
   imageTile.getImage().src = src;
+};
+
+
+/**
+ * @inheritDoc
+ */
+ol.source.TileImage.prototype.canExpireCache = function() {
+  var canExpire = this.tileCache.canExpireCache();
+  if (canExpire) {
+    return true;
+  } else {
+    return goog.object.some(this.tileCacheForProjection, function(tileCache) {
+      return tileCache.canExpireCache();
+    });
+  }
+};
+
+
+/**
+ * @inheritDoc
+ */
+ol.source.TileImage.prototype.expireCache = function(projection, usedTiles) {
+  var usedTileCache = this.getTileCacheForProjection(projection);
+
+  this.tileCache.expireCache(this.tileCache == usedTileCache ? usedTiles : {});
+  goog.object.forEach(this.tileCacheForProjection, function(tileCache) {
+    return tileCache.expireCache(tileCache == usedTileCache ? usedTiles : {});
+  });
 };
 
 
@@ -274,9 +303,10 @@ ol.source.TileImage.prototype.setTileUrlFunction = function(tileUrlFunction) {
 /**
  * @inheritDoc
  */
-ol.source.TileImage.prototype.useTile = function(z, x, y) {
+ol.source.TileImage.prototype.useTile = function(z, x, y, projection) {
+  var tileCache = this.getTileCacheForProjection(projection);
   var tileCoordKey = this.getKeyZXY(z, x, y);
-  if (this.tileCache.containsKey(tileCoordKey)) {
-    this.tileCache.get(tileCoordKey);
+  if (!goog.isNull(tileCache) && tileCache.containsKey(tileCoordKey)) {
+    tileCache.get(tileCoordKey);
   }
 };
