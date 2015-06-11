@@ -572,8 +572,7 @@ ol.Map.prototype.disposeInternal = function() {
 /**
  * Detect features that intersect a pixel on the viewport, and execute a
  * callback with each intersecting feature. Layers included in the detection can
- * be configured through `opt_layerFilter`. Feature overlays will always be
- * included in the detection.
+ * be configured through `opt_layerFilter`.
  * @param {ol.Pixel} pixel Pixel.
  * @param {function(this: S, ol.Feature, ol.layer.Layer): T} callback Feature
  *     callback. The callback will be called with two arguments. The first
@@ -586,7 +585,7 @@ ol.Map.prototype.disposeInternal = function() {
  *     {@link ol.layer.Layer layer-candidate} and it should return a boolean
  *     value. Only layers which are visible and for which this function returns
  *     `true` will be tested for features. By default, all visible layers will
- *     be tested. Feature overlays will always be tested.
+ *     be tested.
  * @param {U=} opt_this2 Value to use as `this` when executing `layerFilter`.
  * @return {T|undefined} Callback result, i.e. the return value of last
  * callback execution, or the first truthy callback return value.
@@ -612,8 +611,7 @@ ol.Map.prototype.forEachFeatureAtPixel =
 /**
  * Detect layers that have a color value at a pixel on the viewport, and
  * execute a callback with each matching layer. Layers included in the
- * detection can be configured through `opt_layerFilter`. Feature overlays will
- * always be included in the detection.
+ * detection can be configured through `opt_layerFilter`.
  * @param {ol.Pixel} pixel Pixel.
  * @param {function(this: S, ol.layer.Layer): T} callback Layer
  *     callback. Will receive one argument, the {@link ol.layer.Layer layer}
@@ -625,7 +623,7 @@ ol.Map.prototype.forEachFeatureAtPixel =
  *     {@link ol.layer.Layer layer-candidate} and it should return a boolean
  *     value. Only layers which are visible and for which this function returns
  *     `true` will be tested for features. By default, all visible layers will
- *     be tested. Feature overlays will always be tested.
+ *     be tested.
  * @param {U=} opt_this2 Value to use as `this` when executing `layerFilter`.
  * @return {T|undefined} Callback result, i.e. the return value of last
  * callback execution, or the first truthy callback return value.
@@ -649,15 +647,14 @@ ol.Map.prototype.forEachLayerAtPixel =
 
 /**
  * Detect if features intersect a pixel on the viewport. Layers included in the
- * detection can be configured through `opt_layerFilter`. Feature overlays will
- * always be included in the detection.
+ * detection can be configured through `opt_layerFilter`.
  * @param {ol.Pixel} pixel Pixel.
  * @param {(function(this: U, ol.layer.Layer): boolean)=} opt_layerFilter Layer
  *     filter function. The filter function will receive one argument, the
  *     {@link ol.layer.Layer layer-candidate} and it should return a boolean
  *     value. Only layers which are visible and for which this function returns
  *     `true` will be tested for features. By default, all visible layers will
- *     be tested. Feature overlays will always be tested.
+ *     be tested.
  * @param {U=} opt_this Value to use as `this` when executing `layerFilter`.
  * @return {boolean} Is there a feature at the given pixel?
  * @template U
