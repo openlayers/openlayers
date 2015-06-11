@@ -101,6 +101,9 @@ ol.source.TileImage.defaultTileLoadFunction = function(imageTile, src) {
  * @inheritDoc
  */
 ol.source.TileImage.prototype.canExpireCache = function() {
+  if (!ol.ENABLE_RASTER_REPROJECTION) {
+    return goog.base(this, 'canExpireCache');
+  }
   var canExpire = this.tileCache.canExpireCache();
   if (canExpire) {
     return true;
@@ -116,11 +119,15 @@ ol.source.TileImage.prototype.canExpireCache = function() {
  * @inheritDoc
  */
 ol.source.TileImage.prototype.expireCache = function(projection, usedTiles) {
+  if (!ol.ENABLE_RASTER_REPROJECTION) {
+    goog.base(this, 'expireCache', projection, usedTiles);
+    return;
+  }
   var usedTileCache = this.getTileCacheForProjection(projection);
 
   this.tileCache.expireCache(this.tileCache == usedTileCache ? usedTiles : {});
   goog.object.forEach(this.tileCacheForProjection, function(tileCache) {
-    return tileCache.expireCache(tileCache == usedTileCache ? usedTiles : {});
+    tileCache.expireCache(tileCache == usedTileCache ? usedTiles : {});
   });
 };
 
@@ -129,6 +136,9 @@ ol.source.TileImage.prototype.expireCache = function(projection, usedTiles) {
  * @inheritDoc
  */
 ol.source.TileImage.prototype.getTileGridForProjection = function(projection) {
+  if (!ol.ENABLE_RASTER_REPROJECTION) {
+    return goog.base(this, 'getTileGridForProjection', projection);
+  }
   var thisProj = this.getProjection();
   if (!goog.isNull(this.tileGrid) &&
       (goog.isNull(thisProj) || ol.proj.equivalent(thisProj, projection))) {
@@ -148,6 +158,9 @@ ol.source.TileImage.prototype.getTileGridForProjection = function(projection) {
  * @inheritDoc
  */
 ol.source.TileImage.prototype.getTileCacheForProjection = function(projection) {
+  if (!ol.ENABLE_RASTER_REPROJECTION) {
+    return goog.base(this, 'getTileCacheForProjection', projection);
+  }
   var thisProj = this.getProjection();
   if (goog.isNull(thisProj) || ol.proj.equivalent(thisProj, projection)) {
     return this.tileCache;
@@ -166,7 +179,8 @@ ol.source.TileImage.prototype.getTileCacheForProjection = function(projection) {
  */
 ol.source.TileImage.prototype.getTile =
     function(z, x, y, pixelRatio, projection) {
-  if (!goog.isDefAndNotNull(this.getProjection()) ||
+  if (!ol.ENABLE_RASTER_REPROJECTION ||
+      !goog.isDefAndNotNull(this.getProjection()) ||
       !goog.isDefAndNotNull(projection) ||
       ol.proj.equivalent(this.getProjection(), projection)) {
     return this.getTileInternal(z, x, y, pixelRatio, projection);

@@ -95,6 +95,13 @@ ol.ENABLE_PROJ4JS = true;
 
 
 /**
+ * @define {boolean} Enable automatic reprojection of raster sources. Default is
+ *     `true`.
+ */
+ol.ENABLE_RASTER_REPROJECTION = true;
+
+
+/**
  * @define {boolean} Enable rendering of ol.layer.Tile based layers.  Default is
  *     `true`. Setting this to false at compile time in advanced mode removes
  *     all code supporting Tile layers from the build.
