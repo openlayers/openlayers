@@ -32,7 +32,7 @@ ol.reproj.Image = function(sourceProj, targetProj,
 
   /**
    * @private
-   * @type {Canvas2DRenderingContext}
+   * @type {CanvasRenderingContext2D}
    */
   this.context_ = ol.dom.createCanvasContext2D(width, height);
   this.context_.imageSmoothingEnabled = true;
@@ -48,15 +48,21 @@ ol.reproj.Image = function(sourceProj, targetProj,
    */
   this.canvas_ = this.context_.canvas;
 
+  /**
+   * @private
+   * @type {ol.Extent}
+   */
+  this.maxSourceExtent_ = sourceProj.getExtent();
   var maxTargetExtent = targetProj.getExtent();
-  var maxSourceExtent = sourceProj.getExtent();
+
 
   /**
    * @private
    * @type {!ol.reproj.Triangulation}
    */
   this.triangulation_ = ol.reproj.triangulation.createForExtent(
-      targetExtent, sourceProj, targetProj, maxTargetExtent, maxSourceExtent);
+      targetExtent, sourceProj, targetProj,
+      maxTargetExtent, this.maxSourceExtent_);
 
   /**
    * @private
@@ -66,11 +72,12 @@ ol.reproj.Image = function(sourceProj, targetProj,
 
   /**
    * @private
-   * @type {!ol.Extent}
+   * @type {ol.Extent}
    */
   this.targetExtent_ = targetExtent;
 
-  var srcExtent = ol.reproj.triangulation.getSourceExtent(this.triangulation_);
+  var srcExtent = ol.reproj.triangulation.getSourceExtent(
+      this.triangulation_, sourceProj);
 
   var targetCenter = ol.extent.getCenter(targetExtent);
   var sourceResolution = ol.reproj.calculateSourceResolution(
@@ -130,9 +137,9 @@ ol.reproj.Image.prototype.reproject_ = function() {
   var srcState = this.srcImage_.getState();
   if (srcState == ol.ImageState.LOADED) {
     // render the reprojected content
-    ol.reproj.renderTriangles(this.context_, this.srcImage_.getResolution(),
-                              this.targetResolution_, this.targetExtent_,
-                              this.triangulation_, [{
+    ol.reproj.renderTriangles(this.context_,
+        this.srcImage_.getResolution(), this.maxSourceExtent_,
+        this.targetResolution_, this.targetExtent_, this.triangulation_, [{
           extent: this.srcImage_.getExtent(),
           image: this.srcImage_.getImage()
         }]);
