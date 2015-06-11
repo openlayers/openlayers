@@ -112,7 +112,13 @@ ol.renderer.canvas.VectorLayer.prototype.composeFrame =
     var focusX = focus[0];
 
     if (vectorSource.getWrapX() && projection.canWrapX() &&
-        !ol.extent.containsExtent(projectionExtent, extent)) {
+        !ol.extent.containsExtent(projectionExtent, extent) &&
+        (ol.extent.getWidth(projectionExtent)<ol.extent.getWidth(frameState.extent)) ) {
+
+      // this.getTransform don't generate a new array but modify this.transform_
+	    // For clipping a clone of "framestate" transform is required
+	    transform = transform.slice();
+	 
       var projLeft = projectionExtent[0];
       var projRight = projectionExtent[2];
       // A feature from skippedFeatureUids will only be skipped in the world
@@ -126,13 +132,17 @@ ol.renderer.canvas.VectorLayer.prototype.composeFrame =
       var worldWidth = ol.extent.getWidth(projectionExtent);
       var world = 0;
       var offsetX;
+      var offsetTransform;
+	  
       while (startX < projectionExtent[0]) {
         --world;
         offsetX = worldWidth * world;
-        transform = this.getTransform(frameState, offsetX);
-        replayGroup.replay(replayContext, pixelRatio, transform, rotation,
+		
+		    offsetTransform = this.getTransform(frameState, offsetX);
+		    replayGroup.replay(replayContext, pixelRatio, offsetTransform, rotation,
             projLeft + offsetX <= focusX && focusX <= projRight + offsetX ?
-                skippedFeatureUids : noSkip);
+                skippedFeatureUids : noSkip, transform);
+
         startX += worldWidth;
       }
       world = 0;
@@ -140,10 +150,12 @@ ol.renderer.canvas.VectorLayer.prototype.composeFrame =
       while (startX > projectionExtent[2]) {
         ++world;
         offsetX = worldWidth * world;
-        transform = this.getTransform(frameState, offsetX);
-        replayGroup.replay(replayContext, pixelRatio, transform, rotation,
+		
+		    offsetTransform = this.getTransform(frameState, offsetX);
+        replayGroup.replay(replayContext, pixelRatio, offsetTransform, rotation,
             projLeft + offsetX <= focusX && focusX <= projRight + offsetX ?
-                skippedFeatureUids : noSkip);
+                skippedFeatureUids : noSkip, transform);
+
         startX -= worldWidth;
       }
     } else {
@@ -246,9 +258,12 @@ ol.renderer.canvas.VectorLayer.prototype.prepareFrame =
   var extent = ol.extent.buffer(frameStateExtent,
       vectorLayerRenderBuffer * resolution);
   var projectionExtent = viewState.projection.getExtent();
-
+  var clipExtent = extent;
+  
   if (vectorSource.getWrapX() && viewState.projection.canWrapX() &&
       !ol.extent.containsExtent(projectionExtent, frameState.extent)) {
+	  clipExtent = extent.slice();
+
     // do not clip when the view crosses the -180° or 180° meridians
     extent[0] = projectionExtent[0];
     extent[2] = projectionExtent[2];
@@ -271,7 +286,7 @@ ol.renderer.canvas.VectorLayer.prototype.prepareFrame =
   var replayGroup =
       new ol.render.canvas.ReplayGroup(
           ol.renderer.vector.getTolerance(resolution, pixelRatio), extent,
-          resolution, vectorLayer.getRenderBuffer());
+          resolution, vectorLayer.getRenderBuffer(), clipExtent, projectionExtent);
   vectorSource.loadFeatures(extent, resolution, projection);
   var renderFeature =
       /**
