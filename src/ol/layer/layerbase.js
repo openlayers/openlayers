@@ -35,7 +35,7 @@ ol.layer.LayerProperty = {
  *            saturation: number,
  *            sourceState: ol.source.State,
  *            visible: boolean,
- *            unmanaged: boolean,
+ *            managed: boolean,
  *            extent: (ol.Extent|undefined),
  *            maxResolution: number,
  *            minResolution: number}}
@@ -143,7 +143,7 @@ ol.layer.Base.prototype.getLayerState = function() {
     saturation: Math.max(saturation, 0),
     sourceState: sourceState,
     visible: visible,
-    unmanaged: false,
+    managed: true,
     extent: extent,
     maxResolution: maxResolution,
     minResolution: Math.max(minResolution, 0)

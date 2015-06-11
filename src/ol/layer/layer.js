@@ -163,7 +163,7 @@ ol.layer.Layer.prototype.setMap = function(map) {
     this.mapPrecomposeKey_ = goog.events.listen(
         map, ol.render.EventType.PRECOMPOSE, function(evt) {
           var layerState = this.getLayerState();
-          layerState.unmanaged = true;
+          layerState.managed = false;
           evt.frameState.layerStatesArray.push(layerState);
           evt.frameState.layerStates[goog.getUid(this)] = layerState;
         }, false, this);
