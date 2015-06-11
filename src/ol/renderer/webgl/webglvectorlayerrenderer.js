@@ -84,7 +84,7 @@ ol.renderer.webgl.VectorLayer.prototype.composeFrame =
         frameState.size, frameState.pixelRatio, layerState.opacity,
         layerState.brightness, layerState.contrast, layerState.hue,
         layerState.saturation,
-        layerState.unmanaged ? {} : frameState.skippedFeatureUids);
+        layerState.managed ? frameState.skippedFeatureUids : {});
   }
 
 };
