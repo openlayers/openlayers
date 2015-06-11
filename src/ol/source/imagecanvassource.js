@@ -59,7 +59,7 @@ goog.inherits(ol.source.ImageCanvas, ol.source.Image);
 /**
  * @inheritDoc
  */
-ol.source.ImageCanvas.prototype.getImage =
+ol.source.ImageCanvas.prototype.getImageInternal =
     function(extent, resolution, pixelRatio, projection) {
   resolution = this.findNearestResolution(resolution);
 
