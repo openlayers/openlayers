@@ -387,6 +387,7 @@ ol.render.canvas.Replay.prototype.replay_ = function(
                 goog.vec.Mat4.getElement(localTransform, 0, 3),
                 goog.vec.Mat4.getElement(localTransform, 1, 3));
           }
+          /*
           if (stroke) {
             context.strokeText(text, x, y);
           }
@@ -395,6 +396,34 @@ ol.render.canvas.Replay.prototype.replay_ = function(
           }
           if (scale != 1 || rotation !== 0) {
             context.setTransform(1, 0, 0, 1, 0, 0);
+          }
+          */
+
+          var fontSize = parseFloat(context.font);
+          var tabText = text.split('\n');
+          var cptText = tabText.length;
+
+          var newY = y;
+
+          newY = newY - (((cptText - 1) / 2) * fontSize);
+
+          for (var iTxt = 0; iTxt < cptText; iTxt++) {
+            var newText = tabText[iTxt];
+            if (stroke) {
+              if (iTxt === 0) {
+                context.strokeText(newText, x, newY);
+              } else {
+                context.strokeText(newText, x, newY);
+              }
+            }
+            if (fill) {
+              if (iTxt === 0) {
+                context.fillText(newText, x, newY);
+              } else {
+                context.fillText(newText, x, newY);
+              }
+            }
+            newY = newY + fontSize;
           }
         }
         ++i;
