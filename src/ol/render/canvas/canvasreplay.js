@@ -423,7 +423,8 @@ ol.render.canvas.Replay.prototype.replay_ = function(
                 context.fillText(newText, x, newY);
               }
             }
-            newY = newY + fontSize;
+            // Add a small padding when calculating the new Y size.
+            newY = newY + fontSize + 5;
           }
         }
         ++i;
