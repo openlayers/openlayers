@@ -968,7 +968,7 @@ ol.render.canvas.LineStringReplay = function(
 
   /**
    * @private
-   * @type {?{currentStrokeStyle: (string|undefined),
+   * @type {{currentStrokeStyle: (string|undefined),
    *         currentLineCap: (string|undefined),
    *         currentLineDash: Array.<number>,
    *         currentLineJoin: (string|undefined),
@@ -980,7 +980,7 @@ ol.render.canvas.LineStringReplay = function(
    *         lineDash: Array.<number>,
    *         lineJoin: (string|undefined),
    *         lineWidth: (number|undefined),
-   *         miterLimit: (number|undefined)}}
+   *         miterLimit: (number|undefined)}|null}
    */
   this.state_ = {
     currentStrokeStyle: undefined,
@@ -1207,7 +1207,7 @@ ol.render.canvas.PolygonReplay = function(
 
   /**
    * @private
-   * @type {?{currentFillStyle: (string|undefined),
+   * @type {{currentFillStyle: (string|undefined),
    *         currentStrokeStyle: (string|undefined),
    *         currentLineCap: (string|undefined),
    *         currentLineDash: Array.<number>,
@@ -1220,7 +1220,7 @@ ol.render.canvas.PolygonReplay = function(
    *         lineDash: Array.<number>,
    *         lineJoin: (string|undefined),
    *         lineWidth: (number|undefined),
-   *         miterLimit: (number|undefined)}}
+   *         miterLimit: (number|undefined)}|null}
    */
   this.state_ = {
     currentFillStyle: undefined,

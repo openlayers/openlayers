@@ -50,7 +50,7 @@ ol.renderer.canvas.VectorLayer = function(vectorLayer) {
 
   /**
    * @private
-   * @type {function(ol.Feature, ol.Feature): ?number}
+   * @type {function(ol.Feature, ol.Feature): number|null}
    */
   this.renderedRenderOrder_ = null;
 
