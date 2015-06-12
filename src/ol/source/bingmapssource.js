@@ -114,34 +114,32 @@ ol.source.BingMaps.prototype.handleImageryMetadataResponse =
   this.tileGrid = tileGrid;
 
   var culture = this.culture_;
-  this.tileUrlFunction = ol.TileUrlFunction.withTileCoordTransform(
-      tileGrid.createTileCoordTransform(),
-      ol.TileUrlFunction.createFromTileUrlFunctions(
-          goog.array.map(
-              resource.imageUrlSubdomains,
-              function(subdomain) {
-                var imageUrl = resource.imageUrl
-                    .replace('{subdomain}', subdomain)
-                    .replace('{culture}', culture);
-                return (
-                    /**
-                     * @param {ol.TileCoord} tileCoord Tile coordinate.
-                     * @param {number} pixelRatio Pixel ratio.
-                     * @param {ol.proj.Projection} projection Projection.
-                     * @return {string|undefined} Tile URL.
-                     */
-                    function(tileCoord, pixelRatio, projection) {
-                      goog.asserts.assert(ol.proj.equivalent(
-                          projection, sourceProjection),
-                          'projections are equivalent');
-                      if (goog.isNull(tileCoord)) {
-                        return undefined;
-                      } else {
-                        return imageUrl.replace(
-                            '{quadkey}', ol.tilecoord.quadKey(tileCoord));
-                      }
-                    });
-              })));
+  this.tileUrlFunction = ol.TileUrlFunction.createFromTileUrlFunctions(
+      goog.array.map(
+          resource.imageUrlSubdomains,
+          function(subdomain) {
+            var imageUrl = resource.imageUrl
+                .replace('{subdomain}', subdomain)
+                .replace('{culture}', culture);
+            return (
+                /**
+                 * @param {ol.TileCoord} tileCoord Tile coordinate.
+                 * @param {number} pixelRatio Pixel ratio.
+                 * @param {ol.proj.Projection} projection Projection.
+                 * @return {string|undefined} Tile URL.
+                 */
+                function(tileCoord, pixelRatio, projection) {
+                  goog.asserts.assert(ol.proj.equivalent(
+                      projection, sourceProjection),
+                      'projections are equivalent');
+                  if (goog.isNull(tileCoord)) {
+                    return undefined;
+                  } else {
+                    return imageUrl.replace(
+                        '{quadkey}', ol.tilecoord.quadKey(tileCoord));
+                  }
+                });
+          }));
 
   if (resource.imageryProviders) {
     var transform = ol.proj.getTransformFromProjections(

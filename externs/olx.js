@@ -6133,7 +6133,7 @@ olx.tilegrid;
 
 
 /**
- * @typedef {{createTileCoordTransform: (undefined|function({extent: (ol.Extent|undefined)}):function(ol.TileCoord, ol.proj.Projection, ol.TileCoord=):ol.TileCoord),
+ * @typedef {{transformTileCoord: (undefined|function(ol.TileCoord, ol.TileCoord=):ol.TileCoord),
  *     extent: (ol.Extent|undefined),
  *     minZoom: (number|undefined),
  *     origin: (ol.Coordinate|undefined),

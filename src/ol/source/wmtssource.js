@@ -180,10 +180,6 @@ ol.source.WMTS = function(options) {
           goog.array.map(this.urls_, createFromWMTSTemplate)) :
       ol.TileUrlFunction.nullTileUrlFunction;
 
-  tileUrlFunction = ol.TileUrlFunction.withTileCoordTransform(
-      ol.tilegrid.createOriginTopLeftTileCoordTransform(tileGrid),
-      tileUrlFunction);
-
   goog.base(this, {
     attributions: options.attributions,
     crossOrigin: options.crossOrigin,

@@ -38,7 +38,8 @@ ol.tilegrid.WMTS = function(options) {
     resolutions: options.resolutions,
     tileSize: options.tileSize,
     tileSizes: options.tileSizes,
-    sizes: options.sizes
+    sizes: options.sizes,
+    transformTileCoord: ol.tilegrid.originTopLeftTileCoordTransform
   });
 
 };

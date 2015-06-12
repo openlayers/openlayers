@@ -155,7 +155,7 @@ ol.tilecoord.wrapX = function(tileCoord, tileGrid, projection) {
     var worldWidth = ol.extent.getWidth(projectionExtent);
     var worldsAway = Math.ceil((projectionExtent[0] - center[0]) / worldWidth);
     center[0] += worldWidth * worldsAway;
-    return tileGrid.getTileCoordForCoordAndZ(center, z);
+    return tileGrid.getTileCoordForCoordAndZInternal(center, z);
   } else {
     return tileCoord;
   }
@@ -165,15 +165,15 @@ ol.tilecoord.wrapX = function(tileCoord, tileGrid, projection) {
 /**
  * @param {ol.TileCoord} tileCoord Tile coordinate.
  * @param {!ol.tilegrid.TileGrid} tileGrid Tile grid.
- * @return {ol.TileCoord} Tile coordinate.
+ * @return {boolean} Tile coordinate is within extent and zoom level range.
  */
-ol.tilecoord.restrictByExtentAndZ = function(tileCoord, tileGrid) {
+ol.tilecoord.withinExtentAndZ = function(tileCoord, tileGrid) {
   var z = tileCoord[0];
   var x = tileCoord[1];
   var y = tileCoord[2];
 
   if (tileGrid.getMinZoom() > z || z > tileGrid.getMaxZoom()) {
-    return null;
+    return false;
   }
   var extent = tileGrid.getExtent();
   var tileRange;
@@ -183,8 +183,8 @@ ol.tilecoord.restrictByExtentAndZ = function(tileCoord, tileGrid) {
     tileRange = tileGrid.getTileRangeForExtentAndZ(extent, z);
   }
   if (goog.isNull(tileRange)) {
-    return tileCoord;
+    return true;
   } else {
-    return tileRange.containsXY(x, y) ? tileCoord : null;
+    return tileRange.containsXY(x, y);
   }
 };

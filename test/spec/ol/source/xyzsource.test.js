@@ -26,7 +26,7 @@ describe('ol.source.XYZ', function() {
       tileGrid = xyzTileSource.getTileGrid();
     });
 
-    it('return the expected URL', function() {
+    it('returns the expected URL', function() {
 
       var coordinate = [829330.2064098881, 5933916.615134273];
       var tileUrl;
