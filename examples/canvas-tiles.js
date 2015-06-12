@@ -7,15 +7,16 @@ goog.require('ol.source.OSM');
 goog.require('ol.source.TileDebug');
 
 
+var osmSource = new ol.source.OSM();
 var map = new ol.Map({
   layers: [
     new ol.layer.Tile({
-      source: new ol.source.OSM()
+      source: osmSource
     }),
     new ol.layer.Tile({
       source: new ol.source.TileDebug({
         projection: 'EPSG:3857',
-        tileGrid: ol.tilegrid.createXYZ({maxZoom: 22})
+        tileGrid: osmSource.getTileGrid()
       })
     })
   ],
