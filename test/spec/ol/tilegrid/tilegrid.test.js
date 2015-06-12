@@ -379,8 +379,8 @@ describe('ol.tilegrid.TileGrid', function() {
         resolutions: [1, 0.5],
         tileSize: 10
       });
-      var transformFn =
-          ol.tilegrid.createOriginTopLeftTileCoordTransform(tileGrid);
+      var transformFn = goog.bind(
+          ol.tilegrid.originTopLeftTileCoordTransform, tileGrid);
       expect(transformFn([0, 0, -2])).to.eql([0, 0, 1]);
       expect(transformFn([0, 0, -1])).to.eql([0, 0, 0]);
       expect(transformFn([1, 0, -4])).to.eql([1, 0, 3]);
@@ -398,10 +398,10 @@ describe('ol.tilegrid.TileGrid', function() {
         resolutions: [1, 0.5],
         tileSize: 10
       });
-      var transformFn1 =
-          ol.tilegrid.createOriginTopLeftTileCoordTransform(tileGrid);
-      var transformFn2 =
-          ol.tilegrid.createOriginTopLeftTileCoordTransform(tileGrid1);
+      var transformFn1 = goog.bind(
+          ol.tilegrid.originTopLeftTileCoordTransform, tileGrid);
+      var transformFn2 = goog.bind(
+          ol.tilegrid.originTopLeftTileCoordTransform, tileGrid1);
       expect(transformFn1([0, 0, -2])).to.eql([0, 0, 1]);
       expect(transformFn2([0, 0, -2])).to.eql([0, 0, 1]);
       expect(transformFn1([0, 0, -1])).to.eql([0, 0, 0]);
@@ -424,10 +424,10 @@ describe('ol.tilegrid.TileGrid', function() {
         resolutions: [1, 0.5],
         tileSize: 10
       });
-      var transformFn1 =
-          ol.tilegrid.createOriginTopLeftTileCoordTransform(tileGrid1);
-      var transformFn2 =
-          ol.tilegrid.createOriginTopLeftTileCoordTransform(tileGrid2);
+      var transformFn1 = goog.bind(
+          ol.tilegrid.originTopLeftTileCoordTransform, tileGrid1);
+      var transformFn2 = goog.bind(
+          ol.tilegrid.originTopLeftTileCoordTransform, tileGrid2);
       expect(tileGrid1.getFullTileRange(0).getHeight()).to.equal(2);
       expect(transformFn1([0, 0, 0])).to.eql([0, 0, 1]);
       expect(transformFn2([0, 0, 0])).to.eql([0, 0, 1]);

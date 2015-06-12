@@ -217,8 +217,10 @@ ol.source.Tile.prototype.getTilePixelSize =
 
 
 /**
- * Handles x-axis wrapping and returns a tile coordinate when it is within
- * the resolution and extent range.
+ * Handles x-axis wrapping and returns a tile coordinate transformed from the
+ * internal tile scheme to the tile grid's tile scheme. When the tile coordinate
+ * is outside the resolution and extent range of the tile grid, `null` will be
+ * returned.
  * @param {ol.TileCoord} tileCoord Tile coordinate.
  * @param {ol.proj.Projection=} opt_projection Projection.
  * @return {ol.TileCoord} Tile coordinate to be passed to the tileUrlFunction or
@@ -233,7 +235,8 @@ ol.source.Tile.prototype.getTileCoordForTileUrlFunction =
   if (this.getWrapX()) {
     tileCoord = ol.tilecoord.wrapX(tileCoord, tileGrid, projection);
   }
-  return ol.tilecoord.restrictByExtentAndZ(tileCoord, tileGrid);
+  return ol.tilecoord.withinExtentAndZ(tileCoord, tileGrid) ?
+      tileGrid.transformTileCoord(tileCoord) : null;
 };
 
 

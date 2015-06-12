@@ -67,18 +67,6 @@ describe('ol.TileUrlFunction', function() {
     });
   });
 
-  describe('withTileCoordTransform', function() {
-    it('creates expected URL', function() {
-      var tileUrl = ol.TileUrlFunction.withTileCoordTransform(
-          function(tileCoord) {
-            return [tileCoord[0], tileCoord[1], -tileCoord[2]];
-          },
-          ol.TileUrlFunction.createFromTemplate('{z}/{x}/{y}'));
-      expect(tileUrl([3, 2, -1])).to.eql('3/2/1');
-      expect(tileUrl(null)).to.be(undefined);
-    });
-  });
-
   describe('createFromTileUrlFunctions', function() {
     it('creates expected URL', function() {
       var tileUrl = ol.TileUrlFunction.createFromTileUrlFunctions([

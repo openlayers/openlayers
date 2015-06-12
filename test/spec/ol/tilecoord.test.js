@@ -47,7 +47,7 @@ describe('ol.TileCoord', function() {
     });
   });
 
-  describe('restrictByExtentAndZ', function() {
+  describe('withinExtentAndZ', function() {
 
     it('restricts by z', function() {
       var tileGrid = new ol.tilegrid.TileGrid({
@@ -56,12 +56,9 @@ describe('ol.TileCoord', function() {
         resolutions: [2, 1],
         minZoom: 1
       });
-      expect(ol.tilecoord.restrictByExtentAndZ([0, 0, 0], tileGrid))
-          .to.equal(null);
-      expect(ol.tilecoord.restrictByExtentAndZ([1, 0, 0], tileGrid))
-          .to.eql([1, 0, 0]);
-      expect(ol.tilecoord.restrictByExtentAndZ([2, 0, 0], tileGrid))
-          .to.equal(null);
+      expect(ol.tilecoord.withinExtentAndZ([0, 0, 0], tileGrid)).to.be(false);
+      expect(ol.tilecoord.withinExtentAndZ([1, 0, 0], tileGrid)).to.be(true);
+      expect(ol.tilecoord.withinExtentAndZ([2, 0, 0], tileGrid)).to.be(false);
     });
 
     it('restricts by extent when extent defines tile ranges', function() {
@@ -71,12 +68,9 @@ describe('ol.TileCoord', function() {
         tileSize: 10,
         resolutions: [1]
       });
-      expect(ol.tilecoord.restrictByExtentAndZ([0, 1, 1], tileGrid))
-          .to.eql([0, 1, 1]);
-      expect(ol.tilecoord.restrictByExtentAndZ([0, 2, 0], tileGrid))
-          .to.equal(null);
-      expect(ol.tilecoord.restrictByExtentAndZ([0, 0, 2], tileGrid))
-          .to.equal(null);
+      expect(ol.tilecoord.withinExtentAndZ([0, 1, 1], tileGrid)).to.be(true);
+      expect(ol.tilecoord.withinExtentAndZ([0, 2, 0], tileGrid)).to.be(false);
+      expect(ol.tilecoord.withinExtentAndZ([0, 0, 2], tileGrid)).to.be(false);
     });
 
     it('restricts by extent when sizes define tile ranges', function() {
@@ -86,18 +80,12 @@ describe('ol.TileCoord', function() {
         tileSize: 10,
         resolutions: [1]
       });
-      expect(ol.tilecoord.restrictByExtentAndZ([0, 0, 0], tileGrid))
-          .to.eql([0, 0, 0]);
-      expect(ol.tilecoord.restrictByExtentAndZ([0, -1, 0], tileGrid))
-          .to.equal(null);
-      expect(ol.tilecoord.restrictByExtentAndZ([0, 0, -1], tileGrid))
-          .to.equal(null);
-      expect(ol.tilecoord.restrictByExtentAndZ([0, 2, 2], tileGrid))
-          .to.eql([0, 2, 2]);
-      expect(ol.tilecoord.restrictByExtentAndZ([0, 3, 0], tileGrid))
-          .to.equal(null);
-      expect(ol.tilecoord.restrictByExtentAndZ([0, 0, 3], tileGrid))
-          .to.equal(null);
+      expect(ol.tilecoord.withinExtentAndZ([0, 0, 0], tileGrid)).to.be(true);
+      expect(ol.tilecoord.withinExtentAndZ([0, -1, 0], tileGrid)).to.be(false);
+      expect(ol.tilecoord.withinExtentAndZ([0, 0, -1], tileGrid)).to.be(false);
+      expect(ol.tilecoord.withinExtentAndZ([0, 2, 2], tileGrid)).to.be(true);
+      expect(ol.tilecoord.withinExtentAndZ([0, 3, 0], tileGrid)).to.be(false);
+      expect(ol.tilecoord.withinExtentAndZ([0, 0, 3], tileGrid)).to.be(false);
     });
 
     it('does not restrict by extent with no extent or sizes', function() {
@@ -106,14 +94,14 @@ describe('ol.TileCoord', function() {
         tileSize: 10,
         resolutions: [1]
       });
-      expect(ol.tilecoord.restrictByExtentAndZ([0, Infinity, 0], tileGrid))
-          .to.eql([0, Infinity, 0]);
-      expect(ol.tilecoord.restrictByExtentAndZ([0, 0, Infinity], tileGrid))
-          .to.eql([0, 0, Infinity]);
-      expect(ol.tilecoord.restrictByExtentAndZ([0, -Infinity, 0], tileGrid))
-          .to.eql([0, -Infinity, 0]);
-      expect(ol.tilecoord.restrictByExtentAndZ([0, 0, Infinity], tileGrid))
-          .to.eql([0, 0, Infinity]);
+      expect(ol.tilecoord.withinExtentAndZ([0, Infinity, 0], tileGrid))
+          .to.be(true);
+      expect(ol.tilecoord.withinExtentAndZ([0, 0, Infinity], tileGrid))
+          .to.be(true);
+      expect(ol.tilecoord.withinExtentAndZ([0, -Infinity, 0], tileGrid))
+          .to.be(true);
+      expect(ol.tilecoord.withinExtentAndZ([0, 0, Infinity], tileGrid))
+          .to.be(true);
     });
   });
 
