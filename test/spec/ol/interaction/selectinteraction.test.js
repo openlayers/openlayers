@@ -219,15 +219,8 @@ describe('ol.interaction.Select', function() {
       beforeEach(function() {
         interaction.setActive(false);
       });
-      it('sets the map into the feature overlay', function() {
-        interaction.setActive(true);
-        expect(interaction.featureOverlay_.map_).to.be(map);
-      });
       it('fires change:active', function() {
-        var listenerSpy = sinon.spy(function() {
-          // test that the interaction's change:active listener is called first
-          expect(interaction.featureOverlay_.map_).not.to.be(null);
-        });
+        var listenerSpy = sinon.spy();
         interaction.on('change:active', listenerSpy);
         interaction.setActive(true);
         expect(listenerSpy.callCount).to.be(1);
@@ -253,8 +246,9 @@ describe('ol.interaction.Select', function() {
       });
       describe('#setMap(null) when interaction is active', function() {
         it('unsets the map from the feature overlay', function() {
+          var spy = sinon.spy(interaction.featureOverlay_, 'setMap');
           interaction.setMap(null);
-          expect(interaction.featureOverlay_.map_).to.be(null);
+          expect(spy.getCall(0).args[0]).to.be(null);
         });
       });
     });
@@ -262,8 +256,9 @@ describe('ol.interaction.Select', function() {
     describe('#setMap(map)', function() {
       describe('#setMap(map) when interaction is active', function() {
         it('sets the map into the feature overlay', function() {
+          var spy = sinon.spy(interaction.featureOverlay_, 'setMap');
           interaction.setMap(map);
-          expect(interaction.featureOverlay_.map_).to.be(map);
+          expect(spy.getCall(0).args[0]).to.be(map);
         });
       });
     });

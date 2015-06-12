@@ -24,7 +24,9 @@ var vector = new ol.layer.Vector({
   })
 });
 
-var select = new ol.interaction.Select();
+var select = new ol.interaction.Select({
+  wrapX: false
+});
 
 var modify = new ol.interaction.Modify({
   features: select.getFeatures()

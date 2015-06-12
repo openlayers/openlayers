@@ -495,15 +495,15 @@ ol.format.WKT.Lexer.prototype.readNumber_ = function() {
   do {
     if (c == '.') {
       decimal = true;
-    } else if (goog.isDef(c) && c.toLowerCase() == 'e') {
+    } else if (c == 'e' || c == 'E') {
       scientificNotation = true;
     }
     c = this.nextChar_();
   } while (
       this.isNumeric_(c, decimal) ||
-      // once c is defined we may have a scientific number indicated by 'e'
-      // but only if we haven't detected a scientific number before
-      !scientificNotation && goog.isDef(c) && c.toLowerCase() == 'e' ||
+      // if we haven't detected a scientific number before, 'e' or 'E'
+      // hint that we should continue to read
+      !scientificNotation && (c == 'e' || c == 'E') ||
       // once we know that we have a scientific number, both '-' and '+'
       // are allowed
       scientificNotation && (c == '-' || c == '+')

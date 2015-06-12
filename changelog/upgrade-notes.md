@@ -1,5 +1,86 @@
 ## Upgrade notes
 
+### v3.7.0
+
+#### Removal of `ol.FeatureOverlay`
+
+Instead of an `ol.FeatureOverlay`, we now use an `ol.layer.Vector` with an
+`ol.source.Vector`. If you previously had:
+```js
+var featureOverlay = new ol.FeatureOverlay({
+  map: map,
+  style: overlayStyle
+});
+featureOverlay.addFeature(feature);
+featureOverlay.removeFeature(feature);
+var collection = featureOverlay.getFeatures();
+```
+you will have to change this to:
+```js
+var collection = new ol.Collection();
+var featureOverlay = new ol.layer.Vector({
+  map: map,
+  style: overlayStyle,
+  source: new ol.source.Vector({
+    features: collection,
+    useSpatialIndex: false // optional, might improve performance
+  });
+});
+featureOverlay.getSource().addFeature(feature);
+featureOverlay.getSource().removeFeature(feature);
+```
+
+With the removal of `ol.FeatureOverlay`, `zIndex` symbolizer properties of overlays are no longer stacked per map, but per layer/overlay. If you previously had multiple feature overlays where you controlled the rendering order of features by using `zIndex` symbolizer properties, you can now achieve the same rendering order only if all overlay features are on the same layer.
+
+Note that `ol.FeatureOverlay#getFeatures()` returned an `{ol.Collection.<ol.Feature>}`, whereas `ol.source.Vector#getFeatures()` returns an `{Array.<ol.Feature>}`.
+
+#### `ol.TileCoord` changes
+
+Until now, the API exposed two different types of `ol.TileCoord` tile coordinates: the internal ones with bottom-left origin, and transformed ones with an origin that is determined by the tile grid configuration. With this change, the API now only exposes the transformed tile coordinates.
+
+The first `tileCoord` argument of `ol.TileUrlFunctionType` now expects transformed tile coordinates instead of internal OpenLayers tile coordinates. Accordingly, `ol.tilegrid.TileGrid#getTileCoordForCoordAndZ` and `ol.tilegrid.TileGrid#getTileCoordForCoordAndResolution` now return transformed tile coordinates.
+
+This change affects applications that configure a custom `tileUrlFunction` for an `ol.source.Tile`. Previously, the `tileUrlFunction` was called with bottom-left origin tile coordinates that OpenLayers uses internally. To transform these into tile coordinates supported by the tile source, a custom `tileUrlFunction` had to change the `y` value of the `ol.TileCoord`. Now the `y` value can be used unaltered.
+
+To make it easier for application developers to perform this transform, the API provided an `ol.tilegrid.TileGrid#createTileCoordTransform()` function. This function is no longer available and no longer needed.
+
+The code snippets below show how your application code needs to be changed:
+
+Old application code (with `ol.tilegrid.TileGrid#createTileCoordTransform()`):
+```js
+var transform = source.getTileGrid().createTileCoordTransform();
+var tileUrlFunction = function(tileCoord, pixelRatio, projection) {
+  tileCoord = transform(tileCoord, projection);
+  return 'http://mytiles.com/' +
+      tileCoord[0] + '/' + tileCoord[1] + '/' + tileCoord[2] + '.png';
+};
+```
+Old application code (with custom `y` transform):
+```js
+var tileUrlFunction = function(tileCoord, pixelRatio, projection) {
+  var z = tileCoord[0];
+  var yFromBottom = tileCoord[2];
+  var resolution = tileGrid.getResolution(z);
+  var tileHeight = ol.size.toSize(tileSize)[1];
+  var matrixHeight =
+      Math.floor(ol.extent.getHeight(extent) / tileHeight / resolution);
+  return 'http://mytiles.com/' +
+      tileCoord[0] + '/' + tileCoord[1] + '/' +
+      (matrixHeight - yFromBottom - 1) + '.png';
+
+};
+```
+New application code (no transform needed):
+```js
+var tileUrlFunction = function(tileCoord, pixelRatio, projection) {
+  return 'http://mytiles.com/' +
+      tileCoord[0] + '/' + tileCoord[1] + '/' + tileCoord[2] + '.png';
+};
+```
+For easier debugging, `ol.source.DebugTile` was changed to display the transformed tile coordinates as well.
+
+Also watch out for sections in your code where you used `ol.tilegrid.TileGrid#getTileCoordForCoordAndZ()` or `ol.tilegrid.TileGrid#getTileCoordForCoordAndResolution()`. When working with the returned tile coordinates, changes equivalent to the ones shown in the above snippets are required.
+
 ### v3.6.0
 
 #### `ol.interaction.Draw` changes

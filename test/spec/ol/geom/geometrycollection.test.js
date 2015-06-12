@@ -1,5 +1,6 @@
 goog.provide('ol.test.geom.GeometryCollection');
 
+goog.require('ol.extent');
 
 describe('ol.geom.GeometryCollection', function() {
 
@@ -110,6 +111,35 @@ describe('ol.geom.GeometryCollection', function() {
       expect(extent[2]).to.be(30);
       expect(extent[1]).to.be(2);
       expect(extent[3]).to.be(40);
+    });
+
+  });
+
+  describe('#intersectsExtent()', function() {
+
+    beforeEach(function() {
+      point = new ol.geom.Point([5, 20]);
+      line = new ol.geom.LineString([[10, 20], [30, 40]]);
+      poly = new ol.geom.Polygon([outer, inner1, inner2]);
+      multi = new ol.geom.GeometryCollection([point, line, poly]);
+    });
+
+    it('returns true for intersecting point', function() {
+      expect(multi.intersectsExtent([5, 20, 5, 20])).to.be(true);
+    });
+
+    it('returns true for intersecting part of lineString', function() {
+      expect(multi.intersectsExtent([25, 35, 30, 40])).to.be(true);
+    });
+
+    it('returns true for intersecting part of polygon', function() {
+      expect(multi.intersectsExtent([0, 0, 5, 5])).to.be(true);
+    });
+
+
+    it('returns false for non-matching extent within own extent', function() {
+      var extent = [0, 35, 5, 40];
+      expect(poly.intersectsExtent(extent)).to.be(false);
     });
 
   });
