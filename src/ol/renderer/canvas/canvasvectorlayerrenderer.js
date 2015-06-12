@@ -116,8 +116,8 @@ ol.renderer.canvas.VectorLayer.prototype.composeFrame =
         (ol.extent.getWidth(projectionExtent)<ol.extent.getWidth(frameState.extent)) ) {
 
       // this.getTransform don't generate a new array but modify this.transform_
-	    // For clipping a clone of "framestate" transform is required
-	    transform = transform.slice();
+      // For clipping a clone of "framestate" transform is required
+      transform = transform.slice();
 	 
       var projLeft = projectionExtent[0];
       var projRight = projectionExtent[2];
@@ -141,7 +141,7 @@ ol.renderer.canvas.VectorLayer.prototype.composeFrame =
         ++world;
         offsetX = worldWidth * world;
         offsetTransform = this.getTransform(frameState, offsetX);
-        replayGroup.replay(replayContext, pixeRatio, offsetTransform, rotation,
+        replayGroup.replay(replayContext, pixelRatio, offsetTransform, rotation,
             skippedFeatureUids , transform);
         startX -= worldWidth;
       }
