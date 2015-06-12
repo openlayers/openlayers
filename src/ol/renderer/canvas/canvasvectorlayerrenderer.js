@@ -50,7 +50,7 @@ ol.renderer.canvas.VectorLayer = function(vectorLayer) {
 
   /**
    * @private
-   * @type {function(ol.Feature, ol.Feature): number|null}
+   * @type {function(ol.Feature, ol.Feature): ?number}
    */
   this.renderedRenderOrder_ = null;
 
@@ -113,12 +113,12 @@ ol.renderer.canvas.VectorLayer.prototype.composeFrame =
         skippedFeatureUids);
     if (vectorSource.getWrapX() && projection.canWrapX() &&
         !ol.extent.containsExtent(projectionExtent, extent) &&
-        (ol.extent.getWidth(projectionExtent)<ol.extent.getWidth(frameState.extent)) ) {
+        (ol.extent.getWidth(projectionExtent) <
+        ol.extent.getWidth(frameState.extent))) {
 
       // this.getTransform don't generate a new array but modify this.transform_
       // For clipping a clone of "framestate" transform is required
       transform = transform.slice();
-	 
       var projLeft = projectionExtent[0];
       var projRight = projectionExtent[2];
       var startX = extent[0];
@@ -126,7 +126,7 @@ ol.renderer.canvas.VectorLayer.prototype.composeFrame =
       var world = 0;
       var offsetX;
       var offsetTransform;
-	  
+
       while (startX < projectionExtent[0]) {
         --world;
         offsetX = worldWidth * world;
@@ -142,7 +142,7 @@ ol.renderer.canvas.VectorLayer.prototype.composeFrame =
         offsetX = worldWidth * world;
         offsetTransform = this.getTransform(frameState, offsetX);
         replayGroup.replay(replayContext, pixelRatio, offsetTransform, rotation,
-            skippedFeatureUids , transform);
+            skippedFeatureUids, transform);
         startX -= worldWidth;
       }
     }
@@ -243,10 +243,10 @@ ol.renderer.canvas.VectorLayer.prototype.prepareFrame =
       vectorLayerRenderBuffer * resolution);
   var projectionExtent = viewState.projection.getExtent();
   var clipExtent = extent;
-  
+
   if (vectorSource.getWrapX() && viewState.projection.canWrapX() &&
       !ol.extent.containsExtent(projectionExtent, frameState.extent)) {
-	  clipExtent = extent.slice();
+    clipExtent = extent.slice();
 
     // do not clip when the view crosses the -180° or 180° meridians
     extent[0] = projectionExtent[0];
@@ -270,7 +270,8 @@ ol.renderer.canvas.VectorLayer.prototype.prepareFrame =
   var replayGroup =
       new ol.render.canvas.ReplayGroup(
           ol.renderer.vector.getTolerance(resolution, pixelRatio), extent,
-          resolution, vectorLayer.getRenderBuffer(), clipExtent, projectionExtent);
+          resolution, vectorLayer.getRenderBuffer(), clipExtent,
+          projectionExtent);
   vectorSource.loadFeatures(extent, resolution, projection);
   var renderFeature =
       /**
