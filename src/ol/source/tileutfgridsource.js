@@ -82,7 +82,7 @@ ol.source.TileUTFGrid.prototype.getTemplate = function() {
 ol.source.TileUTFGrid.prototype.forDataAtCoordinateAndResolution = function(
     coordinate, resolution, callback, opt_this, opt_request) {
   if (!goog.isNull(this.tileGrid)) {
-    var tileCoord = this.tileGrid.getTileCoordForCoordAndResolution(
+    var tileCoord = this.tileGrid.getTileCoordForCoordAndResolutionInternal(
         coordinate, resolution);
     var tile = /** @type {!ol.source.TileUTFGridTile_} */(this.getTile(
         tileCoord[0], tileCoord[1], tileCoord[2], 1, this.getProjection()));

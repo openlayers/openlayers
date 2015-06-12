@@ -382,6 +382,28 @@ ol.tilegrid.TileGrid.prototype.getTileCoordExtent =
  */
 ol.tilegrid.TileGrid.prototype.getTileCoordForCoordAndResolution = function(
     coordinate, resolution, opt_tileCoord) {
+  var tileCoord = this.getTileCoordForCoordAndResolutionInternal(
+      coordinate, resolution, opt_tileCoord);
+  this.transformTileCoord(tileCoord, tileCoord);
+  return tileCoord;
+};
+
+
+/**
+ * Get the tile coordinate for the given map coordinate and resolution.  This
+ * method considers that coordinates that intersect tile boundaries should be
+ * assigned the higher tile coordinate.
+ *
+ * The returned tile coordinate is the internal, untransformed one with
+ * bottom-left origin.
+ *
+ * @param {ol.Coordinate} coordinate Coordinate.
+ * @param {number} resolution Resolution.
+ * @param {ol.TileCoord=} opt_tileCoord Destination ol.TileCoord object.
+ * @return {ol.TileCoord} Internal, untransformed tile coordinate.
+ */
+ol.tilegrid.TileGrid.prototype.getTileCoordForCoordAndResolutionInternal =
+    function(coordinate, resolution, opt_tileCoord) {
   return this.getTileCoordForXYAndResolution_(
       coordinate[0], coordinate[1], resolution, false, opt_tileCoord);
 };
@@ -431,7 +453,24 @@ ol.tilegrid.TileGrid.prototype.getTileCoordForXYAndResolution_ = function(
  * @return {ol.TileCoord} Tile coordinate.
  * @api
  */
-ol.tilegrid.TileGrid.prototype.getTileCoordForCoordAndZ =
+ol.tilegrid.TileGrid.prototype.getTileCoordForCoordAndZ = function(
+    coordinate, z, opt_tileCoord) {
+  var tileCoord = this.getTileCoordForCoordAndZInternal(
+      coordinate, z, opt_tileCoord);
+  this.transformTileCoord(tileCoord, tileCoord);
+  return tileCoord;
+};
+
+
+/**
+ * Get a tile coordinate given a map coordinate and zoom level. The returned
+ * tile coordinate is the internal one, untransformed with bottom-left origin.
+ * @param {ol.Coordinate} coordinate Coordinate.
+ * @param {number} z Zoom level.
+ * @param {ol.TileCoord=} opt_tileCoord Destination ol.TileCoord object.
+ * @return {ol.TileCoord} Internal, untransformed tile coordinate.
+ */
+ol.tilegrid.TileGrid.prototype.getTileCoordForCoordAndZInternal =
     function(coordinate, z, opt_tileCoord) {
   var resolution = this.getResolution(z);
   return this.getTileCoordForXYAndResolution_(

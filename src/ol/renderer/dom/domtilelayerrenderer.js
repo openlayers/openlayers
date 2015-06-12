@@ -192,7 +192,7 @@ ol.renderer.dom.TileLayer.prototype.prepareFrame =
       tileLayerZ = this.tileLayerZs_[tileLayerZKey];
     } else {
       tileCoordOrigin =
-          tileGrid.getTileCoordForCoordAndZ(center, tileLayerZKey);
+          tileGrid.getTileCoordForCoordAndZInternal(center, tileLayerZKey);
       tileLayerZ = new ol.renderer.dom.TileLayerZ_(tileGrid, tileCoordOrigin);
       newTileLayerZKeys[tileLayerZKey] = true;
       this.tileLayerZs_[tileLayerZKey] = tileLayerZ;

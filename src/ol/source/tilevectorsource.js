@@ -114,7 +114,7 @@ ol.source.TileVector.prototype.forEachFeatureAtCoordinateAndResolution =
 
   var tileGrid = this.tileGrid_;
   var tiles = this.tiles_;
-  var tileCoord = tileGrid.getTileCoordForCoordAndResolution(coordinate,
+  var tileCoord = tileGrid.getTileCoordForCoordAndResolutionInternal(coordinate,
       resolution);
 
   var tileKey = this.getTileKeyZXY_(tileCoord[0], tileCoord[1], tileCoord[2]);
