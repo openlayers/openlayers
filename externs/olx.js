@@ -2591,7 +2591,8 @@ olx.interaction.ModifyOptions.prototype.pixelTolerance;
 
 
 /**
- * FeatureOverlay style.
+ * Style used for the features being modified. By default the default edit
+ * style is used (see {@link ol.style}).
  * @type {ol.style.Style|Array.<ol.style.Style>|ol.style.StyleFunction|undefined}
  * @api
  */
@@ -2781,7 +2782,8 @@ olx.interaction.SelectOptions.prototype.layers;
 
 
 /**
- * Style for the selected features (those in the FeatureOverlay).
+ * Style for the selected features. By default the default edit style is used
+ * (see {@link ol.style}).
  * @type {ol.style.Style|Array.<ol.style.Style>|ol.style.StyleFunction|undefined}
  * @api
  */
@@ -3710,39 +3712,6 @@ olx.layer.VectorOptions.prototype.updateWhileInteracting;
  * @api stable
  */
 olx.layer.VectorOptions.prototype.visible;
-
-
-/**
- * @typedef {{features: (Array.<ol.Feature>|ol.Collection.<ol.Feature>|undefined),
- *     map: (ol.Map|undefined),
- *     style: (ol.style.Style|Array.<ol.style.Style>|ol.style.StyleFunction|undefined)}}
- * @api
- */
-olx.FeatureOverlayOptions;
-
-
-/**
- * Features.
- * @type {Array.<ol.Feature>|ol.Collection.<ol.Feature>|undefined}
- * @api
- */
-olx.FeatureOverlayOptions.prototype.features;
-
-
-/**
- * Map.
- * @type {ol.Map|undefined}
- * @api
- */
-olx.FeatureOverlayOptions.prototype.map;
-
-
-/**
- * Feature style.
- * @type {ol.style.Style|Array.<ol.style.Style>|ol.style.StyleFunction|undefined}
- * @api
- */
-olx.FeatureOverlayOptions.prototype.style;
 
 
 /**
