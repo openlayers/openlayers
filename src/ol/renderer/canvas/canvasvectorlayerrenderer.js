@@ -50,7 +50,7 @@ ol.renderer.canvas.VectorLayer = function(vectorLayer) {
 
   /**
    * @private
-   * @type {function(ol.Feature, ol.Feature): number|null}
+   * @type {?function(ol.Feature, ol.Feature): number}
    */
   this.renderedRenderOrder_ = null;
 
@@ -107,44 +107,34 @@ ol.renderer.canvas.VectorLayer.prototype.composeFrame =
     // to save and restore the transformation matrix and the opacity.
     // see http://jsperf.com/context-save-restore-versus-variable
     var alpha = replayContext.globalAlpha;
+    var wrapX = vectorSource.getWrapX() && projection.canWrapX();
     replayContext.globalAlpha = layerState.opacity;
 
-    replayGroup.replay(replayContext, pixelRatio, transform, rotation,
-        skippedFeatureUids);
-    if (vectorSource.getWrapX() && projection.canWrapX() &&
-        !ol.extent.containsExtent(projectionExtent, extent) &&
-        (ol.extent.getWidth(projectionExtent) <
-        ol.extent.getWidth(frameState.extent))) {
+    if (wrapX) {
+      var worldWidth = ol.extent.getWidth(projectionExtent);
+
+      // With wrapX option the world can be repeat indefinitely.
+      // There are several world... Each world has an index
+      // index 0 is the world in projectionExtent.
+      // leftWorld is the index of the world at the left of frameset
+      // rightWorld is the index of the world at the right of frameset
+      var leftWorld = Math.floor((extent[0] + worldWidth / 2) / worldWidth);
+      var rightWorld = Math.floor((extent[2] + worldWidth / 2) / worldWidth);
+      var offsetTransform;
 
       // this.getTransform don't generate a new array but modify this.transform_
       // For clipping a clone of "framestate" transform is required
       transform = transform.slice();
-      var projLeft = projectionExtent[0];
-      var projRight = projectionExtent[2];
-      var startX = extent[0];
-      var worldWidth = ol.extent.getWidth(projectionExtent);
-      var world = 0;
-      var offsetX;
-      var offsetTransform;
 
-      while (startX < projectionExtent[0]) {
-        --world;
-        offsetX = worldWidth * world;
-        offsetTransform = this.getTransform(frameState, offsetX);
-        replayGroup.replay(replayContext, pixelRatio, offsetTransform, rotation,
-            skippedFeatureUids, transform);
-        startX += worldWidth;
+      for (var world = leftWorld; world <= rightWorld; world++) {
+        offsetTransform = this.getTransform(frameState, world * worldWidth);
+        replayGroup.replay(replayContext, pixelRatio, offsetTransform,
+            rotation, skippedFeatureUids, transform);
       }
-      world = 0;
-      startX = extent[2];
-      while (startX > projectionExtent[2]) {
-        ++world;
-        offsetX = worldWidth * world;
-        offsetTransform = this.getTransform(frameState, offsetX);
-        replayGroup.replay(replayContext, pixelRatio, offsetTransform, rotation,
-            skippedFeatureUids, transform);
-        startX -= worldWidth;
-      }
+
+    } else {
+      replayGroup.replay(replayContext, pixelRatio, transform, rotation,
+          skippedFeatureUids);
     }
 
     if (replayContext != context) {
@@ -239,18 +229,38 @@ ol.renderer.canvas.VectorLayer.prototype.prepareFrame =
     vectorLayerRenderOrder = ol.renderer.vector.defaultOrder;
   }
 
+  var wrapX = vectorSource.getWrapX() && viewState.projection.canWrapX();
   var extent = ol.extent.buffer(frameStateExtent,
       vectorLayerRenderBuffer * resolution);
-  var projectionExtent = viewState.projection.getExtent();
   var clipExtent = extent;
+  var projOverflow = false;
+  var projExtent = viewState.projection.getExtent();
 
-  if (vectorSource.getWrapX() && viewState.projection.canWrapX() &&
-      !ol.extent.containsExtent(projectionExtent, frameState.extent)) {
-    clipExtent = extent.slice();
+  if (wrapX) {
+    var worldWidth = ol.extent.getWidth(projExtent);
 
-    // do not clip when the view crosses the -180° or 180° meridians
-    extent[0] = projectionExtent[0];
-    extent[2] = projectionExtent[2];
+    // X Offset to go back to the unwrapped extent
+    var offsetX = Math.floor(
+        (ol.extent.getCenter(frameState.extent)[0] + worldWidth / 2) /
+        worldWidth) * worldWidth;
+        projOverflow = (projExtent[0] > extent[0] - offsetX) ||
+        (projExtent[2] < extent[2] - offsetX);
+
+        if (projOverflow) {
+
+          // do not clip when the view crosses the -180° or 180° meridians
+          // set x values of extent to projExtent
+          clipExtent = extent.slice();
+          clipExtent[0] -= offsetX;
+          clipExtent[2] -= offsetX;
+          extent[0] = projExtent[0];
+          extent[2] = projExtent[2];
+        } else {
+
+          // unwrap extent for features loading (see below)
+          extent[0] -= offsetX;
+          extent[2] -= offsetX;
+        }
   }
 
   if (!this.dirty_ &&
@@ -269,9 +279,9 @@ ol.renderer.canvas.VectorLayer.prototype.prepareFrame =
 
   var replayGroup =
       new ol.render.canvas.ReplayGroup(
-          ol.renderer.vector.getTolerance(resolution, pixelRatio), extent,
-          resolution, vectorLayer.getRenderBuffer(), clipExtent,
-          projectionExtent);
+          ol.renderer.vector.getTolerance(resolution, pixelRatio), clipExtent,
+          resolution, vectorLayer.getRenderBuffer(), projOverflow,
+          projExtent);
   vectorSource.loadFeatures(extent, resolution, projection);
   var renderFeature =
       /**

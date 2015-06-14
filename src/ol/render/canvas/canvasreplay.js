@@ -42,6 +42,7 @@ ol.render.canvas.Instruction = {
 };
 
 
+
 /**
  * @constructor
  * @extends {ol.render.VectorContext}
@@ -54,7 +55,7 @@ ol.render.canvas.Instruction = {
  * @struct
  */
 ol.render.canvas.Replay = function(
-  tolerance, maxExtent, resolution, worldwide, projectionExtent) {
+    tolerance, maxExtent, resolution, worldwide, projectionExtent) {
   goog.base(this);
 
   /**
@@ -175,7 +176,7 @@ ol.render.canvas.Replay.prototype.appendFlatCoordinates =
     nextCoord[0] = flatCoordinates[i];
     nextCoord[1] = flatCoordinates[i + 1];
     nextRel = this.worldwide_ ? ol.extent.Relationship.INTERSECTING :
-      ol.extent.coordinateRelationship(extent, nextCoord);
+        ol.extent.coordinateRelationship(extent, nextCoord);
     if (nextRel !== lastRel) {
       if (skipped) {
         this.coordinates[myEnd++] = lastCoord[0];
@@ -604,6 +605,7 @@ ol.render.canvas.Replay.prototype.getBufferedMaxExtent = function() {
   return this.maxExtent;
 };
 
+
 /**
  * Add draw instructions for coordinates.
  * Test if :
@@ -618,12 +620,12 @@ ol.render.canvas.Replay.prototype.getBufferedMaxExtent = function() {
  * @return {number} end.
  */
 ol.render.canvas.Replay.prototype.drawFlatCoordinatesForViewExtent =
-function(flatCoordinates, offset, ends, stride) {
+    function(flatCoordinates, offset, ends, stride) {
 
   if (!this.worldwide_) {
 
     var extent = ol.extent.extendFlatCoordinates(ol.extent.createEmpty(),
-      flatCoordinates, 0, flatCoordinates.length, stride);
+        flatCoordinates, 0, flatCoordinates.length, stride);
     var maxExtent = this.maxExtent;
     var projWidth = ol.extent.getWidth(this.projectionExtent_);
     var contains = ol.extent.containsExtent(maxExtent, extent);
@@ -640,14 +642,14 @@ function(flatCoordinates, offset, ends, stride) {
       if (extent[0] < maxExtent[0] && extent[0] + projWidth < maxExtent[2]) {
         deltaX = projWidth;
       } else if (extent[2] > maxExtent[2] &&
-        extent[2] - projWidth > maxExtent[0]) {
+          extent[2] - projWidth > maxExtent[0]) {
         deltaX = -projWidth;
       }
       if (deltaX !== 0) {
         var translatedCoordinates = ol.geom.flat.transform.translate(
-          flatCoordinates, 0, flatCoordinates.length, stride, deltaX, 0);
+            flatCoordinates, 0, flatCoordinates.length, stride, deltaX, 0);
         var tOffset = this.drawFlatCoordinates(translatedCoordinates,
-          offset, ends, stride);
+            offset, ends, stride);
         if (!intersects) {
           return tOffset;
         }
@@ -659,6 +661,7 @@ function(flatCoordinates, offset, ends, stride) {
   return this.drawFlatCoordinates(flatCoordinates, offset, ends, stride);
 };
 
+
 /**
  * Add draw instructions for coordinates.
  * @param {Array.<number>} flatCoordinates Flat coordinates.
@@ -669,11 +672,13 @@ function(flatCoordinates, offset, ends, stride) {
  * @return {number} end.
  */
 ol.render.canvas.Replay.prototype.drawFlatCoordinates =
-function(flatCoordinates, offset, ends, stride) {
+    function(flatCoordinates, offset, ends, stride) {
 
   // To override
   return 0;
 };
+
+
 
 /**
  * @constructor
@@ -687,9 +692,9 @@ function(flatCoordinates, offset, ends, stride) {
  * @struct
  */
 ol.render.canvas.ImageReplay = function(
-  tolerance, maxExtent, resolution, worldwide, projectionExtent) {
+    tolerance, maxExtent, resolution, worldwide, projectionExtent) {
   goog.base(
-    this, tolerance, maxExtent, resolution, worldwide, projectionExtent);
+      this, tolerance, maxExtent, resolution, worldwide, projectionExtent);
 
   /**
    * @private
@@ -949,6 +954,7 @@ ol.render.canvas.ImageReplay.prototype.setImageStyle = function(imageStyle) {
 };
 
 
+
 /**
  * @constructor
  * @extends {ol.render.canvas.Replay}
@@ -961,14 +967,14 @@ ol.render.canvas.ImageReplay.prototype.setImageStyle = function(imageStyle) {
  * @struct
  */
 ol.render.canvas.LineStringReplay = function(
-  tolerance, maxExtent, resolution, worldwide, projectionExtent) {
+    tolerance, maxExtent, resolution, worldwide, projectionExtent) {
 
   goog.base(
-    this, tolerance, maxExtent, resolution, worldwide, projectionExtent);
+      this, tolerance, maxExtent, resolution, worldwide, projectionExtent);
 
   /**
    * @private
-   * @type {{currentStrokeStyle: (string|undefined),
+   * @type {?{currentStrokeStyle: (string|undefined),
    *         currentLineCap: (string|undefined),
    *         currentLineDash: Array.<number>,
    *         currentLineJoin: (string|undefined),
@@ -980,7 +986,7 @@ ol.render.canvas.LineStringReplay = function(
    *         lineDash: Array.<number>,
    *         lineJoin: (string|undefined),
    *         lineWidth: (number|undefined),
-   *         miterLimit: (number|undefined)}|null}
+   *         miterLimit: (number|undefined)}}
    */
   this.state_ = {
     currentStrokeStyle: undefined,
@@ -1188,6 +1194,7 @@ ol.render.canvas.LineStringReplay.prototype.setFillStrokeStyle =
 };
 
 
+
 /**
  * @constructor
  * @extends {ol.render.canvas.Replay}
@@ -1200,14 +1207,14 @@ ol.render.canvas.LineStringReplay.prototype.setFillStrokeStyle =
  * @struct
  */
 ol.render.canvas.PolygonReplay = function(
-  tolerance, maxExtent, resolution, worldwide, projectionExtent) {
+    tolerance, maxExtent, resolution, worldwide, projectionExtent) {
 
   goog.base(
-    this, tolerance, maxExtent, resolution, worldwide, projectionExtent);
+      this, tolerance, maxExtent, resolution, worldwide, projectionExtent);
 
   /**
    * @private
-   * @type {{currentFillStyle: (string|undefined),
+   * @type {?{currentFillStyle: (string|undefined),
    *         currentStrokeStyle: (string|undefined),
    *         currentLineCap: (string|undefined),
    *         currentLineDash: Array.<number>,
@@ -1220,7 +1227,7 @@ ol.render.canvas.PolygonReplay = function(
    *         lineDash: Array.<number>,
    *         lineJoin: (string|undefined),
    *         lineWidth: (number|undefined),
-   *         miterLimit: (number|undefined)}|null}
+   *         miterLimit: (number|undefined)}}
    */
   this.state_ = {
     currentFillStyle: undefined,
@@ -1247,7 +1254,7 @@ goog.inherits(ol.render.canvas.PolygonReplay, ol.render.canvas.Replay);
  * @inheritDoc
  */
 ol.render.canvas.PolygonReplay.prototype.drawFlatCoordinates =
-function(flatCoordinates, offset, ends, stride) {
+    function(flatCoordinates, offset, ends, stride) {
   var state = this.state_;
   var beginPathInstruction = [ol.render.canvas.Instruction.BEGIN_PATH];
   this.instructions.push(beginPathInstruction);
@@ -1282,6 +1289,7 @@ function(flatCoordinates, offset, ends, stride) {
   }
   return offset;
 };
+
 
 /**
  * @inheritDoc
@@ -1547,6 +1555,7 @@ ol.render.canvas.PolygonReplay.prototype.setFillStrokeStyles_ = function() {
 };
 
 
+
 /**
  * @constructor
  * @extends {ol.render.canvas.Replay}
@@ -1559,10 +1568,10 @@ ol.render.canvas.PolygonReplay.prototype.setFillStrokeStyles_ = function() {
  * @struct
  */
 ol.render.canvas.TextReplay = function(
-  tolerance, maxExtent, resolution, worldwide, projectionExtent) {
+    tolerance, maxExtent, resolution, worldwide, projectionExtent) {
 
   goog.base(
-    this, tolerance, maxExtent, resolution, worldwide, projectionExtent);
+      this, tolerance, maxExtent, resolution, worldwide, projectionExtent);
 
   /**
    * @private
@@ -1874,13 +1883,18 @@ ol.render.canvas.TextReplay.prototype.setTextStyle = function(textStyle) {
  * @param {ol.Extent} maxExtent Max extent.
  * @param {number} resolution Resolution.
  * @param {number=} opt_renderBuffer Optional rendering buffer.
- * @param {ol.Extent=} opt_clipExtent Optional clipping extent.
- * @param {ol.Extent=} opt_projectionExtent Projection extent.
+ * @param {boolean=} opt_projectionOverflow Optional flag :
+ * wrapX true and projection extent not contains view extent.
+ * @param {ol.Extent=} opt_projectionExtent Optinal projection extent.
  * @struct
  */
 ol.render.canvas.ReplayGroup = function(
-    tolerance, maxExtent, resolution, opt_renderBuffer, opt_clipExtent,
-    opt_projectionExtent) {
+    tolerance, maxExtent, resolution, opt_renderBuffer,
+    opt_projectionOverflow, opt_projectionExtent) {
+
+  if (!goog.isDef(opt_projectionOverflow)) {
+    opt_projectionOverflow = false;
+  }
 
   /**
    * @private
@@ -1898,21 +1912,15 @@ ol.render.canvas.ReplayGroup = function(
    * @private
    * @type {ol.Extent}
    */
-  this.maxClipExtent_ = opt_clipExtent || maxExtent;
-
-  /**
-   * @private
-   * @type {ol.Extent}
-   */
   this.projectionExtent_ = opt_projectionExtent || ol.extent.createEmpty();
 
   /**
    * @private
    * @type {boolean}
    */
-  this.worldwide_ = (this.maxClipExtent_ != maxExtent) &&
-    (ol.extent.getWidth(this.maxClipExtent_) >=
-    ol.extent.getWidth(this.projectionExtent_));
+  this.worldwide_ = opt_projectionOverflow &&
+      (ol.extent.getWidth(maxExtent) >=
+      ol.extent.getWidth(this.projectionExtent_));
 
   /**
    * @private
@@ -2011,11 +2019,12 @@ ol.render.canvas.ReplayGroup.prototype.forEachFeatureAtCoordinate = function(
       }, hitExtent);
 };
 
+
 /**
  * @inheritDoc
  */
 ol.render.canvas.ReplayGroup.prototype.getReplay =
-function(zIndex, replayType) {
+    function(zIndex, replayType) {
   var zIndexKey = goog.isDef(zIndex) ? zIndex.toString() : '0';
   var replays = this.replaysByZIndex_[zIndexKey];
   if (!goog.isDef(replays)) {
@@ -2028,7 +2037,7 @@ function(zIndex, replayType) {
     goog.asserts.assert(goog.isDef(Constructor),
         replayType +
         ' constructor missing from ol.render.canvas.BATCH_CONSTRUCTORS_');
-    replay = new Constructor(this.tolerance_, this.maxClipExtent_,
+    replay = new Constructor(this.tolerance_, this.maxExtent_,
         this.resolution_, this.worldwide_, this.projectionExtent_);
     replays[replayType] = replay;
   }
@@ -2043,44 +2052,45 @@ ol.render.canvas.ReplayGroup.prototype.isEmpty = function() {
   return goog.object.isEmpty(this.replaysByZIndex_);
 };
 
+
 /**
  * @param {CanvasRenderingContext2D} context Context.
  * @param {number} pixelRatio Pixel ratio.
  * @param {goog.vec.Mat4.Number} transform Transform.
  * @param {number} viewRotation View rotation.
  * @param {Object} skippedFeaturesHash Ids of features to skip
- * @param {goog.vec.Mat4.Number=} clipTransform transform for clipping.
+ * @param {goog.vec.Mat4.Number=} opt_clipTransform transform for clipping.
  */
 ol.render.canvas.ReplayGroup.prototype.replay = function(
     context, pixelRatio, transform, viewRotation,
-    skippedFeaturesHash, clipTransform) {
+    skippedFeaturesHash, opt_clipTransform) {
 
   /** @type {Array.<number>} */
   var zs = goog.array.map(goog.object.getKeys(this.replaysByZIndex_), Number);
   goog.array.sort(zs);
 
-  clipTransform = clipTransform || transform;
+  opt_clipTransform = opt_clipTransform || transform;
 
   // setup clipping so that the parts of over-simplified geometries are not
   // visible outside the current extent when panning
-  var maxExtent = this.maxClipExtent_;
+  var maxExtent = this.maxExtent_;
   var minX = maxExtent[0];
   var minY = maxExtent[1];
   var maxX = maxExtent[2];
   var maxY = maxExtent[3];
   var flatClipCoords = [minX, minY, minX, maxY, maxX, maxY, maxX, minY];
   ol.geom.flat.transform.transform2D(
-      flatClipCoords, 0, 8, 2, clipTransform, flatClipCoords);
+      flatClipCoords, 0, 8, 2, opt_clipTransform, flatClipCoords);
 
   if (!this.worldwide_) {
-    context.save();
+    /* context.save();
     context.beginPath();
     context.moveTo(flatClipCoords[0], flatClipCoords[1]);
     context.lineTo(flatClipCoords[2], flatClipCoords[3]);
     context.lineTo(flatClipCoords[4], flatClipCoords[5]);
     context.lineTo(flatClipCoords[6], flatClipCoords[7]);
     context.closePath();
-    context.clip();
+    context.clip();*/
   }
 
   var i, ii, j, jj, replays, replay, result;
