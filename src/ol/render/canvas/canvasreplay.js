@@ -2059,17 +2059,19 @@ ol.render.canvas.ReplayGroup.prototype.isEmpty = function() {
  * @param {goog.vec.Mat4.Number} transform Transform.
  * @param {number} viewRotation View rotation.
  * @param {Object} skippedFeaturesHash Ids of features to skip
- * @param {goog.vec.Mat4.Number=} opt_clipTransform transform for clipping.
+ * @param {boolean=} opt_noClip flag to disabled clipping.
  */
 ol.render.canvas.ReplayGroup.prototype.replay = function(
     context, pixelRatio, transform, viewRotation,
-    skippedFeaturesHash, opt_clipTransform) {
+    skippedFeaturesHash, opt_noClip) {
+
+  if (!goog.isDef(opt_noClip)) {
+    opt_noClip = false;
+  }
 
   /** @type {Array.<number>} */
   var zs = goog.array.map(goog.object.getKeys(this.replaysByZIndex_), Number);
   goog.array.sort(zs);
-
-  opt_clipTransform = opt_clipTransform || transform;
 
   // setup clipping so that the parts of over-simplified geometries are not
   // visible outside the current extent when panning
@@ -2080,17 +2082,17 @@ ol.render.canvas.ReplayGroup.prototype.replay = function(
   var maxY = maxExtent[3];
   var flatClipCoords = [minX, minY, minX, maxY, maxX, maxY, maxX, minY];
   ol.geom.flat.transform.transform2D(
-      flatClipCoords, 0, 8, 2, opt_clipTransform, flatClipCoords);
+      flatClipCoords, 0, 8, 2, transform, flatClipCoords);
 
-  if (!this.worldwide_) {
-    /* context.save();
+  if (!this.worldwide_ && !opt_noClip) {
+    context.save();
     context.beginPath();
     context.moveTo(flatClipCoords[0], flatClipCoords[1]);
     context.lineTo(flatClipCoords[2], flatClipCoords[3]);
     context.lineTo(flatClipCoords[4], flatClipCoords[5]);
     context.lineTo(flatClipCoords[6], flatClipCoords[7]);
     context.closePath();
-    context.clip();*/
+    context.clip();
   }
 
   var i, ii, j, jj, replays, replay, result;

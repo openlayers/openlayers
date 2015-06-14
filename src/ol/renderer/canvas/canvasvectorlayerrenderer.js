@@ -123,13 +123,14 @@ ol.renderer.canvas.VectorLayer.prototype.composeFrame =
       var offsetTransform;
 
       // this.getTransform don't generate a new array but modify this.transform_
-      // For clipping a clone of "framestate" transform is required
+      // the original transform is saved for dispatchRenderEvent and
+      // dispatchPostComposeEvent... Good idea ???
       transform = transform.slice();
 
       for (var world = leftWorld; world <= rightWorld; world++) {
         offsetTransform = this.getTransform(frameState, world * worldWidth);
         replayGroup.replay(replayContext, pixelRatio, offsetTransform,
-            rotation, skippedFeatureUids, transform);
+            rotation, skippedFeatureUids, true);
       }
 
     } else {
