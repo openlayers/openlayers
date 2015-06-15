@@ -4045,7 +4045,8 @@ olx.source.TileImageOptions.prototype.wrapX;
  *     tileGrid: ol.tilegrid.TileGrid,
  *     tileUrlFunction: (ol.TileUrlFunctionType|undefined),
  *     url: (string|undefined),
- *     urls: (Array.<string>|undefined)}}
+ *     urls: (Array.<string>|undefined),
+ *     wrapX: (boolean|undefined)}}
  * @api
  */
 olx.source.TileVectorOptions;
@@ -4106,6 +4107,16 @@ olx.source.TileVectorOptions.prototype.url;
  * @api
  */
 olx.source.TileVectorOptions.prototype.urls;
+
+
+/**
+ * Wrap the world horizontally. Default is `true`. For vector editing across the
+ * -180° and 180° meridians to work properly, this should be set to `false`. The
+ * resulting geometry coordinates will then exceed the world bounds.
+ * @type {boolean|undefined}
+ * @api
+ */
+olx.source.TileVectorOptions.prototype.wrapX;
 
 
 /**
