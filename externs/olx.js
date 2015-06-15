@@ -6151,7 +6151,6 @@ olx.tilegrid.TileGridOptions;
  * Extent for the tile grid. No tiles outside this extent will be requested by
  * {@link ol.source.Tile} sources. When no `origin` or `origins` are
  * configured, the `origin` will be set to the bottom-left corner of the extent.
- * When no `sizes` are configured, they will be calculated from the extent.
  * @type {ol.Extent|undefined}
  * @api
  */
