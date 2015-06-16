@@ -2365,7 +2365,8 @@ olx.interaction.DragZoomOptions.prototype.style;
 
 
 /**
- * @typedef {{features: (ol.Collection.<ol.Feature>|undefined),
+ * @typedef {{clickTolerance: (number|undefined),
+ *     features: (ol.Collection.<ol.Feature>|undefined),
  *     source: (ol.source.Vector|undefined),
  *     snapTolerance: (number|undefined),
  *     type: ol.geom.GeometryType,
@@ -2380,6 +2381,18 @@ olx.interaction.DragZoomOptions.prototype.style;
  * @api
  */
 olx.interaction.DrawOptions;
+
+
+/**
+ * The maximum distance in pixels between "down" and "up" for a "up" event
+ * to be considered a "click" event and actually add a point/vertex to the
+ * geometry being drawn.  Default is 6 pixels.  That value was chosen for
+ * the draw interaction to behave correctly on mouse as well as on touch
+ * devices.
+ * @type {number|undefined}
+ * @api
+ */
+olx.interaction.DrawOptions.prototype.clickTolerance;
 
 
 /**
