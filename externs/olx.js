@@ -6149,8 +6149,8 @@ olx.tilegrid.TileGridOptions.prototype.minZoom;
 
 /**
  * The tile grid origin, i.e. where the `x` and `y` axes meet (`[z, 0, 0]`).
- * Tile coordinates increase from left to right and from bottom to top. Default
- * is null.
+ * Tile coordinates increase from left to right and from bottom to top. If not
+ * specified, `extent` or `origins` must be provided.
  * @type {ol.Coordinate|undefined}
  * @api stable
  */
@@ -6161,7 +6161,8 @@ olx.tilegrid.TileGridOptions.prototype.origin;
  * Tile grid origins, i.e. where the `x` and `y` axes meet (`[z, 0, 0]`), for
  * each zoom level. If given, the array length should match the length of the
  * `resolutions` array, i.e. each resolution can have a different origin. Tile
- * coordinates increase from left to right and from bottom to top.
+ * coordinates increase from left to right and from bottom to top. If not
+ * specified, `extent` or `origin` must be provided.
  * @type {Array.<ol.Coordinate>|undefined}
  * @api stable
  */
