@@ -25,7 +25,7 @@ var map = new ol.Map({
         attributions: [attribution],
         maxZoom: 16,
         projection: projection,
-        tileSize: 512,
+        tileSize: tileSize,
         tileUrlFunction: function(tileCoord) {
           return urlTemplate.replace('{z}', (tileCoord[0] - 1).toString())
                             .replace('{x}', tileCoord[1].toString())
