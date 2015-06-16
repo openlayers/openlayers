@@ -331,7 +331,7 @@ olx.OverlayOptions.prototype.element;
 
 
 /**
- * Offsets in pixels used when positioning the overlay. The fist element in the
+ * Offsets in pixels used when positioning the overlay. The first element in the
  * array is the horizontal offset. A positive value shifts the overlay right.
  * The second element in the array is the vertical offset. A positive value
  * shifts the overlay down. Default is `[0, 0]`.
