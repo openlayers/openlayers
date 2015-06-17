@@ -312,6 +312,37 @@ ol.renderer.canvas.VectorLayer.prototype.prepareFrame =
         function(feature) {
           features.push(feature);
         }, this);
+
+    if (wrapX) {
+
+      // Add feature over -180°
+      var leftExtent = extent.slice();
+      leftExtent[0]-=worldWidth;
+      leftExtent[2]-=worldWidth;
+      vectorSource.forEachFeatureInExtentAtResolution(leftExtent, resolution,
+        /**
+         * @param {ol.Feature} feature Feature.
+         */
+        function(feature) {
+          features.push(feature);
+        }, this);
+
+      // Add feature over 180°
+      var rightExtent = extent.slice();
+      rightExtent[0]+=worldWidth;
+      rightExtent[2]+=worldWidth;
+      vectorSource.forEachFeatureInExtentAtResolution(rightExtent, resolution,
+        /**
+         * @param {ol.Feature} feature Feature.
+         */
+        function(feature) {
+          features.push(feature);
+        }, this);
+
+      // Some features (Ex polygons, lines) can be duplicated with these 3 search
+      goog.array.removeDuplicates(features);
+    }
+
     goog.array.sort(features, vectorLayerRenderOrder);
     goog.array.forEach(features, renderFeature, this);
   } else {
