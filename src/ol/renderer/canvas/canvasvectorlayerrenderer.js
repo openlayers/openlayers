@@ -319,7 +319,7 @@ ol.renderer.canvas.VectorLayer.prototype.prepareFrame =
       // The current state is "load all features" (search extent = projExtent)
       // If extent is over date line we can split this extent in 2 extents
       // (EX [160°,210°] => [160°,180°],[-180°,-150°]
-      // And search features in these 2 extents
+      // And search features in these 2  extents
 
       // Add feature over -180°
       var leftExtent = extent.slice();
