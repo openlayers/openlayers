@@ -315,31 +315,37 @@ ol.renderer.canvas.VectorLayer.prototype.prepareFrame =
 
     if (wrapX) {
 
+      // TODO : Optimise search for extents that are not included in ProjExtent
+      // The current state is "load all features" (search extent = projExtent)
+      // If extent is over date line we can split this extent in 2 extents
+      // (EX [160°,210°] => [160°,180°],[-180°,-150°]
+      // And search features in these 2 extents
+
       // Add feature over -180°
       var leftExtent = extent.slice();
-      leftExtent[0]-=worldWidth;
-      leftExtent[2]-=worldWidth;
+      leftExtent[0] -= worldWidth;
+      leftExtent[2] -= worldWidth;
       vectorSource.forEachFeatureInExtentAtResolution(leftExtent, resolution,
-        /**
+          /**
          * @param {ol.Feature} feature Feature.
          */
-        function(feature) {
-          features.push(feature);
-        }, this);
+          function(feature) {
+            features.push(feature);
+          }, this);
 
       // Add feature over 180°
       var rightExtent = extent.slice();
-      rightExtent[0]+=worldWidth;
-      rightExtent[2]+=worldWidth;
+      rightExtent[0] += worldWidth;
+      rightExtent[2] += worldWidth;
       vectorSource.forEachFeatureInExtentAtResolution(rightExtent, resolution,
-        /**
+          /**
          * @param {ol.Feature} feature Feature.
          */
-        function(feature) {
-          features.push(feature);
-        }, this);
+          function(feature) {
+            features.push(feature);
+          }, this);
 
-      // Some features (Ex polygons, lines) can be duplicated with these 3 search
+      // Some features (Ex polygons, lines) can be duplicated...
       goog.array.removeDuplicates(features);
     }
 
