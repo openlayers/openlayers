@@ -391,9 +391,10 @@ ol.tilegrid.TileGrid.prototype.getTileCoordForXYAndResolution_ = function(
   var origin = this.getOrigin(z);
   var tileSize = ol.size.toSize(this.getTileSize(z), this.tmpSize_);
 
-  var adjust = reverseIntersectionPolicy ? 0.5 : 0;
-  var xFromOrigin = ((x - origin[0]) / resolution + adjust) | 0;
-  var yFromOrigin = ((y - origin[1]) / resolution + adjust) | 0;
+  var adjustX = reverseIntersectionPolicy ? 0.5 : 0;
+  var adjustY = reverseIntersectionPolicy ? 0 : 0.5;
+  var xFromOrigin = Math.floor((x - origin[0]) / resolution + adjustX);
+  var yFromOrigin = Math.floor((y - origin[1]) / resolution + adjustY);
   var tileCoordX = scale * xFromOrigin / tileSize[0];
   var tileCoordY = scale * yFromOrigin / tileSize[1];
 
