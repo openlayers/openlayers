@@ -436,18 +436,28 @@ ol.View.prototype.getZoom = function() {
  * size, that is `map.getSize()`.
  * @param {ol.Extent} extent Extent.
  * @param {ol.Size} size Box pixel size.
+ * @param {olx.view.FitExtentOptions=} opt_options Options.
  * @api
  */
-ol.View.prototype.fitExtent = function(extent, size) {
+ol.View.prototype.fitExtent = function(extent, size, opt_options) {
+  var options = goog.isDef(opt_options) ? opt_options : {};
+
+  var constrainResolution = goog.isDef(options.constrainResolution) ?
+      options.constrainResolution : true;
+  var nearest = goog.isDef(options.nearest) ? options.nearest : false;
+
   if (!ol.extent.isEmpty(extent)) {
     this.setCenter(ol.extent.getCenter(extent));
     var resolution = this.getResolutionForExtent(extent, size);
-    var constrainedResolution = this.constrainResolution(resolution, 0, 0);
-    if (constrainedResolution < resolution) {
-      constrainedResolution =
-          this.constrainResolution(constrainedResolution, -1, 0);
+    if (constrainResolution) {
+      var constrainedResolution = this.constrainResolution(resolution, 0, 0);
+      if (!nearest && constrainedResolution < resolution) {
+        constrainedResolution = this.constrainResolution(
+            constrainedResolution, -1, 0);
+      }
+      resolution = constrainedResolution;
     }
-    this.setResolution(constrainedResolution);
+    this.setResolution(resolution);
   }
 };
 
