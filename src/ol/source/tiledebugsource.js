@@ -91,7 +91,8 @@ ol.source.TileDebug = function(options) {
   goog.base(this, {
     opaque: false,
     projection: options.projection,
-    tileGrid: options.tileGrid
+    tileGrid: options.tileGrid,
+    wrapX: goog.isDef(options.wrapX) ? options.wrapX : true
   });
 
 };
@@ -108,8 +109,9 @@ ol.source.TileDebug.prototype.getTile = function(z, x, y) {
   } else {
     var tileSize = ol.size.toSize(this.tileGrid.getTileSize(z));
     var tileCoord = [z, x, y];
-    var text = ol.tilecoord.toString(
-        this.getTileCoordForTileUrlFunction(tileCoord));
+    var textTileCoord = this.getTileCoordForTileUrlFunction(tileCoord);
+    var text = goog.isNull(textTileCoord) ? '' : ol.tilecoord.toString(
+        this.getTileCoordForTileUrlFunction(textTileCoord));
     var tile = new ol.DebugTile_(tileCoord, tileSize, text);
     this.tileCache.set(tileCoordKey, tile);
     return tile;
