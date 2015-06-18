@@ -11,15 +11,6 @@ describe('ol.TileCoord', function() {
     });
   });
 
-  describe('create from quad key', function() {
-    it('sets x y z properties as expected', function() {
-      var tileCoord = ol.tilecoord.createFromQuadKey('213');
-      expect(tileCoord[0]).to.eql(3);
-      expect(tileCoord[1]).to.eql(3);
-      expect(tileCoord[2]).to.eql(5);
-    });
-  });
-
   describe('create from string', function() {
     it('sets x y z properties as expected', function() {
       var str = '1/2/3';
