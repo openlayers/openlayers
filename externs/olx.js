@@ -6126,8 +6126,7 @@ olx.tilegrid;
 
 
 /**
- * @typedef {{transformTileCoord: (undefined|function(ol.TileCoord, ol.TileCoord=):ol.TileCoord),
- *     extent: (ol.Extent|undefined),
+ * @typedef {{extent: (ol.Extent|undefined),
  *     minZoom: (number|undefined),
  *     origin: (ol.Coordinate|undefined),
  *     origins: (Array.<ol.Coordinate>|undefined),
@@ -6366,21 +6365,6 @@ olx.tilegrid.XYZOptions.prototype.minZoom;
  * @api
  */
 olx.tilegrid.XYZOptions.prototype.tileSize;
-
-
-/**
- * @typedef {{resolutions: !Array.<number>}}
- * @api
- */
-olx.tilegrid.ZoomifyOptions;
-
-
-/**
- * Resolutions.
- * @type {!Array.<number>}
- * @api
- */
-olx.tilegrid.ZoomifyOptions.prototype.resolutions;
 
 
 /**

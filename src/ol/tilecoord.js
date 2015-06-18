@@ -155,7 +155,7 @@ ol.tilecoord.wrapX = function(tileCoord, tileGrid, projection) {
     var worldWidth = ol.extent.getWidth(projectionExtent);
     var worldsAway = Math.ceil((projectionExtent[0] - center[0]) / worldWidth);
     center[0] += worldWidth * worldsAway;
-    return tileGrid.getTileCoordForCoordAndZInternal(center, z);
+    return tileGrid.getTileCoordForCoordAndZ(center, z);
   } else {
     return tileCoord;
   }
