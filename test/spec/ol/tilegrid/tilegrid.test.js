@@ -205,16 +205,16 @@ describe('ol.tilegrid.TileGrid', function() {
       });
     });
 
-    it('assumes bottom left corner of extent as origin', function() {
-      expect(tileGrid.getOrigin()).to.eql([10, 20]);
+    it('assumes top left corner of extent as origin', function() {
+      expect(tileGrid.getOrigin()).to.eql([10, 40]);
     });
 
     it('calculates full tile ranges from extent', function() {
       var fullTileRange = tileGrid.getFullTileRange(0);
       expect(fullTileRange.minX).to.equal(0);
       expect(fullTileRange.maxX).to.equal(1);
-      expect(fullTileRange.minY).to.equal(0);
-      expect(fullTileRange.maxY).to.equal(1);
+      expect(fullTileRange.minY).to.equal(-2);
+      expect(fullTileRange.maxY).to.equal(-1);
     });
   });
 
@@ -223,7 +223,7 @@ describe('ol.tilegrid.TileGrid', function() {
     beforeEach(function() {
       tileGrid = new ol.tilegrid.TileGrid({
         extent: [10, 20, 30, 40],
-        sizes: [[3, 3]],
+        sizes: [[3, -3]],
         tileSize: 10,
         resolutions: [1]
       });
@@ -237,8 +237,8 @@ describe('ol.tilegrid.TileGrid', function() {
       var fullTileRange = tileGrid.getFullTileRange(0);
       expect(fullTileRange.minX).to.equal(0);
       expect(fullTileRange.maxX).to.equal(2);
-      expect(fullTileRange.minY).to.equal(0);
-      expect(fullTileRange.maxY).to.equal(2);
+      expect(fullTileRange.minY).to.equal(-3);
+      expect(fullTileRange.maxY).to.equal(-1);
     });
   });
 
@@ -253,10 +253,28 @@ describe('ol.tilegrid.TileGrid', function() {
       });
     });
 
-    it('calculates correct minX and maxX for negative heights', function() {
+    it('calculates correct minY and maxY for negative heights', function() {
       var fullTileRange = tileGrid.getFullTileRange(0);
       expect(fullTileRange.minY).to.equal(-3);
       expect(fullTileRange.maxY).to.equal(-1);
+    });
+  });
+
+  describe('create with bottom-left origin and sizes', function() {
+    var tileGrid;
+    beforeEach(function() {
+      tileGrid = new ol.tilegrid.TileGrid({
+        origin: [10, 10],
+        sizes: [[3, 3]],
+        tileSize: 10,
+        resolutions: [1]
+      });
+    });
+
+    it('calculates correct minX and maxX for positive heights', function() {
+      var fullTileRange = tileGrid.getFullTileRange(0);
+      expect(fullTileRange.minY).to.equal(0);
+      expect(fullTileRange.maxY).to.equal(2);
     });
   });
 
@@ -281,7 +299,7 @@ describe('ol.tilegrid.TileGrid', function() {
 
       var resolutions = grid.getResolutions();
       expect(resolutions.length).to.be(ol.DEFAULT_MAX_ZOOM + 1);
-      expect(grid.getOrigin()).to.eql([-100, -100]);
+      expect(grid.getOrigin()).to.eql([-100, 100]);
     });
   });
 
@@ -324,12 +342,12 @@ describe('ol.tilegrid.TileGrid', function() {
           ol.DEFAULT_TILE_SIZE / Math.pow(2, 5));
     });
 
-    it('assumes origin is bottom-left', function() {
+    it('assumes origin is top-left', function() {
       var projection = ol.proj.get('EPSG:3857');
       var grid = ol.tilegrid.createForProjection(projection);
       var origin = grid.getOrigin();
       var half = ol.proj.EPSG3857.HALF_SIZE;
-      expect(origin).to.eql([-half, -half]);
+      expect(origin).to.eql([-half, half]);
     });
 
     it('accepts bottom-left as corner', function() {
