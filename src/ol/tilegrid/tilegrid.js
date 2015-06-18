@@ -492,15 +492,10 @@ ol.tilegrid.TileGrid.prototype.getZForResolution = function(resolution) {
  * @private
  */
 ol.tilegrid.TileGrid.prototype.calculateTileRanges_ = function(extent) {
-  var extentWidth = ol.extent.getWidth(extent);
-  var extentHeight = ol.extent.getHeight(extent);
-  var fullTileRanges = new Array(this.resolutions_.length);
-  var tileSize;
-  for (var z = 0, zz = fullTileRanges.length; z < zz; ++z) {
-    tileSize = ol.size.toSize(this.getTileSize(z), this.tmpSize_);
-    fullTileRanges[z] = new ol.TileRange(
-        0, Math.ceil(extentWidth / tileSize[0] / this.resolutions_[z]) - 1,
-        0, Math.ceil(extentHeight / tileSize[1] / this.resolutions_[z]) - 1);
+  var length = this.resolutions_.length;
+  var fullTileRanges = new Array(length);
+  for (var z = this.minZoom; z < length; ++z) {
+    fullTileRanges[z] = this.getTileRangeForExtentAndZ(extent, z);
   }
   this.fullTileRanges_ = fullTileRanges;
 };
