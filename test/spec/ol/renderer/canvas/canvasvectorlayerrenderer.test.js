@@ -76,12 +76,14 @@ describe('ol.renderer.canvas.VectorLayer', function() {
       var spy = sinon.spy();
       var coordinate = [0, 0];
       var frameState = {
+        layerStates: {},
         skippedFeatureUids: {},
         viewState: {
           resolution: 1,
           rotation: 0
         }
       };
+      frameState.layerStates[goog.getUid(layer)] = {};
       renderer.forEachFeatureAtCoordinate(
           coordinate, frameState, spy, undefined);
       expect(spy.callCount).to.be(1);

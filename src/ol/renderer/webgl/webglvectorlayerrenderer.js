@@ -122,7 +122,8 @@ ol.renderer.webgl.VectorLayer.prototype.forEachFeatureAtCoordinate =
         context, viewState.center, viewState.resolution, viewState.rotation,
         frameState.size, frameState.pixelRatio,
         layerState.opacity, layerState.brightness, layerState.contrast,
-        layerState.hue, layerState.saturation, frameState.skippedFeatureUids,
+        layerState.hue, layerState.saturation,
+        layerState.managed ? frameState.skippedFeatureUids : {},
         /**
          * @param {ol.Feature} feature Feature.
          * @return {?} Callback result.
