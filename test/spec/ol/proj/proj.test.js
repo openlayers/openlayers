@@ -2,12 +2,9 @@ goog.provide('ol.test.proj');
 
 describe('ol.proj', function() {
 
-  beforeEach(function() {
-    ol.proj.common.add();
-  });
-
   afterEach(function() {
     ol.proj.clearAllProjections();
+    ol.proj.common.add();
   });
 
   describe('projection equivalence', function() {
