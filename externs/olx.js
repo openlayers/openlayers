@@ -3712,7 +3712,7 @@ olx.layer.VectorOptions.prototype.updateWhileAnimating;
 
 /**
  * When set to `true`, feature batches will be recreated during interactions.
- * See also `updateWhileInteracting`. Default is `false`.
+ * See also `updateWhileAnimating`. Default is `false`.
  * @type {boolean|undefined}
  * @api
  */
