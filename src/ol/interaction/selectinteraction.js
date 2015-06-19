@@ -83,10 +83,13 @@ goog.inherits(ol.SelectEvent, goog.events.Event);
 
 /**
  * @classdesc
- * Handles selection of vector data. An {@link ol.source.Vector} is maintained
- * internally to store the selected feature(s). Which features are selected is
- * determined by the `condition` option, and optionally the `toggle` or
- * `add`/`remove` options.
+ * Interaction for selecting vector features. By default, selected features are
+ * styled differently, so this interaction can be used for visual highlighting,
+ * as well as selecting features for other actions, such as modification or
+ * output. There are three ways of controlling which features are selected:
+ * using the browser event as defined by the `condition` and optionally the
+ * `toggle`, `add`/`remove`, and `multi` options; a `layers` filter; and a
+ * further feature filter using the `filter` option.
  *
  * @constructor
  * @extends {ol.interaction.Interaction}
