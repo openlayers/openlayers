@@ -17,7 +17,7 @@ describe('ol.source.TileWMS', function() {
 
     it('returns a tile with the expected URL', function() {
       var source = new ol.source.TileWMS(options);
-      var tile = source.getTile(3, 2, 1, 1, ol.proj.get('EPSG:3857'));
+      var tile = source.getTile(3, 2, -7, 1, ol.proj.get('EPSG:3857'));
       expect(tile).to.be.an(ol.ImageTile);
       var uri = new goog.Uri(tile.src_);
       expect(uri.getScheme()).to.be('http');
@@ -25,8 +25,8 @@ describe('ol.source.TileWMS', function() {
       expect(uri.getPath()).to.be('/wms');
       var queryData = uri.getQueryData();
       expect(queryData.get('BBOX')).to.be(
-          '-10018754.171394622,-15028131.257091932,' +
-          '-5009377.085697311,-10018754.17139462');
+          '-10018754.171394622,-15028131.257091936,' +
+          '-5009377.085697311,-10018754.171394624');
       expect(queryData.get('CRS')).to.be('EPSG:3857');
       expect(queryData.get('FORMAT')).to.be('image/png');
       expect(queryData.get('HEIGHT')).to.be('256');
@@ -44,13 +44,13 @@ describe('ol.source.TileWMS', function() {
     it('returns a larger tile when a gutter is specified', function() {
       options.gutter = 16;
       var source = new ol.source.TileWMS(options);
-      var tile = source.getTile(3, 2, 1, 1, ol.proj.get('EPSG:3857'));
+      var tile = source.getTile(3, 2, -7, 1, ol.proj.get('EPSG:3857'));
       expect(tile).to.be.an(ol.ImageTile);
       var uri = new goog.Uri(tile.src_);
       var queryData = uri.getQueryData();
       var bbox = queryData.get('BBOX').split(',');
-      var expected = [-10331840.239250705, -15341217.324948015,
-        -4696291.017841229, -9705668.103538537];
+      var expected = [-10331840.239250705, -15341217.324948018,
+        -4696291.017841229, -9705668.103538541];
       for (var i = 0, ii = bbox.length; i < ii; ++i) {
         expect(parseFloat(bbox[i])).to.roughlyEqual(expected[i], 1e-9);
       }
@@ -61,7 +61,7 @@ describe('ol.source.TileWMS', function() {
     it('sets the SRS query value instead of CRS if version < 1.3', function() {
       options.params.VERSION = '1.2';
       var source = new ol.source.TileWMS(options);
-      var tile = source.getTile(3, 2, 1, 1, ol.proj.get('EPSG:4326'));
+      var tile = source.getTile(3, 2, -3, 1, ol.proj.get('EPSG:4326'));
       var uri = new goog.Uri(tile.src_);
       var queryData = uri.getQueryData();
       expect(queryData.get('CRS')).to.be(undefined);
@@ -72,7 +72,7 @@ describe('ol.source.TileWMS', function() {
       options.params.FORMAT = 'image/jpeg';
       options.params.TRANSPARENT = false;
       var source = new ol.source.TileWMS(options);
-      var tile = source.getTile(3, 2, 1, 1, ol.proj.get('EPSG:4326'));
+      var tile = source.getTile(3, 2, -3, 1, ol.proj.get('EPSG:4326'));
       var uri = new goog.Uri(tile.src_);
       var queryData = uri.getQueryData();
       expect(queryData.get('FORMAT')).to.be('image/jpeg');
@@ -82,7 +82,7 @@ describe('ol.source.TileWMS', function() {
     it('does not add a STYLES= option if one is specified', function() {
       options.params.STYLES = 'foo';
       var source = new ol.source.TileWMS(options);
-      var tile = source.getTile(3, 2, 1, 1, ol.proj.get('EPSG:4326'));
+      var tile = source.getTile(3, 2, -3, 1, ol.proj.get('EPSG:4326'));
       var uri = new goog.Uri(tile.src_);
       var queryData = uri.getQueryData();
       expect(queryData.get('STYLES')).to.be('foo');
@@ -90,7 +90,7 @@ describe('ol.source.TileWMS', function() {
 
     it('changes the BBOX order for EN axis orientations', function() {
       var source = new ol.source.TileWMS(options);
-      var tile = source.getTile(3, 2, 1, 1, ol.proj.get('EPSG:4326'));
+      var tile = source.getTile(3, 2, -3, 1, ol.proj.get('EPSG:4326'));
       var uri = new goog.Uri(tile.src_);
       var queryData = uri.getQueryData();
       expect(queryData.get('BBOX')).to.be('-45,-90,0,-45');
@@ -99,7 +99,7 @@ describe('ol.source.TileWMS', function() {
     it('uses EN BBOX order if version < 1.3', function() {
       options.params.VERSION = '1.1.0';
       var source = new ol.source.TileWMS(options);
-      var tile = source.getTile(3, 2, 1, 1, ol.proj.get('CRS:84'));
+      var tile = source.getTile(3, 2, -3, 1, ol.proj.get('CRS:84'));
       var uri = new goog.Uri(tile.src_);
       var queryData = uri.getQueryData();
       expect(queryData.get('BBOX')).to.be('-90,-45,-45,0');
@@ -108,7 +108,7 @@ describe('ol.source.TileWMS', function() {
     it('sets FORMAT_OPTIONS when the server is GeoServer', function() {
       options.serverType = ol.source.wms.ServerType.GEOSERVER;
       var source = new ol.source.TileWMS(options);
-      var tile = source.getTile(3, 2, 1, 2, ol.proj.get('CRS:84'));
+      var tile = source.getTile(3, 2, -3, 2, ol.proj.get('CRS:84'));
       var uri = new goog.Uri(tile.src_);
       var queryData = uri.getQueryData();
       expect(queryData.get('FORMAT_OPTIONS')).to.be('dpi:180');
@@ -118,7 +118,7 @@ describe('ol.source.TileWMS', function() {
       options.serverType = ol.source.wms.ServerType.GEOSERVER;
       var source = new ol.source.TileWMS(options);
       options.params.FORMAT_OPTIONS = 'param1:value1';
-      var tile = source.getTile(3, 2, 1, 2, ol.proj.get('CRS:84'));
+      var tile = source.getTile(3, 2, -3, 2, ol.proj.get('CRS:84'));
       var uri = new goog.Uri(tile.src_);
       var queryData = uri.getQueryData();
       expect(queryData.get('FORMAT_OPTIONS')).to.be('param1:value1;dpi:180');
@@ -128,7 +128,7 @@ describe('ol.source.TileWMS', function() {
        function() {
          options.serverType = ol.source.wms.ServerType.GEOSERVER;
          var source = new ol.source.TileWMS(options);
-         var tile = source.getTile(3, 2, 1, 1.325, ol.proj.get('CRS:84'));
+         var tile = source.getTile(3, 2, -3, 1.325, ol.proj.get('CRS:84'));
          var uri = new goog.Uri(tile.src_);
          var queryData = uri.getQueryData();
          expect(queryData.get('FORMAT_OPTIONS')).to.be('dpi:119');
@@ -141,7 +141,7 @@ describe('ol.source.TileWMS', function() {
     it('returns a tile if it is contained within layers extent', function() {
       options.extent = [-80, -40, -50, -10];
       var source = new ol.source.TileWMS(options);
-      var tileCoord = [3, 2, 1];
+      var tileCoord = [3, 2, -3];
       var url = source.tileUrlFunction(tileCoord, 1, ol.proj.get('EPSG:4326'));
       var uri = new goog.Uri(url);
       var queryData = uri.getQueryData();
@@ -151,7 +151,7 @@ describe('ol.source.TileWMS', function() {
     it('returns a tile if it intersects layers extent', function() {
       options.extent = [-80, -40, -40, -10];
       var source = new ol.source.TileWMS(options);
-      var tileCoord = [3, 3, 1];
+      var tileCoord = [3, 3, -3];
       var url = source.tileUrlFunction(tileCoord, 1, ol.proj.get('EPSG:4326'));
       var uri = new goog.Uri(url);
       var queryData = uri.getQueryData();
@@ -165,7 +165,7 @@ describe('ol.source.TileWMS', function() {
         origin: [-180, -90]
       });
       var source = new ol.source.TileWMS(options);
-      var tileCoord = [3, 3, 1];
+      var tileCoord = [3, 3, -3];
       var url = source.tileUrlFunction(tileCoord, 1, ol.proj.get('EPSG:4326'));
       var uri = new goog.Uri(url);
       var queryData = uri.getQueryData();
@@ -190,8 +190,8 @@ describe('ol.source.TileWMS', function() {
       expect(uri.getPath()).to.be('/wms');
       var queryData = uri.getQueryData();
       expect(queryData.get('BBOX')).to.be(
-          '-10018754.171394622,-15028131.257091932,' +
-          '-5009377.085697311,-10018754.17139462');
+          '-10018754.171394622,-15028131.257091936,' +
+          '-5009377.085697311,-10018754.171394624');
       expect(queryData.get('CRS')).to.be('EPSG:3857');
       expect(queryData.get('FORMAT')).to.be('image/png');
       expect(queryData.get('HEIGHT')).to.be('256');
@@ -222,8 +222,8 @@ describe('ol.source.TileWMS', function() {
       expect(uri.getPath()).to.be('/wms');
       var queryData = uri.getQueryData();
       expect(queryData.get('BBOX')).to.be(
-          '-10018754.171394622,-15028131.257091932,' +
-          '-5009377.085697311,-10018754.17139462');
+          '-10018754.171394622,-15028131.257091936,' +
+          '-5009377.085697311,-10018754.171394624');
       expect(queryData.get('CRS')).to.be('EPSG:3857');
       expect(queryData.get('FORMAT')).to.be('image/png');
       expect(queryData.get('HEIGHT')).to.be('256');

@@ -3,7 +3,11 @@ template: example.html
 title: Canvas tiles example
 shortdesc: Renders tiles with coordinates for debugging.
 docs: >
-  The black grid tiles are generated on the client with an HTML5 canvas. In this example, the `ol.source.TileDebug` source uses the tile grid of the `ol.source.OSM` source, so the displayed tile coordinates are the same as those for OSM tile requests. 
+  The black grid tiles are generated on the client with an HTML5 canvas. The
+  displayed tile coordinates are OpenLayers tile coordinates. These increase
+  from bottom to top, but standard XYZ tiling scheme coordinates increase from
+  top to bottom. To calculate the `y` for a standard XYZ tile coordinate, use
+  `-y - 1`. 
 tags: "layers, openstreetmap, canvas"
 ---
 <div class="row-fluid">

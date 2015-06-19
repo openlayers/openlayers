@@ -118,6 +118,7 @@ ol.source.BingMaps.prototype.handleImageryMetadataResponse =
       goog.array.map(
           resource.imageUrlSubdomains,
           function(subdomain) {
+            var quadKeyTileCoord = [0, 0, 0];
             var imageUrl = resource.imageUrl
                 .replace('{subdomain}', subdomain)
                 .replace('{culture}', culture);
@@ -135,8 +136,10 @@ ol.source.BingMaps.prototype.handleImageryMetadataResponse =
                   if (goog.isNull(tileCoord)) {
                     return undefined;
                   } else {
-                    return imageUrl.replace(
-                        '{quadkey}', ol.tilecoord.quadKey(tileCoord));
+                    ol.tilecoord.createOrUpdate(tileCoord[0], tileCoord[1],
+                        -tileCoord[2] - 1, quadKeyTileCoord);
+                    return imageUrl.replace('{quadkey}', ol.tilecoord.quadKey(
+                        quadKeyTileCoord));
                   }
                 });
           }));

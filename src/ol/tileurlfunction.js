@@ -54,9 +54,12 @@ ol.TileUrlFunction.createFromTemplate = function(template) {
         } else {
           return template.replace(zRegEx, tileCoord[0].toString())
                          .replace(xRegEx, tileCoord[1].toString())
-                         .replace(yRegEx, tileCoord[2].toString())
+                         .replace(yRegEx, function() {
+                           var y = -tileCoord[2] - 1;
+                           return y.toString();
+                         })
                          .replace(dashYRegEx, function() {
-                           var y = (1 << tileCoord[0]) - tileCoord[2] - 1;
+                           var y = (1 << tileCoord[0]) + tileCoord[2];
                            return y.toString();
                          });
         }

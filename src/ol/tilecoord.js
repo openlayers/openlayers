@@ -27,33 +27,6 @@ ol.QuadKeyCharCode = {
 
 
 /**
- * @param {string} quadKey Quad key.
- * @return {ol.TileCoord} Tile coordinate.
- */
-ol.tilecoord.createFromQuadKey = function(quadKey) {
-  var z = quadKey.length, x = 0, y = 0;
-  var mask = 1 << (z - 1);
-  var i;
-  for (i = 0; i < z; ++i) {
-    switch (quadKey.charCodeAt(i)) {
-      case ol.QuadKeyCharCode.ONE:
-        x += mask;
-        break;
-      case ol.QuadKeyCharCode.TWO:
-        y += mask;
-        break;
-      case ol.QuadKeyCharCode.THREE:
-        x += mask;
-        y += mask;
-        break;
-    }
-    mask >>= 1;
-  }
-  return [z, x, y];
-};
-
-
-/**
  * @param {string} str String that follows pattern “z/x/y” where x, y and z are
  *   numbers.
  * @return {ol.TileCoord} Tile coord.
@@ -155,7 +128,7 @@ ol.tilecoord.wrapX = function(tileCoord, tileGrid, projection) {
     var worldWidth = ol.extent.getWidth(projectionExtent);
     var worldsAway = Math.ceil((projectionExtent[0] - center[0]) / worldWidth);
     center[0] += worldWidth * worldsAway;
-    return tileGrid.getTileCoordForCoordAndZInternal(center, z);
+    return tileGrid.getTileCoordForCoordAndZ(center, z);
   } else {
     return tileCoord;
   }

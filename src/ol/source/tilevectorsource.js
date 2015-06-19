@@ -116,7 +116,7 @@ ol.source.TileVector.prototype.forEachFeatureAtCoordinateAndResolution =
 
   var tileGrid = this.tileGrid_;
   var tiles = this.tiles_;
-  var tileCoord = tileGrid.getTileCoordForCoordAndResolutionInternal(coordinate,
+  var tileCoord = tileGrid.getTileCoordForCoordAndResolution(coordinate,
       resolution);
 
   var tileKey = this.getTileKeyZXY_(tileCoord[0], tileCoord[1], tileCoord[2]);
@@ -250,7 +250,7 @@ ol.source.TileVector.prototype.getTileCoordForTileUrlFunction =
     tileCoord = ol.tilecoord.wrapX(tileCoord, tileGrid, projection);
   }
   return ol.tilecoord.withinExtentAndZ(tileCoord, tileGrid) ?
-      tileGrid.transformTileCoord(tileCoord) : null;
+      tileCoord : null;
 };
 
 
