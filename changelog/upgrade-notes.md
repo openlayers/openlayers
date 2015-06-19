@@ -20,11 +20,13 @@ you will have to change this to:
 var collection = new ol.Collection();
 var featureOverlay = new ol.layer.Vector({
   map: map,
-  style: overlayStyle,
   source: new ol.source.Vector({
     features: collection,
     useSpatialIndex: false // optional, might improve performance
-  });
+  }),
+  style: overlayStyle,
+  updateWhileAnimating: true, // optional, for instant visual feedback
+  updateWhileInteracting: true // optional, for instant visual feedback
 });
 featureOverlay.getSource().addFeature(feature);
 featureOverlay.getSource().removeFeature(feature);

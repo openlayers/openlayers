@@ -178,7 +178,9 @@ ol.interaction.Select = function(opt_options) {
       wrapX: options.wrapX
     }),
     style: goog.isDef(options.style) ? options.style :
-        ol.interaction.Select.getDefaultStyleFunction()
+        ol.interaction.Select.getDefaultStyleFunction(),
+    updateWhileAnimating: true,
+    updateWhileInteracting: true
   });
 
   var features = this.featureOverlay_.getSource().getFeaturesCollection();

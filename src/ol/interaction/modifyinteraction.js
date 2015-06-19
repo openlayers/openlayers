@@ -122,7 +122,9 @@ ol.interaction.Modify = function(options) {
       wrapX: goog.isDef(options.wrapX) ? options.wrapX : false
     }),
     style: goog.isDef(options.style) ? options.style :
-        ol.interaction.Modify.getDefaultStyleFunction()
+        ol.interaction.Modify.getDefaultStyleFunction(),
+    updateWhileAnimating: true,
+    updateWhileInteracting: true
   });
 
   /**
