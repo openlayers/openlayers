@@ -5,6 +5,14 @@ describe('ol.source.XYZ', function() {
 
   describe('constructor', function() {
 
+    it('can be constructed with a custom tile grid', function() {
+      var tileGrid = ol.tilegrid.createXYZ();
+      var tileSource = new ol.source.XYZ({
+        tileGrid: tileGrid
+      });
+      expect(tileSource.getTileGrid()).to.be(tileGrid);
+    });
+
     it('can be constructed with a custom tile size', function() {
       var tileSource = new ol.source.XYZ({
         tileSize: 512
