@@ -36,9 +36,9 @@ Note that `ol.FeatureOverlay#getFeatures()` returned an `{ol.Collection.<ol.Feat
 
 #### `ol.TileCoord` changes
 
-Until now, the API exposed two different types of `ol.TileCoord` tile coordinates: internal ones that increase from left to right and from bottom to top, and transformed ones that may increase from top to bottom, as defined by a transform function on the tile grid. With this change, the API now only exposes tile coordinates that increase from left to right and from bottom to top.
+Until now, the API exposed two different types of `ol.TileCoord` tile coordinates: internal ones that increase left to right and upward, and transformed ones that may increase downward, as defined by a transform function on the tile grid. With this change, the API now only exposes tile coordinates that increase left to right and upward.
 
-Previously, tile grids created by OpenLayers either had their origin at the top-left or at the bottom-left corner of the tile grid. To make it easier to for application developers to transform tile coordinates to the common XYZ tiling scheme, all tile grids that OpenLayers creates internally have their origin now at the top-left corner.
+Previously, tile grids created by OpenLayers either had their origin at the top-left or at the bottom-left corner of the extent. To make it easier to for application developers to transform tile coordinates to the common XYZ tiling scheme, all tile grids that OpenLayers creates internally have their origin now at the top-left corner of the extent.
 
 This change affects applications that configure a custom `tileUrlFunction` for an `ol.source.Tile`. Previously, the `tileUrlFunction` was called with rather unpredictable tile coordinates, depending on whether a tile coordinate transform took place before calling the `tileUrlFunction`. Now it is always called with OpenLayers tile coordinates. To transform these into the common XYZ tiling scheme, a custom `tileUrlFunction` has to change the `y` value (tile row) of the `ol.TileCoord`:
 ```js

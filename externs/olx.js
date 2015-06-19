@@ -6168,8 +6168,8 @@ olx.tilegrid.TileGridOptions.prototype.minZoom;
 
 /**
  * The tile grid origin, i.e. where the `x` and `y` axes meet (`[z, 0, 0]`).
- * Tile coordinates increase from left to right and from bottom to top. If not
- * specified, `extent` or `origins` must be provided.
+ * Tile coordinates increase left to right and upwards. If not specified,
+ * `extent` or `origins` must be provided.
  * @type {ol.Coordinate|undefined}
  * @api stable
  */
@@ -6180,8 +6180,8 @@ olx.tilegrid.TileGridOptions.prototype.origin;
  * Tile grid origins, i.e. where the `x` and `y` axes meet (`[z, 0, 0]`), for
  * each zoom level. If given, the array length should match the length of the
  * `resolutions` array, i.e. each resolution can have a different origin. Tile
- * coordinates increase from left to right and from bottom to top. If not
- * specified, `extent` or `origin` must be provided.
+ * coordinates increase left to right and upwards. If not specified, `extent`
+ * or `origin` must be provided.
  * @type {Array.<ol.Coordinate>|undefined}
  * @api stable
  */
@@ -6241,8 +6241,8 @@ olx.tilegrid.WMTSOptions.prototype.extent;
 
 /**
  * The tile grid origin, i.e. where the `x` and `y` axes meet (`[z, 0, 0]`).
- * Tile coordinates increase from left to right and from bottom to top. If not
- * specified, `extent` or `origins` must be provided.
+ * Tile coordinates increase left to right and upwards. If not specified,
+ * `extent` or `origins` must be provided.
  * @type {ol.Coordinate|undefined}
  * @api stable
  */
@@ -6253,8 +6253,8 @@ olx.tilegrid.WMTSOptions.prototype.origin;
  * Tile grid origins, i.e. where the `x` and `y` axes meet (`[z, 0, 0]`), for
  * each zoom level. If given, the array length should match the length of the
  * `resolutions` array, i.e. each resolution can have a different origin. Tile
- * coordinates increase from left to right and from bottom to top. If not
- * specified, `extent` or `origin` must be provided.
+ * coordinates increase left to right and upwards. If not specified, `extent` or
+ * `origin` must be provided.
  * @type {Array.<ol.Coordinate>|undefined}
  * @api stable
  */
@@ -6288,7 +6288,7 @@ olx.tilegrid.WMTSOptions.prototype.matrixIds;
  * further limit the extent for which tile requests are made by sources. Note
  * that when the top-left corner of the `extent` is used as `origin` or
  * `origins`, then the `y` value must be negative because OpenLayers tile
- * coordinates increase from bottom to top.
+ * coordinates increase upwards.
  * @type {Array.<ol.Size>|undefined}
  * @api
  */
