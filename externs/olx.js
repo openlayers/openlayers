@@ -6389,6 +6389,30 @@ olx.tilegrid.ZoomifyOptions.prototype.resolutions;
  */
 olx.view;
 
+/**
+ * @typedef {{padding: !Array.<number>,
+ *     constrainResolution: (boolean|undefined),
+ *     nearest: (boolean|undefined)}}
+ * @api
+ */
+olx.view.FitExtentOptions;
+
+
+/**
+ * Constrain the resolution. Default is `true`.
+ * @type {boolean|undefined}
+ * @api
+ */
+olx.view.FitExtentOptions.prototype.constrainResolution;
+
+
+/**
+ * Get the nearest extent. Default is `false`.
+ * @type {boolean|undefined}
+ * @api
+ */
+olx.view.FitExtentOptions.prototype.nearest;
+
 
 /**
  * @typedef {{padding: !Array.<number>,
