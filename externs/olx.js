@@ -5358,6 +5358,7 @@ olx.source.WMTSOptions.prototype.wrapX;
  *     projection: ol.proj.ProjectionLike,
  *     maxZoom: (number|undefined),
  *     minZoom: (number|undefined),
+ *     tileGrid: (ol.tilegrid.TileGrid|undefined),
  *     tileLoadFunction: (ol.TileLoadFunctionType|undefined),
  *     tilePixelRatio: (number|undefined),
  *     tileSize: (number|ol.Size|undefined),
@@ -5420,6 +5421,14 @@ olx.source.XYZOptions.prototype.maxZoom;
  * @api
  */
 olx.source.XYZOptions.prototype.minZoom;
+
+
+/**
+ * Tile grid.
+ * @type {ol.tilegrid.TileGrid}
+ * @api
+ */
+olx.source.XYZOptions.prototype.tileGrid;
 
 
 /**
