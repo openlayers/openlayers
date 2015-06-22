@@ -33,6 +33,14 @@ describe('ol.source.TileArcGISRest', function() {
 
     });
 
+    it('returns a non floating point DPI value', function() {
+      var source = new ol.source.TileArcGISRest(options);
+      var tile = source.getTile(3, 2, -7, 1.12, ol.proj.get('EPSG:3857'));
+      var uri = new goog.Uri(tile.src_);
+      var queryData = uri.getQueryData();
+      expect(queryData.get('DPI')).to.be('101');
+    });
+
     it('returns a tile with the expected URL with url list', function() {
 
       options.urls = ['http://test1.com/MapServer',

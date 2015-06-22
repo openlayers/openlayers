@@ -111,7 +111,7 @@ ol.source.TileArcGISRest.prototype.getRequestUrl_ =
   params['BBOX'] = tileExtent.join(',');
   params['BBOXSR'] = srid;
   params['IMAGESR'] = srid;
-  params['DPI'] = 90 * pixelRatio;
+  params['DPI'] = Math.round(90 * pixelRatio);
 
   var url;
   if (urls.length == 1) {
