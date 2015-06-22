@@ -203,10 +203,11 @@ ol.format.GMLBase.prototype.readFeatureElement = function(node, objectStack) {
       n = n.nextElementSibling) {
     var localName = ol.xml.getLocalName(n);
     // Assume attribute elements have one child node and that the child
-    // is a text node.  Otherwise assume it is a geometry node.
+    // is a text or CDATA node (to be treated as text).
+    // Otherwise assume it is a geometry node.
     if (n.childNodes.length === 0 ||
         (n.childNodes.length === 1 &&
-        n.firstChild.nodeType === 3)) {
+        (n.firstChild.nodeType === 3 || n.firstChild.nodeType === 4))) {
       var value = ol.xml.getAllTextContent(n, false);
       if (goog.string.isEmpty(value)) {
         value = undefined;
