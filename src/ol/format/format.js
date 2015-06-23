@@ -6,6 +6,7 @@ goog.provide('ol.format.FormatType');
  */
 ol.format.FormatType = {
   JSON: 'json',
+  BINARY: 'binary',
   TEXT: 'text',
   XML: 'xml'
 };

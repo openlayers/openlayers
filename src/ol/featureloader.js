@@ -36,7 +36,12 @@ ol.featureloader.loadFeaturesXhr = function(url, format, success) {
        */
       function(extent, resolution, projection) {
         var xhrIo = new goog.net.XhrIo();
-        xhrIo.setResponseType(goog.net.XhrIo.ResponseType.TEXT);
+        var type = format.getType();
+        if (type == ol.format.FormatType.BINARY) {
+          xhrIo.setResponseType(goog.net.XhrIo.ResponseType.ARRAY_BUFFER);
+        } else {
+          xhrIo.setResponseType(goog.net.XhrIo.ResponseType.TEXT);
+        }
         goog.events.listen(xhrIo, goog.net.EventType.COMPLETE,
             /**
              * @param {Event} event Event.
@@ -48,7 +53,6 @@ ol.featureloader.loadFeaturesXhr = function(url, format, success) {
               goog.asserts.assertInstanceof(xhrIo, goog.net.XhrIo,
                   'event.target/xhrIo is an instance of goog.net.XhrIo');
               if (xhrIo.isSuccess()) {
-                var type = format.getType();
                 /** @type {Document|Node|Object|string|undefined} */
                 var source;
                 if (type == ol.format.FormatType.JSON) {
@@ -62,6 +66,8 @@ ol.featureloader.loadFeaturesXhr = function(url, format, success) {
                   if (!goog.isDefAndNotNull(source)) {
                     source = ol.xml.parse(xhrIo.getResponseText());
                   }
+                } else if (type == ol.format.FormatType.BINARY) {
+                  source = /** @type {ArrayBuffer} */ (xhrIo.getResponse());
                 } else {
                   goog.asserts.fail('unexpected format type');
                 }

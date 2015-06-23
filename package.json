@@ -40,7 +40,8 @@
     "temp": "0.8.1",
     "walk": "2.3.4",
     "wrench": "1.5.8",
-    "browserify": "9.0.3"
+    "browserify": "9.0.3",
+    "twkb": "0.0.1"
   },
   "devDependencies": {
     "clean-css": "2.2.16",
@@ -60,6 +61,10 @@
     "slimerjs-edge": "0.10.0-pre-2"
   },
   "ext": [
-    "rbush"
+    "rbush",
+    {
+      "module": "twkb",
+      "browserify": true
+    }
   ]
 }
