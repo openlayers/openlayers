@@ -34,12 +34,9 @@ ol.source.TileVector = function(options) {
 
   /**
    * @private
-   * @type {ol.format.Feature}
+   * @type {ol.format.Feature|undefined}
    */
-  this.format_ = options.format;
-
-  goog.asserts.assert(goog.isDefAndNotNull(this.format_),
-      'ol.source.TileVector requires a format');
+  this.format_ = goog.isDef(options.format) ? options.format : null;
 
   /**
    * @private
@@ -52,6 +49,17 @@ ol.source.TileVector = function(options) {
    * @type {ol.TileUrlFunctionType}
    */
   this.tileUrlFunction_ = ol.TileUrlFunction.nullTileUrlFunction;
+
+  /**
+   * @private
+   * @type {?ol.TileVectorLoadFunctionType}
+   */
+  this.tileLoadFunction_ = goog.isDef(options.tileLoadFunction) ?
+      options.tileLoadFunction : null;
+
+  goog.asserts.assert(!goog.isNull(this.format_) ||
+      !goog.isNull(this.tileLoadFunction_),
+      'Either format or tileLoadFunction are required');
 
   /**
    * @private
@@ -299,9 +307,14 @@ ol.source.TileVector.prototype.loadFeatures =
             tileUrlFunction(urlTileCoord, 1, projection);
         if (goog.isDef(url)) {
           tiles[tileKey] = [];
-          var loader = ol.featureloader.loadFeaturesXhr(url, this.format_,
-              goog.partial(success, tileKey));
-          loader.call(this, extent, resolution, projection);
+          var tileSuccess = goog.partial(success, tileKey);
+          if (!goog.isNull(this.tileLoadFunction_)) {
+            this.tileLoadFunction_(url, tileSuccess);
+          } else {
+            var loader = ol.featureloader.loadFeaturesXhr(url,
+                /** @type {ol.format.Feature} */ (this.format_), tileSuccess);
+            loader.call(this, extent, resolution, projection);
+          }
         }
       }
     }

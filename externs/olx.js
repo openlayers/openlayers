@@ -4022,10 +4022,11 @@ olx.source.TileImageOptions.prototype.wrapX;
 
 /**
  * @typedef {{attributions: (Array.<ol.Attribution>|undefined),
- *     format: ol.format.Feature,
+ *     format: (ol.format.Feature|undefined),
  *     logo: (string|olx.LogoOptions|undefined),
  *     tileGrid: ol.tilegrid.TileGrid,
  *     tileUrlFunction: (ol.TileUrlFunctionType|undefined),
+ *     tileLoadFunction: (ol.TileVectorLoadFunctionType|undefined),
  *     url: (string|undefined),
  *     urls: (Array.<string>|undefined),
  *     wrapX: (boolean|undefined)}}
@@ -4043,8 +4044,8 @@ olx.source.TileVectorOptions.prototype.attributions;
 
 
 /**
- * Format.
- * @type {ol.format.Feature}
+ * Format. Required unless tileLoadFunction is used.
+ * @type {ol.format.Feature|undefined}
  * @api
  */
 olx.source.TileVectorOptions.prototype.format;
@@ -4073,6 +4074,16 @@ olx.source.TileVectorOptions.prototype.tileGrid;
  * @api
  */
 olx.source.TileVectorOptions.prototype.tileUrlFunction;
+
+
+/**
+ * Optional function to override the default loading and format parsing behaviour.
+ * If this option is used format is ignored and the provided function will be
+ * responsible for data retrieval and transformation into features.
+ * @type {ol.TileVectorLoadFunctionType|undefined}
+ * @api
+ */
+olx.source.TileVectorOptions.prototype.tileLoadFunction;
 
 
 /**
