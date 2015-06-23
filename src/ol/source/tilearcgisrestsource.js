@@ -38,6 +38,7 @@ ol.source.TileArcGISRest = function(opt_options) {
   var params = goog.isDef(options.params) ? options.params : {};
 
   goog.base(this, {
+    crossOrigin: options.crossOrigin,
     attributions: options.attributions,
     logo: options.logo,
     projection: options.projection,
