@@ -79,7 +79,7 @@ ol.CollectionProperty = {
  * @constructor
  * @extends {ol.Object}
  * @fires ol.CollectionEvent
- * @param {Array.<T>=} opt_array Array.
+ * @param {!Array.<T>=} opt_array Array.
  * @template T
  * @api stable
  */
@@ -89,7 +89,7 @@ ol.Collection = function(opt_array) {
 
   /**
    * @private
-   * @type {Array.<T>}
+   * @type {!Array.<T>}
    */
   this.array_ = goog.isDef(opt_array) ? opt_array : [];
 
@@ -113,7 +113,7 @@ ol.Collection.prototype.clear = function() {
 /**
  * Add elements to the collection.  This pushes each item in the provided array
  * to the end of the collection.
- * @param {Array.<T>} arr Array.
+ * @param {!Array.<T>} arr Array.
  * @return {ol.Collection.<T>} This collection.
  * @api stable
  */
@@ -145,7 +145,7 @@ ol.Collection.prototype.forEach = function(f, opt_this) {
  * is mutated, no events will be dispatched by the collection, and the
  * collection's "length" property won't be in sync with the actual length
  * of the array.
- * @return {Array.<T>} Array.
+ * @return {!Array.<T>} Array.
  * @api stable
  */
 ol.Collection.prototype.getArray = function() {
