@@ -223,9 +223,8 @@ ol.source.Raster.prototype.composeFrame_ = function(frameState) {
         this.renderers_[i], frameState, frameState.layerStatesArray[i]);
   }
 
-  var resolution = frameState.viewState.resolution / frameState.pixelRatio;
   this.dispatchEvent(new ol.source.RasterEvent(
-      ol.source.RasterEventType.BEFOREOPERATIONS, resolution));
+      ol.source.RasterEventType.BEFOREOPERATIONS, frameState));
 
   var targetImageData = null;
   if (this.operationType_ === ol.raster.OperationType.PIXEL) {
@@ -256,7 +255,7 @@ ol.source.Raster.prototype.composeFrame_ = function(frameState) {
   }
 
   this.dispatchEvent(new ol.source.RasterEvent(
-      ol.source.RasterEventType.AFTEROPERATIONS, resolution));
+      ol.source.RasterEventType.AFTEROPERATIONS, frameState));
 
   context.putImageData(targetImageData, 0, 0);
 
@@ -396,17 +395,24 @@ ol.source.Raster.createTileRenderer_ = function(source) {
  * @extends {goog.events.Event}
  * @implements {oli.source.RasterEvent}
  * @param {string} type Type.
- * @param {number} resolution Map units per pixel.
+ * @param {olx.FrameState} frameState The frame state.
  */
-ol.source.RasterEvent = function(type, resolution) {
+ol.source.RasterEvent = function(type, frameState) {
   goog.base(this, type);
 
   /**
-   * Map units per pixel.
+   * The raster extent.
+   * @type {ol.Extent}
+   * @api
+   */
+  this.extent = frameState.extent;
+
+  /**
+   * The pixel resolution (map units per pixel).
    * @type {number}
    * @api
    */
-  this.resolution = resolution;
+  this.resolution = frameState.viewState.resolution / frameState.pixelRatio;
 
 };
 goog.inherits(ol.source.RasterEvent, goog.events.Event);

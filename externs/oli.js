@@ -273,6 +273,12 @@ oli.source.RasterEvent = function() {};
 
 
 /**
+ * @type {ol.Extent}
+ */
+oli.source.RasterEvent.prototype.extent;
+
+
+/**
  * @type {number}
  */
 oli.source.RasterEvent.prototype.resolution;
