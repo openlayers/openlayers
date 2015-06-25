@@ -13,6 +13,7 @@ goog.require('ol.extent');
 goog.require('ol.layer.Image');
 goog.require('ol.layer.Tile');
 goog.require('ol.raster.IdentityOp');
+goog.require('ol.raster.OperationType');
 goog.require('ol.renderer.canvas.ImageLayer');
 goog.require('ol.renderer.canvas.TileLayer');
 goog.require('ol.source.Image');
@@ -40,6 +41,13 @@ ol.source.Raster = function(options) {
    */
   this.operations_ = goog.isDef(options.operations) ?
       options.operations : [ol.raster.IdentityOp];
+
+  /**
+   * @private
+   * @type {ol.raster.OperationType}
+   */
+  this.operationType_ = goog.isDef(options.operationType) ?
+      options.operationType : ol.raster.OperationType.PIXEL;
 
   /**
    * @private
@@ -215,29 +223,36 @@ ol.source.Raster.prototype.composeFrame_ = function(frameState) {
         this.renderers_[i], frameState, frameState.layerStatesArray[i]);
   }
 
-  var targetImageData = context.getImageData(0, 0, canvas.width, canvas.height);
-  var target = targetImageData.data;
-
-
   var resolution = frameState.viewState.resolution / frameState.pixelRatio;
   this.dispatchEvent(new ol.source.RasterEvent(
       ol.source.RasterEventType.BEFOREOPERATIONS, resolution));
 
-  var source, pixel;
-  for (var j = 0, jj = target.length; j < jj; j += 4) {
-    for (var k = 0; k < len; ++k) {
-      source = imageDatas[k].data;
-      pixel = pixels[k];
-      pixel[0] = source[j];
-      pixel[1] = source[j + 1];
-      pixel[2] = source[j + 2];
-      pixel[3] = source[j + 3];
+  var targetImageData = null;
+  if (this.operationType_ === ol.raster.OperationType.PIXEL) {
+    targetImageData = context.getImageData(0, 0, canvas.width,
+        canvas.height);
+    var target = targetImageData.data;
+
+    var source, pixel;
+    for (var j = 0, jj = target.length; j < jj; j += 4) {
+      for (var k = 0; k < len; ++k) {
+        source = imageDatas[k].data;
+        pixel = pixels[k];
+        pixel[0] = source[j];
+        pixel[1] = source[j + 1];
+        pixel[2] = source[j + 2];
+        pixel[3] = source[j + 3];
+      }
+      pixel = this.runPixelOperations_(pixels)[0];
+      target[j] = pixel[0];
+      target[j + 1] = pixel[1];
+      target[j + 2] = pixel[2];
+      target[j + 3] = pixel[3];
     }
-    pixel = this.runOperations_(pixels)[0];
-    target[j] = pixel[0];
-    target[j + 1] = pixel[1];
-    target[j + 2] = pixel[2];
-    target[j + 3] = pixel[3];
+  } else if (this.operationType_ === ol.raster.OperationType.IMAGE) {
+    targetImageData = this.runImageOperations_(imageDatas)[0];
+  } else {
+    goog.asserts.fail('unsupported operation type: ' + this.operationType_);
   }
 
   this.dispatchEvent(new ol.source.RasterEvent(
@@ -255,11 +270,25 @@ ol.source.Raster.prototype.composeFrame_ = function(frameState) {
  * @return {Array.<ol.raster.Pixel>} The modified pixels.
  * @private
  */
-ol.source.Raster.prototype.runOperations_ = function(pixels) {
+ol.source.Raster.prototype.runPixelOperations_ = function(pixels) {
   for (var i = 0, ii = this.operations_.length; i < ii; ++i) {
     pixels = this.operations_[i](pixels);
   }
   return pixels;
+};
+
+
+/**
+ * Run image operations.
+ * @param {Array.<ImageData>} imageDatas The input image data.
+ * @return {Array.<ImageData>} The output image data.
+ * @private
+ */
+ol.source.Raster.prototype.runImageOperations_ = function(imageDatas) {
+  for (var i = 0, ii = this.operations_.length; i < ii; ++i) {
+    imageDatas = this.operations_[i](imageDatas);
+  }
+  return imageDatas;
 };
 
 

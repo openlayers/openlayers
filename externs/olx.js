@@ -4500,7 +4500,8 @@ olx.source.ImageVectorOptions.prototype.style;
 
 /**
  * @typedef {{sources: Array.<ol.source.Source>,
- *     operations: (Array.<ol.raster.Operation>|undefined)}}
+ *     operations: (Array.<ol.raster.Operation>|undefined),
+ *     operationType: (ol.raster.OperationType|undefined)}}
  * @api
  */
 olx.source.RasterOptions;
@@ -4515,12 +4516,23 @@ olx.source.RasterOptions.prototype.sources;
 
 
 /**
- * Pixel operations.  Operations will be called with pixels from input sources
+ * Pixel operations.  Operations will be called with data from input sources
  * and the final output will be assigned to the raster source.
  * @type {Array.<ol.raster.Operation>|undefined}
  * @api
  */
 olx.source.RasterOptions.prototype.operations;
+
+
+/**
+ * Operation type.  Supported values are `'pixel'` and `'image'`.  By default,
+ * `'pixel'` operations are assumed, and operations will be called with an
+ * array of pixels from input sources.  If set to `'image'`, operations will
+ * be called with an array of ImageData objects from input sources.
+ * @type {ol.raster.OperationType|undefined}
+ * @api
+ */
+olx.source.RasterOptions.prototype.operationType;
 
 
 /**
