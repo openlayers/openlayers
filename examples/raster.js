@@ -7,7 +7,7 @@ goog.require('ol.layer.Tile');
 goog.require('ol.source.BingMaps');
 goog.require('ol.source.Raster');
 
-function tgi(pixels) {
+function tgi(pixels, data) {
   var pixel = pixels[0];
   var r = pixel[0] / 255;
   var g = pixel[1] / 255;
@@ -17,20 +17,17 @@ function tgi(pixels) {
   return pixels;
 }
 
-var counts = new Counts(0, 25);
 
-function summarize(pixels) {
+function summarize(pixels, data) {
   var value = pixels[0][0];
-  counts.increment(value);
+  data.counts.increment(value);
   return pixels;
 }
 
-var threshold = 10;
-
-function color(pixels) {
+function color(pixels, data) {
   var pixel = pixels[0];
   var value = pixel[0];
-  if (value > threshold) {
+  if (value > data.threshold) {
     pixel[0] = 0;
     pixel[1] = 255;
     pixel[2] = 0;
@@ -51,12 +48,17 @@ var raster = new ol.source.Raster({
   operations: [tgi, summarize, color]
 });
 
-raster.on('beforeoperations', function() {
+var counts = new Counts(0, 25);
+var threshold = 10;
+
+raster.on('beforeoperations', function(event) {
   counts.clear();
+  event.data.counts = counts;
+  event.data.threshold = threshold;
 });
 
 raster.on('afteroperations', function(event) {
-  schedulePlot(event.resolution);
+  schedulePlot(event.resolution, event.data.counts);
 });
 
 var map = new ol.Map({
@@ -114,12 +116,12 @@ Counts.prototype.increment = function(value) {
 };
 
 var timer = null;
-function schedulePlot(resolution) {
+function schedulePlot(resolution, counts) {
   if (timer) {
     clearTimeout(timer);
     timer = null;
   }
-  timer = setTimeout(plot.bind(null, resolution), 1000 / 60);
+  timer = setTimeout(plot.bind(null, resolution, counts), 1000 / 60);
 }
 
 var barWidth = 15;
@@ -133,7 +135,7 @@ var chartRect = chart[0][0].getBoundingClientRect();
 var tip = d3.select(document.body).append('div')
     .attr('class', 'tip');
 
-function plot(resolution) {
+function plot(resolution, counts) {
   var yScale = d3.scale.linear()
       .domain([0, d3.max(counts.values)])
       .range([0, plotHeight]);

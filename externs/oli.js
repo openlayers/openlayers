@@ -285,6 +285,12 @@ oli.source.RasterEvent.prototype.resolution;
 
 
 /**
+ * @type {Object}
+ */
+oli.source.RasterEvent.prototype.data;
+
+
+/**
  * @interface
  */
 oli.source.TileEvent = function() {};

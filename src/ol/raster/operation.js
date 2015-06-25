@@ -21,9 +21,12 @@ ol.raster.OperationType = {
  * return an array of the same.  For `'image'` type operations, functions will
  * be called with an array of {@link ImageData
  * https://developer.mozilla.org/en-US/docs/Web/API/ImageData} and should return
- * an array of the same.
+ * an array of the same.  The operations are called with a second "data"
+ * argument, which can be used for storage.  The data object is accessible
+ * from raster events, where it can be initialized in "beforeoperations" and
+ * accessed again in "afteroperations."
  *
- * @typedef {function((Array.<ol.raster.Pixel>|Array.<ImageData>)):
+ * @typedef {function((Array.<ol.raster.Pixel>|Array.<ImageData>), Object):
  *     (Array.<ol.raster.Pixel>|Array.<ImageData>)}
  * @api
  */
