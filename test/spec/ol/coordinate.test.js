@@ -206,7 +206,7 @@ describe('ol.coordinate', function() {
     it('formats a coord as expected', function() {
       var coord = [7.85, 47.983333];
       var got = ol.coordinate.toStringHDMS(coord);
-      var expected = '47° 59′ 0″ N 7° 51′ 0″ E';
+      var expected = '47° 59′ 00″ N 7° 51′ 00″ E';
       expect(got).to.be(expected);
     });
   });
