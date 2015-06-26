@@ -215,6 +215,33 @@ describe('ol.geom.Polygon', function() {
       expect(polygon.containsCoordinate(insideInner)).to.be(false);
     });
 
+    describe('#intersectsExtent', function() {
+
+      it('does not intersect outside extent', function() {
+        expect(polygon.intersectsExtent(
+            ol.extent.boundingExtent([outsideOuter]))).to.be(false);
+      });
+
+      it('does intersect inside extent', function() {
+        expect(polygon.intersectsExtent(
+            ol.extent.boundingExtent([inside]))).to.be(true);
+      });
+
+      it('does intersect boundary extent', function() {
+        var firstMidX = (outerRing[0][0] + outerRing[1][0]) / 2;
+        var firstMidY = (outerRing[0][1] + outerRing[1][1]) / 2;
+
+        expect(polygon.intersectsExtent(ol.extent.boundingExtent([[firstMidX,
+          firstMidY]]))).to.be(true);
+      });
+
+      it('does not intersect extent fully contained by inner ring', function() {
+        expect(polygon.intersectsExtent(
+            ol.extent.boundingExtent([insideInner]))).to.be(false);
+      });
+
+    });
+
     describe('#getOrientedFlatCoordinates', function() {
 
       it('reverses the outer ring if necessary', function() {
@@ -285,6 +312,33 @@ describe('ol.geom.Polygon', function() {
 
     it('does not contain inside inner coordinates', function() {
       expect(polygon.containsCoordinate(insideInner)).to.be(false);
+    });
+
+    describe('#intersectsExtent', function() {
+
+      it('does not intersect outside extent', function() {
+        expect(polygon.intersectsExtent(
+            ol.extent.boundingExtent([outsideOuter]))).to.be(false);
+      });
+
+      it('does intersect inside extent', function() {
+        expect(polygon.intersectsExtent(
+            ol.extent.boundingExtent([inside]))).to.be(true);
+      });
+
+      it('does intersect boundary extent', function() {
+        var firstMidX = (outerRing[0][0] + outerRing[1][0]) / 2;
+        var firstMidY = (outerRing[0][1] + outerRing[1][1]) / 2;
+
+        expect(polygon.intersectsExtent(ol.extent.boundingExtent([[firstMidX,
+          firstMidY]]))).to.be(true);
+      });
+
+      it('does not intersect extent fully contained by inner ring', function() {
+        expect(polygon.intersectsExtent(
+            ol.extent.boundingExtent([insideInner]))).to.be(false);
+      });
+
     });
 
     describe('#getOrientedFlatCoordinates', function() {
@@ -367,6 +421,35 @@ describe('ol.geom.Polygon', function() {
       expect(polygon.containsCoordinate(insideInner2)).to.be(false);
     });
 
+    describe('#intersectsExtent', function() {
+
+      it('does not intersect outside extent', function() {
+        expect(polygon.intersectsExtent(
+            ol.extent.boundingExtent([outsideOuter]))).to.be(false);
+      });
+
+      it('does intersect inside extent', function() {
+        expect(polygon.intersectsExtent(
+            ol.extent.boundingExtent([inside]))).to.be(true);
+      });
+
+      it('does intersect boundary extent', function() {
+        var firstMidX = (outerRing[0][0] + outerRing[1][0]) / 2;
+        var firstMidY = (outerRing[0][1] + outerRing[1][1]) / 2;
+
+        expect(polygon.intersectsExtent(ol.extent.boundingExtent([[firstMidX,
+          firstMidY]]))).to.be(true);
+      });
+
+      it('does not intersect extent fully contained by inner ring', function() {
+        expect(polygon.intersectsExtent(
+            ol.extent.boundingExtent([insideInner1]))).to.be(false);
+        expect(polygon.intersectsExtent(
+            ol.extent.boundingExtent([insideInner2]))).to.be(false);
+      });
+
+    });
+
     describe('#getOrientedFlatCoordinates', function() {
 
       it('reverses the outer ring if necessary', function() {
@@ -436,9 +519,44 @@ describe('ol.geom.Polygon', function() {
     });
   });
 
+  describe('ol.geom.Polygon.fromCircle', function() {
+
+    it('creates a regular polygon', function() {
+      var circle = new ol.geom.Circle([0, 0, 0], 1, ol.geom.GeometryLayout.XYZ);
+      var polygon = ol.geom.Polygon.fromCircle(circle);
+      var coordinates = polygon.getLinearRing(0).getCoordinates();
+      expect(coordinates[0].length).to.eql(3);
+      expect(coordinates[0][2]).to.eql(0);
+      expect(coordinates[32]).to.eql(coordinates[0]);
+      // east
+      expect(coordinates[0][0]).to.roughlyEqual(1, 1e-9);
+      expect(coordinates[0][1]).to.roughlyEqual(0, 1e-9);
+      // south
+      expect(coordinates[8][0]).to.roughlyEqual(0, 1e-9);
+      expect(coordinates[8][1]).to.roughlyEqual(1, 1e-9);
+      // west
+      expect(coordinates[16][0]).to.roughlyEqual(-1, 1e-9);
+      expect(coordinates[16][1]).to.roughlyEqual(0, 1e-9);
+      // north
+      expect(coordinates[24][0]).to.roughlyEqual(0, 1e-9);
+      expect(coordinates[24][1]).to.roughlyEqual(-1, 1e-9);
+    });
+
+    it('creates a regular polygon with custom sides and angle', function() {
+      var circle = new ol.geom.Circle([0, 0], 1);
+      var polygon = ol.geom.Polygon.fromCircle(circle, 4, Math.PI / 2);
+      var coordinates = polygon.getLinearRing(0).getCoordinates();
+      expect(coordinates[4]).to.eql(coordinates[0]);
+      expect(coordinates[0][0]).to.roughlyEqual(0, 1e-9);
+      expect(coordinates[0][1]).to.roughlyEqual(1, 1e-9);
+    });
+  });
+
 });
 
 
 goog.require('ol.extent');
+goog.require('ol.geom.Circle');
+goog.require('ol.geom.GeometryLayout');
 goog.require('ol.geom.LinearRing');
 goog.require('ol.geom.Polygon');

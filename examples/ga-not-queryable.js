@@ -2,7 +2,7 @@ goog.require('ga.Map');
 goog.require('ga.layer');
 goog.require('ol.View');
 goog.require('ol.layer.Vector');
-goog.require('ol.source.KML');
+goog.require('ol.format.KML');
 
 
 // Create a GeoAdmin Map
@@ -23,9 +23,11 @@ var map = new ga.Map({
 
 // Create the KML Layer
 var vector = new ol.layer.Vector({
-  source: new ol.source.KML({
-    projection: 'EPSG:21781',
-    url: 'data/kml/bln-style.kml'
+  source: new ol.source.Vector({
+    url: 'data/kml/bln-style.kml',
+    format: new ol.format.KML({
+      projection: 'EPSG:21781'
+    })
   })
 });
 

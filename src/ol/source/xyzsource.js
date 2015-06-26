@@ -3,7 +3,6 @@ goog.provide('ol.source.XYZ');
 goog.require('ol.Attribution');
 goog.require('ol.TileUrlFunction');
 goog.require('ol.source.TileImage');
-goog.require('ol.tilegrid.XYZ');
 
 
 
@@ -20,7 +19,7 @@ ol.source.XYZ = function(options) {
   var projection = goog.isDef(options.projection) ?
       options.projection : 'EPSG:3857';
 
-  var tileGrid = new ol.tilegrid.XYZ({
+  var tileGrid = ol.tilegrid.createXYZ({
     extent: ol.tilegrid.extentFromProjection(projection),
     maxZoom: options.maxZoom,
     tileSize: options.tileSize
@@ -68,6 +67,7 @@ ol.source.XYZ.prototype.setTileUrlFunction = function(tileUrlFunction) {
 
 
 /**
+ * Set the URL to use for requests.
  * @param {string} url URL.
  * @api stable
  */
@@ -78,6 +78,7 @@ ol.source.XYZ.prototype.setUrl = function(url) {
 
 
 /**
+ * Set the URLs to use for requests.
  * @param {Array.<string>} urls URLs.
  */
 ol.source.XYZ.prototype.setUrls = function(urls) {

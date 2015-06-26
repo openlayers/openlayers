@@ -1,7 +1,6 @@
 goog.provide('ol.source.Stamen');
 
 goog.require('goog.asserts');
-goog.require('ol');
 goog.require('ol.Attribution');
 goog.require('ol.source.OSM');
 goog.require('ol.source.XYZ');
@@ -91,17 +90,17 @@ ol.source.Stamen = function(options) {
 
   var i = options.layer.indexOf('-');
   var provider = i == -1 ? options.layer : options.layer.slice(0, i);
-  goog.asserts.assert(provider in ol.source.StamenProviderConfig);
+  goog.asserts.assert(provider in ol.source.StamenProviderConfig,
+      'known provider configured');
   var providerConfig = ol.source.StamenProviderConfig[provider];
 
-  goog.asserts.assert(options.layer in ol.source.StamenLayerConfig);
+  goog.asserts.assert(options.layer in ol.source.StamenLayerConfig,
+      'known layer configured');
   var layerConfig = ol.source.StamenLayerConfig[options.layer];
 
-  var root = ol.IS_HTTPS ? 'https://stamen-tiles-{a-d}.a.ssl.fastly.net/' :
-      'http://{a-d}.tile.stamen.com/';
   var url = goog.isDef(options.url) ? options.url :
-      root + options.layer + '/{z}/{x}/{y}.' +
-      layerConfig.extension;
+      'https://stamen-tiles-{a-d}.a.ssl.fastly.net/' + options.layer +
+      '/{z}/{x}/{y}.' + layerConfig.extension;
 
   goog.base(this, {
     attributions: ol.source.Stamen.ATTRIBUTIONS,

@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no, width=device-width">
+    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/twitter-bootstrap/2.3.1/css/bootstrap-combined.min.css" type="text/css">
+    <link rel="stylesheet" href="../css/ol.css" type="text/css">
+    <link rel="stylesheet" href="./resources/layout.css" type="text/css">
+    {{{ extraHead }}}
+    {{{ css.tag }}}
+    <link rel="stylesheet" href="./resources/prism/prism.css" type="text/css">
+    <script src="./resources/zeroclipboard/ZeroClipboard.min.js"></script>
+    <title>{{ title }}</title>
+  </head>
+  <body>
+
+    <div class="navbar navbar-inverse navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container" id="navbar-inner-container">
+          <a class="brand" href="./"><img src="./resources/logo-70x70.png"> OpenLayers 3 Examples</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="container-fluid">
+
+      {{{ contents }}}
+
+      <div class="row-fluid">
+        <div class="span12">
+          <h4 id="title">{{ title }}</h4>
+          <p id="shortdesc">{{ shortdesc }}</p>
+          <div id="docs">{{ md docs }}</div>
+          <div id="tags">{{ tags }}</div>
+          <div id="api-links">Related API documentation: {{{ js.apiHtml }}}</div>
+        </div>
+      </div>
+
+      <div class="row-fluid">
+        <hr>
+        <form method="POST" target="_blank" action="http://jsfiddle.net/api/post/jquery/1.11.0/">
+          <input type="button" class="btn btn-info" id="copy-button" value="Copy example code">
+          <input type="submit" class="btn btn-primary" id="jsfiddle-button" value="Create JSFiddle">
+          <textarea class="hidden" name="js">{{ js.source }}</textarea>
+          <textarea class="hidden" name="css">{{ css.source }}</textarea>
+          <textarea class="hidden" name="html">{{ contents }}</textarea>
+          <input type="hidden" name="wrap" value="l">
+          <input type="hidden" name="resources" value="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css,https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js,https://cdnjs.cloudflare.com/ajax/libs/ol3/{{ olVersion }}/ol.css,https://cdnjs.cloudflare.com/ajax/libs/ol3/{{ olVersion }}/ol.js">
+          <pre><code id="example-source" class="language-markup">&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+&lt;title&gt;{{ title }}&lt;/title&gt;
+&lt;script src="https://code.jquery.com/jquery-1.11.2.min.js"&gt;&lt;/script&gt;
+&lt;link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css"&gt;
+&lt;script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"&gt;&lt;/script&gt;
+&lt;link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ol3/{{ olVersion }}/ol.css" type="text/css"&gt;
+&lt;script src="https://cdnjs.cloudflare.com/ajax/libs/ol3/{{ olVersion }}/ol.js"&gt;&lt;/script&gt;
+{{ extraHead }}
+{{#if css.source}}
+&lt;style&gt;
+{{ css.source }}
+&lt;/style&gt;
+{{/if}}
+&lt;/head&gt;
+&lt;body&gt;
+&lt;div class="container-fluid"&gt;
+
+{{ contents }}
+&lt;/div&gt;
+&lt;script&gt;
+{{ js.source }}
+&lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+        </form>
+      </div>
+    </div>
+
+    <script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
+    <script src="http://maxcdn.bootstrapcdn.com/twitter-bootstrap/2.3.1/js/bootstrap.min.js"></script>
+    <script src="./resources/common.js"></script>
+    <script src="./resources/prism/prism.min.js"></script>
+    {{{ js.tag }}}
+
+  </body>
+</html>

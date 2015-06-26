@@ -566,6 +566,7 @@ describe('ol.format.GPX', function() {
 
 goog.require('ol.Feature');
 goog.require('ol.format.GPX');
+goog.require('ol.geom.GeometryLayout');
 goog.require('ol.geom.LineString');
 goog.require('ol.geom.MultiLineString');
 goog.require('ol.geom.Point');

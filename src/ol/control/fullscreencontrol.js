@@ -67,12 +67,7 @@ ol.control.FullScreen = function(opt_options) {
   goog.events.listen(button, goog.events.EventType.CLICK,
       this.handleClick_, false, this);
 
-  goog.events.listen(button, [
-    goog.events.EventType.MOUSEOUT,
-    goog.events.EventType.FOCUSOUT
-  ], function() {
-    this.blur();
-  }, false);
+  ol.control.Control.bindMouseOutFocusOutBlur(button);
 
   goog.events.listen(goog.global.document,
       goog.dom.fullscreen.EventType.CHANGE,
@@ -123,9 +118,11 @@ ol.control.FullScreen.prototype.handleFullScreen_ = function() {
     goog.dom.fullscreen.exitFullScreen();
   } else {
     var target = map.getTarget();
-    goog.asserts.assert(goog.isDefAndNotNull(target));
+    goog.asserts.assert(goog.isDefAndNotNull(target),
+        'target should be defined');
     var element = goog.dom.getElement(target);
-    goog.asserts.assert(goog.isDefAndNotNull(element));
+    goog.asserts.assert(goog.isDefAndNotNull(element),
+        'element should be defined');
     if (this.keys_) {
       goog.dom.fullscreen.requestFullScreenWithKeys(element);
     } else {

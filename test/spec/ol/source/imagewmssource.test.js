@@ -112,6 +112,17 @@ describe('ol.source.ImageWMS', function() {
       expect(queryData.get('FORMAT_OPTIONS')).to.be('dpi:180');
     });
 
+    it('extends FORMAT_OPTIONS if it is already present', function() {
+      options.serverType = ol.source.wms.ServerType.GEOSERVER;
+      var source = new ol.source.ImageWMS(options);
+      options.params.FORMAT_OPTIONS = 'param1:value1';
+      pixelRatio = 2;
+      var image = source.getImage(extent, resolution, pixelRatio, projection);
+      var uri = new goog.Uri(image.src_);
+      var queryData = uri.getQueryData();
+      expect(queryData.get('FORMAT_OPTIONS')).to.be('param1:value1;dpi:180');
+    });
+
     it('rounds FORMAT_OPTIONS to an integer when the server is GeoServer',
        function() {
          options.serverType = ol.source.wms.ServerType.GEOSERVER;

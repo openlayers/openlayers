@@ -1,7 +1,18 @@
 // FIXME remove afterLoadXml as it uses the wrong XML parser on IE9
 
-// helper functions for async testing
+// helper functions for async testing and other utility functions.
 (function(global) {
+
+  // show generated maps for rendering tests
+  var showMap = (global.location.search.indexOf('generate') >= 0);
+
+  // show a diff when rendering tests fail
+  var showDiff = (global.location.search.indexOf('showdiff') >= 0);
+
+  /**
+   * The default tolerance for image comparisons.
+   */
+  global.IMAGE_TOLERANCE = 1.5;
 
   function afterLoad(type, path, next) {
     var client = new XMLHttpRequest();
@@ -326,5 +337,107 @@
     return this;
   };
 
+  global.createMapDiv = function(width, height) {
+    var target = document.createElement('div');
+    var style = target.style;
+    style.position = 'absolute';
+    style.left = '-1000px';
+    style.top = '-1000px';
+    style.width = width + 'px';
+    style.height = height + 'px';
+    document.body.appendChild(target);
+
+    return target;
+  };
+
+  global.disposeMap = function(map) {
+    var target = map.getTarget();
+    map.setTarget(null);
+    goog.dispose(map);
+    document.body.removeChild(target);
+  };
+
+  global.assertWebGL = function(map) {
+    if(!ol.has.WEBGL) {
+      expect().fail('No WebGL support!');
+    }
+  };
+
+  function resembleCanvas(canvas, referenceImage, tolerance, done) {
+    if (showMap) {
+      document.body.appendChild(canvas);
+    }
+
+    resemble(referenceImage)
+      .compareTo(canvas.getContext('2d').getImageData(
+          0, 0, canvas.width, canvas.height))
+      .onComplete(function(data) {
+        if(!data.isSameDimensions) {
+          expect().fail(
+            'The dimensions of the reference image and ' +
+            'the test canvas are not the same.');
+        }
+
+        if (data.misMatchPercentage > tolerance) {
+          if (showDiff) {
+            var diffImage = new Image();
+            diffImage.src = data.getImageDataUrl();
+            document.body.appendChild(diffImage);
+          }
+          expect(data.misMatchPercentage).to.be.below(tolerance);
+        }
+        done();
+    });
+  };
+
+  function expectResembleCanvas(map, referenceImage, tolerance, done) {
+    map.render();
+    map.on('postcompose', function(event) {
+      var canvas = event.context.canvas;
+      resembleCanvas(canvas, referenceImage, tolerance, done);
+    });
+  };
+
+  function expectResembleWebGL(map, referenceImage, tolerance, done) {
+    map.render();
+    map.on('postcompose', function(event) {
+      if (event.frameState.animate) {
+        // make sure the tile-queue is empty
+        return;
+      }
+
+      var webglCanvas = event.glContext.getCanvas();
+      expect(webglCanvas).to.be.a(HTMLCanvasElement);
+
+      // draw the WebGL canvas on a new canvas, because we can not create
+      // a 2d context for that canvas because there is already a webgl context.
+      var canvas = document.createElement('canvas');
+      canvas.width = webglCanvas.width;
+      canvas.height = webglCanvas.height;
+      canvas.getContext('2d').drawImage(webglCanvas, 0, 0,
+          webglCanvas.width, webglCanvas.height);
+
+      resembleCanvas(canvas, referenceImage, tolerance, done);
+    });
+  };
+
+  /**
+   * Assert that the given map resembles a reference image.
+   *
+   * @param {ol.Map} map A map using the canvas renderer.
+   * @param {string} referenceImage Path to the reference image.
+   * @param {number} tolerance The accepted mismatch tolerance.
+   * @param {function} done A callback to indicate that the test is done.
+   */
+  global.expectResemble = function(map, referenceImage, tolerance, done) {
+    if (map.getRenderer() instanceof ol.renderer.canvas.Map) {
+      expectResembleCanvas(map, referenceImage, tolerance, done);
+    } else if (map.getRenderer() instanceof ol.renderer.webgl.Map) {
+      expectResembleWebGL(map, referenceImage, tolerance, done);
+    } else {
+      expect().fail(
+        'resemble only works with the canvas and WebGL renderer.');
+    }
+  };
 
 })(this);

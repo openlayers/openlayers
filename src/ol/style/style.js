@@ -1,4 +1,6 @@
+goog.provide('ol.style.GeometryFunction');
 goog.provide('ol.style.Style');
+goog.provide('ol.style.StyleFunction');
 goog.provide('ol.style.defaultGeometryFunction');
 
 goog.require('goog.asserts');
@@ -76,6 +78,7 @@ ol.style.Style = function(opt_options) {
 
 
 /**
+ * Get the geometry to be rendered.
  * @return {string|ol.geom.Geometry|ol.style.GeometryFunction}
  * Feature property or geometry or function that returns the geometry that will
  * be rendered with this style.
@@ -87,6 +90,7 @@ ol.style.Style.prototype.getGeometry = function() {
 
 
 /**
+ * Get the function used to generate a geometry for rendering.
  * @return {!ol.style.GeometryFunction} Function that is called with a feature
  * and returns the geometry to render instead of the feature's geometry.
  * @api
@@ -97,6 +101,7 @@ ol.style.Style.prototype.getGeometryFunction = function() {
 
 
 /**
+ * Get the fill style.
  * @return {ol.style.Fill} Fill style.
  * @api
  */
@@ -106,6 +111,7 @@ ol.style.Style.prototype.getFill = function() {
 
 
 /**
+ * Get the image style.
  * @return {ol.style.Image} Image style.
  * @api
  */
@@ -115,6 +121,7 @@ ol.style.Style.prototype.getImage = function() {
 
 
 /**
+ * Get the stroke style.
  * @return {ol.style.Stroke} Stroke style.
  * @api
  */
@@ -124,6 +131,7 @@ ol.style.Style.prototype.getStroke = function() {
 
 
 /**
+ * Get the text style.
  * @return {ol.style.Text} Text style.
  * @api
  */
@@ -133,6 +141,7 @@ ol.style.Style.prototype.getText = function() {
 
 
 /**
+ * Get the z-index for the style.
  * @return {number|undefined} ZIndex.
  * @api
  */
@@ -156,14 +165,16 @@ ol.style.Style.prototype.setGeometry = function(geometry) {
     this.geometryFunction_ = function(feature) {
       var result = feature.get(geometry);
       if (goog.isDefAndNotNull(result)) {
-        goog.asserts.assertInstanceof(result, ol.geom.Geometry);
+        goog.asserts.assertInstanceof(result, ol.geom.Geometry,
+            'feature geometry must be an ol.geom.Geometry instance');
       }
       return result;
     };
   } else if (goog.isNull(geometry)) {
     this.geometryFunction_ = ol.style.defaultGeometryFunction;
   } else if (goog.isDef(geometry)) {
-    goog.asserts.assertInstanceof(geometry, ol.geom.Geometry);
+    goog.asserts.assertInstanceof(geometry, ol.geom.Geometry,
+        'geometry must be an ol.geom.Geometry instance');
     this.geometryFunction_ = function() {
       return geometry;
     };
@@ -173,7 +184,7 @@ ol.style.Style.prototype.setGeometry = function(geometry) {
 
 
 /**
- * Set the zIndex.
+ * Set the z-index.
  *
  * @param {number|undefined} zIndex ZIndex.
  * @api
@@ -218,7 +229,8 @@ ol.style.createStyleFunction = function(obj) {
     if (goog.isArray(obj)) {
       styles = obj;
     } else {
-      goog.asserts.assertInstanceof(obj, ol.style.Style);
+      goog.asserts.assertInstanceof(obj, ol.style.Style,
+          'obj geometry must be an ol.style.Style instance');
       styles = [obj];
     }
     styleFunction = goog.functions.constant(styles);
@@ -358,6 +370,7 @@ ol.style.GeometryFunction;
  * @return {ol.geom.Geometry|undefined} Geometry to render.
  */
 ol.style.defaultGeometryFunction = function(feature) {
-  goog.asserts.assert(!goog.isNull(feature));
+  goog.asserts.assert(!goog.isNull(feature),
+      'feature must not be null');
   return feature.getGeometry();
 };

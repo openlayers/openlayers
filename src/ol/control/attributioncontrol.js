@@ -167,7 +167,7 @@ ol.control.Attribution.prototype.getSourceAttributions = function(frameState) {
   /** @type {Object.<string, ol.Attribution>} */
   var hiddenAttributions = {};
   var projection = frameState.viewState.projection;
-  goog.asserts.assert(!goog.isNull(projection));
+  goog.asserts.assert(!goog.isNull(projection), 'projection cannot be null');
   for (i = 0, ii = layerStatesArray.length; i < ii; i++) {
     source = layerStatesArray[i].layer.getSource();
     if (goog.isNull(source)) {
@@ -186,9 +186,10 @@ ol.control.Attribution.prototype.getSourceAttributions = function(frameState) {
       }
       tileRanges = frameState.usedTiles[sourceKey];
       if (goog.isDef(tileRanges)) {
-        goog.asserts.assertInstanceof(source, ol.source.Tile);
+        goog.asserts.assertInstanceof(source, ol.source.Tile,
+            'source should be an ol.source.Tile');
         var tileGrid = source.getTileGridForProjection(projection);
-        goog.asserts.assert(!goog.isNull(tileGrid));
+        goog.asserts.assert(!goog.isNull(tileGrid), 'tileGrid cannot be null');
         intersectsTileRange = sourceAttribution.intersectsAnyTileRange(
             tileRanges, tileGrid, projection);
       } else {
@@ -209,6 +210,7 @@ ol.control.Attribution.prototype.getSourceAttributions = function(frameState) {
 
 
 /**
+ * Update the attribution element.
  * @param {ol.MapEvent} mapEvent Map event.
  * @this {ol.control.Attribution}
  * @api
@@ -364,6 +366,7 @@ ol.control.Attribution.prototype.handleToggle_ = function() {
 
 
 /**
+ * Return `true` if the attribution is collapsible, `false` otherwise.
  * @return {boolean} True if the widget is collapsible.
  * @api stable
  */
@@ -373,6 +376,7 @@ ol.control.Attribution.prototype.getCollapsible = function() {
 
 
 /**
+ * Set whether the attribution should be collapsible.
  * @param {boolean} collapsible True if the widget is collapsible.
  * @api stable
  */
@@ -389,6 +393,9 @@ ol.control.Attribution.prototype.setCollapsible = function(collapsible) {
 
 
 /**
+ * Collapse or expand the attribution according to the passed parameter. Will
+ * not do anything if the attribution isn't collapsible or if the current
+ * collapsed state is already the one requested.
  * @param {boolean} collapsed True if the widget is collapsed.
  * @api stable
  */
@@ -401,6 +408,8 @@ ol.control.Attribution.prototype.setCollapsed = function(collapsed) {
 
 
 /**
+ * Return `true` when the attribution is currently collapsed or `false`
+ * otherwise.
  * @return {boolean} True if the widget is collapsed.
  * @api stable
  */

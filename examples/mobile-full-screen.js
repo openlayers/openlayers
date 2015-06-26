@@ -19,7 +19,7 @@ var map = new ol.Map({
       })
     })
   ],
-  renderer: exampleNS.getRendererFromQueryString(),
+  renderer: common.getRendererFromQueryString(),
   target: 'map',
   view: view
 });
@@ -37,6 +37,6 @@ geolocation.once('change:position', function() {
 // and the firing of a click event on mobile browsers.
 // See http://updates.html5rocks.com/2013/12/300ms-tap-delay-gone-away
 // for more information.
-$(function() {
+document.addEventListener('DOMContentLoaded', function() {
   FastClick.attach(document.body);
 });

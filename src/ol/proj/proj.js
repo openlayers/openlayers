@@ -24,7 +24,7 @@ ol.proj.ProjectionLike;
 
 
 /**
- * Projection units: `'degrees'`, `'ft'`, `'m'` or `'pixels'`.
+ * Projection units: `'degrees'`, `'ft'`, `'m'`, `'pixels'`, or `'us-ft'`.
  * @enum {string}
  * @api stable
  */
@@ -121,6 +121,13 @@ ol.proj.Projection = function(options) {
    */
   this.global_ = goog.isDef(options.global) ? options.global : false;
 
+
+  /**
+   * @private
+   * @type {boolean}
+   */
+  this.canWrapX_ = this.global_ && !goog.isNull(this.extent_);
+
   /**
   * @private
   * @type {function(number, ol.Coordinate):number}
@@ -169,6 +176,14 @@ ol.proj.Projection = function(options) {
     }
   }
 
+};
+
+
+/**
+ * @return {boolean} The projection is suitable for wrapping the x-axis
+ */
+ol.proj.Projection.prototype.canWrapX = function() {
+  return this.canWrapX_;
 };
 
 
@@ -255,6 +270,7 @@ ol.proj.Projection.prototype.isGlobal = function() {
 */
 ol.proj.Projection.prototype.setGlobal = function(global) {
   this.global_ = global;
+  this.canWrapX_ = global && !goog.isNull(this.extent_);
 };
 
 
@@ -281,6 +297,7 @@ ol.proj.Projection.prototype.setDefaultTileGrid = function(tileGrid) {
  */
 ol.proj.Projection.prototype.setExtent = function(extent) {
   this.extent_ = extent;
+  this.canWrapX_ = this.global_ && !goog.isNull(extent);
 };
 
 
@@ -470,7 +487,8 @@ ol.proj.createProjection = function(projection, defaultCode) {
   } else if (goog.isString(projection)) {
     return ol.proj.get(projection);
   } else {
-    goog.asserts.assertInstanceof(projection, ol.proj.Projection);
+    goog.asserts.assertInstanceof(projection, ol.proj.Projection,
+        'projection should be an ol.proj.Projection');
     return projection;
   }
 };
@@ -571,8 +589,10 @@ ol.proj.removeTransform = function(source, destination) {
   var sourceCode = source.getCode();
   var destinationCode = destination.getCode();
   var transforms = ol.proj.transforms_;
-  goog.asserts.assert(sourceCode in transforms);
-  goog.asserts.assert(destinationCode in transforms[sourceCode]);
+  goog.asserts.assert(sourceCode in transforms,
+      'sourceCode should be in transforms');
+  goog.asserts.assert(destinationCode in transforms[sourceCode],
+      'destinationCode should be in transforms of sourceCode');
   var transform = transforms[sourceCode][destinationCode];
   delete transforms[sourceCode][destinationCode];
   var keys = goog.object.getKeys(transforms[sourceCode]);
@@ -580,6 +600,36 @@ ol.proj.removeTransform = function(source, destination) {
     delete transforms[sourceCode];
   }
   return transform;
+};
+
+
+/**
+ * Transforms a coordinate from longitude/latitude to a different projection.
+ * @param {ol.Coordinate} coordinate Coordinate as longitude and latitude, i.e.
+ *     an array with longitude as 1st and latitude as 2nd element.
+ * @param {ol.proj.ProjectionLike=} opt_projection Target projection. The
+ *     default is Web Mercator, i.e. 'EPSG:3857'.
+ * @return {ol.Coordinate} Coordinate projected to the target projection.
+ * @api stable
+ */
+ol.proj.fromLonLat = function(coordinate, opt_projection) {
+  return ol.proj.transform(coordinate, 'EPSG:4326',
+      goog.isDef(opt_projection) ? opt_projection : 'EPSG:3857');
+};
+
+
+/**
+ * Transforms a coordinate to longitude/latitude.
+ * @param {ol.Coordinate} coordinate Projected coordinate.
+ * @param {ol.proj.ProjectionLike=} opt_projection Projection of the coordinate.
+ *     The default is Web Mercator, i.e. 'EPSG:3857'.
+ * @return {ol.Coordinate} Coordinate as longitude and latitude, i.e. an array
+ *     with longitude as 1st and latitude as 2nd element.
+ * @api stable
+ */
+ol.proj.toLonLat = function(coordinate, opt_projection) {
+  return ol.proj.transform(coordinate,
+      goog.isDef(opt_projection) ? opt_projection : 'EPSG:3857', 'EPSG:4326');
 };
 
 
@@ -622,6 +672,8 @@ ol.proj.get = function(projectionLike) {
  */
 ol.proj.equivalent = function(projection1, projection2) {
   if (projection1 === projection2) {
+    return true;
+  } else if (projection1.getCode() === projection2.getCode()) {
     return true;
   } else if (projection1.getUnits() != projection2.getUnits()) {
     return false;
@@ -671,7 +723,7 @@ ol.proj.getTransformFromProjections =
     transform = transforms[sourceCode][destinationCode];
   }
   if (!goog.isDef(transform)) {
-    goog.asserts.assert(goog.isDef(transform));
+    goog.asserts.assert(goog.isDef(transform), 'transform should be defined');
     transform = ol.proj.identityTransform;
   }
   return transform;

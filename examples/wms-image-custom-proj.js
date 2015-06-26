@@ -71,11 +71,11 @@ var map = new ol.Map({
     new ol.control.ScaleLine()
   ]),
   layers: layers,
-  renderer: exampleNS.getRendererFromQueryString(),
+  renderer: common.getRendererFromQueryString(),
   target: 'map',
   view: new ol.View({
     projection: projection,
-    center: ol.proj.transform([8.23, 46.86], 'EPSG:4326', projection),
+    center: ol.proj.fromLonLat([8.23, 46.86], projection),
     extent: extent,
     zoom: 2
   })

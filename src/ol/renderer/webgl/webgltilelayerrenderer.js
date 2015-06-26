@@ -16,6 +16,7 @@ goog.require('ol.layer.Tile');
 goog.require('ol.math');
 goog.require('ol.renderer.webgl.Layer');
 goog.require('ol.renderer.webgl.tilelayer.shader');
+goog.require('ol.size');
 goog.require('ol.tilecoord');
 goog.require('ol.vec.Mat4');
 goog.require('ol.webgl.Buffer');
@@ -79,6 +80,12 @@ ol.renderer.webgl.TileLayer = function(mapRenderer, tileLayer) {
    * @type {number}
    */
   this.renderedRevision_ = -1;
+
+  /**
+   * @private
+   * @type {ol.Size}
+   */
+  this.tmpSize_ = [0, 0];
 
 };
 goog.inherits(ol.renderer.webgl.TileLayer, ol.renderer.webgl.Layer);
@@ -151,7 +158,8 @@ ol.renderer.webgl.TileLayer.prototype.prepareFrame =
   var projection = viewState.projection;
 
   var tileLayer = this.getLayer();
-  goog.asserts.assertInstanceof(tileLayer, ol.layer.Tile);
+  goog.asserts.assertInstanceof(tileLayer, ol.layer.Tile,
+      'layer is an instance of ol.layer.Tile');
   var tileSource = tileLayer.getSource();
   var tileGrid = tileSource.getTileGridForProjection(projection);
   var z = tileGrid.getZForResolution(viewState.resolution);
@@ -159,7 +167,8 @@ ol.renderer.webgl.TileLayer.prototype.prepareFrame =
 
   var tilePixelSize =
       tileSource.getTilePixelSize(z, frameState.pixelRatio, projection);
-  var pixelRatio = tilePixelSize / tileGrid.getTileSize(z);
+  var pixelRatio = tilePixelSize[0] /
+      ol.size.toSize(tileGrid.getTileSize(z), this.tmpSize_)[0];
   var tilePixelResolution = tileResolution / pixelRatio;
   var tileGutter = tileSource.getGutter();
 
@@ -185,12 +194,15 @@ ol.renderer.webgl.TileLayer.prototype.prepareFrame =
     var tileRangeSize = tileRange.getSize();
 
     var maxDimension = Math.max(
-        tileRangeSize[0] * tilePixelSize, tileRangeSize[1] * tilePixelSize);
+        tileRangeSize[0] * tilePixelSize[0],
+        tileRangeSize[1] * tilePixelSize[1]);
     var framebufferDimension = ol.math.roundUpToPowerOfTwo(maxDimension);
     var framebufferExtentDimension = tilePixelResolution * framebufferDimension;
     var origin = tileGrid.getOrigin(z);
-    var minX = origin[0] + tileRange.minX * tilePixelSize * tilePixelResolution;
-    var minY = origin[1] + tileRange.minY * tilePixelSize * tilePixelResolution;
+    var minX = origin[0] +
+        tileRange.minX * tilePixelSize[0] * tilePixelResolution;
+    var minY = origin[1] +
+        tileRange.minY * tilePixelSize[1] * tilePixelResolution;
     framebufferExtent = [
       minX, minY,
       minX + framebufferExtentDimension, minY + framebufferExtentDimension

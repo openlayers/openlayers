@@ -16,13 +16,13 @@ Install the test dependencies (from the root of the repository):
 
 Run the tests once with PhantomJS:
 
-    ./build.py test
+    make test
 
 (Note that for `npm` users, this can also be run as `npm test`.)
 
 Run the tests in a browser:
 
-    ./build.py serve
+    make serve
 
 (Again for `npm` users, this is `npm start`.)
 
@@ -31,4 +31,4 @@ any time one of the source or spec files changes.
 
 Tip for TDD'ers: to make PhantomJS run the test suite continuously each time
 a spec file is changed you can use nosier (http://pypi.python.org/pypi/nosier)
-and do `nosier -p test -p src "./build.py test"`.
+and do `nosier -p test -p src "make test"`.

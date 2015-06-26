@@ -105,6 +105,35 @@ describe('ol.source.TileWMS', function() {
       expect(queryData.get('BBOX')).to.be('-90,-45,-45,0');
     });
 
+    it('sets FORMAT_OPTIONS when the server is GeoServer', function() {
+      options.serverType = ol.source.wms.ServerType.GEOSERVER;
+      var source = new ol.source.TileWMS(options);
+      var tile = source.getTile(3, 2, 1, 2, ol.proj.get('CRS:84'));
+      var uri = new goog.Uri(tile.src_);
+      var queryData = uri.getQueryData();
+      expect(queryData.get('FORMAT_OPTIONS')).to.be('dpi:180');
+    });
+
+    it('extends FORMAT_OPTIONS if it is already present', function() {
+      options.serverType = ol.source.wms.ServerType.GEOSERVER;
+      var source = new ol.source.TileWMS(options);
+      options.params.FORMAT_OPTIONS = 'param1:value1';
+      var tile = source.getTile(3, 2, 1, 2, ol.proj.get('CRS:84'));
+      var uri = new goog.Uri(tile.src_);
+      var queryData = uri.getQueryData();
+      expect(queryData.get('FORMAT_OPTIONS')).to.be('param1:value1;dpi:180');
+    });
+
+    it('rounds FORMAT_OPTIONS to an integer when the server is GeoServer',
+       function() {
+         options.serverType = ol.source.wms.ServerType.GEOSERVER;
+         var source = new ol.source.TileWMS(options);
+         var tile = source.getTile(3, 2, 1, 1.325, ol.proj.get('CRS:84'));
+         var uri = new goog.Uri(tile.src_);
+         var queryData = uri.getQueryData();
+         expect(queryData.get('FORMAT_OPTIONS')).to.be('dpi:119');
+       });
+
   });
 
   describe('#tileUrlFunction', function() {
@@ -127,6 +156,21 @@ describe('ol.source.TileWMS', function() {
       var uri = new goog.Uri(url);
       var queryData = uri.getQueryData();
       expect(queryData.get('BBOX')).to.be('-45,-45,0,0');
+    });
+
+    it('works with non-square tiles', function() {
+      options.tileGrid = new ol.tilegrid.TileGrid({
+        tileSize: [640, 320],
+        resolutions: [1.40625, 0.703125, 0.3515625, 0.17578125],
+        origin: [-180, -90]
+      });
+      var source = new ol.source.TileWMS(options);
+      var tileCoord = [3, 3, 1];
+      var url = source.tileUrlFunction(tileCoord, 1, ol.proj.get('EPSG:4326'));
+      var uri = new goog.Uri(url);
+      var queryData = uri.getQueryData();
+      expect(queryData.get('WIDTH')).to.be('640');
+      expect(queryData.get('HEIGHT')).to.be('320');
     });
 
   });
@@ -204,4 +248,6 @@ describe('ol.source.TileWMS', function() {
 goog.require('goog.Uri');
 goog.require('ol.ImageTile');
 goog.require('ol.source.TileWMS');
+goog.require('ol.source.wms.ServerType');
 goog.require('ol.proj');
+goog.require('ol.tilegrid.TileGrid');

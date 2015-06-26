@@ -43,12 +43,7 @@ ol.control.ZoomToExtent = function(opt_options) {
   goog.events.listen(button, goog.events.EventType.CLICK,
       this.handleClick_, false, this);
 
-  goog.events.listen(button, [
-    goog.events.EventType.MOUSEOUT,
-    goog.events.EventType.FOCUSOUT
-  ], function() {
-    this.blur();
-  }, false);
+  ol.control.Control.bindMouseOutFocusOutBlur(button);
 
   var cssClasses = className + ' ' + ol.css.CLASS_UNSELECTABLE + ' ' +
       ol.css.CLASS_CONTROL;
@@ -81,6 +76,6 @@ ol.control.ZoomToExtent.prototype.handleZoomToExtent_ = function() {
   var extent = goog.isNull(this.extent_) ?
       view.getProjection().getExtent() : this.extent_;
   var size = map.getSize();
-  goog.asserts.assert(goog.isDef(size));
+  goog.asserts.assert(goog.isDef(size), 'size should be defined');
   view.fitExtent(extent, size);
 };

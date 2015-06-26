@@ -111,7 +111,7 @@ ol.geom.flat.intersectsextent.linearRing =
  */
 ol.geom.flat.intersectsextent.linearRings =
     function(flatCoordinates, offset, ends, stride, extent) {
-  goog.asserts.assert(ends.length > 0);
+  goog.asserts.assert(ends.length > 0, 'ends should not be an empty array');
   if (!ol.geom.flat.intersectsextent.linearRing(
       flatCoordinates, offset, ends[0], stride, extent)) {
     return false;
@@ -140,7 +140,7 @@ ol.geom.flat.intersectsextent.linearRings =
  */
 ol.geom.flat.intersectsextent.linearRingss =
     function(flatCoordinates, offset, endss, stride, extent) {
-  goog.asserts.assert(endss.length > 0);
+  goog.asserts.assert(endss.length > 0, 'endss should not be an empty array');
   var i, ii;
   for (i = 0, ii = endss.length; i < ii; ++i) {
     var ends = endss[i];

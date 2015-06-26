@@ -307,6 +307,7 @@ ga.source.wmts = function(layer, options) {
 ga.source.wms = function(layer, options) {
   return new ol.source.TileWMS({
     crossOrigin: 'anonymous',
+    wrapX: false,
     gutter: options['gutter'] || 0,
     attributions: [
       ga.layer.getAttribution('<a href="' +

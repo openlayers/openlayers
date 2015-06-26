@@ -1,0 +1,22 @@
+.coordinates > div {
+  width: 450px;
+  text-align: center;
+}
+
+.layers label {
+  display: inline-block;
+  cursor: pointer;
+  margin-left: 5px;
+}
+
+.drawing canvas {
+  cursor: crosshair;
+}
+
+.eastwest label, .eastwest input {
+  display: inline-block;
+}
+
+input[type=text] {
+  width: 150px;
+}

@@ -1,0 +1,7 @@
+.ga-tooltip {
+  min-height:150px;
+  max-height: 300px;
+}
+.ga-tooltip-content {
+  overflow: auto;
+}

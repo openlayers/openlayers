@@ -1,7 +1,6 @@
 goog.provide('ol.source.MapQuest');
 
 goog.require('goog.asserts');
-goog.require('ol');
 goog.require('ol.Attribution');
 goog.require('ol.source.OSM');
 goog.require('ol.source.XYZ');
@@ -20,7 +19,8 @@ goog.require('ol.source.XYZ');
 ol.source.MapQuest = function(opt_options) {
 
   var options = goog.isDef(opt_options) ? opt_options : {};
-  goog.asserts.assert(options.layer in ol.source.MapQuestConfig);
+  goog.asserts.assert(options.layer in ol.source.MapQuestConfig,
+      'known layer configured');
 
   var layerConfig = ol.source.MapQuestConfig[options.layer];
 
@@ -31,15 +31,14 @@ ol.source.MapQuest = function(opt_options) {
    */
   this.layer_ = options.layer;
 
-  var protocol = ol.IS_HTTPS ? 'https:' : 'http:';
   var url = goog.isDef(options.url) ? options.url :
-      protocol + '//otile{1-4}-s.mqcdn.com/tiles/1.0.0/' +
+      'https://otile{1-4}-s.mqcdn.com/tiles/1.0.0/' +
       this.layer_ + '/{z}/{x}/{y}.jpg';
 
   goog.base(this, {
     attributions: layerConfig.attributions,
     crossOrigin: 'anonymous',
-    logo: '//developer.mapquest.com/content/osm/mq_logo.png',
+    logo: 'https://developer.mapquest.com/content/osm/mq_logo.png',
     maxZoom: layerConfig.maxZoom,
     opaque: true,
     tileLoadFunction: options.tileLoadFunction,
@@ -91,6 +90,7 @@ ol.source.MapQuestConfig = {
 
 
 /**
+ * Get the layer of the source, either `osm`, `sat`, or `hyb`.
  * @return {string} Layer.
  * @api
  */

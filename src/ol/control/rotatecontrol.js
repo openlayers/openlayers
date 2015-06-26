@@ -60,12 +60,7 @@ ol.control.Rotate = function(opt_options) {
   goog.events.listen(button, goog.events.EventType.CLICK,
       ol.control.Rotate.prototype.handleClick_, false, this);
 
-  goog.events.listen(button, [
-    goog.events.EventType.MOUSEOUT,
-    goog.events.EventType.FOCUSOUT
-  ], function() {
-    this.blur();
-  }, false);
+  ol.control.Control.bindMouseOutFocusOutBlur(button);
 
   var cssClasses = className + ' ' + ol.css.CLASS_UNSELECTABLE + ' ' +
       ol.css.CLASS_CONTROL;
@@ -148,6 +143,7 @@ ol.control.Rotate.prototype.resetNorth_ = function() {
 
 
 /**
+ * Update the rotate control element.
  * @param {ol.MapEvent} mapEvent Map event.
  * @this {ol.control.Rotate}
  * @api
