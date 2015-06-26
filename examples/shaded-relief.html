@@ -1,0 +1,19 @@
+---
+template: example.html
+title: Shaded Relief
+shortdesc: Calculate shaded relief from elevation data
+docs: >
+  With a `ol.source.Raster`, it is possible to run operations on input data from other sources.
+tags: "raster"
+---
+<div class="row-fluid">
+  <div class="span12">
+    <div id="map" class="map"></div>
+    <div id="controls">
+      <label for="sun-el">sun elevation</label>
+      <input id="sun-el" type="range" min="0" max="90" value="45"/>
+      <label for="sun-az">sun azimuth</label>
+      <input id="sun-az" type="range" min="0" max="360" value="45"/>
+    </div>
+  </div>
+</div>
