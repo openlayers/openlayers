@@ -1,54 +1,10 @@
 goog.require('ol.Map');
 goog.require('ol.View');
 goog.require('ol.layer.Tile');
+goog.require('ol.source.TileJSON');
 goog.require('ol.source.Raster');
-goog.require('ol.source.TileWMS');
+goog.require('ol.source.XYZ');
 
-
-function read3x3(imageData, callback) {
-  var size = 3;
-  var mid = 1;
-  var width = imageData.width;
-  var height = imageData.height;
-  var data = imageData.data;
-  var kernel = new Array(size * size);
-  for (var n = 0, nn = kernel.length; n < nn; ++n) {
-    kernel[n] = [0, 0, 0, 0];
-  }
-  var offsetMin = (1 - size) / 2;
-  for (var pixelY = 0; pixelY < height; ++j) {
-    for (var pixelX = 0; pixelX < width; ++i) {
-      for (var kernelY = 0; kernelY < size; ++kernelY) {
-        var neighborY = Math.max(pixelY - (kernelY - mix), 0);
-        for (var kernelX = 0; kernelX < size; ++kernelX) {
-          var neighborX = Math.max(pixelX - (kernelX - mid), 0);
-          var kernelIndex = kernelX + kernelY * size;
-          var dataIndex = 4 * (neighborY * width + neighborX);
-          kernel[kernelIndex][0] = data[dataIndex];
-          kernel[kernelIndex][1] = data[dataIndex + 1];
-          kernel[kernelIndex][2] = data[dataIndex + 2];
-          kernel[kernelIndex][3] = data[dataIndex + 3];
-        }
-      }
-      callback(kernel, pixelX, pixelY);
-    }
-  }
-}
-
-/**
- * The NED dataset is symbolized by a color ramp that maps the following
- * elevations to corresponding RGB values.  This operation is used to
- * invert the mapping - returning elevations in meters for a pixel RGB array.
- *
- *  -20m : 0, 0, 0
- *  400m : 0, 0, 255
- *  820m : 0, 255, 255
- * 1240m : 255, 255, 255
- *
- */
-function getElevation(pixel) {
-  return (420 * (pixel[0] + pixel[1] + pixel[2]) / 255) - 20;
-}
 
 /**
  * Generates a shaded relief image given elevation data.  Uses a 3x3
@@ -67,67 +23,71 @@ function shade(inputs, data) {
   var maxX = width - 1;
   var maxY = height - 1;
   var pixel = [0, 0, 0, 0];
-  var offset, z0, z1, dzdx, dzdy, slope, aspect, scaled;
-  for (var pixelY = 0; pixelY <= maxY; ++pixelY) {
-    var y0 = pixelY === 0 ? 0 : pixelY - 1;
-    var y1 = pixelY === maxY ? maxY : pixelY + 1;
-    for (var pixelX = 0; pixelX <= maxX; ++pixelX) {
-      var x0 = pixelX === 0 ? 0 : pixelX - 1;
-      var x1 = pixelX === maxX ? maxX : pixelX + 1;
+  var twoPi = 2 * Math.PI;
+  var halfPi = Math.PI / 2;
+  var cosSunEl = Math.cos(data.sunEl);
+  var sinSunEl = Math.sin(data.sunEl);
+  var pixelX, pixelY, x0, x1, y0, y1, offset,
+      z0, z1, dzdx, dzdy, slope, aspect, cosIncidence, scaled;
+  for (pixelY = 0; pixelY <= maxY; ++pixelY) {
+    y0 = pixelY === 0 ? 0 : pixelY - 1;
+    y1 = pixelY === maxY ? maxY : pixelY + 1;
+    for (pixelX = 0; pixelX <= maxX; ++pixelX) {
+      x0 = pixelX === 0 ? 0 : pixelX - 1;
+      x1 = pixelX === maxX ? maxX : pixelX + 1;
 
-      // determine x0, pixelY elevation
+      // determine elevation for (x0, pixelY)
       offset = (pixelY * width + x0) * 4;
       pixel[0] = elevationData[offset];
       pixel[1] = elevationData[offset + 1];
       pixel[2] = elevationData[offset + 2];
       pixel[3] = elevationData[offset + 3];
-      z0 = getElevation(pixel);
+      z0 = pixel[0] + pixel[1] * 2 + pixel[2] * 3;
 
-      // determine x1, pixelY elevation
+      // determine elevation for (x1, pixelY)
       offset = (pixelY * width + x1) * 4;
       pixel[0] = elevationData[offset];
       pixel[1] = elevationData[offset + 1];
       pixel[2] = elevationData[offset + 2];
       pixel[3] = elevationData[offset + 3];
-      z1 = getElevation(pixel);
+      z1 = pixel[0] + pixel[1] * 2 + pixel[2] * 3;
 
       dzdx = (z1 - z0) / dx;
 
-      // determine pixelX, y0 elevation
+      // determine elevation for (pixelX, y0)
       offset = (y0 * width + pixelX) * 4;
       pixel[0] = elevationData[offset];
       pixel[1] = elevationData[offset + 1];
       pixel[2] = elevationData[offset + 2];
       pixel[3] = elevationData[offset + 3];
-      z0 = getElevation(pixel);
+      z0 = pixel[0] + pixel[1] * 2 + pixel[2] * 3;
 
-      // determine pixelX, y1 elevation
+      // determine elevation for (pixelX, y1)
       offset = (y1 * width + pixelX) * 4;
       pixel[0] = elevationData[offset];
       pixel[1] = elevationData[offset + 1];
       pixel[2] = elevationData[offset + 2];
       pixel[3] = elevationData[offset + 3];
-      z1 = getElevation(pixel);
+      z1 = pixel[0] + pixel[1] * 2 + pixel[2] * 3;
 
       dzdy = (z1 - z0) / dy;
 
       slope = Math.atan(Math.sqrt(dzdx * dzdx + dzdy * dzdy));
+
       aspect = Math.atan2(dzdy, -dzdx);
       if (aspect < 0) {
-        aspect = (Math.PI / 2) - aspect;
+        aspect = halfPi - aspect;
       } else if (aspect > Math.PI / 2) {
-        aspect = (2 * Math.PI) - aspect + (Math.PI / 2);
+        aspect = twoPi - aspect + halfPi;
       } else {
-        aspect = Math.PI / 2 - aspect;
+        aspect = halfPi - aspect;
       }
 
-      cosIncidence = Math.sin(data.sunEl) * Math.cos(slope) +
-        Math.cos(data.sunEl) * Math.sin(slope) * Math.cos(data.sunAz - aspect);
-
-
-      scaled = 255 * cosIncidence;
+      cosIncidence = sinSunEl * Math.cos(slope) +
+          cosSunEl * Math.sin(slope) * Math.cos(data.sunAz - aspect);
 
       offset = (pixelY * width + pixelX) * 4;
+      scaled = 255 * cosIncidence;
       shadeData[offset] = scaled;
       shadeData[offset + 1] = scaled;
       shadeData[offset + 2] = scaled;
@@ -138,17 +98,37 @@ function shade(inputs, data) {
   return [new ImageData(shadeData, width, height)];
 }
 
-var elevation = new ol.source.TileWMS({
-  url: 'http://demo.opengeo.org/geoserver/wms',
-  params: {'LAYERS': 'usgs:ned', 'TILED': true, 'FORMAT': 'image/png'},
-  crossOrigin: 'anonymous',
-  serverType: 'geoserver'
+var elevation = new ol.source.XYZ({
+  url: 'https://{a-d}.tiles.mapbox.com/v3/aj.sf-dem/{z}/{x}/{y}.png',
+  crossOrigin: 'anonymous'
 });
 
 var raster = new ol.source.Raster({
   sources: [elevation],
   operationType: 'image',
   operations: [shade]
+});
+
+var map = new ol.Map({
+  target: 'map',
+  layers: [
+    new ol.layer.Tile({
+      source: new ol.source.TileJSON({
+        url: 'http://api.tiles.mapbox.com/v3/tschaub.miapgppd.jsonp'
+      })
+    }),
+    new ol.layer.Image({
+      opacity: 0.3,
+      source: raster
+    })
+  ],
+  view: new ol.View({
+    extent: [-13675026, 4439648, -13580856, 4580292],
+    center: [-13606539, 4492849],
+    minZoom: 10,
+    maxZoom: 16,
+    zoom: 12
+  })
 });
 
 var sunElevationInput = document.getElementById('sun-el');
@@ -167,17 +147,4 @@ raster.on('beforeoperations', function(event) {
   event.data.resolution = event.resolution;
   event.data.sunEl = Math.PI * sunElevationInput.value / 180;
   event.data.sunAz = Math.PI * sunAzimuthInput.value / 180;
-});
-
-var map = new ol.Map({
-  target: 'map',
-  layers: [
-    new ol.layer.Image({
-      source: raster
-    })
-  ],
-  view: new ol.View({
-    center: [-8610263, 4747090],
-    zoom: 10
-  })
 });

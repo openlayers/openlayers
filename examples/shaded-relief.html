@@ -3,8 +3,27 @@ template: example.html
 title: Shaded Relief
 shortdesc: Calculate shaded relief from elevation data
 docs: >
-  With a `ol.source.Raster`, it is possible to run operations on input data from other sources.
-tags: "raster"
+  <p>
+    This example uses a <code>ol.source.Raster</code> to generate data
+    based on another source.  The raster source accepts any number of
+    input sources (tile or image based) and runs a pipeline of
+    operations on the input data.  The return from the final
+    operation is used as the data for the output source.
+  </p>
+  <p>
+    In this case, a single tiled source of elevation data is used as input.
+    The shaded relief is calculated in a single "image" operation.  By setting
+    <code>operationType: 'image'</code> on the raster source, operations are
+    called with an <code>ImageData</code> object for each of the input sources.
+    Operations are also called with a general purpose <code>data</code> object.
+    In this example, the sun elevation and azimuth data from the inputs above
+    are assigned to this <code>data</code> object and accessed in the shading
+    operation.  The shading operation returns an array of <code>ImageData</code>
+    objects.  When the raster source is used by an image layer, the first
+    <code>ImageData</code> object returned by the last operation in the pipeline
+    is used for rendering.
+  </p>
+tags: "raster, shaded relief"
 ---
 <div class="row-fluid">
   <div class="span12">
