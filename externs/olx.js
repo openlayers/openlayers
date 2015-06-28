@@ -472,6 +472,7 @@ olx.ProjectionOptions.prototype.global;
  */
 olx.ProjectionOptions.prototype.worldExtent;
 
+
 /**
  * Function to determine resolution at a point. The function is called with a
  * `{number}` view resolution and an `{ol.Coordinate}` as arguments, and returns
@@ -910,6 +911,7 @@ olx.control.AttributionOptions.prototype.tipLabel;
  * @api
  */
 olx.control.AttributionOptions.prototype.label;
+
 
 /**
  * Text label to use for the expanded attributions button. Default is `»`.
@@ -2828,6 +2830,7 @@ olx.interaction.SelectOptions.prototype.removeCondition;
  */
 olx.interaction.SelectOptions.prototype.toggleCondition;
 
+
 /**
  * A boolean that determines if the default behaviour should select only
  * single features or all (overlapping) features at the clicked map
@@ -2836,6 +2839,7 @@ olx.interaction.SelectOptions.prototype.toggleCondition;
  * @api
  */
 olx.interaction.SelectOptions.prototype.multi;
+
 
 /**
  * A function that takes an {@link ol.Feature} and an {@link ol.layer.Layer} and
@@ -4194,7 +4198,6 @@ olx.source.ImageMapGuideOptions.prototype.ratio;
 olx.source.ImageMapGuideOptions.prototype.resolutions;
 
 
-
 /**
  * Optional function to load an image given a URL.
  * @type {ol.TileLoadFunctionType|undefined}
@@ -4342,6 +4345,104 @@ olx.source.OSMOptions.prototype.url;
  * @api
  */
 olx.source.OSMOptions.prototype.wrapX;
+
+
+/**
+ * @typedef {{attributions: (Array.<ol.Attribution>|undefined),
+ *     crossOrigin: (null|string|undefined),
+ *     logo: (string|olx.LogoOptions|undefined),
+ *     imageLoadFunction: (ol.ImageLoadFunctionType|undefined),
+ *     params: Object.<string,*>,
+ *     projection: ol.proj.ProjectionLike,
+ *     ratio: (number|undefined),
+ *     resolutions: (Array.<number>|undefined),
+ *     url: (string|undefined)}}
+ * @api
+ */
+olx.source.ImageArcGISRestOptions;
+
+
+/**
+ * Attributions.
+ * @type {Array.<ol.Attribution>|undefined}
+ * @api stable
+ */
+olx.source.ImageArcGISRestOptions.prototype.attributions;
+
+
+/**
+ * The `crossOrigin` attribute for loaded images.  Note that you must provide a
+ * `crossOrigin` value if you are using the WebGL renderer or if you want to
+ * access pixel data with the Canvas renderer.  See
+ * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/CORS_enabled_image}
+ * for more detail.
+ * @type {null|string|undefined}
+ * @api stable
+ */
+olx.source.ImageArcGISRestOptions.prototype.crossOrigin;
+
+
+/**
+ * Logo.
+ * @type {string|olx.LogoOptions|undefined}
+ * @api stable
+ */
+olx.source.ImageArcGISRestOptions.prototype.logo;
+
+
+/**
+ * Optional function to load an image given a URL.
+ * @type {ol.TileLoadFunctionType|undefined}
+ * @api
+ */
+olx.source.ImageArcGISRestOptions.prototype.imageLoadFunction;
+
+
+/**
+ * ArcGIS Rest parameters. This field is optional. Service defaults will be
+ * used for any fields not specified. `FORMAT` is `PNG32` by default. `F` is `IMAGE` by
+ * default. `TRANSPARENT` is `true` by default.  `BBOX, `SIZE`, `BBOXSR`,
+ * and `IMAGESR` will be set dynamically. Set `LAYERS` to
+ * override the default service layer visibility. See
+ * {@link http://resources.arcgis.com/en/help/arcgis-rest-api/index.html#/Export_Map/02r3000000v7000000/}
+ * for further reference.
+ * @type {Object.<string,*>|undefined}
+ * @api
+ */
+olx.source.ImageArcGISRestOptions.prototype.params;
+
+
+/**
+ * Projection.
+ * @type {ol.proj.ProjectionLike}
+ * @api
+ */
+olx.source.ImageArcGISRestOptions.prototype.projection;
+
+
+/**
+ * Ratio. `1` means image requests are the size of the map viewport, `2` means
+ * twice the size of the map viewport, and so on. Default is `1.5`.
+ * @type {number|undefined}
+ * @api stable
+ */
+olx.source.ImageArcGISRestOptions.prototype.ratio;
+
+
+/**
+ * Resolutions. If specified, requests will be made for these resolutions only.
+ * @type {Array.<number>|undefined}
+ * @api stable
+ */
+olx.source.ImageArcGISRestOptions.prototype.resolutions;
+
+
+/**
+ * ArcGIS Rest service URL.
+ * @type {string|undefined}
+ * @api stable
+ */
+olx.source.ImageArcGISRestOptions.prototype.url;
 
 
 /**
@@ -4753,6 +4854,7 @@ olx.source.ImageStaticOptions.prototype.url;
 
 /**
  * @typedef {{attributions: (Array.<ol.Attribution>|undefined),
+ *     crossOrigin: (null|string|undefined),
  *     params: (Object.<string, *>|undefined),
  *     logo: (string|olx.LogoOptions|undefined),
  *     tileGrid: (ol.tilegrid.TileGrid|undefined),
@@ -4765,12 +4867,25 @@ olx.source.ImageStaticOptions.prototype.url;
  */
 olx.source.TileArcGISRestOptions;
 
+
 /**
  * Attributions.
  * @type {Array.<ol.Attribution>|undefined}
  * @api
  */
 olx.source.TileArcGISRestOptions.prototype.attributions;
+
+
+/**
+ * The `crossOrigin` attribute for loaded images.  Note that you must provide a
+ * `crossOrigin` value if you are using the WebGL renderer or if you want to
+ * access pixel data with the Canvas renderer.  See
+ * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/CORS_enabled_image}
+ * for more detail.
+ * @type {null|string|undefined}
+ * @api stable
+ */
+olx.source.TileArcGISRestOptions.prototype.crossOrigin;
 
 
 /**
@@ -4805,6 +4920,7 @@ olx.source.TileArcGISRestOptions.prototype.logo;
  * @api
  */
 olx.source.TileArcGISRestOptions.prototype.tileGrid;
+
 
 /**
  * Projection.
