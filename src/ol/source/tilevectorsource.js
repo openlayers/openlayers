@@ -313,6 +313,31 @@ ol.source.TileVector.prototype.getFeaturesInExtent = goog.abstractMethod;
 
 
 /**
+ * Get all features in the provided extent at the provided resolution.  Note
+ * that this returns all features whose bounding boxes intersect the given
+ * extent (so it may include features whose geometries do not intersect the
+ * extent).
+ *
+ * @param {ol.Extent} extent Extent.
+ * @param {number} resolution Resolution.
+ * @return {Array.<ol.Feature>} Features.
+ * @api
+ */
+ol.source.TileVector.prototype.getFeaturesInExtentAtResolution =
+    function(extent, resolution) {
+  var features = [];
+  this.forEachFeatureInExtentAtResolution(extent, resolution,
+      /**
+       * @param {ol.Feature} feature Feature.
+       */
+      function(feature) {
+        features.push(feature);
+      });
+  return features;
+};
+
+
+/**
  * Handles x-axis wrapping and returns a tile coordinate transformed from the
  * internal tile scheme to the tile grid's tile scheme. When the tile coordinate
  * is outside the resolution and extent range of the tile grid, `null` will be
