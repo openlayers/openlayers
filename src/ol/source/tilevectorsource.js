@@ -309,7 +309,7 @@ ol.source.TileVector.prototype.loadFeatures =
           tiles[tileKey] = [];
           var tileSuccess = goog.partial(success, tileKey);
           if (!goog.isNull(this.tileLoadFunction_)) {
-            this.tileLoadFunction_(url, tileSuccess);
+            this.tileLoadFunction_(url, goog.bind(tileSuccess, this));
           } else {
             var loader = ol.featureloader.loadFeaturesXhr(url,
                 /** @type {ol.format.Feature} */ (this.format_), tileSuccess);
