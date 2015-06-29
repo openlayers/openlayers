@@ -5,10 +5,12 @@ goog.provide('ol.source.RasterEventType');
 goog.require('goog.asserts');
 goog.require('goog.events.Event');
 goog.require('goog.functions');
+goog.require('goog.object');
 goog.require('goog.vec.Mat4');
 goog.require('ol.ImageCanvas');
 goog.require('ol.TileQueue');
 goog.require('ol.dom');
+goog.require('ol.ext.pixelworks');
 goog.require('ol.extent');
 goog.require('ol.layer.Image');
 goog.require('ol.layer.Tile');
@@ -35,19 +37,14 @@ goog.require('ol.source.Tile');
  */
 ol.source.Raster = function(options) {
 
-  /**
-   * @private
-   * @type {Array.<ol.raster.Operation>}
-   */
-  this.operations_ = goog.isDef(options.operations) ?
+  var operations = goog.isDef(options.operations) ?
       options.operations : [ol.raster.IdentityOp];
 
-  /**
-   * @private
-   * @type {ol.raster.OperationType}
-   */
-  this.operationType_ = goog.isDef(options.operationType) ?
-      options.operationType : ol.raster.OperationType.PIXEL;
+  this.worker_ = new ol.ext.pixelworks.Processor({
+    operations: operations,
+    imageOps: options.operationType === ol.raster.OperationType.IMAGE,
+    queue: 1
+  });
 
   /**
    * @private
@@ -74,6 +71,20 @@ ol.source.Raster = function(options) {
   for (var i = 0, ii = layerStatesArray.length; i < ii; ++i) {
     layerStates[goog.getUid(layerStatesArray[i].layer)] = layerStatesArray[i];
   }
+
+  /**
+   * The most recently rendered state.
+   * @type {?ol.source.Raster.RenderedState}
+   * @private
+   */
+  this.renderedState_ = null;
+
+  /**
+   * The most recently rendered image canvas.
+   * @type {ol.ImageCanvas}
+   * @private
+   */
+  this.renderedImageCanvas_ = null;
 
   /**
    * @private
@@ -119,7 +130,7 @@ goog.inherits(ol.source.Raster, ol.source.Image);
  * @api
  */
 ol.source.Raster.prototype.setOperations = function(operations) {
-  this.operations_ = operations;
+  this.worker_.setOperations(operations);
   this.changed();
 };
 
@@ -134,7 +145,12 @@ ol.source.Raster.prototype.setOperations = function(operations) {
  */
 ol.source.Raster.prototype.updateFrameState_ =
     function(extent, resolution, projection) {
-  var frameState = this.frameState_;
+
+  var frameState = /** @type {olx.FrameState} */ (
+      goog.object.clone(this.frameState_));
+
+  frameState.viewState = /** @type {olx.ViewState} */ (
+      goog.object.clone(frameState.viewState));
 
   var center = ol.extent.getCenter(extent);
   var width = Math.round(ol.extent.getWidth(extent) / resolution);
@@ -154,10 +170,34 @@ ol.source.Raster.prototype.updateFrameState_ =
 
 
 /**
+ * Determine if the most recently rendered image canvas is dirty.
+ * @param {ol.Extent} extent The requested extent.
+ * @param {number} resolution The requested resolution.
+ * @return {boolean} The image is dirty.
+ * @private
+ */
+ol.source.Raster.prototype.isDirty_ = function(extent, resolution) {
+  var state = this.renderedState_;
+  return !state ||
+      this.getRevision() !== state.revision ||
+      resolution !== state.resolution ||
+      !ol.extent.equals(extent, state.extent);
+};
+
+
+/**
  * @inheritDoc
  */
 ol.source.Raster.prototype.getImage =
     function(extent, resolution, pixelRatio, projection) {
+
+  if (!this.allSourcesReady_()) {
+    return null;
+  }
+
+  if (!this.isDirty_(extent, resolution)) {
+    return this.renderedImageCanvas_;
+  }
 
   var context = this.canvasContext_;
   var canvas = context.canvas;
@@ -172,10 +212,18 @@ ol.source.Raster.prototype.getImage =
   }
 
   var frameState = this.updateFrameState_(extent, resolution, projection);
-  this.composeFrame_(frameState);
 
-  var imageCanvas = new ol.ImageCanvas(extent, resolution, 1,
-      this.getAttributions(), canvas);
+  var imageCanvas = new ol.ImageCanvas(
+      extent, resolution, 1, this.getAttributions(), canvas,
+      this.composeFrame_.bind(this, frameState));
+
+  this.renderedImageCanvas_ = imageCanvas;
+
+  this.renderedState_ = {
+    extent: extent,
+    resolution: resolution,
+    revision: this.getRevision()
+  };
 
   return imageCanvas;
 };
@@ -204,93 +252,53 @@ ol.source.Raster.prototype.allSourcesReady_ = function() {
  * Compose the frame.  This renders data from all sources, runs pixel-wise
  * operations, and renders the result to the stored canvas context.
  * @param {olx.FrameState} frameState The frame state.
+ * @param {function(Error)} callback Called when composition is complete.
  * @private
  */
-ol.source.Raster.prototype.composeFrame_ = function(frameState) {
-  if (!this.allSourcesReady_()) {
-    return;
-  }
+ol.source.Raster.prototype.composeFrame_ = function(frameState, callback) {
   var len = this.renderers_.length;
   var imageDatas = new Array(len);
-  var pixels = new Array(len);
-
-  var context = this.canvasContext_;
-  var canvas = context.canvas;
-
   for (var i = 0; i < len; ++i) {
-    pixels[i] = [0, 0, 0, 0];
     imageDatas[i] = ol.source.Raster.getImageData_(
         this.renderers_[i], frameState, frameState.layerStatesArray[i]);
   }
+  frameState.tileQueue.loadMoreTiles(16, 16);
 
   var data = {};
   this.dispatchEvent(new ol.source.RasterEvent(
       ol.source.RasterEventType.BEFOREOPERATIONS, frameState, data));
 
-  var targetImageData = null;
-  if (this.operationType_ === ol.raster.OperationType.PIXEL) {
-    targetImageData = context.getImageData(0, 0, canvas.width,
-        canvas.height);
-    var target = targetImageData.data;
+  this.worker_.process(imageDatas, data,
+      this.onWorkerComplete_.bind(this, frameState, data, callback));
+};
 
-    var source, pixel;
-    for (var j = 0, jj = target.length; j < jj; j += 4) {
-      for (var k = 0; k < len; ++k) {
-        source = imageDatas[k].data;
-        pixel = pixels[k];
-        pixel[0] = source[j];
-        pixel[1] = source[j + 1];
-        pixel[2] = source[j + 2];
-        pixel[3] = source[j + 3];
-      }
-      pixel = this.runPixelOperations_(pixels, data)[0];
-      target[j] = pixel[0];
-      target[j + 1] = pixel[1];
-      target[j + 2] = pixel[2];
-      target[j + 3] = pixel[3];
-    }
-  } else if (this.operationType_ === ol.raster.OperationType.IMAGE) {
-    targetImageData = this.runImageOperations_(imageDatas, data)[0];
-  } else {
-    goog.asserts.fail('unsupported operation type: ' + this.operationType_);
+
+/**
+ * Called when pixel processing is complete.
+ * @param {olx.FrameState} frameState The frame state.
+ * @param {Object} data The user data.
+ * @param {function(Error)} callback Called when rendering is complete.
+ * @param {Error} err Any error during processing.
+ * @param {ImageData} output The output image data.
+ * @private
+ */
+ol.source.Raster.prototype.onWorkerComplete_ =
+    function(frameState, data, callback, err, output) {
+  if (err) {
+    callback(err);
+    return;
+  }
+  if (goog.isNull(output)) {
+    // job aborted
+    return;
   }
 
   this.dispatchEvent(new ol.source.RasterEvent(
       ol.source.RasterEventType.AFTEROPERATIONS, frameState, data));
 
-  context.putImageData(targetImageData, 0, 0);
+  this.canvasContext_.putImageData(output, 0, 0);
 
-  frameState.tileQueue.loadMoreTiles(16, 16);
-};
-
-
-/**
- * Run pixel-wise operations to transform pixels.
- * @param {Array.<ol.raster.Pixel>} pixels The input pixels.
- * @param {Object} data User storage.
- * @return {Array.<ol.raster.Pixel>} The modified pixels.
- * @private
- */
-ol.source.Raster.prototype.runPixelOperations_ = function(pixels, data) {
-  for (var i = 0, ii = this.operations_.length; i < ii; ++i) {
-    pixels = this.operations_[i](pixels, data);
-  }
-  return pixels;
-};
-
-
-/**
- * Run image operations.
- * @param {Array.<ImageData>} imageDatas The input image data.
- * @param {Object} data User storage.
- * @return {Array.<ImageData>} The output image data.
- * @private
- */
-ol.source.Raster.prototype.runImageOperations_ = function(imageDatas, data) {
-  for (var i = 0, ii = this.operations_.length; i < ii; ++i) {
-    imageDatas = this.operations_[i](imageDatas, data);
-  }
-  return imageDatas;
+  callback(null);
 };
 
 
@@ -386,6 +394,14 @@ ol.source.Raster.createTileRenderer_ = function(source) {
   var layer = new ol.layer.Tile({source: source});
   return new ol.renderer.canvas.TileLayer(layer);
 };
+
+
+/**
+ * @typedef {{revision: number,
+ *            resolution: number,
+ *            extent: ol.Extent}}
+ */
+ol.source.Raster.RenderedState;
 
 
 
