@@ -155,10 +155,23 @@ ol.source.TileVector.prototype.forEachFeatureInExtent = goog.abstractMethod;
 
 
 /**
- * @inheritDoc
+ * Iterate through all features whose bounding box intersects the provided
+ * extent (note that the feature's geometry may not intersect the extent) at
+ * the provided resolution, calling the callback with each feature.  If the
+ * callback returns a "truthy" value, iteration will stop and the function
+ * will return the same value.
+ *
+ * @param {ol.Extent} extent Extent.
+ * @param {number} resolution Resolution.
+ * @param {function(this: T, ol.Feature): S} callback Called with each feature
+ *     whose bounding box intersects the provided extent.
+ * @param {T=} opt_this The object to use as `this` in the callback.
+ * @return {S|undefined} The return value from the last call to the callback.
+ * @template T,S
+ * @api
  */
 ol.source.TileVector.prototype.forEachFeatureInExtentAtResolution =
-    function(extent, resolution, f, opt_this) {
+    function(extent, resolution, callback, opt_this) {
   var tileGrid = this.tileGrid_;
   var tiles = this.tiles_;
   var z = tileGrid.getZForResolution(resolution);
@@ -171,7 +184,7 @@ ol.source.TileVector.prototype.forEachFeatureInExtentAtResolution =
       if (goog.isDef(features)) {
         var i, ii;
         for (i = 0, ii = features.length; i < ii; ++i) {
-          var result = f.call(opt_this, features[i]);
+          var result = callback.call(opt_this, features[i]);
           if (result) {
             return result;
           }
