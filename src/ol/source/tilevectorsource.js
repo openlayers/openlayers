@@ -149,6 +149,43 @@ ol.source.TileVector.prototype.forEachFeatureAtCoordinateAndResolution =
 
 
 /**
+ * Iterate through all features at the provided resolution, calling the
+ * callback with each feature.  If the callback returns a "truthy" value,
+ * iteration will stop and the function will return the same value.
+ *
+ * @param {number} resolution Resolution.
+ * @param {function(this: T, ol.Feature): S} callback Called with each feature
+ *     whose bounding box intersects the provided extent.
+ * @param {T=} opt_this The object to use as `this` in the callback.
+ * @return {S|undefined} The return value from the last call to the callback.
+ * @template T,S
+ * @api
+ */
+ol.source.TileVector.prototype.forEachFeatureAtResolution =
+    function(resolution, callback, opt_this) {
+  var tileGrid = this.tileGrid_;
+  var tiles = this.tiles_;
+  var tileKey;
+  var z = tileGrid.getZForResolution(resolution);
+  for (tileKey in tiles) {
+    if (this.isTileKeyAtZ_(tileKey, z)) {
+      var features = tiles[tileKey];
+      if (goog.isDef(features)) {
+        var i, ii;
+        for (i = 0, ii = features.length; i < ii; ++i) {
+          var result = callback.call(opt_this, features[i]);
+          if (result) {
+            return result;
+          }
+        }
+      }
+    }
+  }
+  return undefined;
+};
+
+
+/**
  * @inheritDoc
  */
 ol.source.TileVector.prototype.forEachFeatureInExtent = goog.abstractMethod;
@@ -250,6 +287,26 @@ ol.source.TileVector.prototype.getFeaturesAtCoordinateAndResolution =
 
 
 /**
+ * Return the features at the provided resolution of the TileVector source.
+ * @param {number} resolution Resolution.
+ * @return {Array.<ol.Feature>} Features.
+ * @api
+ */
+ol.source.TileVector.prototype.getFeaturesAtResolution = function(resolution) {
+  var z = this.tileGrid_.getZForResolution(resolution);
+  var tiles = this.tiles_;
+  var features = [];
+  var tileKey;
+  for (tileKey in tiles) {
+    if (this.isTileKeyAtZ_(tileKey, z)) {
+      goog.array.extend(features, tiles[tileKey]);
+    }
+  }
+  return features;
+};
+
+
+/**
  * @inheritDoc
  */
 ol.source.TileVector.prototype.getFeaturesInExtent = goog.abstractMethod;
@@ -286,6 +343,19 @@ ol.source.TileVector.prototype.getTileCoordForTileUrlFunction =
  */
 ol.source.TileVector.prototype.getTileKeyZXY_ = function(z, x, y) {
   return z + '/' + x + '/' + y;
+};
+
+
+/**
+ * @param {string} tileKey Tile key.
+ * @param {number} z Z.
+ * @private
+ * @return {boolean} whether Tile key is on zoom level Z.
+ */
+ol.source.TileVector.prototype.isTileKeyAtZ_ = function(tileKey, z) {
+  var tileKey_z = tileKey.match(/^([0-9]+)\//)[1];
+
+  return tileKey_z == z;
 };
 
 
