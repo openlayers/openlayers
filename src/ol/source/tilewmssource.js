@@ -140,7 +140,7 @@ ol.source.TileWMS.prototype.getGetFeatureInfoUrl =
     tileGrid = this.getTileGridForProjection(projectionObj);
   }
 
-  var tileCoord = tileGrid.getTileCoordForCoordAndResolutionInternal(
+  var tileCoord = tileGrid.getTileCoordForCoordAndResolution(
       coordinate, resolution);
 
   if (tileGrid.getResolutions().length <= tileCoord[0]) {

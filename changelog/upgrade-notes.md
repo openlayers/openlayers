@@ -20,11 +20,13 @@ you will have to change this to:
 var collection = new ol.Collection();
 var featureOverlay = new ol.layer.Vector({
   map: map,
-  style: overlayStyle,
   source: new ol.source.Vector({
     features: collection,
     useSpatialIndex: false // optional, might improve performance
-  });
+  }),
+  style: overlayStyle,
+  updateWhileAnimating: true, // optional, for instant visual feedback
+  updateWhileInteracting: true // optional, for instant visual feedback
 });
 featureOverlay.getSource().addFeature(feature);
 featureOverlay.getSource().removeFeature(feature);
@@ -36,13 +38,22 @@ Note that `ol.FeatureOverlay#getFeatures()` returned an `{ol.Collection.<ol.Feat
 
 #### `ol.TileCoord` changes
 
-Until now, the API exposed two different types of `ol.TileCoord` tile coordinates: the internal ones with bottom-left origin, and transformed ones with an origin that is determined by the tile grid configuration. With this change, the API now only exposes the transformed tile coordinates.
+Until now, the API exposed two different types of `ol.TileCoord` tile coordinates: internal ones that increase left to right and upward, and transformed ones that may increase downward, as defined by a transform function on the tile grid. With this change, the API now only exposes tile coordinates that increase left to right and upward.
 
-The first `tileCoord` argument of `ol.TileUrlFunctionType` now expects transformed tile coordinates instead of internal OpenLayers tile coordinates. Accordingly, `ol.tilegrid.TileGrid#getTileCoordForCoordAndZ` and `ol.tilegrid.TileGrid#getTileCoordForCoordAndResolution` now return transformed tile coordinates.
+Previously, tile grids created by OpenLayers either had their origin at the top-left or at the bottom-left corner of the extent. To make it easier for application developers to transform tile coordinates to the common XYZ tiling scheme, all tile grids that OpenLayers creates internally have their origin now at the top-left corner of the extent.
 
-This change affects applications that configure a custom `tileUrlFunction` for an `ol.source.Tile`. Previously, the `tileUrlFunction` was called with bottom-left origin tile coordinates that OpenLayers uses internally. To transform these into tile coordinates supported by the tile source, a custom `tileUrlFunction` had to change the `y` value of the `ol.TileCoord`. Now the `y` value can be used unaltered.
+This change affects applications that configure a custom `tileUrlFunction` for an `ol.source.Tile`. Previously, the `tileUrlFunction` was called with rather unpredictable tile coordinates, depending on whether a tile coordinate transform took place before calling the `tileUrlFunction`. Now it is always called with OpenLayers tile coordinates. To transform these into the common XYZ tiling scheme, a custom `tileUrlFunction` has to change the `y` value (tile row) of the `ol.TileCoord`:
+```js
+function tileUrlFunction = function(tileCoord, pixelRatio, projection) {
+  var urlTemplate = '{z}/{x}/{y}';
+  return urlTemplate
+      .replace('{z}', tileCoord[0].toString())
+      .replace('{x}', tileCoord[1].toString())
+      .replace('{y}', (-tileCoord[2] - 1).toString());
+}
+```
 
-To make it easier for application developers to perform this transform, the API provided an `ol.tilegrid.TileGrid#createTileCoordTransform()` function. This function is no longer available and no longer needed.
+The `ol.tilegrid.TileGrid#createTileCoordTransform()` function which could be used to get the tile grid's tile coordinate transform function has been removed. This function was confusing and should no longer be needed now that application developers get tile coordinates in a known layout.
 
 The code snippets below show how your application code needs to be changed:
 
@@ -70,16 +81,17 @@ var tileUrlFunction = function(tileCoord, pixelRatio, projection) {
 
 };
 ```
-New application code (no transform needed):
+New application code (simple -y - 1 transform):
 ```js
 var tileUrlFunction = function(tileCoord, pixelRatio, projection) {
   return 'http://mytiles.com/' +
-      tileCoord[0] + '/' + tileCoord[1] + '/' + tileCoord[2] + '.png';
+      tileCoord[0] + '/' + tileCoord[1] + '/' + (-tileCoord[2] - 1) + '.png';
 };
 ```
-For easier debugging, `ol.source.DebugTile` was changed to display the transformed tile coordinates as well.
 
-Also watch out for sections in your code where you used `ol.tilegrid.TileGrid#getTileCoordForCoordAndZ()` or `ol.tilegrid.TileGrid#getTileCoordForCoordAndResolution()`. When working with the returned tile coordinates, changes equivalent to the ones shown in the above snippets are required.
+#### Removal of `ol.tilegrid.Zoomify`
+
+The replacement of `ol.tilegrid.Zoomify` is a plain `ol.tilegrid.TileGrid`, configured with `extent`, `origin` and `resolutions`. If the `size` passed to the `ol.source.Zoomify` source is `[width, height]`, then the extent for the tile grid will be `[0, -height, width, 0]`, and the origin will be `[0, 0]`.
 
 ### v3.6.0
 

@@ -38,8 +38,7 @@ ol.tilegrid.WMTS = function(options) {
     resolutions: options.resolutions,
     tileSize: options.tileSize,
     tileSizes: options.tileSizes,
-    sizes: options.sizes,
-    transformTileCoord: ol.tilegrid.originTopLeftTileCoordTransform
+    sizes: options.sizes
   });
 
 };
@@ -116,7 +115,6 @@ ol.tilegrid.WMTS.createFromCapabilitiesMatrixSet =
             metersPerUnit;
         var tileWidth = elt[tileWidthPropName];
         var tileHeight = elt[tileHeightPropName];
-        var matrixHeight = elt['MatrixHeight'];
         if (switchOriginXY) {
           origins.push([elt[topLeftCornerPropName][1],
             elt[topLeftCornerPropName][0]]);
@@ -127,7 +125,7 @@ ol.tilegrid.WMTS.createFromCapabilitiesMatrixSet =
         tileSizes.push(tileWidth == tileHeight ?
             tileWidth : [tileWidth, tileHeight]);
         // top-left origin, so height is negative
-        sizes.push([elt['MatrixWidth'], -matrixHeight]);
+        sizes.push([elt['MatrixWidth'], -elt['MatrixHeight']]);
       });
 
   return new ol.tilegrid.WMTS({

@@ -29,7 +29,7 @@ var map = new ol.Map({
         tileUrlFunction: function(tileCoord) {
           return urlTemplate.replace('{z}', (tileCoord[0] - 1).toString())
                             .replace('{x}', tileCoord[1].toString())
-                            .replace('{y}', tileCoord[2].toString());
+                            .replace('{y}', (-tileCoord[2] - 1).toString());
         },
         wrapX: true
       })

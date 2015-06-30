@@ -30,16 +30,16 @@ describe('ol.TileUrlFunction', function() {
   describe('createFromTemplate', function() {
     it('creates expected URL', function() {
       var tileUrl = ol.TileUrlFunction.createFromTemplate('{z}/{x}/{y}');
-      expect(tileUrl([3, 2, 1])).to.eql('3/2/1');
+      expect(tileUrl([3, 2, -2])).to.eql('3/2/1');
       expect(tileUrl(null)).to.be(undefined);
     });
     it('accepts {-y} placeholder', function() {
       var tileUrl = ol.TileUrlFunction.createFromTemplate('{z}/{x}/{-y}');
-      expect(tileUrl([3, 2, 2])).to.eql('3/2/5');
+      expect(tileUrl([3, 2, -3])).to.eql('3/2/5');
     });
     it('replaces multiple placeholder occurrences', function() {
       var tileUrl = ol.TileUrlFunction.createFromTemplate('{z}/{z}{x}{y}');
-      expect(tileUrl([3, 2, 1])).to.eql('3/321');
+      expect(tileUrl([3, 2, -2])).to.eql('3/321');
     });
   });
 
@@ -51,7 +51,7 @@ describe('ol.TileUrlFunction', function() {
         'http://tile-3/{z}/{x}/{y}'
       ];
       var tileUrlFunction = ol.TileUrlFunction.createFromTemplates(templates);
-      var tileCoord = [3, 2, 1];
+      var tileCoord = [3, 2, -2];
 
       sinon.stub(ol.tilecoord, 'hash', function() { return 3; });
       expect(tileUrlFunction(tileCoord)).to.eql('http://tile-1/3/2/1');

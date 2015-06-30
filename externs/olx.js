@@ -3712,7 +3712,7 @@ olx.layer.VectorOptions.prototype.updateWhileAnimating;
 
 /**
  * When set to `true`, feature batches will be recreated during interactions.
- * See also `updateWhileInteracting`. Default is `false`.
+ * See also `updateWhileAnimating`. Default is `false`.
  * @type {boolean|undefined}
  * @api
  */
@@ -4022,12 +4022,14 @@ olx.source.TileImageOptions.prototype.wrapX;
 
 /**
  * @typedef {{attributions: (Array.<ol.Attribution>|undefined),
- *     format: ol.format.Feature,
+ *     format: (ol.format.Feature|undefined),
  *     logo: (string|olx.LogoOptions|undefined),
  *     tileGrid: ol.tilegrid.TileGrid,
  *     tileUrlFunction: (ol.TileUrlFunctionType|undefined),
+ *     tileLoadFunction: (ol.TileVectorLoadFunctionType|undefined),
  *     url: (string|undefined),
- *     urls: (Array.<string>|undefined)}}
+ *     urls: (Array.<string>|undefined),
+ *     wrapX: (boolean|undefined)}}
  * @api
  */
 olx.source.TileVectorOptions;
@@ -4042,8 +4044,8 @@ olx.source.TileVectorOptions.prototype.attributions;
 
 
 /**
- * Format.
- * @type {ol.format.Feature}
+ * Format. Required unless tileLoadFunction is used.
+ * @type {ol.format.Feature|undefined}
  * @api
  */
 olx.source.TileVectorOptions.prototype.format;
@@ -4075,6 +4077,16 @@ olx.source.TileVectorOptions.prototype.tileUrlFunction;
 
 
 /**
+ * Optional function to override the default loading and format parsing behaviour.
+ * If this option is used format is ignored and the provided function will be
+ * responsible for data retrieval and transformation into features.
+ * @type {ol.TileVectorLoadFunctionType|undefined}
+ * @api
+ */
+olx.source.TileVectorOptions.prototype.tileLoadFunction;
+
+
+/**
  * URL template. Must include `{x}`, `{y}` or `{-y}`, and `{z}` placeholders.
  * @type {string|undefined}
  * @api
@@ -4088,6 +4100,16 @@ olx.source.TileVectorOptions.prototype.url;
  * @api
  */
 olx.source.TileVectorOptions.prototype.urls;
+
+
+/**
+ * Wrap the world horizontally. Default is `true`. For vector editing across the
+ * -180° and 180° meridians to work properly, this should be set to `false`. The
+ * resulting geometry coordinates will then exceed the world bounds.
+ * @type {boolean|undefined}
+ * @api
+ */
+olx.source.TileVectorOptions.prototype.wrapX;
 
 
 /**
@@ -4224,7 +4246,8 @@ olx.source.MapQuestOptions.prototype.url;
 
 /**
  * @typedef {{projection: ol.proj.ProjectionLike,
- *     tileGrid: (ol.tilegrid.TileGrid|undefined)}}
+ *     tileGrid: (ol.tilegrid.TileGrid|undefined),
+ *     wrapX: (boolean|undefined)}}
  * @api
  */
 olx.source.TileDebugOptions;
@@ -4244,6 +4267,14 @@ olx.source.TileDebugOptions.prototype.projection;
  * @api
  */
 olx.source.TileDebugOptions.prototype.tileGrid;
+
+
+/**
+ * Whether to wrap the world horizontally. Default is `true`.
+ * @type {boolean|undefined}
+ * @api
+ */
+olx.source.TileDebugOptions.prototype.wrapX;
 
 
 /**
@@ -5338,6 +5369,7 @@ olx.source.WMTSOptions.prototype.wrapX;
  *     projection: ol.proj.ProjectionLike,
  *     maxZoom: (number|undefined),
  *     minZoom: (number|undefined),
+ *     tileGrid: (ol.tilegrid.TileGrid|undefined),
  *     tileLoadFunction: (ol.TileLoadFunctionType|undefined),
  *     tilePixelRatio: (number|undefined),
  *     tileSize: (number|ol.Size|undefined),
@@ -5400,6 +5432,14 @@ olx.source.XYZOptions.prototype.maxZoom;
  * @api
  */
 olx.source.XYZOptions.prototype.minZoom;
+
+
+/**
+ * Tile grid.
+ * @type {ol.tilegrid.TileGrid}
+ * @api
+ */
+olx.source.XYZOptions.prototype.tileGrid;
 
 
 /**
@@ -6115,8 +6155,7 @@ olx.tilegrid;
 
 
 /**
- * @typedef {{transformTileCoord: (undefined|function(ol.TileCoord, ol.TileCoord=):ol.TileCoord),
- *     extent: (ol.Extent|undefined),
+ * @typedef {{extent: (ol.Extent|undefined),
  *     minZoom: (number|undefined),
  *     origin: (ol.Coordinate|undefined),
  *     origins: (Array.<ol.Coordinate>|undefined),
@@ -6132,7 +6171,7 @@ olx.tilegrid.TileGridOptions;
 /**
  * Extent for the tile grid. No tiles outside this extent will be requested by
  * {@link ol.source.Tile} sources. When no `origin` or `origins` are
- * configured, the `origin` will be set to the bottom-left corner of the extent.
+ * configured, the `origin` will be set to the top-left corner of the extent.
  * @type {ol.Extent|undefined}
  * @api
  */
@@ -6149,8 +6188,8 @@ olx.tilegrid.TileGridOptions.prototype.minZoom;
 
 /**
  * The tile grid origin, i.e. where the `x` and `y` axes meet (`[z, 0, 0]`).
- * Tile coordinates increase from left to right and from bottom to top. If not
- * specified, `extent` or `origins` must be provided.
+ * Tile coordinates increase left to right and upwards. If not specified,
+ * `extent` or `origins` must be provided.
  * @type {ol.Coordinate|undefined}
  * @api stable
  */
@@ -6161,8 +6200,8 @@ olx.tilegrid.TileGridOptions.prototype.origin;
  * Tile grid origins, i.e. where the `x` and `y` axes meet (`[z, 0, 0]`), for
  * each zoom level. If given, the array length should match the length of the
  * `resolutions` array, i.e. each resolution can have a different origin. Tile
- * coordinates increase from left to right and from bottom to top. If not
- * specified, `extent` or `origin` must be provided.
+ * coordinates increase left to right and upwards. If not specified, `extent`
+ * or `origin` must be provided.
  * @type {Array.<ol.Coordinate>|undefined}
  * @api stable
  */
@@ -6177,17 +6216,6 @@ olx.tilegrid.TileGridOptions.prototype.origins;
  * @api stable
  */
 olx.tilegrid.TileGridOptions.prototype.resolutions;
-
-
-/**
- * Number of tile rows and columns of the grid for each zoom level. This setting
- * is only needed for tile coordinate transforms that need to work with origins
- * other than the bottom-left corner of the grid. No tiles outside this range
- * will be requested by sources. If an `extent` is also configured, it takes
- * precedence.
- * @type {Array.<ol.Size>|undefined}
- */
-olx.tilegrid.TileGridOptions.prototype.sizes;
 
 
 /**
@@ -6223,9 +6251,8 @@ olx.tilegrid.WMTSOptions;
 
 /**
  * Extent for the tile grid. No tiles outside this extent will be requested by
- * {@link ol.source.WMTS} sources. When no `origin` or `origins` are
- * configured, the `origin` will be calculated from the extent.
- * When no `sizes` are configured, they will be calculated from the extent.
+ * {@link ol.source.Tile} sources. When no `origin` or `origins` are
+ * configured, the `origin` will be set to the top-left corner of the extent.
  * @type {ol.Extent|undefined}
  * @api
  */
@@ -6233,19 +6260,23 @@ olx.tilegrid.WMTSOptions.prototype.extent;
 
 
 /**
- * Origin, i.e. the top-left corner of the grid.
+ * The tile grid origin, i.e. where the `x` and `y` axes meet (`[z, 0, 0]`).
+ * Tile coordinates increase left to right and upwards. If not specified,
+ * `extent` or `origins` must be provided.
  * @type {ol.Coordinate|undefined}
- * @api
+ * @api stable
  */
 olx.tilegrid.WMTSOptions.prototype.origin;
 
 
 /**
- * Origins, i.e. the top-left corners of the grid for each zoom level. The
- * length of this array needs to match the length of the
- * `resolutions` array.
+ * Tile grid origins, i.e. where the `x` and `y` axes meet (`[z, 0, 0]`), for
+ * each zoom level. If given, the array length should match the length of the
+ * `resolutions` array, i.e. each resolution can have a different origin. Tile
+ * coordinates increase left to right and upwards. If not specified, `extent` or
+ * `origin` must be provided.
  * @type {Array.<ol.Coordinate>|undefined}
- * @api
+ * @api stable
  */
 olx.tilegrid.WMTSOptions.prototype.origins;
 
@@ -6274,7 +6305,10 @@ olx.tilegrid.WMTSOptions.prototype.matrixIds;
  * here are the `TileMatrixWidth` and `TileMatrixHeight` advertised in the
  * GetCapabilities response of the WMTS, and define the grid's extent together
  * with the `origin`. An `extent` can be configured in addition, and will
- * further limit the extent for which tile requests are made by sources.
+ * further limit the extent for which tile requests are made by sources. Note
+ * that when the top-left corner of the `extent` is used as `origin` or
+ * `origins`, then the `y` value must be negative because OpenLayers tile
+ * coordinates increase upwards.
  * @type {Array.<ol.Size>|undefined}
  * @api
  */
@@ -6355,21 +6389,6 @@ olx.tilegrid.XYZOptions.prototype.minZoom;
  * @api
  */
 olx.tilegrid.XYZOptions.prototype.tileSize;
-
-
-/**
- * @typedef {{resolutions: !Array.<number>}}
- * @api
- */
-olx.tilegrid.ZoomifyOptions;
-
-
-/**
- * Resolutions.
- * @type {!Array.<number>}
- * @api
- */
-olx.tilegrid.ZoomifyOptions.prototype.resolutions;
 
 
 /**

@@ -6,9 +6,10 @@ goog.require('ol.ImageTile');
 goog.require('ol.TileCoord');
 goog.require('ol.TileState');
 goog.require('ol.dom');
+goog.require('ol.extent');
 goog.require('ol.proj');
 goog.require('ol.source.TileImage');
-goog.require('ol.tilegrid.Zoomify');
+goog.require('ol.tilegrid.TileGrid');
 
 
 /**
@@ -86,8 +87,10 @@ ol.source.Zoomify = function(opt_options) {
   }
   resolutions.reverse();
 
-  var tileGrid = new ol.tilegrid.Zoomify({
-    extent: [0, 0, size[0], size[1]],
+  var extent = [0, -size[1], size[0], 0];
+  var tileGrid = new ol.tilegrid.TileGrid({
+    extent: extent,
+    origin: ol.extent.getTopLeft(extent),
     resolutions: resolutions
   });
 
@@ -106,7 +109,7 @@ ol.source.Zoomify = function(opt_options) {
     } else {
       var tileCoordZ = tileCoord[0];
       var tileCoordX = tileCoord[1];
-      var tileCoordY = tileCoord[2];
+      var tileCoordY = -tileCoord[2] - 1;
       var tileIndex =
           tileCoordX +
           tileCoordY * tierSizeInTiles[tileCoordZ][0] +

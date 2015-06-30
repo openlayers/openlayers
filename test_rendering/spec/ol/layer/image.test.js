@@ -56,7 +56,7 @@ describe('ol.rendering.layer.Image', function() {
       source = new ol.source.ImageStatic({
         url: 'spec/ol/data/tiles/osm/5/5/12.png',
         imageExtent: ol.tilegrid.createXYZ().getTileCoordExtent(
-            [5, 5, 32 - 12 - 1]),
+            [5, 5, -12 - 1]),
         projection: ol.proj.get('EPSG:3857')
       });
     });

@@ -123,14 +123,14 @@ describe('ol.source.Tile', function() {
         wrapX: true
       });
 
-      var tileCoord = tileSource.getTileCoordForTileUrlFunction([6, -31, 22]);
-      expect(tileCoord).to.eql([6, 33, 22]);
+      var tileCoord = tileSource.getTileCoordForTileUrlFunction([6, -31, -23]);
+      expect(tileCoord).to.eql([6, 33, -23]);
 
-      tileCoord = tileSource.getTileCoordForTileUrlFunction([6, 33, 22]);
-      expect(tileCoord).to.eql([6, 33, 22]);
+      tileCoord = tileSource.getTileCoordForTileUrlFunction([6, 33, -23]);
+      expect(tileCoord).to.eql([6, 33, -23]);
 
-      tileCoord = tileSource.getTileCoordForTileUrlFunction([6, 97, 22]);
-      expect(tileCoord).to.eql([6, 33, 22]);
+      tileCoord = tileSource.getTileCoordForTileUrlFunction([6, 97, -23]);
+      expect(tileCoord).to.eql([6, 33, -23]);
     });
 
     it('returns the expected tile coordinate - {wrapX: false}', function() {
@@ -139,13 +139,13 @@ describe('ol.source.Tile', function() {
         wrapX: false
       });
 
-      var tileCoord = tileSource.getTileCoordForTileUrlFunction([6, -31, 22]);
+      var tileCoord = tileSource.getTileCoordForTileUrlFunction([6, -31, -23]);
       expect(tileCoord).to.eql(null);
 
-      tileCoord = tileSource.getTileCoordForTileUrlFunction([6, 33, 22]);
-      expect(tileCoord).to.eql([6, 33, 22]);
+      tileCoord = tileSource.getTileCoordForTileUrlFunction([6, 33, -23]);
+      expect(tileCoord).to.eql([6, 33, -23]);
 
-      tileCoord = tileSource.getTileCoordForTileUrlFunction([6, 97, 22]);
+      tileCoord = tileSource.getTileCoordForTileUrlFunction([6, 97, -23]);
       expect(tileCoord).to.eql(null);
     });
   });

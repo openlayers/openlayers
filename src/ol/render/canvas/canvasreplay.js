@@ -353,7 +353,7 @@ ol.render.canvas.Replay.prototype.replay_ = function(
             '3rd instruction should be a number');
         dd = /** @type {number} */ (instruction[2]);
         goog.asserts.assert(goog.isString(instruction[3]),
-            '4th instruction should be a number');
+            '4th instruction should be a string');
         text = /** @type {string} */ (instruction[3]);
         goog.asserts.assert(goog.isNumber(instruction[4]),
             '5th instruction should be a number');

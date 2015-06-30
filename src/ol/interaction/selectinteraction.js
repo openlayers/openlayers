@@ -178,7 +178,9 @@ ol.interaction.Select = function(opt_options) {
       wrapX: options.wrapX
     }),
     style: goog.isDef(options.style) ? options.style :
-        ol.interaction.Select.getDefaultStyleFunction()
+        ol.interaction.Select.getDefaultStyleFunction(),
+    updateWhileAnimating: true,
+    updateWhileInteracting: true
   });
 
   var features = this.featureOverlay_.getSource().getFeaturesCollection();
@@ -219,8 +221,8 @@ ol.interaction.Select.handleEvent = function(mapBrowserEvent) {
   var set = !add && !remove && !toggle;
   var map = mapBrowserEvent.map;
   var features = this.featureOverlay_.getSource().getFeaturesCollection();
-  var /** @type {Array.<ol.Feature>} */ deselected = [];
-  var /** @type {Array.<ol.Feature>} */ selected = [];
+  var /** @type {!Array.<ol.Feature>} */ deselected = [];
+  var /** @type {!Array.<ol.Feature>} */ selected = [];
   var change = false;
   if (set) {
     // Replace the currently selected feature(s) with the feature(s) at the
