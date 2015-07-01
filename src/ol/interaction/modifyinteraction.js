@@ -34,13 +34,13 @@ ol.ModifyEventType = {
   /**
    * Triggered upon feature modification start
    * @event ol.ModifyEvent#modifystart
-   * @api stable
+   * @api
    */
   MODIFYSTART: 'modifystart',
   /**
    * Triggered upon feature modification end
    * @event ol.ModifyEvent#modifyend
-   * @api stable
+   * @api
    */
   MODIFYEND: 'modifyend'
 };
@@ -57,18 +57,26 @@ ol.ModifyEventType = {
  * @implements {oli.ModifyEvent}
  * @param {ol.ModifyEventType} type Type.
  * @param {ol.Collection.<ol.Feature>} features The features modified.
+ * @param {ol.MapBrowserPointerEvent} mapBrowserPointerEvent Associated
+ *     {@link ol.MapBrowserPointerEvent}.
  */
-ol.ModifyEvent = function(type, features) {
+ol.ModifyEvent = function(type, features, mapBrowserPointerEvent) {
 
   goog.base(this, type);
 
   /**
-   * The feature being modified.
+   * The features being modified.
    * @type {ol.Collection.<ol.Feature>}
-   * @api stable
+   * @api
    */
   this.features = features;
 
+  /**
+   * Associated {@link ol.MapBrowserPointerEvent}.
+   * @type {ol.MapBrowserPointerEvent}
+   * @api
+   */
+  this.mapBrowserPointerEvent = mapBrowserPointerEvent;
 };
 goog.inherits(ol.ModifyEvent, goog.events.Event);
 
@@ -92,7 +100,7 @@ ol.interaction.SegmentDataType;
  * @extends {ol.interaction.Pointer}
  * @param {olx.interaction.ModifyOptions} options Options.
  * @fires ol.ModifyEvent
- * @api stable
+ * @api
  */
 ol.interaction.Modify = function(options) {
 
@@ -515,7 +523,7 @@ ol.interaction.Modify.handleDownEvent_ = function(evt) {
       this.insertVertex_.apply(this, insertVertices[i]);
     }
     this.dispatchEvent(new ol.ModifyEvent(ol.ModifyEventType.MODIFYSTART,
-        this.features_));
+        this.features_, evt));
   }
   return !goog.isNull(this.vertexFeature_);
 };
@@ -588,7 +596,7 @@ ol.interaction.Modify.handleUpEvent_ = function(evt) {
         segmentData);
   }
   this.dispatchEvent(new ol.ModifyEvent(ol.ModifyEventType.MODIFYEND,
-      this.features_));
+      this.features_, evt));
   return false;
 };
 

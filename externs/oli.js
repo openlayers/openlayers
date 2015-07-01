@@ -61,6 +61,12 @@ oli.ModifyEvent = function() {};
 oli.ModifyEvent.prototype.features;
 
 
+/**
+ * @type {ol.MapBrowserPointerEvent}
+ */
+oli.ModifyEvent.prototype.mapBrowserPointerEvent;
+
+
 
 /**
  * @interface
