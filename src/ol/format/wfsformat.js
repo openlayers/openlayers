@@ -215,6 +215,8 @@ ol.format.WFS.FEATURE_COLLECTION_PARSERS_ = {
         ol.format.GMLBase.prototype.readGeometryElement, 'bounds')
   }
 };
+ol.format.WFS.FEATURE_COLLECTION_PARSERS_['http://www.opengis.net/gml/3.2'] =
+    ol.format.WFS.FEATURE_COLLECTION_PARSERS_['http://www.opengis.net/gml'];
 
 
 /**

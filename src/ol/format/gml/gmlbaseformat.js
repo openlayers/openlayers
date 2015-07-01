@@ -7,7 +7,6 @@ goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('goog.dom.NodeType');
 goog.require('goog.object');
-goog.require('goog.string');
 goog.require('ol.Feature');
 goog.require('ol.format.Feature');
 goog.require('ol.format.XMLFeature');
@@ -75,7 +74,9 @@ ol.format.GMLBase = function(opt_options) {
     'featureMember': ol.xml.makeReplacer(
         ol.format.GMLBase.prototype.readFeaturesInternal),
     'featureMembers': ol.xml.makeReplacer(
-        ol.format.GMLBase.prototype.readFeaturesInternal)
+        ol.format.GMLBase.prototype.readFeaturesInternal),
+    'boundedBy': ol.xml.makeObjectPropertySetter(
+        ol.format.GMLBase.prototype.readGeometryElement, 'bounds')
   };
 
   goog.base(this);
@@ -195,25 +196,32 @@ ol.format.GMLBase.prototype.readGeometryElement = function(node, objectStack) {
  * @return {ol.Feature} Feature.
  */
 ol.format.GMLBase.prototype.readFeatureElement = function(node, objectStack) {
-  var n;
+  var n, i, hasGeometry;
+  var knownGeometries = goog.object.getKeys(
+      this.GEOMETRY_PARSERS_['http://www.opengis.net/gml']
+      );
   var fid = node.getAttribute('fid') ||
       ol.xml.getAttributeNS(node, ol.format.GMLBase.GMLNS, 'id');
   var values = {}, geometryName;
   for (n = node.firstElementChild; !goog.isNull(n);
       n = n.nextElementSibling) {
+    // Assume there is only one geometry node,
+    // and that is has a know geometry as child node:
+    hasGeometry = false;
+    for (i = 0; i < n.childNodes.length; i++) {
+      hasGeometry = hasGeometry |
+          (knownGeometries.indexOf(n.childNodes[i].localName) > -1);
+    }
     var localName = ol.xml.getLocalName(n);
-    // Assume attribute elements have one child node and that the child
-    // is a text node.  Otherwise assume it is a geometry node.
-    if (n.childNodes.length === 0 ||
-        (n.childNodes.length === 1 &&
-        n.firstChild.nodeType === 3)) {
-      var value = ol.xml.getAllTextContent(n, false);
-      if (goog.string.isEmpty(value)) {
-        value = undefined;
+    if (!hasGeometry) {
+      var data = ol.xml.getStructuredTextContent(n, false);
+      if (goog.object.isEmpty(data)) {
+        data = undefined;
+      } else if (goog.array.equals(goog.object.getKeys(data), ['text_'])) {
+        data = data.text_;
       }
-      values[localName] = value;
+      values[localName] = data;
     } else {
-      // boundedBy is an extent and must not be considered as a geometry
       if (localName !== 'boundedBy') {
         geometryName = localName;
       }
