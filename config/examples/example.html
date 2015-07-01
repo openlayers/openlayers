@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
     <meta name="viewport" content="initial-scale=1.0, user-scalable=no, width=device-width">
-    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/twitter-bootstrap/2.3.1/css/bootstrap-combined.min.css" type="text/css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" type="text/css">
     <link rel="stylesheet" href="../css/ol.css" type="text/css">
     <link rel="stylesheet" href="./resources/layout.css" type="text/css">
     {{{ extraHead }}}
@@ -15,13 +15,11 @@
   </head>
   <body>
 
-    <div class="navbar navbar-inverse navbar-fixed-top">
-      <div class="navbar-inner">
-        <div class="container" id="navbar-inner-container">
-          <a class="brand" href="./"><img src="./resources/logo-70x70.png"> OpenLayers 3 Examples</a>
-        </div>
+    <header class="navbar" role="navigation">
+      <div class="container" id="navbar-inner-container">
+        <a class="navbar-brand" href="./"><img src="./resources/logo-70x70.png">&nbsp;OpenLayers 3 Examples</a>
       </div>
-    </div>
+    </header>
 
     <div class="container-fluid">
 
@@ -52,8 +50,8 @@
 &lt;head&gt;
 &lt;title&gt;{{ title }}&lt;/title&gt;
 &lt;script src="https://code.jquery.com/jquery-1.11.2.min.js"&gt;&lt;/script&gt;
-&lt;link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css"&gt;
-&lt;script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"&gt;&lt;/script&gt;
+&lt;link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css"&gt;
+&lt;script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"&gt;&lt;/script&gt;
 &lt;link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ol3/{{ olVersion }}/ol.css" type="text/css"&gt;
 &lt;script src="https://cdnjs.cloudflare.com/ajax/libs/ol3/{{ olVersion }}/ol.js"&gt;&lt;/script&gt;
 {{ extraHead }}
@@ -77,8 +75,8 @@
       </div>
     </div>
 
-    <script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
-    <script src="http://maxcdn.bootstrapcdn.com/twitter-bootstrap/2.3.1/js/bootstrap.min.js"></script>
+    <script src="https://code.jquery.com/jquery-1.11.2.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
     <script src="./resources/common.js"></script>
     <script src="./resources/prism/prism.min.js"></script>
     {{{ js.tag }}}

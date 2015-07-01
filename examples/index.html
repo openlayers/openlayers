@@ -4,23 +4,32 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
     <meta name="viewport" content="initial-scale=1.0, user-scalable=no, width=device-width">
-    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/twitter-bootstrap/2.3.1/css/bootstrap-combined.min.css" type="text/css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" type="text/css">
     <link rel="stylesheet" href="../css/ol.css" type="text/css">
     <link rel="stylesheet" href="./resources/layout.css" type="text/css">
     <style>
+      body {
+        padding-top: 70px;
+      }
+      .navbar-form {
+        margin-top: 12px;
+      }
+      input.search-query {
+        color: #333;
+      }
       .example {
+        padding: 10px;
+        background-color: #F5F5F5;
         height: 140px;
-        padding: 3px;
-        background-color: #eee;
-        border-radius: 3px;
-        margin-bottom: 10px;
+        margin: 10px 0;
         overflow: auto;
+      }
+      .example p.description {
+        font-size: smaller;
+        margin: 5px 0;
       }
       .example:hover {
         background-color: #ddd;
-      }
-      .navbar-search.pull-left {
-        padding: 5px;
       }
 
       ::-webkit-scrollbar {
@@ -174,35 +183,31 @@
   </head>
   <body>
 
-    <div class="navbar navbar-inverse navbar-fixed-top">
-      <div class="navbar-inner">
-        <div class="container">
-          <a class="brand" href="./"><img src="./resources/logo-70x70.png"> OpenLayers 3 Examples</a>
-          <form class="navbar-search pull-left">
-            <input name="q" type="text" id="keywords" class="search-query" placeholder="Search">
-            <span id="count"></span>
-          </form>
-        </div>
+    <header class="navbar navbar-fixed-top" role="navigation">
+      <div class="container">
+        <a class="navbar-brand" href="./"><img src="./resources/logo-70x70.png">&nbsp;OpenLayers 3 Examples</a>
+        <form class="navbar-form navbar-left" role="search">
+          <input name="q" type="text" id="keywords" class="search-query" placeholder="Search">
+          <span id="count"></span>
+        </form>
       </div>
-    </div>
+    </header>
 
     <div class="container-fluid">
-
       <div id="examples"></div>
-
       <div style="display: none;">
-        <div id="template">
-          <div class="span4 example" jugl:repeat="example examples">
-            <a jugl:attributes="href example.link" class="mainlink">
-              <strong><span jugl:replace="example.title">title</span></strong><br>
-              <small jugl:content="'(' + example.example + ')'"></small>
-            </a>
-            <p><div jugl:content="example.shortdesc"></div></p>
-            <p><small jugl:content="'tags: ' + example.tags"></small></p>
+        <div id="template" class="row">
+          <div class="col-md-4 col-sm-4" jugl:repeat="example examples">
+            <div class="example">
+              <a jugl:attributes="href example.link" class="mainlink">
+                <strong><span jugl:replace="example.title">title</span></strong><br>
+                <small jugl:content="'(' + example.example + ')'"></small>
+              </a>
+              <p class="description" jugl:content="example.shortdesc"></p>
+            </div>
           </div>
         </div>
       </div>
-
     </div>
   </body>
 </html>
