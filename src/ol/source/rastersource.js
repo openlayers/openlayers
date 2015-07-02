@@ -37,14 +37,21 @@ goog.require('ol.source.Tile');
  */
 ol.source.Raster = function(options) {
 
+  /**
+   * @private
+   * @type {ol.raster.OperationType}
+   */
+  this.operationType_ = goog.isDef(options.operationType) ?
+      options.operationType : ol.raster.OperationType.PIXEL;
+
   var operations = goog.isDef(options.operations) ?
       options.operations : [ol.raster.IdentityOp];
 
-  this.worker_ = new ol.ext.pixelworks.Processor({
-    operations: operations,
-    imageOps: options.operationType === ol.raster.OperationType.IMAGE,
-    queue: 1
-  });
+  /**
+   * @private
+   * @type {*}
+   */
+  this.worker_ = this.createWorker_(operations);
 
   /**
    * @private
@@ -125,12 +132,27 @@ goog.inherits(ol.source.Raster, ol.source.Image);
 
 
 /**
+ * Create a worker.
+ * @param {Array.<ol.raster.Operation>} operations The operations.
+ * @return {*} The worker.
+ * @private
+ */
+ol.source.Raster.prototype.createWorker_ = function(operations) {
+  return new ol.ext.pixelworks.Processor({
+    operations: operations,
+    imageOps: this.operationType_ === ol.raster.OperationType.IMAGE,
+    queue: 1
+  });
+};
+
+
+/**
  * Reset the operations.
  * @param {Array.<ol.raster.Operation>} operations New operations.
  * @api
  */
 ol.source.Raster.prototype.setOperations = function(operations) {
-  this.worker_.setOperations(operations);
+  this.worker_ = this.createWorker_(operations);
   this.changed();
 };
 
