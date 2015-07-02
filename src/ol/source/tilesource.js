@@ -231,7 +231,7 @@ ol.source.Tile.prototype.getTileCoordForTileUrlFunction =
       opt_projection : this.getProjection();
   var tileGrid = this.getTileGridForProjection(projection);
   goog.asserts.assert(!goog.isNull(tileGrid), 'tile grid needed');
-  if (this.getWrapX()) {
+  if (this.getWrapX() && projection.canWrapX()) {
     tileCoord = ol.tilecoord.wrapX(tileCoord, tileGrid, projection);
   }
   return ol.tilecoord.withinExtentAndZ(tileCoord, tileGrid) ? tileCoord : null;
