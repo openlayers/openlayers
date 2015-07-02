@@ -269,21 +269,21 @@ ol.source.Raster.prototype.composeFrame_ = function(frameState, callback) {
       ol.source.RasterEventType.BEFOREOPERATIONS, frameState, data));
 
   this.worker_.process(imageDatas, data,
-      this.onWorkerComplete_.bind(this, frameState, data, callback));
+      this.onWorkerComplete_.bind(this, frameState, callback));
 };
 
 
 /**
  * Called when pixel processing is complete.
  * @param {olx.FrameState} frameState The frame state.
- * @param {Object} data The user data.
  * @param {function(Error)} callback Called when rendering is complete.
  * @param {Error} err Any error during processing.
  * @param {ImageData} output The output image data.
+ * @param {Object} data The user data.
  * @private
  */
 ol.source.Raster.prototype.onWorkerComplete_ =
-    function(frameState, data, callback, err, output) {
+    function(frameState, callback, err, output, data) {
   if (err) {
     callback(err);
     return;

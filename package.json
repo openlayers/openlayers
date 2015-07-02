@@ -38,7 +38,7 @@
     "metalsmith": "1.6.0",
     "metalsmith-templates": "0.7.0",
     "nomnom": "1.8.0",
-    "pixelworks": "^0.8.0",
+    "pixelworks": "^0.9.0",
     "rbush": "1.3.5",
     "temp": "0.8.1",
     "walk": "2.3.4",
