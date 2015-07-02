@@ -49,11 +49,26 @@ ol.render.canvas.Instruction = {
  * @param {number} tolerance Tolerance.
  * @param {ol.Extent} maxExtent Maximum extent.
  * @param {number} resolution Resolution.
+ * @param {boolean} worldwide viewExtent width greater than world width .
+ * @param {ol.Extent} projectionExtent projection extent.
  * @protected
  * @struct
  */
-ol.render.canvas.Replay = function(tolerance, maxExtent, resolution) {
+ol.render.canvas.Replay = function(
+    tolerance, maxExtent, resolution, worldwide, projectionExtent) {
   goog.base(this);
+
+  /**
+   * @private
+   * @type {boolean}
+   */
+  this.worldwide_ = worldwide;
+
+  /**
+   * @private
+   * @type {ol.Extent}
+   */
+  this.projectionExtent_ = projectionExtent;
 
   /**
    * @protected
@@ -160,7 +175,8 @@ ol.render.canvas.Replay.prototype.appendFlatCoordinates =
   for (i = offset + stride; i < end; i += stride) {
     nextCoord[0] = flatCoordinates[i];
     nextCoord[1] = flatCoordinates[i + 1];
-    nextRel = ol.extent.coordinateRelationship(extent, nextCoord);
+    nextRel = this.worldwide_ ? ol.extent.Relationship.INTERSECTING :
+        ol.extent.coordinateRelationship(extent, nextCoord);
     if (nextRel !== lastRel) {
       if (skipped) {
         this.coordinates[myEnd++] = lastCoord[0];
@@ -590,6 +606,79 @@ ol.render.canvas.Replay.prototype.getBufferedMaxExtent = function() {
 };
 
 
+/**
+ * Add draw instructions for coordinates.
+ * Test if :
+ *  - view extent not contains geometry (coordinates) but intersects geometry.
+ *  - geometry intersects the "left" AND the "right" of the view extent
+ * If true, draw the coordinates two times (one for left and one for right).
+ * @param {Array.<number>} flatCoordinates Flat coordinates.
+ * @param {number} offset Offset.
+ * @param {Array.<number>} ends End.
+ * @param {number} stride Stride.
+ * @protected
+ * @return {number} end.
+ */
+ol.render.canvas.Replay.prototype.drawFlatCoordinatesForViewExtent =
+    function(flatCoordinates, offset, ends, stride) {
+
+  if (!this.worldwide_) {
+
+    var extent = ol.extent.extendFlatCoordinates(ol.extent.createEmpty(),
+        flatCoordinates, 0, flatCoordinates.length, stride);
+    var maxExtent = this.maxExtent;
+    var projWidth = ol.extent.getWidth(this.projectionExtent_);
+    var contains = ol.extent.containsExtent(maxExtent, extent);
+
+    // Test if viewExtent not contains geometry (coordinates) but
+    // intersects geometry
+    if (!contains) {
+
+      var intersects = ol.extent.intersects(extent, maxExtent);
+
+      // If geometry intersects the "left" AND the "right" of the view
+      // => draw 2 geometries
+      var deltaX = 0;
+      if (extent[0] < maxExtent[0] && extent[0] + projWidth < maxExtent[2]) {
+        deltaX = projWidth;
+      } else if (extent[2] > maxExtent[2] &&
+          extent[2] - projWidth > maxExtent[0]) {
+        deltaX = -projWidth;
+      }
+      if (deltaX !== 0) {
+        var translatedCoordinates = ol.geom.flat.transform.translate(
+            flatCoordinates, 0, flatCoordinates.length, stride, deltaX, 0);
+        var tOffset = this.drawFlatCoordinates(translatedCoordinates,
+            offset, ends, stride);
+        if (!intersects) {
+          return tOffset;
+        }
+      } else if (!intersects) {
+        return ends[ends.length - 1];
+      }
+    }
+  }
+  return this.drawFlatCoordinates(flatCoordinates, offset, ends, stride);
+};
+
+
+/**
+ * Add draw instructions for coordinates.
+ * @param {Array.<number>} flatCoordinates Flat coordinates.
+ * @param {number} offset Offset.
+ * @param {Array.<number>} ends End.
+ * @param {number} stride Stride.
+ * @protected
+ * @return {number} end.
+ */
+ol.render.canvas.Replay.prototype.drawFlatCoordinates =
+    function(flatCoordinates, offset, ends, stride) {
+
+  // To override
+  return 0;
+};
+
+
 
 /**
  * @constructor
@@ -597,11 +686,15 @@ ol.render.canvas.Replay.prototype.getBufferedMaxExtent = function() {
  * @param {number} tolerance Tolerance.
  * @param {ol.Extent} maxExtent Maximum extent.
  * @param {number} resolution Resolution.
+ * @param {boolean} worldwide viewExtent width greater than world width.
+ * @param {ol.Extent} projectionExtent projection extent.
  * @protected
  * @struct
  */
-ol.render.canvas.ImageReplay = function(tolerance, maxExtent, resolution) {
-  goog.base(this, tolerance, maxExtent, resolution);
+ol.render.canvas.ImageReplay = function(
+    tolerance, maxExtent, resolution, worldwide, projectionExtent) {
+  goog.base(
+      this, tolerance, maxExtent, resolution, worldwide, projectionExtent);
 
   /**
    * @private
@@ -868,16 +961,20 @@ ol.render.canvas.ImageReplay.prototype.setImageStyle = function(imageStyle) {
  * @param {number} tolerance Tolerance.
  * @param {ol.Extent} maxExtent Maximum extent.
  * @param {number} resolution Resolution.
+ * @param {boolean} worldwide viewExtent width greater than world width.
+ * @param {ol.Extent} projectionExtent projection extent.
  * @protected
  * @struct
  */
-ol.render.canvas.LineStringReplay = function(tolerance, maxExtent, resolution) {
+ol.render.canvas.LineStringReplay = function(
+    tolerance, maxExtent, resolution, worldwide, projectionExtent) {
 
-  goog.base(this, tolerance, maxExtent, resolution);
+  goog.base(
+      this, tolerance, maxExtent, resolution, worldwide, projectionExtent);
 
   /**
    * @private
-   * @type {{currentStrokeStyle: (string|undefined),
+   * @type {?{currentStrokeStyle: (string|undefined),
    *         currentLineCap: (string|undefined),
    *         currentLineDash: Array.<number>,
    *         currentLineJoin: (string|undefined),
@@ -889,7 +986,7 @@ ol.render.canvas.LineStringReplay = function(tolerance, maxExtent, resolution) {
    *         lineDash: Array.<number>,
    *         lineJoin: (string|undefined),
    *         lineWidth: (number|undefined),
-   *         miterLimit: (number|undefined)}|null}
+   *         miterLimit: (number|undefined)}}
    */
   this.state_ = {
     currentStrokeStyle: undefined,
@@ -912,23 +1009,18 @@ goog.inherits(ol.render.canvas.LineStringReplay, ol.render.canvas.Replay);
 
 
 /**
- * @param {Array.<number>} flatCoordinates Flat coordinates.
- * @param {number} offset Offset.
- * @param {number} end End.
- * @param {number} stride Stride.
- * @private
- * @return {number} end.
+ * @inheritDoc
  */
-ol.render.canvas.LineStringReplay.prototype.drawFlatCoordinates_ =
-    function(flatCoordinates, offset, end, stride) {
+ol.render.canvas.LineStringReplay.prototype.drawFlatCoordinates =
+    function(flatCoordinates, offset, ends, stride) {
   var myBegin = this.coordinates.length;
   var myEnd = this.appendFlatCoordinates(
-      flatCoordinates, offset, end, stride, false);
+      flatCoordinates, offset, ends[0], stride, false);
   var moveToLineToInstruction =
       [ol.render.canvas.Instruction.MOVE_TO_LINE_TO, myBegin, myEnd];
   this.instructions.push(moveToLineToInstruction);
   this.hitDetectionInstructions.push(moveToLineToInstruction);
-  return end;
+  return ends[0];
 };
 
 
@@ -1011,8 +1103,8 @@ ol.render.canvas.LineStringReplay.prototype.drawLineStringGeometry =
       [ol.render.canvas.Instruction.BEGIN_PATH]);
   var flatCoordinates = lineStringGeometry.getFlatCoordinates();
   var stride = lineStringGeometry.getStride();
-  this.drawFlatCoordinates_(
-      flatCoordinates, 0, flatCoordinates.length, stride);
+  this.drawFlatCoordinatesForViewExtent(
+      flatCoordinates, 0, [flatCoordinates.length], stride);
   this.hitDetectionInstructions.push([ol.render.canvas.Instruction.STROKE]);
   this.endGeometry(lineStringGeometry, feature);
 };
@@ -1043,8 +1135,8 @@ ol.render.canvas.LineStringReplay.prototype.drawMultiLineStringGeometry =
   var offset = 0;
   var i, ii;
   for (i = 0, ii = ends.length; i < ii; ++i) {
-    offset = this.drawFlatCoordinates_(
-        flatCoordinates, offset, ends[i], stride);
+    offset = this.drawFlatCoordinatesForViewExtent(
+        flatCoordinates, offset, [ends[i]], stride);
   }
   this.hitDetectionInstructions.push([ol.render.canvas.Instruction.STROKE]);
   this.endGeometry(multiLineStringGeometry, feature);
@@ -1109,16 +1201,20 @@ ol.render.canvas.LineStringReplay.prototype.setFillStrokeStyle =
  * @param {number} tolerance Tolerance.
  * @param {ol.Extent} maxExtent Maximum extent.
  * @param {number} resolution Resolution.
+ * @param {boolean} worldwide viewExtent width greater than world width.
+ * @param {ol.Extent} projectionExtent projection extent.
  * @protected
  * @struct
  */
-ol.render.canvas.PolygonReplay = function(tolerance, maxExtent, resolution) {
+ol.render.canvas.PolygonReplay = function(
+    tolerance, maxExtent, resolution, worldwide, projectionExtent) {
 
-  goog.base(this, tolerance, maxExtent, resolution);
+  goog.base(
+      this, tolerance, maxExtent, resolution, worldwide, projectionExtent);
 
   /**
    * @private
-   * @type {{currentFillStyle: (string|undefined),
+   * @type {?{currentFillStyle: (string|undefined),
    *         currentStrokeStyle: (string|undefined),
    *         currentLineCap: (string|undefined),
    *         currentLineDash: Array.<number>,
@@ -1131,7 +1227,7 @@ ol.render.canvas.PolygonReplay = function(tolerance, maxExtent, resolution) {
    *         lineDash: Array.<number>,
    *         lineJoin: (string|undefined),
    *         lineWidth: (number|undefined),
-   *         miterLimit: (number|undefined)}|null}
+   *         miterLimit: (number|undefined)}}
    */
   this.state_ = {
     currentFillStyle: undefined,
@@ -1155,14 +1251,9 @@ goog.inherits(ol.render.canvas.PolygonReplay, ol.render.canvas.Replay);
 
 
 /**
- * @param {Array.<number>} flatCoordinates Flat coordinates.
- * @param {number} offset Offset.
- * @param {Array.<number>} ends Ends.
- * @param {number} stride Stride.
- * @private
- * @return {number} End.
+ * @inheritDoc
  */
-ol.render.canvas.PolygonReplay.prototype.drawFlatCoordinatess_ =
+ol.render.canvas.PolygonReplay.prototype.drawFlatCoordinates =
     function(flatCoordinates, offset, ends, stride) {
   var state = this.state_;
   var beginPathInstruction = [ol.render.canvas.Instruction.BEGIN_PATH];
@@ -1284,7 +1375,7 @@ ol.render.canvas.PolygonReplay.prototype.drawPolygonGeometry =
   var ends = polygonGeometry.getEnds();
   var flatCoordinates = polygonGeometry.getOrientedFlatCoordinates();
   var stride = polygonGeometry.getStride();
-  this.drawFlatCoordinatess_(flatCoordinates, 0, ends, stride);
+  this.drawFlatCoordinatesForViewExtent(flatCoordinates, 0, ends, stride);
   this.endGeometry(polygonGeometry, feature);
 };
 
@@ -1323,7 +1414,7 @@ ol.render.canvas.PolygonReplay.prototype.drawMultiPolygonGeometry =
   var offset = 0;
   var i, ii;
   for (i = 0, ii = endss.length; i < ii; ++i) {
-    offset = this.drawFlatCoordinatess_(
+    offset = this.drawFlatCoordinatesForViewExtent(
         flatCoordinates, offset, endss[i], stride);
   }
   this.endGeometry(multiPolygonGeometry, feature);
@@ -1471,12 +1562,16 @@ ol.render.canvas.PolygonReplay.prototype.setFillStrokeStyles_ = function() {
  * @param {number} tolerance Tolerance.
  * @param {ol.Extent} maxExtent Maximum extent.
  * @param {number} resolution Resolution.
+ * @param {boolean} worldwide viewExtent width greater than world width .
+ * @param {ol.Extent} projectionExtent projection extent.
  * @protected
  * @struct
  */
-ol.render.canvas.TextReplay = function(tolerance, maxExtent, resolution) {
+ol.render.canvas.TextReplay = function(
+    tolerance, maxExtent, resolution, worldwide, projectionExtent) {
 
-  goog.base(this, tolerance, maxExtent, resolution);
+  goog.base(
+      this, tolerance, maxExtent, resolution, worldwide, projectionExtent);
 
   /**
    * @private
@@ -1788,10 +1883,18 @@ ol.render.canvas.TextReplay.prototype.setTextStyle = function(textStyle) {
  * @param {ol.Extent} maxExtent Max extent.
  * @param {number} resolution Resolution.
  * @param {number=} opt_renderBuffer Optional rendering buffer.
+ * @param {boolean=} opt_projectionOverflow Optional flag :
+ * wrapX true and projection extent not contains view extent.
+ * @param {ol.Extent=} opt_projectionExtent Optinal projection extent.
  * @struct
  */
 ol.render.canvas.ReplayGroup = function(
-    tolerance, maxExtent, resolution, opt_renderBuffer) {
+    tolerance, maxExtent, resolution, opt_renderBuffer,
+    opt_projectionOverflow, opt_projectionExtent) {
+
+  if (!goog.isDef(opt_projectionOverflow)) {
+    opt_projectionOverflow = false;
+  }
 
   /**
    * @private
@@ -1804,6 +1907,20 @@ ol.render.canvas.ReplayGroup = function(
    * @type {ol.Extent}
    */
   this.maxExtent_ = maxExtent;
+
+  /**
+   * @private
+   * @type {ol.Extent}
+   */
+  this.projectionExtent_ = opt_projectionExtent || ol.extent.createEmpty();
+
+  /**
+   * @private
+   * @type {boolean}
+   */
+  this.worldwide_ = opt_projectionOverflow &&
+      (ol.extent.getWidth(maxExtent) >=
+      ol.extent.getWidth(this.projectionExtent_));
 
   /**
    * @private
@@ -1921,7 +2038,7 @@ ol.render.canvas.ReplayGroup.prototype.getReplay =
         replayType +
         ' constructor missing from ol.render.canvas.BATCH_CONSTRUCTORS_');
     replay = new Constructor(this.tolerance_, this.maxExtent_,
-        this.resolution_);
+        this.resolution_, this.worldwide_, this.projectionExtent_);
     replays[replayType] = replay;
   }
   return replay;
@@ -1942,9 +2059,15 @@ ol.render.canvas.ReplayGroup.prototype.isEmpty = function() {
  * @param {goog.vec.Mat4.Number} transform Transform.
  * @param {number} viewRotation View rotation.
  * @param {Object} skippedFeaturesHash Ids of features to skip
+ * @param {boolean=} opt_noClip flag to disabled clipping.
  */
 ol.render.canvas.ReplayGroup.prototype.replay = function(
-    context, pixelRatio, transform, viewRotation, skippedFeaturesHash) {
+    context, pixelRatio, transform, viewRotation,
+    skippedFeaturesHash, opt_noClip) {
+
+  if (!goog.isDef(opt_noClip)) {
+    opt_noClip = false;
+  }
 
   /** @type {Array.<number>} */
   var zs = goog.array.map(goog.object.getKeys(this.replaysByZIndex_), Number);
@@ -1960,14 +2083,17 @@ ol.render.canvas.ReplayGroup.prototype.replay = function(
   var flatClipCoords = [minX, minY, minX, maxY, maxX, maxY, maxX, minY];
   ol.geom.flat.transform.transform2D(
       flatClipCoords, 0, 8, 2, transform, flatClipCoords);
-  context.save();
-  context.beginPath();
-  context.moveTo(flatClipCoords[0], flatClipCoords[1]);
-  context.lineTo(flatClipCoords[2], flatClipCoords[3]);
-  context.lineTo(flatClipCoords[4], flatClipCoords[5]);
-  context.lineTo(flatClipCoords[6], flatClipCoords[7]);
-  context.closePath();
-  context.clip();
+
+  if (!this.worldwide_ && !opt_noClip) {
+    context.save();
+    context.beginPath();
+    context.moveTo(flatClipCoords[0], flatClipCoords[1]);
+    context.lineTo(flatClipCoords[2], flatClipCoords[3]);
+    context.lineTo(flatClipCoords[4], flatClipCoords[5]);
+    context.lineTo(flatClipCoords[6], flatClipCoords[7]);
+    context.closePath();
+    context.clip();
+  }
 
   var i, ii, j, jj, replays, replay, result;
   for (i = 0, ii = zs.length; i < ii; ++i) {
@@ -2027,7 +2153,7 @@ ol.render.canvas.ReplayGroup.prototype.replayHitDetection_ = function(
  * @private
  * @type {Object.<ol.render.ReplayType,
  *                function(new: ol.render.canvas.Replay, number, ol.Extent,
- *                number)>}
+ *                number, boolean, ol.Extent)>}
  */
 ol.render.canvas.BATCH_CONSTRUCTORS_ = {
   'Image': ol.render.canvas.ImageReplay,
