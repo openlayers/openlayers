@@ -436,9 +436,9 @@ ol.View.prototype.getZoom = function() {
 
 /**
  * Fit the given geometry or extent based on the given map size and border.
- * The size is pixel deminsions of the box to fit the extent into.
+ * The size is pixel dimensions of the box to fit the extent into.
  * In most cases you will want to use the map size, that is `map.getSize()`.
- * Take care on the map angle.
+ * Takes care of the map angle.
  * @param {ol.geom.SimpleGeometry|ol.Extent} geometry Geometry.
  * @param {ol.Size} size Box pixel size.
  * @param {olx.view.FitOptions=} opt_options Options.

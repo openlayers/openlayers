@@ -365,7 +365,7 @@ describe('ol.View', function() {
   });
 
   describe('#calculateExtent', function() {
-    it('returns the expect extent', function() {
+    it('returns the expected extent', function() {
       var view = new ol.View({
         resolutions: [512],
         zoom: 0,
@@ -400,7 +400,7 @@ describe('ol.View', function() {
         resolutions: [200, 100, 50, 20, 10, 5, 2, 1]
       });
     });
-    it('fit correctly to the geometry', function() {
+    it('fits correctly to the geometry', function() {
       view.fit(
           new ol.geom.LineString([[6000, 46000], [6000, 47100], [7000, 46000]]),
           [200, 200],
