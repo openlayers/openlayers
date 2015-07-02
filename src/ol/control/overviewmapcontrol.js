@@ -338,7 +338,7 @@ ol.control.OverviewMap.prototype.resetExtent_ = function() {
       ol.OVERVIEWMAP_MAX_RATIO / ol.OVERVIEWMAP_MIN_RATIO) / Math.LN2;
   var ratio = 1 / (Math.pow(2, steps / 2) * ol.OVERVIEWMAP_MIN_RATIO);
   ol.extent.scaleFromCenter(extent, ratio);
-  ovview.fitExtent(extent, ovmapSize);
+  ovview.fit(extent, ovmapSize);
 };
 
 
