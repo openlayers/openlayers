@@ -907,6 +907,47 @@ describe('ol.format.GML3', function() {
     });
   });
 
+  describe('when parsing CDATA attribute', function() {
+    var features;
+    before(function(done) {
+      try {
+        var text =
+            '<gml:featureMembers xmlns:gml="http://www.opengis.net/gml">' +
+            '  <topp:gnis_pop gml:id="gnis_pop.148604" xmlns:topp="' +
+            'http://www.openplans.org/topp">' +
+            '    <gml:name>Aflu</gml:name>' +
+            '    <topp:the_geom>' +
+            '      <gml:Point srsName="urn:x-ogc:def:crs:EPSG:4326">' +
+            '        <gml:pos>34.12 2.09</gml:pos>' +
+            '      </gml:Point>' +
+            '    </topp:the_geom>' +
+            '    <topp:population>84683</topp:population>' +
+            '    <topp:country>Algeria</topp:country>' +
+            '    <topp:type>place</topp:type>' +
+            '    <topp:name>Aflu</topp:name>' +
+            '    <topp:cdata><![CDATA[<a>b</a>]]></topp:cdata>' +
+            '  </topp:gnis_pop>' +
+            '</gml:featureMembers>';
+        var config = {
+          'featureNS': 'http://www.openplans.org/topp',
+          'featureType': 'gnis_pop'
+        };
+        features = new ol.format.GML(config).readFeatures(text);
+      } catch (e) {
+        done(e);
+      }
+      done();
+    });
+
+    it('creates 1 feature', function() {
+      expect(features).to.have.length(1);
+    });
+
+    it('converts XML attribute to text', function() {
+      expect(features[0].get('cdata')).to.be('<a>b</a>');
+    });
+  });
+
   describe('when parsing TOPP states WFS with autoconfigure', function() {
     var features, text, gmlFormat;
     before(function(done) {
