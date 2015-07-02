@@ -372,7 +372,8 @@ ol.Graticule.prototype.handlePostCompose_ = function(e) {
     this.updateProjectionInfo_(projection);
   }
 
-  //Fix the extent if wrapped (note: this is the same extent as vectorContext.extent_)
+  //Fix the extent if wrapped.
+  //(note: this is the same extent as vectorContext.extent_)
   var offsetX = 0;
   if (projection.canWrapX()) {
     var projectionExtent = projection.getExtent();
@@ -380,6 +381,7 @@ ol.Graticule.prototype.handlePostCompose_ = function(e) {
     var x = frameState.focus[0];
     if (x < projectionExtent[0] || x > projectionExtent[2]) {
       var worldsAway = Math.ceil((projectionExtent[0] - x) / worldWidth);
+      offsetX = worldWidth * worldsAway;
       extent = [
         extent[0] + offsetX, extent[1],
         extent[2] + offsetX, extent[3]
