@@ -356,7 +356,7 @@ ol.Graticule.prototype.getParallels = function() {
 ol.Graticule.prototype.handlePostCompose_ = function(e) {
   var vectorContext = e.vectorContext;
   var frameState = e.frameState;
-  var extent = vectorContext.extent_;
+  var extent = framteState.extent;
   var viewState = frameState.viewState;
   var center = viewState.center;
   var projection = viewState.projection;
@@ -370,6 +370,21 @@ ol.Graticule.prototype.handlePostCompose_ = function(e) {
 
   if (updateProjectionInfo) {
     this.updateProjectionInfo_(projection);
+  }
+
+  //Fix the extent if wrapped (note: this is the same extent as vectorContext.extent_)
+  var offsetX = 0;
+  if (projection.canWrapX()) {
+    var projectionExtent = projection.getExtent();
+    var worldWidth = ol.extent.getWidth(projectionExtent);
+    var x = frameState.focus[0];
+    if (x < projectionExtent[0] || x > projectionExtent[2]) {
+      var worldsAway = Math.ceil((projectionExtent[0] - x) / worldWidth);
+      extent = [
+        extent[0] + offsetX, extent[1],
+        extent[2] + offsetX, extent[3]
+      ];
+    }
   }
 
   this.createGraticule_(extent, center, resolution, squaredTolerance);
