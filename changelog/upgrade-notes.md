@@ -93,6 +93,10 @@ var tileUrlFunction = function(tileCoord, pixelRatio, projection) {
 
 The replacement of `ol.tilegrid.Zoomify` is a plain `ol.tilegrid.TileGrid`, configured with `extent`, `origin` and `resolutions`. If the `size` passed to the `ol.source.Zoomify` source is `[width, height]`, then the extent for the tile grid will be `[0, -height, width, 0]`, and the origin will be `[0, 0]`.
 
+#### Replace `ol.View.fitExtent()` and `ol.View.fitGeometry()` with `ol.View.fit()`
+* This combines two previously distinct functions into one more flexible call which takes either a geometry or an extent.
+* Rename all calls to `fitExtent` and `fitGeometry` to `fit`.
+
 ### v3.6.0
 
 #### `ol.interaction.Draw` changes

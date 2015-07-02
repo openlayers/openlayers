@@ -14,6 +14,8 @@ goog.require('ol.RotationConstraintType');
 goog.require('ol.Size');
 goog.require('ol.coordinate');
 goog.require('ol.extent');
+goog.require('ol.geom.Polygon');
+goog.require('ol.geom.SimpleGeometry');
 goog.require('ol.proj');
 goog.require('ol.proj.METERS_PER_UNIT');
 goog.require('ol.proj.Projection');
@@ -273,15 +275,17 @@ ol.View.prototype.getHints = function() {
  * @api stable
  */
 ol.View.prototype.calculateExtent = function(size) {
-  goog.asserts.assert(this.isDef(),
-      'the view was not defined (had no center and/or resolution)');
   var center = this.getCenter();
+  goog.asserts.assert(goog.isDefAndNotNull(center),
+      'The view center is not defined');
   var resolution = this.getResolution();
-  var minX = center[0] - resolution * size[0] / 2;
-  var maxX = center[0] + resolution * size[0] / 2;
-  var minY = center[1] - resolution * size[1] / 2;
-  var maxY = center[1] + resolution * size[1] / 2;
-  return [minX, minY, maxX, maxY];
+  goog.asserts.assert(goog.isDef(resolution),
+      'The view resolution is not defined');
+  var rotation = this.getRotation();
+  goog.asserts.assert(goog.isDef(rotation),
+      'The view rotation is not defined');
+
+  return ol.extent.getForViewAndSize(center, resolution, rotation, size);
 };
 
 
@@ -431,35 +435,24 @@ ol.View.prototype.getZoom = function() {
 
 
 /**
- * Fit the map view to the passed extent and size. The size is pixel dimensions
- * of the box to fit the extent into. In most cases you will want to use the map
- * size, that is `map.getSize()`.
- * @param {ol.Extent} extent Extent.
+ * Fit the given geometry or extent based on the given map size and border.
+ * The size is pixel dimensions of the box to fit the extent into.
+ * In most cases you will want to use the map size, that is `map.getSize()`.
+ * Takes care of the map angle.
+ * @param {ol.geom.SimpleGeometry|ol.Extent} geometry Geometry.
  * @param {ol.Size} size Box pixel size.
+ * @param {olx.view.FitOptions=} opt_options Options.
  * @api
  */
-ol.View.prototype.fitExtent = function(extent, size) {
-  if (!ol.extent.isEmpty(extent)) {
-    this.setCenter(ol.extent.getCenter(extent));
-    var resolution = this.getResolutionForExtent(extent, size);
-    var constrainedResolution = this.constrainResolution(resolution, 0, 0);
-    if (constrainedResolution < resolution) {
-      constrainedResolution =
-          this.constrainResolution(constrainedResolution, -1, 0);
-    }
-    this.setResolution(constrainedResolution);
+ol.View.prototype.fit = function(geometry, size, opt_options) {
+  if (!(geometry instanceof ol.geom.SimpleGeometry)) {
+    goog.asserts.assert(goog.isArray(geometry),
+        'invalid extent or geometry');
+    goog.asserts.assert(!ol.extent.isEmpty(geometry),
+        'cannot fit empty extent');
+    geometry = ol.geom.Polygon.fromExtent(geometry);
   }
-};
 
-
-/**
- * Fit the given geometry into the view based on the given map size and border.
- * @param {ol.geom.SimpleGeometry} geometry Geometry.
- * @param {ol.Size} size Box pixel size.
- * @param {olx.view.FitGeometryOptions=} opt_options Options.
- * @api
- */
-ol.View.prototype.fitGeometry = function(geometry, size, opt_options) {
   var options = goog.isDef(opt_options) ? opt_options : {};
 
   var padding = goog.isDef(options.padding) ? options.padding : [0, 0, 0, 0];
