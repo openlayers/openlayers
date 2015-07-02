@@ -19,7 +19,7 @@ BUILD_HOSTED := build/hosted/$(BRANCH)
 BUILD_HOSTED_EXAMPLES := $(addprefix $(BUILD_HOSTED)/,$(EXAMPLES))
 BUILD_HOSTED_EXAMPLES_JS := $(addprefix $(BUILD_HOSTED)/,$(EXAMPLES_JS))
 
-UNPHANTOMABLE_EXAMPLES = examples/shaded-relief.html examples/raster.html
+UNPHANTOMABLE_EXAMPLES = examples/shaded-relief.html examples/raster.html examples/region-growing.html
 CHECK_EXAMPLE_TIMESTAMPS = $(patsubst examples/%.html,build/timestamps/check-%-timestamp,$(filter-out $(UNPHANTOMABLE_EXAMPLES),$(EXAMPLES_HTML)))
 
 TASKS_JS := $(shell find tasks -name '*.js')
