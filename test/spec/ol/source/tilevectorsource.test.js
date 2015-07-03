@@ -75,6 +75,25 @@ describe('ol.source.TileVector', function() {
           [6, 97, -23], projection);
       expect(tileCoord).to.eql(null);
     });
+
+    it('works with wrapX and custom projection without extent', function() {
+      var tileSource = new ol.source.TileVector({
+        format: new ol.format.TopoJSON(),
+        tileGrid: ol.tilegrid.createXYZ({
+          maxZoom: 19
+        }),
+        wrapX: true
+      });
+      var projection = new ol.proj.Projection({
+        code: 'foo',
+        global: true,
+        units: 'm'
+      });
+
+      var tileCoord = tileSource.getTileCoordForTileUrlFunction(
+          [6, -31, -23], projection);
+      expect(tileCoord).to.eql([6, 33, -23]);
+    });
   });
 
 });
@@ -82,4 +101,5 @@ describe('ol.source.TileVector', function() {
 
 goog.require('ol.format.TopoJSON');
 goog.require('ol.proj');
+goog.require('ol.proj.Projection');
 goog.require('ol.source.TileVector');

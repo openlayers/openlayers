@@ -148,6 +148,20 @@ describe('ol.source.Tile', function() {
       tileCoord = tileSource.getTileCoordForTileUrlFunction([6, 97, -23]);
       expect(tileCoord).to.eql(null);
     });
+
+    it('works with wrapX and custom projection without extent', function() {
+      var tileSource = new ol.source.Tile({
+        projection: new ol.proj.Projection({
+          code: 'foo',
+          global: true,
+          units: 'm'
+        }),
+        wrapX: true
+      });
+
+      var tileCoord = tileSource.getTileCoordForTileUrlFunction([6, -31, -23]);
+      expect(tileCoord).to.eql([6, 33, -23]);
+    });
   });
 
 });
@@ -241,6 +255,7 @@ goog.require('ol.Tile');
 goog.require('ol.TileRange');
 goog.require('ol.TileState');
 goog.require('ol.proj');
+goog.require('ol.proj.Projection');
 goog.require('ol.source.Source');
 goog.require('ol.source.Tile');
 goog.require('ol.tilegrid.TileGrid');
