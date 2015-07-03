@@ -142,6 +142,14 @@ ol.interaction.Modify = function(options) {
   this.lastPixel_ = [0, 0];
 
   /**
+   * Keep track of the last inserted pixel location to avoid
+   * unintentional deletion.
+   * @type {ol.Pixel}
+   * @private
+   */
+  this.lastNewVertexPixel_ = [NaN, NaN];
+
+  /**
    * Segment RTree for each layer
    * @type {Object.<*, ol.structs.RBush>}
    * @private
@@ -618,10 +626,15 @@ ol.interaction.Modify.handleEvent = function(mapBrowserEvent) {
   }
   if (!goog.isNull(this.vertexFeature_) &&
       this.deleteCondition_(mapBrowserEvent)) {
-    var geometry = this.vertexFeature_.getGeometry();
-    goog.asserts.assertInstanceof(geometry, ol.geom.Point,
-        'geometry should be an ol.geom.Point');
-    handled = this.removeVertex_();
+    if (!(this.lastNewVertexPixel_[0] === this.lastPixel_[0] &&
+        this.lastNewVertexPixel_[1] === this.lastPixel_[1])) {
+      var geometry = this.vertexFeature_.getGeometry();
+      goog.asserts.assertInstanceof(geometry, ol.geom.Point,
+          'geometry should be an ol.geom.Point');
+      handled = this.removeVertex_();
+    } else {
+      handled = true;
+    }
   }
   return ol.interaction.Pointer.handleEvent.call(this, mapBrowserEvent) &&
       !handled;
@@ -776,6 +789,7 @@ ol.interaction.Modify.prototype.insertVertex_ = function(segmentData, vertex) {
   rTree.insert(ol.extent.boundingExtent(newSegmentData2.segment),
       newSegmentData2);
   this.dragSegments_.push([newSegmentData2, 0]);
+  this.lastNewVertexPixel_ = this.lastPixel_;
 };
 
 
