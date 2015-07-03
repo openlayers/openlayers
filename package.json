@@ -1,6 +1,6 @@
 {
   "name": "openlayers",
-  "version": "3.6.0",
+  "version": "3.7.0",
   "description": "Build tools and sources for developing OpenLayers based mapping applications",
   "keywords": [
     "map",
