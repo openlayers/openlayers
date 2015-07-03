@@ -1,5 +1,7 @@
 ## Upgrade notes
 
+### v3.8.0
+
 ### v3.7.0
 
 #### Removal of `ol.FeatureOverlay`
