@@ -135,6 +135,8 @@ ol.renderer.canvas.VectorLayer.prototype.composeFrame =
             skippedFeatureUids);
         startX -= worldWidth;
       }
+      // restore original transform for render and compose events
+      transform = this.getTransform(frameState, 0);
     }
 
     if (replayContext != context) {
@@ -236,9 +238,15 @@ ol.renderer.canvas.VectorLayer.prototype.prepareFrame =
 
   if (vectorSource.getWrapX() && viewState.projection.canWrapX() &&
       !ol.extent.containsExtent(projectionExtent, frameState.extent)) {
-    // do not clip when the view crosses the -180° or 180° meridians
-    extent[0] = projectionExtent[0];
-    extent[2] = projectionExtent[2];
+    // For the replay group, we need an extent that intersects the real world
+    // (-180° to +180°). To support geometries in a coordinate range from -540°
+    // to +540°, we add at least 1 world width on each side of the projection
+    // extent. If the viewport is wider than the world, we need to add half of
+    // the viewport width to make sure we cover the whole viewport.
+    var worldWidth = ol.extent.getWidth(projectionExtent);
+    var buffer = Math.max(ol.extent.getWidth(extent) / 2, worldWidth);
+    extent[0] = projectionExtent[0] - buffer;
+    extent[2] = projectionExtent[2] + buffer;
   }
 
   if (!this.dirty_ &&
