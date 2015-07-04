@@ -50,8 +50,6 @@ goog.require('ol.style.Style');
  *
  * @constructor
  * @extends {ol.Object}
- * @fires change Triggered when the id, the geometry or the style of the
- *     feature changes.
  * @param {ol.geom.Geometry|Object.<string, *>=} opt_geometryOrProperties
  *     You may pass a Geometry object directly, or an object literal
  *     containing properties.  If you pass an object literal, you may
@@ -153,6 +151,7 @@ ol.Feature.prototype.getGeometry = function() {
 /**
  * @return {number|string|undefined} Id.
  * @api stable
+ * @observable
  */
 ol.Feature.prototype.getId = function() {
   return this.id_;
@@ -177,6 +176,7 @@ ol.Feature.prototype.getGeometryName = function() {
  * @return {ol.style.Style|Array.<ol.style.Style>|
  *     ol.FeatureStyleFunction} The feature style.
  * @api stable
+ * @observable
  */
 ol.Feature.prototype.getStyle = function() {
   return this.style_;
@@ -238,6 +238,7 @@ ol.Feature.prototype.setGeometry = function(geometry) {
  * @param {ol.style.Style|Array.<ol.style.Style>|
  *     ol.FeatureStyleFunction} style Style for this feature.
  * @api stable
+ * @observable
  */
 ol.Feature.prototype.setStyle = function(style) {
   this.style_ = style;
@@ -254,6 +255,7 @@ ol.Feature.prototype.setStyle = function(style) {
  * method.
  * @param {number|string|undefined} id The feature id.
  * @api stable
+ * @observable
  */
 ol.Feature.prototype.setId = function(id) {
   this.id_ = id;
