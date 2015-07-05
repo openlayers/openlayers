@@ -176,7 +176,7 @@ ol.interaction.Modify = function(options) {
   this.dragSegments_ = null;
 
   /**
-   * Draw overlay where are sketch features are drawn.
+   * Draw overlay where sketch features are drawn.
    * @type {ol.layer.Vector}
    * @private
    */
