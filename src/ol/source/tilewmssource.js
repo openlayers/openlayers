@@ -161,7 +161,8 @@ ol.source.TileWMS.prototype.getGetFeatureInfoUrl =
 
   if (!goog.isNull(this.getProjection()) &&
       this.getProjection() !== projection) {
-    tileExtent = ol.proj.transformExtent(tileExtent, projection, this.getProjection());
+    tileExtent = ol.proj.transformExtent(tileExtent, projection,
+        this.getProjection());
     projectionObj = ol.proj.get(this.getProjection());
   }
 
@@ -402,7 +403,8 @@ ol.source.TileWMS.prototype.tileUrlFunction_ =
 
   if (!goog.isNull(this.getProjection()) &&
       this.getProjection() !== projection) {
-    tileExtent = ol.proj.transformExtent(tileExtent, projection, this.getProjection());
+    tileExtent = ol.proj.transformExtent(tileExtent, projection,
+        this.getProjection());
     projection = ol.proj.get(this.getProjection());
   }
 
