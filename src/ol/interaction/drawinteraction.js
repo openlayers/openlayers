@@ -618,7 +618,7 @@ ol.interaction.Draw.prototype.addToDrawing_ = function(event) {
 
 
 /**
- * Remove last drawed point of the currently edited feature.
+ * Remove last point of the feature currently being drawn.
  * @api
  */
 ol.interaction.Draw.prototype.removeLastPoint = function() {
