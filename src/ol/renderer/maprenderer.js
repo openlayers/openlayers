@@ -167,8 +167,9 @@ ol.renderer.Map.prototype.forEachFeatureAtCoordinate =
   for (i = numLayers - 1; i >= 0; --i) {
     var layerState = layerStates[i];
     var layer = layerState.layer;
-    if (ol.layer.Layer.visibleAtResolution(layerState, viewResolution) &&
-        layerFilter.call(thisArg2, layer)) {
+    if (!layerState.managed ||
+        (ol.layer.Layer.visibleAtResolution(layerState, viewResolution) &&
+        layerFilter.call(thisArg2, layer))) {
       var layerRenderer = this.getLayerRenderer(layer);
       result = layerRenderer.forEachFeatureAtCoordinate(
           layer.getSource().getWrapX() ? translatedCoordinate : coordinate,

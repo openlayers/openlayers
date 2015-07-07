@@ -14,6 +14,58 @@ describe('ol.renderer.canvas.Map', function() {
 
   });
 
+  describe('#forEachFeatureAtCoordinate', function() {
+
+    var layer, map, target;
+
+    beforeEach(function() {
+      target = document.createElement('div');
+      target.style.width = '100px';
+      target.style.height = '100px';
+      document.body.appendChild(target);
+      map = new ol.Map({
+        target: target,
+        view: new ol.View({
+          center: [0, 0],
+          zoom: 0
+        })
+      });
+      layer = new ol.layer.Vector({
+        source: new ol.source.Vector({
+          features: [
+            new ol.Feature({
+              geometry: new ol.geom.Point([0, 0])
+            })
+          ]
+        })
+      });
+    });
+
+    afterEach(function() {
+      map.setTarget(null);
+      document.body.removeChild(target);
+    });
+
+    it('always includes unmanaged layers', function() {
+      layer.setMap(map);
+      map.renderSync();
+      var cb = sinon.spy();
+      map.forEachFeatureAtPixel(map.getPixelFromCoordinate([0, 0]), cb, null,
+          function() { return false; });
+      expect(cb).to.be.called();
+    });
+
+    it('filters managed layers', function() {
+      map.addLayer(layer);
+      map.renderSync();
+      cb = sinon.spy();
+      map.forEachFeatureAtPixel(map.getPixelFromCoordinate([0, 0]), cb, null,
+          function() { return false; });
+      expect(cb).to.not.be.called();
+    });
+
+  });
+
   describe('#renderFrame()', function() {
     var layer, map, renderer;
 
@@ -36,8 +88,11 @@ describe('ol.renderer.canvas.Map', function() {
 });
 
 
-goog.require('ol.layer.Vector');
+goog.require('ol.Feature');
 goog.require('ol.Map');
+goog.require('ol.View');
+goog.require('ol.geom.Point');
+goog.require('ol.layer.Vector');
 goog.require('ol.renderer.canvas.Layer');
 goog.require('ol.renderer.canvas.Map');
 goog.require('ol.source.Vector');
