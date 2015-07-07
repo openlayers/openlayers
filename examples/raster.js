@@ -7,6 +7,9 @@ goog.require('ol.layer.Tile');
 goog.require('ol.source.BingMaps');
 goog.require('ol.source.Raster');
 
+var minTgi = 0;
+var maxTgi = 25;
+
 function tgi(pixels, data) {
   var pixel = pixels[0];
   var r = pixel[0] / 255;
@@ -17,10 +20,12 @@ function tgi(pixels, data) {
   return pixels;
 }
 
-
 function summarize(pixels, data) {
-  var value = pixels[0][0];
-  data.counts.increment(value);
+  var value = Math.floor(pixels[0][0]);
+  var counts = data.counts;
+  if (value >= counts.min && value < counts.max) {
+    counts.values[value - counts.min] += 1;
+  }
   return pixels;
 }
 
@@ -47,18 +52,28 @@ var raster = new ol.source.Raster({
   sources: [bing],
   operations: [tgi, summarize, color]
 });
+raster.set('threshold', 10);
 
-var counts = new Counts(0, 25);
-var threshold = 10;
+function createCounts(min, max) {
+  var len = max - min;
+  var values = new Array(len);
+  for (var i = 0; i < len; ++i) {
+    values[i] = 0;
+  }
+  return {
+    min: min,
+    max: max,
+    values: values
+  };
+}
 
 raster.on('beforeoperations', function(event) {
-  counts.clear();
-  event.data.counts = counts;
-  event.data.threshold = threshold;
+  event.data.counts = createCounts(minTgi, maxTgi);
+  event.data.threshold = raster.get('threshold');
 });
 
 raster.on('afteroperations', function(event) {
-  schedulePlot(event.resolution, event.data.counts);
+  schedulePlot(event.resolution, event.data.counts, event.data.threshold);
 });
 
 var map = new ol.Map({
@@ -80,54 +95,19 @@ var map = new ol.Map({
 });
 
 
-
-/**
- * Maintain counts of values between a min and max.
- * @param {number} min The minimum value (inclusive).
- * @param {[type]} max The maximum value (exclusive).
- * @constructor
- */
-function Counts(min, max) {
-  this.min = min;
-  this.max = max;
-  this.values = new Array(max - min);
-}
-
-
-/**
- * Clear all counts.
- */
-Counts.prototype.clear = function() {
-  for (var i = 0, ii = this.values.length; i < ii; ++i) {
-    this.values[i] = 0;
-  }
-};
-
-
-/**
- * Increment the count for a value.
- * @param {number} value The value.
- */
-Counts.prototype.increment = function(value) {
-  value = Math.floor(value);
-  if (value >= this.min && value < this.max) {
-    this.values[value - this.min] += 1;
-  }
-};
-
 var timer = null;
-function schedulePlot(resolution, counts) {
+function schedulePlot(resolution, counts, threshold) {
   if (timer) {
     clearTimeout(timer);
     timer = null;
   }
-  timer = setTimeout(plot.bind(null, resolution, counts), 1000 / 60);
+  timer = setTimeout(plot.bind(null, resolution, counts, threshold), 1000 / 60);
 }
 
 var barWidth = 15;
 var plotHeight = 150;
 var chart = d3.select('#plot').append('svg')
-    .attr('width', barWidth * counts.values.length)
+    .attr('width', barWidth * (maxTgi - minTgi))
     .attr('height', plotHeight);
 
 var chartRect = chart[0][0].getBoundingClientRect();
@@ -135,7 +115,7 @@ var chartRect = chart[0][0].getBoundingClientRect();
 var tip = d3.select(document.body).append('div')
     .attr('class', 'tip');
 
-function plot(resolution, counts) {
+function plot(resolution, counts, threshold) {
   var yScale = d3.scale.linear()
       .domain([0, d3.max(counts.values)])
       .range([0, plotHeight]);
@@ -161,7 +141,8 @@ function plot(resolution, counts) {
     threshold = counts.min +
         Math.floor((d3.event.pageX - chartRect.left) / barWidth);
     if (old !== threshold) {
-      map.render();
+      raster.set('threshold', threshold);
+      raster.changed();
     }
   });
 
