@@ -1,0 +1,16 @@
+---
+template: example.html
+title: ArcGIS REST from Capabilities example
+shortdesc: Example of how to create the correct configuration from the ArcGIS REST capabilities JSON endpoint.
+docs: >
+  This example shows how to use an ArcGIS REST MapService, ImageService or TileService.
+  The correct source type will be created based on the capabilities JSON response.
+tags: arcgis, tile, tilelayer, rest, capabilities, xyz, arcgisrest"
+---
+<div class="row-fluid">
+  <div class="span12">
+    <input id="caps-url" value="http://sampleserver1.arcgisonline.com/ArcGIS/rest/services/Specialty/ESRI_StateCityHighway_USA/MapServer" style="width:800px"></input>
+    <button id="get-caps">Connect</button>
+    <div id="map" class="map"></div>
+  </div>
+</div>
