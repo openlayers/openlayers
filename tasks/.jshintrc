@@ -12,6 +12,7 @@
   "globals": {
     "Buffer": false,
     "__dirname": false,
+    "__filename": false,
     "exports": true,
     "module": false,
     "process": false,
