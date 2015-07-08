@@ -13,6 +13,64 @@ describe('ol.TileQueue', function() {
     }
   }
 
+  var tileId = 0;
+  function createImageTile() {
+    ++tileId;
+    var tileCoord = [tileId, tileId, tileId];
+    var state = ol.TileState.IDLE;
+    var src = 'data:image/gif;base64,R0lGODlhAQABAPAAAP8AAP///' +
+        'yH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==#' + tileId;
+
+    return new ol.ImageTile(tileCoord, state, src, null,
+        ol.source.Image.defaultImageLoadFunction);
+  }
+
+  describe('#loadMoreTiles()', function() {
+    var noop = function() {};
+
+    it('works when tile queues share tiles', function(done) {
+      var q1 = new ol.TileQueue(noop, noop);
+      var q2 = new ol.TileQueue(noop, noop);
+
+      var numTiles = 20;
+      for (var i = 0; i < numTiles; ++i) {
+        var tile = createImageTile();
+        q1.enqueue([tile]);
+        q2.enqueue([tile]);
+      }
+
+      var maxLoading = numTiles / 2;
+
+      expect(q1.getTilesLoading()).to.equal(0);
+      expect(q2.getTilesLoading()).to.equal(0);
+
+      // ask both to load
+      q1.loadMoreTiles(maxLoading, maxLoading);
+      q2.loadMoreTiles(maxLoading, maxLoading);
+
+      // since tiles can only load once, we expect one queue to load them
+      expect(q1.getTilesLoading()).to.equal(maxLoading);
+      expect(q2.getTilesLoading()).to.equal(0);
+
+      // ask both to load more
+      q1.loadMoreTiles(maxLoading, maxLoading);
+      q2.loadMoreTiles(maxLoading, maxLoading);
+
+      // after the first is saturated, the second should start loading
+      expect(q1.getTilesLoading()).to.equal(maxLoading);
+      expect(q2.getTilesLoading()).to.equal(maxLoading);
+
+      // let all tiles load
+      setTimeout(function() {
+        expect(q1.getTilesLoading()).to.equal(0);
+        expect(q2.getTilesLoading()).to.equal(0);
+        done();
+      }, 20);
+
+    });
+
+  });
+
   describe('heapify', function() {
     it('does convert an arbitrary array into a heap', function() {
 
@@ -56,6 +114,9 @@ describe('ol.TileQueue', function() {
   });
 });
 
+goog.require('ol.ImageTile');
 goog.require('ol.Tile');
+goog.require('ol.TileState');
 goog.require('ol.TileQueue');
+goog.require('ol.source.Image');
 goog.require('ol.structs.PriorityQueue');
