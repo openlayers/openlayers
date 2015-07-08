@@ -29,7 +29,7 @@ document.getElementById('get-caps').addEventListener('click', function() {
         alert(config.error.message + '\n' +
             config.error.details.join('\n'));
       } else {
-        var generator = new LayerGenerator({config: config, url: capsUrl});
+        var generator = new ol3Esri.LayerGenerator({config: config, url: capsUrl});
         var layer = generator.createLayer();
         var fullExtent = generator.getFullExtent();
         var resolutions = generator.getResolutions();
