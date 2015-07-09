@@ -56,10 +56,11 @@ ol.reproj.calculateSourceResolution = function(sourceProj, targetProj,
  * @param {ol.reproj.Triangulation} triangulation
  * @param {Array.<{extent: ol.Extent,
  *                 image: (HTMLCanvasElement|Image)}>} sources
+ * @param {boolean=} opt_renderEdges
  */
 ol.reproj.renderTriangles = function(context,
     sourceResolution, sourceExtent, targetResolution, targetExtent,
-    triangulation, sources) {
+    triangulation, sources, opt_renderEdges) {
 
   var wrapXShiftDistance = !goog.isNull(sourceExtent) ?
       ol.extent.getWidth(sourceExtent) : 0;
@@ -210,7 +211,10 @@ ol.reproj.renderTriangles = function(context,
     context.closePath();
     context.clip();
 
-    context.save();
+    if (opt_renderEdges) {
+      context.save();
+    }
+
     context.translate(srcDataExtent[0] - srcNumericalShiftX,
                       srcDataExtent[3] - srcNumericalShiftY);
 
@@ -225,11 +229,11 @@ ol.reproj.renderTriangles = function(context,
       context.drawImage(stitchContext.canvas, 0, 0);
     }
 
-    context.restore();
+    if (opt_renderEdges) {
+      context.restore();
 
-    if (goog.DEBUG) {
       context.strokeStyle = 'black';
-      context.lineWidth = 2 * pixelSize;
+      context.lineWidth = pixelSize;
       context.beginPath();
       context.moveTo(x0, y0);
       context.lineTo(x1, y1);

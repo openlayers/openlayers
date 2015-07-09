@@ -84,6 +84,12 @@ ol.source.TileImage = function(options) {
    * @type {Object.<string, ol.tilegrid.TileGrid>}
    */
   this.tileGridForProjection = {};
+
+  /**
+   * @private
+   * @type {boolean}
+   */
+  this.renderReprojectionEdges_ = false;
 };
 goog.inherits(ol.source.TileImage, ol.source.Tile);
 
@@ -198,7 +204,7 @@ ol.source.TileImage.prototype.getTile =
           projection, targetTileGrid,
           z, x, y, pixelRatio, goog.bind(function(z, x, y, pixelRatio) {
             return this.getTileInternal(z, x, y, pixelRatio, sourceProjection);
-          }, this));
+          }, this), this.renderReprojectionEdges_);
 
       cache.set(tileCoordKey, tile);
       return tile;
@@ -284,6 +290,21 @@ ol.source.TileImage.prototype.handleTileChange_ = function(event) {
           new ol.source.TileEvent(ol.source.TileEventType.TILELOADERROR, tile));
       break;
   }
+};
+
+
+/**
+ * Sets whether to render reprojection edges or not (usually for debugging).
+ * @param {boolean} render
+ * @api
+ */
+ol.source.TileImage.prototype.setRenderReprojectionEdges = function(render) {
+  if (this.renderReprojectionEdges_ == render) return;
+  this.renderReprojectionEdges_ = render;
+  goog.object.forEach(this.tileCacheForProjection, function(tileCache) {
+    tileCache.clear();
+  });
+  this.changed();
 };
 
 

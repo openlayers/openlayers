@@ -28,10 +28,18 @@ goog.require('ol.reproj.Triangulation');
  * @param {number} y
  * @param {number} pixelRatio
  * @param {function(number, number, number, number) : ol.Tile} getTileFunction
+ * @param {boolean=} opt_renderEdges
  */
 ol.reproj.Tile = function(sourceProj, sourceTileGrid,
-    targetProj, targetTileGrid, z, x, y, pixelRatio, getTileFunction) {
+    targetProj, targetTileGrid, z, x, y, pixelRatio, getTileFunction,
+    opt_renderEdges) {
   goog.base(this, [z, x, y], ol.TileState.IDLE);
+
+  /**
+   * @private
+   * @type {boolean}
+   */
+  this.renderEdges_ = goog.isDef(opt_renderEdges) ? opt_renderEdges : false;
 
   /**
    * @private
@@ -239,18 +247,12 @@ ol.reproj.Tile.prototype.reproject_ = function() {
   var context = ol.dom.createCanvasContext2D(width, height);
   context.imageSmoothingEnabled = true;
 
-  if (goog.DEBUG) {
-    context.fillStyle =
-        sources.length === 0 ? 'rgba(255,0,0,.8)' :
-        (sources.length == 1 ? 'rgba(0,255,0,.3)' : 'rgba(0,0,255,.1)');
-    context.fillRect(0, 0, width, height);
-  }
-
   if (sources.length > 0) {
     var targetExtent = this.targetTileGrid_.getTileCoordExtent(tileCoord);
     ol.reproj.renderTriangles(context,
         srcResolution, this.sourceTileGrid_.getExtent(),
-        targetResolution, targetExtent, this.triangulation_, sources);
+        targetResolution, targetExtent, this.triangulation_, sources,
+        this.renderEdges_);
   }
 
   this.canvas_ = context.canvas;
