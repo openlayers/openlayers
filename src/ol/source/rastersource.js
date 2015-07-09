@@ -318,7 +318,10 @@ ol.source.Raster.prototype.onWorkerComplete_ =
   this.dispatchEvent(new ol.source.RasterEvent(
       ol.source.RasterEventType.AFTEROPERATIONS, frameState, data));
 
-  this.canvasContext_.putImageData(output, 0, 0);
+  var resolution = frameState.viewState.resolution / frameState.pixelRatio;
+  if (!this.isDirty_(frameState.extent, resolution)) {
+    this.canvasContext_.putImageData(output, 0, 0);
+  }
 
   callback(null);
 };
