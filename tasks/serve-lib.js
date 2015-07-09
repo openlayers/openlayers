@@ -41,14 +41,44 @@ var createServer = exports.createServer = function(callback) {
 };
 
 /**
+ * Try listening for incoming connections on a range of ports.
+ * @param {number} min Minimum port to try.
+ * @param {number} max Maximum port to try.
+ * @param {http.Server} server The server.
+ * @param {function(Error)} callback Callback called with any error.
+ */
+function listen(min, max, server, callback) {
+  function _listen(port) {
+    server.once('error', function(err) {
+      if (err.code === 'EADDRINUSE') {
+        log.warn(name, 'Port %d in use, trying next one', port);
+        ++port;
+        if (port < max) {
+          _listen(port);
+        } else {
+          callback(new Error('Could not find an open port'));
+        }
+      } else {
+        callback(err);
+      }
+    });
+    server.listen(port);
+  }
+  server.once('listening', function() {
+    callback(null);
+  });
+  _listen(min);
+}
+
+/**
  * If running this module directly start the server.
  */
 if (require.main === module) {
   var options = nomnom.options({
     port: {
       abbr: 'p',
-      default: 3001,
-      help: 'Port for incoming connections',
+      default: 3000,
+      help: 'Port for incoming connections (will try additional ports if used)',
       metavar: 'PORT'
     },
     loglevel: {
@@ -70,13 +100,13 @@ if (require.main === module) {
       log.error(name, err.message);
       process.exit(1);
     }
-    server.listen(options.port, function() {
+    listen(options.port, options.port + 4, server, function(err) {
+      if (err) {
+        log.error(name, 'Server failed to start: ' + err.message);
+        process.exit(1);
+      }
       log.info(name, 'Debug server running http://localhost:' +
-          options.port + '/loader.js (Ctrl+C to stop)');
-    });
-    server.on('error', function(err) {
-      log.error(name, 'Server failed to start: ' + err.message);
-      process.exit(1);
+          server.address().port + '/loader.js (Ctrl+C to stop)');
     });
   });
 
