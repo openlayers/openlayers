@@ -161,9 +161,8 @@ ol.reproj.renderTriangles = function(context,
     }
 
     // Shift all the source points to improve numerical stability
-    // of all the subsequent calculations.
-    // The [x0, y0] is used here, because it should achieve reasonable results
-    // but any values could actually be chosen.
+    // of all the subsequent calculations. The [x0, y0] is used here.
+    // This is also used to simplify the linear system.
     var srcNumericalShiftX = x0, srcNumericalShiftY = y0;
     x0 = 0;
     y0 = 0;
@@ -173,20 +172,18 @@ ol.reproj.renderTriangles = function(context,
     y2 -= srcNumericalShiftY;
 
     var augmentedMatrix = [
-      [x0, y0, 1, 0, 0, 0, u0 / targetResolution],
-      [x1, y1, 1, 0, 0, 0, u1 / targetResolution],
-      [x2, y2, 1, 0, 0, 0, u2 / targetResolution],
-      [0, 0, 0, x0, y0, 1, v0 / targetResolution],
-      [0, 0, 0, x1, y1, 1, v1 / targetResolution],
-      [0, 0, 0, x2, y2, 1, v2 / targetResolution]
+      [x1, y1, 0, 0, (u1 - u0) / targetResolution],
+      [x2, y2, 0, 0, (u2 - u0) / targetResolution],
+      [0, 0, x1, y1, (v1 - v0) / targetResolution],
+      [0, 0, x2, y2, (v2 - v0) / targetResolution]
     ];
     var coefs = ol.math.solveLinearSystem(augmentedMatrix);
     if (goog.isNull(coefs)) {
       return;
     }
 
-    context.setTransform(coefs[0], coefs[3], coefs[1],
-                         coefs[4], coefs[2], coefs[5]);
+    context.setTransform(coefs[0], coefs[2], coefs[1], coefs[3],
+                         u0 / targetResolution, v0 / targetResolution);
 
     var pixelSize = sourceResolution;
     var centroid = [(x0 + x1 + x2) / 3, (y0 + y1 + y2) / 3];
