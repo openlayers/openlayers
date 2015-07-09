@@ -39,6 +39,13 @@ ol.source.Cluster = function(options) {
   this.resolution_ = undefined;
 
   /**
+   * @type {function}
+   * @private
+   */
+  this.shouldCluster_ = goog.isDef(options.shouldCluster) ? options.shouldCluster : function(feature,neighbor){return true;};
+
+  
+  /**
    * @type {number}
    * @private
    */
@@ -129,6 +136,13 @@ ol.source.Cluster.prototype.cluster_ = function() {
       var neighbors = this.source_.getFeaturesInExtent(extent);
       goog.asserts.assert(neighbors.length >= 1, 'at least one neighbor found');
       neighbors = goog.array.filter(neighbors, function(neighbor) {
+	  
+		// check if neighbor is not the feature used to find neigbors, then check if it should cluster
+        if ((feature != neighbor) &&   
+            !this.shouldCluster_(feature,neighbor)){
+          return false;
+        }
+		
         var uid = goog.getUid(neighbor).toString();
         if (!goog.object.containsKey(clustered, uid)) {
           clustered[uid] = true;
