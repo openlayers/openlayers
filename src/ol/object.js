@@ -198,12 +198,18 @@ ol.Object.prototype.notify = function(key, oldValue) {
  * Sets a value.
  * @param {string} key Key name.
  * @param {*} value Value.
+ * @param {boolean} notify update propertie silently
  * @api stable
  */
-ol.Object.prototype.set = function(key, value) {
-  var oldValue = this.values_[key];
-  this.values_[key] = value;
-  this.notify(key, oldValue);
+ol.Object.prototype.set = function (key, value, notify) {
+    if (goog.isDef(notify) && notify === false) {
+        this.values_[key] = value;
+    }
+    else {
+        var oldValue = this.values_[key];
+        this.values_[key] = value;
+        this.notify(key, oldValue);
+    }
 };
 
 
@@ -211,12 +217,13 @@ ol.Object.prototype.set = function(key, value) {
  * Sets a collection of key-value pairs.  Note that this changes any existing
  * properties and adds new ones (it does not remove any existing properties).
  * @param {Object.<string, *>} values Values.
+ * @param {boolean} notify update propertie silently
  * @api stable
  */
-ol.Object.prototype.setProperties = function(values) {
+ol.Object.prototype.setProperties = function(values,notify) {
   var key;
   for (key in values) {
-    this.set(key, values[key]);
+    this.set(key, values[key],notify);
   }
 };
 
@@ -225,11 +232,14 @@ ol.Object.prototype.setProperties = function(values) {
  * Unsets a property.
  * @param {string} key Key name.
  * @api stable
+ * @param {boolean} notify update propertie silently
  */
-ol.Object.prototype.unset = function(key) {
+ol.Object.prototype.unset = function(key,notify) {
   if (key in this.values_) {
     var oldValue = this.values_[key];
     delete this.values_[key];
-    this.notify(key, oldValue);
+    if (!goog.isDef(notify) || notify !== false) {
+      this.notify(key, oldValue);
+    }
   }
 };
