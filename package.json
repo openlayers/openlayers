@@ -12,7 +12,8 @@
     "install": "node tasks/install.js",
     "postinstall": "closure-util update",
     "start": "node tasks/serve.js",
-    "test": "node tasks/test.js"
+    "test": "node tasks/test.js",
+    "debug-server": "node tasks/serve-lib.js"
   },
   "main": "dist/ol.js",
   "repository": {
@@ -25,7 +26,7 @@
   },
   "dependencies": {
     "async": "0.9.0",
-    "closure-util": "1.4.0",
+    "closure-util": "1.5.0",
     "fs-extra": "0.12.0",
     "glob": "5.0.3",
     "graceful-fs": "3.0.2",
