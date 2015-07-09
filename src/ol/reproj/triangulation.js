@@ -8,13 +8,9 @@ goog.require('ol.proj');
 
 /**
  * Single triangle; consists of 3 source points and 3 target points.
- *   `needsShift` can be used to indicate that the whole triangle has to be
- *   shifted during reprojection. This is needed for triangles crossing edges
- *   of the source projection (dateline).
  *
  * @typedef {{source: Array.<ol.Coordinate>,
- *            target: Array.<ol.Coordinate>,
- *            needsShift: boolean}}
+ *            target: Array.<ol.Coordinate>}}
  */
 ol.reproj.Triangle;
 
@@ -72,12 +68,19 @@ ol.reproj.Triangulation = function(sourceProj, targetProj, targetExtent,
   this.triangles_ = [];
 
   /**
-   * Indicates that _any_ of the triangles has to be shifted during
-   *   reprojection. See {@link ol.reproj.Triangle}.
+   * @type {ol.Extent}
+   * @private
+   */
+  this.trianglesSourceExtent_ = null;
+
+  /**
+   * Indicates that source coordinates has to be shifted during reprojection.
+   * This is needed when the triangulation crosses
+   * edge of the source projection (dateline).
    * @type {boolean}
    * @private
    */
-  this.needsShift_ = false;
+  this.wrapsXInSource_ = false;
 
   /**
    * @type {number}
@@ -108,24 +111,14 @@ ol.reproj.Triangulation = function(sourceProj, targetProj, targetExtent,
  * @param {ol.Coordinate} aSrc
  * @param {ol.Coordinate} bSrc
  * @param {ol.Coordinate} cSrc
- * @param {boolean} wrapsX
  * @private
  */
 ol.reproj.Triangulation.prototype.addTriangle_ = function(a, b, c,
-    aSrc, bSrc, cSrc, wrapsX) {
-  // wrapsX could be determined by transforming centroid of the target triangle.
-  // If the transformed centroid is outside the transformed triangle,
-  // the triangle wraps around projection extent.
-  // However, this would require additional transformation call.
-
+                                                          aSrc, bSrc, cSrc) {
   this.triangles_.push({
     source: [aSrc, bSrc, cSrc],
-    target: [a, b, c],
-    needsShift: wrapsX
+    target: [a, b, c]
   });
-  if (wrapsX) {
-    this.needsShift_ = true;
-  }
 };
 
 
@@ -205,8 +198,12 @@ ol.reproj.Triangulation.prototype.addQuadIfValid_ = function(a, b, c, d,
     }
   }
 
-  this.addTriangle_(a, c, d, aSrc, cSrc, dSrc, wrapsX);
-  this.addTriangle_(a, b, c, aSrc, bSrc, cSrc, wrapsX);
+  if (wrapsX) {
+    this.wrapsXInSource_ = true;
+  }
+
+  this.addTriangle_(a, c, d, aSrc, cSrc, dSrc);
+  this.addTriangle_(a, b, c, aSrc, bSrc, cSrc);
 };
 
 
@@ -214,9 +211,13 @@ ol.reproj.Triangulation.prototype.addQuadIfValid_ = function(a, b, c, d,
  * @return {ol.Extent}
  */
 ol.reproj.Triangulation.prototype.calculateSourceExtent = function() {
+  if (!goog.isNull(this.trianglesSourceExtent_)) {
+    return this.trianglesSourceExtent_;
+  }
+
   var extent = ol.extent.createEmpty();
 
-  if (this.needsShift_) {
+  if (this.wrapsXInSource_) {
     // although only some of the triangles are crossing the dateline,
     // all coordiantes need to be "shifted" to be positive
     // to properly calculate the extent (and then possibly shifted back)
@@ -244,7 +245,16 @@ ol.reproj.Triangulation.prototype.calculateSourceExtent = function() {
     });
   }
 
+  this.trianglesSourceExtent_ = extent;
   return extent;
+};
+
+
+/**
+ * @return {boolean}
+ */
+ol.reproj.Triangulation.prototype.getWrapsXInSource = function() {
+  return this.wrapsXInSource_;
 };
 
 

@@ -2,6 +2,7 @@ goog.provide('ol.reproj');
 
 goog.require('goog.array');
 goog.require('goog.math');
+goog.require('ol.dom');
 goog.require('ol.extent');
 goog.require('ol.math');
 goog.require('ol.proj');
@@ -60,10 +61,62 @@ ol.reproj.renderTriangles = function(context,
     sourceResolution, sourceExtent, targetResolution, targetExtent,
     triangulation, sources) {
 
-  var shiftDistance = !goog.isNull(sourceExtent) ?
-      ol.extent.getWidth(sourceExtent) : null;
-  var shiftThreshold = !goog.isNull(sourceExtent) ?
-      (sourceExtent[0] + sourceExtent[2]) / 2 : null;
+  var wrapXShiftDistance = !goog.isNull(sourceExtent) ?
+      ol.extent.getWidth(sourceExtent) : 0;
+
+  var wrapXShiftNeeded = triangulation.getWrapsXInSource() &&
+      (wrapXShiftDistance > 0);
+
+  // If possible, stitch the sources shifted to solve the wrapX issue here.
+  // This is not possible if crossing both "dateline" and "prime meridian".
+  var performGlobalWrapXShift = false;
+  if (wrapXShiftNeeded) {
+    var triangulationSrcExtent = triangulation.calculateSourceExtent();
+    var triangulationSrcWidth = goog.math.modulo(
+        ol.extent.getWidth(triangulationSrcExtent), wrapXShiftDistance);
+    performGlobalWrapXShift = triangulationSrcWidth < wrapXShiftDistance / 2;
+  }
+
+  var srcDataExtent = ol.extent.createEmpty();
+  goog.array.forEach(sources, function(src, i, arr) {
+    if (performGlobalWrapXShift) {
+      var srcW = src.extent[2] - src.extent[0];
+      var srcX = goog.math.modulo(src.extent[0], wrapXShiftDistance);
+      ol.extent.extend(srcDataExtent, [srcX, src.extent[1],
+                                       srcX + srcW, src.extent[3]]);
+    } else {
+      ol.extent.extend(srcDataExtent, src.extent);
+    }
+  });
+  if (!goog.isNull(sourceExtent)) {
+    if (wrapXType == ol.reproj.WrapXRendering_.NONE) {
+      srcDataExtent[0] = goog.math.clamp(
+          srcDataExtent[0], sourceExtent[0], sourceExtent[2]);
+      srcDataExtent[2] = goog.math.clamp(
+          srcDataExtent[2], sourceExtent[0], sourceExtent[2]);
+    }
+    srcDataExtent[1] = goog.math.clamp(
+        srcDataExtent[1], sourceExtent[1], sourceExtent[3]);
+    srcDataExtent[3] = goog.math.clamp(
+        srcDataExtent[3], sourceExtent[1], sourceExtent[3]);
+  }
+
+  var srcDataWidth = ol.extent.getWidth(srcDataExtent);
+  var srcDataHeight = ol.extent.getHeight(srcDataExtent);
+  var stitchContext = ol.dom.createCanvasContext2D(
+      Math.ceil(srcDataWidth / sourceResolution),
+      Math.ceil(srcDataHeight / sourceResolution));
+
+  stitchContext.scale(1 / sourceResolution, 1 / sourceResolution);
+  stitchContext.translate(-srcDataExtent[0], srcDataExtent[3]);
+
+  goog.array.forEach(sources, function(src, i, arr) {
+    var xPos = performGlobalWrapXShift ?
+        goog.math.modulo(src.extent[0], wrapXShiftDistance) : src.extent[0];
+    stitchContext.drawImage(src.image, xPos, -src.extent[3],
+        src.extent[2] - src.extent[0], src.extent[3] - src.extent[1]);
+  });
+
   var targetTL = ol.extent.getTopLeft(targetExtent);
 
   goog.array.forEach(triangulation.getTriangles(), function(tri, i, arr) {
@@ -96,23 +149,28 @@ ol.reproj.renderTriangles = function(context,
     var u0 = tgt[0][0] - targetTL[0], v0 = -(tgt[0][1] - targetTL[1]),
         u1 = tgt[1][0] - targetTL[0], v1 = -(tgt[1][1] - targetTL[1]),
         u2 = tgt[2][0] - targetTL[0], v2 = -(tgt[2][1] - targetTL[1]);
-    if (tri.needsShift && !goog.isNull(shiftDistance)) {
-      x0 = goog.math.modulo(x0, shiftDistance);
-      x1 = goog.math.modulo(x1, shiftDistance);
-      x2 = goog.math.modulo(x2, shiftDistance);
+
+    var performIndividualWrapXShift = !performGlobalWrapXShift &&
+        (wrapXShiftNeeded &&
+        (Math.max(x0, x1, x2) - Math.min(x0, x1, x2)) > wrapXShiftDistance / 2);
+
+    if (performGlobalWrapXShift || performIndividualWrapXShift) {
+      x0 = goog.math.modulo(x0, wrapXShiftDistance);
+      x1 = goog.math.modulo(x1, wrapXShiftDistance);
+      x2 = goog.math.modulo(x2, wrapXShiftDistance);
     }
 
     // Shift all the source points to improve numerical stability
     // of all the subsequent calculations.
     // The [x0, y0] is used here, because it should achieve reasonable results
     // but any values could actually be chosen.
-    var srcShiftX = x0, srcShiftY = y0;
+    var srcNumericalShiftX = x0, srcNumericalShiftY = y0;
     x0 = 0;
     y0 = 0;
-    x1 -= srcShiftX;
-    y1 -= srcShiftY;
-    x2 -= srcShiftX;
-    y2 -= srcShiftY;
+    x1 -= srcNumericalShiftX;
+    y1 -= srcNumericalShiftY;
+    x2 -= srcNumericalShiftX;
+    y2 -= srcNumericalShiftY;
 
     var augmentedMatrix = [
       [x0, y0, 1, 0, 0, 0, u0 / targetResolution],
@@ -155,27 +213,22 @@ ol.reproj.renderTriangles = function(context,
     context.closePath();
     context.clip();
 
-    goog.array.forEach(sources, function(src, i, arr) {
-      context.save();
-      var dataTL = ol.extent.getTopLeft(src.extent);
-      context.translate(dataTL[0] - srcShiftX, dataTL[1] - srcShiftY);
+    context.save();
+    context.translate(srcDataExtent[0] - srcNumericalShiftX,
+                      srcDataExtent[3] - srcNumericalShiftY);
 
-      // if the triangle needs to be shifted (because of the dateline wrapping),
-      // shift back only the source images that need it
-      if (tri.needsShift && !goog.isNull(shiftDistance) &&
-          dataTL[0] < shiftThreshold) {
-        context.translate(shiftDistance, 0);
-      }
-      context.scale(sourceResolution, -sourceResolution);
+    context.scale(sourceResolution, -sourceResolution);
 
-      // the image has to be scaled by half a pixel in every direction
-      //    in order to prevent artifacts between the original tiles
-      //    that are introduced by the canvas antialiasing.
-      context.drawImage(src.image, -0.5, -0.5,
-                        src.image.width + 1, src.image.height + 1);
+    context.drawImage(stitchContext.canvas, 0, 0);
 
-      context.restore();
-    });
+    if (performIndividualWrapXShift) {
+      // It was not possible to solve the wrapX shifting during stitching ->
+      //   render the data second time (shifted) to solve the wrapX.
+      context.translate(wrapXShiftDistance / sourceResolution, 0);
+      context.drawImage(stitchContext.canvas, 0, 0);
+    }
+
+    context.restore();
 
     if (goog.DEBUG) {
       context.strokeStyle = 'black';
