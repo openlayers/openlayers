@@ -47,6 +47,18 @@ ol.reproj.calculateSourceResolution = function(sourceProj, targetProj,
 
 
 /**
+ * Type of solution used to solve the wrapX issue.
+ * @enum {number}
+ * @private
+ */
+ol.reproj.WrapXRendering_ = {
+  NONE: 0,
+  STITCH_SHIFT: 1,
+  STITCH_EXTENDED: 2
+};
+
+
+/**
  * Renders the source into the canvas based on the triangulation.
  * @param {CanvasRenderingContext2D} context
  * @param {number} sourceResolution
@@ -65,22 +77,25 @@ ol.reproj.renderTriangles = function(context,
   var wrapXShiftDistance = !goog.isNull(sourceExtent) ?
       ol.extent.getWidth(sourceExtent) : 0;
 
-  var wrapXShiftNeeded = triangulation.getWrapsXInSource() &&
-      (wrapXShiftDistance > 0);
+  var wrapXType = ol.reproj.WrapXRendering_.NONE;
 
-  // If possible, stitch the sources shifted to solve the wrapX issue here.
-  // This is not possible if crossing both "dateline" and "prime meridian".
-  var performGlobalWrapXShift = false;
-  if (wrapXShiftNeeded) {
+  if (triangulation.getWrapsXInSource() && wrapXShiftDistance > 0) {
+    // If possible, stitch the sources shifted to solve the wrapX issue here.
+    // This is not possible if crossing both "dateline" and "prime meridian".
     var triangulationSrcExtent = triangulation.calculateSourceExtent();
     var triangulationSrcWidth = goog.math.modulo(
         ol.extent.getWidth(triangulationSrcExtent), wrapXShiftDistance);
-    performGlobalWrapXShift = triangulationSrcWidth < wrapXShiftDistance / 2;
+
+    if (triangulationSrcWidth < wrapXShiftDistance / 2) {
+      wrapXType = ol.reproj.WrapXRendering_.STITCH_SHIFT;
+    } else {
+      wrapXType = ol.reproj.WrapXRendering_.STITCH_EXTENDED;
+    }
   }
 
   var srcDataExtent = ol.extent.createEmpty();
   goog.array.forEach(sources, function(src, i, arr) {
-    if (performGlobalWrapXShift) {
+    if (wrapXType == ol.reproj.WrapXRendering_.STITCH_SHIFT) {
       var srcW = src.extent[2] - src.extent[0];
       var srcX = goog.math.modulo(src.extent[0], wrapXShiftDistance);
       ol.extent.extend(srcDataExtent, [srcX, src.extent[1],
@@ -104,21 +119,40 @@ ol.reproj.renderTriangles = function(context,
 
   var srcDataWidth = ol.extent.getWidth(srcDataExtent);
   var srcDataHeight = ol.extent.getHeight(srcDataExtent);
+  var canvasWidthInUnits;
+  if (wrapXType == ol.reproj.WrapXRendering_.STITCH_EXTENDED) {
+    canvasWidthInUnits = 2 * wrapXShiftDistance;
+  } else {
+    canvasWidthInUnits = srcDataWidth;
+  }
+
   var stitchContext = ol.dom.createCanvasContext2D(
-      Math.ceil(srcDataWidth / sourceResolution),
-      Math.ceil(srcDataHeight / sourceResolution));
+      Math.round(canvasWidthInUnits / sourceResolution),
+      Math.round(srcDataHeight / sourceResolution));
 
   stitchContext.scale(1 / sourceResolution, 1 / sourceResolution);
   stitchContext.translate(-srcDataExtent[0], srcDataExtent[3]);
 
   goog.array.forEach(sources, function(src, i, arr) {
-    var xPos = performGlobalWrapXShift ?
-        goog.math.modulo(src.extent[0], wrapXShiftDistance) : src.extent[0];
-    stitchContext.drawImage(src.image, xPos, -src.extent[3],
-        src.extent[2] - src.extent[0], src.extent[3] - src.extent[1]);
+    var xPos = src.extent[0];
+    var yPos = -src.extent[3];
+    var srcWidth = ol.extent.getWidth(src.extent);
+    var srcHeight = ol.extent.getHeight(src.extent);
+
+    if (wrapXType == ol.reproj.WrapXRendering_.STITCH_SHIFT) {
+      xPos = goog.math.modulo(xPos, wrapXShiftDistance);
+    }
+    stitchContext.drawImage(src.image, xPos, yPos, srcWidth, srcHeight);
+
+    if (wrapXType == ol.reproj.WrapXRendering_.STITCH_EXTENDED) {
+      stitchContext.drawImage(src.image, wrapXShiftDistance + xPos, yPos,
+                              srcWidth, srcHeight);
+    }
   });
 
   var targetTL = ol.extent.getTopLeft(targetExtent);
+
+  context.globalCompositeOperation = 'copy';
 
   goog.array.forEach(triangulation.getTriangles(), function(tri, i, arr) {
     context.save();
@@ -130,7 +164,7 @@ ol.reproj.renderTriangles = function(context,
      * To optimize number of context calls and increase numerical stability,
      * we also do the following operations:
      * trans(-topLeftExtentCorner), scale(1 / targetResolution), scale(1, -1)
-     * here before solving the linear system.
+     * here before solving the linear system so [ui, vi] are pixel coordinates.
      *
      * Src points: xi, yi
      * Dst points: ui, vi
@@ -147,15 +181,25 @@ ol.reproj.renderTriangles = function(context,
     var x0 = src[0][0], y0 = src[0][1],
         x1 = src[1][0], y1 = src[1][1],
         x2 = src[2][0], y2 = src[2][1];
-    var u0 = tgt[0][0] - targetTL[0], v0 = -(tgt[0][1] - targetTL[1]),
-        u1 = tgt[1][0] - targetTL[0], v1 = -(tgt[1][1] - targetTL[1]),
-        u2 = tgt[2][0] - targetTL[0], v2 = -(tgt[2][1] - targetTL[1]);
+    var u0 = (tgt[0][0] - targetTL[0]) / targetResolution,
+        v0 = -(tgt[0][1] - targetTL[1]) / targetResolution;
+    var u1 = (tgt[1][0] - targetTL[0]) / targetResolution,
+        v1 = -(tgt[1][1] - targetTL[1]) / targetResolution;
+    var u2 = (tgt[2][0] - targetTL[0]) / targetResolution,
+        v2 = -(tgt[2][1] - targetTL[1]) / targetResolution;
 
-    var performIndividualWrapXShift = !performGlobalWrapXShift &&
-        (wrapXShiftNeeded &&
-        (Math.max(x0, x1, x2) - Math.min(x0, x1, x2)) > wrapXShiftDistance / 2);
+    var performWrapXShift = false;
+    if (wrapXType == ol.reproj.WrapXRendering_.STITCH_SHIFT) {
+      performWrapXShift = true;
+    } else if (wrapXType == ol.reproj.WrapXRendering_.STITCH_EXTENDED) {
+      var minX = Math.min(x0, x1, x2);
+      var maxX = Math.max(x0, x1, x2);
 
-    if (performGlobalWrapXShift || performIndividualWrapXShift) {
+      performWrapXShift = (maxX - minX) > wrapXShiftDistance / 2 ||
+          minX <= sourceExtent[0];
+    }
+
+    if (performWrapXShift) {
       x0 = goog.math.modulo(x0, wrapXShiftDistance);
       x1 = goog.math.modulo(x1, wrapXShiftDistance);
       x2 = goog.math.modulo(x2, wrapXShiftDistance);
@@ -173,36 +217,30 @@ ol.reproj.renderTriangles = function(context,
     y2 -= srcNumericalShiftY;
 
     var augmentedMatrix = [
-      [x1, y1, 0, 0, (u1 - u0) / targetResolution],
-      [x2, y2, 0, 0, (u2 - u0) / targetResolution],
-      [0, 0, x1, y1, (v1 - v0) / targetResolution],
-      [0, 0, x2, y2, (v2 - v0) / targetResolution]
+      [x1, y1, 0, 0, u1 - u0],
+      [x2, y2, 0, 0, u2 - u0],
+      [0, 0, x1, y1, v1 - v0],
+      [0, 0, x2, y2, v2 - v0]
     ];
     var coefs = ol.math.solveLinearSystem(augmentedMatrix);
     if (goog.isNull(coefs)) {
       return;
     }
 
-    context.setTransform(coefs[0], coefs[2], coefs[1], coefs[3],
-                         u0 / targetResolution, v0 / targetResolution);
+    var centroidX = (u0 + u1 + u2) / 3, centroidY = (v0 + v1 + v2) / 3;
+    var calcClipPoint = function(u, v) {
+      // Enlarges the triangle by 1 pixel to ensure overlap and rounds to whole
+      // pixels to ensure correct cross-browser behavior.
+      // Gecko does antialiasing differently than WebKit.
 
-    var pixelSize = sourceResolution;
-    var centroid = [(x0 + x1 + x2) / 3, (y0 + y1 + y2) / 3];
-
-    // moves the `point` farther away from the `anchor`
-    var increasePointDistance = function(point, anchor, increment) {
-      var dir = [point[0] - anchor[0], point[1] - anchor[1]];
-      var distance = Math.sqrt(dir[0] * dir[0] + dir[1] * dir[1]);
-      var scaleFactor = (distance + increment) / distance;
-      return [anchor[0] + scaleFactor * dir[0],
-              anchor[1] + scaleFactor * dir[1]];
+      var dX = u - centroidX, dY = v - centroidY;
+      var distance = Math.sqrt(dX * dX + dY * dY);
+      return [Math.round(u + dX / distance), Math.round(v + dY / distance)];
     };
 
-    // enlarge the triangle so that the clip paths of individual triangles
-    //   slightly (1px) overlap to prevent transparency errors on triangle edges
-    var p0 = increasePointDistance([x0, y0], centroid, pixelSize);
-    var p1 = increasePointDistance([x1, y1], centroid, pixelSize);
-    var p2 = increasePointDistance([x2, y2], centroid, pixelSize);
+    var p0 = calcClipPoint(u0, v0);
+    var p1 = calcClipPoint(u1, v1);
+    var p2 = calcClipPoint(u2, v2);
 
     context.beginPath();
     context.moveTo(p0[0], p0[1]);
@@ -211,9 +249,7 @@ ol.reproj.renderTriangles = function(context,
     context.closePath();
     context.clip();
 
-    if (opt_renderEdges) {
-      context.save();
-    }
+    context.setTransform(coefs[0], coefs[2], coefs[1], coefs[3], u0, v0);
 
     context.translate(srcDataExtent[0] - srcNumericalShiftX,
                       srcDataExtent[3] - srcNumericalShiftY);
@@ -221,27 +257,35 @@ ol.reproj.renderTriangles = function(context,
     context.scale(sourceResolution, -sourceResolution);
 
     context.drawImage(stitchContext.canvas, 0, 0);
-
-    if (performIndividualWrapXShift) {
-      // It was not possible to solve the wrapX shifting during stitching ->
-      //   render the data second time (shifted) to solve the wrapX.
-      context.translate(wrapXShiftDistance / sourceResolution, 0);
-      context.drawImage(stitchContext.canvas, 0, 0);
-    }
-
-    if (opt_renderEdges) {
-      context.restore();
-
-      context.strokeStyle = 'black';
-      context.lineWidth = pixelSize;
-      context.beginPath();
-      context.moveTo(x0, y0);
-      context.lineTo(x1, y1);
-      context.lineTo(x2, y2);
-      context.closePath();
-      context.stroke();
-    }
-
     context.restore();
   });
+
+  if (opt_renderEdges) {
+    context.save();
+
+    context.globalCompositeOperation = 'source-over';
+
+    context.strokeStyle = 'black';
+    context.lineWidth = 1;
+
+    goog.array.forEach(triangulation.getTriangles(), function(tri, i, arr) {
+
+      var tgt = tri.target;
+      var u0 = (tgt[0][0] - targetTL[0]) / targetResolution,
+          v0 = -(tgt[0][1] - targetTL[1]) / targetResolution;
+      var u1 = (tgt[1][0] - targetTL[0]) / targetResolution,
+          v1 = -(tgt[1][1] - targetTL[1]) / targetResolution;
+      var u2 = (tgt[2][0] - targetTL[0]) / targetResolution,
+          v2 = -(tgt[2][1] - targetTL[1]) / targetResolution;
+
+      context.beginPath();
+      context.moveTo(u0, v0);
+      context.lineTo(u1, v1);
+      context.lineTo(u2, v2);
+      context.closePath();
+      context.stroke();
+    });
+
+    context.restore();
+  }
 };
