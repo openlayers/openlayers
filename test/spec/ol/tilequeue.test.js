@@ -45,6 +45,7 @@ describe('ol.TileQueue', function() {
 
       var maxLoading = numTiles / 2;
 
+      // and nothing is loading
       expect(q1.getTilesLoading()).to.equal(0);
       expect(q2.getTilesLoading()).to.equal(0);
 
@@ -52,32 +53,20 @@ describe('ol.TileQueue', function() {
       q1.loadMoreTiles(maxLoading, maxLoading);
       q2.loadMoreTiles(maxLoading, maxLoading);
 
-      // since tiles can only load once, we expect one queue to load them
-      expect(q1.getTilesLoading()).to.equal(maxLoading);
-      expect(q2.getTilesLoading()).to.equal(0);
-
-      // however, both queues will be reduced
-      expect(q1.getCount()).to.equal(numTiles - maxLoading);
-      expect(q2.getCount()).to.equal(numTiles - maxLoading);
-
-      // ask both to load more
-      q1.loadMoreTiles(maxLoading, maxLoading);
-      q2.loadMoreTiles(maxLoading, maxLoading);
-
-      // now the second queue will be empty
-      expect(q1.getCount()).to.equal(numTiles - maxLoading);
-      expect(q2.getCount()).to.equal(0);
-
-      // after the first is saturated, the second should start loading
+      // both tiles will be loading the max
       expect(q1.getTilesLoading()).to.equal(maxLoading);
       expect(q2.getTilesLoading()).to.equal(maxLoading);
+
+      // the second queue will be empty now
+      expect(q1.getCount()).to.equal(numTiles - maxLoading);
+      expect(q2.getCount()).to.equal(0);
 
       // let all tiles load
       setTimeout(function() {
         expect(q1.getTilesLoading()).to.equal(0);
         expect(q2.getTilesLoading()).to.equal(0);
 
-        // load again, which will clear the first queue
+        // ask both to load, this should clear q1
         q1.loadMoreTiles(maxLoading, maxLoading);
         q2.loadMoreTiles(maxLoading, maxLoading);
 
