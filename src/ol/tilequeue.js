@@ -94,9 +94,11 @@ ol.TileQueue.prototype.loadMoreTiles = function(maxTotalLoading, maxNewLoads) {
   var i, tile;
   for (i = 0; i < newLoads; ++i) {
     tile = /** @type {ol.Tile} */ (this.dequeue()[0]);
-    goog.events.listen(tile, goog.events.EventType.CHANGE,
-        this.handleTileChange, false, this);
-    tile.load();
+    if (tile.getState() === ol.TileState.IDLE) {
+      goog.events.listen(tile, goog.events.EventType.CHANGE,
+          this.handleTileChange, false, this);
+      tile.load();
+      ++this.tilesLoading_;
+    }
   }
-  this.tilesLoading_ += newLoads;
 };
