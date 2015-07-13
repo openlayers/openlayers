@@ -2474,6 +2474,31 @@ describe('ol.format.KML', function() {
 
   });
 
+  describe('#JSONExport', function() {
+
+    var features;
+    before(function(done) {
+      afterLoadText('spec/ol/format/kml/style.kml', function(xml) {
+        try {
+          features = format.readFeatures(xml);
+        } catch (e) {
+          done(e);
+        }
+        done();
+      });
+    });
+
+    it('feature must not have a properties property', function() {
+      var geojsonFormat = new ol.format.GeoJSON();
+      features.forEach(function(feature) {
+        var geojsonFeature = geojsonFormat.writeFeatureObject(feature);
+        expect(geojsonFeature.properties).to.be(null);
+        JSON.stringify(geojsonFeature);
+      });
+    });
+
+  });
+
   describe('#readName', function() {
 
     it('returns undefined if there is no name', function() {
@@ -2578,6 +2603,7 @@ describe('ol.format.KML', function() {
 goog.require('goog.array');
 goog.require('goog.dom.xml');
 goog.require('ol.Feature');
+goog.require('ol.format.GeoJSON');
 goog.require('ol.format.KML');
 goog.require('ol.geom.GeometryCollection');
 goog.require('ol.geom.GeometryLayout');
