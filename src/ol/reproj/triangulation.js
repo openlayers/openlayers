@@ -20,13 +20,12 @@ ol.reproj.Triangle;
  * @param {ol.proj.Projection} sourceProj
  * @param {ol.proj.Projection} targetProj
  * @param {ol.Extent} targetExtent
- * @param {ol.Extent=} opt_maxSourceExtent
- * @param {number=} opt_maxSubdiv Maximal subdivision.
- * @param {number=} opt_errorThreshold Acceptable error (in source units).
+ * @param {ol.Extent} maxSourceExtent
+ * @param {number} errorThreshold Acceptable error (in source units).
  * @constructor
  */
 ol.reproj.Triangulation = function(sourceProj, targetProj, targetExtent,
-    opt_maxSourceExtent, opt_maxSubdiv, opt_errorThreshold) {
+    maxSourceExtent, errorThreshold) {
 
   /**
    * @type {ol.proj.Projection}
@@ -50,11 +49,8 @@ ol.reproj.Triangulation = function(sourceProj, targetProj, targetExtent,
    * @type {ol.Extent}
    * @private
    */
-  this.maxSourceExtent_ = goog.isDef(opt_maxSourceExtent) ?
-                          opt_maxSourceExtent : null;
+  this.maxSourceExtent_ = maxSourceExtent;
 
-  var errorThreshold = goog.isDef(opt_errorThreshold) ?
-                       opt_errorThreshold : 0; //TODO: define
   /**
    * @type {number}
    * @private
@@ -99,7 +95,7 @@ ol.reproj.Triangulation = function(sourceProj, targetProj, targetExtent,
 
   this.addQuadIfValid_(tlDst, trDst, brDst, blDst,
                        tlDstSrc, trDstSrc, brDstSrc, blDstSrc,
-                       opt_maxSubdiv || 0);
+                       ol.RASTER_REPROJ_MAX_SUBDIVISION);
 };
 
 
@@ -155,7 +151,7 @@ ol.reproj.Triangulation.prototype.addQuadIfValid_ = function(a, b, c, d,
 
   if (maxSubdiv > 0) {
     var needsSubdivision = !wrapsX && this.sourceProj_.isGlobal() &&
-                           srcCoverageX > 0.25; //TODO: define
+                           srcCoverageX > ol.RASTER_REPROJ_MAX_TRIANGLE_WIDTH;
 
     var center = [(a[0] + c[0]) / 2, (a[1] + c[1]) / 2];
     var centerSrc = this.transformInv_(center);

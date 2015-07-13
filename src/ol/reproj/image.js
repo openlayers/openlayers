@@ -63,7 +63,7 @@ ol.reproj.Image = function(sourceProj, targetProj,
    * @type {!ol.reproj.Triangulation}
    */
   this.triangulation_ = new ol.reproj.Triangulation(
-      sourceProj, targetProj, limitedTargetExtent, this.maxSourceExtent_);
+      sourceProj, targetProj, limitedTargetExtent, this.maxSourceExtent_, 0);
 
   /**
    * @private

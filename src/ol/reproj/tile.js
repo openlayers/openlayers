@@ -99,7 +99,7 @@ ol.reproj.Tile = function(sourceProj, sourceTileGrid,
 
   var targetResolution = targetTileGrid.getResolution(z);
 
-  var errorThresholdInPixels = 0.5;
+  var errorThresholdInPixels = ol.DEFAULT_RASTER_REPROJ_ERROR_THRESHOLD;
 
   // in source units
   var errorThreshold = targetResolution * errorThresholdInPixels *
@@ -111,7 +111,7 @@ ol.reproj.Tile = function(sourceProj, sourceTileGrid,
    */
   this.triangulation_ = new ol.reproj.Triangulation(
       sourceProj, targetProj, limitedTargetExtent, maxSourceExtent,
-      5, errorThreshold);
+      errorThreshold);
 
   if (this.triangulation_.getTriangles().length === 0) {
     // no valid triangles -> EMPTY
@@ -166,11 +166,11 @@ ol.reproj.Tile = function(sourceProj, sourceTileGrid,
       xRange = goog.array.range(srcRange.minX, srcRange.maxX + 1);
     }
 
-    if (xRange.length * srcRange.getHeight() > 100) {
-      // Too many source tiles are needed -- something probably went wrong
-      // This sometimes happens for certain non-global projections
-      // if no extent is specified.
-      // TODO: detect somehow better? or at least make this a define
+    var tilesRequired = xRange.length * srcRange.getHeight();
+    goog.asserts.assert(tilesRequired < ol.RASTER_REPROJ_MAX_SOURCE_TILES,
+        'reasonable number of tiles is required');
+
+    if (tilesRequired > ol.RASTER_REPROJ_MAX_SOURCE_TILES) {
       this.state = ol.TileState.ERROR;
       return;
     }
