@@ -65,11 +65,6 @@ ol.reproj.Tile = function(sourceProj, sourceTileGrid,
    */
   this.targetTileGrid_ = targetTileGrid;
 
-
-  var targetExtent = targetTileGrid.getTileCoordExtent(this.getTileCoord());
-  var maxTargetExtent = this.targetTileGrid_.getExtent();
-  var maxSourceExtent = this.sourceTileGrid_.getExtent();
-
   /**
    * @private
    * @type {!Array.<ol.Tile>}
@@ -88,8 +83,12 @@ ol.reproj.Tile = function(sourceProj, sourceTileGrid,
    */
   this.srcZ_ = 0;
 
-  var limitedTargetExtent = ol.extent.getIntersection(
-      targetExtent, maxTargetExtent);
+  var targetExtent = targetTileGrid.getTileCoordExtent(this.getTileCoord());
+  var maxTargetExtent = this.targetTileGrid_.getExtent();
+  var maxSourceExtent = this.sourceTileGrid_.getExtent();
+
+  var limitedTargetExtent = goog.isNull(maxTargetExtent) ?
+      targetExtent : ol.extent.getIntersection(targetExtent, maxTargetExtent);
 
   if (ol.extent.getArea(limitedTargetExtent) === 0) {
     // Tile is completely outside range -> EMPTY
@@ -146,21 +145,25 @@ ol.reproj.Tile = function(sourceProj, sourceTileGrid,
     var srcRange = sourceTileGrid.getTileRangeForExtentAndZ(
         srcExtent, this.srcZ_);
 
-    var srcFullRange = sourceTileGrid.getFullTileRange(this.srcZ_);
-    srcRange.minY = Math.max(srcRange.minY, srcFullRange.minY);
-    srcRange.maxY = Math.min(srcRange.maxY, srcFullRange.maxY);
-
     var xRange;
-    if (srcRange.minX > srcRange.maxX) {
-      xRange = goog.array.concat(
-          goog.array.range(srcRange.minX, srcFullRange.maxX + 1),
-          goog.array.range(srcFullRange.minX, srcRange.maxX + 1)
-          );
+    var srcFullRange = sourceTileGrid.getFullTileRange(this.srcZ_);
+    if (!goog.isNull(srcFullRange)) {
+      srcRange.minY = Math.max(srcRange.minY, srcFullRange.minY);
+      srcRange.maxY = Math.min(srcRange.maxY, srcFullRange.maxY);
+
+      if (srcRange.minX > srcRange.maxX) {
+        xRange = goog.array.concat(
+            goog.array.range(srcRange.minX, srcFullRange.maxX + 1),
+            goog.array.range(srcFullRange.minX, srcRange.maxX + 1)
+            );
+      } else {
+        xRange = goog.array.range(
+            Math.max(srcRange.minX, srcFullRange.minX),
+            Math.min(srcRange.maxX, srcFullRange.maxX) + 1
+            );
+      }
     } else {
-      xRange = goog.array.range(
-          Math.max(srcRange.minX, srcFullRange.minX),
-          Math.min(srcRange.maxX, srcFullRange.maxX) + 1
-          );
+      xRange = goog.array.range(srcRange.minX, srcRange.maxX + 1);
     }
 
     if (xRange.length * srcRange.getHeight() > 100) {
