@@ -182,6 +182,23 @@ ol.Object.prototype.getProperties = function() {
 
 
 /**
+ * Get an object of all serializable property names and values.
+ * @return {Object.<string, (string|number|boolean)>} Object.
+ */
+ol.Object.prototype.getSerializableProperties = function() {
+  var properties = {};
+  var key, value;
+  for (key in this.values_) {
+    value = this.values_[key];
+    if (goog.isString(value) || goog.isNumber(value) || goog.isBoolean(value)) {
+      properties[key] = value;
+    }
+  }
+  return properties;
+};
+
+
+/**
  * @param {string} key Key name.
  * @param {*} oldValue Old value.
  */
