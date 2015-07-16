@@ -372,16 +372,14 @@ ol.source.Vector.prototype.bindFeaturesCollection_ = function(collection) {
  */
 ol.source.Vector.prototype.clear = function(opt_fast) {
   if (opt_fast) {
+    for (var featureId in this.featureChangeKeys_) {
+      var keys = this.featureChangeKeys_[featureId];
+      goog.array.forEach(keys, goog.events.unlistenByKey);
+    }
     if (goog.isNull(this.featuresCollection_)) {
-      for (var featureId in this.featureChangeKeys_) {
-        var keys = this.featureChangeKeys_[featureId];
-        goog.array.forEach(keys, goog.events.unlistenByKey);
-      }
       this.featureChangeKeys_ = {};
       this.idIndex_ = {};
       this.undefIdIndex_ = {};
-    } else {
-      this.featuresCollection_.clear();
     }
   } else {
     var rmFeatureInternal = this.removeFeatureInternal;
@@ -389,6 +387,9 @@ ol.source.Vector.prototype.clear = function(opt_fast) {
       this.featuresRtree_.forEach(rmFeatureInternal, this);
       goog.object.forEach(this.nullGeometryFeatures_, rmFeatureInternal, this);
     }
+  }
+  if (!goog.isNull(this.featuresCollection_)) {
+    this.featuresCollection_.clear();
   }
   goog.asserts.assert(goog.object.isEmpty(this.featureChangeKeys_),
       'featureChangeKeys is an empty object now');

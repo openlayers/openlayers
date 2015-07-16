@@ -449,6 +449,53 @@ describe('ol.source.Vector', function() {
   describe('with a collection of features', function() {
     var collection, source;
     beforeEach(function() {
+      source = new ol.source.Vector({
+        useSpatialIndex: false
+      });
+      collection = source.getFeaturesCollection();
+    });
+
+    it('creates a features collection', function() {
+      expect(source.getFeaturesCollection()).to.not.be(null);
+    });
+
+    it('adding/removing features keeps the collection in sync', function() {
+      var feature = new ol.Feature();
+      source.addFeature(feature);
+      expect(collection.getLength()).to.be(1);
+      source.removeFeature(feature);
+      expect(collection.getLength()).to.be(0);
+    });
+
+    it('#clear() features keeps the collection in sync', function() {
+      var feature = new ol.Feature();
+      source.addFeatures([feature]);
+      expect(collection.getLength()).to.be(1);
+      source.clear();
+      expect(collection.getLength()).to.be(0);
+      source.addFeatures([feature]);
+      expect(collection.getLength()).to.be(1);
+      source.clear(true);
+      expect(collection.getLength()).to.be(0);
+    });
+
+    it('keeps the source\'s features in sync with the collection', function() {
+      var feature = new ol.Feature();
+      collection.push(feature);
+      expect(source.getFeatures().length).to.be(1);
+      collection.remove(feature);
+      expect(source.getFeatures().length).to.be(0);
+      collection.extend([feature]);
+      expect(source.getFeatures().length).to.be(1);
+      collection.clear();
+      expect(source.getFeatures().length).to.be(0);
+    });
+
+  });
+
+  describe('with a collection of features plus spatial index', function() {
+    var collection, source;
+    beforeEach(function() {
       collection = new ol.Collection();
       source = new ol.source.Vector({
         features: collection
