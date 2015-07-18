@@ -39,6 +39,9 @@ ol.GeolocationProperty = {
  * The [Geolocation API](http://www.w3.org/TR/geolocation-API/)
  * is used to locate a user's position.
  *
+ * To get notified of position changes, register a listener for the generic
+ * `change` event on your instance of `ol.Geolocation`.
+ *
  * Example:
  *
  *     var geolocation = new ol.Geolocation({
@@ -52,7 +55,6 @@ ol.GeolocationProperty = {
  *
  * @constructor
  * @extends {ol.Object}
- * @fires change Triggered when the position changes.
  * @param {olx.GeolocationOptions=} opt_options Options.
  * @api stable
  */
