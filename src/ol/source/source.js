@@ -37,9 +37,10 @@ ol.source.SourceOptions;
  * instantiated in apps.
  * Base class for {@link ol.layer.Layer} sources.
  *
+ * A generic `change` event is triggered when the state of the source changes.
+ *
  * @constructor
  * @extends {ol.Object}
- * @fires change Triggered when the state of the source changes.
  * @param {ol.source.SourceOptions} options Source options.
  * @api stable
  */

@@ -29,9 +29,10 @@ ol.layer.GroupProperty = {
  * @classdesc
  * A {@link ol.Collection} of layers that are handled together.
  *
+ * A generic `change` event is triggered when the group/Collection changes.
+ *
  * @constructor
  * @extends {ol.layer.Base}
- * @fires change Triggered when the group/Collection changes.
  * @param {olx.layer.GroupOptions=} opt_options Layer options.
  * @api stable
  */

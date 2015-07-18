@@ -67,9 +67,11 @@ ol.DeviceOrientationProperty = {
  *
  * @see http://www.w3.org/TR/orientation-event/
  *
+ * To get notified of device orientation changes, register a listener for the
+ * generic `change` event on your `ol.DeviceOrientation` instance.
+ *
  * @constructor
  * @extends {ol.Object}
- * @fires change Triggered when the device orientation changes.
  * @param {olx.DeviceOrientationOptions=} opt_options Options.
  * @api
  */

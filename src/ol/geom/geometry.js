@@ -50,9 +50,11 @@ ol.geom.GeometryLayout = {
  * instantiated in apps.
  * Base class for vector geometries.
  *
+ * To get notified of changes to the geometry, register a listener for the
+ * generic `change` event on your geometry instance.
+ *
  * @constructor
  * @extends {ol.Object}
- * @fires change Triggered when the geometry changes.
  * @api stable
  */
 ol.geom.Geometry = function() {
