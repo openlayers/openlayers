@@ -4501,6 +4501,8 @@ olx.source.ImageVectorOptions.prototype.style;
 /**
  * @typedef {{sources: Array.<ol.source.Source>,
  *     operations: (Array.<ol.raster.Operation>|undefined),
+ *     lib: (Object|undefined),
+ *     threads: (number|undefined),
  *     operationType: (ol.raster.OperationType|undefined)}}
  * @api
  */
@@ -4522,6 +4524,26 @@ olx.source.RasterOptions.prototype.sources;
  * @api
  */
 olx.source.RasterOptions.prototype.operations;
+
+
+/**
+ * Functions that will be made available to operations run in a worker.
+ * @type {Object|undefined}
+ * @api
+ */
+olx.source.RasterOptions.prototype.lib;
+
+
+/**
+ * By default, operations will be run in a single worker thread.  To avoid using
+ * workers altogether, set `threads: 0`.  For pixel operations, operations can
+ * be run in multiple worker threads.  Note that there some additional overhead
+ * in transferring data to multiple workers, and that depending on the user's
+ * system, it may not be possible to parallelize the work.
+ * @type {number|undefined}
+ * @api
+ */
+olx.source.RasterOptions.prototype.threads;
 
 
 /**

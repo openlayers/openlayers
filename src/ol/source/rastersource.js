@@ -3,7 +3,9 @@ goog.provide('ol.source.RasterEvent');
 goog.provide('ol.source.RasterEventType');
 
 goog.require('goog.asserts');
+goog.require('goog.events');
 goog.require('goog.events.Event');
+goog.require('goog.events.EventType');
 goog.require('goog.functions');
 goog.require('goog.object');
 goog.require('goog.vec.Mat4');
@@ -49,15 +51,26 @@ ol.source.Raster = function(options) {
 
   /**
    * @private
+   * @type {number}
+   */
+  this.threads_ = goog.isDef(options.threads) ? options.threads : 1;
+
+  /**
+   * @private
    * @type {*}
    */
-  this.worker_ = this.createWorker_(operations);
+  this.worker_ = this.createWorker_(operations, options.lib, this.threads_);
 
   /**
    * @private
    * @type {Array.<ol.renderer.canvas.Layer>}
    */
   this.renderers_ = ol.source.Raster.createRenderers_(options.sources);
+
+  for (var r = 0, rr = this.renderers_.length; r < rr; ++r) {
+    goog.events.listen(this.renderers_[r], goog.events.EventType.CHANGE,
+        this.changed, false, this);
+  }
 
   /**
    * @private
@@ -134,14 +147,19 @@ goog.inherits(ol.source.Raster, ol.source.Image);
 /**
  * Create a worker.
  * @param {Array.<ol.raster.Operation>} operations The operations.
+ * @param {Object=} opt_lib Optional lib functions.
+ * @param {number=} opt_threads Number of threads.
  * @return {*} The worker.
  * @private
  */
-ol.source.Raster.prototype.createWorker_ = function(operations) {
+ol.source.Raster.prototype.createWorker_ =
+    function(operations, opt_lib, opt_threads) {
   return new ol.ext.pixelworks.Processor({
     operations: operations,
     imageOps: this.operationType_ === ol.raster.OperationType.IMAGE,
-    queue: 1
+    queue: 1,
+    lib: opt_lib,
+    threads: opt_threads
   });
 };
 
@@ -149,10 +167,12 @@ ol.source.Raster.prototype.createWorker_ = function(operations) {
 /**
  * Reset the operations.
  * @param {Array.<ol.raster.Operation>} operations New operations.
+ * @param {Object=} opt_lib Functions that will be available to operations run
+ *     in a worker.
  * @api
  */
-ol.source.Raster.prototype.setOperations = function(operations) {
-  this.worker_ = this.createWorker_(operations);
+ol.source.Raster.prototype.setOperations = function(operations, opt_lib) {
+  this.worker_ = this.createWorker_(operations, opt_lib, this.threads_);
   this.changed();
 };
 
@@ -281,10 +301,15 @@ ol.source.Raster.prototype.composeFrame_ = function(frameState, callback) {
   var len = this.renderers_.length;
   var imageDatas = new Array(len);
   for (var i = 0; i < len; ++i) {
-    imageDatas[i] = ol.source.Raster.getImageData_(
+    var imageData = ol.source.Raster.getImageData_(
         this.renderers_[i], frameState, frameState.layerStatesArray[i]);
+    if (imageData) {
+      imageDatas[i] = imageData;
+    } else {
+      // image not yet ready
+      return;
+    }
   }
-  frameState.tileQueue.loadMoreTiles(16, 16);
 
   var data = {};
   this.dispatchEvent(new ol.source.RasterEvent(
@@ -292,6 +317,8 @@ ol.source.Raster.prototype.composeFrame_ = function(frameState, callback) {
 
   this.worker_.process(imageDatas, data,
       this.onWorkerComplete_.bind(this, frameState, callback));
+
+  frameState.tileQueue.loadMoreTiles(16, 16);
 };
 
 
@@ -337,14 +364,48 @@ ol.source.Raster.prototype.onWorkerComplete_ =
  */
 ol.source.Raster.getImageData_ = function(renderer, frameState, layerState) {
   renderer.prepareFrame(frameState, layerState);
-  var canvas = renderer.getImage();
+  // We should be able to call renderer.composeFrame(), but this is inefficient
+  // for tiled sources (we've already rendered to an intermediate canvas in the
+  // prepareFrame call and we don't need to render again to the output canvas).
+  // TODO: make all canvas renderers render to a single canvas
+  var image = renderer.getImage();
+  if (!image) {
+    return null;
+  }
   var imageTransform = renderer.getImageTransform();
-  var dx = goog.vec.Mat4.getElement(imageTransform, 0, 3);
-  var dy = goog.vec.Mat4.getElement(imageTransform, 1, 3);
-  return canvas.getContext('2d').getImageData(
-      Math.round(-dx), Math.round(-dy),
-      frameState.size[0], frameState.size[1]);
+  var dx = Math.round(goog.vec.Mat4.getElement(imageTransform, 0, 3));
+  var dy = Math.round(goog.vec.Mat4.getElement(imageTransform, 1, 3));
+  var width = frameState.size[0];
+  var height = frameState.size[1];
+  if (image instanceof Image) {
+    if (!ol.source.Raster.context_) {
+      ol.source.Raster.context_ = ol.dom.createCanvasContext2D(width, height);
+    } else {
+      var canvas = ol.source.Raster.context_.canvas;
+      if (canvas.width !== width || canvas.height !== height) {
+        ol.source.Raster.context_ = ol.dom.createCanvasContext2D(width, height);
+      } else {
+        ol.source.Raster.context_.clearRect(0, 0, width, height);
+      }
+    }
+    var dw = Math.round(
+        image.width * goog.vec.Mat4.getElement(imageTransform, 0, 0));
+    var dh = Math.round(
+        image.height * goog.vec.Mat4.getElement(imageTransform, 1, 1));
+    ol.source.Raster.context_.drawImage(image, dx, dy, dw, dh);
+    return ol.source.Raster.context_.getImageData(0, 0, width, height);
+  } else {
+    return image.getContext('2d').getImageData(-dx, -dy, width, height);
+  }
 };
+
+
+/**
+ * A reusable canvas context.
+ * @type {CanvasRenderingContext2D}
+ * @private
+ */
+ol.source.Raster.context_ = null;
 
 
 /**
