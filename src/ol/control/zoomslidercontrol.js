@@ -8,7 +8,7 @@ goog.require('goog.dom.TagName');
 goog.require('goog.events');
 goog.require('goog.events.Event');
 goog.require('goog.events.EventType');
-goog.require('goog.fx.DragDropEvent');
+goog.require('goog.fx.DragEvent');
 goog.require('goog.fx.Dragger');
 goog.require('goog.fx.Dragger.EventType');
 goog.require('goog.math');
@@ -222,7 +222,7 @@ ol.control.ZoomSlider.prototype.handleContainerClick_ = function(browserEvent) {
 
 /**
  * Handle dragger start events.
- * @param {goog.fx.DragDropEvent} event The dragdropevent.
+ * @param {goog.fx.DragEvent} event The drag event.
  * @private
  */
 ol.control.ZoomSlider.prototype.handleDraggerStart_ = function(event) {
@@ -233,7 +233,7 @@ ol.control.ZoomSlider.prototype.handleDraggerStart_ = function(event) {
 /**
  * Handle dragger drag events.
  *
- * @param {goog.fx.DragDropEvent} event The dragdropevent.
+ * @param {goog.fx.DragEvent} event The drag event.
  * @private
  */
 ol.control.ZoomSlider.prototype.handleDraggerDrag_ = function(event) {
@@ -245,7 +245,7 @@ ol.control.ZoomSlider.prototype.handleDraggerDrag_ = function(event) {
 
 /**
  * Handle dragger end events.
- * @param {goog.fx.DragDropEvent} event The dragdropevent.
+ * @param {goog.fx.DragEvent} event The drag event.
  * @private
  */
 ol.control.ZoomSlider.prototype.handleDraggerEnd_ = function(event) {
