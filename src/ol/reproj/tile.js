@@ -97,6 +97,18 @@ ol.reproj.Tile = function(sourceProj, sourceTileGrid,
     return;
   }
 
+  if (!sourceProj.isGlobal()) {
+    var sourceProjExtent = sourceProj.getExtent();
+    if (!goog.isNull(sourceProjExtent)) {
+      if (goog.isNull(maxSourceExtent)) {
+        maxSourceExtent = sourceProjExtent;
+      } else {
+        maxSourceExtent = ol.extent.getIntersection(
+            maxSourceExtent, sourceProjExtent);
+      }
+    }
+  }
+
   var targetResolution = targetTileGrid.getResolution(z);
 
   var errorThresholdInPixels = ol.DEFAULT_RASTER_REPROJ_ERROR_THRESHOLD;
@@ -133,11 +145,6 @@ ol.reproj.Tile = function(sourceProj, sourceTileGrid,
   this.srcZ_ = sourceTileGrid.getZForResolution(sourceResolution);
   var srcExtent = this.triangulation_.calculateSourceExtent();
 
-  var sourceProjExtent = sourceProj.getExtent();
-  if (!sourceProj.isGlobal() && sourceProjExtent) {
-    srcExtent = ol.extent.getIntersection(srcExtent, sourceProjExtent);
-  }
-
   if (!goog.isNull(maxSourceExtent) &&
       !ol.extent.intersects(maxSourceExtent, srcExtent)) {
     this.state = ol.TileState.EMPTY;
@@ -167,10 +174,8 @@ ol.reproj.Tile = function(sourceProj, sourceTileGrid,
     }
 
     var tilesRequired = xRange.length * srcRange.getHeight();
-    goog.asserts.assert(tilesRequired < ol.RASTER_REPROJ_MAX_SOURCE_TILES,
-        'reasonable number of tiles is required');
-
-    if (tilesRequired > ol.RASTER_REPROJ_MAX_SOURCE_TILES) {
+    if (!goog.asserts.assert(tilesRequired < ol.RASTER_REPROJ_MAX_SOURCE_TILES,
+        'reasonable number of tiles is required')) {
       this.state = ol.TileState.ERROR;
       return;
     }
