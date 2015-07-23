@@ -87,6 +87,12 @@ ol.source.TileImage = function(options) {
 
   /**
    * @private
+   * @type {number|undefined}
+   */
+  this.reprojectionErrorThreshold_ = options.reprojectionErrorThreshold;
+
+  /**
+   * @private
    * @type {boolean}
    */
   this.renderReprojectionEdges_ = false;
@@ -204,7 +210,8 @@ ol.source.TileImage.prototype.getTile =
           projection, targetTileGrid,
           z, x, y, pixelRatio, goog.bind(function(z, x, y, pixelRatio) {
             return this.getTileInternal(z, x, y, pixelRatio, sourceProjection);
-          }, this), this.renderReprojectionEdges_);
+          }, this), this.reprojectionErrorThreshold_,
+          this.renderReprojectionEdges_);
 
       cache.set(tileCoordKey, tile);
       return tile;

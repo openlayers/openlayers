@@ -29,6 +29,7 @@ ol.source.BingMaps = function(options) {
     crossOrigin: 'anonymous',
     opaque: true,
     projection: ol.proj.get('EPSG:3857'),
+    reprojectionErrorThreshold: options.reprojectionErrorThreshold,
     state: ol.source.State.LOADING,
     tileLoadFunction: options.tileLoadFunction,
     wrapX: options.wrapX !== undefined ? options.wrapX : true

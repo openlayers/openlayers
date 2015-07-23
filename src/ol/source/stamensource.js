@@ -109,6 +109,7 @@ ol.source.Stamen = function(options) {
     // FIXME uncomment the following when tilegrid supports minZoom
     //minZoom: providerConfig.minZoom,
     opaque: layerConfig.opaque,
+    reprojectionErrorThreshold: options.reprojectionErrorThreshold,
     tileLoadFunction: options.tileLoadFunction,
     url: url
   });

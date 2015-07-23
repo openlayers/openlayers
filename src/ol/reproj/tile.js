@@ -28,10 +28,12 @@ goog.require('ol.reproj.Triangulation');
  * @param {number} y
  * @param {number} pixelRatio
  * @param {function(number, number, number, number) : ol.Tile} getTileFunction
+ * @param {number=} opt_errorThreshold
  * @param {boolean=} opt_renderEdges
  */
 ol.reproj.Tile = function(sourceProj, sourceTileGrid,
     targetProj, targetTileGrid, z, x, y, pixelRatio, getTileFunction,
+    opt_errorThreshold,
     opt_renderEdges) {
   goog.base(this, [z, x, y], ol.TileState.IDLE);
 
@@ -111,7 +113,8 @@ ol.reproj.Tile = function(sourceProj, sourceTileGrid,
 
   var targetResolution = targetTileGrid.getResolution(z);
 
-  var errorThresholdInPixels = ol.DEFAULT_RASTER_REPROJ_ERROR_THRESHOLD;
+  var errorThresholdInPixels = goog.isDef(opt_errorThreshold) ?
+      opt_errorThreshold : ol.DEFAULT_RASTER_REPROJ_ERROR_THRESHOLD;
 
   // in source units
   var errorThreshold = targetResolution * errorThresholdInPixels *

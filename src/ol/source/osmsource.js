@@ -36,6 +36,7 @@ ol.source.OSM = function(opt_options) {
     crossOrigin: crossOrigin,
     opaque: true,
     maxZoom: options.maxZoom !== undefined ? options.maxZoom : 19,
+    reprojectionErrorThreshold: options.reprojectionErrorThreshold,
     tileLoadFunction: options.tileLoadFunction,
     url: url,
     wrapX: options.wrapX
