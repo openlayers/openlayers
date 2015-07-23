@@ -72,7 +72,6 @@ Creating a custom build requires writing a build configuration file. The format 
       "api", "observable"
     ],
     "compilation_level": "ADVANCED_OPTIMIZATIONS",
-    "use_types_for_optimization": true,
     "manage_closure_dependencies": true
   }
 }
@@ -180,7 +179,7 @@ The Closure documentation explains that "externs" are for external names used in
 
 ### Other compiler options
 
-There are a couple of other compiler options in the config file above. `manage_closure_dependencies` should always be used. `use_types_for_optimization` should be used for better compression rates.
+There are a couple of other compiler options in the config file above. `manage_closure_dependencies` should always be used.
 
 You can specify any of the other compiler options here as needed, such as the renaming reports, output manifest, or source maps. There is a full list of available options in [closure-util](https://github.com/openlayers/closure-util/blob/master/compiler-options.txt).
 
@@ -219,7 +218,6 @@ Now let's try a more complicated example: [`heatmaps-earthquakes`](http://openla
       "goog.DEBUG=false"
     ],
     "compilation_level": "ADVANCED_OPTIMIZATIONS",
-    "use_types_for_optimization": true,
     "manage_closure_dependencies": true
   }
 }
