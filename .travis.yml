@@ -1,5 +1,8 @@
 language: python
 sudo: false
+cache:
+  directories:
+    - node_modules
 env:
   - DISPLAY=:99.0
 
