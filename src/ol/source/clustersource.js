@@ -137,7 +137,7 @@ ol.source.Cluster.prototype.cluster_ = function() {
       goog.asserts.assert(neighbors.length >= 1, 'at least one neighbor found');
       neighbors = goog.array.filter(neighbors, function(neighbor) {
 	  
-		// check if neighbor is not the feature used to find neigbors, then check if it should cluster
+		/* check if neighbor is not the feature used to find neigbors, then check if it should cluster*/
         if ((feature != neighbor) &&   
             !this.shouldCluster_(feature,neighbor)){
           return false;
