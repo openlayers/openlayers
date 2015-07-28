@@ -2881,7 +2881,7 @@ olx.interaction.SnapOptions.prototype.features;
 
 /**
  * Pixel tolerance for considering the pointer close enough to a segment or
- * vertex for editing. Default is `10` pixels.
+ * vertex for snapping. Default is `10` pixels.
  * @type {number|undefined}
  * @api
  */
