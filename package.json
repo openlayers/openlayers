@@ -31,7 +31,6 @@
     "glob": "5.0.3",
     "graceful-fs": "3.0.2",
     "handlebars": "3.0.1",
-    "htmlparser2": "3.7.3",
     "jsdoc": "3.3.0-alpha9",
     "marked": "0.3.3",
     "metalsmith": "1.6.0",
