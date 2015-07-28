@@ -398,10 +398,12 @@ ol.interaction.Draw.handleUpEvent_ = function(event) {
     this.handlePointerMove_(event);
     if (goog.isNull(this.finishCoordinate_)) {
       this.startDrawing_(event);
-    } else if ((this.mode_ === ol.interaction.DrawMode.POINT ||
-        this.mode_ === ol.interaction.DrawMode.CIRCLE) &&
-            !goog.isNull(this.finishCoordinate_) ||
-        this.atFinish_(event)) {
+      if (this.mode_ === ol.interaction.DrawMode.POINT) {
+        this.finishDrawing();
+      }
+    } else if (this.mode_ === ol.interaction.DrawMode.CIRCLE) {
+      this.finishDrawing();
+    } else if (this.atFinish_(event)) {
       this.finishDrawing();
     } else {
       this.addToDrawing_(event);
@@ -419,10 +421,7 @@ ol.interaction.Draw.handleUpEvent_ = function(event) {
  * @private
  */
 ol.interaction.Draw.prototype.handlePointerMove_ = function(event) {
-  if (this.mode_ === ol.interaction.DrawMode.POINT &&
-      goog.isNull(this.finishCoordinate_)) {
-    this.startDrawing_(event);
-  } else if (!goog.isNull(this.finishCoordinate_)) {
+  if (!goog.isNull(this.finishCoordinate_)) {
     this.modifyDrawing_(event);
   } else {
     this.createOrUpdateSketchPoint_(event);
