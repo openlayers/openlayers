@@ -400,7 +400,11 @@ ol.View.prototype.getState = function() {
   var resolution = /** @type {number} */ (this.getResolution());
   var rotation = this.getRotation();
   return /** @type {olx.ViewState} */ ({
-    center: center.slice(),
+    // Snap center to closest pixel
+    center: [
+      Math.round(center[0] / resolution) * resolution,
+      Math.round(center[1] / resolution) * resolution
+    ],
     projection: goog.isDef(projection) ? projection : null,
     resolution: resolution,
     rotation: rotation
