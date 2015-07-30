@@ -5192,6 +5192,42 @@ olx.source.VectorOptions.prototype.wrapX;
 
 
 /**
+ * Options for the WMTS GetFeatureInfo URL
+ * @typedef {{url: (string|undefined),
+ *     requestEncoding: (ol.source.WMTSRequestEncoding|string|undefined),
+ *     infoFormat: (string|undefined)}}
+ * @api
+ */
+olx.source.WMTSGetFeatureInfoOptions;
+
+
+/**
+ * A URL for the GetFeatureInfo service.  For the RESTful request encoding, this is a URL
+ * template.  For KVP encoding, it is normal URL. Default is the WMTS source url
+ * @type {string|undefined}
+ * @api
+ */
+olx.source.WMTSGetFeatureInfoOptions.prototype.url;
+
+
+/**
+ * Request encoding. Default is `KVP`.
+ * @type {ol.source.WMTSRequestEncoding|string|undefined}
+ * @api
+ */
+olx.source.WMTSGetFeatureInfoOptions.prototype.requestEncoding;
+
+
+/**
+ * The format to retrieve the information from the GetFeatureInfo service in. This can 
+ * also be specified in the getGetFeatureInfoUrl call
+ * @type {string|undefined}
+ * @api
+ */
+olx.source.WMTSGetFeatureInfoOptions.prototype.infoFormat;
+
+
+/**
  * @typedef {{attributions: (Array.<ol.Attribution>|undefined),
  *     crossOrigin: (string|null|undefined),
  *     logo: (string|olx.LogoOptions|undefined),
@@ -5212,7 +5248,8 @@ olx.source.VectorOptions.prototype.wrapX;
  *     tileClass: (function(new: ol.ImageTile, ol.TileCoord,
  *                          ol.TileState, string, ?string,
  *                          ol.TileLoadFunctionType)|undefined),
- *     wrapX: (boolean|undefined)}}
+ *     wrapX: (boolean|undefined),
+ *     getFeatureInfoOptions: (olx.source.WMTSGetFeatureInfoOptions|undefined)}}
  * @api
  */
 olx.source.WMTSOptions;
@@ -5380,6 +5417,12 @@ olx.source.WMTSOptions.prototype.urls;
  */
 olx.source.WMTSOptions.prototype.wrapX;
 
+/**
+ * Options for the WMTS GetFeatureInfo URL
+ * @type {olx.source.WMTSGetFeatureInfoOptions|undefined}
+ * @api
+ */
+olx.source.WMTSOptions.prototype.getFeatureInfoOptions;
 
 /**
  * @typedef {{attributions: (Array.<ol.Attribution>|undefined),

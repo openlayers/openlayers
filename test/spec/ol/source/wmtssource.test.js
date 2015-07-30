@@ -76,6 +76,46 @@ describe('ol.source.WMTS', function() {
           expect(options.dimensions).to.eql({});
 
         });
+
+    it('can create getFeatureInfoOptions from ' +
+        'spec/ol/format/wmts/ogcsample.xml', function() {
+          var options;
+          options = ol.source.WMTS.optionsFromCapabilities(
+              capabilities,
+              { layer: 'BlueMarbleNextGeneration', matrixSet: 'google3857' });
+
+          expect(options.urls).to.be.an('array');
+          expect(options.urls).to.have.length(1);
+          expect(options.urls[0]).to.be.eql(
+              'http://www.maps.bob/cgi-bin/MiraMon5_0.cgi?');
+
+          expect(options.layer).to.be.eql('BlueMarbleNextGeneration');
+
+          expect(options.matrixSet).to.be.eql('google3857');
+
+          expect(options.format).to.be.eql('image/jpeg');
+
+          expect(options.projection).to.be.a(ol.proj.Projection);
+          expect(options.projection).to.be.eql(ol.proj.get('EPSG:3857'));
+
+          expect(options.requestEncoding).to.be.eql('KVP');
+
+          expect(options.getFeatureInfoOptions).to.be.an('object');
+          expect(options.getFeatureInfoOptions.url).to.be.eql(
+              'http://www.example.com/wmts/coastlines/{TileMatrixSet}/' +
+              '{TileMatrix}/{TileRow}/{TileCol}/{J}/{I}.xml');
+          expect(options.getFeatureInfoOptions.requestEncoding).to.be.eql(
+              'REST');
+          expect(options.getFeatureInfoOptions.infoFormat).to.be.eql(
+              'application/gml+xml; version=3.1');
+
+          expect(options.tileGrid).to.be.a(ol.tilegrid.WMTS);
+
+          expect(options.style).to.be.eql('DarkBlue');
+
+          expect(options.dimensions).to.eql({});
+
+        });
   });
 
   describe('when creating tileUrlFunction', function() {
@@ -233,6 +273,142 @@ describe('ol.source.WMTS', function() {
       expect(requestEncoding).to.be.eql('REST');
     });
 
+  });
+
+  describe('when retrieving GetFeatureInfo url', function() {
+    it('can get url without defining getFeatureInfoOptions',
+        function() {
+          var source = new ol.source.WMTS({
+            layer: 'layer',
+            style: 'default',
+            urls: ['http://www.example.com/wmts/coastlines'],
+            matrixSet: 'EPSG:3857',
+            tileGrid: new ol.tilegrid.WMTS({
+              origin: [-20037508.342789244, 20037508.342789244],
+              resolutions: [559082264.029 * 0.28E-3,
+                279541132.015 * 0.28E-3,
+                139770566.007 * 0.28E-3],
+              matrixIds: [0, 1, 2]
+            })
+          });
+
+          var url = source.getGetFeatureInfoUrl([1, -2], 78271.516,
+             ol.proj.get('EPSG:3857'), 'text/html');
+          expect(url).to.be.eql('http://www.example.com/wmts/coastlines' +
+             '?SERVICE=WMTS&VERSION=1.0.0&REQUEST=GetFeatureInfo&LAYER=layer' +
+             '&STYLE=default&FORMAT=image%2Fjpeg&TileCol=1&TileRow=1' +
+             '&TileMatrix=1&TileMatrixSet=EPSG%3A3857&' +
+             'INFOFORMAT=text%2Fhtml&I=0&J=0');
+        });
+
+    it('can get url without defining request encoding in getFeatureInfoOptions',
+        function() {
+          var source = new ol.source.WMTS({
+            layer: 'layer',
+            style: 'default',
+            urls: ['http://www.example.com/wmts/coastlines'],
+            matrixSet: 'EPSG:3857',
+            getFeatureInfoOptions: {
+              url: 'http://www.example.com/wmts/coastlines/featureinfo/',
+              infoFormat: 'text/html'
+            },
+            tileGrid: new ol.tilegrid.WMTS({
+              origin: [-20037508.342789244, 20037508.342789244],
+              resolutions: [559082264.029 * 0.28E-3,
+                279541132.015 * 0.28E-3,
+                139770566.007 * 0.28E-3],
+              matrixIds: [0, 1, 2]
+            })
+          });
+
+          var url = source.getGetFeatureInfoUrl([1, -2], 78271.516,
+             ol.proj.get('EPSG:3857'));
+          expect(url).to.be.eql('http://www.example.com/wmts/coastlines/' +
+             'featureinfo/?SERVICE=WMTS&VERSION=1.0.0&REQUEST=GetFeatureInfo' +
+             '&LAYER=layer&STYLE=default&FORMAT=image%2Fjpeg&TileCol=1' +
+             '&TileRow=1&TileMatrix=1&TileMatrixSet=EPSG%3A3857' +
+             '&INFOFORMAT=text%2Fhtml&I=0&J=0');
+        });
+
+    it('can get KVP url from getFeatureInfoOptions',
+        function() {
+          var source = new ol.source.WMTS({
+            layer: 'layer',
+            style: 'default',
+            urls: ['http://www.example.com/wmts/coastlines'],
+            matrixSet: 'EPSG:3857',
+            getFeatureInfoOptions: {
+              url: 'http://www.example.com/wmts/coastlines/featureinfo/',
+              requestEncoding: 'KVP',
+              infoFormat: 'text/html'
+            },
+            tileGrid: new ol.tilegrid.WMTS({
+              origin: [-20037508.342789244, 20037508.342789244],
+              resolutions: [559082264.029 * 0.28E-3,
+                279541132.015 * 0.28E-3,
+                139770566.007 * 0.28E-3],
+              matrixIds: [0, 1, 2]
+            })
+          });
+
+          var url = source.getGetFeatureInfoUrl([1, -2], 78271.516,
+             ol.proj.get('EPSG:3857'));
+          expect(url).to.be.eql('http://www.example.com/wmts/coastlines/' +
+             'featureinfo/?SERVICE=WMTS&VERSION=1.0.0&REQUEST=GetFeatureInfo' +
+             '&LAYER=layer&STYLE=default&FORMAT=image%2Fjpeg&TileCol=1' +
+             '&TileRow=1&TileMatrix=1&TileMatrixSet=EPSG%3A3857' +
+             '&INFOFORMAT=text%2Fhtml&I=0&J=0');
+        });
+
+    it('can get REST url from getFeatureInfoOptions',
+        function() {
+          var source = new ol.source.WMTS({
+            layer: 'layer',
+            style: 'default',
+            urls: ['http://www.example.com/wmts/coastlines'],
+            matrixSet: 'EPSG:3857',
+            getFeatureInfoOptions: {
+              url: 'http://www.example.com/wmts/coastlines/featureinfo/' +
+                 '{TileMatrixSet}/{TileMatrix}/{TileCol}/{TileRow}/{I}/{J}.html',
+              requestEncoding: 'REST',
+              infoFormat: 'text/html'
+            },
+            tileGrid: new ol.tilegrid.WMTS({
+              origin: [-20037508.342789244, 20037508.342789244],
+              resolutions: [559082264.029 * 0.28E-3,
+                279541132.015 * 0.28E-3,
+                139770566.007 * 0.28E-3],
+              matrixIds: [0, 1, 2]
+            })
+          });
+
+          var url = source.getGetFeatureInfoUrl([1, -2], 78271.516,
+             ol.proj.get('EPSG:3857'));
+          expect(url).to.be.eql('http://www.example.com/wmts/coastlines/' +
+              'featureinfo/EPSG:3857/1/1/1/0/0.html');
+        });
+
+    it('throws an exception when infoFormat is not defined',
+        function() {
+          var source = new ol.source.WMTS({
+            layer: 'layer',
+            style: 'default',
+            urls: ['http://www.example.com/wmts/coastlines'],
+            matrixSet: 'EPSG:3857',
+            tileGrid: new ol.tilegrid.WMTS({
+              origin: [-20037508.342789244, 20037508.342789244],
+              resolutions: [559082264.029 * 0.28E-3,
+                279541132.015 * 0.28E-3,
+                139770566.007 * 0.28E-3],
+              matrixIds: [0, 1, 2]
+            })
+          });
+
+          expect(function() {
+            source.getGetFeatureInfoUrl([1, -2], 78271.516,
+               ol.proj.get('EPSG:3857'));
+          }).to.throwException();
+        });
   });
 
 });
