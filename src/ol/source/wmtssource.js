@@ -351,19 +351,25 @@ ol.source.WMTS.optionsFromCapabilities = function(wmtsCap, config) {
 
   goog.asserts.assert(l['TileMatrixSetLink'].length > 0,
       'layer has TileMatrixSetLink');
+  var tileMatrixSets = wmtsCap['Contents']['TileMatrixSet'];
   var idx, matrixSet;
   if (l['TileMatrixSetLink'].length > 1) {
-    idx = goog.array.findIndex(l['TileMatrixSetLink'],
-        function(elt, index, array) {
-          return elt['TileMatrixSet'] == config['matrixSet'];
-        });
-  } else if (goog.isDef(config['projection'])) {
-    idx = goog.array.findIndex(l['TileMatrixSetLink'],
-        function(elt, index, array) {
-          return elt['TileMatrixSet']['SupportedCRS'].replace(
-              /urn:ogc:def:crs:(\w+):(.*:)?(\w+)$/, '$1:$3'
-                 ) == config['projection'];
-        });
+    if (goog.isDef(config['projection'])) {
+      idx = goog.array.findIndex(l['TileMatrixSetLink'],
+          function(elt, index, array) {
+            var tileMatrixSet = goog.array.find(tileMatrixSets, function(el) {
+              return el['Identifier'] == elt['TileMatrixSet'];
+            });
+            return tileMatrixSet['SupportedCRS'].replace(
+                /urn:ogc:def:crs:(\w+):(.*:)?(\w+)$/, '$1:$3'
+                   ) == config['projection'];
+          });
+    } else {
+      idx = goog.array.findIndex(l['TileMatrixSetLink'],
+          function(elt, index, array) {
+            return elt['TileMatrixSet'] == config['matrixSet'];
+          });
+    }
   } else {
     idx = 0;
   }

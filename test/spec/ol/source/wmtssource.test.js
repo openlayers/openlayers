@@ -76,6 +76,16 @@ describe('ol.source.WMTS', function() {
           expect(options.dimensions).to.eql({});
 
         });
+
+    it('can find a MatrixSet by SRS identifier', function() {
+      var options = ol.source.WMTS.optionsFromCapabilities(
+          capabilities,
+          { layer: 'BlueMarbleNextGeneration', projection: 'EPSG:3857',
+            requestEncoding: 'REST' });
+
+      expect(options.matrixSet).to.be.eql('google3857');
+    });
+
   });
 
   describe('when creating tileUrlFunction', function() {
