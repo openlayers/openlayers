@@ -629,7 +629,7 @@ ol.interaction.Modify.handleEvent = function(mapBrowserEvent) {
   if (!goog.isNull(this.vertexFeature_) &&
       this.deleteCondition_(mapBrowserEvent)) {
     if (mapBrowserEvent.type != ol.MapBrowserEvent.EventType.SINGLECLICK ||
-      !this.ignoreNextSingleClick_) {
+        !this.ignoreNextSingleClick_) {
       var geometry = this.vertexFeature_.getGeometry();
       goog.asserts.assertInstanceof(geometry, ol.geom.Point,
           'geometry should be an ol.geom.Point');
