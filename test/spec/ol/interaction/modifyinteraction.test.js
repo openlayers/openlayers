@@ -158,6 +158,53 @@ describe('ol.interaction.Modify', function() {
     });
   });
 
+  describe('double click deleteCondition', function() {
+
+    it('should delete vertex on double click', function() {
+      var modify = new ol.interaction.Modify({
+        features: new ol.Collection(features),
+        deleteCondition: ol.events.condition.doubleClick
+      });
+      map.addInteraction(modify);
+
+      var feature = features[0];
+
+      expect(feature.getGeometry().getRevision()).to.equal(1);
+      expect(feature.getGeometry().getCoordinates()[0]).to.have.length(5);
+
+      simulateEvent('pointerdown', 10, -20, false, 0);
+      simulateEvent('pointerup', 10, -20, false, 0);
+      simulateEvent('click', 10, -20, false, 0);
+      simulateEvent('pointerdown', 10, -20, false, 0);
+      simulateEvent('pointerup', 10, -20, false, 0);
+      simulateEvent('click', 10, -20, false, 0);
+      simulateEvent('dblclick', 10, -20, false, 0);
+
+      expect(feature.getGeometry().getRevision()).to.equal(2);
+      expect(feature.getGeometry().getCoordinates()[0]).to.have.length(4);
+    });
+
+    it('should do nothing on single click', function() {
+      var modify = new ol.interaction.Modify({
+        features: new ol.Collection(features),
+        deleteCondition: ol.events.condition.doubleClick
+      });
+      map.addInteraction(modify);
+
+      var feature = features[0];
+
+      expect(feature.getGeometry().getRevision()).to.equal(1);
+      expect(feature.getGeometry().getCoordinates()[0]).to.have.length(5);
+
+      simulateEvent('pointerdown', 10, -20, false, 0);
+      simulateEvent('pointerup', 10, -20, false, 0);
+      simulateEvent('click', 10, -20, false, 0);
+      simulateEvent('singleclick', 10, -20, false, 0);
+
+      expect(feature.getGeometry().getRevision()).to.equal(1);
+      expect(feature.getGeometry().getCoordinates()[0]).to.have.length(5);
+    });
+  });
 });
 
 goog.require('goog.dispose');
