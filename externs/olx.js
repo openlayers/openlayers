@@ -5342,7 +5342,9 @@ olx.source.WMTSOptions.prototype.dimensions;
 
 /**
  * A URL for the service.  For the RESTful request encoding, this is a URL
- * template.  For KVP encoding, it is normal URL.
+ * template.  For KVP encoding, it is normal URL. A `{?-?}` template pattern,
+ * for example `subdomain{a-f}.domain.com`, may be used instead of defining
+ * each one separately in the `urls` option.
  * @type {string|undefined}
  * @api stable
  */
@@ -5499,6 +5501,8 @@ olx.source.XYZOptions.prototype.tileUrlFunction;
 
 /**
  * URL template. Must include `{x}`, `{y}` or `{-y}`, and `{z}` placeholders.
+ * A `{?-?}` template pattern, for example `subdomain{a-f}.domain.com`, may be
+ * used instead of defining each one separately in the `urls` option.
  * @type {string|undefined}
  * @api stable
  */
