@@ -106,7 +106,6 @@ describe('ol.interaction.Modify', function() {
       expect(feature.getGeometry().getRevision()).to.equal(1);
       expect(feature.getGeometry().getCoordinates()[0]).to.have.length(5);
 
-      simulateEvent('pointermove', 10, -20, false, 0);
       simulateEvent('pointerdown', 10, -20, false, 0);
       simulateEvent('pointerup', 10, -20, false, 0);
       simulateEvent('click', 10, -20, false, 0);
@@ -127,7 +126,6 @@ describe('ol.interaction.Modify', function() {
       expect(feature.getGeometry().getRevision()).to.equal(1);
       expect(feature.getGeometry().getCoordinates()[0]).to.have.length(5);
 
-      simulateEvent('pointermove', 40, -20, false, 0);
       simulateEvent('pointerdown', 40, -20, false, 0);
       simulateEvent('pointerup', 40, -20, false, 0);
       simulateEvent('click', 40, -20, false, 0);
@@ -150,6 +148,7 @@ describe('ol.interaction.Modify', function() {
 
       simulateEvent('pointermove', 40, -20, false, 0);
       simulateEvent('pointerdown', 40, -20, false, 0);
+      simulateEvent('pointermove', 30, -20, false, 0);
       simulateEvent('pointerdrag', 30, -20, false, 0);
       simulateEvent('pointerup', 30, -20, false, 0);
 
