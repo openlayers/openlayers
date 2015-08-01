@@ -626,8 +626,8 @@ ol.interaction.Modify.handleEvent = function(mapBrowserEvent) {
   }
   if (!goog.isNull(this.vertexFeature_) &&
       this.deleteCondition_(mapBrowserEvent)) {
-    if (!(this.lastNewVertexPixel_[0] === this.lastPixel_[0] &&
-        this.lastNewVertexPixel_[1] === this.lastPixel_[1])) {
+    if (this.lastNewVertexPixel_[0] !== this.lastPixel_[0] ||
+        this.lastNewVertexPixel_[1] !== this.lastPixel_[1]) {
       var geometry = this.vertexFeature_.getGeometry();
       goog.asserts.assertInstanceof(geometry, ol.geom.Point,
           'geometry should be an ol.geom.Point');
