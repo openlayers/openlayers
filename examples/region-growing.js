@@ -103,14 +103,10 @@ var map = new ol.Map({
   })
 });
 
-var pixel;
+var coordinate;
 
-map.getView().on('change', function() {
-  pixel = null;
-});
-
-map.on('click', function(ev) {
-  pixel = map.getPixelFromCoordinate(ev.coordinate);
+map.on('click', function(event) {
+  coordinate = event.coordinate;
   raster.changed();
 });
 
@@ -118,7 +114,9 @@ raster.on('beforeoperations', function(event) {
   // the event.data object will be passed to operations
   var data = event.data;
   data.delta = thresholdControl.value;
-  data.pixel = pixel;
+  if (coordinate) {
+    data.pixel = map.getPixelFromCoordinate(coordinate);
+  }
 });
 
 var thresholdControl = document.getElementById('threshold');
