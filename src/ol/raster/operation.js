@@ -24,7 +24,7 @@ ol.raster.OperationType = {
  * an array of the same.  The operations are called with a second "data"
  * argument, which can be used for storage.  The data object is accessible
  * from raster events, where it can be initialized in "beforeoperations" and
- * accessed again in "afteroperations."
+ * accessed again in "afteroperations".
  *
  * @typedef {function((Array.<ol.raster.Pixel>|Array.<ImageData>), Object):
  *     (Array.<ol.raster.Pixel>|Array.<ImageData>)}

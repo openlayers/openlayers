@@ -4537,8 +4537,8 @@ olx.source.RasterOptions.prototype.lib;
 /**
  * By default, operations will be run in a single worker thread.  To avoid using
  * workers altogether, set `threads: 0`.  For pixel operations, operations can
- * be run in multiple worker threads.  Note that there some additional overhead
- * in transferring data to multiple workers, and that depending on the user's
+ * be run in multiple worker threads.  Note that there is additional overhead in
+ * transferring data to multiple workers, and that depending on the user's
  * system, it may not be possible to parallelize the work.
  * @type {number|undefined}
  * @api

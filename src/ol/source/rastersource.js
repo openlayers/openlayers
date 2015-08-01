@@ -28,9 +28,9 @@ goog.require('ol.source.Tile');
 
 /**
  * @classdesc
- * An source that transforms data from any number of input sources source using
- * an array of {@link ol.raster.Operation} functions to transform input pixel
- * values into output pixel values.
+ * A source that transforms data from any number of input sources using an array
+ * of {@link ol.raster.Operation} functions to transform input pixel values into
+ * output pixel values.
  *
  * @constructor
  * @extends {ol.source.Image}
