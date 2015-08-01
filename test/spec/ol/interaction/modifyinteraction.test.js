@@ -135,6 +135,34 @@ describe('ol.interaction.Modify', function() {
       expect(feature.getGeometry().getCoordinates()[0]).to.have.length(6);
     });
 
+    it('single clicking on created vertex should delete it again', function() {
+      var modify = new ol.interaction.Modify({
+        features: new ol.Collection(features)
+      });
+      map.addInteraction(modify);
+
+      var feature = features[0];
+
+      expect(feature.getGeometry().getRevision()).to.equal(1);
+      expect(feature.getGeometry().getCoordinates()[0]).to.have.length(5);
+
+      simulateEvent('pointerdown', 40, -20, false, 0);
+      simulateEvent('pointerup', 40, -20, false, 0);
+      simulateEvent('click', 40, -20, false, 0);
+      simulateEvent('singleclick', 40, -20, false, 0);
+
+      expect(feature.getGeometry().getRevision()).to.equal(2);
+      expect(feature.getGeometry().getCoordinates()[0]).to.have.length(6);
+
+      simulateEvent('pointerdown', 40, -20, false, 0);
+      simulateEvent('pointerup', 40, -20, false, 0);
+      simulateEvent('click', 40, -20, false, 0);
+      simulateEvent('singleclick', 40, -20, false, 0);
+
+      expect(feature.getGeometry().getRevision()).to.equal(3);
+      expect(feature.getGeometry().getCoordinates()[0]).to.have.length(5);
+    });
+
     it('clicking with drag should add vertex and +r3', function() {
       var modify = new ol.interaction.Modify({
         features: new ol.Collection(features)
