@@ -89,7 +89,7 @@ describe('ol.interaction.Modify', function() {
       });
       var rbushEntries = modify.rBush_.getAll();
       expect(rbushEntries.length).to.be(1);
-      expect(rbushEntries[0].feature === feature).to.be.ok();
+      expect(rbushEntries[0].feature).to.be(feature);
     });
   });
 
