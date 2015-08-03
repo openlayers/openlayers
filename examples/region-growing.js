@@ -12,7 +12,7 @@ function growRegion(inputs, data) {
   var seed = data.pixel;
   var delta = parseInt(data.delta);
   if (!seed) {
-    return [image];
+    return image;
   }
 
   seed = seed.map(Math.round);
@@ -59,7 +59,7 @@ function growRegion(inputs, data) {
     }
     edge = newedge;
   }
-  return [new ImageData(outputData, width, height)];
+  return new ImageData(outputData, width, height);
 }
 
 function next4Edges(edge) {
@@ -81,8 +81,8 @@ var imagery = new ol.layer.Tile({
 var raster = new ol.source.Raster({
   sources: [imagery.getSource()],
   operationType: 'image',
-  operations: [growRegion],
-  // the contents of `lib` option will be available to the operation(s) run in
+  operation: growRegion,
+  // Functions in the `lib` object will be available to the operation run in
   // the web worker.
   lib: {
     nextEdges: next4Edges
@@ -90,7 +90,7 @@ var raster = new ol.source.Raster({
 });
 
 var rasterImage = new ol.layer.Image({
-  opacity: 0.8,
+  opacity: 0.7,
   source: raster
 });
 
@@ -98,8 +98,8 @@ var map = new ol.Map({
   layers: [imagery, rasterImage],
   target: 'map',
   view: new ol.View({
-    center: ol.proj.fromLonLat([-120, 50]),
-    zoom: 6
+    center: ol.proj.fromLonLat([-119.07, 47.65]),
+    zoom: 11
   })
 });
 

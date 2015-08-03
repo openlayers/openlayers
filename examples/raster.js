@@ -7,68 +7,96 @@ goog.require('ol.layer.Tile');
 goog.require('ol.source.BingMaps');
 goog.require('ol.source.Raster');
 
-var minTgi = 0;
-var maxTgi = 25;
+var minVgi = 0;
+var maxVgi = 0.25;
+var bins = 10;
 
-function tgi(pixels, data) {
-  var pixel = pixels[0];
+
+/**
+ * Calculate the Vegetation Greenness Index (VGI) from an input pixel.  This
+ * is a rough estimate assuming that pixel values correspond to reflectance.
+ * @param {ol.raster.Pixel} pixel An array of [R, G, B, A] values.
+ * @return {number} The VGI value for the given pixel.
+ */
+function vgi(pixel) {
   var r = pixel[0] / 255;
   var g = pixel[1] / 255;
   var b = pixel[2] / 255;
-  var value = (120 * (r - b) - (190 * (r - g))) / 2;
-  pixel[0] = value;
-  return pixels;
+  return (2 * g - r - b) / (2 * g + r + b);
 }
 
-function summarize(pixels, data) {
-  var value = Math.floor(pixels[0][0]);
-  var counts = data.counts;
-  if (value >= counts.min && value < counts.max) {
-    counts.values[value - counts.min] += 1;
-  }
-  return pixels;
-}
 
-function color(pixels, data) {
-  var pixel = pixels[0];
-  var value = pixel[0];
-  if (value > data.threshold) {
-    pixel[0] = 0;
-    pixel[1] = 255;
-    pixel[2] = 0;
-    pixel[3] = 128;
+/**
+ * Summarize values for a histogram.
+ * @param {numver} value A VGI value.
+ * @param {Object} counts An object for keeping track of VGI counts.
+ */
+function summarize(value, counts) {
+  var min = counts.min;
+  var max = counts.max;
+  var num = counts.values.length;
+  if (value < min) {
+    // do nothing
+  } else if (value >= max) {
+    counts.values[num - 1] += 1;
   } else {
-    pixel[3] = 0;
+    var index = Math.floor((value - min) / counts.delta);
+    counts.values[index] += 1;
   }
-  return pixels;
 }
 
+
+/**
+ * Use aerial imagery as the input data for the raster source.
+ */
 var bing = new ol.source.BingMaps({
   key: 'Ak-dzM4wZjSqTlzveKz5u0d4IQ4bRzVI309GxmkgSVr1ewS6iPSrOvOKhA-CJlm3',
   imagerySet: 'Aerial'
 });
 
+
+/**
+ * Create a raster source where pixels with VGI values above a threshold will
+ * be colored green.
+ */
 var raster = new ol.source.Raster({
   sources: [bing],
-  operations: [tgi, summarize, color]
+  operation: function(pixels, data) {
+    var pixel = pixels[0];
+    var value = vgi(pixel);
+    summarize(value, data.counts);
+    if (value >= data.threshold) {
+      pixel[0] = 0;
+      pixel[1] = 255;
+      pixel[2] = 0;
+      pixel[3] = 128;
+    } else {
+      pixel[3] = 0;
+    }
+    return pixel;
+  },
+  lib: {
+    vgi: vgi,
+    summarize: summarize
+  }
 });
-raster.set('threshold', 10);
+raster.set('threshold', 0.1);
 
-function createCounts(min, max) {
-  var len = max - min;
-  var values = new Array(len);
-  for (var i = 0; i < len; ++i) {
+function createCounts(min, max, num) {
+  var values = new Array(num);
+  for (var i = 0; i < num; ++i) {
     values[i] = 0;
   }
   return {
     min: min,
     max: max,
-    values: values
+    values: values,
+    delta: (max - min) / num
   };
 }
 
 raster.on('beforeoperations', function(event) {
-  event.data.counts = createCounts(minTgi, maxTgi);
+  event.data.counts = createCounts(minVgi, maxVgi, bins);
   event.data.threshold = raster.get('threshold');
 });
 
@@ -107,7 +135,7 @@ function schedulePlot(resolution, counts, threshold) {
 var barWidth = 15;
 var plotHeight = 150;
 var chart = d3.select('#plot').append('svg')
-    .attr('width', barWidth * (maxTgi - minTgi))
+    .attr('width', barWidth * bins)
     .attr('height', plotHeight);
 
 var chartRect = chart[0][0].getBoundingClientRect();
@@ -124,35 +152,32 @@ function plot(resolution, counts, threshold) {
 
   bar.enter().append('rect');
 
-  bar.attr('class', function(value, index) {
-    return 'bar' + (index - counts.min >= threshold ? ' selected' : '');
+  bar.attr('class', function(count, index) {
+    var value = counts.min + (index * counts.delta);
+    return 'bar' + (value >= threshold ? ' selected' : '');
   })
   .attr('width', barWidth - 2);
 
-  bar.transition()
-      .attr('transform', function(value, index) {
-        return 'translate(' + (index * barWidth) + ', ' +
-            (plotHeight - yScale(value)) + ')';
-      })
-      .attr('height', yScale);
+  bar.transition().attr('transform', function(value, index) {
+    return 'translate(' + (index * barWidth) + ', ' +
+        (plotHeight - yScale(value)) + ')';
+  })
+  .attr('height', yScale);
 
-  bar.on('mousemove', function() {
-    var old = threshold;
-    threshold = counts.min +
-        Math.floor((d3.event.pageX - chartRect.left) / barWidth);
-    if (old !== threshold) {
+  bar.on('mousemove', function(count, index) {
+    var threshold = counts.min + (index * counts.delta);
+    if (raster.get('threshold') !== threshold) {
       raster.set('threshold', threshold);
       raster.changed();
     }
   });
 
-  bar.on('mouseover', function() {
-    var index = Math.floor((d3.event.pageX - chartRect.left) / barWidth);
+  bar.on('mouseover', function(count, index) {
     var area = 0;
     for (var i = counts.values.length - 1; i >= index; --i) {
       area += resolution * resolution * counts.values[i];
     }
-    tip.html(message(index + counts.min, area));
+    tip.html(message(counts.min + (index * counts.delta), area));
     tip.style('display', 'block');
     tip.transition().style({
       left: (chartRect.left + (index * barWidth) + (barWidth / 2)) + 'px',
@@ -171,5 +196,5 @@ function plot(resolution, counts, threshold) {
 
 function message(value, area) {
   var acres = (area / 4046.86).toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-  return acres + ' acres at<br>' + value + ' TGI or above';
+  return acres + ' acres at<br>' + value.toFixed(2) + ' VGI or above';
 }

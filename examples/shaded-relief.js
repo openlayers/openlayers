@@ -81,7 +81,7 @@ function shade(inputs, data) {
       aspect = Math.atan2(dzdy, -dzdx);
       if (aspect < 0) {
         aspect = halfPi - aspect;
-      } else if (aspect > Math.PI / 2) {
+      } else if (aspect > halfPi) {
         aspect = twoPi - aspect + halfPi;
       } else {
         aspect = halfPi - aspect;
@@ -99,7 +99,7 @@ function shade(inputs, data) {
     }
   }
 
-  return [new ImageData(shadeData, width, height)];
+  return new ImageData(shadeData, width, height);
 }
 
 var elevation = new ol.source.XYZ({
@@ -110,7 +110,7 @@ var elevation = new ol.source.XYZ({
 var raster = new ol.source.Raster({
   sources: [elevation],
   operationType: 'image',
-  operations: [shade]
+  operation: shade
 });
 
 var map = new ol.Map({

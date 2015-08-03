@@ -46,8 +46,8 @@ ol.source.Raster = function(options) {
   this.operationType_ = goog.isDef(options.operationType) ?
       options.operationType : ol.raster.OperationType.PIXEL;
 
-  var operations = goog.isDef(options.operations) ?
-      options.operations : [ol.raster.IdentityOp];
+  var operation = goog.isDef(options.operation) ?
+      options.operation : ol.raster.IdentityOp;
 
   /**
    * @private
@@ -59,7 +59,7 @@ ol.source.Raster = function(options) {
    * @private
    * @type {*}
    */
-  this.worker_ = this.createWorker_(operations, options.lib, this.threads_);
+  this.worker_ = this.createWorker_(operation, options.lib, this.threads_);
 
   /**
    * @private
@@ -146,16 +146,16 @@ goog.inherits(ol.source.Raster, ol.source.Image);
 
 /**
  * Create a worker.
- * @param {Array.<ol.raster.Operation>} operations The operations.
+ * @param {ol.raster.Operation} operation The operation.
  * @param {Object=} opt_lib Optional lib functions.
  * @param {number=} opt_threads Number of threads.
  * @return {*} The worker.
  * @private
  */
 ol.source.Raster.prototype.createWorker_ =
-    function(operations, opt_lib, opt_threads) {
+    function(operation, opt_lib, opt_threads) {
   return new ol.ext.pixelworks.Processor({
-    operations: operations,
+    operation: operation,
     imageOps: this.operationType_ === ol.raster.OperationType.IMAGE,
     queue: 1,
     lib: opt_lib,
@@ -165,14 +165,14 @@ ol.source.Raster.prototype.createWorker_ =
 
 
 /**
- * Reset the operations.
- * @param {Array.<ol.raster.Operation>} operations New operations.
+ * Reset the operation.
+ * @param {ol.raster.Operation} operation New operation.
  * @param {Object=} opt_lib Functions that will be available to operations run
  *     in a worker.
  * @api
  */
-ol.source.Raster.prototype.setOperations = function(operations, opt_lib) {
-  this.worker_ = this.createWorker_(operations, opt_lib, this.threads_);
+ol.source.Raster.prototype.setOperation = function(operation, opt_lib) {
+  this.worker_ = this.createWorker_(operation, opt_lib, this.threads_);
   this.changed();
 };
 

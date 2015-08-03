@@ -4500,7 +4500,7 @@ olx.source.ImageVectorOptions.prototype.style;
 
 /**
  * @typedef {{sources: Array.<ol.source.Source>,
- *     operations: (Array.<ol.raster.Operation>|undefined),
+ *     operation: (ol.raster.Operation|undefined),
  *     lib: (Object|undefined),
  *     threads: (number|undefined),
  *     operationType: (ol.raster.OperationType|undefined)}}
@@ -4518,12 +4518,12 @@ olx.source.RasterOptions.prototype.sources;
 
 
 /**
- * Pixel operations.  Operations will be called with data from input sources
- * and the final output will be assigned to the raster source.
- * @type {Array.<ol.raster.Operation>|undefined}
+ * Raster operation.  The operation will be called with data from input sources
+ * and the output will be assigned to the raster source.
+ * @type {ol.raster.Operation|undefined}
  * @api
  */
-olx.source.RasterOptions.prototype.operations;
+olx.source.RasterOptions.prototype.operation;
 
 
 /**
