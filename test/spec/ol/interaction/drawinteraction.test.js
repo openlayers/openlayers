@@ -169,8 +169,10 @@ describe('ol.interaction.Draw', function() {
       simulateEvent('pointerdown', 10, 20);
       simulateEvent('pointerup', 10, 20);
       simulateEvent('pointermove', 20, 20);
-      expect(ds).to.be.called(2);
-      expect(de).to.be.called(1);
+      expect(ds).to.be.called();
+      expect(ds.callCount).to.be(2);
+      expect(de).to.be.called();
+      expect(de.callCount).to.be(1);
     });
 
     it('triggers drawend event before inserting the feature', function() {
@@ -325,8 +327,10 @@ describe('ol.interaction.Draw', function() {
       simulateEvent('pointerup', 30, 20);
       simulateEvent('pointermove', 10, 20);
 
-      expect(ds).to.be.called(1);
-      expect(de).to.be.called(1);
+      expect(ds).to.be.called();
+      expect(ds.callCount).to.be(1);
+      expect(de).to.be.called();
+      expect(de.callCount).to.be(1);
     });
 
   });
@@ -486,8 +490,10 @@ describe('ol.interaction.Draw', function() {
       simulateEvent('pointerdown', 10, 20);
       simulateEvent('pointerup', 10, 20);
 
-      expect(ds).to.be.called(1);
-      expect(de).to.be.called(1);
+      expect(ds).to.be.called();
+      expect(ds.callCount).to.be(1);
+      expect(de).to.be.called();
+      expect(de.callCount).to.be(1);
     });
 
   });
@@ -614,8 +620,10 @@ describe('ol.interaction.Draw', function() {
       simulateEvent('pointerdown', 30, 20);
       simulateEvent('pointerup', 30, 20);
 
-      expect(ds).to.be.called(1);
-      expect(de).to.be.called(1);
+      expect(ds).to.be.called();
+      expect(ds.callCount).to.be(1);
+      expect(de).to.be.called();
+      expect(de.callCount).to.be(1);
     });
 
   });
