@@ -155,14 +155,12 @@ function plot(resolution, counts, threshold) {
   bar.attr('class', function(count, index) {
     var value = counts.min + (index * counts.delta);
     return 'bar' + (value >= threshold ? ' selected' : '');
-  })
-  .attr('width', barWidth - 2);
+  }).attr('width', barWidth - 2);
 
   bar.transition().attr('transform', function(value, index) {
     return 'translate(' + (index * barWidth) + ', ' +
         (plotHeight - yScale(value)) + ')';
-  })
-  .attr('height', yScale);
+  }).attr('height', yScale);
 
   bar.on('mousemove', function(count, index) {
     var threshold = counts.min + (index * counts.delta);

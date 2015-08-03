@@ -166,8 +166,8 @@ ol.coordinate.degreesToStringHDMS_ = function(degrees, hemispheres) {
 ol.coordinate.format = function(coordinate, template, opt_fractionDigits) {
   if (goog.isDef(coordinate)) {
     return template
-      .replace('{x}', coordinate[0].toFixed(opt_fractionDigits))
-      .replace('{y}', coordinate[1].toFixed(opt_fractionDigits));
+        .replace('{x}', coordinate[0].toFixed(opt_fractionDigits))
+        .replace('{y}', coordinate[1].toFixed(opt_fractionDigits));
   } else {
     return '';
   }

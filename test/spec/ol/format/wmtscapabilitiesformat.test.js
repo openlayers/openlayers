@@ -25,7 +25,7 @@ describe('ol.format.WMTSCapabilities', function() {
 
       var layer = capabilities.Contents.Layer[0];
       expect(layer.Abstract).to.be
-        .eql('Blue Marble Next Generation NASA Product');
+          .eql('Blue Marble Next Generation NASA Product');
       expect(layer.Identifier).to.be.eql('BlueMarbleNextGeneration');
       expect(layer.Title).to.be.eql('Blue Marble Next Generation');
 
@@ -39,16 +39,15 @@ describe('ol.format.WMTSCapabilities', function() {
       expect(layer.Style[0].isDefault).to.be(true);
       expect(layer.Style[0].Title).to.be.eql('Dark Blue');
       expect(layer.Style[0].LegendURL[0].href).to.be
-        .eql('http://www.miramon.uab.es/wmts/Coastlines/' +
-          'coastlines_darkBlue.png');
+          .eql('http://www.miramon.uab.es/wmts/Coastlines/coastlines_darkBlue.png');
       expect(layer.Style[0].LegendURL[0].format).to.be.eql('image/png');
 
       expect(layer.TileMatrixSetLink).to.be.an('array');
       expect(layer.TileMatrixSetLink).to.have.length(2);
       expect(layer.TileMatrixSetLink[0].TileMatrixSet).to.be
-        .eql('BigWorldPixel');
+          .eql('BigWorldPixel');
       expect(layer.TileMatrixSetLink[1].TileMatrixSet).to.be
-        .eql('google3857');
+          .eql('google3857');
 
       var wgs84Bbox = layer.WGS84BoundingBox;
       expect(wgs84Bbox).to.be.an('array');
@@ -61,9 +60,7 @@ describe('ol.format.WMTSCapabilities', function() {
       expect(layer.ResourceURL).to.have.length(2);
       expect(layer.ResourceURL[0].format).to.be.eql('image/png');
       expect(layer.ResourceURL[0].template).to.be
-        .eql('http://www.example.com/wmts/coastlines/{TileMatrix}' +
-          '/{TileRow}/{TileCol}.png');
-
+          .eql('http://www.example.com/wmts/coastlines/{TileMatrix}/{TileRow}/{TileCol}.png');
     });
 
     it('Can read Capabilities.Content.TileMatrixSet', function() {
