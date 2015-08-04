@@ -19,3 +19,7 @@ script: "make ci"
 after_success:
   - "make test-coverage"
   - "cat coverage/lcov.info | ./node_modules/.bin/coveralls"
+
+branches:
+  only:
+    - master
