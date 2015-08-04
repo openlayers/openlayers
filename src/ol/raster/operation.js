@@ -1,4 +1,3 @@
-goog.provide('ol.raster.IdentityOp');
 goog.provide('ol.raster.Operation');
 goog.provide('ol.raster.OperationType');
 
@@ -31,13 +30,3 @@ ol.raster.OperationType = {
  * @api
  */
 ol.raster.Operation;
-
-
-/**
- * The identity operation.  Returns the supplied input data as output.
- * @param {(Array.<ol.raster.Pixel>|Array.<ImageData>)} inputs Input data.
- * @return {(Array.<ol.raster.Pixel>|Array.<ImageData>)} The output data.
- */
-ol.raster.IdentityOp = function(inputs) {
-  return inputs;
-};

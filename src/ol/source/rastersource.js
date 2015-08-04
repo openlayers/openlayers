@@ -16,7 +16,6 @@ goog.require('ol.ext.pixelworks');
 goog.require('ol.extent');
 goog.require('ol.layer.Image');
 goog.require('ol.layer.Tile');
-goog.require('ol.raster.IdentityOp');
 goog.require('ol.raster.OperationType');
 goog.require('ol.renderer.canvas.ImageLayer');
 goog.require('ol.renderer.canvas.TileLayer');
@@ -41,25 +40,22 @@ ol.source.Raster = function(options) {
 
   /**
    * @private
+   * @type {*}
+   */
+  this.worker_ = null;
+
+  /**
+   * @private
    * @type {ol.raster.OperationType}
    */
   this.operationType_ = goog.isDef(options.operationType) ?
       options.operationType : ol.raster.OperationType.PIXEL;
-
-  var operation = goog.isDef(options.operation) ?
-      options.operation : ol.raster.IdentityOp;
 
   /**
    * @private
    * @type {number}
    */
   this.threads_ = goog.isDef(options.threads) ? options.threads : 1;
-
-  /**
-   * @private
-   * @type {*}
-   */
-  this.worker_ = this.createWorker_(operation, options.lib, this.threads_);
 
   /**
    * @private
@@ -135,44 +131,31 @@ ol.source.Raster = function(options) {
     wantedTiles: {}
   };
 
-  goog.base(this, {
-    // TODO: pass along any relevant options
-  });
+  goog.base(this, {});
 
+  if (goog.isDef(options.operation)) {
+    this.setOperation(options.operation, options.lib);
+  }
 
 };
 goog.inherits(ol.source.Raster, ol.source.Image);
 
 
 /**
- * Create a worker.
- * @param {ol.raster.Operation} operation The operation.
- * @param {Object=} opt_lib Optional lib functions.
- * @param {number=} opt_threads Number of threads.
- * @return {*} The worker.
- * @private
- */
-ol.source.Raster.prototype.createWorker_ =
-    function(operation, opt_lib, opt_threads) {
-  return new ol.ext.pixelworks.Processor({
-    operation: operation,
-    imageOps: this.operationType_ === ol.raster.OperationType.IMAGE,
-    queue: 1,
-    lib: opt_lib,
-    threads: opt_threads
-  });
-};
-
-
-/**
- * Reset the operation.
+ * Set the operation.
  * @param {ol.raster.Operation} operation New operation.
  * @param {Object=} opt_lib Functions that will be available to operations run
  *     in a worker.
  * @api
  */
 ol.source.Raster.prototype.setOperation = function(operation, opt_lib) {
-  this.worker_ = this.createWorker_(operation, opt_lib, this.threads_);
+  this.worker_ = new ol.ext.pixelworks.Processor({
+    operation: operation,
+    imageOps: this.operationType_ === ol.raster.OperationType.IMAGE,
+    queue: 1,
+    lib: opt_lib,
+    threads: this.threads_
+  });
   this.changed();
 };
 
