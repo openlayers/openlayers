@@ -640,7 +640,9 @@ ol.interaction.Draw.prototype.removeLastPoint = function() {
     this.geometryFunction_(this.sketchCoords_, geometry);
   }
 
-  if (coordinates.length === 0) this.finishCoordinate_ = null;
+  if (coordinates.length === 0) {
+    this.finishCoordinate_ = null;
+  }
 
   this.updateSketchFeatures_();
 };
