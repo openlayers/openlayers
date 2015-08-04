@@ -28,16 +28,11 @@ tags: "raster, region growing"
 <div class="row-fluid">
   <div class="span12">
     <div id="map" class="map" style="cursor: pointer"></div>
-  </div>
-</div>
-<div class="row">
-  <div class="col-md-1">
-    Threshold:
-  </div>
-  <div class="col-md-2">
-    <input id="threshold" type="range" min="1" max="50" value="20"/>
-  </div>
-  <div class="col-md-1">
-    <span id="threshold-value"></span>
+    <table class="controls">
+      <tr>
+        <td>Threshold: <span id="threshold-value"></span></td>
+        <td><input id="threshold" type="range" min="1" max="50" value="20"></td>
+      </tr>
+    </table>
   </div>
 </div>
