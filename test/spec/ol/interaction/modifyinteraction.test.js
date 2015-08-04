@@ -18,14 +18,13 @@ describe('ol.interaction.Modify', function() {
     style.height = height + 'px';
     document.body.appendChild(target);
 
-    var geometry = new ol.geom.Polygon([
-      [[0, 0], [10, 20], [0, 40], [40, 40], [40, 0]]]);
-
-    features = [];
-    features.push(
-        new ol.Feature({
-          geometry: geometry
-        }));
+    features = [
+      new ol.Feature({
+        geometry: new ol.geom.Polygon([
+          [[0, 0], [10, 20], [0, 40], [40, 40], [40, 0]]
+        ])
+      })
+    ];
 
     source = new ol.source.Vector({
       features: features
@@ -91,6 +90,37 @@ describe('ol.interaction.Modify', function() {
       expect(rbushEntries.length).to.be(1);
       expect(rbushEntries[0].feature).to.be(feature);
     });
+  });
+
+  describe('vertex deletion', function() {
+
+    it('works when clicking on a shared vertex', function() {
+      features.push(features[0].clone());
+
+      var modify = new ol.interaction.Modify({
+        features: new ol.Collection(features)
+      });
+      map.addInteraction(modify);
+
+      var first = features[0];
+      var second = features[0];
+
+      expect(first.getGeometry().getRevision()).to.equal(1);
+      expect(first.getGeometry().getCoordinates()[0]).to.have.length(5);
+      expect(second.getGeometry().getRevision()).to.equal(1);
+      expect(second.getGeometry().getCoordinates()[0]).to.have.length(5);
+
+      simulateEvent('pointerdown', 10, -20, false, 0);
+      simulateEvent('pointerup', 10, -20, false, 0);
+      simulateEvent('click', 10, -20, false, 0);
+      simulateEvent('singleclick', 10, -20, false, 0);
+
+      expect(first.getGeometry().getRevision()).to.equal(2);
+      expect(first.getGeometry().getCoordinates()[0]).to.have.length(4);
+      expect(second.getGeometry().getRevision()).to.equal(2);
+      expect(second.getGeometry().getCoordinates()[0]).to.have.length(4);
+    });
+
   });
 
   describe('boundary modification', function() {
