@@ -1,7 +1,6 @@
 goog.provide('ol.source.Source');
 goog.provide('ol.source.State');
 
-goog.require('goog.events.EventType');
 goog.require('ol.Attribution');
 goog.require('ol.Object');
 goog.require('ol.proj');

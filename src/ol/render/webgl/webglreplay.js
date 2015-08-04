@@ -1,7 +1,6 @@
 goog.provide('ol.render.webgl.ImageReplay');
 goog.provide('ol.render.webgl.ReplayGroup');
 
-goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('goog.functions');
 goog.require('goog.object');

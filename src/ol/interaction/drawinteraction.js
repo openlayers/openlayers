@@ -28,7 +28,6 @@ goog.require('ol.interaction.InteractionProperty');
 goog.require('ol.interaction.Pointer');
 goog.require('ol.layer.Vector');
 goog.require('ol.source.Vector');
-goog.require('ol.style.Style');
 
 
 /**

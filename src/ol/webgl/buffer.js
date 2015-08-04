@@ -1,6 +1,5 @@
 goog.provide('ol.webgl.Buffer');
 
-goog.require('goog.array');
 goog.require('goog.webgl');
 goog.require('ol');
 

@@ -1,6 +1,5 @@
 goog.provide('ol.Attribution');
 
-goog.require('goog.asserts');
 goog.require('goog.math');
 goog.require('ol.TileRange');
 
