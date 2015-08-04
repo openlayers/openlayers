@@ -888,8 +888,10 @@ ol.interaction.Modify.prototype.removeVertex_ = function() {
             newSegmentData);
         this.updateSegmentIndices_(geometry, index, segmentData.depth, -1);
 
-        this.overlay_.getSource().removeFeature(this.vertexFeature_);
-        this.vertexFeature_ = null;
+        if (!goog.isNull(this.vertexFeature_)) {
+          this.overlay_.getSource().removeFeature(this.vertexFeature_);
+          this.vertexFeature_ = null;
+        }
       }
     }
   }
