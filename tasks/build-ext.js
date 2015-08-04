@@ -50,6 +50,7 @@ function wrapModule(mod, callback) {
         '(function() {\n' +
         'var exports = {};\n' +
         'var module = {exports: exports};\n' +
+        'var define;\n' +
         '/**\n' +
         ' * @fileoverview\n' +
         ' * @suppress {accessControls, ambiguousFunctionDecl, ' +
