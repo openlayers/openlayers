@@ -556,9 +556,9 @@ ol.interaction.Snap.prototype.writePolygonGeometry_ =
 
 /**
  * @typedef {{
- *     snapped: {boolean},
- *     vertex: (ol.Coordinate|null),
- *     vertexPixel: (ol.Pixel|null)
+ *     snapped: boolean,
+ *     vertex: ?ol.Coordinate,
+ *     vertexPixel: ?ol.Pixel
  * }}
  */
 ol.interaction.Snap.ResultType;
