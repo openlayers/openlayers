@@ -616,6 +616,37 @@ ol.interaction.Draw.prototype.addToDrawing_ = function(event) {
 
 
 /**
+ * Remove last point of the feature currently being drawn.
+ * @api
+ */
+ol.interaction.Draw.prototype.removeLastPoint = function() {
+  var geometry = this.sketchFeature_.getGeometry();
+  goog.asserts.assertInstanceof(geometry, ol.geom.SimpleGeometry,
+      'geometry must be an ol.geom.SimpleGeometry');
+  var coordinates, sketchLineGeom;
+  if (this.mode_ === ol.interaction.DrawMode.LINE_STRING) {
+    coordinates = this.sketchCoords_;
+    coordinates.splice(-2, 1);
+    this.geometryFunction_(coordinates, geometry);
+  } else if (this.mode_ === ol.interaction.DrawMode.POLYGON) {
+    coordinates = this.sketchCoords_[0];
+    coordinates.splice(-2, 1);
+    sketchLineGeom = this.sketchLine_.getGeometry();
+    goog.asserts.assertInstanceof(sketchLineGeom, ol.geom.LineString,
+        'sketchLineGeom must be an ol.geom.LineString');
+    sketchLineGeom.setCoordinates(coordinates);
+    this.geometryFunction_(this.sketchCoords_, geometry);
+  }
+
+  if (coordinates.length === 0) {
+    this.finishCoordinate_ = null;
+  }
+
+  this.updateSketchFeatures_();
+};
+
+
+/**
  * Stop drawing and add the sketch feature to the target layer.
  * The {@link ol.interaction.DrawEventType.DRAWEND} event is dispatched before
  * inserting the feature.
