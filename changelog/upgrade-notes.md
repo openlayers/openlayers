@@ -2,6 +2,8 @@
 
 ### v3.8.0
 
+There should be nothing special required when upgrading from v3.7.0 to v3.8.0.
+
 ### v3.7.0
 
 #### Removal of `ol.FeatureOverlay`
