@@ -89,7 +89,7 @@ describe('ol.interaction.Modify', function() {
       });
       var rbushEntries = modify.rBush_.getAll();
       expect(rbushEntries.length).to.be(1);
-      expect(rbushEntries[0].feature === feature).to.be.ok();
+      expect(rbushEntries[0].feature).to.be(feature);
     });
   });
 
@@ -106,7 +106,6 @@ describe('ol.interaction.Modify', function() {
       expect(feature.getGeometry().getRevision()).to.equal(1);
       expect(feature.getGeometry().getCoordinates()[0]).to.have.length(5);
 
-      simulateEvent('pointermove', 10, -20, false, 0);
       simulateEvent('pointerdown', 10, -20, false, 0);
       simulateEvent('pointerup', 10, -20, false, 0);
       simulateEvent('click', 10, -20, false, 0);
@@ -127,7 +126,6 @@ describe('ol.interaction.Modify', function() {
       expect(feature.getGeometry().getRevision()).to.equal(1);
       expect(feature.getGeometry().getCoordinates()[0]).to.have.length(5);
 
-      simulateEvent('pointermove', 40, -20, false, 0);
       simulateEvent('pointerdown', 40, -20, false, 0);
       simulateEvent('pointerup', 40, -20, false, 0);
       simulateEvent('click', 40, -20, false, 0);
@@ -135,6 +133,34 @@ describe('ol.interaction.Modify', function() {
 
       expect(feature.getGeometry().getRevision()).to.equal(2);
       expect(feature.getGeometry().getCoordinates()[0]).to.have.length(6);
+    });
+
+    it('single clicking on created vertex should delete it again', function() {
+      var modify = new ol.interaction.Modify({
+        features: new ol.Collection(features)
+      });
+      map.addInteraction(modify);
+
+      var feature = features[0];
+
+      expect(feature.getGeometry().getRevision()).to.equal(1);
+      expect(feature.getGeometry().getCoordinates()[0]).to.have.length(5);
+
+      simulateEvent('pointerdown', 40, -20, false, 0);
+      simulateEvent('pointerup', 40, -20, false, 0);
+      simulateEvent('click', 40, -20, false, 0);
+      simulateEvent('singleclick', 40, -20, false, 0);
+
+      expect(feature.getGeometry().getRevision()).to.equal(2);
+      expect(feature.getGeometry().getCoordinates()[0]).to.have.length(6);
+
+      simulateEvent('pointerdown', 40, -20, false, 0);
+      simulateEvent('pointerup', 40, -20, false, 0);
+      simulateEvent('click', 40, -20, false, 0);
+      simulateEvent('singleclick', 40, -20, false, 0);
+
+      expect(feature.getGeometry().getRevision()).to.equal(3);
+      expect(feature.getGeometry().getCoordinates()[0]).to.have.length(5);
     });
 
     it('clicking with drag should add vertex and +r3', function() {
@@ -150,6 +176,7 @@ describe('ol.interaction.Modify', function() {
 
       simulateEvent('pointermove', 40, -20, false, 0);
       simulateEvent('pointerdown', 40, -20, false, 0);
+      simulateEvent('pointermove', 30, -20, false, 0);
       simulateEvent('pointerdrag', 30, -20, false, 0);
       simulateEvent('pointerup', 30, -20, false, 0);
 
@@ -158,6 +185,53 @@ describe('ol.interaction.Modify', function() {
     });
   });
 
+  describe('double click deleteCondition', function() {
+
+    it('should delete vertex on double click', function() {
+      var modify = new ol.interaction.Modify({
+        features: new ol.Collection(features),
+        deleteCondition: ol.events.condition.doubleClick
+      });
+      map.addInteraction(modify);
+
+      var feature = features[0];
+
+      expect(feature.getGeometry().getRevision()).to.equal(1);
+      expect(feature.getGeometry().getCoordinates()[0]).to.have.length(5);
+
+      simulateEvent('pointerdown', 10, -20, false, 0);
+      simulateEvent('pointerup', 10, -20, false, 0);
+      simulateEvent('click', 10, -20, false, 0);
+      simulateEvent('pointerdown', 10, -20, false, 0);
+      simulateEvent('pointerup', 10, -20, false, 0);
+      simulateEvent('click', 10, -20, false, 0);
+      simulateEvent('dblclick', 10, -20, false, 0);
+
+      expect(feature.getGeometry().getRevision()).to.equal(2);
+      expect(feature.getGeometry().getCoordinates()[0]).to.have.length(4);
+    });
+
+    it('should do nothing on single click', function() {
+      var modify = new ol.interaction.Modify({
+        features: new ol.Collection(features),
+        deleteCondition: ol.events.condition.doubleClick
+      });
+      map.addInteraction(modify);
+
+      var feature = features[0];
+
+      expect(feature.getGeometry().getRevision()).to.equal(1);
+      expect(feature.getGeometry().getCoordinates()[0]).to.have.length(5);
+
+      simulateEvent('pointerdown', 10, -20, false, 0);
+      simulateEvent('pointerup', 10, -20, false, 0);
+      simulateEvent('click', 10, -20, false, 0);
+      simulateEvent('singleclick', 10, -20, false, 0);
+
+      expect(feature.getGeometry().getRevision()).to.equal(1);
+      expect(feature.getGeometry().getCoordinates()[0]).to.have.length(5);
+    });
+  });
 });
 
 goog.require('goog.dispose');
@@ -169,6 +243,7 @@ goog.require('ol.Feature');
 goog.require('ol.Map');
 goog.require('ol.MapBrowserPointerEvent');
 goog.require('ol.View');
+goog.require('ol.events.condition');
 goog.require('ol.geom.Point');
 goog.require('ol.geom.Polygon');
 goog.require('ol.interaction.Modify');

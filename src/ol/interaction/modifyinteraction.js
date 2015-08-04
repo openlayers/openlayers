@@ -142,12 +142,12 @@ ol.interaction.Modify = function(options) {
   this.lastPixel_ = [0, 0];
 
   /**
-   * Keep track of the last inserted pixel location to avoid
-   * unintentional deletion.
-   * @type {ol.Pixel}
+   * Tracks if the next `singleclick` event should be ignored to prevent
+   * accidental deletion right after vertex creation.
+   * @type {boolean}
    * @private
    */
-  this.lastNewVertexPixel_ = [NaN, NaN];
+  this.ignoreNextSingleClick_ = false;
 
   /**
    * Segment RTree for each layer
@@ -543,6 +543,8 @@ ol.interaction.Modify.handleDownEvent_ = function(evt) {
  * @private
  */
 ol.interaction.Modify.handleDragEvent_ = function(evt) {
+  this.ignoreNextSingleClick_ = false;
+
   var vertex = evt.coordinate;
   for (var i = 0, ii = this.dragSegments_.length; i < ii; ++i) {
     var dragSegment = this.dragSegments_[i];
@@ -626,8 +628,8 @@ ol.interaction.Modify.handleEvent = function(mapBrowserEvent) {
   }
   if (!goog.isNull(this.vertexFeature_) &&
       this.deleteCondition_(mapBrowserEvent)) {
-    if (!(this.lastNewVertexPixel_[0] === this.lastPixel_[0] &&
-        this.lastNewVertexPixel_[1] === this.lastPixel_[1])) {
+    if (mapBrowserEvent.type != ol.MapBrowserEvent.EventType.SINGLECLICK ||
+        !this.ignoreNextSingleClick_) {
       var geometry = this.vertexFeature_.getGeometry();
       goog.asserts.assertInstanceof(geometry, ol.geom.Point,
           'geometry should be an ol.geom.Point');
@@ -636,6 +638,11 @@ ol.interaction.Modify.handleEvent = function(mapBrowserEvent) {
       handled = true;
     }
   }
+
+  if (mapBrowserEvent.type == ol.MapBrowserEvent.EventType.SINGLECLICK) {
+    this.ignoreNextSingleClick_ = false;
+  }
+
   return ol.interaction.Pointer.handleEvent.call(this, mapBrowserEvent) &&
       !handled;
 };
@@ -789,7 +796,7 @@ ol.interaction.Modify.prototype.insertVertex_ = function(segmentData, vertex) {
   rTree.insert(ol.extent.boundingExtent(newSegmentData2.segment),
       newSegmentData2);
   this.dragSegments_.push([newSegmentData2, 0]);
-  this.lastNewVertexPixel_ = this.lastPixel_;
+  this.ignoreNextSingleClick_ = true;
 };
 
 

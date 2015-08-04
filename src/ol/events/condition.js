@@ -112,6 +112,18 @@ ol.events.condition.singleClick = function(mapBrowserEvent) {
 
 
 /**
+ * Return `true` if the event is a map `dblclick` event, `false` otherwise.
+ *
+ * @param {ol.MapBrowserEvent} mapBrowserEvent Map browser event.
+ * @return {boolean} True if the event is a map `dblclick` event.
+ * @api stable
+ */
+ol.events.condition.doubleClick = function(mapBrowserEvent) {
+  return mapBrowserEvent.type == ol.MapBrowserEvent.EventType.DBLCLICK;
+};
+
+
+/**
  * Return `true` if no modifier key (alt-, shift- or platform-modifier-key) is
  * pressed.
  *
