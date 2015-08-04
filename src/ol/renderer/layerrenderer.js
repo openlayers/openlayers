@@ -113,7 +113,6 @@ ol.renderer.Layer.prototype.createLoadedTileFinder = function(source, tiles) {
 
 
 /**
- * @protected
  * @return {ol.layer.Layer} Layer.
  */
 ol.renderer.Layer.prototype.getLayer = function() {
