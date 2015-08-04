@@ -1,6 +1,5 @@
 goog.provide('ol.source.XYZ');
 
-goog.require('ol.Attribution');
 goog.require('ol.TileUrlFunction');
 goog.require('ol.source.TileImage');
 

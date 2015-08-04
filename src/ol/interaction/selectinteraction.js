@@ -13,7 +13,6 @@ goog.require('ol.geom.GeometryType');
 goog.require('ol.interaction.Interaction');
 goog.require('ol.layer.Vector');
 goog.require('ol.source.Vector');
-goog.require('ol.style.Style');
 
 
 /**

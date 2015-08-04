@@ -3,7 +3,6 @@ goog.provide('ol.format.GML2');
 goog.require('goog.asserts');
 goog.require('goog.dom.NodeType');
 goog.require('ol.extent');
-goog.require('ol.format.GML');
 goog.require('ol.format.GMLBase');
 goog.require('ol.format.XSD');
 goog.require('ol.proj');

@@ -2,7 +2,6 @@ goog.provide('ol.View');
 goog.provide('ol.ViewHint');
 goog.provide('ol.ViewProperty');
 
-goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('ol');
 goog.require('ol.CenterConstraint');

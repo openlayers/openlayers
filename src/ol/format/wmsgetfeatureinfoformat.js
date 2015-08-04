@@ -5,7 +5,6 @@ goog.require('goog.asserts');
 goog.require('goog.dom.NodeType');
 goog.require('goog.object');
 goog.require('goog.string');
-goog.require('ol.format.GML');
 goog.require('ol.format.GML2');
 goog.require('ol.format.XMLFeature');
 goog.require('ol.xml');
