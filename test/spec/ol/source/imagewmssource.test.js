@@ -155,7 +155,7 @@ describe('ol.source.ImageWMS', function() {
       expect(imageLoadFunction.calledWith(image, image.src_)).to.be(true);
     });
 
-    it('returns the same image for consecutive calls with the same args', function() {
+    it('returns same image for consecutive calls with same args', function() {
       var extent = [10.01, 20, 30.01, 40];
       var source = new ol.source.ImageWMS(options);
       var image1 = source.getImage(extent, resolution, pixelRatio, projection);
