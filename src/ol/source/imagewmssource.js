@@ -94,12 +94,6 @@ ol.source.ImageWMS = function(opt_options) {
 
   /**
    * @private
-   * @type {ol.Extent}
-   */
-  this.imageExtent_ = null;
-
-  /**
-   * @private
    * @type {ol.Size}
    */
   this.imageSize_ = [0, 0];
@@ -204,24 +198,6 @@ ol.source.ImageWMS.prototype.getImage =
     pixelRatio = 1;
   }
 
-  var image = this.image_;
-  if (!goog.isNull(image) &&
-      this.renderedRevision_ == this.getRevision() &&
-      image.getResolution() == resolution &&
-      image.getPixelRatio() == pixelRatio &&
-      ol.extent.containsExtent(image.getExtent(), this.imageExtent_)) {
-    return image;
-  }
-
-  var params = {
-    'SERVICE': 'WMS',
-    'VERSION': ol.DEFAULT_WMS_VERSION,
-    'REQUEST': 'GetMap',
-    'FORMAT': 'image/png',
-    'TRANSPARENT': true
-  };
-  goog.object.extend(params, this.params_);
-
   extent = extent.slice();
   var centerX = (extent[0] + extent[2]) / 2;
   var centerY = (extent[1] + extent[3]) / 2;
@@ -246,7 +222,23 @@ ol.source.ImageWMS.prototype.getImage =
   extent[1] = centerY - imageResolution * height / 2;
   extent[3] = centerY + imageResolution * height / 2;
 
-  this.imageExtent_ = extent;
+  var image = this.image_;
+  if (!goog.isNull(image) &&
+      this.renderedRevision_ == this.getRevision() &&
+      image.getResolution() == resolution &&
+      image.getPixelRatio() == pixelRatio &&
+      ol.extent.containsExtent(image.getExtent(), extent)) {
+    return image;
+  }
+
+  var params = {
+    'SERVICE': 'WMS',
+    'VERSION': ol.DEFAULT_WMS_VERSION,
+    'REQUEST': 'GetMap',
+    'FORMAT': 'image/png',
+    'TRANSPARENT': true
+  };
+  goog.object.extend(params, this.params_);
 
   this.imageSize_[0] = width;
   this.imageSize_[1] = height;
@@ -370,7 +362,6 @@ ol.source.ImageWMS.prototype.setUrl = function(url) {
   if (url != this.url_) {
     this.url_ = url;
     this.image_ = null;
-    this.imageExtent_ = null;
     this.changed();
   }
 };
@@ -385,7 +376,6 @@ ol.source.ImageWMS.prototype.updateParams = function(params) {
   goog.object.extend(this.params_, params);
   this.updateV13_();
   this.image_ = null;
-  this.imageExtent_ = null;
   this.changed();
 };
 
