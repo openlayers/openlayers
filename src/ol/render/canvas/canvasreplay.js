@@ -252,7 +252,8 @@ ol.render.canvas.Replay.prototype.replay_ = function(
       case ol.render.canvas.Instruction.BEGIN_GEOMETRY:
         feature = /** @type {ol.Feature} */ (instruction[1]);
         var featureUid = goog.getUid(feature).toString();
-        if (goog.isDef(skippedFeaturesHash[featureUid])) {
+        if (goog.isDef(skippedFeaturesHash[featureUid]) ||
+            !goog.isDefAndNotNull(feature.getGeometry())) {
           i = /** @type {number} */ (instruction[2]);
         } else if (goog.isDef(opt_hitExtent) && !ol.extent.intersects(
             opt_hitExtent, feature.getGeometry().getExtent())) {
