@@ -289,28 +289,6 @@ ol.format.KML.ICON_ANCHOR_UNITS_MAP_ = {
  */
 ol.format.KML.createFeatureStyleFunction_ = function(
     style, styleUrl, defaultStyle, sharedStyles) {
-  var findStyle = (
-      /**
-       * @param {Array.<ol.style.Style>|string|undefined} styleValue Style
-       *     value.
-       * @return {Array.<ol.style.Style>} Style.
-       */
-      function(styleValue) {
-        if (goog.isArray(styleValue)) {
-          return styleValue;
-        } else if (goog.isString(styleValue)) {
-          // KML files in the wild occasionally forget the leading `#` on
-          // styleUrls defined in the same document.  Add a leading `#` if it
-          // enables to find a style.
-          if (!(styleValue in sharedStyles) &&
-              ('#' + styleValue in sharedStyles)) {
-            styleValue = '#' + styleValue;
-          }
-          return findStyle(sharedStyles[styleValue]);
-        } else {
-          return defaultStyle;
-        }
-      });
   return (
       /**
        * @param {number} resolution Resolution.
@@ -322,10 +300,36 @@ ol.format.KML.createFeatureStyleFunction_ = function(
           return style;
         }
         if (goog.isDef(styleUrl)) {
-          return findStyle(styleUrl);
+          return ol.format.KML.findStyle_(styleUrl, defaultStyle, sharedStyles);
         }
         return defaultStyle;
       });
+};
+
+
+/**
+ * @param {Array.<ol.style.Style>|string|undefined} styleValue Style value.
+ * @param {Array.<ol.style.Style>} defaultStyle Default style.
+ * @param {Object.<string, (Array.<ol.style.Style>|string)>} sharedStyles
+ * Shared styles.
+ * @return {Array.<ol.style.Style>} Style.
+ * @private
+ */
+ol.format.KML.findStyle_ = function(styleValue, defaultStyle, sharedStyles) {
+  if (goog.isArray(styleValue)) {
+    return styleValue;
+  } else if (goog.isString(styleValue)) {
+    // KML files in the wild occasionally forget the leading `#` on styleUrls
+    // defined in the same document.  Add a leading `#` if it enables to find
+    // a style.
+    if (!(styleValue in sharedStyles) && ('#' + styleValue in sharedStyles)) {
+      styleValue = '#' + styleValue;
+    }
+    return ol.format.KML.findStyle_(
+        sharedStyles[styleValue], defaultStyle, sharedStyles);
+  } else {
+    return defaultStyle;
+  }
 };
 
 
