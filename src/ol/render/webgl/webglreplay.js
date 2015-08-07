@@ -853,6 +853,7 @@ ol.render.webgl.ImageReplay.prototype.drawHitDetectionReplayOneByOne_ =
       featureUid = goog.getUid(feature).toString();
 
       if (!goog.isDef(skippedFeaturesHash[featureUid]) &&
+          goog.isDefAndNotNull(feature.getGeometry()) &&
           (!goog.isDef(opt_hitExtent) || ol.extent.intersects(
               opt_hitExtent, feature.getGeometry().getExtent()))) {
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
