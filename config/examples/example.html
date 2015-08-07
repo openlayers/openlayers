@@ -44,7 +44,7 @@
           <textarea class="hidden" name="css">{{ css.source }}</textarea>
           <textarea class="hidden" name="html">{{ contents }}</textarea>
           <input type="hidden" name="wrap" value="l">
-          <input type="hidden" name="resources" value="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css,https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js,http://openlayers.org/en/{{ olVersion }}/css/ol.css,http://openlayers.org/en/{{ olVersion }}/build/ol.js">
+          <input type="hidden" name="resources" value="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css,https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js,http://openlayers.org/en/v{{ olVersion }}/css/ol.css,http://openlayers.org/en/v{{ olVersion }}/build/ol.js">
           <pre><code id="example-source" class="language-markup">&lt;!DOCTYPE html&gt;
 &lt;html&gt;
 &lt;head&gt;
@@ -52,8 +52,8 @@
 &lt;script src="https://code.jquery.com/jquery-1.11.2.min.js"&gt;&lt;/script&gt;
 &lt;link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css"&gt;
 &lt;script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"&gt;&lt;/script&gt;
-&lt;link rel="stylesheet" href="http://openlayers.org/en/{{ olVersion }}/css/ol.css" type="text/css"&gt;
-&lt;script src="http://openlayers.org/en/{{ olVersion }}/build/ol.js"&gt;&lt;/script&gt;
+&lt;link rel="stylesheet" href="http://openlayers.org/en/v{{ olVersion }}/css/ol.css" type="text/css"&gt;
+&lt;script src="http://openlayers.org/en/v{{ olVersion }}/build/ol.js"&gt;&lt;/script&gt;
 {{ extraHead }}
 {{#if css.source}}
 &lt;style&gt;
