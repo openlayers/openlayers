@@ -41,7 +41,9 @@ map.addOverlay(vienna);
 
 // Popup showing the position the user clicked
 var popup = new ol.Overlay({
-  element: document.getElementById('popup')
+  element: document.getElementById('popup'),
+  positioning: 'bottom-center',
+  offset: [-2, -10]
 });
 map.addOverlay(popup);
 
@@ -51,14 +53,7 @@ map.on('click', function(evt) {
   var hdms = ol.coordinate.toStringHDMS(ol.proj.transform(
       coordinate, 'EPSG:3857', 'EPSG:4326'));
 
-  $(element).popover('destroy');
   popup.setPosition(coordinate);
-  // the keys are quoted to prevent renaming in ADVANCED mode.
-  $(element).popover({
-    'placement': 'top',
-    'animation': false,
-    'html': true,
-    'content': '<p>The location you clicked was:</p><code>' + hdms + '</code>'
-  });
-  $(element).popover('show');
+  $(element).find('.popover-content').html(
+      '<p>The location you clicked was:</p><code>' + hdms + '</code>');
 });
