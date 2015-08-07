@@ -147,7 +147,6 @@ goog.inherits(ol.control.OverviewMap, ol.control.Control);
 
 /**
  * @inheritDoc
- * @api
  */
 ol.control.OverviewMap.prototype.setMap = function(map) {
   var oldMap = this.getMap();

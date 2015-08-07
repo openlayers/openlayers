@@ -180,7 +180,6 @@ ol.control.MousePosition.prototype.handleMouseOut = function(browserEvent) {
 
 /**
  * @inheritDoc
- * @api stable
  */
 ol.control.MousePosition.prototype.setMap = function(map) {
   goog.base(this, 'setMap', map);
