@@ -171,7 +171,7 @@ host-libraries: build/timestamps/node-modules-timestamp
 	@mkdir -p $(BUILD_HOSTED)/ol.ext
 	@cp -r build/ol.ext/* $(BUILD_HOSTED)/ol.ext/
 
-$(BUILD_EXAMPLES): $(EXAMPLES)
+$(BUILD_EXAMPLES): $(EXAMPLES) package.json
 	@mkdir -p $(@D)
 	@node tasks/build-examples.js
 
