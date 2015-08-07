@@ -347,6 +347,10 @@ ol.style.Icon.prototype.listenImageChange = function(listener, thisArg) {
 
 /**
  * Load not yet loaded URI.
+ * When rendering a feature with an icon style, the vector renderer will
+ * automatically call this method. However, you might want to call this
+ * method yourself for preloading or other purposes.
+ * @api
  */
 ol.style.Icon.prototype.load = function() {
   this.iconImage_.load();
