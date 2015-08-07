@@ -10,6 +10,14 @@
     });
   }
 
+  var fiddleButton = document.getElementById('jsfiddle-button');
+  if (fiddleButton) {
+    fiddleButton.onclick = function(event) {
+      event.preventDefault();
+      document.getElementById('jsfiddle-form').submit();
+    };
+  }
+
   if (window.location.host === 'localhost:3000') {
     return;
   }
