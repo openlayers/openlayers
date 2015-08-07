@@ -59,6 +59,36 @@ ol.inline>li {
   font-family: 'Lucida Grande',Verdana,Geneva,Lucida,Arial,Helvetica,sans-serif;
 }
 
+pre[class*="language-"] {
+  margin-top: 20px;
+  background: #FFFFFF;
+}
+
+#source-controls {
+  position: absolute;
+  margin-top: 20px;
+  right: 40px;
+}
+
+#source-controls a {
+  margin-left: 15px;
+}
+
+#copy-button {
+  text-decoration: none;
+  cursor: pointer;
+}
+
+#jsfiddle-button {
+  text-decoration: none;
+  cursor: pointer;
+}
+
+pre {
+  border: 1px solid #eee;
+  border-radius: 0;
+}
+
 #tags, #shortdesc, .hidden {
   display: none;
 }
