@@ -77,33 +77,12 @@ ol.format.KML = function(opt_options) {
    */
   this.defaultDataProjection = ol.proj.get('EPSG:4326');
 
-  var defaultStyle = goog.isDef(options.defaultStyle) ?
+  /**
+   * @private
+   * @type {Array.<ol.style.Style>}
+   */
+  this.defaultStyle_ = goog.isDef(options.defaultStyle) ?
       options.defaultStyle : ol.format.KML.DEFAULT_STYLE_ARRAY_;
-
-  /** @type {Object.<string, (Array.<ol.style.Style>|string)>} */
-  var sharedStyles = {};
-
-  var findStyle =
-      /**
-       * @param {Array.<ol.style.Style>|string|undefined} styleValue Style
-       *     value.
-       * @return {Array.<ol.style.Style>} Style.
-       */
-      function(styleValue) {
-    if (goog.isArray(styleValue)) {
-      return styleValue;
-    } else if (goog.isString(styleValue)) {
-      // KML files in the wild occasionally forget the leading `#` on styleUrls
-      // defined in the same document.  Add a leading `#` if it enables to find
-      // a style.
-      if (!(styleValue in sharedStyles) && ('#' + styleValue in sharedStyles)) {
-        styleValue = '#' + styleValue;
-      }
-      return findStyle(sharedStyles[styleValue]);
-    } else {
-      return defaultStyle;
-    }
-  };
 
   /**
    * @private
@@ -116,30 +95,7 @@ ol.format.KML = function(opt_options) {
    * @private
    * @type {Object.<string, (Array.<ol.style.Style>|string)>}
    */
-  this.sharedStyles_ = sharedStyles;
-
-  /**
-   * @private
-   * @type {ol.FeatureStyleFunction}
-   */
-  this.featureStyleFunction_ =
-      /**
-       * @param {number} resolution Resolution.
-       * @return {Array.<ol.style.Style>} Style.
-       * @this {ol.Feature}
-       */
-      function(resolution) {
-    var style = /** @type {Array.<ol.style.Style>|undefined} */
-        (this.get('Style'));
-    if (goog.isDef(style)) {
-      return style;
-    }
-    var styleUrl = /** @type {string|undefined} */ (this.get('styleUrl'));
-    if (goog.isDef(styleUrl)) {
-      return findStyle(styleUrl);
-    }
-    return defaultStyle;
-  };
+  this.sharedStyles_ = {};
 
 };
 goog.inherits(ol.format.KML, ol.format.XMLFeature);
@@ -319,6 +275,61 @@ ol.format.KML.DEFAULT_STYLE_ARRAY_ = [ol.format.KML.DEFAULT_STYLE_];
 ol.format.KML.ICON_ANCHOR_UNITS_MAP_ = {
   'fraction': ol.style.IconAnchorUnits.FRACTION,
   'pixels': ol.style.IconAnchorUnits.PIXELS
+};
+
+
+/**
+ * @param {Array.<ol.style.Style>|undefined} style Style.
+ * @param {string} styleUrl Style URL.
+ * @param {Array.<ol.style.Style>} defaultStyle Default style.
+ * @param {Object.<string, (Array.<ol.style.Style>|string)>} sharedStyles
+ * Shared styles.
+ * @return {ol.FeatureStyleFunction} Feature style function.
+ * @private
+ */
+ol.format.KML.createFeatureStyleFunction_ = function(
+    style, styleUrl, defaultStyle, sharedStyles) {
+  return (
+      /**
+       * @param {number} resolution Resolution.
+       * @return {Array.<ol.style.Style>} Style.
+       * @this {ol.Feature}
+       */
+      function(resolution) {
+        if (goog.isDef(style)) {
+          return style;
+        }
+        if (goog.isDef(styleUrl)) {
+          return ol.format.KML.findStyle_(styleUrl, defaultStyle, sharedStyles);
+        }
+        return defaultStyle;
+      });
+};
+
+
+/**
+ * @param {Array.<ol.style.Style>|string|undefined} styleValue Style value.
+ * @param {Array.<ol.style.Style>} defaultStyle Default style.
+ * @param {Object.<string, (Array.<ol.style.Style>|string)>} sharedStyles
+ * Shared styles.
+ * @return {Array.<ol.style.Style>} Style.
+ * @private
+ */
+ol.format.KML.findStyle_ = function(styleValue, defaultStyle, sharedStyles) {
+  if (goog.isArray(styleValue)) {
+    return styleValue;
+  } else if (goog.isString(styleValue)) {
+    // KML files in the wild occasionally forget the leading `#` on styleUrls
+    // defined in the same document.  Add a leading `#` if it enables to find
+    // a style.
+    if (!(styleValue in sharedStyles) && ('#' + styleValue in sharedStyles)) {
+      styleValue = '#' + styleValue;
+    }
+    return ol.format.KML.findStyle_(
+        sharedStyles[styleValue], defaultStyle, sharedStyles);
+  } else {
+    return defaultStyle;
+  }
 };
 
 
@@ -1668,13 +1679,27 @@ ol.format.KML.prototype.readPlacemark_ = function(node, objectStack) {
     feature.setId(id);
   }
   var options = /** @type {olx.format.ReadOptions} */ (objectStack[0]);
-  if (goog.isDefAndNotNull(object.geometry)) {
-    ol.format.Feature.transformWithOptions(object.geometry, false, options);
+
+  var geometry = goog.object.get(object, 'geometry');
+  if (goog.isDefAndNotNull(geometry)) {
+    ol.format.Feature.transformWithOptions(geometry, false, options);
   }
-  feature.setProperties(object);
+  feature.setGeometry(geometry);
+  goog.object.remove(object, 'geometry');
+
   if (this.extractStyles_) {
-    feature.setStyle(this.featureStyleFunction_);
+    var style = goog.object.get(object, 'Style');
+    var styleUrl = goog.object.get(object, 'styleUrl');
+    var styleFunction = ol.format.KML.createFeatureStyleFunction_(
+        style, styleUrl, this.defaultStyle_, this.sharedStyles_);
+    feature.setStyle(styleFunction);
   }
+  goog.object.remove(object, 'Style');
+  // we do not remove the styleUrl property from the object, so it
+  // gets stored on feature when setProperties is called
+
+  feature.setProperties(object);
+
   return feature;
 };
 
