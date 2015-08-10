@@ -78,8 +78,7 @@ ol.geom.MultiPolygon = function(coordinates, opt_layout) {
    */
   this.orientedFlatCoordinates_ = null;
 
-  this.setCoordinates(coordinates,
-      /** @type {ol.geom.GeometryLayout|undefined} */ (opt_layout));
+  this.setCoordinates(coordinates, opt_layout);
 
 };
 goog.inherits(ol.geom.MultiPolygon, ol.geom.SimpleGeometry);
