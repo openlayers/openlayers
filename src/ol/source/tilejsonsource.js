@@ -1,4 +1,3 @@
-// FIXME add some error checking
 // FIXME check order of async callbacks
 
 /**
@@ -41,7 +40,8 @@ ol.source.TileJSON = function(options) {
   });
 
   var request = new goog.net.Jsonp(options.url);
-  request.send(undefined, goog.bind(this.handleTileJSONResponse, this));
+  request.send(undefined, goog.bind(this.handleTileJSONResponse, this),
+      goog.bind(this.handleTileJSONError, this));
 
 };
 goog.inherits(ol.source.TileJSON, ol.source.TileImage);
@@ -99,4 +99,12 @@ ol.source.TileJSON.prototype.handleTileJSONResponse = function(tileJSON) {
 
   this.setState(ol.source.State.READY);
 
+};
+
+
+/**
+ * @protected
+ */
+ol.source.TileJSON.prototype.handleTileJSONError = function() {
+  this.setState(ol.source.State.ERROR);
 };
