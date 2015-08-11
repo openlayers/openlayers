@@ -188,13 +188,13 @@ build/timestamps/check-%-timestamp: $(BUILD_HOSTED)/examples/%.html \
 
 build/timestamps/check-requires-timestamp: $(SRC_JS) $(EXAMPLES_JS) \
                                            $(SRC_SHADER_JS) $(SPEC_JS) \
-                                           $(SPEC_RENDERING JS)
+                                           $(SPEC_RENDERING_JS)
 	@mkdir -p $(@D)
 	@python bin/check-requires.py $(CLOSURE_LIB) $^
 	@touch $@
 
 build/timestamps/check-whitespace-timestamp: $(SRC_JS) $(EXAMPLES_JS) \
-                                             $(SPEC_JS) $(SPEC_RENDERING JS) \
+                                             $(SPEC_JS) $(SPEC_RENDERING_JS) \
                                              $(SRC_JSDOC)
 	@mkdir -p $(@D)
 	@python bin/check-whitespace.py $^
