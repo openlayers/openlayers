@@ -208,7 +208,8 @@ ol.source.TileImage.prototype.getTile =
       var tile = new ol.reproj.Tile(
           sourceProjection, sourceTileGrid,
           projection, targetTileGrid,
-          z, x, y, pixelRatio, goog.bind(function(z, x, y, pixelRatio) {
+          z, x, y, this.getTilePixelRatio(),
+          goog.bind(function(z, x, y, pixelRatio) {
             return this.getTileInternal(z, x, y, pixelRatio, sourceProjection);
           }, this), this.reprojectionErrorThreshold_,
           this.renderReprojectionEdges_);

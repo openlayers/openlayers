@@ -27,27 +27,6 @@ goog.require('ol.reproj.Triangulation');
 ol.reproj.Image = function(sourceProj, targetProj,
     targetExtent, targetResolution, pixelRatio, getImageFunction) {
 
-  var width = ol.extent.getWidth(targetExtent) / targetResolution;
-  var height = ol.extent.getHeight(targetExtent) / targetResolution;
-
-  /**
-   * @private
-   * @type {CanvasRenderingContext2D}
-   */
-  this.context_ = ol.dom.createCanvasContext2D(width, height);
-  this.context_.imageSmoothingEnabled = true;
-
-  if (goog.DEBUG) {
-    this.context_.fillStyle = 'rgba(255,0,0,0.1)';
-    this.context_.fillRect(0, 0, width, height);
-  }
-
-  /**
-   * @private
-   * @type {HTMLCanvasElement}
-   */
-  this.canvas_ = this.context_.canvas;
-
   /**
    * @private
    * @type {ol.Extent}
@@ -90,6 +69,31 @@ ol.reproj.Image = function(sourceProj, targetProj,
   this.srcImage_ = getImageFunction(srcExtent, sourceResolution,
                                     pixelRatio, sourceProj);
 
+  var width = ol.extent.getWidth(targetExtent) / targetResolution;
+  var height = ol.extent.getHeight(targetExtent) / targetResolution;
+
+  /**
+   * @private
+   * @type {number}
+   */
+  this.srcPixelRatio_ =
+      !goog.isNull(this.srcImage_) ? this.srcImage_.getPixelRatio() : 1;
+
+  /**
+   * @private
+   * @type {CanvasRenderingContext2D}
+   */
+  this.context_ = ol.dom.createCanvasContext2D(
+      this.srcPixelRatio_ * width, this.srcPixelRatio_ * height);
+  this.context_.imageSmoothingEnabled = true;
+  this.context_.scale(this.srcPixelRatio_, this.srcPixelRatio_);
+
+  /**
+   * @private
+   * @type {HTMLCanvasElement}
+   */
+  this.canvas_ = this.context_.canvas;
+
   /**
    * @private
    * @type {goog.events.Key}
@@ -105,7 +109,7 @@ ol.reproj.Image = function(sourceProj, targetProj,
     attributions = this.srcImage_.getAttributions();
   }
 
-  goog.base(this, targetExtent, targetResolution, pixelRatio,
+  goog.base(this, targetExtent, targetResolution, this.srcPixelRatio_,
             state, attributions);
 };
 goog.inherits(ol.reproj.Image, ol.ImageBase);
@@ -142,7 +146,7 @@ ol.reproj.Image.prototype.reproject_ = function() {
         this.targetResolution_, this.targetExtent_, this.triangulation_, [{
           extent: this.srcImage_.getExtent(),
           image: this.srcImage_.getImage()
-        }]);
+        }], this.srcPixelRatio_);
   }
   this.state = srcState;
   this.changed();

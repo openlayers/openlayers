@@ -45,6 +45,12 @@ ol.reproj.Tile = function(sourceProj, sourceTileGrid,
 
   /**
    * @private
+   * @type {number}
+   */
+  this.pixelRatio_ = pixelRatio;
+
+  /**
+   * @private
    * @type {HTMLCanvasElement}
    */
   this.canvas_ = null;
@@ -253,17 +259,18 @@ ol.reproj.Tile.prototype.reproject_ = function() {
   var targetResolution = this.targetTileGrid_.getResolution(z);
   var srcResolution = this.sourceTileGrid_.getResolution(this.srcZ_);
 
-  var width = goog.isNumber(size) ? size : size[0];
-  var height = goog.isNumber(size) ? size : size[1];
+  var width = this.pixelRatio_ * (goog.isNumber(size) ? size : size[0]);
+  var height = this.pixelRatio_ * (goog.isNumber(size) ? size : size[1]);
   var context = ol.dom.createCanvasContext2D(width, height);
   context.imageSmoothingEnabled = true;
+  context.scale(this.pixelRatio_, this.pixelRatio_);
 
   if (sources.length > 0) {
     var targetExtent = this.targetTileGrid_.getTileCoordExtent(tileCoord);
     ol.reproj.renderTriangles(context,
         srcResolution, this.sourceTileGrid_.getExtent(),
         targetResolution, targetExtent, this.triangulation_, sources,
-        this.renderEdges_);
+        this.pixelRatio_, this.renderEdges_);
   }
 
   this.canvas_ = context.canvas;

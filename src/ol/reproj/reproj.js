@@ -68,11 +68,12 @@ ol.reproj.WrapXRendering_ = {
  * @param {ol.reproj.Triangulation} triangulation
  * @param {Array.<{extent: ol.Extent,
  *                 image: (HTMLCanvasElement|Image)}>} sources
+ * @param {number} sourcePixelRatio
  * @param {boolean=} opt_renderEdges
  */
 ol.reproj.renderTriangles = function(context,
     sourceResolution, sourceExtent, targetResolution, targetExtent,
-    triangulation, sources, opt_renderEdges) {
+    triangulation, sources, sourcePixelRatio, opt_renderEdges) {
 
   var wrapXShiftDistance = !goog.isNull(sourceExtent) ?
       ol.extent.getWidth(sourceExtent) : 0;
@@ -127,10 +128,11 @@ ol.reproj.renderTriangles = function(context,
   }
 
   var stitchContext = ol.dom.createCanvasContext2D(
-      Math.round(canvasWidthInUnits / sourceResolution),
-      Math.round(srcDataHeight / sourceResolution));
+      Math.round(sourcePixelRatio * canvasWidthInUnits / sourceResolution),
+      Math.round(sourcePixelRatio * srcDataHeight / sourceResolution));
 
-  stitchContext.scale(1 / sourceResolution, 1 / sourceResolution);
+  stitchContext.scale(sourcePixelRatio / sourceResolution,
+                      sourcePixelRatio / sourceResolution);
   stitchContext.translate(-srcDataExtent[0], srcDataExtent[3]);
 
   goog.array.forEach(sources, function(src, i, arr) {
@@ -249,12 +251,13 @@ ol.reproj.renderTriangles = function(context,
     context.closePath();
     context.clip();
 
-    context.setTransform(coefs[0], coefs[2], coefs[1], coefs[3], u0, v0);
+    context.transform(coefs[0], coefs[2], coefs[1], coefs[3], u0, v0);
 
     context.translate(srcDataExtent[0] - srcNumericalShiftX,
                       srcDataExtent[3] - srcNumericalShiftY);
 
-    context.scale(sourceResolution, -sourceResolution);
+    context.scale(sourceResolution / sourcePixelRatio,
+                  -sourceResolution / sourcePixelRatio);
 
     context.drawImage(stitchContext.canvas, 0, 0);
     context.restore();
