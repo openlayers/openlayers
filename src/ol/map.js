@@ -931,6 +931,15 @@ ol.Map.prototype.getTilePriority =
 
 
 /**
+ * @return {ol.TileQueue} Tile queue.
+ * @api
+ */
+ol.Map.prototype.getTileQueue = function() {
+  return this.tileQueue_;
+};
+
+
+/**
  * @param {goog.events.BrowserEvent} browserEvent Browser event.
  * @param {string=} opt_type Type.
  */
