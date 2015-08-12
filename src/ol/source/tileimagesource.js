@@ -316,6 +316,25 @@ ol.source.TileImage.prototype.setRenderReprojectionEdges = function(render) {
 
 
 /**
+ * @param {ol.proj.ProjectionLike} projection
+ * @param {ol.tilegrid.TileGrid} tilegrid
+ * @api
+ */
+ol.source.TileImage.prototype.setTileGridForProjection =
+    function(projection, tilegrid) {
+  if (ol.ENABLE_RASTER_REPROJECTION) {
+    var proj = ol.proj.get(projection);
+    if (!goog.isNull(proj)) {
+      var projKey = goog.getUid(proj).toString();
+      if (!(projKey in this.tileGridForProjection)) {
+        this.tileGridForProjection[projKey] = tilegrid;
+      }
+    }
+  }
+};
+
+
+/**
  * Set the tile load function of the source.
  * @param {ol.TileLoadFunctionType} tileLoadFunction Tile load function.
  * @api
