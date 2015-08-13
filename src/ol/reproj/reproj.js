@@ -1,6 +1,8 @@
 goog.provide('ol.reproj');
 
 goog.require('goog.array');
+goog.require('goog.labs.userAgent.browser');
+goog.require('goog.labs.userAgent.platform');
 goog.require('goog.math');
 goog.require('ol.dom');
 goog.require('ol.extent');
@@ -56,6 +58,20 @@ ol.reproj.WrapXRendering_ = {
   STITCH_SHIFT: 1,
   STITCH_EXTENDED: 2
 };
+
+
+/**
+ * We need to employ more sophisticated solution
+ * if the web browser antialiases clipping edges on canvas.
+ *
+ * Currently only Chrome does not antialias the edges, but this is probably
+ * going to be "fixed" in the future: http://crbug.com/424291
+ *
+ * @type {boolean}
+ * @private
+ */
+ol.reproj.browserAntialiasesClip_ = !goog.labs.userAgent.browser.isChrome() ||
+                                    goog.labs.userAgent.platform.isIos();
 
 
 /**
@@ -154,8 +170,6 @@ ol.reproj.renderTriangles = function(context,
 
   var targetTL = ol.extent.getTopLeft(targetExtent);
 
-  context.globalCompositeOperation = 'copy';
-
   goog.array.forEach(triangulation.getTriangles(), function(tri, i, arr) {
     context.save();
 
@@ -229,25 +243,29 @@ ol.reproj.renderTriangles = function(context,
       return;
     }
 
-    var centroidX = (u0 + u1 + u2) / 3, centroidY = (v0 + v1 + v2) / 3;
-    var calcClipPoint = function(u, v) {
-      // Enlarges the triangle by 1 pixel to ensure overlap and rounds to whole
-      // pixels to ensure correct cross-browser behavior.
-      // Gecko does antialiasing differently than WebKit.
-
-      var dX = u - centroidX, dY = v - centroidY;
-      var distance = Math.sqrt(dX * dX + dY * dY);
-      return [Math.round(u + dX / distance), Math.round(v + dY / distance)];
-    };
-
-    var p0 = calcClipPoint(u0, v0);
-    var p1 = calcClipPoint(u1, v1);
-    var p2 = calcClipPoint(u2, v2);
-
     context.beginPath();
-    context.moveTo(p0[0], p0[1]);
-    context.lineTo(p1[0], p1[1]);
-    context.lineTo(p2[0], p2[1]);
+    if (ol.reproj.browserAntialiasesClip_) {
+      // Enlarge the clipping triangle by 1 pixel to ensure the edges overlap
+      // in order to mask gaps caused by antialiasing.
+      var centroidX = (u0 + u1 + u2) / 3, centroidY = (v0 + v1 + v2) / 3;
+      var calcClipPoint = function(u, v) {
+        var dX = u - centroidX, dY = v - centroidY;
+        var distance = Math.sqrt(dX * dX + dY * dY);
+        return [Math.round(u + dX / distance), Math.round(v + dY / distance)];
+      };
+
+      var p0 = calcClipPoint(u0, v0);
+      var p1 = calcClipPoint(u1, v1);
+      var p2 = calcClipPoint(u2, v2);
+
+      context.moveTo(p0[0], p0[1]);
+      context.lineTo(p1[0], p1[1]);
+      context.lineTo(p2[0], p2[1]);
+    } else {
+      context.moveTo(u0, v0);
+      context.lineTo(u1, v1);
+      context.lineTo(u2, v2);
+    }
     context.closePath();
     context.clip();
 
@@ -265,8 +283,6 @@ ol.reproj.renderTriangles = function(context,
 
   if (opt_renderEdges) {
     context.save();
-
-    context.globalCompositeOperation = 'source-over';
 
     context.strokeStyle = 'black';
     context.lineWidth = 1;
