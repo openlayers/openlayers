@@ -49,37 +49,26 @@ ol.source.TileImage = function(options) {
 
   /**
    * @protected
-   * @type {?string}
+   * @type {string|undefined}
    */
-  this.crossOrigin =
-      goog.isDef(options.crossOrigin) ? options.crossOrigin : null;
+  this.crossOrigin = options.crossOrigin;
 
   /**
    * @protected
-   * @type {ol.TileLoadFunctionType}
+   * @type {ol.TileLoadFunctionType|undefined}
    */
-  this.tileLoadFunction = goog.isDef(options.tileLoadFunction) ?
-      options.tileLoadFunction : ol.source.TileImage.defaultTileLoadFunction;
+  this.tileLoadFunction = options.tileLoadFunction;
 
   /**
    * @protected
    * @type {function(new: ol.ImageTile, ol.TileCoord, ol.TileState, string,
-   *        ?string, ol.TileLoadFunctionType)}
+   *        ol.TileLoadFunctionType=, string=)}
    */
   this.tileClass = goog.isDef(options.tileClass) ?
       options.tileClass : ol.ImageTile;
 
 };
 goog.inherits(ol.source.TileImage, ol.source.Tile);
-
-
-/**
- * @param {ol.ImageTile} imageTile Image tile.
- * @param {string} src Source.
- */
-ol.source.TileImage.defaultTileLoadFunction = function(imageTile, src) {
-  imageTile.getImage().src = src;
-};
 
 
 /**
@@ -101,8 +90,8 @@ ol.source.TileImage.prototype.getTile =
         tileCoord,
         goog.isDef(tileUrl) ? ol.TileState.IDLE : ol.TileState.EMPTY,
         goog.isDef(tileUrl) ? tileUrl : '',
-        this.crossOrigin,
-        this.tileLoadFunction);
+        this.tileLoadFunction,
+        this.crossOrigin);
     goog.events.listen(tile, goog.events.EventType.CHANGE,
         this.handleTileChange_, false, this);
 
@@ -114,7 +103,7 @@ ol.source.TileImage.prototype.getTile =
 
 /**
  * Return the tile load function of the source.
- * @return {ol.TileLoadFunctionType} TileLoadFunction
+ * @return {ol.TileLoadFunctionType|undefined} TileLoadFunction
  * @api
  */
 ol.source.TileImage.prototype.getTileLoadFunction = function() {

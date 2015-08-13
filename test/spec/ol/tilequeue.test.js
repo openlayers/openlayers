@@ -21,8 +21,7 @@ describe('ol.TileQueue', function() {
     var src = 'data:image/gif;base64,R0lGODlhAQABAPAAAP8AAP///' +
         'yH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==#' + tileId;
 
-    return new ol.ImageTile(tileCoord, state, src, null,
-        ol.source.Image.defaultImageLoadFunction);
+    return new ol.ImageTile(tileCoord, state, src);
   }
 
   describe('#loadMoreTiles()', function() {
@@ -127,5 +126,4 @@ goog.require('ol.ImageTile');
 goog.require('ol.Tile');
 goog.require('ol.TileState');
 goog.require('ol.TileQueue');
-goog.require('ol.source.Image');
 goog.require('ol.structs.PriorityQueue');
