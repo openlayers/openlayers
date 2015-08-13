@@ -140,14 +140,14 @@ goog.inherits(ol.source.Zoomify, ol.source.TileImage);
  * @param {ol.TileCoord} tileCoord Tile coordinate.
  * @param {ol.TileState} state State.
  * @param {string} src Image source URI.
- * @param {?string} crossOrigin Cross origin.
- * @param {ol.TileLoadFunctionType} tileLoadFunction Tile load function.
+ * @param {ol.TileLoadFunctionType=} opt_tileLoadFunction Tile load function.
+ * @param {string=} opt_crossOrigin Cross origin.
  * @private
  */
 ol.source.ZoomifyTile_ = function(
-    tileCoord, state, src, crossOrigin, tileLoadFunction) {
+    tileCoord, state, src, opt_tileLoadFunction, opt_crossOrigin) {
 
-  goog.base(this, tileCoord, state, src, crossOrigin, tileLoadFunction);
+  goog.base(this, tileCoord, state, src, opt_tileLoadFunction, opt_crossOrigin);
 
   /**
    * @private

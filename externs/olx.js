@@ -3899,19 +3899,18 @@ olx.source.TileUTFGridOptions.prototype.url;
 
 /**
  * @typedef {{attributions: (Array.<ol.Attribution>|undefined),
- *            crossOrigin: (null|string|undefined),
- *            logo: (string|olx.LogoOptions|undefined),
- *            opaque: (boolean|undefined),
- *            projection: ol.proj.ProjectionLike,
- *            state: (ol.source.State|string|undefined),
- *            tileClass: (function(new: ol.ImageTile, ol.TileCoord,
- *                                 ol.TileState, string, ?string,
- *                                 ol.TileLoadFunctionType)|undefined),
- *            tileGrid: (ol.tilegrid.TileGrid|undefined),
- *            tileLoadFunction: (ol.TileLoadFunctionType|undefined),
- *            tilePixelRatio: (number|undefined),
- *            tileUrlFunction: (ol.TileUrlFunctionType|undefined),
- *            wrapX: (boolean|undefined)}}
+ *     crossOrigin: (string|undefined),
+ *     logo: (string|olx.LogoOptions|undefined),
+ *     opaque: (boolean|undefined),
+ *     projection: ol.proj.ProjectionLike,
+ *     state: (ol.source.State|string|undefined),
+ *     tileClass: (function(new: ol.ImageTile, ol.TileCoord, ol.TileState,
+ *         string, ol.TileLoadFunctionType=, string=)|undefined),
+ *     tileGrid: (ol.tilegrid.TileGrid|undefined),
+ *     tileLoadFunction: (ol.TileLoadFunctionType|undefined),
+ *     tilePixelRatio: (number|undefined),
+ *     tileUrlFunction: (ol.TileUrlFunctionType|undefined),
+ *     wrapX: (boolean|undefined)}}
  * @api
  */
 olx.source.TileImageOptions;
@@ -3931,7 +3930,7 @@ olx.source.TileImageOptions.prototype.attributions;
  * access pixel data with the Canvas renderer.  See
  * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/CORS_enabled_image}
  * for more detail.
- * @type {null|string|undefined}
+ * @type {string|undefined}
  * @api
  */
 olx.source.TileImageOptions.prototype.crossOrigin;
@@ -4184,7 +4183,7 @@ olx.source.ImageMapGuideOptions.prototype.projection;
 
 /**
  * Ratio. `1` means image requests are the size of the map viewport, `2` means
- * twice the width and height of the map viewport, and so on. Must be `1` or 
+ * twice the width and height of the map viewport, and so on. Must be `1` or
  * higher. Default is `1`.
  * @type {number|undefined}
  * @api stable
@@ -4309,7 +4308,8 @@ olx.source.OSMOptions.prototype.attributions;
  * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/CORS_enabled_image}
  * for more detail.
  *
- * Default is `anonymous`.
+ * Default is `anonymous`. Set to `null` if your OSM server does not send
+ * CORS headers.
  * @type {null|string|undefined}
  * @api stable
  */
@@ -4467,7 +4467,7 @@ olx.source.ImageVectorOptions.prototype.projection;
 
 /**
  * Ratio. 1 means canvases are the size of the map viewport, 2 means twice the
- * width and height of the map viewport, and so on. Must be `1` or higher. 
+ * width and height of the map viewport, and so on. Must be `1` or higher.
  * Default is `1.5`.
  * @type {number|undefined}
  * @api
@@ -4562,7 +4562,7 @@ olx.source.RasterOptions.prototype.operationType;
 
 /**
  * @typedef {{attributions: (Array.<ol.Attribution>|undefined),
- *     crossOrigin: (null|string|undefined),
+ *     crossOrigin: (string|undefined),
  *     hidpi: (boolean|undefined),
  *     serverType: (ol.source.wms.ServerType|string|undefined),
  *     logo: (string|olx.LogoOptions|undefined),
@@ -4591,7 +4591,7 @@ olx.source.ImageWMSOptions.prototype.attributions;
  * access pixel data with the Canvas renderer.  See
  * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/CORS_enabled_image}
  * for more detail.
- * @type {null|string|undefined}
+ * @type {string|undefined}
  * @api stable
  */
 olx.source.ImageWMSOptions.prototype.crossOrigin;
@@ -4651,7 +4651,7 @@ olx.source.ImageWMSOptions.prototype.projection;
 
 /**
  * Ratio. `1` means image requests are the size of the map viewport, `2` means
- * twice the width and height of the map viewport, and so on. Must be `1` or 
+ * twice the width and height of the map viewport, and so on. Must be `1` or
  * higher. Default is `1.5`.
  * @type {number|undefined}
  * @api stable
@@ -4737,7 +4737,7 @@ olx.source.StamenOptions.prototype.url;
 
 /**
  * @typedef {{attributions: (Array.<ol.Attribution>|undefined),
- *     crossOrigin: (null|string|undefined),
+ *     crossOrigin: (string|undefined),
  *     imageExtent: (ol.Extent),
  *     imageSize: (ol.Size|undefined),
  *     imageLoadFunction: (ol.ImageLoadFunctionType|undefined),
@@ -4763,7 +4763,7 @@ olx.source.ImageStaticOptions.prototype.attributions;
  * access pixel data with the Canvas renderer.  See
  * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/CORS_enabled_image}
  * for more detail.
- * @type {null|string|undefined}
+ * @type {string|undefined}
  * @api stable
  */
 olx.source.ImageStaticOptions.prototype.crossOrigin;
@@ -4820,7 +4820,7 @@ olx.source.ImageStaticOptions.prototype.url;
 
 /**
  * @typedef {{attributions: (Array.<ol.Attribution>|undefined),
- *     crossOrigin: (null|string|undefined),
+ *     crossOrigin: (string|undefined),
  *     params: (Object.<string, *>|undefined),
  *     logo: (string|olx.LogoOptions|undefined),
  *     tileGrid: (ol.tilegrid.TileGrid|undefined),
@@ -4848,7 +4848,7 @@ olx.source.TileArcGISRestOptions.prototype.attributions;
  * access pixel data with the Canvas renderer.  See
  * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/CORS_enabled_image}
  * for more detail.
- * @type {null|string|undefined}
+ * @type {string|undefined}
  * @api
  */
 olx.source.TileArcGISRestOptions.prototype.crossOrigin;
@@ -4932,7 +4932,7 @@ olx.source.TileArcGISRestOptions.prototype.urls;
 
 /**
  * @typedef {{attributions: (Array.<ol.Attribution>|undefined),
- *     crossOrigin: (null|string|undefined),
+ *     crossOrigin: (string|undefined),
  *     tileLoadFunction: (ol.TileLoadFunctionType|undefined),
  *     url: string,
  *     wrapX: (boolean|undefined)}}
@@ -4957,7 +4957,7 @@ olx.source.TileJSONOptions.prototype.attributions;
  * access pixel data with the Canvas renderer.  See
  * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/CORS_enabled_image}
  * for more detail.
- * @type {null|string|undefined}
+ * @type {string|undefined}
  * @api stable
  */
 olx.source.TileJSONOptions.prototype.crossOrigin;
@@ -4990,7 +4990,7 @@ olx.source.TileJSONOptions.prototype.wrapX;
 /**
  * @typedef {{attributions: (Array.<ol.Attribution>|undefined),
  *     params: Object.<string,*>,
- *     crossOrigin: (null|string|undefined),
+ *     crossOrigin: (string|undefined),
  *     gutter: (number|undefined),
  *     hidpi: (boolean|undefined),
  *     logo: (string|olx.LogoOptions|undefined),
@@ -5031,7 +5031,7 @@ olx.source.TileWMSOptions.prototype.params;
  * access pixel data with the Canvas renderer.  See
  * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/CORS_enabled_image}
  * for more detail.
- * @type {null|string|undefined}
+ * @type {string|undefined}
  * @api stable
  */
 olx.source.TileWMSOptions.prototype.crossOrigin;
@@ -5256,7 +5256,7 @@ olx.source.VectorOptions.prototype.wrapX;
 
 /**
  * @typedef {{attributions: (Array.<ol.Attribution>|undefined),
- *     crossOrigin: (string|null|undefined),
+ *     crossOrigin: (string|undefined),
  *     logo: (string|olx.LogoOptions|undefined),
  *     tileGrid: ol.tilegrid.WMTS,
  *     projection: ol.proj.ProjectionLike,
@@ -5295,7 +5295,7 @@ olx.source.WMTSOptions.prototype.attributions;
  * access pixel data with the Canvas renderer.  See
  * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/CORS_enabled_image}
  * for more detail.
- * @type {string|null|undefined}
+ * @type {string|undefined}
  * @api
  */
 olx.source.WMTSOptions.prototype.crossOrigin;
@@ -5448,7 +5448,7 @@ olx.source.WMTSOptions.prototype.wrapX;
 
 /**
  * @typedef {{attributions: (Array.<ol.Attribution>|undefined),
- *     crossOrigin: (null|string|undefined),
+ *     crossOrigin: (string|undefined),
  *     logo: (string|olx.LogoOptions|undefined),
  *     projection: ol.proj.ProjectionLike,
  *     maxZoom: (number|undefined),
@@ -5480,7 +5480,7 @@ olx.source.XYZOptions.prototype.attributions;
  * access pixel data with the Canvas renderer.  See
  * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/CORS_enabled_image}
  * for more detail.
- * @type {null|string|undefined}
+ * @type {string|undefined}
  * @api stable
  */
 olx.source.XYZOptions.prototype.crossOrigin;
@@ -5590,7 +5590,7 @@ olx.source.XYZOptions.prototype.wrapX;
 
 /**
  * @typedef {{attributions: (Array.<ol.Attribution>|undefined),
- *     crossOrigin: (null|string|undefined),
+ *     crossOrigin: (string|undefined),
  *     logo: (string|olx.LogoOptions|undefined),
  *     url: !string,
  *     tierSizeCalculation: (string|undefined),
@@ -5614,7 +5614,7 @@ olx.source.ZoomifyOptions.prototype.attributions;
  * access pixel data with the Canvas renderer.  See
  * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/CORS_enabled_image}
  * for more detail.
- * @type {null|string|undefined}
+ * @type {string|undefined}
  * @api stable
  */
 olx.source.ZoomifyOptions.prototype.crossOrigin;
@@ -5739,7 +5739,7 @@ olx.style.FillOptions.prototype.color;
  *     anchorOrigin: (ol.style.IconOrigin|undefined),
  *     anchorXUnits: (ol.style.IconAnchorUnits|undefined),
  *     anchorYUnits: (ol.style.IconAnchorUnits|undefined),
- *     crossOrigin: (null|string|undefined),
+ *     crossOrigin: (string|undefined),
  *     img: (Image|undefined),
  *     offset: (Array.<number>|undefined),
  *     offsetOrigin: (ol.style.IconOrigin|undefined),
@@ -5799,7 +5799,7 @@ olx.style.IconOptions.prototype.anchorYUnits;
  * access pixel data with the Canvas renderer.  See
  * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/CORS_enabled_image}
  * for more detail.
- * @type {null|string|undefined}
+ * @type {string|undefined}
  * @api
  */
 olx.style.IconOptions.prototype.crossOrigin;

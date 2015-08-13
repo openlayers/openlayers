@@ -18,10 +18,11 @@ goog.require('ol.TileState');
  * @param {ol.TileCoord} tileCoord Tile coordinate.
  * @param {ol.TileState} state State.
  * @param {string} src Image source URI.
- * @param {?string} crossOrigin Cross origin.
- * @param {ol.TileLoadFunctionType} tileLoadFunction Tile load function.
+ * @param {ol.TileLoadFunctionType=} opt_tileLoadFunction Tile load function.
+ * @param {string=} opt_crossOrigin Cross origin.
  */
-ol.ImageTile = function(tileCoord, state, src, crossOrigin, tileLoadFunction) {
+ol.ImageTile = function(
+    tileCoord, state, src, opt_tileLoadFunction, opt_crossOrigin) {
 
   goog.base(this, tileCoord, state);
 
@@ -38,8 +39,8 @@ ol.ImageTile = function(tileCoord, state, src, crossOrigin, tileLoadFunction) {
    * @type {Image}
    */
   this.image_ = new Image();
-  if (!goog.isNull(crossOrigin)) {
-    this.image_.crossOrigin = crossOrigin;
+  if (goog.isDef(opt_crossOrigin)) {
+    this.image_.crossOrigin = opt_crossOrigin;
   }
 
   /**
@@ -58,7 +59,8 @@ ol.ImageTile = function(tileCoord, state, src, crossOrigin, tileLoadFunction) {
    * @private
    * @type {ol.TileLoadFunctionType}
    */
-  this.tileLoadFunction_ = tileLoadFunction;
+  this.tileLoadFunction_ = goog.isDef(opt_tileLoadFunction) ?
+      opt_tileLoadFunction : ol.ImageTile.defaultTileLoadFunction;
 
 };
 goog.inherits(ol.ImageTile, ol.Tile);
@@ -171,4 +173,13 @@ ol.ImageTile.prototype.unlistenImage_ = function() {
       'this.imageListenerKeys_ should not be null');
   goog.array.forEach(this.imageListenerKeys_, goog.events.unlistenByKey);
   this.imageListenerKeys_ = null;
+};
+
+
+/**
+ * @param {ol.ImageTile} imageTile Image tile.
+ * @param {string} src Source.
+ */
+ol.ImageTile.defaultTileLoadFunction = function(imageTile, src) {
+  imageTile.getImage().src = src;
 };

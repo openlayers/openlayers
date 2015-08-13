@@ -26,7 +26,8 @@ ol.source.OSM = function(opt_options) {
   }
 
   var crossOrigin = goog.isDef(options.crossOrigin) ?
-      options.crossOrigin : 'anonymous';
+      (goog.isNull(options.crossOrigin) ? undefined : options.crossOrigin) :
+      'anonymous';
 
   var url = goog.isDef(options.url) ?
       options.url : 'https://{a-c}.tile.openstreetmap.org/{z}/{x}/{y}.png';

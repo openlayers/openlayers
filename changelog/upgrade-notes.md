@@ -1,5 +1,14 @@
 ## Upgrade notes
 
+#### Changed return type of `ol.source.TileImage#getTileLoadFunction()`
+
+When no custom `tileLoadFunction` is configured, this method now returns `undefined`, and no longer the default, which is
+```js
+function(tile, src) {
+  tile.getImage().src = src;
+}
+```
+
 ### v3.8.0
 
 There should be nothing special required when upgrading from v3.7.0 to v3.8.0.

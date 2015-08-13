@@ -3,10 +3,17 @@ goog.provide('ol.TileVectorLoadFunctionType');
 
 
 /**
- * A function that takes an {@link ol.ImageTile} for the image tile and a
- * `{string}` for the src as arguments.
+ * A function that takes an {@link ol.Tile} for the tile and a `{string}` for
+ * the tile url as arguments.
  *
- * @typedef {function(ol.ImageTile, string)}
+ * The default for {@link ol.ImageTile} is
+ * ```js
+ * function(tile, src) {
+ *   tile.getImage().src = src;
+ * }
+ * ```
+ *
+ * @typedef {function(ol.Tile, string)}
  * @api
  */
 ol.TileLoadFunctionType;
