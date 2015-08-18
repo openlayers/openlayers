@@ -2505,6 +2505,22 @@ olx.interaction.DrawOptions.prototype.wrapX;
 
 
 /**
+ * @typedef {{features: (ol.Collection.<ol.Feature>|undefined)}}
+ * @api
+ */
+olx.interaction.TranslateOptions;
+
+
+/**
+ * Only features contained in this collection will be able to be translated. If
+ * not specified, all features on the map will be able to be translated.
+ * @type {ol.Collection.<ol.Feature>|undefined}
+ * @api
+ */
+olx.interaction.TranslateOptions.prototype.features;
+
+
+/**
  * @typedef {{condition: (ol.events.ConditionType|undefined),
  *     duration: (number|undefined),
  *     pixelDelta: (number|undefined)}}
