@@ -299,6 +299,16 @@ describe('ol.proj', function() {
       }
     });
 
+    it('does not overwrite existing projections in the registry', function() {
+      var epsg4326 = ol.proj.get('EPSG:4326');
+      new ol.proj.Projection({
+        code: 'EPSG:4326',
+        units: 'degrees',
+        extent: [-45, -45, 45, 45]
+      });
+      expect(ol.proj.get('EPSG:4326')).to.equal(epsg4326);
+    });
+
   });
 
   describe('ol.proj.getTransformFromProjections()', function() {
