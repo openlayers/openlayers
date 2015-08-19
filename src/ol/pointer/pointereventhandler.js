@@ -96,7 +96,7 @@ ol.pointer.PointerEventHandler.prototype.registerSources = function() {
     var mouseSource = new ol.pointer.MouseSource(this);
     this.registerSource('mouse', mouseSource);
 
-    if (ol.has.TOUCH) {
+    if (ol.ASSUME_TOUCH || ol.has.TOUCH) {
       this.registerSource('touch',
           new ol.pointer.TouchSource(this, mouseSource));
     }

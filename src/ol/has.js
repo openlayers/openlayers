@@ -78,7 +78,7 @@ ol.has.GEOLOCATION = 'geolocation' in goog.global.navigator;
  * @type {boolean}
  * @api stable
  */
-ol.has.TOUCH = ol.ASSUME_TOUCH || 'ontouchstart' in goog.global;
+ol.has.TOUCH = 'ontouchstart' in goog.global;
 
 
 /**
