@@ -271,12 +271,54 @@ describe('ol.Map', function() {
         });
       });
     });
+
+    describe('#getEventPixel', function() {
+
+      var target;
+
+      beforeEach(function() {
+        target = document.createElement('div');
+        target.style.position = 'absolute';
+        target.style.top = '10px';
+        target.style.left = '20px';
+        target.style.width = '800px';
+        target.style.height = '400px';
+
+        document.body.appendChild(target);
+      });
+      afterEach(function() {
+        document.body.removeChild(target);
+      });
+
+      it('works with touchend events', function() {
+
+        var map = new ol.Map({
+          target: target
+        });
+
+        var browserEvent = new goog.events.BrowserEvent({
+          type: 'touchend',
+          target: target,
+          changedTouches: [{
+            clientX: 100,
+            clientY: 200
+          }]
+        });
+        var position = map.getEventPixel(browserEvent.getBrowserEvent());
+        // 80 = clientX - target.style.left
+        expect(position[0]).to.eql(80);
+        // 190 = clientY - target.style.top
+        expect(position[1]).to.eql(190);
+      });
+    });
+
   });
 
 });
 
 goog.require('goog.dispose');
 goog.require('goog.dom');
+goog.require('goog.events.BrowserEvent');
 goog.require('goog.events.EventType');
 goog.require('ol.Map');
 goog.require('ol.MapEvent');
