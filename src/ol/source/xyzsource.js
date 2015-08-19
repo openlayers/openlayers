@@ -38,6 +38,12 @@ ol.source.XYZ = function(options) {
         tileSize: options.tileSize
       });
 
+  /**
+   * @private
+   * @type {!Array.<string>|null}
+   */
+  this.urls_ = null;
+
   goog.base(this, {
     attributions: options.attributions,
     crossOrigin: options.crossOrigin,
@@ -63,6 +69,18 @@ goog.inherits(ol.source.XYZ, ol.source.TileImage);
 
 
 /**
+ * Return the URLs used for this XYZ source.
+ * When a tileUrlFunction is used instead of url or urls,
+ * null will be returned.
+ * @return {!Array.<string>|null} URLs.
+ * @api
+ */
+ol.source.XYZ.prototype.getUrls = function() {
+  return this.urls_;
+};
+
+
+/**
  * Set the URL to use for requests.
  * @param {string} url URL.
  * @api stable
@@ -70,6 +88,7 @@ goog.inherits(ol.source.XYZ, ol.source.TileImage);
 ol.source.XYZ.prototype.setUrl = function(url) {
   this.setTileUrlFunction(ol.TileUrlFunction.createFromTemplates(
       ol.TileUrlFunction.expandUrl(url)));
+  this.urls_ = [url];
 };
 
 
@@ -79,4 +98,5 @@ ol.source.XYZ.prototype.setUrl = function(url) {
  */
 ol.source.XYZ.prototype.setUrls = function(urls) {
   this.setTileUrlFunction(ol.TileUrlFunction.createFromTemplates(urls));
+  this.urls_ = urls;
 };
