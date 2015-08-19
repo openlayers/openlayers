@@ -1534,10 +1534,8 @@ ol.Map.createOptionsInternal = function(options) {
         break;
       }
     } else if (ol.ENABLE_DOM && rendererType == ol.RendererType.DOM) {
-      if (ol.has.DOM) {
-        rendererConstructor = ol.renderer.dom.Map;
-        break;
-      }
+      rendererConstructor = ol.renderer.dom.Map;
+      break;
     } else if (ol.ENABLE_WEBGL && rendererType == ol.RendererType.WEBGL) {
       if (ol.has.WEBGL) {
         rendererConstructor = ol.renderer.webgl.Map;

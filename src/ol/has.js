@@ -64,14 +64,6 @@ ol.has.DEVICE_ORIENTATION = 'DeviceOrientationEvent' in goog.global;
 
 
 /**
- * True if browser supports DOM.
- * @const
- * @type {boolean}
- */
-ol.has.DOM = ol.ENABLE_DOM;
-
-
-/**
  * Is HTML5 geolocation supported in the current browser?
  * @const
  * @type {boolean}
