@@ -30,7 +30,7 @@ ol.has.CANVAS_LINE_DASH = false;
  * @type {boolean}
  * @api stable
  */
-ol.has.CANVAS = ol.ENABLE_CANVAS && (
+ol.has.CANVAS = (
     /**
      * @return {boolean} Canvas supported.
      */
