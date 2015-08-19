@@ -161,8 +161,12 @@ ol.layer.Layer.prototype.handleSourcePropertyChange_ = function() {
  */
 ol.layer.Layer.prototype.setMap = function(map) {
   goog.events.unlistenByKey(this.mapPrecomposeKey_);
-  this.changed();
+  this.mapPrecomposeKey_ = null;
+  if (goog.isNull(map)) {
+    this.changed();
+  }
   goog.events.unlistenByKey(this.mapRenderKey_);
+  this.mapRenderKey_ = null;
   if (!goog.isNull(map)) {
     this.mapPrecomposeKey_ = goog.events.listen(
         map, ol.render.EventType.PRECOMPOSE, function(evt) {
@@ -173,6 +177,7 @@ ol.layer.Layer.prototype.setMap = function(map) {
         }, false, this);
     this.mapRenderKey_ = goog.events.listen(
         this, goog.events.EventType.CHANGE, map.render, false, map);
+    this.changed();
   }
 };
 
