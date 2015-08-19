@@ -115,28 +115,26 @@ ol.has.WEBGL;
 
 
 (function() {
-  if (ol.ENABLE_WEBGL) {
-    var hasWebGL = false;
-    var textureSize;
-    var /** @type {Array.<string>} */ extensions = [];
+  var hasWebGL = false;
+  var textureSize;
+  var /** @type {Array.<string>} */ extensions = [];
 
-    if ('WebGLRenderingContext' in goog.global) {
-      try {
-        var canvas = /** @type {HTMLCanvasElement} */
-            (goog.dom.createElement(goog.dom.TagName.CANVAS));
-        var gl = ol.webgl.getContext(canvas, {
-          failIfMajorPerformanceCaveat: true
-        });
-        if (!goog.isNull(gl)) {
-          hasWebGL = true;
-          textureSize = /** @type {number} */
-              (gl.getParameter(gl.MAX_TEXTURE_SIZE));
-          extensions = gl.getSupportedExtensions();
-        }
-      } catch (e) {}
-    }
-    ol.has.WEBGL = hasWebGL;
-    ol.WEBGL_EXTENSIONS = extensions;
-    ol.WEBGL_MAX_TEXTURE_SIZE = textureSize;
+  if ('WebGLRenderingContext' in goog.global) {
+    try {
+      var canvas = /** @type {HTMLCanvasElement} */
+          (goog.dom.createElement(goog.dom.TagName.CANVAS));
+      var gl = ol.webgl.getContext(canvas, {
+        failIfMajorPerformanceCaveat: true
+      });
+      if (!goog.isNull(gl)) {
+        hasWebGL = true;
+        textureSize = /** @type {number} */
+            (gl.getParameter(gl.MAX_TEXTURE_SIZE));
+        extensions = gl.getSupportedExtensions();
+      }
+    } catch (e) {}
   }
+  ol.has.WEBGL = hasWebGL;
+  ol.WEBGL_EXTENSIONS = extensions;
+  ol.WEBGL_MAX_TEXTURE_SIZE = textureSize;
 })();
