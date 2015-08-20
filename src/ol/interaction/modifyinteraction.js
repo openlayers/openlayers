@@ -151,7 +151,7 @@ ol.interaction.Modify = function(options) {
 
   /**
    * Segment RTree for each layer
-   * @type {Object.<*, ol.structs.RBush>}
+   * @type {ol.structs.RBush.<ol.interaction.SegmentDataType>}
    * @private
    */
   this.rBush_ = new ol.structs.RBush();
@@ -970,6 +970,7 @@ ol.interaction.Modify.prototype.setGeometryCoordinates_ =
 ol.interaction.Modify.prototype.updateSegmentIndices_ = function(
     geometry, index, depth, delta) {
   this.rBush_.forEachInExtent(geometry.getExtent(), function(segmentDataMatch) {
+    goog.asserts.assert(goog.isDef(segmentDataMatch.depth));
     if (segmentDataMatch.geometry === geometry &&
         (!goog.isDef(depth) ||
         goog.array.equals(segmentDataMatch.depth, depth)) &&
