@@ -262,10 +262,65 @@ describe('ol.interaction.Modify', function() {
       expect(feature.getGeometry().getCoordinates()[0]).to.have.length(5);
     });
   });
+
+  describe('handle feature change', function() {
+    var getListeners;
+
+    beforeEach(function() {
+      getListeners = function(feature, modify) {
+        var listeners = goog.events.getListeners(
+            feature, goog.events.EventType.CHANGE, false);
+        return goog.array.filter(listeners, function(listener) {
+          return listener.handler == modify;
+        });
+      };
+    });
+
+    it('updates the segment data', function() {
+      var modify = new ol.interaction.Modify({
+        features: new ol.Collection(features)
+      });
+      map.addInteraction(modify);
+
+      var feature = features[0];
+      var listeners, listener;
+
+      listeners = getListeners(feature, modify);
+      expect(listeners).to.have.length(1);
+
+      var firstSegmentData;
+
+      firstSegmentData = modify.rBush_.forEachInExtent([0, 0, 5, 5],
+          function(node) {
+            return node;
+          });
+      expect(firstSegmentData.segment[0]).to.eql([0, 0]);
+      expect(firstSegmentData.segment[1]).to.eql([10, 20]);
+
+      var coordinates = feature.getGeometry().getCoordinates();
+      var firstVertex = coordinates[0][0];
+      firstVertex[0] = 1;
+      firstVertex[1] = 1;
+      feature.getGeometry().setCoordinates(coordinates);
+
+      firstSegmentData = modify.rBush_.forEachInExtent([0, 0, 5, 5],
+          function(node) {
+            return node;
+          });
+      expect(firstSegmentData.segment[0]).to.eql([1, 1]);
+      expect(firstSegmentData.segment[1]).to.eql([10, 20]);
+
+      listeners = getListeners(feature, modify);
+      expect(listeners).to.have.length(1);
+    });
+  });
+
 });
 
+goog.require('goog.array');
 goog.require('goog.dispose');
 goog.require('goog.events');
+goog.require('goog.events.EventType');
 goog.require('goog.events.BrowserEvent');
 goog.require('goog.style');
 goog.require('ol.Collection');
