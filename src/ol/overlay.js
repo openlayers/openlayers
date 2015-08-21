@@ -97,10 +97,10 @@ ol.Overlay = function(options) {
   this.element_.style.position = 'absolute';
 
   /**
-   * @private
+   * @protected
    * @type {boolean}
    */
-  this.autoPan_ = goog.isDef(options.autoPan) ? options.autoPan : false;
+  this.autoPan = goog.isDef(options.autoPan) ? options.autoPan : false;
 
   /**
    * @private
@@ -263,7 +263,7 @@ ol.Overlay.prototype.handleMapChanged = function() {
   if (goog.isDefAndNotNull(map)) {
     this.mapPostrenderListenerKey_ = goog.events.listen(map,
         ol.MapEventType.POSTRENDER, this.render, false, this);
-    this.updatePixelPosition_();
+    this.updatePixelPosition();
     var container = this.stopEvent_ ?
         map.getOverlayContainerStopEvent() : map.getOverlayContainer();
     if (this.insertFirst_) {
@@ -280,7 +280,7 @@ ol.Overlay.prototype.handleMapChanged = function() {
  * @protected
  */
 ol.Overlay.prototype.render = function() {
-  this.updatePixelPosition_();
+  this.updatePixelPosition();
 };
 
 
@@ -288,7 +288,7 @@ ol.Overlay.prototype.render = function() {
  * @protected
  */
 ol.Overlay.prototype.handleOffsetChanged = function() {
-  this.updatePixelPosition_();
+  this.updatePixelPosition();
 };
 
 
@@ -296,8 +296,8 @@ ol.Overlay.prototype.handleOffsetChanged = function() {
  * @protected
  */
 ol.Overlay.prototype.handlePositionChanged = function() {
-  this.updatePixelPosition_();
-  if (goog.isDef(this.get(ol.OverlayProperty.POSITION)) && this.autoPan_) {
+  this.updatePixelPosition();
+  if (goog.isDef(this.get(ol.OverlayProperty.POSITION)) && this.autoPan) {
     this.panIntoView_();
   }
 };
@@ -307,7 +307,7 @@ ol.Overlay.prototype.handlePositionChanged = function() {
  * @protected
  */
 ol.Overlay.prototype.handlePositioningChanged = function() {
-  this.updatePixelPosition_();
+  this.updatePixelPosition();
 };
 
 
@@ -363,7 +363,7 @@ ol.Overlay.prototype.setPosition = function(position) {
  * @private
  */
 ol.Overlay.prototype.panIntoView_ = function() {
-  goog.asserts.assert(this.autoPan_, 'this.autoPan_ should be true');
+  goog.asserts.assert(this.autoPan, 'this.autoPan should be true');
   var map = this.getMap();
 
   if (!goog.isDef(map) || goog.isNull(map.getTargetElement())) {
@@ -455,27 +455,48 @@ ol.Overlay.prototype.setPositioning = function(positioning) {
 
 
 /**
- * @private
+ * Modify the visibility of the element.
+ * @param {boolean} visible
+ * @protected
  */
-ol.Overlay.prototype.updatePixelPosition_ = function() {
+ol.Overlay.prototype.setVisible = function(visible) {
+  if (this.rendered_.visible !== visible) {
+    goog.style.setElementShown(this.element_, visible);
+    this.rendered_.visible = visible;
+  }
+};
 
+
+/**
+ * Update pixel position.
+ * @protected
+ */
+ol.Overlay.prototype.updatePixelPosition = function() {
   var map = this.getMap();
   var position = this.getPosition();
   if (!goog.isDef(map) || !map.isRendered() || !goog.isDef(position)) {
-    if (this.rendered_.visible) {
-      goog.style.setElementShown(this.element_, false);
-      this.rendered_.visible = false;
-    }
+    this.setVisible(false);
     return;
   }
 
   var pixel = map.getPixelFromCoordinate(position);
-  goog.asserts.assert(!goog.isNull(pixel), 'pixel should not be null');
   var mapSize = map.getSize();
+  this.updateRenderedPosition(pixel, mapSize);
+};
+
+
+/**
+ * @param {ol.Pixel} pixel
+ * @param {ol.Size|undefined} mapSize
+ * @protected
+ */
+ol.Overlay.prototype.updateRenderedPosition = function(pixel, mapSize) {
+  goog.asserts.assert(!goog.isNull(pixel), 'pixel should not be null');
   goog.asserts.assert(goog.isDef(mapSize), 'mapSize should be defined');
   var style = this.element_.style;
   var offset = this.getOffset();
   goog.asserts.assert(goog.isArray(offset), 'offset should be an array');
+
   var positioning = this.getPositioning();
   goog.asserts.assert(goog.isDef(positioning),
       'positioning should be defined');
@@ -531,9 +552,5 @@ ol.Overlay.prototype.updatePixelPosition_ = function() {
     }
   }
 
-  if (!this.rendered_.visible) {
-    goog.style.setElementShown(this.element_, true);
-    this.rendered_.visible = true;
-  }
-
+  this.setVisible(true);
 };
