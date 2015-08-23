@@ -12,7 +12,6 @@ describe('ol.Sphere', function() {
     {
       c1: [0, 0],
       c2: [0, 0],
-      equirectangularDistance: 0,
       haversineDistance: 0,
       initialBearing: 0,
       midpoint: [0, 0]
@@ -20,7 +19,6 @@ describe('ol.Sphere', function() {
     {
       c1: [0, 0],
       c2: [45, 45],
-      equirectangularDistance: 6812.398372654371,
       haversineDistance: 6671.695598673525,
       initialBearing: 35.264389682754654,
       midpoint: [18.434948822922006, 24.0948425521107]
@@ -28,7 +26,6 @@ describe('ol.Sphere', function() {
     {
       c1: [0, 0],
       c2: [-45, 45],
-      equirectangularDistance: 6812.398372654371,
       haversineDistance: 6671.695598673525,
       initialBearing: -35.264389682754654,
       midpoint: [-18.434948822922006, 24.0948425521107]
@@ -36,7 +33,6 @@ describe('ol.Sphere', function() {
     {
       c1: [0, 0],
       c2: [-45, -45],
-      equirectangularDistance: 6812.398372654371,
       haversineDistance: 6671.695598673525,
       initialBearing: -144.73561031724535,
       midpoint: [-18.434948822922006, -24.0948425521107]
@@ -44,7 +40,6 @@ describe('ol.Sphere', function() {
     {
       c1: [0, 0],
       c2: [45, -45],
-      equirectangularDistance: 6812.398372654371,
       haversineDistance: 6671.695598673525,
       initialBearing: 144.73561031724535,
       midpoint: [18.434948822922006, -24.0948425521107]
@@ -52,7 +47,6 @@ describe('ol.Sphere', function() {
     {
       c1: [45, 45],
       c2: [45, 45],
-      equirectangularDistance: 0,
       haversineDistance: 0,
       initialBearing: 0,
       midpoint: [45.00000000000005, 45]
@@ -60,7 +54,6 @@ describe('ol.Sphere', function() {
     {
       c1: [45, 45],
       c2: [-45, 45],
-      equirectangularDistance: 7076.401799751738,
       haversineDistance: 6671.695598673525,
       initialBearing: -54.73561031724535,
       midpoint: [0, 54.735610317245346]
@@ -68,7 +61,6 @@ describe('ol.Sphere', function() {
     {
       c1: [45, 45],
       c2: [-45, -45],
-      equirectangularDistance: 14152.803599503475,
       haversineDistance: 13343.391197347048,
       initialBearing: -125.26438968275465,
       midpoint: [0, 0]
@@ -76,7 +68,6 @@ describe('ol.Sphere', function() {
     {
       c1: [45, 45],
       c2: [45, -45],
-      equirectangularDistance: 10007.543398010286,
       haversineDistance: 10007.543398010286,
       initialBearing: 180,
       midpoint: [45.00000000000005, 0]
@@ -84,7 +75,6 @@ describe('ol.Sphere', function() {
     {
       c1: [-45, 45],
       c2: [-45, 45],
-      equirectangularDistance: 0,
       haversineDistance: 0,
       initialBearing: 0,
       midpoint: [-45.00000000000005, 45]
@@ -92,7 +82,6 @@ describe('ol.Sphere', function() {
     {
       c1: [-45, 45],
       c2: [-45, -45],
-      equirectangularDistance: 10007.543398010286,
       haversineDistance: 10007.543398010286,
       initialBearing: 180,
       midpoint: [-45.00000000000005, 0]
@@ -100,7 +89,6 @@ describe('ol.Sphere', function() {
     {
       c1: [-45, 45],
       c2: [45, -45],
-      equirectangularDistance: 14152.803599503475,
       haversineDistance: 13343.391197347048,
       initialBearing: 125.26438968275465,
       midpoint: [0, 0]
@@ -108,7 +96,6 @@ describe('ol.Sphere', function() {
     {
       c1: [-45, -45],
       c2: [-45, -45],
-      equirectangularDistance: 0,
       haversineDistance: 0,
       initialBearing: 0,
       midpoint: [-45.00000000000005, -45]
@@ -116,7 +103,6 @@ describe('ol.Sphere', function() {
     {
       c1: [-45, -45],
       c2: [45, -45],
-      equirectangularDistance: 7076.401799751738,
       haversineDistance: 6671.695598673525,
       initialBearing: 125.26438968275465,
       midpoint: [0, -54.735610317245346]
@@ -124,25 +110,11 @@ describe('ol.Sphere', function() {
     {
       c1: [45, -45],
       c2: [45, -45],
-      equirectangularDistance: 0,
       haversineDistance: 0,
       initialBearing: 0,
       midpoint: [45.00000000000005, -45]
     }
   ];
-
-  describe('equirectangularDistance', function() {
-
-    it('results match Chris Veness\'s reference implementation', function() {
-      var e, i;
-      for (i = 0; i < expected.length; ++i) {
-        e = expected[i];
-        expect(sphere.equirectangularDistance(e.c1, e.c2)).to.roughlyEqual(
-            e.equirectangularDistance, 1e-9);
-      }
-    });
-
-  });
 
   describe('haversineDistance', function() {
 
