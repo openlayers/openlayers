@@ -220,21 +220,6 @@ describe('ol.Ellipsoid', function() {
 
   });
 
-  describe('vincentyDistance', function() {
-
-    it('returns the same distances as Chris Veness\'s reference implementation',
-        function() {
-          var e, i, vincentyDistance;
-          for (i = 0; i < expected.length; ++i) {
-            e = expected[i];
-            vincentyDistance =
-                ol.ellipsoid.WGS84.vincentyDistance(e.c1, e.c2, 1e-12, 100);
-            expect(vincentyDistance).to.roughlyEqual(e.vincentyDistance, 1e-8);
-          }
-        });
-
-  });
-
 });
 
 

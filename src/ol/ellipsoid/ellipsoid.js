@@ -135,19 +135,3 @@ ol.Ellipsoid.prototype.vincenty =
     finalBearing: goog.math.toDegrees(alpha2)
   };
 };
-
-
-/**
- * Returns the distance from c1 to c2 using Vincenty.
- *
- * @param {ol.Coordinate} c1 Coordinate 1.
- * @param {ol.Coordinate} c2 Coordinate 1.
- * @param {number=} opt_minDeltaLambda Minimum delta lambda for convergence.
- * @param {number=} opt_maxIterations Maximum iterations.
- * @return {number} Vincenty distance.
- */
-ol.Ellipsoid.prototype.vincentyDistance =
-    function(c1, c2, opt_minDeltaLambda, opt_maxIterations) {
-  var vincenty = this.vincenty(c1, c2, opt_minDeltaLambda, opt_maxIterations);
-  return vincenty.distance;
-};
