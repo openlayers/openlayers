@@ -156,13 +156,13 @@ describe('ol.interaction.Modify', function() {
       map.addInteraction(modify);
 
       var first = features[0];
-      var second = features[0];
+      var second = features[1];
 
       events = trackEvents(first, modify);
 
       expect(first.getGeometry().getRevision()).to.equal(1);
       expect(first.getGeometry().getCoordinates()[0]).to.have.length(5);
-      expect(second.getGeometry().getRevision()).to.equal(1);
+      expect(second.getGeometry().getRevision()).to.equal(2);
       expect(second.getGeometry().getCoordinates()[0]).to.have.length(5);
 
       simulateEvent('pointerdown', 10, -20, false, 0);
@@ -172,7 +172,7 @@ describe('ol.interaction.Modify', function() {
 
       expect(first.getGeometry().getRevision()).to.equal(2);
       expect(first.getGeometry().getCoordinates()[0]).to.have.length(4);
-      expect(second.getGeometry().getRevision()).to.equal(2);
+      expect(second.getGeometry().getRevision()).to.equal(3);
       expect(second.getGeometry().getCoordinates()[0]).to.have.length(4);
 
       validateEvents(events, features);
