@@ -127,20 +127,6 @@ ol.Sphere.prototype.interpolate = function(c1, c2, fraction) {
 
 
 /**
- * Returns the maximum latitude of the great circle defined by bearing and
- * latitude.
- *
- * @param {number} bearing Bearing.
- * @param {number} latitude Latitude.
- * @return {number} Maximum latitude.
- */
-ol.Sphere.prototype.maximumLatitude = function(bearing, latitude) {
-  return Math.cos(Math.abs(Math.sin(goog.math.toRadians(bearing)) *
-                           Math.cos(goog.math.toRadians(latitude))));
-};
-
-
-/**
  * Returns the midpoint between c1 and c2.
  *
  * @param {ol.Coordinate} c1 Coordinate 1.
