@@ -151,19 +151,3 @@ ol.Ellipsoid.prototype.vincentyDistance =
   var vincenty = this.vincenty(c1, c2, opt_minDeltaLambda, opt_maxIterations);
   return vincenty.distance;
 };
-
-
-/**
- * Returns the final bearing from c1 to c2 using Vincenty.
- *
- * @param {ol.Coordinate} c1 Coordinate 1.
- * @param {ol.Coordinate} c2 Coordinate 1.
- * @param {number=} opt_minDeltaLambda Minimum delta lambda for convergence.
- * @param {number=} opt_maxIterations Maximum iterations.
- * @return {number} Initial bearing.
- */
-ol.Ellipsoid.prototype.vincentyFinalBearing =
-    function(c1, c2, opt_minDeltaLambda, opt_maxIterations) {
-  var vincenty = this.vincenty(c1, c2, opt_minDeltaLambda, opt_maxIterations);
-  return vincenty.finalBearing;
-};
