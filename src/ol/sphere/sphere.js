@@ -89,18 +89,6 @@ ol.Sphere.prototype.equirectangularDistance = function(c1, c2) {
 
 
 /**
- * Returns the final bearing from c1 to c2.
- *
- * @param {ol.Coordinate} c1 Coordinate 1.
- * @param {ol.Coordinate} c2 Coordinate 2.
- * @return {number} Initial bearing.
- */
-ol.Sphere.prototype.finalBearing = function(c1, c2) {
-  return (this.initialBearing(c2, c1) + 180) % 360;
-};
-
-
-/**
  * Returns the distance from c1 to c2 using the haversine formula.
  *
  * @param {ol.Coordinate} c1 Coordinate 1.
