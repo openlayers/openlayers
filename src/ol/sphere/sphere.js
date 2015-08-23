@@ -5,9 +5,6 @@
  * Licensed under CC-BY-3.0.
  */
 
-// FIXME add intersection of two paths given start points and bearings
-// FIXME add rhumb lines
-
 goog.provide('ol.Sphere');
 
 goog.require('goog.math');
