@@ -1,10 +1,12 @@
 ---
 template: example.html
 title: Measure example
-shortdesc: Example of using the ol.interaction.Draw interaction for creating simple measuring application.
+shortdesc: Example of using the ol.interaction.Draw interaction for creating a simple measuring application.
 docs: >
-  <p><i>NOTE: If use geodesic measures is not checked, measure is done in simple way on projected plane. Earth curvature is not taken into account</i></p>
-tags: "draw, edit, measure, vector"
+  The Linestring coordinates and the view projection are passed to ol.proj.getLength to get a distance in metres.
+  The length calculation method is Haversine on a sphere with the WGS84 equatorial radius.
+  Area computation is also done on a sphere with the WGS84 equatorial radius.
+tags: "draw, edit, measure, vector, length, area"
 ---
 <div class="row-fluid">
   <div class="span12">
@@ -17,5 +19,4 @@ tags: "draw, edit, measure, vector"
       <option value="length">Length</option>
       <option value="area">Area</option>
     </select>
-    <label class="checkbox"><input type="checkbox" id="geodesic"/>use geodesic measures</label>
 </form>

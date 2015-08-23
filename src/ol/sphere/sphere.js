@@ -6,7 +6,6 @@
  */
 
 // FIXME add intersection of two paths given start points and bearings
-// FIXME add rhumb lines
 
 goog.provide('ol.Sphere');
 
@@ -135,11 +134,14 @@ ol.Sphere.prototype.finalBearing = function(c1, c2) {
 
 
 /**
- * Returns the distance from c1 to c2 using the haversine formula.
- *
+ * Returns the distance from c1 to c2 using the Haversine formula.
+ * The Haversine formula computes geodesic distance on the sphere.
+ * A geodesic or great-circle, is the shortest distance between two points
+ * on the sphere. Great-circles are often used for navigation in the air.
+ * A great-circle (other than a meridian) is a curved line on an EPSG:3857 map.
  * @param {ol.Coordinate} c1 Coordinate 1.
  * @param {ol.Coordinate} c2 Coordinate 2.
- * @return {number} Haversine distance.
+ * @return {number} Haversine spherical geodesic distance.
  * @api
  */
 ol.Sphere.prototype.haversineDistance = function(c1, c2) {
@@ -264,4 +266,37 @@ ol.Sphere.prototype.offset = function(c1, distance, bearing) {
       Math.sin(bearing) * Math.sin(dByR) * Math.cos(lat1),
       Math.cos(dByR) - Math.sin(lat1) * Math.sin(lat));
   return [goog.math.toDegrees(lon), goog.math.toDegrees(lat)];
+};
+
+
+/**
+ * Returns the Rhumb line distance between c1 and c2,
+ * calculated on the sphere.
+ * A Rhumb line is a line of constant bearing.
+ * Such a line is often used for navigation at sea.
+ * A Rhumb line is a straight line on an EPSG:3857 map.
+ *
+ * @param {ol.Coordinate} c1 Coordinate 1.
+ * @param {ol.Coordinate} c2 Coordinate 2.
+ * @return {number} Rhumb Line Length.
+ * @api
+ */
+ol.Sphere.prototype.rhumbLineDistance = function(c1, c2) {
+
+  var dLon = goog.math.toRadians(c2[0] - c1[0]);
+  var lat1 = goog.math.toRadians(c1[1]);
+  var lat2 = goog.math.toRadians(c2[1]);
+  var dLat = lat2 - lat1;
+
+  var dPsi = Math.log(Math.tan(Math.PI / 4 + lat2 / 2) /
+      Math.tan(Math.PI / 4 + lat1 / 2));
+
+      // E-W course becomes ill-conditioned with 0/0
+      var q = Math.abs(dPsi) > 10e-12 ? dLat / dPsi : Math.cos(lat1);
+
+      // if dLon over 180 degrees take shorter rhumb across anti-meridian:
+      if (Math.abs(dLon) > Math.PI) {
+        dLon = dLon > 0 ? -(2 * Math.PI - dLon) : (2 * Math.PI + dLon);
+      }
+      return Math.sqrt(dLat * dLat + q * q * dLon * dLon) * this.radius;
 };
