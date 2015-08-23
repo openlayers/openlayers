@@ -88,23 +88,6 @@ ol.Sphere.prototype.geodesicArea = function(coordinates) {
 
 
 /**
- * Returns the distance of c3 from the great circle path defined by c1 and c2.
- *
- * @param {ol.Coordinate} c1 Coordinate 1.
- * @param {ol.Coordinate} c2 Coordinate 2.
- * @param {ol.Coordinate} c3 Coordinate 3.
- * @return {number} Cross-track distance.
- */
-ol.Sphere.prototype.crossTrackDistance = function(c1, c2, c3) {
-  var d13 = this.cosineDistance(c1, c2);
-  var theta12 = goog.math.toRadians(this.initialBearing(c1, c2));
-  var theta13 = goog.math.toRadians(this.initialBearing(c1, c3));
-  return this.radius *
-      Math.asin(Math.sin(d13 / this.radius) * Math.sin(theta13 - theta12));
-};
-
-
-/**
  * Returns the distance from c1 to c2 using Pythagoras's theorem on an
  * equirectangular projection.
  *
