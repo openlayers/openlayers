@@ -91,42 +91,6 @@ ol.Sphere.prototype.haversineDistance = function(c1, c2) {
 
 
 /**
- * Returns the point at `fraction` along the segment of the great circle passing
- * through c1 and c2.
- *
- * @param {ol.Coordinate} c1 Coordinate 1.
- * @param {ol.Coordinate} c2 Coordinate 2.
- * @param {number} fraction Fraction.
- * @return {ol.Coordinate} Coordinate between c1 and c2.
- */
-ol.Sphere.prototype.interpolate = function(c1, c2, fraction) {
-  var lat1 = goog.math.toRadians(c1[1]);
-  var lon1 = goog.math.toRadians(c1[0]);
-  var lat2 = goog.math.toRadians(c2[1]);
-  var lon2 = goog.math.toRadians(c2[0]);
-  var cosLat1 = Math.cos(lat1);
-  var sinLat1 = Math.sin(lat1);
-  var cosLat2 = Math.cos(lat2);
-  var sinLat2 = Math.sin(lat2);
-  var cosDeltaLon = Math.cos(lon2 - lon1);
-  var d = sinLat1 * sinLat2 + cosLat1 * cosLat2 * cosDeltaLon;
-  if (1 <= d) {
-    return c2.slice();
-  }
-  d = fraction * Math.acos(d);
-  var cosD = Math.cos(d);
-  var sinD = Math.sin(d);
-  var y = Math.sin(lon2 - lon1) * cosLat2;
-  var x = cosLat1 * sinLat2 - sinLat1 * cosLat2 * cosDeltaLon;
-  var theta = Math.atan2(y, x);
-  var lat = Math.asin(sinLat1 * cosD + cosLat1 * sinD * Math.cos(theta));
-  var lon = lon1 + Math.atan2(Math.sin(theta) * sinD * cosLat1,
-                              cosD - sinLat1 * Math.sin(lat));
-  return [goog.math.toDegrees(lon), goog.math.toDegrees(lat)];
-};
-
-
-/**
  * Returns the midpoint between c1 and c2.
  *
  * @param {ol.Coordinate} c1 Coordinate 1.

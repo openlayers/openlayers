@@ -113,26 +113,6 @@ describe('ol.Sphere', function() {
 
   });
 
-  describe('interpolate', function() {
-
-    it('results match at the start, midpoint, and end', function() {
-      var e, i;
-      for (i = 0; i < expected.length; ++i) {
-        e = expected[i];
-        var c1 = sphere.interpolate(e.c1, e.c2, 0);
-        expect(c1[0]).to.roughlyEqual(e.c1[0], 1e-9);
-        expect(c1[1]).to.roughlyEqual(e.c1[1], 1e-9);
-        var midpoint = sphere.interpolate(e.c1, e.c2, 0.5);
-        expect(midpoint[0]).to.roughlyEqual(e.midpoint[0], 1e-9);
-        expect(midpoint[1]).to.roughlyEqual(e.midpoint[1], 1e-5);
-        var c2 = sphere.interpolate(e.c1, e.c2, 1);
-        expect(c2[0]).to.roughlyEqual(e.c2[0], 1e-9);
-        expect(c2[1]).to.roughlyEqual(e.c2[1], 1e-5);
-      }
-    });
-
-  });
-
   describe('midpoint', function() {
 
     it('results match Chris Veness\'s reference implementation', function() {
