@@ -127,24 +127,6 @@ ol.Sphere.prototype.interpolate = function(c1, c2, fraction) {
 
 
 /**
- * Returns the initial bearing from c1 to c2.
- *
- * @param {ol.Coordinate} c1 Coordinate 1.
- * @param {ol.Coordinate} c2 Coordinate 2.
- * @return {number} Initial bearing.
- */
-ol.Sphere.prototype.initialBearing = function(c1, c2) {
-  var lat1 = goog.math.toRadians(c1[1]);
-  var lat2 = goog.math.toRadians(c2[1]);
-  var deltaLon = goog.math.toRadians(c2[0] - c1[0]);
-  var y = Math.sin(deltaLon) * Math.cos(lat2);
-  var x = Math.cos(lat1) * Math.sin(lat2) -
-      Math.sin(lat1) * Math.cos(lat2) * Math.cos(deltaLon);
-  return goog.math.toDegrees(Math.atan2(y, x));
-};
-
-
-/**
  * Returns the maximum latitude of the great circle defined by bearing and
  * latitude.
  *
