@@ -41,23 +41,6 @@ ol.Sphere = function(radius) {
 
 
 /**
- * Returns the distance from c1 to c2 using the spherical law of cosines.
- *
- * @param {ol.Coordinate} c1 Coordinate 1.
- * @param {ol.Coordinate} c2 Coordinate 2.
- * @return {number} Spherical law of cosines distance.
- */
-ol.Sphere.prototype.cosineDistance = function(c1, c2) {
-  var lat1 = goog.math.toRadians(c1[1]);
-  var lat2 = goog.math.toRadians(c2[1]);
-  var deltaLon = goog.math.toRadians(c2[0] - c1[0]);
-  return this.radius * Math.acos(
-      Math.sin(lat1) * Math.sin(lat2) +
-      Math.cos(lat1) * Math.cos(lat2) * Math.cos(deltaLon));
-};
-
-
-/**
  * Returns the geodesic area for a list of coordinates.
  *
  * [Reference](http://trs-new.jpl.nasa.gov/dspace/handle/2014/40409)
