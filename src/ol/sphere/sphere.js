@@ -91,28 +91,6 @@ ol.Sphere.prototype.haversineDistance = function(c1, c2) {
 
 
 /**
- * Returns the midpoint between c1 and c2.
- *
- * @param {ol.Coordinate} c1 Coordinate 1.
- * @param {ol.Coordinate} c2 Coordinate 2.
- * @return {ol.Coordinate} Midpoint.
- */
-ol.Sphere.prototype.midpoint = function(c1, c2) {
-  var lat1 = goog.math.toRadians(c1[1]);
-  var lat2 = goog.math.toRadians(c2[1]);
-  var lon1 = goog.math.toRadians(c1[0]);
-  var deltaLon = goog.math.toRadians(c2[0] - c1[0]);
-  var Bx = Math.cos(lat2) * Math.cos(deltaLon);
-  var By = Math.cos(lat2) * Math.sin(deltaLon);
-  var cosLat1PlusBx = Math.cos(lat1) + Bx;
-  var lat = Math.atan2(Math.sin(lat1) + Math.sin(lat2),
-                       Math.sqrt(cosLat1PlusBx * cosLat1PlusBx + By * By));
-  var lon = lon1 + Math.atan2(By, cosLat1PlusBx);
-  return [goog.math.toDegrees(lon), goog.math.toDegrees(lat)];
-};
-
-
-/**
  * Returns the coordinate at the given distance and bearing from `c1`.
  *
  * @param {ol.Coordinate} c1 The origin point (`[lon, lat]` in degrees).

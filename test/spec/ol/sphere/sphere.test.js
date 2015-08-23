@@ -11,92 +11,77 @@ describe('ol.Sphere', function() {
     {
       c1: [0, 0],
       c2: [0, 0],
-      haversineDistance: 0,
-      midpoint: [0, 0]
+      haversineDistance: 0
     },
     {
       c1: [0, 0],
       c2: [45, 45],
-      haversineDistance: 6671.695598673525,
-      midpoint: [18.434948822922006, 24.0948425521107]
+      haversineDistance: 6671.695598673525
     },
     {
       c1: [0, 0],
       c2: [-45, 45],
-      haversineDistance: 6671.695598673525,
-      midpoint: [-18.434948822922006, 24.0948425521107]
+      haversineDistance: 6671.695598673525
     },
     {
       c1: [0, 0],
       c2: [-45, -45],
-      haversineDistance: 6671.695598673525,
-      midpoint: [-18.434948822922006, -24.0948425521107]
+      haversineDistance: 6671.695598673525
     },
     {
       c1: [0, 0],
       c2: [45, -45],
-      haversineDistance: 6671.695598673525,
-      midpoint: [18.434948822922006, -24.0948425521107]
+      haversineDistance: 6671.695598673525
     },
     {
       c1: [45, 45],
       c2: [45, 45],
-      haversineDistance: 0,
-      midpoint: [45.00000000000005, 45]
+      haversineDistance: 0
     },
     {
       c1: [45, 45],
       c2: [-45, 45],
-      haversineDistance: 6671.695598673525,
-      midpoint: [0, 54.735610317245346]
+      haversineDistance: 6671.695598673525
     },
     {
       c1: [45, 45],
       c2: [-45, -45],
-      haversineDistance: 13343.391197347048,
-      midpoint: [0, 0]
+      haversineDistance: 13343.391197347048
     },
     {
       c1: [45, 45],
       c2: [45, -45],
-      haversineDistance: 10007.543398010286,
-      midpoint: [45.00000000000005, 0]
+      haversineDistance: 10007.543398010286
     },
     {
       c1: [-45, 45],
       c2: [-45, 45],
-      haversineDistance: 0,
-      midpoint: [-45.00000000000005, 45]
+      haversineDistance: 0
     },
     {
       c1: [-45, 45],
       c2: [-45, -45],
-      haversineDistance: 10007.543398010286,
-      midpoint: [-45.00000000000005, 0]
+      haversineDistance: 10007.543398010286
     },
     {
       c1: [-45, 45],
       c2: [45, -45],
-      haversineDistance: 13343.391197347048,
-      midpoint: [0, 0]
+      haversineDistance: 13343.391197347048
     },
     {
       c1: [-45, -45],
       c2: [-45, -45],
-      haversineDistance: 0,
-      midpoint: [-45.00000000000005, -45]
+      haversineDistance: 0
     },
     {
       c1: [-45, -45],
       c2: [45, -45],
-      haversineDistance: 6671.695598673525,
-      midpoint: [0, -54.735610317245346]
+      haversineDistance: 6671.695598673525
     },
     {
       c1: [45, -45],
       c2: [45, -45],
-      haversineDistance: 0,
-      midpoint: [45.00000000000005, -45]
+      haversineDistance: 0
     }
   ];
 
@@ -108,23 +93,6 @@ describe('ol.Sphere', function() {
         e = expected[i];
         expect(sphere.haversineDistance(e.c1, e.c2)).to.roughlyEqual(
             e.haversineDistance, 1e-9);
-      }
-    });
-
-  });
-
-  describe('midpoint', function() {
-
-    it('results match Chris Veness\'s reference implementation', function() {
-      var e, i, midpoint;
-      for (i = 0; i < expected.length; ++i) {
-        e = expected[i];
-        midpoint = sphere.midpoint(e.c1, e.c2);
-        // Test modulo 360 to avoid unnecessary expensive modulo operations
-        // in our implementation.
-        expect(goog.math.modulo(midpoint[0], 360)).to.roughlyEqual(
-            goog.math.modulo(e.midpoint[0], 360), 1e-9);
-        expect(midpoint[1]).to.roughlyEqual(e.midpoint[1], 1e-9);
       }
     });
 
