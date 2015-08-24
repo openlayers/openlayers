@@ -24,7 +24,6 @@
       "ambiguousFunctionDecl",
       "checkEventfulObjectDisposal",
       "checkRegExp",
-      "checkStructDictInheritance",
       "checkTypes",
       "checkVars",
       "const",

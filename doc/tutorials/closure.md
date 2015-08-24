@@ -239,7 +239,6 @@ Here is a version of `config.json` with more compilation checks enabled:
       "ambiguousFunctionDecl",
       "checkEventfulObjectDisposal",
       "checkRegExp",
-      "checkStructDictInheritance",
       "checkTypes",
       "checkVars",
       "const",
