@@ -7,7 +7,6 @@ env:
   - DISPLAY=:99.0
 
 before_install:
-  - "pip install -r requirements.txt"
   - "npm install -g npm && npm install"
 
 before_script:
