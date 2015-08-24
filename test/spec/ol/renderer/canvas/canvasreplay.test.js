@@ -122,5 +122,7 @@ describe('ol.render.canvas.PolygonReplay', function() {
 
 });
 
+goog.require('ol.render.canvas.LineStringReplay');
+goog.require('ol.render.canvas.PolygonReplay');
 goog.require('ol.render.canvas.Replay');
 goog.require('ol.style.Stroke');

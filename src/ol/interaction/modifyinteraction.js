@@ -1,3 +1,4 @@
+goog.provide('ol.ModifyEvent');
 goog.provide('ol.interaction.Modify');
 
 goog.require('goog.array');
