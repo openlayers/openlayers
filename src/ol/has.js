@@ -30,7 +30,7 @@ ol.has.CANVAS_LINE_DASH = false;
  * @type {boolean}
  * @api stable
  */
-ol.has.CANVAS = ol.ENABLE_CANVAS && (
+ol.has.CANVAS = (
     /**
      * @return {boolean} Canvas supported.
      */
@@ -64,14 +64,6 @@ ol.has.DEVICE_ORIENTATION = 'DeviceOrientationEvent' in goog.global;
 
 
 /**
- * True if browser supports DOM.
- * @const
- * @type {boolean}
- */
-ol.has.DOM = ol.ENABLE_DOM;
-
-
-/**
  * Is HTML5 geolocation supported in the current browser?
  * @const
  * @type {boolean}
@@ -86,7 +78,7 @@ ol.has.GEOLOCATION = 'geolocation' in goog.global.navigator;
  * @type {boolean}
  * @api stable
  */
-ol.has.TOUCH = ol.ASSUME_TOUCH || 'ontouchstart' in goog.global;
+ol.has.TOUCH = 'ontouchstart' in goog.global;
 
 
 /**
@@ -115,28 +107,26 @@ ol.has.WEBGL;
 
 
 (function() {
-  if (ol.ENABLE_WEBGL) {
-    var hasWebGL = false;
-    var textureSize;
-    var /** @type {Array.<string>} */ extensions = [];
+  var hasWebGL = false;
+  var textureSize;
+  var /** @type {Array.<string>} */ extensions = [];
 
-    if ('WebGLRenderingContext' in goog.global) {
-      try {
-        var canvas = /** @type {HTMLCanvasElement} */
-            (goog.dom.createElement(goog.dom.TagName.CANVAS));
-        var gl = ol.webgl.getContext(canvas, {
-          failIfMajorPerformanceCaveat: true
-        });
-        if (!goog.isNull(gl)) {
-          hasWebGL = true;
-          textureSize = /** @type {number} */
-              (gl.getParameter(gl.MAX_TEXTURE_SIZE));
-          extensions = gl.getSupportedExtensions();
-        }
-      } catch (e) {}
-    }
-    ol.has.WEBGL = hasWebGL;
-    ol.WEBGL_EXTENSIONS = extensions;
-    ol.WEBGL_MAX_TEXTURE_SIZE = textureSize;
+  if ('WebGLRenderingContext' in goog.global) {
+    try {
+      var canvas = /** @type {HTMLCanvasElement} */
+          (goog.dom.createElement(goog.dom.TagName.CANVAS));
+      var gl = ol.webgl.getContext(canvas, {
+        failIfMajorPerformanceCaveat: true
+      });
+      if (!goog.isNull(gl)) {
+        hasWebGL = true;
+        textureSize = /** @type {number} */
+            (gl.getParameter(gl.MAX_TEXTURE_SIZE));
+        extensions = gl.getSupportedExtensions();
+      }
+    } catch (e) {}
   }
+  ol.has.WEBGL = hasWebGL;
+  ol.WEBGL_EXTENSIONS = extensions;
+  ol.WEBGL_MAX_TEXTURE_SIZE = textureSize;
 })();

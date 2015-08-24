@@ -266,7 +266,7 @@ ol.Map = function(options) {
   this.viewport_.style.height = '100%';
   // prevent page zoom on IE >= 10 browsers
   this.viewport_.style.msTouchAction = 'none';
-  if (ol.has.TOUCH) {
+  if (ol.ASSUME_TOUCH || ol.has.TOUCH) {
     goog.dom.classlist.add(this.viewport_, 'ol-touch');
   }
 
@@ -1520,10 +1520,8 @@ ol.Map.createOptionsInternal = function(options) {
         break;
       }
     } else if (ol.ENABLE_DOM && rendererType == ol.RendererType.DOM) {
-      if (ol.has.DOM) {
-        rendererConstructor = ol.renderer.dom.Map;
-        break;
-      }
+      rendererConstructor = ol.renderer.dom.Map;
+      break;
     } else if (ol.ENABLE_WEBGL && rendererType == ol.RendererType.WEBGL) {
       if (ol.has.WEBGL) {
         rendererConstructor = ol.renderer.webgl.Map;
