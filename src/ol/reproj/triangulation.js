@@ -79,6 +79,16 @@ ol.reproj.Triangulation = function(sourceProj, targetProj, targetExtent,
   this.wrapsXInSource_ = false;
 
   /**
+   * @type {boolean}
+   * @private
+   */
+  this.canWrapXInSource_ = this.sourceProj_.canWrapX() &&
+      !goog.isNull(maxSourceExtent) &&
+      !goog.isNull(this.sourceProj_.getExtent()) &&
+      (ol.extent.getWidth(maxSourceExtent) ==
+       ol.extent.getWidth(this.sourceProj_.getExtent()));
+
+  /**
    * @type {number}
    * @private
    */
@@ -195,6 +205,9 @@ ol.reproj.Triangulation.prototype.addQuadIfValid_ = function(a, b, c, d,
   }
 
   if (wrapsX) {
+    if (!this.canWrapXInSource_) {
+      return;
+    }
     this.wrapsXInSource_ = true;
   }
 

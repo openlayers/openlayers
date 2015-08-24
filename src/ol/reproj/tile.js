@@ -105,15 +105,13 @@ ol.reproj.Tile = function(sourceProj, sourceTileGrid,
     return;
   }
 
-  if (!sourceProj.isGlobal()) {
-    var sourceProjExtent = sourceProj.getExtent();
-    if (!goog.isNull(sourceProjExtent)) {
-      if (goog.isNull(maxSourceExtent)) {
-        maxSourceExtent = sourceProjExtent;
-      } else {
-        maxSourceExtent = ol.extent.getIntersection(
-            maxSourceExtent, sourceProjExtent);
-      }
+  var sourceProjExtent = sourceProj.getExtent();
+  if (!goog.isNull(sourceProjExtent)) {
+    if (goog.isNull(maxSourceExtent)) {
+      maxSourceExtent = sourceProjExtent;
+    } else {
+      maxSourceExtent = ol.extent.getIntersection(
+          maxSourceExtent, sourceProjExtent);
     }
   }
 
@@ -155,6 +153,7 @@ ol.reproj.Tile = function(sourceProj, sourceTileGrid,
   var srcExtent = this.triangulation_.calculateSourceExtent();
 
   if (!goog.isNull(maxSourceExtent) &&
+      !this.triangulation_.getWrapsXInSource() &&
       !ol.extent.intersects(maxSourceExtent, srcExtent)) {
     this.state = ol.TileState.EMPTY;
   } else {
