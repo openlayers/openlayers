@@ -21,8 +21,7 @@ goog.require('ol.reproj.Triangulation');
  * @param {ol.Extent} targetExtent
  * @param {number} targetResolution
  * @param {number} pixelRatio
- * @param {function(ol.Extent, number, number, ol.proj.Projection) :
- *             ol.ImageBase} getImageFunction
+ * @param {function(ol.Extent, number, number):ol.ImageBase} getImageFunction
  */
 ol.reproj.Image = function(sourceProj, targetProj,
     targetExtent, targetResolution, pixelRatio, getImageFunction) {
@@ -74,8 +73,7 @@ ol.reproj.Image = function(sourceProj, targetProj,
    * @private
    * @type {ol.ImageBase}
    */
-  this.srcImage_ = getImageFunction(srcExtent, sourceResolution,
-                                    pixelRatio, sourceProj);
+  this.srcImage_ = getImageFunction(srcExtent, sourceResolution, pixelRatio);
 
   var width = ol.extent.getWidth(targetExtent) / targetResolution;
   var height = ol.extent.getHeight(targetExtent) / targetResolution;
