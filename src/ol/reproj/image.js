@@ -37,12 +37,20 @@ ol.reproj.Image = function(sourceProj, targetProj,
   var limitedTargetExtent = ol.extent.getIntersection(
       targetExtent, maxTargetExtent);
 
+
+  var errorThresholdInPixels = ol.DEFAULT_RASTER_REPROJ_ERROR_THRESHOLD;
+
+  // in source units
+  var errorThreshold = targetResolution * errorThresholdInPixels *
+      targetProj.getMetersPerUnit() / sourceProj.getMetersPerUnit();
+
   /**
    * @private
    * @type {!ol.reproj.Triangulation}
    */
   this.triangulation_ = new ol.reproj.Triangulation(
-      sourceProj, targetProj, limitedTargetExtent, this.maxSourceExtent_, 0);
+      sourceProj, targetProj, limitedTargetExtent, this.maxSourceExtent_,
+      errorThreshold);
 
   /**
    * @private
