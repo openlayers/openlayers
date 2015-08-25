@@ -160,6 +160,18 @@ ol.format.WMTSCapabilities.readTileMatrixSetLink_ = function(node,
  * @private
  * @param {Node} node Node.
  * @param {Array.<*>} objectStack Object stack.
+ * @return {Object|undefined} Dimension object.
+ */
+ol.format.WMTSCapabilities.readDimensions_ = function(node, objectStack) {
+  return ol.xml.pushParseAndPop({},
+      ol.format.WMTSCapabilities.DIMENSION_PARSERS_, node, objectStack);
+};
+
+
+/**
+ * @private
+ * @param {Node} node Node.
+ * @param {Array.<*>} objectStack Object stack.
  * @return {Object|undefined} Resource URL object.
  */
 ol.format.WMTSCapabilities.readResourceUrl_ = function(node, objectStack) {
@@ -303,6 +315,8 @@ ol.format.WMTSCapabilities.LAYER_PARSERS_ = ol.xml.makeStructureNS(
           ol.format.XSD.readString),
       'TileMatrixSetLink': ol.xml.makeObjectPropertyPusher(
           ol.format.WMTSCapabilities.readTileMatrixSetLink_),
+      'Dimension': ol.xml.makeObjectPropertyPusher(
+          ol.format.WMTSCapabilities.readDimensions_),
       'ResourceURL': ol.xml.makeObjectPropertyPusher(
           ol.format.WMTSCapabilities.readResourceUrl_)
     }, ol.xml.makeStructureNS(ol.format.WMTSCapabilities.OWS_NAMESPACE_URIS_, {
@@ -344,6 +358,23 @@ ol.format.WMTSCapabilities.TMS_LINKS_PARSERS_ = ol.xml.makeStructureNS(
       'TileMatrixSet': ol.xml.makeObjectPropertySetter(
           ol.format.XSD.readString)
     });
+
+
+/**
+ * @const
+ * @type {Object.<string, Object.<string, ol.xml.Parser>>}
+ * @private
+ */
+ol.format.WMTSCapabilities.DIMENSION_PARSERS_ = ol.xml.makeStructureNS(
+    ol.format.WMTSCapabilities.NAMESPACE_URIS_, {
+      'Default': ol.xml.makeObjectPropertySetter(
+          ol.format.XSD.readString),
+      'Value': ol.xml.makeObjectPropertyPusher(
+          ol.format.XSD.readString)
+    }, ol.xml.makeStructureNS(ol.format.WMTSCapabilities.OWS_NAMESPACE_URIS_, {
+      'Identifier': ol.xml.makeObjectPropertySetter(
+          ol.format.XSD.readString)
+    }));
 
 
 /**

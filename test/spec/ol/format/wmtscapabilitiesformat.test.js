@@ -29,6 +29,15 @@ describe('ol.format.WMTSCapabilities', function() {
       expect(layer.Identifier).to.be.eql('BlueMarbleNextGeneration');
       expect(layer.Title).to.be.eql('Blue Marble Next Generation');
 
+      expect(layer.Dimension).to.be.an('array');
+      expect(layer.Dimension).to.have.length(1);
+      expect(layer.Dimension[0]).to.be.an('object');
+      expect(layer.Dimension[0].Identifier).to.be.eql('Time');
+      expect(layer.Dimension[0].Default).to.be.eql('20110805');
+      expect(layer.Dimension[0].Value).to.be.an('array');
+      expect(layer.Dimension[0].Value).to.have.length(2);
+      expect(layer.Dimension[0].Value[0]).to.be.eql('20110805');
+
       expect(layer.Format).to.be.an('array');
       expect(layer.Format).to.have.length(2);
       expect(layer.Format[0]).to.be.eql('image/jpeg');

@@ -42,7 +42,7 @@ describe('ol.source.WMTS', function() {
 
           expect(options.style).to.be.eql('DarkBlue');
 
-          expect(options.dimensions).to.eql({});
+          expect(options.dimensions).to.eql({Time: '20110805'});
 
         });
 
@@ -73,7 +73,7 @@ describe('ol.source.WMTS', function() {
 
           expect(options.style).to.be.eql('DarkBlue');
 
-          expect(options.dimensions).to.eql({});
+          expect(options.dimensions).to.eql({Time: '20110805'});
 
         });
 
