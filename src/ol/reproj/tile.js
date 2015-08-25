@@ -117,27 +117,6 @@ ol.reproj.Tile = function(sourceProj, sourceTileGrid,
 
   var targetResolution = targetTileGrid.getResolution(z);
 
-  var errorThresholdInPixels = goog.isDef(opt_errorThreshold) ?
-      opt_errorThreshold : ol.DEFAULT_RASTER_REPROJ_ERROR_THRESHOLD;
-
-  // in source units
-  var errorThreshold = targetResolution * errorThresholdInPixels *
-      targetProj.getMetersPerUnit() / sourceProj.getMetersPerUnit();
-
-  /**
-   * @private
-   * @type {!ol.reproj.Triangulation}
-   */
-  this.triangulation_ = new ol.reproj.Triangulation(
-      sourceProj, targetProj, limitedTargetExtent, maxSourceExtent,
-      errorThreshold);
-
-  if (this.triangulation_.getTriangles().length === 0) {
-    // no valid triangles -> EMPTY
-    this.state = ol.TileState.EMPTY;
-    return;
-  }
-
   var targetCenter = ol.extent.getCenter(limitedTargetExtent);
   var sourceResolution = ol.reproj.calculateSourceResolution(
       sourceProj, targetProj, targetCenter, targetResolution);
@@ -145,6 +124,23 @@ ol.reproj.Tile = function(sourceProj, sourceTileGrid,
   if (!goog.math.isFiniteNumber(sourceResolution) || sourceResolution <= 0) {
     // invalid sourceResolution -> EMPTY
     // probably edges of the projections when no extent is defined
+    this.state = ol.TileState.EMPTY;
+    return;
+  }
+
+  var errorThresholdInPixels = goog.isDef(opt_errorThreshold) ?
+      opt_errorThreshold : ol.DEFAULT_RASTER_REPROJ_ERROR_THRESHOLD;
+
+  /**
+   * @private
+   * @type {!ol.reproj.Triangulation}
+   */
+  this.triangulation_ = new ol.reproj.Triangulation(
+      sourceProj, targetProj, limitedTargetExtent, maxSourceExtent,
+      sourceResolution * errorThresholdInPixels);
+
+  if (this.triangulation_.getTriangles().length === 0) {
+    // no valid triangles -> EMPTY
     this.state = ol.TileState.EMPTY;
     return;
   }

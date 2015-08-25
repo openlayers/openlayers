@@ -27,10 +27,14 @@ ol.reproj.calculateSourceResolution = function(sourceProj, targetProj,
 
   var sourceCenter = ol.proj.transform(targetCenter, targetProj, sourceProj);
 
+  var targetMPU = targetProj.getMetersPerUnit();
+  var sourceMPU = sourceProj.getMetersPerUnit();
+
   // calculate the ideal resolution of the source data
   var sourceResolution =
-      targetProj.getPointResolution(targetResolution, targetCenter) *
-      targetProj.getMetersPerUnit() / sourceProj.getMetersPerUnit();
+      targetProj.getPointResolution(targetResolution, targetCenter);
+  if (goog.isDef(targetMPU)) sourceResolution *= targetMPU;
+  if (goog.isDef(sourceMPU)) sourceResolution /= sourceMPU;
 
   // based on the projection properties, the point resolution at the specified
   // coordinates may be slightly different. We need to reverse-compensate this
