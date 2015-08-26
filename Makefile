@@ -323,5 +323,5 @@ build/test_rendering_requires.js: $(SPEC_RENDERING_JS)
 	@mkdir -p $(@D)
 	@node tasks/generate-requires.js $^ > $@
 
-%shader.js: %.glsl src/ol/webgl/shader.mustache bin/pyglslunit.py
-	@python bin/pyglslunit.py --input $< --template src/ol/webgl/shader.mustache --output $@
+%shader.js: %.glsl src/ol/webgl/shader.mustache bin/pyglslunit.py build/timestamps/node-modules-timestamp
+	@python bin/pyglslunit.py --input $< | ./node_modules/.bin/mustache - src/ol/webgl/shader.mustache > $@
