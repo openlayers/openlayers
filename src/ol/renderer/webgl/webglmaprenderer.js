@@ -114,7 +114,7 @@ ol.renderer.webgl.Map = function(container, map) {
 
   /**
    * @private
-   * @type {ol.structs.LRUCache.<ol.renderer.webgl.TextureCacheEntry|null>}
+   * @type {ol.structs.LRUCache.<?ol.renderer.webgl.TextureCacheEntry>}
    */
   this.textureCache_ = new ol.structs.LRUCache();
 

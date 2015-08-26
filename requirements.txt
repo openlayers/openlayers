@@ -1,2 +1,2 @@
-http://closure-linter.googlecode.com/files/closure_linter-latest.tar.gz
+https://github.com/google/closure-linter/archive/v2.3.19.zip
 pystache
