@@ -1,8 +1,12 @@
 // FIXME add option to apply snapToPixel to all coordinates?
 // FIXME can eliminate empty set styles and strokes (when all geoms skipped)
 
+goog.provide('ol.render.canvas.ImageReplay');
+goog.provide('ol.render.canvas.LineStringReplay');
+goog.provide('ol.render.canvas.PolygonReplay');
 goog.provide('ol.render.canvas.Replay');
 goog.provide('ol.render.canvas.ReplayGroup');
+goog.provide('ol.render.canvas.TextReplay');
 
 goog.require('goog.array');
 goog.require('goog.asserts');

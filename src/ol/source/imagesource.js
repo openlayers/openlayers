@@ -1,4 +1,5 @@
 goog.provide('ol.source.Image');
+goog.provide('ol.source.ImageEvent');
 
 goog.require('goog.array');
 goog.require('goog.asserts');

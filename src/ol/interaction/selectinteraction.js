@@ -1,4 +1,5 @@
 goog.provide('ol.interaction.Select');
+goog.provide('ol.interaction.SelectEvent');
 goog.provide('ol.interaction.SelectFilterFunction');
 
 goog.require('goog.array');
@@ -21,7 +22,7 @@ goog.require('ol.source.Vector');
 ol.SelectEventType = {
   /**
    * Triggered when feature(s) has been (de)selected.
-   * @event ol.SelectEvent#select
+   * @event ol.interaction.SelectEvent#select
    * @api
    */
   SELECT: 'select'
@@ -52,7 +53,8 @@ ol.interaction.SelectFilterFunction;
  * @extends {goog.events.Event}
  * @constructor
  */
-ol.SelectEvent = function(type, selected, deselected, mapBrowserEvent) {
+ol.interaction.SelectEvent =
+    function(type, selected, deselected, mapBrowserEvent) {
   goog.base(this, type);
 
   /**
@@ -76,7 +78,7 @@ ol.SelectEvent = function(type, selected, deselected, mapBrowserEvent) {
    */
   this.mapBrowserEvent = mapBrowserEvent;
 };
-goog.inherits(ol.SelectEvent, goog.events.Event);
+goog.inherits(ol.interaction.SelectEvent, goog.events.Event);
 
 
 
@@ -93,7 +95,7 @@ goog.inherits(ol.SelectEvent, goog.events.Event);
  * @constructor
  * @extends {ol.interaction.Interaction}
  * @param {olx.interaction.SelectOptions=} opt_options Options.
- * @fires ol.SelectEvent
+ * @fires ol.interaction.SelectEvent
  * @api stable
  */
 ol.interaction.Select = function(opt_options) {
@@ -284,8 +286,8 @@ ol.interaction.Select.handleEvent = function(mapBrowserEvent) {
   }
   if (change) {
     this.dispatchEvent(
-        new ol.SelectEvent(ol.SelectEventType.SELECT, selected, deselected,
-            mapBrowserEvent));
+        new ol.interaction.SelectEvent(ol.SelectEventType.SELECT,
+            selected, deselected, mapBrowserEvent));
   }
   return ol.events.condition.pointerMove(mapBrowserEvent);
 };
