@@ -33,8 +33,8 @@ ol.reproj.Image = function(sourceProj, targetProj,
   this.maxSourceExtent_ = sourceProj.getExtent();
   var maxTargetExtent = targetProj.getExtent();
 
-  var limitedTargetExtent = ol.extent.getIntersection(
-      targetExtent, maxTargetExtent);
+  var limitedTargetExtent = goog.isNull(maxTargetExtent) ?
+      targetExtent : ol.extent.getIntersection(targetExtent, maxTargetExtent);
 
   var targetCenter = ol.extent.getCenter(limitedTargetExtent);
   var sourceResolution = ol.reproj.calculateSourceResolution(
@@ -85,7 +85,8 @@ ol.reproj.Image = function(sourceProj, targetProj,
    * @type {CanvasRenderingContext2D}
    */
   this.context_ = ol.dom.createCanvasContext2D(
-      this.srcPixelRatio_ * width, this.srcPixelRatio_ * height);
+      Math.round(this.srcPixelRatio_ * width),
+      Math.round(this.srcPixelRatio_ * height));
   this.context_.imageSmoothingEnabled = true;
   this.context_.scale(this.srcPixelRatio_, this.srcPixelRatio_);
 
