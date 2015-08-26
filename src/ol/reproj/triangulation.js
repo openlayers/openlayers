@@ -185,10 +185,10 @@ ol.reproj.Triangulation.prototype.addQuadIfValid_ = function(a, b, c, d,
   }
 
   if (maxSubdiv > 0) {
-    var center = [(a[0] + c[0]) / 2, (a[1] + c[1]) / 2];
-    var centerSrc = this.transformInv_(center);
-
     if (!needsSubdivision) {
+      var center = [(a[0] + c[0]) / 2, (a[1] + c[1]) / 2];
+      var centerSrc = this.transformInv_(center);
+
       var dx;
       if (wrapsX) {
         goog.asserts.assert(!goog.isNull(this.sourceWorldWidth_));
@@ -205,24 +205,27 @@ ol.reproj.Triangulation.prototype.addQuadIfValid_ = function(a, b, c, d,
       needsSubdivision = centerSrcErrorSquared > this.errorThresholdSquared_;
     }
     if (needsSubdivision) {
-      var ab = [(a[0] + b[0]) / 2, (a[1] + b[1]) / 2];
-      var abSrc = this.transformInv_(ab);
-      var bc = [(b[0] + c[0]) / 2, (b[1] + c[1]) / 2];
-      var bcSrc = this.transformInv_(bc);
-      var cd = [(c[0] + d[0]) / 2, (c[1] + d[1]) / 2];
-      var cdSrc = this.transformInv_(cd);
-      var da = [(d[0] + a[0]) / 2, (d[1] + a[1]) / 2];
-      var daSrc = this.transformInv_(da);
+      if (Math.abs(a[0] - c[0]) <= Math.abs(a[1] - c[1])) {
+        var bc = [(b[0] + c[0]) / 2, (b[1] + c[1]) / 2];
+        var bcSrc = this.transformInv_(bc);
+        var da = [(d[0] + a[0]) / 2, (d[1] + a[1]) / 2];
+        var daSrc = this.transformInv_(da);
 
-      this.addQuadIfValid_(a, ab, center, da,
-                           aSrc, abSrc, centerSrc, daSrc, maxSubdiv - 1);
-      this.addQuadIfValid_(ab, b, bc, center,
-                           abSrc, bSrc, bcSrc, centerSrc, maxSubdiv - 1);
-      this.addQuadIfValid_(center, bc, c, cd,
-                           centerSrc, bcSrc, cSrc, cdSrc, maxSubdiv - 1);
-      this.addQuadIfValid_(da, center, cd, d,
-                           daSrc, centerSrc, cdSrc, dSrc, maxSubdiv - 1);
+        this.addQuadIfValid_(a, b, bc, da,
+                             aSrc, bSrc, bcSrc, daSrc, maxSubdiv - 1);
+        this.addQuadIfValid_(da, bc, c, d,
+                             daSrc, bcSrc, cSrc, dSrc, maxSubdiv - 1);
+      } else {
+        var ab = [(a[0] + b[0]) / 2, (a[1] + b[1]) / 2];
+        var abSrc = this.transformInv_(ab);
+        var cd = [(c[0] + d[0]) / 2, (c[1] + d[1]) / 2];
+        var cdSrc = this.transformInv_(cd);
 
+        this.addQuadIfValid_(a, ab, cd, d,
+                             aSrc, abSrc, cdSrc, dSrc, maxSubdiv - 1);
+        this.addQuadIfValid_(ab, b, c, cd,
+                             abSrc, bSrc, cSrc, cdSrc, maxSubdiv - 1);
+      }
       return;
     }
   }
