@@ -40,11 +40,19 @@ ol.reproj.Triangulation = function(sourceProj, targetProj, targetExtent,
    */
   this.targetProj_ = targetProj;
 
+  /** @type {!Object.<string, ol.Coordinate>} */
+  var transformInvCache = {};
+  var transformInv = ol.proj.getTransform(this.targetProj_, this.sourceProj_);
+
   /**
-   * @type {ol.TransformFunction}
+   * @param {ol.Coordinate} c
+   * @return {ol.Coordinate}
    * @private
    */
-  this.transformInv_ = ol.proj.getTransform(this.targetProj_, this.sourceProj_);
+  this.transformInv_ = function(c) {
+    var key = c[0] + '/' + c[1];
+    return transformInvCache[key] || (transformInvCache[key] = transformInv(c));
+  };
 
   /**
    * @type {ol.Extent}
@@ -115,6 +123,8 @@ ol.reproj.Triangulation = function(sourceProj, targetProj, targetExtent,
   this.addQuadIfValid_(tlDst, trDst, brDst, blDst,
                        tlDstSrc, trDstSrc, brDstSrc, blDstSrc,
                        ol.RASTER_REPROJ_MAX_SUBDIVISION);
+
+  transformInvCache = {};
 };
 
 
