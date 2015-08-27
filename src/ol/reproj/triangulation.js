@@ -194,6 +194,19 @@ ol.reproj.Triangulation.prototype.addQuadIfValid_ = function(a, b, c, d,
     }
   }
 
+  if (!needsSubdivision) {
+    if (!isFinite(aSrc[0]) || !isFinite(aSrc[1]) ||
+        !isFinite(bSrc[0]) || !isFinite(bSrc[1]) ||
+        !isFinite(cSrc[0]) || !isFinite(cSrc[1]) ||
+        !isFinite(dSrc[0]) || !isFinite(dSrc[1])) {
+      if (maxSubdiv > 0) {
+        needsSubdivision = true;
+      } else {
+        return;
+      }
+    }
+  }
+
   if (maxSubdiv > 0) {
     if (!needsSubdivision) {
       var center = [(a[0] + c[0]) / 2, (a[1] + c[1]) / 2];
