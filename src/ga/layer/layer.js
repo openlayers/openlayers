@@ -143,9 +143,9 @@ ga.layer.create = function(layer, options) {
         return layerConfig['label'];
       }
     },
-    queryable: {
+    tooltip: {
       get: function() {
-        return layerConfig['queryable'];
+        return layerConfig['tooltip'];
       }
     },
     searchable: {
@@ -214,9 +214,9 @@ ga.layer.create = function(layer, options) {
         return layer;
       }
     },
-    internal_queryable: {
+    internal_tooltip: {
       get: function() {
-        return layerConfig['queryable'];
+        return layerConfig['tooltip'];
       }
     }
   });

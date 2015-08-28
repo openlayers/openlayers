@@ -139,7 +139,7 @@ ga.Tooltip.prototype.handleClick_ = function(mapBrowserEvent) {
   var layer;
   for (var i = 0, ii = this.map_.getLayers().getArray().length; i < ii; i++) {
     layer = this.map_.getLayers().getArray()[i];
-    if (layer.internal_queryable && layer.getVisible() && layer.internal_id) {
+    if (layer.internal_tooltip && layer.getVisible() && layer.internal_id) {
       layerList.push(layer.internal_id);
     }
   }
