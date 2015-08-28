@@ -1,10 +1,11 @@
 ---
 template: example.html
-title: Drag features example
-shortdesc: Example of a drag features interaction.
+title: Custom interaction example
+shortdesc: Example of a custom drag features interaction.
 docs: >
-  The drag features interaction can be used to drag features to a new position.
-tags: "drag, feature, vector, editing"
+  This example demonstrates using a custom interaction with OpenLayers, by subclassing `ol.interaction.Pointer`.
+  Note that the built in interaction `ol.interaction.Translate` might be a better option for moving features.
+tags: "drag, feature, vector, editing, custom, interaction"
 ---
 <div class="row-fluid">
   <div class="span12">
