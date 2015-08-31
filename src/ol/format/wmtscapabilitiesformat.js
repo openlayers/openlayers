@@ -271,7 +271,7 @@ ol.format.WMTSCapabilities.OWS_NAMESPACE_URIS_ = [
  * @type {Object.<string, Object.<string, ol.xml.Parser>>}
  * @private
  */
-ol.format.WMTSCapabilities.PARSERS_ = ol.xml.makeParsersNS(
+ol.format.WMTSCapabilities.PARSERS_ = ol.xml.makeStructureNS(
     ol.format.WMTSCapabilities.NAMESPACE_URIS_, {
       'Contents': ol.xml.makeObjectPropertySetter(
           ol.format.WMTSCapabilities.readContents_)
@@ -283,7 +283,7 @@ ol.format.WMTSCapabilities.PARSERS_ = ol.xml.makeParsersNS(
  * @type {Object.<string, Object.<string, ol.xml.Parser>>}
  * @private
  */
-ol.format.WMTSCapabilities.CONTENTS_PARSERS_ = ol.xml.makeParsersNS(
+ol.format.WMTSCapabilities.CONTENTS_PARSERS_ = ol.xml.makeStructureNS(
     ol.format.WMTSCapabilities.NAMESPACE_URIS_, {
       'Layer': ol.xml.makeObjectPropertyPusher(
           ol.format.WMTSCapabilities.readLayer_),
@@ -297,7 +297,7 @@ ol.format.WMTSCapabilities.CONTENTS_PARSERS_ = ol.xml.makeParsersNS(
  * @type {Object.<string, Object.<string, ol.xml.Parser>>}
  * @private
  */
-ol.format.WMTSCapabilities.LAYER_PARSERS_ = ol.xml.makeParsersNS(
+ol.format.WMTSCapabilities.LAYER_PARSERS_ = ol.xml.makeStructureNS(
     ol.format.WMTSCapabilities.NAMESPACE_URIS_, {
       'Style': ol.xml.makeObjectPropertyPusher(
           ol.format.WMTSCapabilities.readStyle_),
@@ -307,7 +307,7 @@ ol.format.WMTSCapabilities.LAYER_PARSERS_ = ol.xml.makeParsersNS(
           ol.format.WMTSCapabilities.readTileMatrixSetLink_),
       'ResourceURL': ol.xml.makeObjectPropertyPusher(
           ol.format.WMTSCapabilities.readResourceUrl_)
-    }, ol.xml.makeParsersNS(ol.format.WMTSCapabilities.OWS_NAMESPACE_URIS_, {
+    }, ol.xml.makeStructureNS(ol.format.WMTSCapabilities.OWS_NAMESPACE_URIS_, {
       'Title': ol.xml.makeObjectPropertySetter(
           ol.format.XSD.readString),
       'Abstract': ol.xml.makeObjectPropertySetter(
@@ -324,11 +324,11 @@ ol.format.WMTSCapabilities.LAYER_PARSERS_ = ol.xml.makeParsersNS(
  * @type {Object.<string, Object.<string, ol.xml.Parser>>}
  * @private
  */
-ol.format.WMTSCapabilities.STYLE_PARSERS_ = ol.xml.makeParsersNS(
+ol.format.WMTSCapabilities.STYLE_PARSERS_ = ol.xml.makeStructureNS(
     ol.format.WMTSCapabilities.NAMESPACE_URIS_, {
       'LegendURL': ol.xml.makeObjectPropertyPusher(
           ol.format.WMTSCapabilities.readLegendUrl_)
-    }, ol.xml.makeParsersNS(ol.format.WMTSCapabilities.OWS_NAMESPACE_URIS_, {
+    }, ol.xml.makeStructureNS(ol.format.WMTSCapabilities.OWS_NAMESPACE_URIS_, {
       'Title': ol.xml.makeObjectPropertySetter(
           ol.format.XSD.readString),
       'Identifier': ol.xml.makeObjectPropertySetter(
@@ -341,7 +341,7 @@ ol.format.WMTSCapabilities.STYLE_PARSERS_ = ol.xml.makeParsersNS(
  * @type {Object.<string, Object.<string, ol.xml.Parser>>}
  * @private
  */
-ol.format.WMTSCapabilities.TMS_LINKS_PARSERS_ = ol.xml.makeParsersNS(
+ol.format.WMTSCapabilities.TMS_LINKS_PARSERS_ = ol.xml.makeStructureNS(
     ol.format.WMTSCapabilities.NAMESPACE_URIS_, {
       'TileMatrixSet': ol.xml.makeObjectPropertySetter(
           ol.format.XSD.readString)
@@ -353,7 +353,7 @@ ol.format.WMTSCapabilities.TMS_LINKS_PARSERS_ = ol.xml.makeParsersNS(
  * @type {Object.<string, Object.<string, ol.xml.Parser>>}
  * @private
  */
-ol.format.WMTSCapabilities.WGS84_BBOX_READERS_ = ol.xml.makeParsersNS(
+ol.format.WMTSCapabilities.WGS84_BBOX_READERS_ = ol.xml.makeStructureNS(
     ol.format.WMTSCapabilities.OWS_NAMESPACE_URIS_, {
       'LowerCorner': ol.xml.makeArrayPusher(
           ol.format.WMTSCapabilities.readCoordinates_),
@@ -367,13 +367,13 @@ ol.format.WMTSCapabilities.WGS84_BBOX_READERS_ = ol.xml.makeParsersNS(
  * @type {Object.<string, Object.<string, ol.xml.Parser>>}
  * @private
  */
-ol.format.WMTSCapabilities.TMS_PARSERS_ = ol.xml.makeParsersNS(
+ol.format.WMTSCapabilities.TMS_PARSERS_ = ol.xml.makeStructureNS(
     ol.format.WMTSCapabilities.NAMESPACE_URIS_, {
       'WellKnownScaleSet': ol.xml.makeObjectPropertySetter(
           ol.format.XSD.readString),
       'TileMatrix': ol.xml.makeObjectPropertyPusher(
           ol.format.WMTSCapabilities.readTileMatrix_)
-    }, ol.xml.makeParsersNS(ol.format.WMTSCapabilities.OWS_NAMESPACE_URIS_, {
+    }, ol.xml.makeStructureNS(ol.format.WMTSCapabilities.OWS_NAMESPACE_URIS_, {
       'SupportedCRS': ol.xml.makeObjectPropertySetter(
           ol.format.XSD.readString),
       'Identifier': ol.xml.makeObjectPropertySetter(
@@ -386,7 +386,7 @@ ol.format.WMTSCapabilities.TMS_PARSERS_ = ol.xml.makeParsersNS(
  * @type {Object.<string, Object.<string, ol.xml.Parser>>}
  * @private
  */
-ol.format.WMTSCapabilities.TM_PARSERS_ = ol.xml.makeParsersNS(
+ol.format.WMTSCapabilities.TM_PARSERS_ = ol.xml.makeStructureNS(
     ol.format.WMTSCapabilities.NAMESPACE_URIS_, {
       'TopLeftCorner': ol.xml.makeObjectPropertySetter(
           ol.format.WMTSCapabilities.readCoordinates_),
@@ -400,7 +400,7 @@ ol.format.WMTSCapabilities.TM_PARSERS_ = ol.xml.makeParsersNS(
           ol.format.XSD.readNonNegativeInteger),
       'MatrixHeight': ol.xml.makeObjectPropertySetter(
           ol.format.XSD.readNonNegativeInteger)
-    }, ol.xml.makeParsersNS(ol.format.WMTSCapabilities.OWS_NAMESPACE_URIS_, {
+    }, ol.xml.makeStructureNS(ol.format.WMTSCapabilities.OWS_NAMESPACE_URIS_, {
       'Identifier': ol.xml.makeObjectPropertySetter(
           ol.format.XSD.readString)
     }));

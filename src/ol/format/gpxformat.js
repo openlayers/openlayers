@@ -286,7 +286,7 @@ ol.format.GPX.FEATURE_READER_ = {
  * @type {Object.<string, Object.<string, ol.xml.Parser>>}
  * @private
  */
-ol.format.GPX.GPX_PARSERS_ = ol.xml.makeParsersNS(
+ol.format.GPX.GPX_PARSERS_ = ol.xml.makeStructureNS(
     ol.format.GPX.NAMESPACE_URIS_, {
       'rte': ol.xml.makeArrayPusher(ol.format.GPX.readRte_),
       'trk': ol.xml.makeArrayPusher(ol.format.GPX.readTrk_),
@@ -299,7 +299,7 @@ ol.format.GPX.GPX_PARSERS_ = ol.xml.makeParsersNS(
  * @type {Object.<string, Object.<string, ol.xml.Parser>>}
  * @private
  */
-ol.format.GPX.LINK_PARSERS_ = ol.xml.makeParsersNS(
+ol.format.GPX.LINK_PARSERS_ = ol.xml.makeStructureNS(
     ol.format.GPX.NAMESPACE_URIS_, {
       'text':
           ol.xml.makeObjectPropertySetter(ol.format.XSD.readString, 'linkText'),
@@ -313,7 +313,7 @@ ol.format.GPX.LINK_PARSERS_ = ol.xml.makeParsersNS(
  * @type {Object.<string, Object.<string, ol.xml.Parser>>}
  * @private
  */
-ol.format.GPX.RTE_PARSERS_ = ol.xml.makeParsersNS(
+ol.format.GPX.RTE_PARSERS_ = ol.xml.makeStructureNS(
     ol.format.GPX.NAMESPACE_URIS_, {
       'name': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
       'cmt': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
@@ -333,7 +333,7 @@ ol.format.GPX.RTE_PARSERS_ = ol.xml.makeParsersNS(
  * @type {Object.<string, Object.<string, ol.xml.Parser>>}
  * @private
  */
-ol.format.GPX.RTEPT_PARSERS_ = ol.xml.makeParsersNS(
+ol.format.GPX.RTEPT_PARSERS_ = ol.xml.makeStructureNS(
     ol.format.GPX.NAMESPACE_URIS_, {
       'ele': ol.xml.makeObjectPropertySetter(ol.format.XSD.readDecimal),
       'time': ol.xml.makeObjectPropertySetter(ol.format.XSD.readDateTime)
@@ -345,7 +345,7 @@ ol.format.GPX.RTEPT_PARSERS_ = ol.xml.makeParsersNS(
  * @type {Object.<string, Object.<string, ol.xml.Parser>>}
  * @private
  */
-ol.format.GPX.TRK_PARSERS_ = ol.xml.makeParsersNS(
+ol.format.GPX.TRK_PARSERS_ = ol.xml.makeStructureNS(
     ol.format.GPX.NAMESPACE_URIS_, {
       'name': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
       'cmt': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
@@ -365,7 +365,7 @@ ol.format.GPX.TRK_PARSERS_ = ol.xml.makeParsersNS(
  * @type {Object.<string, Object.<string, ol.xml.Parser>>}
  * @private
  */
-ol.format.GPX.TRKSEG_PARSERS_ = ol.xml.makeParsersNS(
+ol.format.GPX.TRKSEG_PARSERS_ = ol.xml.makeStructureNS(
     ol.format.GPX.NAMESPACE_URIS_, {
       'trkpt': ol.format.GPX.parseTrkPt_
     });
@@ -376,7 +376,7 @@ ol.format.GPX.TRKSEG_PARSERS_ = ol.xml.makeParsersNS(
  * @type {Object.<string, Object.<string, ol.xml.Parser>>}
  * @private
  */
-ol.format.GPX.TRKPT_PARSERS_ = ol.xml.makeParsersNS(
+ol.format.GPX.TRKPT_PARSERS_ = ol.xml.makeStructureNS(
     ol.format.GPX.NAMESPACE_URIS_, {
       'ele': ol.xml.makeObjectPropertySetter(ol.format.XSD.readDecimal),
       'time': ol.xml.makeObjectPropertySetter(ol.format.XSD.readDateTime)
@@ -388,7 +388,7 @@ ol.format.GPX.TRKPT_PARSERS_ = ol.xml.makeParsersNS(
  * @type {Object.<string, Object.<string, ol.xml.Parser>>}
  * @private
  */
-ol.format.GPX.WPT_PARSERS_ = ol.xml.makeParsersNS(
+ol.format.GPX.WPT_PARSERS_ = ol.xml.makeStructureNS(
     ol.format.GPX.NAMESPACE_URIS_, {
       'ele': ol.xml.makeObjectPropertySetter(ol.format.XSD.readDecimal),
       'time': ol.xml.makeObjectPropertySetter(ol.format.XSD.readDateTime),

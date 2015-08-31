@@ -583,7 +583,7 @@ ol.format.WMSCapabilities.NAMESPACE_URIS_ = [
  * @type {Object.<string, Object.<string, ol.xml.Parser>>}
  * @private
  */
-ol.format.WMSCapabilities.PARSERS_ = ol.xml.makeParsersNS(
+ol.format.WMSCapabilities.PARSERS_ = ol.xml.makeStructureNS(
     ol.format.WMSCapabilities.NAMESPACE_URIS_, {
       'Service': ol.xml.makeObjectPropertySetter(
           ol.format.WMSCapabilities.readService_),
@@ -597,7 +597,7 @@ ol.format.WMSCapabilities.PARSERS_ = ol.xml.makeParsersNS(
  * @type {Object.<string, Object.<string, ol.xml.Parser>>}
  * @private
  */
-ol.format.WMSCapabilities.CAPABILITY_PARSERS_ = ol.xml.makeParsersNS(
+ol.format.WMSCapabilities.CAPABILITY_PARSERS_ = ol.xml.makeStructureNS(
     ol.format.WMSCapabilities.NAMESPACE_URIS_, {
       'Request': ol.xml.makeObjectPropertySetter(
           ol.format.WMSCapabilities.readRequest_),
@@ -613,7 +613,7 @@ ol.format.WMSCapabilities.CAPABILITY_PARSERS_ = ol.xml.makeParsersNS(
  * @type {Object.<string, Object.<string, ol.xml.Parser>>}
  * @private
  */
-ol.format.WMSCapabilities.SERVICE_PARSERS_ = ol.xml.makeParsersNS(
+ol.format.WMSCapabilities.SERVICE_PARSERS_ = ol.xml.makeStructureNS(
     ol.format.WMSCapabilities.NAMESPACE_URIS_, {
       'Name': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
       'Title': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
@@ -641,7 +641,7 @@ ol.format.WMSCapabilities.SERVICE_PARSERS_ = ol.xml.makeParsersNS(
  * @type {Object.<string, Object.<string, ol.xml.Parser>>}
  * @private
  */
-ol.format.WMSCapabilities.CONTACT_INFORMATION_PARSERS_ = ol.xml.makeParsersNS(
+ol.format.WMSCapabilities.CONTACT_INFORMATION_PARSERS_ = ol.xml.makeStructureNS(
     ol.format.WMSCapabilities.NAMESPACE_URIS_, {
       'ContactPersonPrimary': ol.xml.makeObjectPropertySetter(
           ol.format.WMSCapabilities.readContactPersonPrimary_),
@@ -663,7 +663,7 @@ ol.format.WMSCapabilities.CONTACT_INFORMATION_PARSERS_ = ol.xml.makeParsersNS(
  * @type {Object.<string, Object.<string, ol.xml.Parser>>}
  * @private
  */
-ol.format.WMSCapabilities.CONTACT_PERSON_PARSERS_ = ol.xml.makeParsersNS(
+ol.format.WMSCapabilities.CONTACT_PERSON_PARSERS_ = ol.xml.makeStructureNS(
     ol.format.WMSCapabilities.NAMESPACE_URIS_, {
       'ContactPerson': ol.xml.makeObjectPropertySetter(
           ol.format.XSD.readString),
@@ -677,7 +677,7 @@ ol.format.WMSCapabilities.CONTACT_PERSON_PARSERS_ = ol.xml.makeParsersNS(
  * @type {Object.<string, Object.<string, ol.xml.Parser>>}
  * @private
  */
-ol.format.WMSCapabilities.CONTACT_ADDRESS_PARSERS_ = ol.xml.makeParsersNS(
+ol.format.WMSCapabilities.CONTACT_ADDRESS_PARSERS_ = ol.xml.makeStructureNS(
     ol.format.WMSCapabilities.NAMESPACE_URIS_, {
       'AddressType': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
       'Address': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
@@ -694,7 +694,7 @@ ol.format.WMSCapabilities.CONTACT_ADDRESS_PARSERS_ = ol.xml.makeParsersNS(
  * @type {Object.<string, Object.<string, ol.xml.Parser>>}
  * @private
  */
-ol.format.WMSCapabilities.EXCEPTION_PARSERS_ = ol.xml.makeParsersNS(
+ol.format.WMSCapabilities.EXCEPTION_PARSERS_ = ol.xml.makeStructureNS(
     ol.format.WMSCapabilities.NAMESPACE_URIS_, {
       'Format': ol.xml.makeArrayPusher(ol.format.XSD.readString)
     });
@@ -705,7 +705,7 @@ ol.format.WMSCapabilities.EXCEPTION_PARSERS_ = ol.xml.makeParsersNS(
  * @type {Object.<string, Object.<string, ol.xml.Parser>>}
  * @private
  */
-ol.format.WMSCapabilities.LAYER_PARSERS_ = ol.xml.makeParsersNS(
+ol.format.WMSCapabilities.LAYER_PARSERS_ = ol.xml.makeStructureNS(
     ol.format.WMSCapabilities.NAMESPACE_URIS_, {
       'Name': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
       'Title': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
@@ -746,7 +746,7 @@ ol.format.WMSCapabilities.LAYER_PARSERS_ = ol.xml.makeParsersNS(
  * @type {Object.<string, Object.<string, ol.xml.Parser>>}
  * @private
  */
-ol.format.WMSCapabilities.ATTRIBUTION_PARSERS_ = ol.xml.makeParsersNS(
+ol.format.WMSCapabilities.ATTRIBUTION_PARSERS_ = ol.xml.makeStructureNS(
     ol.format.WMSCapabilities.NAMESPACE_URIS_, {
       'Title': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
       'OnlineResource': ol.xml.makeObjectPropertySetter(
@@ -762,7 +762,7 @@ ol.format.WMSCapabilities.ATTRIBUTION_PARSERS_ = ol.xml.makeParsersNS(
  * @private
  */
 ol.format.WMSCapabilities.EX_GEOGRAPHIC_BOUNDING_BOX_PARSERS_ =
-    ol.xml.makeParsersNS(ol.format.WMSCapabilities.NAMESPACE_URIS_, {
+    ol.xml.makeStructureNS(ol.format.WMSCapabilities.NAMESPACE_URIS_, {
       'westBoundLongitude': ol.xml.makeObjectPropertySetter(
           ol.format.XSD.readDecimal),
       'eastBoundLongitude': ol.xml.makeObjectPropertySetter(
@@ -779,7 +779,7 @@ ol.format.WMSCapabilities.EX_GEOGRAPHIC_BOUNDING_BOX_PARSERS_ =
  * @type {Object.<string, Object.<string, ol.xml.Parser>>}
  * @private
  */
-ol.format.WMSCapabilities.REQUEST_PARSERS_ = ol.xml.makeParsersNS(
+ol.format.WMSCapabilities.REQUEST_PARSERS_ = ol.xml.makeStructureNS(
     ol.format.WMSCapabilities.NAMESPACE_URIS_, {
       'GetCapabilities': ol.xml.makeObjectPropertySetter(
           ol.format.WMSCapabilities.readOperationType_),
@@ -795,7 +795,7 @@ ol.format.WMSCapabilities.REQUEST_PARSERS_ = ol.xml.makeParsersNS(
  * @type {Object.<string, Object.<string, ol.xml.Parser>>}
  * @private
  */
-ol.format.WMSCapabilities.OPERATIONTYPE_PARSERS_ = ol.xml.makeParsersNS(
+ol.format.WMSCapabilities.OPERATIONTYPE_PARSERS_ = ol.xml.makeStructureNS(
     ol.format.WMSCapabilities.NAMESPACE_URIS_, {
       'Format': ol.xml.makeObjectPropertyPusher(ol.format.XSD.readString),
       'DCPType': ol.xml.makeObjectPropertyPusher(
@@ -808,7 +808,7 @@ ol.format.WMSCapabilities.OPERATIONTYPE_PARSERS_ = ol.xml.makeParsersNS(
  * @type {Object.<string, Object.<string, ol.xml.Parser>>}
  * @private
  */
-ol.format.WMSCapabilities.DCPTYPE_PARSERS_ = ol.xml.makeParsersNS(
+ol.format.WMSCapabilities.DCPTYPE_PARSERS_ = ol.xml.makeStructureNS(
     ol.format.WMSCapabilities.NAMESPACE_URIS_, {
       'HTTP': ol.xml.makeObjectPropertySetter(
           ol.format.WMSCapabilities.readHTTP_)
@@ -820,7 +820,7 @@ ol.format.WMSCapabilities.DCPTYPE_PARSERS_ = ol.xml.makeParsersNS(
  * @type {Object.<string, Object.<string, ol.xml.Parser>>}
  * @private
  */
-ol.format.WMSCapabilities.HTTP_PARSERS_ = ol.xml.makeParsersNS(
+ol.format.WMSCapabilities.HTTP_PARSERS_ = ol.xml.makeStructureNS(
     ol.format.WMSCapabilities.NAMESPACE_URIS_, {
       'Get': ol.xml.makeObjectPropertySetter(
           ol.format.WMSCapabilities.readFormatOnlineresource_),
@@ -834,7 +834,7 @@ ol.format.WMSCapabilities.HTTP_PARSERS_ = ol.xml.makeParsersNS(
  * @type {Object.<string, Object.<string, ol.xml.Parser>>}
  * @private
  */
-ol.format.WMSCapabilities.STYLE_PARSERS_ = ol.xml.makeParsersNS(
+ol.format.WMSCapabilities.STYLE_PARSERS_ = ol.xml.makeStructureNS(
     ol.format.WMSCapabilities.NAMESPACE_URIS_, {
       'Name': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
       'Title': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
@@ -853,8 +853,8 @@ ol.format.WMSCapabilities.STYLE_PARSERS_ = ol.xml.makeParsersNS(
  * @type {Object.<string, Object.<string, ol.xml.Parser>>}
  * @private
  */
-ol.format.WMSCapabilities.FORMAT_ONLINERESOURCE_PARSERS_ = ol.xml.makeParsersNS(
-    ol.format.WMSCapabilities.NAMESPACE_URIS_, {
+ol.format.WMSCapabilities.FORMAT_ONLINERESOURCE_PARSERS_ =
+    ol.xml.makeStructureNS(ol.format.WMSCapabilities.NAMESPACE_URIS_, {
       'Format': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
       'OnlineResource': ol.xml.makeObjectPropertySetter(
           ol.format.XLink.readHref)
@@ -866,7 +866,7 @@ ol.format.WMSCapabilities.FORMAT_ONLINERESOURCE_PARSERS_ = ol.xml.makeParsersNS(
  * @type {Object.<string, Object.<string, ol.xml.Parser>>}
  * @private
  */
-ol.format.WMSCapabilities.KEYWORDLIST_PARSERS_ = ol.xml.makeParsersNS(
+ol.format.WMSCapabilities.KEYWORDLIST_PARSERS_ = ol.xml.makeStructureNS(
     ol.format.WMSCapabilities.NAMESPACE_URIS_, {
       'Keyword': ol.xml.makeArrayPusher(ol.format.XSD.readString)
     });
