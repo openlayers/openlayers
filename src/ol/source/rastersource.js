@@ -429,11 +429,9 @@ ol.source.Raster.createRenderers_ = function(sources) {
 ol.source.Raster.createRenderer_ = function(source) {
   var renderer = null;
   if (source instanceof ol.source.Tile) {
-    renderer = ol.source.Raster.createTileRenderer_(
-        /** @type {ol.source.Tile} */ (source));
+    renderer = ol.source.Raster.createTileRenderer_(source);
   } else if (source instanceof ol.source.Image) {
-    renderer = ol.source.Raster.createImageRenderer_(
-        /** @type {ol.source.Image} */ (source));
+    renderer = ol.source.Raster.createImageRenderer_(source);
   } else {
     goog.asserts.fail('Unsupported source type: ' + source);
   }

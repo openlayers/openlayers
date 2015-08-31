@@ -291,8 +291,7 @@ ol.format.TopoJSON.prototype.readFeaturesFromObject = function(
     var topoJSONTopology = /** @type {TopoJSONTopology} */ (object);
     var transform, scale = null, translate = null;
     if (goog.isDef(topoJSONTopology.transform)) {
-      transform = /** @type {TopoJSONTransform} */
-          (topoJSONTopology.transform);
+      transform = topoJSONTopology.transform;
       scale = transform.scale;
       translate = transform.translate;
     }
