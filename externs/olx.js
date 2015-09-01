@@ -2927,6 +2927,7 @@ olx.layer;
  *     saturation: (number|undefined),
  *     visible: (boolean|undefined),
  *     extent: (ol.Extent|undefined),
+ *     zIndex: (number|undefined),
  *     minResolution: (number|undefined),
  *     maxResolution: (number|undefined)}}
  * @api
@@ -2992,6 +2993,15 @@ olx.layer.BaseOptions.prototype.extent;
 
 
 /**
+ * The z-index for layer rendering.  At rendering time, the layers will be
+ * ordered, first by Z-index and then by position. The default Z-index is 0.
+ * @type {number|undefined}
+ * @api
+ */
+olx.layer.BaseOptions.prototype.zIndex;
+
+
+/**
  * The minimum resolution (inclusive) at which this layer will be visible.
  * @type {number|undefined}
  * @api stable
@@ -3016,6 +3026,7 @@ olx.layer.BaseOptions.prototype.maxResolution;
  *     source: (ol.source.Source|undefined),
  *     visible: (boolean|undefined),
  *     extent: (ol.Extent|undefined),
+ *     zIndex: (number|undefined),
  *     minResolution: (number|undefined),
  *     maxResolution: (number|undefined)}}
  * @api
@@ -3091,6 +3102,15 @@ olx.layer.LayerOptions.prototype.extent;
 
 
 /**
+ * The z-index for layer rendering.  At rendering time, the layers will be
+ * ordered, first by Z-index and then by position. The default Z-index is 0.
+ * @type {number|undefined}
+ * @api
+ */
+olx.layer.LayerOptions.prototype.zIndex;
+
+
+/**
  * The minimum resolution (inclusive) at which this layer will be visible.
  * @type {number|undefined}
  * @api stable
@@ -3114,6 +3134,7 @@ olx.layer.LayerOptions.prototype.maxResolution;
  *     saturation: (number|undefined),
  *     visible: (boolean|undefined),
  *     extent: (ol.Extent|undefined),
+ *     zIndex: (number|undefined),
  *     minResolution: (number|undefined),
  *     maxResolution: (number|undefined),
  *     layers: (Array.<ol.layer.Base>|ol.Collection.<ol.layer.Base>|undefined)}}
@@ -3177,6 +3198,15 @@ olx.layer.GroupOptions.prototype.visible;
  * @api stable
  */
 olx.layer.GroupOptions.prototype.extent;
+
+
+/**
+ * The z-index for layer rendering.  At rendering time, the layers will be
+ * ordered, first by Z-index and then by position. The default Z-index is 0.
+ * @type {number|undefined}
+ * @api
+ */
+olx.layer.GroupOptions.prototype.zIndex;
 
 
 /**

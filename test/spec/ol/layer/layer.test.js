@@ -66,6 +66,7 @@ describe('ol.layer.Layer', function() {
         managed: true,
         sourceState: ol.source.State.READY,
         extent: undefined,
+        zIndex: 0,
         maxResolution: Infinity,
         minResolution: 0
       });
@@ -86,6 +87,7 @@ describe('ol.layer.Layer', function() {
         opacity: 0.5,
         saturation: 5,
         visible: false,
+        zIndex: 10,
         maxResolution: 500,
         minResolution: 0.25,
         foo: 42
@@ -111,6 +113,7 @@ describe('ol.layer.Layer', function() {
         managed: true,
         sourceState: ol.source.State.READY,
         extent: undefined,
+        zIndex: 10,
         maxResolution: 500,
         minResolution: 0.25
       });
@@ -194,6 +197,7 @@ describe('ol.layer.Layer', function() {
       layer.setVisible(false);
       layer.setMaxResolution(500);
       layer.setMinResolution(0.25);
+      layer.setZIndex(10);
       expect(layer.getLayerState()).to.eql({
         layer: layer,
         brightness: -0.7,
@@ -205,6 +209,7 @@ describe('ol.layer.Layer', function() {
         managed: true,
         sourceState: ol.source.State.READY,
         extent: undefined,
+        zIndex: 10,
         maxResolution: 500,
         minResolution: 0.25
       });
@@ -228,6 +233,7 @@ describe('ol.layer.Layer', function() {
         managed: true,
         sourceState: ol.source.State.READY,
         extent: undefined,
+        zIndex: 0,
         maxResolution: Infinity,
         minResolution: 0
       });
@@ -249,6 +255,7 @@ describe('ol.layer.Layer', function() {
         managed: true,
         sourceState: ol.source.State.READY,
         extent: undefined,
+        zIndex: 0,
         maxResolution: Infinity,
         minResolution: 0
       });

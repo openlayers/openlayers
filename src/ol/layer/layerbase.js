@@ -19,6 +19,7 @@ ol.layer.LayerProperty = {
   SATURATION: 'saturation',
   VISIBLE: 'visible',
   EXTENT: 'extent',
+  Z_INDEX: 'zIndex',
   MAX_RESOLUTION: 'maxResolution',
   MIN_RESOLUTION: 'minResolution',
   SOURCE: 'source'
@@ -36,6 +37,7 @@ ol.layer.LayerProperty = {
  *            visible: boolean,
  *            managed: boolean,
  *            extent: (ol.Extent|undefined),
+ *            zIndex: number,
  *            maxResolution: number,
  *            minResolution: number}}
  */
@@ -76,6 +78,8 @@ ol.layer.Base = function(options) {
       goog.isDef(options.saturation) ? options.saturation : 1;
   properties[ol.layer.LayerProperty.VISIBLE] =
       goog.isDef(options.visible) ? options.visible : true;
+  properties[ol.layer.LayerProperty.Z_INDEX] =
+      goog.isDef(options.zIndex) ? options.zIndex : 0;
   properties[ol.layer.LayerProperty.MAX_RESOLUTION] =
       goog.isDef(options.maxResolution) ? options.maxResolution : Infinity;
   properties[ol.layer.LayerProperty.MIN_RESOLUTION] =
@@ -131,6 +135,7 @@ ol.layer.Base.prototype.getLayerState = function() {
   var sourceState = this.getSourceState();
   var visible = this.getVisible();
   var extent = this.getExtent();
+  var zIndex = this.getZIndex();
   var maxResolution = this.getMaxResolution();
   var minResolution = this.getMinResolution();
   return {
@@ -144,6 +149,7 @@ ol.layer.Base.prototype.getLayerState = function() {
     visible: visible,
     managed: true,
     extent: extent,
+    zIndex: zIndex,
     maxResolution: maxResolution,
     minResolution: Math.max(minResolution, 0)
   };
@@ -239,6 +245,18 @@ ol.layer.Base.prototype.getSourceState = goog.abstractMethod;
  */
 ol.layer.Base.prototype.getVisible = function() {
   return /** @type {boolean} */ (this.get(ol.layer.LayerProperty.VISIBLE));
+};
+
+
+/**
+ * Return the Z-index of the layer, which is used to order layers before
+ * rendering. The default Z-index is 0.
+ * @return {number} The Z-index of the layer.
+ * @observable
+ * @api
+ */
+ol.layer.Base.prototype.getZIndex = function() {
+  return /** @type {number} */ (this.get(ol.layer.LayerProperty.Z_INDEX));
 };
 
 
@@ -363,4 +381,16 @@ ol.layer.Base.prototype.setSaturation = function(saturation) {
  */
 ol.layer.Base.prototype.setVisible = function(visible) {
   this.set(ol.layer.LayerProperty.VISIBLE, visible);
+};
+
+
+/**
+ * Set Z-index of the layer, which is used to order layers before rendering.
+ * The default Z-index is 0.
+ * @param {number} zindex The z-index of the layer.
+ * @observable
+ * @api
+ */
+ol.layer.Base.prototype.setZIndex = function(zindex) {
+  this.set(ol.layer.LayerProperty.Z_INDEX, zindex);
 };

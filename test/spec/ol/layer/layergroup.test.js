@@ -54,6 +54,7 @@ describe('ol.layer.Group', function() {
         managed: true,
         sourceState: ol.source.State.READY,
         extent: undefined,
+        zIndex: 0,
         maxResolution: Infinity,
         minResolution: 0
       });
@@ -160,6 +161,7 @@ describe('ol.layer.Group', function() {
         opacity: 0.5,
         saturation: 5,
         visible: false,
+        zIndex: 10,
         maxResolution: 500,
         minResolution: 0.25
       });
@@ -183,6 +185,7 @@ describe('ol.layer.Group', function() {
         managed: true,
         sourceState: ol.source.State.READY,
         extent: undefined,
+        zIndex: 10,
         maxResolution: 500,
         minResolution: 0.25
       });
@@ -235,6 +238,7 @@ describe('ol.layer.Group', function() {
         managed: true,
         sourceState: ol.source.State.READY,
         extent: groupExtent,
+        zIndex: 0,
         maxResolution: 500,
         minResolution: 0.25
       });
@@ -266,6 +270,7 @@ describe('ol.layer.Group', function() {
       layerGroup.setOpacity(0.3);
       layerGroup.setSaturation(0.3);
       layerGroup.setVisible(false);
+      layerGroup.setZIndex(10);
       var groupExtent = [-100, 50, 100, 50];
       layerGroup.setExtent(groupExtent);
       layerGroup.setMaxResolution(500);
@@ -281,6 +286,7 @@ describe('ol.layer.Group', function() {
         managed: true,
         sourceState: ol.source.State.READY,
         extent: groupExtent,
+        zIndex: 10,
         maxResolution: 500,
         minResolution: 0.25
       });
@@ -304,6 +310,7 @@ describe('ol.layer.Group', function() {
         managed: true,
         sourceState: ol.source.State.READY,
         extent: undefined,
+        zIndex: 0,
         maxResolution: Infinity,
         minResolution: 0
       });
@@ -325,6 +332,7 @@ describe('ol.layer.Group', function() {
         managed: true,
         sourceState: ol.source.State.READY,
         extent: undefined,
+        zIndex: 0,
         maxResolution: Infinity,
         minResolution: 0
       });
@@ -500,6 +508,7 @@ describe('ol.layer.Group', function() {
         managed: true,
         sourceState: ol.source.State.READY,
         extent: undefined,
+        zIndex: 0,
         maxResolution: 150,
         minResolution: 0.25
       });
