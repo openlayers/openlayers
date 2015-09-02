@@ -715,6 +715,33 @@ ol.interaction.Draw.prototype.abortDrawing_ = function() {
 
 
 /**
+ * Extend an existing geometry by adding additional points. This only works
+ * on features with `LineString` geometries, where the interaction will
+ * extend lines by adding points to the end of the coordinates array.
+ * @param {!ol.Feature} feature Feature to be extended.
+ * @api
+ */
+ol.interaction.Draw.prototype.extend = function(feature) {
+  var geometry = feature.getGeometry();
+  goog.asserts.assert(this.mode_ == ol.interaction.DrawMode.LINE_STRING,
+      'interaction mode must be "line"');
+  goog.asserts.assert(goog.isDefAndNotNull(geometry),
+      'feature must have a geometry');
+  goog.asserts.assert(geometry.getType() == ol.geom.GeometryType.LINE_STRING,
+      'feature geometry must be a line string');
+  var lineString = /** @type {ol.geom.LineString} */ (geometry);
+  this.sketchFeature_ = feature;
+  this.sketchCoords_ = lineString.getCoordinates();
+  var last = this.sketchCoords_[this.sketchCoords_.length - 1];
+  this.finishCoordinate_ = last.slice();
+  this.sketchCoords_.push(last.slice());
+  this.updateSketchFeatures_();
+  this.dispatchEvent(new ol.interaction.DrawEvent(
+      ol.interaction.DrawEventType.DRAWSTART, this.sketchFeature_));
+};
+
+
+/**
  * @inheritDoc
  */
 ol.interaction.Draw.prototype.shouldStopEvent = goog.functions.FALSE;
