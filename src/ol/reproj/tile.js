@@ -8,7 +8,6 @@ goog.require('goog.math');
 goog.require('goog.object');
 goog.require('ol.Tile');
 goog.require('ol.TileState');
-goog.require('ol.dom');
 goog.require('ol.extent');
 goog.require('ol.proj');
 goog.require('ol.reproj');
@@ -247,28 +246,20 @@ ol.reproj.Tile.prototype.reproject_ = function() {
     }
   }, this);
 
-  // create the canvas
   var tileCoord = this.getTileCoord();
   var z = tileCoord[0];
   var size = this.targetTileGrid_.getTileSize(z);
+  var width = goog.isNumber(size) ? size : size[0];
+  var height = goog.isNumber(size) ? size : size[1];
   var targetResolution = this.targetTileGrid_.getResolution(z);
-  var srcResolution = this.sourceTileGrid_.getResolution(this.srcZ_);
+  var sourceResolution = this.sourceTileGrid_.getResolution(this.srcZ_);
 
-  var width = this.pixelRatio_ * (goog.isNumber(size) ? size : size[0]);
-  var height = this.pixelRatio_ * (goog.isNumber(size) ? size : size[1]);
-  var context = ol.dom.createCanvasContext2D(width, height);
-  context.imageSmoothingEnabled = true;
-  context.scale(this.pixelRatio_, this.pixelRatio_);
+  var targetExtent = this.targetTileGrid_.getTileCoordExtent(tileCoord);
+  this.canvas_ = ol.reproj.render(width, height, this.pixelRatio_,
+      sourceResolution, this.sourceTileGrid_.getExtent(),
+      targetResolution, targetExtent, this.triangulation_, sources,
+      this.renderEdges_);
 
-  if (sources.length > 0) {
-    var targetExtent = this.targetTileGrid_.getTileCoordExtent(tileCoord);
-    ol.reproj.renderTriangles(context,
-        srcResolution, this.sourceTileGrid_.getExtent(),
-        targetResolution, targetExtent, this.triangulation_, sources,
-        this.pixelRatio_, this.renderEdges_);
-  }
-
-  this.canvas_ = context.canvas;
   this.state = ol.TileState.LOADED;
   this.changed();
 };
@@ -283,14 +274,6 @@ ol.reproj.Tile.prototype.load = function() {
     this.changed();
 
     var leftToLoad = 0;
-    var onSingleSourceLoaded = goog.bind(function() {
-      leftToLoad--;
-      goog.asserts.assert(leftToLoad >= 0, 'leftToLoad should not be negative');
-      if (leftToLoad <= 0) {
-        this.unlistenSources_();
-        this.reproject_();
-      }
-    }, this);
 
     goog.asserts.assert(goog.isNull(this.sourcesListenerKeys_),
         'this.sourcesListenerKeys_ should be null');
@@ -308,10 +291,16 @@ ol.reproj.Tile.prototype.load = function() {
               if (state == ol.TileState.LOADED ||
                   state == ol.TileState.ERROR ||
                   state == ol.TileState.EMPTY) {
-                onSingleSourceLoaded();
                 goog.events.unlistenByKey(sourceListenKey);
+                leftToLoad--;
+                goog.asserts.assert(leftToLoad >= 0,
+                    'leftToLoad should not be negative');
+                if (leftToLoad <= 0) {
+                  this.unlistenSources_();
+                  this.reproject_();
+                }
               }
-            });
+            }, false, this);
         this.sourcesListenerKeys_.push(sourceListenKey);
       }
     }, this);

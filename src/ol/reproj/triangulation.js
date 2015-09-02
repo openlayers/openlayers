@@ -120,9 +120,9 @@ ol.reproj.Triangulation = function(sourceProj, targetProj, targetExtent,
   var brDstSrc = this.transformInv_(brDst);
   var blDstSrc = this.transformInv_(blDst);
 
-  this.addQuadIfValid_(tlDst, trDst, brDst, blDst,
-                       tlDstSrc, trDstSrc, brDstSrc, blDstSrc,
-                       ol.RASTER_REPROJ_MAX_SUBDIVISION);
+  this.addQuad_(tlDst, trDst, brDst, blDst,
+                tlDstSrc, trDstSrc, brDstSrc, blDstSrc,
+                ol.RASTER_REPROJ_MAX_SUBDIVISION);
 
   transformInvCache = {};
 };
@@ -139,7 +139,7 @@ ol.reproj.Triangulation = function(sourceProj, targetProj, targetExtent,
  * @private
  */
 ol.reproj.Triangulation.prototype.addTriangle_ = function(a, b, c,
-                                                          aSrc, bSrc, cSrc) {
+    aSrc, bSrc, cSrc) {
   this.triangles_.push({
     source: [aSrc, bSrc, cSrc],
     target: [a, b, c]
@@ -161,7 +161,7 @@ ol.reproj.Triangulation.prototype.addTriangle_ = function(a, b, c,
  * @param {number} maxSubdiv Maximal allowed subdivision of the quad.
  * @private
  */
-ol.reproj.Triangulation.prototype.addQuadIfValid_ = function(a, b, c, d,
+ol.reproj.Triangulation.prototype.addQuad_ = function(a, b, c, d,
     aSrc, bSrc, cSrc, dSrc, maxSubdiv) {
 
   var srcQuadExtent = ol.extent.boundingExtent([aSrc, bSrc, cSrc, dSrc]);
@@ -229,25 +229,23 @@ ol.reproj.Triangulation.prototype.addQuadIfValid_ = function(a, b, c, d,
     }
     if (needsSubdivision) {
       if (Math.abs(a[0] - c[0]) <= Math.abs(a[1] - c[1])) {
+        // split horizontally (top & bottom)
         var bc = [(b[0] + c[0]) / 2, (b[1] + c[1]) / 2];
         var bcSrc = this.transformInv_(bc);
         var da = [(d[0] + a[0]) / 2, (d[1] + a[1]) / 2];
         var daSrc = this.transformInv_(da);
 
-        this.addQuadIfValid_(a, b, bc, da,
-                             aSrc, bSrc, bcSrc, daSrc, maxSubdiv - 1);
-        this.addQuadIfValid_(da, bc, c, d,
-                             daSrc, bcSrc, cSrc, dSrc, maxSubdiv - 1);
+        this.addQuad_(a, b, bc, da, aSrc, bSrc, bcSrc, daSrc, maxSubdiv - 1);
+        this.addQuad_(da, bc, c, d, daSrc, bcSrc, cSrc, dSrc, maxSubdiv - 1);
       } else {
+        // split vertically (left & right)
         var ab = [(a[0] + b[0]) / 2, (a[1] + b[1]) / 2];
         var abSrc = this.transformInv_(ab);
         var cd = [(c[0] + d[0]) / 2, (c[1] + d[1]) / 2];
         var cdSrc = this.transformInv_(cd);
 
-        this.addQuadIfValid_(a, ab, cd, d,
-                             aSrc, abSrc, cdSrc, dSrc, maxSubdiv - 1);
-        this.addQuadIfValid_(ab, b, c, cd,
-                             abSrc, bSrc, cSrc, cdSrc, maxSubdiv - 1);
+        this.addQuad_(a, ab, cd, d, aSrc, abSrc, cdSrc, dSrc, maxSubdiv - 1);
+        this.addQuad_(ab, b, c, cd, abSrc, bSrc, cSrc, cdSrc, maxSubdiv - 1);
       }
       return;
     }
@@ -293,8 +291,12 @@ ol.reproj.Triangulation.prototype.calculateSourceExtent = function() {
 
     var sourceProjExtent = this.sourceProj_.getExtent();
     var right = sourceProjExtent[2];
-    if (extent[0] > right) extent[0] -= this.sourceWorldWidth_;
-    if (extent[2] > right) extent[2] -= this.sourceWorldWidth_;
+    if (extent[0] > right) {
+      extent[0] -= this.sourceWorldWidth_;
+    }
+    if (extent[2] > right) {
+      extent[2] -= this.sourceWorldWidth_;
+    }
   } else {
     goog.array.forEach(this.triangles_, function(triangle, i, arr) {
       var src = triangle.source;

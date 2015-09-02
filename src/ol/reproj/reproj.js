@@ -11,6 +11,20 @@ goog.require('ol.proj');
 
 
 /**
+ * We need to employ more sophisticated solution
+ * if the web browser antialiases clipping edges on canvas.
+ *
+ * Currently only Chrome does not antialias the edges, but this is probably
+ * going to be "fixed" in the future: http://crbug.com/424291
+ *
+ * @type {boolean}
+ * @private
+ */
+ol.reproj.browserAntialiasesClip_ = !goog.labs.userAgent.browser.isChrome() ||
+                                    goog.labs.userAgent.platform.isIos();
+
+
+/**
  * Calculates ideal resolution to use from the source in order to achieve
  * pixel mapping as close as possible to 1:1 during reprojection.
  * The resolution is calculated regardless on what resolutions
@@ -27,16 +41,20 @@ ol.reproj.calculateSourceResolution = function(sourceProj, targetProj,
 
   var sourceCenter = ol.proj.transform(targetCenter, targetProj, sourceProj);
 
-  var targetMPU = targetProj.getMetersPerUnit();
-  var sourceMPU = sourceProj.getMetersPerUnit();
-
   // calculate the ideal resolution of the source data
   var sourceResolution =
       targetProj.getPointResolution(targetResolution, targetCenter);
-  if (goog.isDef(targetMPU)) sourceResolution *= targetMPU;
-  if (goog.isDef(sourceMPU)) sourceResolution /= sourceMPU;
 
-  // based on the projection properties, the point resolution at the specified
+  var targetMPU = targetProj.getMetersPerUnit();
+  if (goog.isDef(targetMPU)) {
+    sourceResolution *= targetMPU;
+  }
+  var sourceMPU = sourceProj.getMetersPerUnit();
+  if (goog.isDef(sourceMPU)) {
+    sourceResolution /= sourceMPU;
+  }
+
+  // Based on the projection properties, the point resolution at the specified
   // coordinates may be slightly different. We need to reverse-compensate this
   // in order to achieve optimal results.
 
@@ -53,34 +71,27 @@ ol.reproj.calculateSourceResolution = function(sourceProj, targetProj,
 
 
 /**
- * Type of solution used to solve the wrapX issue.
- * @enum {number}
+ * Enlarge the clipping triangle point by 1 pixel to ensure the edges overlap
+ * in order to mask gaps caused by antialiasing.
+ * @param {number} centroidX Centroid of the triangle.
+ * @param {number} centroidY Centroid of the triangle.
+ * @param {number} u
+ * @param {number} v
+ * @return {ol.Coordinate}
  * @private
  */
-ol.reproj.WrapXRendering_ = {
-  NONE: 0,
-  STITCH_SHIFT: 1,
-  STITCH_EXTENDED: 2
+ol.reproj.enlargeClipPoint_ = function(centroidX, centroidY, u, v) {
+  var dX = u - centroidX, dY = v - centroidY;
+  var distance = Math.sqrt(dX * dX + dY * dY);
+  return [Math.round(u + dX / distance), Math.round(v + dY / distance)];
 };
 
 
 /**
- * We need to employ more sophisticated solution
- * if the web browser antialiases clipping edges on canvas.
- *
- * Currently only Chrome does not antialias the edges, but this is probably
- * going to be "fixed" in the future: http://crbug.com/424291
- *
- * @type {boolean}
- * @private
- */
-ol.reproj.browserAntialiasesClip_ = !goog.labs.userAgent.browser.isChrome() ||
-                                    goog.labs.userAgent.platform.isIos();
-
-
-/**
  * Renders the source into the canvas based on the triangulation.
- * @param {CanvasRenderingContext2D} context
+ * @param {number} width
+ * @param {number} height
+ * @param {number} pixelRatio
  * @param {number} sourceResolution
  * @param {ol.Extent} sourceExtent
  * @param {number} targetResolution
@@ -88,12 +99,21 @@ ol.reproj.browserAntialiasesClip_ = !goog.labs.userAgent.browser.isChrome() ||
  * @param {ol.reproj.Triangulation} triangulation
  * @param {Array.<{extent: ol.Extent,
  *                 image: (HTMLCanvasElement|Image)}>} sources
- * @param {number} sourcePixelRatio
  * @param {boolean=} opt_renderEdges
+ * @return {HTMLCanvasElement}
  */
-ol.reproj.renderTriangles = function(context,
+ol.reproj.render = function(width, height, pixelRatio,
     sourceResolution, sourceExtent, targetResolution, targetExtent,
-    triangulation, sources, sourcePixelRatio, opt_renderEdges) {
+    triangulation, sources, opt_renderEdges) {
+
+  var context = ol.dom.createCanvasContext2D(Math.round(pixelRatio * width),
+                                             Math.round(pixelRatio * height));
+
+  if (sources.length === 0) {
+    return context.canvas;
+  }
+
+  context.scale(pixelRatio, pixelRatio);
 
   var wrapXShiftDistance = !goog.isNull(sourceExtent) ?
       ol.extent.getWidth(sourceExtent) : 0;
@@ -148,11 +168,11 @@ ol.reproj.renderTriangles = function(context,
   }
 
   var stitchContext = ol.dom.createCanvasContext2D(
-      Math.round(sourcePixelRatio * canvasWidthInUnits / sourceResolution),
-      Math.round(sourcePixelRatio * srcDataHeight / sourceResolution));
+      Math.round(pixelRatio * canvasWidthInUnits / sourceResolution),
+      Math.round(pixelRatio * srcDataHeight / sourceResolution));
 
-  stitchContext.scale(sourcePixelRatio / sourceResolution,
-                      sourcePixelRatio / sourceResolution);
+  stitchContext.scale(pixelRatio / sourceResolution,
+                      pixelRatio / sourceResolution);
   stitchContext.translate(-srcDataExtent[0], srcDataExtent[3]);
 
   goog.array.forEach(sources, function(src, i, arr) {
@@ -208,15 +228,13 @@ ol.reproj.renderTriangles = function(context,
     var u2 = (tgt[2][0] - targetTL[0]) / targetResolution,
         v2 = -(tgt[2][1] - targetTL[1]) / targetResolution;
 
-    var performWrapXShift = false;
-    if (wrapXType == ol.reproj.WrapXRendering_.STITCH_SHIFT) {
-      performWrapXShift = true;
-    } else if (wrapXType == ol.reproj.WrapXRendering_.STITCH_EXTENDED) {
+    var performWrapXShift = wrapXType == ol.reproj.WrapXRendering_.STITCH_SHIFT;
+    if (wrapXType == ol.reproj.WrapXRendering_.STITCH_EXTENDED) {
       var minX = Math.min(x0, x1, x2);
       var maxX = Math.max(x0, x1, x2);
 
-      performWrapXShift = (maxX - minX) > wrapXShiftDistance / 2 ||
-          minX <= sourceExtent[0];
+      performWrapXShift = minX <= sourceExtent[0] ||
+                          (maxX - minX) > wrapXShiftDistance / 2;
     }
 
     if (performWrapXShift) {
@@ -249,18 +267,10 @@ ol.reproj.renderTriangles = function(context,
 
     context.beginPath();
     if (ol.reproj.browserAntialiasesClip_) {
-      // Enlarge the clipping triangle by 1 pixel to ensure the edges overlap
-      // in order to mask gaps caused by antialiasing.
       var centroidX = (u0 + u1 + u2) / 3, centroidY = (v0 + v1 + v2) / 3;
-      var calcClipPoint = function(u, v) {
-        var dX = u - centroidX, dY = v - centroidY;
-        var distance = Math.sqrt(dX * dX + dY * dY);
-        return [Math.round(u + dX / distance), Math.round(v + dY / distance)];
-      };
-
-      var p0 = calcClipPoint(u0, v0);
-      var p1 = calcClipPoint(u1, v1);
-      var p2 = calcClipPoint(u2, v2);
+      var p0 = ol.reproj.enlargeClipPoint_(centroidX, centroidY, u0, v0);
+      var p1 = ol.reproj.enlargeClipPoint_(centroidX, centroidY, u1, v1);
+      var p2 = ol.reproj.enlargeClipPoint_(centroidX, centroidY, u2, v2);
 
       context.moveTo(p0[0], p0[1]);
       context.lineTo(p1[0], p1[1]);
@@ -278,8 +288,8 @@ ol.reproj.renderTriangles = function(context,
     context.translate(srcDataExtent[0] - srcNumericalShiftX,
                       srcDataExtent[3] - srcNumericalShiftY);
 
-    context.scale(sourceResolution / sourcePixelRatio,
-                  -sourceResolution / sourcePixelRatio);
+    context.scale(sourceResolution / pixelRatio,
+                  -sourceResolution / pixelRatio);
 
     context.drawImage(stitchContext.canvas, 0, 0);
     context.restore();
@@ -311,4 +321,17 @@ ol.reproj.renderTriangles = function(context,
 
     context.restore();
   }
+  return context.canvas;
+};
+
+
+/**
+ * Type of solution used to solve wrapX in source during rendering.
+ * @enum {number}
+ * @private
+ */
+ol.reproj.WrapXRendering_ = {
+  NONE: 0,
+  STITCH_SHIFT: 1,
+  STITCH_EXTENDED: 2
 };

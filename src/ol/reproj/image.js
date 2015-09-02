@@ -5,7 +5,6 @@ goog.require('goog.events');
 goog.require('goog.events.EventType');
 goog.require('ol.ImageBase');
 goog.require('ol.ImageState');
-goog.require('ol.dom');
 goog.require('ol.extent');
 goog.require('ol.proj');
 goog.require('ol.reproj');
@@ -70,9 +69,6 @@ ol.reproj.Image = function(sourceProj, targetProj,
    */
   this.srcImage_ = getImageFunction(srcExtent, sourceResolution, pixelRatio);
 
-  var width = ol.extent.getWidth(targetExtent) / targetResolution;
-  var height = ol.extent.getHeight(targetExtent) / targetResolution;
-
   /**
    * @private
    * @type {number}
@@ -82,19 +78,9 @@ ol.reproj.Image = function(sourceProj, targetProj,
 
   /**
    * @private
-   * @type {CanvasRenderingContext2D}
-   */
-  this.context_ = ol.dom.createCanvasContext2D(
-      Math.round(this.srcPixelRatio_ * width),
-      Math.round(this.srcPixelRatio_ * height));
-  this.context_.imageSmoothingEnabled = true;
-  this.context_.scale(this.srcPixelRatio_, this.srcPixelRatio_);
-
-  /**
-   * @private
    * @type {HTMLCanvasElement}
    */
-  this.canvas_ = this.context_.canvas;
+  this.canvas_ = null;
 
   /**
    * @private
@@ -142,13 +128,16 @@ ol.reproj.Image.prototype.getImage = function(opt_context) {
 ol.reproj.Image.prototype.reproject_ = function() {
   var srcState = this.srcImage_.getState();
   if (srcState == ol.ImageState.LOADED) {
-    // render the reprojected content
-    ol.reproj.renderTriangles(this.context_,
+    var width = ol.extent.getWidth(this.targetExtent_) / this.targetResolution_;
+    var height =
+        ol.extent.getHeight(this.targetExtent_) / this.targetResolution_;
+
+    this.canvas_ = ol.reproj.render(width, height, this.srcPixelRatio_,
         this.srcImage_.getResolution(), this.maxSourceExtent_,
         this.targetResolution_, this.targetExtent_, this.triangulation_, [{
           extent: this.srcImage_.getExtent(),
           image: this.srcImage_.getImage()
-        }], this.srcPixelRatio_);
+        }]);
   }
   this.state = srcState;
   this.changed();
