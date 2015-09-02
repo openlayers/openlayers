@@ -22,7 +22,8 @@ var createServer = exports.createServer = function(callback) {
     lib: [
       'src/**/*.js',
       'build/ol.ext/*.js',
-    ]
+    ],
+    cwd: path.join(__dirname, '..')
   });
   manager.on('error', function(err) {
     if (server) {
