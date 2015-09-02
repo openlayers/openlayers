@@ -220,7 +220,8 @@ ol.render.canvas.Replay.prototype.beginGeometry = function(geometry, feature) {
  * @param {number} pixelRatio Pixel ratio.
  * @param {goog.vec.Mat4.Number} transform Transform.
  * @param {number} viewRotation View rotation.
- * @param {Object} skippedFeaturesHash Ids of features to skip.
+ * @param {Object.<string, boolean>} skippedFeaturesHash Ids of features
+ *     to skip.
  * @param {Array.<*>} instructions Instructions array.
  * @param {function(ol.Feature): T|undefined} featureCallback Feature callback.
  * @param {ol.Extent=} opt_hitExtent Only check features that intersect this
@@ -496,7 +497,8 @@ ol.render.canvas.Replay.prototype.replay_ = function(
  * @param {number} pixelRatio Pixel ratio.
  * @param {goog.vec.Mat4.Number} transform Transform.
  * @param {number} viewRotation View rotation.
- * @param {Object} skippedFeaturesHash Ids of features to skip
+ * @param {Object.<string, boolean>} skippedFeaturesHash Ids of features
+ *     to skip.
  */
 ol.render.canvas.Replay.prototype.replay = function(
     context, pixelRatio, transform, viewRotation, skippedFeaturesHash) {
@@ -510,7 +512,8 @@ ol.render.canvas.Replay.prototype.replay = function(
  * @param {CanvasRenderingContext2D} context Context.
  * @param {goog.vec.Mat4.Number} transform Transform.
  * @param {number} viewRotation View rotation.
- * @param {Object} skippedFeaturesHash Ids of features to skip
+ * @param {Object.<string, boolean>} skippedFeaturesHash Ids of features
+ *     to skip.
  * @param {function(ol.Feature): T=} opt_featureCallback Feature callback.
  * @param {ol.Extent=} opt_hitExtent Only check features that intersect this
  *     extent.
@@ -1863,7 +1866,8 @@ ol.render.canvas.ReplayGroup.prototype.finish = function() {
  * @param {ol.Coordinate} coordinate Coordinate.
  * @param {number} resolution Resolution.
  * @param {number} rotation Rotation.
- * @param {Object} skippedFeaturesHash Ids of features to skip
+ * @param {Object.<string, boolean>} skippedFeaturesHash Ids of features
+ *     to skip.
  * @param {function(ol.Feature): T} callback Feature callback.
  * @return {T|undefined} Callback result.
  * @template T
@@ -1946,7 +1950,8 @@ ol.render.canvas.ReplayGroup.prototype.isEmpty = function() {
  * @param {number} pixelRatio Pixel ratio.
  * @param {goog.vec.Mat4.Number} transform Transform.
  * @param {number} viewRotation View rotation.
- * @param {Object} skippedFeaturesHash Ids of features to skip
+ * @param {Object.<string, boolean>} skippedFeaturesHash Ids of features
+ *     to skip.
  */
 ol.render.canvas.ReplayGroup.prototype.replay = function(
     context, pixelRatio, transform, viewRotation, skippedFeaturesHash) {
@@ -1995,7 +2000,8 @@ ol.render.canvas.ReplayGroup.prototype.replay = function(
  * @param {CanvasRenderingContext2D} context Context.
  * @param {goog.vec.Mat4.Number} transform Transform.
  * @param {number} viewRotation View rotation.
- * @param {Object} skippedFeaturesHash Ids of features to skip
+ * @param {Object.<string, boolean>} skippedFeaturesHash Ids of features
+ *     to skip.
  * @param {function(ol.Feature): T} featureCallback Feature callback.
  * @param {ol.Extent=} opt_hitExtent Only check features that intersect this
  *     extent.
