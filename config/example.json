@@ -59,11 +59,9 @@
       "typeInvalidation",
       "undefinedNames",
       "undefinedVars",
+      "unknownDefines",
       "uselessCode",
       "visibility"
-    ],
-    "jscomp_off": [
-      "unknownDefines"
     ],
     "extra_annotation_name": [
       "api", "observable"
