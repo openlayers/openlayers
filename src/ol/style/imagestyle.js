@@ -176,6 +176,7 @@ ol.style.Image.prototype.getSize = goog.abstractMethod;
  * Set the opacity.
  *
  * @param {number} opacity Opacity.
+ * @api
  */
 ol.style.Image.prototype.setOpacity = function(opacity) {
   this.opacity_ = opacity;
