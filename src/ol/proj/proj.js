@@ -143,6 +143,8 @@ ol.proj.Projection = function(options) {
 
   var projections = ol.proj.projections_;
   var code = options.code;
+  goog.asserts.assert(goog.isDef(code),
+      'Option "code" is required for constructing instance');
   if (ol.ENABLE_PROJ4JS && typeof proj4 == 'function' &&
       !goog.isDef(projections[code])) {
     var def = proj4.defs(code);
