@@ -101,6 +101,7 @@ ol.OL3_LOGO_URL = 'data:image/png;base64,' +
 
 /**
  * @type {Array.<ol.RendererType>}
+ * @const
  */
 ol.DEFAULT_RENDERER_TYPES = [
   ol.RendererType.CANVAS,
