@@ -3,6 +3,7 @@ goog.provide('ol.source.ImageStatic');
 goog.require('goog.events');
 goog.require('goog.events.EventType');
 goog.require('ol.Image');
+goog.require('ol.ImageLoadFunctionType');
 goog.require('ol.extent');
 goog.require('ol.proj');
 goog.require('ol.source.Image');
@@ -34,7 +35,8 @@ ol.source.ImageStatic = function(options) {
   var crossOrigin = goog.isDef(options.crossOrigin) ?
       options.crossOrigin : null;
 
-  var imageLoadFunction = goog.isDef(options.imageLoadFunction) ?
+  var /** @type {ol.ImageLoadFunctionType} */ imageLoadFunction =
+      goog.isDef(options.imageLoadFunction) ?
       options.imageLoadFunction : ol.source.Image.defaultImageLoadFunction;
 
   goog.base(this, {
