@@ -54,6 +54,7 @@ describe('ol.layer.Group', function() {
         managed: true,
         sourceState: ol.source.State.READY,
         extent: undefined,
+        zIndex: 0,
         maxResolution: Infinity,
         minResolution: 0
       });
@@ -160,6 +161,7 @@ describe('ol.layer.Group', function() {
         opacity: 0.5,
         saturation: 5,
         visible: false,
+        zIndex: 10,
         maxResolution: 500,
         minResolution: 0.25
       });
@@ -183,6 +185,7 @@ describe('ol.layer.Group', function() {
         managed: true,
         sourceState: ol.source.State.READY,
         extent: undefined,
+        zIndex: 10,
         maxResolution: 500,
         minResolution: 0.25
       });
@@ -235,6 +238,7 @@ describe('ol.layer.Group', function() {
         managed: true,
         sourceState: ol.source.State.READY,
         extent: groupExtent,
+        zIndex: 0,
         maxResolution: 500,
         minResolution: 0.25
       });
@@ -266,6 +270,7 @@ describe('ol.layer.Group', function() {
       layerGroup.setOpacity(0.3);
       layerGroup.setSaturation(0.3);
       layerGroup.setVisible(false);
+      layerGroup.setZIndex(10);
       var groupExtent = [-100, 50, 100, 50];
       layerGroup.setExtent(groupExtent);
       layerGroup.setMaxResolution(500);
@@ -281,6 +286,7 @@ describe('ol.layer.Group', function() {
         managed: true,
         sourceState: ol.source.State.READY,
         extent: groupExtent,
+        zIndex: 10,
         maxResolution: 500,
         minResolution: 0.25
       });
@@ -304,6 +310,7 @@ describe('ol.layer.Group', function() {
         managed: true,
         sourceState: ol.source.State.READY,
         extent: undefined,
+        zIndex: 0,
         maxResolution: Infinity,
         minResolution: 0
       });
@@ -325,6 +332,7 @@ describe('ol.layer.Group', function() {
         managed: true,
         sourceState: ol.source.State.READY,
         extent: undefined,
+        zIndex: 0,
         maxResolution: Infinity,
         minResolution: 0
       });
@@ -500,6 +508,7 @@ describe('ol.layer.Group', function() {
         managed: true,
         sourceState: ol.source.State.READY,
         extent: undefined,
+        zIndex: 0,
         maxResolution: 150,
         minResolution: 0.25
       });
@@ -507,14 +516,60 @@ describe('ol.layer.Group', function() {
       goog.dispose(layerGroup);
     });
 
+    it('let order of layers without Z-index unchanged', function() {
+      var layerGroup = new ol.layer.Group({
+        layers: [layer1, layer2]
+      });
+
+      var layerStatesArray = layerGroup.getLayerStatesArray();
+      var initialArray = layerStatesArray.slice();
+      goog.array.stableSort(layerStatesArray, ol.renderer.Map.sortByZIndex);
+      expect(layerStatesArray[0]).to.eql(initialArray[0]);
+      expect(layerStatesArray[1]).to.eql(initialArray[1]);
+
+      goog.dispose(layerGroup);
+    });
+
+    it('orders layer with higher Z-index on top', function() {
+      var layer10 = new ol.layer.Layer({
+        source: new ol.source.Source({
+          projection: 'EPSG:4326'
+        })
+      });
+      layer10.setZIndex(10);
+
+      var layerM1 = new ol.layer.Layer({
+        source: new ol.source.Source({
+          projection: 'EPSG:4326'
+        })
+      });
+      layerM1.setZIndex(-1);
+
+      var layerGroup = new ol.layer.Group({
+        layers: [layer1, layer10, layer2, layerM1]
+      });
+
+      var layerStatesArray = layerGroup.getLayerStatesArray();
+      var initialArray = layerStatesArray.slice();
+      goog.array.stableSort(layerStatesArray, ol.renderer.Map.sortByZIndex);
+      expect(layerStatesArray[0]).to.eql(initialArray[3]);
+      expect(layerStatesArray[1]).to.eql(initialArray[0]);
+      expect(layerStatesArray[2]).to.eql(initialArray[2]);
+      expect(layerStatesArray[3]).to.eql(initialArray[1]);
+
+      goog.dispose(layer10);
+      goog.dispose(layerM1);
+      goog.dispose(layerGroup);
+    });
+
     goog.dispose(layer1);
     goog.dispose(layer2);
     goog.dispose(layer3);
-
   });
 
 });
 
+goog.require('goog.array');
 goog.require('goog.dispose');
 goog.require('goog.events.EventType');
 goog.require('goog.events.Listener');
@@ -523,6 +578,7 @@ goog.require('ol.ObjectEventType');
 goog.require('ol.extent');
 goog.require('ol.layer.Layer');
 goog.require('ol.layer.Group');
+goog.require('ol.renderer.Map');
 goog.require('ol.source.Source');
 goog.require('ol.source.State');
 goog.require('ol.Collection');
