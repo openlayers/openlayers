@@ -13,7 +13,7 @@
 
 ## Documentation
 
-Check out the [hosted examples](http://openlayers.org/en/master/examples/), the [workshop](http://openlayers.org/ol3-workshop/) or [API docs](http://openlayers.org/en/master/apidoc/).
+Check out the [hosted examples](http://openlayers.org/en/master/examples/), the [workshop](http://openlayers.org/workshop/) or [API docs](http://openlayers.org/en/master/apidoc/).
 
 ## Bugs
 
