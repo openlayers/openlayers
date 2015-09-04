@@ -31,11 +31,6 @@ proj4.defs('EPSG:5479', '+proj=lcc +lat_1=-76.66666666666667 +lat_2=' +
 var proj5479 = ol.proj.get('EPSG:5479');
 proj5479.setExtent([6825737.53, 4189159.80, 9633741.96, 5782472.71]);
 
-proj4.defs('EPSG:5041', '+proj=stere +lat_0=90 +lat_ts=90 +lon_0=0 +k=0.994 ' +
-    '+x_0=2000000 +y_0=2000000 +datum=WGS84 +units=m +no_defs');
-var proj5041 = ol.proj.get('EPSG:5041');
-proj5041.setExtent([1994055.62, 5405875.53, 2000969.46, 2555456.55]);
-
 proj4.defs('EPSG:21781', '+proj=somerc +lat_0=46.95240555555556 ' +
     '+lon_0=7.439583333333333 +k_0=1 +x_0=600000 +y_0=200000 +ellps=bessel ' +
     '+towgs84=674.4,15.1,405.3,0,0,0,0 +units=m +no_defs');
@@ -60,7 +55,7 @@ proj54009.setExtent([-18e6, -9e6, 18e6, 9e6]);
 
 var layers = [];
 
-layers['OS'] = new ol.layer.Tile({
+layers['bng'] = new ol.layer.Tile({
   source: new ol.source.XYZ({
     projection: 'EPSG:27700',
     url: 'https://googledrive.com/host/0B0bm2WdRuvICflNqUmxEdUNOV0ZRUFQ3cXNXR' +
@@ -69,7 +64,7 @@ layers['OS'] = new ol.layer.Tile({
   })
 });
 
-layers['MapQuest'] = new ol.layer.Tile({
+layers['mapquest'] = new ol.layer.Tile({
   source: new ol.source.MapQuest({layer: 'osm'})
 });
 
@@ -150,8 +145,8 @@ layers['states'] = new ol.layer.Tile({
 
 var map = new ol.Map({
   layers: [
-    layers['MapQuest'],
-    layers['OS']
+    layers['mapquest'],
+    layers['bng']
   ],
   renderer: common.getRendererFromQueryString(),
   target: 'map',

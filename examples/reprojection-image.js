@@ -12,9 +12,7 @@ proj4.defs('EPSG:27700', '+proj=tmerc +lat_0=49 +lon_0=-2 +k=0.9996012717 ' +
     '+x_0=400000 +y_0=-100000 +ellps=airy ' +
     '+towgs84=446.448,-125.157,542.06,0.15,0.247,0.842,-20.489 ' +
     '+units=m +no_defs');
-var extent = [0, 0, 700000, 1300000];
-var proj27700 = ol.proj.get('EPSG:27700');
-proj27700.setExtent(extent);
+var imageExtent = [0, 0, 700000, 1300000];
 
 var map = new ol.Map({
   layers: [
@@ -26,15 +24,15 @@ var map = new ol.Map({
         url: 'http://upload.wikimedia.org/wikipedia/commons/thumb/1/18/' +
                'British_National_Grid.svg/2000px-British_National_Grid.svg.png',
         projection: 'EPSG:27700',
-        imageExtent: extent
+        imageExtent: imageExtent
       })
     })
   ],
   renderer: common.getRendererFromQueryString(),
   target: 'map',
   view: new ol.View({
-    center: ol.proj.transform(ol.extent.getCenter(extent),
-                              proj27700, 'EPSG:3857'),
+    center: ol.proj.transform(ol.extent.getCenter(imageExtent),
+                              'EPSG:27700', 'EPSG:3857'),
     zoom: 4
   })
 });
