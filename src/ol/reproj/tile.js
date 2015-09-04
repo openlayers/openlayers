@@ -16,19 +16,24 @@ goog.require('ol.reproj.Triangulation');
 
 
 /**
+ * @classdesc
+ * Class encapsulating single reprojected tile.
+ * See {@link ol.source.TileImage}.
+ *
  * @constructor
  * @extends {ol.Tile}
- * @param {ol.proj.Projection} sourceProj
- * @param {ol.tilegrid.TileGrid} sourceTileGrid
- * @param {ol.proj.Projection} targetProj
- * @param {ol.tilegrid.TileGrid} targetTileGrid
- * @param {number} z
- * @param {number} x
- * @param {number} y
- * @param {number} pixelRatio
+ * @param {ol.proj.Projection} sourceProj Source projection.
+ * @param {ol.tilegrid.TileGrid} sourceTileGrid Source tile grid.
+ * @param {ol.proj.Projection} targetProj Target projection.
+ * @param {ol.tilegrid.TileGrid} targetTileGrid Target tile grid.
+ * @param {number} z Zoom level.
+ * @param {number} x X.
+ * @param {number} y Y.
+ * @param {number} pixelRatio Pixel ratio.
  * @param {function(number, number, number, number) : ol.Tile} getTileFunction
- * @param {number=} opt_errorThreshold
- * @param {boolean=} opt_renderEdges
+ *     Function returning source tiles (z, x, y, pixelRatio).
+ * @param {number=} opt_errorThreshold Acceptable reprojection error (in px).
+ * @param {boolean=} opt_renderEdges Render reprojection edges.
  */
 ol.reproj.Tile = function(sourceProj, sourceTileGrid,
     targetProj, targetTileGrid, z, x, y, pixelRatio, getTileFunction,

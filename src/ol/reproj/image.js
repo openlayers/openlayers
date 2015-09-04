@@ -13,14 +13,19 @@ goog.require('ol.reproj.Triangulation');
 
 
 /**
+ * @classdesc
+ * Class encapsulating single reprojected image.
+ * See {@link ol.source.Image}.
+ *
  * @constructor
  * @extends {ol.ImageBase}
- * @param {ol.proj.Projection} sourceProj
- * @param {ol.proj.Projection} targetProj
- * @param {ol.Extent} targetExtent
- * @param {number} targetResolution
- * @param {number} pixelRatio
+ * @param {ol.proj.Projection} sourceProj Source projection (of the data).
+ * @param {ol.proj.Projection} targetProj Target projection.
+ * @param {ol.Extent} targetExtent Target extent.
+ * @param {number} targetResolution Target resolution.
+ * @param {number} pixelRatio Pixel ratio.
  * @param {function(ol.Extent, number, number):ol.ImageBase} getImageFunction
+ *     Function returning source images (extent, resolution, pixelRatio).
  */
 ol.reproj.Image = function(sourceProj, targetProj,
     targetExtent, targetResolution, pixelRatio, getImageFunction) {

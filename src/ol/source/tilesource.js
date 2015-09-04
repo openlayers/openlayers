@@ -98,7 +98,7 @@ ol.source.Tile.prototype.canExpireCache = function() {
 
 
 /**
- * @param {ol.proj.Projection} projection
+ * @param {ol.proj.Projection} projection Projection.
  * @param {Object.<string, ol.TileRange>} usedTiles Used tiles.
  */
 ol.source.Tile.prototype.expireCache = function(projection, usedTiles) {
@@ -110,7 +110,7 @@ ol.source.Tile.prototype.expireCache = function(projection, usedTiles) {
 
 
 /**
- * @param {ol.proj.Projection} projection
+ * @param {ol.proj.Projection} projection Projection.
  * @param {number} z Zoom level.
  * @param {ol.TileRange} tileRange Tile range.
  * @param {function(ol.Tile):(boolean|undefined)} callback Called with each
@@ -231,7 +231,7 @@ ol.source.Tile.prototype.getTileCacheForProjection = function(projection) {
 
 
 /**
- * @return {number}
+ * @return {number} Tile pixel ratio.
  */
 ol.source.Tile.prototype.getTilePixelRatio = function() {
   return this.tilePixelRatio_;

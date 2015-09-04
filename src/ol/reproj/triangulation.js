@@ -18,10 +18,14 @@ ol.reproj.Triangle;
 
 
 /**
- * @param {ol.proj.Projection} sourceProj
- * @param {ol.proj.Projection} targetProj
- * @param {ol.Extent} targetExtent
- * @param {ol.Extent} maxSourceExtent
+ * @classdesc
+ * Class containing triangulation of the given target extent.
+ * Used for determining source data and the reprojection itself.
+ *
+ * @param {ol.proj.Projection} sourceProj Source projection.
+ * @param {ol.proj.Projection} targetProj Target projection.
+ * @param {ol.Extent} targetExtent Target extent to triangulate.
+ * @param {ol.Extent} maxSourceExtent Maximal source extent that can be used.
  * @param {number} errorThreshold Acceptable error (in source units).
  * @constructor
  */
@@ -150,6 +154,8 @@ ol.reproj.Triangulation.prototype.addTriangle_ = function(a, b, c,
 /**
  * Adds quad (points in clock-wise order) to the triangulation
  * (and reprojects the vertices) if valid.
+ * Performs quad subdivision if needed to increase precision.
+ *
  * @param {ol.Coordinate} a
  * @param {ol.Coordinate} b
  * @param {ol.Coordinate} c
@@ -264,7 +270,12 @@ ol.reproj.Triangulation.prototype.addQuad_ = function(a, b, c, d,
 
 
 /**
- * @return {ol.Extent}
+ * Calculates extent of the 'source' coordinates from all the triangles.
+ * The left bound of the returned extent can be higher than the right bound,
+ * if the triangulation wraps X in source (see
+ * {@link ol.reproj.Triangulation#getWrapsXInSource}).
+ *
+ * @return {ol.Extent} Calculated extent.
  */
 ol.reproj.Triangulation.prototype.calculateSourceExtent = function() {
   if (!goog.isNull(this.trianglesSourceExtent_)) {
@@ -312,7 +323,8 @@ ol.reproj.Triangulation.prototype.calculateSourceExtent = function() {
 
 
 /**
- * @return {boolean}
+ * @return {boolean} Whether the source coordinates are wrapped in X
+ *                   (the triangulation "crosses the dateline").
  */
 ol.reproj.Triangulation.prototype.getWrapsXInSource = function() {
   return this.wrapsXInSource_;
@@ -320,7 +332,7 @@ ol.reproj.Triangulation.prototype.getWrapsXInSource = function() {
 
 
 /**
- * @return {Array.<ol.reproj.Triangle>}
+ * @return {Array.<ol.reproj.Triangle>} Array of the calculated triangles.
  */
 ol.reproj.Triangulation.prototype.getTriangles = function() {
   return this.triangles_;

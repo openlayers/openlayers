@@ -303,7 +303,7 @@ ol.source.TileImage.prototype.handleTileChange_ = function(event) {
 
 /**
  * Sets whether to render reprojection edges or not (usually for debugging).
- * @param {boolean} render
+ * @param {boolean} render Render the edges.
  * @api
  */
 ol.source.TileImage.prototype.setRenderReprojectionEdges = function(render) {
@@ -317,8 +317,15 @@ ol.source.TileImage.prototype.setRenderReprojectionEdges = function(render) {
 
 
 /**
- * @param {ol.proj.ProjectionLike} projection
- * @param {ol.tilegrid.TileGrid} tilegrid
+ * Sets the tile grid to use when reprojecting the tiles to the given
+ * projection instead of the default tile grid for the projection.
+ *
+ * This can be useful when the default tile grid cannot be created
+ * (e.g. projection has no extent defined) or
+ * for optimization reasons (custom tile size, resolutions, ...).
+ *
+ * @param {ol.proj.ProjectionLike} projection Projection.
+ * @param {ol.tilegrid.TileGrid} tilegrid Tile grid to use for the projection.
  * @api
  */
 ol.source.TileImage.prototype.setTileGridForProjection =

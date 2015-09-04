@@ -30,10 +30,10 @@ ol.reproj.browserAntialiasesClip_ = !goog.labs.userAgent.browser.isChrome() ||
  * The resolution is calculated regardless on what resolutions
  * are actually available in the dataset (TileGrid, Image, ...).
  *
- * @param {ol.proj.Projection} sourceProj
- * @param {ol.proj.Projection} targetProj
- * @param {ol.Coordinate} targetCenter
- * @param {number} targetResolution
+ * @param {ol.proj.Projection} sourceProj Source projection.
+ * @param {ol.proj.Projection} targetProj Target projection.
+ * @param {ol.Coordinate} targetCenter Target center.
+ * @param {number} targetResolution Target resolution.
  * @return {number} The best resolution to use. Can be +-Infinity, NaN or 0.
  */
 ol.reproj.calculateSourceResolution = function(sourceProj, targetProj,
@@ -73,34 +73,36 @@ ol.reproj.calculateSourceResolution = function(sourceProj, targetProj,
 /**
  * Enlarge the clipping triangle point by 1 pixel to ensure the edges overlap
  * in order to mask gaps caused by antialiasing.
- * @param {number} centroidX Centroid of the triangle.
- * @param {number} centroidY Centroid of the triangle.
- * @param {number} u
- * @param {number} v
- * @return {ol.Coordinate}
+ *
+ * @param {number} centroidX Centroid of the triangle (x coordinate in pixels).
+ * @param {number} centroidY Centroid of the triangle (y coordinate in pixels).
+ * @param {number} x X coordinate of the point (in pixels).
+ * @param {number} y Y coordinate of the point (in pixels).
+ * @return {ol.Coordinate} New point 1 px farther from the centroid.
  * @private
  */
-ol.reproj.enlargeClipPoint_ = function(centroidX, centroidY, u, v) {
-  var dX = u - centroidX, dY = v - centroidY;
+ol.reproj.enlargeClipPoint_ = function(centroidX, centroidY, x, y) {
+  var dX = x - centroidX, dY = y - centroidY;
   var distance = Math.sqrt(dX * dX + dY * dY);
-  return [Math.round(u + dX / distance), Math.round(v + dY / distance)];
+  return [Math.round(x + dX / distance), Math.round(y + dY / distance)];
 };
 
 
 /**
- * Renders the source into the canvas based on the triangulation.
- * @param {number} width
- * @param {number} height
- * @param {number} pixelRatio
- * @param {number} sourceResolution
- * @param {ol.Extent} sourceExtent
- * @param {number} targetResolution
- * @param {ol.Extent} targetExtent
- * @param {ol.reproj.Triangulation} triangulation
+ * Renders the source data into new canvas based on the triangulation.
+ *
+ * @param {number} width Width of the canvas.
+ * @param {number} height Height of the canvas.
+ * @param {number} pixelRatio Pixel ratio.
+ * @param {number} sourceResolution Source resolution.
+ * @param {ol.Extent} sourceExtent Extent of the data source.
+ * @param {number} targetResolution Target resolution.
+ * @param {ol.Extent} targetExtent Target extent.
+ * @param {ol.reproj.Triangulation} triangulation Calculated triangulation.
  * @param {Array.<{extent: ol.Extent,
- *                 image: (HTMLCanvasElement|Image)}>} sources
- * @param {boolean=} opt_renderEdges
- * @return {HTMLCanvasElement}
+ *                 image: (HTMLCanvasElement|Image)}>} sources Array of sources.
+ * @param {boolean=} opt_renderEdges Render reprojection edges.
+ * @return {HTMLCanvasElement} Canvas with reprojected data.
  */
 ol.reproj.render = function(width, height, pixelRatio,
     sourceResolution, sourceExtent, targetResolution, targetExtent,
