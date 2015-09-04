@@ -5195,7 +5195,7 @@ olx.source.TileWMSOptions.prototype.wrapX;
  *     loader: (ol.FeatureLoader|undefined),
  *     logo: (string|olx.LogoOptions|undefined),
  *     strategy: (ol.LoadingStrategy|undefined),
- *     url: (string|undefined),
+ *     url: (string|ol.FeatureUrlFunction|undefined),
  *     useSpatialIndex: (boolean|undefined),
  *     wrapX: (boolean|undefined)}}
  * @api
@@ -5258,10 +5258,12 @@ olx.source.VectorOptions.prototype.strategy;
 
 /**
  * Setting this option instructs the source to use an XHR loader (see
- * {@link ol.featureloader.xhr}) and an {@link ol.loadingstrategy.all} for a
- * one-off download of all features from that URL.
+ * {@link ol.featureloader.xhr}). Use a `string` and an
+ * {@link ol.loadingstrategy.all} for a one-off download of all features from
+ * the given URL. Use a {@link ol.FeatureUrlFunction} to generate the url with
+ * other loading strategies.
  * Requires `format` to be set as well.
- * @type {string|undefined}
+ * @type {string|ol.FeatureUrlFunction|undefined}
  * @api
  */
 olx.source.VectorOptions.prototype.url;

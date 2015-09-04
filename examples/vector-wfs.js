@@ -10,32 +10,20 @@ goog.require('ol.style.Stroke');
 goog.require('ol.style.Style');
 
 
-// format used to parse WFS GetFeature responses
-var geojsonFormat = new ol.format.GeoJSON();
 
 var vectorSource = new ol.source.Vector({
-  loader: function(extent, resolution, projection) {
-    var url = 'http://demo.boundlessgeo.com/geoserver/wfs?service=WFS&' +
+  format: new ol.format.GeoJSON(),
+  url: function(extent, resolution, projection) {
+    return 'http://demo.boundlessgeo.com/geoserver/wfs?service=WFS&' +
         'version=1.1.0&request=GetFeature&typename=osm:water_areas&' +
-        'outputFormat=text/javascript&format_options=callback:loadFeatures' +
-        '&srsname=EPSG:3857&bbox=' + extent.join(',') + ',EPSG:3857';
-    // use jsonp: false to prevent jQuery from adding the "callback"
-    // parameter to the URL
-    $.ajax({url: url, dataType: 'jsonp', jsonp: false});
+        'outputFormat=application/json&srsname=EPSG:3857&' +
+        'bbox=' + extent.join(',') + ',EPSG:3857';
   },
   strategy: ol.loadingstrategy.tile(ol.tilegrid.createXYZ({
     maxZoom: 19
   }))
 });
 
-
-/**
- * JSONP WFS callback function.
- * @param {Object} response The response object.
- */
-window.loadFeatures = function(response) {
-  vectorSource.addFeatures(geojsonFormat.readFeatures(response));
-};
 
 var vector = new ol.layer.Vector({
   source: vectorSource,
