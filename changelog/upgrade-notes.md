@@ -1,5 +1,19 @@
 ## Upgrade notes
 
+### v3.9.0
+
+#### `ol.style.Circle` changes
+
+The experimental `getAnchor`, `getOrigin`, and `getSize` methods have been removed.  The anchor and origin of a circle symbolizer are not modifiable, so these properties should not need to be accessed.  The radius and stroke width can be used to calculate the rendered size of a circle symbolizer if needed:
+
+```js
+// calculate rendered size of a circle symbolizer
+var width = 2 * circle.getRadius();
+if (circle.getStroke()) {
+  width += circle.getStroke().getWidth() + 1;
+}
+```
+
 ### v3.8.0
 
 There should be nothing special required when upgrading from v3.7.0 to v3.8.0.
