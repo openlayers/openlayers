@@ -76,6 +76,7 @@ ol.ImageTile.prototype.disposeInternal = function() {
 
 
 /**
+ * Get the image element for this tile.
  * @inheritDoc
  * @api
  */
