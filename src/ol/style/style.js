@@ -214,13 +214,10 @@ ol.style.StyleFunction;
  * @return {ol.style.StyleFunction} A style function.
  */
 ol.style.createStyleFunction = function(obj) {
-  /**
-   * @type {ol.style.StyleFunction}
-   */
   var styleFunction;
 
   if (goog.isFunction(obj)) {
-    styleFunction = /** @type {ol.style.StyleFunction} */ (obj);
+    styleFunction = obj;
   } else {
     /**
      * @type {Array.<ol.style.Style>}

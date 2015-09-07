@@ -302,13 +302,10 @@ ol.FeatureStyleFunction;
  * @return {ol.FeatureStyleFunction} A style function.
  */
 ol.Feature.createStyleFunction = function(obj) {
-  /**
-   * @type {ol.FeatureStyleFunction}
-   */
   var styleFunction;
 
   if (goog.isFunction(obj)) {
-    styleFunction = /** @type {ol.FeatureStyleFunction} */ (obj);
+    styleFunction = obj;
   } else {
     /**
      * @type {Array.<ol.style.Style>}
