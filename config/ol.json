@@ -20,39 +20,12 @@
       "goog.DEBUG=false"
     ],
     "jscomp_error": [
-      "accessControls",
-      "ambiguousFunctionDecl",
-      "checkEventfulObjectDisposal",
-      "checkRegExp",
-      "checkTypes",
-      "checkVars",
-      "const",
-      "constantProperty",
-      "deprecated",
-      "duplicateMessage",
-      "es3",
-      "es5Strict",
-      "externsValidation",
-      "fileoverviewTags",
-      "globalThis",
-      "internetExplorerChecks",
-      "invalidCasts",
-      "misplacedTypeAnnotation",
-      "missingGetCssName",
-      "missingProperties",
-      "missingProvide",
-      "missingRequire",
-      "missingReturn",
-      "newCheckTypes",
-      "nonStandardJsDocs",
-      "suspiciousCode",
-      "strictModuleDepCheck",
-      "typeInvalidation",
-      "undefinedNames",
-      "undefinedVars",
-      "unknownDefines",
-      "uselessCode",
-      "visibility"
+      "*"
+    ],
+    "jscomp_off": [
+      "useOfGoogBase",
+      "unnecessaryCasts",
+      "lintChecks"
     ],
     "extra_annotation_name": [
       "api", "observable"
