@@ -2102,6 +2102,19 @@ describe('ol.format.KML', function() {
         expect(fs[0]).to.be.an(ol.Feature);
       });
 
+      it('can read a single feature from nested Document', function() {
+        var text =
+            '<Document xmlns="http://earth.google.com/kml/2.2">' +
+            '  <Document>' +
+            '    <Placemark>' +
+            '    </Placemark>' +
+            '  </Document>' +
+            '</Document>';
+        var fs = format.readFeatures(text);
+        expect(fs).to.have.length(1);
+        expect(fs[0]).to.be.an(ol.Feature);
+      });
+
       it('can transform and read a single feature from a Document', function() {
         var text =
             '<Document xmlns="http://earth.google.com/kml/2.2">' +
