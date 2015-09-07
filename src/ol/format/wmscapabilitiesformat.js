@@ -157,10 +157,10 @@ ol.format.WMSCapabilities.readEXGeographicBoundingBox_ =
       !goog.isDef(eastBoundLongitude) || !goog.isDef(northBoundLatitude)) {
     return undefined;
   }
-  return [
+  return /** @type {ol.Extent} */ ([
     westBoundLongitude, southBoundLatitude,
     eastBoundLongitude, northBoundLatitude
-  ];
+  ]);
 };
 
 
