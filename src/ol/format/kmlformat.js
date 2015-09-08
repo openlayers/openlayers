@@ -1681,7 +1681,7 @@ ol.format.KML.prototype.readPlacemark_ = function(node, objectStack) {
   }
   var options = /** @type {olx.format.ReadOptions} */ (objectStack[0]);
 
-  var geometry = goog.object.get(object, 'geometry');
+  var geometry = object['geometry'];
   if (goog.isDefAndNotNull(geometry)) {
     ol.format.Feature.transformWithOptions(geometry, false, options);
   }
@@ -1689,8 +1689,8 @@ ol.format.KML.prototype.readPlacemark_ = function(node, objectStack) {
   goog.object.remove(object, 'geometry');
 
   if (this.extractStyles_) {
-    var style = goog.object.get(object, 'Style');
-    var styleUrl = goog.object.get(object, 'styleUrl');
+    var style = object['Style'];
+    var styleUrl = object['styleUrl'];
     var styleFunction = ol.format.KML.createFeatureStyleFunction_(
         style, styleUrl, this.defaultStyle_, this.sharedStyles_);
     feature.setStyle(styleFunction);
