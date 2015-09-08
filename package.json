@@ -50,7 +50,7 @@
     "gaze": "^0.5.1",
     "istanbul": "0.3.13",
     "jquery": "2.1.1",
-    "jshint": "2.5.6",
+    "jshint": "2.8.0",
     "mocha": "1.21.5",
     "mocha-phantomjs": "3.5.1",
     "mustache": "2.1.3",
