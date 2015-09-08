@@ -2,7 +2,6 @@ goog.provide('ol.format.WMTSCapabilities');
 
 goog.require('goog.asserts');
 goog.require('goog.dom.NodeType');
-goog.require('goog.object');
 goog.require('goog.string');
 goog.require('ol.extent');
 goog.require('ol.format.OWS');
@@ -75,7 +74,7 @@ ol.format.WMTSCapabilities.prototype.readFromNode = function(node) {
   if (!goog.isDef(WMTSCapabilityObject)) {
     return null;
   }
-  goog.object.set(WMTSCapabilityObject, 'version', this.version);
+  WMTSCapabilityObject['version'] = this.version;
   WMTSCapabilityObject = ol.xml.pushParseAndPop(WMTSCapabilityObject,
       ol.format.WMTSCapabilities.PARSERS_, node, []);
   return goog.isDef(WMTSCapabilityObject) ? WMTSCapabilityObject : null;
