@@ -60,6 +60,7 @@ layers['bng'] = new ol.layer.Tile({
     projection: 'EPSG:27700',
     url: 'https://googledrive.com/host/0B0bm2WdRuvICflNqUmxEdUNOV0ZRUFQ3cXNXR' +
         'FlOTm9MWmJxSDAxM2V5M1ZJX2lITE9oejA/{z}/{x}/{y}.png',
+    crossOrigin: '',
     maxZoom: 3
   })
 });
@@ -71,6 +72,7 @@ layers['mapquest'] = new ol.layer.Tile({
 layers['wms4326'] = new ol.layer.Tile({
   source: new ol.source.TileWMS({
     url: 'http://demo.boundlessgeo.com/geoserver/wms',
+    crossOrigin: '',
     params: {
       'LAYERS': 'ne:NE1_HR_LC_SR_W_DR'
     },
@@ -102,6 +104,7 @@ $.ajax('http://map1.vis.earthdata.nasa.gov/wmts-arctic/' +
   var result = parser.read(response);
   var options = ol.source.WMTS.optionsFromCapabilities(result,
       {layer: 'OSM_Land_Mask', matrixSet: 'EPSG3413_250m'});
+  options.crossOrigin = '';
   options.projection = 'EPSG:3413';
   options.wrapX = false;
   layers['wmts3413'] = new ol.layer.Tile({
@@ -112,6 +115,7 @@ $.ajax('http://map1.vis.earthdata.nasa.gov/wmts-arctic/' +
 layers['grandcanyon'] = new ol.layer.Tile({
   source: new ol.source.XYZ({
     url: 'http://tileserver.maptiler.com/grandcanyon@2x/{z}/{x}/{y}.png',
+    crossOrigin: '',
     tilePixelRatio: 2,
     maxZoom: 15,
     attributions: [new ol.Attribution({
@@ -131,6 +135,7 @@ for (var i = 0, ii = resolutions.length; i < ii; ++i) {
 layers['states'] = new ol.layer.Tile({
   source: new ol.source.TileWMS({
     url: 'http://demo.boundlessgeo.com/geoserver/wms',
+    crossOrigin: '',
     params: {'LAYERS': 'topp:states', 'TILED': true},
     serverType: 'geoserver',
     tileGrid: new ol.tilegrid.TileGrid({
