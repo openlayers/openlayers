@@ -116,7 +116,6 @@ goog.inherits(ol.style.Circle, ol.style.Image);
 
 /**
  * @inheritDoc
- * @api
  */
 ol.style.Circle.prototype.getAnchor = function() {
   return this.anchor_;
@@ -178,7 +177,6 @@ ol.style.Circle.prototype.getHitDetectionImageSize = function() {
 
 /**
  * @inheritDoc
- * @api
  */
 ol.style.Circle.prototype.getOrigin = function() {
   return this.origin_;
@@ -197,7 +195,6 @@ ol.style.Circle.prototype.getRadius = function() {
 
 /**
  * @inheritDoc
- * @api
  */
 ol.style.Circle.prototype.getSize = function() {
   return this.size_;
