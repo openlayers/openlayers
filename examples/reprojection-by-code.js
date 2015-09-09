@@ -65,25 +65,29 @@ function setProjection(code, name, proj4def, bbox) {
 
 function search(query) {
   resultSpan.innerHTML = 'Searching...';
-  $.ajax('http://epsg.io/?format=json&q=' + query).then(function(response) {
-    if (response) {
-      var results = response['results'];
-      if (results && results.length > 0) {
-        for (var i = 0; i < results.length; i++) {
-          var result = results[i];
-          if (result) {
-            var code = result['code'], name = result['name'],
-                proj4def = result['proj4'], bbox = result['bbox'];
-            if (code && code.length > 0 && proj4def && proj4def.length > 0 &&
-                bbox && bbox.length == 4) {
-              setProjection(code, name, proj4def, bbox);
-              return;
+  $.ajax({
+    url: 'http://epsg.io/?format=json&q=' + query,
+    dataType: 'jsonp',
+    success: function(response) {
+      if (response) {
+        var results = response['results'];
+        if (results && results.length > 0) {
+          for (var i = 0; i < results.length; i++) {
+            var result = results[i];
+            if (result) {
+              var code = result['code'], name = result['name'],
+                  proj4def = result['proj4'], bbox = result['bbox'];
+              if (code && code.length > 0 && proj4def && proj4def.length > 0 &&
+                  bbox && bbox.length == 4) {
+                setProjection(code, name, proj4def, bbox);
+                return;
+              }
             }
           }
         }
       }
+      setProjection(null, null, null, null);
     }
-    setProjection(null, null, null, null);
   });
 }
 
