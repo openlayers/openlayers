@@ -632,16 +632,3 @@ ol.renderer.webgl.Map.prototype.forEachLayerAtPixel =
   }
   return undefined;
 };
-
-
-/**
- * @private
- * @const
- */
-ol.renderer.webgl.Map.DEFAULT_COLOR_VALUES_ = {
-  opacity: 1,
-  brightness: 0,
-  contrast: 1,
-  hue: 0,
-  saturation: 1
-};
