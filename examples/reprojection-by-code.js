@@ -72,7 +72,7 @@ function search(query) {
       if (response) {
         var results = response['results'];
         if (results && results.length > 0) {
-          for (var i = 0; i < results.length; i++) {
+          for (var i = 0, ii = results.length; i < ii; i++) {
             var result = results[i];
             if (result) {
               var code = result['code'], name = result['name'],

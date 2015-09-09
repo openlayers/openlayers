@@ -174,7 +174,8 @@ ol.OVERVIEWMAP_MIN_RATIO = 0.1;
 
 
 /**
- * @define {number} Maximum number of source tiles for raster reprojection.
+ * @define {number} Maximum number of source tiles for raster reprojection of
+ *     a single tile.
  *     If too many source tiles are determined to be loaded to create a single
  *     reprojected tile the browser can become unresponsive or even crash.
  *     This can happen if the developer defines projections improperly and/or
@@ -188,7 +189,7 @@ ol.RASTER_REPROJ_MAX_SOURCE_TILES = 100;
 /**
  * @define {number} Maximum number of subdivision steps during raster
  *     reprojection triangulation. Prevents high memory usage and large
- *     number of proj4 calls when for certain transformations and areas.
+ *     number of proj4 calls (for certain transformations and areas).
  *     At most `2*(2^this)` triangles are created. Default is `10`.
  */
 ol.RASTER_REPROJ_MAX_SUBDIVISION = 10;
@@ -197,7 +198,7 @@ ol.RASTER_REPROJ_MAX_SUBDIVISION = 10;
 /**
  * @define {number} Maximum allowed size of triangle relative to world width.
  *     When transforming corners of world extent between certain projections,
- *     The resulting triangulation seems to have zero error and no subdivision
+ *     the resulting triangulation seems to have zero error and no subdivision
  *     is performed.
  *     If the triangle width is more than this (relative to world width; 0-1),
  *     subdivison is forced (respecting `ol.RASTER_REPROJ_MAX_SUBDIVISION`).

@@ -83,7 +83,7 @@ ol.reproj.Triangulation = function(sourceProj, targetProj, targetExtent,
   this.trianglesSourceExtent_ = null;
 
   /**
-   * Indicates that source coordinates has to be shifted during reprojection.
+   * Indicates that source coordinates have to be shifted during reprojection.
    * This is needed when the triangulation crosses
    * edge of the source projection (dateline).
    * @type {boolean}
@@ -286,7 +286,7 @@ ol.reproj.Triangulation.prototype.calculateSourceExtent = function() {
 
   if (this.wrapsXInSource_) {
     // although only some of the triangles are crossing the dateline,
-    // all coordiantes need to be "shifted" to be positive
+    // all coordinates need to be "shifted" to be positive
     // to properly calculate the extent (and then possibly shifted back)
 
     goog.array.forEach(this.triangles_, function(triangle, i, arr) {

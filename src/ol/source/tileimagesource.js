@@ -307,7 +307,9 @@ ol.source.TileImage.prototype.handleTileChange_ = function(event) {
  * @api
  */
 ol.source.TileImage.prototype.setRenderReprojectionEdges = function(render) {
-  if (this.renderReprojectionEdges_ == render) return;
+  if (this.renderReprojectionEdges_ == render) {
+    return;
+  }
   this.renderReprojectionEdges_ = render;
   goog.object.forEach(this.tileCacheForProjection, function(tileCache) {
     tileCache.clear();
