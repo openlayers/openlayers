@@ -32,6 +32,12 @@ ol.reproj.Image = function(sourceProj, targetProj,
 
   /**
    * @private
+   * @type {ol.proj.Projection}
+   */
+  this.targetProj_ = targetProj;
+
+  /**
+   * @private
    * @type {ol.Extent}
    */
   this.maxSourceExtent_ = sourceProj.getExtent();
@@ -124,6 +130,14 @@ ol.reproj.Image.prototype.disposeInternal = function() {
  */
 ol.reproj.Image.prototype.getImage = function(opt_context) {
   return this.canvas_;
+};
+
+
+/**
+ * @return {ol.proj.Projection} Projection.
+ */
+ol.reproj.Image.prototype.getProjection = function() {
+  return this.targetProj_;
 };
 
 
