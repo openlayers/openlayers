@@ -163,8 +163,8 @@ var map = new ol.Map({
 });
 
 
-var baseMapSelect = document.getElementById('base-map');
-var overlayMapSelect = document.getElementById('overlay-map');
+var baseLayerSelect = document.getElementById('base-layer');
+var overlayLayerSelect = document.getElementById('overlay-layer');
 var viewProjSelect = document.getElementById('view-projection');
 var renderEdgesCheckbox = document.getElementById('render-edges');
 var renderEdges = false;
@@ -204,8 +204,8 @@ var updateRenderEdgesOnLayer = function(layer) {
 /**
  * @param {Event} e Change event.
  */
-baseMapSelect.onchange = function(e) {
-  var layer = layers[baseMapSelect.value];
+baseLayerSelect.onchange = function(e) {
+  var layer = layers[baseLayerSelect.value];
   if (layer) {
     layer.setOpacity(1);
     updateRenderEdgesOnLayer(layer);
@@ -217,8 +217,8 @@ baseMapSelect.onchange = function(e) {
 /**
  * @param {Event} e Change event.
  */
-overlayMapSelect.onchange = function(e) {
-  var layer = layers[overlayMapSelect.value];
+overlayLayerSelect.onchange = function(e) {
+  var layer = layers[overlayLayerSelect.value];
   if (layer) {
     layer.setOpacity(0.7);
     updateRenderEdgesOnLayer(layer);
