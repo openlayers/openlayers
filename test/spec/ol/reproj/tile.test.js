@@ -23,7 +23,8 @@ describe('ol.reproj.Tile', function() {
         ol.tilegrid.createForProjection(proj4326, 3, opt_tileSize),
         3, 2, -2, pixelRatio, function(z, x, y, pixelRatio) {
           return new ol.ImageTile([z, x, y], ol.TileState.IDLE,
-              'data:image/gif;base64,R0lGODlhAQABAAAAACwAAAAAAQABAAA=', '',
+              'data:image/gif;base64,' +
+              'R0lGODlhAQABAIAAAP///wAAACwAAAAAAQABAAACAkQBADs=', null,
               function(tile, src) {
                 tile.getImage().src = src;
               });
