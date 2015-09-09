@@ -153,9 +153,11 @@ ol.source.Source.prototype.getWrapX = function() {
 /**
  * Set the attributions of the source.
  * @param {Array.<ol.Attribution>} attributions Attributions.
+ * @api
  */
 ol.source.Source.prototype.setAttributions = function(attributions) {
   this.attributions_ = attributions;
+  this.changed();
 };
 
 
