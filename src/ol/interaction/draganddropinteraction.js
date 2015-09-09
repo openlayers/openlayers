@@ -219,18 +219,21 @@ ol.interaction.DragAndDropEvent =
   goog.base(this, type, target);
 
   /**
+   * The features parsed from dropped data.
    * @type {Array.<ol.Feature>|undefined}
    * @api stable
    */
   this.features = opt_features;
 
   /**
+   * The dropped file.
    * @type {File}
    * @api stable
    */
   this.file = file;
 
   /**
+   * The feature projection.
    * @type {ol.proj.Projection|undefined}
    * @api
    */
