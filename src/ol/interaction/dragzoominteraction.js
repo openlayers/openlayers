@@ -1,8 +1,8 @@
 goog.provide('ol.interaction.DragZoom');
 
 goog.require('goog.asserts');
+goog.require('goog.math');
 goog.require('ol.events.condition');
-goog.require('ol.extent');
 goog.require('ol.interaction.DragBox');
 goog.require('ol.interaction.Interaction');
 goog.require('ol.style.Stroke');
@@ -60,11 +60,35 @@ ol.interaction.DragZoom.prototype.onBoxEnd = function() {
   var map = this.getMap();
   var view = map.getView();
   goog.asserts.assert(!goog.isNull(view), 'view should not be null');
-  var extent = this.getGeometry().getExtent();
-  var center = ol.extent.getCenter(extent);
   var size = map.getSize();
   goog.asserts.assert(goog.isDef(size), 'size should be defined');
+  var extent = this.getGeometry().getExtent();
+  var viewExtent = view.calculateExtent(size);
+  var x = ol.interaction.DragZoom.calculateAnchor(viewExtent, extent, 0);
+  var y = ol.interaction.DragZoom.calculateAnchor(viewExtent, extent, 1);
   ol.interaction.Interaction.zoom(map, view,
       view.getResolutionForExtent(extent, size),
-      center, this.duration_);
+      [x, y], this.duration_);
+};
+
+
+/**
+ * Calculate the point which would be stationary (anchorpoint) when
+ * zooming from one extent to the other.
+ * @param {ol.Extent} outerExtent
+ * @param {ol.Extent} innerExtent
+ * @param {number} index 0 for X coordinates, 1 for Y coordinates
+ * @return {number}
+ */
+ol.interaction.DragZoom.calculateAnchor = function(outerExtent, innerExtent,
+    index) {
+  var innerMin = innerExtent[0 + index];
+  var innerMax = innerExtent[2 + index];
+  var ratio = (outerExtent[0 + index] - innerMin) /
+              (innerMax - outerExtent[2 + index]);
+  if (!goog.math.isFiniteNumber(ratio)) {
+    return innerMax;
+  }
+  var percent = ratio / (1 + ratio);
+  return innerMin + (innerMax - innerMin) * percent;
 };
