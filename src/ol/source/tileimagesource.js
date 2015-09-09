@@ -307,7 +307,8 @@ ol.source.TileImage.prototype.handleTileChange_ = function(event) {
  * @api
  */
 ol.source.TileImage.prototype.setRenderReprojectionEdges = function(render) {
-  if (this.renderReprojectionEdges_ == render) {
+  if (!ol.ENABLE_RASTER_REPROJECTION ||
+      this.renderReprojectionEdges_ == render) {
     return;
   }
   this.renderReprojectionEdges_ = render;
