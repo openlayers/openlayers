@@ -1,0 +1,204 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no, width=device-width">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css" type="text/css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" type="text/css">
+    <link rel="stylesheet" href="./resources/prism/prism.css" type="text/css">
+    <link rel="stylesheet" href="../css/ol.css" type="text/css">
+    <link rel="stylesheet" href="./resources/layout.css" type="text/css">
+    
+    
+    <script src="./resources/zeroclipboard/ZeroClipboard.min.js"></script>
+    <title>IGN WMTS example</title>
+  </head>
+  <body>
+
+    <header class="navbar" role="navigation">
+      <div class="container" id="navbar-inner-container">
+        <a class="navbar-brand" href="./"><img src="./resources/logo-70x70.png">&nbsp;OpenLayers 3 Examples</a>
+      </div>
+    </header>
+
+    <div class="container-fluid">
+
+      <div class="row-fluid">
+  <div class="span12">
+    <div id="map" class="map"></div>
+  </div>
+</div>
+
+
+      <div class="row-fluid">
+        <div class="span12">
+          <h4 id="title">IGN WMTS example</h4>
+          <p id="shortdesc">Demonstrates displaying IGN (France) WMTS layers.</p>
+          <div id="docs"><p>In this example an IGN WMTS layer is displayed. For more information on IGN&#39;s WMTS service see the <a href="http://professionnels.ign.fr/api-sig">IGN Géoportail API web page </a> and <a href="http://www.geoportail.gouv.fr/depot/api/cgu/DT_APIGeoportail.pdf"> Descriptif technique des web services du Géoportail</a> (french).</p>
+</div>
+          <div id="tags">french, ign, geoportail, wmts</div>
+          <div id="api-links">Related API documentation: <ul class="inline"><li><a href="../apidoc/ol.Attribution.html" title="API documentation for ol.Attribution">ol.Attribution</a></li>,<li><a href="../apidoc/ol.Map.html" title="API documentation for ol.Map">ol.Map</a></li>,<li><a href="../apidoc/ol.View.html" title="API documentation for ol.View">ol.View</a></li>,<li><a href="../apidoc/ol.control.html" title="API documentation for ol.control">ol.control</a></li>,<li><a href="../apidoc/ol.extent.html" title="API documentation for ol.extent">ol.extent</a></li>,<li><a href="../apidoc/ol.layer.Tile.html" title="API documentation for ol.layer.Tile">ol.layer.Tile</a></li>,<li><a href="../apidoc/ol.proj.html" title="API documentation for ol.proj">ol.proj</a></li>,<li><a href="../apidoc/ol.source.WMTS.html" title="API documentation for ol.source.WMTS">ol.source.WMTS</a></li>,<li><a href="../apidoc/ol.tilegrid.WMTS.html" title="API documentation for ol.tilegrid.WMTS">ol.tilegrid.WMTS</a></li></ul></div>
+        </div>
+      </div>
+
+      <div class="row-fluid">
+        <div id="source-controls">
+          <a id="copy-button"><i class="fa fa-clipboard"></i> Copy</a>
+          <a id="jsfiddle-button"><i class="fa fa-jsfiddle"></i> Edit</a>
+        </div>
+        <form method="POST" id="jsfiddle-form" target="_blank" action="http://jsfiddle.net/api/post/jquery/1.11.0/">
+          <textarea class="hidden" name="js">var map = new ol.Map({
+  target: &#x27;map&#x27;,
+  controls: ol.control.defaults({
+    attributionOptions: /** @type {olx.control.AttributionOptions} */ ({
+      collapsible: false
+    })
+  }),
+  view: new ol.View({
+    zoom: 5,
+    center: ol.proj.transform([5, 45], &#x27;EPSG:4326&#x27;, &#x27;EPSG:3857&#x27;)
+  })
+});
+
+var resolutions = [];
+var matrixIds = [];
+var proj3857 = ol.proj.get(&#x27;EPSG:3857&#x27;);
+var maxResolution = ol.extent.getWidth(proj3857.getExtent()) / 256;
+
+for (var i = 0; i &lt; 18; i++) {
+  matrixIds[i] = i.toString();
+  resolutions[i] = maxResolution / Math.pow(2, i);
+}
+
+var tileGrid = new ol.tilegrid.WMTS({
+  origin: [-20037508, 20037508],
+  resolutions: resolutions,
+  matrixIds: matrixIds
+});
+
+// API key valid for &#x27;openlayers.org&#x27; and &#x27;localhost&#x27;.
+// Expiration date is 06/29/2018.
+var key = &#x27;2mqbg0z6cx7ube8gsou10nrt&#x27;;
+
+var ign_source = new ol.source.WMTS({
+  url: &#x27;http://wxs.ign.fr/&#x27; + key + &#x27;/wmts&#x27;,
+  layer: &#x27;GEOGRAPHICALGRIDSYSTEMS.MAPS&#x27;,
+  matrixSet: &#x27;PM&#x27;,
+  format: &#x27;image/jpeg&#x27;,
+  projection: &#x27;EPSG:3857&#x27;,
+  tileGrid: tileGrid,
+  style: &#x27;normal&#x27;,
+  attributions: [new ol.Attribution({
+    html: &#x27;&lt;a href=&quot;http://www.geoportail.fr/&quot; target=&quot;_blank&quot;&gt;&#x27; +
+        &#x27;&lt;img src=&quot;http://api.ign.fr/geoportail/api/js/latest/&#x27; +
+        &#x27;theme/geoportal/img/logo_gp.gif&quot;&gt;&lt;/a&gt;&#x27;
+  })]
+});
+
+var ign = new ol.layer.Tile({
+  source: ign_source
+});
+
+map.addLayer(ign);
+</textarea>
+          <textarea class="hidden" name="css"></textarea>
+          <textarea class="hidden" name="html">&lt;div class=&quot;row-fluid&quot;&gt;
+  &lt;div class=&quot;span12&quot;&gt;
+    &lt;div id=&quot;map&quot; class=&quot;map&quot;&gt;&lt;/div&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+</textarea>
+          <input type="hidden" name="wrap" value="l">
+          <input type="hidden" name="resources" value="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css,https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js,http://openlayers.org/en/v3.8.2/css/ol.css,http://openlayers.org/en/v3.8.2/build/ol.js">
+        </form>
+        <pre><code id="example-source" class="language-markup">&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+&lt;title&gt;IGN WMTS example&lt;/title&gt;
+&lt;script src="https://code.jquery.com/jquery-1.11.2.min.js"&gt;&lt;/script&gt;
+&lt;link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css"&gt;
+&lt;script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"&gt;&lt;/script&gt;
+&lt;link rel="stylesheet" href="http://openlayers.org/en/v3.8.2/css/ol.css" type="text/css"&gt;
+&lt;script src="http://openlayers.org/en/v3.8.2/build/ol.js"&gt;&lt;/script&gt;
+
+&lt;/head&gt;
+&lt;body&gt;
+&lt;div class="container-fluid"&gt;
+
+&lt;div class=&quot;row-fluid&quot;&gt;
+  &lt;div class=&quot;span12&quot;&gt;
+    &lt;div id=&quot;map&quot; class=&quot;map&quot;&gt;&lt;/div&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+
+&lt;/div&gt;
+&lt;script&gt;
+var map = new ol.Map({
+  target: &#x27;map&#x27;,
+  controls: ol.control.defaults({
+    attributionOptions: /** @type {olx.control.AttributionOptions} */ ({
+      collapsible: false
+    })
+  }),
+  view: new ol.View({
+    zoom: 5,
+    center: ol.proj.transform([5, 45], &#x27;EPSG:4326&#x27;, &#x27;EPSG:3857&#x27;)
+  })
+});
+
+var resolutions = [];
+var matrixIds = [];
+var proj3857 = ol.proj.get(&#x27;EPSG:3857&#x27;);
+var maxResolution = ol.extent.getWidth(proj3857.getExtent()) / 256;
+
+for (var i = 0; i &lt; 18; i++) {
+  matrixIds[i] = i.toString();
+  resolutions[i] = maxResolution / Math.pow(2, i);
+}
+
+var tileGrid = new ol.tilegrid.WMTS({
+  origin: [-20037508, 20037508],
+  resolutions: resolutions,
+  matrixIds: matrixIds
+});
+
+// API key valid for &#x27;openlayers.org&#x27; and &#x27;localhost&#x27;.
+// Expiration date is 06/29/2018.
+var key = &#x27;2mqbg0z6cx7ube8gsou10nrt&#x27;;
+
+var ign_source = new ol.source.WMTS({
+  url: &#x27;http://wxs.ign.fr/&#x27; + key + &#x27;/wmts&#x27;,
+  layer: &#x27;GEOGRAPHICALGRIDSYSTEMS.MAPS&#x27;,
+  matrixSet: &#x27;PM&#x27;,
+  format: &#x27;image/jpeg&#x27;,
+  projection: &#x27;EPSG:3857&#x27;,
+  tileGrid: tileGrid,
+  style: &#x27;normal&#x27;,
+  attributions: [new ol.Attribution({
+    html: &#x27;&lt;a href=&quot;http://www.geoportail.fr/&quot; target=&quot;_blank&quot;&gt;&#x27; +
+        &#x27;&lt;img src=&quot;http://api.ign.fr/geoportail/api/js/latest/&#x27; +
+        &#x27;theme/geoportal/img/logo_gp.gif&quot;&gt;&lt;/a&gt;&#x27;
+  })]
+});
+
+var ign = new ol.layer.Tile({
+  source: ign_source
+});
+
+map.addLayer(ign);
+
+&lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+      </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-1.11.2.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+    <script src="./resources/common.js"></script>
+    <script src="./resources/prism/prism.min.js"></script>
+    <script src="loader.js?id=wmts-ign"></script>
+
+  </body>
+</html>

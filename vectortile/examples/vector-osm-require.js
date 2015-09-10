@@ -1,0 +1,14 @@
+goog.require('ol.Map');
+goog.require('ol.View');
+goog.require('ol.control');
+goog.require('ol.format.OSMXML');
+goog.require('ol.layer.Tile');
+goog.require('ol.layer.Vector');
+goog.require('ol.loadingstrategy');
+goog.require('ol.proj');
+goog.require('ol.source.BingMaps');
+goog.require('ol.source.Vector');
+goog.require('ol.style.Circle');
+goog.require('ol.style.Fill');
+goog.require('ol.style.Stroke');
+goog.require('ol.style.Style');

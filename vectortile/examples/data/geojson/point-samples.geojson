@@ -1,0 +1,16 @@
+{
+"type": "FeatureCollection",
+"crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:OGC:1.3:CRS84" } },
+                                                                                
+"features": [
+{ "type": "Feature", "properties": { "name": "Saguenay (Arrondissement Latterière)" }, "geometry": { "type": "Point", "coordinates": [ -75.849253579389796, 47.6434349837781 ] } },
+{ "type": "Feature", "properties": { "name": "Canton Tremblay" }, "geometry": { "type": "Point", "coordinates": [ -75.840218528338056, 47.971115165183342 ] } },
+{ "type": "Feature", "properties": { "name": "Saint-Félix-d'Otis" }, "geometry": { "type": "Point", "coordinates": [ -75.849253579389796, 48.278693733790902 ] } },
+{ "type": "Feature", "properties": { "name": "La Baie" }, "geometry": { "type": "Point", "coordinates": [ -74.792152606335762, 47.649521925935176 ] } },
+{ "type": "Feature", "properties": { "name": "Saint-David-de-Falardeau" }, "geometry": { "type": "Point", "coordinates": [ -74.801187657387501, 47.977163824275436 ] } },
+{ "type": "Feature", "properties": { "name": "Saint-Honoré-de-Chicoutimi" }, "geometry": { "type": "Point", "coordinates": [ -74.792152606335762, 48.284706278302295 ] } },
+{ "type": "Feature", "properties": { "name": "Alma" }, "geometry": { "type": "Point", "coordinates": [ -75.298115465233423, 47.6434349837781 ] } },
+{ "type": "Feature", "properties": { "name": "Jonquière" }, "geometry": { "type": "Point", "coordinates": [ -75.298115465233423, 47.971115165183342 ] } },
+{ "type": "Feature", "properties": { "name": "Chicoutimi" }, "geometry": { "type": "Point", "coordinates": [ -75.289080414181669, 48.284706278302295 ] } }
+]
+}

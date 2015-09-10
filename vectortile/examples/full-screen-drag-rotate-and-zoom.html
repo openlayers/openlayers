@@ -1,0 +1,173 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no, width=device-width">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css" type="text/css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" type="text/css">
+    <link rel="stylesheet" href="./resources/prism/prism.css" type="text/css">
+    <link rel="stylesheet" href="../css/ol.css" type="text/css">
+    <link rel="stylesheet" href="./resources/layout.css" type="text/css">
+    
+    <link rel="stylesheet" href="full-screen-drag-rotate-and-zoom.css">
+    <script src="./resources/zeroclipboard/ZeroClipboard.min.js"></script>
+    <title>Full screen drag rotate and zoom example</title>
+  </head>
+  <body>
+
+    <header class="navbar" role="navigation">
+      <div class="container" id="navbar-inner-container">
+        <a class="navbar-brand" href="./"><img src="./resources/logo-70x70.png">&nbsp;OpenLayers 3 Examples</a>
+      </div>
+    </header>
+
+    <div class="container-fluid">
+
+      <div class="row-fluid">
+  <div class="span12">
+    <div id="map" class="map"></div>
+  </div>
+</div>
+
+
+      <div class="row-fluid">
+        <div class="span12">
+          <h4 id="title">Full screen drag rotate and zoom example</h4>
+          <p id="shortdesc">Example of drag rotate and zoom control with full screen effect.</p>
+          <div id="docs"><p>Hold down <code>Shift</code> + drag to rotate and zoom.  Click the button in the top right corner to go full screen.  Then do the <code>Shift</code> + drag thing again.</p> <p>If there is no button on the map, your browser does not support the <a href="http://caniuse.com/#feat=fullscreen">Full Screen API</a>.</p>
+</div>
+          <div id="tags">full-screen, drag, rotate, zoom, bing, bing-maps</div>
+          <div id="api-links">Related API documentation: <ul class="inline"><li><a href="../apidoc/ol.Map.html" title="API documentation for ol.Map">ol.Map</a></li>,<li><a href="../apidoc/ol.View.html" title="API documentation for ol.View">ol.View</a></li>,<li><a href="../apidoc/ol.control.html" title="API documentation for ol.control">ol.control</a></li>,<li><a href="../apidoc/ol.control.FullScreen.html" title="API documentation for ol.control.FullScreen">ol.control.FullScreen</a></li>,<li><a href="../apidoc/ol.interaction.html" title="API documentation for ol.interaction">ol.interaction</a></li>,<li><a href="../apidoc/ol.interaction.DragRotateAndZoom.html" title="API documentation for ol.interaction.DragRotateAndZoom">ol.interaction.DragRotateAndZoom</a></li>,<li><a href="../apidoc/ol.layer.Tile.html" title="API documentation for ol.layer.Tile">ol.layer.Tile</a></li>,<li><a href="../apidoc/ol.source.BingMaps.html" title="API documentation for ol.source.BingMaps">ol.source.BingMaps</a></li></ul></div>
+        </div>
+      </div>
+
+      <div class="row-fluid">
+        <div id="source-controls">
+          <a id="copy-button"><i class="fa fa-clipboard"></i> Copy</a>
+          <a id="jsfiddle-button"><i class="fa fa-jsfiddle"></i> Edit</a>
+        </div>
+        <form method="POST" id="jsfiddle-form" target="_blank" action="http://jsfiddle.net/api/post/jquery/1.11.0/">
+          <textarea class="hidden" name="js">var map = new ol.Map({
+  controls: ol.control.defaults().extend([
+    new ol.control.FullScreen()
+  ]),
+  interactions: ol.interaction.defaults().extend([
+    new ol.interaction.DragRotateAndZoom()
+  ]),
+  layers: [
+    new ol.layer.Tile({
+      source: new ol.source.BingMaps({
+        key: &#x27;Ak-dzM4wZjSqTlzveKz5u0d4IQ4bRzVI309GxmkgSVr1ewS6iPSrOvOKhA-CJlm3&#x27;,
+        imagerySet: &#x27;Aerial&#x27;
+      })
+    })
+  ],
+  // Use the canvas renderer because it&#x27;s currently the fastest
+  target: &#x27;map&#x27;,
+  view: new ol.View({
+    center: [-33519607, 5616436],
+    rotation: -Math.PI / 8,
+    zoom: 8
+  })
+});
+</textarea>
+          <textarea class="hidden" name="css">.map:-moz-full-screen {
+  height: 100%;
+}
+.map:-webkit-full-screen {
+  height: 100%;
+}
+.map:fullscreen {
+  height: 100%;
+}
+/* position the rotate control lower than usual */
+.ol-rotate {
+  top: 3em;
+}
+</textarea>
+          <textarea class="hidden" name="html">&lt;div class=&quot;row-fluid&quot;&gt;
+  &lt;div class=&quot;span12&quot;&gt;
+    &lt;div id=&quot;map&quot; class=&quot;map&quot;&gt;&lt;/div&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+</textarea>
+          <input type="hidden" name="wrap" value="l">
+          <input type="hidden" name="resources" value="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css,https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js,http://openlayers.org/en/v3.8.2/css/ol.css,http://openlayers.org/en/v3.8.2/build/ol.js">
+        </form>
+        <pre><code id="example-source" class="language-markup">&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+&lt;title&gt;Full screen drag rotate and zoom example&lt;/title&gt;
+&lt;script src="https://code.jquery.com/jquery-1.11.2.min.js"&gt;&lt;/script&gt;
+&lt;link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css"&gt;
+&lt;script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"&gt;&lt;/script&gt;
+&lt;link rel="stylesheet" href="http://openlayers.org/en/v3.8.2/css/ol.css" type="text/css"&gt;
+&lt;script src="http://openlayers.org/en/v3.8.2/build/ol.js"&gt;&lt;/script&gt;
+
+&lt;style&gt;
+.map:-moz-full-screen {
+  height: 100%;
+}
+.map:-webkit-full-screen {
+  height: 100%;
+}
+.map:fullscreen {
+  height: 100%;
+}
+/* position the rotate control lower than usual */
+.ol-rotate {
+  top: 3em;
+}
+
+&lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;div class="container-fluid"&gt;
+
+&lt;div class=&quot;row-fluid&quot;&gt;
+  &lt;div class=&quot;span12&quot;&gt;
+    &lt;div id=&quot;map&quot; class=&quot;map&quot;&gt;&lt;/div&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+
+&lt;/div&gt;
+&lt;script&gt;
+var map = new ol.Map({
+  controls: ol.control.defaults().extend([
+    new ol.control.FullScreen()
+  ]),
+  interactions: ol.interaction.defaults().extend([
+    new ol.interaction.DragRotateAndZoom()
+  ]),
+  layers: [
+    new ol.layer.Tile({
+      source: new ol.source.BingMaps({
+        key: &#x27;Ak-dzM4wZjSqTlzveKz5u0d4IQ4bRzVI309GxmkgSVr1ewS6iPSrOvOKhA-CJlm3&#x27;,
+        imagerySet: &#x27;Aerial&#x27;
+      })
+    })
+  ],
+  // Use the canvas renderer because it&#x27;s currently the fastest
+  target: &#x27;map&#x27;,
+  view: new ol.View({
+    center: [-33519607, 5616436],
+    rotation: -Math.PI / 8,
+    zoom: 8
+  })
+});
+
+&lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+      </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-1.11.2.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+    <script src="./resources/common.js"></script>
+    <script src="./resources/prism/prism.min.js"></script>
+    <script src="loader.js?id=full-screen-drag-rotate-and-zoom"></script>
+
+  </body>
+</html>

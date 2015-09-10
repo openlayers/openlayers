@@ -1,0 +1,4 @@
+/**
+ * Easing functions for {@link ol.animation}.
+ * @namespace ol.easing
+ */

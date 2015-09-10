@@ -1,0 +1,362 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no, width=device-width">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css" type="text/css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" type="text/css">
+    <link rel="stylesheet" href="./resources/prism/prism.css" type="text/css">
+    <link rel="stylesheet" href="../css/ol.css" type="text/css">
+    <link rel="stylesheet" href="./resources/layout.css" type="text/css">
+    
+    <link rel="stylesheet" href="fractal.css">
+    <script src="./resources/zeroclipboard/ZeroClipboard.min.js"></script>
+    <title>Fractal Example</title>
+  </head>
+  <body>
+
+    <header class="navbar" role="navigation">
+      <div class="container" id="navbar-inner-container">
+        <a class="navbar-brand" href="./"><img src="./resources/logo-70x70.png">&nbsp;OpenLayers 3 Examples</a>
+      </div>
+    </header>
+
+    <div class="container-fluid">
+
+      <div class="row-fluid">
+  <div class="span12">
+    <div id="map" class="map"></div>
+    <label for="depth">
+      depth:&nbsp;
+      <input id="depth" type="range" min="0" max="9" step="1" value="5">
+      &nbsp;(<span id="count">#</span> points)
+    </label>
+  </div>
+</div>
+
+
+      <div class="row-fluid">
+        <div class="span12">
+          <h4 id="title">Fractal Example</h4>
+          <p id="shortdesc">Example of a fractal.</p>
+          <div id="docs"><p>Example of a fractal.</p>
+</div>
+          <div id="tags">fractal, vector</div>
+          <div id="api-links">Related API documentation: <ul class="inline"><li><a href="../apidoc/ol.Feature.html" title="API documentation for ol.Feature">ol.Feature</a></li>,<li><a href="../apidoc/ol.Map.html" title="API documentation for ol.Map">ol.Map</a></li>,<li><a href="../apidoc/ol.View.html" title="API documentation for ol.View">ol.View</a></li>,<li><a href="../apidoc/ol.geom.LineString.html" title="API documentation for ol.geom.LineString">ol.geom.LineString</a></li>,<li><a href="../apidoc/ol.layer.Vector.html" title="API documentation for ol.layer.Vector">ol.layer.Vector</a></li>,<li><a href="../apidoc/ol.source.Vector.html" title="API documentation for ol.source.Vector">ol.source.Vector</a></li></ul></div>
+        </div>
+      </div>
+
+      <div class="row-fluid">
+        <div id="source-controls">
+          <a id="copy-button"><i class="fa fa-clipboard"></i> Copy</a>
+          <a id="jsfiddle-button"><i class="fa fa-jsfiddle"></i> Edit</a>
+        </div>
+        <form method="POST" id="jsfiddle-form" target="_blank" action="http://jsfiddle.net/api/post/jquery/1.11.0/">
+          <textarea class="hidden" name="js">var radius = 10e6;
+var cos30 = Math.cos(Math.PI / 6);
+var sin30 = Math.sin(Math.PI / 6);
+var rise = radius * sin30;
+var run = radius * cos30;
+
+var triangle = new ol.geom.LineString([
+  [0, radius], [run, -rise], [-run, -rise], [0, radius]
+]);
+
+var feature = new ol.Feature(triangle);
+
+var layer = new ol.layer.Vector({
+  source: new ol.source.Vector({
+    features: [feature]
+  })
+});
+
+var map = new ol.Map({
+  layers: [layer],
+  target: &#x27;map&#x27;,
+  view: new ol.View({
+    center: [0, 0],
+    zoom: 1
+  })
+});
+
+function makeFractal(depth) {
+  var geometry = /** @type {ol.geom.LineString} */ (triangle.clone());
+  var graph = coordsToGraph(geometry.getCoordinates());
+  for (var i = 0; i &lt; depth; ++i) {
+    var node = graph;
+    while (node.next) {
+      var next = node.next;
+      injectNodes(node);
+      node = next;
+    }
+  }
+  var coordinates = graphToCoords(graph);
+  document.getElementById(&#x27;count&#x27;).innerHTML = coordinates.length;
+  geometry.setCoordinates(coordinates);
+  feature.setGeometry(geometry);
+}
+
+function injectNodes(startNode) {
+  var endNode = startNode.next;
+
+  var start = startNode.point;
+  var end = startNode.next.point;
+  var dx = end[0] - start[0];
+  var dy = end[1] - start[1];
+
+  // first point at 1/3 along the segment
+  var firstNode = {
+    point: [start[0] + dx / 3, start[1] + dy / 3]
+  };
+
+  // second point at peak of _/\_
+  var r = Math.sqrt(dx * dx + dy * dy) / (2 * cos30);
+  var a = Math.atan2(dy, dx) + Math.PI / 6;
+  var secondNode = {
+    point: [start[0] + r * Math.cos(a), start[1] + r * Math.sin(a)]
+  };
+
+  // third point at 2/3 along the segment
+  var thirdNode = {
+    point: [end[0] - dx / 3, end[1] - dy / 3]
+  };
+
+  startNode.next = firstNode;
+  firstNode.next = secondNode;
+  secondNode.next = thirdNode;
+  thirdNode.next = endNode;
+}
+
+
+function coordsToGraph(coordinates) {
+  var graph = {
+    point: coordinates[0]
+  };
+  var length = coordinates.length;
+  for (var level = 0, node = graph; level &lt; length - 1; ++level) {
+    node.next = {
+      point: coordinates[level + 1]
+    };
+    node = node.next;
+  }
+  return graph;
+}
+
+function graphToCoords(graph) {
+  var coordinates = [graph.point];
+  for (var node = graph, i = 1; node.next; node = node.next, ++i) {
+    coordinates[i] = node.next.point;
+  }
+  return coordinates;
+}
+
+var depthInput = document.getElementById(&#x27;depth&#x27;);
+
+function update() {
+  makeFractal(Number(depthInput.value));
+}
+
+var updateTimer;
+
+
+/**
+ * Regenerate fractal on depth change.  Change events are debounced so updates
+ * only occur every 200ms.
+ */
+depthInput.onchange = function() {
+  window.clearTimeout(updateTimer);
+  updateTimer = window.setTimeout(update, 200);
+};
+
+update();
+</textarea>
+          <textarea class="hidden" name="css">.map {
+  background: whitesmoke;
+}
+#depth {
+  width: 100px;
+}
+</textarea>
+          <textarea class="hidden" name="html">&lt;div class=&quot;row-fluid&quot;&gt;
+  &lt;div class=&quot;span12&quot;&gt;
+    &lt;div id=&quot;map&quot; class=&quot;map&quot;&gt;&lt;/div&gt;
+    &lt;label for=&quot;depth&quot;&gt;
+      depth:&amp;nbsp;
+      &lt;input id=&quot;depth&quot; type=&quot;range&quot; min=&quot;0&quot; max=&quot;9&quot; step=&quot;1&quot; value=&quot;5&quot;&gt;
+      &amp;nbsp;(&lt;span id=&quot;count&quot;&gt;#&lt;/span&gt; points)
+    &lt;/label&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+</textarea>
+          <input type="hidden" name="wrap" value="l">
+          <input type="hidden" name="resources" value="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css,https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js,http://openlayers.org/en/v3.8.2/css/ol.css,http://openlayers.org/en/v3.8.2/build/ol.js">
+        </form>
+        <pre><code id="example-source" class="language-markup">&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+&lt;title&gt;Fractal Example&lt;/title&gt;
+&lt;script src="https://code.jquery.com/jquery-1.11.2.min.js"&gt;&lt;/script&gt;
+&lt;link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css"&gt;
+&lt;script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"&gt;&lt;/script&gt;
+&lt;link rel="stylesheet" href="http://openlayers.org/en/v3.8.2/css/ol.css" type="text/css"&gt;
+&lt;script src="http://openlayers.org/en/v3.8.2/build/ol.js"&gt;&lt;/script&gt;
+
+&lt;style&gt;
+.map {
+  background: whitesmoke;
+}
+#depth {
+  width: 100px;
+}
+
+&lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;div class="container-fluid"&gt;
+
+&lt;div class=&quot;row-fluid&quot;&gt;
+  &lt;div class=&quot;span12&quot;&gt;
+    &lt;div id=&quot;map&quot; class=&quot;map&quot;&gt;&lt;/div&gt;
+    &lt;label for=&quot;depth&quot;&gt;
+      depth:&amp;nbsp;
+      &lt;input id=&quot;depth&quot; type=&quot;range&quot; min=&quot;0&quot; max=&quot;9&quot; step=&quot;1&quot; value=&quot;5&quot;&gt;
+      &amp;nbsp;(&lt;span id=&quot;count&quot;&gt;#&lt;/span&gt; points)
+    &lt;/label&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+
+&lt;/div&gt;
+&lt;script&gt;
+var radius = 10e6;
+var cos30 = Math.cos(Math.PI / 6);
+var sin30 = Math.sin(Math.PI / 6);
+var rise = radius * sin30;
+var run = radius * cos30;
+
+var triangle = new ol.geom.LineString([
+  [0, radius], [run, -rise], [-run, -rise], [0, radius]
+]);
+
+var feature = new ol.Feature(triangle);
+
+var layer = new ol.layer.Vector({
+  source: new ol.source.Vector({
+    features: [feature]
+  })
+});
+
+var map = new ol.Map({
+  layers: [layer],
+  target: &#x27;map&#x27;,
+  view: new ol.View({
+    center: [0, 0],
+    zoom: 1
+  })
+});
+
+function makeFractal(depth) {
+  var geometry = /** @type {ol.geom.LineString} */ (triangle.clone());
+  var graph = coordsToGraph(geometry.getCoordinates());
+  for (var i = 0; i &lt; depth; ++i) {
+    var node = graph;
+    while (node.next) {
+      var next = node.next;
+      injectNodes(node);
+      node = next;
+    }
+  }
+  var coordinates = graphToCoords(graph);
+  document.getElementById(&#x27;count&#x27;).innerHTML = coordinates.length;
+  geometry.setCoordinates(coordinates);
+  feature.setGeometry(geometry);
+}
+
+function injectNodes(startNode) {
+  var endNode = startNode.next;
+
+  var start = startNode.point;
+  var end = startNode.next.point;
+  var dx = end[0] - start[0];
+  var dy = end[1] - start[1];
+
+  // first point at 1/3 along the segment
+  var firstNode = {
+    point: [start[0] + dx / 3, start[1] + dy / 3]
+  };
+
+  // second point at peak of _/\_
+  var r = Math.sqrt(dx * dx + dy * dy) / (2 * cos30);
+  var a = Math.atan2(dy, dx) + Math.PI / 6;
+  var secondNode = {
+    point: [start[0] + r * Math.cos(a), start[1] + r * Math.sin(a)]
+  };
+
+  // third point at 2/3 along the segment
+  var thirdNode = {
+    point: [end[0] - dx / 3, end[1] - dy / 3]
+  };
+
+  startNode.next = firstNode;
+  firstNode.next = secondNode;
+  secondNode.next = thirdNode;
+  thirdNode.next = endNode;
+}
+
+
+function coordsToGraph(coordinates) {
+  var graph = {
+    point: coordinates[0]
+  };
+  var length = coordinates.length;
+  for (var level = 0, node = graph; level &lt; length - 1; ++level) {
+    node.next = {
+      point: coordinates[level + 1]
+    };
+    node = node.next;
+  }
+  return graph;
+}
+
+function graphToCoords(graph) {
+  var coordinates = [graph.point];
+  for (var node = graph, i = 1; node.next; node = node.next, ++i) {
+    coordinates[i] = node.next.point;
+  }
+  return coordinates;
+}
+
+var depthInput = document.getElementById(&#x27;depth&#x27;);
+
+function update() {
+  makeFractal(Number(depthInput.value));
+}
+
+var updateTimer;
+
+
+/**
+ * Regenerate fractal on depth change.  Change events are debounced so updates
+ * only occur every 200ms.
+ */
+depthInput.onchange = function() {
+  window.clearTimeout(updateTimer);
+  updateTimer = window.setTimeout(update, 200);
+};
+
+update();
+
+&lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+      </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-1.11.2.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+    <script src="./resources/common.js"></script>
+    <script src="./resources/prism/prism.min.js"></script>
+    <script src="loader.js?id=fractal"></script>
+
+  </body>
+</html>

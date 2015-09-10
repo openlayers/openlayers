@@ -1,0 +1,160 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no, width=device-width">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css" type="text/css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" type="text/css">
+    <link rel="stylesheet" href="./resources/prism/prism.css" type="text/css">
+    <link rel="stylesheet" href="../css/ol.css" type="text/css">
+    <link rel="stylesheet" href="./resources/layout.css" type="text/css">
+    
+    
+    <script src="./resources/zeroclipboard/ZeroClipboard.min.js"></script>
+    <title>Modify features example</title>
+  </head>
+  <body>
+
+    <header class="navbar" role="navigation">
+      <div class="container" id="navbar-inner-container">
+        <a class="navbar-brand" href="./"><img src="./resources/logo-70x70.png">&nbsp;OpenLayers 3 Examples</a>
+      </div>
+    </header>
+
+    <div class="container-fluid">
+
+      <div class="row-fluid">
+  <div class="span12">
+    <div id="map" class="map"></div>
+  </div>
+</div>
+
+
+      <div class="row-fluid">
+        <div class="span12">
+          <h4 id="title">Modify features example</h4>
+          <p id="shortdesc">Editing features with the modify interaction.</p>
+          <div id="docs"><p>This example demonstrates how the modify and select interactions can be used together.  Zoom in to an area of interest and select a feature for editing. Then drag points around to modify the feature.  You can preserve topology by selecting multiple features before editing (<code>Shift</code>+click to select multiple features).</p>
+</div>
+          <div id="tags">modify, edit, vector</div>
+          <div id="api-links">Related API documentation: <ul class="inline"><li><a href="../apidoc/ol.Map.html" title="API documentation for ol.Map">ol.Map</a></li>,<li><a href="../apidoc/ol.View.html" title="API documentation for ol.View">ol.View</a></li>,<li><a href="../apidoc/ol.format.GeoJSON.html" title="API documentation for ol.format.GeoJSON">ol.format.GeoJSON</a></li>,<li><a href="../apidoc/ol.interaction.html" title="API documentation for ol.interaction">ol.interaction</a></li>,<li><a href="../apidoc/ol.interaction.Modify.html" title="API documentation for ol.interaction.Modify">ol.interaction.Modify</a></li>,<li><a href="../apidoc/ol.interaction.Select.html" title="API documentation for ol.interaction.Select">ol.interaction.Select</a></li>,<li><a href="../apidoc/ol.layer.Tile.html" title="API documentation for ol.layer.Tile">ol.layer.Tile</a></li>,<li><a href="../apidoc/ol.layer.Vector.html" title="API documentation for ol.layer.Vector">ol.layer.Vector</a></li>,<li><a href="../apidoc/ol.source.MapQuest.html" title="API documentation for ol.source.MapQuest">ol.source.MapQuest</a></li>,<li><a href="../apidoc/ol.source.Vector.html" title="API documentation for ol.source.Vector">ol.source.Vector</a></li></ul></div>
+        </div>
+      </div>
+
+      <div class="row-fluid">
+        <div id="source-controls">
+          <a id="copy-button"><i class="fa fa-clipboard"></i> Copy</a>
+          <a id="jsfiddle-button"><i class="fa fa-jsfiddle"></i> Edit</a>
+        </div>
+        <form method="POST" id="jsfiddle-form" target="_blank" action="http://jsfiddle.net/api/post/jquery/1.11.0/">
+          <textarea class="hidden" name="js">var raster = new ol.layer.Tile({
+  source: new ol.source.MapQuest({
+    layer: &#x27;sat&#x27;
+  })
+});
+
+var vector = new ol.layer.Vector({
+  source: new ol.source.Vector({
+    url: &#x27;data/geojson/countries.geojson&#x27;,
+    format: new ol.format.GeoJSON(),
+    wrapX: false
+  })
+});
+
+var select = new ol.interaction.Select({
+  wrapX: false
+});
+
+var modify = new ol.interaction.Modify({
+  features: select.getFeatures()
+});
+
+var map = new ol.Map({
+  interactions: ol.interaction.defaults().extend([select, modify]),
+  layers: [raster, vector],
+  target: &#x27;map&#x27;,
+  view: new ol.View({
+    center: [0, 0],
+    zoom: 2
+  })
+});
+</textarea>
+          <textarea class="hidden" name="css"></textarea>
+          <textarea class="hidden" name="html">&lt;div class=&quot;row-fluid&quot;&gt;
+  &lt;div class=&quot;span12&quot;&gt;
+    &lt;div id=&quot;map&quot; class=&quot;map&quot;&gt;&lt;/div&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+</textarea>
+          <input type="hidden" name="wrap" value="l">
+          <input type="hidden" name="resources" value="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css,https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js,http://openlayers.org/en/v3.8.2/css/ol.css,http://openlayers.org/en/v3.8.2/build/ol.js">
+        </form>
+        <pre><code id="example-source" class="language-markup">&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+&lt;title&gt;Modify features example&lt;/title&gt;
+&lt;script src="https://code.jquery.com/jquery-1.11.2.min.js"&gt;&lt;/script&gt;
+&lt;link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css"&gt;
+&lt;script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"&gt;&lt;/script&gt;
+&lt;link rel="stylesheet" href="http://openlayers.org/en/v3.8.2/css/ol.css" type="text/css"&gt;
+&lt;script src="http://openlayers.org/en/v3.8.2/build/ol.js"&gt;&lt;/script&gt;
+
+&lt;/head&gt;
+&lt;body&gt;
+&lt;div class="container-fluid"&gt;
+
+&lt;div class=&quot;row-fluid&quot;&gt;
+  &lt;div class=&quot;span12&quot;&gt;
+    &lt;div id=&quot;map&quot; class=&quot;map&quot;&gt;&lt;/div&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+
+&lt;/div&gt;
+&lt;script&gt;
+var raster = new ol.layer.Tile({
+  source: new ol.source.MapQuest({
+    layer: &#x27;sat&#x27;
+  })
+});
+
+var vector = new ol.layer.Vector({
+  source: new ol.source.Vector({
+    url: &#x27;data/geojson/countries.geojson&#x27;,
+    format: new ol.format.GeoJSON(),
+    wrapX: false
+  })
+});
+
+var select = new ol.interaction.Select({
+  wrapX: false
+});
+
+var modify = new ol.interaction.Modify({
+  features: select.getFeatures()
+});
+
+var map = new ol.Map({
+  interactions: ol.interaction.defaults().extend([select, modify]),
+  layers: [raster, vector],
+  target: &#x27;map&#x27;,
+  view: new ol.View({
+    center: [0, 0],
+    zoom: 2
+  })
+});
+
+&lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+      </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-1.11.2.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+    <script src="./resources/common.js"></script>
+    <script src="./resources/prism/prism.min.js"></script>
+    <script src="loader.js?id=modify-features"></script>
+
+  </body>
+</html>

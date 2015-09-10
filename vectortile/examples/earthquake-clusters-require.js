@@ -1,0 +1,17 @@
+goog.require('ol.Map');
+goog.require('ol.View');
+goog.require('ol.extent');
+goog.require('ol.format.KML');
+goog.require('ol.interaction');
+goog.require('ol.interaction.Select');
+goog.require('ol.layer.Tile');
+goog.require('ol.layer.Vector');
+goog.require('ol.source.Cluster');
+goog.require('ol.source.Stamen');
+goog.require('ol.source.Vector');
+goog.require('ol.style.Circle');
+goog.require('ol.style.Fill');
+goog.require('ol.style.RegularShape');
+goog.require('ol.style.Stroke');
+goog.require('ol.style.Style');
+goog.require('ol.style.Text');

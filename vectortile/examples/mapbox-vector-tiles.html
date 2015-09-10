@@ -1,0 +1,919 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no, width=device-width">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css" type="text/css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" type="text/css">
+    <link rel="stylesheet" href="./resources/prism/prism.css" type="text/css">
+    <link rel="stylesheet" href="../css/ol.css" type="text/css">
+    <link rel="stylesheet" href="./resources/layout.css" type="text/css">
+    
+    <link rel="stylesheet" href="mapbox-vector-tiles.css">
+    <script src="./resources/zeroclipboard/ZeroClipboard.min.js"></script>
+    <title>Mapbox vector tiles example</title>
+  </head>
+  <body>
+
+    <header class="navbar" role="navigation">
+      <div class="container" id="navbar-inner-container">
+        <a class="navbar-brand" href="./"><img src="./resources/logo-70x70.png">&nbsp;OpenLayers 3 Examples</a>
+      </div>
+    </header>
+
+    <div class="container-fluid">
+
+      <div class="row-fluid">
+  <div class="span12">
+    <div id="map" class="map"></div>
+  </div>
+</div>
+
+
+      <div class="row-fluid">
+        <div class="span12">
+          <h4 id="title">Mapbox vector tiles example</h4>
+          <p id="shortdesc">Example of a Mapbox vector tiles map.</p>
+          <div id="docs"><p>A simple vector tiles map.</p>
+</div>
+          <div id="tags">simple, mapbox, vector, tiles</div>
+          <div id="api-links">Related API documentation: <ul class="inline"><li><a href="../apidoc/ol.Map.html" title="API documentation for ol.Map">ol.Map</a></li>,<li><a href="../apidoc/ol.View.html" title="API documentation for ol.View">ol.View</a></li>,<li><a href="../apidoc/ol.format.MVT.html" title="API documentation for ol.format.MVT">ol.format.MVT</a></li>,<li><a href="../apidoc/ol.layer.VectorTile.html" title="API documentation for ol.layer.VectorTile">ol.layer.VectorTile</a></li>,<li><a href="../apidoc/ol.source.VectorTile.html" title="API documentation for ol.source.VectorTile">ol.source.VectorTile</a></li>,<li><a href="../apidoc/ol.style.Fill.html" title="API documentation for ol.style.Fill">ol.style.Fill</a></li>,<li><a href="../apidoc/ol.style.Stroke.html" title="API documentation for ol.style.Stroke">ol.style.Stroke</a></li>,<li><a href="../apidoc/ol.style.Style.html" title="API documentation for ol.style.Style">ol.style.Style</a></li>,<li><a href="../apidoc/ol.style.Text.html" title="API documentation for ol.style.Text">ol.style.Text</a></li></ul></div>
+        </div>
+      </div>
+
+      <div class="row-fluid">
+        <div id="source-controls">
+          <a id="copy-button"><i class="fa fa-clipboard"></i> Copy</a>
+          <a id="jsfiddle-button"><i class="fa fa-jsfiddle"></i> Edit</a>
+        </div>
+        <form method="POST" id="jsfiddle-form" target="_blank" action="http://jsfiddle.net/api/post/jquery/1.11.0/">
+          <textarea class="hidden" name="js">// Mapbox access token - request your own at http://mabobox.com
+var accessToken =
+    &#x27;pk.eyJ1IjoiYWhvY2V2YXIiLCJhIjoiRk1kMWZaSSJ9.E5BkluenyWQMsBLsuByrmg&#x27;;
+
+var constants = {
+  &#x27;@sans&#x27;: &#x27;&quot;Open Sans&quot;, &quot;Arial Unicode MS&quot;&#x27;,
+  &#x27;@land&#x27;: &#x27;#f8f4f0&#x27;,
+  &#x27;@water&#x27;: &#x27;#a0c8f0&#x27;,
+  &#x27;@admin&#x27;: &#x27;#9e9cab&#x27;,
+  &#x27;@admin-opacity&#x27;: 0.5,
+  &#x27;@park&#x27;: &#x27;#d8e8c8&#x27;,
+  &#x27;@cemetery&#x27;: &#x27;#e0e4dd&#x27;,
+  &#x27;@hospital&#x27;: &#x27;#fde&#x27;,
+  &#x27;@school&#x27;: &#x27;#f0e8f8&#x27;,
+  &#x27;@wood&#x27;: &#x27;#6a4&#x27;,
+  &#x27;@building&#x27;: &#x27;#f2eae2&#x27;,
+  &#x27;@building_shadow&#x27;: &#x27;#dfdbd7&#x27;,
+  &#x27;@aeroway&#x27;: &#x27;#f0ede9&#x27;,
+  &#x27;@motorway&#x27;: &#x27;#fc8&#x27;,
+  &#x27;@motorway_casing&#x27;: &#x27;#e9ac77&#x27;,
+  &#x27;@motorway_tunnel&#x27;: &#x27;#ffdaa6&#x27;,
+  &#x27;@main&#x27;: &#x27;#fea&#x27;,
+  &#x27;@main_tunnel&#x27;: &#x27;#fff4c6&#x27;,
+  &#x27;@street&#x27;: &#x27;#fff&#x27;,
+  &#x27;@street_limited&#x27;: &#x27;#f3f3f3&#x27;,
+  &#x27;@street_casing&#x27;: &#x27;#cfcdca&#x27;,
+  &#x27;@path&#x27;: &#x27;#cba&#x27;,
+  &#x27;@rail&#x27;: &#x27;#bbb&#x27;,
+  &#x27;@text&#x27;: &#x27;#334&#x27;,
+  &#x27;@text_halo&#x27;: &#x27;rgba(255,255,255,0.8)&#x27;,
+  &#x27;@marine_text&#x27;: &#x27;#74aee9&#x27;,
+  &#x27;@marine_text_halo&#x27;: &#x27;rgba(255,255,255,0.7)&#x27;,
+  &#x27;@poi_text&#x27;: &#x27;#666&#x27;,
+  &#x27;@poi_text_halo&#x27;: &#x27;#ffffff&#x27;,
+  &#x27;@maki&#x27;: &#x27;#666&#x27;,
+  &#x27;@point_translate&#x27;: [0, -30],
+  &#x27;@motorway_width&#x27;: {
+    &#x27;base&#x27;: 1.2,
+    &#x27;stops&#x27;: [[6.5, 0], [7, 0.5], [20, 18]]
+  },
+  &#x27;@motorway_casing_width&#x27;: {
+    &#x27;base&#x27;: 1.2,
+    &#x27;stops&#x27;: [[5, 0.4], [6, 0.6], [7, 1.5], [20, 22]]
+  },
+  &#x27;@motorway_link_width&#x27;: {
+    &#x27;base&#x27;: 1.2,
+    &#x27;stops&#x27;: [[12.5, 0], [13, 1.5], [20, 10]]
+  },
+  &#x27;@motorway_link_casing_width&#x27;: {
+    &#x27;base&#x27;: 1.2,
+    &#x27;stops&#x27;: [[12, 1], [13, 3], [20, 13]]
+  },
+  &#x27;@main_width&#x27;: {
+    &#x27;base&#x27;: 1.2,
+    &#x27;stops&#x27;: [[6.5, 0], [7, 0.5], [20, 14]]
+  },
+  &#x27;@main_casing_width&#x27;: {
+    &#x27;base&#x27;: 1.2,
+    &#x27;stops&#x27;: [[5, 0.1], [6, 0.2], [7, 1.5], [20, 18]]
+  },
+  &#x27;@street_width&#x27;: {
+    &#x27;base&#x27;: 1.2,
+    &#x27;stops&#x27;: [[13.5, 0], [14, 2.5], [20, 11.5]]
+  },
+  &#x27;@street_casing_width&#x27;: {
+    &#x27;base&#x27;: 1.2,
+    &#x27;stops&#x27;: [[12, 0.5], [13, 1], [14, 4], [20, 15]]
+  },
+  &#x27;@service_casing_width&#x27;: {
+    &#x27;base&#x27;: 1.2,
+    &#x27;stops&#x27;: [[15, 1], [16, 4], [20, 11]]
+  },
+  &#x27;@service_width&#x27;: {
+    &#x27;base&#x27;: 1.2,
+    &#x27;stops&#x27;: [[15.5, 0], [16, 2], [20, 7.5]]
+  },
+  &#x27;@path_width&#x27;: {
+    &#x27;base&#x27;: 1.2,
+    &#x27;stops&#x27;: [[15, 1.2], [20, 4]]
+  },
+  &#x27;@rail_width&#x27;: {
+    &#x27;base&#x27;: 1.4,
+    &#x27;stops&#x27;: [[14, 0.4], [15, 0.75], [20, 2]]
+  },
+  &#x27;@rail_hatch_width&#x27;: {
+    &#x27;base&#x27;: 1.4,
+    &#x27;stops&#x27;: [[14.5, 0], [15, 3], [20, 8]]
+  },
+  &#x27;@admin_level_3_width&#x27;: {
+    &#x27;base&#x27;: 1,
+    &#x27;stops&#x27;: [[4, 0.4], [5, 1], [12, 3]]
+  },
+  &#x27;@admin_level_2_width&#x27;: {
+    &#x27;base&#x27;: 1,
+    &#x27;stops&#x27;: [[4, 1.4], [5, 2], [12, 8]]
+  }
+};
+
+var map;
+
+function base(value) {
+  return value.base;
+}
+
+var fill = new ol.style.Fill({
+  color: &#x27;&#x27;
+});
+var stroke = new ol.style.Stroke({
+  color: &#x27;&#x27;,
+  width: 1
+});
+var polygon = new ol.style.Style({
+  fill: fill
+});
+var strokedPolygon = new ol.style.Style({
+  fill: fill,
+  stroke: stroke
+});
+var line = new ol.style.Style({
+  stroke: stroke
+});
+var text = new ol.style.Style({
+  text: new ol.style.Text({
+    text: &#x27;&#x27;,
+    fill: fill,
+    stroke: stroke
+  })
+});
+var styles = [];
+function styleFunction(feature, resolution) {
+  var length = 0;
+  var layer = feature.get(&#x27;layer&#x27;);
+  var cls = feature.get(&#x27;class&#x27;);
+  var type = feature.get(&#x27;type&#x27;);
+  var scalerank = feature.get(&#x27;scalerank&#x27;);
+  var labelrank = feature.get(&#x27;labelrank&#x27;);
+  var adminLevel = feature.get(&#x27;admin_level&#x27;);
+  var maritime = feature.get(&#x27;maritime&#x27;);
+  var disputed = feature.get(&#x27;disputed&#x27;);
+  var geom = feature.getGeometry().getType();
+  var zoom = map.getView().getZoom();
+  if (layer == &#x27;landuse&#x27; &amp;&amp; cls == &#x27;park&#x27;) {
+    fill.setColor(constants[&#x27;@park&#x27;]);
+    styles[length++] = polygon;
+  } else if (layer == &#x27;landuse&#x27; &amp;&amp; cls == &#x27;cemetery&#x27;) {
+    fill.setColor(constants[&#x27;@cemetery&#x27;]);
+    styles[length++] = polygon;
+  } else if (layer == &#x27;landuse&#x27; &amp;&amp; cls == &#x27;hospital&#x27;) {
+    fill.setColor(constants[&#x27;@hospital&#x27;]);
+    styles[length++] = polygon;
+  } else if (layer == &#x27;landuse&#x27; &amp;&amp; cls == &#x27;school&#x27;) {
+    fill.setColor(constants[&#x27;@school&#x27;]);
+    styles[length++] = polygon;
+  } else if (layer == &#x27;landuse&#x27; &amp;&amp; cls == &#x27;wood&#x27;) {
+    fill.setColor(&#x27;rgb(233,238,223)&#x27;);
+    styles[length++] = polygon;
+  } else if (layer == &#x27;waterway&#x27; &amp;&amp;
+      cls != &#x27;river&#x27; &amp;&amp; cls != &#x27;stream&#x27; &amp;&amp; cls != &#x27;canal&#x27;) {
+    stroke.setColor(constants[&#x27;@water&#x27;]);
+    stroke.setWidth(1.3);
+    styles[length++] = line;
+  } else if (layer == &#x27;waterway&#x27; &amp;&amp; cls == &#x27;river&#x27;) {
+    stroke.setColor(constants[&#x27;@water&#x27;]);
+    stroke.setWidth(1.2);
+    styles[length++] = line;
+  } else if (layer == &#x27;waterway&#x27; &amp;&amp; (cls == &#x27;stream&#x27; || cls == &#x27;canal&#x27;)) {
+    stroke.setColor(constants[&#x27;@water&#x27;]);
+    stroke.setWidth(1.3);
+    styles[length++] = line;
+  } else if (layer == &#x27;water&#x27;) {
+    fill.setColor(constants[&#x27;@water&#x27;]);
+    styles[length++] = polygon;
+  } else if (layer == &#x27;aeroway&#x27; &amp;&amp; geom == &#x27;Polygon&#x27;) {
+    fill.setColor(&#x27;rgb(242,239,235)&#x27;);
+    styles[length++] = polygon;
+  } else if (layer == &#x27;aeroway&#x27; &amp;&amp; geom == &#x27;LineString&#x27; &amp;&amp; zoom &gt;= 11) {
+    stroke.setColor(constants[&#x27;@aeroway&#x27;]);
+    stroke.setWidth(1.2);
+    styles[length++] = line;
+  } else if (layer == &#x27;building&#x27;) {
+    fill.setColor(constants[&#x27;@building&#x27;]);
+    stroke.setColor(constants[&#x27;@building_shadow&#x27;]);
+    stroke.setWidth(1);
+    styles[length++] = strokedPolygon;
+  } else if (layer == &#x27;tunnel&#x27; &amp;&amp; cls == &#x27;motorway_link&#x27;) {
+    stroke.setColor(constants[&#x27;@motorway_casing&#x27;]);
+    stroke.setWidth(base(constants[&#x27;@motorway_link_casing_width&#x27;]));
+    styles[length++] = line;
+  } else if (layer == &#x27;tunnel&#x27; &amp;&amp; cls == &#x27;service&#x27;) {
+    stroke.setColor(constants[&#x27;@street_casing&#x27;]);
+    stroke.setWidth(base(constants[&#x27;@service_casing_width&#x27;]));
+    styles[length++] = line;
+  } else if (layer == &#x27;tunnel&#x27; &amp;&amp;
+      (cls == &#x27;street&#x27; || cls == &#x27;street_limited&#x27;)) {
+    stroke.setColor(constants[&#x27;@street_casing&#x27;]);
+    stroke.setWidth(base(constants[&#x27;@street_casing_width&#x27;]));
+    styles[length++] = line;
+  } else if (layer == &#x27;tunnel&#x27; &amp;&amp; cls == &#x27;main&#x27;) {
+    stroke.setColor(constants[&#x27;@motorway_casing&#x27;]);
+    stroke.setWidth(base(constants[&#x27;@main_casing_width&#x27;]));
+    styles[length++] = line;
+  } else if (layer == &#x27;tunnel&#x27; &amp;&amp; cls == &#x27;motorway&#x27;) {
+    stroke.setColor(constants[&#x27;@motorway_casing&#x27;]);
+    stroke.setWidth(base(constants[&#x27;@motorway_casing_width&#x27;]));
+    styles[length++] = line;
+  } else if (layer == &#x27;tunnel&#x27; &amp;&amp; cls == &#x27;path&#x27;) {
+    stroke.setColor(constants[&#x27;@path&#x27;]);
+    stroke.setWidth(base(constants[&#x27;@path_width&#x27;]));
+    styles[length++] = line;
+  } else if (layer == &#x27;tunnel&#x27; &amp;&amp; cls == &#x27;major_rail&#x27;) {
+    stroke.setColor(constants[&#x27;@rail&#x27;]);
+    stroke.setWidth(base(constants[&#x27;@rail_width&#x27;]));
+    styles[length++] = line;
+  } else if (layer == &#x27;road&#x27; &amp;&amp; cls == &#x27;motorway_link&#x27;) {
+    stroke.setColor(constants[&#x27;@motorway_casing&#x27;]);
+    stroke.setWidth(base(constants[&#x27;@motorway_link_casing_width&#x27;]));
+    styles[length++] = line;
+  } else if (layer == &#x27;road&#x27; &amp;&amp; (cls == &#x27;street&#x27; || cls == &#x27;street_limited&#x27;) &amp;&amp;
+      geom == &#x27;LineString&#x27;) {
+    stroke.setColor(constants[&#x27;@street_casing&#x27;]);
+    stroke.setWidth(base(constants[&#x27;@street_casing_width&#x27;]));
+    styles[length++] = line;
+  } else if (layer == &#x27;road&#x27; &amp;&amp; cls == &#x27;main&#x27;) {
+    stroke.setColor(constants[&#x27;@motorway_casing&#x27;]);
+    stroke.setWidth(base(constants[&#x27;@main_casing_width&#x27;]));
+    styles[length++] = line;
+  } else if (layer == &#x27;road&#x27; &amp;&amp; cls == &#x27;motorway&#x27; &amp;&amp; zoom &gt;= 5) {
+    stroke.setColor(constants[&#x27;@motorway_casing&#x27;]);
+    stroke.setWidth(base(constants[&#x27;@motorway_casing_width&#x27;]));
+    styles[length++] = line;
+  } else if (layer == &#x27;road&#x27; &amp;&amp; cls == &#x27;path&#x27;) {
+    stroke.setColor(constants[&#x27;@path&#x27;]);
+    stroke.setWidth(base(constants[&#x27;@path_width&#x27;]));
+    styles[length++] = line;
+  } else if (layer == &#x27;road&#x27; &amp;&amp; cls == &#x27;major_rail&#x27;) {
+    stroke.setColor(constants[&#x27;@rail&#x27;]);
+    stroke.setWidth(base(constants[&#x27;@rail_width&#x27;]));
+    styles[length++] = line;
+  } else if (layer == &#x27;bridge&#x27; &amp;&amp; cls == &#x27;motorway_link&#x27;) {
+    stroke.setColor(constants[&#x27;@motorway_casing&#x27;]);
+    stroke.setWidth(base(constants[&#x27;@motorway_link_casing_width&#x27;]));
+    styles[length++] = line;
+  } else if (layer == &#x27;bridge&#x27; &amp;&amp; cls == &#x27;motorway&#x27;) {
+    stroke.setColor(constants[&#x27;@motorway_casing&#x27;]);
+    stroke.setWidth(base(constants[&#x27;@motorway_casing_width&#x27;]));
+    styles[length++] = line;
+  } else if (layer == &#x27;bridge&#x27; &amp;&amp; cls == &#x27;service&#x27;) {
+    stroke.setColor(constants[&#x27;@street_casing&#x27;]);
+    stroke.setWidth(base(constants[&#x27;@service_casing_width&#x27;]));
+    styles[length++] = line;
+  } else if (layer == &#x27;bridge&#x27; &amp;&amp;
+      (cls == &#x27;street&#x27; || cls == &#x27;street_limited&#x27;)) {
+    stroke.setColor(constants[&#x27;@street_casing&#x27;]);
+    stroke.setWidth(base(constants[&#x27;@street_casing_width&#x27;]));
+    styles[length++] = line;
+  } else if (layer == &#x27;bridge&#x27; &amp;&amp; cls == &#x27;main&#x27;) {
+    stroke.setColor(constants[&#x27;@motorway_casing&#x27;]);
+    stroke.setWidth(base(constants[&#x27;@main_casing_width&#x27;]));
+    styles[length++] = line;
+  } else if (layer == &#x27;bridge&#x27; &amp;&amp; cls == &#x27;path&#x27;) {
+    stroke.setColor(constants[&#x27;@path&#x27;]);
+    stroke.setWidth(base(constants[&#x27;@path_width&#x27;]));
+    styles[length++] = line;
+  } else if (layer == &#x27;bridge&#x27; &amp;&amp; cls == &#x27;major_rail&#x27;) {
+    stroke.setColor(constants[&#x27;@rail&#x27;]);
+    stroke.setWidth(base(constants[&#x27;@rail_width&#x27;]));
+    styles[length++] = line;
+  } else if (layer == &#x27;admin&#x27; &amp;&amp; adminLevel &gt;= 3 &amp;&amp; maritime === 0) {
+    stroke.setColor(constants[&#x27;@admin&#x27;]);
+    stroke.setWidth(base(constants[&#x27;@admin_level_3_width&#x27;]));
+    styles[length++] = line;
+  } else if (layer == &#x27;admin&#x27; &amp;&amp; adminLevel == 2 &amp;&amp;
+      disputed === 0 &amp;&amp; maritime === 0) {
+    stroke.setColor(constants[&#x27;@admin&#x27;]);
+    stroke.setWidth(base(constants[&#x27;@admin_level_2_width&#x27;]));
+    styles[length++] = line;
+  } else if (layer == &#x27;admin&#x27; &amp;&amp; adminLevel == 2 &amp;&amp;
+      disputed === 1 &amp;&amp; maritime === 0) {
+    stroke.setColor(constants[&#x27;@admin&#x27;]);
+    stroke.setWidth(base(constants[&#x27;@admin_level_2_width&#x27;]));
+    styles[length++] = line;
+  } else if (layer == &#x27;admin&#x27; &amp;&amp; adminLevel &gt;= 3 &amp;&amp; maritime === 1) {
+    stroke.setColor(constants[&#x27;@water&#x27;]);
+    stroke.setWidth(base(constants[&#x27;@admin_level_3_width&#x27;]));
+    styles[length++] = line;
+  } else if (layer == &#x27;admin&#x27; &amp;&amp; adminLevel == 2 &amp;&amp; maritime === 1) {
+    stroke.setColor(constants[&#x27;@water&#x27;]);
+    stroke.setWidth(base(constants[&#x27;@admin_level_2_width&#x27;]));
+    styles[length++] = line;
+  } else if (layer == &#x27;country_label&#x27; &amp;&amp; scalerank === 1) {
+    text.getText().setText(feature.get(&#x27;name_en&#x27;));
+    text.getText().setFont(&#x27;bold 11px &#x27; + constants[&#x27;@sans&#x27;]);
+    fill.setColor(constants[&#x27;@text&#x27;]);
+    stroke.setColor(constants[&#x27;@text_halo&#x27;]);
+    stroke.setWidth(2);
+    styles[length++] = text;
+  } else if (layer == &#x27;country_label&#x27; &amp;&amp; scalerank === 2 &amp;&amp; zoom &gt;= 3) {
+    text.getText().setText(feature.get(&#x27;name_en&#x27;));
+    text.getText().setFont(&#x27;bold 10px &#x27; + constants[&#x27;@sans&#x27;]);
+    fill.setColor(constants[&#x27;@text&#x27;]);
+    stroke.setColor(constants[&#x27;@text_halo&#x27;]);
+    stroke.setWidth(2);
+    styles[length++] = text;
+  } else if (layer == &#x27;country_label&#x27; &amp;&amp; scalerank === 3 &amp;&amp; zoom &gt;= 4) {
+    text.getText().setText(feature.get(&#x27;name_en&#x27;));
+    text.getText().setFont(&#x27;bold 9px &#x27; + constants[&#x27;@sans&#x27;]);
+    fill.setColor(constants[&#x27;@text&#x27;]);
+    stroke.setColor(constants[&#x27;@text_halo&#x27;]);
+    stroke.setWidth(2);
+    styles[length++] = text;
+  } else if (layer == &#x27;country_label&#x27; &amp;&amp; scalerank === 4 &amp;&amp; zoom &gt;= 5) {
+    text.getText().setText(feature.get(&#x27;name_en&#x27;));
+    text.getText().setFont(&#x27;bold 8px &#x27; + constants[&#x27;@sans&#x27;]);
+    fill.setColor(constants[&#x27;@text&#x27;]);
+    stroke.setColor(constants[&#x27;@text_halo&#x27;]);
+    stroke.setWidth(2);
+    styles[length++] = text;
+  } else if (layer == &#x27;marine_label&#x27; &amp;&amp; labelrank === 1 &amp;&amp; geom == &#x27;Point&#x27;) {
+    text.getText().setText(feature.get(&#x27;name_en&#x27;));
+    text.getText().setFont(&#x27;italic 11px &#x27; + constants[&#x27;@sans&#x27;]);
+    fill.setColor(constants[&#x27;@marine_text&#x27;]);
+    stroke.setColor(constants[&#x27;@text_halo&#x27;]);
+    stroke.setWidth(0.75);
+    styles[length++] = text;
+  } else if (layer == &#x27;marine_label&#x27; &amp;&amp; labelrank === 2 &amp;&amp; geom == &#x27;Point&#x27;) {
+    text.getText().setText(feature.get(&#x27;name_en&#x27;));
+    text.getText().setFont(&#x27;italic 11px &#x27; + constants[&#x27;@sans&#x27;]);
+    fill.setColor(constants[&#x27;@marine_text&#x27;]);
+    stroke.setColor(constants[&#x27;@text_halo&#x27;]);
+    stroke.setWidth(0.75);
+    styles[length++] = text;
+  } else if (layer == &#x27;marine_label&#x27; &amp;&amp; labelrank === 3 &amp;&amp; geom == &#x27;Point&#x27;) {
+    text.getText().setText(feature.get(&#x27;name_en&#x27;));
+    text.getText().setFont(&#x27;italic 10px &#x27; + constants[&#x27;@sans&#x27;]);
+    fill.setColor(constants[&#x27;@marine_text&#x27;]);
+    stroke.setColor(constants[&#x27;@text_halo&#x27;]);
+    stroke.setWidth(0.75);
+    styles[length++] = text;
+  } else if (layer == &#x27;marine_label&#x27; &amp;&amp; labelrank === 4 &amp;&amp; geom == &#x27;Point&#x27;) {
+    text.getText().setText(feature.get(&#x27;name_en&#x27;));
+    text.getText().setFont(&#x27;italic 9px &#x27; + constants[&#x27;@sans&#x27;]);
+    fill.setColor(constants[&#x27;@marine_text&#x27;]);
+    stroke.setColor(constants[&#x27;@text_halo&#x27;]);
+    stroke.setWidth(0.75);
+    styles[length++] = text;
+  } else if (layer == &#x27;place_label&#x27; &amp;&amp; type == &#x27;city&#x27; &amp;&amp; zoom &gt;= 7) {
+    text.getText().setText(feature.get(&#x27;name_en&#x27;));
+    text.getText().setFont(&#x27;11px &#x27; + constants[&#x27;@sans&#x27;]);
+    fill.setColor(&#x27;#333&#x27;);
+    stroke.setColor(constants[&#x27;@text_halo&#x27;]);
+    stroke.setWidth(1.2);
+    styles[length++] = text;
+  } else if (layer == &#x27;place_label&#x27; &amp;&amp; type == &#x27;town&#x27; &amp;&amp; zoom &gt;= 9) {
+    text.getText().setText(feature.get(&#x27;name_en&#x27;));
+    text.getText().setFont(&#x27;9px &#x27; + constants[&#x27;@sans&#x27;]);
+    fill.setColor(&#x27;#333&#x27;);
+    stroke.setColor(constants[&#x27;@text_halo&#x27;]);
+    stroke.setWidth(1.2);
+    styles[length++] = text;
+  } else if (layer == &#x27;place_label&#x27; &amp;&amp; type == &#x27;village&#x27; &amp;&amp; zoom &gt;= 12) {
+    text.getText().setText(feature.get(&#x27;name_en&#x27;));
+    text.getText().setFont(&#x27;8px &#x27; + constants[&#x27;@sans&#x27;]);
+    fill.setColor(&#x27;#333&#x27;);
+    stroke.setColor(constants[&#x27;@text_halo&#x27;]);
+    stroke.setWidth(1.2);
+    styles[length++] = text;
+  } else if (layer == &#x27;place_label&#x27; &amp;&amp; zoom &gt;= 13 &amp;&amp;
+      (type == &#x27;hamlet&#x27; || type == &#x27;suburb&#x27; || type == &#x27;neighbourhood&#x27;)) {
+    text.getText().setText(feature.get(&#x27;name_en&#x27;));
+    text.getText().setFont(&#x27;bold 9px &quot;Arial Narrow&quot;&#x27;);
+    fill.setColor(&#x27;#633&#x27;);
+    stroke.setColor(constants[&#x27;@text_halo&#x27;]);
+    stroke.setWidth(1.2);
+    styles[length++] = text;
+  }
+  styles.length = length;
+  return styles;
+}
+
+map = new ol.Map({
+  layers: [
+    new ol.layer.VectorTile({
+      source: new ol.source.VectorTile({
+        rightHandedPolygons: true,
+        format: new ol.format.MVT(),
+        tileGrid: ol.tilegrid.createXYZ({maxZoom: 22}),
+        tilePixelRatio: 16,
+        tileUrlFunction: function(tileCoord) {
+          return (&#x27;http://{a-d}.tiles.mapbox.com/v4/mapbox.mapbox-streets-v6/&#x27; +
+              &#x27;{z}/{x}/{y}.vector.pbf?access_token=&#x27; + accessToken)
+              .replace(&#x27;{z}&#x27;, String(tileCoord[0]))
+              .replace(&#x27;{x}&#x27;, String(tileCoord[1]))
+              .replace(&#x27;{y}&#x27;, String(-tileCoord[2] - 1))
+              .replace(&#x27;{a-d}&#x27;, &#x27;abcd&#x27;.substr(
+                  ((tileCoord[1] &lt;&lt; tileCoord[0]) + tileCoord[2]) % 4, 1));
+        }
+      }),
+      style: styleFunction
+    })
+  ],
+  target: &#x27;map&#x27;,
+  view: new ol.View({
+    center: [1823849, 6143760],
+    zoom: 3
+  })
+});
+</textarea>
+          <textarea class="hidden" name="css">.map {
+  background: #f8f4f0;
+}
+</textarea>
+          <textarea class="hidden" name="html">&lt;div class=&quot;row-fluid&quot;&gt;
+  &lt;div class=&quot;span12&quot;&gt;
+    &lt;div id=&quot;map&quot; class=&quot;map&quot;&gt;&lt;/div&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+</textarea>
+          <input type="hidden" name="wrap" value="l">
+          <input type="hidden" name="resources" value="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css,https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js,http://openlayers.org/en/v3.8.2/css/ol.css,http://openlayers.org/en/v3.8.2/build/ol.js">
+        </form>
+        <pre><code id="example-source" class="language-markup">&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+&lt;title&gt;Mapbox vector tiles example&lt;/title&gt;
+&lt;script src="https://code.jquery.com/jquery-1.11.2.min.js"&gt;&lt;/script&gt;
+&lt;link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css"&gt;
+&lt;script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"&gt;&lt;/script&gt;
+&lt;link rel="stylesheet" href="http://openlayers.org/en/v3.8.2/css/ol.css" type="text/css"&gt;
+&lt;script src="http://openlayers.org/en/v3.8.2/build/ol.js"&gt;&lt;/script&gt;
+
+&lt;style&gt;
+.map {
+  background: #f8f4f0;
+}
+
+&lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;div class="container-fluid"&gt;
+
+&lt;div class=&quot;row-fluid&quot;&gt;
+  &lt;div class=&quot;span12&quot;&gt;
+    &lt;div id=&quot;map&quot; class=&quot;map&quot;&gt;&lt;/div&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+
+&lt;/div&gt;
+&lt;script&gt;
+// Mapbox access token - request your own at http://mabobox.com
+var accessToken =
+    &#x27;pk.eyJ1IjoiYWhvY2V2YXIiLCJhIjoiRk1kMWZaSSJ9.E5BkluenyWQMsBLsuByrmg&#x27;;
+
+var constants = {
+  &#x27;@sans&#x27;: &#x27;&quot;Open Sans&quot;, &quot;Arial Unicode MS&quot;&#x27;,
+  &#x27;@land&#x27;: &#x27;#f8f4f0&#x27;,
+  &#x27;@water&#x27;: &#x27;#a0c8f0&#x27;,
+  &#x27;@admin&#x27;: &#x27;#9e9cab&#x27;,
+  &#x27;@admin-opacity&#x27;: 0.5,
+  &#x27;@park&#x27;: &#x27;#d8e8c8&#x27;,
+  &#x27;@cemetery&#x27;: &#x27;#e0e4dd&#x27;,
+  &#x27;@hospital&#x27;: &#x27;#fde&#x27;,
+  &#x27;@school&#x27;: &#x27;#f0e8f8&#x27;,
+  &#x27;@wood&#x27;: &#x27;#6a4&#x27;,
+  &#x27;@building&#x27;: &#x27;#f2eae2&#x27;,
+  &#x27;@building_shadow&#x27;: &#x27;#dfdbd7&#x27;,
+  &#x27;@aeroway&#x27;: &#x27;#f0ede9&#x27;,
+  &#x27;@motorway&#x27;: &#x27;#fc8&#x27;,
+  &#x27;@motorway_casing&#x27;: &#x27;#e9ac77&#x27;,
+  &#x27;@motorway_tunnel&#x27;: &#x27;#ffdaa6&#x27;,
+  &#x27;@main&#x27;: &#x27;#fea&#x27;,
+  &#x27;@main_tunnel&#x27;: &#x27;#fff4c6&#x27;,
+  &#x27;@street&#x27;: &#x27;#fff&#x27;,
+  &#x27;@street_limited&#x27;: &#x27;#f3f3f3&#x27;,
+  &#x27;@street_casing&#x27;: &#x27;#cfcdca&#x27;,
+  &#x27;@path&#x27;: &#x27;#cba&#x27;,
+  &#x27;@rail&#x27;: &#x27;#bbb&#x27;,
+  &#x27;@text&#x27;: &#x27;#334&#x27;,
+  &#x27;@text_halo&#x27;: &#x27;rgba(255,255,255,0.8)&#x27;,
+  &#x27;@marine_text&#x27;: &#x27;#74aee9&#x27;,
+  &#x27;@marine_text_halo&#x27;: &#x27;rgba(255,255,255,0.7)&#x27;,
+  &#x27;@poi_text&#x27;: &#x27;#666&#x27;,
+  &#x27;@poi_text_halo&#x27;: &#x27;#ffffff&#x27;,
+  &#x27;@maki&#x27;: &#x27;#666&#x27;,
+  &#x27;@point_translate&#x27;: [0, -30],
+  &#x27;@motorway_width&#x27;: {
+    &#x27;base&#x27;: 1.2,
+    &#x27;stops&#x27;: [[6.5, 0], [7, 0.5], [20, 18]]
+  },
+  &#x27;@motorway_casing_width&#x27;: {
+    &#x27;base&#x27;: 1.2,
+    &#x27;stops&#x27;: [[5, 0.4], [6, 0.6], [7, 1.5], [20, 22]]
+  },
+  &#x27;@motorway_link_width&#x27;: {
+    &#x27;base&#x27;: 1.2,
+    &#x27;stops&#x27;: [[12.5, 0], [13, 1.5], [20, 10]]
+  },
+  &#x27;@motorway_link_casing_width&#x27;: {
+    &#x27;base&#x27;: 1.2,
+    &#x27;stops&#x27;: [[12, 1], [13, 3], [20, 13]]
+  },
+  &#x27;@main_width&#x27;: {
+    &#x27;base&#x27;: 1.2,
+    &#x27;stops&#x27;: [[6.5, 0], [7, 0.5], [20, 14]]
+  },
+  &#x27;@main_casing_width&#x27;: {
+    &#x27;base&#x27;: 1.2,
+    &#x27;stops&#x27;: [[5, 0.1], [6, 0.2], [7, 1.5], [20, 18]]
+  },
+  &#x27;@street_width&#x27;: {
+    &#x27;base&#x27;: 1.2,
+    &#x27;stops&#x27;: [[13.5, 0], [14, 2.5], [20, 11.5]]
+  },
+  &#x27;@street_casing_width&#x27;: {
+    &#x27;base&#x27;: 1.2,
+    &#x27;stops&#x27;: [[12, 0.5], [13, 1], [14, 4], [20, 15]]
+  },
+  &#x27;@service_casing_width&#x27;: {
+    &#x27;base&#x27;: 1.2,
+    &#x27;stops&#x27;: [[15, 1], [16, 4], [20, 11]]
+  },
+  &#x27;@service_width&#x27;: {
+    &#x27;base&#x27;: 1.2,
+    &#x27;stops&#x27;: [[15.5, 0], [16, 2], [20, 7.5]]
+  },
+  &#x27;@path_width&#x27;: {
+    &#x27;base&#x27;: 1.2,
+    &#x27;stops&#x27;: [[15, 1.2], [20, 4]]
+  },
+  &#x27;@rail_width&#x27;: {
+    &#x27;base&#x27;: 1.4,
+    &#x27;stops&#x27;: [[14, 0.4], [15, 0.75], [20, 2]]
+  },
+  &#x27;@rail_hatch_width&#x27;: {
+    &#x27;base&#x27;: 1.4,
+    &#x27;stops&#x27;: [[14.5, 0], [15, 3], [20, 8]]
+  },
+  &#x27;@admin_level_3_width&#x27;: {
+    &#x27;base&#x27;: 1,
+    &#x27;stops&#x27;: [[4, 0.4], [5, 1], [12, 3]]
+  },
+  &#x27;@admin_level_2_width&#x27;: {
+    &#x27;base&#x27;: 1,
+    &#x27;stops&#x27;: [[4, 1.4], [5, 2], [12, 8]]
+  }
+};
+
+var map;
+
+function base(value) {
+  return value.base;
+}
+
+var fill = new ol.style.Fill({
+  color: &#x27;&#x27;
+});
+var stroke = new ol.style.Stroke({
+  color: &#x27;&#x27;,
+  width: 1
+});
+var polygon = new ol.style.Style({
+  fill: fill
+});
+var strokedPolygon = new ol.style.Style({
+  fill: fill,
+  stroke: stroke
+});
+var line = new ol.style.Style({
+  stroke: stroke
+});
+var text = new ol.style.Style({
+  text: new ol.style.Text({
+    text: &#x27;&#x27;,
+    fill: fill,
+    stroke: stroke
+  })
+});
+var styles = [];
+function styleFunction(feature, resolution) {
+  var length = 0;
+  var layer = feature.get(&#x27;layer&#x27;);
+  var cls = feature.get(&#x27;class&#x27;);
+  var type = feature.get(&#x27;type&#x27;);
+  var scalerank = feature.get(&#x27;scalerank&#x27;);
+  var labelrank = feature.get(&#x27;labelrank&#x27;);
+  var adminLevel = feature.get(&#x27;admin_level&#x27;);
+  var maritime = feature.get(&#x27;maritime&#x27;);
+  var disputed = feature.get(&#x27;disputed&#x27;);
+  var geom = feature.getGeometry().getType();
+  var zoom = map.getView().getZoom();
+  if (layer == &#x27;landuse&#x27; &amp;&amp; cls == &#x27;park&#x27;) {
+    fill.setColor(constants[&#x27;@park&#x27;]);
+    styles[length++] = polygon;
+  } else if (layer == &#x27;landuse&#x27; &amp;&amp; cls == &#x27;cemetery&#x27;) {
+    fill.setColor(constants[&#x27;@cemetery&#x27;]);
+    styles[length++] = polygon;
+  } else if (layer == &#x27;landuse&#x27; &amp;&amp; cls == &#x27;hospital&#x27;) {
+    fill.setColor(constants[&#x27;@hospital&#x27;]);
+    styles[length++] = polygon;
+  } else if (layer == &#x27;landuse&#x27; &amp;&amp; cls == &#x27;school&#x27;) {
+    fill.setColor(constants[&#x27;@school&#x27;]);
+    styles[length++] = polygon;
+  } else if (layer == &#x27;landuse&#x27; &amp;&amp; cls == &#x27;wood&#x27;) {
+    fill.setColor(&#x27;rgb(233,238,223)&#x27;);
+    styles[length++] = polygon;
+  } else if (layer == &#x27;waterway&#x27; &amp;&amp;
+      cls != &#x27;river&#x27; &amp;&amp; cls != &#x27;stream&#x27; &amp;&amp; cls != &#x27;canal&#x27;) {
+    stroke.setColor(constants[&#x27;@water&#x27;]);
+    stroke.setWidth(1.3);
+    styles[length++] = line;
+  } else if (layer == &#x27;waterway&#x27; &amp;&amp; cls == &#x27;river&#x27;) {
+    stroke.setColor(constants[&#x27;@water&#x27;]);
+    stroke.setWidth(1.2);
+    styles[length++] = line;
+  } else if (layer == &#x27;waterway&#x27; &amp;&amp; (cls == &#x27;stream&#x27; || cls == &#x27;canal&#x27;)) {
+    stroke.setColor(constants[&#x27;@water&#x27;]);
+    stroke.setWidth(1.3);
+    styles[length++] = line;
+  } else if (layer == &#x27;water&#x27;) {
+    fill.setColor(constants[&#x27;@water&#x27;]);
+    styles[length++] = polygon;
+  } else if (layer == &#x27;aeroway&#x27; &amp;&amp; geom == &#x27;Polygon&#x27;) {
+    fill.setColor(&#x27;rgb(242,239,235)&#x27;);
+    styles[length++] = polygon;
+  } else if (layer == &#x27;aeroway&#x27; &amp;&amp; geom == &#x27;LineString&#x27; &amp;&amp; zoom &gt;= 11) {
+    stroke.setColor(constants[&#x27;@aeroway&#x27;]);
+    stroke.setWidth(1.2);
+    styles[length++] = line;
+  } else if (layer == &#x27;building&#x27;) {
+    fill.setColor(constants[&#x27;@building&#x27;]);
+    stroke.setColor(constants[&#x27;@building_shadow&#x27;]);
+    stroke.setWidth(1);
+    styles[length++] = strokedPolygon;
+  } else if (layer == &#x27;tunnel&#x27; &amp;&amp; cls == &#x27;motorway_link&#x27;) {
+    stroke.setColor(constants[&#x27;@motorway_casing&#x27;]);
+    stroke.setWidth(base(constants[&#x27;@motorway_link_casing_width&#x27;]));
+    styles[length++] = line;
+  } else if (layer == &#x27;tunnel&#x27; &amp;&amp; cls == &#x27;service&#x27;) {
+    stroke.setColor(constants[&#x27;@street_casing&#x27;]);
+    stroke.setWidth(base(constants[&#x27;@service_casing_width&#x27;]));
+    styles[length++] = line;
+  } else if (layer == &#x27;tunnel&#x27; &amp;&amp;
+      (cls == &#x27;street&#x27; || cls == &#x27;street_limited&#x27;)) {
+    stroke.setColor(constants[&#x27;@street_casing&#x27;]);
+    stroke.setWidth(base(constants[&#x27;@street_casing_width&#x27;]));
+    styles[length++] = line;
+  } else if (layer == &#x27;tunnel&#x27; &amp;&amp; cls == &#x27;main&#x27;) {
+    stroke.setColor(constants[&#x27;@motorway_casing&#x27;]);
+    stroke.setWidth(base(constants[&#x27;@main_casing_width&#x27;]));
+    styles[length++] = line;
+  } else if (layer == &#x27;tunnel&#x27; &amp;&amp; cls == &#x27;motorway&#x27;) {
+    stroke.setColor(constants[&#x27;@motorway_casing&#x27;]);
+    stroke.setWidth(base(constants[&#x27;@motorway_casing_width&#x27;]));
+    styles[length++] = line;
+  } else if (layer == &#x27;tunnel&#x27; &amp;&amp; cls == &#x27;path&#x27;) {
+    stroke.setColor(constants[&#x27;@path&#x27;]);
+    stroke.setWidth(base(constants[&#x27;@path_width&#x27;]));
+    styles[length++] = line;
+  } else if (layer == &#x27;tunnel&#x27; &amp;&amp; cls == &#x27;major_rail&#x27;) {
+    stroke.setColor(constants[&#x27;@rail&#x27;]);
+    stroke.setWidth(base(constants[&#x27;@rail_width&#x27;]));
+    styles[length++] = line;
+  } else if (layer == &#x27;road&#x27; &amp;&amp; cls == &#x27;motorway_link&#x27;) {
+    stroke.setColor(constants[&#x27;@motorway_casing&#x27;]);
+    stroke.setWidth(base(constants[&#x27;@motorway_link_casing_width&#x27;]));
+    styles[length++] = line;
+  } else if (layer == &#x27;road&#x27; &amp;&amp; (cls == &#x27;street&#x27; || cls == &#x27;street_limited&#x27;) &amp;&amp;
+      geom == &#x27;LineString&#x27;) {
+    stroke.setColor(constants[&#x27;@street_casing&#x27;]);
+    stroke.setWidth(base(constants[&#x27;@street_casing_width&#x27;]));
+    styles[length++] = line;
+  } else if (layer == &#x27;road&#x27; &amp;&amp; cls == &#x27;main&#x27;) {
+    stroke.setColor(constants[&#x27;@motorway_casing&#x27;]);
+    stroke.setWidth(base(constants[&#x27;@main_casing_width&#x27;]));
+    styles[length++] = line;
+  } else if (layer == &#x27;road&#x27; &amp;&amp; cls == &#x27;motorway&#x27; &amp;&amp; zoom &gt;= 5) {
+    stroke.setColor(constants[&#x27;@motorway_casing&#x27;]);
+    stroke.setWidth(base(constants[&#x27;@motorway_casing_width&#x27;]));
+    styles[length++] = line;
+  } else if (layer == &#x27;road&#x27; &amp;&amp; cls == &#x27;path&#x27;) {
+    stroke.setColor(constants[&#x27;@path&#x27;]);
+    stroke.setWidth(base(constants[&#x27;@path_width&#x27;]));
+    styles[length++] = line;
+  } else if (layer == &#x27;road&#x27; &amp;&amp; cls == &#x27;major_rail&#x27;) {
+    stroke.setColor(constants[&#x27;@rail&#x27;]);
+    stroke.setWidth(base(constants[&#x27;@rail_width&#x27;]));
+    styles[length++] = line;
+  } else if (layer == &#x27;bridge&#x27; &amp;&amp; cls == &#x27;motorway_link&#x27;) {
+    stroke.setColor(constants[&#x27;@motorway_casing&#x27;]);
+    stroke.setWidth(base(constants[&#x27;@motorway_link_casing_width&#x27;]));
+    styles[length++] = line;
+  } else if (layer == &#x27;bridge&#x27; &amp;&amp; cls == &#x27;motorway&#x27;) {
+    stroke.setColor(constants[&#x27;@motorway_casing&#x27;]);
+    stroke.setWidth(base(constants[&#x27;@motorway_casing_width&#x27;]));
+    styles[length++] = line;
+  } else if (layer == &#x27;bridge&#x27; &amp;&amp; cls == &#x27;service&#x27;) {
+    stroke.setColor(constants[&#x27;@street_casing&#x27;]);
+    stroke.setWidth(base(constants[&#x27;@service_casing_width&#x27;]));
+    styles[length++] = line;
+  } else if (layer == &#x27;bridge&#x27; &amp;&amp;
+      (cls == &#x27;street&#x27; || cls == &#x27;street_limited&#x27;)) {
+    stroke.setColor(constants[&#x27;@street_casing&#x27;]);
+    stroke.setWidth(base(constants[&#x27;@street_casing_width&#x27;]));
+    styles[length++] = line;
+  } else if (layer == &#x27;bridge&#x27; &amp;&amp; cls == &#x27;main&#x27;) {
+    stroke.setColor(constants[&#x27;@motorway_casing&#x27;]);
+    stroke.setWidth(base(constants[&#x27;@main_casing_width&#x27;]));
+    styles[length++] = line;
+  } else if (layer == &#x27;bridge&#x27; &amp;&amp; cls == &#x27;path&#x27;) {
+    stroke.setColor(constants[&#x27;@path&#x27;]);
+    stroke.setWidth(base(constants[&#x27;@path_width&#x27;]));
+    styles[length++] = line;
+  } else if (layer == &#x27;bridge&#x27; &amp;&amp; cls == &#x27;major_rail&#x27;) {
+    stroke.setColor(constants[&#x27;@rail&#x27;]);
+    stroke.setWidth(base(constants[&#x27;@rail_width&#x27;]));
+    styles[length++] = line;
+  } else if (layer == &#x27;admin&#x27; &amp;&amp; adminLevel &gt;= 3 &amp;&amp; maritime === 0) {
+    stroke.setColor(constants[&#x27;@admin&#x27;]);
+    stroke.setWidth(base(constants[&#x27;@admin_level_3_width&#x27;]));
+    styles[length++] = line;
+  } else if (layer == &#x27;admin&#x27; &amp;&amp; adminLevel == 2 &amp;&amp;
+      disputed === 0 &amp;&amp; maritime === 0) {
+    stroke.setColor(constants[&#x27;@admin&#x27;]);
+    stroke.setWidth(base(constants[&#x27;@admin_level_2_width&#x27;]));
+    styles[length++] = line;
+  } else if (layer == &#x27;admin&#x27; &amp;&amp; adminLevel == 2 &amp;&amp;
+      disputed === 1 &amp;&amp; maritime === 0) {
+    stroke.setColor(constants[&#x27;@admin&#x27;]);
+    stroke.setWidth(base(constants[&#x27;@admin_level_2_width&#x27;]));
+    styles[length++] = line;
+  } else if (layer == &#x27;admin&#x27; &amp;&amp; adminLevel &gt;= 3 &amp;&amp; maritime === 1) {
+    stroke.setColor(constants[&#x27;@water&#x27;]);
+    stroke.setWidth(base(constants[&#x27;@admin_level_3_width&#x27;]));
+    styles[length++] = line;
+  } else if (layer == &#x27;admin&#x27; &amp;&amp; adminLevel == 2 &amp;&amp; maritime === 1) {
+    stroke.setColor(constants[&#x27;@water&#x27;]);
+    stroke.setWidth(base(constants[&#x27;@admin_level_2_width&#x27;]));
+    styles[length++] = line;
+  } else if (layer == &#x27;country_label&#x27; &amp;&amp; scalerank === 1) {
+    text.getText().setText(feature.get(&#x27;name_en&#x27;));
+    text.getText().setFont(&#x27;bold 11px &#x27; + constants[&#x27;@sans&#x27;]);
+    fill.setColor(constants[&#x27;@text&#x27;]);
+    stroke.setColor(constants[&#x27;@text_halo&#x27;]);
+    stroke.setWidth(2);
+    styles[length++] = text;
+  } else if (layer == &#x27;country_label&#x27; &amp;&amp; scalerank === 2 &amp;&amp; zoom &gt;= 3) {
+    text.getText().setText(feature.get(&#x27;name_en&#x27;));
+    text.getText().setFont(&#x27;bold 10px &#x27; + constants[&#x27;@sans&#x27;]);
+    fill.setColor(constants[&#x27;@text&#x27;]);
+    stroke.setColor(constants[&#x27;@text_halo&#x27;]);
+    stroke.setWidth(2);
+    styles[length++] = text;
+  } else if (layer == &#x27;country_label&#x27; &amp;&amp; scalerank === 3 &amp;&amp; zoom &gt;= 4) {
+    text.getText().setText(feature.get(&#x27;name_en&#x27;));
+    text.getText().setFont(&#x27;bold 9px &#x27; + constants[&#x27;@sans&#x27;]);
+    fill.setColor(constants[&#x27;@text&#x27;]);
+    stroke.setColor(constants[&#x27;@text_halo&#x27;]);
+    stroke.setWidth(2);
+    styles[length++] = text;
+  } else if (layer == &#x27;country_label&#x27; &amp;&amp; scalerank === 4 &amp;&amp; zoom &gt;= 5) {
+    text.getText().setText(feature.get(&#x27;name_en&#x27;));
+    text.getText().setFont(&#x27;bold 8px &#x27; + constants[&#x27;@sans&#x27;]);
+    fill.setColor(constants[&#x27;@text&#x27;]);
+    stroke.setColor(constants[&#x27;@text_halo&#x27;]);
+    stroke.setWidth(2);
+    styles[length++] = text;
+  } else if (layer == &#x27;marine_label&#x27; &amp;&amp; labelrank === 1 &amp;&amp; geom == &#x27;Point&#x27;) {
+    text.getText().setText(feature.get(&#x27;name_en&#x27;));
+    text.getText().setFont(&#x27;italic 11px &#x27; + constants[&#x27;@sans&#x27;]);
+    fill.setColor(constants[&#x27;@marine_text&#x27;]);
+    stroke.setColor(constants[&#x27;@text_halo&#x27;]);
+    stroke.setWidth(0.75);
+    styles[length++] = text;
+  } else if (layer == &#x27;marine_label&#x27; &amp;&amp; labelrank === 2 &amp;&amp; geom == &#x27;Point&#x27;) {
+    text.getText().setText(feature.get(&#x27;name_en&#x27;));
+    text.getText().setFont(&#x27;italic 11px &#x27; + constants[&#x27;@sans&#x27;]);
+    fill.setColor(constants[&#x27;@marine_text&#x27;]);
+    stroke.setColor(constants[&#x27;@text_halo&#x27;]);
+    stroke.setWidth(0.75);
+    styles[length++] = text;
+  } else if (layer == &#x27;marine_label&#x27; &amp;&amp; labelrank === 3 &amp;&amp; geom == &#x27;Point&#x27;) {
+    text.getText().setText(feature.get(&#x27;name_en&#x27;));
+    text.getText().setFont(&#x27;italic 10px &#x27; + constants[&#x27;@sans&#x27;]);
+    fill.setColor(constants[&#x27;@marine_text&#x27;]);
+    stroke.setColor(constants[&#x27;@text_halo&#x27;]);
+    stroke.setWidth(0.75);
+    styles[length++] = text;
+  } else if (layer == &#x27;marine_label&#x27; &amp;&amp; labelrank === 4 &amp;&amp; geom == &#x27;Point&#x27;) {
+    text.getText().setText(feature.get(&#x27;name_en&#x27;));
+    text.getText().setFont(&#x27;italic 9px &#x27; + constants[&#x27;@sans&#x27;]);
+    fill.setColor(constants[&#x27;@marine_text&#x27;]);
+    stroke.setColor(constants[&#x27;@text_halo&#x27;]);
+    stroke.setWidth(0.75);
+    styles[length++] = text;
+  } else if (layer == &#x27;place_label&#x27; &amp;&amp; type == &#x27;city&#x27; &amp;&amp; zoom &gt;= 7) {
+    text.getText().setText(feature.get(&#x27;name_en&#x27;));
+    text.getText().setFont(&#x27;11px &#x27; + constants[&#x27;@sans&#x27;]);
+    fill.setColor(&#x27;#333&#x27;);
+    stroke.setColor(constants[&#x27;@text_halo&#x27;]);
+    stroke.setWidth(1.2);
+    styles[length++] = text;
+  } else if (layer == &#x27;place_label&#x27; &amp;&amp; type == &#x27;town&#x27; &amp;&amp; zoom &gt;= 9) {
+    text.getText().setText(feature.get(&#x27;name_en&#x27;));
+    text.getText().setFont(&#x27;9px &#x27; + constants[&#x27;@sans&#x27;]);
+    fill.setColor(&#x27;#333&#x27;);
+    stroke.setColor(constants[&#x27;@text_halo&#x27;]);
+    stroke.setWidth(1.2);
+    styles[length++] = text;
+  } else if (layer == &#x27;place_label&#x27; &amp;&amp; type == &#x27;village&#x27; &amp;&amp; zoom &gt;= 12) {
+    text.getText().setText(feature.get(&#x27;name_en&#x27;));
+    text.getText().setFont(&#x27;8px &#x27; + constants[&#x27;@sans&#x27;]);
+    fill.setColor(&#x27;#333&#x27;);
+    stroke.setColor(constants[&#x27;@text_halo&#x27;]);
+    stroke.setWidth(1.2);
+    styles[length++] = text;
+  } else if (layer == &#x27;place_label&#x27; &amp;&amp; zoom &gt;= 13 &amp;&amp;
+      (type == &#x27;hamlet&#x27; || type == &#x27;suburb&#x27; || type == &#x27;neighbourhood&#x27;)) {
+    text.getText().setText(feature.get(&#x27;name_en&#x27;));
+    text.getText().setFont(&#x27;bold 9px &quot;Arial Narrow&quot;&#x27;);
+    fill.setColor(&#x27;#633&#x27;);
+    stroke.setColor(constants[&#x27;@text_halo&#x27;]);
+    stroke.setWidth(1.2);
+    styles[length++] = text;
+  }
+  styles.length = length;
+  return styles;
+}
+
+map = new ol.Map({
+  layers: [
+    new ol.layer.VectorTile({
+      source: new ol.source.VectorTile({
+        rightHandedPolygons: true,
+        format: new ol.format.MVT(),
+        tileGrid: ol.tilegrid.createXYZ({maxZoom: 22}),
+        tilePixelRatio: 16,
+        tileUrlFunction: function(tileCoord) {
+          return (&#x27;http://{a-d}.tiles.mapbox.com/v4/mapbox.mapbox-streets-v6/&#x27; +
+              &#x27;{z}/{x}/{y}.vector.pbf?access_token=&#x27; + accessToken)
+              .replace(&#x27;{z}&#x27;, String(tileCoord[0]))
+              .replace(&#x27;{x}&#x27;, String(tileCoord[1]))
+              .replace(&#x27;{y}&#x27;, String(-tileCoord[2] - 1))
+              .replace(&#x27;{a-d}&#x27;, &#x27;abcd&#x27;.substr(
+                  ((tileCoord[1] &lt;&lt; tileCoord[0]) + tileCoord[2]) % 4, 1));
+        }
+      }),
+      style: styleFunction
+    })
+  ],
+  target: &#x27;map&#x27;,
+  view: new ol.View({
+    center: [1823849, 6143760],
+    zoom: 3
+  })
+});
+
+&lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+      </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-1.11.2.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+    <script src="./resources/common.js"></script>
+    <script src="./resources/prism/prism.min.js"></script>
+    <script src="loader.js?id=mapbox-vector-tiles"></script>
+
+  </body>
+</html>

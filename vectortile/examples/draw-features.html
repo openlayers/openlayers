@@ -1,0 +1,294 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no, width=device-width">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css" type="text/css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" type="text/css">
+    <link rel="stylesheet" href="./resources/prism/prism.css" type="text/css">
+    <link rel="stylesheet" href="../css/ol.css" type="text/css">
+    <link rel="stylesheet" href="./resources/layout.css" type="text/css">
+    
+    
+    <script src="./resources/zeroclipboard/ZeroClipboard.min.js"></script>
+    <title>Draw features example</title>
+  </head>
+  <body>
+
+    <header class="navbar" role="navigation">
+      <div class="container" id="navbar-inner-container">
+        <a class="navbar-brand" href="./"><img src="./resources/logo-70x70.png">&nbsp;OpenLayers 3 Examples</a>
+      </div>
+    </header>
+
+    <div class="container-fluid">
+
+      <div class="row-fluid">
+  <div class="span12">
+    <div id="map" class="map"></div>
+    <form class="form-inline">
+      <label>Geometry type &nbsp;</label>
+      <select id="type">
+        <option value="None">None</option>
+        <option value="Point">Point</option>
+        <option value="LineString">LineString</option>
+        <option value="Polygon">Polygon</option>
+        <option value="Circle">Circle</option>
+        <option value="Square">Square</option>
+        <option value="Box">Box</option>
+      </select>
+    </form>
+  </div>
+</div>
+
+
+      <div class="row-fluid">
+        <div class="span12">
+          <h4 id="title">Draw features example</h4>
+          <p id="shortdesc">Example of using the ol.interaction.Draw interaction.</p>
+          <div id="docs"><p>Example of using the Draw interaction. Select a geometry type from the dropdown above to start drawing. To finish drawing, click the last point. To activate freehand drawing for lines and polygons, hold the <code>Shift</code> key. Square drawing is achieved by using Circle mode with a <code>geometryFunction</code> that creates a 4-sided regular polygon instead of a circle. Box drawing uses a custom <code>geometryFunction</code> that takes start and end point of a line with 2 points and creates a rectangular box.</p>
+</div>
+          <div id="tags">draw, edit, freehand, vector</div>
+          <div id="api-links">Related API documentation: <ul class="inline"><li><a href="../apidoc/ol.Map.html" title="API documentation for ol.Map">ol.Map</a></li>,<li><a href="../apidoc/ol.View.html" title="API documentation for ol.View">ol.View</a></li>,<li><a href="../apidoc/ol.geom.Polygon.html" title="API documentation for ol.geom.Polygon">ol.geom.Polygon</a></li>,<li><a href="../apidoc/ol.interaction.Draw.html" title="API documentation for ol.interaction.Draw">ol.interaction.Draw</a></li>,<li><a href="../apidoc/ol.layer.Tile.html" title="API documentation for ol.layer.Tile">ol.layer.Tile</a></li>,<li><a href="../apidoc/ol.layer.Vector.html" title="API documentation for ol.layer.Vector">ol.layer.Vector</a></li>,<li><a href="../apidoc/ol.source.MapQuest.html" title="API documentation for ol.source.MapQuest">ol.source.MapQuest</a></li>,<li><a href="../apidoc/ol.source.Vector.html" title="API documentation for ol.source.Vector">ol.source.Vector</a></li>,<li><a href="../apidoc/ol.style.Circle.html" title="API documentation for ol.style.Circle">ol.style.Circle</a></li>,<li><a href="../apidoc/ol.style.Fill.html" title="API documentation for ol.style.Fill">ol.style.Fill</a></li>,<li><a href="../apidoc/ol.style.Stroke.html" title="API documentation for ol.style.Stroke">ol.style.Stroke</a></li>,<li><a href="../apidoc/ol.style.Style.html" title="API documentation for ol.style.Style">ol.style.Style</a></li></ul></div>
+        </div>
+      </div>
+
+      <div class="row-fluid">
+        <div id="source-controls">
+          <a id="copy-button"><i class="fa fa-clipboard"></i> Copy</a>
+          <a id="jsfiddle-button"><i class="fa fa-jsfiddle"></i> Edit</a>
+        </div>
+        <form method="POST" id="jsfiddle-form" target="_blank" action="http://jsfiddle.net/api/post/jquery/1.11.0/">
+          <textarea class="hidden" name="js">var raster = new ol.layer.Tile({
+  source: new ol.source.MapQuest({layer: &#x27;sat&#x27;})
+});
+
+var source = new ol.source.Vector({wrapX: false});
+
+var vector = new ol.layer.Vector({
+  source: source,
+  style: new ol.style.Style({
+    fill: new ol.style.Fill({
+      color: &#x27;rgba(255, 255, 255, 0.2)&#x27;
+    }),
+    stroke: new ol.style.Stroke({
+      color: &#x27;#ffcc33&#x27;,
+      width: 2
+    }),
+    image: new ol.style.Circle({
+      radius: 7,
+      fill: new ol.style.Fill({
+        color: &#x27;#ffcc33&#x27;
+      })
+    })
+  })
+});
+
+var map = new ol.Map({
+  layers: [raster, vector],
+  target: &#x27;map&#x27;,
+  view: new ol.View({
+    center: [-11000000, 4600000],
+    zoom: 4
+  })
+});
+
+var typeSelect = document.getElementById(&#x27;type&#x27;);
+
+var draw; // global so we can remove it later
+function addInteraction() {
+  var value = typeSelect.value;
+  if (value !== &#x27;None&#x27;) {
+    var geometryFunction, maxPoints;
+    if (value === &#x27;Square&#x27;) {
+      value = &#x27;Circle&#x27;;
+      geometryFunction = ol.interaction.Draw.createRegularPolygon(4);
+    } else if (value === &#x27;Box&#x27;) {
+      value = &#x27;LineString&#x27;;
+      maxPoints = 2;
+      geometryFunction = function(coordinates, geometry) {
+        if (!geometry) {
+          geometry = new ol.geom.Polygon(null);
+        }
+        var start = coordinates[0];
+        var end = coordinates[1];
+        geometry.setCoordinates([
+          [start, [start[0], end[1]], end, [end[0], start[1]], start]
+        ]);
+        return geometry;
+      };
+    }
+    draw = new ol.interaction.Draw({
+      source: source,
+      type: /** @type {ol.geom.GeometryType} */ (value),
+      geometryFunction: geometryFunction,
+      maxPoints: maxPoints
+    });
+    map.addInteraction(draw);
+  }
+}
+
+
+/**
+ * Let user change the geometry type.
+ * @param {Event} e Change event.
+ */
+typeSelect.onchange = function(e) {
+  map.removeInteraction(draw);
+  addInteraction();
+};
+
+addInteraction();
+</textarea>
+          <textarea class="hidden" name="css"></textarea>
+          <textarea class="hidden" name="html">&lt;div class=&quot;row-fluid&quot;&gt;
+  &lt;div class=&quot;span12&quot;&gt;
+    &lt;div id=&quot;map&quot; class=&quot;map&quot;&gt;&lt;/div&gt;
+    &lt;form class=&quot;form-inline&quot;&gt;
+      &lt;label&gt;Geometry type &amp;nbsp;&lt;/label&gt;
+      &lt;select id=&quot;type&quot;&gt;
+        &lt;option value=&quot;None&quot;&gt;None&lt;/option&gt;
+        &lt;option value=&quot;Point&quot;&gt;Point&lt;/option&gt;
+        &lt;option value=&quot;LineString&quot;&gt;LineString&lt;/option&gt;
+        &lt;option value=&quot;Polygon&quot;&gt;Polygon&lt;/option&gt;
+        &lt;option value=&quot;Circle&quot;&gt;Circle&lt;/option&gt;
+        &lt;option value=&quot;Square&quot;&gt;Square&lt;/option&gt;
+        &lt;option value=&quot;Box&quot;&gt;Box&lt;/option&gt;
+      &lt;/select&gt;
+    &lt;/form&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+</textarea>
+          <input type="hidden" name="wrap" value="l">
+          <input type="hidden" name="resources" value="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css,https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js,http://openlayers.org/en/v3.8.2/css/ol.css,http://openlayers.org/en/v3.8.2/build/ol.js">
+        </form>
+        <pre><code id="example-source" class="language-markup">&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+&lt;title&gt;Draw features example&lt;/title&gt;
+&lt;script src="https://code.jquery.com/jquery-1.11.2.min.js"&gt;&lt;/script&gt;
+&lt;link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css"&gt;
+&lt;script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"&gt;&lt;/script&gt;
+&lt;link rel="stylesheet" href="http://openlayers.org/en/v3.8.2/css/ol.css" type="text/css"&gt;
+&lt;script src="http://openlayers.org/en/v3.8.2/build/ol.js"&gt;&lt;/script&gt;
+
+&lt;/head&gt;
+&lt;body&gt;
+&lt;div class="container-fluid"&gt;
+
+&lt;div class=&quot;row-fluid&quot;&gt;
+  &lt;div class=&quot;span12&quot;&gt;
+    &lt;div id=&quot;map&quot; class=&quot;map&quot;&gt;&lt;/div&gt;
+    &lt;form class=&quot;form-inline&quot;&gt;
+      &lt;label&gt;Geometry type &amp;nbsp;&lt;/label&gt;
+      &lt;select id=&quot;type&quot;&gt;
+        &lt;option value=&quot;None&quot;&gt;None&lt;/option&gt;
+        &lt;option value=&quot;Point&quot;&gt;Point&lt;/option&gt;
+        &lt;option value=&quot;LineString&quot;&gt;LineString&lt;/option&gt;
+        &lt;option value=&quot;Polygon&quot;&gt;Polygon&lt;/option&gt;
+        &lt;option value=&quot;Circle&quot;&gt;Circle&lt;/option&gt;
+        &lt;option value=&quot;Square&quot;&gt;Square&lt;/option&gt;
+        &lt;option value=&quot;Box&quot;&gt;Box&lt;/option&gt;
+      &lt;/select&gt;
+    &lt;/form&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+
+&lt;/div&gt;
+&lt;script&gt;
+var raster = new ol.layer.Tile({
+  source: new ol.source.MapQuest({layer: &#x27;sat&#x27;})
+});
+
+var source = new ol.source.Vector({wrapX: false});
+
+var vector = new ol.layer.Vector({
+  source: source,
+  style: new ol.style.Style({
+    fill: new ol.style.Fill({
+      color: &#x27;rgba(255, 255, 255, 0.2)&#x27;
+    }),
+    stroke: new ol.style.Stroke({
+      color: &#x27;#ffcc33&#x27;,
+      width: 2
+    }),
+    image: new ol.style.Circle({
+      radius: 7,
+      fill: new ol.style.Fill({
+        color: &#x27;#ffcc33&#x27;
+      })
+    })
+  })
+});
+
+var map = new ol.Map({
+  layers: [raster, vector],
+  target: &#x27;map&#x27;,
+  view: new ol.View({
+    center: [-11000000, 4600000],
+    zoom: 4
+  })
+});
+
+var typeSelect = document.getElementById(&#x27;type&#x27;);
+
+var draw; // global so we can remove it later
+function addInteraction() {
+  var value = typeSelect.value;
+  if (value !== &#x27;None&#x27;) {
+    var geometryFunction, maxPoints;
+    if (value === &#x27;Square&#x27;) {
+      value = &#x27;Circle&#x27;;
+      geometryFunction = ol.interaction.Draw.createRegularPolygon(4);
+    } else if (value === &#x27;Box&#x27;) {
+      value = &#x27;LineString&#x27;;
+      maxPoints = 2;
+      geometryFunction = function(coordinates, geometry) {
+        if (!geometry) {
+          geometry = new ol.geom.Polygon(null);
+        }
+        var start = coordinates[0];
+        var end = coordinates[1];
+        geometry.setCoordinates([
+          [start, [start[0], end[1]], end, [end[0], start[1]], start]
+        ]);
+        return geometry;
+      };
+    }
+    draw = new ol.interaction.Draw({
+      source: source,
+      type: /** @type {ol.geom.GeometryType} */ (value),
+      geometryFunction: geometryFunction,
+      maxPoints: maxPoints
+    });
+    map.addInteraction(draw);
+  }
+}
+
+
+/**
+ * Let user change the geometry type.
+ * @param {Event} e Change event.
+ */
+typeSelect.onchange = function(e) {
+  map.removeInteraction(draw);
+  addInteraction();
+};
+
+addInteraction();
+
+&lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+      </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-1.11.2.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+    <script src="./resources/common.js"></script>
+    <script src="./resources/prism/prism.min.js"></script>
+    <script src="loader.js?id=draw-features"></script>
+
+  </body>
+</html>

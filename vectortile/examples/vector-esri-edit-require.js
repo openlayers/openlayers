@@ -1,0 +1,14 @@
+goog.require('ol.Attribution');
+goog.require('ol.Map');
+goog.require('ol.View');
+goog.require('ol.format.EsriJSON');
+goog.require('ol.interaction');
+goog.require('ol.interaction.Draw');
+goog.require('ol.interaction.Modify');
+goog.require('ol.interaction.Select');
+goog.require('ol.layer.Tile');
+goog.require('ol.layer.Vector');
+goog.require('ol.loadingstrategy');
+goog.require('ol.proj');
+goog.require('ol.source.Vector');
+goog.require('ol.source.XYZ');

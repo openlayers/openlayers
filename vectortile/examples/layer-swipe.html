@@ -1,0 +1,189 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no, width=device-width">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css" type="text/css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" type="text/css">
+    <link rel="stylesheet" href="./resources/prism/prism.css" type="text/css">
+    <link rel="stylesheet" href="../css/ol.css" type="text/css">
+    <link rel="stylesheet" href="./resources/layout.css" type="text/css">
+    
+    
+    <script src="./resources/zeroclipboard/ZeroClipboard.min.js"></script>
+    <title>Layer Swipe example</title>
+  </head>
+  <body>
+
+    <header class="navbar" role="navigation">
+      <div class="container" id="navbar-inner-container">
+        <a class="navbar-brand" href="./"><img src="./resources/logo-70x70.png">&nbsp;OpenLayers 3 Examples</a>
+      </div>
+    </header>
+
+    <div class="container-fluid">
+
+      <div class="row-fluid">
+  <div class="span12">
+    <div id="map" class="map"></div>
+    <input id="swipe" type="range" style="width: 100%">
+  </div>
+</div>
+
+
+      <div class="row-fluid">
+        <div class="span12">
+          <h4 id="title">Layer Swipe example</h4>
+          <p id="shortdesc">Example of a Layer swipe map.</p>
+          <div id="docs"><p>Example of a Layer swipe map.</p>
+</div>
+          <div id="tags">swipe, openstreetmap</div>
+          <div id="api-links">Related API documentation: <ul class="inline"><li><a href="../apidoc/ol.Map.html" title="API documentation for ol.Map">ol.Map</a></li>,<li><a href="../apidoc/ol.View.html" title="API documentation for ol.View">ol.View</a></li>,<li><a href="../apidoc/ol.control.html" title="API documentation for ol.control">ol.control</a></li>,<li><a href="../apidoc/ol.layer.Tile.html" title="API documentation for ol.layer.Tile">ol.layer.Tile</a></li>,<li><a href="../apidoc/ol.source.BingMaps.html" title="API documentation for ol.source.BingMaps">ol.source.BingMaps</a></li>,<li><a href="../apidoc/ol.source.OSM.html" title="API documentation for ol.source.OSM">ol.source.OSM</a></li></ul></div>
+        </div>
+      </div>
+
+      <div class="row-fluid">
+        <div id="source-controls">
+          <a id="copy-button"><i class="fa fa-clipboard"></i> Copy</a>
+          <a id="jsfiddle-button"><i class="fa fa-jsfiddle"></i> Edit</a>
+        </div>
+        <form method="POST" id="jsfiddle-form" target="_blank" action="http://jsfiddle.net/api/post/jquery/1.11.0/">
+          <textarea class="hidden" name="js">var osm = new ol.layer.Tile({
+  source: new ol.source.OSM()
+});
+var bing = new ol.layer.Tile({
+  source: new ol.source.BingMaps({
+    key: &#x27;Ak-dzM4wZjSqTlzveKz5u0d4IQ4bRzVI309GxmkgSVr1ewS6iPSrOvOKhA-CJlm3&#x27;,
+    imagerySet: &#x27;Aerial&#x27;
+  })
+});
+
+var map = new ol.Map({
+  layers: [osm, bing],
+  target: &#x27;map&#x27;,
+  controls: ol.control.defaults({
+    attributionOptions: /** @type {olx.control.AttributionOptions} */ ({
+      collapsible: false
+    })
+  }),
+  view: new ol.View({
+    center: [0, 0],
+    zoom: 2
+  })
+});
+
+var swipe = document.getElementById(&#x27;swipe&#x27;);
+
+bing.on(&#x27;precompose&#x27;, function(event) {
+  var ctx = event.context;
+  var width = ctx.canvas.width * (swipe.value / 100);
+
+  ctx.save();
+  ctx.beginPath();
+  ctx.rect(width, 0, ctx.canvas.width - width, ctx.canvas.height);
+  ctx.clip();
+});
+
+bing.on(&#x27;postcompose&#x27;, function(event) {
+  var ctx = event.context;
+  ctx.restore();
+});
+
+swipe.addEventListener(&#x27;input&#x27;, function() {
+  map.render();
+}, false);
+</textarea>
+          <textarea class="hidden" name="css"></textarea>
+          <textarea class="hidden" name="html">&lt;div class=&quot;row-fluid&quot;&gt;
+  &lt;div class=&quot;span12&quot;&gt;
+    &lt;div id=&quot;map&quot; class=&quot;map&quot;&gt;&lt;/div&gt;
+    &lt;input id=&quot;swipe&quot; type=&quot;range&quot; style=&quot;width: 100%&quot;&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+</textarea>
+          <input type="hidden" name="wrap" value="l">
+          <input type="hidden" name="resources" value="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css,https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js,http://openlayers.org/en/v3.8.2/css/ol.css,http://openlayers.org/en/v3.8.2/build/ol.js">
+        </form>
+        <pre><code id="example-source" class="language-markup">&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+&lt;title&gt;Layer Swipe example&lt;/title&gt;
+&lt;script src="https://code.jquery.com/jquery-1.11.2.min.js"&gt;&lt;/script&gt;
+&lt;link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css"&gt;
+&lt;script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"&gt;&lt;/script&gt;
+&lt;link rel="stylesheet" href="http://openlayers.org/en/v3.8.2/css/ol.css" type="text/css"&gt;
+&lt;script src="http://openlayers.org/en/v3.8.2/build/ol.js"&gt;&lt;/script&gt;
+
+&lt;/head&gt;
+&lt;body&gt;
+&lt;div class="container-fluid"&gt;
+
+&lt;div class=&quot;row-fluid&quot;&gt;
+  &lt;div class=&quot;span12&quot;&gt;
+    &lt;div id=&quot;map&quot; class=&quot;map&quot;&gt;&lt;/div&gt;
+    &lt;input id=&quot;swipe&quot; type=&quot;range&quot; style=&quot;width: 100%&quot;&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+
+&lt;/div&gt;
+&lt;script&gt;
+var osm = new ol.layer.Tile({
+  source: new ol.source.OSM()
+});
+var bing = new ol.layer.Tile({
+  source: new ol.source.BingMaps({
+    key: &#x27;Ak-dzM4wZjSqTlzveKz5u0d4IQ4bRzVI309GxmkgSVr1ewS6iPSrOvOKhA-CJlm3&#x27;,
+    imagerySet: &#x27;Aerial&#x27;
+  })
+});
+
+var map = new ol.Map({
+  layers: [osm, bing],
+  target: &#x27;map&#x27;,
+  controls: ol.control.defaults({
+    attributionOptions: /** @type {olx.control.AttributionOptions} */ ({
+      collapsible: false
+    })
+  }),
+  view: new ol.View({
+    center: [0, 0],
+    zoom: 2
+  })
+});
+
+var swipe = document.getElementById(&#x27;swipe&#x27;);
+
+bing.on(&#x27;precompose&#x27;, function(event) {
+  var ctx = event.context;
+  var width = ctx.canvas.width * (swipe.value / 100);
+
+  ctx.save();
+  ctx.beginPath();
+  ctx.rect(width, 0, ctx.canvas.width - width, ctx.canvas.height);
+  ctx.clip();
+});
+
+bing.on(&#x27;postcompose&#x27;, function(event) {
+  var ctx = event.context;
+  ctx.restore();
+});
+
+swipe.addEventListener(&#x27;input&#x27;, function() {
+  map.render();
+}, false);
+
+&lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+      </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-1.11.2.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+    <script src="./resources/common.js"></script>
+    <script src="./resources/prism/prism.min.js"></script>
+    <script src="loader.js?id=layer-swipe"></script>
+
+  </body>
+</html>

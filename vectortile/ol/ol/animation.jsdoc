@@ -1,0 +1,13 @@
+/**
+ * The animation static methods are designed to be used with the
+ * {@link ol.Map#beforeRender} method.  For example:
+ *
+ *     var map = new ol.Map({ ... });
+ *     var zoom = ol.animation.zoom({
+ *       resolution: map.getView().getResolution()
+ *     });
+ *     map.beforeRender(zoom);
+ *     map.getView().setResolution(map.getView().getResolution() * 2);
+ *
+ * @namespace ol.animation
+ */

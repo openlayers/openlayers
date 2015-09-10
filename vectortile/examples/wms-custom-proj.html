@@ -1,0 +1,570 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no, width=device-width">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css" type="text/css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" type="text/css">
+    <link rel="stylesheet" href="./resources/prism/prism.css" type="text/css">
+    <link rel="stylesheet" href="../css/ol.css" type="text/css">
+    <link rel="stylesheet" href="./resources/layout.css" type="text/css">
+    
+    
+    <script src="./resources/zeroclipboard/ZeroClipboard.min.js"></script>
+    <title>Tiled WMS with custom projection example</title>
+  </head>
+  <body>
+
+    <header class="navbar" role="navigation">
+      <div class="container" id="navbar-inner-container">
+        <a class="navbar-brand" href="./"><img src="./resources/logo-70x70.png">&nbsp;OpenLayers 3 Examples</a>
+      </div>
+    </header>
+
+    <div class="container-fluid">
+
+      <div class="row-fluid">
+  <div class="span12">
+    <div id="map" class="map"></div>
+  </div>
+</div>
+
+
+      <div class="row-fluid">
+        <div class="span12">
+          <h4 id="title">Tiled WMS with custom projection example</h4>
+          <p id="shortdesc">Example of using custom coordinate transform functions.</p>
+          <div id="docs"><p>With <code>ol.proj.addCoordinateTransforms()</code>, custom coordinate transform functions can be added to configured projections.</p>
+</div>
+          <div id="tags">wms, tile, tilelayer, projection</div>
+          <div id="api-links">Related API documentation: <ul class="inline"><li><a href="../apidoc/ol.Attribution.html" title="API documentation for ol.Attribution">ol.Attribution</a></li>,<li><a href="../apidoc/ol.Map.html" title="API documentation for ol.Map">ol.Map</a></li>,<li><a href="../apidoc/ol.View.html" title="API documentation for ol.View">ol.View</a></li>,<li><a href="../apidoc/ol.control.html" title="API documentation for ol.control">ol.control</a></li>,<li><a href="../apidoc/ol.control.ScaleLine.html" title="API documentation for ol.control.ScaleLine">ol.control.ScaleLine</a></li>,<li><a href="../apidoc/ol.layer.Tile.html" title="API documentation for ol.layer.Tile">ol.layer.Tile</a></li>,<li><a href="../apidoc/ol.proj.html" title="API documentation for ol.proj">ol.proj</a></li>,<li><a href="../apidoc/ol.proj.Projection.html" title="API documentation for ol.proj.Projection">ol.proj.Projection</a></li>,<li><a href="../apidoc/ol.source.TileWMS.html" title="API documentation for ol.source.TileWMS">ol.source.TileWMS</a></li></ul></div>
+        </div>
+      </div>
+
+      <div class="row-fluid">
+        <div id="source-controls">
+          <a id="copy-button"><i class="fa fa-clipboard"></i> Copy</a>
+          <a id="jsfiddle-button"><i class="fa fa-jsfiddle"></i> Edit</a>
+        </div>
+        <form method="POST" id="jsfiddle-form" target="_blank" action="http://jsfiddle.net/api/post/jquery/1.11.0/">
+          <textarea class="hidden" name="js">// By default OpenLayers does not know about the EPSG:21781 (Swiss) projection.
+// So we create a projection instance for EPSG:21781 and pass it to
+// ol.proj.addProjection to make it available to the library for lookup by its
+// code.
+
+var projection = new ol.proj.Projection({
+  code: &#x27;EPSG:21781&#x27;,
+  // The extent is used to determine zoom level 0. Recommended values for a
+  // projection&#x27;s validity extent can be found at http://epsg.io/.
+  extent: [485869.5728, 76443.1884, 837076.5648, 299941.7864],
+  units: &#x27;m&#x27;
+});
+ol.proj.addProjection(projection);
+
+// We also declare EPSG:21781/EPSG:4326 transform functions. These functions
+// are necessary for the ScaleLine control and when calling ol.proj.transform
+// for setting the view&#x27;s initial center (see below).
+
+ol.proj.addCoordinateTransforms(&#x27;EPSG:4326&#x27;, projection,
+    function(coordinate) {
+      return [
+        WGStoCHy(coordinate[1], coordinate[0]),
+        WGStoCHx(coordinate[1], coordinate[0])
+      ];
+    },
+    function(coordinate) {
+      return [
+        CHtoWGSlng(coordinate[0], coordinate[1]),
+        CHtoWGSlat(coordinate[0], coordinate[1])
+      ];
+    });
+
+var extent = [420000, 30000, 900000, 350000];
+var layers = [
+  new ol.layer.Tile({
+    extent: extent,
+    source: new ol.source.TileWMS({
+      url: &#x27;http://wms.geo.admin.ch/&#x27;,
+      crossOrigin: &#x27;anonymous&#x27;,
+      attributions: [new ol.Attribution({
+        html: &#x27;&amp;copy; &#x27; +
+            &#x27;&lt;a href=&quot;http://www.geo.admin.ch/internet/geoportal/&#x27; +
+            &#x27;en/home.html&quot;&gt;&#x27; +
+            &#x27;Pixelmap 1:1000000 / geo.admin.ch&lt;/a&gt;&#x27;
+      })],
+      params: {
+        &#x27;LAYERS&#x27;: &#x27;ch.swisstopo.pixelkarte-farbe-pk1000.noscale&#x27;,
+        &#x27;FORMAT&#x27;: &#x27;image/jpeg&#x27;
+      },
+      serverType: &#x27;mapserver&#x27;
+    })
+  }),
+  new ol.layer.Tile({
+    extent: extent,
+    source: new ol.source.TileWMS({
+      url: &#x27;http://wms.geo.admin.ch/&#x27;,
+      crossOrigin: &#x27;anonymous&#x27;,
+      attributions: [new ol.Attribution({
+        html: &#x27;&amp;copy; &#x27; +
+            &#x27;&lt;a href=&quot;http://www.geo.admin.ch/internet/geoportal/&#x27; +
+            &#x27;en/home.html&quot;&gt;&#x27; +
+            &#x27;National parks / geo.admin.ch&lt;/a&gt;&#x27;
+      })],
+      params: {&#x27;LAYERS&#x27;: &#x27;ch.bafu.schutzgebiete-paerke_nationaler_bedeutung&#x27;},
+      serverType: &#x27;mapserver&#x27;
+    })
+  })
+];
+
+var map = new ol.Map({
+  controls: ol.control.defaults().extend([
+    new ol.control.ScaleLine({
+      units: &#x27;metric&#x27;
+    })
+  ]),
+  layers: layers,
+  target: &#x27;map&#x27;,
+  view: new ol.View({
+    projection: projection,
+    center: ol.proj.transform([8.23, 46.86], &#x27;EPSG:4326&#x27;, &#x27;EPSG:21781&#x27;),
+    extent: extent,
+    zoom: 2
+  })
+});
+
+
+
+/*
+ * Swiss projection transform functions downloaded from
+ * http://www.swisstopo.admin.ch/internet/swisstopo/en/home/products/software/products/skripts.html
+ */
+
+// Convert WGS lat/long (° dec) to CH y
+function WGStoCHy(lat, lng) {
+
+  // Converts degrees dec to sex
+  lat = DECtoSEX(lat);
+  lng = DECtoSEX(lng);
+
+  // Converts degrees to seconds (sex)
+  lat = DEGtoSEC(lat);
+  lng = DEGtoSEC(lng);
+
+  // Axiliary values (% Bern)
+  var lat_aux = (lat - 169028.66) / 10000;
+  var lng_aux = (lng - 26782.5) / 10000;
+
+  // Process Y
+  var y = 600072.37 +
+      211455.93 * lng_aux -
+      10938.51 * lng_aux * lat_aux -
+      0.36 * lng_aux * Math.pow(lat_aux, 2) -
+      44.54 * Math.pow(lng_aux, 3);
+
+  return y;
+}
+
+// Convert WGS lat/long (° dec) to CH x
+function WGStoCHx(lat, lng) {
+
+  // Converts degrees dec to sex
+  lat = DECtoSEX(lat);
+  lng = DECtoSEX(lng);
+
+  // Converts degrees to seconds (sex)
+  lat = DEGtoSEC(lat);
+  lng = DEGtoSEC(lng);
+
+  // Axiliary values (% Bern)
+  var lat_aux = (lat - 169028.66) / 10000;
+  var lng_aux = (lng - 26782.5) / 10000;
+
+  // Process X
+  var x = 200147.07 +
+      308807.95 * lat_aux +
+      3745.25 * Math.pow(lng_aux, 2) +
+      76.63 * Math.pow(lat_aux, 2) -
+      194.56 * Math.pow(lng_aux, 2) * lat_aux +
+      119.79 * Math.pow(lat_aux, 3);
+
+  return x;
+
+}
+
+
+// Convert CH y/x to WGS lat
+function CHtoWGSlat(y, x) {
+
+  // Converts militar to civil and  to unit = 1000km
+  // Axiliary values (% Bern)
+  var y_aux = (y - 600000) / 1000000;
+  var x_aux = (x - 200000) / 1000000;
+
+  // Process lat
+  var lat = 16.9023892 +
+      3.238272 * x_aux -
+      0.270978 * Math.pow(y_aux, 2) -
+      0.002528 * Math.pow(x_aux, 2) -
+      0.0447 * Math.pow(y_aux, 2) * x_aux -
+      0.0140 * Math.pow(x_aux, 3);
+
+  // Unit 10000&quot; to 1 &quot; and converts seconds to degrees (dec)
+  lat = lat * 100 / 36;
+
+  return lat;
+
+}
+
+// Convert CH y/x to WGS long
+function CHtoWGSlng(y, x) {
+
+  // Converts militar to civil and  to unit = 1000km
+  // Axiliary values (% Bern)
+  var y_aux = (y - 600000) / 1000000;
+  var x_aux = (x - 200000) / 1000000;
+
+  // Process long
+  var lng = 2.6779094 +
+      4.728982 * y_aux +
+      0.791484 * y_aux * x_aux +
+      0.1306 * y_aux * Math.pow(x_aux, 2) -
+      0.0436 * Math.pow(y_aux, 3);
+
+  // Unit 10000&quot; to 1 &quot; and converts seconds to degrees (dec)
+  lng = lng * 100 / 36;
+
+  return lng;
+
+}
+
+
+// Convert SEX DMS angle to DEC
+function SEXtoDEC(angle) {
+
+  // Extract DMS
+  var deg = parseInt(angle, 10);
+  var min = parseInt((angle - deg) * 100, 10);
+  var sec = (((angle - deg) * 100) - min) * 100;
+
+  // Result in degrees sex (dd.mmss)
+  return deg + (sec / 60 + min) / 60;
+
+}
+
+// Convert DEC angle to SEX DMS
+function DECtoSEX(angle) {
+
+  // Extract DMS
+  var deg = parseInt(angle, 10);
+  var min = parseInt((angle - deg) * 60, 10);
+  var sec = (((angle - deg) * 60) - min) * 60;
+
+  // Result in degrees sex (dd.mmss)
+  return deg + min / 100 + sec / 10000;
+
+}
+
+// Convert Degrees angle to seconds
+function DEGtoSEC(angle) {
+
+  // Extract DMS
+  var deg = parseInt(angle, 10);
+  var min = parseInt((angle - deg) * 100, 10);
+  var sec = (((angle - deg) * 100) - min) * 100;
+
+  // Avoid rounding problems with seconds=0
+  var parts = String(angle).split(&#x27;.&#x27;);
+  if (parts.length == 2 &amp;&amp; parts[1].length == 2) {
+    min = Number(parts[1]);
+    sec = 0;
+  }
+
+  // Result in degrees sex (dd.mmss)
+  return sec + min * 60 + deg * 3600;
+
+}
+</textarea>
+          <textarea class="hidden" name="css"></textarea>
+          <textarea class="hidden" name="html">&lt;div class=&quot;row-fluid&quot;&gt;
+  &lt;div class=&quot;span12&quot;&gt;
+    &lt;div id=&quot;map&quot; class=&quot;map&quot;&gt;&lt;/div&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+</textarea>
+          <input type="hidden" name="wrap" value="l">
+          <input type="hidden" name="resources" value="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css,https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js,http://openlayers.org/en/v3.8.2/css/ol.css,http://openlayers.org/en/v3.8.2/build/ol.js">
+        </form>
+        <pre><code id="example-source" class="language-markup">&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+&lt;title&gt;Tiled WMS with custom projection example&lt;/title&gt;
+&lt;script src="https://code.jquery.com/jquery-1.11.2.min.js"&gt;&lt;/script&gt;
+&lt;link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css"&gt;
+&lt;script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"&gt;&lt;/script&gt;
+&lt;link rel="stylesheet" href="http://openlayers.org/en/v3.8.2/css/ol.css" type="text/css"&gt;
+&lt;script src="http://openlayers.org/en/v3.8.2/build/ol.js"&gt;&lt;/script&gt;
+
+&lt;/head&gt;
+&lt;body&gt;
+&lt;div class="container-fluid"&gt;
+
+&lt;div class=&quot;row-fluid&quot;&gt;
+  &lt;div class=&quot;span12&quot;&gt;
+    &lt;div id=&quot;map&quot; class=&quot;map&quot;&gt;&lt;/div&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+
+&lt;/div&gt;
+&lt;script&gt;
+// By default OpenLayers does not know about the EPSG:21781 (Swiss) projection.
+// So we create a projection instance for EPSG:21781 and pass it to
+// ol.proj.addProjection to make it available to the library for lookup by its
+// code.
+
+var projection = new ol.proj.Projection({
+  code: &#x27;EPSG:21781&#x27;,
+  // The extent is used to determine zoom level 0. Recommended values for a
+  // projection&#x27;s validity extent can be found at http://epsg.io/.
+  extent: [485869.5728, 76443.1884, 837076.5648, 299941.7864],
+  units: &#x27;m&#x27;
+});
+ol.proj.addProjection(projection);
+
+// We also declare EPSG:21781/EPSG:4326 transform functions. These functions
+// are necessary for the ScaleLine control and when calling ol.proj.transform
+// for setting the view&#x27;s initial center (see below).
+
+ol.proj.addCoordinateTransforms(&#x27;EPSG:4326&#x27;, projection,
+    function(coordinate) {
+      return [
+        WGStoCHy(coordinate[1], coordinate[0]),
+        WGStoCHx(coordinate[1], coordinate[0])
+      ];
+    },
+    function(coordinate) {
+      return [
+        CHtoWGSlng(coordinate[0], coordinate[1]),
+        CHtoWGSlat(coordinate[0], coordinate[1])
+      ];
+    });
+
+var extent = [420000, 30000, 900000, 350000];
+var layers = [
+  new ol.layer.Tile({
+    extent: extent,
+    source: new ol.source.TileWMS({
+      url: &#x27;http://wms.geo.admin.ch/&#x27;,
+      crossOrigin: &#x27;anonymous&#x27;,
+      attributions: [new ol.Attribution({
+        html: &#x27;&amp;copy; &#x27; +
+            &#x27;&lt;a href=&quot;http://www.geo.admin.ch/internet/geoportal/&#x27; +
+            &#x27;en/home.html&quot;&gt;&#x27; +
+            &#x27;Pixelmap 1:1000000 / geo.admin.ch&lt;/a&gt;&#x27;
+      })],
+      params: {
+        &#x27;LAYERS&#x27;: &#x27;ch.swisstopo.pixelkarte-farbe-pk1000.noscale&#x27;,
+        &#x27;FORMAT&#x27;: &#x27;image/jpeg&#x27;
+      },
+      serverType: &#x27;mapserver&#x27;
+    })
+  }),
+  new ol.layer.Tile({
+    extent: extent,
+    source: new ol.source.TileWMS({
+      url: &#x27;http://wms.geo.admin.ch/&#x27;,
+      crossOrigin: &#x27;anonymous&#x27;,
+      attributions: [new ol.Attribution({
+        html: &#x27;&amp;copy; &#x27; +
+            &#x27;&lt;a href=&quot;http://www.geo.admin.ch/internet/geoportal/&#x27; +
+            &#x27;en/home.html&quot;&gt;&#x27; +
+            &#x27;National parks / geo.admin.ch&lt;/a&gt;&#x27;
+      })],
+      params: {&#x27;LAYERS&#x27;: &#x27;ch.bafu.schutzgebiete-paerke_nationaler_bedeutung&#x27;},
+      serverType: &#x27;mapserver&#x27;
+    })
+  })
+];
+
+var map = new ol.Map({
+  controls: ol.control.defaults().extend([
+    new ol.control.ScaleLine({
+      units: &#x27;metric&#x27;
+    })
+  ]),
+  layers: layers,
+  target: &#x27;map&#x27;,
+  view: new ol.View({
+    projection: projection,
+    center: ol.proj.transform([8.23, 46.86], &#x27;EPSG:4326&#x27;, &#x27;EPSG:21781&#x27;),
+    extent: extent,
+    zoom: 2
+  })
+});
+
+
+
+/*
+ * Swiss projection transform functions downloaded from
+ * http://www.swisstopo.admin.ch/internet/swisstopo/en/home/products/software/products/skripts.html
+ */
+
+// Convert WGS lat/long (° dec) to CH y
+function WGStoCHy(lat, lng) {
+
+  // Converts degrees dec to sex
+  lat = DECtoSEX(lat);
+  lng = DECtoSEX(lng);
+
+  // Converts degrees to seconds (sex)
+  lat = DEGtoSEC(lat);
+  lng = DEGtoSEC(lng);
+
+  // Axiliary values (% Bern)
+  var lat_aux = (lat - 169028.66) / 10000;
+  var lng_aux = (lng - 26782.5) / 10000;
+
+  // Process Y
+  var y = 600072.37 +
+      211455.93 * lng_aux -
+      10938.51 * lng_aux * lat_aux -
+      0.36 * lng_aux * Math.pow(lat_aux, 2) -
+      44.54 * Math.pow(lng_aux, 3);
+
+  return y;
+}
+
+// Convert WGS lat/long (° dec) to CH x
+function WGStoCHx(lat, lng) {
+
+  // Converts degrees dec to sex
+  lat = DECtoSEX(lat);
+  lng = DECtoSEX(lng);
+
+  // Converts degrees to seconds (sex)
+  lat = DEGtoSEC(lat);
+  lng = DEGtoSEC(lng);
+
+  // Axiliary values (% Bern)
+  var lat_aux = (lat - 169028.66) / 10000;
+  var lng_aux = (lng - 26782.5) / 10000;
+
+  // Process X
+  var x = 200147.07 +
+      308807.95 * lat_aux +
+      3745.25 * Math.pow(lng_aux, 2) +
+      76.63 * Math.pow(lat_aux, 2) -
+      194.56 * Math.pow(lng_aux, 2) * lat_aux +
+      119.79 * Math.pow(lat_aux, 3);
+
+  return x;
+
+}
+
+
+// Convert CH y/x to WGS lat
+function CHtoWGSlat(y, x) {
+
+  // Converts militar to civil and  to unit = 1000km
+  // Axiliary values (% Bern)
+  var y_aux = (y - 600000) / 1000000;
+  var x_aux = (x - 200000) / 1000000;
+
+  // Process lat
+  var lat = 16.9023892 +
+      3.238272 * x_aux -
+      0.270978 * Math.pow(y_aux, 2) -
+      0.002528 * Math.pow(x_aux, 2) -
+      0.0447 * Math.pow(y_aux, 2) * x_aux -
+      0.0140 * Math.pow(x_aux, 3);
+
+  // Unit 10000&quot; to 1 &quot; and converts seconds to degrees (dec)
+  lat = lat * 100 / 36;
+
+  return lat;
+
+}
+
+// Convert CH y/x to WGS long
+function CHtoWGSlng(y, x) {
+
+  // Converts militar to civil and  to unit = 1000km
+  // Axiliary values (% Bern)
+  var y_aux = (y - 600000) / 1000000;
+  var x_aux = (x - 200000) / 1000000;
+
+  // Process long
+  var lng = 2.6779094 +
+      4.728982 * y_aux +
+      0.791484 * y_aux * x_aux +
+      0.1306 * y_aux * Math.pow(x_aux, 2) -
+      0.0436 * Math.pow(y_aux, 3);
+
+  // Unit 10000&quot; to 1 &quot; and converts seconds to degrees (dec)
+  lng = lng * 100 / 36;
+
+  return lng;
+
+}
+
+
+// Convert SEX DMS angle to DEC
+function SEXtoDEC(angle) {
+
+  // Extract DMS
+  var deg = parseInt(angle, 10);
+  var min = parseInt((angle - deg) * 100, 10);
+  var sec = (((angle - deg) * 100) - min) * 100;
+
+  // Result in degrees sex (dd.mmss)
+  return deg + (sec / 60 + min) / 60;
+
+}
+
+// Convert DEC angle to SEX DMS
+function DECtoSEX(angle) {
+
+  // Extract DMS
+  var deg = parseInt(angle, 10);
+  var min = parseInt((angle - deg) * 60, 10);
+  var sec = (((angle - deg) * 60) - min) * 60;
+
+  // Result in degrees sex (dd.mmss)
+  return deg + min / 100 + sec / 10000;
+
+}
+
+// Convert Degrees angle to seconds
+function DEGtoSEC(angle) {
+
+  // Extract DMS
+  var deg = parseInt(angle, 10);
+  var min = parseInt((angle - deg) * 100, 10);
+  var sec = (((angle - deg) * 100) - min) * 100;
+
+  // Avoid rounding problems with seconds=0
+  var parts = String(angle).split(&#x27;.&#x27;);
+  if (parts.length == 2 &amp;&amp; parts[1].length == 2) {
+    min = Number(parts[1]);
+    sec = 0;
+  }
+
+  // Result in degrees sex (dd.mmss)
+  return sec + min * 60 + deg * 3600;
+
+}
+
+&lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+      </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-1.11.2.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+    <script src="./resources/common.js"></script>
+    <script src="./resources/prism/prism.min.js"></script>
+    <script src="loader.js?id=wms-custom-proj"></script>
+
+  </body>
+</html>

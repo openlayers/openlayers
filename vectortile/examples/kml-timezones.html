@@ -1,0 +1,309 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no, width=device-width">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css" type="text/css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" type="text/css">
+    <link rel="stylesheet" href="./resources/prism/prism.css" type="text/css">
+    <link rel="stylesheet" href="../css/ol.css" type="text/css">
+    <link rel="stylesheet" href="./resources/layout.css" type="text/css">
+    
+    <link rel="stylesheet" href="kml-timezones.css">
+    <script src="./resources/zeroclipboard/ZeroClipboard.min.js"></script>
+    <title>Timezones in KML</title>
+  </head>
+  <body>
+
+    <header class="navbar" role="navigation">
+      <div class="container" id="navbar-inner-container">
+        <a class="navbar-brand" href="./"><img src="./resources/logo-70x70.png">&nbsp;OpenLayers 3 Examples</a>
+      </div>
+    </header>
+
+    <div class="container-fluid">
+
+      <div class="row-fluid">
+  <div class="span12">
+    <div id="map" class="map"><div id="info"></div></div>
+  </div>
+</div>
+
+
+      <div class="row-fluid">
+        <div class="span12">
+          <h4 id="title">Timezones in KML</h4>
+          <p id="shortdesc">Demonstrates rendering timezones from KML.</p>
+          <div id="docs"><p>This example parses a KML file and renders the features as a vector layer.  The layer is given a <code>ol.style.Style</code> that fills timezones yellow with an opacity calculated based on the current offset to local noon.</p>
+</div>
+          <div id="tags">KML, vector, style</div>
+          <div id="api-links">Related API documentation: <ul class="inline"><li><a href="../apidoc/ol.Map.html" title="API documentation for ol.Map">ol.Map</a></li>,<li><a href="../apidoc/ol.View.html" title="API documentation for ol.View">ol.View</a></li>,<li><a href="../apidoc/ol.format.KML.html" title="API documentation for ol.format.KML">ol.format.KML</a></li>,<li><a href="../apidoc/ol.layer.Tile.html" title="API documentation for ol.layer.Tile">ol.layer.Tile</a></li>,<li><a href="../apidoc/ol.layer.Vector.html" title="API documentation for ol.layer.Vector">ol.layer.Vector</a></li>,<li><a href="../apidoc/ol.source.Stamen.html" title="API documentation for ol.source.Stamen">ol.source.Stamen</a></li>,<li><a href="../apidoc/ol.source.Vector.html" title="API documentation for ol.source.Vector">ol.source.Vector</a></li>,<li><a href="../apidoc/ol.style.Fill.html" title="API documentation for ol.style.Fill">ol.style.Fill</a></li>,<li><a href="../apidoc/ol.style.Stroke.html" title="API documentation for ol.style.Stroke">ol.style.Stroke</a></li>,<li><a href="../apidoc/ol.style.Style.html" title="API documentation for ol.style.Style">ol.style.Style</a></li></ul></div>
+        </div>
+      </div>
+
+      <div class="row-fluid">
+        <div id="source-controls">
+          <a id="copy-button"><i class="fa fa-clipboard"></i> Copy</a>
+          <a id="jsfiddle-button"><i class="fa fa-jsfiddle"></i> Edit</a>
+        </div>
+        <form method="POST" id="jsfiddle-form" target="_blank" action="http://jsfiddle.net/api/post/jquery/1.11.0/">
+          <textarea class="hidden" name="js">/*
+ * Compute the style of the feature.  Here we want the opacity of polygons to
+ * be based on the offset from local noon.  For example, a timezone where it is
+ * currently noon would have an opacity of 0.75.  And a timezone where it is
+ * currently midnight would have an opacity of 0.  This doesn&#x27;t account for
+ * daylight savings, so don&#x27;t use it to plan your vacation.
+ */
+var styleFunction = function(feature, resolution) {
+  var offset = 0;
+  var name = feature.get(&#x27;name&#x27;); // e.g. GMT -08:30
+  var match = name.match(/([\-+]\d{2}):(\d{2})$/);
+  if (match) {
+    var hours = parseInt(match[1], 10);
+    var minutes = parseInt(match[2], 10);
+    offset = 60 * hours + minutes;
+  }
+  var date = new Date();
+  var local = new Date(date.getTime() +
+      (date.getTimezoneOffset() + offset) * 60000);
+  // offset from local noon (in hours)
+  var delta = Math.abs(12 - local.getHours() + (local.getMinutes() / 60));
+  if (delta &gt; 12) {
+    delta = 24 - delta;
+  }
+  var opacity = 0.75 * (1 - delta / 12);
+  return [new ol.style.Style({
+    fill: new ol.style.Fill({
+      color: [0xff, 0xff, 0x33, opacity]
+    }),
+    stroke: new ol.style.Stroke({
+      color: &#x27;#ffffff&#x27;
+    })
+  })];
+};
+
+var vector = new ol.layer.Vector({
+  source: new ol.source.Vector({
+    url: &#x27;data/kml/timezones.kml&#x27;,
+    format: new ol.format.KML({
+      extractStyles: false
+    })
+  }),
+  style: styleFunction
+});
+
+var raster = new ol.layer.Tile({
+  source: new ol.source.Stamen({
+    layer: &#x27;toner&#x27;
+  })
+});
+
+var map = new ol.Map({
+  layers: [raster, vector],
+  target: &#x27;map&#x27;,
+  view: new ol.View({
+    center: [0, 0],
+    zoom: 2
+  })
+});
+
+var info = $(&#x27;#info&#x27;);
+info.tooltip({
+  animation: false,
+  trigger: &#x27;manual&#x27;
+});
+
+var displayFeatureInfo = function(pixel) {
+  info.css({
+    left: pixel[0] + &#x27;px&#x27;,
+    top: (pixel[1] - 15) + &#x27;px&#x27;
+  });
+  var feature = map.forEachFeatureAtPixel(pixel, function(feature, layer) {
+    return feature;
+  });
+  if (feature) {
+    info.tooltip(&#x27;hide&#x27;)
+        .attr(&#x27;data-original-title&#x27;, feature.get(&#x27;name&#x27;))
+        .tooltip(&#x27;fixTitle&#x27;)
+        .tooltip(&#x27;show&#x27;);
+  } else {
+    info.tooltip(&#x27;hide&#x27;);
+  }
+};
+
+map.on(&#x27;pointermove&#x27;, function(evt) {
+  if (evt.dragging) {
+    info.tooltip(&#x27;hide&#x27;);
+    return;
+  }
+  displayFeatureInfo(map.getEventPixel(evt.originalEvent));
+});
+
+map.on(&#x27;click&#x27;, function(evt) {
+  displayFeatureInfo(evt.pixel);
+});
+</textarea>
+          <textarea class="hidden" name="css">#map {
+  position: relative;
+}
+#info {
+  position: absolute;
+  height: 1px;
+  width: 1px;
+  z-index: 100;
+}
+</textarea>
+          <textarea class="hidden" name="html">&lt;div class=&quot;row-fluid&quot;&gt;
+  &lt;div class=&quot;span12&quot;&gt;
+    &lt;div id=&quot;map&quot; class=&quot;map&quot;&gt;&lt;div id=&quot;info&quot;&gt;&lt;/div&gt;&lt;/div&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+</textarea>
+          <input type="hidden" name="wrap" value="l">
+          <input type="hidden" name="resources" value="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css,https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js,http://openlayers.org/en/v3.8.2/css/ol.css,http://openlayers.org/en/v3.8.2/build/ol.js">
+        </form>
+        <pre><code id="example-source" class="language-markup">&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+&lt;title&gt;Timezones in KML&lt;/title&gt;
+&lt;script src="https://code.jquery.com/jquery-1.11.2.min.js"&gt;&lt;/script&gt;
+&lt;link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css"&gt;
+&lt;script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"&gt;&lt;/script&gt;
+&lt;link rel="stylesheet" href="http://openlayers.org/en/v3.8.2/css/ol.css" type="text/css"&gt;
+&lt;script src="http://openlayers.org/en/v3.8.2/build/ol.js"&gt;&lt;/script&gt;
+
+&lt;style&gt;
+#map {
+  position: relative;
+}
+#info {
+  position: absolute;
+  height: 1px;
+  width: 1px;
+  z-index: 100;
+}
+
+&lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;div class="container-fluid"&gt;
+
+&lt;div class=&quot;row-fluid&quot;&gt;
+  &lt;div class=&quot;span12&quot;&gt;
+    &lt;div id=&quot;map&quot; class=&quot;map&quot;&gt;&lt;div id=&quot;info&quot;&gt;&lt;/div&gt;&lt;/div&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+
+&lt;/div&gt;
+&lt;script&gt;
+/*
+ * Compute the style of the feature.  Here we want the opacity of polygons to
+ * be based on the offset from local noon.  For example, a timezone where it is
+ * currently noon would have an opacity of 0.75.  And a timezone where it is
+ * currently midnight would have an opacity of 0.  This doesn&#x27;t account for
+ * daylight savings, so don&#x27;t use it to plan your vacation.
+ */
+var styleFunction = function(feature, resolution) {
+  var offset = 0;
+  var name = feature.get(&#x27;name&#x27;); // e.g. GMT -08:30
+  var match = name.match(/([\-+]\d{2}):(\d{2})$/);
+  if (match) {
+    var hours = parseInt(match[1], 10);
+    var minutes = parseInt(match[2], 10);
+    offset = 60 * hours + minutes;
+  }
+  var date = new Date();
+  var local = new Date(date.getTime() +
+      (date.getTimezoneOffset() + offset) * 60000);
+  // offset from local noon (in hours)
+  var delta = Math.abs(12 - local.getHours() + (local.getMinutes() / 60));
+  if (delta &gt; 12) {
+    delta = 24 - delta;
+  }
+  var opacity = 0.75 * (1 - delta / 12);
+  return [new ol.style.Style({
+    fill: new ol.style.Fill({
+      color: [0xff, 0xff, 0x33, opacity]
+    }),
+    stroke: new ol.style.Stroke({
+      color: &#x27;#ffffff&#x27;
+    })
+  })];
+};
+
+var vector = new ol.layer.Vector({
+  source: new ol.source.Vector({
+    url: &#x27;data/kml/timezones.kml&#x27;,
+    format: new ol.format.KML({
+      extractStyles: false
+    })
+  }),
+  style: styleFunction
+});
+
+var raster = new ol.layer.Tile({
+  source: new ol.source.Stamen({
+    layer: &#x27;toner&#x27;
+  })
+});
+
+var map = new ol.Map({
+  layers: [raster, vector],
+  target: &#x27;map&#x27;,
+  view: new ol.View({
+    center: [0, 0],
+    zoom: 2
+  })
+});
+
+var info = $(&#x27;#info&#x27;);
+info.tooltip({
+  animation: false,
+  trigger: &#x27;manual&#x27;
+});
+
+var displayFeatureInfo = function(pixel) {
+  info.css({
+    left: pixel[0] + &#x27;px&#x27;,
+    top: (pixel[1] - 15) + &#x27;px&#x27;
+  });
+  var feature = map.forEachFeatureAtPixel(pixel, function(feature, layer) {
+    return feature;
+  });
+  if (feature) {
+    info.tooltip(&#x27;hide&#x27;)
+        .attr(&#x27;data-original-title&#x27;, feature.get(&#x27;name&#x27;))
+        .tooltip(&#x27;fixTitle&#x27;)
+        .tooltip(&#x27;show&#x27;);
+  } else {
+    info.tooltip(&#x27;hide&#x27;);
+  }
+};
+
+map.on(&#x27;pointermove&#x27;, function(evt) {
+  if (evt.dragging) {
+    info.tooltip(&#x27;hide&#x27;);
+    return;
+  }
+  displayFeatureInfo(map.getEventPixel(evt.originalEvent));
+});
+
+map.on(&#x27;click&#x27;, function(evt) {
+  displayFeatureInfo(evt.pixel);
+});
+
+&lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+      </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-1.11.2.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+    <script src="./resources/common.js"></script>
+    <script src="./resources/prism/prism.min.js"></script>
+    <script src="loader.js?id=kml-timezones"></script>
+
+  </body>
+</html>

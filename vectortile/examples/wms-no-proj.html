@@ -1,0 +1,202 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no, width=device-width">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css" type="text/css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" type="text/css">
+    <link rel="stylesheet" href="./resources/prism/prism.css" type="text/css">
+    <link rel="stylesheet" href="../css/ol.css" type="text/css">
+    <link rel="stylesheet" href="./resources/layout.css" type="text/css">
+    
+    
+    <script src="./resources/zeroclipboard/ZeroClipboard.min.js"></script>
+    <title>WMS without client projection example</title>
+  </head>
+  <body>
+
+    <header class="navbar" role="navigation">
+      <div class="container" id="navbar-inner-container">
+        <a class="navbar-brand" href="./"><img src="./resources/logo-70x70.png">&nbsp;OpenLayers 3 Examples</a>
+      </div>
+    </header>
+
+    <div class="container-fluid">
+
+      <div class="row-fluid">
+  <div class="span12">
+    <div id="map" class="map"></div>
+  </div>
+</div>
+
+
+      <div class="row-fluid">
+        <div class="span12">
+          <h4 id="title">WMS without client projection example</h4>
+          <p id="shortdesc">Example of two WMS layers using the projection EPSG:21781, which is unknown to the client.</p>
+          <div id="docs"><p>As long as no coordinate transformations are required, OpenLayers 3 works fine with projections that are only configured with a <code>code</code> and <code>units</code>.</p>
+</div>
+          <div id="tags">wms, projection</div>
+          <div id="api-links">Related API documentation: <ul class="inline"><li><a href="../apidoc/ol.Attribution.html" title="API documentation for ol.Attribution">ol.Attribution</a></li>,<li><a href="../apidoc/ol.Map.html" title="API documentation for ol.Map">ol.Map</a></li>,<li><a href="../apidoc/ol.View.html" title="API documentation for ol.View">ol.View</a></li>,<li><a href="../apidoc/ol.layer.Image.html" title="API documentation for ol.layer.Image">ol.layer.Image</a></li>,<li><a href="../apidoc/ol.layer.Tile.html" title="API documentation for ol.layer.Tile">ol.layer.Tile</a></li>,<li><a href="../apidoc/ol.proj.Projection.html" title="API documentation for ol.proj.Projection">ol.proj.Projection</a></li>,<li><a href="../apidoc/ol.source.ImageWMS.html" title="API documentation for ol.source.ImageWMS">ol.source.ImageWMS</a></li>,<li><a href="../apidoc/ol.source.TileWMS.html" title="API documentation for ol.source.TileWMS">ol.source.TileWMS</a></li></ul></div>
+        </div>
+      </div>
+
+      <div class="row-fluid">
+        <div id="source-controls">
+          <a id="copy-button"><i class="fa fa-clipboard"></i> Copy</a>
+          <a id="jsfiddle-button"><i class="fa fa-jsfiddle"></i> Edit</a>
+        </div>
+        <form method="POST" id="jsfiddle-form" target="_blank" action="http://jsfiddle.net/api/post/jquery/1.11.0/">
+          <textarea class="hidden" name="js">var layers = [
+  new ol.layer.Tile({
+    source: new ol.source.TileWMS({
+      attributions: [new ol.Attribution({
+        html: &#x27;&amp;copy; &#x27; +
+            &#x27;&lt;a href=&quot;http://www.geo.admin.ch/internet/geoportal/&#x27; +
+            &#x27;en/home.html&quot;&gt;&#x27; +
+            &#x27;Pixelmap 1:1000000 / geo.admin.ch&lt;/a&gt;&#x27;
+      })],
+      crossOrigin: &#x27;anonymous&#x27;,
+      params: {
+        &#x27;LAYERS&#x27;: &#x27;ch.swisstopo.pixelkarte-farbe-pk1000.noscale&#x27;,
+        &#x27;FORMAT&#x27;: &#x27;image/jpeg&#x27;
+      },
+      url: &#x27;http://wms.geo.admin.ch/&#x27;
+    })
+  }),
+  new ol.layer.Image({
+    source: new ol.source.ImageWMS({
+      attributions: [new ol.Attribution({
+        html: &#x27;&amp;copy; &#x27; +
+            &#x27;&lt;a href=&quot;http://www.geo.admin.ch/internet/geoportal/&#x27; +
+            &#x27;en/home.html&quot;&gt;&#x27; +
+            &#x27;National parks / geo.admin.ch&lt;/a&gt;&#x27;
+      })],
+      crossOrigin: &#x27;anonymous&#x27;,
+      params: {&#x27;LAYERS&#x27;: &#x27;ch.bafu.schutzgebiete-paerke_nationaler_bedeutung&#x27;},
+      serverType: &#x27;mapserver&#x27;,
+      url: &#x27;http://wms.geo.admin.ch/&#x27;
+    })
+  })
+];
+
+// A minimal projection object is configured with only the SRS code and the map
+// units. No client-side coordinate transforms are possible with such a
+// projection object. Requesting tiles only needs the code together with a
+// tile grid of Cartesian coordinates; it does not matter how those
+// coordinates relate to latitude or longitude.
+var projection = new ol.proj.Projection({
+  code: &#x27;EPSG:21781&#x27;,
+  units: &#x27;m&#x27;
+});
+
+var map = new ol.Map({
+  layers: layers,
+  target: &#x27;map&#x27;,
+  view: new ol.View({
+    center: [660000, 190000],
+    projection: projection,
+    zoom: 9
+  })
+});
+</textarea>
+          <textarea class="hidden" name="css"></textarea>
+          <textarea class="hidden" name="html">&lt;div class=&quot;row-fluid&quot;&gt;
+  &lt;div class=&quot;span12&quot;&gt;
+    &lt;div id=&quot;map&quot; class=&quot;map&quot;&gt;&lt;/div&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+</textarea>
+          <input type="hidden" name="wrap" value="l">
+          <input type="hidden" name="resources" value="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css,https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js,http://openlayers.org/en/v3.8.2/css/ol.css,http://openlayers.org/en/v3.8.2/build/ol.js">
+        </form>
+        <pre><code id="example-source" class="language-markup">&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+&lt;title&gt;WMS without client projection example&lt;/title&gt;
+&lt;script src="https://code.jquery.com/jquery-1.11.2.min.js"&gt;&lt;/script&gt;
+&lt;link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css"&gt;
+&lt;script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"&gt;&lt;/script&gt;
+&lt;link rel="stylesheet" href="http://openlayers.org/en/v3.8.2/css/ol.css" type="text/css"&gt;
+&lt;script src="http://openlayers.org/en/v3.8.2/build/ol.js"&gt;&lt;/script&gt;
+
+&lt;/head&gt;
+&lt;body&gt;
+&lt;div class="container-fluid"&gt;
+
+&lt;div class=&quot;row-fluid&quot;&gt;
+  &lt;div class=&quot;span12&quot;&gt;
+    &lt;div id=&quot;map&quot; class=&quot;map&quot;&gt;&lt;/div&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+
+&lt;/div&gt;
+&lt;script&gt;
+var layers = [
+  new ol.layer.Tile({
+    source: new ol.source.TileWMS({
+      attributions: [new ol.Attribution({
+        html: &#x27;&amp;copy; &#x27; +
+            &#x27;&lt;a href=&quot;http://www.geo.admin.ch/internet/geoportal/&#x27; +
+            &#x27;en/home.html&quot;&gt;&#x27; +
+            &#x27;Pixelmap 1:1000000 / geo.admin.ch&lt;/a&gt;&#x27;
+      })],
+      crossOrigin: &#x27;anonymous&#x27;,
+      params: {
+        &#x27;LAYERS&#x27;: &#x27;ch.swisstopo.pixelkarte-farbe-pk1000.noscale&#x27;,
+        &#x27;FORMAT&#x27;: &#x27;image/jpeg&#x27;
+      },
+      url: &#x27;http://wms.geo.admin.ch/&#x27;
+    })
+  }),
+  new ol.layer.Image({
+    source: new ol.source.ImageWMS({
+      attributions: [new ol.Attribution({
+        html: &#x27;&amp;copy; &#x27; +
+            &#x27;&lt;a href=&quot;http://www.geo.admin.ch/internet/geoportal/&#x27; +
+            &#x27;en/home.html&quot;&gt;&#x27; +
+            &#x27;National parks / geo.admin.ch&lt;/a&gt;&#x27;
+      })],
+      crossOrigin: &#x27;anonymous&#x27;,
+      params: {&#x27;LAYERS&#x27;: &#x27;ch.bafu.schutzgebiete-paerke_nationaler_bedeutung&#x27;},
+      serverType: &#x27;mapserver&#x27;,
+      url: &#x27;http://wms.geo.admin.ch/&#x27;
+    })
+  })
+];
+
+// A minimal projection object is configured with only the SRS code and the map
+// units. No client-side coordinate transforms are possible with such a
+// projection object. Requesting tiles only needs the code together with a
+// tile grid of Cartesian coordinates; it does not matter how those
+// coordinates relate to latitude or longitude.
+var projection = new ol.proj.Projection({
+  code: &#x27;EPSG:21781&#x27;,
+  units: &#x27;m&#x27;
+});
+
+var map = new ol.Map({
+  layers: layers,
+  target: &#x27;map&#x27;,
+  view: new ol.View({
+    center: [660000, 190000],
+    projection: projection,
+    zoom: 9
+  })
+});
+
+&lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+      </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-1.11.2.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+    <script src="./resources/common.js"></script>
+    <script src="./resources/prism/prism.min.js"></script>
+    <script src="loader.js?id=wms-no-proj"></script>
+
+  </body>
+</html>

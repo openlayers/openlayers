@@ -1,0 +1,262 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no, width=device-width">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css" type="text/css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" type="text/css">
+    <link rel="stylesheet" href="./resources/prism/prism.css" type="text/css">
+    <link rel="stylesheet" href="../css/ol.css" type="text/css">
+    <link rel="stylesheet" href="./resources/layout.css" type="text/css">
+    
+    
+    <script src="./resources/zeroclipboard/ZeroClipboard.min.js"></script>
+    <title>Select features example</title>
+  </head>
+  <body>
+
+    <header class="navbar" role="navigation">
+      <div class="container" id="navbar-inner-container">
+        <a class="navbar-brand" href="./"><img src="./resources/logo-70x70.png">&nbsp;OpenLayers 3 Examples</a>
+      </div>
+    </header>
+
+    <div class="container-fluid">
+
+      <div class="row-fluid">
+  <div class="span12">
+    <div id="map" class="map"></div>
+  </div>
+</div>
+
+
+      <div class="row-fluid">
+        <div class="span12">
+          <h4 id="title">Select features example</h4>
+          <p id="shortdesc">Example of using the Select interaction.</p>
+          <div id="docs"><p>Choose between <code>Single-click</code>, <code>Click</code>, <code>Hover</code> and <code>Alt+Click</code> as the event type for selection in the combobox below. When using <code>Single-click</code> or <code>Click</code> you can hold do <code>Shift</code> key to toggle the feature in the selection.</p>
+        <p>Note: when <code>Single-click</code> is used double-clicks won&#39;t select features. This in contrast to <code>Click</code>, where a double-click will both select the feature and zoom the map (because of the <code>DoubleClickZoom</code> interaction). Note that <code>Single-click</code> is less responsive than <code>Click</code> because of the delay it uses to detect double-clicks.</p></p>
+<p><p>In this example, a listener is registered for the Select interaction&#39;s <code>select</code> event in order to update the selection status below. <form class="form-inline">
+  <label>Action type &nbsp;</label>
+    <select id="type" class="form-control">
+      <option value="none" selected>None</option>
+      <option value="singleclick">Single-click</option>
+      <option value="click">Click</option>
+      <option value="pointermove">Hover</option>
+      <option value="altclick">Alt+Click</option>
+    </select>
+    <span id="status">&nbsp;0 selected features</span>
+</form></p>
+</div>
+          <div id="tags">select, vector</div>
+          <div id="api-links">Related API documentation: <ul class="inline"><li><a href="../apidoc/ol.Map.html" title="API documentation for ol.Map">ol.Map</a></li>,<li><a href="../apidoc/ol.View.html" title="API documentation for ol.View">ol.View</a></li>,<li><a href="../apidoc/ol.events.condition.html" title="API documentation for ol.events.condition">ol.events.condition</a></li>,<li><a href="../apidoc/ol.format.GeoJSON.html" title="API documentation for ol.format.GeoJSON">ol.format.GeoJSON</a></li>,<li><a href="../apidoc/ol.interaction.Select.html" title="API documentation for ol.interaction.Select">ol.interaction.Select</a></li>,<li><a href="../apidoc/ol.layer.Tile.html" title="API documentation for ol.layer.Tile">ol.layer.Tile</a></li>,<li><a href="../apidoc/ol.layer.Vector.html" title="API documentation for ol.layer.Vector">ol.layer.Vector</a></li>,<li><a href="../apidoc/ol.source.MapQuest.html" title="API documentation for ol.source.MapQuest">ol.source.MapQuest</a></li>,<li><a href="../apidoc/ol.source.Vector.html" title="API documentation for ol.source.Vector">ol.source.Vector</a></li></ul></div>
+        </div>
+      </div>
+
+      <div class="row-fluid">
+        <div id="source-controls">
+          <a id="copy-button"><i class="fa fa-clipboard"></i> Copy</a>
+          <a id="jsfiddle-button"><i class="fa fa-jsfiddle"></i> Edit</a>
+        </div>
+        <form method="POST" id="jsfiddle-form" target="_blank" action="http://jsfiddle.net/api/post/jquery/1.11.0/">
+          <textarea class="hidden" name="js">var raster = new ol.layer.Tile({
+  source: new ol.source.MapQuest({layer: &#x27;sat&#x27;})
+});
+
+var vector = new ol.layer.Vector({
+  source: new ol.source.Vector({
+    url: &#x27;data/geojson/countries.geojson&#x27;,
+    format: new ol.format.GeoJSON()
+  })
+});
+
+var map = new ol.Map({
+  layers: [raster, vector],
+  target: &#x27;map&#x27;,
+  view: new ol.View({
+    center: [0, 0],
+    zoom: 2
+  })
+});
+
+var select = null;  // ref to currently selected interaction
+
+// select interaction working on &quot;singleclick&quot;
+var selectSingleClick = new ol.interaction.Select();
+
+// select interaction working on &quot;click&quot;
+var selectClick = new ol.interaction.Select({
+  condition: ol.events.condition.click
+});
+
+// select interaction working on &quot;pointermove&quot;
+var selectPointerMove = new ol.interaction.Select({
+  condition: ol.events.condition.pointerMove
+});
+
+var selectAltClick = new ol.interaction.Select({
+  condition: function(mapBrowserEvent) {
+    return ol.events.condition.click(mapBrowserEvent) &amp;&amp;
+        ol.events.condition.altKeyOnly(mapBrowserEvent);
+  }
+});
+
+var selectElement = document.getElementById(&#x27;type&#x27;);
+
+var changeInteraction = function() {
+  if (select !== null) {
+    map.removeInteraction(select);
+  }
+  var value = selectElement.value;
+  if (value == &#x27;singleclick&#x27;) {
+    select = selectSingleClick;
+  } else if (value == &#x27;click&#x27;) {
+    select = selectClick;
+  } else if (value == &#x27;pointermove&#x27;) {
+    select = selectPointerMove;
+  } else if (value == &#x27;altclick&#x27;) {
+    select = selectAltClick;
+  } else {
+    select = null;
+  }
+  if (select !== null) {
+    map.addInteraction(select);
+    select.on(&#x27;select&#x27;, function(e) {
+      $(&#x27;#status&#x27;).html(&#x27;&amp;nbsp;&#x27; + e.target.getFeatures().getLength() +
+          &#x27; selected features (last operation selected &#x27; + e.selected.length +
+          &#x27; and deselected &#x27; + e.deselected.length + &#x27; features)&#x27;);
+    });
+  }
+};
+
+
+/**
+ * onchange callback on the select element.
+ */
+selectElement.onchange = changeInteraction;
+changeInteraction();
+</textarea>
+          <textarea class="hidden" name="css"></textarea>
+          <textarea class="hidden" name="html">&lt;div class=&quot;row-fluid&quot;&gt;
+  &lt;div class=&quot;span12&quot;&gt;
+    &lt;div id=&quot;map&quot; class=&quot;map&quot;&gt;&lt;/div&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+</textarea>
+          <input type="hidden" name="wrap" value="l">
+          <input type="hidden" name="resources" value="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css,https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js,http://openlayers.org/en/v3.8.2/css/ol.css,http://openlayers.org/en/v3.8.2/build/ol.js">
+        </form>
+        <pre><code id="example-source" class="language-markup">&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+&lt;title&gt;Select features example&lt;/title&gt;
+&lt;script src="https://code.jquery.com/jquery-1.11.2.min.js"&gt;&lt;/script&gt;
+&lt;link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css"&gt;
+&lt;script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"&gt;&lt;/script&gt;
+&lt;link rel="stylesheet" href="http://openlayers.org/en/v3.8.2/css/ol.css" type="text/css"&gt;
+&lt;script src="http://openlayers.org/en/v3.8.2/build/ol.js"&gt;&lt;/script&gt;
+
+&lt;/head&gt;
+&lt;body&gt;
+&lt;div class="container-fluid"&gt;
+
+&lt;div class=&quot;row-fluid&quot;&gt;
+  &lt;div class=&quot;span12&quot;&gt;
+    &lt;div id=&quot;map&quot; class=&quot;map&quot;&gt;&lt;/div&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+
+&lt;/div&gt;
+&lt;script&gt;
+var raster = new ol.layer.Tile({
+  source: new ol.source.MapQuest({layer: &#x27;sat&#x27;})
+});
+
+var vector = new ol.layer.Vector({
+  source: new ol.source.Vector({
+    url: &#x27;data/geojson/countries.geojson&#x27;,
+    format: new ol.format.GeoJSON()
+  })
+});
+
+var map = new ol.Map({
+  layers: [raster, vector],
+  target: &#x27;map&#x27;,
+  view: new ol.View({
+    center: [0, 0],
+    zoom: 2
+  })
+});
+
+var select = null;  // ref to currently selected interaction
+
+// select interaction working on &quot;singleclick&quot;
+var selectSingleClick = new ol.interaction.Select();
+
+// select interaction working on &quot;click&quot;
+var selectClick = new ol.interaction.Select({
+  condition: ol.events.condition.click
+});
+
+// select interaction working on &quot;pointermove&quot;
+var selectPointerMove = new ol.interaction.Select({
+  condition: ol.events.condition.pointerMove
+});
+
+var selectAltClick = new ol.interaction.Select({
+  condition: function(mapBrowserEvent) {
+    return ol.events.condition.click(mapBrowserEvent) &amp;&amp;
+        ol.events.condition.altKeyOnly(mapBrowserEvent);
+  }
+});
+
+var selectElement = document.getElementById(&#x27;type&#x27;);
+
+var changeInteraction = function() {
+  if (select !== null) {
+    map.removeInteraction(select);
+  }
+  var value = selectElement.value;
+  if (value == &#x27;singleclick&#x27;) {
+    select = selectSingleClick;
+  } else if (value == &#x27;click&#x27;) {
+    select = selectClick;
+  } else if (value == &#x27;pointermove&#x27;) {
+    select = selectPointerMove;
+  } else if (value == &#x27;altclick&#x27;) {
+    select = selectAltClick;
+  } else {
+    select = null;
+  }
+  if (select !== null) {
+    map.addInteraction(select);
+    select.on(&#x27;select&#x27;, function(e) {
+      $(&#x27;#status&#x27;).html(&#x27;&amp;nbsp;&#x27; + e.target.getFeatures().getLength() +
+          &#x27; selected features (last operation selected &#x27; + e.selected.length +
+          &#x27; and deselected &#x27; + e.deselected.length + &#x27; features)&#x27;);
+    });
+  }
+};
+
+
+/**
+ * onchange callback on the select element.
+ */
+selectElement.onchange = changeInteraction;
+changeInteraction();
+
+&lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+      </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-1.11.2.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+    <script src="./resources/common.js"></script>
+    <script src="./resources/prism/prism.min.js"></script>
+    <script src="loader.js?id=select-features"></script>
+
+  </body>
+</html>

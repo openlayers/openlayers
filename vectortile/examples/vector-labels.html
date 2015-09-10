@@ -1,0 +1,1424 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no, width=device-width">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css" type="text/css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" type="text/css">
+    <link rel="stylesheet" href="./resources/prism/prism.css" type="text/css">
+    <link rel="stylesheet" href="../css/ol.css" type="text/css">
+    <link rel="stylesheet" href="./resources/layout.css" type="text/css">
+    
+    <link rel="stylesheet" href="vector-labels.css">
+    <script src="./resources/zeroclipboard/ZeroClipboard.min.js"></script>
+    <title>Vector labels example</title>
+  </head>
+  <body>
+
+    <header class="navbar" role="navigation">
+      <div class="container" id="navbar-inner-container">
+        <a class="navbar-brand" href="./"><img src="./resources/logo-70x70.png">&nbsp;OpenLayers 3 Examples</a>
+      </div>
+    </header>
+
+    <div class="container-fluid">
+
+      <div class="row-fluid">
+  <div class="span12">
+    <div id="map" class="map"></div>
+  </div>
+</div>
+
+<div class="edit-form">
+  <input id="refresh-points" type="button" value="Refresh" />
+  <h2>Points</h2>
+  <div class="edit-form-elem">
+    <label>Text: </label>
+    <select id="points-text">
+      <option value="hide">Hide</option>
+      <option value="normal">Normal</option>
+      <option value="shorten" selected="selected">Shorten</option>
+      <option value="wrap">Wrap</option>
+    </select>
+    <br />
+    <label title="Max Resolution Denominator">MaxReso.:</label>
+    <select id="points-maxreso">
+      <option value="38400">38,400</option>
+      <option value="19200">19,200</option>
+      <option value="9600">9,600</option>
+      <option value="4800">4,800</option>
+      <option value="2400">2,400</option>
+      <option value="1200" selected="selected">1,200</option>
+      <option value="600">600</option>
+      <option value="300">300</option>
+      <option value="150">150</option>
+      <option value="75">75</option>
+      <option value="32">32</option>
+      <option value="16">16</option>
+      <option value="8">8</option>
+    </select>
+    <br />
+    <label>Align: </label>
+    <select id="points-align">
+      <option value="center" selected="selected">Center</option>
+      <option value="end">End</option>
+      <option value="left">Left</option>
+      <option value="right">Right</option>
+      <option value="start">Start</option>
+    </select>
+    <br />
+    <label>Baseline: </label>
+    <select id="points-baseline">
+      <option value="alphabetic">Alphabetic</option>
+      <option value="bottom">Bottom</option>
+      <option value="hanging">Hanging</option>
+      <option value="ideographic">Ideographic</option>
+      <option value="middle" selected="selected">Middle</option>
+      <option value="top">Top</option>
+    </select>
+    <br />
+    <label>Rotation: </label>
+    <select id="points-rotation">
+      <option value="0">0°</option>
+      <option value="0.785398164">45°</option>
+      <option value="1.570796327">90°</option>
+    </select>
+    <br />
+    <label>Font: </label>
+    <select id="points-font">
+      <option value="Arial" selected="selected">Arial</option>
+      <option value="Courier New">Courier New</option>
+      <option value="Quattrocento Sans">Quattrocento</option>
+      <option value="Verdana">Verdana</option>
+    </select>
+    <br />
+    <label>Weight: </label>
+    <select id="points-weight">
+      <option value="bold">Bold</option>
+      <option value="normal" selected="selected">Normal</option>
+    </select>
+    <br />
+    <label>Size: </label>
+    <input type="text" value="12px" id="points-size" />
+    <br />
+    <label>Offset X:</label>
+    <input type="text" value="0" id="points-offset-x" />
+    <br />
+    <label>Offset Y:</label>
+    <input type="text" value="0" id="points-offset-y" />
+    <br />
+    <label>Color :</label>
+    <input type="text" value="#aa3300" id="points-color" />
+    <br />
+    <label title="Outline Color">O. Color:</label>
+    <input type="text" value="#ffffff" id="points-outline" />
+    <br />
+    <label title="Outline Width">O. Width :</label>
+    <input type="text" value="3" id="points-outline-width" />
+  </div>
+</div>
+
+<div class="edit-form">
+  <input id="refresh-lines" type="button" value="Refresh" />
+  <h2>Lines</h2>
+  <div class="edit-form-elem">
+    <label>Text: </label>
+    <select id="lines-text">
+      <option value="hide">Hide</option>
+      <option value="normal">Normal</option>
+      <option value="shorten">Shorten</option>
+      <option value="wrap" selected="selected">Wrap</option>
+    </select>
+    <br />
+    <label title="Max Resolution Denominator">MaxReso.:</label>
+    <select id="lines-maxreso">
+      <option value="38400">38,400</option>
+      <option value="19200">19,200</option>
+      <option value="9600">9,600</option>
+      <option value="4800">4,800</option>
+      <option value="2400">2,400</option>
+      <option value="1200" selected="selected">1,200</option>
+      <option value="600">600</option>
+      <option value="300">300</option>
+      <option value="150">150</option>
+      <option value="75">75</option>
+      <option value="32">32</option>
+      <option value="16">16</option>
+      <option value="8">8</option>
+    </select>
+    <br />
+    <label>Align: </label>
+    <select id="lines-align">
+      <option value="center" selected="selected">Center</option>
+      <option value="end">End</option>
+      <option value="left">Left</option>
+      <option value="right">Right</option>
+      <option value="start">Start</option>
+    </select>
+    <br />
+    <label>Baseline: </label>
+    <select id="lines-baseline">
+      <option value="alphabetic">Alphabetic</option>
+      <option value="bottom">Bottom</option>
+      <option value="hanging">Hanging</option>
+      <option value="ideographic">Ideographic</option>
+      <option value="middle" selected="selected">Middle</option>
+      <option value="top">Top</option>
+    </select>
+    <br />
+    <label>Rotation: </label>
+    <select id="lines-rotation">
+      <option value="0">0°</option>
+      <option value="0.785398164">45°</option>
+      <option value="1.570796327">90°</option>
+    </select>
+    <br />
+    <label>Font: </label>
+    <select id="lines-font">
+      <option value="Arial">Arial</option>
+      <option value="Courier New" selected="selected">Courier New</option>
+      <option value="Quattrocento Sans">Quattrocento</option>
+      <option value="Verdana">Verdana</option>
+    </select>
+    <br />
+    <label>Weight: </label>
+    <select id="lines-weight">
+      <option value="bold" selected="selected">Bold</option>
+      <option value="normal">Normal</option>
+    </select>
+    <br />
+    <label>Size: </label>
+    <input type="text" value="12px" id="lines-size" />
+    <br />
+    <label>Offset X:</label>
+    <input type="text" value="0" id="lines-offset-x" />
+    <br />
+    <label>Offset Y:</label>
+    <input type="text" value="0" id="lines-offset-y" />
+    <br />
+    <label>Color :</label>
+    <input type="text" value="green" id="lines-color" />
+    <br />
+    <label title="Outline Color">O. Color:</label>
+    <input type="text" value="#ffffff" id="lines-outline" />
+    <br />
+    <label title="Outline Width">O. Width :</label>
+    <input type="text" value="3" id="lines-outline-width" />
+  </div>
+</div>
+
+<div class="edit-form">
+  <input id="refresh-polygons" type="button" value="Refresh" />
+  <h2>Polygons</h2>
+  <div class="edit-form-elem">
+    <label>Text: </label>
+    <select id="polygons-text">
+      <option value="hide">Hide</option>
+      <option value="normal" selected="selected">Normal</option>
+      <option value="shorten">Shorten</option>
+      <option value="wrap">Wrap</option>
+    </select>
+    <br />
+    <label title="Max Resolution Denominator">MaxReso.:</label>
+    <select id="polygons-maxreso">
+      <option value="38400">38,400</option>
+      <option value="19200">19,200</option>
+      <option value="9600">9,600</option>
+      <option value="4800">4,800</option>
+      <option value="2400">2,400</option>
+      <option value="1200" selected="selected">1,200</option>
+      <option value="600">600</option>
+      <option value="300">300</option>
+      <option value="150">150</option>
+      <option value="75">75</option>
+      <option value="32">32</option>
+      <option value="16">16</option>
+      <option value="8">8</option>
+    </select>
+    <br />
+    <label>Align: </label>
+    <select id="polygons-align">
+      <option value="center" selected="selected">Center</option>
+      <option value="end">End</option>
+      <option value="left">Left</option>
+      <option value="right">Right</option>
+      <option value="start">Start</option>
+    </select>
+    <br />
+    <label>Baseline: </label>
+    <select id="polygons-baseline">
+      <option value="alphabetic">Alphabetic</option>
+      <option value="bottom">Bottom</option>
+      <option value="hanging">Hanging</option>
+      <option value="ideographic">Ideographic</option>
+      <option value="middle" selected="selected">Middle</option>
+      <option value="top">Top</option>
+    </select>
+    <br />
+    <label>Rotation: </label>
+    <select id="polygons-rotation">
+      <option value="0">0°</option>
+      <option value="0.785398164">45°</option>
+      <option value="1.570796327">90°</option>
+    </select>
+    <br />
+    <label>Font: </label>
+    <select id="polygons-font">
+      <option value="Arial">Arial</option>
+      <option value="Courier New">Courier New</option>
+      <option value="Quattrocento Sans">Quattrocento</option>
+      <option value="Verdana" selected="selected">Verdana</option>
+    </select>
+    <br />
+    <label>Weight: </label>
+    <select id="polygons-weight">
+      <option value="bold" selected="selected">Bold</option>
+      <option value="normal">Normal</option>
+    </select>
+    <br />
+    <label>Size: </label>
+    <input type="text" value="10px" id="polygons-size" />
+    <br />
+    <label>Offset X:</label>
+    <input type="text" value="0" id="polygons-offset-x" />
+    <br />
+    <label>Offset Y:</label>
+    <input type="text" value="0" id="polygons-offset-y" />
+    <br />
+    <label>Color :</label>
+    <input type="text" value="blue" id="polygons-color" />
+    <br />
+    <label title="Outline Color">O. Color:</label>
+    <input type="text" value="#ffffff" id="polygons-outline" />
+    <br />
+    <label title="Outline Width">O. Width :</label>
+    <input type="text" value="3" id="polygons-outline-width" />
+  </div>
+</div>
+
+
+      <div class="row-fluid">
+        <div class="span12">
+          <h4 id="title">Vector labels example</h4>
+          <p id="shortdesc">Example of GeoJSON features with labels.</p>
+          <div id="docs"><p><strong>Note:</strong> The &#39;Text/Wrap&#39; option is currently not working properly. This is because ol3 uses Canvas&#39;s strokeText and fillText functions that do not support text wrapping.</p>
+</div>
+          <div id="tags">geojson, vector, openstreetmap, label</div>
+          <div id="api-links">Related API documentation: <ul class="inline"><li><a href="../apidoc/ol.Map.html" title="API documentation for ol.Map">ol.Map</a></li>,<li><a href="../apidoc/ol.View.html" title="API documentation for ol.View">ol.View</a></li>,<li><a href="../apidoc/ol.format.GeoJSON.html" title="API documentation for ol.format.GeoJSON">ol.format.GeoJSON</a></li>,<li><a href="../apidoc/ol.layer.Tile.html" title="API documentation for ol.layer.Tile">ol.layer.Tile</a></li>,<li><a href="../apidoc/ol.layer.Vector.html" title="API documentation for ol.layer.Vector">ol.layer.Vector</a></li>,<li><a href="../apidoc/ol.source.MapQuest.html" title="API documentation for ol.source.MapQuest">ol.source.MapQuest</a></li>,<li><a href="../apidoc/ol.source.Vector.html" title="API documentation for ol.source.Vector">ol.source.Vector</a></li>,<li><a href="../apidoc/ol.style.Circle.html" title="API documentation for ol.style.Circle">ol.style.Circle</a></li>,<li><a href="../apidoc/ol.style.Fill.html" title="API documentation for ol.style.Fill">ol.style.Fill</a></li>,<li><a href="../apidoc/ol.style.Stroke.html" title="API documentation for ol.style.Stroke">ol.style.Stroke</a></li>,<li><a href="../apidoc/ol.style.Style.html" title="API documentation for ol.style.Style">ol.style.Style</a></li>,<li><a href="../apidoc/ol.style.Text.html" title="API documentation for ol.style.Text">ol.style.Text</a></li></ul></div>
+        </div>
+      </div>
+
+      <div class="row-fluid">
+        <div id="source-controls">
+          <a id="copy-button"><i class="fa fa-clipboard"></i> Copy</a>
+          <a id="jsfiddle-button"><i class="fa fa-jsfiddle"></i> Edit</a>
+        </div>
+        <form method="POST" id="jsfiddle-form" target="_blank" action="http://jsfiddle.net/api/post/jquery/1.11.0/">
+          <textarea class="hidden" name="js">var myDom = {
+  points: {
+    text: document.getElementById(&#x27;points-text&#x27;),
+    align: document.getElementById(&#x27;points-align&#x27;),
+    baseline: document.getElementById(&#x27;points-baseline&#x27;),
+    rotation: document.getElementById(&#x27;points-rotation&#x27;),
+    font: document.getElementById(&#x27;points-font&#x27;),
+    weight: document.getElementById(&#x27;points-weight&#x27;),
+    size: document.getElementById(&#x27;points-size&#x27;),
+    offsetX: document.getElementById(&#x27;points-offset-x&#x27;),
+    offsetY: document.getElementById(&#x27;points-offset-y&#x27;),
+    color: document.getElementById(&#x27;points-color&#x27;),
+    outline: document.getElementById(&#x27;points-outline&#x27;),
+    outlineWidth: document.getElementById(&#x27;points-outline-width&#x27;),
+    maxreso: document.getElementById(&#x27;points-maxreso&#x27;)
+  },
+  lines: {
+    text: document.getElementById(&#x27;lines-text&#x27;),
+    align: document.getElementById(&#x27;lines-align&#x27;),
+    baseline: document.getElementById(&#x27;lines-baseline&#x27;),
+    rotation: document.getElementById(&#x27;lines-rotation&#x27;),
+    font: document.getElementById(&#x27;lines-font&#x27;),
+    weight: document.getElementById(&#x27;lines-weight&#x27;),
+    size: document.getElementById(&#x27;lines-size&#x27;),
+    offsetX: document.getElementById(&#x27;lines-offset-x&#x27;),
+    offsetY: document.getElementById(&#x27;lines-offset-y&#x27;),
+    color: document.getElementById(&#x27;lines-color&#x27;),
+    outline: document.getElementById(&#x27;lines-outline&#x27;),
+    outlineWidth: document.getElementById(&#x27;lines-outline-width&#x27;),
+    maxreso: document.getElementById(&#x27;lines-maxreso&#x27;)
+  },
+  polygons: {
+    text: document.getElementById(&#x27;polygons-text&#x27;),
+    align: document.getElementById(&#x27;polygons-align&#x27;),
+    baseline: document.getElementById(&#x27;polygons-baseline&#x27;),
+    rotation: document.getElementById(&#x27;polygons-rotation&#x27;),
+    font: document.getElementById(&#x27;polygons-font&#x27;),
+    weight: document.getElementById(&#x27;polygons-weight&#x27;),
+    size: document.getElementById(&#x27;polygons-size&#x27;),
+    offsetX: document.getElementById(&#x27;polygons-offset-x&#x27;),
+    offsetY: document.getElementById(&#x27;polygons-offset-y&#x27;),
+    color: document.getElementById(&#x27;polygons-color&#x27;),
+    outline: document.getElementById(&#x27;polygons-outline&#x27;),
+    outlineWidth: document.getElementById(&#x27;polygons-outline-width&#x27;),
+    maxreso: document.getElementById(&#x27;polygons-maxreso&#x27;)
+  }
+};
+
+var getText = function(feature, resolution, dom) {
+  var type = dom.text.value;
+  var maxResolution = dom.maxreso.value;
+  var text = feature.get(&#x27;name&#x27;);
+
+  if (resolution &gt; maxResolution) {
+    text = &#x27;&#x27;;
+  } else if (type == &#x27;hide&#x27;) {
+    text = &#x27;&#x27;;
+  } else if (type == &#x27;shorten&#x27;) {
+    text = text.trunc(12);
+  } else if (type == &#x27;wrap&#x27;) {
+    text = stringDivider(text, 16, &#x27;\n&#x27;);
+  }
+
+  return text;
+};
+
+
+var createTextStyle = function(feature, resolution, dom) {
+  var align = dom.align.value;
+  var baseline = dom.baseline.value;
+  var size = dom.size.value;
+  var offsetX = parseInt(dom.offsetX.value, 10);
+  var offsetY = parseInt(dom.offsetY.value, 10);
+  var weight = dom.weight.value;
+  var rotation = parseFloat(dom.rotation.value);
+  var font = weight + &#x27; &#x27; + size + &#x27; &#x27; + dom.font.value;
+  var fillColor = dom.color.value;
+  var outlineColor = dom.outline.value;
+  var outlineWidth = parseInt(dom.outlineWidth.value, 10);
+
+  return new ol.style.Text({
+    textAlign: align,
+    textBaseline: baseline,
+    font: font,
+    text: getText(feature, resolution, dom),
+    fill: new ol.style.Fill({color: fillColor}),
+    stroke: new ol.style.Stroke({color: outlineColor, width: outlineWidth}),
+    offsetX: offsetX,
+    offsetY: offsetY,
+    rotation: rotation
+  });
+};
+
+
+// Polygons
+var createPolygonStyleFunction = function() {
+  return function(feature, resolution) {
+    var style = new ol.style.Style({
+      stroke: new ol.style.Stroke({
+        color: &#x27;blue&#x27;,
+        width: 1
+      }),
+      fill: new ol.style.Fill({
+        color: &#x27;rgba(0, 0, 255, 0.1)&#x27;
+      }),
+      text: createTextStyle(feature, resolution, myDom.polygons)
+    });
+    return [style];
+  };
+};
+
+var vectorPolygons = new ol.layer.Vector({
+  source: new ol.source.Vector({
+    url: &#x27;data/geojson/polygon-samples.geojson&#x27;,
+    format: new ol.format.GeoJSON()
+  }),
+  style: createPolygonStyleFunction()
+});
+
+
+// Lines
+var createLineStyleFunction = function() {
+  return function(feature, resolution) {
+    var style = new ol.style.Style({
+      stroke: new ol.style.Stroke({
+        color: &#x27;green&#x27;,
+        width: 2
+      }),
+      text: createTextStyle(feature, resolution, myDom.lines)
+    });
+    return [style];
+  };
+};
+
+var vectorLines = new ol.layer.Vector({
+  source: new ol.source.Vector({
+    url: &#x27;data/geojson/line-samples.geojson&#x27;,
+    format: new ol.format.GeoJSON()
+  }),
+  style: createLineStyleFunction()
+});
+
+
+// Points
+var createPointStyleFunction = function() {
+  return function(feature, resolution) {
+    var style = new ol.style.Style({
+      image: new ol.style.Circle({
+        radius: 10,
+        fill: new ol.style.Fill({color: &#x27;rgba(255, 0, 0, 0.1)&#x27;}),
+        stroke: new ol.style.Stroke({color: &#x27;red&#x27;, width: 1})
+      }),
+      text: createTextStyle(feature, resolution, myDom.points)
+    });
+    return [style];
+  };
+};
+
+var vectorPoints = new ol.layer.Vector({
+  source: new ol.source.Vector({
+    url: &#x27;data/geojson/point-samples.geojson&#x27;,
+    format: new ol.format.GeoJSON()
+  }),
+  style: createPointStyleFunction()
+});
+
+var map = new ol.Map({
+  layers: [
+    new ol.layer.Tile({
+      source: new ol.source.MapQuest({layer: &#x27;osm&#x27;})
+    }),
+    vectorPolygons,
+    vectorLines,
+    vectorPoints
+  ],
+  target: &#x27;map&#x27;,
+  view: new ol.View({
+    center: [-8161939, 6095025],
+    zoom: 8
+  })
+});
+
+$(&#x27;#refresh-points&#x27;).click(function() {
+  vectorPoints.setStyle(createPointStyleFunction());
+});
+
+$(&#x27;#refresh-lines&#x27;).click(function() {
+  vectorLines.setStyle(createLineStyleFunction());
+});
+
+$(&#x27;#refresh-polygons&#x27;).click(function() {
+  vectorPolygons.setStyle(createPolygonStyleFunction());
+});
+
+
+/**
+ * @param {number} n The max number of characters to keep.
+ * @return {string} Truncated string.
+ */
+String.prototype.trunc = String.prototype.trunc ||
+    function(n) {
+      return this.length &gt; n ? this.substr(0, n - 1) + &#x27;...&#x27; : this.substr(0);
+    };
+
+
+// http://stackoverflow.com/questions/14484787/wrap-text-in-javascript
+function stringDivider(str, width, spaceReplacer) {
+  if (str.length &gt; width) {
+    var p = width;
+    for (; p &gt; 0 &amp;&amp; (str[p] != &#x27; &#x27; &amp;&amp; str[p] != &#x27;-&#x27;); p--) {
+    }
+    if (p &gt; 0) {
+      var left;
+      if (str.substring(p, p + 1) == &#x27;-&#x27;) {
+        left = str.substring(0, p + 1);
+      } else {
+        left = str.substring(0, p);
+      }
+      var right = str.substring(p + 1);
+      return left + spaceReplacer + stringDivider(right, width, spaceReplacer);
+    }
+  }
+  return str;
+}
+</textarea>
+          <textarea class="hidden" name="css">h2 {
+  font-size: 1.5em;
+  line-height: 15px;
+}
+
+.scale-cnt {
+  margin: 5px;
+}
+
+.edit-form-ctn {
+}
+
+.edit-form {
+  float: left;
+  margin: 5px;
+  width: 230px;
+  padding: 4px;
+  border: 1px solid black;
+}
+
+.edit-form input[type=&quot;button&quot;] {
+  float: right;
+}
+
+.edit-form-elem label {
+  display: block;
+  float: left;
+  width: 85px;
+}
+
+.edit-form-elem input[type=&quot;text&quot;] {
+  width: 60px;
+}
+
+.edit-form-elem select {
+  width: 130px;
+}
+</textarea>
+          <textarea class="hidden" name="html">&lt;div class=&quot;row-fluid&quot;&gt;
+  &lt;div class=&quot;span12&quot;&gt;
+    &lt;div id=&quot;map&quot; class=&quot;map&quot;&gt;&lt;/div&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+
+&lt;div class=&quot;edit-form&quot;&gt;
+  &lt;input id=&quot;refresh-points&quot; type=&quot;button&quot; value=&quot;Refresh&quot; /&gt;
+  &lt;h2&gt;Points&lt;/h2&gt;
+  &lt;div class=&quot;edit-form-elem&quot;&gt;
+    &lt;label&gt;Text: &lt;/label&gt;
+    &lt;select id=&quot;points-text&quot;&gt;
+      &lt;option value=&quot;hide&quot;&gt;Hide&lt;/option&gt;
+      &lt;option value=&quot;normal&quot;&gt;Normal&lt;/option&gt;
+      &lt;option value=&quot;shorten&quot; selected=&quot;selected&quot;&gt;Shorten&lt;/option&gt;
+      &lt;option value=&quot;wrap&quot;&gt;Wrap&lt;/option&gt;
+    &lt;/select&gt;
+    &lt;br /&gt;
+    &lt;label title=&quot;Max Resolution Denominator&quot;&gt;MaxReso.:&lt;/label&gt;
+    &lt;select id=&quot;points-maxreso&quot;&gt;
+      &lt;option value=&quot;38400&quot;&gt;38,400&lt;/option&gt;
+      &lt;option value=&quot;19200&quot;&gt;19,200&lt;/option&gt;
+      &lt;option value=&quot;9600&quot;&gt;9,600&lt;/option&gt;
+      &lt;option value=&quot;4800&quot;&gt;4,800&lt;/option&gt;
+      &lt;option value=&quot;2400&quot;&gt;2,400&lt;/option&gt;
+      &lt;option value=&quot;1200&quot; selected=&quot;selected&quot;&gt;1,200&lt;/option&gt;
+      &lt;option value=&quot;600&quot;&gt;600&lt;/option&gt;
+      &lt;option value=&quot;300&quot;&gt;300&lt;/option&gt;
+      &lt;option value=&quot;150&quot;&gt;150&lt;/option&gt;
+      &lt;option value=&quot;75&quot;&gt;75&lt;/option&gt;
+      &lt;option value=&quot;32&quot;&gt;32&lt;/option&gt;
+      &lt;option value=&quot;16&quot;&gt;16&lt;/option&gt;
+      &lt;option value=&quot;8&quot;&gt;8&lt;/option&gt;
+    &lt;/select&gt;
+    &lt;br /&gt;
+    &lt;label&gt;Align: &lt;/label&gt;
+    &lt;select id=&quot;points-align&quot;&gt;
+      &lt;option value=&quot;center&quot; selected=&quot;selected&quot;&gt;Center&lt;/option&gt;
+      &lt;option value=&quot;end&quot;&gt;End&lt;/option&gt;
+      &lt;option value=&quot;left&quot;&gt;Left&lt;/option&gt;
+      &lt;option value=&quot;right&quot;&gt;Right&lt;/option&gt;
+      &lt;option value=&quot;start&quot;&gt;Start&lt;/option&gt;
+    &lt;/select&gt;
+    &lt;br /&gt;
+    &lt;label&gt;Baseline: &lt;/label&gt;
+    &lt;select id=&quot;points-baseline&quot;&gt;
+      &lt;option value=&quot;alphabetic&quot;&gt;Alphabetic&lt;/option&gt;
+      &lt;option value=&quot;bottom&quot;&gt;Bottom&lt;/option&gt;
+      &lt;option value=&quot;hanging&quot;&gt;Hanging&lt;/option&gt;
+      &lt;option value=&quot;ideographic&quot;&gt;Ideographic&lt;/option&gt;
+      &lt;option value=&quot;middle&quot; selected=&quot;selected&quot;&gt;Middle&lt;/option&gt;
+      &lt;option value=&quot;top&quot;&gt;Top&lt;/option&gt;
+    &lt;/select&gt;
+    &lt;br /&gt;
+    &lt;label&gt;Rotation: &lt;/label&gt;
+    &lt;select id=&quot;points-rotation&quot;&gt;
+      &lt;option value=&quot;0&quot;&gt;0°&lt;/option&gt;
+      &lt;option value=&quot;0.785398164&quot;&gt;45°&lt;/option&gt;
+      &lt;option value=&quot;1.570796327&quot;&gt;90°&lt;/option&gt;
+    &lt;/select&gt;
+    &lt;br /&gt;
+    &lt;label&gt;Font: &lt;/label&gt;
+    &lt;select id=&quot;points-font&quot;&gt;
+      &lt;option value=&quot;Arial&quot; selected=&quot;selected&quot;&gt;Arial&lt;/option&gt;
+      &lt;option value=&quot;Courier New&quot;&gt;Courier New&lt;/option&gt;
+      &lt;option value=&quot;Quattrocento Sans&quot;&gt;Quattrocento&lt;/option&gt;
+      &lt;option value=&quot;Verdana&quot;&gt;Verdana&lt;/option&gt;
+    &lt;/select&gt;
+    &lt;br /&gt;
+    &lt;label&gt;Weight: &lt;/label&gt;
+    &lt;select id=&quot;points-weight&quot;&gt;
+      &lt;option value=&quot;bold&quot;&gt;Bold&lt;/option&gt;
+      &lt;option value=&quot;normal&quot; selected=&quot;selected&quot;&gt;Normal&lt;/option&gt;
+    &lt;/select&gt;
+    &lt;br /&gt;
+    &lt;label&gt;Size: &lt;/label&gt;
+    &lt;input type=&quot;text&quot; value=&quot;12px&quot; id=&quot;points-size&quot; /&gt;
+    &lt;br /&gt;
+    &lt;label&gt;Offset X:&lt;/label&gt;
+    &lt;input type=&quot;text&quot; value=&quot;0&quot; id=&quot;points-offset-x&quot; /&gt;
+    &lt;br /&gt;
+    &lt;label&gt;Offset Y:&lt;/label&gt;
+    &lt;input type=&quot;text&quot; value=&quot;0&quot; id=&quot;points-offset-y&quot; /&gt;
+    &lt;br /&gt;
+    &lt;label&gt;Color :&lt;/label&gt;
+    &lt;input type=&quot;text&quot; value=&quot;#aa3300&quot; id=&quot;points-color&quot; /&gt;
+    &lt;br /&gt;
+    &lt;label title=&quot;Outline Color&quot;&gt;O. Color:&lt;/label&gt;
+    &lt;input type=&quot;text&quot; value=&quot;#ffffff&quot; id=&quot;points-outline&quot; /&gt;
+    &lt;br /&gt;
+    &lt;label title=&quot;Outline Width&quot;&gt;O. Width :&lt;/label&gt;
+    &lt;input type=&quot;text&quot; value=&quot;3&quot; id=&quot;points-outline-width&quot; /&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+
+&lt;div class=&quot;edit-form&quot;&gt;
+  &lt;input id=&quot;refresh-lines&quot; type=&quot;button&quot; value=&quot;Refresh&quot; /&gt;
+  &lt;h2&gt;Lines&lt;/h2&gt;
+  &lt;div class=&quot;edit-form-elem&quot;&gt;
+    &lt;label&gt;Text: &lt;/label&gt;
+    &lt;select id=&quot;lines-text&quot;&gt;
+      &lt;option value=&quot;hide&quot;&gt;Hide&lt;/option&gt;
+      &lt;option value=&quot;normal&quot;&gt;Normal&lt;/option&gt;
+      &lt;option value=&quot;shorten&quot;&gt;Shorten&lt;/option&gt;
+      &lt;option value=&quot;wrap&quot; selected=&quot;selected&quot;&gt;Wrap&lt;/option&gt;
+    &lt;/select&gt;
+    &lt;br /&gt;
+    &lt;label title=&quot;Max Resolution Denominator&quot;&gt;MaxReso.:&lt;/label&gt;
+    &lt;select id=&quot;lines-maxreso&quot;&gt;
+      &lt;option value=&quot;38400&quot;&gt;38,400&lt;/option&gt;
+      &lt;option value=&quot;19200&quot;&gt;19,200&lt;/option&gt;
+      &lt;option value=&quot;9600&quot;&gt;9,600&lt;/option&gt;
+      &lt;option value=&quot;4800&quot;&gt;4,800&lt;/option&gt;
+      &lt;option value=&quot;2400&quot;&gt;2,400&lt;/option&gt;
+      &lt;option value=&quot;1200&quot; selected=&quot;selected&quot;&gt;1,200&lt;/option&gt;
+      &lt;option value=&quot;600&quot;&gt;600&lt;/option&gt;
+      &lt;option value=&quot;300&quot;&gt;300&lt;/option&gt;
+      &lt;option value=&quot;150&quot;&gt;150&lt;/option&gt;
+      &lt;option value=&quot;75&quot;&gt;75&lt;/option&gt;
+      &lt;option value=&quot;32&quot;&gt;32&lt;/option&gt;
+      &lt;option value=&quot;16&quot;&gt;16&lt;/option&gt;
+      &lt;option value=&quot;8&quot;&gt;8&lt;/option&gt;
+    &lt;/select&gt;
+    &lt;br /&gt;
+    &lt;label&gt;Align: &lt;/label&gt;
+    &lt;select id=&quot;lines-align&quot;&gt;
+      &lt;option value=&quot;center&quot; selected=&quot;selected&quot;&gt;Center&lt;/option&gt;
+      &lt;option value=&quot;end&quot;&gt;End&lt;/option&gt;
+      &lt;option value=&quot;left&quot;&gt;Left&lt;/option&gt;
+      &lt;option value=&quot;right&quot;&gt;Right&lt;/option&gt;
+      &lt;option value=&quot;start&quot;&gt;Start&lt;/option&gt;
+    &lt;/select&gt;
+    &lt;br /&gt;
+    &lt;label&gt;Baseline: &lt;/label&gt;
+    &lt;select id=&quot;lines-baseline&quot;&gt;
+      &lt;option value=&quot;alphabetic&quot;&gt;Alphabetic&lt;/option&gt;
+      &lt;option value=&quot;bottom&quot;&gt;Bottom&lt;/option&gt;
+      &lt;option value=&quot;hanging&quot;&gt;Hanging&lt;/option&gt;
+      &lt;option value=&quot;ideographic&quot;&gt;Ideographic&lt;/option&gt;
+      &lt;option value=&quot;middle&quot; selected=&quot;selected&quot;&gt;Middle&lt;/option&gt;
+      &lt;option value=&quot;top&quot;&gt;Top&lt;/option&gt;
+    &lt;/select&gt;
+    &lt;br /&gt;
+    &lt;label&gt;Rotation: &lt;/label&gt;
+    &lt;select id=&quot;lines-rotation&quot;&gt;
+      &lt;option value=&quot;0&quot;&gt;0°&lt;/option&gt;
+      &lt;option value=&quot;0.785398164&quot;&gt;45°&lt;/option&gt;
+      &lt;option value=&quot;1.570796327&quot;&gt;90°&lt;/option&gt;
+    &lt;/select&gt;
+    &lt;br /&gt;
+    &lt;label&gt;Font: &lt;/label&gt;
+    &lt;select id=&quot;lines-font&quot;&gt;
+      &lt;option value=&quot;Arial&quot;&gt;Arial&lt;/option&gt;
+      &lt;option value=&quot;Courier New&quot; selected=&quot;selected&quot;&gt;Courier New&lt;/option&gt;
+      &lt;option value=&quot;Quattrocento Sans&quot;&gt;Quattrocento&lt;/option&gt;
+      &lt;option value=&quot;Verdana&quot;&gt;Verdana&lt;/option&gt;
+    &lt;/select&gt;
+    &lt;br /&gt;
+    &lt;label&gt;Weight: &lt;/label&gt;
+    &lt;select id=&quot;lines-weight&quot;&gt;
+      &lt;option value=&quot;bold&quot; selected=&quot;selected&quot;&gt;Bold&lt;/option&gt;
+      &lt;option value=&quot;normal&quot;&gt;Normal&lt;/option&gt;
+    &lt;/select&gt;
+    &lt;br /&gt;
+    &lt;label&gt;Size: &lt;/label&gt;
+    &lt;input type=&quot;text&quot; value=&quot;12px&quot; id=&quot;lines-size&quot; /&gt;
+    &lt;br /&gt;
+    &lt;label&gt;Offset X:&lt;/label&gt;
+    &lt;input type=&quot;text&quot; value=&quot;0&quot; id=&quot;lines-offset-x&quot; /&gt;
+    &lt;br /&gt;
+    &lt;label&gt;Offset Y:&lt;/label&gt;
+    &lt;input type=&quot;text&quot; value=&quot;0&quot; id=&quot;lines-offset-y&quot; /&gt;
+    &lt;br /&gt;
+    &lt;label&gt;Color :&lt;/label&gt;
+    &lt;input type=&quot;text&quot; value=&quot;green&quot; id=&quot;lines-color&quot; /&gt;
+    &lt;br /&gt;
+    &lt;label title=&quot;Outline Color&quot;&gt;O. Color:&lt;/label&gt;
+    &lt;input type=&quot;text&quot; value=&quot;#ffffff&quot; id=&quot;lines-outline&quot; /&gt;
+    &lt;br /&gt;
+    &lt;label title=&quot;Outline Width&quot;&gt;O. Width :&lt;/label&gt;
+    &lt;input type=&quot;text&quot; value=&quot;3&quot; id=&quot;lines-outline-width&quot; /&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+
+&lt;div class=&quot;edit-form&quot;&gt;
+  &lt;input id=&quot;refresh-polygons&quot; type=&quot;button&quot; value=&quot;Refresh&quot; /&gt;
+  &lt;h2&gt;Polygons&lt;/h2&gt;
+  &lt;div class=&quot;edit-form-elem&quot;&gt;
+    &lt;label&gt;Text: &lt;/label&gt;
+    &lt;select id=&quot;polygons-text&quot;&gt;
+      &lt;option value=&quot;hide&quot;&gt;Hide&lt;/option&gt;
+      &lt;option value=&quot;normal&quot; selected=&quot;selected&quot;&gt;Normal&lt;/option&gt;
+      &lt;option value=&quot;shorten&quot;&gt;Shorten&lt;/option&gt;
+      &lt;option value=&quot;wrap&quot;&gt;Wrap&lt;/option&gt;
+    &lt;/select&gt;
+    &lt;br /&gt;
+    &lt;label title=&quot;Max Resolution Denominator&quot;&gt;MaxReso.:&lt;/label&gt;
+    &lt;select id=&quot;polygons-maxreso&quot;&gt;
+      &lt;option value=&quot;38400&quot;&gt;38,400&lt;/option&gt;
+      &lt;option value=&quot;19200&quot;&gt;19,200&lt;/option&gt;
+      &lt;option value=&quot;9600&quot;&gt;9,600&lt;/option&gt;
+      &lt;option value=&quot;4800&quot;&gt;4,800&lt;/option&gt;
+      &lt;option value=&quot;2400&quot;&gt;2,400&lt;/option&gt;
+      &lt;option value=&quot;1200&quot; selected=&quot;selected&quot;&gt;1,200&lt;/option&gt;
+      &lt;option value=&quot;600&quot;&gt;600&lt;/option&gt;
+      &lt;option value=&quot;300&quot;&gt;300&lt;/option&gt;
+      &lt;option value=&quot;150&quot;&gt;150&lt;/option&gt;
+      &lt;option value=&quot;75&quot;&gt;75&lt;/option&gt;
+      &lt;option value=&quot;32&quot;&gt;32&lt;/option&gt;
+      &lt;option value=&quot;16&quot;&gt;16&lt;/option&gt;
+      &lt;option value=&quot;8&quot;&gt;8&lt;/option&gt;
+    &lt;/select&gt;
+    &lt;br /&gt;
+    &lt;label&gt;Align: &lt;/label&gt;
+    &lt;select id=&quot;polygons-align&quot;&gt;
+      &lt;option value=&quot;center&quot; selected=&quot;selected&quot;&gt;Center&lt;/option&gt;
+      &lt;option value=&quot;end&quot;&gt;End&lt;/option&gt;
+      &lt;option value=&quot;left&quot;&gt;Left&lt;/option&gt;
+      &lt;option value=&quot;right&quot;&gt;Right&lt;/option&gt;
+      &lt;option value=&quot;start&quot;&gt;Start&lt;/option&gt;
+    &lt;/select&gt;
+    &lt;br /&gt;
+    &lt;label&gt;Baseline: &lt;/label&gt;
+    &lt;select id=&quot;polygons-baseline&quot;&gt;
+      &lt;option value=&quot;alphabetic&quot;&gt;Alphabetic&lt;/option&gt;
+      &lt;option value=&quot;bottom&quot;&gt;Bottom&lt;/option&gt;
+      &lt;option value=&quot;hanging&quot;&gt;Hanging&lt;/option&gt;
+      &lt;option value=&quot;ideographic&quot;&gt;Ideographic&lt;/option&gt;
+      &lt;option value=&quot;middle&quot; selected=&quot;selected&quot;&gt;Middle&lt;/option&gt;
+      &lt;option value=&quot;top&quot;&gt;Top&lt;/option&gt;
+    &lt;/select&gt;
+    &lt;br /&gt;
+    &lt;label&gt;Rotation: &lt;/label&gt;
+    &lt;select id=&quot;polygons-rotation&quot;&gt;
+      &lt;option value=&quot;0&quot;&gt;0°&lt;/option&gt;
+      &lt;option value=&quot;0.785398164&quot;&gt;45°&lt;/option&gt;
+      &lt;option value=&quot;1.570796327&quot;&gt;90°&lt;/option&gt;
+    &lt;/select&gt;
+    &lt;br /&gt;
+    &lt;label&gt;Font: &lt;/label&gt;
+    &lt;select id=&quot;polygons-font&quot;&gt;
+      &lt;option value=&quot;Arial&quot;&gt;Arial&lt;/option&gt;
+      &lt;option value=&quot;Courier New&quot;&gt;Courier New&lt;/option&gt;
+      &lt;option value=&quot;Quattrocento Sans&quot;&gt;Quattrocento&lt;/option&gt;
+      &lt;option value=&quot;Verdana&quot; selected=&quot;selected&quot;&gt;Verdana&lt;/option&gt;
+    &lt;/select&gt;
+    &lt;br /&gt;
+    &lt;label&gt;Weight: &lt;/label&gt;
+    &lt;select id=&quot;polygons-weight&quot;&gt;
+      &lt;option value=&quot;bold&quot; selected=&quot;selected&quot;&gt;Bold&lt;/option&gt;
+      &lt;option value=&quot;normal&quot;&gt;Normal&lt;/option&gt;
+    &lt;/select&gt;
+    &lt;br /&gt;
+    &lt;label&gt;Size: &lt;/label&gt;
+    &lt;input type=&quot;text&quot; value=&quot;10px&quot; id=&quot;polygons-size&quot; /&gt;
+    &lt;br /&gt;
+    &lt;label&gt;Offset X:&lt;/label&gt;
+    &lt;input type=&quot;text&quot; value=&quot;0&quot; id=&quot;polygons-offset-x&quot; /&gt;
+    &lt;br /&gt;
+    &lt;label&gt;Offset Y:&lt;/label&gt;
+    &lt;input type=&quot;text&quot; value=&quot;0&quot; id=&quot;polygons-offset-y&quot; /&gt;
+    &lt;br /&gt;
+    &lt;label&gt;Color :&lt;/label&gt;
+    &lt;input type=&quot;text&quot; value=&quot;blue&quot; id=&quot;polygons-color&quot; /&gt;
+    &lt;br /&gt;
+    &lt;label title=&quot;Outline Color&quot;&gt;O. Color:&lt;/label&gt;
+    &lt;input type=&quot;text&quot; value=&quot;#ffffff&quot; id=&quot;polygons-outline&quot; /&gt;
+    &lt;br /&gt;
+    &lt;label title=&quot;Outline Width&quot;&gt;O. Width :&lt;/label&gt;
+    &lt;input type=&quot;text&quot; value=&quot;3&quot; id=&quot;polygons-outline-width&quot; /&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+</textarea>
+          <input type="hidden" name="wrap" value="l">
+          <input type="hidden" name="resources" value="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css,https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js,http://openlayers.org/en/v3.8.2/css/ol.css,http://openlayers.org/en/v3.8.2/build/ol.js">
+        </form>
+        <pre><code id="example-source" class="language-markup">&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+&lt;title&gt;Vector labels example&lt;/title&gt;
+&lt;script src="https://code.jquery.com/jquery-1.11.2.min.js"&gt;&lt;/script&gt;
+&lt;link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css"&gt;
+&lt;script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"&gt;&lt;/script&gt;
+&lt;link rel="stylesheet" href="http://openlayers.org/en/v3.8.2/css/ol.css" type="text/css"&gt;
+&lt;script src="http://openlayers.org/en/v3.8.2/build/ol.js"&gt;&lt;/script&gt;
+
+&lt;style&gt;
+h2 {
+  font-size: 1.5em;
+  line-height: 15px;
+}
+
+.scale-cnt {
+  margin: 5px;
+}
+
+.edit-form-ctn {
+}
+
+.edit-form {
+  float: left;
+  margin: 5px;
+  width: 230px;
+  padding: 4px;
+  border: 1px solid black;
+}
+
+.edit-form input[type=&quot;button&quot;] {
+  float: right;
+}
+
+.edit-form-elem label {
+  display: block;
+  float: left;
+  width: 85px;
+}
+
+.edit-form-elem input[type=&quot;text&quot;] {
+  width: 60px;
+}
+
+.edit-form-elem select {
+  width: 130px;
+}
+
+&lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;div class="container-fluid"&gt;
+
+&lt;div class=&quot;row-fluid&quot;&gt;
+  &lt;div class=&quot;span12&quot;&gt;
+    &lt;div id=&quot;map&quot; class=&quot;map&quot;&gt;&lt;/div&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+
+&lt;div class=&quot;edit-form&quot;&gt;
+  &lt;input id=&quot;refresh-points&quot; type=&quot;button&quot; value=&quot;Refresh&quot; /&gt;
+  &lt;h2&gt;Points&lt;/h2&gt;
+  &lt;div class=&quot;edit-form-elem&quot;&gt;
+    &lt;label&gt;Text: &lt;/label&gt;
+    &lt;select id=&quot;points-text&quot;&gt;
+      &lt;option value=&quot;hide&quot;&gt;Hide&lt;/option&gt;
+      &lt;option value=&quot;normal&quot;&gt;Normal&lt;/option&gt;
+      &lt;option value=&quot;shorten&quot; selected=&quot;selected&quot;&gt;Shorten&lt;/option&gt;
+      &lt;option value=&quot;wrap&quot;&gt;Wrap&lt;/option&gt;
+    &lt;/select&gt;
+    &lt;br /&gt;
+    &lt;label title=&quot;Max Resolution Denominator&quot;&gt;MaxReso.:&lt;/label&gt;
+    &lt;select id=&quot;points-maxreso&quot;&gt;
+      &lt;option value=&quot;38400&quot;&gt;38,400&lt;/option&gt;
+      &lt;option value=&quot;19200&quot;&gt;19,200&lt;/option&gt;
+      &lt;option value=&quot;9600&quot;&gt;9,600&lt;/option&gt;
+      &lt;option value=&quot;4800&quot;&gt;4,800&lt;/option&gt;
+      &lt;option value=&quot;2400&quot;&gt;2,400&lt;/option&gt;
+      &lt;option value=&quot;1200&quot; selected=&quot;selected&quot;&gt;1,200&lt;/option&gt;
+      &lt;option value=&quot;600&quot;&gt;600&lt;/option&gt;
+      &lt;option value=&quot;300&quot;&gt;300&lt;/option&gt;
+      &lt;option value=&quot;150&quot;&gt;150&lt;/option&gt;
+      &lt;option value=&quot;75&quot;&gt;75&lt;/option&gt;
+      &lt;option value=&quot;32&quot;&gt;32&lt;/option&gt;
+      &lt;option value=&quot;16&quot;&gt;16&lt;/option&gt;
+      &lt;option value=&quot;8&quot;&gt;8&lt;/option&gt;
+    &lt;/select&gt;
+    &lt;br /&gt;
+    &lt;label&gt;Align: &lt;/label&gt;
+    &lt;select id=&quot;points-align&quot;&gt;
+      &lt;option value=&quot;center&quot; selected=&quot;selected&quot;&gt;Center&lt;/option&gt;
+      &lt;option value=&quot;end&quot;&gt;End&lt;/option&gt;
+      &lt;option value=&quot;left&quot;&gt;Left&lt;/option&gt;
+      &lt;option value=&quot;right&quot;&gt;Right&lt;/option&gt;
+      &lt;option value=&quot;start&quot;&gt;Start&lt;/option&gt;
+    &lt;/select&gt;
+    &lt;br /&gt;
+    &lt;label&gt;Baseline: &lt;/label&gt;
+    &lt;select id=&quot;points-baseline&quot;&gt;
+      &lt;option value=&quot;alphabetic&quot;&gt;Alphabetic&lt;/option&gt;
+      &lt;option value=&quot;bottom&quot;&gt;Bottom&lt;/option&gt;
+      &lt;option value=&quot;hanging&quot;&gt;Hanging&lt;/option&gt;
+      &lt;option value=&quot;ideographic&quot;&gt;Ideographic&lt;/option&gt;
+      &lt;option value=&quot;middle&quot; selected=&quot;selected&quot;&gt;Middle&lt;/option&gt;
+      &lt;option value=&quot;top&quot;&gt;Top&lt;/option&gt;
+    &lt;/select&gt;
+    &lt;br /&gt;
+    &lt;label&gt;Rotation: &lt;/label&gt;
+    &lt;select id=&quot;points-rotation&quot;&gt;
+      &lt;option value=&quot;0&quot;&gt;0°&lt;/option&gt;
+      &lt;option value=&quot;0.785398164&quot;&gt;45°&lt;/option&gt;
+      &lt;option value=&quot;1.570796327&quot;&gt;90°&lt;/option&gt;
+    &lt;/select&gt;
+    &lt;br /&gt;
+    &lt;label&gt;Font: &lt;/label&gt;
+    &lt;select id=&quot;points-font&quot;&gt;
+      &lt;option value=&quot;Arial&quot; selected=&quot;selected&quot;&gt;Arial&lt;/option&gt;
+      &lt;option value=&quot;Courier New&quot;&gt;Courier New&lt;/option&gt;
+      &lt;option value=&quot;Quattrocento Sans&quot;&gt;Quattrocento&lt;/option&gt;
+      &lt;option value=&quot;Verdana&quot;&gt;Verdana&lt;/option&gt;
+    &lt;/select&gt;
+    &lt;br /&gt;
+    &lt;label&gt;Weight: &lt;/label&gt;
+    &lt;select id=&quot;points-weight&quot;&gt;
+      &lt;option value=&quot;bold&quot;&gt;Bold&lt;/option&gt;
+      &lt;option value=&quot;normal&quot; selected=&quot;selected&quot;&gt;Normal&lt;/option&gt;
+    &lt;/select&gt;
+    &lt;br /&gt;
+    &lt;label&gt;Size: &lt;/label&gt;
+    &lt;input type=&quot;text&quot; value=&quot;12px&quot; id=&quot;points-size&quot; /&gt;
+    &lt;br /&gt;
+    &lt;label&gt;Offset X:&lt;/label&gt;
+    &lt;input type=&quot;text&quot; value=&quot;0&quot; id=&quot;points-offset-x&quot; /&gt;
+    &lt;br /&gt;
+    &lt;label&gt;Offset Y:&lt;/label&gt;
+    &lt;input type=&quot;text&quot; value=&quot;0&quot; id=&quot;points-offset-y&quot; /&gt;
+    &lt;br /&gt;
+    &lt;label&gt;Color :&lt;/label&gt;
+    &lt;input type=&quot;text&quot; value=&quot;#aa3300&quot; id=&quot;points-color&quot; /&gt;
+    &lt;br /&gt;
+    &lt;label title=&quot;Outline Color&quot;&gt;O. Color:&lt;/label&gt;
+    &lt;input type=&quot;text&quot; value=&quot;#ffffff&quot; id=&quot;points-outline&quot; /&gt;
+    &lt;br /&gt;
+    &lt;label title=&quot;Outline Width&quot;&gt;O. Width :&lt;/label&gt;
+    &lt;input type=&quot;text&quot; value=&quot;3&quot; id=&quot;points-outline-width&quot; /&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+
+&lt;div class=&quot;edit-form&quot;&gt;
+  &lt;input id=&quot;refresh-lines&quot; type=&quot;button&quot; value=&quot;Refresh&quot; /&gt;
+  &lt;h2&gt;Lines&lt;/h2&gt;
+  &lt;div class=&quot;edit-form-elem&quot;&gt;
+    &lt;label&gt;Text: &lt;/label&gt;
+    &lt;select id=&quot;lines-text&quot;&gt;
+      &lt;option value=&quot;hide&quot;&gt;Hide&lt;/option&gt;
+      &lt;option value=&quot;normal&quot;&gt;Normal&lt;/option&gt;
+      &lt;option value=&quot;shorten&quot;&gt;Shorten&lt;/option&gt;
+      &lt;option value=&quot;wrap&quot; selected=&quot;selected&quot;&gt;Wrap&lt;/option&gt;
+    &lt;/select&gt;
+    &lt;br /&gt;
+    &lt;label title=&quot;Max Resolution Denominator&quot;&gt;MaxReso.:&lt;/label&gt;
+    &lt;select id=&quot;lines-maxreso&quot;&gt;
+      &lt;option value=&quot;38400&quot;&gt;38,400&lt;/option&gt;
+      &lt;option value=&quot;19200&quot;&gt;19,200&lt;/option&gt;
+      &lt;option value=&quot;9600&quot;&gt;9,600&lt;/option&gt;
+      &lt;option value=&quot;4800&quot;&gt;4,800&lt;/option&gt;
+      &lt;option value=&quot;2400&quot;&gt;2,400&lt;/option&gt;
+      &lt;option value=&quot;1200&quot; selected=&quot;selected&quot;&gt;1,200&lt;/option&gt;
+      &lt;option value=&quot;600&quot;&gt;600&lt;/option&gt;
+      &lt;option value=&quot;300&quot;&gt;300&lt;/option&gt;
+      &lt;option value=&quot;150&quot;&gt;150&lt;/option&gt;
+      &lt;option value=&quot;75&quot;&gt;75&lt;/option&gt;
+      &lt;option value=&quot;32&quot;&gt;32&lt;/option&gt;
+      &lt;option value=&quot;16&quot;&gt;16&lt;/option&gt;
+      &lt;option value=&quot;8&quot;&gt;8&lt;/option&gt;
+    &lt;/select&gt;
+    &lt;br /&gt;
+    &lt;label&gt;Align: &lt;/label&gt;
+    &lt;select id=&quot;lines-align&quot;&gt;
+      &lt;option value=&quot;center&quot; selected=&quot;selected&quot;&gt;Center&lt;/option&gt;
+      &lt;option value=&quot;end&quot;&gt;End&lt;/option&gt;
+      &lt;option value=&quot;left&quot;&gt;Left&lt;/option&gt;
+      &lt;option value=&quot;right&quot;&gt;Right&lt;/option&gt;
+      &lt;option value=&quot;start&quot;&gt;Start&lt;/option&gt;
+    &lt;/select&gt;
+    &lt;br /&gt;
+    &lt;label&gt;Baseline: &lt;/label&gt;
+    &lt;select id=&quot;lines-baseline&quot;&gt;
+      &lt;option value=&quot;alphabetic&quot;&gt;Alphabetic&lt;/option&gt;
+      &lt;option value=&quot;bottom&quot;&gt;Bottom&lt;/option&gt;
+      &lt;option value=&quot;hanging&quot;&gt;Hanging&lt;/option&gt;
+      &lt;option value=&quot;ideographic&quot;&gt;Ideographic&lt;/option&gt;
+      &lt;option value=&quot;middle&quot; selected=&quot;selected&quot;&gt;Middle&lt;/option&gt;
+      &lt;option value=&quot;top&quot;&gt;Top&lt;/option&gt;
+    &lt;/select&gt;
+    &lt;br /&gt;
+    &lt;label&gt;Rotation: &lt;/label&gt;
+    &lt;select id=&quot;lines-rotation&quot;&gt;
+      &lt;option value=&quot;0&quot;&gt;0°&lt;/option&gt;
+      &lt;option value=&quot;0.785398164&quot;&gt;45°&lt;/option&gt;
+      &lt;option value=&quot;1.570796327&quot;&gt;90°&lt;/option&gt;
+    &lt;/select&gt;
+    &lt;br /&gt;
+    &lt;label&gt;Font: &lt;/label&gt;
+    &lt;select id=&quot;lines-font&quot;&gt;
+      &lt;option value=&quot;Arial&quot;&gt;Arial&lt;/option&gt;
+      &lt;option value=&quot;Courier New&quot; selected=&quot;selected&quot;&gt;Courier New&lt;/option&gt;
+      &lt;option value=&quot;Quattrocento Sans&quot;&gt;Quattrocento&lt;/option&gt;
+      &lt;option value=&quot;Verdana&quot;&gt;Verdana&lt;/option&gt;
+    &lt;/select&gt;
+    &lt;br /&gt;
+    &lt;label&gt;Weight: &lt;/label&gt;
+    &lt;select id=&quot;lines-weight&quot;&gt;
+      &lt;option value=&quot;bold&quot; selected=&quot;selected&quot;&gt;Bold&lt;/option&gt;
+      &lt;option value=&quot;normal&quot;&gt;Normal&lt;/option&gt;
+    &lt;/select&gt;
+    &lt;br /&gt;
+    &lt;label&gt;Size: &lt;/label&gt;
+    &lt;input type=&quot;text&quot; value=&quot;12px&quot; id=&quot;lines-size&quot; /&gt;
+    &lt;br /&gt;
+    &lt;label&gt;Offset X:&lt;/label&gt;
+    &lt;input type=&quot;text&quot; value=&quot;0&quot; id=&quot;lines-offset-x&quot; /&gt;
+    &lt;br /&gt;
+    &lt;label&gt;Offset Y:&lt;/label&gt;
+    &lt;input type=&quot;text&quot; value=&quot;0&quot; id=&quot;lines-offset-y&quot; /&gt;
+    &lt;br /&gt;
+    &lt;label&gt;Color :&lt;/label&gt;
+    &lt;input type=&quot;text&quot; value=&quot;green&quot; id=&quot;lines-color&quot; /&gt;
+    &lt;br /&gt;
+    &lt;label title=&quot;Outline Color&quot;&gt;O. Color:&lt;/label&gt;
+    &lt;input type=&quot;text&quot; value=&quot;#ffffff&quot; id=&quot;lines-outline&quot; /&gt;
+    &lt;br /&gt;
+    &lt;label title=&quot;Outline Width&quot;&gt;O. Width :&lt;/label&gt;
+    &lt;input type=&quot;text&quot; value=&quot;3&quot; id=&quot;lines-outline-width&quot; /&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+
+&lt;div class=&quot;edit-form&quot;&gt;
+  &lt;input id=&quot;refresh-polygons&quot; type=&quot;button&quot; value=&quot;Refresh&quot; /&gt;
+  &lt;h2&gt;Polygons&lt;/h2&gt;
+  &lt;div class=&quot;edit-form-elem&quot;&gt;
+    &lt;label&gt;Text: &lt;/label&gt;
+    &lt;select id=&quot;polygons-text&quot;&gt;
+      &lt;option value=&quot;hide&quot;&gt;Hide&lt;/option&gt;
+      &lt;option value=&quot;normal&quot; selected=&quot;selected&quot;&gt;Normal&lt;/option&gt;
+      &lt;option value=&quot;shorten&quot;&gt;Shorten&lt;/option&gt;
+      &lt;option value=&quot;wrap&quot;&gt;Wrap&lt;/option&gt;
+    &lt;/select&gt;
+    &lt;br /&gt;
+    &lt;label title=&quot;Max Resolution Denominator&quot;&gt;MaxReso.:&lt;/label&gt;
+    &lt;select id=&quot;polygons-maxreso&quot;&gt;
+      &lt;option value=&quot;38400&quot;&gt;38,400&lt;/option&gt;
+      &lt;option value=&quot;19200&quot;&gt;19,200&lt;/option&gt;
+      &lt;option value=&quot;9600&quot;&gt;9,600&lt;/option&gt;
+      &lt;option value=&quot;4800&quot;&gt;4,800&lt;/option&gt;
+      &lt;option value=&quot;2400&quot;&gt;2,400&lt;/option&gt;
+      &lt;option value=&quot;1200&quot; selected=&quot;selected&quot;&gt;1,200&lt;/option&gt;
+      &lt;option value=&quot;600&quot;&gt;600&lt;/option&gt;
+      &lt;option value=&quot;300&quot;&gt;300&lt;/option&gt;
+      &lt;option value=&quot;150&quot;&gt;150&lt;/option&gt;
+      &lt;option value=&quot;75&quot;&gt;75&lt;/option&gt;
+      &lt;option value=&quot;32&quot;&gt;32&lt;/option&gt;
+      &lt;option value=&quot;16&quot;&gt;16&lt;/option&gt;
+      &lt;option value=&quot;8&quot;&gt;8&lt;/option&gt;
+    &lt;/select&gt;
+    &lt;br /&gt;
+    &lt;label&gt;Align: &lt;/label&gt;
+    &lt;select id=&quot;polygons-align&quot;&gt;
+      &lt;option value=&quot;center&quot; selected=&quot;selected&quot;&gt;Center&lt;/option&gt;
+      &lt;option value=&quot;end&quot;&gt;End&lt;/option&gt;
+      &lt;option value=&quot;left&quot;&gt;Left&lt;/option&gt;
+      &lt;option value=&quot;right&quot;&gt;Right&lt;/option&gt;
+      &lt;option value=&quot;start&quot;&gt;Start&lt;/option&gt;
+    &lt;/select&gt;
+    &lt;br /&gt;
+    &lt;label&gt;Baseline: &lt;/label&gt;
+    &lt;select id=&quot;polygons-baseline&quot;&gt;
+      &lt;option value=&quot;alphabetic&quot;&gt;Alphabetic&lt;/option&gt;
+      &lt;option value=&quot;bottom&quot;&gt;Bottom&lt;/option&gt;
+      &lt;option value=&quot;hanging&quot;&gt;Hanging&lt;/option&gt;
+      &lt;option value=&quot;ideographic&quot;&gt;Ideographic&lt;/option&gt;
+      &lt;option value=&quot;middle&quot; selected=&quot;selected&quot;&gt;Middle&lt;/option&gt;
+      &lt;option value=&quot;top&quot;&gt;Top&lt;/option&gt;
+    &lt;/select&gt;
+    &lt;br /&gt;
+    &lt;label&gt;Rotation: &lt;/label&gt;
+    &lt;select id=&quot;polygons-rotation&quot;&gt;
+      &lt;option value=&quot;0&quot;&gt;0°&lt;/option&gt;
+      &lt;option value=&quot;0.785398164&quot;&gt;45°&lt;/option&gt;
+      &lt;option value=&quot;1.570796327&quot;&gt;90°&lt;/option&gt;
+    &lt;/select&gt;
+    &lt;br /&gt;
+    &lt;label&gt;Font: &lt;/label&gt;
+    &lt;select id=&quot;polygons-font&quot;&gt;
+      &lt;option value=&quot;Arial&quot;&gt;Arial&lt;/option&gt;
+      &lt;option value=&quot;Courier New&quot;&gt;Courier New&lt;/option&gt;
+      &lt;option value=&quot;Quattrocento Sans&quot;&gt;Quattrocento&lt;/option&gt;
+      &lt;option value=&quot;Verdana&quot; selected=&quot;selected&quot;&gt;Verdana&lt;/option&gt;
+    &lt;/select&gt;
+    &lt;br /&gt;
+    &lt;label&gt;Weight: &lt;/label&gt;
+    &lt;select id=&quot;polygons-weight&quot;&gt;
+      &lt;option value=&quot;bold&quot; selected=&quot;selected&quot;&gt;Bold&lt;/option&gt;
+      &lt;option value=&quot;normal&quot;&gt;Normal&lt;/option&gt;
+    &lt;/select&gt;
+    &lt;br /&gt;
+    &lt;label&gt;Size: &lt;/label&gt;
+    &lt;input type=&quot;text&quot; value=&quot;10px&quot; id=&quot;polygons-size&quot; /&gt;
+    &lt;br /&gt;
+    &lt;label&gt;Offset X:&lt;/label&gt;
+    &lt;input type=&quot;text&quot; value=&quot;0&quot; id=&quot;polygons-offset-x&quot; /&gt;
+    &lt;br /&gt;
+    &lt;label&gt;Offset Y:&lt;/label&gt;
+    &lt;input type=&quot;text&quot; value=&quot;0&quot; id=&quot;polygons-offset-y&quot; /&gt;
+    &lt;br /&gt;
+    &lt;label&gt;Color :&lt;/label&gt;
+    &lt;input type=&quot;text&quot; value=&quot;blue&quot; id=&quot;polygons-color&quot; /&gt;
+    &lt;br /&gt;
+    &lt;label title=&quot;Outline Color&quot;&gt;O. Color:&lt;/label&gt;
+    &lt;input type=&quot;text&quot; value=&quot;#ffffff&quot; id=&quot;polygons-outline&quot; /&gt;
+    &lt;br /&gt;
+    &lt;label title=&quot;Outline Width&quot;&gt;O. Width :&lt;/label&gt;
+    &lt;input type=&quot;text&quot; value=&quot;3&quot; id=&quot;polygons-outline-width&quot; /&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+
+&lt;/div&gt;
+&lt;script&gt;
+var myDom = {
+  points: {
+    text: document.getElementById(&#x27;points-text&#x27;),
+    align: document.getElementById(&#x27;points-align&#x27;),
+    baseline: document.getElementById(&#x27;points-baseline&#x27;),
+    rotation: document.getElementById(&#x27;points-rotation&#x27;),
+    font: document.getElementById(&#x27;points-font&#x27;),
+    weight: document.getElementById(&#x27;points-weight&#x27;),
+    size: document.getElementById(&#x27;points-size&#x27;),
+    offsetX: document.getElementById(&#x27;points-offset-x&#x27;),
+    offsetY: document.getElementById(&#x27;points-offset-y&#x27;),
+    color: document.getElementById(&#x27;points-color&#x27;),
+    outline: document.getElementById(&#x27;points-outline&#x27;),
+    outlineWidth: document.getElementById(&#x27;points-outline-width&#x27;),
+    maxreso: document.getElementById(&#x27;points-maxreso&#x27;)
+  },
+  lines: {
+    text: document.getElementById(&#x27;lines-text&#x27;),
+    align: document.getElementById(&#x27;lines-align&#x27;),
+    baseline: document.getElementById(&#x27;lines-baseline&#x27;),
+    rotation: document.getElementById(&#x27;lines-rotation&#x27;),
+    font: document.getElementById(&#x27;lines-font&#x27;),
+    weight: document.getElementById(&#x27;lines-weight&#x27;),
+    size: document.getElementById(&#x27;lines-size&#x27;),
+    offsetX: document.getElementById(&#x27;lines-offset-x&#x27;),
+    offsetY: document.getElementById(&#x27;lines-offset-y&#x27;),
+    color: document.getElementById(&#x27;lines-color&#x27;),
+    outline: document.getElementById(&#x27;lines-outline&#x27;),
+    outlineWidth: document.getElementById(&#x27;lines-outline-width&#x27;),
+    maxreso: document.getElementById(&#x27;lines-maxreso&#x27;)
+  },
+  polygons: {
+    text: document.getElementById(&#x27;polygons-text&#x27;),
+    align: document.getElementById(&#x27;polygons-align&#x27;),
+    baseline: document.getElementById(&#x27;polygons-baseline&#x27;),
+    rotation: document.getElementById(&#x27;polygons-rotation&#x27;),
+    font: document.getElementById(&#x27;polygons-font&#x27;),
+    weight: document.getElementById(&#x27;polygons-weight&#x27;),
+    size: document.getElementById(&#x27;polygons-size&#x27;),
+    offsetX: document.getElementById(&#x27;polygons-offset-x&#x27;),
+    offsetY: document.getElementById(&#x27;polygons-offset-y&#x27;),
+    color: document.getElementById(&#x27;polygons-color&#x27;),
+    outline: document.getElementById(&#x27;polygons-outline&#x27;),
+    outlineWidth: document.getElementById(&#x27;polygons-outline-width&#x27;),
+    maxreso: document.getElementById(&#x27;polygons-maxreso&#x27;)
+  }
+};
+
+var getText = function(feature, resolution, dom) {
+  var type = dom.text.value;
+  var maxResolution = dom.maxreso.value;
+  var text = feature.get(&#x27;name&#x27;);
+
+  if (resolution &gt; maxResolution) {
+    text = &#x27;&#x27;;
+  } else if (type == &#x27;hide&#x27;) {
+    text = &#x27;&#x27;;
+  } else if (type == &#x27;shorten&#x27;) {
+    text = text.trunc(12);
+  } else if (type == &#x27;wrap&#x27;) {
+    text = stringDivider(text, 16, &#x27;\n&#x27;);
+  }
+
+  return text;
+};
+
+
+var createTextStyle = function(feature, resolution, dom) {
+  var align = dom.align.value;
+  var baseline = dom.baseline.value;
+  var size = dom.size.value;
+  var offsetX = parseInt(dom.offsetX.value, 10);
+  var offsetY = parseInt(dom.offsetY.value, 10);
+  var weight = dom.weight.value;
+  var rotation = parseFloat(dom.rotation.value);
+  var font = weight + &#x27; &#x27; + size + &#x27; &#x27; + dom.font.value;
+  var fillColor = dom.color.value;
+  var outlineColor = dom.outline.value;
+  var outlineWidth = parseInt(dom.outlineWidth.value, 10);
+
+  return new ol.style.Text({
+    textAlign: align,
+    textBaseline: baseline,
+    font: font,
+    text: getText(feature, resolution, dom),
+    fill: new ol.style.Fill({color: fillColor}),
+    stroke: new ol.style.Stroke({color: outlineColor, width: outlineWidth}),
+    offsetX: offsetX,
+    offsetY: offsetY,
+    rotation: rotation
+  });
+};
+
+
+// Polygons
+var createPolygonStyleFunction = function() {
+  return function(feature, resolution) {
+    var style = new ol.style.Style({
+      stroke: new ol.style.Stroke({
+        color: &#x27;blue&#x27;,
+        width: 1
+      }),
+      fill: new ol.style.Fill({
+        color: &#x27;rgba(0, 0, 255, 0.1)&#x27;
+      }),
+      text: createTextStyle(feature, resolution, myDom.polygons)
+    });
+    return [style];
+  };
+};
+
+var vectorPolygons = new ol.layer.Vector({
+  source: new ol.source.Vector({
+    url: &#x27;data/geojson/polygon-samples.geojson&#x27;,
+    format: new ol.format.GeoJSON()
+  }),
+  style: createPolygonStyleFunction()
+});
+
+
+// Lines
+var createLineStyleFunction = function() {
+  return function(feature, resolution) {
+    var style = new ol.style.Style({
+      stroke: new ol.style.Stroke({
+        color: &#x27;green&#x27;,
+        width: 2
+      }),
+      text: createTextStyle(feature, resolution, myDom.lines)
+    });
+    return [style];
+  };
+};
+
+var vectorLines = new ol.layer.Vector({
+  source: new ol.source.Vector({
+    url: &#x27;data/geojson/line-samples.geojson&#x27;,
+    format: new ol.format.GeoJSON()
+  }),
+  style: createLineStyleFunction()
+});
+
+
+// Points
+var createPointStyleFunction = function() {
+  return function(feature, resolution) {
+    var style = new ol.style.Style({
+      image: new ol.style.Circle({
+        radius: 10,
+        fill: new ol.style.Fill({color: &#x27;rgba(255, 0, 0, 0.1)&#x27;}),
+        stroke: new ol.style.Stroke({color: &#x27;red&#x27;, width: 1})
+      }),
+      text: createTextStyle(feature, resolution, myDom.points)
+    });
+    return [style];
+  };
+};
+
+var vectorPoints = new ol.layer.Vector({
+  source: new ol.source.Vector({
+    url: &#x27;data/geojson/point-samples.geojson&#x27;,
+    format: new ol.format.GeoJSON()
+  }),
+  style: createPointStyleFunction()
+});
+
+var map = new ol.Map({
+  layers: [
+    new ol.layer.Tile({
+      source: new ol.source.MapQuest({layer: &#x27;osm&#x27;})
+    }),
+    vectorPolygons,
+    vectorLines,
+    vectorPoints
+  ],
+  target: &#x27;map&#x27;,
+  view: new ol.View({
+    center: [-8161939, 6095025],
+    zoom: 8
+  })
+});
+
+$(&#x27;#refresh-points&#x27;).click(function() {
+  vectorPoints.setStyle(createPointStyleFunction());
+});
+
+$(&#x27;#refresh-lines&#x27;).click(function() {
+  vectorLines.setStyle(createLineStyleFunction());
+});
+
+$(&#x27;#refresh-polygons&#x27;).click(function() {
+  vectorPolygons.setStyle(createPolygonStyleFunction());
+});
+
+
+/**
+ * @param {number} n The max number of characters to keep.
+ * @return {string} Truncated string.
+ */
+String.prototype.trunc = String.prototype.trunc ||
+    function(n) {
+      return this.length &gt; n ? this.substr(0, n - 1) + &#x27;...&#x27; : this.substr(0);
+    };
+
+
+// http://stackoverflow.com/questions/14484787/wrap-text-in-javascript
+function stringDivider(str, width, spaceReplacer) {
+  if (str.length &gt; width) {
+    var p = width;
+    for (; p &gt; 0 &amp;&amp; (str[p] != &#x27; &#x27; &amp;&amp; str[p] != &#x27;-&#x27;); p--) {
+    }
+    if (p &gt; 0) {
+      var left;
+      if (str.substring(p, p + 1) == &#x27;-&#x27;) {
+        left = str.substring(0, p + 1);
+      } else {
+        left = str.substring(0, p);
+      }
+      var right = str.substring(p + 1);
+      return left + spaceReplacer + stringDivider(right, width, spaceReplacer);
+    }
+  }
+  return str;
+}
+
+&lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+      </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-1.11.2.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+    <script src="./resources/common.js"></script>
+    <script src="./resources/prism/prism.min.js"></script>
+    <script src="loader.js?id=vector-labels"></script>
+
+  </body>
+</html>

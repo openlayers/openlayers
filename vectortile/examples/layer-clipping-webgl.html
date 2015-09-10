@@ -1,0 +1,309 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no, width=device-width">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css" type="text/css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" type="text/css">
+    <link rel="stylesheet" href="./resources/prism/prism.css" type="text/css">
+    <link rel="stylesheet" href="../css/ol.css" type="text/css">
+    <link rel="stylesheet" href="./resources/layout.css" type="text/css">
+    
+    
+    <script src="./resources/zeroclipboard/ZeroClipboard.min.js"></script>
+    <title>Layer WebGL clipping example</title>
+  </head>
+  <body>
+
+    <header class="navbar" role="navigation">
+      <div class="container" id="navbar-inner-container">
+        <a class="navbar-brand" href="./"><img src="./resources/logo-70x70.png">&nbsp;OpenLayers 3 Examples</a>
+      </div>
+    </header>
+
+    <div class="container-fluid">
+
+      <div class="row-fluid">
+  <div class="span12">
+    <div id="map" class="map"></div>
+  </div>
+</div>
+<div id="no-webgl" class="alert alert-danger" style="display: none">
+  This example requires a browser that supports <a href="http://get.webgl.org/">WebGL</a>.
+</div>
+
+
+      <div class="row-fluid">
+        <div class="span12">
+          <h4 id="title">Layer WebGL clipping example</h4>
+          <p id="shortdesc">Layer WebGL clipping example.</p>
+          <div id="docs"><p>This example shows how to use the <code>precompose</code> and <code>postcompose</code> rendering hooks to clip layers using WebGL.</p>
+</div>
+          <div id="tags">clipping, webgl, openstreetmap</div>
+          <div id="api-links">Related API documentation: <ul class="inline"><li><a href="../apidoc/ol.Map.html" title="API documentation for ol.Map">ol.Map</a></li>,<li><a href="../apidoc/ol.View.html" title="API documentation for ol.View">ol.View</a></li>,<li><a href="../apidoc/ol.control.html" title="API documentation for ol.control">ol.control</a></li>,<li><a href="../apidoc/ol.has.html" title="API documentation for ol.has">ol.has</a></li>,<li><a href="../apidoc/ol.layer.Tile.html" title="API documentation for ol.layer.Tile">ol.layer.Tile</a></li>,<li><a href="../apidoc/ol.source.OSM.html" title="API documentation for ol.source.OSM">ol.source.OSM</a></li></ul></div>
+        </div>
+      </div>
+
+      <div class="row-fluid">
+        <div id="source-controls">
+          <a id="copy-button"><i class="fa fa-clipboard"></i> Copy</a>
+          <a id="jsfiddle-button"><i class="fa fa-jsfiddle"></i> Edit</a>
+        </div>
+        <form method="POST" id="jsfiddle-form" target="_blank" action="http://jsfiddle.net/api/post/jquery/1.11.0/">
+          <textarea class="hidden" name="js">if (!ol.has.WEBGL) {
+  var info = document.getElementById(&#x27;no-webgl&#x27;);
+  /**
+   * display error message
+   */
+  info.style.display = &#x27;&#x27;;
+} else {
+
+  var osm = new ol.layer.Tile({
+    source: new ol.source.OSM()
+  });
+
+  var map = new ol.Map({
+    layers: [osm],
+    renderer: &#x27;webgl&#x27;,
+    target: &#x27;map&#x27;,
+    controls: ol.control.defaults({
+      attributionOptions: /** @type {olx.control.AttributionOptions} */ ({
+        collapsible: false
+      })
+    }),
+    view: new ol.View({
+      center: [0, 0],
+      zoom: 2
+    })
+  });
+
+  var fragmentShaderSource = [
+    &#x27;precision mediump float;&#x27;,
+    &#x27;void main() {&#x27;,
+    &#x27;}&#x27;
+  ].join(&#x27;&#x27;);
+
+  var vertexShaderSource = [
+    &#x27;attribute vec2 a_position;&#x27;,
+    &#x27;void main() {&#x27;,
+    &#x27;  gl_Position = vec4(a_position, 0, 1);&#x27;,
+    &#x27;}&#x27;
+  ].join(&#x27;&#x27;);
+
+  osm.on(&#x27;precompose&#x27;, function(event) {
+    var context = event.glContext;
+
+    var gl = context.getGL();
+    var program = gl.createProgram();
+
+    var vertexShader = gl.createShader(gl.VERTEX_SHADER);
+    gl.shaderSource(vertexShader, vertexShaderSource);
+    gl.compileShader(vertexShader);
+    gl.attachShader(program, vertexShader);
+
+    var fragmentShader = gl.createShader(gl.FRAGMENT_SHADER);
+    gl.shaderSource(fragmentShader, fragmentShaderSource);
+    gl.compileShader(fragmentShader);
+    gl.attachShader(program, fragmentShader);
+
+    gl.linkProgram(program);
+    context.useProgram(program);
+
+    var positionLocation = gl.getAttribLocation(program, &#x27;a_position&#x27;);
+
+    gl.enable(gl.STENCIL_TEST);
+    gl.colorMask(false, false, false, false);
+    gl.stencilOp(gl.KEEP, gl.KEEP, gl.REPLACE);
+    gl.stencilFunc(gl.ALWAYS, 1, 0xff);
+
+    var buffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([
+      // first band
+      -1.0, -1.0, -0.75, -1.0, -1.0, 1.0,
+      -1.0, 1.0, -0.75, -1.0, -0.75, 1.0,
+      // second band
+      -0.5, -1.0, -0.25, -1.0, -0.5, 1.0,
+      -0.5, 1.0, -0.25, -1.0, -0.25, 1.0,
+      // third band
+      0.0, -1.0, 0.25, -1.0, 0.0, 1.0,
+      0.0, 1.0, 0.25, -1.0, 0.25, 1.0,
+      // forth band
+      0.5, -1.0, 0.75, -1.0, 0.5, 1.0,
+      0.5, 1.0, 0.75, -1.0, 0.75, 1.0
+    ]), gl.STATIC_DRAW);
+
+    gl.enableVertexAttribArray(positionLocation);
+    gl.vertexAttribPointer(positionLocation, 2, gl.FLOAT, false, 0, 0);
+    gl.drawArrays(gl.TRIANGLES, 0, 24);
+
+    gl.bindBuffer(gl.ARRAY_BUFFER, null);
+    gl.deleteBuffer(buffer);
+
+    gl.colorMask(true, true, true, true);
+    gl.stencilFunc(gl.NOTEQUAL, 0, 0xff);
+    gl.stencilOp(gl.KEEP, gl.KEEP, gl.KEEP);
+  });
+
+  osm.on(&#x27;postcompose&#x27;, function(event) {
+    var context = event.glContext;
+    var gl = context.getGL();
+    gl.disable(gl.STENCIL_TEST);
+  });
+}
+</textarea>
+          <textarea class="hidden" name="css"></textarea>
+          <textarea class="hidden" name="html">&lt;div class=&quot;row-fluid&quot;&gt;
+  &lt;div class=&quot;span12&quot;&gt;
+    &lt;div id=&quot;map&quot; class=&quot;map&quot;&gt;&lt;/div&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+&lt;div id=&quot;no-webgl&quot; class=&quot;alert alert-danger&quot; style=&quot;display: none&quot;&gt;
+  This example requires a browser that supports &lt;a href=&quot;http://get.webgl.org/&quot;&gt;WebGL&lt;/a&gt;.
+&lt;/div&gt;
+</textarea>
+          <input type="hidden" name="wrap" value="l">
+          <input type="hidden" name="resources" value="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css,https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js,http://openlayers.org/en/v3.8.2/css/ol.css,http://openlayers.org/en/v3.8.2/build/ol.js">
+        </form>
+        <pre><code id="example-source" class="language-markup">&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+&lt;title&gt;Layer WebGL clipping example&lt;/title&gt;
+&lt;script src="https://code.jquery.com/jquery-1.11.2.min.js"&gt;&lt;/script&gt;
+&lt;link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css"&gt;
+&lt;script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"&gt;&lt;/script&gt;
+&lt;link rel="stylesheet" href="http://openlayers.org/en/v3.8.2/css/ol.css" type="text/css"&gt;
+&lt;script src="http://openlayers.org/en/v3.8.2/build/ol.js"&gt;&lt;/script&gt;
+
+&lt;/head&gt;
+&lt;body&gt;
+&lt;div class="container-fluid"&gt;
+
+&lt;div class=&quot;row-fluid&quot;&gt;
+  &lt;div class=&quot;span12&quot;&gt;
+    &lt;div id=&quot;map&quot; class=&quot;map&quot;&gt;&lt;/div&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+&lt;div id=&quot;no-webgl&quot; class=&quot;alert alert-danger&quot; style=&quot;display: none&quot;&gt;
+  This example requires a browser that supports &lt;a href=&quot;http://get.webgl.org/&quot;&gt;WebGL&lt;/a&gt;.
+&lt;/div&gt;
+
+&lt;/div&gt;
+&lt;script&gt;
+if (!ol.has.WEBGL) {
+  var info = document.getElementById(&#x27;no-webgl&#x27;);
+  /**
+   * display error message
+   */
+  info.style.display = &#x27;&#x27;;
+} else {
+
+  var osm = new ol.layer.Tile({
+    source: new ol.source.OSM()
+  });
+
+  var map = new ol.Map({
+    layers: [osm],
+    renderer: &#x27;webgl&#x27;,
+    target: &#x27;map&#x27;,
+    controls: ol.control.defaults({
+      attributionOptions: /** @type {olx.control.AttributionOptions} */ ({
+        collapsible: false
+      })
+    }),
+    view: new ol.View({
+      center: [0, 0],
+      zoom: 2
+    })
+  });
+
+  var fragmentShaderSource = [
+    &#x27;precision mediump float;&#x27;,
+    &#x27;void main() {&#x27;,
+    &#x27;}&#x27;
+  ].join(&#x27;&#x27;);
+
+  var vertexShaderSource = [
+    &#x27;attribute vec2 a_position;&#x27;,
+    &#x27;void main() {&#x27;,
+    &#x27;  gl_Position = vec4(a_position, 0, 1);&#x27;,
+    &#x27;}&#x27;
+  ].join(&#x27;&#x27;);
+
+  osm.on(&#x27;precompose&#x27;, function(event) {
+    var context = event.glContext;
+
+    var gl = context.getGL();
+    var program = gl.createProgram();
+
+    var vertexShader = gl.createShader(gl.VERTEX_SHADER);
+    gl.shaderSource(vertexShader, vertexShaderSource);
+    gl.compileShader(vertexShader);
+    gl.attachShader(program, vertexShader);
+
+    var fragmentShader = gl.createShader(gl.FRAGMENT_SHADER);
+    gl.shaderSource(fragmentShader, fragmentShaderSource);
+    gl.compileShader(fragmentShader);
+    gl.attachShader(program, fragmentShader);
+
+    gl.linkProgram(program);
+    context.useProgram(program);
+
+    var positionLocation = gl.getAttribLocation(program, &#x27;a_position&#x27;);
+
+    gl.enable(gl.STENCIL_TEST);
+    gl.colorMask(false, false, false, false);
+    gl.stencilOp(gl.KEEP, gl.KEEP, gl.REPLACE);
+    gl.stencilFunc(gl.ALWAYS, 1, 0xff);
+
+    var buffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([
+      // first band
+      -1.0, -1.0, -0.75, -1.0, -1.0, 1.0,
+      -1.0, 1.0, -0.75, -1.0, -0.75, 1.0,
+      // second band
+      -0.5, -1.0, -0.25, -1.0, -0.5, 1.0,
+      -0.5, 1.0, -0.25, -1.0, -0.25, 1.0,
+      // third band
+      0.0, -1.0, 0.25, -1.0, 0.0, 1.0,
+      0.0, 1.0, 0.25, -1.0, 0.25, 1.0,
+      // forth band
+      0.5, -1.0, 0.75, -1.0, 0.5, 1.0,
+      0.5, 1.0, 0.75, -1.0, 0.75, 1.0
+    ]), gl.STATIC_DRAW);
+
+    gl.enableVertexAttribArray(positionLocation);
+    gl.vertexAttribPointer(positionLocation, 2, gl.FLOAT, false, 0, 0);
+    gl.drawArrays(gl.TRIANGLES, 0, 24);
+
+    gl.bindBuffer(gl.ARRAY_BUFFER, null);
+    gl.deleteBuffer(buffer);
+
+    gl.colorMask(true, true, true, true);
+    gl.stencilFunc(gl.NOTEQUAL, 0, 0xff);
+    gl.stencilOp(gl.KEEP, gl.KEEP, gl.KEEP);
+  });
+
+  osm.on(&#x27;postcompose&#x27;, function(event) {
+    var context = event.glContext;
+    var gl = context.getGL();
+    gl.disable(gl.STENCIL_TEST);
+  });
+}
+
+&lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+      </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-1.11.2.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+    <script src="./resources/common.js"></script>
+    <script src="./resources/prism/prism.min.js"></script>
+    <script src="loader.js?id=layer-clipping-webgl"></script>
+
+  </body>
+</html>
