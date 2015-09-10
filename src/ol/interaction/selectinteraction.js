@@ -1,5 +1,6 @@
 goog.provide('ol.interaction.Select');
 goog.provide('ol.interaction.SelectEvent');
+goog.provide('ol.interaction.SelectEventType');
 goog.provide('ol.interaction.SelectFilterFunction');
 
 goog.require('goog.array');
@@ -19,7 +20,7 @@ goog.require('ol.source.Vector');
 /**
  * @enum {string}
  */
-ol.SelectEventType = {
+ol.interaction.SelectEventType = {
   /**
    * Triggered when feature(s) has been (de)selected.
    * @event ol.interaction.SelectEvent#select
@@ -286,7 +287,7 @@ ol.interaction.Select.handleEvent = function(mapBrowserEvent) {
   }
   if (change) {
     this.dispatchEvent(
-        new ol.interaction.SelectEvent(ol.SelectEventType.SELECT,
+        new ol.interaction.SelectEvent(ol.interaction.SelectEventType.SELECT,
             selected, deselected, mapBrowserEvent));
   }
   return ol.events.condition.pointerMove(mapBrowserEvent);
