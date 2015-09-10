@@ -1,5 +1,7 @@
 ## Upgrade notes
 
+### v3.10.0
+
 ### v3.9.0
 
 #### `ol.style.Circle` changes
