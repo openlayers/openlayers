@@ -243,6 +243,9 @@ describe('ol.Map', function() {
         var interactions = ol.interaction.defaults(options);
         expect(interactions.getLength()).to.eql(1);
         expect(interactions.item(0)).to.be.a(ol.interaction.MouseWheelZoom);
+        expect(interactions.item(0).useAnchor_).to.eql(true);
+        interactions.item(0).setMouseAnchor(false);
+        expect(interactions.item(0).useAnchor_).to.eql(false);
       });
     });
 

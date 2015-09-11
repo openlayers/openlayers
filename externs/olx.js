@@ -2648,7 +2648,8 @@ olx.interaction.ModifyOptions.prototype.wrapX;
 
 
 /**
- * @typedef {{duration: (number|undefined)}}
+ * @typedef {{duration: (number|undefined),
+ *     useAnchor: (boolean|undefined)}}
  * @api
  */
 olx.interaction.MouseWheelZoomOptions;
@@ -2660,6 +2661,16 @@ olx.interaction.MouseWheelZoomOptions;
  * @api
  */
 olx.interaction.MouseWheelZoomOptions.prototype.duration;
+
+
+/**
+ * Enable zooming using the mouse's location as the anchor. Default is `true`.
+ * When set to false, zooming in and out will zoom to the center of the screen
+ * instead of zooming on the mouse's location.
+ * @type {boolean|undefined}
+ * @api
+ */
+olx.interaction.MouseWheelZoomOptions.prototype.useAnchor;
 
 
 /**
