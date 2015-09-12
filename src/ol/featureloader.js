@@ -46,12 +46,15 @@ ol.FeatureUrlFunction;
 /**
  * @param {string|ol.FeatureUrlFunction} url Feature URL service.
  * @param {ol.format.Feature} format Feature format.
- * @param {function(this:ol.source.Vector, Array.<ol.Feature>, ol.proj.Projection)|function(this:ol.source.Vector, Array.<ol.Feature>)} success
+ * @param {function(this:ol.VectorTile, Array.<ol.Feature>, ol.proj.Projection)|function(this:ol.source.Vector, Array.<ol.Feature>)} success
  *     Function called with the loaded features and optionally with the data
- *     projection. Called with the vector source as `this`.
+ *     projection. Called with the vector tile or source as `this`.
+ * @param {function(this:ol.source.Vector)} failure
+ *     Function called when loading failed. Called with the vector tile or
+ *     source as `this`.
  * @return {ol.FeatureLoader} The feature loader.
  */
-ol.featureloader.loadFeaturesXhr = function(url, format, success) {
+ol.featureloader.loadFeaturesXhr = function(url, format, success, failure) {
   return (
       /**
        * @param {ol.Extent} extent Extent.
@@ -107,7 +110,7 @@ ol.featureloader.loadFeaturesXhr = function(url, format, success) {
                   goog.asserts.fail('undefined or null source');
                 }
               } else {
-                // FIXME
+                failure.call(this);
               }
               goog.dispose(xhrIo);
             }, false, this);
@@ -140,6 +143,12 @@ ol.featureloader.tile = function(url, format) {
       function(features, projection) {
         this.setProjection(projection);
         this.setFeatures(features);
+      },
+      /**
+       * @this {ol.VectorTile}
+       */
+      function() {
+        this.setState(ol.TileState.ERROR);
       });
 };
 
@@ -161,5 +170,5 @@ ol.featureloader.xhr = function(url, format) {
        */
       function(features) {
         this.addFeatures(features);
-      });
+      }, goog.nullFunction);
 };
