@@ -11,6 +11,7 @@ goog.require('ol.source.TileEvent');
 
 /**
  * @typedef {{attributions: (Array.<ol.Attribution>|undefined),
+ *            cacheSize: (number|undefined),
  *            logo: (string|olx.LogoOptions|undefined),
  *            opaque: (boolean|undefined),
  *            projection: ol.proj.ProjectionLike,
@@ -38,6 +39,7 @@ ol.source.UrlTile = function(options) {
 
   goog.base(this, {
     attributions: options.attributions,
+    cacheSize: options.cacheSize,
     extent: options.extent,
     logo: options.logo,
     opaque: options.opaque,

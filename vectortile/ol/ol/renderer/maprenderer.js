@@ -113,8 +113,8 @@ ol.renderer.Map.expireIconCache_ = function(map, frameState) {
 /**
  * @param {ol.Coordinate} coordinate Coordinate.
  * @param {olx.FrameState} frameState FrameState.
- * @param {function(this: S, ol.Feature, ol.layer.Layer): T} callback Feature
- *     callback.
+ * @param {function(this: S, (ol.Feature|ol.FlyweightFeature),
+ *     ol.layer.Layer): T} callback Feature callback.
  * @param {S} thisArg Value to use as `this` when executing `callback`.
  * @param {function(this: U, ol.layer.Layer): boolean} layerFilter Layer filter
  *     function, only layers which are visible and for which this function
@@ -135,7 +135,7 @@ ol.renderer.Map.prototype.forEachFeatureAtCoordinate =
   var features = {};
 
   /**
-   * @param {ol.Feature} feature Feature.
+   * @param {ol.Feature|ol.FlyweightFeature} feature Feature.
    * @return {?} Callback result.
    */
   function forEachFeatureAtCoordinate(feature) {

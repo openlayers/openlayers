@@ -1,0 +1,93 @@
+$(function () {
+    // Search Items
+    $('#search').on('keyup', function (e) {
+        var value = $(this).val();
+        var $el = $('.navigation');
+
+        if (value) {
+            var regexp = new RegExp(value, 'i');
+            $el.find('li, .itemMembers').hide();
+
+            $el.find('li').each(function (i, v) {
+                var $item = $(v);
+
+                if ($item.data('name') && regexp.test($item.data('name'))) {
+                    $item.show();
+                    $item.closest('.itemMembers').show();
+                    $item.closest('.item').show();
+                }
+            });
+        } else {
+            $el.find('.item, .itemMembers').show();
+        }
+
+        $el.find('.list').scrollTop(0);
+    });
+
+    // Toggle when click an item element
+    $('.navigation').on('click', '.title', function (e) {
+        $(this).parent().find('.itemMembers').toggle();
+    });
+
+    // Show an item related a current documentation automatically
+    var filename = $('.page-title').data('filename').replace(/\.[a-z]+$/, '');
+    var $currentItem = $('.navigation .item[data-name*="' + filename + '"]:eq(0)');
+
+    if ($currentItem.length) {
+        $currentItem
+            .remove()
+            .prependTo('.navigation .list')
+            .show()
+            .find('.itemMembers')
+                .show();
+    }
+
+    // Auto resizing on navigation
+    var _onResize = function () {
+        var height = $(window).height();
+        var $el = $('.navigation');
+
+        $el.height(height).find('.list').height(height - 133);
+    };
+
+    $(window).on('resize', _onResize);
+    _onResize();
+
+    // create source code links to github
+    var srcLinks = $('div.tag-source');
+    var masterSearch = window.location.href.match(/\/([^\/]*\/)apidoc\//);
+    if (masterSearch && masterSearch.length) {
+      var branch = masterSearch[1];
+      srcLinks.each(function(i, el) {
+        var textParts = el.innerHTML.trim().split(', ');
+        var link = 'https://github.com/openlayers/ol3/blob/' + branch +
+            textParts[0];
+        el.innerHTML = '<a href="' + link + '">' + textParts[0] + '</a>, ' +
+            '<a href="' + link + textParts[1].replace('line ', '#l') + '">' +
+            textParts[1] + '</a>';
+      });
+    }
+
+    // show/hide unstable items
+    var links = $('a[href^="ol."]');
+    var unstable = $('.unstable');
+    var stabilityToggle = $('#stability-toggle');
+    stabilityToggle.change(function() {
+        unstable.toggleClass('hidden', this.checked);
+        var search = this.checked ? '?stableonly=true' : '';
+        links.each(function(i, el) {
+            this.href = this.pathname + search + this.hash;
+        });
+        if (history.replaceState) {
+            var url = window.location.pathname + search + window.location.hash;
+            history.replaceState({}, '', url);
+        }
+        return false;
+    });
+    var search = window.location.search;
+    links.each(function(i, el) {
+        this.href = this.pathname + search + this.hash;
+    });
+    stabilityToggle.prop('checked', search === '?stableonly=true');
+    unstable.toggleClass('hidden', stabilityToggle[0].checked);
+});

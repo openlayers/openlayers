@@ -149,6 +149,9 @@ ol.Feature.prototype.getGeometry = function() {
 
 
 /**
+ * Get the feature identifier.  This is a stable identifier for the feature and
+ * is either set when reading data from a remote source or set explicitly by
+ * calling {@link ol.Feature#setId}.
  * @return {number|string|undefined} Id.
  * @api stable
  * @observable

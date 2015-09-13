@@ -528,8 +528,8 @@ ol.render.canvas.Immediate.prototype.drawGeometryCollectionGeometry =
  * Render a Point geometry into the canvas.  Rendering is immediate and uses
  * the current style.
  *
- * @param {ol.geom.Point} pointGeometry Point geometry.
- * @param {ol.Feature} feature Feature.
+ * @param {ol.geom.Point|ol.FlyweightFeature} pointGeometry Point geometry.
+ * @param {ol.Feature|ol.FlyweightFeature} feature Feature.
  * @api
  */
 ol.render.canvas.Immediate.prototype.drawPointGeometry =
@@ -549,8 +549,9 @@ ol.render.canvas.Immediate.prototype.drawPointGeometry =
  * Render a MultiPoint geometry  into the canvas.  Rendering is immediate and
  * uses the current style.
  *
- * @param {ol.geom.MultiPoint} multiPointGeometry MultiPoint geometry.
- * @param {ol.Feature} feature Feature.
+ * @param {ol.geom.MultiPoint|ol.FlyweightFeature} multiPointGeometry MultiPoint
+ *     geometry.
+ * @param {ol.Feature|ol.FlyweightFeature} feature Feature.
  * @api
  */
 ol.render.canvas.Immediate.prototype.drawMultiPointGeometry =
@@ -570,8 +571,9 @@ ol.render.canvas.Immediate.prototype.drawMultiPointGeometry =
  * Render a LineString into the canvas.  Rendering is immediate and uses
  * the current style.
  *
- * @param {ol.geom.LineString} lineStringGeometry Line string geometry.
- * @param {ol.Feature} feature Feature.
+ * @param {ol.geom.LineString|ol.FlyweightFeature} lineStringGeometry Line
+ *     string geometry.
+ * @param {ol.Feature|ol.FlyweightFeature} feature Feature.
  * @api
  */
 ol.render.canvas.Immediate.prototype.drawLineStringGeometry =
@@ -599,9 +601,9 @@ ol.render.canvas.Immediate.prototype.drawLineStringGeometry =
  * Render a MultiLineString geometry into the canvas.  Rendering is immediate
  * and uses the current style.
  *
- * @param {ol.geom.MultiLineString} multiLineStringGeometry
+ * @param {ol.geom.MultiLineString|ol.FlyweightFeature} multiLineStringGeometry
  *     MultiLineString geometry.
- * @param {ol.Feature} feature Feature.
+ * @param {ol.Feature|ol.FlyweightFeature} feature Feature.
  * @api
  */
 ol.render.canvas.Immediate.prototype.drawMultiLineStringGeometry =
@@ -636,8 +638,9 @@ ol.render.canvas.Immediate.prototype.drawMultiLineStringGeometry =
  * Render a Polygon geometry into the canvas.  Rendering is immediate and uses
  * the current style.
  *
- * @param {ol.geom.Polygon} polygonGeometry Polygon geometry.
- * @param {ol.Feature} feature Feature.
+ * @param {ol.geom.Polygon|ol.FlyweightFeature} polygonGeometry Polygon
+ *     geometry.
+ * @param {ol.Feature|ol.FlyweightFeature} feature Feature.
  * @api
  */
 ol.render.canvas.Immediate.prototype.drawPolygonGeometry =
@@ -1007,8 +1010,8 @@ ol.render.canvas.Immediate.prototype.setTextStyle = function(textStyle) {
  * @const
  * @private
  * @type {Object.<ol.geom.GeometryType,
- *                function(this: ol.render.canvas.Immediate, ol.geom.Geometry,
- *                         Object)>}
+ *     function(this: ol.render.canvas.Immediate,
+ *         (ol.geom.Geometry|ol.FlyweightFeature), Object)>}
  */
 ol.render.canvas.Immediate.GEOMETRY_RENDERERS_ = {
   'Point': ol.render.canvas.Immediate.prototype.drawPointGeometry,

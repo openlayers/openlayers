@@ -515,7 +515,8 @@ ol.control.OverviewMap.prototype.setCollapsed = function(collapsed) {
 
 
 /**
- * @return {boolean} True if the widget is collapsed.
+ * Determine if the overview map is collapsed.
+ * @return {boolean} The overview map is collapsed.
  * @api stable
  */
 ol.control.OverviewMap.prototype.getCollapsed = function() {

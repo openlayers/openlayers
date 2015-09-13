@@ -62,6 +62,8 @@ ol.Observable.prototype.changed = function() {
 
 
 /**
+ * Get the version number for this object.  Each time the object is modified,
+ * its version number will be incremented.
  * @return {number} Revision.
  * @api
  */

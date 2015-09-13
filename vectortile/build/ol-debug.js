@@ -1,6 +1,6 @@
 // OpenLayers 3. See http://openlayers.org/
 // License: https://raw.githubusercontent.com/openlayers/ol3/master/LICENSE.md
-// Version: v3.8.0-175-gfbe212f
+// Version: v3.8.0-213-g9baf0b5
 
 (function (root, factory) {
   if (typeof exports === "object") {
@@ -2542,27 +2542,362 @@ goog.tagUnsealableClass = function(ctr) {
  */
 goog.UNSEALABLE_CONSTRUCTOR_PROPERTY_ = 'goog_defineClass_legacy_unsealable';
 
-// FIXME factor out common code between usedTiles and wantedTiles
+// Copyright 2008 The Closure Library Authors. All Rights Reserved.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//      http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS-IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
 
-goog.provide('ol.PostRenderFunction');
-goog.provide('ol.PreRenderFunction');
+/**
+ * @fileoverview Utilities for creating functions. Loosely inspired by the
+ * java classes: http://goo.gl/GM0Hmu and http://goo.gl/6k7nI8.
+ *
+ * @author nicksantos@google.com (Nick Santos)
+ */
+
+
+goog.provide('goog.functions');
 
 
 /**
- * @typedef {function(ol.Map, ?olx.FrameState): boolean}
+ * Creates a function that always returns the same value.
+ * @param {T} retValue The value to return.
+ * @return {function():T} The new function.
+ * @template T
  */
-ol.PostRenderFunction;
+goog.functions.constant = function(retValue) {
+  return function() {
+    return retValue;
+  };
+};
 
 
 /**
- * Function to perform manipulations before rendering. This function is called
- * with the {@link ol.Map} as first and an optional {@link olx.FrameState} as
- * second argument. Return `true` to keep this function for the next frame,
- * `false` to remove it.
- * @typedef {function(ol.Map, ?olx.FrameState): boolean}
- * @api
+ * Always returns false.
+ * @type {function(...): boolean}
  */
-ol.PreRenderFunction;
+goog.functions.FALSE = goog.functions.constant(false);
+
+
+/**
+ * Always returns true.
+ * @type {function(...): boolean}
+ */
+goog.functions.TRUE = goog.functions.constant(true);
+
+
+/**
+ * Always returns NULL.
+ * @type {function(...): null}
+ */
+goog.functions.NULL = goog.functions.constant(null);
+
+
+/**
+ * A simple function that returns the first argument of whatever is passed
+ * into it.
+ * @param {T=} opt_returnValue The single value that will be returned.
+ * @param {...*} var_args Optional trailing arguments. These are ignored.
+ * @return {T} The first argument passed in, or undefined if nothing was passed.
+ * @template T
+ */
+goog.functions.identity = function(opt_returnValue, var_args) {
+  return opt_returnValue;
+};
+
+
+/**
+ * Creates a function that always throws an error with the given message.
+ * @param {string} message The error message.
+ * @return {!Function} The error-throwing function.
+ */
+goog.functions.error = function(message) {
+  return function() {
+    throw Error(message);
+  };
+};
+
+
+/**
+ * Creates a function that throws the given object.
+ * @param {*} err An object to be thrown.
+ * @return {!Function} The error-throwing function.
+ */
+goog.functions.fail = function(err) {
+  return function() {
+    throw err;
+  }
+};
+
+
+/**
+ * Given a function, create a function that keeps opt_numArgs arguments and
+ * silently discards all additional arguments.
+ * @param {Function} f The original function.
+ * @param {number=} opt_numArgs The number of arguments to keep. Defaults to 0.
+ * @return {!Function} A version of f that only keeps the first opt_numArgs
+ *     arguments.
+ */
+goog.functions.lock = function(f, opt_numArgs) {
+  opt_numArgs = opt_numArgs || 0;
+  return function() {
+    return f.apply(this, Array.prototype.slice.call(arguments, 0, opt_numArgs));
+  };
+};
+
+
+/**
+ * Creates a function that returns its nth argument.
+ * @param {number} n The position of the return argument.
+ * @return {!Function} A new function.
+ */
+goog.functions.nth = function(n) {
+  return function() {
+    return arguments[n];
+  };
+};
+
+
+/**
+ * Given a function, create a new function that swallows its return value
+ * and replaces it with a new one.
+ * @param {Function} f A function.
+ * @param {T} retValue A new return value.
+ * @return {function(...?):T} A new function.
+ * @template T
+ */
+goog.functions.withReturnValue = function(f, retValue) {
+  return goog.functions.sequence(f, goog.functions.constant(retValue));
+};
+
+
+/**
+ * Creates a function that returns whether its arguement equals the given value.
+ *
+ * Example:
+ * var key = goog.object.findKey(obj, goog.functions.equalTo('needle'));
+ *
+ * @param {*} value The value to compare to.
+ * @param {boolean=} opt_useLooseComparison Whether to use a loose (==)
+ *     comparison rather than a strict (===) one. Defaults to false.
+ * @return {function(*):boolean} The new function.
+ */
+goog.functions.equalTo = function(value, opt_useLooseComparison) {
+  return function(other) {
+    return opt_useLooseComparison ? (value == other) : (value === other);
+  };
+};
+
+
+/**
+ * Creates the composition of the functions passed in.
+ * For example, (goog.functions.compose(f, g))(a) is equivalent to f(g(a)).
+ * @param {function(...?):T} fn The final function.
+ * @param {...Function} var_args A list of functions.
+ * @return {function(...?):T} The composition of all inputs.
+ * @template T
+ */
+goog.functions.compose = function(fn, var_args) {
+  var functions = arguments;
+  var length = functions.length;
+  return function() {
+    var result;
+    if (length) {
+      result = functions[length - 1].apply(this, arguments);
+    }
+
+    for (var i = length - 2; i >= 0; i--) {
+      result = functions[i].call(this, result);
+    }
+    return result;
+  };
+};
+
+
+/**
+ * Creates a function that calls the functions passed in in sequence, and
+ * returns the value of the last function. For example,
+ * (goog.functions.sequence(f, g))(x) is equivalent to f(x),g(x).
+ * @param {...Function} var_args A list of functions.
+ * @return {!Function} A function that calls all inputs in sequence.
+ */
+goog.functions.sequence = function(var_args) {
+  var functions = arguments;
+  var length = functions.length;
+  return function() {
+    var result;
+    for (var i = 0; i < length; i++) {
+      result = functions[i].apply(this, arguments);
+    }
+    return result;
+  };
+};
+
+
+/**
+ * Creates a function that returns true if each of its components evaluates
+ * to true. The components are evaluated in order, and the evaluation will be
+ * short-circuited as soon as a function returns false.
+ * For example, (goog.functions.and(f, g))(x) is equivalent to f(x) && g(x).
+ * @param {...Function} var_args A list of functions.
+ * @return {function(...?):boolean} A function that ANDs its component
+ *      functions.
+ */
+goog.functions.and = function(var_args) {
+  var functions = arguments;
+  var length = functions.length;
+  return function() {
+    for (var i = 0; i < length; i++) {
+      if (!functions[i].apply(this, arguments)) {
+        return false;
+      }
+    }
+    return true;
+  };
+};
+
+
+/**
+ * Creates a function that returns true if any of its components evaluates
+ * to true. The components are evaluated in order, and the evaluation will be
+ * short-circuited as soon as a function returns true.
+ * For example, (goog.functions.or(f, g))(x) is equivalent to f(x) || g(x).
+ * @param {...Function} var_args A list of functions.
+ * @return {function(...?):boolean} A function that ORs its component
+ *    functions.
+ */
+goog.functions.or = function(var_args) {
+  var functions = arguments;
+  var length = functions.length;
+  return function() {
+    for (var i = 0; i < length; i++) {
+      if (functions[i].apply(this, arguments)) {
+        return true;
+      }
+    }
+    return false;
+  };
+};
+
+
+/**
+ * Creates a function that returns the Boolean opposite of a provided function.
+ * For example, (goog.functions.not(f))(x) is equivalent to !f(x).
+ * @param {!Function} f The original function.
+ * @return {function(...?):boolean} A function that delegates to f and returns
+ * opposite.
+ */
+goog.functions.not = function(f) {
+  return function() {
+    return !f.apply(this, arguments);
+  };
+};
+
+
+/**
+ * Generic factory function to construct an object given the constructor
+ * and the arguments. Intended to be bound to create object factories.
+ *
+ * Example:
+ *
+ * var factory = goog.partial(goog.functions.create, Class);
+ *
+ * @param {function(new:T, ...)} constructor The constructor for the Object.
+ * @param {...*} var_args The arguments to be passed to the constructor.
+ * @return {T} A new instance of the class given in {@code constructor}.
+ * @template T
+ */
+goog.functions.create = function(constructor, var_args) {
+  /**
+   * @constructor
+   * @final
+   */
+  var temp = function() {};
+  temp.prototype = constructor.prototype;
+
+  // obj will have constructor's prototype in its chain and
+  // 'obj instanceof constructor' will be true.
+  var obj = new temp();
+
+  // obj is initialized by constructor.
+  // arguments is only array-like so lacks shift(), but can be used with
+  // the Array prototype function.
+  constructor.apply(obj, Array.prototype.slice.call(arguments, 1));
+  return obj;
+};
+
+
+/**
+ * @define {boolean} Whether the return value cache should be used.
+ *    This should only be used to disable caches when testing.
+ */
+goog.define('goog.functions.CACHE_RETURN_VALUE', true);
+
+
+/**
+ * Gives a wrapper function that caches the return value of a parameterless
+ * function when first called.
+ *
+ * When called for the first time, the given function is called and its
+ * return value is cached (thus this is only appropriate for idempotent
+ * functions).  Subsequent calls will return the cached return value. This
+ * allows the evaluation of expensive functions to be delayed until first used.
+ *
+ * To cache the return values of functions with parameters, see goog.memoize.
+ *
+ * @param {!function():T} fn A function to lazily evaluate.
+ * @return {!function():T} A wrapped version the function.
+ * @template T
+ */
+goog.functions.cacheReturnValue = function(fn) {
+  var called = false;
+  var value;
+
+  return function() {
+    if (!goog.functions.CACHE_RETURN_VALUE) {
+      return fn();
+    }
+
+    if (!called) {
+      value = fn();
+      called = true;
+    }
+
+    return value;
+  }
+};
+
+
+/**
+ * Wraps a function to allow it to be called, at most, once. All
+ * additional calls are no-ops.
+ *
+ * This is particularly useful for initialization functions
+ * that should be called, at most, once.
+ *
+ * @param {function():*} f Function to call.
+ * @return {function():undefined} Wrapped function.
+ */
+goog.functions.once = function(f) {
+  // Keep a reference to the function that we null out when we're done with
+  // it -- that way, the function can be GC'd when we're done with it.
+  var inner = f;
+  return function() {
+    if (inner) {
+      var tmp = inner;
+      inner = null;
+      tmp();
+    }
+  };
+};
 
 // Copyright 2009 The Closure Library Authors. All Rights Reserved.
 //
@@ -4609,6 +4944,3157 @@ goog.asserts.getType_ = function(value) {
   }
 };
 
+// Copyright 2011 The Closure Library Authors. All Rights Reserved.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//      http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS-IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+
+/**
+ * @fileoverview Supplies a Float32Array implementation that implements
+ *     most of the Float32Array spec and that can be used when a built-in
+ *     implementation is not available.
+ *
+ *     Note that if no existing Float32Array implementation is found then
+ *     this class and all its public properties are exported as Float32Array.
+ *
+ *     Adding support for the other TypedArray classes here does not make sense
+ *     since this vector math library only needs Float32Array.
+ *
+ */
+goog.provide('goog.vec.Float32Array');
+
+
+
+/**
+ * Constructs a new Float32Array. The new array is initialized to all zeros.
+ *
+ * @param {goog.vec.Float32Array|Array|ArrayBuffer|number} p0
+ *     The length of the array, or an array to initialize the contents of the
+ *     new Float32Array.
+ * @constructor
+ * @final
+ */
+goog.vec.Float32Array = function(p0) {
+  this.length = /** @type {number} */ (p0.length || p0);
+  for (var i = 0; i < this.length; i++) {
+    this[i] = p0[i] || 0;
+  }
+};
+
+
+/**
+ * The number of bytes in an element (as defined by the Typed Array
+ * specification).
+ *
+ * @type {number}
+ */
+goog.vec.Float32Array.BYTES_PER_ELEMENT = 4;
+
+
+/**
+ * The number of bytes in an element (as defined by the Typed Array
+ * specification).
+ *
+ * @type {number}
+ */
+goog.vec.Float32Array.prototype.BYTES_PER_ELEMENT = 4;
+
+
+/**
+ * Sets elements of the array.
+ * @param {Array<number>|Float32Array} values The array of values.
+ * @param {number=} opt_offset The offset in this array to start.
+ */
+goog.vec.Float32Array.prototype.set = function(values, opt_offset) {
+  opt_offset = opt_offset || 0;
+  for (var i = 0; i < values.length && opt_offset + i < this.length; i++) {
+    this[opt_offset + i] = values[i];
+  }
+};
+
+
+/**
+ * Creates a string representation of this array.
+ * @return {string} The string version of this array.
+ * @override
+ */
+goog.vec.Float32Array.prototype.toString = Array.prototype.join;
+
+
+/**
+ * Note that we cannot implement the subarray() or (deprecated) slice()
+ * methods properly since doing so would require being able to overload
+ * the [] operator which is not possible in javascript.  So we leave
+ * them unimplemented.  Any attempt to call these methods will just result
+ * in a javascript error since we leave them undefined.
+ */
+
+
+/**
+ * If no existing Float32Array implementation is found then we export
+ * goog.vec.Float32Array as Float32Array.
+ */
+if (typeof Float32Array == 'undefined') {
+  goog.exportProperty(goog.vec.Float32Array, 'BYTES_PER_ELEMENT',
+                      goog.vec.Float32Array.BYTES_PER_ELEMENT);
+  goog.exportProperty(goog.vec.Float32Array.prototype, 'BYTES_PER_ELEMENT',
+                      goog.vec.Float32Array.prototype.BYTES_PER_ELEMENT);
+  goog.exportProperty(goog.vec.Float32Array.prototype, 'set',
+                      goog.vec.Float32Array.prototype.set);
+  goog.exportProperty(goog.vec.Float32Array.prototype, 'toString',
+                      goog.vec.Float32Array.prototype.toString);
+  goog.exportSymbol('Float32Array', goog.vec.Float32Array);
+}
+
+// Copyright 2011 The Closure Library Authors. All Rights Reserved.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//      http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS-IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+
+/**
+ * @fileoverview Supplies a Float64Array implementation that implements
+ * most of the Float64Array spec and that can be used when a built-in
+ * implementation is not available.
+ *
+ * Note that if no existing Float64Array implementation is found then this
+ * class and all its public properties are exported as Float64Array.
+ *
+ * Adding support for the other TypedArray classes here does not make sense
+ * since this vector math library only needs Float32Array and Float64Array.
+ *
+ */
+goog.provide('goog.vec.Float64Array');
+
+
+
+/**
+ * Constructs a new Float64Array. The new array is initialized to all zeros.
+ *
+ * @param {goog.vec.Float64Array|Array|ArrayBuffer|number} p0
+ *     The length of the array, or an array to initialize the contents of the
+ *     new Float64Array.
+ * @constructor
+ * @final
+ */
+goog.vec.Float64Array = function(p0) {
+  this.length = /** @type {number} */ (p0.length || p0);
+  for (var i = 0; i < this.length; i++) {
+    this[i] = p0[i] || 0;
+  }
+};
+
+
+/**
+ * The number of bytes in an element (as defined by the Typed Array
+ * specification).
+ *
+ * @type {number}
+ */
+goog.vec.Float64Array.BYTES_PER_ELEMENT = 8;
+
+
+/**
+ * The number of bytes in an element (as defined by the Typed Array
+ * specification).
+ *
+ * @type {number}
+ */
+goog.vec.Float64Array.prototype.BYTES_PER_ELEMENT = 8;
+
+
+/**
+ * Sets elements of the array.
+ * @param {Array<number>|Float64Array} values The array of values.
+ * @param {number=} opt_offset The offset in this array to start.
+ */
+goog.vec.Float64Array.prototype.set = function(values, opt_offset) {
+  opt_offset = opt_offset || 0;
+  for (var i = 0; i < values.length && opt_offset + i < this.length; i++) {
+    this[opt_offset + i] = values[i];
+  }
+};
+
+
+/**
+ * Creates a string representation of this array.
+ * @return {string} The string version of this array.
+ * @override
+ */
+goog.vec.Float64Array.prototype.toString = Array.prototype.join;
+
+
+/**
+ * Note that we cannot implement the subarray() or (deprecated) slice()
+ * methods properly since doing so would require being able to overload
+ * the [] operator which is not possible in javascript.  So we leave
+ * them unimplemented.  Any attempt to call these methods will just result
+ * in a javascript error since we leave them undefined.
+ */
+
+
+/**
+ * If no existing Float64Array implementation is found then we export
+ * goog.vec.Float64Array as Float64Array.
+ */
+if (typeof Float64Array == 'undefined') {
+  try {
+    goog.exportProperty(goog.vec.Float64Array, 'BYTES_PER_ELEMENT',
+                        goog.vec.Float64Array.BYTES_PER_ELEMENT);
+  } catch (float64ArrayError) {
+    // Do nothing.  This code is in place to fix b/7225850, in which an error
+    // is incorrectly thrown for Google TV on an old Chrome.
+    // TODO(user): remove after that version is retired.
+  }
+
+  goog.exportProperty(goog.vec.Float64Array.prototype, 'BYTES_PER_ELEMENT',
+                      goog.vec.Float64Array.prototype.BYTES_PER_ELEMENT);
+  goog.exportProperty(goog.vec.Float64Array.prototype, 'set',
+                      goog.vec.Float64Array.prototype.set);
+  goog.exportProperty(goog.vec.Float64Array.prototype, 'toString',
+                      goog.vec.Float64Array.prototype.toString);
+  goog.exportSymbol('Float64Array', goog.vec.Float64Array);
+}
+
+// Copyright 2011 The Closure Library Authors. All Rights Reserved.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//      http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS-IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+
+/**
+ * @fileoverview Supplies global data types and constants for the vector math
+ *     library.
+ */
+goog.provide('goog.vec');
+goog.provide('goog.vec.AnyType');
+goog.provide('goog.vec.ArrayType');
+goog.provide('goog.vec.Float32');
+goog.provide('goog.vec.Float64');
+goog.provide('goog.vec.Number');
+
+
+/**
+ * On platforms that don't have native Float32Array or Float64Array support we
+ * use a javascript implementation so that this math library can be used on all
+ * platforms.
+ * @suppress {extraRequire}
+ */
+goog.require('goog.vec.Float32Array');
+/** @suppress {extraRequire} */
+goog.require('goog.vec.Float64Array');
+
+// All vector and matrix operations are based upon arrays of numbers using
+// either Float32Array, Float64Array, or a standard Javascript Array of
+// Numbers.
+
+
+/** @typedef {!Float32Array} */
+goog.vec.Float32;
+
+
+/** @typedef {!Float64Array} */
+goog.vec.Float64;
+
+
+/** @typedef {!Array<number>} */
+goog.vec.Number;
+
+
+/** @typedef {!goog.vec.Float32|!goog.vec.Float64|!goog.vec.Number} */
+goog.vec.AnyType;
+
+
+/**
+ * @deprecated Use AnyType.
+ * @typedef {!Float32Array|!Array<number>}
+ */
+goog.vec.ArrayType;
+
+
+/**
+ * For graphics work, 6 decimal places of accuracy are typically all that is
+ * required.
+ *
+ * @type {number}
+ * @const
+ */
+goog.vec.EPSILON = 1e-6;
+
+// Copyright 2011 The Closure Library Authors. All Rights Reserved.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//      http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS-IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+
+/**
+ * @fileoverview Supplies 3 element vectors that are compatible with WebGL.
+ * Each element is a float32 since that is typically the desired size of a
+ * 3-vector in the GPU.  The API is structured to avoid unnecessary memory
+ * allocations.  The last parameter will typically be the output vector and
+ * an object can be both an input and output parameter to all methods except
+ * where noted.
+ *
+ */
+goog.provide('goog.vec.Vec3');
+
+/** @suppress {extraRequire} */
+goog.require('goog.vec');
+
+/** @typedef {goog.vec.Float32} */ goog.vec.Vec3.Float32;
+/** @typedef {goog.vec.Float64} */ goog.vec.Vec3.Float64;
+/** @typedef {goog.vec.Number} */ goog.vec.Vec3.Number;
+/** @typedef {goog.vec.AnyType} */ goog.vec.Vec3.AnyType;
+
+// The following two types are deprecated - use the above types instead.
+/** @typedef {Float32Array} */ goog.vec.Vec3.Type;
+/** @typedef {goog.vec.ArrayType} */ goog.vec.Vec3.Vec3Like;
+
+
+/**
+ * Creates a 3 element vector of Float32. The array is initialized to zero.
+ *
+ * @return {!goog.vec.Vec3.Float32} The new 3 element array.
+ */
+goog.vec.Vec3.createFloat32 = function() {
+  return new Float32Array(3);
+};
+
+
+/**
+ * Creates a 3 element vector of Float64. The array is initialized to zero.
+ *
+ * @return {!goog.vec.Vec3.Float64} The new 3 element array.
+ */
+goog.vec.Vec3.createFloat64 = function() {
+  return new Float64Array(3);
+};
+
+
+/**
+ * Creates a 3 element vector of Number. The array is initialized to zero.
+ *
+ * @return {!goog.vec.Vec3.Number} The new 3 element array.
+ */
+goog.vec.Vec3.createNumber = function() {
+  var a = new Array(3);
+  goog.vec.Vec3.setFromValues(a, 0, 0, 0);
+  return a;
+};
+
+
+/**
+ * Creates a 3 element vector of Float32Array. The array is initialized to zero.
+ *
+ * @deprecated Use createFloat32.
+ * @return {!goog.vec.Vec3.Type} The new 3 element array.
+ */
+goog.vec.Vec3.create = function() {
+  return new Float32Array(3);
+};
+
+
+/**
+ * Creates a new 3 element FLoat32 vector initialized with the value from the
+ * given array.
+ *
+ * @param {goog.vec.Vec3.AnyType} vec The source 3 element array.
+ * @return {!goog.vec.Vec3.Float32} The new 3 element array.
+ */
+goog.vec.Vec3.createFloat32FromArray = function(vec) {
+  var newVec = goog.vec.Vec3.createFloat32();
+  goog.vec.Vec3.setFromArray(newVec, vec);
+  return newVec;
+};
+
+
+/**
+ * Creates a new 3 element Float32 vector initialized with the supplied values.
+ *
+ * @param {number} v0 The value for element at index 0.
+ * @param {number} v1 The value for element at index 1.
+ * @param {number} v2 The value for element at index 2.
+ * @return {!goog.vec.Vec3.Float32} The new vector.
+ */
+goog.vec.Vec3.createFloat32FromValues = function(v0, v1, v2) {
+  var a = goog.vec.Vec3.createFloat32();
+  goog.vec.Vec3.setFromValues(a, v0, v1, v2);
+  return a;
+};
+
+
+/**
+ * Creates a clone of the given 3 element Float32 vector.
+ *
+ * @param {goog.vec.Vec3.Float32} vec The source 3 element vector.
+ * @return {!goog.vec.Vec3.Float32} The new cloned vector.
+ */
+goog.vec.Vec3.cloneFloat32 = goog.vec.Vec3.createFloat32FromArray;
+
+
+/**
+ * Creates a new 3 element Float64 vector initialized with the value from the
+ * given array.
+ *
+ * @param {goog.vec.Vec3.AnyType} vec The source 3 element array.
+ * @return {!goog.vec.Vec3.Float64} The new 3 element array.
+ */
+goog.vec.Vec3.createFloat64FromArray = function(vec) {
+  var newVec = goog.vec.Vec3.createFloat64();
+  goog.vec.Vec3.setFromArray(newVec, vec);
+  return newVec;
+};
+
+
+/**
+* Creates a new 3 element Float64 vector initialized with the supplied values.
+*
+* @param {number} v0 The value for element at index 0.
+* @param {number} v1 The value for element at index 1.
+* @param {number} v2 The value for element at index 2.
+* @return {!goog.vec.Vec3.Float64} The new vector.
+*/
+goog.vec.Vec3.createFloat64FromValues = function(v0, v1, v2) {
+  var vec = goog.vec.Vec3.createFloat64();
+  goog.vec.Vec3.setFromValues(vec, v0, v1, v2);
+  return vec;
+};
+
+
+/**
+ * Creates a clone of the given 3 element vector.
+ *
+ * @param {goog.vec.Vec3.Float64} vec The source 3 element vector.
+ * @return {!goog.vec.Vec3.Float64} The new cloned vector.
+ */
+goog.vec.Vec3.cloneFloat64 = goog.vec.Vec3.createFloat64FromArray;
+
+
+/**
+ * Creates a new 3 element vector initialized with the value from the given
+ * array.
+ *
+ * @deprecated Use createFloat32FromArray.
+ * @param {goog.vec.Vec3.Vec3Like} vec The source 3 element array.
+ * @return {!goog.vec.Vec3.Type} The new 3 element array.
+ */
+goog.vec.Vec3.createFromArray = function(vec) {
+  var newVec = goog.vec.Vec3.create();
+  goog.vec.Vec3.setFromArray(newVec, vec);
+  return newVec;
+};
+
+
+/**
+ * Creates a new 3 element vector initialized with the supplied values.
+ *
+ * @deprecated Use createFloat32FromValues.
+ * @param {number} v0 The value for element at index 0.
+ * @param {number} v1 The value for element at index 1.
+ * @param {number} v2 The value for element at index 2.
+ * @return {!goog.vec.Vec3.Type} The new vector.
+ */
+goog.vec.Vec3.createFromValues = function(v0, v1, v2) {
+  var vec = goog.vec.Vec3.create();
+  goog.vec.Vec3.setFromValues(vec, v0, v1, v2);
+  return vec;
+};
+
+
+/**
+ * Creates a clone of the given 3 element vector.
+ *
+ * @deprecated Use cloneFloat32.
+ * @param {goog.vec.Vec3.Vec3Like} vec The source 3 element vector.
+ * @return {!goog.vec.Vec3.Type} The new cloned vector.
+ */
+goog.vec.Vec3.clone = function(vec) {
+  var newVec = goog.vec.Vec3.create();
+  goog.vec.Vec3.setFromArray(newVec, vec);
+  return newVec;
+};
+
+
+/**
+ * Initializes the vector with the given values.
+ *
+ * @param {goog.vec.Vec3.AnyType} vec The vector to receive the values.
+ * @param {number} v0 The value for element at index 0.
+ * @param {number} v1 The value for element at index 1.
+ * @param {number} v2 The value for element at index 2.
+ * @return {!goog.vec.Vec3.AnyType} Return vec so that operations can be
+ *     chained together.
+ */
+goog.vec.Vec3.setFromValues = function(vec, v0, v1, v2) {
+  vec[0] = v0;
+  vec[1] = v1;
+  vec[2] = v2;
+  return vec;
+};
+
+
+/**
+ * Initializes the vector with the given array of values.
+ *
+ * @param {goog.vec.Vec3.AnyType} vec The vector to receive the
+ *     values.
+ * @param {goog.vec.Vec3.AnyType} values The array of values.
+ * @return {!goog.vec.Vec3.AnyType} Return vec so that operations can be
+ *     chained together.
+ */
+goog.vec.Vec3.setFromArray = function(vec, values) {
+  vec[0] = values[0];
+  vec[1] = values[1];
+  vec[2] = values[2];
+  return vec;
+};
+
+
+/**
+ * Performs a component-wise addition of vec0 and vec1 together storing the
+ * result into resultVec.
+ *
+ * @param {goog.vec.Vec3.AnyType} vec0 The first addend.
+ * @param {goog.vec.Vec3.AnyType} vec1 The second addend.
+ * @param {goog.vec.Vec3.AnyType} resultVec The vector to
+ *     receive the result. May be vec0 or vec1.
+ * @return {!goog.vec.Vec3.AnyType} Return resultVec so that operations can be
+ *     chained together.
+ */
+goog.vec.Vec3.add = function(vec0, vec1, resultVec) {
+  resultVec[0] = vec0[0] + vec1[0];
+  resultVec[1] = vec0[1] + vec1[1];
+  resultVec[2] = vec0[2] + vec1[2];
+  return resultVec;
+};
+
+
+/**
+ * Performs a component-wise subtraction of vec1 from vec0 storing the
+ * result into resultVec.
+ *
+ * @param {goog.vec.Vec3.AnyType} vec0 The minuend.
+ * @param {goog.vec.Vec3.AnyType} vec1 The subtrahend.
+ * @param {goog.vec.Vec3.AnyType} resultVec The vector to
+ *     receive the result. May be vec0 or vec1.
+ * @return {!goog.vec.Vec3.AnyType} Return resultVec so that operations can be
+ *     chained together.
+ */
+goog.vec.Vec3.subtract = function(vec0, vec1, resultVec) {
+  resultVec[0] = vec0[0] - vec1[0];
+  resultVec[1] = vec0[1] - vec1[1];
+  resultVec[2] = vec0[2] - vec1[2];
+  return resultVec;
+};
+
+
+/**
+ * Negates vec0, storing the result into resultVec.
+ *
+ * @param {goog.vec.Vec3.AnyType} vec0 The vector to negate.
+ * @param {goog.vec.Vec3.AnyType} resultVec The vector to
+ *     receive the result. May be vec0.
+ * @return {!goog.vec.Vec3.AnyType} Return resultVec so that operations can be
+ *     chained together.
+ */
+goog.vec.Vec3.negate = function(vec0, resultVec) {
+  resultVec[0] = -vec0[0];
+  resultVec[1] = -vec0[1];
+  resultVec[2] = -vec0[2];
+  return resultVec;
+};
+
+
+/**
+ * Takes the absolute value of each component of vec0 storing the result in
+ * resultVec.
+ *
+ * @param {goog.vec.Vec3.AnyType} vec0 The source vector.
+ * @param {goog.vec.Vec3.AnyType} resultVec The vector to receive the result.
+ *     May be vec0.
+ * @return {!goog.vec.Vec3.AnyType} Return resultVec so that operations can be
+ *     chained together.
+ */
+goog.vec.Vec3.abs = function(vec0, resultVec) {
+  resultVec[0] = Math.abs(vec0[0]);
+  resultVec[1] = Math.abs(vec0[1]);
+  resultVec[2] = Math.abs(vec0[2]);
+  return resultVec;
+};
+
+
+/**
+ * Multiplies each component of vec0 with scalar storing the product into
+ * resultVec.
+ *
+ * @param {goog.vec.Vec3.AnyType} vec0 The source vector.
+ * @param {number} scalar The value to multiply with each component of vec0.
+ * @param {goog.vec.Vec3.AnyType} resultVec The vector to
+ *     receive the result. May be vec0.
+ * @return {!goog.vec.Vec3.AnyType} Return resultVec so that operations can be
+ *     chained together.
+ */
+goog.vec.Vec3.scale = function(vec0, scalar, resultVec) {
+  resultVec[0] = vec0[0] * scalar;
+  resultVec[1] = vec0[1] * scalar;
+  resultVec[2] = vec0[2] * scalar;
+  return resultVec;
+};
+
+
+/**
+ * Returns the magnitudeSquared of the given vector.
+ *
+ * @param {goog.vec.Vec3.AnyType} vec0 The vector.
+ * @return {number} The magnitude of the vector.
+ */
+goog.vec.Vec3.magnitudeSquared = function(vec0) {
+  var x = vec0[0], y = vec0[1], z = vec0[2];
+  return x * x + y * y + z * z;
+};
+
+
+/**
+ * Returns the magnitude of the given vector.
+ *
+ * @param {goog.vec.Vec3.AnyType} vec0 The vector.
+ * @return {number} The magnitude of the vector.
+ */
+goog.vec.Vec3.magnitude = function(vec0) {
+  var x = vec0[0], y = vec0[1], z = vec0[2];
+  return Math.sqrt(x * x + y * y + z * z);
+};
+
+
+/**
+ * Normalizes the given vector storing the result into resultVec.
+ *
+ * @param {goog.vec.Vec3.AnyType} vec0 The vector to normalize.
+ * @param {goog.vec.Vec3.AnyType} resultVec The vector to
+ *     receive the result. May be vec0.
+ * @return {!goog.vec.Vec3.AnyType} Return resultVec so that operations can be
+ *     chained together.
+ */
+goog.vec.Vec3.normalize = function(vec0, resultVec) {
+  var ilen = 1 / goog.vec.Vec3.magnitude(vec0);
+  resultVec[0] = vec0[0] * ilen;
+  resultVec[1] = vec0[1] * ilen;
+  resultVec[2] = vec0[2] * ilen;
+  return resultVec;
+};
+
+
+/**
+ * Returns the scalar product of vectors v0 and v1.
+ *
+ * @param {goog.vec.Vec3.AnyType} v0 The first vector.
+ * @param {goog.vec.Vec3.AnyType} v1 The second vector.
+ * @return {number} The scalar product.
+ */
+goog.vec.Vec3.dot = function(v0, v1) {
+  return v0[0] * v1[0] + v0[1] * v1[1] + v0[2] * v1[2];
+};
+
+
+/**
+ * Computes the vector (cross) product of v0 and v1 storing the result into
+ * resultVec.
+ *
+ * @param {goog.vec.Vec3.AnyType} v0 The first vector.
+ * @param {goog.vec.Vec3.AnyType} v1 The second vector.
+ * @param {goog.vec.Vec3.AnyType} resultVec The vector to receive the
+ *     results. May be either v0 or v1.
+ * @return {!goog.vec.Vec3.AnyType} Return resultVec so that operations can be
+ *     chained together.
+ */
+goog.vec.Vec3.cross = function(v0, v1, resultVec) {
+  var x0 = v0[0], y0 = v0[1], z0 = v0[2];
+  var x1 = v1[0], y1 = v1[1], z1 = v1[2];
+  resultVec[0] = y0 * z1 - z0 * y1;
+  resultVec[1] = z0 * x1 - x0 * z1;
+  resultVec[2] = x0 * y1 - y0 * x1;
+  return resultVec;
+};
+
+
+/**
+ * Returns the squared distance between two points.
+ *
+ * @param {goog.vec.Vec3.AnyType} vec0 First point.
+ * @param {goog.vec.Vec3.AnyType} vec1 Second point.
+ * @return {number} The squared distance between the points.
+ */
+goog.vec.Vec3.distanceSquared = function(vec0, vec1) {
+  var x = vec0[0] - vec1[0];
+  var y = vec0[1] - vec1[1];
+  var z = vec0[2] - vec1[2];
+  return x * x + y * y + z * z;
+};
+
+
+/**
+ * Returns the distance between two points.
+ *
+ * @param {goog.vec.Vec3.AnyType} vec0 First point.
+ * @param {goog.vec.Vec3.AnyType} vec1 Second point.
+ * @return {number} The distance between the points.
+ */
+goog.vec.Vec3.distance = function(vec0, vec1) {
+  return Math.sqrt(goog.vec.Vec3.distanceSquared(vec0, vec1));
+};
+
+
+/**
+ * Returns a unit vector pointing from one point to another.
+ * If the input points are equal then the result will be all zeros.
+ *
+ * @param {goog.vec.Vec3.AnyType} vec0 Origin point.
+ * @param {goog.vec.Vec3.AnyType} vec1 Target point.
+ * @param {goog.vec.Vec3.AnyType} resultVec The vector to receive the
+ *     results (may be vec0 or vec1).
+ * @return {!goog.vec.Vec3.AnyType} Return resultVec so that operations can be
+ *     chained together.
+ */
+goog.vec.Vec3.direction = function(vec0, vec1, resultVec) {
+  var x = vec1[0] - vec0[0];
+  var y = vec1[1] - vec0[1];
+  var z = vec1[2] - vec0[2];
+  var d = Math.sqrt(x * x + y * y + z * z);
+  if (d) {
+    d = 1 / d;
+    resultVec[0] = x * d;
+    resultVec[1] = y * d;
+    resultVec[2] = z * d;
+  } else {
+    resultVec[0] = resultVec[1] = resultVec[2] = 0;
+  }
+  return resultVec;
+};
+
+
+/**
+ * Linearly interpolate from vec0 to v1 according to f. The value of f should be
+ * in the range [0..1] otherwise the results are undefined.
+ *
+ * @param {goog.vec.Vec3.AnyType} v0 The first vector.
+ * @param {goog.vec.Vec3.AnyType} v1 The second vector.
+ * @param {number} f The interpolation factor.
+ * @param {goog.vec.Vec3.AnyType} resultVec The vector to receive the
+ *     results (may be v0 or v1).
+ * @return {!goog.vec.Vec3.AnyType} Return resultVec so that operations can be
+ *     chained together.
+ */
+goog.vec.Vec3.lerp = function(v0, v1, f, resultVec) {
+  var x = v0[0], y = v0[1], z = v0[2];
+  resultVec[0] = (v1[0] - x) * f + x;
+  resultVec[1] = (v1[1] - y) * f + y;
+  resultVec[2] = (v1[2] - z) * f + z;
+  return resultVec;
+};
+
+
+/**
+ * Compares the components of vec0 with the components of another vector or
+ * scalar, storing the larger values in resultVec.
+ *
+ * @param {goog.vec.Vec3.AnyType} vec0 The source vector.
+ * @param {goog.vec.Vec3.AnyType|number} limit The limit vector or scalar.
+ * @param {goog.vec.Vec3.AnyType} resultVec The vector to receive the
+ *     results (may be vec0 or limit).
+ * @return {!goog.vec.Vec3.AnyType} Return resultVec so that operations can be
+ *     chained together.
+ */
+goog.vec.Vec3.max = function(vec0, limit, resultVec) {
+  if (goog.isNumber(limit)) {
+    resultVec[0] = Math.max(vec0[0], limit);
+    resultVec[1] = Math.max(vec0[1], limit);
+    resultVec[2] = Math.max(vec0[2], limit);
+  } else {
+    resultVec[0] = Math.max(vec0[0], limit[0]);
+    resultVec[1] = Math.max(vec0[1], limit[1]);
+    resultVec[2] = Math.max(vec0[2], limit[2]);
+  }
+  return resultVec;
+};
+
+
+/**
+ * Compares the components of vec0 with the components of another vector or
+ * scalar, storing the smaller values in resultVec.
+ *
+ * @param {goog.vec.Vec3.AnyType} vec0 The source vector.
+ * @param {goog.vec.Vec3.AnyType|number} limit The limit vector or scalar.
+ * @param {goog.vec.Vec3.AnyType} resultVec The vector to receive the
+ *     results (may be vec0 or limit).
+ * @return {!goog.vec.Vec3.AnyType} Return resultVec so that operations can be
+ *     chained together.
+ */
+goog.vec.Vec3.min = function(vec0, limit, resultVec) {
+  if (goog.isNumber(limit)) {
+    resultVec[0] = Math.min(vec0[0], limit);
+    resultVec[1] = Math.min(vec0[1], limit);
+    resultVec[2] = Math.min(vec0[2], limit);
+  } else {
+    resultVec[0] = Math.min(vec0[0], limit[0]);
+    resultVec[1] = Math.min(vec0[1], limit[1]);
+    resultVec[2] = Math.min(vec0[2], limit[2]);
+  }
+  return resultVec;
+};
+
+
+/**
+ * Returns true if the components of v0 are equal to the components of v1.
+ *
+ * @param {goog.vec.Vec3.AnyType} v0 The first vector.
+ * @param {goog.vec.Vec3.AnyType} v1 The second vector.
+ * @return {boolean} True if the vectors are equal, false otherwise.
+ */
+goog.vec.Vec3.equals = function(v0, v1) {
+  return v0.length == v1.length &&
+      v0[0] == v1[0] && v0[1] == v1[1] && v0[2] == v1[2];
+};
+
+// Copyright 2011 The Closure Library Authors. All Rights Reserved.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//      http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS-IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+
+/**
+ * @fileoverview Supplies 4 element vectors that are compatible with WebGL.
+ * Each element is a float32 since that is typically the desired size of a
+ * 4-vector in the GPU.  The API is structured to avoid unnecessary memory
+ * allocations.  The last parameter will typically be the output vector and
+ * an object can be both an input and output parameter to all methods except
+ * where noted.
+ *
+ */
+goog.provide('goog.vec.Vec4');
+
+/** @suppress {extraRequire} */
+goog.require('goog.vec');
+
+/** @typedef {goog.vec.Float32} */ goog.vec.Vec4.Float32;
+/** @typedef {goog.vec.Float64} */ goog.vec.Vec4.Float64;
+/** @typedef {goog.vec.Number} */ goog.vec.Vec4.Number;
+/** @typedef {goog.vec.AnyType} */ goog.vec.Vec4.AnyType;
+
+// The following two types are deprecated - use the above types instead.
+/** @typedef {Float32Array} */ goog.vec.Vec4.Type;
+/** @typedef {goog.vec.ArrayType} */ goog.vec.Vec4.Vec4Like;
+
+
+/**
+ * Creates a 4 element vector of Float32. The array is initialized to zero.
+ *
+ * @return {!goog.vec.Vec4.Float32} The new 3 element array.
+ */
+goog.vec.Vec4.createFloat32 = function() {
+  return new Float32Array(4);
+};
+
+
+/**
+ * Creates a 4 element vector of Float64. The array is initialized to zero.
+ *
+ * @return {!goog.vec.Vec4.Float64} The new 4 element array.
+ */
+goog.vec.Vec4.createFloat64 = function() {
+  return new Float64Array(4);
+};
+
+
+/**
+ * Creates a 4 element vector of Number. The array is initialized to zero.
+ *
+ * @return {!goog.vec.Vec4.Number} The new 4 element array.
+ */
+goog.vec.Vec4.createNumber = function() {
+  var v = new Array(4);
+  goog.vec.Vec4.setFromValues(v, 0, 0, 0, 0);
+  return v;
+};
+
+
+/**
+ * Creates a 4 element vector of Float32Array. The array is initialized to zero.
+ *
+ * @deprecated Use createFloat32.
+ * @return {!goog.vec.Vec4.Type} The new 4 element array.
+ */
+goog.vec.Vec4.create = function() {
+  return new Float32Array(4);
+};
+
+
+/**
+ * Creates a new 4 element vector initialized with the value from the given
+ * array.
+ *
+ * @deprecated Use createFloat32FromArray.
+ * @param {goog.vec.Vec4.Vec4Like} vec The source 4 element array.
+ * @return {!goog.vec.Vec4.Type} The new 4 element array.
+ */
+goog.vec.Vec4.createFromArray = function(vec) {
+  var newVec = goog.vec.Vec4.create();
+  goog.vec.Vec4.setFromArray(newVec, vec);
+  return newVec;
+};
+
+
+/**
+ * Creates a new 4 element FLoat32 vector initialized with the value from the
+ * given array.
+ *
+ * @param {goog.vec.Vec4.AnyType} vec The source 3 element array.
+ * @return {!goog.vec.Vec4.Float32} The new 3 element array.
+ */
+goog.vec.Vec4.createFloat32FromArray = function(vec) {
+  var newVec = goog.vec.Vec4.createFloat32();
+  goog.vec.Vec4.setFromArray(newVec, vec);
+  return newVec;
+};
+
+
+/**
+ * Creates a new 4 element Float32 vector initialized with the supplied values.
+ *
+ * @param {number} v0 The value for element at index 0.
+ * @param {number} v1 The value for element at index 1.
+ * @param {number} v2 The value for element at index 2.
+ * @param {number} v3 The value for element at index 3.
+ * @return {!goog.vec.Vec4.Float32} The new vector.
+ */
+goog.vec.Vec4.createFloat32FromValues = function(v0, v1, v2, v3) {
+  var vec = goog.vec.Vec4.createFloat32();
+  goog.vec.Vec4.setFromValues(vec, v0, v1, v2, v3);
+  return vec;
+};
+
+
+/**
+ * Creates a clone of the given 4 element Float32 vector.
+ *
+ * @param {goog.vec.Vec4.Float32} vec The source 3 element vector.
+ * @return {!goog.vec.Vec4.Float32} The new cloned vector.
+ */
+goog.vec.Vec4.cloneFloat32 = goog.vec.Vec4.createFloat32FromArray;
+
+
+/**
+ * Creates a new 4 element Float64 vector initialized with the value from the
+ * given array.
+ *
+ * @param {goog.vec.Vec4.AnyType} vec The source 4 element array.
+ * @return {!goog.vec.Vec4.Float64} The new 4 element array.
+ */
+goog.vec.Vec4.createFloat64FromArray = function(vec) {
+  var newVec = goog.vec.Vec4.createFloat64();
+  goog.vec.Vec4.setFromArray(newVec, vec);
+  return newVec;
+};
+
+
+/**
+* Creates a new 4 element Float64 vector initialized with the supplied values.
+*
+* @param {number} v0 The value for element at index 0.
+* @param {number} v1 The value for element at index 1.
+* @param {number} v2 The value for element at index 2.
+* @param {number} v3 The value for element at index 3.
+* @return {!goog.vec.Vec4.Float64} The new vector.
+*/
+goog.vec.Vec4.createFloat64FromValues = function(v0, v1, v2, v3) {
+  var vec = goog.vec.Vec4.createFloat64();
+  goog.vec.Vec4.setFromValues(vec, v0, v1, v2, v3);
+  return vec;
+};
+
+
+/**
+ * Creates a clone of the given 4 element vector.
+ *
+ * @param {goog.vec.Vec4.Float64} vec The source 4 element vector.
+ * @return {!goog.vec.Vec4.Float64} The new cloned vector.
+ */
+goog.vec.Vec4.cloneFloat64 = goog.vec.Vec4.createFloat64FromArray;
+
+
+/**
+ * Creates a new 4 element vector initialized with the supplied values.
+ *
+ * @deprecated Use createFloat32FromValues.
+ * @param {number} v0 The value for element at index 0.
+ * @param {number} v1 The value for element at index 1.
+ * @param {number} v2 The value for element at index 2.
+ * @param {number} v3 The value for element at index 3.
+ * @return {!goog.vec.Vec4.Type} The new vector.
+ */
+goog.vec.Vec4.createFromValues = function(v0, v1, v2, v3) {
+  var vec = goog.vec.Vec4.create();
+  goog.vec.Vec4.setFromValues(vec, v0, v1, v2, v3);
+  return vec;
+};
+
+
+/**
+ * Creates a clone of the given 4 element vector.
+ *
+ * @deprecated Use cloneFloat32.
+ * @param {goog.vec.Vec4.Vec4Like} vec The source 4 element vector.
+ * @return {!goog.vec.Vec4.Type} The new cloned vector.
+ */
+goog.vec.Vec4.clone = goog.vec.Vec4.createFromArray;
+
+
+/**
+ * Initializes the vector with the given values.
+ *
+ * @param {goog.vec.Vec4.AnyType} vec The vector to receive the values.
+ * @param {number} v0 The value for element at index 0.
+ * @param {number} v1 The value for element at index 1.
+ * @param {number} v2 The value for element at index 2.
+ * @param {number} v3 The value for element at index 3.
+ * @return {!goog.vec.Vec4.AnyType} Return vec so that operations can be
+ *     chained together.
+ */
+goog.vec.Vec4.setFromValues = function(vec, v0, v1, v2, v3) {
+  vec[0] = v0;
+  vec[1] = v1;
+  vec[2] = v2;
+  vec[3] = v3;
+  return vec;
+};
+
+
+/**
+ * Initializes the vector with the given array of values.
+ *
+ * @param {goog.vec.Vec4.AnyType} vec The vector to receive the
+ *     values.
+ * @param {goog.vec.Vec4.AnyType} values The array of values.
+ * @return {!goog.vec.Vec4.AnyType} Return vec so that operations can be
+ *     chained together.
+ */
+goog.vec.Vec4.setFromArray = function(vec, values) {
+  vec[0] = values[0];
+  vec[1] = values[1];
+  vec[2] = values[2];
+  vec[3] = values[3];
+  return vec;
+};
+
+
+/**
+ * Performs a component-wise addition of vec0 and vec1 together storing the
+ * result into resultVec.
+ *
+ * @param {goog.vec.Vec4.AnyType} vec0 The first addend.
+ * @param {goog.vec.Vec4.AnyType} vec1 The second addend.
+ * @param {goog.vec.Vec4.AnyType} resultVec The vector to
+ *     receive the result. May be vec0 or vec1.
+ * @return {!goog.vec.Vec4.AnyType} Return resultVec so that operations can be
+ *     chained together.
+ */
+goog.vec.Vec4.add = function(vec0, vec1, resultVec) {
+  resultVec[0] = vec0[0] + vec1[0];
+  resultVec[1] = vec0[1] + vec1[1];
+  resultVec[2] = vec0[2] + vec1[2];
+  resultVec[3] = vec0[3] + vec1[3];
+  return resultVec;
+};
+
+
+/**
+ * Performs a component-wise subtraction of vec1 from vec0 storing the
+ * result into resultVec.
+ *
+ * @param {goog.vec.Vec4.AnyType} vec0 The minuend.
+ * @param {goog.vec.Vec4.AnyType} vec1 The subtrahend.
+ * @param {goog.vec.Vec4.AnyType} resultVec The vector to
+ *     receive the result. May be vec0 or vec1.
+ * @return {!goog.vec.Vec4.AnyType} Return resultVec so that operations can be
+ *     chained together.
+ */
+goog.vec.Vec4.subtract = function(vec0, vec1, resultVec) {
+  resultVec[0] = vec0[0] - vec1[0];
+  resultVec[1] = vec0[1] - vec1[1];
+  resultVec[2] = vec0[2] - vec1[2];
+  resultVec[3] = vec0[3] - vec1[3];
+  return resultVec;
+};
+
+
+/**
+ * Negates vec0, storing the result into resultVec.
+ *
+ * @param {goog.vec.Vec4.AnyType} vec0 The vector to negate.
+ * @param {goog.vec.Vec4.AnyType} resultVec The vector to
+ *     receive the result. May be vec0.
+ * @return {!goog.vec.Vec4.AnyType} Return resultVec so that operations can be
+ *     chained together.
+ */
+goog.vec.Vec4.negate = function(vec0, resultVec) {
+  resultVec[0] = -vec0[0];
+  resultVec[1] = -vec0[1];
+  resultVec[2] = -vec0[2];
+  resultVec[3] = -vec0[3];
+  return resultVec;
+};
+
+
+/**
+ * Takes the absolute value of each component of vec0 storing the result in
+ * resultVec.
+ *
+ * @param {goog.vec.Vec4.AnyType} vec0 The source vector.
+ * @param {goog.vec.Vec4.AnyType} resultVec The vector to receive the result.
+ *     May be vec0.
+ * @return {!goog.vec.Vec4.AnyType} Return resultVec so that operations can be
+ *     chained together.
+ */
+goog.vec.Vec4.abs = function(vec0, resultVec) {
+  resultVec[0] = Math.abs(vec0[0]);
+  resultVec[1] = Math.abs(vec0[1]);
+  resultVec[2] = Math.abs(vec0[2]);
+  resultVec[3] = Math.abs(vec0[3]);
+  return resultVec;
+};
+
+
+/**
+ * Multiplies each component of vec0 with scalar storing the product into
+ * resultVec.
+ *
+ * @param {goog.vec.Vec4.AnyType} vec0 The source vector.
+ * @param {number} scalar The value to multiply with each component of vec0.
+ * @param {goog.vec.Vec4.AnyType} resultVec The vector to
+ *     receive the result. May be vec0.
+ * @return {!goog.vec.Vec4.AnyType} Return resultVec so that operations can be
+ *     chained together.
+ */
+goog.vec.Vec4.scale = function(vec0, scalar, resultVec) {
+  resultVec[0] = vec0[0] * scalar;
+  resultVec[1] = vec0[1] * scalar;
+  resultVec[2] = vec0[2] * scalar;
+  resultVec[3] = vec0[3] * scalar;
+  return resultVec;
+};
+
+
+/**
+ * Returns the magnitudeSquared of the given vector.
+ *
+ * @param {goog.vec.Vec4.AnyType} vec0 The vector.
+ * @return {number} The magnitude of the vector.
+ */
+goog.vec.Vec4.magnitudeSquared = function(vec0) {
+  var x = vec0[0], y = vec0[1], z = vec0[2], w = vec0[3];
+  return x * x + y * y + z * z + w * w;
+};
+
+
+/**
+ * Returns the magnitude of the given vector.
+ *
+ * @param {goog.vec.Vec4.AnyType} vec0 The vector.
+ * @return {number} The magnitude of the vector.
+ */
+goog.vec.Vec4.magnitude = function(vec0) {
+  var x = vec0[0], y = vec0[1], z = vec0[2], w = vec0[3];
+  return Math.sqrt(x * x + y * y + z * z + w * w);
+};
+
+
+/**
+ * Normalizes the given vector storing the result into resultVec.
+ *
+ * @param {goog.vec.Vec4.AnyType} vec0 The vector to normalize.
+ * @param {goog.vec.Vec4.AnyType} resultVec The vector to
+ *     receive the result. May be vec0.
+ * @return {!goog.vec.Vec4.AnyType} Return resultVec so that operations can be
+ *     chained together.
+ */
+goog.vec.Vec4.normalize = function(vec0, resultVec) {
+  var ilen = 1 / goog.vec.Vec4.magnitude(vec0);
+  resultVec[0] = vec0[0] * ilen;
+  resultVec[1] = vec0[1] * ilen;
+  resultVec[2] = vec0[2] * ilen;
+  resultVec[3] = vec0[3] * ilen;
+  return resultVec;
+};
+
+
+/**
+ * Returns the scalar product of vectors v0 and v1.
+ *
+ * @param {goog.vec.Vec4.AnyType} v0 The first vector.
+ * @param {goog.vec.Vec4.AnyType} v1 The second vector.
+ * @return {number} The scalar product.
+ */
+goog.vec.Vec4.dot = function(v0, v1) {
+  return v0[0] * v1[0] + v0[1] * v1[1] + v0[2] * v1[2] + v0[3] * v1[3];
+};
+
+
+/**
+ * Linearly interpolate from v0 to v1 according to f. The value of f should be
+ * in the range [0..1] otherwise the results are undefined.
+ *
+ * @param {goog.vec.Vec4.AnyType} v0 The first vector.
+ * @param {goog.vec.Vec4.AnyType} v1 The second vector.
+ * @param {number} f The interpolation factor.
+ * @param {goog.vec.Vec4.AnyType} resultVec The vector to receive the
+ *     results (may be v0 or v1).
+ * @return {!goog.vec.Vec4.AnyType} Return resultVec so that operations can be
+ *     chained together.
+ */
+goog.vec.Vec4.lerp = function(v0, v1, f, resultVec) {
+  var x = v0[0], y = v0[1], z = v0[2], w = v0[3];
+  resultVec[0] = (v1[0] - x) * f + x;
+  resultVec[1] = (v1[1] - y) * f + y;
+  resultVec[2] = (v1[2] - z) * f + z;
+  resultVec[3] = (v1[3] - w) * f + w;
+  return resultVec;
+};
+
+
+/**
+ * Compares the components of vec0 with the components of another vector or
+ * scalar, storing the larger values in resultVec.
+ *
+ * @param {goog.vec.Vec4.AnyType} vec0 The source vector.
+ * @param {goog.vec.Vec4.AnyType|number} limit The limit vector or scalar.
+ * @param {goog.vec.Vec4.AnyType} resultVec The vector to receive the
+ *     results (may be vec0 or limit).
+ * @return {!goog.vec.Vec4.AnyType} Return resultVec so that operations can be
+ *     chained together.
+ */
+goog.vec.Vec4.max = function(vec0, limit, resultVec) {
+  if (goog.isNumber(limit)) {
+    resultVec[0] = Math.max(vec0[0], limit);
+    resultVec[1] = Math.max(vec0[1], limit);
+    resultVec[2] = Math.max(vec0[2], limit);
+    resultVec[3] = Math.max(vec0[3], limit);
+  } else {
+    resultVec[0] = Math.max(vec0[0], limit[0]);
+    resultVec[1] = Math.max(vec0[1], limit[1]);
+    resultVec[2] = Math.max(vec0[2], limit[2]);
+    resultVec[3] = Math.max(vec0[3], limit[3]);
+  }
+  return resultVec;
+};
+
+
+/**
+ * Compares the components of vec0 with the components of another vector or
+ * scalar, storing the smaller values in resultVec.
+ *
+ * @param {goog.vec.Vec4.AnyType} vec0 The source vector.
+ * @param {goog.vec.Vec4.AnyType|number} limit The limit vector or scalar.
+ * @param {goog.vec.Vec4.AnyType} resultVec The vector to receive the
+ *     results (may be vec0 or limit).
+ * @return {!goog.vec.Vec4.AnyType} Return resultVec so that operations can be
+ *     chained together.
+ */
+goog.vec.Vec4.min = function(vec0, limit, resultVec) {
+  if (goog.isNumber(limit)) {
+    resultVec[0] = Math.min(vec0[0], limit);
+    resultVec[1] = Math.min(vec0[1], limit);
+    resultVec[2] = Math.min(vec0[2], limit);
+    resultVec[3] = Math.min(vec0[3], limit);
+  } else {
+    resultVec[0] = Math.min(vec0[0], limit[0]);
+    resultVec[1] = Math.min(vec0[1], limit[1]);
+    resultVec[2] = Math.min(vec0[2], limit[2]);
+    resultVec[3] = Math.min(vec0[3], limit[3]);
+  }
+  return resultVec;
+};
+
+
+/**
+ * Returns true if the components of v0 are equal to the components of v1.
+ *
+ * @param {goog.vec.Vec4.AnyType} v0 The first vector.
+ * @param {goog.vec.Vec4.AnyType} v1 The second vector.
+ * @return {boolean} True if the vectors are equal, false otherwise.
+ */
+goog.vec.Vec4.equals = function(v0, v1) {
+  return v0.length == v1.length &&
+      v0[0] == v1[0] && v0[1] == v1[1] && v0[2] == v1[2] && v0[3] == v1[3];
+};
+
+// Copyright 2011 The Closure Library Authors. All Rights Reserved.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//      http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS-IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+/**
+ * @fileoverview Implements 4x4 matrices and their related functions which are
+ * compatible with WebGL. The API is structured to avoid unnecessary memory
+ * allocations.  The last parameter will typically be the output vector and
+ * an object can be both an input and output parameter to all methods except
+ * where noted. Matrix operations follow the mathematical form when multiplying
+ * vectors as follows: resultVec = matrix * vec.
+ *
+ * The matrices are stored in column-major order.
+ *
+ */
+goog.provide('goog.vec.Mat4');
+
+goog.require('goog.vec');
+goog.require('goog.vec.Vec3');
+goog.require('goog.vec.Vec4');
+
+
+/** @typedef {goog.vec.Float32} */ goog.vec.Mat4.Float32;
+/** @typedef {goog.vec.Float64} */ goog.vec.Mat4.Float64;
+/** @typedef {goog.vec.Number} */ goog.vec.Mat4.Number;
+/** @typedef {goog.vec.AnyType} */ goog.vec.Mat4.AnyType;
+
+// The following two types are deprecated - use the above types instead.
+/** @typedef {!Float32Array} */ goog.vec.Mat4.Type;
+/** @typedef {goog.vec.ArrayType} */ goog.vec.Mat4.Mat4Like;
+
+
+/**
+ * Creates the array representation of a 4x4 matrix of Float32.
+ * The use of the array directly instead of a class reduces overhead.
+ * The returned matrix is cleared to all zeros.
+ *
+ * @return {!goog.vec.Mat4.Float32} The new matrix.
+ */
+goog.vec.Mat4.createFloat32 = function() {
+  return new Float32Array(16);
+};
+
+
+/**
+ * Creates the array representation of a 4x4 matrix of Float64.
+ * The returned matrix is cleared to all zeros.
+ *
+ * @return {!goog.vec.Mat4.Float64} The new matrix.
+ */
+goog.vec.Mat4.createFloat64 = function() {
+  return new Float64Array(16);
+};
+
+
+/**
+ * Creates the array representation of a 4x4 matrix of Number.
+ * The returned matrix is cleared to all zeros.
+ *
+ * @return {!goog.vec.Mat4.Number} The new matrix.
+ */
+goog.vec.Mat4.createNumber = function() {
+  var a = new Array(16);
+  goog.vec.Mat4.setFromValues(a,
+                              0, 0, 0, 0,
+                              0, 0, 0, 0,
+                              0, 0, 0, 0,
+                              0, 0, 0, 0);
+  return a;
+};
+
+
+/**
+ * Creates the array representation of a 4x4 matrix of Float32.
+ * The returned matrix is cleared to all zeros.
+ *
+ * @deprecated Use createFloat32.
+ * @return {!goog.vec.Mat4.Type} The new matrix.
+ */
+goog.vec.Mat4.create = function() {
+  return goog.vec.Mat4.createFloat32();
+};
+
+
+/**
+ * Creates a 4x4 identity matrix of Float32.
+ *
+ * @return {!goog.vec.Mat4.Float32} The new 16 element array.
+ */
+goog.vec.Mat4.createFloat32Identity = function() {
+  var mat = goog.vec.Mat4.createFloat32();
+  mat[0] = mat[5] = mat[10] = mat[15] = 1;
+  return mat;
+};
+
+
+/**
+ * Creates a 4x4 identity matrix of Float64.
+ *
+ * @return {!goog.vec.Mat4.Float64} The new 16 element array.
+ */
+goog.vec.Mat4.createFloat64Identity = function() {
+  var mat = goog.vec.Mat4.createFloat64();
+  mat[0] = mat[5] = mat[10] = mat[15] = 1;
+  return mat;
+};
+
+
+/**
+ * Creates a 4x4 identity matrix of Number.
+ * The returned matrix is cleared to all zeros.
+ *
+ * @return {!goog.vec.Mat4.Number} The new 16 element array.
+ */
+goog.vec.Mat4.createNumberIdentity = function() {
+  var a = new Array(16);
+  goog.vec.Mat4.setFromValues(a,
+                              1, 0, 0, 0,
+                              0, 1, 0, 0,
+                              0, 0, 1, 0,
+                              0, 0, 0, 1);
+  return a;
+};
+
+
+/**
+ * Creates the array representation of a 4x4 matrix of Float32.
+ * The returned matrix is cleared to all zeros.
+ *
+ * @deprecated Use createFloat32Identity.
+ * @return {!goog.vec.Mat4.Type} The new 16 element array.
+ */
+goog.vec.Mat4.createIdentity = function() {
+  return goog.vec.Mat4.createFloat32Identity();
+};
+
+
+/**
+ * Creates a 4x4 matrix of Float32 initialized from the given array.
+ *
+ * @param {goog.vec.Mat4.AnyType} matrix The array containing the
+ *     matrix values in column major order.
+ * @return {!goog.vec.Mat4.Float32} The new, 16 element array.
+ */
+goog.vec.Mat4.createFloat32FromArray = function(matrix) {
+  var newMatrix = goog.vec.Mat4.createFloat32();
+  goog.vec.Mat4.setFromArray(newMatrix, matrix);
+  return newMatrix;
+};
+
+
+/**
+ * Creates a 4x4 matrix of Float32 initialized from the given values.
+ *
+ * @param {number} v00 The values at (0, 0).
+ * @param {number} v10 The values at (1, 0).
+ * @param {number} v20 The values at (2, 0).
+ * @param {number} v30 The values at (3, 0).
+ * @param {number} v01 The values at (0, 1).
+ * @param {number} v11 The values at (1, 1).
+ * @param {number} v21 The values at (2, 1).
+ * @param {number} v31 The values at (3, 1).
+ * @param {number} v02 The values at (0, 2).
+ * @param {number} v12 The values at (1, 2).
+ * @param {number} v22 The values at (2, 2).
+ * @param {number} v32 The values at (3, 2).
+ * @param {number} v03 The values at (0, 3).
+ * @param {number} v13 The values at (1, 3).
+ * @param {number} v23 The values at (2, 3).
+ * @param {number} v33 The values at (3, 3).
+ * @return {!goog.vec.Mat4.Float32} The new, 16 element array.
+ */
+goog.vec.Mat4.createFloat32FromValues = function(
+    v00, v10, v20, v30,
+    v01, v11, v21, v31,
+    v02, v12, v22, v32,
+    v03, v13, v23, v33) {
+  var newMatrix = goog.vec.Mat4.createFloat32();
+  goog.vec.Mat4.setFromValues(
+      newMatrix, v00, v10, v20, v30, v01, v11, v21, v31, v02, v12, v22, v32,
+      v03, v13, v23, v33);
+  return newMatrix;
+};
+
+
+/**
+ * Creates a clone of a 4x4 matrix of Float32.
+ *
+ * @param {goog.vec.Mat4.Float32} matrix The source 4x4 matrix.
+ * @return {!goog.vec.Mat4.Float32} The new 4x4 element matrix.
+ */
+goog.vec.Mat4.cloneFloat32 = goog.vec.Mat4.createFloat32FromArray;
+
+
+/**
+ * Creates a 4x4 matrix of Float64 initialized from the given array.
+ *
+ * @param {goog.vec.Mat4.AnyType} matrix The array containing the
+ *     matrix values in column major order.
+ * @return {!goog.vec.Mat4.Float64} The new, nine element array.
+ */
+goog.vec.Mat4.createFloat64FromArray = function(matrix) {
+  var newMatrix = goog.vec.Mat4.createFloat64();
+  goog.vec.Mat4.setFromArray(newMatrix, matrix);
+  return newMatrix;
+};
+
+
+/**
+ * Creates a 4x4 matrix of Float64 initialized from the given values.
+ *
+ * @param {number} v00 The values at (0, 0).
+ * @param {number} v10 The values at (1, 0).
+ * @param {number} v20 The values at (2, 0).
+ * @param {number} v30 The values at (3, 0).
+ * @param {number} v01 The values at (0, 1).
+ * @param {number} v11 The values at (1, 1).
+ * @param {number} v21 The values at (2, 1).
+ * @param {number} v31 The values at (3, 1).
+ * @param {number} v02 The values at (0, 2).
+ * @param {number} v12 The values at (1, 2).
+ * @param {number} v22 The values at (2, 2).
+ * @param {number} v32 The values at (3, 2).
+ * @param {number} v03 The values at (0, 3).
+ * @param {number} v13 The values at (1, 3).
+ * @param {number} v23 The values at (2, 3).
+ * @param {number} v33 The values at (3, 3).
+ * @return {!goog.vec.Mat4.Float64} The new, 16 element array.
+ */
+goog.vec.Mat4.createFloat64FromValues = function(
+    v00, v10, v20, v30,
+    v01, v11, v21, v31,
+    v02, v12, v22, v32,
+    v03, v13, v23, v33) {
+  var newMatrix = goog.vec.Mat4.createFloat64();
+  goog.vec.Mat4.setFromValues(
+      newMatrix, v00, v10, v20, v30, v01, v11, v21, v31, v02, v12, v22, v32,
+      v03, v13, v23, v33);
+  return newMatrix;
+};
+
+
+/**
+ * Creates a clone of a 4x4 matrix of Float64.
+ *
+ * @param {goog.vec.Mat4.Float64} matrix The source 4x4 matrix.
+ * @return {!goog.vec.Mat4.Float64} The new 4x4 element matrix.
+ */
+goog.vec.Mat4.cloneFloat64 = goog.vec.Mat4.createFloat64FromArray;
+
+
+/**
+ * Creates a 4x4 matrix of Float32 initialized from the given array.
+ *
+ * @deprecated Use createFloat32FromArray.
+ * @param {goog.vec.Mat4.Mat4Like} matrix The array containing the
+ *     matrix values in column major order.
+ * @return {!goog.vec.Mat4.Type} The new, nine element array.
+ */
+goog.vec.Mat4.createFromArray = function(matrix) {
+  var newMatrix = goog.vec.Mat4.createFloat32();
+  goog.vec.Mat4.setFromArray(newMatrix, matrix);
+  return newMatrix;
+};
+
+
+/**
+ * Creates a 4x4 matrix of Float32 initialized from the given values.
+ *
+ * @deprecated Use createFloat32FromValues.
+ * @param {number} v00 The values at (0, 0).
+ * @param {number} v10 The values at (1, 0).
+ * @param {number} v20 The values at (2, 0).
+ * @param {number} v30 The values at (3, 0).
+ * @param {number} v01 The values at (0, 1).
+ * @param {number} v11 The values at (1, 1).
+ * @param {number} v21 The values at (2, 1).
+ * @param {number} v31 The values at (3, 1).
+ * @param {number} v02 The values at (0, 2).
+ * @param {number} v12 The values at (1, 2).
+ * @param {number} v22 The values at (2, 2).
+ * @param {number} v32 The values at (3, 2).
+ * @param {number} v03 The values at (0, 3).
+ * @param {number} v13 The values at (1, 3).
+ * @param {number} v23 The values at (2, 3).
+ * @param {number} v33 The values at (3, 3).
+ * @return {!goog.vec.Mat4.Type} The new, 16 element array.
+ */
+goog.vec.Mat4.createFromValues = function(
+    v00, v10, v20, v30,
+    v01, v11, v21, v31,
+    v02, v12, v22, v32,
+    v03, v13, v23, v33) {
+  return goog.vec.Mat4.createFloat32FromValues(
+      v00, v10, v20, v30, v01, v11, v21, v31, v02, v12, v22, v32,
+      v03, v13, v23, v33);
+};
+
+
+/**
+ * Creates a clone of a 4x4 matrix of Float32.
+ *
+ * @deprecated Use cloneFloat32.
+ * @param {goog.vec.Mat4.Mat4Like} matrix The source 4x4 matrix.
+ * @return {!goog.vec.Mat4.Type} The new 4x4 element matrix.
+ */
+goog.vec.Mat4.clone = goog.vec.Mat4.createFromArray;
+
+
+/**
+ * Retrieves the element at the requested row and column.
+ *
+ * @param {goog.vec.Mat4.AnyType} mat The matrix containing the
+ *     value to retrieve.
+ * @param {number} row The row index.
+ * @param {number} column The column index.
+ * @return {number} The element value at the requested row, column indices.
+ */
+goog.vec.Mat4.getElement = function(mat, row, column) {
+  return mat[row + column * 4];
+};
+
+
+/**
+ * Sets the element at the requested row and column.
+ *
+ * @param {goog.vec.Mat4.AnyType} mat The matrix to set the value on.
+ * @param {number} row The row index.
+ * @param {number} column The column index.
+ * @param {number} value The value to set at the requested row, column.
+ * @return {goog.vec.Mat4.AnyType} return mat so that operations can be
+ *     chained together.
+ */
+goog.vec.Mat4.setElement = function(mat, row, column, value) {
+  mat[row + column * 4] = value;
+  return mat;
+};
+
+
+/**
+ * Initializes the matrix from the set of values. Note the values supplied are
+ * in column major order.
+ *
+ * @param {goog.vec.Mat4.AnyType} mat The matrix to receive the
+ *     values.
+ * @param {number} v00 The values at (0, 0).
+ * @param {number} v10 The values at (1, 0).
+ * @param {number} v20 The values at (2, 0).
+ * @param {number} v30 The values at (3, 0).
+ * @param {number} v01 The values at (0, 1).
+ * @param {number} v11 The values at (1, 1).
+ * @param {number} v21 The values at (2, 1).
+ * @param {number} v31 The values at (3, 1).
+ * @param {number} v02 The values at (0, 2).
+ * @param {number} v12 The values at (1, 2).
+ * @param {number} v22 The values at (2, 2).
+ * @param {number} v32 The values at (3, 2).
+ * @param {number} v03 The values at (0, 3).
+ * @param {number} v13 The values at (1, 3).
+ * @param {number} v23 The values at (2, 3).
+ * @param {number} v33 The values at (3, 3).
+ * @return {goog.vec.Mat4.AnyType} return mat so that operations can be
+ *     chained together.
+ */
+goog.vec.Mat4.setFromValues = function(
+    mat, v00, v10, v20, v30, v01, v11, v21, v31, v02, v12, v22, v32,
+    v03, v13, v23, v33) {
+  mat[0] = v00;
+  mat[1] = v10;
+  mat[2] = v20;
+  mat[3] = v30;
+  mat[4] = v01;
+  mat[5] = v11;
+  mat[6] = v21;
+  mat[7] = v31;
+  mat[8] = v02;
+  mat[9] = v12;
+  mat[10] = v22;
+  mat[11] = v32;
+  mat[12] = v03;
+  mat[13] = v13;
+  mat[14] = v23;
+  mat[15] = v33;
+  return mat;
+};
+
+
+/**
+ * Sets the matrix from the array of values stored in column major order.
+ *
+ * @param {goog.vec.Mat4.AnyType} mat The matrix to receive the values.
+ * @param {goog.vec.Mat4.AnyType} values The column major ordered
+ *     array of values to store in the matrix.
+ * @return {goog.vec.Mat4.AnyType} return mat so that operations can be
+ *     chained together.
+ */
+goog.vec.Mat4.setFromArray = function(mat, values) {
+  mat[0] = values[0];
+  mat[1] = values[1];
+  mat[2] = values[2];
+  mat[3] = values[3];
+  mat[4] = values[4];
+  mat[5] = values[5];
+  mat[6] = values[6];
+  mat[7] = values[7];
+  mat[8] = values[8];
+  mat[9] = values[9];
+  mat[10] = values[10];
+  mat[11] = values[11];
+  mat[12] = values[12];
+  mat[13] = values[13];
+  mat[14] = values[14];
+  mat[15] = values[15];
+  return mat;
+};
+
+
+/**
+ * Sets the matrix from the array of values stored in row major order.
+ *
+ * @param {goog.vec.Mat4.AnyType} mat The matrix to receive the values.
+ * @param {goog.vec.Mat4.AnyType} values The row major ordered array of
+ *     values to store in the matrix.
+ * @return {goog.vec.Mat4.AnyType} return mat so that operations can be
+ *     chained together.
+ */
+goog.vec.Mat4.setFromRowMajorArray = function(mat, values) {
+  mat[0] = values[0];
+  mat[1] = values[4];
+  mat[2] = values[8];
+  mat[3] = values[12];
+
+  mat[4] = values[1];
+  mat[5] = values[5];
+  mat[6] = values[9];
+  mat[7] = values[13];
+
+  mat[8] = values[2];
+  mat[9] = values[6];
+  mat[10] = values[10];
+  mat[11] = values[14];
+
+  mat[12] = values[3];
+  mat[13] = values[7];
+  mat[14] = values[11];
+  mat[15] = values[15];
+
+  return mat;
+};
+
+
+/**
+ * Sets the diagonal values of the matrix from the given values.
+ *
+ * @param {goog.vec.Mat4.AnyType} mat The matrix to receive the values.
+ * @param {number} v00 The values for (0, 0).
+ * @param {number} v11 The values for (1, 1).
+ * @param {number} v22 The values for (2, 2).
+ * @param {number} v33 The values for (3, 3).
+ * @return {goog.vec.Mat4.AnyType} return mat so that operations can be
+ *     chained together.
+ */
+goog.vec.Mat4.setDiagonalValues = function(mat, v00, v11, v22, v33) {
+  mat[0] = v00;
+  mat[5] = v11;
+  mat[10] = v22;
+  mat[15] = v33;
+  return mat;
+};
+
+
+/**
+ * Sets the diagonal values of the matrix from the given vector.
+ *
+ * @param {goog.vec.Mat4.AnyType} mat The matrix to receive the values.
+ * @param {goog.vec.Vec4.AnyType} vec The vector containing the values.
+ * @return {goog.vec.Mat4.AnyType} return mat so that operations can be
+ *     chained together.
+ */
+goog.vec.Mat4.setDiagonal = function(mat, vec) {
+  mat[0] = vec[0];
+  mat[5] = vec[1];
+  mat[10] = vec[2];
+  mat[15] = vec[3];
+  return mat;
+};
+
+
+/**
+ * Gets the diagonal values of the matrix into the given vector.
+ *
+ * @param {goog.vec.Mat4.AnyType} mat The matrix containing the values.
+ * @param {goog.vec.Vec4.AnyType} vec The vector to receive the values.
+ * @param {number=} opt_diagonal Which diagonal to get. A value of 0 selects the
+ *     main diagonal, a positive number selects a super diagonal and a negative
+ *     number selects a sub diagonal.
+ * @return {goog.vec.Vec4.AnyType} return vec so that operations can be
+ *     chained together.
+ */
+goog.vec.Mat4.getDiagonal = function(mat, vec, opt_diagonal) {
+  if (!opt_diagonal) {
+    // This is the most common case, so we avoid the for loop.
+    vec[0] = mat[0];
+    vec[1] = mat[5];
+    vec[2] = mat[10];
+    vec[3] = mat[15];
+  } else {
+    var offset = opt_diagonal > 0 ? 4 * opt_diagonal : -opt_diagonal;
+    for (var i = 0; i < 4 - Math.abs(opt_diagonal); i++) {
+      vec[i] = mat[offset + 5 * i];
+    }
+  }
+  return vec;
+};
+
+
+/**
+ * Sets the specified column with the supplied values.
+ *
+ * @param {goog.vec.Mat4.AnyType} mat The matrix to recieve the values.
+ * @param {number} column The column index to set the values on.
+ * @param {number} v0 The value for row 0.
+ * @param {number} v1 The value for row 1.
+ * @param {number} v2 The value for row 2.
+ * @param {number} v3 The value for row 3.
+ * @return {goog.vec.Mat4.AnyType} return mat so that operations can be
+ *     chained together.
+ */
+goog.vec.Mat4.setColumnValues = function(mat, column, v0, v1, v2, v3) {
+  var i = column * 4;
+  mat[i] = v0;
+  mat[i + 1] = v1;
+  mat[i + 2] = v2;
+  mat[i + 3] = v3;
+  return mat;
+};
+
+
+/**
+ * Sets the specified column with the value from the supplied vector.
+ *
+ * @param {goog.vec.Mat4.AnyType} mat The matrix to receive the values.
+ * @param {number} column The column index to set the values on.
+ * @param {goog.vec.Vec4.AnyType} vec The vector of elements for the column.
+ * @return {goog.vec.Mat4.AnyType} return mat so that operations can be
+ *     chained together.
+ */
+goog.vec.Mat4.setColumn = function(mat, column, vec) {
+  var i = column * 4;
+  mat[i] = vec[0];
+  mat[i + 1] = vec[1];
+  mat[i + 2] = vec[2];
+  mat[i + 3] = vec[3];
+  return mat;
+};
+
+
+/**
+ * Retrieves the specified column from the matrix into the given vector.
+ *
+ * @param {goog.vec.Mat4.AnyType} mat The matrix supplying the values.
+ * @param {number} column The column to get the values from.
+ * @param {goog.vec.Vec4.AnyType} vec The vector of elements to
+ *     receive the column.
+ * @return {goog.vec.Vec4.AnyType} return vec so that operations can be
+ *     chained together.
+ */
+goog.vec.Mat4.getColumn = function(mat, column, vec) {
+  var i = column * 4;
+  vec[0] = mat[i];
+  vec[1] = mat[i + 1];
+  vec[2] = mat[i + 2];
+  vec[3] = mat[i + 3];
+  return vec;
+};
+
+
+/**
+ * Sets the columns of the matrix from the given vectors.
+ *
+ * @param {goog.vec.Mat4.AnyType} mat The matrix to receive the values.
+ * @param {goog.vec.Vec4.AnyType} vec0 The values for column 0.
+ * @param {goog.vec.Vec4.AnyType} vec1 The values for column 1.
+ * @param {goog.vec.Vec4.AnyType} vec2 The values for column 2.
+ * @param {goog.vec.Vec4.AnyType} vec3 The values for column 3.
+ * @return {goog.vec.Mat4.AnyType} return mat so that operations can be
+ *     chained together.
+ */
+goog.vec.Mat4.setColumns = function(mat, vec0, vec1, vec2, vec3) {
+  goog.vec.Mat4.setColumn(mat, 0, vec0);
+  goog.vec.Mat4.setColumn(mat, 1, vec1);
+  goog.vec.Mat4.setColumn(mat, 2, vec2);
+  goog.vec.Mat4.setColumn(mat, 3, vec3);
+  return mat;
+};
+
+
+/**
+ * Retrieves the column values from the given matrix into the given vectors.
+ *
+ * @param {goog.vec.Mat4.AnyType} mat The matrix supplying the columns.
+ * @param {goog.vec.Vec4.AnyType} vec0 The vector to receive column 0.
+ * @param {goog.vec.Vec4.AnyType} vec1 The vector to receive column 1.
+ * @param {goog.vec.Vec4.AnyType} vec2 The vector to receive column 2.
+ * @param {goog.vec.Vec4.AnyType} vec3 The vector to receive column 3.
+ */
+goog.vec.Mat4.getColumns = function(mat, vec0, vec1, vec2, vec3) {
+  goog.vec.Mat4.getColumn(mat, 0, vec0);
+  goog.vec.Mat4.getColumn(mat, 1, vec1);
+  goog.vec.Mat4.getColumn(mat, 2, vec2);
+  goog.vec.Mat4.getColumn(mat, 3, vec3);
+};
+
+
+/**
+ * Sets the row values from the supplied values.
+ *
+ * @param {goog.vec.Mat4.AnyType} mat The matrix to receive the values.
+ * @param {number} row The index of the row to receive the values.
+ * @param {number} v0 The value for column 0.
+ * @param {number} v1 The value for column 1.
+ * @param {number} v2 The value for column 2.
+ * @param {number} v3 The value for column 3.
+ * @return {goog.vec.Mat4.AnyType} return mat so that operations can be
+ *     chained together.
+ */
+goog.vec.Mat4.setRowValues = function(mat, row, v0, v1, v2, v3) {
+  mat[row] = v0;
+  mat[row + 4] = v1;
+  mat[row + 8] = v2;
+  mat[row + 12] = v3;
+  return mat;
+};
+
+
+/**
+ * Sets the row values from the supplied vector.
+ *
+ * @param {goog.vec.Mat4.AnyType} mat The matrix to receive the row values.
+ * @param {number} row The index of the row.
+ * @param {goog.vec.Vec4.AnyType} vec The vector containing the values.
+ * @return {goog.vec.Mat4.AnyType} return mat so that operations can be
+ *     chained together.
+ */
+goog.vec.Mat4.setRow = function(mat, row, vec) {
+  mat[row] = vec[0];
+  mat[row + 4] = vec[1];
+  mat[row + 8] = vec[2];
+  mat[row + 12] = vec[3];
+  return mat;
+};
+
+
+/**
+ * Retrieves the row values into the given vector.
+ *
+ * @param {goog.vec.Mat4.AnyType} mat The matrix supplying the values.
+ * @param {number} row The index of the row supplying the values.
+ * @param {goog.vec.Vec4.AnyType} vec The vector to receive the row.
+ * @return {goog.vec.Vec4.AnyType} return vec so that operations can be
+ *     chained together.
+ */
+goog.vec.Mat4.getRow = function(mat, row, vec) {
+  vec[0] = mat[row];
+  vec[1] = mat[row + 4];
+  vec[2] = mat[row + 8];
+  vec[3] = mat[row + 12];
+  return vec;
+};
+
+
+/**
+ * Sets the rows of the matrix from the supplied vectors.
+ *
+ * @param {goog.vec.Mat4.AnyType} mat The matrix to receive the values.
+ * @param {goog.vec.Vec4.AnyType} vec0 The values for row 0.
+ * @param {goog.vec.Vec4.AnyType} vec1 The values for row 1.
+ * @param {goog.vec.Vec4.AnyType} vec2 The values for row 2.
+ * @param {goog.vec.Vec4.AnyType} vec3 The values for row 3.
+ * @return {goog.vec.Mat4.AnyType} return mat so that operations can be
+ *     chained together.
+ */
+goog.vec.Mat4.setRows = function(mat, vec0, vec1, vec2, vec3) {
+  goog.vec.Mat4.setRow(mat, 0, vec0);
+  goog.vec.Mat4.setRow(mat, 1, vec1);
+  goog.vec.Mat4.setRow(mat, 2, vec2);
+  goog.vec.Mat4.setRow(mat, 3, vec3);
+  return mat;
+};
+
+
+/**
+ * Retrieves the rows of the matrix into the supplied vectors.
+ *
+ * @param {goog.vec.Mat4.AnyType} mat The matrix to supply the values.
+ * @param {goog.vec.Vec4.AnyType} vec0 The vector to receive row 0.
+ * @param {goog.vec.Vec4.AnyType} vec1 The vector to receive row 1.
+ * @param {goog.vec.Vec4.AnyType} vec2 The vector to receive row 2.
+ * @param {goog.vec.Vec4.AnyType} vec3 The vector to receive row 3.
+ */
+goog.vec.Mat4.getRows = function(mat, vec0, vec1, vec2, vec3) {
+  goog.vec.Mat4.getRow(mat, 0, vec0);
+  goog.vec.Mat4.getRow(mat, 1, vec1);
+  goog.vec.Mat4.getRow(mat, 2, vec2);
+  goog.vec.Mat4.getRow(mat, 3, vec3);
+};
+
+
+/**
+ * Makes the given 4x4 matrix the zero matrix.
+ *
+ * @param {goog.vec.Mat4.AnyType} mat The matrix.
+ * @return {!goog.vec.Mat4.AnyType} return mat so operations can be chained.
+ */
+goog.vec.Mat4.makeZero = function(mat) {
+  mat[0] = 0;
+  mat[1] = 0;
+  mat[2] = 0;
+  mat[3] = 0;
+  mat[4] = 0;
+  mat[5] = 0;
+  mat[6] = 0;
+  mat[7] = 0;
+  mat[8] = 0;
+  mat[9] = 0;
+  mat[10] = 0;
+  mat[11] = 0;
+  mat[12] = 0;
+  mat[13] = 0;
+  mat[14] = 0;
+  mat[15] = 0;
+  return mat;
+};
+
+
+/**
+ * Makes the given 4x4 matrix the identity matrix.
+ *
+ * @param {goog.vec.Mat4.AnyType} mat The matrix.
+ * @return {goog.vec.Mat4.AnyType} return mat so operations can be chained.
+ */
+goog.vec.Mat4.makeIdentity = function(mat) {
+  mat[0] = 1;
+  mat[1] = 0;
+  mat[2] = 0;
+  mat[3] = 0;
+  mat[4] = 0;
+  mat[5] = 1;
+  mat[6] = 0;
+  mat[7] = 0;
+  mat[8] = 0;
+  mat[9] = 0;
+  mat[10] = 1;
+  mat[11] = 0;
+  mat[12] = 0;
+  mat[13] = 0;
+  mat[14] = 0;
+  mat[15] = 1;
+  return mat;
+};
+
+
+/**
+ * Performs a per-component addition of the matrix mat0 and mat1, storing
+ * the result into resultMat.
+ *
+ * @param {goog.vec.Mat4.AnyType} mat0 The first addend.
+ * @param {goog.vec.Mat4.AnyType} mat1 The second addend.
+ * @param {goog.vec.Mat4.AnyType} resultMat The matrix to
+ *     receive the results (may be either mat0 or mat1).
+ * @return {goog.vec.Mat4.AnyType} return resultMat so that operations can be
+ *     chained together.
+ */
+goog.vec.Mat4.addMat = function(mat0, mat1, resultMat) {
+  resultMat[0] = mat0[0] + mat1[0];
+  resultMat[1] = mat0[1] + mat1[1];
+  resultMat[2] = mat0[2] + mat1[2];
+  resultMat[3] = mat0[3] + mat1[3];
+  resultMat[4] = mat0[4] + mat1[4];
+  resultMat[5] = mat0[5] + mat1[5];
+  resultMat[6] = mat0[6] + mat1[6];
+  resultMat[7] = mat0[7] + mat1[7];
+  resultMat[8] = mat0[8] + mat1[8];
+  resultMat[9] = mat0[9] + mat1[9];
+  resultMat[10] = mat0[10] + mat1[10];
+  resultMat[11] = mat0[11] + mat1[11];
+  resultMat[12] = mat0[12] + mat1[12];
+  resultMat[13] = mat0[13] + mat1[13];
+  resultMat[14] = mat0[14] + mat1[14];
+  resultMat[15] = mat0[15] + mat1[15];
+  return resultMat;
+};
+
+
+/**
+ * Performs a per-component subtraction of the matrix mat0 and mat1,
+ * storing the result into resultMat.
+ *
+ * @param {goog.vec.Mat4.AnyType} mat0 The minuend.
+ * @param {goog.vec.Mat4.AnyType} mat1 The subtrahend.
+ * @param {goog.vec.Mat4.AnyType} resultMat The matrix to receive
+ *     the results (may be either mat0 or mat1).
+ * @return {goog.vec.Mat4.AnyType} return resultMat so that operations can be
+ *     chained together.
+ */
+goog.vec.Mat4.subMat = function(mat0, mat1, resultMat) {
+  resultMat[0] = mat0[0] - mat1[0];
+  resultMat[1] = mat0[1] - mat1[1];
+  resultMat[2] = mat0[2] - mat1[2];
+  resultMat[3] = mat0[3] - mat1[3];
+  resultMat[4] = mat0[4] - mat1[4];
+  resultMat[5] = mat0[5] - mat1[5];
+  resultMat[6] = mat0[6] - mat1[6];
+  resultMat[7] = mat0[7] - mat1[7];
+  resultMat[8] = mat0[8] - mat1[8];
+  resultMat[9] = mat0[9] - mat1[9];
+  resultMat[10] = mat0[10] - mat1[10];
+  resultMat[11] = mat0[11] - mat1[11];
+  resultMat[12] = mat0[12] - mat1[12];
+  resultMat[13] = mat0[13] - mat1[13];
+  resultMat[14] = mat0[14] - mat1[14];
+  resultMat[15] = mat0[15] - mat1[15];
+  return resultMat;
+};
+
+
+/**
+ * Multiplies matrix mat with the given scalar, storing the result
+ * into resultMat.
+ *
+ * @param {goog.vec.Mat4.AnyType} mat The matrix.
+ * @param {number} scalar The scalar value to multiply to each element of mat.
+ * @param {goog.vec.Mat4.AnyType} resultMat The matrix to receive
+ *     the results (may be mat).
+ * @return {goog.vec.Mat4.AnyType} return resultMat so that operations can be
+ *     chained together.
+ */
+goog.vec.Mat4.multScalar = function(mat, scalar, resultMat) {
+  resultMat[0] = mat[0] * scalar;
+  resultMat[1] = mat[1] * scalar;
+  resultMat[2] = mat[2] * scalar;
+  resultMat[3] = mat[3] * scalar;
+  resultMat[4] = mat[4] * scalar;
+  resultMat[5] = mat[5] * scalar;
+  resultMat[6] = mat[6] * scalar;
+  resultMat[7] = mat[7] * scalar;
+  resultMat[8] = mat[8] * scalar;
+  resultMat[9] = mat[9] * scalar;
+  resultMat[10] = mat[10] * scalar;
+  resultMat[11] = mat[11] * scalar;
+  resultMat[12] = mat[12] * scalar;
+  resultMat[13] = mat[13] * scalar;
+  resultMat[14] = mat[14] * scalar;
+  resultMat[15] = mat[15] * scalar;
+  return resultMat;
+};
+
+
+/**
+ * Multiplies the two matrices mat0 and mat1 using matrix multiplication,
+ * storing the result into resultMat.
+ *
+ * @param {goog.vec.Mat4.AnyType} mat0 The first (left hand) matrix.
+ * @param {goog.vec.Mat4.AnyType} mat1 The second (right hand) matrix.
+ * @param {goog.vec.Mat4.AnyType} resultMat The matrix to receive
+ *     the results (may be either mat0 or mat1).
+ * @return {goog.vec.Mat4.AnyType} return resultMat so that operations can be
+ *     chained together.
+ */
+goog.vec.Mat4.multMat = function(mat0, mat1, resultMat) {
+  var a00 = mat0[0], a10 = mat0[1], a20 = mat0[2], a30 = mat0[3];
+  var a01 = mat0[4], a11 = mat0[5], a21 = mat0[6], a31 = mat0[7];
+  var a02 = mat0[8], a12 = mat0[9], a22 = mat0[10], a32 = mat0[11];
+  var a03 = mat0[12], a13 = mat0[13], a23 = mat0[14], a33 = mat0[15];
+
+  var b00 = mat1[0], b10 = mat1[1], b20 = mat1[2], b30 = mat1[3];
+  var b01 = mat1[4], b11 = mat1[5], b21 = mat1[6], b31 = mat1[7];
+  var b02 = mat1[8], b12 = mat1[9], b22 = mat1[10], b32 = mat1[11];
+  var b03 = mat1[12], b13 = mat1[13], b23 = mat1[14], b33 = mat1[15];
+
+  resultMat[0] = a00 * b00 + a01 * b10 + a02 * b20 + a03 * b30;
+  resultMat[1] = a10 * b00 + a11 * b10 + a12 * b20 + a13 * b30;
+  resultMat[2] = a20 * b00 + a21 * b10 + a22 * b20 + a23 * b30;
+  resultMat[3] = a30 * b00 + a31 * b10 + a32 * b20 + a33 * b30;
+
+  resultMat[4] = a00 * b01 + a01 * b11 + a02 * b21 + a03 * b31;
+  resultMat[5] = a10 * b01 + a11 * b11 + a12 * b21 + a13 * b31;
+  resultMat[6] = a20 * b01 + a21 * b11 + a22 * b21 + a23 * b31;
+  resultMat[7] = a30 * b01 + a31 * b11 + a32 * b21 + a33 * b31;
+
+  resultMat[8] = a00 * b02 + a01 * b12 + a02 * b22 + a03 * b32;
+  resultMat[9] = a10 * b02 + a11 * b12 + a12 * b22 + a13 * b32;
+  resultMat[10] = a20 * b02 + a21 * b12 + a22 * b22 + a23 * b32;
+  resultMat[11] = a30 * b02 + a31 * b12 + a32 * b22 + a33 * b32;
+
+  resultMat[12] = a00 * b03 + a01 * b13 + a02 * b23 + a03 * b33;
+  resultMat[13] = a10 * b03 + a11 * b13 + a12 * b23 + a13 * b33;
+  resultMat[14] = a20 * b03 + a21 * b13 + a22 * b23 + a23 * b33;
+  resultMat[15] = a30 * b03 + a31 * b13 + a32 * b23 + a33 * b33;
+  return resultMat;
+};
+
+
+/**
+ * Transposes the given matrix mat storing the result into resultMat.
+ *
+ * @param {goog.vec.Mat4.AnyType} mat The matrix to transpose.
+ * @param {goog.vec.Mat4.AnyType} resultMat The matrix to receive
+ *     the results (may be mat).
+ * @return {goog.vec.Mat4.AnyType} return resultMat so that operations can be
+ *     chained together.
+ */
+goog.vec.Mat4.transpose = function(mat, resultMat) {
+  if (resultMat == mat) {
+    var a10 = mat[1], a20 = mat[2], a30 = mat[3];
+    var a21 = mat[6], a31 = mat[7];
+    var a32 = mat[11];
+    resultMat[1] = mat[4];
+    resultMat[2] = mat[8];
+    resultMat[3] = mat[12];
+    resultMat[4] = a10;
+    resultMat[6] = mat[9];
+    resultMat[7] = mat[13];
+    resultMat[8] = a20;
+    resultMat[9] = a21;
+    resultMat[11] = mat[14];
+    resultMat[12] = a30;
+    resultMat[13] = a31;
+    resultMat[14] = a32;
+  } else {
+    resultMat[0] = mat[0];
+    resultMat[1] = mat[4];
+    resultMat[2] = mat[8];
+    resultMat[3] = mat[12];
+
+    resultMat[4] = mat[1];
+    resultMat[5] = mat[5];
+    resultMat[6] = mat[9];
+    resultMat[7] = mat[13];
+
+    resultMat[8] = mat[2];
+    resultMat[9] = mat[6];
+    resultMat[10] = mat[10];
+    resultMat[11] = mat[14];
+
+    resultMat[12] = mat[3];
+    resultMat[13] = mat[7];
+    resultMat[14] = mat[11];
+    resultMat[15] = mat[15];
+  }
+  return resultMat;
+};
+
+
+/**
+ * Computes the determinant of the matrix.
+ *
+ * @param {goog.vec.Mat4.AnyType} mat The matrix to compute the matrix for.
+ * @return {number} The determinant of the matrix.
+ */
+goog.vec.Mat4.determinant = function(mat) {
+  var m00 = mat[0], m10 = mat[1], m20 = mat[2], m30 = mat[3];
+  var m01 = mat[4], m11 = mat[5], m21 = mat[6], m31 = mat[7];
+  var m02 = mat[8], m12 = mat[9], m22 = mat[10], m32 = mat[11];
+  var m03 = mat[12], m13 = mat[13], m23 = mat[14], m33 = mat[15];
+
+  var a0 = m00 * m11 - m10 * m01;
+  var a1 = m00 * m21 - m20 * m01;
+  var a2 = m00 * m31 - m30 * m01;
+  var a3 = m10 * m21 - m20 * m11;
+  var a4 = m10 * m31 - m30 * m11;
+  var a5 = m20 * m31 - m30 * m21;
+  var b0 = m02 * m13 - m12 * m03;
+  var b1 = m02 * m23 - m22 * m03;
+  var b2 = m02 * m33 - m32 * m03;
+  var b3 = m12 * m23 - m22 * m13;
+  var b4 = m12 * m33 - m32 * m13;
+  var b5 = m22 * m33 - m32 * m23;
+
+  return a0 * b5 - a1 * b4 + a2 * b3 + a3 * b2 - a4 * b1 + a5 * b0;
+};
+
+
+/**
+ * Computes the inverse of mat storing the result into resultMat. If the
+ * inverse is defined, this function returns true, false otherwise.
+ *
+ * @param {goog.vec.Mat4.AnyType} mat The matrix to invert.
+ * @param {goog.vec.Mat4.AnyType} resultMat The matrix to receive
+ *     the result (may be mat).
+ * @return {boolean} True if the inverse is defined. If false is returned,
+ *     resultMat is not modified.
+ */
+goog.vec.Mat4.invert = function(mat, resultMat) {
+  var m00 = mat[0], m10 = mat[1], m20 = mat[2], m30 = mat[3];
+  var m01 = mat[4], m11 = mat[5], m21 = mat[6], m31 = mat[7];
+  var m02 = mat[8], m12 = mat[9], m22 = mat[10], m32 = mat[11];
+  var m03 = mat[12], m13 = mat[13], m23 = mat[14], m33 = mat[15];
+
+  var a0 = m00 * m11 - m10 * m01;
+  var a1 = m00 * m21 - m20 * m01;
+  var a2 = m00 * m31 - m30 * m01;
+  var a3 = m10 * m21 - m20 * m11;
+  var a4 = m10 * m31 - m30 * m11;
+  var a5 = m20 * m31 - m30 * m21;
+  var b0 = m02 * m13 - m12 * m03;
+  var b1 = m02 * m23 - m22 * m03;
+  var b2 = m02 * m33 - m32 * m03;
+  var b3 = m12 * m23 - m22 * m13;
+  var b4 = m12 * m33 - m32 * m13;
+  var b5 = m22 * m33 - m32 * m23;
+
+  var det = a0 * b5 - a1 * b4 + a2 * b3 + a3 * b2 - a4 * b1 + a5 * b0;
+  if (det == 0) {
+    return false;
+  }
+
+  var idet = 1.0 / det;
+  resultMat[0] = (m11 * b5 - m21 * b4 + m31 * b3) * idet;
+  resultMat[1] = (-m10 * b5 + m20 * b4 - m30 * b3) * idet;
+  resultMat[2] = (m13 * a5 - m23 * a4 + m33 * a3) * idet;
+  resultMat[3] = (-m12 * a5 + m22 * a4 - m32 * a3) * idet;
+  resultMat[4] = (-m01 * b5 + m21 * b2 - m31 * b1) * idet;
+  resultMat[5] = (m00 * b5 - m20 * b2 + m30 * b1) * idet;
+  resultMat[6] = (-m03 * a5 + m23 * a2 - m33 * a1) * idet;
+  resultMat[7] = (m02 * a5 - m22 * a2 + m32 * a1) * idet;
+  resultMat[8] = (m01 * b4 - m11 * b2 + m31 * b0) * idet;
+  resultMat[9] = (-m00 * b4 + m10 * b2 - m30 * b0) * idet;
+  resultMat[10] = (m03 * a4 - m13 * a2 + m33 * a0) * idet;
+  resultMat[11] = (-m02 * a4 + m12 * a2 - m32 * a0) * idet;
+  resultMat[12] = (-m01 * b3 + m11 * b1 - m21 * b0) * idet;
+  resultMat[13] = (m00 * b3 - m10 * b1 + m20 * b0) * idet;
+  resultMat[14] = (-m03 * a3 + m13 * a1 - m23 * a0) * idet;
+  resultMat[15] = (m02 * a3 - m12 * a1 + m22 * a0) * idet;
+  return true;
+};
+
+
+/**
+ * Returns true if the components of mat0 are equal to the components of mat1.
+ *
+ * @param {goog.vec.Mat4.AnyType} mat0 The first matrix.
+ * @param {goog.vec.Mat4.AnyType} mat1 The second matrix.
+ * @return {boolean} True if the the two matrices are equivalent.
+ */
+goog.vec.Mat4.equals = function(mat0, mat1) {
+  return mat0.length == mat1.length &&
+      mat0[0] == mat1[0] &&
+      mat0[1] == mat1[1] &&
+      mat0[2] == mat1[2] &&
+      mat0[3] == mat1[3] &&
+      mat0[4] == mat1[4] &&
+      mat0[5] == mat1[5] &&
+      mat0[6] == mat1[6] &&
+      mat0[7] == mat1[7] &&
+      mat0[8] == mat1[8] &&
+      mat0[9] == mat1[9] &&
+      mat0[10] == mat1[10] &&
+      mat0[11] == mat1[11] &&
+      mat0[12] == mat1[12] &&
+      mat0[13] == mat1[13] &&
+      mat0[14] == mat1[14] &&
+      mat0[15] == mat1[15];
+};
+
+
+/**
+ * Transforms the given vector with the given matrix storing the resulting,
+ * transformed vector into resultVec. The input vector is multiplied against the
+ * upper 3x4 matrix omitting the projective component.
+ *
+ * @param {goog.vec.Mat4.AnyType} mat The matrix supplying the transformation.
+ * @param {goog.vec.Vec3.AnyType} vec The 3 element vector to transform.
+ * @param {goog.vec.Vec3.AnyType} resultVec The 3 element vector to
+ *     receive the results (may be vec).
+ * @return {goog.vec.Vec3.AnyType} return resultVec so that operations can be
+ *     chained together.
+ */
+goog.vec.Mat4.multVec3 = function(mat, vec, resultVec) {
+  var x = vec[0], y = vec[1], z = vec[2];
+  resultVec[0] = x * mat[0] + y * mat[4] + z * mat[8] + mat[12];
+  resultVec[1] = x * mat[1] + y * mat[5] + z * mat[9] + mat[13];
+  resultVec[2] = x * mat[2] + y * mat[6] + z * mat[10] + mat[14];
+  return resultVec;
+};
+
+
+/**
+ * Transforms the given vector with the given matrix storing the resulting,
+ * transformed vector into resultVec. The input vector is multiplied against the
+ * upper 3x3 matrix omitting the projective component and translation
+ * components.
+ *
+ * @param {goog.vec.Mat4.AnyType} mat The matrix supplying the transformation.
+ * @param {goog.vec.Vec3.AnyType} vec The 3 element vector to transform.
+ * @param {goog.vec.Vec3.AnyType} resultVec The 3 element vector to
+ *     receive the results (may be vec).
+ * @return {goog.vec.Vec3.AnyType} return resultVec so that operations can be
+ *     chained together.
+ */
+goog.vec.Mat4.multVec3NoTranslate = function(mat, vec, resultVec) {
+  var x = vec[0], y = vec[1], z = vec[2];
+  resultVec[0] = x * mat[0] + y * mat[4] + z * mat[8];
+  resultVec[1] = x * mat[1] + y * mat[5] + z * mat[9];
+  resultVec[2] = x * mat[2] + y * mat[6] + z * mat[10];
+  return resultVec;
+};
+
+
+/**
+ * Transforms the given vector with the given matrix storing the resulting,
+ * transformed vector into resultVec. The input vector is multiplied against the
+ * full 4x4 matrix with the homogeneous divide applied to reduce the 4 element
+ * vector to a 3 element vector.
+ *
+ * @param {goog.vec.Mat4.AnyType} mat The matrix supplying the transformation.
+ * @param {goog.vec.Vec3.AnyType} vec The 3 element vector to transform.
+ * @param {goog.vec.Vec3.AnyType} resultVec The 3 element vector
+ *     to receive the results (may be vec).
+ * @return {goog.vec.Vec3.AnyType} return resultVec so that operations can be
+ *     chained together.
+ */
+goog.vec.Mat4.multVec3Projective = function(mat, vec, resultVec) {
+  var x = vec[0], y = vec[1], z = vec[2];
+  var invw = 1 / (x * mat[3] + y * mat[7] + z * mat[11] + mat[15]);
+  resultVec[0] = (x * mat[0] + y * mat[4] + z * mat[8] + mat[12]) * invw;
+  resultVec[1] = (x * mat[1] + y * mat[5] + z * mat[9] + mat[13]) * invw;
+  resultVec[2] = (x * mat[2] + y * mat[6] + z * mat[10] + mat[14]) * invw;
+  return resultVec;
+};
+
+
+/**
+ * Transforms the given vector with the given matrix storing the resulting,
+ * transformed vector into resultVec.
+ *
+ * @param {goog.vec.Mat4.AnyType} mat The matrix supplying the transformation.
+ * @param {goog.vec.Vec4.AnyType} vec The vector to transform.
+ * @param {goog.vec.Vec4.AnyType} resultVec The vector to
+ *     receive the results (may be vec).
+ * @return {goog.vec.Vec4.AnyType} return resultVec so that operations can be
+ *     chained together.
+ */
+goog.vec.Mat4.multVec4 = function(mat, vec, resultVec) {
+  var x = vec[0], y = vec[1], z = vec[2], w = vec[3];
+  resultVec[0] = x * mat[0] + y * mat[4] + z * mat[8] + w * mat[12];
+  resultVec[1] = x * mat[1] + y * mat[5] + z * mat[9] + w * mat[13];
+  resultVec[2] = x * mat[2] + y * mat[6] + z * mat[10] + w * mat[14];
+  resultVec[3] = x * mat[3] + y * mat[7] + z * mat[11] + w * mat[15];
+  return resultVec;
+};
+
+
+/**
+ * Makes the given 4x4 matrix a translation matrix with x, y and z
+ * translation factors.
+ *
+ * @param {goog.vec.Mat4.AnyType} mat The matrix.
+ * @param {number} x The translation along the x axis.
+ * @param {number} y The translation along the y axis.
+ * @param {number} z The translation along the z axis.
+ * @return {goog.vec.Mat4.AnyType} return mat so that operations can be
+ *     chained.
+ */
+goog.vec.Mat4.makeTranslate = function(mat, x, y, z) {
+  goog.vec.Mat4.makeIdentity(mat);
+  return goog.vec.Mat4.setColumnValues(mat, 3, x, y, z, 1);
+};
+
+
+/**
+ * Makes the given 4x4 matrix as a scale matrix with x, y and z scale factors.
+ *
+ * @param {goog.vec.Mat4.AnyType} mat The matrix.
+ * @param {number} x The scale along the x axis.
+ * @param {number} y The scale along the y axis.
+ * @param {number} z The scale along the z axis.
+ * @return {goog.vec.Mat4.AnyType} return mat so that operations can be
+ *     chained.
+ */
+goog.vec.Mat4.makeScale = function(mat, x, y, z) {
+  goog.vec.Mat4.makeIdentity(mat);
+  return goog.vec.Mat4.setDiagonalValues(mat, x, y, z, 1);
+};
+
+
+/**
+ * Makes the given 4x4 matrix a rotation matrix with the given rotation
+ * angle about the axis defined by the vector (ax, ay, az).
+ *
+ * @param {goog.vec.Mat4.AnyType} mat The matrix.
+ * @param {number} angle The rotation angle in radians.
+ * @param {number} ax The x component of the rotation axis.
+ * @param {number} ay The y component of the rotation axis.
+ * @param {number} az The z component of the rotation axis.
+ * @return {goog.vec.Mat4.AnyType} return mat so that operations can be
+ *     chained.
+ */
+goog.vec.Mat4.makeRotate = function(mat, angle, ax, ay, az) {
+  var c = Math.cos(angle);
+  var d = 1 - c;
+  var s = Math.sin(angle);
+
+  return goog.vec.Mat4.setFromValues(mat,
+      ax * ax * d + c,
+      ax * ay * d + az * s,
+      ax * az * d - ay * s,
+      0,
+
+      ax * ay * d - az * s,
+      ay * ay * d + c,
+      ay * az * d + ax * s,
+      0,
+
+      ax * az * d + ay * s,
+      ay * az * d - ax * s,
+      az * az * d + c,
+      0,
+
+      0, 0, 0, 1);
+};
+
+
+/**
+ * Makes the given 4x4 matrix a rotation matrix with the given rotation
+ * angle about the X axis.
+ *
+ * @param {goog.vec.Mat4.AnyType} mat The matrix.
+ * @param {number} angle The rotation angle in radians.
+ * @return {goog.vec.Mat4.AnyType} return mat so that operations can be
+ *     chained.
+ */
+goog.vec.Mat4.makeRotateX = function(mat, angle) {
+  var c = Math.cos(angle);
+  var s = Math.sin(angle);
+  return goog.vec.Mat4.setFromValues(
+      mat, 1, 0, 0, 0, 0, c, s, 0, 0, -s, c, 0, 0, 0, 0, 1);
+};
+
+
+/**
+ * Makes the given 4x4 matrix a rotation matrix with the given rotation
+ * angle about the Y axis.
+ *
+ * @param {goog.vec.Mat4.AnyType} mat The matrix.
+ * @param {number} angle The rotation angle in radians.
+ * @return {goog.vec.Mat4.AnyType} return mat so that operations can be
+ *     chained.
+ */
+goog.vec.Mat4.makeRotateY = function(mat, angle) {
+  var c = Math.cos(angle);
+  var s = Math.sin(angle);
+  return goog.vec.Mat4.setFromValues(
+      mat, c, 0, -s, 0, 0, 1, 0, 0, s, 0, c, 0, 0, 0, 0, 1);
+};
+
+
+/**
+ * Makes the given 4x4 matrix a rotation matrix with the given rotation
+ * angle about the Z axis.
+ *
+ * @param {goog.vec.Mat4.AnyType} mat The matrix.
+ * @param {number} angle The rotation angle in radians.
+ * @return {goog.vec.Mat4.AnyType} return mat so that operations can be
+ *     chained.
+ */
+goog.vec.Mat4.makeRotateZ = function(mat, angle) {
+  var c = Math.cos(angle);
+  var s = Math.sin(angle);
+  return goog.vec.Mat4.setFromValues(
+      mat, c, s, 0, 0, -s, c, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1);
+};
+
+
+/**
+ * Makes the given 4x4 matrix a perspective projection matrix.
+ *
+ * @param {goog.vec.Mat4.AnyType} mat The matrix.
+ * @param {number} left The coordinate of the left clipping plane.
+ * @param {number} right The coordinate of the right clipping plane.
+ * @param {number} bottom The coordinate of the bottom clipping plane.
+ * @param {number} top The coordinate of the top clipping plane.
+ * @param {number} near The distance to the near clipping plane.
+ * @param {number} far The distance to the far clipping plane.
+ * @return {goog.vec.Mat4.AnyType} return mat so that operations can be
+ *     chained.
+ */
+goog.vec.Mat4.makeFrustum = function(mat, left, right, bottom, top, near, far) {
+  var x = (2 * near) / (right - left);
+  var y = (2 * near) / (top - bottom);
+  var a = (right + left) / (right - left);
+  var b = (top + bottom) / (top - bottom);
+  var c = -(far + near) / (far - near);
+  var d = -(2 * far * near) / (far - near);
+
+  return goog.vec.Mat4.setFromValues(mat,
+      x, 0, 0, 0,
+      0, y, 0, 0,
+      a, b, c, -1,
+      0, 0, d, 0
+  );
+};
+
+
+/**
+ * Makse the given 4x4 matrix  perspective projection matrix given a
+ * field of view and aspect ratio.
+ *
+ * @param {goog.vec.Mat4.AnyType} mat The matrix.
+ * @param {number} fovy The field of view along the y (vertical) axis in
+ *     radians.
+ * @param {number} aspect The x (width) to y (height) aspect ratio.
+ * @param {number} near The distance to the near clipping plane.
+ * @param {number} far The distance to the far clipping plane.
+ * @return {goog.vec.Mat4.AnyType} return mat so that operations can be
+ *     chained.
+ */
+goog.vec.Mat4.makePerspective = function(mat, fovy, aspect, near, far) {
+  var angle = fovy / 2;
+  var dz = far - near;
+  var sinAngle = Math.sin(angle);
+  if (dz == 0 || sinAngle == 0 || aspect == 0) {
+    return mat;
+  }
+
+  var cot = Math.cos(angle) / sinAngle;
+  return goog.vec.Mat4.setFromValues(mat,
+      cot / aspect, 0, 0, 0,
+      0, cot, 0, 0,
+      0, 0, -(far + near) / dz, -1,
+      0, 0, -(2 * near * far) / dz, 0
+  );
+};
+
+
+/**
+ * Makes the given 4x4 matrix an orthographic projection matrix.
+ *
+ * @param {goog.vec.Mat4.AnyType} mat The matrix.
+ * @param {number} left The coordinate of the left clipping plane.
+ * @param {number} right The coordinate of the right clipping plane.
+ * @param {number} bottom The coordinate of the bottom clipping plane.
+ * @param {number} top The coordinate of the top clipping plane.
+ * @param {number} near The distance to the near clipping plane.
+ * @param {number} far The distance to the far clipping plane.
+ * @return {goog.vec.Mat4.AnyType} return mat so that operations can be
+ *     chained.
+ */
+goog.vec.Mat4.makeOrtho = function(mat, left, right, bottom, top, near, far) {
+  var x = 2 / (right - left);
+  var y = 2 / (top - bottom);
+  var z = -2 / (far - near);
+  var a = -(right + left) / (right - left);
+  var b = -(top + bottom) / (top - bottom);
+  var c = -(far + near) / (far - near);
+
+  return goog.vec.Mat4.setFromValues(mat,
+      x, 0, 0, 0,
+      0, y, 0, 0,
+      0, 0, z, 0,
+      a, b, c, 1
+  );
+};
+
+
+/**
+ * Makes the given 4x4 matrix a modelview matrix of a camera so that
+ * the camera is 'looking at' the given center point.
+ *
+ * @param {goog.vec.Mat4.AnyType} mat The matrix.
+ * @param {goog.vec.Vec3.AnyType} eyePt The position of the eye point
+ *     (camera origin).
+ * @param {goog.vec.Vec3.AnyType} centerPt The point to aim the camera at.
+ * @param {goog.vec.Vec3.AnyType} worldUpVec The vector that identifies
+ *     the up direction for the camera.
+ * @return {goog.vec.Mat4.AnyType} return mat so that operations can be
+ *     chained.
+ */
+goog.vec.Mat4.makeLookAt = function(mat, eyePt, centerPt, worldUpVec) {
+  // Compute the direction vector from the eye point to the center point and
+  // normalize.
+  var fwdVec = goog.vec.Mat4.tmpVec4_[0];
+  goog.vec.Vec3.subtract(centerPt, eyePt, fwdVec);
+  goog.vec.Vec3.normalize(fwdVec, fwdVec);
+  fwdVec[3] = 0;
+
+  // Compute the side vector from the forward vector and the input up vector.
+  var sideVec = goog.vec.Mat4.tmpVec4_[1];
+  goog.vec.Vec3.cross(fwdVec, worldUpVec, sideVec);
+  goog.vec.Vec3.normalize(sideVec, sideVec);
+  sideVec[3] = 0;
+
+  // Now the up vector to form the orthonormal basis.
+  var upVec = goog.vec.Mat4.tmpVec4_[2];
+  goog.vec.Vec3.cross(sideVec, fwdVec, upVec);
+  goog.vec.Vec3.normalize(upVec, upVec);
+  upVec[3] = 0;
+
+  // Update the view matrix with the new orthonormal basis and position the
+  // camera at the given eye point.
+  goog.vec.Vec3.negate(fwdVec, fwdVec);
+  goog.vec.Mat4.setRow(mat, 0, sideVec);
+  goog.vec.Mat4.setRow(mat, 1, upVec);
+  goog.vec.Mat4.setRow(mat, 2, fwdVec);
+  goog.vec.Mat4.setRowValues(mat, 3, 0, 0, 0, 1);
+  goog.vec.Mat4.translate(
+      mat, -eyePt[0], -eyePt[1], -eyePt[2]);
+
+  return mat;
+};
+
+
+/**
+ * Decomposes a matrix into the lookAt vectors eyePt, fwdVec and worldUpVec.
+ * The matrix represents the modelview matrix of a camera. It is the inverse
+ * of lookAt except for the output of the fwdVec instead of centerPt.
+ * The centerPt itself cannot be recovered from a modelview matrix.
+ *
+ * @param {goog.vec.Mat4.AnyType} mat The matrix.
+ * @param {goog.vec.Vec3.AnyType} eyePt The position of the eye point
+ *     (camera origin).
+ * @param {goog.vec.Vec3.AnyType} fwdVec The vector describing where
+ *     the camera points to.
+ * @param {goog.vec.Vec3.AnyType} worldUpVec The vector that
+ *     identifies the up direction for the camera.
+ * @return {boolean} True if the method succeeds, false otherwise.
+ *     The method can only fail if the inverse of viewMatrix is not defined.
+ */
+goog.vec.Mat4.toLookAt = function(mat, eyePt, fwdVec, worldUpVec) {
+  // Get eye of the camera.
+  var matInverse = goog.vec.Mat4.tmpMat4_[0];
+  if (!goog.vec.Mat4.invert(mat, matInverse)) {
+    // The input matrix does not have a valid inverse.
+    return false;
+  }
+
+  if (eyePt) {
+    eyePt[0] = matInverse[12];
+    eyePt[1] = matInverse[13];
+    eyePt[2] = matInverse[14];
+  }
+
+  // Get forward vector from the definition of lookAt.
+  if (fwdVec || worldUpVec) {
+    if (!fwdVec) {
+      fwdVec = goog.vec.Mat4.tmpVec3_[0];
+    }
+    fwdVec[0] = -mat[2];
+    fwdVec[1] = -mat[6];
+    fwdVec[2] = -mat[10];
+    // Normalize forward vector.
+    goog.vec.Vec3.normalize(fwdVec, fwdVec);
+  }
+
+  if (worldUpVec) {
+    // Get side vector from the definition of gluLookAt.
+    var side = goog.vec.Mat4.tmpVec3_[1];
+    side[0] = mat[0];
+    side[1] = mat[4];
+    side[2] = mat[8];
+    // Compute up vector as a up = side x forward.
+    goog.vec.Vec3.cross(side, fwdVec, worldUpVec);
+    // Normalize up vector.
+    goog.vec.Vec3.normalize(worldUpVec, worldUpVec);
+  }
+  return true;
+};
+
+
+/**
+ * Makes the given 4x4 matrix a rotation matrix given Euler angles using
+ * the ZXZ convention.
+ * Given the euler angles [theta1, theta2, theta3], the rotation is defined as
+ * rotation = rotation_z(theta1) * rotation_x(theta2) * rotation_z(theta3),
+ * with theta1 in [0, 2 * pi], theta2 in [0, pi] and theta3 in [0, 2 * pi].
+ * rotation_x(theta) means rotation around the X axis of theta radians,
+ *
+ * @param {goog.vec.Mat4.AnyType} mat The matrix.
+ * @param {number} theta1 The angle of rotation around the Z axis in radians.
+ * @param {number} theta2 The angle of rotation around the X axis in radians.
+ * @param {number} theta3 The angle of rotation around the Z axis in radians.
+ * @return {goog.vec.Mat4.AnyType} return mat so that operations can be
+ *     chained.
+ */
+goog.vec.Mat4.makeEulerZXZ = function(mat, theta1, theta2, theta3) {
+  var c1 = Math.cos(theta1);
+  var s1 = Math.sin(theta1);
+
+  var c2 = Math.cos(theta2);
+  var s2 = Math.sin(theta2);
+
+  var c3 = Math.cos(theta3);
+  var s3 = Math.sin(theta3);
+
+  mat[0] = c1 * c3 - c2 * s1 * s3;
+  mat[1] = c2 * c1 * s3 + c3 * s1;
+  mat[2] = s3 * s2;
+  mat[3] = 0;
+
+  mat[4] = -c1 * s3 - c3 * c2 * s1;
+  mat[5] = c1 * c2 * c3 - s1 * s3;
+  mat[6] = c3 * s2;
+  mat[7] = 0;
+
+  mat[8] = s2 * s1;
+  mat[9] = -c1 * s2;
+  mat[10] = c2;
+  mat[11] = 0;
+
+  mat[12] = 0;
+  mat[13] = 0;
+  mat[14] = 0;
+  mat[15] = 1;
+
+  return mat;
+};
+
+
+/**
+ * Decomposes a rotation matrix into Euler angles using the ZXZ convention so
+ * that rotation = rotation_z(theta1) * rotation_x(theta2) * rotation_z(theta3),
+ * with theta1 in [0, 2 * pi], theta2 in [0, pi] and theta3 in [0, 2 * pi].
+ * rotation_x(theta) means rotation around the X axis of theta radians.
+ *
+ * @param {goog.vec.Mat4.AnyType} mat The matrix.
+ * @param {goog.vec.Vec3.AnyType} euler The ZXZ Euler angles in
+ *     radians as [theta1, theta2, theta3].
+ * @param {boolean=} opt_theta2IsNegative Whether theta2 is in [-pi, 0] instead
+ *     of the default [0, pi].
+ * @return {goog.vec.Vec4.AnyType} return euler so that operations can be
+ *     chained together.
+ */
+goog.vec.Mat4.toEulerZXZ = function(mat, euler, opt_theta2IsNegative) {
+  // There is an ambiguity in the sign of sinTheta2 because of the sqrt.
+  var sinTheta2 = Math.sqrt(mat[2] * mat[2] + mat[6] * mat[6]);
+
+  // By default we explicitely constrain theta2 to be in [0, pi],
+  // so sinTheta2 is always positive. We can change the behavior and specify
+  // theta2 to be negative in [-pi, 0] with opt_Theta2IsNegative.
+  var signTheta2 = opt_theta2IsNegative ? -1 : 1;
+
+  if (sinTheta2 > goog.vec.EPSILON) {
+    euler[2] = Math.atan2(mat[2] * signTheta2, mat[6] * signTheta2);
+    euler[1] = Math.atan2(sinTheta2 * signTheta2, mat[10]);
+    euler[0] = Math.atan2(mat[8] * signTheta2, -mat[9] * signTheta2);
+  } else {
+    // There is also an arbitrary choice for theta1 = 0 or theta2 = 0 here.
+    // We assume theta1 = 0 as some applications do not allow the camera to roll
+    // (i.e. have theta1 != 0).
+    euler[0] = 0;
+    euler[1] = Math.atan2(sinTheta2 * signTheta2, mat[10]);
+    euler[2] = Math.atan2(mat[1], mat[0]);
+  }
+
+  // Atan2 outputs angles in [-pi, pi] so we bring them back to [0, 2 * pi].
+  euler[0] = (euler[0] + Math.PI * 2) % (Math.PI * 2);
+  euler[2] = (euler[2] + Math.PI * 2) % (Math.PI * 2);
+  // For theta2 we want the angle to be in [0, pi] or [-pi, 0] depending on
+  // signTheta2.
+  euler[1] = ((euler[1] * signTheta2 + Math.PI * 2) % (Math.PI * 2)) *
+      signTheta2;
+
+  return euler;
+};
+
+
+/**
+ * Translates the given matrix by x,y,z.  Equvialent to:
+ * goog.vec.Mat4.multMat(
+ *     mat,
+ *     goog.vec.Mat4.makeTranslate(goog.vec.Mat4.create(), x, y, z),
+ *     mat);
+ *
+ * @param {goog.vec.Mat4.AnyType} mat The matrix.
+ * @param {number} x The translation along the x axis.
+ * @param {number} y The translation along the y axis.
+ * @param {number} z The translation along the z axis.
+ * @return {goog.vec.Mat4.AnyType} return mat so that operations can be
+ *     chained.
+ */
+goog.vec.Mat4.translate = function(mat, x, y, z) {
+  return goog.vec.Mat4.setColumnValues(
+      mat, 3,
+      mat[0] * x + mat[4] * y + mat[8] * z + mat[12],
+      mat[1] * x + mat[5] * y + mat[9] * z + mat[13],
+      mat[2] * x + mat[6] * y + mat[10] * z + mat[14],
+      mat[3] * x + mat[7] * y + mat[11] * z + mat[15]);
+};
+
+
+/**
+ * Scales the given matrix by x,y,z.  Equivalent to:
+ * goog.vec.Mat4.multMat(
+ *     mat,
+ *     goog.vec.Mat4.makeScale(goog.vec.Mat4.create(), x, y, z),
+ *     mat);
+ *
+ * @param {goog.vec.Mat4.AnyType} mat The matrix.
+ * @param {number} x The x scale factor.
+ * @param {number} y The y scale factor.
+ * @param {number} z The z scale factor.
+ * @return {goog.vec.Mat4.AnyType} return mat so that operations can be
+ *     chained.
+ */
+goog.vec.Mat4.scale = function(mat, x, y, z) {
+  return goog.vec.Mat4.setFromValues(
+      mat,
+      mat[0] * x, mat[1] * x, mat[2] * x, mat[3] * x,
+      mat[4] * y, mat[5] * y, mat[6] * y, mat[7] * y,
+      mat[8] * z, mat[9] * z, mat[10] * z, mat[11] * z,
+      mat[12], mat[13], mat[14], mat[15]);
+};
+
+
+/**
+ * Rotate the given matrix by angle about the x,y,z axis.  Equivalent to:
+ * goog.vec.Mat4.multMat(
+ *     mat,
+ *     goog.vec.Mat4.makeRotate(goog.vec.Mat4.create(), angle, x, y, z),
+ *     mat);
+ *
+ * @param {goog.vec.Mat4.AnyType} mat The matrix.
+ * @param {number} angle The angle in radians.
+ * @param {number} x The x component of the rotation axis.
+ * @param {number} y The y component of the rotation axis.
+ * @param {number} z The z component of the rotation axis.
+ * @return {goog.vec.Mat4.AnyType} return mat so that operations can be
+ *     chained.
+ */
+goog.vec.Mat4.rotate = function(mat, angle, x, y, z) {
+  var m00 = mat[0], m10 = mat[1], m20 = mat[2], m30 = mat[3];
+  var m01 = mat[4], m11 = mat[5], m21 = mat[6], m31 = mat[7];
+  var m02 = mat[8], m12 = mat[9], m22 = mat[10], m32 = mat[11];
+  var m03 = mat[12], m13 = mat[13], m23 = mat[14], m33 = mat[15];
+
+  var cosAngle = Math.cos(angle);
+  var sinAngle = Math.sin(angle);
+  var diffCosAngle = 1 - cosAngle;
+  var r00 = x * x * diffCosAngle + cosAngle;
+  var r10 = x * y * diffCosAngle + z * sinAngle;
+  var r20 = x * z * diffCosAngle - y * sinAngle;
+
+  var r01 = x * y * diffCosAngle - z * sinAngle;
+  var r11 = y * y * diffCosAngle + cosAngle;
+  var r21 = y * z * diffCosAngle + x * sinAngle;
+
+  var r02 = x * z * diffCosAngle + y * sinAngle;
+  var r12 = y * z * diffCosAngle - x * sinAngle;
+  var r22 = z * z * diffCosAngle + cosAngle;
+
+  return goog.vec.Mat4.setFromValues(
+      mat,
+      m00 * r00 + m01 * r10 + m02 * r20,
+      m10 * r00 + m11 * r10 + m12 * r20,
+      m20 * r00 + m21 * r10 + m22 * r20,
+      m30 * r00 + m31 * r10 + m32 * r20,
+
+      m00 * r01 + m01 * r11 + m02 * r21,
+      m10 * r01 + m11 * r11 + m12 * r21,
+      m20 * r01 + m21 * r11 + m22 * r21,
+      m30 * r01 + m31 * r11 + m32 * r21,
+
+      m00 * r02 + m01 * r12 + m02 * r22,
+      m10 * r02 + m11 * r12 + m12 * r22,
+      m20 * r02 + m21 * r12 + m22 * r22,
+      m30 * r02 + m31 * r12 + m32 * r22,
+
+      m03, m13, m23, m33);
+};
+
+
+/**
+ * Rotate the given matrix by angle about the x axis.  Equivalent to:
+ * goog.vec.Mat4.multMat(
+ *     mat,
+ *     goog.vec.Mat4.makeRotateX(goog.vec.Mat4.create(), angle),
+ *     mat);
+ *
+ * @param {goog.vec.Mat4.AnyType} mat The matrix.
+ * @param {number} angle The angle in radians.
+ * @return {goog.vec.Mat4.AnyType} return mat so that operations can be
+ *     chained.
+ */
+goog.vec.Mat4.rotateX = function(mat, angle) {
+  var m01 = mat[4], m11 = mat[5], m21 = mat[6], m31 = mat[7];
+  var m02 = mat[8], m12 = mat[9], m22 = mat[10], m32 = mat[11];
+
+  var c = Math.cos(angle);
+  var s = Math.sin(angle);
+
+  mat[4] = m01 * c + m02 * s;
+  mat[5] = m11 * c + m12 * s;
+  mat[6] = m21 * c + m22 * s;
+  mat[7] = m31 * c + m32 * s;
+  mat[8] = m01 * -s + m02 * c;
+  mat[9] = m11 * -s + m12 * c;
+  mat[10] = m21 * -s + m22 * c;
+  mat[11] = m31 * -s + m32 * c;
+
+  return mat;
+};
+
+
+/**
+ * Rotate the given matrix by angle about the y axis.  Equivalent to:
+ * goog.vec.Mat4.multMat(
+ *     mat,
+ *     goog.vec.Mat4.makeRotateY(goog.vec.Mat4.create(), angle),
+ *     mat);
+ *
+ * @param {goog.vec.Mat4.AnyType} mat The matrix.
+ * @param {number} angle The angle in radians.
+ * @return {goog.vec.Mat4.AnyType} return mat so that operations can be
+ *     chained.
+ */
+goog.vec.Mat4.rotateY = function(mat, angle) {
+  var m00 = mat[0], m10 = mat[1], m20 = mat[2], m30 = mat[3];
+  var m02 = mat[8], m12 = mat[9], m22 = mat[10], m32 = mat[11];
+
+  var c = Math.cos(angle);
+  var s = Math.sin(angle);
+
+  mat[0] = m00 * c + m02 * -s;
+  mat[1] = m10 * c + m12 * -s;
+  mat[2] = m20 * c + m22 * -s;
+  mat[3] = m30 * c + m32 * -s;
+  mat[8] = m00 * s + m02 * c;
+  mat[9] = m10 * s + m12 * c;
+  mat[10] = m20 * s + m22 * c;
+  mat[11] = m30 * s + m32 * c;
+
+  return mat;
+};
+
+
+/**
+ * Rotate the given matrix by angle about the z axis.  Equivalent to:
+ * goog.vec.Mat4.multMat(
+ *     mat,
+ *     goog.vec.Mat4.makeRotateZ(goog.vec.Mat4.create(), angle),
+ *     mat);
+ *
+ * @param {goog.vec.Mat4.AnyType} mat The matrix.
+ * @param {number} angle The angle in radians.
+ * @return {goog.vec.Mat4.AnyType} return mat so that operations can be
+ *     chained.
+ */
+goog.vec.Mat4.rotateZ = function(mat, angle) {
+  var m00 = mat[0], m10 = mat[1], m20 = mat[2], m30 = mat[3];
+  var m01 = mat[4], m11 = mat[5], m21 = mat[6], m31 = mat[7];
+
+  var c = Math.cos(angle);
+  var s = Math.sin(angle);
+
+  mat[0] = m00 * c + m01 * s;
+  mat[1] = m10 * c + m11 * s;
+  mat[2] = m20 * c + m21 * s;
+  mat[3] = m30 * c + m31 * s;
+  mat[4] = m00 * -s + m01 * c;
+  mat[5] = m10 * -s + m11 * c;
+  mat[6] = m20 * -s + m21 * c;
+  mat[7] = m30 * -s + m31 * c;
+
+  return mat;
+};
+
+
+/**
+ * Retrieves the translation component of the transformation matrix.
+ *
+ * @param {goog.vec.Mat4.AnyType} mat The transformation matrix.
+ * @param {goog.vec.Vec3.AnyType} translation The vector for storing the
+ *     result.
+ * @return {goog.vec.Mat4.AnyType} return mat so that operations can be
+ *     chained.
+ */
+goog.vec.Mat4.getTranslation = function(mat, translation) {
+  translation[0] = mat[12];
+  translation[1] = mat[13];
+  translation[2] = mat[14];
+  return translation;
+};
+
+
+/**
+ * @type {!Array<!goog.vec.Vec3.Type>}
+ * @private
+ */
+goog.vec.Mat4.tmpVec3_ = [
+  goog.vec.Vec3.createFloat64(),
+  goog.vec.Vec3.createFloat64()
+];
+
+
+/**
+ * @type {!Array<!goog.vec.Vec4.Type>}
+ * @private
+ */
+goog.vec.Mat4.tmpVec4_ = [
+  goog.vec.Vec4.createFloat64(),
+  goog.vec.Vec4.createFloat64(),
+  goog.vec.Vec4.createFloat64()
+];
+
+
+/**
+ * @type {!Array<!goog.vec.Mat4.Type>}
+ * @private
+ */
+goog.vec.Mat4.tmpMat4_ = [
+  goog.vec.Mat4.createFloat64()
+];
+
 // Copyright 2006 The Closure Library Authors. All Rights Reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -6262,6 +9748,1994 @@ goog.array.copyByIndex = function(arr, index_arr) {
     result.push(arr[index]);
   });
   return result;
+};
+
+// Copyright 2006 The Closure Library Authors. All Rights Reserved.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//      http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS-IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+/**
+ * @fileoverview Additional mathematical functions.
+ */
+
+goog.provide('goog.math');
+
+goog.require('goog.array');
+goog.require('goog.asserts');
+
+
+/**
+ * Returns a random integer greater than or equal to 0 and less than {@code a}.
+ * @param {number} a  The upper bound for the random integer (exclusive).
+ * @return {number} A random integer N such that 0 <= N < a.
+ */
+goog.math.randomInt = function(a) {
+  return Math.floor(Math.random() * a);
+};
+
+
+/**
+ * Returns a random number greater than or equal to {@code a} and less than
+ * {@code b}.
+ * @param {number} a  The lower bound for the random number (inclusive).
+ * @param {number} b  The upper bound for the random number (exclusive).
+ * @return {number} A random number N such that a <= N < b.
+ */
+goog.math.uniformRandom = function(a, b) {
+  return a + Math.random() * (b - a);
+};
+
+
+/**
+ * Takes a number and clamps it to within the provided bounds.
+ * @param {number} value The input number.
+ * @param {number} min The minimum value to return.
+ * @param {number} max The maximum value to return.
+ * @return {number} The input number if it is within bounds, or the nearest
+ *     number within the bounds.
+ */
+goog.math.clamp = function(value, min, max) {
+  return Math.min(Math.max(value, min), max);
+};
+
+
+/**
+ * The % operator in JavaScript returns the remainder of a / b, but differs from
+ * some other languages in that the result will have the same sign as the
+ * dividend. For example, -1 % 8 == -1, whereas in some other languages
+ * (such as Python) the result would be 7. This function emulates the more
+ * correct modulo behavior, which is useful for certain applications such as
+ * calculating an offset index in a circular list.
+ *
+ * @param {number} a The dividend.
+ * @param {number} b The divisor.
+ * @return {number} a % b where the result is between 0 and b (either 0 <= x < b
+ *     or b < x <= 0, depending on the sign of b).
+ */
+goog.math.modulo = function(a, b) {
+  var r = a % b;
+  // If r and b differ in sign, add b to wrap the result to the correct sign.
+  return (r * b < 0) ? r + b : r;
+};
+
+
+/**
+ * Performs linear interpolation between values a and b. Returns the value
+ * between a and b proportional to x (when x is between 0 and 1. When x is
+ * outside this range, the return value is a linear extrapolation).
+ * @param {number} a A number.
+ * @param {number} b A number.
+ * @param {number} x The proportion between a and b.
+ * @return {number} The interpolated value between a and b.
+ */
+goog.math.lerp = function(a, b, x) {
+  return a + x * (b - a);
+};
+
+
+/**
+ * Tests whether the two values are equal to each other, within a certain
+ * tolerance to adjust for floating point errors.
+ * @param {number} a A number.
+ * @param {number} b A number.
+ * @param {number=} opt_tolerance Optional tolerance range. Defaults
+ *     to 0.000001. If specified, should be greater than 0.
+ * @return {boolean} Whether {@code a} and {@code b} are nearly equal.
+ */
+goog.math.nearlyEquals = function(a, b, opt_tolerance) {
+  return Math.abs(a - b) <= (opt_tolerance || 0.000001);
+};
+
+
+// TODO(user): Rename to normalizeAngle, retaining old name as deprecated
+// alias.
+/**
+ * Normalizes an angle to be in range [0-360). Angles outside this range will
+ * be normalized to be the equivalent angle with that range.
+ * @param {number} angle Angle in degrees.
+ * @return {number} Standardized angle.
+ */
+goog.math.standardAngle = function(angle) {
+  return goog.math.modulo(angle, 360);
+};
+
+
+/**
+ * Normalizes an angle to be in range [0-2*PI). Angles outside this range will
+ * be normalized to be the equivalent angle with that range.
+ * @param {number} angle Angle in radians.
+ * @return {number} Standardized angle.
+ */
+goog.math.standardAngleInRadians = function(angle) {
+  return goog.math.modulo(angle, 2 * Math.PI);
+};
+
+
+/**
+ * Converts degrees to radians.
+ * @param {number} angleDegrees Angle in degrees.
+ * @return {number} Angle in radians.
+ */
+goog.math.toRadians = function(angleDegrees) {
+  return angleDegrees * Math.PI / 180;
+};
+
+
+/**
+ * Converts radians to degrees.
+ * @param {number} angleRadians Angle in radians.
+ * @return {number} Angle in degrees.
+ */
+goog.math.toDegrees = function(angleRadians) {
+  return angleRadians * 180 / Math.PI;
+};
+
+
+/**
+ * For a given angle and radius, finds the X portion of the offset.
+ * @param {number} degrees Angle in degrees (zero points in +X direction).
+ * @param {number} radius Radius.
+ * @return {number} The x-distance for the angle and radius.
+ */
+goog.math.angleDx = function(degrees, radius) {
+  return radius * Math.cos(goog.math.toRadians(degrees));
+};
+
+
+/**
+ * For a given angle and radius, finds the Y portion of the offset.
+ * @param {number} degrees Angle in degrees (zero points in +X direction).
+ * @param {number} radius Radius.
+ * @return {number} The y-distance for the angle and radius.
+ */
+goog.math.angleDy = function(degrees, radius) {
+  return radius * Math.sin(goog.math.toRadians(degrees));
+};
+
+
+/**
+ * Computes the angle between two points (x1,y1) and (x2,y2).
+ * Angle zero points in the +X direction, 90 degrees points in the +Y
+ * direction (down) and from there we grow clockwise towards 360 degrees.
+ * @param {number} x1 x of first point.
+ * @param {number} y1 y of first point.
+ * @param {number} x2 x of second point.
+ * @param {number} y2 y of second point.
+ * @return {number} Standardized angle in degrees of the vector from
+ *     x1,y1 to x2,y2.
+ */
+goog.math.angle = function(x1, y1, x2, y2) {
+  return goog.math.standardAngle(goog.math.toDegrees(Math.atan2(y2 - y1,
+                                                                x2 - x1)));
+};
+
+
+/**
+ * Computes the difference between startAngle and endAngle (angles in degrees).
+ * @param {number} startAngle  Start angle in degrees.
+ * @param {number} endAngle  End angle in degrees.
+ * @return {number} The number of degrees that when added to
+ *     startAngle will result in endAngle. Positive numbers mean that the
+ *     direction is clockwise. Negative numbers indicate a counter-clockwise
+ *     direction.
+ *     The shortest route (clockwise vs counter-clockwise) between the angles
+ *     is used.
+ *     When the difference is 180 degrees, the function returns 180 (not -180)
+ *     angleDifference(30, 40) is 10, and angleDifference(40, 30) is -10.
+ *     angleDifference(350, 10) is 20, and angleDifference(10, 350) is -20.
+ */
+goog.math.angleDifference = function(startAngle, endAngle) {
+  var d = goog.math.standardAngle(endAngle) -
+          goog.math.standardAngle(startAngle);
+  if (d > 180) {
+    d = d - 360;
+  } else if (d <= -180) {
+    d = 360 + d;
+  }
+  return d;
+};
+
+
+/**
+ * Returns the sign of a number as per the "sign" or "signum" function.
+ * @param {number} x The number to take the sign of.
+ * @return {number} -1 when negative, 1 when positive, 0 when 0. Preserves
+ *     signed zeros and NaN.
+ */
+goog.math.sign = Math.sign || function(x) {
+  if (x > 0) {
+    return 1;
+  }
+  if (x < 0) {
+    return -1;
+  }
+  return x;  // Preserves signed zeros and NaN.
+};
+
+
+/**
+ * JavaScript implementation of Longest Common Subsequence problem.
+ * http://en.wikipedia.org/wiki/Longest_common_subsequence
+ *
+ * Returns the longest possible array that is subarray of both of given arrays.
+ *
+ * @param {Array<Object>} array1 First array of objects.
+ * @param {Array<Object>} array2 Second array of objects.
+ * @param {Function=} opt_compareFn Function that acts as a custom comparator
+ *     for the array ojects. Function should return true if objects are equal,
+ *     otherwise false.
+ * @param {Function=} opt_collectorFn Function used to decide what to return
+ *     as a result subsequence. It accepts 2 arguments: index of common element
+ *     in the first array and index in the second. The default function returns
+ *     element from the first array.
+ * @return {!Array<Object>} A list of objects that are common to both arrays
+ *     such that there is no common subsequence with size greater than the
+ *     length of the list.
+ */
+goog.math.longestCommonSubsequence = function(
+    array1, array2, opt_compareFn, opt_collectorFn) {
+
+  var compare = opt_compareFn || function(a, b) {
+    return a == b;
+  };
+
+  var collect = opt_collectorFn || function(i1, i2) {
+    return array1[i1];
+  };
+
+  var length1 = array1.length;
+  var length2 = array2.length;
+
+  var arr = [];
+  for (var i = 0; i < length1 + 1; i++) {
+    arr[i] = [];
+    arr[i][0] = 0;
+  }
+
+  for (var j = 0; j < length2 + 1; j++) {
+    arr[0][j] = 0;
+  }
+
+  for (i = 1; i <= length1; i++) {
+    for (j = 1; j <= length2; j++) {
+      if (compare(array1[i - 1], array2[j - 1])) {
+        arr[i][j] = arr[i - 1][j - 1] + 1;
+      } else {
+        arr[i][j] = Math.max(arr[i - 1][j], arr[i][j - 1]);
+      }
+    }
+  }
+
+  // Backtracking
+  var result = [];
+  var i = length1, j = length2;
+  while (i > 0 && j > 0) {
+    if (compare(array1[i - 1], array2[j - 1])) {
+      result.unshift(collect(i - 1, j - 1));
+      i--;
+      j--;
+    } else {
+      if (arr[i - 1][j] > arr[i][j - 1]) {
+        i--;
+      } else {
+        j--;
+      }
+    }
+  }
+
+  return result;
+};
+
+
+/**
+ * Returns the sum of the arguments.
+ * @param {...number} var_args Numbers to add.
+ * @return {number} The sum of the arguments (0 if no arguments were provided,
+ *     {@code NaN} if any of the arguments is not a valid number).
+ */
+goog.math.sum = function(var_args) {
+  return /** @type {number} */ (goog.array.reduce(arguments,
+      function(sum, value) {
+        return sum + value;
+      }, 0));
+};
+
+
+/**
+ * Returns the arithmetic mean of the arguments.
+ * @param {...number} var_args Numbers to average.
+ * @return {number} The average of the arguments ({@code NaN} if no arguments
+ *     were provided or any of the arguments is not a valid number).
+ */
+goog.math.average = function(var_args) {
+  return goog.math.sum.apply(null, arguments) / arguments.length;
+};
+
+
+/**
+ * Returns the unbiased sample variance of the arguments. For a definition,
+ * see e.g. http://en.wikipedia.org/wiki/Variance
+ * @param {...number} var_args Number samples to analyze.
+ * @return {number} The unbiased sample variance of the arguments (0 if fewer
+ *     than two samples were provided, or {@code NaN} if any of the samples is
+ *     not a valid number).
+ */
+goog.math.sampleVariance = function(var_args) {
+  var sampleSize = arguments.length;
+  if (sampleSize < 2) {
+    return 0;
+  }
+
+  var mean = goog.math.average.apply(null, arguments);
+  var variance = goog.math.sum.apply(null, goog.array.map(arguments,
+      function(val) {
+        return Math.pow(val - mean, 2);
+      })) / (sampleSize - 1);
+
+  return variance;
+};
+
+
+/**
+ * Returns the sample standard deviation of the arguments.  For a definition of
+ * sample standard deviation, see e.g.
+ * http://en.wikipedia.org/wiki/Standard_deviation
+ * @param {...number} var_args Number samples to analyze.
+ * @return {number} The sample standard deviation of the arguments (0 if fewer
+ *     than two samples were provided, or {@code NaN} if any of the samples is
+ *     not a valid number).
+ */
+goog.math.standardDeviation = function(var_args) {
+  return Math.sqrt(goog.math.sampleVariance.apply(null, arguments));
+};
+
+
+/**
+ * Returns whether the supplied number represents an integer, i.e. that is has
+ * no fractional component.  No range-checking is performed on the number.
+ * @param {number} num The number to test.
+ * @return {boolean} Whether {@code num} is an integer.
+ */
+goog.math.isInt = function(num) {
+  return isFinite(num) && num % 1 == 0;
+};
+
+
+/**
+ * Returns whether the supplied number is finite and not NaN.
+ * @param {number} num The number to test.
+ * @return {boolean} Whether {@code num} is a finite number.
+ */
+goog.math.isFiniteNumber = function(num) {
+  return isFinite(num) && !isNaN(num);
+};
+
+
+/**
+ * @param {number} num The number to test.
+ * @return {boolean} Whether it is negative zero.
+ */
+goog.math.isNegativeZero = function(num) {
+  return num == 0 && 1 / num < 0;
+};
+
+
+/**
+ * Returns the precise value of floor(log10(num)).
+ * Simpler implementations didn't work because of floating point rounding
+ * errors. For example
+ * <ul>
+ * <li>Math.floor(Math.log(num) / Math.LN10) is off by one for num == 1e+3.
+ * <li>Math.floor(Math.log(num) * Math.LOG10E) is off by one for num == 1e+15.
+ * <li>Math.floor(Math.log10(num)) is off by one for num == 1e+15 - 1.
+ * </ul>
+ * @param {number} num A floating point number.
+ * @return {number} Its logarithm to base 10 rounded down to the nearest
+ *     integer if num > 0. -Infinity if num == 0. NaN if num < 0.
+ */
+goog.math.log10Floor = function(num) {
+  if (num > 0) {
+    var x = Math.round(Math.log(num) * Math.LOG10E);
+    return x - (parseFloat('1e' + x) > num);
+  }
+  return num == 0 ? -Infinity : NaN;
+};
+
+
+/**
+ * A tweaked variant of {@code Math.floor} which tolerates if the passed number
+ * is infinitesimally smaller than the closest integer. It often happens with
+ * the results of floating point calculations because of the finite precision
+ * of the intermediate results. For example {@code Math.floor(Math.log(1000) /
+ * Math.LN10) == 2}, not 3 as one would expect.
+ * @param {number} num A number.
+ * @param {number=} opt_epsilon An infinitesimally small positive number, the
+ *     rounding error to tolerate.
+ * @return {number} The largest integer less than or equal to {@code num}.
+ */
+goog.math.safeFloor = function(num, opt_epsilon) {
+  goog.asserts.assert(!goog.isDef(opt_epsilon) || opt_epsilon > 0);
+  return Math.floor(num + (opt_epsilon || 2e-15));
+};
+
+
+/**
+ * A tweaked variant of {@code Math.ceil}. See {@code goog.math.safeFloor} for
+ * details.
+ * @param {number} num A number.
+ * @param {number=} opt_epsilon An infinitesimally small positive number, the
+ *     rounding error to tolerate.
+ * @return {number} The smallest integer greater than or equal to {@code num}.
+ */
+goog.math.safeCeil = function(num, opt_epsilon) {
+  goog.asserts.assert(!goog.isDef(opt_epsilon) || opt_epsilon > 0);
+  return Math.ceil(num - (opt_epsilon || 2e-15));
+};
+
+goog.provide('ol.Coordinate');
+goog.provide('ol.CoordinateFormatType');
+goog.provide('ol.coordinate');
+
+goog.require('goog.math');
+goog.require('goog.string');
+
+
+/**
+ * A function that takes a {@link ol.Coordinate} and transforms it into a
+ * `{string}`.
+ *
+ * @typedef {function((ol.Coordinate|undefined)): string}
+ * @api stable
+ */
+ol.CoordinateFormatType;
+
+
+/**
+ * An array of numbers representing an xy coordinate. Example: `[16, 48]`.
+ * @typedef {Array.<number>} ol.Coordinate
+ * @api stable
+ */
+ol.Coordinate;
+
+
+/**
+ * Add `delta` to `coordinate`. `coordinate` is modified in place and returned
+ * by the function.
+ *
+ * Example:
+ *
+ *     var coord = [7.85, 47.983333];
+ *     ol.coordinate.add(coord, [-2, 4]);
+ *     // coord is now [5.85, 51.983333]
+ *
+ * @param {ol.Coordinate} coordinate Coordinate.
+ * @param {ol.Coordinate} delta Delta.
+ * @return {ol.Coordinate} The input coordinate adjusted by the given delta.
+ * @api stable
+ */
+ol.coordinate.add = function(coordinate, delta) {
+  coordinate[0] += delta[0];
+  coordinate[1] += delta[1];
+  return coordinate;
+};
+
+
+/**
+ * Calculates the point closest to the passed coordinate on the passed segment.
+ * This is the foot of the perpendicular of the coordinate to the segment when
+ * the foot is on the segment, or the closest segment coordinate when the foot
+ * is outside the segment.
+ *
+ * @param {ol.Coordinate} coordinate The coordinate.
+ * @param {Array.<ol.Coordinate>} segment The two coordinates of the segment.
+ * @return {ol.Coordinate} The foot of the perpendicular of the coordinate to
+ *     the segment.
+ */
+ol.coordinate.closestOnSegment = function(coordinate, segment) {
+  var x0 = coordinate[0];
+  var y0 = coordinate[1];
+  var start = segment[0];
+  var end = segment[1];
+  var x1 = start[0];
+  var y1 = start[1];
+  var x2 = end[0];
+  var y2 = end[1];
+  var dx = x2 - x1;
+  var dy = y2 - y1;
+  var along = (dx === 0 && dy === 0) ? 0 :
+      ((dx * (x0 - x1)) + (dy * (y0 - y1))) / ((dx * dx + dy * dy) || 0);
+  var x, y;
+  if (along <= 0) {
+    x = x1;
+    y = y1;
+  } else if (along >= 1) {
+    x = x2;
+    y = y2;
+  } else {
+    x = x1 + along * dx;
+    y = y1 + along * dy;
+  }
+  return [x, y];
+};
+
+
+/**
+ * Returns a {@link ol.CoordinateFormatType} function that can be used to format
+ * a {ol.Coordinate} to a string.
+ *
+ * Example without specifying the fractional digits:
+ *
+ *     var coord = [7.85, 47.983333];
+ *     var stringifyFunc = ol.coordinate.createStringXY();
+ *     var out = stringifyFunc(coord);
+ *     // out is now '8, 48'
+ *
+ * Example with explicitly specifying 2 fractional digits:
+ *
+ *     var coord = [7.85, 47.983333];
+ *     var stringifyFunc = ol.coordinate.createStringXY(2);
+ *     var out = stringifyFunc(coord);
+ *     // out is now '7.85, 47.98'
+ *
+ * @param {number=} opt_fractionDigits The number of digits to include
+ *    after the decimal point. Default is `0`.
+ * @return {ol.CoordinateFormatType} Coordinate format.
+ * @api stable
+ */
+ol.coordinate.createStringXY = function(opt_fractionDigits) {
+  return (
+      /**
+       * @param {ol.Coordinate|undefined} coordinate Coordinate.
+       * @return {string} String XY.
+       */
+      function(coordinate) {
+        return ol.coordinate.toStringXY(coordinate, opt_fractionDigits);
+      });
+};
+
+
+/**
+ * @private
+ * @param {number} degrees Degrees.
+ * @param {string} hemispheres Hemispheres.
+ * @return {string} String.
+ */
+ol.coordinate.degreesToStringHDMS_ = function(degrees, hemispheres) {
+  var normalizedDegrees = goog.math.modulo(degrees + 180, 360) - 180;
+  var x = Math.abs(Math.round(3600 * normalizedDegrees));
+  return Math.floor(x / 3600) + '\u00b0 ' +
+      goog.string.padNumber(Math.floor((x / 60) % 60), 2) + '\u2032 ' +
+      goog.string.padNumber(Math.floor(x % 60), 2) + '\u2033 ' +
+      hemispheres.charAt(normalizedDegrees < 0 ? 1 : 0);
+};
+
+
+/**
+ * Transforms the given {@link ol.Coordinate} to a string using the given string
+ * template. The strings `{x}` and `{y}` in the template will be replaced with
+ * the first and second coordinate values respectively.
+ *
+ * Example without specifying the fractional digits:
+ *
+ *     var coord = [7.85, 47.983333];
+ *     var template = 'Coordinate is ({x}|{y}).';
+ *     var out = ol.coordinate.format(coord, template);
+ *     // out is now 'Coordinate is (8|48).'
+ *
+ * Example explicitly specifying the fractional digits:
+ *
+ *     var coord = [7.85, 47.983333];
+ *     var template = 'Coordinate is ({x}|{y}).';
+ *     var out = ol.coordinate.format(coord, template, 2);
+ *     // out is now 'Coordinate is (7.85|47.98).'
+ *
+ * @param {ol.Coordinate|undefined} coordinate Coordinate.
+ * @param {string} template A template string with `{x}` and `{y}` placeholders
+ *     that will be replaced by first and second coordinate values.
+ * @param {number=} opt_fractionDigits The number of digits to include
+ *    after the decimal point. Default is `0`.
+ * @return {string} Formatted coordinate.
+ * @api stable
+ */
+ol.coordinate.format = function(coordinate, template, opt_fractionDigits) {
+  if (goog.isDef(coordinate)) {
+    return template
+      .replace('{x}', coordinate[0].toFixed(opt_fractionDigits))
+      .replace('{y}', coordinate[1].toFixed(opt_fractionDigits));
+  } else {
+    return '';
+  }
+};
+
+
+/**
+ * @param {ol.Coordinate} coordinate1 First coordinate.
+ * @param {ol.Coordinate} coordinate2 Second coordinate.
+ * @return {boolean} Whether the passed coordinates are equal.
+ */
+ol.coordinate.equals = function(coordinate1, coordinate2) {
+  var equals = true;
+  for (var i = coordinate1.length - 1; i >= 0; --i) {
+    if (coordinate1[i] != coordinate2[i]) {
+      equals = false;
+      break;
+    }
+  }
+  return equals;
+};
+
+
+/**
+ * Rotate `coordinate` by `angle`. `coordinate` is modified in place and
+ * returned by the function.
+ *
+ * Example:
+ *
+ *     var coord = [7.85, 47.983333];
+ *     var rotateRadians = Math.PI / 2; // 90 degrees
+ *     ol.coordinate.rotate(coord, rotateRadians);
+ *     // coord is now [-47.983333, 7.85]
+ *
+ * @param {ol.Coordinate} coordinate Coordinate.
+ * @param {number} angle Angle in radian.
+ * @return {ol.Coordinate} Coordinate.
+ * @api stable
+ */
+ol.coordinate.rotate = function(coordinate, angle) {
+  var cosAngle = Math.cos(angle);
+  var sinAngle = Math.sin(angle);
+  var x = coordinate[0] * cosAngle - coordinate[1] * sinAngle;
+  var y = coordinate[1] * cosAngle + coordinate[0] * sinAngle;
+  coordinate[0] = x;
+  coordinate[1] = y;
+  return coordinate;
+};
+
+
+/**
+ * Scale `coordinate` by `scale`. `coordinate` is modified in place and returned
+ * by the function.
+ *
+ * Example:
+ *
+ *     var coord = [7.85, 47.983333];
+ *     var scale = 1.2;
+ *     ol.coordinate.scale(coord, scale);
+ *     // coord is now [9.42, 57.5799996]
+ *
+ * @param {ol.Coordinate} coordinate Coordinate.
+ * @param {number} scale Scale factor.
+ * @return {ol.Coordinate} Coordinate.
+ */
+ol.coordinate.scale = function(coordinate, scale) {
+  coordinate[0] *= scale;
+  coordinate[1] *= scale;
+  return coordinate;
+};
+
+
+/**
+ * Subtract `delta` to `coordinate`. `coordinate` is modified in place and
+ * returned by the function.
+ *
+ * @param {ol.Coordinate} coordinate Coordinate.
+ * @param {ol.Coordinate} delta Delta.
+ * @return {ol.Coordinate} Coordinate.
+ */
+ol.coordinate.sub = function(coordinate, delta) {
+  coordinate[0] -= delta[0];
+  coordinate[1] -= delta[1];
+  return coordinate;
+};
+
+
+/**
+ * @param {ol.Coordinate} coord1 First coordinate.
+ * @param {ol.Coordinate} coord2 Second coordinate.
+ * @return {number} Squared distance between coord1 and coord2.
+ */
+ol.coordinate.squaredDistance = function(coord1, coord2) {
+  var dx = coord1[0] - coord2[0];
+  var dy = coord1[1] - coord2[1];
+  return dx * dx + dy * dy;
+};
+
+
+/**
+ * Calculate the squared distance from a coordinate to a line segment.
+ *
+ * @param {ol.Coordinate} coordinate Coordinate of the point.
+ * @param {Array.<ol.Coordinate>} segment Line segment (2 coordinates).
+ * @return {number} Squared distance from the point to the line segment.
+ */
+ol.coordinate.squaredDistanceToSegment = function(coordinate, segment) {
+  return ol.coordinate.squaredDistance(coordinate,
+      ol.coordinate.closestOnSegment(coordinate, segment));
+};
+
+
+/**
+ * Format a geographic coordinate with the hemisphere, degrees, minutes, and
+ * seconds.
+ *
+ * Example:
+ *
+ *     var coord = [7.85, 47.983333];
+ *     var out = ol.coordinate.toStringHDMS(coord);
+ *     // out is now '47° 59′ 0″ N 7° 51′ 0″ E'
+ *
+ * @param {ol.Coordinate|undefined} coordinate Coordinate.
+ * @return {string} Hemisphere, degrees, minutes and seconds.
+ * @api stable
+ */
+ol.coordinate.toStringHDMS = function(coordinate) {
+  if (goog.isDef(coordinate)) {
+    return ol.coordinate.degreesToStringHDMS_(coordinate[1], 'NS') + ' ' +
+        ol.coordinate.degreesToStringHDMS_(coordinate[0], 'EW');
+  } else {
+    return '';
+  }
+};
+
+
+/**
+ * Format a coordinate as a comma delimited string.
+ *
+ * Example without specifying fractional digits:
+ *
+ *     var coord = [7.85, 47.983333];
+ *     var out = ol.coordinate.toStringXY(coord);
+ *     // out is now '8, 48'
+ *
+ * Example explicitly specifying 1 fractional digit:
+ *
+ *     var coord = [7.85, 47.983333];
+ *     var out = ol.coordinate.toStringXY(coord, 1);
+ *     // out is now '7.8, 48.0'
+ *
+ * @param {ol.Coordinate|undefined} coordinate Coordinate.
+ * @param {number=} opt_fractionDigits The number of digits to include
+ *    after the decimal point. Default is `0`.
+ * @return {string} XY.
+ * @api stable
+ */
+ol.coordinate.toStringXY = function(coordinate, opt_fractionDigits) {
+  return ol.coordinate.format(coordinate, '{x}, {y}', opt_fractionDigits);
+};
+
+
+/**
+ * Create an ol.Coordinate from an Array and take into account axis order.
+ *
+ * Examples:
+ *
+ *     var northCoord = ol.coordinate.fromProjectedArray([1, 2], 'n');
+ *     // northCoord is now [2, 1]
+ *
+ *     var eastCoord = ol.coordinate.fromProjectedArray([1, 2], 'e');
+ *     // eastCoord is now [1, 2]
+ *
+ * @param {Array} array The array with coordinates.
+ * @param {string} axis the axis info.
+ * @return {ol.Coordinate} The coordinate created.
+ */
+ol.coordinate.fromProjectedArray = function(array, axis) {
+  var firstAxis = axis.charAt(0);
+  if (firstAxis === 'n' || firstAxis === 's') {
+    return [array[1], array[0]];
+  } else {
+    return array;
+  }
+};
+
+goog.provide('ol.Size');
+goog.provide('ol.size');
+
+
+goog.require('goog.asserts');
+
+
+/**
+ * An array of numbers representing a size: `[width, height]`.
+ * @typedef {Array.<number>}
+ * @api stable
+ */
+ol.Size;
+
+
+/**
+ * Returns a buffered size.
+ * @param {ol.Size} size Size.
+ * @param {number} buffer Buffer.
+ * @param {ol.Size=} opt_size Optional reusable size array.
+ * @return {ol.Size}
+ */
+ol.size.buffer = function(size, buffer, opt_size) {
+  if (!goog.isDef(opt_size)) {
+    opt_size = [0, 0];
+  }
+  opt_size[0] = size[0] + 2 * buffer;
+  opt_size[1] = size[1] + 2 * buffer;
+  return opt_size;
+};
+
+
+/**
+ * Compares sizes for equality.
+ * @param {ol.Size} a Size.
+ * @param {ol.Size} b Size.
+ * @return {boolean} Equals.
+ */
+ol.size.equals = function(a, b) {
+  return a[0] == b[0] && a[1] == b[1];
+};
+
+
+/**
+ * Determines if a size has a positive area.
+ * @param {ol.Size} size The size to test.
+ * @return {boolean} The size has a positive area.
+ */
+ol.size.hasArea = function(size) {
+  return size[0] > 0 && size[1] > 0;
+};
+
+
+/**
+ * Returns a size scaled by a ratio. The result will be an array of integers.
+ * @param {ol.Size} size Size.
+ * @param {number} ratio Ratio.
+ * @param {ol.Size=} opt_size Optional reusable size array.
+ * @return {ol.Size}
+ */
+ol.size.scale = function(size, ratio, opt_size) {
+  if (!goog.isDef(opt_size)) {
+    opt_size = [0, 0];
+  }
+  opt_size[0] = (size[0] * ratio + 0.5) | 0;
+  opt_size[1] = (size[1] * ratio + 0.5) | 0;
+  return opt_size;
+};
+
+
+/**
+ * Returns an `ol.Size` array for the passed in number (meaning: square) or
+ * `ol.Size` array.
+ * (meaning: non-square),
+ * @param {number|ol.Size} size Width and height.
+ * @param {ol.Size=} opt_size Optional reusable size array.
+ * @return {ol.Size} Size.
+ * @api stable
+ */
+ol.size.toSize = function(size, opt_size) {
+  if (goog.isArray(size)) {
+    return size;
+  } else {
+    goog.asserts.assert(goog.isNumber(size));
+    if (!goog.isDef(opt_size)) {
+      opt_size = [size, size];
+    } else {
+      opt_size[0] = size;
+      opt_size[1] = size;
+    }
+    return opt_size;
+  }
+};
+
+goog.provide('ol.TransformFunction');
+
+
+/**
+ * A transform function accepts an array of input coordinate values, an optional
+ * output array, and an optional dimension (default should be 2).  The function
+ * transforms the input coordinate values, populates the output array, and
+ * returns the output array.
+ *
+ * @typedef {function(Array.<number>, Array.<number>=, number=): Array.<number>}
+ * @api stable
+ */
+ol.TransformFunction;
+
+goog.provide('ol.Extent');
+goog.provide('ol.extent');
+goog.provide('ol.extent.Corner');
+goog.provide('ol.extent.Relationship');
+
+goog.require('goog.asserts');
+goog.require('goog.vec.Mat4');
+goog.require('ol.Coordinate');
+goog.require('ol.Size');
+goog.require('ol.TransformFunction');
+
+
+/**
+ * An array of numbers representing an extent: `[minx, miny, maxx, maxy]`.
+ * @typedef {Array.<number>}
+ * @api stable
+ */
+ol.Extent;
+
+
+/**
+ * Extent corner.
+ * @enum {string}
+ */
+ol.extent.Corner = {
+  BOTTOM_LEFT: 'bottom-left',
+  BOTTOM_RIGHT: 'bottom-right',
+  TOP_LEFT: 'top-left',
+  TOP_RIGHT: 'top-right'
+};
+
+
+/**
+ * Relationship to an extent.
+ * @enum {number}
+ */
+ol.extent.Relationship = {
+  UNKNOWN: 0,
+  INTERSECTING: 1,
+  ABOVE: 2,
+  RIGHT: 4,
+  BELOW: 8,
+  LEFT: 16
+};
+
+
+/**
+ * Build an extent that includes all given coordinates.
+ *
+ * @param {Array.<ol.Coordinate>} coordinates Coordinates.
+ * @return {ol.Extent} Bounding extent.
+ * @api stable
+ */
+ol.extent.boundingExtent = function(coordinates) {
+  var extent = ol.extent.createEmpty();
+  for (var i = 0, ii = coordinates.length; i < ii; ++i) {
+    ol.extent.extendCoordinate(extent, coordinates[i]);
+  }
+  return extent;
+};
+
+
+/**
+ * @param {Array.<number>} xs Xs.
+ * @param {Array.<number>} ys Ys.
+ * @param {ol.Extent=} opt_extent Destination extent.
+ * @private
+ * @return {ol.Extent} Extent.
+ */
+ol.extent.boundingExtentXYs_ = function(xs, ys, opt_extent) {
+  goog.asserts.assert(xs.length > 0, 'xs length should be larger than 0');
+  goog.asserts.assert(ys.length > 0, 'ys length should be larger than 0');
+  var minX = Math.min.apply(null, xs);
+  var minY = Math.min.apply(null, ys);
+  var maxX = Math.max.apply(null, xs);
+  var maxY = Math.max.apply(null, ys);
+  return ol.extent.createOrUpdate(minX, minY, maxX, maxY, opt_extent);
+};
+
+
+/**
+ * Return extent increased by the provided value.
+ * @param {ol.Extent} extent Extent.
+ * @param {number} value The amount by which the extent should be buffered.
+ * @param {ol.Extent=} opt_extent Extent.
+ * @return {ol.Extent} Extent.
+ * @api stable
+ */
+ol.extent.buffer = function(extent, value, opt_extent) {
+  if (goog.isDef(opt_extent)) {
+    opt_extent[0] = extent[0] - value;
+    opt_extent[1] = extent[1] - value;
+    opt_extent[2] = extent[2] + value;
+    opt_extent[3] = extent[3] + value;
+    return opt_extent;
+  } else {
+    return [
+      extent[0] - value,
+      extent[1] - value,
+      extent[2] + value,
+      extent[3] + value
+    ];
+  }
+};
+
+
+/**
+ * Creates a clone of an extent.
+ *
+ * @param {ol.Extent} extent Extent to clone.
+ * @param {ol.Extent=} opt_extent Extent.
+ * @return {ol.Extent} The clone.
+ */
+ol.extent.clone = function(extent, opt_extent) {
+  if (goog.isDef(opt_extent)) {
+    opt_extent[0] = extent[0];
+    opt_extent[1] = extent[1];
+    opt_extent[2] = extent[2];
+    opt_extent[3] = extent[3];
+    return opt_extent;
+  } else {
+    return extent.slice();
+  }
+};
+
+
+/**
+ * @param {ol.Extent} extent Extent.
+ * @param {number} x X.
+ * @param {number} y Y.
+ * @return {number} Closest squared distance.
+ */
+ol.extent.closestSquaredDistanceXY = function(extent, x, y) {
+  var dx, dy;
+  if (x < extent[0]) {
+    dx = extent[0] - x;
+  } else if (extent[2] < x) {
+    dx = x - extent[2];
+  } else {
+    dx = 0;
+  }
+  if (y < extent[1]) {
+    dy = extent[1] - y;
+  } else if (extent[3] < y) {
+    dy = y - extent[3];
+  } else {
+    dy = 0;
+  }
+  return dx * dx + dy * dy;
+};
+
+
+/**
+ * Check if the passed coordinate is contained or on the edge of the extent.
+ *
+ * @param {ol.Extent} extent Extent.
+ * @param {ol.Coordinate} coordinate Coordinate.
+ * @return {boolean} The coordinate is contained in the extent.
+ * @api stable
+ */
+ol.extent.containsCoordinate = function(extent, coordinate) {
+  return ol.extent.containsXY(extent, coordinate[0], coordinate[1]);
+};
+
+
+/**
+ * Check if one extent contains another.
+ *
+ * An extent is deemed contained if it lies completely within the other extent,
+ * including if they share one or more edges.
+ *
+ * @param {ol.Extent} extent1 Extent 1.
+ * @param {ol.Extent} extent2 Extent 2.
+ * @return {boolean} The second extent is contained by or on the edge of the
+ *     first.
+ * @api stable
+ */
+ol.extent.containsExtent = function(extent1, extent2) {
+  return extent1[0] <= extent2[0] && extent2[2] <= extent1[2] &&
+      extent1[1] <= extent2[1] && extent2[3] <= extent1[3];
+};
+
+
+/**
+ * Check if the passed coordinate is contained or on the edge of the extent.
+ *
+ * @param {ol.Extent} extent Extent.
+ * @param {number} x X coordinate.
+ * @param {number} y Y coordinate.
+ * @return {boolean} The x, y values are contained in the extent.
+ * @api stable
+ */
+ol.extent.containsXY = function(extent, x, y) {
+  return extent[0] <= x && x <= extent[2] && extent[1] <= y && y <= extent[3];
+};
+
+
+/**
+ * Get the relationship between a coordinate and extent.
+ * @param {ol.Extent} extent The extent.
+ * @param {ol.Coordinate} coordinate The coordinate.
+ * @return {number} The relationship (bitwise compare with
+ *     ol.extent.Relationship).
+ */
+ol.extent.coordinateRelationship = function(extent, coordinate) {
+  var minX = extent[0];
+  var minY = extent[1];
+  var maxX = extent[2];
+  var maxY = extent[3];
+  var x = coordinate[0];
+  var y = coordinate[1];
+  var relationship = ol.extent.Relationship.UNKNOWN;
+  if (x < minX) {
+    relationship = relationship | ol.extent.Relationship.LEFT;
+  } else if (x > maxX) {
+    relationship = relationship | ol.extent.Relationship.RIGHT;
+  }
+  if (y < minY) {
+    relationship = relationship | ol.extent.Relationship.BELOW;
+  } else if (y > maxY) {
+    relationship = relationship | ol.extent.Relationship.ABOVE;
+  }
+  if (relationship === ol.extent.Relationship.UNKNOWN) {
+    relationship = ol.extent.Relationship.INTERSECTING;
+  }
+  return relationship;
+};
+
+
+/**
+ * Create an empty extent.
+ * @return {ol.Extent} Empty extent.
+ * @api stable
+ */
+ol.extent.createEmpty = function() {
+  return [Infinity, Infinity, -Infinity, -Infinity];
+};
+
+
+/**
+ * Create a new extent or update the provided extent.
+ * @param {number} minX Minimum X.
+ * @param {number} minY Minimum Y.
+ * @param {number} maxX Maximum X.
+ * @param {number} maxY Maximum Y.
+ * @param {ol.Extent=} opt_extent Destination extent.
+ * @return {ol.Extent} Extent.
+ */
+ol.extent.createOrUpdate = function(minX, minY, maxX, maxY, opt_extent) {
+  if (goog.isDef(opt_extent)) {
+    opt_extent[0] = minX;
+    opt_extent[1] = minY;
+    opt_extent[2] = maxX;
+    opt_extent[3] = maxY;
+    return opt_extent;
+  } else {
+    return [minX, minY, maxX, maxY];
+  }
+};
+
+
+/**
+ * Create a new empty extent or make the provided one empty.
+ * @param {ol.Extent=} opt_extent Extent.
+ * @return {ol.Extent} Extent.
+ */
+ol.extent.createOrUpdateEmpty = function(opt_extent) {
+  return ol.extent.createOrUpdate(
+      Infinity, Infinity, -Infinity, -Infinity, opt_extent);
+};
+
+
+/**
+ * @param {ol.Coordinate} coordinate Coordinate.
+ * @param {ol.Extent=} opt_extent Extent.
+ * @return {ol.Extent} Extent.
+ */
+ol.extent.createOrUpdateFromCoordinate = function(coordinate, opt_extent) {
+  var x = coordinate[0];
+  var y = coordinate[1];
+  return ol.extent.createOrUpdate(x, y, x, y, opt_extent);
+};
+
+
+/**
+ * @param {Array.<ol.Coordinate>} coordinates Coordinates.
+ * @param {ol.Extent=} opt_extent Extent.
+ * @return {ol.Extent} Extent.
+ */
+ol.extent.createOrUpdateFromCoordinates = function(coordinates, opt_extent) {
+  var extent = ol.extent.createOrUpdateEmpty(opt_extent);
+  return ol.extent.extendCoordinates(extent, coordinates);
+};
+
+
+/**
+ * @param {Array.<number>} flatCoordinates Flat coordinates.
+ * @param {number} offset Offset.
+ * @param {number} end End.
+ * @param {number} stride Stride.
+ * @param {ol.Extent=} opt_extent Extent.
+ * @return {ol.Extent} Extent.
+ */
+ol.extent.createOrUpdateFromFlatCoordinates =
+    function(flatCoordinates, offset, end, stride, opt_extent) {
+  var extent = ol.extent.createOrUpdateEmpty(opt_extent);
+  return ol.extent.extendFlatCoordinates(
+      extent, flatCoordinates, offset, end, stride);
+};
+
+
+/**
+ * @param {Array.<Array.<ol.Coordinate>>} rings Rings.
+ * @param {ol.Extent=} opt_extent Extent.
+ * @return {ol.Extent} Extent.
+ */
+ol.extent.createOrUpdateFromRings = function(rings, opt_extent) {
+  var extent = ol.extent.createOrUpdateEmpty(opt_extent);
+  return ol.extent.extendRings(extent, rings);
+};
+
+
+/**
+ * Empty an extent in place.
+ * @param {ol.Extent} extent Extent.
+ * @return {ol.Extent} Extent.
+ */
+ol.extent.empty = function(extent) {
+  extent[0] = extent[1] = Infinity;
+  extent[2] = extent[3] = -Infinity;
+  return extent;
+};
+
+
+/**
+ * Determine if two extents are equivalent.
+ * @param {ol.Extent} extent1 Extent 1.
+ * @param {ol.Extent} extent2 Extent 2.
+ * @return {boolean} The two extents are equivalent.
+ * @api stable
+ */
+ol.extent.equals = function(extent1, extent2) {
+  return extent1[0] == extent2[0] && extent1[2] == extent2[2] &&
+      extent1[1] == extent2[1] && extent1[3] == extent2[3];
+};
+
+
+/**
+ * Modify an extent to include another extent.
+ * @param {ol.Extent} extent1 The extent to be modified.
+ * @param {ol.Extent} extent2 The extent that will be included in the first.
+ * @return {ol.Extent} A reference to the first (extended) extent.
+ * @api stable
+ */
+ol.extent.extend = function(extent1, extent2) {
+  if (extent2[0] < extent1[0]) {
+    extent1[0] = extent2[0];
+  }
+  if (extent2[2] > extent1[2]) {
+    extent1[2] = extent2[2];
+  }
+  if (extent2[1] < extent1[1]) {
+    extent1[1] = extent2[1];
+  }
+  if (extent2[3] > extent1[3]) {
+    extent1[3] = extent2[3];
+  }
+  return extent1;
+};
+
+
+/**
+ * @param {ol.Extent} extent Extent.
+ * @param {ol.Coordinate} coordinate Coordinate.
+ */
+ol.extent.extendCoordinate = function(extent, coordinate) {
+  if (coordinate[0] < extent[0]) {
+    extent[0] = coordinate[0];
+  }
+  if (coordinate[0] > extent[2]) {
+    extent[2] = coordinate[0];
+  }
+  if (coordinate[1] < extent[1]) {
+    extent[1] = coordinate[1];
+  }
+  if (coordinate[1] > extent[3]) {
+    extent[3] = coordinate[1];
+  }
+};
+
+
+/**
+ * @param {ol.Extent} extent Extent.
+ * @param {Array.<ol.Coordinate>} coordinates Coordinates.
+ * @return {ol.Extent} Extent.
+ */
+ol.extent.extendCoordinates = function(extent, coordinates) {
+  var i, ii;
+  for (i = 0, ii = coordinates.length; i < ii; ++i) {
+    ol.extent.extendCoordinate(extent, coordinates[i]);
+  }
+  return extent;
+};
+
+
+/**
+ * @param {ol.Extent} extent Extent.
+ * @param {Array.<number>} flatCoordinates Flat coordinates.
+ * @param {number} offset Offset.
+ * @param {number} end End.
+ * @param {number} stride Stride.
+ * @return {ol.Extent} Extent.
+ */
+ol.extent.extendFlatCoordinates =
+    function(extent, flatCoordinates, offset, end, stride) {
+  for (; offset < end; offset += stride) {
+    ol.extent.extendXY(
+        extent, flatCoordinates[offset], flatCoordinates[offset + 1]);
+  }
+  return extent;
+};
+
+
+/**
+ * @param {ol.Extent} extent Extent.
+ * @param {Array.<Array.<ol.Coordinate>>} rings Rings.
+ * @return {ol.Extent} Extent.
+ */
+ol.extent.extendRings = function(extent, rings) {
+  var i, ii;
+  for (i = 0, ii = rings.length; i < ii; ++i) {
+    ol.extent.extendCoordinates(extent, rings[i]);
+  }
+  return extent;
+};
+
+
+/**
+ * @param {ol.Extent} extent Extent.
+ * @param {number} x X.
+ * @param {number} y Y.
+ */
+ol.extent.extendXY = function(extent, x, y) {
+  extent[0] = Math.min(extent[0], x);
+  extent[1] = Math.min(extent[1], y);
+  extent[2] = Math.max(extent[2], x);
+  extent[3] = Math.max(extent[3], y);
+};
+
+
+/**
+ * This function calls `callback` for each corner of the extent. If the
+ * callback returns a truthy value the function returns that value
+ * immediately. Otherwise the function returns `false`.
+ * @param {ol.Extent} extent Extent.
+ * @param {function(this:T, ol.Coordinate): S} callback Callback.
+ * @param {T=} opt_this Value to use as `this` when executing `callback`.
+ * @return {S|boolean} Value.
+ * @template S, T
+ */
+ol.extent.forEachCorner = function(extent, callback, opt_this) {
+  var val;
+  val = callback.call(opt_this, ol.extent.getBottomLeft(extent));
+  if (val) {
+    return val;
+  }
+  val = callback.call(opt_this, ol.extent.getBottomRight(extent));
+  if (val) {
+    return val;
+  }
+  val = callback.call(opt_this, ol.extent.getTopRight(extent));
+  if (val) {
+    return val;
+  }
+  val = callback.call(opt_this, ol.extent.getTopLeft(extent));
+  if (val) {
+    return val;
+  }
+  return false;
+};
+
+
+/**
+ * @param {ol.Extent} extent Extent.
+ * @return {number} Area.
+ */
+ol.extent.getArea = function(extent) {
+  var area = 0;
+  if (!ol.extent.isEmpty(extent)) {
+    area = ol.extent.getWidth(extent) * ol.extent.getHeight(extent);
+  }
+  return area;
+};
+
+
+/**
+ * Get the bottom left coordinate of an extent.
+ * @param {ol.Extent} extent Extent.
+ * @return {ol.Coordinate} Bottom left coordinate.
+ * @api stable
+ */
+ol.extent.getBottomLeft = function(extent) {
+  return [extent[0], extent[1]];
+};
+
+
+/**
+ * Get the bottom right coordinate of an extent.
+ * @param {ol.Extent} extent Extent.
+ * @return {ol.Coordinate} Bottom right coordinate.
+ * @api stable
+ */
+ol.extent.getBottomRight = function(extent) {
+  return [extent[2], extent[1]];
+};
+
+
+/**
+ * Get the center coordinate of an extent.
+ * @param {ol.Extent} extent Extent.
+ * @return {ol.Coordinate} Center.
+ * @api stable
+ */
+ol.extent.getCenter = function(extent) {
+  return [(extent[0] + extent[2]) / 2, (extent[1] + extent[3]) / 2];
+};
+
+
+/**
+ * Get a corner coordinate of an extent.
+ * @param {ol.Extent} extent Extent.
+ * @param {ol.extent.Corner} corner Corner.
+ * @return {ol.Coordinate} Corner coordinate.
+ */
+ol.extent.getCorner = function(extent, corner) {
+  var coordinate;
+  if (corner === ol.extent.Corner.BOTTOM_LEFT) {
+    coordinate = ol.extent.getBottomLeft(extent);
+  } else if (corner === ol.extent.Corner.BOTTOM_RIGHT) {
+    coordinate = ol.extent.getBottomRight(extent);
+  } else if (corner === ol.extent.Corner.TOP_LEFT) {
+    coordinate = ol.extent.getTopLeft(extent);
+  } else if (corner === ol.extent.Corner.TOP_RIGHT) {
+    coordinate = ol.extent.getTopRight(extent);
+  } else {
+    goog.asserts.fail('Invalid corner: %s', corner);
+  }
+  goog.asserts.assert(goog.isDef(coordinate), 'coordinate should be defined');
+  return coordinate;
+};
+
+
+/**
+ * @param {ol.Extent} extent1 Extent 1.
+ * @param {ol.Extent} extent2 Extent 2.
+ * @return {number} Enlarged area.
+ */
+ol.extent.getEnlargedArea = function(extent1, extent2) {
+  var minX = Math.min(extent1[0], extent2[0]);
+  var minY = Math.min(extent1[1], extent2[1]);
+  var maxX = Math.max(extent1[2], extent2[2]);
+  var maxY = Math.max(extent1[3], extent2[3]);
+  return (maxX - minX) * (maxY - minY);
+};
+
+
+/**
+ * @param {ol.Coordinate} center Center.
+ * @param {number} resolution Resolution.
+ * @param {number} rotation Rotation.
+ * @param {ol.Size} size Size.
+ * @param {ol.Extent=} opt_extent Destination extent.
+ * @return {ol.Extent} Extent.
+ */
+ol.extent.getForViewAndSize =
+    function(center, resolution, rotation, size, opt_extent) {
+  var dx = resolution * size[0] / 2;
+  var dy = resolution * size[1] / 2;
+  var cosRotation = Math.cos(rotation);
+  var sinRotation = Math.sin(rotation);
+  /** @type {Array.<number>} */
+  var xs = [-dx, -dx, dx, dx];
+  /** @type {Array.<number>} */
+  var ys = [-dy, dy, -dy, dy];
+  var i, x, y;
+  for (i = 0; i < 4; ++i) {
+    x = xs[i];
+    y = ys[i];
+    xs[i] = center[0] + x * cosRotation - y * sinRotation;
+    ys[i] = center[1] + x * sinRotation + y * cosRotation;
+  }
+  return ol.extent.boundingExtentXYs_(xs, ys, opt_extent);
+};
+
+
+/**
+ * Get the height of an extent.
+ * @param {ol.Extent} extent Extent.
+ * @return {number} Height.
+ * @api stable
+ */
+ol.extent.getHeight = function(extent) {
+  return extent[3] - extent[1];
+};
+
+
+/**
+ * @param {ol.Extent} extent1 Extent 1.
+ * @param {ol.Extent} extent2 Extent 2.
+ * @return {number} Intersection area.
+ */
+ol.extent.getIntersectionArea = function(extent1, extent2) {
+  var intersection = ol.extent.getIntersection(extent1, extent2);
+  return ol.extent.getArea(intersection);
+};
+
+
+/**
+ * Get the intersection of two extents.
+ * @param {ol.Extent} extent1 Extent 1.
+ * @param {ol.Extent} extent2 Extent 2.
+ * @param {ol.Extent=} opt_extent Optional extent to populate with intersection.
+ * @return {ol.Extent} Intersecting extent.
+ * @api stable
+ */
+ol.extent.getIntersection = function(extent1, extent2, opt_extent) {
+  var intersection = goog.isDef(opt_extent) ?
+      opt_extent : ol.extent.createEmpty();
+  if (ol.extent.intersects(extent1, extent2)) {
+    if (extent1[0] > extent2[0]) {
+      intersection[0] = extent1[0];
+    } else {
+      intersection[0] = extent2[0];
+    }
+    if (extent1[1] > extent2[1]) {
+      intersection[1] = extent1[1];
+    } else {
+      intersection[1] = extent2[1];
+    }
+    if (extent1[2] < extent2[2]) {
+      intersection[2] = extent1[2];
+    } else {
+      intersection[2] = extent2[2];
+    }
+    if (extent1[3] < extent2[3]) {
+      intersection[3] = extent1[3];
+    } else {
+      intersection[3] = extent2[3];
+    }
+  }
+  return intersection;
+};
+
+
+/**
+ * @param {ol.Extent} extent Extent.
+ * @return {number} Margin.
+ */
+ol.extent.getMargin = function(extent) {
+  return ol.extent.getWidth(extent) + ol.extent.getHeight(extent);
+};
+
+
+/**
+ * Get the size (width, height) of an extent.
+ * @param {ol.Extent} extent The extent.
+ * @return {ol.Size} The extent size.
+ * @api stable
+ */
+ol.extent.getSize = function(extent) {
+  return [extent[2] - extent[0], extent[3] - extent[1]];
+};
+
+
+/**
+ * Get the top left coordinate of an extent.
+ * @param {ol.Extent} extent Extent.
+ * @return {ol.Coordinate} Top left coordinate.
+ * @api stable
+ */
+ol.extent.getTopLeft = function(extent) {
+  return [extent[0], extent[3]];
+};
+
+
+/**
+ * Get the top right coordinate of an extent.
+ * @param {ol.Extent} extent Extent.
+ * @return {ol.Coordinate} Top right coordinate.
+ * @api stable
+ */
+ol.extent.getTopRight = function(extent) {
+  return [extent[2], extent[3]];
+};
+
+
+/**
+ * Get the width of an extent.
+ * @param {ol.Extent} extent Extent.
+ * @return {number} Width.
+ * @api stable
+ */
+ol.extent.getWidth = function(extent) {
+  return extent[2] - extent[0];
+};
+
+
+/**
+ * Determine if one extent intersects another.
+ * @param {ol.Extent} extent1 Extent 1.
+ * @param {ol.Extent} extent2 Extent.
+ * @return {boolean} The two extents intersect.
+ * @api stable
+ */
+ol.extent.intersects = function(extent1, extent2) {
+  return extent1[0] <= extent2[2] &&
+      extent1[2] >= extent2[0] &&
+      extent1[1] <= extent2[3] &&
+      extent1[3] >= extent2[1];
+};
+
+
+/**
+ * Determine if an extent is empty.
+ * @param {ol.Extent} extent Extent.
+ * @return {boolean} Is empty.
+ * @api stable
+ */
+ol.extent.isEmpty = function(extent) {
+  return extent[2] < extent[0] || extent[3] < extent[1];
+};
+
+
+/**
+ * @param {ol.Extent} extent Extent.
+ * @return {boolean} Is infinite.
+ */
+ol.extent.isInfinite = function(extent) {
+  return extent[0] == -Infinity || extent[1] == -Infinity ||
+      extent[2] == Infinity || extent[3] == Infinity;
+};
+
+
+/**
+ * @param {ol.Extent} extent Extent.
+ * @param {ol.Coordinate} coordinate Coordinate.
+ * @return {ol.Coordinate} Coordinate.
+ */
+ol.extent.normalize = function(extent, coordinate) {
+  return [
+    (coordinate[0] - extent[0]) / (extent[2] - extent[0]),
+    (coordinate[1] - extent[1]) / (extent[3] - extent[1])
+  ];
+};
+
+
+/**
+ * @param {ol.Extent} extent Extent.
+ * @param {ol.Extent=} opt_extent Extent.
+ * @return {ol.Extent} Extent.
+ */
+ol.extent.returnOrUpdate = function(extent, opt_extent) {
+  if (goog.isDef(opt_extent)) {
+    opt_extent[0] = extent[0];
+    opt_extent[1] = extent[1];
+    opt_extent[2] = extent[2];
+    opt_extent[3] = extent[3];
+    return opt_extent;
+  } else {
+    return extent;
+  }
+};
+
+
+/**
+ * @param {ol.Extent} extent Extent.
+ * @param {number} value Value.
+ */
+ol.extent.scaleFromCenter = function(extent, value) {
+  var deltaX = ((extent[2] - extent[0]) / 2) * (value - 1);
+  var deltaY = ((extent[3] - extent[1]) / 2) * (value - 1);
+  extent[0] -= deltaX;
+  extent[2] += deltaX;
+  extent[1] -= deltaY;
+  extent[3] += deltaY;
+};
+
+
+/**
+ * Determine if the segment between two coordinates intersects (crosses,
+ * touches, or is contained by) the provided extent.
+ * @param {ol.Extent} extent The extent.
+ * @param {ol.Coordinate} start Segment start coordinate.
+ * @param {ol.Coordinate} end Segment end coordinate.
+ * @return {boolean} The segment intersects the extent.
+ */
+ol.extent.intersectsSegment = function(extent, start, end) {
+  var intersects = false;
+  var startRel = ol.extent.coordinateRelationship(extent, start);
+  var endRel = ol.extent.coordinateRelationship(extent, end);
+  if (startRel === ol.extent.Relationship.INTERSECTING ||
+      endRel === ol.extent.Relationship.INTERSECTING) {
+    intersects = true;
+  } else {
+    var minX = extent[0];
+    var minY = extent[1];
+    var maxX = extent[2];
+    var maxY = extent[3];
+    var startX = start[0];
+    var startY = start[1];
+    var endX = end[0];
+    var endY = end[1];
+    var slope = (endY - startY) / (endX - startX);
+    var x, y;
+    if (!!(endRel & ol.extent.Relationship.ABOVE) &&
+        !(startRel & ol.extent.Relationship.ABOVE)) {
+      // potentially intersects top
+      x = endX - ((endY - maxY) / slope);
+      intersects = x >= minX && x <= maxX;
+    }
+    if (!intersects && !!(endRel & ol.extent.Relationship.RIGHT) &&
+        !(startRel & ol.extent.Relationship.RIGHT)) {
+      // potentially intersects right
+      y = endY - ((endX - maxX) * slope);
+      intersects = y >= minY && y <= maxY;
+    }
+    if (!intersects && !!(endRel & ol.extent.Relationship.BELOW) &&
+        !(startRel & ol.extent.Relationship.BELOW)) {
+      // potentially intersects bottom
+      x = endX - ((endY - minY) / slope);
+      intersects = x >= minX && x <= maxX;
+    }
+    if (!intersects && !!(endRel & ol.extent.Relationship.LEFT) &&
+        !(startRel & ol.extent.Relationship.LEFT)) {
+      // potentially intersects left
+      y = endY - ((endX - minX) * slope);
+      intersects = y >= minY && y <= maxY;
+    }
+
+  }
+  return intersects;
+};
+
+
+/**
+ * @param {ol.Extent} extent1 Extent 1.
+ * @param {ol.Extent} extent2 Extent 2.
+ * @return {boolean} Touches.
+ */
+ol.extent.touches = function(extent1, extent2) {
+  var intersects = ol.extent.intersects(extent1, extent2);
+  return intersects &&
+      (extent1[0] == extent2[2] || extent1[2] == extent2[0] ||
+       extent1[1] == extent2[3] || extent1[3] == extent2[1]);
+};
+
+
+/**
+ * Apply a transform function to the extent.
+ * @param {ol.Extent} extent Extent.
+ * @param {ol.TransformFunction} transformFn Transform function.  Called with
+ * [minX, minY, maxX, maxY] extent coordinates.
+ * @param {ol.Extent=} opt_extent Destination extent.
+ * @return {ol.Extent} Extent.
+ * @api stable
+ */
+ol.extent.applyTransform = function(extent, transformFn, opt_extent) {
+  var coordinates = [
+    extent[0], extent[1],
+    extent[0], extent[3],
+    extent[2], extent[1],
+    extent[2], extent[3]
+  ];
+  transformFn(coordinates, coordinates, 2);
+  var xs = [coordinates[0], coordinates[2], coordinates[4], coordinates[6]];
+  var ys = [coordinates[1], coordinates[3], coordinates[5], coordinates[7]];
+  return ol.extent.boundingExtentXYs_(xs, ys, opt_extent);
+};
+
+
+/**
+ * Apply a 2d transform to an extent.
+ * @param {ol.Extent} extent Input extent.
+ * @param {goog.vec.Mat4.Number} transform The transform matrix.
+ * @param {ol.Extent=} opt_extent Optional extent for return values.
+ * @return {ol.Extent} The transformed extent.
+ */
+ol.extent.transform2D = function(extent, transform, opt_extent) {
+  var dest = goog.isDef(opt_extent) ? opt_extent : [];
+  var m00 = goog.vec.Mat4.getElement(transform, 0, 0);
+  var m10 = goog.vec.Mat4.getElement(transform, 1, 0);
+  var m01 = goog.vec.Mat4.getElement(transform, 0, 1);
+  var m11 = goog.vec.Mat4.getElement(transform, 1, 1);
+  var m03 = goog.vec.Mat4.getElement(transform, 0, 3);
+  var m13 = goog.vec.Mat4.getElement(transform, 1, 3);
+  var xi = [0, 2, 0, 2];
+  var yi = [1, 1, 3, 3];
+  var xs = [];
+  var ys = [];
+  var i, x, y;
+  for (i = 0; i < 4; ++i) {
+    x = extent[xi[i]];
+    y = extent[yi[i]];
+    xs[i] = m00 * x + m01 * y + m03;
+    ys[i] = m10 * x + m11 * y + m13;
+  }
+  dest[0] = Math.min.apply(null, xs);
+  dest[1] = Math.min.apply(null, ys);
+  dest[2] = Math.max.apply(null, xs);
+  dest[3] = Math.max.apply(null, ys);
+  return dest;
+};
+
+// Copyright 2010 The Closure Library Authors. All Rights Reserved.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//      http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS-IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+/**
+ * @fileoverview A global registry for entry points into a program,
+ * so that they can be instrumented. Each module should register their
+ * entry points with this registry. Designed to be compiled out
+ * if no instrumentation is requested.
+ *
+ * Entry points may be registered before or after a call to
+ * goog.debug.entryPointRegistry.monitorAll. If an entry point is registered
+ * later, the existing monitor will instrument the new entry point.
+ *
+ * @author nicksantos@google.com (Nick Santos)
+ */
+
+goog.provide('goog.debug.EntryPointMonitor');
+goog.provide('goog.debug.entryPointRegistry');
+
+goog.require('goog.asserts');
+
+
+
+/**
+ * @interface
+ */
+goog.debug.EntryPointMonitor = function() {};
+
+
+/**
+ * Instruments a function.
+ *
+ * @param {!Function} fn A function to instrument.
+ * @return {!Function} The instrumented function.
+ */
+goog.debug.EntryPointMonitor.prototype.wrap;
+
+
+/**
+ * Try to remove an instrumentation wrapper created by this monitor.
+ * If the function passed to unwrap is not a wrapper created by this
+ * monitor, then we will do nothing.
+ *
+ * Notice that some wrappers may not be unwrappable. For example, if other
+ * monitors have applied their own wrappers, then it will be impossible to
+ * unwrap them because their wrappers will have captured our wrapper.
+ *
+ * So it is important that entry points are unwrapped in the reverse
+ * order that they were wrapped.
+ *
+ * @param {!Function} fn A function to unwrap.
+ * @return {!Function} The unwrapped function, or {@code fn} if it was not
+ *     a wrapped function created by this monitor.
+ */
+goog.debug.EntryPointMonitor.prototype.unwrap;
+
+
+/**
+ * An array of entry point callbacks.
+ * @type {!Array<function(!Function)>}
+ * @private
+ */
+goog.debug.entryPointRegistry.refList_ = [];
+
+
+/**
+ * Monitors that should wrap all the entry points.
+ * @type {!Array<!goog.debug.EntryPointMonitor>}
+ * @private
+ */
+goog.debug.entryPointRegistry.monitors_ = [];
+
+
+/**
+ * Whether goog.debug.entryPointRegistry.monitorAll has ever been called.
+ * Checking this allows the compiler to optimize out the registrations.
+ * @type {boolean}
+ * @private
+ */
+goog.debug.entryPointRegistry.monitorsMayExist_ = false;
+
+
+/**
+ * Register an entry point with this module.
+ *
+ * The entry point will be instrumented when a monitor is passed to
+ * goog.debug.entryPointRegistry.monitorAll. If this has already occurred, the
+ * entry point is instrumented immediately.
+ *
+ * @param {function(!Function)} callback A callback function which is called
+ *     with a transforming function to instrument the entry point. The callback
+ *     is responsible for wrapping the relevant entry point with the
+ *     transforming function.
+ */
+goog.debug.entryPointRegistry.register = function(callback) {
+  // Don't use push(), so that this can be compiled out.
+  goog.debug.entryPointRegistry.refList_[
+      goog.debug.entryPointRegistry.refList_.length] = callback;
+  // If no one calls monitorAll, this can be compiled out.
+  if (goog.debug.entryPointRegistry.monitorsMayExist_) {
+    var monitors = goog.debug.entryPointRegistry.monitors_;
+    for (var i = 0; i < monitors.length; i++) {
+      callback(goog.bind(monitors[i].wrap, monitors[i]));
+    }
+  }
+};
+
+
+/**
+ * Configures a monitor to wrap all entry points.
+ *
+ * Entry points that have already been registered are immediately wrapped by
+ * the monitor. When an entry point is registered in the future, it will also
+ * be wrapped by the monitor when it is registered.
+ *
+ * @param {!goog.debug.EntryPointMonitor} monitor An entry point monitor.
+ */
+goog.debug.entryPointRegistry.monitorAll = function(monitor) {
+  goog.debug.entryPointRegistry.monitorsMayExist_ = true;
+  var transformer = goog.bind(monitor.wrap, monitor);
+  for (var i = 0; i < goog.debug.entryPointRegistry.refList_.length; i++) {
+    goog.debug.entryPointRegistry.refList_[i](transformer);
+  }
+  goog.debug.entryPointRegistry.monitors_.push(monitor);
+};
+
+
+/**
+ * Try to unmonitor all the entry points that have already been registered. If
+ * an entry point is registered in the future, it will not be wrapped by the
+ * monitor when it is registered. Note that this may fail if the entry points
+ * have additional wrapping.
+ *
+ * @param {!goog.debug.EntryPointMonitor} monitor The last monitor to wrap
+ *     the entry points.
+ * @throws {Error} If the monitor is not the most recently configured monitor.
+ */
+goog.debug.entryPointRegistry.unmonitorAllIfPossible = function(monitor) {
+  var monitors = goog.debug.entryPointRegistry.monitors_;
+  goog.asserts.assert(monitor == monitors[monitors.length - 1],
+      'Only the most recent monitor can be unwrapped.');
+  var transformer = goog.bind(monitor.unwrap, monitor);
+  for (var i = 0; i < goog.debug.entryPointRegistry.refList_.length; i++) {
+    goog.debug.entryPointRegistry.refList_[i](transformer);
+  }
+  monitors.length--;
 };
 
 // Copyright 2013 The Closure Library Authors. All Rights Reserved.
@@ -8321,1219 +13795,6 @@ goog.userAgent.DOCUMENT_MODE = (function() {
   return mode || (doc['compatMode'] == 'CSS1Compat' ?
       parseInt(goog.userAgent.VERSION, 10) : 5);
 })();
-
-goog.require('goog.userAgent');
-
-goog.provide('ol');
-
-
-/**
- * Constants defined with the define tag cannot be changed in application
- * code, but can be set at compile time.
- * Some reduce the size of the build in advanced compile mode.
- */
-
-
-/**
- * @define {boolean} Assume touch.  Default is `false`.
- */
-ol.ASSUME_TOUCH = false;
-
-
-/**
- * TODO: rename this to something having to do with tile grids
- * see https://github.com/openlayers/ol3/issues/2076
- * @define {number} Default maximum zoom for default tile grids.
- */
-ol.DEFAULT_MAX_ZOOM = 42;
-
-
-/**
- * @define {number} Default min zoom level for the map view.  Default is `0`.
- */
-ol.DEFAULT_MIN_ZOOM = 0;
-
-
-/**
- * @define {number} Default high water mark.
- */
-ol.DEFAULT_TILE_CACHE_HIGH_WATER_MARK = 2048;
-
-
-/**
- * @define {number} Default tile size.
- */
-ol.DEFAULT_TILE_SIZE = 256;
-
-
-/**
- * @define {string} Default WMS version.
- */
-ol.DEFAULT_WMS_VERSION = '1.3.0';
-
-
-/**
- * @define {number} Hysteresis pixels.
- */
-ol.DRAG_BOX_HYSTERESIS_PIXELS = 8;
-
-
-/**
- * @define {boolean} Enable the Canvas renderer.  Default is `true`. Setting
- *     this to false at compile time in advanced mode removes all code
- *     supporting the Canvas renderer from the build.
- */
-ol.ENABLE_CANVAS = true;
-
-
-/**
- * @define {boolean} Enable the DOM renderer (used as a fallback where Canvas is
- *     not available).  Default is `true`. Setting this to false at compile time
- *     in advanced mode removes all code supporting the DOM renderer from the
- *     build.
- */
-ol.ENABLE_DOM = true;
-
-
-/**
- * @define {boolean} Enable rendering of ol.layer.Image based layers.  Default
- *     is `true`. Setting this to false at compile time in advanced mode removes
- *     all code supporting Image layers from the build.
- */
-ol.ENABLE_IMAGE = true;
-
-
-/**
- * @define {boolean} Enable Closure named colors (`goog.color.names`).
- *     Enabling these colors adds about 3KB uncompressed / 1.5KB compressed to
- *     the final build size.  Default is `false`. This setting has no effect
- *     with Canvas renderer, which uses its own names, whether this is true or
- *     false.
- */
-ol.ENABLE_NAMED_COLORS = false;
-
-
-/**
- * @define {boolean} Enable integration with the Proj4js library.  Default is
- *     `true`.
- */
-ol.ENABLE_PROJ4JS = true;
-
-
-/**
- * @define {boolean} Enable rendering of ol.layer.Tile based layers.  Default is
- *     `true`. Setting this to false at compile time in advanced mode removes
- *     all code supporting Tile layers from the build.
- */
-ol.ENABLE_TILE = true;
-
-
-/**
- * @define {boolean} Enable rendering of ol.layer.Vector based layers.  Default
- *     is `true`. Setting this to false at compile time in advanced mode removes
- *     all code supporting Vector layers from the build.
- */
-ol.ENABLE_VECTOR = true;
-
-
-/**
- * @define {boolean} Enable rendering of ol.layer.VectorTile based layers.
- *     Default is `true`. Setting this to false at compile time in advanced mode
- *     removes all code supporting VectorTile layers from the build.
- */
-ol.ENABLE_VECTOR_TILE = true;
-
-
-/**
- * @define {boolean} Enable the WebGL renderer.  Default is `true`. Setting
- *     this to false at compile time in advanced mode removes all code
- *     supporting the WebGL renderer from the build.
- */
-ol.ENABLE_WEBGL = true;
-
-
-/**
- * @define {boolean} Support legacy IE (7-8).  Default is `false`.
- *     If set to `true`, `goog.array.ASSUME_NATIVE_FUNCTIONS` must be set
- *     to `false` because legacy IE do not support ECMAScript 5 array functions.
- */
-ol.LEGACY_IE_SUPPORT = false;
-
-
-/**
- * @define {number} The size in pixels of the first atlas image. Default is
- * `256`.
- */
-ol.INITIAL_ATLAS_SIZE = 256;
-
-
-/**
- * Whether the current browser is legacy IE
- * @const
- * @type {boolean}
- */
-ol.IS_LEGACY_IE = goog.userAgent.IE &&
-    !goog.userAgent.isVersionOrHigher('9.0') && goog.userAgent.VERSION !== '';
-
-
-/**
- * @define {number} The maximum size in pixels of atlas images. Default is
- * `-1`, meaning it is not used (and `ol.WEBGL_MAX_TEXTURE_SIZE` is
- * used instead).
- */
-ol.MAX_ATLAS_SIZE = -1;
-
-
-/**
- * @define {number} Maximum mouse wheel delta.
- */
-ol.MOUSEWHEELZOOM_MAXDELTA = 1;
-
-
-/**
- * @define {number} Mouse wheel timeout duration.
- */
-ol.MOUSEWHEELZOOM_TIMEOUT_DURATION = 80;
-
-
-/**
- * @define {number} Maximum width and/or height extent ratio that determines
- * when the overview map should be zoomed out.
- */
-ol.OVERVIEWMAP_MAX_RATIO = 0.75;
-
-
-/**
- * @define {number} Minimum width and/or height extent ratio that determines
- * when the overview map should be zoomed in.
- */
-ol.OVERVIEWMAP_MIN_RATIO = 0.1;
-
-
-/**
- * @define {number} Tolerance for geometry simplification in device pixels.
- */
-ol.SIMPLIFY_TOLERANCE = 0.5;
-
-
-/**
- * @define {number} Texture cache high water mark.
- */
-ol.WEBGL_TEXTURE_CACHE_HIGH_WATER_MARK = 1024;
-
-
-/**
- * The maximum supported WebGL texture size in pixels. If WebGL is not
- * supported, the value is set to `undefined`.
- * @const
- * @type {number|undefined}
- */
-ol.WEBGL_MAX_TEXTURE_SIZE; // value is set in `ol.has`
-
-
-/**
- * List of supported WebGL extensions.
- * @const
- * @type {Array.<string>}
- */
-ol.WEBGL_EXTENSIONS; // value is set in `ol.has`
-
-
-/**
- * Inherit the prototype methods from one constructor into another.
- *
- * Usage:
- *
- *     function ParentClass(a, b) { }
- *     ParentClass.prototype.foo = function(a) { }
- *
- *     function ChildClass(a, b, c) {
- *       // Call parent constructor
- *       ParentClass.call(this, a, b);
- *     }
- *     ol.inherits(ChildClass, ParentClass);
- *
- *     var child = new ChildClass('a', 'b', 'see');
- *     child.foo(); // This works.
- *
- * In addition, a superclass' implementation of a method can be invoked as
- * follows:
- *
- *     ChildClass.prototype.foo = function(a) {
- *       ChildClass.base(this, 'foo', a);
- *       // Other code here.
- *     };
- *
- * @param {Function} childCtor Child constructor.
- * @param {Function} parentCtor Parent constructor.
- * @function
- * @api
- */
-ol.inherits =
-    goog.inherits;
-// note that the newline above is necessary to satisfy the linter
-
-// Copyright 2006 The Closure Library Authors. All Rights Reserved.
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//      http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS-IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
-
-/**
- * @fileoverview Additional mathematical functions.
- */
-
-goog.provide('goog.math');
-
-goog.require('goog.array');
-goog.require('goog.asserts');
-
-
-/**
- * Returns a random integer greater than or equal to 0 and less than {@code a}.
- * @param {number} a  The upper bound for the random integer (exclusive).
- * @return {number} A random integer N such that 0 <= N < a.
- */
-goog.math.randomInt = function(a) {
-  return Math.floor(Math.random() * a);
-};
-
-
-/**
- * Returns a random number greater than or equal to {@code a} and less than
- * {@code b}.
- * @param {number} a  The lower bound for the random number (inclusive).
- * @param {number} b  The upper bound for the random number (exclusive).
- * @return {number} A random number N such that a <= N < b.
- */
-goog.math.uniformRandom = function(a, b) {
-  return a + Math.random() * (b - a);
-};
-
-
-/**
- * Takes a number and clamps it to within the provided bounds.
- * @param {number} value The input number.
- * @param {number} min The minimum value to return.
- * @param {number} max The maximum value to return.
- * @return {number} The input number if it is within bounds, or the nearest
- *     number within the bounds.
- */
-goog.math.clamp = function(value, min, max) {
-  return Math.min(Math.max(value, min), max);
-};
-
-
-/**
- * The % operator in JavaScript returns the remainder of a / b, but differs from
- * some other languages in that the result will have the same sign as the
- * dividend. For example, -1 % 8 == -1, whereas in some other languages
- * (such as Python) the result would be 7. This function emulates the more
- * correct modulo behavior, which is useful for certain applications such as
- * calculating an offset index in a circular list.
- *
- * @param {number} a The dividend.
- * @param {number} b The divisor.
- * @return {number} a % b where the result is between 0 and b (either 0 <= x < b
- *     or b < x <= 0, depending on the sign of b).
- */
-goog.math.modulo = function(a, b) {
-  var r = a % b;
-  // If r and b differ in sign, add b to wrap the result to the correct sign.
-  return (r * b < 0) ? r + b : r;
-};
-
-
-/**
- * Performs linear interpolation between values a and b. Returns the value
- * between a and b proportional to x (when x is between 0 and 1. When x is
- * outside this range, the return value is a linear extrapolation).
- * @param {number} a A number.
- * @param {number} b A number.
- * @param {number} x The proportion between a and b.
- * @return {number} The interpolated value between a and b.
- */
-goog.math.lerp = function(a, b, x) {
-  return a + x * (b - a);
-};
-
-
-/**
- * Tests whether the two values are equal to each other, within a certain
- * tolerance to adjust for floating point errors.
- * @param {number} a A number.
- * @param {number} b A number.
- * @param {number=} opt_tolerance Optional tolerance range. Defaults
- *     to 0.000001. If specified, should be greater than 0.
- * @return {boolean} Whether {@code a} and {@code b} are nearly equal.
- */
-goog.math.nearlyEquals = function(a, b, opt_tolerance) {
-  return Math.abs(a - b) <= (opt_tolerance || 0.000001);
-};
-
-
-// TODO(user): Rename to normalizeAngle, retaining old name as deprecated
-// alias.
-/**
- * Normalizes an angle to be in range [0-360). Angles outside this range will
- * be normalized to be the equivalent angle with that range.
- * @param {number} angle Angle in degrees.
- * @return {number} Standardized angle.
- */
-goog.math.standardAngle = function(angle) {
-  return goog.math.modulo(angle, 360);
-};
-
-
-/**
- * Normalizes an angle to be in range [0-2*PI). Angles outside this range will
- * be normalized to be the equivalent angle with that range.
- * @param {number} angle Angle in radians.
- * @return {number} Standardized angle.
- */
-goog.math.standardAngleInRadians = function(angle) {
-  return goog.math.modulo(angle, 2 * Math.PI);
-};
-
-
-/**
- * Converts degrees to radians.
- * @param {number} angleDegrees Angle in degrees.
- * @return {number} Angle in radians.
- */
-goog.math.toRadians = function(angleDegrees) {
-  return angleDegrees * Math.PI / 180;
-};
-
-
-/**
- * Converts radians to degrees.
- * @param {number} angleRadians Angle in radians.
- * @return {number} Angle in degrees.
- */
-goog.math.toDegrees = function(angleRadians) {
-  return angleRadians * 180 / Math.PI;
-};
-
-
-/**
- * For a given angle and radius, finds the X portion of the offset.
- * @param {number} degrees Angle in degrees (zero points in +X direction).
- * @param {number} radius Radius.
- * @return {number} The x-distance for the angle and radius.
- */
-goog.math.angleDx = function(degrees, radius) {
-  return radius * Math.cos(goog.math.toRadians(degrees));
-};
-
-
-/**
- * For a given angle and radius, finds the Y portion of the offset.
- * @param {number} degrees Angle in degrees (zero points in +X direction).
- * @param {number} radius Radius.
- * @return {number} The y-distance for the angle and radius.
- */
-goog.math.angleDy = function(degrees, radius) {
-  return radius * Math.sin(goog.math.toRadians(degrees));
-};
-
-
-/**
- * Computes the angle between two points (x1,y1) and (x2,y2).
- * Angle zero points in the +X direction, 90 degrees points in the +Y
- * direction (down) and from there we grow clockwise towards 360 degrees.
- * @param {number} x1 x of first point.
- * @param {number} y1 y of first point.
- * @param {number} x2 x of second point.
- * @param {number} y2 y of second point.
- * @return {number} Standardized angle in degrees of the vector from
- *     x1,y1 to x2,y2.
- */
-goog.math.angle = function(x1, y1, x2, y2) {
-  return goog.math.standardAngle(goog.math.toDegrees(Math.atan2(y2 - y1,
-                                                                x2 - x1)));
-};
-
-
-/**
- * Computes the difference between startAngle and endAngle (angles in degrees).
- * @param {number} startAngle  Start angle in degrees.
- * @param {number} endAngle  End angle in degrees.
- * @return {number} The number of degrees that when added to
- *     startAngle will result in endAngle. Positive numbers mean that the
- *     direction is clockwise. Negative numbers indicate a counter-clockwise
- *     direction.
- *     The shortest route (clockwise vs counter-clockwise) between the angles
- *     is used.
- *     When the difference is 180 degrees, the function returns 180 (not -180)
- *     angleDifference(30, 40) is 10, and angleDifference(40, 30) is -10.
- *     angleDifference(350, 10) is 20, and angleDifference(10, 350) is -20.
- */
-goog.math.angleDifference = function(startAngle, endAngle) {
-  var d = goog.math.standardAngle(endAngle) -
-          goog.math.standardAngle(startAngle);
-  if (d > 180) {
-    d = d - 360;
-  } else if (d <= -180) {
-    d = 360 + d;
-  }
-  return d;
-};
-
-
-/**
- * Returns the sign of a number as per the "sign" or "signum" function.
- * @param {number} x The number to take the sign of.
- * @return {number} -1 when negative, 1 when positive, 0 when 0. Preserves
- *     signed zeros and NaN.
- */
-goog.math.sign = Math.sign || function(x) {
-  if (x > 0) {
-    return 1;
-  }
-  if (x < 0) {
-    return -1;
-  }
-  return x;  // Preserves signed zeros and NaN.
-};
-
-
-/**
- * JavaScript implementation of Longest Common Subsequence problem.
- * http://en.wikipedia.org/wiki/Longest_common_subsequence
- *
- * Returns the longest possible array that is subarray of both of given arrays.
- *
- * @param {Array<Object>} array1 First array of objects.
- * @param {Array<Object>} array2 Second array of objects.
- * @param {Function=} opt_compareFn Function that acts as a custom comparator
- *     for the array ojects. Function should return true if objects are equal,
- *     otherwise false.
- * @param {Function=} opt_collectorFn Function used to decide what to return
- *     as a result subsequence. It accepts 2 arguments: index of common element
- *     in the first array and index in the second. The default function returns
- *     element from the first array.
- * @return {!Array<Object>} A list of objects that are common to both arrays
- *     such that there is no common subsequence with size greater than the
- *     length of the list.
- */
-goog.math.longestCommonSubsequence = function(
-    array1, array2, opt_compareFn, opt_collectorFn) {
-
-  var compare = opt_compareFn || function(a, b) {
-    return a == b;
-  };
-
-  var collect = opt_collectorFn || function(i1, i2) {
-    return array1[i1];
-  };
-
-  var length1 = array1.length;
-  var length2 = array2.length;
-
-  var arr = [];
-  for (var i = 0; i < length1 + 1; i++) {
-    arr[i] = [];
-    arr[i][0] = 0;
-  }
-
-  for (var j = 0; j < length2 + 1; j++) {
-    arr[0][j] = 0;
-  }
-
-  for (i = 1; i <= length1; i++) {
-    for (j = 1; j <= length2; j++) {
-      if (compare(array1[i - 1], array2[j - 1])) {
-        arr[i][j] = arr[i - 1][j - 1] + 1;
-      } else {
-        arr[i][j] = Math.max(arr[i - 1][j], arr[i][j - 1]);
-      }
-    }
-  }
-
-  // Backtracking
-  var result = [];
-  var i = length1, j = length2;
-  while (i > 0 && j > 0) {
-    if (compare(array1[i - 1], array2[j - 1])) {
-      result.unshift(collect(i - 1, j - 1));
-      i--;
-      j--;
-    } else {
-      if (arr[i - 1][j] > arr[i][j - 1]) {
-        i--;
-      } else {
-        j--;
-      }
-    }
-  }
-
-  return result;
-};
-
-
-/**
- * Returns the sum of the arguments.
- * @param {...number} var_args Numbers to add.
- * @return {number} The sum of the arguments (0 if no arguments were provided,
- *     {@code NaN} if any of the arguments is not a valid number).
- */
-goog.math.sum = function(var_args) {
-  return /** @type {number} */ (goog.array.reduce(arguments,
-      function(sum, value) {
-        return sum + value;
-      }, 0));
-};
-
-
-/**
- * Returns the arithmetic mean of the arguments.
- * @param {...number} var_args Numbers to average.
- * @return {number} The average of the arguments ({@code NaN} if no arguments
- *     were provided or any of the arguments is not a valid number).
- */
-goog.math.average = function(var_args) {
-  return goog.math.sum.apply(null, arguments) / arguments.length;
-};
-
-
-/**
- * Returns the unbiased sample variance of the arguments. For a definition,
- * see e.g. http://en.wikipedia.org/wiki/Variance
- * @param {...number} var_args Number samples to analyze.
- * @return {number} The unbiased sample variance of the arguments (0 if fewer
- *     than two samples were provided, or {@code NaN} if any of the samples is
- *     not a valid number).
- */
-goog.math.sampleVariance = function(var_args) {
-  var sampleSize = arguments.length;
-  if (sampleSize < 2) {
-    return 0;
-  }
-
-  var mean = goog.math.average.apply(null, arguments);
-  var variance = goog.math.sum.apply(null, goog.array.map(arguments,
-      function(val) {
-        return Math.pow(val - mean, 2);
-      })) / (sampleSize - 1);
-
-  return variance;
-};
-
-
-/**
- * Returns the sample standard deviation of the arguments.  For a definition of
- * sample standard deviation, see e.g.
- * http://en.wikipedia.org/wiki/Standard_deviation
- * @param {...number} var_args Number samples to analyze.
- * @return {number} The sample standard deviation of the arguments (0 if fewer
- *     than two samples were provided, or {@code NaN} if any of the samples is
- *     not a valid number).
- */
-goog.math.standardDeviation = function(var_args) {
-  return Math.sqrt(goog.math.sampleVariance.apply(null, arguments));
-};
-
-
-/**
- * Returns whether the supplied number represents an integer, i.e. that is has
- * no fractional component.  No range-checking is performed on the number.
- * @param {number} num The number to test.
- * @return {boolean} Whether {@code num} is an integer.
- */
-goog.math.isInt = function(num) {
-  return isFinite(num) && num % 1 == 0;
-};
-
-
-/**
- * Returns whether the supplied number is finite and not NaN.
- * @param {number} num The number to test.
- * @return {boolean} Whether {@code num} is a finite number.
- */
-goog.math.isFiniteNumber = function(num) {
-  return isFinite(num) && !isNaN(num);
-};
-
-
-/**
- * @param {number} num The number to test.
- * @return {boolean} Whether it is negative zero.
- */
-goog.math.isNegativeZero = function(num) {
-  return num == 0 && 1 / num < 0;
-};
-
-
-/**
- * Returns the precise value of floor(log10(num)).
- * Simpler implementations didn't work because of floating point rounding
- * errors. For example
- * <ul>
- * <li>Math.floor(Math.log(num) / Math.LN10) is off by one for num == 1e+3.
- * <li>Math.floor(Math.log(num) * Math.LOG10E) is off by one for num == 1e+15.
- * <li>Math.floor(Math.log10(num)) is off by one for num == 1e+15 - 1.
- * </ul>
- * @param {number} num A floating point number.
- * @return {number} Its logarithm to base 10 rounded down to the nearest
- *     integer if num > 0. -Infinity if num == 0. NaN if num < 0.
- */
-goog.math.log10Floor = function(num) {
-  if (num > 0) {
-    var x = Math.round(Math.log(num) * Math.LOG10E);
-    return x - (parseFloat('1e' + x) > num);
-  }
-  return num == 0 ? -Infinity : NaN;
-};
-
-
-/**
- * A tweaked variant of {@code Math.floor} which tolerates if the passed number
- * is infinitesimally smaller than the closest integer. It often happens with
- * the results of floating point calculations because of the finite precision
- * of the intermediate results. For example {@code Math.floor(Math.log(1000) /
- * Math.LN10) == 2}, not 3 as one would expect.
- * @param {number} num A number.
- * @param {number=} opt_epsilon An infinitesimally small positive number, the
- *     rounding error to tolerate.
- * @return {number} The largest integer less than or equal to {@code num}.
- */
-goog.math.safeFloor = function(num, opt_epsilon) {
-  goog.asserts.assert(!goog.isDef(opt_epsilon) || opt_epsilon > 0);
-  return Math.floor(num + (opt_epsilon || 2e-15));
-};
-
-
-/**
- * A tweaked variant of {@code Math.ceil}. See {@code goog.math.safeFloor} for
- * details.
- * @param {number} num A number.
- * @param {number=} opt_epsilon An infinitesimally small positive number, the
- *     rounding error to tolerate.
- * @return {number} The smallest integer greater than or equal to {@code num}.
- */
-goog.math.safeCeil = function(num, opt_epsilon) {
-  goog.asserts.assert(!goog.isDef(opt_epsilon) || opt_epsilon > 0);
-  return Math.ceil(num - (opt_epsilon || 2e-15));
-};
-
-goog.provide('ol.CenterConstraint');
-goog.provide('ol.CenterConstraintType');
-
-goog.require('goog.math');
-
-
-/**
- * @typedef {function((ol.Coordinate|undefined)): (ol.Coordinate|undefined)}
- */
-ol.CenterConstraintType;
-
-
-/**
- * @param {ol.Extent} extent Extent.
- * @return {ol.CenterConstraintType}
- */
-ol.CenterConstraint.createExtent = function(extent) {
-  return (
-      /**
-       * @param {ol.Coordinate|undefined} center Center.
-       * @return {ol.Coordinate|undefined} Center.
-       */
-      function(center) {
-        if (goog.isDef(center)) {
-          return [
-            goog.math.clamp(center[0], extent[0], extent[2]),
-            goog.math.clamp(center[1], extent[1], extent[3])
-          ];
-        } else {
-          return undefined;
-        }
-      });
-};
-
-
-/**
- * @param {ol.Coordinate|undefined} center Center.
- * @return {ol.Coordinate|undefined} Center.
- */
-ol.CenterConstraint.none = function(center) {
-  return center;
-};
-
-goog.provide('ol.array');
-
-goog.require('goog.array');
-goog.require('goog.asserts');
-
-
-/**
- * @param {Array.<number>} arr Array.
- * @param {number} target Target.
- * @return {number} Index.
- */
-ol.array.binaryFindNearest = function(arr, target) {
-  var index = goog.array.binarySearch(arr, target,
-      /**
-       * @param {number} a A.
-       * @param {number} b B.
-       * @return {number} b minus a.
-       */
-      function(a, b) {
-        return b - a;
-      });
-  if (index >= 0) {
-    return index;
-  } else if (index == -1) {
-    return 0;
-  } else if (index == -arr.length - 1) {
-    return arr.length - 1;
-  } else {
-    var left = -index - 2;
-    var right = -index - 1;
-    if (arr[left] - target < target - arr[right]) {
-      return left;
-    } else {
-      return right;
-    }
-  }
-};
-
-
-/**
- * @param {Array.<number>} arr Array.
- * @param {number} target Target.
- * @param {number} direction 0 means return the nearest, > 0
- *    means return the largest nearest, < 0 means return the
- *    smallest nearest.
- * @return {number} Index.
- */
-ol.array.linearFindNearest = function(arr, target, direction) {
-  var n = arr.length;
-  if (arr[0] <= target) {
-    return 0;
-  } else if (target <= arr[n - 1]) {
-    return n - 1;
-  } else {
-    var i;
-    if (direction > 0) {
-      for (i = 1; i < n; ++i) {
-        if (arr[i] < target) {
-          return i - 1;
-        }
-      }
-    } else if (direction < 0) {
-      for (i = 1; i < n; ++i) {
-        if (arr[i] <= target) {
-          return i;
-        }
-      }
-    } else {
-      for (i = 1; i < n; ++i) {
-        if (arr[i] == target) {
-          return i;
-        } else if (arr[i] < target) {
-          if (arr[i - 1] - target < target - arr[i]) {
-            return i - 1;
-          } else {
-            return i;
-          }
-        }
-      }
-    }
-    // We should never get here, but the compiler complains
-    // if it finds a path for which no number is returned.
-    goog.asserts.fail();
-    return n - 1;
-  }
-};
-
-
-/**
- * @param {Array.<*>} arr Array.
- * @param {number} begin Begin index.
- * @param {number} end End index.
- */
-ol.array.reverseSubArray = function(arr, begin, end) {
-  goog.asserts.assert(begin >= 0,
-      'Array begin index should be equal to or greater than 0');
-  goog.asserts.assert(end < arr.length,
-      'Array end index should be less than the array length');
-  while (begin < end) {
-    var tmp = arr[begin];
-    arr[begin] = arr[end];
-    arr[end] = tmp;
-    ++begin;
-    --end;
-  }
-};
-
-goog.provide('ol.ResolutionConstraint');
-goog.provide('ol.ResolutionConstraintType');
-
-goog.require('goog.math');
-goog.require('ol.array');
-
-
-/**
- * @typedef {function((number|undefined), number, number): (number|undefined)}
- */
-ol.ResolutionConstraintType;
-
-
-/**
- * @param {Array.<number>} resolutions Resolutions.
- * @return {ol.ResolutionConstraintType} Zoom function.
- */
-ol.ResolutionConstraint.createSnapToResolutions =
-    function(resolutions) {
-  return (
-      /**
-       * @param {number|undefined} resolution Resolution.
-       * @param {number} delta Delta.
-       * @param {number} direction Direction.
-       * @return {number|undefined} Resolution.
-       */
-      function(resolution, delta, direction) {
-        if (goog.isDef(resolution)) {
-          var z =
-              ol.array.linearFindNearest(resolutions, resolution, direction);
-          z = goog.math.clamp(z + delta, 0, resolutions.length - 1);
-          return resolutions[z];
-        } else {
-          return undefined;
-        }
-      });
-};
-
-
-/**
- * @param {number} power Power.
- * @param {number} maxResolution Maximum resolution.
- * @param {number=} opt_maxLevel Maximum level.
- * @return {ol.ResolutionConstraintType} Zoom function.
- */
-ol.ResolutionConstraint.createSnapToPower =
-    function(power, maxResolution, opt_maxLevel) {
-  return (
-      /**
-       * @param {number|undefined} resolution Resolution.
-       * @param {number} delta Delta.
-       * @param {number} direction Direction.
-       * @return {number|undefined} Resolution.
-       */
-      function(resolution, delta, direction) {
-        if (goog.isDef(resolution)) {
-          var offset;
-          if (direction > 0) {
-            offset = 0;
-          } else if (direction < 0) {
-            offset = 1;
-          } else {
-            offset = 0.5;
-          }
-          var oldLevel = Math.floor(
-              Math.log(maxResolution / resolution) / Math.log(power) + offset);
-          var newLevel = Math.max(oldLevel + delta, 0);
-          if (goog.isDef(opt_maxLevel)) {
-            newLevel = Math.min(newLevel, opt_maxLevel);
-          }
-          return maxResolution / Math.pow(power, newLevel);
-        } else {
-          return undefined;
-        }
-      });
-};
-
-goog.provide('ol.RotationConstraint');
-goog.provide('ol.RotationConstraintType');
-
-goog.require('goog.math');
-
-
-/**
- * @typedef {function((number|undefined), number): (number|undefined)}
- */
-ol.RotationConstraintType;
-
-
-/**
- * @param {number|undefined} rotation Rotation.
- * @param {number} delta Delta.
- * @return {number|undefined} Rotation.
- */
-ol.RotationConstraint.disable = function(rotation, delta) {
-  if (goog.isDef(rotation)) {
-    return 0;
-  } else {
-    return undefined;
-  }
-};
-
-
-/**
- * @param {number|undefined} rotation Rotation.
- * @param {number} delta Delta.
- * @return {number|undefined} Rotation.
- */
-ol.RotationConstraint.none = function(rotation, delta) {
-  if (goog.isDef(rotation)) {
-    return rotation + delta;
-  } else {
-    return undefined;
-  }
-};
-
-
-/**
- * @param {number} n N.
- * @return {ol.RotationConstraintType} Rotation constraint.
- */
-ol.RotationConstraint.createSnapToN = function(n) {
-  var theta = 2 * Math.PI / n;
-  return (
-      /**
-       * @param {number|undefined} rotation Rotation.
-       * @param {number} delta Delta.
-       * @return {number|undefined} Rotation.
-       */
-      function(rotation, delta) {
-        if (goog.isDef(rotation)) {
-          rotation = Math.floor((rotation + delta) / theta + 0.5) * theta;
-          return rotation;
-        } else {
-          return undefined;
-        }
-      });
-};
-
-
-/**
- * @param {number=} opt_tolerance Tolerance.
- * @return {ol.RotationConstraintType} Rotation constraint.
- */
-ol.RotationConstraint.createSnapToZero = function(opt_tolerance) {
-  var tolerance = opt_tolerance || goog.math.toRadians(5);
-  return (
-      /**
-       * @param {number|undefined} rotation Rotation.
-       * @param {number} delta Delta.
-       * @return {number|undefined} Rotation.
-       */
-      function(rotation, delta) {
-        if (goog.isDef(rotation)) {
-          if (Math.abs(rotation + delta) <= tolerance) {
-            return 0;
-          } else {
-            return rotation + delta;
-          }
-        } else {
-          return undefined;
-        }
-      });
-};
-
-goog.provide('ol.Constraints');
-
-goog.require('ol.CenterConstraintType');
-goog.require('ol.ResolutionConstraintType');
-goog.require('ol.RotationConstraintType');
-
-
-
-/**
- * @constructor
- * @param {ol.CenterConstraintType} centerConstraint Center constraint.
- * @param {ol.ResolutionConstraintType} resolutionConstraint
- *     Resolution constraint.
- * @param {ol.RotationConstraintType} rotationConstraint
- *     Rotation constraint.
- */
-ol.Constraints =
-    function(centerConstraint, resolutionConstraint, rotationConstraint) {
-
-  /**
-   * @type {ol.CenterConstraintType}
-   */
-  this.center = centerConstraint;
-
-  /**
-   * @type {ol.ResolutionConstraintType}
-   */
-  this.resolution = resolutionConstraint;
-
-  /**
-   * @type {ol.RotationConstraintType}
-   */
-  this.rotation = rotationConstraint;
-
-};
-
-// Copyright 2010 The Closure Library Authors. All Rights Reserved.
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//      http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS-IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
-
-/**
- * @fileoverview A global registry for entry points into a program,
- * so that they can be instrumented. Each module should register their
- * entry points with this registry. Designed to be compiled out
- * if no instrumentation is requested.
- *
- * Entry points may be registered before or after a call to
- * goog.debug.entryPointRegistry.monitorAll. If an entry point is registered
- * later, the existing monitor will instrument the new entry point.
- *
- * @author nicksantos@google.com (Nick Santos)
- */
-
-goog.provide('goog.debug.EntryPointMonitor');
-goog.provide('goog.debug.entryPointRegistry');
-
-goog.require('goog.asserts');
-
-
-
-/**
- * @interface
- */
-goog.debug.EntryPointMonitor = function() {};
-
-
-/**
- * Instruments a function.
- *
- * @param {!Function} fn A function to instrument.
- * @return {!Function} The instrumented function.
- */
-goog.debug.EntryPointMonitor.prototype.wrap;
-
-
-/**
- * Try to remove an instrumentation wrapper created by this monitor.
- * If the function passed to unwrap is not a wrapper created by this
- * monitor, then we will do nothing.
- *
- * Notice that some wrappers may not be unwrappable. For example, if other
- * monitors have applied their own wrappers, then it will be impossible to
- * unwrap them because their wrappers will have captured our wrapper.
- *
- * So it is important that entry points are unwrapped in the reverse
- * order that they were wrapped.
- *
- * @param {!Function} fn A function to unwrap.
- * @return {!Function} The unwrapped function, or {@code fn} if it was not
- *     a wrapped function created by this monitor.
- */
-goog.debug.EntryPointMonitor.prototype.unwrap;
-
-
-/**
- * An array of entry point callbacks.
- * @type {!Array<function(!Function)>}
- * @private
- */
-goog.debug.entryPointRegistry.refList_ = [];
-
-
-/**
- * Monitors that should wrap all the entry points.
- * @type {!Array<!goog.debug.EntryPointMonitor>}
- * @private
- */
-goog.debug.entryPointRegistry.monitors_ = [];
-
-
-/**
- * Whether goog.debug.entryPointRegistry.monitorAll has ever been called.
- * Checking this allows the compiler to optimize out the registrations.
- * @type {boolean}
- * @private
- */
-goog.debug.entryPointRegistry.monitorsMayExist_ = false;
-
-
-/**
- * Register an entry point with this module.
- *
- * The entry point will be instrumented when a monitor is passed to
- * goog.debug.entryPointRegistry.monitorAll. If this has already occurred, the
- * entry point is instrumented immediately.
- *
- * @param {function(!Function)} callback A callback function which is called
- *     with a transforming function to instrument the entry point. The callback
- *     is responsible for wrapping the relevant entry point with the
- *     transforming function.
- */
-goog.debug.entryPointRegistry.register = function(callback) {
-  // Don't use push(), so that this can be compiled out.
-  goog.debug.entryPointRegistry.refList_[
-      goog.debug.entryPointRegistry.refList_.length] = callback;
-  // If no one calls monitorAll, this can be compiled out.
-  if (goog.debug.entryPointRegistry.monitorsMayExist_) {
-    var monitors = goog.debug.entryPointRegistry.monitors_;
-    for (var i = 0; i < monitors.length; i++) {
-      callback(goog.bind(monitors[i].wrap, monitors[i]));
-    }
-  }
-};
-
-
-/**
- * Configures a monitor to wrap all entry points.
- *
- * Entry points that have already been registered are immediately wrapped by
- * the monitor. When an entry point is registered in the future, it will also
- * be wrapped by the monitor when it is registered.
- *
- * @param {!goog.debug.EntryPointMonitor} monitor An entry point monitor.
- */
-goog.debug.entryPointRegistry.monitorAll = function(monitor) {
-  goog.debug.entryPointRegistry.monitorsMayExist_ = true;
-  var transformer = goog.bind(monitor.wrap, monitor);
-  for (var i = 0; i < goog.debug.entryPointRegistry.refList_.length; i++) {
-    goog.debug.entryPointRegistry.refList_[i](transformer);
-  }
-  goog.debug.entryPointRegistry.monitors_.push(monitor);
-};
-
-
-/**
- * Try to unmonitor all the entry points that have already been registered. If
- * an entry point is registered in the future, it will not be wrapped by the
- * monitor when it is registered. Note that this may fail if the entry points
- * have additional wrapping.
- *
- * @param {!goog.debug.EntryPointMonitor} monitor The last monitor to wrap
- *     the entry points.
- * @throws {Error} If the monitor is not the most recently configured monitor.
- */
-goog.debug.entryPointRegistry.unmonitorAllIfPossible = function(monitor) {
-  var monitors = goog.debug.entryPointRegistry.monitors_;
-  goog.asserts.assert(monitor == monitors[monitors.length - 1],
-      'Only the most recent monitor can be unwrapped.');
-  var transformer = goog.bind(monitor.unwrap, monitor);
-  for (var i = 0; i < goog.debug.entryPointRegistry.refList_.length; i++) {
-    goog.debug.entryPointRegistry.refList_[i](transformer);
-  }
-  monitors.length--;
-};
 
 // Copyright 2010 The Closure Library Authors. All Rights Reserved.
 //
@@ -13108,6 +17369,8 @@ ol.Observable.prototype.changed = function() {
 
 
 /**
+ * Get the version number for this object.  Each time the object is modified,
+ * its version number will be incremented.
  * @return {number} Revision.
  * @api
  */
@@ -13415,4890 +17678,256 @@ ol.Object.prototype.unset = function(key) {
   }
 };
 
-goog.provide('ol.Size');
-goog.provide('ol.size');
+goog.require('goog.userAgent');
 
-
-goog.require('goog.asserts');
-
-
-/**
- * An array of numbers representing a size: `[width, height]`.
- * @typedef {Array.<number>}
- * @api stable
- */
-ol.Size;
+goog.provide('ol');
 
 
 /**
- * Returns a buffered size.
- * @param {ol.Size} size Size.
- * @param {number} buffer Buffer.
- * @param {ol.Size=} opt_size Optional reusable size array.
- * @return {ol.Size}
- */
-ol.size.buffer = function(size, buffer, opt_size) {
-  if (!goog.isDef(opt_size)) {
-    opt_size = [0, 0];
-  }
-  opt_size[0] = size[0] + 2 * buffer;
-  opt_size[1] = size[1] + 2 * buffer;
-  return opt_size;
-};
-
-
-/**
- * Compares sizes for equality.
- * @param {ol.Size} a Size.
- * @param {ol.Size} b Size.
- * @return {boolean} Equals.
- */
-ol.size.equals = function(a, b) {
-  return a[0] == b[0] && a[1] == b[1];
-};
-
-
-/**
- * Determines if a size has a positive area.
- * @param {ol.Size} size The size to test.
- * @return {boolean} The size has a positive area.
- */
-ol.size.hasArea = function(size) {
-  return size[0] > 0 && size[1] > 0;
-};
-
-
-/**
- * Returns a size scaled by a ratio. The result will be an array of integers.
- * @param {ol.Size} size Size.
- * @param {number} ratio Ratio.
- * @param {ol.Size=} opt_size Optional reusable size array.
- * @return {ol.Size}
- */
-ol.size.scale = function(size, ratio, opt_size) {
-  if (!goog.isDef(opt_size)) {
-    opt_size = [0, 0];
-  }
-  opt_size[0] = (size[0] * ratio + 0.5) | 0;
-  opt_size[1] = (size[1] * ratio + 0.5) | 0;
-  return opt_size;
-};
-
-
-/**
- * Returns an `ol.Size` array for the passed in number (meaning: square) or
- * `ol.Size` array.
- * (meaning: non-square),
- * @param {number|ol.Size} size Width and height.
- * @param {ol.Size=} opt_size Optional reusable size array.
- * @return {ol.Size} Size.
- * @api stable
- */
-ol.size.toSize = function(size, opt_size) {
-  if (goog.isArray(size)) {
-    return size;
-  } else {
-    goog.asserts.assert(goog.isNumber(size));
-    if (!goog.isDef(opt_size)) {
-      opt_size = [size, size];
-    } else {
-      opt_size[0] = size;
-      opt_size[1] = size;
-    }
-    return opt_size;
-  }
-};
-
-goog.provide('ol.Coordinate');
-goog.provide('ol.CoordinateFormatType');
-goog.provide('ol.coordinate');
-
-goog.require('goog.math');
-goog.require('goog.string');
-
-
-/**
- * A function that takes a {@link ol.Coordinate} and transforms it into a
- * `{string}`.
- *
- * @typedef {function((ol.Coordinate|undefined)): string}
- * @api stable
- */
-ol.CoordinateFormatType;
-
-
-/**
- * An array of numbers representing an xy coordinate. Example: `[16, 48]`.
- * @typedef {Array.<number>} ol.Coordinate
- * @api stable
- */
-ol.Coordinate;
-
-
-/**
- * Add `delta` to `coordinate`. `coordinate` is modified in place and returned
- * by the function.
- *
- * Example:
- *
- *     var coord = [7.85, 47.983333];
- *     ol.coordinate.add(coord, [-2, 4]);
- *     // coord is now [5.85, 51.983333]
- *
- * @param {ol.Coordinate} coordinate Coordinate.
- * @param {ol.Coordinate} delta Delta.
- * @return {ol.Coordinate} The input coordinate adjusted by the given delta.
- * @api stable
- */
-ol.coordinate.add = function(coordinate, delta) {
-  coordinate[0] += delta[0];
-  coordinate[1] += delta[1];
-  return coordinate;
-};
-
-
-/**
- * Calculates the point closest to the passed coordinate on the passed segment.
- * This is the foot of the perpendicular of the coordinate to the segment when
- * the foot is on the segment, or the closest segment coordinate when the foot
- * is outside the segment.
- *
- * @param {ol.Coordinate} coordinate The coordinate.
- * @param {Array.<ol.Coordinate>} segment The two coordinates of the segment.
- * @return {ol.Coordinate} The foot of the perpendicular of the coordinate to
- *     the segment.
- */
-ol.coordinate.closestOnSegment = function(coordinate, segment) {
-  var x0 = coordinate[0];
-  var y0 = coordinate[1];
-  var start = segment[0];
-  var end = segment[1];
-  var x1 = start[0];
-  var y1 = start[1];
-  var x2 = end[0];
-  var y2 = end[1];
-  var dx = x2 - x1;
-  var dy = y2 - y1;
-  var along = (dx === 0 && dy === 0) ? 0 :
-      ((dx * (x0 - x1)) + (dy * (y0 - y1))) / ((dx * dx + dy * dy) || 0);
-  var x, y;
-  if (along <= 0) {
-    x = x1;
-    y = y1;
-  } else if (along >= 1) {
-    x = x2;
-    y = y2;
-  } else {
-    x = x1 + along * dx;
-    y = y1 + along * dy;
-  }
-  return [x, y];
-};
-
-
-/**
- * Returns a {@link ol.CoordinateFormatType} function that can be used to format
- * a {ol.Coordinate} to a string.
- *
- * Example without specifying the fractional digits:
- *
- *     var coord = [7.85, 47.983333];
- *     var stringifyFunc = ol.coordinate.createStringXY();
- *     var out = stringifyFunc(coord);
- *     // out is now '8, 48'
- *
- * Example with explicitly specifying 2 fractional digits:
- *
- *     var coord = [7.85, 47.983333];
- *     var stringifyFunc = ol.coordinate.createStringXY(2);
- *     var out = stringifyFunc(coord);
- *     // out is now '7.85, 47.98'
- *
- * @param {number=} opt_fractionDigits The number of digits to include
- *    after the decimal point. Default is `0`.
- * @return {ol.CoordinateFormatType} Coordinate format.
- * @api stable
- */
-ol.coordinate.createStringXY = function(opt_fractionDigits) {
-  return (
-      /**
-       * @param {ol.Coordinate|undefined} coordinate Coordinate.
-       * @return {string} String XY.
-       */
-      function(coordinate) {
-        return ol.coordinate.toStringXY(coordinate, opt_fractionDigits);
-      });
-};
-
-
-/**
- * @private
- * @param {number} degrees Degrees.
- * @param {string} hemispheres Hemispheres.
- * @return {string} String.
- */
-ol.coordinate.degreesToStringHDMS_ = function(degrees, hemispheres) {
-  var normalizedDegrees = goog.math.modulo(degrees + 180, 360) - 180;
-  var x = Math.abs(Math.round(3600 * normalizedDegrees));
-  return Math.floor(x / 3600) + '\u00b0 ' +
-      goog.string.padNumber(Math.floor((x / 60) % 60), 2) + '\u2032 ' +
-      goog.string.padNumber(Math.floor(x % 60), 2) + '\u2033 ' +
-      hemispheres.charAt(normalizedDegrees < 0 ? 1 : 0);
-};
-
-
-/**
- * Transforms the given {@link ol.Coordinate} to a string using the given string
- * template. The strings `{x}` and `{y}` in the template will be replaced with
- * the first and second coordinate values respectively.
- *
- * Example without specifying the fractional digits:
- *
- *     var coord = [7.85, 47.983333];
- *     var template = 'Coordinate is ({x}|{y}).';
- *     var out = ol.coordinate.format(coord, template);
- *     // out is now 'Coordinate is (8|48).'
- *
- * Example explicitly specifying the fractional digits:
- *
- *     var coord = [7.85, 47.983333];
- *     var template = 'Coordinate is ({x}|{y}).';
- *     var out = ol.coordinate.format(coord, template, 2);
- *     // out is now 'Coordinate is (7.85|47.98).'
- *
- * @param {ol.Coordinate|undefined} coordinate Coordinate.
- * @param {string} template A template string with `{x}` and `{y}` placeholders
- *     that will be replaced by first and second coordinate values.
- * @param {number=} opt_fractionDigits The number of digits to include
- *    after the decimal point. Default is `0`.
- * @return {string} Formatted coordinate.
- * @api stable
- */
-ol.coordinate.format = function(coordinate, template, opt_fractionDigits) {
-  if (goog.isDef(coordinate)) {
-    return template
-      .replace('{x}', coordinate[0].toFixed(opt_fractionDigits))
-      .replace('{y}', coordinate[1].toFixed(opt_fractionDigits));
-  } else {
-    return '';
-  }
-};
-
-
-/**
- * @param {ol.Coordinate} coordinate1 First coordinate.
- * @param {ol.Coordinate} coordinate2 Second coordinate.
- * @return {boolean} Whether the passed coordinates are equal.
- */
-ol.coordinate.equals = function(coordinate1, coordinate2) {
-  var equals = true;
-  for (var i = coordinate1.length - 1; i >= 0; --i) {
-    if (coordinate1[i] != coordinate2[i]) {
-      equals = false;
-      break;
-    }
-  }
-  return equals;
-};
-
-
-/**
- * Rotate `coordinate` by `angle`. `coordinate` is modified in place and
- * returned by the function.
- *
- * Example:
- *
- *     var coord = [7.85, 47.983333];
- *     var rotateRadians = Math.PI / 2; // 90 degrees
- *     ol.coordinate.rotate(coord, rotateRadians);
- *     // coord is now [-47.983333, 7.85]
- *
- * @param {ol.Coordinate} coordinate Coordinate.
- * @param {number} angle Angle in radian.
- * @return {ol.Coordinate} Coordinate.
- * @api stable
- */
-ol.coordinate.rotate = function(coordinate, angle) {
-  var cosAngle = Math.cos(angle);
-  var sinAngle = Math.sin(angle);
-  var x = coordinate[0] * cosAngle - coordinate[1] * sinAngle;
-  var y = coordinate[1] * cosAngle + coordinate[0] * sinAngle;
-  coordinate[0] = x;
-  coordinate[1] = y;
-  return coordinate;
-};
-
-
-/**
- * Scale `coordinate` by `scale`. `coordinate` is modified in place and returned
- * by the function.
- *
- * Example:
- *
- *     var coord = [7.85, 47.983333];
- *     var scale = 1.2;
- *     ol.coordinate.scale(coord, scale);
- *     // coord is now [9.42, 57.5799996]
- *
- * @param {ol.Coordinate} coordinate Coordinate.
- * @param {number} scale Scale factor.
- * @return {ol.Coordinate} Coordinate.
- */
-ol.coordinate.scale = function(coordinate, scale) {
-  coordinate[0] *= scale;
-  coordinate[1] *= scale;
-  return coordinate;
-};
-
-
-/**
- * Subtract `delta` to `coordinate`. `coordinate` is modified in place and
- * returned by the function.
- *
- * @param {ol.Coordinate} coordinate Coordinate.
- * @param {ol.Coordinate} delta Delta.
- * @return {ol.Coordinate} Coordinate.
- */
-ol.coordinate.sub = function(coordinate, delta) {
-  coordinate[0] -= delta[0];
-  coordinate[1] -= delta[1];
-  return coordinate;
-};
-
-
-/**
- * @param {ol.Coordinate} coord1 First coordinate.
- * @param {ol.Coordinate} coord2 Second coordinate.
- * @return {number} Squared distance between coord1 and coord2.
- */
-ol.coordinate.squaredDistance = function(coord1, coord2) {
-  var dx = coord1[0] - coord2[0];
-  var dy = coord1[1] - coord2[1];
-  return dx * dx + dy * dy;
-};
-
-
-/**
- * Calculate the squared distance from a coordinate to a line segment.
- *
- * @param {ol.Coordinate} coordinate Coordinate of the point.
- * @param {Array.<ol.Coordinate>} segment Line segment (2 coordinates).
- * @return {number} Squared distance from the point to the line segment.
- */
-ol.coordinate.squaredDistanceToSegment = function(coordinate, segment) {
-  return ol.coordinate.squaredDistance(coordinate,
-      ol.coordinate.closestOnSegment(coordinate, segment));
-};
-
-
-/**
- * Format a geographic coordinate with the hemisphere, degrees, minutes, and
- * seconds.
- *
- * Example:
- *
- *     var coord = [7.85, 47.983333];
- *     var out = ol.coordinate.toStringHDMS(coord);
- *     // out is now '47° 59′ 0″ N 7° 51′ 0″ E'
- *
- * @param {ol.Coordinate|undefined} coordinate Coordinate.
- * @return {string} Hemisphere, degrees, minutes and seconds.
- * @api stable
- */
-ol.coordinate.toStringHDMS = function(coordinate) {
-  if (goog.isDef(coordinate)) {
-    return ol.coordinate.degreesToStringHDMS_(coordinate[1], 'NS') + ' ' +
-        ol.coordinate.degreesToStringHDMS_(coordinate[0], 'EW');
-  } else {
-    return '';
-  }
-};
-
-
-/**
- * Format a coordinate as a comma delimited string.
- *
- * Example without specifying fractional digits:
- *
- *     var coord = [7.85, 47.983333];
- *     var out = ol.coordinate.toStringXY(coord);
- *     // out is now '8, 48'
- *
- * Example explicitly specifying 1 fractional digit:
- *
- *     var coord = [7.85, 47.983333];
- *     var out = ol.coordinate.toStringXY(coord, 1);
- *     // out is now '7.8, 48.0'
- *
- * @param {ol.Coordinate|undefined} coordinate Coordinate.
- * @param {number=} opt_fractionDigits The number of digits to include
- *    after the decimal point. Default is `0`.
- * @return {string} XY.
- * @api stable
- */
-ol.coordinate.toStringXY = function(coordinate, opt_fractionDigits) {
-  return ol.coordinate.format(coordinate, '{x}, {y}', opt_fractionDigits);
-};
-
-
-/**
- * Create an ol.Coordinate from an Array and take into account axis order.
- *
- * Examples:
- *
- *     var northCoord = ol.coordinate.fromProjectedArray([1, 2], 'n');
- *     // northCoord is now [2, 1]
- *
- *     var eastCoord = ol.coordinate.fromProjectedArray([1, 2], 'e');
- *     // eastCoord is now [1, 2]
- *
- * @param {Array} array The array with coordinates.
- * @param {string} axis the axis info.
- * @return {ol.Coordinate} The coordinate created.
- */
-ol.coordinate.fromProjectedArray = function(array, axis) {
-  var firstAxis = axis.charAt(0);
-  if (firstAxis === 'n' || firstAxis === 's') {
-    return [array[1], array[0]];
-  } else {
-    return array;
-  }
-};
-
-// Copyright 2011 The Closure Library Authors. All Rights Reserved.
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//      http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS-IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
-
-
-/**
- * @fileoverview Supplies a Float32Array implementation that implements
- *     most of the Float32Array spec and that can be used when a built-in
- *     implementation is not available.
- *
- *     Note that if no existing Float32Array implementation is found then
- *     this class and all its public properties are exported as Float32Array.
- *
- *     Adding support for the other TypedArray classes here does not make sense
- *     since this vector math library only needs Float32Array.
- *
- */
-goog.provide('goog.vec.Float32Array');
-
-
-
-/**
- * Constructs a new Float32Array. The new array is initialized to all zeros.
- *
- * @param {goog.vec.Float32Array|Array|ArrayBuffer|number} p0
- *     The length of the array, or an array to initialize the contents of the
- *     new Float32Array.
- * @constructor
- * @final
- */
-goog.vec.Float32Array = function(p0) {
-  this.length = /** @type {number} */ (p0.length || p0);
-  for (var i = 0; i < this.length; i++) {
-    this[i] = p0[i] || 0;
-  }
-};
-
-
-/**
- * The number of bytes in an element (as defined by the Typed Array
- * specification).
- *
- * @type {number}
- */
-goog.vec.Float32Array.BYTES_PER_ELEMENT = 4;
-
-
-/**
- * The number of bytes in an element (as defined by the Typed Array
- * specification).
- *
- * @type {number}
- */
-goog.vec.Float32Array.prototype.BYTES_PER_ELEMENT = 4;
-
-
-/**
- * Sets elements of the array.
- * @param {Array<number>|Float32Array} values The array of values.
- * @param {number=} opt_offset The offset in this array to start.
- */
-goog.vec.Float32Array.prototype.set = function(values, opt_offset) {
-  opt_offset = opt_offset || 0;
-  for (var i = 0; i < values.length && opt_offset + i < this.length; i++) {
-    this[opt_offset + i] = values[i];
-  }
-};
-
-
-/**
- * Creates a string representation of this array.
- * @return {string} The string version of this array.
- * @override
- */
-goog.vec.Float32Array.prototype.toString = Array.prototype.join;
-
-
-/**
- * Note that we cannot implement the subarray() or (deprecated) slice()
- * methods properly since doing so would require being able to overload
- * the [] operator which is not possible in javascript.  So we leave
- * them unimplemented.  Any attempt to call these methods will just result
- * in a javascript error since we leave them undefined.
+ * Constants defined with the define tag cannot be changed in application
+ * code, but can be set at compile time.
+ * Some reduce the size of the build in advanced compile mode.
  */
 
 
 /**
- * If no existing Float32Array implementation is found then we export
- * goog.vec.Float32Array as Float32Array.
+ * @define {boolean} Assume touch.  Default is `false`.
  */
-if (typeof Float32Array == 'undefined') {
-  goog.exportProperty(goog.vec.Float32Array, 'BYTES_PER_ELEMENT',
-                      goog.vec.Float32Array.BYTES_PER_ELEMENT);
-  goog.exportProperty(goog.vec.Float32Array.prototype, 'BYTES_PER_ELEMENT',
-                      goog.vec.Float32Array.prototype.BYTES_PER_ELEMENT);
-  goog.exportProperty(goog.vec.Float32Array.prototype, 'set',
-                      goog.vec.Float32Array.prototype.set);
-  goog.exportProperty(goog.vec.Float32Array.prototype, 'toString',
-                      goog.vec.Float32Array.prototype.toString);
-  goog.exportSymbol('Float32Array', goog.vec.Float32Array);
-}
-
-// Copyright 2011 The Closure Library Authors. All Rights Reserved.
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//      http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS-IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
+ol.ASSUME_TOUCH = false;
 
 
 /**
- * @fileoverview Supplies a Float64Array implementation that implements
- * most of the Float64Array spec and that can be used when a built-in
- * implementation is not available.
- *
- * Note that if no existing Float64Array implementation is found then this
- * class and all its public properties are exported as Float64Array.
- *
- * Adding support for the other TypedArray classes here does not make sense
- * since this vector math library only needs Float32Array and Float64Array.
- *
+ * TODO: rename this to something having to do with tile grids
+ * see https://github.com/openlayers/ol3/issues/2076
+ * @define {number} Default maximum zoom for default tile grids.
  */
-goog.provide('goog.vec.Float64Array');
-
+ol.DEFAULT_MAX_ZOOM = 42;
 
 
 /**
- * Constructs a new Float64Array. The new array is initialized to all zeros.
- *
- * @param {goog.vec.Float64Array|Array|ArrayBuffer|number} p0
- *     The length of the array, or an array to initialize the contents of the
- *     new Float64Array.
- * @constructor
- * @final
+ * @define {number} Default min zoom level for the map view.  Default is `0`.
  */
-goog.vec.Float64Array = function(p0) {
-  this.length = /** @type {number} */ (p0.length || p0);
-  for (var i = 0; i < this.length; i++) {
-    this[i] = p0[i] || 0;
-  }
-};
+ol.DEFAULT_MIN_ZOOM = 0;
 
 
 /**
- * The number of bytes in an element (as defined by the Typed Array
- * specification).
- *
- * @type {number}
+ * @define {number} Default high water mark.
  */
-goog.vec.Float64Array.BYTES_PER_ELEMENT = 8;
+ol.DEFAULT_TILE_CACHE_HIGH_WATER_MARK = 2048;
 
 
 /**
- * The number of bytes in an element (as defined by the Typed Array
- * specification).
- *
- * @type {number}
+ * @define {number} Default tile size.
  */
-goog.vec.Float64Array.prototype.BYTES_PER_ELEMENT = 8;
+ol.DEFAULT_TILE_SIZE = 256;
 
 
 /**
- * Sets elements of the array.
- * @param {Array<number>|Float64Array} values The array of values.
- * @param {number=} opt_offset The offset in this array to start.
+ * @define {string} Default WMS version.
  */
-goog.vec.Float64Array.prototype.set = function(values, opt_offset) {
-  opt_offset = opt_offset || 0;
-  for (var i = 0; i < values.length && opt_offset + i < this.length; i++) {
-    this[opt_offset + i] = values[i];
-  }
-};
+ol.DEFAULT_WMS_VERSION = '1.3.0';
 
 
 /**
- * Creates a string representation of this array.
- * @return {string} The string version of this array.
- * @override
+ * @define {number} Hysteresis pixels.
  */
-goog.vec.Float64Array.prototype.toString = Array.prototype.join;
+ol.DRAG_BOX_HYSTERESIS_PIXELS = 8;
 
 
 /**
- * Note that we cannot implement the subarray() or (deprecated) slice()
- * methods properly since doing so would require being able to overload
- * the [] operator which is not possible in javascript.  So we leave
- * them unimplemented.  Any attempt to call these methods will just result
- * in a javascript error since we leave them undefined.
+ * @define {boolean} Enable the Canvas renderer.  Default is `true`. Setting
+ *     this to false at compile time in advanced mode removes all code
+ *     supporting the Canvas renderer from the build.
  */
+ol.ENABLE_CANVAS = true;
 
 
 /**
- * If no existing Float64Array implementation is found then we export
- * goog.vec.Float64Array as Float64Array.
+ * @define {boolean} Enable the DOM renderer (used as a fallback where Canvas is
+ *     not available).  Default is `true`. Setting this to false at compile time
+ *     in advanced mode removes all code supporting the DOM renderer from the
+ *     build.
  */
-if (typeof Float64Array == 'undefined') {
-  try {
-    goog.exportProperty(goog.vec.Float64Array, 'BYTES_PER_ELEMENT',
-                        goog.vec.Float64Array.BYTES_PER_ELEMENT);
-  } catch (float64ArrayError) {
-    // Do nothing.  This code is in place to fix b/7225850, in which an error
-    // is incorrectly thrown for Google TV on an old Chrome.
-    // TODO(user): remove after that version is retired.
-  }
-
-  goog.exportProperty(goog.vec.Float64Array.prototype, 'BYTES_PER_ELEMENT',
-                      goog.vec.Float64Array.prototype.BYTES_PER_ELEMENT);
-  goog.exportProperty(goog.vec.Float64Array.prototype, 'set',
-                      goog.vec.Float64Array.prototype.set);
-  goog.exportProperty(goog.vec.Float64Array.prototype, 'toString',
-                      goog.vec.Float64Array.prototype.toString);
-  goog.exportSymbol('Float64Array', goog.vec.Float64Array);
-}
-
-// Copyright 2011 The Closure Library Authors. All Rights Reserved.
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//      http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS-IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
+ol.ENABLE_DOM = true;
 
 
 /**
- * @fileoverview Supplies global data types and constants for the vector math
- *     library.
+ * @define {boolean} Enable rendering of ol.layer.Image based layers.  Default
+ *     is `true`. Setting this to false at compile time in advanced mode removes
+ *     all code supporting Image layers from the build.
  */
-goog.provide('goog.vec');
-goog.provide('goog.vec.AnyType');
-goog.provide('goog.vec.ArrayType');
-goog.provide('goog.vec.Float32');
-goog.provide('goog.vec.Float64');
-goog.provide('goog.vec.Number');
+ol.ENABLE_IMAGE = true;
 
 
 /**
- * On platforms that don't have native Float32Array or Float64Array support we
- * use a javascript implementation so that this math library can be used on all
- * platforms.
- * @suppress {extraRequire}
+ * @define {boolean} Enable Closure named colors (`goog.color.names`).
+ *     Enabling these colors adds about 3KB uncompressed / 1.5KB compressed to
+ *     the final build size.  Default is `false`. This setting has no effect
+ *     with Canvas renderer, which uses its own names, whether this is true or
+ *     false.
  */
-goog.require('goog.vec.Float32Array');
-/** @suppress {extraRequire} */
-goog.require('goog.vec.Float64Array');
-
-// All vector and matrix operations are based upon arrays of numbers using
-// either Float32Array, Float64Array, or a standard Javascript Array of
-// Numbers.
-
-
-/** @typedef {!Float32Array} */
-goog.vec.Float32;
-
-
-/** @typedef {!Float64Array} */
-goog.vec.Float64;
-
-
-/** @typedef {!Array<number>} */
-goog.vec.Number;
-
-
-/** @typedef {!goog.vec.Float32|!goog.vec.Float64|!goog.vec.Number} */
-goog.vec.AnyType;
+ol.ENABLE_NAMED_COLORS = false;
 
 
 /**
- * @deprecated Use AnyType.
- * @typedef {!Float32Array|!Array<number>}
+ * @define {boolean} Enable integration with the Proj4js library.  Default is
+ *     `true`.
  */
-goog.vec.ArrayType;
+ol.ENABLE_PROJ4JS = true;
 
 
 /**
- * For graphics work, 6 decimal places of accuracy are typically all that is
- * required.
- *
- * @type {number}
+ * @define {boolean} Enable rendering of ol.layer.Tile based layers.  Default is
+ *     `true`. Setting this to false at compile time in advanced mode removes
+ *     all code supporting Tile layers from the build.
+ */
+ol.ENABLE_TILE = true;
+
+
+/**
+ * @define {boolean} Enable rendering of ol.layer.Vector based layers.  Default
+ *     is `true`. Setting this to false at compile time in advanced mode removes
+ *     all code supporting Vector layers from the build.
+ */
+ol.ENABLE_VECTOR = true;
+
+
+/**
+ * @define {boolean} Enable rendering of ol.layer.VectorTile based layers.
+ *     Default is `true`. Setting this to false at compile time in advanced mode
+ *     removes all code supporting VectorTile layers from the build.
+ */
+ol.ENABLE_VECTOR_TILE = true;
+
+
+/**
+ * @define {boolean} Enable the WebGL renderer.  Default is `true`. Setting
+ *     this to false at compile time in advanced mode removes all code
+ *     supporting the WebGL renderer from the build.
+ */
+ol.ENABLE_WEBGL = true;
+
+
+/**
+ * @define {boolean} Support legacy IE (7-8).  Default is `false`.
+ *     If set to `true`, `goog.array.ASSUME_NATIVE_FUNCTIONS` must be set
+ *     to `false` because legacy IE do not support ECMAScript 5 array functions.
+ */
+ol.LEGACY_IE_SUPPORT = false;
+
+
+/**
+ * @define {number} The size in pixels of the first atlas image. Default is
+ * `256`.
+ */
+ol.INITIAL_ATLAS_SIZE = 256;
+
+
+/**
+ * Whether the current browser is legacy IE
  * @const
+ * @type {boolean}
  */
-goog.vec.EPSILON = 1e-6;
+ol.IS_LEGACY_IE = goog.userAgent.IE &&
+    !goog.userAgent.isVersionOrHigher('9.0') && goog.userAgent.VERSION !== '';
 
-// Copyright 2011 The Closure Library Authors. All Rights Reserved.
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//      http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS-IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
 
-
-/**
- * @fileoverview Supplies 3 element vectors that are compatible with WebGL.
- * Each element is a float32 since that is typically the desired size of a
- * 3-vector in the GPU.  The API is structured to avoid unnecessary memory
- * allocations.  The last parameter will typically be the output vector and
- * an object can be both an input and output parameter to all methods except
- * where noted.
- *
- */
-goog.provide('goog.vec.Vec3');
-
-/** @suppress {extraRequire} */
-goog.require('goog.vec');
-
-/** @typedef {goog.vec.Float32} */ goog.vec.Vec3.Float32;
-/** @typedef {goog.vec.Float64} */ goog.vec.Vec3.Float64;
-/** @typedef {goog.vec.Number} */ goog.vec.Vec3.Number;
-/** @typedef {goog.vec.AnyType} */ goog.vec.Vec3.AnyType;
-
-// The following two types are deprecated - use the above types instead.
-/** @typedef {Float32Array} */ goog.vec.Vec3.Type;
-/** @typedef {goog.vec.ArrayType} */ goog.vec.Vec3.Vec3Like;
-
-
-/**
- * Creates a 3 element vector of Float32. The array is initialized to zero.
- *
- * @return {!goog.vec.Vec3.Float32} The new 3 element array.
- */
-goog.vec.Vec3.createFloat32 = function() {
-  return new Float32Array(3);
-};
-
-
-/**
- * Creates a 3 element vector of Float64. The array is initialized to zero.
- *
- * @return {!goog.vec.Vec3.Float64} The new 3 element array.
- */
-goog.vec.Vec3.createFloat64 = function() {
-  return new Float64Array(3);
-};
-
-
-/**
- * Creates a 3 element vector of Number. The array is initialized to zero.
- *
- * @return {!goog.vec.Vec3.Number} The new 3 element array.
- */
-goog.vec.Vec3.createNumber = function() {
-  var a = new Array(3);
-  goog.vec.Vec3.setFromValues(a, 0, 0, 0);
-  return a;
-};
-
-
-/**
- * Creates a 3 element vector of Float32Array. The array is initialized to zero.
- *
- * @deprecated Use createFloat32.
- * @return {!goog.vec.Vec3.Type} The new 3 element array.
- */
-goog.vec.Vec3.create = function() {
-  return new Float32Array(3);
-};
-
-
-/**
- * Creates a new 3 element FLoat32 vector initialized with the value from the
- * given array.
- *
- * @param {goog.vec.Vec3.AnyType} vec The source 3 element array.
- * @return {!goog.vec.Vec3.Float32} The new 3 element array.
- */
-goog.vec.Vec3.createFloat32FromArray = function(vec) {
-  var newVec = goog.vec.Vec3.createFloat32();
-  goog.vec.Vec3.setFromArray(newVec, vec);
-  return newVec;
-};
-
-
-/**
- * Creates a new 3 element Float32 vector initialized with the supplied values.
- *
- * @param {number} v0 The value for element at index 0.
- * @param {number} v1 The value for element at index 1.
- * @param {number} v2 The value for element at index 2.
- * @return {!goog.vec.Vec3.Float32} The new vector.
- */
-goog.vec.Vec3.createFloat32FromValues = function(v0, v1, v2) {
-  var a = goog.vec.Vec3.createFloat32();
-  goog.vec.Vec3.setFromValues(a, v0, v1, v2);
-  return a;
-};
-
-
-/**
- * Creates a clone of the given 3 element Float32 vector.
- *
- * @param {goog.vec.Vec3.Float32} vec The source 3 element vector.
- * @return {!goog.vec.Vec3.Float32} The new cloned vector.
- */
-goog.vec.Vec3.cloneFloat32 = goog.vec.Vec3.createFloat32FromArray;
-
-
-/**
- * Creates a new 3 element Float64 vector initialized with the value from the
- * given array.
- *
- * @param {goog.vec.Vec3.AnyType} vec The source 3 element array.
- * @return {!goog.vec.Vec3.Float64} The new 3 element array.
- */
-goog.vec.Vec3.createFloat64FromArray = function(vec) {
-  var newVec = goog.vec.Vec3.createFloat64();
-  goog.vec.Vec3.setFromArray(newVec, vec);
-  return newVec;
-};
-
-
-/**
-* Creates a new 3 element Float64 vector initialized with the supplied values.
-*
-* @param {number} v0 The value for element at index 0.
-* @param {number} v1 The value for element at index 1.
-* @param {number} v2 The value for element at index 2.
-* @return {!goog.vec.Vec3.Float64} The new vector.
-*/
-goog.vec.Vec3.createFloat64FromValues = function(v0, v1, v2) {
-  var vec = goog.vec.Vec3.createFloat64();
-  goog.vec.Vec3.setFromValues(vec, v0, v1, v2);
-  return vec;
-};
-
-
-/**
- * Creates a clone of the given 3 element vector.
- *
- * @param {goog.vec.Vec3.Float64} vec The source 3 element vector.
- * @return {!goog.vec.Vec3.Float64} The new cloned vector.
- */
-goog.vec.Vec3.cloneFloat64 = goog.vec.Vec3.createFloat64FromArray;
-
-
-/**
- * Creates a new 3 element vector initialized with the value from the given
- * array.
- *
- * @deprecated Use createFloat32FromArray.
- * @param {goog.vec.Vec3.Vec3Like} vec The source 3 element array.
- * @return {!goog.vec.Vec3.Type} The new 3 element array.
- */
-goog.vec.Vec3.createFromArray = function(vec) {
-  var newVec = goog.vec.Vec3.create();
-  goog.vec.Vec3.setFromArray(newVec, vec);
-  return newVec;
-};
-
-
-/**
- * Creates a new 3 element vector initialized with the supplied values.
- *
- * @deprecated Use createFloat32FromValues.
- * @param {number} v0 The value for element at index 0.
- * @param {number} v1 The value for element at index 1.
- * @param {number} v2 The value for element at index 2.
- * @return {!goog.vec.Vec3.Type} The new vector.
- */
-goog.vec.Vec3.createFromValues = function(v0, v1, v2) {
-  var vec = goog.vec.Vec3.create();
-  goog.vec.Vec3.setFromValues(vec, v0, v1, v2);
-  return vec;
-};
-
-
-/**
- * Creates a clone of the given 3 element vector.
- *
- * @deprecated Use cloneFloat32.
- * @param {goog.vec.Vec3.Vec3Like} vec The source 3 element vector.
- * @return {!goog.vec.Vec3.Type} The new cloned vector.
- */
-goog.vec.Vec3.clone = function(vec) {
-  var newVec = goog.vec.Vec3.create();
-  goog.vec.Vec3.setFromArray(newVec, vec);
-  return newVec;
-};
-
-
-/**
- * Initializes the vector with the given values.
- *
- * @param {goog.vec.Vec3.AnyType} vec The vector to receive the values.
- * @param {number} v0 The value for element at index 0.
- * @param {number} v1 The value for element at index 1.
- * @param {number} v2 The value for element at index 2.
- * @return {!goog.vec.Vec3.AnyType} Return vec so that operations can be
- *     chained together.
- */
-goog.vec.Vec3.setFromValues = function(vec, v0, v1, v2) {
-  vec[0] = v0;
-  vec[1] = v1;
-  vec[2] = v2;
-  return vec;
-};
-
-
-/**
- * Initializes the vector with the given array of values.
- *
- * @param {goog.vec.Vec3.AnyType} vec The vector to receive the
- *     values.
- * @param {goog.vec.Vec3.AnyType} values The array of values.
- * @return {!goog.vec.Vec3.AnyType} Return vec so that operations can be
- *     chained together.
- */
-goog.vec.Vec3.setFromArray = function(vec, values) {
-  vec[0] = values[0];
-  vec[1] = values[1];
-  vec[2] = values[2];
-  return vec;
-};
-
-
-/**
- * Performs a component-wise addition of vec0 and vec1 together storing the
- * result into resultVec.
- *
- * @param {goog.vec.Vec3.AnyType} vec0 The first addend.
- * @param {goog.vec.Vec3.AnyType} vec1 The second addend.
- * @param {goog.vec.Vec3.AnyType} resultVec The vector to
- *     receive the result. May be vec0 or vec1.
- * @return {!goog.vec.Vec3.AnyType} Return resultVec so that operations can be
- *     chained together.
- */
-goog.vec.Vec3.add = function(vec0, vec1, resultVec) {
-  resultVec[0] = vec0[0] + vec1[0];
-  resultVec[1] = vec0[1] + vec1[1];
-  resultVec[2] = vec0[2] + vec1[2];
-  return resultVec;
-};
-
-
-/**
- * Performs a component-wise subtraction of vec1 from vec0 storing the
- * result into resultVec.
- *
- * @param {goog.vec.Vec3.AnyType} vec0 The minuend.
- * @param {goog.vec.Vec3.AnyType} vec1 The subtrahend.
- * @param {goog.vec.Vec3.AnyType} resultVec The vector to
- *     receive the result. May be vec0 or vec1.
- * @return {!goog.vec.Vec3.AnyType} Return resultVec so that operations can be
- *     chained together.
- */
-goog.vec.Vec3.subtract = function(vec0, vec1, resultVec) {
-  resultVec[0] = vec0[0] - vec1[0];
-  resultVec[1] = vec0[1] - vec1[1];
-  resultVec[2] = vec0[2] - vec1[2];
-  return resultVec;
-};
-
-
-/**
- * Negates vec0, storing the result into resultVec.
- *
- * @param {goog.vec.Vec3.AnyType} vec0 The vector to negate.
- * @param {goog.vec.Vec3.AnyType} resultVec The vector to
- *     receive the result. May be vec0.
- * @return {!goog.vec.Vec3.AnyType} Return resultVec so that operations can be
- *     chained together.
- */
-goog.vec.Vec3.negate = function(vec0, resultVec) {
-  resultVec[0] = -vec0[0];
-  resultVec[1] = -vec0[1];
-  resultVec[2] = -vec0[2];
-  return resultVec;
-};
-
-
-/**
- * Takes the absolute value of each component of vec0 storing the result in
- * resultVec.
- *
- * @param {goog.vec.Vec3.AnyType} vec0 The source vector.
- * @param {goog.vec.Vec3.AnyType} resultVec The vector to receive the result.
- *     May be vec0.
- * @return {!goog.vec.Vec3.AnyType} Return resultVec so that operations can be
- *     chained together.
- */
-goog.vec.Vec3.abs = function(vec0, resultVec) {
-  resultVec[0] = Math.abs(vec0[0]);
-  resultVec[1] = Math.abs(vec0[1]);
-  resultVec[2] = Math.abs(vec0[2]);
-  return resultVec;
-};
-
-
-/**
- * Multiplies each component of vec0 with scalar storing the product into
- * resultVec.
- *
- * @param {goog.vec.Vec3.AnyType} vec0 The source vector.
- * @param {number} scalar The value to multiply with each component of vec0.
- * @param {goog.vec.Vec3.AnyType} resultVec The vector to
- *     receive the result. May be vec0.
- * @return {!goog.vec.Vec3.AnyType} Return resultVec so that operations can be
- *     chained together.
- */
-goog.vec.Vec3.scale = function(vec0, scalar, resultVec) {
-  resultVec[0] = vec0[0] * scalar;
-  resultVec[1] = vec0[1] * scalar;
-  resultVec[2] = vec0[2] * scalar;
-  return resultVec;
-};
-
-
-/**
- * Returns the magnitudeSquared of the given vector.
- *
- * @param {goog.vec.Vec3.AnyType} vec0 The vector.
- * @return {number} The magnitude of the vector.
- */
-goog.vec.Vec3.magnitudeSquared = function(vec0) {
-  var x = vec0[0], y = vec0[1], z = vec0[2];
-  return x * x + y * y + z * z;
-};
-
-
-/**
- * Returns the magnitude of the given vector.
- *
- * @param {goog.vec.Vec3.AnyType} vec0 The vector.
- * @return {number} The magnitude of the vector.
- */
-goog.vec.Vec3.magnitude = function(vec0) {
-  var x = vec0[0], y = vec0[1], z = vec0[2];
-  return Math.sqrt(x * x + y * y + z * z);
-};
-
-
-/**
- * Normalizes the given vector storing the result into resultVec.
- *
- * @param {goog.vec.Vec3.AnyType} vec0 The vector to normalize.
- * @param {goog.vec.Vec3.AnyType} resultVec The vector to
- *     receive the result. May be vec0.
- * @return {!goog.vec.Vec3.AnyType} Return resultVec so that operations can be
- *     chained together.
- */
-goog.vec.Vec3.normalize = function(vec0, resultVec) {
-  var ilen = 1 / goog.vec.Vec3.magnitude(vec0);
-  resultVec[0] = vec0[0] * ilen;
-  resultVec[1] = vec0[1] * ilen;
-  resultVec[2] = vec0[2] * ilen;
-  return resultVec;
-};
-
-
-/**
- * Returns the scalar product of vectors v0 and v1.
- *
- * @param {goog.vec.Vec3.AnyType} v0 The first vector.
- * @param {goog.vec.Vec3.AnyType} v1 The second vector.
- * @return {number} The scalar product.
- */
-goog.vec.Vec3.dot = function(v0, v1) {
-  return v0[0] * v1[0] + v0[1] * v1[1] + v0[2] * v1[2];
-};
-
-
-/**
- * Computes the vector (cross) product of v0 and v1 storing the result into
- * resultVec.
- *
- * @param {goog.vec.Vec3.AnyType} v0 The first vector.
- * @param {goog.vec.Vec3.AnyType} v1 The second vector.
- * @param {goog.vec.Vec3.AnyType} resultVec The vector to receive the
- *     results. May be either v0 or v1.
- * @return {!goog.vec.Vec3.AnyType} Return resultVec so that operations can be
- *     chained together.
- */
-goog.vec.Vec3.cross = function(v0, v1, resultVec) {
-  var x0 = v0[0], y0 = v0[1], z0 = v0[2];
-  var x1 = v1[0], y1 = v1[1], z1 = v1[2];
-  resultVec[0] = y0 * z1 - z0 * y1;
-  resultVec[1] = z0 * x1 - x0 * z1;
-  resultVec[2] = x0 * y1 - y0 * x1;
-  return resultVec;
-};
-
-
-/**
- * Returns the squared distance between two points.
- *
- * @param {goog.vec.Vec3.AnyType} vec0 First point.
- * @param {goog.vec.Vec3.AnyType} vec1 Second point.
- * @return {number} The squared distance between the points.
- */
-goog.vec.Vec3.distanceSquared = function(vec0, vec1) {
-  var x = vec0[0] - vec1[0];
-  var y = vec0[1] - vec1[1];
-  var z = vec0[2] - vec1[2];
-  return x * x + y * y + z * z;
-};
-
-
-/**
- * Returns the distance between two points.
- *
- * @param {goog.vec.Vec3.AnyType} vec0 First point.
- * @param {goog.vec.Vec3.AnyType} vec1 Second point.
- * @return {number} The distance between the points.
- */
-goog.vec.Vec3.distance = function(vec0, vec1) {
-  return Math.sqrt(goog.vec.Vec3.distanceSquared(vec0, vec1));
-};
-
-
-/**
- * Returns a unit vector pointing from one point to another.
- * If the input points are equal then the result will be all zeros.
- *
- * @param {goog.vec.Vec3.AnyType} vec0 Origin point.
- * @param {goog.vec.Vec3.AnyType} vec1 Target point.
- * @param {goog.vec.Vec3.AnyType} resultVec The vector to receive the
- *     results (may be vec0 or vec1).
- * @return {!goog.vec.Vec3.AnyType} Return resultVec so that operations can be
- *     chained together.
- */
-goog.vec.Vec3.direction = function(vec0, vec1, resultVec) {
-  var x = vec1[0] - vec0[0];
-  var y = vec1[1] - vec0[1];
-  var z = vec1[2] - vec0[2];
-  var d = Math.sqrt(x * x + y * y + z * z);
-  if (d) {
-    d = 1 / d;
-    resultVec[0] = x * d;
-    resultVec[1] = y * d;
-    resultVec[2] = z * d;
-  } else {
-    resultVec[0] = resultVec[1] = resultVec[2] = 0;
-  }
-  return resultVec;
-};
-
-
-/**
- * Linearly interpolate from vec0 to v1 according to f. The value of f should be
- * in the range [0..1] otherwise the results are undefined.
- *
- * @param {goog.vec.Vec3.AnyType} v0 The first vector.
- * @param {goog.vec.Vec3.AnyType} v1 The second vector.
- * @param {number} f The interpolation factor.
- * @param {goog.vec.Vec3.AnyType} resultVec The vector to receive the
- *     results (may be v0 or v1).
- * @return {!goog.vec.Vec3.AnyType} Return resultVec so that operations can be
- *     chained together.
- */
-goog.vec.Vec3.lerp = function(v0, v1, f, resultVec) {
-  var x = v0[0], y = v0[1], z = v0[2];
-  resultVec[0] = (v1[0] - x) * f + x;
-  resultVec[1] = (v1[1] - y) * f + y;
-  resultVec[2] = (v1[2] - z) * f + z;
-  return resultVec;
-};
-
-
-/**
- * Compares the components of vec0 with the components of another vector or
- * scalar, storing the larger values in resultVec.
- *
- * @param {goog.vec.Vec3.AnyType} vec0 The source vector.
- * @param {goog.vec.Vec3.AnyType|number} limit The limit vector or scalar.
- * @param {goog.vec.Vec3.AnyType} resultVec The vector to receive the
- *     results (may be vec0 or limit).
- * @return {!goog.vec.Vec3.AnyType} Return resultVec so that operations can be
- *     chained together.
- */
-goog.vec.Vec3.max = function(vec0, limit, resultVec) {
-  if (goog.isNumber(limit)) {
-    resultVec[0] = Math.max(vec0[0], limit);
-    resultVec[1] = Math.max(vec0[1], limit);
-    resultVec[2] = Math.max(vec0[2], limit);
-  } else {
-    resultVec[0] = Math.max(vec0[0], limit[0]);
-    resultVec[1] = Math.max(vec0[1], limit[1]);
-    resultVec[2] = Math.max(vec0[2], limit[2]);
-  }
-  return resultVec;
-};
-
-
-/**
- * Compares the components of vec0 with the components of another vector or
- * scalar, storing the smaller values in resultVec.
- *
- * @param {goog.vec.Vec3.AnyType} vec0 The source vector.
- * @param {goog.vec.Vec3.AnyType|number} limit The limit vector or scalar.
- * @param {goog.vec.Vec3.AnyType} resultVec The vector to receive the
- *     results (may be vec0 or limit).
- * @return {!goog.vec.Vec3.AnyType} Return resultVec so that operations can be
- *     chained together.
- */
-goog.vec.Vec3.min = function(vec0, limit, resultVec) {
-  if (goog.isNumber(limit)) {
-    resultVec[0] = Math.min(vec0[0], limit);
-    resultVec[1] = Math.min(vec0[1], limit);
-    resultVec[2] = Math.min(vec0[2], limit);
-  } else {
-    resultVec[0] = Math.min(vec0[0], limit[0]);
-    resultVec[1] = Math.min(vec0[1], limit[1]);
-    resultVec[2] = Math.min(vec0[2], limit[2]);
-  }
-  return resultVec;
-};
-
-
-/**
- * Returns true if the components of v0 are equal to the components of v1.
- *
- * @param {goog.vec.Vec3.AnyType} v0 The first vector.
- * @param {goog.vec.Vec3.AnyType} v1 The second vector.
- * @return {boolean} True if the vectors are equal, false otherwise.
- */
-goog.vec.Vec3.equals = function(v0, v1) {
-  return v0.length == v1.length &&
-      v0[0] == v1[0] && v0[1] == v1[1] && v0[2] == v1[2];
-};
-
-// Copyright 2011 The Closure Library Authors. All Rights Reserved.
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//      http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS-IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
-
-
-/**
- * @fileoverview Supplies 4 element vectors that are compatible with WebGL.
- * Each element is a float32 since that is typically the desired size of a
- * 4-vector in the GPU.  The API is structured to avoid unnecessary memory
- * allocations.  The last parameter will typically be the output vector and
- * an object can be both an input and output parameter to all methods except
- * where noted.
- *
- */
-goog.provide('goog.vec.Vec4');
-
-/** @suppress {extraRequire} */
-goog.require('goog.vec');
-
-/** @typedef {goog.vec.Float32} */ goog.vec.Vec4.Float32;
-/** @typedef {goog.vec.Float64} */ goog.vec.Vec4.Float64;
-/** @typedef {goog.vec.Number} */ goog.vec.Vec4.Number;
-/** @typedef {goog.vec.AnyType} */ goog.vec.Vec4.AnyType;
-
-// The following two types are deprecated - use the above types instead.
-/** @typedef {Float32Array} */ goog.vec.Vec4.Type;
-/** @typedef {goog.vec.ArrayType} */ goog.vec.Vec4.Vec4Like;
-
-
-/**
- * Creates a 4 element vector of Float32. The array is initialized to zero.
- *
- * @return {!goog.vec.Vec4.Float32} The new 3 element array.
- */
-goog.vec.Vec4.createFloat32 = function() {
-  return new Float32Array(4);
-};
-
-
-/**
- * Creates a 4 element vector of Float64. The array is initialized to zero.
- *
- * @return {!goog.vec.Vec4.Float64} The new 4 element array.
- */
-goog.vec.Vec4.createFloat64 = function() {
-  return new Float64Array(4);
-};
-
-
-/**
- * Creates a 4 element vector of Number. The array is initialized to zero.
- *
- * @return {!goog.vec.Vec4.Number} The new 4 element array.
- */
-goog.vec.Vec4.createNumber = function() {
-  var v = new Array(4);
-  goog.vec.Vec4.setFromValues(v, 0, 0, 0, 0);
-  return v;
-};
-
-
-/**
- * Creates a 4 element vector of Float32Array. The array is initialized to zero.
- *
- * @deprecated Use createFloat32.
- * @return {!goog.vec.Vec4.Type} The new 4 element array.
- */
-goog.vec.Vec4.create = function() {
-  return new Float32Array(4);
-};
-
-
-/**
- * Creates a new 4 element vector initialized with the value from the given
- * array.
- *
- * @deprecated Use createFloat32FromArray.
- * @param {goog.vec.Vec4.Vec4Like} vec The source 4 element array.
- * @return {!goog.vec.Vec4.Type} The new 4 element array.
- */
-goog.vec.Vec4.createFromArray = function(vec) {
-  var newVec = goog.vec.Vec4.create();
-  goog.vec.Vec4.setFromArray(newVec, vec);
-  return newVec;
-};
-
-
-/**
- * Creates a new 4 element FLoat32 vector initialized with the value from the
- * given array.
- *
- * @param {goog.vec.Vec4.AnyType} vec The source 3 element array.
- * @return {!goog.vec.Vec4.Float32} The new 3 element array.
- */
-goog.vec.Vec4.createFloat32FromArray = function(vec) {
-  var newVec = goog.vec.Vec4.createFloat32();
-  goog.vec.Vec4.setFromArray(newVec, vec);
-  return newVec;
-};
-
-
-/**
- * Creates a new 4 element Float32 vector initialized with the supplied values.
- *
- * @param {number} v0 The value for element at index 0.
- * @param {number} v1 The value for element at index 1.
- * @param {number} v2 The value for element at index 2.
- * @param {number} v3 The value for element at index 3.
- * @return {!goog.vec.Vec4.Float32} The new vector.
- */
-goog.vec.Vec4.createFloat32FromValues = function(v0, v1, v2, v3) {
-  var vec = goog.vec.Vec4.createFloat32();
-  goog.vec.Vec4.setFromValues(vec, v0, v1, v2, v3);
-  return vec;
-};
-
-
-/**
- * Creates a clone of the given 4 element Float32 vector.
- *
- * @param {goog.vec.Vec4.Float32} vec The source 3 element vector.
- * @return {!goog.vec.Vec4.Float32} The new cloned vector.
- */
-goog.vec.Vec4.cloneFloat32 = goog.vec.Vec4.createFloat32FromArray;
-
-
-/**
- * Creates a new 4 element Float64 vector initialized with the value from the
- * given array.
- *
- * @param {goog.vec.Vec4.AnyType} vec The source 4 element array.
- * @return {!goog.vec.Vec4.Float64} The new 4 element array.
- */
-goog.vec.Vec4.createFloat64FromArray = function(vec) {
-  var newVec = goog.vec.Vec4.createFloat64();
-  goog.vec.Vec4.setFromArray(newVec, vec);
-  return newVec;
-};
-
-
-/**
-* Creates a new 4 element Float64 vector initialized with the supplied values.
-*
-* @param {number} v0 The value for element at index 0.
-* @param {number} v1 The value for element at index 1.
-* @param {number} v2 The value for element at index 2.
-* @param {number} v3 The value for element at index 3.
-* @return {!goog.vec.Vec4.Float64} The new vector.
-*/
-goog.vec.Vec4.createFloat64FromValues = function(v0, v1, v2, v3) {
-  var vec = goog.vec.Vec4.createFloat64();
-  goog.vec.Vec4.setFromValues(vec, v0, v1, v2, v3);
-  return vec;
-};
-
-
-/**
- * Creates a clone of the given 4 element vector.
- *
- * @param {goog.vec.Vec4.Float64} vec The source 4 element vector.
- * @return {!goog.vec.Vec4.Float64} The new cloned vector.
- */
-goog.vec.Vec4.cloneFloat64 = goog.vec.Vec4.createFloat64FromArray;
-
-
-/**
- * Creates a new 4 element vector initialized with the supplied values.
- *
- * @deprecated Use createFloat32FromValues.
- * @param {number} v0 The value for element at index 0.
- * @param {number} v1 The value for element at index 1.
- * @param {number} v2 The value for element at index 2.
- * @param {number} v3 The value for element at index 3.
- * @return {!goog.vec.Vec4.Type} The new vector.
- */
-goog.vec.Vec4.createFromValues = function(v0, v1, v2, v3) {
-  var vec = goog.vec.Vec4.create();
-  goog.vec.Vec4.setFromValues(vec, v0, v1, v2, v3);
-  return vec;
-};
-
-
-/**
- * Creates a clone of the given 4 element vector.
- *
- * @deprecated Use cloneFloat32.
- * @param {goog.vec.Vec4.Vec4Like} vec The source 4 element vector.
- * @return {!goog.vec.Vec4.Type} The new cloned vector.
- */
-goog.vec.Vec4.clone = goog.vec.Vec4.createFromArray;
-
-
-/**
- * Initializes the vector with the given values.
- *
- * @param {goog.vec.Vec4.AnyType} vec The vector to receive the values.
- * @param {number} v0 The value for element at index 0.
- * @param {number} v1 The value for element at index 1.
- * @param {number} v2 The value for element at index 2.
- * @param {number} v3 The value for element at index 3.
- * @return {!goog.vec.Vec4.AnyType} Return vec so that operations can be
- *     chained together.
- */
-goog.vec.Vec4.setFromValues = function(vec, v0, v1, v2, v3) {
-  vec[0] = v0;
-  vec[1] = v1;
-  vec[2] = v2;
-  vec[3] = v3;
-  return vec;
-};
-
-
-/**
- * Initializes the vector with the given array of values.
- *
- * @param {goog.vec.Vec4.AnyType} vec The vector to receive the
- *     values.
- * @param {goog.vec.Vec4.AnyType} values The array of values.
- * @return {!goog.vec.Vec4.AnyType} Return vec so that operations can be
- *     chained together.
- */
-goog.vec.Vec4.setFromArray = function(vec, values) {
-  vec[0] = values[0];
-  vec[1] = values[1];
-  vec[2] = values[2];
-  vec[3] = values[3];
-  return vec;
-};
-
-
-/**
- * Performs a component-wise addition of vec0 and vec1 together storing the
- * result into resultVec.
- *
- * @param {goog.vec.Vec4.AnyType} vec0 The first addend.
- * @param {goog.vec.Vec4.AnyType} vec1 The second addend.
- * @param {goog.vec.Vec4.AnyType} resultVec The vector to
- *     receive the result. May be vec0 or vec1.
- * @return {!goog.vec.Vec4.AnyType} Return resultVec so that operations can be
- *     chained together.
- */
-goog.vec.Vec4.add = function(vec0, vec1, resultVec) {
-  resultVec[0] = vec0[0] + vec1[0];
-  resultVec[1] = vec0[1] + vec1[1];
-  resultVec[2] = vec0[2] + vec1[2];
-  resultVec[3] = vec0[3] + vec1[3];
-  return resultVec;
-};
-
-
-/**
- * Performs a component-wise subtraction of vec1 from vec0 storing the
- * result into resultVec.
- *
- * @param {goog.vec.Vec4.AnyType} vec0 The minuend.
- * @param {goog.vec.Vec4.AnyType} vec1 The subtrahend.
- * @param {goog.vec.Vec4.AnyType} resultVec The vector to
- *     receive the result. May be vec0 or vec1.
- * @return {!goog.vec.Vec4.AnyType} Return resultVec so that operations can be
- *     chained together.
- */
-goog.vec.Vec4.subtract = function(vec0, vec1, resultVec) {
-  resultVec[0] = vec0[0] - vec1[0];
-  resultVec[1] = vec0[1] - vec1[1];
-  resultVec[2] = vec0[2] - vec1[2];
-  resultVec[3] = vec0[3] - vec1[3];
-  return resultVec;
-};
-
-
-/**
- * Negates vec0, storing the result into resultVec.
- *
- * @param {goog.vec.Vec4.AnyType} vec0 The vector to negate.
- * @param {goog.vec.Vec4.AnyType} resultVec The vector to
- *     receive the result. May be vec0.
- * @return {!goog.vec.Vec4.AnyType} Return resultVec so that operations can be
- *     chained together.
- */
-goog.vec.Vec4.negate = function(vec0, resultVec) {
-  resultVec[0] = -vec0[0];
-  resultVec[1] = -vec0[1];
-  resultVec[2] = -vec0[2];
-  resultVec[3] = -vec0[3];
-  return resultVec;
-};
-
-
-/**
- * Takes the absolute value of each component of vec0 storing the result in
- * resultVec.
- *
- * @param {goog.vec.Vec4.AnyType} vec0 The source vector.
- * @param {goog.vec.Vec4.AnyType} resultVec The vector to receive the result.
- *     May be vec0.
- * @return {!goog.vec.Vec4.AnyType} Return resultVec so that operations can be
- *     chained together.
- */
-goog.vec.Vec4.abs = function(vec0, resultVec) {
-  resultVec[0] = Math.abs(vec0[0]);
-  resultVec[1] = Math.abs(vec0[1]);
-  resultVec[2] = Math.abs(vec0[2]);
-  resultVec[3] = Math.abs(vec0[3]);
-  return resultVec;
-};
-
-
-/**
- * Multiplies each component of vec0 with scalar storing the product into
- * resultVec.
- *
- * @param {goog.vec.Vec4.AnyType} vec0 The source vector.
- * @param {number} scalar The value to multiply with each component of vec0.
- * @param {goog.vec.Vec4.AnyType} resultVec The vector to
- *     receive the result. May be vec0.
- * @return {!goog.vec.Vec4.AnyType} Return resultVec so that operations can be
- *     chained together.
- */
-goog.vec.Vec4.scale = function(vec0, scalar, resultVec) {
-  resultVec[0] = vec0[0] * scalar;
-  resultVec[1] = vec0[1] * scalar;
-  resultVec[2] = vec0[2] * scalar;
-  resultVec[3] = vec0[3] * scalar;
-  return resultVec;
-};
-
-
-/**
- * Returns the magnitudeSquared of the given vector.
- *
- * @param {goog.vec.Vec4.AnyType} vec0 The vector.
- * @return {number} The magnitude of the vector.
- */
-goog.vec.Vec4.magnitudeSquared = function(vec0) {
-  var x = vec0[0], y = vec0[1], z = vec0[2], w = vec0[3];
-  return x * x + y * y + z * z + w * w;
-};
-
-
-/**
- * Returns the magnitude of the given vector.
- *
- * @param {goog.vec.Vec4.AnyType} vec0 The vector.
- * @return {number} The magnitude of the vector.
- */
-goog.vec.Vec4.magnitude = function(vec0) {
-  var x = vec0[0], y = vec0[1], z = vec0[2], w = vec0[3];
-  return Math.sqrt(x * x + y * y + z * z + w * w);
-};
-
-
-/**
- * Normalizes the given vector storing the result into resultVec.
- *
- * @param {goog.vec.Vec4.AnyType} vec0 The vector to normalize.
- * @param {goog.vec.Vec4.AnyType} resultVec The vector to
- *     receive the result. May be vec0.
- * @return {!goog.vec.Vec4.AnyType} Return resultVec so that operations can be
- *     chained together.
- */
-goog.vec.Vec4.normalize = function(vec0, resultVec) {
-  var ilen = 1 / goog.vec.Vec4.magnitude(vec0);
-  resultVec[0] = vec0[0] * ilen;
-  resultVec[1] = vec0[1] * ilen;
-  resultVec[2] = vec0[2] * ilen;
-  resultVec[3] = vec0[3] * ilen;
-  return resultVec;
-};
-
-
-/**
- * Returns the scalar product of vectors v0 and v1.
- *
- * @param {goog.vec.Vec4.AnyType} v0 The first vector.
- * @param {goog.vec.Vec4.AnyType} v1 The second vector.
- * @return {number} The scalar product.
- */
-goog.vec.Vec4.dot = function(v0, v1) {
-  return v0[0] * v1[0] + v0[1] * v1[1] + v0[2] * v1[2] + v0[3] * v1[3];
-};
-
-
-/**
- * Linearly interpolate from v0 to v1 according to f. The value of f should be
- * in the range [0..1] otherwise the results are undefined.
- *
- * @param {goog.vec.Vec4.AnyType} v0 The first vector.
- * @param {goog.vec.Vec4.AnyType} v1 The second vector.
- * @param {number} f The interpolation factor.
- * @param {goog.vec.Vec4.AnyType} resultVec The vector to receive the
- *     results (may be v0 or v1).
- * @return {!goog.vec.Vec4.AnyType} Return resultVec so that operations can be
- *     chained together.
- */
-goog.vec.Vec4.lerp = function(v0, v1, f, resultVec) {
-  var x = v0[0], y = v0[1], z = v0[2], w = v0[3];
-  resultVec[0] = (v1[0] - x) * f + x;
-  resultVec[1] = (v1[1] - y) * f + y;
-  resultVec[2] = (v1[2] - z) * f + z;
-  resultVec[3] = (v1[3] - w) * f + w;
-  return resultVec;
-};
-
-
-/**
- * Compares the components of vec0 with the components of another vector or
- * scalar, storing the larger values in resultVec.
- *
- * @param {goog.vec.Vec4.AnyType} vec0 The source vector.
- * @param {goog.vec.Vec4.AnyType|number} limit The limit vector or scalar.
- * @param {goog.vec.Vec4.AnyType} resultVec The vector to receive the
- *     results (may be vec0 or limit).
- * @return {!goog.vec.Vec4.AnyType} Return resultVec so that operations can be
- *     chained together.
- */
-goog.vec.Vec4.max = function(vec0, limit, resultVec) {
-  if (goog.isNumber(limit)) {
-    resultVec[0] = Math.max(vec0[0], limit);
-    resultVec[1] = Math.max(vec0[1], limit);
-    resultVec[2] = Math.max(vec0[2], limit);
-    resultVec[3] = Math.max(vec0[3], limit);
-  } else {
-    resultVec[0] = Math.max(vec0[0], limit[0]);
-    resultVec[1] = Math.max(vec0[1], limit[1]);
-    resultVec[2] = Math.max(vec0[2], limit[2]);
-    resultVec[3] = Math.max(vec0[3], limit[3]);
-  }
-  return resultVec;
-};
-
-
-/**
- * Compares the components of vec0 with the components of another vector or
- * scalar, storing the smaller values in resultVec.
- *
- * @param {goog.vec.Vec4.AnyType} vec0 The source vector.
- * @param {goog.vec.Vec4.AnyType|number} limit The limit vector or scalar.
- * @param {goog.vec.Vec4.AnyType} resultVec The vector to receive the
- *     results (may be vec0 or limit).
- * @return {!goog.vec.Vec4.AnyType} Return resultVec so that operations can be
- *     chained together.
- */
-goog.vec.Vec4.min = function(vec0, limit, resultVec) {
-  if (goog.isNumber(limit)) {
-    resultVec[0] = Math.min(vec0[0], limit);
-    resultVec[1] = Math.min(vec0[1], limit);
-    resultVec[2] = Math.min(vec0[2], limit);
-    resultVec[3] = Math.min(vec0[3], limit);
-  } else {
-    resultVec[0] = Math.min(vec0[0], limit[0]);
-    resultVec[1] = Math.min(vec0[1], limit[1]);
-    resultVec[2] = Math.min(vec0[2], limit[2]);
-    resultVec[3] = Math.min(vec0[3], limit[3]);
-  }
-  return resultVec;
-};
-
-
-/**
- * Returns true if the components of v0 are equal to the components of v1.
- *
- * @param {goog.vec.Vec4.AnyType} v0 The first vector.
- * @param {goog.vec.Vec4.AnyType} v1 The second vector.
- * @return {boolean} True if the vectors are equal, false otherwise.
- */
-goog.vec.Vec4.equals = function(v0, v1) {
-  return v0.length == v1.length &&
-      v0[0] == v1[0] && v0[1] == v1[1] && v0[2] == v1[2] && v0[3] == v1[3];
-};
-
-// Copyright 2011 The Closure Library Authors. All Rights Reserved.
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//      http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS-IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
-
-/**
- * @fileoverview Implements 4x4 matrices and their related functions which are
- * compatible with WebGL. The API is structured to avoid unnecessary memory
- * allocations.  The last parameter will typically be the output vector and
- * an object can be both an input and output parameter to all methods except
- * where noted. Matrix operations follow the mathematical form when multiplying
- * vectors as follows: resultVec = matrix * vec.
- *
- * The matrices are stored in column-major order.
- *
- */
-goog.provide('goog.vec.Mat4');
-
-goog.require('goog.vec');
-goog.require('goog.vec.Vec3');
-goog.require('goog.vec.Vec4');
-
-
-/** @typedef {goog.vec.Float32} */ goog.vec.Mat4.Float32;
-/** @typedef {goog.vec.Float64} */ goog.vec.Mat4.Float64;
-/** @typedef {goog.vec.Number} */ goog.vec.Mat4.Number;
-/** @typedef {goog.vec.AnyType} */ goog.vec.Mat4.AnyType;
-
-// The following two types are deprecated - use the above types instead.
-/** @typedef {!Float32Array} */ goog.vec.Mat4.Type;
-/** @typedef {goog.vec.ArrayType} */ goog.vec.Mat4.Mat4Like;
-
-
-/**
- * Creates the array representation of a 4x4 matrix of Float32.
- * The use of the array directly instead of a class reduces overhead.
- * The returned matrix is cleared to all zeros.
- *
- * @return {!goog.vec.Mat4.Float32} The new matrix.
- */
-goog.vec.Mat4.createFloat32 = function() {
-  return new Float32Array(16);
-};
-
-
-/**
- * Creates the array representation of a 4x4 matrix of Float64.
- * The returned matrix is cleared to all zeros.
- *
- * @return {!goog.vec.Mat4.Float64} The new matrix.
- */
-goog.vec.Mat4.createFloat64 = function() {
-  return new Float64Array(16);
-};
-
-
-/**
- * Creates the array representation of a 4x4 matrix of Number.
- * The returned matrix is cleared to all zeros.
- *
- * @return {!goog.vec.Mat4.Number} The new matrix.
- */
-goog.vec.Mat4.createNumber = function() {
-  var a = new Array(16);
-  goog.vec.Mat4.setFromValues(a,
-                              0, 0, 0, 0,
-                              0, 0, 0, 0,
-                              0, 0, 0, 0,
-                              0, 0, 0, 0);
-  return a;
-};
-
-
-/**
- * Creates the array representation of a 4x4 matrix of Float32.
- * The returned matrix is cleared to all zeros.
- *
- * @deprecated Use createFloat32.
- * @return {!goog.vec.Mat4.Type} The new matrix.
- */
-goog.vec.Mat4.create = function() {
-  return goog.vec.Mat4.createFloat32();
-};
-
-
-/**
- * Creates a 4x4 identity matrix of Float32.
- *
- * @return {!goog.vec.Mat4.Float32} The new 16 element array.
- */
-goog.vec.Mat4.createFloat32Identity = function() {
-  var mat = goog.vec.Mat4.createFloat32();
-  mat[0] = mat[5] = mat[10] = mat[15] = 1;
-  return mat;
-};
-
-
-/**
- * Creates a 4x4 identity matrix of Float64.
- *
- * @return {!goog.vec.Mat4.Float64} The new 16 element array.
- */
-goog.vec.Mat4.createFloat64Identity = function() {
-  var mat = goog.vec.Mat4.createFloat64();
-  mat[0] = mat[5] = mat[10] = mat[15] = 1;
-  return mat;
-};
-
-
-/**
- * Creates a 4x4 identity matrix of Number.
- * The returned matrix is cleared to all zeros.
- *
- * @return {!goog.vec.Mat4.Number} The new 16 element array.
- */
-goog.vec.Mat4.createNumberIdentity = function() {
-  var a = new Array(16);
-  goog.vec.Mat4.setFromValues(a,
-                              1, 0, 0, 0,
-                              0, 1, 0, 0,
-                              0, 0, 1, 0,
-                              0, 0, 0, 1);
-  return a;
-};
-
-
-/**
- * Creates the array representation of a 4x4 matrix of Float32.
- * The returned matrix is cleared to all zeros.
- *
- * @deprecated Use createFloat32Identity.
- * @return {!goog.vec.Mat4.Type} The new 16 element array.
- */
-goog.vec.Mat4.createIdentity = function() {
-  return goog.vec.Mat4.createFloat32Identity();
-};
-
-
-/**
- * Creates a 4x4 matrix of Float32 initialized from the given array.
- *
- * @param {goog.vec.Mat4.AnyType} matrix The array containing the
- *     matrix values in column major order.
- * @return {!goog.vec.Mat4.Float32} The new, 16 element array.
- */
-goog.vec.Mat4.createFloat32FromArray = function(matrix) {
-  var newMatrix = goog.vec.Mat4.createFloat32();
-  goog.vec.Mat4.setFromArray(newMatrix, matrix);
-  return newMatrix;
-};
-
-
-/**
- * Creates a 4x4 matrix of Float32 initialized from the given values.
- *
- * @param {number} v00 The values at (0, 0).
- * @param {number} v10 The values at (1, 0).
- * @param {number} v20 The values at (2, 0).
- * @param {number} v30 The values at (3, 0).
- * @param {number} v01 The values at (0, 1).
- * @param {number} v11 The values at (1, 1).
- * @param {number} v21 The values at (2, 1).
- * @param {number} v31 The values at (3, 1).
- * @param {number} v02 The values at (0, 2).
- * @param {number} v12 The values at (1, 2).
- * @param {number} v22 The values at (2, 2).
- * @param {number} v32 The values at (3, 2).
- * @param {number} v03 The values at (0, 3).
- * @param {number} v13 The values at (1, 3).
- * @param {number} v23 The values at (2, 3).
- * @param {number} v33 The values at (3, 3).
- * @return {!goog.vec.Mat4.Float32} The new, 16 element array.
- */
-goog.vec.Mat4.createFloat32FromValues = function(
-    v00, v10, v20, v30,
-    v01, v11, v21, v31,
-    v02, v12, v22, v32,
-    v03, v13, v23, v33) {
-  var newMatrix = goog.vec.Mat4.createFloat32();
-  goog.vec.Mat4.setFromValues(
-      newMatrix, v00, v10, v20, v30, v01, v11, v21, v31, v02, v12, v22, v32,
-      v03, v13, v23, v33);
-  return newMatrix;
-};
-
-
-/**
- * Creates a clone of a 4x4 matrix of Float32.
- *
- * @param {goog.vec.Mat4.Float32} matrix The source 4x4 matrix.
- * @return {!goog.vec.Mat4.Float32} The new 4x4 element matrix.
- */
-goog.vec.Mat4.cloneFloat32 = goog.vec.Mat4.createFloat32FromArray;
-
-
-/**
- * Creates a 4x4 matrix of Float64 initialized from the given array.
- *
- * @param {goog.vec.Mat4.AnyType} matrix The array containing the
- *     matrix values in column major order.
- * @return {!goog.vec.Mat4.Float64} The new, nine element array.
- */
-goog.vec.Mat4.createFloat64FromArray = function(matrix) {
-  var newMatrix = goog.vec.Mat4.createFloat64();
-  goog.vec.Mat4.setFromArray(newMatrix, matrix);
-  return newMatrix;
-};
-
-
-/**
- * Creates a 4x4 matrix of Float64 initialized from the given values.
- *
- * @param {number} v00 The values at (0, 0).
- * @param {number} v10 The values at (1, 0).
- * @param {number} v20 The values at (2, 0).
- * @param {number} v30 The values at (3, 0).
- * @param {number} v01 The values at (0, 1).
- * @param {number} v11 The values at (1, 1).
- * @param {number} v21 The values at (2, 1).
- * @param {number} v31 The values at (3, 1).
- * @param {number} v02 The values at (0, 2).
- * @param {number} v12 The values at (1, 2).
- * @param {number} v22 The values at (2, 2).
- * @param {number} v32 The values at (3, 2).
- * @param {number} v03 The values at (0, 3).
- * @param {number} v13 The values at (1, 3).
- * @param {number} v23 The values at (2, 3).
- * @param {number} v33 The values at (3, 3).
- * @return {!goog.vec.Mat4.Float64} The new, 16 element array.
- */
-goog.vec.Mat4.createFloat64FromValues = function(
-    v00, v10, v20, v30,
-    v01, v11, v21, v31,
-    v02, v12, v22, v32,
-    v03, v13, v23, v33) {
-  var newMatrix = goog.vec.Mat4.createFloat64();
-  goog.vec.Mat4.setFromValues(
-      newMatrix, v00, v10, v20, v30, v01, v11, v21, v31, v02, v12, v22, v32,
-      v03, v13, v23, v33);
-  return newMatrix;
-};
-
-
-/**
- * Creates a clone of a 4x4 matrix of Float64.
- *
- * @param {goog.vec.Mat4.Float64} matrix The source 4x4 matrix.
- * @return {!goog.vec.Mat4.Float64} The new 4x4 element matrix.
- */
-goog.vec.Mat4.cloneFloat64 = goog.vec.Mat4.createFloat64FromArray;
-
-
-/**
- * Creates a 4x4 matrix of Float32 initialized from the given array.
- *
- * @deprecated Use createFloat32FromArray.
- * @param {goog.vec.Mat4.Mat4Like} matrix The array containing the
- *     matrix values in column major order.
- * @return {!goog.vec.Mat4.Type} The new, nine element array.
- */
-goog.vec.Mat4.createFromArray = function(matrix) {
-  var newMatrix = goog.vec.Mat4.createFloat32();
-  goog.vec.Mat4.setFromArray(newMatrix, matrix);
-  return newMatrix;
-};
-
-
-/**
- * Creates a 4x4 matrix of Float32 initialized from the given values.
- *
- * @deprecated Use createFloat32FromValues.
- * @param {number} v00 The values at (0, 0).
- * @param {number} v10 The values at (1, 0).
- * @param {number} v20 The values at (2, 0).
- * @param {number} v30 The values at (3, 0).
- * @param {number} v01 The values at (0, 1).
- * @param {number} v11 The values at (1, 1).
- * @param {number} v21 The values at (2, 1).
- * @param {number} v31 The values at (3, 1).
- * @param {number} v02 The values at (0, 2).
- * @param {number} v12 The values at (1, 2).
- * @param {number} v22 The values at (2, 2).
- * @param {number} v32 The values at (3, 2).
- * @param {number} v03 The values at (0, 3).
- * @param {number} v13 The values at (1, 3).
- * @param {number} v23 The values at (2, 3).
- * @param {number} v33 The values at (3, 3).
- * @return {!goog.vec.Mat4.Type} The new, 16 element array.
- */
-goog.vec.Mat4.createFromValues = function(
-    v00, v10, v20, v30,
-    v01, v11, v21, v31,
-    v02, v12, v22, v32,
-    v03, v13, v23, v33) {
-  return goog.vec.Mat4.createFloat32FromValues(
-      v00, v10, v20, v30, v01, v11, v21, v31, v02, v12, v22, v32,
-      v03, v13, v23, v33);
-};
-
-
-/**
- * Creates a clone of a 4x4 matrix of Float32.
- *
- * @deprecated Use cloneFloat32.
- * @param {goog.vec.Mat4.Mat4Like} matrix The source 4x4 matrix.
- * @return {!goog.vec.Mat4.Type} The new 4x4 element matrix.
- */
-goog.vec.Mat4.clone = goog.vec.Mat4.createFromArray;
-
-
-/**
- * Retrieves the element at the requested row and column.
- *
- * @param {goog.vec.Mat4.AnyType} mat The matrix containing the
- *     value to retrieve.
- * @param {number} row The row index.
- * @param {number} column The column index.
- * @return {number} The element value at the requested row, column indices.
- */
-goog.vec.Mat4.getElement = function(mat, row, column) {
-  return mat[row + column * 4];
-};
-
-
-/**
- * Sets the element at the requested row and column.
- *
- * @param {goog.vec.Mat4.AnyType} mat The matrix to set the value on.
- * @param {number} row The row index.
- * @param {number} column The column index.
- * @param {number} value The value to set at the requested row, column.
- * @return {goog.vec.Mat4.AnyType} return mat so that operations can be
- *     chained together.
- */
-goog.vec.Mat4.setElement = function(mat, row, column, value) {
-  mat[row + column * 4] = value;
-  return mat;
-};
-
-
-/**
- * Initializes the matrix from the set of values. Note the values supplied are
- * in column major order.
- *
- * @param {goog.vec.Mat4.AnyType} mat The matrix to receive the
- *     values.
- * @param {number} v00 The values at (0, 0).
- * @param {number} v10 The values at (1, 0).
- * @param {number} v20 The values at (2, 0).
- * @param {number} v30 The values at (3, 0).
- * @param {number} v01 The values at (0, 1).
- * @param {number} v11 The values at (1, 1).
- * @param {number} v21 The values at (2, 1).
- * @param {number} v31 The values at (3, 1).
- * @param {number} v02 The values at (0, 2).
- * @param {number} v12 The values at (1, 2).
- * @param {number} v22 The values at (2, 2).
- * @param {number} v32 The values at (3, 2).
- * @param {number} v03 The values at (0, 3).
- * @param {number} v13 The values at (1, 3).
- * @param {number} v23 The values at (2, 3).
- * @param {number} v33 The values at (3, 3).
- * @return {goog.vec.Mat4.AnyType} return mat so that operations can be
- *     chained together.
- */
-goog.vec.Mat4.setFromValues = function(
-    mat, v00, v10, v20, v30, v01, v11, v21, v31, v02, v12, v22, v32,
-    v03, v13, v23, v33) {
-  mat[0] = v00;
-  mat[1] = v10;
-  mat[2] = v20;
-  mat[3] = v30;
-  mat[4] = v01;
-  mat[5] = v11;
-  mat[6] = v21;
-  mat[7] = v31;
-  mat[8] = v02;
-  mat[9] = v12;
-  mat[10] = v22;
-  mat[11] = v32;
-  mat[12] = v03;
-  mat[13] = v13;
-  mat[14] = v23;
-  mat[15] = v33;
-  return mat;
-};
-
-
-/**
- * Sets the matrix from the array of values stored in column major order.
- *
- * @param {goog.vec.Mat4.AnyType} mat The matrix to receive the values.
- * @param {goog.vec.Mat4.AnyType} values The column major ordered
- *     array of values to store in the matrix.
- * @return {goog.vec.Mat4.AnyType} return mat so that operations can be
- *     chained together.
- */
-goog.vec.Mat4.setFromArray = function(mat, values) {
-  mat[0] = values[0];
-  mat[1] = values[1];
-  mat[2] = values[2];
-  mat[3] = values[3];
-  mat[4] = values[4];
-  mat[5] = values[5];
-  mat[6] = values[6];
-  mat[7] = values[7];
-  mat[8] = values[8];
-  mat[9] = values[9];
-  mat[10] = values[10];
-  mat[11] = values[11];
-  mat[12] = values[12];
-  mat[13] = values[13];
-  mat[14] = values[14];
-  mat[15] = values[15];
-  return mat;
-};
-
-
-/**
- * Sets the matrix from the array of values stored in row major order.
- *
- * @param {goog.vec.Mat4.AnyType} mat The matrix to receive the values.
- * @param {goog.vec.Mat4.AnyType} values The row major ordered array of
- *     values to store in the matrix.
- * @return {goog.vec.Mat4.AnyType} return mat so that operations can be
- *     chained together.
- */
-goog.vec.Mat4.setFromRowMajorArray = function(mat, values) {
-  mat[0] = values[0];
-  mat[1] = values[4];
-  mat[2] = values[8];
-  mat[3] = values[12];
-
-  mat[4] = values[1];
-  mat[5] = values[5];
-  mat[6] = values[9];
-  mat[7] = values[13];
-
-  mat[8] = values[2];
-  mat[9] = values[6];
-  mat[10] = values[10];
-  mat[11] = values[14];
-
-  mat[12] = values[3];
-  mat[13] = values[7];
-  mat[14] = values[11];
-  mat[15] = values[15];
-
-  return mat;
-};
-
-
-/**
- * Sets the diagonal values of the matrix from the given values.
- *
- * @param {goog.vec.Mat4.AnyType} mat The matrix to receive the values.
- * @param {number} v00 The values for (0, 0).
- * @param {number} v11 The values for (1, 1).
- * @param {number} v22 The values for (2, 2).
- * @param {number} v33 The values for (3, 3).
- * @return {goog.vec.Mat4.AnyType} return mat so that operations can be
- *     chained together.
- */
-goog.vec.Mat4.setDiagonalValues = function(mat, v00, v11, v22, v33) {
-  mat[0] = v00;
-  mat[5] = v11;
-  mat[10] = v22;
-  mat[15] = v33;
-  return mat;
-};
-
-
-/**
- * Sets the diagonal values of the matrix from the given vector.
- *
- * @param {goog.vec.Mat4.AnyType} mat The matrix to receive the values.
- * @param {goog.vec.Vec4.AnyType} vec The vector containing the values.
- * @return {goog.vec.Mat4.AnyType} return mat so that operations can be
- *     chained together.
- */
-goog.vec.Mat4.setDiagonal = function(mat, vec) {
-  mat[0] = vec[0];
-  mat[5] = vec[1];
-  mat[10] = vec[2];
-  mat[15] = vec[3];
-  return mat;
-};
-
-
-/**
- * Gets the diagonal values of the matrix into the given vector.
- *
- * @param {goog.vec.Mat4.AnyType} mat The matrix containing the values.
- * @param {goog.vec.Vec4.AnyType} vec The vector to receive the values.
- * @param {number=} opt_diagonal Which diagonal to get. A value of 0 selects the
- *     main diagonal, a positive number selects a super diagonal and a negative
- *     number selects a sub diagonal.
- * @return {goog.vec.Vec4.AnyType} return vec so that operations can be
- *     chained together.
- */
-goog.vec.Mat4.getDiagonal = function(mat, vec, opt_diagonal) {
-  if (!opt_diagonal) {
-    // This is the most common case, so we avoid the for loop.
-    vec[0] = mat[0];
-    vec[1] = mat[5];
-    vec[2] = mat[10];
-    vec[3] = mat[15];
-  } else {
-    var offset = opt_diagonal > 0 ? 4 * opt_diagonal : -opt_diagonal;
-    for (var i = 0; i < 4 - Math.abs(opt_diagonal); i++) {
-      vec[i] = mat[offset + 5 * i];
-    }
-  }
-  return vec;
-};
-
-
-/**
- * Sets the specified column with the supplied values.
- *
- * @param {goog.vec.Mat4.AnyType} mat The matrix to recieve the values.
- * @param {number} column The column index to set the values on.
- * @param {number} v0 The value for row 0.
- * @param {number} v1 The value for row 1.
- * @param {number} v2 The value for row 2.
- * @param {number} v3 The value for row 3.
- * @return {goog.vec.Mat4.AnyType} return mat so that operations can be
- *     chained together.
- */
-goog.vec.Mat4.setColumnValues = function(mat, column, v0, v1, v2, v3) {
-  var i = column * 4;
-  mat[i] = v0;
-  mat[i + 1] = v1;
-  mat[i + 2] = v2;
-  mat[i + 3] = v3;
-  return mat;
-};
-
-
-/**
- * Sets the specified column with the value from the supplied vector.
- *
- * @param {goog.vec.Mat4.AnyType} mat The matrix to receive the values.
- * @param {number} column The column index to set the values on.
- * @param {goog.vec.Vec4.AnyType} vec The vector of elements for the column.
- * @return {goog.vec.Mat4.AnyType} return mat so that operations can be
- *     chained together.
- */
-goog.vec.Mat4.setColumn = function(mat, column, vec) {
-  var i = column * 4;
-  mat[i] = vec[0];
-  mat[i + 1] = vec[1];
-  mat[i + 2] = vec[2];
-  mat[i + 3] = vec[3];
-  return mat;
-};
-
-
-/**
- * Retrieves the specified column from the matrix into the given vector.
- *
- * @param {goog.vec.Mat4.AnyType} mat The matrix supplying the values.
- * @param {number} column The column to get the values from.
- * @param {goog.vec.Vec4.AnyType} vec The vector of elements to
- *     receive the column.
- * @return {goog.vec.Vec4.AnyType} return vec so that operations can be
- *     chained together.
- */
-goog.vec.Mat4.getColumn = function(mat, column, vec) {
-  var i = column * 4;
-  vec[0] = mat[i];
-  vec[1] = mat[i + 1];
-  vec[2] = mat[i + 2];
-  vec[3] = mat[i + 3];
-  return vec;
-};
-
-
-/**
- * Sets the columns of the matrix from the given vectors.
- *
- * @param {goog.vec.Mat4.AnyType} mat The matrix to receive the values.
- * @param {goog.vec.Vec4.AnyType} vec0 The values for column 0.
- * @param {goog.vec.Vec4.AnyType} vec1 The values for column 1.
- * @param {goog.vec.Vec4.AnyType} vec2 The values for column 2.
- * @param {goog.vec.Vec4.AnyType} vec3 The values for column 3.
- * @return {goog.vec.Mat4.AnyType} return mat so that operations can be
- *     chained together.
- */
-goog.vec.Mat4.setColumns = function(mat, vec0, vec1, vec2, vec3) {
-  goog.vec.Mat4.setColumn(mat, 0, vec0);
-  goog.vec.Mat4.setColumn(mat, 1, vec1);
-  goog.vec.Mat4.setColumn(mat, 2, vec2);
-  goog.vec.Mat4.setColumn(mat, 3, vec3);
-  return mat;
-};
-
-
-/**
- * Retrieves the column values from the given matrix into the given vectors.
- *
- * @param {goog.vec.Mat4.AnyType} mat The matrix supplying the columns.
- * @param {goog.vec.Vec4.AnyType} vec0 The vector to receive column 0.
- * @param {goog.vec.Vec4.AnyType} vec1 The vector to receive column 1.
- * @param {goog.vec.Vec4.AnyType} vec2 The vector to receive column 2.
- * @param {goog.vec.Vec4.AnyType} vec3 The vector to receive column 3.
- */
-goog.vec.Mat4.getColumns = function(mat, vec0, vec1, vec2, vec3) {
-  goog.vec.Mat4.getColumn(mat, 0, vec0);
-  goog.vec.Mat4.getColumn(mat, 1, vec1);
-  goog.vec.Mat4.getColumn(mat, 2, vec2);
-  goog.vec.Mat4.getColumn(mat, 3, vec3);
-};
-
-
-/**
- * Sets the row values from the supplied values.
- *
- * @param {goog.vec.Mat4.AnyType} mat The matrix to receive the values.
- * @param {number} row The index of the row to receive the values.
- * @param {number} v0 The value for column 0.
- * @param {number} v1 The value for column 1.
- * @param {number} v2 The value for column 2.
- * @param {number} v3 The value for column 3.
- * @return {goog.vec.Mat4.AnyType} return mat so that operations can be
- *     chained together.
- */
-goog.vec.Mat4.setRowValues = function(mat, row, v0, v1, v2, v3) {
-  mat[row] = v0;
-  mat[row + 4] = v1;
-  mat[row + 8] = v2;
-  mat[row + 12] = v3;
-  return mat;
-};
-
-
-/**
- * Sets the row values from the supplied vector.
- *
- * @param {goog.vec.Mat4.AnyType} mat The matrix to receive the row values.
- * @param {number} row The index of the row.
- * @param {goog.vec.Vec4.AnyType} vec The vector containing the values.
- * @return {goog.vec.Mat4.AnyType} return mat so that operations can be
- *     chained together.
- */
-goog.vec.Mat4.setRow = function(mat, row, vec) {
-  mat[row] = vec[0];
-  mat[row + 4] = vec[1];
-  mat[row + 8] = vec[2];
-  mat[row + 12] = vec[3];
-  return mat;
-};
-
-
-/**
- * Retrieves the row values into the given vector.
- *
- * @param {goog.vec.Mat4.AnyType} mat The matrix supplying the values.
- * @param {number} row The index of the row supplying the values.
- * @param {goog.vec.Vec4.AnyType} vec The vector to receive the row.
- * @return {goog.vec.Vec4.AnyType} return vec so that operations can be
- *     chained together.
- */
-goog.vec.Mat4.getRow = function(mat, row, vec) {
-  vec[0] = mat[row];
-  vec[1] = mat[row + 4];
-  vec[2] = mat[row + 8];
-  vec[3] = mat[row + 12];
-  return vec;
-};
-
-
-/**
- * Sets the rows of the matrix from the supplied vectors.
- *
- * @param {goog.vec.Mat4.AnyType} mat The matrix to receive the values.
- * @param {goog.vec.Vec4.AnyType} vec0 The values for row 0.
- * @param {goog.vec.Vec4.AnyType} vec1 The values for row 1.
- * @param {goog.vec.Vec4.AnyType} vec2 The values for row 2.
- * @param {goog.vec.Vec4.AnyType} vec3 The values for row 3.
- * @return {goog.vec.Mat4.AnyType} return mat so that operations can be
- *     chained together.
- */
-goog.vec.Mat4.setRows = function(mat, vec0, vec1, vec2, vec3) {
-  goog.vec.Mat4.setRow(mat, 0, vec0);
-  goog.vec.Mat4.setRow(mat, 1, vec1);
-  goog.vec.Mat4.setRow(mat, 2, vec2);
-  goog.vec.Mat4.setRow(mat, 3, vec3);
-  return mat;
-};
-
-
-/**
- * Retrieves the rows of the matrix into the supplied vectors.
- *
- * @param {goog.vec.Mat4.AnyType} mat The matrix to supply the values.
- * @param {goog.vec.Vec4.AnyType} vec0 The vector to receive row 0.
- * @param {goog.vec.Vec4.AnyType} vec1 The vector to receive row 1.
- * @param {goog.vec.Vec4.AnyType} vec2 The vector to receive row 2.
- * @param {goog.vec.Vec4.AnyType} vec3 The vector to receive row 3.
- */
-goog.vec.Mat4.getRows = function(mat, vec0, vec1, vec2, vec3) {
-  goog.vec.Mat4.getRow(mat, 0, vec0);
-  goog.vec.Mat4.getRow(mat, 1, vec1);
-  goog.vec.Mat4.getRow(mat, 2, vec2);
-  goog.vec.Mat4.getRow(mat, 3, vec3);
-};
-
-
-/**
- * Makes the given 4x4 matrix the zero matrix.
- *
- * @param {goog.vec.Mat4.AnyType} mat The matrix.
- * @return {!goog.vec.Mat4.AnyType} return mat so operations can be chained.
- */
-goog.vec.Mat4.makeZero = function(mat) {
-  mat[0] = 0;
-  mat[1] = 0;
-  mat[2] = 0;
-  mat[3] = 0;
-  mat[4] = 0;
-  mat[5] = 0;
-  mat[6] = 0;
-  mat[7] = 0;
-  mat[8] = 0;
-  mat[9] = 0;
-  mat[10] = 0;
-  mat[11] = 0;
-  mat[12] = 0;
-  mat[13] = 0;
-  mat[14] = 0;
-  mat[15] = 0;
-  return mat;
-};
-
-
-/**
- * Makes the given 4x4 matrix the identity matrix.
- *
- * @param {goog.vec.Mat4.AnyType} mat The matrix.
- * @return {goog.vec.Mat4.AnyType} return mat so operations can be chained.
- */
-goog.vec.Mat4.makeIdentity = function(mat) {
-  mat[0] = 1;
-  mat[1] = 0;
-  mat[2] = 0;
-  mat[3] = 0;
-  mat[4] = 0;
-  mat[5] = 1;
-  mat[6] = 0;
-  mat[7] = 0;
-  mat[8] = 0;
-  mat[9] = 0;
-  mat[10] = 1;
-  mat[11] = 0;
-  mat[12] = 0;
-  mat[13] = 0;
-  mat[14] = 0;
-  mat[15] = 1;
-  return mat;
-};
-
-
-/**
- * Performs a per-component addition of the matrix mat0 and mat1, storing
- * the result into resultMat.
- *
- * @param {goog.vec.Mat4.AnyType} mat0 The first addend.
- * @param {goog.vec.Mat4.AnyType} mat1 The second addend.
- * @param {goog.vec.Mat4.AnyType} resultMat The matrix to
- *     receive the results (may be either mat0 or mat1).
- * @return {goog.vec.Mat4.AnyType} return resultMat so that operations can be
- *     chained together.
- */
-goog.vec.Mat4.addMat = function(mat0, mat1, resultMat) {
-  resultMat[0] = mat0[0] + mat1[0];
-  resultMat[1] = mat0[1] + mat1[1];
-  resultMat[2] = mat0[2] + mat1[2];
-  resultMat[3] = mat0[3] + mat1[3];
-  resultMat[4] = mat0[4] + mat1[4];
-  resultMat[5] = mat0[5] + mat1[5];
-  resultMat[6] = mat0[6] + mat1[6];
-  resultMat[7] = mat0[7] + mat1[7];
-  resultMat[8] = mat0[8] + mat1[8];
-  resultMat[9] = mat0[9] + mat1[9];
-  resultMat[10] = mat0[10] + mat1[10];
-  resultMat[11] = mat0[11] + mat1[11];
-  resultMat[12] = mat0[12] + mat1[12];
-  resultMat[13] = mat0[13] + mat1[13];
-  resultMat[14] = mat0[14] + mat1[14];
-  resultMat[15] = mat0[15] + mat1[15];
-  return resultMat;
-};
-
-
-/**
- * Performs a per-component subtraction of the matrix mat0 and mat1,
- * storing the result into resultMat.
- *
- * @param {goog.vec.Mat4.AnyType} mat0 The minuend.
- * @param {goog.vec.Mat4.AnyType} mat1 The subtrahend.
- * @param {goog.vec.Mat4.AnyType} resultMat The matrix to receive
- *     the results (may be either mat0 or mat1).
- * @return {goog.vec.Mat4.AnyType} return resultMat so that operations can be
- *     chained together.
- */
-goog.vec.Mat4.subMat = function(mat0, mat1, resultMat) {
-  resultMat[0] = mat0[0] - mat1[0];
-  resultMat[1] = mat0[1] - mat1[1];
-  resultMat[2] = mat0[2] - mat1[2];
-  resultMat[3] = mat0[3] - mat1[3];
-  resultMat[4] = mat0[4] - mat1[4];
-  resultMat[5] = mat0[5] - mat1[5];
-  resultMat[6] = mat0[6] - mat1[6];
-  resultMat[7] = mat0[7] - mat1[7];
-  resultMat[8] = mat0[8] - mat1[8];
-  resultMat[9] = mat0[9] - mat1[9];
-  resultMat[10] = mat0[10] - mat1[10];
-  resultMat[11] = mat0[11] - mat1[11];
-  resultMat[12] = mat0[12] - mat1[12];
-  resultMat[13] = mat0[13] - mat1[13];
-  resultMat[14] = mat0[14] - mat1[14];
-  resultMat[15] = mat0[15] - mat1[15];
-  return resultMat;
-};
-
-
-/**
- * Multiplies matrix mat with the given scalar, storing the result
- * into resultMat.
- *
- * @param {goog.vec.Mat4.AnyType} mat The matrix.
- * @param {number} scalar The scalar value to multiply to each element of mat.
- * @param {goog.vec.Mat4.AnyType} resultMat The matrix to receive
- *     the results (may be mat).
- * @return {goog.vec.Mat4.AnyType} return resultMat so that operations can be
- *     chained together.
- */
-goog.vec.Mat4.multScalar = function(mat, scalar, resultMat) {
-  resultMat[0] = mat[0] * scalar;
-  resultMat[1] = mat[1] * scalar;
-  resultMat[2] = mat[2] * scalar;
-  resultMat[3] = mat[3] * scalar;
-  resultMat[4] = mat[4] * scalar;
-  resultMat[5] = mat[5] * scalar;
-  resultMat[6] = mat[6] * scalar;
-  resultMat[7] = mat[7] * scalar;
-  resultMat[8] = mat[8] * scalar;
-  resultMat[9] = mat[9] * scalar;
-  resultMat[10] = mat[10] * scalar;
-  resultMat[11] = mat[11] * scalar;
-  resultMat[12] = mat[12] * scalar;
-  resultMat[13] = mat[13] * scalar;
-  resultMat[14] = mat[14] * scalar;
-  resultMat[15] = mat[15] * scalar;
-  return resultMat;
-};
-
-
-/**
- * Multiplies the two matrices mat0 and mat1 using matrix multiplication,
- * storing the result into resultMat.
- *
- * @param {goog.vec.Mat4.AnyType} mat0 The first (left hand) matrix.
- * @param {goog.vec.Mat4.AnyType} mat1 The second (right hand) matrix.
- * @param {goog.vec.Mat4.AnyType} resultMat The matrix to receive
- *     the results (may be either mat0 or mat1).
- * @return {goog.vec.Mat4.AnyType} return resultMat so that operations can be
- *     chained together.
- */
-goog.vec.Mat4.multMat = function(mat0, mat1, resultMat) {
-  var a00 = mat0[0], a10 = mat0[1], a20 = mat0[2], a30 = mat0[3];
-  var a01 = mat0[4], a11 = mat0[5], a21 = mat0[6], a31 = mat0[7];
-  var a02 = mat0[8], a12 = mat0[9], a22 = mat0[10], a32 = mat0[11];
-  var a03 = mat0[12], a13 = mat0[13], a23 = mat0[14], a33 = mat0[15];
-
-  var b00 = mat1[0], b10 = mat1[1], b20 = mat1[2], b30 = mat1[3];
-  var b01 = mat1[4], b11 = mat1[5], b21 = mat1[6], b31 = mat1[7];
-  var b02 = mat1[8], b12 = mat1[9], b22 = mat1[10], b32 = mat1[11];
-  var b03 = mat1[12], b13 = mat1[13], b23 = mat1[14], b33 = mat1[15];
-
-  resultMat[0] = a00 * b00 + a01 * b10 + a02 * b20 + a03 * b30;
-  resultMat[1] = a10 * b00 + a11 * b10 + a12 * b20 + a13 * b30;
-  resultMat[2] = a20 * b00 + a21 * b10 + a22 * b20 + a23 * b30;
-  resultMat[3] = a30 * b00 + a31 * b10 + a32 * b20 + a33 * b30;
-
-  resultMat[4] = a00 * b01 + a01 * b11 + a02 * b21 + a03 * b31;
-  resultMat[5] = a10 * b01 + a11 * b11 + a12 * b21 + a13 * b31;
-  resultMat[6] = a20 * b01 + a21 * b11 + a22 * b21 + a23 * b31;
-  resultMat[7] = a30 * b01 + a31 * b11 + a32 * b21 + a33 * b31;
-
-  resultMat[8] = a00 * b02 + a01 * b12 + a02 * b22 + a03 * b32;
-  resultMat[9] = a10 * b02 + a11 * b12 + a12 * b22 + a13 * b32;
-  resultMat[10] = a20 * b02 + a21 * b12 + a22 * b22 + a23 * b32;
-  resultMat[11] = a30 * b02 + a31 * b12 + a32 * b22 + a33 * b32;
-
-  resultMat[12] = a00 * b03 + a01 * b13 + a02 * b23 + a03 * b33;
-  resultMat[13] = a10 * b03 + a11 * b13 + a12 * b23 + a13 * b33;
-  resultMat[14] = a20 * b03 + a21 * b13 + a22 * b23 + a23 * b33;
-  resultMat[15] = a30 * b03 + a31 * b13 + a32 * b23 + a33 * b33;
-  return resultMat;
-};
-
-
-/**
- * Transposes the given matrix mat storing the result into resultMat.
- *
- * @param {goog.vec.Mat4.AnyType} mat The matrix to transpose.
- * @param {goog.vec.Mat4.AnyType} resultMat The matrix to receive
- *     the results (may be mat).
- * @return {goog.vec.Mat4.AnyType} return resultMat so that operations can be
- *     chained together.
- */
-goog.vec.Mat4.transpose = function(mat, resultMat) {
-  if (resultMat == mat) {
-    var a10 = mat[1], a20 = mat[2], a30 = mat[3];
-    var a21 = mat[6], a31 = mat[7];
-    var a32 = mat[11];
-    resultMat[1] = mat[4];
-    resultMat[2] = mat[8];
-    resultMat[3] = mat[12];
-    resultMat[4] = a10;
-    resultMat[6] = mat[9];
-    resultMat[7] = mat[13];
-    resultMat[8] = a20;
-    resultMat[9] = a21;
-    resultMat[11] = mat[14];
-    resultMat[12] = a30;
-    resultMat[13] = a31;
-    resultMat[14] = a32;
-  } else {
-    resultMat[0] = mat[0];
-    resultMat[1] = mat[4];
-    resultMat[2] = mat[8];
-    resultMat[3] = mat[12];
-
-    resultMat[4] = mat[1];
-    resultMat[5] = mat[5];
-    resultMat[6] = mat[9];
-    resultMat[7] = mat[13];
-
-    resultMat[8] = mat[2];
-    resultMat[9] = mat[6];
-    resultMat[10] = mat[10];
-    resultMat[11] = mat[14];
-
-    resultMat[12] = mat[3];
-    resultMat[13] = mat[7];
-    resultMat[14] = mat[11];
-    resultMat[15] = mat[15];
-  }
-  return resultMat;
-};
-
-
-/**
- * Computes the determinant of the matrix.
- *
- * @param {goog.vec.Mat4.AnyType} mat The matrix to compute the matrix for.
- * @return {number} The determinant of the matrix.
- */
-goog.vec.Mat4.determinant = function(mat) {
-  var m00 = mat[0], m10 = mat[1], m20 = mat[2], m30 = mat[3];
-  var m01 = mat[4], m11 = mat[5], m21 = mat[6], m31 = mat[7];
-  var m02 = mat[8], m12 = mat[9], m22 = mat[10], m32 = mat[11];
-  var m03 = mat[12], m13 = mat[13], m23 = mat[14], m33 = mat[15];
-
-  var a0 = m00 * m11 - m10 * m01;
-  var a1 = m00 * m21 - m20 * m01;
-  var a2 = m00 * m31 - m30 * m01;
-  var a3 = m10 * m21 - m20 * m11;
-  var a4 = m10 * m31 - m30 * m11;
-  var a5 = m20 * m31 - m30 * m21;
-  var b0 = m02 * m13 - m12 * m03;
-  var b1 = m02 * m23 - m22 * m03;
-  var b2 = m02 * m33 - m32 * m03;
-  var b3 = m12 * m23 - m22 * m13;
-  var b4 = m12 * m33 - m32 * m13;
-  var b5 = m22 * m33 - m32 * m23;
-
-  return a0 * b5 - a1 * b4 + a2 * b3 + a3 * b2 - a4 * b1 + a5 * b0;
-};
-
-
-/**
- * Computes the inverse of mat storing the result into resultMat. If the
- * inverse is defined, this function returns true, false otherwise.
- *
- * @param {goog.vec.Mat4.AnyType} mat The matrix to invert.
- * @param {goog.vec.Mat4.AnyType} resultMat The matrix to receive
- *     the result (may be mat).
- * @return {boolean} True if the inverse is defined. If false is returned,
- *     resultMat is not modified.
- */
-goog.vec.Mat4.invert = function(mat, resultMat) {
-  var m00 = mat[0], m10 = mat[1], m20 = mat[2], m30 = mat[3];
-  var m01 = mat[4], m11 = mat[5], m21 = mat[6], m31 = mat[7];
-  var m02 = mat[8], m12 = mat[9], m22 = mat[10], m32 = mat[11];
-  var m03 = mat[12], m13 = mat[13], m23 = mat[14], m33 = mat[15];
-
-  var a0 = m00 * m11 - m10 * m01;
-  var a1 = m00 * m21 - m20 * m01;
-  var a2 = m00 * m31 - m30 * m01;
-  var a3 = m10 * m21 - m20 * m11;
-  var a4 = m10 * m31 - m30 * m11;
-  var a5 = m20 * m31 - m30 * m21;
-  var b0 = m02 * m13 - m12 * m03;
-  var b1 = m02 * m23 - m22 * m03;
-  var b2 = m02 * m33 - m32 * m03;
-  var b3 = m12 * m23 - m22 * m13;
-  var b4 = m12 * m33 - m32 * m13;
-  var b5 = m22 * m33 - m32 * m23;
-
-  var det = a0 * b5 - a1 * b4 + a2 * b3 + a3 * b2 - a4 * b1 + a5 * b0;
-  if (det == 0) {
-    return false;
-  }
-
-  var idet = 1.0 / det;
-  resultMat[0] = (m11 * b5 - m21 * b4 + m31 * b3) * idet;
-  resultMat[1] = (-m10 * b5 + m20 * b4 - m30 * b3) * idet;
-  resultMat[2] = (m13 * a5 - m23 * a4 + m33 * a3) * idet;
-  resultMat[3] = (-m12 * a5 + m22 * a4 - m32 * a3) * idet;
-  resultMat[4] = (-m01 * b5 + m21 * b2 - m31 * b1) * idet;
-  resultMat[5] = (m00 * b5 - m20 * b2 + m30 * b1) * idet;
-  resultMat[6] = (-m03 * a5 + m23 * a2 - m33 * a1) * idet;
-  resultMat[7] = (m02 * a5 - m22 * a2 + m32 * a1) * idet;
-  resultMat[8] = (m01 * b4 - m11 * b2 + m31 * b0) * idet;
-  resultMat[9] = (-m00 * b4 + m10 * b2 - m30 * b0) * idet;
-  resultMat[10] = (m03 * a4 - m13 * a2 + m33 * a0) * idet;
-  resultMat[11] = (-m02 * a4 + m12 * a2 - m32 * a0) * idet;
-  resultMat[12] = (-m01 * b3 + m11 * b1 - m21 * b0) * idet;
-  resultMat[13] = (m00 * b3 - m10 * b1 + m20 * b0) * idet;
-  resultMat[14] = (-m03 * a3 + m13 * a1 - m23 * a0) * idet;
-  resultMat[15] = (m02 * a3 - m12 * a1 + m22 * a0) * idet;
-  return true;
-};
-
-
-/**
- * Returns true if the components of mat0 are equal to the components of mat1.
- *
- * @param {goog.vec.Mat4.AnyType} mat0 The first matrix.
- * @param {goog.vec.Mat4.AnyType} mat1 The second matrix.
- * @return {boolean} True if the the two matrices are equivalent.
- */
-goog.vec.Mat4.equals = function(mat0, mat1) {
-  return mat0.length == mat1.length &&
-      mat0[0] == mat1[0] &&
-      mat0[1] == mat1[1] &&
-      mat0[2] == mat1[2] &&
-      mat0[3] == mat1[3] &&
-      mat0[4] == mat1[4] &&
-      mat0[5] == mat1[5] &&
-      mat0[6] == mat1[6] &&
-      mat0[7] == mat1[7] &&
-      mat0[8] == mat1[8] &&
-      mat0[9] == mat1[9] &&
-      mat0[10] == mat1[10] &&
-      mat0[11] == mat1[11] &&
-      mat0[12] == mat1[12] &&
-      mat0[13] == mat1[13] &&
-      mat0[14] == mat1[14] &&
-      mat0[15] == mat1[15];
-};
-
-
-/**
- * Transforms the given vector with the given matrix storing the resulting,
- * transformed vector into resultVec. The input vector is multiplied against the
- * upper 3x4 matrix omitting the projective component.
- *
- * @param {goog.vec.Mat4.AnyType} mat The matrix supplying the transformation.
- * @param {goog.vec.Vec3.AnyType} vec The 3 element vector to transform.
- * @param {goog.vec.Vec3.AnyType} resultVec The 3 element vector to
- *     receive the results (may be vec).
- * @return {goog.vec.Vec3.AnyType} return resultVec so that operations can be
- *     chained together.
- */
-goog.vec.Mat4.multVec3 = function(mat, vec, resultVec) {
-  var x = vec[0], y = vec[1], z = vec[2];
-  resultVec[0] = x * mat[0] + y * mat[4] + z * mat[8] + mat[12];
-  resultVec[1] = x * mat[1] + y * mat[5] + z * mat[9] + mat[13];
-  resultVec[2] = x * mat[2] + y * mat[6] + z * mat[10] + mat[14];
-  return resultVec;
-};
-
-
-/**
- * Transforms the given vector with the given matrix storing the resulting,
- * transformed vector into resultVec. The input vector is multiplied against the
- * upper 3x3 matrix omitting the projective component and translation
- * components.
- *
- * @param {goog.vec.Mat4.AnyType} mat The matrix supplying the transformation.
- * @param {goog.vec.Vec3.AnyType} vec The 3 element vector to transform.
- * @param {goog.vec.Vec3.AnyType} resultVec The 3 element vector to
- *     receive the results (may be vec).
- * @return {goog.vec.Vec3.AnyType} return resultVec so that operations can be
- *     chained together.
- */
-goog.vec.Mat4.multVec3NoTranslate = function(mat, vec, resultVec) {
-  var x = vec[0], y = vec[1], z = vec[2];
-  resultVec[0] = x * mat[0] + y * mat[4] + z * mat[8];
-  resultVec[1] = x * mat[1] + y * mat[5] + z * mat[9];
-  resultVec[2] = x * mat[2] + y * mat[6] + z * mat[10];
-  return resultVec;
-};
-
-
-/**
- * Transforms the given vector with the given matrix storing the resulting,
- * transformed vector into resultVec. The input vector is multiplied against the
- * full 4x4 matrix with the homogeneous divide applied to reduce the 4 element
- * vector to a 3 element vector.
- *
- * @param {goog.vec.Mat4.AnyType} mat The matrix supplying the transformation.
- * @param {goog.vec.Vec3.AnyType} vec The 3 element vector to transform.
- * @param {goog.vec.Vec3.AnyType} resultVec The 3 element vector
- *     to receive the results (may be vec).
- * @return {goog.vec.Vec3.AnyType} return resultVec so that operations can be
- *     chained together.
- */
-goog.vec.Mat4.multVec3Projective = function(mat, vec, resultVec) {
-  var x = vec[0], y = vec[1], z = vec[2];
-  var invw = 1 / (x * mat[3] + y * mat[7] + z * mat[11] + mat[15]);
-  resultVec[0] = (x * mat[0] + y * mat[4] + z * mat[8] + mat[12]) * invw;
-  resultVec[1] = (x * mat[1] + y * mat[5] + z * mat[9] + mat[13]) * invw;
-  resultVec[2] = (x * mat[2] + y * mat[6] + z * mat[10] + mat[14]) * invw;
-  return resultVec;
-};
-
-
-/**
- * Transforms the given vector with the given matrix storing the resulting,
- * transformed vector into resultVec.
- *
- * @param {goog.vec.Mat4.AnyType} mat The matrix supplying the transformation.
- * @param {goog.vec.Vec4.AnyType} vec The vector to transform.
- * @param {goog.vec.Vec4.AnyType} resultVec The vector to
- *     receive the results (may be vec).
- * @return {goog.vec.Vec4.AnyType} return resultVec so that operations can be
- *     chained together.
- */
-goog.vec.Mat4.multVec4 = function(mat, vec, resultVec) {
-  var x = vec[0], y = vec[1], z = vec[2], w = vec[3];
-  resultVec[0] = x * mat[0] + y * mat[4] + z * mat[8] + w * mat[12];
-  resultVec[1] = x * mat[1] + y * mat[5] + z * mat[9] + w * mat[13];
-  resultVec[2] = x * mat[2] + y * mat[6] + z * mat[10] + w * mat[14];
-  resultVec[3] = x * mat[3] + y * mat[7] + z * mat[11] + w * mat[15];
-  return resultVec;
-};
-
-
-/**
- * Makes the given 4x4 matrix a translation matrix with x, y and z
- * translation factors.
- *
- * @param {goog.vec.Mat4.AnyType} mat The matrix.
- * @param {number} x The translation along the x axis.
- * @param {number} y The translation along the y axis.
- * @param {number} z The translation along the z axis.
- * @return {goog.vec.Mat4.AnyType} return mat so that operations can be
- *     chained.
- */
-goog.vec.Mat4.makeTranslate = function(mat, x, y, z) {
-  goog.vec.Mat4.makeIdentity(mat);
-  return goog.vec.Mat4.setColumnValues(mat, 3, x, y, z, 1);
-};
-
-
-/**
- * Makes the given 4x4 matrix as a scale matrix with x, y and z scale factors.
- *
- * @param {goog.vec.Mat4.AnyType} mat The matrix.
- * @param {number} x The scale along the x axis.
- * @param {number} y The scale along the y axis.
- * @param {number} z The scale along the z axis.
- * @return {goog.vec.Mat4.AnyType} return mat so that operations can be
- *     chained.
- */
-goog.vec.Mat4.makeScale = function(mat, x, y, z) {
-  goog.vec.Mat4.makeIdentity(mat);
-  return goog.vec.Mat4.setDiagonalValues(mat, x, y, z, 1);
-};
-
-
-/**
- * Makes the given 4x4 matrix a rotation matrix with the given rotation
- * angle about the axis defined by the vector (ax, ay, az).
- *
- * @param {goog.vec.Mat4.AnyType} mat The matrix.
- * @param {number} angle The rotation angle in radians.
- * @param {number} ax The x component of the rotation axis.
- * @param {number} ay The y component of the rotation axis.
- * @param {number} az The z component of the rotation axis.
- * @return {goog.vec.Mat4.AnyType} return mat so that operations can be
- *     chained.
- */
-goog.vec.Mat4.makeRotate = function(mat, angle, ax, ay, az) {
-  var c = Math.cos(angle);
-  var d = 1 - c;
-  var s = Math.sin(angle);
-
-  return goog.vec.Mat4.setFromValues(mat,
-      ax * ax * d + c,
-      ax * ay * d + az * s,
-      ax * az * d - ay * s,
-      0,
-
-      ax * ay * d - az * s,
-      ay * ay * d + c,
-      ay * az * d + ax * s,
-      0,
-
-      ax * az * d + ay * s,
-      ay * az * d - ax * s,
-      az * az * d + c,
-      0,
-
-      0, 0, 0, 1);
-};
-
-
-/**
- * Makes the given 4x4 matrix a rotation matrix with the given rotation
- * angle about the X axis.
- *
- * @param {goog.vec.Mat4.AnyType} mat The matrix.
- * @param {number} angle The rotation angle in radians.
- * @return {goog.vec.Mat4.AnyType} return mat so that operations can be
- *     chained.
- */
-goog.vec.Mat4.makeRotateX = function(mat, angle) {
-  var c = Math.cos(angle);
-  var s = Math.sin(angle);
-  return goog.vec.Mat4.setFromValues(
-      mat, 1, 0, 0, 0, 0, c, s, 0, 0, -s, c, 0, 0, 0, 0, 1);
-};
-
-
-/**
- * Makes the given 4x4 matrix a rotation matrix with the given rotation
- * angle about the Y axis.
- *
- * @param {goog.vec.Mat4.AnyType} mat The matrix.
- * @param {number} angle The rotation angle in radians.
- * @return {goog.vec.Mat4.AnyType} return mat so that operations can be
- *     chained.
- */
-goog.vec.Mat4.makeRotateY = function(mat, angle) {
-  var c = Math.cos(angle);
-  var s = Math.sin(angle);
-  return goog.vec.Mat4.setFromValues(
-      mat, c, 0, -s, 0, 0, 1, 0, 0, s, 0, c, 0, 0, 0, 0, 1);
-};
-
-
-/**
- * Makes the given 4x4 matrix a rotation matrix with the given rotation
- * angle about the Z axis.
- *
- * @param {goog.vec.Mat4.AnyType} mat The matrix.
- * @param {number} angle The rotation angle in radians.
- * @return {goog.vec.Mat4.AnyType} return mat so that operations can be
- *     chained.
- */
-goog.vec.Mat4.makeRotateZ = function(mat, angle) {
-  var c = Math.cos(angle);
-  var s = Math.sin(angle);
-  return goog.vec.Mat4.setFromValues(
-      mat, c, s, 0, 0, -s, c, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1);
-};
-
-
-/**
- * Makes the given 4x4 matrix a perspective projection matrix.
- *
- * @param {goog.vec.Mat4.AnyType} mat The matrix.
- * @param {number} left The coordinate of the left clipping plane.
- * @param {number} right The coordinate of the right clipping plane.
- * @param {number} bottom The coordinate of the bottom clipping plane.
- * @param {number} top The coordinate of the top clipping plane.
- * @param {number} near The distance to the near clipping plane.
- * @param {number} far The distance to the far clipping plane.
- * @return {goog.vec.Mat4.AnyType} return mat so that operations can be
- *     chained.
- */
-goog.vec.Mat4.makeFrustum = function(mat, left, right, bottom, top, near, far) {
-  var x = (2 * near) / (right - left);
-  var y = (2 * near) / (top - bottom);
-  var a = (right + left) / (right - left);
-  var b = (top + bottom) / (top - bottom);
-  var c = -(far + near) / (far - near);
-  var d = -(2 * far * near) / (far - near);
-
-  return goog.vec.Mat4.setFromValues(mat,
-      x, 0, 0, 0,
-      0, y, 0, 0,
-      a, b, c, -1,
-      0, 0, d, 0
-  );
-};
-
-
-/**
- * Makse the given 4x4 matrix  perspective projection matrix given a
- * field of view and aspect ratio.
- *
- * @param {goog.vec.Mat4.AnyType} mat The matrix.
- * @param {number} fovy The field of view along the y (vertical) axis in
- *     radians.
- * @param {number} aspect The x (width) to y (height) aspect ratio.
- * @param {number} near The distance to the near clipping plane.
- * @param {number} far The distance to the far clipping plane.
- * @return {goog.vec.Mat4.AnyType} return mat so that operations can be
- *     chained.
- */
-goog.vec.Mat4.makePerspective = function(mat, fovy, aspect, near, far) {
-  var angle = fovy / 2;
-  var dz = far - near;
-  var sinAngle = Math.sin(angle);
-  if (dz == 0 || sinAngle == 0 || aspect == 0) {
-    return mat;
-  }
-
-  var cot = Math.cos(angle) / sinAngle;
-  return goog.vec.Mat4.setFromValues(mat,
-      cot / aspect, 0, 0, 0,
-      0, cot, 0, 0,
-      0, 0, -(far + near) / dz, -1,
-      0, 0, -(2 * near * far) / dz, 0
-  );
-};
-
-
-/**
- * Makes the given 4x4 matrix an orthographic projection matrix.
- *
- * @param {goog.vec.Mat4.AnyType} mat The matrix.
- * @param {number} left The coordinate of the left clipping plane.
- * @param {number} right The coordinate of the right clipping plane.
- * @param {number} bottom The coordinate of the bottom clipping plane.
- * @param {number} top The coordinate of the top clipping plane.
- * @param {number} near The distance to the near clipping plane.
- * @param {number} far The distance to the far clipping plane.
- * @return {goog.vec.Mat4.AnyType} return mat so that operations can be
- *     chained.
- */
-goog.vec.Mat4.makeOrtho = function(mat, left, right, bottom, top, near, far) {
-  var x = 2 / (right - left);
-  var y = 2 / (top - bottom);
-  var z = -2 / (far - near);
-  var a = -(right + left) / (right - left);
-  var b = -(top + bottom) / (top - bottom);
-  var c = -(far + near) / (far - near);
-
-  return goog.vec.Mat4.setFromValues(mat,
-      x, 0, 0, 0,
-      0, y, 0, 0,
-      0, 0, z, 0,
-      a, b, c, 1
-  );
-};
-
-
-/**
- * Makes the given 4x4 matrix a modelview matrix of a camera so that
- * the camera is 'looking at' the given center point.
- *
- * @param {goog.vec.Mat4.AnyType} mat The matrix.
- * @param {goog.vec.Vec3.AnyType} eyePt The position of the eye point
- *     (camera origin).
- * @param {goog.vec.Vec3.AnyType} centerPt The point to aim the camera at.
- * @param {goog.vec.Vec3.AnyType} worldUpVec The vector that identifies
- *     the up direction for the camera.
- * @return {goog.vec.Mat4.AnyType} return mat so that operations can be
- *     chained.
- */
-goog.vec.Mat4.makeLookAt = function(mat, eyePt, centerPt, worldUpVec) {
-  // Compute the direction vector from the eye point to the center point and
-  // normalize.
-  var fwdVec = goog.vec.Mat4.tmpVec4_[0];
-  goog.vec.Vec3.subtract(centerPt, eyePt, fwdVec);
-  goog.vec.Vec3.normalize(fwdVec, fwdVec);
-  fwdVec[3] = 0;
-
-  // Compute the side vector from the forward vector and the input up vector.
-  var sideVec = goog.vec.Mat4.tmpVec4_[1];
-  goog.vec.Vec3.cross(fwdVec, worldUpVec, sideVec);
-  goog.vec.Vec3.normalize(sideVec, sideVec);
-  sideVec[3] = 0;
-
-  // Now the up vector to form the orthonormal basis.
-  var upVec = goog.vec.Mat4.tmpVec4_[2];
-  goog.vec.Vec3.cross(sideVec, fwdVec, upVec);
-  goog.vec.Vec3.normalize(upVec, upVec);
-  upVec[3] = 0;
-
-  // Update the view matrix with the new orthonormal basis and position the
-  // camera at the given eye point.
-  goog.vec.Vec3.negate(fwdVec, fwdVec);
-  goog.vec.Mat4.setRow(mat, 0, sideVec);
-  goog.vec.Mat4.setRow(mat, 1, upVec);
-  goog.vec.Mat4.setRow(mat, 2, fwdVec);
-  goog.vec.Mat4.setRowValues(mat, 3, 0, 0, 0, 1);
-  goog.vec.Mat4.translate(
-      mat, -eyePt[0], -eyePt[1], -eyePt[2]);
-
-  return mat;
-};
-
-
-/**
- * Decomposes a matrix into the lookAt vectors eyePt, fwdVec and worldUpVec.
- * The matrix represents the modelview matrix of a camera. It is the inverse
- * of lookAt except for the output of the fwdVec instead of centerPt.
- * The centerPt itself cannot be recovered from a modelview matrix.
- *
- * @param {goog.vec.Mat4.AnyType} mat The matrix.
- * @param {goog.vec.Vec3.AnyType} eyePt The position of the eye point
- *     (camera origin).
- * @param {goog.vec.Vec3.AnyType} fwdVec The vector describing where
- *     the camera points to.
- * @param {goog.vec.Vec3.AnyType} worldUpVec The vector that
- *     identifies the up direction for the camera.
- * @return {boolean} True if the method succeeds, false otherwise.
- *     The method can only fail if the inverse of viewMatrix is not defined.
- */
-goog.vec.Mat4.toLookAt = function(mat, eyePt, fwdVec, worldUpVec) {
-  // Get eye of the camera.
-  var matInverse = goog.vec.Mat4.tmpMat4_[0];
-  if (!goog.vec.Mat4.invert(mat, matInverse)) {
-    // The input matrix does not have a valid inverse.
-    return false;
-  }
-
-  if (eyePt) {
-    eyePt[0] = matInverse[12];
-    eyePt[1] = matInverse[13];
-    eyePt[2] = matInverse[14];
-  }
-
-  // Get forward vector from the definition of lookAt.
-  if (fwdVec || worldUpVec) {
-    if (!fwdVec) {
-      fwdVec = goog.vec.Mat4.tmpVec3_[0];
-    }
-    fwdVec[0] = -mat[2];
-    fwdVec[1] = -mat[6];
-    fwdVec[2] = -mat[10];
-    // Normalize forward vector.
-    goog.vec.Vec3.normalize(fwdVec, fwdVec);
-  }
-
-  if (worldUpVec) {
-    // Get side vector from the definition of gluLookAt.
-    var side = goog.vec.Mat4.tmpVec3_[1];
-    side[0] = mat[0];
-    side[1] = mat[4];
-    side[2] = mat[8];
-    // Compute up vector as a up = side x forward.
-    goog.vec.Vec3.cross(side, fwdVec, worldUpVec);
-    // Normalize up vector.
-    goog.vec.Vec3.normalize(worldUpVec, worldUpVec);
-  }
-  return true;
-};
-
-
-/**
- * Makes the given 4x4 matrix a rotation matrix given Euler angles using
- * the ZXZ convention.
- * Given the euler angles [theta1, theta2, theta3], the rotation is defined as
- * rotation = rotation_z(theta1) * rotation_x(theta2) * rotation_z(theta3),
- * with theta1 in [0, 2 * pi], theta2 in [0, pi] and theta3 in [0, 2 * pi].
- * rotation_x(theta) means rotation around the X axis of theta radians,
- *
- * @param {goog.vec.Mat4.AnyType} mat The matrix.
- * @param {number} theta1 The angle of rotation around the Z axis in radians.
- * @param {number} theta2 The angle of rotation around the X axis in radians.
- * @param {number} theta3 The angle of rotation around the Z axis in radians.
- * @return {goog.vec.Mat4.AnyType} return mat so that operations can be
- *     chained.
- */
-goog.vec.Mat4.makeEulerZXZ = function(mat, theta1, theta2, theta3) {
-  var c1 = Math.cos(theta1);
-  var s1 = Math.sin(theta1);
-
-  var c2 = Math.cos(theta2);
-  var s2 = Math.sin(theta2);
-
-  var c3 = Math.cos(theta3);
-  var s3 = Math.sin(theta3);
-
-  mat[0] = c1 * c3 - c2 * s1 * s3;
-  mat[1] = c2 * c1 * s3 + c3 * s1;
-  mat[2] = s3 * s2;
-  mat[3] = 0;
-
-  mat[4] = -c1 * s3 - c3 * c2 * s1;
-  mat[5] = c1 * c2 * c3 - s1 * s3;
-  mat[6] = c3 * s2;
-  mat[7] = 0;
-
-  mat[8] = s2 * s1;
-  mat[9] = -c1 * s2;
-  mat[10] = c2;
-  mat[11] = 0;
-
-  mat[12] = 0;
-  mat[13] = 0;
-  mat[14] = 0;
-  mat[15] = 1;
-
-  return mat;
-};
-
-
-/**
- * Decomposes a rotation matrix into Euler angles using the ZXZ convention so
- * that rotation = rotation_z(theta1) * rotation_x(theta2) * rotation_z(theta3),
- * with theta1 in [0, 2 * pi], theta2 in [0, pi] and theta3 in [0, 2 * pi].
- * rotation_x(theta) means rotation around the X axis of theta radians.
- *
- * @param {goog.vec.Mat4.AnyType} mat The matrix.
- * @param {goog.vec.Vec3.AnyType} euler The ZXZ Euler angles in
- *     radians as [theta1, theta2, theta3].
- * @param {boolean=} opt_theta2IsNegative Whether theta2 is in [-pi, 0] instead
- *     of the default [0, pi].
- * @return {goog.vec.Vec4.AnyType} return euler so that operations can be
- *     chained together.
- */
-goog.vec.Mat4.toEulerZXZ = function(mat, euler, opt_theta2IsNegative) {
-  // There is an ambiguity in the sign of sinTheta2 because of the sqrt.
-  var sinTheta2 = Math.sqrt(mat[2] * mat[2] + mat[6] * mat[6]);
-
-  // By default we explicitely constrain theta2 to be in [0, pi],
-  // so sinTheta2 is always positive. We can change the behavior and specify
-  // theta2 to be negative in [-pi, 0] with opt_Theta2IsNegative.
-  var signTheta2 = opt_theta2IsNegative ? -1 : 1;
-
-  if (sinTheta2 > goog.vec.EPSILON) {
-    euler[2] = Math.atan2(mat[2] * signTheta2, mat[6] * signTheta2);
-    euler[1] = Math.atan2(sinTheta2 * signTheta2, mat[10]);
-    euler[0] = Math.atan2(mat[8] * signTheta2, -mat[9] * signTheta2);
-  } else {
-    // There is also an arbitrary choice for theta1 = 0 or theta2 = 0 here.
-    // We assume theta1 = 0 as some applications do not allow the camera to roll
-    // (i.e. have theta1 != 0).
-    euler[0] = 0;
-    euler[1] = Math.atan2(sinTheta2 * signTheta2, mat[10]);
-    euler[2] = Math.atan2(mat[1], mat[0]);
-  }
-
-  // Atan2 outputs angles in [-pi, pi] so we bring them back to [0, 2 * pi].
-  euler[0] = (euler[0] + Math.PI * 2) % (Math.PI * 2);
-  euler[2] = (euler[2] + Math.PI * 2) % (Math.PI * 2);
-  // For theta2 we want the angle to be in [0, pi] or [-pi, 0] depending on
-  // signTheta2.
-  euler[1] = ((euler[1] * signTheta2 + Math.PI * 2) % (Math.PI * 2)) *
-      signTheta2;
-
-  return euler;
-};
-
-
-/**
- * Translates the given matrix by x,y,z.  Equvialent to:
- * goog.vec.Mat4.multMat(
- *     mat,
- *     goog.vec.Mat4.makeTranslate(goog.vec.Mat4.create(), x, y, z),
- *     mat);
- *
- * @param {goog.vec.Mat4.AnyType} mat The matrix.
- * @param {number} x The translation along the x axis.
- * @param {number} y The translation along the y axis.
- * @param {number} z The translation along the z axis.
- * @return {goog.vec.Mat4.AnyType} return mat so that operations can be
- *     chained.
- */
-goog.vec.Mat4.translate = function(mat, x, y, z) {
-  return goog.vec.Mat4.setColumnValues(
-      mat, 3,
-      mat[0] * x + mat[4] * y + mat[8] * z + mat[12],
-      mat[1] * x + mat[5] * y + mat[9] * z + mat[13],
-      mat[2] * x + mat[6] * y + mat[10] * z + mat[14],
-      mat[3] * x + mat[7] * y + mat[11] * z + mat[15]);
-};
-
-
-/**
- * Scales the given matrix by x,y,z.  Equivalent to:
- * goog.vec.Mat4.multMat(
- *     mat,
- *     goog.vec.Mat4.makeScale(goog.vec.Mat4.create(), x, y, z),
- *     mat);
- *
- * @param {goog.vec.Mat4.AnyType} mat The matrix.
- * @param {number} x The x scale factor.
- * @param {number} y The y scale factor.
- * @param {number} z The z scale factor.
- * @return {goog.vec.Mat4.AnyType} return mat so that operations can be
- *     chained.
- */
-goog.vec.Mat4.scale = function(mat, x, y, z) {
-  return goog.vec.Mat4.setFromValues(
-      mat,
-      mat[0] * x, mat[1] * x, mat[2] * x, mat[3] * x,
-      mat[4] * y, mat[5] * y, mat[6] * y, mat[7] * y,
-      mat[8] * z, mat[9] * z, mat[10] * z, mat[11] * z,
-      mat[12], mat[13], mat[14], mat[15]);
-};
-
-
-/**
- * Rotate the given matrix by angle about the x,y,z axis.  Equivalent to:
- * goog.vec.Mat4.multMat(
- *     mat,
- *     goog.vec.Mat4.makeRotate(goog.vec.Mat4.create(), angle, x, y, z),
- *     mat);
- *
- * @param {goog.vec.Mat4.AnyType} mat The matrix.
- * @param {number} angle The angle in radians.
- * @param {number} x The x component of the rotation axis.
- * @param {number} y The y component of the rotation axis.
- * @param {number} z The z component of the rotation axis.
- * @return {goog.vec.Mat4.AnyType} return mat so that operations can be
- *     chained.
- */
-goog.vec.Mat4.rotate = function(mat, angle, x, y, z) {
-  var m00 = mat[0], m10 = mat[1], m20 = mat[2], m30 = mat[3];
-  var m01 = mat[4], m11 = mat[5], m21 = mat[6], m31 = mat[7];
-  var m02 = mat[8], m12 = mat[9], m22 = mat[10], m32 = mat[11];
-  var m03 = mat[12], m13 = mat[13], m23 = mat[14], m33 = mat[15];
-
-  var cosAngle = Math.cos(angle);
-  var sinAngle = Math.sin(angle);
-  var diffCosAngle = 1 - cosAngle;
-  var r00 = x * x * diffCosAngle + cosAngle;
-  var r10 = x * y * diffCosAngle + z * sinAngle;
-  var r20 = x * z * diffCosAngle - y * sinAngle;
-
-  var r01 = x * y * diffCosAngle - z * sinAngle;
-  var r11 = y * y * diffCosAngle + cosAngle;
-  var r21 = y * z * diffCosAngle + x * sinAngle;
-
-  var r02 = x * z * diffCosAngle + y * sinAngle;
-  var r12 = y * z * diffCosAngle - x * sinAngle;
-  var r22 = z * z * diffCosAngle + cosAngle;
-
-  return goog.vec.Mat4.setFromValues(
-      mat,
-      m00 * r00 + m01 * r10 + m02 * r20,
-      m10 * r00 + m11 * r10 + m12 * r20,
-      m20 * r00 + m21 * r10 + m22 * r20,
-      m30 * r00 + m31 * r10 + m32 * r20,
-
-      m00 * r01 + m01 * r11 + m02 * r21,
-      m10 * r01 + m11 * r11 + m12 * r21,
-      m20 * r01 + m21 * r11 + m22 * r21,
-      m30 * r01 + m31 * r11 + m32 * r21,
-
-      m00 * r02 + m01 * r12 + m02 * r22,
-      m10 * r02 + m11 * r12 + m12 * r22,
-      m20 * r02 + m21 * r12 + m22 * r22,
-      m30 * r02 + m31 * r12 + m32 * r22,
-
-      m03, m13, m23, m33);
-};
-
-
-/**
- * Rotate the given matrix by angle about the x axis.  Equivalent to:
- * goog.vec.Mat4.multMat(
- *     mat,
- *     goog.vec.Mat4.makeRotateX(goog.vec.Mat4.create(), angle),
- *     mat);
- *
- * @param {goog.vec.Mat4.AnyType} mat The matrix.
- * @param {number} angle The angle in radians.
- * @return {goog.vec.Mat4.AnyType} return mat so that operations can be
- *     chained.
- */
-goog.vec.Mat4.rotateX = function(mat, angle) {
-  var m01 = mat[4], m11 = mat[5], m21 = mat[6], m31 = mat[7];
-  var m02 = mat[8], m12 = mat[9], m22 = mat[10], m32 = mat[11];
-
-  var c = Math.cos(angle);
-  var s = Math.sin(angle);
-
-  mat[4] = m01 * c + m02 * s;
-  mat[5] = m11 * c + m12 * s;
-  mat[6] = m21 * c + m22 * s;
-  mat[7] = m31 * c + m32 * s;
-  mat[8] = m01 * -s + m02 * c;
-  mat[9] = m11 * -s + m12 * c;
-  mat[10] = m21 * -s + m22 * c;
-  mat[11] = m31 * -s + m32 * c;
-
-  return mat;
-};
-
-
-/**
- * Rotate the given matrix by angle about the y axis.  Equivalent to:
- * goog.vec.Mat4.multMat(
- *     mat,
- *     goog.vec.Mat4.makeRotateY(goog.vec.Mat4.create(), angle),
- *     mat);
- *
- * @param {goog.vec.Mat4.AnyType} mat The matrix.
- * @param {number} angle The angle in radians.
- * @return {goog.vec.Mat4.AnyType} return mat so that operations can be
- *     chained.
- */
-goog.vec.Mat4.rotateY = function(mat, angle) {
-  var m00 = mat[0], m10 = mat[1], m20 = mat[2], m30 = mat[3];
-  var m02 = mat[8], m12 = mat[9], m22 = mat[10], m32 = mat[11];
-
-  var c = Math.cos(angle);
-  var s = Math.sin(angle);
-
-  mat[0] = m00 * c + m02 * -s;
-  mat[1] = m10 * c + m12 * -s;
-  mat[2] = m20 * c + m22 * -s;
-  mat[3] = m30 * c + m32 * -s;
-  mat[8] = m00 * s + m02 * c;
-  mat[9] = m10 * s + m12 * c;
-  mat[10] = m20 * s + m22 * c;
-  mat[11] = m30 * s + m32 * c;
-
-  return mat;
-};
-
-
-/**
- * Rotate the given matrix by angle about the z axis.  Equivalent to:
- * goog.vec.Mat4.multMat(
- *     mat,
- *     goog.vec.Mat4.makeRotateZ(goog.vec.Mat4.create(), angle),
- *     mat);
- *
- * @param {goog.vec.Mat4.AnyType} mat The matrix.
- * @param {number} angle The angle in radians.
- * @return {goog.vec.Mat4.AnyType} return mat so that operations can be
- *     chained.
- */
-goog.vec.Mat4.rotateZ = function(mat, angle) {
-  var m00 = mat[0], m10 = mat[1], m20 = mat[2], m30 = mat[3];
-  var m01 = mat[4], m11 = mat[5], m21 = mat[6], m31 = mat[7];
-
-  var c = Math.cos(angle);
-  var s = Math.sin(angle);
-
-  mat[0] = m00 * c + m01 * s;
-  mat[1] = m10 * c + m11 * s;
-  mat[2] = m20 * c + m21 * s;
-  mat[3] = m30 * c + m31 * s;
-  mat[4] = m00 * -s + m01 * c;
-  mat[5] = m10 * -s + m11 * c;
-  mat[6] = m20 * -s + m21 * c;
-  mat[7] = m30 * -s + m31 * c;
-
-  return mat;
-};
-
-
-/**
- * Retrieves the translation component of the transformation matrix.
- *
- * @param {goog.vec.Mat4.AnyType} mat The transformation matrix.
- * @param {goog.vec.Vec3.AnyType} translation The vector for storing the
- *     result.
- * @return {goog.vec.Mat4.AnyType} return mat so that operations can be
- *     chained.
- */
-goog.vec.Mat4.getTranslation = function(mat, translation) {
-  translation[0] = mat[12];
-  translation[1] = mat[13];
-  translation[2] = mat[14];
-  return translation;
-};
-
-
-/**
- * @type {!Array<!goog.vec.Vec3.Type>}
- * @private
- */
-goog.vec.Mat4.tmpVec3_ = [
-  goog.vec.Vec3.createFloat64(),
-  goog.vec.Vec3.createFloat64()
-];
-
-
-/**
- * @type {!Array<!goog.vec.Vec4.Type>}
- * @private
- */
-goog.vec.Mat4.tmpVec4_ = [
-  goog.vec.Vec4.createFloat64(),
-  goog.vec.Vec4.createFloat64(),
-  goog.vec.Vec4.createFloat64()
-];
-
-
-/**
- * @type {!Array<!goog.vec.Mat4.Type>}
- * @private
- */
-goog.vec.Mat4.tmpMat4_ = [
-  goog.vec.Mat4.createFloat64()
-];
-
-goog.provide('ol.TransformFunction');
-
-
-/**
- * A transform function accepts an array of input coordinate values, an optional
- * output array, and an optional dimension (default should be 2).  The function
- * transforms the input coordinate values, populates the output array, and
- * returns the output array.
- *
- * @typedef {function(Array.<number>, Array.<number>=, number=): Array.<number>}
- * @api stable
- */
-ol.TransformFunction;
-
-goog.provide('ol.Extent');
-goog.provide('ol.extent');
-goog.provide('ol.extent.Corner');
-goog.provide('ol.extent.Relationship');
-
-goog.require('goog.asserts');
-goog.require('goog.vec.Mat4');
-goog.require('ol.Coordinate');
-goog.require('ol.Size');
-goog.require('ol.TransformFunction');
-
-
-/**
- * An array of numbers representing an extent: `[minx, miny, maxx, maxy]`.
- * @typedef {Array.<number>}
- * @api stable
- */
-ol.Extent;
-
-
-/**
- * Extent corner.
- * @enum {string}
- */
-ol.extent.Corner = {
-  BOTTOM_LEFT: 'bottom-left',
-  BOTTOM_RIGHT: 'bottom-right',
-  TOP_LEFT: 'top-left',
-  TOP_RIGHT: 'top-right'
-};
-
-
-/**
- * Relationship to an extent.
- * @enum {number}
- */
-ol.extent.Relationship = {
-  UNKNOWN: 0,
-  INTERSECTING: 1,
-  ABOVE: 2,
-  RIGHT: 4,
-  BELOW: 8,
-  LEFT: 16
-};
-
-
-/**
- * Build an extent that includes all given coordinates.
- *
- * @param {Array.<ol.Coordinate>} coordinates Coordinates.
- * @return {ol.Extent} Bounding extent.
- * @api stable
- */
-ol.extent.boundingExtent = function(coordinates) {
-  var extent = ol.extent.createEmpty();
-  for (var i = 0, ii = coordinates.length; i < ii; ++i) {
-    ol.extent.extendCoordinate(extent, coordinates[i]);
-  }
-  return extent;
-};
-
-
-/**
- * @param {Array.<number>} xs Xs.
- * @param {Array.<number>} ys Ys.
- * @param {ol.Extent=} opt_extent Destination extent.
- * @private
- * @return {ol.Extent} Extent.
- */
-ol.extent.boundingExtentXYs_ = function(xs, ys, opt_extent) {
-  goog.asserts.assert(xs.length > 0, 'xs length should be larger than 0');
-  goog.asserts.assert(ys.length > 0, 'ys length should be larger than 0');
-  var minX = Math.min.apply(null, xs);
-  var minY = Math.min.apply(null, ys);
-  var maxX = Math.max.apply(null, xs);
-  var maxY = Math.max.apply(null, ys);
-  return ol.extent.createOrUpdate(minX, minY, maxX, maxY, opt_extent);
-};
-
-
-/**
- * Return extent increased by the provided value.
- * @param {ol.Extent} extent Extent.
- * @param {number} value The amount by which the extent should be buffered.
- * @param {ol.Extent=} opt_extent Extent.
- * @return {ol.Extent} Extent.
- * @api stable
- */
-ol.extent.buffer = function(extent, value, opt_extent) {
-  if (goog.isDef(opt_extent)) {
-    opt_extent[0] = extent[0] - value;
-    opt_extent[1] = extent[1] - value;
-    opt_extent[2] = extent[2] + value;
-    opt_extent[3] = extent[3] + value;
-    return opt_extent;
-  } else {
-    return [
-      extent[0] - value,
-      extent[1] - value,
-      extent[2] + value,
-      extent[3] + value
-    ];
-  }
-};
-
-
-/**
- * Creates a clone of an extent.
- *
- * @param {ol.Extent} extent Extent to clone.
- * @param {ol.Extent=} opt_extent Extent.
- * @return {ol.Extent} The clone.
- */
-ol.extent.clone = function(extent, opt_extent) {
-  if (goog.isDef(opt_extent)) {
-    opt_extent[0] = extent[0];
-    opt_extent[1] = extent[1];
-    opt_extent[2] = extent[2];
-    opt_extent[3] = extent[3];
-    return opt_extent;
-  } else {
-    return extent.slice();
-  }
-};
-
-
-/**
- * @param {ol.Extent} extent Extent.
- * @param {number} x X.
- * @param {number} y Y.
- * @return {number} Closest squared distance.
- */
-ol.extent.closestSquaredDistanceXY = function(extent, x, y) {
-  var dx, dy;
-  if (x < extent[0]) {
-    dx = extent[0] - x;
-  } else if (extent[2] < x) {
-    dx = x - extent[2];
-  } else {
-    dx = 0;
-  }
-  if (y < extent[1]) {
-    dy = extent[1] - y;
-  } else if (extent[3] < y) {
-    dy = y - extent[3];
-  } else {
-    dy = 0;
-  }
-  return dx * dx + dy * dy;
-};
-
-
-/**
- * Check if the passed coordinate is contained or on the edge of the extent.
- *
- * @param {ol.Extent} extent Extent.
- * @param {ol.Coordinate} coordinate Coordinate.
- * @return {boolean} The coordinate is contained in the extent.
- * @api stable
- */
-ol.extent.containsCoordinate = function(extent, coordinate) {
-  return ol.extent.containsXY(extent, coordinate[0], coordinate[1]);
-};
-
-
-/**
- * Check if one extent contains another.
- *
- * An extent is deemed contained if it lies completely within the other extent,
- * including if they share one or more edges.
- *
- * @param {ol.Extent} extent1 Extent 1.
- * @param {ol.Extent} extent2 Extent 2.
- * @return {boolean} The second extent is contained by or on the edge of the
- *     first.
- * @api stable
- */
-ol.extent.containsExtent = function(extent1, extent2) {
-  return extent1[0] <= extent2[0] && extent2[2] <= extent1[2] &&
-      extent1[1] <= extent2[1] && extent2[3] <= extent1[3];
-};
-
-
-/**
- * Check if the passed coordinate is contained or on the edge of the extent.
- *
- * @param {ol.Extent} extent Extent.
- * @param {number} x X coordinate.
- * @param {number} y Y coordinate.
- * @return {boolean} The x, y values are contained in the extent.
- * @api stable
- */
-ol.extent.containsXY = function(extent, x, y) {
-  return extent[0] <= x && x <= extent[2] && extent[1] <= y && y <= extent[3];
-};
-
-
-/**
- * Get the relationship between a coordinate and extent.
- * @param {ol.Extent} extent The extent.
- * @param {ol.Coordinate} coordinate The coordinate.
- * @return {number} The relationship (bitwise compare with
- *     ol.extent.Relationship).
- */
-ol.extent.coordinateRelationship = function(extent, coordinate) {
-  var minX = extent[0];
-  var minY = extent[1];
-  var maxX = extent[2];
-  var maxY = extent[3];
-  var x = coordinate[0];
-  var y = coordinate[1];
-  var relationship = ol.extent.Relationship.UNKNOWN;
-  if (x < minX) {
-    relationship = relationship | ol.extent.Relationship.LEFT;
-  } else if (x > maxX) {
-    relationship = relationship | ol.extent.Relationship.RIGHT;
-  }
-  if (y < minY) {
-    relationship = relationship | ol.extent.Relationship.BELOW;
-  } else if (y > maxY) {
-    relationship = relationship | ol.extent.Relationship.ABOVE;
-  }
-  if (relationship === ol.extent.Relationship.UNKNOWN) {
-    relationship = ol.extent.Relationship.INTERSECTING;
-  }
-  return relationship;
-};
-
-
-/**
- * Create an empty extent.
- * @return {ol.Extent} Empty extent.
- * @api stable
- */
-ol.extent.createEmpty = function() {
-  return [Infinity, Infinity, -Infinity, -Infinity];
-};
-
-
-/**
- * Create a new extent or update the provided extent.
- * @param {number} minX Minimum X.
- * @param {number} minY Minimum Y.
- * @param {number} maxX Maximum X.
- * @param {number} maxY Maximum Y.
- * @param {ol.Extent=} opt_extent Destination extent.
- * @return {ol.Extent} Extent.
- */
-ol.extent.createOrUpdate = function(minX, minY, maxX, maxY, opt_extent) {
-  if (goog.isDef(opt_extent)) {
-    opt_extent[0] = minX;
-    opt_extent[1] = minY;
-    opt_extent[2] = maxX;
-    opt_extent[3] = maxY;
-    return opt_extent;
-  } else {
-    return [minX, minY, maxX, maxY];
-  }
-};
-
-
-/**
- * Create a new empty extent or make the provided one empty.
- * @param {ol.Extent=} opt_extent Extent.
- * @return {ol.Extent} Extent.
- */
-ol.extent.createOrUpdateEmpty = function(opt_extent) {
-  return ol.extent.createOrUpdate(
-      Infinity, Infinity, -Infinity, -Infinity, opt_extent);
-};
-
-
-/**
- * @param {ol.Coordinate} coordinate Coordinate.
- * @param {ol.Extent=} opt_extent Extent.
- * @return {ol.Extent} Extent.
- */
-ol.extent.createOrUpdateFromCoordinate = function(coordinate, opt_extent) {
-  var x = coordinate[0];
-  var y = coordinate[1];
-  return ol.extent.createOrUpdate(x, y, x, y, opt_extent);
-};
-
-
-/**
- * @param {Array.<ol.Coordinate>} coordinates Coordinates.
- * @param {ol.Extent=} opt_extent Extent.
- * @return {ol.Extent} Extent.
- */
-ol.extent.createOrUpdateFromCoordinates = function(coordinates, opt_extent) {
-  var extent = ol.extent.createOrUpdateEmpty(opt_extent);
-  return ol.extent.extendCoordinates(extent, coordinates);
-};
-
-
-/**
- * @param {Array.<number>} flatCoordinates Flat coordinates.
- * @param {number} offset Offset.
- * @param {number} end End.
- * @param {number} stride Stride.
- * @param {ol.Extent=} opt_extent Extent.
- * @return {ol.Extent} Extent.
- */
-ol.extent.createOrUpdateFromFlatCoordinates =
-    function(flatCoordinates, offset, end, stride, opt_extent) {
-  var extent = ol.extent.createOrUpdateEmpty(opt_extent);
-  return ol.extent.extendFlatCoordinates(
-      extent, flatCoordinates, offset, end, stride);
-};
-
-
-/**
- * @param {Array.<Array.<ol.Coordinate>>} rings Rings.
- * @param {ol.Extent=} opt_extent Extent.
- * @return {ol.Extent} Extent.
- */
-ol.extent.createOrUpdateFromRings = function(rings, opt_extent) {
-  var extent = ol.extent.createOrUpdateEmpty(opt_extent);
-  return ol.extent.extendRings(extent, rings);
-};
-
-
-/**
- * Empty an extent in place.
- * @param {ol.Extent} extent Extent.
- * @return {ol.Extent} Extent.
- */
-ol.extent.empty = function(extent) {
-  extent[0] = extent[1] = Infinity;
-  extent[2] = extent[3] = -Infinity;
-  return extent;
-};
-
-
-/**
- * Determine if two extents are equivalent.
- * @param {ol.Extent} extent1 Extent 1.
- * @param {ol.Extent} extent2 Extent 2.
- * @return {boolean} The two extents are equivalent.
- * @api stable
- */
-ol.extent.equals = function(extent1, extent2) {
-  return extent1[0] == extent2[0] && extent1[2] == extent2[2] &&
-      extent1[1] == extent2[1] && extent1[3] == extent2[3];
-};
-
-
-/**
- * Modify an extent to include another extent.
- * @param {ol.Extent} extent1 The extent to be modified.
- * @param {ol.Extent} extent2 The extent that will be included in the first.
- * @return {ol.Extent} A reference to the first (extended) extent.
- * @api stable
- */
-ol.extent.extend = function(extent1, extent2) {
-  if (extent2[0] < extent1[0]) {
-    extent1[0] = extent2[0];
-  }
-  if (extent2[2] > extent1[2]) {
-    extent1[2] = extent2[2];
-  }
-  if (extent2[1] < extent1[1]) {
-    extent1[1] = extent2[1];
-  }
-  if (extent2[3] > extent1[3]) {
-    extent1[3] = extent2[3];
-  }
-  return extent1;
-};
-
-
-/**
- * @param {ol.Extent} extent Extent.
- * @param {ol.Coordinate} coordinate Coordinate.
- */
-ol.extent.extendCoordinate = function(extent, coordinate) {
-  if (coordinate[0] < extent[0]) {
-    extent[0] = coordinate[0];
-  }
-  if (coordinate[0] > extent[2]) {
-    extent[2] = coordinate[0];
-  }
-  if (coordinate[1] < extent[1]) {
-    extent[1] = coordinate[1];
-  }
-  if (coordinate[1] > extent[3]) {
-    extent[3] = coordinate[1];
-  }
-};
-
-
-/**
- * @param {ol.Extent} extent Extent.
- * @param {Array.<ol.Coordinate>} coordinates Coordinates.
- * @return {ol.Extent} Extent.
- */
-ol.extent.extendCoordinates = function(extent, coordinates) {
-  var i, ii;
-  for (i = 0, ii = coordinates.length; i < ii; ++i) {
-    ol.extent.extendCoordinate(extent, coordinates[i]);
-  }
-  return extent;
-};
-
-
-/**
- * @param {ol.Extent} extent Extent.
- * @param {Array.<number>} flatCoordinates Flat coordinates.
- * @param {number} offset Offset.
- * @param {number} end End.
- * @param {number} stride Stride.
- * @return {ol.Extent} Extent.
- */
-ol.extent.extendFlatCoordinates =
-    function(extent, flatCoordinates, offset, end, stride) {
-  for (; offset < end; offset += stride) {
-    ol.extent.extendXY(
-        extent, flatCoordinates[offset], flatCoordinates[offset + 1]);
-  }
-  return extent;
-};
-
-
-/**
- * @param {ol.Extent} extent Extent.
- * @param {Array.<Array.<ol.Coordinate>>} rings Rings.
- * @return {ol.Extent} Extent.
- */
-ol.extent.extendRings = function(extent, rings) {
-  var i, ii;
-  for (i = 0, ii = rings.length; i < ii; ++i) {
-    ol.extent.extendCoordinates(extent, rings[i]);
-  }
-  return extent;
-};
-
-
-/**
- * @param {ol.Extent} extent Extent.
- * @param {number} x X.
- * @param {number} y Y.
- */
-ol.extent.extendXY = function(extent, x, y) {
-  extent[0] = Math.min(extent[0], x);
-  extent[1] = Math.min(extent[1], y);
-  extent[2] = Math.max(extent[2], x);
-  extent[3] = Math.max(extent[3], y);
-};
-
-
-/**
- * This function calls `callback` for each corner of the extent. If the
- * callback returns a truthy value the function returns that value
- * immediately. Otherwise the function returns `false`.
- * @param {ol.Extent} extent Extent.
- * @param {function(this:T, ol.Coordinate): S} callback Callback.
- * @param {T=} opt_this Value to use as `this` when executing `callback`.
- * @return {S|boolean} Value.
- * @template S, T
- */
-ol.extent.forEachCorner = function(extent, callback, opt_this) {
-  var val;
-  val = callback.call(opt_this, ol.extent.getBottomLeft(extent));
-  if (val) {
-    return val;
-  }
-  val = callback.call(opt_this, ol.extent.getBottomRight(extent));
-  if (val) {
-    return val;
-  }
-  val = callback.call(opt_this, ol.extent.getTopRight(extent));
-  if (val) {
-    return val;
-  }
-  val = callback.call(opt_this, ol.extent.getTopLeft(extent));
-  if (val) {
-    return val;
-  }
-  return false;
-};
-
-
-/**
- * @param {ol.Extent} extent Extent.
- * @return {number} Area.
- */
-ol.extent.getArea = function(extent) {
-  var area = 0;
-  if (!ol.extent.isEmpty(extent)) {
-    area = ol.extent.getWidth(extent) * ol.extent.getHeight(extent);
-  }
-  return area;
-};
-
-
-/**
- * Get the bottom left coordinate of an extent.
- * @param {ol.Extent} extent Extent.
- * @return {ol.Coordinate} Bottom left coordinate.
- * @api stable
- */
-ol.extent.getBottomLeft = function(extent) {
-  return [extent[0], extent[1]];
-};
-
-
-/**
- * Get the bottom right coordinate of an extent.
- * @param {ol.Extent} extent Extent.
- * @return {ol.Coordinate} Bottom right coordinate.
- * @api stable
- */
-ol.extent.getBottomRight = function(extent) {
-  return [extent[2], extent[1]];
-};
-
-
-/**
- * Get the center coordinate of an extent.
- * @param {ol.Extent} extent Extent.
- * @return {ol.Coordinate} Center.
- * @api stable
- */
-ol.extent.getCenter = function(extent) {
-  return [(extent[0] + extent[2]) / 2, (extent[1] + extent[3]) / 2];
-};
-
-
-/**
- * Get a corner coordinate of an extent.
- * @param {ol.Extent} extent Extent.
- * @param {ol.extent.Corner} corner Corner.
- * @return {ol.Coordinate} Corner coordinate.
- */
-ol.extent.getCorner = function(extent, corner) {
-  var coordinate;
-  if (corner === ol.extent.Corner.BOTTOM_LEFT) {
-    coordinate = ol.extent.getBottomLeft(extent);
-  } else if (corner === ol.extent.Corner.BOTTOM_RIGHT) {
-    coordinate = ol.extent.getBottomRight(extent);
-  } else if (corner === ol.extent.Corner.TOP_LEFT) {
-    coordinate = ol.extent.getTopLeft(extent);
-  } else if (corner === ol.extent.Corner.TOP_RIGHT) {
-    coordinate = ol.extent.getTopRight(extent);
-  } else {
-    goog.asserts.fail('Invalid corner: %s', corner);
-  }
-  goog.asserts.assert(goog.isDef(coordinate), 'coordinate should be defined');
-  return coordinate;
-};
-
-
-/**
- * @param {ol.Extent} extent1 Extent 1.
- * @param {ol.Extent} extent2 Extent 2.
- * @return {number} Enlarged area.
- */
-ol.extent.getEnlargedArea = function(extent1, extent2) {
-  var minX = Math.min(extent1[0], extent2[0]);
-  var minY = Math.min(extent1[1], extent2[1]);
-  var maxX = Math.max(extent1[2], extent2[2]);
-  var maxY = Math.max(extent1[3], extent2[3]);
-  return (maxX - minX) * (maxY - minY);
-};
-
-
-/**
- * @param {ol.Coordinate} center Center.
- * @param {number} resolution Resolution.
- * @param {number} rotation Rotation.
- * @param {ol.Size} size Size.
- * @param {ol.Extent=} opt_extent Destination extent.
- * @return {ol.Extent} Extent.
- */
-ol.extent.getForViewAndSize =
-    function(center, resolution, rotation, size, opt_extent) {
-  var dx = resolution * size[0] / 2;
-  var dy = resolution * size[1] / 2;
-  var cosRotation = Math.cos(rotation);
-  var sinRotation = Math.sin(rotation);
-  /** @type {Array.<number>} */
-  var xs = [-dx, -dx, dx, dx];
-  /** @type {Array.<number>} */
-  var ys = [-dy, dy, -dy, dy];
-  var i, x, y;
-  for (i = 0; i < 4; ++i) {
-    x = xs[i];
-    y = ys[i];
-    xs[i] = center[0] + x * cosRotation - y * sinRotation;
-    ys[i] = center[1] + x * sinRotation + y * cosRotation;
-  }
-  return ol.extent.boundingExtentXYs_(xs, ys, opt_extent);
-};
-
-
 /**
- * Get the height of an extent.
- * @param {ol.Extent} extent Extent.
- * @return {number} Height.
- * @api stable
+ * @define {number} The maximum size in pixels of atlas images. Default is
+ * `-1`, meaning it is not used (and `ol.WEBGL_MAX_TEXTURE_SIZE` is
+ * used instead).
  */
-ol.extent.getHeight = function(extent) {
-  return extent[3] - extent[1];
-};
+ol.MAX_ATLAS_SIZE = -1;
 
 
 /**
- * @param {ol.Extent} extent1 Extent 1.
- * @param {ol.Extent} extent2 Extent 2.
- * @return {number} Intersection area.
+ * @define {number} Maximum mouse wheel delta.
  */
-ol.extent.getIntersectionArea = function(extent1, extent2) {
-  var intersection = ol.extent.getIntersection(extent1, extent2);
-  return ol.extent.getArea(intersection);
-};
+ol.MOUSEWHEELZOOM_MAXDELTA = 1;
 
 
 /**
- * Get the intersection of two extents.
- * @param {ol.Extent} extent1 Extent 1.
- * @param {ol.Extent} extent2 Extent 2.
- * @param {ol.Extent=} opt_extent Optional extent to populate with intersection.
- * @return {ol.Extent} Intersecting extent.
- * @api stable
+ * @define {number} Mouse wheel timeout duration.
  */
-ol.extent.getIntersection = function(extent1, extent2, opt_extent) {
-  var intersection = goog.isDef(opt_extent) ?
-      opt_extent : ol.extent.createEmpty();
-  if (ol.extent.intersects(extent1, extent2)) {
-    if (extent1[0] > extent2[0]) {
-      intersection[0] = extent1[0];
-    } else {
-      intersection[0] = extent2[0];
-    }
-    if (extent1[1] > extent2[1]) {
-      intersection[1] = extent1[1];
-    } else {
-      intersection[1] = extent2[1];
-    }
-    if (extent1[2] < extent2[2]) {
-      intersection[2] = extent1[2];
-    } else {
-      intersection[2] = extent2[2];
-    }
-    if (extent1[3] < extent2[3]) {
-      intersection[3] = extent1[3];
-    } else {
-      intersection[3] = extent2[3];
-    }
-  }
-  return intersection;
-};
+ol.MOUSEWHEELZOOM_TIMEOUT_DURATION = 80;
 
 
 /**
- * @param {ol.Extent} extent Extent.
- * @return {number} Margin.
+ * @define {number} Maximum width and/or height extent ratio that determines
+ * when the overview map should be zoomed out.
  */
-ol.extent.getMargin = function(extent) {
-  return ol.extent.getWidth(extent) + ol.extent.getHeight(extent);
-};
+ol.OVERVIEWMAP_MAX_RATIO = 0.75;
 
 
 /**
- * Get the size (width, height) of an extent.
- * @param {ol.Extent} extent The extent.
- * @return {ol.Size} The extent size.
- * @api stable
+ * @define {number} Minimum width and/or height extent ratio that determines
+ * when the overview map should be zoomed in.
  */
-ol.extent.getSize = function(extent) {
-  return [extent[2] - extent[0], extent[3] - extent[1]];
-};
+ol.OVERVIEWMAP_MIN_RATIO = 0.1;
 
 
 /**
- * Get the top left coordinate of an extent.
- * @param {ol.Extent} extent Extent.
- * @return {ol.Coordinate} Top left coordinate.
- * @api stable
+ * @define {number} Tolerance for geometry simplification in device pixels.
  */
-ol.extent.getTopLeft = function(extent) {
-  return [extent[0], extent[3]];
-};
+ol.SIMPLIFY_TOLERANCE = 0.5;
 
 
 /**
- * Get the top right coordinate of an extent.
- * @param {ol.Extent} extent Extent.
- * @return {ol.Coordinate} Top right coordinate.
- * @api stable
+ * @define {number} Texture cache high water mark.
  */
-ol.extent.getTopRight = function(extent) {
-  return [extent[2], extent[3]];
-};
+ol.WEBGL_TEXTURE_CACHE_HIGH_WATER_MARK = 1024;
 
 
 /**
- * Get the width of an extent.
- * @param {ol.Extent} extent Extent.
- * @return {number} Width.
- * @api stable
+ * The maximum supported WebGL texture size in pixels. If WebGL is not
+ * supported, the value is set to `undefined`.
+ * @const
+ * @type {number|undefined}
  */
-ol.extent.getWidth = function(extent) {
-  return extent[2] - extent[0];
-};
+ol.WEBGL_MAX_TEXTURE_SIZE; // value is set in `ol.has`
 
 
 /**
- * Determine if one extent intersects another.
- * @param {ol.Extent} extent1 Extent 1.
- * @param {ol.Extent} extent2 Extent.
- * @return {boolean} The two extents intersect.
- * @api stable
+ * List of supported WebGL extensions.
+ * @const
+ * @type {Array.<string>}
  */
-ol.extent.intersects = function(extent1, extent2) {
-  return extent1[0] <= extent2[2] &&
-      extent1[2] >= extent2[0] &&
-      extent1[1] <= extent2[3] &&
-      extent1[3] >= extent2[1];
-};
+ol.WEBGL_EXTENSIONS; // value is set in `ol.has`
 
 
 /**
- * Determine if an extent is empty.
- * @param {ol.Extent} extent Extent.
- * @return {boolean} Is empty.
- * @api stable
- */
-ol.extent.isEmpty = function(extent) {
-  return extent[2] < extent[0] || extent[3] < extent[1];
-};
-
-
-/**
- * @param {ol.Extent} extent Extent.
- * @return {boolean} Is infinite.
- */
-ol.extent.isInfinite = function(extent) {
-  return extent[0] == -Infinity || extent[1] == -Infinity ||
-      extent[2] == Infinity || extent[3] == Infinity;
-};
-
-
-/**
- * @param {ol.Extent} extent Extent.
- * @param {ol.Coordinate} coordinate Coordinate.
- * @return {ol.Coordinate} Coordinate.
- */
-ol.extent.normalize = function(extent, coordinate) {
-  return [
-    (coordinate[0] - extent[0]) / (extent[2] - extent[0]),
-    (coordinate[1] - extent[1]) / (extent[3] - extent[1])
-  ];
-};
-
-
-/**
- * @param {ol.Extent} extent Extent.
- * @param {ol.Extent=} opt_extent Extent.
- * @return {ol.Extent} Extent.
- */
-ol.extent.returnOrUpdate = function(extent, opt_extent) {
-  if (goog.isDef(opt_extent)) {
-    opt_extent[0] = extent[0];
-    opt_extent[1] = extent[1];
-    opt_extent[2] = extent[2];
-    opt_extent[3] = extent[3];
-    return opt_extent;
-  } else {
-    return extent;
-  }
-};
-
-
-/**
- * @param {ol.Extent} extent Extent.
- * @param {number} value Value.
- */
-ol.extent.scaleFromCenter = function(extent, value) {
-  var deltaX = ((extent[2] - extent[0]) / 2) * (value - 1);
-  var deltaY = ((extent[3] - extent[1]) / 2) * (value - 1);
-  extent[0] -= deltaX;
-  extent[2] += deltaX;
-  extent[1] -= deltaY;
-  extent[3] += deltaY;
-};
-
-
-/**
- * Determine if the segment between two coordinates intersects (crosses,
- * touches, or is contained by) the provided extent.
- * @param {ol.Extent} extent The extent.
- * @param {ol.Coordinate} start Segment start coordinate.
- * @param {ol.Coordinate} end Segment end coordinate.
- * @return {boolean} The segment intersects the extent.
- */
-ol.extent.intersectsSegment = function(extent, start, end) {
-  var intersects = false;
-  var startRel = ol.extent.coordinateRelationship(extent, start);
-  var endRel = ol.extent.coordinateRelationship(extent, end);
-  if (startRel === ol.extent.Relationship.INTERSECTING ||
-      endRel === ol.extent.Relationship.INTERSECTING) {
-    intersects = true;
-  } else {
-    var minX = extent[0];
-    var minY = extent[1];
-    var maxX = extent[2];
-    var maxY = extent[3];
-    var startX = start[0];
-    var startY = start[1];
-    var endX = end[0];
-    var endY = end[1];
-    var slope = (endY - startY) / (endX - startX);
-    var x, y;
-    if (!!(endRel & ol.extent.Relationship.ABOVE) &&
-        !(startRel & ol.extent.Relationship.ABOVE)) {
-      // potentially intersects top
-      x = endX - ((endY - maxY) / slope);
-      intersects = x >= minX && x <= maxX;
-    }
-    if (!intersects && !!(endRel & ol.extent.Relationship.RIGHT) &&
-        !(startRel & ol.extent.Relationship.RIGHT)) {
-      // potentially intersects right
-      y = endY - ((endX - maxX) * slope);
-      intersects = y >= minY && y <= maxY;
-    }
-    if (!intersects && !!(endRel & ol.extent.Relationship.BELOW) &&
-        !(startRel & ol.extent.Relationship.BELOW)) {
-      // potentially intersects bottom
-      x = endX - ((endY - minY) / slope);
-      intersects = x >= minX && x <= maxX;
-    }
-    if (!intersects && !!(endRel & ol.extent.Relationship.LEFT) &&
-        !(startRel & ol.extent.Relationship.LEFT)) {
-      // potentially intersects left
-      y = endY - ((endX - minX) * slope);
-      intersects = y >= minY && y <= maxY;
-    }
-
-  }
-  return intersects;
-};
-
-
-/**
- * @param {ol.Extent} extent1 Extent 1.
- * @param {ol.Extent} extent2 Extent 2.
- * @return {boolean} Touches.
- */
-ol.extent.touches = function(extent1, extent2) {
-  var intersects = ol.extent.intersects(extent1, extent2);
-  return intersects &&
-      (extent1[0] == extent2[2] || extent1[2] == extent2[0] ||
-       extent1[1] == extent2[3] || extent1[3] == extent2[1]);
-};
-
-
-/**
- * Apply a transform function to the extent.
- * @param {ol.Extent} extent Extent.
- * @param {ol.TransformFunction} transformFn Transform function.  Called with
- * [minX, minY, maxX, maxY] extent coordinates.
- * @param {ol.Extent=} opt_extent Destination extent.
- * @return {ol.Extent} Extent.
- * @api stable
- */
-ol.extent.applyTransform = function(extent, transformFn, opt_extent) {
-  var coordinates = [
-    extent[0], extent[1],
-    extent[0], extent[3],
-    extent[2], extent[1],
-    extent[2], extent[3]
-  ];
-  transformFn(coordinates, coordinates, 2);
-  var xs = [coordinates[0], coordinates[2], coordinates[4], coordinates[6]];
-  var ys = [coordinates[1], coordinates[3], coordinates[5], coordinates[7]];
-  return ol.extent.boundingExtentXYs_(xs, ys, opt_extent);
-};
-
-
-/**
- * Apply a 2d transform to an extent.
- * @param {ol.Extent} extent Input extent.
- * @param {goog.vec.Mat4.Number} transform The transform matrix.
- * @param {ol.Extent=} opt_extent Optional extent for return values.
- * @return {ol.Extent} The transformed extent.
- */
-ol.extent.transform2D = function(extent, transform, opt_extent) {
-  var dest = goog.isDef(opt_extent) ? opt_extent : [];
-  var m00 = goog.vec.Mat4.getElement(transform, 0, 0);
-  var m10 = goog.vec.Mat4.getElement(transform, 1, 0);
-  var m01 = goog.vec.Mat4.getElement(transform, 0, 1);
-  var m11 = goog.vec.Mat4.getElement(transform, 1, 1);
-  var m03 = goog.vec.Mat4.getElement(transform, 0, 3);
-  var m13 = goog.vec.Mat4.getElement(transform, 1, 3);
-  var xi = [0, 2, 0, 2];
-  var yi = [1, 1, 3, 3];
-  var xs = [];
-  var ys = [];
-  var i, x, y;
-  for (i = 0; i < 4; ++i) {
-    x = extent[xi[i]];
-    y = extent[yi[i]];
-    xs[i] = m00 * x + m01 * y + m03;
-    ys[i] = m10 * x + m11 * y + m13;
-  }
-  dest[0] = Math.min.apply(null, xs);
-  dest[1] = Math.min.apply(null, ys);
-  dest[2] = Math.max.apply(null, xs);
-  dest[3] = Math.max.apply(null, ys);
-  return dest;
-};
-
-// Copyright 2008 The Closure Library Authors. All Rights Reserved.
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//      http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS-IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
-
-/**
- * @fileoverview Utilities for creating functions. Loosely inspired by the
- * java classes: http://goo.gl/GM0Hmu and http://goo.gl/6k7nI8.
- *
- * @author nicksantos@google.com (Nick Santos)
- */
-
-
-goog.provide('goog.functions');
-
-
-/**
- * Creates a function that always returns the same value.
- * @param {T} retValue The value to return.
- * @return {function():T} The new function.
- * @template T
- */
-goog.functions.constant = function(retValue) {
-  return function() {
-    return retValue;
-  };
-};
-
-
-/**
- * Always returns false.
- * @type {function(...): boolean}
- */
-goog.functions.FALSE = goog.functions.constant(false);
-
-
-/**
- * Always returns true.
- * @type {function(...): boolean}
- */
-goog.functions.TRUE = goog.functions.constant(true);
-
-
-/**
- * Always returns NULL.
- * @type {function(...): null}
- */
-goog.functions.NULL = goog.functions.constant(null);
-
-
-/**
- * A simple function that returns the first argument of whatever is passed
- * into it.
- * @param {T=} opt_returnValue The single value that will be returned.
- * @param {...*} var_args Optional trailing arguments. These are ignored.
- * @return {T} The first argument passed in, or undefined if nothing was passed.
- * @template T
- */
-goog.functions.identity = function(opt_returnValue, var_args) {
-  return opt_returnValue;
-};
-
-
-/**
- * Creates a function that always throws an error with the given message.
- * @param {string} message The error message.
- * @return {!Function} The error-throwing function.
- */
-goog.functions.error = function(message) {
-  return function() {
-    throw Error(message);
-  };
-};
-
-
-/**
- * Creates a function that throws the given object.
- * @param {*} err An object to be thrown.
- * @return {!Function} The error-throwing function.
- */
-goog.functions.fail = function(err) {
-  return function() {
-    throw err;
-  }
-};
-
-
-/**
- * Given a function, create a function that keeps opt_numArgs arguments and
- * silently discards all additional arguments.
- * @param {Function} f The original function.
- * @param {number=} opt_numArgs The number of arguments to keep. Defaults to 0.
- * @return {!Function} A version of f that only keeps the first opt_numArgs
- *     arguments.
- */
-goog.functions.lock = function(f, opt_numArgs) {
-  opt_numArgs = opt_numArgs || 0;
-  return function() {
-    return f.apply(this, Array.prototype.slice.call(arguments, 0, opt_numArgs));
-  };
-};
-
-
-/**
- * Creates a function that returns its nth argument.
- * @param {number} n The position of the return argument.
- * @return {!Function} A new function.
- */
-goog.functions.nth = function(n) {
-  return function() {
-    return arguments[n];
-  };
-};
-
-
-/**
- * Given a function, create a new function that swallows its return value
- * and replaces it with a new one.
- * @param {Function} f A function.
- * @param {T} retValue A new return value.
- * @return {function(...?):T} A new function.
- * @template T
- */
-goog.functions.withReturnValue = function(f, retValue) {
-  return goog.functions.sequence(f, goog.functions.constant(retValue));
-};
-
-
-/**
- * Creates a function that returns whether its arguement equals the given value.
- *
- * Example:
- * var key = goog.object.findKey(obj, goog.functions.equalTo('needle'));
- *
- * @param {*} value The value to compare to.
- * @param {boolean=} opt_useLooseComparison Whether to use a loose (==)
- *     comparison rather than a strict (===) one. Defaults to false.
- * @return {function(*):boolean} The new function.
- */
-goog.functions.equalTo = function(value, opt_useLooseComparison) {
-  return function(other) {
-    return opt_useLooseComparison ? (value == other) : (value === other);
-  };
-};
-
-
-/**
- * Creates the composition of the functions passed in.
- * For example, (goog.functions.compose(f, g))(a) is equivalent to f(g(a)).
- * @param {function(...?):T} fn The final function.
- * @param {...Function} var_args A list of functions.
- * @return {function(...?):T} The composition of all inputs.
- * @template T
- */
-goog.functions.compose = function(fn, var_args) {
-  var functions = arguments;
-  var length = functions.length;
-  return function() {
-    var result;
-    if (length) {
-      result = functions[length - 1].apply(this, arguments);
-    }
-
-    for (var i = length - 2; i >= 0; i--) {
-      result = functions[i].call(this, result);
-    }
-    return result;
-  };
-};
-
-
-/**
- * Creates a function that calls the functions passed in in sequence, and
- * returns the value of the last function. For example,
- * (goog.functions.sequence(f, g))(x) is equivalent to f(x),g(x).
- * @param {...Function} var_args A list of functions.
- * @return {!Function} A function that calls all inputs in sequence.
- */
-goog.functions.sequence = function(var_args) {
-  var functions = arguments;
-  var length = functions.length;
-  return function() {
-    var result;
-    for (var i = 0; i < length; i++) {
-      result = functions[i].apply(this, arguments);
-    }
-    return result;
-  };
-};
-
-
-/**
- * Creates a function that returns true if each of its components evaluates
- * to true. The components are evaluated in order, and the evaluation will be
- * short-circuited as soon as a function returns false.
- * For example, (goog.functions.and(f, g))(x) is equivalent to f(x) && g(x).
- * @param {...Function} var_args A list of functions.
- * @return {function(...?):boolean} A function that ANDs its component
- *      functions.
- */
-goog.functions.and = function(var_args) {
-  var functions = arguments;
-  var length = functions.length;
-  return function() {
-    for (var i = 0; i < length; i++) {
-      if (!functions[i].apply(this, arguments)) {
-        return false;
-      }
-    }
-    return true;
-  };
-};
-
-
-/**
- * Creates a function that returns true if any of its components evaluates
- * to true. The components are evaluated in order, and the evaluation will be
- * short-circuited as soon as a function returns true.
- * For example, (goog.functions.or(f, g))(x) is equivalent to f(x) || g(x).
- * @param {...Function} var_args A list of functions.
- * @return {function(...?):boolean} A function that ORs its component
- *    functions.
- */
-goog.functions.or = function(var_args) {
-  var functions = arguments;
-  var length = functions.length;
-  return function() {
-    for (var i = 0; i < length; i++) {
-      if (functions[i].apply(this, arguments)) {
-        return true;
-      }
-    }
-    return false;
-  };
-};
-
-
-/**
- * Creates a function that returns the Boolean opposite of a provided function.
- * For example, (goog.functions.not(f))(x) is equivalent to !f(x).
- * @param {!Function} f The original function.
- * @return {function(...?):boolean} A function that delegates to f and returns
- * opposite.
- */
-goog.functions.not = function(f) {
-  return function() {
-    return !f.apply(this, arguments);
-  };
-};
-
-
-/**
- * Generic factory function to construct an object given the constructor
- * and the arguments. Intended to be bound to create object factories.
- *
- * Example:
+ * Inherit the prototype methods from one constructor into another.
  *
- * var factory = goog.partial(goog.functions.create, Class);
+ * Usage:
  *
- * @param {function(new:T, ...)} constructor The constructor for the Object.
- * @param {...*} var_args The arguments to be passed to the constructor.
- * @return {T} A new instance of the class given in {@code constructor}.
- * @template T
- */
-goog.functions.create = function(constructor, var_args) {
-  /**
-   * @constructor
-   * @final
-   */
-  var temp = function() {};
-  temp.prototype = constructor.prototype;
-
-  // obj will have constructor's prototype in its chain and
-  // 'obj instanceof constructor' will be true.
-  var obj = new temp();
-
-  // obj is initialized by constructor.
-  // arguments is only array-like so lacks shift(), but can be used with
-  // the Array prototype function.
-  constructor.apply(obj, Array.prototype.slice.call(arguments, 1));
-  return obj;
-};
-
-
-/**
- * @define {boolean} Whether the return value cache should be used.
- *    This should only be used to disable caches when testing.
- */
-goog.define('goog.functions.CACHE_RETURN_VALUE', true);
-
-
-/**
- * Gives a wrapper function that caches the return value of a parameterless
- * function when first called.
+ *     function ParentClass(a, b) { }
+ *     ParentClass.prototype.foo = function(a) { }
  *
- * When called for the first time, the given function is called and its
- * return value is cached (thus this is only appropriate for idempotent
- * functions).  Subsequent calls will return the cached return value. This
- * allows the evaluation of expensive functions to be delayed until first used.
+ *     function ChildClass(a, b, c) {
+ *       // Call parent constructor
+ *       ParentClass.call(this, a, b);
+ *     }
+ *     ol.inherits(ChildClass, ParentClass);
  *
- * To cache the return values of functions with parameters, see goog.memoize.
+ *     var child = new ChildClass('a', 'b', 'see');
+ *     child.foo(); // This works.
  *
- * @param {!function():T} fn A function to lazily evaluate.
- * @return {!function():T} A wrapped version the function.
- * @template T
- */
-goog.functions.cacheReturnValue = function(fn) {
-  var called = false;
-  var value;
-
-  return function() {
-    if (!goog.functions.CACHE_RETURN_VALUE) {
-      return fn();
-    }
-
-    if (!called) {
-      value = fn();
-      called = true;
-    }
-
-    return value;
-  }
-};
-
-
-/**
- * Wraps a function to allow it to be called, at most, once. All
- * additional calls are no-ops.
+ * In addition, a superclass' implementation of a method can be invoked as
+ * follows:
  *
- * This is particularly useful for initialization functions
- * that should be called, at most, once.
+ *     ChildClass.prototype.foo = function(a) {
+ *       ChildClass.base(this, 'foo', a);
+ *       // Other code here.
+ *     };
  *
- * @param {function():*} f Function to call.
- * @return {function():undefined} Wrapped function.
+ * @param {Function} childCtor Child constructor.
+ * @param {Function} parentCtor Parent constructor.
+ * @function
+ * @api
  */
-goog.functions.once = function(f) {
-  // Keep a reference to the function that we null out when we're done with
-  // it -- that way, the function can be GC'd when we're done with it.
-  var inner = f;
-  return function() {
-    if (inner) {
-      var tmp = inner;
-      inner = null;
-      tmp();
-    }
-  };
-};
+ol.inherits =
+    goog.inherits;
+// note that the newline above is necessary to satisfy the linter
 
 /**
  * @license
@@ -19494,6 +19123,538 @@ ol.geom.Geometry.prototype.transform = function(source, destination) {
       'cannot transform geometries with TILE_PIXELS units');
   this.applyTransform(ol.proj.getTransform(source, destination));
   return this;
+};
+
+goog.provide('ol.FlyweightFeature');
+
+
+goog.require('goog.functions');
+goog.require('ol.extent');
+goog.require('ol.geom.GeometryType');
+
+
+
+/**
+ * Lighweight, read-only, {@link ol.Feature} and {@link ol.geom.Geometry} like
+ * structure, optimized for rendering and styling. Geometry retrieval is
+ * limited to getting the type and extent of the geometry.
+ *
+ * Geometry extents are calculated lazily, which results in faster rendering for
+ * vector tiles, but slower hit detection.
+ *
+ * @constructor
+ * @param {ol.geom.GeometryType} type Geometry type.
+ * @param {Array.<number>} flatCoordinates Flat coordinates.
+ * @param {Array.<number>|Array.<Array.<number>>} ends Ends or Endss.
+ * @param {Object.<string, *>} properties Properties.
+ */
+ol.FlyweightFeature = function(type, flatCoordinates, ends, properties) {
+
+  /**
+   * @private
+   * @type {ol.Extent|undefined}
+   */
+  this.extent_;
+
+  goog.asserts.assert(type === ol.geom.GeometryType.POINT ||
+      type === ol.geom.GeometryType.MULTI_POINT ||
+      type === ol.geom.GeometryType.LINE_STRING ||
+      type === ol.geom.GeometryType.MULTI_LINE_STRING ||
+      type === ol.geom.GeometryType.POLYGON,
+      'Need a Point, MultiPoint, LineString, MultiLineString or Polygon type');
+
+  /**
+   * @private
+   * @type {ol.geom.GeometryType}
+   */
+  this.type_ = type;
+
+  /**
+   * @private
+   * @type {Array.<number>}
+   */
+  this.flatCoordinates_ = flatCoordinates;
+
+  /**
+   * @private
+   * @type {Array.<number>|Array.<Array.<number>>}
+   */
+  this.ends_ = ends;
+
+  /**
+   * @private
+   * @type {Object.<string, *>}
+   */
+  this.properties_ = properties;
+
+};
+
+
+/**
+ * Get a feature property by its key.
+ * @param {string} key Key
+ * @return {*} Value for the requested key.
+ * @api
+ */
+ol.FlyweightFeature.prototype.get = function(key) {
+  return this.properties_[key];
+};
+
+
+/**
+ * @return {Array.<number>|Array.<Array.<number>>} Ends or endss.
+ */
+ol.FlyweightFeature.prototype.getEnds = function() {
+  return this.ends_;
+};
+
+
+/**
+ * Get the extent of this flyweight feature's geometry.
+ * @return {ol.Extent} Extent.
+ * @api
+ */
+ol.FlyweightFeature.prototype.getExtent = function() {
+  if (!goog.isDef(this.extent_)) {
+    this.extent_ = this.type_ === ol.geom.GeometryType.POINT ?
+        ol.extent.createOrUpdateFromCoordinate(this.flatCoordinates_) :
+        ol.extent.createOrUpdateFromFlatCoordinates(
+            this.flatCoordinates_, 0, this.flatCoordinates_.length, 2);
+
+  }
+  return this.extent_;
+};
+
+
+/**
+ * @return {Array.<number>} Flat coordinates.
+ */
+ol.FlyweightFeature.prototype.getFlatCoordinates =
+    ol.FlyweightFeature.prototype.getOrientedFlatCoordinates = function() {
+  return this.flatCoordinates_;
+};
+
+
+/**
+ * Get the flyweight feature for working with its geometry.
+ * @return {ol.FlyweightFeature} Flyweight feature.
+ * @api
+ */
+ol.FlyweightFeature.prototype.getGeometry = function() {
+  return this;
+};
+
+
+/**
+ * Get the feature properties.
+ * @return {Object.<string, *>} Feature properties.
+ * @api
+ */
+ol.FlyweightFeature.prototype.getProperties = function() {
+  return this.properties_;
+};
+
+
+/**
+ * Get the flyweight feature for working with its geometry.
+ * @return {ol.FlyweightFeature} Flyweight feature.
+ */
+ol.FlyweightFeature.prototype.getSimplifiedGeometry =
+    ol.FlyweightFeature.prototype.getGeometry;
+
+
+/**
+ * @return {number} Stride.
+ */
+ol.FlyweightFeature.prototype.getStride = goog.functions.constant(2);
+
+
+/**
+ * @return {undefined}
+ */
+ol.FlyweightFeature.prototype.getStyleFunction = goog.nullFunction;
+
+
+/**
+ * Get the type of this flyweight feature's geometry.
+ * @return {ol.geom.GeometryType} Geometry type.
+ * @api
+ */
+ol.FlyweightFeature.prototype.getType = function() {
+  return this.type_;
+};
+
+// FIXME factor out common code between usedTiles and wantedTiles
+
+goog.provide('ol.PostRenderFunction');
+goog.provide('ol.PreRenderFunction');
+
+
+/**
+ * @typedef {function(ol.Map, ?olx.FrameState): boolean}
+ */
+ol.PostRenderFunction;
+
+
+/**
+ * Function to perform manipulations before rendering. This function is called
+ * with the {@link ol.Map} as first and an optional {@link olx.FrameState} as
+ * second argument. Return `true` to keep this function for the next frame,
+ * `false` to remove it.
+ * @typedef {function(ol.Map, ?olx.FrameState): boolean}
+ * @api
+ */
+ol.PreRenderFunction;
+
+goog.provide('ol.CenterConstraint');
+goog.provide('ol.CenterConstraintType');
+
+goog.require('goog.math');
+
+
+/**
+ * @typedef {function((ol.Coordinate|undefined)): (ol.Coordinate|undefined)}
+ */
+ol.CenterConstraintType;
+
+
+/**
+ * @param {ol.Extent} extent Extent.
+ * @return {ol.CenterConstraintType}
+ */
+ol.CenterConstraint.createExtent = function(extent) {
+  return (
+      /**
+       * @param {ol.Coordinate|undefined} center Center.
+       * @return {ol.Coordinate|undefined} Center.
+       */
+      function(center) {
+        if (goog.isDef(center)) {
+          return [
+            goog.math.clamp(center[0], extent[0], extent[2]),
+            goog.math.clamp(center[1], extent[1], extent[3])
+          ];
+        } else {
+          return undefined;
+        }
+      });
+};
+
+
+/**
+ * @param {ol.Coordinate|undefined} center Center.
+ * @return {ol.Coordinate|undefined} Center.
+ */
+ol.CenterConstraint.none = function(center) {
+  return center;
+};
+
+goog.provide('ol.array');
+
+goog.require('goog.array');
+goog.require('goog.asserts');
+
+
+/**
+ * @param {Array.<number>} arr Array.
+ * @param {number} target Target.
+ * @return {number} Index.
+ */
+ol.array.binaryFindNearest = function(arr, target) {
+  var index = goog.array.binarySearch(arr, target,
+      /**
+       * @param {number} a A.
+       * @param {number} b B.
+       * @return {number} b minus a.
+       */
+      function(a, b) {
+        return b - a;
+      });
+  if (index >= 0) {
+    return index;
+  } else if (index == -1) {
+    return 0;
+  } else if (index == -arr.length - 1) {
+    return arr.length - 1;
+  } else {
+    var left = -index - 2;
+    var right = -index - 1;
+    if (arr[left] - target < target - arr[right]) {
+      return left;
+    } else {
+      return right;
+    }
+  }
+};
+
+
+/**
+ * @param {Array.<number>} arr Array.
+ * @param {number} target Target.
+ * @param {number} direction 0 means return the nearest, > 0
+ *    means return the largest nearest, < 0 means return the
+ *    smallest nearest.
+ * @return {number} Index.
+ */
+ol.array.linearFindNearest = function(arr, target, direction) {
+  var n = arr.length;
+  if (arr[0] <= target) {
+    return 0;
+  } else if (target <= arr[n - 1]) {
+    return n - 1;
+  } else {
+    var i;
+    if (direction > 0) {
+      for (i = 1; i < n; ++i) {
+        if (arr[i] < target) {
+          return i - 1;
+        }
+      }
+    } else if (direction < 0) {
+      for (i = 1; i < n; ++i) {
+        if (arr[i] <= target) {
+          return i;
+        }
+      }
+    } else {
+      for (i = 1; i < n; ++i) {
+        if (arr[i] == target) {
+          return i;
+        } else if (arr[i] < target) {
+          if (arr[i - 1] - target < target - arr[i]) {
+            return i - 1;
+          } else {
+            return i;
+          }
+        }
+      }
+    }
+    // We should never get here, but the compiler complains
+    // if it finds a path for which no number is returned.
+    goog.asserts.fail();
+    return n - 1;
+  }
+};
+
+
+/**
+ * @param {Array.<*>} arr Array.
+ * @param {number} begin Begin index.
+ * @param {number} end End index.
+ */
+ol.array.reverseSubArray = function(arr, begin, end) {
+  goog.asserts.assert(begin >= 0,
+      'Array begin index should be equal to or greater than 0');
+  goog.asserts.assert(end < arr.length,
+      'Array end index should be less than the array length');
+  while (begin < end) {
+    var tmp = arr[begin];
+    arr[begin] = arr[end];
+    arr[end] = tmp;
+    ++begin;
+    --end;
+  }
+};
+
+goog.provide('ol.ResolutionConstraint');
+goog.provide('ol.ResolutionConstraintType');
+
+goog.require('goog.math');
+goog.require('ol.array');
+
+
+/**
+ * @typedef {function((number|undefined), number, number): (number|undefined)}
+ */
+ol.ResolutionConstraintType;
+
+
+/**
+ * @param {Array.<number>} resolutions Resolutions.
+ * @return {ol.ResolutionConstraintType} Zoom function.
+ */
+ol.ResolutionConstraint.createSnapToResolutions =
+    function(resolutions) {
+  return (
+      /**
+       * @param {number|undefined} resolution Resolution.
+       * @param {number} delta Delta.
+       * @param {number} direction Direction.
+       * @return {number|undefined} Resolution.
+       */
+      function(resolution, delta, direction) {
+        if (goog.isDef(resolution)) {
+          var z =
+              ol.array.linearFindNearest(resolutions, resolution, direction);
+          z = goog.math.clamp(z + delta, 0, resolutions.length - 1);
+          return resolutions[z];
+        } else {
+          return undefined;
+        }
+      });
+};
+
+
+/**
+ * @param {number} power Power.
+ * @param {number} maxResolution Maximum resolution.
+ * @param {number=} opt_maxLevel Maximum level.
+ * @return {ol.ResolutionConstraintType} Zoom function.
+ */
+ol.ResolutionConstraint.createSnapToPower =
+    function(power, maxResolution, opt_maxLevel) {
+  return (
+      /**
+       * @param {number|undefined} resolution Resolution.
+       * @param {number} delta Delta.
+       * @param {number} direction Direction.
+       * @return {number|undefined} Resolution.
+       */
+      function(resolution, delta, direction) {
+        if (goog.isDef(resolution)) {
+          var offset;
+          if (direction > 0) {
+            offset = 0;
+          } else if (direction < 0) {
+            offset = 1;
+          } else {
+            offset = 0.5;
+          }
+          var oldLevel = Math.floor(
+              Math.log(maxResolution / resolution) / Math.log(power) + offset);
+          var newLevel = Math.max(oldLevel + delta, 0);
+          if (goog.isDef(opt_maxLevel)) {
+            newLevel = Math.min(newLevel, opt_maxLevel);
+          }
+          return maxResolution / Math.pow(power, newLevel);
+        } else {
+          return undefined;
+        }
+      });
+};
+
+goog.provide('ol.RotationConstraint');
+goog.provide('ol.RotationConstraintType');
+
+goog.require('goog.math');
+
+
+/**
+ * @typedef {function((number|undefined), number): (number|undefined)}
+ */
+ol.RotationConstraintType;
+
+
+/**
+ * @param {number|undefined} rotation Rotation.
+ * @param {number} delta Delta.
+ * @return {number|undefined} Rotation.
+ */
+ol.RotationConstraint.disable = function(rotation, delta) {
+  if (goog.isDef(rotation)) {
+    return 0;
+  } else {
+    return undefined;
+  }
+};
+
+
+/**
+ * @param {number|undefined} rotation Rotation.
+ * @param {number} delta Delta.
+ * @return {number|undefined} Rotation.
+ */
+ol.RotationConstraint.none = function(rotation, delta) {
+  if (goog.isDef(rotation)) {
+    return rotation + delta;
+  } else {
+    return undefined;
+  }
+};
+
+
+/**
+ * @param {number} n N.
+ * @return {ol.RotationConstraintType} Rotation constraint.
+ */
+ol.RotationConstraint.createSnapToN = function(n) {
+  var theta = 2 * Math.PI / n;
+  return (
+      /**
+       * @param {number|undefined} rotation Rotation.
+       * @param {number} delta Delta.
+       * @return {number|undefined} Rotation.
+       */
+      function(rotation, delta) {
+        if (goog.isDef(rotation)) {
+          rotation = Math.floor((rotation + delta) / theta + 0.5) * theta;
+          return rotation;
+        } else {
+          return undefined;
+        }
+      });
+};
+
+
+/**
+ * @param {number=} opt_tolerance Tolerance.
+ * @return {ol.RotationConstraintType} Rotation constraint.
+ */
+ol.RotationConstraint.createSnapToZero = function(opt_tolerance) {
+  var tolerance = opt_tolerance || goog.math.toRadians(5);
+  return (
+      /**
+       * @param {number|undefined} rotation Rotation.
+       * @param {number} delta Delta.
+       * @return {number|undefined} Rotation.
+       */
+      function(rotation, delta) {
+        if (goog.isDef(rotation)) {
+          if (Math.abs(rotation + delta) <= tolerance) {
+            return 0;
+          } else {
+            return rotation + delta;
+          }
+        } else {
+          return undefined;
+        }
+      });
+};
+
+goog.provide('ol.Constraints');
+
+goog.require('ol.CenterConstraintType');
+goog.require('ol.ResolutionConstraintType');
+goog.require('ol.RotationConstraintType');
+
+
+
+/**
+ * @constructor
+ * @param {ol.CenterConstraintType} centerConstraint Center constraint.
+ * @param {ol.ResolutionConstraintType} resolutionConstraint
+ *     Resolution constraint.
+ * @param {ol.RotationConstraintType} rotationConstraint
+ *     Rotation constraint.
+ */
+ol.Constraints =
+    function(centerConstraint, resolutionConstraint, rotationConstraint) {
+
+  /**
+   * @type {ol.CenterConstraintType}
+   */
+  this.center = centerConstraint;
+
+  /**
+   * @type {ol.ResolutionConstraintType}
+   */
+  this.resolution = resolutionConstraint;
+
+  /**
+   * @type {ol.RotationConstraintType}
+   */
+  this.rotation = rotationConstraint;
+
 };
 
 goog.provide('ol.geom.flat.transform');
@@ -37037,7 +37198,8 @@ goog.inherits(ol.source.Source, ol.Object);
  * @param {number} resolution Resolution.
  * @param {number} rotation Rotation.
  * @param {Object.<string, boolean>} skippedFeatureUids Skipped feature uids.
- * @param {function(ol.Feature): T} callback Feature callback.
+ * @param {function((ol.Feature|ol.FlyweightFeature)): T} callback Feature
+ *     callback.
  * @return {T|undefined} Callback result.
  * @template T
  */
@@ -37102,9 +37264,11 @@ ol.source.Source.prototype.getWrapX = function() {
 /**
  * Set the attributions of the source.
  * @param {Array.<ol.Attribution>} attributions Attributions.
+ * @api
  */
 ol.source.Source.prototype.setAttributions = function(attributions) {
   this.attributions_ = attributions;
+  this.changed();
 };
 
 
@@ -37785,6 +37949,7 @@ goog.require('ol.tilegrid.TileGrid');
 
 /**
  * @typedef {{attributions: (Array.<ol.Attribution>|undefined),
+ *            cacheSize: (number|undefined),
  *            extent: (ol.Extent|undefined),
  *            logo: (string|olx.LogoOptions|undefined),
  *            opaque: (boolean|undefined),
@@ -37843,7 +38008,7 @@ ol.source.Tile = function(options) {
    * @protected
    * @type {ol.TileCache}
    */
-  this.tileCache = new ol.TileCache();
+  this.tileCache = new ol.TileCache(options.cacheSize);
 
   /**
    * @protected
@@ -50437,6 +50602,8 @@ goog.provide('ol.render.VectorContext');
 
 
 /**
+ * Context for drawing geometries.  A vector context is available on render
+ * events and does not need to be constructed directly.
  * @constructor
  * @struct
  * @api
@@ -50476,25 +50643,27 @@ ol.render.VectorContext.prototype.drawGeometryCollectionGeometry =
 
 
 /**
- * @param {ol.geom.LineString} lineStringGeometry Line string geometry.
- * @param {ol.Feature} feature Feature.
+ * @param {ol.geom.LineString|ol.FlyweightFeature} lineStringGeometry Line
+ *     string geometry.
+ * @param {ol.Feature|ol.FlyweightFeature} feature Feature.
  */
 ol.render.VectorContext.prototype.drawLineStringGeometry =
     goog.abstractMethod;
 
 
 /**
- * @param {ol.geom.MultiLineString} multiLineStringGeometry
+ * @param {ol.geom.MultiLineString|ol.FlyweightFeature} multiLineStringGeometry
  *     MultiLineString geometry.
- * @param {ol.Feature} feature Feature.
+ * @param {ol.Feature|ol.FlyweightFeature} feature Feature.
  */
 ol.render.VectorContext.prototype.drawMultiLineStringGeometry =
     goog.abstractMethod;
 
 
 /**
- * @param {ol.geom.MultiPoint} multiPointGeometry MultiPoint geometry.
- * @param {ol.Feature} feature Feature.
+ * @param {ol.geom.MultiPoint|ol.FlyweightFeature} multiPointGeometry MultiPoint
+ *     geometry.
+ * @param {ol.Feature|ol.FlyweightFeature} feature Feature.
  */
 ol.render.VectorContext.prototype.drawMultiPointGeometry = goog.abstractMethod;
 
@@ -50508,15 +50677,16 @@ ol.render.VectorContext.prototype.drawMultiPolygonGeometry =
 
 
 /**
- * @param {ol.geom.Point} pointGeometry Point geometry.
- * @param {ol.Feature} feature Feature.
+ * @param {ol.geom.Point|ol.FlyweightFeature} pointGeometry Point geometry.
+ * @param {ol.Feature|ol.FlyweightFeature} feature Feature.
  */
 ol.render.VectorContext.prototype.drawPointGeometry = goog.abstractMethod;
 
 
 /**
- * @param {ol.geom.Polygon} polygonGeometry Polygon geometry.
- * @param {ol.Feature} feature Feature.
+ * @param {ol.geom.Polygon|ol.FlyweightFeature} polygonGeometry Polygon
+ *     geometry.
+ * @param {ol.Feature|ol.FlyweightFeature} feature Feature.
  */
 ol.render.VectorContext.prototype.drawPolygonGeometry = goog.abstractMethod;
 
@@ -50526,8 +50696,8 @@ ol.render.VectorContext.prototype.drawPolygonGeometry = goog.abstractMethod;
  * @param {number} offset Offset.
  * @param {number} end End.
  * @param {number} stride Stride.
- * @param {ol.geom.Geometry} geometry Geometry.
- * @param {ol.Feature} feature Feature.
+ * @param {ol.geom.Geometry|ol.FlyweightFeature} geometry Geometry.
+ * @param {ol.Feature|ol.FlyweightFeature} feature Feature.
  */
 ol.render.VectorContext.prototype.drawText = goog.abstractMethod;
 
@@ -50605,6 +50775,7 @@ ol.render.Event = function(
   this.vectorContext = opt_vectorContext;
 
   /**
+   * An object representing the current render frame state.
    * @type {olx.FrameState|undefined}
    * @api
    */
@@ -51088,8 +51259,8 @@ goog.inherits(ol.renderer.Layer, ol.Observable);
 /**
  * @param {ol.Coordinate} coordinate Coordinate.
  * @param {olx.FrameState} frameState Frame state.
- * @param {function(this: S, ol.Feature, ol.layer.Layer): T} callback Feature
- *     callback.
+ * @param {function(this: S, (ol.Feature|ol.FlyweightFeature), ol.layer.Layer): T}
+ *     callback Feature callback.
  * @param {S} thisArg Value to use as `this` when executing `callback`.
  * @return {T|undefined} Callback result.
  * @template S,T
@@ -51498,6 +51669,8 @@ ol.style.Image.prototype.getSnapToPixel = function() {
 
 
 /**
+ * Get the anchor point.  The anchor determines the center point for the
+ * symbolizer.  Its units are determined by `anchorXUnits` and `anchorYUnits`.
  * @function
  * @return {Array.<number>} Anchor.
  */
@@ -51505,6 +51678,7 @@ ol.style.Image.prototype.getAnchor = goog.abstractMethod;
 
 
 /**
+ * Get the image element for the symbolizer.
  * @function
  * @param {number} pixelRatio Pixel ratio.
  * @return {HTMLCanvasElement|HTMLVideoElement|Image} Image element.
@@ -51538,6 +51712,7 @@ ol.style.Image.prototype.getHitDetectionImageSize = goog.abstractMethod;
 
 
 /**
+ * Get the origin of the symbolizer.
  * @function
  * @return {Array.<number>} Origin.
  */
@@ -51545,6 +51720,7 @@ ol.style.Image.prototype.getOrigin = goog.abstractMethod;
 
 
 /**
+ * Get the size of the symbolizer (in pixels).
  * @function
  * @return {ol.Size} Size.
  */
@@ -52418,8 +52594,8 @@ ol.renderer.Map.expireIconCache_ = function(map, frameState) {
 /**
  * @param {ol.Coordinate} coordinate Coordinate.
  * @param {olx.FrameState} frameState FrameState.
- * @param {function(this: S, ol.Feature, ol.layer.Layer): T} callback Feature
- *     callback.
+ * @param {function(this: S, (ol.Feature|ol.FlyweightFeature),
+ *     ol.layer.Layer): T} callback Feature callback.
  * @param {S} thisArg Value to use as `this` when executing `callback`.
  * @param {function(this: U, ol.layer.Layer): boolean} layerFilter Layer filter
  *     function, only layers which are visible and for which this function
@@ -52440,7 +52616,7 @@ ol.renderer.Map.prototype.forEachFeatureAtCoordinate =
   var features = {};
 
   /**
-   * @param {ol.Feature} feature Feature.
+   * @param {ol.Feature|ol.FlyweightFeature} feature Feature.
    * @return {?} Callback result.
    */
   function forEachFeatureAtCoordinate(feature) {
@@ -55881,7 +56057,6 @@ goog.inherits(ol.style.Circle, ol.style.Image);
 
 /**
  * @inheritDoc
- * @api
  */
 ol.style.Circle.prototype.getAnchor = function() {
   return this.anchor_;
@@ -55943,7 +56118,6 @@ ol.style.Circle.prototype.getHitDetectionImageSize = function() {
 
 /**
  * @inheritDoc
- * @api
  */
 ol.style.Circle.prototype.getOrigin = function() {
   return this.origin_;
@@ -55962,7 +56136,6 @@ ol.style.Circle.prototype.getRadius = function() {
 
 /**
  * @inheritDoc
- * @api
  */
 ol.style.Circle.prototype.getSize = function() {
   return this.size_;
@@ -56411,7 +56584,8 @@ ol.style.Style.prototype.setZIndex = function(zIndex) {
  * the view's resolution. The function should return an array of
  * {@link ol.style.Style}. This way e.g. a vector layer can be styled.
  *
- * @typedef {function(ol.Feature, number): Array.<ol.style.Style>}
+ * @typedef {function((ol.Feature|ol.FlyweightFeature), number):
+ *     Array.<ol.style.Style>}
  * @api
  */
 ol.style.StyleFunction;
@@ -56456,7 +56630,7 @@ ol.style.defaultStyle_ = null;
 
 
 /**
- * @param {ol.Feature} feature Feature.
+ * @param {ol.Feature|ol.FlyweightFeature} feature Feature.
  * @param {number} resolution Resolution.
  * @return {Array.<ol.style.Style>} Style.
  */
@@ -56565,7 +56739,8 @@ ol.style.createDefaultEditingStyles = function() {
  * A function that takes an {@link ol.Feature} as argument and returns an
  * {@link ol.geom.Geometry} that will be rendered and styled for the feature.
  *
- * @typedef {function(ol.Feature): (ol.geom.Geometry|undefined)}
+ * @typedef {function((ol.Feature|ol.FlyweightFeature)):
+ *     (ol.geom.Geometry|ol.FlyweightFeature|undefined)}
  * @api
  */
 ol.style.GeometryFunction;
@@ -56573,8 +56748,9 @@ ol.style.GeometryFunction;
 
 /**
  * Function that is called with a feature and returns its default geometry.
- * @param {ol.Feature} feature Feature to get the geometry for.
- * @return {ol.geom.Geometry|undefined} Geometry to render.
+ * @param {ol.Feature|ol.FlyweightFeature} feature Feature to get the geometry
+ *     for.
+ * @return {ol.geom.Geometry|ol.FlyweightFeature|undefined} Geometry to render.
  */
 ol.style.defaultGeometryFunction = function(feature) {
   goog.asserts.assert(!goog.isNull(feature),
@@ -56585,10 +56761,11 @@ ol.style.defaultGeometryFunction = function(feature) {
 goog.provide('ol.interaction.DragZoom');
 
 goog.require('goog.asserts');
+goog.require('ol.animation');
+goog.require('ol.easing');
 goog.require('ol.events.condition');
 goog.require('ol.extent');
 goog.require('ol.interaction.DragBox');
-goog.require('ol.interaction.Interaction');
 goog.require('ol.style.Stroke');
 goog.require('ol.style.Style');
 
@@ -56642,15 +56819,37 @@ goog.inherits(ol.interaction.DragZoom, ol.interaction.DragBox);
  */
 ol.interaction.DragZoom.prototype.onBoxEnd = function() {
   var map = this.getMap();
+
   var view = map.getView();
   goog.asserts.assert(!goog.isNull(view), 'view should not be null');
-  var extent = this.getGeometry().getExtent();
-  var center = ol.extent.getCenter(extent);
+
   var size = map.getSize();
   goog.asserts.assert(goog.isDef(size), 'size should be defined');
-  ol.interaction.Interaction.zoom(map, view,
-      view.getResolutionForExtent(extent, size),
-      center, this.duration_);
+
+  var extent = this.getGeometry().getExtent();
+
+  var resolution = view.constrainResolution(
+      view.getResolutionForExtent(extent, size));
+
+  var currentResolution = view.getResolution();
+  goog.asserts.assert(goog.isDef(currentResolution), 'res should be defined');
+
+  var currentCenter = view.getCenter();
+  goog.asserts.assert(goog.isDef(currentCenter), 'center should be defined');
+
+  map.beforeRender(ol.animation.zoom({
+    resolution: currentResolution,
+    duration: this.duration_,
+    easing: ol.easing.easeOut
+  }));
+  map.beforeRender(ol.animation.pan({
+    source: currentCenter,
+    duration: this.duration_,
+    easing: ol.easing.easeOut
+  }));
+
+  view.setCenter(ol.extent.getCenter(extent));
+  view.setResolution(resolution);
 };
 
 goog.provide('ol.interaction.KeyboardPan');
@@ -58876,8 +59075,8 @@ ol.render.canvas.Immediate.prototype.drawGeometryCollectionGeometry =
  * Render a Point geometry into the canvas.  Rendering is immediate and uses
  * the current style.
  *
- * @param {ol.geom.Point} pointGeometry Point geometry.
- * @param {ol.Feature} feature Feature.
+ * @param {ol.geom.Point|ol.FlyweightFeature} pointGeometry Point geometry.
+ * @param {ol.Feature|ol.FlyweightFeature} feature Feature.
  * @api
  */
 ol.render.canvas.Immediate.prototype.drawPointGeometry =
@@ -58897,8 +59096,9 @@ ol.render.canvas.Immediate.prototype.drawPointGeometry =
  * Render a MultiPoint geometry  into the canvas.  Rendering is immediate and
  * uses the current style.
  *
- * @param {ol.geom.MultiPoint} multiPointGeometry MultiPoint geometry.
- * @param {ol.Feature} feature Feature.
+ * @param {ol.geom.MultiPoint|ol.FlyweightFeature} multiPointGeometry MultiPoint
+ *     geometry.
+ * @param {ol.Feature|ol.FlyweightFeature} feature Feature.
  * @api
  */
 ol.render.canvas.Immediate.prototype.drawMultiPointGeometry =
@@ -58918,8 +59118,9 @@ ol.render.canvas.Immediate.prototype.drawMultiPointGeometry =
  * Render a LineString into the canvas.  Rendering is immediate and uses
  * the current style.
  *
- * @param {ol.geom.LineString} lineStringGeometry Line string geometry.
- * @param {ol.Feature} feature Feature.
+ * @param {ol.geom.LineString|ol.FlyweightFeature} lineStringGeometry Line
+ *     string geometry.
+ * @param {ol.Feature|ol.FlyweightFeature} feature Feature.
  * @api
  */
 ol.render.canvas.Immediate.prototype.drawLineStringGeometry =
@@ -58947,9 +59148,9 @@ ol.render.canvas.Immediate.prototype.drawLineStringGeometry =
  * Render a MultiLineString geometry into the canvas.  Rendering is immediate
  * and uses the current style.
  *
- * @param {ol.geom.MultiLineString} multiLineStringGeometry
+ * @param {ol.geom.MultiLineString|ol.FlyweightFeature} multiLineStringGeometry
  *     MultiLineString geometry.
- * @param {ol.Feature} feature Feature.
+ * @param {ol.Feature|ol.FlyweightFeature} feature Feature.
  * @api
  */
 ol.render.canvas.Immediate.prototype.drawMultiLineStringGeometry =
@@ -58984,8 +59185,9 @@ ol.render.canvas.Immediate.prototype.drawMultiLineStringGeometry =
  * Render a Polygon geometry into the canvas.  Rendering is immediate and uses
  * the current style.
  *
- * @param {ol.geom.Polygon} polygonGeometry Polygon geometry.
- * @param {ol.Feature} feature Feature.
+ * @param {ol.geom.Polygon|ol.FlyweightFeature} polygonGeometry Polygon
+ *     geometry.
+ * @param {ol.Feature|ol.FlyweightFeature} feature Feature.
  * @api
  */
 ol.render.canvas.Immediate.prototype.drawPolygonGeometry =
@@ -59355,8 +59557,8 @@ ol.render.canvas.Immediate.prototype.setTextStyle = function(textStyle) {
  * @const
  * @private
  * @type {Object.<ol.geom.GeometryType,
- *                function(this: ol.render.canvas.Immediate, ol.geom.Geometry,
- *                         Object)>}
+ *     function(this: ol.render.canvas.Immediate,
+ *         (ol.geom.Geometry|ol.FlyweightFeature), Object)>}
  */
 ol.render.canvas.Immediate.GEOMETRY_RENDERERS_ = {
   'Point': ol.render.canvas.Immediate.prototype.drawPointGeometry,
@@ -59903,8 +60105,8 @@ ol.render.canvas.Replay.prototype.appendFlatCoordinates =
 
 /**
  * @protected
- * @param {ol.geom.Geometry} geometry Geometry.
- * @param {ol.Feature} feature Feature.
+ * @param {ol.geom.Geometry|ol.FlyweightFeature} geometry Geometry.
+ * @param {ol.Feature|ol.FlyweightFeature} feature Feature.
  */
 ol.render.canvas.Replay.prototype.beginGeometry = function(geometry, feature) {
   this.beginGeometryInstruction1_ =
@@ -59925,7 +60127,8 @@ ol.render.canvas.Replay.prototype.beginGeometry = function(geometry, feature) {
  * @param {Object.<string, boolean>} skippedFeaturesHash Ids of features
  *     to skip.
  * @param {Array.<*>} instructions Instructions array.
- * @param {function(ol.Feature): T|undefined} featureCallback Feature callback.
+ * @param {function((ol.Feature|ol.FlyweightFeature)): T|undefined}
+ *     featureCallback Feature callback.
  * @param {ol.Extent=} opt_hitExtent Only check features that intersect this
  *     extent.
  * @return {T|undefined} Callback result.
@@ -59957,7 +60160,8 @@ ol.render.canvas.Replay.prototype.replay_ = function(
     var feature, fill, stroke, text, x, y;
     switch (type) {
       case ol.render.canvas.Instruction.BEGIN_GEOMETRY:
-        feature = /** @type {ol.Feature} */ (instruction[1]);
+        feature =
+            /** @type {ol.Feature|ol.FlyweightFeature} */ (instruction[1]);
         if ((!goog.object.isEmpty(skippedFeaturesHash) &&
             goog.isDef(skippedFeaturesHash[goog.getUid(feature).toString()])) ||
             !goog.isDefAndNotNull(feature.getGeometry())) {
@@ -60109,7 +60313,8 @@ ol.render.canvas.Replay.prototype.replay_ = function(
         break;
       case ol.render.canvas.Instruction.END_GEOMETRY:
         if (goog.isDef(featureCallback)) {
-          feature = /** @type {ol.Feature} */ (instruction[1]);
+          feature =
+              /** @type {ol.Feature|ol.FlyweightFeature} */ (instruction[1]);
           var result = featureCallback(feature);
           if (result) {
             return result;
@@ -60216,7 +60421,8 @@ ol.render.canvas.Replay.prototype.replay = function(
  * @param {number} viewRotation View rotation.
  * @param {Object.<string, boolean>} skippedFeaturesHash Ids of features
  *     to skip.
- * @param {function(ol.Feature): T=} opt_featureCallback Feature callback.
+ * @param {function((ol.Feature|ol.FlyweightFeature)): T=} opt_featureCallback
+ *     Feature callback.
  * @param {ol.Extent=} opt_hitExtent Only check features that intersect this
  *     extent.
  * @return {T|undefined} Callback result.
@@ -60263,8 +60469,8 @@ ol.render.canvas.Replay.prototype.reverseHitDetectionInstructions_ =
 
 
 /**
- * @param {ol.geom.Geometry} geometry Geometry.
- * @param {ol.Feature} feature Feature.
+ * @param {ol.geom.Geometry|ol.FlyweightFeature} geometry Geometry.
+ * @param {ol.Feature|ol.FlyweightFeature} feature Feature.
  */
 ol.render.canvas.Replay.prototype.endGeometry = function(geometry, feature) {
   goog.asserts.assert(!goog.isNull(this.beginGeometryInstruction1_),
@@ -61594,7 +61800,8 @@ ol.render.canvas.ReplayGroup.prototype.finish = function() {
  * @param {number} rotation Rotation.
  * @param {Object.<string, boolean>} skippedFeaturesHash Ids of features
  *     to skip.
- * @param {function(ol.Feature): T} callback Feature callback.
+ * @param {function((ol.Feature|ol.FlyweightFeature)): T} callback Feature
+ *     callback.
  * @return {T|undefined} Callback result.
  * @template T
  */
@@ -61622,7 +61829,7 @@ ol.render.canvas.ReplayGroup.prototype.forEachFeatureAtCoordinate = function(
   return this.replayHitDetection_(context, transform, rotation,
       skippedFeaturesHash,
       /**
-       * @param {ol.Feature} feature Feature.
+       * @param {ol.Feature|ol.FlyweightFeature} feature Feature.
        * @return {?} Callback result.
        */
       function(feature) {
@@ -61732,7 +61939,8 @@ ol.render.canvas.ReplayGroup.prototype.replay = function(
  * @param {number} viewRotation View rotation.
  * @param {Object.<string, boolean>} skippedFeaturesHash Ids of features
  *     to skip.
- * @param {function(ol.Feature): T} featureCallback Feature callback.
+ * @param {function((ol.Feature|ol.FlyweightFeature)): T} featureCallback
+ *     Feature callback.
  * @param {ol.Extent=} opt_hitExtent Only check features that intersect this
  *     extent.
  * @return {T|undefined} Callback result.
@@ -63866,7 +64074,9 @@ ol.geom.MultiPolygon.prototype.setPolygons = function(polygons) {
 goog.provide('ol.renderer.vector');
 
 goog.require('goog.asserts');
+goog.require('ol.FlyweightFeature');
 goog.require('ol.geom.Circle');
+goog.require('ol.geom.Geometry');
 goog.require('ol.geom.GeometryCollection');
 goog.require('ol.geom.LineString');
 goog.require('ol.geom.MultiLineString');
@@ -63880,8 +64090,8 @@ goog.require('ol.style.Style');
 
 
 /**
- * @param {ol.Feature} feature1 Feature 1.
- * @param {ol.Feature} feature2 Feature 2.
+ * @param {ol.Feature|ol.FlyweightFeature} feature1 Feature 1.
+ * @param {ol.Feature|ol.FlyweightFeature} feature2 Feature 2.
  * @return {number} Order.
  */
 ol.renderer.vector.defaultOrder = function(feature1, feature2) {
@@ -63941,7 +64151,7 @@ ol.renderer.vector.renderCircleGeometry_ =
 
 /**
  * @param {ol.render.IReplayGroup} replayGroup Replay group.
- * @param {ol.Feature} feature Feature.
+ * @param {ol.Feature|ol.FlyweightFeature} feature Feature.
  * @param {ol.style.Style} style Style.
  * @param {number} squaredTolerance Squared tolerance.
  * @param {function(this: T, goog.events.Event)} listener Listener function.
@@ -63978,7 +64188,7 @@ ol.renderer.vector.renderFeature = function(
 
 /**
  * @param {ol.render.IReplayGroup} replayGroup Replay group.
- * @param {ol.Feature} feature Feature.
+ * @param {ol.Feature|ol.FlyweightFeature} feature Feature.
  * @param {ol.style.Style} style Style.
  * @param {number} squaredTolerance Squared tolerance.
  * @private
@@ -64025,13 +64235,15 @@ ol.renderer.vector.renderGeometryCollectionGeometry_ =
  * @param {ol.render.IReplayGroup} replayGroup Replay group.
  * @param {ol.geom.Geometry} geometry Geometry.
  * @param {ol.style.Style} style Style.
- * @param {ol.Feature} feature Feature.
+ * @param {ol.Feature|ol.FlyweightFeature} feature Feature.
  * @private
  */
 ol.renderer.vector.renderLineStringGeometry_ =
     function(replayGroup, geometry, style, feature) {
-  goog.asserts.assertInstanceof(geometry, ol.geom.LineString,
-      'geometry should be an ol.geom.LineString');
+  if (geometry instanceof ol.geom.Geometry) {
+    goog.asserts.assertInstanceof(geometry, ol.geom.LineString,
+        'geometry should be an ol.geom.LineString');
+  }
   var strokeStyle = style.getStroke();
   if (!goog.isNull(strokeStyle)) {
     var lineStringReplay = replayGroup.getReplay(
@@ -64053,13 +64265,15 @@ ol.renderer.vector.renderLineStringGeometry_ =
  * @param {ol.render.IReplayGroup} replayGroup Replay group.
  * @param {ol.geom.Geometry} geometry Geometry.
  * @param {ol.style.Style} style Style.
- * @param {ol.Feature} feature Feature.
+ * @param {ol.Feature|ol.FlyweightFeature} feature Feature.
  * @private
  */
 ol.renderer.vector.renderMultiLineStringGeometry_ =
     function(replayGroup, geometry, style, feature) {
-  goog.asserts.assertInstanceof(geometry, ol.geom.MultiLineString,
-      'geometry should be an ol.geom.MultiLineString');
+  if (geometry instanceof ol.geom.Geometry) {
+    goog.asserts.assertInstanceof(geometry, ol.geom.MultiLineString,
+        'geometry should be an ol.geom.MultiLineString');
+  }
   var strokeStyle = style.getStroke();
   if (!goog.isNull(strokeStyle)) {
     var lineStringReplay = replayGroup.getReplay(
@@ -64114,13 +64328,15 @@ ol.renderer.vector.renderMultiPolygonGeometry_ =
  * @param {ol.render.IReplayGroup} replayGroup Replay group.
  * @param {ol.geom.Geometry} geometry Geometry.
  * @param {ol.style.Style} style Style.
- * @param {ol.Feature} feature Feature.
+ * @param {ol.Feature|ol.FlyweightFeature} feature Feature.
  * @private
  */
 ol.renderer.vector.renderPointGeometry_ =
     function(replayGroup, geometry, style, feature) {
-  goog.asserts.assertInstanceof(geometry, ol.geom.Point,
-      'geometry should be an ol.geom.Point');
+  if (geometry instanceof ol.geom.Geometry) {
+    goog.asserts.assertInstanceof(geometry, ol.geom.Point,
+        'geometry should be an ol.geom.Point');
+  }
   var imageStyle = style.getImage();
   if (!goog.isNull(imageStyle)) {
     if (imageStyle.getImageState() != ol.style.ImageState.LOADED) {
@@ -64146,13 +64362,15 @@ ol.renderer.vector.renderPointGeometry_ =
  * @param {ol.render.IReplayGroup} replayGroup Replay group.
  * @param {ol.geom.Geometry} geometry Geometry.
  * @param {ol.style.Style} style Style.
- * @param {ol.Feature} feature Feature.
+ * @param {ol.Feature|ol.FlyweightFeature} feature Feature.
  * @private
  */
 ol.renderer.vector.renderMultiPointGeometry_ =
     function(replayGroup, geometry, style, feature) {
-  goog.asserts.assertInstanceof(geometry, ol.geom.MultiPoint,
-      'geometry should be an ol.goem.MultiPoint');
+  if (geometry instanceof ol.geom.Geometry) {
+    goog.asserts.assertInstanceof(geometry, ol.geom.MultiPoint,
+        'geometry should be an ol.goem.MultiPoint');
+  }
   var imageStyle = style.getImage();
   if (!goog.isNull(imageStyle)) {
     if (imageStyle.getImageState() != ol.style.ImageState.LOADED) {
@@ -64177,15 +64395,17 @@ ol.renderer.vector.renderMultiPointGeometry_ =
 
 /**
  * @param {ol.render.IReplayGroup} replayGroup Replay group.
- * @param {ol.geom.Geometry} geometry Geometry.
+ * @param {ol.geom.Geometry|ol.FlyweightFeature} geometry Geometry.
  * @param {ol.style.Style} style Style.
- * @param {ol.Feature} feature Feature.
+ * @param {ol.Feature|ol.FlyweightFeature} feature Feature.
  * @private
  */
 ol.renderer.vector.renderPolygonGeometry_ =
     function(replayGroup, geometry, style, feature) {
-  goog.asserts.assertInstanceof(geometry, ol.geom.Polygon,
-      'geometry should be an ol.geom.Polygon');
+  if (geometry instanceof ol.geom.Geometry) {
+    goog.asserts.assertInstanceof(geometry, ol.geom.Polygon,
+        'geometry should be an ol.geom.Polygon or ol.FlyweightFeature');
+  }
   var fillStyle = style.getFill();
   var strokeStyle = style.getStroke();
   if (!goog.isNull(fillStyle) || !goog.isNull(strokeStyle)) {
@@ -64760,6 +64980,9 @@ ol.Feature.prototype.getGeometry = function() {
 
 
 /**
+ * Get the feature identifier.  This is a stable identifier for the feature and
+ * is either set when reading data from a remote source or set explicitly by
+ * calling {@link ol.Feature#setId}.
  * @return {number|string|undefined} Id.
  * @api stable
  * @observable
@@ -71688,6 +71911,7 @@ goog.require('goog.events');
 goog.require('goog.net.EventType');
 goog.require('goog.net.XhrIo');
 goog.require('goog.net.XhrIo.ResponseType');
+goog.require('ol.TileState');
 goog.require('ol.format.FormatType');
 goog.require('ol.xml');
 
@@ -71727,12 +71951,15 @@ ol.FeatureUrlFunction;
 /**
  * @param {string|ol.FeatureUrlFunction} url Feature URL service.
  * @param {ol.format.Feature} format Feature format.
- * @param {function(this:ol.source.Vector, Array.<ol.Feature>, ol.proj.Projection)|function(this:ol.source.Vector, Array.<ol.Feature>)} success
+ * @param {function(this:ol.VectorTile, Array.<ol.Feature>, ol.proj.Projection)|function(this:ol.source.Vector, Array.<ol.Feature>)} success
  *     Function called with the loaded features and optionally with the data
- *     projection. Called with the vector source as `this`.
+ *     projection. Called with the vector tile or source as `this`.
+ * @param {function(this:ol.VectorTile)|function(this:ol.source.Vector)} failure
+ *     Function called when loading failed. Called with the vector tile or
+ *     source as `this`.
  * @return {ol.FeatureLoader} The feature loader.
  */
-ol.featureloader.loadFeaturesXhr = function(url, format, success) {
+ol.featureloader.loadFeaturesXhr = function(url, format, success, failure) {
   return (
       /**
        * @param {ol.Extent} extent Extent.
@@ -71788,7 +72015,7 @@ ol.featureloader.loadFeaturesXhr = function(url, format, success) {
                   goog.asserts.fail('undefined or null source');
                 }
               } else {
-                // FIXME
+                failure.call(this);
               }
               goog.dispose(xhrIo);
             }, false, this);
@@ -71805,7 +72032,7 @@ ol.featureloader.loadFeaturesXhr = function(url, format, success) {
 /**
  * Create an XHR feature loader for a `url` and `format`. The feature loader
  * loads features (with XHR), parses the features, and adds them to the
- * vector source.
+ * vector tile.
  * @param {string|ol.FeatureUrlFunction} url Feature URL service.
  * @param {ol.format.Feature} format Feature format.
  * @return {ol.FeatureLoader} The feature loader.
@@ -71816,11 +72043,17 @@ ol.featureloader.tile = function(url, format) {
       /**
        * @param {Array.<ol.Feature>} features The loaded features.
        * @param {ol.proj.Projection} projection Feature projection.
-       * @this {ol.source.Vector|ol.VectorTile}
+       * @this {ol.VectorTile}
        */
       function(features, projection) {
         this.setProjection(projection);
         this.setFeatures(features);
+      },
+      /**
+       * @this {ol.VectorTile}
+       */
+      function() {
+        this.setState(ol.TileState.ERROR);
       });
 };
 
@@ -71838,11 +72071,11 @@ ol.featureloader.xhr = function(url, format) {
   return ol.featureloader.loadFeaturesXhr(url, format,
       /**
        * @param {Array.<ol.Feature>} features The loaded features.
-       * @this {ol.source.Vector|ol.VectorTile}
+       * @this {ol.source.Vector}
        */
       function(features) {
         this.addFeatures(features);
-      });
+      }, goog.nullFunction);
 };
 
 goog.provide('ol.LoadingStrategy');
@@ -73828,7 +74061,7 @@ ol.source.ImageVector.prototype.forEachFeatureAtCoordinate = function(
     return this.replayGroup_.forEachFeatureAtCoordinate(
         coordinate, resolution, 0, skippedFeatureUids,
         /**
-         * @param {ol.Feature} feature Feature.
+         * @param {ol.Feature|ol.FlyweightFeature} feature Feature.
          * @return {?} Callback result.
          */
         function(feature) {
@@ -74029,7 +74262,7 @@ ol.renderer.canvas.ImageLayer.prototype.forEachFeatureAtCoordinate =
   return source.forEachFeatureAtCoordinate(
       coordinate, resolution, rotation, skippedFeatureUids,
       /**
-       * @param {ol.Feature} feature Feature.
+       * @param {ol.Feature|ol.FlyweightFeature} feature Feature.
        * @return {?} Callback result.
        */
       function(feature) {
@@ -74818,7 +75051,7 @@ ol.renderer.canvas.VectorLayer.prototype.forEachFeatureAtCoordinate =
     return this.replayGroup_.forEachFeatureAtCoordinate(coordinate, resolution,
         rotation, layerState.managed ? frameState.skippedFeatureUids : {},
         /**
-         * @param {ol.Feature} feature Feature.
+         * @param {ol.Feature|ol.FlyweightFeature} feature Feature.
          * @return {?} Callback result.
          */
         function(feature) {
@@ -75019,10 +75252,9 @@ goog.require('ol.TileState');
 
 
 /**
- * @typedef {{dirty: boolean,
+ * @typedef {{
  *     renderedRenderOrder: (null|function(ol.Feature, ol.Feature):number),
  *     renderedRevision: number,
- *     renderedResolution: number,
  *     replayGroup: ol.render.IReplayGroup}}
  */
 ol.TileReplayState;
@@ -75071,10 +75303,8 @@ ol.VectorTile = function(tileCoord, state, src, format, tileLoadFunction) {
    * @type {ol.TileReplayState}
    */
   this.replayState_ = {
-    dirty: true,
     renderedRenderOrder: null,
     renderedRevision: -1,
-    renderedResolution: NaN,
     replayGroup: null
   };
 
@@ -75149,8 +75379,7 @@ ol.VectorTile.prototype.getProjection = function() {
  */
 ol.VectorTile.prototype.load = function() {
   if (this.state == ol.TileState.IDLE) {
-    this.state = ol.TileState.LOADING;
-    this.changed();
+    this.setState(ol.TileState.LOADING);
     this.tileLoadFunction_(this, this.url_);
     this.loader_(null, NaN, null);
   }
@@ -75162,8 +75391,7 @@ ol.VectorTile.prototype.load = function() {
  */
 ol.VectorTile.prototype.setFeatures = function(features) {
   this.features_ = features;
-  this.state = ol.TileState.LOADED;
-  this.changed();
+  this.setState(ol.TileState.LOADED);
 };
 
 
@@ -75172,6 +75400,15 @@ ol.VectorTile.prototype.setFeatures = function(features) {
  */
 ol.VectorTile.prototype.setProjection = function(projection) {
   this.projection_ = projection;
+};
+
+
+/**
+ * @param {ol.TileState} tileState Tile state.
+ */
+ol.VectorTile.prototype.setState = function(tileState) {
+  this.state = tileState;
+  this.changed();
 };
 
 
@@ -75337,6 +75574,7 @@ goog.require('ol.source.TileEvent');
 
 /**
  * @typedef {{attributions: (Array.<ol.Attribution>|undefined),
+ *            cacheSize: (number|undefined),
  *            logo: (string|olx.LogoOptions|undefined),
  *            opaque: (boolean|undefined),
  *            projection: ol.proj.ProjectionLike,
@@ -75364,6 +75602,7 @@ ol.source.UrlTile = function(options) {
 
   goog.base(this, {
     attributions: options.attributions,
+    cacheSize: options.cacheSize,
     extent: options.extent,
     logo: options.logo,
     opaque: options.opaque,
@@ -75500,6 +75739,7 @@ ol.source.VectorTile = function(options) {
 
   goog.base(this, {
     attributions: options.attributions,
+    cacheSize: ol.DEFAULT_TILE_CACHE_HIGH_WATER_MARK / 16,
     extent: options.extent,
     logo: options.logo,
     opaque: options.opaque,
@@ -75589,8 +75829,10 @@ goog.require('goog.asserts');
 goog.require('goog.events');
 goog.require('goog.object');
 goog.require('goog.vec.Mat4');
+goog.require('ol.Feature');
 goog.require('ol.TileRange');
 goog.require('ol.TileState');
+goog.require('ol.VectorTile');
 goog.require('ol.ViewHint');
 goog.require('ol.dom');
 goog.require('ol.extent');
@@ -75737,12 +75979,10 @@ ol.renderer.canvas.VectorTileLayer.prototype.composeFrame =
 /**
  * @param {ol.VectorTile} tile Tile.
  * @param {ol.layer.VectorTile} layer Vector tile layer.
- * @param {number} resolution Resolution.
  * @param {number} pixelRatio Pixel ratio.
- * @return {boolean} Success.
  */
 ol.renderer.canvas.VectorTileLayer.prototype.createReplayGroup = function(tile,
-    layer, resolution, pixelRatio) {
+    layer, pixelRatio) {
   var revision = layer.getRevision();
   var renderOrder = layer.getRenderOrder();
   if (!goog.isDef(renderOrder)) {
@@ -75750,41 +75990,39 @@ ol.renderer.canvas.VectorTileLayer.prototype.createReplayGroup = function(tile,
   }
 
   var replayState = tile.getReplayState();
-  if (!replayState.dirty &&
-      replayState.renderedResolution == resolution &&
-      replayState.renderedRevision == revision &&
+  if (replayState.renderedRevision == revision &&
       replayState.renderedRenderOrder == renderOrder) {
-    return false;
+    return;
   }
 
   // FIXME dispose of old replayGroup in post render
   goog.dispose(replayState.replayGroup);
   replayState.replayGroup = null;
-  replayState.dirty = false;
 
   var source = layer.getSource();
   goog.asserts.assertInstanceof(source, ol.source.VectorTile,
       'Source is an ol.source.VectorTile');
   var tileGrid = source.getTileGrid();
+  var tileCoord = tile.getTileCoord();
+  var resolution = tileGrid.getTileCoordResolution(tileCoord);
   var pixelSpace = tile.getProjection().getUnits() == ol.proj.Units.TILE_PIXELS;
   var extent = pixelSpace ?
-      [0, 0].concat(source.getTilePixelSize(
-          tileGrid.getZForResolution(resolution), pixelRatio,
+      [0, 0].concat(source.getTilePixelSize(tileCoord[0], pixelRatio,
               tile.getProjection())) :
-      tileGrid.getTileCoordExtent(tile.getTileCoord());
+      tileGrid.getTileCoordExtent(tileCoord);
   var tileResolution = pixelSpace ? source.getTilePixelRatio() : resolution;
   var replayGroup = new ol.render.canvas.ReplayGroup(pixelSpace ? 0 :
       ol.renderer.vector.getTolerance(tileResolution, pixelRatio), extent,
-      tileResolution, layer.getRenderBuffer(),
-      source.getRightHandedPolygons());
+      tileResolution, layer.getRenderBuffer(), source.getRightHandedPolygons());
 
   /**
-   * @param {ol.Feature} feature Feature.
+   * @param {ol.Feature|ol.FlyweightFeature} feature Feature.
    * @this {ol.renderer.canvas.VectorTileLayer}
    */
   function renderFeature(feature) {
     var styles;
     if (goog.isDef(feature.getStyleFunction())) {
+      goog.asserts.assertInstanceof(feature, ol.Feature, 'Got an ol.Feature');
       styles = feature.getStyleFunction().call(feature, resolution);
     } else if (goog.isDef(layer.getStyleFunction())) {
       styles = layer.getStyleFunction()(feature, resolution);
@@ -75794,8 +76032,7 @@ ol.renderer.canvas.VectorTileLayer.prototype.createReplayGroup = function(tile,
     if (goog.isDefAndNotNull(styles)) {
       var dirty = this.renderFeature(feature, squaredTolerance, styles,
           replayGroup);
-      replayState.dirty = replayState.dirty || dirty;
-      this.dirty_ = this.dirty_ || replayState.dirty;
+      this.dirty_ = this.dirty_ || dirty;
     }
   }
 
@@ -75808,12 +76045,9 @@ ol.renderer.canvas.VectorTileLayer.prototype.createReplayGroup = function(tile,
 
   replayGroup.finish();
 
-  replayState.renderedResolution = resolution;
   replayState.renderedRevision = revision;
   replayState.renderedRenderOrder = renderOrder;
   replayState.replayGroup = replayGroup;
-
-  return true;
 };
 
 
@@ -75863,7 +76097,7 @@ ol.renderer.canvas.VectorTileLayer.prototype.forEachFeatureAtCoordinate =
         tileSpaceCoordinate, resolution, rotation,
         layerState.managed ? frameState.skippedFeatureUids : {},
         /**
-         * @param {ol.Feature} feature Feature.
+         * @param {ol.Feature|ol.FlyweightFeature} feature Feature.
          * @return {?} Callback result.
          */
         function(feature) {
@@ -75939,7 +76173,7 @@ ol.renderer.canvas.VectorTileLayer.prototype.prepareFrame =
   this.updateLogos(frameState, source);
 
   /**
-   * @type {Object.<number, Object.<string, ol.Tile>>}
+   * @type {Object.<number, Object.<string, ol.VectorTile>>}
    */
   var tilesToDrawByZ = {};
   tilesToDrawByZ[z] = {};
@@ -75955,6 +76189,8 @@ ol.renderer.canvas.VectorTileLayer.prototype.prepareFrame =
     for (y = tileRange.minY; y <= tileRange.maxY; ++y) {
 
       tile = source.getTile(z, x, y, pixelRatio, projection);
+      goog.asserts.assertInstanceof(tile, ol.VectorTile,
+          'Tile is an ol.VectorTile');
       tileState = tile.getState();
       if (tileState == ol.TileState.LOADED ||
           tileState == ol.TileState.EMPTY ||
@@ -75988,14 +76224,9 @@ ol.renderer.canvas.VectorTileLayer.prototype.prepareFrame =
       tile = tilesToDraw[tileCoordKey];
       if (tile.getState() == ol.TileState.LOADED) {
         replayables.push(tile);
+        this.createReplayGroup(tile, layer, pixelRatio);
       }
     }
-  }
-
-  for (i = 0, ii = replayables.length; i < ii; ++i) {
-    tile = replayables[i];
-    this.dirty_ = this.createReplayGroup(tile, layer, resolution, pixelRatio) ||
-        this.dirty_;
   }
 
   this.renderedTiles_ = replayables;
@@ -76005,7 +76236,7 @@ ol.renderer.canvas.VectorTileLayer.prototype.prepareFrame =
 
 
 /**
- * @param {ol.Feature} feature Feature.
+ * @param {ol.Feature|ol.FlyweightFeature} feature Feature.
  * @param {number} squaredTolerance Squared tolerance.
  * @param {Array.<ol.style.Style>} styles Array of styles
  * @param {ol.render.canvas.ReplayGroup} replayGroup Replay group.
@@ -76344,7 +76575,7 @@ ol.renderer.dom.ImageLayer.prototype.forEachFeatureAtCoordinate =
   return source.forEachFeatureAtCoordinate(
       coordinate, resolution, rotation, skippedFeatureUids,
       /**
-       * @param {ol.Feature} feature Feature.
+       * @param {ol.Feature|ol.FlyweightFeature} feature Feature.
        * @return {?} Callback result.
        */
       function(feature) {
@@ -77122,7 +77353,7 @@ ol.renderer.dom.VectorLayer.prototype.forEachFeatureAtCoordinate =
     return this.replayGroup_.forEachFeatureAtCoordinate(coordinate, resolution,
         rotation, layerState.managed ? frameState.skippedFeatureUids : {},
         /**
-         * @param {ol.Feature} feature Feature.
+         * @param {ol.Feature|ol.FlyweightFeature} feature Feature.
          * @return {?} Callback result.
          */
         function(feature) {
@@ -81961,6 +82192,9 @@ ol.render.webgl.Immediate.prototype.flush = function() {
 
 
 /**
+ * Register a function to be called for rendering at a given zIndex.  The
+ * function will be called asynchronously.  The callback will receive a
+ * reference to {@link ol.render.canvas.Immediate} context for drawing.
  * @param {number} zIndex Z index.
  * @param {function(ol.render.webgl.Immediate)} callback Callback.
  * @api
@@ -82169,8 +82403,8 @@ ol.render.webgl.Immediate.prototype.setTextStyle = function(textStyle) {
  * @const
  * @private
  * @type {Object.<ol.geom.GeometryType,
- *                function(this: ol.render.webgl.Immediate, ol.geom.Geometry,
- *                         Object)>}
+ *      function(this: ol.render.webgl.Immediate,
+ *          (ol.geom.Geometry|ol.FlyweightFeature), Object)>}
  */
 ol.render.webgl.Immediate.GEOMETRY_RENDERERS_ = {
   'Point': ol.render.webgl.Immediate.prototype.drawPointGeometry,
@@ -82829,7 +83063,7 @@ ol.renderer.webgl.ImageLayer.prototype.forEachFeatureAtCoordinate =
       coordinate, resolution, rotation, skippedFeatureUids,
 
       /**
-       * @param {ol.Feature} feature Feature.
+       * @param {ol.Feature|ol.FlyweightFeature} feature Feature.
        * @return {?} Callback result.
        */
       function(feature) {
@@ -84552,19 +84786,6 @@ ol.renderer.webgl.Map.prototype.forEachLayerAtPixel =
   return undefined;
 };
 
-
-/**
- * @private
- * @const
- */
-ol.renderer.webgl.Map.DEFAULT_COLOR_VALUES_ = {
-  opacity: 1,
-  brightness: 0,
-  contrast: 1,
-  hue: 0,
-  saturation: 1
-};
-
 // FIXME recheck layer/map projection compatibility when projection changes
 // FIXME layer renderers should skip when they can't reproject
 // FIXME add tilt and height?
@@ -85142,9 +85363,11 @@ ol.Map.prototype.disposeInternal = function() {
  * callback with each intersecting feature. Layers included in the detection can
  * be configured through `opt_layerFilter`.
  * @param {ol.Pixel} pixel Pixel.
- * @param {function(this: S, ol.Feature, ol.layer.Layer): T} callback Feature
- *     callback. The callback will be called with two arguments. The first
- *     argument is one {@link ol.Feature feature} at the pixel, the second is
+ * @param {function(this: S, (ol.Feature|ol.FlyweightFeature),
+ *     ol.layer.Layer): T} callback Feature callback. The callback will be
+ *     called with two arguments. The first argument is one
+ *     {@link ol.Feature feature} or
+ *     {@link ol.FlyweightFeature flyweight feature} at the pixel, the second is
  *     the {@link ol.layer.Layer layer} of the feature. To stop detection,
  *     callback functions can return a truthy value.
  * @param {S=} opt_this Value to use as `this` when executing `callback`.
@@ -87237,7 +87460,8 @@ ol.control.OverviewMap.prototype.setCollapsed = function(collapsed) {
 
 
 /**
- * @return {boolean} True if the widget is collapsed.
+ * Determine if the overview map is collapsed.
+ * @return {boolean} The overview map is collapsed.
  * @api stable
  */
 ol.control.OverviewMap.prototype.getCollapsed = function() {
@@ -99000,7 +99224,7 @@ ol.format.KML.prototype.readPlacemark_ = function(node, objectStack) {
   }
   var options = /** @type {olx.format.ReadOptions} */ (objectStack[0]);
 
-  var geometry = goog.object.get(object, 'geometry');
+  var geometry = object['geometry'];
   if (goog.isDefAndNotNull(geometry)) {
     ol.format.Feature.transformWithOptions(geometry, false, options);
   }
@@ -99008,8 +99232,8 @@ ol.format.KML.prototype.readPlacemark_ = function(node, objectStack) {
   goog.object.remove(object, 'geometry');
 
   if (this.extractStyles_) {
-    var style = goog.object.get(object, 'Style');
-    var styleUrl = goog.object.get(object, 'styleUrl');
+    var style = object['Style'];
+    var styleUrl = object['styleUrl'];
     var styleFunction = ol.format.KML.createFeatureStyleFunction_(
         style, styleUrl, this.defaultStyle_, this.sharedStyles_);
     feature.setStyle(styleFunction);
@@ -101308,12 +101532,14 @@ goog.provide('ol.format.MVT');
 goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('ol.Feature');
+goog.require('ol.FlyweightFeature');
 goog.require('ol.ext.pbf');
 goog.require('ol.ext.vectortile');
 goog.require('ol.format.Feature');
 goog.require('ol.format.FormatType');
 goog.require('ol.geom.Geometry');
 goog.require('ol.geom.GeometryLayout');
+goog.require('ol.geom.GeometryType');
 goog.require('ol.geom.LineString');
 goog.require('ol.geom.MultiLineString');
 goog.require('ol.geom.MultiPoint');
@@ -101349,6 +101575,12 @@ ol.format.MVT = function(opt_options) {
   });
 
   /**
+  * @private
+   * @type {boolean}
+   */
+  this.flyweight_ = goog.isDef(options.flyweight) ? options.flyweight : false;
+
+  /**
    * @private
    * @type {string}
    */
@@ -101382,12 +101614,15 @@ ol.format.MVT.prototype.getType = function() {
 /**
  * @private
  * @param {Object} rawFeature Raw Mapbox feature.
+ * @param {string} layer Layer.
  * @param {olx.format.ReadOptions=} opt_options Read options.
  * @return {ol.Feature} Feature.
  */
-ol.format.MVT.prototype.readFeature_ = function(rawFeature, opt_options) {
+ol.format.MVT.prototype.readFeature_ = function(
+    rawFeature, layer, opt_options) {
   var feature = new ol.Feature();
   var values = rawFeature.properties;
+  values[this.layerName_] = layer;
   var geometry = ol.format.Feature.transformWithOptions(
       ol.format.MVT.readGeometry_(rawFeature), false,
       this.adaptOptions(opt_options));
@@ -101402,17 +101637,65 @@ ol.format.MVT.prototype.readFeature_ = function(rawFeature, opt_options) {
 
 
 /**
+ * @private
+ * @param {Object} rawFeature Raw Mapbox feature.
+ * @param {string} layer Layer.
+ * @return {ol.FlyweightFeature} Feature.
+ */
+ol.format.MVT.prototype.readFlyweightFeature_ = function(rawFeature, layer) {
+  var coords = rawFeature.loadGeometry();
+  var end = 0;
+  var ends = [];
+  var flatCoordinates = [];
+  var line, coord;
+  for (var i = 0, ii = coords.length; i < ii; ++i) {
+    line = coords[i];
+    for (var j = 0, jj = line.length; j < jj; ++j) {
+      coord = line[j];
+      // Non-tilespace coords can be calculated here when a TileGrid and
+      // TileCoord are known.
+      flatCoordinates.push(coord.x, coord.y);
+    }
+    end += 2 * j;
+    ends.push(end);
+  }
+
+  var type = rawFeature.type;
+  /** @type {ol.geom.GeometryType} */
+  var geometryType;
+  if (type === 1) {
+    geometryType = coords.length === 1 ?
+        ol.geom.GeometryType.POINT : ol.geom.GeometryType.MULTI_POINT;
+  } else if (type === 2) {
+    if (coords.length === 1) {
+      geometryType = ol.geom.GeometryType.LINE_STRING;
+    } else {
+      geometryType = ol.geom.GeometryType.MULTI_LINE_STRING;
+    }
+  } else {
+    geometryType = ol.geom.GeometryType.POLYGON;
+  }
+
+  var properties = rawFeature.properties;
+  properties[this.layerName_] = layer;
+
+  return new ol.FlyweightFeature(
+      geometryType, flatCoordinates, ends, rawFeature.properties);
+};
+
+
+/**
  * @inheritDoc
  */
 ol.format.MVT.prototype.readFeatures = function(source, opt_options) {
   goog.asserts.assertInstanceof(source, ArrayBuffer);
 
-  var layerName = this.layerName_;
   var layers = this.layers_;
 
   var pbf = new ol.ext.pbf(source);
   var tile = new ol.ext.vectortile.VectorTile(pbf);
   var features = [];
+  var flyweight = this.flyweight_;
   var layer, feature;
   for (var name in tile.layers) {
     if (!goog.isNull(layers) && !goog.array.contains(layers, name)) {
@@ -101421,8 +101704,11 @@ ol.format.MVT.prototype.readFeatures = function(source, opt_options) {
     layer = tile.layers[name];
 
     for (var i = 0, ii = layer.length; i < layer.length; ++i) {
-      feature = this.readFeature_(layer.feature(i), opt_options);
-      feature.set(layerName, name);
+      if (flyweight) {
+        feature = this.readFlyweightFeature_(layer.feature(i), name);
+      } else {
+        feature = this.readFeature_(layer.feature(i), name, opt_options);
+      }
       features.push(feature);
     }
   }
@@ -105835,7 +106121,6 @@ goog.provide('ol.format.WMTSCapabilities');
 
 goog.require('goog.asserts');
 goog.require('goog.dom.NodeType');
-goog.require('goog.object');
 goog.require('goog.string');
 goog.require('ol.extent');
 goog.require('ol.format.OWS');
@@ -105908,7 +106193,7 @@ ol.format.WMTSCapabilities.prototype.readFromNode = function(node) {
   if (!goog.isDef(WMTSCapabilityObject)) {
     return null;
   }
-  goog.object.set(WMTSCapabilityObject, 'version', this.version);
+  WMTSCapabilityObject['version'] = this.version;
   WMTSCapabilityObject = ol.xml.pushParseAndPop(WMTSCapabilityObject,
       ol.format.WMTSCapabilities.PARSERS_, node, []);
   return goog.isDef(WMTSCapabilityObject) ? WMTSCapabilityObject : null;
@@ -106854,6 +107139,30 @@ ol.Graticule = function(opt_options) {
    * @type {number}
    * @private
    */
+  this.maxLatP_ = Infinity;
+
+  /**
+   * @type {number}
+   * @private
+   */
+  this.maxLonP_ = Infinity;
+
+  /**
+   * @type {number}
+   * @private
+   */
+  this.minLatP_ = -Infinity;
+
+  /**
+   * @type {number}
+   * @private
+   */
+  this.minLonP_ = -Infinity;
+
+  /**
+   * @type {number}
+   * @private
+   */
   this.targetSize_ = goog.isDef(options.targetSize) ?
       options.targetSize : 100;
 
@@ -106927,6 +107236,8 @@ ol.Graticule.intervals_ = [90, 45, 30, 20, 10, 5, 2, 1, 0.5, 0.2, 0.1, 0.05,
 
 /**
  * @param {number} lon Longitude.
+ * @param {number} minLat Minimal latitude.
+ * @param {number} maxLat Maximal latitude.
  * @param {number} squaredTolerance Squared tolerance.
  * @param {ol.Extent} extent Extent.
  * @param {number} index Index.
@@ -106934,8 +107245,9 @@ ol.Graticule.intervals_ = [90, 45, 30, 20, 10, 5, 2, 1, 0.5, 0.2, 0.1, 0.05,
  * @private
  */
 ol.Graticule.prototype.addMeridian_ =
-    function(lon, squaredTolerance, extent, index) {
-  var lineString = this.getMeridian_(lon, squaredTolerance, index);
+    function(lon, minLat, maxLat, squaredTolerance, extent, index) {
+  var lineString = this.getMeridian_(lon, minLat, maxLat,
+      squaredTolerance, index);
   if (ol.extent.intersects(lineString.getExtent(), extent)) {
     this.meridians_[index++] = lineString;
   }
@@ -106945,6 +107257,8 @@ ol.Graticule.prototype.addMeridian_ =
 
 /**
  * @param {number} lat Latitude.
+ * @param {number} minLon Minimal longitude.
+ * @param {number} maxLon Maximal longitude.
  * @param {number} squaredTolerance Squared tolerance.
  * @param {ol.Extent} extent Extent.
  * @param {number} index Index.
@@ -106952,8 +107266,9 @@ ol.Graticule.prototype.addMeridian_ =
  * @private
  */
 ol.Graticule.prototype.addParallel_ =
-    function(lat, squaredTolerance, extent, index) {
-  var lineString = this.getParallel_(lat, squaredTolerance, index);
+    function(lat, minLon, maxLon, squaredTolerance, extent, index) {
+  var lineString = this.getParallel_(lat, minLon, maxLon, squaredTolerance,
+      index);
   if (ol.extent.intersects(lineString.getExtent(), extent)) {
     this.parallels_[index++] = lineString;
   }
@@ -106983,17 +107298,31 @@ ol.Graticule.prototype.createGraticule_ =
   var maxLines = this.maxLines_;
   var cnt, idx, lat, lon;
 
+  var validExtent = [
+    Math.max(extent[0], this.minLonP_),
+    Math.max(extent[1], this.minLatP_),
+    Math.min(extent[2], this.maxLonP_),
+    Math.min(extent[3], this.maxLatP_)
+  ];
+
+  validExtent = ol.proj.transformExtent(validExtent, this.projection_,
+      'EPSG:4326');
+  var maxLat = validExtent[3];
+  var maxLon = validExtent[2];
+  var minLat = validExtent[1];
+  var minLon = validExtent[0];
+
   // Create meridians
 
   centerLon = Math.floor(centerLon / interval) * interval;
   lon = goog.math.clamp(centerLon, this.minLon_, this.maxLon_);
 
-  idx = this.addMeridian_(lon, squaredTolerance, extent, 0);
+  idx = this.addMeridian_(lon, minLat, maxLat, squaredTolerance, extent, 0);
 
   cnt = 0;
   while (lon != this.minLon_ && cnt++ < maxLines) {
     lon = Math.max(lon - interval, this.minLon_);
-    idx = this.addMeridian_(lon, squaredTolerance, extent, idx);
+    idx = this.addMeridian_(lon, minLat, maxLat, squaredTolerance, extent, idx);
   }
 
   lon = goog.math.clamp(centerLon, this.minLon_, this.maxLon_);
@@ -107001,7 +107330,7 @@ ol.Graticule.prototype.createGraticule_ =
   cnt = 0;
   while (lon != this.maxLon_ && cnt++ < maxLines) {
     lon = Math.min(lon + interval, this.maxLon_);
-    idx = this.addMeridian_(lon, squaredTolerance, extent, idx);
+    idx = this.addMeridian_(lon, minLat, maxLat, squaredTolerance, extent, idx);
   }
 
   this.meridians_.length = idx;
@@ -107011,12 +107340,12 @@ ol.Graticule.prototype.createGraticule_ =
   centerLat = Math.floor(centerLat / interval) * interval;
   lat = goog.math.clamp(centerLat, this.minLat_, this.maxLat_);
 
-  idx = this.addParallel_(lat, squaredTolerance, extent, 0);
+  idx = this.addParallel_(lat, minLon, maxLon, squaredTolerance, extent, 0);
 
   cnt = 0;
   while (lat != this.minLat_ && cnt++ < maxLines) {
     lat = Math.max(lat - interval, this.minLat_);
-    idx = this.addParallel_(lat, squaredTolerance, extent, idx);
+    idx = this.addParallel_(lat, minLon, maxLon, squaredTolerance, extent, idx);
   }
 
   lat = goog.math.clamp(centerLat, this.minLat_, this.maxLat_);
@@ -107024,7 +107353,7 @@ ol.Graticule.prototype.createGraticule_ =
   cnt = 0;
   while (lat != this.maxLat_ && cnt++ < maxLines) {
     lat = Math.min(lat + interval, this.maxLat_);
-    idx = this.addParallel_(lat, squaredTolerance, extent, idx);
+    idx = this.addParallel_(lat, minLon, maxLon, squaredTolerance, extent, idx);
   }
 
   this.parallels_.length = idx;
@@ -107077,18 +107406,21 @@ ol.Graticule.prototype.getMap = function() {
 
 /**
  * @param {number} lon Longitude.
+ * @param {number} minLat Minimal latitude.
+ * @param {number} maxLat Maximal latitude.
  * @param {number} squaredTolerance Squared tolerance.
  * @return {ol.geom.LineString} The meridian line string.
  * @param {number} index Index.
  * @private
  */
-ol.Graticule.prototype.getMeridian_ = function(lon, squaredTolerance, index) {
+ol.Graticule.prototype.getMeridian_ = function(lon, minLat, maxLat,
+                                               squaredTolerance, index) {
   goog.asserts.assert(lon >= this.minLon_,
       'lon should be larger than or equal to this.minLon_');
   goog.asserts.assert(lon <= this.maxLon_,
       'lon should be smaller than or equal to this.maxLon_');
   var flatCoordinates = ol.geom.flat.geodesic.meridian(lon,
-      this.minLat_, this.maxLat_, this.projection_, squaredTolerance);
+      minLat, maxLat, this.projection_, squaredTolerance);
   goog.asserts.assert(flatCoordinates.length > 0,
       'flatCoordinates cannot be empty');
   var lineString = goog.isDef(this.meridians_[index]) ?
@@ -107110,12 +107442,15 @@ ol.Graticule.prototype.getMeridians = function() {
 
 /**
  * @param {number} lat Latitude.
+ * @param {number} minLon Minimal longitude.
+ * @param {number} maxLon Maximal longitude.
  * @param {number} squaredTolerance Squared tolerance.
  * @return {ol.geom.LineString} The parallel line string.
  * @param {number} index Index.
  * @private
  */
-ol.Graticule.prototype.getParallel_ = function(lat, squaredTolerance, index) {
+ol.Graticule.prototype.getParallel_ = function(lat, minLon, maxLon,
+                                               squaredTolerance, index) {
   goog.asserts.assert(lat >= this.minLat_,
       'lat should be larger than or equal to this.minLat_');
   goog.asserts.assert(lat <= this.maxLat_,
@@ -107187,12 +107522,22 @@ ol.Graticule.prototype.handlePostCompose_ = function(e) {
 ol.Graticule.prototype.updateProjectionInfo_ = function(projection) {
   goog.asserts.assert(!goog.isNull(projection), 'projection cannot be null');
 
+  var epsg4326Projection = ol.proj.get('EPSG:4326');
+
   var extent = projection.getExtent();
   var worldExtent = projection.getWorldExtent();
+  var worldExtentP = ol.proj.transformExtent(worldExtent,
+      epsg4326Projection, projection);
+
   var maxLat = worldExtent[3];
   var maxLon = worldExtent[2];
   var minLat = worldExtent[1];
   var minLon = worldExtent[0];
+
+  var maxLatP = worldExtentP[3];
+  var maxLonP = worldExtentP[2];
+  var minLatP = worldExtentP[1];
+  var minLonP = worldExtentP[0];
 
   goog.asserts.assert(!goog.isNull(extent), 'extent cannot be null');
   goog.asserts.assert(goog.isDef(maxLat), 'maxLat should be defined');
@@ -107200,12 +107545,25 @@ ol.Graticule.prototype.updateProjectionInfo_ = function(projection) {
   goog.asserts.assert(goog.isDef(minLat), 'minLat should be defined');
   goog.asserts.assert(goog.isDef(minLon), 'minLon should be defined');
 
+  goog.asserts.assert(goog.isDef(maxLatP),
+      'projected maxLat should be defined');
+  goog.asserts.assert(goog.isDef(maxLonP),
+      'projected maxLon should be defined');
+  goog.asserts.assert(goog.isDef(minLatP),
+      'projected minLat should be defined');
+  goog.asserts.assert(goog.isDef(minLonP),
+      'projected minLon should be defined');
+
   this.maxLat_ = maxLat;
   this.maxLon_ = maxLon;
   this.minLat_ = minLat;
   this.minLon_ = minLon;
 
-  var epsg4326Projection = ol.proj.get('EPSG:4326');
+  this.maxLatP_ = maxLatP;
+  this.maxLonP_ = maxLonP;
+  this.minLatP_ = minLatP;
+  this.minLonP_ = minLonP;
+
 
   this.fromLonLatTransform_ = ol.proj.getTransform(
       epsg4326Projection, projection);
@@ -109583,18 +109941,21 @@ ol.interaction.DragAndDropEvent =
   goog.base(this, type, target);
 
   /**
+   * The features parsed from dropped data.
    * @type {Array.<ol.Feature>|undefined}
    * @api stable
    */
   this.features = opt_features;
 
   /**
+   * The dropped file.
    * @type {File}
    * @api stable
    */
   this.file = file;
 
   /**
+   * The feature projection.
    * @type {ol.proj.Projection|undefined}
    * @api
    */
@@ -111921,6 +112282,7 @@ ol.interaction.Modify.getDefaultStyleFunction = function() {
 
 goog.provide('ol.interaction.Select');
 goog.provide('ol.interaction.SelectEvent');
+goog.provide('ol.interaction.SelectEventType');
 goog.provide('ol.interaction.SelectFilterFunction');
 
 goog.require('goog.array');
@@ -111940,7 +112302,7 @@ goog.require('ol.source.Vector');
 /**
  * @enum {string}
  */
-ol.SelectEventType = {
+ol.interaction.SelectEventType = {
   /**
    * Triggered when feature(s) has been (de)selected.
    * @event ol.interaction.SelectEvent#select
@@ -111951,9 +112313,11 @@ ol.SelectEventType = {
 
 
 /**
- * A function that takes an {@link ol.Feature} and an {@link ol.layer.Layer}
- * and returns `true` if the feature may be selected or `false` otherwise.
- * @typedef {function(ol.Feature, ol.layer.Layer): boolean}
+ * A function that takes an {@link ol.Feature} or {@link ol.Feature} and an
+ * {@link ol.layer.Layer} and returns `true` if the feature may be selected or
+ * `false` otherwise.
+ * @typedef {function((ol.Feature|ol.FlyweightFeature), ol.layer.Layer):
+ *     boolean}
  * @api
  */
 ol.interaction.SelectFilterFunction;
@@ -112155,7 +112519,7 @@ ol.interaction.Select.handleEvent = function(mapBrowserEvent) {
     // the pixel.
     map.forEachFeatureAtPixel(mapBrowserEvent.pixel,
         /**
-         * @param {ol.Feature} feature Feature.
+         * @param {ol.Feature|ol.FlyweightFeature} feature Feature.
          * @param {ol.layer.Layer} layer Layer.
          */
         function(feature, layer) {
@@ -112179,7 +112543,7 @@ ol.interaction.Select.handleEvent = function(mapBrowserEvent) {
     // Modify the currently selected feature(s).
     map.forEachFeatureAtPixel(mapBrowserEvent.pixel,
         /**
-         * @param {ol.Feature} feature Feature.
+         * @param {ol.Feature|ol.FlyweightFeature} feature Feature.
          * @param {ol.layer.Layer} layer Layer.
          */
         function(feature, layer) {
@@ -112207,7 +112571,7 @@ ol.interaction.Select.handleEvent = function(mapBrowserEvent) {
   }
   if (change) {
     this.dispatchEvent(
-        new ol.interaction.SelectEvent(ol.SelectEventType.SELECT,
+        new ol.interaction.SelectEvent(ol.interaction.SelectEventType.SELECT,
             selected, deselected, mapBrowserEvent));
   }
   return ol.events.condition.pointerMove(mapBrowserEvent);
@@ -117716,7 +118080,8 @@ ol.source.TileVector.prototype.loadFeatures =
             this.tileLoadFunction_(url, goog.bind(tileSuccess, this));
           } else {
             var loader = ol.featureloader.loadFeaturesXhr(url,
-                /** @type {ol.format.Feature} */ (this.format_), tileSuccess);
+                /** @type {ol.format.Feature} */ (this.format_), tileSuccess,
+                goog.nullFunction);
             loader.call(this, extent, resolution, projection);
           }
         }
@@ -118644,6 +119009,7 @@ ol.source.WMTS.prototype.updateDimensions = function(dimensions) {
 
 
 /**
+ * Generate source options from a capabilities object.
  * @param {Object} wmtsCap An object representing the capabilities document.
  * @param {Object} config Configuration properties for the layer.  Defaults for
  *                  the layer will apply if not provided.
@@ -120066,6 +120432,7 @@ goog.require('ol.Feature');
 goog.require('ol.FeatureLoader');
 goog.require('ol.FeatureStyleFunction');
 goog.require('ol.FeatureUrlFunction');
+goog.require('ol.FlyweightFeature');
 goog.require('ol.Geolocation');
 goog.require('ol.GeolocationProperty');
 goog.require('ol.Graticule');
@@ -120179,6 +120546,7 @@ goog.require('ol.interaction.PinchZoom');
 goog.require('ol.interaction.Pointer');
 goog.require('ol.interaction.Select');
 goog.require('ol.interaction.SelectEvent');
+goog.require('ol.interaction.SelectEventType');
 goog.require('ol.interaction.SelectFilterFunction');
 goog.require('ol.interaction.Snap');
 goog.require('ol.interaction.SnapProperty');
@@ -120265,6 +120633,31 @@ goog.require('ol.tilejson');
 goog.require('ol.webgl.Context');
 goog.require('ol.xml');
 
+
+goog.exportProperty(
+    ol.FlyweightFeature.prototype,
+    'get',
+    ol.FlyweightFeature.prototype.get);
+
+goog.exportProperty(
+    ol.FlyweightFeature.prototype,
+    'getExtent',
+    ol.FlyweightFeature.prototype.getExtent);
+
+goog.exportProperty(
+    ol.FlyweightFeature.prototype,
+    'getGeometry',
+    ol.FlyweightFeature.prototype.getGeometry);
+
+goog.exportProperty(
+    ol.FlyweightFeature.prototype,
+    'getProperties',
+    ol.FlyweightFeature.prototype.getProperties);
+
+goog.exportProperty(
+    ol.FlyweightFeature.prototype,
+    'getType',
+    ol.FlyweightFeature.prototype.getType);
 
 goog.exportSymbol(
     'ol.animation.bounce',
@@ -121343,11 +121736,6 @@ goog.exportSymbol(
 
 goog.exportProperty(
     ol.style.Circle.prototype,
-    'getAnchor',
-    ol.style.Circle.prototype.getAnchor);
-
-goog.exportProperty(
-    ol.style.Circle.prototype,
     'getFill',
     ol.style.Circle.prototype.getFill);
 
@@ -121358,18 +121746,8 @@ goog.exportProperty(
 
 goog.exportProperty(
     ol.style.Circle.prototype,
-    'getOrigin',
-    ol.style.Circle.prototype.getOrigin);
-
-goog.exportProperty(
-    ol.style.Circle.prototype,
     'getRadius',
     ol.style.Circle.prototype.getRadius);
-
-goog.exportProperty(
-    ol.style.Circle.prototype,
-    'getSize',
-    ol.style.Circle.prototype.getSize);
 
 goog.exportProperty(
     ol.style.Circle.prototype,
@@ -121950,6 +122328,11 @@ goog.exportProperty(
     ol.source.Source.prototype,
     'getState',
     ol.source.Source.prototype.getState);
+
+goog.exportProperty(
+    ol.source.Source.prototype,
+    'setAttributions',
+    ol.source.Source.prototype.setAttributions);
 
 goog.exportSymbol(
     'ol.source.Stamen',
@@ -124958,6 +125341,11 @@ goog.exportProperty(
 
 goog.exportProperty(
     ol.source.Tile.prototype,
+    'setAttributions',
+    ol.source.Tile.prototype.setAttributions);
+
+goog.exportProperty(
+    ol.source.Tile.prototype,
     'get',
     ol.source.Tile.prototype.get);
 
@@ -125040,6 +125428,11 @@ goog.exportProperty(
     ol.source.UrlTile.prototype,
     'getState',
     ol.source.UrlTile.prototype.getState);
+
+goog.exportProperty(
+    ol.source.UrlTile.prototype,
+    'setAttributions',
+    ol.source.UrlTile.prototype.setAttributions);
 
 goog.exportProperty(
     ol.source.UrlTile.prototype,
@@ -125148,6 +125541,11 @@ goog.exportProperty(
 
 goog.exportProperty(
     ol.source.TileImage.prototype,
+    'setAttributions',
+    ol.source.TileImage.prototype.setAttributions);
+
+goog.exportProperty(
+    ol.source.TileImage.prototype,
     'get',
     ol.source.TileImage.prototype.get);
 
@@ -125253,6 +125651,11 @@ goog.exportProperty(
 
 goog.exportProperty(
     ol.source.BingMaps.prototype,
+    'setAttributions',
+    ol.source.BingMaps.prototype.setAttributions);
+
+goog.exportProperty(
+    ol.source.BingMaps.prototype,
     'get',
     ol.source.BingMaps.prototype.get);
 
@@ -125330,6 +125733,11 @@ goog.exportProperty(
     ol.source.Vector.prototype,
     'getState',
     ol.source.Vector.prototype.getState);
+
+goog.exportProperty(
+    ol.source.Vector.prototype,
+    'setAttributions',
+    ol.source.Vector.prototype.setAttributions);
 
 goog.exportProperty(
     ol.source.Vector.prototype,
@@ -125483,6 +125891,11 @@ goog.exportProperty(
 
 goog.exportProperty(
     ol.source.Cluster.prototype,
+    'setAttributions',
+    ol.source.Cluster.prototype.setAttributions);
+
+goog.exportProperty(
+    ol.source.Cluster.prototype,
     'get',
     ol.source.Cluster.prototype.get);
 
@@ -125560,6 +125973,11 @@ goog.exportProperty(
     ol.source.Image.prototype,
     'getState',
     ol.source.Image.prototype.getState);
+
+goog.exportProperty(
+    ol.source.Image.prototype,
+    'setAttributions',
+    ol.source.Image.prototype.setAttributions);
 
 goog.exportProperty(
     ol.source.Image.prototype,
@@ -125643,6 +126061,11 @@ goog.exportProperty(
 
 goog.exportProperty(
     ol.source.ImageCanvas.prototype,
+    'setAttributions',
+    ol.source.ImageCanvas.prototype.setAttributions);
+
+goog.exportProperty(
+    ol.source.ImageCanvas.prototype,
     'get',
     ol.source.ImageCanvas.prototype.get);
 
@@ -125720,6 +126143,11 @@ goog.exportProperty(
     ol.source.ImageMapGuide.prototype,
     'getState',
     ol.source.ImageMapGuide.prototype.getState);
+
+goog.exportProperty(
+    ol.source.ImageMapGuide.prototype,
+    'setAttributions',
+    ol.source.ImageMapGuide.prototype.setAttributions);
 
 goog.exportProperty(
     ol.source.ImageMapGuide.prototype,
@@ -125803,6 +126231,11 @@ goog.exportProperty(
 
 goog.exportProperty(
     ol.source.ImageStatic.prototype,
+    'setAttributions',
+    ol.source.ImageStatic.prototype.setAttributions);
+
+goog.exportProperty(
+    ol.source.ImageStatic.prototype,
     'get',
     ol.source.ImageStatic.prototype.get);
 
@@ -125883,6 +126316,11 @@ goog.exportProperty(
 
 goog.exportProperty(
     ol.source.ImageVector.prototype,
+    'setAttributions',
+    ol.source.ImageVector.prototype.setAttributions);
+
+goog.exportProperty(
+    ol.source.ImageVector.prototype,
     'get',
     ol.source.ImageVector.prototype.get);
 
@@ -125960,6 +126398,11 @@ goog.exportProperty(
     ol.source.ImageWMS.prototype,
     'getState',
     ol.source.ImageWMS.prototype.getState);
+
+goog.exportProperty(
+    ol.source.ImageWMS.prototype,
+    'setAttributions',
+    ol.source.ImageWMS.prototype.setAttributions);
 
 goog.exportProperty(
     ol.source.ImageWMS.prototype,
@@ -126065,6 +126508,11 @@ goog.exportProperty(
     ol.source.XYZ.prototype,
     'getState',
     ol.source.XYZ.prototype.getState);
+
+goog.exportProperty(
+    ol.source.XYZ.prototype,
+    'setAttributions',
+    ol.source.XYZ.prototype.setAttributions);
 
 goog.exportProperty(
     ol.source.XYZ.prototype,
@@ -126183,6 +126631,11 @@ goog.exportProperty(
 
 goog.exportProperty(
     ol.source.MapQuest.prototype,
+    'setAttributions',
+    ol.source.MapQuest.prototype.setAttributions);
+
+goog.exportProperty(
+    ol.source.MapQuest.prototype,
     'get',
     ol.source.MapQuest.prototype.get);
 
@@ -126298,6 +126751,11 @@ goog.exportProperty(
 
 goog.exportProperty(
     ol.source.OSM.prototype,
+    'setAttributions',
+    ol.source.OSM.prototype.setAttributions);
+
+goog.exportProperty(
+    ol.source.OSM.prototype,
     'get',
     ol.source.OSM.prototype.get);
 
@@ -126375,6 +126833,11 @@ goog.exportProperty(
     ol.source.Raster.prototype,
     'getState',
     ol.source.Raster.prototype.getState);
+
+goog.exportProperty(
+    ol.source.Raster.prototype,
+    'setAttributions',
+    ol.source.Raster.prototype.setAttributions);
 
 goog.exportProperty(
     ol.source.Raster.prototype,
@@ -126493,6 +126956,11 @@ goog.exportProperty(
 
 goog.exportProperty(
     ol.source.Stamen.prototype,
+    'setAttributions',
+    ol.source.Stamen.prototype.setAttributions);
+
+goog.exportProperty(
+    ol.source.Stamen.prototype,
     'get',
     ol.source.Stamen.prototype.get);
 
@@ -126598,6 +127066,11 @@ goog.exportProperty(
 
 goog.exportProperty(
     ol.source.TileArcGISRest.prototype,
+    'setAttributions',
+    ol.source.TileArcGISRest.prototype.setAttributions);
+
+goog.exportProperty(
+    ol.source.TileArcGISRest.prototype,
     'get',
     ol.source.TileArcGISRest.prototype.get);
 
@@ -126680,6 +127153,11 @@ goog.exportProperty(
     ol.source.TileDebug.prototype,
     'getState',
     ol.source.TileDebug.prototype.getState);
+
+goog.exportProperty(
+    ol.source.TileDebug.prototype,
+    'setAttributions',
+    ol.source.TileDebug.prototype.setAttributions);
 
 goog.exportProperty(
     ol.source.TileDebug.prototype,
@@ -126788,6 +127266,11 @@ goog.exportProperty(
 
 goog.exportProperty(
     ol.source.TileJSON.prototype,
+    'setAttributions',
+    ol.source.TileJSON.prototype.setAttributions);
+
+goog.exportProperty(
+    ol.source.TileJSON.prototype,
     'get',
     ol.source.TileJSON.prototype.get);
 
@@ -126870,6 +127353,11 @@ goog.exportProperty(
     ol.source.TileUTFGrid.prototype,
     'getState',
     ol.source.TileUTFGrid.prototype.getState);
+
+goog.exportProperty(
+    ol.source.TileUTFGrid.prototype,
+    'setAttributions',
+    ol.source.TileUTFGrid.prototype.setAttributions);
 
 goog.exportProperty(
     ol.source.TileUTFGrid.prototype,
@@ -127023,6 +127511,11 @@ goog.exportProperty(
 
 goog.exportProperty(
     ol.source.TileVector.prototype,
+    'setAttributions',
+    ol.source.TileVector.prototype.setAttributions);
+
+goog.exportProperty(
+    ol.source.TileVector.prototype,
     'get',
     ol.source.TileVector.prototype.get);
 
@@ -127125,6 +127618,11 @@ goog.exportProperty(
     ol.source.TileWMS.prototype,
     'getState',
     ol.source.TileWMS.prototype.getState);
+
+goog.exportProperty(
+    ol.source.TileWMS.prototype,
+    'setAttributions',
+    ol.source.TileWMS.prototype.setAttributions);
 
 goog.exportProperty(
     ol.source.TileWMS.prototype,
@@ -127233,6 +127731,11 @@ goog.exportProperty(
 
 goog.exportProperty(
     ol.source.VectorTile.prototype,
+    'setAttributions',
+    ol.source.VectorTile.prototype.setAttributions);
+
+goog.exportProperty(
+    ol.source.VectorTile.prototype,
     'get',
     ol.source.VectorTile.prototype.get);
 
@@ -127338,6 +127841,11 @@ goog.exportProperty(
 
 goog.exportProperty(
     ol.source.WMTS.prototype,
+    'setAttributions',
+    ol.source.WMTS.prototype.setAttributions);
+
+goog.exportProperty(
+    ol.source.WMTS.prototype,
     'get',
     ol.source.WMTS.prototype.get);
 
@@ -127440,6 +127948,11 @@ goog.exportProperty(
     ol.source.Zoomify.prototype,
     'getState',
     ol.source.Zoomify.prototype.getState);
+
+goog.exportProperty(
+    ol.source.Zoomify.prototype,
+    'setAttributions',
+    ol.source.Zoomify.prototype.setAttributions);
 
 goog.exportProperty(
     ol.source.Zoomify.prototype,

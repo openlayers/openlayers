@@ -17,6 +17,7 @@ goog.require('ol.tilegrid.TileGrid');
 
 /**
  * @typedef {{attributions: (Array.<ol.Attribution>|undefined),
+ *            cacheSize: (number|undefined),
  *            extent: (ol.Extent|undefined),
  *            logo: (string|olx.LogoOptions|undefined),
  *            opaque: (boolean|undefined),
@@ -75,7 +76,7 @@ ol.source.Tile = function(options) {
    * @protected
    * @type {ol.TileCache}
    */
-  this.tileCache = new ol.TileCache();
+  this.tileCache = new ol.TileCache(options.cacheSize);
 
   /**
    * @protected

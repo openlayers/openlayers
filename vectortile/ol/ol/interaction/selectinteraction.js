@@ -1,5 +1,6 @@
 goog.provide('ol.interaction.Select');
 goog.provide('ol.interaction.SelectEvent');
+goog.provide('ol.interaction.SelectEventType');
 goog.provide('ol.interaction.SelectFilterFunction');
 
 goog.require('goog.array');
@@ -19,7 +20,7 @@ goog.require('ol.source.Vector');
 /**
  * @enum {string}
  */
-ol.SelectEventType = {
+ol.interaction.SelectEventType = {
   /**
    * Triggered when feature(s) has been (de)selected.
    * @event ol.interaction.SelectEvent#select
@@ -30,9 +31,11 @@ ol.SelectEventType = {
 
 
 /**
- * A function that takes an {@link ol.Feature} and an {@link ol.layer.Layer}
- * and returns `true` if the feature may be selected or `false` otherwise.
- * @typedef {function(ol.Feature, ol.layer.Layer): boolean}
+ * A function that takes an {@link ol.Feature} or {@link ol.Feature} and an
+ * {@link ol.layer.Layer} and returns `true` if the feature may be selected or
+ * `false` otherwise.
+ * @typedef {function((ol.Feature|ol.FlyweightFeature), ol.layer.Layer):
+ *     boolean}
  * @api
  */
 ol.interaction.SelectFilterFunction;
@@ -234,7 +237,7 @@ ol.interaction.Select.handleEvent = function(mapBrowserEvent) {
     // the pixel.
     map.forEachFeatureAtPixel(mapBrowserEvent.pixel,
         /**
-         * @param {ol.Feature} feature Feature.
+         * @param {ol.Feature|ol.FlyweightFeature} feature Feature.
          * @param {ol.layer.Layer} layer Layer.
          */
         function(feature, layer) {
@@ -258,7 +261,7 @@ ol.interaction.Select.handleEvent = function(mapBrowserEvent) {
     // Modify the currently selected feature(s).
     map.forEachFeatureAtPixel(mapBrowserEvent.pixel,
         /**
-         * @param {ol.Feature} feature Feature.
+         * @param {ol.Feature|ol.FlyweightFeature} feature Feature.
          * @param {ol.layer.Layer} layer Layer.
          */
         function(feature, layer) {
@@ -286,7 +289,7 @@ ol.interaction.Select.handleEvent = function(mapBrowserEvent) {
   }
   if (change) {
     this.dispatchEvent(
-        new ol.interaction.SelectEvent(ol.SelectEventType.SELECT,
+        new ol.interaction.SelectEvent(ol.interaction.SelectEventType.SELECT,
             selected, deselected, mapBrowserEvent));
   }
   return ol.events.condition.pointerMove(mapBrowserEvent);

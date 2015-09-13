@@ -575,9 +575,11 @@ ol.Map.prototype.disposeInternal = function() {
  * callback with each intersecting feature. Layers included in the detection can
  * be configured through `opt_layerFilter`.
  * @param {ol.Pixel} pixel Pixel.
- * @param {function(this: S, ol.Feature, ol.layer.Layer): T} callback Feature
- *     callback. The callback will be called with two arguments. The first
- *     argument is one {@link ol.Feature feature} at the pixel, the second is
+ * @param {function(this: S, (ol.Feature|ol.FlyweightFeature),
+ *     ol.layer.Layer): T} callback Feature callback. The callback will be
+ *     called with two arguments. The first argument is one
+ *     {@link ol.Feature feature} or
+ *     {@link ol.FlyweightFeature flyweight feature} at the pixel, the second is
  *     the {@link ol.layer.Layer layer} of the feature. To stop detection,
  *     callback functions can return a truthy value.
  * @param {S=} opt_this Value to use as `this` when executing `callback`.

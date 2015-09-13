@@ -5,12 +5,14 @@ goog.provide('ol.format.MVT');
 goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('ol.Feature');
+goog.require('ol.FlyweightFeature');
 goog.require('ol.ext.pbf');
 goog.require('ol.ext.vectortile');
 goog.require('ol.format.Feature');
 goog.require('ol.format.FormatType');
 goog.require('ol.geom.Geometry');
 goog.require('ol.geom.GeometryLayout');
+goog.require('ol.geom.GeometryType');
 goog.require('ol.geom.LineString');
 goog.require('ol.geom.MultiLineString');
 goog.require('ol.geom.MultiPoint');
@@ -46,6 +48,12 @@ ol.format.MVT = function(opt_options) {
   });
 
   /**
+  * @private
+   * @type {boolean}
+   */
+  this.flyweight_ = goog.isDef(options.flyweight) ? options.flyweight : false;
+
+  /**
    * @private
    * @type {string}
    */
@@ -79,12 +87,15 @@ ol.format.MVT.prototype.getType = function() {
 /**
  * @private
  * @param {Object} rawFeature Raw Mapbox feature.
+ * @param {string} layer Layer.
  * @param {olx.format.ReadOptions=} opt_options Read options.
  * @return {ol.Feature} Feature.
  */
-ol.format.MVT.prototype.readFeature_ = function(rawFeature, opt_options) {
+ol.format.MVT.prototype.readFeature_ = function(
+    rawFeature, layer, opt_options) {
   var feature = new ol.Feature();
   var values = rawFeature.properties;
+  values[this.layerName_] = layer;
   var geometry = ol.format.Feature.transformWithOptions(
       ol.format.MVT.readGeometry_(rawFeature), false,
       this.adaptOptions(opt_options));
@@ -99,17 +110,65 @@ ol.format.MVT.prototype.readFeature_ = function(rawFeature, opt_options) {
 
 
 /**
+ * @private
+ * @param {Object} rawFeature Raw Mapbox feature.
+ * @param {string} layer Layer.
+ * @return {ol.FlyweightFeature} Feature.
+ */
+ol.format.MVT.prototype.readFlyweightFeature_ = function(rawFeature, layer) {
+  var coords = rawFeature.loadGeometry();
+  var end = 0;
+  var ends = [];
+  var flatCoordinates = [];
+  var line, coord;
+  for (var i = 0, ii = coords.length; i < ii; ++i) {
+    line = coords[i];
+    for (var j = 0, jj = line.length; j < jj; ++j) {
+      coord = line[j];
+      // Non-tilespace coords can be calculated here when a TileGrid and
+      // TileCoord are known.
+      flatCoordinates.push(coord.x, coord.y);
+    }
+    end += 2 * j;
+    ends.push(end);
+  }
+
+  var type = rawFeature.type;
+  /** @type {ol.geom.GeometryType} */
+  var geometryType;
+  if (type === 1) {
+    geometryType = coords.length === 1 ?
+        ol.geom.GeometryType.POINT : ol.geom.GeometryType.MULTI_POINT;
+  } else if (type === 2) {
+    if (coords.length === 1) {
+      geometryType = ol.geom.GeometryType.LINE_STRING;
+    } else {
+      geometryType = ol.geom.GeometryType.MULTI_LINE_STRING;
+    }
+  } else {
+    geometryType = ol.geom.GeometryType.POLYGON;
+  }
+
+  var properties = rawFeature.properties;
+  properties[this.layerName_] = layer;
+
+  return new ol.FlyweightFeature(
+      geometryType, flatCoordinates, ends, rawFeature.properties);
+};
+
+
+/**
  * @inheritDoc
  */
 ol.format.MVT.prototype.readFeatures = function(source, opt_options) {
   goog.asserts.assertInstanceof(source, ArrayBuffer);
 
-  var layerName = this.layerName_;
   var layers = this.layers_;
 
   var pbf = new ol.ext.pbf(source);
   var tile = new ol.ext.vectortile.VectorTile(pbf);
   var features = [];
+  var flyweight = this.flyweight_;
   var layer, feature;
   for (var name in tile.layers) {
     if (!goog.isNull(layers) && !goog.array.contains(layers, name)) {
@@ -118,8 +177,11 @@ ol.format.MVT.prototype.readFeatures = function(source, opt_options) {
     layer = tile.layers[name];
 
     for (var i = 0, ii = layer.length; i < layer.length; ++i) {
-      feature = this.readFeature_(layer.feature(i), opt_options);
-      feature.set(layerName, name);
+      if (flyweight) {
+        feature = this.readFlyweightFeature_(layer.feature(i), name);
+      } else {
+        feature = this.readFeature_(layer.feature(i), name, opt_options);
+      }
       features.push(feature);
     }
   }

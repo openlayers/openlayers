@@ -24,6 +24,7 @@ ol.source.VectorTile = function(options) {
 
   goog.base(this, {
     attributions: options.attributions,
+    cacheSize: ol.DEFAULT_TILE_CACHE_HIGH_WATER_MARK / 16,
     extent: options.extent,
     logo: options.logo,
     opaque: options.opaque,

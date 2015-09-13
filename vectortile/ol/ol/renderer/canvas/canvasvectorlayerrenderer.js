@@ -168,7 +168,7 @@ ol.renderer.canvas.VectorLayer.prototype.forEachFeatureAtCoordinate =
     return this.replayGroup_.forEachFeatureAtCoordinate(coordinate, resolution,
         rotation, layerState.managed ? frameState.skippedFeatureUids : {},
         /**
-         * @param {ol.Feature} feature Feature.
+         * @param {ol.Feature|ol.FlyweightFeature} feature Feature.
          * @return {?} Callback result.
          */
         function(feature) {

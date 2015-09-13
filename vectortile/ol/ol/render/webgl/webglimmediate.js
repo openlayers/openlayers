@@ -93,6 +93,9 @@ ol.render.webgl.Immediate.prototype.flush = function() {
 
 
 /**
+ * Register a function to be called for rendering at a given zIndex.  The
+ * function will be called asynchronously.  The callback will receive a
+ * reference to {@link ol.render.canvas.Immediate} context for drawing.
  * @param {number} zIndex Z index.
  * @param {function(ol.render.webgl.Immediate)} callback Callback.
  * @api
@@ -301,8 +304,8 @@ ol.render.webgl.Immediate.prototype.setTextStyle = function(textStyle) {
  * @const
  * @private
  * @type {Object.<ol.geom.GeometryType,
- *                function(this: ol.render.webgl.Immediate, ol.geom.Geometry,
- *                         Object)>}
+ *      function(this: ol.render.webgl.Immediate,
+ *          (ol.geom.Geometry|ol.FlyweightFeature), Object)>}
  */
 ol.render.webgl.Immediate.GEOMETRY_RENDERERS_ = {
   'Point': ol.render.webgl.Immediate.prototype.drawPointGeometry,

@@ -195,7 +195,7 @@ function styleFunction(feature, resolution) {
     stroke.setColor(constants['@street_casing']);
     stroke.setWidth(base(constants['@street_casing_width']));
     styles[length++] = line;
-  } else if (layer == 'tunnel' && cls == 'main') {
+  } else if (layer == 'tunnel' && cls == 'main' && zoom >= 7) {
     stroke.setColor(constants['@motorway_casing']);
     stroke.setWidth(base(constants['@main_casing_width']));
     styles[length++] = line;
@@ -220,7 +220,7 @@ function styleFunction(feature, resolution) {
     stroke.setColor(constants['@street_casing']);
     stroke.setWidth(base(constants['@street_casing_width']));
     styles[length++] = line;
-  } else if (layer == 'road' && cls == 'main') {
+  } else if (layer == 'road' && cls == 'main' && zoom >= 7) {
     stroke.setColor(constants['@motorway_casing']);
     stroke.setWidth(base(constants['@main_casing_width']));
     styles[length++] = line;
@@ -253,7 +253,7 @@ function styleFunction(feature, resolution) {
     stroke.setColor(constants['@street_casing']);
     stroke.setWidth(base(constants['@street_casing_width']));
     styles[length++] = line;
-  } else if (layer == 'bridge' && cls == 'main') {
+  } else if (layer == 'bridge' && cls == 'main' && zoom >= 7) {
     stroke.setColor(constants['@motorway_casing']);
     stroke.setWidth(base(constants['@main_casing_width']));
     styles[length++] = line;
@@ -382,7 +382,9 @@ map = new ol.Map({
     new ol.layer.VectorTile({
       source: new ol.source.VectorTile({
         rightHandedPolygons: true,
-        format: new ol.format.MVT(),
+        format: new ol.format.MVT({
+          flyweight: true
+        }),
         tileGrid: ol.tilegrid.createXYZ({maxZoom: 22}),
         tilePixelRatio: 16,
         tileUrlFunction: function(tileCoord) {

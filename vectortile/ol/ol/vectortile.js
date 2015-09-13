@@ -7,10 +7,9 @@ goog.require('ol.TileState');
 
 
 /**
- * @typedef {{dirty: boolean,
+ * @typedef {{
  *     renderedRenderOrder: (null|function(ol.Feature, ol.Feature):number),
  *     renderedRevision: number,
- *     renderedResolution: number,
  *     replayGroup: ol.render.IReplayGroup}}
  */
 ol.TileReplayState;
@@ -59,10 +58,8 @@ ol.VectorTile = function(tileCoord, state, src, format, tileLoadFunction) {
    * @type {ol.TileReplayState}
    */
   this.replayState_ = {
-    dirty: true,
     renderedRenderOrder: null,
     renderedRevision: -1,
-    renderedResolution: NaN,
     replayGroup: null
   };
 
@@ -137,8 +134,7 @@ ol.VectorTile.prototype.getProjection = function() {
  */
 ol.VectorTile.prototype.load = function() {
   if (this.state == ol.TileState.IDLE) {
-    this.state = ol.TileState.LOADING;
-    this.changed();
+    this.setState(ol.TileState.LOADING);
     this.tileLoadFunction_(this, this.url_);
     this.loader_(null, NaN, null);
   }
@@ -150,8 +146,7 @@ ol.VectorTile.prototype.load = function() {
  */
 ol.VectorTile.prototype.setFeatures = function(features) {
   this.features_ = features;
-  this.state = ol.TileState.LOADED;
-  this.changed();
+  this.setState(ol.TileState.LOADED);
 };
 
 
@@ -160,6 +155,15 @@ ol.VectorTile.prototype.setFeatures = function(features) {
  */
 ol.VectorTile.prototype.setProjection = function(projection) {
   this.projection_ = projection;
+};
+
+
+/**
+ * @param {ol.TileState} tileState Tile state.
+ */
+ol.VectorTile.prototype.setState = function(tileState) {
+  this.state = tileState;
+  this.changed();
 };
 
 

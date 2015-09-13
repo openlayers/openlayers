@@ -88,7 +88,8 @@ goog.inherits(ol.source.Source, ol.Object);
  * @param {number} resolution Resolution.
  * @param {number} rotation Rotation.
  * @param {Object.<string, boolean>} skippedFeatureUids Skipped feature uids.
- * @param {function(ol.Feature): T} callback Feature callback.
+ * @param {function((ol.Feature|ol.FlyweightFeature)): T} callback Feature
+ *     callback.
  * @return {T|undefined} Callback result.
  * @template T
  */
@@ -153,9 +154,11 @@ ol.source.Source.prototype.getWrapX = function() {
 /**
  * Set the attributions of the source.
  * @param {Array.<ol.Attribution>} attributions Attributions.
+ * @api
  */
 ol.source.Source.prototype.setAttributions = function(attributions) {
   this.attributions_ = attributions;
+  this.changed();
 };
 
 

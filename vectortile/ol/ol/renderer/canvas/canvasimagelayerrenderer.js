@@ -65,7 +65,7 @@ ol.renderer.canvas.ImageLayer.prototype.forEachFeatureAtCoordinate =
   return source.forEachFeatureAtCoordinate(
       coordinate, resolution, rotation, skippedFeatureUids,
       /**
-       * @param {ol.Feature} feature Feature.
+       * @param {ol.Feature|ol.FlyweightFeature} feature Feature.
        * @return {?} Callback result.
        */
       function(feature) {

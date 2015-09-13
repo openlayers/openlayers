@@ -245,7 +245,7 @@ function styleFunction(feature, resolution) {
     stroke.setColor(constants[&#x27;@street_casing&#x27;]);
     stroke.setWidth(base(constants[&#x27;@street_casing_width&#x27;]));
     styles[length++] = line;
-  } else if (layer == &#x27;tunnel&#x27; &amp;&amp; cls == &#x27;main&#x27;) {
+  } else if (layer == &#x27;tunnel&#x27; &amp;&amp; cls == &#x27;main&#x27; &amp;&amp; zoom &gt;= 7) {
     stroke.setColor(constants[&#x27;@motorway_casing&#x27;]);
     stroke.setWidth(base(constants[&#x27;@main_casing_width&#x27;]));
     styles[length++] = line;
@@ -270,7 +270,7 @@ function styleFunction(feature, resolution) {
     stroke.setColor(constants[&#x27;@street_casing&#x27;]);
     stroke.setWidth(base(constants[&#x27;@street_casing_width&#x27;]));
     styles[length++] = line;
-  } else if (layer == &#x27;road&#x27; &amp;&amp; cls == &#x27;main&#x27;) {
+  } else if (layer == &#x27;road&#x27; &amp;&amp; cls == &#x27;main&#x27; &amp;&amp; zoom &gt;= 7) {
     stroke.setColor(constants[&#x27;@motorway_casing&#x27;]);
     stroke.setWidth(base(constants[&#x27;@main_casing_width&#x27;]));
     styles[length++] = line;
@@ -303,7 +303,7 @@ function styleFunction(feature, resolution) {
     stroke.setColor(constants[&#x27;@street_casing&#x27;]);
     stroke.setWidth(base(constants[&#x27;@street_casing_width&#x27;]));
     styles[length++] = line;
-  } else if (layer == &#x27;bridge&#x27; &amp;&amp; cls == &#x27;main&#x27;) {
+  } else if (layer == &#x27;bridge&#x27; &amp;&amp; cls == &#x27;main&#x27; &amp;&amp; zoom &gt;= 7) {
     stroke.setColor(constants[&#x27;@motorway_casing&#x27;]);
     stroke.setWidth(base(constants[&#x27;@main_casing_width&#x27;]));
     styles[length++] = line;
@@ -432,7 +432,9 @@ map = new ol.Map({
     new ol.layer.VectorTile({
       source: new ol.source.VectorTile({
         rightHandedPolygons: true,
-        format: new ol.format.MVT(),
+        format: new ol.format.MVT({
+          flyweight: true
+        }),
         tileGrid: ol.tilegrid.createXYZ({maxZoom: 22}),
         tilePixelRatio: 16,
         tileUrlFunction: function(tileCoord) {
@@ -466,7 +468,7 @@ map = new ol.Map({
 &lt;/div&gt;
 </textarea>
           <input type="hidden" name="wrap" value="l">
-          <input type="hidden" name="resources" value="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css,https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js,http://openlayers.org/en/v3.8.2/css/ol.css,http://openlayers.org/en/v3.8.2/build/ol.js">
+          <input type="hidden" name="resources" value="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css,https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js,http://openlayers.org/en/v3.9.0/css/ol.css,http://openlayers.org/en/v3.9.0/build/ol.js">
         </form>
         <pre><code id="example-source" class="language-markup">&lt;!DOCTYPE html&gt;
 &lt;html&gt;
@@ -475,8 +477,8 @@ map = new ol.Map({
 &lt;script src="https://code.jquery.com/jquery-1.11.2.min.js"&gt;&lt;/script&gt;
 &lt;link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css"&gt;
 &lt;script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"&gt;&lt;/script&gt;
-&lt;link rel="stylesheet" href="http://openlayers.org/en/v3.8.2/css/ol.css" type="text/css"&gt;
-&lt;script src="http://openlayers.org/en/v3.8.2/build/ol.js"&gt;&lt;/script&gt;
+&lt;link rel="stylesheet" href="http://openlayers.org/en/v3.9.0/css/ol.css" type="text/css"&gt;
+&lt;script src="http://openlayers.org/en/v3.9.0/build/ol.js"&gt;&lt;/script&gt;
 
 &lt;style&gt;
 .map {
@@ -693,7 +695,7 @@ function styleFunction(feature, resolution) {
     stroke.setColor(constants[&#x27;@street_casing&#x27;]);
     stroke.setWidth(base(constants[&#x27;@street_casing_width&#x27;]));
     styles[length++] = line;
-  } else if (layer == &#x27;tunnel&#x27; &amp;&amp; cls == &#x27;main&#x27;) {
+  } else if (layer == &#x27;tunnel&#x27; &amp;&amp; cls == &#x27;main&#x27; &amp;&amp; zoom &gt;= 7) {
     stroke.setColor(constants[&#x27;@motorway_casing&#x27;]);
     stroke.setWidth(base(constants[&#x27;@main_casing_width&#x27;]));
     styles[length++] = line;
@@ -718,7 +720,7 @@ function styleFunction(feature, resolution) {
     stroke.setColor(constants[&#x27;@street_casing&#x27;]);
     stroke.setWidth(base(constants[&#x27;@street_casing_width&#x27;]));
     styles[length++] = line;
-  } else if (layer == &#x27;road&#x27; &amp;&amp; cls == &#x27;main&#x27;) {
+  } else if (layer == &#x27;road&#x27; &amp;&amp; cls == &#x27;main&#x27; &amp;&amp; zoom &gt;= 7) {
     stroke.setColor(constants[&#x27;@motorway_casing&#x27;]);
     stroke.setWidth(base(constants[&#x27;@main_casing_width&#x27;]));
     styles[length++] = line;
@@ -751,7 +753,7 @@ function styleFunction(feature, resolution) {
     stroke.setColor(constants[&#x27;@street_casing&#x27;]);
     stroke.setWidth(base(constants[&#x27;@street_casing_width&#x27;]));
     styles[length++] = line;
-  } else if (layer == &#x27;bridge&#x27; &amp;&amp; cls == &#x27;main&#x27;) {
+  } else if (layer == &#x27;bridge&#x27; &amp;&amp; cls == &#x27;main&#x27; &amp;&amp; zoom &gt;= 7) {
     stroke.setColor(constants[&#x27;@motorway_casing&#x27;]);
     stroke.setWidth(base(constants[&#x27;@main_casing_width&#x27;]));
     styles[length++] = line;
@@ -880,7 +882,9 @@ map = new ol.Map({
     new ol.layer.VectorTile({
       source: new ol.source.VectorTile({
         rightHandedPolygons: true,
-        format: new ol.format.MVT(),
+        format: new ol.format.MVT({
+          flyweight: true
+        }),
         tileGrid: ol.tilegrid.createXYZ({maxZoom: 22}),
         tilePixelRatio: 16,
         tileUrlFunction: function(tileCoord) {

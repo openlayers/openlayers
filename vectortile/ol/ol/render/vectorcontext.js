@@ -3,6 +3,8 @@ goog.provide('ol.render.VectorContext');
 
 
 /**
+ * Context for drawing geometries.  A vector context is available on render
+ * events and does not need to be constructed directly.
  * @constructor
  * @struct
  * @api
@@ -42,25 +44,27 @@ ol.render.VectorContext.prototype.drawGeometryCollectionGeometry =
 
 
 /**
- * @param {ol.geom.LineString} lineStringGeometry Line string geometry.
- * @param {ol.Feature} feature Feature.
+ * @param {ol.geom.LineString|ol.FlyweightFeature} lineStringGeometry Line
+ *     string geometry.
+ * @param {ol.Feature|ol.FlyweightFeature} feature Feature.
  */
 ol.render.VectorContext.prototype.drawLineStringGeometry =
     goog.abstractMethod;
 
 
 /**
- * @param {ol.geom.MultiLineString} multiLineStringGeometry
+ * @param {ol.geom.MultiLineString|ol.FlyweightFeature} multiLineStringGeometry
  *     MultiLineString geometry.
- * @param {ol.Feature} feature Feature.
+ * @param {ol.Feature|ol.FlyweightFeature} feature Feature.
  */
 ol.render.VectorContext.prototype.drawMultiLineStringGeometry =
     goog.abstractMethod;
 
 
 /**
- * @param {ol.geom.MultiPoint} multiPointGeometry MultiPoint geometry.
- * @param {ol.Feature} feature Feature.
+ * @param {ol.geom.MultiPoint|ol.FlyweightFeature} multiPointGeometry MultiPoint
+ *     geometry.
+ * @param {ol.Feature|ol.FlyweightFeature} feature Feature.
  */
 ol.render.VectorContext.prototype.drawMultiPointGeometry = goog.abstractMethod;
 
@@ -74,15 +78,16 @@ ol.render.VectorContext.prototype.drawMultiPolygonGeometry =
 
 
 /**
- * @param {ol.geom.Point} pointGeometry Point geometry.
- * @param {ol.Feature} feature Feature.
+ * @param {ol.geom.Point|ol.FlyweightFeature} pointGeometry Point geometry.
+ * @param {ol.Feature|ol.FlyweightFeature} feature Feature.
  */
 ol.render.VectorContext.prototype.drawPointGeometry = goog.abstractMethod;
 
 
 /**
- * @param {ol.geom.Polygon} polygonGeometry Polygon geometry.
- * @param {ol.Feature} feature Feature.
+ * @param {ol.geom.Polygon|ol.FlyweightFeature} polygonGeometry Polygon
+ *     geometry.
+ * @param {ol.Feature|ol.FlyweightFeature} feature Feature.
  */
 ol.render.VectorContext.prototype.drawPolygonGeometry = goog.abstractMethod;
 
@@ -92,8 +97,8 @@ ol.render.VectorContext.prototype.drawPolygonGeometry = goog.abstractMethod;
  * @param {number} offset Offset.
  * @param {number} end End.
  * @param {number} stride Stride.
- * @param {ol.geom.Geometry} geometry Geometry.
- * @param {ol.Feature} feature Feature.
+ * @param {ol.geom.Geometry|ol.FlyweightFeature} geometry Geometry.
+ * @param {ol.Feature|ol.FlyweightFeature} feature Feature.
  */
 ol.render.VectorContext.prototype.drawText = goog.abstractMethod;
 
