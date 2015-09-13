@@ -7,6 +7,7 @@ goog.require('goog.events');
 goog.require('goog.net.EventType');
 goog.require('goog.net.XhrIo');
 goog.require('goog.net.XhrIo.ResponseType');
+goog.require('ol.TileState');
 goog.require('ol.format.FormatType');
 goog.require('ol.xml');
 
@@ -49,7 +50,7 @@ ol.FeatureUrlFunction;
  * @param {function(this:ol.VectorTile, Array.<ol.Feature>, ol.proj.Projection)|function(this:ol.source.Vector, Array.<ol.Feature>)} success
  *     Function called with the loaded features and optionally with the data
  *     projection. Called with the vector tile or source as `this`.
- * @param {function(this:ol.source.Vector)} failure
+ * @param {function(this:ol.VectorTile)|function(this:ol.source.Vector)} failure
  *     Function called when loading failed. Called with the vector tile or
  *     source as `this`.
  * @return {ol.FeatureLoader} The feature loader.

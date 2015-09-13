@@ -5,6 +5,7 @@ goog.require('goog.asserts');
 goog.require('goog.events');
 goog.require('goog.object');
 goog.require('goog.vec.Mat4');
+goog.require('ol.Feature');
 goog.require('ol.TileRange');
 goog.require('ol.TileState');
 goog.require('ol.VectorTile');
@@ -193,12 +194,13 @@ ol.renderer.canvas.VectorTileLayer.prototype.createReplayGroup = function(tile,
       tileResolution, layer.getRenderBuffer(), source.getRightHandedPolygons());
 
   /**
-   * @param {ol.Feature} feature Feature.
+   * @param {ol.Feature|ol.render.Feature} feature Feature.
    * @this {ol.renderer.canvas.VectorTileLayer}
    */
   function renderFeature(feature) {
     var styles;
     if (goog.isDef(feature.getStyleFunction())) {
+      goog.asserts.assertInstanceof(feature, ol.Feature, 'Got an ol.Feature');
       styles = feature.getStyleFunction().call(feature, resolution);
     } else if (goog.isDef(layer.getStyleFunction())) {
       styles = layer.getStyleFunction()(feature, resolution);
@@ -273,7 +275,7 @@ ol.renderer.canvas.VectorTileLayer.prototype.forEachFeatureAtCoordinate =
         tileSpaceCoordinate, resolution, rotation,
         layerState.managed ? frameState.skippedFeatureUids : {},
         /**
-         * @param {ol.Feature} feature Feature.
+         * @param {ol.Feature|ol.render.Feature} feature Feature.
          * @return {?} Callback result.
          */
         function(feature) {
@@ -413,7 +415,7 @@ ol.renderer.canvas.VectorTileLayer.prototype.prepareFrame =
 
 
 /**
- * @param {ol.Feature} feature Feature.
+ * @param {ol.Feature|ol.render.Feature} feature Feature.
  * @param {number} squaredTolerance Squared tolerance.
  * @param {Array.<ol.style.Style>} styles Array of styles
  * @param {ol.render.canvas.ReplayGroup} replayGroup Replay group.

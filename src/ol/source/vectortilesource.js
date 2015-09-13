@@ -24,6 +24,7 @@ ol.source.VectorTile = function(options) {
 
   goog.base(this, {
     attributions: options.attributions,
+    cacheSize: ol.DEFAULT_TILE_CACHE_HIGH_WATER_MARK / 16,
     extent: options.extent,
     logo: options.logo,
     opaque: options.opaque,
@@ -37,10 +38,6 @@ ol.source.VectorTile = function(options) {
     tilePixelRatio: options.tilePixelRatio,
     wrapX: options.wrapX
   });
-
-  this.assumeRightHandedPolygons_ =
-      goog.isDef(options.assumeRightHandedPolygons) ?
-          options.assumeRightHandedPolygons : false;
 
   /**
    * @private
@@ -58,14 +55,6 @@ ol.source.VectorTile = function(options) {
 
 };
 goog.inherits(ol.source.VectorTile, ol.source.UrlTile);
-
-
-/**
- * @return {boolean} Assume right handed polygons.
- */
-ol.source.VectorTile.prototype.getRightHandedPolygons = function() {
-  return this.assumeRightHandedPolygons_;
-};
 
 
 /**

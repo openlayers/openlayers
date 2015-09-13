@@ -294,8 +294,8 @@ ol.render.webgl.Immediate.prototype.setTextStyle = function(textStyle) {
  * @const
  * @private
  * @type {Object.<ol.geom.GeometryType,
- *                function(this: ol.render.webgl.Immediate, ol.geom.Geometry,
- *                         Object)>}
+ *      function(this: ol.render.webgl.Immediate,
+ *          (ol.geom.Geometry|ol.render.Feature), Object)>}
  */
 ol.render.webgl.Immediate.GEOMETRY_RENDERERS_ = {
   'Point': ol.render.webgl.Immediate.prototype.drawPointGeometry,

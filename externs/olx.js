@@ -1686,12 +1686,29 @@ olx.format.EsriJSONOptions.prototype.geometryName;
 
 
 /**
- * @typedef {{geometryName: (string|undefined),
+ * @typedef {{featureClass: (function((ol.geom.Geometry|Object.<string, *>)=)|
+ *         function(ol.geom.GeometryType,Array.<number>,
+ *             (Array.<number>|Array.<Array.<number>>),Object.<string, *>)|
+ *         undefined),
+ *     geometryName: (string|undefined),
  *     layers: (Array.<string>|undefined),
  *     layerName: (string|undefined)}}
  * @api
  */
 olx.format.MVTOptions;
+
+
+/**
+ * Class for features returned by {@link ol.format.MVT#readFeatures}. Set to
+ * {@link ol.Feature} to get full editing and geometry support at the cost of
+ * decreased rendering performance. The default is {@link ol.render.Feature},
+ * which is optimized for rendering and hit detection.
+ * @type {undefined|function((ol.geom.Geometry|Object.<string, *>)=)|
+ *     function(ol.geom.GeometryType,Array.<number>,
+ *         (Array.<number>|Array.<Array.<number>>),Object.<string, *>)}
+ * @api
+ */
+olx.format.MVTOptions.prototype.featureClass;
 
 
 /**

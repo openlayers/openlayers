@@ -17,6 +17,12 @@ describe('ol.format.MVT', function() {
 
   describe('#readFeatures', function() {
 
+    it('uses ol.render.Feature as feature class by default', function() {
+      var format = new ol.format.MVT({layers: ['water']});
+      var features = format.readFeatures(data);
+      expect(features[0]).to.be.a(ol.render.Feature);
+    });
+
     it('parses only specified layers', function() {
       var format = new ol.format.MVT({layers: ['water']});
       var features = format.readFeatures(data);
@@ -24,7 +30,10 @@ describe('ol.format.MVT', function() {
     });
 
     it('parses geometries correctly', function() {
-      var format = new ol.format.MVT({layers: ['poi_label']});
+      var format = new ol.format.MVT({
+        featureClass: ol.Feature,
+        layers: ['poi_label']
+      });
       var pbf = new ol.ext.pbf(data);
       var tile = new ol.ext.vectortile.VectorTile(pbf);
       var geometry, rawGeometry;
@@ -66,3 +75,4 @@ goog.require('ol.Feature');
 goog.require('ol.ext.pbf');
 goog.require('ol.ext.vectortile');
 goog.require('ol.format.MVT');
+goog.require('ol.render.Feature');

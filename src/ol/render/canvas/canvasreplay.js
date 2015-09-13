@@ -202,8 +202,8 @@ ol.render.canvas.Replay.prototype.appendFlatCoordinates =
 
 /**
  * @protected
- * @param {ol.geom.Geometry} geometry Geometry.
- * @param {ol.Feature} feature Feature.
+ * @param {ol.geom.Geometry|ol.render.Feature} geometry Geometry.
+ * @param {ol.Feature|ol.render.Feature} feature Feature.
  */
 ol.render.canvas.Replay.prototype.beginGeometry = function(geometry, feature) {
   this.beginGeometryInstruction1_ =
@@ -224,7 +224,8 @@ ol.render.canvas.Replay.prototype.beginGeometry = function(geometry, feature) {
  * @param {Object.<string, boolean>} skippedFeaturesHash Ids of features
  *     to skip.
  * @param {Array.<*>} instructions Instructions array.
- * @param {function(ol.Feature): T|undefined} featureCallback Feature callback.
+ * @param {function((ol.Feature|ol.render.Feature)): T|undefined}
+ *     featureCallback Feature callback.
  * @param {ol.Extent=} opt_hitExtent Only check features that intersect this
  *     extent.
  * @return {T|undefined} Callback result.
@@ -256,7 +257,7 @@ ol.render.canvas.Replay.prototype.replay_ = function(
     var feature, fill, stroke, text, x, y;
     switch (type) {
       case ol.render.canvas.Instruction.BEGIN_GEOMETRY:
-        feature = /** @type {ol.Feature} */ (instruction[1]);
+        feature = /** @type {ol.Feature|ol.render.Feature} */ (instruction[1]);
         var featureUid = goog.getUid(feature).toString();
         if (skippedFeaturesHash[featureUid] !== undefined ||
             !feature.getGeometry()) {
@@ -409,7 +410,7 @@ ol.render.canvas.Replay.prototype.replay_ = function(
         break;
       case ol.render.canvas.Instruction.END_GEOMETRY:
         if (featureCallback !== undefined) {
-          feature = /** @type {ol.Feature} */ (instruction[1]);
+          feature = /** @type {ol.Feature|ol.render.Feature} */ (instruction[1]);
           var result = featureCallback(feature);
           if (result) {
             return result;
@@ -517,7 +518,8 @@ ol.render.canvas.Replay.prototype.replay = function(
  * @param {number} viewRotation View rotation.
  * @param {Object.<string, boolean>} skippedFeaturesHash Ids of features
  *     to skip.
- * @param {function(ol.Feature): T=} opt_featureCallback Feature callback.
+ * @param {function((ol.Feature|ol.render.Feature)): T=} opt_featureCallback
+ *     Feature callback.
  * @param {ol.Extent=} opt_hitExtent Only check features that intersect this
  *     extent.
  * @return {T|undefined} Callback result.
@@ -564,8 +566,8 @@ ol.render.canvas.Replay.prototype.reverseHitDetectionInstructions_ =
 
 
 /**
- * @param {ol.geom.Geometry} geometry Geometry.
- * @param {ol.Feature} feature Feature.
+ * @param {ol.geom.Geometry|ol.render.Feature} geometry Geometry.
+ * @param {ol.Feature|ol.render.Feature} feature Feature.
  */
 ol.render.canvas.Replay.prototype.endGeometry = function(geometry, feature) {
   goog.asserts.assert(this.beginGeometryInstruction1_,
@@ -1889,7 +1891,8 @@ ol.render.canvas.ReplayGroup.prototype.finish = function() {
  * @param {number} rotation Rotation.
  * @param {Object.<string, boolean>} skippedFeaturesHash Ids of features
  *     to skip.
- * @param {function(ol.Feature): T} callback Feature callback.
+ * @param {function((ol.Feature|ol.render.Feature)): T} callback Feature
+ *     callback.
  * @return {T|undefined} Callback result.
  * @template T
  */
@@ -1917,7 +1920,7 @@ ol.render.canvas.ReplayGroup.prototype.forEachFeatureAtCoordinate = function(
   return this.replayHitDetection_(context, transform, rotation,
       skippedFeaturesHash,
       /**
-       * @param {ol.Feature} feature Feature.
+       * @param {ol.Feature|ol.render.Feature} feature Feature.
        * @return {?} Callback result.
        */
       function(feature) {
@@ -2027,7 +2030,8 @@ ol.render.canvas.ReplayGroup.prototype.replay = function(
  * @param {number} viewRotation View rotation.
  * @param {Object.<string, boolean>} skippedFeaturesHash Ids of features
  *     to skip.
- * @param {function(ol.Feature): T} featureCallback Feature callback.
+ * @param {function((ol.Feature|ol.render.Feature)): T} featureCallback
+ *     Feature callback.
  * @param {ol.Extent=} opt_hitExtent Only check features that intersect this
  *     extent.
  * @return {T|undefined} Callback result.

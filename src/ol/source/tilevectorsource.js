@@ -310,7 +310,8 @@ ol.source.TileVector.prototype.loadFeatures =
             this.tileLoadFunction_(url, goog.bind(tileSuccess, this));
           } else {
             var loader = ol.featureloader.loadFeaturesXhr(url,
-                /** @type {ol.format.Feature} */ (this.format_), tileSuccess);
+                /** @type {ol.format.Feature} */ (this.format_), tileSuccess,
+                goog.nullFunction);
             loader.call(this, extent, resolution, projection);
           }
         }

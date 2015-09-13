@@ -33,9 +33,11 @@ ol.interaction.SelectEventType = {
 
 
 /**
- * A function that takes an {@link ol.Feature} and an {@link ol.layer.Layer}
- * and returns `true` if the feature may be selected or `false` otherwise.
- * @typedef {function(ol.Feature, ol.layer.Layer): boolean}
+ * A function that takes an {@link ol.Feature} or {@link ol.render.Feature} and
+ * an {@link ol.layer.Layer} and returns `true` if the feature may be selected
+ * or `false` otherwise.
+ * @typedef {function((ol.Feature|ol.render.Feature), ol.layer.Layer):
+ *     boolean}
  * @api
  */
 ol.interaction.SelectFilterFunction;
@@ -273,7 +275,7 @@ ol.interaction.Select.handleEvent = function(mapBrowserEvent) {
     // the pixel.
     map.forEachFeatureAtPixel(mapBrowserEvent.pixel,
         /**
-         * @param {ol.Feature} feature Feature.
+         * @param {ol.Feature|ol.render.Feature} feature Feature.
          * @param {ol.layer.Layer} layer Layer.
          */
         function(feature, layer) {
@@ -308,7 +310,7 @@ ol.interaction.Select.handleEvent = function(mapBrowserEvent) {
     // Modify the currently selected feature(s).
     map.forEachFeatureAtPixel(mapBrowserEvent.pixel,
         /**
-         * @param {ol.Feature} feature Feature.
+         * @param {ol.Feature|ol.render.Feature} feature Feature.
          * @param {ol.layer.Layer} layer Layer.
          */
         function(feature, layer) {

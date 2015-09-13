@@ -2,6 +2,7 @@ goog.provide('ol.renderer.vector');
 
 goog.require('goog.asserts');
 goog.require('ol.geom.Circle');
+goog.require('ol.geom.Geometry');
 goog.require('ol.geom.GeometryCollection');
 goog.require('ol.geom.LineString');
 goog.require('ol.geom.MultiLineString');
@@ -9,14 +10,15 @@ goog.require('ol.geom.MultiPoint');
 goog.require('ol.geom.MultiPolygon');
 goog.require('ol.geom.Point');
 goog.require('ol.geom.Polygon');
+goog.require('ol.render.Feature');
 goog.require('ol.render.IReplayGroup');
 goog.require('ol.style.ImageState');
 goog.require('ol.style.Style');
 
 
 /**
- * @param {ol.Feature} feature1 Feature 1.
- * @param {ol.Feature} feature2 Feature 2.
+ * @param {ol.Feature|ol.render.Feature} feature1 Feature 1.
+ * @param {ol.Feature|ol.render.Feature} feature2 Feature 2.
  * @return {number} Order.
  */
 ol.renderer.vector.defaultOrder = function(feature1, feature2) {
@@ -76,7 +78,7 @@ ol.renderer.vector.renderCircleGeometry_ =
 
 /**
  * @param {ol.render.IReplayGroup} replayGroup Replay group.
- * @param {ol.Feature} feature Feature.
+ * @param {ol.Feature|ol.render.Feature} feature Feature.
  * @param {ol.style.Style} style Style.
  * @param {number} squaredTolerance Squared tolerance.
  * @param {function(this: T, goog.events.Event)} listener Listener function.
@@ -113,7 +115,7 @@ ol.renderer.vector.renderFeature = function(
 
 /**
  * @param {ol.render.IReplayGroup} replayGroup Replay group.
- * @param {ol.Feature} feature Feature.
+ * @param {ol.Feature|ol.render.Feature} feature Feature.
  * @param {ol.style.Style} style Style.
  * @param {number} squaredTolerance Squared tolerance.
  * @private
@@ -160,13 +162,15 @@ ol.renderer.vector.renderGeometryCollectionGeometry_ =
  * @param {ol.render.IReplayGroup} replayGroup Replay group.
  * @param {ol.geom.Geometry} geometry Geometry.
  * @param {ol.style.Style} style Style.
- * @param {ol.Feature} feature Feature.
+ * @param {ol.Feature|ol.render.Feature} feature Feature.
  * @private
  */
 ol.renderer.vector.renderLineStringGeometry_ =
     function(replayGroup, geometry, style, feature) {
-  goog.asserts.assertInstanceof(geometry, ol.geom.LineString,
-      'geometry should be an ol.geom.LineString');
+  if (geometry instanceof ol.geom.Geometry) {
+    goog.asserts.assertInstanceof(geometry, ol.geom.LineString,
+        'geometry should be an ol.geom.LineString');
+  }
   var strokeStyle = style.getStroke();
   if (strokeStyle) {
     var lineStringReplay = replayGroup.getReplay(
@@ -188,13 +192,15 @@ ol.renderer.vector.renderLineStringGeometry_ =
  * @param {ol.render.IReplayGroup} replayGroup Replay group.
  * @param {ol.geom.Geometry} geometry Geometry.
  * @param {ol.style.Style} style Style.
- * @param {ol.Feature} feature Feature.
+ * @param {ol.Feature|ol.render.Feature} feature Feature.
  * @private
  */
 ol.renderer.vector.renderMultiLineStringGeometry_ =
     function(replayGroup, geometry, style, feature) {
-  goog.asserts.assertInstanceof(geometry, ol.geom.MultiLineString,
-      'geometry should be an ol.geom.MultiLineString');
+  if (geometry instanceof ol.geom.Geometry) {
+    goog.asserts.assertInstanceof(geometry, ol.geom.MultiLineString,
+        'geometry should be an ol.geom.MultiLineString');
+  }
   var strokeStyle = style.getStroke();
   if (strokeStyle) {
     var lineStringReplay = replayGroup.getReplay(
@@ -249,13 +255,15 @@ ol.renderer.vector.renderMultiPolygonGeometry_ =
  * @param {ol.render.IReplayGroup} replayGroup Replay group.
  * @param {ol.geom.Geometry} geometry Geometry.
  * @param {ol.style.Style} style Style.
- * @param {ol.Feature} feature Feature.
+ * @param {ol.Feature|ol.render.Feature} feature Feature.
  * @private
  */
 ol.renderer.vector.renderPointGeometry_ =
     function(replayGroup, geometry, style, feature) {
-  goog.asserts.assertInstanceof(geometry, ol.geom.Point,
-      'geometry should be an ol.geom.Point');
+  if (geometry instanceof ol.geom.Geometry) {
+    goog.asserts.assertInstanceof(geometry, ol.geom.Point,
+        'geometry should be an ol.geom.Point');
+  }
   var imageStyle = style.getImage();
   if (imageStyle) {
     if (imageStyle.getImageState() != ol.style.ImageState.LOADED) {
@@ -281,13 +289,15 @@ ol.renderer.vector.renderPointGeometry_ =
  * @param {ol.render.IReplayGroup} replayGroup Replay group.
  * @param {ol.geom.Geometry} geometry Geometry.
  * @param {ol.style.Style} style Style.
- * @param {ol.Feature} feature Feature.
+ * @param {ol.Feature|ol.render.Feature} feature Feature.
  * @private
  */
 ol.renderer.vector.renderMultiPointGeometry_ =
     function(replayGroup, geometry, style, feature) {
-  goog.asserts.assertInstanceof(geometry, ol.geom.MultiPoint,
-      'geometry should be an ol.goem.MultiPoint');
+  if (geometry instanceof ol.geom.Geometry) {
+    goog.asserts.assertInstanceof(geometry, ol.geom.MultiPoint,
+        'geometry should be an ol.goem.MultiPoint');
+  }
   var imageStyle = style.getImage();
   if (imageStyle) {
     if (imageStyle.getImageState() != ol.style.ImageState.LOADED) {
@@ -312,15 +322,17 @@ ol.renderer.vector.renderMultiPointGeometry_ =
 
 /**
  * @param {ol.render.IReplayGroup} replayGroup Replay group.
- * @param {ol.geom.Geometry} geometry Geometry.
+ * @param {ol.geom.Geometry|ol.render.Feature} geometry Geometry.
  * @param {ol.style.Style} style Style.
- * @param {ol.Feature} feature Feature.
+ * @param {ol.Feature|ol.render.Feature} feature Feature.
  * @private
  */
 ol.renderer.vector.renderPolygonGeometry_ =
     function(replayGroup, geometry, style, feature) {
-  goog.asserts.assertInstanceof(geometry, ol.geom.Polygon,
-      'geometry should be an ol.geom.Polygon');
+  if (geometry instanceof ol.geom.Geometry) {
+    goog.asserts.assertInstanceof(geometry, ol.geom.Polygon,
+        'geometry should be an ol.geom.Polygon or ol.render.Feature');
+  }
   var fillStyle = style.getFill();
   var strokeStyle = style.getStroke();
   if (fillStyle || strokeStyle) {
