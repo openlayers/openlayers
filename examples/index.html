@@ -170,13 +170,13 @@
         for (var i = 0; i < info.examples.length; ++i) {
           info.examples[i].link += window.location.search;
         }
-        // document.getElementById('keywords').focus();
         template = new jugl.Template("template");
         target = document.getElementById("examples");
         listExamples(info.examples);
         document.getElementById("keywords").onkeyup = inputChange;
         parseQuery();
       };
+
     </script>
 
     <title>OpenLayers 3 Examples</title>
@@ -187,7 +187,7 @@
       <div class="container">
         <a class="navbar-brand" href="./"><img src="./resources/logo-70x70.png">&nbsp;OpenLayers 3 Examples</a>
         <form class="navbar-form navbar-left" role="search">
-          <input name="q" type="text" id="keywords" class="search-query" placeholder="Search">
+          <input name="q" type="text" id="keywords" class="search-query" placeholder="Search" autofocus>
           <span id="count"></span>
         </form>
       </div>
