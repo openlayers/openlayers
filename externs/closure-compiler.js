@@ -30,3 +30,12 @@ Touch.prototype.webkitRadiusX;
 
 /** @type {number} */
 Touch.prototype.webkitRadiusY;
+
+
+// see https://github.com/google/closure-compiler/pull/1139
+
+/**
+ * @type {string}
+ * @see http://www.w3.org/TR/pointerevents/#the-touch-action-css-property
+ */
+CSSProperties.prototype.touchAction;
