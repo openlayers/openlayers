@@ -1118,10 +1118,8 @@ ol.Map.prototype.handleLayerGroupPropertyChanged_ = function(event) {
  */
 ol.Map.prototype.handleLayerGroupChanged_ = function() {
   if (!goog.isNull(this.layerGroupPropertyListenerKeys_)) {
-    var length = this.layerGroupPropertyListenerKeys_.length;
-    for (var i = 0; i < length; ++i) {
-      goog.events.unlistenByKey(this.layerGroupPropertyListenerKeys_[i]);
-    }
+    goog.array.forEach(this.layerGroupPropertyListenerKeys_,
+        goog.events.unlistenByKey);
     this.layerGroupPropertyListenerKeys_ = null;
   }
   var layerGroup = this.getLayerGroup();
