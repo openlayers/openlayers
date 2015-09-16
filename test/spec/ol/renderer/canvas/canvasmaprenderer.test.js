@@ -58,10 +58,19 @@ describe('ol.renderer.canvas.Map', function() {
     it('filters managed layers', function() {
       map.addLayer(layer);
       map.renderSync();
-      cb = sinon.spy();
+      var cb = sinon.spy();
       map.forEachFeatureAtPixel(map.getPixelFromCoordinate([0, 0]), cb, null,
           function() { return false; });
       expect(cb).to.not.be.called();
+    });
+
+    it('doesn\'t fail with layer with no source', function() {
+      map.addLayer(new ol.layer.Tile());
+      map.renderSync();
+      expect(function() {
+        map.forEachFeatureAtPixel(map.getPixelFromCoordinate([0, 0]),
+            function() {});
+      }).to.not.throwException();
     });
 
   });
@@ -92,6 +101,7 @@ goog.require('ol.Feature');
 goog.require('ol.Map');
 goog.require('ol.View');
 goog.require('ol.geom.Point');
+goog.require('ol.layer.Tile');
 goog.require('ol.layer.Vector');
 goog.require('ol.renderer.canvas.Layer');
 goog.require('ol.renderer.canvas.Map');
