@@ -1,6 +1,3 @@
-// TODO: serialize dataProjection as crs member when writing
-// see https://github.com/openlayers/ol3/issues/2078
-
 goog.provide('ol.format.GeoJSON');
 
 goog.require('goog.array');
@@ -508,7 +505,8 @@ ol.format.GeoJSON.prototype.readProjectionFromObject = function(object) {
 
 
 /**
- * Encode a feature as a GeoJSON Feature string.
+ * Encode a feature as a GeoJSON Feature string. The `crs` member is always
+ * defined. If the `featureProjection` is not known, `crs` will be `null`.
  *
  * @function
  * @param {ol.Feature} feature Feature.
@@ -520,7 +518,8 @@ ol.format.GeoJSON.prototype.writeFeature;
 
 
 /**
- * Encode a feature as a GeoJSON Feature object.
+ * Encode a feature as a GeoJSON Feature object. The `crs` member is always
+ * defined. If the `featureProjection` is not known, `crs` will be `null`.
  *
  * @param {ol.Feature} feature Feature.
  * @param {olx.format.WriteOptions=} opt_options Write options.
@@ -530,12 +529,30 @@ ol.format.GeoJSON.prototype.writeFeature;
 ol.format.GeoJSON.prototype.writeFeatureObject = function(
     feature, opt_options) {
   opt_options = this.adaptOptions(opt_options);
+  return this.writeFeatureObjectInternal_(feature, true, opt_options);
+};
+
+
+/**
+ * Encode a feature as a GeoJSON Feature object.
+ *
+ * @param {ol.Feature} feature Feature.
+ * @param {!boolean} writeCRS Write CRS on GeoJSON object.
+ * @param {olx.format.WriteOptions=} opt_options Write options.
+ * @return {Object} Object.
+ * @private
+ */
+ol.format.GeoJSON.prototype.writeFeatureObjectInternal_ = function(
+    feature, writeCRS, opt_options) {
   var object = {
     'type': 'Feature'
   };
   var id = feature.getId();
   if (goog.isDefAndNotNull(id)) {
     object['id'] = id;
+  }
+  if (writeCRS) {
+    object['crs'] = this.writeProjection_(opt_options);
   }
   var geometry = feature.getGeometry();
   if (goog.isDefAndNotNull(geometry)) {
@@ -556,7 +573,8 @@ ol.format.GeoJSON.prototype.writeFeatureObject = function(
 
 
 /**
- * Encode an array of features as GeoJSON.
+ * Encode an array of features as GeoJSON. The `crs` member is always
+ * defined. If the `featureProjection` is not known, `crs` will be `null`.
  *
  * @function
  * @param {Array.<ol.Feature>} features Features.
@@ -568,7 +586,8 @@ ol.format.GeoJSON.prototype.writeFeatures;
 
 
 /**
- * Encode an array of features as a GeoJSON object.
+ * Encode an array of features as a GeoJSON object. The `crs` member is always
+ * defined. If the `featureProjection` is not known, `crs` will be `null`.
  *
  * @param {Array.<ol.Feature>} features Features.
  * @param {olx.format.WriteOptions=} opt_options Write options.
@@ -581,12 +600,35 @@ ol.format.GeoJSON.prototype.writeFeaturesObject =
   var objects = [];
   var i, ii;
   for (i = 0, ii = features.length; i < ii; ++i) {
-    objects.push(this.writeFeatureObject(features[i], opt_options));
+    objects.push(this.writeFeatureObjectInternal_(features[i], false,
+        opt_options));
   }
   return /** @type {GeoJSONFeatureCollection} */ ({
     type: 'FeatureCollection',
+    crs: this.writeProjection_(opt_options),
     features: objects
   });
+};
+
+
+/**
+ * Create a valid GeoJSON CRS Object.
+ *
+ * @param {olx.format.WriteOptions=} opt_options Write options.
+ * @return {GeoJSONCRS} GeoJSONCRS Object.
+ * @private
+ */
+ol.format.GeoJSON.prototype.writeProjection_ = function(opt_options) {
+  var projection = opt_options ? opt_options.dataProjection : null;
+  if (projection) {
+    return /** @type {GeoJSONCRS} */ ({
+      type: 'name',
+      properties: {
+        name: ol.proj.get(projection).getCode()
+      }
+    });
+  }
+  return null;
 };
 
 
