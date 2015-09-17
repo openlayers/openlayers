@@ -58,10 +58,9 @@ var layers = [];
 layers['bng'] = new ol.layer.Tile({
   source: new ol.source.XYZ({
     projection: 'EPSG:27700',
-    url: 'https://googledrive.com/host/0B0bm2WdRuvICflNqUmxEdUNOV0ZRUFQ3cXNXR' +
-        'FlOTm9MWmJxSDAxM2V5M1ZJX2lITE9oejA/{z}/{x}/{y}.png',
+    url: 'http://tileserver.maptiler.com/miniscale/{z}/{x}/{y}.png',
     crossOrigin: '',
-    maxZoom: 3
+    maxZoom: 6
   })
 });
 
