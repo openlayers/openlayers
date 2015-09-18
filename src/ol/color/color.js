@@ -62,7 +62,7 @@ ol.color.rgbaColorRe_ =
 ol.color.blend = function(dst, src, opt_color) {
   // http://en.wikipedia.org/wiki/Alpha_compositing
   // FIXME do we need to scale by 255?
-  var out = goog.isDef(opt_color) ? opt_color : [];
+  var out = opt_color ? opt_color : [];
   var dstA = dst[3];
   var srcA = src[3];
   if (dstA == 1) {
@@ -271,7 +271,7 @@ ol.color.isValid = function(color) {
  * @return {ol.Color} Clamped color.
  */
 ol.color.normalize = function(color, opt_color) {
-  var result = goog.isDef(opt_color) ? opt_color : [];
+  var result = opt_color ? opt_color : [];
   result[0] = goog.math.clamp((color[0] + 0.5) | 0, 0, 255);
   result[1] = goog.math.clamp((color[1] + 0.5) | 0, 0, 255);
   result[2] = goog.math.clamp((color[2] + 0.5) | 0, 0, 255);
@@ -309,7 +309,7 @@ ol.color.toString = function(color) {
  * @return {ol.Color} Transformed color.
  */
 ol.color.transform = function(color, transform, opt_color) {
-  var result = goog.isDef(opt_color) ? opt_color : [];
+  var result = opt_color ? opt_color : [];
   result = goog.vec.Mat4.multVec3(transform, color, result);
   goog.asserts.assert(goog.isArray(result), 'result should be an array');
   result[3] = color[3];
