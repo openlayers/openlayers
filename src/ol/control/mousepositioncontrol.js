@@ -40,14 +40,13 @@ ol.control.MousePositionProperty = {
  */
 ol.control.MousePosition = function(opt_options) {
 
-  var options = goog.isDef(opt_options) ? opt_options : {};
+  var options = opt_options ? opt_options : {};
 
-  var className = goog.isDef(options.className) ?
-      options.className : 'ol-mouse-position';
+  var className = options.className ? options.className : 'ol-mouse-position';
 
   var element = goog.dom.createDom(goog.dom.TagName.DIV, className);
 
-  var render = goog.isDef(options.render) ?
+  var render = options.render ?
       options.render : ol.control.MousePosition.render;
 
   goog.base(this, {
@@ -60,10 +59,10 @@ ol.control.MousePosition = function(opt_options) {
       ol.Object.getChangeEventType(ol.control.MousePositionProperty.PROJECTION),
       this.handleProjectionChanged_, false, this);
 
-  if (goog.isDef(options.coordinateFormat)) {
+  if (options.coordinateFormat) {
     this.setCoordinateFormat(options.coordinateFormat);
   }
-  if (goog.isDef(options.projection)) {
+  if (options.projection) {
     this.setProjection(ol.proj.get(options.projection));
   }
 
@@ -71,8 +70,7 @@ ol.control.MousePosition = function(opt_options) {
    * @private
    * @type {string}
    */
-  this.undefinedHTML_ = goog.isDef(options.undefinedHTML) ?
-      options.undefinedHTML : '';
+  this.undefinedHTML_ = options.undefinedHTML ? options.undefinedHTML : '';
 
   /**
    * @private
@@ -229,7 +227,7 @@ ol.control.MousePosition.prototype.updateHTML_ = function(pixel) {
   if (!goog.isNull(pixel) && !goog.isNull(this.mapProjection_)) {
     if (goog.isNull(this.transform_)) {
       var projection = this.getProjection();
-      if (goog.isDef(projection)) {
+      if (projection) {
         this.transform_ = ol.proj.getTransformFromProjections(
             this.mapProjection_, projection);
       } else {
@@ -241,14 +239,14 @@ ol.control.MousePosition.prototype.updateHTML_ = function(pixel) {
     if (!goog.isNull(coordinate)) {
       this.transform_(coordinate, coordinate);
       var coordinateFormat = this.getCoordinateFormat();
-      if (goog.isDef(coordinateFormat)) {
+      if (coordinateFormat) {
         html = coordinateFormat(coordinate);
       } else {
         html = coordinate.toString();
       }
     }
   }
-  if (!goog.isDef(this.renderedHTML_) || html != this.renderedHTML_) {
+  if (!this.renderedHTML_ || html != this.renderedHTML_) {
     this.element.innerHTML = html;
     this.renderedHTML_ = html;
   }

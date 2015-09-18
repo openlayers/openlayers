@@ -6,6 +6,7 @@ goog.require('goog.dom.classlist');
 goog.require('goog.events');
 goog.require('goog.events.EventType');
 goog.require('goog.math');
+goog.require('ol');
 goog.require('ol.animation');
 goog.require('ol.control.Control');
 goog.require('ol.css');
@@ -26,16 +27,15 @@ goog.require('ol.easing');
  */
 ol.control.Rotate = function(opt_options) {
 
-  var options = goog.isDef(opt_options) ? opt_options : {};
+  var options = opt_options ? opt_options : {};
 
-  var className = goog.isDef(options.className) ?
+  var className = options.className ?
       options.className : 'ol-rotate';
 
-  var label = goog.isDef(options.label) ?
-      options.label : '\u21E7';
+  var label = options.label ? options.label : '\u21E7';
 
   /**
-   * @type {Node}
+   * @type {Element}
    * @private
    */
   this.label_ = null;
@@ -48,8 +48,7 @@ ol.control.Rotate = function(opt_options) {
     goog.dom.classlist.add(this.label_, 'ol-compass');
   }
 
-  var tipLabel = goog.isDef(options.tipLabel) ?
-      options.tipLabel : 'Reset rotation';
+  var tipLabel = options.tipLabel ? options.tipLabel : 'Reset rotation';
 
   var button = goog.dom.createDom(goog.dom.TagName.BUTTON, {
     'class': className + '-reset',
@@ -64,8 +63,7 @@ ol.control.Rotate = function(opt_options) {
       ol.css.CLASS_CONTROL;
   var element = goog.dom.createDom(goog.dom.TagName.DIV, cssClasses, button);
 
-  var render = goog.isDef(options.render) ?
-      options.render : ol.control.Rotate.render;
+  var render = options.render ? options.render : ol.control.Rotate.render;
 
   goog.base(this, {
     element: element,
@@ -77,13 +75,14 @@ ol.control.Rotate = function(opt_options) {
    * @type {number}
    * @private
    */
-  this.duration_ = goog.isDef(options.duration) ? options.duration : 250;
+  this.duration_ = options.duration ? options.duration : 250;
 
   /**
    * @type {boolean}
    * @private
    */
-  this.autoHide_ = goog.isDef(options.autoHide) ? options.autoHide : true;
+  this.autoHide_ = ol.isDef(options.autoHide) ?
+      /** @type {boolean} */ (options.autoHide) : true;
 
   /**
    * @private
@@ -127,7 +126,7 @@ ol.control.Rotate.prototype.resetNorth_ = function() {
   while (currentRotation > Math.PI) {
     currentRotation -= 2 * Math.PI;
   }
-  if (goog.isDef(currentRotation)) {
+  if (ol.isDef(currentRotation)) {
     if (this.duration_ > 0) {
       map.beforeRender(ol.animation.rotate({
         rotation: currentRotation,
