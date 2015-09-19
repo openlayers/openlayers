@@ -164,7 +164,7 @@ ol.coordinate.degreesToStringHDMS_ = function(degrees, hemispheres) {
  * @api stable
  */
 ol.coordinate.format = function(coordinate, template, opt_fractionDigits) {
-  if (goog.isDef(coordinate)) {
+  if (coordinate) {
     return template
       .replace('{x}', coordinate[0].toFixed(opt_fractionDigits))
       .replace('{y}', coordinate[1].toFixed(opt_fractionDigits));
@@ -295,7 +295,7 @@ ol.coordinate.squaredDistanceToSegment = function(coordinate, segment) {
  * @api stable
  */
 ol.coordinate.toStringHDMS = function(coordinate) {
-  if (goog.isDef(coordinate)) {
+  if (coordinate) {
     return ol.coordinate.degreesToStringHDMS_(coordinate[1], 'NS') + ' ' +
         ol.coordinate.degreesToStringHDMS_(coordinate[0], 'EW');
   } else {
