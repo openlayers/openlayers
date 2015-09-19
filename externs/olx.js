@@ -6150,7 +6150,7 @@ olx.style.TextOptions;
 
 
 /**
- * Font.
+ * Font family.
  * @type {string|undefined}
  * @api
  */
@@ -6192,7 +6192,8 @@ olx.style.TextOptions.prototype.rotation;
 
 
 /**
- * Text.
+ * Text. Possible values: 'normal', 'hide', 'shorten', 'wrap'.
+ * Default is 'normal'. Multiline labels are not currently supported.
  * @type {string|undefined}
  * @api
  */
@@ -6200,7 +6201,8 @@ olx.style.TextOptions.prototype.text;
 
 
 /**
- * Text alignment.
+ * Text alignment. Possible values: 'left', 'right', 'center', 'end' or 'start'. 
+ * Default is 'start'.
  * @type {string|undefined}
  * @api
  */
@@ -6208,7 +6210,8 @@ olx.style.TextOptions.prototype.textAlign;
 
 
 /**
- * Text base line.
+ * Text base line. Possible values: 'bottom', 'top', 'middle', 'alphabetic', 
+ * 'hanging', 'ideographic'. Default is 'alphabetic'.
  * @type {string|undefined}
  * @api
  */
