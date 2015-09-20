@@ -82,8 +82,6 @@ ol.renderer.webgl.VectorLayer.prototype.composeFrame =
     replayGroup.replay(context,
         viewState.center, viewState.resolution, viewState.rotation,
         frameState.size, frameState.pixelRatio, layerState.opacity,
-        layerState.brightness, layerState.contrast, layerState.hue,
-        layerState.saturation,
         layerState.managed ? frameState.skippedFeatureUids : {});
   }
 
@@ -120,9 +118,7 @@ ol.renderer.webgl.VectorLayer.prototype.forEachFeatureAtCoordinate =
     var features = {};
     return this.replayGroup_.forEachFeatureAtCoordinate(coordinate,
         context, viewState.center, viewState.resolution, viewState.rotation,
-        frameState.size, frameState.pixelRatio,
-        layerState.opacity, layerState.brightness, layerState.contrast,
-        layerState.hue, layerState.saturation,
+        frameState.size, frameState.pixelRatio, layerState.opacity,
         layerState.managed ? frameState.skippedFeatureUids : {},
         /**
          * @param {ol.Feature} feature Feature.
@@ -153,9 +149,8 @@ ol.renderer.webgl.VectorLayer.prototype.hasFeatureAtCoordinate =
     var layerState = this.layerState_;
     return this.replayGroup_.hasFeatureAtCoordinate(coordinate,
         context, viewState.center, viewState.resolution, viewState.rotation,
-        frameState.size, frameState.pixelRatio,
-        layerState.opacity, layerState.brightness, layerState.contrast,
-        layerState.hue, layerState.saturation, frameState.skippedFeatureUids);
+        frameState.size, frameState.pixelRatio, layerState.opacity,
+        frameState.skippedFeatureUids);
   }
 };
 

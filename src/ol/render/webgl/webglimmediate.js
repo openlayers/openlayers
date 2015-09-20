@@ -186,16 +186,12 @@ ol.render.webgl.Immediate.prototype.drawPointGeometry =
   replay.finish(context);
   // default colors
   var opacity = 1;
-  var brightness = 0;
-  var contrast = 1;
-  var hue = 0;
-  var saturation = 1;
   var skippedFeatures = {};
   var featureCallback;
   var oneByOne = false;
   replay.replay(this.context_, this.center_, this.resolution_, this.rotation_,
-      this.size_, this.pixelRatio_, opacity, brightness,
-      contrast, hue, saturation, skippedFeatures, featureCallback, oneByOne);
+      this.size_, this.pixelRatio_, opacity, skippedFeatures, featureCallback,
+      oneByOne);
   replay.getDeleteResourcesFunction(context)();
 };
 
@@ -231,18 +227,13 @@ ol.render.webgl.Immediate.prototype.drawMultiPointGeometry =
   replay.setImageStyle(this.imageStyle_);
   replay.drawMultiPointGeometry(multiPointGeometry, data);
   replay.finish(context);
-  // default colors
   var opacity = 1;
-  var brightness = 0;
-  var contrast = 1;
-  var hue = 0;
-  var saturation = 1;
   var skippedFeatures = {};
   var featureCallback;
   var oneByOne = false;
   replay.replay(this.context_, this.center_, this.resolution_, this.rotation_,
-      this.size_, this.pixelRatio_, opacity, brightness,
-      contrast, hue, saturation, skippedFeatures, featureCallback, oneByOne);
+      this.size_, this.pixelRatio_, opacity, skippedFeatures, featureCallback,
+      oneByOne);
   replay.getDeleteResourcesFunction(context)();
 };
 

@@ -215,12 +215,7 @@ ol.layer.Group.prototype.getLayerStatesArray = function(opt_states) {
   var i, ii, layerState;
   for (i = pos, ii = states.length; i < ii; i++) {
     layerState = states[i];
-    layerState.brightness = ol.math.clamp(
-        layerState.brightness + ownLayerState.brightness, -1, 1);
-    layerState.contrast *= ownLayerState.contrast;
-    layerState.hue += ownLayerState.hue;
     layerState.opacity *= ownLayerState.opacity;
-    layerState.saturation *= ownLayerState.saturation;
     layerState.visible = layerState.visible && ownLayerState.visible;
     layerState.maxResolution = Math.min(
         layerState.maxResolution, ownLayerState.maxResolution);

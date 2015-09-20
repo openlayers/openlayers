@@ -18,24 +18,8 @@ describe('ol.layer.Group', function() {
       expect(layerGroup).to.be.a(ol.layer.Group);
     });
 
-    it('provides default brightness', function() {
-      expect(layerGroup.getBrightness()).to.be(0);
-    });
-
-    it('provides default contrast', function() {
-      expect(layerGroup.getContrast()).to.be(1);
-    });
-
-    it('provides default hue', function() {
-      expect(layerGroup.getHue()).to.be(0);
-    });
-
     it('provides default opacity', function() {
       expect(layerGroup.getOpacity()).to.be(1);
-    });
-
-    it('provides default saturation', function() {
-      expect(layerGroup.getSaturation()).to.be(1);
     });
 
     it('provides default visibility', function() {
@@ -45,11 +29,7 @@ describe('ol.layer.Group', function() {
     it('provides default layerState', function() {
       expect(layerGroup.getLayerState()).to.eql({
         layer: layerGroup,
-        brightness: 0,
-        contrast: 1,
-        hue: 0,
         opacity: 1,
-        saturation: 1,
         visible: true,
         managed: true,
         sourceState: ol.source.State.READY,
@@ -155,32 +135,20 @@ describe('ol.layer.Group', function() {
       });
       var layerGroup = new ol.layer.Group({
         layers: [layer],
-        brightness: 0.5,
-        contrast: 10,
-        hue: 180,
         opacity: 0.5,
-        saturation: 5,
         visible: false,
         zIndex: 10,
         maxResolution: 500,
         minResolution: 0.25
       });
 
-      expect(layerGroup.getBrightness()).to.be(0.5);
-      expect(layerGroup.getContrast()).to.be(10);
-      expect(layerGroup.getHue()).to.be(180);
       expect(layerGroup.getOpacity()).to.be(0.5);
-      expect(layerGroup.getSaturation()).to.be(5);
       expect(layerGroup.getVisible()).to.be(false);
       expect(layerGroup.getMaxResolution()).to.be(500);
       expect(layerGroup.getMinResolution()).to.be(0.25);
       expect(layerGroup.getLayerState()).to.eql({
         layer: layerGroup,
-        brightness: 0.5,
-        contrast: 10,
-        hue: 180,
         opacity: 0.5,
-        saturation: 5,
         visible: false,
         managed: true,
         sourceState: ol.source.State.READY,
@@ -207,33 +175,21 @@ describe('ol.layer.Group', function() {
       var groupExtent = [-10, -5, 10, 5];
       var layerGroup = new ol.layer.Group({
         layers: [layer],
-        brightness: 0.5,
-        contrast: 10,
-        hue: 180,
         opacity: 0.5,
-        saturation: 5,
         visible: false,
         extent: groupExtent,
         maxResolution: 500,
         minResolution: 0.25
       });
 
-      expect(layerGroup.getBrightness()).to.be(0.5);
-      expect(layerGroup.getContrast()).to.be(10);
-      expect(layerGroup.getHue()).to.be(180);
       expect(layerGroup.getOpacity()).to.be(0.5);
-      expect(layerGroup.getSaturation()).to.be(5);
       expect(layerGroup.getVisible()).to.be(false);
       expect(layerGroup.getExtent()).to.eql(groupExtent);
       expect(layerGroup.getMaxResolution()).to.be(500);
       expect(layerGroup.getMinResolution()).to.be(0.25);
       expect(layerGroup.getLayerState()).to.eql({
         layer: layerGroup,
-        brightness: 0.5,
-        contrast: 10,
-        hue: 180,
         opacity: 0.5,
-        saturation: 5,
         visible: false,
         managed: true,
         sourceState: ol.source.State.READY,
@@ -264,11 +220,7 @@ describe('ol.layer.Group', function() {
     });
 
     it('returns a layerState from the properties values', function() {
-      layerGroup.setBrightness(-0.7);
-      layerGroup.setContrast(0.3);
-      layerGroup.setHue(-0.3);
       layerGroup.setOpacity(0.3);
-      layerGroup.setSaturation(0.3);
       layerGroup.setVisible(false);
       layerGroup.setZIndex(10);
       var groupExtent = [-100, 50, 100, 50];
@@ -277,11 +229,7 @@ describe('ol.layer.Group', function() {
       layerGroup.setMinResolution(0.25);
       expect(layerGroup.getLayerState()).to.eql({
         layer: layerGroup,
-        brightness: -0.7,
-        contrast: 0.3,
-        hue: -0.3,
         opacity: 0.3,
-        saturation: 0.3,
         visible: false,
         managed: true,
         sourceState: ol.source.State.READY,
@@ -293,19 +241,11 @@ describe('ol.layer.Group', function() {
     });
 
     it('returns a layerState with clamped values', function() {
-      layerGroup.setBrightness(1.5);
-      layerGroup.setContrast(-0.7);
-      layerGroup.setHue(42);
       layerGroup.setOpacity(-1.5);
-      layerGroup.setSaturation(-0.7);
       layerGroup.setVisible(false);
       expect(layerGroup.getLayerState()).to.eql({
         layer: layerGroup,
-        brightness: 1,
-        contrast: 0,
-        hue: 42,
         opacity: 0,
-        saturation: 0,
         visible: false,
         managed: true,
         sourceState: ol.source.State.READY,
@@ -315,19 +255,11 @@ describe('ol.layer.Group', function() {
         minResolution: 0
       });
 
-      layerGroup.setBrightness(-3);
-      layerGroup.setContrast(42);
-      layerGroup.setHue(-100);
       layerGroup.setOpacity(3);
-      layerGroup.setSaturation(42);
       layerGroup.setVisible(true);
       expect(layerGroup.getLayerState()).to.eql({
         layer: layerGroup,
-        brightness: -1,
-        contrast: 42,
-        hue: -100,
         opacity: 1,
-        saturation: 42,
         visible: true,
         managed: true,
         sourceState: ol.source.State.READY,
@@ -409,11 +341,7 @@ describe('ol.layer.Group', function() {
       source: new ol.source.Source({
         projection: 'EPSG:4326'
       }),
-      brightness: 0.5,
-      contrast: 10,
-      hue: 180,
       opacity: 0.5,
-      saturation: 5,
       visible: false,
       maxResolution: 500,
       minResolution: 0.25
@@ -473,11 +401,7 @@ describe('ol.layer.Group', function() {
     it('transforms layerStates correctly', function() {
       var layerGroup = new ol.layer.Group({
         layers: [layer1, layer2],
-        brightness: 0.5,
-        contrast: 10,
-        hue: 180,
         opacity: 0.5,
-        saturation: 5,
         visible: false,
         maxResolution: 150,
         minResolution: 0.2
@@ -499,11 +423,7 @@ describe('ol.layer.Group', function() {
       layerState = goog.object.clone(layerStatesArray[1]);
       delete layerState.layer;
       expect(layerState).to.eql({
-        brightness: 1,
-        contrast: 100,
-        hue: 360,
         opacity: 0.25,
-        saturation: 25,
         visible: false,
         managed: true,
         sourceState: ol.source.State.READY,
