@@ -26,7 +26,7 @@ ol.geom.GeometryCollection = function(opt_geometries) {
    * @private
    * @type {Array.<ol.geom.Geometry>}
    */
-  this.geometries_ = goog.isDef(opt_geometries) ? opt_geometries : null;
+  this.geometries_ = opt_geometries ? opt_geometries : null;
 
   this.listenGeometriesChange_();
 };

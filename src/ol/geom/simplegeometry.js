@@ -232,7 +232,7 @@ ol.geom.SimpleGeometry.prototype.setLayout =
     function(layout, coordinates, nesting) {
   /** @type {number} */
   var stride;
-  if (goog.isDef(layout)) {
+  if (layout) {
     stride = ol.geom.SimpleGeometry.getStrideForLayout(layout);
   } else {
     var i;

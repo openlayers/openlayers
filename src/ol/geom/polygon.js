@@ -3,6 +3,7 @@ goog.provide('ol.geom.Polygon');
 goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('goog.math');
+goog.require('ol');
 goog.require('ol.extent');
 goog.require('ol.geom.GeometryLayout');
 goog.require('ol.geom.GeometryType');
@@ -169,7 +170,7 @@ ol.geom.Polygon.prototype.getArea = function() {
  */
 ol.geom.Polygon.prototype.getCoordinates = function(opt_right) {
   var flatCoordinates;
-  if (goog.isDef(opt_right)) {
+  if (ol.isDef(opt_right)) {
     flatCoordinates = this.getOrientedFlatCoordinates().slice();
     ol.geom.flat.orient.orientLinearRings(
         flatCoordinates, 0, this.ends_, this.stride, opt_right);
@@ -388,7 +389,7 @@ ol.geom.Polygon.prototype.setFlatCoordinates =
  * @api stable
  */
 ol.geom.Polygon.circular = function(sphere, center, radius, opt_n) {
-  var n = goog.isDef(opt_n) ? opt_n : 32;
+  var n = opt_n ? opt_n : 32;
   /** @type {Array.<number>} */
   var flatCoordinates = [];
   var i;
@@ -434,7 +435,7 @@ ol.geom.Polygon.fromExtent = function(extent) {
  * @api
  */
 ol.geom.Polygon.fromCircle = function(circle, opt_sides, opt_angle) {
-  var sides = goog.isDef(opt_sides) ? opt_sides : 32;
+  var sides = opt_sides ? opt_sides : 32;
   var stride = circle.getStride();
   var layout = circle.getLayout();
   var polygon = new ol.geom.Polygon(null, layout);
@@ -462,7 +463,7 @@ ol.geom.Polygon.makeRegular = function(polygon, center, radius, opt_angle) {
   var ends = polygon.getEnds();
   goog.asserts.assert(ends.length === 1, 'only 1 ring is supported');
   var sides = flatCoordinates.length / stride - 1;
-  var startAngle = goog.isDef(opt_angle) ? opt_angle : 0;
+  var startAngle = opt_angle ? opt_angle : 0;
   var angle, coord, offset;
   for (var i = 0; i <= sides; ++i) {
     offset = i * stride;
