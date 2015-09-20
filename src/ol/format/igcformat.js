@@ -36,7 +36,7 @@ ol.format.IGCZ = {
  */
 ol.format.IGC = function(opt_options) {
 
-  var options = goog.isDef(opt_options) ? opt_options : {};
+  var options = opt_options ? opt_options : {};
 
   goog.base(this);
 
@@ -49,7 +49,7 @@ ol.format.IGC = function(opt_options) {
    * @private
    * @type {ol.format.IGCZ}
    */
-  this.altitudeMode_ = goog.isDef(options.altitudeMode) ?
+  this.altitudeMode_ = options.altitudeMode ?
       options.altitudeMode : ol.format.IGCZ.NONE;
 
 };
