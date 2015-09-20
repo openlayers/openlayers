@@ -3,6 +3,7 @@ goog.provide('ol.DeviceOrientationProperty');
 
 goog.require('goog.events');
 goog.require('goog.math');
+goog.require('ol');
 goog.require('ol.Object');
 goog.require('ol.has');
 
@@ -79,7 +80,7 @@ ol.DeviceOrientation = function(opt_options) {
 
   goog.base(this);
 
-  var options = goog.isDef(opt_options) ? opt_options : {};
+  var options = opt_options ? opt_options : {};
 
   /**
    * @private
@@ -91,7 +92,8 @@ ol.DeviceOrientation = function(opt_options) {
       ol.Object.getChangeEventType(ol.DeviceOrientationProperty.TRACKING),
       this.handleTrackingChanged_, false, this);
 
-  this.setTracking(goog.isDef(options.tracking) ? options.tracking : false);
+  this.setTracking(ol.isDef(options.tracking) ?
+      /** @type {boolean} */ (options.tracking) : false);
 
 };
 goog.inherits(ol.DeviceOrientation, ol.Object);
