@@ -102,7 +102,7 @@ ol.format.WMSGetFeatureInfo.prototype.readFeatures_ =
       layer.namespaceURI = this.featureNS_;
       var layerFeatures = ol.xml.pushParseAndPop(
           [], parsersNS, layer, objectStack, this.gmlFormat_);
-      if (goog.isDef(layerFeatures)) {
+      if (layerFeatures) {
         goog.array.extend(features, layerFeatures);
       }
     }, this);
@@ -111,7 +111,7 @@ ol.format.WMSGetFeatureInfo.prototype.readFeatures_ =
     var gmlFeatures = ol.xml.pushParseAndPop([],
         this.gmlFormat_.FEATURE_COLLECTION_PARSERS, node,
         [{}], this.gmlFormat_);
-    if (goog.isDef(gmlFeatures)) {
+    if (gmlFeatures) {
       features = gmlFeatures;
     }
   }
@@ -140,7 +140,7 @@ ol.format.WMSGetFeatureInfo.prototype.readFeaturesFromNode =
     'featureType': this.featureType,
     'featureNS': this.featureNS
   };
-  if (goog.isDef(opt_options)) {
+  if (opt_options) {
     goog.object.extend(options, this.getReadOptions(node, opt_options));
   }
   return this.readFeatures_(node, [options]);

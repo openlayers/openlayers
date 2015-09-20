@@ -2,6 +2,7 @@ goog.provide('ol.format.XSD');
 
 goog.require('goog.asserts');
 goog.require('goog.string');
+goog.require('ol');
 goog.require('ol.xml');
 
 
@@ -29,7 +30,7 @@ ol.format.XSD.readBoolean = function(node) {
 ol.format.XSD.readBooleanString = function(string) {
   var m = /^\s*(true|1)|(false|0)\s*$/.exec(string);
   if (m) {
-    return goog.isDef(m[1]) || false;
+    return ol.isDef(m[1]) || false;
   } else {
     return undefined;
   }
@@ -56,7 +57,7 @@ ol.format.XSD.readDateTime = function(node) {
     if (m[7] != 'Z') {
       var sign = m[8] == '-' ? -1 : 1;
       dateTime += sign * 60 * parseInt(m[9], 10);
-      if (goog.isDef(m[10])) {
+      if (ol.isDef(m[10])) {
         dateTime += sign * 60 * 60 * parseInt(m[10], 10);
       }
     }

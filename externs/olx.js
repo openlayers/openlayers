@@ -1914,6 +1914,8 @@ olx.format.WFSOptions.prototype.schemaLocation;
  *     maxFeatures: (number|undefined),
  *     geometryName: (string|undefined),
  *     propertyNames: (Array.<string>|undefined),
+ *     startIndex: (number|undefined),
+ *     count: (number|undefined),
  *     bbox: (ol.Extent|undefined)}}
  * @api
  */

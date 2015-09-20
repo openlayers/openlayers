@@ -71,13 +71,13 @@ ol.format.WMTSCapabilities.prototype.readFromNode = function(node) {
   this.version = goog.string.trim(node.getAttribute('version'));
   goog.asserts.assertString(this.version, 'this.version should be a string');
   var WMTSCapabilityObject = this.owsParser_.readFromNode(node);
-  if (!goog.isDef(WMTSCapabilityObject)) {
+  if (!WMTSCapabilityObject) {
     return null;
   }
   WMTSCapabilityObject['version'] = this.version;
   WMTSCapabilityObject = ol.xml.pushParseAndPop(WMTSCapabilityObject,
       ol.format.WMTSCapabilities.PARSERS_, node, []);
-  return goog.isDef(WMTSCapabilityObject) ? WMTSCapabilityObject : null;
+  return WMTSCapabilityObject ? WMTSCapabilityObject : null;
 };
 
 
@@ -134,7 +134,7 @@ ol.format.WMTSCapabilities.readTileMatrixSet_ = function(node, objectStack) {
 ol.format.WMTSCapabilities.readStyle_ = function(node, objectStack) {
   var style = ol.xml.pushParseAndPop({},
       ol.format.WMTSCapabilities.STYLE_PARSERS_, node, objectStack);
-  if (!goog.isDef(style)) {
+  if (!style) {
     return undefined;
   }
   var isDefault = node.getAttribute('isDefault') === 'true';
@@ -168,13 +168,13 @@ ol.format.WMTSCapabilities.readResourceUrl_ = function(node, objectStack) {
   var template = node.getAttribute('template');
   var resourceType = node.getAttribute('resourceType');
   var resource = {};
-  if (goog.isDef(format)) {
+  if (format) {
     resource['format'] = format;
   }
-  if (goog.isDef(template)) {
+  if (template) {
     resource['template'] = template;
   }
-  if (goog.isDef(resourceType)) {
+  if (resourceType) {
     resource['resourceType'] = resourceType;
   }
   return resource;
@@ -219,7 +219,7 @@ ol.format.WMTSCapabilities.readLegendUrl_ = function(node, objectStack) {
  */
 ol.format.WMTSCapabilities.readCoordinates_ = function(node, objectStack) {
   var coordinates = ol.format.XSD.readString(node).split(' ');
-  if (!goog.isDef(coordinates) || coordinates.length != 2) {
+  if (!coordinates || coordinates.length != 2) {
     return undefined;
   }
   var x = +coordinates[0];
