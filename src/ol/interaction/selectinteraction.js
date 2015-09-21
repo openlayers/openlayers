@@ -148,31 +148,6 @@ ol.interaction.Select = function(opt_options) {
   this.filter_ = goog.isDef(options.filter) ? options.filter :
       goog.functions.TRUE;
 
-  var layerFilter;
-  if (goog.isDef(options.layers)) {
-    if (goog.isFunction(options.layers)) {
-      layerFilter = options.layers;
-    } else {
-      var layers = options.layers;
-      layerFilter =
-          /**
-           * @param {ol.layer.Layer} layer Layer.
-           * @return {boolean} Include.
-           */
-          function(layer) {
-        return goog.array.contains(layers, layer);
-      };
-    }
-  } else {
-    layerFilter = goog.functions.TRUE;
-  }
-
-  /**
-   * @private
-   * @type {function(ol.layer.Layer): boolean}
-   */
-  this.layerFilter_ = layerFilter;
-
   /**
    * @private
    * @type {ol.layer.Vector}
@@ -188,6 +163,41 @@ ol.interaction.Select = function(opt_options) {
     updateWhileAnimating: true,
     updateWhileInteracting: true
   });
+
+  var layerFilter;
+  if (goog.isDef(options.layers)) {
+    var userLayerFilter;
+    if (goog.isFunction(options.layers)) {
+      userLayerFilter = options.layers;
+    } else {
+      var layers = options.layers;
+      userLayerFilter = (
+          /**
+           * @param {ol.layer.Layer} layer Layer.
+           * @return {boolean} Include.
+           */
+          function(layer) {
+            return goog.array.contains(layers, layer);
+          });
+    }
+    var featureOverlay = this.featureOverlay_;
+    layerFilter = goog.functions.or(userLayerFilter, (
+        /**
+         * @param {ol.layer.Layer} layer Layer.
+         * @return {boolean} Include.
+         */
+        function(layer) {
+          return layer === featureOverlay;
+        }));
+  } else {
+    layerFilter = goog.functions.TRUE;
+  }
+
+  /**
+   * @private
+   * @type {function(ol.layer.Layer): boolean}
+   */
+  this.layerFilter_ = layerFilter;
 
   var features = this.featureOverlay_.getSource().getFeaturesCollection();
   goog.events.listen(features, ol.CollectionEventType.ADD,

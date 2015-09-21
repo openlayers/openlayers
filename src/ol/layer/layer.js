@@ -149,8 +149,7 @@ ol.layer.Layer.prototype.handleSourcePropertyChange_ = function() {
 
 /**
  * Sets the layer to be rendered on a map. The map will not manage this layer in
- * its layers collection, layer filters in {@link ol.Map#forEachLayerAtPixel}
- * will not filter the layer, and it will be rendered on top. This is useful for
+ * its layers collection, and it will be rendered on top. This is useful for
  * temporary layers. To remove an unmanaged layer from the map, use
  * `#setMap(null)`.
  *
