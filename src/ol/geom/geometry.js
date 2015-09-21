@@ -170,6 +170,20 @@ ol.geom.Geometry.prototype.getExtent = function(opt_extent) {
 
 
 /**
+ * Create a simplified version of this geometry using the {@link
+ * http://en.wikipedia.org/wiki/Ramer%E2%80%93Douglas%E2%80%93Peucker_algorithm
+ * Douglas Peucker} algorithm.
+ * @function
+ * @param {number} tolerance The tolerance distance for simplification.
+ * @return {ol.geom.Geometry} A new, simplified version of the original
+ *     geometry.
+ */
+ol.geom.Geometry.prototype.simplify = function(tolerance) {
+  return this.getSimplifiedGeometry(tolerance * tolerance);
+};
+
+
+/**
  * Create a simplified version of this geometry using the Douglas Peucker
  * algorithm.
  * @see http://en.wikipedia.org/wiki/Ramer%E2%80%93Douglas%E2%80%93Peucker_algorithm
