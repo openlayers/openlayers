@@ -55,12 +55,11 @@ describe('ol.renderer.canvas.Map', function() {
       expect(cb.firstCall.args[1]).to.be(layer);
     });
 
-    it('includes unmanaged layers, but calls callback with null', function() {
+    it('calls callback with null for unmanaged layers', function() {
       layer.setMap(map);
       map.renderSync();
       var cb = sinon.spy();
-      map.forEachFeatureAtPixel(map.getPixelFromCoordinate([0, 0]), cb, null,
-          function() { return false; });
+      map.forEachFeatureAtPixel(map.getPixelFromCoordinate([0, 0]), cb);
       expect(cb).to.be.called();
       expect(cb.firstCall.args[1]).to.be(null);
     });
