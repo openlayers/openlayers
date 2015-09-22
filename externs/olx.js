@@ -6150,7 +6150,9 @@ olx.style.TextOptions;
 
 
 /**
- * Font family.
+ * Font style as CSS 'font' value, see:
+ * {@link https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/font}.
+ * Default is '10px sans-serif'
  * @type {string|undefined}
  * @api
  */
@@ -6192,8 +6194,7 @@ olx.style.TextOptions.prototype.rotation;
 
 
 /**
- * Text. Possible values: 'normal', 'hide', 'shorten', 'wrap'.
- * Default is 'normal'. Multiline labels are not currently supported.
+ * Text content. 
  * @type {string|undefined}
  * @api
  */
