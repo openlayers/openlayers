@@ -248,6 +248,5 @@ ol.pointer.MouseSource.prototype.cancel = function(inEvent) {
  * Remove the mouse from the list of active pointers.
  */
 ol.pointer.MouseSource.prototype.cleanupMouse = function() {
-  goog.object.remove(this.pointerMap,
-      ol.pointer.MouseSource.POINTER_ID.toString());
+  delete this.pointerMap[ol.pointer.MouseSource.POINTER_ID.toString()];
 };
