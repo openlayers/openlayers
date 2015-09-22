@@ -2,6 +2,7 @@ goog.provide('ol.geom.LineString');
 
 goog.require('goog.array');
 goog.require('goog.asserts');
+goog.require('ol');
 goog.require('ol.extent');
 goog.require('ol.geom.GeometryLayout');
 goog.require('ol.geom.GeometryType');
@@ -148,7 +149,8 @@ ol.geom.LineString.prototype.getCoordinateAtM = function(m, opt_extrapolate) {
       this.layout != ol.geom.GeometryLayout.XYZM) {
     return null;
   }
-  var extrapolate = opt_extrapolate ? opt_extrapolate : false;
+  var extrapolate = ol.isDef(opt_extrapolate) ?
+      /** @type {boolean} */ (opt_extrapolate) : false;
   return ol.geom.flat.lineStringCoordinateAtM(this.flatCoordinates, 0,
       this.flatCoordinates.length, this.stride, m, extrapolate);
 };

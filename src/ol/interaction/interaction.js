@@ -3,6 +3,7 @@
 goog.provide('ol.interaction.Interaction');
 goog.provide('ol.interaction.InteractionProperty');
 
+goog.require('ol');
 goog.require('ol.MapBrowserEvent');
 goog.require('ol.Object');
 goog.require('ol.animation');
@@ -149,7 +150,7 @@ ol.interaction.Interaction.rotateWithoutConstraints =
   if (goog.isDefAndNotNull(rotation)) {
     var currentRotation = view.getRotation();
     var currentCenter = view.getCenter();
-    if (currentRotation !== undefined && currentCenter &&
+    if (ol.isDef(currentRotation) && currentCenter &&
         opt_duration && opt_duration > 0) {
       map.beforeRender(ol.animation.rotate({
         rotation: currentRotation,
@@ -220,10 +221,10 @@ ol.interaction.Interaction.zoomWithoutConstraints =
   if (goog.isDefAndNotNull(resolution)) {
     var currentResolution = view.getResolution();
     var currentCenter = view.getCenter();
-    if (currentResolution !== undefined && currentCenter &&
+    if (ol.isDef(currentResolution) && currentCenter &&
         opt_duration && opt_duration > 0) {
       map.beforeRender(ol.animation.zoom({
-        resolution: currentResolution,
+        resolution: /** @type {number} */ (currentResolution),
         duration: opt_duration,
         easing: ol.easing.easeOut
       }));

@@ -1,6 +1,7 @@
 goog.provide('ol.interaction.DragRotateAndZoom');
 
 goog.require('goog.math.Vec2');
+goog.require('ol');
 goog.require('ol.ViewHint');
 goog.require('ol.events.ConditionType');
 goog.require('ol.events.condition');
@@ -89,17 +90,17 @@ ol.interaction.DragRotateAndZoom.handleDragEvent_ = function(mapBrowserEvent) {
   var magnitude = delta.magnitude();
   var view = map.getView();
   map.render();
-  if (this.lastAngle_ !== undefined) {
+  if (ol.isDef(this.lastAngle_)) {
     var angleDelta = theta - this.lastAngle_;
     ol.interaction.Interaction.rotateWithoutConstraints(
         map, view, view.getRotation() - angleDelta);
   }
   this.lastAngle_ = theta;
-  if (this.lastMagnitude_ !== undefined) {
+  if (ol.isDef(this.lastMagnitude_)) {
     var resolution = this.lastMagnitude_ * (view.getResolution() / magnitude);
     ol.interaction.Interaction.zoomWithoutConstraints(map, view, resolution);
   }
-  if (this.lastMagnitude_ !== undefined) {
+  if (ol.isDef(this.lastMagnitude_)) {
     this.lastScaleDelta_ = this.lastMagnitude_ / magnitude;
   }
   this.lastMagnitude_ = magnitude;

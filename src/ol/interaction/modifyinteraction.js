@@ -7,6 +7,7 @@ goog.require('goog.events');
 goog.require('goog.events.Event');
 goog.require('goog.events.EventType');
 goog.require('goog.functions');
+goog.require('ol');
 goog.require('ol.Collection');
 goog.require('ol.CollectionEventType');
 goog.require('ol.Feature');
@@ -882,13 +883,13 @@ ol.interaction.Modify.prototype.removeVertex_ = function() {
       segmentsByFeature[uid] = [left, right, index];
     }
     newSegment = segmentsByFeature[uid];
-    if (left !== undefined) {
+    if (ol.isDef(left)) {
       newSegment[0] = left;
     }
-    if (right !== undefined) {
+    if (ol.isDef(right)) {
       newSegment[1] = right;
     }
-    if (newSegment[0] !== undefined && newSegment[1] !== undefined) {
+    if (ol.isDef(newSegment[0]) && ol.isDef(newSegment[1])) {
       component = coordinates;
       deleted = false;
       newIndex = index - 1;

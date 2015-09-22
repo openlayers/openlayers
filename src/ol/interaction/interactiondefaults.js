@@ -1,5 +1,6 @@
 goog.provide('ol.interaction');
 
+goog.require('ol');
 goog.require('ol.Collection');
 goog.require('ol.Kinetic');
 goog.require('ol.interaction.DoubleClickZoom');
@@ -47,13 +48,13 @@ ol.interaction.defaults = function(opt_options) {
 
   var kinetic = new ol.Kinetic(-0.005, 0.05, 100);
 
-  var altShiftDragRotate = options.altShiftDragRotate !== undefined ?
+  var altShiftDragRotate = ol.isDef(options.altShiftDragRotate) ?
       options.altShiftDragRotate : true;
   if (altShiftDragRotate) {
     interactions.push(new ol.interaction.DragRotate());
   }
 
-  var doubleClickZoom = options.doubleClickZoom !== undefined ?
+  var doubleClickZoom = ol.isDef(options.doubleClickZoom) ?
       options.doubleClickZoom : true;
   if (doubleClickZoom) {
     interactions.push(new ol.interaction.DoubleClickZoom({
@@ -62,27 +63,27 @@ ol.interaction.defaults = function(opt_options) {
     }));
   }
 
-  var dragPan = options.dragPan !== undefined ? options.dragPan : true;
+  var dragPan = ol.isDef(options.dragPan) ? options.dragPan : true;
   if (dragPan) {
     interactions.push(new ol.interaction.DragPan({
       kinetic: kinetic
     }));
   }
 
-  var pinchRotate = options.pinchRotate !== undefined ? options.pinchRotate :
+  var pinchRotate = ol.isDef(options.pinchRotate) ? options.pinchRotate :
       true;
   if (pinchRotate) {
     interactions.push(new ol.interaction.PinchRotate());
   }
 
-  var pinchZoom = options.pinchZoom !== undefined ? options.pinchZoom : true;
+  var pinchZoom = ol.isDef(options.pinchZoom) ? options.pinchZoom : true;
   if (pinchZoom) {
     interactions.push(new ol.interaction.PinchZoom({
       duration: options.zoomDuration
     }));
   }
 
-  var keyboard = options.keyboard !== undefined ? options.keyboard : true;
+  var keyboard = ol.isDef(options.keyboard) ? options.keyboard : true;
   if (keyboard) {
     interactions.push(new ol.interaction.KeyboardPan());
     interactions.push(new ol.interaction.KeyboardZoom({
@@ -91,7 +92,7 @@ ol.interaction.defaults = function(opt_options) {
     }));
   }
 
-  var mouseWheelZoom = options.mouseWheelZoom !== undefined ?
+  var mouseWheelZoom = ol.isDef(options.mouseWheelZoom) ?
       options.mouseWheelZoom : true;
   if (mouseWheelZoom) {
     interactions.push(new ol.interaction.MouseWheelZoom({
@@ -99,7 +100,7 @@ ol.interaction.defaults = function(opt_options) {
     }));
   }
 
-  var shiftDragZoom = options.shiftDragZoom !== undefined ?
+  var shiftDragZoom = ol.isDef(options.shiftDragZoom) ?
       options.shiftDragZoom : true;
   if (shiftDragZoom) {
     interactions.push(new ol.interaction.DragZoom());
