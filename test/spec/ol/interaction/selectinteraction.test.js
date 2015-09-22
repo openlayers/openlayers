@@ -98,6 +98,16 @@ describe('ol.interaction.Select', function() {
       expect(select).to.be.a(ol.interaction.Interaction);
     });
 
+    describe('user-provided collection', function() {
+
+      it('uses the user-provided collection', function() {
+        var features = new ol.Collection();
+        var select = new ol.interaction.Select({features: features});
+        expect(select.getFeatures()).to.be(features);
+      });
+
+    });
+
   });
 
   describe('selecting a polygon', function() {
@@ -269,6 +279,7 @@ goog.require('goog.dispose');
 goog.require('goog.events');
 goog.require('goog.events.BrowserEvent');
 goog.require('goog.style');
+goog.require('ol.Collection');
 goog.require('ol.Feature');
 goog.require('ol.Map');
 goog.require('ol.MapBrowserEvent.EventType');
