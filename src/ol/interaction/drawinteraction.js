@@ -112,22 +112,21 @@ ol.interaction.Draw = function(options) {
    * @type {ol.source.Vector}
    * @private
    */
-  this.source_ = goog.isDef(options.source) ? options.source : null;
+  this.source_ = options.source ? options.source : null;
 
   /**
    * Target collection for drawn features.
    * @type {ol.Collection.<ol.Feature>}
    * @private
    */
-  this.features_ = goog.isDef(options.features) ? options.features : null;
+  this.features_ = options.features ? options.features : null;
 
   /**
    * Pixel distance for snapping.
    * @type {number}
    * @private
    */
-  this.snapTolerance_ = goog.isDef(options.snapTolerance) ?
-      options.snapTolerance : 12;
+  this.snapTolerance_ = options.snapTolerance ? options.snapTolerance : 12;
 
   /**
    * Geometry type.
@@ -150,7 +149,7 @@ ol.interaction.Draw = function(options) {
    * @type {number}
    * @private
    */
-  this.minPoints_ = goog.isDef(options.minPoints) ?
+  this.minPoints_ = options.minPoints ?
       options.minPoints :
       (this.mode_ === ol.interaction.DrawMode.POLYGON ? 3 : 2);
 
@@ -160,11 +159,10 @@ ol.interaction.Draw = function(options) {
    * @type {number}
    * @private
    */
-  this.maxPoints_ = goog.isDef(options.maxPoints) ?
-      options.maxPoints : Infinity;
+  this.maxPoints_ = options.maxPoints ? options.maxPoints : Infinity;
 
   var geometryFunction = options.geometryFunction;
-  if (!goog.isDef(geometryFunction)) {
+  if (!geometryFunction) {
     if (this.type_ === ol.geom.GeometryType.CIRCLE) {
       /**
        * @param {ol.Coordinate|Array.<ol.Coordinate>|Array.<Array.<ol.Coordinate>>} coordinates
@@ -172,7 +170,7 @@ ol.interaction.Draw = function(options) {
        * @return {ol.geom.SimpleGeometry}
        */
       geometryFunction = function(coordinates, opt_geometry) {
-        var circle = goog.isDef(opt_geometry) ? opt_geometry :
+        var circle = opt_geometry ? opt_geometry :
             new ol.geom.Circle([NaN, NaN]);
         goog.asserts.assertInstanceof(circle, ol.geom.Circle,
             'geometry must be an ol.geom.Circle');
@@ -198,7 +196,7 @@ ol.interaction.Draw = function(options) {
        */
       geometryFunction = function(coordinates, opt_geometry) {
         var geometry = opt_geometry;
-        if (goog.isDef(geometry)) {
+        if (geometry) {
           geometry.setCoordinates(coordinates);
         } else {
           geometry = new Constructor(coordinates);
@@ -264,7 +262,7 @@ ol.interaction.Draw = function(options) {
    * @type {number}
    * @private
    */
-  this.squaredClickTolerance_ = goog.isDef(options.clickTolerance) ?
+  this.squaredClickTolerance_ = options.clickTolerance ?
       options.clickTolerance * options.clickTolerance : 36;
 
   /**
@@ -275,10 +273,10 @@ ol.interaction.Draw = function(options) {
   this.overlay_ = new ol.layer.Vector({
     source: new ol.source.Vector({
       useSpatialIndex: false,
-      wrapX: goog.isDef(options.wrapX) ? options.wrapX : false
+      wrapX: options.wrapX ? options.wrapX : false
     }),
-    style: goog.isDef(options.style) ?
-        options.style : ol.interaction.Draw.getDefaultStyleFunction()
+    style: options.style ? options.style :
+        ol.interaction.Draw.getDefaultStyleFunction()
   });
 
   /**
@@ -292,14 +290,14 @@ ol.interaction.Draw = function(options) {
    * @private
    * @type {ol.events.ConditionType}
    */
-  this.condition_ = goog.isDef(options.condition) ?
+  this.condition_ = options.condition ?
       options.condition : ol.events.condition.noModifierKeys;
 
   /**
    * @private
    * @type {ol.events.ConditionType}
    */
-  this.freehandCondition_ = goog.isDef(options.freehandCondition) ?
+  this.freehandCondition_ = options.freehandCondition ?
       options.freehandCondition : ol.events.condition.shiftKeyOnly;
 
   goog.events.listen(this,
@@ -512,9 +510,9 @@ ol.interaction.Draw.prototype.startDrawing_ = function(event) {
         new ol.geom.LineString(this.sketchLineCoords_));
   }
   var geometry = this.geometryFunction_(this.sketchCoords_);
-  goog.asserts.assert(goog.isDef(geometry), 'geometry should be defined');
+  goog.asserts.assert(geometry !== undefined, 'geometry should be defined');
   this.sketchFeature_ = new ol.Feature();
-  if (goog.isDef(this.geometryName_)) {
+  if (this.geometryName_) {
     this.sketchFeature_.setGeometryName(this.geometryName_);
   }
   this.sketchFeature_.setGeometry(geometry);
@@ -806,11 +804,11 @@ ol.interaction.Draw.createRegularPolygon = function(opt_sides, opt_angle) {
         var end = coordinates[1];
         var radius = Math.sqrt(
             ol.coordinate.squaredDistance(center, end));
-        var geometry = goog.isDef(opt_geometry) ? opt_geometry :
+        var geometry = opt_geometry ? opt_geometry :
             ol.geom.Polygon.fromCircle(new ol.geom.Circle(center), opt_sides);
         goog.asserts.assertInstanceof(geometry, ol.geom.Polygon,
             'geometry must be a polygon');
-        var angle = goog.isDef(opt_angle) ? opt_angle :
+        var angle = opt_angle ? opt_angle :
             Math.atan((end[1] - center[1]) / (end[0] - center[0]));
         ol.geom.Polygon.makeRegular(geometry, center, radius, angle);
         return geometry;
@@ -840,7 +838,7 @@ ol.interaction.Draw.getMode_ = function(type) {
   } else if (type === ol.geom.GeometryType.CIRCLE) {
     mode = ol.interaction.DrawMode.CIRCLE;
   }
-  goog.asserts.assert(goog.isDef(mode), 'mode should be defined');
+  goog.asserts.assert(mode !== undefined, 'mode should be defined');
   return mode;
 };
 
