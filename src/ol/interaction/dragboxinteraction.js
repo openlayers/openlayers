@@ -91,13 +91,13 @@ ol.interaction.DragBox = function(opt_options) {
     handleUpEvent: ol.interaction.DragBox.handleUpEvent_
   });
 
-  var options = goog.isDef(opt_options) ? opt_options : {};
+  var options = opt_options ? opt_options : {};
 
   /**
    * @private
    * @type {ol.style.Style}
    */
-  var style = goog.isDef(options.style) ? options.style : null;
+  var style = options.style ? options.style : null;
 
   /**
    * @type {ol.render.Box}
@@ -115,7 +115,7 @@ ol.interaction.DragBox = function(opt_options) {
    * @private
    * @type {ol.events.ConditionType}
    */
-  this.condition_ = goog.isDef(options.condition) ?
+  this.condition_ = options.condition ?
       options.condition : ol.events.condition.always;
 
 };
