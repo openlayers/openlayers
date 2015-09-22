@@ -144,7 +144,6 @@ ol.geom.SimpleGeometry.prototype.getLayout = function() {
 
 /**
  * @inheritDoc
- * @api
  */
 ol.geom.SimpleGeometry.prototype.getSimplifiedGeometry =
     function(squaredTolerance) {

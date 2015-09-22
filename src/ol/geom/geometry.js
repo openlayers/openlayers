@@ -179,6 +179,7 @@ ol.geom.Geometry.prototype.getExtent = function(opt_extent) {
  * @param {number} tolerance The tolerance distance for simplification.
  * @return {ol.geom.Geometry} A new, simplified version of the original
  *     geometry.
+ * @api
  */
 ol.geom.Geometry.prototype.simplify = function(tolerance) {
   return this.getSimplifiedGeometry(tolerance * tolerance);
