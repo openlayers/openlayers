@@ -116,7 +116,7 @@ ol.interaction.Modify = function(options) {
    * @type {ol.events.ConditionType}
    * @private
    */
-  this.deleteCondition_ = goog.isDef(options.deleteCondition) ?
+  this.deleteCondition_ = options.deleteCondition ?
       options.deleteCondition :
       /** @type {ol.events.ConditionType} */ (goog.functions.and(
           ol.events.condition.noModifierKeys,
@@ -161,8 +161,7 @@ ol.interaction.Modify = function(options) {
    * @type {number}
    * @private
    */
-  this.pixelTolerance_ = goog.isDef(options.pixelTolerance) ?
-      options.pixelTolerance : 10;
+  this.pixelTolerance_ = options.pixelTolerance ? options.pixelTolerance : 10;
 
   /**
    * @type {boolean}
@@ -192,9 +191,9 @@ ol.interaction.Modify = function(options) {
   this.overlay_ = new ol.layer.Vector({
     source: new ol.source.Vector({
       useSpatialIndex: false,
-      wrapX: goog.isDef(options.wrapX) ? options.wrapX : false
+      wrapX: options.wrapX ? options.wrapX : false
     }),
-    style: goog.isDef(options.style) ? options.style :
+    style: options.style ? options.style :
         ol.interaction.Modify.getDefaultStyleFunction(),
     updateWhileAnimating: true,
     updateWhileInteracting: true
@@ -238,7 +237,7 @@ goog.inherits(ol.interaction.Modify, ol.interaction.Pointer);
  */
 ol.interaction.Modify.prototype.addFeature_ = function(feature) {
   var geometry = feature.getGeometry();
-  if (goog.isDef(this.SEGMENT_WRITERS_[geometry.getType()])) {
+  if (this.SEGMENT_WRITERS_[geometry.getType()]) {
     this.SEGMENT_WRITERS_[geometry.getType()].call(this, feature, geometry);
   }
   var map = this.getMap();
@@ -822,9 +821,9 @@ ol.interaction.Modify.prototype.insertVertex_ = function(segmentData, vertex) {
 
   this.setGeometryCoordinates_(geometry, coordinates);
   var rTree = this.rBush_;
-  goog.asserts.assert(goog.isDef(segment), 'segment should be defined');
+  goog.asserts.assert(segment !== undefined, 'segment should be defined');
   rTree.remove(segmentData);
-  goog.asserts.assert(goog.isDef(index), 'index should be defined');
+  goog.asserts.assert(index !== undefined, 'index should be defined');
   this.updateSegmentIndices_(geometry, index, depth, 1);
   var newSegmentData = /** @type {ol.interaction.SegmentDataType} */ ({
     segment: [segment[0], vertex],
@@ -883,13 +882,13 @@ ol.interaction.Modify.prototype.removeVertex_ = function() {
       segmentsByFeature[uid] = [left, right, index];
     }
     newSegment = segmentsByFeature[uid];
-    if (goog.isDef(left)) {
+    if (left !== undefined) {
       newSegment[0] = left;
     }
-    if (goog.isDef(right)) {
+    if (right !== undefined) {
       newSegment[1] = right;
     }
-    if (goog.isDef(newSegment[0]) && goog.isDef(newSegment[1])) {
+    if (newSegment[0] !== undefined && newSegment[1] !== undefined) {
       component = coordinates;
       deleted = false;
       newIndex = index - 1;
@@ -974,7 +973,7 @@ ol.interaction.Modify.prototype.updateSegmentIndices_ = function(
     geometry, index, depth, delta) {
   this.rBush_.forEachInExtent(geometry.getExtent(), function(segmentDataMatch) {
     if (segmentDataMatch.geometry === geometry &&
-        (!goog.isDef(depth) || !goog.isDef(segmentDataMatch.depth) ||
+        (depth === undefined || segmentDataMatch.depth === undefined ||
         goog.array.equals(segmentDataMatch.depth, depth)) &&
         segmentDataMatch.index > index) {
       segmentDataMatch.index += delta;
