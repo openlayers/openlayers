@@ -4241,7 +4241,7 @@ olx.source.ImageMapGuideOptions.prototype.projection;
 
 /**
  * Ratio. `1` means image requests are the size of the map viewport, `2` means
- * twice the width and height of the map viewport, and so on. Must be `1` or 
+ * twice the width and height of the map viewport, and so on. Must be `1` or
  * higher. Default is `1`.
  * @type {number|undefined}
  * @api stable
@@ -4524,7 +4524,7 @@ olx.source.ImageVectorOptions.prototype.projection;
 
 /**
  * Ratio. 1 means canvases are the size of the map viewport, 2 means twice the
- * width and height of the map viewport, and so on. Must be `1` or higher. 
+ * width and height of the map viewport, and so on. Must be `1` or higher.
  * Default is `1.5`.
  * @type {number|undefined}
  * @api
@@ -4708,7 +4708,7 @@ olx.source.ImageWMSOptions.prototype.projection;
 
 /**
  * Ratio. `1` means image requests are the size of the map viewport, `2` means
- * twice the width and height of the map viewport, and so on. Must be `1` or 
+ * twice the width and height of the map viewport, and so on. Must be `1` or
  * higher. Default is `1.5`.
  * @type {number|undefined}
  * @api stable
@@ -6216,7 +6216,7 @@ olx.style.TextOptions.prototype.textBaseline;
 
 
 /**
- * Fill style.
+ * Fill style. If none is provided, we'll use a dark fill-style (#333).
  * @type {ol.style.Fill|undefined}
  * @api
  */

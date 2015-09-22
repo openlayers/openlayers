@@ -1,6 +1,9 @@
 goog.provide('ol.style.Text');
 
 
+goog.require('ol.style.Fill');
+
+
 
 /**
  * @classdesc
@@ -54,7 +57,8 @@ ol.style.Text = function(opt_options) {
    * @private
    * @type {ol.style.Fill}
    */
-  this.fill_ = goog.isDef(options.fill) ? options.fill : null;
+  this.fill_ = goog.isDef(options.fill) ? options.fill :
+      new ol.style.Fill({color: ol.style.Text.DEFAULT_FILL_COLOR_});
 
   /**
    * @private
@@ -74,6 +78,16 @@ ol.style.Text = function(opt_options) {
    */
   this.offsetY_ = goog.isDef(options.offsetY) ? options.offsetY : 0;
 };
+
+
+/**
+ * The default fill color to use if no fill was set at construction time; a
+ * blackish `#333`.
+ *
+ * @const {string}
+ * @private
+ */
+ol.style.Text.DEFAULT_FILL_COLOR_ = '#333';
 
 
 /**
