@@ -23,22 +23,22 @@ goog.require('ol.style.Style');
  * @api stable
  */
 ol.interaction.DragZoom = function(opt_options) {
-  var options = goog.isDef(opt_options) ? opt_options : {};
+  var options = opt_options ? opt_options : {};
 
-  var condition = goog.isDef(options.condition) ?
+  var condition = options.condition ?
       options.condition : ol.events.condition.shiftKeyOnly;
 
   /**
    * @private
    * @type {number}
    */
-  this.duration_ = goog.isDef(options.duration) ? options.duration : 200;
+  this.duration_ = options.duration ? options.duration : 200;
 
   /**
    * @private
    * @type {ol.style.Style}
    */
-  var style = goog.isDef(options.style) ?
+  var style = options.style ?
       options.style : new ol.style.Style({
         stroke: new ol.style.Stroke({
           color: [0, 0, 255, 1]
@@ -64,7 +64,7 @@ ol.interaction.DragZoom.prototype.onBoxEnd = function() {
   goog.asserts.assert(!goog.isNull(view), 'view should not be null');
 
   var size = map.getSize();
-  goog.asserts.assert(goog.isDef(size), 'size should be defined');
+  goog.asserts.assert(size !== undefined, 'size should be defined');
 
   var extent = this.getGeometry().getExtent();
 
@@ -72,10 +72,10 @@ ol.interaction.DragZoom.prototype.onBoxEnd = function() {
       view.getResolutionForExtent(extent, size));
 
   var currentResolution = view.getResolution();
-  goog.asserts.assert(goog.isDef(currentResolution), 'res should be defined');
+  goog.asserts.assert(currentResolution !== undefined, 'res should be defined');
 
   var currentCenter = view.getCenter();
-  goog.asserts.assert(goog.isDef(currentCenter), 'center should be defined');
+  goog.asserts.assert(currentCenter !== undefined, 'center should be defined');
 
   map.beforeRender(ol.animation.zoom({
     resolution: currentResolution,
