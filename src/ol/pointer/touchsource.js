@@ -425,7 +425,7 @@ ol.pointer.TouchSource.prototype.cancelOut_ =
  * @param {Object} inPointer
  */
 ol.pointer.TouchSource.prototype.cleanUpPointer_ = function(inPointer) {
-  delete this.pointerMap[inPointer.pointerId];
+  goog.object.remove(this.pointerMap, inPointer.pointerId);
   this.removePrimaryPointer_(inPointer);
 };
 

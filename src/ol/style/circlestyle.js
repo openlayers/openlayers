@@ -405,7 +405,7 @@ ol.style.Circle.prototype.drawHitDetectionCanvas_ =
       renderOptions.size / 2, renderOptions.size / 2,
       this.radius_, 0, 2 * Math.PI, true);
 
-  context.fillStyle = ol.color.asString(ol.render.canvas.defaultFillStyle);
+  context.fillStyle = ol.render.canvas.defaultFillStyle;
   context.fill();
   if (!goog.isNull(this.stroke_)) {
     context.strokeStyle = renderOptions.strokeStyle;

@@ -72,7 +72,8 @@ function flash(feature) {
       snapToPixel: false,
       stroke: new ol.style.Stroke({
         color: 'rgba(255, 0, 0, ' + opacity + ')',
-        width: 1
+        width: 1,
+        opacity: opacity
       })
     });
 

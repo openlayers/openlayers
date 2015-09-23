@@ -27,7 +27,7 @@ describe('ol.source.BingMaps', function() {
       goog.net.Jsonp = googNetJsonp;
       var key = source.on('change', function() {
         if (source.getState() === 'ready') {
-          ol.Observable.unByKey(key);
+          source.unByKey(key);
           tileGrid = source.getTileGrid();
           done();
         }
@@ -79,4 +79,3 @@ describe('ol.source.BingMaps', function() {
 goog.require('goog.net.Jsonp');
 goog.require('ol.source.BingMaps');
 goog.require('ol.tilecoord');
-goog.require('ol.Observable');
