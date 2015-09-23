@@ -2873,7 +2873,7 @@ olx.interaction.SelectOptions.prototype.multi;
 /**
  * Collection where the interaction will place selected features. Optional. If
  * not set the interaction will create a collection. In any case the collection
- * used by the interaction is returnd by
+ * used by the interaction is returned by
  * {@link ol.interaction.Select#getFeatures}.
  * @type {ol.Collection.<ol.Feature>}
  * @api
