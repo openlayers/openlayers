@@ -127,7 +127,7 @@ ol.renderer.vector.renderFeature_ = function(
   var simplifiedGeometry = geometry.getSimplifiedGeometry(squaredTolerance);
   var geometryRenderer =
       ol.renderer.vector.GEOMETRY_RENDERERS_[simplifiedGeometry.getType()];
-  goog.asserts.assert(goog.isDef(geometryRenderer),
+  goog.asserts.assert(geometryRenderer !== undefined,
       'geometryRenderer should be defined');
   geometryRenderer(replayGroup, simplifiedGeometry, style, feature);
 };
@@ -149,7 +149,7 @@ ol.renderer.vector.renderGeometryCollectionGeometry_ =
   for (i = 0, ii = geometries.length; i < ii; ++i) {
     var geometryRenderer =
         ol.renderer.vector.GEOMETRY_RENDERERS_[geometries[i].getType()];
-    goog.asserts.assert(goog.isDef(geometryRenderer),
+    goog.asserts.assert(geometryRenderer !== undefined,
         'geometryRenderer should be defined');
     geometryRenderer(replayGroup, geometries[i], style, feature);
   }
