@@ -32,6 +32,7 @@ goog.provide('ol.pointer.TouchSource');
 
 goog.require('goog.array');
 goog.require('goog.object');
+goog.require('ol');
 goog.require('ol.pointer.EventSource');
 goog.require('ol.pointer.MouseSource');
 
@@ -168,7 +169,7 @@ ol.pointer.TouchSource.prototype.resetClickCountHandler_ = function() {
  * @private
  */
 ol.pointer.TouchSource.prototype.cancelResetClickCount_ = function() {
-  if (goog.isDef(this.resetId_)) {
+  if (ol.isDef(this.resetId_)) {
     goog.global.clearTimeout(this.resetId_);
   }
 };
