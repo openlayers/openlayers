@@ -1,7 +1,82 @@
 goog.provide('ol.interaction.Translate');
+goog.provide('ol.interaction.TranslateEvent');
 
 goog.require('goog.array');
+goog.require('goog.events');
+goog.require('goog.events.Event');
+goog.require('goog.events.EventType');
+goog.require('ol.MapBrowserEvent.EventType');
 goog.require('ol.interaction.Pointer');
+
+
+/**
+ * @enum {string}
+ */
+ol.TranslateEventType = {
+  /**
+   * Triggered upon feature translation start
+   * @event ol.interaction.TranslateEvent#translatestart
+   * @api
+   */
+  TRANSLATESTART: 'translatestart',
+  /**
+   * Triggered upon feature translation drag
+   * @event ol.interaction.TranslateEvent#translatedrag
+   * @api
+   */
+  TRANSLATEDRAG: 'translatedrag',
+  /**
+   * Triggered upon feature translation end
+   * @event ol.interaction.TranslateEvent#translateend
+   * @api
+   */
+  TRANSLATEEND: 'translateend'
+};
+
+
+
+/**
+ * @classdesc
+ * Events emitted by {@link ol.interaction.Translate} instances are instances of
+ * this type.
+ *
+ * @constructor
+ * @extends {goog.events.Event}
+ * @implements {oli.TranslateEvent}
+ * @param {ol.TranslateEventType} type Type.
+ * @param {ol.Collection.<ol.Feature>} features The features translated.
+ * @param {ol.Coordinate} coordinate The event coordinate.
+ * @param {ol.MapBrowserPointerEvent} mapBrowserPointerEvent Associated
+ *     {@link ol.MapBrowserPointerEvent}.
+ */
+ol.interaction.TranslateEvent =
+    function(type, features, coordinate, mapBrowserPointerEvent) {
+
+  goog.base(this, type);
+
+  /**
+   * The features being translated.
+   * @type {ol.Collection.<ol.Feature>}
+   * @api
+   */
+  this.features = features;
+
+  /**
+   * The coordinate of the drag event.
+   * @const
+   * @type {ol.Coordinate}
+   * @api
+   */
+  this.coordinate = coordinate;
+
+  /**
+   * Associated {@link ol.MapBrowserPointerEvent}.
+   * @type {ol.MapBrowserPointerEvent}
+   * @api
+   */
+  this.mapBrowserPointerEvent = mapBrowserPointerEvent;
+};
+goog.inherits(ol.interaction.TranslateEvent, goog.events.Event);
 
 
 
@@ -64,6 +139,9 @@ ol.interaction.Translate.handleDownEvent_ = function(event) {
   if (goog.isNull(this.lastCoordinate_) && !goog.isNull(this.lastFeature_)) {
     this.lastCoordinate_ = event.coordinate;
     ol.interaction.Translate.handleMoveEvent_.call(this, event);
+    this.dispatchEvent(
+        new ol.interaction.TranslateEvent(ol.TranslateEventType.TRANSLATESTART,
+        this.features_, event.coordinate));
     return true;
   }
   return false;
@@ -80,6 +158,9 @@ ol.interaction.Translate.handleUpEvent_ = function(event) {
   if (!goog.isNull(this.lastCoordinate_)) {
     this.lastCoordinate_ = null;
     ol.interaction.Translate.handleMoveEvent_.call(this, event);
+    this.dispatchEvent(
+        new ol.interaction.TranslateEvent(ol.TranslateEventType.TRANSLATEEND,
+        this.features_, event.coordinate));
     return true;
   }
   return false;
@@ -94,6 +175,7 @@ ol.interaction.Translate.handleUpEvent_ = function(event) {
 ol.interaction.Translate.handleDragEvent_ = function(event) {
   if (!goog.isNull(this.lastCoordinate_)) {
     var newCoordinate = event.coordinate;
+    //console.info(newCoordinate);
     var deltaX = newCoordinate[0] - this.lastCoordinate_[0];
     var deltaY = newCoordinate[1] - this.lastCoordinate_[1];
 
@@ -110,6 +192,9 @@ ol.interaction.Translate.handleDragEvent_ = function(event) {
     }
 
     this.lastCoordinate_ = newCoordinate;
+    this.dispatchEvent(
+        new ol.interaction.TranslateEvent(ol.TranslateEventType.TRANSLATEDRAG,
+        this.features_, newCoordinate));
   }
 };
 
