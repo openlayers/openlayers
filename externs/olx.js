@@ -6162,7 +6162,9 @@ olx.style.TextOptions;
 
 
 /**
- * Font.
+ * Font style as CSS 'font' value, see:
+ * {@link https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/font}.
+ * Default is '10px sans-serif'
  * @type {string|undefined}
  * @api
  */
@@ -6204,7 +6206,7 @@ olx.style.TextOptions.prototype.rotation;
 
 
 /**
- * Text.
+ * Text content. 
  * @type {string|undefined}
  * @api
  */
@@ -6212,7 +6214,8 @@ olx.style.TextOptions.prototype.text;
 
 
 /**
- * Text alignment.
+ * Text alignment. Possible values: 'left', 'right', 'center', 'end' or 'start'. 
+ * Default is 'start'.
  * @type {string|undefined}
  * @api
  */
@@ -6220,7 +6223,8 @@ olx.style.TextOptions.prototype.textAlign;
 
 
 /**
- * Text base line.
+ * Text base line. Possible values: 'bottom', 'top', 'middle', 'alphabetic', 
+ * 'hanging', 'ideographic'. Default is 'alphabetic'.
  * @type {string|undefined}
  * @api
  */
