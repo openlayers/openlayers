@@ -26,9 +26,9 @@ goog.require('ol.interaction.Interaction');
  */
 ol.interaction.Pointer = function(opt_options) {
 
-  var options = goog.isDef(opt_options) ? opt_options : {};
+  var options = opt_options ? opt_options : {};
 
-  var handleEvent = goog.isDef(options.handleEvent) ?
+  var handleEvent = options.handleEvent ?
       options.handleEvent : ol.interaction.Pointer.handleEvent;
 
   goog.base(this, {
@@ -39,28 +39,28 @@ ol.interaction.Pointer = function(opt_options) {
    * @type {function(ol.MapBrowserPointerEvent):boolean}
    * @private
    */
-  this.handleDownEvent_ = goog.isDef(options.handleDownEvent) ?
+  this.handleDownEvent_ = options.handleDownEvent ?
       options.handleDownEvent : ol.interaction.Pointer.handleDownEvent;
 
   /**
    * @type {function(ol.MapBrowserPointerEvent)}
    * @private
    */
-  this.handleDragEvent_ = goog.isDef(options.handleDragEvent) ?
+  this.handleDragEvent_ = options.handleDragEvent ?
       options.handleDragEvent : ol.interaction.Pointer.handleDragEvent;
 
   /**
    * @type {function(ol.MapBrowserPointerEvent)}
    * @private
    */
-  this.handleMoveEvent_ = goog.isDef(options.handleMoveEvent) ?
+  this.handleMoveEvent_ = options.handleMoveEvent ?
       options.handleMoveEvent : ol.interaction.Pointer.handleMoveEvent;
 
   /**
    * @type {function(ol.MapBrowserPointerEvent):boolean}
    * @private
    */
-  this.handleUpEvent_ = goog.isDef(options.handleUpEvent) ?
+  this.handleUpEvent_ = options.handleUpEvent ?
       options.handleUpEvent : ol.interaction.Pointer.handleUpEvent;
 
   /**
