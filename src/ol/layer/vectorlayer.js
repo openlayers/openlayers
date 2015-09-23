@@ -2,6 +2,7 @@ goog.provide('ol.layer.Vector');
 
 goog.require('goog.asserts');
 goog.require('goog.object');
+goog.require('ol');
 goog.require('ol.layer.Layer');
 goog.require('ol.style.Style');
 
@@ -30,11 +31,11 @@ ol.layer.VectorProperty = {
  */
 ol.layer.Vector = function(opt_options) {
 
-  var options = goog.isDef(opt_options) ?
+  var options = opt_options ?
       opt_options : /** @type {olx.layer.VectorOptions} */ ({});
 
   goog.asserts.assert(
-      !goog.isDef(options.renderOrder) || goog.isNull(options.renderOrder) ||
+      options.renderOrder === undefined || goog.isNull(options.renderOrder) ||
       goog.isFunction(options.renderOrder),
       'renderOrder must be a comparator function');
 
@@ -50,8 +51,8 @@ ol.layer.Vector = function(opt_options) {
    * @type {number}
    * @private
    */
-  this.renderBuffer_ = goog.isDef(options.renderBuffer) ?
-      options.renderBuffer : 100;
+  this.renderBuffer_ = ol.isDef(options.renderBuffer) ?
+      /** @type {number} */ (options.renderBuffer) : 100;
 
   /**
    * User provided style.
@@ -73,15 +74,15 @@ ol.layer.Vector = function(opt_options) {
    * @type {boolean}
    * @private
    */
-  this.updateWhileAnimating_ = goog.isDef(options.updateWhileAnimating) ?
-      options.updateWhileAnimating : false;
+  this.updateWhileAnimating_ = ol.isDef(options.updateWhileAnimating) ?
+      /** @type {boolean} */ (options.updateWhileAnimating) : false;
 
   /**
    * @type {boolean}
    * @private
    */
-  this.updateWhileInteracting_ = goog.isDef(options.updateWhileInteracting) ?
-      options.updateWhileInteracting : false;
+  this.updateWhileInteracting_ = ol.isDef(options.updateWhileInteracting) ?
+      /** @type {boolean} */ (options.updateWhileInteracting) : false;
 
 };
 goog.inherits(ol.layer.Vector, ol.layer.Layer);
@@ -160,7 +161,7 @@ ol.layer.Vector.prototype.getUpdateWhileInteracting = function() {
  */
 ol.layer.Vector.prototype.setRenderOrder = function(renderOrder) {
   goog.asserts.assert(
-      !goog.isDef(renderOrder) || goog.isNull(renderOrder) ||
+      renderOrder === undefined || goog.isNull(renderOrder) ||
       goog.isFunction(renderOrder),
       'renderOrder must be a comparator function');
   this.set(ol.layer.VectorProperty.RENDER_ORDER, renderOrder);
@@ -174,12 +175,16 @@ ol.layer.Vector.prototype.setRenderOrder = function(renderOrder) {
  * it is `null` the layer has no style (a `null` style), so only features
  * that have their own styles will be rendered in the layer. See
  * {@link ol.style} for information on the default style.
- * @param {ol.style.Style|Array.<ol.style.Style>|ol.style.StyleFunction|undefined}
+ * @param {ol.style.Style|Array.<ol.style.Style>|ol.style.StyleFunction|null|undefined}
  *     style Layer style.
  * @api stable
  */
 ol.layer.Vector.prototype.setStyle = function(style) {
-  this.style_ = goog.isDef(style) ? style : ol.style.defaultStyleFunction;
+  this.style_ = ol.isDef(style) ?
+      /**
+       * @type {ol.style.Style|Array.<ol.style.Style>|ol.style.StyleFunction|null}
+       */
+      (style) : ol.style.defaultStyleFunction;
   this.styleFunction_ = goog.isNull(style) ?
       undefined : ol.style.createStyleFunction(this.style_);
   this.changed();
