@@ -4,15 +4,13 @@ goog.provide('ol.interaction.TranslateEvent');
 goog.require('goog.array');
 goog.require('goog.events');
 goog.require('goog.events.Event');
-goog.require('goog.events.EventType');
-goog.require('ol.MapBrowserEvent.EventType');
 goog.require('ol.interaction.Pointer');
 
 
 /**
  * @enum {string}
  */
-ol.TranslateEventType = {
+ol.interaction.TranslateEventType = {
   /**
    * Triggered upon feature translation start
    * @event ol.interaction.TranslateEvent#translatestart
@@ -42,15 +40,12 @@ ol.TranslateEventType = {
  *
  * @constructor
  * @extends {goog.events.Event}
- * @implements {oli.TranslateEvent}
- * @param {ol.TranslateEventType} type Type.
+ * @implements {oli.interaction.TranslateEvent}
+ * @param {ol.interaction.TranslateEventType} type Type.
  * @param {ol.Collection.<ol.Feature>} features The features translated.
  * @param {ol.Coordinate} coordinate The event coordinate.
- * @param {ol.MapBrowserPointerEvent} mapBrowserPointerEvent Associated
- *     {@link ol.MapBrowserPointerEvent}.
  */
-ol.interaction.TranslateEvent =
-    function(type, features, coordinate, mapBrowserPointerEvent) {
+ol.interaction.TranslateEvent = function(type, features, coordinate) {
 
   goog.base(this, type);
 
@@ -68,13 +63,6 @@ ol.interaction.TranslateEvent =
    * @api
    */
   this.coordinate = coordinate;
-
-  /**
-   * Associated {@link ol.MapBrowserPointerEvent}.
-   * @type {ol.MapBrowserPointerEvent}
-   * @api
-   */
-  this.mapBrowserPointerEvent = mapBrowserPointerEvent;
 };
 goog.inherits(ol.interaction.TranslateEvent, goog.events.Event);
 
@@ -86,6 +74,7 @@ goog.inherits(ol.interaction.TranslateEvent, goog.events.Event);
  *
  * @constructor
  * @extends {ol.interaction.Pointer}
+ * @fires ol.interaction.TranslateEvent
  * @param {olx.interaction.TranslateOptions} options Options.
  * @api
  */
@@ -140,8 +129,9 @@ ol.interaction.Translate.handleDownEvent_ = function(event) {
     this.lastCoordinate_ = event.coordinate;
     ol.interaction.Translate.handleMoveEvent_.call(this, event);
     this.dispatchEvent(
-        new ol.interaction.TranslateEvent(ol.TranslateEventType.TRANSLATESTART,
-        this.features_, event.coordinate));
+        new ol.interaction.TranslateEvent(
+            ol.interaction.TranslateEventType.TRANSLATESTART, this.features_,
+            event.coordinate));
     return true;
   }
   return false;
@@ -159,8 +149,9 @@ ol.interaction.Translate.handleUpEvent_ = function(event) {
     this.lastCoordinate_ = null;
     ol.interaction.Translate.handleMoveEvent_.call(this, event);
     this.dispatchEvent(
-        new ol.interaction.TranslateEvent(ol.TranslateEventType.TRANSLATEEND,
-        this.features_, event.coordinate));
+        new ol.interaction.TranslateEvent(
+            ol.interaction.TranslateEventType.TRANSLATEEND, this.features_,
+            event.coordinate));
     return true;
   }
   return false;
@@ -193,8 +184,9 @@ ol.interaction.Translate.handleDragEvent_ = function(event) {
 
     this.lastCoordinate_ = newCoordinate;
     this.dispatchEvent(
-        new ol.interaction.TranslateEvent(ol.TranslateEventType.TRANSLATEDRAG,
-        this.features_, newCoordinate));
+        new ol.interaction.TranslateEvent(
+            ol.interaction.TranslateEventType.TRANSLATEDRAG, this.features_,
+            newCoordinate));
   }
 };
 
