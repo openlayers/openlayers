@@ -286,7 +286,7 @@ ol.renderer.webgl.TileLayer.prototype.prepareFrame =
     }
 
     /** @type {Array.<number>} */
-    var zs = goog.array.map(goog.object.getKeys(tilesToDrawByZ), Number);
+    var zs = goog.object.getKeys(tilesToDrawByZ).map(Number);
     goog.array.sort(zs);
     var u_tileOffset = goog.vec.Vec4.createFloat32();
     var i, ii, sx, sy, tileKey, tilesToDraw, tx, ty;

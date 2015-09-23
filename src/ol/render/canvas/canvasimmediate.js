@@ -725,7 +725,7 @@ ol.render.canvas.Immediate.prototype.drawText = goog.abstractMethod;
  */
 ol.render.canvas.Immediate.prototype.flush = function() {
   /** @type {Array.<number>} */
-  var zs = goog.array.map(goog.object.getKeys(this.callbacksByZIndex_), Number);
+  var zs = goog.object.getKeys(this.callbacksByZIndex_).map(Number);
   goog.array.sort(zs);
   var i, ii, callbacks, j, jj;
   for (i = 0, ii = zs.length; i < ii; ++i) {

@@ -172,7 +172,7 @@ ol.renderer.dom.TileLayer.prototype.prepareFrame =
   }
 
   /** @type {Array.<number>} */
-  var zs = goog.array.map(goog.object.getKeys(tilesToDrawByZ), Number);
+  var zs = goog.object.getKeys(tilesToDrawByZ).map(Number);
   goog.array.sort(zs);
 
   /** @type {Object.<number, boolean>} */
@@ -198,8 +198,7 @@ ol.renderer.dom.TileLayer.prototype.prepareFrame =
   }
 
   /** @type {Array.<number>} */
-  var tileLayerZKeys =
-      goog.array.map(goog.object.getKeys(this.tileLayerZs_), Number);
+  var tileLayerZKeys = goog.object.getKeys(this.tileLayerZs_).map(Number);
   goog.array.sort(tileLayerZKeys);
 
   var i, ii, j, origin, resolution;

@@ -121,7 +121,7 @@ ol.tilegrid.TileGrid = function(options) {
   if (options.sizes !== undefined) {
     goog.asserts.assert(options.sizes.length == this.resolutions_.length,
         'number of sizes and resolutions must be equal');
-    this.fullTileRanges_ = goog.array.map(options.sizes, function(size, z) {
+    this.fullTileRanges_ = options.sizes.map(function(size, z) {
       goog.asserts.assert(size[0] !== 0, 'width must not be 0');
       goog.asserts.assert(size[1] !== 0, 'height must not be 0');
       var tileRange = new ol.TileRange(

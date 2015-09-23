@@ -10,7 +10,7 @@ describe('ol.proj', function() {
   describe('projection equivalence', function() {
 
     function _testAllEquivalent(codes) {
-      var projections = goog.array.map(codes, ol.proj.get);
+      var projections = codes.map(ol.proj.get);
       goog.array.forEach(projections, function(source) {
         goog.array.forEach(projections, function(destination) {
           expect(ol.proj.equivalent(source, destination)).to.be.ok();

@@ -3,7 +3,6 @@
 goog.provide('ol.render.Box');
 
 goog.require('goog.Disposable');
-goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('goog.events');
 goog.require('ol.geom.Polygon');
@@ -76,8 +75,7 @@ ol.render.Box.prototype.createGeometry_ = function() {
     endPixel,
     [endPixel[0], startPixel[1]]
   ];
-  var coordinates = goog.array.map(pixels,
-      this.map_.getCoordinateFromPixel, this.map_);
+  var coordinates = pixels.map(this.map_.getCoordinateFromPixel, this.map_);
   // close the polygon
   coordinates[4] = coordinates[0].slice();
   return new ol.geom.Polygon([coordinates]);

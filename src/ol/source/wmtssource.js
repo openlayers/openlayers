@@ -178,7 +178,7 @@ ol.source.WMTS = function(options) {
 
   var tileUrlFunction = this.urls_.length > 0 ?
       ol.TileUrlFunction.createFromTileUrlFunctions(
-          goog.array.map(this.urls_, createFromWMTSTemplate)) :
+          this.urls_.map(createFromWMTSTemplate)) :
       ol.TileUrlFunction.nullTileUrlFunction;
 
   goog.base(this, {
