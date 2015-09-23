@@ -4,6 +4,7 @@ goog.require('goog.asserts');
 goog.require('goog.events.KeyCodes');
 goog.require('goog.events.KeyHandler.EventType');
 goog.require('goog.functions');
+goog.require('ol');
 goog.require('ol.coordinate');
 goog.require('ol.events.ConditionType');
 goog.require('ol.events.condition');
@@ -34,13 +35,14 @@ ol.interaction.KeyboardPan = function(opt_options) {
     handleEvent: ol.interaction.KeyboardPan.handleEvent
   });
 
-  var options = goog.isDef(opt_options) ? opt_options : {};
+  var options = ol.isDef(opt_options) ? opt_options : {};
 
   /**
    * @private
    * @type {ol.events.ConditionType}
    */
-  this.condition_ = goog.isDef(options.condition) ? options.condition :
+  this.condition_ = ol.isDef(options.condition) ?
+      /** @type {ol.events.ConditionType} */ (options.condition) :
       goog.functions.and(ol.events.condition.noModifierKeys,
           ol.events.condition.targetNotEditable);
 
@@ -48,13 +50,15 @@ ol.interaction.KeyboardPan = function(opt_options) {
    * @private
    * @type {number}
    */
-  this.duration_ = goog.isDef(options.duration) ? options.duration : 100;
+  this.duration_ = ol.isDef(options.duration) ?
+      /** @type {number} */ (options.duration) : 100;
 
   /**
    * @private
    * @type {number}
    */
-  this.pixelDelta_ = goog.isDef(options.pixelDelta) ? options.pixelDelta : 128;
+  this.pixelDelta_ = ol.isDef(options.pixelDelta) ?
+      /** @type {number} */ (options.pixelDelta) : 128;
 
 };
 goog.inherits(ol.interaction.KeyboardPan, ol.interaction.Interaction);
