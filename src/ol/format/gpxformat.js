@@ -71,15 +71,13 @@ ol.format.GPX.appendCoordinate_ = function(flatCoordinates, node, values) {
       parseFloat(node.getAttribute('lon')),
       parseFloat(node.getAttribute('lat')));
   if ('ele' in values) {
-    flatCoordinates.push(
-        /** @type {number} */ (values['ele']));
+    flatCoordinates.push(/** @type {number} */ (values['ele']));
     delete values['ele'];
   } else {
     flatCoordinates.push(0);
   }
   if ('time' in values) {
-    flatCoordinates.push(
-        /** @type {number} */ (values['time']));
+    flatCoordinates.push(/** @type {number} */ (values['time']));
     delete values['time'];
   } else {
     flatCoordinates.push(0);
