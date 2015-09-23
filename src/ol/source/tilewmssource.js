@@ -4,6 +4,7 @@
 
 goog.provide('ol.source.TileWMS');
 
+goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('goog.math');
 goog.require('goog.object');
@@ -221,7 +222,7 @@ ol.source.TileWMS.prototype.getRequestUrl_ =
         pixelRatio, projection, params) {
 
   var urls = this.urls_;
-  if (urls.length === 0) {
+  if (goog.array.isEmpty(urls)) {
     return undefined;
   }
 

@@ -426,7 +426,7 @@ ol.style.IconImage_ = function(image, src, size, crossOrigin, imageState) {
    * @type {boolean}
    */
   this.tainting_ = false;
-
+  if (this.imageState_ == ol.style.ImageState.LOADED)this.determineTainting_();
 };
 goog.inherits(ol.style.IconImage_, goog.events.EventTarget);
 
@@ -456,8 +456,8 @@ ol.style.IconImage_.get = function(image, src, size, crossOrigin, imageState) {
  */
 ol.style.IconImage_.prototype.determineTainting_ = function() {
   var context = ol.dom.createCanvasContext2D(1, 1);
-  context.drawImage(this.image_, 0, 0);
   try {
+    context.drawImage(this.image_, 0, 0);
     context.getImageData(0, 0, 1, 1);
   } catch (e) {
     this.tainting_ = true;

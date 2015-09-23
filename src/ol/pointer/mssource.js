@@ -30,6 +30,7 @@
 
 goog.provide('ol.pointer.MsSource');
 
+goog.require('goog.object');
 goog.require('ol.pointer.EventSource');
 
 
@@ -97,7 +98,7 @@ ol.pointer.MsSource.prototype.prepareEvent_ = function(inEvent) {
  * @param {number} pointerId
  */
 ol.pointer.MsSource.prototype.cleanup = function(pointerId) {
-  delete this.pointerMap[pointerId.toString()];
+  goog.object.remove(this.pointerMap, pointerId);
 };
 
 
@@ -107,7 +108,7 @@ ol.pointer.MsSource.prototype.cleanup = function(pointerId) {
  * @param {goog.events.BrowserEvent} inEvent
  */
 ol.pointer.MsSource.prototype.msPointerDown = function(inEvent) {
-  this.pointerMap[inEvent.getBrowserEvent().pointerId.toString()] = inEvent;
+  this.pointerMap[inEvent.getBrowserEvent().pointerId] = inEvent;
   var e = this.prepareEvent_(inEvent);
   this.dispatcher.down(e, inEvent);
 };

@@ -1,5 +1,6 @@
 goog.provide('ol.format.WKT');
 
+goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('ol.Feature');
 goog.require('ol.format.Feature');
@@ -58,7 +59,7 @@ ol.format.WKT.EMPTY = 'EMPTY';
  */
 ol.format.WKT.encodePointGeometry_ = function(geom) {
   var coordinates = geom.getCoordinates();
-  if (coordinates.length === 0) {
+  if (goog.array.isEmpty(coordinates)) {
     return '';
   }
   return coordinates[0] + ' ' + coordinates[1];

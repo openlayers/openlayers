@@ -180,7 +180,6 @@ ol.interaction.Select = function(opt_options) {
   this.featureOverlay_ = new ol.layer.Vector({
     source: new ol.source.Vector({
       useSpatialIndex: false,
-      features: options.features,
       wrapX: options.wrapX
     }),
     style: goog.isDef(options.style) ? options.style :
