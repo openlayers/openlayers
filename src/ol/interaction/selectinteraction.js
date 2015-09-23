@@ -105,51 +105,51 @@ ol.interaction.Select = function(opt_options) {
     handleEvent: ol.interaction.Select.handleEvent
   });
 
-  var options = goog.isDef(opt_options) ? opt_options : {};
+  var options = opt_options ? opt_options : {};
 
   /**
    * @private
    * @type {ol.events.ConditionType}
    */
-  this.condition_ = goog.isDef(options.condition) ?
+  this.condition_ = options.condition ?
       options.condition : ol.events.condition.singleClick;
 
   /**
    * @private
    * @type {ol.events.ConditionType}
    */
-  this.addCondition_ = goog.isDef(options.addCondition) ?
+  this.addCondition_ = options.addCondition ?
       options.addCondition : ol.events.condition.never;
 
   /**
    * @private
    * @type {ol.events.ConditionType}
    */
-  this.removeCondition_ = goog.isDef(options.removeCondition) ?
+  this.removeCondition_ = options.removeCondition ?
       options.removeCondition : ol.events.condition.never;
 
   /**
    * @private
    * @type {ol.events.ConditionType}
    */
-  this.toggleCondition_ = goog.isDef(options.toggleCondition) ?
+  this.toggleCondition_ = options.toggleCondition ?
       options.toggleCondition : ol.events.condition.shiftKeyOnly;
 
   /**
    * @private
    * @type {boolean}
    */
-  this.multi_ = goog.isDef(options.multi) ? options.multi : false;
+  this.multi_ = options.multi ? options.multi : false;
 
   /**
    * @private
    * @type {ol.interaction.SelectFilterFunction}
    */
-  this.filter_ = goog.isDef(options.filter) ? options.filter :
+  this.filter_ = options.filter ? options.filter :
       goog.functions.TRUE;
 
   var layerFilter;
-  if (goog.isDef(options.layers)) {
+  if (options.layers) {
     if (goog.isFunction(options.layers)) {
       layerFilter = options.layers;
     } else {
@@ -183,7 +183,7 @@ ol.interaction.Select = function(opt_options) {
       features: options.features,
       wrapX: options.wrapX
     }),
-    style: goog.isDef(options.style) ? options.style :
+    style: options.style ? options.style :
         ol.interaction.Select.getDefaultStyleFunction(),
     updateWhileAnimating: true,
     updateWhileInteracting: true
