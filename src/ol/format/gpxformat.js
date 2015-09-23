@@ -74,14 +74,14 @@ ol.format.GPX.appendCoordinate_ = function(flatCoordinates, node, values) {
   if (goog.object.containsKey(values, 'ele')) {
     flatCoordinates.push(
         /** @type {number} */ (values['ele']));
-    goog.object.remove(values, 'ele');
+    delete values['ele'];
   } else {
     flatCoordinates.push(0);
   }
   if (goog.object.containsKey(values, 'time')) {
     flatCoordinates.push(
         /** @type {number} */ (values['time']));
-    goog.object.remove(values, 'time');
+    delete values['time'];
   } else {
     flatCoordinates.push(0);
   }
@@ -200,7 +200,7 @@ ol.format.GPX.readRte_ = function(node, objectStack) {
   }
   var flatCoordinates = /** @type {Array.<number>} */
       (values['flatCoordinates']);
-  goog.object.remove(values, 'flatCoordinates');
+  delete values['flatCoordinates'];
   var geometry = new ol.geom.LineString(null);
   geometry.setFlatCoordinates(ol.geom.GeometryLayout.XYZM, flatCoordinates);
   ol.format.Feature.transformWithOptions(geometry, false, options);
@@ -230,9 +230,9 @@ ol.format.GPX.readTrk_ = function(node, objectStack) {
   }
   var flatCoordinates = /** @type {Array.<number>} */
       (values['flatCoordinates']);
-  goog.object.remove(values, 'flatCoordinates');
+  delete values['flatCoordinates'];
   var ends = /** @type {Array.<number>} */ (values['ends']);
-  goog.object.remove(values, 'ends');
+  delete values['ends'];
   var geometry = new ol.geom.MultiLineString(null);
   geometry.setFlatCoordinates(
       ol.geom.GeometryLayout.XYZM, flatCoordinates, ends);
