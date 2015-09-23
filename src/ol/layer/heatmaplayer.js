@@ -4,6 +4,7 @@ goog.require('goog.asserts');
 goog.require('goog.events');
 goog.require('goog.math');
 goog.require('goog.object');
+goog.require('ol');
 goog.require('ol.Object');
 goog.require('ol.dom');
 goog.require('ol.layer.Vector');
@@ -37,7 +38,7 @@ ol.layer.HeatmapLayerProperty = {
  * @api
  */
 ol.layer.Heatmap = function(opt_options) {
-  var options = goog.isDef(opt_options) ? opt_options : {};
+  var options = opt_options ? opt_options : {};
 
   var baseOptions = goog.object.clone(options);
 
@@ -58,7 +59,8 @@ ol.layer.Heatmap = function(opt_options) {
    * @private
    * @type {number}
    */
-  this.shadow_ = goog.isDef(options.shadow) ? options.shadow : 250;
+  this.shadow_ = ol.isDef(options.shadow) ?
+      /** @type {number} */ (options.shadow) : 250;
 
   /**
    * @private
@@ -76,12 +78,14 @@ ol.layer.Heatmap = function(opt_options) {
       ol.Object.getChangeEventType(ol.layer.HeatmapLayerProperty.GRADIENT),
       this.handleGradientChanged_, false, this);
 
-  this.setGradient(goog.isDef(options.gradient) ?
+  this.setGradient(options.gradient ?
       options.gradient : ol.layer.Heatmap.DEFAULT_GRADIENT);
 
-  this.setBlur(goog.isDef(options.blur) ? options.blur : 15);
+  this.setBlur(ol.isDef(options.blur) ?
+      /** @type {number} */ (options.blur) : 15);
 
-  this.setRadius(goog.isDef(options.radius) ? options.radius : 8);
+  this.setRadius(ol.isDef(options.radius) ?
+      /** @type {number} */ (options.radius) : 8);
 
   goog.events.listen(this, [
     ol.Object.getChangeEventType(ol.layer.HeatmapLayerProperty.BLUR),
@@ -90,7 +94,7 @@ ol.layer.Heatmap = function(opt_options) {
 
   this.handleStyleChanged_();
 
-  var weight = goog.isDef(options.weight) ? options.weight : 'weight';
+  var weight = options.weight ? options.weight : 'weight';
   var weightFunction;
   if (goog.isString(weight)) {
     weightFunction = function(feature) {
@@ -105,14 +109,15 @@ ol.layer.Heatmap = function(opt_options) {
   this.setStyle(goog.bind(function(feature, resolution) {
     goog.asserts.assert(!goog.isNull(this.styleCache_),
         'this.styleCache_ should not be null');
-    goog.asserts.assert(goog.isDef(this.circleImage_),
+    goog.asserts.assert(this.circleImage_ !== undefined,
         'this.circleImage_ should be defined');
     var weight = weightFunction(feature);
-    var opacity = goog.isDef(weight) ? goog.math.clamp(weight, 0, 1) : 1;
+    var opacity = ol.isDef(weight) ?
+        goog.math.clamp(/** @type {number} */ (weight), 0, 1) : 1;
     // cast to 8 bits
     var index = (255 * opacity) | 0;
     var style = this.styleCache_[index];
-    if (!goog.isDef(style)) {
+    if (!style) {
       style = [
         new ol.style.Style({
           image: new ol.style.Icon({
@@ -174,7 +179,7 @@ ol.layer.Heatmap.createGradient_ = function(colors) {
 ol.layer.Heatmap.prototype.createCircle_ = function() {
   var radius = this.getRadius();
   var blur = this.getBlur();
-  goog.asserts.assert(goog.isDef(radius) && goog.isDef(blur),
+  goog.asserts.assert(radius !== undefined && blur !== undefined,
       'radius and blur should be defined');
   var halfSize = radius + blur + 1;
   var size = 2 * halfSize;
