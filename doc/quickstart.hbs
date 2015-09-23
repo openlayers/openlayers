@@ -35,7 +35,7 @@ Below you'll find a complete working example.  Create a new file, copy in the co
           })
         ],
         view: new ol.View({
-          center: ol.proj.transform([37.41, 8.82], 'EPSG:4326', 'EPSG:3857'),
+          center: ol.proj.fromLonLat([37.41, 8.82]),
           zoom: 4
         })
       });
@@ -89,7 +89,7 @@ The map in the application is contained in a [`<div>` HTML element](http://en.wi
       })
     ],
     view: new ol.View({
-      center: ol.proj.transform([37.41, 8.82], 'EPSG:4326', 'EPSG:3857'),
+      center: ol.proj.fromLonLat([37.41, 8.82]),
       zoom: 4
     })
   });
@@ -125,9 +125,9 @@ The next part of the `Map` object is the `View`. The view allow to specify the c
 
 ```js
     view: new ol.View({
-      center: ol.proj.transform([37.41, 8.82], 'EPSG:4326', 'EPSG:3857'),
+      center: ol.proj.fromLonLat([37.41, 8.82]),
       zoom: 4
     })
 ```
 
-You will notice that the `center` specified is in lat/lon coordinates (EPSG:4326). Since the only layer we use is in Spherical Mercator projection (EPSG:3857), we can reproject them on the fly to be able to zoom the map on the right coordinates.
+You will notice that the `center` specified is in lon/lat coordinates (EPSG:4326). Since the only layer we use is in Spherical Mercator projection (EPSG:3857), we can reproject them on the fly to be able to zoom the map on the right coordinates.

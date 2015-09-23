@@ -656,7 +656,7 @@ ol.format.EsriJSON.prototype.writeFeatureObject = function(
         ol.format.EsriJSON.writeGeometry_(geometry, opt_options);
   }
   var properties = feature.getProperties();
-  goog.object.remove(properties, feature.getGeometryName());
+  delete properties[feature.getGeometryName()];
   if (!goog.object.isEmpty(properties)) {
     object['attributes'] = properties;
   } else {

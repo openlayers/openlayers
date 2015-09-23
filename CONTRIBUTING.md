@@ -38,7 +38,7 @@ Contributor License Agreement](https://docs.google.com/spreadsheet/viewform?form
 ## Setting up development environment
 
 You will obviously start by
-[forking](https://github.com/openlayers/ol3/fork_select) the ol3 repository.
+[forking](https://github.com/openlayers/ol3/fork) the ol3 repository.
 
 ### Travis CI
 

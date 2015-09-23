@@ -2779,6 +2779,7 @@ olx.interaction.PointerOptions.prototype.handleUpEvent;
  *     removeCondition: (ol.events.ConditionType|undefined),
  *     toggleCondition: (ol.events.ConditionType|undefined),
  *     multi: (boolean|undefined),
+ *     features: (ol.Collection.<ol.Feature>|undefined),
  *     filter: (ol.interaction.SelectFilterFunction|undefined),
  *     wrapX: (boolean|undefined)}}
  * @api
@@ -2867,6 +2868,17 @@ olx.interaction.SelectOptions.prototype.toggleCondition;
  * @api
  */
 olx.interaction.SelectOptions.prototype.multi;
+
+
+/**
+ * Collection where the interaction will place selected features. Optional. If
+ * not set the interaction will create a collection. In any case the collection
+ * used by the interaction is returned by
+ * {@link ol.interaction.Select#getFeatures}.
+ * @type {ol.Collection.<ol.Feature>}
+ * @api
+ */
+olx.interaction.SelectOptions.prototype.features;
 
 
 /**
@@ -6150,7 +6162,9 @@ olx.style.TextOptions;
 
 
 /**
- * Font.
+ * Font style as CSS 'font' value, see:
+ * {@link https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/font}.
+ * Default is '10px sans-serif'
  * @type {string|undefined}
  * @api
  */
@@ -6192,7 +6206,7 @@ olx.style.TextOptions.prototype.rotation;
 
 
 /**
- * Text.
+ * Text content. 
  * @type {string|undefined}
  * @api
  */
@@ -6200,7 +6214,8 @@ olx.style.TextOptions.prototype.text;
 
 
 /**
- * Text alignment.
+ * Text alignment. Possible values: 'left', 'right', 'center', 'end' or 'start'. 
+ * Default is 'start'.
  * @type {string|undefined}
  * @api
  */
@@ -6208,7 +6223,8 @@ olx.style.TextOptions.prototype.textAlign;
 
 
 /**
- * Text base line.
+ * Text base line. Possible values: 'bottom', 'top', 'middle', 'alphabetic', 
+ * 'hanging', 'ideographic'. Default is 'alphabetic'.
  * @type {string|undefined}
  * @api
  */

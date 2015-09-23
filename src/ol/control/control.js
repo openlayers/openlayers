@@ -108,7 +108,7 @@ ol.control.Control.prototype.setMap = function(map) {
   if (!goog.isNull(this.map_)) {
     goog.dom.removeNode(this.element);
   }
-  if (!goog.array.isEmpty(this.listenerKeys)) {
+  if (this.listenerKeys.length > 0) {
     goog.array.forEach(this.listenerKeys, goog.events.unlistenByKey);
     this.listenerKeys.length = 0;
   }

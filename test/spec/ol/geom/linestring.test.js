@@ -263,6 +263,29 @@ describe('ol.geom.LineString', function() {
 
     });
 
+    describe('#simplify', function() {
+
+      it('returns a simplified geometry', function() {
+        var simplified = lineString.simplify(1);
+        expect(simplified).to.be.an(ol.geom.LineString);
+        expect(simplified.getCoordinates()).to.eql(
+            [[0, 0], [3, 3], [5, 1], [7, 5]]);
+      });
+
+      it('does not modify the original', function() {
+        lineString.simplify(1);
+        expect(lineString.getCoordinates()).to.eql(
+            [[0, 0], [1.5, 1], [3, 3], [5, 1], [6, 3.5], [7, 5]]);
+      });
+
+      it('delegates to the internal method', function() {
+        var simplified = lineString.simplify(2);
+        var internal = lineString.getSimplifiedGeometry(4);
+        expect(simplified.getCoordinates()).to.eql(internal.getCoordinates());
+      });
+
+    });
+
     describe('#getSimplifiedGeometry', function() {
 
       it('returns the expectedResult', function() {

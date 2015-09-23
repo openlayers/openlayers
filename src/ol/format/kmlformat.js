@@ -1686,7 +1686,7 @@ ol.format.KML.prototype.readPlacemark_ = function(node, objectStack) {
     ol.format.Feature.transformWithOptions(geometry, false, options);
   }
   feature.setGeometry(geometry);
-  goog.object.remove(object, 'geometry');
+  delete object['geometry'];
 
   if (this.extractStyles_) {
     var style = object['Style'];
@@ -1695,7 +1695,7 @@ ol.format.KML.prototype.readPlacemark_ = function(node, objectStack) {
         style, styleUrl, this.defaultStyle_, this.sharedStyles_);
     feature.setStyle(styleFunction);
   }
-  goog.object.remove(object, 'Style');
+  delete object['Style'];
   // we do not remove the styleUrl property from the object, so it
   // gets stored on feature when setProperties is called
 

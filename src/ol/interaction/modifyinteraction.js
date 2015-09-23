@@ -973,9 +973,8 @@ ol.interaction.Modify.prototype.setGeometryCoordinates_ =
 ol.interaction.Modify.prototype.updateSegmentIndices_ = function(
     geometry, index, depth, delta) {
   this.rBush_.forEachInExtent(geometry.getExtent(), function(segmentDataMatch) {
-    goog.asserts.assert(goog.isDef(segmentDataMatch.depth));
     if (segmentDataMatch.geometry === geometry &&
-        (!goog.isDef(depth) ||
+        (!goog.isDef(depth) || !goog.isDef(segmentDataMatch.depth) ||
         goog.array.equals(segmentDataMatch.depth, depth)) &&
         segmentDataMatch.index > index) {
       segmentDataMatch.index += delta;

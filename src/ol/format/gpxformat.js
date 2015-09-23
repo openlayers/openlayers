@@ -3,7 +3,6 @@ goog.provide('ol.format.GPX');
 goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('goog.dom.NodeType');
-goog.require('goog.object');
 goog.require('ol.Feature');
 goog.require('ol.format.Feature');
 goog.require('ol.format.XMLFeature');
@@ -71,17 +70,15 @@ ol.format.GPX.appendCoordinate_ = function(flatCoordinates, node, values) {
   flatCoordinates.push(
       parseFloat(node.getAttribute('lon')),
       parseFloat(node.getAttribute('lat')));
-  if (goog.object.containsKey(values, 'ele')) {
-    flatCoordinates.push(
-        /** @type {number} */ (values['ele']));
-    goog.object.remove(values, 'ele');
+  if ('ele' in values) {
+    flatCoordinates.push(/** @type {number} */ (values['ele']));
+    delete values['ele'];
   } else {
     flatCoordinates.push(0);
   }
-  if (goog.object.containsKey(values, 'time')) {
-    flatCoordinates.push(
-        /** @type {number} */ (values['time']));
-    goog.object.remove(values, 'time');
+  if ('time' in values) {
+    flatCoordinates.push(/** @type {number} */ (values['time']));
+    delete values['time'];
   } else {
     flatCoordinates.push(0);
   }
@@ -200,7 +197,7 @@ ol.format.GPX.readRte_ = function(node, objectStack) {
   }
   var flatCoordinates = /** @type {Array.<number>} */
       (values['flatCoordinates']);
-  goog.object.remove(values, 'flatCoordinates');
+  delete values['flatCoordinates'];
   var geometry = new ol.geom.LineString(null);
   geometry.setFlatCoordinates(ol.geom.GeometryLayout.XYZM, flatCoordinates);
   ol.format.Feature.transformWithOptions(geometry, false, options);
@@ -230,9 +227,9 @@ ol.format.GPX.readTrk_ = function(node, objectStack) {
   }
   var flatCoordinates = /** @type {Array.<number>} */
       (values['flatCoordinates']);
-  goog.object.remove(values, 'flatCoordinates');
+  delete values['flatCoordinates'];
   var ends = /** @type {Array.<number>} */ (values['ends']);
-  goog.object.remove(values, 'ends');
+  delete values['ends'];
   var geometry = new ol.geom.MultiLineString(null);
   geometry.setFlatCoordinates(
       ol.geom.GeometryLayout.XYZM, flatCoordinates, ends);

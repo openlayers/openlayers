@@ -40,7 +40,7 @@ describe('ol.source.TileJSON', function() {
       goog.net.Jsonp = googNetJsonp;
       var key = source.on('change', function() {
         if (source.getState() === 'ready') {
-          source.unByKey(key);
+          ol.Observable.unByKey(key);
           tileGrid = source.getTileGrid();
           done();
         }
@@ -91,3 +91,4 @@ goog.require('goog.events');
 goog.require('goog.net.Jsonp');
 goog.require('ol.source.State');
 goog.require('ol.source.TileJSON');
+goog.require('ol.Observable');
