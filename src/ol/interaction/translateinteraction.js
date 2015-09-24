@@ -12,19 +12,19 @@ goog.require('ol.interaction.Pointer');
  */
 ol.interaction.TranslateEventType = {
   /**
-   * Triggered upon feature translation start
+   * Triggered upon feature translation start.
    * @event ol.interaction.TranslateEvent#translatestart
    * @api
    */
   TRANSLATESTART: 'translatestart',
   /**
-   * Triggered upon feature translation drag
-   * @event ol.interaction.TranslateEvent#translatedrag
+   * Triggered upon feature translation.
+   * @event ol.interaction.TranslateEvent#translating
    * @api
    */
-  TRANSLATEDRAG: 'translatedrag',
+  TRANSLATING: 'translating',
   /**
-   * Triggered upon feature translation end
+   * Triggered upon feature translation end.
    * @event ol.interaction.TranslateEvent#translateend
    * @api
    */
@@ -166,7 +166,6 @@ ol.interaction.Translate.handleUpEvent_ = function(event) {
 ol.interaction.Translate.handleDragEvent_ = function(event) {
   if (!goog.isNull(this.lastCoordinate_)) {
     var newCoordinate = event.coordinate;
-    //console.info(newCoordinate);
     var deltaX = newCoordinate[0] - this.lastCoordinate_[0];
     var deltaY = newCoordinate[1] - this.lastCoordinate_[1];
 
@@ -185,7 +184,7 @@ ol.interaction.Translate.handleDragEvent_ = function(event) {
     this.lastCoordinate_ = newCoordinate;
     this.dispatchEvent(
         new ol.interaction.TranslateEvent(
-            ol.interaction.TranslateEventType.TRANSLATEDRAG, this.features_,
+            ol.interaction.TranslateEventType.TRANSLATING, this.features_,
             newCoordinate));
   }
 };
