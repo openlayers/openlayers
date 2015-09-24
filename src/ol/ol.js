@@ -232,8 +232,8 @@ ol.WEBGL_EXTENSIONS; // value is set in `ol.has`
  *       // Other code here.
  *     };
  *
- * @param {Function} childCtor Child constructor.
- * @param {Function} parentCtor Parent constructor.
+ * @param {!Function} childCtor Child constructor.
+ * @param {!Function} parentCtor Parent constructor.
  * @function
  * @api
  */
