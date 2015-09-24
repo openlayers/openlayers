@@ -1,6 +1,5 @@
 goog.provide('ol.control.Control');
 
-goog.require('goog.array');
 goog.require('goog.dom');
 goog.require('goog.events');
 goog.require('ol.MapEventType');
@@ -109,7 +108,7 @@ ol.control.Control.prototype.setMap = function(map) {
     goog.dom.removeNode(this.element);
   }
   if (this.listenerKeys.length > 0) {
-    goog.array.forEach(this.listenerKeys, goog.events.unlistenByKey);
+    this.listenerKeys.forEach(goog.events.unlistenByKey);
     this.listenerKeys.length = 0;
   }
   this.map_ = map;

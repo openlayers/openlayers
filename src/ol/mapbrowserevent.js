@@ -3,7 +3,6 @@ goog.provide('ol.MapBrowserEvent.EventType');
 goog.provide('ol.MapBrowserEventHandler');
 goog.provide('ol.MapBrowserPointerEvent');
 
-goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('goog.events');
 goog.require('goog.events.BrowserEvent');
@@ -293,7 +292,7 @@ ol.MapBrowserEventHandler.prototype.handlePointerUp_ = function(pointerEvent) {
   goog.asserts.assert(this.activePointers_ >= 0,
       'this.activePointers_ should be equal to or larger than 0');
   if (this.activePointers_ === 0) {
-    goog.array.forEach(this.dragListenerKeys_, goog.events.unlistenByKey);
+    this.dragListenerKeys_.forEach(goog.events.unlistenByKey);
     this.dragListenerKeys_ = null;
     this.dragging_ = false;
     this.down_ = null;
@@ -427,7 +426,7 @@ ol.MapBrowserEventHandler.prototype.disposeInternal = function() {
     this.pointerdownListenerKey_ = null;
   }
   if (!goog.isNull(this.dragListenerKeys_)) {
-    goog.array.forEach(this.dragListenerKeys_, goog.events.unlistenByKey);
+    this.dragListenerKeys_.forEach(goog.events.unlistenByKey);
     this.dragListenerKeys_ = null;
   }
   if (!goog.isNull(this.documentPointerEventHandler_)) {

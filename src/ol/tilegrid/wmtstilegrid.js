@@ -108,25 +108,23 @@ ol.tilegrid.WMTS.createFromCapabilitiesMatrixSet =
     return b[scaleDenominatorPropName] - a[scaleDenominatorPropName];
   });
 
-  goog.array.forEach(matrixSet[matrixIdsPropName],
-      function(elt, index, array) {
-        matrixIds.push(elt[identifierPropName]);
-        var resolution = elt[scaleDenominatorPropName] * 0.28E-3 /
-            metersPerUnit;
-        var tileWidth = elt[tileWidthPropName];
-        var tileHeight = elt[tileHeightPropName];
-        if (switchOriginXY) {
-          origins.push([elt[topLeftCornerPropName][1],
-            elt[topLeftCornerPropName][0]]);
-        } else {
-          origins.push(elt[topLeftCornerPropName]);
-        }
-        resolutions.push(resolution);
-        tileSizes.push(tileWidth == tileHeight ?
-            tileWidth : [tileWidth, tileHeight]);
-        // top-left origin, so height is negative
-        sizes.push([elt['MatrixWidth'], -elt['MatrixHeight']]);
-      });
+  matrixSet[matrixIdsPropName].forEach(function(elt, index, array) {
+    matrixIds.push(elt[identifierPropName]);
+    var resolution = elt[scaleDenominatorPropName] * 0.28E-3 / metersPerUnit;
+    var tileWidth = elt[tileWidthPropName];
+    var tileHeight = elt[tileHeightPropName];
+    if (switchOriginXY) {
+      origins.push([elt[topLeftCornerPropName][1],
+        elt[topLeftCornerPropName][0]]);
+    } else {
+      origins.push(elt[topLeftCornerPropName]);
+    }
+    resolutions.push(resolution);
+    tileSizes.push(tileWidth == tileHeight ?
+        tileWidth : [tileWidth, tileHeight]);
+    // top-left origin, so height is negative
+    sizes.push([elt['MatrixWidth'], -elt['MatrixHeight']]);
+  });
 
   return new ol.tilegrid.WMTS({
     extent: opt_extent,

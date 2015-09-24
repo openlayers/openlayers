@@ -374,7 +374,7 @@ ol.source.Vector.prototype.clear = function(opt_fast) {
   if (opt_fast) {
     for (var featureId in this.featureChangeKeys_) {
       var keys = this.featureChangeKeys_[featureId];
-      goog.array.forEach(keys, goog.events.unlistenByKey);
+      keys.forEach(goog.events.unlistenByKey);
     }
     if (goog.isNull(this.featuresCollection_)) {
       this.featureChangeKeys_ = {};
@@ -823,8 +823,7 @@ ol.source.Vector.prototype.removeFeatureInternal = function(feature) {
   var featureKey = goog.getUid(feature).toString();
   goog.asserts.assert(featureKey in this.featureChangeKeys_,
       'featureKey exists in featureChangeKeys');
-  goog.array.forEach(this.featureChangeKeys_[featureKey],
-      goog.events.unlistenByKey);
+  this.featureChangeKeys_[featureKey].forEach(goog.events.unlistenByKey);
   delete this.featureChangeKeys_[featureKey];
   var id = feature.getId();
   if (id !== undefined) {

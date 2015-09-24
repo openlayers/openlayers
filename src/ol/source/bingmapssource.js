@@ -1,7 +1,6 @@
 goog.provide('ol.source.BingMaps');
 
 goog.require('goog.Uri');
-goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('goog.net.Jsonp');
 goog.require('ol.Attribution');
@@ -150,26 +149,23 @@ ol.source.BingMaps.prototype.handleImageryMetadataResponse =
       var html = imageryProvider.attribution;
       /** @type {Object.<string, Array.<ol.TileRange>>} */
       var tileRanges = {};
-      goog.array.forEach(
-          imageryProvider.coverageAreas,
-          function(coverageArea) {
-            var minZ = coverageArea.zoomMin;
-            var maxZ = Math.min(coverageArea.zoomMax, maxZoom);
-            var bbox = coverageArea.bbox;
-            var epsg4326Extent = [bbox[1], bbox[0], bbox[3], bbox[2]];
-            var extent = ol.extent.applyTransform(
-                epsg4326Extent, transform);
-            var tileRange, z, zKey;
-            for (z = minZ; z <= maxZ; ++z) {
-              zKey = z.toString();
-              tileRange = tileGrid.getTileRangeForExtentAndZ(extent, z);
-              if (zKey in tileRanges) {
-                tileRanges[zKey].push(tileRange);
-              } else {
-                tileRanges[zKey] = [tileRange];
-              }
-            }
-          });
+      imageryProvider.coverageAreas.forEach(function(coverageArea) {
+        var minZ = coverageArea.zoomMin;
+        var maxZ = Math.min(coverageArea.zoomMax, maxZoom);
+        var bbox = coverageArea.bbox;
+        var epsg4326Extent = [bbox[1], bbox[0], bbox[3], bbox[2]];
+        var extent = ol.extent.applyTransform(epsg4326Extent, transform);
+        var tileRange, z, zKey;
+        for (z = minZ; z <= maxZ; ++z) {
+          zKey = z.toString();
+          tileRange = tileGrid.getTileRangeForExtentAndZ(extent, z);
+          if (zKey in tileRanges) {
+            tileRanges[zKey].push(tileRange);
+          } else {
+            tileRanges[zKey] = [tileRange];
+          }
+        }
+      });
       return new ol.Attribution({html: html, tileRanges: tileRanges});
     });
     attributions.push(ol.source.BingMaps.TOS_ATTRIBUTION);

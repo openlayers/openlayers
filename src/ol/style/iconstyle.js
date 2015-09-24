@@ -3,7 +3,6 @@ goog.provide('ol.style.IconAnchorUnits');
 goog.provide('ol.style.IconImageCache');
 goog.provide('ol.style.IconOrigin');
 
-goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('goog.events');
 goog.require('goog.events.EventTarget');
@@ -581,7 +580,7 @@ ol.style.IconImage_.prototype.load = function() {
 ol.style.IconImage_.prototype.unlistenImage_ = function() {
   goog.asserts.assert(!goog.isNull(this.imageListenerKeys_),
       'we must have listeners registered');
-  goog.array.forEach(this.imageListenerKeys_, goog.events.unlistenByKey);
+  this.imageListenerKeys_.forEach(goog.events.unlistenByKey);
   this.imageListenerKeys_ = null;
 };
 
