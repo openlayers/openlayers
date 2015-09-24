@@ -345,9 +345,12 @@ ol.renderer.canvas.VectorTileLayer.prototype.prepareFrame =
   var pixelRatio = frameState.pixelRatio;
 
   var tileGrid = source.getTileGrid();
-  var z = tileGrid.getZForResolution(resolution);
-  var tileRange = tileGrid.getTileRangeForExtentAndResolution(
-      extent, resolution);
+  var resolutions = tileGrid.getResolutions();
+  var z = resolutions.length - 1;
+  while (z > 0 && resolutions[z] < resolution) {
+    --z;
+  }
+  var tileRange = tileGrid.getTileRangeForExtentAndZ(extent, z);
   this.updateUsedTiles(frameState.usedTiles, source, z, tileRange);
   this.manageTilePyramid(frameState, source, tileGrid, pixelRatio,
       projection, extent, z, layer.getPreload());
