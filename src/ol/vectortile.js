@@ -8,6 +8,7 @@ goog.require('ol.TileState');
 
 /**
  * @typedef {{
+ *     dirty: boolean,
  *     renderedRenderOrder: (null|function(ol.Feature, ol.Feature):number),
  *     renderedRevision: number,
  *     replayGroup: ol.render.IReplayGroup}}
@@ -58,6 +59,7 @@ ol.VectorTile = function(tileCoord, state, src, format, tileLoadFunction) {
    * @type {ol.TileReplayState}
    */
   this.replayState_ = {
+    dirty: false,
     renderedRenderOrder: null,
     renderedRevision: -1,
     replayGroup: null

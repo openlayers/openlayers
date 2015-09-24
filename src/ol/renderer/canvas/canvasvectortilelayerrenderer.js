@@ -168,7 +168,7 @@ ol.renderer.canvas.VectorTileLayer.prototype.createReplayGroup = function(tile,
   }
 
   var replayState = tile.getReplayState();
-  if (replayState.renderedRevision == revision &&
+  if (!replayState.dirty && replayState.renderedRevision == revision &&
       replayState.renderedRenderOrder == renderOrder) {
     return;
   }
@@ -176,6 +176,7 @@ ol.renderer.canvas.VectorTileLayer.prototype.createReplayGroup = function(tile,
   // FIXME dispose of old replayGroup in post render
   goog.dispose(replayState.replayGroup);
   replayState.replayGroup = null;
+  replayState.dirty = false;
 
   var source = layer.getSource();
   goog.asserts.assertInstanceof(source, ol.source.VectorTile,
@@ -211,6 +212,7 @@ ol.renderer.canvas.VectorTileLayer.prototype.createReplayGroup = function(tile,
       var dirty = this.renderFeature(feature, squaredTolerance, styles,
           replayGroup);
       this.dirty_ = this.dirty_ || dirty;
+      replayState.dirty = replayState.dirty || dirty;
     }
   }
 
@@ -390,6 +392,8 @@ ol.renderer.canvas.VectorTileLayer.prototype.prepareFrame =
 
     }
   }
+
+  this.dirty_ = false;
 
   /** @type {Array.<number>} */
   var zs = goog.array.map(goog.object.getKeys(tilesToDrawByZ), Number);
