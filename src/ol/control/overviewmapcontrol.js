@@ -92,23 +92,43 @@ ol.control.OverviewMap = function(opt_options) {
 
   var ovmapDiv = goog.dom.createDom(goog.dom.TagName.DIV, 'ol-overviewmap-map');
 
+  var view;
+
+  this.usesParentProjection_ = !goog.isDef(options.projection);
+  var projection = this.usesParentProjection_ ?
+      'EPSG:3857' : options.projection;
+
+  if (options.resolutions) {
+    view = new ol.View({
+      projection: projection,
+      resolutions: options.resolutions
+    });
+  } else {
+    view = new ol.View({
+      projection: projection
+    });
+  }
   /**
    * @type {ol.Map}
    * @private
    */
   this.ovmap_ = new ol.Map({
+    view: view,
     controls: new ol.Collection(),
     interactions: new ol.Collection(),
     target: ovmapDiv
   });
   var ovmap = this.ovmap_;
 
+  // save layers for removing on update
+  this.currentLayers = [];
   if (goog.isDef(options.layers)) {
     options.layers.forEach(
         /**
        * @param {ol.layer.Layer} layer Layer.
        */
         function(layer) {
+          this.currentLayers.push(layer);
           ovmap.addLayer(layer);
         }, this);
   }
@@ -181,6 +201,32 @@ ol.control.OverviewMap.prototype.setMap = function(map) {
       }
     }
   }
+};
+
+
+/**
+ * Set new layers to the overview map. Current layers will be removed.
+ * @param {Array.<ol.layer.Layer>} layers Add these layers to the overview map.
+ * @api
+ */
+ol.control.OverviewMap.prototype.setLayers = function(layers) {
+  if (this.currentLayers && this.currentLayers.length > 0) {
+    this.currentLayers.forEach(
+        /**
+         * @param {ol.layer.Layer} layer Layer.
+         */
+        function(layer) {
+          this.ovmap_.removeLayer(layer);
+        }, this);
+  }
+  layers.forEach(
+      /**
+       * @param {ol.layer.Layer} layer Layer.
+       */
+      function(layer) {
+        this.currentLayers.push(layer);
+        this.ovmap_.addLayer(layer);
+      }, this);
 };
 
 
