@@ -251,6 +251,7 @@ ol.render.canvas.Replay.prototype.replay_ = function(
   var d = 0; // data index
   var dd; // end of per-instruction data
   var localTransform = this.tmpLocalTransform_;
+  var prevX, prevY, roundX, roundY;
   while (i < ii) {
     var instruction = instructions[i];
     var type = /** @type {ol.render.canvas.Instruction} */ (instruction[0]);
@@ -410,7 +411,8 @@ ol.render.canvas.Replay.prototype.replay_ = function(
         break;
       case ol.render.canvas.Instruction.END_GEOMETRY:
         if (featureCallback !== undefined) {
-          feature = /** @type {ol.Feature|ol.render.Feature} */ (instruction[1]);
+          feature =
+              /** @type {ol.Feature|ol.render.Feature} */ (instruction[1]);
           var result = featureCallback(feature);
           if (result) {
             return result;
@@ -429,9 +431,25 @@ ol.render.canvas.Replay.prototype.replay_ = function(
         goog.asserts.assert(goog.isNumber(instruction[2]),
             '3rd instruction should be a number');
         dd = /** @type {number} */ (instruction[2]);
-        context.moveTo(pixelCoordinates[d], pixelCoordinates[d + 1]);
+        x = pixelCoordinates[d];
+        y = pixelCoordinates[d + 1];
+        roundX = (x + 0.5) | 0;
+        roundY = (y + 0.5) | 0;
+        if (roundX !== prevX || roundY !== prevY) {
+          context.moveTo(x, y);
+          prevX = roundX;
+          prevY = roundY;
+        }
         for (d += 2; d < dd; d += 2) {
-          context.lineTo(pixelCoordinates[d], pixelCoordinates[d + 1]);
+          x = pixelCoordinates[d];
+          y = pixelCoordinates[d + 1];
+          roundX = (x + 0.5) | 0;
+          roundY = (y + 0.5) | 0;
+          if (roundX !== prevX || roundY !== prevY) {
+            context.lineTo(x, y);
+            prevX = roundX;
+            prevY = roundY;
+          }
         }
         ++i;
         break;
@@ -465,6 +483,8 @@ ol.render.canvas.Replay.prototype.replay_ = function(
         if (ol.has.CANVAS_LINE_DASH) {
           context.setLineDash(/** @type {Array.<number>} */ (instruction[6]));
         }
+        prevX = NaN;
+        prevY = NaN;
         ++i;
         break;
       case ol.render.canvas.Instruction.SET_TEXT_STYLE:
