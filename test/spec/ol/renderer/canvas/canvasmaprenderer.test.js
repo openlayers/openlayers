@@ -46,16 +46,7 @@ describe('ol.renderer.canvas.Map', function() {
       document.body.removeChild(target);
     });
 
-    it('always includes unmanaged layers', function() {
-      layer.setMap(map);
-      map.renderSync();
-      var cb = sinon.spy();
-      map.forEachFeatureAtPixel(map.getPixelFromCoordinate([0, 0]), cb, null,
-          function() { return false; });
-      expect(cb).to.be.called();
-    });
-
-    it('filters managed layers', function() {
+    it('filters layers', function() {
       map.addLayer(layer);
       map.renderSync();
       var cb = sinon.spy();
