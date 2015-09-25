@@ -115,8 +115,8 @@ ol.interaction.Snap = function(opt_options) {
    * @type {number}
    * @private
    */
-  this.pixelTolerance_ = ol.isDef(options.pixelTolerance) ?
-      /** @type {number} */ (options.pixelTolerance) : 10;
+  this.pixelTolerance_ = options.pixelTolerance !== undefined ?
+      options.pixelTolerance : 10;
 
   /**
    * @type {function(ol.interaction.Snap.SegmentDataType, ol.interaction.Snap.SegmentDataType): number}
@@ -160,8 +160,7 @@ goog.inherits(ol.interaction.Snap, ol.interaction.Pointer);
  * @api
  */
 ol.interaction.Snap.prototype.addFeature = function(feature, opt_listen) {
-  var listen = ol.isDef(opt_listen) ?
-      /** @type {boolean} */ (opt_listen) : true;
+  var listen = opt_listen !== undefined ? opt_listen : true;
   var geometry = feature.getGeometry();
   var segmentWriter = this.SEGMENT_WRITERS_[geometry.getType()];
   if (segmentWriter) {
@@ -288,8 +287,7 @@ ol.interaction.Snap.prototype.handleGeometryModify_ = function(feature, evt) {
  * @api
  */
 ol.interaction.Snap.prototype.removeFeature = function(feature, opt_unlisten) {
-  var unlisten = ol.isDef(opt_unlisten) ?
-      /** @type {boolean} */ (opt_unlisten) : true;
+  var unlisten = opt_unlisten !== undefined ? opt_unlisten : true;
   var feature_uid = goog.getUid(feature);
   var extent = this.indexedFeaturesExtents_[feature_uid];
   if (extent) {

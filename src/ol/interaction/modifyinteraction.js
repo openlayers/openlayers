@@ -162,8 +162,8 @@ ol.interaction.Modify = function(options) {
    * @type {number}
    * @private
    */
-  this.pixelTolerance_ = ol.isDef(options.pixelTolerance) ?
-      /** @type {number} */ (options.pixelTolerance) : 10;
+  this.pixelTolerance_ = options.pixelTolerance !== undefined ?
+      options.pixelTolerance : 10;
 
   /**
    * @type {boolean}
@@ -823,9 +823,9 @@ ol.interaction.Modify.prototype.insertVertex_ = function(segmentData, vertex) {
 
   this.setGeometryCoordinates_(geometry, coordinates);
   var rTree = this.rBush_;
-  goog.asserts.assert(ol.isDef(segment), 'segment should be defined');
+  goog.asserts.assert(segment !== undefined, 'segment should be defined');
   rTree.remove(segmentData);
-  goog.asserts.assert(ol.isDef(index), 'index should be defined');
+  goog.asserts.assert(index !== undefined, 'index should be defined');
   this.updateSegmentIndices_(geometry, /** @type {number} */ (index), depth, 1);
   var newSegmentData = /** @type {ol.interaction.SegmentDataType} */ ({
     segment: [segment[0], vertex],
@@ -884,13 +884,13 @@ ol.interaction.Modify.prototype.removeVertex_ = function() {
       segmentsByFeature[uid] = [left, right, index];
     }
     newSegment = segmentsByFeature[uid];
-    if (ol.isDef(left)) {
+    if (left !== undefined) {
       newSegment[0] = left;
     }
-    if (ol.isDef(right)) {
+    if (right !== undefined) {
       newSegment[1] = right;
     }
-    if (ol.isDef(newSegment[0]) && ol.isDef(newSegment[1])) {
+    if (newSegment[0] !== undefined && newSegment[1] !== undefined) {
       component = coordinates;
       deleted = false;
       newIndex = index - 1;

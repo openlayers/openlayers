@@ -154,8 +154,8 @@ ol.format.WMSCapabilities.readEXGeographicBoundingBox_ =
       (geographicBoundingBox['eastBoundLongitude']);
   var northBoundLatitude = /** @type {number|undefined} */
       (geographicBoundingBox['northBoundLatitude']);
-  if (!ol.isDef(westBoundLongitude) || !ol.isDef(southBoundLatitude) ||
-      !ol.isDef(eastBoundLongitude) || !ol.isDef(northBoundLatitude)) {
+  if (westBoundLongitude === undefined || southBoundLatitude === undefined ||
+      eastBoundLongitude === undefined || northBoundLatitude === undefined) {
     return undefined;
   }
   return /** @type {ol.Extent} */ ([
@@ -303,30 +303,30 @@ ol.format.WMSCapabilities.readLayer_ = function(node, objectStack) {
   }
   var queryable =
       ol.format.XSD.readBooleanString(node.getAttribute('queryable'));
-  if (!ol.isDef(queryable)) {
+  if (queryable === undefined) {
     queryable = parentLayerObject['queryable'];
   }
-  layerObject['queryable'] = ol.isDef(queryable) ? queryable : false;
+  layerObject['queryable'] = queryable !== undefined ? queryable : false;
 
   var cascaded = ol.format.XSD.readNonNegativeIntegerString(
       node.getAttribute('cascaded'));
-  if (!ol.isDef(cascaded)) {
+  if (cascaded === undefined) {
     cascaded = parentLayerObject['cascaded'];
   }
   layerObject['cascaded'] = cascaded;
 
   var opaque = ol.format.XSD.readBooleanString(node.getAttribute('opaque'));
-  if (!ol.isDef(opaque)) {
+  if (opaque === undefined) {
     opaque = parentLayerObject['opaque'];
   }
-  layerObject['opaque'] = ol.isDef(opaque) ? opaque : false;
+  layerObject['opaque'] = opaque !== undefined ? opaque : false;
 
   var noSubsets =
       ol.format.XSD.readBooleanString(node.getAttribute('noSubsets'));
-  if (!ol.isDef(noSubsets)) {
+  if (noSubsets === undefined) {
     noSubsets = parentLayerObject['noSubsets'];
   }
-  layerObject['noSubsets'] = ol.isDef(noSubsets) ? noSubsets : false;
+  layerObject['noSubsets'] = noSubsets !== undefined ? noSubsets : false;
 
   var fixedWidth =
       ol.format.XSD.readDecimalString(node.getAttribute('fixedWidth'));

@@ -44,7 +44,7 @@ ol.geom.flat.orient.linearRingIsClockwise =
  */
 ol.geom.flat.orient.linearRingsAreOriented =
     function(flatCoordinates, offset, ends, stride, opt_right) {
-  var right = ol.isDef(opt_right) ? opt_right : false;
+  var right = opt_right !== undefined ? opt_right : false;
   var i, ii;
   for (i = 0, ii = ends.length; i < ii; ++i) {
     var end = ends[i];
@@ -106,7 +106,7 @@ ol.geom.flat.orient.linearRingssAreOriented =
  */
 ol.geom.flat.orient.orientLinearRings =
     function(flatCoordinates, offset, ends, stride, opt_right) {
-  var right = ol.isDef(opt_right) ? opt_right : false;
+  var right = opt_right !== undefined ? opt_right : false;
   var i, ii;
   for (i = 0, ii = ends.length; i < ii; ++i) {
     var end = ends[i];

@@ -97,7 +97,7 @@ ol.Feature = function(opt_geometryOrProperties) {
       this, ol.Object.getChangeEventType(this.geometryName_),
       this.handleGeometryChanged_, false, this);
 
-  if (ol.isDef(opt_geometryOrProperties)) {
+  if (opt_geometryOrProperties !== undefined) {
     if (opt_geometryOrProperties instanceof ol.geom.Geometry ||
         goog.isNull(opt_geometryOrProperties)) {
       var geometry = /** @type {ol.geom.Geometry} */ (opt_geometryOrProperties);

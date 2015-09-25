@@ -240,13 +240,3 @@ ol.WEBGL_EXTENSIONS; // value is set in `ol.has`
 ol.inherits =
     goog.inherits;
 // note that the newline above is necessary to satisfy the linter
-
-
-/**
- * Determine if a value is defined.
- * @param {?} value The value to test.
- * @return {boolean} The value is defined.
- */
-ol.isDef = function(value) {
-  return value !== undefined;
-};

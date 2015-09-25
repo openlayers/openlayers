@@ -41,15 +41,14 @@ ol.control.OverviewMap = function(opt_options) {
    * @type {boolean}
    * @private
    */
-  this.collapsed_ = ol.isDef(options.collapsed) ?
-      /** @type {boolean} */ (options.collapsed) : true;
+  this.collapsed_ = options.collapsed !== undefined ? options.collapsed : true;
 
   /**
    * @private
    * @type {boolean}
    */
-  this.collapsible_ = ol.isDef(options.collapsible) ?
-      /** @type {boolean} */ (options.collapsible) : true;
+  this.collapsible_ = options.collapsible !== undefined ?
+      options.collapsible : true;
 
   if (!this.collapsible_) {
     this.collapsed_ = false;
@@ -382,7 +381,7 @@ ol.control.OverviewMap.prototype.updateBox_ = function() {
   goog.asserts.assertArray(ovmapSize, 'ovmapSize should be an array');
 
   var rotation = view.getRotation();
-  goog.asserts.assert(ol.isDef(rotation), 'rotation should be defined');
+  goog.asserts.assert(rotation !== undefined, 'rotation should be defined');
 
   var overlay = this.boxOverlay_;
   var box = this.boxOverlay_.getElement();

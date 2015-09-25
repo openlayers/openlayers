@@ -47,7 +47,7 @@ ol.dom.BrowserFeature = {
 ol.dom.canUseCssTransform = (function() {
   var canUseCssTransform;
   return function() {
-    if (!ol.isDef(canUseCssTransform)) {
+    if (canUseCssTransform === undefined) {
       goog.asserts.assert(!goog.isNull(document.body),
           'document.body should not be null');
       if (!goog.global.getComputedStyle) {
@@ -90,7 +90,7 @@ ol.dom.canUseCssTransform = (function() {
 ol.dom.canUseCssTransform3D = (function() {
   var canUseCssTransform3D;
   return function() {
-    if (!ol.isDef(canUseCssTransform3D)) {
+    if (canUseCssTransform3D === undefined) {
       goog.asserts.assert(!goog.isNull(document.body),
           'document.body should not be null');
       if (!goog.global.getComputedStyle) {
@@ -224,7 +224,7 @@ ol.dom.transformElement2D =
   if (ol.dom.canUseCssTransform3D()) {
     var value3D;
 
-    if (ol.isDef(opt_precision)) {
+    if (opt_precision !== undefined) {
       /** @type {Array.<string>} */
       var strings3D = new Array(16);
       for (i = 0; i < 16; ++i) {
@@ -246,7 +246,7 @@ ol.dom.transformElement2D =
       goog.vec.Mat4.getElement(transform, 1, 3)
     ];
     var value2D;
-    if (ol.isDef(opt_precision)) {
+    if (opt_precision !== undefined) {
       /** @type {Array.<string>} */
       var strings2D = new Array(6);
       for (i = 0; i < 6; ++i) {

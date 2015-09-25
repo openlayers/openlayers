@@ -109,8 +109,7 @@ ol.layer.Layer.prototype.getLayerStatesArray = function(opt_states) {
  */
 ol.layer.Layer.prototype.getSource = function() {
   var source = this.get(ol.layer.LayerProperty.SOURCE);
-  return ol.isDef(source) ?
-      /** @type {ol.source.Source} */ (source) : null;
+  return /** @type {ol.source.Source} */ (source) || null;
 };
 
 

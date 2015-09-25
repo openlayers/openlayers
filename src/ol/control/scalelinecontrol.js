@@ -87,8 +87,7 @@ ol.control.ScaleLine = function(opt_options) {
    * @private
    * @type {number}
    */
-  this.minWidth_ = ol.isDef(options.minWidth) ?
-      /** @type {number} */ (options.minWidth) : 64;
+  this.minWidth_ = options.minWidth !== undefined ? options.minWidth : 64;
 
   /**
    * @private

@@ -136,10 +136,8 @@ ol.geom.MultiLineString.prototype.getCoordinateAtM =
       this.flatCoordinates.length === 0) {
     return null;
   }
-  var extrapolate = ol.isDef(opt_extrapolate) ?
-      /** @type {boolean} */ (opt_extrapolate) : false;
-  var interpolate = ol.isDef(opt_interpolate) ?
-      /** @type {boolean} */ (opt_interpolate) : false;
+  var extrapolate = opt_extrapolate !== undefined ? opt_extrapolate : false;
+  var interpolate = opt_interpolate !== undefined ? opt_interpolate : false;
   return ol.geom.flat.lineStringsCoordinateAtM(this.flatCoordinates, 0,
       this.ends_, this.stride, m, extrapolate, interpolate);
 };

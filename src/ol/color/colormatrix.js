@@ -166,24 +166,24 @@ ol.color.Matrix.makeSaturation = function(matrix, value) {
 ol.color.Matrix.prototype.getMatrix = function(
     brightness, contrast, hue, saturation) {
   var colorMatrixDirty = false;
-  if (ol.isDef(brightness) && brightness !== this.brightness_) {
+  if (brightness !== undefined && brightness !== this.brightness_) {
     ol.color.Matrix.makeBrightness(this.brightnessMatrix_,
         /** @type {number} */ (brightness));
     this.brightness_ = brightness;
     colorMatrixDirty = true;
   }
-  if (ol.isDef(contrast) && contrast !== this.contrast_) {
+  if (contrast !== undefined && contrast !== this.contrast_) {
     ol.color.Matrix.makeContrast(this.contrastMatrix_,
         /** @type {number} */ (contrast));
     this.contrast_ = contrast;
     colorMatrixDirty = true;
   }
-  if (ol.isDef(hue) && hue !== this.hue_) {
+  if (hue !== undefined && hue !== this.hue_) {
     ol.color.Matrix.makeHue(this.hueMatrix_, /** @type {number} */ (hue));
     this.hue_ = hue;
     colorMatrixDirty = true;
   }
-  if (ol.isDef(saturation) && saturation !== this.saturation_) {
+  if (saturation !== undefined && saturation !== this.saturation_) {
     ol.color.Matrix.makeSaturation(this.saturationMatrix_,
         /** @type {number} */ (saturation));
     this.saturation_ = saturation;
@@ -192,16 +192,16 @@ ol.color.Matrix.prototype.getMatrix = function(
   if (colorMatrixDirty) {
     var colorMatrix = this.colorMatrix_;
     goog.vec.Mat4.makeIdentity(colorMatrix);
-    if (ol.isDef(contrast)) {
+    if (contrast !== undefined) {
       goog.vec.Mat4.multMat(colorMatrix, this.contrastMatrix_, colorMatrix);
     }
-    if (ol.isDef(brightness)) {
+    if (brightness !== undefined) {
       goog.vec.Mat4.multMat(colorMatrix, this.brightnessMatrix_, colorMatrix);
     }
-    if (ol.isDef(saturation)) {
+    if (saturation !== undefined) {
       goog.vec.Mat4.multMat(colorMatrix, this.saturationMatrix_, colorMatrix);
     }
-    if (ol.isDef(hue)) {
+    if (hue !== undefined) {
       goog.vec.Mat4.multMat(colorMatrix, this.hueMatrix_, colorMatrix);
     }
   }

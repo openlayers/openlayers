@@ -53,15 +53,14 @@ ol.control.Attribution = function(opt_options) {
    * @private
    * @type {boolean}
    */
-  this.collapsed_ = ol.isDef(options.collapsed) ?
-      /** @type {boolean} */ (options.collapsed) : true;
+  this.collapsed_ = options.collapsed !== undefined ? options.collapsed : true;
 
   /**
    * @private
    * @type {boolean}
    */
-  this.collapsible_ = ol.isDef(options.collapsible) ?
-      /** @type {boolean} */ (options.collapsible) : true;
+  this.collapsible_ = options.collapsible !== undefined ?
+      options.collapsible : true;
 
   if (!this.collapsible_) {
     this.collapsed_ = false;

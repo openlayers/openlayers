@@ -90,17 +90,17 @@ ol.interaction.DragRotateAndZoom.handleDragEvent_ = function(mapBrowserEvent) {
   var magnitude = delta.magnitude();
   var view = map.getView();
   map.render();
-  if (ol.isDef(this.lastAngle_)) {
+  if (this.lastAngle_ !== undefined) {
     var angleDelta = theta - this.lastAngle_;
     ol.interaction.Interaction.rotateWithoutConstraints(
         map, view, view.getRotation() - angleDelta);
   }
   this.lastAngle_ = theta;
-  if (ol.isDef(this.lastMagnitude_)) {
+  if (this.lastMagnitude_ !== undefined) {
     var resolution = this.lastMagnitude_ * (view.getResolution() / magnitude);
     ol.interaction.Interaction.zoomWithoutConstraints(map, view, resolution);
   }
-  if (ol.isDef(this.lastMagnitude_)) {
+  if (this.lastMagnitude_ !== undefined) {
     this.lastScaleDelta_ = this.lastMagnitude_ / magnitude;
   }
   this.lastMagnitude_ = magnitude;

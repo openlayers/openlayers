@@ -68,23 +68,23 @@ ol.layer.Base = function(options) {
    */
   var properties = goog.object.clone(options);
   properties[ol.layer.LayerProperty.BRIGHTNESS] =
-      ol.isDef(options.brightness) ? options.brightness : 0;
+      options.brightness !== undefined ? options.brightness : 0;
   properties[ol.layer.LayerProperty.CONTRAST] =
-      ol.isDef(options.contrast) ? options.contrast : 1;
+      options.contrast !== undefined ? options.contrast : 1;
   properties[ol.layer.LayerProperty.HUE] =
-      ol.isDef(options.hue) ? options.hue : 0;
+      options.hue !== undefined ? options.hue : 0;
   properties[ol.layer.LayerProperty.OPACITY] =
-      ol.isDef(options.opacity) ? options.opacity : 1;
+      options.opacity !== undefined ? options.opacity : 1;
   properties[ol.layer.LayerProperty.SATURATION] =
-      ol.isDef(options.saturation) ? options.saturation : 1;
+      options.saturation !== undefined ? options.saturation : 1;
   properties[ol.layer.LayerProperty.VISIBLE] =
-      ol.isDef(options.visible) ? options.visible : true;
+      options.visible !== undefined ? options.visible : true;
   properties[ol.layer.LayerProperty.Z_INDEX] =
-      ol.isDef(options.zIndex) ? options.zIndex : 0;
+      options.zIndex !== undefined ? options.zIndex : 0;
   properties[ol.layer.LayerProperty.MAX_RESOLUTION] =
-      ol.isDef(options.maxResolution) ? options.maxResolution : Infinity;
+      options.maxResolution !== undefined ? options.maxResolution : Infinity;
   properties[ol.layer.LayerProperty.MIN_RESOLUTION] =
-      ol.isDef(options.minResolution) ? options.minResolution : 0;
+      options.minResolution !== undefined ? options.minResolution : 0;
 
   this.setProperties(properties);
 };

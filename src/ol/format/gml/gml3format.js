@@ -46,28 +46,26 @@ ol.format.GML3 = function(opt_options) {
    * @private
    * @type {boolean}
    */
-  this.surface_ = ol.isDef(options.surface) ?
-      /** @type {boolean} */ (options.surface) : false;
+  this.surface_ = options.surface !== undefined ? options.surface : false;
 
   /**
    * @private
    * @type {boolean}
    */
-  this.curve_ = ol.isDef(options.curve) ?
-      /** @type {boolean} */ (options.curve) : false;
+  this.curve_ = options.curve !== undefined ? options.curve : false;
 
   /**
    * @private
    * @type {boolean}
    */
-  this.multiCurve_ = ol.isDef(options.multiCurve) ?
-      /** @type {boolean} */ (options.multiCurve) : true;
+  this.multiCurve_ = options.multiCurve !== undefined ?
+      options.multiCurve : true;
 
   /**
    * @private
    * @type {boolean}
    */
-  this.multiSurface_ = ol.isDef(options.multiSurface) ?
+  this.multiSurface_ = options.multiSurface !== undefined ?
       /** @type {boolean} */ (options.multiSurface) : true;
 
   /**
@@ -787,11 +785,11 @@ ol.format.GML3.prototype.RING_NODE_FACTORY_ =
   var parentNode = context.node;
   goog.asserts.assert(goog.isObject(context), 'context should be an Object');
   var exteriorWritten = context['exteriorWritten'];
-  if (!ol.isDef(exteriorWritten)) {
+  if (exteriorWritten === undefined) {
     context['exteriorWritten'] = true;
   }
   return ol.xml.createElementNS(parentNode.namespaceURI,
-      ol.isDef(exteriorWritten) ? 'interior' : 'exterior');
+      exteriorWritten !== undefined ? 'interior' : 'exterior');
 };
 
 

@@ -451,7 +451,7 @@ ol.format.WFS.writeUpdate_ = function(node, feature, objectStack) {
     var values = [];
     for (var i = 0, ii = keys.length; i < ii; i++) {
       var value = feature.get(keys[i]);
-      if (ol.isDef(value)) {
+      if (value !== undefined) {
         values.push({name: keys[i], value: value});
       }
     }
@@ -499,10 +499,10 @@ ol.format.WFS.writeNative_ = function(node, nativeElement, objectStack) {
   if (nativeElement.vendorId) {
     node.setAttribute('vendorId', nativeElement.vendorId);
   }
-  if (ol.isDef(nativeElement.safeToIgnore)) {
+  if (nativeElement.safeToIgnore !== undefined) {
     node.setAttribute('safeToIgnore', nativeElement.safeToIgnore);
   }
-  if (ol.isDef(nativeElement.value)) {
+  if (nativeElement.value !== undefined) {
     ol.format.XSD.writeStringTextNode(node, nativeElement.value);
   }
 };
@@ -640,16 +640,16 @@ ol.format.WFS.prototype.writeGetFeature = function(options) {
     if (options.outputFormat) {
       node.setAttribute('outputFormat', options.outputFormat);
     }
-    if (ol.isDef(options.maxFeatures)) {
+    if (options.maxFeatures !== undefined) {
       node.setAttribute('maxFeatures', options.maxFeatures);
     }
     if (options.resultType) {
       node.setAttribute('resultType', options.resultType);
     }
-    if (ol.isDef(options.startIndex)) {
+    if (options.startIndex !== undefined) {
       node.setAttribute('startIndex', options.startIndex);
     }
-    if (ol.isDef(options.count)) {
+    if (options.count !== undefined) {
       node.setAttribute('count', options.count);
     }
   }

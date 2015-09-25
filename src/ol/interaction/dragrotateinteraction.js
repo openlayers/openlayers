@@ -69,7 +69,7 @@ ol.interaction.DragRotate.handleDragEvent_ = function(mapBrowserEvent) {
   var offset = mapBrowserEvent.pixel;
   var theta =
       Math.atan2(size[1] / 2 - offset[1], offset[0] - size[0] / 2);
-  if (ol.isDef(this.lastAngle_)) {
+  if (this.lastAngle_ !== undefined) {
     var delta = theta - this.lastAngle_;
     var view = map.getView();
     var rotation = view.getRotation();

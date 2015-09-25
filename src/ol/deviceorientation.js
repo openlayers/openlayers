@@ -92,8 +92,7 @@ ol.DeviceOrientation = function(opt_options) {
       ol.Object.getChangeEventType(ol.DeviceOrientationProperty.TRACKING),
       this.handleTrackingChanged_, false, this);
 
-  this.setTracking(ol.isDef(options.tracking) ?
-      /** @type {boolean} */ (options.tracking) : false);
+  this.setTracking(options.tracking !== undefined ? options.tracking : false);
 
 };
 goog.inherits(ol.DeviceOrientation, ol.Object);

@@ -30,7 +30,7 @@ ol.format.XSD.readBoolean = function(node) {
 ol.format.XSD.readBooleanString = function(string) {
   var m = /^\s*(true|1)|(false|0)\s*$/.exec(string);
   if (m) {
-    return ol.isDef(m[1]) || false;
+    return m[1] !== undefined || false;
   } else {
     return undefined;
   }
@@ -57,7 +57,7 @@ ol.format.XSD.readDateTime = function(node) {
     if (m[7] != 'Z') {
       var sign = m[8] == '-' ? -1 : 1;
       dateTime += sign * 60 * parseInt(m[9], 10);
-      if (ol.isDef(m[10])) {
+      if (m[10] !== undefined) {
         dateTime += sign * 60 * 60 * parseInt(m[10], 10);
       }
     }

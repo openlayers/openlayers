@@ -38,8 +38,8 @@ ol.format.WKT = function(opt_options) {
    * @type {boolean}
    * @private
    */
-  this.splitCollection_ = ol.isDef(options.splitCollection) ?
-      /** @type {boolean} */ (options.splitCollection) : false;
+  this.splitCollection_ = options.splitCollection !== undefined ?
+      options.splitCollection : false;
 
 };
 goog.inherits(ol.format.WKT, ol.format.TextFeature);
@@ -427,7 +427,7 @@ ol.format.WKT.Lexer.prototype.isAlpha_ = function(c) {
  * @private
  */
 ol.format.WKT.Lexer.prototype.isNumeric_ = function(c, opt_decimal) {
-  var decimal = ol.isDef(opt_decimal) ? opt_decimal : false;
+  var decimal = opt_decimal !== undefined ? opt_decimal : false;
   return c >= '0' && c <= '9' || c == '.' && !decimal;
 };
 

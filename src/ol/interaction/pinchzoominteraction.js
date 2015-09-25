@@ -41,8 +41,7 @@ ol.interaction.PinchZoom = function(opt_options) {
    * @private
    * @type {number}
    */
-  this.duration_ = ol.isDef(options.duration) ?
-      /** @type {number} */ (options.duration) : 400;
+  this.duration_ = options.duration !== undefined ? options.duration : 400;
 
   /**
    * @private
@@ -78,7 +77,7 @@ ol.interaction.PinchZoom.handleDragEvent_ = function(mapBrowserEvent) {
   // distance between touches
   var distance = Math.sqrt(dx * dx + dy * dy);
 
-  if (ol.isDef(this.lastDistance_)) {
+  if (this.lastDistance_ !== undefined) {
     scaleDelta = this.lastDistance_ / distance;
   }
   this.lastDistance_ = distance;

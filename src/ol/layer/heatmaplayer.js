@@ -59,8 +59,7 @@ ol.layer.Heatmap = function(opt_options) {
    * @private
    * @type {number}
    */
-  this.shadow_ = ol.isDef(options.shadow) ?
-      /** @type {number} */ (options.shadow) : 250;
+  this.shadow_ = options.shadow !== undefined ? options.shadow : 250;
 
   /**
    * @private
@@ -81,10 +80,10 @@ ol.layer.Heatmap = function(opt_options) {
   this.setGradient(options.gradient ?
       options.gradient : ol.layer.Heatmap.DEFAULT_GRADIENT);
 
-  this.setBlur(ol.isDef(options.blur) ?
+  this.setBlur(options.blur !== undefined ?
       /** @type {number} */ (options.blur) : 15);
 
-  this.setRadius(ol.isDef(options.radius) ?
+  this.setRadius(options.radius !== undefined ?
       /** @type {number} */ (options.radius) : 8);
 
   goog.events.listen(this, [
@@ -112,8 +111,8 @@ ol.layer.Heatmap = function(opt_options) {
     goog.asserts.assert(this.circleImage_ !== undefined,
         'this.circleImage_ should be defined');
     var weight = weightFunction(feature);
-    var opacity = ol.isDef(weight) ?
-        goog.math.clamp(/** @type {number} */ (weight), 0, 1) : 1;
+    var opacity = weight !== undefined ?
+        goog.math.clamp(weight, 0, 1) : 1;
     // cast to 8 bits
     var index = (255 * opacity) | 0;
     var style = this.styleCache_[index];

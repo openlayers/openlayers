@@ -89,8 +89,8 @@ ol.format.KML = function(opt_options) {
    * @private
    * @type {boolean}
    */
-  this.extractStyles_ = ol.isDef(options.extractStyles) ?
-      /** @type {boolean} */ (options.extractStyles) : true;
+  this.extractStyles_ = options.extractStyles !== undefined ?
+      options.extractStyles : true;
 
   /**
    * @private
@@ -441,7 +441,7 @@ ol.format.KML.readVec2_ = function(node) {
  */
 ol.format.KML.readScale_ = function(node) {
   var number = ol.format.XSD.readDecimal(node);
-  if (ol.isDef(number)) {
+  if (number !== undefined) {
     return Math.sqrt(number);
   } else {
     return undefined;
@@ -517,7 +517,7 @@ ol.format.KML.IconStyleParser_ = function(node, objectStack) {
       (IconObject['x']);
   var y = /** @type {number|undefined} */
       (IconObject['y']);
-  if (ol.isDef(x) && ol.isDef(y)) {
+  if (x !== undefined && y !== undefined) {
     offset = [x, y];
   }
 
@@ -526,14 +526,14 @@ ol.format.KML.IconStyleParser_ = function(node, objectStack) {
       (IconObject['w']);
   var h = /** @type {number|undefined} */
       (IconObject['h']);
-  if (ol.isDef(w) && ol.isDef(h)) {
+  if (w !== undefined && h !== undefined) {
     size = [w, h];
   }
 
   var rotation;
   var heading = /** @type {number} */
       (object['heading']);
-  if (ol.isDef(heading)) {
+  if (heading !== undefined) {
     rotation = goog.math.toRadians(heading);
   }
 
@@ -648,12 +648,12 @@ ol.format.KML.PolyStyleParser_ = function(node, objectStack) {
   });
   styleObject['fillStyle'] = fillStyle;
   var fill = /** @type {boolean|undefined} */ (object['fill']);
-  if (ol.isDef(fill)) {
+  if (fill !== undefined) {
     styleObject['fill'] = fill;
   }
   var outline =
       /** @type {boolean|undefined} */ (object['outline']);
-  if (ol.isDef(outline)) {
+  if (outline !== undefined) {
     styleObject['outline'] = outline;
   }
 };
@@ -1018,7 +1018,7 @@ ol.format.KML.readStyle_ = function(node, objectStack) {
       styleObject, 'fillStyle', ol.format.KML.DEFAULT_FILL_STYLE_));
   var fill = /** @type {boolean|undefined} */
       (styleObject['fill']);
-  if (ol.isDef(fill) && !fill) {
+  if (fill !== undefined && !fill) {
     fillStyle = null;
   }
   var imageStyle = /** @type {ol.style.Image} */ (goog.object.get(
@@ -1029,7 +1029,7 @@ ol.format.KML.readStyle_ = function(node, objectStack) {
       styleObject, 'strokeStyle', ol.format.KML.DEFAULT_STROKE_STYLE_));
   var outline = /** @type {boolean|undefined} */
       (styleObject['outline']);
-  if (ol.isDef(outline) && !outline) {
+  if (outline !== undefined && !outline) {
     strokeStyle = null;
   }
   return [new ol.style.Style({
@@ -1061,7 +1061,7 @@ ol.format.KML.setCommonGeometryProperties_ = function(multiGeometry,
     geometry = geometries[i];
     extrudes[i] = geometry.get('extrude');
     altitudeModes[i] = geometry.get('altitudeMode');
-    hasExtrude = hasExtrude || ol.isDef(extrudes[i]);
+    hasExtrude = hasExtrude || extrudes[i] !== undefined;
     hasAltitudeMode = hasAltitudeMode || altitudeModes[i];
   }
   if (hasExtrude) {

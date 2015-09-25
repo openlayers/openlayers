@@ -81,8 +81,7 @@ ol.control.Rotate = function(opt_options) {
    * @type {boolean}
    * @private
    */
-  this.autoHide_ = ol.isDef(options.autoHide) ?
-      /** @type {boolean} */ (options.autoHide) : true;
+  this.autoHide_ = options.autoHide !== undefined ? options.autoHide : true;
 
   /**
    * @private
@@ -126,7 +125,7 @@ ol.control.Rotate.prototype.resetNorth_ = function() {
   while (currentRotation > Math.PI) {
     currentRotation -= 2 * Math.PI;
   }
-  if (ol.isDef(currentRotation)) {
+  if (currentRotation !== undefined) {
     if (this.duration_ > 0) {
       map.beforeRender(ol.animation.rotate({
         rotation: currentRotation,

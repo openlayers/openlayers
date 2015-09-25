@@ -169,7 +169,7 @@ ol.pointer.TouchSource.prototype.resetClickCountHandler_ = function() {
  * @private
  */
 ol.pointer.TouchSource.prototype.cancelResetClickCount_ = function() {
-  if (ol.isDef(this.resetId_)) {
+  if (this.resetId_ !== undefined) {
     goog.global.clearTimeout(this.resetId_);
   }
 };

@@ -38,10 +38,9 @@ ol.layer.Tile = function(opt_options) {
   delete baseOptions.useInterimTilesOnError;
   goog.base(this,  /** @type {olx.layer.LayerOptions} */ (baseOptions));
 
-  this.setPreload(ol.isDef(options.preload) ?
-      /** @type {number} */ (options.preload) : 0);
-  this.setUseInterimTilesOnError(ol.isDef(options.useInterimTilesOnError) ?
-      /** @type {boolean} */ (options.useInterimTilesOnError) : true);
+  this.setPreload(options.preload !== undefined ? options.preload : 0);
+  this.setUseInterimTilesOnError(options.useInterimTilesOnError !== undefined ?
+      options.useInterimTilesOnError : true);
 };
 goog.inherits(ol.layer.Tile, ol.layer.Layer);
 

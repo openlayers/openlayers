@@ -35,14 +35,14 @@ ol.interaction.KeyboardPan = function(opt_options) {
     handleEvent: ol.interaction.KeyboardPan.handleEvent
   });
 
-  var options = ol.isDef(opt_options) ? opt_options : {};
+  var options = opt_options || {};
 
   /**
    * @private
    * @type {ol.events.ConditionType}
    */
-  this.condition_ = ol.isDef(options.condition) ?
-      /** @type {ol.events.ConditionType} */ (options.condition) :
+  this.condition_ = options.condition !== undefined ?
+      options.condition :
       goog.functions.and(ol.events.condition.noModifierKeys,
           ol.events.condition.targetNotEditable);
 
@@ -50,15 +50,14 @@ ol.interaction.KeyboardPan = function(opt_options) {
    * @private
    * @type {number}
    */
-  this.duration_ = ol.isDef(options.duration) ?
-      /** @type {number} */ (options.duration) : 100;
+  this.duration_ = options.duration !== undefined ? options.duration : 100;
 
   /**
    * @private
    * @type {number}
    */
-  this.pixelDelta_ = ol.isDef(options.pixelDelta) ?
-      /** @type {number} */ (options.pixelDelta) : 128;
+  this.pixelDelta_ = options.pixelDelta !== undefined ?
+      options.pixelDelta : 128;
 
 };
 goog.inherits(ol.interaction.KeyboardPan, ol.interaction.Interaction);

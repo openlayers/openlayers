@@ -150,7 +150,7 @@ ol.interaction.Interaction.rotateWithoutConstraints =
   if (goog.isDefAndNotNull(rotation)) {
     var currentRotation = view.getRotation();
     var currentCenter = view.getCenter();
-    if (ol.isDef(currentRotation) && currentCenter &&
+    if (currentRotation !== undefined && currentCenter &&
         opt_duration && opt_duration > 0) {
       map.beforeRender(ol.animation.rotate({
         rotation: currentRotation,
@@ -221,7 +221,7 @@ ol.interaction.Interaction.zoomWithoutConstraints =
   if (goog.isDefAndNotNull(resolution)) {
     var currentResolution = view.getResolution();
     var currentCenter = view.getCenter();
-    if (ol.isDef(currentResolution) && currentCenter &&
+    if (currentResolution !== undefined && currentCenter &&
         opt_duration && opt_duration > 0) {
       map.beforeRender(ol.animation.zoom({
         resolution: /** @type {number} */ (currentResolution),

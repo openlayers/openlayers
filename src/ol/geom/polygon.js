@@ -170,7 +170,7 @@ ol.geom.Polygon.prototype.getArea = function() {
  */
 ol.geom.Polygon.prototype.getCoordinates = function(opt_right) {
   var flatCoordinates;
-  if (ol.isDef(opt_right)) {
+  if (opt_right !== undefined) {
     flatCoordinates = this.getOrientedFlatCoordinates().slice();
     ol.geom.flat.orient.orientLinearRings(
         flatCoordinates, 0, this.ends_, this.stride, opt_right);

@@ -83,8 +83,7 @@ ol.control.FullScreen = function(opt_options) {
    * @private
    * @type {boolean}
    */
-  this.keys_ = ol.isDef(options.keys) ?
-      /** @type {boolean} */ (options.keys) : false;
+  this.keys_ = options.keys !== undefined ? options.keys : false;
 
 };
 goog.inherits(ol.control.FullScreen, ol.control.Control);

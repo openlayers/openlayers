@@ -48,13 +48,13 @@ ol.interaction.defaults = function(opt_options) {
 
   var kinetic = new ol.Kinetic(-0.005, 0.05, 100);
 
-  var altShiftDragRotate = ol.isDef(options.altShiftDragRotate) ?
+  var altShiftDragRotate = options.altShiftDragRotate !== undefined ?
       options.altShiftDragRotate : true;
   if (altShiftDragRotate) {
     interactions.push(new ol.interaction.DragRotate());
   }
 
-  var doubleClickZoom = ol.isDef(options.doubleClickZoom) ?
+  var doubleClickZoom = options.doubleClickZoom !== undefined ?
       options.doubleClickZoom : true;
   if (doubleClickZoom) {
     interactions.push(new ol.interaction.DoubleClickZoom({
@@ -63,27 +63,27 @@ ol.interaction.defaults = function(opt_options) {
     }));
   }
 
-  var dragPan = ol.isDef(options.dragPan) ? options.dragPan : true;
+  var dragPan = options.dragPan !== undefined ? options.dragPan : true;
   if (dragPan) {
     interactions.push(new ol.interaction.DragPan({
       kinetic: kinetic
     }));
   }
 
-  var pinchRotate = ol.isDef(options.pinchRotate) ? options.pinchRotate :
+  var pinchRotate = options.pinchRotate !== undefined ? options.pinchRotate :
       true;
   if (pinchRotate) {
     interactions.push(new ol.interaction.PinchRotate());
   }
 
-  var pinchZoom = ol.isDef(options.pinchZoom) ? options.pinchZoom : true;
+  var pinchZoom = options.pinchZoom !== undefined ? options.pinchZoom : true;
   if (pinchZoom) {
     interactions.push(new ol.interaction.PinchZoom({
       duration: options.zoomDuration
     }));
   }
 
-  var keyboard = ol.isDef(options.keyboard) ? options.keyboard : true;
+  var keyboard = options.keyboard !== undefined ? options.keyboard : true;
   if (keyboard) {
     interactions.push(new ol.interaction.KeyboardPan());
     interactions.push(new ol.interaction.KeyboardZoom({
@@ -92,7 +92,7 @@ ol.interaction.defaults = function(opt_options) {
     }));
   }
 
-  var mouseWheelZoom = ol.isDef(options.mouseWheelZoom) ?
+  var mouseWheelZoom = options.mouseWheelZoom !== undefined ?
       options.mouseWheelZoom : true;
   if (mouseWheelZoom) {
     interactions.push(new ol.interaction.MouseWheelZoom({
@@ -100,7 +100,7 @@ ol.interaction.defaults = function(opt_options) {
     }));
   }
 
-  var shiftDragZoom = ol.isDef(options.shiftDragZoom) ?
+  var shiftDragZoom = options.shiftDragZoom !== undefined ?
       options.shiftDragZoom : true;
   if (shiftDragZoom) {
     interactions.push(new ol.interaction.DragZoom());

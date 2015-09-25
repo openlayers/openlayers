@@ -51,8 +51,8 @@ ol.layer.Vector = function(opt_options) {
    * @type {number}
    * @private
    */
-  this.renderBuffer_ = ol.isDef(options.renderBuffer) ?
-      /** @type {number} */ (options.renderBuffer) : 100;
+  this.renderBuffer_ = options.renderBuffer !== undefined ?
+      options.renderBuffer : 100;
 
   /**
    * User provided style.
@@ -74,15 +74,15 @@ ol.layer.Vector = function(opt_options) {
    * @type {boolean}
    * @private
    */
-  this.updateWhileAnimating_ = ol.isDef(options.updateWhileAnimating) ?
-      /** @type {boolean} */ (options.updateWhileAnimating) : false;
+  this.updateWhileAnimating_ = options.updateWhileAnimating !== undefined ?
+      options.updateWhileAnimating : false;
 
   /**
    * @type {boolean}
    * @private
    */
-  this.updateWhileInteracting_ = ol.isDef(options.updateWhileInteracting) ?
-      /** @type {boolean} */ (options.updateWhileInteracting) : false;
+  this.updateWhileInteracting_ = options.updateWhileInteracting !== undefined ?
+      options.updateWhileInteracting : false;
 
 };
 goog.inherits(ol.layer.Vector, ol.layer.Layer);
@@ -180,11 +180,7 @@ ol.layer.Vector.prototype.setRenderOrder = function(renderOrder) {
  * @api stable
  */
 ol.layer.Vector.prototype.setStyle = function(style) {
-  this.style_ = ol.isDef(style) ?
-      /**
-       * @type {ol.style.Style|Array.<ol.style.Style>|ol.style.StyleFunction|null}
-       */
-      (style) : ol.style.defaultStyleFunction;
+  this.style_ = style !== undefined ? style : ol.style.defaultStyleFunction;
   this.styleFunction_ = goog.isNull(style) ?
       undefined : ol.style.createStyleFunction(this.style_);
   this.changed();
