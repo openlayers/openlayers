@@ -4106,7 +4106,6 @@ olx.source.TileImageOptions.prototype.wrapX;
  *            projection: ol.proj.ProjectionLike,
  *            state: (ol.source.State|string|undefined),
  *            format: (ol.format.Feature|undefined),
- *            rightHandedPolygons: (boolean|undefined),
  *            tileClass: (function(new: ol.VectorTile, ol.TileCoord,
  *                 ol.TileState, string, ol.format.Feature,
  *                 ol.TileLoadFunctionType)|undefined),
@@ -4151,16 +4150,6 @@ olx.source.VectorTileOptions.prototype.opaque;
  * @api
  */
 olx.source.VectorTileOptions.prototype.projection;
-
-
-/**
- * Assume that all polygons provided by this source follow the right-hand rule
- * (counter-clockwise for exterior and clockwise for interior rings). If `true`,
- * renderers will skip the check for the ring orientation.
- * @type {boolean|undefined}
- * @api
- */
-olx.source.VectorTileOptions.prototype.rightHandedPolygons;
 
 
 /**
