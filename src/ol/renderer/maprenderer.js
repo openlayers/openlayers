@@ -140,7 +140,7 @@ ol.renderer.Map.prototype.forEachFeatureAtCoordinate =
    * @return {?} Callback result.
    */
   function forEachFeatureAtCoordinate(feature) {
-    goog.asserts.assert(feature !== undefined, 'received a feature');
+    goog.asserts.assert(ol.isDef(feature), 'received a feature');
     var key = goog.getUid(feature).toString();
     if (!(key in features)) {
       features[key] = true;
