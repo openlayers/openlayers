@@ -5,17 +5,13 @@ goog.require('ol.proj');
 goog.require('ol.source.Stamen');
 
 
+var stamenSource = new ol.source.Stamen({
+  layer: 'watercolor'
+});
 var map = new ol.Map({
   layers: [
     new ol.layer.Tile({
-      source: new ol.source.Stamen({
-        layer: 'watercolor'
-      })
-    }),
-    new ol.layer.Tile({
-      source: new ol.source.Stamen({
-        layer: 'terrain-labels'
-      })
+      source: stamenSource
     })
   ],
   renderer: common.getRendererFromQueryString(),
@@ -25,4 +21,10 @@ var map = new ol.Map({
         [-122.416667, 37.783333], 'EPSG:4326', 'EPSG:3857'),
     zoom: 12
   })
+});
+
+
+$('#source-layer-select').change(function() {
+  var layer = /** @type {string} */ ($(this).find(':selected').val());
+  stamenSource.setLayer(layer);
 });
