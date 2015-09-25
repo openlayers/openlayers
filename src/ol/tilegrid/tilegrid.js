@@ -503,12 +503,14 @@ ol.tilegrid.TileGrid.prototype.calculateTileRanges_ = function(extent) {
 
 /**
  * @param {ol.proj.Projection} projection Projection.
+ * @param {number=} opt_maxZoom Maximum zoom level (default is
+ *     ol.DEFAULT_MAX_ZOOM).
  * @return {ol.tilegrid.TileGrid} Default tile grid for the passed projection.
  */
-ol.tilegrid.getForProjection = function(projection) {
+ol.tilegrid.getForProjection = function(projection, opt_maxZoom) {
   var tileGrid = projection.getDefaultTileGrid();
   if (goog.isNull(tileGrid)) {
-    tileGrid = ol.tilegrid.createForProjection(projection);
+    tileGrid = ol.tilegrid.createForProjection(projection, opt_maxZoom);
     projection.setDefaultTileGrid(tileGrid);
   }
   return tileGrid;

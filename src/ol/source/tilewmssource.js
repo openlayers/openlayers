@@ -106,6 +106,12 @@ ol.source.TileWMS = function(opt_options) {
    */
   this.tmpExtent_ = ol.extent.createEmpty();
 
+  /**
+   * @private
+   * @type {number|undefined}
+   */
+  this.maxZoom_ = options.maxZoom;
+
   this.updateV13_();
 
 };
@@ -280,6 +286,19 @@ ol.source.TileWMS.prototype.getRequestUrl_ =
     url = urls[index];
   }
   return goog.uri.utils.appendParamsFromMap(url, params);
+};
+
+
+/**
+ * @param {ol.proj.Projection} projection Projection.
+ * @return {ol.tilegrid.TileGrid} Tile grid.
+ */
+ol.source.TileWMS.prototype.getTileGridForProjection = function(projection) {
+  if (goog.isNull(this.tileGrid)) {
+    return ol.tilegrid.getForProjection(projection, this.maxZoom_);
+  } else {
+    return this.tileGrid;
+  }
 };
 
 
