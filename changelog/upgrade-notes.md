@@ -2,6 +2,10 @@
 
 ### v3.10.0
 
+#### `ol.layer.Layer` changes
+
+The experimental `setHue`, `setContrast`, `setBrightness`, `setSaturation`, and the corresponding getter methods have been removed.  These properties only worked with the WebGL renderer.  If are interested in applying color transforms, look for the `postcompose` event in the API docs.  In addition, the `ol.source.Raster` source provides a way to create new raster data based on arbitrary transforms run on any number of input sources.
+
 ### v3.9.0
 
 #### `ol.style.Circle` changes

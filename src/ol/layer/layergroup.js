@@ -12,7 +12,6 @@ goog.require('ol.Object');
 goog.require('ol.ObjectEventType');
 goog.require('ol.extent');
 goog.require('ol.layer.Base');
-goog.require('ol.math');
 goog.require('ol.source.State');
 
 
