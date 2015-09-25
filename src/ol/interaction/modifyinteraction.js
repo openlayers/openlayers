@@ -162,7 +162,8 @@ ol.interaction.Modify = function(options) {
    * @type {number}
    * @private
    */
-  this.pixelTolerance_ = options.pixelTolerance ? options.pixelTolerance : 10;
+  this.pixelTolerance_ = ol.isDef(options.pixelTolerance) ?
+      /** @type {number} */ (options.pixelTolerance) : 10;
 
   /**
    * @type {boolean}
@@ -192,7 +193,7 @@ ol.interaction.Modify = function(options) {
   this.overlay_ = new ol.layer.Vector({
     source: new ol.source.Vector({
       useSpatialIndex: false,
-      wrapX: options.wrapX ? options.wrapX : false
+      wrapX: !!options.wrapX
     }),
     style: options.style ? options.style :
         ol.interaction.Modify.getDefaultStyleFunction(),
@@ -238,7 +239,7 @@ goog.inherits(ol.interaction.Modify, ol.interaction.Pointer);
  */
 ol.interaction.Modify.prototype.addFeature_ = function(feature) {
   var geometry = feature.getGeometry();
-  if (this.SEGMENT_WRITERS_[geometry.getType()]) {
+  if (geometry.getType() in this.SEGMENT_WRITERS_) {
     this.SEGMENT_WRITERS_[geometry.getType()].call(this, feature, geometry);
   }
   var map = this.getMap();
@@ -822,10 +823,10 @@ ol.interaction.Modify.prototype.insertVertex_ = function(segmentData, vertex) {
 
   this.setGeometryCoordinates_(geometry, coordinates);
   var rTree = this.rBush_;
-  goog.asserts.assert(segment !== undefined, 'segment should be defined');
+  goog.asserts.assert(ol.isDef(segment), 'segment should be defined');
   rTree.remove(segmentData);
-  goog.asserts.assert(index !== undefined, 'index should be defined');
-  this.updateSegmentIndices_(geometry, index, depth, 1);
+  goog.asserts.assert(ol.isDef(index), 'index should be defined');
+  this.updateSegmentIndices_(geometry, /** @type {number} */ (index), depth, 1);
   var newSegmentData = /** @type {ol.interaction.SegmentDataType} */ ({
     segment: [segment[0], vertex],
     feature: feature,
@@ -975,7 +976,9 @@ ol.interaction.Modify.prototype.updateSegmentIndices_ = function(
   this.rBush_.forEachInExtent(geometry.getExtent(), function(segmentDataMatch) {
     if (segmentDataMatch.geometry === geometry &&
         (depth === undefined || segmentDataMatch.depth === undefined ||
-        goog.array.equals(segmentDataMatch.depth, depth)) &&
+        goog.array.equals(
+            /** @type {null|{length: number}} */ (segmentDataMatch.depth),
+            depth)) &&
         segmentDataMatch.index > index) {
       segmentDataMatch.index += delta;
     }
