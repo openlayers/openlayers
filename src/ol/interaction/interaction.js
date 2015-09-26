@@ -222,6 +222,7 @@ ol.interaction.Interaction.zoomWithoutConstraints =
     var currentResolution = view.getResolution();
     var currentCenter = view.getCenter();
     if (currentResolution !== undefined && currentCenter &&
+        resolution !== currentResolution &&
         opt_duration && opt_duration > 0) {
       map.beforeRender(ol.animation.zoom({
         resolution: /** @type {number} */ (currentResolution),
