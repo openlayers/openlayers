@@ -297,7 +297,7 @@ ol.Overlay.prototype.handleOffsetChanged = function() {
  */
 ol.Overlay.prototype.handlePositionChanged = function() {
   this.updatePixelPosition();
-  if (goog.isDef(this.get(ol.OverlayProperty.POSITION)) && this.autoPan) {
+  if (this.get(ol.OverlayProperty.POSITION) !== undefined && this.autoPan) {
     this.panIntoView_();
   }
 };

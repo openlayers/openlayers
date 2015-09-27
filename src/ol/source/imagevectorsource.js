@@ -259,9 +259,10 @@ ol.source.ImageVector.prototype.handleSourceChange_ = function() {
 ol.source.ImageVector.prototype.renderFeature_ =
     function(feature, resolution, pixelRatio, replayGroup) {
   var styles;
-  if (goog.isDef(feature.getStyleFunction())) {
-    styles = feature.getStyleFunction().call(feature, resolution);
-  } else if (this.styleFunction_ !== undefined) {
+  var styleFunction = feature.getStyleFunction();
+  if (styleFunction) {
+    styles = styleFunction.call(feature, resolution);
+  } else if (this.styleFunction_) {
     styles = this.styleFunction_(feature, resolution);
   }
   if (!goog.isDefAndNotNull(styles)) {

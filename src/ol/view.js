@@ -553,7 +553,7 @@ ol.View.prototype.centerOn = function(coordinate, size, position) {
  */
 ol.View.prototype.isDef = function() {
   return goog.isDefAndNotNull(this.getCenter()) &&
-      goog.isDef(this.getResolution());
+      this.getResolution() !== undefined;
 };
 
 

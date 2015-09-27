@@ -283,10 +283,14 @@ ol.renderer.dom.VectorLayer.prototype.prepareFrame =
        */
       function(feature) {
     var styles;
-    if (goog.isDef(feature.getStyleFunction())) {
-      styles = feature.getStyleFunction().call(feature, resolution);
-    } else if (goog.isDef(vectorLayer.getStyleFunction())) {
-      styles = vectorLayer.getStyleFunction()(feature, resolution);
+    var styleFunction = feature.getStyleFunction();
+    if (styleFunction) {
+      styles = styleFunction.call(feature, resolution);
+    } else {
+      styleFunction = vectorLayer.getStyleFunction();
+      if (styleFunction) {
+        styles = styleFunction(feature, resolution);
+      }
     }
     if (goog.isDefAndNotNull(styles)) {
       var dirty = this.renderFeature(
