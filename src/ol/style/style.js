@@ -164,7 +164,7 @@ ol.style.Style.prototype.setGeometry = function(geometry) {
   } else if (goog.isString(geometry)) {
     this.geometryFunction_ = function(feature) {
       var result = feature.get(geometry);
-      if (goog.isDefAndNotNull(result)) {
+      if (result) {
         goog.asserts.assertInstanceof(result, ol.geom.Geometry,
             'feature geometry must be an ol.geom.Geometry instance');
       }

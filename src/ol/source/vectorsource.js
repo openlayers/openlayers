@@ -204,7 +204,7 @@ ol.source.Vector.prototype.addFeatureInternal = function(feature) {
   this.setupChangeEvents_(featureKey, feature);
 
   var geometry = feature.getGeometry();
-  if (goog.isDefAndNotNull(geometry)) {
+  if (geometry) {
     var extent = geometry.getExtent();
     if (!goog.isNull(this.featuresRtree_)) {
       this.featuresRtree_.insert(extent, feature);
@@ -299,7 +299,7 @@ ol.source.Vector.prototype.addFeaturesInternal = function(features) {
     this.setupChangeEvents_(featureKey, feature);
 
     var geometry = feature.getGeometry();
-    if (goog.isDefAndNotNull(geometry)) {
+    if (geometry) {
       var extent = geometry.getExtent();
       extents.push(extent);
       geometryFeatures.push(feature);

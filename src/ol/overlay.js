@@ -244,7 +244,7 @@ ol.Overlay.prototype.getPositioning = function() {
 ol.Overlay.prototype.handleElementChanged = function() {
   goog.dom.removeChildren(this.element_);
   var element = this.getElement();
-  if (goog.isDefAndNotNull(element)) {
+  if (element) {
     goog.dom.append(/** @type {!Node} */ (this.element_), element);
   }
 };
@@ -260,7 +260,7 @@ ol.Overlay.prototype.handleMapChanged = function() {
     this.mapPostrenderListenerKey_ = null;
   }
   var map = this.getMap();
-  if (goog.isDefAndNotNull(map)) {
+  if (map) {
     this.mapPostrenderListenerKey_ = goog.events.listen(map,
         ol.MapEventType.POSTRENDER, this.render, false, this);
     this.updatePixelPosition();

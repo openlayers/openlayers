@@ -90,7 +90,7 @@ ol.featureloader.loadFeaturesXhr = function(url, format, success) {
                 } else {
                   goog.asserts.fail('unexpected format type');
                 }
-                if (goog.isDefAndNotNull(source)) {
+                if (source) {
                   var features = format.readFeatures(source,
                       {featureProjection: projection});
                   success.call(this, features);

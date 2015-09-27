@@ -134,7 +134,7 @@ ol.tilegrid.TileGrid = function(options) {
       }
       return tileRange;
     }, this);
-  } else if (goog.isDefAndNotNull(extent)) {
+  } else if (extent) {
     this.calculateTileRanges_(extent);
   }
 

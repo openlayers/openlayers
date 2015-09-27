@@ -61,7 +61,7 @@ ol.layer.Group = function(opt_options) {
       ol.Object.getChangeEventType(ol.layer.GroupProperty.LAYERS),
       this.handleLayersChanged_, false, this);
 
-  if (goog.isDefAndNotNull(layers)) {
+  if (layers) {
     if (goog.isArray(layers)) {
       layers = new ol.Collection(layers.slice());
     } else {

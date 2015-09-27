@@ -650,7 +650,7 @@ ol.format.EsriJSON.prototype.writeFeatureObject = function(
   opt_options = this.adaptOptions(opt_options);
   var object = {};
   var geometry = feature.getGeometry();
-  if (goog.isDefAndNotNull(geometry)) {
+  if (geometry) {
     object['geometry'] =
         ol.format.EsriJSON.writeGeometry_(geometry, opt_options);
   }

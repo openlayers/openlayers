@@ -643,7 +643,7 @@ ol.format.GML3.prototype.writePos_ = function(node, value, objectStack) {
   goog.asserts.assert(goog.isObject(context), 'context should be an Object');
   var srsName = context['srsName'];
   var axisOrientation = 'enu';
-  if (goog.isDefAndNotNull(srsName)) {
+  if (srsName) {
     axisOrientation = ol.proj.get(srsName).getAxisOrientation();
   }
   var point = value.getCoordinates();
@@ -666,7 +666,7 @@ ol.format.GML3.prototype.writePos_ = function(node, value, objectStack) {
  */
 ol.format.GML3.prototype.getCoords_ = function(point, opt_srsName) {
   var axisOrientation = 'enu';
-  if (goog.isDefAndNotNull(opt_srsName)) {
+  if (opt_srsName) {
     axisOrientation = ol.proj.get(opt_srsName).getAxisOrientation();
   }
   return ((axisOrientation.substr(0, 2) === 'en') ?
@@ -708,7 +708,7 @@ ol.format.GML3.prototype.writePoint_ = function(node, geometry, objectStack) {
   var context = objectStack[objectStack.length - 1];
   goog.asserts.assert(goog.isObject(context), 'context should be an Object');
   var srsName = context['srsName'];
-  if (goog.isDefAndNotNull(srsName)) {
+  if (srsName) {
     node.setAttribute('srsName', srsName);
   }
   var pos = ol.xml.createElementNS(node.namespaceURI, 'pos');
@@ -763,7 +763,7 @@ ol.format.GML3.prototype.writeLinearRing_ =
   var context = objectStack[objectStack.length - 1];
   goog.asserts.assert(goog.isObject(context), 'context should be an Object');
   var srsName = context['srsName'];
-  if (goog.isDefAndNotNull(srsName)) {
+  if (srsName) {
     node.setAttribute('srsName', srsName);
   }
   var posList = ol.xml.createElementNS(node.namespaceURI, 'posList');
@@ -864,7 +864,7 @@ ol.format.GML3.prototype.writeMultiSurfaceOrPolygon_ =
   goog.asserts.assert(goog.isObject(context), 'context should be an Object');
   var srsName = context['srsName'];
   var surface = context['surface'];
-  if (goog.isDefAndNotNull(srsName)) {
+  if (srsName) {
     node.setAttribute('srsName', srsName);
   }
   var polygons = geometry.getPolygons();
@@ -886,7 +886,7 @@ ol.format.GML3.prototype.writeMultiPoint_ = function(node, geometry,
   var context = objectStack[objectStack.length - 1];
   goog.asserts.assert(goog.isObject(context), 'context should be an Object');
   var srsName = context['srsName'];
-  if (goog.isDefAndNotNull(srsName)) {
+  if (srsName) {
     node.setAttribute('srsName', srsName);
   }
   var points = geometry.getPoints();
@@ -909,7 +909,7 @@ ol.format.GML3.prototype.writeMultiCurveOrLineString_ =
   goog.asserts.assert(goog.isObject(context), 'context should be an Object');
   var srsName = context['srsName'];
   var curve = context['curve'];
-  if (goog.isDefAndNotNull(srsName)) {
+  if (srsName) {
     node.setAttribute('srsName', srsName);
   }
   var lines = geometry.getLineStrings();

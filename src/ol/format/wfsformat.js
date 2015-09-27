@@ -697,7 +697,7 @@ ol.format.WFS.prototype.writeTransaction = function(inserts, updates, deletes,
   }
   ol.xml.setAttributeNS(node, 'http://www.w3.org/2001/XMLSchema-instance',
       'xsi:schemaLocation', this.schemaLocation_);
-  if (goog.isDefAndNotNull(inserts)) {
+  if (inserts) {
     obj = {node: node, featureNS: options.featureNS,
       featureType: options.featureType, featurePrefix: options.featurePrefix};
     goog.object.extend(obj, baseObj);
@@ -706,7 +706,7 @@ ol.format.WFS.prototype.writeTransaction = function(inserts, updates, deletes,
         ol.xml.makeSimpleNodeFactory('Insert'), inserts,
         objectStack);
   }
-  if (goog.isDefAndNotNull(updates)) {
+  if (updates) {
     obj = {node: node, featureNS: options.featureNS,
       featureType: options.featureType, featurePrefix: options.featurePrefix};
     goog.object.extend(obj, baseObj);
@@ -715,7 +715,7 @@ ol.format.WFS.prototype.writeTransaction = function(inserts, updates, deletes,
         ol.xml.makeSimpleNodeFactory('Update'), updates,
         objectStack);
   }
-  if (goog.isDefAndNotNull(deletes)) {
+  if (deletes) {
     ol.xml.pushSerializeAndPop({node: node, featureNS: options.featureNS,
       featureType: options.featureType, featurePrefix: options.featurePrefix},
     ol.format.WFS.TRANSACTION_SERIALIZERS_,

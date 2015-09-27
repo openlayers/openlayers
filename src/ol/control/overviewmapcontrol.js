@@ -395,7 +395,7 @@ ol.control.OverviewMap.prototype.updateBox_ = function() {
   overlay.setPosition(rotateBottomLeft);
 
   // set box size calculated from map extent size and overview map resolution
-  if (goog.isDefAndNotNull(box)) {
+  if (box) {
     var boxWidth = Math.abs((bottomLeft[0] - topRight[0]) / ovresolution);
     var boxHeight = Math.abs((topRight[1] - bottomLeft[1]) / ovresolution);
     goog.style.setBorderBoxSize(box, new goog.math.Size(

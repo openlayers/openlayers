@@ -1123,7 +1123,7 @@ ol.Map.prototype.handleLayerGroupChanged_ = function() {
     this.layerGroupPropertyListenerKeys_ = null;
   }
   var layerGroup = this.getLayerGroup();
-  if (goog.isDefAndNotNull(layerGroup)) {
+  if (layerGroup) {
     this.layerGroupPropertyListenerKeys_ = [
       goog.events.listen(
           layerGroup, ol.ObjectEventType.PROPERTYCHANGE,
