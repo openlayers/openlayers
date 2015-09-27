@@ -58,7 +58,7 @@ ol.style.Fill.prototype.setColor = function(color) {
  * @inheritDoc
  */
 ol.style.Fill.prototype.getChecksum = function() {
-  if (!goog.isDef(this.checksum_)) {
+  if (this.checksum_ === undefined) {
     this.checksum_ = 'f' + (!goog.isNull(this.color_) ?
         ol.color.asString(this.color_) : '-');
   }

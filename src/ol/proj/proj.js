@@ -152,7 +152,7 @@ ol.proj.Projection = function(options) {
       if (goog.isDef(def.axis) && !goog.isDef(options.axisOrientation)) {
         this.axisOrientation_ = def.axis;
       }
-      if (!goog.isDef(options.units)) {
+      if (options.units === undefined) {
         var units = def.units;
         if (units === undefined) {
           if (def.to_meter !== undefined) {

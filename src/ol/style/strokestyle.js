@@ -203,7 +203,7 @@ ol.style.Stroke.prototype.setWidth = function(width) {
  * @inheritDoc
  */
 ol.style.Stroke.prototype.getChecksum = function() {
-  if (!goog.isDef(this.checksum_)) {
+  if (this.checksum_ === undefined) {
     var raw = 's' +
         (!goog.isNull(this.color_) ?
             ol.color.asString(this.color_) : '-') + ',' +

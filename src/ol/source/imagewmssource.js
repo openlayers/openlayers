@@ -142,7 +142,7 @@ ol.source.ImageWMS.prototype.getGetFeatureInfoUrl =
   goog.asserts.assert(!('VERSION' in params),
       'key VERSION is not allowed in params');
 
-  if (!goog.isDef(this.url_)) {
+  if (this.url_ === undefined) {
     return undefined;
   }
 
@@ -188,7 +188,7 @@ ol.source.ImageWMS.prototype.getParams = function() {
 ol.source.ImageWMS.prototype.getImage =
     function(extent, resolution, pixelRatio, projection) {
 
-  if (!goog.isDef(this.url_)) {
+  if (this.url_ === undefined) {
     return null;
   }
 

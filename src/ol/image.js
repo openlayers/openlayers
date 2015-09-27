@@ -114,7 +114,7 @@ ol.Image.prototype.handleImageError_ = function() {
  * @private
  */
 ol.Image.prototype.handleImageLoad_ = function() {
-  if (!goog.isDef(this.resolution)) {
+  if (this.resolution === undefined) {
     this.resolution = ol.extent.getHeight(this.extent) / this.image_.height;
   }
   this.state = ol.ImageState.LOADED;

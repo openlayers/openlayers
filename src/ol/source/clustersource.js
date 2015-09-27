@@ -103,7 +103,7 @@ ol.source.Cluster.prototype.onSourceChange_ = function() {
  * @private
  */
 ol.source.Cluster.prototype.cluster_ = function() {
-  if (!goog.isDef(this.resolution_)) {
+  if (this.resolution_ === undefined) {
     return;
   }
   this.features_.length = 0;

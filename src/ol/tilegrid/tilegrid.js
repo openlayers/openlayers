@@ -552,7 +552,7 @@ ol.tilegrid.createXYZ = function(opt_options) {
   var options = /** @type {olx.tilegrid.TileGridOptions} */ ({});
   goog.object.extend(options, goog.isDef(opt_options) ?
       opt_options : /** @type {olx.tilegrid.XYZOptions} */ ({}));
-  if (!goog.isDef(options.extent)) {
+  if (options.extent === undefined) {
     options.extent = ol.proj.get('EPSG:3857').getExtent();
   }
   options.resolutions = ol.tilegrid.resolutionsFromExtent(
