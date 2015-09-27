@@ -56,11 +56,11 @@ ol.source.XYZ = function(options) {
     wrapX: goog.isDef(options.wrapX) ? options.wrapX : true
   });
 
-  if (goog.isDef(options.tileUrlFunction)) {
+  if (options.tileUrlFunction !== undefined) {
     this.setTileUrlFunction(options.tileUrlFunction);
-  } else if (goog.isDef(options.urls)) {
+  } else if (options.urls !== undefined) {
     this.setUrls(options.urls);
-  } else if (goog.isDef(options.url)) {
+  } else if (options.url !== undefined) {
     this.setUrl(options.url);
   }
 

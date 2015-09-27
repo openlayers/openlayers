@@ -133,7 +133,7 @@ ol.source.Raster = function(options) {
 
   goog.base(this, {});
 
-  if (goog.isDef(options.operation)) {
+  if (options.operation !== undefined) {
     this.setOperation(options.operation, options.lib);
   }
 

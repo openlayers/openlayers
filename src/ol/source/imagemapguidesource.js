@@ -50,7 +50,7 @@ ol.source.ImageMapGuide = function(options) {
   this.params_ = goog.isDef(options.params) ? options.params : {};
 
   var imageUrlFunction;
-  if (goog.isDef(options.url)) {
+  if (options.url !== undefined) {
     imageUrlFunction = ol.ImageUrlFunction.createFromParamsFunction(
         options.url, this.params_, goog.bind(this.getUrl, this));
   } else {

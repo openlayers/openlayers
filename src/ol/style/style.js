@@ -40,7 +40,7 @@ ol.style.Style = function(opt_options) {
    */
   this.geometryFunction_ = ol.style.defaultGeometryFunction;
 
-  if (goog.isDef(options.geometry)) {
+  if (options.geometry !== undefined) {
     this.setGeometry(options.geometry);
   }
 

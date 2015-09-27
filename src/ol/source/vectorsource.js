@@ -91,9 +91,9 @@ ol.source.Vector = function(opt_options) {
    */
   this.loader_ = goog.nullFunction;
 
-  if (goog.isDef(options.loader)) {
+  if (options.loader !== undefined) {
     this.loader_ = options.loader;
-  } else if (goog.isDef(options.url)) {
+  } else if (options.url !== undefined) {
     goog.asserts.assert(goog.isDef(options.format),
         'format must be set when url is set');
     // create a XHR feature loader for "url" and "format"

@@ -57,13 +57,13 @@ ol.source.TileJSON.prototype.handleTileJSONResponse = function(tileJSON) {
 
   var sourceProjection = this.getProjection();
   var extent;
-  if (goog.isDef(tileJSON.bounds)) {
+  if (tileJSON.bounds !== undefined) {
     var transform = ol.proj.getTransformFromProjections(
         epsg4326Projection, sourceProjection);
     extent = ol.extent.applyTransform(tileJSON.bounds, transform);
   }
 
-  if (goog.isDef(tileJSON.scheme)) {
+  if (tileJSON.scheme !== undefined) {
     goog.asserts.assert(tileJSON.scheme == 'xyz', 'tileJSON-scheme is "xyz"');
   }
   var minZoom = tileJSON.minzoom || 0;

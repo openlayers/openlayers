@@ -19,7 +19,7 @@ ol.source.OSM = function(opt_options) {
   var options = opt_options || {};
 
   var attributions;
-  if (goog.isDef(options.attributions)) {
+  if (options.attributions !== undefined) {
     attributions = options.attributions;
   } else {
     attributions = [ol.source.OSM.ATTRIBUTION];

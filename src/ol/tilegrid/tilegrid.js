@@ -64,7 +64,7 @@ ol.tilegrid.TileGrid = function(options) {
    * @type {Array.<ol.Coordinate>}
    */
   this.origins_ = null;
-  if (goog.isDef(options.origins)) {
+  if (options.origins !== undefined) {
     this.origins_ = options.origins;
     goog.asserts.assert(this.origins_.length == this.resolutions_.length,
         'number of origins and resolutions must be equal');
@@ -87,7 +87,7 @@ ol.tilegrid.TileGrid = function(options) {
    * @type {Array.<number|ol.Size>}
    */
   this.tileSizes_ = null;
-  if (goog.isDef(options.tileSizes)) {
+  if (options.tileSizes !== undefined) {
     this.tileSizes_ = options.tileSizes;
     goog.asserts.assert(this.tileSizes_.length == this.resolutions_.length,
         'number of tileSizes and resolutions must be equal');
@@ -118,7 +118,7 @@ ol.tilegrid.TileGrid = function(options) {
    */
   this.fullTileRanges_ = null;
 
-  if (goog.isDef(options.sizes)) {
+  if (options.sizes !== undefined) {
     goog.asserts.assert(options.sizes.length == this.resolutions_.length,
         'number of sizes and resolutions must be equal');
     this.fullTileRanges_ = goog.array.map(options.sizes, function(size, z) {

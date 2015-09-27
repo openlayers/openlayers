@@ -261,7 +261,7 @@ ol.source.ImageVector.prototype.renderFeature_ =
   var styles;
   if (goog.isDef(feature.getStyleFunction())) {
     styles = feature.getStyleFunction().call(feature, resolution);
-  } else if (goog.isDef(this.styleFunction_)) {
+  } else if (this.styleFunction_ !== undefined) {
     styles = this.styleFunction_(feature, resolution);
   }
   if (!goog.isDefAndNotNull(styles)) {

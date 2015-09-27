@@ -67,11 +67,11 @@ ol.source.TileVector = function(options) {
    */
   this.tiles_ = {};
 
-  if (goog.isDef(options.tileUrlFunction)) {
+  if (options.tileUrlFunction !== undefined) {
     this.setTileUrlFunction(options.tileUrlFunction);
-  } else if (goog.isDef(options.urls)) {
+  } else if (options.urls !== undefined) {
     this.setUrls(options.urls);
-  } else if (goog.isDef(options.url)) {
+  } else if (options.url !== undefined) {
     this.setUrl(options.url);
   }
 

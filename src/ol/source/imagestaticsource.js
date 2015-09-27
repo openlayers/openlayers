@@ -27,7 +27,7 @@ ol.source.ImageStatic = function(options) {
   var imageExtent = options.imageExtent;
 
   var resolution, resolutions;
-  if (goog.isDef(options.imageSize)) {
+  if (options.imageSize !== undefined) {
     resolution = ol.extent.getHeight(imageExtent) / options.imageSize[1];
     resolutions = [resolution];
   }

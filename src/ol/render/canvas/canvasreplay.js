@@ -1194,10 +1194,10 @@ ol.render.canvas.PolygonReplay.prototype.drawFlatCoordinatess_ =
   // FIXME or all polygons together?
   var fillInstruction = [ol.render.canvas.Instruction.FILL];
   this.hitDetectionInstructions.push(fillInstruction);
-  if (goog.isDef(state.fillStyle)) {
+  if (state.fillStyle !== undefined) {
     this.instructions.push(fillInstruction);
   }
-  if (goog.isDef(state.strokeStyle)) {
+  if (state.strokeStyle !== undefined) {
     goog.asserts.assert(goog.isDef(state.lineWidth),
         'state.lineWidth should be defined');
     var strokeInstruction = [ol.render.canvas.Instruction.STROKE];
@@ -1230,7 +1230,7 @@ ol.render.canvas.PolygonReplay.prototype.drawCircleGeometry =
   this.hitDetectionInstructions.push(
       [ol.render.canvas.Instruction.SET_FILL_STYLE,
        ol.color.asString(ol.render.canvas.defaultFillStyle)]);
-  if (goog.isDef(state.strokeStyle)) {
+  if (state.strokeStyle !== undefined) {
     this.hitDetectionInstructions.push(
         [ol.render.canvas.Instruction.SET_STROKE_STYLE,
          state.strokeStyle, state.lineWidth, state.lineCap, state.lineJoin,
@@ -1247,10 +1247,10 @@ ol.render.canvas.PolygonReplay.prototype.drawCircleGeometry =
   this.hitDetectionInstructions.push(beginPathInstruction, circleInstruction);
   var fillInstruction = [ol.render.canvas.Instruction.FILL];
   this.hitDetectionInstructions.push(fillInstruction);
-  if (goog.isDef(state.fillStyle)) {
+  if (state.fillStyle !== undefined) {
     this.instructions.push(fillInstruction);
   }
-  if (goog.isDef(state.strokeStyle)) {
+  if (state.strokeStyle !== undefined) {
     goog.asserts.assert(goog.isDef(state.lineWidth),
         'state.lineWidth should be defined');
     var strokeInstruction = [ol.render.canvas.Instruction.STROKE];
@@ -1283,7 +1283,7 @@ ol.render.canvas.PolygonReplay.prototype.drawPolygonGeometry =
   this.hitDetectionInstructions.push(
       [ol.render.canvas.Instruction.SET_FILL_STYLE,
        ol.color.asString(ol.render.canvas.defaultFillStyle)]);
-  if (goog.isDef(state.strokeStyle)) {
+  if (state.strokeStyle !== undefined) {
     this.hitDetectionInstructions.push(
         [ol.render.canvas.Instruction.SET_STROKE_STYLE,
          state.strokeStyle, state.lineWidth, state.lineCap, state.lineJoin,
@@ -1319,7 +1319,7 @@ ol.render.canvas.PolygonReplay.prototype.drawMultiPolygonGeometry =
   this.hitDetectionInstructions.push(
       [ol.render.canvas.Instruction.SET_FILL_STYLE,
        ol.color.asString(ol.render.canvas.defaultFillStyle)]);
-  if (goog.isDef(state.strokeStyle)) {
+  if (state.strokeStyle !== undefined) {
     this.hitDetectionInstructions.push(
         [ol.render.canvas.Instruction.SET_STROKE_STYLE,
          state.strokeStyle, state.lineWidth, state.lineCap, state.lineJoin,
@@ -1887,7 +1887,7 @@ ol.render.canvas.ReplayGroup.prototype.forEachFeatureAtCoordinate = function(
    * @type {ol.Extent}
    */
   var hitExtent;
-  if (goog.isDef(this.renderBuffer_)) {
+  if (this.renderBuffer_ !== undefined) {
     hitExtent = ol.extent.createEmpty();
     ol.extent.extendCoordinate(hitExtent, coordinate);
     ol.extent.buffer(hitExtent, resolution * this.renderBuffer_, hitExtent);

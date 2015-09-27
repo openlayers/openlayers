@@ -1163,7 +1163,7 @@ ol.render.webgl.ReplayGroup.prototype.forEachFeatureAtCoordinate = function(
    * @type {ol.Extent}
    */
   var hitExtent;
-  if (goog.isDef(this.renderBuffer_)) {
+  if (this.renderBuffer_ !== undefined) {
     // build an extent around the coordinate, so that only features that
     // intersect this extent are checked
     hitExtent = ol.extent.buffer(

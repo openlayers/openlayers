@@ -1452,7 +1452,7 @@ ol.Map.createOptionsInternal = function(options) {
    * @type {Element|Document}
    */
   var keyboardEventTarget = null;
-  if (goog.isDef(options.keyboardEventTarget)) {
+  if (options.keyboardEventTarget !== undefined) {
     // cannot use goog.dom.getElement because its argument cannot be
     // of type Document
     keyboardEventTarget = goog.isString(options.keyboardEventTarget) ?
@@ -1498,7 +1498,7 @@ ol.Map.createOptionsInternal = function(options) {
    * @type {Array.<ol.RendererType>}
    */
   var rendererTypes;
-  if (goog.isDef(options.renderer)) {
+  if (options.renderer !== undefined) {
     if (goog.isArray(options.renderer)) {
       rendererTypes = options.renderer;
     } else if (goog.isString(options.renderer)) {
@@ -1533,7 +1533,7 @@ ol.Map.createOptionsInternal = function(options) {
   }
 
   var controls;
-  if (goog.isDef(options.controls)) {
+  if (options.controls !== undefined) {
     if (goog.isArray(options.controls)) {
       controls = new ol.Collection(options.controls.slice());
     } else {
@@ -1546,7 +1546,7 @@ ol.Map.createOptionsInternal = function(options) {
   }
 
   var interactions;
-  if (goog.isDef(options.interactions)) {
+  if (options.interactions !== undefined) {
     if (goog.isArray(options.interactions)) {
       interactions = new ol.Collection(options.interactions.slice());
     } else {
@@ -1559,7 +1559,7 @@ ol.Map.createOptionsInternal = function(options) {
   }
 
   var overlays;
-  if (goog.isDef(options.overlays)) {
+  if (options.overlays !== undefined) {
     if (goog.isArray(options.overlays)) {
       overlays = new ol.Collection(options.overlays.slice());
     } else {

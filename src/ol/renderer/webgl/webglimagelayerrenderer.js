@@ -118,7 +118,7 @@ ol.renderer.webgl.ImageLayer.prototype.prepareFrame =
   var hints = frameState.viewHints;
 
   var renderedExtent = frameState.extent;
-  if (goog.isDef(layerState.extent)) {
+  if (layerState.extent !== undefined) {
     renderedExtent = ol.extent.getIntersection(
         renderedExtent, layerState.extent);
   }

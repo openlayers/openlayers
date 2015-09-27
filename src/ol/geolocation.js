@@ -90,10 +90,10 @@ ol.Geolocation = function(opt_options) {
       this, ol.Object.getChangeEventType(ol.GeolocationProperty.TRACKING),
       this.handleTrackingChanged_, false, this);
 
-  if (goog.isDef(options.projection)) {
+  if (options.projection !== undefined) {
     this.setProjection(ol.proj.get(options.projection));
   }
-  if (goog.isDef(options.trackingOptions)) {
+  if (options.trackingOptions !== undefined) {
     this.setTrackingOptions(options.trackingOptions);
   }
 

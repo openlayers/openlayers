@@ -251,7 +251,7 @@ ol.renderer.webgl.TileLayer.prototype.prepareFrame =
       for (y = tileRange.minY; y <= tileRange.maxY; ++y) {
 
         tile = tileSource.getTile(z, x, y, pixelRatio, projection);
-        if (goog.isDef(layerState.extent)) {
+        if (layerState.extent !== undefined) {
           // ignore tiles outside layer extent
           tileExtent = tileGrid.getTileCoordExtent(tile.tileCoord, tmpExtent);
           if (!ol.extent.intersects(tileExtent, layerState.extent)) {

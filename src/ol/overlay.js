@@ -158,7 +158,7 @@ ol.Overlay = function(options) {
       this, ol.Object.getChangeEventType(ol.OverlayProperty.POSITIONING),
       this.handlePositioningChanged, false, this);
 
-  if (goog.isDef(options.element)) {
+  if (options.element !== undefined) {
     this.setElement(options.element);
   }
 
@@ -168,7 +168,7 @@ ol.Overlay = function(options) {
       /** @type {ol.OverlayPositioning} */ (options.positioning) :
       ol.OverlayPositioning.TOP_LEFT);
 
-  if (goog.isDef(options.position)) {
+  if (options.position !== undefined) {
     this.setPosition(options.position);
   }
 

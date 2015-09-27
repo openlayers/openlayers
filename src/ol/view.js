@@ -154,9 +154,9 @@ ol.View = function(opt_options) {
   this.constraints_ = new ol.Constraints(
       centerConstraint, resolutionConstraint, rotationConstraint);
 
-  if (goog.isDef(options.resolution)) {
+  if (options.resolution !== undefined) {
     properties[ol.ViewProperty.RESOLUTION] = options.resolution;
-  } else if (goog.isDef(options.zoom)) {
+  } else if (options.zoom !== undefined) {
     properties[ol.ViewProperty.RESOLUTION] = this.constrainResolution(
         this.maxResolution_, options.zoom - this.minZoom_);
   }
@@ -463,9 +463,9 @@ ol.View.prototype.fit = function(geometry, size, opt_options) {
       options.constrainResolution : true;
   var nearest = goog.isDef(options.nearest) ? options.nearest : false;
   var minResolution;
-  if (goog.isDef(options.minResolution)) {
+  if (options.minResolution !== undefined) {
     minResolution = options.minResolution;
-  } else if (goog.isDef(options.maxZoom)) {
+  } else if (options.maxZoom !== undefined) {
     minResolution = this.constrainResolution(
         this.maxResolution_, options.maxZoom - this.minZoom_, 0);
   } else {
@@ -638,7 +638,7 @@ ol.View.prototype.setZoom = function(zoom) {
  * @return {ol.CenterConstraintType}
  */
 ol.View.createCenterConstraint_ = function(options) {
-  if (goog.isDef(options.extent)) {
+  if (options.extent !== undefined) {
     return ol.CenterConstraint.createExtent(options.extent);
   } else {
     return ol.CenterConstraint.none;
@@ -671,7 +671,7 @@ ol.View.createResolutionConstraint_ = function(options) {
   var zoomFactor = goog.isDef(options.zoomFactor) ?
       options.zoomFactor : defaultZoomFactor;
 
-  if (goog.isDef(options.resolutions)) {
+  if (options.resolutions !== undefined) {
     var resolutions = options.resolutions;
     maxResolution = resolutions[0];
     minResolution = resolutions[resolutions.length - 1];
@@ -704,8 +704,8 @@ ol.View.createResolutionConstraint_ = function(options) {
     // user provided minResolution takes precedence
     minResolution = options.minResolution;
     if (!goog.isDef(minResolution)) {
-      if (goog.isDef(options.maxZoom)) {
-        if (goog.isDef(options.maxResolution)) {
+      if (options.maxZoom !== undefined) {
+        if (options.maxResolution !== undefined) {
           minResolution = maxResolution / Math.pow(zoomFactor, maxZoom);
         } else {
           minResolution = defaultMaxResolution / Math.pow(zoomFactor, maxZoom);

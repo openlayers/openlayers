@@ -155,7 +155,7 @@ ol.proj.Projection = function(options) {
       if (!goog.isDef(options.units)) {
         var units = def.units;
         if (!goog.isDef(units)) {
-          if (goog.isDef(def.to_meter)) {
+          if (def.to_meter !== undefined) {
             units = def.to_meter.toString();
             ol.proj.METERS_PER_UNIT[units] = def.to_meter;
           }
