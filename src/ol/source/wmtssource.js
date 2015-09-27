@@ -83,7 +83,7 @@ ol.source.WMTS = function(options) {
   this.style_ = options.style;
 
   var urls = options.urls;
-  if (!goog.isDef(urls) && goog.isDef(options.url)) {
+  if (urls === undefined && goog.isDef(options.url)) {
     urls = ol.TileUrlFunction.expandUrl(options.url);
   }
 

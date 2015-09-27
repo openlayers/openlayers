@@ -161,7 +161,7 @@ ol.source.Vector = function(opt_options) {
   } else if (goog.isArray(options.features)) {
     features = options.features;
   }
-  if (!useSpatialIndex && !goog.isDef(collection)) {
+  if (!useSpatialIndex && collection === undefined) {
     collection = new ol.Collection(features);
   }
   if (features !== undefined) {

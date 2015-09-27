@@ -652,7 +652,7 @@ ol.proj.get = function(projectionLike) {
   } else if (goog.isString(projectionLike)) {
     var code = projectionLike;
     projection = ol.proj.projections_[code];
-    if (ol.ENABLE_PROJ4JS && !goog.isDef(projection) &&
+    if (ol.ENABLE_PROJ4JS && projection === undefined &&
         typeof proj4 == 'function' && goog.isDef(proj4.defs(code))) {
       projection = new ol.proj.Projection({code: code});
       ol.proj.addProjection(projection);

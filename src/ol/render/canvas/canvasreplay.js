@@ -1007,7 +1007,7 @@ ol.render.canvas.LineStringReplay.prototype.drawLineStringGeometry =
   goog.asserts.assert(!goog.isNull(state), 'state should not be null');
   var strokeStyle = state.strokeStyle;
   var lineWidth = state.lineWidth;
-  if (!goog.isDef(strokeStyle) || !goog.isDef(lineWidth)) {
+  if (strokeStyle === undefined || lineWidth === undefined) {
     return;
   }
   this.setStrokeStyle_();
@@ -1035,7 +1035,7 @@ ol.render.canvas.LineStringReplay.prototype.drawMultiLineStringGeometry =
   goog.asserts.assert(!goog.isNull(state), 'state should not be null');
   var strokeStyle = state.strokeStyle;
   var lineWidth = state.lineWidth;
-  if (!goog.isDef(strokeStyle) || !goog.isDef(lineWidth)) {
+  if (strokeStyle === undefined || lineWidth === undefined) {
     return;
   }
   this.setStrokeStyle_();
@@ -1217,7 +1217,7 @@ ol.render.canvas.PolygonReplay.prototype.drawCircleGeometry =
   goog.asserts.assert(!goog.isNull(state), 'state should not be null');
   var fillStyle = state.fillStyle;
   var strokeStyle = state.strokeStyle;
-  if (!goog.isDef(fillStyle) && !goog.isDef(strokeStyle)) {
+  if (fillStyle === undefined && strokeStyle === undefined) {
     return;
   }
   if (strokeStyle !== undefined) {
@@ -1270,7 +1270,7 @@ ol.render.canvas.PolygonReplay.prototype.drawPolygonGeometry =
   goog.asserts.assert(!goog.isNull(state), 'state should not be null');
   var fillStyle = state.fillStyle;
   var strokeStyle = state.strokeStyle;
-  if (!goog.isDef(fillStyle) && !goog.isDef(strokeStyle)) {
+  if (fillStyle === undefined && strokeStyle === undefined) {
     return;
   }
   if (strokeStyle !== undefined) {
@@ -1306,7 +1306,7 @@ ol.render.canvas.PolygonReplay.prototype.drawMultiPolygonGeometry =
   goog.asserts.assert(!goog.isNull(state), 'state should not be null');
   var fillStyle = state.fillStyle;
   var strokeStyle = state.strokeStyle;
-  if (!goog.isDef(fillStyle) && !goog.isDef(strokeStyle)) {
+  if (fillStyle === undefined && strokeStyle === undefined) {
     return;
   }
   if (strokeStyle !== undefined) {

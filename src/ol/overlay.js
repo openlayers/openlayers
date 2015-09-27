@@ -366,7 +366,7 @@ ol.Overlay.prototype.panIntoView_ = function() {
   goog.asserts.assert(this.autoPan, 'this.autoPan should be true');
   var map = this.getMap();
 
-  if (!goog.isDef(map) || goog.isNull(map.getTargetElement())) {
+  if (map === undefined || goog.isNull(map.getTargetElement())) {
     return;
   }
 
@@ -474,7 +474,7 @@ ol.Overlay.prototype.setVisible = function(visible) {
 ol.Overlay.prototype.updatePixelPosition = function() {
   var map = this.getMap();
   var position = this.getPosition();
-  if (!goog.isDef(map) || !map.isRendered() || !goog.isDef(position)) {
+  if (map === undefined || !map.isRendered() || position === undefined) {
     this.setVisible(false);
     return;
   }

@@ -48,7 +48,7 @@ ol.source.TileArcGISRest = function(opt_options) {
   });
 
   var urls = options.urls;
-  if (!goog.isDef(urls) && goog.isDef(options.url)) {
+  if (urls === undefined && goog.isDef(options.url)) {
     urls = ol.TileUrlFunction.expandUrl(options.url);
   }
 

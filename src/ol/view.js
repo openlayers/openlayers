@@ -738,7 +738,7 @@ ol.View.createRotationConstraint_ = function(options) {
       options.enableRotation : true;
   if (enableRotation) {
     var constrainRotation = options.constrainRotation;
-    if (!goog.isDef(constrainRotation) || constrainRotation === true) {
+    if (constrainRotation === undefined || constrainRotation === true) {
       return ol.RotationConstraint.createSnapToZero();
     } else if (constrainRotation === false) {
       return ol.RotationConstraint.none;

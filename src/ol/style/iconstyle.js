@@ -108,13 +108,13 @@ ol.style.Icon = function(opt_options) {
   goog.asserts.assert(!(goog.isDef(src) && !goog.isNull(image)),
       'image and src can not provided at the same time');
   goog.asserts.assert(
-      !goog.isDef(src) || (goog.isDef(src) && goog.isNull(imgSize)),
+      src === undefined || (goog.isDef(src) && goog.isNull(imgSize)),
       'imgSize should not be set when src is provided');
   goog.asserts.assert(
       goog.isNull(image) || (!goog.isNull(image) && !goog.isNull(imgSize)),
       'imgSize must be set when image is provided');
 
-  if ((!goog.isDef(src) || src.length === 0) && !goog.isNull(image)) {
+  if ((src === undefined || src.length === 0) && !goog.isNull(image)) {
     src = image.src;
   }
   goog.asserts.assert(goog.isDef(src) && src.length > 0,
