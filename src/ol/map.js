@@ -1201,10 +1201,7 @@ ol.Map.prototype.render = function() {
 ol.Map.prototype.removeControl = function(control) {
   var controls = this.getControls();
   goog.asserts.assert(controls !== undefined, 'controls should be defined');
-  if (goog.isDef(controls.remove(control))) {
-    return control;
-  }
-  return undefined;
+  return controls.remove(control);
 };
 
 
@@ -1216,14 +1213,10 @@ ol.Map.prototype.removeControl = function(control) {
  * @api stable
  */
 ol.Map.prototype.removeInteraction = function(interaction) {
-  var removed;
   var interactions = this.getInteractions();
   goog.asserts.assert(interactions !== undefined,
       'interactions should be defined');
-  if (goog.isDef(interactions.remove(interaction))) {
-    removed = interaction;
-  }
-  return removed;
+  return interactions.remove(interaction);
 };
 
 
@@ -1250,10 +1243,7 @@ ol.Map.prototype.removeLayer = function(layer) {
 ol.Map.prototype.removeOverlay = function(overlay) {
   var overlays = this.getOverlays();
   goog.asserts.assert(overlays !== undefined, 'overlays should be defined');
-  if (goog.isDef(overlays.remove(overlay))) {
-    return overlay;
-  }
-  return undefined;
+  return overlays.remove(overlay);
 };
 
 
