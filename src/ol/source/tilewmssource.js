@@ -292,7 +292,7 @@ ol.source.TileWMS.prototype.getRequestUrl_ =
 ol.source.TileWMS.prototype.getTilePixelSize =
     function(z, pixelRatio, projection) {
   var tileSize = goog.base(this, 'getTilePixelSize', z, pixelRatio, projection);
-  if (pixelRatio == 1 || !this.hidpi_ || !goog.isDef(this.serverType_)) {
+  if (pixelRatio == 1 || !this.hidpi_ || this.serverType_ === undefined) {
     return tileSize;
   } else {
     return ol.size.scale(tileSize, pixelRatio, this.tmpSize);
@@ -373,7 +373,7 @@ ol.source.TileWMS.prototype.tileUrlFunction_ =
     return undefined;
   }
 
-  if (pixelRatio != 1 && (!this.hidpi_ || !goog.isDef(this.serverType_))) {
+  if (pixelRatio != 1 && (!this.hidpi_ || this.serverType_ === undefined)) {
     pixelRatio = 1;
   }
 

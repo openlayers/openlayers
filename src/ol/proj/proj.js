@@ -149,7 +149,7 @@ ol.proj.Projection = function(options) {
       !goog.isDef(projections[code])) {
     var def = proj4.defs(code);
     if (def !== undefined) {
-      if (goog.isDef(def.axis) && !goog.isDef(options.axisOrientation)) {
+      if (goog.isDef(def.axis) && options.axisOrientation === undefined) {
         this.axisOrientation_ = def.axis;
       }
       if (options.units === undefined) {

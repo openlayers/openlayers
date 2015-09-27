@@ -134,7 +134,7 @@ ol.Geolocation.prototype.handleProjectionChanged_ = function() {
 ol.Geolocation.prototype.handleTrackingChanged_ = function() {
   if (ol.has.GEOLOCATION) {
     var tracking = this.getTracking();
-    if (tracking && !goog.isDef(this.watchId_)) {
+    if (tracking && this.watchId_ === undefined) {
       this.watchId_ = goog.global.navigator.geolocation.watchPosition(
           goog.bind(this.positionChange_, this),
           goog.bind(this.positionError_, this),
