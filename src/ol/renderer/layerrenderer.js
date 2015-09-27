@@ -221,7 +221,7 @@ ol.renderer.Layer.prototype.updateAttributions =
  */
 ol.renderer.Layer.prototype.updateLogos = function(frameState, source) {
   var logo = source.getLogo();
-  if (goog.isDef(logo)) {
+  if (logo !== undefined) {
     if (goog.isString(logo)) {
       frameState.logos[logo] = '';
     } else if (goog.isObject(logo)) {
@@ -319,7 +319,7 @@ ol.renderer.Layer.prototype.manageTilePyramid = function(
                 tileGrid.getTileCoordCenter(tile.tileCoord), tileResolution]);
             }
           }
-          if (goog.isDef(opt_tileCallback)) {
+          if (opt_tileCallback !== undefined) {
             opt_tileCallback.call(opt_this, tile);
           }
         } else {

@@ -2,6 +2,7 @@ goog.provide('ol.geom.MultiLineString');
 
 goog.require('goog.array');
 goog.require('goog.asserts');
+goog.require('ol');
 goog.require('ol.extent');
 goog.require('ol.geom.GeometryLayout');
 goog.require('ol.geom.GeometryType');
@@ -135,8 +136,8 @@ ol.geom.MultiLineString.prototype.getCoordinateAtM =
       this.flatCoordinates.length === 0) {
     return null;
   }
-  var extrapolate = goog.isDef(opt_extrapolate) ? opt_extrapolate : false;
-  var interpolate = goog.isDef(opt_interpolate) ? opt_interpolate : false;
+  var extrapolate = opt_extrapolate !== undefined ? opt_extrapolate : false;
+  var interpolate = opt_interpolate !== undefined ? opt_interpolate : false;
   return ol.geom.flat.lineStringsCoordinateAtM(this.flatCoordinates, 0,
       this.ends_, this.stride, m, extrapolate, interpolate);
 };

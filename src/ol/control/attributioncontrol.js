@@ -10,6 +10,7 @@ goog.require('goog.events');
 goog.require('goog.events.EventType');
 goog.require('goog.object');
 goog.require('goog.style');
+goog.require('ol');
 goog.require('ol.Attribution');
 goog.require('ol.control.Control');
 goog.require('ol.css');
@@ -31,7 +32,7 @@ goog.require('ol.source.Tile');
  */
 ol.control.Attribution = function(opt_options) {
 
-  var options = goog.isDef(opt_options) ? opt_options : {};
+  var options = opt_options ? opt_options : {};
 
   /**
    * @private
@@ -52,27 +53,24 @@ ol.control.Attribution = function(opt_options) {
    * @private
    * @type {boolean}
    */
-  this.collapsed_ = goog.isDef(options.collapsed) ? options.collapsed : true;
+  this.collapsed_ = options.collapsed !== undefined ? options.collapsed : true;
 
   /**
    * @private
    * @type {boolean}
    */
-  this.collapsible_ = goog.isDef(options.collapsible) ?
+  this.collapsible_ = options.collapsible !== undefined ?
       options.collapsible : true;
 
   if (!this.collapsible_) {
     this.collapsed_ = false;
   }
 
-  var className = goog.isDef(options.className) ?
-      options.className : 'ol-attribution';
+  var className = options.className ? options.className : 'ol-attribution';
 
-  var tipLabel = goog.isDef(options.tipLabel) ?
-      options.tipLabel : 'Attributions';
+  var tipLabel = options.tipLabel ? options.tipLabel : 'Attributions';
 
-  var collapseLabel = goog.isDef(options.collapseLabel) ?
-      options.collapseLabel : '\u00BB';
+  var collapseLabel = options.collapseLabel ? options.collapseLabel : '\u00BB';
 
   /**
    * @private
@@ -82,7 +80,7 @@ ol.control.Attribution = function(opt_options) {
       goog.dom.createDom(goog.dom.TagName.SPAN, {}, collapseLabel) :
       collapseLabel);
 
-  var label = goog.isDef(options.label) ? options.label : 'i';
+  var label = options.label ? options.label : 'i';
 
   /**
    * @private
@@ -116,8 +114,7 @@ ol.control.Attribution = function(opt_options) {
   var element = goog.dom.createDom(goog.dom.TagName.DIV,
       cssClasses, this.ulElement_, button);
 
-  var render = goog.isDef(options.render) ?
-      options.render : ol.control.Attribution.render;
+  var render = options.render ? options.render : ol.control.Attribution.render;
 
   goog.base(this, {
     element: element,
@@ -185,7 +182,7 @@ ol.control.Attribution.prototype.getSourceAttributions = function(frameState) {
         continue;
       }
       tileRanges = frameState.usedTiles[sourceKey];
-      if (goog.isDef(tileRanges)) {
+      if (tileRanges) {
         goog.asserts.assertInstanceof(source, ol.source.Tile,
             'source should be an ol.source.Tile');
         var tileGrid = source.getTileGridForProjection(projection);

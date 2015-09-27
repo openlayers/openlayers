@@ -110,7 +110,7 @@ ol.proj.EPSG3857.fromEPSG4326 = function(input, opt_output, opt_dimension) {
   var length = input.length,
       dimension = opt_dimension > 1 ? opt_dimension : 2,
       output = opt_output;
-  if (!goog.isDef(output)) {
+  if (output === undefined) {
     if (dimension > 2) {
       // preserve values beyond second dimension
       output = input.slice();
@@ -141,7 +141,7 @@ ol.proj.EPSG3857.toEPSG4326 = function(input, opt_output, opt_dimension) {
   var length = input.length,
       dimension = opt_dimension > 1 ? opt_dimension : 2,
       output = opt_output;
-  if (!goog.isDef(output)) {
+  if (output === undefined) {
     if (dimension > 2) {
       // preserve values beyond second dimension
       output = input.slice();

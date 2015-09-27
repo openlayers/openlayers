@@ -38,7 +38,7 @@ goog.require('ol.easing');
  */
 ol.control.ZoomSlider = function(opt_options) {
 
-  var options = goog.isDef(opt_options) ? opt_options : {};
+  var options = opt_options ? opt_options : {};
 
   /**
    * Will hold the current resolution of the view.
@@ -76,10 +76,9 @@ ol.control.ZoomSlider = function(opt_options) {
    * @private
    * @type {number}
    */
-  this.duration_ = goog.isDef(options.duration) ? options.duration : 200;
+  this.duration_ = options.duration ? options.duration : 200;
 
-  var className = goog.isDef(options.className) ?
-      options.className : 'ol-zoomslider';
+  var className = options.className ? options.className : 'ol-zoomslider';
   var thumbElement = goog.dom.createDom(goog.dom.TagName.DIV,
       [className + '-thumb', ol.css.CLASS_UNSELECTABLE]);
   var containerElement = goog.dom.createDom(goog.dom.TagName.DIV,
@@ -105,8 +104,7 @@ ol.control.ZoomSlider = function(opt_options) {
   goog.events.listen(thumbElement, goog.events.EventType.CLICK,
       goog.events.Event.stopPropagation);
 
-  var render = goog.isDef(options.render) ?
-      options.render : ol.control.ZoomSlider.render;
+  var render = options.render ? options.render : ol.control.ZoomSlider.render;
 
   goog.base(this, {
     element: containerElement,
@@ -205,7 +203,7 @@ ol.control.ZoomSlider.prototype.handleContainerClick_ = function(browserEvent) {
   var map = this.getMap();
   var view = map.getView();
   var currentResolution = view.getResolution();
-  goog.asserts.assert(goog.isDef(currentResolution),
+  goog.asserts.assert(currentResolution,
       'currentResolution should be defined');
   map.beforeRender(ol.animation.zoom({
     resolution: currentResolution,
@@ -252,7 +250,7 @@ ol.control.ZoomSlider.prototype.handleDraggerEnd_ = function(event) {
   var map = this.getMap();
   var view = map.getView();
   view.setHint(ol.ViewHint.INTERACTING, -1);
-  goog.asserts.assert(goog.isDef(this.currentResolution_),
+  goog.asserts.assert(this.currentResolution_,
       'this.currentResolution_ should be defined');
   map.beforeRender(ol.animation.zoom({
     resolution: this.currentResolution_,

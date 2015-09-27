@@ -31,26 +31,26 @@ ol.interaction.KeyboardZoom = function(opt_options) {
     handleEvent: ol.interaction.KeyboardZoom.handleEvent
   });
 
-  var options = goog.isDef(opt_options) ? opt_options : {};
+  var options = opt_options ? opt_options : {};
 
   /**
    * @private
    * @type {ol.events.ConditionType}
    */
-  this.condition_ = goog.isDef(options.condition) ? options.condition :
+  this.condition_ = options.condition ? options.condition :
           ol.events.condition.targetNotEditable;
 
   /**
    * @private
    * @type {number}
    */
-  this.delta_ = goog.isDef(options.delta) ? options.delta : 1;
+  this.delta_ = options.delta ? options.delta : 1;
 
   /**
    * @private
    * @type {number}
    */
-  this.duration_ = goog.isDef(options.duration) ? options.duration : 100;
+  this.duration_ = options.duration ? options.duration : 100;
 
 };
 goog.inherits(ol.interaction.KeyboardZoom, ol.interaction.Interaction);

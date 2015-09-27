@@ -1,6 +1,7 @@
 goog.provide('ol.color.Matrix');
 
 goog.require('goog.vec.Mat4');
+goog.require('ol');
 
 
 
@@ -165,39 +166,42 @@ ol.color.Matrix.makeSaturation = function(matrix, value) {
 ol.color.Matrix.prototype.getMatrix = function(
     brightness, contrast, hue, saturation) {
   var colorMatrixDirty = false;
-  if (goog.isDef(brightness) && brightness !== this.brightness_) {
-    ol.color.Matrix.makeBrightness(this.brightnessMatrix_, brightness);
+  if (brightness !== undefined && brightness !== this.brightness_) {
+    ol.color.Matrix.makeBrightness(this.brightnessMatrix_,
+        /** @type {number} */ (brightness));
     this.brightness_ = brightness;
     colorMatrixDirty = true;
   }
-  if (goog.isDef(contrast) && contrast !== this.contrast_) {
-    ol.color.Matrix.makeContrast(this.contrastMatrix_, contrast);
+  if (contrast !== undefined && contrast !== this.contrast_) {
+    ol.color.Matrix.makeContrast(this.contrastMatrix_,
+        /** @type {number} */ (contrast));
     this.contrast_ = contrast;
     colorMatrixDirty = true;
   }
-  if (goog.isDef(hue) && hue !== this.hue_) {
-    ol.color.Matrix.makeHue(this.hueMatrix_, hue);
+  if (hue !== undefined && hue !== this.hue_) {
+    ol.color.Matrix.makeHue(this.hueMatrix_, /** @type {number} */ (hue));
     this.hue_ = hue;
     colorMatrixDirty = true;
   }
-  if (goog.isDef(saturation) && saturation !== this.saturation_) {
-    ol.color.Matrix.makeSaturation(this.saturationMatrix_, saturation);
+  if (saturation !== undefined && saturation !== this.saturation_) {
+    ol.color.Matrix.makeSaturation(this.saturationMatrix_,
+        /** @type {number} */ (saturation));
     this.saturation_ = saturation;
     colorMatrixDirty = true;
   }
   if (colorMatrixDirty) {
     var colorMatrix = this.colorMatrix_;
     goog.vec.Mat4.makeIdentity(colorMatrix);
-    if (goog.isDef(contrast)) {
+    if (contrast !== undefined) {
       goog.vec.Mat4.multMat(colorMatrix, this.contrastMatrix_, colorMatrix);
     }
-    if (goog.isDef(brightness)) {
+    if (brightness !== undefined) {
       goog.vec.Mat4.multMat(colorMatrix, this.brightnessMatrix_, colorMatrix);
     }
-    if (goog.isDef(saturation)) {
+    if (saturation !== undefined) {
       goog.vec.Mat4.multMat(colorMatrix, this.saturationMatrix_, colorMatrix);
     }
-    if (goog.isDef(hue)) {
+    if (hue !== undefined) {
       goog.vec.Mat4.multMat(colorMatrix, this.hueMatrix_, colorMatrix);
     }
   }

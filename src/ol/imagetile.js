@@ -81,7 +81,7 @@ ol.ImageTile.prototype.disposeInternal = function() {
  * @api
  */
 ol.ImageTile.prototype.getImage = function(opt_context) {
-  if (goog.isDef(opt_context)) {
+  if (opt_context !== undefined) {
     var image;
     var key = goog.getUid(opt_context);
     if (key in this.imageByContext_) {
@@ -126,7 +126,7 @@ ol.ImageTile.prototype.handleImageError_ = function() {
  */
 ol.ImageTile.prototype.handleImageLoad_ = function() {
   if (ol.LEGACY_IE_SUPPORT && ol.IS_LEGACY_IE) {
-    if (!goog.isDef(this.image_.naturalWidth)) {
+    if (this.image_.naturalWidth === undefined) {
       this.image_.naturalWidth = this.image_.width;
       this.image_.naturalHeight = this.image_.height;
     }

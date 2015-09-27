@@ -110,7 +110,7 @@ ol.renderer.webgl.Layer.prototype.bindFramebuffer =
 
   var gl = this.mapRenderer.getGL();
 
-  if (!goog.isDef(this.framebufferDimension) ||
+  if (this.framebufferDimension === undefined ||
       this.framebufferDimension != framebufferDimension) {
 
     frameState.postRenderFunctions.push(

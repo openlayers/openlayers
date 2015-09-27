@@ -32,20 +32,20 @@ ol.source.BingMaps = function(options) {
     projection: ol.proj.get('EPSG:3857'),
     state: ol.source.State.LOADING,
     tileLoadFunction: options.tileLoadFunction,
-    wrapX: goog.isDef(options.wrapX) ? options.wrapX : true
+    wrapX: options.wrapX !== undefined ? options.wrapX : true
   });
 
   /**
    * @private
    * @type {string}
    */
-  this.culture_ = goog.isDef(options.culture) ? options.culture : 'en-us';
+  this.culture_ = options.culture !== undefined ? options.culture : 'en-us';
 
   /**
    * @private
    * @type {number}
    */
-  this.maxZoom_ = goog.isDef(options.maxZoom) ? options.maxZoom : -1;
+  this.maxZoom_ = options.maxZoom !== undefined ? options.maxZoom : -1;
 
   var uri = new goog.Uri(
       'https://dev.virtualearth.net/REST/v1/Imagery/Metadata/' +

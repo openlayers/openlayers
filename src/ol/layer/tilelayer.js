@@ -1,6 +1,7 @@
 goog.provide('ol.layer.Tile');
 
 goog.require('goog.object');
+goog.require('ol');
 goog.require('ol.layer.Layer');
 
 
@@ -29,7 +30,7 @@ ol.layer.TileProperty = {
  * @api stable
  */
 ol.layer.Tile = function(opt_options) {
-  var options = goog.isDef(opt_options) ? opt_options : {};
+  var options = opt_options ? opt_options : {};
 
   var baseOptions = goog.object.clone(options);
 
@@ -37,8 +38,8 @@ ol.layer.Tile = function(opt_options) {
   delete baseOptions.useInterimTilesOnError;
   goog.base(this,  /** @type {olx.layer.LayerOptions} */ (baseOptions));
 
-  this.setPreload(goog.isDef(options.preload) ? options.preload : 0);
-  this.setUseInterimTilesOnError(goog.isDef(options.useInterimTilesOnError) ?
+  this.setPreload(options.preload !== undefined ? options.preload : 0);
+  this.setUseInterimTilesOnError(options.useInterimTilesOnError !== undefined ?
       options.useInterimTilesOnError : true);
 };
 goog.inherits(ol.layer.Tile, ol.layer.Layer);

@@ -25,7 +25,7 @@ ol.interaction.MouseWheelZoom = function(opt_options) {
     handleEvent: ol.interaction.MouseWheelZoom.handleEvent
   });
 
-  var options = goog.isDef(opt_options) ? opt_options : {};
+  var options = opt_options || {};
 
   /**
    * @private
@@ -37,14 +37,13 @@ ol.interaction.MouseWheelZoom = function(opt_options) {
    * @private
    * @type {number}
    */
-  this.duration_ = goog.isDef(options.duration) ? options.duration : 250;
+  this.duration_ = options.duration !== undefined ? options.duration : 250;
 
   /**
    * @private
    * @type {boolean}
    */
-  this.useAnchor_ = goog.isDef(options.useAnchor) ?
-      options.useAnchor : true;
+  this.useAnchor_ = options.useAnchor !== undefined ? options.useAnchor : true;
 
   /**
    * @private
@@ -91,7 +90,7 @@ ol.interaction.MouseWheelZoom.handleEvent = function(mapBrowserEvent) {
 
     this.delta_ += mouseWheelEvent.deltaY;
 
-    if (!goog.isDef(this.startTime_)) {
+    if (this.startTime_ === undefined) {
       this.startTime_ = goog.now();
     }
 

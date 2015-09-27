@@ -20,7 +20,7 @@ goog.require('ol.style.Stroke');
  */
 ol.Graticule = function(opt_options) {
 
-  var options = goog.isDef(opt_options) ? opt_options : {};
+  var options = opt_options || {};
 
   /**
    * @type {ol.Map}
@@ -86,14 +86,14 @@ ol.Graticule = function(opt_options) {
    * @type {number}
    * @private
    */
-  this.targetSize_ = goog.isDef(options.targetSize) ?
+  this.targetSize_ = options.targetSize !== undefined ?
       options.targetSize : 100;
 
   /**
    * @type {number}
    * @private
    */
-  this.maxLines_ = goog.isDef(options.maxLines) ? options.maxLines : 100;
+  this.maxLines_ = options.maxLines !== undefined ? options.maxLines : 100;
   goog.asserts.assert(this.maxLines_ > 0,
       'this.maxLines_ should be more than 0');
 
@@ -113,7 +113,7 @@ ol.Graticule = function(opt_options) {
    * @type {ol.style.Stroke}
    * @private
    */
-  this.strokeStyle_ = goog.isDef(options.strokeStyle) ?
+  this.strokeStyle_ = options.strokeStyle !== undefined ?
       options.strokeStyle : ol.Graticule.DEFAULT_STROKE_STYLE_;
 
   /**
@@ -134,7 +134,7 @@ ol.Graticule = function(opt_options) {
    */
   this.projectionCenterLonLat_ = null;
 
-  this.setMap(goog.isDef(options.map) ? options.map : null);
+  this.setMap(options.map !== undefined ? options.map : null);
 };
 
 
@@ -346,7 +346,7 @@ ol.Graticule.prototype.getMeridian_ = function(lon, minLat, maxLat,
       minLat, maxLat, this.projection_, squaredTolerance);
   goog.asserts.assert(flatCoordinates.length > 0,
       'flatCoordinates cannot be empty');
-  var lineString = goog.isDef(this.meridians_[index]) ?
+  var lineString = this.meridians_[index] !== undefined ?
       this.meridians_[index] : new ol.geom.LineString(null);
   lineString.setFlatCoordinates(ol.geom.GeometryLayout.XY, flatCoordinates);
   return lineString;
@@ -382,7 +382,7 @@ ol.Graticule.prototype.getParallel_ = function(lat, minLon, maxLon,
       this.minLon_, this.maxLon_, this.projection_, squaredTolerance);
   goog.asserts.assert(flatCoordinates.length > 0,
       'flatCoordinates cannot be empty');
-  var lineString = goog.isDef(this.parallels_[index]) ?
+  var lineString = this.parallels_[index] !== undefined ?
       this.parallels_[index] : new ol.geom.LineString(null);
   lineString.setFlatCoordinates(ol.geom.GeometryLayout.XY, flatCoordinates);
   return lineString;
@@ -463,18 +463,18 @@ ol.Graticule.prototype.updateProjectionInfo_ = function(projection) {
   var minLonP = worldExtentP[0];
 
   goog.asserts.assert(!goog.isNull(extent), 'extent cannot be null');
-  goog.asserts.assert(goog.isDef(maxLat), 'maxLat should be defined');
-  goog.asserts.assert(goog.isDef(maxLon), 'maxLon should be defined');
-  goog.asserts.assert(goog.isDef(minLat), 'minLat should be defined');
-  goog.asserts.assert(goog.isDef(minLon), 'minLon should be defined');
+  goog.asserts.assert(maxLat !== undefined, 'maxLat should be defined');
+  goog.asserts.assert(maxLon !== undefined, 'maxLon should be defined');
+  goog.asserts.assert(minLat !== undefined, 'minLat should be defined');
+  goog.asserts.assert(minLon !== undefined, 'minLon should be defined');
 
-  goog.asserts.assert(goog.isDef(maxLatP),
+  goog.asserts.assert(maxLatP !== undefined,
       'projected maxLat should be defined');
-  goog.asserts.assert(goog.isDef(maxLonP),
+  goog.asserts.assert(maxLonP !== undefined,
       'projected maxLon should be defined');
-  goog.asserts.assert(goog.isDef(minLatP),
+  goog.asserts.assert(minLatP !== undefined,
       'projected minLat should be defined');
-  goog.asserts.assert(goog.isDef(minLonP),
+  goog.asserts.assert(minLonP !== undefined,
       'projected minLon should be defined');
 
   this.maxLat_ = maxLat;

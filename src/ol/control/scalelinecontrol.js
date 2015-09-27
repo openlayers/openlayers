@@ -8,6 +8,7 @@ goog.require('goog.dom.TagName');
 goog.require('goog.events');
 goog.require('goog.math');
 goog.require('goog.style');
+goog.require('ol');
 goog.require('ol.Object');
 goog.require('ol.TransformFunction');
 goog.require('ol.control.Control');
@@ -58,10 +59,9 @@ ol.control.ScaleLineUnits = {
  */
 ol.control.ScaleLine = function(opt_options) {
 
-  var options = goog.isDef(opt_options) ? opt_options : {};
+  var options = opt_options ? opt_options : {};
 
-  var className = goog.isDef(options.className) ?
-      options.className : 'ol-scale-line';
+  var className = options.className ? options.className : 'ol-scale-line';
 
   /**
    * @private
@@ -87,7 +87,7 @@ ol.control.ScaleLine = function(opt_options) {
    * @private
    * @type {number}
    */
-  this.minWidth_ = goog.isDef(options.minWidth) ? options.minWidth : 64;
+  this.minWidth_ = options.minWidth !== undefined ? options.minWidth : 64;
 
   /**
    * @private
@@ -113,8 +113,7 @@ ol.control.ScaleLine = function(opt_options) {
    */
   this.toEPSG4326_ = null;
 
-  var render = goog.isDef(options.render) ?
-      options.render : ol.control.ScaleLine.render;
+  var render = options.render ? options.render : ol.control.ScaleLine.render;
 
   goog.base(this, {
     element: this.element_,
@@ -233,7 +232,7 @@ ol.control.ScaleLine.prototype.updateElement_ = function() {
     }
     cosLatitude = Math.cos(goog.math.toRadians(this.toEPSG4326_(center)[1]));
     var radius = ol.sphere.NORMAL.radius;
-    goog.asserts.assert(goog.isDef(ol.proj.METERS_PER_UNIT[projectionUnits]),
+    goog.asserts.assert(ol.proj.METERS_PER_UNIT[projectionUnits],
         'Meters per unit should be defined for the projection unit');
     radius /= ol.proj.METERS_PER_UNIT[projectionUnits];
     pointResolution *= 180 / (Math.PI * cosLatitude * radius);

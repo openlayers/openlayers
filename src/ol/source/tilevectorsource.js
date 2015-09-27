@@ -36,7 +36,7 @@ ol.source.TileVector = function(options) {
    * @private
    * @type {ol.format.Feature|undefined}
    */
-  this.format_ = goog.isDef(options.format) ? options.format : null;
+  this.format_ = options.format !== undefined ? options.format : null;
 
   /**
    * @private
@@ -54,7 +54,7 @@ ol.source.TileVector = function(options) {
    * @private
    * @type {?ol.TileVectorLoadFunctionType}
    */
-  this.tileLoadFunction_ = goog.isDef(options.tileLoadFunction) ?
+  this.tileLoadFunction_ = options.tileLoadFunction !== undefined ?
       options.tileLoadFunction : null;
 
   goog.asserts.assert(!goog.isNull(this.format_) ||
@@ -67,11 +67,11 @@ ol.source.TileVector = function(options) {
    */
   this.tiles_ = {};
 
-  if (goog.isDef(options.tileUrlFunction)) {
+  if (options.tileUrlFunction !== undefined) {
     this.setTileUrlFunction(options.tileUrlFunction);
-  } else if (goog.isDef(options.urls)) {
+  } else if (options.urls !== undefined) {
     this.setUrls(options.urls);
-  } else if (goog.isDef(options.url)) {
+  } else if (options.url !== undefined) {
     this.setUrl(options.url);
   }
 
@@ -129,7 +129,7 @@ ol.source.TileVector.prototype.forEachFeatureAtCoordinateAndResolution =
 
   var tileKey = this.getTileKeyZXY_(tileCoord[0], tileCoord[1], tileCoord[2]);
   var features = tiles[tileKey];
-  if (goog.isDef(features)) {
+  if (features !== undefined) {
     var i, ii;
     for (i = 0, ii = features.length; i < ii; ++i) {
       var feature = features[i];
@@ -168,7 +168,7 @@ ol.source.TileVector.prototype.forEachFeatureInExtentAtResolution =
     for (y = tileRange.minY; y <= tileRange.maxY; ++y) {
       var tileKey = this.getTileKeyZXY_(z, x, y);
       var features = tiles[tileKey];
-      if (goog.isDef(features)) {
+      if (features !== undefined) {
         var i, ii;
         for (i = 0, ii = features.length; i < ii; ++i) {
           var result = f.call(opt_this, features[i]);
@@ -305,7 +305,7 @@ ol.source.TileVector.prototype.loadFeatures =
             tileCoord, projection);
         var url = goog.isNull(urlTileCoord) ? undefined :
             tileUrlFunction(urlTileCoord, 1, projection);
-        if (goog.isDef(url)) {
+        if (url !== undefined) {
           tiles[tileKey] = [];
           var tileSuccess = goog.partial(success, tileKey);
           if (!goog.isNull(this.tileLoadFunction_)) {

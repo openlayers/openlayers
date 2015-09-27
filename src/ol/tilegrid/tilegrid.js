@@ -36,7 +36,7 @@ ol.tilegrid.TileGrid = function(options) {
    * @protected
    * @type {number}
    */
-  this.minZoom = goog.isDef(options.minZoom) ? options.minZoom : 0;
+  this.minZoom = options.minZoom !== undefined ? options.minZoom : 0;
 
   /**
    * @private
@@ -57,14 +57,14 @@ ol.tilegrid.TileGrid = function(options) {
    * @private
    * @type {ol.Coordinate}
    */
-  this.origin_ = goog.isDef(options.origin) ? options.origin : null;
+  this.origin_ = options.origin !== undefined ? options.origin : null;
 
   /**
    * @private
    * @type {Array.<ol.Coordinate>}
    */
   this.origins_ = null;
-  if (goog.isDef(options.origins)) {
+  if (options.origins !== undefined) {
     this.origins_ = options.origins;
     goog.asserts.assert(this.origins_.length == this.resolutions_.length,
         'number of origins and resolutions must be equal');
@@ -72,7 +72,7 @@ ol.tilegrid.TileGrid = function(options) {
 
   var extent = options.extent;
 
-  if (goog.isDef(extent) &&
+  if (extent !== undefined &&
       goog.isNull(this.origin_) && goog.isNull(this.origins_)) {
     this.origin_ = ol.extent.getTopLeft(extent);
   }
@@ -87,7 +87,7 @@ ol.tilegrid.TileGrid = function(options) {
    * @type {Array.<number|ol.Size>}
    */
   this.tileSizes_ = null;
-  if (goog.isDef(options.tileSizes)) {
+  if (options.tileSizes !== undefined) {
     this.tileSizes_ = options.tileSizes;
     goog.asserts.assert(this.tileSizes_.length == this.resolutions_.length,
         'number of tileSizes and resolutions must be equal');
@@ -97,7 +97,7 @@ ol.tilegrid.TileGrid = function(options) {
    * @private
    * @type {number|ol.Size}
    */
-  this.tileSize_ = goog.isDef(options.tileSize) ?
+  this.tileSize_ = options.tileSize !== undefined ?
       options.tileSize :
       goog.isNull(this.tileSizes_) ? ol.DEFAULT_TILE_SIZE : null;
   goog.asserts.assert(
@@ -109,7 +109,7 @@ ol.tilegrid.TileGrid = function(options) {
    * @private
    * @type {ol.Extent}
    */
-  this.extent_ = goog.isDef(extent) ? extent : null;
+  this.extent_ = extent !== undefined ? extent : null;
 
 
   /**
@@ -118,7 +118,7 @@ ol.tilegrid.TileGrid = function(options) {
    */
   this.fullTileRanges_ = null;
 
-  if (goog.isDef(options.sizes)) {
+  if (options.sizes !== undefined) {
     goog.asserts.assert(options.sizes.length == this.resolutions_.length,
         'number of sizes and resolutions must be equal');
     this.fullTileRanges_ = goog.array.map(options.sizes, function(size, z) {
@@ -127,7 +127,7 @@ ol.tilegrid.TileGrid = function(options) {
       var tileRange = new ol.TileRange(
           Math.min(0, size[0]), Math.max(size[0] - 1, -1),
           Math.min(0, size[1]), Math.max(size[1] - 1, -1));
-      if (this.minZoom <= z && z <= this.maxZoom && goog.isDef(extent)) {
+      if (this.minZoom <= z && z <= this.maxZoom && extent !== undefined) {
         goog.asserts.assert(tileRange.containsTileRange(
             this.getTileRangeForExtentAndZ(extent, z)),
             'extent tile range must not exceed tilegrid width and height');
@@ -527,7 +527,7 @@ ol.tilegrid.getForProjection = function(projection) {
  */
 ol.tilegrid.createForExtent =
     function(extent, opt_maxZoom, opt_tileSize, opt_corner) {
-  var corner = goog.isDef(opt_corner) ?
+  var corner = opt_corner !== undefined ?
       opt_corner : ol.extent.Corner.TOP_LEFT;
 
   var resolutions = ol.tilegrid.resolutionsFromExtent(
@@ -550,9 +550,9 @@ ol.tilegrid.createForExtent =
  */
 ol.tilegrid.createXYZ = function(opt_options) {
   var options = /** @type {olx.tilegrid.TileGridOptions} */ ({});
-  goog.object.extend(options, goog.isDef(opt_options) ?
+  goog.object.extend(options, opt_options !== undefined ?
       opt_options : /** @type {olx.tilegrid.XYZOptions} */ ({}));
-  if (!goog.isDef(options.extent)) {
+  if (options.extent === undefined) {
     options.extent = ol.proj.get('EPSG:3857').getExtent();
   }
   options.resolutions = ol.tilegrid.resolutionsFromExtent(
@@ -574,13 +574,13 @@ ol.tilegrid.createXYZ = function(opt_options) {
  */
 ol.tilegrid.resolutionsFromExtent =
     function(extent, opt_maxZoom, opt_tileSize) {
-  var maxZoom = goog.isDef(opt_maxZoom) ?
+  var maxZoom = opt_maxZoom !== undefined ?
       opt_maxZoom : ol.DEFAULT_MAX_ZOOM;
 
   var height = ol.extent.getHeight(extent);
   var width = ol.extent.getWidth(extent);
 
-  var tileSize = ol.size.toSize(goog.isDef(opt_tileSize) ?
+  var tileSize = ol.size.toSize(opt_tileSize !== undefined ?
       opt_tileSize : ol.DEFAULT_TILE_SIZE);
   var maxResolution = Math.max(
       width / tileSize[0], height / tileSize[1]);

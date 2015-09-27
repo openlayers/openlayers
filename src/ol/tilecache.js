@@ -21,7 +21,7 @@ ol.TileCache = function(opt_highWaterMark) {
    * @private
    * @type {number}
    */
-  this.highWaterMark_ = goog.isDef(opt_highWaterMark) ?
+  this.highWaterMark_ = opt_highWaterMark !== undefined ?
       opt_highWaterMark : ol.DEFAULT_TILE_CACHE_HIGH_WATER_MARK;
 
 };

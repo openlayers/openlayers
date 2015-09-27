@@ -55,7 +55,7 @@ ol.geom.flat.deflate.coordinates =
  */
 ol.geom.flat.deflate.coordinatess =
     function(flatCoordinates, offset, coordinatess, stride, opt_ends) {
-  var ends = goog.isDef(opt_ends) ? opt_ends : [];
+  var ends = opt_ends ? opt_ends : [];
   var i = 0;
   var j, jj;
   for (j = 0, jj = coordinatess.length; j < jj; ++j) {
@@ -79,7 +79,7 @@ ol.geom.flat.deflate.coordinatess =
  */
 ol.geom.flat.deflate.coordinatesss =
     function(flatCoordinates, offset, coordinatesss, stride, opt_endss) {
-  var endss = goog.isDef(opt_endss) ? opt_endss : [];
+  var endss = opt_endss ? opt_endss : [];
   var i = 0;
   var j, jj;
   for (j = 0, jj = coordinatesss.length; j < jj; ++j) {

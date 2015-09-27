@@ -42,9 +42,9 @@ ol.format.Feature.prototype.getExtensions = goog.abstractMethod;
  */
 ol.format.Feature.prototype.getReadOptions = function(source, opt_options) {
   var options;
-  if (goog.isDef(opt_options)) {
+  if (opt_options) {
     options = {
-      dataProjection: goog.isDef(opt_options.dataProjection) ?
+      dataProjection: opt_options.dataProjection ?
           opt_options.dataProjection : this.readProjection(source),
       featureProjection: opt_options.featureProjection
     };
@@ -64,7 +64,7 @@ ol.format.Feature.prototype.getReadOptions = function(source, opt_options) {
  */
 ol.format.Feature.prototype.adaptOptions = function(options) {
   var updatedOptions;
-  if (goog.isDef(options)) {
+  if (options) {
     updatedOptions = {
       featureProjection: options.featureProjection,
       dataProjection: goog.isDefAndNotNull(options.dataProjection) ?
@@ -161,9 +161,9 @@ ol.format.Feature.prototype.writeGeometry = goog.abstractMethod;
  */
 ol.format.Feature.transformWithOptions = function(
     geometry, write, opt_options) {
-  var featureProjection = goog.isDef(opt_options) ?
+  var featureProjection = opt_options ?
       ol.proj.get(opt_options.featureProjection) : null;
-  var dataProjection = goog.isDef(opt_options) ?
+  var dataProjection = opt_options ?
       ol.proj.get(opt_options.dataProjection) : null;
   if (!goog.isNull(featureProjection) && !goog.isNull(dataProjection) &&
       !ol.proj.equivalent(featureProjection, dataProjection)) {

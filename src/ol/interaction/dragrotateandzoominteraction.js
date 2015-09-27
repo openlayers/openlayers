@@ -1,6 +1,7 @@
 goog.provide('ol.interaction.DragRotateAndZoom');
 
 goog.require('goog.math.Vec2');
+goog.require('ol');
 goog.require('ol.ViewHint');
 goog.require('ol.events.ConditionType');
 goog.require('ol.events.condition');
@@ -26,7 +27,7 @@ goog.require('ol.interaction.Pointer');
  */
 ol.interaction.DragRotateAndZoom = function(opt_options) {
 
-  var options = goog.isDef(opt_options) ? opt_options : {};
+  var options = opt_options ? opt_options : {};
 
   goog.base(this, {
     handleDownEvent: ol.interaction.DragRotateAndZoom.handleDownEvent_,
@@ -38,7 +39,7 @@ ol.interaction.DragRotateAndZoom = function(opt_options) {
    * @private
    * @type {ol.events.ConditionType}
    */
-  this.condition_ = goog.isDef(options.condition) ?
+  this.condition_ = options.condition ?
       options.condition : ol.events.condition.shiftKeyOnly;
 
   /**
@@ -63,7 +64,7 @@ ol.interaction.DragRotateAndZoom = function(opt_options) {
    * @private
    * @type {number}
    */
-  this.duration_ = goog.isDef(options.duration) ? options.duration : 400;
+  this.duration_ = options.duration ? options.duration : 400;
 
 };
 goog.inherits(ol.interaction.DragRotateAndZoom, ol.interaction.Pointer);
@@ -89,17 +90,17 @@ ol.interaction.DragRotateAndZoom.handleDragEvent_ = function(mapBrowserEvent) {
   var magnitude = delta.magnitude();
   var view = map.getView();
   map.render();
-  if (goog.isDef(this.lastAngle_)) {
+  if (this.lastAngle_ !== undefined) {
     var angleDelta = theta - this.lastAngle_;
     ol.interaction.Interaction.rotateWithoutConstraints(
         map, view, view.getRotation() - angleDelta);
   }
   this.lastAngle_ = theta;
-  if (goog.isDef(this.lastMagnitude_)) {
+  if (this.lastMagnitude_ !== undefined) {
     var resolution = this.lastMagnitude_ * (view.getResolution() / magnitude);
     ol.interaction.Interaction.zoomWithoutConstraints(map, view, resolution);
   }
-  if (goog.isDef(this.lastMagnitude_)) {
+  if (this.lastMagnitude_ !== undefined) {
     this.lastScaleDelta_ = this.lastMagnitude_ / magnitude;
   }
   this.lastMagnitude_ = magnitude;

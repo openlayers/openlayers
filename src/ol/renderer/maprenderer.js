@@ -9,6 +9,7 @@ goog.require('goog.events.EventType');
 goog.require('goog.functions');
 goog.require('goog.object');
 goog.require('goog.vec.Mat4');
+goog.require('ol');
 goog.require('ol.extent');
 goog.require('ol.layer.Layer');
 goog.require('ol.renderer.Layer');
@@ -139,7 +140,7 @@ ol.renderer.Map.prototype.forEachFeatureAtCoordinate =
    * @return {?} Callback result.
    */
   function forEachFeatureAtCoordinate(feature) {
-    goog.asserts.assert(goog.isDef(feature), 'received a feature');
+    goog.asserts.assert(feature !== undefined, 'received a feature');
     var key = goog.getUid(feature).toString();
     if (!(key in features)) {
       features[key] = true;
@@ -241,7 +242,7 @@ ol.renderer.Map.prototype.hasFeatureAtCoordinate =
   var hasFeature = this.forEachFeatureAtCoordinate(
       coordinate, frameState, goog.functions.TRUE, this, layerFilter, thisArg);
 
-  return goog.isDef(hasFeature);
+  return hasFeature !== undefined;
 };
 
 

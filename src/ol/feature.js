@@ -5,6 +5,7 @@ goog.require('goog.asserts');
 goog.require('goog.events');
 goog.require('goog.events.EventType');
 goog.require('goog.functions');
+goog.require('ol');
 goog.require('ol.Object');
 goog.require('ol.geom.Geometry');
 goog.require('ol.style.Style');
@@ -96,7 +97,7 @@ ol.Feature = function(opt_geometryOrProperties) {
       this, ol.Object.getChangeEventType(this.geometryName_),
       this.handleGeometryChanged_, false, this);
 
-  if (goog.isDef(opt_geometryOrProperties)) {
+  if (opt_geometryOrProperties !== undefined) {
     if (opt_geometryOrProperties instanceof ol.geom.Geometry ||
         goog.isNull(opt_geometryOrProperties)) {
       var geometry = /** @type {ol.geom.Geometry} */ (opt_geometryOrProperties);

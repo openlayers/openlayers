@@ -118,7 +118,7 @@ ol.renderer.webgl.ImageLayer.prototype.prepareFrame =
   var hints = frameState.viewHints;
 
   var renderedExtent = frameState.extent;
-  if (goog.isDef(layerState.extent)) {
+  if (layerState.extent !== undefined) {
     renderedExtent = ol.extent.getIntersection(
         renderedExtent, layerState.extent);
   }
@@ -225,7 +225,7 @@ ol.renderer.webgl.ImageLayer.prototype.hasFeatureAtCoordinate =
     function(coordinate, frameState) {
   var hasFeature = this.forEachFeatureAtCoordinate(
       coordinate, frameState, goog.functions.TRUE, this);
-  return goog.isDef(hasFeature);
+  return hasFeature !== undefined;
 };
 
 

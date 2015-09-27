@@ -1,6 +1,7 @@
 goog.provide('ol.format.WKT');
 
 goog.require('goog.asserts');
+goog.require('ol');
 goog.require('ol.Feature');
 goog.require('ol.format.Feature');
 goog.require('ol.format.TextFeature');
@@ -28,7 +29,7 @@ goog.require('ol.geom.Polygon');
  */
 ol.format.WKT = function(opt_options) {
 
-  var options = goog.isDef(opt_options) ? opt_options : {};
+  var options = opt_options ? opt_options : {};
 
   goog.base(this);
 
@@ -37,7 +38,7 @@ ol.format.WKT = function(opt_options) {
    * @type {boolean}
    * @private
    */
-  this.splitCollection_ = goog.isDef(options.splitCollection) ?
+  this.splitCollection_ = options.splitCollection !== undefined ?
       options.splitCollection : false;
 
 };
@@ -167,8 +168,7 @@ ol.format.WKT.encodeMultiPolygonGeometry_ = function(geom) {
 ol.format.WKT.encode_ = function(geom) {
   var type = geom.getType();
   var geometryEncoder = ol.format.WKT.GeometryEncoder_[type];
-  goog.asserts.assert(goog.isDef(geometryEncoder),
-      'geometryEncoder should be defined');
+  goog.asserts.assert(geometryEncoder, 'geometryEncoder should be defined');
   var enc = geometryEncoder(geom);
   type = type.toUpperCase();
   if (enc.length === 0) {
@@ -225,7 +225,7 @@ ol.format.WKT.prototype.readFeature;
  */
 ol.format.WKT.prototype.readFeatureFromText = function(text, opt_options) {
   var geom = this.readGeometryFromText(text, opt_options);
-  if (goog.isDef(geom)) {
+  if (geom) {
     var feature = new ol.Feature();
     feature.setGeometry(geom);
     return feature;
@@ -286,7 +286,7 @@ ol.format.WKT.prototype.readGeometry;
  */
 ol.format.WKT.prototype.readGeometryFromText = function(text, opt_options) {
   var geometry = this.parse_(text);
-  if (goog.isDef(geometry)) {
+  if (geometry) {
     return /** @type {ol.geom.Geometry} */ (
         ol.format.Feature.transformWithOptions(geometry, false, opt_options));
   } else {
@@ -312,7 +312,7 @@ ol.format.WKT.prototype.writeFeature;
  */
 ol.format.WKT.prototype.writeFeatureText = function(feature, opt_options) {
   var geometry = feature.getGeometry();
-  if (goog.isDef(geometry)) {
+  if (geometry) {
     return this.writeGeometryText(geometry, opt_options);
   }
   return '';
@@ -427,7 +427,7 @@ ol.format.WKT.Lexer.prototype.isAlpha_ = function(c) {
  * @private
  */
 ol.format.WKT.Lexer.prototype.isNumeric_ = function(c, opt_decimal) {
-  var decimal = goog.isDef(opt_decimal) ? opt_decimal : false;
+  var decimal = opt_decimal !== undefined ? opt_decimal : false;
   return c >= '0' && c <= '9' || c == '.' && !decimal;
 };
 
@@ -603,7 +603,7 @@ ol.format.WKT.Parser.prototype.parseGeometry_ = function() {
     } else {
       var parser = ol.format.WKT.Parser.GeometryParser_[geomType];
       var ctor = ol.format.WKT.Parser.GeometryConstructor_[geomType];
-      if (!goog.isDef(parser) || !goog.isDef(ctor)) {
+      if (!parser || !ctor) {
         throw new Error('Invalid geometry type: ' + geomType);
       }
       var coordinates = parser.call(this);

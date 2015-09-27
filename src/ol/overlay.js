@@ -78,14 +78,14 @@ ol.Overlay = function(options) {
    * @private
    * @type {boolean}
    */
-  this.insertFirst_ = goog.isDef(options.insertFirst) ?
+  this.insertFirst_ = options.insertFirst !== undefined ?
       options.insertFirst : true;
 
   /**
    * @private
    * @type {boolean}
    */
-  this.stopEvent_ = goog.isDef(options.stopEvent) ? options.stopEvent : true;
+  this.stopEvent_ = options.stopEvent !== undefined ? options.stopEvent : true;
 
   /**
    * @private
@@ -100,20 +100,20 @@ ol.Overlay = function(options) {
    * @protected
    * @type {boolean}
    */
-  this.autoPan = goog.isDef(options.autoPan) ? options.autoPan : false;
+  this.autoPan = options.autoPan !== undefined ? options.autoPan : false;
 
   /**
    * @private
    * @type {olx.animation.PanOptions}
    */
-  this.autoPanAnimation_ = goog.isDef(options.autoPanAnimation) ?
+  this.autoPanAnimation_ = options.autoPanAnimation !== undefined ?
       options.autoPanAnimation : /** @type {olx.animation.PanOptions} */ ({});
 
   /**
    * @private
    * @type {number}
    */
-  this.autoPanMargin_ = goog.isDef(options.autoPanMargin) ?
+  this.autoPanMargin_ = options.autoPanMargin !== undefined ?
       options.autoPanMargin : 20;
 
   /**
@@ -158,17 +158,17 @@ ol.Overlay = function(options) {
       this, ol.Object.getChangeEventType(ol.OverlayProperty.POSITIONING),
       this.handlePositioningChanged, false, this);
 
-  if (goog.isDef(options.element)) {
+  if (options.element !== undefined) {
     this.setElement(options.element);
   }
 
-  this.setOffset(goog.isDef(options.offset) ? options.offset : [0, 0]);
+  this.setOffset(options.offset !== undefined ? options.offset : [0, 0]);
 
-  this.setPositioning(goog.isDef(options.positioning) ?
+  this.setPositioning(options.positioning !== undefined ?
       /** @type {ol.OverlayPositioning} */ (options.positioning) :
       ol.OverlayPositioning.TOP_LEFT);
 
-  if (goog.isDef(options.position)) {
+  if (options.position !== undefined) {
     this.setPosition(options.position);
   }
 
@@ -297,7 +297,7 @@ ol.Overlay.prototype.handleOffsetChanged = function() {
  */
 ol.Overlay.prototype.handlePositionChanged = function() {
   this.updatePixelPosition();
-  if (goog.isDef(this.get(ol.OverlayProperty.POSITION)) && this.autoPan) {
+  if (this.get(ol.OverlayProperty.POSITION) !== undefined && this.autoPan) {
     this.panIntoView_();
   }
 };
@@ -366,7 +366,7 @@ ol.Overlay.prototype.panIntoView_ = function() {
   goog.asserts.assert(this.autoPan, 'this.autoPan should be true');
   var map = this.getMap();
 
-  if (!goog.isDef(map) || goog.isNull(map.getTargetElement())) {
+  if (map === undefined || goog.isNull(map.getTargetElement())) {
     return;
   }
 
@@ -403,7 +403,7 @@ ol.Overlay.prototype.panIntoView_ = function() {
 
     if (delta[0] !== 0 || delta[1] !== 0) {
       var center = map.getView().getCenter();
-      goog.asserts.assert(goog.isDef(center), 'center should be defined');
+      goog.asserts.assert(center !== undefined, 'center should be defined');
       var centerPx = map.getPixelFromCoordinate(center);
       var newCenterPx = [
         centerPx[0] + delta[0],
@@ -430,7 +430,7 @@ ol.Overlay.prototype.panIntoView_ = function() {
 ol.Overlay.prototype.getRect_ = function(element, size) {
   goog.asserts.assert(goog.isDefAndNotNull(element),
       'element should be defined');
-  goog.asserts.assert(goog.isDef(size), 'size should be defined');
+  goog.asserts.assert(size !== undefined, 'size should be defined');
 
   var offset = goog.style.getPageOffset(element);
   return [
@@ -474,7 +474,7 @@ ol.Overlay.prototype.setVisible = function(visible) {
 ol.Overlay.prototype.updatePixelPosition = function() {
   var map = this.getMap();
   var position = this.getPosition();
-  if (!goog.isDef(map) || !map.isRendered() || !goog.isDef(position)) {
+  if (map === undefined || !map.isRendered() || position === undefined) {
     this.setVisible(false);
     return;
   }
@@ -492,13 +492,13 @@ ol.Overlay.prototype.updatePixelPosition = function() {
  */
 ol.Overlay.prototype.updateRenderedPosition = function(pixel, mapSize) {
   goog.asserts.assert(!goog.isNull(pixel), 'pixel should not be null');
-  goog.asserts.assert(goog.isDef(mapSize), 'mapSize should be defined');
+  goog.asserts.assert(mapSize !== undefined, 'mapSize should be defined');
   var style = this.element_.style;
   var offset = this.getOffset();
   goog.asserts.assert(goog.isArray(offset), 'offset should be an array');
 
   var positioning = this.getPositioning();
-  goog.asserts.assert(goog.isDef(positioning),
+  goog.asserts.assert(positioning !== undefined,
       'positioning should be defined');
 
   var offsetX = offset[0];

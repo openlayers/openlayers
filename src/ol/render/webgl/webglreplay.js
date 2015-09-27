@@ -280,19 +280,20 @@ ol.render.webgl.ImageReplay.prototype.drawAsync = goog.abstractMethod;
  */
 ol.render.webgl.ImageReplay.prototype.drawCoordinates_ =
     function(flatCoordinates, offset, end, stride) {
-  goog.asserts.assert(goog.isDef(this.anchorX_), 'anchorX is defined');
-  goog.asserts.assert(goog.isDef(this.anchorY_), 'anchorY is defined');
-  goog.asserts.assert(goog.isDef(this.height_), 'height is defined');
-  goog.asserts.assert(goog.isDef(this.imageHeight_), 'imageHeight is defined');
-  goog.asserts.assert(goog.isDef(this.imageWidth_), 'imageWidth is defined');
-  goog.asserts.assert(goog.isDef(this.opacity_), 'opacity is defined');
-  goog.asserts.assert(goog.isDef(this.originX_), 'originX is defined');
-  goog.asserts.assert(goog.isDef(this.originY_), 'originY is defined');
-  goog.asserts.assert(goog.isDef(this.rotateWithView_),
+  goog.asserts.assert(this.anchorX_ !== undefined, 'anchorX is defined');
+  goog.asserts.assert(this.anchorY_ !== undefined, 'anchorY is defined');
+  goog.asserts.assert(this.height_ !== undefined, 'height is defined');
+  goog.asserts.assert(this.imageHeight_ !== undefined,
+      'imageHeight is defined');
+  goog.asserts.assert(this.imageWidth_ !== undefined, 'imageWidth is defined');
+  goog.asserts.assert(this.opacity_ !== undefined, 'opacity is defined');
+  goog.asserts.assert(this.originX_ !== undefined, 'originX is defined');
+  goog.asserts.assert(this.originY_ !== undefined, 'originY is defined');
+  goog.asserts.assert(this.rotateWithView_ !== undefined,
       'rotateWithView is defined');
-  goog.asserts.assert(goog.isDef(this.rotation_), 'rotation is defined');
-  goog.asserts.assert(goog.isDef(this.scale_), 'scale is defined');
-  goog.asserts.assert(goog.isDef(this.width_), 'width is defined');
+  goog.asserts.assert(this.rotation_ !== undefined, 'rotation is defined');
+  goog.asserts.assert(this.scale_ !== undefined, 'scale is defined');
+  goog.asserts.assert(this.width_ !== undefined, 'width is defined');
   var anchorX = this.anchorX_;
   var anchorY = this.anchorY_;
   var height = this.height_;
@@ -634,7 +635,7 @@ ol.render.webgl.ImageReplay.prototype.replay = function(context,
 
   // draw!
   var result;
-  if (!goog.isDef(featureCallback)) {
+  if (featureCallback === undefined) {
     this.drawReplay_(gl, context, skippedFeaturesHash,
         this.textures_, this.groupIndices_);
   } else {
@@ -732,7 +733,7 @@ ol.render.webgl.ImageReplay.prototype.drawReplaySkipping_ =
       var feature = this.startIndicesFeature_[featureIndex];
 
       var featureUid = goog.getUid(feature).toString();
-      if (goog.isDef(skippedFeaturesHash[featureUid])) {
+      if (skippedFeaturesHash[featureUid] !== undefined) {
         // feature should be skipped
         if (start !== end) {
           // draw the features so far
@@ -864,10 +865,11 @@ ol.render.webgl.ImageReplay.prototype.drawHitDetectionReplayOneByOne_ =
       feature = this.startIndicesFeature_[featureIndex];
       featureUid = goog.getUid(feature).toString();
 
-      if (!goog.isDef(skippedFeaturesHash[featureUid]) &&
+      if (skippedFeaturesHash[featureUid] === undefined &&
           goog.isDefAndNotNull(feature.getGeometry()) &&
-          (!goog.isDef(opt_hitExtent) || ol.extent.intersects(
-              opt_hitExtent, feature.getGeometry().getExtent()))) {
+          (opt_hitExtent === undefined || ol.extent.intersects(
+              /** @type {Array<number>} */ (opt_hitExtent),
+              feature.getGeometry().getExtent()))) {
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
         this.drawElements_(gl, start, end, elementType, elementSize);
 
@@ -914,13 +916,13 @@ ol.render.webgl.ImageReplay.prototype.setImageStyle = function(imageStyle) {
       'imageStyle hitDetectionImage is not null');
   goog.asserts.assert(!goog.isNull(hitDetectionImageSize),
       'imageStyle hitDetectionImageSize is not null');
-  goog.asserts.assert(goog.isDef(opacity), 'imageStyle opacity is defined');
+  goog.asserts.assert(opacity !== undefined, 'imageStyle opacity is defined');
   goog.asserts.assert(!goog.isNull(origin), 'imageStyle origin is not null');
-  goog.asserts.assert(goog.isDef(rotateWithView),
+  goog.asserts.assert(rotateWithView !== undefined,
       'imageStyle rotateWithView is defined');
-  goog.asserts.assert(goog.isDef(rotation), 'imageStyle rotation is defined');
+  goog.asserts.assert(rotation !== undefined, 'imageStyle rotation is defined');
   goog.asserts.assert(!goog.isNull(size), 'imageStyle size is not null');
-  goog.asserts.assert(goog.isDef(scale), 'imageStyle scale is defined');
+  goog.asserts.assert(scale !== undefined, 'imageStyle scale is defined');
 
   var currentImage;
   if (this.images_.length === 0) {
@@ -1037,9 +1039,9 @@ ol.render.webgl.ReplayGroup.prototype.finish = function(context) {
 ol.render.webgl.ReplayGroup.prototype.getReplay =
     function(zIndex, replayType) {
   var replay = this.replays_[replayType];
-  if (!goog.isDef(replay)) {
+  if (replay === undefined) {
     var constructor = ol.render.webgl.BATCH_CONSTRUCTORS_[replayType];
-    goog.asserts.assert(goog.isDef(constructor),
+    goog.asserts.assert(constructor !== undefined,
         replayType +
         ' constructor missing from ol.render.webgl.BATCH_CONSTRUCTORS_');
     replay = new constructor(this.tolerance_, this.maxExtent_);
@@ -1078,7 +1080,7 @@ ol.render.webgl.ReplayGroup.prototype.replay = function(context,
   var i, ii, replay, result;
   for (i = 0, ii = ol.render.REPLAY_ORDER.length; i < ii; ++i) {
     replay = this.replays_[ol.render.REPLAY_ORDER[i]];
-    if (goog.isDef(replay)) {
+    if (replay !== undefined) {
       replay.replay(context,
           center, resolution, rotation, size, pixelRatio,
           opacity, brightness, contrast, hue, saturation, skippedFeaturesHash,
@@ -1117,7 +1119,7 @@ ol.render.webgl.ReplayGroup.prototype.replayHitDetection_ = function(context,
   var i, replay, result;
   for (i = ol.render.REPLAY_ORDER.length - 1; i >= 0; --i) {
     replay = this.replays_[ol.render.REPLAY_ORDER[i]];
-    if (goog.isDef(replay)) {
+    if (replay !== undefined) {
       result = replay.replay(context,
           center, resolution, rotation, size, pixelRatio,
           opacity, brightness, contrast, hue, saturation,
@@ -1163,7 +1165,7 @@ ol.render.webgl.ReplayGroup.prototype.forEachFeatureAtCoordinate = function(
    * @type {ol.Extent}
    */
   var hitExtent;
-  if (goog.isDef(this.renderBuffer_)) {
+  if (this.renderBuffer_ !== undefined) {
     // build an extent around the coordinate, so that only features that
     // intersect this extent are checked
     hitExtent = ol.extent.buffer(
@@ -1231,7 +1233,7 @@ ol.render.webgl.ReplayGroup.prototype.hasFeatureAtCoordinate = function(
         return imageData[3] > 0;
       }, false);
 
-  return goog.isDef(hasFeature);
+  return hasFeature !== undefined;
 };
 
 

@@ -42,7 +42,7 @@ ol.interaction.Translate = function(options) {
    * @type {ol.Collection.<ol.Feature>}
    * @private
    */
-  this.features_ = goog.isDef(options.features) ? options.features : null;
+  this.features_ = options.features !== undefined ? options.features : null;
 
   /**
    * @type {ol.Feature}
@@ -147,7 +147,7 @@ ol.interaction.Translate.handleMoveEvent_ = function(event)
         'grabbing' : (isSelected ? 'grab' : 'pointer');
 
   } else {
-    elem.style.cursor = goog.isDef(this.previousCursor_) ?
+    elem.style.cursor = this.previousCursor_ !== undefined ?
         this.previousCursor_ : '';
     this.previousCursor_ = undefined;
   }
