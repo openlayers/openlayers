@@ -346,7 +346,7 @@ ol.Graticule.prototype.getMeridian_ = function(lon, minLat, maxLat,
       minLat, maxLat, this.projection_, squaredTolerance);
   goog.asserts.assert(flatCoordinates.length > 0,
       'flatCoordinates cannot be empty');
-  var lineString = goog.isDef(this.meridians_[index]) ?
+  var lineString = this.meridians_[index] !== undefined ?
       this.meridians_[index] : new ol.geom.LineString(null);
   lineString.setFlatCoordinates(ol.geom.GeometryLayout.XY, flatCoordinates);
   return lineString;
@@ -382,7 +382,7 @@ ol.Graticule.prototype.getParallel_ = function(lat, minLon, maxLon,
       this.minLon_, this.maxLon_, this.projection_, squaredTolerance);
   goog.asserts.assert(flatCoordinates.length > 0,
       'flatCoordinates cannot be empty');
-  var lineString = goog.isDef(this.parallels_[index]) ?
+  var lineString = this.parallels_[index] !== undefined ?
       this.parallels_[index] : new ol.geom.LineString(null);
   lineString.setFlatCoordinates(ol.geom.GeometryLayout.XY, flatCoordinates);
   return lineString;

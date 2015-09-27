@@ -126,7 +126,7 @@ ol.ImageTile.prototype.handleImageError_ = function() {
  */
 ol.ImageTile.prototype.handleImageLoad_ = function() {
   if (ol.LEGACY_IE_SUPPORT && ol.IS_LEGACY_IE) {
-    if (!goog.isDef(this.image_.naturalWidth)) {
+    if (this.image_.naturalWidth === undefined) {
       this.image_.naturalWidth = this.image_.width;
       this.image_.naturalHeight = this.image_.height;
     }

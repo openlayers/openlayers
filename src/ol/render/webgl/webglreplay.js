@@ -733,7 +733,7 @@ ol.render.webgl.ImageReplay.prototype.drawReplaySkipping_ =
       var feature = this.startIndicesFeature_[featureIndex];
 
       var featureUid = goog.getUid(feature).toString();
-      if (goog.isDef(skippedFeaturesHash[featureUid])) {
+      if (skippedFeaturesHash[featureUid] !== undefined) {
         // feature should be skipped
         if (start !== end) {
           // draw the features so far
@@ -865,10 +865,11 @@ ol.render.webgl.ImageReplay.prototype.drawHitDetectionReplayOneByOne_ =
       feature = this.startIndicesFeature_[featureIndex];
       featureUid = goog.getUid(feature).toString();
 
-      if (!goog.isDef(skippedFeaturesHash[featureUid]) &&
+      if (skippedFeaturesHash[featureUid] === undefined &&
           goog.isDefAndNotNull(feature.getGeometry()) &&
           (opt_hitExtent === undefined || ol.extent.intersects(
-              opt_hitExtent, feature.getGeometry().getExtent()))) {
+              /** @type {Array<number>} */ (opt_hitExtent),
+              feature.getGeometry().getExtent()))) {
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
         this.drawElements_(gl, start, end, elementType, elementSize);
 

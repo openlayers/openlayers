@@ -146,7 +146,7 @@ ol.proj.Projection = function(options) {
   goog.asserts.assert(code !== undefined,
       'Option "code" is required for constructing instance');
   if (ol.ENABLE_PROJ4JS && typeof proj4 == 'function' &&
-      !goog.isDef(projections[code])) {
+      projections[code] === undefined) {
     var def = proj4.defs(code);
     if (def !== undefined) {
       if (def.axis !== undefined && options.axisOrientation === undefined) {

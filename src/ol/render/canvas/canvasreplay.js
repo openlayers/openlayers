@@ -257,11 +257,12 @@ ol.render.canvas.Replay.prototype.replay_ = function(
       case ol.render.canvas.Instruction.BEGIN_GEOMETRY:
         feature = /** @type {ol.Feature} */ (instruction[1]);
         var featureUid = goog.getUid(feature).toString();
-        if (goog.isDef(skippedFeaturesHash[featureUid]) ||
+        if (skippedFeaturesHash[featureUid] !== undefined ||
             !goog.isDefAndNotNull(feature.getGeometry())) {
           i = /** @type {number} */ (instruction[2]);
         } else if (opt_hitExtent !== undefined && !ol.extent.intersects(
-            opt_hitExtent, feature.getGeometry().getExtent())) {
+            /** @type {Array<number>} */ (opt_hitExtent),
+            feature.getGeometry().getExtent())) {
           i = /** @type {number} */ (instruction[2]);
         } else {
           ++i;
@@ -451,7 +452,8 @@ ol.render.canvas.Replay.prototype.replay_ = function(
             '6th instruction should be a number');
         goog.asserts.assert(!goog.isNull(instruction[6]),
             '7th instruction should not be null');
-        var usePixelRatio = goog.isDef(instruction[7]) ? instruction[7] : true;
+        var usePixelRatio = instruction[7] !== undefined ?
+            instruction[7] : true;
         var lineWidth = /** @type {number} */ (instruction[2]);
         context.strokeStyle = /** @type {string} */ (instruction[1]);
         context.lineWidth = usePixelRatio ? lineWidth * pixelRatio : lineWidth;
