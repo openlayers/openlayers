@@ -496,7 +496,7 @@ goog.inherits(ol.Map, ol.Object);
  */
 ol.Map.prototype.addControl = function(control) {
   var controls = this.getControls();
-  goog.asserts.assert(goog.isDef(controls), 'controls should be defined');
+  goog.asserts.assert(controls !== undefined, 'controls should be defined');
   controls.push(control);
 };
 
@@ -508,7 +508,7 @@ ol.Map.prototype.addControl = function(control) {
  */
 ol.Map.prototype.addInteraction = function(interaction) {
   var interactions = this.getInteractions();
-  goog.asserts.assert(goog.isDef(interactions),
+  goog.asserts.assert(interactions !== undefined,
       'interactions should be defined');
   interactions.push(interaction);
 };
@@ -534,7 +534,7 @@ ol.Map.prototype.addLayer = function(layer) {
  */
 ol.Map.prototype.addOverlay = function(overlay) {
   var overlays = this.getOverlays();
-  goog.asserts.assert(goog.isDef(overlays), 'overlays should be defined');
+  goog.asserts.assert(overlays !== undefined, 'overlays should be defined');
   overlays.push(overlay);
 };
 
@@ -600,10 +600,10 @@ ol.Map.prototype.forEachFeatureAtPixel =
     return;
   }
   var coordinate = this.getCoordinateFromPixel(pixel);
-  var thisArg = goog.isDef(opt_this) ? opt_this : null;
-  var layerFilter = goog.isDef(opt_layerFilter) ?
+  var thisArg = opt_this !== undefined ? opt_this : null;
+  var layerFilter = opt_layerFilter !== undefined ?
       opt_layerFilter : goog.functions.TRUE;
-  var thisArg2 = goog.isDef(opt_this2) ? opt_this2 : null;
+  var thisArg2 = opt_this2 !== undefined ? opt_this2 : null;
   return this.renderer_.forEachFeatureAtCoordinate(
       coordinate, this.frameState_, callback, thisArg,
       layerFilter, thisArg2);
@@ -637,10 +637,10 @@ ol.Map.prototype.forEachLayerAtPixel =
   if (goog.isNull(this.frameState_)) {
     return;
   }
-  var thisArg = goog.isDef(opt_this) ? opt_this : null;
-  var layerFilter = goog.isDef(opt_layerFilter) ?
+  var thisArg = opt_this !== undefined ? opt_this : null;
+  var layerFilter = opt_layerFilter !== undefined ?
       opt_layerFilter : goog.functions.TRUE;
-  var thisArg2 = goog.isDef(opt_this2) ? opt_this2 : null;
+  var thisArg2 = opt_this2 !== undefined ? opt_this2 : null;
   return this.renderer_.forEachLayerAtPixel(
       pixel, this.frameState_, callback, thisArg,
       layerFilter, thisArg2);
@@ -668,9 +668,9 @@ ol.Map.prototype.hasFeatureAtPixel =
     return false;
   }
   var coordinate = this.getCoordinateFromPixel(pixel);
-  var layerFilter = goog.isDef(opt_layerFilter) ?
+  var layerFilter = opt_layerFilter !== undefined ?
       opt_layerFilter : goog.functions.TRUE;
-  var thisArg = goog.isDef(opt_this) ? opt_this : null;
+  var thisArg = opt_this !== undefined ? opt_this : null;
   return this.renderer_.hasFeatureAtCoordinate(
       coordinate, this.frameState_, layerFilter, thisArg);
 };
@@ -723,7 +723,7 @@ ol.Map.prototype.getTarget = function() {
  */
 ol.Map.prototype.getTargetElement = function() {
   var target = this.getTarget();
-  return goog.isDef(target) ? goog.dom.getElement(target) : null;
+  return target !== undefined ? goog.dom.getElement(target) : null;
 };
 
 
@@ -941,7 +941,7 @@ ol.Map.prototype.handleMapBrowserEvent = function(mapBrowserEvent) {
   this.focus_ = mapBrowserEvent.coordinate;
   mapBrowserEvent.frameState = this.frameState_;
   var interactions = this.getInteractions();
-  goog.asserts.assert(goog.isDef(interactions),
+  goog.asserts.assert(interactions !== undefined,
       'interactions should be defined');
   var interactionsArray = interactions.getArray();
   var i;
@@ -1199,7 +1199,7 @@ ol.Map.prototype.render = function() {
  */
 ol.Map.prototype.removeControl = function(control) {
   var controls = this.getControls();
-  goog.asserts.assert(goog.isDef(controls), 'controls should be defined');
+  goog.asserts.assert(controls !== undefined, 'controls should be defined');
   if (goog.isDef(controls.remove(control))) {
     return control;
   }
@@ -1217,7 +1217,7 @@ ol.Map.prototype.removeControl = function(control) {
 ol.Map.prototype.removeInteraction = function(interaction) {
   var removed;
   var interactions = this.getInteractions();
-  goog.asserts.assert(goog.isDef(interactions),
+  goog.asserts.assert(interactions !== undefined,
       'interactions should be defined');
   if (goog.isDef(interactions.remove(interaction))) {
     removed = interaction;
@@ -1248,7 +1248,7 @@ ol.Map.prototype.removeLayer = function(layer) {
  */
 ol.Map.prototype.removeOverlay = function(overlay) {
   var overlays = this.getOverlays();
-  goog.asserts.assert(goog.isDef(overlays), 'overlays should be defined');
+  goog.asserts.assert(overlays !== undefined, 'overlays should be defined');
   if (goog.isDef(overlays.remove(overlay))) {
     return overlay;
   }
@@ -1268,7 +1268,7 @@ ol.Map.prototype.renderFrame_ = function(time) {
   var view = this.getView();
   /** @type {?olx.FrameState} */
   var frameState = null;
-  if (goog.isDef(size) && ol.size.hasArea(size) &&
+  if (size !== undefined && ol.size.hasArea(size) &&
       !goog.isNull(view) && view.isDef()) {
     var viewHints = view.getHints();
     var layerStatesArray = this.getLayerGroup().getLayerStatesArray();

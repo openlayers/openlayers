@@ -105,10 +105,10 @@ ol.style.Icon = function(opt_options) {
    */
   var src = options.src;
 
-  goog.asserts.assert(!(goog.isDef(src) && !goog.isNull(image)),
+  goog.asserts.assert(!(src !== undefined && !goog.isNull(image)),
       'image and src can not provided at the same time');
   goog.asserts.assert(
-      src === undefined || (goog.isDef(src) && goog.isNull(imgSize)),
+      src === undefined || (src !== undefined && goog.isNull(imgSize)),
       'imgSize should not be set when src is provided');
   goog.asserts.assert(
       goog.isNull(image) || (!goog.isNull(image) && !goog.isNull(imgSize)),
@@ -117,7 +117,7 @@ ol.style.Icon = function(opt_options) {
   if ((src === undefined || src.length === 0) && !goog.isNull(image)) {
     src = image.src;
   }
-  goog.asserts.assert(goog.isDef(src) && src.length > 0,
+  goog.asserts.assert(src !== undefined && src.length > 0,
       'must provide a defined and non-empty src or image');
 
   /**
@@ -620,7 +620,7 @@ goog.addSingletonGetter(ol.style.IconImageCache);
  * @return {string} Cache key.
  */
 ol.style.IconImageCache.getKey = function(src, crossOrigin) {
-  goog.asserts.assert(goog.isDef(crossOrigin),
+  goog.asserts.assert(crossOrigin !== undefined,
       'argument crossOrigin must be defined');
   return crossOrigin + ':' + src;
 };

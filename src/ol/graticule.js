@@ -463,18 +463,18 @@ ol.Graticule.prototype.updateProjectionInfo_ = function(projection) {
   var minLonP = worldExtentP[0];
 
   goog.asserts.assert(!goog.isNull(extent), 'extent cannot be null');
-  goog.asserts.assert(goog.isDef(maxLat), 'maxLat should be defined');
-  goog.asserts.assert(goog.isDef(maxLon), 'maxLon should be defined');
-  goog.asserts.assert(goog.isDef(minLat), 'minLat should be defined');
-  goog.asserts.assert(goog.isDef(minLon), 'minLon should be defined');
+  goog.asserts.assert(maxLat !== undefined, 'maxLat should be defined');
+  goog.asserts.assert(maxLon !== undefined, 'maxLon should be defined');
+  goog.asserts.assert(minLat !== undefined, 'minLat should be defined');
+  goog.asserts.assert(minLon !== undefined, 'minLon should be defined');
 
-  goog.asserts.assert(goog.isDef(maxLatP),
+  goog.asserts.assert(maxLatP !== undefined,
       'projected maxLat should be defined');
-  goog.asserts.assert(goog.isDef(maxLonP),
+  goog.asserts.assert(maxLonP !== undefined,
       'projected maxLon should be defined');
-  goog.asserts.assert(goog.isDef(minLatP),
+  goog.asserts.assert(minLatP !== undefined,
       'projected minLat should be defined');
-  goog.asserts.assert(goog.isDef(minLonP),
+  goog.asserts.assert(minLonP !== undefined,
       'projected minLon should be defined');
 
   this.maxLat_ = maxLat;

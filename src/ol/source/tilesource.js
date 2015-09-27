@@ -227,7 +227,7 @@ ol.source.Tile.prototype.getTilePixelSize =
  */
 ol.source.Tile.prototype.getTileCoordForTileUrlFunction =
     function(tileCoord, opt_projection) {
-  var projection = goog.isDef(opt_projection) ?
+  var projection = opt_projection !== undefined ?
       opt_projection : this.getProjection();
   var tileGrid = this.getTileGridForProjection(projection);
   goog.asserts.assert(!goog.isNull(tileGrid), 'tile grid needed');

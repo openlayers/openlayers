@@ -17,7 +17,7 @@ ol.geom.flat.flip.flipXY =
   var dest, destOffset;
   if (opt_dest !== undefined) {
     dest = opt_dest;
-    destOffset = goog.isDef(opt_destOffset) ? opt_destOffset : 0;
+    destOffset = opt_destOffset !== undefined ? opt_destOffset : 0;
   } else {
     goog.asserts.assert(opt_destOffset === undefined,
         'opt_destOffSet should be defined');

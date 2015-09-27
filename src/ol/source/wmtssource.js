@@ -410,7 +410,7 @@ ol.source.WMTS.optionsFromCapabilities = function(wmtsCap, config) {
       } else {
         value = elt['values'][0];
       }
-      goog.asserts.assert(goog.isDef(value), 'value could be found');
+      goog.asserts.assert(value !== undefined, 'value could be found');
       dimensions[key] = value;
     });
   }
@@ -454,7 +454,7 @@ ol.source.WMTS.optionsFromCapabilities = function(wmtsCap, config) {
   /** @type {!Array.<string>} */
   var urls = [];
   var requestEncoding = config['requestEncoding'];
-  requestEncoding = goog.isDef(requestEncoding) ? requestEncoding : '';
+  requestEncoding = requestEncoding !== undefined ? requestEncoding : '';
 
   goog.asserts.assert(
       goog.array.contains(['REST', 'RESTful', 'KVP', ''], requestEncoding),

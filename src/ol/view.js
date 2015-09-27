@@ -193,7 +193,7 @@ ol.View.prototype.calculateCenterZoom = function(resolution, anchor) {
   var center;
   var currentCenter = this.getCenter();
   var currentResolution = this.getResolution();
-  if (goog.isDef(currentCenter) && goog.isDef(currentResolution)) {
+  if (currentCenter !== undefined && currentResolution !== undefined) {
     var x = anchor[0] -
         resolution * (anchor[0] - currentCenter[0]) / currentResolution;
     var y = anchor[1] -
@@ -278,10 +278,10 @@ ol.View.prototype.calculateExtent = function(size) {
   goog.asserts.assert(goog.isDefAndNotNull(center),
       'The view center is not defined');
   var resolution = this.getResolution();
-  goog.asserts.assert(goog.isDef(resolution),
+  goog.asserts.assert(resolution !== undefined,
       'The view resolution is not defined');
   var rotation = this.getRotation();
-  goog.asserts.assert(goog.isDef(rotation),
+  goog.asserts.assert(rotation !== undefined,
       'The view rotation is not defined');
 
   return ol.extent.getForViewAndSize(center, resolution, rotation, size);
@@ -404,7 +404,7 @@ ol.View.prototype.getState = function() {
       Math.round(center[0] / resolution) * resolution,
       Math.round(center[1] / resolution) * resolution
     ],
-    projection: goog.isDef(projection) ? projection : null,
+    projection: projection !== undefined ? projection : null,
     resolution: resolution,
     rotation: rotation
   });
@@ -433,7 +433,7 @@ ol.View.prototype.getZoom = function() {
     } while (res > this.minResolution_);
   }
 
-  return goog.isDef(offset) ? this.minZoom_ + offset : offset;
+  return offset !== undefined ? this.minZoom_ + offset : offset;
 };
 
 
@@ -475,7 +475,7 @@ ol.View.prototype.fit = function(geometry, size, opt_options) {
 
   // calculate rotated extent
   var rotation = this.getRotation();
-  goog.asserts.assert(goog.isDef(rotation), 'rotation was not defined');
+  goog.asserts.assert(rotation !== undefined, 'rotation was not defined');
   var cosAngle = Math.cos(-rotation);
   var sinAngle = Math.sin(-rotation);
   var minRotX = +Infinity;

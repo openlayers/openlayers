@@ -225,7 +225,7 @@ ol.renderer.webgl.ImageLayer.prototype.hasFeatureAtCoordinate =
     function(coordinate, frameState) {
   var hasFeature = this.forEachFeatureAtCoordinate(
       coordinate, frameState, goog.functions.TRUE, this);
-  return goog.isDef(hasFeature);
+  return hasFeature !== undefined;
 };
 
 

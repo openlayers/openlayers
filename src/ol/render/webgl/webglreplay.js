@@ -914,13 +914,13 @@ ol.render.webgl.ImageReplay.prototype.setImageStyle = function(imageStyle) {
       'imageStyle hitDetectionImage is not null');
   goog.asserts.assert(!goog.isNull(hitDetectionImageSize),
       'imageStyle hitDetectionImageSize is not null');
-  goog.asserts.assert(goog.isDef(opacity), 'imageStyle opacity is defined');
+  goog.asserts.assert(opacity !== undefined, 'imageStyle opacity is defined');
   goog.asserts.assert(!goog.isNull(origin), 'imageStyle origin is not null');
-  goog.asserts.assert(goog.isDef(rotateWithView),
+  goog.asserts.assert(rotateWithView !== undefined,
       'imageStyle rotateWithView is defined');
-  goog.asserts.assert(goog.isDef(rotation), 'imageStyle rotation is defined');
+  goog.asserts.assert(rotation !== undefined, 'imageStyle rotation is defined');
   goog.asserts.assert(!goog.isNull(size), 'imageStyle size is not null');
-  goog.asserts.assert(goog.isDef(scale), 'imageStyle scale is defined');
+  goog.asserts.assert(scale !== undefined, 'imageStyle scale is defined');
 
   var currentImage;
   if (this.images_.length === 0) {
@@ -1039,7 +1039,7 @@ ol.render.webgl.ReplayGroup.prototype.getReplay =
   var replay = this.replays_[replayType];
   if (replay === undefined) {
     var constructor = ol.render.webgl.BATCH_CONSTRUCTORS_[replayType];
-    goog.asserts.assert(goog.isDef(constructor),
+    goog.asserts.assert(constructor !== undefined,
         replayType +
         ' constructor missing from ol.render.webgl.BATCH_CONSTRUCTORS_');
     replay = new constructor(this.tolerance_, this.maxExtent_);
@@ -1231,7 +1231,7 @@ ol.render.webgl.ReplayGroup.prototype.hasFeatureAtCoordinate = function(
         return imageData[3] > 0;
       }, false);
 
-  return goog.isDef(hasFeature);
+  return hasFeature !== undefined;
 };
 
 

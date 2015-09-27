@@ -143,7 +143,7 @@ ol.proj.Projection = function(options) {
 
   var projections = ol.proj.projections_;
   var code = options.code;
-  goog.asserts.assert(goog.isDef(code),
+  goog.asserts.assert(code !== undefined,
       'Option "code" is required for constructing instance');
   if (ol.ENABLE_PROJ4JS && typeof proj4 == 'function' &&
       !goog.isDef(projections[code])) {
@@ -563,8 +563,8 @@ ol.proj.createTransformFromCoordinateTransform = function(transform) {
        */
       function(input, opt_output, opt_dimension) {
         var length = input.length;
-        var dimension = goog.isDef(opt_dimension) ? opt_dimension : 2;
-        var output = goog.isDef(opt_output) ? opt_output : new Array(length);
+        var dimension = opt_dimension !== undefined ? opt_dimension : 2;
+        var output = opt_output !== undefined ? opt_output : new Array(length);
         var point, i, j;
         for (i = 0; i < length; i += dimension) {
           point = transform([input[i], input[i + 1]]);
@@ -617,7 +617,7 @@ ol.proj.removeTransform = function(source, destination) {
  */
 ol.proj.fromLonLat = function(coordinate, opt_projection) {
   return ol.proj.transform(coordinate, 'EPSG:4326',
-      goog.isDef(opt_projection) ? opt_projection : 'EPSG:3857');
+      opt_projection !== undefined ? opt_projection : 'EPSG:3857');
 };
 
 
@@ -632,7 +632,7 @@ ol.proj.fromLonLat = function(coordinate, opt_projection) {
  */
 ol.proj.toLonLat = function(coordinate, opt_projection) {
   return ol.proj.transform(coordinate,
-      goog.isDef(opt_projection) ? opt_projection : 'EPSG:3857', 'EPSG:4326');
+      opt_projection !== undefined ? opt_projection : 'EPSG:3857', 'EPSG:4326');
 };
 
 
@@ -726,7 +726,7 @@ ol.proj.getTransformFromProjections =
     transform = transforms[sourceCode][destinationCode];
   }
   if (transform === undefined) {
-    goog.asserts.assert(goog.isDef(transform), 'transform should be defined');
+    goog.asserts.assert(transform !== undefined, 'transform should be defined');
     transform = ol.proj.identityTransform;
   }
   return transform;
@@ -740,7 +740,7 @@ ol.proj.getTransformFromProjections =
  * @return {Array.<number>} Input coordinate array (same array as input).
  */
 ol.proj.identityTransform = function(input, opt_output, opt_dimension) {
-  if (goog.isDef(opt_output) && input !== opt_output) {
+  if (opt_output !== undefined && input !== opt_output) {
     // TODO: consider making this a warning instead
     goog.asserts.fail('This should not be used internally.');
     for (var i = 0, ii = input.length; i < ii; ++i) {

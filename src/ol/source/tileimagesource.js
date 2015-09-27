@@ -99,8 +99,8 @@ ol.source.TileImage.prototype.getTile =
         this.tileUrlFunction(urlTileCoord, pixelRatio, projection);
     var tile = new this.tileClass(
         tileCoord,
-        goog.isDef(tileUrl) ? ol.TileState.IDLE : ol.TileState.EMPTY,
-        goog.isDef(tileUrl) ? tileUrl : '',
+        tileUrl !== undefined ? ol.TileState.IDLE : ol.TileState.EMPTY,
+        tileUrl !== undefined ? tileUrl : '',
         this.crossOrigin,
         this.tileLoadFunction);
     goog.events.listen(tile, goog.events.EventType.CHANGE,

@@ -494,7 +494,7 @@ ol.render.canvas.Immediate.prototype.drawFeature = function(feature, style) {
     render.setTextStyle(style.getText());
     var renderGeometry =
         ol.render.canvas.Immediate.GEOMETRY_RENDERERS_[geometry.getType()];
-    goog.asserts.assert(goog.isDef(renderGeometry),
+    goog.asserts.assert(renderGeometry !== undefined,
         'renderGeometry should be defined');
     renderGeometry.call(render, geometry, null);
   });
@@ -517,7 +517,7 @@ ol.render.canvas.Immediate.prototype.drawGeometryCollectionGeometry =
     var geometry = geometries[i];
     var geometryRenderer =
         ol.render.canvas.Immediate.GEOMETRY_RENDERERS_[geometry.getType()];
-    goog.asserts.assert(goog.isDef(geometryRenderer),
+    goog.asserts.assert(geometryRenderer !== undefined,
         'geometryRenderer should be defined');
     geometryRenderer.call(this, geometry, feature);
   }
@@ -872,15 +872,15 @@ ol.render.canvas.Immediate.prototype.setFillStrokeStyle =
     var strokeStyleWidth = strokeStyle.getWidth();
     var strokeStyleMiterLimit = strokeStyle.getMiterLimit();
     this.strokeState_ = {
-      lineCap: goog.isDef(strokeStyleLineCap) ?
+      lineCap: strokeStyleLineCap !== undefined ?
           strokeStyleLineCap : ol.render.canvas.defaultLineCap,
       lineDash: goog.isDefAndNotNull(strokeStyleLineDash) ?
           strokeStyleLineDash : ol.render.canvas.defaultLineDash,
-      lineJoin: goog.isDef(strokeStyleLineJoin) ?
+      lineJoin: strokeStyleLineJoin !== undefined ?
           strokeStyleLineJoin : ol.render.canvas.defaultLineJoin,
-      lineWidth: this.pixelRatio_ * (goog.isDef(strokeStyleWidth) ?
+      lineWidth: this.pixelRatio_ * (strokeStyleWidth !== undefined ?
           strokeStyleWidth : ol.render.canvas.defaultLineWidth),
-      miterLimit: goog.isDef(strokeStyleMiterLimit) ?
+      miterLimit: strokeStyleMiterLimit !== undefined ?
           strokeStyleMiterLimit : ol.render.canvas.defaultMiterLimit,
       strokeStyle: ol.color.asString(!goog.isNull(strokeStyleColor) ?
           strokeStyleColor : ol.render.canvas.defaultStrokeStyle)
@@ -961,15 +961,15 @@ ol.render.canvas.Immediate.prototype.setTextStyle = function(textStyle) {
       var textStrokeStyleWidth = textStrokeStyle.getWidth();
       var textStrokeStyleMiterLimit = textStrokeStyle.getMiterLimit();
       this.textStrokeState_ = {
-        lineCap: goog.isDef(textStrokeStyleLineCap) ?
+        lineCap: textStrokeStyleLineCap !== undefined ?
             textStrokeStyleLineCap : ol.render.canvas.defaultLineCap,
         lineDash: goog.isDefAndNotNull(textStrokeStyleLineDash) ?
             textStrokeStyleLineDash : ol.render.canvas.defaultLineDash,
-        lineJoin: goog.isDef(textStrokeStyleLineJoin) ?
+        lineJoin: textStrokeStyleLineJoin !== undefined ?
             textStrokeStyleLineJoin : ol.render.canvas.defaultLineJoin,
-        lineWidth: goog.isDef(textStrokeStyleWidth) ?
+        lineWidth: textStrokeStyleWidth !== undefined ?
             textStrokeStyleWidth : ol.render.canvas.defaultLineWidth,
-        miterLimit: goog.isDef(textStrokeStyleMiterLimit) ?
+        miterLimit: textStrokeStyleMiterLimit !== undefined ?
             textStrokeStyleMiterLimit : ol.render.canvas.defaultMiterLimit,
         strokeStyle: ol.color.asString(!goog.isNull(textStrokeStyleColor) ?
             textStrokeStyleColor : ol.render.canvas.defaultStrokeStyle)
@@ -984,20 +984,20 @@ ol.render.canvas.Immediate.prototype.setTextStyle = function(textStyle) {
     var textTextAlign = textStyle.getTextAlign();
     var textTextBaseline = textStyle.getTextBaseline();
     this.textState_ = {
-      font: goog.isDef(textFont) ?
+      font: textFont !== undefined ?
           textFont : ol.render.canvas.defaultFont,
-      textAlign: goog.isDef(textTextAlign) ?
+      textAlign: textTextAlign !== undefined ?
           textTextAlign : ol.render.canvas.defaultTextAlign,
-      textBaseline: goog.isDef(textTextBaseline) ?
+      textBaseline: textTextBaseline !== undefined ?
           textTextBaseline : ol.render.canvas.defaultTextBaseline
     };
-    this.text_ = goog.isDef(textText) ? textText : '';
+    this.text_ = textText !== undefined ? textText : '';
     this.textOffsetX_ =
-        goog.isDef(textOffsetX) ? (this.pixelRatio_ * textOffsetX) : 0;
+        textOffsetX !== undefined ? (this.pixelRatio_ * textOffsetX) : 0;
     this.textOffsetY_ =
-        goog.isDef(textOffsetY) ? (this.pixelRatio_ * textOffsetY) : 0;
-    this.textRotation_ = goog.isDef(textRotation) ? textRotation : 0;
-    this.textScale_ = this.pixelRatio_ * (goog.isDef(textScale) ?
+        textOffsetY !== undefined ? (this.pixelRatio_ * textOffsetY) : 0;
+    this.textRotation_ = textRotation !== undefined ? textRotation : 0;
+    this.textScale_ = this.pixelRatio_ * (textScale !== undefined ?
         textScale : 1);
   }
 };

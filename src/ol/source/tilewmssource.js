@@ -337,7 +337,7 @@ ol.source.TileWMS.prototype.resetCoordKeyPrefix_ = function() {
  * @api stable
  */
 ol.source.TileWMS.prototype.setUrl = function(url) {
-  var urls = goog.isDef(url) ? ol.TileUrlFunction.expandUrl(url) : null;
+  var urls = url !== undefined ? ol.TileUrlFunction.expandUrl(url) : null;
   this.setUrls(urls);
 };
 

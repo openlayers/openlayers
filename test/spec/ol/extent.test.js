@@ -836,7 +836,7 @@ describe('ol.extent', function() {
 
     it('takes arbitrary function', function() {
       var transformFn = function(input, output, opt_dimension) {
-        var dimension = goog.isDef(opt_dimension) ? opt_dimension : 2;
+        var dimension = opt_dimension !== undefined ? opt_dimension : 2;
         if (output === undefined) {
           output = new Array(input.length);
         }

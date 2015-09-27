@@ -191,7 +191,7 @@ ol.style.AtlasManager.prototype.add =
   // even if no hit-detection entry is requested, we insert a fake entry into
   // the hit-detection atlas, to make sure that the offset is the same for
   // the original image and the hit-detection image.
-  var renderHitCallback = goog.isDef(opt_renderHitCallback) ?
+  var renderHitCallback = opt_renderHitCallback !== undefined ?
       opt_renderHitCallback : goog.functions.NULL;
 
   /** @type {?ol.style.AtlasInfo} */

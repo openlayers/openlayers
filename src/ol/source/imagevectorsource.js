@@ -166,7 +166,7 @@ ol.source.ImageVector.prototype.forEachFeatureAtCoordinate = function(
          * @return {?} Callback result.
          */
         function(feature) {
-          goog.asserts.assert(goog.isDef(feature), 'passed a feature');
+          goog.asserts.assert(feature !== undefined, 'passed a feature');
           var key = goog.getUid(feature).toString();
           if (!(key in features)) {
             features[key] = true;
@@ -290,7 +290,7 @@ ol.source.ImageVector.prototype.renderFeature_ =
  * @api stable
  */
 ol.source.ImageVector.prototype.setStyle = function(style) {
-  this.style_ = goog.isDef(style) ? style : ol.style.defaultStyleFunction;
+  this.style_ = style !== undefined ? style : ol.style.defaultStyleFunction;
   this.styleFunction_ = goog.isNull(style) ?
       undefined : ol.style.createStyleFunction(this.style_);
   this.changed();

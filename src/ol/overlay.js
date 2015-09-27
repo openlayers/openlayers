@@ -403,7 +403,7 @@ ol.Overlay.prototype.panIntoView_ = function() {
 
     if (delta[0] !== 0 || delta[1] !== 0) {
       var center = map.getView().getCenter();
-      goog.asserts.assert(goog.isDef(center), 'center should be defined');
+      goog.asserts.assert(center !== undefined, 'center should be defined');
       var centerPx = map.getPixelFromCoordinate(center);
       var newCenterPx = [
         centerPx[0] + delta[0],
@@ -430,7 +430,7 @@ ol.Overlay.prototype.panIntoView_ = function() {
 ol.Overlay.prototype.getRect_ = function(element, size) {
   goog.asserts.assert(goog.isDefAndNotNull(element),
       'element should be defined');
-  goog.asserts.assert(goog.isDef(size), 'size should be defined');
+  goog.asserts.assert(size !== undefined, 'size should be defined');
 
   var offset = goog.style.getPageOffset(element);
   return [
@@ -492,13 +492,13 @@ ol.Overlay.prototype.updatePixelPosition = function() {
  */
 ol.Overlay.prototype.updateRenderedPosition = function(pixel, mapSize) {
   goog.asserts.assert(!goog.isNull(pixel), 'pixel should not be null');
-  goog.asserts.assert(goog.isDef(mapSize), 'mapSize should be defined');
+  goog.asserts.assert(mapSize !== undefined, 'mapSize should be defined');
   var style = this.element_.style;
   var offset = this.getOffset();
   goog.asserts.assert(goog.isArray(offset), 'offset should be an array');
 
   var positioning = this.getPositioning();
-  goog.asserts.assert(goog.isDef(positioning),
+  goog.asserts.assert(positioning !== undefined,
       'positioning should be defined');
 
   var offsetX = offset[0];

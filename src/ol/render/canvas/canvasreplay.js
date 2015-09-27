@@ -260,7 +260,7 @@ ol.render.canvas.Replay.prototype.replay_ = function(
         if (goog.isDef(skippedFeaturesHash[featureUid]) ||
             !goog.isDefAndNotNull(feature.getGeometry())) {
           i = /** @type {number} */ (instruction[2]);
-        } else if (goog.isDef(opt_hitExtent) && !ol.extent.intersects(
+        } else if (opt_hitExtent !== undefined && !ol.extent.intersects(
             opt_hitExtent, feature.getGeometry().getExtent())) {
           i = /** @type {number} */ (instruction[2]);
         } else {
@@ -966,13 +966,13 @@ ol.render.canvas.LineStringReplay.prototype.setStrokeStyle_ = function() {
   var lineJoin = state.lineJoin;
   var lineWidth = state.lineWidth;
   var miterLimit = state.miterLimit;
-  goog.asserts.assert(goog.isDef(strokeStyle),
+  goog.asserts.assert(strokeStyle !== undefined,
       'strokeStyle should be defined');
-  goog.asserts.assert(goog.isDef(lineCap), 'lineCap should be defined');
+  goog.asserts.assert(lineCap !== undefined, 'lineCap should be defined');
   goog.asserts.assert(!goog.isNull(lineDash), 'lineDash should not be null');
-  goog.asserts.assert(goog.isDef(lineJoin), 'lineJoin should be defined');
-  goog.asserts.assert(goog.isDef(lineWidth), 'lineWidth should be defined');
-  goog.asserts.assert(goog.isDef(miterLimit), 'miterLimit should be defined');
+  goog.asserts.assert(lineJoin !== undefined, 'lineJoin should be defined');
+  goog.asserts.assert(lineWidth !== undefined, 'lineWidth should be defined');
+  goog.asserts.assert(miterLimit !== undefined, 'miterLimit should be defined');
   if (state.currentStrokeStyle != strokeStyle ||
       state.currentLineCap != lineCap ||
       !goog.array.equals(state.currentLineDash, lineDash) ||
@@ -1087,19 +1087,19 @@ ol.render.canvas.LineStringReplay.prototype.setFillStrokeStyle =
   this.state_.strokeStyle = ol.color.asString(!goog.isNull(strokeStyleColor) ?
       strokeStyleColor : ol.render.canvas.defaultStrokeStyle);
   var strokeStyleLineCap = strokeStyle.getLineCap();
-  this.state_.lineCap = goog.isDef(strokeStyleLineCap) ?
+  this.state_.lineCap = strokeStyleLineCap !== undefined ?
       strokeStyleLineCap : ol.render.canvas.defaultLineCap;
   var strokeStyleLineDash = strokeStyle.getLineDash();
   this.state_.lineDash = !goog.isNull(strokeStyleLineDash) ?
       strokeStyleLineDash : ol.render.canvas.defaultLineDash;
   var strokeStyleLineJoin = strokeStyle.getLineJoin();
-  this.state_.lineJoin = goog.isDef(strokeStyleLineJoin) ?
+  this.state_.lineJoin = strokeStyleLineJoin !== undefined ?
       strokeStyleLineJoin : ol.render.canvas.defaultLineJoin;
   var strokeStyleWidth = strokeStyle.getWidth();
-  this.state_.lineWidth = goog.isDef(strokeStyleWidth) ?
+  this.state_.lineWidth = strokeStyleWidth !== undefined ?
       strokeStyleWidth : ol.render.canvas.defaultLineWidth;
   var strokeStyleMiterLimit = strokeStyle.getMiterLimit();
-  this.state_.miterLimit = goog.isDef(strokeStyleMiterLimit) ?
+  this.state_.miterLimit = strokeStyleMiterLimit !== undefined ?
       strokeStyleMiterLimit : ol.render.canvas.defaultMiterLimit;
 
   if (this.state_.lineWidth > this.maxLineWidth) {
@@ -1398,19 +1398,19 @@ ol.render.canvas.PolygonReplay.prototype.setFillStrokeStyle =
     state.strokeStyle = ol.color.asString(!goog.isNull(strokeStyleColor) ?
         strokeStyleColor : ol.render.canvas.defaultStrokeStyle);
     var strokeStyleLineCap = strokeStyle.getLineCap();
-    state.lineCap = goog.isDef(strokeStyleLineCap) ?
+    state.lineCap = strokeStyleLineCap !== undefined ?
         strokeStyleLineCap : ol.render.canvas.defaultLineCap;
     var strokeStyleLineDash = strokeStyle.getLineDash();
     state.lineDash = !goog.isNull(strokeStyleLineDash) ?
         strokeStyleLineDash.slice() : ol.render.canvas.defaultLineDash;
     var strokeStyleLineJoin = strokeStyle.getLineJoin();
-    state.lineJoin = goog.isDef(strokeStyleLineJoin) ?
+    state.lineJoin = strokeStyleLineJoin !== undefined ?
         strokeStyleLineJoin : ol.render.canvas.defaultLineJoin;
     var strokeStyleWidth = strokeStyle.getWidth();
-    state.lineWidth = goog.isDef(strokeStyleWidth) ?
+    state.lineWidth = strokeStyleWidth !== undefined ?
         strokeStyleWidth : ol.render.canvas.defaultLineWidth;
     var strokeStyleMiterLimit = strokeStyle.getMiterLimit();
-    state.miterLimit = goog.isDef(strokeStyleMiterLimit) ?
+    state.miterLimit = strokeStyleMiterLimit !== undefined ?
         strokeStyleMiterLimit : ol.render.canvas.defaultMiterLimit;
 
     if (state.lineWidth > this.maxLineWidth) {
@@ -1441,17 +1441,18 @@ ol.render.canvas.PolygonReplay.prototype.setFillStrokeStyles_ = function() {
   var lineJoin = state.lineJoin;
   var lineWidth = state.lineWidth;
   var miterLimit = state.miterLimit;
-  if (goog.isDef(fillStyle) && state.currentFillStyle != fillStyle) {
+  if (fillStyle !== undefined && state.currentFillStyle != fillStyle) {
     this.instructions.push(
         [ol.render.canvas.Instruction.SET_FILL_STYLE, fillStyle]);
     state.currentFillStyle = state.fillStyle;
   }
   if (strokeStyle !== undefined) {
-    goog.asserts.assert(goog.isDef(lineCap), 'lineCap should be defined');
+    goog.asserts.assert(lineCap !== undefined, 'lineCap should be defined');
     goog.asserts.assert(!goog.isNull(lineDash), 'lineDash should not be null');
-    goog.asserts.assert(goog.isDef(lineJoin), 'lineJoin should be defined');
-    goog.asserts.assert(goog.isDef(lineWidth), 'lineWidth should be defined');
-    goog.asserts.assert(goog.isDef(miterLimit), 'miterLimit should be defined');
+    goog.asserts.assert(lineJoin !== undefined, 'lineJoin should be defined');
+    goog.asserts.assert(lineWidth !== undefined, 'lineWidth should be defined');
+    goog.asserts.assert(miterLimit !== undefined,
+        'miterLimit should be defined');
     if (state.currentStrokeStyle != strokeStyle ||
         state.currentLineCap != lineCap ||
         state.currentLineDash != lineDash ||
@@ -1722,15 +1723,15 @@ ol.render.canvas.TextReplay.prototype.setTextStyle = function(textStyle) {
       var textStrokeStyleLineJoin = textStrokeStyle.getLineJoin();
       var textStrokeStyleWidth = textStrokeStyle.getWidth();
       var textStrokeStyleMiterLimit = textStrokeStyle.getMiterLimit();
-      var lineCap = goog.isDef(textStrokeStyleLineCap) ?
+      var lineCap = textStrokeStyleLineCap !== undefined ?
           textStrokeStyleLineCap : ol.render.canvas.defaultLineCap;
       var lineDash = goog.isDefAndNotNull(textStrokeStyleLineDash) ?
           textStrokeStyleLineDash.slice() : ol.render.canvas.defaultLineDash;
-      var lineJoin = goog.isDef(textStrokeStyleLineJoin) ?
+      var lineJoin = textStrokeStyleLineJoin !== undefined ?
           textStrokeStyleLineJoin : ol.render.canvas.defaultLineJoin;
-      var lineWidth = goog.isDef(textStrokeStyleWidth) ?
+      var lineWidth = textStrokeStyleWidth !== undefined ?
           textStrokeStyleWidth : ol.render.canvas.defaultLineWidth;
-      var miterLimit = goog.isDef(textStrokeStyleMiterLimit) ?
+      var miterLimit = textStrokeStyleMiterLimit !== undefined ?
           textStrokeStyleMiterLimit : ol.render.canvas.defaultMiterLimit;
       var strokeStyle = ol.color.asString(!goog.isNull(textStrokeStyleColor) ?
           textStrokeStyleColor : ol.render.canvas.defaultStrokeStyle);
@@ -1761,11 +1762,11 @@ ol.render.canvas.TextReplay.prototype.setTextStyle = function(textStyle) {
     var textText = textStyle.getText();
     var textTextAlign = textStyle.getTextAlign();
     var textTextBaseline = textStyle.getTextBaseline();
-    var font = goog.isDef(textFont) ?
+    var font = textFont !== undefined ?
         textFont : ol.render.canvas.defaultFont;
-    var textAlign = goog.isDef(textTextAlign) ?
+    var textAlign = textTextAlign !== undefined ?
         textTextAlign : ol.render.canvas.defaultTextAlign;
-    var textBaseline = goog.isDef(textTextBaseline) ?
+    var textBaseline = textTextBaseline !== undefined ?
         textTextBaseline : ol.render.canvas.defaultTextBaseline;
     if (goog.isNull(this.textState_)) {
       this.textState_ = {
@@ -1779,11 +1780,11 @@ ol.render.canvas.TextReplay.prototype.setTextStyle = function(textStyle) {
       textState.textAlign = textAlign;
       textState.textBaseline = textBaseline;
     }
-    this.text_ = goog.isDef(textText) ? textText : '';
-    this.textOffsetX_ = goog.isDef(textOffsetX) ? textOffsetX : 0;
-    this.textOffsetY_ = goog.isDef(textOffsetY) ? textOffsetY : 0;
-    this.textRotation_ = goog.isDef(textRotation) ? textRotation : 0;
-    this.textScale_ = goog.isDef(textScale) ? textScale : 1;
+    this.text_ = textText !== undefined ? textText : '';
+    this.textOffsetX_ = textOffsetX !== undefined ? textOffsetX : 0;
+    this.textOffsetY_ = textOffsetY !== undefined ? textOffsetY : 0;
+    this.textRotation_ = textRotation !== undefined ? textRotation : 0;
+    this.textScale_ = textScale !== undefined ? textScale : 1;
   }
 };
 
@@ -1917,7 +1918,7 @@ ol.render.canvas.ReplayGroup.prototype.forEachFeatureAtCoordinate = function(
  */
 ol.render.canvas.ReplayGroup.prototype.getReplay =
     function(zIndex, replayType) {
-  var zIndexKey = goog.isDef(zIndex) ? zIndex.toString() : '0';
+  var zIndexKey = zIndex !== undefined ? zIndex.toString() : '0';
   var replays = this.replaysByZIndex_[zIndexKey];
   if (replays === undefined) {
     replays = {};
@@ -1926,7 +1927,7 @@ ol.render.canvas.ReplayGroup.prototype.getReplay =
   var replay = replays[replayType];
   if (replay === undefined) {
     var Constructor = ol.render.canvas.BATCH_CONSTRUCTORS_[replayType];
-    goog.asserts.assert(goog.isDef(Constructor),
+    goog.asserts.assert(Constructor !== undefined,
         replayType +
         ' constructor missing from ol.render.canvas.BATCH_CONSTRUCTORS_');
     replay = new Constructor(this.tolerance_, this.maxExtent_,

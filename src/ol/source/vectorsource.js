@@ -572,7 +572,7 @@ ol.source.Vector.prototype.getFeatures = function() {
           features, goog.object.getValues(this.nullGeometryFeatures_));
     }
   }
-  goog.asserts.assert(goog.isDef(features),
+  goog.asserts.assert(features !== undefined,
       'Neither featuresRtree_ nor featuresCollection_ are available');
   return features;
 };
@@ -692,7 +692,7 @@ ol.source.Vector.prototype.getExtent = function() {
  */
 ol.source.Vector.prototype.getFeatureById = function(id) {
   var feature = this.idIndex_[id.toString()];
-  return goog.isDef(feature) ? feature : null;
+  return feature !== undefined ? feature : null;
 };
 
 

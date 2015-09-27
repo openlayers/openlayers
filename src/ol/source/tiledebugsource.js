@@ -48,7 +48,7 @@ goog.inherits(ol.DebugTile_, ol.Tile);
  * @inheritDoc
  */
 ol.DebugTile_.prototype.getImage = function(opt_context) {
-  var key = goog.isDef(opt_context) ? goog.getUid(opt_context) : -1;
+  var key = opt_context !== undefined ? goog.getUid(opt_context) : -1;
   if (key in this.canvasByContext_) {
     return this.canvasByContext_[key];
   } else {
