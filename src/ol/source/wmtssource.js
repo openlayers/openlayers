@@ -355,7 +355,7 @@ ol.source.WMTS.optionsFromCapabilities = function(wmtsCap, config) {
   var tileMatrixSets = wmtsCap['Contents']['TileMatrixSet'];
   var idx, matrixSet;
   if (l['TileMatrixSetLink'].length > 1) {
-    if (goog.isDef(config['projection'])) {
+    if ('projection' in config) {
       idx = goog.array.findIndex(l['TileMatrixSetLink'],
           function(elt, index, array) {
             var tileMatrixSet = goog.array.find(tileMatrixSets, function(el) {
@@ -384,11 +384,11 @@ ol.source.WMTS.optionsFromCapabilities = function(wmtsCap, config) {
       'TileMatrixSet must not be null');
 
   var format = /** @type {string} */ (l['Format'][0]);
-  if (goog.isDef(config['format'])) {
+  if ('format' in config) {
     format = config['format'];
   }
   idx = goog.array.findIndex(l['Style'], function(elt, index, array) {
-    if (goog.isDef(config['style'])) {
+    if ('style' in config) {
       return elt['Title'] == config['style'];
     } else {
       return elt['isDefault'];
@@ -400,7 +400,7 @@ ol.source.WMTS.optionsFromCapabilities = function(wmtsCap, config) {
   var style = /** @type {string} */ (l['Style'][idx]['Identifier']);
 
   var dimensions = {};
-  if (goog.isDef(l['Dimension'])) {
+  if ('Dimension' in l) {
     goog.array.forEach(l['Dimension'], function(elt, index, array) {
       var key = elt['Identifier'];
       var value = elt['default'];
@@ -423,7 +423,7 @@ ol.source.WMTS.optionsFromCapabilities = function(wmtsCap, config) {
       'found matrixSet in Contents/TileMatrixSet');
 
   var projection;
-  if (goog.isDef(config['projection'])) {
+  if ('projection' in config) {
     projection = ol.proj.get(config['projection']);
   } else {
     projection = ol.proj.get(matrixSetObj['SupportedCRS'].replace(
