@@ -164,10 +164,10 @@ ol.source.Vector = function(opt_options) {
   if (!useSpatialIndex && !goog.isDef(collection)) {
     collection = new ol.Collection(features);
   }
-  if (goog.isDef(features)) {
+  if (features !== undefined) {
     this.addFeaturesInternal(features);
   }
-  if (goog.isDef(collection)) {
+  if (collection !== undefined) {
     this.bindFeaturesCollection_(collection);
   }
 
@@ -246,7 +246,7 @@ ol.source.Vector.prototype.setupChangeEvents_ = function(featureKey, feature) {
 ol.source.Vector.prototype.addToIndex_ = function(featureKey, feature) {
   var valid = true;
   var id = feature.getId();
-  if (goog.isDef(id)) {
+  if (id !== undefined) {
     if (!(id.toString() in this.idIndex_)) {
       this.idIndex_[id.toString()] = feature;
     } else {
@@ -726,7 +726,7 @@ ol.source.Vector.prototype.handleFeatureChange_ = function(event) {
   }
   var id = feature.getId();
   var removed;
-  if (goog.isDef(id)) {
+  if (id !== undefined) {
     var sid = id.toString();
     if (featureKey in this.undefIdIndex_) {
       delete this.undefIdIndex_[featureKey];
@@ -827,7 +827,7 @@ ol.source.Vector.prototype.removeFeatureInternal = function(feature) {
       goog.events.unlistenByKey);
   delete this.featureChangeKeys_[featureKey];
   var id = feature.getId();
-  if (goog.isDef(id)) {
+  if (id !== undefined) {
     delete this.idIndex_[id.toString()];
   } else {
     delete this.undefIdIndex_[featureKey];

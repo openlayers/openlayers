@@ -406,7 +406,7 @@ ol.render.canvas.Replay.prototype.replay_ = function(
         ++i;
         break;
       case ol.render.canvas.Instruction.END_GEOMETRY:
-        if (goog.isDef(featureCallback)) {
+        if (featureCallback !== undefined) {
           feature = /** @type {ol.Feature} */ (instruction[1]);
           var result = featureCallback(feature);
           if (result) {
@@ -1220,7 +1220,7 @@ ol.render.canvas.PolygonReplay.prototype.drawCircleGeometry =
   if (!goog.isDef(fillStyle) && !goog.isDef(strokeStyle)) {
     return;
   }
-  if (goog.isDef(strokeStyle)) {
+  if (strokeStyle !== undefined) {
     goog.asserts.assert(goog.isDef(state.lineWidth),
         'state.lineWidth should be defined');
   }
@@ -1273,7 +1273,7 @@ ol.render.canvas.PolygonReplay.prototype.drawPolygonGeometry =
   if (!goog.isDef(fillStyle) && !goog.isDef(strokeStyle)) {
     return;
   }
-  if (goog.isDef(strokeStyle)) {
+  if (strokeStyle !== undefined) {
     goog.asserts.assert(goog.isDef(state.lineWidth),
         'state.lineWidth should be defined');
   }
@@ -1309,7 +1309,7 @@ ol.render.canvas.PolygonReplay.prototype.drawMultiPolygonGeometry =
   if (!goog.isDef(fillStyle) && !goog.isDef(strokeStyle)) {
     return;
   }
-  if (goog.isDef(strokeStyle)) {
+  if (strokeStyle !== undefined) {
     goog.asserts.assert(goog.isDef(state.lineWidth),
         'state.lineWidth should be defined');
   }
@@ -1446,7 +1446,7 @@ ol.render.canvas.PolygonReplay.prototype.setFillStrokeStyles_ = function() {
         [ol.render.canvas.Instruction.SET_FILL_STYLE, fillStyle]);
     state.currentFillStyle = state.fillStyle;
   }
-  if (goog.isDef(strokeStyle)) {
+  if (strokeStyle !== undefined) {
     goog.asserts.assert(goog.isDef(lineCap), 'lineCap should be defined');
     goog.asserts.assert(!goog.isNull(lineDash), 'lineDash should not be null');
     goog.asserts.assert(goog.isDef(lineJoin), 'lineJoin should be defined');
@@ -1984,7 +1984,7 @@ ol.render.canvas.ReplayGroup.prototype.replay = function(
     replays = this.replaysByZIndex_[zs[i].toString()];
     for (j = 0, jj = ol.render.REPLAY_ORDER.length; j < jj; ++j) {
       replay = replays[ol.render.REPLAY_ORDER[j]];
-      if (goog.isDef(replay)) {
+      if (replay !== undefined) {
         replay.replay(context, pixelRatio, transform, viewRotation,
             skippedFeaturesHash);
       }
@@ -2020,7 +2020,7 @@ ol.render.canvas.ReplayGroup.prototype.replayHitDetection_ = function(
     replays = this.replaysByZIndex_[zs[i].toString()];
     for (j = ol.render.REPLAY_ORDER.length - 1; j >= 0; --j) {
       replay = replays[ol.render.REPLAY_ORDER[j]];
-      if (goog.isDef(replay)) {
+      if (replay !== undefined) {
         result = replay.replayHitDetection(context, transform, viewRotation,
             skippedFeaturesHash, featureCallback, opt_hitExtent);
         if (result) {

@@ -81,7 +81,7 @@ ol.ImageTile.prototype.disposeInternal = function() {
  * @api
  */
 ol.ImageTile.prototype.getImage = function(opt_context) {
-  if (goog.isDef(opt_context)) {
+  if (opt_context !== undefined) {
     var image;
     var key = goog.getUid(opt_context);
     if (key in this.imageByContext_) {

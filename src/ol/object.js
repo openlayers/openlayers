@@ -116,7 +116,7 @@ ol.Object = function(opt_values) {
    */
   this.values_ = {};
 
-  if (goog.isDef(opt_values)) {
+  if (opt_values !== undefined) {
     this.setProperties(opt_values);
   }
 };

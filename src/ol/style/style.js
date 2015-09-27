@@ -172,7 +172,7 @@ ol.style.Style.prototype.setGeometry = function(geometry) {
     };
   } else if (goog.isNull(geometry)) {
     this.geometryFunction_ = ol.style.defaultGeometryFunction;
-  } else if (goog.isDef(geometry)) {
+  } else if (geometry !== undefined) {
     goog.asserts.assertInstanceof(geometry, ol.geom.Geometry,
         'geometry must be an ol.geom.Geometry instance');
     this.geometryFunction_ = function() {

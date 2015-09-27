@@ -404,7 +404,7 @@ ol.source.WMTS.optionsFromCapabilities = function(wmtsCap, config) {
     goog.array.forEach(l['Dimension'], function(elt, index, array) {
       var key = elt['Identifier'];
       var value = elt['default'];
-      if (goog.isDef(value)) {
+      if (value !== undefined) {
         goog.asserts.assert(goog.array.contains(elt['values'], value),
             'default value contained in values');
       } else {
@@ -432,7 +432,7 @@ ol.source.WMTS.optionsFromCapabilities = function(wmtsCap, config) {
 
   var wgs84BoundingBox = l['WGS84BoundingBox'];
   var extent, wrapX;
-  if (goog.isDef(wgs84BoundingBox)) {
+  if (wgs84BoundingBox !== undefined) {
     var wgs84ProjectionExtent = ol.proj.get('EPSG:4326').getExtent();
     wrapX = (wgs84BoundingBox[0] == wgs84ProjectionExtent[0] &&
         wgs84BoundingBox[2] == wgs84ProjectionExtent[2]);

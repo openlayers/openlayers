@@ -50,7 +50,7 @@ ol.tilecoord.createFromString = function(str) {
  * @return {ol.TileCoord} Tile coordinate.
  */
 ol.tilecoord.createOrUpdate = function(z, x, y, opt_tileCoord) {
-  if (goog.isDef(opt_tileCoord)) {
+  if (opt_tileCoord !== undefined) {
     opt_tileCoord[0] = z;
     opt_tileCoord[1] = x;
     opt_tileCoord[2] = y;

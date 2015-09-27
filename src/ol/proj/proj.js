@@ -148,7 +148,7 @@ ol.proj.Projection = function(options) {
   if (ol.ENABLE_PROJ4JS && typeof proj4 == 'function' &&
       !goog.isDef(projections[code])) {
     var def = proj4.defs(code);
-    if (goog.isDef(def)) {
+    if (def !== undefined) {
       if (goog.isDef(def.axis) && !goog.isDef(options.axisOrientation)) {
         this.axisOrientation_ = def.axis;
       }
@@ -165,7 +165,7 @@ ol.proj.Projection = function(options) {
       var currentCode, currentDef, currentProj, proj4Transform;
       for (currentCode in projections) {
         currentDef = proj4.defs(currentCode);
-        if (goog.isDef(currentDef)) {
+        if (currentDef !== undefined) {
           currentProj = ol.proj.get(currentCode);
           if (currentDef === def) {
             ol.proj.addEquivalentProjections([currentProj, this]);
@@ -361,7 +361,7 @@ ol.proj.Projection.prototype.getPointResolution_ = function(resolution, point) {
         vertices.slice(4, 6), vertices.slice(6, 8));
     var pointResolution = (width + height) / 2;
     var metersPerUnit = this.getMetersPerUnit();
-    if (goog.isDef(metersPerUnit)) {
+    if (metersPerUnit !== undefined) {
       pointResolution /= metersPerUnit;
     }
     return pointResolution;
@@ -761,7 +761,7 @@ ol.proj.identityTransform = function(input, opt_output, opt_dimension) {
  */
 ol.proj.cloneTransform = function(input, opt_output, opt_dimension) {
   var output;
-  if (goog.isDef(opt_output)) {
+  if (opt_output !== undefined) {
     for (var i = 0, ii = input.length; i < ii; ++i) {
       opt_output[i] = input[i];
     }

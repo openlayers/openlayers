@@ -1078,7 +1078,7 @@ ol.render.webgl.ReplayGroup.prototype.replay = function(context,
   var i, ii, replay, result;
   for (i = 0, ii = ol.render.REPLAY_ORDER.length; i < ii; ++i) {
     replay = this.replays_[ol.render.REPLAY_ORDER[i]];
-    if (goog.isDef(replay)) {
+    if (replay !== undefined) {
       replay.replay(context,
           center, resolution, rotation, size, pixelRatio,
           opacity, brightness, contrast, hue, saturation, skippedFeaturesHash,
@@ -1117,7 +1117,7 @@ ol.render.webgl.ReplayGroup.prototype.replayHitDetection_ = function(context,
   var i, replay, result;
   for (i = ol.render.REPLAY_ORDER.length - 1; i >= 0; --i) {
     replay = this.replays_[ol.render.REPLAY_ORDER[i]];
-    if (goog.isDef(replay)) {
+    if (replay !== undefined) {
       result = replay.replay(context,
           center, resolution, rotation, size, pixelRatio,
           opacity, brightness, contrast, hue, saturation,

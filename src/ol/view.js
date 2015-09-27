@@ -175,7 +175,7 @@ goog.inherits(ol.View, ol.Object);
 ol.View.prototype.calculateCenterRotate = function(rotation, anchor) {
   var center;
   var currentCenter = this.getCenter();
-  if (goog.isDef(currentCenter)) {
+  if (currentCenter !== undefined) {
     center = [currentCenter[0] - anchor[0], currentCenter[1] - anchor[1]];
     ol.coordinate.rotate(center, rotation - this.getRotation());
     ol.coordinate.add(center, anchor);
@@ -421,7 +421,7 @@ ol.View.prototype.getZoom = function() {
   var offset;
   var resolution = this.getResolution();
 
-  if (goog.isDef(resolution)) {
+  if (resolution !== undefined) {
     var res, z = 0;
     do {
       res = this.constrainResolution(this.maxResolution_, z);
@@ -564,7 +564,7 @@ ol.View.prototype.isDef = function() {
  * @api stable
  */
 ol.View.prototype.rotate = function(rotation, opt_anchor) {
-  if (goog.isDef(opt_anchor)) {
+  if (opt_anchor !== undefined) {
     var center = this.calculateCenterRotate(rotation, opt_anchor);
     this.setCenter(center);
   }
@@ -695,7 +695,7 @@ ol.View.createResolutionConstraint_ = function(options) {
 
     // user provided maxResolution takes precedence
     maxResolution = options.maxResolution;
-    if (goog.isDef(maxResolution)) {
+    if (maxResolution !== undefined) {
       minZoom = 0;
     } else {
       maxResolution = defaultMaxResolution / Math.pow(zoomFactor, minZoom);

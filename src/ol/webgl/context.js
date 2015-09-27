@@ -367,11 +367,11 @@ ol.webgl.Context.createTexture_ = function(gl, opt_wrapS, opt_wrapT) {
   gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
   gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
 
-  if (goog.isDef(opt_wrapS)) {
+  if (opt_wrapS !== undefined) {
     gl.texParameteri(
         goog.webgl.TEXTURE_2D, goog.webgl.TEXTURE_WRAP_S, opt_wrapS);
   }
-  if (goog.isDef(opt_wrapT)) {
+  if (opt_wrapT !== undefined) {
     gl.texParameteri(
         goog.webgl.TEXTURE_2D, goog.webgl.TEXTURE_WRAP_T, opt_wrapT);
   }

@@ -129,7 +129,7 @@ ol.source.TileVector.prototype.forEachFeatureAtCoordinateAndResolution =
 
   var tileKey = this.getTileKeyZXY_(tileCoord[0], tileCoord[1], tileCoord[2]);
   var features = tiles[tileKey];
-  if (goog.isDef(features)) {
+  if (features !== undefined) {
     var i, ii;
     for (i = 0, ii = features.length; i < ii; ++i) {
       var feature = features[i];
@@ -168,7 +168,7 @@ ol.source.TileVector.prototype.forEachFeatureInExtentAtResolution =
     for (y = tileRange.minY; y <= tileRange.maxY; ++y) {
       var tileKey = this.getTileKeyZXY_(z, x, y);
       var features = tiles[tileKey];
-      if (goog.isDef(features)) {
+      if (features !== undefined) {
         var i, ii;
         for (i = 0, ii = features.length; i < ii; ++i) {
           var result = f.call(opt_this, features[i]);
@@ -305,7 +305,7 @@ ol.source.TileVector.prototype.loadFeatures =
             tileCoord, projection);
         var url = goog.isNull(urlTileCoord) ? undefined :
             tileUrlFunction(urlTileCoord, 1, projection);
-        if (goog.isDef(url)) {
+        if (url !== undefined) {
           tiles[tileKey] = [];
           var tileSuccess = goog.partial(success, tileKey);
           if (!goog.isNull(this.tileLoadFunction_)) {

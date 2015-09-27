@@ -78,7 +78,7 @@ goog.inherits(ol.Image, ol.ImageBase);
  * @api
  */
 ol.Image.prototype.getImage = function(opt_context) {
-  if (goog.isDef(opt_context)) {
+  if (opt_context !== undefined) {
     var image;
     var key = goog.getUid(opt_context);
     if (key in this.imageByContext_) {

@@ -149,7 +149,7 @@ ol.source.ImageMapGuide.prototype.getImage =
   var size = [width * pixelRatio, height * pixelRatio];
 
   var imageUrl = this.imageUrlFunction_(extent, size, projection);
-  if (goog.isDef(imageUrl)) {
+  if (imageUrl !== undefined) {
     image = new ol.Image(extent, resolution, pixelRatio,
         this.getAttributions(), imageUrl, this.crossOrigin_,
         this.imageLoadFunction_);

@@ -15,7 +15,7 @@ goog.require('goog.asserts');
 ol.geom.flat.flip.flipXY =
     function(flatCoordinates, offset, end, stride, opt_dest, opt_destOffset) {
   var dest, destOffset;
-  if (goog.isDef(opt_dest)) {
+  if (opt_dest !== undefined) {
     dest = opt_dest;
     destOffset = goog.isDef(opt_destOffset) ? opt_destOffset : 0;
   } else {
