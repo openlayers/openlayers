@@ -705,7 +705,7 @@ ol.source.Vector.prototype.handleFeatureChange_ = function(event) {
   var feature = /** @type {ol.Feature} */ (event.target);
   var featureKey = goog.getUid(feature).toString();
   var geometry = feature.getGeometry();
-  if (!goog.isDefAndNotNull(geometry)) {
+  if (!geometry) {
     if (!(featureKey in this.nullGeometryFeatures_)) {
       if (!goog.isNull(this.featuresRtree_)) {
         this.featuresRtree_.remove(feature);

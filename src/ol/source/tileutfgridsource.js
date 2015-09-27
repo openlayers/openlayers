@@ -131,7 +131,7 @@ ol.source.TileUTFGrid.prototype.handleTileJSONResponse = function(tileJSON) {
   this.template_ = tileJSON.template;
 
   var grids = tileJSON.grids;
-  if (!goog.isDefAndNotNull(grids)) {
+  if (!grids) {
     this.setState(ol.source.State.ERROR);
     return;
   }

@@ -336,7 +336,7 @@ ol.renderer.dom.VectorLayer.prototype.prepareFrame =
  */
 ol.renderer.dom.VectorLayer.prototype.renderFeature =
     function(feature, resolution, pixelRatio, styles, replayGroup) {
-  if (!goog.isDefAndNotNull(styles)) {
+  if (!styles) {
     return false;
   }
   var i, ii, loading = false;

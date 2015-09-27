@@ -84,7 +84,7 @@ ol.featureloader.loadFeaturesXhr = function(url, format, success) {
                   if (!goog.userAgent.IE) {
                     source = xhrIo.getResponseXml();
                   }
-                  if (!goog.isDefAndNotNull(source)) {
+                  if (!source) {
                     source = ol.xml.parse(xhrIo.getResponseText());
                   }
                 } else {
