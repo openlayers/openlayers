@@ -1,6 +1,31 @@
 goog.provide('ol.test.math');
 
 
+describe('ol.math.clamp', function() {
+
+  it('returns the correct value at -Infinity', function() {
+    expect(ol.math.clamp(-Infinity, 10, 20)).to.eql(10);
+  });
+
+  it('returns the correct value at min', function() {
+    expect(ol.math.clamp(10, 10, 20)).to.eql(10);
+  });
+
+  it('returns the correct value at mid point', function() {
+    expect(ol.math.clamp(15, 10, 20)).to.eql(15);
+  });
+
+  it('returns the correct value at max', function() {
+    expect(ol.math.clamp(20, 10, 20)).to.eql(20);
+  });
+
+  it('returns the correct value at Infinity', function() {
+    expect(ol.math.clamp(Infinity, 10, 20)).to.eql(20);
+  });
+
+});
+
+
 describe('ol.math.cosh', function() {
 
   it('returns the correct value at -Infinity', function() {

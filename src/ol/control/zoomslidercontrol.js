@@ -11,7 +11,6 @@ goog.require('goog.events.EventType');
 goog.require('goog.fx.DragEvent');
 goog.require('goog.fx.Dragger');
 goog.require('goog.fx.Dragger.EventType');
-goog.require('goog.math');
 goog.require('goog.math.Rect');
 goog.require('goog.style');
 goog.require('ol.Size');
@@ -20,6 +19,7 @@ goog.require('ol.animation');
 goog.require('ol.control.Control');
 goog.require('ol.css');
 goog.require('ol.easing');
+goog.require('ol.math');
 
 
 
@@ -301,7 +301,7 @@ ol.control.ZoomSlider.prototype.getRelativePosition_ = function(x, y) {
   } else {
     amount = (y - draggerLimits.top) / draggerLimits.height;
   }
-  return goog.math.clamp(amount, 0, 1);
+  return ol.math.clamp(amount, 0, 1);
 };
 
 

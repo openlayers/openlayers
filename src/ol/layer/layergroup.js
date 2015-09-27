@@ -4,7 +4,6 @@ goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('goog.events');
 goog.require('goog.events.EventType');
-goog.require('goog.math');
 goog.require('goog.object');
 goog.require('ol.Collection');
 goog.require('ol.CollectionEvent');
@@ -13,6 +12,7 @@ goog.require('ol.Object');
 goog.require('ol.ObjectEventType');
 goog.require('ol.extent');
 goog.require('ol.layer.Base');
+goog.require('ol.math');
 goog.require('ol.source.State');
 
 
@@ -215,7 +215,7 @@ ol.layer.Group.prototype.getLayerStatesArray = function(opt_states) {
   var i, ii, layerState;
   for (i = pos, ii = states.length; i < ii; i++) {
     layerState = states[i];
-    layerState.brightness = goog.math.clamp(
+    layerState.brightness = ol.math.clamp(
         layerState.brightness + ownLayerState.brightness, -1, 1);
     layerState.contrast *= ownLayerState.contrast;
     layerState.hue += ownLayerState.hue;
