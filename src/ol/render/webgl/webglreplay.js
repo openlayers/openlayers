@@ -634,7 +634,7 @@ ol.render.webgl.ImageReplay.prototype.replay = function(context,
 
   // draw!
   var result;
-  if (!goog.isDef(featureCallback)) {
+  if (featureCallback === undefined) {
     this.drawReplay_(gl, context, skippedFeaturesHash,
         this.textures_, this.groupIndices_);
   } else {
@@ -1037,7 +1037,7 @@ ol.render.webgl.ReplayGroup.prototype.finish = function(context) {
 ol.render.webgl.ReplayGroup.prototype.getReplay =
     function(zIndex, replayType) {
   var replay = this.replays_[replayType];
-  if (!goog.isDef(replay)) {
+  if (replay === undefined) {
     var constructor = ol.render.webgl.BATCH_CONSTRUCTORS_[replayType];
     goog.asserts.assert(goog.isDef(constructor),
         replayType +

@@ -1919,12 +1919,12 @@ ol.render.canvas.ReplayGroup.prototype.getReplay =
     function(zIndex, replayType) {
   var zIndexKey = goog.isDef(zIndex) ? zIndex.toString() : '0';
   var replays = this.replaysByZIndex_[zIndexKey];
-  if (!goog.isDef(replays)) {
+  if (replays === undefined) {
     replays = {};
     this.replaysByZIndex_[zIndexKey] = replays;
   }
   var replay = replays[replayType];
-  if (!goog.isDef(replay)) {
+  if (replay === undefined) {
     var Constructor = ol.render.canvas.BATCH_CONSTRUCTORS_[replayType];
     goog.asserts.assert(goog.isDef(Constructor),
         replayType +

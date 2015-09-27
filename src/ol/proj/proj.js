@@ -154,7 +154,7 @@ ol.proj.Projection = function(options) {
       }
       if (!goog.isDef(options.units)) {
         var units = def.units;
-        if (!goog.isDef(units)) {
+        if (units === undefined) {
           if (def.to_meter !== undefined) {
             units = def.to_meter.toString();
             ol.proj.METERS_PER_UNIT[units] = def.to_meter;
@@ -725,7 +725,7 @@ ol.proj.getTransformFromProjections =
       goog.object.containsKey(transforms[sourceCode], destinationCode)) {
     transform = transforms[sourceCode][destinationCode];
   }
-  if (!goog.isDef(transform)) {
+  if (transform === undefined) {
     goog.asserts.assert(goog.isDef(transform), 'transform should be defined');
     transform = ol.proj.identityTransform;
   }

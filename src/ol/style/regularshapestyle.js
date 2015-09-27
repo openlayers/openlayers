@@ -315,7 +315,7 @@ ol.style.RegularShape.prototype.render_ = function(atlasManager) {
   if (!goog.isNull(this.stroke_)) {
     strokeStyle = ol.color.asString(this.stroke_.getColor());
     strokeWidth = this.stroke_.getWidth();
-    if (!goog.isDef(strokeWidth)) {
+    if (strokeWidth === undefined) {
       strokeWidth = ol.render.canvas.defaultLineWidth;
     }
     lineDash = this.stroke_.getLineDash();
@@ -323,15 +323,15 @@ ol.style.RegularShape.prototype.render_ = function(atlasManager) {
       lineDash = null;
     }
     lineJoin = this.stroke_.getLineJoin();
-    if (!goog.isDef(lineJoin)) {
+    if (lineJoin === undefined) {
       lineJoin = ol.render.canvas.defaultLineJoin;
     }
     lineCap = this.stroke_.getLineCap();
-    if (!goog.isDef(lineCap)) {
+    if (lineCap === undefined) {
       lineCap = ol.render.canvas.defaultLineCap;
     }
     miterLimit = this.stroke_.getMiterLimit();
-    if (!goog.isDef(miterLimit)) {
+    if (miterLimit === undefined) {
       miterLimit = ol.render.canvas.defaultMiterLimit;
     }
   }
@@ -349,7 +349,7 @@ ol.style.RegularShape.prototype.render_ = function(atlasManager) {
     miterLimit: miterLimit
   };
 
-  if (!goog.isDef(atlasManager)) {
+  if (atlasManager === undefined) {
     // no atlas manager is used, create a new canvas
     this.canvas_ = /** @type {HTMLCanvasElement} */
         (goog.dom.createElement(goog.dom.TagName.CANVAS));

@@ -131,7 +131,7 @@ ol.render.webgl.Immediate.prototype.drawFeature = function(feature, style) {
     return;
   }
   var zIndex = style.getZIndex();
-  if (!goog.isDef(zIndex)) {
+  if (zIndex === undefined) {
     zIndex = 0;
   }
   this.drawAsync(zIndex, function(render) {

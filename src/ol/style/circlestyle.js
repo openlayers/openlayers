@@ -249,7 +249,7 @@ ol.style.Circle.prototype.render_ = function(atlasManager) {
   if (!goog.isNull(this.stroke_)) {
     strokeStyle = ol.color.asString(this.stroke_.getColor());
     strokeWidth = this.stroke_.getWidth();
-    if (!goog.isDef(strokeWidth)) {
+    if (strokeWidth === undefined) {
       strokeWidth = ol.render.canvas.defaultLineWidth;
     }
     lineDash = this.stroke_.getLineDash();
@@ -269,7 +269,7 @@ ol.style.Circle.prototype.render_ = function(atlasManager) {
     lineDash: lineDash
   };
 
-  if (!goog.isDef(atlasManager)) {
+  if (atlasManager === undefined) {
     // no atlas manager is used, create a new canvas
     this.canvas_ = /** @type {HTMLCanvasElement} */
         (goog.dom.createElement(goog.dom.TagName.CANVAS));

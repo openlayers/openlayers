@@ -703,7 +703,7 @@ ol.View.createResolutionConstraint_ = function(options) {
 
     // user provided minResolution takes precedence
     minResolution = options.minResolution;
-    if (!goog.isDef(minResolution)) {
+    if (minResolution === undefined) {
       if (options.maxZoom !== undefined) {
         if (options.maxResolution !== undefined) {
           minResolution = maxResolution / Math.pow(zoomFactor, maxZoom);

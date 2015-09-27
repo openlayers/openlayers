@@ -537,7 +537,7 @@ ol.xml.makeChildAppender = function(nodeWriter, opt_this) {
 ol.xml.makeArraySerializer = function(nodeWriter, opt_this) {
   var serializersNS, nodeFactory;
   return function(node, value, objectStack) {
-    if (!goog.isDef(serializersNS)) {
+    if (serializersNS === undefined) {
       serializersNS = {};
       var serializers = {};
       serializers[node.localName] = nodeWriter;
@@ -577,11 +577,11 @@ ol.xml.makeSimpleNodeFactory = function(opt_nodeName, opt_namespaceURI) {
         goog.asserts.assert(ol.xml.isNode(node) || ol.xml.isDocument(node),
             'expected node %s to be a Node or a Document', node);
         var nodeName = fixedNodeName;
-        if (!goog.isDef(nodeName)) {
+        if (nodeName === undefined) {
           nodeName = opt_nodeName;
         }
         var namespaceURI = opt_namespaceURI;
-        if (!goog.isDef(opt_namespaceURI)) {
+        if (opt_namespaceURI === undefined) {
           namespaceURI = node.namespaceURI;
         }
         goog.asserts.assert(goog.isDef(nodeName), 'nodeName was undefined');
