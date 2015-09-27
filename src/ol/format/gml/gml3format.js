@@ -804,7 +804,7 @@ ol.format.GML3.prototype.writeSurfaceOrPolygon_ =
   var context = objectStack[objectStack.length - 1];
   goog.asserts.assert(goog.isObject(context), 'context should be an Object');
   var srsName = context['srsName'];
-  if (node.nodeName !== 'PolygonPatch' && goog.isDefAndNotNull(srsName)) {
+  if (node.nodeName !== 'PolygonPatch' && srsName) {
     node.setAttribute('srsName', srsName);
   }
   if (node.nodeName === 'Polygon' || node.nodeName === 'PolygonPatch') {
@@ -834,8 +834,7 @@ ol.format.GML3.prototype.writeCurveOrLineString_ =
   var context = objectStack[objectStack.length - 1];
   goog.asserts.assert(goog.isObject(context), 'context should be an Object');
   var srsName = context['srsName'];
-  if (node.nodeName !== 'LineStringSegment' &&
-      goog.isDefAndNotNull(srsName)) {
+  if (node.nodeName !== 'LineStringSegment' && srsName) {
     node.setAttribute('srsName', srsName);
   }
   if (node.nodeName === 'LineString' ||

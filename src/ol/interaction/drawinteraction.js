@@ -723,8 +723,7 @@ ol.interaction.Draw.prototype.extend = function(feature) {
   var geometry = feature.getGeometry();
   goog.asserts.assert(this.mode_ == ol.interaction.DrawMode.LINE_STRING,
       'interaction mode must be "line"');
-  goog.asserts.assert(goog.isDefAndNotNull(geometry),
-      'feature must have a geometry');
+  goog.asserts.assert(geometry, 'feature must have a geometry');
   goog.asserts.assert(geometry.getType() == ol.geom.GeometryType.LINE_STRING,
       'feature geometry must be a line string');
   var lineString = /** @type {ol.geom.LineString} */ (geometry);

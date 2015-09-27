@@ -480,7 +480,7 @@ ol.render.canvas.Immediate.prototype.drawCircleGeometry =
  */
 ol.render.canvas.Immediate.prototype.drawFeature = function(feature, style) {
   var geometry = style.getGeometryFunction()(feature);
-  if (!goog.isDefAndNotNull(geometry) ||
+  if (!geometry ||
       !ol.extent.intersects(this.extent_, geometry.getExtent())) {
     return;
   }
@@ -874,7 +874,7 @@ ol.render.canvas.Immediate.prototype.setFillStrokeStyle =
     this.strokeState_ = {
       lineCap: strokeStyleLineCap !== undefined ?
           strokeStyleLineCap : ol.render.canvas.defaultLineCap,
-      lineDash: goog.isDefAndNotNull(strokeStyleLineDash) ?
+      lineDash: strokeStyleLineDash ?
           strokeStyleLineDash : ol.render.canvas.defaultLineDash,
       lineJoin: strokeStyleLineJoin !== undefined ?
           strokeStyleLineJoin : ol.render.canvas.defaultLineJoin,
@@ -963,7 +963,7 @@ ol.render.canvas.Immediate.prototype.setTextStyle = function(textStyle) {
       this.textStrokeState_ = {
         lineCap: textStrokeStyleLineCap !== undefined ?
             textStrokeStyleLineCap : ol.render.canvas.defaultLineCap,
-        lineDash: goog.isDefAndNotNull(textStrokeStyleLineDash) ?
+        lineDash: textStrokeStyleLineDash ?
             textStrokeStyleLineDash : ol.render.canvas.defaultLineDash,
         lineJoin: textStrokeStyleLineJoin !== undefined ?
             textStrokeStyleLineJoin : ol.render.canvas.defaultLineJoin,

@@ -475,7 +475,7 @@ ol.format.WFS.writeProperty_ = function(node, pair, objectStack) {
   var name = ol.xml.createElementNS('http://www.opengis.net/wfs', 'Name');
   node.appendChild(name);
   ol.format.XSD.writeStringTextNode(name, pair.name);
-  if (goog.isDefAndNotNull(pair.value)) {
+  if (pair.value !== undefined && pair.value !== null) {
     var value = ol.xml.createElementNS('http://www.opengis.net/wfs', 'Value');
     node.appendChild(value);
     if (pair.value instanceof ol.geom.Geometry) {
@@ -768,8 +768,8 @@ ol.format.WFS.prototype.readProjectionFromNode = function(node) {
   goog.asserts.assert(node.localName == 'FeatureCollection',
       'localName should be FeatureCollection');
 
-  if (goog.isDefAndNotNull(node.firstElementChild) &&
-      goog.isDefAndNotNull(node.firstElementChild.firstElementChild)) {
+  if (node.firstElementChild &&
+      node.firstElementChild.firstElementChild) {
     node = node.firstElementChild.firstElementChild;
     for (var n = node.firstElementChild; !goog.isNull(n);
         n = n.nextElementSibling) {

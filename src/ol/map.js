@@ -1151,7 +1151,7 @@ ol.Map.prototype.isDef = function() {
     return false;
   }
   var size = this.getSize();
-  if (!goog.isDefAndNotNull(size) || size[0] <= 0 || size[1] <= 0) {
+  if (!size || size[0] <= 0 || size[1] <= 0) {
     return false;
   }
   var view = this.getView();

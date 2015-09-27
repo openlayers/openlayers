@@ -56,7 +56,7 @@ ol.source.TileArcGISRest = function(opt_options) {
    * @private
    * @type {!Array.<string>}
    */
-  this.urls_ = goog.isDefAndNotNull(urls) ? urls : [];
+  this.urls_ = urls || [];
 
   /**
    * @private
@@ -184,7 +184,7 @@ ol.source.TileArcGISRest.prototype.setUrl = function(url) {
  * @api stable
  */
 ol.source.TileArcGISRest.prototype.setUrls = function(urls) {
-  this.urls_ = goog.isDefAndNotNull(urls) ? urls : [];
+  this.urls_ = urls || [];
   this.changed();
 };
 
