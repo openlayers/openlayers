@@ -9,9 +9,9 @@ goog.provide('ol.color');
 goog.require('goog.asserts');
 goog.require('goog.color');
 goog.require('goog.color.names');
-goog.require('goog.math');
 goog.require('goog.vec.Mat4');
 goog.require('ol');
+goog.require('ol.math');
 
 
 /**
@@ -271,11 +271,11 @@ ol.color.isValid = function(color) {
  * @return {ol.Color} Clamped color.
  */
 ol.color.normalize = function(color, opt_color) {
-  var result = opt_color ? opt_color : [];
-  result[0] = goog.math.clamp((color[0] + 0.5) | 0, 0, 255);
-  result[1] = goog.math.clamp((color[1] + 0.5) | 0, 0, 255);
-  result[2] = goog.math.clamp((color[2] + 0.5) | 0, 0, 255);
-  result[3] = goog.math.clamp(color[3], 0, 1);
+  var result = opt_color || [];
+  result[0] = ol.math.clamp((color[0] + 0.5) | 0, 0, 255);
+  result[1] = ol.math.clamp((color[1] + 0.5) | 0, 0, 255);
+  result[2] = ol.math.clamp((color[2] + 0.5) | 0, 0, 255);
+  result[3] = ol.math.clamp(color[3], 0, 1);
   return result;
 };
 

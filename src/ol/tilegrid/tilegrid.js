@@ -2,7 +2,6 @@ goog.provide('ol.tilegrid.TileGrid');
 
 goog.require('goog.array');
 goog.require('goog.asserts');
-goog.require('goog.math');
 goog.require('goog.object');
 goog.require('ol');
 goog.require('ol.Coordinate');
@@ -11,6 +10,7 @@ goog.require('ol.TileRange');
 goog.require('ol.array');
 goog.require('ol.extent');
 goog.require('ol.extent.Corner');
+goog.require('ol.math');
 goog.require('ol.proj');
 goog.require('ol.proj.METERS_PER_UNIT');
 goog.require('ol.proj.Projection');
@@ -483,7 +483,7 @@ ol.tilegrid.TileGrid.prototype.getFullTileRange = function(z) {
  */
 ol.tilegrid.TileGrid.prototype.getZForResolution = function(resolution) {
   var z = ol.array.linearFindNearest(this.resolutions_, resolution, 0);
-  return goog.math.clamp(z, this.minZoom, this.maxZoom);
+  return ol.math.clamp(z, this.minZoom, this.maxZoom);
 };
 
 

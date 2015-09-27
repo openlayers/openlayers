@@ -1,8 +1,8 @@
 goog.provide('ol.ResolutionConstraint');
 goog.provide('ol.ResolutionConstraintType');
 
-goog.require('goog.math');
 goog.require('ol.array');
+goog.require('ol.math');
 
 
 /**
@@ -28,7 +28,7 @@ ol.ResolutionConstraint.createSnapToResolutions =
         if (resolution !== undefined) {
           var z =
               ol.array.linearFindNearest(resolutions, resolution, direction);
-          z = goog.math.clamp(z + delta, 0, resolutions.length - 1);
+          z = ol.math.clamp(z + delta, 0, resolutions.length - 1);
           return resolutions[z];
         } else {
           return undefined;

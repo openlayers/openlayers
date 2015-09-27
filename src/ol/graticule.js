@@ -1,11 +1,11 @@
 goog.provide('ol.Graticule');
 
 goog.require('goog.asserts');
-goog.require('goog.math');
 goog.require('ol.extent');
 goog.require('ol.geom.GeometryLayout');
 goog.require('ol.geom.LineString');
 goog.require('ol.geom.flat.geodesic');
+goog.require('ol.math');
 goog.require('ol.proj');
 goog.require('ol.render.EventType');
 goog.require('ol.style.Stroke');
@@ -238,7 +238,7 @@ ol.Graticule.prototype.createGraticule_ =
   // Create meridians
 
   centerLon = Math.floor(centerLon / interval) * interval;
-  lon = goog.math.clamp(centerLon, this.minLon_, this.maxLon_);
+  lon = ol.math.clamp(centerLon, this.minLon_, this.maxLon_);
 
   idx = this.addMeridian_(lon, minLat, maxLat, squaredTolerance, extent, 0);
 
@@ -248,7 +248,7 @@ ol.Graticule.prototype.createGraticule_ =
     idx = this.addMeridian_(lon, minLat, maxLat, squaredTolerance, extent, idx);
   }
 
-  lon = goog.math.clamp(centerLon, this.minLon_, this.maxLon_);
+  lon = ol.math.clamp(centerLon, this.minLon_, this.maxLon_);
 
   cnt = 0;
   while (lon != this.maxLon_ && cnt++ < maxLines) {
@@ -261,7 +261,7 @@ ol.Graticule.prototype.createGraticule_ =
   // Create parallels
 
   centerLat = Math.floor(centerLat / interval) * interval;
-  lat = goog.math.clamp(centerLat, this.minLat_, this.maxLat_);
+  lat = ol.math.clamp(centerLat, this.minLat_, this.maxLat_);
 
   idx = this.addParallel_(lat, minLon, maxLon, squaredTolerance, extent, 0);
 
@@ -271,7 +271,7 @@ ol.Graticule.prototype.createGraticule_ =
     idx = this.addParallel_(lat, minLon, maxLon, squaredTolerance, extent, idx);
   }
 
-  lat = goog.math.clamp(centerLat, this.minLat_, this.maxLat_);
+  lat = ol.math.clamp(centerLat, this.minLat_, this.maxLat_);
 
   cnt = 0;
   while (lat != this.maxLat_ && cnt++ < maxLines) {

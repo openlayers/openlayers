@@ -2,12 +2,12 @@ goog.provide('ol.layer.Heatmap');
 
 goog.require('goog.asserts');
 goog.require('goog.events');
-goog.require('goog.math');
 goog.require('goog.object');
 goog.require('ol');
 goog.require('ol.Object');
 goog.require('ol.dom');
 goog.require('ol.layer.Vector');
+goog.require('ol.math');
 goog.require('ol.render.EventType');
 goog.require('ol.style.Icon');
 goog.require('ol.style.Style');
@@ -111,8 +111,7 @@ ol.layer.Heatmap = function(opt_options) {
     goog.asserts.assert(this.circleImage_ !== undefined,
         'this.circleImage_ should be defined');
     var weight = weightFunction(feature);
-    var opacity = weight !== undefined ?
-        goog.math.clamp(weight, 0, 1) : 1;
+    var opacity = weight !== undefined ? ol.math.clamp(weight, 0, 1) : 1;
     // cast to 8 bits
     var index = (255 * opacity) | 0;
     var style = this.styleCache_[index];

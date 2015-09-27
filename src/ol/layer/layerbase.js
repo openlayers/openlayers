@@ -2,10 +2,10 @@ goog.provide('ol.layer.Base');
 goog.provide('ol.layer.LayerProperty');
 goog.provide('ol.layer.LayerState');
 
-goog.require('goog.math');
 goog.require('goog.object');
 goog.require('ol');
 goog.require('ol.Object');
+goog.require('ol.math');
 goog.require('ol.source.State');
 
 
@@ -141,10 +141,10 @@ ol.layer.Base.prototype.getLayerState = function() {
   var minResolution = this.getMinResolution();
   return {
     layer: /** @type {ol.layer.Layer} */ (this),
-    brightness: goog.math.clamp(brightness, -1, 1),
+    brightness: ol.math.clamp(brightness, -1, 1),
     contrast: Math.max(contrast, 0),
     hue: hue,
-    opacity: goog.math.clamp(opacity, 0, 1),
+    opacity: ol.math.clamp(opacity, 0, 1),
     saturation: Math.max(saturation, 0),
     sourceState: sourceState,
     visible: visible,
