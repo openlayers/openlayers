@@ -35,7 +35,7 @@ ol.source.TileWMS = function(opt_options) {
 
   var options = opt_options || {};
 
-  var params = goog.isDef(options.params) ? options.params : {};
+  var params = options.params !== undefined ? options.params : {};
 
   var transparent = goog.object.get(params, 'TRANSPARENT', true);
 
@@ -48,11 +48,11 @@ ol.source.TileWMS = function(opt_options) {
     tileGrid: options.tileGrid,
     tileLoadFunction: options.tileLoadFunction,
     tileUrlFunction: goog.bind(this.tileUrlFunction_, this),
-    wrapX: goog.isDef(options.wrapX) ? options.wrapX : true
+    wrapX: options.wrapX !== undefined ? options.wrapX : true
   });
 
   var urls = options.urls;
-  if (urls === undefined && goog.isDef(options.url)) {
+  if (urls === undefined && options.url !== undefined) {
     urls = ol.TileUrlFunction.expandUrl(options.url);
   }
 
@@ -66,7 +66,7 @@ ol.source.TileWMS = function(opt_options) {
    * @private
    * @type {number}
    */
-  this.gutter_ = goog.isDef(options.gutter) ? options.gutter : 0;
+  this.gutter_ = options.gutter !== undefined ? options.gutter : 0;
 
   /**
    * @private
@@ -91,7 +91,7 @@ ol.source.TileWMS = function(opt_options) {
    * @private
    * @type {boolean}
    */
-  this.hidpi_ = goog.isDef(options.hidpi) ? options.hidpi : true;
+  this.hidpi_ = options.hidpi !== undefined ? options.hidpi : true;
 
   /**
    * @private

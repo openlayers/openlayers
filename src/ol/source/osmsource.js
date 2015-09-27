@@ -25,17 +25,17 @@ ol.source.OSM = function(opt_options) {
     attributions = [ol.source.OSM.ATTRIBUTION];
   }
 
-  var crossOrigin = goog.isDef(options.crossOrigin) ?
+  var crossOrigin = options.crossOrigin !== undefined ?
       options.crossOrigin : 'anonymous';
 
-  var url = goog.isDef(options.url) ?
+  var url = options.url !== undefined ?
       options.url : 'https://{a-c}.tile.openstreetmap.org/{z}/{x}/{y}.png';
 
   goog.base(this, {
     attributions: attributions,
     crossOrigin: crossOrigin,
     opaque: true,
-    maxZoom: goog.isDef(options.maxZoom) ? options.maxZoom : 19,
+    maxZoom: options.maxZoom !== undefined ? options.maxZoom : 19,
     tileLoadFunction: options.tileLoadFunction,
     url: url,
     wrapX: options.wrapX

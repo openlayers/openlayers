@@ -30,7 +30,7 @@ goog.require('ol.style.Stroke');
 ol.style.RegularShape = function(options) {
 
   goog.asserts.assert(
-      goog.isDef(options.radius) || goog.isDef(options.radius1),
+      options.radius !== undefined || options.radius1 !== undefined,
       'must provide either "radius" or "radius1"');
 
   /**
@@ -55,7 +55,7 @@ ol.style.RegularShape = function(options) {
    * @private
    * @type {ol.style.Fill}
    */
-  this.fill_ = goog.isDef(options.fill) ? options.fill : null;
+  this.fill_ = options.fill !== undefined ? options.fill : null;
 
   /**
    * @private
@@ -73,7 +73,7 @@ ol.style.RegularShape = function(options) {
    * @private
    * @type {number}
    */
-  this.radius_ = /** @type {number} */ (goog.isDef(options.radius) ?
+  this.radius_ = /** @type {number} */ (options.radius !== undefined ?
       options.radius : options.radius1);
 
   /**
@@ -81,19 +81,19 @@ ol.style.RegularShape = function(options) {
    * @type {number}
    */
   this.radius2_ =
-      goog.isDef(options.radius2) ? options.radius2 : this.radius_;
+      options.radius2 !== undefined ? options.radius2 : this.radius_;
 
   /**
    * @private
    * @type {number}
    */
-  this.angle_ = goog.isDef(options.angle) ? options.angle : 0;
+  this.angle_ = options.angle !== undefined ? options.angle : 0;
 
   /**
    * @private
    * @type {ol.style.Stroke}
    */
-  this.stroke_ = goog.isDef(options.stroke) ? options.stroke : null;
+  this.stroke_ = options.stroke !== undefined ? options.stroke : null;
 
   /**
    * @private
@@ -124,13 +124,13 @@ ol.style.RegularShape = function(options) {
   /**
    * @type {boolean}
    */
-  var snapToPixel = goog.isDef(options.snapToPixel) ?
+  var snapToPixel = options.snapToPixel !== undefined ?
       options.snapToPixel : true;
 
   goog.base(this, {
     opacity: 1,
     rotateWithView: false,
-    rotation: goog.isDef(options.rotation) ? options.rotation : 0,
+    rotation: options.rotation !== undefined ? options.rotation : 0,
     scale: 1,
     snapToPixel: snapToPixel
   });
@@ -536,10 +536,10 @@ ol.style.RegularShape.prototype.getChecksum = function() {
 
   if (recalculate) {
     var checksum = 'r' + strokeChecksum + fillChecksum +
-        (goog.isDef(this.radius_) ? this.radius_.toString() : '-') +
-        (goog.isDef(this.radius2_) ? this.radius2_.toString() : '-') +
-        (goog.isDef(this.angle_) ? this.angle_.toString() : '-') +
-        (goog.isDef(this.points_) ? this.points_.toString() : '-');
+        (this.radius_ !== undefined ? this.radius_.toString() : '-') +
+        (this.radius2_ !== undefined ? this.radius2_.toString() : '-') +
+        (this.angle_ !== undefined ? this.angle_.toString() : '-') +
+        (this.points_ !== undefined ? this.points_.toString() : '-');
     this.checksums_ = [checksum, strokeChecksum, fillChecksum,
       this.radius_, this.radius2_, this.angle_, this.points_];
   }

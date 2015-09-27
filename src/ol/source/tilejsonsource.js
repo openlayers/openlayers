@@ -36,7 +36,7 @@ ol.source.TileJSON = function(options) {
     projection: ol.proj.get('EPSG:3857'),
     state: ol.source.State.LOADING,
     tileLoadFunction: options.tileLoadFunction,
-    wrapX: goog.isDef(options.wrapX) ? options.wrapX : true
+    wrapX: options.wrapX !== undefined ? options.wrapX : true
   });
 
   var request = new goog.net.Jsonp(options.url);
@@ -77,7 +77,7 @@ ol.source.TileJSON.prototype.handleTileJSONResponse = function(tileJSON) {
 
   this.tileUrlFunction = ol.TileUrlFunction.createFromTemplates(tileJSON.tiles);
 
-  if (goog.isDef(tileJSON.attribution) &&
+  if (tileJSON.attribution !== undefined &&
       goog.isNull(this.getAttributions())) {
     var attributionExtent = extent !== undefined ?
         extent : epsg4326Projection.getExtent();

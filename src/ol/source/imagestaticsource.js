@@ -21,7 +21,7 @@ goog.require('ol.source.Image');
  */
 ol.source.ImageStatic = function(options) {
 
-  var attributions = goog.isDef(options.attributions) ?
+  var attributions = options.attributions !== undefined ?
       options.attributions : null;
 
   var imageExtent = options.imageExtent;
@@ -32,11 +32,11 @@ ol.source.ImageStatic = function(options) {
     resolutions = [resolution];
   }
 
-  var crossOrigin = goog.isDef(options.crossOrigin) ?
+  var crossOrigin = options.crossOrigin !== undefined ?
       options.crossOrigin : null;
 
   var /** @type {ol.ImageLoadFunctionType} */ imageLoadFunction =
-      goog.isDef(options.imageLoadFunction) ?
+      options.imageLoadFunction !== undefined ?
       options.imageLoadFunction : ol.source.Image.defaultImageLoadFunction;
 
   goog.base(this, {

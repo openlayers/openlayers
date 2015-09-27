@@ -280,19 +280,20 @@ ol.render.webgl.ImageReplay.prototype.drawAsync = goog.abstractMethod;
  */
 ol.render.webgl.ImageReplay.prototype.drawCoordinates_ =
     function(flatCoordinates, offset, end, stride) {
-  goog.asserts.assert(goog.isDef(this.anchorX_), 'anchorX is defined');
-  goog.asserts.assert(goog.isDef(this.anchorY_), 'anchorY is defined');
-  goog.asserts.assert(goog.isDef(this.height_), 'height is defined');
-  goog.asserts.assert(goog.isDef(this.imageHeight_), 'imageHeight is defined');
-  goog.asserts.assert(goog.isDef(this.imageWidth_), 'imageWidth is defined');
-  goog.asserts.assert(goog.isDef(this.opacity_), 'opacity is defined');
-  goog.asserts.assert(goog.isDef(this.originX_), 'originX is defined');
-  goog.asserts.assert(goog.isDef(this.originY_), 'originY is defined');
-  goog.asserts.assert(goog.isDef(this.rotateWithView_),
+  goog.asserts.assert(this.anchorX_ !== undefined, 'anchorX is defined');
+  goog.asserts.assert(this.anchorY_ !== undefined, 'anchorY is defined');
+  goog.asserts.assert(this.height_ !== undefined, 'height is defined');
+  goog.asserts.assert(this.imageHeight_ !== undefined,
+      'imageHeight is defined');
+  goog.asserts.assert(this.imageWidth_ !== undefined, 'imageWidth is defined');
+  goog.asserts.assert(this.opacity_ !== undefined, 'opacity is defined');
+  goog.asserts.assert(this.originX_ !== undefined, 'originX is defined');
+  goog.asserts.assert(this.originY_ !== undefined, 'originY is defined');
+  goog.asserts.assert(this.rotateWithView_ !== undefined,
       'rotateWithView is defined');
-  goog.asserts.assert(goog.isDef(this.rotation_), 'rotation is defined');
-  goog.asserts.assert(goog.isDef(this.scale_), 'scale is defined');
-  goog.asserts.assert(goog.isDef(this.width_), 'width is defined');
+  goog.asserts.assert(this.rotation_ !== undefined, 'rotation is defined');
+  goog.asserts.assert(this.scale_ !== undefined, 'scale is defined');
+  goog.asserts.assert(this.width_ !== undefined, 'width is defined');
   var anchorX = this.anchorX_;
   var anchorY = this.anchorY_;
   var height = this.height_;

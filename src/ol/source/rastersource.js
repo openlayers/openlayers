@@ -48,14 +48,14 @@ ol.source.Raster = function(options) {
    * @private
    * @type {ol.raster.OperationType}
    */
-  this.operationType_ = goog.isDef(options.operationType) ?
+  this.operationType_ = options.operationType !== undefined ?
       options.operationType : ol.raster.OperationType.PIXEL;
 
   /**
    * @private
    * @type {number}
    */
-  this.threads_ = goog.isDef(options.threads) ? options.threads : 1;
+  this.threads_ = options.threads !== undefined ? options.threads : 1;
 
   /**
    * @private

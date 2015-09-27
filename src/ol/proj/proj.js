@@ -99,27 +99,27 @@ ol.proj.Projection = function(options) {
    * @private
    * @type {ol.Extent}
    */
-  this.extent_ = goog.isDef(options.extent) ? options.extent : null;
+  this.extent_ = options.extent !== undefined ? options.extent : null;
 
   /**
    * @private
    * @type {ol.Extent}
    */
-  this.worldExtent_ = goog.isDef(options.worldExtent) ?
+  this.worldExtent_ = options.worldExtent !== undefined ?
       options.worldExtent : null;
 
   /**
    * @private
    * @type {string}
    */
-  this.axisOrientation_ = goog.isDef(options.axisOrientation) ?
+  this.axisOrientation_ = options.axisOrientation !== undefined ?
       options.axisOrientation : 'enu';
 
   /**
    * @private
    * @type {boolean}
    */
-  this.global_ = goog.isDef(options.global) ? options.global : false;
+  this.global_ = options.global !== undefined ? options.global : false;
 
 
   /**
@@ -132,7 +132,7 @@ ol.proj.Projection = function(options) {
   * @private
   * @type {function(number, ol.Coordinate):number}
   */
-  this.getPointResolutionFunc_ = goog.isDef(options.getPointResolution) ?
+  this.getPointResolutionFunc_ = options.getPointResolution !== undefined ?
       options.getPointResolution : this.getPointResolution_;
 
   /**
@@ -149,7 +149,7 @@ ol.proj.Projection = function(options) {
       !goog.isDef(projections[code])) {
     var def = proj4.defs(code);
     if (def !== undefined) {
-      if (goog.isDef(def.axis) && options.axisOrientation === undefined) {
+      if (def.axis !== undefined && options.axisOrientation === undefined) {
         this.axisOrientation_ = def.axis;
       }
       if (options.units === undefined) {

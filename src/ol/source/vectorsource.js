@@ -82,7 +82,7 @@ ol.source.Vector = function(opt_options) {
     logo: options.logo,
     projection: undefined,
     state: ol.source.State.READY,
-    wrapX: goog.isDef(options.wrapX) ? options.wrapX : true
+    wrapX: options.wrapX !== undefined ? options.wrapX : true
   });
 
   /**
@@ -94,7 +94,7 @@ ol.source.Vector = function(opt_options) {
   if (options.loader !== undefined) {
     this.loader_ = options.loader;
   } else if (options.url !== undefined) {
-    goog.asserts.assert(goog.isDef(options.format),
+    goog.asserts.assert(options.format !== undefined,
         'format must be set when url is set');
     // create a XHR feature loader for "url" and "format"
     this.loader_ = ol.featureloader.xhr(options.url, options.format);
@@ -104,11 +104,11 @@ ol.source.Vector = function(opt_options) {
    * @private
    * @type {ol.LoadingStrategy}
    */
-  this.strategy_ = goog.isDef(options.strategy) ? options.strategy :
+  this.strategy_ = options.strategy !== undefined ? options.strategy :
       ol.loadingstrategy.all;
 
   var useSpatialIndex =
-      goog.isDef(options.useSpatialIndex) ? options.useSpatialIndex : true;
+      options.useSpatialIndex !== undefined ? options.useSpatialIndex : true;
 
   /**
    * @private

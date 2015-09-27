@@ -92,7 +92,7 @@ ol.source.TileDebug = function(options) {
     opaque: false,
     projection: options.projection,
     tileGrid: options.tileGrid,
-    wrapX: goog.isDef(options.wrapX) ? options.wrapX : true
+    wrapX: options.wrapX !== undefined ? options.wrapX : true
   });
 
 };

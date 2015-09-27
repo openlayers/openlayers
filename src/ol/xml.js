@@ -194,7 +194,7 @@ ol.xml.isNode_ = function(value) {
  * @return {boolean} Is node.
  */
 ol.xml.isNodeIE_ = function(value) {
-  return goog.isObject(value) && goog.isDef(value.nodeType);
+  return goog.isObject(value) && value.nodeType !== undefined;
 };
 
 

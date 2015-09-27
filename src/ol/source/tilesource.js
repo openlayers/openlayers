@@ -56,20 +56,20 @@ ol.source.Tile = function(options) {
    * @private
    * @type {boolean}
    */
-  this.opaque_ = goog.isDef(options.opaque) ? options.opaque : false;
+  this.opaque_ = options.opaque !== undefined ? options.opaque : false;
 
   /**
    * @private
    * @type {number}
    */
-  this.tilePixelRatio_ = goog.isDef(options.tilePixelRatio) ?
+  this.tilePixelRatio_ = options.tilePixelRatio !== undefined ?
       options.tilePixelRatio : 1;
 
   /**
    * @protected
    * @type {ol.tilegrid.TileGrid}
    */
-  this.tileGrid = goog.isDef(options.tileGrid) ? options.tileGrid : null;
+  this.tileGrid = options.tileGrid !== undefined ? options.tileGrid : null;
 
   /**
    * @protected

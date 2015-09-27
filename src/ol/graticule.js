@@ -86,14 +86,14 @@ ol.Graticule = function(opt_options) {
    * @type {number}
    * @private
    */
-  this.targetSize_ = goog.isDef(options.targetSize) ?
+  this.targetSize_ = options.targetSize !== undefined ?
       options.targetSize : 100;
 
   /**
    * @type {number}
    * @private
    */
-  this.maxLines_ = goog.isDef(options.maxLines) ? options.maxLines : 100;
+  this.maxLines_ = options.maxLines !== undefined ? options.maxLines : 100;
   goog.asserts.assert(this.maxLines_ > 0,
       'this.maxLines_ should be more than 0');
 
@@ -113,7 +113,7 @@ ol.Graticule = function(opt_options) {
    * @type {ol.style.Stroke}
    * @private
    */
-  this.strokeStyle_ = goog.isDef(options.strokeStyle) ?
+  this.strokeStyle_ = options.strokeStyle !== undefined ?
       options.strokeStyle : ol.Graticule.DEFAULT_STROKE_STYLE_;
 
   /**
@@ -134,7 +134,7 @@ ol.Graticule = function(opt_options) {
    */
   this.projectionCenterLonLat_ = null;
 
-  this.setMap(goog.isDef(options.map) ? options.map : null);
+  this.setMap(options.map !== undefined ? options.map : null);
 };
 
 

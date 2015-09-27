@@ -42,7 +42,7 @@ ol.source.Cluster = function(options) {
    * @type {number}
    * @private
    */
-  this.distance_ = goog.isDef(options.distance) ? options.distance : 20;
+  this.distance_ = options.distance !== undefined ? options.distance : 20;
 
   /**
    * @type {Array.<ol.Feature>}

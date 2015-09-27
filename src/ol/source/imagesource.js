@@ -48,7 +48,7 @@ ol.source.Image = function(options) {
    * @private
    * @type {Array.<number>}
    */
-  this.resolutions_ = goog.isDef(options.resolutions) ?
+  this.resolutions_ = options.resolutions !== undefined ?
       options.resolutions : null;
   goog.asserts.assert(goog.isNull(this.resolutions_) ||
       goog.array.isSorted(this.resolutions_,

@@ -55,7 +55,7 @@ ol.style.Icon = function(opt_options) {
    * @private
    * @type {Array.<number>}
    */
-  this.anchor_ = goog.isDef(options.anchor) ? options.anchor : [0.5, 0.5];
+  this.anchor_ = options.anchor !== undefined ? options.anchor : [0.5, 0.5];
 
   /**
    * @private
@@ -67,38 +67,38 @@ ol.style.Icon = function(opt_options) {
    * @private
    * @type {ol.style.IconOrigin}
    */
-  this.anchorOrigin_ = goog.isDef(options.anchorOrigin) ?
+  this.anchorOrigin_ = options.anchorOrigin !== undefined ?
       options.anchorOrigin : ol.style.IconOrigin.TOP_LEFT;
 
   /**
    * @private
    * @type {ol.style.IconAnchorUnits}
    */
-  this.anchorXUnits_ = goog.isDef(options.anchorXUnits) ?
+  this.anchorXUnits_ = options.anchorXUnits !== undefined ?
       options.anchorXUnits : ol.style.IconAnchorUnits.FRACTION;
 
   /**
    * @private
    * @type {ol.style.IconAnchorUnits}
    */
-  this.anchorYUnits_ = goog.isDef(options.anchorYUnits) ?
+  this.anchorYUnits_ = options.anchorYUnits !== undefined ?
       options.anchorYUnits : ol.style.IconAnchorUnits.FRACTION;
 
   /**
    * @type {?string}
    */
   var crossOrigin =
-      goog.isDef(options.crossOrigin) ? options.crossOrigin : null;
+      options.crossOrigin !== undefined ? options.crossOrigin : null;
 
   /**
    * @type {Image}
    */
-  var image = goog.isDef(options.img) ? options.img : null;
+  var image = options.img !== undefined ? options.img : null;
 
   /**
    * @type {ol.Size}
    */
-  var imgSize = goog.isDef(options.imgSize) ? options.imgSize : null;
+  var imgSize = options.imgSize !== undefined ? options.imgSize : null;
 
   /**
    * @type {string|undefined}
@@ -123,7 +123,7 @@ ol.style.Icon = function(opt_options) {
   /**
    * @type {ol.style.ImageState}
    */
-  var imageState = goog.isDef(options.src) ?
+  var imageState = options.src !== undefined ?
       ol.style.ImageState.IDLE : ol.style.ImageState.LOADED;
 
   /**
@@ -137,13 +137,13 @@ ol.style.Icon = function(opt_options) {
    * @private
    * @type {Array.<number>}
    */
-  this.offset_ = goog.isDef(options.offset) ? options.offset : [0, 0];
+  this.offset_ = options.offset !== undefined ? options.offset : [0, 0];
 
   /**
    * @private
    * @type {ol.style.IconOrigin}
    */
-  this.offsetOrigin_ = goog.isDef(options.offsetOrigin) ?
+  this.offsetOrigin_ = options.offsetOrigin !== undefined ?
       options.offsetOrigin : ol.style.IconOrigin.TOP_LEFT;
 
   /**
@@ -156,33 +156,33 @@ ol.style.Icon = function(opt_options) {
    * @private
    * @type {ol.Size}
    */
-  this.size_ = goog.isDef(options.size) ? options.size : null;
+  this.size_ = options.size !== undefined ? options.size : null;
 
   /**
    * @type {number}
    */
-  var opacity = goog.isDef(options.opacity) ? options.opacity : 1;
+  var opacity = options.opacity !== undefined ? options.opacity : 1;
 
   /**
    * @type {boolean}
    */
-  var rotateWithView = goog.isDef(options.rotateWithView) ?
+  var rotateWithView = options.rotateWithView !== undefined ?
       options.rotateWithView : false;
 
   /**
    * @type {number}
    */
-  var rotation = goog.isDef(options.rotation) ? options.rotation : 0;
+  var rotation = options.rotation !== undefined ? options.rotation : 0;
 
   /**
    * @type {number}
    */
-  var scale = goog.isDef(options.scale) ? options.scale : 1;
+  var scale = options.scale !== undefined ? options.scale : 1;
 
   /**
    * @type {boolean}
    */
-  var snapToPixel = goog.isDef(options.snapToPixel) ?
+  var snapToPixel = options.snapToPixel !== undefined ?
       options.snapToPixel : true;
 
   goog.base(this, {
@@ -553,7 +553,7 @@ ol.style.IconImage_.prototype.getSrc = function() {
  */
 ol.style.IconImage_.prototype.load = function() {
   if (this.imageState_ == ol.style.ImageState.IDLE) {
-    goog.asserts.assert(goog.isDef(this.src_),
+    goog.asserts.assert(this.src_ !== undefined,
         'this.src_ must not be undefined');
     goog.asserts.assert(goog.isNull(this.imageListenerKeys_),
         'no listener keys existing');

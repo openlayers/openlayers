@@ -57,26 +57,26 @@ ol.style.Text = function(opt_options) {
    * @private
    * @type {ol.style.Fill}
    */
-  this.fill_ = goog.isDef(options.fill) ? options.fill :
+  this.fill_ = options.fill !== undefined ? options.fill :
       new ol.style.Fill({color: ol.style.Text.DEFAULT_FILL_COLOR_});
 
   /**
    * @private
    * @type {ol.style.Stroke}
    */
-  this.stroke_ = goog.isDef(options.stroke) ? options.stroke : null;
+  this.stroke_ = options.stroke !== undefined ? options.stroke : null;
 
   /**
    * @private
    * @type {number}
    */
-  this.offsetX_ = goog.isDef(options.offsetX) ? options.offsetX : 0;
+  this.offsetX_ = options.offsetX !== undefined ? options.offsetX : 0;
 
   /**
    * @private
    * @type {number}
    */
-  this.offsetY_ = goog.isDef(options.offsetY) ? options.offsetY : 0;
+  this.offsetY_ = options.offsetY !== undefined ? options.offsetY : 0;
 };
 
 

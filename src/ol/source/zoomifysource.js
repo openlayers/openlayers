@@ -36,7 +36,7 @@ ol.source.Zoomify = function(opt_options) {
   var options = opt_options || {};
 
   var size = options.size;
-  var tierSizeCalculation = goog.isDef(options.tierSizeCalculation) ?
+  var tierSizeCalculation = options.tierSizeCalculation !== undefined ?
       options.tierSizeCalculation :
       ol.source.ZoomifyTierSizeCalculation.DEFAULT;
 

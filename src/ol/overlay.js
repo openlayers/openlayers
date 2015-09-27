@@ -78,14 +78,14 @@ ol.Overlay = function(options) {
    * @private
    * @type {boolean}
    */
-  this.insertFirst_ = goog.isDef(options.insertFirst) ?
+  this.insertFirst_ = options.insertFirst !== undefined ?
       options.insertFirst : true;
 
   /**
    * @private
    * @type {boolean}
    */
-  this.stopEvent_ = goog.isDef(options.stopEvent) ? options.stopEvent : true;
+  this.stopEvent_ = options.stopEvent !== undefined ? options.stopEvent : true;
 
   /**
    * @private
@@ -100,20 +100,20 @@ ol.Overlay = function(options) {
    * @protected
    * @type {boolean}
    */
-  this.autoPan = goog.isDef(options.autoPan) ? options.autoPan : false;
+  this.autoPan = options.autoPan !== undefined ? options.autoPan : false;
 
   /**
    * @private
    * @type {olx.animation.PanOptions}
    */
-  this.autoPanAnimation_ = goog.isDef(options.autoPanAnimation) ?
+  this.autoPanAnimation_ = options.autoPanAnimation !== undefined ?
       options.autoPanAnimation : /** @type {olx.animation.PanOptions} */ ({});
 
   /**
    * @private
    * @type {number}
    */
-  this.autoPanMargin_ = goog.isDef(options.autoPanMargin) ?
+  this.autoPanMargin_ = options.autoPanMargin !== undefined ?
       options.autoPanMargin : 20;
 
   /**
@@ -162,9 +162,9 @@ ol.Overlay = function(options) {
     this.setElement(options.element);
   }
 
-  this.setOffset(goog.isDef(options.offset) ? options.offset : [0, 0]);
+  this.setOffset(options.offset !== undefined ? options.offset : [0, 0]);
 
-  this.setPositioning(goog.isDef(options.positioning) ?
+  this.setPositioning(options.positioning !== undefined ?
       /** @type {ol.OverlayPositioning} */ (options.positioning) :
       ol.OverlayPositioning.TOP_LEFT);
 

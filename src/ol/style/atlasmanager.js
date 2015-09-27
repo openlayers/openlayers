@@ -47,7 +47,7 @@ ol.style.AtlasManager = function(opt_options) {
    * @private
    * @type {number}
    */
-  this.currentSize_ = goog.isDef(options.initialSize) ?
+  this.currentSize_ = options.initialSize !== undefined ?
       options.initialSize : ol.INITIAL_ATLAS_SIZE;
 
   /**
@@ -55,9 +55,9 @@ ol.style.AtlasManager = function(opt_options) {
    * @private
    * @type {number}
    */
-  this.maxSize_ = goog.isDef(options.maxSize) ?
+  this.maxSize_ = options.maxSize !== undefined ?
       options.maxSize : ol.MAX_ATLAS_SIZE != -1 ?
-          ol.MAX_ATLAS_SIZE : goog.isDef(ol.WEBGL_MAX_TEXTURE_SIZE) ?
+          ol.MAX_ATLAS_SIZE : ol.WEBGL_MAX_TEXTURE_SIZE !== undefined ?
               ol.WEBGL_MAX_TEXTURE_SIZE : 2048;
 
   /**
@@ -65,7 +65,7 @@ ol.style.AtlasManager = function(opt_options) {
    * @private
    * @type {number}
    */
-  this.space_ = goog.isDef(options.space) ? options.space : 1;
+  this.space_ = options.space !== undefined ? options.space : 1;
 
   /**
    * @private

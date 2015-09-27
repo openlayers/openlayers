@@ -36,7 +36,7 @@ ol.source.TileVector = function(options) {
    * @private
    * @type {ol.format.Feature|undefined}
    */
-  this.format_ = goog.isDef(options.format) ? options.format : null;
+  this.format_ = options.format !== undefined ? options.format : null;
 
   /**
    * @private
@@ -54,7 +54,7 @@ ol.source.TileVector = function(options) {
    * @private
    * @type {?ol.TileVectorLoadFunctionType}
    */
-  this.tileLoadFunction_ = goog.isDef(options.tileLoadFunction) ?
+  this.tileLoadFunction_ = options.tileLoadFunction !== undefined ?
       options.tileLoadFunction : null;
 
   goog.asserts.assert(!goog.isNull(this.format_) ||

@@ -181,22 +181,23 @@ ol.Map = function(options) {
    * @type {boolean}
    * @private
    */
-  this.loadTilesWhileAnimating_ = goog.isDef(options.loadTilesWhileAnimating) ?
-      options.loadTilesWhileAnimating : false;
+  this.loadTilesWhileAnimating_ =
+      options.loadTilesWhileAnimating !== undefined ?
+          options.loadTilesWhileAnimating : false;
 
   /**
    * @type {boolean}
    * @private
    */
   this.loadTilesWhileInteracting_ =
-      goog.isDef(options.loadTilesWhileInteracting) ?
+      options.loadTilesWhileInteracting !== undefined ?
           options.loadTilesWhileInteracting : false;
 
   /**
    * @private
    * @type {number}
    */
-  this.pixelRatio_ = goog.isDef(options.pixelRatio) ?
+  this.pixelRatio_ = options.pixelRatio !== undefined ?
       options.pixelRatio : ol.has.DEVICE_PIXEL_RATIO;
 
   /**
@@ -1486,7 +1487,7 @@ ol.Map.createOptionsInternal = function(options) {
 
   values[ol.MapProperty.TARGET] = options.target;
 
-  values[ol.MapProperty.VIEW] = goog.isDef(options.view) ?
+  values[ol.MapProperty.VIEW] = options.view !== undefined ?
       options.view : new ol.View();
 
   /**

@@ -36,7 +36,7 @@ ol.tilegrid.TileGrid = function(options) {
    * @protected
    * @type {number}
    */
-  this.minZoom = goog.isDef(options.minZoom) ? options.minZoom : 0;
+  this.minZoom = options.minZoom !== undefined ? options.minZoom : 0;
 
   /**
    * @private
@@ -57,7 +57,7 @@ ol.tilegrid.TileGrid = function(options) {
    * @private
    * @type {ol.Coordinate}
    */
-  this.origin_ = goog.isDef(options.origin) ? options.origin : null;
+  this.origin_ = options.origin !== undefined ? options.origin : null;
 
   /**
    * @private
@@ -97,7 +97,7 @@ ol.tilegrid.TileGrid = function(options) {
    * @private
    * @type {number|ol.Size}
    */
-  this.tileSize_ = goog.isDef(options.tileSize) ?
+  this.tileSize_ = options.tileSize !== undefined ?
       options.tileSize :
       goog.isNull(this.tileSizes_) ? ol.DEFAULT_TILE_SIZE : null;
   goog.asserts.assert(

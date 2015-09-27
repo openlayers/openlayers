@@ -32,7 +32,7 @@ ol.source.TileImage = function(options) {
     logo: options.logo,
     opaque: options.opaque,
     projection: options.projection,
-    state: goog.isDef(options.state) ?
+    state: options.state !== undefined ?
         /** @type {ol.source.State} */ (options.state) : undefined,
     tileGrid: options.tileGrid,
     tilePixelRatio: options.tilePixelRatio,
@@ -43,7 +43,7 @@ ol.source.TileImage = function(options) {
    * @protected
    * @type {ol.TileUrlFunctionType}
    */
-  this.tileUrlFunction = goog.isDef(options.tileUrlFunction) ?
+  this.tileUrlFunction = options.tileUrlFunction !== undefined ?
       options.tileUrlFunction :
       ol.TileUrlFunction.nullTileUrlFunction;
 
@@ -52,13 +52,13 @@ ol.source.TileImage = function(options) {
    * @type {?string}
    */
   this.crossOrigin =
-      goog.isDef(options.crossOrigin) ? options.crossOrigin : null;
+      options.crossOrigin !== undefined ? options.crossOrigin : null;
 
   /**
    * @protected
    * @type {ol.TileLoadFunctionType}
    */
-  this.tileLoadFunction = goog.isDef(options.tileLoadFunction) ?
+  this.tileLoadFunction = options.tileLoadFunction !== undefined ?
       options.tileLoadFunction : ol.source.TileImage.defaultTileLoadFunction;
 
   /**
@@ -66,7 +66,7 @@ ol.source.TileImage = function(options) {
    * @type {function(new: ol.ImageTile, ol.TileCoord, ol.TileState, string,
    *        ?string, ol.TileLoadFunctionType)}
    */
-  this.tileClass = goog.isDef(options.tileClass) ?
+  this.tileClass = options.tileClass !== undefined ?
       options.tileClass : ol.ImageTile;
 
 };

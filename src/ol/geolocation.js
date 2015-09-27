@@ -97,7 +97,7 @@ ol.Geolocation = function(opt_options) {
     this.setTrackingOptions(options.trackingOptions);
   }
 
-  this.setTracking(goog.isDef(options.tracking) ? options.tracking : false);
+  this.setTracking(options.tracking !== undefined ? options.tracking : false);
 
 };
 goog.inherits(ol.Geolocation, ol.Object);
@@ -139,7 +139,7 @@ ol.Geolocation.prototype.handleTrackingChanged_ = function() {
           goog.bind(this.positionChange_, this),
           goog.bind(this.positionError_, this),
           this.getTrackingOptions());
-    } else if (!tracking && goog.isDef(this.watchId_)) {
+    } else if (!tracking && this.watchId_ !== undefined) {
       goog.global.navigator.geolocation.clearWatch(this.watchId_);
       this.watchId_ = undefined;
     }

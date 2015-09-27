@@ -50,13 +50,13 @@ ol.style.Circle = function(opt_options) {
    * @private
    * @type {ol.style.Fill}
    */
-  this.fill_ = goog.isDef(options.fill) ? options.fill : null;
+  this.fill_ = options.fill !== undefined ? options.fill : null;
 
   /**
    * @private
    * @type {ol.style.Stroke}
    */
-  this.stroke_ = goog.isDef(options.stroke) ? options.stroke : null;
+  this.stroke_ = options.stroke !== undefined ? options.stroke : null;
 
   /**
    * @private
@@ -99,7 +99,7 @@ ol.style.Circle = function(opt_options) {
   /**
    * @type {boolean}
    */
-  var snapToPixel = goog.isDef(options.snapToPixel) ?
+  var snapToPixel = options.snapToPixel !== undefined ?
       options.snapToPixel : true;
 
   goog.base(this, {
@@ -435,7 +435,7 @@ ol.style.Circle.prototype.getChecksum = function() {
 
   if (recalculate) {
     var checksum = 'c' + strokeChecksum + fillChecksum +
-        (goog.isDef(this.radius_) ? this.radius_.toString() : '-');
+        (this.radius_ !== undefined ? this.radius_.toString() : '-');
     this.checksums_ = [checksum, strokeChecksum, fillChecksum, this.radius_];
   }
 

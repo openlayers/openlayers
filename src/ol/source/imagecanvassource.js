@@ -23,7 +23,7 @@ ol.source.ImageCanvas = function(options) {
     logo: options.logo,
     projection: options.projection,
     resolutions: options.resolutions,
-    state: goog.isDef(options.state) ?
+    state: options.state !== undefined ?
         /** @type {ol.source.State} */ (options.state) : undefined
   });
 
@@ -49,7 +49,7 @@ ol.source.ImageCanvas = function(options) {
    * @private
    * @type {number}
    */
-  this.ratio_ = goog.isDef(options.ratio) ?
+  this.ratio_ = options.ratio !== undefined ?
       options.ratio : 1.5;
 
 };

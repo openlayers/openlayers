@@ -48,25 +48,25 @@ ol.style.Style = function(opt_options) {
    * @private
    * @type {ol.style.Fill}
    */
-  this.fill_ = goog.isDef(options.fill) ? options.fill : null;
+  this.fill_ = options.fill !== undefined ? options.fill : null;
 
   /**
    * @private
    * @type {ol.style.Image}
    */
-  this.image_ = goog.isDef(options.image) ? options.image : null;
+  this.image_ = options.image !== undefined ? options.image : null;
 
   /**
    * @private
    * @type {ol.style.Stroke}
    */
-  this.stroke_ = goog.isDef(options.stroke) ? options.stroke : null;
+  this.stroke_ = options.stroke !== undefined ? options.stroke : null;
 
   /**
    * @private
    * @type {ol.style.Text}
    */
-  this.text_ = goog.isDef(options.text) ? options.text : null;
+  this.text_ = options.text !== undefined ? options.text : null;
 
   /**
    * @private

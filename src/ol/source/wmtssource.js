@@ -43,19 +43,19 @@ ol.source.WMTS = function(options) {
    * @private
    * @type {string}
    */
-  this.version_ = goog.isDef(options.version) ? options.version : '1.0.0';
+  this.version_ = options.version !== undefined ? options.version : '1.0.0';
 
   /**
    * @private
    * @type {string}
    */
-  this.format_ = goog.isDef(options.format) ? options.format : 'image/jpeg';
+  this.format_ = options.format !== undefined ? options.format : 'image/jpeg';
 
   /**
    * @private
    * @type {Object}
    */
-  this.dimensions_ = goog.isDef(options.dimensions) ? options.dimensions : {};
+  this.dimensions_ = options.dimensions !== undefined ? options.dimensions : {};
 
   /**
    * @private
@@ -83,7 +83,7 @@ ol.source.WMTS = function(options) {
   this.style_ = options.style;
 
   var urls = options.urls;
-  if (urls === undefined && goog.isDef(options.url)) {
+  if (urls === undefined && options.url !== undefined) {
     urls = ol.TileUrlFunction.expandUrl(options.url);
   }
 
@@ -100,7 +100,7 @@ ol.source.WMTS = function(options) {
    * @private
    * @type {ol.source.WMTSRequestEncoding}
    */
-  this.requestEncoding_ = goog.isDef(options.requestEncoding) ?
+  this.requestEncoding_ = options.requestEncoding !== undefined ?
       /** @type {ol.source.WMTSRequestEncoding} */ (options.requestEncoding) :
       ol.source.WMTSRequestEncoding.KVP;
 
@@ -190,7 +190,7 @@ ol.source.WMTS = function(options) {
     tileLoadFunction: options.tileLoadFunction,
     tilePixelRatio: options.tilePixelRatio,
     tileUrlFunction: tileUrlFunction,
-    wrapX: goog.isDef(options.wrapX) ? options.wrapX : false
+    wrapX: options.wrapX !== undefined ? options.wrapX : false
   });
 
 };

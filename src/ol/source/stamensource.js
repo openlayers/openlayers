@@ -98,7 +98,7 @@ ol.source.Stamen = function(options) {
       'known layer configured');
   var layerConfig = ol.source.StamenLayerConfig[options.layer];
 
-  var url = goog.isDef(options.url) ? options.url :
+  var url = options.url !== undefined ? options.url :
       'https://stamen-tiles-{a-d}.a.ssl.fastly.net/' + options.layer +
       '/{z}/{x}/{y}.' + layerConfig.extension;
 

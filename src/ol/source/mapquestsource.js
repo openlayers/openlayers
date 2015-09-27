@@ -31,7 +31,7 @@ ol.source.MapQuest = function(opt_options) {
    */
   this.layer_ = options.layer;
 
-  var url = goog.isDef(options.url) ? options.url :
+  var url = options.url !== undefined ? options.url :
       'https://otile{1-4}-s.mqcdn.com/tiles/1.0.0/' +
       this.layer_ + '/{z}/{x}/{y}.jpg';
 

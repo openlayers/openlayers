@@ -112,7 +112,7 @@ ol.View = function(opt_options) {
    * @type {Object.<string, *>}
    */
   var properties = {};
-  properties[ol.ViewProperty.CENTER] = goog.isDef(options.center) ?
+  properties[ol.ViewProperty.CENTER] = options.center !== undefined ?
       options.center : null;
 
   /**
@@ -161,7 +161,7 @@ ol.View = function(opt_options) {
         this.maxResolution_, options.zoom - this.minZoom_);
   }
   properties[ol.ViewProperty.ROTATION] =
-      goog.isDef(options.rotation) ? options.rotation : 0;
+      options.rotation !== undefined ? options.rotation : 0;
   this.setProperties(properties);
 };
 goog.inherits(ol.View, ol.Object);
@@ -458,10 +458,10 @@ ol.View.prototype.fit = function(geometry, size, opt_options) {
 
   var options = opt_options || {};
 
-  var padding = goog.isDef(options.padding) ? options.padding : [0, 0, 0, 0];
-  var constrainResolution = goog.isDef(options.constrainResolution) ?
+  var padding = options.padding !== undefined ? options.padding : [0, 0, 0, 0];
+  var constrainResolution = options.constrainResolution !== undefined ?
       options.constrainResolution : true;
-  var nearest = goog.isDef(options.nearest) ? options.nearest : false;
+  var nearest = options.nearest !== undefined ? options.nearest : false;
   var minResolution;
   if (options.minResolution !== undefined) {
     minResolution = options.minResolution;
@@ -662,13 +662,13 @@ ol.View.createResolutionConstraint_ = function(options) {
   var defaultMaxZoom = 28;
   var defaultZoomFactor = 2;
 
-  var minZoom = goog.isDef(options.minZoom) ?
+  var minZoom = options.minZoom !== undefined ?
       options.minZoom : ol.DEFAULT_MIN_ZOOM;
 
-  var maxZoom = goog.isDef(options.maxZoom) ?
+  var maxZoom = options.maxZoom !== undefined ?
       options.maxZoom : defaultMaxZoom;
 
-  var zoomFactor = goog.isDef(options.zoomFactor) ?
+  var zoomFactor = options.zoomFactor !== undefined ?
       options.zoomFactor : defaultZoomFactor;
 
   if (options.resolutions !== undefined) {
@@ -734,7 +734,7 @@ ol.View.createResolutionConstraint_ = function(options) {
  * @return {ol.RotationConstraintType} Rotation constraint.
  */
 ol.View.createRotationConstraint_ = function(options) {
-  var enableRotation = goog.isDef(options.enableRotation) ?
+  var enableRotation = options.enableRotation !== undefined ?
       options.enableRotation : true;
   if (enableRotation) {
     var constrainRotation = options.constrainRotation;

@@ -22,7 +22,7 @@ ol.style.Fill = function(opt_options) {
    * @private
    * @type {ol.Color|string}
    */
-  this.color_ = goog.isDef(options.color) ? options.color : null;
+  this.color_ = options.color !== undefined ? options.color : null;
 
   /**
    * @private

@@ -716,25 +716,25 @@ ol.render.canvas.ImageReplay.prototype.drawPointGeometry =
   if (goog.isNull(this.image_)) {
     return;
   }
-  goog.asserts.assert(goog.isDef(this.anchorX_),
+  goog.asserts.assert(this.anchorX_ !== undefined,
       'this.anchorX_ should be defined');
-  goog.asserts.assert(goog.isDef(this.anchorY_),
+  goog.asserts.assert(this.anchorY_ !== undefined,
       'this.anchorY_ should be defined');
-  goog.asserts.assert(goog.isDef(this.height_),
+  goog.asserts.assert(this.height_ !== undefined,
       'this.height_ should be defined');
-  goog.asserts.assert(goog.isDef(this.opacity_),
+  goog.asserts.assert(this.opacity_ !== undefined,
       'this.opacity_ should be defined');
-  goog.asserts.assert(goog.isDef(this.originX_),
+  goog.asserts.assert(this.originX_ !== undefined,
       'this.originX_ should be defined');
-  goog.asserts.assert(goog.isDef(this.originY_),
+  goog.asserts.assert(this.originY_ !== undefined,
       'this.originY_ should be defined');
-  goog.asserts.assert(goog.isDef(this.rotateWithView_),
+  goog.asserts.assert(this.rotateWithView_ !== undefined,
       'this.rotateWithView_ should be defined');
-  goog.asserts.assert(goog.isDef(this.rotation_),
+  goog.asserts.assert(this.rotation_ !== undefined,
       'this.rotation_ should be defined');
-  goog.asserts.assert(goog.isDef(this.scale_),
+  goog.asserts.assert(this.scale_ !== undefined,
       'this.scale_ should be defined');
-  goog.asserts.assert(goog.isDef(this.width_),
+  goog.asserts.assert(this.width_ !== undefined,
       'this.width_ should be defined');
   this.beginGeometry(pointGeometry, feature);
   var flatCoordinates = pointGeometry.getFlatCoordinates();
@@ -769,25 +769,25 @@ ol.render.canvas.ImageReplay.prototype.drawMultiPointGeometry =
   if (goog.isNull(this.image_)) {
     return;
   }
-  goog.asserts.assert(goog.isDef(this.anchorX_),
+  goog.asserts.assert(this.anchorX_ !== undefined,
       'this.anchorX_ should be defined');
-  goog.asserts.assert(goog.isDef(this.anchorY_),
+  goog.asserts.assert(this.anchorY_ !== undefined,
       'this.anchorY_ should be defined');
-  goog.asserts.assert(goog.isDef(this.height_),
+  goog.asserts.assert(this.height_ !== undefined,
       'this.height_ should be defined');
-  goog.asserts.assert(goog.isDef(this.opacity_),
+  goog.asserts.assert(this.opacity_ !== undefined,
       'this.opacity_ should be defined');
-  goog.asserts.assert(goog.isDef(this.originX_),
+  goog.asserts.assert(this.originX_ !== undefined,
       'this.originX_ should be defined');
-  goog.asserts.assert(goog.isDef(this.originY_),
+  goog.asserts.assert(this.originY_ !== undefined,
       'this.originY_ should be defined');
-  goog.asserts.assert(goog.isDef(this.rotateWithView_),
+  goog.asserts.assert(this.rotateWithView_ !== undefined,
       'this.rotateWithView_ should be defined');
-  goog.asserts.assert(goog.isDef(this.rotation_),
+  goog.asserts.assert(this.rotation_ !== undefined,
       'this.rotation_ should be defined');
-  goog.asserts.assert(goog.isDef(this.scale_),
+  goog.asserts.assert(this.scale_ !== undefined,
       'this.scale_ should be defined');
-  goog.asserts.assert(goog.isDef(this.width_),
+  goog.asserts.assert(this.width_ !== undefined,
       'this.width_ should be defined');
   this.beginGeometry(multiPointGeometry, feature);
   var flatCoordinates = multiPointGeometry.getFlatCoordinates();
@@ -1198,7 +1198,7 @@ ol.render.canvas.PolygonReplay.prototype.drawFlatCoordinatess_ =
     this.instructions.push(fillInstruction);
   }
   if (state.strokeStyle !== undefined) {
-    goog.asserts.assert(goog.isDef(state.lineWidth),
+    goog.asserts.assert(state.lineWidth !== undefined,
         'state.lineWidth should be defined');
     var strokeInstruction = [ol.render.canvas.Instruction.STROKE];
     this.instructions.push(strokeInstruction);
@@ -1221,7 +1221,7 @@ ol.render.canvas.PolygonReplay.prototype.drawCircleGeometry =
     return;
   }
   if (strokeStyle !== undefined) {
-    goog.asserts.assert(goog.isDef(state.lineWidth),
+    goog.asserts.assert(state.lineWidth !== undefined,
         'state.lineWidth should be defined');
   }
   this.setFillStrokeStyles_();
@@ -1251,7 +1251,7 @@ ol.render.canvas.PolygonReplay.prototype.drawCircleGeometry =
     this.instructions.push(fillInstruction);
   }
   if (state.strokeStyle !== undefined) {
-    goog.asserts.assert(goog.isDef(state.lineWidth),
+    goog.asserts.assert(state.lineWidth !== undefined,
         'state.lineWidth should be defined');
     var strokeInstruction = [ol.render.canvas.Instruction.STROKE];
     this.instructions.push(strokeInstruction);
@@ -1274,7 +1274,7 @@ ol.render.canvas.PolygonReplay.prototype.drawPolygonGeometry =
     return;
   }
   if (strokeStyle !== undefined) {
-    goog.asserts.assert(goog.isDef(state.lineWidth),
+    goog.asserts.assert(state.lineWidth !== undefined,
         'state.lineWidth should be defined');
   }
   this.setFillStrokeStyles_();
@@ -1310,7 +1310,7 @@ ol.render.canvas.PolygonReplay.prototype.drawMultiPolygonGeometry =
     return;
   }
   if (strokeStyle !== undefined) {
-    goog.asserts.assert(goog.isDef(state.lineWidth),
+    goog.asserts.assert(state.lineWidth !== undefined,
         'state.lineWidth should be defined');
   }
   this.setFillStrokeStyles_();
