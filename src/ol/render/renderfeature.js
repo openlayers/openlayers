@@ -10,7 +10,7 @@ goog.require('ol.geom.GeometryType');
 
 /**
  * Lightweight, read-only, {@link ol.Feature} and {@link ol.geom.Geometry} like
- * structure, optimized for rendering and styling. Geometry acces through the
+ * structure, optimized for rendering and styling. Geometry access through the
  * API is limited to getting the type and extent of the geometry.
  *
  * @constructor

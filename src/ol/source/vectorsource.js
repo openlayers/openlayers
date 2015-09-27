@@ -66,7 +66,9 @@ ol.source.VectorEventType = {
 
 /**
  * @classdesc
- * Provides a source of features for vector layers.
+ * Provides a source of features for vector layers. Vector features provided
+ * by this source are suitable for editing. See {@link ol.source.VectorTile} for
+ * vector data that is optimized for rendering.
  *
  * @constructor
  * @extends {ol.source.Source}
