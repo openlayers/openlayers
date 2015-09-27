@@ -62,7 +62,7 @@ ol.Geolocation = function(opt_options) {
 
   goog.base(this);
 
-  var options = goog.isDef(opt_options) ? opt_options : {};
+  var options = opt_options || {};
 
   /**
    * The unprojected (EPSG:4326) device position.

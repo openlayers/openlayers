@@ -15,7 +15,7 @@ goog.require('ol.style.Fill');
  */
 ol.style.Text = function(opt_options) {
 
-  var options = goog.isDef(opt_options) ? opt_options : {};
+  var options = opt_options || {};
 
   /**
    * @private

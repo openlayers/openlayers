@@ -49,7 +49,7 @@ ol.style.IconOrigin = {
  */
 ol.style.Icon = function(opt_options) {
 
-  var options = goog.isDef(opt_options) ? opt_options : {};
+  var options = opt_options || {};
 
   /**
    * @private

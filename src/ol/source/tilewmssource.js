@@ -33,7 +33,7 @@ goog.require('ol.tilecoord');
  */
 ol.source.TileWMS = function(opt_options) {
 
-  var options = goog.isDef(opt_options) ? opt_options : {};
+  var options = opt_options || {};
 
   var params = goog.isDef(options.params) ? options.params : {};
 

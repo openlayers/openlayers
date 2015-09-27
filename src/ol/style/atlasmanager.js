@@ -40,7 +40,7 @@ ol.style.AtlasManagerInfo;
  */
 ol.style.AtlasManager = function(opt_options) {
 
-  var options = goog.isDef(opt_options) ? opt_options : {};
+  var options = opt_options || {};
 
   /**
    * The size in pixels of the latest atlas image.

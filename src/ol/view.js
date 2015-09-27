@@ -100,7 +100,7 @@ ol.ViewHint = {
  */
 ol.View = function(opt_options) {
   goog.base(this);
-  var options = goog.isDef(opt_options) ? opt_options : {};
+  var options = opt_options || {};
 
   /**
    * @private
@@ -456,7 +456,7 @@ ol.View.prototype.fit = function(geometry, size, opt_options) {
     geometry = ol.geom.Polygon.fromExtent(geometry);
   }
 
-  var options = goog.isDef(opt_options) ? opt_options : {};
+  var options = opt_options || {};
 
   var padding = goog.isDef(options.padding) ? options.padding : [0, 0, 0, 0];
   var constrainResolution = goog.isDef(options.constrainResolution) ?

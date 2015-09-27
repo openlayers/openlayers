@@ -21,7 +21,7 @@ goog.require('ol.structs.IHasChecksum');
  */
 ol.style.Stroke = function(opt_options) {
 
-  var options = goog.isDef(opt_options) ? opt_options : {};
+  var options = opt_options || {};
 
   /**
    * @private

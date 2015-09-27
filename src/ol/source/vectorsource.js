@@ -75,7 +75,7 @@ ol.source.VectorEventType = {
  */
 ol.source.Vector = function(opt_options) {
 
-  var options = goog.isDef(opt_options) ? opt_options : {};
+  var options = opt_options || {};
 
   goog.base(this, {
     attributions: options.attributions,

@@ -38,7 +38,7 @@ ol.layer.GroupProperty = {
  */
 ol.layer.Group = function(opt_options) {
 
-  var options = goog.isDef(opt_options) ? opt_options : {};
+  var options = opt_options || {};
   var baseOptions = /** @type {olx.layer.GroupOptions} */
       (goog.object.clone(options));
   delete baseOptions.layers;
