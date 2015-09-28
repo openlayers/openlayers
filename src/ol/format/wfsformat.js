@@ -196,7 +196,7 @@ ol.format.WFS.prototype.readFeatureCollectionMetadataFromDocument =
     function(doc) {
   goog.asserts.assert(doc.nodeType == goog.dom.NodeType.DOCUMENT,
       'doc.nodeType should be DOCUMENT');
-  for (var n = doc.firstChild; !goog.isNull(n); n = n.nextSibling) {
+  for (var n = doc.firstChild; n !== null; n = n.nextSibling) {
     if (n.nodeType == goog.dom.NodeType.ELEMENT) {
       return this.readFeatureCollectionMetadataFromNode(n);
     }
@@ -337,7 +337,7 @@ ol.format.WFS.TRANSACTION_RESPONSE_PARSERS_ = {
 ol.format.WFS.prototype.readTransactionResponseFromDocument = function(doc) {
   goog.asserts.assert(doc.nodeType == goog.dom.NodeType.DOCUMENT,
       'doc.nodeType should be DOCUMENT');
-  for (var n = doc.firstChild; !goog.isNull(n); n = n.nextSibling) {
+  for (var n = doc.firstChild; n !== null; n = n.nextSibling) {
     if (n.nodeType == goog.dom.NodeType.ELEMENT) {
       return this.readTransactionResponseFromNode(n);
     }
@@ -750,7 +750,7 @@ ol.format.WFS.prototype.readProjection;
 ol.format.WFS.prototype.readProjectionFromDocument = function(doc) {
   goog.asserts.assert(doc.nodeType == goog.dom.NodeType.DOCUMENT,
       'doc.nodeType should be a DOCUMENT');
-  for (var n = doc.firstChild; !goog.isNull(n); n = n.nextSibling) {
+  for (var n = doc.firstChild; n !== null; n = n.nextSibling) {
     if (n.nodeType == goog.dom.NodeType.ELEMENT) {
       return this.readProjectionFromNode(n);
     }
@@ -771,8 +771,7 @@ ol.format.WFS.prototype.readProjectionFromNode = function(node) {
   if (goog.isDefAndNotNull(node.firstElementChild) &&
       goog.isDefAndNotNull(node.firstElementChild.firstElementChild)) {
     node = node.firstElementChild.firstElementChild;
-    for (var n = node.firstElementChild; !goog.isNull(n);
-        n = n.nextElementSibling) {
+    for (var n = node.firstElementChild; n !== null; n = n.nextElementSibling) {
       if (!(n.childNodes.length === 0 ||
           (n.childNodes.length === 1 &&
           n.firstChild.nodeType === 3))) {

@@ -97,7 +97,7 @@ ol.format.TopoJSON.concatenateArcs_ = function(indices, arcs) {
  */
 ol.format.TopoJSON.readPointGeometry_ = function(object, scale, translate) {
   var coordinates = object.coordinates;
-  if (!goog.isNull(scale) && !goog.isNull(translate)) {
+  if (scale !== null && translate !== null) {
     ol.format.TopoJSON.transformVertex_(coordinates, scale, translate);
   }
   return new ol.geom.Point(coordinates);
@@ -117,7 +117,7 @@ ol.format.TopoJSON.readMultiPointGeometry_ = function(object, scale,
     translate) {
   var coordinates = object.coordinates;
   var i, ii;
-  if (!goog.isNull(scale) && !goog.isNull(translate)) {
+  if (scale !== null && translate !== null) {
     for (i = 0, ii = coordinates.length; i < ii; ++i) {
       ol.format.TopoJSON.transformVertex_(coordinates[i], scale, translate);
     }
