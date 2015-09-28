@@ -33,9 +33,10 @@ ol.TileCoordTransformType;
 
 /**
  * @param {string} template Template.
+ * @param {ol.tilegrid.TileGrid} tileGrid Tile grid.
  * @return {ol.TileUrlFunctionType} Tile URL function.
  */
-ol.TileUrlFunction.createFromTemplate = function(template) {
+ol.TileUrlFunction.createFromTemplate = function(template, tileGrid) {
   var zRegEx = /\{z\}/g;
   var xRegEx = /\{x\}/g;
   var yRegEx = /\{y\}/g;
@@ -52,15 +53,19 @@ ol.TileUrlFunction.createFromTemplate = function(template) {
           return undefined;
         } else {
           return template.replace(zRegEx, tileCoord[0].toString())
-                         .replace(xRegEx, tileCoord[1].toString())
-                         .replace(yRegEx, function() {
-                           var y = -tileCoord[2] - 1;
-                           return y.toString();
-                         })
-                         .replace(dashYRegEx, function() {
-                           var y = (1 << tileCoord[0]) + tileCoord[2];
-                           return y.toString();
-                         });
+              .replace(xRegEx, tileCoord[1].toString())
+              .replace(yRegEx, function() {
+                var y = -tileCoord[2] - 1;
+                return y.toString();
+              })
+              .replace(dashYRegEx, function() {
+                var z = tileCoord[0];
+                var range = tileGrid.getFullTileRange(z);
+                goog.asserts.assert(range,
+                    'The {-y} template requires a tile grid with extent');
+                var y = range.getHeight() + tileCoord[2];
+                return y.toString();
+              });
         }
       });
 };
@@ -68,11 +73,17 @@ ol.TileUrlFunction.createFromTemplate = function(template) {
 
 /**
  * @param {Array.<string>} templates Templates.
+ * @param {ol.tilegrid.TileGrid} tileGrid Tile grid.
  * @return {ol.TileUrlFunctionType} Tile URL function.
  */
-ol.TileUrlFunction.createFromTemplates = function(templates) {
-  return ol.TileUrlFunction.createFromTileUrlFunctions(
-      templates.map(ol.TileUrlFunction.createFromTemplate));
+ol.TileUrlFunction.createFromTemplates = function(templates, tileGrid) {
+  var len = templates.length;
+  var tileUrlFunctions = new Array(len);
+  for (var i = 0; i < len; ++i) {
+    tileUrlFunctions[i] = ol.TileUrlFunction.createFromTemplate(
+        templates[i], tileGrid);
+  }
+  return ol.TileUrlFunction.createFromTileUrlFunctions(tileUrlFunctions);
 };
 
 
