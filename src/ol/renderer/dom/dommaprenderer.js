@@ -7,7 +7,6 @@ goog.require('goog.dom.TagName');
 goog.require('goog.events');
 goog.require('goog.events.Event');
 goog.require('goog.events.EventType');
-goog.require('goog.functions');
 goog.require('goog.style');
 goog.require('goog.vec.Mat4');
 goog.require('ol');
@@ -45,16 +44,13 @@ ol.renderer.dom.Map = function(container, map) {
    * @private
    * @type {CanvasRenderingContext2D}
    */
-  this.context_ = null;
-  if (!(ol.LEGACY_IE_SUPPORT && ol.IS_LEGACY_IE)) {
-    this.context_ = ol.dom.createCanvasContext2D();
-    var canvas = this.context_.canvas;
-    canvas.style.position = 'absolute';
-    canvas.style.width = '100%';
-    canvas.style.height = '100%';
-    canvas.className = ol.css.CLASS_UNSELECTABLE;
-    goog.dom.insertChildAt(container, canvas, 0);
-  }
+  this.context_ = ol.dom.createCanvasContext2D();
+  var canvas = this.context_.canvas;
+  canvas.style.position = 'absolute';
+  canvas.style.width = '100%';
+  canvas.style.height = '100%';
+  canvas.className = ol.css.CLASS_UNSELECTABLE;
+  goog.dom.insertChildAt(container, canvas, 0);
 
   /**
    * @private
@@ -72,14 +68,6 @@ ol.renderer.dom.Map = function(container, map) {
   style.position = 'absolute';
   style.width = '100%';
   style.height = '100%';
-
-  // in IE < 9, we need to return false from ondragstart to cancel the default
-  // behavior of dragging images, which is interfering with the custom handler
-  // in the Drag interaction subclasses
-  if (ol.LEGACY_IE_SUPPORT && ol.IS_LEGACY_IE) {
-    this.layersPane_.ondragstart = goog.functions.FALSE;
-    this.layersPane_.onselectstart = goog.functions.FALSE;
-  }
 
   // prevent the img context menu on mobile devices
   goog.events.listen(this.layersPane_, goog.events.EventType.TOUCHSTART,
@@ -115,8 +103,7 @@ ol.renderer.dom.Map.prototype.createLayerRenderer = function(layer) {
     layerRenderer = new ol.renderer.dom.ImageLayer(layer);
   } else if (ol.ENABLE_TILE && layer instanceof ol.layer.Tile) {
     layerRenderer = new ol.renderer.dom.TileLayer(layer);
-  } else if (!(ol.LEGACY_IE_SUPPORT && ol.IS_LEGACY_IE) &&
-      ol.ENABLE_VECTOR && layer instanceof ol.layer.Vector) {
+  } else if (ol.ENABLE_VECTOR && layer instanceof ol.layer.Vector) {
     layerRenderer = new ol.renderer.dom.VectorLayer(layer);
   } else {
     goog.asserts.fail('unexpected layer configuration');
@@ -134,7 +121,7 @@ ol.renderer.dom.Map.prototype.createLayerRenderer = function(layer) {
 ol.renderer.dom.Map.prototype.dispatchComposeEvent_ =
     function(type, frameState) {
   var map = this.getMap();
-  if (!(ol.LEGACY_IE_SUPPORT && ol.IS_LEGACY_IE) && map.hasListener(type)) {
+  if (map.hasListener(type)) {
     var extent = frameState.extent;
     var pixelRatio = frameState.pixelRatio;
     var viewState = frameState.viewState;
@@ -180,40 +167,9 @@ ol.renderer.dom.Map.prototype.renderFrame = function(frameState) {
     return;
   }
 
-  /**
-   * @this {ol.renderer.dom.Map}
-   * @param {Element} elem
-   * @param {number} i
-   */
-  var addChild;
-
-  // appendChild is actually more performant than insertBefore
-  // in IE 7 and 8. http://jsperf.com/reattaching-dom-nodes
-  if (ol.LEGACY_IE_SUPPORT && ol.IS_LEGACY_IE) {
-    addChild =
-        /**
-         * @this {ol.renderer.dom.Map}
-         * @param {Element} elem
-         */ (
-        function(elem) {
-          goog.dom.appendChild(this.layersPane_, elem);
-        });
-  } else {
-    addChild =
-        /**
-         * @this {ol.renderer.dom.Map}
-         * @param {Element} elem
-         * @param {number} i
-         */ (
-        function(elem, i) {
-          goog.dom.insertChildAt(this.layersPane_, elem, i);
-        });
-  }
-
   var map = this.getMap();
-  if (!(ol.LEGACY_IE_SUPPORT && ol.IS_LEGACY_IE) &&
-      (map.hasListener(ol.render.EventType.PRECOMPOSE) ||
-      map.hasListener(ol.render.EventType.POSTCOMPOSE))) {
+  if (map.hasListener(ol.render.EventType.PRECOMPOSE) ||
+      map.hasListener(ol.render.EventType.POSTCOMPOSE)) {
     var canvas = this.context_.canvas;
     var pixelRatio = frameState.pixelRatio;
     canvas.width = frameState.size[0] * pixelRatio;
@@ -234,7 +190,7 @@ ol.renderer.dom.Map.prototype.renderFrame = function(frameState) {
         this.getLayerRenderer(layer));
     goog.asserts.assertInstanceof(layerRenderer, ol.renderer.dom.Layer,
         'renderer is an instance of ol.renderer.dom.Layer');
-    addChild.call(this, layerRenderer.getTarget(), i);
+    goog.dom.insertChildAt(this.layersPane_, layerRenderer.getTarget(), i);
     if (ol.layer.Layer.visibleAtResolution(layerState, viewResolution) &&
         layerState.sourceState == ol.source.State.READY) {
       if (layerRenderer.prepareFrame(frameState, layerState)) {
