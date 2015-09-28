@@ -254,7 +254,7 @@ ol.Overlay.prototype.handleElementChanged = function() {
  * @protected
  */
 ol.Overlay.prototype.handleMapChanged = function() {
-  if (!goog.isNull(this.mapPostrenderListenerKey_)) {
+  if (this.mapPostrenderListenerKey_ !== null) {
     goog.dom.removeNode(this.element_);
     goog.events.unlistenByKey(this.mapPostrenderListenerKey_);
     this.mapPostrenderListenerKey_ = null;
@@ -366,7 +366,7 @@ ol.Overlay.prototype.panIntoView_ = function() {
   goog.asserts.assert(this.autoPan, 'this.autoPan should be true');
   var map = this.getMap();
 
-  if (map === undefined || goog.isNull(map.getTargetElement())) {
+  if (map === undefined || map.getTargetElement() === null) {
     return;
   }
 
@@ -410,7 +410,7 @@ ol.Overlay.prototype.panIntoView_ = function() {
         centerPx[1] + delta[1]
       ];
 
-      if (!goog.isNull(this.autoPanAnimation_)) {
+      if (this.autoPanAnimation_ !== null) {
         this.autoPanAnimation_.source = center;
         map.beforeRender(ol.animation.pan(this.autoPanAnimation_));
       }
@@ -491,7 +491,7 @@ ol.Overlay.prototype.updatePixelPosition = function() {
  * @protected
  */
 ol.Overlay.prototype.updateRenderedPosition = function(pixel, mapSize) {
-  goog.asserts.assert(!goog.isNull(pixel), 'pixel should not be null');
+  goog.asserts.assert(pixel !== null, 'pixel should not be null');
   goog.asserts.assert(mapSize !== undefined, 'mapSize should be defined');
   var style = this.element_.style;
   var offset = this.getOffset();
