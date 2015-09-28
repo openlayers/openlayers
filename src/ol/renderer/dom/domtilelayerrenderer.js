@@ -149,7 +149,7 @@ ol.renderer.dom.TileLayer.prototype.prepareFrame =
       if (!fullyLoaded) {
         childTileRange = tileGrid.getTileCoordChildTileRange(
             tile.tileCoord, tmpTileRange, tmpExtent);
-        if (!goog.isNull(childTileRange)) {
+        if (childTileRange !== null) {
           findLoadedTiles(z + 1, childTileRange);
         }
       }
@@ -377,7 +377,7 @@ ol.renderer.dom.TileLayerZ_.prototype.addTile = function(tile, tileGutter) {
       ((tileCoordX - this.tileCoordOrigin_[1]) * tileSize[0]) + 'px';
   tileElementStyle.top =
       ((this.tileCoordOrigin_[2] - tileCoordY) * tileSize[1]) + 'px';
-  if (goog.isNull(this.documentFragment_)) {
+  if (this.documentFragment_ === null) {
     this.documentFragment_ = document.createDocumentFragment();
   }
   goog.dom.appendChild(this.documentFragment_, tileElement);
@@ -389,7 +389,7 @@ ol.renderer.dom.TileLayerZ_.prototype.addTile = function(tile, tileGutter) {
  * FIXME empty description for jsdoc
  */
 ol.renderer.dom.TileLayerZ_.prototype.finalizeAddTiles = function() {
-  if (!goog.isNull(this.documentFragment_)) {
+  if (this.documentFragment_ !== null) {
     goog.dom.appendChild(this.target, this.documentFragment_);
     this.documentFragment_ = null;
   }

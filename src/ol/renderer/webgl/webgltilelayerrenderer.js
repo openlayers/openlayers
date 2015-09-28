@@ -187,7 +187,7 @@ ol.renderer.webgl.TileLayer.prototype.prepareFrame =
       extent, tileResolution);
 
   var framebufferExtent;
-  if (!goog.isNull(this.renderedTileRange_) &&
+  if (this.renderedTileRange_ !== null &&
       this.renderedTileRange_.equals(tileRange) &&
       this.renderedRevision_ == tileSource.getRevision()) {
     framebufferExtent = this.renderedFramebufferExtent_;
@@ -219,7 +219,7 @@ ol.renderer.webgl.TileLayer.prototype.prepareFrame =
 
     var program = context.getProgram(this.fragmentShader_, this.vertexShader_);
     context.useProgram(program);
-    if (goog.isNull(this.locations_)) {
+    if (this.locations_ === null) {
       this.locations_ =
           new ol.renderer.webgl.tilelayer.shader.Locations(gl, program);
     }
@@ -276,7 +276,7 @@ ol.renderer.webgl.TileLayer.prototype.prepareFrame =
         if (!fullyLoaded) {
           childTileRange = tileGrid.getTileCoordChildTileRange(
               tile.tileCoord, tmpTileRange, tmpExtent);
-          if (!goog.isNull(childTileRange)) {
+          if (childTileRange !== null) {
             findLoadedTiles(z + 1, childTileRange);
           }
         }
@@ -378,7 +378,7 @@ ol.renderer.webgl.TileLayer.prototype.prepareFrame =
  */
 ol.renderer.webgl.TileLayer.prototype.forEachLayerAtPixel =
     function(pixel, frameState, callback, thisArg) {
-  if (goog.isNull(this.framebuffer)) {
+  if (this.framebuffer === null) {
     return undefined;
   }
 

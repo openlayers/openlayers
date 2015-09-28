@@ -71,7 +71,7 @@ goog.inherits(ol.renderer.Map, goog.Disposable);
 ol.renderer.Map.prototype.calculateMatrices2D = function(frameState) {
   var viewState = frameState.viewState;
   var coordinateToPixelMatrix = frameState.coordinateToPixelMatrix;
-  goog.asserts.assert(!goog.isNull(coordinateToPixelMatrix),
+  goog.asserts.assert(coordinateToPixelMatrix !== null,
       'frameState has non-null coordinateToPixelMatrix');
   ol.vec.Mat4.makeTransform2D(coordinateToPixelMatrix,
       frameState.size[0] / 2, frameState.size[1] / 2,
@@ -171,7 +171,7 @@ ol.renderer.Map.prototype.forEachFeatureAtCoordinate =
         (ol.layer.Layer.visibleAtResolution(layerState, viewResolution) &&
         layerFilter.call(thisArg2, layer))) {
       var layerRenderer = this.getLayerRenderer(layer);
-      if (!goog.isNull(layer.getSource())) {
+      if (layer.getSource() !== null) {
         result = layerRenderer.forEachFeatureAtCoordinate(
             layer.getSource().getWrapX() ? translatedCoordinate : coordinate,
             frameState, callback, thisArg);
@@ -347,7 +347,7 @@ ol.renderer.Map.prototype.removeUnusedLayerRenderers_ =
     function(map, frameState) {
   var layerKey;
   for (layerKey in this.layerRenderers_) {
-    if (goog.isNull(frameState) || !(layerKey in frameState.layerStates)) {
+    if (frameState === null || !(layerKey in frameState.layerStates)) {
       goog.dispose(this.removeLayerRendererByKey_(layerKey));
     }
   }
