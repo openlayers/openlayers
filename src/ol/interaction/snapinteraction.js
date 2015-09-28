@@ -205,9 +205,9 @@ ol.interaction.Snap.prototype.forEachFeatureRemove_ = function(feature) {
  */
 ol.interaction.Snap.prototype.getFeatures_ = function() {
   var features;
-  if (!goog.isNull(this.features_)) {
+  if (this.features_ !== null) {
     features = this.features_;
-  } else if (!goog.isNull(this.source_)) {
+  } else if (this.source_ !== null) {
     features = this.source_.getFeatures();
   }
   goog.asserts.assert(features !== undefined, 'features should be defined');
@@ -328,12 +328,12 @@ ol.interaction.Snap.prototype.setMap = function(map) {
   goog.base(this, 'setMap', map);
 
   if (map) {
-    if (!goog.isNull(this.features_)) {
+    if (this.features_ !== null) {
       keys.push(this.features_.on(ol.CollectionEventType.ADD,
           this.handleFeatureAdd_, this));
       keys.push(this.features_.on(ol.CollectionEventType.REMOVE,
           this.handleFeatureRemove_, this));
-    } else if (!goog.isNull(this.source_)) {
+    } else if (this.source_ !== null) {
       keys.push(this.source_.on(ol.source.VectorEventType.ADDFEATURE,
           this.handleFeatureAdd_, this));
       keys.push(this.source_.on(ol.source.VectorEventType.REMOVEFEATURE,

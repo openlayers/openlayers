@@ -98,11 +98,11 @@ ol.interaction.DragAndDrop.prototype.handleDrop_ = function(event) {
  */
 ol.interaction.DragAndDrop.prototype.handleResult_ = function(file, result) {
   var map = this.getMap();
-  goog.asserts.assert(!goog.isNull(map), 'map should not be null');
+  goog.asserts.assert(map !== null, 'map should not be null');
   var projection = this.projection_;
-  if (goog.isNull(projection)) {
+  if (projection === null) {
     var view = map.getView();
-    goog.asserts.assert(!goog.isNull(view), 'view should not be null');
+    goog.asserts.assert(view !== null, 'view should not be null');
     projection = view.getProjection();
     goog.asserts.assert(projection !== undefined,
         'projection should be defined');
@@ -114,7 +114,7 @@ ol.interaction.DragAndDrop.prototype.handleResult_ = function(file, result) {
     var formatConstructor = formatConstructors[i];
     var format = new formatConstructor();
     var readFeatures = this.tryReadFeatures_(format, result);
-    if (!goog.isNull(readFeatures)) {
+    if (readFeatures !== null) {
       var featureProjection = format.readProjection(result);
       var transform = ol.proj.getTransform(featureProjection, projection);
       var j, jj;
@@ -154,14 +154,14 @@ ol.interaction.DragAndDrop.prototype.setMap = function(map) {
     goog.events.unlistenByKey(this.dropListenKey_);
     this.dropListenKey_ = undefined;
   }
-  if (!goog.isNull(this.fileDropHandler_)) {
+  if (this.fileDropHandler_ !== null) {
     goog.dispose(this.fileDropHandler_);
     this.fileDropHandler_ = null;
   }
   goog.asserts.assert(this.dropListenKey_ === undefined,
       'this.dropListenKey_ should be undefined');
   goog.base(this, 'setMap', map);
-  if (!goog.isNull(map)) {
+  if (map !== null) {
     this.fileDropHandler_ = new goog.events.FileDropHandler(map.getViewport());
     this.dropListenKey_ = goog.events.listen(
         this.fileDropHandler_, goog.events.FileDropHandler.EventType.DROP,

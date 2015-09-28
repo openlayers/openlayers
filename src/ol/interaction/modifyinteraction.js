@@ -243,7 +243,7 @@ ol.interaction.Modify.prototype.addFeature_ = function(feature) {
     this.SEGMENT_WRITERS_[geometry.getType()].call(this, feature, geometry);
   }
   var map = this.getMap();
-  if (!goog.isNull(map)) {
+  if (map !== null) {
     this.handlePointerAtPixel_(this.lastPixel_, map);
   }
   goog.events.listen(feature, goog.events.EventType.CHANGE,
@@ -259,8 +259,7 @@ ol.interaction.Modify.prototype.removeFeature_ = function(feature) {
   this.removeFeatureSegmentData_(feature);
   // Remove the vertex feature if the collection of canditate features
   // is empty.
-  if (!goog.isNull(this.vertexFeature_) &&
-      this.features_.getLength() === 0) {
+  if (this.vertexFeature_ !== null && this.features_.getLength() === 0) {
     this.overlay_.getSource().removeFeature(this.vertexFeature_);
     this.vertexFeature_ = null;
   }
@@ -501,7 +500,7 @@ ol.interaction.Modify.prototype.writeGeometryCollectionGeometry_ =
 ol.interaction.Modify.prototype.createOrUpdateVertexFeature_ =
     function(coordinates) {
   var vertexFeature = this.vertexFeature_;
-  if (goog.isNull(vertexFeature)) {
+  if (vertexFeature === null) {
     vertexFeature = new ol.Feature(new ol.geom.Point(coordinates));
     this.vertexFeature_ = vertexFeature;
     this.overlay_.getSource().addFeature(vertexFeature);
@@ -534,7 +533,7 @@ ol.interaction.Modify.handleDownEvent_ = function(evt) {
   this.handlePointerAtPixel_(evt.pixel, evt.map);
   this.dragSegments_ = [];
   var vertexFeature = this.vertexFeature_;
-  if (!goog.isNull(vertexFeature)) {
+  if (vertexFeature !== null) {
     var insertVertices = [];
     var geometry = /** @type {ol.geom.Point} */ (vertexFeature.getGeometry());
     var vertex = geometry.getCoordinates();
@@ -584,7 +583,7 @@ ol.interaction.Modify.handleDownEvent_ = function(evt) {
         new ol.interaction.ModifyEvent(ol.ModifyEventType.MODIFYSTART,
         this.features_, evt));
   }
-  return !goog.isNull(this.vertexFeature_);
+  return this.vertexFeature_ !== null;
 };
 
 
@@ -678,8 +677,7 @@ ol.interaction.Modify.handleEvent = function(mapBrowserEvent) {
       !this.handlingDownUpSequence) {
     this.handlePointerMove_(mapBrowserEvent);
   }
-  if (!goog.isNull(this.vertexFeature_) &&
-      this.deleteCondition_(mapBrowserEvent)) {
+  if (this.vertexFeature_ !== null && this.deleteCondition_(mapBrowserEvent)) {
     if (mapBrowserEvent.type != ol.MapBrowserEvent.EventType.SINGLECLICK ||
         !this.ignoreNextSingleClick_) {
       var geometry = this.vertexFeature_.getGeometry();
@@ -768,7 +766,7 @@ ol.interaction.Modify.prototype.handlePointerAtPixel_ = function(pixel, map) {
       return;
     }
   }
-  if (!goog.isNull(this.vertexFeature_)) {
+  if (this.vertexFeature_ !== null) {
     this.overlay_.getSource().removeFeature(this.vertexFeature_);
     this.vertexFeature_ = null;
   }
@@ -940,7 +938,7 @@ ol.interaction.Modify.prototype.removeVertex_ = function() {
             newSegmentData);
         this.updateSegmentIndices_(geometry, index, segmentData.depth, -1);
 
-        if (!goog.isNull(this.vertexFeature_)) {
+        if (this.vertexFeature_ !== null) {
           this.overlay_.getSource().removeFeature(this.vertexFeature_);
           this.vertexFeature_ = null;
         }
