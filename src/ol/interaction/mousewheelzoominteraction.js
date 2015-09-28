@@ -91,11 +91,11 @@ ol.interaction.MouseWheelZoom.handleEvent = function(mapBrowserEvent) {
     this.delta_ += mouseWheelEvent.deltaY;
 
     if (this.startTime_ === undefined) {
-      this.startTime_ = goog.now();
+      this.startTime_ = Date.now();
     }
 
     var duration = ol.MOUSEWHEELZOOM_TIMEOUT_DURATION;
-    var timeLeft = Math.max(duration - (goog.now() - this.startTime_), 0);
+    var timeLeft = Math.max(duration - (Date.now() - this.startTime_), 0);
 
     goog.global.clearTimeout(this.timeoutId_);
     this.timeoutId_ = goog.global.setTimeout(
