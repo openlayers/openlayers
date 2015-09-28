@@ -282,7 +282,7 @@ ol.style.Icon.prototype.getImageState = function() {
  * @inheritDoc
  */
 ol.style.Icon.prototype.getHitDetectionImage = function(pixelRatio) {
-  return this.iconImage_.getHitDetectionImage(pixelRatio);
+  return this.iconImage_.getHitDetectionImage(pixelRatio, this.getSize());
 };
 
 
@@ -514,17 +514,22 @@ ol.style.IconImage_.prototype.getImageState = function() {
 
 /**
  * @param {number} pixelRatio Pixel ratio.
+ * @param {ol.Size} size The size of SVG icons is unknown on IE, so provide it.
  * @return {Image|HTMLCanvasElement} Image element.
  */
-ol.style.IconImage_.prototype.getHitDetectionImage = function(pixelRatio) {
+ol.style.IconImage_.prototype.getHitDetectionImage =
+    function(pixelRatio, size) {
   if (goog.isNull(this.hitDetectionImage_)) {
-    if (this.tainting_) {
-      var width = this.size_[0];
-      var height = this.size_[1];
-      var context = ol.dom.createCanvasContext2D(width, height);
-      context.fillRect(0, 0, width, height);
-      this.hitDetectionImage_ = context.canvas;
-    } else {
+    if (this.tainting_ && !goog.isNull(size)) {
+      var width = size[0];
+      var height = size[1];
+      if (width > 0 && height > 0) {
+        var context = ol.dom.createCanvasContext2D(width, height);
+        context.fillRect(0, 0, width, height);
+        this.hitDetectionImage_ = context.canvas;
+      }
+    }
+    if (goog.isNull(this.hitDetectionImage_)) {
       this.hitDetectionImage_ = this.image_;
     }
   }

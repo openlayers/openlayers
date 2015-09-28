@@ -311,6 +311,7 @@ ol.render.canvas.Replay.prototype.replay_ = function(
         var scale = /** @type {number} */ (instruction[12]);
         var snapToPixel = /** @type {boolean} */ (instruction[13]);
         var width = /** @type {number} */ (instruction[14]);
+        goog.asserts.assert(width > 0 && height > 0);
         if (rotateWithView) {
           rotation += viewRotation;
         }
