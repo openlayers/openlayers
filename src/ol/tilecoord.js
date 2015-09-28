@@ -148,12 +148,12 @@ ol.tilecoord.withinExtentAndZ = function(tileCoord, tileGrid) {
   }
   var extent = tileGrid.getExtent();
   var tileRange;
-  if (goog.isNull(extent)) {
+  if (extent === null) {
     tileRange = tileGrid.getFullTileRange(z);
   } else {
     tileRange = tileGrid.getTileRangeForExtentAndZ(extent, z);
   }
-  if (goog.isNull(tileRange)) {
+  if (tileRange === null) {
     return true;
   } else {
     return tileRange.containsXY(x, y);
