@@ -8,6 +8,7 @@ goog.require('goog.string');
 goog.require('goog.uri.utils');
 goog.require('ol.TileUrlFunction');
 goog.require('ol.TileUrlFunctionType');
+goog.require('ol.array');
 goog.require('ol.extent');
 goog.require('ol.proj');
 goog.require('ol.source.TileImage');
@@ -405,7 +406,7 @@ ol.source.WMTS.optionsFromCapabilities = function(wmtsCap, config) {
       var key = elt['Identifier'];
       var value = elt['default'];
       if (value !== undefined) {
-        goog.asserts.assert(goog.array.contains(elt['values'], value),
+        goog.asserts.assert(ol.array.includes(elt['values'], value),
             'default value contained in values');
       } else {
         value = elt['values'][0];
@@ -457,7 +458,7 @@ ol.source.WMTS.optionsFromCapabilities = function(wmtsCap, config) {
   requestEncoding = requestEncoding !== undefined ? requestEncoding : '';
 
   goog.asserts.assert(
-      goog.array.contains(['REST', 'RESTful', 'KVP', ''], requestEncoding),
+      ol.array.includes(['REST', 'RESTful', 'KVP', ''], requestEncoding),
       'requestEncoding (%s) is one of "REST", "RESTful", "KVP" or ""',
       requestEncoding);
 
@@ -481,7 +482,7 @@ ol.source.WMTS.optionsFromCapabilities = function(wmtsCap, config) {
             return elt['name'] == 'GetEncoding';
           });
       var encodings = constraint['AllowedValues']['Value'];
-      if (encodings.length > 0 && goog.array.contains(encodings, 'KVP')) {
+      if (encodings.length > 0 && ol.array.includes(encodings, 'KVP')) {
         requestEncoding = ol.source.WMTSRequestEncoding.KVP;
         urls.push(/** @type {string} */ (gets[i]['href']));
       }

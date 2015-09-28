@@ -1,6 +1,6 @@
 goog.provide('ol.interaction.Translate');
 
-goog.require('goog.array');
+goog.require('ol.array');
 goog.require('ol.interaction.Pointer');
 
 
@@ -131,7 +131,7 @@ ol.interaction.Translate.handleMoveEvent_ = function(event)
     var isSelected = false;
 
     if (!goog.isNull(this.features_) &&
-        goog.array.contains(this.features_.getArray(), intersectingFeature)) {
+        ol.array.includes(this.features_.getArray(), intersectingFeature)) {
       isSelected = true;
     }
 
@@ -172,7 +172,7 @@ ol.interaction.Translate.prototype.featuresAtPixel_ = function(pixel, map) {
       });
 
   if (!goog.isNull(this.features_) &&
-      goog.array.contains(this.features_.getArray(), intersectingFeature)) {
+      ol.array.includes(this.features_.getArray(), intersectingFeature)) {
     found = intersectingFeature;
   }
 
