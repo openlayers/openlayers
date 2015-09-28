@@ -258,7 +258,7 @@ ol.geom.SimpleGeometry.prototype.setLayout =
  * @api stable
  */
 ol.geom.SimpleGeometry.prototype.applyTransform = function(transformFn) {
-  if (!goog.isNull(this.flatCoordinates)) {
+  if (this.flatCoordinates !== null) {
     transformFn(this.flatCoordinates, this.flatCoordinates, this.stride);
     this.changed();
   }
@@ -271,7 +271,7 @@ ol.geom.SimpleGeometry.prototype.applyTransform = function(transformFn) {
  */
 ol.geom.SimpleGeometry.prototype.translate = function(deltaX, deltaY) {
   var flatCoordinates = this.getFlatCoordinates();
-  if (!goog.isNull(flatCoordinates)) {
+  if (flatCoordinates !== null) {
     var stride = this.getStride();
     ol.geom.flat.transform.translate(
         flatCoordinates, 0, flatCoordinates.length, stride,
@@ -290,7 +290,7 @@ ol.geom.SimpleGeometry.prototype.translate = function(deltaX, deltaY) {
 ol.geom.transformSimpleGeometry2D =
     function(simpleGeometry, transform, opt_dest) {
   var flatCoordinates = simpleGeometry.getFlatCoordinates();
-  if (goog.isNull(flatCoordinates)) {
+  if (flatCoordinates === null) {
     return null;
   } else {
     var stride = simpleGeometry.getStride();
