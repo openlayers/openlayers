@@ -48,7 +48,7 @@ ol.TileUrlFunction.createFromTemplate = function(template) {
        * @return {string|undefined} Tile URL.
        */
       function(tileCoord, pixelRatio, projection) {
-        if (goog.isNull(tileCoord)) {
+        if (tileCoord === null) {
           return undefined;
         } else {
           return template.replace(zRegEx, tileCoord[0].toString())
@@ -94,7 +94,7 @@ ol.TileUrlFunction.createFromTileUrlFunctions = function(tileUrlFunctions) {
        * @return {string|undefined} Tile URL.
        */
       function(tileCoord, pixelRatio, projection) {
-        if (goog.isNull(tileCoord)) {
+        if (tileCoord === null) {
           return undefined;
         } else {
           var h = ol.tilecoord.hash(tileCoord);
