@@ -284,8 +284,7 @@ ol.MapBrowserEventHandler.prototype.handlePointerUp_ = function(pointerEvent) {
   // to 0).
   // See http://www.w3.org/TR/pointerevents/#button-states
   if (!this.dragging_ && this.isMouseActionButton_(pointerEvent)) {
-    goog.asserts.assert(!goog.isNull(this.down_),
-        'this.down_ should not be null');
+    goog.asserts.assert(this.down_ !== null, 'this.down_ should not be null');
     this.emulateClick_(this.down_);
   }
 
@@ -326,7 +325,7 @@ ol.MapBrowserEventHandler.prototype.handlePointerDown_ =
 
   this.down_ = pointerEvent;
 
-  if (goog.isNull(this.dragListenerKeys_)) {
+  if (this.dragListenerKeys_ === null) {
     /* Set up a pointer event handler on the `document`,
      * which is required when the pointer is moved outside
      * the viewport when dragging.
@@ -396,7 +395,7 @@ ol.MapBrowserEventHandler.prototype.handlePointerMove_ =
  * @private
  */
 ol.MapBrowserEventHandler.prototype.relayEvent_ = function(pointerEvent) {
-  var dragging = !goog.isNull(this.down_) && this.isMoving_(pointerEvent);
+  var dragging = this.down_ !== null && this.isMoving_(pointerEvent);
   this.dispatchEvent(new ol.MapBrowserPointerEvent(
       pointerEvent.type, this.map_, pointerEvent, dragging));
 };
@@ -417,23 +416,23 @@ ol.MapBrowserEventHandler.prototype.isMoving_ = function(pointerEvent) {
  * @inheritDoc
  */
 ol.MapBrowserEventHandler.prototype.disposeInternal = function() {
-  if (!goog.isNull(this.relayedListenerKey_)) {
+  if (this.relayedListenerKey_ !== null) {
     goog.events.unlistenByKey(this.relayedListenerKey_);
     this.relayedListenerKey_ = null;
   }
-  if (!goog.isNull(this.pointerdownListenerKey_)) {
+  if (this.pointerdownListenerKey_ !== null) {
     goog.events.unlistenByKey(this.pointerdownListenerKey_);
     this.pointerdownListenerKey_ = null;
   }
-  if (!goog.isNull(this.dragListenerKeys_)) {
+  if (this.dragListenerKeys_ !== null) {
     this.dragListenerKeys_.forEach(goog.events.unlistenByKey);
     this.dragListenerKeys_ = null;
   }
-  if (!goog.isNull(this.documentPointerEventHandler_)) {
+  if (this.documentPointerEventHandler_ !== null) {
     goog.dispose(this.documentPointerEventHandler_);
     this.documentPointerEventHandler_ = null;
   }
-  if (!goog.isNull(this.pointerEventHandler_)) {
+  if (this.pointerEventHandler_ !== null) {
     goog.dispose(this.pointerEventHandler_);
     this.pointerEventHandler_ = null;
   }
