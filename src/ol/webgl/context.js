@@ -203,7 +203,6 @@ ol.webgl.Context.prototype.getGL = function() {
 /**
  * Get the frame buffer for hit detection.
  * @return {WebGLFramebuffer} The hit detection frame buffer.
- * @api
  */
 ol.webgl.Context.prototype.getHitDetectionFramebuffer = function() {
   if (goog.isNull(this.hitDetectionFramebuffer_)) {
