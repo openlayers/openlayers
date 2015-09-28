@@ -250,7 +250,7 @@ ol.render.canvas.Immediate =
  */
 ol.render.canvas.Immediate.prototype.drawImages_ =
     function(flatCoordinates, offset, end, stride) {
-  if (goog.isNull(this.image_)) {
+  if (this.image_ === null) {
     return;
   }
   goog.asserts.assert(offset === 0, 'offset should be 0');
@@ -313,13 +313,13 @@ ol.render.canvas.Immediate.prototype.drawImages_ =
  */
 ol.render.canvas.Immediate.prototype.drawText_ =
     function(flatCoordinates, offset, end, stride) {
-  if (goog.isNull(this.textState_) || this.text_ === '') {
+  if (this.textState_ === null || this.text_ === '') {
     return;
   }
-  if (!goog.isNull(this.textFillState_)) {
+  if (this.textFillState_ !== null) {
     this.setContextFillState_(this.textFillState_);
   }
-  if (!goog.isNull(this.textStrokeState_)) {
+  if (this.textStrokeState_ !== null) {
     this.setContextStrokeState_(this.textStrokeState_);
   }
   this.setContextTextState_(this.textState_);
@@ -344,10 +344,10 @@ ol.render.canvas.Immediate.prototype.drawText_ =
           goog.vec.Mat4.getElement(localTransform, 0, 3),
           goog.vec.Mat4.getElement(localTransform, 1, 3));
     }
-    if (!goog.isNull(this.textStrokeState_)) {
+    if (this.textStrokeState_ !== null) {
       context.strokeText(this.text_, x, y);
     }
-    if (!goog.isNull(this.textFillState_)) {
+    if (this.textFillState_ !== null) {
       context.fillText(this.text_, x, y);
     }
   }
@@ -438,11 +438,11 @@ ol.render.canvas.Immediate.prototype.drawCircleGeometry =
   if (!ol.extent.intersects(this.extent_, circleGeometry.getExtent())) {
     return;
   }
-  if (!goog.isNull(this.fillState_) || !goog.isNull(this.strokeState_)) {
-    if (!goog.isNull(this.fillState_)) {
+  if (this.fillState_ !== null || this.strokeState_ !== null) {
+    if (this.fillState_ !== null) {
       this.setContextFillState_(this.fillState_);
     }
-    if (!goog.isNull(this.strokeState_)) {
+    if (this.strokeState_ !== null) {
       this.setContextStrokeState_(this.strokeState_);
     }
     var pixelCoordinates = ol.geom.transformSimpleGeometry2D(
@@ -454,10 +454,10 @@ ol.render.canvas.Immediate.prototype.drawCircleGeometry =
     context.beginPath();
     context.arc(
         pixelCoordinates[0], pixelCoordinates[1], radius, 0, 2 * Math.PI);
-    if (!goog.isNull(this.fillState_)) {
+    if (this.fillState_ !== null) {
       context.fill();
     }
-    if (!goog.isNull(this.strokeState_)) {
+    if (this.strokeState_ !== null) {
       context.stroke();
     }
   }
@@ -536,7 +536,7 @@ ol.render.canvas.Immediate.prototype.drawPointGeometry =
     function(pointGeometry, feature) {
   var flatCoordinates = pointGeometry.getFlatCoordinates();
   var stride = pointGeometry.getStride();
-  if (!goog.isNull(this.image_)) {
+  if (this.image_ !== null) {
     this.drawImages_(flatCoordinates, 0, flatCoordinates.length, stride);
   }
   if (this.text_ !== '') {
@@ -557,7 +557,7 @@ ol.render.canvas.Immediate.prototype.drawMultiPointGeometry =
     function(multiPointGeometry, feature) {
   var flatCoordinates = multiPointGeometry.getFlatCoordinates();
   var stride = multiPointGeometry.getStride();
-  if (!goog.isNull(this.image_)) {
+  if (this.image_ !== null) {
     this.drawImages_(flatCoordinates, 0, flatCoordinates.length, stride);
   }
   if (this.text_ !== '') {
@@ -579,7 +579,7 @@ ol.render.canvas.Immediate.prototype.drawLineStringGeometry =
   if (!ol.extent.intersects(this.extent_, lineStringGeometry.getExtent())) {
     return;
   }
-  if (!goog.isNull(this.strokeState_)) {
+  if (this.strokeState_ !== null) {
     this.setContextStrokeState_(this.strokeState_);
     var context = this.context_;
     var flatCoordinates = lineStringGeometry.getFlatCoordinates();
@@ -610,7 +610,7 @@ ol.render.canvas.Immediate.prototype.drawMultiLineStringGeometry =
   if (!ol.extent.intersects(this.extent_, geometryExtent)) {
     return;
   }
-  if (!goog.isNull(this.strokeState_)) {
+  if (this.strokeState_ !== null) {
     this.setContextStrokeState_(this.strokeState_);
     var context = this.context_;
     var flatCoordinates = multiLineStringGeometry.getFlatCoordinates();
@@ -645,21 +645,21 @@ ol.render.canvas.Immediate.prototype.drawPolygonGeometry =
   if (!ol.extent.intersects(this.extent_, polygonGeometry.getExtent())) {
     return;
   }
-  if (!goog.isNull(this.strokeState_) || !goog.isNull(this.fillState_)) {
-    if (!goog.isNull(this.fillState_)) {
+  if (this.strokeState_ !== null || this.fillState_ !== null) {
+    if (this.fillState_ !== null) {
       this.setContextFillState_(this.fillState_);
     }
-    if (!goog.isNull(this.strokeState_)) {
+    if (this.strokeState_ !== null) {
       this.setContextStrokeState_(this.strokeState_);
     }
     var context = this.context_;
     context.beginPath();
     this.drawRings_(polygonGeometry.getOrientedFlatCoordinates(),
         0, polygonGeometry.getEnds(), polygonGeometry.getStride());
-    if (!goog.isNull(this.fillState_)) {
+    if (this.fillState_ !== null) {
       context.fill();
     }
-    if (!goog.isNull(this.strokeState_)) {
+    if (this.strokeState_ !== null) {
       context.stroke();
     }
   }
@@ -682,11 +682,11 @@ ol.render.canvas.Immediate.prototype.drawMultiPolygonGeometry =
   if (!ol.extent.intersects(this.extent_, multiPolygonGeometry.getExtent())) {
     return;
   }
-  if (!goog.isNull(this.strokeState_) || !goog.isNull(this.fillState_)) {
-    if (!goog.isNull(this.fillState_)) {
+  if (this.strokeState_ !== null || this.fillState_ !== null) {
+    if (this.fillState_ !== null) {
       this.setContextFillState_(this.fillState_);
     }
-    if (!goog.isNull(this.strokeState_)) {
+    if (this.strokeState_ !== null) {
       this.setContextStrokeState_(this.strokeState_);
     }
     var context = this.context_;
@@ -699,10 +699,10 @@ ol.render.canvas.Immediate.prototype.drawMultiPolygonGeometry =
       var ends = endss[i];
       context.beginPath();
       offset = this.drawRings_(flatCoordinates, offset, ends, stride);
-      if (!goog.isNull(this.fillState_)) {
+      if (this.fillState_ !== null) {
         context.fill();
       }
-      if (!goog.isNull(this.strokeState_)) {
+      if (this.strokeState_ !== null) {
         context.stroke();
       }
     }
@@ -745,7 +745,7 @@ ol.render.canvas.Immediate.prototype.setContextFillState_ =
     function(fillState) {
   var context = this.context_;
   var contextFillState = this.contextFillState_;
-  if (goog.isNull(contextFillState)) {
+  if (contextFillState === null) {
     context.fillStyle = fillState.fillStyle;
     this.contextFillState_ = {
       fillStyle: fillState.fillStyle
@@ -766,7 +766,7 @@ ol.render.canvas.Immediate.prototype.setContextStrokeState_ =
     function(strokeState) {
   var context = this.context_;
   var contextStrokeState = this.contextStrokeState_;
-  if (goog.isNull(contextStrokeState)) {
+  if (contextStrokeState === null) {
     context.lineCap = strokeState.lineCap;
     if (ol.has.CANVAS_LINE_DASH) {
       context.setLineDash(strokeState.lineDash);
@@ -819,7 +819,7 @@ ol.render.canvas.Immediate.prototype.setContextTextState_ =
     function(textState) {
   var context = this.context_;
   var contextTextState = this.contextTextState_;
-  if (goog.isNull(contextTextState)) {
+  if (contextTextState === null) {
     context.font = textState.font;
     context.textAlign = textState.textAlign;
     context.textBaseline = textState.textBaseline;
@@ -853,16 +853,16 @@ ol.render.canvas.Immediate.prototype.setContextTextState_ =
  */
 ol.render.canvas.Immediate.prototype.setFillStrokeStyle =
     function(fillStyle, strokeStyle) {
-  if (goog.isNull(fillStyle)) {
+  if (fillStyle === null) {
     this.fillState_ = null;
   } else {
     var fillStyleColor = fillStyle.getColor();
     this.fillState_ = {
-      fillStyle: ol.color.asString(!goog.isNull(fillStyleColor) ?
+      fillStyle: ol.color.asString(fillStyleColor !== null ?
           fillStyleColor : ol.render.canvas.defaultFillStyle)
     };
   }
-  if (goog.isNull(strokeStyle)) {
+  if (strokeStyle === null) {
     this.strokeState_ = null;
   } else {
     var strokeStyleColor = strokeStyle.getColor();
@@ -882,7 +882,7 @@ ol.render.canvas.Immediate.prototype.setFillStrokeStyle =
           strokeStyleWidth : ol.render.canvas.defaultLineWidth),
       miterLimit: strokeStyleMiterLimit !== undefined ?
           strokeStyleMiterLimit : ol.render.canvas.defaultMiterLimit,
-      strokeStyle: ol.color.asString(!goog.isNull(strokeStyleColor) ?
+      strokeStyle: ol.color.asString(strokeStyleColor !== null ?
           strokeStyleColor : ol.render.canvas.defaultStrokeStyle)
     };
   }
@@ -897,7 +897,7 @@ ol.render.canvas.Immediate.prototype.setFillStrokeStyle =
  * @api
  */
 ol.render.canvas.Immediate.prototype.setImageStyle = function(imageStyle) {
-  if (goog.isNull(imageStyle)) {
+  if (imageStyle === null) {
     this.image_ = null;
   } else {
     var imageAnchor = imageStyle.getAnchor();
@@ -905,14 +905,10 @@ ol.render.canvas.Immediate.prototype.setImageStyle = function(imageStyle) {
     var imageImage = imageStyle.getImage(1);
     var imageOrigin = imageStyle.getOrigin();
     var imageSize = imageStyle.getSize();
-    goog.asserts.assert(!goog.isNull(imageAnchor),
-        'imageAnchor should not be null');
-    goog.asserts.assert(!goog.isNull(imageImage),
-        'imageImage should not be null');
-    goog.asserts.assert(!goog.isNull(imageOrigin),
-        'imageOrigin should not be null');
-    goog.asserts.assert(!goog.isNull(imageSize),
-        'imageSize should not be null');
+    goog.asserts.assert(imageAnchor !== null, 'imageAnchor should not be null');
+    goog.asserts.assert(imageImage !== null, 'imageImage should not be null');
+    goog.asserts.assert(imageOrigin !== null, 'imageOrigin should not be null');
+    goog.asserts.assert(imageSize !== null, 'imageSize should not be null');
     this.imageAnchorX_ = imageAnchor[0];
     this.imageAnchorY_ = imageAnchor[1];
     this.imageHeight_ = imageSize[1];
@@ -937,21 +933,21 @@ ol.render.canvas.Immediate.prototype.setImageStyle = function(imageStyle) {
  * @api
  */
 ol.render.canvas.Immediate.prototype.setTextStyle = function(textStyle) {
-  if (goog.isNull(textStyle)) {
+  if (textStyle === null) {
     this.text_ = '';
   } else {
     var textFillStyle = textStyle.getFill();
-    if (goog.isNull(textFillStyle)) {
+    if (textFillStyle === null) {
       this.textFillState_ = null;
     } else {
       var textFillStyleColor = textFillStyle.getColor();
       this.textFillState_ = {
-        fillStyle: ol.color.asString(!goog.isNull(textFillStyleColor) ?
+        fillStyle: ol.color.asString(textFillStyleColor !== null ?
             textFillStyleColor : ol.render.canvas.defaultFillStyle)
       };
     }
     var textStrokeStyle = textStyle.getStroke();
-    if (goog.isNull(textStrokeStyle)) {
+    if (textStrokeStyle === null) {
       this.textStrokeState_ = null;
     } else {
       var textStrokeStyleColor = textStrokeStyle.getColor();
@@ -971,7 +967,7 @@ ol.render.canvas.Immediate.prototype.setTextStyle = function(textStyle) {
             textStrokeStyleWidth : ol.render.canvas.defaultLineWidth,
         miterLimit: textStrokeStyleMiterLimit !== undefined ?
             textStrokeStyleMiterLimit : ol.render.canvas.defaultMiterLimit,
-        strokeStyle: ol.color.asString(!goog.isNull(textStrokeStyleColor) ?
+        strokeStyle: ol.color.asString(textStrokeStyleColor !== null ?
             textStrokeStyleColor : ol.render.canvas.defaultStrokeStyle)
       };
     }
