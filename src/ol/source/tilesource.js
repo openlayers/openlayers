@@ -194,7 +194,7 @@ ol.source.Tile.prototype.getTileGrid = function() {
  * @return {ol.tilegrid.TileGrid} Tile grid.
  */
 ol.source.Tile.prototype.getTileGridForProjection = function(projection) {
-  if (goog.isNull(this.tileGrid)) {
+  if (this.tileGrid === null) {
     return ol.tilegrid.getForProjection(projection);
   } else {
     return this.tileGrid;
@@ -230,7 +230,7 @@ ol.source.Tile.prototype.getTileCoordForTileUrlFunction =
   var projection = opt_projection !== undefined ?
       opt_projection : this.getProjection();
   var tileGrid = this.getTileGridForProjection(projection);
-  goog.asserts.assert(!goog.isNull(tileGrid), 'tile grid needed');
+  goog.asserts.assert(tileGrid !== null, 'tile grid needed');
   if (this.getWrapX() && projection.isGlobal()) {
     tileCoord = ol.tilecoord.wrapX(tileCoord, tileGrid, projection);
   }

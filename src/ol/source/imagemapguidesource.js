@@ -132,7 +132,7 @@ ol.source.ImageMapGuide.prototype.getImage =
   pixelRatio = this.hidpi_ ? pixelRatio : 1;
 
   var image = this.image_;
-  if (!goog.isNull(image) &&
+  if (image !== null &&
       this.renderedRevision_ == this.getRevision() &&
       image.getResolution() == resolution &&
       image.getPixelRatio() == pixelRatio &&

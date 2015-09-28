@@ -77,8 +77,7 @@ ol.source.TileJSON.prototype.handleTileJSONResponse = function(tileJSON) {
 
   this.tileUrlFunction = ol.TileUrlFunction.createFromTemplates(tileJSON.tiles);
 
-  if (tileJSON.attribution !== undefined &&
-      goog.isNull(this.getAttributions())) {
+  if (tileJSON.attribution !== undefined && this.getAttributions() === null) {
     var attributionExtent = extent !== undefined ?
         extent : epsg4326Projection.getExtent();
     /** @type {Object.<string, Array.<ol.TileRange>>} */

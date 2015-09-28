@@ -200,7 +200,7 @@ ol.source.TileArcGISRest.prototype.tileUrlFunction_ =
     function(tileCoord, pixelRatio, projection) {
 
   var tileGrid = this.getTileGrid();
-  if (goog.isNull(tileGrid)) {
+  if (tileGrid === null) {
     tileGrid = this.getTileGridForProjection(projection);
   }
 

@@ -50,7 +50,7 @@ ol.source.Image = function(options) {
    */
   this.resolutions_ = options.resolutions !== undefined ?
       options.resolutions : null;
-  goog.asserts.assert(goog.isNull(this.resolutions_) ||
+  goog.asserts.assert(this.resolutions_ === null ||
       goog.array.isSorted(this.resolutions_,
           function(a, b) {
             return b - a;
@@ -75,7 +75,7 @@ ol.source.Image.prototype.getResolutions = function() {
  */
 ol.source.Image.prototype.findNearestResolution =
     function(resolution) {
-  if (!goog.isNull(this.resolutions_)) {
+  if (this.resolutions_ !== null) {
     var idx = ol.array.linearFindNearest(this.resolutions_, resolution, 0);
     resolution = this.resolutions_[idx];
   }
