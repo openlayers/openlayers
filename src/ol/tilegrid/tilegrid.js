@@ -73,13 +73,13 @@ ol.tilegrid.TileGrid = function(options) {
   var extent = options.extent;
 
   if (extent !== undefined &&
-      goog.isNull(this.origin_) && goog.isNull(this.origins_)) {
+      this.origin_ === null && this.origins_ === null) {
     this.origin_ = ol.extent.getTopLeft(extent);
   }
 
   goog.asserts.assert(
-      (goog.isNull(this.origin_) && !goog.isNull(this.origins_)) ||
-      (!goog.isNull(this.origin_) && goog.isNull(this.origins_)),
+      (this.origin_ === null && this.origins_ !== null) ||
+      (this.origin_ !== null && this.origins_ === null),
       'either origin or origins must be configured, never both');
 
   /**
@@ -99,10 +99,10 @@ ol.tilegrid.TileGrid = function(options) {
    */
   this.tileSize_ = options.tileSize !== undefined ?
       options.tileSize :
-      goog.isNull(this.tileSizes_) ? ol.DEFAULT_TILE_SIZE : null;
+      this.tileSizes_ === null ? ol.DEFAULT_TILE_SIZE : null;
   goog.asserts.assert(
-      (goog.isNull(this.tileSize_) && !goog.isNull(this.tileSizes_)) ||
-      (!goog.isNull(this.tileSize_) && goog.isNull(this.tileSizes_)),
+      (this.tileSize_ === null && this.tileSizes_ !== null) ||
+      (this.tileSize_ !== null && this.tileSizes_ === null),
       'either tileSize or tileSizes must be configured, never both');
 
   /**
@@ -214,10 +214,10 @@ ol.tilegrid.TileGrid.prototype.getMinZoom = function() {
  * @api stable
  */
 ol.tilegrid.TileGrid.prototype.getOrigin = function(z) {
-  if (!goog.isNull(this.origin_)) {
+  if (this.origin_ !== null) {
     return this.origin_;
   } else {
-    goog.asserts.assert(!goog.isNull(this.origins_),
+    goog.asserts.assert(this.origins_ !== null,
         'origins cannot be null if origin is null');
     goog.asserts.assert(this.minZoom <= z && z <= this.maxZoom,
         'given z is not in allowed range (%s <= %s <= %s)',
@@ -448,10 +448,10 @@ ol.tilegrid.TileGrid.prototype.getTileCoordResolution = function(tileCoord) {
  * @api stable
  */
 ol.tilegrid.TileGrid.prototype.getTileSize = function(z) {
-  if (!goog.isNull(this.tileSize_)) {
+  if (this.tileSize_ !== null) {
     return this.tileSize_;
   } else {
-    goog.asserts.assert(!goog.isNull(this.tileSizes_),
+    goog.asserts.assert(this.tileSizes_ !== null,
         'tileSizes cannot be null if tileSize is null');
     goog.asserts.assert(this.minZoom <= z && z <= this.maxZoom,
         'z is not in allowed range (%s <= %s <= %s',
@@ -466,7 +466,7 @@ ol.tilegrid.TileGrid.prototype.getTileSize = function(z) {
  * @return {ol.TileRange} Extent tile range for the specified zoom level.
  */
 ol.tilegrid.TileGrid.prototype.getFullTileRange = function(z) {
-  if (goog.isNull(this.fullTileRanges_)) {
+  if (this.fullTileRanges_ === null) {
     return null;
   } else {
     goog.asserts.assert(this.minZoom <= z && z <= this.maxZoom,
@@ -507,7 +507,7 @@ ol.tilegrid.TileGrid.prototype.calculateTileRanges_ = function(extent) {
  */
 ol.tilegrid.getForProjection = function(projection) {
   var tileGrid = projection.getDefaultTileGrid();
-  if (goog.isNull(tileGrid)) {
+  if (tileGrid === null) {
     tileGrid = ol.tilegrid.createForProjection(projection);
     projection.setDefaultTileGrid(tileGrid);
   }
@@ -620,7 +620,7 @@ ol.tilegrid.createForProjection =
 ol.tilegrid.extentFromProjection = function(projection) {
   projection = ol.proj.get(projection);
   var extent = projection.getExtent();
-  if (goog.isNull(extent)) {
+  if (extent === null) {
     var half = 180 * ol.proj.METERS_PER_UNIT[ol.proj.Units.DEGREES] /
         projection.getMetersPerUnit();
     extent = ol.extent.createOrUpdate(-half, -half, half, half);
