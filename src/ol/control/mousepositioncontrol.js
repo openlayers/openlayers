@@ -108,7 +108,7 @@ goog.inherits(ol.control.MousePosition, ol.control.Control);
  */
 ol.control.MousePosition.render = function(mapEvent) {
   var frameState = mapEvent.frameState;
-  if (goog.isNull(frameState)) {
+  if (frameState === null) {
     this.mapProjection_ = null;
   } else {
     if (this.mapProjection_ != frameState.viewState.projection) {
@@ -182,7 +182,7 @@ ol.control.MousePosition.prototype.handleMouseOut = function(browserEvent) {
  */
 ol.control.MousePosition.prototype.setMap = function(map) {
   goog.base(this, 'setMap', map);
-  if (!goog.isNull(map)) {
+  if (map !== null) {
     var viewport = map.getViewport();
     this.listenerKeys.push(
         goog.events.listen(viewport, goog.events.EventType.MOUSEMOVE,
@@ -224,8 +224,8 @@ ol.control.MousePosition.prototype.setProjection = function(projection) {
  */
 ol.control.MousePosition.prototype.updateHTML_ = function(pixel) {
   var html = this.undefinedHTML_;
-  if (!goog.isNull(pixel) && !goog.isNull(this.mapProjection_)) {
-    if (goog.isNull(this.transform_)) {
+  if (pixel !== null && this.mapProjection_ !== null) {
+    if (this.transform_ === null) {
       var projection = this.getProjection();
       if (projection) {
         this.transform_ = ol.proj.getTransformFromProjections(
@@ -236,7 +236,7 @@ ol.control.MousePosition.prototype.updateHTML_ = function(pixel) {
     }
     var map = this.getMap();
     var coordinate = map.getCoordinateFromPixel(pixel);
-    if (!goog.isNull(coordinate)) {
+    if (coordinate !== null) {
       this.transform_(coordinate, coordinate);
       var coordinateFormat = this.getCoordinateFormat();
       if (coordinateFormat) {
