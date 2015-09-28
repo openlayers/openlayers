@@ -106,7 +106,7 @@ ol.layer.Heatmap = function(opt_options) {
       'weightFunction should be a function');
 
   this.setStyle(goog.bind(function(feature, resolution) {
-    goog.asserts.assert(!goog.isNull(this.styleCache_),
+    goog.asserts.assert(this.styleCache_ !== null,
         'this.styleCache_ should not be null');
     goog.asserts.assert(this.circleImage_ !== undefined,
         'this.circleImage_ should be defined');
@@ -252,7 +252,7 @@ ol.layer.Heatmap.prototype.handleStyleChanged_ = function() {
 ol.layer.Heatmap.prototype.handleRender_ = function(event) {
   goog.asserts.assert(event.type == ol.render.EventType.RENDER,
       'event.type should be RENDER');
-  goog.asserts.assert(!goog.isNull(this.gradient_),
+  goog.asserts.assert(this.gradient_ !== null,
       'this.gradient_ should not be null');
   var context = event.context;
   var canvas = context.canvas;
