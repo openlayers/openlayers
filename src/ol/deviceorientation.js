@@ -114,24 +114,23 @@ ol.DeviceOrientation.prototype.disposeInternal = function() {
 ol.DeviceOrientation.prototype.orientationChange_ = function(browserEvent) {
   var event = /** @type {DeviceOrientationEvent} */
       (browserEvent.getBrowserEvent());
-  if (goog.isDefAndNotNull(event.alpha)) {
+  if (event.alpha !== null) {
     var alpha = goog.math.toRadians(event.alpha);
     this.set(ol.DeviceOrientationProperty.ALPHA, alpha);
     // event.absolute is undefined in iOS.
     if (goog.isBoolean(event.absolute) && event.absolute) {
       this.set(ol.DeviceOrientationProperty.HEADING, alpha);
-    } else if (goog.isDefAndNotNull(event.webkitCompassHeading) &&
-               goog.isDefAndNotNull(event.webkitCompassAccuracy) &&
+    } else if (goog.isNumber(event.webkitCompassHeading) &&
                event.webkitCompassAccuracy != -1) {
       var heading = goog.math.toRadians(event.webkitCompassHeading);
       this.set(ol.DeviceOrientationProperty.HEADING, heading);
     }
   }
-  if (goog.isDefAndNotNull(event.beta)) {
+  if (event.beta !== null) {
     this.set(ol.DeviceOrientationProperty.BETA,
         goog.math.toRadians(event.beta));
   }
-  if (goog.isDefAndNotNull(event.gamma)) {
+  if (event.gamma !== null) {
     this.set(ol.DeviceOrientationProperty.GAMMA,
         goog.math.toRadians(event.gamma));
   }
