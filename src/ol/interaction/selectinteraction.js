@@ -265,8 +265,7 @@ ol.interaction.Select.handleEvent = function(mapBrowserEvent) {
          * @param {ol.layer.Layer} layer Layer.
          */
         function(feature, layer) {
-          var index = goog.array.indexOf(features.getArray(), feature);
-          if (index == -1) {
+          if (!ol.array.includes(features.getArray(), feature)) {
             if (add || toggle) {
               if (this.filter_(feature, layer)) {
                 selected.push(feature);
