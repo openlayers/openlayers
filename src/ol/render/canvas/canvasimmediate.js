@@ -6,7 +6,6 @@ goog.provide('ol.render.canvas.Immediate');
 
 goog.require('goog.array');
 goog.require('goog.asserts');
-goog.require('goog.object');
 goog.require('goog.vec.Mat4');
 goog.require('ol.color');
 goog.require('ol.extent');
@@ -41,7 +40,7 @@ ol.render.canvas.Immediate =
 
   /**
    * @private
-   * @type {Object.<string,
+   * @type {!Object.<string,
    *        Array.<function(ol.render.canvas.Immediate)>>}
    */
   this.callbacksByZIndex_ = {};
@@ -725,7 +724,7 @@ ol.render.canvas.Immediate.prototype.drawText = goog.abstractMethod;
  */
 ol.render.canvas.Immediate.prototype.flush = function() {
   /** @type {Array.<number>} */
-  var zs = goog.object.getKeys(this.callbacksByZIndex_).map(Number);
+  var zs = Object.keys(this.callbacksByZIndex_).map(Number);
   goog.array.sort(zs);
   var i, ii, callbacks, j, jj;
   for (i = 0, ii = zs.length; i < ii; ++i) {

@@ -7,7 +7,6 @@ goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('goog.dom');
 goog.require('goog.dom.TagName');
-goog.require('goog.object');
 goog.require('goog.style');
 goog.require('goog.vec.Mat4');
 goog.require('ol');
@@ -59,7 +58,7 @@ ol.renderer.dom.TileLayer = function(tileLayer) {
 
   /**
    * @private
-   * @type {Object.<number, ol.renderer.dom.TileLayerZ_>}
+   * @type {!Object.<number, ol.renderer.dom.TileLayerZ_>}
    */
   this.tileLayerZs_ = {};
 
@@ -172,7 +171,7 @@ ol.renderer.dom.TileLayer.prototype.prepareFrame =
   }
 
   /** @type {Array.<number>} */
-  var zs = goog.object.getKeys(tilesToDrawByZ).map(Number);
+  var zs = Object.keys(tilesToDrawByZ).map(Number);
   goog.array.sort(zs);
 
   /** @type {Object.<number, boolean>} */
@@ -198,7 +197,7 @@ ol.renderer.dom.TileLayer.prototype.prepareFrame =
   }
 
   /** @type {Array.<number>} */
-  var tileLayerZKeys = goog.object.getKeys(this.tileLayerZs_).map(Number);
+  var tileLayerZKeys = Object.keys(this.tileLayerZs_).map(Number);
   goog.array.sort(tileLayerZKeys);
 
   var i, ii, j, origin, resolution;

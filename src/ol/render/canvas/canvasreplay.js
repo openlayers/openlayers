@@ -1831,7 +1831,7 @@ ol.render.canvas.ReplayGroup = function(
 
   /**
    * @private
-   * @type {Object.<string,
+   * @type {!Object.<string,
    *        Object.<ol.render.ReplayType, ol.render.canvas.Replay>>}
    */
   this.replaysByZIndex_ = {};
@@ -1961,7 +1961,7 @@ ol.render.canvas.ReplayGroup.prototype.replay = function(
     context, pixelRatio, transform, viewRotation, skippedFeaturesHash) {
 
   /** @type {Array.<number>} */
-  var zs = goog.object.getKeys(this.replaysByZIndex_).map(Number);
+  var zs = Object.keys(this.replaysByZIndex_).map(Number);
   goog.array.sort(zs);
 
   // setup clipping so that the parts of over-simplified geometries are not
@@ -2016,7 +2016,7 @@ ol.render.canvas.ReplayGroup.prototype.replayHitDetection_ = function(
     context, transform, viewRotation, skippedFeaturesHash,
     featureCallback, opt_hitExtent) {
   /** @type {Array.<number>} */
-  var zs = goog.object.getKeys(this.replaysByZIndex_).map(Number);
+  var zs = Object.keys(this.replaysByZIndex_).map(Number);
   goog.array.sort(zs, function(a, b) { return b - a; });
 
   var i, ii, j, replays, replay, result;

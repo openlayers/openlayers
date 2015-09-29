@@ -5,7 +5,6 @@ goog.provide('ol.renderer.canvas.TileLayer');
 
 goog.require('goog.array');
 goog.require('goog.asserts');
-goog.require('goog.object');
 goog.require('goog.vec.Mat4');
 goog.require('ol.Size');
 goog.require('ol.TileRange');
@@ -354,7 +353,7 @@ ol.renderer.canvas.TileLayer.prototype.prepareFrame =
   }
 
   /** @type {Array.<number>} */
-  var zs = goog.object.getKeys(tilesToDrawByZ).map(Number);
+  var zs = Object.keys(tilesToDrawByZ).map(Number);
   goog.array.sort(zs);
   var opaque = tileSource.getOpaque();
   var origin = ol.extent.getTopLeft(tileGrid.getTileCoordExtent(
