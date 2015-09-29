@@ -118,7 +118,7 @@ ol.layer.Layer.prototype.getSource = function() {
   */
 ol.layer.Layer.prototype.getSourceState = function() {
   var source = this.getSource();
-  return goog.isNull(source) ? ol.source.State.UNDEFINED : source.getState();
+  return !source ? ol.source.State.UNDEFINED : source.getState();
 };
 
 
@@ -134,12 +134,12 @@ ol.layer.Layer.prototype.handleSourceChange_ = function() {
  * @private
  */
 ol.layer.Layer.prototype.handleSourcePropertyChange_ = function() {
-  if (!goog.isNull(this.sourceChangeKey_)) {
+  if (this.sourceChangeKey_) {
     goog.events.unlistenByKey(this.sourceChangeKey_);
     this.sourceChangeKey_ = null;
   }
   var source = this.getSource();
-  if (!goog.isNull(source)) {
+  if (source) {
     this.sourceChangeKey_ = goog.events.listen(source,
         goog.events.EventType.CHANGE, this.handleSourceChange_, false, this);
   }
@@ -162,12 +162,12 @@ ol.layer.Layer.prototype.handleSourcePropertyChange_ = function() {
 ol.layer.Layer.prototype.setMap = function(map) {
   goog.events.unlistenByKey(this.mapPrecomposeKey_);
   this.mapPrecomposeKey_ = null;
-  if (goog.isNull(map)) {
+  if (!map) {
     this.changed();
   }
   goog.events.unlistenByKey(this.mapRenderKey_);
   this.mapRenderKey_ = null;
-  if (!goog.isNull(map)) {
+  if (map) {
     this.mapPrecomposeKey_ = goog.events.listen(
         map, ol.render.EventType.PRECOMPOSE, function(evt) {
           var layerState = this.getLayerState();
