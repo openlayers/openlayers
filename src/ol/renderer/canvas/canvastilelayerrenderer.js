@@ -354,7 +354,7 @@ ol.renderer.canvas.TileLayer.prototype.prepareFrame =
   }
 
   /** @type {Array.<number>} */
-  var zs = goog.array.map(goog.object.getKeys(tilesToDrawByZ), Number);
+  var zs = goog.object.getKeys(tilesToDrawByZ).map(Number);
   goog.array.sort(zs);
   var opaque = tileSource.getOpaque();
   var origin = ol.extent.getTopLeft(tileGrid.getTileCoordExtent(

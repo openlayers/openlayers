@@ -1,6 +1,5 @@
 goog.provide('ol.structs.RBush');
 
-goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('goog.object');
 goog.require('ol.ext.rbush');
@@ -150,7 +149,7 @@ ol.structs.RBush.prototype.update = function(extent, value) {
  */
 ol.structs.RBush.prototype.getAll = function() {
   var items = this.rbush_.all();
-  return goog.array.map(items, function(item) {
+  return items.map(function(item) {
     return item[4];
   });
 };
@@ -163,7 +162,7 @@ ol.structs.RBush.prototype.getAll = function() {
  */
 ol.structs.RBush.prototype.getInExtent = function(extent) {
   var items = this.rbush_.search(extent);
-  return goog.array.map(items, function(item) {
+  return items.map(function(item) {
     return item[4];
   });
 };

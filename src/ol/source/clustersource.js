@@ -3,7 +3,6 @@
 
 goog.provide('ol.source.Cluster');
 
-goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('goog.events.EventType');
 goog.require('goog.object');
@@ -128,7 +127,7 @@ ol.source.Cluster.prototype.cluster_ = function() {
 
       var neighbors = this.source_.getFeaturesInExtent(extent);
       goog.asserts.assert(neighbors.length >= 1, 'at least one neighbor found');
-      neighbors = goog.array.filter(neighbors, function(neighbor) {
+      neighbors = neighbors.filter(function(neighbor) {
         var uid = goog.getUid(neighbor).toString();
         if (!goog.object.containsKey(clustered, uid)) {
           clustered[uid] = true;

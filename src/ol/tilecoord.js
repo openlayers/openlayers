@@ -1,7 +1,6 @@
 goog.provide('ol.TileCoord');
 goog.provide('ol.tilecoord');
 
-goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('ol.extent');
 
@@ -35,10 +34,9 @@ ol.tilecoord.createFromString = function(str) {
   var v = str.split('/');
   goog.asserts.assert(v.length === 3,
       'must provide a string in "z/x/y" format, got "%s"', str);
-  v = goog.array.map(v, function(e, i, a) {
+  return v.map(function(e) {
     return parseInt(e, 10);
   });
-  return v;
 };
 
 

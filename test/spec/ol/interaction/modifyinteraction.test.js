@@ -270,7 +270,7 @@ describe('ol.interaction.Modify', function() {
       getListeners = function(feature, modify) {
         var listeners = goog.events.getListeners(
             feature, goog.events.EventType.CHANGE, false);
-        return goog.array.filter(listeners, function(listener) {
+        return listeners.filter(function(listener) {
           return listener.handler == modify;
         });
       };
@@ -317,7 +317,6 @@ describe('ol.interaction.Modify', function() {
 
 });
 
-goog.require('goog.array');
 goog.require('goog.dispose');
 goog.require('goog.events');
 goog.require('goog.events.EventType');

@@ -3,7 +3,6 @@
 
 goog.provide('ol.format.GeoJSON');
 
-goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('goog.object');
 goog.require('ol.Feature');
@@ -90,7 +89,7 @@ ol.format.GeoJSON.readGeometryCollectionGeometry_ = function(
     object, opt_options) {
   goog.asserts.assert(object.type == 'GeometryCollection',
       'object.type should be GeometryCollection');
-  var geometries = goog.array.map(object.geometries,
+  var geometries = object.geometries.map(
       /**
        * @param {GeoJSONGeometry} geometry Geometry.
        * @return {ol.geom.Geometry} geometry Geometry.
@@ -212,10 +211,9 @@ ol.format.GeoJSON.writeGeometryCollectionGeometry_ = function(
     geometry, opt_options) {
   goog.asserts.assertInstanceof(geometry, ol.geom.GeometryCollection,
       'geometry should be an ol.geom.GeometryCollection');
-  var geometries = goog.array.map(
-      geometry.getGeometriesArray(), function(geometry) {
-        return ol.format.GeoJSON.writeGeometry_(geometry, opt_options);
-      });
+  var geometries = geometry.getGeometriesArray().map(function(geometry) {
+    return ol.format.GeoJSON.writeGeometry_(geometry, opt_options);
+  });
   return /** @type {GeoJSONGeometryCollection} */ ({
     type: 'GeometryCollection',
     geometries: geometries

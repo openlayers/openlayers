@@ -10,9 +10,9 @@ describe('ol.proj', function() {
   describe('projection equivalence', function() {
 
     function _testAllEquivalent(codes) {
-      var projections = goog.array.map(codes, ol.proj.get);
-      goog.array.forEach(projections, function(source) {
-        goog.array.forEach(projections, function(destination) {
+      var projections = codes.map(ol.proj.get);
+      projections.forEach(function(source) {
+        projections.forEach(function(destination) {
           expect(ol.proj.equivalent(source, destination)).to.be.ok();
         });
       });
@@ -522,7 +522,6 @@ describe('ol.proj', function() {
 });
 
 
-goog.require('goog.array');
 goog.require('ol.proj');
 goog.require('ol.proj.Projection');
 goog.require('ol.proj.Units');

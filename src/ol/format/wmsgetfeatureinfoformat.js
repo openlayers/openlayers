@@ -75,9 +75,10 @@ ol.format.WMSGetFeatureInfo.prototype.readFeatures_ =
     return features;
   }
   if (localName == 'msGMLOutput') {
-    goog.array.forEach(node.childNodes, function(layer) {
+    for (var i = 0, ii = node.childNodes.length; i < ii; i++) {
+      var layer = node.childNodes[i];
       if (layer.nodeType !== goog.dom.NodeType.ELEMENT) {
-        return;
+        continue;
       }
       var context = objectStack[0];
       goog.asserts.assert(goog.isObject(context),
@@ -105,7 +106,7 @@ ol.format.WMSGetFeatureInfo.prototype.readFeatures_ =
       if (layerFeatures) {
         goog.array.extend(features, layerFeatures);
       }
-    }, this);
+    }
   }
   if (localName == 'FeatureCollection') {
     var gmlFeatures = ol.xml.pushParseAndPop([],

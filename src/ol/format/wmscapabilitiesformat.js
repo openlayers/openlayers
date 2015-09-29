@@ -1,6 +1,5 @@
 goog.provide('ol.format.WMSCapabilities');
 
-goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('goog.dom.NodeType');
 goog.require('goog.object');
@@ -344,7 +343,7 @@ ol.format.WMSCapabilities.readLayer_ = function(node, objectStack) {
 
   // See 7.2.4.8
   var addKeys = ['Style', 'CRS', 'AuthorityURL'];
-  goog.array.forEach(addKeys, function(key) {
+  addKeys.forEach(function(key) {
     if (key in parentLayerObject) {
       var childValue = goog.object.setIfUndefined(layerObject, key, []);
       childValue = childValue.concat(parentLayerObject[key]);
@@ -354,7 +353,7 @@ ol.format.WMSCapabilities.readLayer_ = function(node, objectStack) {
 
   var replaceKeys = ['EX_GeographicBoundingBox', 'BoundingBox', 'Dimension',
     'Attribution', 'MinScaleDenominator', 'MaxScaleDenominator'];
-  goog.array.forEach(replaceKeys, function(key) {
+  replaceKeys.forEach(function(key) {
     if (!(key in layerObject)) {
       var parentValue = parentLayerObject[key];
       layerObject[key] = parentValue;

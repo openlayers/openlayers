@@ -136,7 +136,7 @@ ol.Collection.prototype.extend = function(arr) {
  * @api stable
  */
 ol.Collection.prototype.forEach = function(f, opt_this) {
-  goog.array.forEach(this.array_, f, opt_this);
+  this.array_.forEach(f, opt_this);
 };
 
 

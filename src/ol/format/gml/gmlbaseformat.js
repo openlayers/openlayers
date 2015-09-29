@@ -122,7 +122,7 @@ ol.format.GMLBase.prototype.readFeaturesInternal = function(node, objectStack) {
         var child = node.childNodes[i];
         if (child.nodeType === 1) {
           var ft = child.nodeName.split(':').pop();
-          if (goog.array.indexOf(featureType, ft) === -1) {
+          if (featureType.indexOf(ft) === -1) {
             var key;
             if (!goog.object.contains(featureNS, child.namespaceURI)) {
               key = prefix + goog.object.getCount(featureNS);

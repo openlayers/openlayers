@@ -4,7 +4,6 @@ goog.provide('ol.proj.Projection');
 goog.provide('ol.proj.ProjectionLike');
 goog.provide('ol.proj.Units');
 
-goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('goog.object');
 goog.require('ol');
@@ -412,8 +411,8 @@ ol.proj.transforms_ = {};
  */
 ol.proj.addEquivalentProjections = function(projections) {
   ol.proj.addProjections(projections);
-  goog.array.forEach(projections, function(source) {
-    goog.array.forEach(projections, function(destination) {
+  projections.forEach(function(source) {
+    projections.forEach(function(destination) {
       if (source !== destination) {
         ol.proj.addTransform(source, destination, ol.proj.cloneTransform);
       }
@@ -437,8 +436,8 @@ ol.proj.addEquivalentProjections = function(projections) {
  */
 ol.proj.addEquivalentTransforms =
     function(projections1, projections2, forwardTransform, inverseTransform) {
-  goog.array.forEach(projections1, function(projection1) {
-    goog.array.forEach(projections2, function(projection2) {
+  projections1.forEach(function(projection1) {
+    projections2.forEach(function(projection2) {
       ol.proj.addTransform(projection1, projection2, forwardTransform);
       ol.proj.addTransform(projection2, projection1, inverseTransform);
     });
@@ -464,7 +463,7 @@ ol.proj.addProjection = function(projection) {
  */
 ol.proj.addProjections = function(projections) {
   var addedProjections = [];
-  goog.array.forEach(projections, function(projection) {
+  projections.forEach(function(projection) {
     addedProjections.push(ol.proj.addProjection(projection));
   });
 };

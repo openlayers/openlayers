@@ -1,7 +1,6 @@
 goog.provide('ol.interaction.Snap');
 goog.provide('ol.interaction.SnapProperty');
 
-goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('goog.events');
 goog.require('goog.events.EventType');
@@ -321,7 +320,7 @@ ol.interaction.Snap.prototype.setMap = function(map) {
   var features = this.getFeatures_();
 
   if (currentMap) {
-    goog.array.forEach(keys, ol.Observable.unByKey);
+    keys.forEach(ol.Observable.unByKey);
     keys.length = 0;
     features.forEach(this.forEachFeatureRemove_, this);
   }
@@ -600,7 +599,7 @@ ol.interaction.Snap.handleEvent_ = function(evt) {
 ol.interaction.Snap.handleUpEvent_ = function(evt) {
   var featuresToUpdate = goog.object.getValues(this.pendingFeatures_);
   if (featuresToUpdate.length) {
-    goog.array.forEach(featuresToUpdate, this.updateFeature_, this);
+    featuresToUpdate.forEach(this.updateFeature_, this);
     this.pendingFeatures_ = {};
   }
   return false;

@@ -1,6 +1,5 @@
 goog.provide('ol.proj.EPSG3857');
 
-goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('ol.math');
 goog.require('ol.proj');
@@ -91,11 +90,9 @@ ol.proj.EPSG3857.CODES = [
  * @const
  * @type {Array.<ol.proj.Projection>}
  */
-ol.proj.EPSG3857.PROJECTIONS = goog.array.map(
-    ol.proj.EPSG3857.CODES,
-    function(code) {
-      return new ol.proj.EPSG3857_(code);
-    });
+ol.proj.EPSG3857.PROJECTIONS = ol.proj.EPSG3857.CODES.map(function(code) {
+  return new ol.proj.EPSG3857_(code);
+});
 
 
 /**

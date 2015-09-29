@@ -29,7 +29,7 @@ describe('ol.rendering.layer.Tile', function() {
       }
     };
 
-    goog.array.forEach(sources, function(source) {
+    sources.forEach(function(source) {
       source.on('tileloadstart', function(event) {
         tilesLoading++;
       });
@@ -190,7 +190,6 @@ describe('ol.rendering.layer.Tile', function() {
 
 });
 
-goog.require('goog.array');
 goog.require('goog.object');
 goog.require('ol.proj');
 goog.require('ol.Map');

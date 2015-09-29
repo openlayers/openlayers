@@ -178,7 +178,7 @@ ol.source.WMTS = function(options) {
 
   var tileUrlFunction = this.urls_.length > 0 ?
       ol.TileUrlFunction.createFromTileUrlFunctions(
-          goog.array.map(this.urls_, createFromWMTSTemplate)) :
+          this.urls_.map(createFromWMTSTemplate)) :
       ol.TileUrlFunction.nullTileUrlFunction;
 
   goog.base(this, {
@@ -402,7 +402,7 @@ ol.source.WMTS.optionsFromCapabilities = function(wmtsCap, config) {
 
   var dimensions = {};
   if ('Dimension' in l) {
-    goog.array.forEach(l['Dimension'], function(elt, index, array) {
+    l['Dimension'].forEach(function(elt, index, array) {
       var key = elt['Identifier'];
       var value = elt['default'];
       if (value !== undefined) {
@@ -467,7 +467,7 @@ ol.source.WMTS.optionsFromCapabilities = function(wmtsCap, config) {
       goog.string.startsWith(requestEncoding, 'REST')) {
     // Add REST tile resource url
     requestEncoding = ol.source.WMTSRequestEncoding.REST;
-    goog.array.forEach(l['ResourceURL'], function(elt, index, array) {
+    l['ResourceURL'].forEach(function(elt, index, array) {
       if (elt['resourceType'] == 'tile') {
         format = elt['format'];
         urls.push(/** @type {string} */ (elt['template']));

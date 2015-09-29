@@ -1,6 +1,5 @@
 goog.provide('ol.ImageTile');
 
-goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('goog.events');
 goog.require('goog.events.EventType');
@@ -163,6 +162,6 @@ ol.ImageTile.prototype.load = function() {
 ol.ImageTile.prototype.unlistenImage_ = function() {
   goog.asserts.assert(!goog.isNull(this.imageListenerKeys_),
       'this.imageListenerKeys_ should not be null');
-  goog.array.forEach(this.imageListenerKeys_, goog.events.unlistenByKey);
+  this.imageListenerKeys_.forEach(goog.events.unlistenByKey);
   this.imageListenerKeys_ = null;
 };
