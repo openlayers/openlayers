@@ -10,6 +10,7 @@ goog.require('goog.events.Event');
 goog.require('goog.functions');
 goog.require('ol.CollectionEventType');
 goog.require('ol.Feature');
+goog.require('ol.array');
 goog.require('ol.events.condition');
 goog.require('ol.geom.GeometryType');
 goog.require('ol.interaction.Interaction');
@@ -160,7 +161,7 @@ ol.interaction.Select = function(opt_options) {
            * @return {boolean} Include.
            */
           function(layer) {
-        return goog.array.contains(layers, layer);
+        return ol.array.includes(layers, layer);
       };
     }
   } else {
@@ -264,8 +265,7 @@ ol.interaction.Select.handleEvent = function(mapBrowserEvent) {
          * @param {ol.layer.Layer} layer Layer.
          */
         function(feature, layer) {
-          var index = goog.array.indexOf(features.getArray(), feature);
-          if (index == -1) {
+          if (!ol.array.includes(features.getArray(), feature)) {
             if (add || toggle) {
               if (this.filter_(feature, layer)) {
                 selected.push(feature);
