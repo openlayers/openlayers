@@ -410,7 +410,7 @@ ol.geom.MultiPolygon.prototype.setFlatCoordinates =
  * @param {Array.<ol.geom.Polygon>} polygons Polygons.
  */
 ol.geom.MultiPolygon.prototype.setPolygons = function(polygons) {
-  var layout = ol.geom.GeometryLayout.XY;
+  var layout = this.getLayout();
   var flatCoordinates = [];
   var endss = [];
   var i, ii, ends;
