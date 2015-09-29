@@ -415,7 +415,7 @@ ol.Graticule.prototype.handlePostCompose_ = function(e) {
   var squaredTolerance =
       resolution * resolution / (4 * pixelRatio * pixelRatio);
 
-  var updateProjectionInfo = goog.isNull(this.projection_) ||
+  var updateProjectionInfo = !this.projection_ ||
       !ol.proj.equivalent(this.projection_, projection);
 
   if (updateProjectionInfo) {
@@ -443,7 +443,7 @@ ol.Graticule.prototype.handlePostCompose_ = function(e) {
  * @private
  */
 ol.Graticule.prototype.updateProjectionInfo_ = function(projection) {
-  goog.asserts.assert(!goog.isNull(projection), 'projection cannot be null');
+  goog.asserts.assert(projection, 'projection cannot be null');
 
   var epsg4326Projection = ol.proj.get('EPSG:4326');
 
@@ -462,7 +462,7 @@ ol.Graticule.prototype.updateProjectionInfo_ = function(projection) {
   var minLatP = worldExtentP[1];
   var minLonP = worldExtentP[0];
 
-  goog.asserts.assert(!goog.isNull(extent), 'extent cannot be null');
+  goog.asserts.assert(extent, 'extent cannot be null');
   goog.asserts.assert(maxLat !== undefined, 'maxLat should be defined');
   goog.asserts.assert(maxLon !== undefined, 'maxLon should be defined');
   goog.asserts.assert(minLat !== undefined, 'minLat should be defined');
@@ -508,12 +508,12 @@ ol.Graticule.prototype.updateProjectionInfo_ = function(projection) {
  * @api
  */
 ol.Graticule.prototype.setMap = function(map) {
-  if (!goog.isNull(this.map_)) {
+  if (this.map_) {
     this.map_.un(ol.render.EventType.POSTCOMPOSE,
         this.handlePostCompose_, this);
     this.map_.render();
   }
-  if (!goog.isNull(map)) {
+  if (map) {
     map.on(ol.render.EventType.POSTCOMPOSE,
         this.handlePostCompose_, this);
     map.render();
