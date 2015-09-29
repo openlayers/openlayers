@@ -54,7 +54,7 @@ goog.inherits(ol.format.EsriJSON, ol.format.JSONFeature);
  * @return {ol.geom.Geometry} Geometry.
  */
 ol.format.EsriJSON.readGeometry_ = function(object, opt_options) {
-  if (goog.isNull(object)) {
+  if (!object) {
     return null;
   }
   var type;

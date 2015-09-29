@@ -301,7 +301,7 @@ ol.format.GML3.prototype.readSurface_ = function(node, objectStack) {
   var flatLinearRings = ol.xml.pushParseAndPop(
       /** @type {Array.<Array.<number>>} */ ([null]),
       this.SURFACE_PARSERS_, node, objectStack, this);
-  if (flatLinearRings && !goog.isNull(flatLinearRings[0])) {
+  if (flatLinearRings && flatLinearRings[0]) {
     var polygon = new ol.geom.Polygon(null);
     var flatCoordinates = flatLinearRings[0];
     var ends = [flatCoordinates.length];
@@ -385,7 +385,7 @@ ol.format.GML3.prototype.readFlatPos_ = function(node, objectStack) {
   goog.asserts.assert(goog.isObject(context), 'context should be an Object');
   var containerSrs = context['srsName'];
   var axisOrientation = 'enu';
-  if (!goog.isNull(containerSrs)) {
+  if (containerSrs) {
     var proj = ol.proj.get(containerSrs);
     axisOrientation = proj.getAxisOrientation();
   }
@@ -422,20 +422,20 @@ ol.format.GML3.prototype.readFlatPosList_ = function(node, objectStack) {
   var containerSrs = context['srsName'];
   var containerDimension = node.parentNode.getAttribute('srsDimension');
   var axisOrientation = 'enu';
-  if (!goog.isNull(containerSrs)) {
+  if (containerSrs) {
     var proj = ol.proj.get(containerSrs);
     axisOrientation = proj.getAxisOrientation();
   }
   var coords = s.split(/\s+/);
   // The "dimension" attribute is from the GML 3.0.1 spec.
   var dim = 2;
-  if (!goog.isNull(node.getAttribute('srsDimension'))) {
+  if (node.getAttribute('srsDimension')) {
     dim = ol.format.XSD.readNonNegativeIntegerString(
         node.getAttribute('srsDimension'));
-  } else if (!goog.isNull(node.getAttribute('dimension'))) {
+  } else if (node.getAttribute('dimension')) {
     dim = ol.format.XSD.readNonNegativeIntegerString(
         node.getAttribute('dimension'));
-  } else if (!goog.isNull(containerDimension)) {
+  } else if (containerDimension) {
     dim = ol.format.XSD.readNonNegativeIntegerString(containerDimension);
   }
   var x, y, z;
@@ -1067,7 +1067,7 @@ ol.format.GML3.prototype.writeFeatureElement =
   var keys = [], values = [];
   for (var key in properties) {
     var value = properties[key];
-    if (!goog.isNull(value)) {
+    if (value !== null) {
       keys.push(key);
       values.push(value);
       if (key == geometryName) {

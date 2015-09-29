@@ -97,7 +97,7 @@ ol.format.GPX.parseLink_ = function(node, objectStack) {
   goog.asserts.assert(node.localName == 'link', 'localName should be link');
   var values = /** @type {Object} */ (objectStack[objectStack.length - 1]);
   var href = node.getAttribute('href');
-  if (!goog.isNull(href)) {
+  if (href !== null) {
     values['link'] = href;
   }
   ol.xml.parseNode(ol.format.GPX.LINK_PARSERS_, node, objectStack);
@@ -417,7 +417,7 @@ ol.format.GPX.WPT_PARSERS_ = ol.xml.makeStructureNS(
  * @private
  */
 ol.format.GPX.prototype.handleReadExtensions_ = function(features) {
-  if (goog.isNull(features)) {
+  if (!features) {
     features = [];
   }
   for (var i = 0, ii = features.length; i < ii; ++i) {
