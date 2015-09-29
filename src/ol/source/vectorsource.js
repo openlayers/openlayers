@@ -450,8 +450,7 @@ ol.source.Vector.prototype.forEachFeatureAtCoordinateDirect =
   var extent = [coordinate[0], coordinate[1], coordinate[0], coordinate[1]];
   return this.forEachFeatureInExtent(extent, function(feature) {
     var geometry = feature.getGeometry();
-    goog.asserts.assert(goog.isDefAndNotNull(geometry),
-        'feature geometry is defined and not null');
+    goog.asserts.assert(geometry, 'feature geometry is defined and not null');
     if (geometry.containsCoordinate(coordinate)) {
       return callback.call(opt_this, feature);
     } else {
@@ -533,7 +532,7 @@ ol.source.Vector.prototype.forEachFeatureIntersectingExtent =
        */
       function(feature) {
         var geometry = feature.getGeometry();
-        goog.asserts.assert(goog.isDefAndNotNull(geometry),
+        goog.asserts.assert(geometry,
             'feature geometry is defined and not null');
         if (geometry.intersectsExtent(extent)) {
           var result = callback.call(opt_this, feature);
@@ -645,7 +644,7 @@ ol.source.Vector.prototype.getClosestFeatureToCoordinate =
        */
       function(feature) {
         var geometry = feature.getGeometry();
-        goog.asserts.assert(goog.isDefAndNotNull(geometry),
+        goog.asserts.assert(geometry,
             'feature geometry is defined and not null');
         var previousMinSquaredDistance = minSquaredDistance;
         minSquaredDistance = geometry.closestPointXY(

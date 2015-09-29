@@ -134,8 +134,7 @@ ol.source.TileVector.prototype.forEachFeatureAtCoordinateAndResolution =
     for (i = 0, ii = features.length; i < ii; ++i) {
       var feature = features[i];
       var geometry = feature.getGeometry();
-      goog.asserts.assert(goog.isDefAndNotNull(geometry),
-          'feature geometry is defined and not null');
+      goog.asserts.assert(geometry, 'feature geometry is defined and not null');
       if (geometry.containsCoordinate(coordinate)) {
         var result = callback.call(opt_this, feature);
         if (result) {
