@@ -81,7 +81,7 @@ ol.source.TileUTFGrid.prototype.getTemplate = function() {
  */
 ol.source.TileUTFGrid.prototype.forDataAtCoordinateAndResolution = function(
     coordinate, resolution, callback, opt_this, opt_request) {
-  if (!goog.isNull(this.tileGrid)) {
+  if (this.tileGrid !== null) {
     var tileCoord = this.tileGrid.getTileCoordForCoordAndResolution(
         coordinate, resolution);
     var tile = /** @type {!ol.source.TileUTFGridTile_} */(this.getTile(
@@ -268,7 +268,7 @@ ol.source.TileUTFGridTile_.prototype.getImage = function(opt_context) {
  * @return {Object}
  */
 ol.source.TileUTFGridTile_.prototype.getData = function(coordinate) {
-  if (goog.isNull(this.grid_) || goog.isNull(this.keys_) ||
+  if (this.grid_ === null || this.keys_ === null ||
       !goog.isDefAndNotNull(this.data_)) {
     return null;
   }

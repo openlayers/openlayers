@@ -154,7 +154,7 @@ ol.source.ImageVector.prototype.canvasFunctionInternal_ =
  */
 ol.source.ImageVector.prototype.forEachFeatureAtCoordinate = function(
     coordinate, resolution, rotation, skippedFeatureUids, callback) {
-  if (goog.isNull(this.replayGroup_)) {
+  if (this.replayGroup_ === null) {
     return undefined;
   } else {
     /** @type {Object.<string, boolean>} */
@@ -292,7 +292,7 @@ ol.source.ImageVector.prototype.renderFeature_ =
  */
 ol.source.ImageVector.prototype.setStyle = function(style) {
   this.style_ = style !== undefined ? style : ol.style.defaultStyleFunction;
-  this.styleFunction_ = goog.isNull(style) ?
+  this.styleFunction_ = style === null ?
       undefined : ol.style.createStyleFunction(this.style_);
   this.changed();
 };

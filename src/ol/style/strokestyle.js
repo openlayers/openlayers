@@ -205,11 +205,11 @@ ol.style.Stroke.prototype.setWidth = function(width) {
 ol.style.Stroke.prototype.getChecksum = function() {
   if (this.checksum_ === undefined) {
     var raw = 's' +
-        (!goog.isNull(this.color_) ?
+        (this.color_ !== null ?
             ol.color.asString(this.color_) : '-') + ',' +
         (this.lineCap_ !== undefined ?
             this.lineCap_.toString() : '-') + ',' +
-        (!goog.isNull(this.lineDash_) ?
+        (this.lineDash_ !== null ?
             this.lineDash_.toString() : '-') + ',' +
         (this.lineJoin_ !== undefined ?
             this.lineJoin_ : '-') + ',' +

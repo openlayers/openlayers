@@ -103,7 +103,7 @@ ol.control.Zoom.prototype.handleClick_ = function(delta, event) {
 ol.control.Zoom.prototype.zoomByDelta_ = function(delta) {
   var map = this.getMap();
   var view = map.getView();
-  if (goog.isNull(view)) {
+  if (view === null) {
     // the map does not have a view, so we can't act
     // upon it
     return;

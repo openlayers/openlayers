@@ -222,9 +222,9 @@ ol.render.webgl.ImageReplay.prototype.getDeleteResourcesFunction =
   // be used by other ImageReplay instances (for other layers). And
   // they will be deleted when disposing of the ol.webgl.Context
   // object.
-  goog.asserts.assert(!goog.isNull(this.verticesBuffer_),
+  goog.asserts.assert(this.verticesBuffer_ !== null,
       'verticesBuffer must not be null');
-  goog.asserts.assert(!goog.isNull(this.indicesBuffer_),
+  goog.asserts.assert(this.indicesBuffer_ !== null,
       'indicesBuffer must not be null');
   var verticesBuffer = this.verticesBuffer_;
   var indicesBuffer = this.indicesBuffer_;
@@ -514,12 +514,12 @@ ol.render.webgl.ImageReplay.prototype.replay = function(context,
   var gl = context.getGL();
 
   // bind the vertices buffer
-  goog.asserts.assert(!goog.isNull(this.verticesBuffer_),
+  goog.asserts.assert(this.verticesBuffer_ !== null,
       'verticesBuffer must not be null');
   context.bindBuffer(goog.webgl.ARRAY_BUFFER, this.verticesBuffer_);
 
   // bind the indices buffer
-  goog.asserts.assert(!goog.isNull(this.indicesBuffer_),
+  goog.asserts.assert(this.indicesBuffer_ !== null,
       'indecesBuffer must not be null');
   context.bindBuffer(goog.webgl.ELEMENT_ARRAY_BUFFER, this.indicesBuffer_);
 
@@ -532,7 +532,7 @@ ol.render.webgl.ImageReplay.prototype.replay = function(context,
 
   // get the locations
   var locations;
-  if (goog.isNull(this.defaultLocations_)) {
+  if (this.defaultLocations_ === null) {
     locations =
         new ol.render.webgl.imagereplay.shader.Default.Locations(gl, program);
     this.defaultLocations_ = locations;
@@ -863,20 +863,20 @@ ol.render.webgl.ImageReplay.prototype.setImageStyle = function(imageStyle) {
   var rotation = imageStyle.getRotation();
   var size = imageStyle.getSize();
   var scale = imageStyle.getScale();
-  goog.asserts.assert(!goog.isNull(anchor), 'imageStyle anchor is not null');
-  goog.asserts.assert(!goog.isNull(image), 'imageStyle image is not null');
-  goog.asserts.assert(!goog.isNull(imageSize),
+  goog.asserts.assert(anchor !== null, 'imageStyle anchor is not null');
+  goog.asserts.assert(image !== null, 'imageStyle image is not null');
+  goog.asserts.assert(imageSize !== null,
       'imageStyle imageSize is not null');
-  goog.asserts.assert(!goog.isNull(hitDetectionImage),
+  goog.asserts.assert(hitDetectionImage !== null,
       'imageStyle hitDetectionImage is not null');
-  goog.asserts.assert(!goog.isNull(hitDetectionImageSize),
+  goog.asserts.assert(hitDetectionImageSize !== null,
       'imageStyle hitDetectionImageSize is not null');
   goog.asserts.assert(opacity !== undefined, 'imageStyle opacity is defined');
-  goog.asserts.assert(!goog.isNull(origin), 'imageStyle origin is not null');
+  goog.asserts.assert(origin !== null, 'imageStyle origin is not null');
   goog.asserts.assert(rotateWithView !== undefined,
       'imageStyle rotateWithView is defined');
   goog.asserts.assert(rotation !== undefined, 'imageStyle rotation is defined');
-  goog.asserts.assert(!goog.isNull(size), 'imageStyle size is not null');
+  goog.asserts.assert(size !== null, 'imageStyle size is not null');
   goog.asserts.assert(scale !== undefined, 'imageStyle scale is defined');
 
   var currentImage;

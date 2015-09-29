@@ -126,19 +126,19 @@ ol.renderer.webgl.ImageLayer.prototype.prepareFrame =
       !ol.extent.isEmpty(renderedExtent)) {
     var projection = viewState.projection;
     var sourceProjection = imageSource.getProjection();
-    if (!goog.isNull(sourceProjection)) {
+    if (sourceProjection !== null) {
       goog.asserts.assert(ol.proj.equivalent(projection, sourceProjection),
           'projection and sourceProjection are equivalent');
       projection = sourceProjection;
     }
     var image_ = imageSource.getImage(renderedExtent, viewResolution,
         pixelRatio, projection);
-    if (!goog.isNull(image_)) {
+    if (image_ !== null) {
       var loaded = this.loadImage(image_);
       if (loaded) {
         image = image_;
         texture = this.createTexture_(image_);
-        if (!goog.isNull(this.texture)) {
+        if (this.texture !== null) {
           frameState.postRenderFunctions.push(
               goog.partial(
                   /**
@@ -155,8 +155,8 @@ ol.renderer.webgl.ImageLayer.prototype.prepareFrame =
     }
   }
 
-  if (!goog.isNull(image)) {
-    goog.asserts.assert(!goog.isNull(texture), 'texture is not null');
+  if (image !== null) {
+    goog.asserts.assert(texture !== null, 'texture is not null');
 
     var canvas = this.mapRenderer.getContext().getCanvas();
 
@@ -234,7 +234,7 @@ ol.renderer.webgl.ImageLayer.prototype.hasFeatureAtCoordinate =
  */
 ol.renderer.webgl.ImageLayer.prototype.forEachLayerAtPixel =
     function(pixel, frameState, callback, thisArg) {
-  if (goog.isNull(this.image_) || goog.isNull(this.image_.getImage())) {
+  if (this.image_ === null || this.image_.getImage() === null) {
     return undefined;
   }
 
@@ -256,7 +256,7 @@ ol.renderer.webgl.ImageLayer.prototype.forEachLayerAtPixel =
     var imageSize =
         [this.image_.getImage().width, this.image_.getImage().height];
 
-    if (goog.isNull(this.hitTransformationMatrix_)) {
+    if (this.hitTransformationMatrix_ === null) {
       this.hitTransformationMatrix_ = this.getHitTransformationMatrix_(
           frameState.size, imageSize);
     }
@@ -271,7 +271,7 @@ ol.renderer.webgl.ImageLayer.prototype.forEachLayerAtPixel =
       return undefined;
     }
 
-    if (goog.isNull(this.hitCanvasContext_)) {
+    if (this.hitCanvasContext_ === null) {
       this.hitCanvasContext_ = ol.dom.createCanvasContext2D(1, 1);
     }
 

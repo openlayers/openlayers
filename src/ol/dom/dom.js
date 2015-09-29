@@ -39,7 +39,7 @@ ol.dom.canUseCssTransform = (function() {
   var canUseCssTransform;
   return function() {
     if (canUseCssTransform === undefined) {
-      goog.asserts.assert(!goog.isNull(document.body),
+      goog.asserts.assert(document.body !== null,
           'document.body should not be null');
       if (!goog.global.getComputedStyle) {
         // this browser is ancient
@@ -82,7 +82,7 @@ ol.dom.canUseCssTransform3D = (function() {
   var canUseCssTransform3D;
   return function() {
     if (canUseCssTransform3D === undefined) {
-      goog.asserts.assert(!goog.isNull(document.body),
+      goog.asserts.assert(document.body !== null,
           'document.body should not be null');
       if (!goog.global.getComputedStyle) {
         // this browser is ancient

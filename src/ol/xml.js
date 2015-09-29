@@ -57,7 +57,7 @@ ol.xml.createElementNS_ = function(namespaceURI, qualifiedName) {
  * @private
  */
 ol.xml.createElementNSActiveX_ = function(namespaceURI, qualifiedName) {
-  if (goog.isNull(namespaceURI)) {
+  if (namespaceURI === null) {
     namespaceURI = '';
   }
   return ol.xml.DOCUMENT.createNode(1, qualifiedName, namespaceURI);
@@ -107,7 +107,7 @@ ol.xml.getAllTextContent_ = function(node, normalizeWhitespace, accumulator) {
     }
   } else {
     var n;
-    for (n = node.firstChild; !goog.isNull(n); n = n.nextSibling) {
+    for (n = node.firstChild; n !== null; n = n.nextSibling) {
       ol.xml.getAllTextContent_(n, normalizeWhitespace, accumulator);
     }
   }
@@ -314,7 +314,7 @@ ol.xml.setAttributeNS_ = function(node, namespaceURI, name, value) {
  * @private
  */
 ol.xml.setAttributeNSActiveX_ = function(node, namespaceURI, name, value) {
-  if (!goog.isNull(namespaceURI)) {
+  if (namespaceURI !== null) {
     var attribute = node.ownerDocument.createNode(2, name, namespaceURI);
     attribute.nodeValue = value;
     node.setAttributeNode(attribute);
@@ -656,7 +656,7 @@ ol.xml.makeStructureNS = function(namespaceURIs, structure, opt_structureNS) {
  */
 ol.xml.parseNode = function(parsersNS, node, objectStack, opt_this) {
   var n;
-  for (n = node.firstElementChild; !goog.isNull(n); n = n.nextElementSibling) {
+  for (n = node.firstElementChild; n !== null; n = n.nextElementSibling) {
     var parsers = parsersNS[n.namespaceURI];
     if (parsers !== undefined) {
       var parser = parsers[n.localName];

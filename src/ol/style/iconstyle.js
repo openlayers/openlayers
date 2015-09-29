@@ -104,16 +104,16 @@ ol.style.Icon = function(opt_options) {
    */
   var src = options.src;
 
-  goog.asserts.assert(!(src !== undefined && !goog.isNull(image)),
+  goog.asserts.assert(!(src !== undefined && image !== null),
       'image and src can not provided at the same time');
   goog.asserts.assert(
-      src === undefined || (src !== undefined && goog.isNull(imgSize)),
+      src === undefined || (src !== undefined && imgSize === null),
       'imgSize should not be set when src is provided');
   goog.asserts.assert(
-      goog.isNull(image) || (!goog.isNull(image) && !goog.isNull(imgSize)),
+      image === null || (image !== null && imgSize !== null),
       'imgSize must be set when image is provided');
 
-  if ((src === undefined || src.length === 0) && !goog.isNull(image)) {
+  if ((src === undefined || src.length === 0) && image !== null) {
     src = image.src;
   }
   goog.asserts.assert(src !== undefined && src.length > 0,
@@ -201,14 +201,14 @@ goog.inherits(ol.style.Icon, ol.style.Image);
  * @api
  */
 ol.style.Icon.prototype.getAnchor = function() {
-  if (!goog.isNull(this.normalizedAnchor_)) {
+  if (this.normalizedAnchor_ !== null) {
     return this.normalizedAnchor_;
   }
   var anchor = this.anchor_;
   var size = this.getSize();
   if (this.anchorXUnits_ == ol.style.IconAnchorUnits.FRACTION ||
       this.anchorYUnits_ == ol.style.IconAnchorUnits.FRACTION) {
-    if (goog.isNull(size)) {
+    if (size === null) {
       return null;
     }
     anchor = this.anchor_.slice();
@@ -221,7 +221,7 @@ ol.style.Icon.prototype.getAnchor = function() {
   }
 
   if (this.anchorOrigin_ != ol.style.IconOrigin.TOP_LEFT) {
-    if (goog.isNull(size)) {
+    if (size === null) {
       return null;
     }
     if (anchor === this.anchor_) {
@@ -290,7 +290,7 @@ ol.style.Icon.prototype.getHitDetectionImage = function(pixelRatio) {
  * @api
  */
 ol.style.Icon.prototype.getOrigin = function() {
-  if (!goog.isNull(this.origin_)) {
+  if (this.origin_ !== null) {
     return this.origin_;
   }
   var offset = this.offset_;
@@ -298,7 +298,7 @@ ol.style.Icon.prototype.getOrigin = function() {
   if (this.offsetOrigin_ != ol.style.IconOrigin.TOP_LEFT) {
     var size = this.getSize();
     var iconImageSize = this.iconImage_.getSize();
-    if (goog.isNull(size) || goog.isNull(iconImageSize)) {
+    if (size === null || iconImageSize === null) {
       return null;
     }
     offset = offset.slice();
@@ -331,7 +331,7 @@ ol.style.Icon.prototype.getSrc = function() {
  * @api
  */
 ol.style.Icon.prototype.getSize = function() {
-  return goog.isNull(this.size_) ? this.iconImage_.getSize() : this.size_;
+  return this.size_ === null ? this.iconImage_.getSize() : this.size_;
 };
 
 
@@ -390,9 +390,9 @@ ol.style.IconImage_ = function(image, src, size, crossOrigin, imageState) {
    * @private
    * @type {Image}
    */
-  this.image_ = goog.isNull(image) ? new Image() : image;
+  this.image_ = image === null ? new Image() : image;
 
-  if (!goog.isNull(crossOrigin)) {
+  if (crossOrigin !== null) {
     this.image_.crossOrigin = crossOrigin;
   }
 
@@ -441,7 +441,7 @@ goog.inherits(ol.style.IconImage_, goog.events.EventTarget);
 ol.style.IconImage_.get = function(image, src, size, crossOrigin, imageState) {
   var iconImageCache = ol.style.IconImageCache.getInstance();
   var iconImage = iconImageCache.get(src, crossOrigin);
-  if (goog.isNull(iconImage)) {
+  if (iconImage === null) {
     iconImage = new ol.style.IconImage_(
         image, src, size, crossOrigin, imageState);
     iconImageCache.set(src, crossOrigin, iconImage);
@@ -516,7 +516,7 @@ ol.style.IconImage_.prototype.getImageState = function() {
  * @return {Image|HTMLCanvasElement} Image element.
  */
 ol.style.IconImage_.prototype.getHitDetectionImage = function(pixelRatio) {
-  if (goog.isNull(this.hitDetectionImage_)) {
+  if (this.hitDetectionImage_ === null) {
     if (this.tainting_) {
       var width = this.size_[0];
       var height = this.size_[1];
@@ -554,7 +554,7 @@ ol.style.IconImage_.prototype.load = function() {
   if (this.imageState_ == ol.style.ImageState.IDLE) {
     goog.asserts.assert(this.src_ !== undefined,
         'this.src_ must not be undefined');
-    goog.asserts.assert(goog.isNull(this.imageListenerKeys_),
+    goog.asserts.assert(this.imageListenerKeys_ === null,
         'no listener keys existing');
     this.imageState_ = ol.style.ImageState.LOADING;
     this.imageListenerKeys_ = [
@@ -578,7 +578,7 @@ ol.style.IconImage_.prototype.load = function() {
  * @private
  */
 ol.style.IconImage_.prototype.unlistenImage_ = function() {
-  goog.asserts.assert(!goog.isNull(this.imageListenerKeys_),
+  goog.asserts.assert(this.imageListenerKeys_ !== null,
       'we must have listeners registered');
   this.imageListenerKeys_.forEach(goog.events.unlistenByKey);
   this.imageListenerKeys_ = null;

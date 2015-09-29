@@ -61,7 +61,7 @@ ol.Attribution.prototype.getHTML = function() {
  */
 ol.Attribution.prototype.intersectsAnyTileRange =
     function(tileRanges, tileGrid, projection) {
-  if (goog.isNull(this.tileRanges_)) {
+  if (this.tileRanges_ === null) {
     return true;
   }
   var i, ii, tileRange, zKey;

@@ -92,7 +92,7 @@ goog.inherits(ol.geom.Polygon, ol.geom.SimpleGeometry);
 ol.geom.Polygon.prototype.appendLinearRing = function(linearRing) {
   goog.asserts.assert(linearRing.getLayout() == this.layout,
       'layout of linearRing should match layout');
-  if (goog.isNull(this.flatCoordinates)) {
+  if (this.flatCoordinates === null) {
     this.flatCoordinates = linearRing.getFlatCoordinates().slice();
   } else {
     goog.array.extend(this.flatCoordinates, linearRing.getFlatCoordinates());
@@ -339,11 +339,11 @@ ol.geom.Polygon.prototype.intersectsExtent = function(extent) {
  * @api stable
  */
 ol.geom.Polygon.prototype.setCoordinates = function(coordinates, opt_layout) {
-  if (goog.isNull(coordinates)) {
+  if (coordinates === null) {
     this.setFlatCoordinates(ol.geom.GeometryLayout.XY, null, this.ends_);
   } else {
     this.setLayout(opt_layout, coordinates, 2);
-    if (goog.isNull(this.flatCoordinates)) {
+    if (this.flatCoordinates === null) {
       this.flatCoordinates = [];
     }
     var ends = ol.geom.flat.deflate.coordinatess(
@@ -361,8 +361,8 @@ ol.geom.Polygon.prototype.setCoordinates = function(coordinates, opt_layout) {
  */
 ol.geom.Polygon.prototype.setFlatCoordinates =
     function(layout, flatCoordinates, ends) {
-  if (goog.isNull(flatCoordinates)) {
-    goog.asserts.assert(!goog.isNull(ends) && ends.length === 0,
+  if (flatCoordinates === null) {
+    goog.asserts.assert(ends !== null && ends.length === 0,
         'ends cannot be null and should be an empty array');
   } else if (ends.length === 0) {
     goog.asserts.assert(flatCoordinates.length === 0,

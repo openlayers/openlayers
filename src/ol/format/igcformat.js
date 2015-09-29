@@ -202,7 +202,7 @@ ol.format.IGC.prototype.readFeatures;
  */
 ol.format.IGC.prototype.readFeaturesFromText = function(text, opt_options) {
   var feature = this.readFeatureFromText(text, opt_options);
-  if (!goog.isNull(feature)) {
+  if (feature !== null) {
     return [feature];
   } else {
     return [];

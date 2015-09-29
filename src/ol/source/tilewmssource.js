@@ -135,7 +135,7 @@ ol.source.TileWMS.prototype.getGetFeatureInfoUrl =
   var projectionObj = ol.proj.get(projection);
 
   var tileGrid = this.getTileGrid();
-  if (goog.isNull(tileGrid)) {
+  if (tileGrid === null) {
     tileGrid = this.getTileGridForProjection(projectionObj);
   }
 
@@ -365,7 +365,7 @@ ol.source.TileWMS.prototype.tileUrlFunction_ =
     function(tileCoord, pixelRatio, projection) {
 
   var tileGrid = this.getTileGrid();
-  if (goog.isNull(tileGrid)) {
+  if (tileGrid === null) {
     tileGrid = this.getTileGridForProjection(projection);
   }
 

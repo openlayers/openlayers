@@ -209,10 +209,10 @@ ol.DeviceOrientation.prototype.getTracking = function() {
 ol.DeviceOrientation.prototype.handleTrackingChanged_ = function() {
   if (ol.has.DEVICE_ORIENTATION) {
     var tracking = this.getTracking();
-    if (tracking && goog.isNull(this.listenerKey_)) {
+    if (tracking && this.listenerKey_ === null) {
       this.listenerKey_ = goog.events.listen(goog.global, 'deviceorientation',
           this.orientationChange_, false, this);
-    } else if (!tracking && !goog.isNull(this.listenerKey_)) {
+    } else if (!tracking && this.listenerKey_ !== null) {
       goog.events.unlistenByKey(this.listenerKey_);
       this.listenerKey_ = null;
     }

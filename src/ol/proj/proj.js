@@ -125,7 +125,7 @@ ol.proj.Projection = function(options) {
    * @private
    * @type {boolean}
    */
-  this.canWrapX_ = this.global_ && !goog.isNull(this.extent_);
+  this.canWrapX_ = this.global_ && this.extent_ !== null;
 
   /**
   * @private
@@ -272,7 +272,7 @@ ol.proj.Projection.prototype.isGlobal = function() {
 */
 ol.proj.Projection.prototype.setGlobal = function(global) {
   this.global_ = global;
-  this.canWrapX_ = global && !goog.isNull(this.extent_);
+  this.canWrapX_ = global && this.extent_ !== null;
 };
 
 
@@ -299,7 +299,7 @@ ol.proj.Projection.prototype.setDefaultTileGrid = function(tileGrid) {
  */
 ol.proj.Projection.prototype.setExtent = function(extent) {
   this.extent_ = extent;
-  this.canWrapX_ = this.global_ && !goog.isNull(extent);
+  this.canWrapX_ = this.global_ && extent !== null;
 };
 
 

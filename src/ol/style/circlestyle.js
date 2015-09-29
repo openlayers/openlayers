@@ -247,7 +247,7 @@ ol.style.Circle.prototype.render_ = function(atlasManager) {
   var strokeStyle;
   var strokeWidth = 0;
 
-  if (!goog.isNull(this.stroke_)) {
+  if (this.stroke_ !== null) {
     strokeStyle = ol.color.asString(this.stroke_.getColor());
     strokeWidth = this.stroke_.getWidth();
     if (strokeWidth === undefined) {
@@ -291,7 +291,7 @@ ol.style.Circle.prototype.render_ = function(atlasManager) {
     // an atlas manager is used, add the symbol to an atlas
     size = Math.round(size);
 
-    var hasCustomHitDetectionImage = goog.isNull(this.fill_);
+    var hasCustomHitDetectionImage = this.fill_ === null;
     var renderHitDetectionCallback;
     if (hasCustomHitDetectionImage) {
       // render the hit-detection image into a separate atlas image
@@ -344,14 +344,14 @@ ol.style.Circle.prototype.draw_ = function(renderOptions, context, x, y) {
       renderOptions.size / 2, renderOptions.size / 2,
       this.radius_, 0, 2 * Math.PI, true);
 
-  if (!goog.isNull(this.fill_)) {
+  if (this.fill_ !== null) {
     context.fillStyle = ol.color.asString(this.fill_.getColor());
     context.fill();
   }
-  if (!goog.isNull(this.stroke_)) {
+  if (this.stroke_ !== null) {
     context.strokeStyle = renderOptions.strokeStyle;
     context.lineWidth = renderOptions.strokeWidth;
-    if (!goog.isNull(renderOptions.lineDash)) {
+    if (renderOptions.lineDash !== null) {
       context.setLineDash(renderOptions.lineDash);
     }
     context.stroke();
@@ -366,7 +366,7 @@ ol.style.Circle.prototype.draw_ = function(renderOptions, context, x, y) {
  */
 ol.style.Circle.prototype.createHitDetectionCanvas_ = function(renderOptions) {
   this.hitDetectionImageSize_ = [renderOptions.size, renderOptions.size];
-  if (!goog.isNull(this.fill_)) {
+  if (this.fill_ !== null) {
     this.hitDetectionCanvas_ = this.canvas_;
     return;
   }
@@ -408,10 +408,10 @@ ol.style.Circle.prototype.drawHitDetectionCanvas_ =
 
   context.fillStyle = ol.color.asString(ol.render.canvas.defaultFillStyle);
   context.fill();
-  if (!goog.isNull(this.stroke_)) {
+  if (this.stroke_ !== null) {
     context.strokeStyle = renderOptions.strokeStyle;
     context.lineWidth = renderOptions.strokeWidth;
-    if (!goog.isNull(renderOptions.lineDash)) {
+    if (renderOptions.lineDash !== null) {
       context.setLineDash(renderOptions.lineDash);
     }
     context.stroke();
@@ -424,12 +424,12 @@ ol.style.Circle.prototype.drawHitDetectionCanvas_ =
  * @inheritDoc
  */
 ol.style.Circle.prototype.getChecksum = function() {
-  var strokeChecksum = !goog.isNull(this.stroke_) ?
+  var strokeChecksum = this.stroke_ !== null ?
       this.stroke_.getChecksum() : '-';
-  var fillChecksum = !goog.isNull(this.fill_) ?
+  var fillChecksum = this.fill_ !== null ?
       this.fill_.getChecksum() : '-';
 
-  var recalculate = goog.isNull(this.checksums_) ||
+  var recalculate = this.checksums_ === null ||
       (strokeChecksum != this.checksums_[1] ||
       fillChecksum != this.checksums_[2] ||
       this.radius_ != this.checksums_[3]);

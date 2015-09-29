@@ -199,8 +199,7 @@ ol.format.GMLBase.prototype.readFeatureElement = function(node, objectStack) {
   var fid = node.getAttribute('fid') ||
       ol.xml.getAttributeNS(node, ol.format.GMLBase.GMLNS, 'id');
   var values = {}, geometryName;
-  for (n = node.firstElementChild; !goog.isNull(n);
-      n = n.nextElementSibling) {
+  for (n = node.firstElementChild; n !== null; n = n.nextElementSibling) {
     var localName = ol.xml.getLocalName(n);
     // Assume attribute elements have one child node and that the child
     // is a text or CDATA node (to be treated as text).
@@ -449,8 +448,7 @@ ol.format.GMLBase.prototype.readPolygon = function(node, objectStack) {
   var flatLinearRings = ol.xml.pushParseAndPop(
       /** @type {Array.<Array.<number>>} */ ([null]),
       this.FLAT_LINEAR_RINGS_PARSERS_, node, objectStack, this);
-  if (flatLinearRings &&
-      !goog.isNull(flatLinearRings[0])) {
+  if (flatLinearRings && flatLinearRings[0] !== null) {
     var polygon = new ol.geom.Polygon(null);
     var flatCoordinates = flatLinearRings[0];
     var ends = [flatCoordinates.length];

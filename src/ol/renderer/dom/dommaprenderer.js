@@ -159,7 +159,7 @@ ol.renderer.dom.Map.prototype.getType = function() {
  */
 ol.renderer.dom.Map.prototype.renderFrame = function(frameState) {
 
-  if (goog.isNull(frameState)) {
+  if (frameState === null) {
     if (this.renderedVisible_) {
       goog.style.setElementShown(this.layersPane_, false);
       this.renderedVisible_ = false;

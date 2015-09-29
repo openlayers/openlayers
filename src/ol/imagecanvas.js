@@ -78,7 +78,7 @@ ol.ImageCanvas.prototype.handleLoad_ = function(err) {
  */
 ol.ImageCanvas.prototype.load = function() {
   if (this.state == ol.ImageState.IDLE) {
-    goog.asserts.assert(!goog.isNull(this.loader_));
+    goog.asserts.assert(this.loader_ !== null, 'this.loader_ must not be null');
     this.state = ol.ImageState.LOADING;
     this.changed();
     this.loader_(goog.bind(this.handleLoad_, this));

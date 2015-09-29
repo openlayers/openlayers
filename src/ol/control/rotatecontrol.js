@@ -113,7 +113,7 @@ ol.control.Rotate.prototype.handleClick_ = function(event) {
 ol.control.Rotate.prototype.resetNorth_ = function() {
   var map = this.getMap();
   var view = map.getView();
-  if (goog.isNull(view)) {
+  if (view === null) {
     // the map does not have a view, so we can't act
     // upon it
     return;
@@ -146,7 +146,7 @@ ol.control.Rotate.prototype.resetNorth_ = function() {
  */
 ol.control.Rotate.render = function(mapEvent) {
   var frameState = mapEvent.frameState;
-  if (goog.isNull(frameState)) {
+  if (frameState === null) {
     return;
   }
   var rotation = frameState.viewState.rotation;
