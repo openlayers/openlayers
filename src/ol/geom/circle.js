@@ -189,11 +189,11 @@ ol.geom.Circle.prototype.setCenter = function(center) {
  */
 ol.geom.Circle.prototype.setCenterAndRadius =
     function(center, radius, opt_layout) {
-  if (goog.isNull(center)) {
+  if (!center) {
     this.setFlatCoordinates(ol.geom.GeometryLayout.XY, null);
   } else {
     this.setLayout(opt_layout, center, 0);
-    if (goog.isNull(this.flatCoordinates)) {
+    if (!this.flatCoordinates) {
       this.flatCoordinates = [];
     }
     /** @type {Array.<number>} */
@@ -228,8 +228,8 @@ ol.geom.Circle.prototype.setFlatCoordinates =
  * @api
  */
 ol.geom.Circle.prototype.setRadius = function(radius) {
-  goog.asserts.assert(!goog.isNull(this.flatCoordinates),
-      'this.flatCoordinates cannot be null');
+  goog.asserts.assert(this.flatCoordinates,
+      'truthy this.flatCoordinates expected');
   this.flatCoordinates[this.stride] = this.flatCoordinates[0] + radius;
   this.changed();
 };
