@@ -4,7 +4,6 @@ goog.provide('ol.FeatureStyleFunction');
 goog.require('goog.asserts');
 goog.require('goog.events');
 goog.require('goog.events.EventType');
-goog.require('goog.functions');
 goog.require('ol');
 goog.require('ol.Object');
 goog.require('ol.geom.Geometry');
@@ -322,7 +321,9 @@ ol.Feature.createStyleFunction = function(obj) {
           'obj should be an ol.style.Style');
       styles = [obj];
     }
-    styleFunction = goog.functions.constant(styles);
+    styleFunction = function() {
+      return styles;
+    };
   }
   return styleFunction;
 };

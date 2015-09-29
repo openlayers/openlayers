@@ -4,7 +4,6 @@ goog.provide('ol.style.StyleFunction');
 goog.provide('ol.style.defaultGeometryFunction');
 
 goog.require('goog.asserts');
-goog.require('goog.functions');
 goog.require('ol.geom.Geometry');
 goog.require('ol.geom.GeometryType');
 goog.require('ol.style.Circle');
@@ -230,7 +229,9 @@ ol.style.createStyleFunction = function(obj) {
           'obj geometry must be an ol.style.Style instance');
       styles = [obj];
     }
-    styleFunction = goog.functions.constant(styles);
+    styleFunction = function() {
+      return styles;
+    };
   }
   return styleFunction;
 };
