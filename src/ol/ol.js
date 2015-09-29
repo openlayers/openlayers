@@ -221,3 +221,11 @@ ol.WEBGL_EXTENSIONS; // value is set in `ol.has`
 ol.inherits =
     goog.inherits;
 // note that the newline above is necessary to satisfy the linter
+
+
+/**
+ * A reusable function, used e.g. as a default for callbacks.
+ *
+ * @return {undefined} Nothing.
+ */
+ol.nullFunction = function() {};

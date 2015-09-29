@@ -2,6 +2,7 @@ goog.provide('ol.control.Control');
 
 goog.require('goog.dom');
 goog.require('goog.events');
+goog.require('ol');
 goog.require('ol.MapEventType');
 goog.require('ol.Object');
 
@@ -67,7 +68,7 @@ ol.control.Control = function(options) {
   /**
    * @type {function(ol.MapEvent)}
    */
-  this.render = options.render ? options.render : goog.nullFunction;
+  this.render = options.render ? options.render : ol.nullFunction;
 
   if (options.target) {
     this.setTarget(options.target);
@@ -116,7 +117,7 @@ ol.control.Control.prototype.setMap = function(map) {
     var target = !goog.isNull(this.target_) ?
         this.target_ : map.getOverlayContainerStopEvent();
     goog.dom.appendChild(target, this.element);
-    if (this.render !== goog.nullFunction) {
+    if (this.render !== ol.nullFunction) {
       this.listenerKeys.push(goog.events.listen(map,
           ol.MapEventType.POSTRENDER, this.render, false, this));
     }

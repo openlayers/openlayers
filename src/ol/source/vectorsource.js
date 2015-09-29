@@ -11,6 +11,7 @@ goog.require('goog.events');
 goog.require('goog.events.Event');
 goog.require('goog.events.EventType');
 goog.require('goog.object');
+goog.require('ol');
 goog.require('ol.Collection');
 goog.require('ol.CollectionEventType');
 goog.require('ol.Extent');
@@ -89,7 +90,7 @@ ol.source.Vector = function(opt_options) {
    * @private
    * @type {ol.FeatureLoader}
    */
-  this.loader_ = goog.nullFunction;
+  this.loader_ = ol.nullFunction;
 
   if (options.loader !== undefined) {
     this.loader_ = options.loader;
