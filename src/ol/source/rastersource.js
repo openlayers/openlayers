@@ -6,7 +6,6 @@ goog.require('goog.asserts');
 goog.require('goog.events');
 goog.require('goog.events.Event');
 goog.require('goog.events.EventType');
-goog.require('goog.functions');
 goog.require('goog.object');
 goog.require('goog.vec.Mat4');
 goog.require('ol.ImageCanvas');
@@ -79,7 +78,7 @@ ol.source.Raster = function(options) {
    * @type {ol.TileQueue}
    */
   this.tileQueue_ = new ol.TileQueue(
-      goog.functions.constant(1),
+      function() { return 1; },
       goog.bind(this.changed, this));
 
   var layerStatesArray = ol.source.Raster.getLayerStatesArray_(this.renderers_);
