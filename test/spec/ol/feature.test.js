@@ -70,7 +70,7 @@ describe('ol.Feature', function() {
 
       var attributes = feature.getProperties();
 
-      var keys = goog.object.getKeys(attributes);
+      var keys = Object.keys(attributes);
       expect(keys.sort()).to.eql(['foo', 'geometry', 'ten']);
 
       expect(attributes.foo).to.be('bar');
