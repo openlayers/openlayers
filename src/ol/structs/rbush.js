@@ -118,7 +118,7 @@ ol.structs.RBush.prototype.remove = function(value) {
   // get the object in which the value was wrapped when adding to the
   // internal rbush. then use that object to do the removal.
   var item = this.items_[uid];
-  goog.object.remove(this.items_, uid);
+  delete this.items_[uid];
   return this.rbush_.remove(item) !== null;
 };
 

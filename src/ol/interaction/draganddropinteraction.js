@@ -27,7 +27,7 @@ goog.require('ol.proj');
  */
 ol.interaction.DragAndDrop = function(opt_options) {
 
-  var options = goog.isDef(opt_options) ? opt_options : {};
+  var options = opt_options ? opt_options : {};
 
   goog.base(this, {
     handleEvent: ol.interaction.DragAndDrop.handleEvent
@@ -37,14 +37,14 @@ ol.interaction.DragAndDrop = function(opt_options) {
    * @private
    * @type {Array.<function(new: ol.format.Feature)>}
    */
-  this.formatConstructors_ = goog.isDef(options.formatConstructors) ?
+  this.formatConstructors_ = options.formatConstructors ?
       options.formatConstructors : [];
 
   /**
    * @private
    * @type {ol.proj.Projection}
    */
-  this.projection_ = goog.isDef(options.projection) ?
+  this.projection_ = options.projection ?
       ol.proj.get(options.projection) : null;
 
   /**
@@ -67,7 +67,7 @@ goog.inherits(ol.interaction.DragAndDrop, ol.interaction.Interaction);
  * @inheritDoc
  */
 ol.interaction.DragAndDrop.prototype.disposeInternal = function() {
-  if (goog.isDef(this.dropListenKey_)) {
+  if (this.dropListenKey_) {
     goog.events.unlistenByKey(this.dropListenKey_);
   }
   goog.base(this, 'disposeInternal');
@@ -104,7 +104,7 @@ ol.interaction.DragAndDrop.prototype.handleResult_ = function(file, result) {
     var view = map.getView();
     goog.asserts.assert(!goog.isNull(view), 'view should not be null');
     projection = view.getProjection();
-    goog.asserts.assert(goog.isDef(projection),
+    goog.asserts.assert(projection !== undefined,
         'projection should be defined');
   }
   var formatConstructors = this.formatConstructors_;
@@ -150,7 +150,7 @@ ol.interaction.DragAndDrop.handleEvent = goog.functions.TRUE;
  * @inheritDoc
  */
 ol.interaction.DragAndDrop.prototype.setMap = function(map) {
-  if (goog.isDef(this.dropListenKey_)) {
+  if (this.dropListenKey_) {
     goog.events.unlistenByKey(this.dropListenKey_);
     this.dropListenKey_ = undefined;
   }
@@ -158,7 +158,7 @@ ol.interaction.DragAndDrop.prototype.setMap = function(map) {
     goog.dispose(this.fileDropHandler_);
     this.fileDropHandler_ = null;
   }
-  goog.asserts.assert(!goog.isDef(this.dropListenKey_),
+  goog.asserts.assert(this.dropListenKey_ === undefined,
       'this.dropListenKey_ should be undefined');
   goog.base(this, 'setMap', map);
   if (!goog.isNull(map)) {

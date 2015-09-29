@@ -1,5 +1,3 @@
-goog.require('goog.userAgent');
-
 goog.provide('ol');
 
 
@@ -121,27 +119,10 @@ ol.ENABLE_WEBGL = true;
 
 
 /**
- * @define {boolean} Support legacy IE (7-8).  Default is `false`.
- *     If set to `true`, `goog.array.ASSUME_NATIVE_FUNCTIONS` must be set
- *     to `false` because legacy IE do not support ECMAScript 5 array functions.
- */
-ol.LEGACY_IE_SUPPORT = false;
-
-
-/**
  * @define {number} The size in pixels of the first atlas image. Default is
  * `256`.
  */
 ol.INITIAL_ATLAS_SIZE = 256;
-
-
-/**
- * Whether the current browser is legacy IE
- * @const
- * @type {boolean}
- */
-ol.IS_LEGACY_IE = goog.userAgent.IE &&
-    !goog.userAgent.isVersionOrHigher('9.0') && goog.userAgent.VERSION !== '';
 
 
 /**
@@ -232,8 +213,8 @@ ol.WEBGL_EXTENSIONS; // value is set in `ol.has`
  *       // Other code here.
  *     };
  *
- * @param {Function} childCtor Child constructor.
- * @param {Function} parentCtor Parent constructor.
+ * @param {!Function} childCtor Child constructor.
+ * @param {!Function} parentCtor Parent constructor.
  * @function
  * @api
  */

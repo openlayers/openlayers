@@ -44,7 +44,7 @@ ol.has.CANVAS = ol.ENABLE_CANVAS && (
         if (goog.isNull(context)) {
           return false;
         } else {
-          if (goog.isDef(context.setLineDash)) {
+          if (context.setLineDash !== undefined) {
             ol.has.CANVAS_LINE_DASH = true;
           }
           return true;

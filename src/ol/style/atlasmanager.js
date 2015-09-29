@@ -40,14 +40,14 @@ ol.style.AtlasManagerInfo;
  */
 ol.style.AtlasManager = function(opt_options) {
 
-  var options = goog.isDef(opt_options) ? opt_options : {};
+  var options = opt_options || {};
 
   /**
    * The size in pixels of the latest atlas image.
    * @private
    * @type {number}
    */
-  this.currentSize_ = goog.isDef(options.initialSize) ?
+  this.currentSize_ = options.initialSize !== undefined ?
       options.initialSize : ol.INITIAL_ATLAS_SIZE;
 
   /**
@@ -55,9 +55,9 @@ ol.style.AtlasManager = function(opt_options) {
    * @private
    * @type {number}
    */
-  this.maxSize_ = goog.isDef(options.maxSize) ?
+  this.maxSize_ = options.maxSize !== undefined ?
       options.maxSize : ol.MAX_ATLAS_SIZE != -1 ?
-          ol.MAX_ATLAS_SIZE : goog.isDef(ol.WEBGL_MAX_TEXTURE_SIZE) ?
+          ol.MAX_ATLAS_SIZE : ol.WEBGL_MAX_TEXTURE_SIZE !== undefined ?
               ol.WEBGL_MAX_TEXTURE_SIZE : 2048;
 
   /**
@@ -65,7 +65,7 @@ ol.style.AtlasManager = function(opt_options) {
    * @private
    * @type {number}
    */
-  this.space_ = goog.isDef(options.space) ? options.space : 1;
+  this.space_ = options.space !== undefined ? options.space : 1;
 
   /**
    * @private
@@ -191,7 +191,7 @@ ol.style.AtlasManager.prototype.add =
   // even if no hit-detection entry is requested, we insert a fake entry into
   // the hit-detection atlas, to make sure that the offset is the same for
   // the original image and the hit-detection image.
-  var renderHitCallback = goog.isDef(opt_renderHitCallback) ?
+  var renderHitCallback = opt_renderHitCallback !== undefined ?
       opt_renderHitCallback : goog.functions.NULL;
 
   /** @type {?ol.style.AtlasInfo} */

@@ -21,19 +21,19 @@ goog.require('ol.css');
  * @api stable
  */
 ol.control.ZoomToExtent = function(opt_options) {
-  var options = goog.isDef(opt_options) ? opt_options : {};
+  var options = opt_options ? opt_options : {};
 
   /**
    * @type {ol.Extent}
    * @private
    */
-  this.extent_ = goog.isDef(options.extent) ? options.extent : null;
+  this.extent_ = options.extent ? options.extent : null;
 
-  var className = goog.isDef(options.className) ? options.className :
+  var className = options.className ? options.className :
       'ol-zoom-extent';
 
-  var label = goog.isDef(options.label) ? options.label : 'E';
-  var tipLabel = goog.isDef(options.tipLabel) ?
+  var label = options.label ? options.label : 'E';
+  var tipLabel = options.tipLabel ?
       options.tipLabel : 'Fit to extent';
   var button = goog.dom.createDom(goog.dom.TagName.BUTTON, {
     'type': 'button',
@@ -74,6 +74,6 @@ ol.control.ZoomToExtent.prototype.handleZoomToExtent_ = function() {
   var extent = goog.isNull(this.extent_) ?
       view.getProjection().getExtent() : this.extent_;
   var size = map.getSize();
-  goog.asserts.assert(goog.isDef(size), 'size should be defined');
+  goog.asserts.assert(size, 'size should be defined');
   view.fit(extent, size);
 };

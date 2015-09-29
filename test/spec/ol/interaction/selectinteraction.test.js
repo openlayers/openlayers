@@ -79,7 +79,7 @@ describe('ol.interaction.Select', function() {
     var viewport = map.getViewport();
     // calculated in case body has top < 0 (test runner with small window)
     var position = goog.style.getClientPosition(viewport);
-    var shiftKey = goog.isDef(opt_shiftKey) ? opt_shiftKey : false;
+    var shiftKey = opt_shiftKey !== undefined ? opt_shiftKey : false;
     var event = new ol.MapBrowserPointerEvent(type, map,
         new ol.pointer.PointerEvent(type,
             new goog.events.BrowserEvent({
@@ -96,6 +96,16 @@ describe('ol.interaction.Select', function() {
       var select = new ol.interaction.Select();
       expect(select).to.be.a(ol.interaction.Select);
       expect(select).to.be.a(ol.interaction.Interaction);
+    });
+
+    describe('user-provided collection', function() {
+
+      it('uses the user-provided collection', function() {
+        var features = new ol.Collection();
+        var select = new ol.interaction.Select({features: features});
+        expect(select.getFeatures()).to.be(features);
+      });
+
     });
 
   });
@@ -269,6 +279,7 @@ goog.require('goog.dispose');
 goog.require('goog.events');
 goog.require('goog.events.BrowserEvent');
 goog.require('goog.style');
+goog.require('ol.Collection');
 goog.require('ol.Feature');
 goog.require('ol.Map');
 goog.require('ol.MapBrowserEvent.EventType');

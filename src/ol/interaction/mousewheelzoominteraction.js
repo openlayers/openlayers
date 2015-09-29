@@ -3,10 +3,10 @@ goog.provide('ol.interaction.MouseWheelZoom');
 goog.require('goog.asserts');
 goog.require('goog.events.MouseWheelEvent');
 goog.require('goog.events.MouseWheelHandler.EventType');
-goog.require('goog.math');
 goog.require('ol');
 goog.require('ol.Coordinate');
 goog.require('ol.interaction.Interaction');
+goog.require('ol.math');
 
 
 
@@ -25,7 +25,7 @@ ol.interaction.MouseWheelZoom = function(opt_options) {
     handleEvent: ol.interaction.MouseWheelZoom.handleEvent
   });
 
-  var options = goog.isDef(opt_options) ? opt_options : {};
+  var options = opt_options || {};
 
   /**
    * @private
@@ -37,14 +37,13 @@ ol.interaction.MouseWheelZoom = function(opt_options) {
    * @private
    * @type {number}
    */
-  this.duration_ = goog.isDef(options.duration) ? options.duration : 250;
+  this.duration_ = options.duration !== undefined ? options.duration : 250;
 
   /**
    * @private
    * @type {boolean}
    */
-  this.useAnchor_ = goog.isDef(options.useAnchor) ?
-      options.useAnchor : true;
+  this.useAnchor_ = options.useAnchor !== undefined ? options.useAnchor : true;
 
   /**
    * @private
@@ -91,12 +90,12 @@ ol.interaction.MouseWheelZoom.handleEvent = function(mapBrowserEvent) {
 
     this.delta_ += mouseWheelEvent.deltaY;
 
-    if (!goog.isDef(this.startTime_)) {
-      this.startTime_ = goog.now();
+    if (this.startTime_ === undefined) {
+      this.startTime_ = Date.now();
     }
 
     var duration = ol.MOUSEWHEELZOOM_TIMEOUT_DURATION;
-    var timeLeft = Math.max(duration - (goog.now() - this.startTime_), 0);
+    var timeLeft = Math.max(duration - (Date.now() - this.startTime_), 0);
 
     goog.global.clearTimeout(this.timeoutId_);
     this.timeoutId_ = goog.global.setTimeout(
@@ -115,7 +114,7 @@ ol.interaction.MouseWheelZoom.handleEvent = function(mapBrowserEvent) {
  */
 ol.interaction.MouseWheelZoom.prototype.doZoom_ = function(map) {
   var maxDelta = ol.MOUSEWHEELZOOM_MAXDELTA;
-  var delta = goog.math.clamp(this.delta_, -maxDelta, maxDelta);
+  var delta = ol.math.clamp(this.delta_, -maxDelta, maxDelta);
 
   var view = map.getView();
   goog.asserts.assert(!goog.isNull(view), 'view should not be null');

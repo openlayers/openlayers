@@ -217,7 +217,7 @@ ol.renderer.canvas.TileLayer.prototype.prepareFrame =
     extent = frameState.extent;
   }
 
-  if (goog.isDef(layerState.extent)) {
+  if (layerState.extent !== undefined) {
     extent = ol.extent.getIntersection(extent, layerState.extent);
   }
   if (ol.extent.isEmpty(extent)) {

@@ -32,7 +32,7 @@ ol.format.JSONFeature.prototype.getObject_ = function(source) {
     return source;
   } else if (goog.isString(source)) {
     var object = goog.json.parse(source);
-    return goog.isDef(object) ? object : null;
+    return object ? object : null;
   } else {
     goog.asserts.fail();
     return null;

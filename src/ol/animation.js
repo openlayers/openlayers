@@ -1,5 +1,6 @@
 goog.provide('ol.animation');
 
+goog.require('ol');
 goog.require('ol.PreRenderFunction');
 goog.require('ol.ViewHint');
 goog.require('ol.coordinate');
@@ -15,9 +16,9 @@ goog.require('ol.easing');
  */
 ol.animation.bounce = function(options) {
   var resolution = options.resolution;
-  var start = goog.isDef(options.start) ? options.start : goog.now();
-  var duration = goog.isDef(options.duration) ? options.duration : 1000;
-  var easing = goog.isDef(options.easing) ?
+  var start = options.start ? options.start : Date.now();
+  var duration = options.duration !== undefined ? options.duration : 1000;
+  var easing = options.easing ?
       options.easing : ol.easing.upAndDown;
   return (
       /**
@@ -51,11 +52,11 @@ ol.animation.bounce = function(options) {
  */
 ol.animation.pan = function(options) {
   var source = options.source;
-  var start = goog.isDef(options.start) ? options.start : goog.now();
+  var start = options.start ? options.start : Date.now();
   var sourceX = source[0];
   var sourceY = source[1];
-  var duration = goog.isDef(options.duration) ? options.duration : 1000;
-  var easing = goog.isDef(options.easing) ?
+  var duration = options.duration !== undefined ? options.duration : 1000;
+  var easing = options.easing ?
       options.easing : ol.easing.inAndOut;
   return (
       /**
@@ -90,12 +91,12 @@ ol.animation.pan = function(options) {
  * @api
  */
 ol.animation.rotate = function(options) {
-  var sourceRotation = goog.isDef(options.rotation) ? options.rotation : 0;
-  var start = goog.isDef(options.start) ? options.start : goog.now();
-  var duration = goog.isDef(options.duration) ? options.duration : 1000;
-  var easing = goog.isDef(options.easing) ?
+  var sourceRotation = options.rotation ? options.rotation : 0;
+  var start = options.start ? options.start : Date.now();
+  var duration = options.duration !== undefined ? options.duration : 1000;
+  var easing = options.easing ?
       options.easing : ol.easing.inAndOut;
-  var anchor = goog.isDef(options.anchor) ?
+  var anchor = options.anchor ?
       options.anchor : null;
 
   return (
@@ -137,9 +138,9 @@ ol.animation.rotate = function(options) {
  */
 ol.animation.zoom = function(options) {
   var sourceResolution = options.resolution;
-  var start = goog.isDef(options.start) ? options.start : goog.now();
-  var duration = goog.isDef(options.duration) ? options.duration : 1000;
-  var easing = goog.isDef(options.easing) ?
+  var start = options.start ? options.start : Date.now();
+  var duration = options.duration !== undefined ? options.duration : 1000;
+  var easing = options.easing ?
       options.easing : ol.easing.inAndOut;
   return (
       /**

@@ -1,6 +1,5 @@
 goog.provide('ol.geom.GeometryCollection');
 
-goog.require('goog.array');
 goog.require('goog.events');
 goog.require('goog.events.EventType');
 goog.require('goog.object');
@@ -27,7 +26,7 @@ ol.geom.GeometryCollection = function(opt_geometries) {
    * @private
    * @type {Array.<ol.geom.Geometry>}
    */
-  this.geometries_ = goog.isDef(opt_geometries) ? opt_geometries : null;
+  this.geometries_ = opt_geometries ? opt_geometries : null;
 
   this.listenGeometriesChange_();
 };
@@ -231,7 +230,7 @@ ol.geom.GeometryCollection.prototype.intersectsExtent = function(extent) {
  * @return {boolean} Is empty.
  */
 ol.geom.GeometryCollection.prototype.isEmpty = function() {
-  return goog.array.isEmpty(this.geometries_);
+  return this.geometries_.length === 0;
 };
 
 

@@ -16,7 +16,7 @@ ol.RotationConstraintType;
  * @return {number|undefined} Rotation.
  */
 ol.RotationConstraint.disable = function(rotation, delta) {
-  if (goog.isDef(rotation)) {
+  if (rotation !== undefined) {
     return 0;
   } else {
     return undefined;
@@ -30,7 +30,7 @@ ol.RotationConstraint.disable = function(rotation, delta) {
  * @return {number|undefined} Rotation.
  */
 ol.RotationConstraint.none = function(rotation, delta) {
-  if (goog.isDef(rotation)) {
+  if (rotation !== undefined) {
     return rotation + delta;
   } else {
     return undefined;
@@ -51,7 +51,7 @@ ol.RotationConstraint.createSnapToN = function(n) {
        * @return {number|undefined} Rotation.
        */
       function(rotation, delta) {
-        if (goog.isDef(rotation)) {
+        if (rotation !== undefined) {
           rotation = Math.floor((rotation + delta) / theta + 0.5) * theta;
           return rotation;
         } else {
@@ -74,7 +74,7 @@ ol.RotationConstraint.createSnapToZero = function(opt_tolerance) {
        * @return {number|undefined} Rotation.
        */
       function(rotation, delta) {
-        if (goog.isDef(rotation)) {
+        if (rotation !== undefined) {
           if (Math.abs(rotation + delta) <= tolerance) {
             return 0;
           } else {

@@ -59,7 +59,7 @@ ol.pointer.PointerEvent = function(type, browserEvent, opt_eventDict) {
    */
   this.browserEvent = browserEvent;
 
-  var eventDict = goog.isDef(opt_eventDict) ? opt_eventDict : {};
+  var eventDict = opt_eventDict ? opt_eventDict : {};
 
   /**
    * @type {number}

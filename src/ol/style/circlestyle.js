@@ -26,7 +26,7 @@ goog.require('ol.style.Stroke');
  */
 ol.style.Circle = function(opt_options) {
 
-  var options = goog.isDef(opt_options) ? opt_options : {};
+  var options = opt_options || {};
 
   /**
    * @private
@@ -50,13 +50,13 @@ ol.style.Circle = function(opt_options) {
    * @private
    * @type {ol.style.Fill}
    */
-  this.fill_ = goog.isDef(options.fill) ? options.fill : null;
+  this.fill_ = options.fill !== undefined ? options.fill : null;
 
   /**
    * @private
    * @type {ol.style.Stroke}
    */
-  this.stroke_ = goog.isDef(options.stroke) ? options.stroke : null;
+  this.stroke_ = options.stroke !== undefined ? options.stroke : null;
 
   /**
    * @private
@@ -99,7 +99,7 @@ ol.style.Circle = function(opt_options) {
   /**
    * @type {boolean}
    */
-  var snapToPixel = goog.isDef(options.snapToPixel) ?
+  var snapToPixel = options.snapToPixel !== undefined ?
       options.snapToPixel : true;
 
   goog.base(this, {
@@ -249,7 +249,7 @@ ol.style.Circle.prototype.render_ = function(atlasManager) {
   if (!goog.isNull(this.stroke_)) {
     strokeStyle = ol.color.asString(this.stroke_.getColor());
     strokeWidth = this.stroke_.getWidth();
-    if (!goog.isDef(strokeWidth)) {
+    if (strokeWidth === undefined) {
       strokeWidth = ol.render.canvas.defaultLineWidth;
     }
     lineDash = this.stroke_.getLineDash();
@@ -269,7 +269,7 @@ ol.style.Circle.prototype.render_ = function(atlasManager) {
     lineDash: lineDash
   };
 
-  if (!goog.isDef(atlasManager)) {
+  if (atlasManager === undefined) {
     // no atlas manager is used, create a new canvas
     this.canvas_ = /** @type {HTMLCanvasElement} */
         (goog.dom.createElement(goog.dom.TagName.CANVAS));
@@ -405,7 +405,7 @@ ol.style.Circle.prototype.drawHitDetectionCanvas_ =
       renderOptions.size / 2, renderOptions.size / 2,
       this.radius_, 0, 2 * Math.PI, true);
 
-  context.fillStyle = ol.render.canvas.defaultFillStyle;
+  context.fillStyle = ol.color.asString(ol.render.canvas.defaultFillStyle);
   context.fill();
   if (!goog.isNull(this.stroke_)) {
     context.strokeStyle = renderOptions.strokeStyle;
@@ -435,7 +435,7 @@ ol.style.Circle.prototype.getChecksum = function() {
 
   if (recalculate) {
     var checksum = 'c' + strokeChecksum + fillChecksum +
-        (goog.isDef(this.radius_) ? this.radius_.toString() : '-');
+        (this.radius_ !== undefined ? this.radius_.toString() : '-');
     this.checksums_ = [checksum, strokeChecksum, fillChecksum, this.radius_];
   }
 

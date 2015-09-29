@@ -4,7 +4,6 @@ goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('goog.events');
 goog.require('goog.events.EventType');
-goog.require('goog.math');
 goog.require('goog.object');
 goog.require('ol.Collection');
 goog.require('ol.CollectionEvent');
@@ -38,7 +37,7 @@ ol.layer.GroupProperty = {
  */
 ol.layer.Group = function(opt_options) {
 
-  var options = goog.isDef(opt_options) ? opt_options : {};
+  var options = opt_options || {};
   var baseOptions = /** @type {olx.layer.GroupOptions} */
       (goog.object.clone(options));
   delete baseOptions.layers;
@@ -191,7 +190,7 @@ ol.layer.Group.prototype.setLayers = function(layers) {
  * @inheritDoc
  */
 ol.layer.Group.prototype.getLayersArray = function(opt_array) {
-  var array = goog.isDef(opt_array) ? opt_array : [];
+  var array = opt_array !== undefined ? opt_array : [];
   this.getLayers().forEach(function(layer) {
     layer.getLayersArray(array);
   });
@@ -203,7 +202,7 @@ ol.layer.Group.prototype.getLayersArray = function(opt_array) {
  * @inheritDoc
  */
 ol.layer.Group.prototype.getLayerStatesArray = function(opt_states) {
-  var states = goog.isDef(opt_states) ? opt_states : [];
+  var states = opt_states !== undefined ? opt_states : [];
 
   var pos = states.length;
 
@@ -215,19 +214,14 @@ ol.layer.Group.prototype.getLayerStatesArray = function(opt_states) {
   var i, ii, layerState;
   for (i = pos, ii = states.length; i < ii; i++) {
     layerState = states[i];
-    layerState.brightness = goog.math.clamp(
-        layerState.brightness + ownLayerState.brightness, -1, 1);
-    layerState.contrast *= ownLayerState.contrast;
-    layerState.hue += ownLayerState.hue;
     layerState.opacity *= ownLayerState.opacity;
-    layerState.saturation *= ownLayerState.saturation;
     layerState.visible = layerState.visible && ownLayerState.visible;
     layerState.maxResolution = Math.min(
         layerState.maxResolution, ownLayerState.maxResolution);
     layerState.minResolution = Math.max(
         layerState.minResolution, ownLayerState.minResolution);
-    if (goog.isDef(ownLayerState.extent)) {
-      if (goog.isDef(layerState.extent)) {
+    if (ownLayerState.extent !== undefined) {
+      if (layerState.extent !== undefined) {
         layerState.extent = ol.extent.getIntersection(
             layerState.extent, ownLayerState.extent);
       } else {

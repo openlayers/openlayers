@@ -25,9 +25,9 @@ ol.ImageCanvas = function(extent, resolution, pixelRatio, attributions,
    * @type {?ol.ImageCanvasLoader}
    * @private
    */
-  this.loader_ = goog.isDef(opt_loader) ? opt_loader : null;
+  this.loader_ = opt_loader !== undefined ? opt_loader : null;
 
-  var state = goog.isDef(opt_loader) ?
+  var state = opt_loader !== undefined ?
       ol.ImageState.IDLE : ol.ImageState.LOADED;
 
   goog.base(this, extent, resolution, pixelRatio, state, attributions);

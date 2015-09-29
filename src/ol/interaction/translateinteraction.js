@@ -1,9 +1,9 @@
 goog.provide('ol.interaction.Translate');
 goog.provide('ol.interaction.TranslateEvent');
 
-goog.require('goog.array');
 goog.require('goog.events');
 goog.require('goog.events.Event');
+goog.require('ol.array');
 goog.require('ol.interaction.Pointer');
 
 
@@ -106,7 +106,7 @@ ol.interaction.Translate = function(options) {
    * @type {ol.Collection.<ol.Feature>}
    * @private
    */
-  this.features_ = goog.isDef(options.features) ? options.features : null;
+  this.features_ = options.features !== undefined ? options.features : null;
 
   /**
    * @type {ol.Feature}
@@ -207,7 +207,7 @@ ol.interaction.Translate.handleMoveEvent_ = function(event)
     var isSelected = false;
 
     if (!goog.isNull(this.features_) &&
-        goog.array.contains(this.features_.getArray(), intersectingFeature)) {
+        ol.array.includes(this.features_.getArray(), intersectingFeature)) {
       isSelected = true;
     }
 
@@ -223,7 +223,7 @@ ol.interaction.Translate.handleMoveEvent_ = function(event)
         'grabbing' : (isSelected ? 'grab' : 'pointer');
 
   } else {
-    elem.style.cursor = goog.isDef(this.previousCursor_) ?
+    elem.style.cursor = this.previousCursor_ !== undefined ?
         this.previousCursor_ : '';
     this.previousCursor_ = undefined;
   }
@@ -248,7 +248,7 @@ ol.interaction.Translate.prototype.featuresAtPixel_ = function(pixel, map) {
       });
 
   if (!goog.isNull(this.features_) &&
-      goog.array.contains(this.features_.getArray(), intersectingFeature)) {
+      ol.array.includes(this.features_.getArray(), intersectingFeature)) {
     found = intersectingFeature;
   }
 

@@ -130,7 +130,7 @@ ol.structs.LRUCache.prototype.forEach = function(f, opt_this) {
  */
 ol.structs.LRUCache.prototype.get = function(key) {
   var entry = this.entries_[key];
-  goog.asserts.assert(goog.isDef(entry), 'an entry exists for key %s', key);
+  goog.asserts.assert(entry !== undefined, 'an entry exists for key %s', key);
   if (entry === this.newest_) {
     return entry.value_;
   } else if (entry === this.oldest_) {

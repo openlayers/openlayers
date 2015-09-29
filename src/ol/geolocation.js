@@ -62,7 +62,7 @@ ol.Geolocation = function(opt_options) {
 
   goog.base(this);
 
-  var options = goog.isDef(opt_options) ? opt_options : {};
+  var options = opt_options || {};
 
   /**
    * The unprojected (EPSG:4326) device position.
@@ -90,14 +90,14 @@ ol.Geolocation = function(opt_options) {
       this, ol.Object.getChangeEventType(ol.GeolocationProperty.TRACKING),
       this.handleTrackingChanged_, false, this);
 
-  if (goog.isDef(options.projection)) {
+  if (options.projection !== undefined) {
     this.setProjection(ol.proj.get(options.projection));
   }
-  if (goog.isDef(options.trackingOptions)) {
+  if (options.trackingOptions !== undefined) {
     this.setTrackingOptions(options.trackingOptions);
   }
 
-  this.setTracking(goog.isDef(options.tracking) ? options.tracking : false);
+  this.setTracking(options.tracking !== undefined ? options.tracking : false);
 
 };
 goog.inherits(ol.Geolocation, ol.Object);
@@ -134,12 +134,12 @@ ol.Geolocation.prototype.handleProjectionChanged_ = function() {
 ol.Geolocation.prototype.handleTrackingChanged_ = function() {
   if (ol.has.GEOLOCATION) {
     var tracking = this.getTracking();
-    if (tracking && !goog.isDef(this.watchId_)) {
+    if (tracking && this.watchId_ === undefined) {
       this.watchId_ = goog.global.navigator.geolocation.watchPosition(
           goog.bind(this.positionChange_, this),
           goog.bind(this.positionError_, this),
           this.getTrackingOptions());
-    } else if (!tracking && goog.isDef(this.watchId_)) {
+    } else if (!tracking && this.watchId_ !== undefined) {
       goog.global.navigator.geolocation.clearWatch(this.watchId_);
       this.watchId_ = undefined;
     }

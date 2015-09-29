@@ -223,7 +223,7 @@ ol.format.OSMXML.prototype.readFeaturesFromNode = function(node, opt_options) {
       nodes: {},
       features: []
     }, ol.format.OSMXML.PARSERS_, node, [options]);
-    if (goog.isDef(state.features)) {
+    if (state.features) {
       return state.features;
     }
   }

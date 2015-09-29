@@ -8,6 +8,7 @@ goog.require('goog.dom.fullscreen');
 goog.require('goog.dom.fullscreen.EventType');
 goog.require('goog.events');
 goog.require('goog.events.EventType');
+goog.require('ol');
 goog.require('ol.control.Control');
 goog.require('ol.css');
 
@@ -28,16 +29,15 @@ goog.require('ol.css');
  */
 ol.control.FullScreen = function(opt_options) {
 
-  var options = goog.isDef(opt_options) ? opt_options : {};
+  var options = opt_options ? opt_options : {};
 
   /**
    * @private
    * @type {string}
    */
-  this.cssClassName_ = goog.isDef(options.className) ?
-      options.className : 'ol-full-screen';
+  this.cssClassName_ = options.className ? options.className : 'ol-full-screen';
 
-  var label = goog.isDef(options.label) ? options.label : '\u2194';
+  var label = options.label ? options.label : '\u2194';
 
   /**
    * @private
@@ -46,8 +46,7 @@ ol.control.FullScreen = function(opt_options) {
   this.labelNode_ = /** @type {Node} */ (goog.isString(label) ?
           goog.dom.createTextNode(label) : label);
 
-  var labelActive = goog.isDef(options.labelActive) ?
-      options.labelActive : '\u00d7';
+  var labelActive = options.labelActive ? options.labelActive : '\u00d7';
 
   /**
    * @private
@@ -56,8 +55,7 @@ ol.control.FullScreen = function(opt_options) {
   this.labelActiveNode_ = /** @type {Node} */ (goog.isString(labelActive) ?
           goog.dom.createTextNode(labelActive) : labelActive);
 
-  var tipLabel = goog.isDef(options.tipLabel) ?
-      options.tipLabel : 'Toggle full-screen';
+  var tipLabel = options.tipLabel ? options.tipLabel : 'Toggle full-screen';
   var button = goog.dom.createDom(goog.dom.TagName.BUTTON, {
     'class': this.cssClassName_ + '-' + goog.dom.fullscreen.isFullScreen(),
     'type': 'button',
@@ -85,7 +83,7 @@ ol.control.FullScreen = function(opt_options) {
    * @private
    * @type {boolean}
    */
-  this.keys_ = goog.isDef(options.keys) ? options.keys : false;
+  this.keys_ = options.keys !== undefined ? options.keys : false;
 
 };
 goog.inherits(ol.control.FullScreen, ol.control.Control);
