@@ -169,7 +169,7 @@ ol.style.Style.prototype.setGeometry = function(geometry) {
       }
       return result;
     };
-  } else if (goog.isNull(geometry)) {
+  } else if (!geometry) {
     this.geometryFunction_ = ol.style.defaultGeometryFunction;
   } else if (geometry !== undefined) {
     goog.asserts.assertInstanceof(geometry, ol.geom.Geometry,
@@ -255,7 +255,7 @@ ol.style.defaultStyleFunction = function(feature, resolution) {
   // browsers that do not support Canvas. (ol.style.Circle does
   // canvas.getContext('2d') at construction time, which will cause an.error
   // in such browsers.)
-  if (goog.isNull(ol.style.defaultStyle_)) {
+  if (!ol.style.defaultStyle_) {
     var fill = new ol.style.Fill({
       color: 'rgba(255,255,255,0.4)'
     });
@@ -366,7 +366,6 @@ ol.style.GeometryFunction;
  * @return {ol.geom.Geometry|undefined} Geometry to render.
  */
 ol.style.defaultGeometryFunction = function(feature) {
-  goog.asserts.assert(!goog.isNull(feature),
-      'feature must not be null');
+  goog.asserts.assert(feature, 'feature must not be null');
   return feature.getGeometry();
 };
