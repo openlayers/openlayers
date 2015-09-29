@@ -154,7 +154,7 @@ ol.source.WMTS = function(options) {
          * @return {string|undefined} Tile URL.
          */
         function(tileCoord, pixelRatio, projection) {
-          if (goog.isNull(tileCoord)) {
+          if (!tileCoord) {
             return undefined;
           } else {
             var localContext = {
@@ -341,15 +341,14 @@ ol.source.WMTS.optionsFromCapabilities = function(wmtsCap, config) {
   /* jshint -W069 */
 
   // TODO: add support for TileMatrixLimits
-  goog.asserts.assert(!goog.isNull(config['layer']),
+  goog.asserts.assert(config['layer'],
       'config "layer" must not be null');
 
   var layers = wmtsCap['Contents']['Layer'];
   var l = goog.array.find(layers, function(elt, index, array) {
     return elt['Identifier'] == config['layer'];
   });
-  goog.asserts.assert(!goog.isNull(l),
-      'found a matching layer in Contents/Layer');
+  goog.asserts.assert(l, 'found a matching layer in Contents/Layer');
 
   goog.asserts.assert(l['TileMatrixSetLink'].length > 0,
       'layer has TileMatrixSetLink');
@@ -381,8 +380,7 @@ ol.source.WMTS.optionsFromCapabilities = function(wmtsCap, config) {
   matrixSet = /** @type {string} */
       (l['TileMatrixSetLink'][idx]['TileMatrixSet']);
 
-  goog.asserts.assert(!goog.isNull(matrixSet),
-      'TileMatrixSet must not be null');
+  goog.asserts.assert(matrixSet, 'TileMatrixSet must not be null');
 
   var format = /** @type {string} */ (l['Format'][0]);
   if ('format' in config) {
@@ -420,7 +418,7 @@ ol.source.WMTS.optionsFromCapabilities = function(wmtsCap, config) {
   var matrixSetObj = goog.array.find(matrixSets, function(elt, index, array) {
     return elt['Identifier'] == matrixSet;
   });
-  goog.asserts.assert(!goog.isNull(matrixSetObj),
+  goog.asserts.assert(matrixSetObj,
       'found matrixSet in Contents/TileMatrixSet');
 
   var projection;
@@ -440,7 +438,7 @@ ol.source.WMTS.optionsFromCapabilities = function(wmtsCap, config) {
     extent = ol.proj.transformExtent(
         wgs84BoundingBox, 'EPSG:4326', projection);
     var projectionExtent = projection.getExtent();
-    if (!goog.isNull(projectionExtent)) {
+    if (projectionExtent) {
       // If possible, do a sanity check on the extent - it should never be
       // bigger than the validity extent of the projection of a matrix set.
       if (!ol.extent.containsExtent(projectionExtent, extent)) {

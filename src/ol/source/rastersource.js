@@ -319,7 +319,7 @@ ol.source.Raster.prototype.onWorkerComplete_ =
     callback(err);
     return;
   }
-  if (goog.isNull(output)) {
+  if (!output) {
     // job aborted
     return;
   }
