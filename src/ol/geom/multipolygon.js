@@ -413,9 +413,6 @@ ol.geom.MultiPolygon.prototype.setPolygons = function(polygons) {
   var flatCoordinates = [];
   var endss = [];
   var i, ii, ends;
-  if(!goog.isDefAndNotNull(layout)){
-    layout = ol.geom.GeometryLayout.XY;
-  }
   for (i = 0, ii = polygons.length; i < ii; ++i) {
     var polygon = polygons[i];
     if (i === 0) {
