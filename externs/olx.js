@@ -2964,11 +2964,7 @@ olx.layer;
 
 
 /**
- * @typedef {{brightness: (number|undefined),
- *     contrast: (number|undefined),
- *     hue: (number|undefined),
- *     opacity: (number|undefined),
- *     saturation: (number|undefined),
+ * @typedef {{opacity: (number|undefined),
  *     visible: (boolean|undefined),
  *     extent: (ol.Extent|undefined),
  *     zIndex: (number|undefined),
@@ -2980,43 +2976,11 @@ olx.layer.BaseOptions;
 
 
 /**
- * Brightness. Default is `0`.
- * @type {number|undefined}
- * @api
- */
-olx.layer.BaseOptions.prototype.brightness;
-
-
-/**
- * Contrast. Default is `1`.
- * @type {number|undefined}
- * @api
- */
-olx.layer.BaseOptions.prototype.contrast;
-
-
-/**
- * Hue. Default is `0`.
- * @type {number|undefined}
- * @api
- */
-olx.layer.BaseOptions.prototype.hue;
-
-
-/**
  * Opacity (0, 1). Default is `1`.
  * @type {number|undefined}
  * @api stable
  */
 olx.layer.BaseOptions.prototype.opacity;
-
-
-/**
- * Saturation. Default is `1`.
- * @type {number|undefined}
- * @api
- */
-olx.layer.BaseOptions.prototype.saturation;
 
 
 /**
@@ -3062,11 +3026,7 @@ olx.layer.BaseOptions.prototype.maxResolution;
 
 
 /**
- * @typedef {{brightness: (number|undefined),
- *     contrast: (number|undefined),
- *     hue: (number|undefined),
- *     opacity: (number|undefined),
- *     saturation: (number|undefined),
+ * @typedef {{opacity: (number|undefined),
  *     source: (ol.source.Source|undefined),
  *     visible: (boolean|undefined),
  *     extent: (ol.Extent|undefined),
@@ -3079,43 +3039,11 @@ olx.layer.LayerOptions;
 
 
 /**
- * Brightness. Default is `0`.
- * @type {number|undefined}
- * @api
- */
-olx.layer.LayerOptions.prototype.brightness;
-
-
-/**
- * Contrast. Default is `1`.
- * @type {number|undefined}
- * @api
- */
-olx.layer.LayerOptions.prototype.contrast;
-
-
-/**
- * Hue. Default is `0`.
- * @type {number|undefined}
- * @api
- */
-olx.layer.LayerOptions.prototype.hue;
-
-
-/**
  * Opacity (0, 1). Default is `1`.
  * @type {number|undefined}
  * @api stable
  */
 olx.layer.LayerOptions.prototype.opacity;
-
-
-/**
- * Saturation. Default is `1`.
- * @type {number|undefined}
- * @api
- */
-olx.layer.LayerOptions.prototype.saturation;
 
 
 /**
@@ -3171,11 +3099,7 @@ olx.layer.LayerOptions.prototype.maxResolution;
 
 
 /**
- * @typedef {{brightness: (number|undefined),
- *     contrast: (number|undefined),
- *     hue: (number|undefined),
- *     opacity: (number|undefined),
- *     saturation: (number|undefined),
+ * @typedef {{opacity: (number|undefined),
  *     visible: (boolean|undefined),
  *     extent: (ol.Extent|undefined),
  *     zIndex: (number|undefined),
@@ -3188,43 +3112,11 @@ olx.layer.GroupOptions;
 
 
 /**
- * Brightness. Default is `0`.
- * @type {number|undefined}
- * @api
- */
-olx.layer.GroupOptions.prototype.brightness;
-
-
-/**
- * Contrast. Default is `1`.
- * @type {number|undefined}
- * @api
- */
-olx.layer.GroupOptions.prototype.contrast;
-
-
-/**
- * Hue. Default is `0`.
- * @type {number|undefined}
- * @api
- */
-olx.layer.GroupOptions.prototype.hue;
-
-
-/**
  * Opacity (0, 1). Default is `1`.
  * @type {number|undefined}
  * @api stable
  */
 olx.layer.GroupOptions.prototype.opacity;
-
-
-/**
- * Saturation. Default is `1`.
- * @type {number|undefined}
- * @api
- */
-olx.layer.GroupOptions.prototype.saturation;
 
 
 /**
@@ -3278,10 +3170,7 @@ olx.layer.GroupOptions.prototype.layers;
 
 
 /**
- * @typedef {{brightness: (number|undefined),
- *     contrast: (number|undefined),
- *     hue: (number|undefined),
- *     gradient: (Array.<string>|undefined),
+ * @typedef {{gradient: (Array.<string>|undefined),
  *     radius: (number|undefined),
  *     blur: (number|undefined),
  *     shadow: (number|undefined),
@@ -3290,36 +3179,11 @@ olx.layer.GroupOptions.prototype.layers;
  *     minResolution: (number|undefined),
  *     maxResolution: (number|undefined),
  *     opacity: (number|undefined),
- *     saturation: (number|undefined),
  *     source: (ol.source.Vector|undefined),
  *     visible: (boolean|undefined)}}
  * @api
  */
 olx.layer.HeatmapOptions;
-
-
-/**
- * Brightness.
- * @type {number|undefined}
- * @api
- */
-olx.layer.HeatmapOptions.prototype.brightness;
-
-
-/**
- * Contrast.
- * @type {number|undefined}
- * @api
- */
-olx.layer.HeatmapOptions.prototype.contrast;
-
-
-/**
- * Hue.
- * @type {number|undefined}
- * @api
- */
-olx.layer.HeatmapOptions.prototype.hue;
 
 
 /**
@@ -3399,14 +3263,6 @@ olx.layer.HeatmapOptions.prototype.opacity;
 
 
 /**
- * Saturation.
- * @type {number|undefined}
- * @api
- */
-olx.layer.HeatmapOptions.prototype.saturation;
-
-
-/**
  * Source.
  * @type {ol.source.Vector}
  * @api
@@ -3423,11 +3279,7 @@ olx.layer.HeatmapOptions.prototype.visible;
 
 
 /**
- * @typedef {{brightness: (number|undefined),
- *     contrast: (number|undefined),
- *     hue: (number|undefined),
- *     opacity: (number|undefined),
- *     saturation: (number|undefined),
+ * @typedef {{opacity: (number|undefined),
  *     map: (ol.Map|undefined),
  *     source: (ol.source.Image|undefined),
  *     visible: (boolean|undefined),
@@ -3440,43 +3292,11 @@ olx.layer.ImageOptions;
 
 
 /**
- * Brightness. Default is `0`.
- * @type {number|undefined}
- * @api
- */
-olx.layer.ImageOptions.prototype.brightness;
-
-
-/**
- * Contrast. Default is `1`.
- * @type {number|undefined}
- * @api
- */
-olx.layer.ImageOptions.prototype.contrast;
-
-
-/**
- * Hue. Default is `0`.
- * @type {number|undefined}
- * @api
- */
-olx.layer.ImageOptions.prototype.hue;
-
-
-/**
  * Opacity (0, 1). Default is `1`.
  * @type {number|undefined}
  * @api stable
  */
 olx.layer.ImageOptions.prototype.opacity;
-
-
-/**
- * Saturation. Default is `1`.
- * @type {number|undefined}
- * @api
- */
-olx.layer.ImageOptions.prototype.saturation;
 
 
 /**
@@ -3532,12 +3352,8 @@ olx.layer.ImageOptions.prototype.maxResolution;
 
 
 /**
- * @typedef {{brightness: (number|undefined),
- *     contrast: (number|undefined),
- *     hue: (number|undefined),
- *     opacity: (number|undefined),
+ * @typedef {{opacity: (number|undefined),
  *     preload: (number|undefined),
- *     saturation: (number|undefined),
  *     source: (ol.source.Tile|undefined),
  *     map: (ol.Map|undefined),
  *     visible: (boolean|undefined),
@@ -3548,30 +3364,6 @@ olx.layer.ImageOptions.prototype.maxResolution;
  * @api
  */
 olx.layer.TileOptions;
-
-
-/**
- * Brightness. Default is `0`.
- * @type {number|undefined}
- * @api
- */
-olx.layer.TileOptions.prototype.brightness;
-
-
-/**
- * Contrast. Default is `1`.
- * @type {number|undefined}
- * @api
- */
-olx.layer.TileOptions.prototype.contrast;
-
-
-/**
- * Hue. Default is `0`.
- * @type {number|undefined}
- * @api
- */
-olx.layer.TileOptions.prototype.hue;
 
 
 /**
@@ -3589,14 +3381,6 @@ olx.layer.TileOptions.prototype.opacity;
  * @api stable
  */
 olx.layer.TileOptions.prototype.preload;
-
-
-/**
- * Saturation. Default is `1`.
- * @type {number|undefined}
- * @api
- */
-olx.layer.TileOptions.prototype.saturation;
 
 
 /**
@@ -3660,15 +3444,11 @@ olx.layer.TileOptions.prototype.useInterimTilesOnError;
 
 
 /**
- * @typedef {{brightness: (number|undefined),
- *     contrast: (number|undefined),
- *     renderOrder: (function(ol.Feature, ol.Feature):number|null|undefined),
- *     hue: (number|undefined),
+ * @typedef {{renderOrder: (function(ol.Feature, ol.Feature):number|null|undefined),
  *     minResolution: (number|undefined),
  *     maxResolution: (number|undefined),
  *     opacity: (number|undefined),
  *     renderBuffer: (number|undefined),
- *     saturation: (number|undefined),
  *     source: (ol.source.Vector|undefined),
  *     map: (ol.Map|undefined),
  *     style: (ol.style.Style|Array.<ol.style.Style>|ol.style.StyleFunction|undefined),
@@ -3681,22 +3461,6 @@ olx.layer.VectorOptions;
 
 
 /**
- * Brightness.
- * @type {number|undefined}
- * @api
- */
-olx.layer.VectorOptions.prototype.brightness;
-
-
-/**
- * Contrast.
- * @type {number|undefined}
- * @api
- */
-olx.layer.VectorOptions.prototype.contrast;
-
-
-/**
  * Render order. Function to be used when sorting features before rendering. By
  * default features are drawn in the order that they are created. Use `null` to
  * avoid the sort, but get an undefined draw order.
@@ -3704,14 +3468,6 @@ olx.layer.VectorOptions.prototype.contrast;
  * @api
  */
 olx.layer.VectorOptions.prototype.renderOrder;
-
-
-/**
- * Hue.
- * @type {number|undefined}
- * @api
- */
-olx.layer.VectorOptions.prototype.hue;
 
 
 /**
@@ -3767,14 +3523,6 @@ olx.layer.VectorOptions.prototype.opacity;
  * @api
  */
 olx.layer.VectorOptions.prototype.renderBuffer;
-
-
-/**
- * Saturation.
- * @type {number|undefined}
- * @api
- */
-olx.layer.VectorOptions.prototype.saturation;
 
 
 /**

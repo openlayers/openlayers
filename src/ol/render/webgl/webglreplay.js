@@ -5,14 +5,9 @@ goog.require('goog.asserts');
 goog.require('goog.functions');
 goog.require('goog.object');
 goog.require('goog.vec.Mat4');
-goog.require('ol.color.Matrix');
 goog.require('ol.extent');
 goog.require('ol.render.IReplayGroup');
 goog.require('ol.render.VectorContext');
-goog.require('ol.render.webgl.imagereplay.shader.Color');
-goog.require('ol.render.webgl.imagereplay.shader.Color.Locations');
-goog.require('ol.render.webgl.imagereplay.shader.ColorFragment');
-goog.require('ol.render.webgl.imagereplay.shader.ColorVertex');
 goog.require('ol.render.webgl.imagereplay.shader.Default');
 goog.require('ol.render.webgl.imagereplay.shader.Default.Locations');
 goog.require('ol.render.webgl.imagereplay.shader.DefaultFragment');
@@ -45,12 +40,6 @@ ol.render.webgl.ImageReplay = function(tolerance, maxExtent) {
    * @private
    */
   this.anchorY_ = undefined;
-
-  /**
-   * @private
-   * @type {ol.color.Matrix}
-   */
-  this.colorMatrix_ = new ol.color.Matrix();
 
   /**
    * The origin of the coordinate system for the point coordinates sent to
@@ -115,12 +104,6 @@ ol.render.webgl.ImageReplay = function(tolerance, maxExtent) {
    * @private
    */
   this.indicesBuffer_ = null;
-
-  /**
-   * @private
-   * @type {ol.render.webgl.imagereplay.shader.Color.Locations}
-   */
-  this.colorLocations_ = null;
 
   /**
    * @private
@@ -515,10 +498,6 @@ ol.render.webgl.ImageReplay.prototype.createTextures_ =
  * @param {ol.Size} size Size.
  * @param {number} pixelRatio Pixel ratio.
  * @param {number} opacity Global opacity.
- * @param {number} brightness Global brightness.
- * @param {number} contrast Global contrast.
- * @param {number} hue Global hue.
- * @param {number} saturation Global saturation.
  * @param {Object.<string, boolean>} skippedFeaturesHash Ids of features
  *  to skip.
  * @param {function(ol.Feature): T|undefined} featureCallback Feature callback.
@@ -530,7 +509,7 @@ ol.render.webgl.ImageReplay.prototype.createTextures_ =
  */
 ol.render.webgl.ImageReplay.prototype.replay = function(context,
     center, resolution, rotation, size, pixelRatio,
-    opacity, brightness, contrast, hue, saturation, skippedFeaturesHash,
+    opacity, skippedFeaturesHash,
     featureCallback, oneByOne, opt_hitExtent) {
   var gl = context.getGL();
 
@@ -544,41 +523,21 @@ ol.render.webgl.ImageReplay.prototype.replay = function(context,
       'indecesBuffer must not be null');
   context.bindBuffer(goog.webgl.ELEMENT_ARRAY_BUFFER, this.indicesBuffer_);
 
-  var useColor = brightness || contrast != 1 || hue || saturation != 1;
-
   // get the program
-  var fragmentShader, vertexShader;
-  if (useColor) {
-    fragmentShader =
-        ol.render.webgl.imagereplay.shader.ColorFragment.getInstance();
-    vertexShader =
-        ol.render.webgl.imagereplay.shader.ColorVertex.getInstance();
-  } else {
-    fragmentShader =
-        ol.render.webgl.imagereplay.shader.DefaultFragment.getInstance();
-    vertexShader =
-        ol.render.webgl.imagereplay.shader.DefaultVertex.getInstance();
-  }
+  var fragmentShader =
+      ol.render.webgl.imagereplay.shader.DefaultFragment.getInstance();
+  var vertexShader =
+      ol.render.webgl.imagereplay.shader.DefaultVertex.getInstance();
   var program = context.getProgram(fragmentShader, vertexShader);
 
   // get the locations
   var locations;
-  if (useColor) {
-    if (goog.isNull(this.colorLocations_)) {
-      locations =
-          new ol.render.webgl.imagereplay.shader.Color.Locations(gl, program);
-      this.colorLocations_ = locations;
-    } else {
-      locations = this.colorLocations_;
-    }
+  if (goog.isNull(this.defaultLocations_)) {
+    locations =
+        new ol.render.webgl.imagereplay.shader.Default.Locations(gl, program);
+    this.defaultLocations_ = locations;
   } else {
-    if (goog.isNull(this.defaultLocations_)) {
-      locations =
-          new ol.render.webgl.imagereplay.shader.Default.Locations(gl, program);
-      this.defaultLocations_ = locations;
-    } else {
-      locations = this.defaultLocations_;
-    }
+    locations = this.defaultLocations_;
   }
 
   // use the program (FIXME: use the return value)
@@ -628,10 +587,6 @@ ol.render.webgl.ImageReplay.prototype.replay = function(context,
   gl.uniformMatrix4fv(locations.u_offsetRotateMatrix, false,
       offsetRotateMatrix);
   gl.uniform1f(locations.u_opacity, opacity);
-  if (useColor) {
-    gl.uniformMatrix4fv(locations.u_colorMatrix, false,
-        this.colorMatrix_.getMatrix(brightness, contrast, hue, saturation));
-  }
 
   // draw!
   var result;
@@ -1067,23 +1022,19 @@ ol.render.webgl.ReplayGroup.prototype.isEmpty = function() {
  * @param {ol.Size} size Size.
  * @param {number} pixelRatio Pixel ratio.
  * @param {number} opacity Global opacity.
- * @param {number} brightness Global brightness.
- * @param {number} contrast Global contrast.
- * @param {number} hue Global hue.
- * @param {number} saturation Global saturation.
  * @param {Object.<string, boolean>} skippedFeaturesHash Ids of features
  *  to skip.
  */
 ol.render.webgl.ReplayGroup.prototype.replay = function(context,
     center, resolution, rotation, size, pixelRatio,
-    opacity, brightness, contrast, hue, saturation, skippedFeaturesHash) {
+    opacity, skippedFeaturesHash) {
   var i, ii, replay, result;
   for (i = 0, ii = ol.render.REPLAY_ORDER.length; i < ii; ++i) {
     replay = this.replays_[ol.render.REPLAY_ORDER[i]];
     if (replay !== undefined) {
       replay.replay(context,
           center, resolution, rotation, size, pixelRatio,
-          opacity, brightness, contrast, hue, saturation, skippedFeaturesHash,
+          opacity, skippedFeaturesHash,
           undefined, false);
     }
   }
@@ -1099,10 +1050,6 @@ ol.render.webgl.ReplayGroup.prototype.replay = function(context,
  * @param {ol.Size} size Size.
  * @param {number} pixelRatio Pixel ratio.
  * @param {number} opacity Global opacity.
- * @param {number} brightness Global brightness.
- * @param {number} contrast Global contrast.
- * @param {number} hue Global hue.
- * @param {number} saturation Global saturation.
  * @param {Object.<string, boolean>} skippedFeaturesHash Ids of features
  *  to skip.
  * @param {function(ol.Feature): T|undefined} featureCallback Feature callback.
@@ -1113,16 +1060,14 @@ ol.render.webgl.ReplayGroup.prototype.replay = function(context,
  * @template T
  */
 ol.render.webgl.ReplayGroup.prototype.replayHitDetection_ = function(context,
-    center, resolution, rotation, size, pixelRatio,
-    opacity, brightness, contrast, hue, saturation, skippedFeaturesHash,
-    featureCallback, oneByOne, opt_hitExtent) {
+    center, resolution, rotation, size, pixelRatio, opacity,
+    skippedFeaturesHash, featureCallback, oneByOne, opt_hitExtent) {
   var i, replay, result;
   for (i = ol.render.REPLAY_ORDER.length - 1; i >= 0; --i) {
     replay = this.replays_[ol.render.REPLAY_ORDER[i]];
     if (replay !== undefined) {
       result = replay.replay(context,
-          center, resolution, rotation, size, pixelRatio,
-          opacity, brightness, contrast, hue, saturation,
+          center, resolution, rotation, size, pixelRatio, opacity,
           skippedFeaturesHash, featureCallback, oneByOne, opt_hitExtent);
       if (result) {
         return result;
@@ -1142,10 +1087,6 @@ ol.render.webgl.ReplayGroup.prototype.replayHitDetection_ = function(context,
  * @param {ol.Size} size Size.
  * @param {number} pixelRatio Pixel ratio.
  * @param {number} opacity Global opacity.
- * @param {number} brightness Global brightness.
- * @param {number} contrast Global contrast.
- * @param {number} hue Global hue.
- * @param {number} saturation Global saturation.
  * @param {Object.<string, boolean>} skippedFeaturesHash Ids of features
  *  to skip.
  * @param {function(ol.Feature): T|undefined} callback Feature callback.
@@ -1154,7 +1095,7 @@ ol.render.webgl.ReplayGroup.prototype.replayHitDetection_ = function(context,
  */
 ol.render.webgl.ReplayGroup.prototype.forEachFeatureAtCoordinate = function(
     coordinate, context, center, resolution, rotation, size, pixelRatio,
-    opacity, brightness, contrast, hue, saturation, skippedFeaturesHash,
+    opacity, skippedFeaturesHash,
     callback) {
   var gl = context.getGL();
   gl.bindFramebuffer(
@@ -1175,8 +1116,7 @@ ol.render.webgl.ReplayGroup.prototype.forEachFeatureAtCoordinate = function(
 
   return this.replayHitDetection_(context,
       coordinate, resolution, rotation, ol.render.webgl.HIT_DETECTION_SIZE_,
-      pixelRatio, opacity, brightness, contrast, hue, saturation,
-      skippedFeaturesHash,
+      pixelRatio, opacity, skippedFeaturesHash,
       /**
        * @param {ol.Feature} feature Feature.
        * @return {?} Callback result.
@@ -1204,25 +1144,20 @@ ol.render.webgl.ReplayGroup.prototype.forEachFeatureAtCoordinate = function(
  * @param {ol.Size} size Size.
  * @param {number} pixelRatio Pixel ratio.
  * @param {number} opacity Global opacity.
- * @param {number} brightness Global brightness.
- * @param {number} contrast Global contrast.
- * @param {number} hue Global hue.
- * @param {number} saturation Global saturation.
  * @param {Object.<string, boolean>} skippedFeaturesHash Ids of features
  *  to skip.
  * @return {boolean} Is there a feature at the given coordinate?
  */
 ol.render.webgl.ReplayGroup.prototype.hasFeatureAtCoordinate = function(
     coordinate, context, center, resolution, rotation, size, pixelRatio,
-    opacity, brightness, contrast, hue, saturation, skippedFeaturesHash) {
+    opacity, skippedFeaturesHash) {
   var gl = context.getGL();
   gl.bindFramebuffer(
       gl.FRAMEBUFFER, context.getHitDetectionFramebuffer());
 
   var hasFeature = this.replayHitDetection_(context,
       coordinate, resolution, rotation, ol.render.webgl.HIT_DETECTION_SIZE_,
-      pixelRatio, opacity, brightness, contrast, hue, saturation,
-      skippedFeaturesHash,
+      pixelRatio, opacity, skippedFeaturesHash,
       /**
        * @param {ol.Feature} feature Feature.
        * @return {boolean} Is there a feature?
