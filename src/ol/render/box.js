@@ -62,11 +62,11 @@ goog.inherits(ol.render.Box, goog.Disposable);
  * @return {ol.geom.Polygon} Geometry.
  */
 ol.render.Box.prototype.createGeometry_ = function() {
-  goog.asserts.assert(!goog.isNull(this.startPixel_),
-      'this.startPixel_ should not be null');
-  goog.asserts.assert(!goog.isNull(this.endPixel_),
-      'this.endPixel_ should not be null');
-  goog.asserts.assert(!goog.isNull(this.map_), 'this.map_ should not be null');
+  goog.asserts.assert(this.startPixel_,
+      'this.startPixel_ must be truthy');
+  goog.asserts.assert(this.endPixel_,
+      'this.endPixel_ must be truthy');
+  goog.asserts.assert(this.map_, 'this.map_ must be truthy');
   var startPixel = this.startPixel_;
   var endPixel = this.endPixel_;
   var pixels = [
@@ -98,7 +98,7 @@ ol.render.Box.prototype.handleMapPostCompose_ = function(event) {
   var geometry = this.geometry_;
   goog.asserts.assert(geometry, 'geometry should be defined');
   var style = this.style_;
-  goog.asserts.assert(!goog.isNull(style), 'style should not be null');
+  goog.asserts.assert(style, 'style must be truthy');
   // use drawAsync(Infinity) to draw above everything
   event.vectorContext.drawAsync(Infinity, function(render) {
     render.setFillStrokeStyle(style.getFill(), style.getStroke());
@@ -120,9 +120,7 @@ ol.render.Box.prototype.getGeometry = function() {
  * @private
  */
 ol.render.Box.prototype.requestMapRenderFrame_ = function() {
-  if (!goog.isNull(this.map_) &&
-      !goog.isNull(this.startPixel_) &&
-      !goog.isNull(this.endPixel_)) {
+  if (this.map_ && this.startPixel_ && this.endPixel_) {
     this.map_.render();
   }
 };
@@ -132,14 +130,14 @@ ol.render.Box.prototype.requestMapRenderFrame_ = function() {
  * @param {ol.Map} map Map.
  */
 ol.render.Box.prototype.setMap = function(map) {
-  if (!goog.isNull(this.postComposeListenerKey_)) {
+  if (this.postComposeListenerKey_) {
     goog.events.unlistenByKey(this.postComposeListenerKey_);
     this.postComposeListenerKey_ = null;
     this.map_.render();
     this.map_ = null;
   }
   this.map_ = map;
-  if (!goog.isNull(this.map_)) {
+  if (this.map_) {
     this.postComposeListenerKey_ = goog.events.listen(
         map, ol.render.EventType.POSTCOMPOSE, this.handleMapPostCompose_, false,
         this);
