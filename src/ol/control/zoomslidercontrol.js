@@ -130,7 +130,7 @@ ol.control.ZoomSlider.direction = {
  */
 ol.control.ZoomSlider.prototype.setMap = function(map) {
   goog.base(this, 'setMap', map);
-  if (!goog.isNull(map)) {
+  if (map) {
     map.render();
   }
 };
@@ -179,7 +179,7 @@ ol.control.ZoomSlider.prototype.initSlider_ = function() {
  * @api
  */
 ol.control.ZoomSlider.render = function(mapEvent) {
-  if (goog.isNull(mapEvent.frameState)) {
+  if (!mapEvent.frameState) {
     return;
   }
   goog.asserts.assert(mapEvent.frameState.viewState,
