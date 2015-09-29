@@ -125,13 +125,6 @@ ol.ImageTile.prototype.handleImageError_ = function() {
  * @private
  */
 ol.ImageTile.prototype.handleImageLoad_ = function() {
-  if (ol.LEGACY_IE_SUPPORT && ol.IS_LEGACY_IE) {
-    if (this.image_.naturalWidth === undefined) {
-      this.image_.naturalWidth = this.image_.width;
-      this.image_.naturalHeight = this.image_.height;
-    }
-  }
-
   if (this.image_.naturalWidth && this.image_.naturalHeight) {
     this.state = ol.TileState.LOADED;
   } else {
