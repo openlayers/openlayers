@@ -275,8 +275,7 @@ ol.View.prototype.getHints = function() {
  */
 ol.View.prototype.calculateExtent = function(size) {
   var center = this.getCenter();
-  goog.asserts.assert(goog.isDefAndNotNull(center),
-      'The view center is not defined');
+  goog.asserts.assert(center, 'The view center is not defined');
   var resolution = this.getResolution();
   goog.asserts.assert(resolution !== undefined,
       'The view resolution is not defined');
@@ -552,8 +551,7 @@ ol.View.prototype.centerOn = function(coordinate, size, position) {
  * @return {boolean} Is defined.
  */
 ol.View.prototype.isDef = function() {
-  return goog.isDefAndNotNull(this.getCenter()) &&
-      this.getResolution() !== undefined;
+  return !!this.getCenter() && this.getResolution() !== undefined;
 };
 
 

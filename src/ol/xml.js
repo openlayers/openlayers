@@ -136,7 +136,7 @@ ol.xml.getLocalNameIE_ = function(node) {
     return localName;
   }
   var baseName = node.baseName;
-  goog.asserts.assert(goog.isDefAndNotNull(baseName),
+  goog.asserts.assert(baseName,
       'Failed to get localName/baseName of node %s', node);
   return baseName;
 };

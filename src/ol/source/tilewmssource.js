@@ -60,7 +60,7 @@ ol.source.TileWMS = function(opt_options) {
    * @private
    * @type {!Array.<string>}
    */
-  this.urls_ = goog.isDefAndNotNull(urls) ? urls : [];
+  this.urls_ = urls || [];
 
   /**
    * @private
@@ -348,7 +348,7 @@ ol.source.TileWMS.prototype.setUrl = function(url) {
  * @api stable
  */
 ol.source.TileWMS.prototype.setUrls = function(urls) {
-  this.urls_ = goog.isDefAndNotNull(urls) ? urls : [];
+  this.urls_ = urls || [];
   this.resetCoordKeyPrefix_();
   this.changed();
 };
