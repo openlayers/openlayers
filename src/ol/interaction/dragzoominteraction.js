@@ -61,7 +61,7 @@ ol.interaction.DragZoom.prototype.onBoxEnd = function() {
   var map = this.getMap();
 
   var view = map.getView();
-  goog.asserts.assert(!goog.isNull(view), 'view should not be null');
+  goog.asserts.assert(view, 'map must have view');
 
   var size = map.getSize();
   goog.asserts.assert(size !== undefined, 'size should be defined');

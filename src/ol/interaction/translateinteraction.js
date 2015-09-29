@@ -61,7 +61,7 @@ goog.inherits(ol.interaction.Translate, ol.interaction.Pointer);
  */
 ol.interaction.Translate.handleDownEvent_ = function(event) {
   this.lastFeature_ = this.featuresAtPixel_(event.pixel, event.map);
-  if (goog.isNull(this.lastCoordinate_) && !goog.isNull(this.lastFeature_)) {
+  if (!this.lastCoordinate_ && this.lastFeature_) {
     this.lastCoordinate_ = event.coordinate;
     ol.interaction.Translate.handleMoveEvent_.call(this, event);
     return true;
@@ -77,7 +77,7 @@ ol.interaction.Translate.handleDownEvent_ = function(event) {
  * @private
  */
 ol.interaction.Translate.handleUpEvent_ = function(event) {
-  if (!goog.isNull(this.lastCoordinate_)) {
+  if (this.lastCoordinate_) {
     this.lastCoordinate_ = null;
     ol.interaction.Translate.handleMoveEvent_.call(this, event);
     return true;
@@ -92,18 +92,18 @@ ol.interaction.Translate.handleUpEvent_ = function(event) {
  * @private
  */
 ol.interaction.Translate.handleDragEvent_ = function(event) {
-  if (!goog.isNull(this.lastCoordinate_)) {
+  if (this.lastCoordinate_) {
     var newCoordinate = event.coordinate;
     var deltaX = newCoordinate[0] - this.lastCoordinate_[0];
     var deltaY = newCoordinate[1] - this.lastCoordinate_[1];
 
-    if (!goog.isNull(this.features_)) {
+    if (this.features_) {
       this.features_.forEach(function(feature) {
         var geom = feature.getGeometry();
         geom.translate(deltaX, deltaY);
         feature.setGeometry(geom);
       });
-    } else if (goog.isNull(this.lastFeature_)) {
+    } else if (this.lastFeature_) {
       var geom = this.lastFeature_.getGeometry();
       geom.translate(deltaX, deltaY);
       this.lastFeature_.setGeometry(geom);
@@ -130,7 +130,7 @@ ol.interaction.Translate.handleMoveEvent_ = function(event)
   if (intersectingFeature) {
     var isSelected = false;
 
-    if (!goog.isNull(this.features_) &&
+    if (this.features_ &&
         ol.array.includes(this.features_.getArray(), intersectingFeature)) {
       isSelected = true;
     }
@@ -138,12 +138,12 @@ ol.interaction.Translate.handleMoveEvent_ = function(event)
     this.previousCursor_ = elem.style.cursor;
 
     // WebKit browsers don't support the grab icons without a prefix
-    elem.style.cursor = !goog.isNull(this.lastCoordinate_) ?
+    elem.style.cursor = this.lastCoordinate_ ?
         '-webkit-grabbing' : (isSelected ? '-webkit-grab' : 'pointer');
 
     // Thankfully, attempting to set the standard ones will silently fail,
     // keeping the prefixed icons
-    elem.style.cursor = goog.isNull(this.lastCoordinate_) ?
+    elem.style.cursor = !this.lastCoordinate_ ?
         'grabbing' : (isSelected ? 'grab' : 'pointer');
 
   } else {
@@ -171,7 +171,7 @@ ol.interaction.Translate.prototype.featuresAtPixel_ = function(pixel, map) {
         return feature;
       });
 
-  if (!goog.isNull(this.features_) &&
+  if (this.features_ &&
       ol.array.includes(this.features_.getArray(), intersectingFeature)) {
     found = intersectingFeature;
   }
