@@ -27,7 +27,7 @@ ol.reproj.browserAntialiasesClip_ = !goog.labs.userAgent.browser.isChrome() ||
 /**
  * Calculates ideal resolution to use from the source in order to achieve
  * pixel mapping as close as possible to 1:1 during reprojection.
- * The resolution is calculated regardless on what resolutions
+ * The resolution is calculated regardless of what resolutions
  * are actually available in the dataset (TileGrid, Image, ...).
  *
  * @param {ol.proj.Projection} sourceProj Source projection.
