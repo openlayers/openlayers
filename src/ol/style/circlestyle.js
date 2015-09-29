@@ -3,6 +3,7 @@ goog.provide('ol.style.Circle');
 goog.require('goog.asserts');
 goog.require('goog.dom');
 goog.require('goog.dom.TagName');
+goog.require('ol');
 goog.require('ol.color');
 goog.require('ol.has');
 goog.require('ol.render.canvas');
@@ -214,19 +215,19 @@ ol.style.Circle.prototype.getStroke = function() {
 /**
  * @inheritDoc
  */
-ol.style.Circle.prototype.listenImageChange = goog.nullFunction;
+ol.style.Circle.prototype.listenImageChange = ol.nullFunction;
 
 
 /**
  * @inheritDoc
  */
-ol.style.Circle.prototype.load = goog.nullFunction;
+ol.style.Circle.prototype.load = ol.nullFunction;
 
 
 /**
  * @inheritDoc
  */
-ol.style.Circle.prototype.unlistenImageChange = goog.nullFunction;
+ol.style.Circle.prototype.unlistenImageChange = ol.nullFunction;
 
 
 /**

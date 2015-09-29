@@ -3,6 +3,7 @@ goog.provide('ol.style.RegularShape');
 goog.require('goog.asserts');
 goog.require('goog.dom');
 goog.require('goog.dom.TagName');
+goog.require('ol');
 goog.require('ol.color');
 goog.require('ol.has');
 goog.require('ol.render.canvas');
@@ -270,19 +271,19 @@ ol.style.RegularShape.prototype.getStroke = function() {
 /**
  * @inheritDoc
  */
-ol.style.RegularShape.prototype.listenImageChange = goog.nullFunction;
+ol.style.RegularShape.prototype.listenImageChange = ol.nullFunction;
 
 
 /**
  * @inheritDoc
  */
-ol.style.RegularShape.prototype.load = goog.nullFunction;
+ol.style.RegularShape.prototype.load = ol.nullFunction;
 
 
 /**
  * @inheritDoc
  */
-ol.style.RegularShape.prototype.unlistenImageChange = goog.nullFunction;
+ol.style.RegularShape.prototype.unlistenImageChange = ol.nullFunction;
 
 
 /**

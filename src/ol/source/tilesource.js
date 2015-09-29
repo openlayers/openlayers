@@ -4,6 +4,7 @@ goog.provide('ol.source.TileOptions');
 
 goog.require('goog.asserts');
 goog.require('goog.events.Event');
+goog.require('ol');
 goog.require('ol.Attribution');
 goog.require('ol.Extent');
 goog.require('ol.TileCache');
@@ -244,7 +245,7 @@ ol.source.Tile.prototype.getTileCoordForTileUrlFunction =
  * @param {number} x Tile coordinate x.
  * @param {number} y Tile coordinate y.
  */
-ol.source.Tile.prototype.useTile = goog.nullFunction;
+ol.source.Tile.prototype.useTile = ol.nullFunction;
 
 
 

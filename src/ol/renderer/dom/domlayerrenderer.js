@@ -1,5 +1,6 @@
 goog.provide('ol.renderer.dom.Layer');
 
+goog.require('ol');
 goog.require('ol.layer.Layer');
 goog.require('ol.renderer.Layer');
 
@@ -28,14 +29,14 @@ goog.inherits(ol.renderer.dom.Layer, ol.renderer.Layer);
 /**
  * Clear rendered elements.
  */
-ol.renderer.dom.Layer.prototype.clearFrame = goog.nullFunction;
+ol.renderer.dom.Layer.prototype.clearFrame = ol.nullFunction;
 
 
 /**
  * @param {olx.FrameState} frameState Frame state.
  * @param {ol.layer.LayerState} layerState Layer state.
  */
-ol.renderer.dom.Layer.prototype.composeFrame = goog.nullFunction;
+ol.renderer.dom.Layer.prototype.composeFrame = ol.nullFunction;
 
 
 /**

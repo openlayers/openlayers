@@ -152,7 +152,7 @@ ol.interaction.DragBox.prototype.getGeometry = function() {
  * @param {ol.MapBrowserEvent} mapBrowserEvent Map browser event.
  * @protected
  */
-ol.interaction.DragBox.prototype.onBoxEnd = goog.nullFunction;
+ol.interaction.DragBox.prototype.onBoxEnd = ol.nullFunction;
 
 
 /**

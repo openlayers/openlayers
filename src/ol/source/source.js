@@ -1,6 +1,7 @@
 goog.provide('ol.source.Source');
 goog.provide('ol.source.State');
 
+goog.require('ol');
 goog.require('ol.Attribution');
 goog.require('ol.Object');
 goog.require('ol.proj');
@@ -92,8 +93,7 @@ goog.inherits(ol.source.Source, ol.Object);
  * @return {T|undefined} Callback result.
  * @template T
  */
-ol.source.Source.prototype.forEachFeatureAtCoordinate =
-    goog.nullFunction;
+ol.source.Source.prototype.forEachFeatureAtCoordinate = ol.nullFunction;
 
 
 /**

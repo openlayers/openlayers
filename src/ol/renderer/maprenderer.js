@@ -335,7 +335,7 @@ ol.renderer.Map.prototype.removeLayerRendererByKey_ = function(layerKey) {
  * Render.
  * @param {?olx.FrameState} frameState Frame state.
  */
-ol.renderer.Map.prototype.renderFrame = goog.nullFunction;
+ol.renderer.Map.prototype.renderFrame = ol.nullFunction;
 
 
 /**

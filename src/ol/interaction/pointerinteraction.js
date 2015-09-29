@@ -2,6 +2,7 @@ goog.provide('ol.interaction.Pointer');
 
 goog.require('goog.functions');
 goog.require('goog.object');
+goog.require('ol');
 goog.require('ol.MapBrowserEvent.EventType');
 goog.require('ol.MapBrowserPointerEvent');
 goog.require('ol.Pixel');
@@ -144,7 +145,7 @@ ol.interaction.Pointer.prototype.updateTrackedPointers_ =
  * @param {ol.MapBrowserPointerEvent} mapBrowserEvent Event.
  * @this {ol.interaction.Pointer}
  */
-ol.interaction.Pointer.handleDragEvent = goog.nullFunction;
+ol.interaction.Pointer.handleDragEvent = ol.nullFunction;
 
 
 /**
@@ -167,7 +168,7 @@ ol.interaction.Pointer.handleDownEvent = goog.functions.FALSE;
  * @param {ol.MapBrowserPointerEvent} mapBrowserEvent Event.
  * @this {ol.interaction.Pointer}
  */
-ol.interaction.Pointer.handleMoveEvent = goog.nullFunction;
+ol.interaction.Pointer.handleMoveEvent = ol.nullFunction;
 
 
 /**
