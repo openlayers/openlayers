@@ -46,11 +46,11 @@ ol.reproj.calculateSourceResolution = function(sourceProj, targetProj,
       targetProj.getPointResolution(targetResolution, targetCenter);
 
   var targetMPU = targetProj.getMetersPerUnit();
-  if (goog.isDef(targetMPU)) {
+  if (targetMPU !== undefined) {
     sourceResolution *= targetMPU;
   }
   var sourceMPU = sourceProj.getMetersPerUnit();
-  if (goog.isDef(sourceMPU)) {
+  if (sourceMPU !== undefined) {
     sourceResolution /= sourceMPU;
   }
 

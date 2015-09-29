@@ -45,7 +45,7 @@ ol.reproj.Tile = function(sourceProj, sourceTileGrid,
    * @private
    * @type {boolean}
    */
-  this.renderEdges_ = goog.isDef(opt_renderEdges) ? opt_renderEdges : false;
+  this.renderEdges_ = opt_renderEdges !== undefined ? opt_renderEdges : false;
 
   /**
    * @private
@@ -132,7 +132,7 @@ ol.reproj.Tile = function(sourceProj, sourceTileGrid,
     return;
   }
 
-  var errorThresholdInPixels = goog.isDef(opt_errorThreshold) ?
+  var errorThresholdInPixels = opt_errorThreshold !== undefined ?
       opt_errorThreshold : ol.DEFAULT_RASTER_REPROJ_ERROR_THRESHOLD;
 
   /**
@@ -219,7 +219,7 @@ ol.reproj.Tile.prototype.disposeInternal = function() {
  * @inheritDoc
  */
 ol.reproj.Tile.prototype.getImage = function(opt_context) {
-  if (goog.isDef(opt_context)) {
+  if (opt_context !== undefined) {
     var image;
     var key = goog.getUid(opt_context);
     if (key in this.canvasByContext_) {
