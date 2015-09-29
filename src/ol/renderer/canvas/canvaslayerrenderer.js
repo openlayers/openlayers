@@ -44,7 +44,7 @@ ol.renderer.canvas.Layer.prototype.composeFrame =
   this.dispatchPreComposeEvent(context, frameState);
 
   var image = this.getImage();
-  if (!goog.isNull(image)) {
+  if (image) {
 
     // clipped rendering if layer extent is set
     var extent = layerState.extent;
@@ -252,7 +252,7 @@ ol.renderer.canvas.Layer.testCanvasSize = (function() {
   var imageData = null;
 
   return function(size) {
-    if (goog.isNull(context)) {
+    if (!context) {
       context = ol.dom.createCanvasContext2D(1, 1);
       imageData = context.createImageData(1, 1);
       var data = imageData.data;

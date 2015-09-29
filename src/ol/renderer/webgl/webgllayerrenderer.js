@@ -151,7 +151,7 @@ ol.renderer.webgl.Layer.prototype.composeFrame =
   var program = context.getProgram(fragmentShader, vertexShader);
 
   var locations;
-  if (goog.isNull(this.defaultLocations_)) {
+  if (!this.defaultLocations_) {
     locations =
         new ol.renderer.webgl.map.shader.Default.Locations(gl, program);
     this.defaultLocations_ = locations;
