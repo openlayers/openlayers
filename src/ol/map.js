@@ -1260,7 +1260,8 @@ ol.Map.prototype.renderFrame_ = function(time) {
   var frameState = null;
   if (size !== undefined && ol.size.hasArea(size) &&
       !goog.isNull(view) && view.isDef()) {
-    var viewHints = view.getHints();
+    var viewHints = view.getHints(goog.isNull(this.frameState_) ?
+        undefined : this.frameState_.viewHints);
     var layerStatesArray = this.getLayerGroup().getLayerStatesArray();
     var layerStates = {};
     for (i = 0, ii = layerStatesArray.length; i < ii; ++i) {
@@ -1303,7 +1304,8 @@ ol.Map.prototype.renderFrame_ = function(time) {
     preRenderFunctions.length = n;
 
     frameState.extent = ol.extent.getForViewAndSize(viewState.center,
-        viewState.resolution, viewState.rotation, frameState.size);
+        viewState.resolution, viewState.rotation, frameState.size,
+        goog.isNull(this.frameState_) ? undefined : this.frameState_.extent);
   }
 
   this.frameState_ = frameState;
