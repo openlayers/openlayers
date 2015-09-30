@@ -1,5 +1,8 @@
 goog.provide('ol.test.source.Vector');
 
+goog.require('ol.geom.Circle');
+goog.require('ol.geom.LineString');
+goog.require('ol.geom.Polygon');
 
 describe('ol.source.Vector', function() {
 
@@ -60,6 +63,83 @@ describe('ol.source.Vector', function() {
         goog.events.listen(vectorSource, 'change', listener);
         vectorSource.addFeature(pointFeature);
         expect(listener).to.be.called();
+      });
+
+    });
+
+    describe('#getFeaturesAtCoordinate', function() {
+
+      it('returns the empty list', function() {
+        var features = vectorSource.getFeaturesAtCoordinate([0, 0]);
+        expect(features).to.eql([]);
+      });
+
+    });
+
+  });
+
+  describe('when containing different geometry features', function() {
+
+    var pointFeature, lineStringFeature, circleFeature;
+    var polygonFeature1, polygonFeature2;
+    var vectorSource;
+    var features;
+    beforeEach(function() {
+      pointFeature = new ol.Feature(new ol.geom.Point([0, 0]));
+      lineStringFeature = new ol.Feature(new ol.geom.LineString([
+        [-1, -1], [1, 1]]));
+
+      circleFeature = new ol.Feature(new ol.geom.Circle([0, 0], 5));
+
+      // these share the boundary between [-4, 0] and [4, 0].
+      polygonFeature1 = new ol.Feature(new ol.geom.Polygon(
+          [[[-4, 0], [0, 4], [4, 0]]]));
+      polygonFeature2 = new ol.Feature(new ol.geom.Polygon(
+          [[[-4, 0], [4, 0], [0, -4]]]));
+
+      features = [pointFeature, lineStringFeature, circleFeature,
+        polygonFeature1, polygonFeature2];
+      vectorSource = new ol.source.Vector({
+        features: features
+      });
+    });
+
+    describe('#getFeaturesAtCoordinate', function() {
+
+      it('returns the expected point', function() {
+        var features = vectorSource.getFeaturesAtCoordinate([0, 0]);
+        expect(features).to.contain(pointFeature);
+      });
+
+      it('returns the expected linestring', function() {
+        var result = vectorSource.getFeaturesAtCoordinate([-1, -1]);
+        expect(result).to.contain(lineStringFeature);
+      });
+
+      it('returns the expected circle', function() {
+        var result = vectorSource.getFeaturesAtCoordinate([3, 3]);
+        expect(result).to.contain(circleFeature);
+      });
+
+      it('returns the expected polygon on inner point', function() {
+        var result = vectorSource.getFeaturesAtCoordinate([1, 1]);
+        expect(result).to.contain(polygonFeature1);
+      });
+
+      it('returns the expected polygons on boundary', function() {
+        var result = vectorSource.getFeaturesAtCoordinate([0, 0]);
+        expect(result).to.contain(polygonFeature1);
+        expect(result).to.contain(polygonFeature2);
+      });
+
+      it('does not return polygon because of extent match', function() {
+        var result = vectorSource.getFeaturesAtCoordinate([3, 3]);
+        expect(result).not.to.contain(polygonFeature1);
+      });
+
+      it('returns all matching features', function() {
+        var result = vectorSource.getFeaturesAtCoordinate([0, 0]);
+        expect(result.length).to.eql(features.length);
       });
 
     });
