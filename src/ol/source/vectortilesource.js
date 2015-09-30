@@ -42,7 +42,7 @@ ol.source.VectorTile = function(options) {
         options.tileLoadFunction : ol.source.VectorTile.defaultTileLoadFunction,
     tileUrlFunction: options.tileUrlFunction,
     tilePixelRatio: options.tilePixelRatio,
-    wrapX: options.wrapX
+    wrapX: options.wrapX === undefined ? true : options.wrapX
   });
 
   /**

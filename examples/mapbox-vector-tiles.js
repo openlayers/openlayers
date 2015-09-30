@@ -65,9 +65,9 @@ var map = new ol.Map({
   ],
   target: 'map',
   view: new ol.View({
-    center: [1823849, 6143760],
+    center: [0, 0],
     minZoom: 1,
-    zoom: 3
+    zoom: 2
   })
 });
 
