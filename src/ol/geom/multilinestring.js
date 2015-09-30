@@ -311,7 +311,7 @@ ol.geom.MultiLineString.prototype.setFlatCoordinates =
  * @param {Array.<ol.geom.LineString>} lineStrings LineStrings.
  */
 ol.geom.MultiLineString.prototype.setLineStrings = function(lineStrings) {
-  var layout = ol.geom.GeometryLayout.XY;
+  var layout = this.getLayout();
   var flatCoordinates = [];
   var ends = [];
   var i, ii;
