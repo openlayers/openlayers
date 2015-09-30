@@ -119,14 +119,15 @@ ol.control.Rotate.prototype.resetNorth_ = function() {
     return;
   }
   var currentRotation = view.getRotation();
-  while (currentRotation < -Math.PI) {
-    currentRotation += 2 * Math.PI;
-  }
-  while (currentRotation > Math.PI) {
-    currentRotation -= 2 * Math.PI;
-  }
   if (currentRotation !== undefined) {
     if (this.duration_ > 0) {
+      currentRotation = currentRotation % (2 * Math.PI);
+      if (currentRotation < -Math.PI) {
+        currentRotation += 2 * Math.PI;
+      }
+      if (currentRotation > Math.PI) {
+        currentRotation -= 2 * Math.PI;
+      }
       map.beforeRender(ol.animation.rotate({
         rotation: currentRotation,
         duration: this.duration_,
