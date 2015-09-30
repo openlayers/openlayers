@@ -33,6 +33,7 @@ goog.require('ol.geom.MultiPolygon');
 goog.require('ol.geom.Point');
 goog.require('ol.geom.Polygon');
 goog.require('ol.proj');
+goog.require('ol.style.Circle');
 goog.require('ol.style.Fill');
 goog.require('ol.style.Icon');
 goog.require('ol.style.IconAnchorUnits');
@@ -2095,45 +2096,51 @@ ol.format.KML.writeIcon_ = function(node, icon, objectStack) {
 
 /**
  * @param {Node} node Node.
- * @param {ol.style.Icon} style Icon style.
+ * @param {ol.style.Image} style Image style.
  * @param {Array.<*>} objectStack Object stack.
  * @private
  */
 ol.format.KML.writeIconStyle_ = function(node, style, objectStack) {
   var /** @type {ol.xml.NodeStackItem} */ context = {node: node};
   var properties = {};
-  var src = style.getSrc();
-  var size = style.getSize();
-  var iconImageSize = style.getImageSize();
-  var iconProperties = {
-    'href': src
-  };
 
-  if (!goog.isNull(size)) {
-    iconProperties['w'] = size[0];
-    iconProperties['h'] = size[1];
-    var anchor = style.getAnchor(); // top-left
-    var origin = style.getOrigin(); // top-left
+  if (style instanceof ol.style.Icon) {
+    var src = style.getSrc();
+    var size = style.getSize();
+    var iconImageSize = style.getImageSize();
+    var iconProperties = {
+      'href': src
+    };
 
-    if (!goog.isNull(origin) && !goog.isNull(iconImageSize) &&
-        origin[0] !== 0 && origin[1] !== size[1]) {
-      iconProperties['x'] = origin[0];
-      iconProperties['y'] = iconImageSize[1] - (origin[1] + size[1]);
+    if (!goog.isNull(size)) {
+      iconProperties['w'] = size[0];
+      iconProperties['h'] = size[1];
+      var anchor = style.getAnchor(); // top-left
+      var origin = style.getOrigin(); // top-left
+
+      if (!goog.isNull(origin) && !goog.isNull(iconImageSize) &&
+          origin[0] !== 0 && origin[1] !== size[1]) {
+        iconProperties['x'] = origin[0];
+        iconProperties['y'] = iconImageSize[1] - (origin[1] + size[1]);
+      }
+
+      if (!goog.isNull(anchor) &&
+          anchor[0] !== 0 && anchor[1] !== size[1]) {
+        var /** @type {ol.format.KMLVec2_} */ hotSpot = {
+          x: anchor[0],
+          xunits: ol.style.IconAnchorUnits.PIXELS,
+          y: size[1] - anchor[1],
+          yunits: ol.style.IconAnchorUnits.PIXELS
+        };
+        properties['hotSpot'] = hotSpot;
+      }
     }
 
-    if (!goog.isNull(anchor) &&
-        anchor[0] !== 0 && anchor[1] !== size[1]) {
-      var /** @type {ol.format.KMLVec2_} */ hotSpot = {
-        x: anchor[0],
-        xunits: ol.style.IconAnchorUnits.PIXELS,
-        y: size[1] - anchor[1],
-        yunits: ol.style.IconAnchorUnits.PIXELS
-      };
-      properties['hotSpot'] = hotSpot;
-    }
+    properties['Icon'] = iconProperties;
+  } else if (style instanceof ol.style.Circle) {
+    properties['color'] = style.getFill() ? style.getFill().getColor() :
+        'ffffffff';
   }
-
-  properties['Icon'] = iconProperties;
 
   var scale = style.getScale();
   if (scale !== 1) {
@@ -2513,7 +2520,7 @@ ol.format.KML.ICON_SERIALIZERS_ = ol.xml.makeStructureNS(
  */
 ol.format.KML.ICON_STYLE_SEQUENCE_ = ol.xml.makeStructureNS(
     ol.format.KML.NAMESPACE_URIS_, [
-      'scale', 'heading', 'Icon', 'hotSpot'
+      'color', 'scale', 'heading', 'Icon', 'hotSpot'
     ]);
 
 
@@ -2527,7 +2534,8 @@ ol.format.KML.ICON_STYLE_SERIALIZERS_ = ol.xml.makeStructureNS(
       'Icon': ol.xml.makeChildAppender(ol.format.KML.writeIcon_),
       'heading': ol.xml.makeChildAppender(ol.format.XSD.writeDecimalTextNode),
       'hotSpot': ol.xml.makeChildAppender(ol.format.KML.writeVec2_),
-      'scale': ol.xml.makeChildAppender(ol.format.KML.writeScaleTextNode_)
+      'scale': ol.xml.makeChildAppender(ol.format.KML.writeScaleTextNode_),
+      'color': ol.xml.makeChildAppender(ol.format.KML.writeColorTextNode_)
     });
 
 

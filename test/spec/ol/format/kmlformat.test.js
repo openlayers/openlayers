@@ -1681,6 +1681,41 @@ describe('ol.format.KML', function() {
         expect(node).to.xmleql(ol.xml.parse(text));
       });
 
+      it('can write an feature\'s icon style with Circle style', function() {
+        var fill = new ol.style.Fill({
+          color: 'rgba(225,109,0,0.4)'
+        });
+        var stroke = new ol.style.Stroke({
+          color: '#3399CC',
+          width: 1.25
+        });
+        var style = new ol.style.Style({
+          image: new ol.style.Circle({
+            fill: fill,
+            stroke: stroke,
+            radius: 5
+          })
+        });
+        var feature = new ol.Feature();
+        feature.setStyle([style]);
+        var node = format.writeFeaturesNode([feature]);
+        var text =
+            '<kml xmlns="http://www.opengis.net/kml/2.2"' +
+            ' xmlns:gx="http://www.google.com/kml/ext/2.2"' +
+            ' xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"' +
+            ' xsi:schemaLocation="http://www.opengis.net/kml/2.2' +
+            ' https://developers.google.com/kml/schema/kml22gx.xsd">' +
+            '  <Placemark>' +
+            '    <Style>' +
+            '      <IconStyle>' +
+            '        <color>66006de1</color>' +
+            '      </IconStyle>' +
+            '    </Style>' +
+            '  </Placemark>' +
+            '</kml>';
+        expect(node).to.xmleql(ol.xml.parse(text));
+      });
+
       it('can write an feature\'s text style', function() {
         var style = new ol.style.Style({
           text: new ol.style.Text({
@@ -2627,6 +2662,7 @@ goog.require('ol.geom.MultiPoint');
 goog.require('ol.geom.MultiPolygon');
 goog.require('ol.geom.Point');
 goog.require('ol.geom.Polygon');
+goog.require('ol.style.Circle');
 goog.require('ol.style.Fill');
 goog.require('ol.style.Icon');
 goog.require('ol.style.IconOrigin');
