@@ -1166,7 +1166,7 @@ ol.Map.prototype.isDef = function() {
  * @return {boolean} Is rendered.
  */
 ol.Map.prototype.isRendered = function() {
-  return this.frameState_ !== null;
+  return !!this.frameState_;
 };
 
 

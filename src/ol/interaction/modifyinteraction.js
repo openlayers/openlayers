@@ -583,7 +583,7 @@ ol.interaction.Modify.handleDownEvent_ = function(evt) {
         new ol.interaction.ModifyEvent(ol.ModifyEventType.MODIFYSTART,
         this.features_, evt));
   }
-  return this.vertexFeature_ !== null;
+  return !!this.vertexFeature_;
 };
 
 
