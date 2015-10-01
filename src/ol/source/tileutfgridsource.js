@@ -136,7 +136,8 @@ ol.source.TileUTFGrid.prototype.handleTileJSONResponse = function(tileJSON) {
     return;
   }
 
-  this.tileUrlFunction_ = ol.TileUrlFunction.createFromTemplates(grids);
+  this.tileUrlFunction_ =
+      ol.TileUrlFunction.createFromTemplates(grids, tileGrid);
 
   if (tileJSON.attribution !== undefined) {
     var attributionExtent = extent !== undefined ?

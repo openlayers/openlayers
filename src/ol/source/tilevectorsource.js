@@ -341,7 +341,7 @@ ol.source.TileVector.prototype.setTileUrlFunction = function(tileUrlFunction) {
  */
 ol.source.TileVector.prototype.setUrl = function(url) {
   this.setTileUrlFunction(ol.TileUrlFunction.createFromTemplates(
-      ol.TileUrlFunction.expandUrl(url)));
+      ol.TileUrlFunction.expandUrl(url), this.tileGrid_));
 };
 
 
@@ -349,5 +349,6 @@ ol.source.TileVector.prototype.setUrl = function(url) {
  * @param {Array.<string>} urls URLs.
  */
 ol.source.TileVector.prototype.setUrls = function(urls) {
-  this.setTileUrlFunction(ol.TileUrlFunction.createFromTemplates(urls));
+  this.setTileUrlFunction(
+      ol.TileUrlFunction.createFromTemplates(urls, this.tileGrid_));
 };
