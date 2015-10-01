@@ -66,7 +66,7 @@ ol.geom.Point.prototype.closestPointXY =
  * @api stable
  */
 ol.geom.Point.prototype.getCoordinates = function() {
-  return goog.isNull(this.flatCoordinates) ? [] : this.flatCoordinates.slice();
+  return !this.flatCoordinates ? [] : this.flatCoordinates.slice();
 };
 
 
@@ -104,11 +104,11 @@ ol.geom.Point.prototype.intersectsExtent = function(extent) {
  * @api stable
  */
 ol.geom.Point.prototype.setCoordinates = function(coordinates, opt_layout) {
-  if (goog.isNull(coordinates)) {
+  if (!coordinates) {
     this.setFlatCoordinates(ol.geom.GeometryLayout.XY, null);
   } else {
     this.setLayout(opt_layout, coordinates, 0);
-    if (goog.isNull(this.flatCoordinates)) {
+    if (!this.flatCoordinates) {
       this.flatCoordinates = [];
     }
     this.flatCoordinates.length = ol.geom.flat.deflate.coordinate(

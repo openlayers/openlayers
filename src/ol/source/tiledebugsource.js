@@ -110,7 +110,7 @@ ol.source.TileDebug.prototype.getTile = function(z, x, y) {
     var tileSize = ol.size.toSize(this.tileGrid.getTileSize(z));
     var tileCoord = [z, x, y];
     var textTileCoord = this.getTileCoordForTileUrlFunction(tileCoord);
-    var text = goog.isNull(textTileCoord) ? '' : ol.tilecoord.toString(
+    var text = !textTileCoord ? '' : ol.tilecoord.toString(
         this.getTileCoordForTileUrlFunction(textTileCoord));
     var tile = new ol.DebugTile_(tileCoord, tileSize, text);
     this.tileCache.set(tileCoordKey, tile);

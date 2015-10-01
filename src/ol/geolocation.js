@@ -120,7 +120,7 @@ ol.Geolocation.prototype.handleProjectionChanged_ = function() {
   if (projection) {
     this.transform_ = ol.proj.getTransformFromProjections(
         ol.proj.get('EPSG:4326'), projection);
-    if (!goog.isNull(this.position_)) {
+    if (this.position_) {
       this.set(
           ol.GeolocationProperty.POSITION, this.transform_(this.position_));
     }
@@ -155,13 +155,13 @@ ol.Geolocation.prototype.positionChange_ = function(position) {
   var coords = position.coords;
   this.set(ol.GeolocationProperty.ACCURACY, coords.accuracy);
   this.set(ol.GeolocationProperty.ALTITUDE,
-      goog.isNull(coords.altitude) ? undefined : coords.altitude);
+      coords.altitude === null ? undefined : coords.altitude);
   this.set(ol.GeolocationProperty.ALTITUDE_ACCURACY,
-      goog.isNull(coords.altitudeAccuracy) ?
+      coords.altitudeAccuracy === null ?
       undefined : coords.altitudeAccuracy);
-  this.set(ol.GeolocationProperty.HEADING, goog.isNull(coords.heading) ?
+  this.set(ol.GeolocationProperty.HEADING, coords.heading === null ?
       undefined : goog.math.toRadians(coords.heading));
-  if (goog.isNull(this.position_)) {
+  if (!this.position_) {
     this.position_ = [coords.longitude, coords.latitude];
   } else {
     this.position_[0] = coords.longitude;
@@ -170,7 +170,7 @@ ol.Geolocation.prototype.positionChange_ = function(position) {
   var projectedPosition = this.transform_(this.position_);
   this.set(ol.GeolocationProperty.POSITION, projectedPosition);
   this.set(ol.GeolocationProperty.SPEED,
-      goog.isNull(coords.speed) ? undefined : coords.speed);
+      coords.speed === null ? undefined : coords.speed);
   var geometry = ol.geom.Polygon.circular(
       ol.sphere.WGS84, this.position_, coords.accuracy);
   geometry.applyTransform(this.transform_);

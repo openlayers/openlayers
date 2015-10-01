@@ -105,7 +105,7 @@ ol.control.Control.prototype.getMap = function() {
  * @api stable
  */
 ol.control.Control.prototype.setMap = function(map) {
-  if (!goog.isNull(this.map_)) {
+  if (this.map_) {
     goog.dom.removeNode(this.element);
   }
   if (this.listenerKeys.length > 0) {
@@ -113,8 +113,8 @@ ol.control.Control.prototype.setMap = function(map) {
     this.listenerKeys.length = 0;
   }
   this.map_ = map;
-  if (!goog.isNull(this.map_)) {
-    var target = !goog.isNull(this.target_) ?
+  if (this.map_) {
+    var target = this.target_ ?
         this.target_ : map.getOverlayContainerStopEvent();
     goog.dom.appendChild(target, this.element);
     if (this.render !== ol.nullFunction) {

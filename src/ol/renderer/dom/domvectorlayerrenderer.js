@@ -138,7 +138,7 @@ ol.renderer.dom.VectorLayer.prototype.composeFrame =
 
   var replayGroup = this.replayGroup_;
 
-  if (!goog.isNull(replayGroup) && !replayGroup.isEmpty()) {
+  if (replayGroup && !replayGroup.isEmpty()) {
 
     context.globalAlpha = layerState.opacity;
     replayGroup.replay(context, pixelRatio, transform, viewRotation,
@@ -178,7 +178,7 @@ ol.renderer.dom.VectorLayer.prototype.dispatchEvent_ =
  */
 ol.renderer.dom.VectorLayer.prototype.forEachFeatureAtCoordinate =
     function(coordinate, frameState, callback, thisArg) {
-  if (goog.isNull(this.replayGroup_)) {
+  if (!this.replayGroup_) {
     return undefined;
   } else {
     var resolution = frameState.viewState.resolution;
@@ -298,7 +298,7 @@ ol.renderer.dom.VectorLayer.prototype.prepareFrame =
       this.dirty_ = this.dirty_ || dirty;
     }
   };
-  if (!goog.isNull(vectorLayerRenderOrder)) {
+  if (vectorLayerRenderOrder) {
     /** @type {Array.<ol.Feature>} */
     var features = [];
     vectorSource.forEachFeatureInExtentAtResolution(extent, resolution,

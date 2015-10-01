@@ -57,8 +57,7 @@ ol.source.TileVector = function(options) {
   this.tileLoadFunction_ = options.tileLoadFunction !== undefined ?
       options.tileLoadFunction : null;
 
-  goog.asserts.assert(!goog.isNull(this.format_) ||
-      !goog.isNull(this.tileLoadFunction_),
+  goog.asserts.assert(this.format_ || this.tileLoadFunction_,
       'Either format or tileLoadFunction are required');
 
   /**
@@ -252,7 +251,7 @@ ol.source.TileVector.prototype.getFeaturesInExtent = goog.abstractMethod;
 ol.source.TileVector.prototype.getTileCoordForTileUrlFunction =
     function(tileCoord, projection) {
   var tileGrid = this.tileGrid_;
-  goog.asserts.assert(!goog.isNull(tileGrid), 'tile grid needed');
+  goog.asserts.assert(tileGrid, 'tile grid needed');
   if (this.getWrapX() && projection.isGlobal()) {
     tileCoord = ol.tilecoord.wrapX(tileCoord, tileGrid, projection);
   }
@@ -302,12 +301,12 @@ ol.source.TileVector.prototype.loadFeatures =
         tileCoord[2] = y;
         var urlTileCoord = this.getTileCoordForTileUrlFunction(
             tileCoord, projection);
-        var url = goog.isNull(urlTileCoord) ? undefined :
+        var url = !urlTileCoord ? undefined :
             tileUrlFunction(urlTileCoord, 1, projection);
         if (url !== undefined) {
           tiles[tileKey] = [];
           var tileSuccess = goog.partial(success, tileKey);
-          if (!goog.isNull(this.tileLoadFunction_)) {
+          if (this.tileLoadFunction_) {
             this.tileLoadFunction_(url, goog.bind(tileSuccess, this));
           } else {
             var loader = ol.featureloader.loadFeaturesXhr(url,

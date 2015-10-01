@@ -95,7 +95,7 @@ ol.source.TileImage.prototype.getTile =
     var tileCoord = [z, x, y];
     var urlTileCoord = this.getTileCoordForTileUrlFunction(
         tileCoord, projection);
-    var tileUrl = goog.isNull(urlTileCoord) ? undefined :
+    var tileUrl = !urlTileCoord ? undefined :
         this.tileUrlFunction(urlTileCoord, pixelRatio, projection);
     var tile = new this.tileClass(
         tileCoord,

@@ -130,7 +130,7 @@ ol.source.BingMaps.prototype.handleImageryMetadataResponse =
               goog.asserts.assert(ol.proj.equivalent(
                   projection, sourceProjection),
                   'projections are equivalent');
-              if (goog.isNull(tileCoord)) {
+              if (!tileCoord) {
                 return undefined;
               } else {
                 ol.tilecoord.createOrUpdate(tileCoord[0], tileCoord[1],

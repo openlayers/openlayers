@@ -164,15 +164,15 @@ ol.control.Attribution.prototype.getSourceAttributions = function(frameState) {
   /** @type {Object.<string, ol.Attribution>} */
   var hiddenAttributions = {};
   var projection = frameState.viewState.projection;
-  goog.asserts.assert(!goog.isNull(projection), 'projection cannot be null');
+  goog.asserts.assert(projection, 'projection of viewState required');
   for (i = 0, ii = layerStatesArray.length; i < ii; i++) {
     source = layerStatesArray[i].layer.getSource();
-    if (goog.isNull(source)) {
+    if (!source) {
       continue;
     }
     sourceKey = goog.getUid(source).toString();
     sourceAttributions = source.getAttributions();
-    if (goog.isNull(sourceAttributions)) {
+    if (!sourceAttributions) {
       continue;
     }
     for (j = 0, jj = sourceAttributions.length; j < jj; j++) {
@@ -186,7 +186,7 @@ ol.control.Attribution.prototype.getSourceAttributions = function(frameState) {
         goog.asserts.assertInstanceof(source, ol.source.Tile,
             'source should be an ol.source.Tile');
         var tileGrid = source.getTileGridForProjection(projection);
-        goog.asserts.assert(!goog.isNull(tileGrid), 'tileGrid cannot be null');
+        goog.asserts.assert(tileGrid, 'tileGrid required for projection');
         intersectsTileRange = sourceAttribution.intersectsAnyTileRange(
             tileRanges, tileGrid, projection);
       } else {
@@ -223,7 +223,7 @@ ol.control.Attribution.render = function(mapEvent) {
  */
 ol.control.Attribution.prototype.updateElement_ = function(frameState) {
 
-  if (goog.isNull(frameState)) {
+  if (!frameState) {
     if (this.renderedVisible_) {
       goog.style.setElementShown(this.element, false);
       this.renderedVisible_ = false;

@@ -115,7 +115,7 @@ ol.animation.rotate = function(options) {
               (sourceRotation - frameState.viewState.rotation) * delta;
           frameState.animate = true;
           frameState.viewState.rotation += deltaRotation;
-          if (!goog.isNull(anchor)) {
+          if (anchor) {
             var center = frameState.viewState.center;
             ol.coordinate.sub(center, anchor);
             ol.coordinate.rotate(center, deltaRotation);

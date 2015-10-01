@@ -679,7 +679,7 @@ ol.View.createResolutionConstraint_ = function(options) {
     // calculate the default min and max resolution
     var projection = ol.proj.createProjection(options.projection, 'EPSG:3857');
     var extent = projection.getExtent();
-    var size = goog.isNull(extent) ?
+    var size = !extent ?
         // use an extent that can fit the whole world if need be
         360 * ol.proj.METERS_PER_UNIT[ol.proj.Units.DEGREES] /
             ol.proj.METERS_PER_UNIT[projection.getUnits()] :

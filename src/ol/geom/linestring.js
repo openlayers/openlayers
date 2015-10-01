@@ -70,7 +70,7 @@ goog.inherits(ol.geom.LineString, ol.geom.SimpleGeometry);
 ol.geom.LineString.prototype.appendCoordinate = function(coordinate) {
   goog.asserts.assert(coordinate.length == this.stride,
       'length of coordinate array should match stride');
-  if (goog.isNull(this.flatCoordinates)) {
+  if (!this.flatCoordinates) {
     this.flatCoordinates = coordinate.slice();
   } else {
     goog.array.extend(this.flatCoordinates, coordinate);
@@ -235,11 +235,11 @@ ol.geom.LineString.prototype.intersectsExtent = function(extent) {
  */
 ol.geom.LineString.prototype.setCoordinates =
     function(coordinates, opt_layout) {
-  if (goog.isNull(coordinates)) {
+  if (!coordinates) {
     this.setFlatCoordinates(ol.geom.GeometryLayout.XY, null);
   } else {
     this.setLayout(opt_layout, coordinates, 1);
-    if (goog.isNull(this.flatCoordinates)) {
+    if (!this.flatCoordinates) {
       this.flatCoordinates = [];
     }
     this.flatCoordinates.length = ol.geom.flat.deflate.coordinates(

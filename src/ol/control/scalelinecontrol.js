@@ -160,7 +160,7 @@ ol.control.ScaleLine.prototype.getUnits = function() {
  */
 ol.control.ScaleLine.render = function(mapEvent) {
   var frameState = mapEvent.frameState;
-  if (goog.isNull(frameState)) {
+  if (!frameState) {
     this.viewState_ = null;
   } else {
     this.viewState_ = frameState.viewState;
@@ -194,7 +194,7 @@ ol.control.ScaleLine.prototype.setUnits = function(units) {
 ol.control.ScaleLine.prototype.updateElement_ = function() {
   var viewState = this.viewState_;
 
-  if (goog.isNull(viewState)) {
+  if (!viewState) {
     if (this.renderedVisible_) {
       goog.style.setElementShown(this.element_, false);
       this.renderedVisible_ = false;
@@ -226,7 +226,7 @@ ol.control.ScaleLine.prototype.updateElement_ = function() {
       units == ol.control.ScaleLineUnits.DEGREES) {
 
     // Convert pointResolution from other units to degrees
-    if (goog.isNull(this.toEPSG4326_)) {
+    if (!this.toEPSG4326_) {
       this.toEPSG4326_ = ol.proj.getTransformFromProjections(
           projection, ol.proj.get('EPSG:4326'));
     }

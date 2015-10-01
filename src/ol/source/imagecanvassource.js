@@ -64,7 +64,7 @@ ol.source.ImageCanvas.prototype.getImage =
   resolution = this.findNearestResolution(resolution);
 
   var canvas = this.canvas_;
-  if (!goog.isNull(canvas) &&
+  if (canvas &&
       this.renderedRevision_ == this.getRevision() &&
       canvas.getResolution() == resolution &&
       canvas.getPixelRatio() == pixelRatio &&
@@ -80,7 +80,7 @@ ol.source.ImageCanvas.prototype.getImage =
 
   var canvasElement = this.canvasFunction_(
       extent, resolution, pixelRatio, size, projection);
-  if (!goog.isNull(canvasElement)) {
+  if (canvasElement) {
     canvas = new ol.ImageCanvas(extent, resolution, pixelRatio,
         this.getAttributions(), canvasElement);
   }

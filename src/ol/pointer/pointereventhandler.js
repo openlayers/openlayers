@@ -366,7 +366,7 @@ ol.pointer.PointerEventHandler.prototype.enterOver =
  */
 ol.pointer.PointerEventHandler.prototype.contains_ =
     function(container, contained) {
-  if (goog.isNull(contained)) {
+  if (!contained) {
     return false;
   }
   return goog.dom.contains(container, contained);

@@ -41,7 +41,7 @@ ol.has.CANVAS = ol.ENABLE_CANVAS && (
       }
       try {
         var context = ol.dom.createCanvasContext2D();
-        if (goog.isNull(context)) {
+        if (!context) {
           return false;
         } else {
           if (context.setLineDash !== undefined) {
@@ -129,7 +129,7 @@ ol.has.WEBGL;
         var gl = ol.webgl.getContext(canvas, {
           failIfMajorPerformanceCaveat: true
         });
-        if (!goog.isNull(gl)) {
+        if (gl) {
           hasWebGL = true;
           textureSize = /** @type {number} */
               (gl.getParameter(gl.MAX_TEXTURE_SIZE));

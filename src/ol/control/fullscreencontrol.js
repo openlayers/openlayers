@@ -107,7 +107,7 @@ ol.control.FullScreen.prototype.handleFullScreen_ = function() {
     return;
   }
   var map = this.getMap();
-  if (goog.isNull(map)) {
+  if (!map) {
     return;
   }
   if (goog.dom.fullscreen.isFullScreen()) {
@@ -141,7 +141,7 @@ ol.control.FullScreen.prototype.handleFullScreenChange_ = function() {
     goog.dom.classlist.swap(button, opened, closed);
     goog.dom.replaceNode(this.labelNode_, this.labelActiveNode_);
   }
-  if (!goog.isNull(map)) {
+  if (map) {
     map.updateSize();
   }
 };

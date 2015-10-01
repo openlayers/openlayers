@@ -103,14 +103,14 @@ ol.renderer.dom.ImageLayer.prototype.prepareFrame =
       !ol.extent.isEmpty(renderedExtent)) {
     var projection = viewState.projection;
     var sourceProjection = imageSource.getProjection();
-    if (!goog.isNull(sourceProjection)) {
+    if (sourceProjection) {
       goog.asserts.assert(ol.proj.equivalent(projection, sourceProjection),
           'projection and sourceProjection are equivalent');
       projection = sourceProjection;
     }
     var image_ = imageSource.getImage(renderedExtent, viewResolution,
         frameState.pixelRatio, projection);
-    if (!goog.isNull(image_)) {
+    if (image_) {
       var loaded = this.loadImage(image_);
       if (loaded) {
         image = image_;
@@ -118,7 +118,7 @@ ol.renderer.dom.ImageLayer.prototype.prepareFrame =
     }
   }
 
-  if (!goog.isNull(image)) {
+  if (image) {
     var imageExtent = image.getExtent();
     var imageResolution = image.getResolution();
     var transform = goog.vec.Mat4.createNumber();

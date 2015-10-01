@@ -93,7 +93,7 @@ ol.webgl.Context = function(canvas, gl) {
   // use the OES_element_index_uint extension if available
   if (this.hasOESElementIndexUint) {
     var ext = gl.getExtension('OES_element_index_uint');
-    goog.asserts.assert(!goog.isNull(ext),
+    goog.asserts.assert(ext,
         'Failed to get extension "OES_element_index_uint"');
   }
 
@@ -205,7 +205,7 @@ ol.webgl.Context.prototype.getGL = function() {
  * @return {WebGLFramebuffer} The hit detection frame buffer.
  */
 ol.webgl.Context.prototype.getHitDetectionFramebuffer = function() {
-  if (goog.isNull(this.hitDetectionFramebuffer_)) {
+  if (!this.hitDetectionFramebuffer_) {
     this.initHitDetectionFramebuffer_();
   }
   return this.hitDetectionFramebuffer_;

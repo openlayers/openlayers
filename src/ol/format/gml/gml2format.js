@@ -62,20 +62,20 @@ ol.format.GML2.prototype.readFlatCoordinates_ = function(node, objectStack) {
   var containerSrs = context['srsName'];
   var containerDimension = node.parentNode.getAttribute('srsDimension');
   var axisOrientation = 'enu';
-  if (!goog.isNull(containerSrs)) {
+  if (containerSrs) {
     var proj = ol.proj.get(containerSrs);
     axisOrientation = proj.getAxisOrientation();
   }
   var coords = s.split(/[\s,]+/);
   // The "dimension" attribute is from the GML 3.0.1 spec.
   var dim = 2;
-  if (!goog.isNull(node.getAttribute('srsDimension'))) {
+  if (node.getAttribute('srsDimension')) {
     dim = ol.format.XSD.readNonNegativeIntegerString(
         node.getAttribute('srsDimension'));
-  } else if (!goog.isNull(node.getAttribute('dimension'))) {
+  } else if (node.getAttribute('dimension')) {
     dim = ol.format.XSD.readNonNegativeIntegerString(
         node.getAttribute('dimension'));
-  } else if (!goog.isNull(containerDimension)) {
+  } else if (containerDimension) {
     dim = ol.format.XSD.readNonNegativeIntegerString(containerDimension);
   }
   var x, y, z;
