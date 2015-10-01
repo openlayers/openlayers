@@ -1123,7 +1123,7 @@ ol.Map.prototype.handleLayerGroupChanged_ = function() {
     this.layerGroupPropertyListenerKeys_ = null;
   }
   var layerGroup = this.getLayerGroup();
-  if (goog.isDefAndNotNull(layerGroup)) {
+  if (layerGroup) {
     this.layerGroupPropertyListenerKeys_ = [
       goog.events.listen(
           layerGroup, ol.ObjectEventType.PROPERTYCHANGE,
@@ -1151,7 +1151,7 @@ ol.Map.prototype.isDef = function() {
     return false;
   }
   var size = this.getSize();
-  if (!goog.isDefAndNotNull(size) || size[0] <= 0 || size[1] <= 0) {
+  if (!size || size[0] <= 0 || size[1] <= 0) {
     return false;
   }
   var view = this.getView();

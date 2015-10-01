@@ -92,7 +92,7 @@ ol.source.WMTS = function(options) {
    * @private
    * @type {!Array.<string>}
    */
-  this.urls_ = goog.isDefAndNotNull(urls) ? urls : [];
+  this.urls_ = urls || [];
 
   // FIXME: should we guess this requestEncoding from options.url(s)
   //        structure? that would mean KVP only if a template is not provided.

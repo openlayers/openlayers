@@ -821,7 +821,7 @@ ol.render.webgl.ImageReplay.prototype.drawHitDetectionReplayOneByOne_ =
       featureUid = goog.getUid(feature).toString();
 
       if (skippedFeaturesHash[featureUid] === undefined &&
-          goog.isDefAndNotNull(feature.getGeometry()) &&
+          feature.getGeometry() &&
           (opt_hitExtent === undefined || ol.extent.intersects(
               /** @type {Array<number>} */ (opt_hitExtent),
               feature.getGeometry().getExtent()))) {

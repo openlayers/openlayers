@@ -117,7 +117,7 @@ ol.Geolocation.prototype.disposeInternal = function() {
  */
 ol.Geolocation.prototype.handleProjectionChanged_ = function() {
   var projection = this.getProjection();
-  if (goog.isDefAndNotNull(projection)) {
+  if (projection) {
     this.transform_ = ol.proj.getTransformFromProjections(
         ol.proj.get('EPSG:4326'), projection);
     if (!goog.isNull(this.position_)) {

@@ -244,7 +244,7 @@ ol.Overlay.prototype.getPositioning = function() {
 ol.Overlay.prototype.handleElementChanged = function() {
   goog.dom.removeChildren(this.element_);
   var element = this.getElement();
-  if (goog.isDefAndNotNull(element)) {
+  if (element) {
     goog.dom.append(/** @type {!Node} */ (this.element_), element);
   }
 };
@@ -260,7 +260,7 @@ ol.Overlay.prototype.handleMapChanged = function() {
     this.mapPostrenderListenerKey_ = null;
   }
   var map = this.getMap();
-  if (goog.isDefAndNotNull(map)) {
+  if (map) {
     this.mapPostrenderListenerKey_ = goog.events.listen(map,
         ol.MapEventType.POSTRENDER, this.render, false, this);
     this.updatePixelPosition();
@@ -372,8 +372,7 @@ ol.Overlay.prototype.panIntoView_ = function() {
 
   var mapRect = this.getRect_(map.getTargetElement(), map.getSize());
   var element = this.getElement();
-  goog.asserts.assert(goog.isDefAndNotNull(element),
-      'element should be defined');
+  goog.asserts.assert(element, 'element should be defined');
   var overlayRect = this.getRect_(element,
       [ol.dom.outerWidth(element), ol.dom.outerHeight(element)]);
 
@@ -428,8 +427,7 @@ ol.Overlay.prototype.panIntoView_ = function() {
  * @private
  */
 ol.Overlay.prototype.getRect_ = function(element, size) {
-  goog.asserts.assert(goog.isDefAndNotNull(element),
-      'element should be defined');
+  goog.asserts.assert(element, 'element should be defined');
   goog.asserts.assert(size !== undefined, 'size should be defined');
 
   var offset = goog.style.getPageOffset(element);

@@ -356,7 +356,7 @@ ol.format.Polyline.prototype.readProjection;
  */
 ol.format.Polyline.prototype.writeFeatureText = function(feature, opt_options) {
   var geometry = feature.getGeometry();
-  if (goog.isDefAndNotNull(geometry)) {
+  if (geometry) {
     return this.writeGeometryText(geometry, opt_options);
   } else {
     goog.asserts.fail('geometry needs to be defined');

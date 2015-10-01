@@ -182,7 +182,7 @@ ol.control.ZoomSlider.render = function(mapEvent) {
   if (goog.isNull(mapEvent.frameState)) {
     return;
   }
-  goog.asserts.assert(goog.isDefAndNotNull(mapEvent.frameState.viewState),
+  goog.asserts.assert(mapEvent.frameState.viewState,
       'viewState should be defined');
   if (!this.sliderInitialized_) {
     this.initSlider_();

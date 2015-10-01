@@ -125,7 +125,7 @@ ol.render.webgl.Immediate.prototype.drawCircleGeometry =
  */
 ol.render.webgl.Immediate.prototype.drawFeature = function(feature, style) {
   var geometry = style.getGeometryFunction()(feature);
-  if (!goog.isDefAndNotNull(geometry) ||
+  if (!geometry ||
       !ol.extent.intersects(this.extent_, geometry.getExtent())) {
     return;
   }

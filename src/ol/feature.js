@@ -123,7 +123,7 @@ ol.Feature.prototype.clone = function() {
   var clone = new ol.Feature(this.getProperties());
   clone.setGeometryName(this.getGeometryName());
   var geometry = this.getGeometry();
-  if (goog.isDefAndNotNull(geometry)) {
+  if (geometry) {
     clone.setGeometry(geometry.clone());
   }
   var style = this.getStyle();
@@ -214,7 +214,7 @@ ol.Feature.prototype.handleGeometryChanged_ = function() {
     this.geometryChangeKey_ = null;
   }
   var geometry = this.getGeometry();
-  if (goog.isDefAndNotNull(geometry)) {
+  if (geometry) {
     this.geometryChangeKey_ = goog.events.listen(geometry,
         goog.events.EventType.CHANGE, this.handleGeometryChange_, false, this);
   }

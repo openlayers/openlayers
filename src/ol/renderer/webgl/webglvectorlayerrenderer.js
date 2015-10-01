@@ -260,7 +260,7 @@ ol.renderer.webgl.VectorLayer.prototype.prepareFrame =
         styles = styleFunction(feature, resolution);
       }
     }
-    if (goog.isDefAndNotNull(styles)) {
+    if (styles) {
       var dirty = this.renderFeature(
           feature, resolution, pixelRatio, styles, replayGroup);
       this.dirty_ = this.dirty_ || dirty;
@@ -304,7 +304,7 @@ ol.renderer.webgl.VectorLayer.prototype.prepareFrame =
  */
 ol.renderer.webgl.VectorLayer.prototype.renderFeature =
     function(feature, resolution, pixelRatio, styles, replayGroup) {
-  if (!goog.isDefAndNotNull(styles)) {
+  if (!styles) {
     return false;
   }
   var i, ii, loading = false;

@@ -393,7 +393,7 @@ ol.format.KML.readFlatCoordinates_ = function(node) {
  */
 ol.format.KML.readStyleUrl_ = function(node) {
   var s = goog.string.trim(ol.xml.getAllTextContent(node, false));
-  if (goog.isDefAndNotNull(node.baseURI)) {
+  if (node.baseURI) {
     return goog.Uri.resolve(node.baseURI, s).toString();
   } else {
     return s;
@@ -409,7 +409,7 @@ ol.format.KML.readStyleUrl_ = function(node) {
  */
 ol.format.KML.readURI_ = function(node) {
   var s = ol.xml.getAllTextContent(node, false);
-  if (goog.isDefAndNotNull(node.baseURI)) {
+  if (node.baseURI) {
     return goog.Uri.resolve(node.baseURI, goog.string.trim(s)).toString();
   } else {
     return goog.string.trim(s);
@@ -949,7 +949,7 @@ ol.format.KML.readPoint_ = function(node, objectStack) {
       objectStack);
   var flatCoordinates =
       ol.format.KML.readFlatCoordinatesFromNode_(node, objectStack);
-  if (goog.isDefAndNotNull(flatCoordinates)) {
+  if (flatCoordinates) {
     var point = new ol.geom.Point(null);
     goog.asserts.assert(flatCoordinates.length == 3,
         'flatCoordinates should have a length of 3');
@@ -979,8 +979,7 @@ ol.format.KML.readPolygon_ = function(node, objectStack) {
   var flatLinearRings = ol.xml.pushParseAndPop(
       /** @type {Array.<Array.<number>>} */ ([null]),
       ol.format.KML.FLAT_LINEAR_RINGS_PARSERS_, node, objectStack);
-  if (goog.isDefAndNotNull(flatLinearRings) &&
-      !goog.isNull(flatLinearRings[0])) {
+  if (flatLinearRings && !goog.isNull(flatLinearRings[0])) {
     var polygon = new ol.geom.Polygon(null);
     var flatCoordinates = flatLinearRings[0];
     var ends = [flatCoordinates.length];
@@ -1686,7 +1685,7 @@ ol.format.KML.prototype.readPlacemark_ = function(node, objectStack) {
   var options = /** @type {olx.format.ReadOptions} */ (objectStack[0]);
 
   var geometry = object['geometry'];
-  if (goog.isDefAndNotNull(geometry)) {
+  if (geometry) {
     ol.format.Feature.transformWithOptions(geometry, false, options);
   }
   feature.setGeometry(geometry);
@@ -1723,7 +1722,7 @@ ol.format.KML.prototype.readSharedStyle_ = function(node, objectStack) {
     var style = ol.format.KML.readStyle_(node, objectStack);
     if (style) {
       var styleUri;
-      if (goog.isDefAndNotNull(node.baseURI)) {
+      if (node.baseURI) {
         styleUri = goog.Uri.resolve(node.baseURI, '#' + id).toString();
       } else {
         styleUri = '#' + id;
@@ -1753,7 +1752,7 @@ ol.format.KML.prototype.readSharedStyleMap_ = function(node, objectStack) {
     return;
   }
   var styleUri;
-  if (goog.isDefAndNotNull(node.baseURI)) {
+  if (node.baseURI) {
     styleUri = goog.Uri.resolve(node.baseURI, '#' + id).toString();
   } else {
     styleUri = '#' + id;
@@ -2269,7 +2268,7 @@ ol.format.KML.writePlacemark_ = function(node, feature, objectStack) {
   var /** @type {ol.xml.NodeStackItem} */ context = {node: node};
 
   // set id
-  if (goog.isDefAndNotNull(feature.getId())) {
+  if (feature.getId()) {
     node.setAttribute('id', feature.getId());
   }
 
@@ -2297,7 +2296,7 @@ ol.format.KML.writePlacemark_ = function(node, feature, objectStack) {
   // serialize geometry
   var options = /** @type {olx.format.WriteOptions} */ (objectStack[0]);
   var geometry = feature.getGeometry();
-  if (goog.isDefAndNotNull(geometry)) {
+  if (geometry) {
     geometry =
         ol.format.Feature.transformWithOptions(geometry, true, options);
   }
@@ -2753,7 +2752,7 @@ ol.format.KML.DOCUMENT_NODE_FACTORY_ = function(value, objectStack,
  */
 ol.format.KML.GEOMETRY_NODE_FACTORY_ = function(value, objectStack,
     opt_nodeName) {
-  if (goog.isDefAndNotNull(value)) {
+  if (value) {
     goog.asserts.assertInstanceof(value, ol.geom.Geometry,
         'value should be an ol.geom.Geometry');
     var parentNode = objectStack[objectStack.length - 1].node;

@@ -38,7 +38,7 @@ ol.format.GeoJSON = function(opt_options) {
    * @inheritDoc
    */
   this.defaultDataProjection = ol.proj.get(
-      goog.isDefAndNotNull(options.defaultDataProjection) ?
+      options.defaultDataProjection ?
           options.defaultDataProjection : 'EPSG:4326');
 
 
@@ -484,7 +484,7 @@ ol.format.GeoJSON.prototype.readProjection;
 ol.format.GeoJSON.prototype.readProjectionFromObject = function(object) {
   var geoJSONObject = /** @type {GeoJSONObject} */ (object);
   var crs = geoJSONObject.crs;
-  if (goog.isDefAndNotNull(crs)) {
+  if (crs) {
     if (crs.type == 'name') {
       return ol.proj.get(crs.properties.name);
     } else if (crs.type == 'EPSG') {
@@ -530,11 +530,11 @@ ol.format.GeoJSON.prototype.writeFeatureObject = function(
     'type': 'Feature'
   };
   var id = feature.getId();
-  if (goog.isDefAndNotNull(id)) {
+  if (id) {
     object['id'] = id;
   }
   var geometry = feature.getGeometry();
-  if (goog.isDefAndNotNull(geometry)) {
+  if (geometry) {
     object['geometry'] =
         ol.format.GeoJSON.writeGeometry_(geometry, opt_options);
   } else {

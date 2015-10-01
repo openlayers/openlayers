@@ -484,7 +484,7 @@ ol.proj.clearAllProjections = function() {
  * @return {ol.proj.Projection} Projection.
  */
 ol.proj.createProjection = function(projection, defaultCode) {
-  if (!goog.isDefAndNotNull(projection)) {
+  if (!projection) {
     return ol.proj.get(defaultCode);
   } else if (goog.isString(projection)) {
     return ol.proj.get(projection);
