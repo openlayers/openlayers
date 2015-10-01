@@ -42,6 +42,8 @@ ol.source.VectorTile = function(options) {
         options.tileLoadFunction : ol.source.VectorTile.defaultTileLoadFunction,
     tileUrlFunction: options.tileUrlFunction,
     tilePixelRatio: options.tilePixelRatio,
+    url: options.url,
+    urls: options.urls,
     wrapX: options.wrapX === undefined ? true : options.wrapX
   });
 

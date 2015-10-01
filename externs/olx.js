@@ -3976,6 +3976,8 @@ olx.source.TileUTFGridOptions.prototype.url;
  *            tileLoadFunction: (ol.TileLoadFunctionType|undefined),
  *            tilePixelRatio: (number|undefined),
  *            tileUrlFunction: (ol.TileUrlFunctionType|undefined),
+ *            url: (string|undefined),
+ *            urls: (Array.<string>|undefined),
  *            wrapX: (boolean|undefined)}}
  * @api
  */
@@ -4089,6 +4091,24 @@ olx.source.TileImageOptions.prototype.tileUrlFunction;
 
 
 /**
+ * URL template. Must include `{x}`, `{y}` or `{-y}`, and `{z}` placeholders.
+ * A `{?-?}` template pattern, for example `subdomain{a-f}.domain.com`, may be
+ * used instead of defining each one separately in the `urls` option.
+ * @type {string|undefined}
+ * @api stable
+ */
+olx.source.TileImageOptions.prototype.url;
+
+
+/**
+ * An array of URL templates.
+ * @type {Array.<string>|undefined}
+ * @api
+ */
+olx.source.TileImageOptions.prototype.urls;
+
+
+/**
  * Whether to wrap the world horizontally. The default, `undefined`, is to
  * request out-of-bounds tiles from the server. When set to `false`, only one
  * world will be rendered. When set to `true`, tiles will be requested for one
@@ -4101,11 +4121,11 @@ olx.source.TileImageOptions.prototype.wrapX;
 
 /**
  * @typedef {{attributions: (Array.<ol.Attribution>|undefined),
+ *            format: (ol.format.Feature|undefined),
  *            logo: (string|olx.LogoOptions|undefined),
  *            opaque: (boolean|undefined),
  *            projection: ol.proj.ProjectionLike,
  *            state: (ol.source.State|string|undefined),
- *            format: (ol.format.Feature|undefined),
  *            tileClass: (function(new: ol.VectorTile, ol.TileCoord,
  *                 ol.TileState, string, ol.format.Feature,
  *                 ol.TileLoadFunctionType)|undefined),
@@ -4113,6 +4133,8 @@ olx.source.TileImageOptions.prototype.wrapX;
  *            tileLoadFunction: (ol.TileLoadFunctionType|undefined),
  *            tilePixelRatio: (number|undefined),
  *            tileUrlFunction: (ol.TileUrlFunctionType|undefined),
+ *            url: (string|undefined),
+ *            urls: (Array.<string>|undefined),
  *            wrapX: (boolean|undefined)}}
  * @api
  */
@@ -4126,6 +4148,14 @@ olx.source.VectorTileOptions;
  * @api
  */
 olx.source.VectorTileOptions.prototype.attributions;
+
+
+/**
+ * Feature format for tiles. Used and required by the default
+ * `tileLoadFunction`.
+ * @type {ol.format.Feature|undefined}
+ */
+olx.source.VectorTileOptions.prototype.format;
 
 
 /**
@@ -4158,14 +4188,6 @@ olx.source.VectorTileOptions.prototype.projection;
  * @api
  */
 olx.source.VectorTileOptions.prototype.state;
-
-
-/**
- * Feature format for tiles. Used and required by the default
- * `tileLoadFunction`.
- * @type {ol.format.Feature|undefined}
- */
-olx.source.VectorTileOptions.prototype.format;
 
 
 /**
@@ -4214,10 +4236,27 @@ olx.source.VectorTileOptions.prototype.tileUrlFunction;
 
 
 /**
- * Whether to wrap the world horizontally. The default, `undefined`, is to
- * request out-of-bounds tiles from the server. When set to `false`, only one
- * world will be rendered. When set to `true`, tiles will be requested for one
- * world only, but they will be wrapped horizontally to render multiple worlds.
+ * URL template. Must include `{x}`, `{y}` or `{-y}`, and `{z}` placeholders.
+ * A `{?-?}` template pattern, for example `subdomain{a-f}.domain.com`, may be
+ * used instead of defining each one separately in the `urls` option.
+ * @type {string|undefined}
+ * @api stable
+ */
+olx.source.VectorTileOptions.prototype.url;
+
+
+/**
+ * An array of URL templates.
+ * @type {Array.<string>|undefined}
+ * @api
+ */
+olx.source.VectorTileOptions.prototype.urls;
+
+
+/**
+ * Whether to wrap the world horizontally. When set to `false`, only one world
+ * will be rendered. When set to `true`, tiles will be wrapped horizontally to
+ * render multiple worlds. Default is `true`.
  * @type {boolean|undefined}
  * @api
  */

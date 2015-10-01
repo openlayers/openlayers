@@ -5,6 +5,7 @@ goog.require('ol.TileLoadFunctionType');
 goog.require('ol.TileState');
 goog.require('ol.TileUrlFunction');
 goog.require('ol.TileUrlFunctionType');
+goog.require('ol.proj');
 goog.require('ol.source.Tile');
 goog.require('ol.source.TileEvent');
 
@@ -20,6 +21,8 @@ goog.require('ol.source.TileEvent');
  *            tileLoadFunction: ol.TileLoadFunctionType,
  *            tilePixelRatio: (number|undefined),
  *            tileUrlFunction: (ol.TileUrlFunctionType|undefined),
+ *            url: (string|undefined),
+ *            urls: (Array.<string>|undefined),
  *            wrapX: (boolean|undefined)}}
  */
 ol.source.UrlTileOptions;
@@ -53,17 +56,36 @@ ol.source.UrlTile = function(options) {
 
   /**
    * @protected
+   * @type {ol.TileLoadFunctionType}
+   */
+  this.tileLoadFunction = options.tileLoadFunction;
+
+  /**
+   * @protected
    * @type {ol.TileUrlFunctionType}
    */
-  this.tileUrlFunction = goog.isDef(options.tileUrlFunction) ?
+  this.tileUrlFunction = options.tileUrlFunction ?
       options.tileUrlFunction :
       ol.TileUrlFunction.nullTileUrlFunction;
 
   /**
    * @protected
-   * @type {ol.TileLoadFunctionType}
+   * @type {!Array.<string>|null}
    */
-  this.tileLoadFunction = options.tileLoadFunction;
+  this.urls = null;
+
+  if (options.urls) {
+    if (options.tileUrlFunction) {
+      this.urls = options.urls;
+    } else {
+      this.setUrls(options.urls);
+    }
+  } else if (options.url) {
+    this.setUrl(options.url);
+  }
+  if (options.tileUrlFunction) {
+    this.setTileUrlFunction(options.tileUrlFunction);
+  }
 
 };
 goog.inherits(ol.source.UrlTile, ol.source.Tile);
@@ -86,6 +108,18 @@ ol.source.UrlTile.prototype.getTileLoadFunction = function() {
  */
 ol.source.UrlTile.prototype.getTileUrlFunction = function() {
   return this.tileUrlFunction;
+};
+
+
+/**
+ * Return the URLs used for this XYZ source.
+ * When a tileUrlFunction is used instead of url or urls,
+ * null will be returned.
+ * @return {!Array.<string>|null} URLs.
+ * @api
+ */
+ol.source.UrlTile.prototype.getUrls = function() {
+  return this.urls;
 };
 
 
@@ -137,6 +171,30 @@ ol.source.UrlTile.prototype.setTileUrlFunction = function(tileUrlFunction) {
   this.tileCache.clear();
   this.tileUrlFunction = tileUrlFunction;
   this.changed();
+};
+
+
+/**
+ * Set the URL to use for requests.
+ * @param {string} url URL.
+ * @api stable
+ */
+ol.source.UrlTile.prototype.setUrl = function(url) {
+  this.setTileUrlFunction(ol.TileUrlFunction.createFromTemplates(
+      ol.TileUrlFunction.expandUrl(url), this.tileGrid));
+  this.urls = [url];
+};
+
+
+/**
+ * Set the URLs to use for requests.
+ * @param {Array.<string>} urls URLs.
+ * @api stable
+ */
+ol.source.UrlTile.prototype.setUrls = function(urls) {
+  this.setTileUrlFunction(ol.TileUrlFunction.createFromTemplates(
+      urls, this.tileGrid));
+  this.urls = urls;
 };
 
 

@@ -38,6 +38,8 @@ ol.source.TileImage = function(options) {
         options.tileLoadFunction : ol.source.TileImage.defaultTileLoadFunction,
     tilePixelRatio: options.tilePixelRatio,
     tileUrlFunction: options.tileUrlFunction,
+    url: options.url,
+    urls: options.urls,
     wrapX: options.wrapX
   });
 

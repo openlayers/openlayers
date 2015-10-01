@@ -1,6 +1,5 @@
 goog.provide('ol.source.XYZ');
 
-goog.require('ol.TileUrlFunction');
 goog.require('ol.source.TileImage');
 
 
@@ -38,12 +37,6 @@ ol.source.XYZ = function(options) {
         tileSize: options.tileSize
       });
 
-  /**
-   * @private
-   * @type {!Array.<string>|null}
-   */
-  this.urls_ = null;
-
   goog.base(this, {
     attributions: options.attributions,
     crossOrigin: options.crossOrigin,
@@ -53,52 +46,11 @@ ol.source.XYZ = function(options) {
     tileGrid: tileGrid,
     tileLoadFunction: options.tileLoadFunction,
     tilePixelRatio: options.tilePixelRatio,
-    tileUrlFunction: ol.TileUrlFunction.nullTileUrlFunction,
+    tileUrlFunction: options.tileUrlFunction,
+    url: options.url,
+    urls: options.urls,
     wrapX: options.wrapX !== undefined ? options.wrapX : true
   });
 
-  if (options.tileUrlFunction !== undefined) {
-    this.setTileUrlFunction(options.tileUrlFunction);
-  } else if (options.urls !== undefined) {
-    this.setUrls(options.urls);
-  } else if (options.url !== undefined) {
-    this.setUrl(options.url);
-  }
-
 };
 goog.inherits(ol.source.XYZ, ol.source.TileImage);
-
-
-/**
- * Return the URLs used for this XYZ source.
- * When a tileUrlFunction is used instead of url or urls,
- * null will be returned.
- * @return {!Array.<string>|null} URLs.
- * @api
- */
-ol.source.XYZ.prototype.getUrls = function() {
-  return this.urls_;
-};
-
-
-/**
- * Set the URL to use for requests.
- * @param {string} url URL.
- * @api stable
- */
-ol.source.XYZ.prototype.setUrl = function(url) {
-  this.setTileUrlFunction(ol.TileUrlFunction.createFromTemplates(
-      ol.TileUrlFunction.expandUrl(url), this.tileGrid));
-  this.urls_ = [url];
-};
-
-
-/**
- * Set the URLs to use for requests.
- * @param {Array.<string>} urls URLs.
- */
-ol.source.XYZ.prototype.setUrls = function(urls) {
-  this.setTileUrlFunction(
-      ol.TileUrlFunction.createFromTemplates(urls, this.tileGrid));
-  this.urls_ = urls;
-};
