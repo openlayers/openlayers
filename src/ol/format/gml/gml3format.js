@@ -66,7 +66,7 @@ ol.format.GML3 = function(opt_options) {
    * @type {boolean}
    */
   this.multiSurface_ = options.multiSurface !== undefined ?
-      /** @type {boolean} */ (options.multiSurface) : true;
+      options.multiSurface : true;
 
   /**
    * @inheritDoc

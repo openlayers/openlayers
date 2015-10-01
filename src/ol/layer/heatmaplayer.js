@@ -80,11 +80,9 @@ ol.layer.Heatmap = function(opt_options) {
   this.setGradient(options.gradient ?
       options.gradient : ol.layer.Heatmap.DEFAULT_GRADIENT);
 
-  this.setBlur(options.blur !== undefined ?
-      /** @type {number} */ (options.blur) : 15);
+  this.setBlur(options.blur !== undefined ? options.blur : 15);
 
-  this.setRadius(options.radius !== undefined ?
-      /** @type {number} */ (options.radius) : 8);
+  this.setRadius(options.radius !== undefined ? options.radius : 8);
 
   goog.events.listen(this, [
     ol.Object.getChangeEventType(ol.layer.HeatmapLayerProperty.BLUR),
