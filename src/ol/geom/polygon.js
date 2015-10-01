@@ -464,7 +464,7 @@ ol.geom.Polygon.makeRegular = function(polygon, center, radius, opt_angle) {
   goog.asserts.assert(ends.length === 1, 'only 1 ring is supported');
   var sides = flatCoordinates.length / stride - 1;
   var startAngle = opt_angle ? opt_angle : 0;
-  var angle, coord, offset;
+  var angle, offset;
   for (var i = 0; i <= sides; ++i) {
     offset = i * stride;
     angle = startAngle + (goog.math.modulo(i, sides) * 2 * Math.PI / sides);
