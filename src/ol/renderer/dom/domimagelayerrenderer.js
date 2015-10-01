@@ -136,7 +136,7 @@ ol.renderer.dom.ImageLayer.prototype.prepareFrame =
       imageElement.style.maxWidth = 'none';
       imageElement.style.position = 'absolute';
       goog.dom.removeChildren(this.target);
-      goog.dom.appendChild(this.target, imageElement);
+      this.target.appendChild(imageElement);
       this.image_ = image;
     }
     this.setTransform_(transform);

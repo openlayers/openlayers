@@ -54,7 +54,7 @@ ol.dom.canUseCssTransform = (function() {
               'MozTransform': '-moz-transform',
               'transform': 'transform'
             };
-        goog.dom.appendChild(document.body, el);
+        document.body.appendChild(el);
         for (var t in transforms) {
           if (t in el.style) {
             el.style[t] = 'translate(1px,1px)';
@@ -97,7 +97,7 @@ ol.dom.canUseCssTransform3D = (function() {
               'MozTransform': '-moz-transform',
               'transform': 'transform'
             };
-        goog.dom.appendChild(document.body, el);
+        document.body.appendChild(el);
         for (var t in transforms) {
           if (t in el.style) {
             el.style[t] = 'translate3d(1px,1px,1px)';

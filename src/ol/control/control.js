@@ -116,7 +116,7 @@ ol.control.Control.prototype.setMap = function(map) {
   if (this.map_) {
     var target = this.target_ ?
         this.target_ : map.getOverlayContainerStopEvent();
-    goog.dom.appendChild(target, this.element);
+    target.appendChild(this.element);
     if (this.render !== ol.nullFunction) {
       this.listenerKeys.push(goog.events.listen(map,
           ol.MapEventType.POSTRENDER, this.render, false, this));

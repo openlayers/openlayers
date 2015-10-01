@@ -364,7 +364,7 @@ ol.renderer.dom.TileLayerZ_.prototype.addTile = function(tile, tileGutter) {
     imageStyle.top = -tileGutter + 'px';
     imageStyle.width = (tileSize[0] + 2 * tileGutter) + 'px';
     imageStyle.height = (tileSize[1] + 2 * tileGutter) + 'px';
-    goog.dom.appendChild(tileElement, image);
+    tileElement.appendChild(image);
   } else {
     imageStyle.width = tileSize[0] + 'px';
     imageStyle.height = tileSize[1] + 'px';
@@ -379,7 +379,7 @@ ol.renderer.dom.TileLayerZ_.prototype.addTile = function(tile, tileGutter) {
   if (!this.documentFragment_) {
     this.documentFragment_ = document.createDocumentFragment();
   }
-  goog.dom.appendChild(this.documentFragment_, tileElement);
+  this.documentFragment_.appendChild(tileElement);
   this.tiles_[tileCoordKey] = tile;
 };
 
@@ -389,7 +389,7 @@ ol.renderer.dom.TileLayerZ_.prototype.addTile = function(tile, tileGutter) {
  */
 ol.renderer.dom.TileLayerZ_.prototype.finalizeAddTiles = function() {
   if (this.documentFragment_) {
-    goog.dom.appendChild(this.target, this.documentFragment_);
+    this.target.appendChild(this.documentFragment_);
     this.documentFragment_ = null;
   }
 };

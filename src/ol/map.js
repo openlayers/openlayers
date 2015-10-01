@@ -279,7 +279,7 @@ ol.Map = function(options) {
    */
   this.overlayContainer_ = goog.dom.createDom(goog.dom.TagName.DIV,
       'ol-overlaycontainer');
-  goog.dom.appendChild(this.viewport_, this.overlayContainer_);
+  this.viewport_.appendChild(this.overlayContainer_);
 
   /**
    * @private
@@ -296,7 +296,7 @@ ol.Map = function(options) {
     ol.MapBrowserEvent.EventType.POINTERDOWN,
     goog.userAgent.GECKO ? 'DOMMouseScroll' : 'mousewheel'
   ], goog.events.Event.stopPropagation);
-  goog.dom.appendChild(this.viewport_, this.overlayContainerStopEvent_);
+  this.viewport_.appendChild(this.overlayContainerStopEvent_);
 
   var mapBrowserEventHandler = new ol.MapBrowserEventHandler(this);
   goog.events.listen(mapBrowserEventHandler,
@@ -1039,7 +1039,7 @@ ol.Map.prototype.handleTargetChanged_ = function() {
       this.viewportResizeListenerKey_ = null;
     }
   } else {
-    goog.dom.appendChild(targetElement, this.viewport_);
+    targetElement.appendChild(this.viewport_);
 
     var keyboardEventTarget = !this.keyboardEventTarget_ ?
         targetElement : this.keyboardEventTarget_;
