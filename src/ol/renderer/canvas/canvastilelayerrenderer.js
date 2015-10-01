@@ -360,7 +360,7 @@ ol.renderer.canvas.TileLayer.prototype.prepareFrame =
       [z, canvasTileRange.minX, canvasTileRange.maxY],
       tmpExtent));
   var currentZ, index, scale, tileCoordKey, tileExtent, tilesToDraw;
-  var ix, iy, interimTileExtent, interimTileRange, maxX, maxY;
+  var ix, iy, interimTileRange, maxX, maxY;
   var height, width;
   for (i = 0, ii = zs.length; i < ii; ++i) {
     currentZ = zs[i];

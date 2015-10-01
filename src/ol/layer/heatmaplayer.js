@@ -80,11 +80,9 @@ ol.layer.Heatmap = function(opt_options) {
   this.setGradient(options.gradient ?
       options.gradient : ol.layer.Heatmap.DEFAULT_GRADIENT);
 
-  this.setBlur(options.blur !== undefined ?
-      /** @type {number} */ (options.blur) : 15);
+  this.setBlur(options.blur !== undefined ? options.blur : 15);
 
-  this.setRadius(options.radius !== undefined ?
-      /** @type {number} */ (options.radius) : 8);
+  this.setRadius(options.radius !== undefined ? options.radius : 8);
 
   goog.events.listen(this, [
     ol.Object.getChangeEventType(ol.layer.HeatmapLayerProperty.BLUR),
@@ -256,7 +254,7 @@ ol.layer.Heatmap.prototype.handleRender_ = function(event) {
   var canvas = context.canvas;
   var image = context.getImageData(0, 0, canvas.width, canvas.height);
   var view8 = image.data;
-  var i, ii, alpha, offset;
+  var i, ii, alpha;
   for (i = 0, ii = view8.length; i < ii; i += 4) {
     alpha = view8[i + 3] * 4;
     if (alpha) {

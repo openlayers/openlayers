@@ -1978,7 +1978,7 @@ ol.render.canvas.ReplayGroup.prototype.replay = function(
   context.closePath();
   context.clip();
 
-  var i, ii, j, jj, replays, replay, result;
+  var i, ii, j, jj, replays, replay;
   for (i = 0, ii = zs.length; i < ii; ++i) {
     replays = this.replaysByZIndex_[zs[i].toString()];
     for (j = 0, jj = ol.render.REPLAY_ORDER.length; j < jj; ++j) {

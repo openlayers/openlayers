@@ -225,7 +225,7 @@ ol.interaction.Interaction.zoomWithoutConstraints =
         resolution !== currentResolution &&
         opt_duration && opt_duration > 0) {
       map.beforeRender(ol.animation.zoom({
-        resolution: /** @type {number} */ (currentResolution),
+        resolution: currentResolution,
         duration: opt_duration,
         easing: ol.easing.easeOut
       }));

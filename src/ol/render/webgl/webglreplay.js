@@ -1028,7 +1028,7 @@ ol.render.webgl.ReplayGroup.prototype.isEmpty = function() {
 ol.render.webgl.ReplayGroup.prototype.replay = function(context,
     center, resolution, rotation, size, pixelRatio,
     opacity, skippedFeaturesHash) {
-  var i, ii, replay, result;
+  var i, ii, replay;
   for (i = 0, ii = ol.render.REPLAY_ORDER.length; i < ii; ++i) {
     replay = this.replays_[ol.render.REPLAY_ORDER[i]];
     if (replay !== undefined) {
