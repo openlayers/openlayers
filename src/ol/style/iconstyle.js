@@ -426,7 +426,10 @@ ol.style.IconImage_ = function(image, src, size, crossOrigin, imageState) {
    * @type {boolean}
    */
   this.tainting_ = false;
-  if (this.imageState_ == ol.style.ImageState.LOADED)this.determineTainting_();
+  if (this.imageState_ == ol.style.ImageState.LOADED) {
+    this.determineTainting_();
+  }
+
 };
 goog.inherits(ol.style.IconImage_, goog.events.EventTarget);
 
