@@ -11,7 +11,7 @@
     <link rel="stylesheet" href="./resources/layout.css" type="text/css">
     {{{ extraHead }}}
     {{{ css.tag }}}
-    <script src="./resources/zeroclipboard/ZeroClipboard.min.js"></script>
+    <script src="https://cdn.rawgit.com/zenorocha/clipboard.js/master/dist/clipboard.min.js"></script>
     <title>{{ title }}</title>
   </head>
   <body>
@@ -38,7 +38,7 @@
 
       <div class="row-fluid">
         <div id="source-controls">
-          <a id="copy-button"><i class="fa fa-clipboard"></i> Copy</a>
+          <a id="copy-button"data-clipboard-target="#example-source"><i class="fa fa-clipboard"></i> Copy</a>
           <a id="jsfiddle-button"><i class="fa fa-jsfiddle"></i> Edit</a>
         </div>
         <form method="POST" id="jsfiddle-form" target="_blank" action="http://jsfiddle.net/api/post/jquery/1.11.0/">
