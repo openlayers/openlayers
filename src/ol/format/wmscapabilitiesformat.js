@@ -3,7 +3,6 @@ goog.provide('ol.format.WMSCapabilities');
 goog.require('goog.asserts');
 goog.require('goog.dom.NodeType');
 goog.require('goog.object');
-goog.require('goog.string');
 goog.require('ol');
 goog.require('ol.format.XLink');
 goog.require('ol.format.XML');
@@ -69,7 +68,7 @@ ol.format.WMSCapabilities.prototype.readFromNode = function(node) {
   goog.asserts.assert(node.localName == 'WMS_Capabilities' ||
       node.localName == 'WMT_MS_Capabilities',
       'localName should be WMS_Capabilities or WMT_MS_Capabilities');
-  this.version = goog.string.trim(node.getAttribute('version'));
+  this.version = node.getAttribute('version').trim();
   goog.asserts.assertString(this.version, 'this.version should be a string');
   var wmsCapabilityObject = ol.xml.pushParseAndPop({
     'version': this.version

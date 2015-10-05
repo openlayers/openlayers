@@ -122,8 +122,7 @@ ol.format.XSD.readNonNegativeIntegerString = function(string) {
  * @return {string|undefined} String.
  */
 ol.format.XSD.readString = function(node) {
-  var s = ol.xml.getAllTextContent(node, false);
-  return goog.string.trim(s);
+  return ol.xml.getAllTextContent(node, false).trim();
 };
 
 

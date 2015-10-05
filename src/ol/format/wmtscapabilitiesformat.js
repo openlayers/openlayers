@@ -2,7 +2,6 @@ goog.provide('ol.format.WMTSCapabilities');
 
 goog.require('goog.asserts');
 goog.require('goog.dom.NodeType');
-goog.require('goog.string');
 goog.require('ol.extent');
 goog.require('ol.format.OWS');
 goog.require('ol.format.XLink');
@@ -68,7 +67,7 @@ ol.format.WMTSCapabilities.prototype.readFromNode = function(node) {
       'node.nodeType should be ELEMENT');
   goog.asserts.assert(node.localName == 'Capabilities',
       'localName should be Capabilities');
-  this.version = goog.string.trim(node.getAttribute('version'));
+  this.version = node.getAttribute('version').trim();
   goog.asserts.assertString(this.version, 'this.version should be a string');
   var WMTSCapabilityObject = this.owsParser_.readFromNode(node);
   if (!WMTSCapabilityObject) {

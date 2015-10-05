@@ -11,7 +11,6 @@ goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('goog.dom.NodeType');
 goog.require('goog.math');
-goog.require('goog.string');
 goog.require('ol');
 goog.require('ol.Feature');
 goog.require('ol.FeatureStyleFunction');
@@ -392,7 +391,7 @@ ol.format.KML.readFlatCoordinates_ = function(node) {
  * @return {string|undefined} Style URL.
  */
 ol.format.KML.readStyleUrl_ = function(node) {
-  var s = goog.string.trim(ol.xml.getAllTextContent(node, false));
+  var s = ol.xml.getAllTextContent(node, false).trim();
   if (node.baseURI) {
     return goog.Uri.resolve(node.baseURI, s).toString();
   } else {
@@ -410,9 +409,9 @@ ol.format.KML.readStyleUrl_ = function(node) {
 ol.format.KML.readURI_ = function(node) {
   var s = ol.xml.getAllTextContent(node, false);
   if (node.baseURI) {
-    return goog.Uri.resolve(node.baseURI, goog.string.trim(s)).toString();
+    return goog.Uri.resolve(node.baseURI, s.trim()).toString();
   } else {
-    return goog.string.trim(s);
+    return s.trim();
   }
 };
 
