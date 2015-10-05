@@ -677,7 +677,8 @@ ol.proj.get = function(projectionLike) {
 ol.proj.equivalent = function(projection1, projection2) {
   if (projection1 === projection2) {
     return true;
-  } else if (projection1.getCode() === projection2.getCode()) {
+  } else if (projection1.getCode() === projection2.getCode() &&
+      projection1.getUnits() === projection2.getUnits()) {
     return true;
   } else if (projection1.getUnits() != projection2.getUnits()) {
     return false;

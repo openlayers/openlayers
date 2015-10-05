@@ -56,6 +56,19 @@ describe('ol.proj', function() {
             'EPSG:4326'
           ]);
         });
+
+    it('requires code and units to be equal for projection evquivalence',
+        function() {
+          var proj1 = new ol.proj.Projection({
+            code: 'EPSG:3857',
+            units: 'm'
+          });
+          var proj2 = new ol.proj.Projection({
+            code: 'EPSG:3857',
+            units: 'tile-pixels'
+          });
+          expect(ol.proj.equivalent(proj1, proj2)).to.not.be.ok();
+        });
   });
 
   describe('identify transform', function() {
