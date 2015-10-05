@@ -4,7 +4,6 @@ goog.provide('ol.source.WMTSRequestEncoding');
 goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('goog.object');
-goog.require('goog.string');
 goog.require('goog.uri.utils');
 goog.require('ol.TileUrlFunction');
 goog.require('ol.TileUrlFunctionType');
@@ -462,7 +461,7 @@ ol.source.WMTS.optionsFromCapabilities = function(wmtsCap, config) {
 
   if (!wmtsCap.hasOwnProperty('OperationsMetadata') ||
       !wmtsCap['OperationsMetadata'].hasOwnProperty('GetTile') ||
-      goog.string.startsWith(requestEncoding, 'REST')) {
+      requestEncoding.indexOf('REST') === 0) {
     // Add REST tile resource url
     requestEncoding = ol.source.WMTSRequestEncoding.REST;
     l['ResourceURL'].forEach(function(elt, index, array) {
