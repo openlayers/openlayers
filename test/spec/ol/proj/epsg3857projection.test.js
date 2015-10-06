@@ -42,7 +42,7 @@ describe('ol.proj.EPSG3857', function() {
             to.roughlyEqual(19.11 * Math.cos(Math.PI * latitude / 180), 1e-9);
       }
     });
-    
+
     it('returns the correct point scale at extrem latitudes', function() {
       // @see http://msdn.microsoft.com/en-us/library/aa940990.aspx
       var epsg3857 = ol.proj.get('EPSG:3857');
