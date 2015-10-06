@@ -43,8 +43,8 @@ ol.control.FullScreen = function(opt_options) {
    * @private
    * @type {Node}
    */
-  this.labelNode_ = /** @type {Node} */ (goog.isString(label) ?
-          goog.dom.createTextNode(label) : label);
+  this.labelNode_ = goog.isString(label) ?
+      goog.dom.createTextNode(label) : label;
 
   var labelActive = options.labelActive ? options.labelActive : '\u00d7';
 
@@ -52,8 +52,8 @@ ol.control.FullScreen = function(opt_options) {
    * @private
    * @type {Node}
    */
-  this.labelActiveNode_ = /** @type {Node} */ (goog.isString(labelActive) ?
-          goog.dom.createTextNode(labelActive) : labelActive);
+  this.labelActiveNode_ = goog.isString(labelActive) ?
+      goog.dom.createTextNode(labelActive) : labelActive;
 
   var tipLabel = options.tipLabel ? options.tipLabel : 'Toggle full-screen';
   var button = goog.dom.createDom(goog.dom.TagName.BUTTON, {
