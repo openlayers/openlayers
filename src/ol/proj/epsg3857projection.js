@@ -121,8 +121,8 @@ ol.proj.EPSG3857.fromEPSG4326 = function(input, opt_output, opt_dimension) {
     output[i] = ol.proj.EPSG3857.RADIUS * Math.PI * input[i] / 180;
     if (Math.abs(input[i + 1]) >= Math.abs(ol.proj.EPSG3857.WORLD_EXTENT[1])) {
       // move coordinate value into the world extent
-      input[i + 1] = Math.abs(ol.proj.EPSG3857.WORLD_EXTENT[1]) * 
-        (input[i + 1] / Math.abs(input[i + 1]));
+      input[i + 1] = Math.abs(ol.proj.EPSG3857.WORLD_EXTENT[1]) *
+          (input[i + 1] / Math.abs(input[i + 1]));
     }
     output[i + 1] = ol.proj.EPSG3857.RADIUS *
         Math.log(Math.tan(Math.PI * (input[i + 1] + 90) / 360));
