@@ -50,9 +50,9 @@ describe('ol.proj.EPSG3857', function() {
       var resolution = 19.11;
       var latitude;
       for (latitude = 85; latitude < 90; ++latitude) {
-        var point = ol.proj.transform([0, 85], epsg4326, epsg3857);
+        var point = ol.proj.transform([0, latitude], epsg4326, epsg3857);
         expect(epsg3857.getPointResolution(resolution, point)).
-            to.roughlyEqual(19.11 * Math.cos(Math.PI * latitude / 180), 1e-9);
+            to.roughlyEqual(19.11 * Math.cos(Math.PI * 85 / 180), 1e-9);
       }
     });
 
