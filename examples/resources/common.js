@@ -1,9 +1,12 @@
 (function() {
   var copyButton = document.getElementById('copy-button');
   if (copyButton) {
-    var clipboard = new Clipboard('#copy-button');
-    clipboard.on('success', function(e) {
-      e.clearSelection();
+    var data = document.getElementById('example-source').textContent;
+    new ZeroClipboard(copyButton).on('copy', function(event) {
+      event.clipboardData.setData({
+        'text/plain': data,
+        'text/html': data
+      });
     });
   }
 
