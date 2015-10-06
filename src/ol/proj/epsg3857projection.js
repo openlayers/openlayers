@@ -125,7 +125,7 @@ ol.proj.EPSG3857.fromEPSG4326 = function(input, opt_output, opt_dimension) {
           Math.log(Math.tan(Math.PI *
               (Math.abs(ol.proj.EPSG3857.WORLD_EXTENT[1]) *
                   (input[i + 1] / Math.abs(input[i + 1])) + 90) / 360));
-    }else{
+    } else {
       output[i + 1] = ol.proj.EPSG3857.RADIUS *
           Math.log(Math.tan(Math.PI * (input[i + 1] + 90) / 360));
     }
