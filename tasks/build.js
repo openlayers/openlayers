@@ -18,13 +18,13 @@ var root = path.join(__dirname, '..');
 
 var umdWrapper = '(function (root, factory) {\n' +
     '  if (typeof exports === "object") {\n' +
-    '    module.exports = factory();\n' +
+    '    module.exports = factory(require("proj4"));\n' +
     '  } else if (typeof define === "function" && define.amd) {\n' +
-    '    define([], factory);\n' +
+    '    define(["proj4"], factory);\n' +
     '  } else {\n' +
-    '    root.ol = factory();\n' +
+    '    root.ol = factory(root.proj4);\n' +
     '  }\n' +
-    '}(this, function () {\n' +
+    '}(this, function (proj4) {\n' +
     '  var OPENLAYERS = {};\n' +
     '  %output%\n' +
     '  return OPENLAYERS.ol;\n' +
