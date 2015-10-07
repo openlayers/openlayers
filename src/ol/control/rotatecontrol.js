@@ -5,7 +5,6 @@ goog.require('goog.dom.TagName');
 goog.require('goog.dom.classlist');
 goog.require('goog.events');
 goog.require('goog.events.EventType');
-goog.require('goog.math');
 goog.require('ol');
 goog.require('ol.animation');
 goog.require('ol.control.Control');
@@ -152,7 +151,7 @@ ol.control.Rotate.render = function(mapEvent) {
   }
   var rotation = frameState.viewState.rotation;
   if (rotation != this.rotation_) {
-    var transform = 'rotate(' + goog.math.toDegrees(rotation) + 'deg)';
+    var transform = 'rotate(' + rotation + 'rad)';
     if (this.autoHide_) {
       goog.dom.classlist.enable(
           this.element, ol.css.CLASS_HIDDEN, rotation === 0);
