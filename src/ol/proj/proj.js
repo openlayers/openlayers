@@ -153,8 +153,9 @@ ol.proj.Projection = function(options) {
       }
       if (options.units === undefined) {
         var units = def.units;
-        if (units === undefined) {
-          if (def.to_meter !== undefined) {
+        if (def.to_meter !== undefined) {
+          if (units === undefined ||
+              ol.proj.METERS_PER_UNIT[units] === undefined) {
             units = def.to_meter.toString();
             ol.proj.METERS_PER_UNIT[units] = def.to_meter;
           }
