@@ -26,8 +26,11 @@ goog.require('ol.source.Tile');
  * @api
  */
 ol.source.TileUTFGrid = function(options) {
+  var projection = goog.isDef(options.projection) ?
+      options.projection : 'EPSG:3857';
+
   goog.base(this, {
-    projection: ol.proj.get('EPSG:3857'),
+    projection: projection,
     state: ol.source.State.LOADING
   });
 
