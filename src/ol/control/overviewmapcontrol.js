@@ -97,7 +97,8 @@ ol.control.OverviewMap = function(opt_options) {
   this.ovmap_ = new ol.Map({
     controls: new ol.Collection(),
     interactions: new ol.Collection(),
-    target: ovmapDiv
+    target: ovmapDiv,
+    view: options.view
   });
   var ovmap = this.ovmap_;
 

@@ -1160,7 +1160,8 @@ olx.control.MousePositionOptions.prototype.undefinedHTML;
  *     layers: (Array.<ol.layer.Layer>|ol.Collection|undefined),
  *     render: (function(ol.MapEvent)|undefined),
  *     target: (Element|undefined),
- *     tipLabel: (string|undefined)}}
+ *     tipLabel: (string|undefined),
+ *     view: (ol.View|undefined)}}
  * @api
  */
 olx.control.OverviewMapOptions;
@@ -1234,6 +1235,15 @@ olx.control.OverviewMapOptions.prototype.target;
  * @api
  */
 olx.control.OverviewMapOptions.prototype.tipLabel;
+
+
+/**
+ * Custom view for the overview map. If not provided, a default view with
+ * an EPSG:3857 projection will be used.
+ * @type {ol.View|undefined}
+ * @api
+ */
+olx.control.OverviewMapOptions.prototype.view;
 
 
 /**
