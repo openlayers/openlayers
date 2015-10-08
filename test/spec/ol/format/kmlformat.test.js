@@ -1810,7 +1810,7 @@ describe('ol.format.KML', function() {
             '    <Placemark>' +
             '      <StyleMap>' +
             '        <Pair>' +
-            '          <key>highlighted</key>' +
+            '          <key>highlight</key>' +
             '          <Style>' +
             '            <PolyStyle>' +
             '              <color>00000000</color>' +
@@ -1851,7 +1851,7 @@ describe('ol.format.KML', function() {
             '          </Style>' +
             '        </Pair>' +
             '        <Pair>' +
-            '          <key>highlighted</key>' +
+            '          <key>highlight</key>' +
             '          <Style>' +
             '            <PolyStyle>' +
             '              <color>ffffffff</color>' +
@@ -1911,7 +1911,7 @@ describe('ol.format.KML', function() {
         expect(s.getFill().getColor()).to.eql([0, 0, 0, 0]);
       });
 
-      it('ignores highlighted styleUrls', function() {
+      it('ignores highlight styleUrls', function() {
         var text =
             '<kml xmlns="http://earth.google.com/kml/2.2">' +
             '  <Document>' +
@@ -1923,7 +1923,7 @@ describe('ol.format.KML', function() {
             '    <Placemark>' +
             '      <StyleMap>' +
             '        <Pair>' +
-            '          <key>highlighted</key>' +
+            '          <key>highlight</key>' +
             '          <styleUrl>#foo</styleUrl>' +
             '        </Pair>' +
             '      </StyleMap>' +
