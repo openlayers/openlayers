@@ -265,8 +265,8 @@ ol.interaction.Modify.prototype.addFeature_ = function(feature) {
 ol.interaction.Modify.prototype.willModifyFeatures_ = function(evt) {
   if (!this.modified_) {
     this.modified_ = true;
-    this.dispatchEvent(new ol.ModifyEvent(ol.ModifyEventType.MODIFYSTART,
-        this.features_, evt));
+    this.dispatchEvent(new ol.interaction.ModifyEvent(
+        ol.ModifyEventType.MODIFYSTART, this.features_, evt));
   }
 };
 
@@ -678,8 +678,8 @@ ol.interaction.Modify.handleUpEvent_ = function(evt) {
         segmentData);
   }
   if (this.modified_) {
-    this.dispatchEvent(new ol.ModifyEvent(ol.ModifyEventType.MODIFYEND,
-        this.features_, evt));
+    this.dispatchEvent(new ol.interaction.ModifyEvent(
+        ol.ModifyEventType.MODIFYEND, this.features_, evt));
     this.modified_ = false;
   }
   return false;
@@ -713,8 +713,8 @@ ol.interaction.Modify.handleEvent = function(mapBrowserEvent) {
           'geometry should be an ol.geom.Point');
       this.willModifyFeatures_(mapBrowserEvent);
       handled = this.removeVertex_();
-      this.dispatchEvent(new ol.ModifyEvent(ol.ModifyEventType.MODIFYEND,
-          this.features_, mapBrowserEvent));
+      this.dispatchEvent(new ol.interaction.ModifyEvent(
+          ol.ModifyEventType.MODIFYEND, this.features_, mapBrowserEvent));
       this.modified_ = false;
     } else {
       handled = true;
