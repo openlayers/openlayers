@@ -1,7 +1,7 @@
 goog.provide('ol.test.interaction.Select');
 
 describe('ol.interaction.Select', function() {
-  var target, map, source;
+  var target, map, layer, source;
 
   var width = 360;
   var height = 180;
@@ -45,7 +45,7 @@ describe('ol.interaction.Select', function() {
       features: features
     });
 
-    var layer = new ol.layer.Vector({source: source});
+    layer = new ol.layer.Vector({source: source});
 
     map = new ol.Map({
       target: target,
@@ -197,6 +197,32 @@ describe('ol.interaction.Select', function() {
       });
     });
 
+  });
+
+  describe('#getLayer(feature)', function() {
+    var interaction;
+
+    beforeEach(function() {
+      interaction = new ol.interaction.Select();
+      map.addInteraction(interaction);
+    });
+    afterEach(function() {
+      map.removeInteraction(interaction);
+    });
+
+    it('returns a layer from a selected feature', function() {
+      var listenerSpy = sinon.spy(function(e) {
+        var feature = e.selected[0];
+        var layer_ = interaction.getLayer(feature);
+        expect(e.selected).to.have.length(1);
+        expect(feature).to.be.a(ol.Feature);
+        expect(layer_).to.be.a(ol.layer.Vector);
+        expect(layer_).to.equal(layer);
+      });
+      interaction.on('select', listenerSpy);
+
+      simulateEvent(ol.MapBrowserEvent.EventType.SINGLECLICK, 10, -20);
+    });
   });
 
   describe('#setActive()', function() {
