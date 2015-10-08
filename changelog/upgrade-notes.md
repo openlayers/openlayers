@@ -1,5 +1,7 @@
 ## Upgrade notes
 
+### v3.11.0
+
 ### v3.10.0
 
 #### `ol.layer.Layer` changes
