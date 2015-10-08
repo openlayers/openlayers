@@ -83,7 +83,7 @@ describe('ol.interaction.Modify', function() {
    * modifications. Helper function to
    * @param {ol.Feature} feature Modified feature.
    * @param {ol.interaction.Modify} interaction
-   * @return {Array<ol.ModifyEvent|string>} events
+   * @return {Array<ol.interaction.ModifyEvent|string>} events
    */
   function trackEvents(feature, interaction) {
     var events = [];
@@ -103,7 +103,7 @@ describe('ol.interaction.Modify', function() {
   * Validates the event array to verify proper event sequence. Checks
   * that first and last event are correct ModifyEvents and that feature
   * modifications event are in between.
-  * @param {Array<ol.ModifyEvent|string>} event
+  * @param {Array<ol.interaction.ModifyEvent|string>} event
   * @param {Array<ol.Feature>} features
   */
   function validateEvents(events, features) {
@@ -112,11 +112,11 @@ describe('ol.interaction.Modify', function() {
     var endevent = events[events.length - 1];
 
     // first event should be modifystary
-    expect(startevent).to.be.an(ol.ModifyEvent);
+    expect(startevent).to.be.an(ol.interaction.ModifyEvent);
     expect(startevent.type).to.eql('modifystart');
 
     // last event should be modifyend
-    expect(endevent).to.be.an(ol.ModifyEvent);
+    expect(endevent).to.be.an(ol.interaction.ModifyEvent);
     expect(endevent.type).to.eql('modifyend');
 
     // make sure we get change events to events array
@@ -387,6 +387,7 @@ goog.require('ol.events.condition');
 goog.require('ol.geom.Point');
 goog.require('ol.geom.Polygon');
 goog.require('ol.interaction.Modify');
+goog.require('ol.interaction.ModifyEvent');
 goog.require('ol.layer.Vector');
 goog.require('ol.pointer.PointerEvent');
 goog.require('ol.source.Vector');
