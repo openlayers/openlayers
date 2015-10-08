@@ -331,11 +331,11 @@ describe('ol.format.WFS', function() {
 
   describe('when writing out a Transaction request', function() {
     var text, filename = 'spec/ol/format/wfs/TransactionUpdateMultiGeoms.xml';
-    before(function (done) {
-      afterLoadText(filename, function (xml) {
-          text = xml;
-          done();
-        }
+    before(function(done) {
+      afterLoadText(filename, function(xml) {
+        text = xml;
+        done();
+      }
       );
     });
 
