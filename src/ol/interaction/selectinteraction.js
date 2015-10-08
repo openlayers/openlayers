@@ -179,9 +179,9 @@ ol.interaction.Select = function(opt_options) {
    * An association between selected feature (key)
    * and layer (value)
    * @private
-   * @type {Array.<ol.layer.Vector>}
+   * @type {Object.<number, ol.layer.Layer>}
    */
-  this.featureLayerAssociation_ = [];
+  this.featureLayerAssociation_ = {};
 
   /**
    * @private
@@ -217,9 +217,7 @@ goog.inherits(ol.interaction.Select, ol.interaction.Interaction);
 ol.interaction.Select.prototype.addFeatureLayerAssociation_ =
     function(feature, layer) {
   var key = goog.getUid(feature);
-  var obj = {};
-  obj[key] = layer;
-  this.featureLayerAssociation_.push(obj);
+  this.featureLayerAssociation_[key] = layer;
 };
 
 
@@ -243,14 +241,8 @@ ol.interaction.Select.prototype.getFeatures = function() {
 ol.interaction.Select.prototype.getLayer = function(feature) {
   goog.asserts.assertInstanceof(feature, ol.Feature,
       'feature should be an ol.Feature');
-  var key = goog.getUid(feature).toString();
-  var found = goog.array.find(this.featureLayerAssociation_, function(each) {
-    if (key == goog.object.getKeys(each)[0]) {
-      return true;
-    }
-    return false;
-  });
-  return /** @type {ol.layer.Vector} */ (goog.object.getValues(found)[0]);
+  var key = goog.getUid(feature);
+  return /** @type {ol.layer.Vector} */ (this.featureLayerAssociation_[key]);
 };
 
 
@@ -301,9 +293,9 @@ ol.interaction.Select.handleEvent = function(mapBrowserEvent) {
         features.clear();
       }
       features.extend(selected);
-      // Modify array featureLayerAssociation_
+      // Modify object this.featureLayerAssociation_
       if (selected.length === 0) {
-        this.featureLayerAssociation_.length = 0;
+        goog.object.clear(this.featureLayerAssociation_);
       } else {
         if (deselected.length > 0) {
           deselected.forEach(function(feature) {
@@ -426,12 +418,5 @@ ol.interaction.Select.prototype.removeFeature_ = function(evt) {
 ol.interaction.Select.prototype.removeFeatureLayerAssociation_ =
     function(feature) {
   var key = goog.getUid(feature);
-  var index = goog.array.findIndex(this.featureLayerAssociation_,
-      function(each) {
-        if (key == goog.object.getKeys(each)[0]) {
-          return true;
-        }
-        return false;
-      });
-  this.featureLayerAssociation_.splice(index, 1);
+  delete this.featureLayerAssociation_[key];
 };
