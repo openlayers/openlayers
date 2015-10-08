@@ -332,10 +332,12 @@ describe('ol.format.WFS', function() {
   describe('when writing out a Transaction request', function() {
     var text;
     before(function(done) {
-      afterLoadText('spec/ol/format/wfs/TransactionUpdateMultiGeoms.xml', function(xml) {
-        text = xml;
-        done();
-      });
+      afterLoadText('spec/ol/format/wfs/TransactionUpdateMultiGeoms.xml', 
+        function(xml) {
+          text = xml;
+          done();
+        }
+      );
     });
 
     it('handles multiple geometries', function() {
@@ -349,7 +351,7 @@ describe('ol.format.WFS', function() {
         [-12240318, 6507071],
         [-12416429, 6604910]
       ]]));
-      updateFeature.set('geom2',new ol.geom.MultiLineString([[
+      updateFeature.set('geom2', new ol.geom.MultiLineString([[
         [-12000000, 6700000],
         [-12000001, 6700001],
         [-12000002, 6700002]
