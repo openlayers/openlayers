@@ -197,7 +197,7 @@ ol.Object.prototype.notify = function(key, oldValue) {
  * Sets a value.
  * @param {string} key Key name.
  * @param {*} value Value.
- * @param {boolean=} notify update propertie silently
+ * @param {boolean=} opt_notify update propertie silently
  * @api stable
  */
 ol.Object.prototype.set = function(key, value, notify) {
@@ -216,7 +216,7 @@ ol.Object.prototype.set = function(key, value, notify) {
  * Sets a collection of key-value pairs.  Note that this changes any existing
  * properties and adds new ones (it does not remove any existing properties).
  * @param {Object.<string, *>} values Values.
- * @param {boolean=} notify update propertie silently
+ * @param {boolean=} opt_notify update propertie silently
  * @api stable
  */
 ol.Object.prototype.setProperties = function(values, notify) {
@@ -230,7 +230,7 @@ ol.Object.prototype.setProperties = function(values, notify) {
 /**
  * Unsets a property.
  * @param {string} key Key name.
- * @param {boolean=} notify update propertie silently
+ * @param {boolean=} opt_notify update propertie silently
  * @api stable
  */
 ol.Object.prototype.unset = function(key, notify) {
