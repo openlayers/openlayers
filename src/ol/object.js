@@ -230,12 +230,15 @@ ol.Object.prototype.setProperties = function(values,notify) {
 /**
  * Unsets a property.
  * @param {string} key Key name.
+ * @param {boolean} notify update propertie silently
  * @api stable
  */
 ol.Object.prototype.unset = function(key) {
   if (key in this.values_) {
     var oldValue = this.values_[key];
     delete this.values_[key];
-    this.notify(key, oldValue);
+    if (!goog.isDef(notify) || notify !== false) {
++      this.notify(key, oldValue);
++   }
   }
 };
