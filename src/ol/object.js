@@ -202,12 +202,12 @@ ol.Object.prototype.notify = function(key, oldValue) {
  */
 ol.Object.prototype.set = function(key, value, notify) {
   if (goog.isDef(notify) && notify === false) {
-      this.values_[key] = value;
+    this.values_[key] = value;
   }
   else {
-      var oldValue = this.values_[key];
-      this.values_[key] = value;
-      this.notify(key, oldValue);
+    var oldValue = this.values_[key];
+    this.values_[key] = value;
+    this.notify(key, oldValue);
   }
 };
 
