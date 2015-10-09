@@ -21,7 +21,8 @@ ol.math.clamp = function(value, min, max) {
  * @return {number} Hyperbolic cosine of x.
  */
 ol.math.cosh = function(x) {
-  return (Math.exp(x) + Math.exp(-x)) / 2;
+  var y = Math.exp(x);
+  return (y + 1 / y) / 2;
 };
 
 
