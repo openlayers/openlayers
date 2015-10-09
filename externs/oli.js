@@ -309,6 +309,12 @@ oli.source.VectorEvent = function() {};
 
 
 /**
+ * @type {ol.source.Vector}
+ */
+oli.source.VectorEvent.prototype.source;
+
+
+/**
  * @type {ol.Feature}
  */
 oli.source.VectorEvent.prototype.feature;
