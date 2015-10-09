@@ -214,7 +214,8 @@ ol.source.Vector.prototype.addFeatureInternal = function(feature) {
   }
 
   this.dispatchEvent(
-      new ol.source.VectorEvent(ol.source.VectorEventType.ADDFEATURE, feature));
+      new ol.source.VectorEvent(ol.source.VectorEventType.ADDFEATURE, this,
+      feature));
 };
 
 
@@ -313,7 +314,7 @@ ol.source.Vector.prototype.addFeaturesInternal = function(features) {
 
   for (i = 0, length = newFeatures.length; i < length; i++) {
     this.dispatchEvent(new ol.source.VectorEvent(
-        ol.source.VectorEventType.ADDFEATURE, newFeatures[i]));
+        ol.source.VectorEventType.ADDFEATURE, this, newFeatures[i]));
   }
 };
 
@@ -405,7 +406,8 @@ ol.source.Vector.prototype.clear = function(opt_fast) {
   this.loadedExtentsRtree_.clear();
   this.nullGeometryFeatures_ = {};
 
-  var clearEvent = new ol.source.VectorEvent(ol.source.VectorEventType.CLEAR);
+  var clearEvent = new ol.source.VectorEvent(ol.source.VectorEventType.CLEAR,
+      this);
   this.dispatchEvent(clearEvent);
   this.changed();
 };
@@ -752,7 +754,7 @@ ol.source.Vector.prototype.handleFeatureChange_ = function(event) {
   }
   this.changed();
   this.dispatchEvent(new ol.source.VectorEvent(
-      ol.source.VectorEventType.CHANGEFEATURE, feature));
+      ol.source.VectorEventType.CHANGEFEATURE, this, feature));
 };
 
 
@@ -832,7 +834,7 @@ ol.source.Vector.prototype.removeFeatureInternal = function(feature) {
     delete this.undefIdIndex_[featureKey];
   }
   this.dispatchEvent(new ol.source.VectorEvent(
-      ol.source.VectorEventType.REMOVEFEATURE, feature));
+      ol.source.VectorEventType.REMOVEFEATURE, this, feature));
 };
 
 
@@ -866,11 +868,19 @@ ol.source.Vector.prototype.removeFromIdIndex_ = function(feature) {
  * @extends {goog.events.Event}
  * @implements {oli.source.VectorEvent}
  * @param {string} type Type.
+ * @param {ol.source.Vector} source Source.
  * @param {ol.Feature=} opt_feature Feature.
  */
-ol.source.VectorEvent = function(type, opt_feature) {
+ol.source.VectorEvent = function(type, source, opt_feature) {
 
   goog.base(this, type);
+
+  /**
+   * The source on which the feature is being added or removed.
+   * @type {ol.source.Vector}
+   * @api stable
+   */
+  this.source = source;
 
   /**
    * The feature being added or removed.
