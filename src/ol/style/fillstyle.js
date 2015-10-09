@@ -26,7 +26,7 @@ ol.style.Fill = function(opt_options) {
 
   /**
    * @private
-   * @type {function()}
+   * @type {function(CanvasRenderingContext2D)}
    */
   this.renderer_ = options.renderer !== undefined ? options.renderer : null;
 
@@ -62,7 +62,7 @@ ol.style.Fill.prototype.setColor = function(color) {
 
 /**
  * Get the fill renderer.
- * @return {function()} Function.
+ * @return {function(CanvasRenderingContext2D)} Function.
  * @api
  */
 ol.style.Fill.prototype.getRenderer = function() {
@@ -73,7 +73,7 @@ ol.style.Fill.prototype.getRenderer = function() {
 /**
  * Set the renderer.
  *
- * @param {function()} renderer Function.
+ * @param {function(CanvasRenderingContext2D)} renderer Function.
  * @api
  */
 ol.style.Fill.prototype.setRenderer = function(renderer) {

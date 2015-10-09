@@ -1138,7 +1138,7 @@ ol.render.canvas.PolygonReplay = function(tolerance, maxExtent, resolution) {
    *         currentLineJoin: (string|undefined),
    *         currentLineWidth: (number|undefined),
    *         currentMiterLimit: (number|undefined),
-   *         fillStyle: (string|undefined),
+   *         fillStyle: (string|function(CanvasRenderingContext2D)|undefined),
    *         strokeStyle: (string|undefined),
    *         lineCap: (string|undefined),
    *         lineDash: Array.<number>,
