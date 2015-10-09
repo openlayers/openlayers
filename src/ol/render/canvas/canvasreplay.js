@@ -435,9 +435,13 @@ ol.render.canvas.Replay.prototype.replay_ = function(
         ++i;
         break;
       case ol.render.canvas.Instruction.SET_FILL_STYLE:
-        goog.asserts.assert(goog.isString(instruction[1]),
-            '2nd instruction should be a string');
-        context.fillStyle = /** @type {string} */ (instruction[1]);
+        goog.asserts.assert(goog.isString(instruction[1]) || goog.isFunction(instruction[1]),
+            '2nd instruction should be a string or a function');
+        if (goog.isString(instruction[1])) {
+            context.fillStyle = /** @type {string} */ (instruction[1]);
+        } else {
+            context.fillStyle = instruction[1](context);
+        }
         ++i;
         break;
       case ol.render.canvas.Instruction.SET_STROKE_STYLE:
@@ -1386,8 +1390,13 @@ ol.render.canvas.PolygonReplay.prototype.setFillStrokeStyle =
   var state = this.state_;
   if (fillStyle) {
     var fillStyleColor = fillStyle.getColor();
-    state.fillStyle = ol.color.asString(fillStyleColor ?
-        fillStyleColor : ol.render.canvas.defaultFillStyle);
+    var fillStyleRenderer = fillStyle.getRenderer();
+    if (fillStyleRenderer) {
+        this.state_.fillStyle = fillStyleRenderer;
+    } else {
+        state.fillStyle = ol.color.asString(fillStyleColor ?
+            fillStyleColor : ol.render.canvas.defaultFillStyle);
+    }
   } else {
     state.fillStyle = undefined;
   }
