@@ -26,6 +26,12 @@ ol.style.Fill = function(opt_options) {
 
   /**
    * @private
+   * @type {function}
+   */
+  this.renderer_ = options.renderer !== undefined ? options.renderer : null;
+
+  /**
+   * @private
    * @type {string|undefined}
    */
   this.checksum_ = undefined;
@@ -50,6 +56,28 @@ ol.style.Fill.prototype.getColor = function() {
  */
 ol.style.Fill.prototype.setColor = function(color) {
   this.color_ = color;
+  this.checksum_ = undefined;
+};
+
+
+/**
+ * Get the fill renderer.
+ * @return {function} Function.
+ * @api
+ */
+ol.style.Fill.prototype.getRenderer = function() {
+  return this.renderer_;
+};
+
+
+/**
+ * Set the renderer.
+ *
+ * @param {function} renderer Function.
+ * @api
+ */
+ol.style.Fill.prototype.setRenderer = function(renderer) {
+  this.renderer_ = renderer;
   this.checksum_ = undefined;
 };
 
