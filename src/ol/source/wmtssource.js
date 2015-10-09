@@ -401,12 +401,12 @@ ol.source.WMTS.optionsFromCapabilities = function(wmtsCap, config) {
   if ('Dimension' in l) {
     l['Dimension'].forEach(function(elt, index, array) {
       var key = elt['Identifier'];
-      var value = elt['default'];
+      var value = elt['Default'];
       if (value !== undefined) {
-        goog.asserts.assert(ol.array.includes(elt['values'], value),
+        goog.asserts.assert(ol.array.includes(elt['Value'], value),
             'default value contained in values');
       } else {
-        value = elt['values'][0];
+        value = elt['Value'][0];
       }
       goog.asserts.assert(value !== undefined, 'value could be found');
       dimensions[key] = value;
