@@ -3,7 +3,6 @@ goog.provide('ol.renderer.dom.Map');
 goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('goog.dom');
-goog.require('goog.dom.TagName');
 goog.require('goog.events');
 goog.require('goog.events.Event');
 goog.require('goog.events.EventType');
@@ -62,7 +61,7 @@ ol.renderer.dom.Map = function(container, map) {
    * @type {!Element}
    * @private
    */
-  this.layersPane_ = goog.dom.createElement(goog.dom.TagName.DIV);
+  this.layersPane_ = goog.dom.createElement('DIV');
   this.layersPane_.className = ol.css.CLASS_UNSELECTABLE;
   var style = this.layersPane_.style;
   style.position = 'absolute';

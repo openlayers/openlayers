@@ -2,7 +2,6 @@ goog.provide('ol.control.OverviewMap');
 
 goog.require('goog.asserts');
 goog.require('goog.dom');
-goog.require('goog.dom.TagName');
 goog.require('goog.dom.classlist');
 goog.require('goog.events');
 goog.require('goog.events.EventType');
@@ -65,7 +64,7 @@ ol.control.OverviewMap = function(opt_options) {
    * @type {Node}
    */
   this.collapseLabel_ = goog.isString(collapseLabel) ?
-      goog.dom.createDom(goog.dom.TagName.SPAN, {}, collapseLabel) :
+      goog.dom.createDom('SPAN', {}, collapseLabel) :
       collapseLabel;
 
   var label = options.label ? options.label : '\u00BB';
@@ -75,12 +74,12 @@ ol.control.OverviewMap = function(opt_options) {
    * @type {Node}
    */
   this.label_ = goog.isString(label) ?
-      goog.dom.createDom(goog.dom.TagName.SPAN, {}, label) :
+      goog.dom.createDom('SPAN', {}, label) :
       label;
 
   var activeLabel = (this.collapsible_ && !this.collapsed_) ?
       this.collapseLabel_ : this.label_;
-  var button = goog.dom.createDom(goog.dom.TagName.BUTTON, {
+  var button = goog.dom.createDom('BUTTON', {
     'type': 'button',
     'title': tipLabel
   }, activeLabel);
@@ -88,7 +87,7 @@ ol.control.OverviewMap = function(opt_options) {
   goog.events.listen(button, goog.events.EventType.CLICK,
       this.handleClick_, false, this);
 
-  var ovmapDiv = goog.dom.createDom(goog.dom.TagName.DIV, 'ol-overviewmap-map');
+  var ovmapDiv = goog.dom.createDom('DIV', 'ol-overviewmap-map');
 
   /**
    * @type {ol.Map}
@@ -112,7 +111,7 @@ ol.control.OverviewMap = function(opt_options) {
         }, this);
   }
 
-  var box = goog.dom.createDom(goog.dom.TagName.DIV, 'ol-overviewmap-box');
+  var box = goog.dom.createDom('DIV', 'ol-overviewmap-box');
 
   /**
    * @type {ol.Overlay}
@@ -129,7 +128,7 @@ ol.control.OverviewMap = function(opt_options) {
       ol.css.CLASS_CONTROL +
       (this.collapsed_ && this.collapsible_ ? ' ol-collapsed' : '') +
       (this.collapsible_ ? '' : ' ol-uncollapsible');
-  var element = goog.dom.createDom(goog.dom.TagName.DIV,
+  var element = goog.dom.createDom('DIV',
       cssClasses, ovmapDiv, button);
 
   var render = options.render ? options.render : ol.control.OverviewMap.render;

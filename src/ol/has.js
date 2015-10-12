@@ -1,7 +1,6 @@
 goog.provide('ol.has');
 
 goog.require('goog.dom');
-goog.require('goog.dom.TagName');
 goog.require('ol');
 goog.require('ol.dom');
 goog.require('ol.webgl');
@@ -125,7 +124,7 @@ ol.has.WEBGL;
     if ('WebGLRenderingContext' in goog.global) {
       try {
         var canvas = /** @type {HTMLCanvasElement} */
-            (goog.dom.createElement(goog.dom.TagName.CANVAS));
+            (goog.dom.createElement('CANVAS'));
         var gl = ol.webgl.getContext(canvas, {
           failIfMajorPerformanceCaveat: true
         });

@@ -4,7 +4,6 @@ goog.provide('ol.control.ScaleLineUnits');
 
 goog.require('goog.asserts');
 goog.require('goog.dom');
-goog.require('goog.dom.TagName');
 goog.require('goog.events');
 goog.require('goog.math');
 goog.require('goog.style');
@@ -67,14 +66,14 @@ ol.control.ScaleLine = function(opt_options) {
    * @private
    * @type {Element}
    */
-  this.innerElement_ = goog.dom.createDom(goog.dom.TagName.DIV,
+  this.innerElement_ = goog.dom.createDom('DIV',
       className + '-inner');
 
   /**
    * @private
    * @type {Element}
    */
-  this.element_ = goog.dom.createDom(goog.dom.TagName.DIV,
+  this.element_ = goog.dom.createDom('DIV',
       className + ' ' + ol.css.CLASS_UNSELECTABLE, this.innerElement_);
 
   /**

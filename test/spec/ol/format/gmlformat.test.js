@@ -3,7 +3,7 @@ goog.provide('ol.test.format.GML');
 var readGeometry = function(format, text, opt_options) {
   var doc = ol.xml.parse(text);
   // we need an intermediate node for testing purposes
-  var node = goog.dom.createElement(goog.dom.TagName.PRE);
+  var node = goog.dom.createElement('PRE');
   node.appendChild(doc.documentElement);
   return format.readGeometryFromNode(node, opt_options);
 };
@@ -1261,7 +1261,6 @@ describe('ol.format.GML3', function() {
 
 
 goog.require('goog.dom');
-goog.require('goog.dom.TagName');
 goog.require('ol.format.GML');
 goog.require('ol.format.GML2');
 goog.require('ol.format.GML3');

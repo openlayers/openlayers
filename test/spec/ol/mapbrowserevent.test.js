@@ -11,7 +11,7 @@ describe('ol.MapBrowserEventHandler', function() {
 
     beforeEach(function() {
       clock = sinon.useFakeTimers();
-      target = goog.dom.createElement(goog.dom.TagName.DIV);
+      target = goog.dom.createElement('DIV');
       handler = new ol.MapBrowserEventHandler(new ol.Map({
         target: target
       }));
@@ -118,7 +118,6 @@ describe('ol.MapBrowserEventHandler', function() {
 });
 
 goog.require('goog.dom');
-goog.require('goog.dom.TagName');
 goog.require('goog.events');
 goog.require('goog.events.BrowserEvent');
 goog.require('ol.Map');

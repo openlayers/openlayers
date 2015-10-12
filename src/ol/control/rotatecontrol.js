@@ -1,7 +1,6 @@
 goog.provide('ol.control.Rotate');
 
 goog.require('goog.dom');
-goog.require('goog.dom.TagName');
 goog.require('goog.dom.classlist');
 goog.require('goog.events');
 goog.require('goog.events.EventType');
@@ -40,7 +39,7 @@ ol.control.Rotate = function(opt_options) {
   this.label_ = null;
 
   if (goog.isString(label)) {
-    this.label_ = goog.dom.createDom(goog.dom.TagName.SPAN,
+    this.label_ = goog.dom.createDom('SPAN',
         'ol-compass', label);
   } else {
     this.label_ = label;
@@ -49,7 +48,7 @@ ol.control.Rotate = function(opt_options) {
 
   var tipLabel = options.tipLabel ? options.tipLabel : 'Reset rotation';
 
-  var button = goog.dom.createDom(goog.dom.TagName.BUTTON, {
+  var button = goog.dom.createDom('BUTTON', {
     'class': className + '-reset',
     'type' : 'button',
     'title': tipLabel
@@ -60,7 +59,7 @@ ol.control.Rotate = function(opt_options) {
 
   var cssClasses = className + ' ' + ol.css.CLASS_UNSELECTABLE + ' ' +
       ol.css.CLASS_CONTROL;
-  var element = goog.dom.createDom(goog.dom.TagName.DIV, cssClasses, button);
+  var element = goog.dom.createDom('DIV', cssClasses, button);
 
   var render = options.render ? options.render : ol.control.Rotate.render;
 
