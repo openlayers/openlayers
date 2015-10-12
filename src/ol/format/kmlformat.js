@@ -10,7 +10,6 @@ goog.require('goog.Uri');
 goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('goog.dom.NodeType');
-goog.require('goog.math');
 goog.require('ol');
 goog.require('ol.Feature');
 goog.require('ol.FeatureStyleFunction');
@@ -30,6 +29,7 @@ goog.require('ol.geom.MultiPoint');
 goog.require('ol.geom.MultiPolygon');
 goog.require('ol.geom.Point');
 goog.require('ol.geom.Polygon');
+goog.require('ol.math');
 goog.require('ol.proj');
 goog.require('ol.style.Fill');
 goog.require('ol.style.Icon');
@@ -533,7 +533,7 @@ ol.format.KML.IconStyleParser_ = function(node, objectStack) {
   var heading = /** @type {number} */
       (object['heading']);
   if (heading !== undefined) {
-    rotation = goog.math.toRadians(heading);
+    rotation = ol.math.toRadians(heading);
   }
 
   var scale = /** @type {number|undefined} */

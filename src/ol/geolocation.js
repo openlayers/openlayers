@@ -5,12 +5,12 @@ goog.provide('ol.GeolocationProperty');
 
 goog.require('goog.events');
 goog.require('goog.events.EventType');
-goog.require('goog.math');
 goog.require('ol.Coordinate');
 goog.require('ol.Object');
 goog.require('ol.geom.Geometry');
 goog.require('ol.geom.Polygon');
 goog.require('ol.has');
+goog.require('ol.math');
 goog.require('ol.proj');
 goog.require('ol.sphere.WGS84');
 
@@ -160,7 +160,7 @@ ol.Geolocation.prototype.positionChange_ = function(position) {
       coords.altitudeAccuracy === null ?
       undefined : coords.altitudeAccuracy);
   this.set(ol.GeolocationProperty.HEADING, coords.heading === null ?
-      undefined : goog.math.toRadians(coords.heading));
+      undefined : ol.math.toRadians(coords.heading));
   if (!this.position_) {
     this.position_ = [coords.longitude, coords.latitude];
   } else {

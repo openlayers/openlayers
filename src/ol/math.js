@@ -123,3 +123,25 @@ ol.math.tanh = function(x) {
   var expMinusTwoX = Math.exp(-2 * x);
   return (1 - expMinusTwoX) / (1 + expMinusTwoX);
 };
+
+
+/**
+ * Converts radians to to degrees.
+ *
+ * @param {number} angleInRadians Angle in radians.
+ * @return {number} Angle in degrees.
+ */
+ol.math.toDegrees = function(angleInRadians) {
+  return angleInRadians * 180 / Math.PI;
+};
+
+
+/**
+ * Converts degrees to radians.
+ *
+ * @param {number} angleInDegrees Angle in degrees.
+ * @return {number} Angle in radians.
+ */
+ol.math.toRadians = function(angleInDegrees) {
+  return angleInDegrees * Math.PI / 180;
+};

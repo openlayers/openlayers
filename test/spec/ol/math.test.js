@@ -196,4 +196,31 @@ describe('ol.math.tanh', function() {
 });
 
 
+describe('ol.math.toDegrees', function() {
+  it('returns the correct value at -π', function() {
+    expect(ol.math.toDegrees(-Math.PI)).to.be(-180);
+  });
+  it('returns the correct value at 0', function() {
+    expect(ol.math.toDegrees(0)).to.be(0);
+  });
+  it('returns the correct value at π', function() {
+    expect(ol.math.toDegrees(Math.PI)).to.be(180);
+  });
+});
+
+
+describe('ol.math.toRadians', function() {
+  it('returns the correct value at -180', function() {
+    expect(ol.math.toRadians(-180)).to.be(-Math.PI);
+  });
+  it('returns the correct value at 0', function() {
+    expect(ol.math.toRadians(0)).to.be(0);
+  });
+  it('returns the correct value at 180', function() {
+    expect(ol.math.toRadians(180)).to.be(Math.PI);
+  });
+});
+
+
+
 goog.require('ol.math');
