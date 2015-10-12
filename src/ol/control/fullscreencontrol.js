@@ -2,7 +2,6 @@ goog.provide('ol.control.FullScreen');
 
 goog.require('goog.asserts');
 goog.require('goog.dom');
-goog.require('goog.dom.TagName');
 goog.require('goog.dom.classlist');
 goog.require('goog.dom.fullscreen');
 goog.require('goog.dom.fullscreen.EventType');
@@ -56,7 +55,7 @@ ol.control.FullScreen = function(opt_options) {
       goog.dom.createTextNode(labelActive) : labelActive;
 
   var tipLabel = options.tipLabel ? options.tipLabel : 'Toggle full-screen';
-  var button = goog.dom.createDom(goog.dom.TagName.BUTTON, {
+  var button = goog.dom.createDom('BUTTON', {
     'class': this.cssClassName_ + '-' + goog.dom.fullscreen.isFullScreen(),
     'type': 'button',
     'title': tipLabel
@@ -72,7 +71,7 @@ ol.control.FullScreen = function(opt_options) {
   var cssClasses = this.cssClassName_ + ' ' + ol.css.CLASS_UNSELECTABLE +
       ' ' + ol.css.CLASS_CONTROL + ' ' +
       (!goog.dom.fullscreen.isSupported() ? ol.css.CLASS_UNSUPPORTED : '');
-  var element = goog.dom.createDom(goog.dom.TagName.DIV, cssClasses, button);
+  var element = goog.dom.createDom('DIV', cssClasses, button);
 
   goog.base(this, {
     element: element,

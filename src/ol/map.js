@@ -11,7 +11,6 @@ goog.require('goog.async.AnimationDelay');
 goog.require('goog.async.nextTick');
 goog.require('goog.debug.Console');
 goog.require('goog.dom');
-goog.require('goog.dom.TagName');
 goog.require('goog.dom.ViewportSizeMonitor');
 goog.require('goog.dom.classlist');
 goog.require('goog.events');
@@ -261,7 +260,7 @@ ol.Map = function(options) {
    * @private
    * @type {Element}
    */
-  this.viewport_ = goog.dom.createDom(goog.dom.TagName.DIV, 'ol-viewport');
+  this.viewport_ = goog.dom.createDom('DIV', 'ol-viewport');
   this.viewport_.style.position = 'relative';
   this.viewport_.style.overflow = 'hidden';
   this.viewport_.style.width = '100%';
@@ -277,7 +276,7 @@ ol.Map = function(options) {
    * @private
    * @type {Element}
    */
-  this.overlayContainer_ = goog.dom.createDom(goog.dom.TagName.DIV,
+  this.overlayContainer_ = goog.dom.createDom('DIV',
       'ol-overlaycontainer');
   this.viewport_.appendChild(this.overlayContainer_);
 
@@ -285,7 +284,7 @@ ol.Map = function(options) {
    * @private
    * @type {Element}
    */
-  this.overlayContainerStopEvent_ = goog.dom.createDom(goog.dom.TagName.DIV,
+  this.overlayContainerStopEvent_ = goog.dom.createDom('DIV',
       'ol-overlaycontainer-stopevent');
   goog.events.listen(this.overlayContainerStopEvent_, [
     goog.events.EventType.CLICK,

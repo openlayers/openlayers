@@ -2,7 +2,6 @@ goog.provide('ol.renderer.dom.ImageLayer');
 
 goog.require('goog.asserts');
 goog.require('goog.dom');
-goog.require('goog.dom.TagName');
 goog.require('goog.vec.Mat4');
 goog.require('ol.ImageBase');
 goog.require('ol.ViewHint');
@@ -21,7 +20,7 @@ goog.require('ol.vec.Mat4');
  * @param {ol.layer.Image} imageLayer Image layer.
  */
 ol.renderer.dom.ImageLayer = function(imageLayer) {
-  var target = goog.dom.createElement(goog.dom.TagName.DIV);
+  var target = goog.dom.createElement('DIV');
   target.style.position = 'absolute';
 
   goog.base(this, imageLayer, target);

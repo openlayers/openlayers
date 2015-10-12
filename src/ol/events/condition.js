@@ -2,7 +2,6 @@ goog.provide('ol.events.ConditionType');
 goog.provide('ol.events.condition');
 
 goog.require('goog.asserts');
-goog.require('goog.dom.TagName');
 goog.require('goog.functions');
 goog.require('ol.MapBrowserEvent.EventType');
 goog.require('ol.MapBrowserPointerEvent');
@@ -188,9 +187,9 @@ ol.events.condition.targetNotEditable = function(mapBrowserEvent) {
       'target should be an Element');
   var tagName = target.tagName;
   return (
-      tagName !== goog.dom.TagName.INPUT &&
-      tagName !== goog.dom.TagName.SELECT &&
-      tagName !== goog.dom.TagName.TEXTAREA);
+      tagName !== 'INPUT' &&
+      tagName !== 'SELECT' &&
+      tagName !== 'TEXTAREA');
 };
 
 

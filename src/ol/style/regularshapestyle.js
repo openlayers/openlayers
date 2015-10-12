@@ -2,7 +2,6 @@ goog.provide('ol.style.RegularShape');
 
 goog.require('goog.asserts');
 goog.require('goog.dom');
-goog.require('goog.dom.TagName');
 goog.require('ol');
 goog.require('ol.color');
 goog.require('ol.has');
@@ -353,7 +352,7 @@ ol.style.RegularShape.prototype.render_ = function(atlasManager) {
   if (atlasManager === undefined) {
     // no atlas manager is used, create a new canvas
     this.canvas_ = /** @type {HTMLCanvasElement} */
-        (goog.dom.createElement(goog.dom.TagName.CANVAS));
+        (goog.dom.createElement('CANVAS'));
 
     this.canvas_.height = size;
     this.canvas_.width = size;
@@ -465,7 +464,7 @@ ol.style.RegularShape.prototype.createHitDetectionCanvas_ =
   // if no fill style is set, create an extra hit-detection image with a
   // default fill style
   this.hitDetectionCanvas_ = /** @type {HTMLCanvasElement} */
-      (goog.dom.createElement(goog.dom.TagName.CANVAS));
+      (goog.dom.createElement('CANVAS'));
   var canvas = this.hitDetectionCanvas_;
 
   canvas.height = renderOptions.size;

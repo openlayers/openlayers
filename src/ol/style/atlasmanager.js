@@ -3,7 +3,6 @@ goog.provide('ol.style.AtlasManager');
 
 goog.require('goog.asserts');
 goog.require('goog.dom');
-goog.require('goog.dom.TagName');
 goog.require('goog.functions');
 goog.require('goog.object');
 goog.require('ol');
@@ -298,7 +297,7 @@ ol.style.Atlas = function(size, space) {
    * @type {HTMLCanvasElement}
    */
   this.canvas_ = /** @type {HTMLCanvasElement} */
-      (goog.dom.createElement(goog.dom.TagName.CANVAS));
+      (goog.dom.createElement('CANVAS'));
   this.canvas_.width = size;
   this.canvas_.height = size;
 

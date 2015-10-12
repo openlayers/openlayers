@@ -5,7 +5,6 @@ goog.provide('ol.dom.BrowserFeature');
 
 goog.require('goog.asserts');
 goog.require('goog.dom');
-goog.require('goog.dom.TagName');
 goog.require('goog.userAgent');
 goog.require('goog.vec.Mat4');
 goog.require('ol');
@@ -18,7 +17,7 @@ goog.require('ol');
  * @return {CanvasRenderingContext2D}
  */
 ol.dom.createCanvasContext2D = function(opt_width, opt_height) {
-  var canvas = goog.dom.createElement(goog.dom.TagName.CANVAS);
+  var canvas = goog.dom.createElement('CANVAS');
   if (opt_width) {
     canvas.width = opt_width;
   }
@@ -45,7 +44,7 @@ ol.dom.canUseCssTransform = (function() {
         // this browser is ancient
         canUseCssTransform = false;
       } else {
-        var el = goog.dom.createElement(goog.dom.TagName.P),
+        var el = goog.dom.createElement('P'),
             has2d,
             transforms = {
               'webkitTransform': '-webkit-transform',
@@ -88,7 +87,7 @@ ol.dom.canUseCssTransform3D = (function() {
         // this browser is ancient
         canUseCssTransform3D = false;
       } else {
-        var el = goog.dom.createElement(goog.dom.TagName.P),
+        var el = goog.dom.createElement('P'),
             has3d,
             transforms = {
               'webkitTransform': '-webkit-transform',
