@@ -200,7 +200,7 @@ ol.Object.prototype.notify = function(key, oldValue) {
  * @param {boolean=} opt_notify update propertie silently
  * @api stable
  */
-ol.Object.prototype.set = function(key, value, opt_notify=) {
+ol.Object.prototype.set = function(key, value, opt_notify) {
   if (goog.isDef(opt_notify) && opt_notify === false) {
     this.values_[key] = value;
   }
@@ -219,7 +219,7 @@ ol.Object.prototype.set = function(key, value, opt_notify=) {
  * @param {boolean=} opt_notify update propertie silently
  * @api stable
  */
-ol.Object.prototype.setProperties = function(values, opt_notify=) {
+ol.Object.prototype.setProperties = function(values, opt_notify) {
   var key;
   for (key in values) {
     this.set(key, values[key], opt_notify);
@@ -233,7 +233,7 @@ ol.Object.prototype.setProperties = function(values, opt_notify=) {
  * @param {boolean=} opt_notify update propertie silently
  * @api stable
  */
-ol.Object.prototype.unset = function(key, opt_notify=) {
+ol.Object.prototype.unset = function(key, opt_notify) {
   if (key in this.values_) {
     var oldValue = this.values_[key];
     delete this.values_[key];
