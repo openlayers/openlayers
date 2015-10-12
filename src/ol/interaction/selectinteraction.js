@@ -212,7 +212,7 @@ goog.inherits(ol.interaction.Select, ol.interaction.Interaction);
 
 
 /**
- * @param {ol.Feature} feature Feature.
+ * @param {ol.Feature|ol.render.Feature} feature Feature.
  * @param {ol.layer.Layer} layer Layer.
  * @private
  */
@@ -236,7 +236,7 @@ ol.interaction.Select.prototype.getFeatures = function() {
 /**
  * Returns the associated {@link ol.layer.Vector vectorlayer} of
  * the (last) selected feature.
- * @param {ol.Feature} feature Feature
+ * @param {ol.Feature|ol.render.Feature} feature Feature
  * @return {ol.layer.Vector} Layer.
  * @api
  */
@@ -414,7 +414,7 @@ ol.interaction.Select.prototype.removeFeature_ = function(evt) {
 
 
 /**
- * @param {ol.Feature} feature Feature.
+ * @param {ol.Feature|ol.render.Feature} feature Feature.
  * @private
  */
 ol.interaction.Select.prototype.removeFeatureLayerAssociation_ =
