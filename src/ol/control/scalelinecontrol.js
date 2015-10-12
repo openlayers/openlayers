@@ -5,13 +5,13 @@ goog.provide('ol.control.ScaleLineUnits');
 goog.require('goog.asserts');
 goog.require('goog.dom');
 goog.require('goog.events');
-goog.require('goog.math');
 goog.require('goog.style');
 goog.require('ol');
 goog.require('ol.Object');
 goog.require('ol.TransformFunction');
 goog.require('ol.control.Control');
 goog.require('ol.css');
+goog.require('ol.math');
 goog.require('ol.proj');
 goog.require('ol.proj.METERS_PER_UNIT');
 goog.require('ol.proj.Units');
@@ -217,7 +217,7 @@ ol.control.ScaleLine.prototype.updateElement_ = function() {
 
     // Convert pointResolution from degrees to meters
     this.toEPSG4326_ = null;
-    cosLatitude = Math.cos(goog.math.toRadians(center[1]));
+    cosLatitude = Math.cos(ol.math.toRadians(center[1]));
     pointResolution *= Math.PI * cosLatitude * ol.sphere.NORMAL.radius / 180;
     projectionUnits = ol.proj.Units.METERS;
 
@@ -229,7 +229,7 @@ ol.control.ScaleLine.prototype.updateElement_ = function() {
       this.toEPSG4326_ = ol.proj.getTransformFromProjections(
           projection, ol.proj.get('EPSG:4326'));
     }
-    cosLatitude = Math.cos(goog.math.toRadians(this.toEPSG4326_(center)[1]));
+    cosLatitude = Math.cos(ol.math.toRadians(this.toEPSG4326_(center)[1]));
     var radius = ol.sphere.NORMAL.radius;
     goog.asserts.assert(ol.proj.METERS_PER_UNIT[projectionUnits],
         'Meters per unit should be defined for the projection unit');
