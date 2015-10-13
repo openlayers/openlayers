@@ -61,7 +61,10 @@ ol.featureloader.loadFeaturesXhr = function(url, format, success) {
        */
       function(extent, resolution, projection) {
         var xhrIo = new goog.net.XhrIo();
-        xhrIo.setResponseType(goog.net.XhrIo.ResponseType.TEXT);
+        xhrIo.setResponseType(
+            format.getType() == ol.format.FormatType.ARRAY_BUFFER ?
+                goog.net.XhrIo.ResponseType.ARRAY_BUFFER :
+                goog.net.XhrIo.ResponseType.TEXT);
         goog.events.listen(xhrIo, goog.net.EventType.COMPLETE,
             /**
              * @param {Event} event Event.
@@ -87,6 +90,8 @@ ol.featureloader.loadFeaturesXhr = function(url, format, success) {
                   if (!source) {
                     source = ol.xml.parse(xhrIo.getResponseText());
                   }
+                } else if (type == ol.format.FormatType.ARRAY_BUFFER) {
+                  source = xhrIo.getResponse();
                 } else {
                   goog.asserts.fail('unexpected format type');
                 }
