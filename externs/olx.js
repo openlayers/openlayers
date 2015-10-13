@@ -3634,6 +3634,133 @@ olx.layer.VectorOptions.prototype.visible;
 
 
 /**
+ * @typedef {{map: (ol.Map|undefined),
+ *     minResolution: (number|undefined),
+ *     maxResolution: (number|undefined),
+ *     opacity: (number|undefined),
+ *     renderBuffer: (number|undefined),
+ *     renderOrder: (function(ol.Feature, ol.Feature):number|null|undefined),
+ *     source: (ol.source.VectorTile|undefined),
+ *     style: (ol.style.Style|Array.<ol.style.Style>|ol.style.StyleFunction|undefined),
+ *     updateWhileAnimating: (boolean|undefined),
+ *     updateWhileInteracting: (boolean|undefined),
+ *     visible: (boolean|undefined)}}
+ * @api
+ */
+olx.layer.VectorTileOptions;
+
+
+/**
+ * The buffer around the viewport extent used by the renderer when getting
+ * features from the vector source for the rendering or hit-detection.
+ * Recommended value: the size of the largest symbol, line width or label.
+ * Default is 100 pixels.
+ * @type {number|undefined}
+ * @api
+ */
+olx.layer.VectorTileOptions.prototype.renderBuffer;
+
+
+/**
+ * Render order. Function to be used when sorting features before rendering. By
+ * default features are drawn in the order that they are created. Use `null` to
+ * avoid the sort, but get an undefined draw order.
+ * @type {function(ol.Feature, ol.Feature):number|null|undefined}
+ * @api
+ */
+olx.layer.VectorTileOptions.prototype.renderOrder;
+
+
+/**
+ * Sets the layer as overlay on a map. The map will not manage this layer in its
+ * layers collection, and the layer will be rendered on top. This is useful for
+ * temporary layers. The standard way to add a layer to a map and have it
+ * managed by the map is to use {@link ol.Map#addLayer}.
+ * @type {ol.Map|undefined}
+ * @api
+ */
+olx.layer.VectorTileOptions.prototype.map;
+
+
+/**
+ * The bounding extent for layer rendering.  The layer will not be rendered
+ * outside of this extent.
+ * @type {ol.Extent|undefined}
+ * @api
+ */
+olx.layer.VectorTileOptions.prototype.extent;
+
+
+/**
+ * The minimum resolution (inclusive) at which this layer will be visible.
+ * @type {number|undefined}
+ * @api
+ */
+olx.layer.VectorTileOptions.prototype.minResolution;
+
+
+/**
+ * The maximum resolution (exclusive) below which this layer will be visible.
+ * @type {number|undefined}
+ * @api
+ */
+olx.layer.VectorTileOptions.prototype.maxResolution;
+
+
+/**
+ * Opacity. 0-1. Default is `1`.
+ * @type {number|undefined}
+ * @api
+ */
+olx.layer.VectorTileOptions.prototype.opacity;
+
+
+/**
+ * Source.
+ * @type {ol.source.VectorTile}
+ * @api
+ */
+olx.layer.VectorTileOptions.prototype.source;
+
+
+/**
+ * Layer style. See {@link ol.style} for default style which will be used if
+ * this is not defined.
+ * @type {ol.style.Style|Array.<ol.style.Style>|ol.style.StyleFunction|undefined}
+ * @api
+ */
+olx.layer.VectorTileOptions.prototype.style;
+
+
+/**
+ * When set to `true`, feature batches will be recreated during animations.
+ * This means that no vectors will be shown clipped, but the setting will have a
+ * performance impact for large amounts of vector data. When set to `false`,
+ * batches will be recreated when no animation is active.  Default is `false`.
+ * @type {boolean|undefined}
+ * @api
+ */
+olx.layer.VectorTileOptions.prototype.updateWhileAnimating;
+
+
+/**
+ * When set to `true`, feature batches will be recreated during interactions.
+ * See also `updateWhileAnimating`. Default is `false`.
+ * @type {boolean|undefined}
+ * @api
+ */
+olx.layer.VectorTileOptions.prototype.updateWhileInteracting;
+
+
+/**
+ * Visibility. Default is `true` (visible).
+ * @type {boolean|undefined}
+ * @api stable
+ */
+olx.layer.VectorTileOptions.prototype.visible;
+
+
+/**
  * Namespace.
  * @type {Object}
  */
@@ -3953,6 +4080,142 @@ olx.source.TileImageOptions.prototype.tileUrlFunction;
  * @api
  */
 olx.source.TileImageOptions.prototype.wrapX;
+
+
+/**
+ * @typedef {{attributions: (Array.<ol.Attribution>|undefined),
+ *            logo: (string|olx.LogoOptions|undefined),
+ *            opaque: (boolean|undefined),
+ *            projection: ol.proj.ProjectionLike,
+ *            state: (ol.source.State|string|undefined),
+ *            format: (ol.format.Feature|undefined),
+ *            rightHandedPolygons: (boolean|undefined),
+ *            tileClass: (function(new: ol.VectorTile, ol.TileCoord,
+ *                 ol.TileState, string, ol.format.Feature,
+ *                 ol.TileLoadFunctionType)|undefined),
+ *            tileGrid: (ol.tilegrid.TileGrid|undefined),
+ *            tileLoadFunction: (ol.TileLoadFunctionType|undefined),
+ *            tilePixelRatio: (number|undefined),
+ *            tileUrlFunction: (ol.TileUrlFunctionType|undefined),
+ *            wrapX: (boolean|undefined)}}
+ * @api
+ */
+olx.source.VectorTileOptions;
+
+
+/**
+/**
+ * Attributions.
+ * @type {Array.<ol.Attribution>|undefined}
+ * @api
+ */
+olx.source.VectorTileOptions.prototype.attributions;
+
+
+/**
+ * Logo.
+ * @type {string|olx.LogoOptions|undefined}
+ * @api
+ */
+olx.source.VectorTileOptions.prototype.logo;
+
+
+/**
+ * Whether the layer is opaque.
+ * @type {boolean|undefined}
+ * @api
+ */
+olx.source.VectorTileOptions.prototype.opaque;
+
+
+/**
+ * Projection.
+ * @type {ol.proj.ProjectionLike}
+ * @api
+ */
+olx.source.VectorTileOptions.prototype.projection;
+
+
+/**
+ * Assume that all polygons provided by this source follow the right-hand rule
+ * (counter-clockwise for exterior and clockwise for interior rings). If `true`,
+ * renderers will skip the check for the ring orientation.
+ * @type {boolean|undefined}
+ * @api
+ */
+olx.source.VectorTileOptions.prototype.rightHandedPolygons;
+
+
+/**
+ * Source state.
+ * @type {ol.source.State|string|undefined}
+ * @api
+ */
+olx.source.VectorTileOptions.prototype.state;
+
+
+/**
+ * Feature format for tiles. Used and required by the default
+ * `tileLoadFunction`.
+ * @type {ol.format.Feature|undefined}
+ */
+olx.source.VectorTileOptions.prototype.format;
+
+
+/**
+ * Class used to instantiate image tiles. Default is {@link ol.VectorTile}.
+ * @type {function(new: ol.VectorTile, ol.TileCoord,
+ *                 ol.TileState, string, ol.format.Feature,
+ *                 ol.TileLoadFunctionType)|undefined}
+ * @api
+ */
+olx.source.VectorTileOptions.prototype.tileClass;
+
+
+/**
+ * Tile grid.
+ * @type {ol.tilegrid.TileGrid|undefined}
+ * @api
+ */
+olx.source.VectorTileOptions.prototype.tileGrid;
+
+
+/**
+ * Optional function to load a tile given a URL.
+ * @type {ol.TileLoadFunctionType|undefined}
+ * @api
+ */
+olx.source.VectorTileOptions.prototype.tileLoadFunction;
+
+
+/**
+ * The pixel ratio used by the tile service. For example, if the tile
+ * service advertizes 256px by 256px tiles but actually sends 512px
+ * by 512px tiles (for retina/hidpi devices) then `tilePixelRatio`
+ * should be set to `2`. Default is `1`.
+ * @type {number|undefined}
+ * @api
+ */
+olx.source.VectorTileOptions.prototype.tilePixelRatio;
+
+
+/**
+ * Optional function to get tile URL given a tile coordinate and the projection.
+ * @type {ol.TileUrlFunctionType|undefined}
+ * @api
+ */
+olx.source.VectorTileOptions.prototype.tileUrlFunction;
+
+
+/**
+ * Whether to wrap the world horizontally. The default, `undefined`, is to
+ * request out-of-bounds tiles from the server. When set to `false`, only one
+ * world will be rendered. When set to `true`, tiles will be requested for one
+ * world only, but they will be wrapped horizontally to render multiple worlds.
+ * @type {boolean|undefined}
+ * @api
+ */
+olx.source.VectorTileOptions.prototype.wrapX;
 
 
 /**
