@@ -7,3 +7,11 @@
  *
  * @externs
  */
+
+// see https://github.com/google/closure-compiler/pull/1206
+
+/**
+ * @type {string}
+ * @see http://www.w3.org/TR/pointerevents/#the-touch-action-css-property
+ */
+CSSProperties.prototype.touchAction;
