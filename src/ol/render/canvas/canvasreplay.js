@@ -1158,6 +1158,8 @@ ol.render.canvas.PolygonReplay = function(tolerance, maxExtent, resolution) {
     miterLimit: undefined
   };
 
+  this.rightHanded_ = false;
+
 };
 goog.inherits(ol.render.canvas.PolygonReplay, ol.render.canvas.Replay);
 
@@ -1290,7 +1292,9 @@ ol.render.canvas.PolygonReplay.prototype.drawPolygonGeometry =
          state.miterLimit, state.lineDash]);
   }
   var ends = polygonGeometry.getEnds();
-  var flatCoordinates = polygonGeometry.getOrientedFlatCoordinates();
+  var flatCoordinates = this.rightHanded_ ?
+      polygonGeometry.getFlatCoordinates() :
+      polygonGeometry.getOrientedFlatCoordinates();
   var stride = polygonGeometry.getStride();
   this.drawFlatCoordinatess_(flatCoordinates, 0, ends, stride);
   this.endGeometry(polygonGeometry, feature);
@@ -1372,6 +1376,16 @@ ol.render.canvas.PolygonReplay.prototype.getBufferedMaxExtent = function() {
     }
   }
   return this.bufferedMaxExtent_;
+};
+
+
+/**
+ * @param {boolean} rightHanded Whether polygons are assumed to follow
+ *     the right-hand rule.
+ */
+ol.render.canvas.PolygonReplay.prototype.setRightHanded =
+    function(rightHanded) {
+  this.rightHanded_ = rightHanded;
 };
 
 
@@ -1793,10 +1807,13 @@ ol.render.canvas.TextReplay.prototype.setTextStyle = function(textStyle) {
  * @param {ol.Extent} maxExtent Max extent.
  * @param {number} resolution Resolution.
  * @param {number=} opt_renderBuffer Optional rendering buffer.
+ * @param {boolean=} opt_rightHandedPolygons Assume that polygons follow the
+ *     right-hand rule.
  * @struct
  */
 ol.render.canvas.ReplayGroup = function(
-    tolerance, maxExtent, resolution, opt_renderBuffer) {
+    tolerance, maxExtent, resolution, opt_renderBuffer,
+    opt_rightHandedPolygons) {
 
   /**
    * @private
@@ -1840,6 +1857,13 @@ ol.render.canvas.ReplayGroup = function(
    * @type {!goog.vec.Mat4.Number}
    */
   this.hitDetectionTransform_ = goog.vec.Mat4.createNumber();
+
+  /**
+   * @private
+   * @type {boolean}
+   */
+  this.rightHandedPolygons_ = goog.isDef(opt_rightHandedPolygons) ?
+      opt_rightHandedPolygons : false;
 
 };
 
@@ -1928,6 +1952,10 @@ ol.render.canvas.ReplayGroup.prototype.getReplay =
         ' constructor missing from ol.render.canvas.BATCH_CONSTRUCTORS_');
     replay = new Constructor(this.tolerance_, this.maxExtent_,
         this.resolution_);
+    if (replayType == ol.render.ReplayType.POLYGON) {
+      goog.asserts.assertInstanceof(replay, ol.render.canvas.PolygonReplay);
+      replay.setRightHanded(this.rightHandedPolygons_);
+    }
     replays[replayType] = replay;
   }
   return replay;

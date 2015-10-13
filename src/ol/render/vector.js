@@ -271,7 +271,8 @@ ol.renderer.vector.renderPointGeometry_ =
     var textReplay = replayGroup.getReplay(
         style.getZIndex(), ol.render.ReplayType.TEXT);
     textReplay.setTextStyle(textStyle);
-    textReplay.drawText(geometry.getCoordinates(), 0, 2, 2, geometry, feature);
+    textReplay.drawText(geometry.getFlatCoordinates(), 0, 2, 2, geometry,
+        feature);
   }
 };
 
