@@ -23,7 +23,8 @@ ol.proj.ProjectionLike;
 
 
 /**
- * Projection units: `'degrees'`, `'ft'`, `'m'`, `'pixels'`, or `'us-ft'`.
+ * Projection units: `'degrees'`, `'ft'`, `'m'`, `'pixels'`, `'tile-pixels'` or
+ * `'us-ft'`.
  * @enum {string}
  * @api stable
  */
@@ -32,6 +33,7 @@ ol.proj.Units = {
   FEET: 'ft',
   METERS: 'm',
   PIXELS: 'pixels',
+  TILE_PIXELS: 'tile-pixels',
   USFEET: 'us-ft'
 };
 
