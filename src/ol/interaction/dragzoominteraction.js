@@ -32,7 +32,7 @@ ol.interaction.DragZoom = function(opt_options) {
    * @private
    * @type {number}
    */
-  this.duration_ = options.duration ? options.duration : 200;
+  this.duration_ = options.duration !== undefined ? options.duration : 200;
 
   /**
    * @private
