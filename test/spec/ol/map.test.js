@@ -346,80 +346,36 @@ describe('ol.Map', function() {
 
       it('returns an overlay by id', function() {
         overlay = new ol.Overlay({
-          element: overlay_target,
-          position: [0, 0]
-        });
-        overlay.setId('foo');
-        map.addOverlay(overlay);
-        expect(map.getOverlayById('foo')).to.be(overlay);
-      });
-
-      it('returns an overlay by id (set after add)', function() {
-        overlay = new ol.Overlay({
+          id: 'foo',
           element: overlay_target,
           position: [0, 0]
         });
         map.addOverlay(overlay);
-        expect(map.getOverlayById('foo')).to.be(null);
-        overlay.setId('foo');
         expect(map.getOverlayById('foo')).to.be(overlay);
       });
 
       it('returns null when no overlay is found', function() {
         overlay = new ol.Overlay({
+          id: 'foo',
           element: overlay_target,
           position: [0, 0]
         });
-        overlay.setId('foo');
         map.addOverlay(overlay);
         expect(map.getOverlayById('bar')).to.be(null);
       });
 
       it('returns null after removing overlay', function() {
         overlay = new ol.Overlay({
+          id: 'foo',
           element: overlay_target,
           position: [0, 0]
         });
-        overlay.setId('foo');
         map.addOverlay(overlay);
         expect(map.getOverlayById('foo')).to.be(overlay);
         map.removeOverlay(overlay);
         expect(map.getOverlayById('foo')).to.be(null);
       });
 
-      it('returns correct overlay after add/remove/add', function() {
-        expect(map.getOverlayById('foo')).to.be(null);
-        var first = new ol.Overlay({
-          element: overlay_target,
-          position: [0, 0]
-        });
-        first.setId('foo');
-        map.addOverlay(first);
-        expect(map.getOverlayById('foo')).to.be(first);
-        map.removeOverlay(first);
-        expect(map.getOverlayById('foo')).to.be(null);
-        var second = new ol.Overlay({
-          element: overlay_target,
-          position: [0, 0]
-        });
-        second.setId('foo');
-        map.addOverlay(second);
-        expect(map.getOverlayById('foo')).to.be(second);
-      });
-
-      it('returns correct overlay after add/change', function() {
-        expect(map.getOverlayById('foo')).to.be(null);
-        overlay = new ol.Overlay({
-          element: overlay_target,
-          position: [0, 0]
-        });
-        overlay.setId('foo');
-        map.addOverlay(overlay);
-        expect(map.getOverlayById('foo')).to.be(overlay);
-        overlay.setId('bar');
-        expect(map.getOverlayById('foo')).to.be(null);
-        expect(map.getOverlayById('bar')).to.be(overlay);
-      });
     });
 
   });

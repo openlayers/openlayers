@@ -41,32 +41,31 @@ describe('ol.Overlay', function() {
 
   });
 
-  describe('#setId()', function() {
+  describe('#getId()', function() {
     var overlay, target;
 
     beforeEach(function() {
       target = document.createElement('div');
-      overlay = new ol.Overlay({
-        element: target,
-        position: [0, 0]
-      });
-      map.addOverlay(overlay);
     });
     afterEach(function() {
       map.removeOverlay(overlay);
     });
 
-    it('sets the overlay identifier', function() {
+    it('returns the overlay identifier', function() {
+      overlay = new ol.Overlay({
+        element: target,
+        position: [0, 0]
+      });
+      map.addOverlay(overlay);
       expect(overlay.getId()).to.be(undefined);
-      overlay.setId('foo');
+      map.removeOverlay(overlay);
+      overlay = new ol.Overlay({
+        id: 'foo',
+        element: target,
+        position: [0, 0]
+      });
+      map.addOverlay(overlay);
       expect(overlay.getId()).to.be('foo');
-    });
-
-    it('accepts a string or number', function() {
-      overlay.setId('foo');
-      expect(overlay.getId()).to.be('foo');
-      overlay.setId(2);
-      expect(overlay.getId()).to.be(2);
     });
 
   });

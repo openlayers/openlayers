@@ -557,9 +557,6 @@ ol.Map.prototype.addOverlayInternal = function(overlay) {
     this.overlayIdIndex_[id.toString()] = overlay;
   }
   overlay.setMap(this);
-  goog.events.listen(
-      overlay, ol.Object.getChangeEventType(overlay.getOverlayIdProperty()),
-      this.handleOverlayIdChange_, false, this);
 };
 
 
@@ -1100,28 +1097,6 @@ ol.Map.prototype.handleTargetChanged_ = function() {
  */
 ol.Map.prototype.handleTileChange_ = function() {
   this.render();
-};
-
-
-/**
- * @param {goog.events.Event} event Event.
- * @private
- */
-ol.Map.prototype.handleOverlayIdChange_ = function(event) {
-  var overlay = /** @type {ol.Overlay} */ (event.target);
-  var id = overlay.getId().toString();
-  var oldId = event.oldValue;
-  if (oldId && oldId != id) {
-    delete this.overlayIdIndex_[oldId];
-  }
-  if (id in this.overlayIdIndex_) {
-    if (this.overlayIdIndex_[id] !== overlay) {
-      delete this.overlayIdIndex_[id];
-      this.overlayIdIndex_[id] = overlay;
-    }
-  } else {
-    this.overlayIdIndex_[id] = overlay;
-  }
 };
 
 

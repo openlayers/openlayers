@@ -19,7 +19,6 @@ goog.require('ol.extent');
  * @enum {string}
  */
 ol.OverlayProperty = {
-  ID: 'id',
   ELEMENT: 'element',
   MAP: 'map',
   OFFSET: 'offset',
@@ -78,7 +77,7 @@ ol.Overlay = function(options) {
    * @private
    * @type {number|string|undefined}
    */
-  this.id_ = undefined;
+  this.id_ = options.id;
 
   /**
    * @private
@@ -195,8 +194,7 @@ ol.Overlay.prototype.getElement = function() {
 
 
 /**
- * Get the feature identifier.  This is an identifier for the overlay and
- * is set explicitly by calling {@link ol.Overlay#setId}.
+ * Get the feature identifier which is set on constructor.
  * @return {number|string|undefined} Id.
  * @api
  */
@@ -226,15 +224,6 @@ ol.Overlay.prototype.getMap = function() {
 ol.Overlay.prototype.getOffset = function() {
   return /** @type {Array.<number>} */ (
       this.get(ol.OverlayProperty.OFFSET));
-};
-
-
-/**
- * Workaround to overcome circular dependency.
- * @return {ol.OverlayProperty}
- */
-ol.Overlay.prototype.getOverlayIdProperty = function() {
-  return ol.OverlayProperty.ID;
 };
 
 
@@ -345,22 +334,6 @@ ol.Overlay.prototype.handlePositioningChanged = function() {
  */
 ol.Overlay.prototype.setElement = function(element) {
   this.set(ol.OverlayProperty.ELEMENT, element);
-};
-
-
-/**
- * Set the feature id. The feature id can be used with the
- * {@link ol.Map#getOverlayById} method.
- * @param {number|string} id The feature id.
- * @observable
- * @api
- */
-ol.Overlay.prototype.setId = function(id) {
-  goog.asserts.assert(id !== undefined, 'overlay id should be defined');
-  if (id != this.id_) {
-    this.id_ = id;
-    this.set(ol.OverlayProperty.ID, id);
-  }
 };
 
 
