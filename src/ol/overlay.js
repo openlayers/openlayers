@@ -194,7 +194,7 @@ ol.Overlay.prototype.getElement = function() {
 
 
 /**
- * Get the feature identifier which is set on constructor.
+ * Get the overlay identifier which is set on constructor.
  * @return {number|string|undefined} Id.
  * @api
  */

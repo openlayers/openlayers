@@ -467,21 +467,14 @@ ol.Map = function(options) {
         event.element.setMap(null);
       }, false, this);
 
-  this.overlays_.forEach(
-      /**
-       * @param {ol.Overlay} overlay Overlay.
-       * @this {ol.Map}
-       */
-      function(overlay) {
-        this.addOverlayInternal(overlay);
-      }, this);
+  this.overlays_.forEach(this.addOverlayInternal_, this);
 
   goog.events.listen(this.overlays_, ol.CollectionEventType.ADD,
       /**
        * @param {ol.CollectionEvent} event Collection event.
        */
       function(event) {
-        this.addOverlayInternal(/** @type {ol.Overlay} */ (event.element));
+        this.addOverlayInternal_(/** @type {ol.Overlay} */ (event.element));
       }, false, this);
 
   goog.events.listen(this.overlays_, ol.CollectionEventType.REMOVE,
@@ -489,7 +482,11 @@ ol.Map = function(options) {
        * @param {ol.CollectionEvent} event Collection event.
        */
       function(event) {
-        this.removeOverlayInternal(/** @type {ol.Overlay} */ (event.element));
+        var id = event.element.getId();
+        if (id !== undefined) {
+          delete this.overlayIdIndex_[id.toString()];
+        }
+        event.element.setMap(null);
       }, false, this);
 
 };
@@ -549,9 +546,9 @@ ol.Map.prototype.addOverlay = function(overlay) {
 /**
  * This deals with map's overlay collection changes.
  * @param {ol.Overlay} overlay Overlay.
- * @protected
+ * @private
  */
-ol.Map.prototype.addOverlayInternal = function(overlay) {
+ol.Map.prototype.addOverlayInternal_ = function(overlay) {
   var id = overlay.getId();
   if (id !== undefined) {
     this.overlayIdIndex_[id.toString()] = overlay;
@@ -1277,20 +1274,6 @@ ol.Map.prototype.removeOverlay = function(overlay) {
   var overlays = this.getOverlays();
   goog.asserts.assert(overlays !== undefined, 'overlays should be defined');
   return overlays.remove(overlay);
-};
-
-
-/**
- * This deals with map's overlay collection changes.
- * @param {ol.Overlay} overlay Overlay.
- * @protected
- */
-ol.Map.prototype.removeOverlayInternal = function(overlay) {
-  var id = overlay.getId();
-  if (id !== undefined) {
-    delete this.overlayIdIndex_[id.toString()];
-  }
-  overlay.setMap(null);
 };
 
 
