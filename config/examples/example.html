@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="./resources/prism/prism.css" type="text/css">
     <link rel="stylesheet" href="../css/ol.css" type="text/css">
     <link rel="stylesheet" href="./resources/layout.css" type="text/css">
-    {{{ extraHead }}}
+    {{{ extraHead.local }}}
     {{{ css.tag }}}
     <script src="./resources/zeroclipboard/ZeroClipboard.min.js"></script>
     <title>{{ title }}</title>
@@ -46,7 +46,7 @@
           <textarea class="hidden" name="css">{{ css.source }}</textarea>
           <textarea class="hidden" name="html">{{ contents }}</textarea>
           <input type="hidden" name="wrap" value="l">
-          <input type="hidden" name="resources" value="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css,https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js,http://openlayers.org/en/v{{ olVersion }}/css/ol.css,http://openlayers.org/en/v{{ olVersion }}/build/ol.js">
+          <input type="hidden" name="resources" value="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css,https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js,http://openlayers.org/en/v{{ olVersion }}/css/ol.css,http://openlayers.org/en/v{{ olVersion }}/build/ol.js{{ extraResources }}">
         </form>
         <pre><code id="example-source" class="language-markup">&lt;!DOCTYPE html&gt;
 &lt;html&gt;
@@ -57,7 +57,7 @@
 &lt;script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"&gt;&lt;/script&gt;
 &lt;link rel="stylesheet" href="http://openlayers.org/en/v{{ olVersion }}/css/ol.css" type="text/css"&gt;
 &lt;script src="http://openlayers.org/en/v{{ olVersion }}/build/ol.js"&gt;&lt;/script&gt;
-{{ extraHead }}
+{{ extraHead.remote }}
 {{#if css.source}}
 &lt;style&gt;
 {{ css.source }}
