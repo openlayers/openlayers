@@ -103,7 +103,9 @@ ol.interaction.defaults = function(opt_options) {
   var shiftDragZoom = options.shiftDragZoom !== undefined ?
       options.shiftDragZoom : true;
   if (shiftDragZoom) {
-    interactions.push(new ol.interaction.DragZoom());
+    interactions.push(new ol.interaction.DragZoom({
+      duration: options.zoomDuration
+    }));
   }
 
   return interactions;
