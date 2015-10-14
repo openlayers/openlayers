@@ -75,6 +75,12 @@ ol.Overlay = function(options) {
 
   /**
    * @private
+   * @type {number|string|undefined}
+   */
+  this.id_ = options.id;
+
+  /**
+   * @private
    * @type {boolean}
    */
   this.insertFirst_ = options.insertFirst !== undefined ?
@@ -184,6 +190,16 @@ goog.inherits(ol.Overlay, ol.Object);
 ol.Overlay.prototype.getElement = function() {
   return /** @type {Element|undefined} */ (
       this.get(ol.OverlayProperty.ELEMENT));
+};
+
+
+/**
+ * Get the overlay identifier which is set on constructor.
+ * @return {number|string|undefined} Id.
+ * @api
+ */
+ol.Overlay.prototype.getId = function() {
+  return this.id_;
 };
 
 

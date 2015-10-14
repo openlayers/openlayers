@@ -343,6 +343,13 @@ ol.Map = function(options) {
   this.overlays_ = optionsInternal.overlays;
 
   /**
+   * A lookup of overlays by id.
+   * @private
+   * @type {Object.<string, ol.Overlay>}
+   */
+  this.overlayIdIndex_ = {};
+
+  /**
    * @type {ol.renderer.Map}
    * @private
    */
@@ -460,21 +467,14 @@ ol.Map = function(options) {
         event.element.setMap(null);
       }, false, this);
 
-  this.overlays_.forEach(
-      /**
-       * @param {ol.Overlay} overlay Overlay.
-       * @this {ol.Map}
-       */
-      function(overlay) {
-        overlay.setMap(this);
-      }, this);
+  this.overlays_.forEach(this.addOverlayInternal_, this);
 
   goog.events.listen(this.overlays_, ol.CollectionEventType.ADD,
       /**
        * @param {ol.CollectionEvent} event Collection event.
        */
       function(event) {
-        event.element.setMap(this);
+        this.addOverlayInternal_(/** @type {ol.Overlay} */ (event.element));
       }, false, this);
 
   goog.events.listen(this.overlays_, ol.CollectionEventType.REMOVE,
@@ -482,6 +482,10 @@ ol.Map = function(options) {
        * @param {ol.CollectionEvent} event Collection event.
        */
       function(event) {
+        var id = event.element.getId();
+        if (id !== undefined) {
+          delete this.overlayIdIndex_[id.toString()];
+        }
         event.element.setMap(null);
       }, false, this);
 
@@ -536,6 +540,20 @@ ol.Map.prototype.addOverlay = function(overlay) {
   var overlays = this.getOverlays();
   goog.asserts.assert(overlays !== undefined, 'overlays should be defined');
   overlays.push(overlay);
+};
+
+
+/**
+ * This deals with map's overlay collection changes.
+ * @param {ol.Overlay} overlay Overlay.
+ * @private
+ */
+ol.Map.prototype.addOverlayInternal_ = function(overlay) {
+  var id = overlay.getId();
+  if (id !== undefined) {
+    this.overlayIdIndex_[id.toString()] = overlay;
+  }
+  overlay.setMap(this);
 };
 
 
@@ -764,6 +782,20 @@ ol.Map.prototype.getControls = function() {
  */
 ol.Map.prototype.getOverlays = function() {
   return this.overlays_;
+};
+
+
+/**
+ * Get an overlay by its identifier (the value returned by overlay.getId()).
+ * Note that the index treats string and numeric identifiers as the same. So
+ * `map.getOverlayById(2)` will return an overlay with id `'2'` or `2`.
+ * @param {string|number} id Overlay identifier.
+ * @return {ol.Overlay} Overlay.
+ * @api
+ */
+ol.Map.prototype.getOverlayById = function(id) {
+  var overlay = this.overlayIdIndex_[id.toString()];
+  return overlay !== undefined ? overlay : null;
 };
 
 
