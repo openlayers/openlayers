@@ -83,6 +83,11 @@ function augmentExamples(files, metalsmith, done) {
         throw new Error('No .js file found for ' + filename);
       }
       var jsSource = files[jsFilename].contents.toString();
+      if (file.cloak) {
+        for (var key in file.cloak) {
+          jsSource = jsSource.replace(new RegExp(key, 'g'), file.cloak[key]);
+        }
+      }
       var requires = getRequires(jsSource);
       file.requires = requires;
       file.js = {
