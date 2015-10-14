@@ -2366,7 +2366,7 @@ olx.interaction.DragRotateOptions.prototype.duration;
 /**
  * @typedef {{condition: (ol.events.ConditionType|undefined),
  *     duration: (number|undefined),
- *     style: ol.style.Style}}
+ *     style: (ol.style.Style|undefined)}}
  * @api
  */
 olx.interaction.DragZoomOptions;
@@ -2392,7 +2392,7 @@ olx.interaction.DragZoomOptions.prototype.duration;
 
 /**
  * Style for the box.
- * @type {ol.style.Style}
+ * @type {ol.style.Style|undefined}
  * @api
  */
 olx.interaction.DragZoomOptions.prototype.style;
