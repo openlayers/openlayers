@@ -152,8 +152,8 @@ ol.source.TileImage.prototype.getTileGridForProjection = function(projection) {
     return goog.base(this, 'getTileGridForProjection', projection);
   }
   var thisProj = this.getProjection();
-  if (!goog.isNull(this.tileGrid) &&
-      (goog.isNull(thisProj) || ol.proj.equivalent(thisProj, projection))) {
+  if (this.tileGrid &&
+      (!thisProj || ol.proj.equivalent(thisProj, projection))) {
     return this.tileGrid;
   } else {
     var projKey = goog.getUid(projection).toString();
@@ -174,7 +174,7 @@ ol.source.TileImage.prototype.getTileCacheForProjection = function(projection) {
     return goog.base(this, 'getTileCacheForProjection', projection);
   }
   var thisProj = this.getProjection();
-  if (goog.isNull(thisProj) || ol.proj.equivalent(thisProj, projection)) {
+  if (!thisProj || ol.proj.equivalent(thisProj, projection)) {
     return this.tileCache;
   } else {
     var projKey = goog.getUid(projection).toString();
@@ -192,8 +192,8 @@ ol.source.TileImage.prototype.getTileCacheForProjection = function(projection) {
 ol.source.TileImage.prototype.getTile =
     function(z, x, y, pixelRatio, projection) {
   if (!ol.ENABLE_RASTER_REPROJECTION ||
-      !goog.isDefAndNotNull(this.getProjection()) ||
-      !goog.isDefAndNotNull(projection) ||
+      !this.getProjection() ||
+      !projection ||
       ol.proj.equivalent(this.getProjection(), projection)) {
     return this.getTileInternal(z, x, y, pixelRatio, projection);
   } else {
@@ -335,7 +335,7 @@ ol.source.TileImage.prototype.setTileGridForProjection =
     function(projection, tilegrid) {
   if (ol.ENABLE_RASTER_REPROJECTION) {
     var proj = ol.proj.get(projection);
-    if (!goog.isNull(proj)) {
+    if (proj) {
       var projKey = goog.getUid(proj).toString();
       if (!(projKey in this.tileGridForProjection)) {
         this.tileGridForProjection[projKey] = tilegrid;
@@ -380,7 +380,7 @@ ol.source.TileImage.prototype.setTileUrlFunction = function(tileUrlFunction) {
 ol.source.TileImage.prototype.useTile = function(z, x, y, projection) {
   var tileCache = this.getTileCacheForProjection(projection);
   var tileCoordKey = this.getKeyZXY(z, x, y);
-  if (!goog.isNull(tileCache) && tileCache.containsKey(tileCoordKey)) {
+  if (tileCache && tileCache.containsKey(tileCoordKey)) {
     tileCache.get(tileCoordKey);
   }
 };

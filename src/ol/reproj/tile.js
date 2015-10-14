@@ -1,6 +1,5 @@
 goog.provide('ol.reproj.Tile');
 
-goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('goog.events');
 goog.require('goog.events.EventType');
@@ -99,8 +98,8 @@ ol.reproj.Tile = function(sourceProj, sourceTileGrid,
   var maxTargetExtent = this.targetTileGrid_.getExtent();
   var maxSourceExtent = this.sourceTileGrid_.getExtent();
 
-  var limitedTargetExtent = goog.isNull(maxTargetExtent) ?
-      targetExtent : ol.extent.getIntersection(targetExtent, maxTargetExtent);
+  var limitedTargetExtent = maxTargetExtent ?
+      ol.extent.getIntersection(targetExtent, maxTargetExtent) : targetExtent;
 
   if (ol.extent.getArea(limitedTargetExtent) === 0) {
     // Tile is completely outside range -> EMPTY
@@ -110,8 +109,8 @@ ol.reproj.Tile = function(sourceProj, sourceTileGrid,
   }
 
   var sourceProjExtent = sourceProj.getExtent();
-  if (!goog.isNull(sourceProjExtent)) {
-    if (goog.isNull(maxSourceExtent)) {
+  if (sourceProjExtent) {
+    if (!maxSourceExtent) {
       maxSourceExtent = sourceProjExtent;
     } else {
       maxSourceExtent = ol.extent.getIntersection(
@@ -152,7 +151,7 @@ ol.reproj.Tile = function(sourceProj, sourceTileGrid,
   this.srcZ_ = sourceTileGrid.getZForResolution(sourceResolution);
   var srcExtent = this.triangulation_.calculateSourceExtent();
 
-  if (!goog.isNull(maxSourceExtent) &&
+  if (maxSourceExtent &&
       !this.triangulation_.getWrapsXInSource() &&
       !ol.extent.intersects(maxSourceExtent, srcExtent)) {
     this.state = ol.TileState.EMPTY;
@@ -160,25 +159,31 @@ ol.reproj.Tile = function(sourceProj, sourceTileGrid,
     var srcRange = sourceTileGrid.getTileRangeForExtentAndZ(
         srcExtent, this.srcZ_);
 
-    var xRange;
+    var xRange = [];
     var srcFullRange = sourceTileGrid.getFullTileRange(this.srcZ_);
-    if (!goog.isNull(srcFullRange)) {
+    if (srcFullRange) {
       srcRange.minY = Math.max(srcRange.minY, srcFullRange.minY);
       srcRange.maxY = Math.min(srcRange.maxY, srcFullRange.maxY);
 
       if (srcRange.minX > srcRange.maxX) {
-        xRange = goog.array.concat(
-            goog.array.range(srcRange.minX, srcFullRange.maxX + 1),
-            goog.array.range(srcFullRange.minX, srcRange.maxX + 1)
-            );
+        var i;
+        for (i = srcRange.minX; i <= srcFullRange.maxX; i++) {
+          xRange.push(i);
+        }
+        for (i = srcFullRange.minX; i <= srcRange.maxX; i++) {
+          xRange.push(i);
+        }
       } else {
-        xRange = goog.array.range(
-            Math.max(srcRange.minX, srcFullRange.minX),
-            Math.min(srcRange.maxX, srcFullRange.maxX) + 1
-            );
+        var first = Math.max(srcRange.minX, srcFullRange.minX);
+        var last = Math.min(srcRange.maxX, srcFullRange.maxX);
+        for (var j = first; j <= last; j++) {
+          xRange.push(j);
+        }
       }
     } else {
-      xRange = goog.array.range(srcRange.minX, srcRange.maxX + 1);
+      for (var k = srcRange.minX; k <= srcRange.maxX; k++) {
+        xRange.push(k);
+      }
     }
 
     var tilesRequired = xRange.length * srcRange.getHeight();
@@ -187,7 +192,7 @@ ol.reproj.Tile = function(sourceProj, sourceTileGrid,
       this.state = ol.TileState.ERROR;
       return;
     }
-    goog.array.forEach(xRange, function(srcX, i, arr) {
+    xRange.forEach(function(srcX, i, arr) {
       for (var srcY = srcRange.minY; srcY <= srcRange.maxY; srcY++) {
         var tile = getTileFunction(this.srcZ_, srcX, srcY, pixelRatio);
         if (tile) {
@@ -242,7 +247,7 @@ ol.reproj.Tile.prototype.getImage = function(opt_context) {
  */
 ol.reproj.Tile.prototype.reproject_ = function() {
   var sources = [];
-  goog.array.forEach(this.srcTiles_, function(tile, i, arr) {
+  this.srcTiles_.forEach(function(tile, i, arr) {
     if (tile && tile.getState() == ol.TileState.LOADED) {
       sources.push({
         extent: this.sourceTileGrid_.getTileCoordExtent(tile.tileCoord),
@@ -280,11 +285,11 @@ ol.reproj.Tile.prototype.load = function() {
 
     var leftToLoad = 0;
 
-    goog.asserts.assert(goog.isNull(this.sourcesListenerKeys_),
+    goog.asserts.assert(!this.sourcesListenerKeys_,
         'this.sourcesListenerKeys_ should be null');
 
     this.sourcesListenerKeys_ = [];
-    goog.array.forEach(this.srcTiles_, function(tile, i, arr) {
+    this.srcTiles_.forEach(function(tile, i, arr) {
       var state = tile.getState();
       if (state == ol.TileState.IDLE || state == ol.TileState.LOADING) {
         leftToLoad++;
@@ -310,7 +315,7 @@ ol.reproj.Tile.prototype.load = function() {
       }
     }, this);
 
-    goog.array.forEach(this.srcTiles_, function(tile, i, arr) {
+    this.srcTiles_.forEach(function(tile, i, arr) {
       var state = tile.getState();
       if (state == ol.TileState.IDLE) {
         tile.load();
@@ -328,8 +333,8 @@ ol.reproj.Tile.prototype.load = function() {
  * @private
  */
 ol.reproj.Tile.prototype.unlistenSources_ = function() {
-  goog.asserts.assert(!goog.isNull(this.sourcesListenerKeys_),
+  goog.asserts.assert(this.sourcesListenerKeys_,
       'this.sourcesListenerKeys_ should not be null');
-  goog.array.forEach(this.sourcesListenerKeys_, goog.events.unlistenByKey);
+  this.sourcesListenerKeys_.forEach(goog.events.unlistenByKey);
   this.sourcesListenerKeys_ = null;
 };

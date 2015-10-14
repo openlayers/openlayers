@@ -43,8 +43,8 @@ ol.reproj.Image = function(sourceProj, targetProj,
   this.maxSourceExtent_ = sourceProj.getExtent();
   var maxTargetExtent = targetProj.getExtent();
 
-  var limitedTargetExtent = goog.isNull(maxTargetExtent) ?
-      targetExtent : ol.extent.getIntersection(targetExtent, maxTargetExtent);
+  var limitedTargetExtent = maxTargetExtent ?
+      ol.extent.getIntersection(targetExtent, maxTargetExtent) : targetExtent;
 
   var targetCenter = ol.extent.getCenter(limitedTargetExtent);
   var sourceResolution = ol.reproj.calculateSourceResolution(
@@ -84,8 +84,7 @@ ol.reproj.Image = function(sourceProj, targetProj,
    * @private
    * @type {number}
    */
-  this.srcPixelRatio_ =
-      !goog.isNull(this.srcImage_) ? this.srcImage_.getPixelRatio() : 1;
+  this.srcPixelRatio_ = this.srcImage_ ? this.srcImage_.getPixelRatio() : 1;
 
   /**
    * @private
@@ -103,7 +102,7 @@ ol.reproj.Image = function(sourceProj, targetProj,
   var state = ol.ImageState.LOADED;
   var attributions = [];
 
-  if (!goog.isNull(this.srcImage_)) {
+  if (this.srcImage_) {
     state = ol.ImageState.IDLE;
     attributions = this.srcImage_.getAttributions();
   }
@@ -195,7 +194,7 @@ ol.reproj.Image.prototype.load = function() {
  * @private
  */
 ol.reproj.Image.prototype.unlistenSource_ = function() {
-  goog.asserts.assert(!goog.isNull(this.sourceListenerKey_),
+  goog.asserts.assert(this.sourceListenerKey_,
       'this.sourceListenerKey_ should not be null');
   goog.events.unlistenByKey(this.sourceListenerKey_);
   this.sourceListenerKey_ = null;

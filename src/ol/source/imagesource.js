@@ -110,15 +110,15 @@ ol.source.Image.prototype.getImage =
     function(extent, resolution, pixelRatio, projection) {
   var sourceProjection = this.getProjection();
   if (!ol.ENABLE_RASTER_REPROJECTION ||
-      !goog.isDefAndNotNull(sourceProjection) ||
-      !goog.isDefAndNotNull(projection) ||
+      !sourceProjection ||
+      !projection ||
       ol.proj.equivalent(sourceProjection, projection)) {
-    if (!goog.isNull(sourceProjection)) {
+    if (sourceProjection) {
       projection = sourceProjection;
     }
     return this.getImageInternal(extent, resolution, pixelRatio, projection);
   } else {
-    if (!goog.isNull(this.reprojectedImage_)) {
+    if (this.reprojectedImage_) {
       if (this.reprojectedRevision_ == this.getRevision() &&
           ol.proj.equivalent(
               this.reprojectedImage_.getProjection(), projection) &&

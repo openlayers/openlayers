@@ -103,7 +103,7 @@ ol.source.Tile.prototype.canExpireCache = function() {
  */
 ol.source.Tile.prototype.expireCache = function(projection, usedTiles) {
   var tileCache = this.getTileCacheForProjection(projection);
-  if (!goog.isNull(tileCache)) {
+  if (tileCache) {
     tileCache.expireCache(usedTiles);
   }
 };
@@ -121,7 +121,7 @@ ol.source.Tile.prototype.expireCache = function(projection, usedTiles) {
 ol.source.Tile.prototype.forEachLoadedTile =
     function(projection, z, tileRange, callback) {
   var tileCache = this.getTileCacheForProjection(projection);
-  if (goog.isNull(tileCache)) {
+  if (!tileCache) {
     return false;
   }
 
@@ -222,7 +222,7 @@ ol.source.Tile.prototype.getTileGridForProjection = function(projection) {
  */
 ol.source.Tile.prototype.getTileCacheForProjection = function(projection) {
   var thisProj = this.getProjection();
-  if (!goog.isNull(thisProj) && !ol.proj.equivalent(thisProj, projection)) {
+  if (thisProj && !ol.proj.equivalent(thisProj, projection)) {
     return null;
   } else {
     return this.tileCache;

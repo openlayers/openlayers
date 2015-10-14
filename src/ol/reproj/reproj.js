@@ -1,6 +1,5 @@
 goog.provide('ol.reproj');
 
-goog.require('goog.array');
 goog.require('goog.labs.userAgent.browser');
 goog.require('goog.labs.userAgent.platform');
 goog.require('goog.math');
@@ -117,8 +116,7 @@ ol.reproj.render = function(width, height, pixelRatio,
 
   context.scale(pixelRatio, pixelRatio);
 
-  var wrapXShiftDistance = !goog.isNull(sourceExtent) ?
-      ol.extent.getWidth(sourceExtent) : 0;
+  var wrapXShiftDistance = sourceExtent ? ol.extent.getWidth(sourceExtent) : 0;
 
   var wrapXType = ol.reproj.WrapXRendering_.NONE;
 
@@ -137,7 +135,7 @@ ol.reproj.render = function(width, height, pixelRatio,
   }
 
   var srcDataExtent = ol.extent.createEmpty();
-  goog.array.forEach(sources, function(src, i, arr) {
+  sources.forEach(function(src, i, arr) {
     if (wrapXType == ol.reproj.WrapXRendering_.STITCH_SHIFT) {
       var srcW = src.extent[2] - src.extent[0];
       var srcX = goog.math.modulo(src.extent[0], wrapXShiftDistance);
@@ -147,7 +145,7 @@ ol.reproj.render = function(width, height, pixelRatio,
       ol.extent.extend(srcDataExtent, src.extent);
     }
   });
-  if (!goog.isNull(sourceExtent)) {
+  if (sourceExtent) {
     if (wrapXType == ol.reproj.WrapXRendering_.NONE) {
       srcDataExtent[0] = ol.math.clamp(
           srcDataExtent[0], sourceExtent[0], sourceExtent[2]);
@@ -177,7 +175,7 @@ ol.reproj.render = function(width, height, pixelRatio,
                       pixelRatio / sourceResolution);
   stitchContext.translate(-srcDataExtent[0], srcDataExtent[3]);
 
-  goog.array.forEach(sources, function(src, i, arr) {
+  sources.forEach(function(src, i, arr) {
     var xPos = src.extent[0];
     var yPos = -src.extent[3];
     var srcWidth = ol.extent.getWidth(src.extent);
@@ -196,7 +194,7 @@ ol.reproj.render = function(width, height, pixelRatio,
 
   var targetTL = ol.extent.getTopLeft(targetExtent);
 
-  goog.array.forEach(triangulation.getTriangles(), function(tri, i, arr) {
+  triangulation.getTriangles().forEach(function(tri, i, arr) {
     context.save();
 
     /* Calculate affine transform (src -> dst)
@@ -263,7 +261,7 @@ ol.reproj.render = function(width, height, pixelRatio,
       [0, 0, x2, y2, v2 - v0]
     ];
     var coefs = ol.math.solveLinearSystem(augmentedMatrix);
-    if (goog.isNull(coefs)) {
+    if (!coefs) {
       return;
     }
 
@@ -303,8 +301,7 @@ ol.reproj.render = function(width, height, pixelRatio,
     context.strokeStyle = 'black';
     context.lineWidth = 1;
 
-    goog.array.forEach(triangulation.getTriangles(), function(tri, i, arr) {
-
+    triangulation.getTriangles().forEach(function(tri, i, arr) {
       var tgt = tri.target;
       var u0 = (tgt[0][0] - targetTL[0]) / targetResolution,
           v0 = -(tgt[0][1] - targetTL[1]) / targetResolution;
