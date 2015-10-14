@@ -11,9 +11,7 @@ goog.require('ol.style.Style');
 goog.require('ol.style.Text');
 
 
-// Mapbox access token - request your own at http://mapbox.com
-var accessToken =
-    'pk.eyJ1IjoiYWhvY2V2YXIiLCJhIjoiRk1kMWZaSSJ9.E5BkluenyWQMsBLsuByrmg';
+var key = 'pk.eyJ1IjoiYWhvY2V2YXIiLCJhIjoiRk1kMWZaSSJ9.E5BkluenyWQMsBLsuByrmg';
 
 var map = new ol.Map({
   layers: [
@@ -28,7 +26,7 @@ var map = new ol.Map({
         tileGrid: ol.tilegrid.createXYZ({maxZoom: 22}),
         tilePixelRatio: 16,
         url: 'http://{a-d}.tiles.mapbox.com/v4/mapbox.mapbox-streets-v6/' +
-            '{z}/{x}/{y}.vector.pbf?access_token=' + accessToken
+            '{z}/{x}/{y}.vector.pbf?access_token=' + key
       }),
       style: createMapboxStreetsV6Style()
     })

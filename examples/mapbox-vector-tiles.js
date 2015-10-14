@@ -13,9 +13,7 @@ goog.require('ol.style.Text');
 goog.require('ol.tilegrid.TileGrid');
 
 
-// Mapbox access token - request your own at http://mapbox.com
-var accessToken =
-    'pk.eyJ1IjoiYWhvY2V2YXIiLCJhIjoiRk1kMWZaSSJ9.E5BkluenyWQMsBLsuByrmg';
+var key = 'pk.eyJ1IjoiYWhvY2V2YXIiLCJhIjoiRk1kMWZaSSJ9.E5BkluenyWQMsBLsuByrmg';
 
 // For how many zoom levels do we want to use the same vector tiles?
 // 1 means "use tiles from all zoom levels". 2 means "use the same tiles for 2
@@ -34,7 +32,7 @@ for (var z = zoomOffset / reuseZoomLevels; z <= 22 / reuseZoomLevels; ++z) {
 }
 function tileUrlFunction(tileCoord) {
   return ('http://{a-d}.tiles.mapbox.com/v4/mapbox.mapbox-streets-v6/' +
-      '{z}/{x}/{y}.vector.pbf?access_token=' + accessToken)
+      '{z}/{x}/{y}.vector.pbf?access_token=' + key)
       .replace('{z}', String(tileCoord[0] * reuseZoomLevels + zoomOffset))
       .replace('{x}', String(tileCoord[1]))
       .replace('{y}', String(-tileCoord[2] - 1))
