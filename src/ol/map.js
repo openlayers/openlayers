@@ -343,6 +343,13 @@ ol.Map = function(options) {
   this.overlays_ = optionsInternal.overlays;
 
   /**
+   * A lookup of overlays by id.
+   * @private
+   * @type {Object.<string, ol.Overlay>}
+   */
+  this.overlayIdIndex_ = {};
+
+  /**
    * @type {ol.renderer.Map}
    * @private
    */
@@ -466,7 +473,7 @@ ol.Map = function(options) {
        * @this {ol.Map}
        */
       function(overlay) {
-        overlay.setMap(this);
+        this.addOverlayInternal(overlay);
       }, this);
 
   goog.events.listen(this.overlays_, ol.CollectionEventType.ADD,
@@ -474,7 +481,7 @@ ol.Map = function(options) {
        * @param {ol.CollectionEvent} event Collection event.
        */
       function(event) {
-        event.element.setMap(this);
+        this.addOverlayInternal(/** @type {ol.Overlay} */ (event.element));
       }, false, this);
 
   goog.events.listen(this.overlays_, ol.CollectionEventType.REMOVE,
@@ -482,7 +489,7 @@ ol.Map = function(options) {
        * @param {ol.CollectionEvent} event Collection event.
        */
       function(event) {
-        event.element.setMap(null);
+        this.removeOverlayInternal(/** @type {ol.Overlay} */ (event.element));
       }, false, this);
 
 };
@@ -536,6 +543,23 @@ ol.Map.prototype.addOverlay = function(overlay) {
   var overlays = this.getOverlays();
   goog.asserts.assert(overlays !== undefined, 'overlays should be defined');
   overlays.push(overlay);
+};
+
+
+/**
+ * This deals with map's overlay collection changes.
+ * @param {ol.Overlay} overlay Overlay.
+ * @protected
+ */
+ol.Map.prototype.addOverlayInternal = function(overlay) {
+  var id = overlay.getId();
+  if (id !== undefined) {
+    this.overlayIdIndex_[id.toString()] = overlay;
+  }
+  overlay.setMap(this);
+  goog.events.listen(
+      overlay, ol.Object.getChangeEventType(overlay.getOverlayIdProperty()),
+      this.handleOverlayIdChange_, false, this);
 };
 
 
@@ -764,6 +788,20 @@ ol.Map.prototype.getControls = function() {
  */
 ol.Map.prototype.getOverlays = function() {
   return this.overlays_;
+};
+
+
+/**
+ * Get an overlay by its identifier (the value returned by overlay.getId()).
+ * Note that the index treats string and numeric identifiers as the same. So
+ * `map.getOverlayById(2)` will return an overlay with id `'2'` or `2`.
+ * @param {string|number} id Overlay identifier.
+ * @return {ol.Overlay} Overlay.
+ * @api
+ */
+ol.Map.prototype.getOverlayById = function(id) {
+  var overlay = this.overlayIdIndex_[id.toString()];
+  return overlay !== undefined ? overlay : null;
 };
 
 
@@ -1066,6 +1104,28 @@ ol.Map.prototype.handleTileChange_ = function() {
 
 
 /**
+ * @param {goog.events.Event} event Event.
+ * @private
+ */
+ol.Map.prototype.handleOverlayIdChange_ = function(event) {
+  var overlay = /** @type {ol.Overlay} */ (event.target);
+  var id = overlay.getId().toString();
+  var oldId = event.oldValue;
+  if (oldId && oldId != id) {
+    delete this.overlayIdIndex_[oldId];
+  }
+  if (id in this.overlayIdIndex_) {
+    if (this.overlayIdIndex_[id] !== overlay) {
+      delete this.overlayIdIndex_[id];
+      this.overlayIdIndex_[id] = overlay;
+    }
+  } else {
+    this.overlayIdIndex_[id] = overlay;
+  }
+};
+
+
+/**
  * @private
  */
 ol.Map.prototype.handleViewPropertyChanged_ = function() {
@@ -1242,6 +1302,20 @@ ol.Map.prototype.removeOverlay = function(overlay) {
   var overlays = this.getOverlays();
   goog.asserts.assert(overlays !== undefined, 'overlays should be defined');
   return overlays.remove(overlay);
+};
+
+
+/**
+ * This deals with map's overlay collection changes.
+ * @param {ol.Overlay} overlay Overlay.
+ * @protected
+ */
+ol.Map.prototype.removeOverlayInternal = function(overlay) {
+  var id = overlay.getId();
+  if (id !== undefined) {
+    delete this.overlayIdIndex_[id.toString()];
+  }
+  overlay.setMap(null);
 };
 
 

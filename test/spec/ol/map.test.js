@@ -315,6 +315,113 @@ describe('ol.Map', function() {
       });
     });
 
+    describe('#getOverlayById()', function() {
+      var target, map, overlay, overlay_target;
+
+      beforeEach(function() {
+        target = document.createElement('div');
+        var style = target.style;
+        style.position = 'absolute';
+        style.left = '-1000px';
+        style.top = '-1000px';
+        style.width = '360px';
+        style.height = '180px';
+        document.body.appendChild(target);
+        map = new ol.Map({
+          target: target,
+          view: new ol.View({
+            projection: 'EPSG:4326',
+            center: [0, 0],
+            resolution: 1
+          })
+        });
+        overlay_target = document.createElement('div');
+      });
+
+      afterEach(function() {
+        map.removeOverlay(overlay);
+        goog.dispose(map);
+        document.body.removeChild(target);
+      });
+
+      it('returns an overlay by id', function() {
+        overlay = new ol.Overlay({
+          element: overlay_target,
+          position: [0, 0]
+        });
+        overlay.setId('foo');
+        map.addOverlay(overlay);
+        expect(map.getOverlayById('foo')).to.be(overlay);
+      });
+
+      it('returns an overlay by id (set after add)', function() {
+        overlay = new ol.Overlay({
+          element: overlay_target,
+          position: [0, 0]
+        });
+        map.addOverlay(overlay);
+        expect(map.getOverlayById('foo')).to.be(null);
+        overlay.setId('foo');
+        expect(map.getOverlayById('foo')).to.be(overlay);
+      });
+
+      it('returns null when no overlay is found', function() {
+        overlay = new ol.Overlay({
+          element: overlay_target,
+          position: [0, 0]
+        });
+        overlay.setId('foo');
+        map.addOverlay(overlay);
+        expect(map.getOverlayById('bar')).to.be(null);
+      });
+
+      it('returns null after removing overlay', function() {
+        overlay = new ol.Overlay({
+          element: overlay_target,
+          position: [0, 0]
+        });
+        overlay.setId('foo');
+        map.addOverlay(overlay);
+        expect(map.getOverlayById('foo')).to.be(overlay);
+        map.removeOverlay(overlay);
+        expect(map.getOverlayById('foo')).to.be(null);
+      });
+
+      it('returns correct overlay after add/remove/add', function() {
+        expect(map.getOverlayById('foo')).to.be(null);
+        var first = new ol.Overlay({
+          element: overlay_target,
+          position: [0, 0]
+        });
+        first.setId('foo');
+        map.addOverlay(first);
+        expect(map.getOverlayById('foo')).to.be(first);
+        map.removeOverlay(first);
+        expect(map.getOverlayById('foo')).to.be(null);
+        var second = new ol.Overlay({
+          element: overlay_target,
+          position: [0, 0]
+        });
+        second.setId('foo');
+        map.addOverlay(second);
+        expect(map.getOverlayById('foo')).to.be(second);
+      });
+
+      it('returns correct overlay after add/change', function() {
+        expect(map.getOverlayById('foo')).to.be(null);
+        overlay = new ol.Overlay({
+          element: overlay_target,
+          position: [0, 0]
+        });
+        overlay.setId('foo');
+        map.addOverlay(overlay);
+        expect(map.getOverlayById('foo')).to.be(overlay);
+        overlay.setId('bar');
+        expect(map.getOverlayById('foo')).to.be(null);
+        expect(map.getOverlayById('bar')).to.be(overlay);
+      });
+    });
+
   });
 
 });
@@ -325,6 +432,7 @@ goog.require('goog.events.BrowserEvent');
 goog.require('goog.events.EventType');
 goog.require('ol.Map');
 goog.require('ol.MapEvent');
+goog.require('ol.Overlay');
 goog.require('ol.View');
 goog.require('ol.interaction');
 goog.require('ol.interaction.Interaction');
