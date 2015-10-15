@@ -62,6 +62,18 @@ ol.Observable.prototype.changed = function() {
 
 
 /**
+ * Dispatches an event and calls all listeners listening for events
+ * of this type. The event parameter can either be a string or an
+ * Object with a `type` property.
+ *
+ * @param {goog.events.EventLike} event Event object.
+ * @function
+ * @api
+ */
+ol.Observable.prototype.dispatchEvent;
+
+
+/**
  * Get the version number for this object.  Each time the object is modified,
  * its version number will be incremented.
  * @return {number} Revision.
