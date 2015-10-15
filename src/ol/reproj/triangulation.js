@@ -125,7 +125,7 @@ ol.reproj.Triangulation = function(sourceProj, targetProj, targetExtent,
 
   this.addQuad_(tlDst, trDst, brDst, blDst,
                 tlDstSrc, trDstSrc, brDstSrc, blDstSrc,
-                ol.RASTER_REPROJ_MAX_SUBDIVISION);
+                ol.RASTER_REPROJECTION_MAX_SUBDIVISION);
 
   transformInvCache = {};
 };
@@ -185,10 +185,12 @@ ol.reproj.Triangulation.prototype.addQuad_ = function(a, b, c, d,
       var tgtQuadExtent = ol.extent.boundingExtent([a, b, c, d]);
       var tgtCoverageX =
           ol.extent.getWidth(tgtQuadExtent) / this.targetWorldWidth_;
-      needsSubdivision |= tgtCoverageX > ol.RASTER_REPROJ_MAX_TRIANGLE_WIDTH;
+      needsSubdivision |=
+          tgtCoverageX > ol.RASTER_REPROJECTION_MAX_TRIANGLE_WIDTH;
     }
     if (!wrapsX && this.sourceProj_.isGlobal() && srcCoverageX) {
-      needsSubdivision |= srcCoverageX > ol.RASTER_REPROJ_MAX_TRIANGLE_WIDTH;
+      needsSubdivision |=
+          srcCoverageX > ol.RASTER_REPROJECTION_MAX_TRIANGLE_WIDTH;
     }
   }
 

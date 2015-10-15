@@ -132,7 +132,7 @@ ol.reproj.Tile = function(sourceProj, sourceTileGrid,
   }
 
   var errorThresholdInPixels = opt_errorThreshold !== undefined ?
-      opt_errorThreshold : ol.DEFAULT_RASTER_REPROJ_ERROR_THRESHOLD;
+      opt_errorThreshold : ol.DEFAULT_RASTER_REPROJECTION_ERROR_THRESHOLD;
 
   /**
    * @private
@@ -187,7 +187,8 @@ ol.reproj.Tile = function(sourceProj, sourceTileGrid,
     }
 
     var tilesRequired = xRange.length * srcRange.getHeight();
-    if (!goog.asserts.assert(tilesRequired < ol.RASTER_REPROJ_MAX_SOURCE_TILES,
+    if (!goog.asserts.assert(
+        tilesRequired < ol.RASTER_REPROJECTION_MAX_SOURCE_TILES,
         'reasonable number of tiles is required')) {
       this.state = ol.TileState.ERROR;
       return;

@@ -50,7 +50,7 @@ ol.reproj.Image = function(sourceProj, targetProj,
   var sourceResolution = ol.reproj.calculateSourceResolution(
       sourceProj, targetProj, targetCenter, targetResolution);
 
-  var errorThresholdInPixels = ol.DEFAULT_RASTER_REPROJ_ERROR_THRESHOLD;
+  var errorThresholdInPixels = ol.DEFAULT_RASTER_REPROJECTION_ERROR_THRESHOLD;
 
   /**
    * @private

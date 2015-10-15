@@ -32,7 +32,7 @@ ol.DEFAULT_MIN_ZOOM = 0;
  * @define {number} Default maximum allowed threshold  (in pixels) for
  *     reprojection triangulation. Default is `0.5`.
  */
-ol.DEFAULT_RASTER_REPROJ_ERROR_THRESHOLD = 0.5;
+ol.DEFAULT_RASTER_REPROJECTION_ERROR_THRESHOLD = 0.5;
 
 
 /**
@@ -183,7 +183,7 @@ ol.OVERVIEWMAP_MIN_RATIO = 0.1;
  *     If too many tiles are required, no tiles are loaded and
  *     `ol.TileState.ERROR` state is set. Default is `100`.
  */
-ol.RASTER_REPROJ_MAX_SOURCE_TILES = 100;
+ol.RASTER_REPROJECTION_MAX_SOURCE_TILES = 100;
 
 
 /**
@@ -192,7 +192,7 @@ ol.RASTER_REPROJ_MAX_SOURCE_TILES = 100;
  *     number of proj4 calls (for certain transformations and areas).
  *     At most `2*(2^this)` triangles are created. Default is `10`.
  */
-ol.RASTER_REPROJ_MAX_SUBDIVISION = 10;
+ol.RASTER_REPROJECTION_MAX_SUBDIVISION = 10;
 
 
 /**
@@ -201,10 +201,10 @@ ol.RASTER_REPROJ_MAX_SUBDIVISION = 10;
  *     the resulting triangulation seems to have zero error and no subdivision
  *     is performed.
  *     If the triangle width is more than this (relative to world width; 0-1),
- *     subdivison is forced (respecting `ol.RASTER_REPROJ_MAX_SUBDIVISION`).
+ *     subdivison is forced (up to `ol.RASTER_REPROJECTION_MAX_SUBDIVISION`).
  *     Default is `0.25`.
  */
-ol.RASTER_REPROJ_MAX_TRIANGLE_WIDTH = 0.25;
+ol.RASTER_REPROJECTION_MAX_TRIANGLE_WIDTH = 0.25;
 
 
 /**
