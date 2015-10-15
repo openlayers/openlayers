@@ -44,13 +44,13 @@ ol.reproj.calculateSourceResolution = function(sourceProj, targetProj,
   var sourceResolution =
       targetProj.getPointResolution(targetResolution, targetCenter);
 
-  var targetMPU = targetProj.getMetersPerUnit();
-  if (targetMPU !== undefined) {
-    sourceResolution *= targetMPU;
+  var targetMetersPerUnit = targetProj.getMetersPerUnit();
+  if (targetMetersPerUnit !== undefined) {
+    sourceResolution *= targetMetersPerUnit;
   }
-  var sourceMPU = sourceProj.getMetersPerUnit();
-  if (sourceMPU !== undefined) {
-    sourceResolution /= sourceMPU;
+  var sourceMetersPerUnit = sourceProj.getMetersPerUnit();
+  if (sourceMetersPerUnit !== undefined) {
+    sourceResolution /= sourceMetersPerUnit;
   }
 
   // Based on the projection properties, the point resolution at the specified
@@ -134,46 +134,45 @@ ol.reproj.render = function(width, height, pixelRatio,
     }
   }
 
-  var srcDataExtent = ol.extent.createEmpty();
+  var sourceDataExtent = ol.extent.createEmpty();
   sources.forEach(function(src, i, arr) {
     if (wrapXType == ol.reproj.WrapXRendering_.STITCH_SHIFT) {
       var srcW = src.extent[2] - src.extent[0];
       var srcX = goog.math.modulo(src.extent[0], wrapXShiftDistance);
-      ol.extent.extend(srcDataExtent, [srcX, src.extent[1],
-                                       srcX + srcW, src.extent[3]]);
+      ol.extent.extend(sourceDataExtent, [srcX, src.extent[1],
+                                          srcX + srcW, src.extent[3]]);
     } else {
-      ol.extent.extend(srcDataExtent, src.extent);
+      ol.extent.extend(sourceDataExtent, src.extent);
     }
   });
   if (sourceExtent) {
     if (wrapXType == ol.reproj.WrapXRendering_.NONE) {
-      srcDataExtent[0] = ol.math.clamp(
-          srcDataExtent[0], sourceExtent[0], sourceExtent[2]);
-      srcDataExtent[2] = ol.math.clamp(
-          srcDataExtent[2], sourceExtent[0], sourceExtent[2]);
+      sourceDataExtent[0] = ol.math.clamp(
+          sourceDataExtent[0], sourceExtent[0], sourceExtent[2]);
+      sourceDataExtent[2] = ol.math.clamp(
+          sourceDataExtent[2], sourceExtent[0], sourceExtent[2]);
     }
-    srcDataExtent[1] = ol.math.clamp(
-        srcDataExtent[1], sourceExtent[1], sourceExtent[3]);
-    srcDataExtent[3] = ol.math.clamp(
-        srcDataExtent[3], sourceExtent[1], sourceExtent[3]);
+    sourceDataExtent[1] = ol.math.clamp(
+        sourceDataExtent[1], sourceExtent[1], sourceExtent[3]);
+    sourceDataExtent[3] = ol.math.clamp(
+        sourceDataExtent[3], sourceExtent[1], sourceExtent[3]);
   }
 
-  var srcDataWidth = ol.extent.getWidth(srcDataExtent);
-  var srcDataHeight = ol.extent.getHeight(srcDataExtent);
   var canvasWidthInUnits;
   if (wrapXType == ol.reproj.WrapXRendering_.STITCH_EXTENDED) {
     canvasWidthInUnits = 2 * wrapXShiftDistance;
   } else {
-    canvasWidthInUnits = srcDataWidth;
+    canvasWidthInUnits = ol.extent.getWidth(sourceDataExtent);
   }
 
+  var canvasHeightInUnits = ol.extent.getHeight(sourceDataExtent);
   var stitchContext = ol.dom.createCanvasContext2D(
       Math.round(pixelRatio * canvasWidthInUnits / sourceResolution),
-      Math.round(pixelRatio * srcDataHeight / sourceResolution));
+      Math.round(pixelRatio * canvasHeightInUnits / sourceResolution));
 
   stitchContext.scale(pixelRatio / sourceResolution,
                       pixelRatio / sourceResolution);
-  stitchContext.translate(-srcDataExtent[0], srcDataExtent[3]);
+  stitchContext.translate(-sourceDataExtent[0], sourceDataExtent[3]);
 
   sources.forEach(function(src, i, arr) {
     var xPos = src.extent[0];
@@ -192,9 +191,9 @@ ol.reproj.render = function(width, height, pixelRatio,
     }
   });
 
-  var targetTL = ol.extent.getTopLeft(targetExtent);
+  var targetTopLeft = ol.extent.getTopLeft(targetExtent);
 
-  triangulation.getTriangles().forEach(function(tri, i, arr) {
+  triangulation.getTriangles().forEach(function(triangle, i, arr) {
     context.save();
 
     /* Calculate affine transform (src -> dst)
@@ -217,16 +216,16 @@ ol.reproj.render = function(width, height, pixelRatio,
      * |  0  0 0 x1 y1 1 |   |a11|   |v1|
      * |  0  0 0 x2 y2 1 |   |a12|   |v2|
      */
-    var src = tri.source, tgt = tri.target;
-    var x0 = src[0][0], y0 = src[0][1],
-        x1 = src[1][0], y1 = src[1][1],
-        x2 = src[2][0], y2 = src[2][1];
-    var u0 = (tgt[0][0] - targetTL[0]) / targetResolution,
-        v0 = -(tgt[0][1] - targetTL[1]) / targetResolution;
-    var u1 = (tgt[1][0] - targetTL[0]) / targetResolution,
-        v1 = -(tgt[1][1] - targetTL[1]) / targetResolution;
-    var u2 = (tgt[2][0] - targetTL[0]) / targetResolution,
-        v2 = -(tgt[2][1] - targetTL[1]) / targetResolution;
+    var source = triangle.source, target = triangle.target;
+    var x0 = source[0][0], y0 = source[0][1],
+        x1 = source[1][0], y1 = source[1][1],
+        x2 = source[2][0], y2 = source[2][1];
+    var u0 = (target[0][0] - targetTopLeft[0]) / targetResolution,
+        v0 = -(target[0][1] - targetTopLeft[1]) / targetResolution;
+    var u1 = (target[1][0] - targetTopLeft[0]) / targetResolution,
+        v1 = -(target[1][1] - targetTopLeft[1]) / targetResolution;
+    var u2 = (target[2][0] - targetTopLeft[0]) / targetResolution,
+        v2 = -(target[2][1] - targetTopLeft[1]) / targetResolution;
 
     var performWrapXShift = wrapXType == ol.reproj.WrapXRendering_.STITCH_SHIFT;
     if (wrapXType == ol.reproj.WrapXRendering_.STITCH_EXTENDED) {
@@ -246,13 +245,13 @@ ol.reproj.render = function(width, height, pixelRatio,
     // Shift all the source points to improve numerical stability
     // of all the subsequent calculations. The [x0, y0] is used here.
     // This is also used to simplify the linear system.
-    var srcNumericalShiftX = x0, srcNumericalShiftY = y0;
+    var sourceNumericalShiftX = x0, sourceNumericalShiftY = y0;
     x0 = 0;
     y0 = 0;
-    x1 -= srcNumericalShiftX;
-    y1 -= srcNumericalShiftY;
-    x2 -= srcNumericalShiftX;
-    y2 -= srcNumericalShiftY;
+    x1 -= sourceNumericalShiftX;
+    y1 -= sourceNumericalShiftY;
+    x2 -= sourceNumericalShiftX;
+    y2 -= sourceNumericalShiftY;
 
     var augmentedMatrix = [
       [x1, y1, 0, 0, u1 - u0],
@@ -260,8 +259,8 @@ ol.reproj.render = function(width, height, pixelRatio,
       [0, 0, x1, y1, v1 - v0],
       [0, 0, x2, y2, v2 - v0]
     ];
-    var coefs = ol.math.solveLinearSystem(augmentedMatrix);
-    if (!coefs) {
+    var affineCoefs = ol.math.solveLinearSystem(augmentedMatrix);
+    if (!affineCoefs) {
       return;
     }
 
@@ -283,10 +282,11 @@ ol.reproj.render = function(width, height, pixelRatio,
     context.closePath();
     context.clip();
 
-    context.transform(coefs[0], coefs[2], coefs[1], coefs[3], u0, v0);
+    context.transform(
+        affineCoefs[0], affineCoefs[2], affineCoefs[1], affineCoefs[3], u0, v0);
 
-    context.translate(srcDataExtent[0] - srcNumericalShiftX,
-                      srcDataExtent[3] - srcNumericalShiftY);
+    context.translate(sourceDataExtent[0] - sourceNumericalShiftX,
+                      sourceDataExtent[3] - sourceNumericalShiftY);
 
     context.scale(sourceResolution / pixelRatio,
                   -sourceResolution / pixelRatio);
@@ -301,14 +301,14 @@ ol.reproj.render = function(width, height, pixelRatio,
     context.strokeStyle = 'black';
     context.lineWidth = 1;
 
-    triangulation.getTriangles().forEach(function(tri, i, arr) {
-      var tgt = tri.target;
-      var u0 = (tgt[0][0] - targetTL[0]) / targetResolution,
-          v0 = -(tgt[0][1] - targetTL[1]) / targetResolution;
-      var u1 = (tgt[1][0] - targetTL[0]) / targetResolution,
-          v1 = -(tgt[1][1] - targetTL[1]) / targetResolution;
-      var u2 = (tgt[2][0] - targetTL[0]) / targetResolution,
-          v2 = -(tgt[2][1] - targetTL[1]) / targetResolution;
+    triangulation.getTriangles().forEach(function(triangle, i, arr) {
+      var target = triangle.target;
+      var u0 = (target[0][0] - targetTopLeft[0]) / targetResolution,
+          v0 = -(target[0][1] - targetTopLeft[1]) / targetResolution;
+      var u1 = (target[1][0] - targetTopLeft[0]) / targetResolution,
+          v1 = -(target[1][1] - targetTopLeft[1]) / targetResolution;
+      var u2 = (target[2][0] - targetTopLeft[0]) / targetResolution,
+          v2 = -(target[2][1] - targetTopLeft[1]) / targetResolution;
 
       context.beginPath();
       context.moveTo(u0, v0);

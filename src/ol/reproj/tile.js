@@ -80,7 +80,7 @@ ol.reproj.Tile = function(sourceProj, sourceTileGrid,
    * @private
    * @type {!Array.<ol.Tile>}
    */
-  this.srcTiles_ = [];
+  this.sourceTiles_ = [];
 
   /**
    * @private
@@ -92,7 +92,7 @@ ol.reproj.Tile = function(sourceProj, sourceTileGrid,
    * @private
    * @type {number}
    */
-  this.srcZ_ = 0;
+  this.sourceZ_ = 0;
 
   var targetExtent = targetTileGrid.getTileCoordExtent(this.getTileCoord());
   var maxTargetExtent = this.targetTileGrid_.getExtent();
@@ -148,45 +148,45 @@ ol.reproj.Tile = function(sourceProj, sourceTileGrid,
     return;
   }
 
-  this.srcZ_ = sourceTileGrid.getZForResolution(sourceResolution);
-  var srcExtent = this.triangulation_.calculateSourceExtent();
+  this.sourceZ_ = sourceTileGrid.getZForResolution(sourceResolution);
+  var sourceExtent = this.triangulation_.calculateSourceExtent();
 
   if (maxSourceExtent &&
       !this.triangulation_.getWrapsXInSource() &&
-      !ol.extent.intersects(maxSourceExtent, srcExtent)) {
+      !ol.extent.intersects(maxSourceExtent, sourceExtent)) {
     this.state = ol.TileState.EMPTY;
   } else {
-    var srcRange = sourceTileGrid.getTileRangeForExtentAndZ(
-        srcExtent, this.srcZ_);
+    var sourceRange = sourceTileGrid.getTileRangeForExtentAndZ(
+        sourceExtent, this.sourceZ_);
 
     var xRange = [];
-    var srcFullRange = sourceTileGrid.getFullTileRange(this.srcZ_);
-    if (srcFullRange) {
-      srcRange.minY = Math.max(srcRange.minY, srcFullRange.minY);
-      srcRange.maxY = Math.min(srcRange.maxY, srcFullRange.maxY);
+    var sourceFullRange = sourceTileGrid.getFullTileRange(this.sourceZ_);
+    if (sourceFullRange) {
+      sourceRange.minY = Math.max(sourceRange.minY, sourceFullRange.minY);
+      sourceRange.maxY = Math.min(sourceRange.maxY, sourceFullRange.maxY);
 
-      if (srcRange.minX > srcRange.maxX) {
+      if (sourceRange.minX > sourceRange.maxX) {
         var i;
-        for (i = srcRange.minX; i <= srcFullRange.maxX; i++) {
+        for (i = sourceRange.minX; i <= sourceFullRange.maxX; i++) {
           xRange.push(i);
         }
-        for (i = srcFullRange.minX; i <= srcRange.maxX; i++) {
+        for (i = sourceFullRange.minX; i <= sourceRange.maxX; i++) {
           xRange.push(i);
         }
       } else {
-        var first = Math.max(srcRange.minX, srcFullRange.minX);
-        var last = Math.min(srcRange.maxX, srcFullRange.maxX);
+        var first = Math.max(sourceRange.minX, sourceFullRange.minX);
+        var last = Math.min(sourceRange.maxX, sourceFullRange.maxX);
         for (var j = first; j <= last; j++) {
           xRange.push(j);
         }
       }
     } else {
-      for (var k = srcRange.minX; k <= srcRange.maxX; k++) {
+      for (var k = sourceRange.minX; k <= sourceRange.maxX; k++) {
         xRange.push(k);
       }
     }
 
-    var tilesRequired = xRange.length * srcRange.getHeight();
+    var tilesRequired = xRange.length * sourceRange.getHeight();
     if (!goog.asserts.assert(
         tilesRequired < ol.RASTER_REPROJECTION_MAX_SOURCE_TILES,
         'reasonable number of tiles is required')) {
@@ -194,15 +194,15 @@ ol.reproj.Tile = function(sourceProj, sourceTileGrid,
       return;
     }
     xRange.forEach(function(srcX, i, arr) {
-      for (var srcY = srcRange.minY; srcY <= srcRange.maxY; srcY++) {
-        var tile = getTileFunction(this.srcZ_, srcX, srcY, pixelRatio);
+      for (var srcY = sourceRange.minY; srcY <= sourceRange.maxY; srcY++) {
+        var tile = getTileFunction(this.sourceZ_, srcX, srcY, pixelRatio);
         if (tile) {
-          this.srcTiles_.push(tile);
+          this.sourceTiles_.push(tile);
         }
       }
     }, this);
 
-    if (this.srcTiles_.length === 0) {
+    if (this.sourceTiles_.length === 0) {
       this.state = ol.TileState.EMPTY;
     }
   }
@@ -248,7 +248,7 @@ ol.reproj.Tile.prototype.getImage = function(opt_context) {
  */
 ol.reproj.Tile.prototype.reproject_ = function() {
   var sources = [];
-  this.srcTiles_.forEach(function(tile, i, arr) {
+  this.sourceTiles_.forEach(function(tile, i, arr) {
     if (tile && tile.getState() == ol.TileState.LOADED) {
       sources.push({
         extent: this.sourceTileGrid_.getTileCoordExtent(tile.tileCoord),
@@ -256,7 +256,7 @@ ol.reproj.Tile.prototype.reproject_ = function() {
       });
     }
   }, this);
-  this.srcTiles_.length = 0;
+  this.sourceTiles_.length = 0;
 
   var tileCoord = this.getTileCoord();
   var z = tileCoord[0];
@@ -264,7 +264,7 @@ ol.reproj.Tile.prototype.reproject_ = function() {
   var width = goog.isNumber(size) ? size : size[0];
   var height = goog.isNumber(size) ? size : size[1];
   var targetResolution = this.targetTileGrid_.getResolution(z);
-  var sourceResolution = this.sourceTileGrid_.getResolution(this.srcZ_);
+  var sourceResolution = this.sourceTileGrid_.getResolution(this.sourceZ_);
 
   var targetExtent = this.targetTileGrid_.getTileCoordExtent(tileCoord);
   this.canvas_ = ol.reproj.render(width, height, this.pixelRatio_,
@@ -291,7 +291,7 @@ ol.reproj.Tile.prototype.load = function() {
         'this.sourcesListenerKeys_ should be null');
 
     this.sourcesListenerKeys_ = [];
-    this.srcTiles_.forEach(function(tile, i, arr) {
+    this.sourceTiles_.forEach(function(tile, i, arr) {
       var state = tile.getState();
       if (state == ol.TileState.IDLE || state == ol.TileState.LOADING) {
         leftToLoad++;
@@ -317,7 +317,7 @@ ol.reproj.Tile.prototype.load = function() {
       }
     }, this);
 
-    this.srcTiles_.forEach(function(tile, i, arr) {
+    this.sourceTiles_.forEach(function(tile, i, arr) {
       var state = tile.getState();
       if (state == ol.TileState.IDLE) {
         tile.load();

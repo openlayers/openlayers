@@ -72,19 +72,21 @@ ol.reproj.Image = function(sourceProj, targetProj,
    */
   this.targetExtent_ = targetExtent;
 
-  var srcExtent = this.triangulation_.calculateSourceExtent();
+  var sourceExtent = this.triangulation_.calculateSourceExtent();
 
   /**
    * @private
    * @type {ol.ImageBase}
    */
-  this.srcImage_ = getImageFunction(srcExtent, sourceResolution, pixelRatio);
+  this.sourceImage_ =
+      getImageFunction(sourceExtent, sourceResolution, pixelRatio);
 
   /**
    * @private
    * @type {number}
    */
-  this.srcPixelRatio_ = this.srcImage_ ? this.srcImage_.getPixelRatio() : 1;
+  this.sourcePixelRatio_ =
+      this.sourceImage_ ? this.sourceImage_.getPixelRatio() : 1;
 
   /**
    * @private
@@ -102,12 +104,12 @@ ol.reproj.Image = function(sourceProj, targetProj,
   var state = ol.ImageState.LOADED;
   var attributions = [];
 
-  if (this.srcImage_) {
+  if (this.sourceImage_) {
     state = ol.ImageState.IDLE;
-    attributions = this.srcImage_.getAttributions();
+    attributions = this.sourceImage_.getAttributions();
   }
 
-  goog.base(this, targetExtent, targetResolution, this.srcPixelRatio_,
+  goog.base(this, targetExtent, targetResolution, this.sourcePixelRatio_,
             state, attributions);
 };
 goog.inherits(ol.reproj.Image, ol.ImageBase);
@@ -144,20 +146,20 @@ ol.reproj.Image.prototype.getProjection = function() {
  * @private
  */
 ol.reproj.Image.prototype.reproject_ = function() {
-  var srcState = this.srcImage_.getState();
-  if (srcState == ol.ImageState.LOADED) {
+  var sourceState = this.sourceImage_.getState();
+  if (sourceState == ol.ImageState.LOADED) {
     var width = ol.extent.getWidth(this.targetExtent_) / this.targetResolution_;
     var height =
         ol.extent.getHeight(this.targetExtent_) / this.targetResolution_;
 
-    this.canvas_ = ol.reproj.render(width, height, this.srcPixelRatio_,
-        this.srcImage_.getResolution(), this.maxSourceExtent_,
+    this.canvas_ = ol.reproj.render(width, height, this.sourcePixelRatio_,
+        this.sourceImage_.getResolution(), this.maxSourceExtent_,
         this.targetResolution_, this.targetExtent_, this.triangulation_, [{
-          extent: this.srcImage_.getExtent(),
-          image: this.srcImage_.getImage()
+          extent: this.sourceImage_.getExtent(),
+          image: this.sourceImage_.getImage()
         }]);
   }
-  this.state = srcState;
+  this.state = sourceState;
   this.changed();
 };
 
@@ -170,21 +172,21 @@ ol.reproj.Image.prototype.load = function() {
     this.state = ol.ImageState.LOADING;
     this.changed();
 
-    var srcState = this.srcImage_.getState();
-    if (srcState == ol.ImageState.LOADED ||
-        srcState == ol.ImageState.ERROR) {
+    var sourceState = this.sourceImage_.getState();
+    if (sourceState == ol.ImageState.LOADED ||
+        sourceState == ol.ImageState.ERROR) {
       this.reproject_();
     } else {
-      this.sourceListenerKey_ = this.srcImage_.listen(
+      this.sourceListenerKey_ = this.sourceImage_.listen(
           goog.events.EventType.CHANGE, function(e) {
-            var srcState = this.srcImage_.getState();
-            if (srcState == ol.ImageState.LOADED ||
-                srcState == ol.ImageState.ERROR) {
+            var sourceState = this.sourceImage_.getState();
+            if (sourceState == ol.ImageState.LOADED ||
+                sourceState == ol.ImageState.ERROR) {
               this.unlistenSource_();
               this.reproject_();
             }
           }, false, this);
-      this.srcImage_.load();
+      this.sourceImage_.load();
     }
   }
 };
