@@ -26,8 +26,6 @@ ol.DRAG_BOX_HYSTERESIS_PIXELS_SQUARED =
  * (see {@link ol.interaction.DragZoom} and
  * {@link ol.interaction.DragRotateAndZoom}).
  *
- * This interaction is only supported for mouse devices.
- *
  * @constructor
  * @extends {ol.interaction.Pointer}
  * @fires ol.interaction.DragBox.Event
@@ -97,10 +95,6 @@ ol.interaction.DragBox.defaultBoxEndCondition = function(mapBrowserEvent,
  * @private
  */
 ol.interaction.DragBox.handleDragEvent_ = function(mapBrowserEvent) {
-  if (!ol.events.condition.mouseOnly(mapBrowserEvent)) {
-    return;
-  }
-
   this.box_.setPixels(this.startPixel_, mapBrowserEvent.pixel);
 
   this.dispatchEvent(new ol.interaction.DragBox.Event(ol.interaction.DragBox.EventType.BOXDRAG,
@@ -134,10 +128,6 @@ ol.interaction.DragBox.prototype.onBoxEnd = ol.nullFunction;
  * @private
  */
 ol.interaction.DragBox.handleUpEvent_ = function(mapBrowserEvent) {
-  if (!ol.events.condition.mouseOnly(mapBrowserEvent)) {
-    return true;
-  }
-
   this.box_.setMap(null);
 
   if (this.boxEndCondition_(mapBrowserEvent,
@@ -157,12 +147,7 @@ ol.interaction.DragBox.handleUpEvent_ = function(mapBrowserEvent) {
  * @private
  */
 ol.interaction.DragBox.handleDownEvent_ = function(mapBrowserEvent) {
-  if (!ol.events.condition.mouseOnly(mapBrowserEvent)) {
-    return false;
-  }
-
-  if (ol.events.condition.mouseActionButton(mapBrowserEvent) &&
-      this.condition_(mapBrowserEvent)) {
+  if (ol.events.condition.primaryAction(mapBrowserEvent) && this.condition_(mapBrowserEvent)) {
     this.startPixel_ = mapBrowserEvent.pixel;
     this.box_.setMap(mapBrowserEvent.map);
     this.box_.setPixels(this.startPixel_, this.startPixel_);
