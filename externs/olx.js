@@ -2281,11 +2281,19 @@ olx.interaction.DragAndDropOptions.prototype.projection;
 
 
 /**
- * @typedef {{condition: (ol.events.ConditionType|undefined),
- *     style: ol.style.Style}}
+ * @typedef {{className: (string|undefined),
+ *     condition: (ol.events.ConditionType|undefined)}}
  * @api
  */
 olx.interaction.DragBoxOptions;
+
+
+/**
+ * CSS class name for styling the box. The default is `ol-dragbox`.
+ * @type {string|undefined}
+ * @api
+ */
+olx.interaction.DragBoxOptions.prototype.className;
 
 
 /**
@@ -2296,14 +2304,6 @@ olx.interaction.DragBoxOptions;
  * @api
  */
 olx.interaction.DragBoxOptions.prototype.condition;
-
-
-/**
- * Style for the box.
- * @type {ol.style.Style}
- * @api
- */
-olx.interaction.DragBoxOptions.prototype.style;
 
 
 /**
@@ -2374,12 +2374,20 @@ olx.interaction.DragRotateOptions.prototype.duration;
 
 
 /**
- * @typedef {{condition: (ol.events.ConditionType|undefined),
- *     duration: (number|undefined),
- *     style: (ol.style.Style|undefined)}}
+ * @typedef {{className: (string|undefined),
+ *     condition: (ol.events.ConditionType|undefined),
+ *     duration: (number|undefined)}}
  * @api
  */
 olx.interaction.DragZoomOptions;
+
+
+/**
+ * CSS class name for styling the box. The default is `ol-dragzoom`.
+ * @type {string|undefined}
+ * @api
+ */
+olx.interaction.DragZoomOptions.prototype.className;
 
 
 /**
@@ -2398,14 +2406,6 @@ olx.interaction.DragZoomOptions.prototype.condition;
  * @api
  */
 olx.interaction.DragZoomOptions.prototype.duration;
-
-
-/**
- * Style for the box.
- * @type {ol.style.Style|undefined}
- * @api
- */
-olx.interaction.DragZoomOptions.prototype.style;
 
 
 /**
@@ -5995,7 +5995,7 @@ olx.style.TextOptions.prototype.rotation;
 
 
 /**
- * Text content. 
+ * Text content.
  * @type {string|undefined}
  * @api
  */
@@ -6003,7 +6003,7 @@ olx.style.TextOptions.prototype.text;
 
 
 /**
- * Text alignment. Possible values: 'left', 'right', 'center', 'end' or 'start'. 
+ * Text alignment. Possible values: 'left', 'right', 'center', 'end' or 'start'.
  * Default is 'start'.
  * @type {string|undefined}
  * @api
@@ -6012,7 +6012,7 @@ olx.style.TextOptions.prototype.textAlign;
 
 
 /**
- * Text base line. Possible values: 'bottom', 'top', 'middle', 'alphabetic', 
+ * Text base line. Possible values: 'bottom', 'top', 'middle', 'alphabetic',
  * 'hanging', 'ideographic'. Default is 'alphabetic'.
  * @type {string|undefined}
  * @api

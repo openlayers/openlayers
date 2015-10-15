@@ -2,6 +2,35 @@
 
 ### v3.11.0
 
+#### `ol.interaction.DragBox` and `ol.interaction.DragZoom` changes
+
+Styling is no longer done with `ol.Style`, but with pure CSS. The `style` constructor option is no longer required, and no longer available. Instead, there is a `className` option for the CSS selector. The default for `ol.interaction.DragBox` is `ol-dragbox`, and `ol.interaction.DragZoom` uses `ol-dragzoom`. If you previously had
+```js
+new ol.interaction.DragZoom({
+  style: new ol.style.Style({
+    stroke: new ol.style.Stroke({
+      color: 'red',
+      width: 3
+    }),
+    fill: new ol.style.Fill({
+      color: [255, 255, 255, 0.4]
+    })
+  })
+});
+```
+you'll now just need
+```js
+new ol.interaction.DragZoom();
+```
+but with additional css:
+```css
+.ol-dragzoom {
+  border-color: red;
+  border-width: 3px;
+  background-color: rgba(255,255,255,0.4);
+}
+```
+
 ### v3.10.0
 
 #### `ol.layer.Layer` changes

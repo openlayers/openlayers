@@ -43,6 +43,14 @@ describe('ol.interaction.DragZoom', function() {
       var instance = new ol.interaction.DragZoom();
       expect(instance).to.be.an(ol.interaction.DragZoom);
     });
+    it('sets "ol-dragzoom" as box className', function() {
+      var instance = new ol.interaction.DragZoom();
+      expect(instance.box_.element_.className).to.be('ol-box ol-dragzoom');
+    });
+    it('sets a custom box className', function() {
+      var instance = new ol.interaction.DragZoom({className: 'test-dragzoom'});
+      expect(instance.box_.element_.className).to.be('ol-box test-dragzoom');
+    });
 
   });
 
