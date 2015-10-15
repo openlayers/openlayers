@@ -255,6 +255,7 @@ ol.reproj.Tile.prototype.reproject_ = function() {
       });
     }
   }, this);
+  this.srcTiles_.length = 0;
 
   var tileCoord = this.getTileCoord();
   var z = tileCoord[0];
@@ -305,7 +306,7 @@ ol.reproj.Tile.prototype.load = function() {
                 leftToLoad--;
                 goog.asserts.assert(leftToLoad >= 0,
                     'leftToLoad should not be negative');
-                if (leftToLoad <= 0) {
+                if (leftToLoad === 0) {
                   this.unlistenSources_();
                   this.reproject_();
                 }
