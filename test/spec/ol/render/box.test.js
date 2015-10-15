@@ -26,12 +26,15 @@ describe('ol.render.Box', function() {
     document.body.removeChild(target);
   });
 
-  describe('Constructor', function() {
+  describe('constructor', function() {
     it('creates an absolutely positioned DIV with a className', function() {
       expect(box.element_).to.be.a(HTMLDivElement);
       expect(box.element_.style.position).to.be('absolute');
       expect(box.element_.className).to.be('ol-box test-box');
       expect(box.element_.style.position).to.be('absolute');
+    });
+    it('appends the DIV to the map\'s overlay container', function() {
+      expect(box.element_.parentNode).to.equal(map.getOverlayContainer());
     });
   });
 

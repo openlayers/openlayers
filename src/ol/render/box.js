@@ -82,13 +82,13 @@ ol.render.Box.prototype.render_ = function() {
  */
 ol.render.Box.prototype.setMap = function(map) {
   if (this.map_) {
-    this.map_.getViewport().removeChild(this.element_);
+    this.map_.getOverlayContainer().removeChild(this.element_);
     var style = this.element_.style;
     style.left = style.top = style.width = style.height = 'inherit';
   }
   this.map_ = map;
   if (this.map_) {
-    this.map_.getViewport().appendChild(this.element_);
+    this.map_.getOverlayContainer().appendChild(this.element_);
   }
 };
 
