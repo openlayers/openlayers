@@ -203,8 +203,6 @@ ol.events.condition.targetNotEditable = function(mapBrowserEvent) {
 ol.events.condition.mouseOnly = function(mapBrowserEvent) {
   goog.asserts.assertInstanceof(mapBrowserEvent, ol.MapBrowserPointerEvent,
       'mapBrowserEvent should be an instance of ol.MapBrowserPointerEvent');
-  /* pointerId must be 1 for mouse devices,
-   * see: http://www.w3.org/Submission/pointer-events/#pointerevent-interface
-   */
-  return mapBrowserEvent.pointerEvent.pointerId == 1;
+  // see http://www.w3.org/TR/pointerevents/#widl-PointerEvent-pointerType
+  return mapBrowserEvent.pointerEvent.pointerType == 'mouse';
 };
