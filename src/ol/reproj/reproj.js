@@ -116,55 +116,12 @@ ol.reproj.render = function(width, height, pixelRatio,
 
   context.scale(pixelRatio, pixelRatio);
 
-  var wrapXShiftDistance = sourceExtent ? ol.extent.getWidth(sourceExtent) : 0;
-
-  var wrapXType = ol.reproj.WrapXRendering_.NONE;
-
-  if (triangulation.getWrapsXInSource() && wrapXShiftDistance > 0) {
-    // If possible, stitch the sources shifted to solve the wrapX issue here.
-    // This is not possible if crossing both "dateline" and "prime meridian".
-    var triangulationSrcExtent = triangulation.calculateSourceExtent();
-    var triangulationSrcWidth = goog.math.modulo(
-        ol.extent.getWidth(triangulationSrcExtent), wrapXShiftDistance);
-
-    if (triangulationSrcWidth < wrapXShiftDistance / 2) {
-      wrapXType = ol.reproj.WrapXRendering_.STITCH_SHIFT;
-    } else {
-      wrapXType = ol.reproj.WrapXRendering_.STITCH_EXTENDED;
-    }
-  }
-
   var sourceDataExtent = ol.extent.createEmpty();
   sources.forEach(function(src, i, arr) {
-    if (wrapXType == ol.reproj.WrapXRendering_.STITCH_SHIFT) {
-      var srcW = src.extent[2] - src.extent[0];
-      var srcX = goog.math.modulo(src.extent[0], wrapXShiftDistance);
-      ol.extent.extend(sourceDataExtent, [srcX, src.extent[1],
-                                          srcX + srcW, src.extent[3]]);
-    } else {
-      ol.extent.extend(sourceDataExtent, src.extent);
-    }
+    ol.extent.extend(sourceDataExtent, src.extent);
   });
-  if (sourceExtent) {
-    if (wrapXType == ol.reproj.WrapXRendering_.NONE) {
-      sourceDataExtent[0] = ol.math.clamp(
-          sourceDataExtent[0], sourceExtent[0], sourceExtent[2]);
-      sourceDataExtent[2] = ol.math.clamp(
-          sourceDataExtent[2], sourceExtent[0], sourceExtent[2]);
-    }
-    sourceDataExtent[1] = ol.math.clamp(
-        sourceDataExtent[1], sourceExtent[1], sourceExtent[3]);
-    sourceDataExtent[3] = ol.math.clamp(
-        sourceDataExtent[3], sourceExtent[1], sourceExtent[3]);
-  }
 
-  var canvasWidthInUnits;
-  if (wrapXType == ol.reproj.WrapXRendering_.STITCH_EXTENDED) {
-    canvasWidthInUnits = 2 * wrapXShiftDistance;
-  } else {
-    canvasWidthInUnits = ol.extent.getWidth(sourceDataExtent);
-  }
-
+  var canvasWidthInUnits = ol.extent.getWidth(sourceDataExtent);
   var canvasHeightInUnits = ol.extent.getHeight(sourceDataExtent);
   var stitchContext = ol.dom.createCanvasContext2D(
       Math.round(pixelRatio * canvasWidthInUnits / sourceResolution),
@@ -180,15 +137,7 @@ ol.reproj.render = function(width, height, pixelRatio,
     var srcWidth = ol.extent.getWidth(src.extent);
     var srcHeight = ol.extent.getHeight(src.extent);
 
-    if (wrapXType == ol.reproj.WrapXRendering_.STITCH_SHIFT) {
-      xPos = goog.math.modulo(xPos, wrapXShiftDistance);
-    }
     stitchContext.drawImage(src.image, xPos, yPos, srcWidth, srcHeight);
-
-    if (wrapXType == ol.reproj.WrapXRendering_.STITCH_EXTENDED) {
-      stitchContext.drawImage(src.image, wrapXShiftDistance + xPos, yPos,
-                              srcWidth, srcHeight);
-    }
   });
 
   var targetTopLeft = ol.extent.getTopLeft(targetExtent);
@@ -226,21 +175,6 @@ ol.reproj.render = function(width, height, pixelRatio,
         v1 = -(target[1][1] - targetTopLeft[1]) / targetResolution;
     var u2 = (target[2][0] - targetTopLeft[0]) / targetResolution,
         v2 = -(target[2][1] - targetTopLeft[1]) / targetResolution;
-
-    var performWrapXShift = wrapXType == ol.reproj.WrapXRendering_.STITCH_SHIFT;
-    if (wrapXType == ol.reproj.WrapXRendering_.STITCH_EXTENDED) {
-      var minX = Math.min(x0, x1, x2);
-      var maxX = Math.max(x0, x1, x2);
-
-      performWrapXShift = minX <= sourceExtent[0] ||
-                          (maxX - minX) > wrapXShiftDistance / 2;
-    }
-
-    if (performWrapXShift) {
-      x0 = goog.math.modulo(x0, wrapXShiftDistance);
-      x1 = goog.math.modulo(x1, wrapXShiftDistance);
-      x2 = goog.math.modulo(x2, wrapXShiftDistance);
-    }
 
     // Shift all the source points to improve numerical stability
     // of all the subsequent calculations. The [x0, y0] is used here.
@@ -321,16 +255,4 @@ ol.reproj.render = function(width, height, pixelRatio,
     context.restore();
   }
   return context.canvas;
-};
-
-
-/**
- * Type of solution used to solve wrapX in source during rendering.
- * @enum {number}
- * @private
- */
-ol.reproj.WrapXRendering_ = {
-  NONE: 0,
-  STITCH_SHIFT: 1,
-  STITCH_EXTENDED: 2
 };

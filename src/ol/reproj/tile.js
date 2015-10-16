@@ -8,6 +8,7 @@ goog.require('goog.object');
 goog.require('ol.Tile');
 goog.require('ol.TileState');
 goog.require('ol.extent');
+goog.require('ol.math');
 goog.require('ol.proj');
 goog.require('ol.reproj');
 goog.require('ol.reproj.Triangulation');
@@ -151,56 +152,38 @@ ol.reproj.Tile = function(sourceProj, sourceTileGrid,
   this.sourceZ_ = sourceTileGrid.getZForResolution(sourceResolution);
   var sourceExtent = this.triangulation_.calculateSourceExtent();
 
-  if (maxSourceExtent &&
-      !this.triangulation_.getWrapsXInSource() &&
-      !ol.extent.intersects(maxSourceExtent, sourceExtent)) {
+  if (maxSourceExtent) {
+    if (sourceProj.canWrapX()) {
+      sourceExtent[1] = ol.math.clamp(
+          sourceExtent[1], maxSourceExtent[1], maxSourceExtent[3]);
+      sourceExtent[3] = ol.math.clamp(
+          sourceExtent[3], maxSourceExtent[1], maxSourceExtent[3]);
+    } else {
+      sourceExtent = ol.extent.getIntersection(sourceExtent, maxSourceExtent);
+    }
+  }
+
+  if (!ol.extent.getArea(sourceExtent)) {
     this.state = ol.TileState.EMPTY;
   } else {
     var sourceRange = sourceTileGrid.getTileRangeForExtentAndZ(
         sourceExtent, this.sourceZ_);
 
-    var xRange = [];
-    var sourceFullRange = sourceTileGrid.getFullTileRange(this.sourceZ_);
-    if (sourceFullRange) {
-      sourceRange.minY = Math.max(sourceRange.minY, sourceFullRange.minY);
-      sourceRange.maxY = Math.min(sourceRange.maxY, sourceFullRange.maxY);
-
-      if (sourceRange.minX > sourceRange.maxX) {
-        var i;
-        for (i = sourceRange.minX; i <= sourceFullRange.maxX; i++) {
-          xRange.push(i);
-        }
-        for (i = sourceFullRange.minX; i <= sourceRange.maxX; i++) {
-          xRange.push(i);
-        }
-      } else {
-        var first = Math.max(sourceRange.minX, sourceFullRange.minX);
-        var last = Math.min(sourceRange.maxX, sourceFullRange.maxX);
-        for (var j = first; j <= last; j++) {
-          xRange.push(j);
-        }
-      }
-    } else {
-      for (var k = sourceRange.minX; k <= sourceRange.maxX; k++) {
-        xRange.push(k);
-      }
-    }
-
-    var tilesRequired = xRange.length * sourceRange.getHeight();
+    var tilesRequired = sourceRange.getWidth() * sourceRange.getHeight();
     if (!goog.asserts.assert(
         tilesRequired < ol.RASTER_REPROJECTION_MAX_SOURCE_TILES,
         'reasonable number of tiles is required')) {
       this.state = ol.TileState.ERROR;
       return;
     }
-    xRange.forEach(function(srcX, i, arr) {
+    for (var srcX = sourceRange.minX; srcX <= sourceRange.maxX; srcX++) {
       for (var srcY = sourceRange.minY; srcY <= sourceRange.maxY; srcY++) {
         var tile = getTileFunction(this.sourceZ_, srcX, srcY, pixelRatio);
         if (tile) {
           this.sourceTiles_.push(tile);
         }
       }
-    }, this);
+    }
 
     if (this.sourceTiles_.length === 0) {
       this.state = ol.TileState.EMPTY;

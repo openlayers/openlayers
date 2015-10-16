@@ -76,12 +76,6 @@ ol.reproj.Triangulation = function(sourceProj, targetProj, targetExtent,
   this.triangles_ = [];
 
   /**
-   * @type {ol.Extent}
-   * @private
-   */
-  this.trianglesSourceExtent_ = null;
-
-  /**
    * Indicates that source coordinates have to be shifted during reprojection.
    * This is needed when the triangulation crosses
    * edge of the source projection (dateline).
@@ -128,6 +122,49 @@ ol.reproj.Triangulation = function(sourceProj, targetProj, targetExtent,
       destinationBottomRight, destinationBottomLeft,
       sourceTopLeft, sourceTopRight, sourceBottomRight, sourceBottomLeft,
       ol.RASTER_REPROJECTION_MAX_SUBDIVISION);
+
+  if (this.wrapsXInSource_) {
+    // Fix coordinates (ol.proj returns wrapped coordinates, "unwrap" here).
+    // This significantly simplifies the rest of the reprojection process.
+
+    goog.asserts.assert(this.sourceWorldWidth_ !== null);
+    var leftBound = Infinity;
+    this.triangles_.forEach(function(triangle, i, arr) {
+      leftBound = Math.min(leftBound,
+          triangle.source[0][0], triangle.source[1][0], triangle.source[2][0]);
+    });
+
+    // Shift triangles to be as close to `leftBound` as possible
+    // (if the distance is more than `worldWidth / 2` it can be closer.
+    this.triangles_.forEach(function(triangle) {
+      if (Math.max(triangle.source[0][0], triangle.source[1][0],
+          triangle.source[2][0]) - leftBound > this.sourceWorldWidth_ / 2) {
+        var newTriangle = [[triangle.source[0][0], triangle.source[0][1]],
+                           [triangle.source[1][0], triangle.source[1][1]],
+                           [triangle.source[2][0], triangle.source[2][1]]];
+        if ((newTriangle[0][0] - leftBound) > this.sourceWorldWidth_ / 2) {
+          newTriangle[0][0] -= this.sourceWorldWidth_;
+        }
+        if ((newTriangle[1][0] - leftBound) > this.sourceWorldWidth_ / 2) {
+          newTriangle[1][0] -= this.sourceWorldWidth_;
+        }
+        if ((newTriangle[2][0] - leftBound) > this.sourceWorldWidth_ / 2) {
+          newTriangle[2][0] -= this.sourceWorldWidth_;
+        }
+
+        // Rarely (if the extent contains both the dateline and prime meridian)
+        // the shift can in turn break some triangles.
+        // Detect this here and don't shift in such cases.
+        var minX = Math.min(
+            newTriangle[0][0], newTriangle[1][0], newTriangle[2][0]);
+        var maxX = Math.max(
+            newTriangle[0][0], newTriangle[1][0], newTriangle[2][0]);
+        if ((maxX - minX) < this.sourceWorldWidth_ / 2) {
+          triangle.source = newTriangle;
+        }
+      }
+    }, this);
+  }
 
   transformInvCache = {};
 };
@@ -278,63 +315,20 @@ ol.reproj.Triangulation.prototype.addQuad_ = function(a, b, c, d,
 
 /**
  * Calculates extent of the 'source' coordinates from all the triangles.
- * The left bound of the returned extent can be higher than the right bound,
- * if the triangulation wraps X in source (see
- * {@link ol.reproj.Triangulation#getWrapsXInSource}).
  *
  * @return {ol.Extent} Calculated extent.
  */
 ol.reproj.Triangulation.prototype.calculateSourceExtent = function() {
-  if (this.trianglesSourceExtent_) {
-    return this.trianglesSourceExtent_;
-  }
-
   var extent = ol.extent.createEmpty();
 
-  if (this.wrapsXInSource_) {
-    // although only some of the triangles are crossing the dateline,
-    // all coordinates need to be "shifted" to be positive
-    // to properly calculate the extent (and then possibly shifted back)
+  this.triangles_.forEach(function(triangle, i, arr) {
+    var src = triangle.source;
+    ol.extent.extendCoordinate(extent, src[0]);
+    ol.extent.extendCoordinate(extent, src[1]);
+    ol.extent.extendCoordinate(extent, src[2]);
+  });
 
-    this.triangles_.forEach(function(triangle, i, arr) {
-      goog.asserts.assert(this.sourceWorldWidth_);
-      var src = triangle.source;
-      ol.extent.extendCoordinate(extent,
-          [goog.math.modulo(src[0][0], this.sourceWorldWidth_), src[0][1]]);
-      ol.extent.extendCoordinate(extent,
-          [goog.math.modulo(src[1][0], this.sourceWorldWidth_), src[1][1]]);
-      ol.extent.extendCoordinate(extent,
-          [goog.math.modulo(src[2][0], this.sourceWorldWidth_), src[2][1]]);
-    }, this);
-
-    var sourceProjExtent = this.sourceProj_.getExtent();
-    var right = sourceProjExtent[2];
-    if (extent[0] > right) {
-      extent[0] -= this.sourceWorldWidth_;
-    }
-    if (extent[2] > right) {
-      extent[2] -= this.sourceWorldWidth_;
-    }
-  } else {
-    this.triangles_.forEach(function(triangle, i, arr) {
-      var src = triangle.source;
-      ol.extent.extendCoordinate(extent, src[0]);
-      ol.extent.extendCoordinate(extent, src[1]);
-      ol.extent.extendCoordinate(extent, src[2]);
-    });
-  }
-
-  this.trianglesSourceExtent_ = extent;
   return extent;
-};
-
-
-/**
- * @return {boolean} Whether the source coordinates are wrapped in X
- *                   (the triangulation "crosses the dateline").
- */
-ol.reproj.Triangulation.prototype.getWrapsXInSource = function() {
-  return this.wrapsXInSource_;
 };
 
 
