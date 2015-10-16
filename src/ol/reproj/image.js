@@ -1,4 +1,5 @@
 goog.provide('ol.reproj.Image');
+goog.provide('ol.reproj.ImageFunctionType');
 
 goog.require('goog.asserts');
 goog.require('goog.events');
@@ -9,6 +10,12 @@ goog.require('ol.extent');
 goog.require('ol.proj');
 goog.require('ol.reproj');
 goog.require('ol.reproj.Triangulation');
+
+
+/**
+ * @typedef {function(ol.Extent, number, number) : ol.ImageBase}
+ */
+ol.reproj.ImageFunctionType;
 
 
 
@@ -24,7 +31,7 @@ goog.require('ol.reproj.Triangulation');
  * @param {ol.Extent} targetExtent Target extent.
  * @param {number} targetResolution Target resolution.
  * @param {number} pixelRatio Pixel ratio.
- * @param {function(ol.Extent, number, number):ol.ImageBase} getImageFunction
+ * @param {ol.reproj.ImageFunctionType} getImageFunction
  *     Function returning source images (extent, resolution, pixelRatio).
  */
 ol.reproj.Image = function(sourceProj, targetProj,

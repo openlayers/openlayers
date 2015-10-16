@@ -1,4 +1,5 @@
 goog.provide('ol.reproj.Tile');
+goog.provide('ol.reproj.TileFunctionType');
 
 goog.require('goog.asserts');
 goog.require('goog.events');
@@ -12,6 +13,12 @@ goog.require('ol.math');
 goog.require('ol.proj');
 goog.require('ol.reproj');
 goog.require('ol.reproj.Triangulation');
+
+
+/**
+ * @typedef {function(number, number, number, number) : ol.Tile}
+ */
+ol.reproj.TileFunctionType;
 
 
 
@@ -30,7 +37,7 @@ goog.require('ol.reproj.Triangulation');
  * @param {number} x X.
  * @param {number} y Y.
  * @param {number} pixelRatio Pixel ratio.
- * @param {function(number, number, number, number) : ol.Tile} getTileFunction
+ * @param {ol.reproj.TileFunctionType} getTileFunction
  *     Function returning source tiles (z, x, y, pixelRatio).
  * @param {number=} opt_errorThreshold Acceptable reprojection error (in px).
  * @param {boolean=} opt_renderEdges Render reprojection edges.
