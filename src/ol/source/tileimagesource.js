@@ -9,6 +9,7 @@ goog.require('ol.TileLoadFunctionType');
 goog.require('ol.TileState');
 goog.require('ol.TileUrlFunction');
 goog.require('ol.TileUrlFunctionType');
+goog.require('ol.extent');
 goog.require('ol.source.Tile');
 goog.require('ol.source.TileEvent');
 
@@ -68,6 +69,12 @@ ol.source.TileImage = function(options) {
    */
   this.tileClass = options.tileClass !== undefined ?
       options.tileClass : ol.ImageTile;
+
+  /**
+   * @private
+   * @type {Object.<string, *>}
+   */
+  this.loadRequests_ = {};
 
 };
 goog.inherits(ol.source.TileImage, ol.source.Tile);
@@ -191,4 +198,142 @@ ol.source.TileImage.prototype.useTile = function(z, x, y) {
   if (this.tileCache.containsKey(tileCoordKey)) {
     this.tileCache.get(tileCoordKey);
   }
+};
+
+
+/**
+ * start reloading the visible tiles, using the out-of-band mechanism
+ *
+ * @param {ol.Map} map A map instance.
+ * @api
+ */
+ol.source.TileImage.prototype.reloadVisibleTilesOutOfBand = function(map) {
+
+  // find all the visible tiles
+  var size = map.getSize() || null;
+  var viewState = map.getView().getState();
+  var extent = ol.extent.getForViewAndSize(
+      viewState.center,
+      viewState.resolution,
+      viewState.rotation,
+      size);
+  var z = this.tileGrid.getZForResolution(viewState.resolution);
+  var tileResolution = this.tileGrid.getResolution(z);
+  var tileRange = this.tileGrid.getTileRangeForExtentAndResolution(extent,
+      tileResolution);
+
+  // request reloads for all the visible tiles
+  for (var x = tileRange.minX; x <= tileRange.maxX; ++x) {
+    for (var y = tileRange.minY; y <= tileRange.maxY; ++y) {
+      var tileCoordKey = this.getKeyZXY(z, x, y);
+      this.loadRequests_[tileCoordKey] = { z: z, x: x, y: y };
+    }
+  }
+
+  // execute the load requests after a little bit
+  // this lets multiple load requests in rapid succession overwrite each other
+  // it means we end up skipping some load requests entirely if they were
+  // immediately succeeded by another request for the same tile
+  // if this function is called by a UI slider (which can generate a huge
+  // number of requests in a short time), this delay can offer a significant
+  // speedup
+  var afterDelay = function() {
+    this.executeLoadRequests(map, z, tileRange, viewState.projection);
+  };
+  window.setTimeout(goog.bind(afterDelay, this), 100);
+};
+
+
+/**
+ * run the queued out-of-band load requests
+ *
+ * @param {ol.Map} map A map instance.
+ * @param {number} z The zoom.
+ * @param {ol.TileRange} tileRange A range of tiles.
+ * @param {ol.proj.Projection} projection The map view projection.
+ */
+ol.source.TileImage.prototype.executeLoadRequests =
+    function(map, z, tileRange, projection) {
+
+  var x, y, tileCoordKey;
+
+  if (this.tileCache.getCount() > 0) {
+    // clear any tiles that are not visible out of the cache
+    // it looks like we can only remove old things from the cache
+    // so collect our visible tiles
+    var cachedTiles = {};
+    for (x = tileRange.minX; x <= tileRange.maxX; ++x) {
+      for (y = tileRange.minY; y <= tileRange.maxY; ++y) {
+        tileCoordKey = this.getKeyZXY(z, x, y);
+        if (this.tileCache.containsKey(tileCoordKey)) {
+          cachedTiles[tileCoordKey] = this.tileCache.get(tileCoordKey);
+        }
+      }
+    }
+
+    // clear the cache, then put our tiles back
+    this.tileCache.clear();
+    for (tileCoordKey in cachedTiles) {
+      this.tileCache.set(tileCoordKey, cachedTiles[tileCoordKey]);
+    }
+  }
+
+  // set up the tile load handler
+  var setLoadHandler = function(tileCoordKey, outOfBandTile) {
+    var onTileLoad = function() {
+      if (outOfBandTile.getState() == ol.TileState.LOADING) {
+        // listen again to get the next event
+        goog.events.listenOnce(outOfBandTile, goog.events.EventType.CHANGE,
+            onTileLoad, false, this);
+      } else if (outOfBandTile.getState() == ol.TileState.LOADED ||
+          outOfBandTile.getState() == ol.TileState.ERROR) {
+        if (this.tileCache.containsKey(tileCoordKey)) {
+          // tile loads can come in out of order. make sure we only
+          // use the most recent tile
+          var cachedTile = this.tileCache.get(tileCoordKey);
+          if (outOfBandTile.getSequenceNumber() >
+              cachedTile.getSequenceNumber()) {
+            // make sure we don't overwrite a newer out-of-band-tile
+            outOfBandTile.updateOutOfBandTile(cachedTile);
+            // replace the old tile
+            this.tileCache.replace(tileCoordKey, outOfBandTile);
+          }
+        } else {
+          // we've never seen this tile before, just add it to the cache
+          this.tileCache.set(tileCoordKey, outOfBandTile);
+        }
+        // make sure the map draws a frame after the tile is loaded
+        map.render();
+      }
+    };
+    goog.events.listenOnce(outOfBandTile, goog.events.EventType.CHANGE,
+        onTileLoad, false, this);
+  };
+
+  // actually execute the tile load requests that are still in the current view
+  for (x = tileRange.minX; x <= tileRange.maxX; ++x) {
+    for (y = tileRange.minY; y <= tileRange.maxY; ++y) {
+      tileCoordKey = this.getKeyZXY(z, x, y);
+      var request = this.loadRequests_[tileCoordKey];
+      if (request !== null) {
+        var urlTileCoord = this.getTileCoordForTileUrlFunction([z, x, y],
+            projection);
+        var url = this.tileUrlFunction(urlTileCoord, this.getTilePixelRatio(),
+            projection);
+        if (this.tileCache.containsKey(tileCoordKey)) {
+          // add an out-of-band tile to the tile at this position
+          // it will get picked up by the tile queue and loaded some time later
+          var cachedTile = this.tileCache.get(tileCoordKey);
+          var outOfBandTile = cachedTile.setOutOfBandUrl(url, map);
+          setLoadHandler.call(this, tileCoordKey, outOfBandTile);
+        } else {
+          // there's no tile at this position yet, just ignore this request
+        }
+      }
+    }
+  }
+  this.loadRequests_ = {};
+
+  // tell the map to render to start processing the tile queue
+  map.render();
 };

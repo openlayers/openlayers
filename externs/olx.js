@@ -5135,7 +5135,8 @@ olx.source.VectorOptions.prototype.wrapX;
  *     tileClass: (function(new: ol.ImageTile, ol.TileCoord,
  *                          ol.TileState, string, ?string,
  *                          ol.TileLoadFunctionType)|undefined),
- *     wrapX: (boolean|undefined)}}
+ *     wrapX: (boolean|undefined),
+ *     keyPrefixIgnoredDimensions: (Array.<string>|undefined)}}
  * @api
  */
 olx.source.WMTSOptions;
@@ -5304,6 +5305,14 @@ olx.source.WMTSOptions.prototype.urls;
  * @api
  */
 olx.source.WMTSOptions.prototype.wrapX;
+
+
+/**
+ * Ignored dimensions for prefix keys
+ * @type {Array.<string>|undefined}
+ * @api
+ */
+olx.source.WMTSOptions.prototype.keyPrefixIgnoredDimensions;
 
 
 /**

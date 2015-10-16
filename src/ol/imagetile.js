@@ -59,8 +59,108 @@ ol.ImageTile = function(tileCoord, state, src, crossOrigin, tileLoadFunction) {
    */
   this.tileLoadFunction_ = tileLoadFunction;
 
+  /**
+   * @private
+   * @type {number}
+   */
+  this.sequenceNumber_ = 0;
+
+
+  /**
+   * @private
+   * @type {ol.ImageTile}
+   */
+  this.outOfBandTile_ = null;
+
 };
 goog.inherits(ol.ImageTile, ol.Tile);
+
+
+/**
+ * set the url for the out-of-band tile
+ *
+ * @param {string} url The url to load out-of-band.
+ * @return {ol.ImageTile}
+ */
+ol.ImageTile.prototype.setOutOfBandUrl = function(url) {
+  if (this.outOfBandTile_ === null) {
+
+    // create a new tile
+    this.outOfBandTile_ = this.createOutOfBandTile_(url);
+    this.assertSequence_();
+    return this.outOfBandTile_;
+
+  } else if (this.outOfBandTile_.state == ol.TileState.IDLE) {
+    goog.asserts.assert(this.outOfBandTile_.outOfBandTile_ === null);
+
+    // replace the old tile, and cause it to be dropped from the tile queue
+    var newTile = this.createOutOfBandTile_(url);
+    // this sets the tile load priority to DROP
+    this.outOfBandTile_.tileCoord = [-1, 0, 0];
+    this.outOfBandTile_ = newTile;
+    this.assertSequence_();
+    return this.outOfBandTile_;
+
+  } else if (this.outOfBandTile_.state == ol.TileState.LOADING ||
+      this.outOfBandTile_.state == ol.TileState.LOADED ||
+      this.outOfBandTile_.state == ol.TileState.ERROR) {
+    return this.outOfBandTile_.setOutOfBandUrl(url);
+  } else {
+    throw "don't know what to do when outOfBandTile is in state" +
+        this.outOfBandTile_.state;
+  }
+};
+
+
+/**
+ * create the out-of-band tile
+ *
+ * @param {string} url The url to load out of band
+ * @return {ol.ImageTile}
+ * @private
+ */
+ol.ImageTile.prototype.createOutOfBandTile_ = function(url) {
+  var tile = new ol.ImageTile(
+      this.tileCoord,
+      ol.TileState.IDLE,
+      url,
+      this.image_.crossOrigin === '' ? null : this.image_.crossOrigin,
+      this.tileLoadFunction_);
+  tile.sequenceNumber_ = this.getHighestSequenceNumber() + 1;
+  return tile;
+};
+
+
+/**
+ * get the out of band tile
+ *
+ * @return {ol.ImageTile}
+ */
+ol.ImageTile.prototype.getOutOfBandTile = function() {
+  this.assertSequence_();
+  return this.outOfBandTile_;
+};
+
+
+/**
+ * update the out of band tile with a new tile
+ *
+ * @param {ol.ImageTile} tile The new tile
+ */
+ol.ImageTile.prototype.updateOutOfBandTile = function(tile) {
+  if (tile.outOfBandTile_ !== null) {
+    if (this.outOfBandTile_ === null) {
+      if (this.sequenceNumber_ < tile.outOfBandTile_.sequenceNumber_) {
+        this.outOfBandTile_ = tile.outOfBandTile_;
+        this.assertSequence_();
+      }
+    } else if (this.outOfBandTile_.sequenceNumber_ <
+        tile.outOfBandTile_.sequenceNumber_) {
+      this.outOfBandTile_ = tile.outOfBandTile_;
+      this.assertSequence_();
+    }
+  }
+};
 
 
 /**
@@ -164,4 +264,45 @@ ol.ImageTile.prototype.unlistenImage_ = function() {
       'this.imageListenerKeys_ should not be null');
   this.imageListenerKeys_.forEach(goog.events.unlistenByKey);
   this.imageListenerKeys_ = null;
+};
+
+
+/**
+ * Gets the sequence number.
+ *
+ * @return {number} sequence number
+ * @api
+ */
+ol.ImageTile.prototype.getSequenceNumber = function() {
+  this.assertSequence_();
+  return this.sequenceNumber_;
+};
+
+
+/**
+ * Gets the highest sequence number of the tile, or its OOB tile, recursively
+ *
+ * @return {number}
+ */
+ol.ImageTile.prototype.getHighestSequenceNumber = function() {
+  this.assertSequence_();
+  if (this.outOfBandTile_ !== null) {
+    return this.outOfBandTile_.getHighestSequenceNumber();
+  } else {
+    return this.sequenceNumber_;
+  }
+};
+
+
+/**
+ * Asserts that the sequence of tiles is correct
+ *
+ * @private
+ */
+ol.ImageTile.prototype.assertSequence_ = function() {
+  if (this.outOfBandTile_ !== null) {
+    goog.asserts.assert(this.outOfBandTile_.sequenceNumber_ >
+        this.sequenceNumber_);
+    this.outOfBandTile_.assertSequence_();
+  }
 };

@@ -57,6 +57,10 @@ ol.source.WMTS = function(options) {
    */
   this.dimensions_ = options.dimensions !== undefined ? options.dimensions : {};
 
+  this.keyPrefixIgnoredDimensions_ =
+      goog.isDef(options.keyPrefixIgnoredDimensions) ?
+      options.keyPrefixIgnoredDimensions : [];
+
   /**
    * @private
    * @type {string}
@@ -294,7 +298,9 @@ ol.source.WMTS.prototype.resetCoordKeyPrefix_ = function() {
   var i = 0;
   var res = [];
   for (var key in this.dimensions_) {
-    res[i++] = key + '-' + this.dimensions_[key];
+    if (!goog.array.contains(this.keyPrefixIgnoredDimensions_, key)) {
+      res[i++] = key + '-' + this.dimensions_[key];
+    }
   }
   this.coordKeyPrefix_ = res.join('/');
 };
