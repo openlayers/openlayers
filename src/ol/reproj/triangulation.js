@@ -54,7 +54,10 @@ ol.reproj.Triangulation = function(sourceProj, targetProj, targetExtent,
    */
   this.transformInv_ = function(c) {
     var key = c[0] + '/' + c[1];
-    return transformInvCache[key] || (transformInvCache[key] = transformInv(c));
+    if (!transformInvCache[key]) {
+      transformInvCache[key] = transformInv(c);
+    }
+    return transformInvCache[key];
   };
 
   /**
