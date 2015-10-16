@@ -367,7 +367,8 @@ ol.renderer.canvas.VectorTileLayer.prototype.prepareFrame =
   var tilesToDrawByZ = {};
   tilesToDrawByZ[z] = {};
 
-  var findLoadedTiles = this.createLoadedTileFinder(source, tilesToDrawByZ);
+  var findLoadedTiles = this.createLoadedTileFinder(source, projection,
+      tilesToDrawByZ);
 
   var useInterimTilesOnError = layer.getUseInterimTilesOnError();
 
